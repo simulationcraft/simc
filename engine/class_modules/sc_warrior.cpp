@@ -19,6 +19,19 @@ struct warrior_t;
 
 enum warrior_stance { STANCE_BATTLE = 2, STANCE_DEFENSE = 4, STANCE_GLADIATOR = 8 };
 
+static bool bloodbath_blacklist( unsigned spell_id )
+{
+  // These spells do not proc bloodbath. Tested 9-9-14, spell ids are in the following order
+  // Heroic Throw, Execute Off-hand, Storm Bolt Off-Hand, Ravager, Deep Wounds, Rend Burst, Enhanced Rend
+  static const unsigned blacklist[] = { 57755, 163558, 145585, 156287, 115768, 176318, 94009, 174736 };
+
+  for ( size_t i = 0; i < sizeof_array( blacklist ); i++ )
+    if ( spell_id == blacklist[i] )
+      return true;
+
+  return false;
+}
+
 struct warrior_td_t: public actor_pair_t
 {
   dot_t* dots_bloodbath;
@@ -1036,7 +1049,10 @@ void warrior_attack_t::impact( action_state_t* s )
         if ( special )
         {
           if ( p() -> buff.bloodbath -> up() )
-            trigger_bloodbath_dot( s -> target, s -> result_amount );
+          {
+            if ( !bloodbath_blacklist( this -> id ) )
+              trigger_bloodbath_dot( s -> target, s -> result_amount );
+          }
           if ( p() -> new_sets.has_set_bonus( SET_MELEE, T16, B2 ) && td( s -> target ) ->  debuffs_colossus_smash -> up() && // Melee tier 16 2 piece.
                ( this ->  weapon == &( p() -> main_hand_weapon ) || this -> id == 100130 ) && // Only procs once per ability used.
                this -> id != 12328 ) // Doesn't proc from sweeping strikes.
@@ -1131,8 +1147,7 @@ struct melee_t: public warrior_attack_t
         residual_action::trigger(
           p() -> active_blood_craze, // ignite spell
           p(), // target
-          p() -> spec.blood_craze -> effectN( 1 ).trigger() -> effectN( 1 ).percent() *
-          p() -> resources.max[RESOURCE_HEALTH] * 3 );
+          p() -> spec.blood_craze -> effectN( 1 ).percent() * p() -> resources.max[RESOURCE_HEALTH] );
       }
     }
   }
