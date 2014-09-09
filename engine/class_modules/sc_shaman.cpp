@@ -1471,7 +1471,7 @@ struct fire_elemental_t : public primal_elemental_t
     main_hand_weapon.type            = WEAPON_BEAST;
     main_hand_weapon.swing_time      = timespan_t::from_seconds( 1.4 );
 
-    owner_coeff.sp_from_sp = 0.27;
+    owner_coeff.sp_from_sp = 0.25;
   }
 
   void init_action_list()
