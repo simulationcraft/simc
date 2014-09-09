@@ -3863,10 +3863,7 @@ action_t* player_t::execute_action()
       iteration_executed_foreground_actions++;
       action -> total_executions++;
       if ( action -> trigger_gcd > timespan_t::zero() )
-      {
         last_gcd_action = action;
-        off_gcdactions.clear();
-      }
       else
         off_gcdactions.push_back( action );
 

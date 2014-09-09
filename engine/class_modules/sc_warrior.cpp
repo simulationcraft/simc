@@ -1826,6 +1826,7 @@ struct heroic_leap_t: public warrior_attack_t
     may_dodge = may_parry = may_miss = may_block = false;
     movement_directionality = MOVEMENT_OMNI;
     base_teleport_distance = data().max_range();
+    base_teleport_distance += p -> glyphs.death_from_above -> effectN( 2 ).percent();
     attack_power_mod.direct = data().effectN( 2 ).trigger() -> effectN( 1 ).ap_coeff();
 
     cooldown -> duration = p -> cooldown.heroic_leap -> duration;
@@ -3238,7 +3239,7 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
     use_off_gcd = true;
     target = player;
-    attack_power_mod.direct = 2.75; // Effect #1 is not correct.
+    attack_power_mod.direct = 2.35; // Effect #1 is not correct.
   }
 
   double cost() const
@@ -3281,7 +3282,7 @@ struct shield_block_t: public warrior_spell_t
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_DEFENSE | STANCE_BATTLE;
-    cooldown -> duration = timespan_t::from_seconds( 9.0 );
+    cooldown -> duration = timespan_t::from_seconds( 12.0 );
     cooldown -> charges = 2;
     use_off_gcd = true;
   }
@@ -4837,8 +4838,7 @@ double warrior_t::composite_armor_multiplier() const
   double a = player_t::composite_armor_multiplier();
 
   if ( active_stance == STANCE_DEFENSE )
-    a *= 1.0 + spec.unwavering_sentinel -> effectN( 3 ).percent() +
-    perk.improved_defensive_stance -> effectN( 1 ).percent();
+   a += perk.improved_defensive_stance -> effectN( 1 ).percent();
 
   return a;
 }
