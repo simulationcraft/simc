@@ -73,6 +73,10 @@ namespace actions {
 struct ignite_t;
 } // actions
 
+namespace pets {
+struct water_elemental_pet_t;
+}
+
 enum mage_rotation_e { ROTATION_NONE = 0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
 typedef std::pair< timespan_t, double > icicle_data_t;
 
@@ -225,7 +229,7 @@ public:
   // Pets
   struct pets_t
   {
-    pet_t* water_elemental;
+    pets::water_elemental_pet_t* water_elemental;
     pet_t* mirror_images[ 3 ];
     pet_t* prismatic_crystal;
   } pets;
@@ -391,7 +395,6 @@ public:
   virtual void      reset();
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual resource_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_e    primary_role() const { return ROLE_SPELL; }
@@ -477,6 +480,15 @@ namespace pets {
 // Pet Water Elemental
 // ==========================================================================
 
+struct water_elemental_pet_t;
+
+struct water_elemental_pet_td_t: public actor_pair_t
+{
+  buff_t* water_jet;
+public:
+  water_elemental_pet_td_t( player_t* target, water_elemental_pet_t* welly );
+};
+
 struct water_elemental_pet_t : public pet_t
 {
   struct freeze_t : public spell_t
@@ -500,6 +512,55 @@ struct water_elemental_pet_t : public pet_t
     }
   };
 
+  struct water_jet_tick_t : public spell_t
+  {
+    water_jet_tick_t( water_elemental_pet_t* p ) :
+      spell_t( "water_jet_tick", p, p -> find_pet_spell( "water_jet" ) )
+    {
+      background = true;
+      dot_duration = timespan_t::zero();
+    }
+  };
+  struct water_jet_t : public spell_t
+  {
+    water_jet_t( water_elemental_pet_t* p, const std::string& options_str ) :
+      spell_t( "water_jet", p, p -> find_pet_spell( "water_jet" ) )
+    {
+      parse_options( NULL, options_str );
+      channeled = true;
+      dynamic_tick_action = true;
+      tick_action = new water_jet_tick_t( p );
+    }
+
+    water_elemental_pet_td_t* td( player_t* t = 0 ) const
+    { return p() -> get_target_data( t ? t : target ); }
+
+    water_elemental_pet_t* p()
+    { return static_cast<water_elemental_pet_t*>( player ); }
+
+    const water_elemental_pet_t* p() const
+    { return static_cast<water_elemental_pet_t*>( player ); }
+
+    virtual void impact( action_state_t* s )
+    {
+      spell_t::impact( s );
+
+      td( s -> target ) -> water_jet -> trigger();
+    }
+  };
+
+  water_elemental_pet_td_t* td( player_t* t ) const
+  { return get_target_data( t ); }
+
+  target_specific_t<water_elemental_pet_td_t*> target_data;
+
+  virtual water_elemental_pet_td_t* get_target_data( player_t* target ) const
+  {
+    water_elemental_pet_td_t*& td = target_data[ target ];
+    if ( ! td )
+      td = new water_elemental_pet_td_t( target, const_cast<water_elemental_pet_t*>(this) );
+    return td;
+  }
   struct waterbolt_t: public spell_t
   {
     waterbolt_t( water_elemental_pet_t* p, const std::string& options_str ):
@@ -527,7 +588,8 @@ struct water_elemental_pet_t : public pet_t
                                    const std::string& options_str )
   {
     if ( name == "freeze"     ) return new     freeze_t( this, options_str );
-    if ( name == "waterbolt" ) return new waterbolt_t( this, options_str );
+    if ( name == "waterbolt"  ) return new  waterbolt_t( this, options_str );
+    if ( name == "water_jet"  ) return new  water_jet_t( this, options_str );
 
     return pet_t::create_action( name, options_str );
   }
@@ -544,16 +606,19 @@ struct water_elemental_pet_t : public pet_t
       m *= 1.0 + o() -> buffs.rune_of_power -> data().effectN( 3 ).percent();
     }
 
-
     // Orc racial
     if ( owner -> race == RACE_ORC )
       m *= 1.0 + find_spell( 21563 ) -> effectN( 1 ).percent();
 
     return m;
   }
-
 };
 
+water_elemental_pet_td_t::water_elemental_pet_td_t( player_t* target, water_elemental_pet_t* welly ) :
+  actor_pair_t( target, welly )
+{
+  water_jet = buff_creator_t( *this, "water_jet", welly -> find_spell( 135029 ) ).cd( timespan_t::zero() );
+}
 // ==========================================================================
 // Pet Mirror Image
 // ==========================================================================
@@ -2555,6 +2620,16 @@ struct frostbolt_t : public mage_spell_t
           trigger_unstable_magic( s );
         trigger_icicle_gain( s );
       }
+
+    if ( ! p() -> pets.water_elemental -> is_sleeping() )
+    {
+      pets::water_elemental_pet_td_t* we_td = p() -> pets.water_elemental -> get_target_data( execute_state -> target );
+      if ( we_td -> water_jet -> up() )
+      {
+        // do stuff here
+      }
+    }
+
   }
 
   virtual timespan_t travel_time() const
@@ -4184,25 +4259,11 @@ action_t* mage_t::create_action( const std::string& name,
   return player_t::create_action( name, options_str );
 }
 
-// mage_t::create_pet =======================================================
-
-pet_t* mage_t::create_pet( const std::string& pet_name,
-                           const std::string& /* pet_type */ )
-{
-  pet_t* p = find_pet( pet_name );
-
-  if ( p ) return p;
-
-  if ( pet_name == "water_elemental" ) return new pets::water_elemental_pet_t( sim, this );
-
-  return 0;
-}
-
 // mage_t::create_pets ======================================================
 
 void mage_t::create_pets()
 {
-  pets.water_elemental = create_pet( "water_elemental" );
+  pets.water_elemental = new pets::water_elemental_pet_t( sim, this ); 
   pets.prismatic_crystal = new pets::prismatic_crystal_t( sim, this );
 
   for ( unsigned i = 0; i < sizeof_array( pets.mirror_images ); i++ )
