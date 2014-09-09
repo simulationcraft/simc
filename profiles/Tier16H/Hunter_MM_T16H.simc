@@ -81,7 +81,7 @@ main_hand=hiseks_reserve_longbow,id=105623,upgrade=2,gems=8agi_3agi,enchant=lord
 # gear_crit_rating=652
 # gear_haste_rating=535
 # gear_mastery_rating=173
-# gear_armor=720
+# gear_armor=750
 # gear_multistrike_rating=99
 # meta_gem=capacitive_primal
 # set_bonus=tier16_2pc_melee=1
