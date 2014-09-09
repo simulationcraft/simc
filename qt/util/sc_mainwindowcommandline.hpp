@@ -40,6 +40,7 @@ public:
     CMDLINE_TAB_LOG,
     CMDLINE_TAB_RESULTS,
     CMDLINE_TAB_SITE,
+    CMDLINE_TAB_SPELLQUERY,
 #ifdef SC_PAPERDOLL
     CMDLINE_TAB_PAPERDOLL,
 #endif
@@ -63,6 +64,7 @@ protected:
   QString text_cancel_all_tooltip;
   QString text_save;
   QString text_import;
+  QString text_spellquery;
   QString text_prev;
   QString text_next;
   QString text_prev_tooltip;
@@ -219,6 +221,7 @@ signals:
   void currentlyViewedTabCloseRequest();
   void commandLineReturnPressed();
   void commandLineTextEdited( const QString& );
+  void queryClicked();
 #ifdef SC_PAPERDOLL
   void simulatePaperdollClicked();
 #endif

@@ -239,6 +239,7 @@ void SC_MainWindowCommandLine::initTextStrings()
       "Cancel ALL simulations, including what is queued" );
   text_save = tr( "Save!" );
   text_import = tr( "Import!" );
+  text_spellquery = tr( "Query!" );
   text_prev = tr( "<" );
   text_next = tr( ">" );
   text_prev_tooltip = tr( "Backwards" );
@@ -309,6 +310,7 @@ void SC_MainWindowCommandLine::initDefaultStates()
       }
     }
   }
+  setText( IDLE, CMDLINE_TAB_SPELLQUERY, BUTTON_MAIN, &text_spellquery );
 }
 
 void SC_MainWindowCommandLine::initImportStates()
@@ -642,6 +644,9 @@ void SC_MainWindowCommandLine::emitSignal( QString* text )
     } else if ( text == text_queue )
     {
       emit( queueClicked() );
+    } else if ( text == text_spellquery )
+    {
+      emit( queryClicked() );
     } else if ( text == text_save )
     {
       switch ( current_tab )

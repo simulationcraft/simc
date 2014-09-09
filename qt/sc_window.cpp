@@ -6,6 +6,7 @@
 #include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
 #include "SC_OptionsTab.hpp"
+#include "SC_SpellQueryTab.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
 #ifdef SC_PAPERDOLL
 #include "simcpaperdoll.hpp"
@@ -413,6 +414,7 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   createLogTab();
   createResultsTab();
   createSiteTab();
+  createSpellQueryTab();
   createCmdLine();
   createToolTips();
   createTabShortcuts();
@@ -466,6 +468,7 @@ void SC_MainWindow::createCmdLine()
   connect( cmdLine, SIGNAL( forwardButtonClicked() ), this, SLOT( forwardButtonClicked() ) );
   connect( cmdLine, SIGNAL( simulateClicked() ), this, SLOT( enqueueSim() ) );
   connect( cmdLine, SIGNAL( queueClicked() ), this, SLOT( enqueueSim() ) );
+  connect( cmdLine, SIGNAL( queryClicked() ), this, SLOT( queryButtonClicked() ) );
   connect( cmdLine, SIGNAL( importClicked() ), this, SLOT( importButtonClicked() ) );
   connect( cmdLine, SIGNAL( saveLogClicked() ), this, SLOT( saveLog() ) );
   connect( cmdLine, SIGNAL( saveResultsClicked() ), this, SLOT( saveResults() ) );
@@ -815,6 +818,12 @@ void SC_MainWindow::createSiteTab()
   siteView -> enableMouseNavigation();
   siteView -> enableKeyboardNavigation();
   mainTab -> addTab( siteView, tr( "Site" ) );
+}
+
+void SC_MainWindow::createSpellQueryTab()
+{
+  spellQueryTab = new SC_SpellQueryTab( this );
+  mainTab -> addTab( spellQueryTab, tr( "Spell Query" ) );
 }
 
 void SC_MainWindow::createToolTips()
@@ -1513,6 +1522,7 @@ void SC_MainWindow::mainButtonClicked( bool /* checked */ )
       break;
     case TAB_LOG: saveLog(); break;
     case TAB_RESULTS: saveResults(); break;
+    case TAB_SPELLQUERY: spellQueryTab -> run_spell_query();
 #ifdef SC_PAPERDOLL
     case TAB_PAPERDOLL: start_paperdoll_sim(); break;
 #endif
@@ -1550,6 +1560,11 @@ void SC_MainWindow::importButtonClicked()
     case TAB_AUTOMATION: startAutomationImport( TAB_AUTOMATION ); break;
     default: break;
   }
+}
+
+void SC_MainWindow::queryButtonClicked()
+{
+  spellQueryTab -> run_spell_query();
 }
 
 void SC_MainWindow::pauseButtonClicked( bool )
@@ -1637,6 +1652,8 @@ void SC_MainWindow::mainTabChanged( int index )
       break;
     case TAB_SITE:
       updateWebView( siteView );
+      break;
+    case TAB_SPELLQUERY:
       break;
     default: assert( 0 );
   }

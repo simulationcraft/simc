@@ -48,7 +48,8 @@ enum main_tabs_e
   TAB_HELP,
   TAB_LOG,
   TAB_RESULTS,
-  TAB_SITE
+  TAB_SITE,
+  TAB_SPELLQUERY
 #ifdef SC_PAPERDOLL
   , TAB_PAPERDOLL
 #endif
@@ -66,6 +67,7 @@ enum import_tabs_e
 };
 
 class SC_WebView;
+//class SC_SpellQueryTab;
 class SC_CommandLine;
 class SimulateThread;
 #ifdef SC_PAPERDOLL
@@ -875,6 +877,7 @@ public slots:
 };
 
 class SC_OptionsTab;
+class SC_SpellQueryTab;
 
 // ============================================================================
 // SC_ComboBoxIntegerValidator
@@ -1019,6 +1022,7 @@ public:
   SC_ImportTab* importTab;
   SC_SimulateTab* simulateTab;
   SC_ResultTab* resultsTab;
+  SC_SpellQueryTab* spellQueryTab;
   QTabWidget* createCustomProfileDock;
 #ifdef SC_PAPERDOLL
   QTabWidget* paperdollTab;
@@ -1098,6 +1102,7 @@ public:
   void createLogTab();
   void createResultsTab();
   void createSiteTab();
+  void createSpellQueryTab();
   void createToolTips();
   void createTabShortcuts();
 #ifdef SC_PAPERDOLL
@@ -1138,6 +1143,7 @@ private slots:
   void cancelButtonClicked();
   void queueButtonClicked();
   void importButtonClicked();
+  void queryButtonClicked();
   void mainTabChanged( int index );
   void importTabChanged( int index );
   void resultsTabChanged( int index );
