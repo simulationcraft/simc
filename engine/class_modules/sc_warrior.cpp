@@ -50,6 +50,7 @@ struct warrior_td_t: public actor_pair_t
 struct warrior_t: public player_t
 {
 public:
+  core_event_t* heroic_charge;
   int initial_rage;
   double arms_rage_mult;
   double crit_rage_mult;
@@ -62,7 +63,6 @@ public:
   double rend_burst_mastery;
   bool swapping; // Disables automated swapping when it's not required to use the ability.
   // Set to true whenever a player uses the swap option inside of stance_t, as we should assume they are intentionally sitting in defensive stance.
-  bool heroic_charge;
 
   simple_sample_data_t cs_damage;
   simple_sample_data_t priority_damage;
@@ -228,6 +228,7 @@ public:
     const spell_data_t* drawn_sword;
     const spell_data_t* rallying_cry;
     const spell_data_t* recklessness;
+    const spell_data_t* wind_and_thunder;
     // Fury only
     const spell_data_t* bloodthirst;
     const spell_data_t* raging_blow;
@@ -380,6 +381,7 @@ public:
 
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ):
     player_t( sim, WARRIOR, name, r ),
+    heroic_charge( 0 ),
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),
     gain( gains_t() ),
@@ -437,8 +439,7 @@ public:
     arms_rage_mult = 1.695;
     crit_rage_mult = 2.325;
     swapping = false;
-    base.distance = 3.0;
-    heroic_charge = false;
+    base.distance = 5.0;
 
     regen_type = REGEN_DISABLED;
   }
@@ -471,6 +472,8 @@ public:
   virtual double    composite_melee_speed() const;
   virtual double    composite_melee_crit() const;
   virtual double    composite_spell_crit() const;
+  virtual void      interrupt();
+  virtual void      halt();
   virtual void      reset();
   virtual void      create_options();
   virtual action_t* create_proc_action( const std::string& name );
@@ -532,6 +535,7 @@ struct warrior_action_t: public Base
   bool headlongrush;
   bool recklessness;
   bool weapons_master;
+  double melee_range;
 private:
   typedef Base ab; // action base, eg. spell_t
 public:
@@ -543,7 +547,8 @@ public:
                     stancemask( STANCE_BATTLE | STANCE_DEFENSE | STANCE_GLADIATOR ),
                     headlongrush( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 1 ) ) ),
                     recklessness( ab::data().affected_by( player -> spec.recklessness -> effectN( 1 ) ) ),
-                    weapons_master( ab::data().affected_by( player -> mastery.weapons_master -> effectN( 1 ) ) )
+                    weapons_master( ab::data().affected_by( player -> mastery.weapons_master -> effectN( 1 ) ) ),
+                    melee_range( 5 )
   {
     ab::may_crit = true;
   }
@@ -622,6 +627,10 @@ public:
     if ( !ab::ready() )
       return false;
 
+    if ( p() -> current.distance_to_move > melee_range && melee_range != -1 ) 
+      // -1 melee range implies that the ability can be used at any distance from the target. Battle shout, stance swaps, etc.
+      return false;
+
     if ( p() -> active_stance == STANCE_GLADIATOR ) // Gladiator can use all abilities no matter the stance.
       return true;
 
@@ -634,6 +643,11 @@ public:
     else if ( ( ( stancemask & p() -> active_stance ) == 0 ) && p() -> cooldown.stance_swap -> down() )
       return false;
 
+    return true;
+  }
+
+  bool usable_moving() const
+  { // All warrior abilities are usable while moving, the issue is being in range.
     return true;
   }
 
@@ -1069,12 +1083,12 @@ void warrior_attack_t::impact( action_state_t* s )
 
 struct melee_t: public warrior_attack_t
 {
-  int sync_weapons;
   bool first;
-
-  melee_t( const std::string& name, warrior_t* p, int sw ):
+  bool mh_lost_melee_contact;
+  bool oh_lost_melee_contact;
+  melee_t( const std::string& name, warrior_t* p ):
     warrior_attack_t( name, p, spell_data_t::nil() ),
-    sync_weapons( sw ), first( true )
+    first( true ), mh_lost_melee_contact( false ), oh_lost_melee_contact( false )
   {
     school = SCHOOL_PHYSICAL;
     special = false;
@@ -1089,13 +1103,19 @@ struct melee_t: public warrior_attack_t
   {
     warrior_attack_t::reset();
     first = true;
+    mh_lost_melee_contact = false;
+    oh_lost_melee_contact = false;
   }
 
   timespan_t execute_time() const
   {
     timespan_t t = warrior_attack_t::execute_time();
     if ( first )
-      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::zero() ) : t / 2 ) : timespan_t::zero();
+      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( t / 2 ) : timespan_t::zero();
+    else if ( weapon -> slot == SLOT_MAIN_HAND && mh_lost_melee_contact )
+      return timespan_t::zero(); // If contact is lost, the attack is instant.
+    else if ( weapon -> slot == SLOT_OFF_HAND && oh_lost_melee_contact )
+      return timespan_t::zero();
     else
       return t;
   }
@@ -1105,11 +1125,30 @@ struct melee_t: public warrior_attack_t
     if ( first )
       first = false;
 
-    // If we're casting, we should clip a swing
-    if ( time_to_execute > timespan_t::zero() && player -> executing && player -> executing -> interrupt_auto_attack )
-      schedule_execute();
+    if ( p() -> current.distance_to_move > 5 )
+    { // Cancel autoattacks, auto_attack_t will restart them when we're back in range.
+      if ( weapon -> slot == SLOT_MAIN_HAND )
+      {
+        mh_lost_melee_contact = true;
+        player -> main_hand_attack -> cancel();
+      }
+      else
+      {
+        oh_lost_melee_contact = true;
+        player -> off_hand_attack -> cancel();
+      }
+    }
     else
+    {
       warrior_attack_t::execute();
+      if ( weapon -> slot == SLOT_MAIN_HAND )
+      {
+        if ( mh_lost_melee_contact )
+          mh_lost_melee_contact = false;
+      }
+      else if ( oh_lost_melee_contact )
+        oh_lost_melee_contact = false;
+    }
   }
 
   void impact( action_state_t* s )
@@ -1157,50 +1196,52 @@ struct melee_t: public warrior_attack_t
 
 struct auto_attack_t: public warrior_attack_t
 {
-  int sync_weapons;
-
   auto_attack_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "auto_attack", p ),
-    sync_weapons( 0 )
+    warrior_attack_t( "auto_attack", p )
   {
-    option_t options[] =
-    {
-      opt_bool( "sync_weapons", sync_weapons ),
-      opt_null()
-    };
-    parse_options( options, options_str );
-
+    parse_options( NULL, options_str );
+    stancemask = STANCE_GLADIATOR | STANCE_DEFENSE | STANCE_BATTLE;
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
 
-    p -> main_hand_attack = new melee_t( "auto_attack_mh", p, sync_weapons );
+    p -> main_hand_attack = new melee_t( "auto_attack_mh", p );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
     p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      p -> off_hand_attack = new melee_t( "auto_attack_oh", p, sync_weapons );
+      p -> off_hand_attack = new melee_t( "auto_attack_oh", p );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
       p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
       p -> off_hand_attack -> id = 1;
     }
-
     trigger_gcd = timespan_t::zero();
   }
 
   void execute()
   {
-    p() -> main_hand_attack -> schedule_execute();
-
+    if ( p() -> main_hand_attack -> execute_event == 0 )
+      p() -> main_hand_attack -> schedule_execute();
     if ( p() -> off_hand_attack )
-      p() -> off_hand_attack -> schedule_execute();
+    {
+      if ( p() -> off_hand_attack -> execute_event == 0 )
+        p() -> off_hand_attack -> schedule_execute();
+    }
   }
 
   bool ready()
   {
-    if ( p() -> current.distance_to_move > 5 )
-      return false;
-
-    return( p() -> main_hand_attack -> execute_event == 0 ); // not swinging
+    bool ready = warrior_attack_t::ready();
+    if ( ready ) // Range check
+    {
+      if ( p() -> main_hand_attack -> execute_event == 0 )
+        return ready;
+      if ( p() -> off_hand_attack )
+      { // Don't check for execute_event if we don't have an offhand.
+        if ( p() -> off_hand_attack -> execute_event == 0 )
+          return ready;
+      }
+    }
+    return false;
   }
 };
 
@@ -1403,8 +1444,10 @@ struct charge_t: public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     base_teleport_distance = data().max_range();
     base_teleport_distance += p -> glyphs.long_charge -> effectN( 1 ).base_value();
+    melee_range = base_teleport_distance;
     movement_directionality = MOVEMENT_OMNI;
-
+    cooldown -> duration = data().cooldown();
+    use_off_gcd = true;
     if ( p -> talents.double_time -> ok() )
       cooldown -> charges = 2;
     else if ( p -> talents.juggernaut -> ok() )
@@ -1421,9 +1464,6 @@ struct charge_t: public warrior_attack_t
 
     if ( first_charge )
       first_charge = !first_charge;
-
-    if ( p() -> heroic_charge )
-      p() -> heroic_charge = false;
 
     if ( p() -> cooldown.rage_from_charge -> up() )
     {
@@ -1444,7 +1484,7 @@ struct charge_t: public warrior_attack_t
 
   bool ready()
   {
-    if ( first_charge == true || p() -> heroic_charge == true ) // Assumes that we charge into combat, instead of setting initial distance to 20 yards.
+    if ( first_charge == true ) // Assumes that we charge into combat, instead of setting initial distance to 20 yards.
       return warrior_attack_t::ready();
 
     if ( p() -> current.distance_to_move > base_teleport_distance ||
@@ -1586,6 +1626,7 @@ struct dragon_roar_t: public warrior_attack_t
     parse_options( NULL, options_str );
     aoe = -1;
     may_dodge = may_parry = may_block = false;
+    melee_range = p -> find_spell( 118000 ) -> effectN( 1 ).radius_max();
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 
@@ -1795,7 +1836,7 @@ struct heroic_throw_t: public warrior_attack_t
     weapon = &( player -> main_hand_weapon );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     may_dodge = may_parry = may_block = false;
-
+    melee_range = data().max_range();
     if ( p -> perk.improved_heroic_throw -> ok() )
       cooldown -> duration = timespan_t::zero();
   }
@@ -1826,6 +1867,7 @@ struct heroic_leap_t: public warrior_attack_t
     may_dodge = may_parry = may_miss = may_block = false;
     movement_directionality = MOVEMENT_OMNI;
     base_teleport_distance = data().max_range();
+    melee_range = base_teleport_distance;
     base_teleport_distance += p -> glyphs.death_from_above -> effectN( 2 ).percent();
     attack_power_mod.direct = data().effectN( 2 ).trigger() -> effectN( 1 ).ap_coeff();
 
@@ -1836,7 +1878,7 @@ struct heroic_leap_t: public warrior_attack_t
   void impact( action_state_t* s )
   {
     if ( p() -> current.distance_to_move >  // Hack so that heroic leap doesn't deal damage if the target is far away.
-         data().effectN( 2 ).trigger() -> effectN( 1 ).radius() || p() -> heroic_charge == true )
+         data().effectN( 2 ).trigger() -> effectN( 1 ).radius() )
          s -> result_amount = 0;
     warrior_attack_t::impact( s );
     p() -> buff.heroic_leap_glyph -> trigger();
@@ -1924,6 +1966,7 @@ struct intervene_t: public warrior_attack_t
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     base_teleport_distance = data().max_range();
+    melee_range = base_teleport_distance;
     movement_directionality = MOVEMENT_OMNI;
   }
 
@@ -1937,43 +1980,92 @@ struct intervene_t: public warrior_attack_t
 };
 
 // Heroic Charge  ==============================================================
-// Currently assumes that the player has a swing timer, and never clips autoattacks.
-// In practice this is extremely easy to do.
+
+struct heroic_charge_movement_ticker_t: public event_t
+{
+  timespan_t duration;
+  warrior_t* warrior;
+  heroic_charge_movement_ticker_t( sim_t& s, warrior_t*p, timespan_t d = timespan_t::zero() ):
+    event_t( s, "Player Movement Event" ), warrior( p )
+  {
+    if ( d > timespan_t::zero() )
+      duration = d;
+    else
+      duration = next_execute();
+
+    add_event( duration );
+    if ( sim().debug ) sim().out_debug.printf( "New movement event" );
+  }
+
+  timespan_t next_execute() const
+  {
+    timespan_t min_time = timespan_t::max();
+    bool any_movement = false;
+    timespan_t time_to_finish = warrior -> time_to_move();
+    if ( time_to_finish != timespan_t::zero() )
+    {
+      any_movement = true;
+
+      if ( time_to_finish < min_time )
+        min_time = time_to_finish;
+    }
+
+    if ( min_time > timespan_t::from_seconds( 0.1 ) )
+      min_time = timespan_t::from_seconds( 0.1 );
+
+    if ( !any_movement )
+      return timespan_t::zero();
+    else
+      return min_time;
+  }
+
+  void execute()
+  {
+    if ( warrior -> time_to_move() > timespan_t::zero() )
+      warrior -> update_movement( duration );
+
+    timespan_t next = next_execute();
+    if ( next > timespan_t::zero() )
+      new ( sim() ) heroic_charge_movement_ticker_t( sim(), warrior, next );
+  }
+};
 
 struct heroic_charge_t: public warrior_attack_t
 {
   action_t*leap;
-  action_t*charge;
+  heroic_charge_movement_ticker_t* charge;
   heroic_charge_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "heroic_charge", p, spell_data_t::nil() )
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_DEFENSE | STANCE_GLADIATOR | STANCE_BATTLE;
     leap = new heroic_leap_t( p, options_str );
-    charge = new charge_t( p, options_str );
-    min_gcd = timespan_t::from_millis( 250 );
-  }
-
-  timespan_t gcd() const
-  {
-    if ( p() -> cooldown.heroic_leap -> up() )
-      return timespan_t::from_millis( 250 );
-    else
-      return timespan_t::from_millis( 750 );
+    trigger_gcd = timespan_t::zero();
+    use_off_gcd = true;
+    callbacks = may_crit = false;
   }
 
   void execute()
   {
-    p() -> heroic_charge = true;
-    if ( p() -> cooldown.heroic_leap -> up() )
-      leap -> execute();
-
     warrior_attack_t::execute();
-    charge -> execute();
+
+    if ( p() -> cooldown.heroic_leap -> up() )
+    {
+      leap -> execute();
+      p() -> current.distance_to_move = 10;
+    }
+    else
+    {
+      p() -> moving();
+      p() -> trigger_movement( 8.0, MOVEMENT_AWAY );
+      new ( *sim ) heroic_charge_movement_ticker_t( *sim, p() );
+    }
   }
 
   bool ready()
   {
+    if ( p() -> current.moving_away > 0 )
+      return false;
     if ( p() -> cooldown.rage_from_charge -> up() && p() -> cooldown.charge -> up() )
       return warrior_attack_t::ready();
     else
@@ -2265,6 +2357,7 @@ struct enraged_regeneration_t: public warrior_heal_t
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     dot_duration = data().duration();
+    melee_range = -1;
     base_tick_time = data().effectN( 2 ).period();
 
     pct_heal = data().effectN( 1 ).percent();
@@ -2584,6 +2677,7 @@ struct shockwave_t: public warrior_attack_t
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     may_dodge = may_parry = may_block = false;
+    melee_range = data().effectN( 2 ).radius_max();
     aoe = -1;
   }
 
@@ -2612,7 +2706,7 @@ struct storm_bolt_off_hand_t: public warrior_attack_t
   {
     may_dodge = may_parry = may_block = may_miss = false;
     dual = true;
-
+    melee_range = data().max_range();
     weapon = &( p -> off_hand_weapon );
     // assume the target is stun-immune
     weapon_multiplier *= 4.00;
@@ -2629,6 +2723,7 @@ struct storm_bolt_t: public warrior_attack_t
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     may_dodge = may_parry = may_block = false;
+    melee_range = data().max_range();
     // Assuming that our target is stun immune
     weapon_multiplier *= 4.00;
 
@@ -2676,6 +2771,7 @@ struct thunder_clap_t: public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     aoe = -1;
     may_dodge = may_parry = may_block = false;
+    melee_range = data().effectN( 2 ).radius_max();
     cooldown -> duration = data().cooldown();
     cooldown -> duration *= 1 + p -> glyphs.resonating_power -> effectN( 2 ).percent();
     attack_power_mod.direct *= 1.0 + p -> glyphs.resonating_power -> effectN( 1 ).percent();
@@ -2758,6 +2854,8 @@ struct whirlwind_off_hand_t: public warrior_attack_t
   {
     dual = true;
     aoe = -1;
+    melee_range = p -> spec.whirlwind -> effectN( 2 ).radius_max(); // 8 yard range.
+    melee_range += p -> glyphs.wind_and_thunder -> effectN( 1 ).base_value(); // Increased by the glyph.
     weapon = &( p -> off_hand_weapon );
   }
 
@@ -2783,6 +2881,8 @@ struct whirlwind_t: public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     aoe = -1;
 
+    melee_range = p -> spec.whirlwind -> effectN( 2 ).radius_max(); // 8 yard range.
+    melee_range += p -> glyphs.wind_and_thunder -> effectN( 1 ).base_value(); // Increased by the glyph.
     if ( p -> specialization() == WARRIOR_FURY )
     {
       oh_attack = new whirlwind_off_hand_t( p );
@@ -2937,6 +3037,7 @@ struct battle_shout_t: public warrior_spell_t
     warrior_spell_t( "battle_shout", p, p -> find_class_spell( "Battle Shout" ) )
   {
     parse_options( NULL, options_str );
+    melee_range = -1;
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     callbacks = false;
   }
@@ -2958,6 +3059,7 @@ struct berserker_rage_t: public warrior_spell_t
     warrior_spell_t( "berserker_rage", p, p -> find_class_spell( "Berserker Rage" ) )
   {
     parse_options( NULL, options_str );
+    melee_range = -1; // Just in case anyone wants to use berserker rage + enraged speed glyph to get somewhere a little faster... I guess.
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 
@@ -3006,6 +3108,7 @@ struct commanding_shout_t: public warrior_spell_t
     warrior_spell_t( "commanding_shout", p, p -> find_class_spell( "Commanding Shout" ) )
   {
     parse_options( NULL, options_str );
+    melee_range = -1;
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     callbacks = false;
   }
@@ -3039,6 +3142,7 @@ struct die_by_the_sword_t: public warrior_spell_t
     warrior_spell_t( "die_by_the_sword", p, p -> spec.die_by_the_sword )
   {
     parse_options( NULL, options_str );
+    melee_range = -1;
     stancemask = STANCE_DEFENSE | STANCE_BATTLE;
   }
 
@@ -3142,6 +3246,7 @@ struct rallying_cry_t: public warrior_spell_t
     warrior_spell_t( "rallying_cry", p, p -> spec.rallying_cry )
   {
     parse_options( NULL, options_str );
+    melee_range = -1;
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 
@@ -3174,6 +3279,7 @@ struct ravager_t: public warrior_spell_t
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     hasted_ticks = callbacks = false;
+    melee_range = data().max_range();
     dot_duration = timespan_t::from_seconds( data().effectN( 4 ).base_value() );
     add_child( ravager );
   }
@@ -3238,6 +3344,7 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     parse_options( NULL, options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
     use_off_gcd = true;
+    melee_range = -1;
     target = player;
     attack_power_mod.direct = 2.35; // Effect #1 is not correct.
   }
@@ -3331,6 +3438,7 @@ struct shield_charge_t: public warrior_spell_t
     cooldown -> charges = 2;
     cooldown -> duration = timespan_t::from_seconds( 15 );
     base_teleport_distance = data().max_range();
+    melee_range = base_teleport_distance;
     movement_directionality = MOVEMENT_OMNI;
     use_off_gcd = true;
   }
@@ -3367,6 +3475,7 @@ struct shield_wall_t: public warrior_spell_t
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     harmful = false;
+    melee_range = -1;
     cooldown -> duration = data().cooldown();
     cooldown -> duration += p -> spec.bastion_of_defense -> effectN( 2 ).time_value();
     cooldown -> duration += p -> glyphs.shield_wall -> effectN( 1 ).time_value();
@@ -3438,6 +3547,7 @@ struct stance_t: public warrior_spell_t
       opt_null()
     };
     parse_options( options, options_str );
+    melee_range = -1;
 
     if ( p -> specialization() != WARRIOR_PROTECTION )
       starting_stance = STANCE_BATTLE;
@@ -3564,6 +3674,7 @@ struct taunt_t: public warrior_spell_t
   {
     parse_options( NULL, options_str );
     use_off_gcd = true;
+    melee_range = data().max_range();
     stancemask = STANCE_DEFENSE | STANCE_GLADIATOR;
   }
 
@@ -3779,6 +3890,7 @@ void warrior_t::init_spells()
   glyphs.sweeping_strikes       = find_glyph_spell( "Glyph of Sweeping Strikes" );
   glyphs.unending_rage          = find_glyph_spell( "Glyph of Unending Rage" );
   glyphs.victory_rush           = find_glyph_spell( "Glyph of Victory Rush" );
+  glyphs.wind_and_thunder       = find_glyph_spell( "Glyph of Wind and Thunder" ); //So roleplay.
 
   // Generic spells
   spell.charge                  = find_class_spell( "Charge" );
@@ -4763,9 +4875,18 @@ void warrior_t::reset()
 
   active_stance = STANCE_BATTLE;
   swapping = false;
-  heroic_charge = false;
 
   t15_2pc_melee.reset();
+}
+
+void warrior_t::interrupt()
+{
+  return;
+}
+
+void warrior_t::halt()
+{
+  return;
 }
 
 // warrior_t::composite_player_multiplier ===================================
