@@ -452,7 +452,7 @@ void scaling_t::normalize()
     if ( divisor == 0 ) continue;
 
     // hack to deal with weirdness in TMI calculations - always normalize using negative divisor
-    if ( scale_over == "tmi" || scale_over == "theck_meloree_index" )
+    if ( util::str_compare_ci( scale_over, "tmi" ) || util::str_compare_ci( scale_over, "theck_meloree_index" ) )
       divisor = - std::abs( divisor );
 
     for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
@@ -490,7 +490,7 @@ void scaling_t::analyze()
       }
     }
     // more hack to deal with TMI weirdness, this just determines sorting order, not what gets displayed on the chart
-    bool use_normalized = p -> scaling_normalized.get_stat( p -> normalize_by() ) > 0 || scale_over == "tmi" || scale_over == "theck_meloree_index" || scale_over == "etmi";
+    bool use_normalized = p -> scaling_normalized.get_stat( p -> normalize_by() ) > 0 || util::str_compare_ci( scale_over, "tmi" ) || util::str_compare_ci( scale_over, "theck_meloree_index" ) || util::str_compare_ci( scale_over, "etmi" );
     range::sort( p -> scaling_stats, compare_scale_factors( p, use_normalized ) );
   }
 }

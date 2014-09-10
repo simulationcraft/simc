@@ -4101,7 +4101,7 @@ stat_e player_t::normalize_by() const
   role_e role = primary_role();
   if ( role == ROLE_SPELL || role == ROLE_HEAL )
     return STAT_INTELLECT;
-  else if ( role == ROLE_TANK && ( so == "tmi" || so == "etmi" || so == "deaths" || so == "theck_meloree_index" ) )
+  else if ( role == ROLE_TANK && ( util::str_compare_ci( so, "tmi" ) || util::str_compare_ci( so, "etmi" ) || util::str_compare_ci( so, "deaths" ) || util::str_compare_ci(so, "theck_meloree_index" ) ) )
     return STAT_STAMINA;
   else if ( type == DRUID || type == HUNTER || type == SHAMAN || type == ROGUE || type == MONK )
     return STAT_AGILITY;
@@ -8568,34 +8568,34 @@ player_t::scales_over_t player_t::scales_over()
   if ( !q )
     q = this;
 
-  if ( so == "dmg_taken" ) 
+  if ( util::str_compare_ci( so, "dmg_taken" ) )
     return q -> collected_data.dmg_taken;
 
-  if ( so == "dps" )
+  if ( util::str_compare_ci( so, "dps" ) )  
     return q -> collected_data.dps;
 
-  if ( so == "dpse" )
+  if ( util::str_compare_ci( so, "dpse" ) )
     return q -> collected_data.dpse;
 
-  if ( so == "hpse" )
+  if ( util::str_compare_ci( so, "hpse" ) )
     return q -> collected_data.hpse;
 
-  if ( so == "htps" )
+  if ( util::str_compare_ci( so, "htps" ) )
     return q -> collected_data.htps;
 
-  if ( so == "deaths" )
+  if ( util::str_compare_ci( so, "deaths" ) )
     return q -> collected_data.deaths;
 
-  if ( so == "theck_meloree_index" || so == "tmi" )
+  if ( util::str_compare_ci( so, "theck_meloree_index" ) || util::str_compare_ci( so, "tmi" ) )
     return q -> collected_data.theck_meloree_index;
 
-  if ( so == "etmi" )
+  if ( util::str_compare_ci( so, "etmi" ) )
     return q -> collected_data.effective_theck_meloree_index;
 
-  if ( q -> primary_role() == ROLE_HEAL || so == "hps" )
+  if ( q -> primary_role() == ROLE_HEAL || util::str_compare_ci( so, "hps" ) )
     return q -> collected_data.hps;
 
-  if ( q -> primary_role() == ROLE_TANK || so == "dtps" )
+  if ( q -> primary_role() == ROLE_TANK || util::str_compare_ci( so, "dtps" ) )
     return q -> collected_data.dtps;
 
   return q -> collected_data.dps;
