@@ -2518,7 +2518,10 @@ struct focusing_shot_t: public hunter_ranged_attack_t
   
   virtual void try_steady_focus()
   {
-    trigger_steady_focus();
+    // Just one focusing shot triggers the buff
+    double regen_buff = p() -> buffs.steady_focus -> data().effectN( 1 ).percent();
+    p() -> buffs.steady_focus -> trigger( 1, regen_buff );
+    p() -> buffs.pre_steady_focus -> expire();
   }
 
   virtual void execute()
