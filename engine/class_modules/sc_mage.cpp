@@ -22,12 +22,13 @@
 // Need to do some basic d=vt calcs to have a more realistic travel time for AO.
 // Improve the delay between tick and aoe for NT by applying a guassian distribution centered around 1.25s with stddev such that travel time is ~1.2-1.3s
 // Removing hardcoding of Inferno Blast CD once it has returned to the spell data
-// Water elemental waterbolt hitting ~30% too hard. Frost bomb is hitting too hard
+// Water elemental waterbolt hitting ~30% too hard.
 
 
 // Are Meteor ticks effected by haste? - Maybe? They are bugged on Beta as of 8/11/2014 (http://us.battle.net/wow/en/forum/topic/13780228135)
 
 // To-do Completed:
+//  Frost bomb is hitting too hard - DONE!
 //  BUG IGNITE TRIGGERS ON MISSES. Fixing this breaks icicles. Need to investigate - DONE!
 //  Enhanced Pyrotechnics is giving global crit chance increase (not just FB/FFB). Fix this! - DONE!
 // Enhanced Frostbolt keeps trying to trigger for non-Frost specs (causes debug log to look ugly, prolly slows down the sim) - DONE!
@@ -2475,6 +2476,7 @@ struct frost_bomb_explosion_t : public mage_spell_t
   {
     aoe = -1;
     parse_effect_data( data().effectN( 1 ) );
+    base_aoe_multiplier *= 0.5;
     background = true;
   }
 
