@@ -20,8 +20,8 @@ class SC_SpellQueryTab : public QWidget
 public:
   SC_SpellQueryTab( SC_MainWindow* parent );
 
-  void    decodeOptions();
-  void    encodeOptions();
+  void    decodeSettings();
+  void    encodeSettings();
   void    run_spell_query();
 
   void createToolTips();
@@ -29,8 +29,9 @@ public:
   struct choices_t
   {
     // options
-    QComboBox* spell;
+    QComboBox* source;
     QComboBox* filter;
+    QComboBox* operatorString;
   } choice;
 
   struct labels_t
@@ -46,11 +47,14 @@ public:
   } textbox;
 
 //  
-//public slots:
-//  void _resetallSettings();
+public slots:
+  void sourceTypeChanged( const int source_index );
+  void filterTypeChanged( const int filter_index );
 protected:
   SC_MainWindow* mainWindow;
   void load_setting( QSettings& s, const QString& name, QComboBox* choice, const QString& default_value );
+  void load_setting( QSettings& s, const QString& name, QLineEdit* textbox, const QString& default_value);
+  void load_setting( QSettings& s, const QString& name, SC_TextEdit* textbox, const QString& default_value);
 };
 
 #endif // SC_SPELLQUERYTAB_HPP
