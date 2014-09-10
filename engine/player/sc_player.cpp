@@ -9877,12 +9877,12 @@ void manager_t::update()
   assert( _started && "Trying to update Resolve for a unstarted Resolve Manager." );
 
   // Relevant constants
-  static const double resolve_dmg_mod = 0.25; // multiplier for the resolve damage component
-  const double resolve_sta_mod = 1 / 250.0 /  _player.dbc.resolve_item_scaling( _player.level );
+  static const double damage_mod_coefficient = 1 / ( 10 * _player.dbc.resolve_level_scaling( _player.level ) ); // multiplier for the resolve damage component
+  //const double resolve_sta_mod = 1 / 250.0 /  _player.dbc.resolve_item_scaling( _player.level );
   static const timespan_t max_interval = timespan_t::from_seconds( 10.0 );
 
   // cycle through the resolve damage table and add the appropriate amount of Resolve from each event
-  double new_amount = 0;
+  double damage_mod = 0;
 
   // Iterate through the Resolve event list, retrieving each event's details
   const damage_event_list_t::list_t& list= _damage_list -> _event_list;
@@ -9903,20 +9903,17 @@ void manager_t::update()
     contribution *= 2.0 * ( 10.0 - delta_t ) / 10.0;
 
     // add to existing amount
-    new_amount += contribution;
+    damage_mod += contribution;
   }
 
   // multiply by damage modifier
-  new_amount *= resolve_dmg_mod;
-
-  // add stamina-based contribution
-  new_amount += _player.get_attribute( ATTR_STAMINA ) * resolve_sta_mod;
+  damage_mod *= damage_mod_coefficient;
 
   // multiply by 100 for display purposes
-  new_amount *= 100;
+  double new_resolve = 100 * std::max( 0.0, 8.5 * ( 1 - std::exp( - 0.045 * damage_mod ) ) - 1.0 );
 
   // updatee the buff
-  _player.buffs.resolve -> trigger( 1, new_amount, 1, timespan_t::zero() );
+  _player.buffs.resolve -> trigger( 1, new_resolve, 1, timespan_t::zero() );
 
   // Add to the Resolve timeline
   _player.collected_data.resolve_timeline.add_max( _player.sim -> current_time, _player.buffs.resolve -> value() );

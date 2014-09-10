@@ -1220,6 +1220,12 @@ int dbc_t::resolve_item_scaling( unsigned level ) const
   return __gt_item_scaling[ level - 1 ];
 }
 
+double dbc_t::resolve_level_scaling( unsigned level ) const
+{
+  assert( level > 0 && level <= MAX_LEVEL );
+  return _gt_resolve_dps_by_level[ level - 1 ];
+}
+
 double dbc_t::health_base( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );

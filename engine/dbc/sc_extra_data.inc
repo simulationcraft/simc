@@ -1591,3 +1591,20 @@ static double __gt_VerticalStretch[] =
 static double __gt_HorizontalShift[] = 
 { 0.0, 0.956, 0.886, 0.988, 0.988, 0.983, 0.956, 0.988, 0.983, 0.983, 1.422, 1.222 };
 
+// Resolve "basic equal-level creature damage" expectation values
+// from http://us.battle.net/wow/en/forum/topic/14058407204?page=2#39
+// using 1 as placeholder for unknown to avoid divide-by-zero errors
+
+static double _gt_resolve_dps_by_level[] = 
+{ 
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1,       //01-10
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1,       //11-20
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1,       //21-30
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1,       //31-40
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1,       //41-50
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1,       //51-60
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1,       //61-70
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1,       //71-80
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 847.125, //81-90
+  1161, 1425.06, 1796.76, 2179.35, 2646, 3114.45, 3238.65, 3364.2, 3489.75, 3615.3 // 91-100
+};

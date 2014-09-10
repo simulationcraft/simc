@@ -954,6 +954,7 @@ public:
   double oct_combat_rating( unsigned combat_rating_id, player_e t ) const;
 
   int resolve_item_scaling( unsigned level ) const;
+  double resolve_level_scaling( unsigned level ) const;
 
 private:
   template <typename T>

@@ -2440,7 +2440,6 @@ struct mind_sear_tick_t final : public priest_spell_t
     aoe         = -1;
     callbacks   = false;
     direct_tick = true;
-    base_dd_max = base_dd_min = 0; // Spell data is importing 9250-10750 for this. 8/23/14
   }
 };
 
