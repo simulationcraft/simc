@@ -350,7 +350,10 @@ class CASCObject(object):
 		return handle
 
 class CDNIndex(CASCObject):
-	PATCH_BASE_URL = 'http://us.patch.battle.net:1119/wow_beta'
+	PATCH_BASE_URL = 'http://us.patch.battle.net:1119'
+
+	PATCH_BETA = 'wow_beta'
+	PATCH_PTR = 'wowt'
 
 	def __init__(self, options):
 		CASCObject.__init__(self, options)
@@ -375,9 +378,17 @@ class CDNIndex(CASCObject):
 	
 	def encoding_blte_url(self):
 		return self.cdn_url('data', self.build_info['encoding'][1])
+
+	def patch_base_url(self):
+		if self.options.ptr:
+			return '%s/%s' % ( CDNIndex.PATCH_BASE_URL, CDNIndex.PATCH_PTR )
+		elif self.options.beta:
+			return '%s/%s' % ( CDNIndex.PATCH_BASE_URL, CDNIndex.PATCH_BETA )
+		else:
+			return '%s/%s' % ( CDNIndex.PATCH_BASE_URL, CDNIndex.PATCH_LIVE )
 	
 	def open_cdns(self):
-		cdns_url = '%s/cdns' % CDNIndex.PATCH_BASE_URL
+		cdns_url = '%s/cdns' % self.patch_base_url()
 		handle = self.get_url(cdns_url)
 		
 		data = handle.read().strip().split('\n')
@@ -401,7 +412,7 @@ class CDNIndex(CASCObject):
 		return '%s/%s/%s/%s/%s' % (self.cdn_base_url(), type, file[:2], file[2:4], file)
 	
 	def open_version(self):
-		version_url =  '%s/versions' % CDNIndex.PATCH_BASE_URL
+		version_url =  '%s/versions' % self.patch_base_url()
 		handle = self.get_url(version_url)
 	
 		for line in handle.readlines():
