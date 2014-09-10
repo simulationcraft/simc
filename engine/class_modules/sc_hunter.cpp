@@ -3672,8 +3672,9 @@ void hunter_t::apl_mm()
     careful_aim -> add_action( this, "Chimaera Shot" );
     careful_aim -> add_action( this, "Kill Shot", "if=focus.time_to_max>action.aimed_shot.cast_time" );
     careful_aim -> add_talent( this, "Glaive Toss" );
-    careful_aim -> add_talent( this, "Powershot" );
-    careful_aim -> add_talent( this, "Barrage", "if=focus.time_to_max>cast_time" );
+    careful_aim -> add_talent( this, "Powershot", "if=focus.time_to_max>cast_time" );
+    careful_aim -> add_talent( this, "Barrage" );
+    careful_aim -> add_action( this, "Steady Shot", "if=buff.pre_steady_focus.up&focus+32<120" );
     careful_aim -> add_action( this, "Aimed Shot" );
     careful_aim -> add_talent( this, "Focusing Shot", "if=focus+72<120" );
     careful_aim -> add_action( this, "Steady Shot" );
@@ -3682,8 +3683,9 @@ void hunter_t::apl_mm()
   default_list -> add_action( this, "Chimaera Shot" );
   default_list -> add_action( this, "Kill Shot", "if=focus.time_to_max>action.aimed_shot.cast_time" );
   default_list -> add_talent( this, "Glaive Toss" );
-  default_list -> add_talent( this, "Powershot" );
-  default_list -> add_talent( this, "Barrage", "if=focus.time_to_max>cast_time" );
+  default_list -> add_talent( this, "Powershot", "if=focus.time_to_max>cast_time" );
+  default_list -> add_talent( this, "Barrage" );
+  default_list -> add_action( this, "Steady Shot", "if=buff.pre_steady_focus.up&focus+32<120" );
   default_list -> add_action( this, "Aimed Shot", "if=talent.focusing_shot.enabled" );
   default_list -> add_action( this, "Aimed Shot", "if=focus+focus.regen*cast_time>=85" );
   default_list -> add_action( this, "Aimed Shot", "if=buff.thrill_of_the_hunt.react&focus+focus.regen*cast_time>=65" );

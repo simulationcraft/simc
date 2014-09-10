@@ -1,6 +1,5 @@
-
-
 talent_format=armory
+
 # BM
 hunter=Hunter_BM_T17P
 level=100
@@ -33,7 +32,7 @@ race=orc
 spec=marksmanship
 position=ranged_back
 role=attack
-talents=0003113
+talents=0002123
 head=primal_gladiators_helm,id=111280
 neck=primal_gladiators_necklace_of_cruelty,id=111079,enchant=gift_of_critical_strike
 shoulders=primal_gladiators_spaulders,id=111282

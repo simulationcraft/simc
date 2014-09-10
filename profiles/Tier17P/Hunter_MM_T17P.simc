@@ -3,7 +3,7 @@ level=100
 race=orc
 role=attack
 position=ranged_back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#YZ!...2002
+talents=http://us.battle.net/wow/en/tool/talent-calculator#YZ!...0012
 spec=marksmanship
 
 # This default action priority list is automatically created based on your character.
@@ -39,8 +39,9 @@ actions+=/run_action_list,name=careful_aim,if=buff.careful_aim.up
 actions+=/chimaera_shot
 actions+=/kill_shot,if=focus.time_to_max>action.aimed_shot.cast_time
 actions+=/glaive_toss
-actions+=/powershot
-actions+=/barrage,if=focus.time_to_max>cast_time
+actions+=/powershot,if=focus.time_to_max>cast_time
+actions+=/barrage
+actions+=/steady_shot,if=buff.pre_steady_focus.up&focus+32<120
 actions+=/aimed_shot,if=talent.focusing_shot.enabled
 actions+=/aimed_shot,if=focus+focus.regen*cast_time>=85
 actions+=/aimed_shot,if=buff.thrill_of_the_hunt.react&focus+focus.regen*cast_time>=65
@@ -52,8 +53,9 @@ actions+=/steady_shot
 actions.careful_aim=chimaera_shot
 actions.careful_aim+=/kill_shot,if=focus.time_to_max>action.aimed_shot.cast_time
 actions.careful_aim+=/glaive_toss
-actions.careful_aim+=/powershot
-actions.careful_aim+=/barrage,if=focus.time_to_max>cast_time
+actions.careful_aim+=/powershot,if=focus.time_to_max>cast_time
+actions.careful_aim+=/barrage
+actions.careful_aim+=/steady_shot,if=buff.pre_steady_focus.up&focus+32<120
 actions.careful_aim+=/aimed_shot
 actions.careful_aim+=/focusing_shot,if=focus+72<120
 actions.careful_aim+=/steady_shot
