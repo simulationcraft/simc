@@ -132,6 +132,7 @@ void SC_MainWindow::loadHistory()
   }
   optionsTab -> decodeOptions();
   importTab -> decodeSettings();
+  spellQueryTab -> decodeSettings();
 
   if ( simulateTab -> count() <= 1 )
   { // If we haven't retrieved any simulate tabs from history, add a default one.
@@ -295,6 +296,7 @@ void SC_MainWindow::saveHistory()
 
   optionsTab -> encodeOptions();
   importTab -> encodeSettings();
+  spellQueryTab -> encodeSettings();
 }
 
 // ==========================================================================
@@ -1032,6 +1034,8 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
       logText -> moveCursor( QTextCursor::End );
     }
     logText -> resetformat();
+    if ( mainTab -> currentTab() == TAB_SPELLQUERY )
+      spellQueryTab -> textbox.result -> setText( contents );
   }
 }
 
@@ -1306,7 +1310,8 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
     logText -> append( "Simulation failed!" );
     logText -> moveCursor( QTextCursor::End );
     logText -> resetformat();
-    mainTab -> setCurrentTab( TAB_LOG );
+    if ( mainTab -> currentTab() != TAB_SPELLQUERY )
+      mainTab -> setCurrentTab( TAB_LOG );
   }
   else
   {

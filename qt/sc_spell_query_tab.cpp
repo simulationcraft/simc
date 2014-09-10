@@ -10,14 +10,77 @@
 
 namespace { // unnamed namespace
 
-struct OptionEntry
+struct FilterEntry
 {
-  const char* label;
-  const char* option;
-  const char* tooltip;
+  const QString name;
+  const bool spell_source;
+  const bool talent_source;
+  const QString operand_type;
 };
 
-const int reforgePlotOption_cut = 7; // separate between secondary and primary stats
+const QString sources[] = 
+{
+  "spell",
+  "talent",
+  "talent_spell",
+  "class_spell",
+  "race_spell",
+  "mastery",
+  "spec_spell",
+  "glyph",
+  "set_bonus",
+  "effect",
+  "perk_spell"
+};
+
+const FilterEntry filters[] = 
+{
+  //                   source
+  // filter name     spell talent argument type/description
+  { "    ",          true, true, "string" },
+  { "name",          true, true, "string" },
+  { "id",            true, true, "number" },
+  { "flags",         true, true, "number (not used for anything currently) " },
+  { "speed",         true, false, "number (projectile speed) " },
+  { "school",        true, false, "string (spell school name) " },
+  { "class",         true, true, "string (class name) " },
+  { "pet_class",     false, true, "string (pet talent tree name) " },
+  { "scaling",       true, false, "number (spell scaling type, -1 for \"generic scaling\", 0 for no scaling, otherwise class number) " },
+  { "extra_coeff",   true, false, "number (spell-wide coefficient, usually used for spells scaling with both SP and AP) " },
+  { "level",         true, false, "number (spell learned level) " },
+  { "max_level",     true, false, "number (spell \"maximum\" level in a scaling sense) " },
+  { "min_range",     true, false, "number (minimum range in yards) " },
+  { "max_range",     true, false, "number (maximum range in yards) " },
+  { "cooldown",      true, false, "number (spell cooldown, in milliseconds) " },
+  { "gcd",           true, false, "number (spell gcd duration, in milliseconds) " },
+  { "category",      true, false, "number (spell cooldown category) " },
+  { "duration",      true, false, "number (spell duration in milliseconds) " },
+  { "rune",          true, false, "string (b = blood, f = frost, u = unholy, will match minimum rune requirement)" },
+  { "power_gain",    true, false, "number (amount of runic power gained)" },
+  { "max_stack",     true, false, "number (maximum stack of spell)" },
+  { "proc_chance",   true, false, "number (spell proc chance in percent (0..100))" },
+  { "icd",           true, false, "number (internal cooldown of a spell in milliseconds)" },
+  { "initial_stack", true, false, "number (initial amount of stacks)" },
+  { "cast_min",      true, false, "number (minimum cast time in milliseconds)" },
+  { "cast_max",      true, false, "number (maximum cast time in milliseconds)" },
+  { "cast_div",      true, false, "number (scaling divisor for cast time, always 20)" },
+  { "m_scaling",     true, false, "number (unknown scaling multiplier)" },
+  { "scaling_level", true, false, "number (level threshold for m_scaling)" },
+  { "desc",          true, false, "string (spell description)" },
+  { "tooltip",       true, false, "string (spell tooltip)" },
+  { "tab",           false, true, "number (talent tab number, 0..2)" },
+  { "dependence",    false, true, "number (talent id this talent depends on)" },
+  { "depend_rank",   false, true, "number (talent rank of talent id this talent depends on)" },
+  { "col",           false, true, "number (talent column 0..3)" },
+  { "row",           false, true, "number (talent \"tier\" 0..6) " },
+  { NULL,            NULL,  NULL, NULL }
+};
+
+const QString numericOperators[] = 
+{ "==", "!=", "\>", "\<", "\>=", "\<=", NULL };
+
+const QString stringOperators[] = 
+{ "==", "!=", "\~", "\!~", NULL };
 
 QComboBox* createChoiceFromRange( int lowerInclusive, int upperInclusive ) {
   QComboBox* choice = new QComboBox();
@@ -39,7 +102,46 @@ QComboBox* createChoice( int count, ... )
   return choice;
 }
 
+QComboBox* createChoiceFromList( const QString list[] )
+{
+  QComboBox* choice = new QComboBox();
+  for ( int i = 0; i < list -> length(); i++ )
+  {
+    choice -> addItem( list[ i ] );
+  }
+  return choice;
+}
+
 } // end unnamed namespace
+
+void SC_SpellQueryTab::sourceTypeChanged( const int source_index )
+{
+  choice.filter -> clear();
+  for ( int i = 0; filters[ i ].name.length() > 0; i++ )
+    if ( ( source_index != 1 && filters[ i ].spell_source ) || ( source_index == 1 && filters[ i ].talent_source ) )
+      choice.filter -> addItem( filters[ i ].name );
+
+  filterTypeChanged( choice.filter -> currentIndex() );
+}
+
+void SC_SpellQueryTab::filterTypeChanged( const int filter_index )
+{
+  choice.operatorString -> clear();
+  QString filter_text = choice.filter -> itemText( filter_index );
+
+  for ( int i = 0; filters[ i ].name.length() > 0; i++ )
+    if ( filter_text == filters[ i ].name )
+    {
+      if ( filters[ i ].operand_type.startsWith( "number" ) )
+        for ( int j = 0; numericOperators[ j ].length() > 0; j++ )
+          choice.operatorString -> addItem( numericOperators[ j ] );
+      else
+        for ( int j = 0; stringOperators[ j ].length() > 0; j++ )
+          choice.operatorString -> addItem( stringOperators[ j ] );
+
+      return;
+    }
+}
 
 SC_SpellQueryTab::SC_SpellQueryTab( SC_MainWindow* parent ) :
   QWidget( parent ), mainWindow( parent )
@@ -61,12 +163,20 @@ SC_SpellQueryTab::SC_SpellQueryTab( SC_MainWindow* parent ) :
 
 
   // Add a combo box
-  choice.spell = createChoice( 5, "spell", "talent_spell", "spec_spell", "mastery_spell", "glyph_spell" );
-  inputGroupBoxLayout -> addRow( tr( "spell qualifier" ), choice.spell );
+  choice.source = createChoiceFromList( sources );
+  inputGroupBoxLayout -> addRow( tr( "spell qualifier" ), choice.source );
 
-  // add anotehr combo box
-  choice.filter = createChoice( 3, "name", "id", "class");
+  // add another combo box
+  choice.filter = createChoice( 2, "1", "2" );
   inputGroupBoxLayout -> addRow( tr( "filter" ), choice.filter );
+
+  // add a combo box for operators
+  choice.operatorString = createChoice( 2, "1", "2" );
+  inputGroupBoxLayout -> addRow( tr( "operator" ), choice.operatorString );
+
+  // initialize the filter and operator combo boxes
+  sourceTypeChanged( choice.source -> currentIndex() );
+  filterTypeChanged( choice.filter -> currentIndex() );
 
   // add a line edit for text input
   textbox.arg = new QLineEdit;
@@ -78,6 +188,8 @@ SC_SpellQueryTab::SC_SpellQueryTab( SC_MainWindow* parent ) :
   // Column 1 is the text output box
   label.output = new QLabel( tr( "Output" ) );
   textbox.result = new SC_TextEdit;
+  textbox.result -> setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  textbox.result -> setLineWrapMode( SC_TextEdit::WidgetWidth );
   gridLayout -> addWidget( label.output, 0, 1, 0 );
   gridLayout -> addWidget( textbox.result, 1, 1, 0 );
   
@@ -86,13 +198,38 @@ SC_SpellQueryTab::SC_SpellQueryTab( SC_MainWindow* parent ) :
   gridLayout -> setColumnStretch( 1, 3 );
 
   setLayout( gridLayout );
+
+  // connect source drop-down to method that swaps filter options
+  connect( choice.source, SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( sourceTypeChanged( const int ) ) );
+  connect( choice.filter, SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( filterTypeChanged( const int ) ) );
+
+  // create tooltips
+  createToolTips();
 }
 
-/* Decode all options/setting from a string ( loaded from the history ).
- * Decode / Encode order needs to be equal!
- *
- * If no default_value is specified, index 0 is used as default.
- */
+void SC_SpellQueryTab::run_spell_query()
+{
+  // construct the query string
+  QString command = "spell_query=";
+  command += choice.source -> currentText();
+  if ( choice.filter -> currentText() != filters[ 0 ].name )
+    command += "." + choice.filter -> currentText();
+  command += choice.operatorString -> currentText();
+  command += textbox.arg -> text();
+
+  // set the command line (mostly so we can see the query)
+  mainWindow -> cmdLine -> setCommandLineText( command );
+  
+  // call the sim - results will be stuffed back into textbox in SC_MainWindow::deleteSim()
+  mainWindow -> simulationQueue.enqueue( "Spell Query", "", command );
+}
+
+
+void SC_SpellQueryTab::createToolTips()
+{
+  choice.source -> setToolTip( tr( "Test" ) );
+}
+
 
 void SC_SpellQueryTab::load_setting( QSettings& s, const QString& name, QComboBox* choice, const QString& default_value = QString() )
 {
@@ -113,36 +250,58 @@ void SC_SpellQueryTab::load_setting( QSettings& s, const QString& name, QComboBo
   }
 }
 
-void SC_SpellQueryTab::run_spell_query()
+void SC_SpellQueryTab::load_setting( QSettings& s, const QString& name, QLineEdit* textbox, const QString& default_value = QString() )
 {
-  // everything we do to run a spell query goes in here!
-  textbox.result -> setText( "Hello World." );
+  const QString& v = s.value( name ).toString();
+
+  if ( !v.isEmpty() )
+    textbox -> setText( v );
+  else if ( !default_value.isEmpty() )
+    textbox -> setText( default_value );
 }
 
-void SC_SpellQueryTab::decodeOptions()
+void SC_SpellQueryTab::load_setting( QSettings& s, const QString& name, SC_TextEdit* textbox, const QString& default_value = QString() )
 {
-  QSettings settings;
-  settings.beginGroup( "spell_query" );
-  load_setting( settings, "version", choice.spell );
+  const QString& v = s.value( name ).toString();
 
-  settings.endGroup();
+  if ( !v.isEmpty() )
+    textbox -> setText( v );
+  else if ( !default_value.isEmpty() )
+    textbox -> setText( default_value );
 }
-
 
 // Encode all options/setting into a string ( to be able to save it to the history )
 // Decode / Encode order needs to be equal!
 
-void SC_SpellQueryTab::encodeOptions()
+void SC_SpellQueryTab::encodeSettings()
 {
   QSettings settings;
   settings.beginGroup( "spell_query" );
-  settings.setValue( "version", choice.spell -> currentText() );
+  settings.setValue( "source", choice.source -> currentText() );
+  settings.setValue( "filter", choice.filter -> currentText() );
+  settings.setValue( "operatorString", choice.operatorString -> currentIndex() );
+  settings.setValue( "arg", textbox.arg -> text() );
   
+  QString encoded;
+
   settings.endGroup(); // end group "options"
 }
 
-void SC_SpellQueryTab::createToolTips()
-{
-  choice.spell -> setToolTip( tr( "Test" ) );
-}
+/* Decode all options/setting from a string ( loaded from the history ).
+ * Decode / Encode order needs to be equal!
+ *
+ * If no default_value is specified, index 0 is used as default.
+ */
 
+
+void SC_SpellQueryTab::decodeSettings()
+{
+  QSettings settings;
+  settings.beginGroup( "spell_query" );
+  load_setting( settings, "source", choice.source );
+  load_setting( settings, "filter", choice.filter );
+  load_setting( settings, "operatorString", choice.operatorString );
+  load_setting( settings, "arg", textbox.arg );
+
+  settings.endGroup();
+}
