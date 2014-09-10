@@ -472,9 +472,12 @@ public:
   virtual double    composite_melee_speed() const;
   virtual double    composite_melee_crit() const;
   virtual double    composite_spell_crit() const;
+  virtual void      teleport( double yards, timespan_t duration );
+  virtual void      update_movement( timespan_t duration );
   virtual void      interrupt();
   virtual void      halt();
   virtual void      reset();
+  virtual void      moving();
   virtual void      create_options();
   virtual action_t* create_proc_action( const std::string& name );
   virtual bool      create_profile( std::string& profile_str, save_e type, bool save_html );
@@ -1986,7 +1989,7 @@ struct heroic_charge_movement_ticker_t: public event_t
   timespan_t duration;
   warrior_t* warrior;
   heroic_charge_movement_ticker_t( sim_t& s, warrior_t*p, timespan_t d = timespan_t::zero() ):
-    event_t( s, "Player Movement Event" ), warrior( p )
+    event_t( *p -> sim, "Player Movement Event" ), warrior( p )
   {
     if ( d > timespan_t::zero() )
       duration = d;
@@ -2026,7 +2029,7 @@ struct heroic_charge_movement_ticker_t: public event_t
 
     timespan_t next = next_execute();
     if ( next > timespan_t::zero() )
-      new ( sim() ) heroic_charge_movement_ticker_t( sim(), warrior, next );
+    warrior -> heroic_charge = new ( sim() ) heroic_charge_movement_ticker_t( sim(), warrior, next );
   }
 };
 
@@ -2057,7 +2060,7 @@ struct heroic_charge_t: public warrior_attack_t
     else
     {
       p() -> trigger_movement( 8.0, MOVEMENT_BOOMERANG );
-      new ( *sim ) heroic_charge_movement_ticker_t( *sim, p() );
+      p() -> heroic_charge = new ( *sim ) heroic_charge_movement_ticker_t( *sim, p() );
     }
   }
 
@@ -4615,7 +4618,8 @@ void warrior_t::create_buffs()
   buff.rallying_cry = new buffs::rallying_cry_t( *this, "rallying_cry", find_spell( 97463 ) );
 
   buff.ravager = buff_creator_t( this, "ravager", talents.ravager )
-    .add_invalidate( CACHE_PARRY );
+    .add_invalidate( CACHE_PARRY )
+    .chance( spec.shield_slam ? 1.0 : 0 );
 
   buff.recklessness = buff_creator_t( this, "recklessness", spec.recklessness )
     .duration( spec.recklessness -> duration() * ( 1.0 + glyphs.recklessness -> effectN( 2 ).percent() ) )
@@ -4878,14 +4882,38 @@ void warrior_t::reset()
   t15_2pc_melee.reset();
 }
 
-void warrior_t::interrupt()
+// Movement related overrides. =============================================
+
+void warrior_t::moving()
 {
   return;
 }
 
+void warrior_t::interrupt()
+{
+  core_event_t::cancel( heroic_charge );
+  player_t::interrupt();
+}
+
 void warrior_t::halt()
 {
-  return;
+  player_t::halt();
+}
+
+void warrior_t::teleport( double yards, timespan_t duration )
+{
+  player_t::teleport( yards, duration );
+}
+
+void warrior_t::update_movement( timespan_t duration )
+{
+  if ( heroic_charge )
+    player_t::update_movement( duration );
+  else
+  {
+    core_event_t::cancel( heroic_charge );
+    player_t::update_movement( duration );
+  }
 }
 
 // warrior_t::composite_player_multiplier ===================================
@@ -5065,7 +5093,7 @@ double warrior_t::composite_parry() const
   double parry = player_t::composite_parry();
 
   if ( buff.ravager -> up() )
-    parry += talents.ravager -> effectN( 2 ).percent();
+    parry += talents.ravager -> effectN( 1 ).percent();
 
   if ( buff.die_by_the_sword -> up() )
     parry += spec.die_by_the_sword -> effectN( 1 ).percent();
