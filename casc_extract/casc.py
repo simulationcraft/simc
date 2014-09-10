@@ -354,6 +354,7 @@ class CDNIndex(CASCObject):
 
 	PATCH_BETA = 'wow_beta'
 	PATCH_PTR = 'wowt'
+	PATCH_LIVE = 'wow'
 
 	def __init__(self, options):
 		CASCObject.__init__(self, options)
