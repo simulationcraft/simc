@@ -1,4 +1,4 @@
-monk="Monk_Windwalker_2h_T17H"
+monk="Monk_WW_1h_T17H"
 level=100
 race=troll
 role=dps
@@ -26,7 +26,6 @@ actions=auto_attack
 actions+=/invoke_xuen,if=talent.invoke_xuen.enabled&time>5
 actions+=/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4
 actions+=/potion,name=draenic_agility,if=buff.serenity.up|(!talent.serenity.enabled&trinket.proc.agility.react)
-actions+=/use_item,name=primal_gladiators_badge_of_conquest,if=buff.tigereye_brew_use.up|target.time_to_die<18
 actions+=/blood_fury,if=buff.tigereye_brew_use.up|target.time_to_die<18
 actions+=/berserking,if=buff.tigereye_brew_use.up|target.time_to_die<18
 actions+=/arcane_torrent,if=buff.tigereye_brew_use.up|target.time_to_die<18
@@ -38,7 +37,7 @@ actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>
 actions+=/tigereye_brew,if=talent.hurricane_strike.enabled&buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=10&cooldown.hurricane_strike.up&chi>=3&debuff.rising_sun_kick.up&buff.tiger_power.up
 actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&chi>=2&(buff.tigereye_brew.stack>=16|target.time_to_die<40)&debuff.rising_sun_kick.up&buff.tiger_power.up
 actions+=/rising_sun_kick,if=(debuff.rising_sun_kick.down|debuff.rising_sun_kick.remains<3)
-actions+=/tiger_palm,if=buff.tiger_power.down&debuff.rising_sun_kick.remains>1&energy.time_to_max>1
+actions+=/tiger_palm,if=!talent.chi_explosion.enabled&buff.tiger_power.down&debuff.rising_sun_kick.remains>1&energy.time_to_max>1
 actions+=/serenity,if=talent.serenity.enabled&chi>=2&buff.tiger_power.up&debuff.rising_sun_kick.up
 actions+=/call_action_list,name=aoe,if=active_enemies>=3
 actions+=/call_action_list,name=st,if=active_enemies<3
@@ -65,28 +64,31 @@ actions.aoe+=/chi_burst,if=chi>=4
 actions.aoe+=/rising_sun_kick,if=chi=chi.max
 actions.aoe+=/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled
 
-head=primal_gladiators_helm,id=111275,gem_id=0/0/0/,enchant_id=0
-neck=primal_gladiators_necklace_of_cruelty,id=111079,gem_id=0/0/0/,enchant_id=5294
-shoulders=primal_gladiators_spaulders,id=111277,gem_id=0/0/0/,enchant_id=0
-back=primal_gladiators_cape_of_cruelty,id=111077,gem_id=0/0/0/,enchant_id=5302
-chest=primal_gladiators_chestguard,id=111283,gem_id=0/0/0/,enchant_id=0
-wrists=primal_gladiators_bindings_of_prowess,id=111148,gem_id=0/0/0/,enchant_id=0
-hands=primal_gladiators_ironskin_gloves,id=111164,gem_id=0/0/0/,enchant_id=0
-waist=primal_gladiators_belt_of_victory,id=111143,gem_id=0/0/0/,enchant_id=0
-legs=primal_gladiators_leggings,id=111286,gem_id=0/0/0/,enchant_id=0
-feet=primal_gladiators_boots_of_prowess,id=111145,gem_id=0/0/0/,enchant_id=0
-finger1=primal_gladiators_ring_of_cruelty,id=111081,gem_id=0/0/0/,enchant_id=5301
-finger2=primal_gladiators_ring_of_prowess,id=111271,gem_id=0/0/0/,enchant_id=5301
-trinket1=primal_gladiators_badge_of_conquest,id=111222,gem_id=0/0/0/,enchant_id=0
-trinket2=primal_gladiators_insignia_of_conquest,id=111223,gem_id=0/0/0/,enchant_id=0
-main_hand=primal_gladiators_staff,id=111076,gem_id=0/0/0/,enchant_id=5334
+head=helm_of_the_somber_gaze,id=115556,bonus_id=566
+neck=darklight_necklace,id=113865,bonus_id=566,enchant=gift_of_multistrike
+shoulders=mantle_of_the_somber_gaze,id=115559,bonus_id=566
+back=drape_of_the_dark_hunt,id=113971,bonus_id=566,enchant=gift_of_multistrike
+chest=vest_of_forceful_fury,id=113870,bonus_id=566
+wrists=bracers_of_shattered_limbs,id=119333,bonus_id=566
+hands=handwraps_of_the_somber_gaze,id=115555,bonus_id=566
+waist=conductors_multipocket_girdle,id=113964,bonus_id=566
+legs=legwraps_of_the_somber_gaze,id=115557,bonus_id=566
+feet=furnace_tenders_treads,id=113895,bonus_id=566
+finger1=cinderwolf_signet,id=113917,bonus_id=566,enchant=gift_of_multistrike
+finger2=unexploded_explosive_shard,id=113877,bonus_id=566,enchant=gift_of_multistrike
+trinket1=humming_blackiron_trigger,id=113985,bonus_id=566
+trinket2=scales_of_doom,id=113612,bonus_id=566
+main_hand=hansgars_forgehammer,id=113897,bonus_id=566,enchant=mark_of_the_frostwolf
+off_hand=hansgars_forgehammer,id=113897,bonus_id=566,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_agility=2588
-# gear_stamina=3249
-# gear_crit_rating=947
-# gear_haste_rating=717
-# gear_mastery_rating=301
-# gear_armor=950
-# gear_multistrike_rating=715
-# gear_versatility_rating=407
+# gear_agility=3056
+# gear_stamina=3858
+# gear_crit_rating=1136
+# gear_haste_rating=339
+# gear_mastery_rating=266
+# gear_armor=1059
+# gear_multistrike_rating=1731
+# gear_versatility_rating=187
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1
