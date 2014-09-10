@@ -22,6 +22,8 @@
 // Need to do some basic d=vt calcs to have a more realistic travel time for AO.
 // Improve the delay between tick and aoe for NT by applying a guassian distribution centered around 1.25s with stddev such that travel time is ~1.2-1.3s
 // Removing hardcoding of Inferno Blast CD once it has returned to the spell data
+// Water elemental waterbolt hitting ~30% too hard. Frost bomb is hitting too hard
+
 
 // Are Meteor ticks effected by haste? - Maybe? They are bugged on Beta as of 8/11/2014 (http://us.battle.net/wow/en/forum/topic/13780228135)
 
@@ -2472,9 +2474,6 @@ struct frost_bomb_explosion_t : public mage_spell_t
     mage_spell_t( "frost_bomb_explosion", p, p -> find_spell( 113092 ) )
   {
     aoe = -1;
-    // This spell is where the actual damage coefficients are stored.
-    base_multiplier = p -> find_spell( 113092 ) -> effectN( 1 ).sp_coeff();
-    base_aoe_multiplier = p -> find_spell( 113092 ) -> effectN( 2 ).sp_coeff();
     parse_effect_data( data().effectN( 1 ) );
     background = true;
   }
