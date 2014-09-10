@@ -221,6 +221,7 @@ enum movement_direction_e
   MOVEMENT_OMNI,
   MOVEMENT_TOWARDS,
   MOVEMENT_AWAY,
+  MOVEMENT_BOOMERANG,
   MOVEMENT_RANDOM, // Reserved for raid event
   MOVEMENT_DIRECTION_MAX,
   MOVEMENT_RANDOM_MIN = MOVEMENT_OMNI,
@@ -5093,7 +5094,7 @@ struct player_t : public actor_t
       do_update_movement( 9999 );
     else
     {
-      if ( direction == MOVEMENT_AWAY )
+      if ( direction == MOVEMENT_BOOMERANG )
         current.moving_away = distance;
       else
         current.distance_to_move = distance;

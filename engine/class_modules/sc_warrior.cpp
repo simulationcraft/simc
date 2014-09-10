@@ -2052,12 +2052,11 @@ struct heroic_charge_t: public warrior_attack_t
     if ( p() -> cooldown.heroic_leap -> up() )
     {
       leap -> execute();
-      p() -> current.distance_to_move = 10;
+      p() -> current.distance_to_move += 10;
     }
     else
     {
-      p() -> moving();
-      p() -> trigger_movement( 8.0, MOVEMENT_AWAY );
+      p() -> trigger_movement( 8.0, MOVEMENT_BOOMERANG );
       new ( *sim ) heroic_charge_movement_ticker_t( *sim, p() );
     }
   }
