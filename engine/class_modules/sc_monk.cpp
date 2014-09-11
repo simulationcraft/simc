@@ -3759,7 +3759,7 @@ void monk_t::target_mitigation( school_e school,
     s -> result_amount *= 1.0 + buff.fortifying_brew -> data().effectN( 2 ).percent();
 
 
-  if ( school == SCHOOL_MAGIC)
+  if ( school != SCHOOL_PHYSICAL)
     s -> result_amount *= 1.0 + active_stance_data( STURDY_OX ).effectN( 4 ).percent();
 }
 
