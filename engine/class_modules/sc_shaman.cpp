@@ -125,7 +125,6 @@ public:
   action_t* action_lightning_strike;
   spell_t*  molten_earth;
 
-
   // Pets
   pet_t* pet_feral_spirit[4];
   pet_t* pet_fire_elemental;
@@ -5103,8 +5102,7 @@ void shaman_t::create_buffs()
 
   buff.focus_of_the_elements = buff_creator_t( this, "focus_of_the_elements", find_spell( 167205 ) )
                                .chance( static_cast< double >( new_sets.has_set_bonus( SHAMAN_ELEMENTAL, T17, B2 ) ) );
-  buff.feral_spirit          = buff_creator_t( this, "feral_spirit", find_spell( 167204 ) )
-                               .chance( static_cast< double >( new_sets.has_set_bonus( SHAMAN_ENHANCEMENT, T17, B4 ) ) );
+  buff.feral_spirit          = buff_creator_t( this, "feral_spirit", new_sets.set( SHAMAN_ENHANCEMENT, T17, B4 ) -> effectN( 1 ).trigger() );
 
 }
 

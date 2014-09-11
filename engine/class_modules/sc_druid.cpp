@@ -2892,8 +2892,8 @@ struct maul_t : public bear_attack_t
       may_multistrike = 0;
       target = player;
 
-      // Coeff of 4 AP is hardcoded into tooltip, use FR coeff * 0.4 instead.
-      attack_power_mod.direct = 0.4 * p -> spell.frenzied_regeneration -> effectN( 1 ).ap_coeff();
+      // Coeff of 3 AP is hardcoded into tooltip, use FR coeff * 0.3 instead.
+      attack_power_mod.direct = 0.3 * p -> spell.frenzied_regeneration -> effectN( 1 ).ap_coeff();
     }
 
     virtual void impact( action_state_t* s )
