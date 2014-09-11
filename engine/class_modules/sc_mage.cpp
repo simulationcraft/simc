@@ -2483,6 +2483,7 @@ struct frost_bomb_explosion_t : public mage_spell_t
   { return RESOURCE_NONE; }
 };
 
+// TODO: Add removal of previous FB when applied to new target
 struct frost_bomb_t : public mage_spell_t
 {
   frost_bomb_t( mage_t* p, const std::string& options_str ) :
@@ -2522,20 +2523,6 @@ struct frost_bomb_t : public mage_spell_t
 
     td( s -> target ) -> debuffs.frost_bomb -> trigger();
   }
-
-  virtual bool ready()
-  {
-    mage_t& p = *this -> p();
-
-    assert( p.active_bomb_targets <= 1 && p.active_bomb_targets >= 0 );
-
-    if ( p.active_bomb_targets == 1 )
-      return false;
-
-    return mage_spell_t::ready();
-  }
-
-
 };
 
 // Frostbolt Spell ==========================================================
