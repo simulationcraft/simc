@@ -3302,6 +3302,7 @@ struct nether_tempest_aoe_t: public mage_spell_t
 };
 
 // Nether Tempest Spell ===========================================================
+// TODO: Add removal of previous NT when applied to new target
 struct nether_tempest_t : public mage_spell_t
 {
   nether_tempest_aoe_t *add_aoe;
@@ -3338,7 +3339,7 @@ struct nether_tempest_t : public mage_spell_t
 
     add_aoe -> schedule_execute( aoe_state );
   }
-  
+
   virtual void last_tick( dot_t* d )
   {
     mage_spell_t::last_tick( d );
@@ -3347,7 +3348,7 @@ struct nether_tempest_t : public mage_spell_t
     p.active_bomb_targets--;
 
   }
-  
+
   double composite_persistent_multiplier( const action_state_t* state ) const
   {
     double m = mage_spell_t::composite_persistent_multiplier( state );
@@ -3356,19 +3357,6 @@ struct nether_tempest_t : public mage_spell_t
 
     return m;
   }
-
-  virtual bool ready()
-  {
-    mage_t& p = *this -> p();
-
-    assert( p.active_bomb_targets <= 1 && p.active_bomb_targets >= 0 );
-
-    if ( p.active_bomb_targets == 1 )
-      return false;
-
-    return mage_spell_t::ready();
-  }
-
 };
 
 // Presence of Mind Spell ===================================================
