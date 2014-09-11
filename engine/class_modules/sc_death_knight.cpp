@@ -5590,7 +5590,6 @@ void death_knight_t::init_base_stats()
   player_t::init_base_stats();
 
   base.attribute_multiplier[ ATTR_STRENGTH ] *= 1.0 + spec.unholy_might -> effectN( 1 ).percent();
-  base.attribute_multiplier[ ATTR_STAMINA ]  *= 1.0 + spec.veteran_of_the_third_war -> effectN( 1 ).percent();
 
   base.attack_power_per_strength = 1.0;
   base.attack_power_per_agility = 0.0;
