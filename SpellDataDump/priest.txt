@@ -1,8 +1,8 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18837)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18850)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
-Resource         : 3% Base Mana (4800 @Level 100)
+Resource         : 2.4% Base Mana (3840 @Level 100)
 Spell Level      : 5
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -242,7 +242,7 @@ Spell Level      : 7
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Rapid Healing (24546), Healing Trance (37706), Spiritual Healing (87336), Holy Word: Serenity (88684), Temporal Boon (105826), Spirit Shell (109964), Surge of Light (114255), Item - Priest T14 Healer 2P Bonus (123111), Lucidity (137323), Enhanced Leap of Faith (157146)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Archangel (81700), Spiritual Healing (87336), Holy Word: Serenity (88684), Temporal Boon (105826), Spirit Shell (109964), Surge of Light (114255), Item - Priest T14 Healer 2P Bonus (123111), Lucidity (137323), Enhanced Leap of Faith (157146)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -409,12 +409,12 @@ Class            : Priest
 Range            : 50000 yards
 Duration         : 15 seconds
 Affecting spells : Glyph of Weakened Soul (89489), Enhanced Power Word: Shield (157129)
-Attributes       : ........ ........ ........ ..x..x..   ...x...x ..x..... xx...... ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ x.xx.x..   ...x.x.x ..x..... xx...... ........ 
+                 : ..x..... ......x. ...x.... ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ........ ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=2448)     : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 19
@@ -2767,6 +2767,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=68778)    : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 126 | Misc Value 2: 0x1
+#2 (id=255808)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14
+                   Affected Spells: Flash Heal (2061), Flash Heal (101062)
 Description      : Consumes your Evangelism, increasing your healing done by $s1% for each Evangelism consumed for $d.
 Tooltip          : Healing increased by $w1%.
 
@@ -2810,7 +2813,7 @@ Spell Level      : 5
 Range            : 50000 yards
 Duration         : 12 seconds
 Attributes       : ........ ........ ........ x..x.x.x   .....x.. ........ ........ ........ 
-                 : ..x..... ......x. ...x.x.. ........   ........ ........ ........ ......x. 
+                 : ..x..... ......x. ...x.x.. ........   ........ .x...... ........ ......x. 
                  : x......x .....x.x ........ ........   ...x.... ..x..... .xx..... ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : .....x.. ....x... ........ ........   ...x.... ...x.... ....x... ........ 
@@ -3186,7 +3189,7 @@ Class            : Priest
 Spell Level      : 7
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Rapid Healing (24546), Healing Trance (37706), Spiritual Healing (87336), Holy Word: Serenity (88684), Temporal Boon (105826), Spirit Shell (109964), Surge of Light (114255), Item - Priest T14 Healer 2P Bonus (123111), Lucidity (137323), Enhanced Leap of Faith (157146)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Archangel (81700), Spiritual Healing (87336), Holy Word: Serenity (88684), Temporal Boon (105826), Spirit Shell (109964), Surge of Light (114255), Item - Priest T14 Healer 2P Bonus (123111), Lucidity (137323), Enhanced Leap of Faith (157146)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5254,7 +5257,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=218990)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
-                   Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1
+                   Base Value: -3000 | Scaled Value: -3000 | Misc Value: 1
                    Affected Spells: Weakened Soul (6788)
 Description      : Reduces the duration of Weakened Soul caused by your Power Word: Shield by ${$m1/-1000} sec.
 
@@ -5789,24 +5792,6 @@ Effects          :
 #1 (id=228220)   : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1202
 
-Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
-Class            : Elemental Balance Priest, Shaman, Mage, Warlock, Druid
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=228487)   : Apply Aura (6) | Unknown effect sub type (467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1
-#2 (id=228488)   : Apply Aura (6) | Unknown effect sub type (467)
-                   Base Value: -100 | Scaled Value: -100
-#3 (id=228489)   : Apply Aura (6) | Unknown effect sub type (467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 4
-#4 (id=228490)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: -100 | Scaled Value: -100
-
 Name             : Stat Negation Aura - Intellect Healer (id=162701) [Passive, Hidden] 
 Class            : Holy Discipline Holy Restoration Mistweaver Restoration Paladin, Priest, Shaman, Monk, Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -6103,4 +6088,20 @@ Effects          :
 #1 (id=251176)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Choose a level 90 talent.
+
+Name             : Discipline (id=178291) [Spell Family (6), Passive, Hidden] 
+Class            : Discipline Priest
+Spell Level      : 10
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=255769)   : Apply Aura (6) | Modify Healing% Done (136)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 127
+#2 (id=255770)   : Apply Aura (6) | Modify Absorb% Done (422)
+                   Base Value: 10 | Scaled Value: 10
+Description      : Increases healing and absorption done by $s1%.
 

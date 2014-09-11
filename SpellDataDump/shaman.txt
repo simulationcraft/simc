@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18837)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18850)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -4874,9 +4874,6 @@ Description      : Your Healing Stream Totem now heals an additional target for 
 
 Name             : Item - Shaman T15 Restoration 4P Bonus (id=138305) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
-Proc Chance      : 50%
-Proc Flags       : ........ ......x. ........ ........ 
-                 : Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4884,9 +4881,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
 Effects          :
-#1 (id=181733)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50
-Description      : Your Ancestral Awakening now has a $h% chance to trigger on non-critical heals.
+#1 (id=181733)   : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 5 | Scaled Value: 5
+Description      : Haste increased by $s1%.
 
 Name             : Player Damage Reduction Level 90 (id=142689) [Passive, Hidden] 
 Class            : Death Knight, Shaman, Mage, Warlock, Monk
@@ -6169,7 +6166,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100
 
 Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
-Class            : Elemental Balance Priest, Shaman, Mage, Warlock, Druid
+Class            : Elemental Balance Shaman, Mage, Warlock, Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6362,6 +6359,22 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Empowers your Unleash Life, increasing the healing from your next single-target heal on that ally by $118473s1%.
 
+Name             : Item - Shaman T17 Enhancement 4P Bonus (id=165610) [Spell Family (11), Passive, Hidden] 
+Class            : Shaman
+Proc Chance      : 101%
+Proc Flags       : ....x... ..x...x. ........ ........ 
+                 : Yellow Melee, AOE Heal, Heal
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+Effects          :
+#1 (id=233804)   : Apply Aura (6) | Proc Trigger Spell: Feral Spirit (42)
+                   Base Value: 5000 | Scaled Value: 5000 | Trigger Spell: 167204
+Description      : While Feral Spirits is active, you also turn into a Feral Spirit. While you are transformed, you move $167204s1% faster, and your wolves can proc Windfury.
+
 Name             : Enhanced Weapons (id=166221) [Spell Family (11), Passive] 
 Class            : Enhancement Shaman
 Spell Level      : 30
@@ -6379,6 +6392,25 @@ Description      : You imbue your weapons with the power of wind and fire.
 Each of your main-hand weapon attacks has a $33757h% chance of triggering three extra attacks dealing $25504sw2 Physical damage.
 
 Each of your off-hand weapon attacks causes up to ${0.149*$AP} additional Fire damage, based on weapon speed.
+
+Name             : Feral Spirit (id=167204) [Spell Family (11)] 
+Class            : Shaman
+Range            : 100 yards
+Duration         : 30 seconds
+Attributes       : ........ ........ ..x..... ........   ........ ........ ..x..... ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+Effects          :
+#1 (id=236393)   : Apply Aura (6) | Increase Speed% (31)
+                   Base Value: 25 | Scaled Value: 25
+#2 (id=241618)   : Apply Aura (6) | Unknown effect sub type (403)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 25504 | Misc Value 2: 0x29a10
+Description      : $@spelldesc165610
+Tooltip          : Movement Speed increased by $s1%.
+Feral Spirits can now proc Windfury.
 
 Name             : Mastery: Molten Earth (id=170374) [Spell Family (11), Passive] 
 Class            : Elemental Shaman
@@ -6435,6 +6467,20 @@ Effects          :
 #1 (id=241705)   : School Damage: fire (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 Description      : $@spelldesc170374
+
+Name             : Windfury Attack (id=170512) [Spell Family (11)] 
+Class            : Shaman
+Range            : 100 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=241955)   : School Damage: physical (2)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000
+Description      : $@spelldesc165610
 
 Name             : Glyph of Purify Spirit (Restoration) (id=171933) [Spell Family (6), Passive, Hidden] 
 Class            : Shaman
@@ -6556,20 +6602,4 @@ Effects          :
 #1 (id=254397)   : School Damage: fire (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.27500 | Radius: 0 - 4 yards
 Description      : $@spelldesc152255
-
-Name             : Stat Negation Aura - Sub 10 - Agility/Intellect (id=178113) [Passive, Hidden] 
-Class            : Shaman, Druid
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=255370)   : Apply Aura (6) | Unknown effect sub type (467)
-                   Base Value: 0 | Scaled Value: 0
-#2 (id=255371)   : Apply Aura (6) | Unknown effect sub type (467)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 4
-#3 (id=255372)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: 0 | Scaled Value: 0
 

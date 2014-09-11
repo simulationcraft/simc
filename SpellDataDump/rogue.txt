@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18837)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18850)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
 Resource         : 35 Energy
@@ -2801,7 +2801,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 #3 (id=87043)    : Apply Aura (6) | Stalked (68)
                    Base Value: 0 | Scaled Value: 0
-Description      : Marks an enemy for death for $d, increasing all damage you deal to the target by $s1%, and making the target visible to you even through concealments such as stealth and invisibility.
+Description      : Marks an enemy for death for $d, increasing the damage your abilities and melee attacks deal to the target by $s1%, and making the target visible to you even through concealments such as stealth and invisibility.
 Tooltip          : Marked for death.
 
 Name             : Sanguinary Vein (id=79147) [Spell Family (8), Passive] 
@@ -3243,7 +3243,7 @@ Tooltip          : Weapon strikes have a chance to poison the target, causing th
 
 Name             : Burst of Speed (id=108212) [Spell Family (8)] 
 Class            : Rogue
-Resource         : 25 Energy
+Resource         : 30 Energy
 Duration         : 0.1 seconds
 Affecting spells : Quick Blades (165509)
 Attributes       : ........ x....... ........ ........   ........ .......x ........ ....x... 
@@ -4185,8 +4185,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=217580)   : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.66000 | Radius: 0 - 8 yards
-#3 (id=217591)   : Unknown effect type (42)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 45 | Misc Value 2: 0x2d
+#3 (id=217591)   : Dummy (3)
+                   Base Value: 2 | Scaled Value: 2
 #4 (id=217594)   : Apply Aura (6) | Unknown effect sub type (288)
                    Base Value: 0 | Scaled Value: 0
 #5 (id=217868)   : Apply Aura (6) | Unknown effect sub type (263)

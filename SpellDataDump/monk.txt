@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18837)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18850)
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -827,6 +827,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=110144)   : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 54569 | Misc Value 2: 0xca2
+#2 (id=255742)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
+                   Base Value: 0 | Scaled Value: 0
 Description      : You split your body and spirit, leaving your spirit behind for $d.  Use Transcendence: Transfer to swap locations with your spirit.
 
 Name             : Stance of the Fierce Tiger (Stance) (id=103985) [Spell Family (53)] 
@@ -1023,7 +1025,7 @@ Name             : Fists of Fury (id=113656) [Spell Family (53)]
 Class            : Windwalker Monk
 Resource         : 3 Chi
 Spell Level      : 10
-Range            : 100 yards
+Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
 Cooldown         : 25 seconds
@@ -1279,7 +1281,7 @@ Class            : Monk
 Spell Level      : 18
 Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 12 yards/sec
+Velocity         : 20 yards/sec
 Cooldown         : 15 seconds
 Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069)
 Attributes       : ........ ........ ........ ...x....   .......x ........ ........ ........ 
@@ -2275,7 +2277,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 718
 #2 (id=184169)   : Trigger Spell: Incapacitated (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 137460 | Radius: 0 - 8 yards
-Description      : Form a Ring of Peace around the friendly target for $d, incapacitating all enemies for $137460d, and incapacitating other enemies when they use a harmful spell or ability.
+Description      : Form a Ring of Peace around the friendly target for $d, incapacitating all enemies for $137460d, and incapacitating other enemies the first time they use a harmful spell or ability.
 Tooltip          : Nearby enemies become incapacitated for $137460d when they use a harmful spell or ability.
 
 Name             : Rushing Jade Wind (id=116847) [Spell Family (53)] 
@@ -3669,7 +3671,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Affecting spells : Rising Sun Kick (130320)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ ......x. 
+                 : ........ ........ ........ ........   x....... .x...... ........ ......x. 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
@@ -3731,8 +3733,8 @@ GCD              : 1.5 seconds
 Duration         : 16 seconds
 Cooldown         : 10 seconds
 Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Guard (115295), Rising Sun Kick (130320), Storm, Earth, and Fire (137639), 
 Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -3747,7 +3749,7 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35
 Description      : Forms a Zen Sphere above the target, healing the target for $<healingperiodic> over $d and dealing $<damageperiodic> Nature damage every $t1 sec to the nearest enemy within $124098A1 yards.
 
-After $d, the Zen Sphere detonates, dealing $<damagedetonate> Nature damage and $<healingdetonate> healing to all targets within $124101A1 yards.  Triggered early if dispelled or the target falls below $m2% health.
+After $d, the Zen Sphere detonates, dealing $<damagedetonate> Nature damage and $<healingdetonate> healing to all targets within $124101A1 yards.  Triggered early if dispelled or the target is damaged below $m2% health.
 Tooltip          : Healing $w1 every $t1 sec.
 Variables        : $dmgMult=$?s103985[${1.2}][${1.0}]
 $healMult=$?s115070[${1.2}][${1.0}]
@@ -3854,8 +3856,8 @@ Spell Level      : 1
 Range            : 50000 yards
 Velocity         : 20 yards/sec
 Duration         : 6 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .....x..   ........ ........ x.x..... ......x. 
+Attributes       : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ x....... ......x. 
                  : ........ .......x .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .x...... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -4238,8 +4240,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=159496)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 23
+#1 (id=159496)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 32
                    Affected Spells: Fists of Fury (113656), Fists of Fury (120086)
 Description      : When channeling Fists of Fury, your parry chance is increased by $s1%.
 
@@ -4973,7 +4975,7 @@ Name             : Chi Wave (id=132467) [Spell Family (53)]
 Class            : Monk
 Spell Level      : 1
 Range            : 50000 yards
-Velocity         : 15 yards/sec
+Velocity         : 20 yards/sec
 Duration         : 0.1 seconds
 Affecting spells : Rising Sun Kick (130320)
 Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ ........ ....x... 
@@ -5183,7 +5185,7 @@ Stacks           : 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x.x. x.x.x.x. x.x..x.. .x...... 
                  : Yellow Melee, White Ranged, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered, Proc on jump
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5775,7 +5777,7 @@ Effects          :
 #1 (id=214261)   : Apply Aura (6) | Shapeshift (36)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 9 | Misc Value 2: 0x2
 #2 (id=214262)   : Apply Aura (6) | Unknown effect sub type (312)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 115
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 322
 #3 (id=214263)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 159620 | Scaled Value: 159620 | Misc Value: 157675
 Description      : Improves the functionality of Surging Mist, Blackout Kick, and Crackling Jade Lightning.
@@ -5783,7 +5785,7 @@ Description      : Improves the functionality of Surging Mist, Blackout Kick, an
 While in this stance, you will gain Eminence.
 
 |CFFFFFFFFEminence|R
-$115313s3% of all damage you deal, including multistrikes, will be converted into healing on an injured ally within $117895A1 yards.
+$115313s3% of all damage you deal with your melee attacks and abilities, including multistrikes, will be converted into healing on an injured ally within $117895A1 yards.
 
 Name             : Focus and Harmony (id=154555) [Scaling Spell (5), Spell Family (53), Passive] 
 Class            : Mistweaver Monk
@@ -5996,7 +5998,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ ...x.
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=219749)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.50000 | Radius: 20 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.30000 | Radius: 20 yards
 Description      : $@spelldesc157535
 
 Name             : Breath of the Serpent (id=157627) 

@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18837)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18850)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -2760,7 +2760,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50
 #2 (id=110901)   : Direct Heal (10)
                    Base Value: 51 | Scaled Value: 0 (avg=4.96, dl=0.2) | Value Range: 12 | SP Coefficient: 1.51319 | Radius: 0 - 10 yards
-Description      : Imbues a friendly target with radiant energy, healing that target for $s2 and up to 5 allies within $A2 yards for half that amount. Grants 1 Holy Power.
+Description      : Imbues a friendly target with radiant energy, healing that target for $s2 and up to 6 allies within $A2 yards for half that amount. Grants 1 Holy Power.
 
 Healing effectiveness diminishes for each player target beyond 6.
 
@@ -3910,6 +3910,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 85673
 #3 (id=196325)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20
+#4 (id=255718)   : Apply Aura (6) | Unknown effect sub type (408)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 114163
 Description      : Increases the strength of $?s114163[your Eternal Flame][your Word of Glory] when used to heal yourself by $114637s1%. Stacks up to 5 times.
 Tooltip          : $?s114163[Your next Eternal Flame][Your next Word of Glory] used to heal yourself heals for an additional $w1%.
 
@@ -4287,7 +4289,7 @@ Class            : Paladin
 Range            : 100 yards
 Duration         : 4 seconds
 Attributes       : .......x x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6314,22 +6316,4 @@ Effects          :
 #1 (id=251173)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Choose a level 90 talent.
-
-Name             : Stat Negation Aura - Sub 10 - Strength/Intellect (id=178112) [Passive, Hidden] 
-Class            : Paladin
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=255366)   : Apply Aura (6) | Unknown effect sub type (467)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1
-#2 (id=255367)   : Apply Aura (6) | Unknown effect sub type (467)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 4
-#3 (id=255368)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: 0 | Scaled Value: 0
-#4 (id=255378)   : Apply Aura (6) | Unknown effect sub type (467)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3
 

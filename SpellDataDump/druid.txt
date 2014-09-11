@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18837)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18850)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 1
@@ -613,7 +613,7 @@ Effects          :
 #2 (id=1967)     : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 17
 #3 (id=81812)    : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 250 | Scaled Value: 250 | Misc Value: 1
+                   Base Value: 180 | Scaled Value: 180 | Misc Value: 1
 #4 (id=222311)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11
                    Affected Spells: Maul (6807), Frenzied Regeneration (22842), Lacerate (33745), Mangle (33917), Thrash (77758), Maul (168883)
@@ -1252,7 +1252,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=13048)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 9.00000
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 6.00000
 #2 (id=124626)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60
 Description      : $?s54810[Increases healing received by $122307s1% for $122307d.][Instantly converts up to $s2 Rage into up to $s1 health.]
@@ -1544,7 +1544,7 @@ Spell Level      : 8
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Bear Form (5487), Berserk (50334), Incarnation: Son of Ursoc (102558), Tiger's Fury (138358), Bloodtalons (145152), Soul of the Forest (158477), Dream of Cenarius (158501)
+Affecting spells : Bear Form (5487), Berserk (50334), Incarnation: Son of Ursoc (102558), Bloodtalons (145152), Soul of the Forest (158477), Dream of Cenarius (158501)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3958,7 +3958,6 @@ Name             : Thrash (id=106832) [Spell Family (7)]
 Class            : Druid
 Spell Level      : 28
 Range            : 5 yards
-Affecting spells : Item - Druid T10 Feral 2P Bonus (70724)
 Attributes       : ........ x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4009,24 +4008,6 @@ Description      : The Druid roars, increasing the movement speed of all friendl
 
 Using this ability outside of Bear Form or Cat Form activates Bear Form.]
 Tooltip          : Movement speed increased by $s1%.
-
-Name             : Might of Ursoc (id=106922) [Spell Family (7)] 
-Class            : Guardian Druid
-Spell Level      : 72
-Duration         : 10 seconds
-Cooldown         : 180 seconds
-Affecting spells : Glyph of Might of Ursoc (116238), Item - Druid T14 Guardian 2P Bonus (123086)
-Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=117429)   : Apply Aura (6) | Unknown effect sub type (133)
-                   Base Value: 30 | Scaled Value: 30
-Description      : Increases current and maximum health by $s1% for $d.
-Tooltip          : Maximum health increased by $w1%.
 
 Name             : Berserk (id=106951) [Spell Family (7)] 
 Class            : Druid
@@ -4663,10 +4644,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=131104)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3
-                   Affected Spells: Might of Ursoc (106922)
 #2 (id=131105)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
                    Base Value: 120000 | Scaled Value: 120000 | Misc Value: 11
-                   Affected Spells: Might of Ursoc (106922)
 Description      : Increases the health gain from Might of Ursoc by $m1%, but increases the cooldown by ${$m2/60000} min.
 
 Name             : Incarnation (Passive) (id=117679) [Spell Family (7)] 
@@ -4700,7 +4679,7 @@ Effects          :
 #2 (id=166017)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1
                    Affected Spells: Lifebloom (33763), Lifebloom (33778)
-Description      : Increases the bloom heal of your Lifebloom when it expires by $s1%, but its duration is reduced by ${$m2/-1000} sec and your Healing Touch, Nourish, and Regrowth abilities no longer refresh the duration.
+Description      : Increases the bloom heal of your Lifebloom when it expires by $s1%, but its duration is reduced by ${$m2/-1000} sec and your Healing Touch and Regrowth abilities no longer refresh the duration.
 
 Name             : Chosen of Elune (id=122114) [Spell Family (7), Hidden] 
 Class            : Druid
@@ -4797,7 +4776,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=155154)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
                    Base Value: -60000 | Scaled Value: -60000 | Misc Value: 11
-                   Affected Spells: Might of Ursoc (106922)
 Description      : Reduces the cooldown of your Might of Ursoc ability by ${$m1/-1000} sec.
 
 Name             : Item - Druid T14 Guardian 4P Bonus (id=123087) [Spell Family (7), Passive, Hidden] 
@@ -5161,7 +5139,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=176513)   : Apply Aura (6) | Proc Trigger Spell: Tooth and Claw (42)
                    Base Value: 2 | Scaled Value: 2 | SP Coefficient: 1.00000 | Trigger Spell: 135286
-Description      : Your autoattacks in Bear Form have a $h% chance to empower your next Maul for $135286d.  Empowered Maul causes its primary victim's next autoattack to deal ${$AP*3.2} less damage.
+Description      : Your autoattacks in Bear Form have a $h% chance to empower your next Maul for $135286d.  Empowered Maul causes its primary victim's next autoattack to deal ${$AP*2.4} less damage.
 
 You can accumulate up to $s1 charges of Tooth and Claw.
 
@@ -5477,7 +5455,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=181810)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | Misc Value: 7
-Description      : After using Tiger's Fury, you gain $138358s1% increased critical strike chance on the next $138358n uses of Mangle, Shred, Ferocious Bite, Ravage, and Swipe.
+Description      : After using Tiger's Fury, you gain $138358s1% increased critical strike chance on the next $138358n uses of Shred, Ferocious Bite, and Swipe.
 
 Name             : Tiger's Fury (id=138358) [Spell Family (7)] 
 Class            : Druid
@@ -5495,9 +5473,9 @@ Attributes       : ........ ........ ........ ...x....   ........ ..x..... .....
 Effects          :
 #1 (id=181811)   : Apply Aura (6) | Add Flat Modifier: Spell Critical Chance (107)
                    Base Value: 40 | Scaled Value: 40 | SP Coefficient: 1.00000 | Misc Value: 7
-                   Affected Spells: Shred (5221), Ferocious Bite (22568), Mangle (33917), Swipe (106785)
+                   Affected Spells: Shred (5221), Ferocious Bite (22568), Swipe (106785)
 Description      : Increases critical strike chance by $s1% for next $n uses of Mangle, Shred, Ferocious Bite, Ravage, and Swipe.  Lasts $d.
-Tooltip          : $s1% increased critical strike chance for next $n uses of Mangle, Shred, Ferocious Bite, Ravage, or Swipe.
+Tooltip          : $s1% increased critical strike chance for next $n uses of Shred, Ferocious Bite, or Swipe.
 
 Name             : Combo Point Delayed (id=139569) 
 Class            : Rogue, Druid
@@ -5703,8 +5681,8 @@ Description      : Heals you for $s1% of your maximum health every $t sec.  If y
 Name             : Ysera's Gift (id=145109) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 1
-Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
-                 : ........ ......x. ........ ....xxx.   ........ ........ x....... ......x. 
+Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ........ ........ 
+                 : ........ ......x. ........ ....xx..   ........ ........ x....... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5718,8 +5696,8 @@ Name             : Ysera's Gift (id=145110) [Spell Family (7)]
 Class            : Druid
 Spell Level      : 1
 Range            : 30 yards
-Attributes       : ........ ........ ........ x..x....   .....x.. ........ ...x.... ........ 
-                 : ........ ......x. ........ ....xxx.   ........ ........ x....... ......x. 
+Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ...x.... ........ 
+                 : ........ ......x. ........ ....xx..   ........ ........ x....... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7141,7 +7119,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100
 
 Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
-Class            : Elemental Balance Priest, Shaman, Mage, Warlock, Druid
+Class            : Elemental Balance Shaman, Mage, Warlock, Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7903,20 +7881,4 @@ Effects          :
 #1 (id=255329)   : Energize Power (30)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1.00000 | Misc Value: rage
 Description      : $@spelldesc16961
-
-Name             : Stat Negation Aura - Sub 10 - Agility/Intellect (id=178113) [Passive, Hidden] 
-Class            : Shaman, Druid
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=255370)   : Apply Aura (6) | Unknown effect sub type (467)
-                   Base Value: 0 | Scaled Value: 0
-#2 (id=255371)   : Apply Aura (6) | Unknown effect sub type (467)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 4
-#3 (id=255372)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: 0 | Scaled Value: 0
 

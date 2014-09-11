@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18837)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18850)
 Name             : Blizzard (id=10) [Spell Family (3)] 
 Class            : Frost Mage
 Resource         : 5% Base Mana (8000 @Level 100)
@@ -957,7 +957,9 @@ Description      : Blasts the target with energy, dealing $30451s1 Arcane damage
 
 Arcane Blast's damage is increased by $36032s1% per Arcane Charge, and its mana cost is increased by $36032s2% per Arcane Charge.$?s86209[
 
-Also applies the Slow spell to any target it damages.][]
+Also applies the Slow spell to any target it damages.][]
+
+Replaces Frostfire Bolt.
 
 Name             : Ice Lance (id=30455) [Scaling Spell (4), Spell Family (3)] 
 Replaces         : Fire Blast (id=2136)
@@ -981,7 +983,9 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100
 Description      : Deals $?a44544[${$m1*$<fingersMult>} to ${$M1*$<fingersMult>}][$s1] Frost damage to an enemy target$?s56377&!a44544[, and ${$m1*$56377m2/100} to ${$M1*$56377m2/100} Frost damage to a second nearby target][]$?s56377&a44544[, and ${$m1*$<fingersMult>*$56377m2/100} to ${$M1*$<fingersMult>*$56377m2/100} Frost damage to a second nearby target][].
 
-Ice Lance damage is doubled against frozen targets.
+Ice Lance damage is doubled against frozen targets.
+
+Replaces Fire Blast.
 Variables        : $masteryMod=${$cond($gt($pl,79),1,0)}
 $masteryPoints=${$44544m4/100}
 $masteryMult=${(1+$<masteryMod>*$<masteryPoints>)}
@@ -1056,7 +1060,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 12 yards
 Description      : Targets in a cone in front of the caster take $s1 Fire damage and are disoriented for $d.  
 
-Any direct damage will cancel the effect.
+Any direct damage will cancel the effect.
+
+Replaces Cone of Cold.
 Tooltip          : Disoriented.
 
 Name             : Summon Water Elemental (id=31687) [Spell Family (3)] 
@@ -1300,7 +1306,9 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50
 Description      : Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. Consumes all Arcane Charges.
 
-Arcane Barrage's damage is increased by $36032s1% per Arcane Charge, and it hits $36032s3 additional nearby $Ltarget:targets; per Arcane Charge for $44425s2% damage.
+Arcane Barrage's damage is increased by $36032s1% per Arcane Charge, and it hits $36032s3 additional nearby $Ltarget:targets; per Arcane Charge for $44425s2% damage.
+
+Replaces Fire Blast.
 
 Name             : Pyroblast Clearcasting Driver (id=44448) [Spell Family (3), Passive, Hidden] 
 Class            : Fire Mage
@@ -4216,7 +4224,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : ........ ......x. ...x.... .....x..   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
                  : ........ ....x... ........ .....x..   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=215513)   : Dummy (3)
@@ -4555,7 +4563,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ .....x..   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=220354)   : School Damage: fire (2)
@@ -4570,7 +4578,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ .....x..   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=220355)   : School Damage: frost (2)
@@ -4585,7 +4593,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ .....x..   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=220356)   : School Damage: arcane (2)
@@ -4738,7 +4746,7 @@ Description      : Amplify the effects of helpful magic, increasing all healing 
 Tooltip          : Increases healing received by $s1%.
 
 Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
-Class            : Elemental Balance Priest, Shaman, Mage, Warlock, Druid
+Class            : Elemental Balance Shaman, Mage, Warlock, Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
