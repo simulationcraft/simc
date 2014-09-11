@@ -2486,7 +2486,6 @@ struct frost_bomb_explosion_t : public mage_spell_t
   { return timespan_t::zero(); }
 };
 
-// TODO: Add removal of previous FB when applied to new target
 struct frost_bomb_t : public mage_spell_t
 {
   frost_bomb_t( mage_t* p, const std::string& options_str ) :
@@ -2499,25 +2498,23 @@ struct frost_bomb_t : public mage_spell_t
   virtual void execute()
   {
     mage_t& p = *this -> p();
-    bool pre_ticking = get_dot( target ) -> is_ticking();
 
     mage_spell_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( ! pre_ticking )
-        p.active_bomb_targets++;
+      if (p.last_bomb_target != execute_state -> target && p.last_bomb_target != 0)
+        {
+          td(p.last_bomb_target) -> dots.frost_bomb -> cancel();
+          td(p.last_bomb_target) -> debuffs.frost_bomb -> expire();
+        }
       p.last_bomb_target = execute_state -> target;
     }
   }
 
   virtual void last_tick( dot_t* d )
   {
-
     mage_spell_t::last_tick( d );
-
-    mage_t& p = *this -> p();
-    p.active_bomb_targets--;
   }
 
   virtual void impact( action_state_t* s )
@@ -3292,7 +3289,6 @@ struct nether_tempest_aoe_t: public mage_spell_t
 };
 
 // Nether Tempest Spell ===========================================================
-// TODO: Add removal of previous NT when applied to new target
 struct nether_tempest_t : public mage_spell_t
 {
   nether_tempest_aoe_t *add_aoe;
@@ -3308,14 +3304,16 @@ struct nether_tempest_t : public mage_spell_t
   virtual void execute()
   {
     mage_t& p = *this -> p();
-    bool pre_ticking = get_dot( target ) -> is_ticking();
+
 
     mage_spell_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( ! pre_ticking )
-        p.active_bomb_targets++;
+      if (p.last_bomb_target != execute_state -> target && p.last_bomb_target != 0)
+        {
+          td(p.last_bomb_target) -> dots.nether_tempest -> cancel();
+        }
       p.last_bomb_target = execute_state -> target;
     }
   }
@@ -3333,10 +3331,6 @@ struct nether_tempest_t : public mage_spell_t
   virtual void last_tick( dot_t* d )
   {
     mage_spell_t::last_tick( d );
-
-    mage_t& p = *this -> p();
-    p.active_bomb_targets--;
-
   }
 
   double composite_persistent_multiplier( const action_state_t* state ) const
