@@ -695,11 +695,12 @@ public:
   {
     if ( p() -> spec.brewing_tigereye_brew -> ok() )
     {
+      int stacks = base_stacks;
       // Look through each ability stack and test against mastery value for extra stack
       for (int x = 0; x < base_stacks; ++x){
         stacks += (ab::rng().roll( p() -> cache.mastery_value() )) ? 1 : 0;
       }
-      p() -> buff.tigereye_brew -> trigger( base_stacks );
+      p() -> buff.tigereye_brew -> trigger( stacks );
     }
     else if ( p() -> spec.brewing_elusive_brew -> ok() )
       p() -> buff.elusive_brew_stacks -> trigger( base_stacks );
