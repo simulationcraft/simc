@@ -444,37 +444,7 @@ public:
   virtual void      init_action_list();
 
   std::string       get_potion_action();
-
-  player_t*         actor_by_name_str( const std::string& name ) const;
-
 };
-
-player_t* mage_t::actor_by_name_str( const std::string& name ) const
-{
-  // Check player pets first
-  for ( size_t i = 0; i < pet_list.size(); i++ )
-  {
-    if ( util::str_compare_ci( pet_list[ i ] -> name_str, name ) )
-      return pet_list[ i ];
-  }
-
-  // Check harmful targets list
-  for ( size_t i = 0; i < sim -> target_list.size(); i++ )
-  {
-    if ( util::str_compare_ci( sim -> target_list[ i ] -> name_str, name ) )
-      return sim -> target_list[ i ];
-  }
-
-  // Finally, check player (non pet list), don't support targeting other
-  // people's pets for now
-  for ( size_t i = 0; i < sim -> player_no_pet_list.size(); i++ )
-  {
-    if ( util::str_compare_ci( sim -> player_no_pet_list[ i ] -> name_str, name ) )
-      return sim -> player_no_pet_list[ i ];
-  }
-
-  return 0;
-}
 
 namespace pets {
 

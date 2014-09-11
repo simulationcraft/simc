@@ -243,11 +243,11 @@ action_t::action_t( action_e       ty,
   callbacks( true ),
   special(),
   channeled(),
-  interrupt_auto_attack( true ),
-  background(),
   sequence(),
-  use_off_gcd(),
   quiet(),
+  background(),
+  use_off_gcd(),
+  interrupt_auto_attack( true ),
   direct_tick(),
   periodic_hit(),
   repeating(),
@@ -278,12 +278,12 @@ action_t::action_t( action_e       ty,
   base_execute_time( timespan_t::zero() ),
   base_tick_time( timespan_t::zero() ),
   dot_duration( timespan_t::zero() ),
+  base_cooldown_reduction( 1.0 ),
   time_to_execute( timespan_t::zero() ),
   time_to_travel( timespan_t::zero() ),
   target_specific_dot( false ),
   total_executions(),
-  line_cooldown( cooldown_t( "line_cd", *p ) ),
-  base_cooldown_reduction( 1.0 )
+  line_cooldown( cooldown_t( "line_cd", *p ) )
 {
   dot_behavior                   = DOT_CLIP;
   trigger_gcd                    = player -> base_gcd;
@@ -1256,7 +1256,7 @@ void action_t::tick( dot_t* d )
 // action_t::multistrike_tick ===============================================
 
 // Generate a periodic multistrike
-void action_t::multistrike_tick( const action_state_t* source_state, action_state_t* ms_state, double tick_multiplier )
+void action_t::multistrike_tick( const action_state_t* source_state, action_state_t* ms_state, double /* tick_multiplier */ )
 {
   ms_state -> result_raw = source_state -> result_raw * composite_multistrike_multiplier( source_state );
   double total = ms_state -> result_raw;
@@ -1915,6 +1915,18 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
   if ( name_str == "cast_time" )
     return make_mem_fn_expr( name_str, *this, &action_t::execute_time );
+  else if ( name_str == "target" )
+  {
+    struct target_expr_t : public action_expr_t
+    {
+      target_expr_t( action_t& a ) : action_expr_t( "target", a )
+      { }
+
+      double evaluate()
+      { return action.target -> actor_index; }
+    };
+    return new target_expr_t( *this );
+  }
   else if ( name_str == "gcd" )
     return make_mem_fn_expr( name_str, *this, &action_t::gcd );
   else if ( name_str == "execute_time" )
@@ -2029,7 +2041,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       action_t* action;
       action_state_t* state;
 
-      tick_multiplier_expr_t( action_t* a ) : 
+      tick_multiplier_expr_t( action_t* a ) :
         expr_t( "tick_multiplier" ), action( a ), state( a -> get_state() )
       {
         state -> n_targets    = 1;
@@ -2057,7 +2069,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       action_t* action;
       action_state_t* state;
 
-      persistent_multiplier_expr_t( action_t* a ) : 
+      persistent_multiplier_expr_t( action_t* a ) :
         expr_t( "persistent_multiplier" ), action( a ), state( a -> get_state() )
       {
         state -> n_targets    = 1;
