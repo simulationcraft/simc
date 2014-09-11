@@ -1,3 +1,4 @@
+cd ..
 simc64 spell_query="spell.class=warrior">spelldatadump/warrior.txt
 simc64 spell_query="spell.class=hunter">spelldatadump/hunter.txt
 simc64 spell_query="spell.class=monk">spelldatadump/monk.txt
