@@ -1,5 +1,5 @@
 
-SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18702)
+SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18716)
 Name             : Suicide (id=7) 
 Class            : Monk
 Attributes       : ........ x....... ........ x..x.x..   .....x.. ........ ........ ........ 
@@ -647,7 +647,7 @@ Resource         : 2.4% Base Mana (3840 @Level 100) w/ Stance of the Spirited Cr
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), 2H Staff Override (108561), Stance of the Sturdy Ox (115069), 2H Polearm Override (115697), Rising Sun Kick (130320), Lucidity (137331), Focus and Harmony (154555)
+Affecting spells : Stance of the Fierce Tiger (103985), 2H Staff Override (108561), Stance of the Sturdy Ox (115069), 2H Polearm Override (115697), Rising Sun Kick (130320), Lucidity (137331), Focus and Harmony (154555), Heightened Senses (165692), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -800,7 +800,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #4 (id=156068)   : Apply Aura (6) | Unknown effect sub type (263)
                    Base Value: 1 | Scaled Value: 1
-Description      : You spin while kicking in the air, dealing ${(4*1.59*$<low>+4*1.59*$<high>)/2} damage over $d to enemies within $107270A1 yards$?a115070&s116645[ and ${4*$117640m1} healing over $d to allies within $117640A1 yards.][.]  Generates $129881m1 Chi.
+Description      : You spin while kicking in the air, dealing ${(4*1.59*$<low>+4*1.59*$<high>)/2} damage over $d to enemies within $107270A1 yards$?a115070&s116645[ and ${4*$117640m1} healing over $d to allies within $117640A1 yards.][.]  Generates $129881m1 Chi.$?c1[
+
+Channeling Spinning Crane Kick does not prevent avoiding attacks.][]
 Tooltip          : Attacking all nearby enemies for physical damage every $101546t1 sec.$?s120479[][
 
 Movement speed is reduced by $101546s2%. ]
@@ -933,7 +935,7 @@ Resource         : 2.4% Base Mana (3840 @Level 100) w/ Stance of the Spirited Cr
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), 2H Staff Override (108561), Stance of the Sturdy Ox (115069), 2H Polearm Override (115697), Rising Sun Kick (130320), Lucidity (137331), Focus and Harmony (154555)
+Affecting spells : Stance of the Fierce Tiger (103985), 2H Staff Override (108561), Stance of the Sturdy Ox (115069), 2H Polearm Override (115697), Rising Sun Kick (130320), Lucidity (137331), Focus and Harmony (154555), Heightened Senses (165692), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1585,7 +1587,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=129069)   : Apply Aura (6) | Modify Dodge% (49)
-                   Base Value: 35 | Scaled Value: 35 | Misc Value: 4
+                   Base Value: 45 | Scaled Value: 45 | Misc Value: 4
 Description      : Consumes all stacks of Elusive Brew to increase your chance to dodge melee and ranged attacks by $s1% for $d per stack.
 
 Your autoattack critical strikes grant up to $m1 stacks of Elusive Brew.
@@ -2121,7 +2123,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 #2 (id=154236)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: chi
-Description      : Heals the target for $116995s1 $?s115070[and generates $m2 Chi][].$?a154436[  Each Chi you consume reduces the cast time and mana cost of your next Surging Mist by $118674m1%.][]
+Description      : Heals the target for $116995s1 $?s115070[ and generates $m2 Chi][].$?a154436[  Each Chi you consume reduces the cast time and mana cost of your next Surging Mist by $118674m1%.][]
 
 Name             : Spear Hand Strike (id=116705) [Spell Family (53)] 
 Class            : Monk
@@ -2166,6 +2168,7 @@ Class            : Windwalker Monk
 Spell Level      : 56
 Duration         : 15 seconds
 Cooldown         : 5 seconds
+Affecting spells : Item - Monk WoD PvP Windwalker 4P Bonus (165696)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2337,7 +2340,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 120 seconds
-Affecting spells : Lucidity (137331), Improved Life Cocoon (157401)
+Affecting spells : Lucidity (137331), Improved Life Cocoon (157401), Item - Monk WoD PvP Mistweaver 4P Bonus (165697)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3668,7 +3671,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1316
 #2 (id=201318)   : Unknown effect type (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1315
-Description      : Hurls a torrent of Chi energy up to 40 yds forward, dealing $<damage> Nature damage to all enemies, and $<healing> healing to the Monk and all allies in its path.
+Description      : Hurls a torrent of Chi energy up to 40 yds forward, dealing $<damage> Nature damage to all enemies, and $<healing> healing to the Monk and all allies in its path.$?c1[
+
+Casting Chi Burst does not prevent avoiding attacks.][]
 Variables        : $dmgMult=$?s103985[${1.2}][${1.0}]
 $healMult=$?s115070[${1.2}][${1.0}]
 $damage=${$148135m1+$<dmgMult>*$ap*2.036}
@@ -4548,9 +4553,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=159961)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 3
-Description      : Your Black Ox Statue now passively generates a small amount of threat toward all enemies within 30 yards.
-
-Additionally, teaches you the spell Leer of the Ox.
+Description      : Teaches you the spell Leer of the Ox.
 
 |CFFFFFFFFLeer of the Ox|R
 $@spelldesc115543
@@ -6200,11 +6203,11 @@ Attributes       : ....x.xx x....... ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ x.......   ........ ........ ........ ........ 
 Effects          :
-#1 (id=223393)   : Apply Aura (6) | Add Flat Modifier: Spell Resource Cost (107)
-                   Base Value: -5 | Scaled Value: -5 | Misc Value: 14
+#1 (id=223393)   : Apply Aura (6) | Add Flat Modifier (107)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 34
                    Affected Spells: Expel Harm (115072)
 Description      : Expel Harm's energy cost is reduced by $s1 while your health is below 35%.
 
@@ -6321,7 +6324,21 @@ Attributes       : ....x.xx x....... ........ ........   ...x...x ........ .....
 Effects          :
 #1 (id=223473)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 5
-Description      : When you stop channeling Soothing Mist, you gain $s1% movement speed for $m1 sec for every sec you spent channeling Soothing Mist.
+Description      : When you stop channeling Soothing Mist, you gain $159537s1% movement speed for $m1 sec for every sec you spent channeling Soothing Mist.
+
+Name             : Glyph of Soothing Mist (id=159537) [Spell Family (53)] 
+Class            : Monk
+Duration         : 8 seconds
+Attributes       : ........ x....... ..x..... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=223474)   : Apply Aura (6) | Increase Speed% (31)
+                   Base Value: 60 | Scaled Value: 60
+Tooltip          : Movement speed increased by $w1%.
 
 Name             : Glyph of Zen Focus (Mistweaver) (id=159545) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
@@ -6491,7 +6508,7 @@ Effects          :
 Description      : Increases your Attack Power by $s1% of your Bonus Armor.
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
-Class            : Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
+Class            : Beast Mastery Marksmanship Survival Assassination Combat Subtlety Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

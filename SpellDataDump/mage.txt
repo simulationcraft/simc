@@ -1,5 +1,5 @@
 
-SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18702)
+SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18716)
 Name             : Blizzard (id=10) [Spell Family (3)] 
 Class            : Frost Mage
 Resource         : 5% Base Mana (8000 @Level 100)
@@ -59,7 +59,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Duration         : 15 seconds
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Frosty Zap (24392), Item - Mage T8 4P Bonus (64869), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T10 4P Bonus (70748), Item - Mage T11 4P Bonus (90291), Item - Mage T15 2P Bonus (138316), Enhanced Frostbolt (157646), Enhanced Frostbolt (157648), Ice Shard (166869), 
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Frosty Zap (24392), Item - Mage T8 4P Bonus (64869), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T10 4P Bonus (70748), Item - Mage T11 4P Bonus (90291), Item - Mage T15 2P Bonus (138316), Enhanced Frostbolt (157646), Enhanced Frostbolt (157648), Ice Shard (166869), Frostbite (171345)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -149,7 +149,7 @@ Range            : 40 yards
 Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Item - Mage T8 4P Bonus (64869), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T10 4P Bonus (70748), Item - Mage T11 4P Bonus (90291), Critical Mass (117216), Item - Mage T15 2P Bonus (138316), Enhanced Pyrotechnics (157644)
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Item - Mage T8 4P Bonus (64869), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T10 4P Bonus (70748), Item - Mage T11 4P Bonus (90291), Critical Mass (117216), Item - Mage T15 2P Bonus (138316), Enhanced Pyrotechnics (157644), Ignition (165979), Firestarter (171170)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -407,7 +407,7 @@ Spell Level      : 24
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
-Affecting spells : Arcane Power (12042), Icy Veins (12472), Arcane Instability (166872)
+Affecting spells : Arcane Power (12042), Icy Veins (12472), Arcane Instability (166872), Arcane Focus (171375)
 Attributes       : ........ x....... x....... .....x..   ..x....x ..x...x. ........ ..x.x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ .....x.. ........ ........ 
@@ -479,7 +479,7 @@ Class            : Mage
 Spell Level      : 24
 Range            : 60 yards
 Velocity         : 20 yards/sec
-Affecting spells : Shatter (12982), Arcane Charge (36032), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T11 2P Bonus (90290), Item - Mage T14 2P Bonus (123097)
+Affecting spells : Shatter (12982), Arcane Charge (36032), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T11 2P Bonus (90290), Item - Mage T14 2P Bonus (123097), Arcane Focus (171375)
 Attributes       : ........ ........ x....... ........   ..x..... ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -943,7 +943,7 @@ Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Arcane Charge (36032), Item - Mage T8 4P Bonus (64869), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T10 4P Bonus (70748), Item - Mage T11 4P Bonus (90291), Item - Mage T15 2P Bonus (138316), Profound Magic (145252), Arcane Affinity (166871), 
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Arcane Charge (36032), Item - Mage T8 4P Bonus (64869), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T10 4P Bonus (70748), Item - Mage T11 4P Bonus (90291), Item - Mage T15 2P Bonus (138316), Profound Magic (145252), Arcane Affinity (166871), Arcane Focus (171375)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2434,7 +2434,7 @@ Stacks           : 1 initial, 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
-Affecting spells : Arcane Missiles (5143), Arcane Power (12042), Icy Veins (12472), Arcane Instability (166872)
+Affecting spells : Arcane Missiles (5143), Arcane Power (12042), Icy Veins (12472), Arcane Instability (166872), Arcane Focus (171375)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -3688,7 +3688,7 @@ Class            : Mage
 Spell Level      : 55
 Range            : 40 yards
 Cast Time        : 2 seconds
-Affecting spells : Shatter (12982), Item - Mage T8 4P Bonus (64869), Item - Mage T10 4P Bonus (70748), Item - Mage T15 2P Bonus (138316)
+Affecting spells : Shatter (12982), Item - Mage T8 4P Bonus (64869), Item - Mage T10 4P Bonus (70748), Item - Mage T15 2P Bonus (138316), Frostbite (171345)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ..x..... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4273,7 +4273,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=212907)   : Unknown effect type (179)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1612
-Description      : Launches an Arcane Orb forward from the Mage's position, traveling up to 40 yards, dealing $153640s1 Arcane damage to enemies it passes through. Grants the Mage an Arcane Charge every time it deals damage.
+Description      : Launches an Arcane Orb forward from the Mage's position, traveling up to 40 yards, dealing $153640s1 Arcane damage to enemies it passes through. Grants the Mage an Arcane Charge when cast and every time it deals damage.
 
 Name             : Arcane Orb (id=153640) 
 Class            : Mage
@@ -4863,7 +4863,7 @@ Description      : Amplify the effects of helpful magic, increasing all healing 
 Tooltip          : Increases healing received by $s1%.
 
 Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
-Class            : Shadow Elemental Balance Priest, Shaman, Mage, Warlock, Druid
+Class            : Shadow Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Priest, Shaman, Mage, Warlock, Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

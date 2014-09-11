@@ -1,5 +1,5 @@
 
-SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18702)
+SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18716)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -288,7 +288,7 @@ Cooldown         : 120 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Clemency (105622), Lucidity (137288), Absolve (140333), Enhanced Hand of Sacrifice (157493)
+Affecting spells : Clemency (105622), Lucidity (137288), Absolve (140333), Enhanced Hand of Sacrifice (157493), Item - Paladin WoD PvP Holy 4P Bonus (165881)
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x.x.... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -991,11 +991,13 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20
 #3 (id=213906)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 127 | Misc Value 2: 0x1
-#4 (id=223521)   : Apply Aura (6) | Modify Power Cost% (72)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2
-#5 (id=224222)   : Apply Aura (6) | Modify Damage Done% (79)
+#4 (id=223521)   : Apply Aura (6) | Unknown effect sub type (105)
+                   Base Value: 0 | Scaled Value: 0
+#5 (id=224222)   : Apply Aura (6) | Modify Power Cost% (72)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Misc Value 2: 0x1
+#6 (id=249743)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f
-#6 (id=225285)   : Apply Aura (6) | Scale% (61)
+#7 (id=249744)   : Apply Aura (6) | Scale% (61)
                    Base Value: 15 | Scaled Value: 15
 Description      : Imbues you with wrathful light, increasing healing done by $s3% and haste, critical strike chance, and damage by $s1% for $d.
 Tooltip          : Healing done increased by $s3%.
@@ -1006,7 +1008,7 @@ Class            : Protection Paladin
 Spell Level      : 70
 Duration         : 10 seconds
 Cooldown         : 180 seconds
-Affecting spells : Item - Paladin T14 Protection 2P Bonus (123104)
+Affecting spells : Item - Paladin T14 Protection 2P Bonus (123104), Item - Paladin WoD PvP Protection 4P Bonus (171427)
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2517,7 +2519,7 @@ Tooltip          : Absorbs up to $w1 damage.
 Name             : Ardent Defender (id=66235) [Spell Family (10)] 
 Class            : Paladin
 Spell Level      : 40
-Affecting spells : Item - Paladin T14 Protection 2P Bonus (123104)
+Affecting spells : Item - Paladin T14 Protection 2P Bonus (123104), Item - Paladin WoD PvP Protection 4P Bonus (171427)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4467,7 +4469,7 @@ Effects          :
 #1 (id=153367)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=153368)   : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.88110 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.40520 | Radius: 0 - 8 yards
 Description      : Forcefully attempt to expel the evil from the target with a blast of Holy Light. Causes $s2 Holy damage to the target and 25% of that to other enemies within $A2 yards and generates a charge of Holy Power.
 
 Name             : Light's Hammer (Talent) (id=122773) [Spell Family (10)] 
@@ -5267,7 +5269,7 @@ Effects          :
                    Base Value: 1000000 | Scaled Value: 1e+006 | Misc Value: 126
 Description      : Increases your block chance by $s1%, and allows you to block spells. Additionally, when you block, you deal $157122s1 Holy damage to your attacker.
 
-Name             : Seraphim (id=152262) [Spell Family (10)] 
+Name             : Seraphim (id=152262) [Scaling Spell (-1), Spell Family (10)] 
 Class            : Paladin
 Resource         : 5 Holy Power
 Duration         : 15 seconds
@@ -5280,12 +5282,12 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=210813)   : Apply Aura (6) | Unknown effect sub type (405)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 302911232
-#2 (id=218844)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: 50 | Scaled Value: 50
-Description      : The Light temporarily magnifies your power, increasing your Haste, Critical Strike, Mastery, Multistrike, Versatility, and Bonus Armor from gear by $s1% for $d.
-Tooltip          : Haste, Critical Strike, Mastery, Multistrike, Versatility, and Bonus Armor from gear increased by $s1%.
+#1 (id=210813)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 1500 | Scaled Value: 1499.71 (avg=5.746) | Misc Value: 1913523968
+#2 (id=218844)   : Apply Aura (6) | Unknown effect sub type (465)
+                   Base Value: 1500 | Scaled Value: 1499.71 (avg=5.746)
+Description      : The Light temporarily magnifies your power, increasing your Haste, Critical Strike, Mastery, Multistrike, Versatility, and Bonus Armor by $s1 for $d.
+Tooltip          : Haste, Critical Strike, Mastery, Multistrike, Versatility, and Bonus Armor increased by $s1.
 
 Name             : Empowered Seals (id=152263) [Passive] 
 Class            : Paladin
@@ -5307,7 +5309,7 @@ Increases your movement speed by $156987s1% for $156987d.
 Heals you for $156988s1% of your maximum health every $156988t1 sec for $156988d.
 
 |cFFFFFFFFJudgment of Righteousness|r
-Increases your attack speed by $156989s1% for $156989d.
+Increases your haste by $156989s1% for $156989d.
 
 |cFFFFFFFFJudgment of Truth|r
 Increases your attack power by $156990s1% for $156990d.
@@ -5418,10 +5420,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=218704)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
-                   Base Value: 30 | Scaled Value: 30
+#1 (id=218704)   : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 10 | Scaled Value: 10
 Description      : $@spelldesc152263
-Tooltip          : Attack speed increased by $s1%.
+Tooltip          : Haste increased by $s1%.
 
 Name             : Maraad's Truth (id=156990) 
 Class            : Paladin
@@ -5774,8 +5776,8 @@ Effects          :
 #1 (id=223522)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 23
                    Affected Spells: Avenging Wrath (31842)
-#2 (id=223523)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
-                   Base Value: -25 | Scaled Value: -25 | Misc Value: 32
+#2 (id=223523)   : Apply Aura (6) | Add Flat Modifier (107)
+                   Base Value: -25 | Scaled Value: -25 | Misc Value: 33
                    Affected Spells: Avenging Wrath (31842)
 Description      : Reduces all mana costs while Avenging Wrath is active by $s2%, but Avenging Wrath increases healing done by $s1% less.
 
@@ -5924,7 +5926,4 @@ Name             : Judgment (id=159849)
 Class            : Paladin
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ 
+                 : ........ ........ ........ ........   ........ ........ ......

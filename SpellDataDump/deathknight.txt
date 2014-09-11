@@ -1,5 +1,5 @@
 
-SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18702)
+SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18716)
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -357,8 +357,6 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .x...
 Effects          :
 #1 (id=34352)    : Apply Aura (6) | Periodic Trigger Spell: Army of the Dead every 0.5 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 42651
-#2 (id=34353)    : Server Side Script (77)
-                   Base Value: 0 | Scaled Value: 0
 Description      : Summons a legion of Ghouls over $d who will fight for the Death Knight for $42651d, swarming the area, taunting and fighting anything they can.
 Tooltip          : Summoning Ghouls.
 
@@ -458,7 +456,7 @@ Spell Level      : 55
 Range            : 30 yards
 GCD              : 1 seconds
 Power Gain       : 10 Runic Power
-Affecting spells : Razorice (51714), Glyph of Icy Touch (58631), Freezing Fog (59052), Item - Death Knight T10 Melee 4P Bonus (70656), 
+Affecting spells : Razorice (51714), Glyph of Icy Touch (58631), Freezing Fog (59052), Item - Death Knight T10 Melee 4P Bonus (70656), Biting Cold (166057)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -726,7 +724,7 @@ Spell Level      : 76
 Velocity         : 4 yards/sec
 Power Gain       : 25 Runic Power
 Cooldown         : 300 seconds
-Affecting spells : Glyph of Pestilence (58657), Glyph of Death Grip (62259), Glyph of Empowerment (159421)
+Affecting spells : Glyph of Blood Boil (58657), Glyph of Death Grip (62259), Glyph of Empowerment (159421)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -880,7 +878,7 @@ Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ..x.....   ........ ..x..... .x.x.... ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ....x... ........ 
                  : ....x... x....... ........ ........   ........ ........ .....x.. ........ 
-                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x.x..   ........ ........ ........ ........ 
                  : .......x ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -921,7 +919,7 @@ Rune Cost        : 1 Blood Rune
 Spell Level      : 64
 Power Gain       : 10 Runic Power
 Cooldown         : 1 seconds
-Affecting spells : Item - Death Knight T15 Blood 2P Bonus (138195)
+Affecting spells : Item - Death Knight T15 Blood 2P Bonus (138195), Glyph of Rune Tap (159428), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -961,8 +959,8 @@ Range            : 30 yards
 Duration         : 12 seconds
 Cooldown         : 90 seconds
 Proc Chance      : 100%
-Proc Flags       : ....x... x...x.x. x....... ........ 
-                 : Yellow Melee, Yellow Ranged, AOE Hostile Spell, Heal, Hostile Spell
+Proc Flags       : ....x... x...x.x. x.x..... ........ 
+                 : Yellow Melee, Yellow Ranged, AOE Hostile Spell, Heal, Hostile Spell, Periodic
 Affecting spells : Item - Death Knight T12 DPS 4P Bonus (98996)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ........ ........   .x...... ..x..... ..x..... ..x..... 
@@ -1010,7 +1008,7 @@ Resource         : 40 Runic Power
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Frost Presence (48266), Killing Machine (51124), Razorice (51714), Glyph of Shifting Presences (58647), Item - Death Knight T8 Melee 2P Bonus (64735), Threat of Thassarian (66192), Might of the Frozen Wastes (81333), Item - Death Knight T11 DPS 2P Bonus (90457), Item - Death Knight T11 DPS 4P Bonus (90459), Item - Death Knight T14 DPS 2P Bonus (123077)
+Affecting spells : Frost Presence (48266), Killing Machine (51124), Razorice (51714), Glyph of Shifting Presences (58647), Item - Death Knight T8 Melee 2P Bonus (64735), Threat of Thassarian (66192), Might of the Frozen Wastes (81333), Item - Death Knight T11 DPS 2P Bonus (90457), Item - Death Knight T11 DPS 4P Bonus (90459), Item - Death Knight T14 DPS 2P Bonus (123077), Biting Cold (166057)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1031,7 +1029,7 @@ Spell Level      : 55
 Range            : 30 yards
 GCD              : 1 seconds
 Power Gain       : 10 Runic Power
-Affecting spells : Razorice (51714), Freezing Fog (59052), 
+Affecting spells : Razorice (51714), Freezing Fog (59052), Biting Cold (166057)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1340,7 +1338,7 @@ Internal Cooldown: 0.008 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
-Affecting spells : Improved Razorice (157376)
+Affecting spells : Improved Razorice (157376), Biting Cold (166057)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... x.x..... ......x. 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -1416,7 +1414,7 @@ Rune Cost        : 1 Blood Rune
 Spell Level      : 55
 GCD              : 1 seconds
 Power Gain       : 10 Runic Power
-Affecting spells : Glyph of Pestilence (58657), Glyph of Resilient Grip (59309), Item - Death Knight T9 Tank 2P Bonus (67119), Crimson Scourge (81136), Crimson Scourge (81141)
+Affecting spells : Glyph of Blood Boil (58657), Glyph of Resilient Grip (59309), Item - Death Knight T9 Tank 2P Bonus (67119), Crimson Scourge (81136), Crimson Scourge (81141)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1433,7 +1431,7 @@ The Rune spent on this ability will become a Death Rune when it activates. Death
 Name             : Icy Talons (id=50887) [Spell Family (15), Passive, Hidden] 
 Class            : Frost Death Knight
 Spell Level      : 55
-Affecting spells : Razorice (51714), Glyph of Icy Touch (58631), Freezing Fog (59052), Item - Death Knight T10 Melee 4P Bonus (70656), 
+Affecting spells : Razorice (51714), Glyph of Icy Touch (58631), Freezing Fog (59052), Item - Death Knight T10 Melee 4P Bonus (70656), Biting Cold (166057)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1839,7 +1837,7 @@ Class            : Death Knight
 Spell Level      : 55
 Range            : 50000 yards
 Duration         : 30 seconds
-Affecting spells : Chilblains (50041), Ebon Plaguebringer (51160), Razorice (51714), Glyph of Enduring Infection (58671), Crimson Scourge (81136), Necrotic Plague (152281)
+Affecting spells : Chilblains (50041), Ebon Plaguebringer (51160), Razorice (51714), Glyph of Enduring Infection (58671), Crimson Scourge (81136), Necrotic Plague (152281), Biting Cold (166057)
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ .......x ....x..x ........   ........ ........ ........ ........ 
@@ -2117,7 +2115,7 @@ Effects          :
                    Affected Spells: Frost Strike (49143), Frost Strike Off-Hand (66196)
 Description      : You retain $58647s1% of your Runic Power when switching Presences.
 
-Name             : Glyph of Pestilence (id=58657) [Spell Family (15), Passive, Hidden] 
+Name             : Glyph of Blood Boil (id=58657) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2132,7 +2130,7 @@ Effects          :
 #2 (id=52053)    : None (0)
                    Base Value: 1 | Scaled Value: 1
                    Affected Spells: Empower Rune Weapon (47568), Empower Rune Weapon (89831)
-Description      : Increases the radius of your Pestilence effect by $58657s1 yards.
+Description      : Increases the radius of your Blood Boil by $58657s1 yards.
 
 Name             : Glyph of Army of the Dead (id=58669) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
@@ -2401,7 +2399,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 525
 Description      : Your diseases are undispellable, but their damage dealt is reduced by $58671s1%.
 
-Name             : Pestilence (id=58720) 
+Name             : Blood Boil (id=58720) 
 Class            : Death Knight
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2412,7 +2410,7 @@ Attributes       : ........ x....... ........ ....x...   ........ ........ .x...
 Effects          :
 #1 (id=52120)    : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 526
-Description      : Increases the radius of your Pestilence effect by $58657s1 yards.
+Description      : Increases the radius of your Blood Boil by $58657s1 yards.
 
 Name             : Mind Freeze (id=58721) 
 Class            : Death Knight
@@ -3048,7 +3046,7 @@ Name             : Frost Strike Off-Hand (id=66196) [Scaling Spell (1), Spell Fa
 Class            : Death Knight
 Range            : 100 yards
 GCD              : 1.5 seconds
-Affecting spells : Frost Presence (48266), Killing Machine (51124), Razorice (51714), Glyph of Shifting Presences (58647), Item - Death Knight T8 Melee 2P Bonus (64735), Threat of Thassarian (66192), Might of the Frozen Wastes (81333), Item - Death Knight T11 DPS 2P Bonus (90457), Item - Death Knight T11 DPS 4P Bonus (90459), Item - Death Knight T14 DPS 2P Bonus (123077)
+Affecting spells : Frost Presence (48266), Killing Machine (51124), Razorice (51714), Glyph of Shifting Presences (58647), Item - Death Knight T8 Melee 2P Bonus (64735), Threat of Thassarian (66192), Might of the Frozen Wastes (81333), Item - Death Knight T11 DPS 2P Bonus (90457), Item - Death Knight T11 DPS 4P Bonus (90459), Item - Death Knight T14 DPS 2P Bonus (123077), Biting Cold (166057)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x.....x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3162,7 +3160,7 @@ Effects          :
 #1 (id=64510)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=214692)   : Weapon Damage% (31)
-                   Base Value: 35 | Scaled Value: 0.35 (avg=0)
+                   Base Value: 42 | Scaled Value: 0.42 (avg=0)
 Description      : $@spelldesc55090
 
 Name             : Mastery: Blood Shield (id=77513) [Spell Family (15), Passive] 
@@ -3543,7 +3541,7 @@ Description      : Increases your Stamina by $s1% while wearing only Plate armor
 Name             : Empower Rune Weapon (id=89831) [Spell Family (15), Hidden] 
 Class            : Death Knight
 Spell Level      : 76
-Affecting spells : Glyph of Pestilence (58657), Glyph of Death Grip (62259), Glyph of Empowerment (159421)
+Affecting spells : Glyph of Blood Boil (58657), Glyph of Death Grip (62259), Glyph of Empowerment (159421)
 Attributes       : .......x x....... ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4157,7 +4155,7 @@ GCD              : 1 seconds
 Power Gain       : 10 Runic Power
 Duration         : 5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Might of the Frozen Wastes (81333)
+Affecting spells : Might of the Frozen Wastes (81333), Biting Cold (166057)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4177,6 +4175,7 @@ Name             : Soul Reaper (id=114867) [Spell Family (15)]
 Class            : Death Knight
 Spell Level      : 87
 Range            : 100 yards
+Affecting spells : Biting Cold (166057)
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ........ ........   ........ .x...... ..x..... ......x. 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -4507,7 +4506,7 @@ GCD              : 1 seconds
 Power Gain       : 10 Runic Power
 Duration         : 5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Might of the Frozen Wastes (81333)
+Affecting spells : Might of the Frozen Wastes (81333), Biting Cold (166057)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4532,7 +4531,7 @@ GCD              : 1 seconds
 Power Gain       : 10 Runic Power
 Duration         : 5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Might of the Frozen Wastes (81333)
+Affecting spells : Might of the Frozen Wastes (81333), Biting Cold (166057)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5018,7 +5017,7 @@ Description      : Continuously deals $155166s2 Shadowfrost damage every $t1 sec
 Mark of Sindragosa causes you to be healed for $155166s1% of spell damage dealt by afflicted enemies.
 Tooltip          : Continuously dealing Shadowfrost damage every $t1 sec to enemies in a cone in front of you, and applying Mark of Sindragosa.
 
-Name             : Defile (id=152280) [Spell Family (15), Hidden] 
+Name             : Defile (id=152280) [Spell Family (15)] 
 Class            : Death Knight
 Rune Cost        : 1 Unholy Rune
 Range            : 30 yards
@@ -5027,11 +5026,11 @@ Power Gain       : 10 Runic Power
 Duration         : 10 seconds
 Cooldown         : 30 seconds
 Affecting spells : Item - Death Knight T8 Tank 4P Bonus (64748), Item - Warrior T8 Protection 4P Bonus (64934), Item - Death Knight T10 Melee 4P Bonus (70656), Crimson Scourge (81141)
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=210838)   : Dummy (3)
@@ -5512,12 +5511,19 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=223308)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 12
-Description      : Instead of granting an absorb, Rune Tap heals you for $s1% more than it would have absorbed.
+#1 (id=223308)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
+                   Base Value: -10000 | Scaled Value: -10000 | Misc Value: 11
+                   Affected Spells: Rune Tap (48982), Rune Tap (171049)
+#2 (id=250201)   : Apply Aura (6) | Add Flat Modifier: Spell Tick Time (107)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 8
+                   Affected Spells: Rune Tap (48982), Rune Tap (171049)
+#3 (id=250202)   : Apply Aura (6) | Unknown effect sub type (453)
+                   Base Value: -10000 | Scaled Value: -10000 | Misc Value: 1475
+                   Affected Spells: Rune Tap (48982), Rune Tap (171049)
+Description      : Reduces the cooldown of Rune Tap by ${$m1/-1000} sec but Rune Tap reduces damage taken by $s2% less.
 
 Name             : Glyph of Runic Power (id=159429) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
@@ -5836,7 +5842,7 @@ Name             : Rune Tap (id=171049) [Spell Family (15)]
 Class            : Death Knight
 Spell Level      : 64
 Duration         : 3 seconds
-Affecting spells : Item - Death Knight T15 Blood 2P Bonus (138195)
+Affecting spells : Item - Death Knight T15 Blood 2P Bonus (138195), Glyph of Rune Tap (159428), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

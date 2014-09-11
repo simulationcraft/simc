@@ -1,5 +1,5 @@
 
-SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18702)
+SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18716)
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 9
@@ -26,7 +26,7 @@ Effects          :
                    Base Value: 17 | Scaled Value: 17 | Misc Value: 1
 #5 (id=236625)   : Apply Aura (6) | Shapeshift (36)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 18 | Misc Value 2: 0x1
-Description      : A tanking combat stance that decreases damage taken by $s1%, $?s146969[][increases threat generation, ]and generates 1 Rage every 3 sec while in combat.
+Description      : A tanking combat stance that decreases damage taken by $s1%, $?s146969[][increases threat generation, ]and generates 1 Rage every 3 sec while in combat.$?s12294[ Activating Defensive Stance triggers a $174897d cooldown on Mortal Strike, Whirlwind, and Slam.]?s23881[ Activating Defensive Stance triggers a $174897d cooldown on Bloodthirst, Raging Blow, Wild Strike, and Whirlwind.][]
 Tooltip          : A tanking combat stance that reduces damage taken and increases threat generated.
 
 Name             : Heroic Strike (id=78) [Spell Family (4)] 
@@ -93,7 +93,7 @@ Range            : 30 yards
 Duration         : 3 seconds
 Cooldown         : 8 seconds
 Affecting spells : Bladestorm (46924), Item - Warrior T9 Tank 2P Bonus (Taunt) (67269), Vigilance (114030)
-Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
+Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ x.x..... ........ 
                  : ........ ...x.... .......x ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ .......x x....... 
@@ -104,7 +104,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=148)      : Apply Aura (6) | Taunt (11)
                    Base Value: 200 | Scaled Value: 200
-Description      : Taunts the target to attack you, and increases threat that you generate against the target for $d.
+Description      : Taunts the target to attack you, and increases threat that you generate against the target for $d.  Using this ability while in Battle Stance activates Defensive Stance.
 Tooltip          : Taunted.
 
 Name             : Commanding Shout (id=469) [Spell Family (4)] 
@@ -285,11 +285,11 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=524)      : Apply Aura (6) | Add Flat Modifier: Spell Critical Chance (107)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 7
-                   Affected Spells: Heroic Strike (78), Slam (1464), Whirlwind (1680), Execute (5308), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85288), Raging Blow Off-Hand (85384), Colossus Smash (86346), Bladestorm Off-Hand (95738), Raging Blow (96103), Wild Strike (100130), Impending Victory (103840), Storm Bolt (107570), Colossus Smash (108126), Dragon Roar (118000), Dragon Roar (118895), Shockwave (132168), Storm Bolt (132169), Storm Bolt Off-Hand (145585), Ignite Weapon (156288), Execute (163201), Execute Off-Hand (163558), Ignite Weapon (163965), Colossus Smash (167105), Whirlwind (168695), Execute (168874), Bladestorm (168969)
+                   Affected Spells: Heroic Strike (78), Slam (1464), Whirlwind (1680), Execute (5308), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85288), Raging Blow Off-Hand (85384), Colossus Smash (86346), Bladestorm Off-Hand (95738), Raging Blow (96103), Wild Strike (100130), Impending Victory (103840), Storm Bolt (107570), Colossus Smash (108126), Dragon Roar (118000), Dragon Roar (118895), Shockwave (132168), Storm Bolt (132169), Storm Bolt Off-Hand (145585), Ignite Weapon (156288), Execute (163201), Execute Off-Hand (163558), Ignite Weapon (163965), Colossus Smash (167105), Whirlwind (168695), Execute (168874), Bladestorm (168969), Devastate (174892), Devastate (174893), Devastate (174894)
 #2 (id=216686)   : Apply Aura (6) | Unknown effect sub type (163)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 127
-                   Affected Spells: Heroic Strike (78), Slam (1464), Whirlwind (1680), Execute (5308), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85288), Raging Blow Off-Hand (85384), Colossus Smash (86346), Bladestorm Off-Hand (95738), Raging Blow (96103), Wild Strike (100130), Impending Victory (103840), Storm Bolt (107570), Colossus Smash (108126), Dragon Roar (118000), Dragon Roar (118895), Shockwave (132168), Storm Bolt (132169), Storm Bolt Off-Hand (145585), Ignite Weapon (156288), Execute (163201), Execute Off-Hand (163558), Ignite Weapon (163965), Colossus Smash (167105), Whirlwind (168695), Execute (168874), Bladestorm (168969)
-Description      : Grants your special attacks an additional $s1% chance to critically strike, and increases critical strike damage by $s2%.  Lasts $d.
+                   Affected Spells: Heroic Strike (78), Slam (1464), Whirlwind (1680), Execute (5308), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85288), Raging Blow Off-Hand (85384), Colossus Smash (86346), Bladestorm Off-Hand (95738), Raging Blow (96103), Wild Strike (100130), Impending Victory (103840), Storm Bolt (107570), Colossus Smash (108126), Dragon Roar (118000), Dragon Roar (118895), Shockwave (132168), Storm Bolt (132169), Storm Bolt Off-Hand (145585), Ignite Weapon (156288), Execute (163201), Execute Off-Hand (163558), Ignite Weapon (163965), Colossus Smash (167105), Whirlwind (168695), Execute (168874), Bladestorm (168969), Devastate (174892), Devastate (174893), Devastate (174894)
+Description      : Grants your special attacks an additional $s1% chance to critically strike, and increases critical strike damage by $s2%. Lasts $d. Using this ability in Defensive Stance activates Battle Stance.
 Tooltip          : Critical chance of special attacks increased by $s1% and critical strike damage increased by $s2%.
 
 Name             : Battle Stance (id=2457) [Spell Family (4)] 
@@ -575,7 +575,7 @@ Effects          :
 Description      : Pummel the target, $?s58357[silencing for $18498d, ][]interrupting spellcasting and preventing any spell in that school from being cast for $d.
 
 Name             : Revenge (id=6572) [Spell Family (4)] 
-Class            : Protection Warrior
+Class            : Arms Fury Protection Warrior
 Spell Level      : 30
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -729,7 +729,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 6 seconds
-Affecting spells : Recklessness (1719), Item - Warrior T8 Melee 4P Bonus (64939), Mastery: Weapons Master (76838), Item - Warrior T11 DPS 2P Bonus (90293), Item - Warrior T13 Arms and Fury 2P Bonus (Inner Rage) (105797), Item - Warrior T14 DPS 2P Bonus (123142), Headlong Rush (158836), Deadly Calm (166587)
+Affecting spells : Recklessness (1719), Item - Warrior T8 Melee 4P Bonus (64939), Mastery: Weapons Master (76838), Item - Warrior T11 DPS 2P Bonus (90293), Item - Warrior T13 Arms and Fury 2P Bonus (Inner Rage) (105797), Item - Warrior T14 DPS 2P Bonus (123142), Headlong Rush (158836), Vicious Strike (165638), Deadly Calm (166587)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -793,7 +793,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50
 Description      : Your melee attacks strike an additional nearby opponent for $s1% damage. Lasts $d.$?s58384[
 
-When you hit a target with Sweeping Strikes, you gain $/10;124333s1 Rage.][]
+When you hit a target with Sweeping Strikes, you gain $/10;124333s1 Rage.][] Using this ability in Defensive Stance activates Battle Stance.
 Tooltip          : Your melee attacks strike an additional nearby opponent.
 
 Name             : Seasoned Soldier (id=12712) [Spell Family (4), Passive] 
@@ -985,7 +985,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 
 Name             : Devastate (id=20243) [Spell Family (4)] 
-Class            : Protection Warrior
+Class            : Warrior
 Spell Level      : 26 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -1094,7 +1094,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 4.5 seconds
-Affecting spells : Recklessness (1719), Item - Warrior T8 Melee 4P Bonus (64939), Item - Warrior T11 DPS 2P Bonus (90293), Item - Warrior T13 Arms and Fury 2P Bonus (Inner Rage) (105797), Item - Warrior T14 DPS 2P Bonus (123142), Headlong Rush (158836), Unquenchable Thirst (169683)
+Affecting spells : Recklessness (1719), Item - Warrior T8 Melee 4P Bonus (64939), Item - Warrior T11 DPS 2P Bonus (90293), Item - Warrior T13 Arms and Fury 2P Bonus (Inner Rage) (105797), Item - Warrior T14 DPS 2P Bonus (123142), Headlong Rush (158836), Vicious Strike (165640), Unquenchable Thirst (169683)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1142,7 +1142,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Recklessness (1719), Sword and Board (50227), Glyph of Shield Slam (58375), Item - Warrior T10 Protection 2P Bonus (70843), Item - Warrior T11 Protection 2P Bonus (90296), Shield Block (132404), Headlong Rush (158836), Shield Charge (169667)
+Affecting spells : Recklessness (1719), Sword and Board (50227), Glyph of Shield Slam (58375), Item - Warrior T10 Protection 2P Bonus (70843), Item - Warrior T11 Protection 2P Bonus (90296), Shield Block (132404), Headlong Rush (158836), Vicious Strike (165642), Shield Charge (169667)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1463,7 +1463,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 60 seconds
 Affecting spells : Recklessness (1719), Bladestorm (Protection buff) DND (131086)
-Attributes       : ....x... ........ x.x..... ........   ....x... ..x....x ........ ........ 
+Attributes       : ....x... ........ x.x..... ........   ....x... .xx....x ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1476,8 +1476,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1733
 #3 (id=39084)    : Apply Aura (6) | Unknown effect sub type (263)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Shield Block (2565), Last Stand (12975), Enraged Regeneration (55694), Shield Barrier (112048), Demoralizing Shout (125565), Shield Charge (156321)
-Description      : Become an unstoppable storm of destructive force, striking all targets within $50622A1 yards $?s23881[for $50622sw2 Physical damage with your main-hand and $95738sw2 Physical damage with your off-hand][for $168969sw2 Physical damage] every $t1 sec for $d.  You are immune to movement impairing and loss of control effects, but can only use Taunt and other defensive abilities.
+                   Affected Spells: Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Shield Block (2565), Last Stand (12975), Enraged Regeneration (55694), Shield Barrier (112048), Demoralizing Shout (125565), Shield Charge (156321), Shield Barrier (174926)
+Description      : Become an unstoppable storm of destructive force, striking all targets within $50622A1 yards $?s23881[for $50622sw2 Physical damage with your main-hand and $95738sw2 Physical damage with your off-hand][for $168969sw2 Physical damage] every $t1 sec for $d.  You are immune to movement impairing and loss of control effects, but can only use Taunt and other defensive abilities.$?c1[
+
+Channeling Bladestorm does not prevent avoiding attacks.][]
 Tooltip          : Deal area damage every $t1 sec.
 Immune to crowd control.
 
@@ -1609,7 +1611,6 @@ Description      : $@spelldesc6544
 Name             : Sudden Death (id=52437) [Spell Family (4)] 
 Class            : Warrior
 Duration         : 10 seconds
-Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -2843,7 +2844,7 @@ Effects          :
                    Base Value: 140 | Scaled Value: 1.4 (avg=0)
 #4 (id=166619)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
-Description      : Smashes a target for $sw3 Physical damage and causes your attacks to bypass $?s89003[$s2%][all] of their armor for $s4 sec. Bypasses less armor on players.
+Description      : Smashes a target for $sw3 Physical damage and causes your attacks to bypass $?s89003[$s2%][all] of their armor for $s4 sec. Bypasses less armor on players. Using this ability in Defensive Stance activates Battle Stance.
 Tooltip          : Defenses weakened, allowing the Warrior's attacks to bypass $w2% of armor.
 
 Name             : Plate Specialization (id=86535) [Passive, Hidden] 
@@ -3320,7 +3321,7 @@ Description      : Weakens the target's defenses, allowing your attacks to entir
 Tooltip          : Defenses weakened, allowing the warrior's attacks to bypass $w1% of their armor.
 
 Name             : Shield Barrier (id=112048) [Spell Family (4)] 
-Class            : Protection Warrior
+Class            : Warrior
 Resource         : 20 Rage
 Spell Level      : 81
 Duration         : 6 seconds
@@ -3335,7 +3336,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=124622)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.30000 | Misc Value: 127
-Description      : Raise your shield, absorbing${$AP*2.75} damage for the next $d. Consumes up to 40 additional Rage to increase the amount absorbed.
+Description      : Raise your shield, absorbing ${$AP*2.75} damage for the next $d. Consumes up to 40 additional Rage to increase the amount absorbed.
 Tooltip          : Absorbs $w1 damage.
 
 Name             : Crow Feast (id=112792) 
@@ -3547,7 +3548,7 @@ Effects          :
 #2 (id=236206)   : Apply Aura (6) | Unknown effect sub type (109)
                    Base Value: 100 | Scaled Value: 100 | Trigger Spell: 115767
                    Affected Spells: Thunder Clap (6343)
-Description      : Your $?s12294[Mortal Strike and Thunder Clap cause]?s23881[Bloodthirst causes][Devastate and Thunder Clap cause] the target to bleed for $115767o1 Physical damage over $115767d.
+Description      : Your Devastate and Thunder Clap cause the target to bleed for $115767o1 Physical damage over $115767d.
 
 This effect is cancelled if the target reaches full health.
 
@@ -3804,7 +3805,7 @@ Effects          :
 
 Name             : Ultimatum (id=122509) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
-Spell Level      : 58
+Spell Level      : 10
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -3852,7 +3853,7 @@ Effects          :
                    Affected Spells: Mortal Strike (12294)
 #2 (id=155245)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 25 | Scaled Value: 25
-                   Affected Spells: Devastate (20243), Bloodthirst (23881)
+                   Affected Spells: Devastate (20243), Bloodthirst (23881), Devastate (174892), Devastate (174893), Devastate (174894)
 Description      : Increases the damage done by your Mortal Strike ability by $s1% and increases the damage done by your Bloodthirst ability by $s2%.
 
 Name             : Item - Warrior T14 DPS 4P Bonus (id=123144) [Spell Family (4), Passive, Hidden] 
@@ -3903,7 +3904,7 @@ Effects          :
                    Affected Spells: Shield Block (2565), Shield Charge (156321)
 #2 (id=171305)   : Apply Aura (6) | Add Percent Modifier: Spell Tick Time (108)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 8
-                   Affected Spells: Shield Barrier (112048)
+                   Affected Spells: Shield Barrier (112048), Shield Barrier (174926)
 Description      : Reduces the cost of your Shield Block ability by ${$m1/-10} Rage and increases the damage absorbed by your Shield Barrier by $s2%.
 
 Name             : Glyph of the Blazing Trail (id=123779) [Spell Family (4), Passive, Hidden] 
@@ -5010,10 +5011,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=222399)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11
-                   Affected Spells: Heroic Strike (78), Thunder Clap (6343), Mortal Strike (12294), Bloodthirst (23881), Shield Slam (23922), Shield Barrier (112048), Ignite Weapon (156288), Ignite Weapon (163965)
+                   Affected Spells: Heroic Strike (78), Thunder Clap (6343), Mortal Strike (12294), Bloodthirst (23881), Shield Slam (23922), Shield Barrier (112048), Ignite Weapon (156288), Ignite Weapon (163965), Shield Barrier (174926)
 #2 (id=222415)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11
-                   Affected Spells: Defensive Stance (71), Heroic Strike (78), Commanding Shout (469), Slam (1464), Whirlwind (1680), Hamstring (1715), Battle Stance (2457), Intimidating Shout (5246), Execute (5308), Thunder Clap (6343), Revenge (6572), Battle Shout (6673), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Heroic Throw (57755), Raging Blow (85288), Raging Blow Off-Hand (85384), Colossus Smash (86346), Raging Blow (96103), Wild Strike (100130), Impending Victory (103840), Colossus Smash (108126), Shield Barrier (112048), Ignite Weapon (156288), Gladiator Stance (156291), Execute (163201), Execute Off-Hand (163558), Ignite Weapon (163965), Colossus Smash (167105), Whirlwind (168695), Execute (168874)
+                   Affected Spells: Defensive Stance (71), Heroic Strike (78), Commanding Shout (469), Slam (1464), Whirlwind (1680), Hamstring (1715), Battle Stance (2457), Intimidating Shout (5246), Execute (5308), Thunder Clap (6343), Revenge (6572), Battle Shout (6673), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Heroic Throw (57755), Raging Blow (85288), Raging Blow Off-Hand (85384), Colossus Smash (86346), Raging Blow (96103), Wild Strike (100130), Impending Victory (103840), Colossus Smash (108126), Shield Barrier (112048), Ignite Weapon (156288), Gladiator Stance (156291), Execute (163201), Execute Off-Hand (163558), Ignite Weapon (163965), Colossus Smash (167105), Whirlwind (168695), Execute (168874), Devastate (174892), Devastate (174893), Devastate (174894), Shield Barrier (174926)
 Description      : Haste reduces your global cooldown, and the cooldown of $?s12294[Mortal Strike and Thunder Clap]?s23881[Bloodthirst][Shield Slam and Thunder Clap].
 
 Name             : Ursa Major (id=159232) [Spell Family (7), Passive] 
@@ -5682,7 +5683,7 @@ Effects          :
                    Base Value: 400 | Scaled Value: 4 (avg=0)
 #4 (id=236213)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
-Description      : Smashes a target for $sw3 Physical damage and causes your attacks to bypass $?s89003[$s2%][all] of their armor for $s4 sec. Bypasses less armor on players.
+Description      : Smashes a target for $sw3 Physical damage and causes your attacks to bypass $?s89003[$s2%][all] of their armor for $s4 sec. Bypasses less armor on players. Using this ability in Defensive Stance activates Battle Stance.
 Tooltip          : Defenses weakened, allowing the Warrior's attacks to bypass $w2% of armor.
 
 Name             : Inspiring Presence (id=167188) [Passive] 
@@ -5929,4 +5930,102 @@ Effects          :
 #1 (id=249377)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22
 Description      : Each of your autoattacks causes $174736s1 additional Physical damage from your Rend on the target.
+
+Name             : Devastate (id=174892) [Spell Family (4)] 
+Replaces         : Devastate (id=20243)
+Class            : Arms Warrior
+Spell Level      : 26 (max 80)
+Range            : 5 yards
+GCD              : 1.5 seconds
+Stacks           : 3 maximum
+Proc Chance      : 101%
+Affecting spells : Recklessness (1719), Item - Warrior T8 Protection 2P Bonus (64933), Item - Warrior T9 Tank 2P Bonus (Taunt) (67269), Item - Warrior T14 DPS 2P Bonus (123142), Headlong Rush (158836)
+Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=249660)   : Weapon Damage% (31)
+                   Base Value: 150 | Scaled Value: 1.5 (avg=0)
+#2 (id=249661)   : Normalized Weapon Damage (121)
+                   Base Value: 1 | Scaled Value: 1
+Description      : Deals $sw1 Physical damage, and has a $46953s1% chance to reset the cooldown on Revenge.
+
+Name             : Devastate (id=174893) [Spell Family (4)] 
+Replaces         : Devastate (id=20243)
+Class            : Fury Warrior
+Spell Level      : 26 (max 80)
+Range            : 5 yards
+GCD              : 1.5 seconds
+Stacks           : 3 maximum
+Proc Chance      : 101%
+Affecting spells : Recklessness (1719), Item - Warrior T8 Protection 2P Bonus (64933), Item - Warrior T9 Tank 2P Bonus (Taunt) (67269), Item - Warrior T14 DPS 2P Bonus (123142), Headlong Rush (158836)
+Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=249662)   : Weapon Damage% (31)
+                   Base Value: 100 | Scaled Value: 1 (avg=0)
+#2 (id=249663)   : Normalized Weapon Damage (121)
+                   Base Value: 1 | Scaled Value: 1
+Description      : Deals $sw1 Physical damage with main hand weapon and $174894sw1 Physical damage with off hand weapon, and has a $46953s1% chance to reset the cooldown on Revenge.
+
+Name             : Devastate (id=174894) [Spell Family (4)] 
+Class            : Warrior
+Spell Level      : 26 (max 80)
+Range            : 5 yards
+GCD              : 1.5 seconds
+Stacks           : 3 maximum
+Proc Chance      : 101%
+Affecting spells : Recklessness (1719), Item - Warrior T8 Protection 2P Bonus (64933), Item - Warrior T9 Tank 2P Bonus (Taunt) (67269), Item - Warrior T14 DPS 2P Bonus (123142), Headlong Rush (158836)
+Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ........ ........ x....... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=249664)   : Weapon Damage% (31)
+                   Base Value: 100 | Scaled Value: 1 (avg=0)
+#2 (id=249665)   : Normalized Weapon Damage (121)
+                   Base Value: 1 | Scaled Value: 1
+Description      : Deals $sw1 Physical damage with main hand weapon and $sw1 Physical damage with off hand weapon, and has a $46953s1% chance to reset the cooldown on Bloodthirst.
+
+Name             : Defensive Stance (id=174897) [Spell Family (4), Hidden] 
+Class            : Warrior
+Duration         : 6 seconds
+Attributes       : .......x x....... .......x x..x....   .....x.. ..x..... ........ ........ 
+                 : ..x..... ......x. ...x.... ........   ........ ........ ........ ........ 
+                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=249670)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+
+Name             : Shield Barrier (id=174926) [Spell Family (4)] 
+Replaces         : Shield Barrier (id=112048)
+Class            : Arms Fury Warrior
+Resource         : 20 Rage
+Spell Level      : 81
+Duration         : 6 seconds
+Cooldown         : 1.5 seconds
+Affecting spells : Bladestorm (46924), Item - Warrior T14 Protection 4P Bonus (123147), Headlong Rush (158836), 
+Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   .x...... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=249710)   : Apply Aura (6) | Absorb Damage (69)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.30000 | Misc Value: 127
+Description      : Improve your defenses, absorbing ${$AP*2.75} damage for the next $d. Consumes up to 40 additional Rage to increase the amount absorbed.
+Tooltip          : Absorbs $w1 damage.
 

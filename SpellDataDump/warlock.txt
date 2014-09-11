@@ -1,5 +1,5 @@
 
-SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18702)
+SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18716)
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
 Resource         : 4% Base Mana (6400 @Level 100)
@@ -32,7 +32,7 @@ Resource         : 1.25% Base Mana (2000 @Level 100)
 Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Haunt (48181), Metamorphosis (54879), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 2P Bonus (70839), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Chaotic Energy (111546), Item - Warlock T14 2P Bonus (123136), Kil'jaeden's Cunning (137587), Enhanced Corruption (157098), Haunting Spirits (157698), 
+Affecting spells : Haunt (48181), Metamorphosis (54879), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 2P Bonus (70839), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Chaotic Energy (111546), Item - Warlock T14 2P Bonus (123136), Kil'jaeden's Cunning (137587), Enhanced Corruption (157098), Haunting Spirits (157698), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -298,7 +298,7 @@ GCD              : 1.5 seconds
 Duration         : 24 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Affecting spells : Haunt (48181), Metamorphosis (54879), Glyph of Verdant Spheres (56241), Mastery: Potent Afflictions (77215), Item - Warlock T13 4P Bonus (Soulburn) (105787), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
+Affecting spells : Haunt (48181), Metamorphosis (54879), Glyph of Verdant Spheres (56241), Mastery: Potent Afflictions (77215), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -1203,7 +1203,7 @@ Duration         : 18 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Haunt (48181), Metamorphosis (54879), Soulburn (74434), Kil'jaeden's Cunning (137587)
+Affecting spells : Haunt (48181), Metamorphosis (54879), Soulburn (74434), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1227,7 +1227,7 @@ Name             : Seed of Corruption (id=27285) [Scaling Spell (10), Spell Fami
 Class            : Warlock
 Spell Level      : 72
 Range            : 50000 yards
-Affecting spells : Haunt (48181), Metamorphosis (54879), Glyph of Hand of Gul'dan (56248), Mannoroth's Fury (108508), Kil'jaeden's Cunning (137587)
+Affecting spells : Haunt (48181), Metamorphosis (54879), Glyph of Hand of Gul'dan (56248), Grimoire of Sacrifice (108503), Mannoroth's Fury (108508), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   x....... .x...... ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x..... 
@@ -1325,7 +1325,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 14 seconds
-Affecting spells : Haunt (48181), Metamorphosis (54879), Glyph of Unstable Affliction (56233), Glyph of Falling Meteor (56247), Item - Warlock T8 2P Bonus (64931), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 4P Bonus (70841), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
+Affecting spells : Haunt (48181), Metamorphosis (54879), Glyph of Unstable Affliction (56233), Glyph of Falling Meteor (56247), Item - Warlock T8 2P Bonus (64931), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 4P Bonus (70841), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -1678,16 +1678,16 @@ Attributes       : ....x..x x....... ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=47687)    : Apply Aura (6) | Unknown effect sub type (232)
+#1 (id=47687)    : Apply Aura (6) | Dummy (4)
                    Base Value: -35 | Scaled Value: -35 | SP Coefficient: 1.00000 | Misc Value: 11
-#2 (id=47688)    : Apply Aura (6) | Unknown effect sub type (232)
+#2 (id=47688)    : Apply Aura (6) | Dummy (4)
                    Base Value: -35 | Scaled Value: -35 | SP Coefficient: 1.00000 | Misc Value: 12
 #3 (id=47689)    : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 250 | Scaled Value: 250 | SP Coefficient: 1.00000 | Misc Value: 1
 #4 (id=137903)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 11
 #5 (id=141523)   : Apply Aura (6) | Unknown effect sub type (382)
-                   Base Value: -50 | Scaled Value: -50 | SP Coefficient: 1.00000 | Misc Value: 13
+                   Base Value: -70 | Scaled Value: -70 | SP Coefficient: 1.00000 | Misc Value: 13
 
 Name             : Metamorphosis (id=54879) [Spell Family (5), Hidden] 
 Class            : Warlock
@@ -2888,7 +2888,7 @@ Class            : Warlock
 Spell Level      : 72
 Range            : 50000 yards
 Cooldown         : 60 seconds
-Affecting spells : Haunt (48181), Metamorphosis (54879), Glyph of Hand of Gul'dan (56248), Soulburn (74434), Mannoroth's Fury (108508), Kil'jaeden's Cunning (137587)
+Affecting spells : Haunt (48181), Metamorphosis (54879), Glyph of Hand of Gul'dan (56248), Soulburn (74434), Grimoire of Sacrifice (108503), Mannoroth's Fury (108508), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   x....... .x...... ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x..... 
@@ -3557,8 +3557,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=119453)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 3
+#1 (id=119453)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 22
                    Affected Spells: Drain Life (689)
 #2 (id=119454)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
@@ -3722,11 +3722,11 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20
 #4 (id=154191)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Shadowburn (17877), Incinerate (29722), Haunt (48181), Harvest Life (108371), Incinerate (114654), Chaos Bolt (116858)
+                   Affected Spells: Corruption (172), Agony (980), Shadowburn (17877), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Unstable Affliction (30108), Haunt (48181), Seed of Corruption (87385), Harvest Life (108371), Incinerate (114654), Seed of Corruption (114790), Shadow Shield (115234), Chaos Bolt (116858), Unstable Affliction (131736), Agony (131737), Corruption (131740), Seed of Corruption (132566), Corruption (146739)
 #5 (id=245910)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22
                    Affected Spells: Drain Life (689), Drain Soul (103103)
-Description      : Sacrifice your demon to gain one of its abilities, increase the damage of your $?s30108[Drain Soul, Haunt, and Drain Life by $s4%.][Incinerate, Chaos Bolt, and Shadowburn by $s4%. Does not apply to spells affected by Fire and Brimstone.]
+Description      : Sacrifice your demon to gain one of its abilities, and to increase the damage of your $?s30108[Drain Soul, Haunt, and Drain Life by $s4%.][Incinerate, Chaos Bolt, and Shadowburn by $s4%. Does not apply to spells affected by Fire and Brimstone.]
 
 Also $?s108415[increases your maximum health by $s3%, and ][]causes you to regenerate $s2% of maximum health every $t2 sec.
 
@@ -4701,7 +4701,7 @@ Duration         : 18 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Haunt (48181), Metamorphosis (54879), Soulburn (74434), Kil'jaeden's Cunning (137587)
+Affecting spells : Haunt (48181), Metamorphosis (54879), Soulburn (74434), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4789,7 +4789,7 @@ Name             : Shadow Shield (id=115234) [Scaling Spell (9), Spell Family (5
 Class            : Warlock
 Spell Level      : 8
 Range            : 100 yards
-Affecting spells : Haunt (48181), Metamorphosis (54879), Glyph of Verdant Spheres (56241), Mastery: Potent Afflictions (77215), Item - Warlock T13 4P Bonus (Soulburn) (105787), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
+Affecting spells : Haunt (48181), Metamorphosis (54879), Glyph of Verdant Spheres (56241), Mastery: Potent Afflictions (77215), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
 Attributes       : ........ ........ ........ x..x....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   ........ .x...... ........ ........ 
                  : .......x ......xx ........ ........   ...x.... ........ .xx..... ........ 
@@ -5057,7 +5057,7 @@ Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 16 yards/sec
-Affecting spells : Metamorphosis (54879), Item - Warlock T9 2P Bonus (67230), Havoc (80240), Grimoire of Sacrifice (108503), Fire and Brimstone (108683), Chaotic Energy (111546), Backdraft (117828), Kil'jaeden's Cunning (137587), Dark Soul (138483), Enhanced Chaos Bolt (157103), Chaotic Infusion (170000), 
+Affecting spells : Metamorphosis (54879), Item - Warlock T9 2P Bonus (67230), Havoc (80240), Grimoire of Sacrifice (108503), Fire and Brimstone (108683), Chaotic Energy (111546), Backdraft (117828), Kil'jaeden's Cunning (137587), Dark Soul (138483), Enhanced Chaos Bolt (157103), Chaotic Infusion (170000), Chaotic Influx (171384)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5472,7 +5472,7 @@ Class            : Warlock
 Spell Level      : 10
 Range            : 100 yards
 Cast Time        : 1.5 seconds
-Affecting spells : Haunt (48181), Metamorphosis (54879), Glyph of Unstable Affliction (56233), Glyph of Falling Meteor (56247), Item - Warlock T8 2P Bonus (64931), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 4P Bonus (70841), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
+Affecting spells : Haunt (48181), Metamorphosis (54879), Glyph of Unstable Affliction (56233), Glyph of Falling Meteor (56247), Item - Warlock T8 2P Bonus (64931), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 4P Bonus (70841), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
 Attributes       : ........ ........ x......x x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ..x..... .x....x. 
                  : .......x ........ ....x... ........   ...x.... .....x.. .xx..... ........ 
@@ -5481,7 +5481,7 @@ Attributes       : ........ ........ x......x x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=170041)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.08700
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.10440
 Description      : $@spelldesc30108
 Tooltip          : $@spellaura30108
 
@@ -5489,7 +5489,7 @@ Name             : Agony (id=131737) [Scaling Spell (10), Spell Family (5)]
 Class            : Warlock
 Spell Level      : 36
 Range            : 100 yards
-Affecting spells : Haunt (48181), Metamorphosis (54879), Glyph of Verdant Spheres (56241), Mastery: Potent Afflictions (77215), Item - Warlock T13 4P Bonus (Soulburn) (105787), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
+Affecting spells : Haunt (48181), Metamorphosis (54879), Glyph of Verdant Spheres (56241), Mastery: Potent Afflictions (77215), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
 Attributes       : ........ ........ x......x x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   .......x ........ ..x..... .x....x. 
                  : .......x ........ ....x... ........   ...x.... .....x.. .xx..... ........ 
@@ -5498,7 +5498,7 @@ Attributes       : ........ ........ x......x x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=170042)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01050
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01048
 Description      : $@spelldesc980
 Tooltip          : $@spellaura980
 
@@ -5506,7 +5506,7 @@ Name             : Corruption (id=131740) [Scaling Spell (10), Spell Family (5)]
 Class            : Warlock
 Spell Level      : 3
 Range            : 100 yards
-Affecting spells : Haunt (48181), Metamorphosis (54879), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 2P Bonus (70839), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Chaotic Energy (111546), Item - Warlock T14 2P Bonus (123136), Kil'jaeden's Cunning (137587), Enhanced Corruption (157098), Haunting Spirits (157698), 
+Affecting spells : Haunt (48181), Metamorphosis (54879), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 2P Bonus (70839), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Chaotic Energy (111546), Item - Warlock T14 2P Bonus (123136), Kil'jaeden's Cunning (137587), Enhanced Corruption (157098), Haunting Spirits (157698), 
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ..x..... .x....x. 
                  : .......x ........ ....x... ........   ...x.... .....x.. .xx..... ........ 
@@ -5523,7 +5523,7 @@ Name             : Seed of Corruption (id=132566) [Scaling Spell (10), Spell Fam
 Class            : Warlock
 Spell Level      : 60
 Range            : 40 yards
-Affecting spells : Haunt (48181), Metamorphosis (54879), Soulburn (74434), Kil'jaeden's Cunning (137587)
+Affecting spells : Haunt (48181), Metamorphosis (54879), Soulburn (74434), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .xx..... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -6050,7 +6050,7 @@ Class            : Warlock
 Spell Level      : 3
 Range            : 40 yards
 Duration         : 18 seconds
-Affecting spells : Haunt (48181), Metamorphosis (54879), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 2P Bonus (70839), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Chaotic Energy (111546), Item - Warlock T14 2P Bonus (123136), Kil'jaeden's Cunning (137587), Enhanced Corruption (157098), Haunting Spirits (157698), 
+Affecting spells : Haunt (48181), Metamorphosis (54879), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 2P Bonus (70839), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Chaotic Energy (111546), Item - Warlock T14 2P Bonus (123136), Kil'jaeden's Cunning (137587), Enhanced Corruption (157098), Haunting Spirits (157698), 
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ .......x ....x... ........   ........ .....x.. ........ ........ 
@@ -6660,7 +6660,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1180
 
 Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
-Class            : Shadow Elemental Balance Priest, Shaman, Mage, Warlock, Druid
+Class            : Shadow Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Priest, Shaman, Mage, Warlock, Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
