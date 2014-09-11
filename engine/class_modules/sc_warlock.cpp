@@ -9,7 +9,7 @@
 //
 // TODO:
 // T17 Set bonusses. T17 4pc affli, 2/4pc demo, 4p destruction.
-// Grimoire of Synergy: Check whether it is using one or two different Proc counters for the caster and pet buff, i.e., whether it as an effective 1.333 or 2.666 rppm
+// check pet coefficients
 // Update action lists, especially AoE
 // Proper spell ids for drain_soul triggered Corruption/UA/Agony ticks.
 //   Main dots: UA: 30108, Corruption: 146739, Agony 980
@@ -186,7 +186,9 @@ public:
 
   //Procs and RNG
 
-  real_ppm_t grimoire_of_synergy;
+  real_ppm_t grimoire_of_synergy; //caster ppm, i.e., if it procs, the wl will create a buff for the pet.
+  real_ppm_t grimoire_of_synergy_pet; //pet ppm, i.e., if it procs, the pet will create a buff for the wl.
+    
   // Perks
   struct
   {
@@ -544,7 +546,7 @@ public:
 
     if ( ab::result_is_hit( ab::execute_state -> result ) && p() -> o() -> talents.grimoire_of_synergy -> ok() )
     {
-      bool procced = p() -> o() -> grimoire_of_synergy.trigger(); //check for RPPM
+      bool procced = p() -> o() -> grimoire_of_synergy_pet.trigger(); //check for RPPM
       if ( procced ) p() -> o() -> buffs.demonic_synergy -> trigger(); //trigger the buff
     }
   }
@@ -1092,6 +1094,7 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   if ( o() -> buffs.tier16_2pc_fiery_wrath -> up() )
     m *= 1.0 + o() -> buffs.tier16_2pc_fiery_wrath -> value();
+    
   if ( buffs.demonic_synergy -> up() )
     m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
 
@@ -1766,7 +1769,7 @@ public:
       pets::warlock_pet_t* my_pet = static_cast<pets::warlock_pet_t*>( p() -> pets.active ); //get active pet
       if ( my_pet != NULL )
       {
-        bool procced = p() -> grimoire_of_synergy.trigger(); //CHECK: We are assuming that the pet buff and the caster buff are using the same Proc counter.
+        bool procced = p() -> grimoire_of_synergy.trigger();
         if ( procced ) my_pet -> buffs.demonic_synergy -> trigger();
       }
     }
@@ -4653,6 +4656,7 @@ talents( talents_t() ),
 glyphs( glyphs_t() ),
 mastery_spells( mastery_spells_t() ),
 grimoire_of_synergy( *this ),
+grimoire_of_synergy_pet( *this ),
 perk(),
 cooldowns( cooldowns_t() ),
 spec( specs_t() ),
@@ -5228,6 +5232,7 @@ void warlock_t::init_rng()
 {
   player_t::init_rng();
   grimoire_of_synergy.set_frequency( 1.333 );
+  grimoire_of_synergy_pet.set_frequency( 1.333 );
 }
 
 void warlock_t::init_gains()
@@ -5532,6 +5537,7 @@ void warlock_t::reset()
   havoc_target = 0;
 
   grimoire_of_synergy.reset();
+  grimoire_of_synergy_pet.reset();
 }
 
 

@@ -5244,6 +5244,10 @@ public:
   // Internal counter for action priority lists, used to set
   // action_priority_list_t::internal_id for lists.
   size_t action_list_id_;
+
+  // Figure out another actor, by name. Prioritizes pets > harmful targets >
+  // other players. Used by "actor.<name>" expression currently.
+  virtual player_t* actor_by_name_str( const std::string& ) const;
 };
 
 // Target Specific ==========================================================
