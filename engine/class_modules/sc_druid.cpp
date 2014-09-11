@@ -188,6 +188,7 @@ public:
     buff_t* son_of_ursoc;
     buff_t* survival_instincts;
     buff_t* tier15_2pc_tank;
+    buff_t* tier17_4pc_tank;
     buff_t* tooth_and_claw;
     absorb_buff_t* tooth_and_claw_absorb;
     buff_t* ursa_major;
@@ -2892,28 +2893,26 @@ struct maul_t : public bear_attack_t
       may_multistrike = 0;
       target = player;
 
-      // Coeff of 3 AP is hardcoded into tooltip, use FR coeff * 0.3 instead.
-      attack_power_mod.direct = 0.3 * p -> spell.frenzied_regeneration -> effectN( 1 ).ap_coeff();
+      /* Coeff is hardcoded into tooltip, use FR coeff * 0.4 instead.
+         Apply 40% nerf to FR coeff from builds 18837 and 18850 not reflected in the spell data. */
+      attack_power_mod.direct = 0.4 * ( p -> spell.frenzied_regeneration -> effectN( 1 ).ap_coeff() * 0.6 );
     }
 
     virtual void impact( action_state_t* s )
     {
-      if ( p() -> new_sets.has_set_bonus( DRUID_GUARDIAN, T17, B2 ) )
-      {
-        p() -> resource_gain(
-          RESOURCE_RAGE,
-          p() -> find_spell( 165410 ) -> effectN( 1 ).base_value(), // Spell data contains an int value not a rage amount
-          p() -> gain.tier17_2pc_tank );
-      }
+      if ( p() -> new_sets.has_set_bonus( DRUID_GUARDIAN, T17, B4 ) )
+        p() -> buff.tier17_4pc_tank -> increment();
 
       p() -> buff.tooth_and_claw_absorb -> trigger( 1, s -> result_amount );
     }
   };
 
   tooth_and_claw_t* absorb;
+  double cost_reduction;
 
   maul_t( druid_t* player, const std::string& options_str ) :
-    bear_attack_t( "maul", player, player -> find_specialization_spell( "Maul" ) )
+    bear_attack_t( "maul", player, player -> find_specialization_spell( "Maul" ) ),
+    cost_reduction( 0.0 )
   {
     parse_options( NULL, options_str );
     weapon = &( player -> main_hand_weapon );
@@ -2923,7 +2922,21 @@ struct maul_t : public bear_attack_t
     use_off_gcd = true;
 
     if ( player -> spec.tooth_and_claw -> ok() )
+    {
       absorb = new tooth_and_claw_t( player );
+      if ( p() -> new_sets.has_set_bonus( DRUID_GUARDIAN, T17, B2 ) )
+        cost_reduction = p() -> find_spell( 165410 ) -> effectN( 1 ).resource( RESOURCE_RAGE ) * -1.0;
+    }
+  }
+
+  virtual double cost() const
+  {
+    double c = bear_attack_t::cost();
+
+    if ( p() -> buff.tooth_and_claw -> check() && p() -> new_sets.has_set_bonus( DRUID_GUARDIAN, T17, B2 ) )
+      c -= cost_reduction;
+
+    return bear_attack_t::cost();
   }
 
   virtual double composite_target_multiplier( player_t* t ) const
@@ -2952,6 +2965,9 @@ struct maul_t : public bear_attack_t
 
     if ( result_is_hit( s -> result ) && p() -> buff.tooth_and_claw -> up() )
     {
+      if ( p() -> new_sets.has_set_bonus( DRUID_GUARDIAN, T17, B2 ) )
+        p() -> gain.tier17_2pc_tank -> add( RESOURCE_RAGE, cost_reduction );
+
       absorb -> execute();
       p() -> buff.tooth_and_claw -> decrement(); // Only decrements on hit, tested 6/27/2014 by Zerrahki
     }
@@ -3253,7 +3269,6 @@ void druid_heal_t::init_living_seed()
 
 struct frenzied_regeneration_t : public druid_heal_t
 {
-public:
   double maximum_rage_cost;
 
   frenzied_regeneration_t( druid_t* p, const std::string& options_str ) :
@@ -3265,8 +3280,10 @@ public:
     may_crit = false;
     may_multistrike = 0;
     target = p;
-
-    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+    /* Apply 40% nerf from builds 18837 and 18850 not reflected in the spell data.
+       This is also applied in tooth_and_claw_t so if you remove this kludge check there too!
+       TODO: Verify in-game! */
+    attack_power_mod.direct = data().effectN( 1 ).ap_coeff() * 0.6;
     maximum_rage_cost = data().effectN( 2 ).base_value();
 
     if ( p -> new_sets.has_set_bonus( SET_TANK, T16, B2 ) )
@@ -3285,14 +3302,19 @@ public:
   {
     double am = druid_heal_t::action_multiplier();
 
-    am *= effective_cost() / 60.0;
+    am *= cost() / 60.0;
+    am *= 1.0 + p() -> buff.tier17_4pc_tank -> default_value * p() -> buff.tier17_4pc_tank -> current_stack;
 
     return am;
   }
 
   virtual void execute()
   {
+    // Benefit tracking
+    p() -> buff.tier17_4pc_tank -> up();
+
     p() -> buff.tier15_2pc_tank -> expire();
+    p() -> buff.tier17_4pc_tank -> expire();
 
     druid_heal_t::execute();
 
@@ -3313,16 +3335,6 @@ public:
       return false;
 
     return druid_heal_t::ready();
-  }
-private:
-  double effective_cost() const
-  {
-    double c = cost();
-
-    if ( p() -> new_sets.has_set_bonus( DRUID_GUARDIAN, T17, B4 ) )
-      c += p() -> find_spell( 165423 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
-
-    return c;
   }
 };
 
@@ -4852,7 +4864,7 @@ struct savage_defense_t : public druid_spell_t
     p -> cooldown.savage_defense_use -> duration = cooldown -> duration;
 
     // Hard code charge information since it isn't in the spell data.
-    cooldown -> duration = timespan_t::from_seconds( 9.0 );
+    cooldown -> duration = timespan_t::from_seconds( 12.0 );
     cooldown -> charges = 2;
 
     use_off_gcd = true;
@@ -5819,6 +5831,11 @@ void druid_t::create_buffs()
                                .cd( timespan_t::zero() )
                                .default_value( 0.0 - find_specialization_spell( "Survival Instincts" ) -> effectN( 1 ).percent() );
   buff.tier15_2pc_tank       = buff_creator_t( this, "tier15_2pc_tank", find_spell( 138217 ) );
+  buff.tier17_4pc_tank       = buff_creator_t( this, "tier17_4pc_tank", find_spell( 177969 ) ) // FIXME: Remove fallback values after spell is in spell data.
+                               .chance( find_spell( 177969 ) ? find_spell( 177969 ) -> proc_chance() : 1.0 )
+                               .duration( find_spell( 177969 ) ? find_spell( 177969 ) -> duration() : timespan_t::from_seconds( 10.0 ) )
+                               .max_stack( find_spell( 177969 ) ? find_spell( 177969 ) -> max_stacks() : 3 )
+                               .default_value( find_spell( 177969 ) ? find_spell( 177969 ) -> effectN( 1 ).percent() : 0.10 );
   buff.tooth_and_claw        = buff_creator_t( this, "tooth_and_claw", find_spell( 135286 ) )
                                .max_stack( find_spell( 135286 ) -> _max_stack + perk.enhanced_tooth_and_claw -> effectN( 1 ).base_value() );
   buff.tooth_and_claw_absorb = new tooth_and_claw_absorb_t( this );
