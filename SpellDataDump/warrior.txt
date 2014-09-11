@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18816)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18837)
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 9
@@ -17,7 +17,7 @@ Attributes       : ....x... ........ x.x..... x..x.x.x   ........ ..x..... .x...
                  : ........ ........ ........ x.......   ........ ........ ........ ........ 
 Effects          :
 #1 (id=43)       : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -25 | Scaled Value: -25 | Misc Value: 0x7f
+                   Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f
 #2 (id=217521)   : Apply Aura (6) | Threat (10)
                    Base Value: 900 | Scaled Value: 900 | Misc Value: 127
 #3 (id=217522)   : Apply Aura (6) | Unknown effect sub type (213)
@@ -160,7 +160,7 @@ Tooltip          : Bleeding for $w1 damage every $t1 sec and a final large burst
 Name             : Shield Wall (id=871) [Spell Family (4)] 
 Class            : Protection Warrior
 Spell Level      : 48
-Duration         : 12 seconds
+Duration         : 8 seconds
 Cooldown         : 180 seconds
 Affecting spells : Bladestorm (46924), Glyph of Shield Wall (63329), Bastion of Defense (84608), Item - Warrior T11 Protection 4P Bonus (90297)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -178,7 +178,7 @@ Tooltip          : All damage taken reduced by $w1%.
 Name             : Demoralizing Shout (id=1160) [Spell Family (4)] 
 Class            : Protection Warrior
 Spell Level      : 56
-Duration         : 10 seconds
+Duration         : 8 seconds
 Cooldown         : 60 seconds
 Affecting spells : Bladestorm (46924)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
@@ -332,7 +332,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=755)      : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
-Description      : Raise your shield, blocking every melee attack against you for $132404d. These blocks can be critical blocks.  Maximum 2 charges.
+Description      : Raise your shield, blocking every melee attack against you for $132404d. These blocks can be critical blocks. Maximum 2 charges.
 
 Name             : Parry (id=3127) [Passive] 
 Class            : Warrior
@@ -540,9 +540,9 @@ Name             : Heroic Leap (id=6544) [Spell Family (4)]
 Class            : Warrior
 Spell Level      : 85
 Range            : 8 - 40 yards
-Duration         : 1 seconds
+Duration         : 0.25 seconds
 Cooldown         : 45 seconds
-Affecting spells : Recklessness (1719), Glyph of Death From Above (63325)
+Affecting spells : Recklessness (1719), Glyph of Death From Above (63325), 
 Attributes       : ....x... x....... x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -875,7 +875,7 @@ Description      : Dealing damage with Whirlwind increases the number of targets
 Name             : Last Stand (id=12975) [Spell Family (4)] 
 Class            : Protection Warrior
 Spell Level      : 38
-Duration         : 20 seconds
+Duration         : 15 seconds
 Cooldown         : 180 seconds
 Affecting spells : Bladestorm (46924), Item - Warrior T14 Protection 2P Bonus (123146), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ .x...... ........ 
@@ -1218,8 +1218,8 @@ Effects          :
 #2 (id=89364)    : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14
                    Affected Spells: Thunder Clap (6343)
-#3 (id=127992)   : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 1
+#3 (id=127992)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 1
 #4 (id=167754)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6
 #5 (id=218365)   : Apply Aura (6) | Modify Expertise% (240)
@@ -1230,7 +1230,6 @@ Description      : Your Defensive Stance provides several additional benefits.
 Increases your total Stamina by $s1%.
 Reduces the chance you will be critically hit by melee attacks by $s4%.
 Reduces the chance your attacks will be parried by $s5%.
-Increases your armor value from items by $s3%.
 Reduces the Rage cost of Thunder Clap by $s2%.
 
 Name             : Sudden Death (id=29725) [Spell Family (4), Passive] 
@@ -1601,7 +1600,7 @@ Name             : Heroic Leap (id=52174) [Spell Family (4)]
 Class            : Warrior
 Spell Level      : 85
 Range            : 50000 yards
-Affecting spells : Recklessness (1719), Glyph of Death From Above (63325)
+Affecting spells : Recklessness (1719), Glyph of Death From Above (63325), 
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ..x..... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x...x. 
@@ -2348,7 +2347,10 @@ Effects          :
 #1 (id=57451)    : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
                    Base Value: -15000 | Scaled Value: -15000 | Misc Value: 11
                    Affected Spells: Heroic Leap (6544), Heroic Leap (52174)
-Description      : Reduces the cooldown on Heroic Leap by ${$63325m1/-1000} sec.
+#2 (id=255194)   : Apply Aura (6) | Add Flat Modifier: Spell Range (107)
+                   Base Value: -20 | Scaled Value: -20 | Misc Value: 5
+                   Affected Spells: Heroic Leap (6544), Heroic Leap (52174)
+Description      : Reduces the cooldown on Heroic Leap by ${$63325m1/-1000} sec, but the range of Heroic Leap is also reduced by $s2 yds.
 
 Name             : Glyph of Intimidating Shout (id=63327) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -2648,7 +2650,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68048)    : Apply Aura (6) | Unknown effect sub type (253)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.20000 | Misc Value: 8
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Misc Value: 8
 #2 (id=87946)    : Apply Aura (6) | Modify Block% (51)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000
 #3 (id=89764)    : Apply Aura (6) | Dummy (4)
@@ -2763,7 +2765,7 @@ Becoming Enraged enables one charge of Raging Blow.  Limit $131116s1 charges.
 
 Name             : Raging Blow Off-Hand (id=85384) [Spell Family (4)] 
 Class            : Warrior
-Spell Level      : 39 (max 80)
+Spell Level      : 30 (max 80)
 Range            : 100 yards
 Affecting spells : Recklessness (1719), Glyph of Enraged Speed (58355), Meat Cleaver (85739), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
@@ -2895,7 +2897,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Starts combat by attacking a target with a melee weapon.
 
-Name             : Glyph of Colossus Smash (Arms, Fury) (id=89003) [Spell Family (4), Passive, Hidden] 
+Name             : Glyph of Colossus Smash (Arms) (id=89003) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3034,7 +3036,7 @@ Description      : You become a whirling storm of destructive force, striking al
 
 Name             : Raging Blow (id=96103) [Spell Family (4)] 
 Class            : Warrior
-Spell Level      : 39 (max 80)
+Spell Level      : 30 (max 80)
 Range            : 100 yards
 Affecting spells : Recklessness (1719), Glyph of Enraged Speed (58355), Meat Cleaver (85739), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
@@ -3340,10 +3342,10 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=124622)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.30000 | Misc Value: 127
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.35000 | Misc Value: 127
 Description      : Raise your shield, absorbing $<barrier> damage for the next $d. Consumes up to 40 additional Rage to increase the amount absorbed.
 Tooltip          : Absorbs $w1 damage.
-Variables        : $barrier=${$AP*2.75}
+Variables        : $barrier=${$AP*2.35}
 
 Name             : Crow Feast (id=112792) 
 Class            : Warrior
@@ -3683,7 +3685,7 @@ Effects          :
 Name             : Bloodthirst Heal (id=117313) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 1
-Affecting spells : Glyph of Bloodthirst (58367), Glyph of Raging Blow (159747)
+Affecting spells : Glyph of Bloodthirst (58367)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4973,7 +4975,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219603)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 23
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 23
                    Affected Spells: Unwavering Sentinel (29144)
 Description      : Defensive Stance now increases your armor by an additional $s1%.
 
@@ -5006,6 +5008,10 @@ Attributes       : ....x.x. ........ ........ x..x....   ........ ........ .....
 Effects          :
 #1 (id=220939)   : Unknown effect type (174) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Radius: 100 yards
+#2 (id=255132)   : Apply Aura (6) | Modify Healing% Done (136)
+                   Base Value: -60 | Scaled Value: -60 | Misc Value: 127
+#3 (id=255133)   : Apply Aura (6) | Modify Absorb% Done (422)
+                   Base Value: -60 | Scaled Value: -60
 Description      : Increases your healing and absorption done to yourself, based on Stamina and damage taken (before avoidance and mitigation) in the last 10 sec.
 
 Name             : Headlong Rush (id=158836) [Spell Family (4), Passive, Hidden] 
@@ -5040,10 +5046,10 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=223203)   : Apply Aura (6) | Proc Trigger Spell: Blood Craze (42)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 159363
+                   Base Value: 3 | Scaled Value: 3 | Trigger Spell: 159363
 Description      : Your multistrikes from auto attacks trigger a Blood Craze.
 
-Blood Craze regenerates $159363o1% of your health over $159363d. When this effect is refreshed, the remaining portion is added to the new effect.
+Blood Craze regenerates $s1% of your health over $159363d. When this effect is refreshed, the remaining portion is added to the new effect.
 
 Name             : Blood Craze (id=159363) 
 Class            : Warrior
@@ -5135,7 +5141,7 @@ Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5159,9 +5165,8 @@ Attributes       : .......x x....... ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=223833)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+#1 (id=223833)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200
-                   Affected Spells: Bloodthirst Heal (117313)
 Description      : Your next Bloodthirst heals for $s1% more.
 
 Name             : Glyph of Rallying Cry (Arms, Fury) (id=159754) [Spell Family (4), Passive, Hidden] 
@@ -5190,7 +5195,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20
 Description      : Teaches you the ability Shattering Throw.
 
-|Tinterface\icons\inv_axe_66.blp:24|t |cFFFFFFFFShattering Throw|r
+|Tinterface\icons\ability_warrior_shatteringthrow.blp:24|t |cFFFFFFFFShattering Throw|r
 $@spelldesc64382
 
 Name             : Glyph of Flawless Defense (Arms, Fury) (id=159761) [Spell Family (4), Passive, Hidden] 
@@ -5350,6 +5355,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100
 
 Name             : Stat Negation Aura - Strength Tank (id=162702) [Passive, Hidden] 
+Replaces         : Stat Negation Aura - Strength DPS (id=162698)
 Class            : Protection Protection Blood Warrior, Paladin, Death Knight
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5427,7 +5433,7 @@ Description      : Colossus Smash now generates 30 rage.
 
 Name             : Item - Warrior T17 Fury 2P Bonus (id=165337) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
-Proc Chance      : 50%
+Proc Chance      : 25%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -5900,9 +5906,10 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=249710)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.30000 | Misc Value: 127
-Description      : Improve your defenses, absorbing ${$AP*2.75} damage for the next $d. Consumes up to 40 additional Rage to increase the amount absorbed.
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.35000 | Misc Value: 127
+Description      : Improve your defenses, absorbing $<barrier> damage for the next $d. Consumes up to 40 additional Rage to increase the amount absorbed.
 Tooltip          : Absorbs $w1 damage.
+Variables        : $barrier=${$AP*2.35}
 
 Name             : Concussion Blow (id=175708) 
 Class            : Warrior
@@ -5912,7 +5919,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=251185)   : Dummy (3)
@@ -5927,7 +5934,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=251188)   : Dummy (3)
@@ -5973,7 +5980,7 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 161
 #5 (id=252300)   : Trigger Spell: Siegebreaker Off-Hand (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 176318
-Description      : Use your full strength to slam the target with both weapons, dealing $sw2 damage, and knocking them back and down for $d.
+Description      : Use your full strength to slam the target with $?s23881[both weapons][your weapon], dealing $sw2 damage, and knocking them back and down for $d.
 
 Replaces Intimidating Shout.
 Tooltip          : Knocked down.

@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18816)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18837)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
 Resource         : 35 Energy
@@ -2022,7 +2022,7 @@ Effects          :
 #1 (id=50486)    : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 406
 
-Name             : Hemorraghing Veins (id=57299) 
+Name             : Hemorrhaging Veins (id=57299) 
 Class            : Rogue
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2903,8 +2903,6 @@ Spell Level      : 20
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 24 seconds
-Internal Cooldown: 0.5 seconds
-Proc Chance      : 25%
 Affecting spells : Adrenaline Rush (13750), Silent Blades (145193), Item - Rogue T17 Combat 2P Bonus (165480)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   .x...... ..x..... ........ ........ 
@@ -2923,7 +2921,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #5 (id=229655)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
-Description      : Deals $sw1 Physical damage, increasing the effect of your offensive finishing moves on that target by $s3%, and giving your Sinister Strike a $h% chance to generate an extra combo point.  Lasts $d. Awards $s2 combo $lpoint:points;.
+#6 (id=255191)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 25 | Scaled Value: 25
+Description      : Deals $sw1 Physical damage, increasing the effect of your offensive finishing moves on that target by $s3%, and giving your Sinister Strike a $s6% chance to generate an extra combo point.  Lasts $d. Awards $s2 combo $lpoint:points;.
 Tooltip          : Reveals weakness, increasing the effectiveness of the Rogue's offensive finishing moves by $w3%, and giving the Rogue's Sinister Strikes a $h% chance to generate an extra combo point.
 
 Name             : Bandit's Guile (id=84654) [Spell Family (8), Passive] 
@@ -3246,10 +3246,10 @@ Class            : Rogue
 Resource         : 25 Energy
 Duration         : 0.1 seconds
 Affecting spells : Quick Blades (165509)
-Attributes       : ........ ........ ........ ........   ........ .......x ........ ....x... 
+Attributes       : ........ x....... ........ ........   ........ .......x ........ ....x... 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -3626,6 +3626,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... ....x
 Effects          :
 #1 (id=150471)   : School Damage: physical (2)
                    Base Value: 0 | Scaled Value: 1 - 5 (avg=0) | Value Range: 5 | SP Coefficient: 1.00000 | Points Per Combo Point: 5 | Radius: 0 - 10 yards
+#2 (id=255402)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
 Description      : Finishing move that slashes at the flesh of all enemies within $A1 yards, dealing Physical damage and causing victims to bleed for an additional $122233s1% of the initial damage over $122233d:
    1 point  : ${(($m1+$M1)/2)+(($AP*0.0602)*1*$<mult>))} damage
    2 points: ${(($m1+$M1)/2)+(($AP*0.0602)*2*$<mult>))} damage
@@ -4688,7 +4690,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1162
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
-Class            : Beast Mastery Marksmanship Survival Assassination Combat Subtlety Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
+Class            : Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18816)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18837)
 Name             : Mend Pet (id=136) [Scaling Spell (3), Spell Family (9)] 
 Class            : Hunter
 Spell Level      : 16
@@ -813,7 +813,9 @@ Attributes       : .x..x... ........ x...x... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=10613)    : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0
-Description      : A stinging shot that puts the target to sleep, incapacitating them for $d.  Any damage will cancel the effect.
+Description      : A stinging shot that puts the target to sleep, incapacitating them for $d.  Any damage will cancel the effect.
+
+Usable while moving.
 Tooltip          : Incapacitated.
 
 Name             : Entrapment (id=19387) [Spell Family (9), Passive] 
@@ -3495,7 +3497,6 @@ Class            : Hunter
 Spell Level      : 20
 Range            : 100 yards
 Duration         : Aura (infinite)
-Cooldown         : 45 seconds
 Affecting spells : Camouflage (51755), Camouflage (119450)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4033,9 +4034,11 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=120768)   : Apply Aura (6) | Proc Trigger Spell: Thrill of the Hunt (42)
                    Base Value: 6 | Scaled Value: 6 | Trigger Spell: 34720
+#2 (id=255234)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3
 Description      : You have a $s1% chance per 10 Focus spent on Focus-costing attacks to trigger Thrill of the Hunt.
 
-Thrill of the Hunt reduces the Focus cost of your next $s1 Arcane Shots, Aimed Shots, or Multi-Shots by $34720s1.
+Thrill of the Hunt reduces the Focus cost of your next $s2 Arcane Shots, Aimed Shots, or Multi-Shots by $34720s1.
 
 Name             : Mortal Wounds (id=115804) 
 Class            : Warrior, Hunter, Monk
@@ -4380,7 +4383,7 @@ Range            : 40 yards
 GCD              : 1 seconds
 Velocity         : 30 yards/sec
 Duration         : 3 seconds
-Cooldown         : 30 seconds
+Cooldown         : 20 seconds
 Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Sniper Training (168811)
 Attributes       : ........ ........ x....... ........   ..x...x. .x....x. ........ ..x.x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4394,8 +4397,8 @@ Effects          :
 #2 (id=139948)   : Apply Aura (6) | Periodic Trigger Spell: Barrage every 0.2 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 120361
 Description      : Rapidly fires a spray of shots for $120360d, dealing $<damagePri> Physical damage to the enemy target and an average of $<damageSec> Physical damage to each other enemy target in front of you.  Usable while moving.
-Variables        : $damagePri=${$120361mw3*16}
-$damageSec=${$120361mw3*8}
+Variables        : $damagePri=${$mw3*0.6*16}
+$damageSec=${$mw3*0.6*8}
 
 Name             : Barrage (id=120361) [Spell Family (9)] 
 Class            : Hunter
@@ -4780,7 +4783,6 @@ Class            : Hunter
 Spell Level      : 81
 Range            : 100 yards
 Duration         : Aura (infinite)
-Cooldown         : 45 seconds
 Affecting spells : Camouflage (51755), Camouflage (119450)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x.x.... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4857,7 +4859,7 @@ Cooldown         : 60 seconds
 Affecting spells : Camouflage (51755), Mastery: Master of Beasts (76657), Camouflage (119450), Sniper Training (168811)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
+                 : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4871,7 +4873,7 @@ Name             : A Murder of Crows (id=131900) [Spell Family (9)]
 Class            : Hunter
 Spell Level      : 1
 Range            : 100 yards
-Velocity         : 2.1 yards/sec
+Velocity         : 1.5 yards/sec
 Affecting spells : Camouflage (51755), Mastery: Master of Beasts (76657), Camouflage (119450), Sniper Training (168811)
 Attributes       : ........ ........ x......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6195,7 +6197,7 @@ Description      : $@spelldesc162539
 Tooltip          : Slowed by $s2%.
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
-Class            : Beast Mastery Marksmanship Survival Assassination Combat Subtlety Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
+Class            : Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6468,7 +6470,7 @@ Attributes       : ........ ...x.... x.x..... x.......   ........ ........ .x...
                  : ........ ....x... ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=244488)   : Apply Raid Aura (65) | Unknown effect sub type (377)
+#1 (id=244488)   : Apply Aura (6) | Unknown effect sub type (377)
                    Base Value: 0 | Scaled Value: 0 | Radius: 40 yards
 Description      : Party and raid members within $a1 yards take on the aspects of a fox, allowing them to move while casting all spells and abilities for $d. Only one Aspect can be active at a time.
 Tooltip          : Able to move while casting all spells.
@@ -6481,7 +6483,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=251160)   : Dummy (3)
@@ -6496,7 +6498,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=251161)   : Dummy (3)

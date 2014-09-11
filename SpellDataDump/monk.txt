@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18816)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18837)
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -1120,7 +1120,7 @@ Effects          :
 #3 (id=134152)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1
 #4 (id=138807)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -25 | Scaled Value: -25 | Misc Value: 0x7f
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7e
 #5 (id=140824)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 25 | Scaled Value: 25 | Misc Value 2: 0x4
 #6 (id=141322)   : Apply Aura (6) | Threat (10)
@@ -1129,8 +1129,8 @@ Effects          :
                    Base Value: -6 | Scaled Value: -6
 #8 (id=157383)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
-#9 (id=157505)   : Apply Aura (6) | Mod Power Regen (110)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3
+#9 (id=157505)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3
 #10 (id=214843)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21
                    Affected Spells: Jab (100780), Blackout Kick (100784), Tiger Palm (100787), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Jab (108557), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Legacy of the Emperor (115921), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Charging Ox Wave (119392), Transcendence: Transfer (119996), Chi Burst (123986), Zen Sphere (124081), Zen Sphere (124098), Zen Sphere: Detonate (124101), Zen Sphere: Detonate (125033), Blackout Kick (128531), Rising Sun Kick (130320), Chi Burst (130654), Chi Burst (148135), Chi Explosion (157680)
@@ -1139,7 +1139,9 @@ Effects          :
                    Affected Spells: Elusive Brew (115308)
 #12 (id=235531)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
-Description      : Reduces damage taken by $m4%, increases Stamina by $s5%, and improves the functionality of Jab, Fortifying Brew, Tiger Palm, Blackout Kick, and Expel Harm.
+#13 (id=255479)   : Apply Aura (6) | Modify Base Resistance (142)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 1
+Description      : Increases armor by $s13%, increases Stamina by $s5%, reduces magic damage taken by $m4%, and improves the functionality of Jab, Fortifying Brew, Tiger Palm, Blackout Kick, and Expel Harm.
 
 While in this stance, you will Stagger damage taken.
 
@@ -1170,10 +1172,10 @@ Description      : Iincreases healing done by $s3%, and improves the functionali
 
 Name             : Expel Harm (id=115072) [Spell Family (53)] 
 Class            : Monk
-Resource         : 3% Base Mana (4800 @Level 100) w/ Stance of the Wise Serpent (id=115070)
+Resource         : 2% Base Mana (3200 @Level 100) w/ Stance of the Wise Serpent (id=115070)
 Resource         : 40 Energy w/ Stance of the Sturdy Ox (id=115069)
 Resource         : 40 Energy w/ Stance of the Fierce Tiger (id=103985)
-Resource         : 3% Base Mana (4800 @Level 100) w/ Stance of the Spirited Crane (id=154436)
+Resource         : 2% Base Mana (3200 @Level 100) w/ Stance of the Spirited Crane (id=154436)
 Spell Level      : 26
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
@@ -1189,7 +1191,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 #2 (id=154922)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: chi
-Description      : Heal yourself for ${11.4*$<low>} to ${11.4*$<high>}, and deal $115129s2% of the amount healed as Nature damage to an enemy within $115129A1 yards. Generates $m2 Chi.$?s115069[
+Description      : Heal yourself for ${7.5*$<low>} to ${7.5*$<high>}, and deal $115129s2% of the amount healed as Nature damage to an enemy within $115129A1 yards. Generates $m2 Chi.$?s115069[
 
 This ability has no cooldown while below 35% health in Stance of the Sturdy Ox.][]
 Variables        : $stnc=$?a115070[${1.2}][${1.0}]
@@ -1290,10 +1292,10 @@ Effects          :
 #1 (id=128771)   : Dummy (3)
                    Base Value: 7 | Scaled Value: 7
 Description      : A wave of Chi energy to flows through friends and foes, dealing $<damage> Nature damage or $<healing> healing.  Bounces up to $115098s1 times to targets within $132466a2 yards.
-Variables        : $dmgMult=$?s103985[${1.2}][${1.0}]
-$healMult=$?s115070[${1.2}][${1.0}]
-$damage=${$132467m1+$<dmgMult>*$ap*0.757}
-$healing=${$132463m1+$<healMult>*$ap*0.757}
+Variables        : $dmgMult=$?a103985[${1.2}][${1.0}]
+$healMult=$?a115070[${1.2}][${1.0}]
+$damage=${$<dmgMult>*$ap*0.500}
+$healing=${$<healMult>*$ap*0.500}
 
 Name             : Expel Harm (id=115129) [Scaling Spell (5), Spell Family (53)] 
 Class            : Monk
@@ -1540,10 +1542,11 @@ Effects          :
 #2 (id=133909)   : Apply Aura (6) | Unknown effect sub type (283)
                    Base Value: 30 | Scaled Value: 30
                    Affected Spells: Expel Harm (115072), Detonate Chi (115460), Healing Elixirs (122281), Chi Torpedo (124040), Gift of the Serpent (124041), Zen Sphere (124081), Zen Sphere: Detonate (124101), Gift of the Ox (124507), Chi Burst (130654), Chi Wave (132463), Gift of the Serpent (135920), Summon Healing Sphere (147494), Healing Sphere (163212)
-Description      : Guard against future attacks, absorbing $<absorb> damage and increasing all heals you apply to yourself by $m2%.  Lasts $115295d.
+Description      : Guard against future attacks, absorbing $<absorb> damage and increasing all heals you apply to yourself by $m2%. Lasts $115295d.
 Tooltip          : Absorbing $w1 damage and increasing heals done to yourself by $w2%.
-Variables        : $absorb=${($AP*11.335)+$115295m1}
-$mult=$?s123401[${1.1}][${1.0}]
+Variables        : $mult=$?s123401[${1.1}][${1.0}]
+$absorb=${$<mult>*($AP*9)}
+
 
 Name             : Shuffle (id=115307) [Spell Family (53)] 
 Class            : Monk
@@ -1557,9 +1560,9 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=129066)   : Apply Aura (6) | Modify Parry% (47)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 3
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3
 #2 (id=171370)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20
+                   Base Value: 10 | Scaled Value: 10
 Description      : $@spelltooltip117967
 Tooltip          : Increases your parry chance by $s1%.
 Increases your Stagger amount by an additional $s2%.
@@ -1682,9 +1685,9 @@ Class            : Monk
 Spell Level      : 1
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=129191)   : Energize Power (30)
@@ -2286,7 +2289,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 6 seconds
 Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Fighting Style (115074), Rising Sun Kick (130320), Lucidity (137331), Focus and Harmony (154555)
-Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
+Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
@@ -2982,10 +2985,7 @@ Description      : While in Stance of the Spirited Crane, your Surging Mist no l
 
 Name             : Fortifying Brew (id=120954) [Spell Family (53)] 
 Class            : Monk
-Duration         : 20 seconds
-Proc Chance      : 100%
-Proc Flags       : ........ ...x...x ...x.... .......x 
-                 : AOE Heal Taken, Heal Taken, Periodic Taken
+Duration         : 15 seconds
 Affecting spells : Glyph of Stoneskin (125169)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3110,7 +3110,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Trigger Spell: 129914
 #2 (id=162104)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20
-Description      : Every $t1 sec, your next Jab, Spinning Crane Kick, Expel Harm, or Crackling Jade Lightning generates $s1 additional Chi, or a Chi Sphere if already at maximum Chi.
+Description      : Every $t1 sec, your next Jab, Spinning Crane Kick, Expel Harm, or $?s115070[Surging Mist][Crackling Jade Lightning] generates $s1 additional Chi, or a Chi Sphere if already at maximum Chi.
 
 Name             : Dampen Harm (id=122278) [Scaling Spell (9), Spell Family (53)] 
 Class            : Monk
@@ -4860,7 +4860,7 @@ Effects          :
 #1 (id=166762)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1
 Description      : $@spelldesc121817
-Tooltip          : Your next Jab, Spinning Crane Kick, Expel Harm, or Crackling Jade Lightning will generate $s1 additional Chi.
+Tooltip          : Your next Jab, Spinning Crane Kick, Expel Harm, or $?s115070[Surging Mist][Crackling Jade Lightning] will generate $s1 additional Chi.
 
 If you are already at maximum Chi, a Chi Sphere will be summoned near you.
 
@@ -4935,7 +4935,7 @@ Effects          :
 Description      : $@spelldesc124682
 Tooltip          : Heals $w1 every $t1 sec, healing received from the Monk's Soothing Mist increased by $m2%.
 
-Name             : Chi Wave (id=132463) [Scaling Spell (5), Spell Family (53)] 
+Name             : Chi Wave (id=132463) [Spell Family (53)] 
 Class            : Monk
 Spell Level      : 1
 Range            : 50000 yards
@@ -4948,7 +4948,7 @@ Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=171555)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.45)
+                   Base Value: 1 | Scaled Value: 1
 Description      : $@spelldesc115098
 
 Name             : Chi Wave (id=132466) [Spell Family (53)] 
@@ -6155,6 +6155,10 @@ Attributes       : ....x.x. ........ ........ x..x....   ........ ........ .....
 Effects          :
 #1 (id=220939)   : Unknown effect type (174) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Radius: 100 yards
+#2 (id=255132)   : Apply Aura (6) | Modify Healing% Done (136)
+                   Base Value: -60 | Scaled Value: -60 | Misc Value: 127
+#3 (id=255133)   : Apply Aura (6) | Modify Absorb% Done (422)
+                   Base Value: -60 | Scaled Value: -60
 Description      : Increases your healing and absorption done to yourself, based on Stamina and damage taken (before avoidance and mitigation) in the last 10 sec.
 
 Name             : Healer Level 90 Mana Fix (Passive) (id=158920) [Passive, Hidden] 
@@ -6512,7 +6516,7 @@ Effects          :
 Description      : While channeling Spinning Crane Kick, you also heal nearby injured allies for $162530m1 every $101546t1 sec for $101546d. Healing yourself does not count for Chi generation.
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
-Class            : Beast Mastery Marksmanship Survival Assassination Combat Subtlety Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
+Class            : Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6762,7 +6766,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=251167)   : Dummy (3)
@@ -6777,7 +6781,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=251171)   : Dummy (3)

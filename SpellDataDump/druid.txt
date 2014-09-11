@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18816)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18837)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 1
@@ -253,7 +253,7 @@ Effects          :
 #4 (id=164016)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 919296
 #5 (id=167022)   : Apply Aura (6) | Unknown effect sub type (213)
-                   Base Value: 15 | Scaled Value: 15
+                   Base Value: 0 | Scaled Value: 0
 
 Name             : Rake (id=1822) [Spell Family (7)] 
 Class            : Feral Druid
@@ -613,7 +613,7 @@ Effects          :
 #2 (id=1967)     : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 17
 #3 (id=81812)    : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 330 | Scaled Value: 330 | Misc Value: 1
+                   Base Value: 250 | Scaled Value: 250 | Misc Value: 1
 #4 (id=222311)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11
                    Affected Spells: Maul (6807), Frenzied Regeneration (22842), Lacerate (33745), Mangle (33917), Thrash (77758), Maul (168883)
@@ -870,7 +870,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=138419)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -25 | Scaled Value: -25 | Misc Value: 0x7e
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7e
 #2 (id=88006)    : Apply Aura (6) | Unknown effect sub type (197)
                    Base Value: -6 | Scaled Value: -6 | Misc Value: 127
 #3 (id=88007)    : Apply Aura (6) | Modify Expertise% (240)
@@ -932,7 +932,7 @@ Proc Chance      : 100%
 Proc Flags       : ..x.x... ..x.x.x. x....... ........ 
                  : White Melee, Yellow Melee, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ...x.... ........ 
+                 : ........ ........ ........ ........   ........ ........ ...x.... ..x..... 
                  : ........ .......x ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1217,7 +1217,7 @@ Name             : Barkskin (id=22812) [Spell Family (7)]
 Class            : Balance Guardian Restoration Druid
 Spell Level      : 44
 Duration         : 12 seconds
-Cooldown         : 30 seconds
+Cooldown         : 60 seconds
 Affecting spells : Item - Druid T9 Feral 4P Bonus (67123), Item - Druid T10 Feral 4P Bonus (70726), Glyph of Imbued Bark (159434)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1243,7 +1243,7 @@ Name             : Frenzied Regeneration (id=22842) [Spell Family (7)]
 Class            : Druid
 Spell Level      : 68
 Cooldown         : 1.5 seconds
-Affecting spells : Bear Form (5487), Item - Druid T14 Guardian 4P Bonus (123087), Improved Regeneration (138217)
+Affecting spells : Bear Form (5487), Item - Druid T14 Guardian 4P Bonus (123087), Improved Regeneration (138217), Primal Mending (177969)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1252,7 +1252,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=13048)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 11.00000
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 9.00000
 #2 (id=124626)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60
 Description      : $?s54810[Increases healing received by $122307s1% for $122307d.][Instantly converts up to $s2 Rage into up to $s1 health.]
@@ -1855,7 +1855,7 @@ Description      : $@spelldesc48505
 
 Name             : Survival Instincts (id=50322) [Spell Family (7), Hidden] 
 Class            : Druid
-Duration         : 12 seconds
+Duration         : 6 seconds
 Affecting spells : Item - Druid T8 Feral 4P Bonus (64754), Item - Druid T11 Feral 4P Bonus (90165), Glyph of Survival Instincts (114223), 
 Attributes       : .......x ........ ........ ........   ........ ..x....x ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2016,7 +2016,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=47700)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 10
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 10
 Description      : When you cast Healing Touch, the cooldown on your Nature's Swiftness is reduced by $s1 sec.
 
 Name             : Glyph of Hurricane (Balance) (id=54831) [Spell Family (7), Passive, Hidden] 
@@ -2380,7 +2380,7 @@ Description      : Increases the damage done by Maim by $s1% and increases the d
 Name             : Survival Instincts (id=61336) [Spell Family (7)] 
 Class            : Feral Guardian Druid
 Spell Level      : 56
-Duration         : 12 seconds
+Duration         : 6 seconds
 Cooldown         : 12 seconds
 Affecting spells : Item - Druid T8 Feral 4P Bonus (64754), Item - Druid T11 Feral 4P Bonus (90165), Glyph of Survival Instincts (114223), 
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4013,7 +4013,7 @@ Tooltip          : Movement speed increased by $s1%.
 Name             : Might of Ursoc (id=106922) [Spell Family (7)] 
 Class            : Guardian Druid
 Spell Level      : 72
-Duration         : 20 seconds
+Duration         : 10 seconds
 Cooldown         : 180 seconds
 Affecting spells : Glyph of Might of Ursoc (116238), Item - Druid T14 Guardian 2P Bonus (123086)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -5161,7 +5161,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=176513)   : Apply Aura (6) | Proc Trigger Spell: Tooth and Claw (42)
                    Base Value: 2 | Scaled Value: 2 | SP Coefficient: 1.00000 | Trigger Spell: 135286
-Description      : Your autoattacks in Bear Form have a $h% chance to empower your next Maul for $135286d.  Empowered Maul causes its primary victim's next autoattack to deal ${$AP*4} less damage.
+Description      : Your autoattacks in Bear Form have a $h% chance to empower your next Maul for $135286d.  Empowered Maul causes its primary victim's next autoattack to deal ${$AP*3.2} less damage.
 
 You can accumulate up to $s1 charges of Tooth and Claw.
 
@@ -5448,7 +5448,7 @@ Attributes       : .......x x....... ........ ...x....   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=181804)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 1000 | Scaled Value: 1000 | SP Coefficient: 1.00000 | Misc Value: 33556224
+                   Base Value: 60 | Scaled Value: 60 | SP Coefficient: 1.00000 | Misc Value: 33556224
 
 Name             : Item - Druid T15 Feral 2P Bonus (id=138352) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -6248,7 +6248,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=216593)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 0x7f
+                   Base Value: -40 | Scaled Value: -40 | Misc Value: 0x7f
 Description      : You bristle your fur, reducing all damage taken by $s1% for $d.
 Tooltip          : All damage taken reduced by $s1%.
 
@@ -6536,6 +6536,10 @@ Attributes       : ....x.x. ........ ........ x..x....   ........ ........ .....
 Effects          :
 #1 (id=220939)   : Unknown effect type (174) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Radius: 100 yards
+#2 (id=255132)   : Apply Aura (6) | Modify Healing% Done (136)
+                   Base Value: -60 | Scaled Value: -60 | Misc Value: 127
+#3 (id=255133)   : Apply Aura (6) | Modify Absorb% Done (422)
+                   Base Value: -60 | Scaled Value: -60
 Description      : Increases your healing and absorption done to yourself, based on Stamina and damage taken (before avoidance and mitigation) in the last 10 sec.
 
 Name             : Soul of the Forest (id=158476) [Spell Family (7), Passive] 
@@ -6675,7 +6679,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=222298)   : Apply Aura (6) | Proc Trigger Spell: Primal Fury (42)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Trigger Spell: 16959
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Trigger Spell: 178090
 Description      : $@spelldesc16961
 
 Name             : Pulverize (id=158792) [Spell Family (7)] 
@@ -6690,7 +6694,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=222335)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 0x7f
 Description      : $@spelldesc80313
 Tooltip          : Damage taken reduced by $s4%.
 
@@ -6724,7 +6728,7 @@ Effects          :
 Description      : $@spelldesc155783
 
 Name             : Ursa Major (id=159232) [Spell Family (7), Passive] 
-Class            : Guardian Death Knight, Druid
+Class            : Guardian Druid
 Spell Level      : 90
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ....x... ..x..... ........ 
@@ -6743,7 +6747,7 @@ Description      : Your auto attack multistrikes, Mangle multistrikes, and Lacer
 Ursa Major increases your maximum health by $159233s1% for $159233d. When this effect is refreshed, the remaining portion is added to the new effect.
 
 Name             : Ursa Major (id=159233) 
-Class            : Death Knight, Druid
+Class            : Druid
 Duration         : 25 seconds
 Attributes       : ........ ........ ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6773,7 +6777,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=223081)   : Apply Aura (6) | Proc Trigger Spell: Primal Fury (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 16953
-Description      : You gain an additional $/10;16959s1 Rage when you dodge or when you critically strike with a Bear Form attack.
+Description      : You gain an additional $/10;16959s1 Rage when you critically strike with a Bear Form attack, or $/10;178090s1 Rage when you dodge.
 
 You gain an additional combo point when you critically strike with a combo-generating attack.
 
@@ -7119,7 +7123,7 @@ $gift=$?s87305[${1.25}][${1}]
 $bloom=${$<gift>*$<genesis3>*$<mstrshape>*$<gotem3>*$<tol>}
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
-Class            : Beast Mastery Marksmanship Survival Assassination Combat Subtlety Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
+Class            : Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7137,7 +7141,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100
 
 Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
-Class            : Shadow Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Priest, Shaman, Mage, Warlock, Druid
+Class            : Elemental Balance Priest, Shaman, Mage, Warlock, Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7865,7 +7869,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=251152)   : Dummy (3)
@@ -7880,10 +7884,39 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=251154)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Choose a level 75 talent.
+
+Name             : Primal Fury (id=178090) 
+Class            : Druid
+Attributes       : ........ ........ ........ x.......   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .......x ........ ...x.... ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=255329)   : Energize Power (30)
+                   Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1.00000 | Misc Value: rage
+Description      : $@spelldesc16961
+
+Name             : Stat Negation Aura - Sub 10 - Agility/Intellect (id=178113) [Passive, Hidden] 
+Class            : Shaman, Druid
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=255370)   : Apply Aura (6) | Unknown effect sub type (467)
+                   Base Value: 0 | Scaled Value: 0
+#2 (id=255371)   : Apply Aura (6) | Unknown effect sub type (467)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 4
+#3 (id=255372)   : Apply Aura (6) | Unknown effect sub type (466)
+                   Base Value: 0 | Scaled Value: 0
 

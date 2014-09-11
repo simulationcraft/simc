@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18816)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18837)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -77,7 +77,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.63000
 Description      : $@spelldesc974
 
-Name             : Lightning Bolt (id=403) [Spell Family (11)] 
+Name             : Lightning Bolt (id=403) [Scaling Spell (9), Spell Family (11)] 
 Class            : Shaman
 Resource         : 7.1% Base Mana (2272 @Level 100)
 Spell Level      : 1
@@ -527,7 +527,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3248)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.32000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.92500
 Description      : Instantly shocks the target with concussive force, causing $s1 Nature damage.
 
 Name             : Flame Shock (id=8050) [Spell Family (11)] 
@@ -574,7 +574,7 @@ Effects          :
 #1 (id=3252)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
 #2 (id=3253)     : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.10000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.77000
 Description      : Instantly shocks an enemy with frost, dealing $s2 Frost damage$?s63374[, rooting the target in ice for $63685d,][] and reducing the target's movement speed by $s1%. Lasts $d.
 Tooltip          : Movement slowed by $s1%.
 
@@ -1479,7 +1479,7 @@ Attributes       : ....x.x. x....... ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=43874)    : Apply Aura (6) | Proc Trigger Spell: Maelstrom Weapon (42)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 53817
-Description      : When you deal damage with a melee weapon, you have a chance to gain an application of Maelstrom Weapon. Each application of Maelstrom Weapon reduces the cast time and mana cost of your next Nature spell by $53817s1%$?s89646[ and increases its direct healing done by $53817s3%][]. Does not apply to Ancestral Spirit or Hex. Stacks up to 5 times.
+Description      : When you deal damage with a melee weapon, you have a chance to gain an application of Maelstrom Weapon. Each application of Maelstrom Weapon reduces the cast time and mana cost of your next Nature spell by $53817s1% and increases its direct healing done by $53817s3%. Does not apply to Ancestral Spirit or Hex. Stacks up to 5 times.
 
 Name             : Feral Spirit (id=51533) [Spell Family (11)] 
 Class            : Enhancement Shaman
@@ -1739,7 +1739,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=48380)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 17
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 17
 #2 (id=48381)    : None (0)
                    Base Value: 1 | Scaled Value: 1
 Description      : Your Healing Wave also heals you for $55440s1% of the healing effect when you heal someone else.
@@ -1935,12 +1935,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=48404)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 11
+#1 (id=48404)    : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
+                   Base Value: 3000 | Scaled Value: 3000 | Misc Value: 11
+                   Affected Spells: Chain Heal (1064)
 #2 (id=48405)    : Apply Aura (6) | Add Percent Modifier (108)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 35
                    Affected Spells: Chain Heal (1064)
-Description      : Increases the jump distance of your Chain Heal spell by $s2%.
+Description      : Increases the jump distance of your Chain Heal spell by $s2%, but Chain Heal now has a ${$m1/1000} sec cooldown.
 
 Name             : Telluric Currents (Restoration) (id=55453) [Spell Family (11), Passive, Hidden] 
 Class            : Restoration Shaman
@@ -1972,7 +1973,10 @@ Effects          :
 #1 (id=48408)    : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 11
                    Affected Spells: Spirit Walk (58875)
-Description      : Reduces the cooldown of your Spirit Walk ability by $s1%.
+#2 (id=255195)   : Apply Aura (6) | Add Percent Modifier: Spell Duration (108)
+                   Base Value: -25 | Scaled Value: -25 | Misc Value: 1
+                   Affected Spells: Spirit Walk (58875)
+Description      : Reduces the cooldown and duration of your Spirit Walk ability by $s1%.
 
 Name             : Glyph of Fire Elemental Totem (id=55455) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -2474,7 +2478,7 @@ Resource         : 1.5% Base Mana (480 @Level 100)
 Spell Level      : 60
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Affecting spells : Mental Quickness (30814), Glyph of Spirit Walk (55454)
+Affecting spells : Mental Quickness (30814), Glyph of Spirit Walk (55454), 
 Attributes       : ........ ........ ........ ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2627,7 +2631,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 18 seconds
 Cooldown         : 6 seconds
-Affecting spells : Restorative Waves (16213), Healing Trance (60515), Glyph of Riptide (63273), Item - Shaman T8 Restoration 2P Bonus (64921), Item - Shaman T9 Restoration 2P Bonus (Riptide) (67225), Unleash Life (73685), Mastery: Deep Healing (77226), Spiritual Stimulus (105763), Lucidity (137326), Improved Riptide (157812), Echo of the Elements (159105)
+Affecting spells : Restorative Waves (16213), Healing Trance (60515), Glyph of Riptide (63273), Item - Shaman T8 Restoration 2P Bonus (64921), Item - Shaman T9 Restoration 2P Bonus (Riptide) (67225), Unleash Life (73685), Mastery: Deep Healing (77226), Spiritual Stimulus (105763), Lucidity (137326), Improved Riptide (157812), Echo of the Elements (159105), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -3127,7 +3131,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
-Affecting spells : Restorative Waves (16213), Mastery: Deep Healing (77226), Temporal Maelstrom (105869), Echo of the Elements (159105)
+Affecting spells : Restorative Waves (16213), Mastery: Deep Healing (77226), Temporal Maelstrom (105869), Echo of the Elements (159105), 
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3217,7 +3221,7 @@ Resource         : 16.4% Base Mana (5247 @Level 100)
 Spell Level      : 18
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Lucidity (137326), Echo of the Elements (159105)
+Affecting spells : Lucidity (137326), Echo of the Elements (159105), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3632,7 +3636,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=115766)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 1000 | Scaled Value: 1000 | Misc Value: 33554432
+                   Base Value: 60 | Scaled Value: 60 | Misc Value: 33554432
 Description      : Increases your mastery by $s1 for $d.
 Tooltip          : Increases your mastery by $s1.
 
@@ -3693,7 +3697,7 @@ Attributes       : ....x... ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=115821)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 250 | Scaled Value: 250 | Misc Value: 917504
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 917504
 Description      : Increases your haste by $s1 for $d.
 Tooltip          : Increases your haste by $s1.
 
@@ -4171,7 +4175,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128512)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.91954 | Radius: 0 - 40 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60000 | Radius: 0 - 40 yards
 Description      : Heals injured allies.
 
 Name             : Player Damage Reduction (id=115043) [Passive, Hidden] 
@@ -4485,7 +4489,7 @@ Name             : Unleashed Fury (id=118473) [Spell Family (11)]
 Class            : Shaman
 Range            : 100 yards
 Duration         : 10 seconds
-Affecting spells : Restorative Waves (16213), Mastery: Deep Healing (77226), Temporal Maelstrom (105869), Echo of the Elements (159105)
+Affecting spells : Restorative Waves (16213), Mastery: Deep Healing (77226), Temporal Maelstrom (105869), Echo of the Elements (159105), 
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... .....xx.   ........ .x...... ........ .....xx. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -4852,7 +4856,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=181513)   : School Damage: nature (2)
-                   Base Value: 32374 | Scaled Value: 32375 - 37625 (avg=0) | Value Range: 5251 | Radius: 0 - 10 yards
+                   Base Value: 1941 | Scaled Value: 1942 - 2258 (avg=0) | Value Range: 317 | Radius: 0 - 10 yards
 Description      : Calls down a Lightning Strike on your current target, dealing $s1 Nature damage divided between all non-crowd controlled targets within $A1 yards.
 
 Name             : Item - Shaman T15 Restoration 2P Bonus (id=138303) [Spell Family (11), Passive, Hidden] 
@@ -5837,6 +5841,9 @@ Effects          :
 #1 (id=222795)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11
                    Affected Spells: Riptide (61295), Unleash Life (73685), Purify Spirit (77130), Unleashed Fury (118473)
+#2 (id=255310)   : Apply Aura (6) | Unknown effect sub type (454)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1513
+                   Affected Spells: Riptide (61295), Unleash Life (73685), Purify Spirit (77130), Unleashed Fury (118473)
 Description      : $@spelldesc108283
 Tooltip          : Your next Riptide, Unleash Life, Purify Spirit will not incur its cooldown.
 
@@ -6144,7 +6151,7 @@ Description      : $@spelldesc157784
 Tooltip          : Movement speed increased by $s1%.
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
-Class            : Beast Mastery Marksmanship Survival Assassination Combat Subtlety Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
+Class            : Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6162,7 +6169,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100
 
 Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
-Class            : Shadow Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Priest, Shaman, Mage, Warlock, Druid
+Class            : Elemental Balance Priest, Shaman, Mage, Warlock, Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6549,4 +6556,20 @@ Effects          :
 #1 (id=254397)   : School Damage: fire (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.27500 | Radius: 0 - 4 yards
 Description      : $@spelldesc152255
+
+Name             : Stat Negation Aura - Sub 10 - Agility/Intellect (id=178113) [Passive, Hidden] 
+Class            : Shaman, Druid
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=255370)   : Apply Aura (6) | Unknown effect sub type (467)
+                   Base Value: 0 | Scaled Value: 0
+#2 (id=255371)   : Apply Aura (6) | Unknown effect sub type (467)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 4
+#3 (id=255372)   : Apply Aura (6) | Unknown effect sub type (466)
+                   Base Value: 0 | Scaled Value: 0
 

@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18816)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18837)
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -446,7 +446,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=37434)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 5.00000
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 4.00000
 Description      : $@spelldesc49998
 
 Name             : Icy Touch (id=45477) [Scaling Spell (1), Spell Family (15)] 
@@ -743,7 +743,7 @@ Effects          :
 #2 (id=40418)    : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=40419)    : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 55 | Scaled Value: 55 | Misc Value: 1
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 1
 #4 (id=139814)   : Apply Aura (6) | Threat (10)
                    Base Value: 900 | Scaled Value: 900 | Misc Value: 127
 #5 (id=139815)   : Apply Aura (6) | Modify Total Stat% (137)
@@ -865,17 +865,17 @@ Attributes       : ........ ........ ........ ..x.....   ........ ..x..... .x.x.
                  : .......x ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=40903)    : Direct Heal (10)
+#1 (id=40903)    : Direct Heal% (136)
                    Base Value: 50 | Scaled Value: 50
 #2 (id=214260)   : Apply Aura (6) | Unknown effect sub type (301)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 127
-Description      : Heals the Death Knight for $s1% of max health, and absorbs incoming healing equal to $s2% of the amount healed for $d.
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 127
+Description      : Heals the Death Knight for $s1% of max health, and absorbs incoming healing equal to $s2% of max health for $d.
 Tooltip          : The next $w2 healing received will be absorbed.
 
 Name             : Icebound Fortitude (id=48792) [Spell Family (15)] 
 Class            : Death Knight
 Spell Level      : 62
-Duration         : 12 seconds
+Duration         : 8 seconds
 Cooldown         : 180 seconds
 Proc Chance      : 100%
 Affecting spells : Glyph of Icebound Fortitude (58673), Sanguine Fortitude (81127), Item - Death Knight T11 Blood 4P Bonus (90456)
@@ -939,7 +939,7 @@ Name             : Dancing Rune Weapon (id=49028) [Spell Family (15)]
 Class            : Blood Death Knight
 Spell Level      : 74
 Range            : 30 yards
-Duration         : 12 seconds
+Duration         : 8 seconds
 Cooldown         : 90 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... x...x.x. x.x..... ........ 
@@ -958,7 +958,7 @@ Effects          :
                    Base Value: 50707 | Scaled Value: 50707 | Trigger Spell: 1206
 #3 (id=41136)    : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10
-Description      : Summons a second rune weapon that mirrors its master's attacks and bolsters its master's defenses, granting an additional $81256s1% parry chance$?s63330[ and increasing threat generation by $81256s2%][].
+Description      : Summons a second rune weapon for $d that mirrors its master's attacks and bolsters its master's defenses, granting an additional $81256s1% parry chance$?s63330[ and increasing threat generation by $81256s2%][].
 
 Name             : Lichborne (id=49039) [Spell Family (15)] 
 Class            : Death Knight
@@ -1058,7 +1058,7 @@ Class            : Blood Death Knight
 Spell Level      : 78
 Duration         : 300 seconds
 Cooldown         : 60 seconds
-Internal Cooldown: 2 seconds
+Internal Cooldown: 1 seconds
 Stacks           : 6 initial, 6 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.x .x...... ........ 
@@ -1850,7 +1850,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=48161)    : Apply Aura (6) | Unknown effect sub type (118)
-                   Base Value: 25 | Scaled Value: 25 | SP Coefficient: 1.00000 | Misc Value: 127
+                   Base Value: 15 | Scaled Value: 15 | SP Coefficient: 1.00000 | Misc Value: 127
 #2 (id=48162)    : Apply Aura (6) | Increase Health (34)
                    Base Value: 15 | Scaled Value: 15
 Description      : $?s58676[Increases healing recieved by $s1% for $d.][Increases maximum health by $s2% and increases healing recieved by $s1% for $d.]
@@ -2175,7 +2175,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=52080)    : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 3
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3
                    Affected Spells: Vampiric Blood (55233)
 #2 (id=93231)    : Apply Aura (6) | Add Percent Modifier: Spell Effect 2 (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 12
@@ -3464,7 +3464,7 @@ Effects          :
 #1 (id=87374)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 0 (avg=0.433)
 #2 (id=87375)    : Weapon Damage% (31)
-                   Base Value: 114 | Scaled Value: 1.14 (avg=0)
+                   Base Value: 225 | Scaled Value: 2.25 (avg=0)
 #3 (id=87376)    : Server Side Script (77)
                    Base Value: 6 | Scaled Value: 6
 Description      : Deals $sw2 Physical damage and increases the duration of your Blood Plague, Frost Fever, and Chains of Ice effects on the target by up to $s3 sec.$?s56835[  
@@ -3804,13 +3804,13 @@ When activated, you gain $s1% movement speed and may not be slowed below $s2% of
 Tooltip          : Movement speed increased by $s1%.
 Cannot be slowed below $s2% of normal run speed.
 
-Name             : Dark Succor (id=96279) [Spell Family (15), Passive, Hidden] 
+Name             : Dark Succor (id=96279) [Spell Family (15), Passive] 
 Class            : Death Knight
 Spell Level      : 60
 Proc Chance      : 100%
 Proc Flags       : .x...... ........ ........ ........ 
                  : Killing Blow
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5155,7 +5155,7 @@ Range            : 100 yards
 Affecting spells : Item - Death Knight T10 Tank 2P Bonus (70650)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : x....... ........ ........ ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5377,41 +5377,11 @@ Attributes       : ....x.x. ........ ........ x..x....   ........ ........ .....
 Effects          :
 #1 (id=220939)   : Unknown effect type (174) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Radius: 100 yards
+#2 (id=255132)   : Apply Aura (6) | Modify Healing% Done (136)
+                   Base Value: -60 | Scaled Value: -60 | Misc Value: 127
+#3 (id=255133)   : Apply Aura (6) | Modify Absorb% Done (422)
+                   Base Value: -60 | Scaled Value: -60
 Description      : Increases your healing and absorption done to yourself, based on Stamina and damage taken (before avoidance and mitigation) in the last 10 sec.
-
-Name             : Ursa Major (id=159232) [Spell Family (7), Passive] 
-Class            : Guardian Death Knight, Druid
-Spell Level      : 90
-Proc Chance      : 100%
-Proc Flags       : ..x.x... ....x... ..x..... ........ 
-                 : White Melee, Yellow Melee, AOE Hostile Spell, Periodic
-Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=223001)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-Description      : Your auto attack multistrikes, Mangle multistrikes, and Lacerate periodic multistrikes grant you Ursa Major.
-
-Ursa Major increases your maximum health by $159233s1% for $159233d. When this effect is refreshed, the remaining portion is added to the new effect.
-
-Name             : Ursa Major (id=159233) 
-Class            : Death Knight, Druid
-Duration         : 25 seconds
-Attributes       : ........ ........ ........ x.......   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : .......x ........ ...x.... ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=223002)   : Apply Aura (6) | Unknown effect sub type (133)
-                   Base Value: 2 | Scaled Value: 2
-Description      : $@spelldesc159232
-Tooltip          : Maximum health increased by $w1%.
 
 Name             : Glyph of Absorb Magic (id=159415) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
@@ -5693,6 +5663,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100
 
 Name             : Stat Negation Aura - Strength Tank (id=162702) [Passive, Hidden] 
+Replaces         : Stat Negation Aura - Strength DPS (id=162698)
 Class            : Protection Protection Blood Warrior, Paladin, Death Knight
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5752,7 +5723,7 @@ Attributes       : ........ ........ ........ x.......   ........ ........ .....
 Effects          :
 #1 (id=231166)   : Apply Aura (6) | Unknown effect sub type (133)
                    Base Value: 3 | Scaled Value: 3
-Description      : $@spelldesc159232
+Description      : $@spelldesc157343
 Tooltip          : Maximum health increased by $w1%.
 
 Name             : Runic Strikes (id=165394) [Passive] 
@@ -5830,7 +5801,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=242778)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 0x7f
+                   Base Value: -40 | Scaled Value: -40 | Misc Value: 0x7f
 Description      : $@spelldesc48982
 Tooltip          : Damage taken reduced by $s1%.
 
@@ -5842,7 +5813,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=251148)   : Dummy (3)
@@ -5857,7 +5828,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=251150)   : Dummy (3)
