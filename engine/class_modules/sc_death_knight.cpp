@@ -6715,7 +6715,8 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
 
   if ( attr == ATTR_STRENGTH )
   {
-    m *= 1.0 + runeforge.rune_of_the_fallen_crusader -> value();
+    if ( runeforge.rune_of_the_fallen_crusader -> up() )
+      m *= 1.0 + runeforge.rune_of_the_fallen_crusader -> data().effectN( 1 ).percent();
     m *= 1.0 + buffs.pillar_of_frost -> value();
   }
   else if ( attr == ATTR_STAMINA )
