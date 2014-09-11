@@ -2481,6 +2481,9 @@ struct frost_bomb_explosion_t : public mage_spell_t
 
   virtual resource_e current_resource() const
   { return RESOURCE_NONE; }
+
+  virtual timespan_t travel_time() const
+  { return timespan_t::zero(); }
 };
 
 // TODO: Add removal of previous FB when applied to new target
