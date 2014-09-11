@@ -5590,7 +5590,6 @@ void death_knight_t::init_base_stats()
   player_t::init_base_stats();
 
   base.attribute_multiplier[ ATTR_STRENGTH ] *= 1.0 + spec.unholy_might -> effectN( 1 ).percent();
-  base.attribute_multiplier[ ATTR_STAMINA ]  *= 1.0 + spec.veteran_of_the_third_war -> effectN( 1 ).percent();
 
   base.attack_power_per_strength = 1.0;
   base.attack_power_per_agility = 0.0;
@@ -6716,7 +6715,8 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
 
   if ( attr == ATTR_STRENGTH )
   {
-    m *= 1.0 + runeforge.rune_of_the_fallen_crusader -> value();
+    if ( runeforge.rune_of_the_fallen_crusader -> up() )
+      m *= 1.0 + runeforge.rune_of_the_fallen_crusader -> data().effectN( 1 ).percent();
     m *= 1.0 + buffs.pillar_of_frost -> value();
   }
   else if ( attr == ATTR_STAMINA )

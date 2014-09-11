@@ -22,10 +22,12 @@
 // Need to do some basic d=vt calcs to have a more realistic travel time for AO.
 // Improve the delay between tick and aoe for NT by applying a guassian distribution centered around 1.25s with stddev such that travel time is ~1.2-1.3s
 // Removing hardcoding of Inferno Blast CD once it has returned to the spell data
+// Water elemental waterbolt hitting ~30% too hard.
 
 // Are Meteor ticks effected by haste? - Maybe? They are bugged on Beta as of 8/11/2014 (http://us.battle.net/wow/en/forum/topic/13780228135)
 
 // To-do Completed:
+//  Frost bomb is hitting too hard - DONE!
 //  BUG IGNITE TRIGGERS ON MISSES. Fixing this breaks icicles. Need to investigate - DONE!
 //  Enhanced Pyrotechnics is giving global crit chance increase (not just FB/FFB). Fix this! - DONE!
 // Enhanced Frostbolt keeps trying to trigger for non-Frost specs (causes debug log to look ugly, prolly slows down the sim) - DONE!
@@ -2472,15 +2474,16 @@ struct frost_bomb_explosion_t : public mage_spell_t
     mage_spell_t( "frost_bomb_explosion", p, p -> find_spell( 113092 ) )
   {
     aoe = -1;
-    // This spell is where the actual damage coefficients are stored.
-    base_multiplier = p -> find_spell( 113092 ) -> effectN( 1 ).sp_coeff();
-    base_aoe_multiplier = p -> find_spell( 113092 ) -> effectN( 2 ).sp_coeff();
     parse_effect_data( data().effectN( 1 ) );
+    base_aoe_multiplier *= ( p -> find_spell( 113092 ) -> effectN( 2 ).sp_coeff() / p -> find_spell( 113092 ) -> effectN( 1 ).sp_coeff() );
     background = true;
   }
 
   virtual resource_e current_resource() const
   { return RESOURCE_NONE; }
+
+  virtual timespan_t travel_time() const
+  { return timespan_t::zero(); }
 };
 
 struct frost_bomb_t : public mage_spell_t
@@ -2495,25 +2498,23 @@ struct frost_bomb_t : public mage_spell_t
   virtual void execute()
   {
     mage_t& p = *this -> p();
-    bool pre_ticking = get_dot( target ) -> is_ticking();
 
     mage_spell_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( ! pre_ticking )
-        p.active_bomb_targets++;
+      if (p.last_bomb_target != execute_state -> target && p.last_bomb_target != 0)
+        {
+          td(p.last_bomb_target) -> dots.frost_bomb -> cancel();
+          td(p.last_bomb_target) -> debuffs.frost_bomb -> expire();
+        }
       p.last_bomb_target = execute_state -> target;
     }
   }
 
   virtual void last_tick( dot_t* d )
   {
-
     mage_spell_t::last_tick( d );
-
-    mage_t& p = *this -> p();
-    p.active_bomb_targets--;
   }
 
   virtual void impact( action_state_t* s )
@@ -2522,20 +2523,6 @@ struct frost_bomb_t : public mage_spell_t
 
     td( s -> target ) -> debuffs.frost_bomb -> trigger();
   }
-
-  virtual bool ready()
-  {
-    mage_t& p = *this -> p();
-
-    assert( p.active_bomb_targets <= 1 && p.active_bomb_targets >= 0 );
-
-    if ( p.active_bomb_targets == 1 )
-      return false;
-
-    return mage_spell_t::ready();
-  }
-
-
 };
 
 // Frostbolt Spell ==========================================================
@@ -3317,14 +3304,16 @@ struct nether_tempest_t : public mage_spell_t
   virtual void execute()
   {
     mage_t& p = *this -> p();
-    bool pre_ticking = get_dot( target ) -> is_ticking();
+
 
     mage_spell_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( ! pre_ticking )
-        p.active_bomb_targets++;
+      if (p.last_bomb_target != execute_state -> target && p.last_bomb_target != 0)
+        {
+          td(p.last_bomb_target) -> dots.nether_tempest -> cancel();
+        }
       p.last_bomb_target = execute_state -> target;
     }
   }
@@ -3338,16 +3327,12 @@ struct nether_tempest_t : public mage_spell_t
 
     add_aoe -> schedule_execute( aoe_state );
   }
-  
+
   virtual void last_tick( dot_t* d )
   {
     mage_spell_t::last_tick( d );
-
-    mage_t& p = *this -> p();
-    p.active_bomb_targets--;
-
   }
-  
+
   double composite_persistent_multiplier( const action_state_t* state ) const
   {
     double m = mage_spell_t::composite_persistent_multiplier( state );
@@ -3356,19 +3341,6 @@ struct nether_tempest_t : public mage_spell_t
 
     return m;
   }
-
-  virtual bool ready()
-  {
-    mage_t& p = *this -> p();
-
-    assert( p.active_bomb_targets <= 1 && p.active_bomb_targets >= 0 );
-
-    if ( p.active_bomb_targets == 1 )
-      return false;
-
-    return mage_spell_t::ready();
-  }
-
 };
 
 // Presence of Mind Spell ===================================================
