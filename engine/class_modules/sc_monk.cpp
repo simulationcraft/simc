@@ -2794,7 +2794,7 @@ struct surging_mist_t: public monk_heal_t
   virtual void impact(action_state_t* s)
   {
     //if (result_is_multistrike(s->result) && p() -> new_sets.set(SET_HEALER, T17, B4) )
-      
+
   }
 };
 
@@ -3759,7 +3759,7 @@ void monk_t::target_mitigation( school_e school,
     s -> result_amount *= 1.0 + buff.fortifying_brew -> data().effectN( 2 ).percent();
 
 
-  if ( dt == SCHOOL_MAGIC)
+  if ( school == SCHOOL_MAGIC)
     s -> result_amount *= 1.0 + active_stance_data( STURDY_OX ).effectN( 4 ).percent();
 }
 
