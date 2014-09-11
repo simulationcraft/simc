@@ -1,5 +1,5 @@
 
-SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18716)
+SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18764)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 1
@@ -17,7 +17,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Radius: 0 - 10 yards
 #2 (id=111704)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Radius: 0 - 10 yards
-Description      : Invokes the spirit of Ursol to roar, incapacitating all enemies within $A1 yards for $d. Any damage caused will remove the effect.  Useable in all shapeshift forms.
+Description      : Invokes the spirit of Ursol to roar, incapacitating all enemies within $A1 yards for $d. Any damage caused will remove the effect.  Usable in all shapeshift forms.
 Tooltip          : Incapacitated.
 
 Name             : Entangling Roots (id=339) [Spell Family (7)] 
@@ -33,7 +33,7 @@ Proc Flags       : ...x.x.x .x...x.. .x.x.... ........
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Cat Form (3025), Glyph of Entangling Roots (54760), Predatory Swiftness (69369), Incarnation: Tree of Life (81097), Nature's Swiftness (132158), Lucidity (137247), Entangling Energy (164991), Claws of Shirvallah (171745)
 Attributes       : ........ ........ x....... ......x.   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ...x.... ....x... .....x..   .....x.. ........ ........ ........ 
                  : ........ ........ .....x.x .x......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -41,7 +41,7 @@ Attributes       : ........ ........ x....... ......x.   ........ ..x..... .....
 Effects          :
 #1 (id=142)      : Apply Aura (6) | Unknown effect sub type (455)
                    Base Value: 0 | Scaled Value: 0
-Description      : Roots the target in place for $d.  Damage caused may interrupt the effect.$?s106731&s106735[
+Description      : Roots the target in place for $d.  Damage caused may interrupt the effect.$?s33891[
 
 |C0033AA11Tree of Life: Instant cast|R][]
 Tooltip          : Rooted.
@@ -138,12 +138,11 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.71179
 #2 (id=227841)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1
-Description      : Heals the target for $s1 and an additional $o1 over $d. 
+Description      : Heals the target for $s1 and an additional $o1 over $d.$?s33891[
+
+|C0033AA11Tree of Life: Healing increased by $5420s5% and Mana cost reduced by $5420s4%.|R][]
 Tooltip          : Heals $w1 damage every $t1 seconds.
-Variables        : $genesis1=$?s57810[${1+0.01*$57810m1}][${1}]
-$genesis2=$?s57811[${1+0.01*$57811m1}][${$<genesis1>}]
-$genesis3=$?s57812[${1+0.01*$57812m1}][${$<genesis2>}]
-$mult=${$<genesis3>}
+Variables        : $mult=${1}
 $mstrshape=$?s48411[${1+0.01*$48411m1}][${1}]
 $gotem1=$?s51179[${1+0.01*$51179m1}][${1}]
 $gotem2=$?s51180[${1+0.01*$51180m1}][${$<gotem1>}]
@@ -170,7 +169,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Misc Value 2: 0x2
 Description      : Shapeshift into a travel form appropriate to your current location, increasing movement speed on land, in water, or in the air.
 
-Protects the caster from Polymorph effects.  Non-swimming forms only useable outdoors.
+Protects the caster from Polymorph effects.  Non-swimming forms only usable outdoors.
 
 The act of shapeshifting frees the caster of movement impairing effects.
 Tooltip          : Immune to Polymorph effects.  Movement speed increased.
@@ -352,7 +351,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=879)      : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.24100
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.80000
 #2 (id=169356)   : Server Side Script (77)
                    Base Value: 20 | Scaled Value: 20
 Description      : A Lunar spell that causes $s1 Arcane damage to the target.
@@ -436,7 +435,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.38600
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.12500
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -448,7 +447,7 @@ Spell Level      : 26
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Cat Form (3025), Incarnation: Tree of Life (5420), Nimble Healing Touch (24542), Blessing of Lower City (37878), Item - Druid T9 Restoration 2P Bonus (Healing Touch) (67127), Predatory Swiftness (69369), Mastery: Harmony (77495), Glyph of Rejuvenation (96206), Item - Druid T13 Restoration 2P Bonus (Healing Touch and Rejuv) (105715), Tricks of Time (105864), Heart of the Wild (108291), Heart of the Wild (108292), Heart of the Wild (108293), Soul of the Forest (114108), Glyph of Blooming (121840), Nature's Swiftness (132158), Clearcasting (135700), Lucidity (137247), Sage Mender (144871), Dream of Cenarius (145162), Empowered Moonkin (157228), Dream of Cenarius (158497), Dream of Cenarius (158501), Claws of Shirvallah (171745)
+Affecting spells : Cat Form (3025), Incarnation: Tree of Life (5420), Nimble Healing Touch (24542), Blessing of Lower City (37878), Item - Druid T9 Restoration 2P Bonus (Healing Touch) (67127), Predatory Swiftness (69369), Mastery: Harmony (77495), Glyph of Rejuvenation (96206), Item - Druid T13 Restoration 2P Bonus (Healing Touch and Rejuv) (105715), Tricks of Time (105864), Heart of the Wild (108291), Heart of the Wild (108292), Heart of the Wild (108293), Soul of the Forest (114108), Nature's Swiftness (132158), Clearcasting (135700), Lucidity (137247), Sage Mender (144871), Dream of Cenarius (145162), Empowered Moonkin (157228), Dream of Cenarius (158497), Dream of Cenarius (158501), Claws of Shirvallah (171745)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -457,8 +456,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1839)     : Direct Heal (10)
-                   Base Value: 36 | Scaled Value: 0 (avg=18.388, dl=0.166) | Points Per Level: 0.8 | Value Range: 15 | SP Coefficient: 3.98299
-Description      : Heals a friendly target for $s1$?s54825[ and reduces your remaining cooldown on Swiftmend by $54825m1 sec][].$?s24858[  Healing increased by 50% when cast on self.][]
+                   Base Value: 36 | Scaled Value: 0 (avg=18.388, dl=0.166) | Points Per Level: 0.8 | Value Range: 15 | SP Coefficient: 3.60000
+Description      : Heals a friendly target for $s1$?s54825[ and reduces your remaining cooldown on Nature's Swiftness by $54825m1 sec][].$?s24858[  Healing increased by 50% when cast on self.][]
 
 Name             : Mighty Bash (id=5211) [Spell Family (7)] 
 Class            : Druid
@@ -476,7 +475,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... ..x..
 Effects          :
 #1 (id=1848)     : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0
-Description      : Invokes the spirit of Ursoc to stun the target for $d.  Useable in all shapeshift forms.
+Description      : Invokes the spirit of Ursoc to stun the target for $d.  Usable in all shapeshift forms.
 Tooltip          : Stunned.
 
 Name             : Prowl (id=5215) [Spell Family (7)] 
@@ -488,7 +487,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Incarnation: King of the Jungle (102543), Glyph of Prowl (116186)
+Affecting spells : Incarnation: King of the Jungle (102543)
 Attributes       : ....x... ........ ..x.x... .x.xx...   ....x... ..x..... ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ..x..... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -504,7 +503,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #4 (id=230015)   : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35
-Description      : Activates Cat Form and places the Druid into stealth$?s116186[][, but reduces movement speed by $s2%].  Lasts until cancelled.
+Description      : Activates Cat Form and places the Druid into stealth$?s157274[][, but reduces movement speed by $s2%].  Lasts until cancelled.
 Tooltip          : Stealthed.$?$w2>=0[][  Movement speed slowed by $w2%.]
 
 Name             : Tiger's Fury (id=5217) [Spell Family (7)] 
@@ -561,13 +560,22 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=124697)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 15 | Scaled Value: 15
-                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Wild Growth (48438), Wild Mushroom (81269), Wild Mushroom (88747), Lifebloom (94447), Wild Mushroom (145205), Tranquility (157982)
+                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Wild Mushroom (81269), Wild Mushroom (88747), Wild Mushroom (145205), Tranquility (157982)
 #2 (id=124698)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22
-                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Wild Growth (48438), Wild Mushroom (81269), Wild Mushroom (88747), Lifebloom (94447), Wild Mushroom (145205), Tranquility (157982)
+                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Wild Mushroom (81269), Wild Mushroom (88747), Wild Mushroom (145205), Tranquility (157982)
 #3 (id=1947)     : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 120 | Scaled Value: 120 | Misc Value: 1
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Lifebloom (94447)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438)
+#4 (id=253735)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 14
+                   Affected Spells: Rejuvenation (774)
+#5 (id=253736)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 22
+                   Affected Spells: Rejuvenation (774)
+#6 (id=253737)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 50 | Scaled Value: 50
+                   Affected Spells: Rejuvenation (774)
 
 Name             : Aquatic Form Passive (id=5421) [Spell Family (7), Passive] 
 Class            : Druid
@@ -613,7 +621,7 @@ Effects          :
                    Affected Spells: Maul (6807), Frenzied Regeneration (22842), Lacerate (33745), Mangle (33917), Savage Defense (62606), Thrash (77758), Savage Defense (132402), Maul (168883)
 Description      : Shapeshift into Bear Form, increasing armor by $m3% and Stamina by $1178s2%.$?s16931[
 
-Also reduces all magical damage taken by $16931s3%, reduces all physical damage taken by $16931s5%, reduces the chance the Druid will be critically hit by $16931s1%, and reduces the chance for attacks to be parried by $16931s7%.][]
+Also reduces all magical damage taken by $16931s1%, reduces the chance the Druid will be critically hit by $16931s2%, and reduces the chance for attacks to be parried by $16931s3%.][]
 
 Increases threat generation, protects the caster from Polymorph effects, and allows the use of various bear abilities.
 
@@ -749,14 +757,11 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.09104
 Description      : Heals a friendly target for $s1$?s116218[][ and another ${$o2*$<mult>} over $d].
 
-Regrowth has a $?s116218[100][60]% increased chance for a critical effect.$?s106731&s106735[
+Regrowth has a $?s116218[100][60]% increased chance for a critical effect.$?s33891[
 
 |C0033AA11Tree of Life: Instant cast.|R][]
 Tooltip          : Heals $w2 every $t2 seconds.
-Variables        : $genesis1=$?s57810[${1+0.01*$57810m1}][${1}]
-$genesis2=$?s57811[${1+0.01*$57811m1}][${$<genesis1>}]
-$genesis3=$?s57812[${1+0.01*$57812m1}][${$<genesis2>}]
-$mult=${$<genesis3>}
+Variables        : $mult=${1}
 $mstrshape=$?s48411[${1+0.01*$48411m1}][${1}]
 $gotem1=$?s51179[${1+0.01*$51179m1}][${1}]
 $gotem2=$?s51180[${1+0.01*$51180m1}][${$<gotem1>}]
@@ -1023,7 +1028,7 @@ Description      : When you have Rejuvenation active on three or more targets, t
 
 Name             : Swiftmend (id=18562) [Spell Family (7)] 
 Class            : Restoration Druid
-Resource         : 21.78% Base Mana (6969 @Level 100)
+Resource         : 13% Base Mana (4160 @Level 100)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1073,7 +1078,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Cooldown         : 600 seconds
-Affecting spells : Cat Form (3025), Cheaper Druid Shapeshifting (38314), Glyph of Rebirth (54733), Predatory Swiftness (69369), Nature's Swiftness (132158), Clearcasting (135700), Lucidity (137247), Dream of Cenarius (145162), Enhanced Rebirth (157301), Claws of Shirvallah (171745)
+Affecting spells : Cat Form (3025), Cheaper Druid Shapeshifting (38314), Glyph of Rebirth (54733), Predatory Swiftness (69369), Nature's Swiftness (132158), Clearcasting (135700), Lucidity (137247), Dream of Cenarius (145162), Enhanced Rebirth (157301), Claws of Shirvallah (171745), Book of Rebirth (176021), 
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : x....... ........ ........ ........   ....x... ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -1160,7 +1165,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... ....x
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=12790)    : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | AP Coefficient: 1.42800 | Chain Multiplier: 0.7
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | AP Coefficient: 3.00000 | Chain Multiplier: 0.7
 #2 (id=12791)    : None (0)
                    Base Value: 25 | Scaled Value: 25
 Description      : Finishing move that causes damage per combo point$?s67598[, consumes up to 25 additional Energy to increase damage by up to 100%, and heals you for $67598m1% of your total maximum health for each $67598m2 Energy used.][ and consumes up to 25 additional Energy to increase damage by up to 100%.]$?s1079[
@@ -1226,7 +1231,9 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f
 #3 (id=13025)    : Apply Aura (6) | Unknown effect sub type (232)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 26
-Description      : The Druid's skin becomes as tough as bark, reducing all damage taken by $s2%$?s63057[ and reducing chance to be critically hit by 25%][] for $d.
+#4 (id=253237)   : Apply Aura (6) | Unknown effect sub type (149)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 127 | Misc Value 2: 0xf
+Description      : The Druid's skin becomes as tough as bark, reducing all damage taken by $s2%$?s63057[ and reducing chance to be critically hit by 25%][] for $d. While protected, damaging attacks will not cause spellcasting delays.
 
 Usable while stunned, frozen, incapacitated, feared, or asleep, and in all forms.
 Tooltip          : All damage taken reduced by $s2%.
@@ -1398,7 +1405,7 @@ Description      : Lacerates the enemy target, dealing $s2 bleed damage and an a
 Generates ${$m3/10} Rage and has a 25% chance to reset the cooldown on Mangle.
 Tooltip          : Suffering $w1 damage every $t1 sec.
 
-Name             : Lifebloom (id=33763) [Scaling Spell (2), Spell Family (7)] 
+Name             : Lifebloom (id=33763) [Spell Family (7)] 
 Class            : Restoration Druid
 Resource         : 4.5% Base Mana (1440 @Level 100)
 Spell Level      : 36
@@ -1410,40 +1417,26 @@ Proc Chance      : 101%
 Affecting spells : Incarnation: Tree of Life (5420), Blessing of Lower City (37878), Incarnation: Tree of Life (81098), Item - Druid T11 Restoration 2P Bonus (90157), Item - Druid T11 Restoration 4P Bonus (90158), Harmony (100977), Ironbark (102342), Tricks of Time (105864), Glyph of Blooming (121840), Lucidity (137247)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
+                 : ........ ........ ........ ........   .....x.. .....x.. ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=23639)    : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.567) | SP Coefficient: 0.36729
-#2 (id=23640)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 0 (avg=7.445) | SP Coefficient: 2.01100
-Description      : Heals the target for ${$o1*$<mult>} over $d.  When Lifebloom expires or is dispelled, the target is instantly healed for $?s121840[${($m2+$SPN*0.752)*$<bloom>*1.5*3}][${($m2+$SPN*0.752)*$<bloom>*3}].
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.36729
+Description      : Heals the target for $o1 over $d.  When Lifebloom expires or is dispelled, the target is instantly healed for $33778s1.
 
-Duration refreshed by casting Regrowth or Healing Touch on the target.$?a33891[
+Duration refreshed by casting Regrowth or Healing Touch on the target.
 
-|C0033AA11Tree of Life: Can be cast on unlimited targets.|R][
-
-Lifebloom can be active only on one target at a time]
+Lifebloom can be active only on one target at a time.
 Tooltip          : Healing $w1 every second.
-Blooms for $w2 healing when effect expires or is dispelled.
-Variables        : $genesis1=$?s57810[${1+0.01*$57810m1}][${1}]
-$genesis2=$?s57811[${1+0.01*$57811m1}][${$<genesis1>}]
-$genesis3=$?s57812[${1+0.01*$57812m1}][${$<genesis2>}]
-$mult=${$<genesis3>}
-$mstrshape=$?s48411[${1+0.01*$48411m1}][${1}]
-$gotem1=$?s51179[${1+0.01*$51179m1}][${1}]
-$gotem2=$?s51180[${1+0.01*$51180m1}][${$<gotem1>}]
-$gotem3=$?s51181[${1+0.01*$51181m1}][${$<gotem2>}]
-$tol=$?a5420[${1+0.01+$5420m1}][${1}]
-$gift=$?s87305[${1.25}][${1}]
-$bloom=${$<gift>*$<genesis3>*$<mstrshape>*$<gotem3>*$<tol>}
+Blooms for additional healing when effect expires or is dispelled.
 
 Name             : Lifebloom (id=33778) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 64
 Range            : 40 yards
+Affecting spells : Incarnation: Tree of Life (5420), Blessing of Lower City (37878), Incarnation: Tree of Life (81098), Item - Druid T11 Restoration 2P Bonus (90157), Item - Druid T11 Restoration 4P Bonus (90158), Harmony (100977), Ironbark (102342), Tricks of Time (105864), Glyph of Blooming (121840), Lucidity (137247)
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ........ ....x...   ........ ........ x....... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1452,7 +1445,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=23653)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.01100
 Description      : $@spelldesc33763
 
 Name             : Cyclone (id=33786) [Spell Family (7)] 
@@ -1537,7 +1530,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 17
 #3 (id=170940)   : Apply Aura (6) | Periodic Dummy: every 7 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 132213
-Description      : Shapeshift into the Tree of Life, increasing healing done by $5420s1%, increasing armor by $5420s3%, and granting immunity to Polymorph.  Functionality of Lifebloom, Wild Growth, Regrowth, and Entangling Roots is enhanced.
+Description      : Shapeshift into the Tree of Life, increasing healing done by $5420s1%, increasing armor by $5420s3%, and granting immunity to Polymorph.  Functionality of Rejuvenation, Wild Growth, Regrowth, and Entangling Roots is enhanced.
 
 You may freely shapeshift in and out of this form for $117679d, at which point the shapeshift expires.
 Tooltip          : Healing increased by $5420s1%.
@@ -1561,7 +1554,7 @@ Effects          :
 #1 (id=23847)    : Weapon Damage (58)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=216150)   : Weapon Damage% (31)
-                   Base Value: 276 | Scaled Value: 2.76 (avg=0)
+                   Base Value: 300 | Scaled Value: 3 (avg=0)
 #3 (id=216151)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: rage
 Description      : Mangle the target for $sw2 Physical damage, $?s48484[reducing the target's movement speed by $58180s1% for $58180d, and][] generating ${$m3/10} Rage.
@@ -1687,7 +1680,7 @@ Description      : Increases healing done to you by $s1% while in Cat Form.
 
 Name             : Wild Growth (id=48438) [Spell Family (7)] 
 Class            : Restoration Druid
-Resource         : 44.55% Base Mana (14255 @Level 100)
+Resource         : 37.75% Base Mana (12080 @Level 100)
 Spell Level      : 76
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -1703,7 +1696,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=40640)    : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.47400 | Radius: 0 - 30 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40000 | Radius: 0 - 30 yards
 #2 (id=40641)    : Apply Aura (6) | Unknown effect sub type (283)
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 30 yards
                    Affected Spells: Wild Growth (48438)
@@ -1711,10 +1704,10 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 Description      : Heals up to $s3 injured party or raid members within $A1 yards of the target for $o1 over $d.
 
-Healing amount starts high and declines over the duration.$?s106731&s106735[
+Healing amount starts high and declines over the duration.$?s33891[
 
 |C0033AA11Tree of Life: Affects an additional 2 targets.|R][]
-Tooltip          : Heals $s1 damage every $t1 second.
+Tooltip          : Heals $w1 damage every $t1 second.
 
 Name             : Infected Wounds (id=48484) [Spell Family (7), Passive, Hidden] 
 Class            : Feral Guardian Druid
@@ -1994,7 +1987,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=47679)    : Apply Aura (6) | Proc Trigger Spell: Entangling Energy (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 164991
-Description      : When you kill an enemy that yields experience or honor, your next Starfire or Wrath also applys Entangling Roots to your target.
+Description      : When you kill an enemy that yields experience or honor, your next Starfire or Wrath also applies Entangling Roots to your target.
 
 Name             : Glyph of Rake (Feral) (id=54821) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -2404,7 +2397,7 @@ Tooltip          : Damage taken reduced by $50322s1%.
 Name             : Typhoon (id=61391) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 28
-Range            : 30 yards
+Range            : 15 yards
 Duration         : 6 seconds
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -2414,9 +2407,9 @@ Attributes       : ........ ........ ........ ........   .......x ........ .....
                  : ........ x....... ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=55240)    : Knock Back (98)
-                   Base Value: 70 | Scaled Value: 70 | Misc Value: 150 | Radius: 30 yards
+                   Base Value: 70 | Scaled Value: 70 | Misc Value: 150 | Radius: 15 yards
 #3 (id=55242)    : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Radius: 30 yards
+                   Base Value: -50 | Scaled Value: -50 | Radius: 15 yards
 Description      : Summon a violent Typhoon that strikes targets in front of the caster within $61391a1 yards, knocking them back and dazing them for $61391d.
 Tooltip          : Dazed.
 
@@ -2809,8 +2802,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68268)    : School Damage: spellstorm (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=4.54, dl=0.319) | SP Coefficient: 2.80000
-Description      : Instantly causes $78674s1 Spellstorm damage to the target, benefitting from your strongest current Eclipse bonus. Also grants Lunar or Solar Empowerment, based on current Balance Energy side, which increases the damage of your next $164547n Starfires or $164545n Wraths by $164545s1%.
+                   Base Value: 1 | Scaled Value: 0 (avg=4.54, dl=0.319) | SP Coefficient: 2.24000
+Description      : Instantly causes $78674s1 Spellstorm damage to the target, benefiting from your strongest current Eclipse bonus. Also grants Lunar or Solar Empowerment, based on current Balance Energy side, which increases the damage of your next $164547n Starfires or $164545n Wraths by $164545s1%.
 
 Max 3 charges. Charges shared with Starfall.
 
@@ -2824,7 +2817,7 @@ Cooldown         : 60 seconds
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ .x...... 
+                 : ........ ........ ........ ........   ........ ...x.... ........ .x...... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
 Effects          :
@@ -2908,7 +2901,7 @@ Attributes       : .......x x....... ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=68622)    : Apply Aura (6) | Dummy (4)
                    Base Value: 94447 | Scaled Value: 94447
-                   Affected Spells: Lifebloom (33763), Lifebloom (94447)
+                   Affected Spells: Lifebloom (33763), Lifebloom (33778)
 
 Name             : Wild Mushroom (id=81262) [Spell Family (7)] 
 Class            : Druid
@@ -2926,7 +2919,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=68690)    : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 0 | Scaled Value: 0
-Description      : Restores ${$18562m1*0.12} health to the $?p138284[four][three] most injured allies within $81269A1 yards of the initial target every $81262t2 sec for $81262d.
+Description      : Restores ${$18562m1*0.12} health to $?p138284[four][three] injured allies within $81269A1 yards of the initial target every $81262t2 sec for $81262d.
 
 Name             : Wild Mushroom (id=81269) [Scaling Spell (2), Spell Family (7)] 
 Class            : Druid
@@ -2941,7 +2934,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=68693)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.56445 | Radius: 0 - 10 yards
-Description      : Instantly heals a friendly target that has an active Rejuvenation or Regrowth effect for $18562s1, and restores ${$18562m1*0.12} health to the $?p138284[four][three] most injured allies within $81269A1 yards of the initial target every $81262t2 sec for $81262d.
+Description      : Instantly heals a friendly target that has an active Rejuvenation or Regrowth effect for $18562s1, and restores ${$18562m1*0.12} health to $?p138284[four][three] injured allies within $81269A1 yards of the initial target every $81262t2 sec for $81262d.
 
 Name             : Fungal Growth (id=81281) [Spell Family (7)] 
 Class            : Druid
@@ -3269,48 +3262,6 @@ Effects          :
 #1 (id=99289)    : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 936
 
-Name             : Lifebloom (Tree of Life) (id=94447) [Scaling Spell (2), Spell Family (7)] 
-Class            : Druid
-Resource         : 4.5% Base Mana (1440 @Level 100)
-Spell Level      : 64
-Range            : 40 yards
-GCD              : 1.5 seconds
-Duration         : 15 seconds
-Stacks           : 3 maximum
-Proc Chance      : 101%
-Affecting spells : Incarnation: Tree of Life (5420), Blessing of Lower City (37878), Incarnation: Tree of Life (81098), Item - Druid T11 Restoration 2P Bonus (90157), Item - Druid T11 Restoration 4P Bonus (90158), Harmony (100977), Ironbark (102342), Tricks of Time (105864), Glyph of Blooming (121840), Lucidity (137247)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ...x.... ........   .......x ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ .....x.. ........ ........ 
-                 : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
-                 : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=99392)    : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.567) | SP Coefficient: 0.12243
-#2 (id=99393)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 0 (avg=7.445) | SP Coefficient: 1.36899
-Description      : Heals the target for ${$o1*$<mult>} over $d.  When Lifebloom expires or is dispelled, the target is instantly healed for $?s121840[${($m2+$SPN*0.752)*$<bloom>*1.5}][${($m2+$SPN*0.752)*$<bloom>}].
-
-Duration refreshed by casting Regrowth or Healing Touch on the target.$?a33891[
-
-|C0033AA11Tree of Life: Can be cast on unlimited targets.|R][
-
-Lifebloom can be active only on one target at a time]
-Tooltip          : Healing $w1 every second.
-Blooms for $w2 healing when effect expires or is dispelled.
-Variables        : $genesis1=$?s57810[${1+0.01*$57810m1}][${1}]
-$genesis2=$?s57811[${1+0.01*$57811m1}][${$<genesis1>}]
-$genesis3=$?s57812[${1+0.01*$57812m1}][${$<genesis2>}]
-$mult=${$<genesis3>}
-$mstrshape=$?s48411[${1+0.01*$48411m1}][${1}]
-$gotem1=$?s51179[${1+0.01*$51179m1}][${1}]
-$gotem2=$?s51180[${1+0.01*$51180m1}][${$<gotem1>}]
-$gotem3=$?s51181[${1+0.01*$51181m1}][${$<gotem2>}]
-$tol=$?a5420[${1+0.01+$5420m1}][${1}]
-$gift=$?s87305[${1.25}][${1}]
-$bloom=${$<gift>*$<genesis3>*$<mstrshape>*$<gotem3>*$<tol>}
-
 Name             : The Treant (id=95213) 
 Class            : Druid
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
@@ -3372,7 +3323,7 @@ Description      : Removes snares and roots.
 Name             : Stampeding Roar (id=97993) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 84
-Affecting spells : Berserk (106951), Glyph of Stampeding Roar (114222), Glyph of Blooming (121840)
+Affecting spells : Berserk (106951), Glyph of Stampeding Roar (114222), 
 Attributes       : ....x... ........ ..x..... ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ...x...x ........ ........   ........ ........ ........ .......x 
@@ -3395,7 +3346,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=109137)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Wild Mushroom (81269), Lifebloom (94447), Cenarion Ward (102351), Cenarion Ward (102352), Tranquility (157982)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Wild Mushroom (81269), Cenarion Ward (102351), Cenarion Ward (102352), Tranquility (157982)
 #2 (id=109138)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Wild Mushroom (81269), Tranquility (157982)
@@ -3441,7 +3392,7 @@ Effects          :
                    Base Value: 12 | Scaled Value: 12
 #3 (id=219284)   : Apply Aura (6) | Unknown effect sub type (283)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Lifebloom (94447), Cenarion Ward (102351), Cenarion Ward (102352), Tranquility (157982)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Cenarion Ward (102351), Cenarion Ward (102352), Tranquility (157982)
 Description      : The target's skin becomes as tough as Ironwood, reducing all damage taken by $s1%.  Lasts $d.
 Tooltip          : All damage taken is reduced by $s1%.
 
@@ -3461,13 +3412,13 @@ Attributes       : ....x... ...x.... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=111086)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Trigger Spell: 102352
 Description      : Protects a friendly target for $d.  Any damage taken will consume the ward and heal the target for $102352o1 over $102352d.
-Tooltip          : Taking damage will grant $102352s1 healing every $102352t sec for $102352d.
+Tooltip          : Taking damage will grant $w1 healing every $102352t sec for $102352d.
 
 Name             : Cenarion Ward (id=102352) [Scaling Spell (2), Spell Family (7)] 
 Class            : Druid
@@ -3510,7 +3461,7 @@ Spell Level      : 1
 Range            : 35 yards
 GCD              : 1.5 seconds
 Duration         : 300 seconds
-Affecting spells : Bear Form Passive (1178), Cat Form (3025), Glyph of Faerie Fire (94386)
+Affecting spells : Bear Form Passive (1178), Cat Form (3025), Glyph of Faerie Fire (94386), Enhanced Faerie Fire (157286), 
 Attributes       : ........ ........ ........ ........   ........ .......x x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3521,10 +3472,10 @@ Effects          :
 #1 (id=167439)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.60400
 #2 (id=111092)   : School Damage: nature (2)
-                   Base Value: 10 | Scaled Value: 10 | AP Coefficient: 0.60400
+                   Base Value: 10 | Scaled Value: 10 | AP Coefficient: 0.32500
 #3 (id=111093)   : Apply Aura (6) | Dummy (4)
                    Base Value: 12 | Scaled Value: 12 | AP Coefficient: 0.60400
-Description      : Prevents the target from activating stealth or invisibility, and reduces movement speed by $102354s2% for $102354d.  Deals $102355m2 damage$?s114237[ and silences for $114238d][] when cast from Bear Form. Useable in all shapeshift forms, but incurs a 6 sec cooldown while in $?s114237[Cat Form and a 15 sec cooldown while in Bear Form][Bear Form or Cat Form].
+Description      : Prevents the target from activating stealth or invisibility, and reduces movement speed by $102354s2% for $102354d.  Deals $102355m2 damage$?s114237[ and silences for $114238d][] when cast from Bear Form. Usable in all shapeshift forms, but incurs a 6 sec cooldown while in $?s114237[Cat Form and a 15 sec cooldown while in Bear Form][Bear Form or Cat Form].
 Tooltip          : While affected, the target cannot stealth or turn invisible.$?$w3=12[  Movement speed reduced by $102354s2% for $102354d.][]
 
 Name             : Mass Entanglement (id=102359) [Spell Family (7)] 
@@ -3538,7 +3489,7 @@ Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ ........ ......x.   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ...x.... ....x... .....x..   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
@@ -3546,7 +3497,7 @@ Attributes       : ........ ........ ........ ......x.   ........ ..x..... .....
 Effects          :
 #1 (id=111098)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0
-Description      : Roots your target in place for $d and spreads to additional nearby enemies. Damage caused may interrupt the effect. Useable in all shapeshift forms.
+Description      : Roots your target in place for $d and spreads to additional nearby enemies. Damage caused may interrupt the effect. Usable in all shapeshift forms.
 Tooltip          : Rooted.
 
 Name             : Wild Charge (id=102401) [Spell Family (7)] 
@@ -3602,7 +3553,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Incarnation: King of the Jungle (102543), Glyph of Prowl (116186)
+Affecting spells : Incarnation: King of the Jungle (102543)
 Attributes       : ....x... ........ ..x.x... .x.x....   ....x... ..x..... ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3689,7 +3640,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=111576)   : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 54983 | Misc Value 2: 0xc19
-Description      : Summons a Treant which will immediately cast Swiftmend on your current target.  The Treant will cast Healing Touch on that target or a nearby ally periodically, healing for $113828s1.  Lasts $d.  Maximum 3 charges.
+Description      : Summons a Treant which will immediately cast Swiftmend on your current target.  The Treant will cast Healing Touch on that target or a nearby ally periodically, healing for ${$113828m1/1.1}.  Lasts $d.  Maximum 3 charges. 
 
 Name             : Force of Nature (Feral, Talent) (id=102703) [Scaling Spell (2), Spell Family (7)] 
 Class            : Druid
@@ -3745,7 +3696,7 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Radius: 8 yards
 #2 (id=154620)   : Unknown effect type (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 314
-Description      : Conjures a vortex of wind for $d at the destination location that reduces the movement speed of all enemies within $A1 yards by $s1%.  The first time an enemy attempts to leave the vortex, winds will pull that enemy back to its center.  Useable in all shapeshift forms.
+Description      : Conjures a vortex of wind for $d at the destination location that reduces the movement speed of all enemies within $A1 yards by $s1%.  The first time an enemy attempts to leave the vortex, winds will pull that enemy back to its center.  Usable in all shapeshift forms.
 Tooltip          : Movement speed slowed by $s1% and winds impeding movement.
 
 Name             : Ursol's Vortex (id=102794) [Spell Family (7)] 
@@ -4042,7 +3993,7 @@ Spell Level      : 84
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 120 seconds
-Affecting spells : Glyph of Stampeding Roar (114222), Glyph of Blooming (121840)
+Affecting spells : Glyph of Stampeding Roar (114222), 
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... .x...... ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ...x.... ........ ........   ........ ........ ........ .......x 
@@ -4075,7 +4026,7 @@ Effects          :
 #1 (id=117429)   : Apply Aura (6) | Unknown effect sub type (133)
                    Base Value: 30 | Scaled Value: 30
 Description      : Increases current and maximum health by $s1% for $d.
-Tooltip          : Maximum health increased by $w1.
+Tooltip          : Maximum health increased by $w1%.
 
 Name             : Berserk (id=106951) [Spell Family (7)] 
 Class            : Druid
@@ -4191,7 +4142,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=119286)   : Direct Heal% (136)
                    Base Value: 22 | Scaled Value: 22
-Description      : Instantly heals the Druid for $s1% of maximum health.  Useable in all shapeshift forms.
+Description      : Instantly heals the Druid for $s1% of maximum health.  Usable in all shapeshift forms.
 
 Name             : Heart of the Wild (Talent) (id=108291) [Spell Family (7)] 
 Class            : Druid
@@ -4312,7 +4263,7 @@ Effects          :
 #5 (id=177260)   : Apply Aura (6) | Unknown effect sub type (423)
                    Base Value: 100 | Scaled Value: 100
 #6 (id=195448)   : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 126
+                   Base Value: 35 | Scaled Value: 35 | Misc Value: 126
 Description      : When activated, increases all healing done by $s6% and dramatically improves the Druid's ability to tank, deal melee damage, and cast spells.
 Tooltip          : Spellcasting ability and effectiveness in Cat Form and Bear Form increased.
 
@@ -4350,8 +4301,8 @@ Spell Level      : 68
 Duration         : 15 seconds
 Cooldown         : 180 seconds
 Proc Chance      : 100%
-Proc Flags       : ........ ........ x....... ........ 
-                 : Hostile Spell
+Proc Flags       : ........ ......x. x....... ........ 
+                 : Heal, Hostile Spell
 Affecting spells : Glyph of Celestial Alignment (159445)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4442,8 +4393,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=126770)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.875, dl=0.12) | SP Coefficient: 0.37500
-Description      : Causes $s1 Nature damage to the target.
+                   Base Value: 1 | Scaled Value: 0 (avg=1.875, dl=0.12) | SP Coefficient: 0.18750
+Description      : Causes $s1 Nature damage to the target. 
 
 Name             : Entangling Roots (id=113770) [Spell Family (7)] 
 Class            : Druid
@@ -4456,7 +4407,7 @@ Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Cat Form (3025), Glyph of Entangling Roots (54760), Predatory Swiftness (69369), Incarnation: Tree of Life (81097), Nature's Swiftness (132158), Lucidity (137247), Entangling Energy (164991), Claws of Shirvallah (171745)
 Attributes       : ........ ........ x....... ......x.   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ...x.... ....x... .....x..   .....x.. ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4467,7 +4418,7 @@ Effects          :
 Description      : Roots the target in place for $d.  Damage caused may interrupt the effect.
 Tooltip          : Rooted.
 
-Name             : Healing Touch (id=113828) [Scaling Spell (2)] 
+Name             : Healing Touch (id=113828) 
 Class            : Druid
 Spell Level      : 1
 Range            : 40 yards
@@ -4481,7 +4432,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=126851)   : Direct Heal (10)
-                   Base Value: 1000 | Scaled Value: 0 (avg=3.188, dl=0.166) | SP Coefficient: 0.48500 | Radius: 0 - 40 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.24250 | Radius: 0 - 40 yards
 Description      : Heals one of the most injured nearby friendly targets for $s1.
 
 Name             : Soul of the Forest (id=114107) [Spell Family (7), Passive] 
@@ -4517,8 +4468,10 @@ Effects          :
                    Affected Spells: Healing Touch (5185)
 #2 (id=228019)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100
+#3 (id=253734)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50
 Description      : $@spelldesc158478
-Tooltip          : Cast time of your next Healing Touch reduced by $s1%, or increases the healing done by your next Regrowth, Wild Growth, or Rejuvenation spell by $s2%.
+Tooltip          : Cast time of your next Healing Touch reduced by $s1%, or increases the healing done by your next Regrowth or Rejuvenation spell by $s2%, or increases the healing done by your next Wild Growth by $s3%.
 
 Name             : Glyph of Stampeding Roar (id=114222) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -4668,21 +4621,6 @@ Effects          :
                    Affected Spells: Cat Form (768), Travel Form (783), Bear Form (5487), Moonkin Form (24858), Incarnation: Tree of Life (33891), Incarnation: King of the Jungle (102543), Incarnation: Son of Ursoc (102558), Incarnation: Chosen of Elune (102560), Claws of Shirvallah (171745)
 Description      : Reduces the mana cost of all shapeshifts by $s1%.
 
-Name             : Glyph of Prowl (id=116186) [Spell Family (7), Passive, Hidden] 
-Class            : Druid
-Spell Level      : 1
-Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ...x.... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=131033)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | SP Coefficient: 1.00000 | Misc Value: 12
-                   Affected Spells: Prowl (5215), Prowl (102547)
-Description      : Reduces the movement penalty of Prowl by ${$m1*100/30}%.
-
 Name             : Glyph of Skull Bash (Feral, Guardian) (id=116216) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 Spell Level      : 1
@@ -4756,12 +4694,12 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=153072)   : Apply Aura (6) | Dummy (4)
+#1 (id=153072)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50
-                   Affected Spells: Healing Touch (5185), Stampeding Roar (97993), Stampeding Roar (106898)
+                   Affected Spells: Lifebloom (33763), Lifebloom (33778)
 #2 (id=166017)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1
-                   Affected Spells: Lifebloom (33763), Lifebloom (94447)
+                   Affected Spells: Lifebloom (33763), Lifebloom (33778)
 Description      : Increases the bloom heal of your Lifebloom when it expires by $s1%, but its duration is reduced by ${$m2/-1000} sec and your Healing Touch, Nourish, and Regrowth abilities no longer refresh the duration.
 
 Name             : Chosen of Elune (id=122114) [Spell Family (7), Hidden] 
@@ -4776,6 +4714,21 @@ Attributes       : .......x x....... ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=153504)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 72
+
+Name             : Frenzied Regeneration (id=122307) [Spell Family (7)] 
+Class            : Druid
+Spell Level      : 1
+Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=153897)   : Direct Heal (10)
+                   Base Value: 1 | Scaled Value: 1
+Description      : $@spelldesc22842
+Tooltip          : $s1% increased healing received.
 
 Name             : Item - Druid T14 Balance 2P Bonus (id=123082) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -4930,7 +4883,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=158340)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 100 (avg=0) | Points Per Level: 1 | Radius: 0 - 60 yards
+                   Base Value: 1 | Scaled Value: 100 (avg=0) | Points Per Level: 1 | Radius: 0 - 40 yards
 Description      : Healed for $124974s3% of single-target damage done by a nearby friendly Druid.
 
 Name             : Nature's Vigil (id=124991) [Spell Family (7)] 
@@ -5159,7 +5112,7 @@ Tooltip          : Increases chance to dodge by $w1%.
 Name             : Typhoon (id=132469) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 28
-Range            : 30 yards
+Range            : 15 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ....x... 
@@ -5170,10 +5123,10 @@ Attributes       : ........ ........ ........ ........   .......x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=171565)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 30 yards
+                   Base Value: 0 | Scaled Value: 0 | Radius: 15 yards
 #2 (id=171566)   : Trigger Spell: Typhoon (64)
                    Base Value: 400 | Scaled Value: 400 | Trigger Spell: 61391
-Description      : Summons a violent Typhoon that strikes targets in front of the caster within $61391a1 yards, knocking them back and dazing them for $61391d.  Useable in all shapeshift forms.
+Description      : Summons a violent Typhoon that strikes targets in front of the caster within $61391a1 yards, knocking them back and dazing them for $61391d.  Usable in all shapeshift forms.
 
 Name             : Tooth and Claw (id=135286) [Spell Family (7)] 
 Class            : Druid
@@ -5208,7 +5161,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=176513)   : Apply Aura (6) | Proc Trigger Spell: Tooth and Claw (42)
                    Base Value: 2 | Scaled Value: 2 | SP Coefficient: 1.00000 | Trigger Spell: 135286
-Description      : Your autoattacks in Bear Form have a $h% chance to empower your next Maul for $135286d.  Empowered Maul $?s157283[is free, and ][]causes its victim's next autoattack to deal ${$AP*4} less damage.
+Description      : Your autoattacks in Bear Form have a $h% chance to empower your next Maul for $135286d.  Empowered Maul causes its victim's next autoattack to deal ${$AP*4} less damage.
 
 You can accumulate up to $s1 charges of Tooth and Claw.
 
@@ -5716,7 +5669,7 @@ Attributes       : ......x. ........ ..x..... x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=194818)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30
-Description      : Activating Frenzied Regeneration and Savage Defense will cause a heal over time on yourself based on $s1% of your Attack Power over $144888d.
+Description      : Activating Frenzied Regeneration or Savage Defense will cause a heal over time on yourself based on $s1% of your Attack Power over $144888d.
 
 Name             : Ursoc's Vigor (id=144888) [Spell Family (7)] 
 Class            : Druid
@@ -5864,7 +5817,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=196001)   : Server Side Script (77)
                    Base Value: 400 | Scaled Value: 400 | Radius: 0 - 60 yards
-Description      : Consumes all of the Rejuvenation effects from party or raid members within $A1 yards and applies Genesis to each target.
+Description      : Consumes all of the Rejuvenation effects from party or raid members within $A1 yards of the target and applies Genesis to each target.
 
 Genesis heals the target for an amount equal to the healing from the consumed Rejuvenation effects over $162359d.
 
@@ -6014,11 +5967,11 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=210749)   : School Damage: spellstorm (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.75000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.37500
 #2 (id=216368)   : Apply Aura (6) | Periodic Damage: spellstorm every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.12500
 Description      : A powerful spell which benefits from both Lunar and Solar Eclipses, dealing the most damage when they are balanced. Burns the target for $s1 Spellstorm damage, and then an additional $o2 damage over $d.
-Tooltip          : Suffering $s1 Spellstorm damage every $t seconds.
+Tooltip          : Suffering $w2 Spellstorm damage every $t seconds.
 
 Name             : Euphoria (id=152222) [Spell Family (7), Passive] 
 Class            : Druid
@@ -6069,7 +6022,7 @@ Effects          :
                    Affected Spells: Savage Defense (62606), Savage Defense (132402)
 Description      : Savage Defense now lasts 3 sec, and increases your chance to dodge by 100%.
 
-Additionally, the recharge time on Savage Defense is now reduced by your base dodge chance %.
+Additionally, the recharge time on Savage Defense is now reduced by your base dodge chance percentage.
 
 Name             : Lunar Inspiration (id=155580) [Passive] 
 Class            : Druid
@@ -6401,10 +6354,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=219258)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
                    Base Value: -6000 | Scaled Value: -6000 | Misc Value: 11
-                   Affected Spells: Faerie Fire (770)
+                   Affected Spells: Faerie Fire (770), Faerie Swarm (102355)
 #2 (id=243076)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 100 | Scaled Value: 100
-                   Affected Spells: Faerie Fire (770)
+                   Affected Spells: Faerie Fire (770), Faerie Swarm (102355)
 Description      : While in you are in Bear Form, Faerie Fire no longer has a cooldown and deals $s2% increased damage.
 
 Name             : Empowered Bear Form (id=157292) [Spell Family (7), Passive] 
@@ -6568,7 +6521,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : When you cast Swiftmend, you gain Soul of the Forest. 
 
-Soul of the Forest reduces the cast time of your next Healing Touch by $114108s1%, or increases the healing of your next Regrowth, Wild Growth, or Rejuvenation by $114108s2%.
+Soul of the Forest reduces the cast time of your next Healing Touch by $114108s1%, or increases the healing of your next Regrowth or Rejuvenation by $114108s2%, or increases the healing of your next Wild Growth by $114108s3%.
 
 
 Name             : Dream of Cenarius (id=158497) [Spell Family (7), Passive] 
@@ -6711,7 +6664,7 @@ Effects          :
 Description      : $@spelldesc155783
 
 Name             : Ursa Major (id=159232) [Spell Family (7), Passive] 
-Class            : Guardian Warrior, Death Knight, Druid
+Class            : Guardian Death Knight, Druid
 Spell Level      : 90
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ....x... ..x..... ........ 
@@ -6730,7 +6683,7 @@ Description      : Your auto attack multistrikes, Mangle multistrikes, and Lacer
 Ursa Major increases your maximum health by $159233s1% for $159233d. When this effect is refreshed, the remaining portion is added to the new effect.
 
 Name             : Ursa Major (id=159233) 
-Class            : Warrior, Death Knight, Druid
+Class            : Death Knight, Druid
 Duration         : 30 seconds
 Attributes       : ........ ........ ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6747,6 +6700,7 @@ Tooltip          : Maximum health increased by $w1%.
 Name             : Primal Fury (id=159286) [Spell Family (7), Passive] 
 Class            : Druid
 Spell Level      : 30
+Internal Cooldown: 0.9 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ..x.x.x. x....... ........ 
                  : Yellow Melee, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
@@ -6759,9 +6713,11 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=223081)   : Apply Aura (6) | Proc Trigger Spell: Primal Fury (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 16953
-Description      : You gain an additional $/10;16959s1 Rage every time you deal a non-periodic critical strike to your primary target, or dodge.
+Description      : You gain an additional $/10;16959s1 Rage when you dodge or when you critically strike with a Bear Form attack.
 
-You gain an additional combo point every time one of your combo moves deals a critical strike to your primary target.
+You gain an additional combo point when you critically strike with a combo-generating attack.
+
+Damage over time cannot trigger these effects.
 
 Name             : Glyph of Astral Communion (Balance) (id=159432) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -6930,9 +6886,9 @@ Attributes       : ....x.xx x....... ........ ........   ...x...x ........ .....
 Effects          :
 #1 (id=223349)   : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60
-Description      : Travel Form grants an additional $s1% movement speed.  This movement speed bonus will not be granted if Travel Form is activated while in combat.
+Description      : You gain an additional $s1% movement speed while in the land version of Travel Form.  This movement speed bonus will not be granted if Travel Form is activated while in combat.
 
-This effect is disabled in battlegrounds and arenas and cannot be combined with other temporary speed bonuses.
+This effect is disabled in battlegrounds and arenas and cannot be combined with other speed increases.
 
 Name             : Astral Communion (Balance) (id=159814) 
 Class            : Druid
@@ -7048,8 +7004,8 @@ Spell Level      : 1
 Duration         : 60 seconds
 Stacks           : 8 initial, 8 maximum
 Proc Chance      : 100%
-Proc Flags       : ........ ........ x.x..... ........ 
-                 : Hostile Spell, Periodic
+Proc Flags       : ........ ......x. x....... ........ 
+                 : Heal, Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7093,10 +7049,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 Description      : $@spelldesc145518
 Tooltip          : Heals $w1 damage every $t1 seconds.
-Variables        : $genesis1=$?s57810[${1+0.01*$57810m1}][${1}]
-$genesis2=$?s57811[${1+0.01*$57811m1}][${$<genesis1>}]
-$genesis3=$?s57812[${1+0.01*$57812m1}][${$<genesis2>}]
-$mult=${$<genesis3>}
+Variables        : $mult=${1}
 $mstrshape=$?s48411[${1+0.01*$48411m1}][${1}]
 $gotem1=$?s51179[${1+0.01*$51179m1}][${1}]
 $gotem2=$?s51180[${1+0.01*$51180m1}][${$<gotem1>}]
@@ -7267,9 +7220,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=232409)   : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.56700
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.45000
 #2 (id=232410)   : Apply Aura (6) | Periodic Damage: arcane every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40500
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.32500
 Description      : $@spelldesc8921
 Tooltip          : Suffering $w2 Arcane damage every $t2 seconds.
 
@@ -7287,9 +7240,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=232416)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.56700
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.45000
 #2 (id=232417)   : Apply Aura (6) | Periodic Damage: nature every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40500 | Radius: 0 - 5 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.32500 | Radius: 0 - 5 yards
 Description      : $@spelldesc93402
 Tooltip          : Suffering $w2 Nature damage every $t2 seconds.
 
@@ -7322,9 +7275,9 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14
                    Affected Spells: Entangling Roots (339), Entangling Roots (113770)
 Description      : $@spelldesc54812
-Tooltip          : Your next Starfire or Wrath also applys Entangling Roots to your target.
+Tooltip          : Your next Starfire or Wrath also applies Entangling Roots to your target.
 
-Name             : Glyph of the Flapping Owl (id=164997) [Spell Family (7), Passive, Hidden] 
+Name             : Glyph of the Flapping Owl (Balance) (id=164997) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7739,17 +7692,17 @@ Name             : Savagery (Feral) (id=171752) [Passive]
 Class            : Druid
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=243859)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 155836 | Scaled Value: 155836 | Misc Value: 52610
 #2 (id=243860)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
-#3 (id=245911)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 35 | Scaled Value: 35 | Misc Value: 0x1
+#3 (id=245911)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 35 | Scaled Value: 35 | Misc Value: 1
 Description      : Savage Roar is now always active passively, but its effect is reduced by $s2%.
 
 Name             : Savagery (id=171753) 
@@ -7770,7 +7723,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=243956)   : Apply Aura (6) | Unknown effect sub type (332)
@@ -7804,7 +7757,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1510
 #2 (id=244125)   : Apply Aura (6) | Unknown effect sub type (453)
                    Base Value: 4000 | Scaled Value: 4000 | Misc Value: 1510
-Description      : Nature's Cure now has a maximum of ${$m1+1} charges, but its cooldown is increased by ${$m1/1000} sec.
+Description      : Nature's Cure now has a maximum of ${$m1+1} charges, but its cooldown is increased by ${$m2/1000} sec.
 
 Name             : Nature's Cure (id=172001) 
 Class            : Druid
@@ -7842,4 +7795,34 @@ Attributes       : ........ x....... ........ ....x...   ........ ........ .x...
 Effects          :
 #1 (id=250133)   : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1213
+
+Name             : Nature's Control (id=175682) 
+Class            : Druid
+Spell Level      : 45
+GCD              : 1.5 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=251152)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Choose a level 45 talent.
+
+Name             : Ursol's Power (id=175683) 
+Class            : Druid
+Spell Level      : 75
+GCD              : 1.5 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=251154)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Choose a level 75 talent.
 

@@ -1,5 +1,5 @@
 
-SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18716)
+SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18764)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -302,7 +302,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1
 #3 (id=199307)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f
-Description      : Places a Hand on a party or raid member, $?s146957[reducing damage taken by $s3%][transferring $s1% damage taken to the Paladin]$?s140333[ and removing all harmful Magic effects from the target][] for $d$?s146957[][ or until the Paladin has transferred 100% of their maximum health].  Players may only have one Hand on them per Paladin at any one time.
+Description      : Places a Hand on a party or raid member, $?s140333[instantly removing all harmful Magic effects from the target, and ][]$?s146957[reducing damage taken by $s3%][transferring $s1% of damage taken to the Paladin] for $d$?s146957[][ or until the Paladin has transferred 100% of their maximum health].  Players may only have one Hand on them per Paladin at any one time.
 Tooltip          : $?$w1>0[$s1% of damage taken is transferred to the Paladin.][Damage taken reduced by $w3%.]
 
 Name             : Silk Bandage (id=7928) 
@@ -359,7 +359,7 @@ Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Evil is a Point of View (110301), Lucidity (137288)
 Attributes       : ........ ........ x....... ......x.   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   .....x.. ........ ........ ........ 
                  : ........ ........ .......x .x......   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -448,7 +448,7 @@ Tooltip          : Mastery increased by $s1.
 
 Name             : Flash of Light (id=19750) [Scaling Spell (6), Spell Family (10)] 
 Class            : Holy Protection Retribution Paladin
-Resource         : 20.7% Base Mana (6624 @Level 100)
+Resource         : 20% Base Mana (6400 @Level 100)
 Spell Level      : 14
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -462,7 +462,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=10981)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=11.04, dl=0.115) | SP Coefficient: 2.22365
+                   Base Value: 1 | Scaled Value: 0 (avg=11.04, dl=0.115) | SP Coefficient: 2.50000
 Description      : Heals a friendly target for $s1. $?s57955[In addition, the value of your next heal on the target within $54957d will be increased by $57955s1%.][]
 
 Name             : Repentance (id=20066) [Spell Family (10)] 
@@ -502,7 +502,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=11193)    : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 0x1
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 0x1
 #2 (id=171227)   : Apply Aura (6) | Unknown effect sub type (403)
                    Base Value: 132331 | Scaled Value: 132331 | Misc Value: 35395 | Misc Value 2: 0x204eb
 
@@ -515,7 +515,7 @@ Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Affecting spells : Sanctity of Battle (25956), Glyph of Dazing Shield (56414), Item - Paladin T8 Protection 4P Bonus (64882), Item - Paladin T10 Retribution 4P Bonus (70762), Item - Paladin T10 Retribution 2P Bonus (70765), Glyph of the Luminous Charger (89401), Lucidity (137288), Exorcism (138162)
-Attributes       : ........ ........ x.x..... x..x....   ........ ..x..... .x...... ....x... 
+Attributes       : ........ ........ x.x..... x..x...x   ........ ..x..... .x...... ....x... 
                  : ....x... ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
@@ -541,7 +541,7 @@ Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Affecting spells : Sanctity of Battle (25956), Glyph of Fire From the Heavens (57954)
-Attributes       : ........ ........ x.x..... x..x....   ........ ..x..... ........ ....x... 
+Attributes       : ........ ........ x.x..... x..x...x   ........ ..x..... ........ ....x... 
                  : ....x... ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
@@ -550,7 +550,7 @@ Attributes       : ........ ........ x.x..... x..x....   ........ ..x..... .....
 Effects          :
 #1 (id=11236)    : Apply Aura (6) | Proc Trigger Spell: Seal of Justice (42)
                    Base Value: 25 | Scaled Value: 25 | Trigger Spell: 20170
-Description      : Fills you with Holy Light, causing melee attacks to deal $20170s2% additional Holy damage and reduce the target's movement speed by $20170s1% for $20170d.
+Description      : Fills you with Holy Light, causing melee attacks to deal $20170sw2 additional Holy damage and reduce the target's movement speed by $20170s1% for $20170d.
 Tooltip          : Melee attacks cause Holy damage and reduce movement speed by $20170s1%.
 
 Name             : Seal of Insight (id=20165) [Spell Family (10)] 
@@ -562,7 +562,7 @@ Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Affecting spells : Sanctity of Battle (25956), Lucidity (137288)
-Attributes       : ........ ........ x.x..... x..x....   ........ ..x..... .x...... ....x... 
+Attributes       : ........ ........ x.x..... x..x...x   ........ ..x..... .x...... ....x... 
                  : ....x... ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
@@ -573,7 +573,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 #2 (id=231176)   : Apply Aura (6) | Proc Trigger Spell: Seal of Insight (42)
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 20167
-Description      : Fills you with Holy Light, increasing healing done by $s2% and giving melee attacks a chance to heal $?s119477[the most wounded member of your party or raid][you] for $20167s1.
+Description      : Fills you with Holy Light, increasing healing done by $s2% and giving melee attacks a chance to heal $?s119477[the most wounded member of your party or raid for ${$20167m1*0.45}][you for $20167s1].
 Tooltip          : Improves healing by $s2%.
 Melee attacks have a chance to heal.
 
@@ -600,7 +600,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
 Affecting spells : Exorcism (138162)
-Attributes       : ........ ........ ..x..x.. ..x.....   ...x...x ........ ........ ........ 
+Attributes       : ........ ........ ..x..x.. ..x....x   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ .x...... 
@@ -613,7 +613,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 0.1 (avg=0)
 #3 (id=186979)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
-Description      : Fills you with Holy Light, causing melee attacks to deal $20170s2% additional Holy damage and reduce the target's movement speed by $20170s1% for $20170d.
+Description      : Fills you with Holy Light, causing melee attacks to deal $20170sw2 additional Holy damage and reduce the target's movement speed by $20170s1% for $20170d.
 Tooltip          : Reduces movement speed by $s1%.
 
 Name             : Blessing of Kings (id=20217) [Spell Family (10)] 
@@ -655,12 +655,12 @@ Attributes       : ........ ........ x.x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=11347)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60252 | AP Coefficient: 0.72360
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.48000 | AP Coefficient: 0.58000
 Description      : Causes $s1 Holy damage $?s105424[and generates 1 Holy Power]?s85256[and generates 1 Holy Power][].  Requires an active Seal to cast.
 
 Name             : Holy Shock (id=20473) [Spell Family (10)] 
 Class            : Holy Paladin
-Resource         : 6.4% Base Mana (2048 @Level 100)
+Resource         : 7.35% Base Mana (2352 @Level 100)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -693,7 +693,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value 2: 0x8
 Description      : Maximum mana increased by $s1%.
 
-Name             : Sacred Shield (id=20925) [Scaling Spell (6), Spell Family (10)] 
+Name             : Sacred Shield (id=20925) [Spell Family (10)] 
 Class            : Paladin
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -708,8 +708,8 @@ Attributes       : ........ ...x.... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=86373)    : Apply Aura (6) | Periodic Dummy: every 6 seconds (226)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.21)
-Description      : Protects the target with a shield of Holy Light for $d, absorbing up to ${$m1+1.306*$SPH} damage every $t1 sec.  Only one target can be affected at a time.
+                   Base Value: 1 | Scaled Value: 1
+Description      : Protects the target with a shield of Holy Light for $d, absorbing up to $?s85256[${$m1+1.306*$SPH/0.7}][${$m1+1.306*$SPH}] damage every $t1 sec.  Only one target can be affected at a time.
 Tooltip          : Absorbs up to $w1 damage every $t1 sec.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
@@ -795,7 +795,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=15851)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.25, dl=0.08) | SP Coefficient: 1.02000
+                   Base Value: 1 | Scaled Value: 0 (avg=1.25, dl=0.08) | SP Coefficient: 1.40000
 Description      : Blasts the target with Holy energy, causing $25912s1 Holy damage to an enemy, or $25914s1 healing to an ally, and granting a charge of Holy Power.
 
 Name             : Holy Shock (id=25914) [Scaling Spell (6), Spell Family (10)] 
@@ -811,7 +811,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=15852)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=8.222, dl=0.08) | SP Coefficient: 1.22162
+                   Base Value: 1 | Scaled Value: 0 (avg=8.222, dl=0.08) | SP Coefficient: 1.40000
 Description      : Blasts the target with Holy energy, causing $25912s1 Holy damage to an enemy, or $25914s1 healing to an ally, and granting a charge of Holy Power.
 
 Name             : Sanctity of Battle (id=25956) [Spell Family (10), Passive, Hidden] 
@@ -869,7 +869,7 @@ Cooldown         : 9 seconds
 Affecting spells : Sanctity of Battle (25956), Glyph of Consecration (54928), Lucidity (137288), Improved Consecration (157486)
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -879,7 +879,7 @@ Effects          :
 #3 (id=81786)    : Trigger Spell: Consecration (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 82366 | Radius: 0 - 8 yards
 Description      : Consecrates the land beneath you, causing ${$81297m1*9} Holy damage over $d to enemies who enter the area.
-Tooltip          : $s1 damage every $t1 $lsecond:seconds;.
+Tooltip          : Damage every $t1 $lsecond:seconds;.
 
 Name             : Gift of the Naaru (Racial) (id=28880) [Spell Family (4)] 
 Class            : Warrior, Paladin, Hunter, Priest, Death Knight, Shaman, Mage, Monk
@@ -912,7 +912,7 @@ Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Affecting spells : Sanctity of Battle (25956), Item - Paladin T8 Protection 4P Bonus (64882), Item - Paladin T10 Retribution 4P Bonus (70762), Item - Paladin T10 Retribution 2P Bonus (70765), Lucidity (137288)
-Attributes       : ........ ........ x.x..... x..x....   ........ ..x..... .x...... ....x... 
+Attributes       : ........ ........ x.x..... x..x...x   ........ ..x..... .x...... ....x... 
                  : ....x... ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
@@ -948,7 +948,7 @@ Attributes       : ........ ........ ..x..x.. ........   ...x.... ........ .....
 Effects          :
 #1 (id=21447)    : Apply Aura (6) | Periodic Damage: holy every 3 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.06178
-Description      : Deals $?s31850[$m1][${$m1*5}] additional Holy damage over $31803d. Stacks up to $31803u times.
+Description      : Deals $m1 additional Holy damage over $31803d. Stacks up to $31803u times.
 Tooltip          : Holy damage every $t1 sec.
 
 Name             : Devotion Aura (id=31821) [Spell Family (10)] 
@@ -1013,16 +1013,16 @@ Attributes       : ....x... ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
 Effects          :
 #1 (id=21513)    : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 127
 #2 (id=21514)    : Apply Aura (6) | Dummy (4)
                    Base Value: 12 | Scaled Value: 12
-Description      : Reduce damage taken by $s1% for $d. While Ardent Defender is active, the next attack that would otherwise kill you will instead cause you to be healed for $s2% of your maximum health.
-Tooltip          : Damage taken reduced by $s1%.
-The next attack that would otherwise kill you will instead cause you to be healed for $s2% of your maximum health.
+Description      : $?s159548[][Reduce damage taken by $w1% for $d. ]While Ardent Defender is active, the next attack that would otherwise kill you will instead cause you to be healed for $w2% of your maximum health.$?s159548[ If this effect expires without triggering, its cooldown will be reset to $159548s1 sec.][]
+Tooltip          : Damage taken reduced by $w1%.
+The next attack that would otherwise kill you will instead cause you to be healed for $w2% of your maximum health.
 
 Name             : Supplication (id=31868) [Spell Family (10), Passive] 
 Class            : Holy Retribution Paladin
@@ -1089,7 +1089,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=21607)    : School Damage: holy (2)
-                   Base Value: 0 | Scaled Value: 1 - 3 (avg=0) | Value Range: 3 | AP Coefficient: 2.37600
+                   Base Value: 0 | Scaled Value: 1 - 3 (avg=0) | Value Range: 3 | AP Coefficient: 1.33300
 #2 (id=135932)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.63500
 #3 (id=135933)   : Apply Aura (6) | Silence (27)
@@ -1149,10 +1149,10 @@ Effects          :
 #1 (id=25579)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=25580)    : Weapon Damage% (31)
-                   Base Value: 120 | Scaled Value: 1.2 (avg=0)
+                   Base Value: 100 | Scaled Value: 1 (avg=0)
 #3 (id=91108)    : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: holy_power
-Description      : $?s85673[An instant strike that causes $sw2 Physical damage and grants 1 Holy Power.][An instant strike that causes $sw2 Physical damage.]
+Description      : $?s85673|s85256[An instant strike that causes $sw2 Physical damage and grants 1 Holy Power.][An instant strike that causes $sw2 Physical damage.]
 
 Name             : Furious Gizmatic Goggles (id=40274) 
 Class            : Warrior, Paladin, Death Knight
@@ -1209,7 +1209,7 @@ Effects          :
                    Base Value: 12 | Scaled Value: 0.12 (avg=0)
 #2 (id=131737)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
-Description      : Fills you with Holy Light, causing melee attacks to deal $42463s1% additional weapon damage as Holy and apply Censure to the target.
+Description      : Fills you with Holy Light, causing melee attacks to deal $42463sw1 additional Holy damage and apply Censure to the target.
 
 Name             : Justicebringer 3000 Specs (id=46107) 
 Class            : Paladin
@@ -1278,7 +1278,7 @@ Resource         : 3 Holy Power
 Spell Level      : 34
 GCD              : 1.5 seconds
 Affecting spells : Sanctity of Battle (25956), Item - Paladin T8 Retribution 4P Bonus (64879), Divine Purpose (90174), Exorcism (138162), Divine Crusader (144595), Final Verdict (157048), 
-Attributes       : ........ ........ x.x..... ........   ....x... ........ ........ ........ 
+Attributes       : ........ ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
@@ -1470,8 +1470,8 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=46256)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.97000
-Description      : Instantly slam the target with your shield, causing $s1 Holy damage, reducing the physical damage you take by ${$clamp($132403m1*-1,30,80)}% for $132403d, and causing Bastion of Glory.
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.60000
+Description      : Instantly slam the target with your shield, causing $s1 Holy damage, reducing the physical damage you take by ${$clamp($132403m1*-1,25,80)}% for $132403d, and causing Bastion of Glory.
 
 |cFFFFFFFFBastion of Glory|r
 $@spelldesc114637
@@ -1711,7 +1711,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=47834)    : Apply Aura (6) | Unknown effect sub type (332)
@@ -2470,6 +2470,7 @@ Effects          :
 
 Name             : Holy Shock (Holy) (id=63870) 
 Class            : Paladin
+Spell Level      : 25
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2675,7 +2676,7 @@ Attributes       : ........ ........ ........ x..x....   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=81788)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.33520 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.11000 | Radius: 0 - 8 yards
 Description      : Deals $s1 Holy damage to enemies within $A1 yards.
 
 Name             : Reinforced Bio-Optic Killshades (id=81714) 
@@ -2734,7 +2735,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=81809)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.22365
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.50000
 Description      : Heals a friendly target for $s1.
 
 Name             : Holy Radiance (id=82327) [Scaling Spell (6), Spell Family (10)] 
@@ -2744,7 +2745,7 @@ Spell Level      : 28
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Infusion of Light (54149), Glyph of Flash of Light (54957), Saint's Vigor (105742), Item - Paladin T13 Holy 4P Bonus (Holy Radiance) (105798), Holy Avenger (105809), Holy Insight (112859), Item - Paladin T14 Holy 2P Bonus (123102), Lucidity (137288), Unyielding Faith (144624)
+Affecting spells : Infusion of Light (54149), Glyph of Flash of Light (54957), Saint's Vigor (105742), Item - Paladin T13 Holy 4P Bonus (Holy Radiance) (105798), Holy Avenger (105809), Holy Insight (112859), Item - Paladin T14 Holy 2P Bonus (123102), Lucidity (137288), Unyielding Faith (144624), Beacon of Insight (157007)
 Attributes       : ........ ...x.... ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -2756,7 +2757,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50
 #2 (id=110901)   : Direct Heal (10)
                    Base Value: 51 | Scaled Value: 0 (avg=4.96, dl=0.2) | Value Range: 12 | SP Coefficient: 1.51319 | Radius: 0 - 10 yards
-Description      : Imbues a friendly target with radiant energy, healing that target for $s2 and all allies within $A2 yards for half that amount. Grants 1 Holy Power.
+Description      : Imbues a friendly target with radiant energy, healing that target for $s2 and up to 5 allies within $A2 yards for half that amount. Grants 1 Holy Power.
 
 Healing effectiveness diminishes for each player target beyond 6.
 
@@ -2775,7 +2776,7 @@ Effects          :
 #3 (id=82418)    : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 43499 | Misc Value 2: 0xbba
 Description      : Consecrates the land beneath the Paladin, doing ${8*($m1+0.04*$SPH+0.04*$AP)} Holy damage over $d to enemies who enter the area.
-Tooltip          : $s1 damage every $t1 $lsecond:seconds;.
+Tooltip          : Damage every $t1 $lsecond:seconds;.
 
 Name             : Grand Crusader (id=85043) [Spell Family (10), Passive] 
 Class            : Protection Paladin
@@ -2956,7 +2957,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=87655)    : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Trigger Spell: 90174
-Description      : $?s114163[Eternal Flame][Word of Glory]$?s85256[,][] $?s53600[and Shield of the Righteous][]$?s53563[and Light of Dawn][]$?s85256[Templar's Verdict, and Divine Storm][] have a $s1% chance to cause your next Word of Glory or Light of Dawn to consume no Holy Power but cast as if 3 were consumed.
+Description      : $?s114163[Eternal Flame][Word of Glory]$?s53600[ and Shield of the Righteous have]?s53563[ and Light of Dawn have]?s85256[, Templar's Verdict, and Divine Storm have][ has] a $s1% chance to cause your next Word of Glory or Light of Dawn to consume no Holy Power but cast as if 3 were consumed.
 
 Name             : Illuminated Healing (Rank 1) (id=86273) [Spell Family (10)] 
 Class            : Paladin
@@ -3355,7 +3356,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 0.05 (avg=0) | Radius: 0 - 8 yards
 #2 (id=136531)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
-Description      : Fills you with Holy Light, causing melee attacks to deal $101423s1% weapon damage to all targets within $101423A1 yards.
+Description      : Fills you with Holy Light, causing melee attacks to deal $101423sw1 Holy damage to all targets within $101423A1 yards.
 
 Name             : Seal of Command (id=105361) [Spell Family (10)] 
 Class            : Paladin
@@ -3366,7 +3367,7 @@ Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Affecting spells : Sanctity of Battle (25956), Item - Paladin T8 Protection 4P Bonus (64882), Item - Paladin T10 Retribution 4P Bonus (70762), Item - Paladin T10 Retribution 2P Bonus (70765)
-Attributes       : ........ ........ x.x..... x..x....   ........ ..x..... .x...... ....x... 
+Attributes       : ........ ........ x.x..... x..x...x   ........ ..x..... .x...... ....x... 
                  : ....x... ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
@@ -3440,7 +3441,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 1391
 #5 (id=166942)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
                    Base Value: -24000 | Scaled Value: -24000 | Misc Value: 11
-                   Affected Spells: Hand of Freedom (1044), Hand of Purity (114039)
+                   Affected Spells: Hand of Freedom (1044)
 #6 (id=166943)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
                    Base Value: -299000 | Scaled Value: -299000 | Misc Value: 11
                    Affected Spells: Hand of Protection (1022)
@@ -3544,7 +3545,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=115793)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 25 | Scaled Value: 25
-                   Affected Spells: Hand of Freedom (1044), Hand of Purity (114039)
+                   Affected Spells: Hand of Freedom (1044)
 Description      : Your Judgment ability now also grants a physical absorption shield equal to $s1% of the damage it dealt.
 
 Name             : Sanctuary (id=105805) [Spell Family (10), Passive, Hidden] 
@@ -3692,7 +3693,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 30 seconds
-Affecting spells : Clemency (105622), Item - Paladin T13 Protection 2P Bonus (Judgment) (105800), Lucidity (137288)
 Attributes       : ........ ........ x.x..... ........   ........ .......x .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
@@ -3741,7 +3741,7 @@ Effects          :
 Description      : $@spelldesc114916
 
 |CFFFFFFFFStay of Execution|R
-On a friendly target, the falling hammer heals for ${$SPH*$114917m2/1000+26.72716306*$114917m1} over $114917d. Healing increases over time, culminating in a final burst.  Dispelling the effect triggers the final burst.
+On a friendly target, the falling hammer heals for ${$SPH*$114917m2/1000+26.72716306*$114917m1} over $114917d. This healing is a large burst at first, and then decreases over time.
 
 Name             : Light's Hammer (id=114158) [Spell Family (10)] 
 Class            : Paladin
@@ -3759,7 +3759,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=127305)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 122773 | Radius: 10 yards
-Description      : Hurls a Light-infused hammer into the ground, where it blasts a 10 yard radius every $114918t1 sec for ${$122773d-1.5} sec. Each blast deals $114919s1 Holy damage to enemies, reduces enemy movement speed by $114919s2% for $114919d, and heals allies for $119952s1.
+Description      : Hurls a Light-infused hammer into the ground, where it blasts a 10 yard radius every $114918t1 sec for ${$122773d-1.5} sec. Each blast deals $114919s1 Holy damage to enemies, reduces enemy movement speed by $114919s2% for $114919d, and heals up to 6 allies for $119952s1.
 
 Name             : Eternal Flame (id=114163) [Spell Family (10)] 
 Class            : Paladin
@@ -3769,7 +3769,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 1 seconds
-Affecting spells : Sword of Light (53503), Beacon of Light (53563), Guarded by the Light (53592), Divine Purpose (90174), Holy Insight (112859), Item - Paladin T14 Protection 4P Bonus (123107), Exorcism (138162), Bastion of Power (144569), Beacon of Faith (156910), Beacon of Insight (157007)
+Affecting spells : Sword of Light (53503), Beacon of Light (53563), Guarded by the Light (53592), Divine Purpose (90174), Holy Insight (112859), Item - Paladin T14 Protection 4P Bonus (123107), Exorcism (138162), Bastion of Power (144569), Sacred Shield Overridde (Holy) (148040), Beacon of Faith (156910), Beacon of Insight (157007)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -3785,9 +3785,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 Description      : Consumes up to 3 Holy Power to heal an ally for up to $s1 and an additional $156322m1 every $156322t1 sec for up to $m3 sec.  Healing over time increased by $s2% when cast on self.
 
-Replaces Word of Glory.$?s76669[
-
-Periodic healing from this spell does not cause Illuminated Healing.][]
+Replaces Word of Glory.
 
 Name             : Holy Prism (id=114165) [Spell Family (10)] 
 Class            : Paladin
@@ -3858,7 +3856,7 @@ Effects          :
                    Base Value: -35 | Scaled Value: -35 | Misc Value: 10
                    Affected Spells: Flash of Light (19750)
 #2 (id=127661)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20
+                   Base Value: 35 | Scaled Value: 35
                    Affected Spells: Flash of Light (19750)
 #3 (id=156536)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -35 | Scaled Value: -35 | Misc Value: 14
@@ -3990,7 +3988,7 @@ Effects          :
 #2 (id=163021)   : Dummy (3)
                    Base Value: 6742 | Scaled Value: 6742
 Description      : A hammer slowly falls from the sky, causing ${$SPH*$114917m2/1000+26.72716306*$114917m1} healing over $114917d. This healing is a large burst at first, and then decreases over time.
-Tooltip          : Receiving increasing healing every $t1 sec.
+Tooltip          : Healing every $t1 sec, decreasing over time.
 
 Name             : Light's Hammer (id=114918) [Spell Family (10), Passive] 
 Class            : Paladin
@@ -4286,7 +4284,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 0.1 (avg=0)
 #2 (id=134519)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
-Description      : Fills you with Holy Light, causing melee attacks to deal $s1% additional Holy damage.
+Description      : Fills you with Holy Light, causing melee attacks to deal $sw1 additional Holy damage.
 
 Name             : Holy Wrath (id=119072) [Spell Family (10)] 
 Class            : Protection Paladin
@@ -4307,7 +4305,7 @@ Effects          :
 #1 (id=135938)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards
 #2 (id=136087)   : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.00000 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Radius: 0 - 10 yards
 Description      : Sends bolts of power in all directions, causing $s2 Holy damage $?s115738[to your target][divided among all enemies within $A1 yards], stunning Demons$?s54923[, Aberrations, Dragonkin, Elementals][] and Undead for $d.$?s171648[ Generates $171648s2 Holy Power.][]$?s54935[
 
 Causes $54935s1% additional damage to targets with less than 20% health.][]
@@ -4668,13 +4666,14 @@ Effects          :
 Description      : $@spelldesc53600
 Tooltip          : Physical damage taken reduced by $w1%.
 
-Name             : Word of Glory (id=136494) [Scaling Spell (6), Spell Family (10)] 
+Name             : Word of Glory (id=136494) [Spell Family (10)] 
 Class            : Paladin
 Resource         : 1 Holy Power
 Spell Level      : 9
 Range            : 40 yards
+Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Cooldown         : 1.5 seconds
+Cooldown         : 1 seconds
 Affecting spells : Sword of Light (53503), Beacon of Light (53563), Guarded by the Light (53592), Glyph of Flash of Light (54957), Divine Purpose (90174), Holy Insight (112859), Item - Paladin T14 Protection 4P Bonus (123107), Bastion of Power (144569), Sacred Shield Overridde (Holy) (148040), Beacon of Faith (156910), Beacon of Insight (157007)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -5022,6 +5021,7 @@ Description      : Holy Power consumers have a 25% chance to make your next Divi
 Name             : Divine Crusader (id=144595) [Spell Family (10)] 
 Class            : Paladin
 Duration         : 12 seconds
+Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -5030,7 +5030,7 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ .....
                  : .......x ........ ...x.... ........   ...x.... ........ .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. ....x... ........ ........   ........ ...x.... ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=194372)   : Apply Aura (6) | Add Flat Modifier: Spell Resource Cost (107)
                    Base Value: -3 | Scaled Value: -3 | Misc Value: 14
@@ -5110,7 +5110,7 @@ Attributes       : ......x. ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=194431)   : Apply Aura (6) | Proc Trigger Spell: Unyielding Faith (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 144624
-Description      : Infusion of Light also increases the healing done by Holy Light, Divine Light, and Holy Radiance by $144624s1%.
+Description      : Infusion of Light also increases the healing done by Holy Light and Holy Radiance by $144624s1%.
 
 Name             : Glyph of Devotion Aura (Holy) (id=146955) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
@@ -5233,6 +5233,27 @@ Effects          :
 #1 (id=201014)   : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1083
 
+Name             : Sacred Shield (id=148039) [Scaling Spell (6), Spell Family (10)] 
+Class            : Paladin
+Resource         : 14.4% Base Mana (4608 @Level 100)
+Range            : 40 yards
+GCD              : 1.5 seconds
+Duration         : 30 seconds
+Affecting spells : Sacred Shield Overridde (Holy) (148040)
+Attributes       : ........ ...x.... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
+                 : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=201150)   : Apply Aura (6) | Periodic Dummy: every 6 seconds (226)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.3)
+Description      : Protects the target with a shield of Holy Light for $d. The shield absorbs up to ${$m1+0.995*$SPH} damage every $t1 sec.
+
+Max 3 charges.
+Tooltip          : Absorbs up to $w1 damage every $t1 sec.
+
 Name             : Sacred Shield Overridde (Holy) (id=148040) [Spell Family (10), Passive, Hidden] 
 Class            : Holy Paladin
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
@@ -5244,10 +5265,10 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=201151)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 148039 | Scaled Value: 148039
-                   Affected Spells: Sacred Shield (20925)
+                   Affected Spells: Sacred Shield (20925), Sacred Shield (148039)
 #2 (id=223119)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11
-                   Affected Spells: Word of Glory (85673), Word of Glory (130551), Word of Glory (136494)
+                   Affected Spells: Word of Glory (85673), Eternal Flame (114163), Word of Glory (130551), Word of Glory (136494), Eternal Flame (156322)
 
 Name             : Holy Shield (id=152261) [Passive] 
 Class            : Paladin
@@ -5338,7 +5359,7 @@ Class            : Paladin
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 10 seconds
-Affecting spells : Sword of Light (53503), Beacon of Light (53563), Guarded by the Light (53592), Divine Purpose (90174), Holy Insight (112859), Item - Paladin T14 Protection 4P Bonus (123107), Exorcism (138162), Bastion of Power (144569), Beacon of Faith (156910)
+Affecting spells : Sword of Light (53503), Beacon of Light (53563), Guarded by the Light (53592), Divine Purpose (90174), Holy Insight (112859), Item - Paladin T14 Protection 4P Bonus (123107), Exorcism (138162), Bastion of Power (144569), Sacred Shield Overridde (Holy) (148040), Beacon of Faith (156910)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -5347,7 +5368,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=217570)   : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.16028
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.10000
 Description      : $@spelldesc114163
 Tooltip          : Healing $w1 health every $t2 sec.
 
@@ -5459,8 +5480,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=218734)   : Apply Aura (6) | Unknown effect sub type (283)
                    Base Value: 30 | Scaled Value: 30
-                   Affected Spells: Lay on Hands (633), Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Eternal Flame (114163), Word of Glory (130551), Word of Glory (136494)
-Description      : Places a beacon of insight on an ally, increasing their healing recieved from your next direct single-target heal within $d by $s1%. When consumed, or when the target reaches full health, it moves to the most injured ally within 40 yards. Limit 1.
+                   Affected Spells: Lay on Hands (633), Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Holy Radiance (82327), Word of Glory (85673), Eternal Flame (114163), Word of Glory (130551), Word of Glory (136494)
+Description      : Places a beacon of insight on an ally, increasing their healing received from your next direct single-target heal, or Holy Radiance, within $d by $s1%. When consumed, or when the target reaches full health, it moves to the most injured ally within 40 yards. Limit 1.
+Tooltip          : Increases single-target healing received from the casting Paladin.
 
 Name             : Saved by the Light (id=157047) [Passive] 
 Class            : Paladin
@@ -5500,7 +5522,7 @@ Attributes       : ........ ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=218849)   : Weapon Damage% (31)
-                   Base Value: 280 | Scaled Value: 2.8 (avg=0)
+                   Base Value: 185 | Scaled Value: 1.85 (avg=0)
 #2 (id=218850)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=243842)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
@@ -5509,6 +5531,8 @@ Effects          :
 #4 (id=246310)   : Apply Aura (6) | Add Percent Modifier: Spell Radius (108)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 6
                    Affected Spells: Divine Storm (53385)
+#5 (id=253778)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 1 yards
 Description      : Empowers your weapon with holy energy, and performs a devastating strike, dealing $sw1 Holy damage.
 
 Also increases the damage and radius of your next Divine Storm by $s3%.
@@ -5521,7 +5545,7 @@ Class            : Paladin
 Range            : 100 yards
 Velocity         : 40 yards/sec
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5575,7 +5599,7 @@ Effects          :
 #1 (id=219557)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 23
                    Affected Spells: Beacon of Light (53563), Beacon of Faith (156910)
-Description      : Your single-target heals heal your Beacon of Light target for $s1% more.
+Description      : Your single-target heals heal your Beacon of Light target for $s1% more.  Also applies to Beacon of Faith.
 
 Name             : Improved Daybreak (id=157455) [Spell Family (10), Passive] 
 Class            : Paladin
@@ -5644,7 +5668,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219595)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 100 | Scaled Value: 100
+                   Base Value: 50 | Scaled Value: 50
                    Affected Spells: Consecration (26573), Consecration (81297), Consecration (82366)
 Description      : Increases damage done by Consecration by $s1%.
 
@@ -5926,4 +5950,43 @@ Name             : Judgment (id=159849)
 Class            : Paladin
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ......
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=223972)   : Unknown effect type (74)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1149
+
+Name             : Enhanced Holy Shock (id=160002) [Spell Family (10)] 
+Class            : Paladin
+Duration         : 15 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ........ ......x. x....... ........ 
+                 : Heal, Hostile Spell
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=224183)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 11
+                   Affected Spells: Holy Shock (20473), Holy Shock (25912)
+Description      : $@spelldesc157478
+Tooltip          : Your next Holy Shock will not trigger a cooldown.
+
+Name             : Bladed Armor (id=161608) [Passive] 
+Class            : Protection Protection Blood Brewmaster Guardian Warrior, Paladin, Death Knight, Monk, Druid
+Spell Level      : 10
+Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ......x. ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=226766)   : Apply Aura (6) | Unknown effect sub type (464)
+                   Base Value: 100 | S

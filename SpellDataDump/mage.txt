@@ -1,5 +1,5 @@
 
-SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18716)
+SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18764)
 Name             : Blizzard (id=10) [Spell Family (3)] 
 Class            : Frost Mage
 Resource         : 5% Base Mana (8000 @Level 100)
@@ -158,7 +158,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=91)       : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.5, dl=0.24) | SP Coefficient: 1.35000
+                   Base Value: 1 | Scaled Value: 0 (avg=1.5, dl=0.24) | SP Coefficient: 1.65000
 Description      : Hurls a fiery ball that causes $s1 Fire damage.
 
 Name             : Remove Curse (id=475) [Spell Family (3)] 
@@ -446,7 +446,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.38600
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.12500
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -635,9 +635,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=4785)     : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.98, dl=0.238) | SP Coefficient: 1.63000
+                   Base Value: 1 | Scaled Value: 0 (avg=1.98, dl=0.238) | SP Coefficient: 2.30000
 #2 (id=4786)     : Apply Aura (6) | Periodic Damage: fire every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.36) | SP Coefficient: 0.29700
+                   Base Value: 1 | Scaled Value: 0 (avg=0.36) | SP Coefficient: 0.43000
 #3 (id=169381)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage and an additional $o2 Fire damage over $d.
@@ -702,7 +702,7 @@ Effects          :
 #3 (id=5132)     : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 21
                    Affected Spells: Blink (1953), Mirror Image (55342)
-Description      : When activated, you deal $s1% more spell damage and damaging spells cost $s2% $?p99064[less][more] mana to cast. $?s56381[While Arcane Power is active, the global cooldown of your Blink, Mana Shield, and Mirror Image is reduced to zero. ][]This effect lasts $D.
+Description      : When activated, you deal $s1% more spell damage and damaging spells cost $s2% $?p99064|?s157614[less][more] mana to cast. $?s56381[While Arcane Power is active, the global cooldown of your Blink, Mana Shield, and Mirror Image is reduced to zero. ][]This effect lasts $D.
 Tooltip          : Spell damage increased by $w1%.
 Mana costs of your damaging spells $?$w2=10[increased][reduced] by $w2%.
 
@@ -728,7 +728,7 @@ Effects          :
                    Base Value: 140376 | Scaled Value: 140376
                    Affected Spells: Ring of Frost (113724)
 Description      : Causes your next Mage spell to be instant.  Does not apply to Polymorph, Portal, or Teleport spells.
-Tooltip          : Your next Mage spell with a casting time less than 10 sec will be an instant cast spell.
+Tooltip          : Your next Mage spell will be an instant cast spell.  Does not apply to Polymorph, Portal, or Teleport spells.
 
 Name             : Evocation (id=12051) [Spell Family (3)] 
 Class            : Arcane Mage
@@ -769,8 +769,8 @@ Effects          :
                    Affected Spells: Blizzard (10), Frostbolt (116), Fireball (133), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Pyroblast (11366), Arcane Power (12042), Evocation (12051), Arcane Blast (30451), Blizzard (42208), Frostfire Bolt (44614), Arcane Missiles! (79683), Frostjaw (102051), Conjure Familiar (126578)
 #3 (id=221660)   : Apply Aura (6) | Modify Multistrike% (441)
                    Base Value: 0 | Scaled Value: 0
-Description      : Accelerates your spellcasting, granting $?s56364[$s3% multistrike chance][$s1% haste] and preventing spell pushback.$?s56374[  Casting Icy Veins removes all movement slowing and cast time slowing effects.][] Lasts $d.
-Tooltip          : $?$w3>0[Multistrike chance increased by $w3%][Haste increased by $s1%] and immune to pushback.
+Description      : Accelerates your spellcasting, granting $?s56364[$s3% multistrike chance][$m1% haste] and preventing spell pushback.$?s56374[  Casting Icy Veins removes all movement slowing and cast time slowing effects.][] Lasts $d.
+Tooltip          : $?$w3>0[Multistrike chance increased by $w3%][Haste increased by $w1%] and immune to pushback.
 
 Name             : Ignite (id=12654) [Spell Family (3)] 
 Class            : Mage
@@ -808,7 +808,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000
 #2 (id=127998)   : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150
-Description      : Your target burns for an additional $m1% over $12654d of the total direct damage caused by your Fireball, Frostfire Bolt, Inferno Blast, Scorch, Pyroblast, Flamestrike, and their multistrikes. If this effect is reapplied, any remaining damage will be added to the new Ignite.
+Description      : Your target burns for an additional $m1% over $12654d of the total direct damage caused by your Fireball, Frostfire Bolt, Inferno Blast, Scorch, Pyroblast, Flamestrike$?s153561[, Meteor][], and their multistrikes. If this effect is reapplied, any remaining damage will be added to the new Ignite.
 
 Name             : Shatter (Frost, Passive) (id=12982) [Spell Family (3), Passive] 
 Class            : Frost Mage
@@ -1153,7 +1153,7 @@ Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Rune of Power (116014), Incanter's Flow (116267)
 Attributes       : ........ ........ x....... ......x.   ...x...x ........ .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : .....x.x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1333,15 +1333,17 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
-                 : ........ .x...... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=36371)    : Apply Aura (6) | Periodic Damage: fire every 3 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.18750
+#2 (id=253823)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
 Description      : The target becomes a Living Bomb, taking $44457o1 Fire damage over $44457d. When this effect ends, or the target dies, it explodes to deal an additional $44461s1 Fire damage to the target and all other enemies within $44461A1 yards.
 
 May be spread by Inferno Blast.
-Tooltip          : Causes $s1 Fire damage every $t1 sec. After $d, the target explodes, causing $44461s1 Fire damage to the target and all other enemies within $44461A1 yards.
+Tooltip          : Causes $w1 Fire damage every $t1 sec. After $d, the target explodes, causing $w2 Fire damage to the target and all other enemies within $44461A1 yards.
 
 Name             : Living Bomb (id=44461) [Spell Family (3)] 
 Class            : Mage
@@ -1399,7 +1401,7 @@ Effects          :
 #2 (id=220454)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25
 #3 (id=245924)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25
+                   Base Value: 15 | Scaled Value: 15
 Description      : Your Frostbolts have a $m1% chance to cause the Brain Freeze effect. Each multistrike increases that cast's chance by an additional $m2%.
 
 The Brain Freeze effect causes your next Frostfire Bolt to cost no mana, be instant cast, deal $s3% additional damage, and act as if your target were frozen.
@@ -1417,7 +1419,7 @@ Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Shatter (12982), Fingers of Frost (44544), Glyph of Deep Freeze (115710), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1446,7 +1448,7 @@ Cast Time        : 2.75 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Duration         : 8 seconds
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Brain Freeze (57761), Glyph of Frostfire Bolt (61205), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T11 4P Bonus (90291), Critical Mass (117216), Enhanced Pyrotechnics (157644)
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Brain Freeze (57761), Glyph of Frostfire Bolt (61205), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T11 4P Bonus (90291), Critical Mass (117216), Enhanced Pyrotechnics (157644), Ignition (165979), Firestarter (171170)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1457,7 +1459,7 @@ Effects          :
 #1 (id=36562)    : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -40 | Scaled Value: -40
 #2 (id=36563)    : School Damage: frostfire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.5, dl=0.24) | SP Coefficient: 1.35000
+                   Base Value: 1 | Scaled Value: 0 (avg=1.5, dl=0.24) | SP Coefficient: 1.50000
 Description      : Launches a bolt of frostfire at the enemy, causing $?a57761[${$m2*1.25} to ${$M2*1.25}][$s2] Frostfire damage and slowing the target's movement by $s1% for $d.
 Tooltip          : Movement slowed by $s1%.
 Variables        : $arctic1=$?s31674[${1.01}][${1}]
@@ -1562,7 +1564,7 @@ Effects          :
 #2 (id=134203)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14
                    Affected Spells: Pyroblast (11366)
-#3 (id=221662)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+#3 (id=221662)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25
                    Affected Spells: Pyroblast (11366)
 Description      : Getting two direct-damage critical strikes in a row will make your next Pyroblast spell instant cast, cost no mana, and deal $11366s3% additional damage.
@@ -1698,7 +1700,7 @@ Effects          :
                    Affected Spells: Frost Nova (122), Frost Nova (115757)
 Description      : Reduces the cooldown of Frost Nova by ${$m1/-1000} sec.
 
-Name             : Glyph of Splitting Ice (id=56377) [Spell Family (3), Passive, Hidden] 
+Name             : Glyph of Splitting Ice (Frost) (id=56377) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1964,7 +1966,7 @@ Effects          :
                    Base Value: -10000 | Scaled Value: -10000 | Misc Value: 10
                    Affected Spells: Frostfire Bolt (44614)
 Description      : $@spelldesc44549
-Tooltip          : Your next Frostfire Bolt costs no mana, is instant cast, acts as if your target were frozen, and deals 25% additional damage.
+Tooltip          : Your next Frostfire Bolt costs no mana, is instant cast, acts as if your target were frozen, and deals $44549s3% additional damage.
 
 Name             : Glyph of the Porcupine (id=57924) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
@@ -2957,7 +2959,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=120062)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.01300
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.12500
 #2 (id=219802)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : Blasts the enemy for $s1 Fire damage and spreads your Fire damage effects on the target to up to $s2 enemies within $118280A1 yards.  Inferno Blast will always deal a critical strike. 
@@ -2986,7 +2988,7 @@ Description      : Alters the fabric of time, returning you to your current loca
 Name             : Alter Time (id=110909) [Spell Family (3)] 
 Class            : Mage
 Spell Level      : 87
-Duration         : 15 seconds
+Duration         : 10 seconds
 Attributes       : ........ ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ....x... 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -2997,7 +2999,7 @@ Effects          :
 #1 (id=123137)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 127140 | Scaled Value: 127140 | Misc Value: 108978
 Description      : $@spelldesc108978
-Tooltip          : Altering Time.  Returning to past location and health when duration expires.
+Tooltip          : Altering Time. Returning to past location and health when duration expires.
 
 Name             : Greater Invisibility (id=110959) [Spell Family (3)] 
 Class            : Mage
@@ -3074,7 +3076,7 @@ Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Shatter (12982)
 Attributes       : ........ ........ x....... x..x..x.   ...x...x ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3103,7 +3105,9 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
 Effects          :
 #1 (id=125604)   : Apply Aura (6) | Periodic Dummy: every 6 seconds (226)
                    Base Value: 0 | Scaled Value: 0
-Description      : Places a Frost Bomb on the target for $d triggered by each Ice Lance while the target is frozen.  The bomb releases a wave of freezing ice dealing $113092s1 Frost damage to the target and $113092s2 Frost damage to all other enemies within $113092A2 yards. Limit 1 target.
+Description      : Places a Frost Bomb on the target for $d. Limit 1 target.
+
+Your Ice Lances that benefit from Shatter will trigger the release of a wave of freezing ice, dealing $113092s1 Frost damage to the target and $113092s2 Frost damage to all other enemies within $113092A2 yards.
 Tooltip          : The Mage's Ice Lances that hit the target while frozen will cause the Frost Bomb to release a wave of freezing ice that deals $113092s1 Frost damage to the target, $113092s2 Frost damage to all other enemies within $113092A2 yards.
 
 Name             : Fingers of Frost (id=112965) [Spell Family (3), Passive] 
@@ -3144,9 +3148,9 @@ Attributes       : ........ ........ x.x....x x..x....   ........ ........ .....
                  : ........ ........ x....... ........   .x...... ........ .....x.. ........ 
 Effects          :
 #1 (id=125807)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=4.4198) | SP Coefficient: 2.58510
+                   Base Value: 1 | Scaled Value: 0 (avg=4.4198) | SP Coefficient: 1.50000
 #2 (id=125808)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.2106) | SP Coefficient: 1.29375 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=2.2106) | SP Coefficient: 0.75000 | Radius: 0 - 10 yards
 Description      : $@spelldesc112948
 Tooltip          : Slowed by $113092s3%.
 
@@ -3673,7 +3677,7 @@ Class            : Mage
 Spell Level      : 75
 GCD              : 1.5 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3681,7 +3685,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=159107)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
-Description      : Casts a powerful damage over time effect based upon your talent choice.
+Description      : Choose a level 75 talent.
 
 Name             : Frostbolt (id=126201) [Scaling Spell (4), Spell Family (3)] 
 Class            : Mage
@@ -3965,7 +3969,7 @@ Effects          :
 #1 (id=195539)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 14
                    Affected Spells: Arcane Blast (30451)
-Description      : $@spelldesc145251
+Description      : Arcane Missiles causes your next Arcane Blast within $145252d to cost $145252s1% less mana, stacking up to $145252u times.
 Tooltip          : Your next Arcane Blast will cost $s1% less mana.
 
 Name             : Potent Flames (id=145254) [Scaling Spell (-1), Spell Family (3)] 
@@ -3983,7 +3987,7 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=195545)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 5 | Scaled Value: 114.448 (avg=0.4385) | Misc Value: 917504
-Description      : $@spelldesc145251
+Description      : Consuming Pyroblast! increases your haste by $145254s1 for $145254d, stacking up to $145254u times.
 Tooltip          : Haste increased by $s1.
 
 Name             : Item - Mage T16 4P Bonus (id=145257) [Spell Family (3), Passive] 
@@ -4011,7 +4015,7 @@ Class            : Mage
 Range            : 100 yards
 Velocity         : 0.8 yards/sec
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
-                 : ........ ......x. ...x.... ........   ........ ........ ........ ..x..... 
+                 : ........ ......x. ...x.... ........   ........ ........ ........ ..x...x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ....x... ...x.... ....x... ........ 
@@ -4019,7 +4023,7 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=195563)   : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 0 (avg=1.5, dl=0.15) | SP Coefficient: 1.50000
-Description      : $@spelldesc145257
+Description      : Consuming Brain Freeze has a $145257s2% chance to drop an icy boulder on your target.
 
 Name             : Frozen Thoughts (id=146557) [Spell Family (3)] 
 Class            : Mage
@@ -4038,7 +4042,7 @@ Effects          :
 #1 (id=198026)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 20 | Scaled Value: 20
                    Affected Spells: Cone of Cold (120), Cleansing Flames (107835), Cleansing Flames (109847), Cleansing Flames (109849)
-Description      : $@spelldesc145251
+Description      : Consuming Brain Freeze increases the damage of your next Ice Lance, Frostbolt, Frostfire Bolt, or Cone of Cold by $146557s1%.
 Tooltip          : Your next Ice Lance, Frostbolt, Frostfire Bolt, or Cone of Cold will deal $s1% more damage.
 
 Name             : Glyph of Rapid Displacement (id=146659) [Spell Family (3), Passive, Hidden] 
@@ -4056,7 +4060,7 @@ Effects          :
                    Base Value: -14999 | Scaled Value: -14999 | Misc Value: 44
 Description      : Blink now has 2 charges, gaining a charge every 15 sec, but no longer frees the caster from stuns and bonds.
 
-Name             : Glyph of Evaporation (id=146662) [Spell Family (3), Passive, Hidden] 
+Name             : Glyph of Evaporation (Frost) (id=146662) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
 Attributes       : ......xx ........ ........ ........   ........ ........ ...x.... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4069,7 +4073,7 @@ Effects          :
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 11 | Radius: 100 yards
 Description      : Reduces the size of your Water Elemental by $s1%.
 
-Name             : Glyph of the Unbound Elemental (id=146976) [Spell Family (3), Passive, Hidden] 
+Name             : Glyph of the Unbound Elemental (Frost) (id=146976) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4082,7 +4086,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11
 Description      : Your Water Elemental is replaced by an Unbound Water Elemental.
 
-Name             : Glyph of Condensation (id=147353) [Spell Family (3), Passive, Hidden] 
+Name             : Glyph of Condensation (Frost) (id=147353) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
 Attributes       : ......xx ........ ........ ........   ........ ........ ...x.... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4106,7 +4110,6 @@ Attributes       : ........ x....... ........ ....x...   ........ ........ .x...
 Effects          :
 #1 (id=201009)   : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1079
-Description      : Your Mirror Images cast Arcane Blast or Fireball instead of Frostbolt depending on your primary talent tree.
 
 Name             : Evaporation (id=147971) 
 Class            : Mage
@@ -4132,7 +4135,6 @@ Attributes       : ........ x....... ........ ....x...   ........ ........ .x...
 Effects          :
 #1 (id=201011)   : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1081
-Description      : Your Mirror Images cast Arcane Blast or Fireball instead of Frostbolt depending on your primary talent tree.
 
 Name             : Icicle (id=148012) [Spell Family (3), Hidden] 
 Class            : Mage
@@ -4187,40 +4189,38 @@ Description      : Conjures a prismatic crystal at the target location, which is
 
 When the crystal takes damage, it instantly releases a burst of energy dealing that damage, split evenly between all enemies within 8 yards.
 
-Name             : Meteor (id=153561) 
+Name             : Meteor (id=153561) [Spell Family (3)] 
 Class            : Mage
 Resource         : 1% Base Mana (1600 @Level 100)
 Range            : 40 yards
 GCD              : 1 seconds
-Duration         : 3 seconds
 Cooldown         : 45 seconds
-Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ....x... 
+Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
-                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=212821)   : Persistent Area Aura (27) | Periodic Dummy: every 3 seconds (226)
+#1 (id=212821)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards
 Description      : Calls down a meteor which lands at the target location after $d, dealing $153564s1 Fire damage, split evenly between all targets within 8 yards. Also burns the ground, dealing an additional $155158s1 Fire damage every $155158t1 sec for $153564d to enemies in the area. 
 
-Name             : Meteor (id=153564) 
+Name             : Meteor (id=153564) [Spell Family (3)] 
 Class            : Mage
 Range            : 40 yards
 Velocity         : 1 yards/sec
-Duration         : 8 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ....x... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=212829)   : School Damage: fire (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.75000 | Radius: 0 - 8 yards
-#2 (id=215527)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1712
+#2 (id=215527)   : Trigger Missiles (32)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 175396
 Description      : $@spelldesc153561
 
 Name             : Comet Storm (id=153595) [Spell Family (3)] 
@@ -4318,7 +4318,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=215509)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1
-Description      : Your Fireball, Pyroblast, and Inferno Blast critical strikes reduce the cooldown remaining on Combustion by $s1 sec.
+Description      : Your Fireball, Frostfire Bolt, Pyroblast, and Inferno Blast critical strikes reduce the cooldown remaining on Combustion by $s1 sec.
 
 Name             : Thermal Void (id=155149) [Passive] 
 Class            : Mage
@@ -4372,7 +4372,7 @@ Class            : Mage
 Range            : 40 yards
 Duration         : 10 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .......x ........ ........ ........ 
+                 : ........ ........ ........ ....x...   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
@@ -4774,7 +4774,7 @@ Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Shatter (12982)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4789,7 +4789,7 @@ Effects          :
 Description      : Causes a whirl of icy wind around the target enemy or ally, dealing $s2 Frost damage to all enemies within $A2 yards, and freezing for $d. A primary enemy target will take $s1% increased damage. Max 2 charges.
 
 Replaces Frost Nova.
-Tooltip          : Movement speed reduced by $s3%.
+Tooltip          : Frozen.
 
 Name             : Glyph of Dragon's Breath (Fire) (id=159485) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
@@ -4858,7 +4858,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=224053)   : Apply Aura (6) | Unknown effect sub type (118)
-                   Base Value: 12 | Scaled Value: 12 | Misc Value: 127 | Radius: 100 yards
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 127 | Radius: 100 yards
 Description      : Amplify the effects of helpful magic, increasing all healing received by $s1% for all party and raid members within $a1 yards. Lasts $d.
 Tooltip          : Increases healing received by $s1%.
 
@@ -4934,4 +4934,35 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=234650)   : Apply Aura (6) | Periodic Dummy: every 0.1 seconds (226)
                    Base Value: 0 | Scaled Value: 0
+
+Name             : Meteor Burn (id=175396) [Hidden] 
+Class            : Mage
+Range            : 100 yards
+Duration         : 8 seconds
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ....x...   .......x ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=250555)   : Unknown effect type (179)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1712
+Description      : $@spelldesc153561
+Tooltip          : Burning for $w1 Fire damage every $t1 sec.
+
+Name             : Freezing Grasp (id=175689) 
+Class            : Mage
+Spell Level      : 45
+GCD              : 1.5 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=251163)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Choose a level 45 talent.
 

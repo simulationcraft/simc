@@ -1,5 +1,5 @@
 
-SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18716)
+SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18764)
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
 Resource         : 4% Base Mana (6400 @Level 100)
@@ -8,7 +8,7 @@ Range            : 50000 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 45 seconds
-Affecting spells : Metamorphosis (54879), Kil'jaeden's Cunning (137587)
+Affecting spells : Metamorphosis (103958), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ x....... ........   ..x..... .....x.. .x...... ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -32,7 +32,7 @@ Resource         : 1.25% Base Mana (2000 @Level 100)
 Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Haunt (48181), Metamorphosis (54879), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 2P Bonus (70839), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Chaotic Energy (111546), Item - Warlock T14 2P Bonus (123136), Kil'jaeden's Cunning (137587), Enhanced Corruption (157098), Haunting Spirits (157698), 
+Affecting spells : Haunt (48181), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 2P Bonus (70839), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Chaotic Energy (111546), Item - Warlock T14 2P Bonus (123136), Kil'jaeden's Cunning (137587), Enhanced Corruption (157098), Haunting Spirits (157698), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -46,7 +46,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
 Description      : Corrupts the target, causing $146739o1 Shadow damage over $146739d$?a104315[, and generating $m2 Demonic Fury each time it deals damage.]?s108558[
 
-Your most recently applied Corruption has a $108558m1% chance to generate a Soul Shard each time it deals damage.][.]$?s103958[
+Your most recently applied Corruption has a ${$108558m1/10}.1% chance to generate a Soul Shard each time it deals damage.][.]$?s103958[
 
 Metamorphosis transforms this spell into Doom: 
 
@@ -61,7 +61,7 @@ Spell Level      : 12
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Metamorphosis (54879), Item - Warlock T8 2P Bonus (64931), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Mastery: Emberstorm (77220), Havoc (80240), Fire and Brimstone (108683), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Empowered Immolate (157114)
+Affecting spells : Item - Warlock T8 2P Bonus (64931), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Mastery: Emberstorm (77220), Havoc (80240), Metamorphosis (103958), Fire and Brimstone (108683), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Empowered Immolate (157114)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -81,7 +81,7 @@ Spell Level      : 36
 Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 60 seconds
-Affecting spells : Metamorphosis (54879), Kil'jaeden's Cunning (137587), Dark Soul (138483), Empowered Doom (157100)
+Affecting spells : Mastery: Master Demonologist (77219), Metamorphosis (103958), Kil'jaeden's Cunning (137587), Dark Soul (138483), Empowered Doom (157100)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -91,19 +91,19 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=246)      : Apply Aura (6) | Periodic Damage: shadow every 15 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.50000
-Description      : Inflicts impending doom upon the target, causing $o1 Shadow damage over $d.  Doom critical strikes summon a Wild Imp to attack the target.
+Description      : Inflicts impending doom upon the target, causing $o1 Shadow damage over $d. Doom critical strikes summon a Wild Imp to attack the target.
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
 Name             : Shadow Bolt (id=686) [Spell Family (5)] 
 Class            : Warlock
 Resource         : 5.5% Base Mana (8800 @Level 100)
-Resource         : 40 Demonic Fury w/ Metamorphosis (id=54879)
+Resource         : 40 Demonic Fury w/ Metamorphosis (id=103958)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Metamorphosis (54879), Item - Warlock T8 4P Bonus (64932), Item - Warlock T10 2P Bonus (70839), Item - Warlock T13 4P Bonus (Soulburn) (105787), Item - Warlock T14 2P Bonus (123136), Kil'jaeden's Cunning (137587), Item - Warlock T15 DPS 4P Bonus (138134)
+Affecting spells : Item - Warlock T8 4P Bonus (64932), Item - Warlock T10 2P Bonus (70839), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Item - Warlock T14 2P Bonus (123136), Kil'jaeden's Cunning (137587), Item - Warlock T15 DPS 4P Bonus (138134)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -125,12 +125,12 @@ $@spelldesc103964][]
 Name             : Summon Imp (Summon) (id=688) [Spell Family (5)] 
 Class            : Warlock
 Resource         : 20% Base Mana (32000 @Level 100)
-Resource         : 200 Demonic Fury w/ Metamorphosis (id=54879)
+Resource         : 200 Demonic Fury w/ Metamorphosis (id=103958)
 Spell Level      : 1
 Cast Time        : 5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Affecting spells : Metamorphosis (54879), Soulburn (74434), Kil'jaeden's Cunning (137587), Dark Soul (138483)
+Affecting spells : Soulburn (74434), Metamorphosis (103958), Kil'jaeden's Cunning (137587), Dark Soul (138483)
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -148,11 +148,12 @@ Description      : Summons an Imp under your command that casts ranged Firebolts
 Name             : Drain Life (id=689) [Spell Family (5)] 
 Class            : Affliction Demonology Warlock
 Resource         : 1% Base Mana (1600 @Level 100) and 1% Base Mana (1600 @Level 100) per second
+Resource         : 30 Demonic Fury and 30 Demonic Fury per second w/ Metamorphosis (id=103958)
 Spell Level      : 7
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Haunt (48181), Metamorphosis (54879), Harvest Life (108371), Grimoire of Sacrifice (108503), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Item - Warlock T15 DPS 4P Bonus (138134), Haunting Spirits (157698), 
+Affecting spells : Haunt (48181), Metamorphosis (103958), Harvest Life (108371), Grimoire of Sacrifice (108503), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Item - Warlock T15 DPS 4P Bonus (138134), Haunting Spirits (157698), 
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..... 
                  : ........ ...x.... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -166,20 +167,20 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 10
 #3 (id=186635)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 10
-Description      : Drains life from the target, causing ${($689m1+0.334*$SP)*6} Shadow damage$?a104315&!a54879[,][ and] restoring ${6*($689m2/10)}% of the caster's health$?a104315&!a54879[ and generating ${$m3*6} Demonic Fury][] over $d.
+Description      : Drains life from the target, causing ${($689m1*6)} Shadow damage$?a104315&!a54879[,][ and] restoring $?s63302[${2*6*($689m2/10)}][${6*($689m2/10)}]% of the caster's health$?a104315&!a54879[ and generating ${$m3*6} Demonic Fury][] over $d.
 Tooltip          : Suffering $w1 Shadow damage every $t1 seconds. 
 
-Restoring $689s2% of maximum health to the caster when Drain Life deals damage.
+Restoring ${$689m2/10}.1% of maximum health to the caster when Drain Life deals damage.
 
 Name             : Summon Felhunter (Summon) (id=691) [Spell Family (5)] 
 Class            : Warlock
 Resource         : 25% Base Mana (40000 @Level 100)
-Resource         : 200 Demonic Fury w/ Metamorphosis (id=54879)
+Resource         : 200 Demonic Fury w/ Metamorphosis (id=103958)
 Spell Level      : 29
 Cast Time        : 5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Affecting spells : Metamorphosis (54879), Soulburn (74434), Kil'jaeden's Cunning (137587), Dark Soul (138483)
+Affecting spells : Soulburn (74434), Metamorphosis (103958), Kil'jaeden's Cunning (137587), Dark Soul (138483)
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
@@ -197,12 +198,12 @@ Description      : Summons a Felhunter under your command, able to heal itself b
 Name             : Summon Voidwalker (Summon) (id=697) [Spell Family (5)] 
 Class            : Warlock
 Resource         : 25% Base Mana (40000 @Level 100)
-Resource         : 200 Demonic Fury w/ Metamorphosis (id=54879)
+Resource         : 200 Demonic Fury w/ Metamorphosis (id=103958)
 Spell Level      : 8
 Cast Time        : 5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Affecting spells : Metamorphosis (54879), Soulburn (74434), Kil'jaeden's Cunning (137587), Dark Soul (138483)
+Affecting spells : Soulburn (74434), Metamorphosis (103958), Kil'jaeden's Cunning (137587), Dark Soul (138483)
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
@@ -220,13 +221,13 @@ Description      : Summons a Voidwalker under your command, able to withstand he
 Name             : Banish (id=710) [Spell Family (5)] 
 Class            : Warlock
 Resource         : 3% Base Mana (4800 @Level 100)
-Resource         : 30 Demonic Fury w/ Metamorphosis (id=54879)
+Resource         : 30 Demonic Fury w/ Metamorphosis (id=103958)
 Spell Level      : 32
 Range            : 30 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 30 seconds
-Affecting spells : Metamorphosis (54879), Kil'jaeden's Cunning (137587), Dark Soul (138483)
+Affecting spells : Metamorphosis (103958), Kil'jaeden's Cunning (137587), Dark Soul (138483)
 Attributes       : ........ ........ x....... ......x.   ........ ..x..... x....... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -246,12 +247,12 @@ Tooltip          : Invulnerable, but unable to act.
 Name             : Summon Succubus (Summon) (id=712) [Spell Family (5)] 
 Class            : Warlock
 Resource         : 25% Base Mana (40000 @Level 100)
-Resource         : 200 Demonic Fury w/ Metamorphosis (id=54879)
+Resource         : 200 Demonic Fury w/ Metamorphosis (id=103958)
 Spell Level      : 20
 Cast Time        : 5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Affecting spells : Metamorphosis (54879), Soulburn (74434), Kil'jaeden's Cunning (137587), Dark Soul (138483)
+Affecting spells : Soulburn (74434), Metamorphosis (103958), Kil'jaeden's Cunning (137587), Dark Soul (138483)
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
@@ -272,7 +273,7 @@ Spell Level      : 11
 Range            : 45 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Metamorphosis (54879), Glyph of Health Funnel (56238), Soulburn (74434), Kil'jaeden's Cunning (137587)
+Affecting spells : Glyph of Health Funnel (56238), Soulburn (74434), Metamorphosis (103958), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ........ 
                  : ...x.... ...x.... ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -298,7 +299,7 @@ GCD              : 1.5 seconds
 Duration         : 24 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Affecting spells : Haunt (48181), Metamorphosis (54879), Glyph of Verdant Spheres (56241), Mastery: Potent Afflictions (77215), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
+Affecting spells : Haunt (48181), Glyph of Verdant Spheres (56241), Mastery: Potent Afflictions (77215), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -311,7 +312,7 @@ Effects          :
 #2 (id=198244)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 1 | Scaled Value: 1
 Description      : Inflicts increasing agony on the target, causing ${$o1*10} Shadow damage over $d.  Damage starts low and increases over the duration.
-Tooltip          : Suffering $w2 Shadow damage every $t1 sec.
+Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 Damage increases over time.
 
 Name             : Enslave Demon (id=1098) [Spell Family (5)] 
@@ -322,7 +323,7 @@ Range            : 30 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Duration         : 300 seconds
-Affecting spells : Metamorphosis (54879), Glyph of Enslave Demon (58107), Kil'jaeden's Cunning (137587)
+Affecting spells : Glyph of Enslave Demon (58107), Metamorphosis (103958), Kil'jaeden's Cunning (137587), Grimoire of Convert Demon (168800)
 Attributes       : ........ ........ x....... ......x.   x....... ........ .x...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ...x.... ........ .....x..   ........ ........ ........ ........ 
@@ -343,7 +344,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 1.5 yards/sec
 Cooldown         : 600 seconds
-Affecting spells : Metamorphosis (54879), Glyph of Hand of Gul'dan (56248), Item - Warlock T11 2P Bonus (89934), Kil'jaeden's Cunning (137587), Demonic Servitude (152107), Grimoire of Summoning Secrets (168800)
+Affecting spells : Glyph of Hand of Gul'dan (56248), Item - Warlock T11 2P Bonus (89934), Metamorphosis (103958), Kil'jaeden's Cunning (137587), Demonic Servitude (152107)
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -361,7 +362,7 @@ Name             : Life Tap (id=1454) [Scaling Spell (10), Spell Family (5)]
 Class            : Warlock
 Spell Level      : 16
 GCD              : 1.5 seconds
-Affecting spells : Metamorphosis (54879), Glyph of Life Tap (63320), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
+Affecting spells : Glyph of Life Tap (63320), Metamorphosis (103958), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ x....... ..x....x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .x......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -384,7 +385,7 @@ Resource         : 2% Base Mana (3200 @Level 100) and 2% Base Mana (3200 @Level 
 Spell Level      : 22
 GCD              : 1.5 seconds
 Duration         : 14 seconds
-Affecting spells : Metamorphosis (54879), Mannoroth's Fury (108508), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Item - Warlock T15 DPS 4P Bonus (138134), 
+Affecting spells : Metamorphosis (103958), Mannoroth's Fury (108508), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Item - Warlock T15 DPS 4P Bonus (138134), 
 Attributes       : ........ ........ x....... ........   ......x. .......x x....... ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ......x. 
@@ -410,7 +411,7 @@ Tooltip          : Damages self and all nearby enemies.
 
 Name             : Use Soulstone (id=3026) [Spell Family (5)] 
 Class            : Warlock
-Affecting spells : Metamorphosis (54879), Glyph of Soulstone (56231), Kil'jaeden's Cunning (137587)
+Affecting spells : Glyph of Soulstone (56231), Metamorphosis (103958), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ .......x ........   ........ ..x..... ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -545,7 +546,7 @@ Cooldown         : 40 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Metamorphosis (54879), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
+Affecting spells : Metamorphosis (103958), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ x....... ......x.   ...x...x ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -571,7 +572,7 @@ Spell Level      : 21
 Range            : 35 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Metamorphosis (54879), Glyph of Hand of Gul'dan (56248), Mannoroth's Fury (108508), Aftermath (109784), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
+Affecting spells : Glyph of Hand of Gul'dan (56248), Metamorphosis (103958), Mannoroth's Fury (108508), Aftermath (109784), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ x....... ........   ..xx...x ..x..... ........ ....x... 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -593,7 +594,7 @@ Spell Level      : 14
 Range            : 30 yards
 Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
-Affecting spells : Metamorphosis (54879), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
+Affecting spells : Metamorphosis (103958), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ x....... ......x.   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -614,7 +615,7 @@ Tooltip          : Disoriented.
 Name             : Hellfire (id=5857) [Scaling Spell (10), Spell Family (5)] 
 Class            : Warlock
 Spell Level      : 20
-Affecting spells : Metamorphosis (54879), Glyph of Hand of Gul'dan (56248), Mannoroth's Fury (108508), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
+Affecting spells : Glyph of Hand of Gul'dan (56248), Metamorphosis (103958), Mannoroth's Fury (108508), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ ........ ........ .x...... 
                  : ........ .......x ........ ........   ........ ........ ........ ..x...x. 
@@ -632,7 +633,7 @@ Resource         : 5% Base Mana (8000 @Level 100)
 Spell Level      : 9
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
-Affecting spells : Metamorphosis (54879), Kil'jaeden's Cunning (137587)
+Affecting spells : Metamorphosis (103958), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
@@ -642,7 +643,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
 Effects          :
 #1 (id=2130)     : Server Side Script (77)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1.00000
-Description      : Creates a Healthstone that can be consumed to restore $?s56224[${$m1*2}% of your maximum health over ${$56224m2/1000} sec.][$m1% of your maximum health.]
+Description      : Creates a Healthstone that can be consumed to restore $?s56224[$6262o2 health over $6262d.][$6262m1 health.]
 
 Name             : Soulstone (id=6203) 
 Class            : Warlock
@@ -660,6 +661,24 @@ Description      : When cast on live targets, the soul of the target is stored a
 
 If cast on a dead target, they are instantly resurrected. Targets resurrect with $3026s1% health and $3026q1% mana.
 
+Name             : Healthstone (id=6262) [Scaling Spell (-2), Spell Family (5)] 
+Class            : Warlock
+Cooldown         : 60 seconds
+Affecting spells : Glyph of Healthstone (56224), Metamorphosis (103958), Kil'jaeden's Cunning (137587)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=2157)     : Direct Heal (10)
+                   Base Value: 15 | Scaled Value: 50000.1 (avg=0.294118)
+#2 (id=127600)   : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
+                   Base Value: 30 | Scaled Value: 9999.91 (avg=0.058823)
+Description      : $?s56224[Restores $o2 health over $d.][Instantly restores $m1 health.]
+Tooltip          : $w2 health restored every $t2 sec.
+
 Name             : Soul Fire (id=6353) [Spell Family (5)] 
 Class            : Demonology Warlock
 Resource         : 15% Base Mana (24000 @Level 100)
@@ -668,7 +687,7 @@ Range            : 40 yards
 Cast Time        : 4 seconds
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
-Affecting spells : Metamorphosis (54879), Item - Warlock T10 2P Bonus (70839), Mastery: Emberstorm (77220), Chaotic Energy (111546), Molten Core (122355), Kil'jaeden's Cunning (137587), Item - Warlock T15 DPS 4P Bonus (138134)
+Affecting spells : Item - Warlock T10 2P Bonus (70839), Mastery: Emberstorm (77220), Metamorphosis (103958), Chaotic Energy (111546), Molten Core (122355), Kil'jaeden's Cunning (137587), Item - Warlock T15 DPS 4P Bonus (138134)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -677,7 +696,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2210)     : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.58125
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.42500
 #2 (id=114966)   : Energize Power (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: demonic_fury
 Description      : Burn the enemy's soul, causing $s1 Fire damage$?a104315&!a54879[ and generating $s2 Demonic Fury][].  Soul Fire always critically strikes and your critical strike chance increases its damage.
@@ -737,7 +756,7 @@ GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Duration         : 3 seconds
 Cooldown         : 45 seconds
-Affecting spells : Metamorphosis (54879), Havoc (80240), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
+Affecting spells : Havoc (80240), Metamorphosis (103958), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -753,7 +772,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 108396
 #4 (id=200196)   : Apply Aura (6) | Unknown effect sub type (191)
                    Base Value: 7 | Scaled Value: 7
-Description      : Horrifies an enemy target to flee, incapacitating them for $6789d, and restores $108396s1% of the caster's maximum health.
+Description      : Horrifies an enemy target into fleeing, incapacitating them for $6789d, and restores $108396s1% of the caster's maximum health.
 Tooltip          : Incapacitated.
 
 Name             : Lash of Pain (Basic Attack) (id=7814) [Scaling Spell (10), Spell Family (57)] 
@@ -939,7 +958,7 @@ Resource         : 1 Burning Ember
 Spell Level      : 47
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Metamorphosis (54879), Havoc (80240), Grimoire of Sacrifice (108503), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Dark Soul (138483)
+Affecting spells : Havoc (80240), Metamorphosis (103958), Grimoire of Sacrifice (108503), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Dark Soul (138483)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -962,7 +981,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
-Affecting spells : Metamorphosis (54879), Glyph of Conflagrate (56235), Item - Warlock T8 2P Bonus (64931), Mastery: Emberstorm (77220), Havoc (80240), Fire and Brimstone (108683), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Charred Remains (157696), 
+Affecting spells : Glyph of Conflagrate (56235), Item - Warlock T8 2P Bonus (64931), Mastery: Emberstorm (77220), Havoc (80240), Metamorphosis (103958), Fire and Brimstone (108683), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Charred Remains (157696), 
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -984,7 +1003,7 @@ Spell Level      : 58
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 600 seconds
-Affecting spells : Metamorphosis (54879), Item - Warlock T11 2P Bonus (89934), Kil'jaeden's Cunning (137587), Demonic Servitude (152107), Grimoire of Summoning Secrets (168800)
+Affecting spells : Item - Warlock T11 2P Bonus (89934), Metamorphosis (103958), Kil'jaeden's Cunning (137587), Demonic Servitude (152107)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -1103,7 +1122,7 @@ Description      : Heals and energizes when an effect is dispelled.
 Name             : Immolation (id=20153) [Scaling Spell (10), Spell Family (5)] 
 Class            : Warlock
 Spell Level      : 50
-Affecting spells : Metamorphosis (54879), Grimoire of Supremacy (108499), Kil'jaeden's Cunning (137587)
+Affecting spells : Metamorphosis (103958), Grimoire of Supremacy (108499), Kil'jaeden's Cunning (137587)
 Attributes       : ....x... ........ x.x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1203,7 +1222,7 @@ Duration         : 18 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Haunt (48181), Metamorphosis (54879), Soulburn (74434), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587)
+Affecting spells : Haunt (48181), Soulburn (74434), Metamorphosis (103958), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1217,7 +1236,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 #3 (id=154322)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-Description      : Embeds a demon seed in the enemy target, causing $o1 Shadow damage over $d.  Detonates for $27285s1 Shadow damage to all enemies within $27285a1 yards after the target dies or takes ${6*0.5*($m1+$M1)} damage from your spells.$?s86664[
+Description      : Embeds a demon seed in the enemy target, causing $o1 Shadow damage over $d.  Detonates for $27285s1 Shadow damage to all enemies within $27285a1 yards after the target dies or takes ${6*0.5*($m1+$M1)} damage from your spells.$?s74434[
 
 |cFFFFFFFFSoulburn: |r
 |cFF8282FFYour Seed of Corruption detonation effect will afflict Corruption on all enemy targets.|R][]
@@ -1227,7 +1246,7 @@ Name             : Seed of Corruption (id=27285) [Scaling Spell (10), Spell Fami
 Class            : Warlock
 Spell Level      : 72
 Range            : 50000 yards
-Affecting spells : Haunt (48181), Metamorphosis (54879), Glyph of Hand of Gul'dan (56248), Grimoire of Sacrifice (108503), Mannoroth's Fury (108508), Kil'jaeden's Cunning (137587)
+Affecting spells : Glyph of Hand of Gul'dan (56248), Metamorphosis (103958), Mannoroth's Fury (108508), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   x....... .x...... ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x..... 
@@ -1287,7 +1306,7 @@ Stacks           : 5 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
-Affecting spells : Metamorphosis (54879), Glyph of Imp Swarm (56242), Item - Warlock T8 4P Bonus (64932), Item - Warlock T10 2P Bonus (70839), Mastery: Emberstorm (77220), Havoc (80240), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Fire and Brimstone (108683), Chaotic Energy (111546), Backdraft (117828), Item - Warlock T14 2P Bonus (123136), Kil'jaeden's Cunning (137587), Charred Remains (157696), 
+Affecting spells : Glyph of Imp Swarm (56242), Item - Warlock T8 4P Bonus (64932), Item - Warlock T10 2P Bonus (70839), Mastery: Emberstorm (77220), Havoc (80240), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Fire and Brimstone (108683), Chaotic Energy (111546), Backdraft (117828), Item - Warlock T14 2P Bonus (123136), Kil'jaeden's Cunning (137587), Charred Remains (157696), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1325,7 +1344,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 14 seconds
-Affecting spells : Haunt (48181), Metamorphosis (54879), Glyph of Unstable Affliction (56233), Glyph of Falling Meteor (56247), Item - Warlock T8 2P Bonus (64931), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 4P Bonus (70841), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
+Affecting spells : Haunt (48181), Glyph of Unstable Affliction (56233), Glyph of Falling Meteor (56247), Item - Warlock T8 2P Bonus (64931), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 4P Bonus (70841), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Metamorphosis (103958), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -1334,7 +1353,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=19677)    : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.26100
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25000
 Description      : Causes $o1 damage over $d.  If dispelled, the dispeller suffers ${$m1*8} instant Shadow damage and is silenced for $31117d. This damage is always a critical strike.
 Tooltip          : Suffering $w2 Shadow damage every $t1 sec.
 If dispelled, will cause ${$m1*8} damage to the dispeller, will always critically strike, and silence them for $31117d.
@@ -1342,12 +1361,12 @@ If dispelled, will cause ${$m1*8} damage to the dispeller, will always criticall
 Name             : Summon Felguard (Summon) (id=30146) [Spell Family (5)] 
 Class            : Demonology Warlock
 Resource         : 25% Base Mana (40000 @Level 100)
-Resource         : 200 Demonic Fury w/ Metamorphosis (id=54879)
+Resource         : 200 Demonic Fury w/ Metamorphosis (id=103958)
 Spell Level      : 42
 Cast Time        : 5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Affecting spells : Metamorphosis (54879), Kil'jaeden's Cunning (137587), Dark Soul (138483)
+Affecting spells : Metamorphosis (103958), Kil'jaeden's Cunning (137587), Dark Soul (138483)
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
@@ -1445,7 +1464,7 @@ Range            : 30 yards
 GCD              : 0.5 seconds
 Duration         : 3 seconds
 Cooldown         : 30 seconds
-Affecting spells : Metamorphosis (54879), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
+Affecting spells : Metamorphosis (103958), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ x....... ........   ...x...x ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1463,7 +1482,7 @@ Class            : Warlock
 Range            : 50000 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
-Affecting spells : Metamorphosis (54879), Mastery: Potent Afflictions (77215), Kil'jaeden's Cunning (137587)
+Affecting spells : Mastery: Potent Afflictions (77215), Metamorphosis (103958), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ x....... ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1515,7 +1534,7 @@ Tooltip          : Interrupted.
 Name             : Soulshatter (id=32835) [Spell Family (5)] 
 Class            : Warlock
 Range            : 50000 yards
-Affecting spells : Metamorphosis (54879), Kil'jaeden's Cunning (137587)
+Affecting spells : Metamorphosis (103958), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ x.x..... ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -1563,7 +1582,7 @@ Name             : Rain of Fire (id=42223) [Scaling Spell (10), Spell Family (5)
 Class            : Warlock
 Spell Level      : 20
 Range            : 100 yards
-Affecting spells : Metamorphosis (54879), Glyph of Hand of Gul'dan (56248), Mannoroth's Fury (108508), Aftermath (109784), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
+Affecting spells : Glyph of Hand of Gul'dan (56248), Metamorphosis (103958), Mannoroth's Fury (108508), Aftermath (109784), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ .x...... ........ .x....x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x..... 
@@ -1598,7 +1617,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Affecting spells : Metamorphosis (54879), Kil'jaeden's Cunning (137587), Glyph of Shadowflame (159688)
+Affecting spells : Metamorphosis (103958), Kil'jaeden's Cunning (137587), Glyph of Shadowflame (159688)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   .......x ........ ..x..... ........ 
                  : ........ .......x ........ ........   ........ .....x.. ........ ........ 
@@ -1613,10 +1632,10 @@ Effects          :
 Description      : Deals $47960o1 Shadowflame damage over $47960d. Generates 2 Demonic Fury every time it deals damage.
 Tooltip          : Deals $w1 Shadowflame damage every $t1 sec.
 
-Name             : Haunt (id=48181) [Scaling Spell (10), Spell Family (5)] 
+Name             : Haunt (id=48181) [Spell Family (5)] 
 Class            : Affliction Warlock
 Resource         : 1 Soul Shard
-Spell Level      : 62
+Spell Level      : 60
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
@@ -1631,15 +1650,18 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=40331)    : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.625) | SP Coefficient: 2.95500
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.75000
 #2 (id=40332)    : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100
 #3 (id=40333)    : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 35 | Scaled Value: 35
 #4 (id=159995)   : Apply Aura (6) | Unknown effect sub type (271)
-                   Base Value: 35 | Scaled Value: 35
-                   Affected Spells: Corruption (172), Drain Life (689), Agony (980), Seed of Corruption (27243), Seed of Corruption (27285), Unstable Affliction (30108), Soul Swap (86121), Seed of Corruption (87385), Drain Soul (103103), Harvest Life (108371), Seed of Corruption (114790), Shadow Shield (115234), Unstable Affliction (131736), Agony (131737), Corruption (131740), Seed of Corruption (132566), Corruption (146739)
-Description      : A ghostly soul haunts the target, dealing $s1 Shadow damage and increasing damage over time you deal to the target by $s3% for $d.
+                   Base Value: 30 | Scaled Value: 30
+                   Affected Spells: Corruption (172), Drain Life (689), Agony (980), Seed of Corruption (27243), Unstable Affliction (30108), Soul Swap (86121), Drain Soul (103103), Harvest Life (108371), Seed of Corruption (114790), Shadow Shield (115234), Unstable Affliction (131736), Agony (131737), Corruption (131740), Seed of Corruption (132566), Corruption (146739)
+Description      : A ghostly soul haunts the target, dealing $s1 Shadow damage and increasing damage over time you deal to the target by $s3% for $d.$?s152109[
+
+|cFFFFFFFFSoulburn:|r
+|cFF8282FFYour Haunt spell also increases the damage of your damage over time effects to all targets by $157698s1% for $157698d.|r][]
 Tooltip          : Damage over time taken from the caster is increased by $s3%.
 
 Name             : Shadow Bite (Basic Attack) (id=54049) [Scaling Spell (10), Spell Family (57)] 
@@ -1666,69 +1688,6 @@ Description      : Bite the enemy, causing $s1 Shadow damage.$?a104315[
 Master gains $s3 Demonic Fury.][]
 
 |cFF777777(Right-Click to toggle)|r
-
-Name             : Metamorphosis (id=54817) [Spell Family (5), Hidden] 
-Class            : Warlock
-Duration         : Aura (infinite)
-Cooldown         : 180 seconds
-Attributes       : ....x..x x....... ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=47687)    : Apply Aura (6) | Dummy (4)
-                   Base Value: -35 | Scaled Value: -35 | SP Coefficient: 1.00000 | Misc Value: 11
-#2 (id=47688)    : Apply Aura (6) | Dummy (4)
-                   Base Value: -35 | Scaled Value: -35 | SP Coefficient: 1.00000 | Misc Value: 12
-#3 (id=47689)    : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 250 | Scaled Value: 250 | SP Coefficient: 1.00000 | Misc Value: 1
-#4 (id=137903)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 11
-#5 (id=141523)   : Apply Aura (6) | Unknown effect sub type (382)
-                   Base Value: -70 | Scaled Value: -70 | SP Coefficient: 1.00000 | Misc Value: 13
-
-Name             : Metamorphosis (id=54879) [Spell Family (5), Hidden] 
-Class            : Warlock
-Duration         : Aura (infinite)
-Cooldown         : 180 seconds
-Attributes       : ....x..x x....... ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=47762)    : Apply Aura (6) | Unknown effect sub type (244)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 8
-#3 (id=47764)    : Apply Aura (6) | Unknown effect sub type (275)
-                   Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Eye of Kilrogg (126), Corruption (172), Immolate (348), Doom (603), Shadow Bolt (686), Summon Imp (688), Drain Life (689), Summon Felhunter (691), Summon Voidwalker (697), Banish (710), Summon Succubus (712), Health Funnel (755), Agony (980), Enslave Demon (1098), Summon Infernal (1122), Life Tap (1454), Hellfire (1949), Use Soulstone (3026), Howl of Terror (5484), Rain of Fire (5740), Fear (5782), Hellfire (5857), Create Healthstone (6201), Soul Fire (6353), Mortal Coil (6789), Shadowburn (17877), Conflagrate (17962), Summon Doomguard (18540), Immolation (20153), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Unstable Affliction (30108), Shadowfury (30283), Unstable Affliction (31117), Soulshatter (32835), Rain of Fire (42223), Hand of Gul'dan (47960), Soulburn (74434), Havoc (80240), Doom Bolt (85692), Seed of Corruption (87385), Drain Soul (103103), Immolation Aura (104025), Soul Fire (104027), Rain of Fire (104232), Imp Swarm (104316), Unending Resolve (104773), Hand of Gul'dan (105174), Harvest Life (108371), Fire and Brimstone (108683), Conflagrate (108685), Immolate (108686), Dark Intent (109773), Dark Soul: Instability (113858), Dark Soul: Misery (113860), Dark Soul: Knowledge (113861), Health Funnel (114189), Ember Tap (114635), Incinerate (114654), Seed of Corruption (114790), Shadow Shield (115234), Chaos Bolt (116858), Fear (118699), Soul Swap (119678), Chaos Wave (124915), Chaos Wave (124916), Unstable Affliction (131736), Agony (131737), Corruption (131740), Seed of Corruption (132566), Corruption (146739), Unending Resolve (148688), Cataclysm (152108), Demonbolt (157695), Immolate (157736)
-#4 (id=139992)   : Apply Aura (6) | Unknown effect sub type (275)
-                   Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Corruption (172), Immolate (348), Shadow Bolt (686), Drain Life (689), Hellfire (1949), Rain of Fire (5740), Hellfire (5857), Rain of Fire (42223), Immolation Aura (104025), Rain of Fire (104232), Immolate (108686), Corruption (131740), Corruption (146739), Immolate (157736)
-#5 (id=139993)   : Dummy (3)
-                   Base Value: 103988 | Scaled Value: 103988
-                   Affected Spells: Shadow Bolt (686)
-#6 (id=139994)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 14
-                   Affected Spells: Eye of Kilrogg (126), Banish (710), Create Healthstone (6201)
-#7 (id=139995)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
-                   Base Value: -500 | Scaled Value: -500 | SP Coefficient: 1.00000 | Misc Value: 21
-                   Affected Spells: Summon Imp (688), Summon Felhunter (691), Summon Voidwalker (697), Summon Succubus (712), Health Funnel (755), Summon Infernal (1122), Life Tap (1454), Summon Doomguard (18540), Summon Voidwalker (25112), Summon Felguard (30146), Summon Fel Imp (112866), Summon Voidlord (112867), Summon Shivarra (112868), Summon Observer (112869), Summon Wrathguard (112870), Summon Abyssal (112921), Summon Terrorguard (112927), Health Funnel (114189)
-#8 (id=139996)   : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 10
-                   Affected Spells: Summon Imp (688), Summon Felhunter (691), Summon Voidwalker (697), Summon Succubus (712), Summon Voidwalker (25112), Summon Felguard (30146), Summon Fel Imp (112866), Summon Voidlord (112867), Summon Shivarra (112868), Summon Observer (112869), Summon Wrathguard (112870)
-#9 (id=139997)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 14
-                   Affected Spells: Shadow Bolt (686), Summon Imp (688), Summon Felhunter (691), Summon Voidwalker (697), Summon Succubus (712), Summon Voidwalker (25112), Summon Felguard (30146), Summon Fel Imp (112866), Summon Voidlord (112867), Summon Shivarra (112868), Summon Observer (112869), Summon Wrathguard (112870)
-#10 (id=140016)   : Apply Aura (6) | Proc Trigger Spell: Summon Demon Cooldown (42)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Trigger Spell: 120465
-                   Affected Spells: Summon Imp (688), Summon Felhunter (691), Summon Voidwalker (697), Summon Succubus (712), Summon Voidwalker (25112), Summon Felguard (30146), Summon Fel Imp (112866), Summon Voidlord (112867), Summon Shivarra (112868), Summon Observer (112869), Summon Wrathguard (112870)
-#11 (id=140023)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
-                   Base Value: 60000 | Scaled Value: 60000 | Misc Value: 11
-                   Affected Spells: Summon Imp (688), Summon Felhunter (691), Summon Voidwalker (697), Summon Succubus (712), Summon Voidwalker (25112), Summon Felguard (30146), Summon Fel Imp (112866), Summon Voidlord (112867), Summon Shivarra (112868), Summon Observer (112869), Summon Wrathguard (112870)
 
 Name             : Glyph of Subtlety (Affliction) (id=56217) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
@@ -1770,8 +1729,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=49251)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 100 | Scaled Value: 100
+                   Affected Spells: Healthstone (6262)
 #2 (id=127599)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
                    Base Value: 10000 | Scaled Value: 10000 | Misc Value: 1
+                   Affected Spells: Healthstone (6262)
 Description      : You receive $56224s1% more healing from using a healthstone, but the health is restored over ${$m2/1000} sec.
 
 Name             : Glyph of Dark Soul (id=56228) [Spell Family (5), Passive, Hidden] 
@@ -1947,7 +1908,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=49273)    : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5
-Description      : Your Felguard will equip a random two-handed axe, sword or polearm from your backpack.
+Description      : Your Felguard will equip a random two-handed axe, mace, sword, or polearm from your backpack.
 
 Name             : Glyph of Falling Meteor (Demonology) (id=56247) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
@@ -2322,7 +2283,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=51414)    : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 10
-                   Affected Spells: Enslave Demon (1098)
+                   Affected Spells: Enslave Demon (1098), Convert Demon (175984)
 Description      : Reduces the cast time of your Enslave Demon spell by $58107s1%.
 
 Name             : Unending Breath (id=58267) 
@@ -2418,7 +2379,7 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35
 Description      : $@spelldesc56218
 
-Name             : Glyph of Drain Life (id=63302) [Spell Family (5), Passive, Hidden] 
+Name             : Glyph of Drain Life (Affliction, Demonology) (id=63302) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2641,7 +2602,7 @@ Resource         : 1 Soul Shard
 Spell Level      : 19
 Duration         : 30 seconds
 Cooldown         : 1 seconds
-Affecting spells : Metamorphosis (54879), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
+Affecting spells : Metamorphosis (103958), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2691,19 +2652,19 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=68066)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 8
-#2 (id=124552)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
-#3 (id=92147)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100
-Description      : Increases the damage done by your demon servants by ${$77219m1}.2%.
+#1 (id=68066)    : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75000 | Misc Value: 0x7f
+#2 (id=124552)   : Apply Aura (6) | Unknown effect sub type (429)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75000
+#3 (id=92147)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000
+                   Affected Spells: Doom (603), Touch of Chaos (103964), Soul Fire (104027), Chaos Wave (124915), Demonbolt (157695)
+#4 (id=251445)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Misc Value: 22
+                   Affected Spells: Doom (603), Touch of Chaos (103964), Soul Fire (104027), Chaos Wave (124915), Demonbolt (157695)
+Description      : Increases all damage done by you and your demon servants by $s1%.
 
-Increases the damage you deal in caster form by ${$77219m1}.2%.
-
-Increases the damage you deal while in Metamorphosis form by ${$77219m1*3}.2%$?s63303[
-
-Reduces the damage you take while in Dark Apotheosis form by ${$114168m6+($77219m1/($77219m1+$114168m1))*100}.2%][].
+Further increases the damage of your Touch of Chaos, Chaos Wave, Doom, Immolation Aura$?s157695[, Demonbolt][], and Soul Fire while in Metamorphosis by $s3%.
 
 Name             : Mastery: Emberstorm (id=77220) [Spell Family (5), Passive] 
 Class            : Destruction Warlock
@@ -2724,7 +2685,7 @@ Effects          :
                    Affected Spells: Immolate (348), Soul Fire (6353), Conflagrate (17962), Incinerate (29722), Soul Fire (104027), Conflagrate (108685), Immolate (108686), Incinerate (114654)
 #4 (id=137876)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Misc Value: 22
-                   Affected Spells: Immolate (157736)
+                   Affected Spells: Ember Tap (114635), Immolate (157736)
 Description      : $?$W1>0[][Increases the damage of Immolate, Incinerate, and Conflagrate by ${$77220m3}.2%.
 
 ]Increases the effectiveness of Burning Ember consuming spells by ${$77220m1}.2%|r.
@@ -2755,7 +2716,7 @@ Duration         : 15 seconds
 Cooldown         : 25 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Metamorphosis (54879), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Glyph of Havoc (146962), Enhanced Havoc (157126)
+Affecting spells : Metamorphosis (103958), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Glyph of Havoc (146962), Enhanced Havoc (157126)
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ..x..... ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -2791,7 +2752,7 @@ Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 3 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Metamorphosis (54879), Grimoire of Supremacy (108499), Kil'jaeden's Cunning (137587)
+Affecting spells : Metamorphosis (103958), Grimoire of Supremacy (108499), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2859,7 +2820,7 @@ Effects          :
 Description      : Copies your damage over time effects from the target, preserving their duration.  Your next use of Soul Swap within $86211d will exhale a copy of the effects onto a new target.$?s74434&!s603[
 
 |cFFFFFFFFSoulburn:|r
-|cFF8282FFApplies Corruption, Unstable Affliction, and Agony without removing them from a target.|r][]
+|cFF8282FFApplies Corruption, Unstable Affliction, and Agony without requiring a previous copy.|r][]
 
 Name             : Soul Swap (id=86211) [Spell Family (5)] 
 Class            : Warlock
@@ -2888,7 +2849,7 @@ Class            : Warlock
 Spell Level      : 72
 Range            : 50000 yards
 Cooldown         : 60 seconds
-Affecting spells : Haunt (48181), Metamorphosis (54879), Glyph of Hand of Gul'dan (56248), Soulburn (74434), Grimoire of Sacrifice (108503), Mannoroth's Fury (108508), Kil'jaeden's Cunning (137587)
+Affecting spells : Glyph of Hand of Gul'dan (56248), Soulburn (74434), Metamorphosis (103958), Mannoroth's Fury (108508), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   x....... .x...... ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x..... 
@@ -3167,7 +3128,7 @@ Spell Level      : 42
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
-Affecting spells : Haunt (48181), Metamorphosis (54879), Item - Warlock T8 4P Bonus (64932), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587), Item - Warlock T15 DPS 4P Bonus (138134), Empowered Grasp (145082), Haunting Spirits (157698), 
+Affecting spells : Haunt (48181), Item - Warlock T8 4P Bonus (64932), Metamorphosis (103958), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587), Item - Warlock T15 DPS 4P Bonus (138134), Empowered Grasp (145082), Haunting Spirits (157698), 
 Attributes       : x....... ........ x....... ........   ..x..... ......x. .x...... ..x..... 
                  : ........ ...x.... ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -3176,7 +3137,7 @@ Attributes       : x....... ........ x....... ........   ..x..... ......x. .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=112098)   : Apply Aura (6) | Periodic Damage: shadow every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.15000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.19000
 #2 (id=171006)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=171007)   : Apply Aura (6) | Dummy (4)
@@ -3188,6 +3149,7 @@ Tooltip          : Deals $w1 Shadow damage every $t1 sec and causes all of the W
 
 Name             : Metamorphosis (id=103958) [Spell Family (5)] 
 Class            : Demonology Warlock
+Resource         : 6 Demonic Fury per second
 Spell Level      : 10
 Duration         : Aura (infinite)
 Cooldown         : 10 seconds
@@ -3204,25 +3166,36 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .x...
 Effects          :
 #1 (id=113189)   : Apply Aura (6) | Shapeshift (36)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 0x7
-#2 (id=113190)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f
-#3 (id=133528)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
-                   Base Value: 300 | Scaled Value: 300
-#4 (id=155358)   : Apply Aura (6) | Unknown effect sub type (396)
+#2 (id=113190)   : Apply Aura (6) | Unknown effect sub type (396)
                    Base Value: 39 | Scaled Value: 39 | Misc Value: 15 | Misc Value 2: 0x1 | Trigger Spell: 123217
-#5 (id=172055)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22
-                   Affected Spells: Corruption (172), Corruption (131740), Corruption (146739)
-#6 (id=171739)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+#3 (id=251492)   : Apply Aura (6) | Modify Base Resistance (142)
+                   Base Value: 250 | Scaled Value: 250 | SP Coefficient: 1.00000 | Misc Value: 1
+#4 (id=251493)   : Apply Aura (6) | Unknown effect sub type (382)
+                   Base Value: -71 | Scaled Value: -71 | SP Coefficient: 1.00000 | Misc Value: 13
+#5 (id=251494)   : Apply Aura (6) | Unknown effect sub type (244)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 8
+#7 (id=251496)   : Apply Aura (6) | Unknown effect sub type (275)
+                   Base Value: 0 | Scaled Value: 0
+                   Affected Spells: Eye of Kilrogg (126), Corruption (172), Immolate (348), Doom (603), Shadow Bolt (686), Summon Imp (688), Drain Life (689), Summon Felhunter (691), Summon Voidwalker (697), Banish (710), Summon Succubus (712), Health Funnel (755), Agony (980), Enslave Demon (1098), Summon Infernal (1122), Life Tap (1454), Hellfire (1949), Use Soulstone (3026), Howl of Terror (5484), Rain of Fire (5740), Fear (5782), Hellfire (5857), Create Healthstone (6201), Healthstone (6262), Soul Fire (6353), Mortal Coil (6789), Shadowburn (17877), Conflagrate (17962), Summon Doomguard (18540), Immolation (20153), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Unstable Affliction (30108), Shadowfury (30283), Unstable Affliction (31117), Soulshatter (32835), Rain of Fire (42223), Hand of Gul'dan (47960), Soulburn (74434), Havoc (80240), Doom Bolt (85692), Seed of Corruption (87385), Drain Soul (103103), Immolation Aura (104025), Soul Fire (104027), Rain of Fire (104232), Imp Swarm (104316), Unending Resolve (104773), Hand of Gul'dan (105174), Harvest Life (108371), Fire and Brimstone (108683), Conflagrate (108685), Immolate (108686), Dark Intent (109773), Dark Soul: Instability (113858), Dark Soul: Misery (113860), Dark Soul: Knowledge (113861), Health Funnel (114189), Ember Tap (114635), Incinerate (114654), Seed of Corruption (114790), Shadow Shield (115234), Chaos Bolt (116858), Fear (118699), Soul Swap (119678), Chaos Wave (124915), Chaos Wave (124916), Unstable Affliction (131736), Agony (131737), Corruption (131740), Seed of Corruption (132566), Corruption (146739), Unending Resolve (148688), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Convert Demon (175984)
+#8 (id=251497)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
+                   Base Value: -500 | Scaled Value: -500 | SP Coefficient: 1.00000 | Misc Value: 21
+                   Affected Spells: Summon Imp (688), Summon Felhunter (691), Summon Voidwalker (697), Summon Succubus (712), Health Funnel (755), Summon Infernal (1122), Life Tap (1454), Summon Doomguard (18540), Summon Voidwalker (25112), Summon Felguard (30146), Summon Fel Imp (112866), Summon Voidlord (112867), Summon Shivarra (112868), Summon Observer (112869), Summon Wrathguard (112870), Summon Abyssal (112921), Summon Terrorguard (112927), Health Funnel (114189)
+#9 (id=251498)   : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 10
+                   Affected Spells: Summon Imp (688), Summon Felhunter (691), Summon Voidwalker (697), Summon Succubus (712), Summon Voidwalker (25112), Summon Felguard (30146), Summon Fel Imp (112866), Summon Voidlord (112867), Summon Shivarra (112868), Summon Observer (112869), Summon Wrathguard (112870)
+#10 (id=251499)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14
-                   Affected Spells: Harvest Life (108371)
-#7 (id=172383)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: 14
-#8 (id=172385)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
-                   Base Value: 10000 | Scaled Value: 10000 | Misc Value: 11
-Description      : Transform into a demon, increasing damage dealt by ${$104315m1*$m3/100+$77219m1*$m3/100}.1%, tranforming your Corruption, Hand of Gul'dan, Hellfire, and Shadowbolt into alternate improved abilities, and improving functionality of many other abilities.  Also increases armor by $54817s3% and reduces the duration of stuns and snares by $54817s1%.
-Tooltip          : Damage increased by $103958w2%.
-Armor increased by $54817s3%.
+                   Affected Spells: Eye of Kilrogg (126), Shadow Bolt (686), Summon Imp (688), Summon Felhunter (691), Summon Voidwalker (697), Banish (710), Summon Succubus (712), Create Healthstone (6201), Summon Voidwalker (25112), Summon Felguard (30146), Summon Fel Imp (112866), Summon Voidlord (112867), Summon Shivarra (112868), Summon Observer (112869), Summon Wrathguard (112870)
+#11 (id=251500)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
+                   Base Value: 60000 | Scaled Value: 60000 | Misc Value: 11
+                   Affected Spells: Summon Imp (688), Summon Felhunter (691), Summon Voidwalker (697), Summon Succubus (712), Summon Voidwalker (25112), Summon Felguard (30146), Summon Fel Imp (112866), Summon Voidlord (112867), Summon Shivarra (112868), Summon Observer (112869), Summon Wrathguard (112870)
+#12 (id=251833)   : Apply Aura (6) | Periodic Dummy: every 0.2 seconds (226)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Turn into a demon, transforming your Corruption, Hand of Gul'dan, Hellfire, and Shadowbolt into alternate improved abilities, and improving functionality of many other abilities.
+
+Also increases armor by $s3%.
+Tooltip          : Demon abilities unlocked.
+Armor increased by $s3%.
 
 Name             : Touch of Chaos (Metamorphosis) (id=103964) [Spell Family (5)] 
 Class            : Warlock
@@ -3231,7 +3204,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1 seconds
 Velocity         : 120 yards/sec
-Affecting spells : Item - Warlock T14 2P Bonus (123136), Kil'jaeden's Cunning (137587), Dark Soul (138483)
+Affecting spells : Mastery: Master Demonologist (77219), Item - Warlock T14 2P Bonus (123136), Kil'jaeden's Cunning (137587), Dark Soul (138483)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -3247,11 +3220,12 @@ Description      : Unleashes energy at the enemy, causing $s1 Chaos damage and e
 
 Name             : Immolation Aura (Metamorphosis) (id=104025) [Spell Family (5)] 
 Class            : Warlock
+Resource         : 25 Demonic Fury per second
 Spell Level      : 22
 Range            : 50000 yards
 GCD              : 1 seconds
 Duration         : 10 seconds
-Affecting spells : Metamorphosis (54879), Mannoroth's Fury (108508), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Dark Soul (138483)
+Affecting spells : Metamorphosis (103958), Mannoroth's Fury (108508), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Dark Soul (138483)
 Attributes       : ........ ........ x....... ........   ........ .......x x....... ........ 
                  : ........ ...x.... ........ .....x..   ........ ........ x....... ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ......x. 
@@ -3272,7 +3246,7 @@ Range            : 40 yards
 Cast Time        : 4 seconds
 GCD              : 1 seconds
 Velocity         : 24 yards/sec
-Affecting spells : Metamorphosis (54879), Item - Warlock T10 2P Bonus (70839), Mastery: Emberstorm (77220), Chaotic Energy (111546), Molten Core (122355), Kil'jaeden's Cunning (137587), Item - Warlock T15 DPS 4P Bonus (138134), Dark Soul (138483)
+Affecting spells : Item - Warlock T10 2P Bonus (70839), Mastery: Master Demonologist (77219), Mastery: Emberstorm (77220), Metamorphosis (103958), Chaotic Energy (111546), Molten Core (122355), Kil'jaeden's Cunning (137587), Item - Warlock T15 DPS 4P Bonus (138134), Dark Soul (138483)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3281,7 +3255,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=113307)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.58125
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.42500
 Description      : $@spelldesc6353
 
 Name             : Rain of Fire (id=104232) [Spell Family (5)] 
@@ -3291,7 +3265,7 @@ Spell Level      : 60
 Range            : 35 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
-Affecting spells : Metamorphosis (54879), Glyph of Hand of Gul'dan (56248), Mannoroth's Fury (108508), Aftermath (109784), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
+Affecting spells : Glyph of Hand of Gul'dan (56248), Metamorphosis (103958), Mannoroth's Fury (108508), Aftermath (109784), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -3354,7 +3328,7 @@ Spell Level      : 32
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 120 seconds
-Affecting spells : Metamorphosis (54879), Glyph of Imp Swarm (56242), Kil'jaeden's Cunning (137587)
+Affecting spells : Glyph of Imp Swarm (56242), Metamorphosis (103958), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ ........ ..x....x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3389,7 +3363,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=113740)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.242, dl=0.05) | SP Coefficient: 0.24200
+                   Base Value: 1 | Scaled Value: 0 (avg=0.242, dl=0.05) | SP Coefficient: 0.18000
 #2 (id=113741)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=134300)   : Trigger Spell w/ Value: (104330) (142)
@@ -3403,7 +3377,7 @@ Spell Level      : 64
 Duration         : 8 seconds
 Cooldown         : 180 seconds
 Proc Chance      : 100%
-Affecting spells : Metamorphosis (54879), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Glyph of Unending Resolve (146964), Glyph of Eternal Resolve (148683), Glyph of Strengthened Resolve (159697), 
+Affecting spells : Metamorphosis (103958), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Glyph of Unending Resolve (146964), Glyph of Eternal Resolve (148683), Glyph of Strengthened Resolve (159697), 
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ .x...... ........ 
@@ -3445,7 +3419,7 @@ Spell Level      : 19
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 1.3 yards/sec
-Affecting spells : Metamorphosis (54879), Glyph of Hand of Gul'dan (56248), Kil'jaeden's Cunning (137587)
+Affecting spells : Glyph of Hand of Gul'dan (56248), Metamorphosis (103958), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ...x.... ........ ........   ........ ..x..... ........ ...x.... 
@@ -3549,7 +3523,7 @@ Description      : $?c0[Shadow Bolt, Soul Fire, Chaos Bolt, Shadowburn, Touch of
 Name             : Harvest Life (id=108371) [Spell Family (5), Passive] 
 Class            : Warlock
 Range            : 40 yards
-Affecting spells : Haunt (48181), Metamorphosis (54879), Metamorphosis (103958), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587), Dark Soul (138483)
+Affecting spells : Haunt (48181), Metamorphosis (103958), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587), Dark Soul (138483)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3612,7 +3586,7 @@ Effects          :
                    Base Value: 400 | Scaled Value: 400 | Misc Value: 127
 #2 (id=180660)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
-Description      : Sacrifices $s2% of your demon's current health to shield you for $s1% of the sacrificed health for $d. If you have no demon, your health is sacrificed instead. Useable while suffering from control impairing effects.$?s101508[
+Description      : Sacrifices $s2% of your demon's current health to shield you for $s1% of the sacrificed health for $d. If you have no demon, your health is sacrificed instead. Usable while suffering from control impairing effects.$?s101508[
 
 |cFFFFDD84"Let someone else pay the price of your recklessness." -Zelfrax |r][]
 Tooltip          : Absorbs $w1 damage.
@@ -3722,7 +3696,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20
 #4 (id=154191)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Corruption (172), Agony (980), Shadowburn (17877), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Unstable Affliction (30108), Haunt (48181), Seed of Corruption (87385), Harvest Life (108371), Incinerate (114654), Seed of Corruption (114790), Shadow Shield (115234), Chaos Bolt (116858), Unstable Affliction (131736), Agony (131737), Corruption (131740), Seed of Corruption (132566), Corruption (146739)
+                   Affected Spells: Corruption (172), Agony (980), Shadowburn (17877), Seed of Corruption (27243), Incinerate (29722), Unstable Affliction (30108), Haunt (48181), Harvest Life (108371), Incinerate (114654), Seed of Corruption (114790), Shadow Shield (115234), Chaos Bolt (116858), Unstable Affliction (131736), Agony (131737), Corruption (131740), Seed of Corruption (132566), Corruption (146739)
 #5 (id=245910)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22
                    Affected Spells: Drain Life (689), Drain Soul (103103)
@@ -3781,7 +3755,7 @@ Spell Level      : 10
 Proc Chance      : 100%
 Proc Flags       : ........ ........ ..x..x.. ........ 
                  : Periodic, Trap Triggered
-Affecting spells : Kil'jaeden's Cunning (137587)
+Affecting spells : Kil'jaeden's Cunning (137587), Empowered Corruption (157078)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -3790,12 +3764,12 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=119700)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10
-Description      : Your most recently applied Corruption has a $s1% chance when it deals damage to cause you to regain a Soul Shard.
+                   Base Value: 100 | Scaled Value: 100
+Description      : Your most recently applied Corruption has a ${$m1/10}.1% chance when it deals damage to cause you to regain a Soul Shard.
 
 Name             : Burning Embers (id=108647) [Spell Family (5), Passive] 
 Class            : Destruction Warlock
-Spell Level      : 42
+Spell Level      : 10
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x.x..x.. ........ 
                  : Hostile Spell, Periodic, Trap Triggered
@@ -3821,7 +3795,7 @@ Cooldown         : 1 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. x....... ........ 
                  : AOE Heal, Heal, Hostile Spell
-Affecting spells : Metamorphosis (54879), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
+Affecting spells : Metamorphosis (103958), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3846,7 +3820,7 @@ Effects          :
 #6 (id=219897)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 14
                    Affected Spells: Immolate (348), Conflagrate (17962), Incinerate (29722), Conflagrate (108685), Immolate (108686), Incinerate (114654)
-Description      : While active causes your Immolate, Incinerate, and Conflagrate to consume a Burning Ember, hit all enemies within $108685A1 yards of the target, and deal ${($m5*(100+$77220m1*$<masteryMod>)/100)}.1% of their normal damage.
+Description      : While active causes your Immolate, Incinerate, $?s157696[Chaos Bolt, ][]and Conflagrate to consume a Burning Ember, hit all enemies within $108685A1 yards of the target, and deal ${($m5*(100+$77220m1*$<masteryMod>)/100)}.1% of their normal damage.
 Tooltip          : Immolate, Incinerate, and Conflagrate cost a Burning Ember and will hit all targets within $108685A1 yards of the target.
 Variables        : $masteryMod=${$cond($gt($pl,79),1,0)}
 
@@ -3857,7 +3831,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
-Affecting spells : Metamorphosis (54879), Glyph of Conflagrate (56235), Glyph of Hand of Gul'dan (56248), Item - Warlock T8 2P Bonus (64931), Mastery: Emberstorm (77220), Fire and Brimstone (108683), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Charred Remains (157696), 
+Affecting spells : Glyph of Conflagrate (56235), Glyph of Hand of Gul'dan (56248), Item - Warlock T8 2P Bonus (64931), Mastery: Emberstorm (77220), Metamorphosis (103958), Fire and Brimstone (108683), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Charred Remains (157696), 
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3885,7 +3859,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
-Affecting spells : Metamorphosis (54879), Glyph of Hand of Gul'dan (56248), Item - Warlock T8 2P Bonus (64931), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Mastery: Emberstorm (77220), Fire and Brimstone (108683), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Empowered Immolate (157114)
+Affecting spells : Glyph of Hand of Gul'dan (56248), Item - Warlock T8 2P Bonus (64931), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Mastery: Emberstorm (77220), Metamorphosis (103958), Fire and Brimstone (108683), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Empowered Immolate (157114)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -3920,9 +3894,6 @@ $@spelldesc122355
 Name             : Demonic Fury (Passive) (id=109145) [Passive] 
 Class            : Demonology Warlock
 Spell Level      : 10
-Proc Chance      : 100%
-Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........ 
-                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered
 Attributes       : ......x. x....... .......x x..x.x.x   .....x.. ..x..... ........ ....x..x 
                  : x.x..... ......x. ...x.... ....x...   ........ ........ xx..x... ........ 
                  : .......x .......x .......x ........   ...x.... ........ .xx..... ........ 
@@ -3932,14 +3903,6 @@ Attributes       : ......x. x....... .......x x..x.x.x   .....x.. ..x..... .....
 Effects          :
 #1 (id=155236)   : Apply Aura (6) | Mod Power Regen (110)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 15
-#2 (id=127248)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f
-#3 (id=127277)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f
-Description      : Damage dealt increased by ${$104315m1+$77219m1}.2%.
-
-This effect is disabled while in a Demon Form.
-Tooltip          : Damage dealt increased by $109145W2%.
 
 Name             : Demonic Leap (id=109151) [Spell Family (5)] 
 Class            : Demonology Warlock
@@ -3969,7 +3932,7 @@ Spell Level      : 82
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 3600 seconds
-Affecting spells : Metamorphosis (54879), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
+Affecting spells : Metamorphosis (103958), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ x....... ........ ........ 
@@ -4024,7 +3987,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127
 #2 (id=123143)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50
-Description      : Prevents all damage for $d, but when the effect ends, you take  $s2% of the damage prevented over $110914d. Useable while suffering from control impairing effects.$?s101508[
+Description      : Prevents all damage for $d, but when the effect ends, you take  $s2% of the damage prevented over $110914d. Usable while suffering from control impairing effects.$?s101508[
 
 |cFFFFDD84"All debts must be repaid... eventually." - Shinfel|r][]
 Tooltip          : Absorbed $w1 damage.
@@ -4289,12 +4252,12 @@ Tooltip          : Increases your threat generation while active.
 Name             : Summon Fel Imp (Summon) (id=112866) [Spell Family (5)] 
 Class            : Warlock
 Resource         : 20% Base Mana (32000 @Level 100)
-Resource         : 200 Demonic Fury w/ Metamorphosis (id=54879)
+Resource         : 200 Demonic Fury w/ Metamorphosis (id=103958)
 Spell Level      : 1
 Cast Time        : 5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Affecting spells : Metamorphosis (54879), Soulburn (74434), Kil'jaeden's Cunning (137587), Dark Soul (138483)
+Affecting spells : Soulburn (74434), Metamorphosis (103958), Kil'jaeden's Cunning (137587), Dark Soul (138483)
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4312,12 +4275,12 @@ Description      : Summons a Fel Imp under your command that casts ranged Fel Fi
 Name             : Summon Voidlord (Summon) (id=112867) [Spell Family (5)] 
 Class            : Warlock
 Resource         : 25% Base Mana (40000 @Level 100)
-Resource         : 200 Demonic Fury w/ Metamorphosis (id=54879)
+Resource         : 200 Demonic Fury w/ Metamorphosis (id=103958)
 Spell Level      : 8
 Cast Time        : 5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Affecting spells : Metamorphosis (54879), Soulburn (74434), Kil'jaeden's Cunning (137587), Dark Soul (138483)
+Affecting spells : Soulburn (74434), Metamorphosis (103958), Kil'jaeden's Cunning (137587), Dark Soul (138483)
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
@@ -4335,12 +4298,12 @@ Description      : Summons a Voidlord under your command, able to withstand heav
 Name             : Summon Shivarra (Summon) (id=112868) [Spell Family (5)] 
 Class            : Warlock
 Resource         : 25% Base Mana (40000 @Level 100)
-Resource         : 200 Demonic Fury w/ Metamorphosis (id=54879)
+Resource         : 200 Demonic Fury w/ Metamorphosis (id=103958)
 Spell Level      : 20
 Cast Time        : 5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Affecting spells : Metamorphosis (54879), Soulburn (74434), Kil'jaeden's Cunning (137587), Dark Soul (138483)
+Affecting spells : Soulburn (74434), Metamorphosis (103958), Kil'jaeden's Cunning (137587), Dark Soul (138483)
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
@@ -4358,12 +4321,12 @@ Description      : Summons a Shivarra under your command to mesmerize opponents,
 Name             : Summon Observer (Summon) (id=112869) [Spell Family (5)] 
 Class            : Warlock
 Resource         : 25% Base Mana (40000 @Level 100)
-Resource         : 200 Demonic Fury w/ Metamorphosis (id=54879)
+Resource         : 200 Demonic Fury w/ Metamorphosis (id=103958)
 Spell Level      : 29
 Cast Time        : 5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Affecting spells : Metamorphosis (54879), Soulburn (74434), Kil'jaeden's Cunning (137587), Dark Soul (138483)
+Affecting spells : Soulburn (74434), Metamorphosis (103958), Kil'jaeden's Cunning (137587), Dark Soul (138483)
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
@@ -4381,12 +4344,12 @@ Description      : Summons an Observer under your command, able to heal itself b
 Name             : Summon Wrathguard (Summon) (id=112870) [Spell Family (5)] 
 Class            : Warlock
 Resource         : 25% Base Mana (40000 @Level 100)
-Resource         : 200 Demonic Fury w/ Metamorphosis (id=54879)
+Resource         : 200 Demonic Fury w/ Metamorphosis (id=103958)
 Spell Level      : 42
 Cast Time        : 5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Affecting spells : Metamorphosis (54879), Soulburn (74434), Kil'jaeden's Cunning (137587), Dark Soul (138483)
+Affecting spells : Soulburn (74434), Metamorphosis (103958), Kil'jaeden's Cunning (137587), Dark Soul (138483)
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
@@ -4406,7 +4369,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 1.5 yards/sec
 Cooldown         : 600 seconds
-Affecting spells : Metamorphosis (54879), Kil'jaeden's Cunning (137587), Grimoire of Summoning Secrets (168800)
+Affecting spells : Metamorphosis (103958), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -4459,7 +4422,7 @@ Spell Level      : 58
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 600 seconds
-Affecting spells : Metamorphosis (54879), Kil'jaeden's Cunning (137587), Demonic Servitude (152107), Grimoire of Summoning Secrets (168800)
+Affecting spells : Metamorphosis (103958), Kil'jaeden's Cunning (137587), Demonic Servitude (152107)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ..x..... ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -4480,7 +4443,7 @@ Resource         : 5% Base Mana (8000 @Level 100)
 Spell Level      : 84
 Duration         : 20 seconds
 Cooldown         : 120 seconds
-Affecting spells : Metamorphosis (54879), Glyph of Dark Soul (56228), Archimonde's Darkness (108505), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Glyph of Dark Soul (159665), 
+Affecting spells : Glyph of Dark Soul (56228), Metamorphosis (103958), Archimonde's Darkness (108505), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Glyph of Dark Soul (159665), 
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4503,7 +4466,7 @@ Resource         : 5% Base Mana (8000 @Level 100)
 Spell Level      : 84
 Duration         : 20 seconds
 Cooldown         : 120 seconds
-Affecting spells : Metamorphosis (54879), Glyph of Dark Soul (56228), Archimonde's Darkness (108505), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Glyph of Dark Soul (159665), 
+Affecting spells : Glyph of Dark Soul (56228), Metamorphosis (103958), Archimonde's Darkness (108505), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Glyph of Dark Soul (159665), 
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4526,7 +4489,7 @@ Resource         : 5% Base Mana (8000 @Level 100)
 Spell Level      : 84
 Duration         : 20 seconds
 Cooldown         : 120 seconds
-Affecting spells : Metamorphosis (54879), Glyph of Dark Soul (56228), Archimonde's Darkness (108505), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Glyph of Dark Soul (159665), 
+Affecting spells : Glyph of Dark Soul (56228), Metamorphosis (103958), Archimonde's Darkness (108505), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Glyph of Dark Soul (159665), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4540,7 +4503,7 @@ Description      : Your soul is infused with demonic knowledge, increasing your 
 
 |cFFFFFFFFPassive:|r
 Increases your mastery by ${$113861m1/$56228m1}%. This effect is disabled while on cooldown.][]
-Tooltip          : Mastery increased by $s1.
+Tooltip          : Mastery increased by $s1%.
 
 Name             : Demonic Gateway (id=113886) [Spell Family (5)] 
 Class            : Warlock
@@ -4598,7 +4561,7 @@ Spell Level      : 11
 Range            : 45 yards
 GCD              : 1.5 seconds
 Cooldown         : 10 seconds
-Affecting spells : Metamorphosis (54879), Glyph of Health Funnel (56238), Soulburn (74434), Kil'jaeden's Cunning (137587)
+Affecting spells : Glyph of Health Funnel (56238), Soulburn (74434), Metamorphosis (103958), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ...x.... ...x.... ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4631,9 +4594,9 @@ Each Wild Imp will cast 10 Firebolts before departing. Each Firebolt generates $
 Name             : Ember Tap (id=114635) [Spell Family (5)] 
 Class            : Destruction Warlock
 Resource         : 1 Burning Ember
-Spell Level      : 42
+Spell Level      : 15
 GCD              : 1 seconds
-Affecting spells : Metamorphosis (54879), Glyph of Ember Tap (63304), Kil'jaeden's Cunning (137587), Enhanced Ember Tap (157121), Searing Flames (174848), 
+Affecting spells : Glyph of Ember Tap (63304), Mastery: Emberstorm (77220), Metamorphosis (103958), Kil'jaeden's Cunning (137587), Enhanced Ember Tap (157121)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4647,7 +4610,7 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150
 #3 (id=181881)   : Apply Aura (6) | Periodic Heal%: every 2 seconds (20)
                    Base Value: 3 | Scaled Value: 3
-Description      : $?s63304[Heals ${(10*($m3+$m3*$77220m1*.01*$<masteryMod>)))}.2% of your health over $d.][Heals ${($m1+$m1*$77220m1*.01*$<masteryMod>)}.2% of your health.]
+Description      : $?s63304[Heals ${(($m1+$m1*$77220m1*.01)*16/11*$<masteryMod>)}.2% of your health over $d.][Heals ${($m1+$m1*$77220m1*.01*$<masteryMod>)}.2% of your health.]
 Tooltip          : $w3% of your health restored every $t3 sec.
 Variables        : $masteryMod=${$cond($gt($pl,79),1,0)}
 
@@ -4661,7 +4624,7 @@ GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Metamorphosis (54879), Glyph of Imp Swarm (56242), Glyph of Hand of Gul'dan (56248), Item - Warlock T8 4P Bonus (64932), Item - Warlock T10 2P Bonus (70839), Mastery: Emberstorm (77220), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Fire and Brimstone (108683), Chaotic Energy (111546), Backdraft (117828), Item - Warlock T14 2P Bonus (123136), Kil'jaeden's Cunning (137587), Charred Remains (157696), 
+Affecting spells : Glyph of Imp Swarm (56242), Glyph of Hand of Gul'dan (56248), Item - Warlock T8 4P Bonus (64932), Item - Warlock T10 2P Bonus (70839), Mastery: Emberstorm (77220), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Fire and Brimstone (108683), Chaotic Energy (111546), Backdraft (117828), Item - Warlock T14 2P Bonus (123136), Kil'jaeden's Cunning (137587), Charred Remains (157696), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4690,7 +4653,7 @@ Effects          :
 Description      : Activating the Wild Imps ability disables the passive effect for $t2 sec.
 Tooltip          : The Wild Imps passive is disabled.
 
-Name             : Seed of Corruption (Soulburn) (id=114790) [Scaling Spell (10), Spell Family (5)] 
+Name             : Seed of Corruption (id=114790) [Scaling Spell (10), Spell Family (5)] 
 Class            : Warlock
 Spell Level      : 60
 Range            : 40 yards
@@ -4701,7 +4664,7 @@ Duration         : 18 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Haunt (48181), Metamorphosis (54879), Soulburn (74434), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587)
+Affecting spells : Haunt (48181), Soulburn (74434), Metamorphosis (103958), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4716,7 +4679,7 @@ Effects          :
 #3 (id=154323)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc27243
-Tooltip          : Causes $w1 Shadow damage every $t1 sec. After taking $w3 damage from the caster or dying, Seed of Corruption deals $27285s1 Shadow damage to the caster's enemies within $27285a1 yards.
+Tooltip          : Causes $w1 Shadow damage every $t1 sec. After taking $w3 damage from the caster or dying, Seed of Corruption deals Shadow damage to the caster's enemies within $27285a1 yards.
 
 Name             : Demonic Calling (id=114925) [Spell Family (5)] 
 Class            : Warlock
@@ -4785,11 +4748,11 @@ Use this ability when being attacked.
 Tooltip          : Damage taken reduced by $w1%.
 Deals $115234s1 Shadow damage when struck.
 
-Name             : Shadow Shield (id=115234) [Scaling Spell (9), Spell Family (5)] 
+Name             : Shadow Shield (id=115234) [Spell Family (5)] 
 Class            : Warlock
 Spell Level      : 8
 Range            : 100 yards
-Affecting spells : Haunt (48181), Metamorphosis (54879), Glyph of Verdant Spheres (56241), Mastery: Potent Afflictions (77215), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
+Affecting spells : Haunt (48181), Glyph of Verdant Spheres (56241), Mastery: Potent Afflictions (77215), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
 Attributes       : ........ ........ ........ x..x....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   ........ .x...... ........ ........ 
                  : .......x ......xx ........ ........   ...x.... ........ .xx..... ........ 
@@ -4798,7 +4761,7 @@ Attributes       : ........ ........ ........ x..x....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128962)   : School Damage: shadow (2)
-                   Base Value: 13 | Scaled Value: 0 (avg=1) | SP Coefficient: 1.00000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
 Description      : Discharges void energy at an attacker, dealing $s1 Shadow damage.
 
 Name             : Glyph of Demonic Training (Voidwalker) (id=115408) [Passive, Hidden] 
@@ -4979,7 +4942,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=129867)   : School Damage: shadow (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.14000
-Description      : Blasts the enemy with lasers, dealing $s3 Shadow damage. 
+Description      : Blasts the enemy with lasers, dealing $s2 Shadow damage. 
 
 If used on a casting target, it will counter the enemy's spellcast, preventing any spell from that school of magic from being cast for $19647d.
 
@@ -5052,12 +5015,12 @@ Effects          :
 Name             : Chaos Bolt (id=116858) [Spell Family (5)] 
 Class            : Destruction Warlock
 Resource         : 1 Burning Ember
-Spell Level      : 42
+Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 16 yards/sec
-Affecting spells : Metamorphosis (54879), Item - Warlock T9 2P Bonus (67230), Havoc (80240), Grimoire of Sacrifice (108503), Fire and Brimstone (108683), Chaotic Energy (111546), Backdraft (117828), Kil'jaeden's Cunning (137587), Dark Soul (138483), Enhanced Chaos Bolt (157103), Chaotic Infusion (170000), Chaotic Influx (171384)
+Affecting spells : Item - Warlock T9 2P Bonus (67230), Havoc (80240), Metamorphosis (103958), Grimoire of Sacrifice (108503), Fire and Brimstone (108683), Chaotic Energy (111546), Backdraft (117828), Kil'jaeden's Cunning (137587), Dark Soul (138483), Enhanced Chaos Bolt (157103), Chaotic Infusion (170000), Chaotic Influx (171384)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5154,7 +5117,7 @@ Effects          :
 #3 (id=156104)   : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 10
                    Affected Spells: Chaos Bolt (116858)
-Description      : When you cast Conflagrate, the cast time for your next three Incinerate$?s123686[ or one Chaos Bolt][] is reduced by $117828s1%. Lasts $117828d.
+Description      : $@spelldesc117896
 Tooltip          : Incinerate's cast time and mana cost reduced by $s1%.$?$W3<>0[
 Chaos Bolt's cast time reduced by $s3%][]
 
@@ -5183,7 +5146,7 @@ Duration         : 20 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Metamorphosis (54879), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
+Affecting spells : Metamorphosis (103958), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ x....... ......x.   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ..x..... 
                  : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -5204,7 +5167,7 @@ Resource         : 1 Soul Shard
 Spell Level      : 79
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Metamorphosis (54879), Soulburn (74434), Kil'jaeden's Cunning (137587)
+Affecting spells : Soulburn (74434), Metamorphosis (103958), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5290,19 +5253,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : The flames of Xoroth instantly revive your last demon.
 Tooltip          : Embers will not degenerate for a short time.
-
-Name             : Summon Demon Cooldown (id=120465) 
-Class            : Warlock
-Cooldown         : 60 seconds
-Attributes       : ........ x....... .......x x..x.x.x   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x.... ....x...   ........ ........ xx..x... ........ 
-                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
-                 : ..x..... ....xx.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=140027)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
 
 Name             : Molten Core (id=122351) [Passive] 
 Class            : Demonology Warlock
@@ -5412,13 +5362,30 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 181
 Description      : Demons use Fel Energy. Fel Energy users gain 10 Fel Energy per second and can store up to 200 Fel Energy.
 
+Name             : Doom (id=124913) [Spell Family (5), Passive, Hidden] 
+Class            : Demonology Warlock
+Spell Level      : 10
+Proc Chance      : 100%
+Proc Flags       : ........ ........ ..x..x.. ........ 
+                 : Periodic, Trap Triggered
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=158224)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+Description      : While using Metamorphosis, your Corruption spell transforms into Doom.
+
 Name             : Chaos Wave (id=124915) [Scaling Spell (10), Spell Family (5)] 
 Class            : Warlock
 Range            : 50000 yards
 Duration         : 6 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Affecting spells : Metamorphosis (54879), Glyph of Hand of Gul'dan (56248), Kil'jaeden's Cunning (137587)
+Affecting spells : Glyph of Hand of Gul'dan (56248), Mastery: Master Demonologist (77219), Metamorphosis (103958), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ....x...   x....... ........ ........ ......x. 
                  : ........ ........ ........ .x......   ........ ........ ........ ..x..... 
@@ -5440,7 +5407,7 @@ Spell Level      : 62
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
-Affecting spells : Metamorphosis (54879), Glyph of Hand of Gul'dan (56248), Kil'jaeden's Cunning (137587), Dark Soul (138483)
+Affecting spells : Glyph of Hand of Gul'dan (56248), Metamorphosis (103958), Kil'jaeden's Cunning (137587), Dark Soul (138483)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ...x.... ........ ...x....   ........ ........ ........ ...x.... 
@@ -5472,7 +5439,7 @@ Class            : Warlock
 Spell Level      : 10
 Range            : 100 yards
 Cast Time        : 1.5 seconds
-Affecting spells : Haunt (48181), Metamorphosis (54879), Glyph of Unstable Affliction (56233), Glyph of Falling Meteor (56247), Item - Warlock T8 2P Bonus (64931), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 4P Bonus (70841), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
+Affecting spells : Haunt (48181), Glyph of Unstable Affliction (56233), Glyph of Falling Meteor (56247), Item - Warlock T8 2P Bonus (64931), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 4P Bonus (70841), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Metamorphosis (103958), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
 Attributes       : ........ ........ x......x x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ..x..... .x....x. 
                  : .......x ........ ....x... ........   ...x.... .....x.. .xx..... ........ 
@@ -5481,7 +5448,7 @@ Attributes       : ........ ........ x......x x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=170041)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.10440
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.10000
 Description      : $@spelldesc30108
 Tooltip          : $@spellaura30108
 
@@ -5489,7 +5456,7 @@ Name             : Agony (id=131737) [Scaling Spell (10), Spell Family (5)]
 Class            : Warlock
 Spell Level      : 36
 Range            : 100 yards
-Affecting spells : Haunt (48181), Metamorphosis (54879), Glyph of Verdant Spheres (56241), Mastery: Potent Afflictions (77215), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
+Affecting spells : Haunt (48181), Glyph of Verdant Spheres (56241), Mastery: Potent Afflictions (77215), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
 Attributes       : ........ ........ x......x x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   .......x ........ ..x..... .x....x. 
                  : .......x ........ ....x... ........   ...x.... .....x.. .xx..... ........ 
@@ -5506,7 +5473,7 @@ Name             : Corruption (id=131740) [Scaling Spell (10), Spell Family (5)]
 Class            : Warlock
 Spell Level      : 3
 Range            : 100 yards
-Affecting spells : Haunt (48181), Metamorphosis (54879), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 2P Bonus (70839), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Chaotic Energy (111546), Item - Warlock T14 2P Bonus (123136), Kil'jaeden's Cunning (137587), Enhanced Corruption (157098), Haunting Spirits (157698), 
+Affecting spells : Haunt (48181), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 2P Bonus (70839), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Chaotic Energy (111546), Item - Warlock T14 2P Bonus (123136), Kil'jaeden's Cunning (137587), Enhanced Corruption (157098), Haunting Spirits (157698), 
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ..x..... .x....x. 
                  : .......x ........ ....x... ........   ...x.... .....x.. .xx..... ........ 
@@ -5523,18 +5490,18 @@ Name             : Seed of Corruption (id=132566) [Scaling Spell (10), Spell Fam
 Class            : Warlock
 Spell Level      : 60
 Range            : 40 yards
-Affecting spells : Haunt (48181), Metamorphosis (54879), Soulburn (74434), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587)
+Affecting spells : Haunt (48181), Soulburn (74434), Metamorphosis (103958), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .xx..... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
-                 : ........ .x...x.. .x...... ........   ...x.... ........ ........ ........ 
+                 : ........ .x..xx.. .x...... ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=171779)   : School Damage: shadow (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.06300
 Description      : $@spelldesc27243
-Tooltip          : Causes $s1 Shadow damage every $?$W2=2[${$t1/2000}.2][$t1] sec. After taking $s3 total damage or dying, Seed of Corruption deals $27285s1 Shadow damage to the caster's enemies within $27285a1 yards.
+Tooltip          : Causes $w1 Shadow damage every $?$W2=2[${$t1/2000}.2][$t1] sec. After taking $s3 total damage or dying, Seed of Corruption deals $27285s1 Shadow damage to the caster's enemies within $27285a1 yards.
 
 Name             : Threatening Presence (Special Ability) (id=134477) [Spell Family (57)] 
 Class            : Warlock
@@ -5771,7 +5738,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=180662)   : Apply Aura (6) | Unknown effect sub type (330)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7
-                   Affected Spells: Eye of Kilrogg (126), Corruption (172), Immolate (348), Doom (603), Shadow Bolt (686), Summon Imp (688), Drain Life (689), Summon Felhunter (691), Summon Voidwalker (697), Banish (710), Summon Succubus (712), Health Funnel (755), Agony (980), Enslave Demon (1098), Summon Infernal (1122), Life Tap (1454), Hellfire (1949), Use Soulstone (3026), Firebolt (3110), Howl of Terror (5484), Rain of Fire (5740), Fear (5782), Hellfire (5857), Create Healthstone (6201), Soul Fire (6353), Mortal Coil (6789), Shadowburn (17877), Conflagrate (17962), Summon Doomguard (18540), Immolation (20153), Soulstone (20707), Infernal Awakening (22703), Summon Voidwalker (25112), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Soulshatter (29858), Unstable Affliction (30108), Summon Felguard (30146), Shadowfury (30283), Unstable Affliction (31117), Soulshatter (32835), Rain of Fire (42223), Hand of Gul'dan (47960), Haunt (48181), Soulburn (74434), Havoc (80240), Doom Bolt (85692), Hand of Gul'dan (86040), Soul Swap (86121), Soul Swap (86211), Seed of Corruption (87385), Drain Life (89653), Soul Harvest (101976), Drain Soul (103103), Metamorphosis (103958), Touch of Chaos (103964), Immolation Aura (104025), Soul Fire (104027), Rain of Fire (104232), Rain of Fire (104233), Imp Swarm (104316), Fel Firebolt (104318), Unending Resolve (104773), Hand of Gul'dan (105174), Harvest Life (108371), Nightfall (108558), Fire and Brimstone (108683), Conflagrate (108685), Immolate (108686), Demonic Leap (109151), Dark Intent (109773), Demonic Gateway (111771), Summon Fel Imp (112866), Summon Voidlord (112867), Summon Shivarra (112868), Summon Observer (112869), Summon Wrathguard (112870), Summon Abyssal (112921), Summon Terrorguard (112927), Dark Soul: Instability (113858), Dark Soul: Misery (113860), Dark Soul: Knowledge (113861), Demonic Gateway (113886), Demonic Gateway (113890), Health Funnel (114189), Wild Imps (114592), Ember Tap (114635), Incinerate (114654), Seed of Corruption (114790), Shadow Shield (115234), Chaos Bolt (116858), Backdraft (117828), Fear (118699), Soul Swap (119678), Command Demon (119898), Flames of Xoroth (120451), Molten Core (122355), Chaos Wave (124915), Chaos Wave (124916), Unstable Affliction (131736), Agony (131737), Corruption (131740), Seed of Corruption (132566), Corruption (146739), Unending Resolve (148688), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Meteor Strike (171017), Meteor Strike (171018)
+                   Affected Spells: Eye of Kilrogg (126), Corruption (172), Immolate (348), Doom (603), Shadow Bolt (686), Summon Imp (688), Drain Life (689), Summon Felhunter (691), Summon Voidwalker (697), Banish (710), Summon Succubus (712), Health Funnel (755), Agony (980), Enslave Demon (1098), Summon Infernal (1122), Life Tap (1454), Hellfire (1949), Use Soulstone (3026), Firebolt (3110), Howl of Terror (5484), Rain of Fire (5740), Fear (5782), Hellfire (5857), Create Healthstone (6201), Healthstone (6262), Soul Fire (6353), Mortal Coil (6789), Shadowburn (17877), Conflagrate (17962), Summon Doomguard (18540), Immolation (20153), Soulstone (20707), Infernal Awakening (22703), Summon Voidwalker (25112), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Soulshatter (29858), Unstable Affliction (30108), Summon Felguard (30146), Shadowfury (30283), Unstable Affliction (31117), Soulshatter (32835), Rain of Fire (42223), Hand of Gul'dan (47960), Haunt (48181), Soulburn (74434), Havoc (80240), Doom Bolt (85692), Hand of Gul'dan (86040), Soul Swap (86121), Soul Swap (86211), Seed of Corruption (87385), Drain Life (89653), Soul Harvest (101976), Drain Soul (103103), Metamorphosis (103958), Touch of Chaos (103964), Immolation Aura (104025), Soul Fire (104027), Rain of Fire (104232), Rain of Fire (104233), Imp Swarm (104316), Fel Firebolt (104318), Unending Resolve (104773), Hand of Gul'dan (105174), Harvest Life (108371), Nightfall (108558), Fire and Brimstone (108683), Conflagrate (108685), Immolate (108686), Demonic Leap (109151), Dark Intent (109773), Demonic Gateway (111771), Summon Fel Imp (112866), Summon Voidlord (112867), Summon Shivarra (112868), Summon Observer (112869), Summon Wrathguard (112870), Summon Abyssal (112921), Summon Terrorguard (112927), Dark Soul: Instability (113858), Dark Soul: Misery (113860), Dark Soul: Knowledge (113861), Demonic Gateway (113886), Demonic Gateway (113890), Health Funnel (114189), Wild Imps (114592), Ember Tap (114635), Incinerate (114654), Seed of Corruption (114790), Shadow Shield (115234), Chaos Bolt (116858), Backdraft (117828), Fear (118699), Soul Swap (119678), Command Demon (119898), Flames of Xoroth (120451), Molten Core (122355), Chaos Wave (124915), Chaos Wave (124916), Unstable Affliction (131736), Agony (131737), Corruption (131740), Seed of Corruption (132566), Corruption (146739), Unending Resolve (148688), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Meteor Strike (171017), Meteor Strike (171018), Convert Demon (175984)
 Description      : The cunning of Kil'jaeden allows you to move while casting Warlock spells for $d. Castable while casting other spells.
 Tooltip          : Able to move while casting Warlock spells that have a cast or channel time.
 
@@ -6050,7 +6017,7 @@ Class            : Warlock
 Spell Level      : 3
 Range            : 40 yards
 Duration         : 18 seconds
-Affecting spells : Haunt (48181), Metamorphosis (54879), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 2P Bonus (70839), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Chaotic Energy (111546), Item - Warlock T14 2P Bonus (123136), Kil'jaeden's Cunning (137587), Enhanced Corruption (157098), Haunting Spirits (157698), 
+Affecting spells : Haunt (48181), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 2P Bonus (70839), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Chaotic Energy (111546), Item - Warlock T14 2P Bonus (123136), Kil'jaeden's Cunning (137587), Enhanced Corruption (157098), Haunting Spirits (157698), 
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ .......x ....x... ........   ........ .....x.. ........ ........ 
@@ -6133,7 +6100,7 @@ Class            : Warlock
 Spell Level      : 64
 Cooldown         : 180 seconds
 Proc Chance      : 100%
-Affecting spells : Metamorphosis (54879), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Glyph of Unending Resolve (146964), Glyph of Strengthened Resolve (159697), 
+Affecting spells : Metamorphosis (103958), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Glyph of Unending Resolve (146964), Glyph of Strengthened Resolve (159697), 
 Attributes       : ....x.x. ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ .x...... ........ 
@@ -6175,7 +6142,7 @@ Class            : Warlock
 Range            : 40 yards
 Cast Time        : 3 seconds
 Cooldown         : 60 seconds
-Affecting spells : Metamorphosis (54879), Kil'jaeden's Cunning (137587)
+Affecting spells : Metamorphosis (103958), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6200,7 +6167,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Grants the Soulburn empowerment to your Haunt spell.
 
-Your Haunt spell also increases the damage of your damage over time effects by 15% for 30 sec.
+Your Haunt spell also increases the damage of your damage over time effects to all targets by $157698s1% for $157698d.
 
 Name             : Improved Demons (id=157068) [Spell Family (5), Passive, Hidden] 
 Class            : Demonology Warlock
@@ -6211,14 +6178,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=218884)   : Apply Aura (6) | Unknown effect sub type (382)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 24
-#2 (id=218885)   : Apply Aura (6) | Unknown effect sub type (382)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 2
-#3 (id=218886)   : Apply Aura (6) | Unknown effect sub type (382)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 3
-#4 (id=218887)   : Apply Aura (6) | Unknown effect sub type (382)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 17
+#1 (id=218884)   : Apply Aura (6) | Unknown effect sub type (429)
+                   Base Value: 20 | Scaled Value: 20
 Description      : Increases all damage done by your demon pets by $s1%.
 
 Name             : Empowered Drain Life (id=157069) [Spell Family (5), Passive] 
@@ -6270,8 +6231,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=218898)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 18
+#1 (id=218898)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 3
+                   Affected Spells: Nightfall (108558)
 Description      : Corruption has a ${$m1/10}.1% increased chance to generate a Soul Shard.
 
 Name             : Empowered Demons (id=157096) [Spell Family (5), Passive] 
@@ -6389,7 +6351,7 @@ Velocity         : 16 yards/sec
 Duration         : 60 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Affecting spells : Metamorphosis (54879), Kil'jaeden's Cunning (137587)
+Affecting spells : Mastery: Master Demonologist (77219), Metamorphosis (103958), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6442,7 +6404,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22
                    Affected Spells: Corruption (172), Drain Life (689), Agony (980), Unstable Affliction (30108), Drain Soul (103103), Shadow Shield (115234), Unstable Affliction (131736), Agony (131737), Corruption (131740), Corruption (146739)
 #2 (id=219889)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 15 | Scaled Value: 15
+                   Base Value: 20 | Scaled Value: 20
                    Affected Spells: Corruption (172), Drain Life (689), Agony (980), Unstable Affliction (30108), Drain Soul (103103), Shadow Shield (115234), Unstable Affliction (131736), Agony (131737), Corruption (131740), Corruption (146739)
 Description      : $@spelldesc152109
 Tooltip          : Periodic spell damage increased by $s1%.
@@ -6452,7 +6414,7 @@ Class            : Warlock
 Spell Level      : 12
 Range            : 100 yards
 Duration         : 15 seconds
-Affecting spells : Metamorphosis (54879), Mastery: Emberstorm (77220), Havoc (80240), Item - Warlock T11 4P Bonus (89935), Kil'jaeden's Cunning (137587)
+Affecting spells : Mastery: Emberstorm (77220), Havoc (80240), Item - Warlock T11 4P Bonus (89935), Metamorphosis (103958), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -6750,7 +6712,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ........ .....
 Effects          :
 #1 (id=242681)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -80 | Scaled Value: -80
-Description      : Cripples the target, reducing movment speed by $s1% for $d (4 sec in PvP).
+Description      : Cripples the target, reducing movement speed by $s1% for $d (4 sec in PvP).
 Tooltip          : Movement speed reduced by $s1%.
 
 Name             : Burning Presence (Special Ability) (id=171011) [Spell Family (57)] 
@@ -6761,7 +6723,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ .x...... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=242701)   : Apply Aura (6) | Threat (10)
@@ -6911,6 +6873,7 @@ Effects          :
 #1 (id=244288)   : Unknown effect type (174) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Radius: 100 yards
 Description      : When you or your demon deal damage, there is a chance to trigger Demonic Synergy, granting the other one $171982s1% increased damage for $171982d.
+Tooltip          : Damage done by Warlock and demon pet have a chance to grant each other $171982s1% increased damage for $171982d.
 
 Name             : Demonic Synergy (id=171982) [Spell Family (5)] 
 Class            : Warlock
@@ -6939,11 +6902,24 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=249568)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+#1 (id=249568)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50
-                   Affected Spells: Ember Tap (114635)
-#2 (id=249569)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 14
-                   Affected Spells: Ember Tap (114635)
-Description      : Ember Tap causes $s1% more healing, and costs $s2% fewer Burning Embers.
+#2 (id=249569)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 14
+Description      : Ember Tap causes $s1% more healing, and refunds $s2% of its Burning Ember cost.
+
+Name             : Crippling Shadows (id=175707) 
+Class            : Warlock
+Spell Level      : 30
+GCD              : 1.5 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=251184)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Choose a level 30 talent.
 

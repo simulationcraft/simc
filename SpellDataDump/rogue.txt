@@ -1,5 +1,5 @@
 
-SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18716)
+SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18764)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
 Resource         : 35 Energy
@@ -79,19 +79,14 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=280)      : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.08910
+#1 (id=280)      : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.06000
 #2 (id=281)      : Trigger Spell: Garrote - Silence (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1330
 #3 (id=282)      : Add Combo Points (80)
                    Base Value: 1 | Scaled Value: 1
-Description      : Garrote the enemy, silencing them for $1330d and causing ${($m1+$AP*$<bonus>*0.135)*6} damage over $d. Awards $s3 combo $lpoint:points;$?s138106[ and causes you to appear behind the target][].$?s91023[  For the next $91021d, your attacks bypass up to $91021s1% of that enemy's armor.][]
+Description      : Garrote the enemy, silencing them for $1330d and causing $o1 damage over $d. Awards $s3 combo $lpoint:points;$?s138106[ and causes you to appear behind the target][].$?s91023[  For the next $91021d, your attacks bypass up to $91021s1% of that enemy's armor.][]
 Tooltip          : $w1 damage every $t1 seconds.
-Variables        : $opp1=$?s14057[${1.10}][${1.00}]
-$opp2=$?s14072[${1.20}][${$<opp1>}]
-$opportunity=$?s79141[${1.30}][${$<opp2>}]
-$spatter1=$?s51632[${1.15}][${1.0}]
-$bonus=$?s51633[${$<opportunity>*1.3}][${$<opportunity>*$<spatter1>}]
 
 Name             : Mutilate (id=1329) [Spell Family (8)] 
 Class            : Assassination Rogue
@@ -150,7 +145,7 @@ Attributes       : ....x... ........ ..x..... ......x.   .....x.. x.x..... .x...
 Effects          :
 #1 (id=527)      : Distract (69)
                    Base Value: 10 | Scaled Value: 10 | Radius: 10 yards
-Description      : Throws a distraction, attracting the attention of all nearby monsters for $s1 seconds.  Useable while stealthed.
+Description      : Throws a distraction, attracting the attention of all nearby monsters for $s1 seconds.  Usable while stealthed.
 
 Name             : Sinister Strike (id=1752) [Spell Family (8)] 
 Class            : Rogue
@@ -248,7 +243,7 @@ Effects          :
 #5 (id=219899)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 23
                    Affected Spells: Garrote (703), Ambush (8676), Garrote (168971)
-Description      : Conceals you in the shadows, allowing you to stalk enemies without being seen. $?s14062[Movement speed while stealthed is increased by $s3%. ]?s13975[Movement speed while stealthed is increased by $s3% and damage dealt is increased by $s4%. ][]$?s31223[Attacks from Stealth and for $31666d after deal $31223s1% more damage.  ][]Lasts until canceled.
+Description      : Conceals you in the shadows until cancelled, allowing you to stalk enemies without being seen. $?s14062[Movement speed while stealthed is increased by $s3%. ]?s13975[Movement speed while stealthed is increased by $s3% and damage dealt is increased by $s4%. ][]$?s31223[Attacks from Stealth and for $31666d after deal $31223s1% more damage.  ][]
 Tooltip          : Stealthed.$?$w3!=0[
 Movement speed increased by $w3%.][]$?$w4!=0[
 Damage increased by $w4%.][]
@@ -413,7 +408,7 @@ Effects          :
                    Base Value: -60 | Scaled Value: -60
 #3 (id=169691)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f
-Description      : Blinds the target, causing it to wander disoriented for up to $d.  Any damage caused will remove the effect$?s91299[, but Blind also clears all damage over time effects from the target that would cause it to break early][]. Useable while stealthed.
+Description      : Blinds the target, causing it to wander disoriented for up to $d.  Any damage caused will remove the effect$?s91299[, but Blind also clears all damage over time effects from the target that would cause it to break early][]. Usable while stealthed.
 Tooltip          : Disoriented.$?$w3!=0[
 Damage taken increased by $w3%.][]
 
@@ -432,13 +427,13 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... ....x
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=622)      : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Points Per Combo Point: 5
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 Description      : Finishing move that causes damage per combo point:
-   1 point  : ${$m1+($AP*0.38436)*$<mult>} damage
-   2 points: ${$m1+($AP*0.38436)*$<mult>*2} damage
-   3 points: ${$m1+($AP*0.38436)*$<mult>*3} damage
-   4 points: ${$m1+($AP*0.38436)*$<mult>*4} damage
-   5 points: ${$m1+($AP*0.38436)*$<mult>*5} damage
+   1 point  : ${($AP*0.577)*$<mult>} damage
+   2 points: ${($AP*0.577)*$<mult>*2} damage
+   3 points: ${($AP*0.577)*$<mult>*3} damage
+   4 points: ${($AP*0.577)*$<mult>*4} damage
+   5 points: ${($AP*0.577)*$<mult>*5} damage
 Variables        : $mult=$?s16511[${(((100+$76808m1))/100)}][${1.00}]
 
 Name             : Deadly Poison (id=2818) [Scaling Spell (8), Spell Family (8)] 
@@ -511,7 +506,7 @@ Attributes       : ....x... ........ x....... ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=895)      : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 70 | Scaled Value: 70
-Description      : Increases your movement speed by $s1% for $d. Useable while stealthed.
+Description      : Increases your movement speed by $s1% for $d. Usable while stealthed.
 Tooltip          : Movement speed increased by $w1%.
 
 Name             : Heavy Linen Bandage (id=3276) 
@@ -618,12 +613,12 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40
 #2 (id=127877)   : Apply Aura (6) | Periodic Energize Power: every 2 seconds (24)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3
-Description      : Finishing move that consumes combo points to increase attack speed by $s1%$?s79152[ and grant $79152s1 Energy per $5171t2 sec ][]. Lasts longer per combo point:
+Description      : Finishing move that consumes combo points to increase attack speed by $s1%$?s79152[ and grant $79152s1 Energy per $5171t2 sec][]. Lasts longer per combo point:
    1 point  : 12 seconds
    2 points: 18 seconds
    3 points: 24 seconds
    4 points: 30 seconds
-   5 points: 36 seconds$
+   5 points: 36 seconds
 Tooltip          : Attack speed increased by $w1%.$?$w2!=0[
 Regaining $w2 Energy every $t2 sec.][]
 
@@ -645,7 +640,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.38600
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.12500
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -684,7 +679,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 #2 (id=99543)    : Weapon Damage% (31)
                    Base Value: 200 | Scaled Value: 2 (avg=0)
-Description      : Instantly attacks with both weapons for $5374m2% weapon damage.  Awards 2 combo points.
+Description      : Instantly attacks for $5374sw2 Physical damage.  Awards 2 combo points.
 
 Name             : Shiv (id=5938) [Spell Family (8)] 
 Class            : Rogue
@@ -717,7 +712,7 @@ Range            : 10 yards
 GCD              : 1 seconds
 Duration         : 60 seconds
 Proc Chance      : 100%
-Affecting spells : Shadow Dance (51713), Glyph of Sap (56798), Vendetta (79140), Sanguinary Vein (124271), Prey on the Weak (131511), Quick Blades (165509)
+Affecting spells : Shadow Dance (51713), Vendetta (79140), Sanguinary Vein (124271), Prey on the Weak (131511), Quick Blades (165509)
 Attributes       : ....x... ........ x.x.xx.. ........   .....x.. x.x..... ..x..... ...x.... 
                  : ........ ........ ........ ........   x....... ........ xx...... ........ 
                  : ........ ........ .......x ........   .....x.. ........ ........ ........ 
@@ -940,7 +935,7 @@ Effects          :
 #5 (id=221864)   : Apply Aura (6) | Dummy (4)
                    Base Value: 158571 | Scaled Value: 158571
                    Affected Spells: Killing Spree (51690)
-Description      : While active, your attacks also strike $?s157615[all][up to $s4] additional nearby opponents for $s3% of normal damage$?s56818[ and the application chance of Non-Lethal poisons is increased by $s2%][], but your Energy regeneration is reduced by $s1%. Lasts until canceled.
+Description      : While active, your attacks also strike $?s157615[all][up to $s4] additional nearby opponents for $s3% of normal damage$?s56818[ and the application chance of Non-Lethal poisons is increased by $s2%][], but your Energy regeneration is reduced by $s1%. Lasts until cancelled.
 Tooltip          : Attacking additional opponents.
 Energy regeneration reduced by $w1%.$?$w2!=0[
 Non-Lethal poison application chance increased by $w2%.][]
@@ -1088,12 +1083,13 @@ Resource         : 30 Energy
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
+Duration         : 24 seconds
 Affecting spells : Glyph of Hemorrhage (56807), Item - Rogue T8 2P Bonus (64914), Item - Rogue T9 4P Bonus (Hemorrhage, Sinister Strike, Backstab, and Mutilate) (67211), Vendetta (79140), Sanguinary Vein (124271), Silent Blades (145193), Quick Blades (165509)
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   .x...... ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=8231)     : Normalized Weapon Damage (121)
@@ -1102,11 +1098,12 @@ Effects          :
                    Base Value: 78 | Scaled Value: 0.78 (avg=0)
 #3 (id=8233)     : Add Combo Points (80)
                    Base Value: 1 | Scaled Value: 1
-#4 (id=134070)   : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100
-Description      : An instant strike that deals $sw2 Physical damage (increased 40% if a dagger is equipped)$?s56807[, and increases existing bleeds to deal][, and causes the target to bleed for] an additional $s4% of the initial damage over $89775d. Awards $s3 combo $lpoint:points;.
+#4 (id=134070)   : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03500
+Description      : An instant strike that deals $sw2 Physical damage (increased 40% if a dagger is equipped)$?s56807[, and increases existing bleeds to deal][, and causes the target to bleed for] an additional $o4 damage over $d. Awards $s3 combo $lpoint:points;.
 
 Replaces Sinister Strike.
+Tooltip          : Suffering $w4 damage every $t1 sec.
 
 Name             : Runecloth Bandage (id=18629) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
@@ -1243,7 +1240,7 @@ Description      : Finishing move that deals damage, reduces the target's moveme
    4 points: ${$m1+(($b1*4)+$AP*0.178)*4*$<mult>} damage
    5 points: ${$m1+(($b1*5)+$AP*0.178)*5*$<mult>} damage
 Tooltip          : Movement slowed by $s2%.
-Variables        : $mult=$?s76808[${((100+$76808m1))/100}][${1.00}]
+Variables        : $mult=$?s76808[${((100+$76808m1))/100}]$?s84601[${1.15}][${1.00}]
 
 Name             : Mutilate Off-Hand (id=27576) [Scaling Spell (8), Spell Family (8)] 
 Class            : Rogue
@@ -1261,7 +1258,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 0 (avg=0.25)
 #2 (id=99544)    : Weapon Damage% (31)
                    Base Value: 200 | Scaled Value: 2 (avg=0)
-Description      : Instantly attacks with both weapons for $5374m2% weapon damage.  Awards 2 combo points.
+Description      : Instantly attacks for $5374sw2 Physical damage.  Awards 2 combo points.
 
 Name             : Fleet Footed (Passive) (id=31209) [Passive] 
 Class            : Rogue
@@ -1294,9 +1291,11 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 1 | Misc Value 2: 0x2
 #2 (id=238338)   : Apply Aura (6) | Unknown effect sub type (405)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 2048
+#3 (id=253607)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 2048
 Description      : Increases your total Agility by $s1% and you gain $s2% more of the Multistrike stat from all sources.
 
-When you multistrike with Backstab or Ambush, you also twist the blade, causing all of your Bleed effects to instantly tick an additional time.
+When you multistrike with Backstab or Ambush, you also twist the blade, causing all of your Bleed effects to advance by $s3 sec, triggering an instant tick.
 
 Name             : Master of Subtlety (id=31223) [Spell Family (8), Passive, Hidden] 
 Class            : Subtlety Rogue
@@ -1391,14 +1390,17 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Mutilate (5374), Mutilate Off-Hand (27576), Dispatch (111240)
 Description      : Finishing move that deals instant Nature damage$?s157513[][, refreshes the duration of Slice and Dice if it is active, ] and increases your poison application chance  by $s2%.  Damage and duration increased per combo point.
-   1 point  : ${$AP*0.306+($m1*1)} damage, 2 sec
-   2 points: ${$AP*0.306*2+($m1*2)} damage, 3 sec
-   3 points: ${$AP*0.306*3+($m1*3)} damage, 4 sec
-   4 points: ${$AP*0.306*4+($m1*4)} damage, 5 sec
-   5 points: ${$AP*0.306*5+($m1*5)} damage, 6 sec
 
-Replaces Eviscerate.
+   1 point  : ${$<mult>*$AP*0.306+($m1*1)} damage, 2 sec
+   2 points: ${$<mult>*$AP*0.306*2+($m1*2)} damage, 3 sec
+   3 points: ${$<mult>*$AP*0.306*3+($m1*3)} damage, 4 sec
+   4 points: ${$<mult>*$AP*0.306*4+($m1*4)} damage, 5 sec
+   5 points: ${$<mult>*$AP*0.306*5+($m1*5)} damage, 6 sec  
+
+Replaces Eviscerate. 
 Tooltip          : Poison application chance increased by $s2%.
+Variables        : $mult2=$?s84601[${1.15}][${1.00}]
+$mult=$?s76803[${$<mult2>*((100+$76803m1)/100)}][$<mult2>*${1.00}]
 
 Name             : Interrupt (id=32747) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk
@@ -1552,7 +1554,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Step through the shadows to a visible enemy within 10 yards, attacking 7 times over $d for $57841sw3 Physical damage with your main-hand and $57842sw3 Physical damage with your off-hand.
 
-While Blade Flurry is active, each Killing Spree attack will teleport to and damage a different nearby enemy target.
+While Blade Flurry is active, each Killing Spree attack will teleport to and damage a different nearby enemy target.
+
+The Rogue cannot be targeted or disabled while Killing Spree is active.
 Tooltip          : Attacking an enemy every $t1 sec.
 Damage dealt increased by $61851s3%.
 
@@ -1634,20 +1638,6 @@ Attributes       : .....x.. ........ x....... ........   ........ ..x..... .....
 Effects          :
 #1 (id=49563)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1
-
-Name             : Glyph of Sap (id=56798) [Spell Family (8), Passive, Hidden] 
-Class            : Rogue
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=49922)    : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
-                   Base Value: 80000 | Scaled Value: 80000 | Misc Value: 1
-                   Affected Spells: Sap (6770)
-Description      : Increases the duration of Sap against non-player targets by ${$56798m1/1000} sec.
 
 Name             : Glyph of Evasion (id=56799) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
@@ -2043,7 +2033,6 @@ Attributes       : ........ x....... ........ ....x...   ........ ........ .x...
 Effects          :
 #1 (id=50487)    : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 407
-Description      : Increases the duration of Sap against non-player targets by ${$56798m1/1000} sec.
 
 Name             : Kick (id=57300) 
 Class            : Rogue
@@ -2349,7 +2338,7 @@ Effects          :
 #1 (id=55169)    : Apply Aura (6) | Mod Power Regen (110)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3
 #2 (id=99542)    : Apply Aura (6) | Unknown effect sub type (166)
-                   Base Value: 40 | Scaled Value: 40
+                   Base Value: 30 | Scaled Value: 30
 Description      : Increases your Energy regeneration rate by $s1% and your Attack Power by $s2%.
 
 Name             : Mechanized Snow Goggles (id=61481) 
@@ -2611,7 +2600,7 @@ Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=66846)    : Apply Aura (6) | Periodic Heal: every 3 seconds (8)
-                   Base Value: 5 | Scaled Value: 5
+                   Base Value: 3 | Scaled Value: 3
 #2 (id=198198)   : Apply Aura (6) | Unknown effect sub type (118)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 127
 Description      : Finishing move that restores $?s56806[${$m1+($56806m1/1000)}.1%][$m1%] of maximum health every $t1 sec. $?s146625[Increases all healing received from other sources by $146625s1% while active. ][]Lasts longer per combo point:
@@ -2904,7 +2893,7 @@ Effects          :
 #1 (id=85447)    : Apply Aura (6) | Increase Energy (35)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1.00000 | Misc Value: 3
 #2 (id=85448)    : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f
 Description      : While wielding daggers, your maximum Energy is increased by $s1 and your damage is increased by $s2%.
 
 Name             : Revealing Strike (id=84617) [Spell Family (8)] 
@@ -2998,8 +2987,8 @@ Effects          :
 #1 (id=87938)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=101077)   : Weapon Damage% (31)
-                   Base Value: 150 | Scaled Value: 1.5 (avg=0)
-Description      : A vicious attack that deals $86392s2% weapon damage with your off-hand.
+                   Base Value: 225 | Scaled Value: 2.25 (avg=0)
+Description      : A vicious attack that deals $86392sw2 Physical damage with your off-hand.
 
 Name             : Smoke Bomb (id=88611) [Spell Family (8)] 
 Class            : Rogue
@@ -3057,10 +3046,10 @@ Attributes       : ........ ........ ........ ........   .....x.. ........ .....
                  : ........ ........ ........ .....x..   .......x ........ ..x..... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
-                 : ........ .x..xx.. ........ ........   ........ ........ ........ ........ 
-                 : .x...... ......x. ........ ........   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=92690)    : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
+#1 (id=92690)    : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : $@spelldesc16511
 Tooltip          : Suffering $w1 damage every $t1 sec.
@@ -3165,7 +3154,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=115879)   : Apply Aura (6) | Modify Power Cost% (72)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 127 | Misc Value 2: 0x8
-                   Affected Spells: Tranquility (740), Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Wild Growth (48438), Lifebloom (94447)
+                   Affected Spells: Tranquility (740), Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438)
 Description      : Your abilities cost $s1% less energy for $d after triggering Tricks of the Trade.
 Tooltip          : Ability costs reduced by $s1%.
 
@@ -3266,7 +3255,7 @@ Attributes       : ........ ........ ........ ........   ........ .......x .....
 Effects          :
 #1 (id=119253)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 11
-Description      : Increases your movement speed by $137573s1% for $137573d and removes movement slowing effects. Useable while stealthed.
+Description      : Increases your movement speed by $137573s1% for $137573d and removes movement slowing effects. Usable while stealthed.
 Tooltip          : $?$w1!=0[Movement speed increased by $w1%.  ][]$?$w2!=0[Immune to movement-impairing effects.][]
 
 Name             : Dirty Tricks (Passive Talent) (id=108216) [Spell Family (8), Passive] 
@@ -3306,7 +3295,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 Description      : Exploits the vulnerability of foes with less than 35% health, causing $sw2 Physical damage to the target. Awards $s3 combo $lpoint:points;.
 
-Your successful Mutilates have a $121152h% chance to make your next Dispatch free and useable on any target.
+Your successful Mutilates have a $121152h% chance to make your next Dispatch free and usable on any target.
 
 Replaces Sinister Strike.
 
@@ -3628,7 +3617,7 @@ Spell Level      : 83
 Range            : 5 yards
 GCD              : 1 seconds
 Affecting spells : Mastery: Executioner (76808), Vendetta (79140), Sanguinary Vein (124271), Quick Blades (165509)
-Attributes       : ....x... ........ x.x..... ........   ........ ........ ....x... ........ 
+Attributes       : ....x... ........ x.x..... ........   ........ .x...... ....x... ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
@@ -4196,7 +4185,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.66000 | Radius: 0 - 8 yards
 #3 (id=217591)   : Unknown effect type (42)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 45 | Misc Value 2: 0x2d
-#4 (id=217594)   : Apply Aura (6) | Dummy (4)
+#4 (id=217594)   : Apply Aura (6) | Unknown effect sub type (288)
                    Base Value: 0 | Scaled Value: 0
 #5 (id=217868)   : Apply Aura (6) | Unknown effect sub type (263)
                    Base Value: 0 | Scaled Value: 0
@@ -4768,14 +4757,14 @@ Class            : Rogue
 Spell Level      : 1
 Range            : 30 yards
 Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
-                 : ........ ........ ........ .....x..   ........ ........ ..x..... .x....x. 
+                 : ........ ........ ........ ........   ........ ........ ..x..... .x....x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
-                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..xx.. ........ ........   ........ ........ ........ ........ 
                  : .x...... ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=239283)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03500
 Description      : $@spelldesc16511
 
 Name             : Crimson Tempest (id=168952) [Spell Family (8)] 
