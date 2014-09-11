@@ -1,5 +1,5 @@
 
-SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18612)
+SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18702)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -85,7 +85,7 @@ Range            : 30 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
-Affecting spells : Ancestral Swiftness (16188), Stormstrike (17364), Elemental Reach (29000), Maelstrom Weapon (53817), Telluric Currents (55453), Elemental Fury (60188), Shamanism (62099), Spiritwalker's Grace (79206), Item - Shaman T11 Enhancment 4P Bonus (90502), Item - Shaman T11 Elemental 4P Bonus (90505), Temporal Maelstrom (105869), Windstrike (115356), Unleashed Fury (118470), Unleashed Fury (118472), Item - Shaman T14 Elemental 2P Bonus (123123), Lucidity (137326), Elemental Discharge (144999), Improved Lightning Bolt (157777)
+Affecting spells : Ancestral Swiftness (16188), Stormstrike (17364), Elemental Reach (29000), Maelstrom Weapon (53817), Telluric Currents (55453), Elemental Fury (60188), Shamanism (62099), Spiritwalker's Grace (79206), Item - Shaman T11 Enhancment 4P Bonus (90502), Item - Shaman T11 Elemental 4P Bonus (90505), Temporal Maelstrom (105869), Windstrike (115356), Unleashed Fury (118470), Unleashed Fury (118472), Item - Shaman T14 Elemental 2P Bonus (123123), Lucidity (137326), Elemental Discharge (144999)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -94,7 +94,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=151)      : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.95337
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.14404
 Description      : Fires a bolt of lightning at the target, dealing $s1 Nature damage$?s55453[, and restoring ${$55453m2/100}.2% of maximum mana][.]
 
 Name             : Chain Lightning (id=421) [Spell Family (11)] 
@@ -113,12 +113,12 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=155)      : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.30656
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.46000
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.
 
 Name             : Earth Shield (id=974) [Spell Family (11)] 
 Class            : Restoration Shaman
-Resource         : 14% Base Mana (4480 @Level 100)
+Resource         : 12.6% Base Mana (4032 @Level 100)
 Spell Level      : 26
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -148,7 +148,7 @@ Triggers a heal when struck by an attacker.
 
 Name             : Chain Heal (id=1064) [Spell Family (11)] 
 Class            : Restoration Shaman
-Resource         : 17.5% Base Mana (5600 @Level 100)
+Resource         : 14.18% Base Mana (4537 @Level 100)
 Spell Level      : 44
 Range            : 40 yards
 Cast Time        : 2.5 seconds
@@ -212,7 +212,7 @@ Spell Level      : 58
 GCD              : 1 seconds
 Duration         : 60 seconds
 Cooldown         : 300 seconds
-Affecting spells : Mental Quickness (30814), Lucidity (137326), Readiness: Enhancement (145986), Readiness: Restoration (145988), Readiness: Elemental (151023)
+Affecting spells : Mental Quickness (30814), Lucidity (137326)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -300,7 +300,7 @@ Spell Level      : 66
 GCD              : 1 seconds
 Duration         : 60 seconds
 Cooldown         : 300 seconds
-Affecting spells : Mental Quickness (30814), Glyph of Fire Elemental Totem (55455), Lucidity (137326), Elemental Discharge (144999), Readiness: Enhancement (145986), Readiness: Restoration (145988), Readiness: Elemental (151023)
+Affecting spells : Mental Quickness (30814), Glyph of Fire Elemental Totem (55455), Lucidity (137326), Elemental Discharge (144999)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -391,7 +391,7 @@ Spell Level      : 10
 Range            : 25 yards
 Cast Time        : 1.5 seconds
 Velocity         : 32 yards/sec
-Affecting spells : Elemental Reach (29000), Elemental Fury (60188), Item - Shaman T12 Restoration 2P Bonus (99190), Stormfire (99212), Elemental Discharge (144999), Improved Fire Totems (157775)
+Affecting spells : Elemental Reach (29000), Elemental Fury (60188), Item - Shaman T12 Restoration 2P Bonus (99190), Stormfire (99212), Elemental Discharge (144999)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -400,45 +400,32 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1252)     : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.10328
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.14873
 Description      : Deals Fire damage to the target.
 
 Name             : Healing Stream Totem (Water Totem) (id=5394) [Spell Family (11)] 
 Class            : Shaman
-Resource         : 9.5% Base Mana (3040 @Level 100)
+Resource         : 8.6% Base Mana (2752 @Level 100)
 Spell Level      : 30
 GCD              : 1 seconds
 Duration         : 15 seconds
 Cooldown         : 30 seconds
 Affecting spells : Mental Quickness (30814), Lucidity (137326)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
                  : ........ ........ ........ ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1925)     : Summon (28)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3527 | Misc Value 2: 0xd4a
-Description      : Summons a Water Totem with $?s63298[$s1% of the caster's][$s1] health at the feet of the caster that heals the $?s147074[two most injured party or raid members][most injured party or raid member] within $52042A1 yards for ${(($SP*0.444)*$<bonus>)} every $5672t1 sec.$?s55456[  Healed allies take $119523s1% less Fire, Frost, and Nature damage for $d.][]  Lasts $d.
+#2 (id=247804)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
+                   Base Value: 1 | Scaled Value: 1
+Description      : Summons a Water Totem with $?s63298[$s1% of the caster's][$s1] health at the feet of the caster that heals the $?s147074[two most injured party or raid members][most injured party or raid member] within $52042A1 yards for ${(($SP*0.444)*$<bonus>)} every $t2 sec.$?s55456[  Healed allies take $119523s1% less Fire, Frost, and Nature damage for $d.][]  Lasts $d.
 Variables        : $purification=$?s16213[${1.875}][${1.0}]
 $soothe=$?s16205[${1.50}]?s16187[${1.25}][${1.0}]
 $bonus=${($<purification>*$<soothe>)}
-
-Name             : Healing Stream (id=5672) [Scaling Spell (9), Spell Family (11), Passive] 
-Class            : Shaman
-Spell Level      : 20
-Affecting spells : Purification (16213), Glyph of Healing Stream Totem (55456), Mastery: Deep Healing (77226), Rushing Streams (147074)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .......x ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=2016)     : Apply Aura (6) | Periodic Trigger Spell: Healing Stream Totem every 2 seconds (23)
-                   Base Value: 6 | Scaled Value: 0 (avg=0.028) | SP Coefficient: 0.08270 | Trigger Spell: 52042
-Tooltip          : Heals $s1 every $t1 seconds.
 
 Name             : Far Sight (id=6196) [Spell Family (11)] 
 Class            : Shaman
@@ -505,12 +492,12 @@ Description      : Creates 3 vials of Anti-Venom.
 
 Name             : Healing Surge (id=8004) [Spell Family (11)] 
 Class            : Shaman
-Resource         : 23% Base Mana (7360 @Level 100)
+Resource         : 20.7% Base Mana (6624 @Level 100)
 Spell Level      : 7
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Ancestral Swiftness (16188), Purification (16213), Tidal Waves (53390), Maelstrom Weapon (53817), Healing Trance (60515), Unleash Life (73685), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Lucidity (137326), Improved Healing Surge (157816)
+Affecting spells : Ancestral Swiftness (16188), Purification (16213), Tidal Waves (53390), Maelstrom Weapon (53817), Healing Trance (60515), Unleash Life (73685), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Lucidity (137326)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -519,7 +506,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3235)     : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.87004
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.44405
 Description      : Heals a friendly target for $s1.$?s62099[  Healing increased by 100% when cast on self][]
 
 Name             : Earth Shock (id=8042) [Spell Family (11)] 
@@ -529,7 +516,7 @@ Spell Level      : 6
 Range            : 25 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Flurry (16282), Stormstrike (17364), Elemental Reach (29000), Mental Quickness (30814), Shaman Shock Range Bonus (32973), Elemental Fury (60188), Item - Shaman T9 Enhancment 4P Bonus (Stormstrike) (67221), Windstrike (115356), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Elemental Fusion (157174), Improved Shocks (157779), Glyph of Shocks (159649)
+Affecting spells : Flurry (16282), Stormstrike (17364), Elemental Reach (29000), Mental Quickness (30814), Shaman Shock Range Bonus (32973), Elemental Fury (60188), Item - Shaman T9 Enhancment 4P Bonus (Stormstrike) (67221), Windstrike (115356), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Elemental Fusion (157174), Glyph of Shocks (159649)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -538,7 +525,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3248)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.35952
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.43142
 Description      : Instantly shocks the target with concussive force, causing $s1 Nature damage.
 
 Name             : Flame Shock (id=8050) [Spell Family (11)] 
@@ -549,7 +536,7 @@ Range            : 25 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 6 seconds
-Affecting spells : Flurry (16282), Elemental Reach (29000), Mental Quickness (30814), Shaman Shock Range Bonus (32973), Elemental Fury (60188), Item - Shaman T8 Elemental 2P Bonus (64925), Item - Shaman T8 Elemental 4P Bonus (64928), Item - Shaman T9 Enhancment 4P Bonus (Stormstrike) (67221), Item - Shaman T9 Elemental 2P Bonus (Flame Shock) (67227), Unleash Flame (73683), Item - Shaman T11 Elemental 2P Bonus (90503), Stormfire (99212), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Improved Shocks (157779), Glyph of Shocks (159649), Unleash Flame (165462)
+Affecting spells : Flurry (16282), Elemental Reach (29000), Mental Quickness (30814), Shaman Shock Range Bonus (32973), Elemental Fury (60188), Item - Shaman T8 Elemental 2P Bonus (64925), Item - Shaman T8 Elemental 4P Bonus (64928), Item - Shaman T9 Enhancment 4P Bonus (Stormstrike) (67221), Item - Shaman T9 Elemental 2P Bonus (Flame Shock) (67227), Item - Shaman T11 Elemental 2P Bonus (90503), Stormfire (99212), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Glyph of Shocks (159649), Unleash Flame (165462)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -558,9 +545,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3250)     : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.26803
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.32164
 #2 (id=3251)     : Apply Aura (6) | Periodic Damage: fire every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.12198
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.14638
 #3 (id=233307)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 Description      : Sears the target with fire, causing $s1 Fire damage and then an additional $o1 Fire damage over $d.
@@ -574,7 +561,7 @@ Range            : 25 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 6 seconds
-Affecting spells : Flurry (16282), Elemental Reach (29000), Mental Quickness (30814), Shaman Shock Range Bonus (32973), Glyph of Frost Shock (55443), Elemental Fury (60188), Item - Shaman T9 Enhancment 4P Bonus (Stormstrike) (67221), Lucidity (137326), Improved Shocks (157779), Echo of the Elements (159101), Echo of the Elements (159103), Glyph of Shocks (159649)
+Affecting spells : Flurry (16282), Elemental Reach (29000), Mental Quickness (30814), Shaman Shock Range Bonus (32973), Glyph of Frost Shock (55443), Elemental Fury (60188), Item - Shaman T9 Enhancment 4P Bonus (Stormstrike) (67221), Lucidity (137326), Echo of the Elements (159101), Glyph of Shocks (159649)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -585,7 +572,7 @@ Effects          :
 #1 (id=3252)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
 #2 (id=3253)     : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 94.6 (avg=0) | Points Per Level: 1.2 | SP Coefficient: 0.30495
+                   Base Value: 1 | Scaled Value: 94.6 (avg=0) | Points Per Level: 1.2 | SP Coefficient: 0.36594
 Description      : Instantly shocks an enemy with frost, dealing $s2 Frost damage$?s63374[, rooting the target in ice for $63685d,][] and reducing the target's movement speed by $s1%. Lasts $d.
 Tooltip          : Movement slowed by $s1%.
 
@@ -594,21 +581,19 @@ Class            : Shaman
 Resource         : 2.3% Base Mana (736 @Level 100)
 Spell Level      : 54
 GCD              : 1 seconds
-Duration         : 6 seconds
+Duration         : 10 seconds
 Cooldown         : 60 seconds
 Affecting spells : Mental Quickness (30814), Lucidity (137326)
-Attributes       : ........ ........ x....... ........   ........ .......x ........ ....x... 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ........   .....x.. ........ ........ ........ 
-                 : .....x.. ........ ........ ........   .....x.. ........ ........ ........ 
+                 : ........ ........ ........ ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3317)     : Summon (28)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 5913 | Misc Value 2: 0x51
-#2 (id=102260)   : Apply Aura (6) | Unknown effect sub type (147)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1849
-Description      : Summons an Earth Totem with $?s63298[$s1% of the caster's][$s1] health at the feet of the caster that shakes the ground around it for $d, removing Fear, Charm and Sleep effects from party and raid members within $8146a1 yards.  This totem may be dropped even while the caster is afflicted with such effects.
+Description      : Summons an Earth Totem with $?s63298[$s1% of the caster's][$s1] health at the feet of the caster that shakes the ground around it for $d, removing Fear, Charm and Sleep effects from party and raid members within $8146a1 yards.
 
 Name             : Tremor Totem Effect (id=8146) [Spell Family (11)] 
 Class            : Shaman
@@ -651,7 +636,7 @@ Description      : Summons an Air Totem with $?s63298[$s1% of the caster's][$s1]
 Name             : Magma Totem (id=8187) [Scaling Spell (9), Spell Family (11)] 
 Class            : Shaman
 Spell Level      : 36
-Affecting spells : Elemental Reach (29000), Elemental Fury (60188), Item - Shaman T12 Restoration 2P Bonus (99190), Stormfire (99212), Elemental Discharge (144999), Improved Fire Totems (157775)
+Affecting spells : Elemental Reach (29000), Elemental Fury (60188), Item - Shaman T12 Restoration 2P Bonus (99190), Stormfire (99212), Elemental Discharge (144999)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ......x.   ......x. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -660,7 +645,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3341)     : School Damage: fire (2)
-                   Base Value: 38 | Scaled Value: 0 (avg=0.267) | SP Coefficient: 0.08500 | Radius: 0 - 8 yards
+                   Base Value: 38 | Scaled Value: 0 (avg=0.267) | SP Coefficient: 0.10200 | Radius: 0 - 8 yards
 Description      : Summons a Magma Totem with $8190s1 health at the feet of the caster for ${$8190d-1} sec that causes $s1 Fire damage to creatures within $a1 yards every $8188t1 seconds.
 
 Name             : Magma Totem Passive (id=8188) [Passive, Hidden] 
@@ -867,13 +852,13 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=7992)     : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 25 | Scaled Value: 25
-                   Affected Spells: Chain Heal (1064), Healing Stream (5672), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Unleashed Fury (118473)
+                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Unleashed Fury (118473)
 #2 (id=86701)    : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 22
                    Affected Spells: Riptide (61295)
 #3 (id=133083)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50
-                   Affected Spells: Healing Stream (5672), Healing Stream Totem (52042), Healing Tide (114942)
+                   Affected Spells: Healing Stream Totem (52042), Healing Tide (114942)
 #4 (id=203904)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 100 | Scaled Value: 100
                    Affected Spells: Healing Rain (73921)
@@ -1085,7 +1070,7 @@ Effects          :
                    Base Value: 130 | Scaled Value: 130 | Misc Value: 126 | Misc Value 2: 0x1
 #2 (id=138751)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 14
-                   Affected Spells: Lightning Shield (324), Purge (370), Fire Nova (1535), Earth Elemental Totem (2062), Earthbind Totem (2484), Ghost Wolf (2645), Bloodlust (2825), Fire Elemental Totem (2894), Searing Totem (3599), Healing Stream Totem (5394), Tremor Totem (8143), Grounding Totem (8177), Magma Totem (8190), Windfury Weapon (8232), Lightning Shield (26364), Heroism (32182), Earthgrab Totem (51485), Feral Spirit (51533), Cleanse Spirit (51886), Wind Shear (57994), Spirit Walk (58875), Unleash Elements (73680), Spiritwalker's Grace (79206), Timewalker (105877), Capacitor Totem (108269), Stone Bulwark Totem (108270), Windwalk Totem (108273), Healing Tide Totem (108280), Ascendance (114049), Ascendance (165339), Ascendance (165341), Ascendance (165344)
+                   Affected Spells: Lightning Shield (324), Purge (370), Fire Nova (1535), Earth Elemental Totem (2062), Earthbind Totem (2484), Ghost Wolf (2645), Bloodlust (2825), Fire Elemental Totem (2894), Searing Totem (3599), Healing Stream Totem (5394), Tremor Totem (8143), Grounding Totem (8177), Magma Totem (8190), Windfury Weapon (8232), Lightning Shield (26364), Heroism (32182), Earthgrab Totem (51485), Feral Spirit (51533), Cleanse Spirit (51886), Wind Shear (57994), Spirit Walk (58875), Unleash Elements (73680), Spiritwalker's Grace (79206), Timewalker (105877), Capacitor Totem (108269), Stone Bulwark Totem (108270), Windwalk Totem (108273), Healing Tide Totem (108280), Ascendance (114049), Cloudburst Totem (157153), Ascendance (165339), Ascendance (165341), Ascendance (165344)
 #3 (id=183482)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -90 | Scaled Value: -90 | Misc Value: 14
                    Affected Spells: Earth Shock (8042), Flame Shock (8050), Frost Shock (8056)
@@ -1101,7 +1086,7 @@ Cooldown         : 60 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
-Affecting spells : Readiness: Enhancement (145986), Readiness: Elemental (151023), Glyph of Shamanistic Resolve (159648), 
+Affecting spells : Glyph of Shamanistic Resolve (159648), 
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1159,7 +1144,7 @@ Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Item - Shaman T9 Enhancement 2P Bonus (Stormstrike) (67220), Item - Shaman T11 Enhancement 2P Bonus (90501), Improved Stormstrike (157808)
+Affecting spells : Item - Shaman T9 Enhancement 2P Bonus (Stormstrike) (67220), Item - Shaman T11 Enhancement 2P Bonus (90501)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : x....... .......x ........ ........   ........ ........ ........ ........ 
@@ -1168,7 +1153,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=21915)    : Weapon Damage% (31)
-                   Base Value: 160 | Scaled Value: 1.6 (avg=0) | SP Coefficient: 1.00000
+                   Base Value: 192 | Scaled Value: 1.92 (avg=0) | SP Coefficient: 1.00000
 #2 (id=172084)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc17364
@@ -1177,7 +1162,7 @@ Name             : Stormstrike Off-Hand (id=32176) [Spell Family (11)]
 Class            : Shaman
 Spell Level      : 40
 Range            : 5 yards
-Affecting spells : Item - Shaman T9 Enhancement 2P Bonus (Stormstrike) (67220), Item - Shaman T11 Enhancement 2P Bonus (90501), Improved Stormstrike (157808)
+Affecting spells : Item - Shaman T9 Enhancement 2P Bonus (Stormstrike) (67220), Item - Shaman T11 Enhancement 2P Bonus (90501)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x.....x. 
                  : x....... .......x ........ ........   ........ ........ ........ ........ 
@@ -1186,7 +1171,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=21916)    : Weapon Damage% (31)
-                   Base Value: 160 | Scaled Value: 1.6 (avg=0) | SP Coefficient: 1.00000
+                   Base Value: 192 | Scaled Value: 1.92 (avg=0) | SP Coefficient: 1.00000
 #2 (id=172085)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc17364
@@ -1393,7 +1378,7 @@ Spell Level      : 10
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 45 seconds
-Affecting spells : Elemental Reach (29000), Elemental Fury (60188), Glyph of Thunderstorm (62132), Glyph of Thunder (63270), Elemental Discharge (144999), Readiness: Elemental (151023)
+Affecting spells : Elemental Reach (29000), Elemental Fury (60188), Glyph of Thunderstorm (62132), Glyph of Thunder (63270), Elemental Discharge (144999)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1402,7 +1387,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
 Effects          :
 #1 (id=43815)    : School Damage: nature (2)
-                   Base Value: 550 | Scaled Value: 821 - 899 (avg=0) | Points Per Level: 3 | Value Range: 79 | SP Coefficient: 0.34828 | Radius: 0 - 10 yards
+                   Base Value: 0 | Scaled Value: 271 - 273 (avg=0) | Points Per Level: 3 | Value Range: 3 | SP Coefficient: 0.34828 | Radius: 0 - 10 yards
 #2 (id=43816)    : Knock Back (98)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 300 | Radius: 0 - 10 yards
 #3 (id=43817)    : Apply Aura (6) | Decrease Movement Speed% (33)
@@ -1420,7 +1405,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Cooldown         : 8 seconds
-Affecting spells : Elemental Reach (29000), Elemental Fury (60188), Item - Shaman T9 Elemental 4P Bonus (Lava Burst) (67228), Item - Shaman T10 Elemental 4P Bonus (70817), Unleash Flame (73683), Spiritwalker's Grace (79206), Stormfire (99212), Unleashed Fury (118470), Lucidity (137326), Elemental Discharge (144999), Improved Lava Burst (157778), Echo of the Elements (159101), Unleash Flame (165462)
+Affecting spells : Elemental Reach (29000), Elemental Fury (60188), Item - Shaman T9 Elemental 4P Bonus (Lava Burst) (67228), Item - Shaman T10 Elemental 4P Bonus (70817), Unleash Flame (73683), Spiritwalker's Grace (79206), Stormfire (99212), Unleashed Fury (118470), Lucidity (137326), Elemental Discharge (144999), Echo of the Elements (159101), Unleash Flame (165462)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1429,7 +1414,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=43841)    : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.77040
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.92448
 Description      : You hurl molten lava at the target, dealing $s1 Fire damage.  Lava Burst will always deal a critical strike.  If your Flame Shock is on the target, Lava Burst will deal $8050m3% additional damage.
 
 Name             : Hex (id=51514) [Spell Family (11)] 
@@ -1500,7 +1485,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 120 seconds
-Affecting spells : Mental Quickness (30814), Lucidity (137326), Readiness: Enhancement (145986), Glyph of Ephemeral Spirits (159640), 
+Affecting spells : Mental Quickness (30814), Lucidity (137326), Glyph of Ephemeral Spirits (159640), 
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ .x...... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1620,7 +1605,6 @@ Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
-Affecting spells : Improved Tidal Waves (157818), 
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -2014,7 +1998,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=48412)    : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10
-                   Affected Spells: Healing Stream (5672), Healing Stream Totem (52042)
+                   Affected Spells: Healing Stream Totem (52042)
 #2 (id=48413)    : None (0)
                    Base Value: 1 | Scaled Value: 1
                    Affected Spells: Mana Spring (24853)
@@ -2598,7 +2582,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 10.5 seconds
-Affecting spells : Flurry (16282), Glyph of Lava Lash (55444), Item - Shaman T8 Enhancement 2P Bonus (64916), Item - Shaman T11 Enhancement 2P Bonus (90501), Item - Shaman T12 Enhancement 2P Bonus (99209), Stormfire (99212), Item - Shaman T14 Enhancement 2P Bonus (123132), Empowered Lava Lash (157803), Improved Lava Lash (157809), Echo of the Elements (159103)
+Affecting spells : Flurry (16282), Glyph of Lava Lash (55444), Item - Shaman T8 Enhancement 2P Bonus (64916), Item - Shaman T11 Enhancement 2P Bonus (90501), Item - Shaman T12 Enhancement 2P Bonus (99209), Stormfire (99212), Item - Shaman T14 Enhancement 2P Bonus (123132), Echo of the Elements (159103)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2607,19 +2591,18 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=53784)    : Weapon Damage% (31)
-                   Base Value: 260 | Scaled Value: 2.6 (avg=0)
+                   Base Value: 312 | Scaled Value: 3.12 (avg=0)
 #2 (id=53785)    : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 #3 (id=134467)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #4 (id=220014)   : Dummy (3)
-                   Base Value: 4 | Scaled Value: 4
+                   Base Value: 6 | Scaled Value: 6
 Description      : You charge your off-hand weapon with lava, instantly dealing $s1% of that weapon's damage to an enemy target$?s55444[][ and spreading your Flame Shock from the target to up to $s4 enemies within $105792A1 yards].
 
 Name             : Elemental Fury (id=60188) [Spell Family (11), Passive, Hidden] 
 Class            : Elemental Shaman
 Spell Level      : 10
-Affecting spells : Improved Critical Strikes (157776)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2629,12 +2612,12 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=53887)    : Apply Aura (6) | Add Percent Modifier: Spell Critical Damage (108)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 15
-                   Affected Spells: Lightning Shield (324), Lightning Bolt (403), Chain Lightning (421), Searing Bolt (3606), Earth Shock (8042), Flame Shock (8050), Frost Shock (8056), Magma Totem (8187), Fire Nova (8349), Flametongue (10400), Flametongue Attack (10444), Lightning Shield (26364), Frozen Rune Weapon 2 (51385), Frozen Rune Weapon 3 (51386), Frozen Rune Weapon 4 (51387), Frozen Rune Weapon 5 (51388), Thunderstorm (51490), Lava Burst (51505), Earthquake (61882), Unleash Flame (73683), Earthquake (77478), Lava Beam (114074), Elemental Blast (117014), Soothing Winds (157333), Unleash Flame (165462)
+                   Affected Spells: Lightning Shield (324), Lightning Bolt (403), Chain Lightning (421), Searing Bolt (3606), Earth Shock (8042), Flame Shock (8050), Frost Shock (8056), Magma Totem (8187), Fire Nova (8349), Flametongue (10400), Flametongue Attack (10444), Lightning Shield (26364), Frozen Rune Weapon 2 (51385), Frozen Rune Weapon 3 (51386), Frozen Rune Weapon 4 (51387), Frozen Rune Weapon 5 (51388), Thunderstorm (51490), Lava Burst (51505), Earthquake (61882), Unleash Flame (73683), Earthquake (77478), Lava Beam (114074), Elemental Blast (117014), Soothing Winds (157333), Unleash Flame (165462), Molten Earth (170379)
 Description      : Your damaging critical strikes deal ${$m1+200}% damage instead of the usual 200%.
 
-Name             : Riptide (id=61295) [Scaling Spell (9), Spell Family (11)] 
+Name             : Riptide (id=61295) [Spell Family (11)] 
 Class            : Restoration Shaman
-Resource         : 9% Base Mana (2880 @Level 100)
+Resource         : 7.29% Base Mana (2332 @Level 100)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2649,12 +2632,12 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=55127)    : Direct Heal (10)
-                   Base Value: 638 | Scaled Value: 0 (avg=3.351) | Value Range: 53 | SP Coefficient: 0.81276
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.38000
 #2 (id=55128)    : Apply Aura (6) | Periodic Heal: every 3 seconds (8)
-                   Base Value: 133 | Scaled Value: 0 (avg=1.583) | SP Coefficient: 0.38214
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.30000
 #3 (id=55129)    : None (0)
                    Base Value: 25 | Scaled Value: 25
-Description      : Heals a friendly target for $s1 and an additional $o2 over $d.  Your Chain Heal spell is $s3% more effective when the primary target is affected by your Riptide.
+Description      : Heals a friendly target for $s1 and an additional $o2 over $d. Your Chain Heal spell is $s3% more effective when the primary target is affected by your Riptide.
 Tooltip          : Heals $w2 every $t2 seconds.  
 Increases caster's Chain Heal by $s3%.
 
@@ -2673,7 +2656,7 @@ Effects          :
 
 Name             : Earthquake (id=61882) [Spell Family (11)] 
 Class            : Elemental Shaman
-Resource         : 70.3% Base Mana (22496 @Level 100)
+Resource         : 3% Base Mana (960 @Level 100)
 Spell Level      : 60
 Range            : 35 yards
 Cast Time        : 2.5 seconds
@@ -2681,19 +2664,19 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 10 seconds
 Proc Chance      : 100%
-Affecting spells : Ancestral Swiftness (16188), Glyph of Unstable Earth (55437), Elemental Fury (60188), Spiritwalker's Grace (79206), Lucidity (137326), Echo of the Elements (159101)
+Affecting spells : Ancestral Swiftness (16188), Glyph of Unstable Earth (55437), Elemental Fury (60188), Spiritwalker's Grace (79206), Lucidity (137326), Echo of the Elements (159101), Mastery: Molten Earth (170374)
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... .x...... ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
 Effects          :
 #1 (id=55819)    : Persistent Area Aura (27) | Dummy (4)
                    Base Value: 674 | Scaled Value: 679 - 829 (avg=0) | Points Per Level: 0.1 | Value Range: 151 | SP Coefficient: 0.09100 | Radius: 8 yards
 #2 (id=55820)    : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
-                   Base Value: 0 | Scaled Value: 0
-Description      : You cause the earth at the target location to tremble and break, dealing ${$SPN*0.1125*10} Physical damage over $d to enemies in an $a1 yard radius$?s55437[ and reducing their movement speed by $55437s1% for $77478d][], with a $77478s2% chance of knocking down affected targets.
+                   Base Value: 100 | Scaled Value: 100
+Description      : You cause the earth at the target location to tremble and break, dealing ${$SPN*0.15*10} Physical damage over $d to enemies in an $a1 yard radius$?s55437[ and reducing their movement speed by $55437s1% for $77478d][], with a $77478s2% chance of knocking down affected targets.
 Tooltip          : Suffering Physical damage every $t2 sec with a chance to be knocked down.
 
 Name             : Shamanism (id=62099) [Spell Family (11), Passive, Hidden] 
@@ -2879,7 +2862,7 @@ Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
+                 : ........ ........ ........ ........   ........ ........ ..x..... ..x...x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3094,9 +3077,9 @@ Proc Chance      : 101%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
-                 : ........ ......x. ...x.... ......x.   ........ .xx..... ........ ......x. 
+                 : ........ ......x. ...x.... ........   ........ .xx..... ........ ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
-                 : ........ ....x... ........ ........   ........ ........ .......x x....... 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -3114,7 +3097,7 @@ Proc Flags       : ........ ........ x....... ........
                  : Hostile Spell
 Affecting spells : Elemental Fury (60188), Stormfire (99212), Elemental Discharge (144999)
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
-                 : ........ ......x. ...x.... ......x.   ........ .x...... ........ ......x. 
+                 : ........ ......x. ...x.... ........   ........ .x...... ........ ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. ....x... ........ ........   ........ ........ ........ ........ 
@@ -3124,13 +3107,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=224115)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 40 | Scaled Value: 40
-                   Affected Spells: Flame Shock (8050), Fire Nova (8349), Lava Burst (51505), Lava Beam (114074), Elemental Blast (117014)
+                   Affected Spells: Fire Nova (8349), Lava Burst (51505), Lava Beam (114074), Elemental Blast (117014)
 Description      : Unleashes the Flametongue enchantment upon the Shaman's weapon, increasing the damage dealt by the Shaman's next Fire spell by $s2%.
 Tooltip          : Damage dealt by the next Fire spell increased by $w2%.
 
 Name             : Unleash Life (id=73685) [Spell Family (11)] 
 Class            : Restoration Shaman
-Resource         : 7.5% Base Mana (2400 @Level 100)
+Resource         : 6.8% Base Mana (2176 @Level 100)
 Spell Level      : 81
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3140,12 +3123,12 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
-Affecting spells : Purification (16213), Mastery: Deep Healing (77226), Temporal Maelstrom (105869)
-Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
-                 : ........ ......x. ...x.... ......x.   ........ .x...... ........ ......x. 
-                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
+Affecting spells : Purification (16213), Mastery: Deep Healing (77226), Temporal Maelstrom (105869), Echo of the Elements (159105)
+Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ......x.   ........ .x...... ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=66866)    : Direct Heal (10)
@@ -3182,14 +3165,14 @@ Description      : An instant weapon strike that causes $m2% weapon damage.
 
 Name             : Healing Rain (id=73920) [Spell Family (11)] 
 Class            : Shaman
-Resource         : 27% Base Mana (8640 @Level 100)
+Resource         : 21.6% Base Mana (6912 @Level 100)
 Spell Level      : 60
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 10 seconds
-Affecting spells : Ancestral Swiftness (16188), Maelstrom Weapon (53817), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Lucidity (137326), Echo of the Elements (159105)
+Affecting spells : Ancestral Swiftness (16188), Maelstrom Weapon (53817), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Lucidity (137326)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ......x. 
@@ -3207,7 +3190,7 @@ Description      : Healing rains blanket the area targeted by the Shaman, restor
 Tooltip          : Your Healing Rain is currently active.
 $?$w1!=0[Magic damage taken reduced by $w1%.][]
 
-Name             : Healing Rain (id=73921) [Scaling Spell (9), Spell Family (11)] 
+Name             : Healing Rain (id=73921) [Spell Family (11)] 
 Class            : Shaman
 Spell Level      : 83
 Range            : 100 yards
@@ -3220,7 +3203,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=67015)    : Direct Heal (10)
-                   Base Value: 2191 | Scaled Value: 0 (avg=1.636, dl=0.173) | Value Range: 416 | SP Coefficient: 0.16388 | Radius: 0 - 12 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.16388 | Radius: 0 - 12 yards
 Description      : $@spelldesc73920
 
 Name             : Purify Spirit (id=77130) [Spell Family (11)] 
@@ -3272,19 +3255,19 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68079)    : Apply Aura (6) | Unknown effect sub type (354)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Misc Value: 2
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Stream (5672), Healing Surge (8004), Healing Stream Totem (52042), Gift of the Naaru (59547), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Unleashed Fury (118473), Soothing Winds (157333)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Gift of the Naaru (59547), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Unleashed Fury (118473), Soothing Winds (157333)
 #2 (id=92128)    : Apply Aura (6) | Dummy (4)
                    Base Value: 300 | Scaled Value: 300
 Description      : Increases the potency of your healing spells by up to $77226s1%, based on the current health level of your target (lower health targets are healed for more).
 
 Name             : Healing Wave (id=77472) [Spell Family (11)] 
 Class            : Restoration Shaman
-Resource         : 11.5% Base Mana (3680 @Level 100)
+Resource         : 10.35% Base Mana (3312 @Level 100)
 Spell Level      : 60
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Ancestral Swiftness (16188), Purification (16213), Tidal Waves (53390), Healing Trance (60515), Unleash Life (73685), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Item - Shaman T11 Restoration 2P Bonus (90494), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Item - Shaman T14 Restoration 2P Bonus (123134), Lucidity (137326), Improved Healing Wave (157814)
+Affecting spells : Ancestral Swiftness (16188), Purification (16213), Tidal Waves (53390), Healing Trance (60515), Unleash Life (73685), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Item - Shaman T11 Restoration 2P Bonus (90494), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Item - Shaman T14 Restoration 2P Bonus (123134), Lucidity (137326)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3293,7 +3276,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.87004 | Chain Multiplier: 0.2
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.44405 | Chain Multiplier: 0.2
 Description      : Heals a friendly target for $s1.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
@@ -3301,7 +3284,7 @@ Class            : Shaman
 Spell Level      : 50
 Range            : 100 yards
 Duration         : 3 seconds
-Affecting spells : Ancestral Swiftness (16188), Glyph of Unstable Earth (55437), Elemental Fury (60188), Spiritwalker's Grace (79206), Lucidity (137326), Echo of the Elements (159101)
+Affecting spells : Ancestral Swiftness (16188), Glyph of Unstable Earth (55437), Elemental Fury (60188), Spiritwalker's Grace (79206), Lucidity (137326), Echo of the Elements (159101), Mastery: Molten Earth (170374)
 Attributes       : ........ ........ ........ x..x....   ...x...x ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -3341,7 +3324,7 @@ Resource         : 14.1% Base Mana (4512 @Level 100)
 Spell Level      : 85
 Duration         : 15 seconds
 Cooldown         : 120 seconds
-Affecting spells : Mental Quickness (30814), Glyph of Spiritwalker's Grace (55446), Item - Shaman T13 Restoration 4P Bonus (Spiritwalker's Grace) (105876), Lucidity (137326), Readiness: Enhancement (145986), Readiness: Restoration (145988), Readiness: Elemental (151023), Glyph of Spiritwalker's Focus (159650), 
+Affecting spells : Mental Quickness (30814), Glyph of Spiritwalker's Grace (55446), Item - Shaman T13 Restoration 4P Bonus (Spiritwalker's Grace) (105876), Lucidity (137326), Glyph of Spiritwalker's Focus (159650), 
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -3521,7 +3504,7 @@ Spell Level      : 70
 GCD              : 1 seconds
 Duration         : 6 seconds
 Cooldown         : 180 seconds
-Affecting spells : Lucidity (137326), Readiness: Restoration (145988)
+Affecting spells : Lucidity (137326)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3789,7 +3772,7 @@ Name             : Timewalker (id=105877) [Spell Family (11)]
 Class            : Shaman
 Spell Level      : 1
 Duration         : 15 seconds
-Affecting spells : Mental Quickness (30814), Glyph of Spiritwalker's Grace (55446), Item - Shaman T13 Restoration 4P Bonus (Spiritwalker's Grace) (105876), Lucidity (137326), Readiness: Enhancement (145986), Readiness: Restoration (145988), Readiness: Elemental (151023), Glyph of Spiritwalker's Focus (159650), 
+Affecting spells : Mental Quickness (30814), Glyph of Spiritwalker's Grace (55446), Item - Shaman T13 Restoration 4P Bonus (Spiritwalker's Grace) (105876), Lucidity (137326), Glyph of Spiritwalker's Focus (159650), 
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3876,22 +3859,24 @@ Description      : Summons an Air Totem with $?s63298[$s1% of the caster's][$s1]
 
 Name             : Healing Tide Totem (Water Totem) (id=108280) [Spell Family (11)] 
 Class            : Restoration Shaman
-Resource         : 7% Base Mana (2240 @Level 100)
+Resource         : 5.6% Base Mana (1791 @Level 100)
 Spell Level      : 65
 GCD              : 1 seconds
-Duration         : 11 seconds
+Duration         : 10 seconds
 Cooldown         : 180 seconds
 Affecting spells : Mental Quickness (30814), Lucidity (137326)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=119337)   : Summon (28)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 59764 | Misc Value 2: 0x52
-Description      : Summons a Water Totem with $?s63298[${$m1+5}][$m1]% of the caster's health at the feet of the caster for ${$d-1} sec. The Healing Tide Totem pulses every $114941t1 sec, healing all party or raid members within $114942A1 yards for $114942m1.
+#2 (id=247825)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
+                   Base Value: 1 | Scaled Value: 1
+Description      : Summons a Water Totem with $?s63298[${$m1+5}][$m1]% of the caster's health at the feet of the caster for $d. The Healing Tide Totem pulses every $t2 sec, healing all party or raid members within $114942A1 yards for $114942m1.
 
 Name             : Ancestral Guidance (id=108281) 
 Class            : Shaman
@@ -3917,7 +3902,7 @@ Class            : Shaman
 Proc Chance      : 100%
 Proc Flags       : ....x... ......x. x....... ........ 
                  : Yellow Melee, Heal, Hostile Spell
-Affecting spells : Ancestral Swiftness (16188), Maelstrom Weapon (53817), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Lucidity (137326), Echo of the Elements (159105)
+Affecting spells : Ancestral Swiftness (16188), Maelstrom Weapon (53817), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Lucidity (137326)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3943,14 +3928,14 @@ Proc Flags       : ....x... ......x. x....... ........
                  : Yellow Melee, Heal, Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=119340)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-Description      : Your spells and abilities have a chance to cause your next $?c0[short cooldown spell or ability][]$?c1[Lava Burst or Frost Shock][]$?c2[Lava Lash, Stormstrike, Frost Shock, or Fire Nova][]$?c3[Riptide, Healing Rain, or Purify Spirit][] not to incur its cooldown.
+Description      : Your spells and abilities have a chance to cause your next $?c0[short cooldown spell or ability][]$?c1[Lava Burst, Frost Shock, or Earthquake][]$?c2[Lava Lash, Stormstrike, or Fire Nova][]$?c3[Riptide, Unleash Life, or Purify Spirit][] not to incur its cooldown.
 
 Name             : Totemic Persistence (id=108284) [Passive] 
 Class            : Shaman
@@ -4020,7 +4005,7 @@ Class            : Shaman
 Resource         : 5.2% Base Mana (1664 @Level 100)
 Spell Level      : 87
 Cooldown         : 180 seconds
-Affecting spells : Mental Quickness (30814), Lucidity (137326), Readiness: Enhancement (145986), Readiness: Restoration (145988), Readiness: Elemental (151023)
+Affecting spells : Mental Quickness (30814), Lucidity (137326)
 Attributes       : ........ x....... x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4078,7 +4063,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=127188)   : School Damage: fire (2)
-                   Base Value: -1 | Scaled Value: 0 - 2 (avg=0) | Value Range: 3 | SP Coefficient: 0.61097 | Chain Multiplier: 1.1
+                   Base Value: -1 | Scaled Value: 0 - 2 (avg=0) | Value Range: 3 | SP Coefficient: 0.61000 | Chain Multiplier: 1.1
 #2 (id=188522)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : Unleash a blast of superheated flame at the enemy, dealing $s1 Fire damage and then jumping to additional nearby enemies. Damage is increased by $s2% after each jump. Affects up to $x1 total targets.
@@ -4171,20 +4156,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards
 Description      : When the Shaman deals direct damage or healing, $108281s1% of that amount is copied as healing to up to 3 injured allies within $114911a1 yards.
 
-Name             : Healing Tide (id=114941) [Spell Family (11), Passive, Hidden] 
-Class            : Shaman
-Spell Level      : 40
-Proc Chance      : 100%
-Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=128511)   : Apply Aura (6) | Periodic Trigger Spell: Healing Tide every 2 seconds (23)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 114942
-
 Name             : Healing Tide (id=114942) [Spell Family (11)] 
 Class            : Shaman
 Affecting spells : Purification (16213), Mastery: Deep Healing (77226)
@@ -4197,7 +4168,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=128512)   : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.91954 | Radius: 0 - 40 yards
-Description      : Heals the most injured allies.
+Description      : Heals injured allies.
 
 Name             : Player Damage Reduction (id=115043) [Passive, Hidden] 
 Class            : Death Knight, Shaman, Mage, Warlock, Monk
@@ -4215,14 +4186,14 @@ Description      : Reduces all damage taken from players or their pets by ${$m1/
 
 Name             : Windstrike (id=115356) [Spell Family (11)] 
 Class            : Shaman
-Resource         : 9.37% Base Mana (2998 @Level 100)
+Resource         : 1% Base Mana (320 @Level 100)
 Spell Level      : 26
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 7.5 seconds
 Proc Chance      : 100%
-Affecting spells : Flurry (16282), Item - Shaman T9 Enhancement 2P Bonus (Stormstrike) (67220), Item - Shaman T14 Enhancement 4P Bonus (123133)
+Affecting spells : Flurry (16282), Item - Shaman T9 Enhancement 2P Bonus (Stormstrike) (67220), Item - Shaman T14 Enhancement 4P Bonus (123133), Echo of the Elements (159103)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4245,7 +4216,7 @@ Class            : Shaman
 Spell Level      : 40
 Range            : 100 yards
 Velocity         : 30 yards/sec
-Affecting spells : Item - Shaman T9 Enhancement 2P Bonus (Stormstrike) (67220), Item - Shaman T11 Enhancement 2P Bonus (90501), Improved Stormstrike (157808)
+Affecting spells : Item - Shaman T9 Enhancement 2P Bonus (Stormstrike) (67220), Item - Shaman T11 Enhancement 2P Bonus (90501)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ......x. 
                  : x....... .......x ........ ........   ........ ........ ........ ........ 
@@ -4254,7 +4225,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=129139)   : Weapon Damage% (31)
-                   Base Value: 120 | Scaled Value: 1.2 (avg=0)
+                   Base Value: 192 | Scaled Value: 1.92 (avg=0)
 #2 (id=197633)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc115356
@@ -4264,7 +4235,7 @@ Class            : Shaman
 Spell Level      : 40
 Range            : 100 yards
 Velocity         : 30 yards/sec
-Affecting spells : Item - Shaman T9 Enhancement 2P Bonus (Stormstrike) (67220), Item - Shaman T11 Enhancement 2P Bonus (90501), Improved Stormstrike (157808)
+Affecting spells : Item - Shaman T9 Enhancement 2P Bonus (Stormstrike) (67220), Item - Shaman T11 Enhancement 2P Bonus (90501)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x.....x. 
                  : x....... .......x ........ ........   ........ ........ ........ ........ 
@@ -4273,7 +4244,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=129143)   : Weapon Damage% (31)
-                   Base Value: 120 | Scaled Value: 1.2 (avg=0)
+                   Base Value: 192 | Scaled Value: 1.92 (avg=0)
 #2 (id=197634)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc115356
@@ -4352,7 +4323,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=132332)   : School Damage: elemental (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.64513
-Description      : Harness the raw power of the elements, dealing $s1 Elemental damage and increasing your $?c2[Agility, ][]Critical Strike, Haste, Mastery, Multistrike, or Versatility by $118522s1 for $118522d.
+Description      : Harness the raw power of the elements, dealing $s1 Elemental damage and increasing your $?c2[Agility, ][]Critical Strike, Haste, Mastery, or Multistrike by $118522s1 for $118522d.$?c3[
+
+Also increases your Spirit by $173187s1 for $173187d.][]
 
 Name             : Fire Nova (id=117588) 
 Class            : Shaman
@@ -4501,14 +4474,14 @@ Effects          :
 #2 (id=241886)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 30 | Scaled Value: 30
                    Affected Spells: Lightning Bolt (403)
-Description      : Increases the damage dealt by your Lightning Bolt by $s1% and increases your multistrike chance by $s1% for $d.
-Tooltip          : Increases damage dealt by Lightning Bolt by $s1% and increases your multistrike chance by $s1%.
+Description      : Increases the damage dealt by your Lightning Bolt by $s2% and increases your multistrike chance by $s1% for $d.
+Tooltip          : Increases damage dealt by Lightning Bolt by $s2% and increases your multistrike chance by $s1%.
 
 Name             : Unleashed Fury (id=118473) [Spell Family (11)] 
 Class            : Shaman
 Range            : 100 yards
 Duration         : 10 seconds
-Affecting spells : Purification (16213), Mastery: Deep Healing (77226), Temporal Maelstrom (105869)
+Affecting spells : Purification (16213), Mastery: Deep Healing (77226), Temporal Maelstrom (105869), Echo of the Elements (159105)
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... .....xx.   ........ .x...... ........ .....xx. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -4521,7 +4494,7 @@ Effects          :
 Description      : Increases the healing done by your next single-target heal by $s1%, for $d.
 Tooltip          : Increases the healing done by your next single-target heal by $s1%.
 
-Name             : Elemental Blast (id=118522) [Scaling Spell (-1)] 
+Name             : Elemental Blast: Critical Strike (id=118522) [Scaling Spell (-1)] 
 Class            : Shaman
 Range            : 40 yards
 Duration         : 8 seconds
@@ -4529,23 +4502,13 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ x...x... ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=135038)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 5 | Scaled Value: 534.267 (avg=2.047) | Misc Value: 1792
-#2 (id=135039)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 5 | Scaled Value: 534.267 (avg=2.047) | Misc Value: 917504
-#3 (id=135040)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 5 | Scaled Value: 534.267 (avg=2.047) | Misc Value: 33554432
-#4 (id=180944)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 5 | Scaled Value: 534.267 (avg=2.047) | Misc Value: 2048
-#5 (id=226395)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 5 | Scaled Value: 534.267 (avg=2.047) | Misc Value: 1879048192
-#6 (id=241297)   : Apply Aura (6) | Attribute (29)
-                   Base Value: 5 | Scaled Value: 534.267 (avg=2.047) | Misc Value: 1
-Description      : Increases $?c2[Agility, ][]Critical Strike, Haste, Mastery, Multistrike, or Versatility.
-Tooltip          : $?$w1!=0[Critical Strike increased by $w1.][]$?$w2!=0[Haste increased by $w2.][]$?$w3!=0[Mastery increased by $w3.][]$?$w6!=0[Agility increased by $w6.][]$?$w4!=0[Multistrike increased by $w4.][]$?$w5!=0[Versatility increased by $w5.][]
+                   Base Value: 5 | Scaled Value: 499.815 (avg=1.915) | Misc Value: 1792
+Description      : $@spelldesc117014
+Tooltip          : Critical Strike increased by $s1.
 
 Name             : Static Charge (id=118905) 
 Class            : Shaman
@@ -5162,40 +5125,6 @@ Effects          :
 #2 (id=195817)   : Trigger Spell: Spiritwalker Champion (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 145385
 
-Name             : Readiness: Enhancement (id=145986) [Spell Family (11), Passive] 
-Class            : Enhancement Shaman
-Spell Level      : 90
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-Effects          :
-#1 (id=197017)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: -1.00000 | Misc Value: 11
-                   Affected Spells: Earth Elemental Totem (2062), Fire Elemental Totem (2894), Shamanistic Rage (30823), Feral Spirit (51533), Spiritwalker's Grace (79206), Timewalker (105877), Ascendance (114049), Ascendance (165339), Ascendance (165341), Ascendance (165344)
-#2 (id=213044)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
-Description      : Increases the cooldown recovery rate by $s2% on your Feral Spirit, Shamanistic Rage, Earth Elemental Totem, Fire Elemental Totem, Spiritwalker's Grace, and Ascendance abilities ($s1% cooldown reduction).
-
-Name             : Readiness: Restoration (id=145988) [Spell Family (11), Passive] 
-Class            : Restoration Shaman
-Spell Level      : 90
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-Effects          :
-#1 (id=197019)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: -1.00000 | Misc Value: 11
-                   Affected Spells: Earth Elemental Totem (2062), Fire Elemental Totem (2894), Spiritwalker's Grace (79206), Spirit Link Totem (98008), Timewalker (105877), Ascendance (114049), Ascendance (165339), Ascendance (165341), Ascendance (165344)
-#2 (id=213045)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
-Description      : Increases the cooldown recovery rate by $s2% on your Earth Elemental Totem, Fire Elemental Totem, Spiritwalker's Grace, Ascendance, Spirit Link Totem, and Mana Tide Totem abilities ($s1% cooldown reduction).
-
 Name             : Rushing Streams (id=147074) [Spell Family (11), Passive] 
 Class            : Shaman
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5207,7 +5136,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=199258)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 15 | Scaled Value: 15
-                   Affected Spells: Healing Stream (5672), Healing Stream Totem (52042)
+                   Affected Spells: Healing Stream Totem (52042)
 Description      : Your Healing Stream Totem now heals two targets at once for $s1% additional healing.
 
 Name             : Glyph of Rain of Frogs (id=147707) [Spell Family (11), Passive, Hidden] 
@@ -5490,23 +5419,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1097
 Description      : $@spelldesc63279
 
-Name             : Readiness: Elemental (id=151023) [Spell Family (11), Passive] 
-Class            : Elemental Shaman
-Spell Level      : 90
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-Effects          :
-#1 (id=208231)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: -1.00000 | Misc Value: 11
-                   Affected Spells: Earth Elemental Totem (2062), Fire Elemental Totem (2894), Shamanistic Rage (30823), Thunderstorm (51490), Spiritwalker's Grace (79206), Timewalker (105877), Ascendance (114049), Ascendance (165339), Ascendance (165341), Ascendance (165344)
-#2 (id=213041)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
-Description      : Increases the cooldown recovery rate by $s2% on your Thunderstorm, Shamanistic Rage, Earth Elemental Totem, Fire Elemental Totem, Spiritwalker's Grace, and Ascendance abilities ($s1% cooldown reduction).
-
 Name             : Liquid Magma (id=152255) 
 Class            : Shaman
 GCD              : 1.5 seconds
@@ -5556,11 +5468,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Your Lava Burst and Lava Lash increase the damage of your next Shock by $157174s1%, stacking up to 2 times.
 
-Name             : Cloudburst Totem (id=157153) 
+Name             : Cloudburst Totem (id=157153) [Spell Family (11)] 
 Class            : Shaman
+Resource         : 9.5% Base Mana (3040 @Level 100)
 GCD              : 1 seconds
 Duration         : 15 seconds
 Cooldown         : 30 seconds
+Affecting spells : Mental Quickness (30814)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5570,9 +5484,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=219029)   : Summon (28)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 78001 | Misc Value 2: 0xd4a
-Description      : Summons a Water Totem with $?s63298[$s1% of the caster's][$s1] health at the feet of the caster for $d that collects power from all healing.
+Description      : Summons a Water Totem with $?s63298[$s1% of the caster's][$s1] health at the feet of the caster for $d that collects power from all healing spells and their multistrikes.
 
-When the Cloudburst Totem is destroyed, replaced, or expires, the stored power is released, healing all injured allies for a total of $157504s1% of all healing done while it was active, split evenly between them.
+When the Cloudburst Totem is destroyed, replaced, or expires, the stored power is released, healing all injured allies for a total of $157503s1% of all healing done while it was active, split evenly between them.
 
 Name             : High Tide (id=157154) [Scaling Spell (-1), Spell Family (11), Passive] 
 Class            : Shaman
@@ -5715,25 +5629,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 40 yards
 Description      : $@spelldesc157153
 
-Name             : Cloudburst Totem (id=157504) [Spell Family (11), Passive] 
-Class            : Shaman
-Proc Chance      : 100%
-Proc Flags       : ........ ..x...x. ..x..x.. ........ 
-                 : AOE Heal, Heal, Periodic, Trap Triggered
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219624)   : Apply Pet Area Aura (119) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 100 yards
-Description      : $@spelldesc157153
-Tooltip          : Cloudburst Totem is collecting $157503s1% of healing done.
-
-Healing Collected: $w1
-
 Name             : Improved Reincarnation (id=157764) [Spell Family (11), Passive] 
 Class            : Shaman
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5758,8 +5653,25 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219987)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 3
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 3
 Description      : Each target struck by your Chain Lightning or Lava Beam increases the damage done by your next Earthquake by $s1%.
+
+Name             : Improved Chain Lightning (id=157766) [Spell Family (11)] 
+Class            : Shaman
+Duration         : 10 seconds
+Stacks           : 5 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=219988)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 25 | Scaled Value: 25
+Description      : $@spelldesc157765
+Tooltip          : Damage of your next Earthquake increased by $w1%.
 
 Name             : Improved Lightning Shield (id=157774) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -5775,81 +5687,11 @@ Effects          :
                    Affected Spells: Fulmination (88766)
 Description      : Lightning Shield gains $s1 additional maximum charges, and Lava Burst and its multistrikes can now generate additional Lightning Shield charges though Fulmination.
 
-Name             : Improved Fire Totems (id=157775) [Spell Family (11), Passive] 
-Class            : Shaman
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=220001)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 50 | Scaled Value: 50
-                   Affected Spells: Searing Bolt (3606), Magma Totem (8187)
-Description      : Increases the damage dealt by Searing Totem $?s8190[and Magma Totem ][]by $s1%.
-
-Name             : Improved Critical Strikes (id=157776) [Spell Family (11), Passive] 
-Class            : Shaman
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=220002)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 3
-                   Affected Spells: Elemental Fury (60188)
-Description      : Your critical strikes now deal ${$m1+250}% damage instead of 250% damage.
-
-Name             : Improved Lightning Bolt (id=157777) [Spell Family (11), Passive] 
-Class            : Shaman
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=220003)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Lightning Bolt (403)
-Description      : Increases the damage dealt by Lightning Bolt by $s1%.
-
-Name             : Improved Lava Burst (id=157778) [Spell Family (11), Passive] 
-Class            : Shaman
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=220004)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Lava Burst (51505)
-Description      : Increases the damage dealt by Lava Burst by $s1%.
-
-Name             : Improved Shocks (id=157779) [Spell Family (11), Passive] 
-Class            : Shaman
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=220005)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Earth Shock (8042), Flame Shock (8050), Frost Shock (8056)
-#2 (id=220006)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22
-                   Affected Spells: Flame Shock (8050)
-Description      : Increases the damage dealt by your Frost Shock, Earth Shock, and Flame Shock by $s1%.
-
 Name             : Enhanced Unleash (id=157784) [Spell Family (11), Passive] 
 Class            : Shaman
+Proc Chance      : 100%
+Proc Flags       : ........ ..x...x. ........ ........ 
+                 : AOE Heal, Heal
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5857,23 +5699,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=220012)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+#1 (id=220012)   : Apply Aura (6) | Proc Trigger Spell: Enhanced Unleash (42)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 162557
 Description      : Your $?s165462[Unleash Flame]?s73685[Unleash Life][Unleash Elements] ability also causes you to gain $162557s1% increased movement speed for $162557d.
-
-Name             : Empowered Lava Lash (id=157803) [Spell Family (11), Passive] 
-Class            : Shaman
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=220036)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 32
-                   Affected Spells: Lava Lash (60103)
-Description      : Increases the number of targets Flame Shock spreads to by $s1.
 
 Name             : Improved Flame Shock (id=157804) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -5889,7 +5717,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=220037)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 32
-Description      : Your Flame Shock ticks have a $h% chance to reset the cooldown of Lava Lash.
+Description      : When your Flame Shock deals damage over time, you have a $h% chance to reset the cooldown of Lava Lash.
 
 Name             : Improved Maelstrom Weapon (id=157807) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -5904,47 +5732,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 33
                    Affected Spells: Maelstrom Weapon (53817)
 Description      : Maelstrom Weapon now also causes your spells to deal $s1% additional damage per stack of Maelstrom Weapon.
-
-Name             : Improved Stormstrike (id=157808) [Spell Family (11), Passive] 
-Class            : Shaman
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=220042)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Stormstrike (32175), Stormstrike Off-Hand (32176), Windstrike (115357), Windstrike Off-Hand (115360)
-Description      : Increases the damage of Stormstrike and Stormblast by $s1%.
-
-Name             : Improved Lava Lash (id=157809) [Spell Family (11), Passive] 
-Class            : Shaman
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=220045)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Lava Lash (60103)
-Description      : Increases the damage of Lava Lash by $s1%.
-
-Name             : Improved Feral Spirit (id=157810) [Spell Family (11), Passive] 
-Class            : Shaman
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=220046)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100
-Description      : Increases the damage of your Spirit Wolves by $s1%.
 
 Name             : Improved Riptide (id=157812) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -5972,64 +5759,6 @@ Effects          :
 #1 (id=220049)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 11
 Description      : Increases the healing on the primary target of your Chain Heal spell by $s1%.
-
-Name             : Improved Healing Wave (id=157814) [Spell Family (11), Passive] 
-Class            : Shaman
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=220050)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Healing Wave (77472)
-Description      : Increases the healing from Healing Wave by $s1%.
-
-Name             : Improved Healing Surge (id=157816) [Spell Family (11), Passive] 
-Class            : Shaman
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=220052)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Healing Surge (8004)
-Description      : Increases the healing from Healing Surge by $s1%.
-
-Name             : Improved Tidal Waves (id=157818) [Spell Family (11), Passive] 
-Class            : Shaman
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=220054)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 3
-                   Affected Spells: Tidal Waves (53390)
-#2 (id=220055)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 12
-                   Affected Spells: Tidal Waves (53390)
-Description      : Increases the cast speed reduction and critical strike chance of the Tidal Waves effect by $s1%
-
-Name             : Improved Healing Rain (id=157830) [Spell Family (11), Passive] 
-Class            : Shaman
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=220069)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10
-Description      : Increases all healing you do to targets in your Healing Rain by $s1%.
 
 Name             : Healer Level 90 Mana Fix (Passive) (id=158920) [Passive, Hidden] 
 Class            : Holy Discipline Holy Restoration Mistweaver Restoration Paladin, Priest, Shaman, Monk, Druid
@@ -6082,9 +5811,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=222793)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11
-                   Affected Spells: Fire Nova (1535), Frost Shock (8056), Stormstrike (17364), Lava Lash (60103)
+                   Affected Spells: Fire Nova (1535), Stormstrike (17364), Lava Lash (60103), Windstrike (115356)
 Description      : $@spelldesc108283
-Tooltip          : Your next Lava Lash, Stormstrike, Frost Shock, or Fire Nova will not incur its cooldown.
+Tooltip          : Your next Lava Lash, Stormstrike, or Fire Nova will not incur its cooldown.
 
 Name             : Echo of the Elements (id=159105) [Spell Family (11)] 
 Class            : Shaman
@@ -6102,9 +5831,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=222795)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11
-                   Affected Spells: Riptide (61295), Healing Rain (73920), Purify Spirit (77130), Conductivity (108282)
+                   Affected Spells: Riptide (61295), Unleash Life (73685), Purify Spirit (77130), Unleashed Fury (118473)
 Description      : $@spelldesc108283
-Tooltip          : Your next Riptide, Healing Rain, Purify Spirit will not incur its cooldown.
+Tooltip          : Your next Riptide, Unleash Life, Purify Spirit will not incur its cooldown.
 
 Name             : Glyph of Ephemeral Spirits (Enhancement) (id=159640) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -6407,7 +6136,7 @@ Description      : $@spelldesc157784
 Tooltip          : Movement speed increased by $s1%.
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
-Class            : Enhancement Feral Hunter, Rogue, Shaman, Druid
+Class            : Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6443,7 +6172,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100
 
 Name             : Stat Negation Aura - Intellect Healer (id=162701) [Passive, Hidden] 
-Class            : Holy Discipline Holy Restoration Restoration Paladin, Priest, Shaman, Druid
+Class            : Holy Discipline Holy Restoration Mistweaver Restoration Paladin, Priest, Shaman, Monk, Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6464,7 +6193,7 @@ Class            : Elemental Shaman
 Resource         : 5.2% Base Mana (1664 @Level 100)
 Spell Level      : 87
 Cooldown         : 180 seconds
-Affecting spells : Mental Quickness (30814), Lucidity (137326), Readiness: Enhancement (145986), Readiness: Restoration (145988), Readiness: Elemental (151023)
+Affecting spells : Mental Quickness (30814), Lucidity (137326)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6482,7 +6211,7 @@ Class            : Enhancement Shaman
 Resource         : 5.2% Base Mana (1664 @Level 100)
 Spell Level      : 87
 Cooldown         : 180 seconds
-Affecting spells : Mental Quickness (30814), Lucidity (137326), Readiness: Enhancement (145986), Readiness: Restoration (145988), Readiness: Elemental (151023)
+Affecting spells : Mental Quickness (30814), Lucidity (137326)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6500,7 +6229,7 @@ Class            : Restoration Shaman
 Resource         : 5.2% Base Mana (1664 @Level 100)
 Spell Level      : 87
 Cooldown         : 180 seconds
-Affecting spells : Mental Quickness (30814), Lucidity (137326), Readiness: Enhancement (145986), Readiness: Restoration (145988), Readiness: Elemental (151023)
+Affecting spells : Mental Quickness (30814), Lucidity (137326)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6650,10 +6379,15 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=241696)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Misc Value: 24
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Misc Value: 24
 #2 (id=241697)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 500 | Scaled Value: 500
-Description      : Your damaging spells incite the earth around you to come to your aid for $170377d, repeatedly dealing ${($m1/100)*($170379m1+$170379m2)/2} Fire damage to your most recently attacked target.
+                   Base Value: 300 | Scaled Value: 300
+#3 (id=249213)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000
+                   Affected Spells: Earthquake (61882), Earthquake (77478)
+Description      : Your damaging spells incite the earth around you to come to your aid for $170377d, repeatedly dealing ${($m1/100)*($170379m1+$170379m2)/2} Fire damage to your most recently attacked target.
+
+Also increases the damage of your Earthquake by $s3%.
 
 Name             : Molten Earth (id=170377) [Spell Family (11), Hidden] 
 Class            : Shaman
@@ -6675,6 +6409,7 @@ Class            : Shaman
 Spell Level      : 80
 Range            : 45 yards
 Velocity         : 25 yards/sec
+Affecting spells : Elemental Fury (60188)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6699,7 +6434,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1513
 #2 (id=244142)   : Apply Aura (6) | Unknown effect sub type (453)
                    Base Value: 4000 | Scaled Value: 4000 | Misc Value: 1513
-Description      : Purify Spirit now has a maximum of ${$m1+1} charges, but its cooldown is increased by ${$m1/1000} sec.
+Description      : Purify Spirit now has a maximum of ${$m1+1} charges, but its cooldown is increased by ${$m2/1000} sec.
 
 Name             : Purify Spirit (id=171998) 
 Class            : Shaman
@@ -6712,4 +6447,84 @@ Attributes       : ........ x....... ........ ....x...   ........ ........ .x...
 Effects          :
 #1 (id=244335)   : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1207
+
+Name             : Elemental Blast: Haste (id=173183) [Scaling Spell (-1)] 
+Class            : Shaman
+Range            : 40 yards
+Duration         : 8 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=246371)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 5 | Scaled Value: 499.815 (avg=1.915) | Misc Value: 917504
+Description      : $@spelldesc117014
+Tooltip          : Haste increased by $s1.
+
+Name             : Elemental Blast: Mastery (id=173184) [Scaling Spell (-1)] 
+Class            : Shaman
+Range            : 40 yards
+Duration         : 8 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=246377)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 5 | Scaled Value: 499.815 (avg=1.915) | Misc Value: 33554432
+Description      : $@spelldesc117014
+Tooltip          : Mastery increased by $s1.
+
+Name             : Elemental Blast: Multistrike (id=173185) [Scaling Spell (-1)] 
+Class            : Shaman
+Range            : 40 yards
+Duration         : 8 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=246383)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 5 | Scaled Value: 499.815 (avg=1.915) | Misc Value: 2048
+Description      : $@spelldesc117014
+Tooltip          : Multistrike increased by $s1.
+
+Name             : Elemental Blast: Agility (id=173186) [Scaling Spell (-1)] 
+Class            : Shaman
+Range            : 40 yards
+Duration         : 8 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=246389)   : Apply Aura (6) | Attribute (29)
+                   Base Value: 5 | Scaled Value: 499.815 (avg=1.915) | Misc Value: 1
+Description      : $@spelldesc117014
+Tooltip          : Agility increased by $s1.
+
+Name             : Elemental Blast: Spirit (id=173187) [Scaling Spell (-1)] 
+Class            : Shaman
+Range            : 40 yards
+Duration         : 8 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=246395)   : Apply Aura (6) | Attribute (29)
+                   Base Value: 5 | Scaled Value: 999.63 (avg=3.83) | Misc Value: 4
+Description      : $@spelldesc117014
+Tooltip          : Spirit increased by $s1.
 

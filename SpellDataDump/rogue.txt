@@ -1,12 +1,12 @@
 
-SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18612)
+SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18702)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
 Resource         : 35 Energy
 Spell Level      : 40
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Item - Rogue T9 4P Bonus (Hemorrhage, Sinister Strike, Backstab, and Mutilate) (67211), Vendetta (79140), Item - Rogue T11 2P Bonus (90460), Item - Rogue T11 4P Bonus (90473), Item - Rogue T14 2P Bonus (123116), Sanguinary Vein (124271), Silent Blades (145193), Sleight of Hand (145211), Improved Backstab (157663), Quick Blades (165509)
+Affecting spells : Item - Rogue T9 4P Bonus (Hemorrhage, Sinister Strike, Backstab, and Mutilate) (67211), Vendetta (79140), Item - Rogue T11 2P Bonus (90460), Item - Rogue T11 4P Bonus (90473), Item - Rogue T14 2P Bonus (123116), Sanguinary Vein (124271), Silent Blades (145193), Sleight of Hand (145211), Quick Blades (165509)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17,7 +17,7 @@ Effects          :
 #1 (id=30)       : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
 #2 (id=31)       : Weapon Damage% (31)
-                   Base Value: 130 | Scaled Value: 1.3 (avg=0) | SP Coefficient: 1.00000
+                   Base Value: 156 | Scaled Value: 1.56 (avg=0) | SP Coefficient: 1.00000
 #3 (id=32)       : Add Combo Points (80)
                    Base Value: 1 | Scaled Value: 1
 Description      : Backstab the target, causing $sw2 Physical damage.  Must not be in front of the target.  Awards $s3 combo $lpoint:points;.
@@ -30,7 +30,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 1 seconds
 Cooldown         : 20 seconds
-Affecting spells : Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Vendetta (79140), Fury of the Destroyer (109949), Sanguinary Vein (124271), Prey on the Weak (131511), Quick Blades (165509)
+Affecting spells : Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Vendetta (79140), Fury of the Destroyer (109949), Sanguinary Vein (124271), Prey on the Weak (131511), Quick Blades (165509), Ruthlessness (174597)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ..x...x. ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ...x.... ........ ........   ........ ........ ........ ........ 
@@ -158,7 +158,7 @@ Resource         : 50 Energy
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Adrenaline Rush (13750), Item - Rogue T9 4P Bonus (Hemorrhage, Sinister Strike, Backstab, and Mutilate) (67211), Vendetta (79140), Sinister Strike Enabler (79327), Item - Rogue T11 2P Bonus (90460), Item - Rogue T11 4P Bonus (90473), Item - Rogue T14 2P Bonus (123116), Sanguinary Vein (124271), Silent Blades (145193), Improved Sinister Strike (157661)
+Affecting spells : Adrenaline Rush (13750), Item - Rogue T9 4P Bonus (Hemorrhage, Sinister Strike, Backstab, and Mutilate) (67211), Vendetta (79140), Sinister Strike Enabler (79327), Item - Rogue T11 2P Bonus (90460), Item - Rogue T11 4P Bonus (90473), Item - Rogue T14 2P Bonus (123116), Sanguinary Vein (124271), Silent Blades (145193)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -171,7 +171,7 @@ Effects          :
 #2 (id=536)      : Add Combo Points (80)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=101522)   : Weapon Damage% (31)
-                   Base Value: 85 | Scaled Value: 0.85 (avg=0)
+                   Base Value: 102 | Scaled Value: 1.02 (avg=0)
 Description      : An instant strike that causes $sw3 Physical damage.$?s79327[  Awards $s2 combo $lpoint:points;.][]
 
 Name             : Kick (id=1766) [Spell Family (8)] 
@@ -247,7 +247,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127
 #5 (id=219899)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 23
-                   Affected Spells: Garrote (703), Ambush (8676)
+                   Affected Spells: Garrote (703), Ambush (8676), Garrote (168971)
 Description      : Conceals you in the shadows, allowing you to stalk enemies without being seen. $?s14062[Movement speed while stealthed is increased by $s3%. ]?s13975[Movement speed while stealthed is increased by $s3% and damage dealt is increased by $s4%. ][]$?s31223[Attacks from Stealth and for $31666d after deal $31223s1% more damage.  ][]Lasts until canceled.
 Tooltip          : Stealthed.$?$w3!=0[
 Movement speed increased by $w3%.][]$?$w4!=0[
@@ -299,7 +299,7 @@ Name             : Vanish (id=1856) [Spell Family (8)]
 Class            : Rogue
 Spell Level      : 34
 Cooldown         : 120 seconds
-Affecting spells : Nightstalker (14062), Glyph of Blurred Speed (58039), Glyph of Vanish (89758), Readiness: Assassination (145983), Enhanced Vanish (157666), Glyph of Disappearance (159638)
+Affecting spells : Nightstalker (14062), Glyph of Blurred Speed (58039), Glyph of Vanish (89758), Enhanced Vanish (157666), Glyph of Disappearance (159638)
 Attributes       : ....x... ........ x.x.x... ...x.x..   .....x.. ..x..... ........ ........ 
                  : .xx..... ........ ........ ........   ........ ........ xxx..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -336,7 +336,7 @@ Spell Level      : 46
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Item - Rogue T8 4P Bonus (64915), Mastery: Executioner (76808), Vendetta (79140), Sanguinary Vein (79147), Fury of the Destroyer (109949), Sanguinary Vein (124271), Improved Rupture (157570), Quick Blades (165509)
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Item - Rogue T8 4P Bonus (64915), Mastery: Executioner (76808), Vendetta (79140), Sanguinary Vein (79147), Fury of the Destroyer (109949), Sanguinary Vein (124271), Quick Blades (165509), Ruthlessness (174597)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ....x... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ....x... ........   ........ ........ ........ ........ 
@@ -345,7 +345,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... ....x
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=586)      : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06850
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.08220
 #2 (id=239409)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 1 | Scaled Value: 1
 Description      : Finishing move that causes damage over time.  Lasts longer per combo point:
@@ -355,7 +355,7 @@ Description      : Finishing move that causes damage over time.  Lasts longer pe
    4 points: ${$<bonus>*4*0.0685*$AP*0.5*20} over 20 sec
    5 points: ${$<bonus>*5*0.0685*$AP*0.5*24} over 24 sec$?s79134[
 
-While you have poisoned your target, this damage has a $79134h% chance to deal $79136s1 additional Nature damage and grant you $79134s2 Energy.  You gain additional Energy if a target dies with Rupture active.][]
+While you have poisoned your target, this damage deals $79136s1 additional Nature damage and grants you $79134s2 Energy.  You gain additional Energy if a target dies with Rupture active.][]
 Tooltip          : Suffering $w1 damage every $t1 sec.
 Variables        : $dur1=$?s56801[${6+2+4}][${6+2}]
 $dur2=$?s56801[${6+4+4}][${6+4}]
@@ -423,7 +423,7 @@ Resource         : 35 Energy
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Glyph of Debilitation (56802), Relentless Strikes (58423), Item - Rogue T8 4P Bonus (64915), Mastery: Executioner (76808), Vendetta (79140), Deadly Scheme (90472), Fury of the Destroyer (109949), Sanguinary Vein (124271), Item - Rogue T15 4P Bonus (138150), Improved Eviscerate (157662), Enhanced Eviscerate (157667), Death from Above (163786), Quick Blades (165509), Deceit (166878)
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Glyph of Debilitation (56802), Relentless Strikes (58423), Item - Rogue T8 4P Bonus (64915), Mastery: Executioner (76808), Vendetta (79140), Deadly Scheme (90472), Fury of the Destroyer (109949), Sanguinary Vein (124271), Item - Rogue T15 4P Bonus (138150), Death from Above (163786), Quick Blades (165509), Deceit (166878), Ruthlessness (174597)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ....x... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -434,11 +434,11 @@ Effects          :
 #1 (id=622)      : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Points Per Combo Point: 5
 Description      : Finishing move that causes damage per combo point:
-   1 point  : ${$m1+($AP*0.3203)*$<mult>} damage
-   2 points: ${$m1+($AP*0.3203)*$<mult>*2} damage
-   3 points: ${$m1+($AP*0.3203)*$<mult>*3} damage
-   4 points: ${$m1+($AP*0.3203)*$<mult>*4} damage
-   5 points: ${$m1+($AP*0.3203)*$<mult>*5} damage
+   1 point  : ${$m1+($AP*0.38436)*$<mult>} damage
+   2 points: ${$m1+($AP*0.38436)*$<mult>*2} damage
+   3 points: ${$m1+($AP*0.38436)*$<mult>*3} damage
+   4 points: ${$m1+($AP*0.38436)*$<mult>*4} damage
+   5 points: ${$m1+($AP*0.38436)*$<mult>*5} damage
 Variables        : $mult=$?s16511[${(((100+$76808m1))/100)}][${1.00}]
 
 Name             : Deadly Poison (id=2818) [Scaling Spell (8), Spell Family (8)] 
@@ -475,7 +475,7 @@ Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=855)      : Apply Aura (6) | Proc Trigger Spell: Deadly Poison (42)
+#1 (id=855)      : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 2818
 Description      : Coats your weapons with a Lethal Poison that lasts for $2823d.  Each strike has a $2823h% chance of poisoning the enemy for ${$2818m1*4} Nature damage over $2818d.  Subsequent poison applications will instantly deal $113780s1 Nature damage.
 Tooltip          : Each strike has a chance of causing the target to suffer Nature damage every $2818t1 sec for $2818d.  Subsequent poison applications deal instant Nature damage.
@@ -501,7 +501,7 @@ Class            : Rogue
 Spell Level      : 26
 Duration         : 8 seconds
 Cooldown         : 60 seconds
-Affecting spells : Glyph of Sprint (56811), Vendetta (79140), Sanguinary Vein (124271), Readiness: Assassination (145983), Readiness: Combat (145984), Readiness: Subtlety (145985), Quick Blades (165509)
+Affecting spells : Glyph of Sprint (56811), Vendetta (79140), Sanguinary Vein (124271), Quick Blades (165509)
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -606,7 +606,7 @@ Spell Level      : 14
 Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Energetic Recovery (79152), Fury of the Destroyer (109949), Sanguinary Vein (124271), Improved Slice and Dice (157513), Quick Blades (165509)
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Energetic Recovery (79152), Fury of the Destroyer (109949), Sanguinary Vein (124271), Improved Slice and Dice (157513), Quick Blades (165509), Ruthlessness (174597)
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ......x. ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -630,13 +630,13 @@ Regaining $w2 Energy every $t2 sec.][]
 Name             : Wrath (Solar) (id=5176) [Scaling Spell (2), Spell Family (7)] 
 Class            : Warrior, Hunter, Rogue, Priest, Death Knight, Mage, Monk, Druid
 Race             : Night Elf
-Resource         : 8.8% Base Mana (0 @Level 100)
+Resource         : 8.8% Base Mana (0 @Level 100) w/ Balance (id=166163)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Item - Druid T9 Balance 4P Bonus (Starfire) (67126), Item - Druid T12 Balance 4P Bonus (99049), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Clearcasting (135700), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Improved Wrath (157231), Dream of Cenarius (158504), Solar Empowerment (164545), Item - Druid T17 Balance 2P Bonus (165433)
+Affecting spells : Item - Druid T9 Balance 4P Bonus (Starfire) (67126), Item - Druid T12 Balance 4P Bonus (99049), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Clearcasting (135700), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Dream of Cenarius (158504), Solar Empowerment (164545), Item - Druid T17 Balance 2P Bonus (165433)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -645,7 +645,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.15500
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.38600
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -655,7 +655,7 @@ Class            : Rogue
 Spell Level      : 8
 Duration         : 10 seconds
 Cooldown         : 120 seconds
-Affecting spells : Glyph of Evasion (56799), Vendetta (79140), Sanguinary Vein (124271), Readiness: Assassination (145983), Readiness: Combat (145984), Readiness: Subtlety (145985), Glyph of Elusiveness (159635)
+Affecting spells : Glyph of Evasion (56799), Vendetta (79140), Sanguinary Vein (124271), Glyph of Elusiveness (159635)
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -779,7 +779,7 @@ Resource         : 60 Energy
 Spell Level      : 6
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Stealth (1784), Shadow Dance (51713), Glyph of Ambush (56813), Vendetta (79140), Sanguinary Vein (124271), Cloak and Dagger (138106), Silent Blades (145193), Sleight of Hand (145211), Improved Ambush (157664), Enhanced Vendetta (158108), Quick Blades (165509)
+Affecting spells : Stealth (1784), Shadow Dance (51713), Glyph of Ambush (56813), Vendetta (79140), Sanguinary Vein (124271), Cloak and Dagger (138106), Silent Blades (145193), Sleight of Hand (145211), Enhanced Vendetta (158108), Quick Blades (165509)
 Attributes       : ....x... ........ xxx..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -790,7 +790,7 @@ Effects          :
 #1 (id=3612)     : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=3613)     : Weapon Damage% (31)
-                   Base Value: 250 | Scaled Value: 2.5 (avg=0) | SP Coefficient: 1.00000
+                   Base Value: 300 | Scaled Value: 3 (avg=0) | SP Coefficient: 1.00000
 #3 (id=3614)     : Add Combo Points (80)
                    Base Value: 2 | Scaled Value: 2
 Description      : Ambush the target, causing $sw2 Physical damage to the target (damage increased 40% if a dagger is equipped)$?s138106[ and causes you to appear behind the target][].  Awards $s3 combo $lpoint:points;.$?s91023[  For the next $91021d, your attacks bypass up to $91021s1% of that enemy's armor.][]
@@ -867,7 +867,7 @@ Name             : Vanish (id=11327) [Spell Family (8)]
 Class            : Rogue
 Spell Level      : 24
 Duration         : 3 seconds
-Affecting spells : Nightstalker (14062), Glyph of Blurred Speed (58039), Glyph of Vanish (89758), Readiness: Assassination (145983), Enhanced Vanish (157666), Glyph of Disappearance (159638)
+Affecting spells : Nightstalker (14062), Glyph of Blurred Speed (58039), Glyph of Vanish (89758), Enhanced Vanish (157666), Glyph of Disappearance (159638)
 Attributes       : ....x... x....... x.x.x... .x.x....   .....x.. ..x..... ........ ........ 
                  : .x...... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -892,7 +892,7 @@ Class            : Combat Rogue
 Spell Level      : 40
 Duration         : 15 seconds
 Cooldown         : 180 seconds
-Affecting spells : Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta) (105865), Readiness: Combat (145984), Enhanced Adrenaline Rush (157613)
+Affecting spells : Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta) (105865)
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -906,7 +906,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20
 #3 (id=165715)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
                    Base Value: -200 | Scaled Value: -200 | Misc Value: 21
-                   Affected Spells: Sinister Strike (1752), Rupture (1943), Eviscerate (2098), Slice and Dice (5171), Revealing Strike (84617)
+                   Affected Spells: Sinister Strike (1752), Rupture (1943), Eviscerate (2098), Slice and Dice (5171), Revealing Strike (84617), Rupture (168963)
 Description      : Increases your Energy regeneration rate by $s1% and your attack speed by $s2% for $d.  While Adrenaline Rush is active, the global cooldown on most of your Energy consumers is reduced by ${$m3/-1000}.1 sec
 Tooltip          : Energy regeneration increased by $s1%.
 Attack speed increased by $s2%.$?$w3!=0[
@@ -991,12 +991,11 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=6447)     : Apply Aura (6) | Unknown effect sub type (109)
+#1 (id=6447)     : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Points Per Combo Point: 20 | Trigger Spell: 139569
-                   Affected Spells: Kidney Shot (408), Rupture (1943), Eviscerate (2098), Slice and Dice (5171), Deadly Throw (26679), Recuperate (73651), Crimson Tempest (121411)
 #2 (id=238829)   : Apply Aura (6) | Unknown effect sub type (109)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Points Per Combo Point: 20 | Trigger Spell: 14181
-                   Affected Spells: Kidney Shot (408), Rupture (1943), Eviscerate (2098), Slice and Dice (5171), Deadly Throw (26679), Recuperate (73651), Crimson Tempest (121411)
+                   Affected Spells: Kidney Shot (408), Rupture (1943), Eviscerate (2098), Slice and Dice (5171), Deadly Throw (26679), Recuperate (73651), Rupture (168963)
 #3 (id=238830)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2000 | Scaled Value: 2000 | SP Coefficient: 1.00000
 Description      : For each combo point spent, your finishing moves reduce the cooldown on your Adrenaline Rush, Killing Spree, and Sprint by ${$m3/1000} sec, and have a $b1% chance to grant a combo point and restore $14181s1 Energy.
@@ -1090,7 +1089,7 @@ Resource         : 30 Energy
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Glyph of Hemorrhage (56807), Item - Rogue T8 2P Bonus (64914), Item - Rogue T9 4P Bonus (Hemorrhage, Sinister Strike, Backstab, and Mutilate) (67211), Vendetta (79140), Sanguinary Vein (124271), Silent Blades (145193), Improved Hemorrhage (157665), Quick Blades (165509)
+Affecting spells : Glyph of Hemorrhage (56807), Item - Rogue T8 2P Bonus (64914), Item - Rogue T9 4P Bonus (Hemorrhage, Sinister Strike, Backstab, and Mutilate) (67211), Vendetta (79140), Sanguinary Vein (124271), Silent Blades (145193), Quick Blades (165509)
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   .x...... ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1101,7 +1100,7 @@ Effects          :
 #1 (id=8231)     : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=8232)     : Weapon Damage% (31)
-                   Base Value: 65 | Scaled Value: 0.65 (avg=0)
+                   Base Value: 78 | Scaled Value: 0.78 (avg=0)
 #3 (id=8233)     : Add Combo Points (80)
                    Base Value: 1 | Scaled Value: 1
 #4 (id=134070)   : Dummy (3)
@@ -1226,7 +1225,7 @@ Range            : 30 yards
 GCD              : 1 seconds
 Velocity         : 50 yards/sec
 Duration         : 6 seconds
-Affecting spells : Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Fury of the Destroyer (109949), Sanguinary Vein (124271), Quick Blades (165509)
+Affecting spells : Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Fury of the Destroyer (109949), Sanguinary Vein (124271), Quick Blades (165509), Ruthlessness (174597)
 Attributes       : ....x... ........ x.....x. ........   ........ .x...... ....x... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -1319,7 +1318,7 @@ Class            : Rogue
 Spell Level      : 58
 Duration         : 5 seconds
 Cooldown         : 60 seconds
-Affecting spells : Glyph of Cloak of Shadows (63269), Readiness: Assassination (145983), Readiness: Combat (145984), Readiness: Subtlety (145985)
+Affecting spells : Glyph of Cloak of Shadows (63269)
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1348,7 +1347,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=20803)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 10000000 | Scaled Value: 1e+007 | Misc Value: 127
+                   Base Value: 99999999 | Scaled Value: 1e+008 - 1.9e+008 (avg=0) | Value Range: 90000001 | Misc Value: 127
 Description      : Fatal attacks instead reduce you to 7% of your maximum health.  For $45182d afterward, you take $45182s1% reduced damage.  Cannot trigger more often than once per 90 seconds.
 
 Name             : Master of Subtlety (id=31666) [Spell Family (8), Hidden] 
@@ -1373,7 +1372,7 @@ Spell Level      : 20
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 1 seconds
-Affecting spells : Rogue Tier 6 Trinket (40460), Mastery: Potent Poisons (76803), Mastery: Executioner (76808), Vendetta (79140), Deadly Scheme (90472), Fury of the Destroyer (109949), Sanguinary Vein (124271), Item - Rogue T15 4P Bonus (138150), Empowered Envenom (157569), Enhanced Envenom (157572), Enhanced Vendetta (158108), Death from Above (163786), 
+Affecting spells : Rogue Tier 6 Trinket (40460), Mastery: Potent Poisons (76803), Mastery: Executioner (76808), Vendetta (79140), Deadly Scheme (90472), Fury of the Destroyer (109949), Sanguinary Vein (124271), Item - Rogue T15 4P Bonus (138150), Empowered Envenom (157569), Enhanced Vendetta (158108), Death from Above (163786), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ....x... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : x..x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -1384,7 +1383,7 @@ Effects          :
 #1 (id=22420)    : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=22421)    : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 18
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 18
                    Affected Spells: Deadly Poison (2823), Crippling Poison (3408), Wound Poison (8679), Leeching Poison (108211), Instant Poison (157584)
 #3 (id=159997)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 18
@@ -1536,7 +1535,7 @@ Range            : 10 yards
 GCD              : 1 seconds
 Duration         : 3 seconds
 Cooldown         : 120 seconds
-Affecting spells : Blade Flurry (13877), Readiness: Combat (145984), Readiness: Subtlety (145985), Empowered Bandit's Guile (157581)
+Affecting spells : Blade Flurry (13877), Empowered Bandit's Guile (157581)
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ..x..... 
                  : ........ ........ ........ ....x...   x....... ..x..... xx...... ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -1581,7 +1580,7 @@ Class            : Subtlety Rogue
 Spell Level      : 80
 Duration         : 8 seconds
 Cooldown         : 60 seconds
-Affecting spells : Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta) (105865), Readiness: Subtlety (145985), Enhanced Shadow Dance (157669)
+Affecting spells : Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta) (105865), Enhanced Shadow Dance (157669)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1591,7 +1590,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=44093)    : Apply Aura (6) | Unknown effect sub type (275)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Garrote (703), Cheap Shot (1833), Sap (6770), Ambush (8676), Premeditation (14183)
+                   Affected Spells: Garrote (703), Cheap Shot (1833), Sap (6770), Ambush (8676), Premeditation (14183), Garrote (168971)
 #2 (id=128280)   : Apply Aura (6) | Add Flat Modifier: Spell Resource Cost (107)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 14
                    Affected Spells: Ambush (8676)
@@ -1620,7 +1619,7 @@ Attributes       : ....x... ........ x....... ........   ....x... .x...... .....
 Effects          :
 #1 (id=44107)    : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.23100 | Radius: 0 - 10 yards
-#2 (id=150470)   : Add Combo Points (80)
+#2 (id=150470)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.35000 | Radius: 0 - 10 yards
 Description      : Sprays knives at all targets within $A1 yards, dealing $s1 Physical damage and applying your active poisons at their normal rate. Awards $s2 combo $Lpoint:points;.
 
@@ -2089,7 +2088,6 @@ Name             : Killing Spree (id=57841) [Spell Family (8)]
 Class            : Rogue
 Spell Level      : 1
 Range            : 5 yards
-Affecting spells : Readiness: Combat (145984), Readiness: Subtlety (145985)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ......x.   x....... .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2109,7 +2107,6 @@ Name             : Killing Spree Off-Hand (id=57842) [Spell Family (8)]
 Class            : Rogue
 Spell Level      : 1
 Range            : 5 yards
-Affecting spells : Readiness: Combat (145984), Readiness: Subtlety (145985)
 Attributes       : ....x... ........ x.x..x.. ........   ....x... ........ ........ ........ 
                  : ........ ........ ........ ......x.   x....... .x...... ........ x....... 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -2337,7 +2334,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=51794)    : Apply Aura (6) | Unknown effect sub type (109)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Points Per Combo Point: 20 | Trigger Spell: 14181
-                   Affected Spells: Kidney Shot (408), Rupture (1943), Eviscerate (2098), Slice and Dice (5171), Deadly Throw (26679), Recuperate (73651)
+                   Affected Spells: Kidney Shot (408), Rupture (1943), Eviscerate (2098), Slice and Dice (5171), Deadly Throw (26679), Recuperate (73651), Rupture (168963)
 Description      : Your finishing moves have a $b1% chance per combo point to restore $14181s1 Energy.
 
 Name             : Vitality (id=61329) [Passive, Hidden] 
@@ -2606,7 +2603,7 @@ Resource         : 30 Energy
 Spell Level      : 16
 Range            : 100 yards
 GCD              : 1 seconds
-Affecting spells : Ruthlessness (14161), Relentless Strikes (58423), Improved Recuperate (61249), Fury of the Destroyer (109949), Improved Recuperate (157576), Quick Blades (165509)
+Affecting spells : Ruthlessness (14161), Relentless Strikes (58423), Improved Recuperate (61249), Fury of the Destroyer (109949), Quick Blades (165509), Ruthlessness (174597)
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ......x. ...x.... 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -2734,10 +2731,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68029)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000
-                   Affected Spells: Rupture (1943), Eviscerate (2098), Deadly Throw (26679), Envenom (32645), Crimson Tempest (121411), Death from Above (152150), Death from Above (163786)
+                   Affected Spells: Rupture (1943), Eviscerate (2098), Deadly Throw (26679), Envenom (32645), Crimson Tempest (121411), Death from Above (152150), Death from Above (163786), Rupture (168963)
 #2 (id=87762)    : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Misc Value: 22
-                   Affected Spells: Rupture (1943), Eviscerate (2098), Deadly Throw (26679), Envenom (32645), Crimson Tempest (121411)
+                   Affected Spells: Rupture (1943), Eviscerate (2098), Deadly Throw (26679), Envenom (32645), Crimson Tempest (121411), Rupture (168963)
 #3 (id=92120)    : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Misc Value: 3
                    Affected Spells: Slice and Dice (5171)
@@ -2760,10 +2757,9 @@ Description      : Feint also reduces all damage you take by $s1% for $1966d.
 Name             : Venomous Wounds (id=79134) [Spell Family (8), Passive, Hidden] 
 Class            : Assassination Rogue
 Spell Level      : 10
-Proc Chance      : 75%
+Proc Chance      : 100%
 Proc Flags       : ........ ........ ..x..x.. ........ 
                  : Periodic, Trap Triggered
-Affecting spells : Empowered Rupture (157515)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2802,7 +2798,7 @@ Range            : 30 yards
 GCD              : 1 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
-Affecting spells : Glyph of Vendetta (63249), Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta) (105865), Readiness: Assassination (145983)
+Affecting spells : Glyph of Vendetta (63249), Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta) (105865)
 Attributes       : ........ ........ ........ ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2812,7 +2808,7 @@ Attributes       : ........ ........ ........ ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=68390)    : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 30 | Scaled Value: 30
-                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Eviscerate (2098), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Shiv (5938), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Deadly Throw (26679), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Venomous Wound (79136), Dispatch (111240), Deadly Poison (113780), Shuriken Toss (114014), Debilitating Poison (115196), Crimson Tempest (121411), Throw (121733), Shuriken Toss (137584), Instant Poison (157584), Instant Poison (157607)
+                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Eviscerate (2098), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Shiv (5938), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Deadly Throw (26679), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Venomous Wound (79136), Dispatch (111240), Deadly Poison (113780), Shuriken Toss (114014), Debilitating Poison (115196), Crimson Tempest (121411), Throw (121733), Shuriken Toss (137584), Instant Poison (157584), Instant Poison (157607), Rupture (168963), Garrote (168971)
 #2 (id=68391)    : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=87043)    : Apply Aura (6) | Stalked (68)
@@ -2835,7 +2831,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68395)    : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22
-                   Affected Spells: Rupture (1943)
+                   Affected Spells: Rupture (1943), Rupture (168963)
 #2 (id=167162)   : Apply Aura (6) | Proc Trigger Spell: Sanguinary Vein (42)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 18 | Trigger Spell: 124271
 Description      : Increases the damage of your Rupture ability by $s1% and causes you to deal $s2% additional damage to targets afflicted by your Rupture, Garrote, $?s146631[Hemorrhage, ][]or Crimson Tempest.
@@ -2921,7 +2917,7 @@ GCD              : 1 seconds
 Duration         : 24 seconds
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 20%
-Affecting spells : Adrenaline Rush (13750), Silent Blades (145193), Improved Sinister Strike (157661), Item - Rogue T17 Combat 2P Bonus (165480)
+Affecting spells : Adrenaline Rush (13750), Silent Blades (145193), Item - Rogue T17 Combat 2P Bonus (165480)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   .x...... ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2930,7 +2926,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=85480)    : Weapon Damage% (31)
-                   Base Value: 80 | Scaled Value: 0.8 (avg=0)
+                   Base Value: 96 | Scaled Value: 0.96 (avg=0)
 #2 (id=85481)    : Add Combo Points (80)
                    Base Value: 1 | Scaled Value: 1
 #3 (id=85482)    : Apply Aura (6) | Dummy (4)
@@ -3259,8 +3255,8 @@ Tooltip          : Weapon strikes have a chance to poison the target, causing th
 
 Name             : Burst of Speed (id=108212) [Spell Family (8)] 
 Class            : Rogue
-Resource         : 15 Energy
-Duration         : 0.5 seconds
+Resource         : 25 Energy
+Duration         : 0.1 seconds
 Affecting spells : Quick Blades (165509)
 Attributes       : ........ ........ ........ ........   ........ .......x ........ ....x... 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -3471,6 +3467,23 @@ Effects          :
 Description      : Extend a cloak that wraps party and raid members within $115834A1 yards in shadows, providing stealth for $d.
 Tooltip          : Concealing allies within $115834A1 yards in shadows.
 
+Name             : Anticipation (id=115189) 
+Class            : Rogue
+Duration         : 15 seconds
+Stacks           : 5 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=128888)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1
+Description      : $@spelldesc114015
+Tooltip          : Your next offensive finishing move will grant you $s1 combo points on that target.
+
 Name             : Subterfuge (id=115192) 
 Class            : Rogue
 Duration         : 3 seconds
@@ -3615,7 +3628,7 @@ Resource         : 35 Energy
 Spell Level      : 83
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Ruthlessness (14161), Mastery: Executioner (76808), Vendetta (79140), Sanguinary Vein (124271), Quick Blades (165509)
+Affecting spells : Mastery: Executioner (76808), Vendetta (79140), Sanguinary Vein (124271), Quick Blades (165509)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -3624,7 +3637,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ ....x
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=150471)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 1 - 5 (avg=0) | Value Range: 5 | SP Coefficient: 1.00000 | Points Per Combo Point: 5 | Radius: 0 - 8 yards
+                   Base Value: 0 | Scaled Value: 1 - 5 (avg=0) | Value Range: 5 | SP Coefficient: 1.00000 | Points Per Combo Point: 5 | Radius: 0 - 10 yards
 Description      : Finishing move that slashes at the flesh of all enemies within $A1 yards, dealing Physical damage and causing victims to bleed for an additional $122233s1% of the initial damage over $122233d:
    1 point  : ${(($m1+$M1)/2)+(($AP*0.0602)*1*$<mult>))} damage
    2 points: ${(($m1+$M1)/2)+(($AP*0.0602)*2*$<mult>))} damage
@@ -3656,7 +3669,7 @@ Class            : Rogue
 Spell Level      : 83
 Range            : 100 yards
 Duration         : 12 seconds
-Affecting spells : Empowered Crimson Tempest (157645), Quick Blades (165509)
+Affecting spells : Quick Blades (165509)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3716,7 +3729,7 @@ Attributes       : .......x x....... ........ ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=157252)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Eviscerate (2098), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Shiv (5938), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Deadly Throw (26679), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Venomous Wound (79136), Dispatch (111240), Deadly Poison (113780), Shuriken Toss (114014), Debilitating Poison (115196), Crimson Tempest (121411), Throw (121733), Shuriken Toss (137584), Instant Poison (157584), Instant Poison (157607)
+                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Eviscerate (2098), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Shiv (5938), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Deadly Throw (26679), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Venomous Wound (79136), Dispatch (111240), Deadly Poison (113780), Shuriken Toss (114014), Debilitating Poison (115196), Crimson Tempest (121411), Throw (121733), Shuriken Toss (137584), Instant Poison (157584), Instant Poison (157607), Rupture (168963), Garrote (168971)
 #2 (id=157253)   : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 20 | Scaled Value: 20
 
@@ -3925,7 +3938,7 @@ Attributes       : ......x. ........ .x...... ........   ........ ........ .....
 Effects          :
 #1 (id=181446)   : Apply Aura (6) | Add Flat Modifier: Spell Range (107)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 5
-                   Affected Spells: Garrote (703), Cheap Shot (1833), Ambush (8676)
+                   Affected Spells: Garrote (703), Cheap Shot (1833), Ambush (8676), Garrote (168971)
 Description      : Ambush, Garrote, and Cheap Shot have a 40 yard range, and cause you to teleport behind your target.
 
 Name             : Item - Rogue T15 2P Bonus (id=138148) [Spell Family (8), Passive] 
@@ -3963,12 +3976,12 @@ Proc Chance      : 101%
 Attributes       : ....x... x....... ........ x.......   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ xx...... ........ 
                  : .......x ........ ...x.... ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ .......x 
+                 : ........ ........ ........ ........   ........ ........ x....... .......x 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=184172)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1
+#1 (id=184172)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: energy
 Description      : Grants $m1 combo point.
 
 Name             : Marked for Death (id=140149) [Spell Family (8), Hidden] 
@@ -4020,7 +4033,7 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=195449)   : Apply Aura (6) | Add Flat Modifier: Spell Resource Cost (107)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 14
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Cheap Shot (1833), Ambush (8676), Hemorrhage (16511), Fan of Knives (51723), Revealing Strike (84617), Dispatch (111240), Shuriken Toss (114014)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Cheap Shot (1833), Ambush (8676), Hemorrhage (16511), Fan of Knives (51723), Revealing Strike (84617), Dispatch (111240), Shuriken Toss (114014), Garrote (168971)
 Description      : $@spelldesc145185
 Tooltip          : Energy cost of your next combo point generating ability reduced by $w1.
 
@@ -4084,57 +4097,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 38.106 (avg=0.146) | Misc Value: 33554432
 Description      : $@spelldesc145210
 Tooltip          : Mastery increased by $s1.
-
-Name             : Readiness: Assassination (id=145983) [Spell Family (8), Passive] 
-Class            : Assassination Rogue
-Spell Level      : 90
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-Effects          :
-#1 (id=197014)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: -1.00000 | Misc Value: 11
-                   Affected Spells: Vanish (1856), Sprint (2983), Evasion (5277), Vanish (11327), Cloak of Shadows (31224), Vendetta (79140)
-#2 (id=213037)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
-Description      : Increases the cooldown recovery rate by $s2% on your Evasion, Sprint, Vanish, Cloak of Shadows, Vendetta, and Shadow Blades abilities ($s1% cooldown reduction).
-
-Name             : Readiness: Combat (id=145984) [Spell Family (8), Passive] 
-Class            : Combat Rogue
-Spell Level      : 90
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-Effects          :
-#1 (id=197015)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: -1.00000 | Misc Value: 11
-                   Affected Spells: Sprint (2983), Evasion (5277), Adrenaline Rush (13750), Cloak of Shadows (31224), Killing Spree (51690), Killing Spree (57841), Killing Spree Off-Hand (57842)
-#2 (id=213038)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
-Description      : Increases the cooldown recovery rate by $s2% on your Evasion, Sprint, Adrenaline Rush, Cloak of Shadows, Killing Spree, and Shadow Blades abilities ($s1% cooldown reduction).
-
-Name             : Readiness: Subtlety (id=145985) [Spell Family (8), Passive] 
-Class            : Subtlety Rogue
-Spell Level      : 90
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-Effects          :
-#1 (id=197016)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: -1.00000 | Misc Value: 11
-                   Affected Spells: Sprint (2983), Evasion (5277), Cloak of Shadows (31224), Killing Spree (51690), Shadow Dance (51713), Killing Spree (57841), Killing Spree Off-Hand (57842)
-#2 (id=213039)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
-Description      : Increases the cooldown recovery rate by $s2% on your Evasion, Sprint, Vanish, Cloak of Shadows, Shadow Dance, and Shadow Blades abilities ($s1% cooldown reduction).
 
 Name             : Glyph of Recovery (id=146625) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
@@ -4421,33 +4383,6 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100
 Description      : After activating Vendetta, your next Mutilate, Dispatch, Envenom, or Ambush has $158108s1% increased chance to be a critical strike.
 
-Name             : Empowered Rupture (id=157515) [Spell Family (8), Passive] 
-Class            : Rogue
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219641)   : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 18
-                   Affected Spells: Venomous Wounds (79134)
-Description      : Rupture's chance to deal additional Nature damage and grant Energy is increased by $s1%.
-
-Name             : Enhanced Poisons (id=157560) [Spell Family (8), Passive] 
-Class            : Rogue
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219711)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 18
-Description      : Fan of Knives will always apply your poisons to the targets hit.
-
 Name             : Enhanced Crimson Tempest (id=157561) [Spell Family (8), Passive] 
 Class            : Rogue
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4474,48 +4409,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 32
                    Affected Spells: Envenom (32645)
 Description      : While Envenom is active, you deal $s1% more damage with Mutilate and Dispatch.
-
-Name             : Improved Rupture (id=157570) [Spell Family (8), Passive] 
-Class            : Rogue
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219728)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22
-                   Affected Spells: Rupture (1943)
-Description      : Rupture deals $s1% additional damage.
-
-Name             : Enhanced Envenom (id=157572) [Spell Family (8), Passive] 
-Class            : Rogue
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219730)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 12
-                   Affected Spells: Envenom (32645)
-Description      : Envenom grants an additional $s1% to your chance to apply poisons.
-
-Name             : Improved Recuperate (id=157576) [Spell Family (8), Passive] 
-Class            : Rogue
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219734)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22
-                   Affected Spells: Recuperate (73651)
-Description      : Increases healing from Recuperate by $s1%.
 
 Name             : Empowered Bandit's Guile (id=157581) [Spell Family (8), Passive] 
 Class            : Rogue
@@ -4585,20 +4478,6 @@ Effects          :
                    Base Value: -1 | Scaled Value: 0 - 2 (avg=0) | Value Range: 3 | AP Coefficient: 0.26400
 Description      : $@spelldesc157584
 
-Name             : Enhanced Adrenaline Rush (id=157613) [Spell Family (8), Passive] 
-Class            : Rogue
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219780)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: -300 | Scaled Value: -300 | Misc Value: 23
-                   Affected Spells: Adrenaline Rush (13750)
-Description      : While Adrenaline Rush is active, the global cooldown on Sinister Strike, Revealing Strike, Eviscerate, Slice and Dice, and Rupture is reduced by an additional ${$m1/-1000}.1 sec.
-
 Name             : Enhanced Blade Flurry (id=157615) [Spell Family (8), Passive] 
 Class            : Rogue
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4613,20 +4492,6 @@ Effects          :
                    Affected Spells: Blade Flurry (22482)
 Description      : Blade flurry no longer has a target cap.
 
-Name             : Empowered Crimson Tempest (id=157645) [Spell Family (8), Passive] 
-Class            : Rogue
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219820)   : Apply Aura (6) | Add Percent Modifier: Spell Duration (108)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 1
-                   Affected Spells: Crimson Tempest (122233)
-Description      : Increases the duration of Crimson Tempest's bleed by $s1%.
-
 Name             : Improved Dual Wield (id=157660) [Spell Family (8), Passive] 
 Class            : Rogue
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4639,76 +4504,6 @@ Effects          :
 #1 (id=219841)   : Apply Aura (6) | Unknown effect sub type (458)
                    Base Value: 19 | Scaled Value: 19
 Description      : You no longer have a penalty to hitting with your autoattacks due to dual-wielding.
-
-Name             : Improved Sinister Strike (id=157661) [Spell Family (8), Passive] 
-Class            : Rogue
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219842)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Sinister Strike (1752), Revealing Strike (84617)
-Description      : Increases the damage done by Sinister Strike and Revealing Strike by $s1%.
-
-Name             : Improved Eviscerate (id=157662) [Spell Family (8), Passive] 
-Class            : Rogue
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219843)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Eviscerate (2098)
-Description      : Increases the damage done by Eviscerate by $s1%.
-
-Name             : Improved Backstab (id=157663) [Spell Family (8), Passive] 
-Class            : Rogue
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219844)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Backstab (53)
-Description      : Increases the damage done by Backstab by $s1%.
-
-Name             : Improved Ambush (id=157664) [Spell Family (8), Passive] 
-Class            : Rogue
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219845)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Ambush (8676)
-Description      : Increases the damage done by Ambush by $s1%.
-
-Name             : Improved Hemorrhage (id=157665) [Spell Family (8), Passive] 
-Class            : Rogue
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219846)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Hemorrhage (16511)
-Description      : Increases the damage done by Hemorrhage by $s1%.
 
 Name             : Enhanced Vanish (id=157666) [Spell Family (8), Passive] 
 Class            : Rogue
@@ -4723,20 +4518,6 @@ Effects          :
                    Base Value: -30000 | Scaled Value: -30000 | Misc Value: 11
                    Affected Spells: Vanish (1856), Vanish (11327)
 Description      : Reduces the cooldown on Vanish by ${$m1/-1000} sec.
-
-Name             : Enhanced Eviscerate (id=157667) [Spell Family (8), Passive] 
-Class            : Rogue
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219850)   : Apply Aura (6) | Add Flat Modifier: Spell Resource Cost (107)
-                   Base Value: -5 | Scaled Value: -5 | Misc Value: 14
-                   Affected Spells: Eviscerate (2098)
-Description      : Reduces the Energy cost of Eviscerate by $s1.
 
 Name             : Enhanced Shadow Dance (id=157669) [Spell Family (8), Passive] 
 Class            : Rogue
@@ -4917,7 +4698,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1162
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
-Class            : Enhancement Feral Hunter, Rogue, Shaman, Druid
+Class            : Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4966,4 +4747,95 @@ Effects          :
 #1 (id=233430)   : Apply Aura (6) | Unknown effect sub type (405)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 33554432
 Description      : You gain $s1% more of the Mastery stat from all sources.
+
+Name             : Balance (id=166163) [Passive, Hidden] 
+Class            : Balance Warrior, Hunter, Rogue, Priest, Death Knight, Mage, Monk, Druid
+Race             : Night Elf
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=234650)   : Apply Aura (6) | Periodic Dummy: every 0.1 seconds (226)
+                   Base Value: 0 | Scaled Value: 0
+
+Name             : Hemorrhage (id=168908) [Spell Family (8)] 
+Class            : Rogue
+Spell Level      : 1
+Range            : 30 yards
+Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ..x..... .x....x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=239283)   : School Damage: physical (2)
+                   Base Value: 1 | Scaled Value: 1
+Description      : $@spelldesc16511
+
+Name             : Crimson Tempest (id=168952) [Spell Family (8)] 
+Class            : Rogue
+Spell Level      : 83
+Range            : 100 yards
+Affecting spells : Quick Blades (165509)
+Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ .x....x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=239384)   : School Damage: physical (2)
+                   Base Value: 1 | Scaled Value: 1
+Description      : $@spelldesc121411
+
+Name             : Rupture (id=168963) [Spell Family (8)] 
+Class            : Rogue
+Spell Level      : 46
+Range            : 5 yards
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Item - Rogue T8 4P Bonus (64915), Mastery: Executioner (76808), Vendetta (79140), Sanguinary Vein (79147), Fury of the Destroyer (109949), Sanguinary Vein (124271), Quick Blades (165509), Ruthlessness (174597)
+Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ .x...x.. 
+                 : ...x.... x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=239408)   : School Damage: physical (2)
+                   Base Value: 0 | Scaled Value: 0
+Description      : $@spelldesc1943
+
+Name             : Garrote (id=168971) [Spell Family (8)] 
+Class            : Rogue
+Spell Level      : 48
+Range            : 5 yards
+Affecting spells : Stealth (1784), Shadow Dance (51713), Vendetta (79140), Sanguinary Vein (124271), Cloak and Dagger (138106), Silent Blades (145193), Quick Blades (165509)
+Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .x...... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=239421)   : School Damage: physical (2)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.08910
+Description      : $@spelldesc703
+
+Name             : Ruthlessness (id=174597) [Spell Family (8), Passive, Hidden] 
+Class            : Combat Rogue
+Spell Level      : 32
+Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=249124)   : Apply Aura (6) | Unknown effect sub type (109)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Points Per Combo Point: 20 | Trigger Spell: 139569
+                   Affected Spells: Kidney Shot (408), Rupture (1943), Eviscerate (2098), Slice and Dice (5171), Deadly Throw (26679), Recuperate (73651), Rupture (168963)
+Description      : For each combo point spent, your finishing moves reduce the cooldown on your Adrenaline Rush, Killing Spree, and Sprint by ${$m3/1000} sec, and have a $b1% chance to grant a combo point and restore $14181s1 Energy.
 

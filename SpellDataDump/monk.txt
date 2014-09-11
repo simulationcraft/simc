@@ -1,5 +1,18 @@
 
-SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18612)
+SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18702)
+Name             : Suicide (id=7) 
+Class            : Monk
+Attributes       : ........ x....... ........ x..x.x..   .....x.. ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=5)        : Instant Kill (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
+Description      : The caster commits suicide, instantly killing themself.
+
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -78,13 +91,13 @@ Effects          :
 Name             : Wrath (Solar) (id=5176) [Scaling Spell (2), Spell Family (7)] 
 Class            : Warrior, Hunter, Rogue, Priest, Death Knight, Mage, Monk, Druid
 Race             : Night Elf
-Resource         : 8.8% Base Mana (0 @Level 100)
+Resource         : 8.8% Base Mana (0 @Level 100) w/ Balance (id=166163)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Item - Druid T9 Balance 4P Bonus (Starfire) (67126), Item - Druid T12 Balance 4P Bonus (99049), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Clearcasting (135700), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Improved Wrath (157231), Dream of Cenarius (158504), Solar Empowerment (164545), Item - Druid T17 Balance 2P Bonus (165433)
+Affecting spells : Item - Druid T9 Balance 4P Bonus (Starfire) (67126), Item - Druid T12 Balance 4P Bonus (99049), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Clearcasting (135700), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Dream of Cenarius (158504), Solar Empowerment (164545), Item - Druid T17 Balance 2P Bonus (165433)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -93,7 +106,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.15500
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.38600
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -646,7 +659,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
 #2 (id=134420)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: chi
-Description      : Jab the target, dealing ${1.15*$<low>} to ${1.15*$<high>} damage and generating $s2 Chi.$?s103985[
+Description      : Jab the target, dealing ${1.15*$<low>} to ${1.15*$<high>} damage and generating $s2 Chi.$?s137384[
 
 Jab has a $137384m1% chance to make your next Tiger Palm or Blackout Kick cost no Chi.][]
 Variables        : $stnc=$?a103985[${1.2}][${1.0}]
@@ -667,7 +680,7 @@ Resource         : 2 Chi
 Spell Level      : 7
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Teachings of the Monastery (116645), Combo Breaker: Blackout Kick (116768), Rising Sun Kick (130320), Focus and Harmony (154555), Empowered Blackout Kick (157374)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Teachings of the Monastery (116645), Combo Breaker: Blackout Kick (116768), Rising Sun Kick (130320), Focus and Harmony (154555)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -681,7 +694,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 #3 (id=186903)   : Energize Power% (137)
                    Base Value: 0 | Scaled Value: 0
-Description      : Kick with a blast of Chi energy, dealing ${9.929*$<low>} to ${9.929*$<high>} Physical damage$?s117967[, and increasing your parry chance by $115307s1% and your Stagger amount by an additional $115307s2% for $115307d]?s154436[, and increasing your critical strike chance by $127722s1% for $127722d][]$?s116645&a115070[
+Description      : Kick with a blast of Chi energy, dealing ${6.72*$<low>} to ${6.72*$<high>} Physical damage$?s117967[, and increasing your parry chance by $115307s1% and your Stagger amount by an additional $115307s2% for $115307d]?s154436[, and increasing your critical strike chance by $127722s1% for $127722d][]$?s116645&a115070[
 
 Also deals ${4.9645*$<low>} to ${4.9645*$<high>} damage to up to $116645s4 additional nearby targets][].$?s128595[
 
@@ -706,7 +719,7 @@ Resource         : 1 Chi
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Teachings of the Monastery (116645), Brewmaster Training (117967), Combo Breaker: Tiger Palm (118864), Rising Sun Kick (130320), Focus and Harmony (154555), Empowered Tiger Palm (157399)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Teachings of the Monastery (116645), Brewmaster Training (117967), Combo Breaker: Tiger Palm (118864), Rising Sun Kick (130320), Focus and Harmony (154555)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -720,7 +733,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 125359
 #3 (id=184683)   : Energize Power% (137)
                    Base Value: 0 | Scaled Value: 0
-Description      : Attack with the palm of your hand, dealing $?s116645[${8.366*$<low>} to ${8.366*$<high>}][${4.183*$<low>} to ${4.183*$<high>}] damage, and causing your attacks to ignore $125359m1% of armor for $125359d.
+Description      : Attack with the palm of your hand, dealing $?s116645[$7.584*$<low>} to ${7.584*$<high>}][${3.792*$<low>} to ${3.792*$<high>}] damage, and causing your attacks to ignore $125359m1% of armor for $125359d.
 Variables        : $stnc=$?a103985[${1.2}][${1.0}]
 $dwm1=$?a108561[${1}][${0.898882275}]
 $dwm=$?a115697[${1}][${$<dwm1>}]
@@ -739,7 +752,7 @@ Spell Level      : 18
 GCD              : 1 seconds
 Duration         : 2 seconds
 Cooldown         : 25 seconds
-Affecting spells : Glyph of Flying Serpent Kick (123403), Glyph of Rising Tiger Kick (125151), Glyph of Spirit Roll (125154), Glyph of Honor (125732), Glyph of Fighting Pose (125872), Glyph of Water Roll (125901), Readiness: Windwalker (145969)
+Affecting spells : Glyph of Flying Serpent Kick (123403), Glyph of Rising Tiger Kick (125151), Glyph of Spirit Roll (125154), Glyph of Honor (125732), Glyph of Fighting Pose (125872), Glyph of Water Roll (125901)
 Attributes       : ....x... ........ ..x..... .....x..   ........ ........ .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -771,7 +784,7 @@ Resource         : 8.8% Base Mana (14080 @Level 100) w/ Stance of the Spirited C
 Spell Level      : 46
 GCD              : 1.5 seconds
 Duration         : 2.25 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Glyph of Spinning Crane Kick (120479), Lucidity (137331), Focus and Harmony (154555), Empowered Spinning Crane Kick (157415), 
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Lucidity (137331), Focus and Harmony (154555), Empowered Spinning Crane Kick (157415), 
 Attributes       : ....x... ........ x.x..... ........   ..x...x. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -781,7 +794,7 @@ Attributes       : ....x... ........ x.x..... ........   ..x...x. ........ .....
 Effects          :
 #1 (id=110004)   : Apply Aura (6) | Periodic Dummy: every 0.75 seconds (226)
                    Base Value: 0 | Scaled Value: 0
-#2 (id=110005)   : Apply Aura (6) | Decrease Movement Speed% (33)
+#2 (id=110005)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | SP Coefficient: 1.00000
 #3 (id=110006)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
@@ -810,7 +823,7 @@ Spell Level      : 87
 GCD              : 1.5 seconds
 Duration         : 900 seconds
 Cooldown         : 45 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Readiness: Brewmaster (145967), Readiness: Mistweaver (145968), Readiness: Windwalker (145969), Focus and Harmony (154555), Enhanced Transcendence (157366)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Focus and Harmony (154555), Enhanced Transcendence (157366)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
@@ -873,8 +886,7 @@ Resource         : 2 Chi
 Spell Level      : 56
 Range            : 5 yards
 GCD              : 1.5 seconds
-Cooldown         : 8 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Rising Sun Kick (130320), Focus and Harmony (154555), Empowered Rising Sun Kick (157426)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Rising Sun Kick (130320), Focus and Harmony (154555)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -884,7 +896,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
 Effects          :
 #1 (id=118198)   : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1
-Description      : You kick upwards, dealing ${17.866*$<low>} to ${17.866*$<high>} damage$?s128595[, reducing the effectiveness of healing on the target for $115804d,][] and causing all enemies within $130320A1 yards to take $130320m1% increased damage from your abilities for $130320d.
+Description      : You kick upwards, dealing ${7.08*$<low>} to ${7.08*$<high>} damage$?s128595[, reducing the effectiveness of healing on the target for $115804d,][] and causing all enemies within $130320A1 yards to take $130320m1% increased damage from your abilities for $130320d.
 Variables        : $stnc=$?a103985[${1.2}][${1.0}]
 $dwm1=$?a108561[${1}][${0.898882275}]
 $dwm=$?a115697[${1}][${$<dwm1>}]
@@ -933,7 +945,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 0 (avg=0.831) | SP Coefficient: 1.00000
 #2 (id=134450)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: chi
-Description      : Clobber the target with your staff, dealing ${2.091*$<low>} to ${2.091*$<high>} damage and generating $s2 Chi.$?s103985[
+Description      : Clobber the target with your staff, dealing ${1.15*$<low>} to ${1.15*$<high>} damage and generating $s2 Chi.$?s137384[
 
 Jab has a $137384m1% chance to make your next Tiger Palm or Blackout Kick cost no Chi.][]
 Variables        : $stnc=$?a103985[${1.2}][${1.0}]
@@ -1019,7 +1031,7 @@ Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
 Cooldown         : 25 seconds
-Affecting spells : Item - Monk T14 Windwalker 2P Bonus (123149), Glyph of Fists of Fury (125671), Readiness: Windwalker (145969), Glyph of the Floating Butterfly (159490)
+Affecting spells : Item - Monk T14 Windwalker 2P Bonus (123149), Glyph of Fists of Fury (125671), Glyph of the Floating Butterfly (159490), Glyph of Flying Fists (173182)
 Attributes       : ........ ........ ........ ........   ..x...x. .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
@@ -1035,7 +1047,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 117418
 #4 (id=219526)   : Apply Aura (6) | Modify Parry% (47)
                    Base Value: 0 | Scaled Value: 0
-Description      : Pummel all targets in front of you,$?s159490[][ stunning them and] dealing ${(5*18.5*$<low>+5*18.5*$<high>)/2} damage over $113656d. Deals reduced damage to secondary targets.$?s125671[  Your parry chance is increased by 100% while channeling.][]
+Description      : Pummel all targets in front of you,$?s159490[][ stunning them and] dealing ${(5*7.32*$<low>+5*7.32*$<high>)/2} damage over $113656d. Deals reduced damage to secondary targets.$?s125671[  Your parry chance is increased by 100% while channeling.][]
 Tooltip          : $w2 damage every $t2 sec. $?s125671[Parrying all attacks.][]
 Variables        : $stnc=$?a103985[${1.2}][${1.0}]
 $dwm1=$?a108561[${1}][${0.898882275}]
@@ -1099,7 +1111,6 @@ Class            : Brewmaster Monk
 Spell Level      : 10
 GCD              : 1 seconds
 Duration         : Aura (infinite)
-Affecting spells : Improved Stance of the Sturdy Ox (157381)
 Attributes       : ....x... ........ x.x..... x..x.x.x   ........ ..x..... .x...... ....x..x 
                  : x....... ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -1116,7 +1127,7 @@ Effects          :
 #4 (id=138807)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 0x7f
 #5 (id=140824)   : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value 2: 0x4
+                   Base Value: 40 | Scaled Value: 40 | Misc Value 2: 0x4
 #6 (id=141322)   : Apply Aura (6) | Threat (10)
                    Base Value: 900 | Scaled Value: 900 | Misc Value: 127
 #7 (id=153830)   : Apply Aura (6) | Unknown effect sub type (197)
@@ -1164,14 +1175,14 @@ Description      : Iincreases healing done by $s3%, and improves the functionali
 
 Name             : Expel Harm (id=115072) [Scaling Spell (5), Spell Family (53)] 
 Class            : Monk
-Resource         : 3.3% Base Mana (5280 @Level 100) w/ Stance of the Wise Serpent (id=115070)
+Resource         : 3% Base Mana (4800 @Level 100) w/ Stance of the Wise Serpent (id=115070)
 Resource         : 40 Energy w/ Stance of the Sturdy Ox (id=115069)
 Resource         : 40 Energy w/ Stance of the Fierce Tiger (id=103985)
-Resource         : 3.3% Base Mana (5280 @Level 100) w/ Stance of the Spirited Crane (id=154436)
+Resource         : 3% Base Mana (4800 @Level 100) w/ Stance of the Spirited Crane (id=154436)
 Spell Level      : 26
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Guard (115295), Desperate Measures (126060), Rising Sun Kick (130320), Lucidity (137331), Glyph of Targeted Expulsion (146950), Improved Expel Harm (157392), Glyph of Expel Harm (159487)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Guard (115295), Desperate Measures (126060), Rising Sun Kick (130320), Lucidity (137331), Glyph of Targeted Expulsion (146950), Glyph of Expel Harm (159487)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1183,7 +1194,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 #2 (id=154922)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: chi
-Description      : Heal yourself for ${15.768*$<low>} to ${15.768*$<high>}, and deal $115129s2% of the amount healed as Nature damage to an enemy within $115129A1 yards. Generates $m2 Chi.$?s115069[
+Description      : Heal yourself for ${11.4*$<low>} to ${11.4*$<high>}, and deal $115129s2% of the amount healed as Nature damage to an enemy within $115129A1 yards. Generates $m2 Chi.$?s115069[
 
 This ability has no cooldown while below 35% health in Stance of the Sturdy Ox.][]
 Variables        : $stnc=$?a103985[${1.0}][${1.0}]
@@ -1230,7 +1241,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Expel Harm Driver (115612), Lucidity (137331), Focus and Harmony (154555)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Lucidity (137331), Focus and Harmony (154555)
 Attributes       : ....x... ........ ....xx.. ........   ...x...x ..x..... ..x..... ...x.... 
                  : ........ ........ ........ ........   x..x.... ........ x....... ..x..... 
                  : ........ ........ .......x ........   .....x.. ........ ........ .......x 
@@ -1311,12 +1322,11 @@ Description      : $@spelldesc115072
 
 Name             : Renewing Mist (id=115151) [Scaling Spell (5), Spell Family (53)] 
 Class            : Mistweaver Monk
-Resource         : 4.9% Base Mana (7840 @Level 100)
+Resource         : 4% Base Mana (6400 @Level 100)
 Spell Level      : 42
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
-Cooldown         : 8 seconds
 Affecting spells : Thunder Focus Tea (116680), Lucidity (137331), Improved Renewing Mist (157398)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ .x...... ........ ..x...x. 
@@ -1375,13 +1385,13 @@ Description      : Roll and Chi Torpedo also increase movement speed by $119085m
 
 Name             : Soothing Mist (id=115175) [Spell Family (53)] 
 Class            : Mistweaver Monk
-Resource         : 0.8% Base Mana (1280 @Level 100) per second
+Resource         : 0.7% Base Mana (1119 @Level 100) per second
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 0.5 seconds
 Duration         : 8 seconds
 Cooldown         : 1 seconds
-Affecting spells : Enveloping Mist (132120), Lucidity (137331), Improved Soothing Mist (157771)
+Affecting spells : Enveloping Mist (132120), Lucidity (137331)
 Attributes       : ........ ........ x....... ........   ..x...x. ......x. ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1390,7 +1400,7 @@ Attributes       : ........ ........ x....... ........   ..x...x. ......x. .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128871)   : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.95625 | Chain Multiplier: 100
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.14750 | Chain Multiplier: 100
 Description      : Heals the target for $o1 over $d.  Surging Mist is instant while channeling this ability. 
 Tooltip          : Healing for $o1 over $d.
 
@@ -1403,7 +1413,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
-Affecting spells : Glyph of Zen Meditation (120477), Glyph of Life Cocoon (124989), Glyph of Fortifying Brew (124997), Readiness: Brewmaster (145967), Readiness: Mistweaver (145968), Readiness: Windwalker (145969)
+Affecting spells : Glyph of Zen Meditation (120477), Glyph of Life Cocoon (124989), Glyph of Fortifying Brew (124997)
 Attributes       : ........ ........ ........ ........   ..x...x. ........ .x...... .....x.. 
                  : ........ ........ ........ ......x.   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -1422,12 +1432,10 @@ Tooltip          : Damage dealt to the Monk reduced by $s2%.
 
 Name             : Dizzying Haze (id=115180) [Spell Family (53)] 
 Class            : Brewmaster Monk
-Resource         : 20 Energy
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1 seconds
 Velocity         : 25 yards/sec
-Affecting spells : Improved Dizzying Haze (157365)
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ......x. 
@@ -1463,7 +1471,7 @@ Name             : Fortifying Brew (id=115203) [Scaling Spell (5), Spell Family 
 Class            : Monk
 Spell Level      : 24
 Cooldown         : 180 seconds
-Affecting spells : Item - Monk T16 Brewmaster 2P Bonus (145049), Readiness: Brewmaster (145967), Readiness: Mistweaver (145968), Readiness: Windwalker (145969)
+Affecting spells : Item - Monk T16 Brewmaster 2P Bonus (145049)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1484,7 +1492,7 @@ Duration         : 6 seconds
 Cooldown         : 60 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Item - Monk T14 Windwalker 4P Bonus (123150), Readiness: Windwalker (145969)
+Affecting spells : Item - Monk T14 Windwalker 4P Bonus (123150)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1526,7 +1534,7 @@ Resource         : 2 Chi
 Spell Level      : 26
 Duration         : 30 seconds
 Cooldown         : 30 seconds
-Affecting spells : Item - Monk T14 Brewmaster 4P Bonus (123159), Glyph of Guard (123401), Readiness: Brewmaster (145967), Improved Guard (157363)
+Affecting spells : Item - Monk T14 Brewmaster 4P Bonus (123159), Glyph of Guard (123401), Improved Guard (157363)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1541,7 +1549,7 @@ Effects          :
                    Affected Spells: Expel Harm (115072), Detonate Chi (115460), Healing Elixirs (122281), Chi Torpedo (124040), Gift of the Serpent (124041), Zen Sphere (124081), Zen Sphere: Detonate (124101), Gift of the Ox (124507), Chi Burst (130654), Chi Wave (132463), Gift of the Serpent (135920), Summon Healing Sphere (147494), Healing Sphere (163212)
 Description      : Guard against future attacks, absorbing $<absorb> damage and increasing all heals you apply to yourself by $m2%.  Lasts $115295d.
 Tooltip          : Absorbing $w1 damage and increasing heals done to yourself by $w2%.
-Variables        : $absorb=${($AP*2.267)+$115295m1}
+Variables        : $absorb=${($AP*11.335)+$115295m1}
 $mult=$?s123401[${1.1}][${1.0}]
 
 Name             : Shuffle (id=115307) [Spell Family (53)] 
@@ -1568,7 +1576,7 @@ Class            : Brewmaster Monk
 Spell Level      : 36
 Duration         : 1 seconds
 Cooldown         : 6 seconds
-Affecting spells : Stance of the Sturdy Ox (115069), Item - Monk T14 Brewmaster 2P Bonus (123157), Improved Elusive Brew (157378)
+Affecting spells : Stance of the Sturdy Ox (115069), Item - Monk T14 Brewmaster 2P Bonus (123157)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1577,7 +1585,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=129069)   : Apply Aura (6) | Modify Dodge% (49)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 4
+                   Base Value: 35 | Scaled Value: 35 | Misc Value: 4
 Description      : Consumes all stacks of Elusive Brew to increase your chance to dodge melee and ranged attacks by $s1% for $d per stack.
 
 Your autoattack critical strikes grant up to $m1 stacks of Elusive Brew.
@@ -1585,11 +1593,11 @@ Tooltip          : Chance to dodge melee and ranged attacks increased by $w1%.
 
 Name             : Revival (id=115310) [Scaling Spell (5), Spell Family (53)] 
 Class            : Mistweaver Monk
-Resource         : 5.4% Base Mana (8640 @Level 100)
+Resource         : 4.37% Base Mana (6992 @Level 100)
 Spell Level      : 78
 GCD              : 1.5 seconds
 Cooldown         : 180 seconds
-Affecting spells : Lucidity (137331), Readiness: Mistweaver (145968)
+Affecting spells : Lucidity (137331)
 Attributes       : ........ ........ ........ ........   ........ ..x....x ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1734,7 +1742,7 @@ Description      : Your Detox spell now also clears all Magical effects when use
 
 Name             : Detonate Chi (id=115460) [Spell Family (53)] 
 Class            : Mistweaver Monk
-Resource         : 8.8% Base Mana (14080 @Level 100)
+Resource         : 3% Base Mana (4800 @Level 100)
 Spell Level      : 64
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1749,7 +1757,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=129292)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
-Description      : Detonate all of your Healing Spheres, causing each of them to heal an ally within $135920A1 yards for $117907m2% of the effect.
+Description      : Detonate all of your Healing Spheres, causing each of them to heal an ally within $135920A1 yards.
 
 Name             : Leer of the Ox (Major Glyph) (id=115543) [Scaling Spell (5), Spell Family (53)] 
 Class            : Monk
@@ -1803,7 +1811,6 @@ Attributes       : ....x.xx x....... ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=129505)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50
-                   Affected Spells: Paralysis (115078)
 
 Name             : Mastery: Bottled Fury (id=115636) [Spell Family (53), Passive] 
 Class            : Windwalker Monk
@@ -1936,7 +1943,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50
 Description      : When you kill an enemy while gaining experience or honor, you  summon a Healing Sphere, healing you for $125355s1 when you walk through it.
 
-Enemies who die from Blackout Kick have a $m2% chance to summon a Chi Sphere, granting 1 Chi when you walk through it.
+Enemies who die from $?s152174[Chi Explosion][Blackout Kick] have a $m2% chance to summon a Chi Sphere, granting 1 Chi when you walk through it.
 
 Name             : Disable (id=116095) [Spell Family (53)] 
 Class            : Windwalker Monk
@@ -1991,7 +1998,6 @@ Class            : Monk
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
-Affecting spells : Improved Dizzying Haze (157365)
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -2077,7 +2083,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ..x..x.. ........ 
                  : AOE Heal, Heal, Periodic, Trap Triggered
-Affecting spells : Item - Monk T15 Mistweaver 4P Bonus (138289), Readiness: Mistweaver (145968)
+Affecting spells : Item - Monk T15 Mistweaver 4P Bonus (138289)
 Attributes       : ........ ........ ........ .x......   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2096,7 +2102,7 @@ Tooltip          : Healing done by your next Surging Mist will be doubled or you
 
 Name             : Surging Mist (id=116694) [Spell Family (53)] 
 Class            : Monk
-Resource         : 5.2% Base Mana (8320 @Level 100) w/ Mana Usage (id=119651)
+Resource         : 4.7% Base Mana (7520 @Level 100) w/ Mana Usage (id=119651)
 Resource         : 30 Energy w/ Stance of the Fierce Tiger (id=103985)
 Resource         : 30 Energy w/ Stance of the Sturdy Ox (id=115069)
 Spell Level      : 32
@@ -2115,7 +2121,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 #2 (id=154236)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: chi
-Description      : Heals the target for $116995s1$?s115070[and generates $m2 Chi][].$?s154436[  Each Chi you consume reduces the cast time and mana cost of your next Surging Mist by $118674m1%.][]
+Description      : Heals the target for $116995s1 $?s115070[and generates $m2 Chi][].$?a154436[  Each Chi you consume reduces the cast time and mana cost of your next Surging Mist by $118674m1%.][]
 
 Name             : Spear Hand Strike (id=116705) [Spell Family (53)] 
 Class            : Monk
@@ -2144,7 +2150,7 @@ Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
-                 : ........ ........ ........ ........   ...x.... ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ..x..... ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2331,7 +2337,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 120 seconds
-Affecting spells : Lucidity (137331), Readiness: Mistweaver (145968), Improved Life Cocoon (157401)
+Affecting spells : Lucidity (137331), Improved Life Cocoon (157401)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2352,7 +2358,7 @@ Class            : Monk
 Spell Level      : 1
 Range            : 100 yards
 GCD              : 1.5 seconds
-Affecting spells : Thunder Focus Tea (116680), Empowered Surging Mist (157400)
+Affecting spells : Thunder Focus Tea (116680)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2361,7 +2367,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=132304)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.47500
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.97000
 #2 (id=168398)   : Unknown effect type (164)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 118674
 Description      : $@spelldesc116694
@@ -2370,7 +2376,7 @@ Name             : Fists of Fury (id=117418) [Spell Family (53)]
 Class            : Monk
 Spell Level      : 1
 Range            : 5 yards
-Affecting spells : Rising Sun Kick (130320), Empowered Fists of Fury (157427)
+Affecting spells : Rising Sun Kick (130320)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ........ 
                  : ........ .......x ........ ........   ........ ..x..... ........ ........ 
@@ -2535,7 +2541,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=134138)   : School Damage: nature (2)
-                   Base Value: 0 | Scaled Value: 1 - 3 (avg=0) | Value Range: 3 | AP Coefficient: 0.65604
+                   Base Value: 0 | Scaled Value: 1 - 3 (avg=0) | Value Range: 3 | AP Coefficient: 1.00000
 Description      : $@spelldesc115008
 
 Name             : Leer of the Ox (id=118585) [Spell Family (53)] 
@@ -2793,7 +2799,7 @@ Cast Time        : 0.5 seconds
 GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 25 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Glyph of Transcendence (123023), Lucidity (137331), Readiness: Brewmaster (145967), Readiness: Mistweaver (145968), Readiness: Windwalker (145969), Focus and Harmony (154555), Enhanced Transcendence (157366)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Glyph of Transcendence (123023), Lucidity (137331), Focus and Harmony (154555), Enhanced Transcendence (157366)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
@@ -2812,7 +2818,7 @@ Class            : Monk
 Spell Level      : 1
 Range            : 5 yards
 Duration         : 4 seconds
-Affecting spells : Item - Monk T14 Windwalker 2P Bonus (123149), Glyph of Fists of Fury (125671), Readiness: Windwalker (145969), Glyph of the Floating Butterfly (159490)
+Affecting spells : Item - Monk T14 Windwalker 2P Bonus (123149), Glyph of Fists of Fury (125671), Glyph of the Floating Butterfly (159490), Glyph of Flying Fists (173182)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2963,20 +2969,6 @@ Effects          :
 #1 (id=140051)   : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 999
 
-Name             : Glyph of Spinning Crane Kick (id=120479) [Spell Family (53), Passive, Hidden] 
-Class            : Monk
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=140052)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 12
-                   Affected Spells: Spinning Crane Kick (101546)
-Description      : You move at full speed while channeling Spinning Crane Kick.
-
 Name             : Surging Mist (id=120481) 
 Class            : Monk
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
@@ -3081,7 +3073,7 @@ GCD              : 1 seconds
 Velocity         : 30 yards/sec
 Duration         : 15 seconds
 Cooldown         : 8 seconds
-Affecting spells : Empowered Keg Smash (157377), Glyph of Keg Smash (159495)
+Affecting spells : Glyph of Keg Smash (159495)
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3093,7 +3085,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards
 #2 (id=229522)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards
-Description      : Smash a keg of brew on the target, dealing ${10.00*$<low>} to ${10.00*$<high>} damage to all enemies within $A1 yards and reducing their movement speed by $m2% for $d. Generates $127796m1 Chi.
+Description      : Smash a keg of brew on the target, dealing ${11.58*$<low>} to ${11.58*$<high>} damage to all enemies within $A1 yards and reducing their movement speed by $m2% for $d. Generates $127796m1 Chi.
 Variables        : $stnc=$?a103985[${1.2}][${1.0}]
 $dwm1=$?a108561[${1}][${0.898882275}]
 $dwm=$?a115697[${1}][${$<dwm1>}]
@@ -3190,7 +3182,6 @@ Name             : Touch of Karma (id=122470) [Spell Family (53)]
 Class            : Windwalker Monk
 Spell Level      : 22
 Range            : 5 yards
-GCD              : 1 seconds
 Duration         : 10 seconds
 Cooldown         : 90 seconds
 Affecting spells : Glyph of Touch of Karma (125678)
@@ -3757,7 +3748,7 @@ Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x
 Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Guard (115295), Rising Sun Kick (130320), Storm, Earth, and Fire (137639), 
 Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .....x.. ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3945,9 +3936,9 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=157616)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 15
-Description      : Your autoattack multistrikes can trigger Gift of the Ox, summoning a Healing Sphere visible only to you.  Moving through this Healing Sphere will heal you for ${$124507m1+$AP*0.375}.
+Description      : Your autoattack multistrikes can trigger Gift of the Ox, summoning a Healing Sphere visible only to you. Moving through this Healing Sphere will heal you for $124507s1.
 
-Name             : Gift of the Ox (id=124507) [Scaling Spell (5), Spell Family (53)] 
+Name             : Gift of the Ox (id=124507) [Spell Family (53)] 
 Class            : Monk
 Range            : 50000 yards
 Affecting spells : Guard (115295)
@@ -3959,7 +3950,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=157621)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=4.5)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.00000
 Description      : $@spelldesc124502
 
 Name             : Enveloping Mist (id=124682) [Scaling Spell (5), Spell Family (53)] 
@@ -4276,7 +4267,7 @@ Effects          :
 #1 (id=159496)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 23
                    Affected Spells: Fists of Fury (113656), Fists of Fury (120086)
-Description      : When channeling Fists of Fury, your parry chance is increased by 100%.
+Description      : When channeling Fists of Fury, your parry chance is increased by $s1%.
 
 Name             : Fists of Fury (id=125672) 
 Class            : Monk
@@ -4515,7 +4506,7 @@ Spell Level      : 1
 Range            : 50000 yards
 GCD              : 1 seconds
 Duration         : 8 seconds
-Affecting spells : Enveloping Mist (132120), Lucidity (137331), Improved Soothing Mist (157771)
+Affecting spells : Enveloping Mist (132120), Lucidity (137331)
 Attributes       : ........ ........ x....... ........   ..x...x. ......x. ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -4534,7 +4525,7 @@ Spell Level      : 1
 Range            : 50000 yards
 GCD              : 1 seconds
 Proc Chance      : 20%
-Affecting spells : Enveloping Mist (132120), Lucidity (137331), Improved Soothing Mist (157771)
+Affecting spells : Enveloping Mist (132120), Lucidity (137331)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4747,7 +4738,7 @@ Class            : Monk
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 4 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Teachings of the Monastery (116645), Combo Breaker: Blackout Kick (116768), Rising Sun Kick (130320), Focus and Harmony (154555), Empowered Blackout Kick (157374)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Teachings of the Monastery (116645), Combo Breaker: Blackout Kick (116768), Rising Sun Kick (130320), Focus and Harmony (154555)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ..x..... ......x. 
                  : ........ x......x ........ ........   ........ ........ ........ ........ 
@@ -4905,7 +4896,7 @@ Name             : Rising Sun Kick (id=130320) [Scaling Spell (5), Spell Family 
 Class            : Monk
 Spell Level      : 1
 Duration         : 15 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Focus and Harmony (154555), Empowered Rising Sun Kick (157426)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Focus and Harmony (154555)
 Attributes       : ....x... ........ ........ ........   ........ .xx..... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5576,57 +5567,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 Description      : $@spelldesc115399
 
-Name             : Readiness: Brewmaster (id=145967) [Spell Family (53), Passive] 
-Class            : Brewmaster Monk
-Spell Level      : 90
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-Effects          :
-#1 (id=196995)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: -0.50000 | Misc Value: 11
-                   Affected Spells: Transcendence (101643), Zen Meditation (115176), Fortifying Brew (115203), Guard (115295), Transcendence: Transfer (119996)
-#2 (id=213026)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000
-Description      : Increases the cooldown recovery rate by $s2% on your Avert Harm, Guard, Zen Meditation, Fortifying Brew, Transcendence, and Clash abilities ($s1% cooldown reduction).
-
-Name             : Readiness: Mistweaver (id=145968) [Spell Family (53), Passive] 
-Class            : Mistweaver Monk
-Spell Level      : 90
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-Effects          :
-#1 (id=196996)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: -1.00000 | Misc Value: 11
-                   Affected Spells: Transcendence (101643), Zen Meditation (115176), Fortifying Brew (115203), Revival (115310), Thunder Focus Tea (116680), Life Cocoon (116849), Transcendence: Transfer (119996)
-#2 (id=213028)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
-Description      : Increases the cooldown recovery rate by $s2% on your Thunder Focus Tea, Zen Meditation, Fortifying Brew, Transcendence, Revival, and Life Cocoon abilities ($s1% cooldown reduction).
-
-Name             : Readiness: Windwalker (id=145969) [Spell Family (53), Passive] 
-Class            : Windwalker Monk
-Spell Level      : 90
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-Effects          :
-#1 (id=196997)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: -1.00000 | Misc Value: 11
-                   Affected Spells: Flying Serpent Kick (101545), Transcendence (101643), Fists of Fury (113656), Zen Meditation (115176), Fortifying Brew (115203), Energizing Brew (115288), Transcendence: Transfer (119996), Fists of Fury (120086)
-#2 (id=213029)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
-Description      : Increases the cooldown recovery rate by $s2% on your Flying Serpent Kick, Zen Meditation, Fortifying Brew, Transcendence, Fists of Fury, and Energizing Brew abilities ($s1% cooldown reduction).
-
 Name             : Glyph of Targeted Expulsion (id=146950) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -5869,7 +5809,7 @@ Description      : Improves the functionality of Surging Mist, Blackout Kick, an
 While in this stance, you will gain Eminence.
 
 |CFFFFFFFFEminence|R
-$115313s3% of all damage you deal will be converted into healing on an injured ally within $117895A1 yards.
+$115313s3% of all damage you deal, including multistrikes, will be converted into healing on an injured ally within $117895A1 yards.
 
 Name             : Focus and Harmony (id=154555) [Scaling Spell (5), Spell Family (53), Passive] 
 Class            : Mistweaver Monk
@@ -5953,20 +5893,6 @@ Effects          :
                    Affected Spells: Guard (115295)
 Description      : Guard now has $s1 charges.
 
-Name             : Improved Dizzying Haze (id=157365) [Spell Family (53), Passive] 
-Class            : Monk
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219440)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 14
-                   Affected Spells: Dizzying Haze (115180), Dizzying Haze (116330)
-Description      : Dizziying Haze no longer has an energy cost.
-
 Name             : Enhanced Transcendence (id=157366) [Spell Family (53), Passive] 
 Class            : Monk
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5984,76 +5910,6 @@ Effects          :
                    Affected Spells: Transcendence (101643)
 Description      : The cooldown of Transcendence is reduced by ${$m2/-1000} sec, and Transcendence: Transfer is now instant cast.
 
-Name             : Empowered Blackout Kick (id=157374) [Spell Family (53), Passive] 
-Class            : Monk
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219450)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Blackout Kick (100784), Blackout Kick (128531), Chi Explosion (157680), Chi Explosion (157681)
-Description      : Damage of Blackout Kick increased by $s1%.
-
-Name             : Empowered Keg Smash (id=157377) [Spell Family (53), Passive] 
-Class            : Monk
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219453)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Keg Smash (121253)
-Description      : Damage of Keg Smash increased by $s1%.
-
-Name             : Improved Elusive Brew (id=157378) [Spell Family (53), Passive] 
-Class            : Monk
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219454)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 3
-                   Affected Spells: Elusive Brew (115308)
-Description      : Elusive Brew now increases dodge chance by an additional $s1%.
-
-Name             : Improved Stance of the Sturdy Ox (id=157381) [Spell Family (53), Passive] 
-Class            : Monk
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219458)   : Apply Aura (6) | Add Flat Modifier (107)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 33
-                   Affected Spells: Stance of the Sturdy Ox (115069)
-Description      : Increases the Stamina bonus of Stance of the Sturdy Ox by $s1%.
-
-Name             : Improved Expel Harm (id=157392) [Spell Family (53), Passive] 
-Class            : Monk
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219474)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Expel Harm (115072)
-Description      : Increases the damage and healing of Expel Harm by $s1%.
-
 Name             : Improved Renewing Mist (id=157398) [Spell Family (53), Passive] 
 Class            : Monk
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6068,34 +5924,6 @@ Effects          :
                    Affected Spells: Renewing Mist (115151), Renewing Mist (119611)
 Description      : Increases the duration of Renewing Mist by ${$m1/1000} sec.
 
-Name             : Empowered Tiger Palm (id=157399) [Spell Family (53), Passive] 
-Class            : Monk
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219484)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Tiger Palm (100787)
-Description      : Increases the damage of Tiger Palm by $s1%.
-
-Name             : Empowered Surging Mist (id=157400) [Spell Family (53), Passive] 
-Class            : Monk
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219485)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Surging Mist (116995)
-Description      : Increases the healing of Surging Mist by $s1%.
-
 Name             : Improved Life Cocoon (id=157401) [Spell Family (53), Passive] 
 Class            : Monk
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6109,19 +5937,6 @@ Effects          :
                    Base Value: -20000 | Scaled Value: -20000 | Misc Value: 11
                    Affected Spells: Life Cocoon (116849)
 Description      : Reduces the cooldown of Life Cocoon by ${$m1/-1000} sec.
-
-Name             : Improved Energizing Brew (id=157404) [Spell Family (53), Passive] 
-Class            : Monk
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219490)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10
-Description      : While Energizing Brew is active, your Multistrike chance is increased by $s1%.
 
 Name             : Empowered Chi (id=157411) [Spell Family (53), Passive] 
 Class            : Monk
@@ -6152,34 +5967,6 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 1
                    Affected Spells: Spinning Crane Kick (101546)
 Description      : Spinning Crane Kick now deals damage twice as fast, but its duration is reduced by $s2%.
-
-Name             : Empowered Rising Sun Kick (id=157426) [Spell Family (53), Passive] 
-Class            : Monk
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219519)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (130320)
-Description      : Damage of Rising Sun Kick is increased by $s1%.
-
-Name             : Empowered Fists of Fury (id=157427) [Spell Family (53), Passive] 
-Class            : Monk
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219520)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Fists of Fury (117418)
-Description      : Damage of Fists of Fury is increased by $s1%.
 
 Name             : Critical Strikes (Passive) (id=157445) [Passive] 
 Class            : Brewmaster Windwalker Monk
@@ -6223,37 +6010,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Your Jade Serpent Statue breathes healing mists toward you, healing allies in a cone within $157590A2 yards for $157590s1 every $157627t1 sec, split evenly between them. Lasts $157627d.
 Tooltip          : Your Jade Serpent Statue is breathing healing mists toward you.
-
-Name             : Path of Mists (id=157556) 
-Class            : Monk
-Resource         : 0.62% Base Mana (992 @Level 100) and 1.25% Base Mana (2000 @Level 100) per second
-Duration         : Aura (infinite)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219707)   : Apply Aura (6) | Periodic Dummy: every 0.25 seconds (226)
-                   Base Value: 2 | Scaled Value: 2
-Description      : Causes you to leave a trail of healing spheres behind you as you move, spaced $s1 yards apart. These healing spheres last $157557d.
-
-Name             : Path of Mists (id=157557) [Spell Family (53)] 
-Class            : Monk
-Spell Level      : 1
-Range            : 100 yards
-Duration         : 15 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ .......x 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219708)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3172
-Description      : $@spelldesc157556
 
 Name             : Breath of the Serpent (id=157590) 
 Class            : Monk
@@ -6345,7 +6101,7 @@ Class            : Monk
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 6 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Teachings of the Monastery (116645), Combo Breaker: Blackout Kick (116768), Rising Sun Kick (130320), Focus and Harmony (154555), Empowered Blackout Kick (157374)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Teachings of the Monastery (116645), Combo Breaker: Blackout Kick (116768), Rising Sun Kick (130320), Focus and Harmony (154555)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ..x..... ......x. 
                  : ........ x......x ........ ........   ........ ........ ........ ........ 
@@ -6363,7 +6119,7 @@ Class            : Monk
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 6 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Teachings of the Monastery (116645), Combo Breaker: Blackout Kick (116768), Rising Sun Kick (130320), Focus and Harmony (154555), Empowered Blackout Kick (157374)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Teachings of the Monastery (116645), Combo Breaker: Blackout Kick (116768), Rising Sun Kick (130320), Focus and Harmony (154555)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ..x..... ......x. 
                  : ........ x......x ........ ........   ........ ........ ........ ........ 
@@ -6389,22 +6145,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219869)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 321 | Radius: 0 - 6 yards
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3220 | Radius: 0 - 6 yards
 Description      : $@spelldesc157675
-
-Name             : Improved Soothing Mist (id=157771) [Spell Family (53), Passive] 
-Class            : Monk
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219994)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22
-                   Affected Spells: Soothing Mist (115175), Soothing Mist (125950), Soothing Mist (125953)
-Description      : Increases the healing of Soothing Mist by $s1%.
 
 Name             : Hurricane Strike (id=158221) 
 Class            : Monk
@@ -6727,7 +6469,7 @@ Duration         : Aura (infinite)
 Attributes       : ....x..x ........ ..x..... x..x.x.x   ........ ..x..... .x...... ....x... 
                  : x....... ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x.x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -6747,6 +6489,56 @@ Effects          :
 #1 (id=226766)   : Apply Aura (6) | Unknown effect sub type (464)
                    Base Value: 100 | Scaled Value: 100
 Description      : Increases your Attack Power by $s1% of your Bonus Armor.
+
+Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
+Class            : Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=228478)   : Apply Aura (6) | Unknown effect sub type (467)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 3
+#2 (id=228479)   : Apply Aura (6) | Unknown effect sub type (467)
+                   Base Value: -100 | Scaled Value: -100
+#3 (id=228480)   : Apply Aura (6) | Unknown effect sub type (467)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 4
+#4 (id=228481)   : Apply Aura (6) | Unknown effect sub type (466)
+                   Base Value: -100 | Scaled Value: -100
+
+Name             : Stat Negation Aura - Agility Tank (id=162700) [Passive, Hidden] 
+Class            : Brewmaster Guardian Monk, Druid
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=228491)   : Apply Aura (6) | Unknown effect sub type (467)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 3
+#2 (id=228492)   : Apply Aura (6) | Unknown effect sub type (467)
+                   Base Value: -100 | Scaled Value: -100
+#3 (id=228493)   : Apply Aura (6) | Unknown effect sub type (467)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 4
+
+Name             : Stat Negation Aura - Intellect Healer (id=162701) [Passive, Hidden] 
+Class            : Holy Discipline Holy Restoration Mistweaver Restoration Paladin, Priest, Shaman, Monk, Druid
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=228494)   : Apply Aura (6) | Unknown effect sub type (467)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1
+#2 (id=228495)   : Apply Aura (6) | Unknown effect sub type (467)
+                   Base Value: -100 | Scaled Value: -100
+#3 (id=228496)   : Apply Aura (6) | Unknown effect sub type (466)
+                   Base Value: -100 | Scaled Value: -100
 
 Name             : Summon Black Ox Statue (id=163178) [Spell Family (53), Hidden] 
 Class            : Monk
@@ -6821,17 +6613,30 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 2048
 Description      : You gain $s1% more of the Multistrike stat from all sources.
 
+Name             : Balance (id=166163) [Passive, Hidden] 
+Class            : Balance Warrior, Hunter, Rogue, Priest, Death Knight, Mage, Monk, Druid
+Race             : Night Elf
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=234650)   : Apply Aura (6) | Periodic Dummy: every 0.1 seconds (226)
+                   Base Value: 0 | Scaled Value: 0
+
 Name             : Windwalking (id=166646) [Spell Family (53)] 
 Class            : Monk
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 10 seconds
 Attributes       : ....x... ........ ..x..... x..x.x..   .....x.. ..x..... .x...... ........ 
-                 : x....... ......x. ...x.... ....x...   ........ ........ ....x... ........ 
+                 : x....... ......x. ...x.... ....x...   ........ ........ xx..x... ........ 
                  : x......x ........ .....x.. ........   ...x.... ..x..... .xx..... ........ 
-                 : ..x..... ....x... ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ..x.x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ....x... ........ 
-                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..xx.... 
 Effects          :
 #1 (id=235496)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 10 | Scaled Value: 10
@@ -6878,4 +6683,47 @@ Attributes       : ........ x....... ........ ....x...   ........ ........ .x...
 Effects          :
 #1 (id=244337)   : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1209
+
+Name             : Glyph of Flying Fists (Windwalker) (id=173182) [Spell Family (53), Passive, Hidden] 
+Class            : Monk
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=246370)   : Apply Aura (6) | Add Flat Modifier: Spell Radius (107)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 6
+                   Affected Spells: Fists of Fury (113656), Fists of Fury (120086)
+Description      : Increases the range of Fists of Fury by $s1 yards.
+
+Name             : Flying Fists (Windwalker) (id=173367) 
+Class            : Monk
+Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=246801)   : Unknown effect type (74)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1212
+
+Name             : Pool of Mists (id=173841) [Spell Family (53), Passive] 
+Class            : Monk
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=247750)   : Apply Aura (6) | Unknown effect sub type (411)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 1517
+#2 (id=247778)   : Apply Aura (6) | Unknown effect sub type (411)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 1518
+Description      : Your Renewing Mist spell now has ${1+$m1} charges.
+
+Your Rising Sun Kick spell now has ${1+$m2} charges.
 

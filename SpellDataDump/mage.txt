@@ -1,5 +1,5 @@
 
-SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18612)
+SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18702)
 Name             : Blizzard (id=10) [Spell Family (3)] 
 Class            : Frost Mage
 Resource         : 5% Base Mana (8000 @Level 100)
@@ -32,7 +32,6 @@ Spell Level      : 56
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 300 seconds
-Affecting spells : Readiness: Arcane (151024), Readiness: Fire (151026), Readiness: Frost (151027)
 Attributes       : ........ ........ x...x... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -60,7 +59,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Duration         : 15 seconds
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Frosty Zap (24392), Item - Mage T8 4P Bonus (64869), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T10 4P Bonus (70748), Item - Mage T11 4P Bonus (90291), Item - Mage T15 2P Bonus (138316), Enhanced Frostbolt (157646), Enhanced Frostbolt (157648), Improved Frostbolt (157723), Ice Shard (166869), 
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Frosty Zap (24392), Item - Mage T8 4P Bonus (64869), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T10 4P Bonus (70748), Item - Mage T11 4P Bonus (90291), Item - Mage T15 2P Bonus (138316), Enhanced Frostbolt (157646), Enhanced Frostbolt (157648), Ice Shard (166869), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -71,7 +70,7 @@ Effects          :
 #1 (id=75)       : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
 #2 (id=76)       : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.12500
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.35000
 #3 (id=160297)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0
 Description      : Launches a bolt of frost at the enemy, causing $s2 Frost damage and slowing movement speed by $s1% for $d.
@@ -150,7 +149,7 @@ Range            : 40 yards
 Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Item - Mage T8 4P Bonus (64869), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T10 4P Bonus (70748), Item - Mage T11 4P Bonus (90291), Critical Mass (117216), Item - Mage T15 2P Bonus (138316), Improved Fireball and Frostfire Bolt (157637), Enhanced Pyrotechnics (157644)
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Item - Mage T8 4P Bonus (64869), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T10 4P Bonus (70748), Item - Mage T11 4P Bonus (90291), Critical Mass (117216), Item - Mage T15 2P Bonus (138316), Enhanced Pyrotechnics (157644)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -159,7 +158,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=91)       : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.5, dl=0.24) | SP Coefficient: 1.12500
+                   Base Value: 1 | Scaled Value: 0 (avg=1.5, dl=0.24) | SP Coefficient: 1.35000
 Description      : Hurls a fiery ball that causes $s1 Fire damage.
 
 Name             : Remove Curse (id=475) [Spell Family (3)] 
@@ -185,7 +184,7 @@ Class            : Arcane Mage
 Resource         : 3% Base Mana (4800 @Level 100)
 Spell Level      : 18
 GCD              : 1.5 seconds
-Affecting spells : Arcane Power (12042), Shatter (12982), Glyph of Arcane Explosion (115718), Improved Arcane Explosion (157619)
+Affecting spells : Arcane Power (12042), Shatter (12982), Glyph of Arcane Explosion (115718)
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -194,7 +193,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=457)      : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.483, dl=0.08) | SP Coefficient: 0.41250 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=0.483, dl=0.08) | SP Coefficient: 0.49500 | Radius: 0 - 10 yards
 #2 (id=157071)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 Description      : Causes an explosion of arcane magic around the caster, dealing $s1 Arcane damage to all targets within $A1 yards. $?s114664[Refreshes the duration of your Arcane Charges and has a $1449s2% chance to generate an Arcane Charge.][]
@@ -314,6 +313,7 @@ Spell Level      : 8
 Range            : 40 yards
 Duration         : 6 seconds
 Cooldown         : 24 seconds
+Affecting spells : Glyph of Counterspell (115703)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -332,7 +332,7 @@ Spell Level      : 22
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Arcane Charge (36032), Item - Mage T13 2P Bonus (Haste) (105788), Arcane Charge (114664), Critical Mass (117216)
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Arcane Charge (36032), Arcane Charge (114664), Critical Mass (117216)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -407,7 +407,7 @@ Spell Level      : 24
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
-Affecting spells : Arcane Power (12042), Icy Veins (12472), Enhanced Arcane Missiles (157599), Arcane Instability (166872)
+Affecting spells : Arcane Power (12042), Icy Veins (12472), Arcane Instability (166872)
 Attributes       : ........ x....... x....... .....x..   ..x....x ..x...x. ........ ..x.x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ .....x.. ........ ........ 
@@ -431,13 +431,13 @@ Arcane Missiles has a chance to be activated after each of your damaging spell c
 Name             : Wrath (Solar) (id=5176) [Scaling Spell (2), Spell Family (7)] 
 Class            : Warrior, Hunter, Rogue, Priest, Death Knight, Mage, Monk, Druid
 Race             : Night Elf
-Resource         : 8.8% Base Mana (0 @Level 100)
+Resource         : 8.8% Base Mana (0 @Level 100) w/ Balance (id=166163)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Item - Druid T9 Balance 4P Bonus (Starfire) (67126), Item - Druid T12 Balance 4P Bonus (99049), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Clearcasting (135700), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Improved Wrath (157231), Dream of Cenarius (158504), Solar Empowerment (164545), Item - Druid T17 Balance 2P Bonus (165433)
+Affecting spells : Item - Druid T9 Balance 4P Bonus (Starfire) (67126), Item - Druid T12 Balance 4P Bonus (99049), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Clearcasting (135700), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Dream of Cenarius (158504), Solar Empowerment (164545), Item - Druid T17 Balance 2P Bonus (165433)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -446,7 +446,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.15500
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.38600
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -479,7 +479,7 @@ Class            : Mage
 Spell Level      : 24
 Range            : 60 yards
 Velocity         : 20 yards/sec
-Affecting spells : Shatter (12982), Arcane Charge (36032), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T11 2P Bonus (90290), Item - Mage T14 2P Bonus (123097), Improved Arcane Missiles (157617)
+Affecting spells : Shatter (12982), Arcane Charge (36032), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T11 2P Bonus (90290), Item - Mage T14 2P Bonus (123097)
 Attributes       : ........ ........ x....... ........   ..x..... ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -488,7 +488,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2716)     : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.18300
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.21960
 Description      : $@spelldesc5143
 
 Name             : Frost Armor (id=7302) [Spell Family (3), Passive] 
@@ -605,7 +605,7 @@ Resource         : 10% Base Mana (16000 @Level 100)
 Spell Level      : 77
 Range            : 40 yards
 Cooldown         : 45 seconds
-Affecting spells : Shatter (12982), Glyph of Combustion (56368), Stolen Time (105791), Item - Mage T14 4P Bonus (123101), Readiness: Fire (151026)
+Affecting spells : Shatter (12982), Glyph of Combustion (56368), Stolen Time (105791), Item - Mage T14 4P Bonus (123101)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -615,7 +615,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=4721)     : Server Side Script (77)
                    Base Value: 8 | Scaled Value: 8
-Description      : Resets the cooldown on Inferno Blast and combusts your Ignite on the target, burning for additional damage over $83853d equal to $m1 seconds of Ignite's current damage over time.
+Description      : Resets the cooldown on Inferno Blast and combusts your Ignite on the target, burning for additional damage over $83853d equal to $?s56368[${$m1*2}][$m1] seconds of Ignite's current damage over time.
 
 Name             : Pyroblast (id=11366) [Scaling Spell (4), Spell Family (3)] 
 Class            : Fire Mage
@@ -626,7 +626,7 @@ Cast Time        : 3.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Duration         : 18 seconds
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Pyroblast! (48108), Item - Mage T11 2P Bonus (90290), Critical Mass (117216), Item - Mage T14 2P Bonus (123097), Item - Mage T15 4P Bonus (138376), Improved Pyroblast (157624), Pyromaniac (166868), 
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Pyroblast! (48108), Item - Mage T11 2P Bonus (90290), Critical Mass (117216), Item - Mage T14 2P Bonus (123097), Item - Mage T15 4P Bonus (138376), Pyromaniac (166868), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -686,7 +686,7 @@ Class            : Arcane Mage
 Spell Level      : 62
 Duration         : 15 seconds
 Cooldown         : 90 seconds
-Affecting spells : Icy Veins (12472), Glyph of Arcane Power (62210), Item - Mage T12 4P Bonus (99064), Stolen Time (105791), Item - Mage T14 4P Bonus (123101), Readiness: Arcane (151024), Improved Arcane Power (157604)
+Affecting spells : Icy Veins (12472), Glyph of Arcane Power (62210), Item - Mage T12 4P Bonus (99064), Stolen Time (105791), Item - Mage T14 4P Bonus (123101), Improved Arcane Power (157604)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -754,7 +754,7 @@ Class            : Frost Mage
 Spell Level      : 36
 Duration         : 20 seconds
 Cooldown         : 180 seconds
-Affecting spells : Glyph of Icy Veins (56364), Stolen Time (105791), Item - Mage T14 4P Bonus (123101), Readiness: Frost (151027), Improved Icy Veins (157721), 
+Affecting spells : Glyph of Icy Veins (56364), Stolen Time (105791), Item - Mage T14 4P Bonus (123101), Improved Icy Veins (157721), 
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -943,7 +943,7 @@ Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Arcane Charge (36032), Item - Mage T8 4P Bonus (64869), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T10 4P Bonus (70748), Item - Mage T11 4P Bonus (90291), Item - Mage T15 2P Bonus (138316), Profound Magic (145252), Improved Arcane Blast (157616), Arcane Affinity (166871), 
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Arcane Charge (36032), Item - Mage T8 4P Bonus (64869), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T10 4P Bonus (70748), Item - Mage T11 4P Bonus (90291), Item - Mage T15 2P Bonus (138316), Profound Magic (145252), Arcane Affinity (166871), 
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -952,7 +952,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=20028)    : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.72100
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.86520
 #2 (id=20029)    : Trigger Spell: Arcane Charge (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 36032
 Description      : Blasts the target with energy, dealing $30451s1 Arcane damage and generating an Arcane Charge.
@@ -969,7 +969,7 @@ Spell Level      : 22
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 38 yards/sec
-Affecting spells : Arcane Power (12042), Shatter (12982), Glyph of Splitting Ice (56377), Item - Mage T11 2P Bonus (90290), Item - Mage T14 2P Bonus (123097), Improved Ice Lance (157725)
+Affecting spells : Arcane Power (12042), Shatter (12982), Glyph of Splitting Ice (56377), Item - Mage T11 2P Bonus (90290), Item - Mage T14 2P Bonus (123097)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -978,7 +978,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=20036)    : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.335, dl=0.25) | SP Coefficient: 0.60300 | Chain Multiplier: 0.5
+                   Base Value: 1 | Scaled Value: 0 (avg=0.335, dl=0.25) | SP Coefficient: 0.72360 | Chain Multiplier: 0.5
 #2 (id=85836)    : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 Description      : Deals $?a44544[${$m1*$<fingersMult>} to ${$M1*$<fingersMult>}][$s1] Frost damage to an enemy target$?s56377&!a44544[, and ${$m1*$56377m2/100} to ${$M1*$56377m2/100} Frost damage to a second nearby target][]$?s56377&a44544[, and ${$m1*$<fingersMult>*$56377m2/100} to ${$M1*$<fingersMult>*$56377m2/100} Frost damage to a second nearby target][].
@@ -1044,7 +1044,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Arcane Power (12042), Shatter (12982), Improved Dragon's Breath (157640), Glyph of Dragon's Breath (159485)
+Affecting spells : Arcane Power (12042), Shatter (12982), Glyph of Dragon's Breath (159485)
 Attributes       : ........ ........ x...x... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1053,7 +1053,7 @@ Attributes       : ........ ........ x...x... ........   ...x...x ........ .....
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=21276)    : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.967, dl=0.15) | SP Coefficient: 0.40950 | Radius: 12 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=1.967, dl=0.15) | SP Coefficient: 0.61425 | Radius: 12 yards
 #2 (id=21277)    : Apply Aura (6) | Confuse (5)
                    Base Value: 0 | Scaled Value: 0 | Radius: 12 yards
 Description      : Targets in a cone in front of the caster take $s1 Fire damage and are incapacitated for $d.  
@@ -1106,7 +1106,7 @@ Name             : Invisibility (id=32612) [Spell Family (3)]
 Class            : Mage
 Spell Level      : 56
 Duration         : 20 seconds
-Affecting spells : Glyph of Invisibility (56366), Readiness: Arcane (151024), Readiness: Fire (151026), Readiness: Frost (151027)
+Affecting spells : Glyph of Invisibility (56366)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1290,7 +1290,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Cooldown         : 3 seconds
-Affecting spells : Arcane Power (12042), Shatter (12982), Arcane Charge (36032), Improved Arcane Barrage (157532)
+Affecting spells : Arcane Power (12042), Shatter (12982), Arcane Charge (36032), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1343,7 +1343,7 @@ Description      : The target becomes a Living Bomb, taking $44457o1 Fire damage
 May be spread by Inferno Blast.
 Tooltip          : Causes $s1 Fire damage every $t1 sec. After $d, the target explodes, causing $44461s1 Fire damage to the target and all other enemies within $44461A1 yards.
 
-Name             : Living Bomb (id=44461) [Scaling Spell (4), Spell Family (3)] 
+Name             : Living Bomb (id=44461) [Spell Family (3)] 
 Class            : Mage
 Spell Level      : 60
 Range            : 50000 yards
@@ -1356,7 +1356,7 @@ Attributes       : ........ ........ x.x..... x..x....   ........ ........ .....
                  : ........ ........ x....... ........   ........ ........ .....x.. ........ 
 Effects          :
 #1 (id=36375)    : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.10304) | SP Coefficient: 0.37510 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.50000 | Radius: 0 - 10 yards
 Description      : $@spelldesc44457
 
 Name             : Fingers of Frost (id=44544) [Spell Family (3)] 
@@ -1365,7 +1365,6 @@ Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Affecting spells : Enhanced Fingers of Frost (157668)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1396,12 +1395,14 @@ Attributes       : ......x. ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=36481)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60
+                   Base Value: 10 | Scaled Value: 10
 #2 (id=220454)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 45 | Scaled Value: 45
+                   Base Value: 25 | Scaled Value: 25
+#3 (id=245924)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 25 | Scaled Value: 25
 Description      : Your Frostbolts have a $m1% chance to cause the Brain Freeze effect. Each multistrike increases that cast's chance by an additional $m2%.
 
-The Brain Freeze effect causes your next Frostfire Bolt to cost no mana, be instant cast, deal $s1% additional damage, and act as if your target were frozen.
+The Brain Freeze effect causes your next Frostfire Bolt to cost no mana, be instant cast, deal $s3% additional damage, and act as if your target were frozen.
 
 Name             : Deep Freeze (id=44572) [Spell Family (3)] 
 Class            : Frost Mage
@@ -1414,7 +1415,7 @@ Cooldown         : 30 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Shatter (12982), Fingers of Frost (44544), Glyph of Deep Freeze (115710), Readiness: Arcane (151024), Readiness: Fire (151026), Readiness: Frost (151027)
+Affecting spells : Shatter (12982), Fingers of Frost (44544), Glyph of Deep Freeze (115710), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1445,7 +1446,7 @@ Cast Time        : 2.75 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Duration         : 8 seconds
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Brain Freeze (57761), Glyph of Frostfire Bolt (61205), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T11 4P Bonus (90291), Critical Mass (117216), Improved Fireball and Frostfire Bolt (157637), Enhanced Pyrotechnics (157644), Improved Frostfire Bolt (157770)
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Brain Freeze (57761), Glyph of Frostfire Bolt (61205), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T11 4P Bonus (90291), Critical Mass (117216), Enhanced Pyrotechnics (157644)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1456,9 +1457,7 @@ Effects          :
 #1 (id=36562)    : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -40 | Scaled Value: -40
 #2 (id=36563)    : School Damage: frostfire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.5, dl=0.24) | SP Coefficient: 1.12500
-#3 (id=227743)   : Server Side Script (77)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 1 | Scaled Value: 0 (avg=1.5, dl=0.24) | SP Coefficient: 1.35000
 Description      : Launches a bolt of frostfire at the enemy, causing $?a57761[${$m2*1.25} to ${$M2*1.25}][$s2] Frostfire damage and slowing the target's movement by $s1% for $d.
 Tooltip          : Movement slowed by $s1%.
 Variables        : $arctic1=$?s31674[${1.01}][${1}]
@@ -1478,11 +1477,11 @@ Spell Level      : 15
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 300 seconds
-Affecting spells : Readiness: Arcane (151024), Readiness: Fire (151026), Readiness: Frost (151027), Glyph of Regenerative Ice (159486)
+Affecting spells : Glyph of Regenerative Ice (159486)
 Attributes       : ........ ........ x.x..... ........   ........ ..x....x ........ ........ 
-                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ...x....   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ...x.... ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -1589,7 +1588,7 @@ Spell Level      : 49
 GCD              : 1.5 seconds
 Duration         : 40 seconds
 Cooldown         : 120 seconds
-Affecting spells : Arcane Power (12042), Readiness: Arcane (151024), Readiness: Fire (151026), Readiness: Frost (151027)
+Affecting spells : Arcane Power (12042)
 Attributes       : ........ ........ x....... .......x   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...xx... 
@@ -2135,7 +2134,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=53215)    : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.65, dl=0.1) | SP Coefficient: 1.65000
+                   Base Value: 1 | Scaled Value: 0 (avg=1.65, dl=0.1) | SP Coefficient: 0.55000
 #2 (id=53216)    : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
 Description      : Inflicts Frost damage to an enemy and reduces its movement speed for $d.
@@ -2431,11 +2430,11 @@ Name             : Arcane Missiles! (id=79683) [Spell Family (3)]
 Class            : Mage
 Spell Level      : 24
 Duration         : 20 seconds
-Stacks           : 1 initial, 2 maximum
+Stacks           : 1 initial, 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
-Affecting spells : Arcane Missiles (5143), Arcane Power (12042), Icy Veins (12472), Enhanced Arcane Missiles (157599), Arcane Instability (166872)
+Affecting spells : Arcane Missiles (5143), Arcane Power (12042), Icy Veins (12472), Arcane Instability (166872)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -2542,7 +2541,7 @@ Name             : Combustion (id=83853) [Spell Family (3)]
 Class            : Mage
 Range            : 50000 yards
 Duration         : 10 seconds
-Affecting spells : Glyph of Combustion (56368), Improved Combustion (157630)
+Affecting spells : Glyph of Combustion (56368), 
 Attributes       : ........ ........ .......x ..x....x   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ....x.x. 
                  : .......x ........ ....x... ........   ........ .....x.. .......x ........ 
@@ -2623,7 +2622,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=88723)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 10000000 | Scaled Value: 1e+007 | Misc Value: 127
+                   Base Value: 100000000 | Scaled Value: 1e+008 | Misc Value: 127
 #2 (id=88811)    : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35
 Description      : Fatal damage will instead bring you to $86949s2% health and then burn you for $87023o1% of your max health over $87023d.  This effect cannot occur more than once every $87024d.
@@ -2693,7 +2692,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=90295)    : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.8, dl=0.2) | SP Coefficient: 1.80000
+                   Base Value: 1 | Scaled Value: 0 (avg=1.8, dl=0.2) | SP Coefficient: 0.60000
 Description      : Hurls a fiery ball that causes $s1 Fire damage.
 
 Name             : Arcane Blast (id=88084) [Scaling Spell (4), Spell Family (3)] 
@@ -2711,7 +2710,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=90297)    : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.9, dl=0.15) | SP Coefficient: 0.90000
+                   Base Value: 1 | Scaled Value: 0 (avg=0.9, dl=0.15) | SP Coefficient: 0.30000
 #2 (id=90298)    : Trigger Spell: Arcane Charge (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 36032
 Description      : Blasts the target with energy, dealing $30451s1 Arcane damage. Generates an Arcane Charge.
@@ -2870,7 +2869,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=115775)   : Apply Aura (6) | Proc Trigger Spell: Stolen Time (42)
                    Base Value: 50 | Scaled Value: 50 | Trigger Spell: 105785
-                   Affected Spells: Scorch (2948)
 Description      : Your Arcane Blast has a $h% chance and your Fireball, Pyroblast, Frostfire Bolt, and Frostbolt spells have a $s1% chance to grant Stolen Time, increasing your haste by $105785s1 for $105785d and stacking up to $105785u times.  When Arcane Power, Combustion, or Icy Veins expires, all stacks of Stolen Time are lost.
 
 Name             : Item - Mage T13 4P Bonus (Arcane Power, Combustion, and Icy Veins) (id=105790) [Spell Family (7), Passive, Hidden] 
@@ -2921,7 +2919,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=120042)   : Apply Aura (6) | Unknown effect sub type (377)
                    Base Value: 0 | Scaled Value: 0
-Description      : Your next spell can be cast while moving.  Castable while another spell is in progress and unaffected by global cooldown.  Max 3 charges.
+Description      : Your next spell can be cast while moving. Castable while another spell is in progress and unaffected by global cooldown.  Max 3 charges.
 Tooltip          : Able to move while casting spells.
 
 Name             : Blazing Speed (id=108843) [Spell Family (3)] 
@@ -2950,8 +2948,7 @@ Resource         : 2% Base Mana (3200 @Level 100)
 Spell Level      : 24
 Range            : 40 yards
 GCD              : 1.5 seconds
-Cooldown         : 8 seconds
-Affecting spells : Glyph of Inferno Blast (89926), Enhanced Inferno Blast (157622), Improved Inferno Blast (157629), Item - Mage T17 Fire 2P Bonus (165458)
+Affecting spells : Glyph of Inferno Blast (89926), Improved Inferno Blast (157629), Item - Mage T17 Fire 2P Bonus (165458)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2973,7 +2970,6 @@ Resource         : 1% Base Mana (1600 @Level 100)
 Spell Level      : 30
 Duration         : 20 seconds
 Cooldown         : 90 seconds
-Affecting spells : Readiness: Arcane (151024), Readiness: Fire (151026), Readiness: Frost (151027)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3008,7 +3004,6 @@ Class            : Mage
 Spell Level      : 1
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
-Affecting spells : Readiness: Arcane (151024), Readiness: Fire (151026), Readiness: Frost (151027)
 Attributes       : ........ ........ x...x... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -3028,7 +3023,7 @@ Name             : Greater Invisibility (id=110960) [Spell Family (3)]
 Class            : Mage
 Spell Level      : 56
 Duration         : 20 seconds
-Affecting spells : Glyph of Invisibility (56366), Readiness: Arcane (151024), Readiness: Fire (151026), Readiness: Frost (151027)
+Affecting spells : Glyph of Invisibility (56366)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3066,8 +3061,8 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=125755)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Trigger Spell: 111340
-Description      : Protects a friendly target for $d. The next $s1 melee attackers will trigger a Frost Nova, freezing all enemies within $111340A1 yds for $111340d.
+                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1.00000 | Trigger Spell: 111340
+Description      : Protects a friendly target for $d. The next $s1 melee attacks will trigger a Frost Nova, freezing all enemies within $111340A1 yds for $111340d.
 Tooltip          : Upon being hit by a melee attack, all enemies within $111340A1 yds will be frozen in place.
 
 Name             : Ice Ward (id=111340) [Spell Family (3)] 
@@ -3184,7 +3179,7 @@ Name             : Greater Invisibility (id=113862) [Spell Family (3)]
 Class            : Mage
 Spell Level      : 1
 Duration         : Aura (infinite)
-Affecting spells : Glyph of Combustion (56368), Readiness: Arcane (151024), Readiness: Fire (151026), Readiness: Frost (151027), Improved Combustion (157630)
+Affecting spells : Glyph of Combustion (56368), 
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3319,6 +3314,25 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7f
 Description      : $@spelldesc115700
 Tooltip          : Damage done increased by $s1%.
+
+Name             : Glyph of Counterspell (id=115703) [Spell Family (3), Passive, Hidden] 
+Class            : Mage
+Proc Chance      : 100%
+Proc Flags       : ........ ........ x....... ........ 
+                 : Hostile Spell
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=129706)   : Apply Aura (6) | Unknown effect sub type (332)
+                   Base Value: 119308 | Scaled Value: 119308
+                   Affected Spells: Counterspell (2139)
+#2 (id=136437)   : Dummy (3)
+                   Base Value: 4 | Scaled Value: 4
+Description      : Your Counterspell can now be cast while casting or channeling other spells, but its cooldown is increased by $s2 sec.
 
 Name             : Glyph of Cone of Cold (Arcane, Frost) (id=115705) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
@@ -3488,9 +3502,9 @@ Name             : Rune of Power (id=116014) [Spell Family (3)]
 Class            : Mage
 Duration         : Aura (infinite)
 Attributes       : ........ ........ ........ x..x...x   .....x.. ..x..... ........ ........ 
-                 : ........ ......x. ........ ....x...   ........ ........ x....... ........ 
+                 : ........ ......x. ........ ....xx..   ........ ........ x....... ........ 
                  : .......x ........ ........ ........   ...x.... ..x..... .xx..... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : .....x.. ....x... ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -3564,7 +3578,7 @@ Name             : Inferno Blast (id=118280) [Spell Family (3)]
 Class            : Mage
 Spell Level      : 54
 Range            : 100 yards
-Affecting spells : Glyph of Inferno Blast (89926), Enhanced Inferno Blast (157622), Improved Inferno Blast (157629), Item - Mage T17 Fire 2P Bonus (165458)
+Affecting spells : Glyph of Inferno Blast (89926), Improved Inferno Blast (157629), Item - Mage T17 Fire 2P Bonus (165458)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -3674,7 +3688,7 @@ Class            : Mage
 Spell Level      : 55
 Range            : 40 yards
 Cast Time        : 2 seconds
-Affecting spells : Shatter (12982), Item - Mage T8 4P Bonus (64869), Item - Mage T10 4P Bonus (70748), Item - Mage T15 2P Bonus (138316), Improved Frostbolt (157723)
+Affecting spells : Shatter (12982), Item - Mage T8 4P Bonus (64869), Item - Mage T10 4P Bonus (70748), Item - Mage T15 2P Bonus (138316)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ..x..... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3683,7 +3697,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=160295)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.5) | SP Coefficient: 2.25000
+                   Base Value: 1 | Scaled Value: 0 (avg=1.5) | SP Coefficient: 2.70000
 Description      : Heals your Water Elemental for $s1.
 
 Name             : Conjure Familiar (Glyph) (id=126578) [Spell Family (3)] 
@@ -3751,9 +3765,9 @@ Effects          :
                    Base Value: 1 | Scaled Value: 0 (avg=0.32, dl=0.25) | SP Coefficient: 0.32000
 Description      : Channels a jet of icy water at the target, dealing $o1 Frost damage to the target over $d.
 
-The Mage's Frostbolts and Frostfire Bolts that hit the target while it is being blasted with icy water will grant a charge of Fingers of Frost.
+The Mage's Frostbolts that hit the target while it is being blasted with icy water will grant a charge of Fingers of Frost.
 Tooltip          : Taking $s1 damage every $t1 sec.
-Frostbolts and Frostfire Bolts from the Water Elemental's owner that hit the target will grant a charge of Fingers of Frost.
+Frostbolts from the Water Elemental's owner that hit the target will grant a charge of Fingers of Frost.
 
 Name             : Ring of Frost (id=136511) [Spell Family (3)] 
 Class            : Mage
@@ -4153,57 +4167,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 0.5
 Description      : $@spelldesc76613
 
-Name             : Readiness: Arcane (id=151024) [Spell Family (3), Passive] 
-Class            : Arcane Mage
-Spell Level      : 90
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-Effects          :
-#1 (id=208233)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: -1.00000 | Misc Value: 11
-                   Affected Spells: Invisibility (66), Arcane Power (12042), Invisibility (32612), Deep Freeze (44572), Ice Block (45438), Mirror Image (55342), Alter Time (108978), Greater Invisibility (110959), Greater Invisibility (110960), Greater Invisibility (113862)
-#2 (id=213012)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
-Description      : Increases the cooldown recovery rate by $s2% on your Ice Block, Invisibility, Arcane Power, Deep Freeze, Mirror Image, and Alter Time abilities ($s1% cooldown reduction).
-
-Name             : Readiness: Fire (id=151026) [Spell Family (3), Passive] 
-Class            : Fire Mage
-Spell Level      : 90
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-Effects          :
-#1 (id=208235)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: -1.00000 | Misc Value: 11
-                   Affected Spells: Invisibility (66), Combustion (11129), Invisibility (32612), Deep Freeze (44572), Ice Block (45438), Mirror Image (55342), Alter Time (108978), Greater Invisibility (110959), Greater Invisibility (110960), Greater Invisibility (113862)
-#2 (id=213011)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
-Description      : Increases the cooldown recovery rate by $s2% on your Ice Block, Invisibility, Deep Freeze, Mirror Image, Combustion, and Alter Time abilities ($s1% cooldown reduction).
-
-Name             : Readiness: Frost (id=151027) [Spell Family (3), Passive] 
-Class            : Frost Mage
-Spell Level      : 90
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-Effects          :
-#1 (id=208237)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: -1.00000 | Misc Value: 11
-                   Affected Spells: Invisibility (66), Icy Veins (12472), Invisibility (32612), Deep Freeze (44572), Ice Block (45438), Mirror Image (55342), Alter Time (108978), Greater Invisibility (110959), Greater Invisibility (110960), Greater Invisibility (113862)
-#2 (id=213009)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
-Description      : Increases the cooldown recovery rate by $s2% on your Ice Block, Icy Veins, Invisibility, Deep Freeze, Mirror Image, and Alter Time abilities ($s1% cooldown reduction).
-
 Name             : Prismatic Crystal (id=152087) 
 Class            : Mage
 Range            : 40 yards
@@ -4420,20 +4383,6 @@ Effects          :
 Description      : $@spelldesc153561
 Tooltip          : Burning for $w1 Fire damage every $t1 sec.
 
-Name             : Improved Arcane Barrage (id=157532) [Spell Family (3), Passive] 
-Class            : Mage
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219674)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 12
-                   Affected Spells: Arcane Barrage (44425)
-Description      : Increases the damage dealt to secondary targets of Arcane Barrage from 50% to 100%.
-
 Name             : Enhanced Arcane Blast (id=157595) [Spell Family (3), Passive] 
 Class            : Mage
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4446,20 +4395,6 @@ Effects          :
 #1 (id=219756)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 12
 Description      : Each stack of Arcane Charge now reduces the cast time of Arcane Blast by $s1%.
-
-Name             : Enhanced Arcane Missiles (id=157599) [Spell Family (3), Passive] 
-Class            : Mage
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219765)   : Apply Aura (6) | Add Flat Modifier (107)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 37
-                   Affected Spells: Arcane Missiles (5143), Arcane Missiles! (79683)
-Description      : Increases the maximum stacks of Arcane Missiles by $s1.
 
 Name             : Improved Arcane Power (id=157604) [Spell Family (3), Passive] 
 Class            : Mage
@@ -4517,48 +4452,6 @@ Effects          :
                    Affected Spells: Evocation (12051)
 Description      : Reduces the cooldown of Evocation by ${$m1/-1000} sec.
 
-Name             : Improved Arcane Blast (id=157616) [Spell Family (3), Passive] 
-Class            : Mage
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219784)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Arcane Blast (30451)
-Description      : Increases the damage of Arcane Blast by $s1%.
-
-Name             : Improved Arcane Missiles (id=157617) [Spell Family (3), Passive] 
-Class            : Mage
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219785)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Arcane Missiles (7268)
-Description      : Increases the damage of Arcane Missiles by $s1%.
-
-Name             : Improved Arcane Explosion (id=157619) [Spell Family (3), Passive] 
-Class            : Mage
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219787)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Arcane Explosion (1449)
-Description      : Increases the damage of Arcane Explosion by $s1%.
-
 Name             : Improved Flamestrike (id=157621) [Spell Family (3), Passive] 
 Class            : Mage
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4573,34 +4466,6 @@ Effects          :
                    Affected Spells: Flamestrike (2120)
 Description      : Flamestrike no longer has a cooldown.
 
-Name             : Enhanced Inferno Blast (id=157622) [Spell Family (3), Passive] 
-Class            : Mage
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219790)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
-                   Base Value: -1000 | Scaled Value: -1000 | Misc Value: 11
-                   Affected Spells: Inferno Blast (108853), Inferno Blast (118280)
-Description      : Reduces the cooldown of Inferno Blast by ${$m/-1000} sec.
-
-Name             : Improved Pyroblast (id=157624) [Spell Family (3), Passive] 
-Class            : Mage
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219792)   : Apply Aura (6) | Add Flat Modifier: Spell Critical Chance (107)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 7
-                   Affected Spells: Pyroblast (11366)
-Description      : Increases the critical strike chance of Pyroblast by $s1%.
-
 Name             : Improved Inferno Blast (id=157629) [Spell Family (3), Passive] 
 Class            : Mage
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4614,20 +4479,6 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 12
                    Affected Spells: Inferno Blast (108853), Inferno Blast (118280)
 Description      : Inferno Blast now spreads the damage over time effects of Pyroblast, Ignite, and Combustion to $s1 additional targets.
-
-Name             : Improved Combustion (id=157630) [Spell Family (3), Passive] 
-Class            : Mage
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219805)   : Apply Aura (6) | Add Percent Modifier: Spell Duration (108)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 1
-                   Affected Spells: Combustion (83853), Greater Invisibility (113862)
-Description      : Increases the duration of Combustion by $s1%.
 
 Name             : Improved Scorch (id=157632) [Spell Family (3), Passive] 
 Class            : Mage
@@ -4656,34 +4507,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 Description      : $@spelldesc157632
 Tooltip          : Movement speed increased by $s1%.
-
-Name             : Improved Fireball and Frostfire Bolt (id=157637) [Spell Family (3), Passive] 
-Class            : Mage
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219812)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Fireball (133), Frostfire Bolt (44614)
-Description      : Increases the damage of Fireball and Frostfire Bolt by $s1%.
-
-Name             : Improved Dragon's Breath (id=157640) [Spell Family (3), Passive] 
-Class            : Mage
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219815)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 50 | Scaled Value: 50
-                   Affected Spells: Dragon's Breath (31661)
-Description      : Increases damage of Dragon's Breath by $s1%.
 
 Name             : Enhanced Pyrotechnics (id=157642) [Spell Family (3), Passive] 
 Class            : Mage
@@ -4750,33 +4573,6 @@ Effects          :
                    Affected Spells: Frostbolt (116)
 Description      : Frostbolt's cast time is reduced by 0.5 sec. This effect is disabled for $d after you benefit from it.
 
-Name             : Enhanced Fingers of Frost (id=157668) [Spell Family (3), Passive] 
-Class            : Mage
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219851)   : Apply Aura (6) | Add Flat Modifier (107)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 37
-                   Affected Spells: Fingers of Frost (44544)
-Description      : Fingers of Frost can stack $s1 additional time.
-
-Name             : Improved Frost Nova (id=157670) [Spell Family (3), Passive] 
-Class            : Mage
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219853)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 31
-Description      : After casting Frost Nova, $?s146659[you gain one full charge of Blink][the cooldown of Blink is reset].
-
 Name             : Improved Icy Veins (id=157721) [Spell Family (3), Passive] 
 Class            : Mage
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4798,34 +4594,6 @@ Effects          :
                    Affected Spells: Icy Veins (12472)
 Description      : Increases the amount of $?s56364[Multistrike][Haste] gained from Icy Veins by $?s56364[$s2][$s1]%.
 
-Name             : Improved Frostbolt (id=157723) [Spell Family (3), Passive] 
-Class            : Mage
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219926)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Frostbolt (116), Frostbolt (126201)
-Description      : Increases the damage of Frostbolt by $s1%.
-
-Name             : Improved Ice Lance (id=157725) [Spell Family (3), Passive] 
-Class            : Mage
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219928)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Ice Lance (30455)
-Description      : Increases the damage of Ice Lance by $s1%.
-
 Name             : Improved Blizzard (id=157727) [Spell Family (3), Passive] 
 Class            : Mage
 Proc Chance      : 101%
@@ -4839,8 +4607,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219930)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1
-Description      : Each time Blizzard deals damage, it reduces the cooldown of Frozen Orb by $s1 sec.
+                   Base Value: 50 | Scaled Value: 50
+Description      : Each time Blizzard deals damage, it reduces the cooldown of Frozen Orb by ${$m1/100}.1 sec.
 
 Name             : Improved Water Elemental (id=157738) [Spell Family (3), Passive] 
 Class            : Mage
@@ -4858,20 +4626,6 @@ Description      : Your summoned Water Elemental now also knows the Water Jet sp
 
 $@spellname135029
 $@spelldesc135029
-
-Name             : Improved Frostfire Bolt (id=157770) [Spell Family (3), Passive] 
-Class            : Mage
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219993)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Frostfire Bolt (44614)
-Description      : Increases the damage of Frostfire Bolt by $s1%.
 
 Name             : Evanesce (id=157913) [Spell Family (3)] 
 Class            : Mage
@@ -4896,6 +4650,7 @@ Effects          :
 Description      : Fade into the nether, avoiding all attacks against you for $d. Castable while another spell is in progress and unaffected by global cooldown.
 
 Replaces Ice Block.
+Tooltip          : Avoiding all attacks.
 
 Name             : Unstable Magic (id=157976) [Spell Family (3), Passive] 
 Class            : Mage
@@ -4932,6 +4687,36 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Radius: 0 - 8 yards
 Description      : $@spelldesc157976
 
+Name             : Unstable Magic (id=157978) [Spell Family (3)] 
+Class            : Mage
+Spell Level      : 1
+Range            : 100 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ..x..... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=220355)   : School Damage: frost (2)
+                   Base Value: 20 | Scaled Value: 20 | Radius: 0 - 8 yards
+Description      : $@spelldesc157976
+
+Name             : Unstable Magic (id=157979) [Spell Family (3)] 
+Class            : Mage
+Spell Level      : 1
+Range            : 100 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ..x..... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=220356)   : School Damage: arcane (2)
+                   Base Value: 50 | Scaled Value: 50 | Radius: 0 - 8 yards
+Description      : $@spelldesc157976
+
 Name             : Supernova (id=157980) [Spell Family (3)] 
 Class            : Mage
 Spell Level      : 1
@@ -4950,7 +4735,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.12500 | Radius: 0 - 8 yards
 #3 (id=220359)   : Unknown effect type (144)
                    Base Value: 100 | Scaled Value: 100 | Radius: 0 - 8 yards
-Description      : Causes a pulse of arcane energy around the target enemy or ally, dealing $s2 Arcane damage to all enemies within $A2 yards, and knocking them up. A primary enemy target will take $s1% increased damage.  Max 2 charges
+Description      : Causes a pulse of arcane energy around the target enemy or ally, dealing $s2 Arcane damage to all enemies within $A2 yards, and knocking them upward. A primary enemy target will take $s1% increased damage.  Max 2 charges
 
 Replaces Frost Nova.
 
@@ -5136,4 +4921,17 @@ Effects          :
 #1 (id=233392)   : Apply Aura (6) | Unknown effect sub type (405)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 2048
 Description      : You gain $s1% more of the Multistrike stat from all sources.
+
+Name             : Balance (id=166163) [Passive, Hidden] 
+Class            : Balance Warrior, Hunter, Rogue, Priest, Death Knight, Mage, Monk, Druid
+Race             : Night Elf
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=234650)   : Apply Aura (6) | Periodic Dummy: every 0.1 seconds (226)
+                   Base Value: 0 | Scaled Value: 0
 
