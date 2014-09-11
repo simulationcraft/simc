@@ -693,37 +693,29 @@ public:
 
   void trigger_brew( double base_stacks )
   {
-    if ( p() -> mastery.bottled_fury -> ok() )
-      base_stacks *= 1 + p() -> cache.mastery_value();
-    else if ( p() -> spec.brewing_mana_tea -> ok() && ab::rng().roll( p() -> cache.spell_crit() ) )
-      base_stacks *= 2;
-
-    int stacks;
-    if ( ab::rng().roll( std::fmod( base_stacks, 1 ) ) )
-      stacks = as<int>( ceil( base_stacks ) );
-    else
-      stacks = as<int>( floor( base_stacks ) );
-
     if ( p() -> spec.brewing_tigereye_brew -> ok() )
     {
-      if ( stacks > 0 )
-      {
-        int count = stacks;
-        do
-        {
-          p() -> proc.tigereye_brew -> occur();
-          if ( p() -> buff.tigereye_brew -> current_stack + count > p() -> buff.tigereye_brew -> max_stack() )
-            p() -> proc.tigereye_brew_wasted -> occur();
-          count--;
-        }
-        while ( count > 0 );
+      // Look through each ability stack and test against mastery value for extra stack
+      for (int x = 0; x < base_stacks; ++x){
+        stacks += (ab::rng().roll( p() -> cache.mastery_value() )) ? 1 : 0;
       }
-      p() -> buff.tigereye_brew -> trigger( stacks );
+      p() -> buff.tigereye_brew -> trigger( base_stacks );
     }
     else if ( p() -> spec.brewing_elusive_brew -> ok() )
-      p() -> buff.elusive_brew_stacks -> trigger( stacks );
+      p() -> buff.elusive_brew_stacks -> trigger( base_stacks );
+
     else if ( p() -> spec.brewing_mana_tea -> ok() )
-      p() -> buff.mana_tea -> trigger( stacks );
+      // Manatee
+      //                      _.---.._
+      //     _        _.-'         ''-.
+      //   .'  '-,_.-'                 '''.
+      //  (       _                     o  :
+      //   '._ .-'  '-._         \  \-  ---]
+      //                 '-.___.-')  )..-'
+      //                          (_/
+      if (ab::rng().roll( p() -> cache.spell_crit() ) )
+        base_stacks *= 2;
+      p() -> buff.mana_tea -> trigger( base_stacks );
   }
 
   virtual void consume_resource()
