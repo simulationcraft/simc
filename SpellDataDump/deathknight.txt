@@ -1,5 +1,5 @@
 
-SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18764)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18816)
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -90,7 +90,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.12500
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.30000
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -747,7 +747,7 @@ Effects          :
 #4 (id=139814)   : Apply Aura (6) | Threat (10)
                    Base Value: 900 | Scaled Value: 900 | Misc Value: 127
 #5 (id=139815)   : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 2 | Misc Value 2: 0x4
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 2 | Misc Value 2: 0x4
 #6 (id=139821)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7f | Misc Value 2: 0x4
 Description      : You assume the presence of Blood, increasing Stamina by $s5%, $?s50371[damage dealt by $s1%, ][]and base armor by $s3%, and reducing damage taken by $s6%. Threat generation is significantly increased.
@@ -932,7 +932,7 @@ Effects          :
 #1 (id=41120)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=41121)    : Weapon Damage% (31)
-                   Base Value: 210 | Scaled Value: 2.1 (avg=0)
+                   Base Value: 185 | Scaled Value: 1.85 (avg=0)
 Description      : A brutal attack that deals $sw1 Physical damage and has a $59057h% chance to cause your next Howling Blast or Icy Touch to consume no runes.
 
 Name             : Dancing Rune Weapon (id=49028) [Spell Family (15)] 
@@ -1200,7 +1200,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=42153)    : Apply Aura (6) | Modify Total Stat% (137)
+#1 (id=42153)    : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Misc Value 2: 0x4
 #2 (id=166230)   : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 11
@@ -1217,7 +1217,7 @@ Effects          :
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
 #8 (id=248806)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
-Description      : Increases your Stamina, multistrike chance, and haste by $s1%.
+Description      : Increases your haste and multistrike chance by $s1%.
 
 While in combat, you generate $s8 Runic Power per second.
 
@@ -1248,16 +1248,18 @@ Additionally, your auto attack multistrikes have a chance to generate ${$163948m
 
 Name             : Chilblains (id=50041) [Spell Family (15), Passive] 
 Class            : Death Knight
+Proc Chance      : 100%
+Proc Flags       : ....x... ....x... x....... ........ 
+                 : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=42167)    : Apply Aura (6) | Unknown effect sub type (109)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Trigger Spell: 50435
-                   Affected Spells: Frost Fever (55095)
+#1 (id=42167)    : Apply Aura (6) | Proc Trigger Spell: Chilblains (42)
+                   Base Value: 100 | Scaled Value: 100 | Trigger Spell: 50435
 Description      : Victims of your Frost Fever are Chilled, reducing movement speed by $50435s1% for $50435d, and victims of your Chains of Ice are immobilized for $96294d.
 
 Name             : Improved Blood Presence (id=50371) [Spell Family (15), Passive, Hidden] 
@@ -1474,7 +1476,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=43434)    : Apply Aura (6) | Proc Trigger Spell: Killing Machine (42)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 51124
-Description      : Your autoattacks have a chance to increase the critical strike chance of your next Obliterate or Frost Strike by $51124s1%.
+Description      : Your autoattacks have a chance to make your next Obliterate or Frost Strike automatically critically strike.
 
 Name             : Ebon Plaguebringer (id=51160) [Spell Family (15), Passive, Hidden] 
 Class            : Unholy Death Knight
@@ -1821,7 +1823,7 @@ Class            : Death Knight
 Spell Level      : 55
 Range            : 50000 yards
 Duration         : 30 seconds
-Affecting spells : Chilblains (50041), Ebon Plaguebringer (51160), Razorice (51714), Glyph of Enduring Infection (58671), Crimson Scourge (81136), Necrotic Plague (152281), Biting Cold (166057)
+Affecting spells : Ebon Plaguebringer (51160), Razorice (51714), Glyph of Enduring Infection (58671), Crimson Scourge (81136), Necrotic Plague (152281), Biting Cold (166057)
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ .......x ....x..x ........   ........ ........ ........ ........ 
@@ -2140,10 +2142,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=52072)    : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 22
-                   Affected Spells: Blood Plague (55078), Frost Fever (55095)
+                   Affected Spells: Blood Plague (55078), Frost Fever (55095), Necrotic Plague (155159)
 #2 (id=130502)   : Apply Aura (6) | Add Flat Modifier: Spell Dispel Chance (107)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 28
-                   Affected Spells: Blood Plague (55078), Frost Fever (55095)
+                   Affected Spells: Blood Plague (55078), Frost Fever (55095), Necrotic Plague (155159)
 Description      : Your diseases are undispellable, but their damage dealt is reduced by $58671s1%.
 
 Name             : Glyph of Icebound Fortitude (id=58673) [Spell Family (15), Passive, Hidden] 
@@ -2335,7 +2337,7 @@ Class            : Death Knight
 Spell Level      : 25
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3061,7 +3063,7 @@ Effects          :
 #1 (id=60372)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=60373)    : Weapon Damage% (31)
-                   Base Value: 210 | Scaled Value: 2.1 (avg=0)
+                   Base Value: 185 | Scaled Value: 1.85 (avg=0)
 Description      : A brutal attack with your off-hand weapon that deals $sw2 Physical damage. 
 
 Name             : Plague Strike Off-Hand (id=66216) [Scaling Spell (1), Spell Family (15)] 
@@ -3977,7 +3979,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=115576)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 710 | Scaled Value: 710 | Misc Value: 33554432
+                   Base Value: 52 | Scaled Value: 52 | Misc Value: 33554432
 Description      : Increases your mastery by $s1 for $d.
 Tooltip          : Increases mastery by $s1.
 
@@ -4329,7 +4331,7 @@ Description      : $@spelldesc108201
 
 Name             : Conversion (id=119975) [Spell Family (15)] 
 Class            : Death Knight
-Resource         : 15 Runic Power per second w/ Blood Rites (id=50034)
+Resource         : 30 Runic Power per second w/ Blood Rites (id=50034)
 Resource         : 10 Runic Power per second w/ Rime (id=59057)
 Resource         : 20 Runic Power per second w/ Reaping (id=56835)
 GCD              : 1 seconds
@@ -5019,7 +5021,7 @@ Cooldown         : 30 seconds
 Affecting spells : Item - Death Knight T8 Tank 4P Bonus (64748), Item - Warrior T8 Protection 4P Bonus (64934), Item - Death Knight T10 Melee 4P Bonus (70656), Crimson Scourge (81141)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5080,7 +5082,7 @@ Stacks           : 15 maximum
 Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
-Affecting spells : Ebon Plaguebringer (51160), Crimson Scourge (81136)
+Affecting spells : Ebon Plaguebringer (51160), Glyph of Enduring Infection (58671), Crimson Scourge (81136)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5126,7 +5128,7 @@ Attributes       : ........ ........ .....x.. ........   ...x...x ........ .....
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=215544)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Radius: 12 yards
+                   Base Value: 20 | Scaled Value: 20 | Radius: 12 yards
 #2 (id=215545)   : School Damage: shadowfrost (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.00000 | Radius: 12 yards
 Description      : $@spelldesc152279
@@ -5398,7 +5400,7 @@ Ursa Major increases your maximum health by $159233s1% for $159233d. When this e
 
 Name             : Ursa Major (id=159233) 
 Class            : Death Knight, Druid
-Duration         : 30 seconds
+Duration         : 25 seconds
 Attributes       : ........ ........ ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ...x.... ........   ...x.... ........ ........ ........ 
@@ -5749,7 +5751,7 @@ Attributes       : ........ ........ ........ x.......   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=231166)   : Apply Aura (6) | Unknown effect sub type (133)
-                   Base Value: 5 | Scaled Value: 5
+                   Base Value: 3 | Scaled Value: 3
 Description      : $@spelldesc159232
 Tooltip          : Maximum health increased by $w1%.
 

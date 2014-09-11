@@ -1,5 +1,5 @@
 
-SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18764)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18816)
 Name             : Blizzard (id=10) [Spell Family (3)] 
 Class            : Frost Mage
 Resource         : 5% Base Mana (8000 @Level 100)
@@ -71,8 +71,6 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50
 #2 (id=76)       : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.35000
-#3 (id=160297)   : Server Side Script (77)
-                   Base Value: 0 | Scaled Value: 0
 Description      : Launches a bolt of frost at the enemy, causing $s2 Frost damage and slowing movement speed by $s1% for $d.
 Tooltip          : $?$w1=0[][Movement slowed by $w1%.]
 
@@ -158,7 +156,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=91)       : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.5, dl=0.24) | SP Coefficient: 1.65000
+                   Base Value: 1 | Scaled Value: 0 (avg=1.5, dl=0.24) | SP Coefficient: 1.48500
 Description      : Hurls a fiery ball that causes $s1 Fire damage.
 
 Name             : Remove Curse (id=475) [Spell Family (3)] 
@@ -446,7 +444,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.12500
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.30000
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -635,9 +633,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=4785)     : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.98, dl=0.238) | SP Coefficient: 2.30000
+                   Base Value: 1 | Scaled Value: 0 (avg=1.98, dl=0.238) | SP Coefficient: 2.07000
 #2 (id=4786)     : Apply Aura (6) | Periodic Damage: fire every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.36) | SP Coefficient: 0.43000
+                   Base Value: 1 | Scaled Value: 0 (avg=0.36) | SP Coefficient: 0.38700
 #3 (id=169381)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage and an additional $o2 Fire damage over $d.
@@ -810,7 +808,7 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150
 Description      : Your target burns for an additional $m1% over $12654d of the total direct damage caused by your Fireball, Frostfire Bolt, Inferno Blast, Scorch, Pyroblast, Flamestrike$?s153561[, Meteor][], and their multistrikes. If this effect is reapplied, any remaining damage will be added to the new Ignite.
 
-Name             : Shatter (Frost, Passive) (id=12982) [Spell Family (3), Passive] 
+Name             : Shatter (id=12982) [Spell Family (3), Passive] 
 Class            : Frost Mage
 Spell Level      : 16
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -822,7 +820,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=5792)     : Apply Aura (6) | Unknown effect sub type (112)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 911
-                   Affected Spells: Blizzard (10), Frostbolt (116), Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Fire Blast (2136), Scorch (2948), Arcane Missiles (7268), Frost Armor (7302), Combustion (11129), Pyroblast (11366), Arcane Blast (30451), Ice Lance (30455), Dragon's Breath (31661), Blizzard (42208), Arcane Barrage (44425), Living Bomb (44457), Living Bomb (44461), Deep Freeze (44572), Frostfire Bolt (44614), Frozen Orb (84721), Cleansing Flames (107835), Cleansing Flames (109847), Cleansing Flames (109849), Ice Ward (111340), Frost Bomb (113092), Nether Tempest (114923), Frost Nova (115757), Frostbolt (126201), Comet Storm (153595), Comet Storm (153596), Ice Nova (157997)
+                   Affected Spells: Blizzard (10), Frostbolt (116), Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Fire Blast (2136), Scorch (2948), Arcane Missiles (7268), Frost Armor (7302), Combustion (11129), Pyroblast (11366), Arcane Blast (30451), Ice Lance (30455), Dragon's Breath (31661), Blizzard (42208), Arcane Barrage (44425), Living Bomb (44457), Living Bomb (44461), Deep Freeze (44572), Frostfire Bolt (44614), Frozen Orb (84721), Cleansing Flames (107835), Cleansing Flames (109847), Cleansing Flames (109849), Ice Ward (111340), Frost Bomb (113092), Nether Tempest (114923), Frost Nova (115757), Comet Storm (153595), Comet Storm (153596), Ice Nova (157997)
 #2 (id=99824)    : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50
 Description      : Multiplies the critical strike chance of all your spells against frozen targets by 1.5 and adds another $s2% chance.
@@ -1056,10 +1054,10 @@ Effects          :
                    Base Value: 1 | Scaled Value: 0 (avg=1.967, dl=0.15) | SP Coefficient: 0.61425 | Radius: 12 yards
 #2 (id=21277)    : Apply Aura (6) | Confuse (5)
                    Base Value: 0 | Scaled Value: 0 | Radius: 12 yards
-Description      : Targets in a cone in front of the caster take $s1 Fire damage and are incapacitated for $d.  
+Description      : Targets in a cone in front of the caster take $s1 Fire damage and are disoriented for $d.  
 
 Any direct damage will cancel the effect.
-Tooltip          : Incapacitated.
+Tooltip          : Disoriented.
 
 Name             : Summon Water Elemental (id=31687) [Spell Family (3)] 
 Class            : Frost Mage
@@ -1079,9 +1077,7 @@ Attributes       : ........ ........ x....... ........   x....... ........ .x...
 Effects          :
 #1 (id=21314)    : Summon Pet (56)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 510 | Radius: 2 yards
-Description      : Summons a Water Elemental to fight for the caster.
-
-Casting Frostbolt on your Water Elemental will heal it for $126201s1.
+Description      : Summons a Water Elemental to fight for the caster.
 
 Name             : Waterbolt (id=31707) [Scaling Spell (4), Spell Family (3)] 
 Class            : Mage
@@ -1401,7 +1397,7 @@ Effects          :
 #2 (id=220454)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25
 #3 (id=245924)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15
+                   Base Value: 25 | Scaled Value: 25
 Description      : Your Frostbolts have a $m1% chance to cause the Brain Freeze effect. Each multistrike increases that cast's chance by an additional $m2%.
 
 The Brain Freeze effect causes your next Frostfire Bolt to cost no mana, be instant cast, deal $s3% additional damage, and act as if your target were frozen.
@@ -1459,7 +1455,7 @@ Effects          :
 #1 (id=36562)    : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -40 | Scaled Value: -40
 #2 (id=36563)    : School Damage: frostfire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.5, dl=0.24) | SP Coefficient: 1.50000
+                   Base Value: 1 | Scaled Value: 0 (avg=1.5, dl=0.24) | SP Coefficient: 1.48500
 Description      : Launches a bolt of frostfire at the enemy, causing $?a57761[${$m2*1.25} to ${$M2*1.25}][$s2] Frostfire damage and slowing the target's movement by $s1% for $d.
 Tooltip          : Movement slowed by $s1%.
 Variables        : $arctic1=$?s31674[${1.01}][${1}]
@@ -1569,19 +1565,6 @@ Effects          :
                    Affected Spells: Pyroblast (11366)
 Description      : Getting two direct-damage critical strikes in a row will make your next Pyroblast spell instant cast, cost no mana, and deal $11366s3% additional damage.
 Tooltip          : Your next Pyroblast spell is instant cast, costs no mana, and deals $11366s3% additional damage.
-
-Name             : Glyph of the Penguin (id=52648) [Spell Family (3), Passive, Hidden] 
-Class            : Mage
-Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=45199)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 14
-Description      : Your Polymorph spell polymorphs the target into a penguin instead.
 
 Name             : Mirror Image (id=55342) [Spell Family (3)] 
 Class            : Mage
@@ -1968,19 +1951,6 @@ Effects          :
 Description      : $@spelldesc44549
 Tooltip          : Your next Frostfire Bolt costs no mana, is instant cast, acts as if your target were frozen, and deals $44549s3% additional damage.
 
-Name             : Glyph of the Porcupine (id=57924) [Spell Family (3), Passive, Hidden] 
-Class            : Mage
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=51245)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14
-Description      : Your Polymorph spell polymorphs the target into a porcupine instead.
-
 Name             : Glyph of Arcane Language (id=57925) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -1993,58 +1963,6 @@ Effects          :
 #1 (id=51246)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14
 Description      : Your Arcane Brilliance spell allows you to comprehend your allies' racial languages.
-
-Name             : Glyph of the Monkey (id=57927) [Spell Family (3), Passive, Hidden] 
-Class            : Mage
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=51248)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 12
-Description      : Your Polymorph spell polymorphs the target into a monkey instead.
-
-Name             : Glyph of the Bear Cub (id=58136) [Spell Family (3), Passive, Hidden] 
-Class            : Mage
-Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=51450)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 14
-Description      : Your Polymorph spell polymorphs the target into a polar bear cub instead.
-
-Name             : Porcupine (id=58235) 
-Class            : Mage
-Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=51570)    : Unknown effect type (74)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 445
-Description      : Your Polymorph: Sheep spell polymorphs the target into a porcupine instead.
-
-Name             : Monkey (id=58237) 
-Class            : Mage
-Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=51572)    : Unknown effect type (74)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 447
-Description      : Your Polymorph spell turns the target into a monkey instead of a sheep.
 
 Name             : Conjure Familiar (id=58238) 
 Class            : Mage
@@ -2060,32 +1978,6 @@ Effects          :
 Description      : Teaches you the spell Conjure Familiar.
 
 $@spelldesc126578
-
-Name             : Penguin (id=58239) 
-Class            : Mage
-Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=51574)    : Unknown effect type (74)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 450
-Description      : Your Polymorph: Sheep spell polymorphs the target into a penguin instead.
-
-Name             : Bear Cub (id=58240) 
-Class            : Mage
-Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=51575)    : Unknown effect type (74)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 449
-Description      : Your Polymorph: Sheep spell polymorphs the target into a polar bear cub instead.
 
 Name             : Arcane Language (id=58241) 
 Class            : Mage
@@ -3687,23 +3579,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Choose a level 75 talent.
 
-Name             : Frostbolt (id=126201) [Scaling Spell (4), Spell Family (3)] 
-Class            : Mage
-Spell Level      : 55
-Range            : 40 yards
-Cast Time        : 2 seconds
-Affecting spells : Shatter (12982), Item - Mage T8 4P Bonus (64869), Item - Mage T10 4P Bonus (70748), Item - Mage T15 2P Bonus (138316), Frostbite (171345)
-Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ......x.   ........ .x...... ..x..... ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=160295)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.5) | SP Coefficient: 2.70000
-Description      : Heals your Water Elemental for $s1.
-
 Name             : Conjure Familiar (Glyph) (id=126578) [Spell Family (3)] 
 Class            : Mage
 Cast Time        : 3 seconds
@@ -3881,7 +3756,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=181748)   : Apply Aura (6) | Add Percent Modifier: Spell Critical Chance (108)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 7
-                   Affected Spells: Frostbolt (116), Fireball (133), Arcane Blast (30451), Frostbolt (126201)
+                   Affected Spells: Frostbolt (116), Fireball (133), Arcane Blast (30451)
 Description      : Increases critical strike chance of Fireball, Frostbolt, and Arcane Blast by $s1%.
 
 Name             : Item - Mage T15 4P Bonus (id=138376) [Spell Family (3), Passive, Hidden] 
@@ -4248,7 +4123,7 @@ Velocity         : 1 yards/sec
 Affecting spells : Shatter (12982)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .xx..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4339,7 +4214,7 @@ Range            : 100 yards
 Cooldown         : 60 seconds
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... .....x..   ........ ........ ........ ........ 
-                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : .......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
                  : ........ ....x... ........ .....x..   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4666,11 +4541,11 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15
 #2 (id=220424)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20
-#3 (id=226055)   : Dummy (3)
+#3 (id=226055)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30
-#4 (id=226056)   : Dummy (3)
+#4 (id=226056)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40
-Description      : Arcane Blast, Fireball, Frostfire Bolt, and Frostbolt have a $?s112965[$s2%]?s12042[$s1%][$s3%] chance to explode on impact, dealing an additional $s2% damage to the target, and to all other enemies within $157977A1 yards.
+Description      : Arcane Blast, Fireball, Frostfire Bolt, and Frostbolt have a $?s112965[$s2%]?s12042[$s1%][$s3%] chance to explode on impact, dealing an additional $s4% damage to the target, and to all other enemies within $157977A1 yards.
 
 Name             : Unstable Magic (id=157977) [Spell Family (3)] 
 Class            : Mage

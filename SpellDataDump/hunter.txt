@@ -1,5 +1,5 @@
 
-SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18764)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18816)
 Name             : Mend Pet (id=136) [Scaling Spell (3), Spell Family (9)] 
 Class            : Hunter
 Spell Level      : 16
@@ -11,7 +11,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
-                 : ........ ....x... ........ x.......   ........ ........ ........ ........ 
+                 : ........ ....x... ........ x.......   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=94)       : Apply Aura (6) | Periodic Heal%: every 2 seconds (20)
@@ -335,7 +335,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=1072)     : Apply Aura (6) | Unknown effect sub type (308)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7
-                   Affected Spells: Freezing Trap (1499), Multi-Shot (2643), Arcane Shot (3044), Freezing Trap (3355), Black Arrow (3674), Concussive Shot (5116), Ice Trap (13809), Explosive Trap (13812), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Tranquilizing Shot (19801), Distracting Shot (20736), Chimaera Shot (53209), Explosive Shot (53301), Kill Shot (53351), Steady Shot (56641), Bullheaded (63896), Cobra Shot (77767), Focus Fire (82692), Powershot (109259), Glaive Toss (117050), Serpent Sting (118253), Barrage (120360), Barrage (120361), Glaive Toss (120761), Glaive Toss (121414), Chimaera Shot (171454), Chimaera Shot (171457)
+                   Affected Spells: Freezing Trap (1499), Multi-Shot (2643), Arcane Shot (3044), Freezing Trap (3355), Black Arrow (3674), Concussive Shot (5116), Ice Trap (13809), Explosive Trap (13812), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Tranquilizing Shot (19801), Distracting Shot (20736), Chimaera Shot (53209), Explosive Shot (53301), Kill Shot (53351), Steady Shot (56641), Bullheaded (63896), Cobra Shot (77767), Focus Fire (82692), Powershot (109259), Glaive Toss (117050), Serpent Sting (118253), Barrage (120360), Barrage (120361), Glaive Toss (120761), Glaive Toss (121414), Chimaera Shot (171454), Chimaera Shot (171457), Powershot (177571)
 Description      : Place an ice trap that freezes the first enemy that approaches, incapacitating them for $3355d.  Any damage caused will break the ice. Only one target can be Freezing Trapped at a time. Trap will exist for $d.
 Tooltip          : Incapacitated.
 
@@ -346,9 +346,9 @@ Spell Level      : 50
 Range            : 40 yards
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
-Duration         : 18 seconds
+Duration         : 20 seconds
 Cooldown         : 30 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Trap Cooldown Reduction (61255), Trap Mastery (63458), Item - Hunter T11 4P Bonus (89925), Camouflage (119450), Lone Wolf (155228), Item - Hunter T17 Survival 2P Bonus (165544)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Trap Cooldown Reduction (61255), Trap Mastery (63458), Item - Hunter T11 4P Bonus (89925), Camouflage (119450), Lone Wolf (155228), 
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ...x.... ........ ...x....   ........ ........ ........ ........ 
@@ -356,12 +356,16 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : ........ .x..x... ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=1289)     : Apply Aura (6) | Periodic Damage: shadow every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.126) | AP Coefficient: 0.85000
+#1 (id=1289)     : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.126) | AP Coefficient: 0.50000
+#2 (id=254557)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20
 Description      : Fires a Black Arrow at the target, dealing $3674o1 damage over $3674d.
 
-When your Black Arrow multistrikes, you gain 1 stack of Lock and Load. Lock and Load causes your next Explosive Shot to trigger no cooldown. Max 5 stacks.
-Tooltip          : $w1 Shadow damage every $t1 seconds.
+Your Black Arrow periodic damage has a $s2% chance to trigger Lock and Load, causing your next two Explosive Shots to cost no Focus and trigger no cooldown.
+
+When Black Arrow is dispelled, its cooldown is reset.
+Tooltip          : Taking $w1 Shadow damage every $t1 seconds.
 
 Name             : Concussive Shot (id=5116) [Spell Family (9)] 
 Class            : Hunter
@@ -426,7 +430,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.12500
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.30000
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -790,18 +794,19 @@ Name             : Wyvern Sting (id=19386) [Spell Family (9)]
 Class            : Hunter
 Spell Level      : 30
 Range            : 40 yards
+Cast Time        : 1.5 seconds
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Duration         : 30 seconds
 Cooldown         : 45 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Proc Flags       : ........ ........ ....x... ........ 
-                 : Any Damage Taken
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Sniper Training (168811)
-Attributes       : .x...... ........ x...x... ........   ........ ..x..... .x...... ...x.... 
+Attributes       : .x..x... ........ x...x... ........   ........ ..x..... .x...... ...x.... 
                  : ........ ........ .x...... ........   x....... ........ ........ ........ 
-                 : ........ ........ .......x ........   .....x.. ........ ........ ........ 
+                 : ........ ........ .......x ...x....   .....x.. ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -845,7 +850,7 @@ Effects          :
 #1 (id=10651)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=101526)   : Weapon Damage% (31)
-                   Base Value: 350 | Scaled Value: 3.5 (avg=0)
+                   Base Value: 420 | Scaled Value: 4.2 (avg=0)
 Description      : A powerful aimed shot that deals $sw2 Physical damage.  Castable while moving.
 
 Name             : Trueshot Aura (id=19506) [Spell Family (9), Passive] 
@@ -1439,7 +1444,7 @@ Effects          :
                    Base Value: 83381 | Scaled Value: 83381
 Description      : Give the command to kill, causing your pet to instantly inflict $<damage> damage to its target.  25 yard range.
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
-$damage=${1.5*($83381m1+($RAP*1.60))*$<bmMastery>}
+$damage=${1.5*($83381m1+($RAP*1.36))*$<bmMastery>}
 
 
 Name             : Misdirection (id=34477) [Spell Family (9)] 
@@ -1784,7 +1789,7 @@ Effects          :
                    Base Value: -15 | Scaled Value: -15
 #3 (id=98141)    : Apply Aura (6) | Unknown effect sub type (353)
                    Base Value: 1 | Scaled Value: 1
-                   Affected Spells: Mend Pet (136), Disengage (781), Revive Pet (982), Track Beasts (1494), Freezing Trap (1499), Flare (1543), Multi-Shot (2643), Growl (2649), Arcane Shot (3044), Rapid Fire (3045), Freezing Trap (3355), Black Arrow (3674), Concussive Shot (5116), Aspect of the Cheetah (5118), Feign Death (5384), Aspect of the Pack (13159), Ice Trap (13809), Ice Trap (13810), Explosive Trap (13812), Explosive Trap (13813), Claw (16827), Bite (17253), Deterrence (19263), Wyvern Sting (19386), Aimed Shot (19434), Trueshot Aura (19506), Bestial Wrath (19574), Intimidation (19577), Pet Health (19581), Tranquilizing Shot (19801), Track Demons (19878), Track Dragonkin (19879), Track Elementals (19880), Track Giants (19882), Track Humanoids (19883), Track Undead (19884), Distracting Shot (20736), Frenzy (20784), Bloody Screech (24423), Prowl (24450), Furious Howl (24604), Breath of the Winds (24844), Shell Shield (26064), Kill Command (34026), Misdirection (34477), Spry Attacks (34889), Indomitable (35290), Warp Time (35346), Smack (49966), Invigorating Roar (50256), Ankle Crack (50433), Chitinous Armor (50518), Sonic Focus (50519), Camouflage (51753), Chimaera Shot (53209), Master's Call (53271), Explosive Shot (53301), Kill Shot (53351), Last Stand (53478), Roar of Sacrifice (53480), Bullheaded (53490), Master's Call (54216), Frost Breath (54644), Monstrous Bite (54680), Froststorm Breath (54689), Lock and Load (56343), Steady Shot (56641), Wild Strength (57386), Double Bite (58604), Gift of the Naaru (59543), Dash (61684), Charge (61685), Bullheaded (63896), Thunderstomp (63900), Cobra Shot (77767), Trap Launcher (77769), Focus Fire (82692), Kill Command (83381), Kindred Spirits (88680), Terrifying Roar (90309), Spirit Walk (90328), Play (90347), Ancient Hysteria (90355), Spirit Mend (90361), Qiraji Fortitude (90364), Froststorm Breath (92380), Burrow Attack (93433), Roar of Courage (93435), Rest (94019), Trick (94022), Froststorm Breath (95725), Binding Shot (109248), Powershot (109259), Serpent Sting (118253), Beast Cleave (118455), Barrage (120360), Dire Beast (120679), Spirit Beast Blessing (128997), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Energizing Spores (135678), Tenacity (159735), Harden Shell (159926), Bark of the Wild (159988), Agile Reflexes (160011), Blessing of Kongs (160017), Strength of the Pack (160052), Thick Hide (160057), Thick Hide (160058), Deadly Sting (160060), Tendon Rip (160065), Web Spray (160067), Plainswalking (160073), Strength of the Earth (160077), Chimaera Shot (171454), Chimaera Shot (171457), Aspect of the Fox (172106)
+                   Affected Spells: Mend Pet (136), Disengage (781), Revive Pet (982), Track Beasts (1494), Freezing Trap (1499), Flare (1543), Multi-Shot (2643), Growl (2649), Arcane Shot (3044), Rapid Fire (3045), Freezing Trap (3355), Black Arrow (3674), Concussive Shot (5116), Aspect of the Cheetah (5118), Feign Death (5384), Aspect of the Pack (13159), Ice Trap (13809), Ice Trap (13810), Explosive Trap (13812), Explosive Trap (13813), Claw (16827), Bite (17253), Deterrence (19263), Wyvern Sting (19386), Aimed Shot (19434), Trueshot Aura (19506), Bestial Wrath (19574), Intimidation (19577), Pet Health (19581), Tranquilizing Shot (19801), Track Demons (19878), Track Dragonkin (19879), Track Elementals (19880), Track Giants (19882), Track Humanoids (19883), Track Undead (19884), Distracting Shot (20736), Frenzy (20784), Bloody Screech (24423), Prowl (24450), Furious Howl (24604), Breath of the Winds (24844), Shell Shield (26064), Kill Command (34026), Misdirection (34477), Spry Attacks (34889), Indomitable (35290), Warp Time (35346), Smack (49966), Invigorating Roar (50256), Ankle Crack (50433), Chitinous Armor (50518), Sonic Focus (50519), Camouflage (51753), Chimaera Shot (53209), Master's Call (53271), Explosive Shot (53301), Kill Shot (53351), Last Stand (53478), Roar of Sacrifice (53480), Bullheaded (53490), Master's Call (54216), Frost Breath (54644), Monstrous Bite (54680), Froststorm Breath (54689), Steady Shot (56641), Wild Strength (57386), Double Bite (58604), Gift of the Naaru (59543), Dash (61684), Charge (61685), Bullheaded (63896), Thunderstomp (63900), Cobra Shot (77767), Trap Launcher (77769), Focus Fire (82692), Kill Command (83381), Kindred Spirits (88680), Terrifying Roar (90309), Spirit Walk (90328), Play (90347), Ancient Hysteria (90355), Spirit Mend (90361), Qiraji Fortitude (90364), Froststorm Breath (92380), Burrow Attack (93433), Roar of Courage (93435), Rest (94019), Trick (94022), Froststorm Breath (95725), Binding Shot (109248), Powershot (109259), Serpent Sting (118253), Beast Cleave (118455), Barrage (120360), Dire Beast (120679), Spirit Beast Blessing (128997), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Energizing Spores (135678), Tenacity (159735), Harden Shell (159926), Bark of the Wild (159988), Agile Reflexes (160011), Blessing of Kongs (160017), Strength of the Pack (160052), Thick Hide (160057), Thick Hide (160058), Deadly Sting (160060), Tendon Rip (160065), Web Spray (160067), Plainswalking (160073), Strength of the Earth (160077), Chimaera Shot (171454), Chimaera Shot (171457), Aspect of the Fox (172106), Powershot (177571)
 #4 (id=202220)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e
 Description      : You blend into your surroundings, causing you and your pet to be untargetable by ranged attacks $?s148475[ and reduces your spell damage taken by $148475s1%][]. Also reduces the range at which enemy creatures can detect you, and provides stealth while stationary.
@@ -1958,7 +1963,7 @@ GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Duration         : 2 seconds
 Cooldown         : 6 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Lock and Load (56453), Burning Adrenaline (99060), Camouflage (119450), Item - Hunter T14 2P Bonus (123090), Lone Wolf (155228), Empowered Explosive Shot (157748), Black Fire (171103)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Burning Adrenaline (99060), Camouflage (119450), Item - Hunter T14 2P Bonus (123090), Lone Wolf (155228), Empowered Explosive Shot (157748), Lock and Load (168980), Black Fire (171103)
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1993,7 +1998,7 @@ Effects          :
 #1 (id=45989)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=45990)    : Weapon Damage% (31)
-                   Base Value: 550 | Scaled Value: 5.5 (avg=0)
+                   Base Value: 660 | Scaled Value: 6.6 (avg=0)
 Description      : You attempt to finish off a wounded target, dealing $sw2 Physical damage. Only usable on enemies with less than 20% health.  If the target dies, the Hunter will regain $164851s1% of maximum health.
 
 If Kill Shot fails to kill the target, the cooldown is reset.
@@ -2244,53 +2249,6 @@ Effects          :
                    Affected Spells: Kindred Spirits (88680)
 Description      : Increases your maximum Focus and your pet's maximum Focus by $s1.
 
-Name             : Lock and Load (id=56343) [Spell Family (9), Passive, Hidden] 
-Class            : Survival Hunter
-Spell Level      : 43
-Proc Chance      : 100%
-Proc Flags       : ........ ........ ..x..... ........ 
-                 : Periodic
-Affecting spells : Camouflage (51755), Camouflage (119450), Item - Hunter T14 4P Bonus (123091)
-Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=49399)    : Apply Aura (6) | Proc Trigger Spell: Lock and Load (42)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Trigger Spell: 56453
-Description      : $@spelldesc3674
-
-Name             : Lock and Load (id=56453) [Spell Family (9)] 
-Class            : Hunter
-Duration         : 30 seconds
-Stacks           : 1 initial, 5 maximum
-Proc Chance      : 100%
-Proc Flags       : ......x. x...x... x.x..x.. ........ 
-                 : White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell, Periodic, Trap Triggered
-Attributes       : ....x... ........ ..x..... ...x....   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : x.....x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=49534)    : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: -100 | Scaled Value: -100 | SP Coefficient: 1.00000 | Misc Value: 11
-                   Affected Spells: Explosive Shot (53301)
-#2 (id=49535)    : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14
-                   Affected Spells: Explosive Shot (53301)
-#3 (id=130455)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Explosive Shot (53301)
-#4 (id=253548)   : Apply Aura (6) | Unknown effect sub type (408)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 53301
-                   Affected Spells: Explosive Shot (53301)
-Description      : $@spelldesc3674
-Tooltip          : Your Explosive Shot triggers no cooldown.
-
 Name             : Truesight Ice Blinders (id=56574) 
 Class            : Hunter, Shaman
 Cast Time        : 15 seconds
@@ -2325,7 +2283,7 @@ Effects          :
 #1 (id=49735)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=101525)   : Weapon Damage% (31)
-                   Base Value: 60 | Scaled Value: 0.6 (avg=0)
+                   Base Value: 75 | Scaled Value: 0.75 (avg=0)
 #3 (id=49737)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : A steady shot that causes $sw2 Physical damage and generates $77443s1 Focus.
@@ -3375,25 +3333,6 @@ Description      : Your pet's Basic Attacks have a $19623s2% chance to trigger F
 Focus Fire consumes all your pet's Frenzy, restoring $s2 Focus to your pet and increasing your haste by $s1% per Frenzy application consumed. Lasts for $d.
 Tooltip          : Haste increased by $w1%.
 
-Name             : Fervor (id=82726) [Spell Family (9)] 
-Class            : Hunter
-Spell Level      : 56
-Duration         : 10 seconds
-Cooldown         : 30 seconds
-Attributes       : ....x... ........ ..x..... ........   .....x.. ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=83029)    : Energize Power (30)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: focus
-#2 (id=164761)   : Apply Aura (6) | Periodic Energize Power: every 1 seconds (24)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 2
-Description      : Instantly restores $s1 Focus to you and your pet and an additional $o2 Focus over $d.
-Tooltip          : Generating $m2 Focus every $t2 sec.
-
 Name             : Bombardment (id=82921) [Spell Family (9)] 
 Class            : Hunter
 Duration         : 5 seconds
@@ -4018,8 +3957,8 @@ Effects          :
                    Base Value: 225 | Scaled Value: 2.25 (avg=0) | Radius: 0 - 5 yards
 #7 (id=186160)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards
-Description      : A powerful shot which deals $<damagePri> Physical damage to the target and $sw3 Physical damage to all enemies between you and the target.  All enemies hit are knocked back.
-Variables        : $damagePri=${$mw3*2}
+Description      : A powerful shot which deals $177571sw1 Physical damage to the target and $sw3 Physical damage to all enemies between you and the target.  All enemies hit are knocked back. 
+Variables        : $damagePri=${$sw3*2}
 
 Name             : Iron Hawk (id=109260) [Spell Family (9), Passive] 
 Class            : Hunter
@@ -4082,7 +4021,7 @@ Description      : Instantly heals you for $s1% and your pet for $128594s1% of m
 
 Name             : Thrill of the Hunt (id=109306) [Spell Family (9), Passive] 
 Class            : Hunter
-Proc Chance      : 20%
+Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x... x....... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Hostile Spell
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4093,8 +4032,10 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=120768)   : Apply Aura (6) | Proc Trigger Spell: Thrill of the Hunt (42)
-                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1.00000 | Trigger Spell: 34720
-Description      : You have a $h% chance when you use a Focus-costing attack to reduce the Focus cost of your next $s1 Arcane Shots, Aimed Shots, or Multi-Shots by $34720s1.
+                   Base Value: 6 | Scaled Value: 6 | Trigger Spell: 34720
+Description      : You have a $s1% chance per 10 Focus spent on Focus-costing attacks to trigger Thrill of the Hunt.
+
+Thrill of the Hunt reduces the Focus cost of your next $s1 Arcane Shots, Aimed Shots, or Multi-Shots by $34720s1.
 
 Name             : Mortal Wounds (id=115804) 
 Class            : Warrior, Hunter, Monk
@@ -4393,7 +4334,7 @@ Effects          :
                    Base Value: 425 | Scaled Value: 500 (avg=0) | Points Per Level: 5
 #2 (id=137570)   : Apply Aura (6) | Unknown effect sub type (353)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Mend Pet (136), Disengage (781), Revive Pet (982), Track Beasts (1494), Freezing Trap (1499), Flare (1543), Multi-Shot (2643), Growl (2649), Arcane Shot (3044), Rapid Fire (3045), Freezing Trap (3355), Black Arrow (3674), Concussive Shot (5116), Ice Trap (13809), Ice Trap (13810), Explosive Trap (13812), Explosive Trap (13813), Claw (16827), Bite (17253), Deterrence (19263), Wyvern Sting (19386), Aimed Shot (19434), Trueshot Aura (19506), Bestial Wrath (19574), Intimidation (19577), Pet Health (19581), Tranquilizing Shot (19801), Track Demons (19878), Track Dragonkin (19879), Track Elementals (19880), Track Giants (19882), Track Humanoids (19883), Track Undead (19884), Distracting Shot (20736), Frenzy (20784), Bloody Screech (24423), Prowl (24450), Furious Howl (24604), Breath of the Winds (24844), Shell Shield (26064), Kill Command (34026), Misdirection (34477), Spry Attacks (34889), Indomitable (35290), Warp Time (35346), Smack (49966), Invigorating Roar (50256), Ankle Crack (50433), Chitinous Armor (50518), Sonic Focus (50519), Camouflage (51753), Chimaera Shot (53209), Master's Call (53271), Explosive Shot (53301), Kill Shot (53351), Last Stand (53478), Roar of Sacrifice (53480), Bullheaded (53490), Master's Call (54216), Frost Breath (54644), Monstrous Bite (54680), Froststorm Breath (54689), Lock and Load (56343), Steady Shot (56641), Wild Strength (57386), Double Bite (58604), Gift of the Naaru (59543), Dash (61684), Charge (61685), Bullheaded (63896), Thunderstomp (63900), Cobra Shot (77767), Trap Launcher (77769), Focus Fire (82692), Kill Command (83381), Kindred Spirits (88680), Terrifying Roar (90309), Spirit Walk (90328), Play (90347), Ancient Hysteria (90355), Spirit Mend (90361), Qiraji Fortitude (90364), Froststorm Breath (92380), Burrow Attack (93433), Roar of Courage (93435), Rest (94019), Trick (94022), Froststorm Breath (95725), Binding Shot (109248), Powershot (109259), Glaive Toss (117050), Serpent Sting (118253), Beast Cleave (118455), Barrage (120360), Dire Beast (120679), Spirit Beast Blessing (128997), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Energizing Spores (135678), Tenacity (159735), Harden Shell (159926), Bark of the Wild (159988), Agile Reflexes (160011), Blessing of Kongs (160017), Strength of the Pack (160052), Thick Hide (160057), Thick Hide (160058), Deadly Sting (160060), Tendon Rip (160065), Web Spray (160067), Plainswalking (160073), Strength of the Earth (160077), Chimaera Shot (171454), Chimaera Shot (171457)
+                   Affected Spells: Mend Pet (136), Disengage (781), Revive Pet (982), Track Beasts (1494), Freezing Trap (1499), Flare (1543), Multi-Shot (2643), Growl (2649), Arcane Shot (3044), Rapid Fire (3045), Freezing Trap (3355), Black Arrow (3674), Concussive Shot (5116), Ice Trap (13809), Ice Trap (13810), Explosive Trap (13812), Explosive Trap (13813), Claw (16827), Bite (17253), Deterrence (19263), Wyvern Sting (19386), Aimed Shot (19434), Trueshot Aura (19506), Bestial Wrath (19574), Intimidation (19577), Pet Health (19581), Tranquilizing Shot (19801), Track Demons (19878), Track Dragonkin (19879), Track Elementals (19880), Track Giants (19882), Track Humanoids (19883), Track Undead (19884), Distracting Shot (20736), Frenzy (20784), Bloody Screech (24423), Prowl (24450), Furious Howl (24604), Breath of the Winds (24844), Shell Shield (26064), Kill Command (34026), Misdirection (34477), Spry Attacks (34889), Indomitable (35290), Warp Time (35346), Smack (49966), Invigorating Roar (50256), Ankle Crack (50433), Chitinous Armor (50518), Sonic Focus (50519), Camouflage (51753), Chimaera Shot (53209), Master's Call (53271), Explosive Shot (53301), Kill Shot (53351), Last Stand (53478), Roar of Sacrifice (53480), Bullheaded (53490), Master's Call (54216), Frost Breath (54644), Monstrous Bite (54680), Froststorm Breath (54689), Steady Shot (56641), Wild Strength (57386), Double Bite (58604), Gift of the Naaru (59543), Dash (61684), Charge (61685), Bullheaded (63896), Thunderstomp (63900), Cobra Shot (77767), Trap Launcher (77769), Focus Fire (82692), Kill Command (83381), Kindred Spirits (88680), Terrifying Roar (90309), Spirit Walk (90328), Play (90347), Ancient Hysteria (90355), Spirit Mend (90361), Qiraji Fortitude (90364), Froststorm Breath (92380), Burrow Attack (93433), Roar of Courage (93435), Rest (94019), Trick (94022), Froststorm Breath (95725), Binding Shot (109248), Powershot (109259), Glaive Toss (117050), Serpent Sting (118253), Beast Cleave (118455), Barrage (120360), Dire Beast (120679), Spirit Beast Blessing (128997), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Energizing Spores (135678), Tenacity (159735), Harden Shell (159926), Bark of the Wild (159988), Agile Reflexes (160011), Blessing of Kongs (160017), Strength of the Pack (160052), Thick Hide (160057), Thick Hide (160058), Deadly Sting (160060), Tendon Rip (160065), Web Spray (160067), Plainswalking (160073), Strength of the Earth (160077), Chimaera Shot (171454), Chimaera Shot (171457), Powershot (177571)
 #3 (id=137571)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
 Description      : You blend into your surroundings, causing you and your pet to be untargetable by ranged attacks. Also reduces the range at which enemy creatures can detect you, provides stealth, and reduces movement speed by $s3%.
@@ -4433,7 +4374,7 @@ Description      : Reduces the time required to complete Tame Beast by ${$m1/-10
 
 Name             : Barrage (id=120360) [Spell Family (9)] 
 Class            : Hunter
-Resource         : 30 Focus
+Resource         : 60 Focus
 Spell Level      : 24
 Range            : 40 yards
 GCD              : 1 seconds
@@ -4461,7 +4402,7 @@ Class            : Hunter
 Spell Level      : 24
 Range            : 40 yards
 Velocity         : 30 yards/sec
-Affecting spells : Freezing Trap (3355), Sniper Training (168811)
+Affecting spells : Freezing Trap (3355), Sniper Training (168811), 
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ .x...... ........ ......x. 
                  : .......x ........ ........ ........   ........ .......x ........ ........ 
@@ -4474,7 +4415,7 @@ Effects          :
 #2 (id=139842)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 40 yards
 #3 (id=139945)   : Weapon Damage% (31)
-                   Base Value: 30 | Scaled Value: 0.3 (avg=0) | Radius: 40 yards
+                   Base Value: 60 | Scaled Value: 0.6 (avg=0) | Radius: 40 yards
 Description      : $@spelldesc120360
 
 Name             : Dire Beast (id=120679) [Spell Family (9)] 
@@ -4544,14 +4485,14 @@ Class            : Hunter
 Duration         : 3 seconds
 Affecting spells : Freezing Trap (3355), Sniper Training (168811)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ......x.   ........ .x...... ........ ........ 
+                 : ..x..... ........ ........ ......x.   ........ .x...... ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=140699)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.36100 | Radius: 0 - 50 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.36100 | Radius: 0 - 100 yards
 #2 (id=150546)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | Radius: 0 - 50 yards
 Description      : $@spelldesc117050
@@ -4562,14 +4503,14 @@ Class            : Hunter
 Duration         : 3 seconds
 Affecting spells : Freezing Trap (3355), Sniper Training (168811)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ......x.   ........ .x...... ........ ........ 
+                 : ..x..... ........ ........ ......x.   ........ .x...... ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=150477)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.36100 | Radius: 0 - 50 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.36100 | Radius: 0 - 100 yards
 #2 (id=150547)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | Radius: 0 - 50 yards
 Description      : $@spelldesc117050
@@ -4667,7 +4608,6 @@ Effects          :
                    Affected Spells: Bestial Wrath (19574)
 #2 (id=155162)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3
-                   Affected Spells: Lock and Load (56343)
 #3 (id=155163)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 10 | Scaled Value: 10
                    Affected Spells: Aimed Shot (19434)
@@ -4908,12 +4848,12 @@ Description      : For $142978d after using Arcane Shot, your PvP power is incre
 
 Name             : A Murder of Crows (id=131894) [Spell Family (9)] 
 Class            : Hunter
-Resource         : 60 Focus
+Resource         : 30 Focus
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1 seconds
-Duration         : 30 seconds
-Cooldown         : 120 seconds
+Duration         : 15 seconds
+Cooldown         : 60 seconds
 Affecting spells : Camouflage (51755), Mastery: Master of Beasts (76657), Camouflage (119450), Sniper Training (168811)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -4924,10 +4864,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=170310)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 60 | Scaled Value: 60
-Description      : Summons a flock of crows to attack your target over the next $d.  If used on a target below 20% health, the cooldown is reduced to $s1 seconds.
+Description      : Summons a flock of crows to attack your target over the next $d. If the target dies while under attack, A Murder of Crows' cooldown is reset.
 Tooltip          : Under attack by a flock of crows.
 
-Name             : A Murder of Crows (id=131900) [Scaling Spell (3), Spell Family (9)] 
+Name             : A Murder of Crows (id=131900) [Spell Family (9)] 
 Class            : Hunter
 Spell Level      : 1
 Range            : 100 yards
@@ -4941,7 +4881,7 @@ Attributes       : ........ ........ x......x ........   ........ ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=170318)   : School Damage: physical (2)
-                   Base Value: 1000 | Scaled Value: 0 (avg=0.63) | AP Coefficient: 0.65000
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.65000
 Description      : Deals $s1 physical damage.
 
 Name             : Glyph of Liberation (id=132106) [Spell Family (9), Passive, Hidden] 
@@ -5196,7 +5136,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=181839)   : School Damage: nature (2)
-                   Base Value: 15999 | Scaled Value: 16000 - 24000 (avg=0) | Value Range: 8001
+                   Base Value: 1 | Scaled Value: 2 - 4 (avg=0) | Value Range: 3 | SP Coefficient: 0.80000
 Description      : Blasts a target for $s1 Nature damage.
 
 Name             : Ancient Zandalari Knowledge (id=138430) [Hidden] 
@@ -6329,9 +6269,9 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=232516)   : Apply Aura (6) | Proc Trigger Spell: Survivalist (42)
                    Base Value: 4 | Scaled Value: 4 | SP Coefficient: 1.00000 | Trigger Spell: 164857
-#2 (id=242526)   : Apply Aura (6) | Modify Multistrike% (441)
-                   Base Value: 10 | Scaled Value: 10 | Trigger Spell: 164857
-Description      : Increases your Multistrike chance by $s2%.
+#2 (id=242526)   : Apply Aura (6) | Unknown effect sub type (440)
+                   Base Value: 20 | Scaled Value: 20
+Description      : Increases the damage of your multistrikes by $s2%.
 
 After killing a target, you gain $164857o1% health over $164857d.
 
@@ -6423,7 +6363,7 @@ Effects          :
 Name             : Sniper Training: Recently Moved (id=168809) [Spell Family (9)] 
 Class            : Hunter
 Duration         : 3 seconds
-Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+Attributes       : ........ x....... ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6451,7 +6391,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127
 #3 (id=239100)   : Apply Aura (6) | Add Percent Modifier: Spell Range (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5
-                   Affected Spells: Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Wyvern Sting (19386), Aimed Shot (19434), Tranquilizing Shot (19801), Distracting Shot (20736), Chimaera Shot (53209), Kill Shot (53351), Steady Shot (56641), Bullheaded (63896), Binding Shot (109248), Powershot (109259), Glaive Toss (117050), Barrage (120360), Barrage (120361), Dire Beast (120679), Glaive Toss (120761), Glaive Toss (121414), Stampede (121818), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Focusing Shot (152245), Focusing Shot (163485), Chimaera Shot (171454), Chimaera Shot (171457)
+                   Affected Spells: Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Wyvern Sting (19386), Aimed Shot (19434), Tranquilizing Shot (19801), Distracting Shot (20736), Chimaera Shot (53209), Kill Shot (53351), Steady Shot (56641), Bullheaded (63896), Binding Shot (109248), Powershot (109259), Glaive Toss (117050), Barrage (120360), Barrage (120361), Dire Beast (120679), Glaive Toss (120761), Glaive Toss (121414), Stampede (121818), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Focusing Shot (152245), Focusing Shot (163485), Chimaera Shot (171454), Chimaera Shot (171457), Powershot (177571)
+#4 (id=254233)   : Apply Aura (6) | Add Percent Modifier: Spell Radius (108)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6
+                   Affected Spells: Barrage (120361)
 Description      : Increases damage dealt, critical strike damage, and shot range when the hunter has remained still for at least $168809d.
 Tooltip          : Damage dealt increased by $w1%.
 Critical strike damage increased by $w2%.
@@ -6490,7 +6433,7 @@ Effects          :
 #1 (id=243431)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=243432)   : Weapon Damage% (31)
-                   Base Value: 385 | Scaled Value: 3.85 (avg=0)
+                   Base Value: 465 | Scaled Value: 4.65 (avg=0)
 Description      : $@spelldesc53209
 
 Name             : Chimaera Shot (id=171457) [Spell Family (9)] 
@@ -6509,7 +6452,7 @@ Effects          :
 #1 (id=243435)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=243436)   : Weapon Damage% (31)
-                   Base Value: 385 | Scaled Value: 3.85 (avg=0)
+                   Base Value: 465 | Scaled Value: 4.65 (avg=0)
 Description      : $@spelldesc53209
 
 Name             : Aspect of the Fox (id=172106) [Spell Family (9)] 
@@ -6559,4 +6502,59 @@ Effects          :
 #1 (id=251161)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Choose a level 90 talent.
+
+Name             : Powershot (id=177571) [Scaling Spell (3), Spell Family (9)] 
+Class            : Hunter
+Resource         : 15 Focus
+Range            : 40 yards
+Cast Time        : 2.25 seconds
+GCD              : 1 seconds
+Velocity         : 100 yards/sec
+Cooldown         : 45 seconds
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Sniper Training (168811)
+Attributes       : .x..x... ........ x.x...x. ........   ........ ......x. ........ ........ 
+                 : ........ ........ .x..x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...xx...   ........ ........ ........ ........ 
+                 : ........ ........ ...x.... ....x...   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x....   ........ x....... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=254290)   : Weapon Damage% (31)
+                   Base Value: 450 | Scaled Value: 4.5 (avg=0) | Radius: 0 - 5 yards
+#2 (id=254291)   : Normalized Weapon Damage (121)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards
+
+Name             : Steady Focus (id=177667) [Spell Family (9), Passive] 
+Class            : Hunter
+Spell Level      : 63
+Proc Chance      : 100%
+Proc Flags       : ........ x...x... x....... ........ 
+                 : Yellow Ranged, AOE Hostile Spell, Hostile Spell
+Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=254506)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+Description      : Using $?s163485[Focusing Shot]?s77767[Cobra Shot twice in a row][Steady Shot twice in a row] increases your Focus Regeneration by $177668s1% for $177668d.
+
+Name             : Steady Focus (id=177668) [Spell Family (9)] 
+Class            : Hunter
+Duration         : 10 seconds
+Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=254507)   : Apply Aura (6) | Mod Power Regen (110)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 2
+#2 (id=254508)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3
+Description      : $@spelldesc177667
+Tooltip          : Focus regeneration increased by $w1%.
 

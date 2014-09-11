@@ -1,5 +1,5 @@
 
-SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18764)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18816)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
 Resource         : 35 Energy
@@ -166,7 +166,7 @@ Effects          :
 #2 (id=536)      : Add Combo Points (80)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=101522)   : Weapon Damage% (31)
-                   Base Value: 102 | Scaled Value: 1.02 (avg=0)
+                   Base Value: 100 | Scaled Value: 1 (avg=0)
 Description      : An instant strike that causes $sw3 Physical damage.$?s79327[  Awards $s2 combo $lpoint:points;.][]
 
 Name             : Kick (id=1766) [Spell Family (8)] 
@@ -640,7 +640,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.12500
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.30000
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -977,8 +977,8 @@ Class            : Combat Rogue
 Spell Level      : 32
 Internal Cooldown: 0.8 seconds
 Proc Chance      : 100%
-Proc Flags       : ....x... x...x... ........ ........ 
-                 : Yellow Melee, Yellow Ranged, AOE Hostile Spell
+Proc Flags       : ....x... x.x.x... ........ ........ 
+                 : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -993,7 +993,7 @@ Effects          :
                    Affected Spells: Kidney Shot (408), Rupture (1943), Eviscerate (2098), Slice and Dice (5171), Deadly Throw (26679), Recuperate (73651), Rupture (168963)
 #3 (id=238830)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2000 | Scaled Value: 2000 | SP Coefficient: 1.00000
-Description      : For each combo point spent, your finishing moves reduce the cooldown on your Adrenaline Rush, Killing Spree, and Sprint by ${$m3/1000} sec, and have a $b1% chance to grant a combo point and restore $14181s1 Energy.
+Description      : For each combo point spent, your damaging finishing moves reduce the cooldown on your Adrenaline Rush, Killing Spree, and Sprint by ${$m3/1000} sec, and all your finishing moves have a $b1% chance to grant a combo point and restore $14181s1 Energy.
 
 Name             : Relentless Strikes (id=14181) 
 Class            : Rogue
@@ -1049,7 +1049,7 @@ Range            : 50000 yards
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : x.x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1233,12 +1233,12 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 #2 (id=16647)    : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
-Description      : Finishing move that deals damage, reduces the target's movement speed by $s2% for $d, and interrupts spellcasting when used with 3 or more combo pioints:
-   1 point  : ${$m1+(($b1*1)+$AP*0.178)*1*$<mult>} damage
-   2 points: ${$m1+(($b1*2)+$AP*0.178)*2*$<mult>} damage
-   3 points: ${$m1+(($b1*3)+$AP*0.178)*3*$<mult>} damage
-   4 points: ${$m1+(($b1*4)+$AP*0.178)*4*$<mult>} damage
-   5 points: ${$m1+(($b1*5)+$AP*0.178)*5*$<mult>} damage
+Description      : Finishing move that deals damage, reduces the target's movement speed by $s2% for $d, and interrupts spellcasting when used with 5 combo pioints:
+   1 point  : ${$AP*0.178*1*$<mult>} damage
+   2 points: ${$AP*0.178*2*$<mult>} damage
+   3 points: ${$AP*0.178*3*$<mult>} damage
+   4 points: ${$AP*0.178*4*$<mult>} damage
+   5 points: ${$AP*0.178*5*$<mult>} damage
 Tooltip          : Movement slowed by $s2%.
 Variables        : $mult=$?s76808[${((100+$76808m1))/100}]$?s84601[${1.15}][${1.00}]
 
@@ -1372,7 +1372,7 @@ GCD              : 1 seconds
 Duration         : 1 seconds
 Affecting spells : Rogue Tier 6 Trinket (40460), Mastery: Potent Poisons (76803), Mastery: Executioner (76808), Vendetta (79140), Deadly Scheme (90472), Fury of the Destroyer (109949), Sanguinary Vein (124271), Item - Rogue T15 4P Bonus (138150), Empowered Envenom (157569), Enhanced Vendetta (158108), Death from Above (163786), Cold Blood (170882)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ....x... ...x.... 
-                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : x..x.... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2338,7 +2338,7 @@ Effects          :
 #1 (id=55169)    : Apply Aura (6) | Mod Power Regen (110)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3
 #2 (id=99542)    : Apply Aura (6) | Unknown effect sub type (166)
-                   Base Value: 30 | Scaled Value: 30
+                   Base Value: 40 | Scaled Value: 40
 Description      : Increases your Energy regeneration rate by $s1% and your Attack Power by $s2%.
 
 Name             : Mechanized Snow Goggles (id=61481) 
@@ -2904,7 +2904,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 24 seconds
 Internal Cooldown: 0.5 seconds
-Proc Chance      : 20%
+Proc Chance      : 25%
 Affecting spells : Adrenaline Rush (13750), Silent Blades (145193), Item - Rogue T17 Combat 2P Bonus (165480)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   .x...... ..x..... ........ ........ 
@@ -2914,7 +2914,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=85480)    : Weapon Damage% (31)
-                   Base Value: 96 | Scaled Value: 0.96 (avg=0)
+                   Base Value: 75 | Scaled Value: 0.75 (avg=0)
 #2 (id=85481)    : Add Combo Points (80)
                    Base Value: 1 | Scaled Value: 1
 #3 (id=85482)    : Apply Aura (6) | Dummy (4)
@@ -3917,7 +3917,7 @@ Tooltip          : Marked for Death will reset upon death.
 
 Name             : Cloak and Dagger (id=138106) [Spell Family (8), Passive] 
 Class            : Rogue
-Attributes       : ......x. ........ .x...... ........   ........ ........ ........ ........ 
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3961,8 +3961,8 @@ Class            : Rogue, Druid
 Range            : 100 yards
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Attributes       : ....x... x....... ........ x.......   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ xx...... ........ 
+Attributes       : ....x... x....... ........ x.......   ........ ..x..... ........ ........ 
+                 : x.x..... ........ ........ ........   ........ ........ xx...... ........ 
                  : .......x ........ ...x.... ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... .......x 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4189,8 +4189,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #5 (id=217868)   : Apply Aura (6) | Unknown effect sub type (263)
                    Base Value: 0 | Scaled Value: 0
-#6 (id=217869)   : Apply Aura (6) | Periodic Trigger Spell: Death from Above every 1 seconds (23)
+#6 (id=217869)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 156327
+#7 (id=254016)   : Apply Aura (6) | Unknown effect sub type (147)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1733
 Description      : Finishing move that consumes combo points on the target to empower your weapons with shadow energy and perform a devastating two-part attack. 
 
 You whirl around, dealing up to $s2 damage to all enemies within 8 yds, then leap into the air and $?s32645[Envenom][Eviscerate] your target on the way back down, with such force that it deals an additional $163786s2% damage.

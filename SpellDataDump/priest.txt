@@ -1,5 +1,5 @@
 
-SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18764)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18816)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 Resource         : 3% Base Mana (4800 @Level 100)
@@ -141,14 +141,16 @@ Proc Chance      : 100%
 Affecting spells : Item - Priest T10 Shadow 2P Bonus (70800), Item - Priest T13 Shadow 4P Bonus (Shadow Word: Pain) (105844), Item - Priest T14 Shadow 2P Bonus (123114), Item - Priest T14 Shadow 4P Bonus (123115), Lucidity (137323)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
-                 : ........ ........ ....x... ........   ........ .x...x.. ........ ........ 
+                 : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=242)      : Apply Aura (6) | Periodic Damage: shadow every 3 seconds (3)
-                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.47500
-Description      : A word of darkness that causes $s1 Shadow damage and an additional ${$o1-$m1} Shadow damage over $d.
+#1 (id=242)      : School Damage: shadow (2)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.47500
+#2 (id=254257)   : Apply Aura (6) | Periodic Damage: shadow every 3 seconds (3)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.47500
+Description      : A word of darkness that causes $s1 Shadow damage and an additional $o2 Shadow damage over $d.
 Tooltip          : $w1 Shadow damage every $t1 seconds.
 
 Name             : Prayer of Healing (id=596) [Scaling Spell (7), Spell Family (6)] 
@@ -192,7 +194,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 103 (avg=0) | Points Per Level: 1 | Radius: 100 yards
 #2 (id=248)      : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-Description      : Controls a mind up to level $s1, incapacitating them for $d.  Does not work versus Mechanical beings.
+Description      : Controls a mind up to level $s1 for $d.  Does not work versus Mechanical beings. This spell shares diminishing returns with other incapacitating effects.
 Tooltip          : Incapacitated.
 
 Name             : Levitate (id=1706) [Spell Family (6)] 
@@ -371,7 +373,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.12500
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.30000
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -641,7 +643,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=7301)     : Apply Aura (6) | Periodic Damage: shadow every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.21000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.30000
 #2 (id=7302)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
 Description      : Assault the target's mind with Shadow energy, causing $o1 Shadow damage over $d$?s120585[. Each time Mind Flay deals damage the Priest will be granted $120587s1% increased movement speed for $120587d, stacking up to $120587u times.][ and slowing their movement speed by $s2%.]
@@ -671,7 +673,7 @@ Tooltip          : Shadow damage you deal increased by $s2%.
 Armor increased by $s3%.
 
 Name             : Silence (id=15487) [Spell Family (6)] 
-Class            : Shadow Priest
+Class            : Discipline Shadow Priest
 Resource         : 0.9% Base Mana (1440 @Level 100)
 Spell Level      : 52
 Range            : 30 yards
@@ -823,7 +825,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=13737)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.5, dl=0.15) | SP Coefficient: 1.38600 | Radius: 0 - 12 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=0.5, dl=0.15) | SP Coefficient: 1.12500 | Radius: 0 - 12 yards
 Description      : $@spelldesc132157
 
 Name             : Spirit of Redemption (id=27827) [Spell Family (6)] 
@@ -1183,7 +1185,7 @@ Stacks           : 5 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Item - Priest T17 Holy 2P Bonus (165621)
+Affecting spells : Glyph of Prayer of Mending (55685), Item - Priest T17 Holy 2P Bonus (165621)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ..xx.... ........ ...x.... ........   .......x ........ ........ ..x...x. 
                  : ........ ........ ...xx... ........   ........ ........ ........ ........ 
@@ -1394,7 +1396,6 @@ Class            : Priest
 Spell Level      : 60
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Enhanced Leap of Faith (157146)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ......x. ........   ........ .x...... ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1468,7 +1469,7 @@ Tooltip          : Increased healing received by $w1%$?$w1<100[ and will prevent
 Name             : Mind Sear (id=48045) [Spell Family (6)] 
 Class            : Priest
 Resource         : 3% Base Mana (4800 @Level 100)
-Spell Level      : 76
+Spell Level      : 28
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
@@ -1497,7 +1498,7 @@ Attributes       : ........ ........ ........ ........   ...x...x .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=41944)    : School Damage: shadow (2)
-                   Base Value: 9249 | Scaled Value: 9250 - 10750 (avg=0) | Value Range: 1501 | SP Coefficient: 0.22500 | Radius: 10 yards
+                   Base Value: -1 | Scaled Value: 0 (avg=0) | Value Range: 1 | SP Coefficient: 0.22500 | Radius: 10 yards
 Description      : Causes an explosion of shadow magic around the target, causing $49821s1 Shadow damage every $48045T1 sec for $48045d to all enemies within $49821a1 yards around the target.
 Tooltip          : Causing shadow damage to all targets within $a1 yards.
 
@@ -1520,7 +1521,7 @@ Tooltip          : Haste and multistrike chance increased by $s1%.
 
 Name             : Borrowed Time (id=52798) [Spell Family (6), Passive] 
 Class            : Discipline Priest
-Spell Level      : 62
+Spell Level      : 10
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
@@ -1649,8 +1650,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=48640)    : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 1
-#2 (id=138944)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 4
+#2 (id=138944)   : Apply Aura (6) | Add Flat Modifier (107)
+                   Base Value: -1 | Scaled Value: -1 | Misc Value: 37
+                   Affected Spells: Prayer of Mending (41635)
 Description      : The first charge of your Prayer of Mending heals for an additional $55685s1% but your Prayer of Mending has $s2 fewer $Lcharge:charges;.
 
 Name             : Glyph of Psychic Horror (Shadow) (id=55688) [Spell Family (6), Passive, Hidden] 
@@ -1739,7 +1741,7 @@ Name             : Fade (id=56164)
 Class            : Priest
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2125,7 +2127,7 @@ Effects          :
 #1 (id=53538)    : Apply Aura (6) | Unknown effect sub type (405)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 917504
 Description      : $@spelldesc52798
-Tooltip          : Cast or channel time of your next Priest spell reduced by $s1%.
+Tooltip          : You gain $s1% more of the Haste stat from all sources.
 
 Name             : Power Word: Barrier (id=62618) [Scaling Spell (7), Spell Family (6)] 
 Class            : Discipline Priest
@@ -2603,7 +2605,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68229)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-Description      : When you deal critical damage over time with your Shadow Word: Pain, you also create a shadowy version of yourself that floats towards the target and deals $148859s1 Shadow damage.
+Description      : When your Shadow Word: Pain damage over time critically strikes, you also create a shadowy version of yourself that floats towards the target and deals $148859s1 Shadow damage.
 
 Name             : Chakra: Sanctuary (id=81206) [Spell Family (6)] 
 Class            : Holy Priest
@@ -2733,7 +2735,7 @@ Effects          :
 Description      : $@spelldesc81662
 Tooltip          : Consumed by the Archangel spell to increase healing done.
 
-Name             : Evangelism (Discipline, Passive) (id=81662) [Spell Family (6), Passive] 
+Name             : Evangelism (id=81662) [Spell Family (6), Passive] 
 Class            : Discipline Priest
 Spell Level      : 44
 Proc Chance      : 100%
@@ -2754,6 +2756,7 @@ Name             : Archangel (id=81700) [Spell Family (6)]
 Class            : Discipline Priest
 Spell Level      : 50
 Duration         : 18 seconds
+Cooldown         : 30 seconds
 Affecting spells : Shadow Passive (121196)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3968,7 +3971,7 @@ GCD              : 1.5 seconds
 Cooldown         : 25 seconds
 Affecting spells : Holy Word: Serenity (88684), Lucidity (137323), Enhanced Leap of Faith (157146)
 Attributes       : ........ ........ x....... ........   .......x ..x..... ........ ........ 
-                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ...x.... ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4367,7 +4370,7 @@ Class            : Priest
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 6 seconds
-Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
+Attributes       : ........ ........ ..x..... ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ .......x ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4375,7 +4378,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=160226)   : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.09890
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.09890
 Description      : Restore $s1 health every $t1 sec.
 Tooltip          : Restore $w1 health every $t1 sec.
 
@@ -4591,7 +4594,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50
 Description      : When your Vampiric Touch is dispelled, the dispeller is instantly feared in horror for $87204d.
 
-Name             : Holy Nova (Discipline) (id=132157) [Spell Family (6)] 
+Name             : Holy Nova (id=132157) [Spell Family (6)] 
 Class            : Discipline Priest
 Resource         : 1.6% Base Mana (2560 @Level 100)
 Spell Level      : 20
@@ -5060,6 +5063,7 @@ Class            : Priest
 Resource         : 3% Base Mana (4800 @Level 100)
 Range            : 40 yards
 GCD              : 1.5 seconds
+Affecting spells : Enhanced Leap of Faith (157146)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5103,8 +5107,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=210595)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 127
-Description      : Shields the target with a protective ward, absorbing ${$SP*6.00} damage within $d.
+Description      : Shields the target with a protective ward, absorbing ${$SP*6.00*$<mastery>} damage within $d.
 Tooltip          : Absorbs $w1 damage.
+Variables        : $masteryMod=${$cond($gt($pl,79),1,0)}
+$mastery=$?s47540[${((100+$<masteryMod>*$77484m1)/100)}][${1.00}]
+
 
 Name             : Clarity of Purpose (id=155245) [Spell Family (6)] 
 Class            : Priest
@@ -5251,9 +5258,6 @@ Description      : Reduces the duration of Weakened Soul caused by your Power Wo
 
 Name             : Enhanced Leap of Faith (id=157145) [Spell Family (6), Passive] 
 Class            : Priest
-Proc Chance      : 100%
-Proc Flags       : ........ ......x. ........ ........ 
-                 : Heal
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5261,19 +5265,20 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=219017)   : Apply Aura (6) | Proc Trigger Spell: Enhanced Leap of Faith (42)
+#1 (id=219017)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Trigger Spell: 157146
 Description      : Your Leap of Faith also increases your next non-periodic heal cast on that target by $157146s1% for $157146d.
 
 Name             : Enhanced Leap of Faith (id=157146) [Spell Family (6)] 
 Class            : Priest
+Range            : 100 yards
 Duration         : 10 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ .......x ........ ........ 
                  : Heal Taken
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5281,7 +5286,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=219019)   : Apply Aura (6) | Unknown effect sub type (283)
                    Base Value: 50 | Scaled Value: 50
-                   Affected Spells: Prayer of Healing (596), Heal (2060), Flash Heal (2061), Desperate Prayer (19236), Holy Nova (23455), Sunwell Torrent (28516), Binding Heal (32546), Prayer of Mending (33110), Circle of Healing (34861), Penance (47750), Divine Hymn (64844), Holy Word: Serenity (88684), Holy Word: Sanctuary (88686), Flash Heal (101062), Divine Star (110744), Divine Star (110745), Halo (120517), Halo (120644), Halo (120692), Halo (120696), Cascade (121135), Cascade (121148), Divine Star (122121), Divine Star (122128), Cascade (127628), Cascade (127632)
+                   Affected Spells: Prayer of Healing (596), Heal (2060), Flash Heal (2061), Desperate Prayer (19236), Holy Nova (23455), Sunwell Torrent (28516), Binding Heal (32546), Prayer of Mending (33110), Circle of Healing (34861), Divine Hymn (64844), Holy Word: Serenity (88684), Holy Word: Sanctuary (88686), Flash Heal (101062), Divine Star (110744), Divine Star (110745), Halo (120517), Halo (120644), Halo (120692), Halo (120696), Cascade (121135), Cascade (121148), Divine Star (122121), Divine Star (122128), Cascade (127628), Cascade (127632), Saving Grace (152116)
 Description      : $@spelldesc157145
 Tooltip          : Healing received from next non-periodic spell cast by Priest increased by $s1%.
 
@@ -5628,7 +5633,4 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1154
 
 Name             : Inquisitor (Discipline, Holy) (id=159855) 
-Class            : Priest
-Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........
+Class            

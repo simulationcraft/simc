@@ -1,5 +1,5 @@
 
-SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18764)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18816)
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -93,7 +93,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.12500
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.30000
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -722,7 +722,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 125359
 #3 (id=184683)   : Energize Power% (137)
                    Base Value: 0 | Scaled Value: 0
-Description      : Attack with the palm of your hand, dealing $?s116645[$6.00*$<low>} to ${6.00*$<high>}][${3.00*$<low>} to ${3.00*$<high>}] damage, and causing your attacks to ignore $125359m1% of armor for $125359d.$?s115070[
+Description      : Attack with the palm of your hand, dealing $?s116645[${6.00*$<low>} to ${6.00*$<high>}][${3.00*$<low>} to ${3.00*$<high>}] damage, and causing your attacks to ignore $125359m1% of armor for $125359d.$?s115070[
 
 Not useable in Stance of the Wise Serpent.][]
 Variables        : $stnc=$?a103985[${1.2}][${1.0}]
@@ -742,7 +742,7 @@ Spell Level      : 18
 GCD              : 1 seconds
 Duration         : 2 seconds
 Cooldown         : 25 seconds
-Affecting spells : Glyph of Flying Serpent Kick (123403), Glyph of Rising Tiger Kick (125151), Glyph of Spirit Roll (125154), Glyph of Honor (125732), Glyph of Fighting Pose (125872), Glyph of Water Roll (125901)
+Affecting spells : Glyph of Flying Serpent Kick (123403), Glyph of Spirit Roll (125154), Glyph of Honor (125732), Glyph of Fighting Pose (125872), Glyph of Water Roll (125901)
 Attributes       : ....x... ........ ..x..... .....x..   ........ ........ .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -761,6 +761,10 @@ Effects          :
                    Base Value: 400 | Scaled Value: 400
 #6 (id=172321)   : Apply Aura (6) | Unknown effect sub type (191)
                    Base Value: 36 | Scaled Value: 36
+#7 (id=254018)   : Apply Aura (6) | Unknown effect sub type (395)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2156
+#8 (id=254019)   : Apply Aura (6) | Unknown effect sub type (395)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 388
 Description      : Soar forward through the air at high speed for $d.
  
 If used again while active, you will land, dealing $123586m1 damage to all enemies within $123586A1 yards, and slowing them by $123586m2% for $123586d.
@@ -1118,7 +1122,7 @@ Effects          :
 #4 (id=138807)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 0x7f
 #5 (id=140824)   : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value 2: 0x4
+                   Base Value: 25 | Scaled Value: 25 | Misc Value 2: 0x4
 #6 (id=141322)   : Apply Aura (6) | Threat (10)
                    Base Value: 900 | Scaled Value: 900 | Misc Value: 127
 #7 (id=153830)   : Apply Aura (6) | Unknown effect sub type (197)
@@ -1266,7 +1270,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10
 Description      : Instantly kills a creature with less health than the Monk's maximum health.
 
-Can also be used on tough $?s124490[targets][creatures] when they are below $m2% health, dealing damage equal to the Monk's maximum health to them.
+Can also be used on tough targets when they are below $m2% health, dealing damage equal to the Monk's maximum health to them.
 
 Name             : Chi Wave (id=115098) [Scaling Spell (5), Spell Family (53)] 
 Class            : Monk
@@ -1312,11 +1316,11 @@ Description      : $@spelldesc115072
 Name             : Renewing Mist (id=115151) [Scaling Spell (5), Spell Family (53)] 
 Class            : Mistweaver Monk
 Resource         : 4% Base Mana (6400 @Level 100)
-Spell Level      : 42
+Spell Level      : 24
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
-Affecting spells : Thunder Focus Tea (116680), Lucidity (137331), Improved Renewing Mist (157398)
+Affecting spells : Thunder Focus Tea (116680), Lucidity (137331), Improved Renewing Mist (157398), Pool of Mists (173841)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ .x...... ........ ..x...x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1668,9 +1672,9 @@ Effects          :
 #1 (id=129188)   : Apply Aura (6) | Increase Energy (35)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12
 #2 (id=177614)   : Apply Aura (6) | Unknown effect sub type (132)
-                   Base Value: 15 | Scaled Value: 15 | SP Coefficient: 1.00000
+                   Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1.00000
 #3 (id=177615)   : Apply Aura (6) | Mod Power Regen (110)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 3
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 3
 Description      : Increases your maximum Chi by $s1, your Energy regeneration by $s3%, and your maximum mana by $s2%. 
 
 Name             : Chi Brew (id=115399) [Scaling Spell (5), Spell Family (53)] 
@@ -2047,7 +2051,7 @@ Effects          :
 #1 (id=131794)   : Server Side Script (77)
                    Base Value: 6 | Scaled Value: 6 | Radius: 0 - 100 yards
 #2 (id=132302)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.82131 | Radius: 0 - 100 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.10000 | Radius: 0 - 100 yards
 Description      : Heals all targets with your Renewing Mist active for $s2.
 
 Name             : Thunder Focus Tea (id=116680) [Scaling Spell (5), Spell Family (53)] 
@@ -2081,7 +2085,7 @@ Class            : Monk
 Resource         : 4.7% Base Mana (7520 @Level 100) w/ Mana Usage (id=119651)
 Resource         : 30 Energy w/ Stance of the Fierce Tiger (id=103985)
 Resource         : 30 Energy w/ Stance of the Sturdy Ox (id=115069)
-Spell Level      : 32
+Spell Level      : 12
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
@@ -2268,8 +2272,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 718
 #2 (id=184169)   : Trigger Spell: Incapacitated (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 137460 | Radius: 0 - 8 yards
-Description      : Form a Ring of Peace around the friendly target for $d, incapacitating all enemies for $137460d, and incapacitating them again each time they attack or cast a harmful spell.
-Tooltip          : Nearby enemies become incapacitated for $137460d when they cast a harmful spell or ability.
+Description      : Form a Ring of Peace around the friendly target for $d, incapacitating all enemies for $137460d, and incapacitating other enemies when they use a harmful spell or ability.
+Tooltip          : Nearby enemies become incapacitated for $137460d when they use a harmful spell or ability.
 
 Name             : Rushing Jade Wind (id=116847) [Spell Family (53)] 
 Class            : Monk
@@ -2715,7 +2719,7 @@ Name             : Renewing Mist (id=119611) [Scaling Spell (5), Spell Family (5
 Class            : Monk
 Range            : 50000 yards
 Duration         : 18 seconds
-Affecting spells : Lucidity (137331), Improved Renewing Mist (157398)
+Affecting spells : Lucidity (137331), Improved Renewing Mist (157398), Pool of Mists (173841)
 Attributes       : ........ ........ ..x..... x..x....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ......x. 
                  : ........ .......x ........ ........   ........ .....x.. ........ ........ 
@@ -3326,7 +3330,7 @@ Description      : Increases the damage absorbed by your Guard ability by $s1%.
 
 Name             : Surging Mist (id=123273) [Scaling Spell (5), Spell Family (53)] 
 Class            : Monk
-Resource         : 6.4% Base Mana (10240 @Level 100)
+Resource         : 4.7% Base Mana (7520 @Level 100)
 Spell Level      : 34
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -3892,19 +3896,6 @@ Effects          :
 Description      : $@spelldesc124487
 Tooltip          : Immune to Silence and Interrupt effects.
 
-Name             : Touch of Death (id=124490) [Spell Family (53), Passive, Hidden] 
-Class            : Monk
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-Effects          :
-#1 (id=157590)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1
-Description      : Your Touch of Death can be used on players with 10% or less health, instantly killing them.
-
 Name             : Gift of the Ox (id=124502) [Spell Family (53), Passive] 
 Class            : Brewmaster Monk
 Spell Level      : 56
@@ -4040,7 +4031,7 @@ Effects          :
 #1 (id=158505)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 
-Name             : Glyph of Rising Tiger Kick (Windwalker) (id=125151) [Spell Family (53), Passive, Hidden] 
+Name             : Glyph of Rising Tiger Kick (Mistweaver, Windwalker) (id=125151) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4051,7 +4042,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=158657)   : Apply Aura (6) | Unknown effect sub type (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 107428 | Misc Value 2: 0x1e8de
-                   Affected Spells: Flying Serpent Kick (101545)
 Description      : Your Rising Sun Kick's visual is altered to the color of the White Tiger.
 
 Name             : Rising Tiger Kick (id=125152) 
@@ -4817,7 +4807,7 @@ Effects          :
 #2 (id=164982)   : Apply Aura (6) | Unknown effect sub type (408)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 115308
 Description      : $@spelldesc128938
-Tooltip          : Use Elusive Brew to consume charges to gain $?s157378[35][30]% dodge for $115308d per charge.
+Tooltip          : Use Elusive Brew to consume charges to gain $115308s1% dodge for $115308d per charge.
 
 Name             : Arcane Torrent (Racial) (id=129597) 
 Class            : Monk
@@ -4938,7 +4928,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=170737)   : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
-                   Base Value: 1 | Scaled Value: 0 (avg=6.767) | SP Coefficient: 1.54210
+                   Base Value: 1 | Scaled Value: 0 (avg=6.767) | SP Coefficient: 1.10000
 #2 (id=170738)   : Apply Aura (6) | Unknown effect sub type (283)
                    Base Value: 30 | Scaled Value: 30
                    Affected Spells: Soothing Mist (115175), Soothing Mist (125950), Soothing Mist (125953)
@@ -5711,7 +5701,7 @@ Tooltip          : All Chi consumptions are instantly refilled.
 Name             : Chi Explosion (id=152174) [Spell Family (53)] 
 Class            : Monk
 Resource         : 1 Chi
-Range            : 40 yards
+Range            : 30 yards
 GCD              : 1 seconds
 Affecting spells : Rising Sun Kick (130320), Combo Breaker: Chi Explosion (159407)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5753,7 +5743,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #3 (id=220666)   : Apply Aura (6) | Unknown effect sub type (147)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1733
-Description      : Unleash a rapid series of kicks toward random enemies within $158221A1 yards, dealing a total of ${30*2.5*$<low>} to ${30*2.5*$<high>} damage over $d. While kicking, you are immune to movement impairing and loss of control effects.
+Description      : Unleash a rapid series of kicks toward random enemies within $158221A1 yards, dealing a total of ${15*2*$<low>} to ${15*2*$<high>} damage over $d. While kicking, you are immune to movement impairing and loss of control effects.
 Tooltip          : Unleashing kicks rapidly, and immune to movement impairing and loss of control effects.
 Variables        : $stnc=$?a103985[${1.2}][${1.0}]
 $dwm=$?a108561|a115697[${1}][${0.898882275}]
@@ -6251,9 +6241,10 @@ Description      : Flying Serpent Kick now also slows all enemies you move throu
 Name             : Glyph of the Flying Serpent (id=159493) [Scaling Spell (4), Spell Family (53)] 
 Class            : Monk
 Spell Level      : 1
+Range            : 100 yards
 Duration         : 4 seconds
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6273,8 +6264,8 @@ Attributes       : ....x.xx x....... ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=223408)   : Apply Aura (6) | Add Flat Modifier: Spell Range (107)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 5
+#1 (id=223408)   : Apply Aura (6) | Add Flat Modifier: Spell Radius (107)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 6
                    Affected Spells: Keg Smash (121253)
 Description      : Increases the range on Keg Smash by $s1 yards.
 
@@ -6433,7 +6424,7 @@ Class            : Monk
 Spell Level      : 25
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6576,7 +6567,7 @@ Spell Level      : 70
 Range            : 40 yards
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6661,7 +6652,7 @@ Class            : Monk
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 10 seconds
-Attributes       : ....x... ........ ..x..... x..x.x..   .....x.. ..x..... .x...... ........ 
+Attributes       : ....x... ........ ..x..... x..x.x.x   .....x.. ..x..... .x...... ........ 
                  : x....... ......x. ...x.... ....x...   ........ ........ xx..x... ........ 
                  : x......x ........ .....x.. ........   ...x.... ..x..... .xx..... ........ 
                  : ..x..... ..x.x... ........ ........   ........ ........ ........ ........ 
@@ -6755,6 +6746,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 1518
 #3 (id=253771)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22
+                   Affected Spells: Renewing Mist (115151), Renewing Mist (119611)
 #4 (id=253772)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (130320)

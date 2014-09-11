@@ -1,5 +1,5 @@
 
-SimulationCraft 601-1 for World of Warcraft 6.0.1 Live (build level 18764)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18816)
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
 Resource         : 4% Base Mana (6400 @Level 100)
@@ -90,7 +90,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=246)      : Apply Aura (6) | Periodic Damage: shadow every 15 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.50000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.20000
 Description      : Inflicts impending doom upon the target, causing $o1 Shadow damage over $d. Doom critical strikes summon a Wild Imp to attack the target.
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -112,7 +112,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=267)      : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.24200
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.74000
 #2 (id=114949)   : Energize Power (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: demonic_fury
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage$?a104315[ and generating $m2 Demonic Fury][].$?s103958[
@@ -696,7 +696,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2210)     : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.42500
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.34000
 #2 (id=114966)   : Energize Power (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: demonic_fury
 Description      : Burn the enemy's soul, causing $s1 Fire damage$?a104315&!a54879[ and generating $s2 Demonic Fury][].  Soul Fire always critically strikes and your critical strike chance increases its damage.
@@ -1004,7 +1004,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 600 seconds
 Affecting spells : Item - Warlock T11 2P Bonus (89934), Metamorphosis (103958), Kil'jaeden's Cunning (137587), Demonic Servitude (152107)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1626,7 +1626,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=40146)    : Apply Aura (6) | Periodic Damage: shadowflame every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.137) | SP Coefficient: 0.22500
+                   Base Value: 1 | Scaled Value: 0 (avg=0.137) | SP Coefficient: 0.18000
 #2 (id=153992)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: 0 | Scaled Value: 0
 Description      : Deals $47960o1 Shadowflame damage over $47960d. Generates 2 Demonic Fury every time it deals damage.
@@ -1654,7 +1654,7 @@ Effects          :
 #2 (id=40332)    : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100
 #3 (id=40333)    : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
-                   Base Value: 35 | Scaled Value: 35
+                   Base Value: 30 | Scaled Value: 30
 #4 (id=159995)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 30 | Scaled Value: 30
                    Affected Spells: Corruption (172), Drain Life (689), Agony (980), Seed of Corruption (27243), Unstable Affliction (30108), Soul Swap (86121), Drain Soul (103103), Harvest Life (108371), Seed of Corruption (114790), Shadow Shield (115234), Unstable Affliction (131736), Agony (131737), Corruption (131740), Seed of Corruption (132566), Corruption (146739)
@@ -2443,7 +2443,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 104036 | Misc Value 2: 0x1e47f
 Description      : Your Banish spell is now red.
 
-Name             : Glyph of Life Tap (id=63320) [Spell Family (5), Passive, Hidden] 
+Name             : Glyph of Life Tap (Affliction, Demonology) (id=63320) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2784,7 +2784,7 @@ Attributes       : ........ ........ .......x ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=87492)    : School Damage: shadowflame (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.575) | SP Coefficient: 0.86000 | Radius: 0 - 6 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=0.575) | SP Coefficient: 0.68800 | Radius: 0 - 6 yards
 Description      : $@spelldesc105174
 
 Name             : Nethermancy (Passive) (id=86091) [Passive, Hidden] 
@@ -3098,8 +3098,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 157736 | Misc Value 2: 0x27fe0
 #31 (id=203685)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 148970 | Scaled Value: 148970 | Misc Value 2: 0x225d9
-#32 (id=203686)   : Apply Aura (6) | Unknown effect sub type (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 157701 | Misc Value 2: 0x1e642
+#32 (id=203686)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 157701 | Scaled Value: 157701
+                   Affected Spells: Chaos Bolt (116858)
 Description      : Corrupts all of your Warlock fire spells, infusing them with fel magic.
 
 Name             : Soul Harvest (id=101976) [Spell Family (5), Passive] 
@@ -3124,7 +3125,7 @@ Name             : Drain Soul (id=103103) [Spell Family (5)]
 Replaces         : Shadow Bolt (id=686)
 Class            : Affliction Warlock
 Resource         : 1.5% Base Mana (2400 @Level 100) and 1.5% Base Mana (2400 @Level 100) per second
-Spell Level      : 42
+Spell Level      : 24
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
@@ -3189,8 +3190,6 @@ Effects          :
 #11 (id=251500)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
                    Base Value: 60000 | Scaled Value: 60000 | Misc Value: 11
                    Affected Spells: Summon Imp (688), Summon Felhunter (691), Summon Voidwalker (697), Summon Succubus (712), Summon Voidwalker (25112), Summon Felguard (30146), Summon Fel Imp (112866), Summon Voidlord (112867), Summon Shivarra (112868), Summon Observer (112869), Summon Wrathguard (112870)
-#12 (id=251833)   : Apply Aura (6) | Periodic Dummy: every 0.2 seconds (226)
-                   Base Value: 0 | Scaled Value: 0
 Description      : Turn into a demon, transforming your Corruption, Hand of Gul'dan, Hellfire, and Shadowbolt into alternate improved abilities, and improving functionality of many other abilities.
 
 Also increases armor by $s3%.
@@ -3213,7 +3212,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=113200)   : School Damage: chaos (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.69030
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40000
 #2 (id=127331)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0
 Description      : Unleashes energy at the enemy, causing $s1 Chaos damage and extending the duration of Corruption.
@@ -3255,7 +3254,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=113307)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.42500
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.34000
 Description      : $@spelldesc6353
 
 Name             : Rain of Fire (id=104232) [Spell Family (5)] 
@@ -3363,7 +3362,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=113740)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.242, dl=0.05) | SP Coefficient: 0.18000
+                   Base Value: 1 | Scaled Value: 0 (avg=0.242, dl=0.05) | SP Coefficient: 0.14400
 #2 (id=113741)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=134300)   : Trigger Spell w/ Value: (104330) (142)
@@ -3684,7 +3683,7 @@ Cooldown         : 30 seconds
 Attributes       : ........ ........ ........ .....x..   ........ ..x..... ........ ..x..... 
                  : ........ ........ ........ ..x..x..   ........ ........ x....... ......x. 
                  : ........ ...x.... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x....   ........ ...x.... ........ ........ 
                  : ........ ....xx.. ........ .......x   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -4423,7 +4422,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 600 seconds
 Affecting spells : Metamorphosis (103958), Kil'jaeden's Cunning (137587), Demonic Servitude (152107)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ..x..... ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4543,11 +4542,11 @@ Name             : Demonic Gateway (id=113942)
 Class            : Warlock
 Duration         : 90 seconds
 Attributes       : ........ ........ .......x x.xx.x..   .....x.. ........ ........ ........ 
-                 : x..x.... ......x. ...x.... ........   ........ ........ ....x... ........ 
+                 : x..x.... ......x. ...x.... ........   ........ ........ ..x.x... ........ 
                  : .....x.x ........ .x.x.x.. ........   x..x.... ........ .xx..... ........ 
                  : ........ .x..x... .x...... ........   x....... ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ......x. ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x..x. ....x... ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=127009)   : Apply Aura (6) | Dummy (4)
                    Base Value: -1000000000 | Scaled Value: -1e+009 | Misc Value: 893
@@ -4596,7 +4595,7 @@ Class            : Destruction Warlock
 Resource         : 1 Burning Ember
 Spell Level      : 15
 GCD              : 1 seconds
-Affecting spells : Glyph of Ember Tap (63304), Mastery: Emberstorm (77220), Metamorphosis (103958), Kil'jaeden's Cunning (137587), Enhanced Ember Tap (157121)
+Affecting spells : Glyph of Ember Tap (63304), Mastery: Emberstorm (77220), Metamorphosis (103958), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4640,7 +4639,7 @@ Generates Burning Embers for each target hit. Critical strikes double this effec
 
 Name             : Disrupted Nether (id=114736) [Hidden] 
 Class            : Warlock
-Duration         : 60 seconds
+Duration         : 120 seconds
 Attributes       : .......x x....... .......x x.xx.x.x   .....x.. ..x..... ........ ....x... 
                  : x.x..... ......x. ...x.... ....x...   ........ ........ xx..x... ........ 
                  : .......x ........ .......x ........   ...x.... .....x.. .xx..... ........ 
@@ -5020,7 +5019,7 @@ Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 16 yards/sec
-Affecting spells : Item - Warlock T9 2P Bonus (67230), Havoc (80240), Metamorphosis (103958), Grimoire of Sacrifice (108503), Fire and Brimstone (108683), Chaotic Energy (111546), Backdraft (117828), Kil'jaeden's Cunning (137587), Dark Soul (138483), Enhanced Chaos Bolt (157103), Chaotic Infusion (170000), Chaotic Influx (171384)
+Affecting spells : Item - Warlock T9 2P Bonus (67230), Havoc (80240), The Codex of Xerrath (101508), Metamorphosis (103958), Grimoire of Sacrifice (108503), Fire and Brimstone (108683), Chaotic Energy (111546), Backdraft (117828), Kil'jaeden's Cunning (137587), Dark Soul (138483), Enhanced Chaos Bolt (157103), Chaotic Influx (171384)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5394,7 +5393,7 @@ Attributes       : ........ ........ .......x ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=158226)   : School Damage: chaos (2)
-                   Base Value: 100 | Scaled Value: 0 (avg=1) | SP Coefficient: 1.31280 | Radius: 0 - 6 yards
+                   Base Value: 100 | Scaled Value: 0 (avg=1) | SP Coefficient: 1.05000 | Radius: 0 - 6 yards
 #2 (id=165681)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
 Description      : $@spelldesc124916
@@ -5738,7 +5737,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=180662)   : Apply Aura (6) | Unknown effect sub type (330)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7
-                   Affected Spells: Eye of Kilrogg (126), Corruption (172), Immolate (348), Doom (603), Shadow Bolt (686), Summon Imp (688), Drain Life (689), Summon Felhunter (691), Summon Voidwalker (697), Banish (710), Summon Succubus (712), Health Funnel (755), Agony (980), Enslave Demon (1098), Summon Infernal (1122), Life Tap (1454), Hellfire (1949), Use Soulstone (3026), Firebolt (3110), Howl of Terror (5484), Rain of Fire (5740), Fear (5782), Hellfire (5857), Create Healthstone (6201), Healthstone (6262), Soul Fire (6353), Mortal Coil (6789), Shadowburn (17877), Conflagrate (17962), Summon Doomguard (18540), Immolation (20153), Soulstone (20707), Infernal Awakening (22703), Summon Voidwalker (25112), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Soulshatter (29858), Unstable Affliction (30108), Summon Felguard (30146), Shadowfury (30283), Unstable Affliction (31117), Soulshatter (32835), Rain of Fire (42223), Hand of Gul'dan (47960), Haunt (48181), Soulburn (74434), Havoc (80240), Doom Bolt (85692), Hand of Gul'dan (86040), Soul Swap (86121), Soul Swap (86211), Seed of Corruption (87385), Drain Life (89653), Soul Harvest (101976), Drain Soul (103103), Metamorphosis (103958), Touch of Chaos (103964), Immolation Aura (104025), Soul Fire (104027), Rain of Fire (104232), Rain of Fire (104233), Imp Swarm (104316), Fel Firebolt (104318), Unending Resolve (104773), Hand of Gul'dan (105174), Harvest Life (108371), Nightfall (108558), Fire and Brimstone (108683), Conflagrate (108685), Immolate (108686), Demonic Leap (109151), Dark Intent (109773), Demonic Gateway (111771), Summon Fel Imp (112866), Summon Voidlord (112867), Summon Shivarra (112868), Summon Observer (112869), Summon Wrathguard (112870), Summon Abyssal (112921), Summon Terrorguard (112927), Dark Soul: Instability (113858), Dark Soul: Misery (113860), Dark Soul: Knowledge (113861), Demonic Gateway (113886), Demonic Gateway (113890), Health Funnel (114189), Wild Imps (114592), Ember Tap (114635), Incinerate (114654), Seed of Corruption (114790), Shadow Shield (115234), Chaos Bolt (116858), Backdraft (117828), Fear (118699), Soul Swap (119678), Command Demon (119898), Flames of Xoroth (120451), Molten Core (122355), Chaos Wave (124915), Chaos Wave (124916), Unstable Affliction (131736), Agony (131737), Corruption (131740), Seed of Corruption (132566), Corruption (146739), Unending Resolve (148688), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Meteor Strike (171017), Meteor Strike (171018), Convert Demon (175984)
+                   Affected Spells: Eye of Kilrogg (126), Corruption (172), Immolate (348), Doom (603), Shadow Bolt (686), Summon Imp (688), Drain Life (689), Summon Felhunter (691), Summon Voidwalker (697), Banish (710), Summon Succubus (712), Health Funnel (755), Agony (980), Enslave Demon (1098), Summon Infernal (1122), Life Tap (1454), Hellfire (1949), Use Soulstone (3026), Firebolt (3110), Howl of Terror (5484), Rain of Fire (5740), Fear (5782), Hellfire (5857), Create Healthstone (6201), Healthstone (6262), Soul Fire (6353), Mortal Coil (6789), Shadowburn (17877), Conflagrate (17962), Summon Doomguard (18540), Immolation (20153), Soulstone (20707), Infernal Awakening (22703), Summon Voidwalker (25112), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Soulshatter (29858), Unstable Affliction (30108), Summon Felguard (30146), Shadowfury (30283), Unstable Affliction (31117), Soulshatter (32835), Rain of Fire (42223), Hand of Gul'dan (47960), Haunt (48181), Soulburn (74434), Havoc (80240), Doom Bolt (85692), Hand of Gul'dan (86040), Soul Swap (86121), Soul Swap (86211), Seed of Corruption (87385), Drain Life (89653), Soul Harvest (101976), Drain Soul (103103), Metamorphosis (103958), Touch of Chaos (103964), Immolation Aura (104025), Soul Fire (104027), Rain of Fire (104232), Rain of Fire (104233), Imp Swarm (104316), Fel Firebolt (104318), Unending Resolve (104773), Hand of Gul'dan (105174), Harvest Life (108371), Nightfall (108558), Fire and Brimstone (108683), Conflagrate (108685), Immolate (108686), Demonic Leap (109151), Dark Intent (109773), Demonic Gateway (111771), Summon Fel Imp (112866), Summon Voidlord (112867), Summon Shivarra (112868), Summon Observer (112869), Summon Wrathguard (112870), Summon Abyssal (112921), Summon Terrorguard (112927), Dark Soul: Instability (113858), Dark Soul: Misery (113860), Dark Soul: Knowledge (113861), Demonic Gateway (113886), Demonic Gateway (113890), Health Funnel (114189), Wild Imps (114592), Ember Tap (114635), Incinerate (114654), Seed of Corruption (114790), Shadow Shield (115234), Chaos Bolt (116858), Backdraft (117828), Fear (118699), Soul Swap (119678), Command Demon (119898), Flames of Xoroth (120451), Molten Core (122355), Chaos Wave (124915), Chaos Wave (124916), Unstable Affliction (131736), Agony (131737), Corruption (131740), Seed of Corruption (132566), Corruption (146739), Unending Resolve (148688), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Item - Warlock T17 Destruction 4P Dummy Proc Roller (170001), Meteor Strike (171017), Meteor Strike (171018), Convert Demon (175984)
 Description      : The cunning of Kil'jaeden allows you to move while casting Warlock spells for $d. Castable while casting other spells.
 Tooltip          : Able to move while casting Warlock spells that have a cast or channel time.
 
@@ -6019,8 +6018,8 @@ Range            : 40 yards
 Duration         : 18 seconds
 Affecting spells : Haunt (48181), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 2P Bonus (70839), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Chaotic Energy (111546), Item - Warlock T14 2P Bonus (123136), Kil'jaeden's Cunning (137587), Enhanced Corruption (157098), Haunting Spirits (157698), 
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
-                 : ........ .......x ....x... ........   ........ .....x.. ........ ........ 
+                 : ..x..... ........ ........ ........   ........ .x...... ........ ........ 
+                 : x....... .......x ....x... ........   ........ .....x.. ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6169,19 +6168,6 @@ Description      : Grants the Soulburn empowerment to your Haunt spell.
 
 Your Haunt spell also increases the damage of your damage over time effects to all targets by $157698s1% for $157698d.
 
-Name             : Improved Demons (id=157068) [Spell Family (5), Passive, Hidden] 
-Class            : Demonology Warlock
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=218884)   : Apply Aura (6) | Unknown effect sub type (429)
-                   Base Value: 20 | Scaled Value: 20
-Description      : Increases all damage done by your demon pets by $s1%.
-
 Name             : Empowered Drain Life (id=157069) [Spell Family (5), Passive] 
 Class            : Warlock
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6240,19 +6226,19 @@ Name             : Empowered Demons (id=157096) [Spell Family (5), Passive]
 Class            : Warlock
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=218932)   : Apply Aura (6) | Unknown effect sub type (381)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 4
-#2 (id=218933)   : Apply Aura (6) | Unknown effect sub type (381)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 21
-#3 (id=218934)   : Apply Aura (6) | Unknown effect sub type (381)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22
-#4 (id=218935)   : Apply Aura (6) | Unknown effect sub type (381)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 20
+#1 (id=218932)   : Unknown effect type (174) | Modify Critical Strike% (290)
+                   Base Value: 10 | Scaled Value: 10 | Radius: 100 yards
+#2 (id=218933)   : Unknown effect type (174) | Modify All Haste% (193)
+                   Base Value: 10 | Scaled Value: 10 | Radius: 100 yards
+#3 (id=254736)   : Apply Aura (6) | Modify Critical Strike% (290)
+                   Base Value: -10 | Scaled Value: -10
+#4 (id=254737)   : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: -10 | Scaled Value: -10
 Description      : Grants your demon pets an additional $s2% haste and $s1% critical strike chance.
 
 Name             : Enhanced Corruption (id=157098) [Spell Family (5), Passive] 
@@ -6322,9 +6308,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=218979)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20
-#2 (id=218980)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+#2 (id=218980)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22
-                   Affected Spells: Ember Tap (114635)
 Description      : Your Ember Tap also heals your pet demon for $s1% as much.
 
 Name             : Enhanced Havoc (id=157126) [Spell Family (5), Passive] 
@@ -6360,7 +6345,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219885)   : School Damage: chaos (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.50000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.50000
 #2 (id=245223)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 20 | Scaled Value: 20
                    Affected Spells: Demonbolt (157695)
@@ -6459,7 +6444,7 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 1447
 Description      : Reduces the duration and cooldown of Dark Soul by $s1%.
 
-Name             : Glyph of Life Pact (id=159669) [Spell Family (5), Passive, Hidden] 
+Name             : Glyph of Life Pact (Affliction, Demonology) (id=159669) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
