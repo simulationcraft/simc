@@ -10,7 +10,7 @@ spec=arms
 role=attack
 position=back
 professions=engineering=600/blacksmithing=600
-talents=233122
+talents=231122
 glyphs=unending_rage/death_from_above/sweeping_strikes/resonating_power
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=capacitive_primal_16crit_8haste_8crit_9str
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
@@ -39,7 +39,7 @@ spec=fury
 role=attack
 position=back
 professions=engineering=600/blacksmithing=600
-talents=233323
+talents=233322
 glyphs=unending_rage/death_from_above/bull_rush
 
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=capacitive_primal_16crit_8haste_8crit_9str
@@ -69,7 +69,7 @@ spec=fury
 role=attack
 position=back
 professions=engineering=600/blacksmithing=600
-talents=233123
+talents=233122
 glyphs=unending_rage/death_from_above/bull_rush
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=capacitive_primal_16crit_8haste_8crit_9str
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2

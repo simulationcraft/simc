@@ -2653,7 +2653,7 @@ call_action_list_t::call_action_list_t( player_t* player, const std::string& opt
 
   if ( randomtoggle == 1 )
   {
-  alist -> random = randomtoggle;
+    alist -> random = randomtoggle;
   }
 
   if ( ! alist )
