@@ -2759,6 +2759,8 @@ struct frostfire_bolt_t : public mage_spell_t
       am *= ( 1.0 + p() -> buffs.frozen_thoughts -> data().effectN( 1 ).percent() );
     }
 
+    am *= 1.0 + p() -> find_spell( 44549 ) -> effectN( 3 ).percent();
+
     return am;
   }
 
@@ -3136,7 +3138,7 @@ struct meteor_impact_t : public mage_spell_t
     // Sp_Coeff is stored in 153564 for the impact
     parse_spell_data( *p -> dbc.spell( 155158 ) );
     spell_power_mod.direct = p -> find_spell( 153564 ) -> effectN( 1 ).sp_coeff();
-    dot_duration = timespan_t::from_seconds( 8.0 );
+    dot_duration = timespan_t::from_seconds( 7.0 );
     hasted_ticks = may_miss = false;
     targets_hit = targets;
     may_crit = tick_may_crit = split_aoe_damage = dual = true;
@@ -3436,12 +3438,6 @@ struct pyroblast_t : public mage_spell_t
     {
       am *= 1.25;
     }
-
-    if ( p() -> new_sets.has_set_bonus( SET_CASTER, T14, B2 ) )
-    {
-      am *= 1.08;
-    }
-
     return am;
   }
 
