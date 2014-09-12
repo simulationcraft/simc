@@ -6562,7 +6562,6 @@ void death_knight_t::reset()
   t16_tank_2pc_driver = 0;
 
   runic_power_decay_rate = 1; // 1 RP per second decay
-  fallen_crusader = 0.15;
   blood_charge_counter = 0;
   shadow_infusion_counter = 0;
 
@@ -6719,7 +6718,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
   if ( attr == ATTR_STRENGTH )
   {
     if ( runeforge.rune_of_the_fallen_crusader -> up() )
-      m *= 1.0 + fallen_crusader; // Will remove later - Collision
+      m *= 1.0 + fallen_crusader; // Will remove later, 
     m *= 1.0 + buffs.pillar_of_frost -> value();
   }
   else if ( attr == ATTR_STAMINA )
