@@ -3727,20 +3727,22 @@ void hunter_t::apl_surv()
   }
 
   default_list -> add_action( this, "Explosive Trap", "if=active_enemies>1" );
-  default_list -> add_talent( this, "Fervor", "if=focus<=50" );
-  default_list -> add_talent( this, "A Murder of Crows" );
+  default_list -> add_action( this, "Black Arrow", "if=!ticking" );
+  default_list -> add_action( this, "Arcane Shot", "if=buff.lock_and_load.react&focus.time_to_max<=gcd" );
   default_list -> add_action( this, "Explosive Shot" );
+  default_list -> add_talent( this, "A Murder of Crows" );
+  default_list -> add_talent( this, "Dire Beast" );
   default_list -> add_talent( this, "Glaive Toss" );
   default_list -> add_talent( this, "Powershot" );
   default_list -> add_talent( this, "Barrage" );
-  default_list -> add_action( this, "Black Arrow", "if=!ticking" );
   default_list -> add_action( this, "Multi-Shot" , "if=active_enemies>3" );
-  default_list -> add_talent( this, "Focusing Shot", "if=focus<50" );
   default_list -> add_action( this, "Arcane Shot", "if=buff.thrill_of_the_hunt.react" );
-  default_list -> add_talent( this, "Dire Beast" );
   default_list -> add_talent( this, "Stampede", "if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))" );
+  default_list -> add_action( this, "Cobra Shot","if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&focus+14+8*(1+buff.steady_focus.value)<80" );
   default_list -> add_action( this, "Arcane Shot", "if=focus>=67&active_enemies<2" );
+  default_list -> add_action( this, "Arcane Shot", "if=talent.focusing_shot.enabled&active_enemies<2" );
   default_list -> add_action( this, "Multi-Shot", "if=focus>67&active_enemies>1" );
+  default_list-> add_talent( this, "Focusing Shot" );
   if ( level >= 81 )
     default_list -> add_action( this, "Cobra Shot" );
   else
