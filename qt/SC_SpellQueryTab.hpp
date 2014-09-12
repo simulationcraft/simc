@@ -36,6 +36,10 @@ public:
 
   struct labels_t
   {
+    QLabel* source;
+    QLabel* filter;
+    QLabel* operatorString;
+    QLabel* arg;
     QLabel* input;
     QLabel* output;
   } label;

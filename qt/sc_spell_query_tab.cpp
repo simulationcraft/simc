@@ -30,7 +30,8 @@ const QString sources[] =
   "glyph",
   "set_bonus",
   "effect",
-  "perk_spell"
+  "perk_spell",
+  NULL
 };
 
 const FilterEntry filters[] = 
@@ -77,10 +78,10 @@ const FilterEntry filters[] =
 };
 
 const QString numericOperators[] = 
-{ "==", "!=", "\>", "\<", "\>=", "\<=", NULL };
+{ "==", "!=", ">", "<", "\>=", "\<=", NULL };
 
 const QString stringOperators[] = 
-{ "==", "!=", "\~", "\!~", NULL };
+{ "==", "!=", "~", "!~", NULL };
 
 QComboBox* createChoiceFromRange( int lowerInclusive, int upperInclusive ) {
   QComboBox* choice = new QComboBox();
@@ -105,7 +106,7 @@ QComboBox* createChoice( int count, ... )
 QComboBox* createChoiceFromList( const QString list[] )
 {
   QComboBox* choice = new QComboBox();
-  for ( int i = 0; i < list -> length(); i++ )
+  for ( int i = 0; list[ i ].length() > 0; i++ )
   {
     choice -> addItem( list[ i ] );
   }
@@ -158,29 +159,48 @@ SC_SpellQueryTab::SC_SpellQueryTab( SC_MainWindow* parent ) :
   gridLayout -> addWidget( inputGroupBox, 1, 0, 0 );
 
   // Layout of the groupbox
-  QFormLayout* inputGroupBoxLayout = new QFormLayout();
-  inputGroupBoxLayout -> setFieldGrowthPolicy( QFormLayout::ExpandingFieldsGrow );
+  QGridLayout* inputGroupBoxLayout = new QGridLayout();
+  //inputGroupBoxLayout -> setFieldGrowthPolicy( QFormLayout::ExpandingFieldsGrow );
 
 
-  // Add a combo box
+  // Add a combo box and label
+  label.source = new QLabel( tr( "data source" ) );
   choice.source = createChoiceFromList( sources );
-  inputGroupBoxLayout -> addRow( tr( "spell qualifier" ), choice.source );
+  inputGroupBoxLayout -> addWidget( label.source,  0, 0 );
+  inputGroupBoxLayout -> addWidget( choice.source, 1, 0 );
 
   // add another combo box
+  label.filter = new QLabel( tr( "filter" ) );
   choice.filter = createChoice( 2, "1", "2" );
-  inputGroupBoxLayout -> addRow( tr( "filter" ), choice.filter );
+  inputGroupBoxLayout -> addWidget( label.filter,  0, 1 );
+  inputGroupBoxLayout -> addWidget( choice.filter, 1, 1 );
 
   // add a combo box for operators
+  label.operatorString = new QLabel( tr( "operator" ) );
   choice.operatorString = createChoice( 2, "1", "2" );
-  inputGroupBoxLayout -> addRow( tr( "operator" ), choice.operatorString );
+  inputGroupBoxLayout -> addWidget( label.operatorString,  0, 2 );
+  inputGroupBoxLayout -> addWidget( choice.operatorString, 1, 2 );
 
   // initialize the filter and operator combo boxes
   sourceTypeChanged( choice.source -> currentIndex() );
   filterTypeChanged( choice.filter -> currentIndex() );
 
   // add a line edit for text input
+  label.arg = new QLabel( tr( "argument" ) );
   textbox.arg = new QLineEdit;
-  inputGroupBoxLayout -> addRow( tr( "argument" ), textbox.arg );
+  inputGroupBoxLayout -> addWidget( label.arg,   0, 3 );
+  inputGroupBoxLayout -> addWidget( textbox.arg, 1, 3 );
+
+  // Checkbox for save to file goes here
+
+  // Line edit for filename goes here
+  
+
+  // this adjusts the relative width of each column
+  //inputGroupBoxLayout -> setColumnStretch( 0, 2 );
+  //inputGroupBoxLayout -> setColumnStretch( 1, 2 );
+  //inputGroupBoxLayout -> setColumnStretch( 2, 2 );
+  //inputGroupBoxLayout -> setColumnStretch( 3, 5 );
 
   // apply the layout to the group box
   inputGroupBox -> setLayout( inputGroupBoxLayout );
@@ -190,12 +210,12 @@ SC_SpellQueryTab::SC_SpellQueryTab( SC_MainWindow* parent ) :
   textbox.result = new SC_TextEdit;
   textbox.result -> setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   textbox.result -> setLineWrapMode( SC_TextEdit::WidgetWidth );
-  gridLayout -> addWidget( label.output, 0, 1, 0 );
-  gridLayout -> addWidget( textbox.result, 1, 1, 0 );
+  gridLayout -> addWidget( label.output, 2, 0, 0 );
+  gridLayout -> addWidget( textbox.result, 3, 0, 0 );
   
   // this adjusts the relative width of each column
-  gridLayout -> setColumnStretch( 0, 1 );
-  gridLayout -> setColumnStretch( 1, 3 );
+  //gridLayout -> setColumnStretch( 0, 1 );
+  //gridLayout -> setColumnStretch( 1, 3 );
 
   setLayout( gridLayout );
 
@@ -215,7 +235,9 @@ void SC_SpellQueryTab::run_spell_query()
   if ( choice.filter -> currentText() != filters[ 0 ].name )
     command += "." + choice.filter -> currentText();
   command += choice.operatorString -> currentText();
-  command += textbox.arg -> text();
+  std::string arg = textbox.arg -> text().toStdString();
+  util::tokenize( arg );
+  command += QString::fromStdString( arg );
 
   // set the command line (mostly so we can see the query)
   mainWindow -> cmdLine -> setCommandLineText( command );
