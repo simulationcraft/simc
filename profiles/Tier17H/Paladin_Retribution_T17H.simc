@@ -1,4 +1,4 @@
-paladin="Paladin_Retribution_T17N"
+paladin="Paladin_Retribution_T17H"
 level=100
 race=blood_elf
 role=hybrid
@@ -38,7 +38,7 @@ actions+=/holy_avenger,sync=seraphim,if=talent.seraphim.enabled
 actions+=/holy_avenger,if=holy_power<=2&!talent.seraphim.enabled
 actions+=/avenging_wrath,sync=seraphim,if=talent.seraphim.enabled
 actions+=/avenging_wrath,if=!talent.seraphim.enabled
-actions+=/use_item,name=primal_gladiators_badge_of_victory
+actions+=/use_item,name=pvial_of_convulsive_shadows
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
@@ -93,12 +93,13 @@ trinket2=pvial_of_convulsive_shadows,id=113969,bonus_id=566/448
 main_hand=thogars_control_rod,id=113953,bonus_id=566/448,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_strength=2588
-# gear_stamina=3250
-# gear_crit_rating=493
-# gear_haste_rating=1017
-# gear_mastery_rating=918
-# gear_armor=2020
-# gear_multistrike_rating=733
-# set_bonus=pvp_2pc=1
-# set_bonus=pvp_4pc=1
+# gear_strength=3240
+# gear_stamina=4059
+# gear_crit_rating=616
+# gear_haste_rating=1763
+# gear_mastery_rating=892
+# gear_armor=2169
+# gear_multistrike_rating=223
+# gear_versatility_rating=309
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1

@@ -28,7 +28,6 @@ actions.precombat+=/snapshot_stats
 
 actions=/auto_attack
 actions+=/speed_of_light,if=movement.remains>1
-actions+=//use_item,name=primal_gladiators_badge_of_victory
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
@@ -51,29 +50,32 @@ actions+=/consecration,if=target.debuff.flying.down&!ticking
 actions+=/holy_prism
 actions+=/sacred_shield
 
-head=helmet_of_guiding_light,id=115568,bonus_id=0
+head=helmet_of_guiding_light,id=115568
 neck=vertebrae_protector,id=113900,bonus_id=448,enchant=gift_of_haste
 shoulders=unstable_slag_shoulderplates,id=113884,bonus_id=448
 back=charbreath_firecloak,id=11391,bonus_id=448,enchant=gift_of_haste
-chest=battleplate_of_guiding_light,id=115566,bonus_id=0
+chest=battleplate_of_guiding_light,id=115566
 wrists=bracers_of_visceral_force,id=119331,bonus_id=448
-hands=gauntlets_of_guiding_light,id=115567,bonus_id=0
+hands=gauntlets_of_guiding_light,id=115567
 waist=uktars_belt_of_chiming_rings,id=113976,bonus_id=448
-legs=legplates_of_guiding_light,id=115569,bonus_id=0
+legs=legplates_of_guiding_light,id=115569
 feet=sabatons_of_fractal_earth,id=113936,bonus_id=448
 finger1=seal_of_unquenchable_flame,id=113922,bonus_id=448,enchant=gift_of_haste
 finger2=phosphorescent_seal,id=113866,bonus_id=448,enchant=gift_of_haste
-trinket1=forgemaster's_insignia,id=113983,bonus_id=448
+trinket1=forgemasters_insignia,id=113983,bonus_id=448
 trinket2=horn_of_screaming_spirits,id=119193,bonus_id=448
 main_hand=kromogs_brutal_fist,id=113927,bonus_id=448,enchant=mark_of_warsong
 off_hand=kromogs_protecting_palm,id=113926,bonus_id=448
 
 # Gear Summary
-# gear_strength=need to recalculate
-# gear_stamina=need to recalculate
-# gear_crit_rating=need to recalculate
-# gear_haste_rating=need to recalculate
-# gear_mastery_rating=need to recalculate
-# gear_armor=need to recalculate
-# gear_multistrike_rating=need to recalculate
-# gear_versatility_rating=need to recalculate
+# gear_strength=2678
+# gear_stamina=3316
+# gear_crit_rating=483
+# gear_haste_rating=1096
+# gear_mastery_rating=659
+# gear_armor=2783
+# gear_bonus_armor=96
+# gear_multistrike_rating=540
+# gear_versatility_rating=192
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1
