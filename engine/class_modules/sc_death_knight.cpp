@@ -182,7 +182,7 @@ public:
   double    runic_power_decay_rate;
   double    blood_charge_counter;
   double    shadow_infusion_counter;
-  double    fallen_crusader;
+  double    fallen_crusader, fallen_crusader_rppm;
   // Buffs
   struct buffs_t
   {
@@ -447,6 +447,7 @@ public:
     t16_tank_2pc_driver(),
     runic_power_decay_rate(),
     fallen_crusader( find_spell( 53365 ) -> effectN( 1 ).percent() ),
+    fallen_crusader_rppm( find_spell( 166441 ) -> real_ppm() ),
     buffs( buffs_t() ),
     runeforge( runeforge_t() ),
     active_spells( active_spells_t() ),
@@ -6257,6 +6258,9 @@ void runeforge::fallen_crusader( special_effect_t& effect,
   if ( ! b )
     return;
 
+  const death_knight_t* dk = debug_cast<const death_knight_t*>( item.player );
+
+  effect.ppm_ = -1.0 * dk -> fallen_crusader_rppm;
   effect.custom_buff = b;
 
   new dbc_proc_callback_t( item, effect );
@@ -6953,6 +6957,7 @@ void death_knight_t::create_options()
   option_t death_knight_options[] =
   {
     opt_float( "fallen_crusader_str", fallen_crusader ),
+    opt_float( "fallen_crusader_rppm", fallen_crusader_rppm ),
     opt_null()
   };
 
