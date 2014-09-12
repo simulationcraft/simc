@@ -182,7 +182,7 @@ public:
   double    runic_power_decay_rate;
   double    blood_charge_counter;
   double    shadow_infusion_counter;
-
+  double    fallen_crusader;
   // Buffs
   struct buffs_t
   {
@@ -446,6 +446,7 @@ public:
     active_presence(),
     t16_tank_2pc_driver(),
     runic_power_decay_rate(),
+    fallen_crusader( 0.15 ),
     buffs( buffs_t() ),
     runeforge( runeforge_t() ),
     active_spells( active_spells_t() ),
@@ -512,6 +513,7 @@ public:
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
+  virtual void      create_options();
   virtual resource_e primary_resource() const { return RESOURCE_RUNIC_POWER; }
   virtual role_e    primary_role() const;
   virtual stat_e    convert_hybrid_stat( stat_e s ) const;
@@ -6560,6 +6562,7 @@ void death_knight_t::reset()
   t16_tank_2pc_driver = 0;
 
   runic_power_decay_rate = 1; // 1 RP per second decay
+  fallen_crusader = 0.15;
   blood_charge_counter = 0;
   shadow_infusion_counter = 0;
 
@@ -6716,7 +6719,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
   if ( attr == ATTR_STRENGTH )
   {
     if ( runeforge.rune_of_the_fallen_crusader -> up() )
-      m *= 1.0 + runeforge.rune_of_the_fallen_crusader -> data().effectN( 1 ).percent();
+      m *= 1.0 + fallen_crusader; // Will remove later - Collision
     m *= 1.0 + buffs.pillar_of_frost -> value();
   }
   else if ( attr == ATTR_STAMINA )
@@ -6940,6 +6943,21 @@ role_e death_knight_t::primary_role() const
     return ROLE_ATTACK;
 
   return ROLE_ATTACK;
+}
+
+// death_knight_t::create_options ================================================
+
+void death_knight_t::create_options()
+{
+  player_t::create_options();
+
+  option_t death_knight_options[] =
+  {
+    opt_float( "fallen_crusader_str", fallen_crusader ),
+    opt_null()
+  };
+
+  option_t::copy( options, death_knight_options );
 }
 
 // death_knight_t::convert_hybrid_stat ==============================================
