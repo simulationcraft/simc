@@ -1,4 +1,4 @@
-paladin="Paladin_Protection_T17H"
+paladin="Paladin_Protection_T17N"
 level=100
 race=blood_elf
 role=tank
@@ -51,29 +51,29 @@ actions+=/consecration,if=target.debuff.flying.down&!ticking
 actions+=/holy_prism
 actions+=/sacred_shield
 
-head=primal_gladiators_plate_helm,id=111211
-neck=primal_gladiators_choker_of_cruelty,id=111207,enchant=gift_of_haste
-shoulders=primal_gladiators_plate_shoulders,id=111213
-back=primal_gladiators_cloak_of_prowess,id=111206,enchant=gift_of_haste
-chest=primal_gladiators_plate_chestpiece,id=111209
-wrists=primal_gladiators_armplates_of_victory,id=111182
-hands=primal_gladiators_plate_gauntlets,id=111210
-waist=primal_gladiators_girdle_of_cruelty,id=111174
-legs=primal_gladiators_plate_legguards,id=111212
-feet=primal_gladiators_warboots_of_prowess,id=111178
-finger1=primal_gladiators_signet_of_cruelty,id=111219,enchant=gift_of_haste
-finger2=primal_gladiators_signet_of_accuracy,id=111220,enchant=gift_of_haste
-trinket1=primal_gladiators_badge_of_victory,id=111232
-trinket2=primal_gladiators_insignia_of_victory,id=111233
-main_hand=primal_gladiators_hacker,id=111198,enchant=mark_of_warsong
-off_hand=primal_gladiators_shield_wall,id=111221
+head=helmet_of_guiding_light,id=115568,bonus_id=566
+neck=vertebrae_protector,id=113900,bonus_id=566/448,enchant=gift_of_haste
+shoulders=unstable_slag_shoulderplates,id=113884,bonus_id=566/448
+back=charbreath_firecloak,id=11391,bonus_id=566/448,enchant=gift_of_haste
+chest=battleplate_of_guiding_light,id=115566,bonus_id=566
+wrists=bracers_of_visceral_force,id=119331,bonus_id=566/448
+hands=gauntlets_of_guiding_light,id=115567,bonus_id=566
+waist=uktars_belt_of_chiming_rings,id=113976,bonus_id=566/448
+legs=legplates_of_guiding_light,id=115569,bonus_id=566
+feet=sabatons_of_fractal_earth,id=113936,bonus_id=566/448
+finger1=seal_of_unquenchable_flame,id=113922,bonus_id=566/448,enchant=gift_of_haste
+finger2=phosphorescent_seal,id=113866,bonus_id=566/448,enchant=gift_of_haste
+trinket1=forgemaster's_insignia,id=113983,bonus_id=566/448
+trinket2=horn_of_screaming_spirits,id=119193,bonus_id=566/448
+main_hand=kromogs_brutal_fist,id=113927,bonus_id=566/448,enchant=mark_of_warsong
+off_hand=kromogs_protecting_palm,id=113926,bonus_id=566/448
 
 # Gear Summary
-# gear_strength=2584
-# gear_stamina=3245
-# gear_crit_rating=1011
-# gear_haste_rating=645
-# gear_mastery_rating=576
-# gear_armor=2783
-# gear_multistrike_rating=701
-# gear_versatility_rating=224
+# gear_strength=need to recalculate
+# gear_stamina=need to recalculate
+# gear_crit_rating=need to recalculate
+# gear_haste_rating=need to recalculate
+# gear_mastery_rating=need to recalculate
+# gear_armor=need to recalculate
+# gear_multistrike_rating=need to recalculate
+# gear_versatility_rating=need to recalculate

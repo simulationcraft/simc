@@ -76,21 +76,21 @@ actions+=/templars_verdict,if=(!talent.seraphim.enabled|cooldown.seraphim.remain
 actions+=/final_verdict
 actions+=/holy_prism
 
-head=primal_gladiators_scaled_helm,id=111171
-neck=primal_gladiators_choker_of_prowess,id=111208,enchant=gift_of_mastery
-shoulders=primal_gladiators_plate_shoulders,id=111213
-back=primal_gladiators_cloak_of_cruelty,id=111205,enchant=gift_of_mastery
-chest=primal_gladiators_scaled_chestpiece,id=111169
-wrists=primal_gladiators_armplates_of_cruelty,id=111180
-hands=primal_gladiators_scaled_gauntlets,id=111170
-waist=primal_gladiators_girdle_of_prowess,id=111175
-legs=primal_gladiators_scaled_legguards,id=111172
-feet=primal_gladiators_warboots_of_prowess,id=111178
-finger1=primal_gladiators_signet_of_cruelty,id=111219,enchant=gift_of_mastery
-finger2=primal_gladiators_signet_of_accuracy,id=111220,enchant=gift_of_mastery
-trinket1=primal_gladiators_badge_of_victory,id=111232
-trinket2=primal_gladiators_insignia_of_victory,id=111233
-main_hand=primal_gladiators_greatsword,id=111204,enchant=mark_of_bleeding_hollow
+head=helmet_of_guiding_light,id=115568,bonus_id=0
+neck=vertebrae_protector,id=113900,bonus_id=448,enchant=gift_of_haste
+shoulders=pauldrons_of_guiding_light,id=115565,bonus_id=0
+back=charbreath_firecloak,id=113916,bonus_id=448,enchant=gift_of_haste
+chest=battleplate_of_guiding_light,id=115566,bonus_id=0
+wrists=bracers_of_martial_perfection,id=113871,bonus_id=448
+hands=gauntlets_of_guiding_light,id=115567,bonus_id=0
+waist=uktars_belt_of_chiming_rings,id=113976,bonus_id=448
+legs=firestorm_legplates,id=113921,bonus_id=448
+feet=iron_bellow_sabatons,id=113961,bonus_id=448
+finger1=phosphorescent_seal,id=113866,bonus_id=448,enchant=gift_of_haste
+finger2=ransackers_ring_of_plunder,id=118868,bonus_id=448,enchant=gift_of_haste
+trinket1=forgemasters_insignia,id=113983,bonus_id=448
+trinket2=pvial_of_convulsive_shadows,id=113969,bonus_id=448
+main_hand=thogars_control_rod,id=113953,bonus_id=448,enchant=mark_of_warsong
 
 # Gear Summary
 # gear_strength=2588
