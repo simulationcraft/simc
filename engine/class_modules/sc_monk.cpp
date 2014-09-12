@@ -698,14 +698,15 @@ public:
       int stacks = base_stacks;
       // Look through each ability stack and test against mastery value for extra stack
       for (int x = 0; x < base_stacks; ++x){
-        stacks += (ab::rng().roll( p() -> cache.mastery_value() )) ? 1 : 0;
+        stacks += ( ab::rng().roll( p() -> cache.mastery_value() ) ) ? 1 : 0;
       }
       p() -> buff.tigereye_brew -> trigger( stacks );
     }
     else if ( p() -> spec.brewing_elusive_brew -> ok() )
       p() -> buff.elusive_brew_stacks -> trigger( base_stacks );
 
-    else if ( p() -> spec.brewing_mana_tea -> ok() )
+    else if (p()->spec.brewing_mana_tea->ok())
+    {
       // Manatee
       //                      _.---.._
       //     _        _.-'         ''-.
@@ -714,9 +715,12 @@ public:
       //   '._ .-'  '-._         \  \-  ---]
       //                 '-.___.-')  )..-'
       //                          (_/
-      if (ab::rng().roll( p() -> cache.spell_crit() ) )
-        base_stacks *= 2;
-      p() -> buff.mana_tea -> trigger( base_stacks );
+      int stacks = base_stacks;
+      for (int x = 0; x < base_stacks; ++x) {
+        stacks += ( ab::rng().roll( p() -> cache.spell_crit() ) ) ? 1 : 0;
+      }
+      p() -> buff.mana_tea -> trigger( stacks );
+    }
   }
 
   virtual void consume_resource()
