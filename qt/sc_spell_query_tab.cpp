@@ -78,7 +78,7 @@ const FilterEntry filters[] =
 };
 
 const QString numericOperators[] = 
-{ "==", "!=", ">", "<", "\>=", "\<=", NULL };
+{ "==", "!=", ">", "<", ">=", "<=", NULL };
 
 const QString stringOperators[] = 
 { "==", "!=", "~", "!~", NULL };
@@ -144,6 +144,18 @@ void SC_SpellQueryTab::filterTypeChanged( const int filter_index )
     }
 }
 
+void SC_SpellQueryTab::browseForFile()
+{
+  QString directory = QFileDialog::getSaveFileName( this, tr( "Choose File" ), QDir::currentPath() + "/query.txt", tr( "Text files (*.txt *.simc)" ) );
+
+  if ( ! directory.isEmpty() )
+  {
+    if ( choice.directory -> findText( directory ) == -1 )
+      choice.directory -> addItem( directory );
+    choice.directory -> setCurrentIndex( choice.directory -> findText( directory ) );
+  }
+}
+
 SC_SpellQueryTab::SC_SpellQueryTab( SC_MainWindow* parent ) :
   QWidget( parent ), mainWindow( parent )
 {
@@ -191,10 +203,23 @@ SC_SpellQueryTab::SC_SpellQueryTab( SC_MainWindow* parent ) :
   inputGroupBoxLayout -> addWidget( label.arg,   0, 3 );
   inputGroupBoxLayout -> addWidget( textbox.arg, 1, 3 );
 
-  // Checkbox for save to file goes here
+  // random label to use as a spacer
+  QLabel* dummy = new QLabel( tr( "   " ) );
+  inputGroupBoxLayout -> addWidget( dummy, 2, 0 );
 
-  // Line edit for filename goes here
-  
+  // Checkbox for save to file goes here
+  choice.saveToFile = new QCheckBox( "Save to file?" );
+  inputGroupBoxLayout -> addWidget( choice.saveToFile, 3, 1 );
+
+  // push button for browsing to find a file
+  button.save = new QPushButton( "Browse" );
+  connect( button.save, SIGNAL( clicked() ), SLOT( browseForFile() ) );
+  inputGroupBoxLayout -> addWidget( button.save, 3, 2 );
+
+  // Editable Combo Box for filename
+  choice.directory = new QComboBox;
+  choice.directory -> setEditable( true );
+  inputGroupBoxLayout -> addWidget( choice.directory, 3, 3 );
 
   // this adjusts the relative width of each column
   //inputGroupBoxLayout -> setColumnStretch( 0, 2 );
@@ -205,7 +230,7 @@ SC_SpellQueryTab::SC_SpellQueryTab( SC_MainWindow* parent ) :
   // apply the layout to the group box
   inputGroupBox -> setLayout( inputGroupBoxLayout );
 
-  // Column 1 is the text output box
+  // text output box
   label.output = new QLabel( tr( "Output" ) );
   textbox.result = new SC_TextEdit;
   textbox.result -> setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
@@ -244,6 +269,22 @@ void SC_SpellQueryTab::run_spell_query()
   
   // call the sim - results will be stuffed back into textbox in SC_MainWindow::deleteSim()
   mainWindow -> simulationQueue.enqueue( "Spell Query", "", command );
+}
+
+void SC_SpellQueryTab::checkForSave()
+{
+  // save to file
+  if ( choice.saveToFile -> isChecked() )
+  {
+    QFile file( choice.directory -> currentText() );
+    // if the file can't be opened, skip
+    if ( ! file.open( QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text ) )
+      return;
+    QTextStream ts( &file );
+
+    ts << textbox.result -> document() -> toPlainText();
+    file.close();
+  }
 }
 
 
@@ -303,7 +344,14 @@ void SC_SpellQueryTab::encodeSettings()
   settings.setValue( "filter", choice.filter -> currentText() );
   settings.setValue( "operatorString", choice.operatorString -> currentIndex() );
   settings.setValue( "arg", textbox.arg -> text() );
+
+  QStringList directories;
+  for ( int i = 0; i < choice.directory -> count(); i++ )
+    directories.append( choice.directory -> itemText( i ) );
+  settings.setValue( "directory", directories );
   
+  settings.setValue( "saveCheckBox", choice.saveToFile -> isChecked() );
+
   QString encoded;
 
   settings.endGroup(); // end group "options"
@@ -324,6 +372,12 @@ void SC_SpellQueryTab::decodeSettings()
   load_setting( settings, "filter", choice.filter );
   load_setting( settings, "operatorString", choice.operatorString );
   load_setting( settings, "arg", textbox.arg );
+
+  QStringList directories = settings.value( "directory" ).toStringList();
+  for ( int i = 0; i < directories.count(); i++ )
+    choice.directory -> addItems( directories );
+
+  choice.saveToFile -> setChecked( settings.value( "saveCheckBox" ).toBool() );
 
   settings.endGroup();
 }

@@ -1035,7 +1035,10 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
     }
     logText -> resetformat();
     if ( mainTab -> currentTab() == TAB_SPELLQUERY )
+    {
       spellQueryTab -> textbox.result -> setText( contents );
+      spellQueryTab -> checkForSave();
+    }
   }
 }
 
