@@ -9965,7 +9965,7 @@ action_t* player_t::select_action( const action_priority_list_t& list )
 
     if ( list.random == 1 )
     {
-      random = std::floor( rng().range( 0, static_cast<int>(num_actions) ) );
+      random = static_cast<size_t>(std::floor( rng().range( 0, static_cast<int>( num_actions ) ) ) );
       a = list.foreground_action_list[random];
     }
 

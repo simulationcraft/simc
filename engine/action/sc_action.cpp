@@ -1923,7 +1923,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       { }
 
       double evaluate()
-      { return action.target -> actor_index; }
+      { return static_cast<double>( action.target -> actor_index ); }
     };
     return new target_expr_t( *this );
   }

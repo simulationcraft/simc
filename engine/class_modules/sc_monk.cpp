@@ -695,7 +695,7 @@ public:
   {
     if ( p() -> spec.brewing_tigereye_brew -> ok() )
     {
-      int stacks = base_stacks;
+      int stacks = static_cast<int>(base_stacks);
       // Look through each ability stack and test against mastery value for extra stack
       for (int x = 0; x < base_stacks; ++x){
         stacks += ( ab::rng().roll( p() -> cache.mastery_value() ) ) ? 1 : 0;
@@ -703,7 +703,7 @@ public:
       p() -> buff.tigereye_brew -> trigger( stacks );
     }
     else if ( p() -> spec.brewing_elusive_brew -> ok() )
-      p() -> buff.elusive_brew_stacks -> trigger( base_stacks );
+      p() -> buff.elusive_brew_stacks -> trigger( static_cast<int>(base_stacks) );
 
     else if (p()->spec.brewing_mana_tea->ok())
     {
@@ -714,8 +714,8 @@ public:
       //  (       _                     o  :
       //   '._ .-'  '-._         \  \-  ---]
       //                 '-.___.-')  )..-'
-      //                          (_/
-      int stacks = base_stacks;
+      //                          (_/lame
+      int stacks = static_cast<int>(base_stacks);
       for (int x = 0; x < base_stacks; ++x) {
         stacks += ( ab::rng().roll( p() -> cache.spell_crit() ) ) ? 1 : 0;
       }
