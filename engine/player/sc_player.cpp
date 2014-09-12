@@ -9959,7 +9959,15 @@ action_t* player_t::select_action( const action_priority_list_t& list )
   for ( size_t i = 0, num_actions = list.foreground_action_list.size(); i < num_actions; ++i )
   {
     visited_apls_ = _visited;
-    action_t* a = list.foreground_action_list[ i ];
+    size_t random;
+
+    action_t* a = list.foreground_action_list[i];
+
+    if ( list.random == 1 )
+    {
+      random = std::floor( rng().range( 0, static_cast<int>(num_actions) ) );
+      a = list.foreground_action_list[random];
+    }
 
     if ( a -> background ) continue;
 

@@ -6817,9 +6817,10 @@ struct action_priority_list_t
   bool used;
   std::vector<action_t*> foreground_action_list;
   std::vector<action_t*> off_gcd_actions;
+  int random; // Used to determine how faceroll something actually is. :D
   action_priority_list_t( std::string name, player_t* p, const std::string& list_comment = std::string() ) :
     internal_id( 0 ), internal_id_mask( 0 ), name_str( name ), action_list_comment_str( list_comment ), player( p ), used( false ),
-    foreground_action_list( 0 ), off_gcd_actions( 0 )
+    foreground_action_list( 0 ), off_gcd_actions( 0 ), random( 0 )
   { }
 
   action_priority_t* add_action( const std::string& action_priority_str, const std::string& comment = std::string() );
