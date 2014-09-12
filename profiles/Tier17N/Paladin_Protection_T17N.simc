@@ -27,8 +27,7 @@ actions.precombat+=/snapshot_stats
 # Executed every time the actor is available.
 
 actions=/auto_attack
-actions+=/speed_of_light,if=movement.remains>1
-actions+=//use_item,name=primal_gladiators_badge_of_victory
+actions+=/speed_of_light,if=movement.remains>1=
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
@@ -54,7 +53,7 @@ actions+=/sacred_shield
 head=helmet_of_guiding_light,id=115568,bonus_id=0
 neck=vertebrae_protector,id=113900,bonus_id=448,enchant=gift_of_haste
 shoulders=unstable_slag_shoulderplates,id=113884,bonus_id=448
-back=charbreath_firecloak,id=11391,bonus_id=448,enchant=gift_of_haste
+back=charbreath_firecloak,id=113916,bonus_id=448,enchant=gift_of_haste
 chest=battleplate_of_guiding_light,id=115566,bonus_id=0
 wrists=bracers_of_visceral_force,id=119331,bonus_id=448
 hands=gauntlets_of_guiding_light,id=115567,bonus_id=0
