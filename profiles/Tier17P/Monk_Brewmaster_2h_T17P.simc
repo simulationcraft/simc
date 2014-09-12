@@ -1,0 +1,74 @@
+#!./simc 
+
+monk="Monk_Brewmaster_2h_T17P"
+level=100
+race=blood_elf
+role=tank
+position=front
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!0011111
+spec=brewmaster
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_stamina_flask
+actions.precombat+=/food,type=sleeper_surprise
+actions.precombat+=/stance,choose=sturdy_ox
+actions.precombat+=/snapshot_stats
+actions.precombat+=/dampen_harm
+
+
+# Executed every time the actor is available.
+
+actions=auto_attack
+actions+=/arcane_torrent,if=energy<=40
+actions+=/use_item,slot=trinket1
+actions+=/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4
+actions+=/chi_brew,if=talent.chi_brew.enabled&chi=0
+actions+=/chi_explosion,if=buff.shuffle.down&chi>=2
+actions+=/dampen_harm,if=incoming_damage_1500ms&buff.fortifying_brew.down&buff.elusive_brew_activated.down
+actions+=/fortifying_brew,if=incoming_damage_1500ms&buff.dampen_harm.down&buff.elusive_brew_activated.down
+actions+=/elusive_brew,if=buff.elusive_brew_stacks.react>=9&buff.dampen_harm.down&buff.elusive_brew_activated.down
+actions+=/guard,if=chi>=2&incoming_damage_1500ms
+actions+=/keg_smash,if=talent.ascension.enabled&chi<=3&cooldown.keg_smash.remains=0
+actions+=/keg_smash,if=!talent.ascension.enabled&chi<=2&cooldown.keg_smash.remains=0
+actions+=/tiger_palm,if=buff.tiger_power.remains<=3
+actions+=/tiger_palm,if=buff.tiger_power.down&energy.time_to_max>1
+actions+=/invoke_xuen,if=talent.invoke_xuen.enabled
+actions+=/run_action_list,name=aoe,if=active_enemies>=5
+actions+=/run_action_list,name=single_target,if=active_enemies<5
+
+actions.aoe=breath_of_fire,if=chi>=3&buff.shuffle.remains>=6&target.debuff.dizzying_haze.up
+actions.aoe+=/rushing_jade_wind,if=talent.rushing_jade_wind.enabled
+actions.aoe+=/spinning_crane_kick
+
+actions.single_target=/chi_wave,if=talent.chi_wave.enabled&energy.time_to_max>3
+actions.single_target+=/chi_explosion,if=chi>=3
+actions.single_target+=/tiger_palm,if=energy.time_to_max>=3
+# actions.single_target+=/expel_harm,if=talent.ascension.enabled&chi<=3&cooldown.expel_harm.remains=0
+# actions.single_target+=/expel_harm,if=!talent.ascension.enabled&chi<=2&cooldown.expel_harm.remains=0
+actions.single_target+=/jab,if=talent.ascension.enabled&chi<=3&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40
+actions.single_target+=/jab,if=!talent.ascension.enabled&chi<=2&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40
+
+
+
+head=primal_gladiators_ironskin_helm,id=115692
+neck=primal_gladiators_choker_of_endurance,id=120107,enchant=gift_of_critical_strike
+shoulders=primal_gladiators_pauldrons,id=111287
+back=primal_gladiators_cape_of_cruelty,id=111077,enchant=gift_of_critical_strike
+chest=primal_gladiators_ironskin_tunic,id=115695
+wrists=primal_gladiators_bindings_of_cruelty,id=111147
+hands=primal_gladiators_gloves_of_prowess,id=111083
+waist=primal_gladiators_belt_of_prowess,id=115668
+legs=primal_gladiators_ironskin_legguards,id=115693
+feet=primal_gladiators_boots_of_victory,id=111146
+finger1=primal_gladiators_ring_of_cruelty,id=115608,enchant=gift_of_critical_strike
+finger2=primal_gladiators_ring_of_prowess,id=115609,enchant=gift_of_critical_strike
+trinket1=primal_gladiators_badge_of_adaptation,id=115495
+trinket2=primal_gladiators_insignia_of_conquest,id=111223
+main_hand=primal_gladiators_pike,id=111075,enchant_id=5352
