@@ -170,9 +170,9 @@ const food_data_t food_data[] =
 
   { FOOD_CLEFTHOOF_SAUSAGES,           STAT_VERSATILITY_RATING, 50 },
 
-  { FOOD_CRISPY_FRIED_SCORPION,        STAT_ARMOR,              50 },
+  { FOOD_CRISPY_FRIED_SCORPION,        STAT_BONUS_ARMOR,        50 },
 
-  { FOOD_DEEP_FRIED_BASILISK,          STAT_ARMOR,              50 },
+  { FOOD_DEEP_FRIED_BASILISK,          STAT_BONUS_ARMOR,        50 },
 
   { FOOD_FAT_SLEEPER_CAKES,            STAT_MASTERY_RATING,     50 },
 
@@ -186,7 +186,7 @@ const food_data_t food_data[] =
 
   { FOOD_HEARTY_ELEKK_STEAK,           STAT_STAMINA,            75 },
 
-  { FOOD_NAGRAND_TEMPURA,              STAT_ARMOR,              75 },
+  { FOOD_NAGRAND_TEMPURA,              STAT_BONUS_ARMOR,        75 },
 
   { FOOD_PAN_SEARED_TALBUK,            STAT_HASTE_RATING,       50 },
 
