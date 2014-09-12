@@ -24,7 +24,7 @@
   BREWMASTER:
   - Swift Reflexes strike back
   - Purifying Brew
-  - Level 75 talents
+  - Level 75 talents - dampen harm added
   - Black Ox Statue
   - Gift of the Ox
 
@@ -93,6 +93,7 @@ public:
     buff_t* combo_breaker_bok;
     buff_t* combo_breaker_ce;
     buff_t* combo_breaker_tp;
+    buff_t* dampen_harm;
     buff_t* elusive_brew_activated;
     buff_t* elusive_brew_stacks;
     buff_t* energizing_brew;
@@ -2519,6 +2520,33 @@ struct crackling_jade_lightning_t: public monk_spell_t
       dot -> cancel();
   }
 };
+
+// ==========================================================================
+// Dampen Harm
+// ==========================================================================
+
+struct dampen_harm_t : public monk_spell_t
+{
+    dampen_harm_t( monk_t& p, const std::string& options_str ):
+        monk_spell_t( "dampen_harm", &p, p.talent.dampen_harm )
+        {
+            parse_options( NULL, options_str );
+	        trigger_gcd = timespan_t::zero();
+            harmful = false;
+			base_dd_min = 0;
+			base_dd_max = 0;
+            
+        }
+  
+  virtual void execute()
+  {
+        size_t max_stacks = p() -> buff.dampen_harm -> data().initial_stacks();
+    	p() -> buff.dampen_harm -> trigger( static_cast<int>(max_stacks) ); //forces 3 stacks on cast
+		monk_spell_t::execute();
+        
+  }
+};
+
 } // END spells NAMESPACE
 
 namespace heals {
@@ -2978,6 +3006,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "hurricane_strike"      ) return new       hurricane_strike_t( this, options_str );
   if ( name == "chi_explosion"         ) return new          chi_explosion_t( this, options_str );
   if ( name == "serenity"              ) return new               serenity_t( this, options_str );
+  if ( name == "dampen_harm"           ) return new            dampen_harm_t( *this, options_str );
   return base_t::create_action( name, options_str );
 }
 
@@ -3026,6 +3055,7 @@ void monk_t::init_spells()
   talent.chi_explosion            = find_talent_spell( "Chi Explosion" );
   talent.serenity                 = find_talent_spell( "Serenity" );
   talent.path_of_mists            = find_talent_spell( "Path of Mists" );
+  talent.dampen_harm              = find_talent_spell( "Dampen Harm" );
 
   // PERKS
   perk.improved_guard                   = find_perk_spell( "Improved Guard" );
@@ -3208,6 +3238,10 @@ void monk_t::create_buffs()
     .cd( timespan_t::zero() );
 
   buff.serenity = buff_creator_t( this, "serenity", talent.serenity );
+  
+  buff.dampen_harm  =  buff_creator_t( this, "dampen_harm", find_spell( 122278 ) )
+    .cd( timespan_t::zero() )
+    .max_stack( find_talent_spell( "Dampen Harm" ) -> initial_stacks() );
 
   // Brewmaster
   buff.bladed_armor = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
@@ -3758,6 +3792,10 @@ void monk_t::target_mitigation( school_e school,
 
   if ( school != SCHOOL_PHYSICAL)
     s -> result_amount *= 1.0 + active_stance_data( STURDY_OX ).effectN( 4 ).percent();
+  
+  if (buff.dampen_harm->check())
+  if (dt > (resources.max[RESOURCE_HEALTH] * ( buff.dampen_harm -> data().effectN(1).percent())))
+    s -> result_amount *=1.0 + buff.dampen_harm -> data().effectN( 2 ).percent();
 }
 
 // monk_t::assess_damage ====================================================
@@ -3774,6 +3812,12 @@ void monk_t::assess_damage( school_e school,
 
   if ( s -> result == RESULT_DODGE && new_sets.set( MONK_BREWMASTER, T17, B2 ) )
     resource_gain(RESOURCE_ENERGY, passives.tier17_2pc_tank -> effectN( 1 ).base_value(), gain.energy_refund);
+  
+  // A stack will only be removed if the hit was bigger than 15% of total health, and will reduce that attack by 50%
+  if ( s -> result_amount > ( resources.max[RESOURCE_HEALTH] * ( buff.dampen_harm -> data().effectN( 1 ).percent() ) ) )
+    {
+    buff.dampen_harm -> decrement();
+    }
 
   base_t::assess_damage( school, dtype, s );
 }
