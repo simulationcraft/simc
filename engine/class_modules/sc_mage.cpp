@@ -1793,7 +1793,6 @@ struct arcane_missiles_t : public mage_spell_t
       p() -> benefits.arcane_charge[ i ] -> update( as<int>( i ) == p() -> buffs.arcane_charge -> check() );
     }
 
-    p() -> buffs.arcane_charge   -> trigger(); // Comes before action_t::execute(). See Issue 1189. Changed on 18/12/2012
 
     mage_spell_t::execute();
 
@@ -1813,6 +1812,12 @@ struct arcane_missiles_t : public mage_spell_t
     {
       p() -> buffs.arcane_missiles -> decrement();
     }
+  }
+
+  virtual void last_tick (dot_t * d)
+  {
+    mage_spell_t::last_tick( d );
+    p() -> buffs.arcane_charge -> trigger();
   }
 
   virtual bool ready()
@@ -2512,10 +2517,10 @@ struct frost_bomb_t : public mage_spell_t
     if ( result_is_hit( execute_state -> result ) )
     {
       if (p.last_bomb_target != execute_state -> target && p.last_bomb_target != 0)
-        {
-          td(p.last_bomb_target) -> dots.frost_bomb -> cancel();
-          td(p.last_bomb_target) -> debuffs.frost_bomb -> expire();
-        }
+      {
+        td(p.last_bomb_target) -> dots.frost_bomb -> cancel();
+        td(p.last_bomb_target) -> debuffs.frost_bomb -> expire();
+      }
       p.last_bomb_target = execute_state -> target;
     }
   }
@@ -3332,9 +3337,9 @@ struct nether_tempest_t : public mage_spell_t
     if ( result_is_hit( execute_state -> result ) )
     {
       if (p.last_bomb_target != execute_state -> target && p.last_bomb_target != 0)
-        {
-          td(p.last_bomb_target) -> dots.nether_tempest -> cancel();
-        }
+      {
+        td(p.last_bomb_target) -> dots.nether_tempest -> cancel();
+      }
       p.last_bomb_target = execute_state -> target;
     }
   }
