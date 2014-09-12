@@ -375,8 +375,8 @@ struct rogue_t : public player_t
 
     base.distance = 3;
     regen_type = REGEN_DYNAMIC;
-    regen_caches.push_back( CACHE_HASTE );
-    regen_caches.push_back( CACHE_ATTACK_HASTE );
+    regen_caches[CACHE_HASTE] = true;
+    regen_caches[CACHE_ATTACK_HASTE] = true;
   }
 
   // Character Definition
