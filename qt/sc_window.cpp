@@ -1641,6 +1641,10 @@ void SC_MainWindow::mainTabChanged( int index )
     cmdLine -> setTab( static_cast< main_tabs_e >( index ) );
   }
 
+  // clear spell_query entries when changing tabs
+  if ( cmdLine -> commandLineText().startsWith( "spell_query" ) )
+    cmdLine -> setCommandLineText( " " );
+
   switch ( index )
   {
     case TAB_WELCOME:
