@@ -20,6 +20,7 @@ struct FilterEntry
 
 const QString sources[] = 
 {
+  " ",
   "spell",
   "talent",
   "talent_spell",
@@ -38,7 +39,7 @@ const FilterEntry filters[] =
 {
   //                   source
   // filter name     spell talent argument type/description
-  { "    ",          true, true, "string" },
+  { " ",             true, true, "none" },
   { "name",          true, true, "string" },
   { "id",            true, true, "number" },
   { "flags",         true, true, "number (not used for anything currently) " },
@@ -119,7 +120,8 @@ void SC_SpellQueryTab::sourceTypeChanged( const int source_index )
 {
   choice.filter -> clear();
   for ( int i = 0; filters[ i ].name.length() > 0; i++ )
-    if ( ( source_index != 1 && filters[ i ].spell_source ) || ( source_index == 1 && filters[ i ].talent_source ) )
+    if ( ( choice.source -> itemText( source_index) != "talent" && filters[ i ].spell_source ) || 
+         ( choice.source -> itemText( source_index) == "talent" && filters[ i ].talent_source ) )
       choice.filter -> addItem( filters[ i ].name );
 
   filterTypeChanged( choice.filter -> currentIndex() );
@@ -136,7 +138,7 @@ void SC_SpellQueryTab::filterTypeChanged( const int filter_index )
       if ( filters[ i ].operand_type.startsWith( "number" ) )
         for ( int j = 0; numericOperators[ j ].length() > 0; j++ )
           choice.operatorString -> addItem( numericOperators[ j ] );
-      else
+      else if ( filters[ i ].operand_type.startsWith( "string" ) )
         for ( int j = 0; stringOperators[ j ].length() > 0; j++ )
           choice.operatorString -> addItem( stringOperators[ j ] );
 
@@ -254,14 +256,28 @@ SC_SpellQueryTab::SC_SpellQueryTab( SC_MainWindow* parent ) :
 
 void SC_SpellQueryTab::run_spell_query()
 {
+  // local copy of the argument
+  std::string arg = textbox.arg -> text().toStdString();
+
   // construct the query string
   QString command = "spell_query=";
-  command += choice.source -> currentText();
-  if ( choice.filter -> currentText() != filters[ 0 ].name )
-    command += "." + choice.filter -> currentText();
-  command += choice.operatorString -> currentText();
-  std::string arg = textbox.arg -> text().toStdString();
-  util::tokenize( arg );
+
+  // if we're using the simple style, we have a data source spec
+  if ( choice.source -> currentText() != sources[ 0 ] )
+  {
+    // add source, filter (if present), and operator string
+    command += choice.source -> currentText();
+
+    if ( choice.filter -> currentText() != filters[ 0 ].name )
+      command += "." + choice.filter -> currentText();
+
+    command += choice.operatorString -> currentText();
+
+    // tokenize the argument
+    util::tokenize( arg );
+  }
+
+  // Add the argument (to support advanced mode, this isn't tokenized unless we use a source)
   command += QString::fromStdString( arg );
 
   // set the command line (mostly so we can see the query)
@@ -290,7 +306,18 @@ void SC_SpellQueryTab::checkForSave()
 
 void SC_SpellQueryTab::createToolTips()
 {
-  choice.source -> setToolTip( tr( "Test" ) );
+  choice.source -> setToolTip( tr( "Data Source, determines which list of identifiers to search within" ) );
+  choice.filter -> setToolTip( tr( "Filter, for filtering the data in the data source." ) );
+  choice.operatorString -> setToolTip( tr( "Operand. Different for string and numeric arguments.\n\n Strings:\n\n == : case-insensitive equality\n != : case-insensitive inequality\n ~  : case-insensitive substring in field\n !~ : case-insensitive substring not in field\n" ) );
+  textbox.arg -> setToolTip( tr( "Argument, what you're searching for within the filtered data.\n\n For more complicated queries, set the Data Source and Filter to blank and write your full query string in here." ) );
+  
+  choice.saveToFile -> setToolTip( tr( "Enabling this will save the results to a file." ) );
+  button.save -> setToolTip( tr( "Browse for the file name of the results file." ) );
+  choice.directory -> setToolTip( tr( "Filename of the results file." ) );
+
+  textbox.result -> setToolTip( tr( "Result of the query." ) );
+
+  
 }
 
 
@@ -374,8 +401,7 @@ void SC_SpellQueryTab::decodeSettings()
   load_setting( settings, "arg", textbox.arg );
 
   QStringList directories = settings.value( "directory" ).toStringList();
-  for ( int i = 0; i < directories.count(); i++ )
-    choice.directory -> addItems( directories );
+  choice.directory -> addItems( directories );
 
   choice.saveToFile -> setChecked( settings.value( "saveCheckBox" ).toBool() );
 
