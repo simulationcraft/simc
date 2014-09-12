@@ -2893,9 +2893,9 @@ struct maul_t : public bear_attack_t
       may_multistrike = 0;
       target = player;
 
-      /* Coeff is hardcoded into tooltip, use FR coeff * 0.4 instead.
-         Apply 40% nerf to FR coeff from builds 18837 and 18850 not reflected in the spell data. */
-      attack_power_mod.direct = 0.4 * ( p -> spell.frenzied_regeneration -> effectN( 1 ).ap_coeff() * 0.6 );
+      /* Coeff is hardcoded into tooltip and isn't in spell data, so hardcode coeff.
+         Used to be able to use FR coeff * x but can't anymore because of recent changes. */
+      attack_power_mod.direct = 2.40;
     }
 
     virtual void impact( action_state_t* s )
@@ -3280,10 +3280,8 @@ struct frenzied_regeneration_t : public druid_heal_t
     may_crit = false;
     may_multistrike = 0;
     target = p;
-    /* Apply 40% nerf from builds 18837 and 18850 not reflected in the spell data.
-       This is also applied in tooth_and_claw_t so if you remove this kludge check there too!
-       TODO: Verify in-game! */
-    attack_power_mod.direct = data().effectN( 1 ).ap_coeff() * 0.6;
+    // Hardcode AP coeff because spelldata is incorrect. According to Arielle coeff is 2.4 AP as of 9/12/2014
+    attack_power_mod.direct = 2.40;
     maximum_rage_cost = data().effectN( 2 ).base_value();
 
     if ( p -> new_sets.has_set_bonus( SET_TANK, T16, B2 ) )
