@@ -548,7 +548,7 @@ struct water_elemental_pet_t : public pet_t
   {
     action_list_str  = "waterbolt";
 
-    owner_coeff.sp_from_sp = 1.0;
+    owner_coeff.sp_from_sp = 0.75;
   }
 
   mage_t* o()
