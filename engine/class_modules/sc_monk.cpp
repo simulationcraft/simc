@@ -2527,23 +2527,21 @@ struct crackling_jade_lightning_t: public monk_spell_t
 
 struct dampen_harm_t : public monk_spell_t
 {
-    dampen_harm_t( monk_t& p, const std::string& options_str ):
-        monk_spell_t( "dampen_harm", &p, p.talent.dampen_harm )
-        {
-            parse_options( NULL, options_str );
-	        trigger_gcd = timespan_t::zero();
-            harmful = false;
-			base_dd_min = 0;
-			base_dd_max = 0;
-            
-        }
-  
+  dampen_harm_t( monk_t& p, const std::string& options_str ):
+    monk_spell_t( "dampen_harm", &p, p.talent.dampen_harm )
+      {
+        parse_options( NULL, options_str );
+        trigger_gcd = timespan_t::zero();
+        harmful = false;
+        base_dd_min = 0;
+        base_dd_max = 0;
+      }
+
   virtual void execute()
   {
-        size_t max_stacks = p() -> buff.dampen_harm -> data().initial_stacks();
-    	p() -> buff.dampen_harm -> trigger( static_cast<int>(max_stacks) ); //forces 3 stacks on cast
-		monk_spell_t::execute();
-        
+    size_t max_stacks = p() -> buff.dampen_harm -> data().initial_stacks();
+    p() -> buff.dampen_harm -> trigger( static_cast<int>(max_stacks) ); //forces 3 stacks on cast
+    monk_spell_t::execute();
   }
 };
 
@@ -3006,7 +3004,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "hurricane_strike"      ) return new       hurricane_strike_t( this, options_str );
   if ( name == "chi_explosion"         ) return new          chi_explosion_t( this, options_str );
   if ( name == "serenity"              ) return new               serenity_t( this, options_str );
-  if ( name == "dampen_harm"           ) return new            dampen_harm_t( *this, options_str );
+  if ( name == "dampen_harm"           ) return new           dampen_harm_t( *this, options_str );
   return base_t::create_action( name, options_str );
 }
 
