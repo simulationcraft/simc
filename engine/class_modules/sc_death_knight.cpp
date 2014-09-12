@@ -446,7 +446,7 @@ public:
     active_presence(),
     t16_tank_2pc_driver(),
     runic_power_decay_rate(),
-    fallen_crusader( 0.15 ),
+    fallen_crusader( find_spell( 53365 ) -> effectN( 1 ).percent() ),
     buffs( buffs_t() ),
     runeforge( runeforge_t() ),
     active_spells( active_spells_t() ),
