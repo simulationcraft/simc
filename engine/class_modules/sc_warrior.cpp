@@ -159,7 +159,8 @@ public:
     cooldown_t* die_by_the_sword;
     cooldown_t* recklessness;
     // Prot Only
-    cooldown_t* block;
+    cooldown_t* block_cd;
+    cooldown_t* shield_charge_cd;
     cooldown_t* demoralizing_shout;
     cooldown_t* last_stand;
     cooldown_t* rage_from_crit_block;
@@ -406,8 +407,10 @@ public:
     // Cooldowns
     cooldown.avatar                   = get_cooldown( "avatar" );
     cooldown.bladestorm               = get_cooldown( "bladestorm" );
-    cooldown.block                    = get_cooldown( "block" );
-    cooldown.block                    -> duration = timespan_t::from_seconds( 1.5 );
+    cooldown.block_cd                 = get_cooldown( "block_cd" );
+    cooldown.block_cd                 -> duration = timespan_t::from_seconds( 1.5 );
+    cooldown.shield_charge_cd         = get_cooldown( "shield_charge_cd" );
+    cooldown.shield_charge_cd         -> duration = timespan_t::from_seconds( 1.5 );
     cooldown.bloodbath                = get_cooldown( "bloodbath" );
     cooldown.charge                   = get_cooldown( "charge" );
     cooldown.demoralizing_shout       = get_cooldown( "demoralizing_shout" );
@@ -3408,7 +3411,7 @@ struct shield_block_t: public warrior_spell_t
   void execute()
   {
     warrior_spell_t::execute();
-    p() -> cooldown.block -> start();
+    p() -> cooldown.block_cd -> start();
 
     if ( p() -> buff.shield_block -> check() )
       p() -> buff.shield_block -> extend_duration( p(), timespan_t::from_seconds( 6.0 ) );
@@ -3421,7 +3424,7 @@ struct shield_block_t: public warrior_spell_t
     if ( !p() -> has_shield_equipped() )
       return false;
 
-    if ( !p() -> cooldown.block -> up() )
+    if ( !p() -> cooldown.block_cd -> up() )
       return false;
 
     return warrior_spell_t::ready();
@@ -3448,15 +3451,19 @@ struct shield_charge_t: public warrior_spell_t
   void execute()
   {
     warrior_spell_t::execute();
+    p() -> cooldown.shield_charge_cd -> start();
 
     if ( p() -> buff.shield_charge -> check() )
-      p() -> buff.shield_charge -> extend_duration( p(), timespan_t::from_seconds( 6.0 ) );
+      p() -> buff.shield_charge -> extend_duration( p(), data().duration() );
     else
       p() -> buff.shield_charge -> trigger();
   }
 
   bool ready()
   {
+    if ( !p() -> cooldown.shield_charge_cd -> up() )
+      return false;
+
     if ( !p() -> has_shield_equipped() )
       return false;
 

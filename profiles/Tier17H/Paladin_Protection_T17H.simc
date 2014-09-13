@@ -1,4 +1,4 @@
-paladin="Paladin_Protection_T17N"
+paladin="Paladin_Protection_T17H"
 level=100
 race=blood_elf
 role=tank
@@ -28,7 +28,6 @@ actions.precombat+=/snapshot_stats
 
 actions=/auto_attack
 actions+=/speed_of_light,if=movement.remains>1
-actions+=//use_item,name=primal_gladiators_badge_of_victory
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
@@ -63,17 +62,20 @@ legs=legplates_of_guiding_light,id=115569,bonus_id=566
 feet=sabatons_of_fractal_earth,id=113936,bonus_id=566/448
 finger1=seal_of_unquenchable_flame,id=113922,bonus_id=566/448,enchant=gift_of_haste
 finger2=phosphorescent_seal,id=113866,bonus_id=566/448,enchant=gift_of_haste
-trinket1=forgemaster's_insignia,id=113983,bonus_id=566/448
+trinket1=forgemasters_insignia,id=113983,bonus_id=566/448
 trinket2=horn_of_screaming_spirits,id=119193,bonus_id=566/448
 main_hand=kromogs_brutal_fist,id=113927,bonus_id=566/448,enchant=mark_of_warsong
 off_hand=kromogs_protecting_palm,id=113926,bonus_id=566/448
 
 # Gear Summary
-# gear_strength=need to recalculate
-# gear_stamina=need to recalculate
-# gear_crit_rating=need to recalculate
-# gear_haste_rating=need to recalculate
-# gear_mastery_rating=need to recalculate
-# gear_armor=need to recalculate
-# gear_multistrike_rating=need to recalculate
-# gear_versatility_rating=need to recalculate
+# gear_strength=3074
+# gear_stamina=3808
+# gear_crit_rating=556
+# gear_haste_rating=1235
+# gear_mastery_rating=758
+# gear_armor=2887
+# gear_bonus_armor=110
+# gear_multistrike_rating=622
+# gear_versatility_rating=220
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1
