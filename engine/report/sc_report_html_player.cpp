@@ -1038,7 +1038,16 @@ void print_html_gear ( report::sc_html_stream& os, player_t* p )
     if ( item.active() )
     {
       std::string rel_str = "";
-      if ( item.upgrade_level() ) rel_str = " rel=\"upgd=" + util::to_string( item.upgrade_level() ) + "\"";
+      if ( item.parsed.bonus_id.size() )
+      {
+        rel_str += " rel=\"bonus=";
+        for ( size_t i = 0; i < item.parsed.bonus_id.size(); i++ )
+        {
+          rel_str += util::to_string( item.parsed.bonus_id[i] );
+          rel_str += ":";
+        }
+        rel_str += "\"";
+      }
       item_string = ! item.parsed.data.id ? item.options_str : "<a href=\"http://" + domain + ".wowhead.com/item=" + util::to_string( item.parsed.data.id ) + "\"" + rel_str + ">" + item.encoded_item() + "</a>";
     }
     else
