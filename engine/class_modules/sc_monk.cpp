@@ -922,7 +922,8 @@ struct jab_t: public monk_melee_attack_t
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-	base_costs[RESOURCE_ENERGY] = (p -> specialization() == MONK_WINDWALKER ? 45 : 40);
+
+	  base_costs[RESOURCE_ENERGY] = (p -> specialization() == MONK_WINDWALKER ? 45 : 40);
 
     base_multiplier *= 1.15; // hardcoded into tooltip
   }
@@ -3453,8 +3454,7 @@ double monk_t::composite_player_multiplier( school_e school ) const
 {
   double m = base_t::composite_player_multiplier( school );
 
-  if ( specialization() == MONK_WINDWALKER )
-    m *= 1.1;
+  m *= 1.0 + active_stance_data( FIERCE_TIGER ).effectN( 3 ).percent();
 
   m *= 1.0 + buff.tigereye_brew_use -> value();
 
