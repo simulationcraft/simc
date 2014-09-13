@@ -4176,7 +4176,7 @@ double monk_t::stagger_pct()
       stagger += buff.shuffle -> data().effectN( 2 ).percent();
 
     if ( spec.brewmaster_training -> ok() && buff.fortifying_brew -> check() )
-      stagger += spec.brewmaster_training -> effectN( 2 ).percent();
+      stagger += spec.brewmaster_training -> effectN( 1 ).percent();
 
     if ( mastery.elusive_brawler -> ok() )
       stagger += cache.mastery_value();
