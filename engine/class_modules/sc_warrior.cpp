@@ -1070,7 +1070,7 @@ void warrior_attack_t::impact( action_state_t* s )
         {
           if ( p() -> buff.bloodbath -> up() )
           {
-            if ( !bloodbath_blacklist( this -> id ) )
+            if ( !bloodbath_blacklist( this -> id ) || !p() -> bugs )
               trigger_bloodbath_dot( s -> target, s -> result_amount );
           }
           if ( p() -> new_sets.has_set_bonus( SET_MELEE, T16, B2 ) && td( s -> target ) ->  debuffs_colossus_smash -> up() && // Melee tier 16 2 piece.

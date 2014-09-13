@@ -37,7 +37,7 @@ glyphs=focused_shield/alabaster_shield/divine_protection
 head=helmet_of_guiding_light,id=115568,bonus_id=566
 neck=vertebrae_protector,id=113900,bonus_id=566/448,enchant=gift_of_haste
 shoulders=unstable_slag_shoulderplates,id=113884,bonus_id=566/448
-back=charbreath_firecloak,id=11391,bonus_id=566/448,enchant=gift_of_haste
+back=charbreath_firecloak,id=113916,bonus_id=566/448,enchant=gift_of_haste
 chest=battleplate_of_guiding_light,id=115566,bonus_id=566
 wrists=bracers_of_visceral_force,id=119331,bonus_id=566/448
 hands=gauntlets_of_guiding_light,id=115567,bonus_id=566
