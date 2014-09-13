@@ -1638,21 +1638,27 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
   
   virtual void try_steady_focus()
   {
-    // Most ranged attacks reset the counter for two steady shots in a row
-    p() -> buffs.pre_steady_focus -> expire();
+    // Most ranged attacks reset the counter for two steady/cobra shots in a row
+    if ( p() -> talents.steady_focus -> ok() )
+      p() -> buffs.pre_steady_focus -> expire();
   }
 
-  virtual void trigger_steady_focus()
+  virtual void trigger_steady_focus( bool require_pre )
   {
-    if ( p() -> talents.steady_focus -> ok() )
-       p() -> buffs.pre_steady_focus -> trigger( 1 );
+    if ( !p() -> talents.steady_focus -> ok() )
+      return;
 
-    if ( p() -> buffs.pre_steady_focus -> stack() == 2 )
+    if ( require_pre ) 
     {
-      double regen_buff = p() -> buffs.steady_focus -> data().effectN( 1 ).percent();
-      p() -> buffs.steady_focus -> trigger( 1, regen_buff );
-      p() -> buffs.pre_steady_focus -> expire();
+      p() -> buffs.pre_steady_focus -> trigger( 1 );
+      if ( p() -> buffs.pre_steady_focus -> stack() < 2 )
+        return;
     }
+
+    // either two required shots have happened or we don't require them
+    double regen_buff = p() -> buffs.steady_focus -> data().effectN( 1 ).percent();
+    p() -> buffs.steady_focus -> trigger( 1, regen_buff );
+    p() -> buffs.pre_steady_focus -> expire();
   }
 
   void trigger_go_for_the_throat()
@@ -2208,7 +2214,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
    
   virtual void try_steady_focus()
   {
-    trigger_steady_focus();
+    trigger_steady_focus( true );
   }
 
   virtual void execute()
@@ -2518,10 +2524,7 @@ struct focusing_shot_t: public hunter_ranged_attack_t
   
   virtual void try_steady_focus()
   {
-    // Just one focusing shot triggers the buff
-    double regen_buff = p() -> buffs.steady_focus -> data().effectN( 1 ).percent();
-    p() -> buffs.steady_focus -> trigger( 1, regen_buff );
-    p() -> buffs.pre_steady_focus -> expire();
+    trigger_steady_focus( false );
   }
 
   virtual void execute()
@@ -2553,7 +2556,7 @@ struct steady_shot_t: public hunter_ranged_attack_t
    
   virtual void try_steady_focus()
   {
-    trigger_steady_focus();
+    trigger_steady_focus( true );
   }
 
   virtual void execute()
