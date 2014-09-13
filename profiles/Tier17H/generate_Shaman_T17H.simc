@@ -8,7 +8,7 @@ spec=elemental
 role=spell
 position=back
 professions=blacksmithing=600/engineering=600
-talents=0001013
+talents=0001011
 glyphs=chain_lightning
 head=primal_gladiators_helm,id=115780
 neck=primal_gladiators_pendant_of_cruelty,id=115655,enchant=gift_of_multistrike
