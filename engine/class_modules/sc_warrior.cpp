@@ -2569,14 +2569,14 @@ struct shield_slam_t: public warrior_attack_t
       if ( p() -> active_stance == STANCE_GLADIATOR )
       {
         if ( p() -> buff.shield_charge -> check() )
-          p() -> buff.shield_charge -> extend_duration( p(), timespan_t::from_seconds( 7.0 ) );
+          p() -> buff.shield_charge -> extend_duration( p(), p() -> buff.shield_charge -> data().duration() );
         else
           p() -> buff.shield_charge -> trigger();
       }
       else
       {
         if ( p() -> buff.shield_block -> check() )
-          p() -> buff.shield_block -> extend_duration( p(), timespan_t::from_seconds( 6.0 ) );
+          p() -> buff.shield_block -> extend_duration( p(), p() -> buff.shield_block -> data().duration() );
         else
           p() -> buff.shield_block -> trigger();
       }
@@ -3422,7 +3422,7 @@ struct shield_block_t: public warrior_spell_t
     p() -> cooldown.block_cd -> start();
 
     if ( p() -> buff.shield_block -> check() )
-      p() -> buff.shield_block -> extend_duration( p(), timespan_t::from_seconds( 6.0 ) );
+      p() -> buff.shield_block -> extend_duration( p(), p() -> buff.shield_block -> data().duration() );
     else
       p() -> buff.shield_block -> trigger();
   }
@@ -3462,7 +3462,7 @@ struct shield_charge_t: public warrior_spell_t
     p() -> cooldown.shield_charge_cd -> start();
 
     if ( p() -> buff.shield_charge -> check() )
-      p() -> buff.shield_charge -> extend_duration( p(), data().duration() );
+      p() -> buff.shield_charge -> extend_duration( p(), p() -> buff.shield_charge -> data().duration() );
     else
       p() -> buff.shield_charge -> trigger();
   }
