@@ -2834,12 +2834,16 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
         m *= 1.0 + buffs.archmages_greater_incandescence_str -> data().effectN( 1 ).percent();
       if ( buffs.archmages_incandescence_str -> check() )
         m *= 1.0 + buffs.archmages_incandescence_str -> data().effectN( 1 ).percent();
+      if ( sim -> auras.str_agi_int -> check() )
+        m *= 1.0 + sim -> auras.str_agi_int -> value();
       break;
     case ATTR_AGILITY:
       if ( buffs.archmages_greater_incandescence_agi -> check() )
         m *= 1.0 + buffs.archmages_greater_incandescence_agi -> data().effectN( 1 ).percent();
       if ( buffs.archmages_incandescence_agi -> check() )
         m *= 1.0 + buffs.archmages_incandescence_agi -> data().effectN( 1 ).percent();
+      if ( sim -> auras.str_agi_int -> check() )
+        m *= 1.0 + sim -> auras.str_agi_int -> value();
       break;
     case ATTR_INTELLECT:
       if ( buffs.archmages_greater_incandescence_int -> check() )
