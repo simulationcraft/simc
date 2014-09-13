@@ -10,7 +10,7 @@ spec=elemental
 role=spell
 position=back
 professions=blacksmithing=600/engineering=600
-talents=000301
+talents=000103
 glyphs=chain_lightning
 head=headpiece_of_celestial_harmony,id=99332,upgrade=2,gems=sinister_primal_4int_8haste_9int
 neck=necklace_of_fading_light,id=105473,upgrade=2,reforge=spi_mastery
