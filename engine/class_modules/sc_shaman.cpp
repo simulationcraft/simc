@@ -5393,14 +5393,15 @@ void shaman_t::init_action_list()
     if ( find_item( "unerring_vision_of_lei_shen" ) )
       single -> add_action( this, "Flame Shock", "if=buff.perfect_aim.react&crit_pct<100" );
     single -> add_action( this, spec.fulmination, "earth_shock", "if=buff.lightning_shield.react=buff.lightning_shield.max_stack" );
+    single -> add_action( this, "Flame Shock", "if=talent.elemental_fusion.enabled&(!ticking|(buff.elemental_fusion.stack=2&dot.flame_shock.remains<15))" );
     single -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)" );
-    single -> add_action( this, "Flame Shock", "if=dot.flame_shock.remains<9" );
-    single -> add_action( this, spec.fulmination, "earth_shock", "if=buff.lightning_shield.react>15" );
+    single -> add_action( this, "Flame Shock", "if=!talent.elemental_fusion.enabled&dot.flame_shock.remains<9" );
+    single -> add_action( this, spec.fulmination, "earth_shock", "if=(talent.elemental_fusion.enabled&(buff.lightning_shield.react>12|buff.elemental_fusion.stack=2)&dot.flame_shock.remains>=15)|(!talent.elemental_fusion.enabled&buff.lightning_shield.react>15)" );
     single -> add_action( this, "Earthquake", "if=((1+stat.spell_haste)*(1+(mastery_value*2%3))>=2.3)&target.time_to_die>10" );
     single -> add_talent( this, "Elemental Blast" );
     single -> add_action( this, "Flame Shock", "if=time>60&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<duration",
                           "After the initial Ascendance, use Flame Shock pre-emptively just before Ascendance to guarantee Flame Shock staying up for the full duration of the Ascendance buff" );
-    single -> add_action( this, "Searing Totem", "if=cooldown.fire_elemental_totem.remains>20&!totem.fire.active",
+    single -> add_action( this, "Searing Totem", "if=(!talent.liquid_magma.enabled&!totem.fire.active)|(pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up)",
                           "Keep Searing Totem up, unless Fire Elemental Totem is coming off cooldown in the next 20 seconds" );
     single -> add_action( this, "Spiritwalker's Grace", "moving=1,if=((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))" );
 
@@ -5415,6 +5416,7 @@ void shaman_t::init_action_list()
     aoe -> add_action( this, find_class_spell( "Ascendance" ), "lava_beam" );
     aoe -> add_action( this, spec.fulmination, "earth_shock", "if=buff.lightning_shield.react=buff.lightning_shield.max_stack" );
     aoe -> add_action( this, "Thunderstorm", "if=active_enemies>=10" );
+    aoe -> add_action( this, "Searing Totem", "if=(!talent.liquid_magma.enabled&!totem.fire.active)|(pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up)" );
     aoe -> add_action( this, "Chain Lightning", "if=active_enemies>=2" );
     aoe -> add_action( this, "Lightning Bolt" );
   }
