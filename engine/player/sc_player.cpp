@@ -2137,6 +2137,20 @@ void player_t::create_buffs()
       buffs.fortitude                 = buff_creator_t( this, "fortitude", find_spell( 137593 ) ).add_invalidate( CACHE_STAMINA ).activated( false );
       buffs.shadowmeld                = buff_creator_t( this, "shadowmeld", find_spell( 58984 ) ).cd( timespan_t::zero() );
 
+      buffs.archmages_greater_incandescence_agi = buff_creator_t( this, "archmages_greater_incandescence_agi", find_spell( 177172 ) )
+        .add_invalidate( CACHE_AGILITY );
+      buffs.archmages_greater_incandescence_str = buff_creator_t( this, "archmages_greater_incandescence_str", find_spell( 177175 ) )
+        .add_invalidate( CACHE_STRENGTH );
+      buffs.archmages_greater_incandescence_int = buff_creator_t( this, "archmages_greater_incandescence_int", find_spell( 177176 ) )
+        .add_invalidate( CACHE_INTELLECT );
+
+      buffs.archmages_incandescence_agi = buff_creator_t( this, "archmages_incandescence_agi", find_spell( 177161 ) )
+        .add_invalidate( CACHE_AGILITY );
+      buffs.archmages_incandescence_str = buff_creator_t( this, "archmages_incandescence_str", find_spell( 177160 ) )
+        .add_invalidate( CACHE_STRENGTH );
+      buffs.archmages_incandescence_int = buff_creator_t( this, "archmages_incandescence_int", find_spell( 177159 ) )
+        .add_invalidate( CACHE_INTELLECT );
+
       // Legendary meta haste buff
       buffs.tempus_repit              = buff_creator_t( this, "tempus_repit", find_spell( 137590 ) ).add_invalidate( CACHE_HASTE ).activated( false );
 
@@ -2816,8 +2830,22 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
   switch ( attr )
   {
     case ATTR_STRENGTH:
+      if ( buffs.archmages_greater_incandescence_str -> check() )
+        m *= 1.0 + buffs.archmages_greater_incandescence_str -> data().effectN( 1 ).percent();
+      if ( buffs.archmages_incandescence_str -> check() )
+        m *= 1.0 + buffs.archmages_incandescence_str -> data().effectN( 1 ).percent();
+      break;
     case ATTR_AGILITY:
+      if ( buffs.archmages_greater_incandescence_agi -> check() )
+        m *= 1.0 + buffs.archmages_greater_incandescence_agi -> data().effectN( 1 ).percent();
+      if ( buffs.archmages_incandescence_agi -> check() )
+        m *= 1.0 + buffs.archmages_incandescence_agi -> data().effectN( 1 ).percent();
+      break;
     case ATTR_INTELLECT:
+      if ( buffs.archmages_greater_incandescence_int -> check() )
+        m *= 1.0 + buffs.archmages_greater_incandescence_int -> data().effectN( 1 ).percent();
+      if ( buffs.archmages_incandescence_int -> check() )
+        m *= 1.0 + buffs.archmages_incandescence_int -> data().effectN( 1 ).percent();
       if ( sim -> auras.str_agi_int -> check() )
         m *= 1.0 + sim -> auras.str_agi_int -> value();
       break;

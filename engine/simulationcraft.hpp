@@ -4625,6 +4625,13 @@ struct player_t : public actor_t
     buff_t* tempus_repit;
     buff_t* fortitude;
 
+    buff_t* archmages_greater_incandescence_str;
+    buff_t* archmages_greater_incandescence_agi;
+    buff_t* archmages_greater_incandescence_int;
+    buff_t* archmages_incandescence_str;
+    buff_t* archmages_incandescence_agi;
+    buff_t* archmages_incandescence_int;
+
     stat_buff_t* flask;
   } buffs;
 

@@ -58,6 +58,8 @@ namespace item
   void humming_blackiron_trigger( special_effect_t&, const item_t& );
   void forgemasters_insignia( special_effect_t&, const item_t& );
   void autorepairing_autoclave( special_effect_t&, const item_t& );
+  void spellbound_runic_band( special_effect_t&, const item_t& );
+  void spellbound_solium_band( special_effect_t&, const item_t& );
 }
 
 namespace gem
@@ -204,6 +206,8 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 177071, 0,                    item::humming_blackiron_trigger }, /* Humming Blackiron Trigger */
   { 177098, 0,                        item::forgemasters_insignia }, /* Forgemaster's Insignia */
   { 177090, 0,                      item::autorepairing_autoclave }, /* Forgemaster's Insignia */
+  { 177171, 0,                        item::spellbound_runic_band }, /* 700 ilevel proc-ring */
+  { 177163, 0,                       item::spellbound_solium_band }, /* 690 ilevel proc-ring */
 
   /* Mists of Pandaria: 5.4 */
   { 146195, 0,                               item::flurry_of_xuen }, /* Melee legendary cloak */
@@ -1364,6 +1368,52 @@ void item::autorepairing_autoclave( special_effect_t& effect,
                    .duration( spell -> duration() );
 
   effect.custom_buff = b;
+
+  new dbc_proc_callback_t( item.player, effect );
+}
+
+void item::spellbound_runic_band( special_effect_t& effect,
+                                  const item_t& item )
+{
+  maintenance_check( 528 );
+
+  player_t* p = item.player;
+  const spell_data_t* driver = item.player -> find_spell( effect.spell_id );
+  buff_t* buff;
+
+  if ( item.has_item_stat( STAT_STRENGTH ) )
+    buff = buff_t::find( item.player, "archmages_greater_incandescence_str" );
+  else if ( item.has_item_stat( STAT_AGILITY ) )
+    buff = buff_t::find( item.player, "archmages_greater_incandescence_agi" );
+  else if ( item.has_item_stat( STAT_INTELLECT ) )
+    buff = buff_t::find( item.player, "archmages_greater_incandescence_int" );
+
+  effect.ppm_ = -1.0 * driver -> real_ppm();
+  effect.custom_buff = buff;
+  effect.type = SPECIAL_EFFECT_EQUIP;
+
+  new dbc_proc_callback_t( item.player, effect );
+}
+
+void item::spellbound_solium_band( special_effect_t& effect,
+                                   const item_t& item )
+{
+  maintenance_check( 528 );
+
+  player_t* p = item.player;
+  const spell_data_t* driver = item.player -> find_spell( effect.spell_id );
+  buff_t* buff;
+
+  if ( item.has_item_stat( STAT_STRENGTH ) )
+    buff = buff_t::find( item.player, "archmages_incandescence_str" );
+  else if ( item.has_item_stat( STAT_AGILITY ) )
+    buff = buff_t::find( item.player, "archmages_incandescence_agi" );
+  else if ( item.has_item_stat( STAT_INTELLECT ) )
+    buff = buff_t::find( item.player, "archmages_incandescence_int" );
+
+  effect.ppm_ = -1.0 * driver -> real_ppm();
+  effect.custom_buff = buff;
+  effect.type = SPECIAL_EFFECT_EQUIP;
 
   new dbc_proc_callback_t( item.player, effect );
 }
