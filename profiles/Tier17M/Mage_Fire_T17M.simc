@@ -4,7 +4,7 @@ race=troll
 role=spell
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!0...011
-glyphs=inferno_blast,combustion
+glyphs=inferno_blast
 spec=fire
 
 # This default action priority list is automatically created based on your character.
