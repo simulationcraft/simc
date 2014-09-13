@@ -6926,6 +6926,10 @@ void death_knight_t::invalidate_cache( cache_e c )
 
   switch ( c )
   {
+    case CACHE_CRIT:
+      if ( spec.riposte -> ok() )
+        player_t::invalidate_cache( CACHE_PARRY );
+      break;
     case CACHE_MASTERY:
       player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
       if ( specialization() == DEATH_KNIGHT_BLOOD )
