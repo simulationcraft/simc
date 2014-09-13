@@ -6964,13 +6964,6 @@ void druid_t::assess_damage( school_e school,
     // Track buff benefit
     buff.savage_defense -> up();
 
-    if ( s -> result == RESULT_DODGE )
-    {
-      resource_gain( RESOURCE_RAGE,
-        find_spell( 178090 ) -> effectN( 1 ).resource( RESOURCE_RAGE ), // 2 rage from dodging.
-        gain.primal_fury );
-      proc.primal_fury -> occur();
-     }
     if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
       s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 1 ).percent();
   }
