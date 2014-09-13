@@ -5252,7 +5252,6 @@ stat_e warrior_t::convert_hybrid_stat( stat_e s ) const
   // for certain specs into the appropriate "basic" stats
   switch ( s )
   {
-    // This is a guess at how AGI/INT will work for Warriors, TODO: confirm
   case STAT_AGI_INT:
     return STAT_NONE;
   case STAT_STR_AGI_INT:

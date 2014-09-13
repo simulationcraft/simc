@@ -24,8 +24,8 @@ finger1=spellbound_runic_band_of_elemental_power,id=118305,bonus_id=524,enchant=
 finger2=seal_of_the_savage_howl,id=113940,bonus_id=567/448,enchant=gift_of_critical_strike
 trinket1=forgemaster's_insignia,id=113983,bonus_id=567/448
 trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=567/448
-main_hand=iron_soldiers_saber,id=113980,bonus_id=567/448,enchant=mark_of_the_thunderlord
-off_hand=iron_soldiers_saber,id=113980,bonus_id=567/448,enchant=mark_of_the_thunderlord
+main_hand=taners_terrible_spine,id=113862,bonus_id=566/448,enchant=mark_of_the_thunderlord
+off_hand=taners_terrible_spine,id=113862,bonus_id=566/448,enchant=mark_of_the_thunderlord
 save=Warrior_Fury_1h_T17M.simc
 
 # Warrior Fury 2h T17M
@@ -104,7 +104,7 @@ finger1=spellbound_runic_band_of_elemental_power,id=118305,bonus_id=524,enchant=
 finger2=seal_of_the_savage_howl,id=113940,bonus_id=567/448,enchant=gift_of_critical_strike
 trinket1=forgemaster's_insignia,id=113983,bonus_id=567/448
 trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=567/448
-main_hand=iron_soldiers_saber,id=113980,bonus_id=567/448,enchant=mark_of_the_thunderlord
+main_hand=taners_terrible_spine,id=113862,bonus_id=566/448,enchant=mark_of_the_thunderlord
 off_hand=kromogs_protecting_palm,id=113926,bonus_id=567/448
 save=Warrior_Protection_T17M.simc
 
@@ -131,6 +131,6 @@ finger1=spellbound_runic_band_of_elemental_power,id=118305,bonus_id=524,enchant=
 finger2=seal_of_the_savage_howl,id=113940,bonus_id=567/448,enchant=gift_of_critical_strike
 trinket1=forgemaster's_insignia,id=113983,bonus_id=567/448
 trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=567/448
-main_hand=iron_soldiers_saber,id=113980,bonus_id=567/448,enchant=mark_of_the_thunderlord
+main_hand=taners_terrible_spine,id=113862,bonus_id=566/448,enchant=mark_of_the_thunderlord
 off_hand=kromogs_protecting_palm,id=113926,bonus_id=567/448
 save=Warrior_Gladiator_T17M.simc

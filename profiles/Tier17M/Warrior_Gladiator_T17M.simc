@@ -74,18 +74,17 @@ finger1=spellbound_runic_band_of_elemental_power,id=118305,bonus_id=524,enchant=
 finger2=seal_of_the_savage_howl,id=113940,bonus_id=567/448,enchant=gift_of_critical_strike
 trinket1=forgemasters_insignia,id=113983,bonus_id=567/448
 trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=567/448
-main_hand=iron_soldiers_saber,id=113980,bonus_id=567/448,enchant=mark_of_the_thunderlord
+main_hand=taners_terrible_spine,id=113862,bonus_id=566/448,enchant=mark_of_the_thunderlord
 off_hand=kromogs_protecting_palm,id=113926,bonus_id=567/448
 
 # Gear Summary
-# gear_strength=3578
-# gear_agility=136
-# gear_stamina=4654
-# gear_crit_rating=1554
-# gear_haste_rating=402
+# gear_strength=3697
+# gear_stamina=4628
+# gear_crit_rating=1536
+# gear_haste_rating=322
 # gear_mastery_rating=1087
 # gear_armor=3066
-# gear_multistrike_rating=1031
+# gear_multistrike_rating=1110
 # gear_versatility_rating=277
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

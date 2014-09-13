@@ -2540,8 +2540,7 @@ struct dampen_harm_t : public monk_spell_t
 
   virtual void execute()
   {
-    size_t max_stacks = p() -> buff.dampen_harm -> data().initial_stacks();
-    p() -> buff.dampen_harm -> trigger( static_cast<int>(max_stacks) ); //forces 3 stacks on cast
+    p() -> buff.dampen_harm -> trigger( 3 );
     monk_spell_t::execute();
   }
 };
@@ -3238,9 +3237,9 @@ void monk_t::create_buffs()
 
   buff.serenity = buff_creator_t( this, "serenity", talent.serenity );
   
-  buff.dampen_harm  =  buff_creator_t( this, "dampen_harm", find_spell( 122278 ) )
+  buff.dampen_harm  =  buff_creator_t( this, "dampen_harm", talent.dampen_harm )
     .cd( timespan_t::zero() )
-    .max_stack( find_talent_spell( "Dampen Harm" ) -> initial_stacks() );
+    .max_stack( 3 );
 
   // Brewmaster
   buff.bladed_armor = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
@@ -3781,9 +3780,8 @@ void monk_t::target_mitigation( school_e school,
   // Stagger is not reduced by damage mitigation effects
   if ( s -> action -> id == 124255 )
     return;
-  else
 
-  base_t::target_mitigation( school, dt, s );
+  player_t::target_mitigation( school, dt, s );
 
   // Passive sources (Sturdy Ox)
   if ( school != SCHOOL_PHYSICAL)
@@ -3792,20 +3790,15 @@ void monk_t::target_mitigation( school_e school,
   // Damage Reduction Cooldowns
 
   // Dampen Harm // Currently reduces hits below 15% hp as well
-  if ( buff.dampen_harm -> up())
-    {
-    s -> result_amount *=1.0 - buff.dampen_harm -> data().effectN( 2 ).percent(); // Dampen Harm reduction is stored as +50
+  if ( buff.dampen_harm -> up() )
+  {
+    s -> result_amount *= 1.0 - buff.dampen_harm -> data().effectN( 2 ).percent(); // Dampen Harm reduction is stored as +50
     buff.dampen_harm -> decrement(); // A stack will only be removed if the reduction was applied.
-    }
+  }
 
   //Fortifying Brew
   if ( buff.fortifying_brew -> check() )
     s -> result_amount *= 1.0 + buff.fortifying_brew -> data().effectN( 2 ).percent();
-
-
-
-  
-
 }
 
 // monk_t::assess_damage ====================================================
