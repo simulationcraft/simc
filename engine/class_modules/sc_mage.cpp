@@ -3392,11 +3392,12 @@ struct presence_of_mind_t : public mage_spell_t
 
 struct pyroblast_t : public mage_spell_t
 {
-  bool is_hot_streak;
+  bool is_hot_streak,
+       dot_is_hot_streak;
 
   pyroblast_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "pyroblast", p, p -> find_class_spell( "Pyroblast" ) ),
-    is_hot_streak( false )
+    is_hot_streak( false ), dot_is_hot_streak( false )
   {
     parse_options( NULL, options_str );
     may_hot_streak = true;
@@ -3451,6 +3452,8 @@ struct pyroblast_t : public mage_spell_t
 
   virtual void impact( action_state_t* s )
   {
+    dot_is_hot_streak = is_hot_streak;
+
     mage_spell_t::impact( s );
 
     if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
@@ -3459,7 +3462,7 @@ struct pyroblast_t : public mage_spell_t
     if ( s -> result == RESULT_CRIT && p() -> talents.kindling -> ok() )
       p() -> cooldowns.combustion -> adjust( timespan_t::from_seconds( - p() -> talents.kindling -> effectN( 1 ).base_value() ) );
 
-    if ( is_hot_streak )
+    if ( p() -> new_sets.has_set_bonus( SET_CASTER, PVP, B4 ) && is_hot_streak )
       td( s -> target ) -> debuffs.firestarter -> trigger();
   }
 
@@ -3484,17 +3487,33 @@ struct pyroblast_t : public mage_spell_t
     return c;
   }
 
-  virtual double action_multiplier() const
+  virtual double action_da_multiplier() const
   {
-    double am = mage_spell_t::action_multiplier();
+    double am = mage_spell_t::action_da_multiplier();
 
     if ( p() -> buffs.pyroblast -> up() )
     {
-      am *= 1.25;
+      am *= 1.0 + p() -> find_spell( 48108 ) -> effectN( 3 ).percent();
     }
     return am;
   }
 
+  virtual double action_ta_multiplier() const
+  {
+    double am = mage_spell_t::action_ta_multiplier();
+
+    if ( dot_is_hot_streak )
+    {
+      am *= 1.0 + p() -> find_spell( 48108 ) -> effectN( 3 ).percent();
+    }
+    return am;
+  }
+
+  void reset()
+  {
+    is_hot_streak = false;
+    dot_is_hot_streak = false;
+  }
 };
 
 // Rune of Power ============================================================
