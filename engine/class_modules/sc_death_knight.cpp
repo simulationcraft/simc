@@ -214,7 +214,7 @@ public:
     buff_t* will_of_the_necropolis_rt;
 
     absorb_buff_t* blood_shield;
-    absorb_buff_t* rune_tap;
+    buff_t* rune_tap;
     stat_buff_t* death_shroud;
     stat_buff_t* riposte;
     buff_t* shadow_of_death;
@@ -466,7 +466,7 @@ public:
     base.distance = 0;
 
     cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
-    cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 2.0 );
+    cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 1.0 );
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[ CACHE_HASTE ] = true;
@@ -5031,14 +5031,18 @@ struct icebound_fortitude_t : public death_knight_spell_t
 
 // Rune Tap
 
-struct rune_tap_t : public death_knight_heal_t
+struct rune_tap_t : public death_knight_spell_t
 {
+  cooldown_t* ability_cooldown;
   rune_tap_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_heal_t( "rune_tap", p, p -> find_specialization_spell( "Rune Tap" ) )
+    death_knight_spell_t( "rune_tap", p, p -> find_specialization_spell( "Rune Tap" ) )
   {
     parse_options( NULL, options_str );
-
-    attack_power_mod.direct = 0;
+    cooldown -> charges = 2;
+    cooldown -> duration = timespan_t::from_seconds( 40 );
+    cooldown -> duration += p -> perk.enhanced_rune_tap -> effectN( 1 ).time_value();
+    ability_cooldown -> duration = data().cooldown(); // Can only use it once per second.
+    use_off_gcd = true;
   }
 
   void consume_resource()
@@ -5046,16 +5050,15 @@ struct rune_tap_t : public death_knight_heal_t
     if ( p() -> buffs.will_of_the_necropolis_rt -> check() )
       return;
 
-    death_knight_heal_t::consume_resource();
+    death_knight_spell_t::consume_resource();
   }
 
   void execute()
   {
-    death_knight_heal_t::execute();
+    death_knight_spell_t::execute();
+    ability_cooldown -> start();
 
-    double amount = ( p() -> resources.max[ RESOURCE_HEALTH ] - p() -> resources.current[ RESOURCE_HEALTH ] ) * data().effectN( 1 ).percent();
-
-    p() -> buffs.rune_tap -> trigger( 1, amount );
+    p() -> buffs.rune_tap -> trigger();
 
     p() -> buffs.will_of_the_necropolis_rt -> expire();
   }
@@ -5064,7 +5067,7 @@ struct rune_tap_t : public death_knight_heal_t
   {
     if ( p() -> buffs.will_of_the_necropolis_rt -> check() )
       return 0;
-    return death_knight_heal_t::cost();
+    return death_knight_spell_t::cost();
   }
 
   bool ready()
@@ -5072,11 +5075,14 @@ struct rune_tap_t : public death_knight_heal_t
     if ( p() -> buffs.will_of_the_necropolis_rt-> check() )
     {
       cost_blood = 0;
-      bool r = death_knight_heal_t::ready();
+      bool r = death_knight_spell_t::ready();
       cost_blood  = 1;
       return r;
     }
-    return death_knight_heal_t::ready();
+    if ( ability_cooldown -> up() )
+      return death_knight_spell_t::ready();
+
+    return false;
   }
 };
 
@@ -6389,9 +6395,7 @@ void death_knight_t::create_buffs()
                               .school( SCHOOL_PHYSICAL )
                               .source( get_stats( "blood_shield" ) )
                               .gain( get_gain( "blood_shield" ) );
-  buffs.rune_tap            = absorb_buff_creator_t( this, "rune_tap", find_specialization_spell( "Rune Tap" ) )
-                              .source( get_stats( "rune_tap" ) )
-                              .gain( get_gain( "rune_tap" ) );
+  buffs.rune_tap            = buff_creator_t( this, "rune_tap", find_specialization_spell( "Rune Tap" ) -> effectN( 1 ).trigger() );
 
   buffs.antimagic_shell     = buff_creator_t( this, "antimagic_shell", find_class_spell( "Anti-Magic Shell" ) )
                               .cd( timespan_t::zero() );
@@ -6676,6 +6680,9 @@ void death_knight_t::target_mitigation( school_e school, dmg_e type, action_stat
   if ( school != SCHOOL_PHYSICAL && runeforge.rune_of_spellbreaking_oh -> check() )
     state -> result_amount *= 1.0 + runeforge.rune_of_spellbreaking_oh -> data().effectN( 1 ).percent();
 
+  if ( buffs.rune_tap -> up() )
+    state -> result_amount *= 1.0 + buffs.rune_tap -> data().effectN( 1 ).percent();
+
   if ( buffs.bone_shield -> up() )
     state -> result_amount *= 1.0 + buffs.bone_shield -> data().effectN( 1 ).percent();
 
@@ -6722,7 +6729,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
   if ( attr == ATTR_STRENGTH )
   {
     if ( runeforge.rune_of_the_fallen_crusader -> up() )
-      m *= 1.0 + fallen_crusader; // Will remove later, 
+      m *= 1.0 + fallen_crusader;
     m *= 1.0 + buffs.pillar_of_frost -> value();
   }
   else if ( attr == ATTR_STAMINA )
