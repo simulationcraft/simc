@@ -415,7 +415,6 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   createHelpTab();
   createLogTab();
   createResultsTab();
-  createSiteTab();
   createSpellQueryTab();
   createCmdLine();
   createToolTips();
@@ -813,15 +812,6 @@ void SC_MainWindow::createResultsTab()
   mainTab -> addTab( resultsTab, tr( "Results" ) );
 }
 
-void SC_MainWindow::createSiteTab()
-{
-  siteView = new SC_WebView( this );
-  siteView -> setUrl( QUrl( "http://code.google.com/p/simulationcraft/" ) );
-  siteView -> enableMouseNavigation();
-  siteView -> enableKeyboardNavigation();
-  mainTab -> addTab( siteView, tr( "Site" ) );
-}
-
 void SC_MainWindow::createSpellQueryTab()
 {
   spellQueryTab = new SC_SpellQueryTab( this );
@@ -886,11 +876,6 @@ void SC_MainWindow::updateWebView( SC_WebView* wv )
     {
       cmdLine -> setHelpViewProgress( visibleWebView -> progress, "%p%", "" );
       cmdLine -> setCommandLineText( TAB_HELP, visibleWebView -> url_to_show );
-    }
-    else if ( visibleWebView == siteView )
-    {
-      cmdLine -> setSiteLoadProgress( visibleWebView -> progress, "%p%", "" );
-      cmdLine -> setCommandLineText( TAB_SITE, visibleWebView -> url_to_show );
     }
   }
 }
@@ -1481,7 +1466,6 @@ void SC_MainWindow::cmdLineTextEdited( const QString& s )
     case TAB_SIMULATE:  cmdLineText = s; break;
     case TAB_OVERRIDES: cmdLineText = s; break;
     case TAB_HELP:      cmdLineText = s; break;
-    case TAB_SITE:      cmdLineText = s; break;
     case TAB_LOG:       logFileText = s; break;
     case TAB_RESULTS:   resultsFileText = s; break;
     default:  break;
@@ -1519,7 +1503,6 @@ void SC_MainWindow::mainButtonClicked( bool /* checked */ )
     case TAB_SIMULATE:  enqueueSim(); break;
     case TAB_OVERRIDES: enqueueSim(); break;
     case TAB_HELP:      enqueueSim(); break;
-    case TAB_SITE:      enqueueSim(); break;
     case TAB_IMPORT:
       switch ( importTab -> currentTab() )
       {
@@ -1661,9 +1644,6 @@ void SC_MainWindow::mainTabChanged( int index )
       break;
     case TAB_RESULTS:
       resultsTabChanged( resultsTab -> currentIndex() );
-      break;
-    case TAB_SITE:
-      updateWebView( siteView );
       break;
     case TAB_SPELLQUERY:
       break;

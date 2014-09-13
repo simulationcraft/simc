@@ -48,7 +48,6 @@ enum main_tabs_e
   TAB_HELP,
   TAB_LOG,
   TAB_RESULTS,
-  TAB_SITE,
   TAB_SPELLQUERY
 #ifdef SC_PAPERDOLL
   , TAB_PAPERDOLL
@@ -1030,9 +1029,7 @@ public:
   PaperdollProfile* paperdollProfile;
 #endif
 
-
   SC_WebView* battleNetView;
-  SC_WebView* siteView;
   SC_WebView* helpView;
   SC_WebView* visibleWebView;
   QListWidget* historyList;
@@ -1101,7 +1098,6 @@ public:
   void createHelpTab();
   void createLogTab();
   void createResultsTab();
-  void createSiteTab();
   void createSpellQueryTab();
   void createToolTips();
   void createTabShortcuts();
