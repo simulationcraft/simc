@@ -105,7 +105,7 @@ wrists=fleshmelter_bracers,id=113896,bonus_id=566
 hands=blackhands_handguards,id=115583,bonus_id=566
 waist=ironcrushers_collar,id=113950,bonus_id=566
 legs=blackhands_legguards,id=115580,bonus_id=566
-feet=sabatons_of_fractal_earth,id=113936,bonus_id=566
+feet=iron_bellow_sabatons,id=113961,bonus_id=566
 finger1=spellbound_runic_band_of_elemental_power,id=118305,bonus_id=524,enchant=gift_of_critical_strike
 finger2=seal_of_the_savage_howl,id=113940,bonus_id=566,enchant=gift_of_critical_strike
 trinket1=forgemasters_insignia,id=113983,bonus_id=566
@@ -116,11 +116,11 @@ off_hand=crescent_of_living_magma,id=113886,bonus_id=566,enchant=mark_of_the_thu
 # Gear Summary
 # gear_strength=3416
 # gear_stamina=4366
-# gear_crit_rating=1580
-# gear_haste_rating=274
-# gear_mastery_rating=913
+# gear_crit_rating=1684
+# gear_haste_rating=424
+# gear_mastery_rating=776
 # gear_armor=2148
-# gear_multistrike_rating=1197
+# gear_multistrike_rating=1070
 # gear_versatility_rating=127
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
