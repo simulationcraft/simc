@@ -27,11 +27,7 @@ actions.precombat+=/snapshot_stats
 # Executed every time the actor is available.
 
 actions=/auto_attack
-<<<<<<< HEAD
-actions+=/speed_of_light,if=movement.remains>1=
-=======
 actions+=/speed_of_light,if=movement.remains>1
->>>>>>> 673900f59ff77d6fdeae73923677d268e196717e
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
@@ -57,13 +53,8 @@ actions+=/sacred_shield
 head=helmet_of_guiding_light,id=115568
 neck=vertebrae_protector,id=113900,bonus_id=448,enchant=gift_of_haste
 shoulders=unstable_slag_shoulderplates,id=113884,bonus_id=448
-<<<<<<< HEAD
 back=charbreath_firecloak,id=113916,bonus_id=448,enchant=gift_of_haste
-chest=battleplate_of_guiding_light,id=115566,bonus_id=0
-=======
-back=charbreath_firecloak,id=11391,bonus_id=448,enchant=gift_of_haste
 chest=battleplate_of_guiding_light,id=115566
->>>>>>> 673900f59ff77d6fdeae73923677d268e196717e
 wrists=bracers_of_visceral_force,id=119331,bonus_id=448
 hands=gauntlets_of_guiding_light,id=115567
 waist=uktars_belt_of_chiming_rings,id=113976,bonus_id=448

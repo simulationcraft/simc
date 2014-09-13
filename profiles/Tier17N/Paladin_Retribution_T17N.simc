@@ -38,11 +38,7 @@ actions+=/holy_avenger,sync=seraphim,if=talent.seraphim.enabled
 actions+=/holy_avenger,if=holy_power<=2&!talent.seraphim.enabled
 actions+=/avenging_wrath,sync=seraphim,if=talent.seraphim.enabled
 actions+=/avenging_wrath,if=!talent.seraphim.enabled
-<<<<<<< HEAD
 actions+=/use_item,name=vial_of_convulsive_shadows
-=======
-actions+=/use_item,name=pvial_of_convulsive_shadows
->>>>>>> 673900f59ff77d6fdeae73923677d268e196717e
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
