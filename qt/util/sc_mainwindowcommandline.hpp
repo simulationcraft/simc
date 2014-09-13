@@ -39,7 +39,6 @@ public:
     CMDLINE_TAB_HELP,
     CMDLINE_TAB_LOG,
     CMDLINE_TAB_RESULTS,
-    CMDLINE_TAB_SITE,
     CMDLINE_TAB_SPELLQUERY,
 #ifdef SC_PAPERDOLL
     CMDLINE_TAB_PAPERDOLL,
@@ -92,7 +91,6 @@ protected:
     PROGRESSBAR_IMPORTING,
     PROGRESSBAR_BATTLE_NET,
     PROGRESSBAR_HELP,
-    PROGRESSBAR_SITE,
     PROGRESSBAR_STATE_COUNT
   };
 
@@ -117,7 +115,6 @@ protected:
   QString commandLineBuffer_DEFAULT; // different buffers for different tabs
   QString commandLineBuffer_TAB_BATTLE_NET;
   QString commandLineBuffer_TAB_RESULTS;
-  QString commandLineBuffer_TAB_SITE;
   QString commandLineBuffer_TAB_HELP;
   QString commandLineBuffer_TAB_LOG;
 

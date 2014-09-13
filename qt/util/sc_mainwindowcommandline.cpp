@@ -62,17 +62,6 @@ int SC_MainWindowCommandLine::getHelpViewProgress()
   return getProgressBarProgressForState( PROGRESSBAR_HELP );
 }
 
-void SC_MainWindowCommandLine::setSiteLoadProgress( int value, QString format,
-                                                    QString toolTip )
-{
-  updateProgress( PROGRESSBAR_SITE, value, format, toolTip );
-}
-
-int SC_MainWindowCommandLine::getSiteProgress()
-{
-  return getProgressBarProgressForState( PROGRESSBAR_SITE );
-}
-
 QString SC_MainWindowCommandLine::commandLineText()
 {
   // gets commandline text for the current tab
@@ -372,8 +361,6 @@ void SC_MainWindowCommandLine::initProgressBarStates()
     // battlenet: battlenet has its own state
     setProgressBarState( state, CMDLINE_TAB_BATTLE_NET,
                          PROGRESSBAR_BATTLE_NET );
-    // site: has its own state
-    setProgressBarState( state, CMDLINE_TAB_SITE, PROGRESSBAR_SITE );
     // help: has its own state
     setProgressBarState( state, CMDLINE_TAB_HELP, PROGRESSBAR_HELP );
   }
@@ -401,9 +388,6 @@ void SC_MainWindowCommandLine::initCommandLineBuffers()
     // battlenet has its own buffer (for url)
     setText( state, CMDLINE_TAB_BATTLE_NET, TEXTEDIT_CMDLINE,
              &commandLineBuffer_TAB_BATTLE_NET );
-    // site has its own buffer (for url)
-    setText( state, CMDLINE_TAB_SITE, TEXTEDIT_CMDLINE,
-             &commandLineBuffer_TAB_SITE );
     // help has its own buffer (for url)
     setText( state, CMDLINE_TAB_HELP, TEXTEDIT_CMDLINE,
              &commandLineBuffer_TAB_HELP );
