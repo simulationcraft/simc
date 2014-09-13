@@ -1,4 +1,5 @@
-deathknight="Death_Knight_Frost_1h_T17H"
+deathknight="Death_Knight_Frost_1h_T17H”
+"
 level=100
 race=orc
 role=attack
@@ -35,7 +36,7 @@ actions+=/empower_rune_weapon,if=target.time_to_die<=60&buff.potion.up
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
-actions+=/use_item,name=vial_of_convulsive_shadows
+actions+=/use_item,slot=trinket2
 actions+=/call_action_list,name=aoe,if=active_enemies>=3
 actions+=/call_action_list,name=single_target,if=active_enemies<3
 actions+=/run_action_list,name=aoe,if=active_enemies>=3
@@ -93,10 +94,12 @@ main_hand=kromogs_brutal_fist,id=113927,bonus_id=566/448,enchant=rune_of_the_fal
 off_hand=kromogs_brutal_fist,id=113927,bonus_id=566/448,enchant=rune_of_razorice
 
 # Gear Summary
-# gear_strength=2553
-# gear_stamina=3199
-# gear_crit_rating=1344
-# gear_haste_rating=436
-# gear_mastery_rating=924
-# gear_armor=2020
-# gear_multistrike_rating=411
+# gear_strength=3182
+# gear_stamina=3970
+# gear_crit_rating=508
+# gear_haste_rating=816
+# gear_mastery_rating=1486
+# gear_armor=2163
+# gear_multistrike_rating=934
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1

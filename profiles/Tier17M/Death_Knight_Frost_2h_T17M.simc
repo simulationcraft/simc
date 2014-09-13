@@ -1,4 +1,5 @@
-deathknight="Death_Knight_Frost_2h_T17M"
+deathknight="Death_Knight_Frost_2h_T17M”
+"
 level=100
 race=orc
 role=attack
@@ -35,7 +36,7 @@ actions+=/empower_rune_weapon,if=target.time_to_die<=60&buff.potion.up
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
-actions+=/use_item,name=vial_of_convulsive_shadows
+actions+=/use_item,slot=trinket2
 actions+=/call_action_list,name=aoe,if=active_enemies>=3
 actions+=/call_action_list,name=single_target,if=active_enemies<3
 actions+=/run_action_list,name=aoe,if=active_enemies>=3
@@ -97,10 +98,13 @@ trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=567/448
 main_hand=kagrazs_burning_blade,id=113913,bonus_id=567/448,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_strength=2588
-# gear_stamina=3250
-# gear_crit_rating=1367
-# gear_haste_rating=711
-# gear_mastery_rating=672
-# gear_armor=2020
-# gear_multistrike_rating=411
+# gear_strength=3721
+# gear_stamina=4664
+# gear_crit_rating=602
+# gear_haste_rating=691
+# gear_mastery_rating=1229
+# gear_armor=2271
+# gear_multistrike_rating=1678
+# gear_versatility_rating=154
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1

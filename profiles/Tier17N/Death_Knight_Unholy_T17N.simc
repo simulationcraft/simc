@@ -32,7 +32,7 @@ actions+=/antimagic_shell,damage=100000
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
-actions+=/use_item,name=vial_of_convulsive_shadows
+actions+=/use_item,slot=trinket2
 actions+=/potion,name=draenic_strength,if=buff.dark_transformation.up&target.time_to_die<=60
 actions+=/run_action_list,name=aoe,if=active_enemies>=3
 actions+=/run_action_list,name=single_target,if=active_enemies<3
@@ -100,12 +100,14 @@ trinket1=forgemasters_insignia,id=113983,bonus_id=448
 trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=448
 main_hand=kagrazs_burning_blade,id=113913,bonus_id=448,enchant=rune_of_the_fallen_crusader
 
-
 # Gear Summary
-# gear_strength=2588
-# gear_stamina=3250
-# gear_crit_rating=1367
-# gear_haste_rating=436
-# gear_mastery_rating=947
-# gear_armor=2020
-# gear_multistrike_rating=411
+# gear_strength=2824
+# gear_stamina=3533
+# gear_crit_rating=443
+# gear_haste_rating=450
+# gear_mastery_rating=1462
+# gear_armor=2070
+# gear_multistrike_rating=832
+# gear_versatility_rating=168
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1

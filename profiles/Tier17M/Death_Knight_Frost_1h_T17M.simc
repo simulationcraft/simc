@@ -1,4 +1,5 @@
-deathknight="Death_Knight_Frost_1h_T17M"
+deathknight="Death_Knight_Frost_1h_T17M”
+"
 level=100
 race=orc
 role=attack
@@ -35,7 +36,7 @@ actions+=/empower_rune_weapon,if=target.time_to_die<=60&buff.potion.up
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
-actions+=/use_item,name=vial_of_convulsive_shadows
+actions+=/use_item,slot=trinket2
 actions+=/call_action_list,name=aoe,if=active_enemies>=3
 actions+=/call_action_list,name=single_target,if=active_enemies<3
 actions+=/run_action_list,name=aoe,if=active_enemies>=3
@@ -55,23 +56,28 @@ actions.aoe+=/plague_leech,if=unholy=1
 actions.aoe+=/plague_strike,if=unholy=1
 actions.aoe+=/empower_rune_weapon
 
-actions.single_target=blood_tap,if=buff.blood_charge.stack>10&(runic_power>76|(runic_power>=20&buff.killing_machine.react))
+actions.single_target=plague_leech,if=disease.min_remains<1
+actions.single_target+=/outbreak,if=!disease.min_ticking
+actions.single_target+=/unholy_blight,if=!disease.min_ticking
 actions.single_target+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35
 actions.single_target+=/blood_tap,if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains=0)
-actions.single_target+=/blood_tap,if=talent.defile.enabled&cooldown.defile.remains=0
-actions.single_target+=/frost_strike,if=buff.killing_machine.react|runic_power>88
-actions.single_target+=/frost_strike,if=cooldown.antimagic_shell.remains<1&runic_power>=50&!buff.antimagic_shell.up
-actions.single_target+=/howling_blast,if=death>1|frost>1
-actions.single_target+=/unholy_blight,if=!disease.ticking
 actions.single_target+=/howling_blast,if=!talent.necrotic_plague.enabled&!dot.frost_fever.ticking
 actions.single_target+=/howling_blast,if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking
-actions.single_target+=/plague_strike,if=!talent.necrotic_plague.enabled&!dot.blood_plague.remains<10&unholy>0
+actions.single_target+=/plague_strike,if=!talent.necrotic_plague.enabled&!dot.blood_plague.ticking
 actions.single_target+=/howling_blast,if=buff.rime.react
+actions.single_target+=/obliterate,if=buff.killing_machine.react
+actions.single_target+=/blood_tap,if=buff.killing_machine.react
+actions.single_target+=/blood_tap,if=buff.blood_charge.stack>10&runic_power>76
 actions.single_target+=/frost_strike,if=runic_power>76
-actions.single_target+=/obliterate,if=unholy>0&!buff.killing_machine.react
-actions.single_target+=/howling_blast,if=!(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains<2)|death+frost>=2
-actions.single_target+=/blood_tap,if=target.health.pct-3*(target.health.pct%target.time_to_die)>35|buff.blood_charge.stack>=8
-actions.single_target+=/blood_tap
+actions.single_target+=/obliterate,if=blood=2|frost=2|unholy=2
+actions.single_target+=/plague_leech,if=disease.min_remains<3
+actions.single_target+=/outbreak,if=disease.min_remains<3
+actions.single_target+=/unholy_blight,if=disease.min_remains<3
+actions.single_target+=/frost_strike,if=talent.runic_empowerment.enabled&(frost=0|unholy=0|blood=0)
+actions.single_target+=/frost_strike,if=talent.blood_tap.enabled&buff.blood_charge.stack<=10
+actions.single_target+=/obliterate
+actions.single_target+=/blood_tap,if=buff.blood_charge.stack>10&runic_power>=20
+actions.single_target+=/frost_strike
 actions.single_target+=/plague_leech
 actions.single_target+=/empower_rune_weapon
 
@@ -92,10 +98,13 @@ trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=567/448
 main_hand=kagrazs_burning_blade,id=113913,bonus_id=567/448,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_strength=2553
-# gear_stamina=3199
-# gear_crit_rating=1344
-# gear_haste_rating=436
-# gear_mastery_rating=924
-# gear_armor=2020
-# gear_multistrike_rating=411
+# gear_strength=3721
+# gear_stamina=4664
+# gear_crit_rating=602
+# gear_haste_rating=691
+# gear_mastery_rating=1229
+# gear_armor=2271
+# gear_multistrike_rating=1678
+# gear_versatility_rating=154
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1
