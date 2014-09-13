@@ -544,6 +544,43 @@ std::vector<player_t*> heal_t::find_lowest_players( int num_players ) const
   return lowest_N_players;
 }
 
+// heal_t::smart_target =====================================================
+
+player_t* heal_t::smart_target() const
+{
+  std::vector<player_t*> injured_targets;
+  player_t* target;
+  // First check non-pet target
+  for( size_t i = 0 ; i < sim -> healing_no_pet_list.size() ; i++ )
+  {
+    player_t* temp_p = sim -> healing_no_pet_list[ i ];
+    if( temp_p -> health_percentage() < 100 )
+    {
+      injured_targets.push_back( temp_p );
+    }
+  }
+  // Check pets if we didn't find any injured non-pets
+  if( injured_targets.empty() )
+  {
+    for( size_t i = 0 ; i < sim -> healing_pet_list.size() ; i++ )
+    {
+      player_t* temp_p = sim -> healing_pet_list[ i ];
+      if( temp_p -> health_percentage() < 100 )
+      {
+        injured_targets.push_back( temp_p );
+      }
+    }
+  }
+  // Just choose a full-health target if nobody is injured
+  if( injured_targets.empty() )
+  {
+    injured_targets = sim -> healing_no_pet_list.data();
+  }
+  // Choose a random member of injured_targets
+  target = injured_targets[ rng().real() * injured_targets.size() ];
+  return target;
+}
+
 // heal_t::num_targets ======================================================
 
 int heal_t::num_targets()

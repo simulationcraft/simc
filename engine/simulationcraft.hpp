@@ -2594,6 +2594,8 @@ struct sim_t : public core_sim_t, private sc_thread_t
   vector_with_callback<player_t*> player_list;
   vector_with_callback<player_t*> player_no_pet_list;
   vector_with_callback<player_t*> player_non_sleeping_list;
+  vector_with_callback<player_t*> healing_no_pet_list;
+  vector_with_callback<player_t*> healing_pet_list;
   player_t*   active_player;
   int         num_players;
   int         num_enemies;
@@ -6187,6 +6189,7 @@ public:
   player_t* find_greatest_difference_player();
   player_t* find_lowest_player();
   std::vector < player_t* > find_lowest_players( int num_players ) const;
+  player_t* smart_target() const; // Find random injured healing target, preferring non-pets // Might need to move up hierarchy if there are smart absorbs
   virtual int num_targets();
   virtual void   parse_effect_data( const spelleffect_data_t& );
 

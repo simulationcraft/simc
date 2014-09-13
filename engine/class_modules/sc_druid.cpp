@@ -654,6 +654,16 @@ struct natures_vigil_proc_t : public spell_t
       dmg_coeff  = p -> talent.natures_vigil -> effectN( 4 ).percent();
     }
 
+    virtual void init()
+    {
+      heal_t::init();
+      // Disable the snapshot_flags for all multipliers, but specifically allow factors in
+      // action_state_t::composite_da_multiplier() to be called. This works and I stole it 
+      // from the paladin module but I don't understand why.
+      snapshot_flags &= STATE_NO_MULTIPLIER;
+      snapshot_flags |= STATE_MUL_DA;
+    }
+
     virtual double action_multiplier() const
     {
       double am = heal_t::action_multiplier();
@@ -668,7 +678,7 @@ struct natures_vigil_proc_t : public spell_t
 
     virtual void execute()
     {
-      target = find_lowest_target();
+      target = smart_target();
 
       heal_t::execute();
     }
@@ -920,6 +930,28 @@ struct yseras_gift_t : public heal_t
     d -> refresh_duration(); // ticks indefinitely
 
     heal_t::tick( d );
+  }
+
+  // Override calculate_tick_amount for unique mechanic (heals smart target for % of own health)
+  // This might not be the best way to do this, but it works.
+  virtual double calculate_tick_amount( action_state_t* state, double dmg_multiplier )
+  {
+    double amount = state -> action -> player -> resources.max[ RESOURCE_HEALTH ] * tick_pct_heal;
+    return amount;
+  }
+
+  virtual void execute()
+  {
+    if( player -> health_percentage() < 100 )
+    {
+      target = player;
+    }
+    else
+    { 
+    target = smart_target();
+    }
+
+    heal_t::execute();
   }
 };
 

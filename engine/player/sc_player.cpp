@@ -629,6 +629,19 @@ player_t::player_t( sim_t*             s,
     index = - ( ++( sim -> num_enemies ) );
   }
 
+  // Fill healng lists with all non-enemy players.
+  if( !is_enemy() )
+  {
+    if( ! is_pet() )
+    {
+      sim -> healing_no_pet_list.push_back( this );
+    } 
+    else 
+    {
+      sim -> healing_pet_list.push_back( this );
+    }
+  }
+
   if ( ! is_pet() && sim -> stat_cache != -1 )
   {
     cache.active = sim -> stat_cache != 0;
