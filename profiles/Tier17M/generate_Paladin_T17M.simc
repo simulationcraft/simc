@@ -21,7 +21,7 @@ feet=iron_bellow_sabatons,id=113961,bonus_id=567/448
 finger1=phosphorescent_seal,id=113866,bonus_id=567/448,enchant=gift_of_haste
 finger2=ransackers_ring_of_plunder,id=118868,bonus_id=567/448,enchant=gift_of_haste
 trinket1=forgemasters_insignia,id=113983,bonus_id=567/448
-trinket2=pvial_of_convulsive_shadows,id=113969,bonus_id=567/448
+trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=567/448
 main_hand=thogars_control_rod,id=113953,bonus_id=567/448,enchant=mark_of_warsong
 save=Paladin_Retribution_T17M.simc
 
