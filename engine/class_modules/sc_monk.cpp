@@ -24,7 +24,7 @@
   BREWMASTER:
   - Swift Reflexes strike back
   - Purifying Brew
-  - Level 75 talents - dampen harm added
+  - Level 75 talents - dampen harm added - currently stacks are consumed on all attacks, not just above 15% max hp
   - Black Ox Statue
   - Gift of the Ox
 
@@ -379,10 +379,10 @@ public:
   virtual stat_e    convert_hybrid_stat( stat_e s ) const;
   virtual void      pre_analyze_hook();
   virtual void      combat_begin();
+  virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
   virtual void      assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void      assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* s );
-  virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
-  virtual void invalidate_cache( cache_e );
+  virtual void      invalidate_cache( cache_e );
   virtual void      init_action_list();
   virtual expr_t*   create_expression( action_t* a, const std::string& name_str );
   virtual monk_td_t* get_target_data( player_t* target ) const
@@ -3781,19 +3781,31 @@ void monk_t::target_mitigation( school_e school,
   // Stagger is not reduced by damage mitigation effects
   if ( s -> action -> id == 124255 )
     return;
+  else
 
   base_t::target_mitigation( school, dt, s );
 
+  // Passive sources (Sturdy Ox)
+  if ( school != SCHOOL_PHYSICAL)
+    s -> result_amount *= 1.0 + active_stance_data( STURDY_OX ).effectN( 4 ).percent();
+
+  // Damage Reduction Cooldowns
+
+  // Dampen Harm // Currently reduces hits below 15% hp as well
+  if ( buff.dampen_harm -> up())
+    {
+    s -> result_amount *=1.0 - buff.dampen_harm -> data().effectN( 2 ).percent(); // Dampen Harm reduction is stored as +50
+    buff.dampen_harm -> decrement(); // A stack will only be removed if the reduction was applied.
+    }
+
+  //Fortifying Brew
   if ( buff.fortifying_brew -> check() )
     s -> result_amount *= 1.0 + buff.fortifying_brew -> data().effectN( 2 ).percent();
 
 
-  if ( school != SCHOOL_PHYSICAL)
-    s -> result_amount *= 1.0 + active_stance_data( STURDY_OX ).effectN( 4 ).percent();
+
   
-  if (buff.dampen_harm->check())
-  if (dt > (resources.max[RESOURCE_HEALTH] * ( buff.dampen_harm -> data().effectN(1).percent())))
-    s -> result_amount *=1.0 + buff.dampen_harm -> data().effectN( 2 ).percent();
+
 }
 
 // monk_t::assess_damage ====================================================
@@ -3810,12 +3822,6 @@ void monk_t::assess_damage( school_e school,
 
   if ( s -> result == RESULT_DODGE && new_sets.set( MONK_BREWMASTER, T17, B2 ) )
     resource_gain(RESOURCE_ENERGY, passives.tier17_2pc_tank -> effectN( 1 ).base_value(), gain.energy_refund);
-  
-  // A stack will only be removed if the hit was bigger than 15% of total health, and will reduce that attack by 50%
-  if ( s -> result_amount > ( resources.max[RESOURCE_HEALTH] * ( buff.dampen_harm -> data().effectN( 1 ).percent() ) ) )
-    {
-    buff.dampen_harm -> decrement();
-    }
 
   base_t::assess_damage( school, dtype, s );
 }
