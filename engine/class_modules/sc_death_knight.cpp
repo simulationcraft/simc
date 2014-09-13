@@ -5041,6 +5041,7 @@ struct rune_tap_t : public death_knight_spell_t
     cooldown -> charges = 2;
     cooldown -> duration = timespan_t::from_seconds( 40 );
     cooldown -> duration += p -> perk.enhanced_rune_tap -> effectN( 1 ).time_value();
+    ability_cooldown = p -> get_cooldown( "Rune Tap Ability Cooldown" );
     ability_cooldown -> duration = data().cooldown(); // Can only use it once per second.
     use_off_gcd = true;
   }
