@@ -2047,7 +2047,7 @@ struct black_arrow_t: public hunter_ranged_attack_t
     uint32_t proc_bit = 1 << ( d -> current_tick );
     if ( lnl_procs & proc_bit )
     {
-      p() -> buffs.lock_and_load -> trigger();
+      p() -> buffs.lock_and_load -> trigger( 2 );
       p() -> cooldowns.explosive_shot -> reset( true );
       p() -> procs.lock_and_load -> occur();
     }
@@ -2060,7 +2060,7 @@ struct black_arrow_t: public hunter_ranged_attack_t
     if ( p() -> new_sets.has_set_bonus( HUNTER_SURVIVAL, T17, B2 ) )
     {
       // guaranteed trigger (but we don't count that as a proc)
-      p() -> buffs.lock_and_load -> trigger();
+      p() -> buffs.lock_and_load -> trigger( 2 );
       p() -> cooldowns.explosive_shot -> reset( false );
     }
   }
