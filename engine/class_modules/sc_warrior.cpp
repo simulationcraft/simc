@@ -2568,10 +2568,18 @@ struct shield_slam_t: public warrior_attack_t
       p() -> proc.t17_2pc_prot -> occur();
       if ( p() -> active_stance == STANCE_GLADIATOR )
       {
-        p() -> buff.shield_charge -> trigger();
+        if ( p() -> buff.shield_charge -> check() )
+          p() -> buff.shield_charge -> extend_duration( p(), timespan_t::from_seconds( 7.0 ) );
+        else
+          p() -> buff.shield_charge -> trigger();
       }
       else
-        p() -> buff.shield_block -> trigger();
+      {
+        if ( p() -> buff.shield_block -> check() )
+          p() -> buff.shield_block -> extend_duration( p(), timespan_t::from_seconds( 6.0 ) );
+        else
+          p() -> buff.shield_block -> trigger();
+      }
     }
 
     double rage_from_snb = 0;
