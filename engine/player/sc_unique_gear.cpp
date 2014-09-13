@@ -56,6 +56,7 @@ namespace item
   /* Warlards of Draenor 6.0 */
   void blackiron_micro_crucible( special_effect_t&, const item_t& );
   void humming_blackiron_trigger( special_effect_t&, const item_t& );
+  void battering_talisman_trigger( special_effect_t&, const item_t& );
   void forgemasters_insignia( special_effect_t&, const item_t& );
   void autorepairing_autoclave( special_effect_t&, const item_t& );
   void spellbound_runic_band( special_effect_t&, const item_t& );
@@ -204,6 +205,7 @@ static const special_effect_db_item_t __special_effect_db[] = {
   /* Warlords of Draenor 6.0 */
   { 177085, 0,                     item::blackiron_micro_crucible }, /* Blackiron Micro Crucible */
   { 177071, 0,                    item::humming_blackiron_trigger }, /* Humming Blackiron Trigger */
+  { 177104, 0,                   item::battering_talisman_trigger }, /* Battering Talisman Trigger */
   { 177098, 0,                        item::forgemasters_insignia }, /* Forgemaster's Insignia */
   { 177090, 0,                      item::autorepairing_autoclave }, /* Forgemaster's Insignia */
   { 177171, 0,                        item::spellbound_runic_band }, /* 700 ilevel proc-ring */
@@ -1314,6 +1316,33 @@ void item::humming_blackiron_trigger( special_effect_t& effect,
                    .tick_behavior( BUFF_TICK_CLIP )
                    .period( spell -> effectN( 1 ).period() )
                    .duration( spell -> duration() );
+
+  effect.custom_buff = b;
+
+  new dbc_proc_callback_t( item.player, effect );
+}
+
+void item::battering_talisman_trigger( special_effect_t& effect,
+                                      const item_t& item )
+{
+  maintenance_check( 528 );
+
+  const spell_data_t* driver = item.player -> find_spell( effect.spell_id );
+  const spell_data_t* spell = driver -> effectN( 1 ).trigger();
+  const spell_data_t* stacks = item.player -> find_spell( 146293 );
+
+  std::string buff_name = spell -> name_cstr();
+  util::tokenize( buff_name );
+
+  // Require a damaging result, instead of any harmful spell hit
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  stat_buff_t* b = stat_buff_creator_t( item.player, buff_name, spell )
+    .add_stat( STAT_HASTE_RATING, spell -> effectN( 1 ).average( item ) )
+    .max_stack( stacks -> max_stacks() )
+    .tick_behavior( BUFF_TICK_CLIP )
+    .period( spell -> effectN( 1 ).period() )
+    .duration( spell -> duration() );
 
   effect.custom_buff = b;
 
