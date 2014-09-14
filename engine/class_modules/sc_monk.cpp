@@ -2391,7 +2391,7 @@ struct purifying_brew_t: public monk_spell_t
     // Optional addition: Track and report amount of damage cleared
     p() -> active_actions.stagger_self_damage -> clear_all_damage();
 
-    trigger_brew( p() -> new_sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value();
+    trigger_brew( p() -> new_sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
   }
 
   bool ready()
