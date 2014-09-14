@@ -14,7 +14,7 @@ namespace { // UNNAMED NAMESPACE
     = Feral =
     Update LI implementation to work like in-game
     Damage check:
-      Thrash (both forms)
+      Thrash (both forms) // Checked, is correct as of 9/14
       Swipe
 
     = Balance =
