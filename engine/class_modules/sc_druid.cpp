@@ -22,7 +22,6 @@ namespace { // UNNAMED NAMESPACE
 
     = Guardian =
     Damage check
-    Might of Ursoc
     PvP bonuses
     Add SD time @ max charges statistic
     Tooth & Claw in multi-tank sims
@@ -181,7 +180,6 @@ public:
     buff_t* barkskin;
     buff_t* bladed_armor;
     buff_t* bristling_fur;
-    buff_t* might_of_ursoc;
     absorb_buff_t* primal_tenacity;
     buff_t* pulverize;
     buff_t* savage_defense;
@@ -298,7 +296,6 @@ public:
     const spell_data_t* moonwarding;
     const spell_data_t* lifebloom;
     const spell_data_t* master_shapeshifter;
-    const spell_data_t* might_of_ursoc;
     const spell_data_t* ninth_life;
     const spell_data_t* shapemender;
     const spell_data_t* regrowth;
@@ -1442,36 +1439,6 @@ struct celestial_alignment_t : public druid_buff_t < buff_t >
     base_t::expire_override();
 
     druid.last_check = sim -> current_time;
-  }
-};
-
-// Might of Ursoc Buff ======================================================
-
-struct might_of_ursoc_t : public druid_buff_t < buff_t >
-{
-  int health_gain;
-  double health_pct;
-
-  might_of_ursoc_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "might_of_ursoc", p.find_spell( 106922 ) ) ),
-    health_gain( 0 ), health_pct( 0.0 )
-  {
-    health_pct = data().effectN( 1 ).percent() + p.glyph.might_of_ursoc -> effectN( 1 ).percent();
-  }
-
-  virtual void start( int stacks, double value, timespan_t duration )
-  {
-    health_gain = (int) floor( player -> resources.max[ RESOURCE_HEALTH ] * health_pct );
-    player -> stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*) 0, (action_t*) 0, true );
-
-    base_t::start( stacks, value, duration );
-  }
-
-  virtual void expire_override()
-  {
-    player -> stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*) 0, (action_t*) 0, true );
-
-    base_t::expire_override();
   }
 };
 
@@ -4490,35 +4457,6 @@ struct mark_of_the_wild_t : public druid_spell_t
   }
 };
 
-// Might of Ursoc ===========================================================
-
-struct might_of_ursoc_t : public druid_spell_t
-{
-  might_of_ursoc_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( "might_of_ursoc", p, p -> find_specialization_spell( "Might of Ursoc" ), options_str )
-  {
-    cooldown -> duration = data().cooldown();
-    cooldown -> duration += p -> glyph.might_of_ursoc -> effectN( 2 ).time_value();
-    harmful = false;
-    use_off_gcd = true;
-  }
-
-  void execute()
-  {
-    druid_spell_t::execute();
-
-    p() -> buff.might_of_ursoc -> trigger();
-  }
-
-  bool ready() 
-  {
-    if ( ! p() -> buff.bear_form -> check() )
-      return false;
-
-    return druid_spell_t::ready();
-  }
-};
-
 // Sunfire Spell ===========================================================
 
 struct sunfire_t: public druid_spell_t
@@ -5414,7 +5352,6 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "mangle"                 ) return new                 mangle_t( this, options_str );
   if ( name == "mark_of_the_wild"       ) return new       mark_of_the_wild_t( this, options_str );
   if ( name == "maul"                   ) return new                   maul_t( this, options_str );
-  if ( name == "might_of_ursoc"         ) return new         might_of_ursoc_t( this, options_str );
   if ( name == "moonfire"               )
   {
     if ( specialization() == DRUID_FERAL )  return new            moonfire_li_t( this, options_str );
@@ -5687,7 +5624,6 @@ void druid_t::init_spells()
   glyph.maim                  = find_glyph_spell( "Glyph of Maim" );
   glyph.maul                  = find_glyph_spell( "Glyph of Maul" );
   glyph.master_shapeshifter   = find_glyph_spell( "Glyph of the Master Shapeshifter" );
-  glyph.might_of_ursoc        = find_glyph_spell( "Glyph of Might of Ursoc" );
   glyph.moonwarding           = find_glyph_spell( "Glyph of Moonwarding" );
   glyph.ninth_life            = find_glyph_spell( "Glyph of the Ninth Life" );
   glyph.regrowth              = find_glyph_spell( "Glyph of Regrowth" );
@@ -5856,7 +5792,6 @@ void druid_t::create_buffs()
   buff.bristling_fur         = buff_creator_t( this, "bristling_fur", talent.bristling_fur )
                                .default_value( talent.bristling_fur -> effectN( 1 ).percent() )\
                                .cd( timespan_t::zero() );
-  buff.might_of_ursoc        = new might_of_ursoc_t( *this );
   buff.primal_tenacity       = absorb_buff_creator_t( this, "primal_tenacity", find_spell( 155784 ) )
                                .school( SCHOOL_PHYSICAL )
                                .source( get_stats( "primal_tenacity" ) )

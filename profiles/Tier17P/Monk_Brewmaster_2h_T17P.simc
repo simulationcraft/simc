@@ -34,7 +34,7 @@ actions+=/chi_explosion,if=buff.shuffle.down&chi>=2
 actions+=/dampen_harm,if=incoming_damage_1500ms&buff.fortifying_brew.down&buff.elusive_brew_activated.down
 actions+=/fortifying_brew,if=incoming_damage_1500ms&buff.dampen_harm.down&buff.elusive_brew_activated.down
 actions+=/elusive_brew,if=buff.elusive_brew_stacks.react>=9&buff.dampen_harm.down&buff.elusive_brew_activated.down
-actions+=/guard,if=chi>=2&incoming_damage_1500ms
+actions+=/guard,if=chi>=2
 actions+=/keg_smash,if=talent.ascension.enabled&chi<=3&cooldown.keg_smash.remains=0
 actions+=/keg_smash,if=!talent.ascension.enabled&chi<=2&cooldown.keg_smash.remains=0
 actions+=/tiger_palm,if=buff.tiger_power.remains<=3
@@ -56,19 +56,29 @@ actions.single_target+=/jab,if=talent.ascension.enabled&chi<=3&(energy+(energy.r
 actions.single_target+=/jab,if=!talent.ascension.enabled&chi<=2&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40
 
 
-
-head=primal_gladiators_ironskin_helm,id=115692
-neck=primal_gladiators_choker_of_endurance,id=120107,enchant=gift_of_critical_strike
+head=primal_gladiators_headcover,id=115785
+neck=primal_gladiators_choker_of_endurance,id=120107,enchant=gift_of_versatility
 shoulders=primal_gladiators_pauldrons,id=111287
-back=primal_gladiators_cape_of_cruelty,id=111077,enchant=gift_of_critical_strike
+back=primal_gladiators_cape_of_cruelty,id=111077,enchant=gift_of_versatility
 chest=primal_gladiators_ironskin_tunic,id=115695
 wrists=primal_gladiators_bindings_of_cruelty,id=111147
-hands=primal_gladiators_gloves_of_prowess,id=111083
+hands=primal_gladiators_grips,id=111284
 waist=primal_gladiators_belt_of_prowess,id=115668
 legs=primal_gladiators_ironskin_legguards,id=115693
 feet=primal_gladiators_boots_of_victory,id=111146
-finger1=primal_gladiators_ring_of_cruelty,id=115608,enchant=gift_of_critical_strike
-finger2=primal_gladiators_ring_of_prowess,id=115609,enchant=gift_of_critical_strike
+finger1=primal_gladiators_ring_of_cruelty,id=115608,enchant=gift_of_versatility
+finger2=primal_gladiators_ring_of_prowess,id=115609,enchant=gift_of_versatility
 trinket1=primal_gladiators_badge_of_adaptation,id=115495
 trinket2=primal_gladiators_insignia_of_conquest,id=111223
 main_hand=primal_gladiators_pike,id=111075,enchant_id=5352
+
+# Gear Summary
+# gear_agility=2378
+# gear_stamina=3248
+# gear_crit_rating=692
+# gear_haste_rating=325
+# gear_mastery_rating=1513
+# gear_armor=950
+# gear_bonus_armor=89
+# gear_versatility_rating=752
+# set_bonus=pvp_2pc=1
