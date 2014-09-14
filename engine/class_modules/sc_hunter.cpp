@@ -1737,6 +1737,10 @@ struct ranged_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
   }
 
+  virtual void try_steady_focus()
+  {
+  }
+
   virtual void impact( action_state_t* s )
   {
     hunter_ranged_attack_t::impact( s );
