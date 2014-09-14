@@ -19,6 +19,8 @@ actions.precombat=flask,type=greater_draenic_stamina_flask
 actions.precombat+=/food,type=nagrand_tempura
 actions.precombat+=/stance,choose=defensive
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
+# Generic on-use trinket line if needed when swapping trinkets out. 
+#actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&buff.ravager.up)
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_armor
 
@@ -26,7 +28,7 @@ actions.precombat+=/potion,name=draenic_armor
 
 actions=charge
 actions+=/auto_attack
-actions+=/use_item,name=primal_gladiators_badge_of_victory,if=buff.bloodbath.up|buff.avatar.up
+actions+=/use_item,name=primal_gladiators_badge_of_victory,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&buff.ravager.up)
 actions+=/blood_fury,if=buff.bloodbath.up|buff.avatar.up
 actions+=/berserking,if=buff.bloodbath.up|buff.avatar.up
 actions+=/arcane_torrent,if=buff.bloodbath.up|buff.avatar.up
