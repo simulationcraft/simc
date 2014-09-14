@@ -240,8 +240,8 @@ expr_t* set_bonus_t::create_expression( const player_t*, const std::string& type
   int tier = -1, bonus = -1;
   set_role_e role = SET_ROLE_NONE;
 
-  size_t bonus_idx = 0;
-  size_t role_idx = 1;
+  size_t bonus_idx = 1;
+  size_t role_idx = 0;
 
   if ( split[ 0 ].find( "tier" ) != std::string::npos )
     tier = util::to_unsigned( split[ 0 ].substr( 4 ) );
@@ -253,10 +253,7 @@ expr_t* set_bonus_t::create_expression( const player_t*, const std::string& type
     return 0;
 
   if ( split.size() == 3 )
-  {
-    bonus_idx++;
-    role_idx++;
-  }
+    role_idx = 2;
 
   if ( split[ bonus_idx ].find( "pc" ) != std::string::npos )
     bonus = util::to_unsigned( split[ bonus_idx ].substr( 0, split[ bonus_idx ].size() - 2 ) );

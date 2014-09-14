@@ -58,6 +58,7 @@ actions+=/moonfire,cycle_targets=1,if=remains<=duration*0.3&active_enemies=1
 actions+=/swipe,if=combo_points<5&active_enemies>1
 actions+=/shred,if=combo_points<5&active_enemies=1
 actions+=/rejuvenation,cycle_targets=1,max_cycle_targets=3,if=talent.natures_vigil.enabled&!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
+actions+=/natures_vigil
 actions+=/rejuvenation,cycle_targets=1,if=talent.natures_vigil.enabled&!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
 actions+=/rejuvenation,cycle_targets=1,if=talent.natures_vigil.enabled&buff.natures_vigil.up
 
