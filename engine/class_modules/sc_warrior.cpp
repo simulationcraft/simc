@@ -643,7 +643,10 @@ public:
     // Attack available in current stance?
     if ( ( ( stancemask & p() -> active_stance ) == 0 ) && p() -> cooldown.stance_swap -> up() )
     {
-      p() -> stance_swap();
+      if ( p() -> talents.gladiators_resolve -> ok() && p() -> in_combat )
+        return false; // Protection cannot swap in/out of gladiator stance during combat.
+      else
+        p() -> stance_swap();
       return false;
     }
     else if ( ( ( stancemask & p() -> active_stance ) == 0 ) && p() -> cooldown.stance_swap -> down() )
@@ -659,7 +662,7 @@ public:
 
   virtual void execute()
   {
-    if ( p() -> cooldown.stance_swap -> up() && p() -> swapping == false )
+    if ( p() -> cooldown.stance_swap -> up() && p() -> swapping == false && !p() -> talents.gladiators_resolve -> ok() )
     {
       if ( p() -> active_stance == STANCE_DEFENSE &&
            p() -> specialization() != WARRIOR_PROTECTION &&
@@ -3651,10 +3654,10 @@ struct stance_t: public warrior_spell_t
 
   bool ready()
   {
-    if ( p() -> cooldown.stance_swap -> down() ||
-         cooldown -> down() ||
-         ( swap == 0 && p() -> active_stance == switch_to_stance ) ||
-         p() -> buff.gladiator_stance -> check() )
+    if ( p() -> in_combat && p() -> talents.gladiators_resolve -> ok() )
+      return false;
+    if ( p() -> cooldown.stance_swap -> down() || cooldown -> down() || 
+         ( swap == 0 && p() -> active_stance == switch_to_stance ) )
          return false;
 
     return warrior_spell_t::ready();
@@ -4478,7 +4481,6 @@ struct gladiator_stance_t: public warrior_buff_t < buff_t >
 
   void execute( int a, double b, timespan_t t )
   {
-    warrior.swapping = true; // Once you go into gladiator stance, there's no going back after precombat.
     warrior.active_stance = STANCE_GLADIATOR;
     base_t::execute( a, b, t );
   }
@@ -5445,7 +5447,6 @@ void warrior_t::stance_swap()
 {
   // Blizzard has automated stance swapping with defensive and battle stance. This class will swap to the stance automatically if
   // The ability that we are trying to use is not usable in the current stance.
-  // Currently it is not possible to swap in/out of gladiator stance, so there's no need to model it.
   warrior_stance swap;
   switch ( active_stance )
   {
