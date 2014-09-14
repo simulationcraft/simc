@@ -6063,6 +6063,13 @@ void druid_t::apl_feral()
   /* def -> add_action( this, "Rake", "if=combo_points<5&hit_damage>=action.shred.hit_damage",
                         "Rake for CP if it hits harder than Shred." ); */
   def -> add_action( this, "Shred", "if=combo_points<5&active_enemies=1" );
+
+  // Add in rejuv blanketing for nature's vigil -- not fully optimized
+  def -> add_action( this, "rejuvenation", "cycle_targets=1,max_cycle_targets=3,if=talent.natures_vigil.enabled&!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)" );
+  def -> add_talent( this, "natures_vigil" );
+  def -> add_action( this, "rejuvenation", "cycle_targets=1,if=talent.natures_vigil.enabled&!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)" );  
+  def -> add_action( this, "rejuvenation", "cycle_targets=1,if=talent.natures_vigil.enabled&buff.natures_vigil.up" );  
+
 }
 
 // Balance Combat Action Priority List ==============================
