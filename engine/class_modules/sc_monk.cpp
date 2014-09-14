@@ -968,7 +968,7 @@ struct jab_t: public monk_melee_attack_t
     }
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.jab, this );
 
-    if ( rng().roll( p() -> new_sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
+    if ( rng().roll( p() -> sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
     {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc_melee );
       p() -> proc.tier15_2pc_melee -> occur();
@@ -1001,8 +1001,8 @@ struct tiger_palm_t: public monk_melee_attack_t
 
     m *= 1.0 + p() -> spec.teachings_of_the_monastery -> effectN( 5 ).percent();
 
-    if ( p() -> new_sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_tp -> check() )
-      m *= 1.0 + ( p() -> new_sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).base_value() / 100 );
+    if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_tp -> check() )
+      m *= 1.0 + ( p() -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).base_value() / 100 );
 
     return m;
   }
@@ -1098,9 +1098,9 @@ struct blackout_kick_t: public monk_melee_attack_t
     double m = monk_melee_attack_t::action_multiplier();
 
     // check for melee 2p and CB: TP, for the 50% dmg bonus
-    if ( p() -> new_sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_bok -> check() ) {
+    if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_bok -> check() ) {
       // damage increased by 40% for WW 2pc upon CB
-      m *= 1 + ( p() -> new_sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).base_value() / 100 );
+      m *= 1 + ( p() -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).base_value() / 100 );
     }
     return m;
   }
@@ -1229,9 +1229,9 @@ struct chi_explosion_t: public monk_melee_attack_t
 
 
     // check for melee 2p and CB: TP, for the 50% dmg bonus
-    if ( p() -> new_sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_ce -> check() ) {
+    if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_ce -> check() ) {
       // damage increased by 40% for WW 2pc upon CB
-      m *= 1 + ( p() -> new_sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).base_value() / 100 );
+      m *= 1 + ( p() -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).base_value() / 100 );
     }
 
     m *= 1.0 + std::min( 4.0, p() -> resources.current[RESOURCE_CHI] );
@@ -1411,7 +1411,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     if ( p() -> talent.rushing_jade_wind -> ok() )
       p() -> buff.rushing_jade_wind -> trigger( 1, 0, 1.0, cooldown -> duration * p() -> cache.attack_haste() );
 
-    if ( rng().roll( p() -> new_sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
+    if ( rng().roll( p() -> sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
     {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc_melee );
       p() -> proc.tier15_2pc_melee -> occur();
@@ -1464,7 +1464,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     // T14 WW 2PC
     cooldown -> duration = data().cooldown();
-    cooldown -> duration += p -> new_sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).time_value();
+    cooldown -> duration += p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).time_value();
   }
 
   void tick( dot_t*d )
@@ -1481,8 +1481,8 @@ struct fists_of_fury_t: public monk_melee_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       p() -> track_chi_consumption += savings;
-      if ( p() -> new_sets.has_set_bonus( MONK_WINDWALKER, T17, B2 ) )
-        trigger_brew( p() -> new_sets.set( MONK_WINDWALKER, T17, B2 ) -> effectN( 1 ).base_value() );
+      if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T17, B2 ) )
+        trigger_brew( p() -> sets.set( MONK_WINDWALKER, T17, B2 ) -> effectN( 1 ).base_value() );
     }
   }
 };
@@ -1867,7 +1867,7 @@ struct tigereye_brew_t: public monk_spell_t
   double value()
   {
     double value = p() -> buff.tigereye_brew_use -> data().effectN( 1 ).percent();
-    value += p() -> new_sets.set( SET_MELEE, T15, B4 ) -> effectN( 1 ).base_value() / 10000; // t154pc
+    value += p() -> sets.set( SET_MELEE, T15, B4 ) -> effectN( 1 ).base_value() / 10000; // t154pc
     return value;
   }
 
@@ -1880,7 +1880,7 @@ struct tigereye_brew_t: public monk_spell_t
     // EEIN: Seperated teb_stacks_used from use_value so it can be used to track focus of xuen.
     double use_value = value() * teb_stacks_used;
 
-    if ( p() -> new_sets.has_set_bonus( MONK_WINDWALKER, T17, B4 ) )
+    if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T17, B4 ) )
       p() -> buff.forceful_winds-> trigger( (int)teb_stacks_used, buff_t::DEFAULT_VALUE(), 100.0 );
 
     p() -> buff.tigereye_brew_use -> trigger( 1, use_value );
@@ -2391,7 +2391,7 @@ struct purifying_brew_t: public monk_spell_t
     // Optional addition: Track and report amount of damage cleared
     p() -> active_actions.stagger_self_damage -> clear_all_damage();
 
-    trigger_brew( p() -> new_sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
+    trigger_brew( p() -> sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
   }
 
   bool ready()
@@ -2607,7 +2607,7 @@ struct expel_harm_heal_t: public monk_heal_t
 
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.expel_harm, this );
 
-    if ( rng().roll( p() -> new_sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
+    if ( rng().roll( p() -> sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
     {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc_melee );
       p() -> proc.tier15_2pc_melee -> occur();
@@ -2810,7 +2810,7 @@ struct surging_mist_t: public monk_heal_t
 
   virtual void impact(action_state_t* s)
   {
-    //if (result_is_multistrike(s->result) && p() -> new_sets.has_set_bonus( MONK_MISTWEAVER, T17, B4 ) )
+    //if (result_is_multistrike(s->result) && p() -> sets.has_set_bonus( MONK_MISTWEAVER, T17, B4 ) )
 
   }
 };
@@ -2898,7 +2898,7 @@ struct guard_t: public monk_absorb_t
     target = &p;
     cooldown -> charges = p.perk.improved_guard -> effectN( 1 ).base_value();
     attack_power_mod.direct = 9; // hardcoded into tooltip 2014/09/09
-    base_multiplier += p.new_sets.set( SET_TANK, T14, B4 ) -> effectN( 1 ).percent();
+    base_multiplier += p.sets.set( SET_TANK, T14, B4 ) -> effectN( 1 ).percent();
   }
 
   virtual void impact( action_state_t* s )
@@ -3214,7 +3214,7 @@ void monk_t::create_buffs()
 
   // General
   buff.fortifying_brew = buff_creator_t( this, "fortifying_brew", find_spell( 120954 ) );
-  buff.fortifying_brew -> cooldown -> duration += new_sets.set( SET_TANK, T16, B2 ) -> effectN( 1 ).time_value();
+  buff.fortifying_brew -> cooldown -> duration += sets.set( SET_TANK, T16, B2 ) -> effectN( 1 ).time_value();
 
   buff.power_strikes = buff_creator_t( this, "power_strikes", talent.power_strikes -> effectN( 1 ).trigger() );
 
@@ -3270,12 +3270,12 @@ void monk_t::create_buffs()
     .tick_callback( energizing_brew_energize )
     .add_invalidate( CACHE_MULTISTRIKE );
 
-  buff.energizing_brew -> buff_duration += new_sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value(); //verify working
+  buff.energizing_brew -> buff_duration += sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value(); //verify working
 
   buff.tigereye_brew = buff_creator_t( this, "tigereye_brew", find_spell( 125195 ) )
     .period( timespan_t::zero() ); // Tigereye Brew does not tick, despite what the spelldata implies.
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use", spec.tigereye_brew ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buff.tigereye_brew_use -> buff_duration += new_sets.set( SET_MELEE, PVP, B4 ) -> effectN( 1 ).time_value();
+  buff.tigereye_brew_use -> buff_duration += sets.set( SET_MELEE, PVP, B4 ) -> effectN( 1 ).time_value();
 
   buff.forceful_winds = buff_creator_t( this, "forceful_winds", find_spell( 166603 ) );
 }
@@ -3540,7 +3540,7 @@ double monk_t::composite_dodge() const
   if (buff.elusive_brew_activated -> check())
   {
     d += buff.elusive_brew_activated -> data().effectN( 1 ).percent();
-    d += new_sets.set( SET_TANK, T14, B2 ) -> effectN( 1 ).percent();
+    d += sets.set( SET_TANK, T14, B2 ) -> effectN( 1 ).percent();
   }
 
   return d;
@@ -3826,8 +3826,8 @@ void monk_t::assess_damage( school_e school,
   if ( s -> result_total > 0 )
     buff.guard -> up();
 
-  if ( s -> result == RESULT_DODGE && new_sets.set( MONK_BREWMASTER, T17, B2 ) )
-    resource_gain(RESOURCE_ENERGY, new_sets.set( MONK_BREWMASTER, T17, B2 ) -> effectN( 1 ).base_value(), gain.energy_refund);
+  if ( s -> result == RESULT_DODGE && sets.set( MONK_BREWMASTER, T17, B2 ) )
+    resource_gain(RESOURCE_ENERGY, sets.set( MONK_BREWMASTER, T17, B2 ) -> effectN( 1 ).base_value(), gain.energy_refund);
 
   base_t::assess_damage( school, dtype, s );
 }

@@ -1665,7 +1665,7 @@ public:
   {
     ab::impact( s );
 
-    if ( p() -> new_sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
+    if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
       trigger_gushing_wound( s -> target, s -> result_amount );
 
     if ( ab::aoe == 0 && s -> result_total > 0 && p() -> buff.natures_vigil -> up() ) 
@@ -1676,7 +1676,7 @@ public:
   {
     ab::tick( d );
 
-    if ( p() -> new_sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
+    if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
       trigger_gushing_wound( d -> target, d -> state -> result_amount );
 
     if ( ab::aoe == 0 && d -> state -> result_total > 0 && p() -> buff.natures_vigil -> up() )
@@ -1687,7 +1687,7 @@ public:
   {
     ab::multistrike_tick( src_state, ms_state, multiplier );
 
-    if ( p() -> new_sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
+    if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
       trigger_gushing_wound( ms_state -> target, ms_state -> result_amount );
 
     if ( ab::aoe == 0 && ms_state -> result_total > 0 && p() -> buff.natures_vigil -> up() )
@@ -1782,7 +1782,7 @@ public:
   {
     ab::tick( d );
 
-    if ( ab::p() -> new_sets.has_set_bonus( DRUID_FERAL, T17, B2 ) && dbc::is_school( ab::school, SCHOOL_PHYSICAL ) )
+    if ( ab::p() -> sets.has_set_bonus( DRUID_FERAL, T17, B2 ) && dbc::is_school( ab::school, SCHOOL_PHYSICAL ) )
       ab::p() -> resource_gain( RESOURCE_ENERGY, 3.0, ab::p() -> gain.tier17_2pc_melee );
   }
 
@@ -1845,7 +1845,7 @@ public:
       return;
 
     if ( ab::rng().roll( ab::weapon -> proc_chance_on_swing( 3.5 ) ) ) // 3.5 PPM via https://twitter.com/Celestalon/status/482329896404799488
-      if ( ab::p() -> buff.omen_of_clarity -> trigger() && ab::p() -> new_sets.has_set_bonus( SET_MELEE, T16, B2 ) )
+      if ( ab::p() -> buff.omen_of_clarity -> trigger() && ab::p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) )
         ab::p() -> buff.feral_fury -> trigger();
   }
 
@@ -1982,7 +1982,7 @@ public:
 
     if ( this -> base_costs[ RESOURCE_COMBO_POINT ] > 0 )
     {
-      if ( player -> new_sets.has_set_bonus( SET_MELEE, T15, B2 ) &&
+      if ( player -> sets.has_set_bonus( SET_MELEE, T15, B2 ) &&
           rng().roll( cost() * 0.15 ) )
       {
         p() -> proc.tier15_2pc_melee -> occur();
@@ -2233,8 +2233,8 @@ struct ferocious_bite_t : public cat_attack_t
       }
 
       double health_percentage = 25.0;
-      if ( p() -> new_sets.has_set_bonus( SET_MELEE, T13, B2 ) )
-        health_percentage = p() -> new_sets.set( SET_MELEE, T13, B2 ) -> effectN( 2 ).base_value();
+      if ( p() -> sets.has_set_bonus( SET_MELEE, T13, B2 ) )
+        health_percentage = p() -> sets.set( SET_MELEE, T13, B2 ) -> effectN( 2 ).base_value();
 
       if ( state -> target -> health_percentage() <= health_percentage )
       {
@@ -2357,7 +2357,7 @@ struct rake_t : public cat_attack_t
     {
       p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.rake );
 
-      if ( p() -> new_sets.has_set_bonus( DRUID_FERAL, T17, B2 ) )
+      if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B2 ) )
         p() -> resource_gain( RESOURCE_ENERGY, 3.0, p() -> gain.tier17_2pc_melee );
     }
   }
@@ -2424,7 +2424,7 @@ struct rip_t : public cat_attack_t
     may_crit     = false;
     dot_behavior = DOT_REFRESH;
 
-    dot_duration += player -> new_sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
+    dot_duration += player -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
   }
 
   action_state_t* new_state()
@@ -2494,7 +2494,7 @@ struct shred_t : public cat_attack_t
   shred_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "shred", p, p -> find_class_spell( "Shred" ), options_str )
   {
-    base_multiplier *= 1.0 + player -> new_sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + player -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     special = true;
   }
 
@@ -2519,7 +2519,7 @@ struct shred_t : public cat_attack_t
     {
       p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.shred );
 
-      if ( s -> result == RESULT_CRIT && p() -> new_sets.has_set_bonus( DRUID_FERAL, PVP, B4 ) )
+      if ( s -> result == RESULT_CRIT && p() -> sets.has_set_bonus( DRUID_FERAL, PVP, B4 ) )
         td( s -> target ) -> buffs.bloodletting -> trigger(); // Druid module debuff
     }
   }
@@ -2651,7 +2651,7 @@ struct thrash_cat_t : public cat_attack_t
     {
       this -> td( s -> target ) -> dots.thrash_bear -> cancel();
 
-      if ( p() -> new_sets.has_set_bonus( DRUID_FERAL, T17, B2 ) )
+      if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B2 ) )
         p() -> resource_gain( RESOURCE_ENERGY, 3.0, p() -> gain.tier17_2pc_melee );
     }
   }
@@ -2911,7 +2911,7 @@ struct maul_t : public bear_attack_t
 
     virtual void impact( action_state_t* s )
     {
-      if ( p() -> new_sets.has_set_bonus( DRUID_GUARDIAN, T17, B4 ) )
+      if ( p() -> sets.has_set_bonus( DRUID_GUARDIAN, T17, B4 ) )
         p() -> buff.tier17_4pc_tank -> increment();
 
       p() -> buff.tooth_and_claw_absorb -> trigger( 1, s -> result_amount );
@@ -2935,7 +2935,7 @@ struct maul_t : public bear_attack_t
     if ( player -> spec.tooth_and_claw -> ok() )
     {
       absorb = new tooth_and_claw_t( player );
-      if ( p() -> new_sets.has_set_bonus( DRUID_GUARDIAN, T17, B2 ) )
+      if ( p() -> sets.has_set_bonus( DRUID_GUARDIAN, T17, B2 ) )
         cost_reduction = p() -> find_spell( 165410 ) -> effectN( 1 ).resource( RESOURCE_RAGE ) * -1.0;
     }
   }
@@ -2944,7 +2944,7 @@ struct maul_t : public bear_attack_t
   {
     double c = bear_attack_t::cost();
 
-    if ( p() -> buff.tooth_and_claw -> check() && p() -> new_sets.has_set_bonus( DRUID_GUARDIAN, T17, B2 ) )
+    if ( p() -> buff.tooth_and_claw -> check() && p() -> sets.has_set_bonus( DRUID_GUARDIAN, T17, B2 ) )
       c -= cost_reduction;
 
     return bear_attack_t::cost();
@@ -2976,7 +2976,7 @@ struct maul_t : public bear_attack_t
 
     if ( result_is_hit( s -> result ) && p() -> buff.tooth_and_claw -> up() )
     {
-      if ( p() -> new_sets.has_set_bonus( DRUID_GUARDIAN, T17, B2 ) )
+      if ( p() -> sets.has_set_bonus( DRUID_GUARDIAN, T17, B2 ) )
         p() -> gain.tier17_2pc_tank -> add( RESOURCE_RAGE, cost_reduction );
 
       absorb -> execute();
@@ -3040,7 +3040,7 @@ struct thrash_bear_t : public bear_attack_t
     {
       this -> td( s -> target ) -> dots.thrash_cat -> cancel();
 
-      if ( p() -> new_sets.has_set_bonus( DRUID_FERAL, T17, B2 ) )
+      if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B2 ) )
         p() -> resource_gain( RESOURCE_ENERGY, 3.0, p() -> gain.tier17_2pc_melee );
     }
   }
@@ -3295,7 +3295,7 @@ struct frenzied_regeneration_t : public druid_heal_t
     attack_power_mod.direct = 2.40;
     maximum_rage_cost = data().effectN( 2 ).base_value();
 
-    if ( p -> new_sets.has_set_bonus( SET_TANK, T16, B2 ) )
+    if ( p -> sets.has_set_bonus( SET_TANK, T16, B2 ) )
       p -> active.ursocs_vigor = new ursocs_vigor_t( p );
   }
 
@@ -3327,7 +3327,7 @@ struct frenzied_regeneration_t : public druid_heal_t
 
     druid_heal_t::execute();
 
-    if ( p() -> new_sets.has_set_bonus( SET_TANK, T16, B4 ) )
+    if ( p() -> sets.has_set_bonus( SET_TANK, T16, B4 ) )
       p() -> active.ursocs_vigor -> trigger_hot( resource_consumed );
   }
 
@@ -4472,7 +4472,7 @@ struct sunfire_t: public druid_spell_t
       const spell_data_t* dmg_spell = player -> find_spell(164812);
       dot_duration = dmg_spell -> duration();
       dot_duration *= 1 + player -> spec.astral_showers -> effectN(1).percent();
-      dot_duration += player -> new_sets.set( SET_CASTER, T14, B4 ) -> effectN(1).time_value();
+      dot_duration += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN(1).time_value();
       base_tick_time = dmg_spell -> effectN(2).period();
       spell_power_mod.tick = dmg_spell -> effectN(2).sp_coeff();
 
@@ -4501,7 +4501,7 @@ struct sunfire_t: public druid_spell_t
     dot_behavior = DOT_REFRESH;
     const spell_data_t* dmg_spell = player -> find_spell(164815);
     dot_duration = dmg_spell -> duration();
-    dot_duration += player -> new_sets.set( SET_CASTER, T14, B4 ) -> effectN(1).time_value();
+    dot_duration += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN(1).time_value();
     base_tick_time = dmg_spell -> effectN(2).period();
     spell_power_mod.direct = dmg_spell-> effectN(1).sp_coeff();
     spell_power_mod.tick = dmg_spell-> effectN(2).sp_coeff();
@@ -4580,7 +4580,7 @@ struct moonfire_t : public druid_spell_t
       const spell_data_t* dmg_spell = player -> find_spell( 164815 );
       dot_behavior = DOT_REFRESH;
       dot_duration                  = dmg_spell -> duration();
-      dot_duration                 += player -> new_sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
+      dot_duration                 += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
       base_tick_time                = dmg_spell -> effectN( 2 ).period();
       spell_power_mod.tick          = dmg_spell -> effectN( 2 ).sp_coeff();
 
@@ -4614,7 +4614,7 @@ struct moonfire_t : public druid_spell_t
     dot_behavior = DOT_REFRESH;
     dot_duration                  = dmg_spell -> duration(); 
     dot_duration                 *= 1 + player -> spec.astral_showers -> effectN( 1 ).percent();
-    dot_duration                 += player -> new_sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
+    dot_duration                 += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
     base_tick_time                = dmg_spell -> effectN( 2 ).period();
     spell_power_mod.tick          = dmg_spell -> effectN( 2 ).sp_coeff();
     spell_power_mod.direct        = dmg_spell -> effectN( 1 ).sp_coeff();
@@ -4850,7 +4850,7 @@ struct savage_defense_t : public druid_spell_t
     use_off_gcd = true;
     harmful = false;
 
-    if ( p -> new_sets.has_set_bonus( SET_TANK, T16, B2 ) )
+    if ( p -> sets.has_set_bonus( SET_TANK, T16, B2 ) )
       p -> active.ursocs_vigor = new ursocs_vigor_t( p );
   }
 
@@ -4865,7 +4865,7 @@ struct savage_defense_t : public druid_spell_t
     else
       p() -> buff.savage_defense -> trigger();
 
-    if ( p() -> new_sets.has_set_bonus( SET_TANK, T16, B4 ) )
+    if ( p() -> sets.has_set_bonus( SET_TANK, T16, B4 ) )
       p() -> active.ursocs_vigor -> trigger_hot();
   }
 
@@ -4911,7 +4911,7 @@ struct skull_bash_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( p() -> new_sets.has_set_bonus( SET_MELEE, PVP, B2 ) )
+    if ( p() -> sets.has_set_bonus( SET_MELEE, PVP, B2 ) )
       p() -> cooldown.tigers_fury -> reset( false );
   }
 
@@ -5027,7 +5027,7 @@ struct starfall_t : public druid_spell_t
     may_multistrike = 0;
     tick_zero = true;
     cooldown = player -> cooldown.starfallsurge;
-    base_multiplier *= 1.0 + player -> new_sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + player -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
     add_child( starfall );
   }
 
@@ -5061,11 +5061,11 @@ struct starsurge_t : public druid_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_multiplier *= 1.0 + player -> new_sets.set( SET_CASTER, T13, B4 ) -> effectN( 2 ).percent();
+    base_multiplier *= 1.0 + player -> sets.set( SET_CASTER, T13, B4 ) -> effectN( 2 ).percent();
 
-    base_multiplier *= 1.0 + p() -> new_sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p() -> sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
 
-    base_crit += p() -> new_sets.set( SET_CASTER, T15, B2 ) -> effectN( 1 ).percent();
+    base_crit += p() -> sets.set( SET_CASTER, T15, B2 ) -> effectN( 1 ).percent();
     cooldown = player -> cooldown.starfallsurge;
     base_execute_time *= 1.0 + player -> perk.enhanced_starsurge -> effectN( 1 ).percent();
   }
@@ -5153,13 +5153,13 @@ struct tigers_fury_t : public druid_spell_t
                           data().effectN( 2 ).resource( RESOURCE_ENERGY ),
                           p() -> gain.tigers_fury );
 
-    if ( p() -> new_sets.has_set_bonus( SET_MELEE, T13, B4 ) )
+    if ( p() -> sets.has_set_bonus( SET_MELEE, T13, B4 ) )
       p() -> buff.omen_of_clarity -> trigger();
 
-    if ( p() -> new_sets.has_set_bonus( SET_MELEE, T15, B4 ) )
+    if ( p() -> sets.has_set_bonus( SET_MELEE, T15, B4 ) )
       p() -> buff.tier15_4pc_melee -> trigger( 3 );
 
-    if ( p() -> new_sets.has_set_bonus( SET_MELEE, T16, B4 ) )
+    if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B4 ) )
       p() -> buff.feral_rage -> trigger();
   }
 };
@@ -5229,7 +5229,7 @@ struct wrath_t : public druid_spell_t
   {
     double m = druid_spell_t::action_multiplier();
 
-    m *= 1.0 + p() -> new_sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
+    m *= 1.0 + p() -> sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
 
     m *= 1.0 + p() -> buff.heart_of_the_wild -> damage_spell_multiplier();
 
@@ -5571,7 +5571,7 @@ void druid_t::init_spells()
     active.cenarion_ward_hot  = new cenarion_ward_hot_t( this );
   if ( talent.yseras_gift -> ok() )
     active.yseras_gift        = new yseras_gift_t( this );
-  if ( new_sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
+  if ( sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
     active.gushing_wound      = new gushing_wound_t( this );
   if ( mastery.primal_tenacity -> ok() )
     active.primal_tenacity = new primal_tenacity_t( this );
@@ -5639,7 +5639,7 @@ void druid_t::init_spells()
   glyph.ursols_defense        = find_glyph_spell( "Glyph of Ursol's Defense" );
   glyph.wild_growth           = find_glyph_spell( "Glyph of Wild Growth" );
 
-  if ( new_sets.has_set_bonus( SET_CASTER, T16, B2 ) )
+  if ( sets.has_set_bonus( SET_CASTER, T16, B2 ) )
   {
     t16_2pc_starfall_bolt = new spells::t16_2pc_starfall_bolt_t( this );
     t16_2pc_sun_bolt = new spells::t16_2pc_sun_bolt_t( this );
@@ -5764,7 +5764,7 @@ void druid_t::create_buffs()
   buff.solar_peak                = buff_creator_t( this, "solar_peak", find_spell( 171744 ) );
 
   buff.shooting_stars            = buff_creator_t( this, "shooting_stars", spec.shooting_stars -> effectN( 1 ).trigger() )
-                                   .chance( spec.shooting_stars -> proc_chance() + new_sets.set( SET_CASTER, T16, B4 ) -> effectN( 1 ).percent() );
+                                   .chance( spec.shooting_stars -> proc_chance() + sets.set( SET_CASTER, T16, B4 ) -> effectN( 1 ).percent() );
 
   buff.solar_empowerment         = buff_creator_t( this, "solar_empowerment", find_spell( 164545 ) );
 
@@ -6961,7 +6961,7 @@ void druid_t::assess_damage( school_e school,
        ! ( s -> result == RESULT_DODGE || s -> result == RESULT_MISS ) )
     active.primal_tenacity -> absorb_remaining = buff.primal_tenacity -> value();
 
-  if ( new_sets.has_set_bonus( SET_TANK, T15, B2 ) && s -> result == RESULT_DODGE && buff.savage_defense -> check() )
+  if ( sets.has_set_bonus( SET_TANK, T15, B2 ) && s -> result == RESULT_DODGE && buff.savage_defense -> check() )
     buff.tier15_2pc_tank -> trigger();
 
   if ( buff.barkskin -> up() )

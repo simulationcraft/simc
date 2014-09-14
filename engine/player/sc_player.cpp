@@ -350,7 +350,7 @@ bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
   else
     tier = util::to_unsigned( splits[ 0 ].substr( 4 ) );
 
-  if ( tier == -1 || static_cast<unsigned>( tier ) > p -> new_sets.max_tier() )
+  if ( tier == -1 || static_cast<unsigned>( tier ) > p -> sets.max_tier() )
   {
     sim -> errorf( error_str, p -> name(), value.c_str() );
     return false;
@@ -375,7 +375,7 @@ bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
   set_role_e role = SET_ROLE_NONE;
   if ( role_idx > 0 )
   {
-    role = new_set_bonus::translate_set_bonus_role_str( splits[ role_idx ].substr( 0, splits[ role_idx ].size() - 2 ) );
+    role = translate_set_bonus_role_str( splits[ role_idx ].substr( 0, splits[ role_idx ].size() - 2 ) );
 
     if ( role == SET_ROLE_NONE )
     {
@@ -391,13 +391,13 @@ bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
   else
     state = util::to_int( splits[ role_idx ].substr( splits[ role_idx ].size() - 1 ) );
 
-  if ( tier == 0 || static_cast<unsigned>( tier ) >= new_set_bonus::set_bonus_t::TIER_THRESHOLD )
+  if ( tier == 0 || static_cast<unsigned>( tier ) >= set_bonus_t::TIER_THRESHOLD )
   {
     if ( role != SET_ROLE_NONE )
       sim -> errorf( "%s tier %u set bonus given with role '%s', ignoring role",
           p -> name(), tier, splits[ role_idx ].c_str() );
 
-    p -> new_sets.set_bonus_spec_data[ tier ][ specdata::spec_idx( p -> specialization() ) ][ bonus_type ].overridden = state;
+    p -> sets.set_bonus_spec_data[ tier ][ specdata::spec_idx( p -> specialization() ) ][ bonus_type ].overridden = state;
   }
   else
   {
@@ -407,8 +407,7 @@ bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
       return false;
     }
 
-    p -> new_sets.set_bonus_spec_data[ tier ][ role ][ bonus_type ].overridden = state;
-    p -> sets.count[ new_set_bonus::translate_set_bonus_data( *p -> new_sets.set_bonus_spec_data[ tier ][ role ][ bonus_type ].bonus ) ] = state;
+    p -> sets.set_bonus_spec_data[ tier ][ role ][ bonus_type ].overridden = state;
   }
 
   return true;
@@ -580,7 +579,6 @@ player_t::player_t( sim_t*             s,
   report_information( player_processed_report_information_t() ),
   // Gear
   sets( this ),
-  new_sets( this ),
   meta_gem( META_GEM_NONE ), matching_gear( false ),
   item_cooldown( cooldown_t( "item_cd", *this ) ),
   legendary_tank_cloak_cd( nullptr ),
@@ -1104,9 +1102,8 @@ bool player_t::init_items()
     sim -> out_debug.printf( "%s gear: %s", name(), gear.to_string().c_str() );
   }
 
-  sets.init( *this );
   // Needs to be initialized after old set bonus system
-  new_sets.initialize();
+  sets.initialize();
 
   // these initialize the weapons, but don't have a return value (yet?)
   init_weapon( main_hand_weapon );
@@ -7519,12 +7516,7 @@ expr_t* player_t::create_expression( action_t* a,
   else if ( splits.size() == 2 )
   {
     if ( splits[ 0 ] == "set_bonus" )
-    {
-      expr_t* expr = sets.create_expression( this, splits[ 1 ] );
-      if ( ! expr )
-        expr = new_sets.create_expression( this, splits[ 1 ] );
-      return expr;
-    }
+      return sets.create_expression( this, splits[ 1 ] );
 
     if ( splits[ 0 ] == "active_dot" )
     {
@@ -8101,14 +8093,7 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
     }
 
     // Set Bonus
-    for ( set_e s = SET_NONE; s < SET_MAX; ++s )
-    {
-      if ( set_bonus_t::has_set_bonus( this, s ) && ( s % 3 != 1 ) /* Only report 2pc/4pc, not base set bonus enum */ )
-      {
-        profile_str += std::string("# ") + util::set_bonus_string( s ) + "=1" + term;
-      }
-    }
-    profile_str += new_sets.to_profile_string( term );
+    profile_str += sets.to_profile_string( term );
 
     if ( enchant.attribute[ ATTR_STRENGTH  ] != 0 )  profile_str += "enchant_strength="
          + util::to_string( enchant.attribute[ ATTR_STRENGTH  ] ) + term;
@@ -8208,7 +8193,7 @@ void player_t::copy_from( player_t* source )
     items[ i ].player = this;
   }
 
-  sets.copy_from( source -> sets );
+  sets = source -> sets;
   gear = source -> gear;
   enchant = source -> enchant;
 }
@@ -8293,38 +8278,38 @@ void player_t::create_options()
     opt_string( "tabard",    items[ SLOT_TABARD    ].options_str ),
 
     // Set Bonus
-    opt_bool( "tier13_2pc_caster", sets.count[ SET_T13_2PC_CASTER ] ),
-    opt_bool( "tier13_4pc_caster", sets.count[ SET_T13_4PC_CASTER ] ),
-    opt_bool( "tier13_2pc_melee",  sets.count[ SET_T13_2PC_MELEE ] ),
-    opt_bool( "tier13_4pc_melee",  sets.count[ SET_T13_4PC_MELEE ] ),
-    opt_bool( "tier13_2pc_tank",   sets.count[ SET_T13_2PC_TANK ] ),
-    opt_bool( "tier13_4pc_tank",   sets.count[ SET_T13_4PC_TANK ] ),
-    opt_bool( "tier13_2pc_heal",   sets.count[ SET_T13_2PC_HEAL ] ),
-    opt_bool( "tier13_4pc_heal",   sets.count[ SET_T13_4PC_HEAL ] ),
-    opt_bool( "tier14_2pc_caster", sets.count[ SET_T14_2PC_CASTER ] ),
-    opt_bool( "tier14_4pc_caster", sets.count[ SET_T14_4PC_CASTER ] ),
-    opt_bool( "tier14_2pc_melee",  sets.count[ SET_T14_2PC_MELEE ] ),
-    opt_bool( "tier14_4pc_melee",  sets.count[ SET_T14_4PC_MELEE ] ),
-    opt_bool( "tier14_2pc_tank",   sets.count[ SET_T14_2PC_TANK ] ),
-    opt_bool( "tier14_4pc_tank",   sets.count[ SET_T14_4PC_TANK ] ),
-    opt_bool( "tier14_2pc_heal",   sets.count[ SET_T14_2PC_HEAL ] ),
-    opt_bool( "tier14_4pc_heal",   sets.count[ SET_T14_4PC_HEAL ] ),
-    opt_bool( "tier15_2pc_caster", sets.count[ SET_T15_2PC_CASTER ] ),
-    opt_bool( "tier15_4pc_caster", sets.count[ SET_T15_4PC_CASTER ] ),
-    opt_bool( "tier15_2pc_melee",  sets.count[ SET_T15_2PC_MELEE ] ),
-    opt_bool( "tier15_4pc_melee",  sets.count[ SET_T15_4PC_MELEE ] ),
-    opt_bool( "tier15_2pc_tank",   sets.count[ SET_T15_2PC_TANK ] ),
-    opt_bool( "tier15_4pc_tank",   sets.count[ SET_T15_4PC_TANK ] ),
-    opt_bool( "tier15_2pc_heal",   sets.count[ SET_T15_2PC_HEAL ] ),
-    opt_bool( "tier15_4pc_heal",   sets.count[ SET_T15_4PC_HEAL ] ),
-    opt_bool( "tier16_2pc_caster", sets.count[ SET_T16_2PC_CASTER ] ),
-    opt_bool( "tier16_4pc_caster", sets.count[ SET_T16_4PC_CASTER ] ),
-    opt_bool( "tier16_2pc_melee",  sets.count[ SET_T16_2PC_MELEE ] ),
-    opt_bool( "tier16_4pc_melee",  sets.count[ SET_T16_4PC_MELEE ] ),
-    opt_bool( "tier16_2pc_tank",   sets.count[ SET_T16_2PC_TANK ] ),
-    opt_bool( "tier16_4pc_tank",   sets.count[ SET_T16_4PC_TANK ] ),
-    opt_bool( "tier16_2pc_heal",   sets.count[ SET_T16_2PC_HEAL ] ),
-    opt_bool( "tier16_4pc_heal",   sets.count[ SET_T16_4PC_HEAL ] ),
+    opt_int( "tier13_2pc_caster", sets.set_bonus_spec_data[ T13 ][ SET_CASTER ][ B2 ].overridden ),
+    opt_int( "tier13_4pc_caster", sets.set_bonus_spec_data[ T13 ][ SET_CASTER ][ B4 ].overridden ),
+    opt_int( "tier13_2pc_melee",  sets.set_bonus_spec_data[ T13 ][ SET_MELEE ][ B2 ].overridden ),
+    opt_int( "tier13_4pc_melee",  sets.set_bonus_spec_data[ T13 ][ SET_MELEE ][ B4 ].overridden ),
+    opt_int( "tier13_2pc_tank",   sets.set_bonus_spec_data[ T13 ][ SET_TANK ][ B2 ].overridden ),
+    opt_int( "tier13_4pc_tank",   sets.set_bonus_spec_data[ T13 ][ SET_TANK ][ B4 ].overridden ),
+    opt_int( "tier13_2pc_heal",   sets.set_bonus_spec_data[ T13 ][ SET_HEALER ][ B2 ].overridden ),
+    opt_int( "tier13_4pc_heal",   sets.set_bonus_spec_data[ T13 ][ SET_HEALER ][ B4 ].overridden ),
+    opt_int( "tier14_2pc_caster", sets.set_bonus_spec_data[ T14 ][ SET_CASTER ][ B2 ].overridden ),
+    opt_int( "tier14_4pc_caster", sets.set_bonus_spec_data[ T14 ][ SET_CASTER ][ B4 ].overridden ),
+    opt_int( "tier14_2pc_melee",  sets.set_bonus_spec_data[ T14 ][ SET_MELEE ][ B2 ].overridden ),
+    opt_int( "tier14_4pc_melee",  sets.set_bonus_spec_data[ T14 ][ SET_MELEE ][ B4 ].overridden ),
+    opt_int( "tier14_2pc_tank",   sets.set_bonus_spec_data[ T14 ][ SET_TANK ][ B2 ].overridden ),
+    opt_int( "tier14_4pc_tank",   sets.set_bonus_spec_data[ T14 ][ SET_TANK ][ B4 ].overridden ),
+    opt_int( "tier14_2pc_heal",   sets.set_bonus_spec_data[ T14 ][ SET_HEALER ][ B2 ].overridden ),
+    opt_int( "tier14_4pc_heal",   sets.set_bonus_spec_data[ T15 ][ SET_HEALER ][ B4 ].overridden ),
+    opt_int( "tier15_2pc_caster", sets.set_bonus_spec_data[ T15 ][ SET_CASTER ][ B2 ].overridden ),
+    opt_int( "tier15_4pc_caster", sets.set_bonus_spec_data[ T15 ][ SET_CASTER ][ B4 ].overridden ),
+    opt_int( "tier15_2pc_melee",  sets.set_bonus_spec_data[ T15 ][ SET_MELEE ][ B2 ].overridden ),
+    opt_int( "tier15_4pc_melee",  sets.set_bonus_spec_data[ T15 ][ SET_MELEE ][ B4 ].overridden ),
+    opt_int( "tier15_2pc_tank",   sets.set_bonus_spec_data[ T15 ][ SET_TANK ][ B2 ].overridden ),
+    opt_int( "tier15_4pc_tank",   sets.set_bonus_spec_data[ T15 ][ SET_TANK ][ B4 ].overridden ),
+    opt_int( "tier15_2pc_heal",   sets.set_bonus_spec_data[ T15 ][ SET_HEALER ][ B2 ].overridden ),
+    opt_int( "tier15_4pc_heal",   sets.set_bonus_spec_data[ T15 ][ SET_HEALER ][ B4 ].overridden ),
+    opt_int( "tier16_2pc_caster", sets.set_bonus_spec_data[ T16 ][ SET_CASTER ][ B2 ].overridden ),
+    opt_int( "tier16_4pc_caster", sets.set_bonus_spec_data[ T16 ][ SET_CASTER ][ B4 ].overridden ),
+    opt_int( "tier16_2pc_melee",  sets.set_bonus_spec_data[ T16 ][ SET_MELEE ][ B2 ].overridden ),
+    opt_int( "tier16_4pc_melee",  sets.set_bonus_spec_data[ T16 ][ SET_MELEE ][ B4 ].overridden ),
+    opt_int( "tier16_2pc_tank",   sets.set_bonus_spec_data[ T16 ][ SET_TANK ][ B2 ].overridden ),
+    opt_int( "tier16_4pc_tank",   sets.set_bonus_spec_data[ T16 ][ SET_TANK ][ B4 ].overridden ),
+    opt_int( "tier16_2pc_heal",   sets.set_bonus_spec_data[ T16 ][ SET_HEALER ][ B2 ].overridden ),
+    opt_int( "tier16_4pc_heal",   sets.set_bonus_spec_data[ T16 ][ SET_HEALER ][ B4 ].overridden ),
     opt_func( "set_bonus",         parse_set_bonus                ),
 
     // Gear Stats

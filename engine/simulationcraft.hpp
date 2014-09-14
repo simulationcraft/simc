@@ -648,37 +648,6 @@ enum tier_e
   T13, T14, T15, T16, T17
 };
 
-enum set_e
-{
-  SET_NONE = 0,
-  SET_T13_CASTER, SET_T13_2PC_CASTER, SET_T13_4PC_CASTER,
-  SET_T13_MELEE,  SET_T13_2PC_MELEE,  SET_T13_4PC_MELEE,
-  SET_T13_TANK,   SET_T13_2PC_TANK,   SET_T13_4PC_TANK,
-  SET_T13_HEAL,   SET_T13_2PC_HEAL,   SET_T13_4PC_HEAL,
-  SET_T14_CASTER, SET_T14_2PC_CASTER, SET_T14_4PC_CASTER,
-  SET_T14_MELEE,  SET_T14_2PC_MELEE,  SET_T14_4PC_MELEE,
-  SET_T14_TANK,   SET_T14_2PC_TANK,   SET_T14_4PC_TANK,
-  SET_T14_HEAL,   SET_T14_2PC_HEAL,   SET_T14_4PC_HEAL,
-  SET_T15_CASTER, SET_T15_2PC_CASTER, SET_T15_4PC_CASTER,
-  SET_T15_MELEE,  SET_T15_2PC_MELEE,  SET_T15_4PC_MELEE,
-  SET_T15_TANK,   SET_T15_2PC_TANK,   SET_T15_4PC_TANK,
-  SET_T15_HEAL,   SET_T15_2PC_HEAL,   SET_T15_4PC_HEAL,
-  SET_T16_CASTER, SET_T16_2PC_CASTER, SET_T16_4PC_CASTER,
-  SET_T16_MELEE,  SET_T16_2PC_MELEE,  SET_T16_4PC_MELEE,
-  SET_T16_TANK,   SET_T16_2PC_TANK,   SET_T16_4PC_TANK,
-  SET_T16_HEAL,   SET_T16_2PC_HEAL,   SET_T16_4PC_HEAL,
-  SET_T17_CASTER, SET_T17_2PC_CASTER, SET_T17_4PC_CASTER,
-  SET_T17_MELEE,  SET_T17_2PC_MELEE,  SET_T17_4PC_MELEE,
-  SET_T17_TANK,   SET_T17_2PC_TANK,   SET_T17_4PC_TANK,
-  SET_T17_HEAL,   SET_T17_2PC_HEAL,   SET_T17_4PC_HEAL,
-  SET_PVP_CASTER, SET_PVP_2PC_CASTER, SET_PVP_4PC_CASTER,
-  SET_PVP_MELEE,  SET_PVP_2PC_MELEE,  SET_PVP_4PC_MELEE,
-  SET_PVP_TANK,   SET_PVP_2PC_TANK,   SET_PVP_4PC_TANK,
-  SET_PVP_HEAL,   SET_PVP_2PC_HEAL,   SET_PVP_4PC_HEAL,
-  SET_MAX
-};
-static_assert( static_cast<int>( SET_MAX ) == ( 1 + N_TIER * 3 * N_TIER_BONUS / 2 ), "enum set_e must be structured correctly." );
-
 enum meta_gem_e
 {
   META_GEM_NONE = 0,
@@ -1290,7 +1259,6 @@ uint32_t    school_type_component     ( school_e s_type, school_e c_type );
 const char* school_type_string        ( school_e type );
 const char* armor_type_string         ( int type );
 const char* armor_type_string         ( item_subclass_armor type );
-const char* set_bonus_string          ( set_e type );
 const char* cache_type_string         ( cache_e type );
 const char* proc_type_string          ( proc_types type );
 const char* proc_type2_string         ( proc_types2 type );
@@ -1331,7 +1299,6 @@ role_e parse_role_type           ( const std::string& name );
 resource_e parse_resource_type   ( const std::string& name );
 result_e parse_result_type       ( const std::string& name );
 school_e parse_school_type       ( const std::string& name );
-set_e parse_set_bonus            ( const std::string& name );
 slot_e parse_slot_type           ( const std::string& name );
 stat_e parse_stat_type           ( const std::string& name );
 specialization_e parse_specialization_type( const std::string &name );
@@ -3632,41 +3599,8 @@ public:
 
 // Set Bonus ================================================================
 
-
-typedef uint32_t set_bonus_description_t[N_TIER][N_TIER_BONUS];
-// using set_bonus_description_t = std::array<std::array<uint32_t,N_TIER_BONUS>,N_TIER>; // Use when we support initializer lists to enforce matching array dimensions
-struct set_bonus_t
-{
-public:
-  set_bonus_t( const player_t* p );
-
-  bool has_set_bonus( set_e s ) const;
-  const spell_data_t* set( set_e s ) const;
-
-  void register_spelldata( const set_bonus_description_t  );
-  void init( const player_t& );
-  static bool has_set_bonus( const player_t* p, set_e s );
-  static expr_t* create_expression( const player_t*, const std::string& type );
-  std::array<int, SET_MAX> count;
-  void copy_from( const set_bonus_t& );
-private:
-  const spell_data_t* default_value;
-  std::array<const spell_data_t*,SET_MAX> set_bonuses;
-  const player_t* p;
-
-  const spell_data_t* create_set_bonus( uint32_t spell_id );
-  set_e decode( const player_t&, const item_t& item ) const;
-  bool initialized, spelldata_registered; // help avoid initialization order problems
-
-};
-
-namespace new_set_bonus {
-
 set_role_e translate_set_bonus_role_str( const std::string& name );
 const char* translate_set_bonus_role( set_role_e );
-
-// Translate a DBC set bonus data entry to an "old style" set_e enum entry
-set_e translate_set_bonus_data( const item_set_bonus_t& );
 
 struct set_bonus_t
 {
@@ -3749,7 +3683,6 @@ struct set_bonus_t
   static bool old_tier( size_t tier )
   { return old_tier( static_cast<tier_e>( tier ) ); }
 };
-}
 
 struct action_sequence_data_t
 {
@@ -4570,7 +4503,6 @@ struct player_t : public actor_t
   gear_stats_t gear, enchant;
   gear_stats_t total_gear; // composite of gear, enchant and for non-pets sim -> enchant
   set_bonus_t sets;
-  new_set_bonus::set_bonus_t new_sets;
   meta_gem_e meta_gem;
   bool matching_gear;
   cooldown_t item_cooldown;
@@ -4988,8 +4920,6 @@ struct player_t : public actor_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual void      create_pets() { }
   virtual pet_t*    create_pet( const std::string& /* name*/,  const std::string& /* type */ = std::string() ) { return 0; }
-
-  virtual set_e decode_set( const item_t& item ) const { ( void )item; assert( item.name() ); return SET_NONE; }
 
   virtual void armory_extensions( const std::string& /* region */, const std::string& /* server */, const std::string& /* character */,
                                   cache::behavior_e /* behavior */ = cache::players() )

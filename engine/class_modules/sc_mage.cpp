@@ -637,7 +637,7 @@ struct mirror_image_pet_t : public pet_t
       double am = mirror_image_spell_t::action_multiplier();
 
       am *= 1.0 + p() -> arcane_charge -> stack() * p() -> o() -> spells.arcane_charge_arcane_blast -> effectN( 4 ).percent() *
-            ( 1.0 + p() -> o() -> new_sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).percent() );
+            ( 1.0 + p() -> o() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).percent() );
         
       return am;
     }
@@ -1607,7 +1607,7 @@ struct arcane_barrage_t : public mage_spell_t
     double am = mage_spell_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
-      ( 1.0 + p() -> new_sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).percent() );
+      ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).percent() );
 
     return am;
   }
@@ -1631,7 +1631,7 @@ struct arcane_blast_t : public mage_spell_t
     if ( p() -> buffs.arcane_charge -> check() )
     {
       c *= 1.0 +  p() -> buffs.arcane_charge -> check() * p() -> spells.arcane_charge_arcane_blast -> effectN( 2 ).percent() *
-        ( 1.0 + p() -> new_sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).percent() );
+        ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).percent() );
     }
 
     if ( p() -> buffs.profound_magic -> check() )
@@ -1660,7 +1660,7 @@ struct arcane_blast_t : public mage_spell_t
     double am = mage_spell_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
-      ( 1.0 + p() -> new_sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).percent() );
+      ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).percent() );
 
     return am;
   }
@@ -1777,8 +1777,8 @@ struct arcane_missiles_t : public mage_spell_t
     double am = mage_spell_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
-      ( 1.0 + p() -> new_sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).percent() );
-    if ( p() -> new_sets.has_set_bonus( SET_CASTER, T14, B2 ) )
+      ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).percent() );
+    if ( p() -> sets.has_set_bonus( SET_CASTER, T14, B2 ) )
     {
       am *= 1.07;
     }
@@ -1802,13 +1802,13 @@ struct arcane_missiles_t : public mage_spell_t
 
     p() -> buffs.arcane_missiles -> up();
 
-    if ( p() -> new_sets.has_set_bonus( SET_CASTER, T16, B2 ) )
+    if ( p() -> sets.has_set_bonus( SET_CASTER, T16, B2 ) )
     {
       p() -> buffs.profound_magic -> trigger();
     }
 
     // T16 4pc has a chance not to consume arcane missiles buff
-    if ( !p() -> new_sets.has_set_bonus( SET_CASTER, T16, B4 ) || !rng().roll( p() -> new_sets.set( SET_CASTER, T16, B4 ) -> effectN( 1 ).percent() ) )
+    if ( !p() -> sets.has_set_bonus( SET_CASTER, T16, B4 ) || !rng().roll( p() -> sets.set( SET_CASTER, T16, B4 ) -> effectN( 1 ).percent() ) )
     {
       p() -> buffs.arcane_missiles -> decrement();
     }
@@ -2086,7 +2086,7 @@ struct combustion_t : public mage_spell_t
     dot_duration      = tick_spell.duration();
     tick_may_crit  = true;
 
-    if ( p -> new_sets.has_set_bonus( SET_CASTER, T14, B4 ) )
+    if ( p -> sets.has_set_bonus( SET_CASTER, T14, B4 ) )
     {
       cooldown -> duration = data().cooldown() * 0.8;
     }
@@ -2336,7 +2336,7 @@ public:
       mana *= 0.1;
 
       mana *= 1.0 + arcane_charges * p() -> spells.arcane_charge_arcane_blast -> effectN( 4 ).percent() *
-              ( 1.0 + p() -> new_sets.set( SET_CASTER, T15, B4) -> effectN( 1 ).percent() );
+              ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4) -> effectN( 1 ).percent() );
     }
     else
     {
@@ -2598,7 +2598,7 @@ struct frostbolt_t : public mage_spell_t
     {
       double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent();
 
-      fof_proc_chance += p() -> new_sets.set( SET_CASTER, T15, B4 ) -> effectN( 3 ).percent();
+      fof_proc_chance += p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 3 ).percent();
 
       // TODO: Verify that hidden FoF proc increase from glyph of IV is removed
       /*if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
@@ -2684,7 +2684,7 @@ struct frostfire_bolt_t : public mage_spell_t
     base_execute_time += p -> glyphs.frostfire -> effectN( 1 ).time_value();
 
 
-    if ( p -> new_sets.has_set_bonus( SET_CASTER, T16, B2 ) )
+    if ( p -> sets.has_set_bonus( SET_CASTER, T16, B2 ) )
     {
       add_child( frigid_blast );
     }
@@ -2726,11 +2726,11 @@ struct frostfire_bolt_t : public mage_spell_t
       p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
     }
     p() -> buffs.frozen_thoughts -> expire();
-    if ( p() -> buffs.brain_freeze -> check() && p() -> new_sets.has_set_bonus( SET_CASTER, T16, B2 ) )
+    if ( p() -> buffs.brain_freeze -> check() && p() -> sets.has_set_bonus( SET_CASTER, T16, B2 ) )
     {
       p() -> buffs.frozen_thoughts -> trigger();
     }
-    if ( rng().roll( p() -> new_sets.set( SET_CASTER, T16, B4 ) -> effectN( 2 ).percent() ) )
+    if ( rng().roll( p() -> sets.set( SET_CASTER, T16, B4 ) -> effectN( 2 ).percent() ) )
     {
       frigid_blast -> schedule_execute();
     }
@@ -2962,7 +2962,7 @@ struct ice_lance_t : public mage_spell_t
       am *= 1.0 + fof_multiplier; // Buff from Fingers of Frost
     }
 
-    if ( p() -> new_sets.has_set_bonus( SET_CASTER, T14, B2 ) )
+    if ( p() -> sets.has_set_bonus( SET_CASTER, T14, B2 ) )
     {
       am *= 1.12;
     }
@@ -3012,7 +3012,7 @@ struct icy_veins_t : public mage_spell_t
     parse_options( NULL, options_str );
     harmful = false;
 
-    if ( player -> new_sets.has_set_bonus( SET_CASTER, T14, B4 ) )
+    if ( player -> sets.has_set_bonus( SET_CASTER, T14, B4 ) )
     {
       cooldown -> duration *= 0.5;
     }
@@ -3127,7 +3127,7 @@ struct inferno_blast_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    if ( p() -> new_sets.has_set_bonus( SET_CASTER, T16, B4 ) )
+    if ( p() -> sets.has_set_bonus( SET_CASTER, T16, B4 ) )
     {
       p() -> buffs.fiery_adept -> trigger();
     }
@@ -3433,7 +3433,7 @@ struct pyroblast_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    if ( p() -> buffs.pyroblast -> check() && p() -> new_sets.has_set_bonus( SET_CASTER, T16, B2 ) )
+    if ( p() -> buffs.pyroblast -> check() && p() -> sets.has_set_bonus( SET_CASTER, T16, B2 ) )
     {
       p() -> buffs.potent_flames -> trigger();
     }
@@ -3462,7 +3462,7 @@ struct pyroblast_t : public mage_spell_t
     if ( s -> result == RESULT_CRIT && p() -> talents.kindling -> ok() )
       p() -> cooldowns.combustion -> adjust( timespan_t::from_seconds( - p() -> talents.kindling -> effectN( 1 ).base_value() ) );
 
-    if ( p() -> new_sets.has_set_bonus( SET_CASTER, PVP, B4 ) && is_hot_streak )
+    if ( p() -> sets.has_set_bonus( SET_CASTER, PVP, B4 ) && is_hot_streak )
       td( s -> target ) -> debuffs.firestarter -> trigger();
   }
 
@@ -3479,7 +3479,7 @@ struct pyroblast_t : public mage_spell_t
   {
     double c = mage_spell_t::composite_crit();
 
-    c += p() -> new_sets.set( SET_CASTER, T15, B4 ) -> effectN( 2 ).percent();
+    c += p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 2 ).percent();
 
     if ( p() -> buffs.fiery_adept -> check() )
       c += 1.0;
@@ -5080,7 +5080,7 @@ double mage_t::composite_player_multiplier( school_e school ) const
   if ( buffs.arcane_power -> check() )
   {
     double v = buffs.arcane_power -> value();
-    if ( new_sets.has_set_bonus( SET_CASTER, T14, B4 ) )
+    if ( sets.has_set_bonus( SET_CASTER, T14, B4 ) )
     {
       v += 0.1;
     }
