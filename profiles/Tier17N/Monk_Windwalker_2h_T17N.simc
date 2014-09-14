@@ -1,4 +1,4 @@
-monk="Monk_WW_1h_T17N"
+monk="Monk_Windwalker_2h_T17N"
 level=100
 race=troll
 role=dps
@@ -78,17 +78,16 @@ finger1=cinderwolf_signet,id=113917,enchant=gift_of_multistrike
 finger2=unexploded_explosive_shard,id=113877,enchant=gift_of_multistrike
 trinket1=humming_blackiron_trigger,id=113985
 trinket2=scales_of_doom,id=113612
-main_hand=hansgars_forgehammer,id=113897,enchant=mark_of_the_frostwolf
-off_hand=hansgars_forgehammer,id=113897,enchant=mark_of_the_frostwolf
+main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_agility=2656
-# gear_stamina=3355
-# gear_crit_rating=988
-# gear_haste_rating=296
+# gear_agility=2691
+# gear_stamina=3408
+# gear_crit_rating=1156
+# gear_haste_rating=154
 # gear_mastery_rating=232
 # gear_armor=976
-# gear_multistrike_rating=1543
+# gear_multistrike_rating=1563
 # gear_versatility_rating=163
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
