@@ -565,6 +565,7 @@ void SC_MainWindowCommandLine::createCommandLine( state_e state,
   QFont progressBarFont( progressBar->font() );
   progressBarFont.setPointSize( 14 );
   progressBar->setFont( progressBarFont );
+  progressBar->setStyleSheet( QString::fromUtf8( "text-align: center;" ) );
 
   parentLayout->addWidget( progressBar );
 }
