@@ -3998,7 +3998,9 @@ void warrior_t::apl_precombat( bool probablynotgladiator )
   else
     precombat -> add_action( "stance,choose=defensive" );
 
-  precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
+                           "# Generic on-use trinket line if needed when swapping trinkets out. \n"
+                           "#actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&buff.ravager.up)" );
 
   //Pre-pot
   if ( sim -> allow_potions )
@@ -4040,7 +4042,7 @@ void warrior_t::apl_fury()
   for ( int i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=debuff.colossus_smash.up" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&buff.ravager.up)" );
   }
 
   if ( sim -> allow_potions )
@@ -4051,8 +4053,8 @@ void warrior_t::apl_fury()
       default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
   }
 
-  default_list -> add_action( this, "Recklessness", "if=!talent.bloodbath.enabled&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192)|target.health.pct<20)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12",
-                              "This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'" );
+  default_list -> add_action( this, "Recklessness", "if=(target.time_to_die>190|target.health.pct<20)&(!talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)|buff.bloodbath.up)|target.time_to_die<=10",
+                              "This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'" );
   default_list -> add_talent( this, "Avatar", "if=(buff.recklessness.up|target.time_to_die<=25)" );
   default_list -> add_action( this, "Berserker Rage", "if=debuff.colossus_smash.up&buff.raging_blow.stack<2" );
 
@@ -4128,7 +4130,7 @@ void warrior_t::apl_arms()
   std::vector<std::string> racial_actions = get_racial_actions();
 
   action_priority_list_t* default_list        = get_action_priority_list( "default" );
-  action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
+  action_priority_list_t* single_target       = get_action_priority_list( "single" );
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
 
   default_list -> add_action( this, "charge" );
@@ -4149,21 +4151,21 @@ void warrior_t::apl_arms()
       default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
   }
 
-  default_list -> add_action( this, "Recklessness", "if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>190|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>190|target.health.pct<20)|target.time_to_die<=10",
+  default_list -> add_action( this, "Recklessness", "if=(target.time_to_die>190|target.health.pct<20)&(!talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)|buff.bloodbath.up)|target.time_to_die<=10",
                               "This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'" );
+  default_list -> add_talent( this, "Bloodbath", "if=(active_enemies=1&cooldown.colossus_smash.remains<5)|(active_enemies>=2&buff.ravager.up)|target.time_to_die<=20" );
   default_list -> add_talent( this, "Avatar", "if=buff.recklessness.up|target.time_to_die<=25" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up" );
 
-  default_list -> add_talent( this, "Bloodbath", "if=cooldown.colossus_smash.remains<5|target.time_to_die<=20" );
   default_list -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up&rage>70" );
-  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>1" );
-  default_list -> add_action( "call_action_list,name=single_target,if=active_enemies=1" );
+  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=2" );
+  default_list -> add_action( "call_action_list,name=single,if=active_enemies=1" );
 
   single_target -> add_action( this, "Rend", "if=ticks_remain<2&target.time_to_die>4" );
   single_target -> add_action( this, "Mortal Strike", "if=target.health.pct>20" );
-  single_target -> add_action( "heroic_charge,if=((!debuff.colossus_smash.up&cooldown.colossus_smash.remains)|(debuff.colossus_smash.up&!cooldown.heroic_leap.remains))&rage<=85" );
+  single_target -> add_action( "heroic_charge" );
   single_target -> add_talent( this, "Ravager", "if=cooldown.colossus_smash.remains<3" );
   single_target -> add_action( this, "Colossus Smash" );
   single_target -> add_talent( this, "Storm Bolt", "if=(cooldown.colossus_smash.remains>4|debuff.colossus_smash.up)&rage<90" );
@@ -4176,17 +4178,18 @@ void warrior_t::apl_arms()
   single_target -> add_talent( this, "Shockwave" );
 
   aoe -> add_action( this, "Sweeping Strikes" );
-  aoe -> add_action( this, "Rend", "if=!ticking" );
+  aoe -> add_action( "heroic_charge" );
+  aoe -> add_action( this, "Rend", "if=active_enemies<=4&ticks_remain<2" );
   aoe -> add_talent( this, "Ravager" );
-  aoe -> add_talent( this, "Bladestorm" );
-  aoe -> add_talent( this, "Shockwave" );
-  aoe -> add_talent( this, "Dragon Roar" );
   aoe -> add_action( this, "Colossus Smash" );
-  aoe -> add_action( this, "Mortal Strike", "if=active_enemies<4" );
-  aoe -> add_action( this, "Execute", "if=buff.sudden_death.up|active_enemies<4" );
-  aoe -> add_action( this, "Whirlwind", "if=rage>40" );
-  aoe -> add_talent( this, "Siegebreaker" );
-  aoe -> add_action( this, "Rend", "cycle_targets=1,if=!ticking&talent.taste_for_blood.enabled" );
+  aoe -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up" );
+  aoe -> add_action( this, "Execute", "if=active_enemies<=3&((rage>60&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|target.time_to_die<5)" );
+  aoe -> add_action( this, "Whirlwind", "if=active_enemies>=4|active_enemies<=3&(rage>60|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20" );
+  aoe -> add_action( "bladestorm,interrupt_if=!cooldown.colossus_smash.remains|!cooldown.ravager.remains" );
+  aoe -> add_action( this, "Rend", "cycle_targets=1,if=!ticking" );
+  aoe -> add_talent( this, "Siegebreaker", "if=active_enemies=2" );
+  aoe -> add_talent( this, "Storm Bolt", "if=cooldown.colossus_smash.remains>4|debuff.colossus_smash.up" );
+  aoe -> add_talent( this, "Shockwave" );
 }
 
 // Protection Warrior Action Priority List ========================================
@@ -4206,7 +4209,7 @@ void warrior_t::apl_prot()
   for ( int i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.bloodbath.up|buff.avatar.up" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&buff.ravager.up)" );
   }
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|buff.avatar.up" );

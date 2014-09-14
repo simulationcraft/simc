@@ -62,7 +62,7 @@ race=Tauren
 spec=Arms
 role=attack
 position=back
-talents=1213322
+talents=1313322
 glyphs=unending_rage/death_from_above/bull_rush
 head=blackhands_faceguard,id=115584,bonus_id=566
 neck=vertebrae_protector,id=113900,bonus_id=566,enchant=gift_of_critical_strike
