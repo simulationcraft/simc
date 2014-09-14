@@ -2634,7 +2634,7 @@ call_action_list_t::call_action_list_t( player_t* player, const std::string& opt
   action_t( ACTION_CALL, "call_action_list", player ), alist( 0 )
 {
   std::string alist_name;
-  int randomtoggle;
+  int randomtoggle = 0;
   option_t options[] =
   {
     opt_string( "name", alist_name ),
