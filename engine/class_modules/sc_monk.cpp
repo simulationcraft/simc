@@ -305,9 +305,7 @@ public:
     const spell_data_t* enveloping_mist;
     const spell_data_t* surging_mist;
     const spell_data_t* tier15_2pc_melee;
-    const spell_data_t* tier17_2pc_melee;
-    const spell_data_t* tier17_2pc_tank;
-    const spell_data_t* tier17_4pc_tank;
+
   } passives;
 
   // Options
@@ -1484,7 +1482,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
     {
       p() -> track_chi_consumption += savings;
       if ( p() -> new_sets.has_set_bonus( MONK_WINDWALKER, T17, B2 ) )
-        trigger_brew( p() -> passives.tier17_2pc_melee -> effectN( 1 ).base_value() );
+        trigger_brew( p() -> new_sets.set( MONK_WINDWALKER, T17, B2 ) -> effectN( 1 ).base_value() );
     }
   }
 };
@@ -2397,8 +2395,8 @@ struct purifying_brew_t: public monk_spell_t
     // Optional addition: Track and report amount of damage cleared
     p() -> active_actions.stagger_self_damage -> clear_all_damage();
 
-    if ( p() -> new_sets.set( SET_TANK, T17, B4 ) )
-      trigger_brew( p() -> passives.tier17_4pc_tank -> effectN( 1 ).base_value() );
+    if ( p() -> new_sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) )
+      trigger_brew( p() -> new_sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
   }
 
   bool ready()
@@ -2817,7 +2815,7 @@ struct surging_mist_t: public monk_heal_t
 
   virtual void impact(action_state_t* s)
   {
-    //if (result_is_multistrike(s->result) && p() -> new_sets.set(SET_HEALER, T17, B4) )
+    //if (result_is_multistrike(s->result) && p() -> new_sets.has_set_bonus( MONK_MISTWEAVER, T17, B4 ) )
 
   }
 };
@@ -2905,6 +2903,7 @@ struct guard_t: public monk_absorb_t
     target = &p;
     cooldown -> charges = p.perk.improved_guard -> effectN( 1 ).base_value();
     attack_power_mod.direct = 9; // hardcoded into tooltip 2014/09/09
+    base_multiplier += ( p.new_sets.has_set_bonus( SET_TANK, T14, B4 ) ? p.new_sets.set( SET_TANK, T14, B4 ) -> effectN( 1 ).percent() : 0.0 );
   }
 
   virtual void impact( action_state_t* s )
@@ -3143,9 +3142,6 @@ void monk_t::init_spells()
   passives.tier15_2pc_melee       = find_spell( 138311 );
   passives.enveloping_mist        = find_class_spell( "Enveloping Mist" );
   passives.surging_mist           = find_class_spell( "Surging Mist" );
-  passives.tier17_2pc_melee       = find_spell( 165403 );
-  passives.tier17_2pc_tank        = find_spell( 165356 );
-  passives.tier17_4pc_tank        = find_spell( 165352 );
 
   // GLYPHS
   glyph.fortifying_brew    = find_glyph( "Glyph of Fortifying Brew"    );
@@ -3223,6 +3219,7 @@ void monk_t::create_buffs()
 
   // General
   buff.fortifying_brew = buff_creator_t( this, "fortifying_brew", find_spell( 120954 ) );
+  buff.fortifying_brew -> cooldown -> duration += new_sets.set( SET_TANK, T16, B2 ) -> effectN( 1 ).time_value();
 
   buff.power_strikes = buff_creator_t( this, "power_strikes", talent.power_strikes -> effectN( 1 ).trigger() );
 
@@ -3545,8 +3542,12 @@ double monk_t::composite_dodge() const
 {
   double d = base_t::composite_dodge();
 
-  if ( buff.elusive_brew_activated -> check() )
+  if (buff.elusive_brew_activated -> check())
+  {
     d += buff.elusive_brew_activated -> data().effectN( 1 ).percent();
+    if ( new_sets.has_set_bonus( SET_TANK, T14, B2 ) )
+      d += new_sets.set( SET_TANK, T14, B2 ) -> effectN( 1 ).percent();
+  }
 
   return d;
 }
@@ -3832,7 +3833,7 @@ void monk_t::assess_damage( school_e school,
     buff.guard -> up();
 
   if ( s -> result == RESULT_DODGE && new_sets.set( MONK_BREWMASTER, T17, B2 ) )
-    resource_gain(RESOURCE_ENERGY, passives.tier17_2pc_tank -> effectN( 1 ).base_value(), gain.energy_refund);
+    resource_gain(RESOURCE_ENERGY, new_sets.set( MONK_BREWMASTER, T17, B2 ) -> effectN( 1 ).base_value(), gain.energy_refund);
 
   base_t::assess_damage( school, dtype, s );
 }
