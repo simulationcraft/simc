@@ -60,7 +60,7 @@ actions.single+=/elemental_blast
 # After the initial Ascendance, use Flame Shock pre-emptively just before Ascendance to guarantee Flame Shock staying up for the full duration of the Ascendance buff
 actions.single+=/flame_shock,if=time>60&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<duration
 # Keep Searing Totem up, unless Fire Elemental Totem is coming off cooldown in the next 20 seconds
-actions.single+=/searing_totem,if=(!talent.liquid_magma.enabled&!totem.fire.active)|(pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up)
+actions.single+=/searing_totem,if=(!talent.liquid_magma.enabled&!totem.fire.active)|(talent.liquid_magma.enabled&pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up)
 actions.single+=/spiritwalkers_grace,moving=1,if=((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))
 actions.single+=/lightning_bolt
 
@@ -70,7 +70,7 @@ actions.aoe=earthquake,if=(buff.enhanced_chain_lightning.up|level<=90)&active_en
 actions.aoe+=/lava_beam
 actions.aoe+=/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
 actions.aoe+=/thunderstorm,if=active_enemies>=10
-actions.aoe+=/searing_totem,if=(!talent.liquid_magma.enabled&!totem.fire.active)|(pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up)
+actions.aoe+=/searing_totem,if=(!talent.liquid_magma.enabled&!totem.fire.active)|(talent.liquid_magma.enabled&pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up)
 actions.aoe+=/chain_lightning,if=active_enemies>=2
 actions.aoe+=/lightning_bolt
 
