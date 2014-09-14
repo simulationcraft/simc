@@ -155,6 +155,7 @@ QString automation::auto_talent_sim( QString player_class,
                                    )
 {
   QString profile;
+  QStringList names;
   
   // make profile for each entry in talentList
   for ( int i = 0; i < talentList.size(); i++ )
@@ -163,7 +164,19 @@ QString automation::auto_talent_sim( QString player_class,
     // If so, we want to split them off and append them to the end.
     QStringList splitEntry = splitPreservingComments( talentList[ i ] );
     
-    profile += tokenize( player_class ) + "=T_" + splitEntry[ 0 ] + "\n";
+    // handle isolated comments
+    if ( splitEntry.size() == 1 && splitEntry[ 0 ].startsWith( "#" ) )
+      continue;
+    
+    profile += tokenize( player_class ) + "=T_";
+    if ( ! names.contains( splitEntry[ 0 ] ) )
+    {
+      profile += splitEntry[ 0 ];
+      names.append( splitEntry[ 0 ] );
+    }
+    else
+      profile += QString::number( i );
+    profile += "\n";
     profile += base_profile_info;
 
     // skip comments
@@ -217,6 +230,10 @@ QString automation::auto_glyph_sim( QString player_class,
     // first, check to see if the user has specified additional options within the list entry.
     // If so, we want to split them off and append them to the end. We do this by splitting on spaces and \n
     QStringList splitEntry = splitPreservingComments( glyphList[ i ] );
+    
+    // handle isolated comments
+    if ( splitEntry.size() == 1 && splitEntry[ 0 ].startsWith( "#" ) )
+      continue;
 
     profile += tokenize( player_class ) + "=G_" + QString::number( i ) + "\n";
     profile += base_profile_info;
@@ -269,6 +286,13 @@ QString automation::auto_gear_sim( QString player_class,
   // make profile for each entry in gearList, which should be a complete gear set (plus optional extra stuff)
   for ( int i = 0; i < gearList.size(); i++ )
   {
+    // split the entry on newlines and spaces, preserving comments
+    QStringList itemList = splitPreservingComments( gearList[ i ] );
+
+    // handle isolated comments
+    if ( itemList.size() == 1 && itemList[ 0 ].startsWith( "#" ) )
+      continue;
+
     profile += tokenize( player_class ) + "=G_" + QString::number( i ) + "\n";
     profile += base_profile_info;
 
@@ -284,9 +308,6 @@ QString automation::auto_gear_sim( QString player_class,
 
     if ( player_rotation.size() > 0 )
       profile += player_rotation + "\n";
-
-    // split the entry on newlines and spaces, preserving comments
-    QStringList itemList = splitPreservingComments( gearList[ i ] );
 
     // add each line of the reult to the profile
     for ( int j = 0; j < itemList.size(); j++ )
