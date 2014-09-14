@@ -1867,11 +1867,7 @@ struct tigereye_brew_t: public monk_spell_t
   double value()
   {
     double value = p() -> buff.tigereye_brew_use -> data().effectN( 1 ).percent();
-    if ( p() -> new_sets.has_set_bonus( SET_MELEE, T15, B4 ) )
-    {
-      // 50 / 10000 = 0.005
-      value += p() -> new_sets.set( SET_MELEE, T15, B4 ) -> effectN( 1 ).base_value() / 10000; // t154pc
-    }
+    value += p() -> new_sets.set( SET_MELEE, T15, B4 ) -> effectN( 1 ).base_value() / 10000; // t154pc
     return value;
   }
 
@@ -2395,8 +2391,7 @@ struct purifying_brew_t: public monk_spell_t
     // Optional addition: Track and report amount of damage cleared
     p() -> active_actions.stagger_self_damage -> clear_all_damage();
 
-    if ( p() -> new_sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) )
-      trigger_brew( p() -> new_sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
+    trigger_brew( p() -> new_sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value();
   }
 
   bool ready()
@@ -2903,7 +2898,7 @@ struct guard_t: public monk_absorb_t
     target = &p;
     cooldown -> charges = p.perk.improved_guard -> effectN( 1 ).base_value();
     attack_power_mod.direct = 9; // hardcoded into tooltip 2014/09/09
-    base_multiplier += ( p.new_sets.has_set_bonus( SET_TANK, T14, B4 ) ? p.new_sets.set( SET_TANK, T14, B4 ) -> effectN( 1 ).percent() : 0.0 );
+    base_multiplier += p.new_sets.set( SET_TANK, T14, B4 ) -> effectN( 1 ).percent();
   }
 
   virtual void impact( action_state_t* s )
@@ -3545,8 +3540,7 @@ double monk_t::composite_dodge() const
   if (buff.elusive_brew_activated -> check())
   {
     d += buff.elusive_brew_activated -> data().effectN( 1 ).percent();
-    if ( new_sets.has_set_bonus( SET_TANK, T14, B2 ) )
-      d += new_sets.set( SET_TANK, T14, B2 ) -> effectN( 1 ).percent();
+    d += new_sets.set( SET_TANK, T14, B2 ) -> effectN( 1 ).percent();
   }
 
   return d;
