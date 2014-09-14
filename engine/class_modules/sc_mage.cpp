@@ -4678,66 +4678,120 @@ void mage_t::apl_arcane()
   std::vector<std::string> item_actions       = get_item_actions();
   std::vector<std::string> racial_actions     = get_racial_actions();
 
-  action_priority_list_t* default_list        = get_action_priority_list( "default"           );
-  action_priority_list_t* single_target       = get_action_priority_list( "single_target"     );
-  action_priority_list_t* aoe                 = get_action_priority_list( "aoe"               );
-  action_priority_list_t* prismatic_crystal   = get_action_priority_list( "prismatic_crystal" );
-  // action_priority_list_t* incanters_flow      = get_action_priority_list( "incanters_flow"    );
+  action_priority_list_t* default_list        = get_action_priority_list( "default"          );
 
-  default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
-  default_list -> add_action( this, "Blink", "if=movement.distance>10" );
-  default_list -> add_talent( this, "Blazing Speed", "if=movement.remains>0" );
-  default_list -> add_talent( this, "Cold Snap", "if=health.pct<30" );
-  default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time>5" );
-  //not useful if bloodlust is check in option.
+  action_priority_list_t* init_crystal        = get_action_priority_list( "init_crystal"     );
+  action_priority_list_t* crystal_sequence    = get_action_priority_list( "crystal_sequence" );
+  action_priority_list_t* cooldowns           = get_action_priority_list( "cooldowns"        );
+  action_priority_list_t* aoe                 = get_action_priority_list( "aoe"              );
+  action_priority_list_t* burn                = get_action_priority_list( "burn"             );
+  action_priority_list_t* conserve            = get_action_priority_list( "conserve"         );
 
-  default_list -> add_talent( this, "Rune of Power", "if=buff.rune_of_power.remains<cast_time" );
-  default_list -> add_talent( this, "Rune of Power", "if=cooldown.arcane_power.remains<gcd&buff.rune_of_power.remains<buff.arcane_power.duration" );
 
+  default_list -> add_action( this, "Counterspell",
+                              "if=target.debuff.casting.react" );
+  default_list -> add_action( this, "Blink",
+                              "if=movement.distance>10" );
+  default_list -> add_talent( this, "Blazing Speed",
+                              "if=movement.remains>0" );
+  default_list -> add_talent( this, "Cold Snap",
+                              "if=health.pct<30" );
+  default_list -> add_action( this, "Time Warp",
+                              "if=target.health.pct<25|time>5" );
+  default_list -> add_talent( this, "Rune of Power",
+                              "if=buff.rune_of_power.remains<cast_time" );
   default_list -> add_talent( this, "Mirror Image" );
-  default_list -> add_action( this, "Evocation", "if=mana.pct<50,interrupt_if=mana.pct>95&buff.arcane_power.down" );
-  default_list -> add_action( this, "Arcane Power", "if=!talent.overpowered.enabled&time_to_bloodlust>cooldown.arcane_power.duration&((buff.arcane_charge.stack=4)|target.time_to_die<buff.arcane_power.duration+5),moving=0" );
-  default_list -> add_action( this, "Arcane Power", "if=talent.overpowered.enabled&time_to_bloodlust>cooldown.arcane_power.duration&((buff.arcane_charge.stack=4)|target.time_to_die<buff.arcane_power.duration+5)&cooldown.evocation.remains<buff.arcane_power.duration+5,moving=0" );
+  default_list -> add_action( "call_action_list,name=init_crystal,if=talent.prismatic_crystal.enabled" );
+  default_list -> add_action( "call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active" );
+  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=6" );
+  default_list -> add_action( "call_action_list,name=burn,if=buff.arcane_power.up&cooldown.evocation.remains<buff.arcane_power.remains&mana.pct>15&talent.prismatic_crystal.enabled" );
+  default_list -> add_action( "call_action_list,name=conserve" );
+
+
+  init_crystal -> add_talent( this, "Prismatic Crystal",
+                              "if=cooldown.arcane_power.remains=0&buff.arcane_charge.stack=4",
+                              "Conditions for initiating Prismatic Crystal burn phase" );
+  init_crystal -> add_talent( this, "Prismatic Crystal",
+                              "if=buff.arcane_charge.stack=4&(glyph.arcane_power.enabled&cooldown.arcane_power.remains>45)|(!glyph.arcane_power.enabled&cooldown.arcane_power.remains>15)" );
+
+
+  crystal_sequence -> add_action( "call_action_list,name=cooldowns",
+                                  "Actions while Prismatic Crystal is active" );
+  crystal_sequence -> add_talent( this, "Nether Tempest",
+                                  "if=current_target=prismatic_crystal&buff.arcane_charge.stack=4&!ticking&cooldown.prismatic_crystal.remains>58" );
+  crystal_sequence -> add_action( "call_action_list,name=burn,if=cooldown.evocation.remains<cooldown.prismatic_crystal.remains-50" );
+  crystal_sequence -> add_action( "call_action_list,name=conserve" );
+
+
+  cooldowns -> add_action( this, "Arcane Power",
+                           "",
+                           "Consolidated damage cooldown abilities" );
 
   for( size_t i = 0; i < racial_actions.size(); i++ )
-    default_list -> add_action( racial_actions[i] );
+    cooldowns -> add_action( racial_actions[i] );
 
-  default_list -> add_action( get_potion_action() + ",if=buff.arcane_power.up|target.time_to_die<50" );
+  cooldowns -> add_action( get_potion_action() + ",if=buff.arcane_power.up&(!talent.prismatic_crystal.enabled|pet.prismatic_crystal.active)" );
 
   for( size_t i = 0; i < item_actions.size(); i++ )
-    default_list -> add_action( item_actions[i] );
-
-  default_list -> add_action( this, "Presence of Mind", "if=buff.arcane_power.up" );
-
-  default_list -> add_talent( this, "Prismatic Crystal", "if=buff.arcane_charge.stack=4");
-
-  default_list -> add_action( "run_action_list,name=prismatic_crystal,if=pet.prismatic_crystal.active" );
-  default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>=6" );
-  default_list -> add_action( "run_action_list,name=single_target,if=active_enemies<6" );
-
-  single_target -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.stack=3&buff.arcane_charge.stack=4" );
-  single_target -> add_talent( this, "Nether Tempest", "if=(!ticking|remains<tick_time)&target.time_to_die>6&buff.arcane_charge.stack=4" );
-  single_target -> add_talent( this, "Supernova", "if=buff.arcane_charge.stack=4&((charges=1&recharge_time<10&cooldown.arcane_power.remains>12)|(buff.arcane_power.react))" );
-  single_target -> add_action( this, "Arcane Missiles", "if=buff.arcane_charge.stack=4" );
-  single_target -> add_talent( this, "Nether Tempest", "if=remains<7&target.time_to_die>6&buff.arcane_charge.stack=4" );
-  single_target -> add_action( this, "Arcane Blast", "if=talent.unstable_magic.enabled&buff.arcane_power.react");
-  single_target -> add_talent( this, "Arcane Orb", "if=buff.arcane_charge.stack<=2" );
-  single_target -> add_action( this, "Arcane Barrage", "if=buff.arcane_charge.stack=4&mana.pct<95" );
-  single_target -> add_action( this, "Presence of Mind", "if=cooldown.arcane_power.remains>75" );
-  single_target -> add_action( this, "Arcane Blast" );
-  single_target -> add_talent( this, "Ice Floes", "moving=1" );
-  single_target -> add_action( this, "Arcane Barrage", "moving=1" );
+    cooldowns -> add_action( item_actions[i] );
 
 
-  prismatic_crystal -> add_action( this, "Arcane Missiles", "if=buff.arcane_charge.stack=4");
-  prismatic_crystal -> add_talent( this, "Supernova");
-  prismatic_crystal -> add_action( this, "Arcane Barrage", "if=buff.arcane_charge.stack=4&action.arcane_barrage.travel_time+0.5>cooldown.prismatic_crystal.remains-50");
-  prismatic_crystal -> add_action( this, "Arcane Blast" );
+  aoe -> add_talent( this, "Nether Tempest",
+                     "if=buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))",
+                     "AoE sequence" );
+  aoe -> add_talent( this, "Supernova" );
+  aoe -> add_action( this, "Arcane Barrage",
+                     "if=buff.arcane_charge.stack=4" );
+  aoe -> add_talent( this, "Arcane Orb",
+                     "if=buff.arcane_charge.stack<4" );
+  aoe -> add_action( this, "Arcane Explosion" );
 
-  aoe -> add_action ( this, "Flamestrike" );
-  aoe -> add_talent ( this, "Nether Tempest", "if=buff.arcane_charge.stack=4&(!ticking|remains<tick_time)&target.time_to_die>6");
-  aoe -> add_action ( this, "Arcane Barrage", "if=buff.arcane_charge.stack=4" );
-  aoe -> add_action ( this, "Arcane Explosion" );
+
+  burn -> add_action( this, "Arcane Missiles",
+                      "if=buff.arcane_missiles.react=3",
+                      "High mana usage, \"Burn\" sequence" );
+  burn -> add_talent( this, "Supernova",
+                      "if=charges=2" );
+  burn -> add_talent( this, "Nether Tempest",
+                      "cycle_targets=1,if=target!=prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))" );
+  burn -> add_action( this, "Arcane Blast",
+                      "if=mana.pct>95&buff.arcane_charge.stack=4" );
+  burn -> add_action( this, "Arcane Missiles",
+                      "if=buff.arcane_charge.stack=4" );
+  burn -> add_talent( this, "Supernova" );
+  burn -> add_action( this, "Arcane Barrage",
+                      "if=buff.presence_of_mind.up&buff.arcane_charge.stack=4" );
+  burn -> add_action( this, "Presence of Mind" );
+  burn -> add_action( this, "Arcane Blast" );
+
+
+  conserve -> add_action( this, "Evocation",
+                          "interrupt_if=mana.pct>92,if=mana.pct<65",
+                          "Low mana usage, \"Conserve\" sequence" );
+  conserve -> add_action( "call_action_list,name=cooldowns,if=time_to_die<30|(buff.arcane_charge.stack=4&!(glyph.arcane_power.enabled&talent.prismatic_crystal.enabled)&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>20))" );
+  conserve -> add_action( this, "Arcane Missiles",
+                          "if=buff.arcane_missiles.react=3|(talent.overpowered.enabled&buff.arcane_power.up&buff.arcane_power.remains<3)" );
+  conserve -> add_action( this, "Arcane Blast",
+                          "if=buff.arcane_charge.stack=4&(mana.pct>95|(talent.unstable_magic.enabled&mana.pct>92))" );
+  conserve -> add_talent( this, "Nether Tempest",
+                          "cycle_targets=1,if=target!=prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))" );
+  conserve -> add_talent( this, "Supernova",
+                          "if=time_to_die<8|charges=2" );
+  conserve -> add_action( this, "Arcane Missiles",
+                          "if=buff.arcane_charge.stack=4&(!talent.overpowered.enabled|cooldown.arcane_power.remains>8)" );
+  conserve -> add_talent( this, "Supernova",
+                          "if=(buff.arcane_missiles.stack<2|buff.arcane_charge.stack=4)&(buff.arcane_power.up|current_target=prismatic_crystal|(charges=1&cooldown.arcane_power.remains>recharge_time)&(!talent.prismatic_crystal.enabled|(charges=1&cooldown.prismatic_crystal.remains>recharge_time)))" );
+  conserve -> add_talent( this, "Arcane Orb",
+                          "if=buff.arcane_charge.stack<2" );
+  conserve -> add_talent( this, "Nether Tempest",
+                          "cycle_targets=1,if=target!=prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<8*spell_haste))" );
+  conserve -> add_action( this, "Arcane Barrage",
+                          "if=buff.arcane_charge.stack=4&mana.pct<95" );
+  conserve -> add_action( this, "Presence of Mind",
+                          "if=buff.arcane_charge.stack<2&cooldown.arcane_power.remains>15&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>15)" );
+  conserve -> add_action( this, "Arcane Blast" );
+  conserve -> add_talent( this, "Ice Floes", "moving=1" );
+  conserve -> add_action( this, "Arcane Barrage", "moving=1" );
 }
 
 // Fire Mage Action List ===================================================================================================
