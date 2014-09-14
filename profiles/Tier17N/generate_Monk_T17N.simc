@@ -1,7 +1,7 @@
 talent_format=armory
 
 # Windwalker 1h
-monk="Monk_WW_1h_T17N"
+monk="Monk_Windwalker_1h_T17N"
 level=100
 race=troll
 spec=windwalker
@@ -24,7 +24,7 @@ trinket1=humming_blackiron_trigger,id=113985
 trinket2=scales_of_doom,id=113612
 main_hand=hansgars_forgehammer,id=113897,enchant=mark_of_the_frostwolf
 off_hand=hansgars_forgehammer,id=113897,enchant=mark_of_the_frostwolf
-save=Monk_WW_1h_T17N.simc
+save=Monk_Windwalker_1h_T17N.simc
 
 # Windwalker 1h CE
 monk="Monk_WW_1h_CE_T17N"
@@ -53,7 +53,7 @@ off_hand=hansgars_forgehammer,id=113897,enchant=mark_of_warsong
 save=Monk_WW_1h_CE_T17N.simc
 
 # Windwalker 2h
-monk="Monk_WW_2h_T17N"
+monk="Monk_Windwalker_2h_T17N"
 level=100
 race=troll
 spec=windwalker
@@ -75,7 +75,7 @@ finger2=unexploded_explosive_shard,id=113877,enchant=gift_of_multistrike
 trinket1=humming_blackiron_trigger,id=113985
 trinket2=scales_of_doom,id=113612
 main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,enchant=mark_of_the_frostwolf
-save=Monk_WW_2h_T17N.simc
+save=Monk_Windwalker_2h_T17N.simc
 
 # Windwalker 2h CE
 monk="Monk_WW_2h_CE_T17N"

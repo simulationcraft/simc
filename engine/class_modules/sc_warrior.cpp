@@ -2014,7 +2014,7 @@ struct heroic_charge_movement_ticker_t: public event_t
 {
   timespan_t duration;
   warrior_t* warrior;
-  heroic_charge_movement_ticker_t( sim_t& s, warrior_t*p, timespan_t d = timespan_t::zero() ):
+  heroic_charge_movement_ticker_t( sim_t& /*s*/, warrior_t*p, timespan_t d = timespan_t::zero() ):
     event_t( *p -> sim, "Player Movement Event" ), warrior( p )
   {
     if ( d > timespan_t::zero() )
