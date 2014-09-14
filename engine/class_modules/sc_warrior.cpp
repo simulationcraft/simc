@@ -462,6 +462,8 @@ public:
   virtual double    composite_attribute( attribute_e attr ) const;
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
+  virtual double    composite_player_heal_multiplier( const action_state_t* s ) const;
+  virtual double    composite_player_absorb_multiplier( const action_state_t* s ) const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual double    composite_armor_multiplier() const;
   virtual double    composite_block() const;
@@ -4972,6 +4974,32 @@ double warrior_t::composite_player_multiplier( school_e school ) const
 
   if ( active_stance == STANCE_GLADIATOR && school == SCHOOL_PHYSICAL )
     m *= 1.0 + buff.gladiator_stance -> data().effectN( 1 ).percent();
+
+  return m;
+}
+
+// druid_t::composite_player_heal_multiplier ================================
+
+double warrior_t::composite_player_heal_multiplier( const action_state_t* s ) const
+{
+  double m = player_t::composite_player_heal_multiplier( s );
+
+  // Resolve applies a blanket -60% healing for tanks
+  if ( spec.resolve -> ok() )
+    m *= 1.0 + spec.resolve -> effectN( 2 ).percent();
+
+  return m;
+}
+
+// druid_t::composite_player_absorb_multiplier ================================
+
+double warrior_t::composite_player_absorb_multiplier( const action_state_t* s ) const
+{
+  double m = player_t::composite_player_absorb_multiplier( s );
+  
+  // Resolve applies a blanket -60% healing for tanks
+  if ( spec.resolve -> ok() )
+    m *= 1.0 + spec.resolve -> effectN( 3 ).percent();
 
   return m;
 }

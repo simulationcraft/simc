@@ -543,6 +543,7 @@ public:
   virtual double    passive_movement_modifier() const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    composite_player_heal_multiplier( const action_state_t* s ) const;
+  virtual double    composite_player_absorb_multiplier( const action_state_t* s ) const;
   virtual double    composite_spell_crit() const;
   virtual double    composite_spell_power( school_e school ) const;
   virtual double    composite_attribute( attribute_e attr ) const;
@@ -6410,6 +6411,34 @@ double druid_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
+// druid_t::composite_player_heal_multiplier ================================
+
+double druid_t::composite_player_heal_multiplier( const action_state_t* s ) const
+{
+  double m = player_t::composite_player_heal_multiplier( s );
+
+  m *= 1.0 + buff.heart_of_the_wild -> heal_multiplier();
+
+  // Resolve applies a blanket -60% healing for tanks
+  if ( spec.resolve -> ok() )
+    m *= 1.0 + spec.resolve -> effectN( 2 ).percent();
+
+  return m;
+}
+
+// druid_t::composite_player_absorb_multiplier ================================
+
+double druid_t::composite_player_absorb_multiplier( const action_state_t* s ) const
+{
+  double m = player_t::composite_player_absorb_multiplier( s );
+  
+  // Resolve applies a blanket -60% healing for tanks
+  if ( spec.resolve -> ok() )
+    m *= 1.0 + spec.resolve -> effectN( 3 ).percent();
+
+  return m;
+}
+
 // druid_t::composite_melee_expertise( weapon_t* ) ==========================
 
 double druid_t::composite_melee_expertise( weapon_t* ) const
@@ -6419,16 +6448,6 @@ double druid_t::composite_melee_expertise( weapon_t* ) const
   exp += spec.thick_hide -> effectN( 3 ).percent();
 
   return exp;
-}
-// druid_t::composite_player_heal_multiplier ================================
-
-double druid_t::composite_player_heal_multiplier( const action_state_t* s ) const
-{
-  double m = player_t::composite_player_heal_multiplier( s );
-
-  m *= 1.0 + buff.heart_of_the_wild -> heal_multiplier();
-
-  return m;
 }
 
 // druid_t::composite_melee_attack_power ==================================
