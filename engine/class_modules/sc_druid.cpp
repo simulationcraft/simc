@@ -523,6 +523,7 @@ public:
   }
 
   // Character Definition
+  virtual void      arise();
   virtual void      init_spells();
   virtual void      init_base_stats();
   virtual void      create_buffs();
@@ -5777,6 +5778,7 @@ void druid_t::create_buffs()
                                .duration( find_specialization_spell( "Tiger's Fury" ) -> duration() );
   buff.savage_roar           = buff_creator_t( this, "savage_roar", find_specialization_spell( "Savage Roar" ) )
                                .default_value( find_specialization_spell( "Savage Roar" ) -> effectN( 2 ).percent() - glyph.savagery -> effectN( 2 ).percent() )
+                               .duration( find_spell( glyph.savagery -> effectN( 1 ).trigger_spell_id() ) -> duration() )
                                .refresh_behavior( BUFF_REFRESH_DURATION ) // Pandemic refresh is done by the action
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness", spec.predatory_swiftness -> ok() ? find_spell( 69369 ) : spell_data_t::not_found() );
@@ -6200,6 +6202,17 @@ void druid_t::init_scaling()
   caster_form_weapon = main_hand_weapon;
 }
 
+
+// druid_t::arise ============================================================
+
+void druid_t::arise()
+{
+  player_t::arise();
+
+  if ( glyph.savagery -> ok() )
+    buff.savage_roar -> trigger();
+
+}
 // druid_t::init_gains ======================================================
 
 void druid_t::init_gains()
