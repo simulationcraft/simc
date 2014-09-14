@@ -26,7 +26,6 @@ actions.precombat+=/potion,name=draenic_armor
 
 actions=charge
 actions+=/auto_attack
-actions+=/use_item,name=vial_of_convulsive_shadows,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10
 actions+=/blood_fury,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<15
 actions+=/berserking,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<15
 actions+=/arcane_torrent,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<15
@@ -61,30 +60,31 @@ actions.gladiator_aoe+=/storm_bolt,if=(buff.bloodbath.up|cooldown.bloodbath.rema
 actions.gladiator_aoe+=/devastate,if=cooldown.shield_slam.remains>execute_time*0.4
 
 head=blackhands_faceguard,id=115584
-neck=vertebrae_protector,id=113900,enchant=gift_of_critical_strike
+neck=gluttons_kerchief,id=113882,enchant=gift_of_critical_strike
 shoulders=overdriven_spaulders,id=113990
-back=cloak_of_sanguine_terror,id=113972,enchant=gift_of_critical_strike
+back=gronnstitched_greatcloak,id=113873,enchant=gift_of_critical_strike
 chest=blackhands_chestguard,id=115582
 wrists=fleshmelter_bracers,id=113896
 hands=blackhands_handguards,id=115583
 waist=ironcrushers_collar,id=113950
 legs=blackhands_legguards,id=115580
 feet=iron_bellow_sabatons,id=113961
-finger1=spellbound_runic_band_of_elemental_power,id=118305,bonus_id=524,enchant=gift_of_critical_strike
-finger2=seal_of_the_savage_howl,id=113940,enchant=gift_of_critical_strike
+finger1=timeless_solium_band_of_the_bulwark,id=118298,enchant=gift_of_critical_strike
+finger2=siege_bombers_band,id=113963,enchant=gift_of_critical_strike
 trinket1=forgemasters_insignia,id=113983
-trinket2=vial_of_convulsive_shadows,id=113969
+trinket2=bottle_of_infesting_spores,id=113658
 main_hand=taners_terrible_spine,id=113862,enchant=mark_of_the_thunderlord
 off_hand=kromogs_protecting_palm,id=113926
 
 # Gear Summary
-# gear_strength=2757
-# gear_stamina=3479
-# gear_crit_rating=1337
-# gear_haste_rating=369
-# gear_mastery_rating=674
+# gear_strength=2715
+# gear_stamina=3443
+# gear_crit_rating=1191
+# gear_haste_rating=284
+# gear_mastery_rating=494
 # gear_armor=2819
-# gear_multistrike_rating=738
-# gear_versatility_rating=198
+# gear_bonus_armor=360
+# gear_multistrike_rating=711
+# gear_versatility_rating=509
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

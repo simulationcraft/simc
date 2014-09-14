@@ -26,7 +26,6 @@ actions.precombat+=/potion,name=draenic_strength
 
 actions=charge
 actions+=/auto_attack
-actions+=/use_item,name=vial_of_convulsive_shadows,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>1&buff.ravager.up)
 actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25
 # This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'
 actions+=/recklessness,if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>190|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>190|target.health.pct<20)|target.time_to_die<=10
@@ -76,20 +75,20 @@ hands=blackhands_handguards,id=115583,bonus_id=566
 waist=ironcrushers_collar,id=113950,bonus_id=566
 legs=blackhands_legguards,id=115580,bonus_id=566
 feet=iron_bellow_sabatons,id=113961,bonus_id=566
-finger1=spellbound_runic_band_of_elemental_power,id=118305,bonus_id=524,enchant=gift_of_critical_strike
+finger1=spellbound_solium_band_of_sorcerous_strength,id=118300,enchant=gift_of_critical_strike
 finger2=seal_of_the_savage_howl,id=113940,bonus_id=566,enchant=gift_of_critical_strike
 trinket1=forgemasters_insignia,id=113983,bonus_id=566
-trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=566
+trinket2=bottle_of_infesting_spores,id=113658,bonus_id=566
 main_hand=crescent_of_living_magma,id=113886,bonus_id=566,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_strength=3150
-# gear_stamina=3967
-# gear_crit_rating=1494
+# gear_strength=3112
+# gear_stamina=3942
+# gear_crit_rating=1637
 # gear_haste_rating=424
 # gear_mastery_rating=776
 # gear_armor=2148
-# gear_multistrike_rating=914
-# gear_versatility_rating=127
+# gear_multistrike_rating=905
+# gear_versatility_rating=281
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
