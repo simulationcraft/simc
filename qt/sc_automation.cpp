@@ -317,30 +317,21 @@ QString automation::auto_rotation_sim( QString player_class,
 
   for ( int i = 0; i < rotation_list.size(); i++ )
   {
-    profile += tokenize( player_class ) + "=R_" + QString::number( i ) + "\n";
-    profile += base_profile_info;
-
-    if ( player_talents.startsWith( "talents=" ) )
-      profile += player_talents + "\n";
-    else
-      profile += "talents=" + player_talents + "\n";
-    
-    if ( player_glyphs.startsWith( "glyphs=" ) )
-      profile += player_glyphs + "\n";
-    else
-      profile += "glyphs=" + player_glyphs + "\n";
-    
-    if ( player_gear.size() > 0 )
-      profile += player_gear + "\n";
-    //default gear missing
-
-    if ( player_rotationHeader.size() > 0 )
-      profile += player_rotationHeader + "\n";
     
     // Since action lists can be specified as shorthand with options or as full lists or a mix, we need to support both.
     // To do that, let's first split the provided configuration as usual:
     QStringList actionList = splitPreservingComments( rotation_list[ i ] );
     QString name; // placeholder for naming the actor based on shorthand
+
+    // handle comments in single-newline-separated rotation lists
+    if ( actionList.size() == 1 && actionList[ 0 ].startsWith( "#" ) )
+      continue;
+
+    QString action_block; // string for action block
+
+    // build action block first - for better naming
+    if ( player_rotationHeader.size() > 0 )
+      action_block += "#acton header\n" + player_rotationHeader + "\n#rotation\n";
 
     // cycle through the actionList handling each entry one at a time
     for ( int j = 0; j < actionList.size(); j++ )
@@ -359,24 +350,47 @@ QString automation::auto_rotation_sim( QString player_class,
         
         // use the shorthand to create a name for this actor, if we haven't already
         if ( name.length() == 0 )
-        {
           name = entry;
-          profile += "name=" + name + "\n";
-        }
+
         // add each line of the result to profile
         for ( int q = 0; q < convertedAPL.size(); q++ )
-          profile += convertedAPL[ q ] + "\n";
+          action_block += convertedAPL[ q ] + "\n";
 
         continue;
       }
       // otherwise it's some other option or text, we just want to output that like usual
       else
-        profile += entry + "\n";
+        action_block += entry + "\n";
     }
 
     // add action footer, if it exists
     if ( player_rotationFooter.size() > 0 )
-      profile += player_rotationFooter + "\n";
+      action_block += "#action_footer" + player_rotationFooter + "\n";
+
+    // build profile from components
+    profile += tokenize( player_class ) + "=";
+    if ( name.length() > 0 )
+      profile += name;
+    else
+      profile+= QString::number( i );
+    profile += "\n";
+
+    profile += base_profile_info;
+
+    if ( player_talents.startsWith( "talents=" ) )
+      profile += player_talents + "\n";
+    else
+      profile += "talents=" + player_talents + "\n";
+    
+    if ( player_glyphs.startsWith( "glyphs=" ) )
+      profile += player_glyphs + "\n";
+    else
+      profile += "glyphs=" + player_glyphs + "\n";
+    
+    if ( player_gear.size() > 0 )
+      profile += player_gear + "\n";
+
+    profile += action_block;
 
     // leave some space
     profile += "\n\n";
