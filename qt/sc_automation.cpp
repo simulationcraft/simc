@@ -824,6 +824,8 @@ QString sidebarText[ 11 ][ 4 ] = {
   
   { // MONK Shorthand Declaration
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "KS=keg_smash\nEB=elusive_brew\nEH=expel_harm\nPB=purifying_brew\nFB=fortifying_brew\nBoK=blackout_kick\nTP=tiger_palm\nTPow=buff.tiger_power\nBoF=breath_of_fire\nSCK=spinning_crane_kick\n\n"
+    "CW=chi_wave\nZS=zen_sphere\nCBur=chi_burst\nPS=power_strikes\nAsc=ascension\nCB=chi_brew\nDH=dampen_harm\nRJW=rushing_jade_wind\nXuen=invoke_xuen\nCE=chi_explosion\nSer=serenity\n"
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
@@ -838,6 +840,8 @@ QString sidebarText[ 11 ][ 4 ] = {
     "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "FoF=fists_of_fury\nBoK=blackout_kick\nCBBoK=buff.combo_breaker_bok.react\nTP=tiger_palm\nTPow=buff.tiger_power\nCBTP=buff.combo_breaker_tp.react\nRSK=rising_sun_kick\nTeB=tigereye_brew\nSCK=spinning_crane_kick\n\n"
+    "CW=chi_wave\nZS=zen_sphere\nCBur=chi_burst\nPS=power_strikes\nAsc=ascension\nCB=chi_brew\nRJW=rushing_jade_wind\nXuen=invoke_xuen\nHS=hurricane_strike\nCE=chi_explosion\nCBCE=buff.combo_breaker_ce.react\nSer=serenity\n"
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
