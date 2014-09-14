@@ -19,6 +19,8 @@ actions.precombat=flask,type=greater_draenic_strength_flask
 actions.precombat+=/food,type=blackrock_barbecue
 actions.precombat+=/stance,choose=battle
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
+# Generic on-use trinket line if needed when swapping trinkets out. 
+#actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&buff.ravager.up)
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_strength
 
@@ -26,10 +28,9 @@ actions.precombat+=/potion,name=draenic_strength
 
 actions=charge
 actions+=/auto_attack
-actions+=/use_item,name=vial_of_convulsive_shadows,if=debuff.colossus_smash.up
 actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25
-# This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'
-actions+=/recklessness,if=!talent.bloodbath.enabled&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192)|target.health.pct<20)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12
+# This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'
+actions+=/recklessness,if=(target.time_to_die>190|target.health.pct<20)&(!talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)|buff.bloodbath.up)|target.time_to_die<=10
 actions+=/avatar,if=(buff.recklessness.up|target.time_to_die<=25)
 actions+=/berserker_rage,if=debuff.colossus_smash.up&buff.raging_blow.stack<2
 actions+=/blood_fury,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
@@ -99,9 +100,9 @@ actions.aoe+=/bloodthirst
 head=blackhands_faceguard,id=115584,bonus_id=567
 neck=vertebrae_protector,id=113900,bonus_id=567/448,enchant=gift_of_critical_strike
 shoulders=overdriven_spaulders,id=113990,bonus_id=567/448
-back=cloak_of_sanguine_terror,id=113972,bonus_id=567/448,enchant=gift_of_critical_strike
+back=charbreath_firecloak,id=113916,bonus_id=567/448,enchant=gift_of_critical_strike
 chest=blackhands_chestguard,id=115582,bonus_id=567
-wrists=fleshmelter_bracers,id=113896,bonus_id=567/448
+wrists=bracers_of_visceral_force,id=119331,bonus_id=567/448
 hands=blackhands_handguards,id=115583,bonus_id=567
 waist=ironcrushers_collar,id=113950,bonus_id=567/448
 legs=blackhands_legguards,id=115580,bonus_id=567
@@ -109,18 +110,18 @@ feet=iron_bellow_sabatons,id=113961,bonus_id=567/448
 finger1=spellbound_runic_band_of_elemental_power,id=118305,bonus_id=524,enchant=gift_of_critical_strike
 finger2=seal_of_the_savage_howl,id=113940,bonus_id=567/448,enchant=gift_of_critical_strike
 trinket1=forgemasters_insignia,id=113983,bonus_id=567/448
-trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=567/448
+trinket2=bottle_of_infesting_spores,id=113658,bonus_id=567/448
 main_hand=crescent_of_living_magma,id=113886,bonus_id=567/448,enchant=mark_of_the_thunderlord
 off_hand=crescent_of_living_magma,id=113886,bonus_id=567/448,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_strength=4042
+# gear_strength=4016
 # gear_stamina=5147
-# gear_crit_rating=1928
-# gear_haste_rating=504
-# gear_mastery_rating=921
+# gear_crit_rating=2133
+# gear_haste_rating=731
+# gear_mastery_rating=655
 # gear_armor=2271
-# gear_multistrike_rating=1255
-# gear_versatility_rating=154
+# gear_multistrike_rating=1288
+# gear_versatility_rating=341
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

@@ -393,7 +393,8 @@ void buff_t::datacollection_end()
   for ( int i = 0; i <= simulation_max_stack; i++ )
     stack_uptime[ i ] -> datacollection_end( time );
 
-  double benefit = up_count > 0 ? 100.0 * up_count / ( up_count + down_count ) : 0;
+  double benefit = up_count > 0 ? 100.0 * up_count / ( up_count + down_count ) : 
+    time != timespan_t::zero() ? 100 * iteration_uptime_sum / time : 0;
   benefit_pct.add( benefit );
 
   double _trigger_pct = trigger_attempts > 0 ? 100.0 * trigger_successes / trigger_attempts : 0;
@@ -734,7 +735,11 @@ void buff_t::start( int        stacks,
   }
 #endif
 
-  if ( sim -> current_time <= timespan_t::from_seconds( 0.01 ) ) constant = true;
+  if ( sim -> current_time <= timespan_t::from_seconds( 0.01 ) )
+  {
+    if ( buff_duration == timespan_t::zero() || ( buff_duration > timespan_t::from_seconds( sim -> expected_max_time() ) ) )
+      constant = true;
+  }
 
   start_count++;
 

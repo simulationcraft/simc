@@ -19,6 +19,8 @@ actions.precombat=flask,type=greater_draenic_strength_flask
 actions.precombat+=/food,type=blackrock_barbecue
 actions.precombat+=/stance,choose=gladiator
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
+# Generic on-use trinket line if needed when swapping trinkets out. 
+#actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&buff.ravager.up)
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_armor
 
@@ -26,7 +28,6 @@ actions.precombat+=/potion,name=draenic_armor
 
 actions=charge
 actions+=/auto_attack
-actions+=/use_item,name=vial_of_convulsive_shadows,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10
 actions+=/blood_fury,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<15
 actions+=/berserking,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<15
 actions+=/arcane_torrent,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<15
@@ -61,30 +62,31 @@ actions.gladiator_aoe+=/storm_bolt,if=(buff.bloodbath.up|cooldown.bloodbath.rema
 actions.gladiator_aoe+=/devastate,if=cooldown.shield_slam.remains>execute_time*0.4
 
 head=blackhands_faceguard,id=115584,bonus_id=566
-neck=vertebrae_protector,id=113900,bonus_id=566,enchant=gift_of_critical_strike
+neck=gluttons_kerchief,id=113882,bonus_id=566,enchant=gift_of_critical_strike
 shoulders=overdriven_spaulders,id=113990,bonus_id=566
-back=cloak_of_sanguine_terror,id=113972,bonus_id=566,enchant=gift_of_critical_strike
+back=gronnstitched_greatcloak,id=113873,bonus_id=566,enchant=gift_of_critical_strike
 chest=blackhands_chestguard,id=115582,bonus_id=566
 wrists=fleshmelter_bracers,id=113896,bonus_id=566
 hands=blackhands_handguards,id=115583,bonus_id=566
 waist=ironcrushers_collar,id=113950,bonus_id=566
 legs=blackhands_legguards,id=115580,bonus_id=566
 feet=iron_bellow_sabatons,id=113961,bonus_id=566
-finger1=spellbound_runic_band_of_elemental_power,id=118305,bonus_id=524,enchant=gift_of_critical_strike
-finger2=seal_of_the_savage_howl,id=113940,bonus_id=566,enchant=gift_of_critical_strike
+finger1=spellbound_solium_band_of_sorcerous_invincibility,id=118303,enchant=gift_of_critical_strike
+finger2=siege_bombers_band,id=113963,bonus_id=566,enchant=gift_of_critical_strike
 trinket1=forgemasters_insignia,id=113983,bonus_id=566
-trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=566
+trinket2=bottle_of_infesting_spores,id=113658,bonus_id=566
 main_hand=taners_terrible_spine,id=113862,bonus_id=566,enchant=mark_of_the_thunderlord
 off_hand=kromogs_protecting_palm,id=113926,bonus_id=566
 
 # Gear Summary
-# gear_strength=3146
-# gear_stamina=3961
-# gear_crit_rating=1476
-# gear_haste_rating=424
-# gear_mastery_rating=776
+# gear_strength=3108
+# gear_stamina=3936
+# gear_crit_rating=1328
+# gear_haste_rating=327
+# gear_mastery_rating=569
 # gear_armor=2927
-# gear_multistrike_rating=833
-# gear_versatility_rating=228
+# gear_bonus_armor=401
+# gear_multistrike_rating=818
+# gear_versatility_rating=576
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

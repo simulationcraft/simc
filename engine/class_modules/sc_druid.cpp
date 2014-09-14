@@ -652,6 +652,16 @@ struct natures_vigil_proc_t : public spell_t
       dmg_coeff  = p -> talent.natures_vigil -> effectN( 4 ).percent();
     }
 
+    virtual void init()
+    {
+      heal_t::init();
+      // Disable the snapshot_flags for all multipliers, but specifically allow factors in
+      // action_state_t::composite_da_multiplier() to be called. This works and I stole it 
+      // from the paladin module but I don't understand why.
+      snapshot_flags &= STATE_NO_MULTIPLIER;
+      snapshot_flags |= STATE_MUL_DA;
+    }
+
     virtual double action_multiplier() const
     {
       double am = heal_t::action_multiplier();
@@ -666,7 +676,7 @@ struct natures_vigil_proc_t : public spell_t
 
     virtual void execute()
     {
-      target = find_lowest_target();
+      target = smart_target();
 
       heal_t::execute();
     }
@@ -704,6 +714,16 @@ struct natures_vigil_proc_t : public spell_t
       may_multistrike = 0;
       trigger_gcd     = timespan_t::zero();
       base_multiplier = p -> talent.natures_vigil -> effectN( 3 ).percent();
+    }
+
+    virtual void init()
+    {
+      spell_t::init();
+      // Disable the snapshot_flags for all multipliers, but specifically allow factors in
+      // action_state_t::composite_da_multiplier() to be called. This works and I stole it 
+      // from the paladin module.
+      snapshot_flags &= STATE_NO_MULTIPLIER;
+      snapshot_flags |= STATE_MUL_DA;
     }
 
     virtual void execute()
@@ -918,6 +938,28 @@ struct yseras_gift_t : public heal_t
     d -> refresh_duration(); // ticks indefinitely
 
     heal_t::tick( d );
+  }
+
+  // Override calculate_tick_amount for unique mechanic (heals smart target for % of own health)
+  // This might not be the best way to do this, but it works.
+  virtual double calculate_tick_amount( action_state_t* state, double /* dmg_multiplier */ ) // dmg_multiplier is unused, this removes compiler warning.
+  {
+    double amount = state -> action -> player -> resources.max[ RESOURCE_HEALTH ] * tick_pct_heal;
+    return amount;
+  }
+
+  virtual void execute()
+  {
+    if( player -> health_percentage() < 100 )
+    {
+      target = player;
+    }
+    else
+    { 
+    target = smart_target();
+    }
+
+    heal_t::execute();
   }
 };
 
@@ -1625,8 +1667,8 @@ public:
     if ( p() -> new_sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
       trigger_gushing_wound( s -> target, s -> result_amount );
 
-    if ( ab::aoe == 0 && s -> result_amount > 0 && p() -> buff.natures_vigil -> up() )
-      p() -> active.natures_vigil -> trigger( s -> result_amount, ab::harmful );
+    if ( ab::aoe == 0 && s -> result_total > 0 && p() -> buff.natures_vigil -> up() ) 
+      p() -> active.natures_vigil -> trigger( ab::harmful ? s -> result_amount :  s -> result_total , ab::harmful ); // Natures Vigil procs from overhealing
   }
 
   virtual void tick( dot_t* d )
@@ -1636,8 +1678,8 @@ public:
     if ( p() -> new_sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
       trigger_gushing_wound( d -> target, d -> state -> result_amount );
 
-    if ( ab::aoe == 0 && d -> state -> result_amount > 0 && p() -> buff.natures_vigil -> up() )
-      p() -> active.natures_vigil -> trigger( d -> state -> result_amount, ab::harmful );
+    if ( ab::aoe == 0 && d -> state -> result_total > 0 && p() -> buff.natures_vigil -> up() )
+      p() -> active.natures_vigil -> trigger( ab::harmful ? d -> state -> result_amount : d -> state -> result_total, ab::harmful );
   }
 
   virtual void multistrike_tick( const action_state_t* src_state, action_state_t* ms_state, double multiplier )
@@ -1647,8 +1689,8 @@ public:
     if ( p() -> new_sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
       trigger_gushing_wound( ms_state -> target, ms_state -> result_amount );
 
-    if ( ab::aoe == 0 && ms_state -> result_amount > 0 && p() -> buff.natures_vigil -> up() )
-      p() -> active.natures_vigil -> trigger( ms_state -> result_amount, ab::harmful );
+    if ( ab::aoe == 0 && ms_state -> result_total > 0 && p() -> buff.natures_vigil -> up() )
+      p() -> active.natures_vigil -> trigger( ab::harmful ? ms_state -> result_amount : ms_state -> result_total, ab::harmful );
   }
 
   void trigger_gushing_wound( player_t* t, double dmg )
@@ -6022,6 +6064,13 @@ void druid_t::apl_feral()
   /* def -> add_action( this, "Rake", "if=combo_points<5&hit_damage>=action.shred.hit_damage",
                         "Rake for CP if it hits harder than Shred." ); */
   def -> add_action( this, "Shred", "if=combo_points<5&active_enemies=1" );
+
+  // Add in rejuv blanketing for nature's vigil -- not fully optimized
+  def -> add_action( this, "rejuvenation", "cycle_targets=1,max_cycle_targets=3,if=talent.natures_vigil.enabled&!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)" );
+  def -> add_talent( this, "natures_vigil" );
+  def -> add_action( this, "rejuvenation", "cycle_targets=1,if=talent.natures_vigil.enabled&!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)" );  
+  def -> add_action( this, "rejuvenation", "cycle_targets=1,if=talent.natures_vigil.enabled&buff.natures_vigil.up" );  
+
 }
 
 // Balance Combat Action Priority List ==============================

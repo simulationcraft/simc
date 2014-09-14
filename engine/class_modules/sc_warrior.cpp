@@ -87,6 +87,7 @@ public:
     buff_t* battle_stance;
     buff_t* berserker_rage;
     buff_t* defensive_stance;
+    buff_t* heroic_charge;
     // Talents
     buff_t* avatar;
     buff_t* bloodbath;
@@ -258,6 +259,7 @@ public:
     proc_t* sudden_death_wasted;
     proc_t* bloodsurge;
     proc_t* bloodsurge_wasted;
+    proc_t* delayed_auto_attack;
 
     //Tier bonuses
     proc_t* t15_2pc_melee;
@@ -645,7 +647,10 @@ public:
     // Attack available in current stance?
     if ( ( ( stancemask & p() -> active_stance ) == 0 ) && p() -> cooldown.stance_swap -> up() )
     {
-      p() -> stance_swap();
+      if ( p() -> talents.gladiators_resolve -> ok() && p() -> in_combat )
+        return false; // Protection cannot swap in/out of gladiator stance during combat.
+      else
+        p() -> stance_swap();
       return false;
     }
     else if ( ( ( stancemask & p() -> active_stance ) == 0 ) && p() -> cooldown.stance_swap -> down() )
@@ -661,7 +666,7 @@ public:
 
   virtual void execute()
   {
-    if ( p() -> cooldown.stance_swap -> up() && p() -> swapping == false )
+    if ( p() -> cooldown.stance_swap -> up() && p() -> swapping == false && !p() -> talents.gladiators_resolve -> ok() )
     {
       if ( p() -> active_stance == STANCE_DEFENSE &&
            p() -> specialization() != WARRIOR_PROTECTION &&
@@ -1137,11 +1142,13 @@ struct melee_t: public warrior_attack_t
     { // Cancel autoattacks, auto_attack_t will restart them when we're back in range.
       if ( weapon -> slot == SLOT_MAIN_HAND )
       {
+        p() -> proc.delayed_auto_attack -> occur();
         mh_lost_melee_contact = true;
         player -> main_hand_attack -> cancel();
       }
       else
       {
+        p() -> proc.delayed_auto_attack -> occur();
         oh_lost_melee_contact = true;
         player -> off_hand_attack -> cancel();
       }
@@ -1444,9 +1451,10 @@ struct bloodthirst_t: public warrior_attack_t
 struct charge_t: public warrior_attack_t
 {
   bool first_charge;
+  double movement_speed_increase;
   charge_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "charge", p, p -> spell.charge ),
-    first_charge( true )
+    first_charge( true ), movement_speed_increase( 5.0 )
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
@@ -1462,8 +1470,21 @@ struct charge_t: public warrior_attack_t
       cooldown -> duration += p -> talents.juggernaut -> effectN( 1 ).time_value();
   }
 
+  timespan_t travel_time() const
+  {
+    if ( p() -> buff.heroic_charge -> check() )
+      return p() -> buff.heroic_charge -> remains();
+    return timespan_t::zero();
+  }
+
   void execute()
   {
+    if ( p() -> current.distance_to_move > data().min_range() )
+    {
+      p() -> buff.heroic_charge -> trigger( 1, movement_speed_increase, 1,
+      timespan_t::from_millis( p() -> current.distance_to_move / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() + movement_speed_increase ) ) ) );
+      p() -> current.moving_away = 0;
+    }
     warrior_attack_t::execute();
 
     p() -> buff.pvp_2pc_arms -> trigger();
@@ -1875,12 +1896,16 @@ struct heroic_leap_t: public warrior_attack_t
     may_dodge = may_parry = may_miss = may_block = false;
     movement_directionality = MOVEMENT_OMNI;
     base_teleport_distance = data().max_range();
-    melee_range = base_teleport_distance;
     base_teleport_distance += p -> glyphs.death_from_above -> effectN( 2 ).percent();
     attack_power_mod.direct = data().effectN( 2 ).trigger() -> effectN( 1 ).ap_coeff();
 
     cooldown -> duration = p -> cooldown.heroic_leap -> duration;
     cooldown -> duration += p -> glyphs.death_from_above -> effectN( 1 ).time_value();
+  }
+
+  timespan_t travel_time() const
+  {
+    return timespan_t::from_millis( 250 );
   }
 
   void impact( action_state_t* s )
@@ -2018,8 +2043,8 @@ struct heroic_charge_movement_ticker_t: public event_t
         min_time = time_to_finish;
     }
 
-    if ( min_time > timespan_t::from_seconds( 0.1 ) )
-      min_time = timespan_t::from_seconds( 0.1 );
+    if ( min_time > timespan_t::from_seconds( 0.05 ) ) // Update a little more than usual, since we're moving a lot faster.
+      min_time = timespan_t::from_seconds( 0.05 );
 
     if ( !any_movement )
       return timespan_t::zero();
@@ -2034,7 +2059,9 @@ struct heroic_charge_movement_ticker_t: public event_t
 
     timespan_t next = next_execute();
     if ( next > timespan_t::zero() )
-    warrior -> heroic_charge = new ( sim() ) heroic_charge_movement_ticker_t( sim(), warrior, next );
+      warrior -> heroic_charge = new ( sim() ) heroic_charge_movement_ticker_t( sim(), warrior, next );
+    else
+      warrior -> buff.heroic_charge -> expire();
   }
 };
 
@@ -2058,9 +2085,15 @@ struct heroic_charge_t: public warrior_attack_t
     warrior_attack_t::execute();
 
     if ( p() -> cooldown.heroic_leap -> up() )
-    {
+    { // We are moving 10 yards, and heroic leap always executes in 0.25 seconds.
+      // Do some hacky math to ensure it will only take 0.25 seconds, since it will certainly be
+      // The highest temporary movement speed buff.
+      double speed;
+      speed = 10 / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() ) ) / 0.25;
+      p() -> buff.heroic_charge -> trigger( 1, speed, 1, timespan_t::from_millis( 250 ) );
       leap -> execute();
-      p() -> current.distance_to_move += 10;
+      p() -> trigger_movement( 10.0, MOVEMENT_BOOMERANG ); // Leap 10 yards out, because it's impossible to precisely land 8 yards away.
+      p() -> heroic_charge = new ( *sim ) heroic_charge_movement_ticker_t( *sim, p() );
     }
     else
     {
@@ -3361,7 +3394,6 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     use_off_gcd = true;
     melee_range = -1;
     target = player;
-    attack_power_mod.direct = 2.35; // Effect #1 is not correct.
   }
 
   double cost() const
@@ -3653,10 +3685,10 @@ struct stance_t: public warrior_spell_t
 
   bool ready()
   {
-    if ( p() -> cooldown.stance_swap -> down() ||
-         cooldown -> down() ||
-         ( swap == 0 && p() -> active_stance == switch_to_stance ) ||
-         p() -> buff.gladiator_stance -> check() )
+    if ( p() -> in_combat && p() -> talents.gladiators_resolve -> ok() )
+      return false;
+    if ( p() -> cooldown.stance_swap -> down() || cooldown -> down() || 
+         ( swap == 0 && p() -> active_stance == switch_to_stance ) )
          return false;
 
     return warrior_spell_t::ready();
@@ -4000,7 +4032,9 @@ void warrior_t::apl_precombat( bool probablynotgladiator )
   else
     precombat -> add_action( "stance,choose=defensive" );
 
-  precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
+                           "# Generic on-use trinket line if needed when swapping trinkets out. \n"
+                           "#actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&buff.ravager.up)" );
 
   //Pre-pot
   if ( sim -> allow_potions )
@@ -4042,7 +4076,7 @@ void warrior_t::apl_fury()
   for ( int i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=debuff.colossus_smash.up" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&buff.ravager.up)" );
   }
 
   if ( sim -> allow_potions )
@@ -4053,8 +4087,8 @@ void warrior_t::apl_fury()
       default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
   }
 
-  default_list -> add_action( this, "Recklessness", "if=!talent.bloodbath.enabled&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192)|target.health.pct<20)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12",
-                              "This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'" );
+  default_list -> add_action( this, "Recklessness", "if=(target.time_to_die>190|target.health.pct<20)&(!talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)|buff.bloodbath.up)|target.time_to_die<=10",
+                              "This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'" );
   default_list -> add_talent( this, "Avatar", "if=(buff.recklessness.up|target.time_to_die<=25)" );
   default_list -> add_action( this, "Berserker Rage", "if=debuff.colossus_smash.up&buff.raging_blow.stack<2" );
 
@@ -4130,7 +4164,7 @@ void warrior_t::apl_arms()
   std::vector<std::string> racial_actions = get_racial_actions();
 
   action_priority_list_t* default_list        = get_action_priority_list( "default" );
-  action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
+  action_priority_list_t* single_target       = get_action_priority_list( "single" );
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
 
   default_list -> add_action( this, "charge" );
@@ -4151,21 +4185,21 @@ void warrior_t::apl_arms()
       default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
   }
 
-  default_list -> add_action( this, "Recklessness", "if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>190|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>190|target.health.pct<20)|target.time_to_die<=10",
+  default_list -> add_action( this, "Recklessness", "if=(target.time_to_die>190|target.health.pct<20)&(!talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)|buff.bloodbath.up)|target.time_to_die<=10",
                               "This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'" );
+  default_list -> add_talent( this, "Bloodbath", "if=(active_enemies=1&cooldown.colossus_smash.remains<5)|(active_enemies>=2&buff.ravager.up)|target.time_to_die<=20" );
   default_list -> add_talent( this, "Avatar", "if=buff.recklessness.up|target.time_to_die<=25" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up" );
 
-  default_list -> add_talent( this, "Bloodbath", "if=cooldown.colossus_smash.remains<5|target.time_to_die<=20" );
   default_list -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up&rage>70" );
-  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>1" );
-  default_list -> add_action( "call_action_list,name=single_target,if=active_enemies=1" );
+  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=2" );
+  default_list -> add_action( "call_action_list,name=single,if=active_enemies=1" );
 
   single_target -> add_action( this, "Rend", "if=ticks_remain<2&target.time_to_die>4" );
   single_target -> add_action( this, "Mortal Strike", "if=target.health.pct>20" );
-  single_target -> add_action( "heroic_charge,if=((!debuff.colossus_smash.up&cooldown.colossus_smash.remains)|(debuff.colossus_smash.up&!cooldown.heroic_leap.remains))&rage<=85" );
+  single_target -> add_action( "heroic_charge" );
   single_target -> add_talent( this, "Ravager", "if=cooldown.colossus_smash.remains<3" );
   single_target -> add_action( this, "Colossus Smash" );
   single_target -> add_talent( this, "Storm Bolt", "if=(cooldown.colossus_smash.remains>4|debuff.colossus_smash.up)&rage<90" );
@@ -4178,17 +4212,18 @@ void warrior_t::apl_arms()
   single_target -> add_talent( this, "Shockwave" );
 
   aoe -> add_action( this, "Sweeping Strikes" );
-  aoe -> add_action( this, "Rend", "if=!ticking" );
+  aoe -> add_action( "heroic_charge" );
+  aoe -> add_action( this, "Rend", "if=active_enemies<=4&ticks_remain<2" );
   aoe -> add_talent( this, "Ravager" );
-  aoe -> add_talent( this, "Bladestorm" );
-  aoe -> add_talent( this, "Shockwave" );
-  aoe -> add_talent( this, "Dragon Roar" );
   aoe -> add_action( this, "Colossus Smash" );
-  aoe -> add_action( this, "Mortal Strike", "if=active_enemies<4" );
-  aoe -> add_action( this, "Execute", "if=buff.sudden_death.up|active_enemies<4" );
-  aoe -> add_action( this, "Whirlwind", "if=rage>40" );
-  aoe -> add_talent( this, "Siegebreaker" );
-  aoe -> add_action( this, "Rend", "cycle_targets=1,if=!ticking&talent.taste_for_blood.enabled" );
+  aoe -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up" );
+  aoe -> add_action( this, "Execute", "if=active_enemies<=3&((rage>60&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|target.time_to_die<5)" );
+  aoe -> add_action( this, "Whirlwind", "if=active_enemies>=4|active_enemies<=3&(rage>60|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20" );
+  aoe -> add_action( "bladestorm,interrupt_if=!cooldown.colossus_smash.remains|!cooldown.ravager.remains" );
+  aoe -> add_action( this, "Rend", "cycle_targets=1,if=!ticking" );
+  aoe -> add_talent( this, "Siegebreaker", "if=active_enemies=2" );
+  aoe -> add_talent( this, "Storm Bolt", "if=cooldown.colossus_smash.remains>4|debuff.colossus_smash.up" );
+  aoe -> add_talent( this, "Shockwave" );
 }
 
 // Protection Warrior Action Priority List ========================================
@@ -4208,7 +4243,7 @@ void warrior_t::apl_prot()
   for ( int i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.bloodbath.up|buff.avatar.up" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&buff.ravager.up)" );
   }
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|buff.avatar.up" );
@@ -4477,7 +4512,6 @@ struct gladiator_stance_t: public warrior_buff_t < buff_t >
 
   void execute( int a, double b, timespan_t t )
   {
-    warrior.swapping = true; // Once you go into gladiator stance, there's no going back after precombat.
     warrior.active_stance = STANCE_GLADIATOR;
     base_t::execute( a, b, t );
   }
@@ -4618,6 +4652,9 @@ void warrior_t::create_buffs()
   buff.hamstring = buff_creator_t( this, "hamstring", glyphs.hamstring -> effectN( 1 ).trigger() );
 
   buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", glyphs.heroic_leap );
+
+  buff.heroic_charge = buff_creator_t( this, "heroic_charge" )
+    .quiet( true ); // The reason this is used, is to model the time it takes to reach the target while charging. 
 
   buff.last_stand = new buffs::last_stand_t( *this, "last_stand", spec.last_stand );
 
@@ -4773,6 +4810,7 @@ void warrior_t::init_procs()
   player_t::init_procs();
   proc.bloodsurge              = get_proc( "bloodsurge" );
   proc.bloodsurge_wasted       = get_proc( "bloodsurge_wasted" );
+  proc.delayed_auto_attack     = get_proc( "delayed_auto_attack" );
   proc.raging_blow_wasted      = get_proc( "raging_blow_wasted" );
   proc.sudden_death            = get_proc( "sudden_death" );
   proc.sudden_death_wasted     = get_proc( "sudden_death_wasted" );
@@ -4909,6 +4947,7 @@ void warrior_t::moving()
 
 void warrior_t::interrupt()
 {
+  buff.heroic_charge -> expire();
   core_event_t::cancel( heroic_charge );
   player_t::interrupt();
 }
@@ -4920,6 +4959,9 @@ void warrior_t::halt()
 
 void warrior_t::teleport( double yards, timespan_t duration )
 {
+  if ( buff.heroic_charge -> check() ) // Let the movement event take care of it.
+    return;
+
   player_t::teleport( yards, duration );
 }
 
@@ -5226,6 +5268,9 @@ double warrior_t::temporary_movement_modifier() const
   if ( buff.enraged_speed -> up() )
     temporary = std::max( buff.enraged_speed -> data().effectN( 1 ).percent(), temporary );
 
+  if ( buff.heroic_charge -> up() )
+    temporary = std::max( buff.heroic_charge -> value(), temporary );
+
   return temporary;
 }
 
@@ -5470,7 +5515,6 @@ void warrior_t::stance_swap()
 {
   // Blizzard has automated stance swapping with defensive and battle stance. This class will swap to the stance automatically if
   // The ability that we are trying to use is not usable in the current stance.
-  // Currently it is not possible to swap in/out of gladiator stance, so there's no need to model it.
   warrior_stance swap;
   switch ( active_stance )
   {

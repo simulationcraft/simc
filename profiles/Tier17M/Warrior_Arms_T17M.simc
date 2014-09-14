@@ -3,7 +3,7 @@ level=100
 race=Tauren
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Za!0102211
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Za!0202211
 glyphs=unending_rage/death_from_above/bull_rush
 spec=arms
 
@@ -19,6 +19,8 @@ actions.precombat=flask,type=greater_draenic_strength_flask
 actions.precombat+=/food,type=blackrock_barbecue
 actions.precombat+=/stance,choose=battle
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
+# Generic on-use trinket line if needed when swapping trinkets out. 
+#actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&buff.ravager.up)
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_strength
 
@@ -26,52 +28,52 @@ actions.precombat+=/potion,name=draenic_strength
 
 actions=charge
 actions+=/auto_attack
-actions+=/use_item,name=vial_of_convulsive_shadows,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>1&buff.ravager.up)
 actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25
 # This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'
-actions+=/recklessness,if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>190|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>190|target.health.pct<20)|target.time_to_die<=10
+actions+=/recklessness,if=(target.time_to_die>190|target.health.pct<20)&(!talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)|buff.bloodbath.up)|target.time_to_die<=10
+actions+=/bloodbath,if=(active_enemies=1&cooldown.colossus_smash.remains<5)|(active_enemies>=2&buff.ravager.up)|target.time_to_die<=20
 actions+=/avatar,if=buff.recklessness.up|target.time_to_die<=25
 actions+=/blood_fury,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
 actions+=/berserking,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
 actions+=/arcane_torrent,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
-actions+=/bloodbath,if=cooldown.colossus_smash.remains<5|target.time_to_die<=20
 actions+=/heroic_leap,if=debuff.colossus_smash.up&rage>70
-actions+=/call_action_list,name=aoe,if=active_enemies>1
-actions+=/call_action_list,name=single_target,if=active_enemies=1
+actions+=/call_action_list,name=aoe,if=active_enemies>=2
+actions+=/call_action_list,name=single,if=active_enemies=1
 
-actions.single_target=rend,if=ticks_remain<2&target.time_to_die>4
-actions.single_target+=/mortal_strike,if=target.health.pct>20
-actions.single_target+=/heroic_charge,if=((!debuff.colossus_smash.up&cooldown.colossus_smash.remains)|(debuff.colossus_smash.up&!cooldown.heroic_leap.remains))&rage<=85
-actions.single_target+=/ravager,if=cooldown.colossus_smash.remains<3
-actions.single_target+=/colossus_smash
-actions.single_target+=/storm_bolt,if=(cooldown.colossus_smash.remains>4|debuff.colossus_smash.up)&rage<90
-actions.single_target+=/siegebreaker
-actions.single_target+=/dragon_roar,if=!debuff.colossus_smash.up
-actions.single_target+=/execute,if=(rage>60&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|buff.sudden_death.up|target.time_to_die<5
-actions.single_target+=/impending_victory,if=rage<30&!debuff.colossus_smash.up&target.health.pct>20
-actions.single_target+=/slam,if=(rage>20|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20
-actions.single_target+=/whirlwind,if=(rage>60|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20&!talent.slam.enabled
-actions.single_target+=/shockwave
+actions.single=rend,if=ticks_remain<2&target.time_to_die>4
+actions.single+=/mortal_strike,if=target.health.pct>20
+actions.single+=/heroic_charge
+actions.single+=/ravager,if=cooldown.colossus_smash.remains<3
+actions.single+=/colossus_smash
+actions.single+=/storm_bolt,if=(cooldown.colossus_smash.remains>4|debuff.colossus_smash.up)&rage<90
+actions.single+=/siegebreaker
+actions.single+=/dragon_roar,if=!debuff.colossus_smash.up
+actions.single+=/execute,if=(rage>60&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|buff.sudden_death.up|target.time_to_die<5
+actions.single+=/impending_victory,if=rage<30&!debuff.colossus_smash.up&target.health.pct>20
+actions.single+=/slam,if=(rage>20|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20
+actions.single+=/whirlwind,if=(rage>60|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20&!talent.slam.enabled
+actions.single+=/shockwave
 
 actions.aoe=sweeping_strikes
-actions.aoe+=/rend,if=!ticking
+actions.aoe+=/heroic_charge
+actions.aoe+=/rend,if=active_enemies<=4&ticks_remain<2
 actions.aoe+=/ravager
-actions.aoe+=/bladestorm
-actions.aoe+=/shockwave
-actions.aoe+=/dragon_roar
 actions.aoe+=/colossus_smash
-actions.aoe+=/mortal_strike,if=active_enemies<4
-actions.aoe+=/execute,if=buff.sudden_death.up|active_enemies<4
-actions.aoe+=/whirlwind,if=rage>40
-actions.aoe+=/siegebreaker
-actions.aoe+=/rend,cycle_targets=1,if=!ticking&talent.taste_for_blood.enabled
+actions.aoe+=/dragon_roar,if=!debuff.colossus_smash.up
+actions.aoe+=/execute,if=active_enemies<=3&((rage>60&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|target.time_to_die<5)
+actions.aoe+=/whirlwind,if=active_enemies>=4|active_enemies<=3&(rage>60|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20
+actions.aoe+=/bladestorm,interrupt_if=!cooldown.colossus_smash.remains|!cooldown.ravager.remains
+actions.aoe+=/rend,cycle_targets=1,if=!ticking
+actions.aoe+=/siegebreaker,if=active_enemies=2
+actions.aoe+=/storm_bolt,if=cooldown.colossus_smash.remains>4|debuff.colossus_smash.up
+actions.aoe+=/shockwave
 
 head=blackhands_faceguard,id=115584,bonus_id=567
 neck=vertebrae_protector,id=113900,bonus_id=567/448,enchant=gift_of_critical_strike
 shoulders=overdriven_spaulders,id=113990,bonus_id=567/448
-back=cloak_of_sanguine_terror,id=113972,bonus_id=567/448,enchant=gift_of_critical_strike
+back=charbreath_firecloak,id=113916,bonus_id=567/448,enchant=gift_of_critical_strike
 chest=blackhands_chestguard,id=115582,bonus_id=567
-wrists=fleshmelter_bracers,id=113896,bonus_id=567/448
+wrists=bracers_of_visceral_force,id=119331,bonus_id=567/448
 hands=blackhands_handguards,id=115583,bonus_id=567
 waist=ironcrushers_collar,id=113950,bonus_id=567/448
 legs=blackhands_legguards,id=115580,bonus_id=567
@@ -79,17 +81,17 @@ feet=iron_bellow_sabatons,id=113961,bonus_id=567/448
 finger1=spellbound_runic_band_of_elemental_power,id=118305,bonus_id=524,enchant=gift_of_critical_strike
 finger2=seal_of_the_savage_howl,id=113940,bonus_id=567/448,enchant=gift_of_critical_strike
 trinket1=forgemasters_insignia,id=113983,bonus_id=567/448
-trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=567/448
+trinket2=bottle_of_infesting_spores,id=113658,bonus_id=567/448
 main_hand=crescent_of_living_magma,id=113886,bonus_id=567/448,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_strength=3719
+# gear_strength=3693
 # gear_stamina=4662
-# gear_crit_rating=1697
-# gear_haste_rating=504
-# gear_mastery_rating=921
+# gear_crit_rating=1902
+# gear_haste_rating=731
+# gear_mastery_rating=655
 # gear_armor=2271
-# gear_multistrike_rating=1066
-# gear_versatility_rating=154
+# gear_multistrike_rating=1099
+# gear_versatility_rating=341
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
