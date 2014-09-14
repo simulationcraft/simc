@@ -6207,7 +6207,7 @@ public:
     double m = action_multiplier() * action_ta_multiplier() *
            player -> cache.player_heal_multiplier( s ) *
            player -> composite_player_th_multiplier( get_school() );
-
+           
     return m;
   }
 
