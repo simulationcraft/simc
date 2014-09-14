@@ -1159,7 +1159,15 @@ struct priest_heal_t : public priest_action_t<heal_t>
       absorb_buff_t& buff = *get_td( s -> target ).buffs.divine_aegis;
       // Divine Aegis caps absorbs at 40% of target's health
       double old_amount = buff.value();
-      double new_amount = clamp( s -> result_amount, 0.0, s -> target -> resources.current[ RESOURCE_HEALTH ] * 0.4 - old_amount );
+      
+      // when healing a tank that's below 0 life in the sim, Divine Aegis causes an exception because it tries to 
+      // clamp s -. result_amount between 0 and a negative number. This is a workaround that treats a tank with
+      // negative life as being at maximum health for the purposes of Divine Aegis.
+      double upper_limit = s -> target -> resources.current[ RESOURCE_HEALTH ] * 0.4 - old_amount;
+      if ( upper_limit <= 0 )
+        upper_limit = s -> target -> resources.max[ RESOURCE_HEALTH ] * 0.4 - old_amount;
+
+      double new_amount = clamp( s -> result_amount, 0.0, upper_limit );
       buff.trigger( 1, old_amount + new_amount );
       stats -> add_result( 0.0, new_amount, ABSORB, s -> result, s -> block_result, s -> target );
       buff.absorb_source -> add_result( 0.0, new_amount, ABSORB, s -> result, s -> block_result, s -> target );
