@@ -1720,6 +1720,41 @@ struct keg_smash_t: public monk_melee_attack_t
 };
 
 // ==========================================================================
+// Touch of Death
+// ==========================================================================
+
+struct touch_of_death_t : public monk_melee_attack_t
+{
+  touch_of_death_t(monk_t* p, const std::string& options_str) :
+    monk_melee_attack_t("touch_of_death", p, p -> find_class_spell("Touch of Death"))
+  {
+    parse_options(nullptr, options_str);
+    stancemask = STURDY_OX | FIERCE_TIGER | SPIRITED_CRANE;
+    cooldown -> duration += p -> glyph.touch_of_death -> effectN( 1 ).time_value();
+    base_costs[RESOURCE_CHI] *= 1.0 + p -> glyph.touch_of_death -> effectN( 2 ).percent();
+  }
+
+  virtual void impact(action_state_t* s)
+  {
+    s->result_amount = player -> resources.max[RESOURCE_HEALTH];
+    monk_melee_attack_t::impact(s);
+  }
+
+  virtual void consume_resource()
+  {
+    monk_melee_attack_t::consume_resource();
+  }
+
+  bool ready()
+  {
+    if ( target -> health_percentage() > 10)
+      return true;
+
+    return monk_melee_attack_t::ready();
+  }
+};
+
+// ==========================================================================
 // Expel Harm
 // ==========================================================================
 
@@ -2979,6 +3014,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "tigereye_brew"         ) return new          tigereye_brew_t( this, options_str );
   if ( name == "energizing_brew"       ) return new        energizing_brew_t( this, options_str );
   if ( name == "provoke"               ) return new                provoke_t( this, options_str );
+  if ( name == "touch_of_death"        ) return new         touch_of_death_t( this, options_str );
   // Brewmaster
   if ( name == "breath_of_fire"        ) return new         breath_of_fire_t( *this, options_str );
   if ( name == "keg_smash"             ) return new              keg_smash_t( *this, options_str );
