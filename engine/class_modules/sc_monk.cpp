@@ -3875,9 +3875,9 @@ void monk_t::assess_damage( school_e school,
   buff.shuffle -> up();
   buff.fortifying_brew -> up();
   buff.elusive_brew_activated -> up();
-  if ( s-> result_total > 0 && school == SCHOOL_PHYSICAL && !glyph.guard)
+  if (s->result_total > 0 && school == SCHOOL_PHYSICAL && !glyph.guard)
     buff.guard -> up();
-  else if ( s -> result_total > 0 && !school == SCHOOL_PHYSICAL && glyph.guard)
+  else if ( s -> result_total > 0 && school != SCHOOL_PHYSICAL && glyph.guard)
     buff.guard->up();
 
   if ( s -> result == RESULT_DODGE && sets.set( MONK_BREWMASTER, T17, B2 ) )
