@@ -3571,6 +3571,9 @@ double monk_t::composite_player_heal_multiplier( const action_state_t* s ) const
   if ( current_stance() == WISE_SERPENT )
     m *= 1.0 + active_stance_data( WISE_SERPENT ).effectN( 3 ).percent();
 
+  if (buff.guard->up())
+    m *= 1.0 + spec.guard -> effectN( 2 ).percent();
+
   // Resolve applies a blanket -60% healing for tanks
   if ( spec.resolve -> ok() )
     m *= 1.0 + spec.resolve -> effectN( 2 ).percent();
