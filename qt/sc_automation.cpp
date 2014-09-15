@@ -155,6 +155,7 @@ QString automation::auto_talent_sim( QString player_class,
                                    )
 {
   QString profile;
+  QStringList names;
   
   // make profile for each entry in talentList
   for ( int i = 0; i < talentList.size(); i++ )
@@ -163,7 +164,19 @@ QString automation::auto_talent_sim( QString player_class,
     // If so, we want to split them off and append them to the end.
     QStringList splitEntry = splitPreservingComments( talentList[ i ] );
     
-    profile += tokenize( player_class ) + "=T_" + splitEntry[ 0 ] + "\n";
+    // handle isolated comments
+    if ( splitEntry.size() == 1 && splitEntry[ 0 ].startsWith( "#" ) )
+      continue;
+    
+    profile += tokenize( player_class ) + "=T_";
+    if ( ! names.contains( splitEntry[ 0 ] ) )
+    {
+      profile += splitEntry[ 0 ];
+      names.append( splitEntry[ 0 ] );
+    }
+    else
+      profile += QString::number( i );
+    profile += "\n";
     profile += base_profile_info;
 
     // skip comments
@@ -217,6 +230,10 @@ QString automation::auto_glyph_sim( QString player_class,
     // first, check to see if the user has specified additional options within the list entry.
     // If so, we want to split them off and append them to the end. We do this by splitting on spaces and \n
     QStringList splitEntry = splitPreservingComments( glyphList[ i ] );
+    
+    // handle isolated comments
+    if ( splitEntry.size() == 1 && splitEntry[ 0 ].startsWith( "#" ) )
+      continue;
 
     profile += tokenize( player_class ) + "=G_" + QString::number( i ) + "\n";
     profile += base_profile_info;
@@ -269,6 +286,13 @@ QString automation::auto_gear_sim( QString player_class,
   // make profile for each entry in gearList, which should be a complete gear set (plus optional extra stuff)
   for ( int i = 0; i < gearList.size(); i++ )
   {
+    // split the entry on newlines and spaces, preserving comments
+    QStringList itemList = splitPreservingComments( gearList[ i ] );
+
+    // handle isolated comments
+    if ( itemList.size() == 1 && itemList[ 0 ].startsWith( "#" ) )
+      continue;
+
     profile += tokenize( player_class ) + "=G_" + QString::number( i ) + "\n";
     profile += base_profile_info;
 
@@ -284,9 +308,6 @@ QString automation::auto_gear_sim( QString player_class,
 
     if ( player_rotation.size() > 0 )
       profile += player_rotation + "\n";
-
-    // split the entry on newlines and spaces, preserving comments
-    QStringList itemList = splitPreservingComments( gearList[ i ] );
 
     // add each line of the reult to the profile
     for ( int j = 0; j < itemList.size(); j++ )
@@ -317,30 +338,21 @@ QString automation::auto_rotation_sim( QString player_class,
 
   for ( int i = 0; i < rotation_list.size(); i++ )
   {
-    profile += tokenize( player_class ) + "=R_" + QString::number( i ) + "\n";
-    profile += base_profile_info;
-
-    if ( player_talents.startsWith( "talents=" ) )
-      profile += player_talents + "\n";
-    else
-      profile += "talents=" + player_talents + "\n";
-    
-    if ( player_glyphs.startsWith( "glyphs=" ) )
-      profile += player_glyphs + "\n";
-    else
-      profile += "glyphs=" + player_glyphs + "\n";
-    
-    if ( player_gear.size() > 0 )
-      profile += player_gear + "\n";
-    //default gear missing
-
-    if ( player_rotationHeader.size() > 0 )
-      profile += player_rotationHeader + "\n";
     
     // Since action lists can be specified as shorthand with options or as full lists or a mix, we need to support both.
     // To do that, let's first split the provided configuration as usual:
     QStringList actionList = splitPreservingComments( rotation_list[ i ] );
     QString name; // placeholder for naming the actor based on shorthand
+
+    // handle comments in single-newline-separated rotation lists
+    if ( actionList.size() == 1 && actionList[ 0 ].startsWith( "#" ) )
+      continue;
+
+    QString action_block; // string for action block
+
+    // build action block first - for better naming
+    if ( player_rotationHeader.size() > 0 )
+      action_block += "#acton header\n" + player_rotationHeader + "\n#rotation\n";
 
     // cycle through the actionList handling each entry one at a time
     for ( int j = 0; j < actionList.size(); j++ )
@@ -359,24 +371,47 @@ QString automation::auto_rotation_sim( QString player_class,
         
         // use the shorthand to create a name for this actor, if we haven't already
         if ( name.length() == 0 )
-        {
           name = entry;
-          profile += "name=" + name + "\n";
-        }
+
         // add each line of the result to profile
         for ( int q = 0; q < convertedAPL.size(); q++ )
-          profile += convertedAPL[ q ] + "\n";
+          action_block += convertedAPL[ q ] + "\n";
 
         continue;
       }
       // otherwise it's some other option or text, we just want to output that like usual
       else
-        profile += entry + "\n";
+        action_block += entry + "\n";
     }
 
     // add action footer, if it exists
     if ( player_rotationFooter.size() > 0 )
-      profile += player_rotationFooter + "\n";
+      action_block += "#action_footer" + player_rotationFooter + "\n";
+
+    // build profile from components
+    profile += tokenize( player_class ) + "=";
+    if ( name.length() > 0 )
+      profile += name;
+    else
+      profile+= QString::number( i );
+    profile += "\n";
+
+    profile += base_profile_info;
+
+    if ( player_talents.startsWith( "talents=" ) )
+      profile += player_talents + "\n";
+    else
+      profile += "talents=" + player_talents + "\n";
+    
+    if ( player_glyphs.startsWith( "glyphs=" ) )
+      profile += player_glyphs + "\n";
+    else
+      profile += "glyphs=" + player_glyphs + "\n";
+    
+    if ( player_gear.size() > 0 )
+      profile += player_gear + "\n";
+
+    profile += action_block;
 
     // leave some space
     profile += "\n\n";
@@ -789,6 +824,8 @@ QString sidebarText[ 11 ][ 4 ] = {
   
   { // MONK Shorthand Declaration
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "KS=keg_smash\nEB=elusive_brew\nEH=expel_harm\nPB=purifying_brew\nFB=fortifying_brew\nBoK=blackout_kick\nTP=tiger_palm\nTPow=buff.tiger_power\nBoF=breath_of_fire\nSCK=spinning_crane_kick\n\n"
+    "CW=chi_wave\nZS=zen_sphere\nCBur=chi_burst\nPS=power_strikes\nAsc=ascension\nCB=chi_brew\nDH=dampen_harm\nRJW=rushing_jade_wind\nXuen=invoke_xuen\nCE=chi_explosion\nSer=serenity\n"
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
@@ -803,6 +840,8 @@ QString sidebarText[ 11 ][ 4 ] = {
     "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "FoF=fists_of_fury\nBoK=blackout_kick\nCBBoK=buff.combo_breaker_bok.react\nTP=tiger_palm\nTPow=buff.tiger_power\nCBTP=buff.combo_breaker_tp.react\nRSK=rising_sun_kick\nTeB=tigereye_brew\nSCK=spinning_crane_kick\n\n"
+    "CW=chi_wave\nZS=zen_sphere\nCBur=chi_burst\nPS=power_strikes\nAsc=ascension\nCB=chi_brew\nRJW=rushing_jade_wind\nXuen=invoke_xuen\nHS=hurricane_strike\nCE=chi_explosion\nCBCE=buff.combo_breaker_ce.react\nSer=serenity\n"
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
@@ -822,7 +861,7 @@ QString sidebarText[ 11 ][ 4 ] = {
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n"
     "AA=auto_attack\nAS=avengers_shield\nCons=consecration\nCS=crusader_strike\nEF=eternal_flame\nES=execution_sentence\nHotR=hammer_of_the_righteous\nHoW=hammer_of_wrath\nHPr=holy_prism\nHW=holy_wrath\nJ=judgment\nLH=lights_hammer\nSS=sacred_shield\nSoI=seal_of_insight\nSoR=seal_of_righteousness\nSoT=seal_of_truth\nSP=seraphim\nSotR=shield_of_the_righteous\nWoG=word_of_glory\n\n"
-    "DJ=double_jeopardy\nDP=divine_purpose\nGC=grand_crusader\nHA=holy_avenger\nSP=seraphim\nSotR=shield_of_the_righteous\nSW=sanctified_wrath\n\n"
+    "DJ=double_jeopardy\nDP=divine_purpose\nFW=holy_wrath,if=glyph.final_wrath.enabled&target.health.pct<=20\nGC=grand_crusader\nHA=holy_avenger\nSP=seraphim\nSotR=shield_of_the_righteous\nSW=sanctified_wrath\n\n"
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "HP=holy_power\nHP#=holy_power>=#\nFW=glyph.final_wrath.enabled&target.health.pct<=20\nEverything below this line is redundant with the buff syntax method, just here for ease of use\nDP=buff.divine_purpose.react\nSW=talent.sanctified_wrath.enabled\nSP=buff.seraphim.react\n\nGC=buff.grand_crusader.react\nGC#=buff.grand_crusader.remains<#\n"
     "Additional option shorthands can be added here"

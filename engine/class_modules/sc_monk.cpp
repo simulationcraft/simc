@@ -22,8 +22,7 @@
   - Non-glyphed Mana Tea
 
   BREWMASTER:
-  - Swift Reflexes strike back
-  - Purifying Brew
+  - Purifying Brew - mostly implemented
   - Level 75 talents - dampen harm added - currently stacks are consumed on all attacks, not just above 15% max hp
   - Black Ox Statue
   - Gift of the Ox
@@ -135,6 +134,7 @@ public:
     gain_t* expel_harm;
     gain_t* jab;
     gain_t* keg_smash;
+    gain_t* gift_of_the_ox;
     gain_t* mana_tea;
     gain_t* renewing_mist;
     gain_t* serenity;
@@ -156,6 +156,7 @@ public:
     proc_t* tier17_4pc_heal;
     proc_t* tigereye_brew;
     proc_t* tigereye_brew_wasted;
+    proc_t* gift_of_the_ox;
   } proc;
 
   struct talents_t
@@ -202,6 +203,7 @@ public:
     const spell_data_t* rising_sun_kick;
     const spell_data_t* way_of_the_monk;
     const spell_data_t* zen_meditaiton;
+    const spell_data_t* touch_of_death;
 
     // Brewmaster
     const spell_data_t* bladed_armor;
@@ -285,6 +287,9 @@ public:
   {
     // General
     const spell_data_t* fortifying_brew;
+    const spell_data_t* expel_harm;
+    const spell_data_t* guard;
+    const spell_data_t* touch_of_death;
     // Brewmaster
     // Mistweaver
     const spell_data_t* mana_tea;
@@ -305,9 +310,7 @@ public:
     const spell_data_t* enveloping_mist;
     const spell_data_t* surging_mist;
     const spell_data_t* tier15_2pc_melee;
-    const spell_data_t* tier17_2pc_melee;
-    const spell_data_t* tier17_2pc_tank;
-    const spell_data_t* tier17_4pc_tank;
+
   } passives;
 
   // Options
@@ -353,6 +356,7 @@ public:
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    composite_player_heal_multiplier( const action_state_t* s ) const;
+  virtual double    composite_player_absorb_multiplier( const action_state_t* s ) const;
   virtual double    composite_melee_expertise( weapon_t* weapon ) const;
   virtual double    composite_melee_attack_power() const;
   virtual double    composite_parry() const;
@@ -969,7 +973,7 @@ struct jab_t: public monk_melee_attack_t
     }
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.jab, this );
 
-    if ( rng().roll( p() -> new_sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
+    if ( rng().roll( p() -> sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
     {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc_melee );
       p() -> proc.tier15_2pc_melee -> occur();
@@ -1002,8 +1006,8 @@ struct tiger_palm_t: public monk_melee_attack_t
 
     m *= 1.0 + p() -> spec.teachings_of_the_monastery -> effectN( 5 ).percent();
 
-    if ( p() -> new_sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_tp -> check() )
-      m *= 1.0 + ( p() -> new_sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).base_value() / 100 );
+    if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_tp -> check() )
+      m *= 1.0 + ( p() -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).base_value() / 100 );
 
     return m;
   }
@@ -1099,9 +1103,9 @@ struct blackout_kick_t: public monk_melee_attack_t
     double m = monk_melee_attack_t::action_multiplier();
 
     // check for melee 2p and CB: TP, for the 50% dmg bonus
-    if ( p() -> new_sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_bok -> check() ) {
+    if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_bok -> check() ) {
       // damage increased by 40% for WW 2pc upon CB
-      m *= 1 + ( p() -> new_sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).base_value() / 100 );
+      m *= 1 + ( p() -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).base_value() / 100 );
     }
     return m;
   }
@@ -1230,9 +1234,9 @@ struct chi_explosion_t: public monk_melee_attack_t
 
 
     // check for melee 2p and CB: TP, for the 50% dmg bonus
-    if ( p() -> new_sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_ce -> check() ) {
+    if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_ce -> check() ) {
       // damage increased by 40% for WW 2pc upon CB
-      m *= 1 + ( p() -> new_sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).base_value() / 100 );
+      m *= 1 + ( p() -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).base_value() / 100 );
     }
 
     m *= 1.0 + std::min( 4.0, p() -> resources.current[RESOURCE_CHI] );
@@ -1412,7 +1416,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     if ( p() -> talent.rushing_jade_wind -> ok() )
       p() -> buff.rushing_jade_wind -> trigger( 1, 0, 1.0, cooldown -> duration * p() -> cache.attack_haste() );
 
-    if ( rng().roll( p() -> new_sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
+    if ( rng().roll( p() -> sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
     {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc_melee );
       p() -> proc.tier15_2pc_melee -> occur();
@@ -1465,7 +1469,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     // T14 WW 2PC
     cooldown -> duration = data().cooldown();
-    cooldown -> duration += p -> new_sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).time_value();
+    cooldown -> duration += p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).time_value();
   }
 
   void tick( dot_t*d )
@@ -1482,8 +1486,8 @@ struct fists_of_fury_t: public monk_melee_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       p() -> track_chi_consumption += savings;
-      if ( p() -> new_sets.has_set_bonus( MONK_WINDWALKER, T17, B2 ) )
-        trigger_brew( p() -> passives.tier17_2pc_melee -> effectN( 1 ).base_value() );
+      if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T17, B2 ) )
+        trigger_brew( p() -> sets.set( MONK_WINDWALKER, T17, B2 ) -> effectN( 1 ).base_value() );
     }
   }
 };
@@ -1715,6 +1719,44 @@ struct keg_smash_t: public monk_melee_attack_t
 };
 
 // ==========================================================================
+// Touch of Death
+// ==========================================================================
+
+struct touch_of_death_t : public monk_melee_attack_t
+{
+  touch_of_death_t(monk_t* p, const std::string& options_str) :
+    monk_melee_attack_t("touch_of_death", p, p -> find_class_spell("Touch of Death"))
+  {
+    parse_options(nullptr, options_str);
+    stancemask = STURDY_OX | FIERCE_TIGER | SPIRITED_CRANE;
+    if ( p -> glyph.touch_of_death -> ok() )
+    {
+      cooldown -> duration += p -> glyph.touch_of_death -> effectN( 1 ).time_value();
+      base_costs[RESOURCE_CHI] *= 1.0 + p -> glyph.touch_of_death -> effectN( 2 ).percent();
+    }
+  }
+
+  virtual void impact(action_state_t* s)
+  {
+    s -> result_amount = player -> resources.max[RESOURCE_HEALTH];
+    monk_melee_attack_t::impact(s);
+  }
+
+  virtual void consume_resource()
+  {
+    monk_melee_attack_t::consume_resource();
+  }
+
+  bool ready()
+  {
+    if ( target -> health_percentage() > 10)
+      return false;
+
+    return monk_melee_attack_t::ready();
+  }
+};
+
+// ==========================================================================
 // Expel Harm
 // ==========================================================================
 
@@ -1735,6 +1777,15 @@ struct expel_harm_t: public monk_melee_attack_t
 
     if ( p -> glyph.targeted_expulsion -> ok() )
       base_multiplier *= 1.0 - p -> glyph.targeted_expulsion -> effectN( 2 ).percent();
+  }
+
+  virtual double cost() const
+  {
+    double c = monk_melee_attack_t::cost();
+    if ( player->health_percentage() < 35 && p() -> glyph.expel_harm -> ok() )
+      c += p() -> glyph.expel_harm -> effectN( 1 ).base_value();
+
+    return c;
   }
 
   double trigger_attack()
@@ -1868,11 +1919,7 @@ struct tigereye_brew_t: public monk_spell_t
   double value()
   {
     double value = p() -> buff.tigereye_brew_use -> data().effectN( 1 ).percent();
-    if ( p() -> new_sets.has_set_bonus( SET_MELEE, T15, B4 ) )
-    {
-      // 50 / 10000 = 0.005
-      value += p() -> new_sets.set( SET_MELEE, T15, B4 ) -> effectN( 1 ).base_value() / 10000; // t154pc
-    }
+    value += p() -> sets.set( SET_MELEE, T15, B4 ) -> effectN( 1 ).base_value() / 10000; // t154pc
     return value;
   }
 
@@ -1885,7 +1932,7 @@ struct tigereye_brew_t: public monk_spell_t
     // EEIN: Seperated teb_stacks_used from use_value so it can be used to track focus of xuen.
     double use_value = value() * teb_stacks_used;
 
-    if ( p() -> new_sets.has_set_bonus( MONK_WINDWALKER, T17, B4 ) )
+    if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T17, B4 ) )
       p() -> buff.forceful_winds-> trigger( (int)teb_stacks_used, buff_t::DEFAULT_VALUE(), 100.0 );
 
     p() -> buff.tigereye_brew_use -> trigger( 1, use_value );
@@ -2396,8 +2443,8 @@ struct purifying_brew_t: public monk_spell_t
     // Optional addition: Track and report amount of damage cleared
     p() -> active_actions.stagger_self_damage -> clear_all_damage();
 
-    if ( p() -> new_sets.set( SET_TANK, T17, B4 ) )
-      trigger_brew( p() -> passives.tier17_4pc_tank -> effectN( 1 ).base_value() );
+    if ( p() -> sets.has_set_bonus(MONK_BREWMASTER, T17, B4) )
+      trigger_brew( p() -> sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
   }
 
   bool ready()
@@ -2613,7 +2660,7 @@ struct expel_harm_heal_t: public monk_heal_t
 
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.expel_harm, this );
 
-    if ( rng().roll( p() -> new_sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
+    if ( rng().roll( p() -> sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
     {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc_melee );
       p() -> proc.tier15_2pc_melee -> occur();
@@ -2816,7 +2863,7 @@ struct surging_mist_t: public monk_heal_t
 
   virtual void impact(action_state_t* s)
   {
-    //if (result_is_multistrike(s->result) && p() -> new_sets.set(SET_HEALER, T17, B4) )
+    //if (result_is_multistrike(s->result) && p() -> sets.has_set_bonus( MONK_MISTWEAVER, T17, B4 ) )
 
   }
 };
@@ -2904,6 +2951,9 @@ struct guard_t: public monk_absorb_t
     target = &p;
     cooldown -> charges = p.perk.improved_guard -> effectN( 1 ).base_value();
     attack_power_mod.direct = 9; // hardcoded into tooltip 2014/09/09
+    base_multiplier += p.sets.set( SET_TANK, T14, B4 ) -> effectN( 1 ).percent();
+    if ( p.glyph.guard -> ok() )
+      base_multiplier += p.glyph.guard -> effectN( 1 ).percent();
   }
 
   virtual void impact( action_state_t* s )
@@ -2977,6 +3027,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "tigereye_brew"         ) return new          tigereye_brew_t( this, options_str );
   if ( name == "energizing_brew"       ) return new        energizing_brew_t( this, options_str );
   if ( name == "provoke"               ) return new                provoke_t( this, options_str );
+  if ( name == "touch_of_death"        ) return new         touch_of_death_t( this, options_str );
   // Brewmaster
   if ( name == "breath_of_fire"        ) return new         breath_of_fire_t( *this, options_str );
   if ( name == "keg_smash"             ) return new              keg_smash_t( *this, options_str );
@@ -3072,6 +3123,7 @@ void monk_t::init_spells()
   spec.way_of_the_monk            = find_specialization_spell( "Way of the Monk" );
   spec.rising_sun_kick            = find_specialization_spell( "Rising Sun Kick" );
   spec.legacy_of_the_white_tiger  = find_specialization_spell( "Legacy of the White Tiger" );
+  spec.touch_of_death             = find_specialization_spell( "Touch of Death" );
 
   // Windwalker Passives
   spec.brewing_tigereye_brew      = find_specialization_spell( "Brewing: Tigereye Brew" );
@@ -3142,14 +3194,15 @@ void monk_t::init_spells()
   passives.tier15_2pc_melee       = find_spell( 138311 );
   passives.enveloping_mist        = find_class_spell( "Enveloping Mist" );
   passives.surging_mist           = find_class_spell( "Surging Mist" );
-  passives.tier17_2pc_melee       = find_spell( 165403 );
-  passives.tier17_2pc_tank        = find_spell( 165356 );
-  passives.tier17_4pc_tank        = find_spell( 165352 );
 
   // GLYPHS
-  glyph.fortifying_brew    = find_glyph( "Glyph of Fortifying Brew"    );
-  glyph.mana_tea           = find_glyph( "Glyph of Mana Tea"           );
+  glyph.touch_of_death     = find_glyph( "Glyph of Touch of Death" );
   glyph.targeted_expulsion = find_glyph( "Glyph of Targeted Expulsion" );
+  glyph.expel_harm         = find_glyph( "Glyph of Expel Harm" );
+  glyph.fortifying_brew    = find_glyph( "Glyph of Fortifying Brew"    );
+  glyph.guard              = find_glyph( "Glyph of Guard" );
+  glyph.mana_tea           = find_glyph( "Glyph of Mana Tea" );
+
 
   //MASTERY
   mastery.bottled_fury        = find_mastery_spell( MONK_WINDWALKER );
@@ -3222,6 +3275,7 @@ void monk_t::create_buffs()
 
   // General
   buff.fortifying_brew = buff_creator_t( this, "fortifying_brew", find_spell( 120954 ) );
+  buff.fortifying_brew -> cooldown -> duration += sets.set( SET_TANK, T16, B2 ) -> effectN( 1 ).time_value();
 
   buff.power_strikes = buff_creator_t( this, "power_strikes", talent.power_strikes -> effectN( 1 ).trigger() );
 
@@ -3277,12 +3331,12 @@ void monk_t::create_buffs()
     .tick_callback( energizing_brew_energize )
     .add_invalidate( CACHE_MULTISTRIKE );
 
-  buff.energizing_brew -> buff_duration += new_sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value(); //verify working
+  buff.energizing_brew -> buff_duration += sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value(); //verify working
 
   buff.tigereye_brew = buff_creator_t( this, "tigereye_brew", find_spell( 125195 ) )
     .period( timespan_t::zero() ); // Tigereye Brew does not tick, despite what the spelldata implies.
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use", spec.tigereye_brew ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buff.tigereye_brew_use -> buff_duration += new_sets.set( SET_MELEE, PVP, B4 ) -> effectN( 1 ).time_value();
+  buff.tigereye_brew_use -> buff_duration += sets.set( SET_MELEE, PVP, B4 ) -> effectN( 1 ).time_value();
 
   buff.forceful_winds = buff_creator_t( this, "forceful_winds", find_spell( 166603 ) );
 }
@@ -3311,6 +3365,7 @@ void monk_t::init_gains()
   gain.spinning_crane_kick = get_gain( "spinning_crane_kick" );
   gain.surging_mist = get_gain( "surging_mist" );
   gain.tier15_2pc_melee = get_gain( "tier15_2pc_melee" );
+  gain.gift_of_the_ox = get_gain( "gift_of_the_ox" );
 }
 
 // monk_t::init_procs =======================================================
@@ -3328,6 +3383,7 @@ void monk_t::init_procs()
   proc.tier17_4pc_heal = get_proc( "tier17_2pc_heal" );
   proc.tigereye_brew = get_proc( "tigereye_brew" );
   proc.tigereye_brew_wasted = get_proc( "tigereye_brew_wasted" );
+  proc.gift_of_the_ox = get_proc( "gift_of_the_ox" );
 }
 
 // monk_t::reset ============================================================
@@ -3481,6 +3537,23 @@ double monk_t::composite_player_heal_multiplier( const action_state_t* s ) const
   if ( current_stance() == WISE_SERPENT )
     m *= 1.0 + active_stance_data( WISE_SERPENT ).effectN( 3 ).percent();
 
+  // Resolve applies a blanket -60% healing for tanks
+  if ( spec.resolve -> ok() )
+    m *= 1.0 + spec.resolve -> effectN( 2 ).percent();
+
+  return m;
+}
+
+// monk_t::composite_player_absorb_multiplier ==================================
+
+double monk_t::composite_player_absorb_multiplier( const action_state_t* s ) const
+{
+  double m = base_t::composite_player_absorb_multiplier( s );
+
+  // Resolve applies a blanket -60% healing & absorb for tanks
+  if ( spec.resolve -> ok() )
+    m *= 1.0 + spec.resolve -> effectN( 3 ).percent();
+
   return m;
 }
 
@@ -3527,8 +3600,11 @@ double monk_t::composite_dodge() const
 {
   double d = base_t::composite_dodge();
 
-  if ( buff.elusive_brew_activated -> check() )
+  if (buff.elusive_brew_activated -> check())
+  {
     d += buff.elusive_brew_activated -> data().effectN( 1 ).percent();
+    d += sets.set( SET_TANK, T14, B2 ) -> effectN( 1 ).percent();
+  }
 
   return d;
 }
@@ -3810,11 +3886,13 @@ void monk_t::assess_damage( school_e school,
   buff.shuffle -> up();
   buff.fortifying_brew -> up();
   buff.elusive_brew_activated -> up();
-  if ( s -> result_total > 0 )
+  if ( s -> result_total > 0 && school == SCHOOL_PHYSICAL && !glyph.guard -> ok() )
     buff.guard -> up();
+  else if ( s -> result_total > 0 && school != SCHOOL_PHYSICAL && glyph.guard -> ok() )
+    buff.guard->up();
 
-  if ( s -> result == RESULT_DODGE && new_sets.set( MONK_BREWMASTER, T17, B2 ) )
-    resource_gain(RESOURCE_ENERGY, passives.tier17_2pc_tank -> effectN( 1 ).base_value(), gain.energy_refund);
+  if ( s -> result == RESULT_DODGE && sets.set( MONK_BREWMASTER, T17, B2 ) )
+    resource_gain(RESOURCE_ENERGY, sets.set( MONK_BREWMASTER, T17, B2 ) -> effectN( 1 ).base_value(), gain.energy_refund);
 
   base_t::assess_damage( school, dtype, s );
 }

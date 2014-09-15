@@ -87,7 +87,7 @@ shoulders=quarantine_shoulderguards,id=105455,upgrade=4,gems=20crit_20crit_8agi,
 back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=10mastery_10crit_4agi,enchant=11crit
 chest=cuirass_of_celestial_harmony,id=99347,upgrade=4,gems=10haste_10crit_10haste_10crit_10haste_10crit_11agi,enchant=5all
 wrists=bracers_of_infinite_pipes,id=105617,upgrade=4,enchant=11agi
-hands=grips_of_celestial_harmony,id=99340,upgrade=4,gems=10haste_10crit_10crit_10crit_8agi,enchant=11haste
+hands=grips_of_celestial_harmony,id=99340,upgrade=4,gems=10haste_10crit_10haste_10crit_8agi,enchant=11haste
 waist=cannoneers_multipocket_gunbelt,id=105486,upgrade=4,gems=10haste_10crit_10haste_10crit_20crit_8agi
 legs=legguards_of_celestial_harmony,id=99342,upgrade=4,gems=20crit_20crit_8agi,enchant=18agi_10crit
 feet=ravagers_pathwalkers,id=105553,upgrade=4,gems=10haste_10crit_4agi,enchant=9agi
@@ -103,8 +103,8 @@ off_hand=korvens_crimson_crescent,id=105625,upgrade=4,gems=10haste_10crit_4agi,e
 # gear_agility=1137
 # gear_stamina=1634
 # gear_intellect=5
-# gear_crit_rating=507
-# gear_haste_rating=671
+# gear_crit_rating=497
+# gear_haste_rating=681
 # gear_mastery_rating=753
 # gear_armor=825
 # gear_multistrike_rating=107

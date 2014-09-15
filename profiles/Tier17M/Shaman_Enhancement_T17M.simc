@@ -91,7 +91,7 @@ hands=windspeakers_handwraps,id=115578,bonus_id=567
 waist=earthgrasp_girdle,id=113930,bonus_id=567
 legs=windspeakers_legwraps,id=115575,bonus_id=567
 feet=slagstomper_treads,id=113888,bonus_id=567
-finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,bonus_id=524,enchant=gift_of_haste
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_haste
 finger2=cinderwolf_signet,id=113917,bonus_id=567,enchant=gift_of_haste
 trinket1=captive_microaberration,id=113853,bonus_id=567
 trinket2=meaty_dragonspine_trophy,id=118114,bonus_id=567

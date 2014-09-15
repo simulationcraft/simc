@@ -27,32 +27,26 @@ actions.precombat+=/dampen_harm
 
 actions=auto_attack
 actions+=/arcane_torrent,if=energy<=40
-actions+=/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4
 actions+=/chi_brew,if=talent.chi_brew.enabled&chi=0
-actions+=/chi_explosion,if=buff.shuffle.down&chi>=2
 actions+=/dampen_harm,if=incoming_damage_1500ms&buff.fortifying_brew.down&buff.elusive_brew_activated.down
 actions+=/fortifying_brew,if=incoming_damage_1500ms&buff.dampen_harm.down&buff.elusive_brew_activated.down
 actions+=/elusive_brew,if=buff.elusive_brew_stacks.react>=9&buff.dampen_harm.down&buff.elusive_brew_activated.down
-actions+=/guard,if=chi>=2
-actions+=/keg_smash,if=talent.ascension.enabled&chi<=3&cooldown.keg_smash.remains=0
-actions+=/keg_smash,if=!talent.ascension.enabled&chi<=2&cooldown.keg_smash.remains=0
-actions+=/tiger_palm,if=buff.tiger_power.remains<=3
-actions+=/tiger_palm,if=buff.tiger_power.down&energy.time_to_max>1
 actions+=/invoke_xuen,if=talent.invoke_xuen.enabled
-actions+=/run_action_list,name=aoe,if=active_enemies>=5
 actions+=/run_action_list,name=single_target,if=active_enemies<5
+actions+=/run_action_list,name=aoe,if=active_enemies>5
+
+actions.single_target=/guard,if=chi>=4
+actions.single_target+=/keg_smash,if=chi<=4
+actions.single_target+=/chi_wave,if=talent.chi_wave.enabled&energy.time_to_max>3
+actions.single_target+=/chi_explosion,if=chi>=3
+actions.single_target+=/expel_harm,if=chi<=4&cooldown.expel_harm.remains=0&cooldown.keg_smash.remains>=1.5
+actions.single_target+=/jab,if=chi<=3&cooldown.keg_smash.remains>=1.5&cooldown.expel_harm.remains>=1.5
+actions.single_target+=/tiger_palm,if=(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40
+actions.single_target+=/tiger_palm,if=cooldown.keg_smash.remains>=1.5
 
 actions.aoe=breath_of_fire,if=chi>=3&buff.shuffle.remains>=6&target.debuff.dizzying_haze.up
 actions.aoe+=/rushing_jade_wind,if=talent.rushing_jade_wind.enabled
 actions.aoe+=/spinning_crane_kick
-
-actions.single_target=/chi_wave,if=talent.chi_wave.enabled&energy.time_to_max>3
-actions.single_target+=/chi_explosion,if=chi>=3
-actions.single_target+=/tiger_palm,if=energy.time_to_max>=3
-# actions.single_target+=/expel_harm,if=talent.ascension.enabled&chi<=3&cooldown.expel_harm.remains=0
-# actions.single_target+=/expel_harm,if=!talent.ascension.enabled&chi<=2&cooldown.expel_harm.remains=0
-actions.single_target+=/jab,if=talent.ascension.enabled&chi<=3&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40
-actions.single_target+=/jab,if=!talent.ascension.enabled&chi<=2&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40
 
 
 head=acidic_jaws,id=113880,bonus_id=566
@@ -68,5 +62,17 @@ feet=iron-flecked_sandals,id=119340,bonus_id=566
 finger1=timeless_solium_band_of_the_bulwark,id=118298,enchant=gift_of_versatility,bonus_id=566
 finger2=stonefist_band,id=113938,enchant=gift_of_versatility,bonus_id=566
 trinket1=pillar_of_the_earth,id=113650,bonus_id=566
-trinket2=bottle_of_infesting_spores,id=113658,bonus_id=566
+trinket2=blast_furnace_door,id=113893,bonus_id=566
 main_hand=head-lopper_skullscythe,id=119448,enchant_id=5352,bonus_id=566
+
+# Gear Summary
+# gear_strength=231
+# gear_agility=2602
+# gear_stamina=4251
+# gear_crit_rating=1247
+# gear_haste_rating=495
+# gear_mastery_rating=778
+# gear_armor=1045
+# gear_bonus_armor=593
+# gear_versatility_rating=1177
+# set_bonus=tier17_2pc=1
