@@ -28,7 +28,6 @@ actions.precombat+=/potion,name=draenic_intellect
 actions=wind_shear
 # Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
 actions+=/bloodlust,if=target.health.pct<25|time>0.500
-actions+=/use_item,name=primal_gladiators_badge_of_dominance
 # In-combat potion is preferentially linked to Ascendance, unless combat will end shortly
 actions+=/potion,name=draenic_intellect,if=buff.ascendance.up|target.time_to_die<=30
 actions+=/berserking,if=!buff.bloodlust.up&!buff.elemental_mastery.up&(set_bonus.tier15_4pc_caster=1|(buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)))
@@ -55,7 +54,7 @@ actions.single+=/flame_shock,if=talent.elemental_fusion.enabled&(!ticking|(buff.
 actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)
 actions.single+=/flame_shock,if=!talent.elemental_fusion.enabled&dot.flame_shock.remains<9
 actions.single+=/earth_shock,if=(talent.elemental_fusion.enabled&(buff.lightning_shield.react>12|buff.elemental_fusion.stack=2)&dot.flame_shock.remains>=15)|(!talent.elemental_fusion.enabled&buff.lightning_shield.react>15)
-actions.single+=/earthquake,if=((1+stat.spell_haste)*(1+(mastery_value*2%3))>=2.3)&target.time_to_die>10
+# actions.single+=/earthquake,if=((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=2.3)&target.time_to_die>10
 actions.single+=/elemental_blast
 # After the initial Ascendance, use Flame Shock pre-emptively just before Ascendance to guarantee Flame Shock staying up for the full duration of the Ascendance buff
 actions.single+=/flame_shock,if=time>60&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<duration
@@ -74,28 +73,31 @@ actions.aoe+=/searing_totem,if=(!talent.liquid_magma.enabled&!totem.fire.active)
 actions.aoe+=/chain_lightning,if=active_enemies>=2
 actions.aoe+=/lightning_bolt
 
-head=primal_gladiators_helm,id=115780
-neck=primal_gladiators_pendant_of_cruelty,id=115655,enchant=gift_of_multistrike
-shoulders=primal_gladiators_spaulders,id=115782
-back=primal_gladiators_drape_of_cruelty,id=115651,enchant=gift_of_multistrike
-chest=primal_gladiators_ringmail_armor,id=115720
-wrists=primal_gladiators_armbands_of_cruelty,id=115689
-hands=primal_gladiators_gauntlets,id=115779
-waist=primal_gladiators_waistguard_of_prowess,id=115683
-legs=primal_gladiators_leggings,id=115781
-feet=primal_gladiators_footguards_of_prowess,id=115686
-finger1=primal_gladiators_band_of_prowess,id=115662,enchant=gift_of_multistrike
-finger2=primal_gladiators_band_of_victory,id=115663,enchant=gift_of_multistrike
-trinket1=primal_gladiators_badge_of_dominance,id=115754
-trinket2=primal_gladiators_insignia_of_dominance,id=115755
-main_hand=primal_gladiators_battle_staff,id=115649,enchant=mark_of_the_frostwolf
+head=windspeakers_faceguard,id=115579,bonus_id=567
+neck=gruuls_lip_ring,id=113872,bonus_id=567,enchant=gift_of_multistrike
+shoulders=windspeakers_mantle,id=115576,bonus_id=567
+back=runescribed_gronncloak,id=120078,bonus_id=567,enchant=gift_of_multistrike
+chest=chestguard_of_the_siegemaker,id=113982,bonus_id=567
+wrists=bloodwhirl_bracers,id=113968,bonus_id=567
+hands=windspeakers_handwraps,id=115578,bonus_id=567
+waist=grenadiers_belt,id=113955,bonus_id=567
+legs=windspeakers_legwraps,id=115575,bonus_id=567
+feet=railwalkers_ratcheted_boots,id=113954,bonus_id=567
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
+finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant=gift_of_multistrike
+trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567
+trinket2=quiescent_runestone,id=113859,bonus_id=567
+main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_stamina=3246
-# gear_intellect=2588
-# gear_spell_power=1265
-# gear_crit_rating=553
-# gear_haste_rating=758
-# gear_mastery_rating=365
-# gear_armor=1258
-# gear_multistrike_rating=1485
+# gear_stamina=4519
+# gear_intellect=3568
+# gear_spell_power=1753
+# gear_crit_rating=134
+# gear_haste_rating=1074
+# gear_mastery_rating=1555
+# gear_armor=1463
+# gear_multistrike_rating=1718
+# gear_versatility_rating=94
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1
