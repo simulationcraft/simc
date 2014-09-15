@@ -1736,7 +1736,7 @@ struct touch_of_death_t : public monk_melee_attack_t
 
   virtual void impact(action_state_t* s)
   {
-    s->result_amount = player -> resources.max[RESOURCE_HEALTH];
+    s -> result_amount = player -> resources.max[RESOURCE_HEALTH];
     monk_melee_attack_t::impact(s);
   }
 
@@ -2941,6 +2941,7 @@ struct guard_t: public monk_absorb_t
     cooldown -> charges = p.perk.improved_guard -> effectN( 1 ).base_value();
     attack_power_mod.direct = 9; // hardcoded into tooltip 2014/09/09
     base_multiplier += p.sets.set( SET_TANK, T14, B4 ) -> effectN( 1 ).percent();
+    base_multiplier += p.glyph.guard -> effectN( 1 ).percent();
   }
 
   virtual void impact( action_state_t* s )
@@ -3874,8 +3875,10 @@ void monk_t::assess_damage( school_e school,
   buff.shuffle -> up();
   buff.fortifying_brew -> up();
   buff.elusive_brew_activated -> up();
-  if ( s -> result_total > 0 )
+  if ( s-> result_total > 0 && school == SCHOOL_PHYSICAL && !glyph.guard)
     buff.guard -> up();
+  else if ( s -> result_total > 0 && !school == SCHOOL_PHYSICAL && glyph.guard)
+    buff.guard->up();
 
   if ( s -> result == RESULT_DODGE && sets.set( MONK_BREWMASTER, T17, B2 ) )
     resource_gain(RESOURCE_ENERGY, sets.set( MONK_BREWMASTER, T17, B2 ) -> effectN( 1 ).base_value(), gain.energy_refund);
