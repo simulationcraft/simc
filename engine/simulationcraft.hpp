@@ -5634,6 +5634,7 @@ struct action_t : public noncopyable
   struct {
   double direct, tick;
   } attack_power_mod, spell_power_mod;
+  double amount_delta;
   timespan_t base_execute_time;
   timespan_t base_tick_time;
   timespan_t dot_duration;
@@ -5836,6 +5837,8 @@ public:
   virtual timespan_t composite_dot_duration( const action_state_t* ) const;
   virtual double attack_direct_power_coefficient( const action_state_t* ) const
   { return attack_power_mod.direct; }
+  virtual double amount_delta_modifier( const action_state_t* ) const
+  { return amount_delta; }
   virtual double attack_tick_power_coefficient( const action_state_t* ) const
   { return attack_power_mod.tick; }
   virtual double spell_direct_power_coefficient( const action_state_t* ) const
