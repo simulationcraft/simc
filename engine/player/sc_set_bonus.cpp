@@ -36,9 +36,6 @@ unsigned set_bonus_t::max_tier() const
 
 set_bonus_t::set_bonus_t( player_t* player ) : actor( player )
 {
-  if ( actor -> is_pet() || actor -> is_enemy() )
-    return;
-
   // First, pre-allocate vectors based on current boundaries of the set bonus data in DBC
   set_bonus_spec_data.resize( max_tier() + 1 );
   set_bonus_spec_count.resize( max_tier() + 1 );
@@ -53,6 +50,9 @@ set_bonus_t::set_bonus_t( player_t* player ) : actor( player )
       set_bonus_spec_count[ i ][ j ] = 0;
     }
   }
+
+  if ( actor -> is_pet() || actor -> is_enemy() )
+    return;
 
   // Initialize the set bonus data structure with correct set bonus data.
   // Spells are not setup yet.
