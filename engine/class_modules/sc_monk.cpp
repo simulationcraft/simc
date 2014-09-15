@@ -4060,7 +4060,7 @@ void monk_t::apl_combat_brewmaster()
   def -> add_action( this, "Blackout Kick", "if=!talent.chi_explosion.enabled&chi=chi.max&energy.time_to_max<=2" );
   def -> add_action( this, "Blackout Kick", "if=!talent.chi_explosion.enabled&chi>=chi.max-1&cooldown.keg_smash.remains<=1" );
   def -> add_talent( this, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down&buff.elusive_brew_activated.down" );
-  def -> add_talent( this, "Fortifying Brew", "if=incoming_damage_1500ms&buff.dampen_harm.down&buff.elusive_brew_activated.down" );
+  def -> add_action( this, "Fortifying Brew", "if=incoming_damage_1500ms&buff.dampen_harm.down&buff.elusive_brew_activated.down" );
   def -> add_action( this, "Elusive Brew", "if=buff.elusive_brew_stacks.react>=9&buff.dampen_harm.down&buff.elusive_brew_activated.down" );
   def -> add_action( this, "Guard", "if=chi>=2" );
   def -> add_action( this, "Keg Smash", "if=talent.ascension.enabled&chi<=3&cooldown.keg_smash.remains=0" );
