@@ -1782,7 +1782,7 @@ struct expel_harm_t: public monk_melee_attack_t
   virtual double cost() const
   {
     double c = monk_melee_attack_t::cost();
-    if ( player->health_percentage() < 35 && p() -> glyph.expel_harm -> ok() )
+    if ( player -> health_percentage() < 35 && p() -> glyph.expel_harm -> ok() )
       c += p() -> glyph.expel_harm -> effectN( 1 ).base_value();
 
     return c;
@@ -4052,26 +4052,31 @@ void monk_t::apl_combat_brewmaster()
   action_priority_list_t* aoe = get_action_priority_list( "aoe" );
 
   def -> add_action( "auto_attack" );
+  def -> add_action( this, "chi_sphere", "if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4" );
+  def -> add_talent( this, "Chi Brew", "if=talent.chi_brew.enabled&chi=0" );
+  def -> add_talent( this, "Chi Explosion", "if=buff.shuffle.down&chi>=2" );
+  def -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.amount&stagger.amount%health.max*100>20-buff.shuffle.remains", "Purify off stagger, being more liberal the longer time remains on shuffle." );
+  def -> add_action( this, "Blackout Kick", "if=!talent.chi_explosion.enabled&buff.shuffle.remains<=1.5" );
+  def -> add_action( this, "Blackout Kick", "if=!talent.chi_explosion.enabled&chi=chi.max&energy.time_to_max<=2" );
+  def -> add_action( this, "Blackout Kick", "if=!talent.chi_explosion.enabled&chi>=chi.max-1&cooldown.keg_smash.remains<=1" );
+  def -> add_talent( this, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down&buff.elusive_brew_activated.down" );
+  def -> add_talent( this, "Fortifying Brew", "if=incoming_damage_1500ms&buff.dampen_harm.down&buff.elusive_brew_activated.down" );
+  def -> add_action( this, "Elusive Brew", "if=buff.elusive_brew_stacks.react>=9&buff.dampen_harm.down&buff.elusive_brew_activated.down" );
+  def -> add_action( this, "Guard", "if=chi>=2" );
+  def -> add_action( this, "Keg Smash", "if=talent.ascension.enabled&chi<=3&cooldown.keg_smash.remains=0" );
+  def -> add_action( this, "Keg Smash", "if=!talent.ascension.enabled&chi<=2&cooldown.keg_smash.remains=0" );
+  def -> add_action( this, "Tiger Palm", "if=buff.tiger_power.remains<=3" );
+  def -> add_action( this, "Tiger Palm", "if=buff.tiger_power.down&energy.time_to_max>1" );
   def -> add_action( "invoke_xuen,if=talent.invoke_xuen.enabled&time>5" );
-  def -> add_action( this, "Elusive Brew" );
-  def -> add_action( this, "Purifying Brew", "if=stagger.amount&stagger.amount%health.max*100>20-buff.shuffle.remains", "Purify off stagger, being more liberal the longer time remains on shuffle." );
-  def -> add_action( this, "Guard", "if=buff.shuffle.remains>6&incoming_damage_2>health.max*0.5" );
-  def -> add_action( this, "Blackout Kick", "if=buff.shuffle.remains<=1.5" );
-  def -> add_action( this, "Blackout Kick", "if=chi=chi.max&energy.time_to_max<=2" );
-  def -> add_action( this, "Blackout Kick", "if=chi>=chi.max-1&cooldown.keg_smash.remains<=1" );
-  def -> add_action( this, "Keg Smash" );
-  def -> add_action( this, "Expel Harm", "if=incoming_damage_2>health.max*0.3" );
   def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
   def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
 
-  st -> add_action( this, "Jab", "if=energy.time_to_max<=1" );
-  st -> add_action( this, "Tiger Palm", "if=buff.tiger_power.down" );
-  st -> add_talent( this, "Chi Burst" );
-  st -> add_talent( this, "Chi Wave" );
+  st -> add_talent( this, "Chi Burst", "if=talent.chi_burst.enabled&energy.time_to_max>3" );
+  st -> add_talent( this, "Chi Wave", "if=talent.chi_wave.enabled&energy.time_to_max>3" );
   st -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking" );
-  st -> add_action( this, "Blackout Kick", "if=chi=chi.max" );
-  st -> add_action( this, "Jab", "if=energy+energy.regen*cooldown.keg_smash.remains>=80" );
-  st -> add_action( this, "Tiger Palm" );
+  st -> add_action( this, "Tiger Palm", "if=energy.time_to_max>=3" );
+  st -> add_action( this, "Jab", "if=talent.ascension.enabled&chi<=3&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
+  st -> add_action( this, "Jab", "if=!talent.ascension.enabled&chi<=2&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
 
   aoe -> add_talent( this, "Rushing Jade Wind" );
   aoe -> add_action( this, "Spinning Crane Kick", "if=!talent.rushing_jade_wind.enabled&energy.time_to_max<=1" );
