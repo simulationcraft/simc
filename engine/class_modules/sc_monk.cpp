@@ -289,7 +289,6 @@ public:
     const spell_data_t* fortifying_brew;
     const spell_data_t* expel_harm;
     const spell_data_t* guard;
-    const spell_data_t* keg_smash;
     const spell_data_t* touch_of_death;
     // Brewmaster
     // Mistweaver
@@ -1730,8 +1729,11 @@ struct touch_of_death_t : public monk_melee_attack_t
   {
     parse_options(nullptr, options_str);
     stancemask = STURDY_OX | FIERCE_TIGER | SPIRITED_CRANE;
-    cooldown -> duration += p -> glyph.touch_of_death -> effectN( 1 ).time_value();
-    base_costs[RESOURCE_CHI] *= 1.0 + p -> glyph.touch_of_death -> effectN( 2 ).percent();
+    if ( p -> glyph.touch_of_death -> ok() )
+    {
+      cooldown -> duration += p -> glyph.touch_of_death -> effectN( 1 ).time_value();
+      base_costs[RESOURCE_CHI] *= 1.0 + p -> glyph.touch_of_death -> effectN( 2 ).percent();
+    }
   }
 
   virtual void impact(action_state_t* s)
@@ -1775,6 +1777,15 @@ struct expel_harm_t: public monk_melee_attack_t
 
     if ( p -> glyph.targeted_expulsion -> ok() )
       base_multiplier *= 1.0 - p -> glyph.targeted_expulsion -> effectN( 2 ).percent();
+  }
+
+  virtual double cost() const
+  {
+    double c = monk_melee_attack_t::cost();
+    if ( player->health_percentage() < 35 && p() -> glyph.expel_harm -> ok() )
+      c += p() -> glyph.expel_harm -> effectN( 1 ).base_value();
+
+    return c;
   }
 
   double trigger_attack()
@@ -2941,7 +2952,8 @@ struct guard_t: public monk_absorb_t
     cooldown -> charges = p.perk.improved_guard -> effectN( 1 ).base_value();
     attack_power_mod.direct = 9; // hardcoded into tooltip 2014/09/09
     base_multiplier += p.sets.set( SET_TANK, T14, B4 ) -> effectN( 1 ).percent();
-    base_multiplier += p.glyph.guard -> effectN( 1 ).percent();
+    if ( p.glyph.guard -> ok() )
+      base_multiplier += p.glyph.guard -> effectN( 1 ).percent();
   }
 
   virtual void impact( action_state_t* s )
@@ -3189,8 +3201,7 @@ void monk_t::init_spells()
   glyph.expel_harm         = find_glyph( "Glyph of Expel Harm" );
   glyph.fortifying_brew    = find_glyph( "Glyph of Fortifying Brew"    );
   glyph.guard              = find_glyph( "Glyph of Guard" );
-  glyph.keg_smash          = find_glyph( "Glyph of Keg Smash" );
-  glyph.mana_tea           = find_glyph( "Glyph of Mana Tea"           );
+  glyph.mana_tea           = find_glyph( "Glyph of Mana Tea" );
 
 
   //MASTERY
@@ -3875,9 +3886,9 @@ void monk_t::assess_damage( school_e school,
   buff.shuffle -> up();
   buff.fortifying_brew -> up();
   buff.elusive_brew_activated -> up();
-  if (s->result_total > 0 && school == SCHOOL_PHYSICAL && !glyph.guard)
+  if ( s -> result_total > 0 && school == SCHOOL_PHYSICAL && !glyph.guard -> ok() )
     buff.guard -> up();
-  else if ( s -> result_total > 0 && school != SCHOOL_PHYSICAL && glyph.guard)
+  else if ( s -> result_total > 0 && school != SCHOOL_PHYSICAL && glyph.guard -> ok() )
     buff.guard->up();
 
   if ( s -> result == RESULT_DODGE && sets.set( MONK_BREWMASTER, T17, B2 ) )
