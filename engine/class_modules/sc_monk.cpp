@@ -103,6 +103,7 @@ public:
     buff_t* rushing_jade_wind;
     buff_t* serenity;
     buff_t* shuffle;
+    buff_t* gift_of_the_ox;
     buff_t* tiger_power;
     buff_t* tiger_strikes;
     buff_t* tigereye_brew;
@@ -156,7 +157,6 @@ public:
     proc_t* tier17_4pc_heal;
     proc_t* tigereye_brew;
     proc_t* tigereye_brew_wasted;
-    proc_t* gift_of_the_ox;
   } proc;
 
   struct talents_t
@@ -1613,6 +1613,11 @@ struct melee_t: public monk_melee_attack_t
       else
         trigger_brew( 3.0 * weapon -> swing_time.total_seconds() / 3.6 );
     }
+
+    if (p()->spec.brewing_elusive_brew->ok() && s->result == RESULT_MULTISTRIKE)
+    {
+      p() -> buff.gift_of_the_ox -> trigger();
+    }
   }
 };
 
@@ -2924,6 +2929,33 @@ struct zen_sphere_t: public monk_heal_t
     zen_sphere_detonate_heal -> execute();
   }
 };
+
+
+// ==========================================================================
+// Gift of the Ox
+// ==========================================================================
+
+struct gift_of_the_ox_t : public monk_heal_t
+{
+  gift_of_the_ox_t( monk_t& p, const std::string& options_str ) :
+    monk_heal_t( "gift_of_the_ox", p, p.spec.gift_of_the_ox )
+  {
+    parse_options(nullptr, options_str);
+    harmful = false;
+    trigger_gcd = timespan_t::zero();
+    attack_power_mod.direct = 0.40; // Hardcoded Sep-15-2014
+  }
+
+  virtual void execute()
+  {
+    if ( p() -> buff.gift_of_the_ox -> up() )
+    {
+      monk_heal_t::execute();
+
+      p() -> buff.gift_of_the_ox -> decrement();
+    }
+  }
+};
 } // end namespace heals
 
 namespace absorbs {
@@ -3036,6 +3068,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "fortifying_brew"       ) return new        fortifying_brew_t( *this, options_str );
   if ( name == "elusive_brew"          ) return new           elusive_brew_t( *this, options_str );
   if ( name == "purifying_brew"        ) return new         purifying_brew_t( *this, options_str );
+  if ( name == "gift_of_the_ox"        ) return new         gift_of_the_ox_t( *this, options_str );
   // Mistweaver
   if ( name == "enveloping_mist"       ) return new        enveloping_mist_t( *this, options_str );
   if ( name == "mana_tea"              ) return new               mana_tea_t( *this, options_str );
@@ -3320,6 +3353,8 @@ void monk_t::create_buffs()
   // Windwalker
   buff.chi_sphere = buff_creator_t( this, "chi_sphere" ).max_stack( 5 );
 
+  buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox" ).max_stack( 99 );
+
   buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok", find_class_spell( "Combo Breaker: Blackout Kick" ) );
 
   buff.combo_breaker_tp = buff_creator_t( this, "combo_breaker_tp", find_class_spell( "Combo Breaker: Tiger Palm" ) );
@@ -3383,7 +3418,6 @@ void monk_t::init_procs()
   proc.tier17_4pc_heal = get_proc( "tier17_2pc_heal" );
   proc.tigereye_brew = get_proc( "tigereye_brew" );
   proc.tigereye_brew_wasted = get_proc( "tigereye_brew_wasted" );
-  proc.gift_of_the_ox = get_proc( "gift_of_the_ox" );
 }
 
 // monk_t::reset ============================================================
@@ -4049,12 +4083,16 @@ void monk_t::apl_pre_mistweaver()
 
 void monk_t::apl_combat_brewmaster()
 {
+  std::vector<std::string> racial_actions = get_racial_actions();
   action_priority_list_t* def = get_action_priority_list( "default" );
   action_priority_list_t* st = get_action_priority_list( "st" );
   action_priority_list_t* aoe = get_action_priority_list( "aoe" );
 
   def -> add_action( "auto_attack" );
-  def -> add_action( this, "arcane_torrent", "if=energy<=40" );
+
+  for (size_t i = 0; i < racial_actions.size(); i++)
+    def -> add_action( racial_actions[i] + ",if=energy<=40" );
+
   def -> add_action( this, "chi_sphere", "if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4" );
   def -> add_talent( this, "Chi Brew", "if=talent.chi_brew.enabled&chi=0" );
   def -> add_talent( this, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down&buff.elusive_brew_activated.down" );
