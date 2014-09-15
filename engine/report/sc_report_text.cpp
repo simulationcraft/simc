@@ -608,8 +608,9 @@ void print_text_scale_factors( FILE* file, sim_t* sim )
     player_t* p = sim -> players_by_name[ i ];
 
     util::fprintf( file, "  %-*s", max_length, p -> name() );
-
-    gear_stats_t& sf = ( sim -> scaling -> normalize_scale_factors ) ? p -> scaling_normalized : p -> scaling;
+    
+    scale_metric_e sm = p -> sim -> scaling -> scaling_metric;
+    gear_stats_t& sf = ( sim -> scaling -> normalize_scale_factors ) ? p -> scaling_normalized[ sm ] : p -> scaling[ sm ];
 
     for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
@@ -617,16 +618,17 @@ void print_text_scale_factors( FILE* file, sim_t* sim )
       {
         util::fprintf( file, "  %s=%.*f(%.*f)", util::stat_type_abbrev( j ),
                        sim -> report_precision, sf.get_stat( j ),
-                       sim -> report_precision, p -> scaling_error.get_stat( j ) );
+                       sim -> report_precision, p -> scaling_error[ sm ].get_stat( j ) );
       }
     }
 
     if ( sim -> scaling -> normalize_scale_factors )
     {
-      util::fprintf( file, "  DPS/%s=%.*f", util::stat_type_abbrev( p -> normalize_by() ), sim -> report_precision, p -> scaling.get_stat( p -> normalize_by() ) );
+      scale_metric_e sm = p -> sim -> scaling -> scaling_metric;
+      util::fprintf( file, "  DPS/%s=%.*f", util::stat_type_abbrev( p -> normalize_by() ), sim -> report_precision, p -> scaling[ sm ].get_stat( p -> normalize_by() ) );
     }
 
-    if ( p -> sim -> scaling -> scale_lag ) util::fprintf( file, "  ms Lag=%.*f(%.*f)", p -> sim -> report_precision, p -> scaling_lag, p -> sim -> report_precision, p -> scaling_lag_error );
+    if ( p -> sim -> scaling -> scale_lag ) util::fprintf( file, "  ms Lag=%.*f(%.*f)", p -> sim -> report_precision, p -> scaling_lag[ sm ], p -> sim -> report_precision, p -> scaling_lag_error[ sm ] );
 
     util::fprintf( file, "\n" );
   }
@@ -642,8 +644,9 @@ void print_text_scale_factors( FILE* file, player_t* p, player_processed_report_
     p -> sim -> report_precision = 2;
 
   util::fprintf( file, "  Scale Factors:\n" );
-
-  gear_stats_t& sf = ( p -> sim -> scaling -> normalize_scale_factors ) ? p -> scaling_normalized : p -> scaling;
+  
+  scale_metric_e sm = p -> sim -> scaling -> scaling_metric;
+  gear_stats_t& sf = ( p -> sim -> scaling -> normalize_scale_factors ) ? p -> scaling_normalized[ sm ] : p -> scaling[ sm ];
 
   util::fprintf( file, "    Weights :" );
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
@@ -652,14 +655,14 @@ void print_text_scale_factors( FILE* file, player_t* p, player_processed_report_
     {
       util::fprintf( file, "  %s=%.*f(%.*f)", util::stat_type_abbrev( i ),
                      p -> sim -> report_precision, sf.get_stat( i ),
-                     p -> sim -> report_precision, p -> scaling_error.get_stat( i ) );
+                     p -> sim -> report_precision, p -> scaling_error[ sm ].get_stat( i ) );
     }
   }
   if ( p -> sim -> scaling -> normalize_scale_factors )
   {
-    util::fprintf( file, "  DPS/%s=%.*f", util::stat_type_abbrev( p -> normalize_by() ), p -> sim -> report_precision, p -> scaling.get_stat( p -> normalize_by() ) );
+    util::fprintf( file, "  DPS/%s=%.*f", util::stat_type_abbrev( p -> normalize_by() ), p -> sim -> report_precision, p -> scaling[ sm ].get_stat( p -> normalize_by() ) );
   }
-  if ( p -> sim -> scaling -> scale_lag ) util::fprintf( file, "  ms Lag=%.*f(%.*f)", p -> sim -> report_precision, p -> scaling_lag, p -> sim -> report_precision, p -> scaling_lag_error );
+  if ( p -> sim -> scaling -> scale_lag ) util::fprintf( file, "  ms Lag=%.*f(%.*f)", p -> sim -> report_precision, p -> scaling_lag[ sm ], p -> sim -> report_precision, p -> scaling_lag_error[ sm ] );
 
   util::fprintf( file, "\n" );
 
@@ -730,6 +733,8 @@ void print_text_reference_dps( FILE* file, sim_t* sim )
     return;
   }
 
+  scale_metric_e sm = sim -> scaling -> scaling_metric;
+
   int num_players = ( int ) sim -> players_by_dps.size();
   int max_length = 0;
 
@@ -749,7 +754,7 @@ void print_text_reference_dps( FILE* file, sim_t* sim )
     {
       if ( ref_p -> scales_with[ j ] )
       {
-        util::fprintf( file, "  %s=%.*f", util::stat_type_abbrev( j ), sim -> report_precision, ref_p -> scaling.get_stat( j ) );
+        util::fprintf( file, "  %s=%.*f", util::stat_type_abbrev( j ), sim -> report_precision, ref_p -> scaling[ sm ].get_stat( j ) );
       }
     }
   }
@@ -776,8 +781,8 @@ void print_text_reference_dps( FILE* file, sim_t* sim )
         {
           if ( ref_p -> scales_with[ j ] )
           {
-            double ref_sf = ref_p -> scaling.get_stat( j );
-            double     sf =     p -> scaling.get_stat( j );
+            double ref_sf = ref_p -> scaling[ sm ].get_stat( j );
+            double     sf =     p -> scaling[ sm ].get_stat( j );
 
             over = ( sf > ref_sf );
 

@@ -1375,6 +1375,9 @@ std::string chart::gains( player_t* p, resource_e type )
 std::string chart::scale_factors( player_t* p )
 {
   std::vector<stat_e> scaling_stats;
+  // load the data from whatever the default metric is set 
+  // TODO: eventually show all data
+  scale_metric_e sm = p -> sim -> scaling -> scaling_metric;
 
   for ( std::vector<stat_e>::const_iterator it = p -> scaling_stats.begin(), end = p -> scaling_stats.end(); it != end; ++it )
   {
@@ -1399,21 +1402,21 @@ std::string chart::scale_factors( player_t* p )
   snprintf( buffer, sizeof( buffer ), "chd=t%i:" , 1 ); s += buffer;
   for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
-    double factor = p -> scaling.get_stat( scaling_stats[ i ] );
+    double factor = p -> scaling[ sm ].get_stat( scaling_stats[ i ] );
     snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i ? "," : "" ), p -> sim -> report_precision, factor ); s += buffer;
   }
   s += "|";
 
   for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
-    double factor = p -> scaling.get_stat( scaling_stats[ i ] ) - fabs( p -> scaling_error.get_stat( scaling_stats[ i ] ) );
+    double factor = p -> scaling[ sm ].get_stat( scaling_stats[ i ] ) - fabs( p -> scaling_error[ sm ].get_stat( scaling_stats[ i ] ) );
 
     snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i ? "," : "" ), p -> sim -> report_precision, factor ); s += buffer;
   }
   s += "|";
   for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
-    double factor = p -> scaling.get_stat( scaling_stats[ i ] ) + fabs( p -> scaling_error.get_stat( scaling_stats[ i ] ) );
+    double factor = p -> scaling[ sm ].get_stat( scaling_stats[ i ] ) + fabs( p -> scaling_error[ sm ].get_stat( scaling_stats[ i ] ) );
 
     snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i ? "," : "" ), p -> sim -> report_precision, factor ); s += buffer;
   }
@@ -1425,7 +1428,7 @@ std::string chart::scale_factors( player_t* p )
   snprintf( buffer, sizeof( buffer ), "E,FF0000,1:0,,1:20|" ); s += buffer;
   for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
-    double factor = p -> scaling.get_stat( scaling_stats[ i ] );
+    double factor = p -> scaling[ sm ].get_stat( scaling_stats[ i ] );
     const char* name = util::stat_type_abbrev( scaling_stats[ i ] );
     snprintf( buffer, sizeof( buffer ), "%st++++%.*f++%s,%s,0,%d,15,0.1,%s", ( i ? "|" : "" ),
               p -> sim -> report_precision, factor, name, get_color( p ).c_str(),
@@ -1438,8 +1441,8 @@ std::string chart::scale_factors( player_t* p )
   double lowest_value = 0, highest_value = 0;
   for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
-    double value = p -> scaling.get_stat( scaling_stats[ i ] );
-    double error = fabs( p -> scaling_error.get_stat( scaling_stats[ i ] ) );
+    double value = p -> scaling[ sm ].get_stat( scaling_stats[ i ] );
+    double error = fabs( p -> scaling_error[ sm ].get_stat( scaling_stats[ i ] ) );
     double high_value = std::max( value * 1.2, value + error ); // add enough space to display stat name
     if ( high_value > highest_value )
       highest_value = high_value;
@@ -2132,10 +2135,11 @@ std::string chart::gear_weights_lootrank( player_t* p )
   default: break;
   }
   */
-  bool positive_normalizing_value = p -> scaling.get_stat( p -> normalize_by() ) >= 0;
+  scale_metric_e sm = p -> sim -> scaling -> scaling_metric;
+  bool positive_normalizing_value = p -> scaling[ sm ].get_stat( p -> normalize_by() ) >= 0;
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    double value = positive_normalizing_value ? p -> scaling.get_stat( i ) : -p -> scaling.get_stat( i );
+    double value = positive_normalizing_value ? p -> scaling[ sm ].get_stat( i ) : -p -> scaling[ sm ].get_stat( i );
     if ( value == 0 ) continue;
 
     const char* name;
@@ -2293,18 +2297,19 @@ std::string chart::gear_weights_wowhead( player_t* p, bool hit_expertise )
   std::string value_string = "";
 
   double worst_value = 0.0;
-  bool positive_normalizing_value = p -> scaling.get_stat( p -> normalize_by() ) >= 0;
+  scale_metric_e sm = p -> sim -> scaling -> scaling_metric;
+  bool positive_normalizing_value = p -> scaling[ sm ].get_stat( p -> normalize_by() ) >= 0;
   if ( !hit_expertise )
   {
-    double crit_value    = positive_normalizing_value ? p -> scaling.get_stat( STAT_CRIT_RATING ) : -p -> scaling.get_stat( STAT_CRIT_RATING );
-    double haste_value   = positive_normalizing_value ? p -> scaling.get_stat( STAT_HASTE_RATING ) : -p -> scaling.get_stat( STAT_HASTE_RATING );
-    double mastery_value = positive_normalizing_value ? p -> scaling.get_stat( STAT_MASTERY_RATING ) : -p -> scaling.get_stat( STAT_MASTERY_RATING );
+    double crit_value    = positive_normalizing_value ? p -> scaling[ sm ].get_stat( STAT_CRIT_RATING ) : -p -> scaling[ sm ].get_stat( STAT_CRIT_RATING );
+    double haste_value   = positive_normalizing_value ? p -> scaling[ sm ].get_stat( STAT_HASTE_RATING ) : -p -> scaling[ sm ].get_stat( STAT_HASTE_RATING );
+    double mastery_value = positive_normalizing_value ? p -> scaling[ sm ].get_stat( STAT_MASTERY_RATING ) : -p -> scaling[ sm ].get_stat( STAT_MASTERY_RATING );
     worst_value = std::min( mastery_value, std::min( crit_value, haste_value ) );
   }
 
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    double value = positive_normalizing_value ? p -> scaling.get_stat( i ) : -p -> scaling.get_stat( i );
+    double value = positive_normalizing_value ? p -> scaling[ sm ].get_stat( i ) : -p -> scaling[ sm ].get_stat( i );
     if ( value == 0 ) continue;
 
     int id = 0;
@@ -2485,7 +2490,8 @@ std::string chart::gear_weights_askmrrobot( player_t* p )
   ss << "&weights=";
 
   // check for negative normalizer
-  bool positive_normalizing_value = p -> scaling_normalized.get_stat( p -> normalize_by() ) >= 0;
+  scale_metric_e sm = p -> sim -> scaling -> scaling_metric;
+  bool positive_normalizing_value = p -> scaling_normalized[ sm ].get_stat( p -> normalize_by() ) >= 0;
 
   // AMR accepts a max precision of 2 decimal places
   ss.precision( std::min( p -> sim -> report_precision + 1, 2 ) );
@@ -2497,7 +2503,7 @@ std::string chart::gear_weights_askmrrobot( player_t* p )
   for ( stat_e i = STAT_NONE; i < STAT_MAX; ++i )
   {
     // get stat weight value
-    double value = positive_normalizing_value ? p -> scaling_normalized.get_stat( i ) : -p -> scaling_normalized.get_stat( i );
+    double value = positive_normalizing_value ? p -> scaling_normalized[ sm ].get_stat( i ) : -p -> scaling_normalized[ sm ].get_stat( i );
 
     // if the weight is negative or AMR won't recognize the stat type string, skip this stat
     if ( value <= 0 || util::str_compare_ci( util::stat_type_askmrrobot( i ), "unknown" ) ) continue;
@@ -2543,13 +2549,14 @@ std::string chart::gear_weights_pawn( player_t* p,
   double maxR = 0;
   double maxB = 0;
   double maxY = 0;
-
-  bool positive_normalizing_value = p -> scaling.get_stat( p -> normalize_by() ) >= 0;
+    
+  scale_metric_e sm = p -> sim -> scaling -> scaling_metric;
+  bool positive_normalizing_value = p -> scaling[ sm ].get_stat( p -> normalize_by() ) >= 0;
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     stat_e stat = stats[ i ];
 
-    double value = positive_normalizing_value ? p -> scaling.get_stat( stat ) : -p -> scaling.get_stat( stat );
+    double value = positive_normalizing_value ? p -> scaling[ sm ].get_stat( stat ) : -p -> scaling[ sm ].get_stat( stat );
     if ( value == 0 ) continue;
 
     if ( ! hit_expertise )

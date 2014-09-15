@@ -785,6 +785,8 @@ void print_html_raid_imagemaps( report::sc_html_stream& os, sim_t* sim, sim_repo
 void print_html_scale_factors( report::sc_html_stream& os, sim_t* sim )
 {
   if ( ! sim -> scaling -> has_scale_factors() ) return;
+  
+  scale_metric_e sm = sim -> scaling -> scaling_metric;
 
   os << "<div id=\"raid-scale-factors\" class=\"section grouped-first\">\n\n"
      << "<h2 class=\"toggle\">DPS Scale Factors (dps increase per unit stat)</h2>\n"
@@ -809,7 +811,7 @@ void print_html_scale_factors( report::sc_html_stream& os, sim_t* sim )
     // add the absolute value of their stat weights to accumulator element
     for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
-      stat_effect_is_nonzero[ j ] += std::abs( p -> scaling.get_stat( j ) );
+      stat_effect_is_nonzero[ j ] += std::abs( p -> scaling[ sm ].get_stat( j ) );
     }
   }
   // end column suppression section
@@ -851,7 +853,7 @@ void print_html_scale_factors( report::sc_html_stream& os, sim_t* sim )
     {
       if ( sim -> scaling -> stats.get_stat( j ) != 0 && stat_effect_is_nonzero[ j ] > 0 )
       {
-        if ( p -> scaling.get_stat( j ) == 0 )
+        if ( p -> scaling[ sm ].get_stat( j ) == 0 )
         {
           os << "<td class=\"small\">-</td>\n";
         }
@@ -860,7 +862,7 @@ void print_html_scale_factors( report::sc_html_stream& os, sim_t* sim )
           os.printf(
             "<td class=\"small\">%.*f</td>\n",
             sim -> report_precision,
-            p -> scaling.get_stat( j ) );
+            p -> scaling[ sm ].get_stat( j ) );
         }
       }
     }

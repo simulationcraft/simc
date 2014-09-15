@@ -1668,6 +1668,40 @@ stat_e util::parse_stat_type( const std::string& name )
   return STAT_NONE;
 }
 
+// scale_metric_type_string ===================================================
+
+const char* util::scale_metric_type_string( scale_metric_e sm )
+{
+  switch ( sm )
+  {
+    case SCALE_METRIC_DPS:       return "dps";
+    case SCALE_METRIC_DPSE:      return "dpse";
+    case SCALE_METRIC_HPS:       return "hps";
+    case SCALE_METRIC_HPSE:      return "hpse";
+    case SCALE_METRIC_DTPS:      return "dtps";
+    case SCALE_METRIC_DMG_TAKEN: return "dmg_taken";
+    case SCALE_METRIC_HTPS:      return "htps";
+    case SCALE_METRIC_TMI:       return "tmi";
+    case SCALE_METRIC_ETMI:      return "etmi";
+    case SCALE_METRIC_DEATHS:    return "deaths";
+    default:                     return "unknown";
+  }
+}
+
+// parse_scale_metric =========================================================
+
+scale_metric_e util::parse_scale_metric( const std::string& name )
+{
+  scale_metric_e sm = parse_enum<scale_metric_e, SCALE_METRIC_NONE, SCALE_METRIC_MAX, scale_metric_type_string>( name );
+  if ( sm != SCALE_METRIC_NONE ) return sm;
+
+  if ( name == "theck_meloree_index" ) return SCALE_METRIC_TMI;
+  if ( name == "effective_theck_meloree_index" ) return SCALE_METRIC_ETMI;
+
+  return SCALE_METRIC_NONE;
+}
+
+
 // parse_origin =============================================================
 
 bool util::parse_origin( std::string& region_str,
