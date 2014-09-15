@@ -3951,16 +3951,12 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
   double stagger_dmg = 0;
 
   if ( school == SCHOOL_PHYSICAL )
-  {
     stagger_dmg += s -> result_amount > 0 ? s -> result_amount * stagger_pct() : 0.0;
-    s -> result_amount -= stagger_dmg;
-  }
 
   if (school != SCHOOL_PHYSICAL && talent.soul_dance)
-  {
     stagger_dmg += s -> result_amount > 0 ? s -> result_amount * ( stagger_pct() * talent.soul_dance -> effectN( 1 ).percent() ) : 0.0;
-    s -> result_amount -= stagger_dmg;
-  }
+
+  s->result_amount -= stagger_dmg;
   // Hook up Stagger Mechanism
   if ( stagger_dmg > 0 )
     residual_action::trigger( active_actions.stagger_self_damage, this, stagger_dmg );
