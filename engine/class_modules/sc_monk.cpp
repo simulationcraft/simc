@@ -22,8 +22,7 @@
   - Non-glyphed Mana Tea
 
   BREWMASTER:
-  - Swift Reflexes strike back
-  - Purifying Brew
+  - Purifying Brew - mostly implemented
   - Level 75 talents - dampen harm added - currently stacks are consumed on all attacks, not just above 15% max hp
   - Black Ox Statue
   - Gift of the Ox
@@ -135,6 +134,7 @@ public:
     gain_t* expel_harm;
     gain_t* jab;
     gain_t* keg_smash;
+    gain_t* gift_of_the_ox;
     gain_t* mana_tea;
     gain_t* renewing_mist;
     gain_t* serenity;
@@ -156,6 +156,7 @@ public:
     proc_t* tier17_4pc_heal;
     proc_t* tigereye_brew;
     proc_t* tigereye_brew_wasted;
+    proc_t* gift_of_the_ox;
   } proc;
 
   struct talents_t
@@ -202,6 +203,7 @@ public:
     const spell_data_t* rising_sun_kick;
     const spell_data_t* way_of_the_monk;
     const spell_data_t* zen_meditaiton;
+    const spell_data_t* touch_of_death;
 
     // Brewmaster
     const spell_data_t* bladed_armor;
@@ -285,6 +287,10 @@ public:
   {
     // General
     const spell_data_t* fortifying_brew;
+    const spell_data_t* expel_harm;
+    const spell_data_t* guard;
+    const spell_data_t* keg_smash;
+    const spell_data_t* touch_of_death;
     // Brewmaster
     // Mistweaver
     const spell_data_t* mana_tea;
@@ -2391,7 +2397,8 @@ struct purifying_brew_t: public monk_spell_t
     // Optional addition: Track and report amount of damage cleared
     p() -> active_actions.stagger_self_damage -> clear_all_damage();
 
-    trigger_brew( p() -> sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
+    if ( p() -> sets.has_set_bonus(MONK_BREWMASTER, T17, B4) )
+      trigger_brew( p() -> sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
   }
 
   bool ready()
@@ -3067,6 +3074,7 @@ void monk_t::init_spells()
   spec.way_of_the_monk            = find_specialization_spell( "Way of the Monk" );
   spec.rising_sun_kick            = find_specialization_spell( "Rising Sun Kick" );
   spec.legacy_of_the_white_tiger  = find_specialization_spell( "Legacy of the White Tiger" );
+  spec.touch_of_death             = find_specialization_spell( "Touch of Death" );
 
   // Windwalker Passives
   spec.brewing_tigereye_brew      = find_specialization_spell( "Brewing: Tigereye Brew" );
@@ -3139,9 +3147,14 @@ void monk_t::init_spells()
   passives.surging_mist           = find_class_spell( "Surging Mist" );
 
   // GLYPHS
-  glyph.fortifying_brew    = find_glyph( "Glyph of Fortifying Brew"    );
-  glyph.mana_tea           = find_glyph( "Glyph of Mana Tea"           );
+  glyph.touch_of_death     = find_glyph( "Glyph of Touch of Death" );
   glyph.targeted_expulsion = find_glyph( "Glyph of Targeted Expulsion" );
+  glyph.expel_harm         = find_glyph( "Glyph of Expel Harm" );
+  glyph.fortifying_brew    = find_glyph( "Glyph of Fortifying Brew"    );
+  glyph.guard              = find_glyph( "Glyph of Guard" );
+  glyph.keg_smash          = find_glyph( "Glyph of Keg Smash" );
+  glyph.mana_tea           = find_glyph( "Glyph of Mana Tea"           );
+
 
   //MASTERY
   mastery.bottled_fury        = find_mastery_spell( MONK_WINDWALKER );
@@ -3304,6 +3317,7 @@ void monk_t::init_gains()
   gain.spinning_crane_kick = get_gain( "spinning_crane_kick" );
   gain.surging_mist = get_gain( "surging_mist" );
   gain.tier15_2pc_melee = get_gain( "tier15_2pc_melee" );
+  gain.gift_of_the_ox = get_gain( "gift_of_the_ox" );
 }
 
 // monk_t::init_procs =======================================================
@@ -3321,6 +3335,7 @@ void monk_t::init_procs()
   proc.tier17_4pc_heal = get_proc( "tier17_2pc_heal" );
   proc.tigereye_brew = get_proc( "tigereye_brew" );
   proc.tigereye_brew_wasted = get_proc( "tigereye_brew_wasted" );
+  proc.gift_of_the_ox = get_proc( "gift_of_the_ox" );
 }
 
 // monk_t::reset ============================================================
