@@ -1748,7 +1748,7 @@ struct touch_of_death_t : public monk_melee_attack_t
   bool ready()
   {
     if ( target -> health_percentage() > 10)
-      return true;
+      return false;
 
     return monk_melee_attack_t::ready();
   }
