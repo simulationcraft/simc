@@ -3959,6 +3959,8 @@ void monk_t::apl_pre_brewmaster()
     else
       pre -> add_action( "potion,name=tolvir" );
   }
+
+  pre -> add_action( "dampen_harm" );
 }
 
 // Windwalker Pre-Combat Action Priority List ==========================
@@ -4052,42 +4054,34 @@ void monk_t::apl_combat_brewmaster()
   action_priority_list_t* aoe = get_action_priority_list( "aoe" );
 
   def -> add_action( "auto_attack" );
+  def -> add_action( this, "arcane_torrent", "if=energy<=40" );
   def -> add_action( this, "chi_sphere", "if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4" );
   def -> add_talent( this, "Chi Brew", "if=talent.chi_brew.enabled&chi=0" );
-  def -> add_talent( this, "Chi Explosion", "if=buff.shuffle.down&chi>=2" );
-  def -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.amount&stagger.amount%health.max*100>20-buff.shuffle.remains", "Purify off stagger, being more liberal the longer time remains on shuffle." );
-  def -> add_action( this, "Blackout Kick", "if=!talent.chi_explosion.enabled&buff.shuffle.remains<=1.5" );
-  def -> add_action( this, "Blackout Kick", "if=!talent.chi_explosion.enabled&chi=chi.max&energy.time_to_max<=2" );
-  def -> add_action( this, "Blackout Kick", "if=!talent.chi_explosion.enabled&chi>=chi.max-1&cooldown.keg_smash.remains<=1" );
   def -> add_talent( this, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down&buff.elusive_brew_activated.down" );
   def -> add_action( this, "Fortifying Brew", "if=incoming_damage_1500ms&buff.dampen_harm.down&buff.elusive_brew_activated.down" );
   def -> add_action( this, "Elusive Brew", "if=buff.elusive_brew_stacks.react>=9&buff.dampen_harm.down&buff.elusive_brew_activated.down" );
-  def -> add_action( this, "Guard", "if=chi>=2" );
-  def -> add_action( this, "Keg Smash", "if=talent.ascension.enabled&chi<=3&cooldown.keg_smash.remains=0" );
-  def -> add_action( this, "Keg Smash", "if=!talent.ascension.enabled&chi<=2&cooldown.keg_smash.remains=0" );
-  def -> add_action( this, "Tiger Palm", "if=buff.tiger_power.remains<=3" );
-  def -> add_action( this, "Tiger Palm", "if=buff.tiger_power.down&energy.time_to_max>1" );
   def -> add_action( "invoke_xuen,if=talent.invoke_xuen.enabled&time>5" );
   def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
   def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
 
+  st -> add_action( this, "Guard", "if=chi>=4" );
+  st -> add_action( this, "Keg Smash", "if=chi<=4" );
   st -> add_talent( this, "Chi Burst", "if=talent.chi_burst.enabled&energy.time_to_max>3" );
   st -> add_talent( this, "Chi Wave", "if=talent.chi_wave.enabled&energy.time_to_max>3" );
   st -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking" );
-  st -> add_action( this, "Tiger Palm", "if=energy.time_to_max>=3" );
-  st -> add_action( this, "Jab", "if=talent.ascension.enabled&chi<=3&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
-  st -> add_action( this, "Jab", "if=!talent.ascension.enabled&chi<=2&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
+  st -> add_talent( this, "Chi Explosion", "if=chi>=3" );
+  st -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.amount&stagger.amount%health.max*100>20-buff.shuffle.remains", "Purify off stagger, being more liberal the longer time remains on shuffle." );
+  st -> add_action( this, "Blackout Kick", "if=!talent.chi_explosion.enabled&buff.shuffle.remains<=1.5" );
+  st -> add_action( this, "Blackout Kick", "if=!talent.chi_explosion.enabled&chi=chi.max&energy.time_to_max<=2" );
+  st -> add_action( this, "Blackout Kick", "if=!talent.chi_explosion.enabled&chi>=chi.max-1&cooldown.keg_smash.remains<=1" );
+  st -> add_action( this, "Expel Harm", "if=chi<=4&cooldown.expel_harm.remains=0&cooldown.keg_smash.remains>=1.5" );
+  st -> add_action( this, "Jab", "if=chi<=3&cooldown.keg_smash.remains>=1.5&cooldown.expel_harm.remains>=1.5" );
+  st -> add_action( this, "Tiger Palm", "if=(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
+  st -> add_action( this, "Tiger Palm", "if=cooldown.keg_smash.remains>=1.5" );
 
-  aoe -> add_talent( this, "Rushing Jade Wind" );
-  aoe -> add_action( this, "Spinning Crane Kick", "if=!talent.rushing_jade_wind.enabled&energy.time_to_max<=1" );
-  aoe -> add_action( this, "Tiger Palm", "if=buff.tiger_power.down" );
-  aoe -> add_talent( this, "Chi Burst" );
-  aoe -> add_talent( this, "Chi Wave" );
-  aoe -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking" );
-  aoe -> add_action( this, "Blackout Kick", "if=chi=chi.max" );
-  aoe -> add_action( this, "Jab", "if=talent.rushing_jade_wind.enabled&energy.time_to_max<cooldown.rushing_jade_wind.remains&energy.time_to_max<cooldown.keg_smash.remains" );
-  aoe -> add_action( this, "Spinning Crane Kick", "if=!talent.rushing_jade_wind.enabled&energy+energy.regen*cooldown.keg_smash.remains>=80" );
-  aoe -> add_action( this, "Tiger Palm" );
+  aoe->add_action(this, "Breath of Fire", "if=chi>=3&buff.shuffle.remains>=6&target.debuff.dizzying_haze.up");
+  aoe -> add_talent( this, "Rushing Jade Wind", "if=talent.rushing_jade_wind.enabled" );
+  aoe -> add_action( this, "Spinning Crane Kick" );
 }
 
 // Windwalker Combat Action Priority List ===============================
