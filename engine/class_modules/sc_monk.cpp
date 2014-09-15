@@ -25,7 +25,6 @@
   - Purifying Brew - mostly implemented
   - Level 75 talents - dampen harm added - currently stacks are consumed on all attacks, not just above 15% max hp
   - Black Ox Statue
-  - Gift of the Ox
 
   - Zen Meditation
   - Cache stagger_pct
@@ -3571,7 +3570,7 @@ double monk_t::composite_player_heal_multiplier( const action_state_t* s ) const
   if ( current_stance() == WISE_SERPENT )
     m *= 1.0 + active_stance_data( WISE_SERPENT ).effectN( 3 ).percent();
 
-  if (buff.guard->up())
+  if ( buff.guard -> up() )
     m *= 1.0 + spec.guard -> effectN( 2 ).percent();
 
   // Resolve applies a blanket -60% healing for tanks
@@ -3949,9 +3948,19 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
   if ( s -> action -> id == 124255 )
     return;
 
-  double stagger_dmg = s -> result_amount > 0 ? s -> result_amount * stagger_pct() : 0.0;
-  s -> result_amount -= stagger_dmg;
+  double stagger_dmg = 0;
 
+  if ( school == SCHOOL_PHYSICAL )
+  {
+    stagger_dmg += s -> result_amount > 0 ? s -> result_amount * stagger_pct() : 0.0;
+    s -> result_amount -= stagger_dmg;
+  }
+
+  if (school != SCHOOL_PHYSICAL && talent.soul_dance)
+  {
+    stagger_dmg += s -> result_amount > 0 ? s -> result_amount * ( stagger_pct() * talent.soul_dance -> effectN( 1 ).percent() ) : 0.0;
+    s -> result_amount -= stagger_dmg;
+  }
   // Hook up Stagger Mechanism
   if ( stagger_dmg > 0 )
     residual_action::trigger( active_actions.stagger_self_damage, this, stagger_dmg );
