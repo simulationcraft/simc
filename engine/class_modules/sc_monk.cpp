@@ -2650,6 +2650,11 @@ struct expel_harm_heal_t: public monk_heal_t
     base_multiplier = 7.5;
 
     attack = new attacks::expel_harm_t( &p );
+
+    if ( p.specialization == MONK_MISTWEAVER )
+      base_costs[RESOURCE_MANA] = 0;
+    else
+      base_costs[RESOURCE_ENERGY] = 0;
   }
 
   virtual void execute()
