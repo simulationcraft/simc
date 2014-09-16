@@ -2651,7 +2651,7 @@ struct expel_harm_heal_t: public monk_heal_t
 
     attack = new attacks::expel_harm_t( &p );
 
-    if ( p.specialization == MONK_MISTWEAVER )
+    if ( p.specialization() == MONK_MISTWEAVER )
       base_costs[RESOURCE_MANA] = 0;
     else
       base_costs[RESOURCE_ENERGY] = 0;
