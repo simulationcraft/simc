@@ -92,6 +92,7 @@ public:
     buff_t* combo_breaker_ce;
     buff_t* combo_breaker_tp;
     buff_t* dampen_harm;
+    buff_t* diffuse_magic;
     buff_t* elusive_brew_activated;
     buff_t* elusive_brew_stacks;
     buff_t* energizing_brew;
@@ -143,6 +144,7 @@ public:
     gain_t* surging_mist;
     gain_t* tier15_2pc_melee;
     gain_t* tier16_4pc_melee;
+    gain_t* healing_elixirs;
   } gain;
 
   struct procs_t
@@ -172,7 +174,7 @@ public:
     const spell_data_t* ascension;
     const spell_data_t* chi_brew;
 
-    const spell_data_t* deadly_reach;
+    const spell_data_t* ring_of_peace;
     const spell_data_t* charging_ox_wave;
     const spell_data_t* leg_sweep;
 
@@ -185,11 +187,11 @@ public:
     const spell_data_t* chi_torpedo;
 
     const spell_data_t* breath_of_the_serpent;
-    const spell_data_t* chi_explosion;
+    const spell_data_t* soul_dance;
     const spell_data_t* hurricane_strike;
+    const spell_data_t* chi_explosion;
     const spell_data_t* path_of_mists;
     const spell_data_t* serenity;
-    const spell_data_t* soul_dance;
   } talent;
 
   // Specialization
@@ -309,6 +311,7 @@ public:
     const spell_data_t* enveloping_mist;
     const spell_data_t* surging_mist;
     const spell_data_t* tier15_2pc_melee;
+    const spell_data_t* healing_elixirs;
 
   } passives;
 
@@ -2596,6 +2599,29 @@ struct dampen_harm_t : public monk_spell_t
   }
 };
 
+// ==========================================================================
+// Diffuse Magic
+// ==========================================================================
+
+struct diffuse_magic_t : public monk_spell_t
+{
+  diffuse_magic_t( monk_t& p, const std::string& options_str ) :
+    monk_spell_t( "diffuse_magic", &p, p.talent.diffuse_magic )
+  {
+    parse_options(NULL, options_str);
+    trigger_gcd = timespan_t::zero();
+    harmful = false;
+    base_dd_min = 0;
+    base_dd_max = 0;
+  }
+
+  virtual void execute()
+  {
+    p() -> buff.diffuse_magic -> trigger();
+    monk_spell_t::execute();
+  }
+};
+
 } // END spells NAMESPACE
 
 namespace heals {
@@ -2960,6 +2986,47 @@ struct gift_of_the_ox_t : public monk_heal_t
     }
   }
 };
+
+// ==========================================================================
+// Healing Elixirs
+// ==========================================================================
+
+struct healing_elixirs_t : public monk_heal_t
+{
+  healing_elixirs_t( monk_t& p, const std::string& options_str ) :
+    monk_heal_t( "healing_elixirs", p, p.talent.healing_elixers )
+  {
+    parse_options(nullptr, options_str);
+    harmful = false;
+    trigger_gcd = timespan_t::zero();
+    cooldown -> duration = p.talent.healing_elixers -> effectN( 1 ).period();
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> buff.tigereye_brew_use -> check() )
+      return true;
+
+    if ( p() -> buff.elusive_brew_activated -> check() )
+      return true;
+
+    if ( p() -> buff.mana_tea -> check() )
+      return true;
+
+    if ( player -> health_percentage() < 35)
+      return true;
+
+    return false;
+  }
+
+  virtual void execute()
+  {
+      monk_heal_t::execute();
+
+      double amount_healed = player -> resources.max[RESOURCE_HEALTH] * p() -> passives.healing_elixirs -> effectN( 1 ).percent();
+      player -> resource_gain( RESOURCE_HEALTH, amount_healed, p() -> gain.healing_elixirs, this );
+  }
+};
 } // end namespace heals
 
 namespace absorbs {
@@ -3081,18 +3148,20 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "surging_mist"          ) return new           surging_mist_t( *this, options_str );
   if ( name == "crackling_jade_lightning" ) return new crackling_jade_lightning_t( *this, options_str );
   // Talents
+  if ( name == "chi_wave"              ) return new               chi_wave_t( this, options_str );
+  if ( name == "zen_sphere"            ) return new             zen_sphere_t( *this, options_str );
+  if ( name == "chi_burst"             ) return new              chi_burst_t( this, options_str );
   if ( name == "chi_sphere"            ) return new             chi_sphere_t( this, options_str ); // For Power Strikes
   if ( name == "chi_brew"              ) return new               chi_brew_t( this, options_str );
-  if ( name == "zen_sphere"            ) return new            zen_sphere_t( *this, options_str );
-  if ( name == "chi_wave"              ) return new               chi_wave_t( this, options_str );
-  if ( name == "chi_burst"             ) return new              chi_burst_t( this, options_str );
+  if ( name == "healing_elixers"       ) return new        healing_elixirs_t( *this, options_str );
+  if ( name == "dampen_harm"           ) return new            dampen_harm_t( *this, options_str );
+  if ( name == "diffuse_magic"         ) return new          diffuse_magic_t( *this, options_str );
   if ( name == "rushing_jade_wind"     ) return new    spinning_crane_kick_t( this, options_str );
   if ( name == "invoke_xuen"           ) return new             xuen_spell_t( this, options_str );
   if ( name == "chi_torpedo"           ) return new            chi_torpedo_t( this, options_str );
   if ( name == "hurricane_strike"      ) return new       hurricane_strike_t( this, options_str );
   if ( name == "chi_explosion"         ) return new          chi_explosion_t( this, options_str );
   if ( name == "serenity"              ) return new               serenity_t( this, options_str );
-  if ( name == "dampen_harm"           ) return new           dampen_harm_t( *this, options_str );
   return base_t::create_action( name, options_str );
 }
 
@@ -3127,21 +3196,36 @@ void monk_t::init_spells()
   base_t::init_spells();
 
   //TALENTS
-  talent.ascension                = find_talent_spell( "Ascension" );
-  talent.zen_sphere               = find_talent_spell( "Zen Sphere" );
-  talent.invoke_xuen              = find_talent_spell( "Invoke Xuen, the White Tiger", "invoke_xuen" );
+  talent.celerity                 = find_talent_spell( "Celerity" );
+  talent.tigers_lust              = find_talent_spell( "Tiger's Lust" );
+  talent.momentum                 = find_talent_spell( "Momentum" );
+
   talent.chi_wave                 = find_talent_spell( "Chi Wave" );
+  talent.zen_sphere               = find_talent_spell( "Zen Sphere" );
   talent.chi_burst                = find_talent_spell( "Chi Burst" );
-  talent.chi_brew                 = find_talent_spell( "Chi Brew" );
-  talent.rushing_jade_wind        = find_talent_spell( "Rushing Jade Wind" );
-  talent.chi_torpedo              = find_talent_spell( "Chi Torpedo" );
+
   talent.power_strikes            = find_talent_spell( "Power Strikes" );
+  talent.ascension                = find_talent_spell( "Ascension" );
+  talent.chi_brew                 = find_talent_spell( "Chi Brew" );
+
+  talent.ring_of_peace            = find_talent_spell( "Ring of Peace" );
+  talent.charging_ox_wave         = find_talent_spell( "Charging Ox Wave" );
+  talent.leg_sweep                = find_talent_spell( "Leg Sweep" );
+
+  talent.healing_elixers          = find_talent_spell( "Healing Elixirs" );
+  talent.dampen_harm              = find_talent_spell( "Dampen Harm" );
+  talent.diffuse_magic            = find_talent_spell( "Diffuse Magic" );
+
+  talent.rushing_jade_wind        = find_talent_spell( "Rushing Jade Wind" );
+  talent.invoke_xuen              = find_talent_spell( "Invoke Xuen, the White Tiger", "invoke_xuen" );
+  talent.chi_torpedo              = find_talent_spell( "Chi Torpedo" );
+
+  talent.breath_of_the_serpent    = find_talent_spell( "Breath of the Serpent" );
   talent.soul_dance               = find_talent_spell( "Soul Dance" );
   talent.hurricane_strike         = find_talent_spell( "Hurricane Strike" );
   talent.chi_explosion            = find_talent_spell( "Chi Explosion" );
-  talent.serenity                 = find_talent_spell( "Serenity" );
   talent.path_of_mists            = find_talent_spell( "Path of Mists" );
-  talent.dampen_harm              = find_talent_spell( "Dampen Harm" );
+  talent.serenity                 = find_talent_spell( "Serenity" );
 
   // PERKS
   perk.improved_guard                   = find_perk_spell( "Improved Guard" );
@@ -3231,6 +3315,7 @@ void monk_t::init_spells()
   passives.tier15_2pc_melee       = find_spell( 138311 );
   passives.enveloping_mist        = find_class_spell( "Enveloping Mist" );
   passives.surging_mist           = find_class_spell( "Surging Mist" );
+  passives.healing_elixirs        = find_spell( 134563 );
 
   // GLYPHS
   glyph.touch_of_death     = find_glyph( "Glyph of Touch of Death" );
@@ -3326,11 +3411,13 @@ void monk_t::create_buffs()
   buff.rushing_jade_wind = buff_creator_t( this, "rushing_jade_wind", talent.rushing_jade_wind )
     .cd( timespan_t::zero() );
 
-  buff.serenity = buff_creator_t( this, "serenity", talent.serenity );
-  
-  buff.dampen_harm  =  buff_creator_t( this, "dampen_harm", talent.dampen_harm )
+  buff.dampen_harm  = buff_creator_t( this, "dampen_harm", talent.dampen_harm )
     .cd( timespan_t::zero() )
     .max_stack( 3 );
+
+  buff.diffuse_magic = buff_creator_t(this, "diffuse_magic", talent.diffuse_magic);
+
+  buff.serenity = buff_creator_t(this, "serenity", talent.serenity);
 
   // Brewmaster
   buff.bladed_armor = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
@@ -3913,6 +4000,10 @@ void monk_t::target_mitigation( school_e school,
     buff.dampen_harm -> decrement(); // A stack will only be removed if the reduction was applied.
   }
 
+  // Diffuse Magic
+  if ( buff.diffuse_magic -> up() && school != SCHOOL_PHYSICAL)
+    s -> result_amount *= 1.0 + buff.diffuse_magic -> data().effectN( 1 ).percent();
+
   //Fortifying Brew
   if ( buff.fortifying_brew -> check() )
     s -> result_amount *= 1.0 + buff.fortifying_brew -> data().effectN( 2 ).percent();
@@ -4108,6 +4199,7 @@ void monk_t::apl_combat_brewmaster()
 
   def -> add_action( this, "chi_sphere", "if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4" );
   def -> add_talent( this, "Chi Brew", "if=talent.chi_brew.enabled&chi=0" );
+  def -> add_action( this, "Gift of the Ox", "if=buff.gift_of_the_ox.react&incoming_damage_1500ms");
   def -> add_talent( this, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down&buff.elusive_brew_activated.down" );
   def -> add_action( this, "Fortifying Brew", "if=incoming_damage_1500ms&buff.dampen_harm.down&buff.elusive_brew_activated.down" );
   def -> add_action( this, "Elusive Brew", "if=buff.elusive_brew_stacks.react>=9&buff.dampen_harm.down&buff.elusive_brew_activated.down" );
