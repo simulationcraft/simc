@@ -580,7 +580,10 @@ struct water_elemental_pet_t : public pet_t
     {
       m *= 1.0 + o() -> buffs.rune_of_power -> data().effectN( 3 ).percent();
     }
-
+    if ( o() -> talents.incanters_flow -> ok() )
+    {
+      m *= 1.0 + ( o() -> buffs.incanters_flow -> stack() ) * ( find_spell( 116267 ) -> effectN( 1 ).percent() );
+    }
     // Orc racial
     if ( owner -> race == RACE_ORC )
       m *= 1.0 + find_spell( 21563 ) -> effectN( 1 ).percent();
