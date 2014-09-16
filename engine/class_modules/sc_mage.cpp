@@ -2147,7 +2147,13 @@ struct combustion_t : public mage_spell_t
 
       residual_periodic_state_t* combustion_dot_state_t = debug_cast<residual_periodic_state_t*>( combustion_dot -> state );
       const residual_periodic_state_t* ignite_dot_state_t = debug_cast<const residual_periodic_state_t*>( ignite_dot -> state );
-      combustion_dot_state_t -> tick_amount = ignite_dot_state_t -> tick_amount * 8/10  ; // 8s of ignite damage, distributed over 10 seconds as combustion damage.
+
+      // Combustion tooltip: "equal to X seconds of Ignite's current damage
+      // done over <Combustion's duration>". Compute this by using Ignite's
+      // tick damage, number of seconds, and Combustion's base duration.
+      double base_duration = p() -> find_spell( 83853, "combustion_dot" ) -> duration().total_seconds();
+      combustion_dot_state_t -> tick_amount = ignite_dot_state_t -> tick_amount *
+                                              data().effectN( 1 ).base_value()  / base_duration;
     }
   }
 
