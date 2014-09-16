@@ -20,15 +20,6 @@ actions.precombat=flask,type=greater_draenic_stamina_flask
 actions.precombat+=/food,type=sleeper_surprise
 actions.precombat+=/stance,choose=sturdy_ox
 actions.precombat+=/snapshot_stats
-actions.precombat+=/dampen_harm
-
-
-# Executed every time the actor is available.
-
-actions.precombat=flask,type=greater_draenic_stamina_flask
-actions.precombat+=/food,type=sleeper_surprise
-actions.precombat+=/stance,choose=sturdy_ox
-actions.precombat+=/snapshot_stats
 actions.precombat+=/dampen_harm,if=talent.dampen_harm.enabled
 
 
