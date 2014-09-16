@@ -329,6 +329,7 @@ public:
     cooldowns( cooldowns_t() ),
     passives( passives_t() ),
     procs( procs_t() ),
+    rppm_defender_of_the_light( *this, 0, RPPM_HASTE ),
     spells( spells_t() ),
     talents( talents_t() ),
     glyphs( glyphs_t() ),
@@ -338,8 +339,7 @@ public:
     bom_up( false ),
     last_extra_regen( timespan_t::from_seconds( 0.0 ) ),
     extra_regen_period( timespan_t::from_seconds( 0.0 ) ),
-    extra_regen_percent( 0.0 ),
-    rppm_defender_of_the_light( *this, 0, RPPM_HASTE )
+    extra_regen_percent( 0.0 )
   {
     active_beacon_of_light             = 0;
     active_censure                     = 0;

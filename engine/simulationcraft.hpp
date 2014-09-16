@@ -4445,8 +4445,8 @@ struct player_t : public actor_t
   bool action_queued;
   bool first_cast;
   action_t* last_foreground_action;
-  std::vector<action_t*> off_gcdactions; // Returns all off gcd abilities used since the last gcd.
   action_t* last_gcd_action;
+  std::vector<action_t*> off_gcdactions; // Returns all off gcd abilities used since the last gcd.
 
   // Delay time used by "cast_delay" expression to determine when an action
   // can be used at minimum after a spell cast has finished, including GCD

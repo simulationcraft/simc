@@ -1407,21 +1407,21 @@ void item::spellbound_runic_band( special_effect_t& effect,
   maintenance_check( 528 );
 
   player_t* p = item.player;
-  const spell_data_t* driver = item.player -> find_spell( effect.spell_id );
-  buff_t* buff;
+  const spell_data_t* driver = p -> find_spell( effect.spell_id );
+  buff_t* buff = 0;
 
-  if ( item.player -> convert_hybrid_stat( STAT_STRENGTH ) )
-    buff = buff_t::find( item.player, "archmages_greater_incandescence_str" );
-  else if ( item.player -> convert_hybrid_stat( STAT_AGILITY ) )
-    buff = buff_t::find( item.player, "archmages_greater_incandescence_agi" );
-  else if ( item.player -> convert_hybrid_stat( STAT_INTELLECT ) )
-    buff = buff_t::find( item.player, "archmages_greater_incandescence_int" );
+  if ( p -> convert_hybrid_stat( STAT_STRENGTH ) )
+    buff = buff_t::find( p, "archmages_greater_incandescence_str" );
+  else if ( p -> convert_hybrid_stat( STAT_AGILITY ) )
+    buff = buff_t::find( p, "archmages_greater_incandescence_agi" );
+  else if ( p -> convert_hybrid_stat( STAT_INTELLECT ) )
+    buff = buff_t::find( p, "archmages_greater_incandescence_int" );
 
   effect.ppm_ = -1.0 * driver -> real_ppm();
   effect.custom_buff = buff;
   effect.type = SPECIAL_EFFECT_EQUIP;
 
-  new dbc_proc_callback_t( item.player, effect );
+  new dbc_proc_callback_t( p, effect );
 }
 
 void item::spellbound_solium_band( special_effect_t& effect,
@@ -1430,21 +1430,21 @@ void item::spellbound_solium_band( special_effect_t& effect,
   maintenance_check( 528 );
 
   player_t* p = item.player;
-  const spell_data_t* driver = item.player -> find_spell( effect.spell_id );
-  buff_t* buff;
+  const spell_data_t* driver = p -> find_spell( effect.spell_id );
+  buff_t* buff = 0;
 
-  if ( item.player -> convert_hybrid_stat( STAT_STRENGTH ) )
-    buff = buff_t::find( item.player, "archmages_incandescence_str" );
-  else if ( item.player -> convert_hybrid_stat( STAT_AGILITY ) )
-    buff = buff_t::find( item.player, "archmages_incandescence_agi" );
-  else if ( item.player -> convert_hybrid_stat( STAT_INTELLECT ) )
-    buff = buff_t::find( item.player, "archmages_incandescence_int" );
+  if ( p -> convert_hybrid_stat( STAT_STRENGTH ) )
+    buff = buff_t::find( p, "archmages_incandescence_str" );
+  else if ( p -> convert_hybrid_stat( STAT_AGILITY ) )
+    buff = buff_t::find( p, "archmages_incandescence_agi" );
+  else if ( p -> convert_hybrid_stat( STAT_INTELLECT ) )
+    buff = buff_t::find( p, "archmages_incandescence_int" );
 
   effect.ppm_ = -1.0 * driver -> real_ppm();
   effect.custom_buff = buff;
   effect.type = SPECIAL_EFFECT_EQUIP;
 
-  new dbc_proc_callback_t( item.player, effect );
+  new dbc_proc_callback_t( p, effect );
 }
 
 void item::black_blood_of_yshaarj( special_effect_t& effect,
