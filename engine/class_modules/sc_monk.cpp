@@ -178,7 +178,7 @@ public:
     const spell_data_t* charging_ox_wave;
     const spell_data_t* leg_sweep;
 
-    const spell_data_t* healing_elixers;
+    const spell_data_t* healing_elixirs;
     const spell_data_t* dampen_harm;
     const spell_data_t* diffuse_magic;
 
@@ -2994,12 +2994,12 @@ struct gift_of_the_ox_t : public monk_heal_t
 struct healing_elixirs_t : public monk_heal_t
 {
   healing_elixirs_t( monk_t& p, const std::string& options_str ) :
-    monk_heal_t( "healing_elixirs", p, p.talent.healing_elixers )
+    monk_heal_t( "healing_elixirs", p, p.talent.healing_elixirs )
   {
     parse_options(nullptr, options_str);
     harmful = false;
     trigger_gcd = timespan_t::zero();
-    cooldown -> duration = p.talent.healing_elixers -> effectN( 1 ).period();
+    cooldown -> duration = p.talent.healing_elixirs -> effectN( 1 ).period();
   }
 
   virtual bool ready()
@@ -3013,8 +3013,8 @@ struct healing_elixirs_t : public monk_heal_t
     if ( p() -> buff.mana_tea -> check() )
       return true;
 
-    if ( player -> health_percentage() < 35)
-      return true;
+    //if ( p() -> health_percentage() < 35)
+    //  return true;
 
     return false;
   }
@@ -3153,7 +3153,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "chi_burst"             ) return new              chi_burst_t( this, options_str );
   if ( name == "chi_sphere"            ) return new             chi_sphere_t( this, options_str ); // For Power Strikes
   if ( name == "chi_brew"              ) return new               chi_brew_t( this, options_str );
-  if ( name == "healing_elixers"       ) return new        healing_elixirs_t( *this, options_str );
+  if ( name == "healing_elixirs"       ) return new        healing_elixirs_t( *this, options_str );
   if ( name == "dampen_harm"           ) return new            dampen_harm_t( *this, options_str );
   if ( name == "diffuse_magic"         ) return new          diffuse_magic_t( *this, options_str );
   if ( name == "rushing_jade_wind"     ) return new    spinning_crane_kick_t( this, options_str );
@@ -3212,7 +3212,7 @@ void monk_t::init_spells()
   talent.charging_ox_wave         = find_talent_spell( "Charging Ox Wave" );
   talent.leg_sweep                = find_talent_spell( "Leg Sweep" );
 
-  talent.healing_elixers          = find_talent_spell( "Healing Elixirs" );
+  talent.healing_elixirs          = find_talent_spell( "Healing Elixirs" );
   talent.dampen_harm              = find_talent_spell( "Dampen Harm" );
   talent.diffuse_magic            = find_talent_spell( "Diffuse Magic" );
 
