@@ -601,10 +601,12 @@ void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, player
   if ( p -> sim -> report_precision < 0 )
     p -> sim -> report_precision = 2;
 
+  scale_metric_e sm = p -> sim -> scaling -> scaling_metric;
+
   writer.begin_tag( "scale_factors" );
 
-  gear_stats_t& sf = p -> scaling;
-  gear_stats_t& sf_norm = p -> scaling_normalized;
+  gear_stats_t& sf = p -> scaling[ sm ];
+  gear_stats_t& sf_norm = p -> scaling_normalized[ sm ];
 
   writer.begin_tag( "weights" );
 
@@ -616,7 +618,7 @@ void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, player
       writer.print_attribute( "name", util::stat_type_abbrev( i ) );
       writer.print_attribute( "value", util::to_string( sf.get_stat( i ), p -> sim -> report_precision ) );
       writer.print_attribute( "normalized", util::to_string( sf_norm.get_stat( i ), p -> sim -> report_precision ) );
-      writer.print_attribute( "scaling_error", util::to_string( p -> scaling_error.get_stat( i ), p -> sim -> report_precision ) );
+      writer.print_attribute( "scaling_error", util::to_string( p -> scaling_error[ sm ].get_stat( i ), p -> sim -> report_precision ) );
       writer.print_attribute( "delta", util::to_string( p -> sim -> scaling -> stats.get_stat( i ) ) );
 
       writer.end_tag( "stat" );
@@ -632,8 +634,8 @@ void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, player
 
     if ( i > 0 )
     {
-      if ( ( ( p -> scaling.get_stat( p -> scaling_stats[ i - 1 ] ) - p -> scaling.get_stat( p -> scaling_stats[ i ] ) )
-             > sqrt ( p -> scaling_compare_error.get_stat( p -> scaling_stats[ i - 1 ] ) * p -> scaling_compare_error.get_stat( p -> scaling_stats[ i - 1 ] ) / 4 + p -> scaling_compare_error.get_stat( p -> scaling_stats[ i ] ) * p -> scaling_compare_error.get_stat( p -> scaling_stats[ i ] ) / 4 ) * 2 ) )
+      if ( ( ( p -> scaling[ sm ].get_stat( p -> scaling_stats[ i - 1 ] ) - p -> scaling[ sm ].get_stat( p -> scaling_stats[ i ] ) )
+             > sqrt ( p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ i - 1 ] ) * p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ i - 1 ] ) / 4 + p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ i ] ) * p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ i ] ) / 4 ) * 2 ) )
         writer.print_attribute( "relative_to_previous", ">" );
       else
         writer.print_attribute( "relative_to_previous", "=" );
@@ -648,32 +650,24 @@ void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, player
   {
     writer.begin_tag( "dps_per_point" );
     writer.print_attribute( "stat", util::stat_type_abbrev( p -> normalize_by() ) );
-    writer.print_attribute( "value", util::to_string( p -> scaling.get_stat( p -> normalize_by() ), p -> sim -> report_precision ) );
+    writer.print_attribute( "value", util::to_string( p -> scaling[ sm ].get_stat( p -> normalize_by() ), p -> sim -> report_precision ) );
     writer.end_tag( "dps_per_point" );
   }
   if ( p -> sim -> scaling -> scale_lag )
   {
     writer.begin_tag( "scale_lag_ms" );
-    writer.print_attribute( "value", util::to_string( p -> scaling_lag, p -> sim -> report_precision ) );
-    writer.print_attribute( "error", util::to_string( p -> scaling_lag_error, p -> sim -> report_precision ) );
+    writer.print_attribute( "value", util::to_string( p -> scaling_lag[ sm ], p -> sim -> report_precision ) );
+    writer.print_attribute( "error", util::to_string( p -> scaling_lag_error[ sm ], p -> sim -> report_precision ) );
     writer.end_tag( "scale_lag_ms" );
   }
 
-
   std::string lootrank    = ri.gear_weights_lootrank_link;
   std::string wowhead_std = ri.gear_weights_wowhead_std_link;
-  std::string wowhead_alt = ri.gear_weights_wowhead_alt_link;
 
   writer.begin_tag( "link" );
   writer.print_attribute( "name", "wowhead" );
   writer.print_attribute( "type", "ranking" );
   writer.print_attribute_unescaped( "href", wowhead_std );
-  writer.end_tag( "link" );
-
-  writer.begin_tag( "link" );
-  writer.print_attribute( "name", "wowhead_alt" );
-  writer.print_attribute( "type", "ranking" );
-  writer.print_attribute_unescaped( "href", wowhead_alt );
   writer.end_tag( "link" );
 
   writer.begin_tag( "link" );

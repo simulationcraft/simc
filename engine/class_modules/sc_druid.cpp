@@ -2676,8 +2676,8 @@ public:
 
   bear_attack_t( const std::string& n, druid_t* p,
                  const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( n, p, s ), rage_gain( p -> get_gain( name() ) ),
-    rage_amount( 0.0 ), rage_tick_amount( 0.0 )
+    base_t( n, p, s ), rage_amount( 0.0 ), 
+    rage_tick_amount( 0.0 ),  rage_gain( p -> get_gain( name() ) )
   {}
 
   virtual timespan_t gcd() const
@@ -6069,7 +6069,7 @@ void druid_t::apl_feral()
 
   // Add in rejuv blanketing for nature's vigil -- not fully optimized
   def -> add_action( this, "rejuvenation", "cycle_targets=1,max_cycle_targets=3,if=talent.natures_vigil.enabled&!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)" );
-  def -> add_talent( this, "natures_vigil" );
+  def -> add_talent( this, "Nature's Vigil" );
   def -> add_action( this, "rejuvenation", "cycle_targets=1,if=talent.natures_vigil.enabled&!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)" );  
   def -> add_action( this, "rejuvenation", "cycle_targets=1,if=talent.natures_vigil.enabled&buff.natures_vigil.up" );  
 

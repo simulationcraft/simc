@@ -1345,6 +1345,7 @@ public:
   {
     allow_keyboard_navigation = false;
   }
+
 private:
   void update_progress( int p )
   {
@@ -1432,7 +1433,13 @@ private slots:
     mainWindow -> updateWebView( this );
   }
   void linkClickedSlot( const QUrl& url )
-  { load( url ); }
+  {
+    if ( url.isLocalFile() )
+      load( url );
+    else
+      QDesktopServices::openUrl( url );
+  }
+
 public slots:
   void hideSearchBox()
   {

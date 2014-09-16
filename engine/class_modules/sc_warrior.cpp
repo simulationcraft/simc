@@ -5016,7 +5016,7 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-// druid_t::composite_player_heal_multiplier ================================
+// warrior_t::composite_player_heal_multiplier ================================
 
 double warrior_t::composite_player_heal_multiplier( const action_state_t* s ) const
 {
@@ -5029,7 +5029,7 @@ double warrior_t::composite_player_heal_multiplier( const action_state_t* s ) co
   return m;
 }
 
-// druid_t::composite_player_absorb_multiplier ================================
+// warrior_t::composite_player_absorb_multiplier ================================
 
 double warrior_t::composite_player_absorb_multiplier( const action_state_t* s ) const
 {

@@ -40,13 +40,13 @@ actions+=/kill_shot,if=focus.time_to_max%(1+buff.steady_focus.value)>action.aime
 actions+=/glaive_toss
 actions+=/powershot,if=focus.time_to_max%(1+buff.steady_focus.value)>cast_time
 actions+=/barrage
-actions+=/steady_shot,if=buff.pre_steady_focus.up&focus+14+18*(1+buff.steady_focus.value)<120
+# Pool max focus for rapid fire so we can spam AimedShot with Careful Aim buff
+actions+=/steady_shot,if=buff.careful_aim.down&cast_time*focus.deficit%(14+focus.regen*(1+buff.steady_focus.value))>cooldown.rapid_fire.remains
+actions+=/steady_shot,if=buff.pre_steady_focus.up&focus+14+18*(1+buff.steady_focus.value)<focus.max
 actions+=/aimed_shot,if=talent.focusing_shot.enabled
 actions+=/aimed_shot,if=focus+focus.regen*(1+buff.steady_focus.value)*cast_time>=85
 actions+=/aimed_shot,if=buff.thrill_of_the_hunt.react&focus+focus.regen*(1+buff.steady_focus.value)*cast_time>=65
-actions+=/aimed_shot,if=cooldown.fervor.remains>=20&(focus+(focus.regen*(1+buff.steady_focus.value)+5)*cast_time)>=85
-actions+=/aimed_shot,if=cooldown.fervor.remains<=cast_time
-actions+=/focusing_shot,if=focus+50+12*(1+buff.steady_focus.value)<120
+actions+=/focusing_shot,if=focus+50+12*(1+buff.steady_focus.value)<focus.max
 actions+=/steady_shot
 
 actions.careful_aim=chimaera_shot
@@ -54,9 +54,9 @@ actions.careful_aim+=/kill_shot,if=focus.time_to_max%(1+buff.steady_focus.value)
 actions.careful_aim+=/glaive_toss
 actions.careful_aim+=/powershot,if=focus.time_to_max%(1+buff.steady_focus.value)>cast_time
 actions.careful_aim+=/barrage
-actions.careful_aim+=/steady_shot,if=buff.pre_steady_focus.up&focus+14+18*(1+buff.steady_focus.value)<120
+actions.careful_aim+=/steady_shot,if=buff.pre_steady_focus.up&focus+14+18*(1+buff.steady_focus.value)<focus.max
 actions.careful_aim+=/aimed_shot
-actions.careful_aim+=/focusing_shot,if=focus+50+12*(1+buff.steady_focus.value)<120
+actions.careful_aim+=/focusing_shot,if=focus+50+12*(1+buff.steady_focus.value)<focus.max
 actions.careful_aim+=/steady_shot
 
 head=rylakstalkers_headguard,id=115545,bonus_id=567

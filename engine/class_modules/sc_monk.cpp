@@ -25,7 +25,6 @@
   - Purifying Brew - mostly implemented
   - Level 75 talents - dampen harm added - currently stacks are consumed on all attacks, not just above 15% max hp
   - Black Ox Statue
-  - Gift of the Ox
 
   - Zen Meditation
   - Cache stagger_pct
@@ -93,6 +92,7 @@ public:
     buff_t* combo_breaker_ce;
     buff_t* combo_breaker_tp;
     buff_t* dampen_harm;
+    buff_t* diffuse_magic;
     buff_t* elusive_brew_activated;
     buff_t* elusive_brew_stacks;
     buff_t* energizing_brew;
@@ -103,6 +103,7 @@ public:
     buff_t* rushing_jade_wind;
     buff_t* serenity;
     buff_t* shuffle;
+    buff_t* gift_of_the_ox;
     buff_t* tiger_power;
     buff_t* tiger_strikes;
     buff_t* tigereye_brew;
@@ -143,6 +144,7 @@ public:
     gain_t* surging_mist;
     gain_t* tier15_2pc_melee;
     gain_t* tier16_4pc_melee;
+    gain_t* healing_elixirs;
   } gain;
 
   struct procs_t
@@ -156,7 +158,6 @@ public:
     proc_t* tier17_4pc_heal;
     proc_t* tigereye_brew;
     proc_t* tigereye_brew_wasted;
-    proc_t* gift_of_the_ox;
   } proc;
 
   struct talents_t
@@ -173,11 +174,11 @@ public:
     const spell_data_t* ascension;
     const spell_data_t* chi_brew;
 
-    const spell_data_t* deadly_reach;
+    const spell_data_t* ring_of_peace;
     const spell_data_t* charging_ox_wave;
     const spell_data_t* leg_sweep;
 
-    const spell_data_t* healing_elixers;
+    const spell_data_t* healing_elixirs;
     const spell_data_t* dampen_harm;
     const spell_data_t* diffuse_magic;
 
@@ -186,11 +187,11 @@ public:
     const spell_data_t* chi_torpedo;
 
     const spell_data_t* breath_of_the_serpent;
-    const spell_data_t* chi_explosion;
+    const spell_data_t* soul_dance;
     const spell_data_t* hurricane_strike;
+    const spell_data_t* chi_explosion;
     const spell_data_t* path_of_mists;
     const spell_data_t* serenity;
-    const spell_data_t* soul_dance;
   } talent;
 
   // Specialization
@@ -310,6 +311,7 @@ public:
     const spell_data_t* enveloping_mist;
     const spell_data_t* surging_mist;
     const spell_data_t* tier15_2pc_melee;
+    const spell_data_t* healing_elixirs;
 
   } passives;
 
@@ -1613,6 +1615,11 @@ struct melee_t: public monk_melee_attack_t
       else
         trigger_brew( 3.0 * weapon -> swing_time.total_seconds() / 3.6 );
     }
+
+    if (p()->spec.brewing_elusive_brew->ok() && s->result == RESULT_MULTISTRIKE)
+    {
+      p() -> buff.gift_of_the_ox -> trigger();
+    }
   }
 };
 
@@ -2592,6 +2599,29 @@ struct dampen_harm_t : public monk_spell_t
   }
 };
 
+// ==========================================================================
+// Diffuse Magic
+// ==========================================================================
+
+struct diffuse_magic_t : public monk_spell_t
+{
+  diffuse_magic_t( monk_t& p, const std::string& options_str ) :
+    monk_spell_t( "diffuse_magic", &p, p.talent.diffuse_magic )
+  {
+    parse_options(NULL, options_str);
+    trigger_gcd = timespan_t::zero();
+    harmful = false;
+    base_dd_min = 0;
+    base_dd_max = 0;
+  }
+
+  virtual void execute()
+  {
+    p() -> buff.diffuse_magic -> trigger();
+    monk_spell_t::execute();
+  }
+};
+
 } // END spells NAMESPACE
 
 namespace heals {
@@ -2646,6 +2676,11 @@ struct expel_harm_heal_t: public monk_heal_t
     base_multiplier = 7.5;
 
     attack = new attacks::expel_harm_t( &p );
+
+    if ( p.specialization() == MONK_MISTWEAVER )
+      base_costs[RESOURCE_MANA] = 0;
+    else
+      base_costs[RESOURCE_ENERGY] = 0;
   }
 
   virtual void execute()
@@ -2924,6 +2959,74 @@ struct zen_sphere_t: public monk_heal_t
     zen_sphere_detonate_heal -> execute();
   }
 };
+
+
+// ==========================================================================
+// Gift of the Ox
+// ==========================================================================
+
+struct gift_of_the_ox_t : public monk_heal_t
+{
+  gift_of_the_ox_t( monk_t& p, const std::string& options_str ) :
+    monk_heal_t( "gift_of_the_ox", p, p.spec.gift_of_the_ox )
+  {
+    parse_options(nullptr, options_str);
+    harmful = false;
+    trigger_gcd = timespan_t::zero();
+    attack_power_mod.direct = 0.40; // Hardcoded Sep-15-2014
+  }
+
+  virtual void execute()
+  {
+    if ( p() -> buff.gift_of_the_ox -> up() )
+    {
+      monk_heal_t::execute();
+
+      p() -> buff.gift_of_the_ox -> decrement();
+    }
+  }
+};
+
+// ==========================================================================
+// Healing Elixirs
+// ==========================================================================
+
+struct healing_elixirs_t : public monk_heal_t
+{
+  healing_elixirs_t( monk_t& p, const std::string& options_str ) :
+    monk_heal_t( "healing_elixirs", p, p.talent.healing_elixirs )
+  {
+    parse_options(nullptr, options_str);
+    harmful = false;
+    trigger_gcd = timespan_t::zero();
+    cooldown -> duration = p.talent.healing_elixirs -> effectN( 1 ).period();
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> buff.tigereye_brew_use -> check() )
+      return true;
+
+    if ( p() -> buff.elusive_brew_activated -> check() )
+      return true;
+
+    if ( p() -> buff.mana_tea -> check() )
+      return true;
+
+    //if ( p() -> health_percentage() < 35)
+    //  return true;
+
+    return false;
+  }
+
+  virtual void execute()
+  {
+      monk_heal_t::execute();
+
+      double amount_healed = player -> resources.max[RESOURCE_HEALTH] * p() -> passives.healing_elixirs -> effectN( 1 ).percent();
+      player -> resource_gain( RESOURCE_HEALTH, amount_healed, p() -> gain.healing_elixirs, this );
+  }
+};
 } // end namespace heals
 
 namespace absorbs {
@@ -3036,6 +3139,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "fortifying_brew"       ) return new        fortifying_brew_t( *this, options_str );
   if ( name == "elusive_brew"          ) return new           elusive_brew_t( *this, options_str );
   if ( name == "purifying_brew"        ) return new         purifying_brew_t( *this, options_str );
+  if ( name == "gift_of_the_ox"        ) return new         gift_of_the_ox_t( *this, options_str );
   // Mistweaver
   if ( name == "enveloping_mist"       ) return new        enveloping_mist_t( *this, options_str );
   if ( name == "mana_tea"              ) return new               mana_tea_t( *this, options_str );
@@ -3044,18 +3148,20 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "surging_mist"          ) return new           surging_mist_t( *this, options_str );
   if ( name == "crackling_jade_lightning" ) return new crackling_jade_lightning_t( *this, options_str );
   // Talents
+  if ( name == "chi_wave"              ) return new               chi_wave_t( this, options_str );
+  if ( name == "zen_sphere"            ) return new             zen_sphere_t( *this, options_str );
+  if ( name == "chi_burst"             ) return new              chi_burst_t( this, options_str );
   if ( name == "chi_sphere"            ) return new             chi_sphere_t( this, options_str ); // For Power Strikes
   if ( name == "chi_brew"              ) return new               chi_brew_t( this, options_str );
-  if ( name == "zen_sphere"            ) return new            zen_sphere_t( *this, options_str );
-  if ( name == "chi_wave"              ) return new               chi_wave_t( this, options_str );
-  if ( name == "chi_burst"             ) return new              chi_burst_t( this, options_str );
+  if ( name == "healing_elixirs"       ) return new        healing_elixirs_t( *this, options_str );
+  if ( name == "dampen_harm"           ) return new            dampen_harm_t( *this, options_str );
+  if ( name == "diffuse_magic"         ) return new          diffuse_magic_t( *this, options_str );
   if ( name == "rushing_jade_wind"     ) return new    spinning_crane_kick_t( this, options_str );
   if ( name == "invoke_xuen"           ) return new             xuen_spell_t( this, options_str );
   if ( name == "chi_torpedo"           ) return new            chi_torpedo_t( this, options_str );
   if ( name == "hurricane_strike"      ) return new       hurricane_strike_t( this, options_str );
   if ( name == "chi_explosion"         ) return new          chi_explosion_t( this, options_str );
   if ( name == "serenity"              ) return new               serenity_t( this, options_str );
-  if ( name == "dampen_harm"           ) return new           dampen_harm_t( *this, options_str );
   return base_t::create_action( name, options_str );
 }
 
@@ -3090,21 +3196,36 @@ void monk_t::init_spells()
   base_t::init_spells();
 
   //TALENTS
-  talent.ascension                = find_talent_spell( "Ascension" );
-  talent.zen_sphere               = find_talent_spell( "Zen Sphere" );
-  talent.invoke_xuen              = find_talent_spell( "Invoke Xuen, the White Tiger", "invoke_xuen" );
+  talent.celerity                 = find_talent_spell( "Celerity" );
+  talent.tigers_lust              = find_talent_spell( "Tiger's Lust" );
+  talent.momentum                 = find_talent_spell( "Momentum" );
+
   talent.chi_wave                 = find_talent_spell( "Chi Wave" );
+  talent.zen_sphere               = find_talent_spell( "Zen Sphere" );
   talent.chi_burst                = find_talent_spell( "Chi Burst" );
-  talent.chi_brew                 = find_talent_spell( "Chi Brew" );
-  talent.rushing_jade_wind        = find_talent_spell( "Rushing Jade Wind" );
-  talent.chi_torpedo              = find_talent_spell( "Chi Torpedo" );
+
   talent.power_strikes            = find_talent_spell( "Power Strikes" );
+  talent.ascension                = find_talent_spell( "Ascension" );
+  talent.chi_brew                 = find_talent_spell( "Chi Brew" );
+
+  talent.ring_of_peace            = find_talent_spell( "Ring of Peace" );
+  talent.charging_ox_wave         = find_talent_spell( "Charging Ox Wave" );
+  talent.leg_sweep                = find_talent_spell( "Leg Sweep" );
+
+  talent.healing_elixirs          = find_talent_spell( "Healing Elixirs" );
+  talent.dampen_harm              = find_talent_spell( "Dampen Harm" );
+  talent.diffuse_magic            = find_talent_spell( "Diffuse Magic" );
+
+  talent.rushing_jade_wind        = find_talent_spell( "Rushing Jade Wind" );
+  talent.invoke_xuen              = find_talent_spell( "Invoke Xuen, the White Tiger", "invoke_xuen" );
+  talent.chi_torpedo              = find_talent_spell( "Chi Torpedo" );
+
+  talent.breath_of_the_serpent    = find_talent_spell( "Breath of the Serpent" );
   talent.soul_dance               = find_talent_spell( "Soul Dance" );
   talent.hurricane_strike         = find_talent_spell( "Hurricane Strike" );
   talent.chi_explosion            = find_talent_spell( "Chi Explosion" );
-  talent.serenity                 = find_talent_spell( "Serenity" );
   talent.path_of_mists            = find_talent_spell( "Path of Mists" );
-  talent.dampen_harm              = find_talent_spell( "Dampen Harm" );
+  talent.serenity                 = find_talent_spell( "Serenity" );
 
   // PERKS
   perk.improved_guard                   = find_perk_spell( "Improved Guard" );
@@ -3194,6 +3315,7 @@ void monk_t::init_spells()
   passives.tier15_2pc_melee       = find_spell( 138311 );
   passives.enveloping_mist        = find_class_spell( "Enveloping Mist" );
   passives.surging_mist           = find_class_spell( "Surging Mist" );
+  passives.healing_elixirs        = find_spell( 134563 );
 
   // GLYPHS
   glyph.touch_of_death     = find_glyph( "Glyph of Touch of Death" );
@@ -3289,11 +3411,13 @@ void monk_t::create_buffs()
   buff.rushing_jade_wind = buff_creator_t( this, "rushing_jade_wind", talent.rushing_jade_wind )
     .cd( timespan_t::zero() );
 
-  buff.serenity = buff_creator_t( this, "serenity", talent.serenity );
-  
-  buff.dampen_harm  =  buff_creator_t( this, "dampen_harm", talent.dampen_harm )
+  buff.dampen_harm  = buff_creator_t( this, "dampen_harm", talent.dampen_harm )
     .cd( timespan_t::zero() )
     .max_stack( 3 );
+
+  buff.diffuse_magic = buff_creator_t(this, "diffuse_magic", talent.diffuse_magic);
+
+  buff.serenity = buff_creator_t(this, "serenity", talent.serenity);
 
   // Brewmaster
   buff.bladed_armor = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
@@ -3319,6 +3443,8 @@ void monk_t::create_buffs()
 
   // Windwalker
   buff.chi_sphere = buff_creator_t( this, "chi_sphere" ).max_stack( 5 );
+
+  buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox" ).max_stack( 99 );
 
   buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok", find_class_spell( "Combo Breaker: Blackout Kick" ) );
 
@@ -3383,7 +3509,6 @@ void monk_t::init_procs()
   proc.tier17_4pc_heal = get_proc( "tier17_2pc_heal" );
   proc.tigereye_brew = get_proc( "tigereye_brew" );
   proc.tigereye_brew_wasted = get_proc( "tigereye_brew_wasted" );
-  proc.gift_of_the_ox = get_proc( "gift_of_the_ox" );
 }
 
 // monk_t::reset ============================================================
@@ -3536,6 +3661,9 @@ double monk_t::composite_player_heal_multiplier( const action_state_t* s ) const
 
   if ( current_stance() == WISE_SERPENT )
     m *= 1.0 + active_stance_data( WISE_SERPENT ).effectN( 3 ).percent();
+
+  if ( buff.guard -> up() )
+    m *= 1.0 + spec.guard -> effectN( 2 ).percent();
 
   // Resolve applies a blanket -60% healing for tanks
   if ( spec.resolve -> ok() )
@@ -3872,6 +4000,10 @@ void monk_t::target_mitigation( school_e school,
     buff.dampen_harm -> decrement(); // A stack will only be removed if the reduction was applied.
   }
 
+  // Diffuse Magic
+  if ( buff.diffuse_magic -> up() && school != SCHOOL_PHYSICAL)
+    s -> result_amount *= 1.0 + buff.diffuse_magic -> data().effectN( 1 ).percent();
+
   //Fortifying Brew
   if ( buff.fortifying_brew -> check() )
     s -> result_amount *= 1.0 + buff.fortifying_brew -> data().effectN( 2 ).percent();
@@ -3912,9 +4044,15 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
   if ( s -> action -> id == 124255 )
     return;
 
-  double stagger_dmg = s -> result_amount > 0 ? s -> result_amount * stagger_pct() : 0.0;
-  s -> result_amount -= stagger_dmg;
+  double stagger_dmg = 0;
 
+  if ( school == SCHOOL_PHYSICAL )
+    stagger_dmg += s -> result_amount > 0 ? s -> result_amount * stagger_pct() : 0.0;
+
+  if (school != SCHOOL_PHYSICAL && talent.soul_dance)
+    stagger_dmg += s -> result_amount > 0 ? s -> result_amount * ( stagger_pct() * talent.soul_dance -> effectN( 1 ).percent() ) : 0.0;
+
+  s->result_amount -= stagger_dmg;
   // Hook up Stagger Mechanism
   if ( stagger_dmg > 0 )
     residual_action::trigger( active_actions.stagger_self_damage, this, stagger_dmg );
@@ -4049,14 +4187,19 @@ void monk_t::apl_pre_mistweaver()
 
 void monk_t::apl_combat_brewmaster()
 {
+  std::vector<std::string> racial_actions = get_racial_actions();
   action_priority_list_t* def = get_action_priority_list( "default" );
   action_priority_list_t* st = get_action_priority_list( "st" );
   action_priority_list_t* aoe = get_action_priority_list( "aoe" );
 
   def -> add_action( "auto_attack" );
-  def -> add_action( this, "arcane_torrent", "if=energy<=40" );
+
+  for (size_t i = 0; i < racial_actions.size(); i++)
+    def -> add_action( racial_actions[i] + ",if=energy<=40" );
+
   def -> add_action( this, "chi_sphere", "if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4" );
   def -> add_talent( this, "Chi Brew", "if=talent.chi_brew.enabled&chi=0" );
+  def -> add_action( this, "Gift of the Ox", "if=buff.gift_of_the_ox.react&incoming_damage_1500ms");
   def -> add_talent( this, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down&buff.elusive_brew_activated.down" );
   def -> add_action( this, "Fortifying Brew", "if=incoming_damage_1500ms&buff.dampen_harm.down&buff.elusive_brew_activated.down" );
   def -> add_action( this, "Elusive Brew", "if=buff.elusive_brew_stacks.react>=9&buff.dampen_harm.down&buff.elusive_brew_activated.down" );

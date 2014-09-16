@@ -386,7 +386,7 @@ QString automation::auto_rotation_sim( QString player_class,
 
     // add action footer, if it exists
     if ( player_rotationFooter.size() > 0 )
-      action_block += "#action_footer" + player_rotationFooter + "\n";
+      action_block += "#action footer\n" + player_rotationFooter + "\n";
 
     // build profile from components
     profile += tokenize( player_class ) + "=";

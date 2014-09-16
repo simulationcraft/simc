@@ -443,7 +443,7 @@ public:
   virtual double composite_multistrike_multiplier( const action_state_t* s ) const
   { 
     double m = ab::composite_multistrike_multiplier( s );
-    m *= 1.0 + p() -> buffs.heavy_shot -> data().effectN( 1 ).percent() * p() -> buffs.heavy_shot -> stack();
+    m *= 1.0 + p() -> buffs.heavy_shot -> value();
     m *= 1.0 + p() -> specs.survivalist -> effectN( 2 ).percent();
     return m; 
   }
@@ -3422,8 +3422,9 @@ void hunter_t::create_buffs()
   buffs.tier16_4pc_bm_brutal_kinship = buff_creator_t( this, 144670, "tier16_4pc_brutal_kinship" )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buffs.heavy_shot   = buff_creator_t( this, 167165, "heavy_shot" );
-
+  buffs.heavy_shot   = buff_creator_t( this, 167165, "heavy_shot" )
+    .default_value( find_spell( 167165 ) -> effectN( 1 ).percent() )
+    .refresh_behavior( BUFF_REFRESH_EXTEND );
 }
 
 // hunter_t::init_gains =====================================================
@@ -3619,28 +3620,28 @@ void hunter_t::apl_bm()
       default_list -> add_action( "potion,name=virmens_bite,if=buff.bestial_wrath.up" );
   }
   
-  default_list ->add_talent(this, "Dire Beast");
-  default_list ->add_talent(this, "Fervor", "if=focus<=65");
-  default_list ->add_action(this, "Bestial Wrath", "if=focus>60&!buff.bestial_wrath.up");
-  default_list ->add_action(this, "Multi-Shot", "if=active_enemies>5|(active_enemies>1&pet.cat.buff.beast_cleave.down)");
-  default_list ->add_talent(this, "Stampede", "if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))");
-  default_list ->add_talent(this, "Barrage", "if=active_enemies>1");
-  default_list ->add_talent(this, "A Murder of Crows");
-  default_list ->add_action(this, "Kill Shot","if=focus.time_to_max>gcd");
-  default_list ->add_action(this, "Kill Command");
-  default_list ->add_talent(this, "Focusing Shot", "if=focus<50");
-  default_list ->add_action(this, "Cobra Shot", "if=buff.pre_steady_focus.up&focus+14+18*(1+buff.steady_focus.value)<120" );
-  default_list ->add_talent(this, "Glaive Toss");
-  default_list ->add_talent(this, "Barrage");
-  default_list ->add_talent(this, "Powershot", "if=focus.time_to_max>cast_time");
-  default_list ->add_action(this, "Cobra Shot", "if=active_enemies>5");
-  default_list ->add_action(this, "Arcane Shot", "if=buff.thrill_of_the_hunt.react|buff.bestial_wrath.up");
-  default_list ->add_action("focus_fire,five_stacks=1");
-  default_list ->add_action(this, "Arcane Shot", "if=focus>=64");
+  default_list -> add_talent(this, "Dire Beast");
+  default_list -> add_talent(this, "Fervor", "if=focus<=65");
+  default_list -> add_action(this, "Bestial Wrath", "if=focus>60&!buff.bestial_wrath.up");
+  default_list -> add_action(this, "Multi-Shot", "if=active_enemies>5|(active_enemies>1&pet.cat.buff.beast_cleave.down)");
+  default_list -> add_talent(this, "Stampede", "if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))");
+  default_list -> add_talent(this, "Barrage", "if=active_enemies>1");
+  default_list -> add_talent(this, "A Murder of Crows");
+  default_list -> add_action(this, "Kill Shot","if=focus.time_to_max>gcd");
+  default_list -> add_action(this, "Kill Command");
+  default_list -> add_talent(this, "Focusing Shot", "if=focus<50");
+  default_list -> add_action(this, "Cobra Shot", "if=buff.pre_steady_focus.up&focus+14+18*(1+buff.steady_focus.value)<120" );
+  default_list -> add_talent(this, "Glaive Toss");
+  default_list -> add_talent(this, "Barrage");
+  default_list -> add_talent(this, "Powershot", "if=focus.time_to_max>cast_time");
+  default_list -> add_action(this, "Cobra Shot", "if=active_enemies>5");
+  default_list -> add_action(this, "Arcane Shot", "if=buff.thrill_of_the_hunt.react|buff.bestial_wrath.up");
+  default_list -> add_action("focus_fire,five_stacks=1");
+  default_list -> add_action(this, "Arcane Shot", "if=focus>=64");
   if ( level >= 81 )
-    default_list ->add_action(this, "Cobra Shot");
-  else
-    default_list ->add_action(this, "Steady Shot");
+    default_list -> add_action(this, "Cobra Shot");
+  else              
+    default_list -> add_action(this, "Steady Shot");
 }
 
 // Marksman Action List ======================================================================
@@ -3685,9 +3686,9 @@ void hunter_t::apl_mm()
     careful_aim -> add_talent( this, "Glaive Toss" );
     careful_aim -> add_talent( this, "Powershot", "if=focus.time_to_max%(1+buff.steady_focus.value)>cast_time" );
     careful_aim -> add_talent( this, "Barrage" );
-    careful_aim -> add_action( this, "Steady Shot", "if=buff.pre_steady_focus.up&focus+14+18*(1+buff.steady_focus.value)<120" );
+    careful_aim -> add_action( this, "Steady Shot", "if=buff.pre_steady_focus.up&focus+14+18*(1+buff.steady_focus.value)<focus.max" );
     careful_aim -> add_action( this, "Aimed Shot" );
-    careful_aim -> add_talent( this, "Focusing Shot", "if=focus+50+12*(1+buff.steady_focus.value)<120" );
+    careful_aim -> add_talent( this, "Focusing Shot", "if=focus+50+12*(1+buff.steady_focus.value)<focus.max" );
     careful_aim -> add_action( this, "Steady Shot" );
   }
 
@@ -3696,13 +3697,12 @@ void hunter_t::apl_mm()
   default_list -> add_talent( this, "Glaive Toss" );
   default_list -> add_talent( this, "Powershot", "if=focus.time_to_max%(1+buff.steady_focus.value)>cast_time" );
   default_list -> add_talent( this, "Barrage" );
-  default_list -> add_action( this, "Steady Shot", "if=buff.pre_steady_focus.up&focus+14+18*(1+buff.steady_focus.value)<120" );
+  default_list -> add_action( this, "Steady Shot", "if=buff.careful_aim.down&cast_time*focus.deficit%(14+focus.regen*(1+buff.steady_focus.value))>cooldown.rapid_fire.remains", "Pool max focus for rapid fire so we can spam AimedShot with Careful Aim buff" );
+  default_list -> add_action( this, "Steady Shot", "if=buff.pre_steady_focus.up&focus+14+18*(1+buff.steady_focus.value)<focus.max" );
   default_list -> add_action( this, "Aimed Shot", "if=talent.focusing_shot.enabled" );
   default_list -> add_action( this, "Aimed Shot", "if=focus+focus.regen*(1+buff.steady_focus.value)*cast_time>=85" );
   default_list -> add_action( this, "Aimed Shot", "if=buff.thrill_of_the_hunt.react&focus+focus.regen*(1+buff.steady_focus.value)*cast_time>=65" );
-  default_list -> add_action( this, "Aimed Shot", "if=cooldown.fervor.remains>=20&(focus+(focus.regen*(1+buff.steady_focus.value)+5)*cast_time)>=85" );
-  default_list -> add_action( this, "Aimed Shot", "if=cooldown.fervor.remains<=cast_time" );
-  default_list -> add_talent( this, "Focusing Shot", "if=focus+50+12*(1+buff.steady_focus.value)<120" );
+  default_list -> add_talent( this, "Focusing Shot", "if=focus+50+12*(1+buff.steady_focus.value)<focus.max" );
   default_list -> add_action( this, "Steady Shot" );
 }
 
@@ -3913,7 +3913,8 @@ double hunter_t::composite_player_critical_damage_multiplier() const
   if ( buffs.sniper_training -> up() )
     cdm += cache.mastery_value();
   
-  if ( sets.has_set_bonus( HUNTER_MARKSMANSHIP, T17, B4 ) && buffs.rapid_fire -> up() )
+  // we use check() for rapid_fire becuase it's usage is reported from value() above
+  if ( sets.has_set_bonus( HUNTER_MARKSMANSHIP, T17, B4 ) && buffs.rapid_fire -> check() )
   {
     // deadly_aim_driver
     double seconds_buffed = floor( buffs.rapid_fire -> elapsed( sim -> current_time ).total_seconds() );

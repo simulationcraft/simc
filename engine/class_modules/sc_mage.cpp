@@ -64,8 +64,6 @@ using namespace residual_action;
 
 namespace { // UNNAMED NAMESPACE
 
-struct incanters_flow_t;
-
 // ==========================================================================
 // Mage
 // ==========================================================================
@@ -160,7 +158,7 @@ public:
     buff_t* fiery_adept;
     buff_t* enhanced_pyrotechnics;
     buff_t* enhanced_frostbolt;
-    incanters_flow_t* incanters_flow;
+    buff_t* incanters_flow;
   } buffs;
 
   // Cooldowns
@@ -580,7 +578,10 @@ struct water_elemental_pet_t : public pet_t
     {
       m *= 1.0 + o() -> buffs.rune_of_power -> data().effectN( 3 ).percent();
     }
-
+    if ( o() -> talents.incanters_flow -> ok() )
+    {
+      m *= 1.0 + ( o() -> buffs.incanters_flow -> current_stack ) * ( find_spell( 116267 ) -> effectN( 1 ).percent() );
+    }
     // Orc racial
     if ( owner -> race == RACE_ORC )
       m *= 1.0 + find_spell( 21563 ) -> effectN( 1 ).percent();
@@ -2146,7 +2147,7 @@ struct combustion_t : public mage_spell_t
 
       residual_periodic_state_t* combustion_dot_state_t = debug_cast<residual_periodic_state_t*>( combustion_dot -> state );
       const residual_periodic_state_t* ignite_dot_state_t = debug_cast<const residual_periodic_state_t*>( ignite_dot -> state );
-      combustion_dot_state_t -> tick_amount = ignite_dot_state_t -> tick_amount * 0.4; // Changed in 40% in WoD beta.
+      combustion_dot_state_t -> tick_amount = ignite_dot_state_t -> tick_amount * 8/10  ; // 8s of ignite damage, distributed over 10 seconds as combustion damage.
     }
   }
 
@@ -5480,7 +5481,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
         if ( !mage -> talents.incanters_flow -> ok() )
           return 0.0;
 
-        incanters_flow_t * flow = mage -> buffs.incanters_flow;
+        buff_t*flow = mage -> buffs.incanters_flow;
         if ( flow -> reverse )
           return flow -> current_stack == 1 ? 0.0: -1.0;
         else

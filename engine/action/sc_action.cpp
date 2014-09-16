@@ -291,6 +291,7 @@ action_t::action_t( action_e       ty,
   weapon_power_mod               = 1.0 / 3.5;
 
 
+  amount_delta                   = 0.0;
   base_dd_min                    = 0.0;
   base_dd_max                    = 0.0;
   base_td                        = 0.0;
@@ -476,8 +477,9 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
     case E_HEAL:
     case E_SCHOOL_DAMAGE:
     case E_HEALTH_LEECH:
-      spell_power_mod.direct = spelleffect_data.sp_coeff();
-      attack_power_mod.direct = spelleffect_data.ap_coeff(); // change to ap_coeff
+      spell_power_mod.direct  = spelleffect_data.sp_coeff();
+      attack_power_mod.direct = spelleffect_data.ap_coeff();
+      amount_delta            = spelleffect_data.m_delta();
       base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
       base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level );
       break;
@@ -503,7 +505,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
         case A_PERIODIC_DAMAGE:
         case A_PERIODIC_LEECH:
         case A_PERIODIC_HEAL:
-          spell_power_mod.tick = spelleffect_data.sp_coeff();
+          spell_power_mod.tick  = spelleffect_data.sp_coeff();
           attack_power_mod.tick = spelleffect_data.ap_coeff();
           base_td          = player -> dbc.effect_average( spelleffect_data.id(), player -> level );
         case A_PERIODIC_ENERGIZE:
@@ -521,8 +523,9 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
           }
           break;
         case A_SCHOOL_ABSORB:
-          spell_power_mod.direct = spelleffect_data.sp_coeff();
+          spell_power_mod.direct  = spelleffect_data.sp_coeff();
           attack_power_mod.direct = spelleffect_data.ap_coeff();
+          amount_delta            = spelleffect_data.m_delta();
           base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
           base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level );
           break;
@@ -799,6 +802,11 @@ double action_t::calculate_direct_amount( action_state_t* state )
   amount += spell_direct_power_coefficient( state ) * ( state -> composite_spell_power() );
   amount += attack_direct_power_coefficient( state ) * ( state -> composite_attack_power() );
   amount *= state -> composite_da_multiplier();
+
+  // damage variation in WoD is based on the delta field in the spell data, applied to entire amount
+  double delta_mod = amount_delta_modifier( state );
+  if ( ! sim -> average_range &&  delta_mod > 0 )
+    amount *= 1 + delta_mod / 2 * sim -> averaged_range( -1.0, 1.0 );
 
   // AoE with decay per target
   if ( state -> chain_target > 0 && base_add_multiplier != 1.0 )

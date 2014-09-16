@@ -79,11 +79,12 @@ struct compare_scale_factors
     player( p ), normalized( use_normalized ) {}
 
   bool operator()( const stat_e& l, const stat_e& r ) const
-  {
+  {  
+    scale_metric_e sm = player -> sim -> scaling -> scaling_metric;
     if ( normalized )
-      return player -> scaling_normalized.get_stat( l ) >  player -> scaling_normalized.get_stat( r );
+      return player -> scaling_normalized[ sm ].get_stat( l ) >  player -> scaling_normalized[ sm ].get_stat( r );
     else
-      return player -> scaling.get_stat( l ) >  player -> scaling.get_stat( r );
+      return player -> scaling[ sm ].get_stat( l ) >  player -> scaling[ sm ].get_stat( r );
   }
 };
 
@@ -111,7 +112,7 @@ scaling_t::scaling_t( sim_t* s ) :
   current_scaling_stat( STAT_NONE ),
   num_scaling_stats( 0 ),
   remaining_scaling_stats( 0 ),
-  scale_over(), scale_over_player()
+  scale_over(), scaling_metric( SCALE_METRIC_NONE ), scale_over_player()
 {
   create_options();
 }
@@ -292,38 +293,44 @@ void scaling_t::analyze_stats()
 
       if ( divisor < 0.0 ) divisor += ref_p -> over_cap[ stat ];
 
-      double delta_score = delta_p -> scales_over().value;
-      double   ref_score = ref_p -> scales_over().value;
-
-      double delta_error = delta_p -> scales_over().stddev * delta_sim -> confidence_estimator;
-      double   ref_error = ref_p -> scales_over().stddev * ref_sim -> confidence_estimator;
-
-      p -> scaling_delta_dps.set_stat( stat, delta_score );
-      
-      double score = ( delta_score - ref_score ) / divisor;
-      double error = delta_error * delta_error + ref_error * ref_error;
-      
-      if ( error > 0  )
-        error = sqrt( error );
-
-      error = fabs( error / divisor );
-
-      if ( fabs( divisor ) < 1.0 ) // For things like Weapon Speed, show the gain per 0.1 speed gain rather than every 1.0.
+      for ( scale_metric_e sm = SCALE_METRIC_NONE; sm < SCALE_METRIC_MAX; sm++ )
       {
-        score /= 10.0;
-        error /= 10.0;
-        delta_error /= 10.0;
+
+        double delta_score = delta_p -> scaling_for_metric( sm ).value;
+        double   ref_score = ref_p -> scaling_for_metric( sm ).value;
+
+        double delta_error = delta_p -> scaling_for_metric( sm ).stddev * delta_sim -> confidence_estimator;
+        double   ref_error = ref_p -> scaling_for_metric( sm ).stddev * ref_sim -> confidence_estimator;
+
+        // TODO: this is the only place in the entire code base where scaling_delta_dps shows up, 
+        // apart from declaration in simulationcraft.hpp line 4535. Possible to remove?
+        p -> scaling_delta_dps[ sm ].set_stat( stat, delta_score );
+
+        double score = ( delta_score - ref_score ) / divisor;
+        double error = delta_error * delta_error + ref_error * ref_error;
+
+        if ( error > 0 )
+          error = sqrt( error );
+
+        error = fabs( error / divisor );
+
+        if ( fabs( divisor ) < 1.0 ) // For things like Weapon Speed, show the gain per 0.1 speed gain rather than every 1.0.
+        {
+          score /= 10.0;
+          error /= 10.0;
+          delta_error /= 10.0;
+        }
+
+        analyze_ability_stats( stat, divisor, p, ref_p, delta_p );
+
+        if ( center )
+          p -> scaling_compare_error[ sm ].set_stat( stat, error );
+        else
+          p -> scaling_compare_error[ sm ].set_stat( stat, delta_error / divisor );
+
+        p -> scaling[ sm ].set_stat( stat, score );
+        p -> scaling_error[ sm ].set_stat( stat, error );
       }
-
-      analyze_ability_stats( stat, divisor, p, ref_p, delta_p );
-
-      if ( center )
-        p -> scaling_compare_error.set_stat( stat, error );
-      else
-        p -> scaling_compare_error.set_stat( stat, delta_error / divisor );
-
-      p -> scaling.set_stat( stat, score );
-      p -> scaling_error.set_stat( stat, error );
     }
 
     if ( debug_scale_factors )
@@ -415,19 +422,22 @@ void scaling_t::analyze_lag()
 
     // Calculate DPS difference per millisecond of lag
     double divisor = ( double ) ( delta_sim -> gcd_lag - ref_sim -> gcd_lag ).total_millis();
+    
+    for ( scale_metric_e sm = SCALE_METRIC_NONE; sm < SCALE_METRIC_MAX; sm++ )
+    {
+      double delta_score = delta_p -> scaling_for_metric( sm ).value;
+      double   ref_score = ref_p -> scaling_for_metric( sm ).value;
 
-    double delta_score = delta_p -> scales_over().value;
-    double   ref_score = ref_p -> scales_over().value;
+      double delta_error = delta_p -> scaling_for_metric( sm ).stddev * delta_sim -> confidence_estimator;
+      double ref_error = ref_p -> scaling_for_metric( sm ).stddev * ref_sim -> confidence_estimator;
+      double error = sqrt( delta_error * delta_error + ref_error * ref_error );
 
-    double delta_error = delta_p -> scales_over().stddev * delta_sim -> confidence_estimator;
-    double ref_error = ref_p -> scales_over().stddev * ref_sim -> confidence_estimator;
-    double error = sqrt ( delta_error * delta_error + ref_error * ref_error );
+      double score = ( delta_score - ref_score ) / divisor;
 
-    double score = ( delta_score - ref_score ) / divisor;
-
-    error = fabs( error / divisor );
-    p -> scaling_lag = score;
-    p -> scaling_lag_error = error;
+      error = fabs( error / divisor );
+      p -> scaling_lag[ sm ]       = score;
+      p -> scaling_lag_error[ sm ] = error;
+    }
   }
 
   if ( ref_sim != sim ) delete ref_sim;
@@ -446,20 +456,21 @@ void scaling_t::normalize()
   {
     player_t* p = sim -> player_list[ i ];
     if ( p -> quiet ) continue;
-
-    double divisor = p -> scaling.get_stat( p -> normalize_by() );
+    
+    scale_metric_e sm = p -> sim -> scaling -> scaling_metric;
+    double divisor = p -> scaling[ sm ].get_stat( p -> normalize_by() );
 
     if ( divisor == 0 ) continue;
 
     // hack to deal with weirdness in TMI calculations - always normalize using negative divisor
-    if ( util::str_compare_ci( scale_over, "tmi" ) || util::str_compare_ci( scale_over, "theck_meloree_index" ) )
+    if ( sm == SCALE_METRIC_TMI || sm == SCALE_METRIC_ETMI )
       divisor = - std::abs( divisor );
 
     for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
       if ( ! p -> scales_with[ j ] ) continue;
 
-      p -> scaling_normalized.set_stat( j, p -> scaling.get_stat( j ) / divisor );
+      p -> scaling_normalized[ sm ].set_stat( j, p -> scaling[ sm ].get_stat( j ) / divisor );
     }
   }
 }
@@ -469,6 +480,7 @@ void scaling_t::normalize()
 void scaling_t::analyze()
 {
   if ( sim -> is_canceled() ) return;
+  scaling_metric = util::parse_scale_metric( scale_over );
   init_deltas();
   analyze_stats();
   analyze_lag();
@@ -478,19 +490,19 @@ void scaling_t::analyze()
   {
     player_t* p = sim -> player_list[ i ];
     if ( p -> quiet ) continue;
-
+    
     // Sort scaling results
     for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
       if ( p -> scales_with[ j ] )
       {
-        double s = p -> scaling.get_stat( j );
+        double s = p -> scaling[ scaling_metric ].get_stat( j );
 
         if ( s ) p -> scaling_stats.push_back( j );
       }
     }
     // more hack to deal with TMI weirdness, this just determines sorting order, not what gets displayed on the chart
-    bool use_normalized = p -> scaling_normalized.get_stat( p -> normalize_by() ) > 0 || util::str_compare_ci( scale_over, "tmi" ) || util::str_compare_ci( scale_over, "theck_meloree_index" ) || util::str_compare_ci( scale_over, "etmi" );
+    bool use_normalized = p -> scaling_normalized[ scaling_metric ].get_stat( p -> normalize_by() ) > 0 || scaling_metric == SCALE_METRIC_TMI || scaling_metric == SCALE_METRIC_ETMI;
     range::sort( p -> scaling_stats, compare_scale_factors( p, use_normalized ) );
   }
 }

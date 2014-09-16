@@ -767,6 +767,22 @@ inline stat_e stat_from_attr( attribute_e a )
   return static_cast<stat_e>( a );
 }
 
+enum scale_metric_e
+{
+  SCALE_METRIC_NONE = 0,
+  SCALE_METRIC_DPS,
+  SCALE_METRIC_DPSE,
+  SCALE_METRIC_HPS,
+  SCALE_METRIC_HPSE,
+  SCALE_METRIC_DTPS,
+  SCALE_METRIC_DMG_TAKEN,
+  SCALE_METRIC_HTPS,
+  SCALE_METRIC_TMI,
+  SCALE_METRIC_ETMI,
+  SCALE_METRIC_DEATHS,
+  SCALE_METRIC_MAX
+};
+
 enum cache_e
 {
   CACHE_NONE = 0,
@@ -1264,6 +1280,7 @@ const char* proc_type_string          ( proc_types type );
 const char* proc_type2_string         ( proc_types2 type );
 const char* special_effect_string     ( special_effect_e type );
 const char* special_effect_source_string( special_effect_source_e type );
+const char* scale_metric_type_string  ( scale_metric_e );
 
 bool is_match_slot( slot_e slot );
 item_subclass_armor matching_armor_type ( player_e ptype );
@@ -1301,6 +1318,7 @@ result_e parse_result_type       ( const std::string& name );
 school_e parse_school_type       ( const std::string& name );
 slot_e parse_slot_type           ( const std::string& name );
 stat_e parse_stat_type           ( const std::string& name );
+scale_metric_e parse_scale_metric( const std::string& name );
 specialization_e parse_specialization_type( const std::string &name );
 
 const char* movement_direction_string( movement_direction_e );
@@ -2928,6 +2946,7 @@ struct scaling_t
   stat_e current_scaling_stat;
   int num_scaling_stats, remaining_scaling_stats;
   std::string scale_over;
+  scale_metric_e scaling_metric;
   std::string scale_over_player;
 
   // Gear delta for determining scale factors
@@ -3913,8 +3932,7 @@ struct player_processed_report_information_t
   std::string distribution_dps_chart, scaling_dps_chart, scale_factors_chart;
   std::string reforge_dps_chart, dps_error_chart, distribution_deaths_chart;
   std::string health_change_chart, health_change_sliding_chart;
-  std::string gear_weights_lootrank_link, gear_weights_wowhead_std_link, gear_weights_wowhead_alt_link, gear_weights_askmrrobot_link;
-  std::string gear_weights_pawn_std_string, gear_weights_pawn_alt_string;
+  std::string gear_weights_lootrank_link, gear_weights_wowhead_std_link, gear_weights_askmrrobot_link;
   std::string save_str;
   std::string save_gear_str;
   std::string save_talents_str;
@@ -4426,8 +4444,8 @@ struct player_t : public actor_t
   bool action_queued;
   bool first_cast;
   action_t* last_foreground_action;
-  std::vector<action_t*> off_gcdactions; // Returns all off gcd abilities used since the last gcd.
   action_t* last_gcd_action;
+  std::vector<action_t*> off_gcdactions; // Returns all off gcd abilities used since the last gcd.
 
   // Delay time used by "cast_delay" expression to determine when an action
   // can be used at minimum after a spell cast has finished, including GCD
@@ -4509,12 +4527,12 @@ struct player_t : public actor_t
   cooldown_t* legendary_tank_cloak_cd; // non-Null if item available
 
   // Scale Factors
-  gear_stats_t scaling;
-  gear_stats_t scaling_normalized;
-  gear_stats_t scaling_error;
-  gear_stats_t scaling_delta_dps;
-  gear_stats_t scaling_compare_error;
-  double scaling_lag, scaling_lag_error;
+  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling;
+  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_normalized;
+  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_error;
+  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_delta_dps;
+  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_compare_error;
+  std::array<double, SCALE_METRIC_MAX> scaling_lag, scaling_lag_error;
   std::array<bool, STAT_MAX> scales_with;
   std::array<double, STAT_MAX> over_cap;
   std::vector<stat_e> scaling_stats; // sorting vector
@@ -4997,6 +5015,7 @@ struct player_t : public actor_t
       name( name ), value( tl.mean() ), stddev( tl.mean_stddev() ) {}
   };
   scales_over_t scales_over();
+  scales_over_t scaling_for_metric( scale_metric_e metric );
 
   void change_position( position_e );
   position_e position() const
@@ -5634,6 +5653,7 @@ struct action_t : public noncopyable
   struct {
   double direct, tick;
   } attack_power_mod, spell_power_mod;
+  double amount_delta;
   timespan_t base_execute_time;
   timespan_t base_tick_time;
   timespan_t dot_duration;
@@ -5836,6 +5856,8 @@ public:
   virtual timespan_t composite_dot_duration( const action_state_t* ) const;
   virtual double attack_direct_power_coefficient( const action_state_t* ) const
   { return attack_power_mod.direct; }
+  virtual double amount_delta_modifier( const action_state_t* ) const
+  { return amount_delta; }
   virtual double attack_tick_power_coefficient( const action_state_t* ) const
   { return attack_power_mod.tick; }
   virtual double spell_direct_power_coefficient( const action_state_t* ) const

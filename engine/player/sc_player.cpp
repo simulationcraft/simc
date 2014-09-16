@@ -582,8 +582,6 @@ player_t::player_t( sim_t*             s,
   meta_gem( META_GEM_NONE ), matching_gear( false ),
   item_cooldown( cooldown_t( "item_cd", *this ) ),
   legendary_tank_cloak_cd( nullptr ),
-  // Scaling
-  scaling_lag( 0 ), scaling_lag_error( 0 ),
   // Movement & Position
   base_movement_speed( 7.0 ), passive_modifier( 0 ),
   x_position( 0.0 ), y_position( 0.0 ),
@@ -655,6 +653,8 @@ player_t::player_t( sim_t*             s,
 
   range::fill( scales_with, false );
   range::fill( over_cap, 0 );
+  range::fill( scaling_lag, 0 );
+  range::fill( scaling_lag_error, 0 );
 
   if ( ! is_pet() )
   {
@@ -4140,12 +4140,12 @@ stat_e player_t::normalize_by() const
   if ( sim -> normalized_stat != STAT_NONE )
     return sim -> normalized_stat;
 
-  const std::string& so = this -> sim -> scaling -> scale_over;
+  const scale_metric_e sm = this -> sim -> scaling -> scaling_metric;
 
   role_e role = primary_role();
   if ( role == ROLE_SPELL || role == ROLE_HEAL )
     return STAT_INTELLECT;
-  else if ( role == ROLE_TANK && ( util::str_compare_ci( so, "tmi" ) || util::str_compare_ci( so, "etmi" ) || util::str_compare_ci( so, "deaths" ) || util::str_compare_ci(so, "theck_meloree_index" ) ) )
+  else if ( role == ROLE_TANK && ( sm == SCALE_METRIC_TMI || sm == SCALE_METRIC_TMI || sm == SCALE_METRIC_DEATHS ) )
     return STAT_STAMINA;
   else if ( type == DRUID || type == HUNTER || type == SHAMAN || type == ROGUE || type == MONK )
     return STAT_AGILITY;
@@ -8631,6 +8631,36 @@ player_t::scales_over_t player_t::scales_over()
     return q -> collected_data.dtps;
 
   return q -> collected_data.dps;
+}
+
+player_t::scales_over_t player_t::scaling_for_metric( scale_metric_e metric )
+{
+  player_t* q = nullptr;
+  if ( ! sim -> scaling -> scale_over_player.empty() )
+    q = sim -> find_player( sim -> scaling -> scale_over_player );
+  if ( !q )
+    q = this;
+
+  switch ( metric )
+  {
+    case SCALE_METRIC_DPS:        return q -> collected_data.dps;
+    case SCALE_METRIC_DPSE:       return q -> collected_data.dpse;
+    case SCALE_METRIC_HPS:        return q -> collected_data.hps;
+    case SCALE_METRIC_HPSE:       return q -> collected_data.hpse;
+    case SCALE_METRIC_DTPS:       return q -> collected_data.dtps;
+    case SCALE_METRIC_DMG_TAKEN:  return q -> collected_data.dmg_taken;
+    case SCALE_METRIC_HTPS:       return q -> collected_data.htps;
+    case SCALE_METRIC_TMI:        return q -> collected_data.theck_meloree_index;
+    case SCALE_METRIC_ETMI:       return q -> collected_data.effective_theck_meloree_index;
+    case SCALE_METRIC_DEATHS:     return q -> collected_data.deaths;
+    default:
+      if ( q -> primary_role() == ROLE_TANK )
+        return q -> collected_data.dtps;
+      else if ( q -> primary_role() == ROLE_HEAL )
+        return q -> collected_data.hps;
+      else
+       return q -> collected_data.dps;
+  }
 }
 
 // Change the player position ( fron/back, etc. ) and update attack hit table
