@@ -3686,9 +3686,9 @@ void hunter_t::apl_mm()
     careful_aim -> add_talent( this, "Glaive Toss" );
     careful_aim -> add_talent( this, "Powershot", "if=focus.time_to_max%(1+buff.steady_focus.value)>cast_time" );
     careful_aim -> add_talent( this, "Barrage" );
-    careful_aim -> add_action( this, "Steady Shot", "if=buff.pre_steady_focus.up&focus+14+18*(1+buff.steady_focus.value)<120" );
+    careful_aim -> add_action( this, "Steady Shot", "if=buff.pre_steady_focus.up&focus+14+18*(1+buff.steady_focus.value)<focus.max" );
     careful_aim -> add_action( this, "Aimed Shot" );
-    careful_aim -> add_talent( this, "Focusing Shot", "if=focus+50+12*(1+buff.steady_focus.value)<120" );
+    careful_aim -> add_talent( this, "Focusing Shot", "if=focus+50+12*(1+buff.steady_focus.value)<focus.max" );
     careful_aim -> add_action( this, "Steady Shot" );
   }
 
@@ -3697,13 +3697,12 @@ void hunter_t::apl_mm()
   default_list -> add_talent( this, "Glaive Toss" );
   default_list -> add_talent( this, "Powershot", "if=focus.time_to_max%(1+buff.steady_focus.value)>cast_time" );
   default_list -> add_talent( this, "Barrage" );
-  default_list -> add_action( this, "Steady Shot", "if=buff.pre_steady_focus.up&focus+14+18*(1+buff.steady_focus.value)<120" );
+  default_list -> add_action( this, "Steady Shot", "if=buff.careful_aim.down&cast_time*focus.deficit%(14+focus.regen*(1+buff.steady_focus.value))>cooldown.rapid_fire.remains", "Pool max focus for rapid fire so we can spam AimedShot with Careful Aim buff" );
+  default_list -> add_action( this, "Steady Shot", "if=buff.pre_steady_focus.up&focus+14+18*(1+buff.steady_focus.value)<focus.max" );
   default_list -> add_action( this, "Aimed Shot", "if=talent.focusing_shot.enabled" );
   default_list -> add_action( this, "Aimed Shot", "if=focus+focus.regen*(1+buff.steady_focus.value)*cast_time>=85" );
   default_list -> add_action( this, "Aimed Shot", "if=buff.thrill_of_the_hunt.react&focus+focus.regen*(1+buff.steady_focus.value)*cast_time>=65" );
-  default_list -> add_action( this, "Aimed Shot", "if=cooldown.fervor.remains>=20&(focus+(focus.regen*(1+buff.steady_focus.value)+5)*cast_time)>=85" );
-  default_list -> add_action( this, "Aimed Shot", "if=cooldown.fervor.remains<=cast_time" );
-  default_list -> add_talent( this, "Focusing Shot", "if=focus+50+12*(1+buff.steady_focus.value)<120" );
+  default_list -> add_talent( this, "Focusing Shot", "if=focus+50+12*(1+buff.steady_focus.value)<focus.max" );
   default_list -> add_action( this, "Steady Shot" );
 }
 
