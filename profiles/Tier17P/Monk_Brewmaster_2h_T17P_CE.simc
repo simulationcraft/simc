@@ -1,6 +1,6 @@
 #!./simc 
 
-monk="Monk_Brewmaster_1h_T17P"
+monk="Monk_Brewmaster_2h_T17P_CE"
 level=100
 race=blood_elf
 role=tank
@@ -25,6 +25,16 @@ actions.precombat+=/dampen_harm
 
 # Executed every time the actor is available.
 
+actions.precombat=flask,type=greater_draenic_stamina_flask
+actions.precombat+=/food,type=sleeper_surprise
+actions.precombat+=/stance,choose=sturdy_ox
+actions.precombat+=/snapshot_stats
+actions.precombat+=/dampen_harm,if=talent.dampen_harm.enabled
+
+
+# Executed every time the actor is available.
+
+
 actions=auto_attack
 actions+=/arcane_torrent,if=energy<=40
 actions+=/use_item,slot=trinket1
@@ -42,12 +52,16 @@ actions.single_target+=/chi_wave,if=talent.chi_wave.enabled&energy.time_to_max>3
 actions.single_target+=/chi_explosion,if=chi>=3
 actions.single_target+=/expel_harm,if=chi<=4&cooldown.expel_harm.remains=0&cooldown.keg_smash.remains>=1.5
 actions.single_target+=/jab,if=chi<=3&cooldown.keg_smash.remains>=1.5&cooldown.expel_harm.remains>=1.5
-actions.single_target+=/tiger_palm,if=(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40
+actions.single_target+=/tiger_palm,if=(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40&cooldown.keg_smash.remains>=1.5
 actions.single_target+=/tiger_palm,if=cooldown.keg_smash.remains>=1.5
 
-actions.aoe=breath_of_fire,if=chi>=3&buff.shuffle.remains>=6&target.debuff.dizzying_haze.up
+actions.aoe=guard,if=chi>=4
+actions.aoe+=/breath_of_fire,if=chi>=3&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=1.5
+actions.aoe+=/chi_explosion,if=chi>=3
+actions.aoe+=/keg_smash,if=chi<=4
+actions.aoe+=/expel_harm,if=chi<=4&cooldown.expel_harm.remains=0&cooldown.keg_smash.remains>=1.5&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40
 actions.aoe+=/rushing_jade_wind,if=talent.rushing_jade_wind.enabled
-actions.aoe+=/spinning_crane_kick
+actions.aoe+=/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled
 
 
 head=primal_gladiators_headcover,id=115785
@@ -64,16 +78,14 @@ finger1=primal_gladiators_ring_of_cruelty,id=115608,enchant=gift_of_versatility
 finger2=primal_gladiators_ring_of_prowess,id=115609,enchant=gift_of_versatility
 trinket1=primal_gladiators_badge_of_adaptation,id=115495
 trinket2=primal_gladiators_insignia_of_conquest,id=111223
-main_hand=primal_gladiators_cleaver,id=111067,enchant_id=5352
-off_hand=primal_gladiators_cleaver,id=111067,enchant_id=5352
-
+main_hand=primal_gladiators_pike,id=111075,enchant_id=5352
 
 # Gear Summary
-# gear_agility=2343
-# gear_stamina=3197
-# gear_crit_rating=669
+# gear_agility=2378
+# gear_stamina=3248
+# gear_crit_rating=692
 # gear_haste_rating=325
-# gear_mastery_rating=1490
+# gear_mastery_rating=1513
 # gear_armor=950
 # gear_bonus_armor=89
 # gear_versatility_rating=752

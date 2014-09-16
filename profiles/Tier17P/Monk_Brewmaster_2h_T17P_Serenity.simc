@@ -1,6 +1,6 @@
 #!./simc 
 
-monk="Monk_Brewmaster_2h_T17P"
+monk="Monk_Brewmaster_2h_T17P_Serenity"
 level=100
 race=blood_elf
 role=tank
@@ -25,29 +25,46 @@ actions.precombat+=/dampen_harm
 
 # Executed every time the actor is available.
 
+actions.precombat=flask,type=greater_draenic_stamina_flask
+actions.precombat+=/food,type=sleeper_surprise
+actions.precombat+=/stance,choose=sturdy_ox
+actions.precombat+=/snapshot_stats
+actions.precombat+=/dampen_harm,if=talent.dampen_harm.enabled
+
+
+# Executed every time the actor is available.
+
 actions=auto_attack
 actions+=/arcane_torrent,if=energy<=40
 actions+=/use_item,slot=trinket1
-actions+=/chi_brew,if=talent.chi_brew.enabled&chi=0
-actions+=/dampen_harm,if=incoming_damage_1500ms&buff.fortifying_brew.down&buff.elusive_brew_activated.down
+actions+=/dampen_harm,if=talent.dampen_harm.enabled&incoming_damage_1500ms&buff.fortifying_brew.down&buff.elusive_brew_activated.down
 actions+=/fortifying_brew,if=incoming_damage_1500ms&buff.dampen_harm.down&buff.elusive_brew_activated.down
 actions+=/elusive_brew,if=buff.elusive_brew_stacks.react>=9&buff.dampen_harm.down&buff.elusive_brew_activated.down
 actions+=/invoke_xuen,if=talent.invoke_xuen.enabled
+actions+=/serenity,if=talent.serenity.enabled&energy<=40
 actions+=/run_action_list,name=single_target,if=active_enemies<5
 actions+=/run_action_list,name=aoe,if=active_enemies>5
 
-actions.single_target=/guard,if=chi>=4
+actions.single_target=blackout_kick,if=buff.shuffle.down
+actions.single_target+=/purifying_brew,if=!talent.chi_explosion.enabled&stagger.heavy
+actions.single_target+=/guard
 actions.single_target+=/keg_smash,if=chi<=4
 actions.single_target+=/chi_wave,if=talent.chi_wave.enabled&energy.time_to_max>3
-actions.single_target+=/chi_explosion,if=chi>=3
-actions.single_target+=/expel_harm,if=chi<=4&cooldown.expel_harm.remains=0&cooldown.keg_smash.remains>=1.5
+actions.single_target+=/blackout_kick,if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=1.5
+actions.single_target+=/blackout_kick,if=buff.serenity.up
+actions.single_target+=/blackout_kick,if=chi>=4
+actions.single_target+=/expel_harm,if=chi<=4&cooldown.expel_harm.remains=0&cooldown.keg_smash.remains>=1.5&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40
 actions.single_target+=/jab,if=chi<=3&cooldown.keg_smash.remains>=1.5&cooldown.expel_harm.remains>=1.5
+actions.single_target+=/purifying_brew,if=!talent.chi_explosion.enabled&stagger.moderate&buff.shuffle.remains>=6
 actions.single_target+=/tiger_palm,if=(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40
 actions.single_target+=/tiger_palm,if=cooldown.keg_smash.remains>=1.5
 
-actions.aoe=breath_of_fire,if=chi>=3&buff.shuffle.remains>=6&target.debuff.dizzying_haze.up
+actions.aoe=breath_of_fire,if=chi>=3&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=1.5
+actions.aoe+=/blackout_kick,if=buff.shuffle.remains<=3
+actions.aoe+=/keg_smash,if=chi<=4
+actions.aoe+=/expel_harm,if=chi<=4&cooldown.expel_harm.remains=0&cooldown.keg_smash.remains>=1.5&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40
 actions.aoe+=/rushing_jade_wind,if=talent.rushing_jade_wind.enabled
-actions.aoe+=/spinning_crane_kick
+actions.aoe+=/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled
 
 
 head=primal_gladiators_headcover,id=115785
