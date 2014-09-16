@@ -206,6 +206,9 @@ void SC_OptionsTab::createGlobalsTab()
   // Create left side global options
   QFormLayout* globalsLayout_left = new QFormLayout();
   globalsLayout_left -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
+  globalsLayout_left -> addRow( tr( "Armory Region" ),  choice.armory_region = createChoice( 5, "US", "EU", "TW", "CN", "KR" ) );
+  globalsLayout_left -> addRow( tr(   "Armory Spec" ),    choice.armory_spec = createChoice( 2, "Active", "Inactive" ) );
+   
 #if SC_BETA
   globalsLayout_left -> addRow(       tr(  "Version" ),        choice.version = createChoice( 3, "Live", "Beta", "Both" ) );
 #else
@@ -216,30 +219,32 @@ void SC_OptionsTab::createGlobalsTab()
 #endif
 #endif
   globalsLayout_left -> addRow( tr(    "Iterations" ),     choice.iterations = addValidatorToComboBox( 1, INT_MAX, createChoice( 8, "1", "100", "1000", "10000", "25000", "50000", "100000", "250000" ) ) );
-  globalsLayout_left -> addRow( tr(     "World Lag" ),      choice.world_lag = createChoice( 5, "Super Low - 25 ms", "Low - 50 ms", "Medium - 100 ms", "High - 150 ms", "Australia - 200 ms" ) );
   globalsLayout_left -> addRow( tr(  "Length (sec)" ),   choice.fight_length = addValidatorToComboBox( 1, 1000, createChoice( 10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) ) );
   globalsLayout_left -> addRow( tr(   "Vary Length" ), choice.fight_variance = createChoice( 3, "0%", "10%", "20%" ) );
   globalsLayout_left -> addRow( tr(   "Fight Style" ),    choice.fight_style = createChoice( 6, "Patchwerk", "HecticAddCleave", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement" ) );
-  globalsLayout_left -> addRow( tr(  "Target Level" ),   choice.target_level = createChoice( 4, "Raid Boss", "5-Man Heroic", "5-Man Normal", "Max Player Level" ) );
-  globalsLayout_left -> addRow( tr(   "Target Race" ),    choice.target_race = createChoice( 7, "Humanoid", "Beast", "Demon", "Dragonkin", "Elemental", "Giant", "Undead" ) );
   globalsLayout_left -> addRow( tr(   "Num Enemies" ),     choice.num_target = createChoice( 9, "1", "2", "3", "4", "5", "6", "7", "8", "20" ) );
   globalsLayout_left -> addRow( tr( "Challenge Mode" ),   choice.challenge_mode = createChoice( 2, "Disabled", "Enabled" ) );
   globalsLayout_left -> addRow( tr(  "Player Skill" ),   choice.player_skill = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
-  globalsLayout_left -> addRow( tr(       "Threads" ),        choice.threads = addValidatorToComboBox( 1, QThread::idealThreadCount(), createChoiceFromRange( 1, QThread::idealThreadCount() ) ) );
-  globalsLayout_left -> addRow( tr(  "Thread Priority" ), choice.thread_priority = createChoice( 5, "Highest", "High", "Normal", "Lower", "Lowest" ) );
-  globalsLayout_left -> addRow( tr( "Armory Region" ),  choice.armory_region = createChoice( 5, "US", "EU", "TW", "CN", "KR" ) );
-  globalsLayout_left -> addRow( tr(   "Armory Spec" ),    choice.armory_spec = createChoice( 2, "Active", "Inactive" ) );
-  globalsLayout_left -> addRow( tr(  "Default Role" ),   choice.default_role = createChoice( 4, "Auto", "DPS", "Heal", "Tank" ) );
-  globalsLayout_left -> addRow( tr( "TMI Standard Boss" ),   choice.tmi_boss = createChoice( 8, "Custom", "T17M", "T17H", "T17N", "T16H25", "T16H10", "T16N25", "T16N10" ) );
-  globalsLayout_left -> addRow( tr( "TMI Window (sec)" ),  choice.tmi_window = createChoice( 10, "0", "2", "3", "4", "5", "6", "7", "8", "9", "10" ) );
-  globalsLayout_left -> addRow( tr( "Show ETMI" ),          choice.show_etmi = createChoice( 2, "Only when in group", "Always" ) );
-
+ 
   QGroupBox* globalsGroupBox_left = new QGroupBox( tr( "Basic Options" ) );
   globalsGroupBox_left -> setLayout( globalsLayout_left );
 
   // Create right side of global options
   QFormLayout* globalsLayout_right = new QFormLayout();
   globalsLayout_right -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
+    globalsLayout_right -> addRow( tr(  "Default Role" ),   choice.default_role = createChoice( 4, "Auto", "DPS", "Heal", "Tank" ) );
+    
+    globalsLayout_right -> addRow( tr(  "Target Level" ),   choice.target_level = createChoice( 4, "Raid Boss", "5-Man Heroic", "5-Man Normal", "Max Player Level" ) );
+    globalsLayout_right -> addRow( tr(   "Target Race" ),    choice.target_race = createChoice( 7, "Humanoid", "Beast", "Demon", "Dragonkin", "Elemental", "Giant", "Undead" ) );
+    
+    globalsLayout_right -> addRow( tr( "TMI Standard Boss" ),   choice.tmi_boss = createChoice( 8, "Custom", "T17M", "T17H", "T17N", "T16H25", "T16H10", "T16N25", "T16N10" ) );
+    globalsLayout_right -> addRow( tr( "TMI Window (sec)" ),  choice.tmi_window = createChoice( 10, "0", "2", "3", "4", "5", "6", "7", "8", "9", "10" ) );
+    globalsLayout_right -> addRow( tr( "Show ETMI" ),          choice.show_etmi = createChoice( 2, "Only when in group", "Always" ) );
+    globalsLayout_right -> addRow( tr(       "Threads" ),        choice.threads = addValidatorToComboBox( 1, QThread::idealThreadCount(), createChoiceFromRange( 1, QThread::idealThreadCount() ) ) );
+    globalsLayout_right -> addRow( tr(  "Thread Priority" ), choice.thread_priority = createChoice( 5, "Highest", "High", "Normal", "Lower", "Lowest" ) );
+    
+  globalsLayout_right -> addRow( tr(     "World Lag" ),      choice.world_lag = createChoice( 5, "Super Low - 25 ms", "Low - 50 ms", "Medium - 100 ms", "High - 150 ms", "Australia - 200 ms" ) );
+    
   globalsLayout_right -> addRow( tr( "Generate Debug" ),                choice.debug = createChoice( 3, "None", "Log Only", "Gory Details" ) );
   globalsLayout_right -> addRow( tr( "Report Pets Separately" ),  choice.report_pets = createChoice( 2, "Yes", "No" ) );
   globalsLayout_right -> addRow( tr( "Report Print Style" ),      choice.print_style = createChoice( 3, "MoP", "White", "Classic" ) );
