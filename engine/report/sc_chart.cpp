@@ -2262,87 +2262,72 @@ std::string chart::gear_weights_lootrank( player_t* p )
 
 // chart::gear_weights_wowhead ==============================================
 
-std::string chart::gear_weights_wowhead( player_t* p, bool hit_expertise )
+std::string chart::gear_weights_wowhead( player_t* p )
 {
-  char buffer[ 1024 ];
+  char buffer[1024];
   bool first = true;
 
-  // FIXME: switch back to www.wowhead.com once MoP ( including monks ) goes live
-  std::string s = "http://mop.wowhead.com/?items&amp;filter=";
+  // FIXME: switch back to www.wowhead.com once WoD goes live
+  std::string s = "http://wod.wowhead.com/?items&amp;filter=";
 
   switch ( p -> type )
   {
-    case DEATH_KNIGHT: s += "ub=6;";  break;
-    case DRUID:        s += "ub=11;"; break;
-    case HUNTER:       s += "ub=3;";  break;
-    case MAGE:         s += "ub=8;";  break;
-    case PALADIN:      s += "ub=2;";  break;
-    case PRIEST:       s += "ub=5;";  break;
-    case ROGUE:        s += "ub=4;";  break;
-    case SHAMAN:       s += "ub=7;";  break;
-    case WARLOCK:      s += "ub=9;";  break;
-    case WARRIOR:      s += "ub=1;";  break;
-    case MONK:         s += "ub=10;"; break;
-    default: assert( 0 ); break;
+  case DEATH_KNIGHT: s += "ub=6;";  break;
+  case DRUID:        s += "ub=11;"; break;
+  case HUNTER:       s += "ub=3;";  break;
+  case MAGE:         s += "ub=8;";  break;
+  case PALADIN:      s += "ub=2;";  break;
+  case PRIEST:       s += "ub=5;";  break;
+  case ROGUE:        s += "ub=4;";  break;
+  case SHAMAN:       s += "ub=7;";  break;
+  case WARLOCK:      s += "ub=9;";  break;
+  case WARRIOR:      s += "ub=1;";  break;
+  case MONK:         s += "ub=10;"; break;
+  default: assert( 0 ); break;
   }
 
   // Restrict wowhead to rare gems. When epic gems become available:"gm=4;gb=1;"
   s += "gm=3;gb=1;";
 
-  // Automatically reforge items, and min ilvl of 463 (sensible for
-  // current raid tier).
-  s += "rf=1;minle=463;";
+  // Min ilvl of 463 (sensible for current raid tier).
+  s += "minle=463;";
 
   std::string    id_string = "";
   std::string value_string = "";
 
-  double worst_value = 0.0;
   scale_metric_e sm = p -> sim -> scaling -> scaling_metric;
-  bool positive_normalizing_value = p -> scaling[ sm ].get_stat( p -> normalize_by() ) >= 0;
-  if ( !hit_expertise )
-  {
-    double crit_value    = positive_normalizing_value ? p -> scaling[ sm ].get_stat( STAT_CRIT_RATING ) : -p -> scaling[ sm ].get_stat( STAT_CRIT_RATING );
-    double haste_value   = positive_normalizing_value ? p -> scaling[ sm ].get_stat( STAT_HASTE_RATING ) : -p -> scaling[ sm ].get_stat( STAT_HASTE_RATING );
-    double mastery_value = positive_normalizing_value ? p -> scaling[ sm ].get_stat( STAT_MASTERY_RATING ) : -p -> scaling[ sm ].get_stat( STAT_MASTERY_RATING );
-    worst_value = std::min( mastery_value, std::min( crit_value, haste_value ) );
-  }
+  bool positive_normalizing_value = p -> scaling[sm].get_stat( p -> normalize_by() ) >= 0;
 
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    double value = positive_normalizing_value ? p -> scaling[ sm ].get_stat( i ) : -p -> scaling[ sm ].get_stat( i );
+    double value = positive_normalizing_value ? p -> scaling[sm].get_stat( i ) : -p -> scaling[sm].get_stat( i );
     if ( value == 0 ) continue;
 
     int id = 0;
     switch ( i )
     {
-      case STAT_STRENGTH:                 id = 20;  break;
-      case STAT_AGILITY:                  id = 21;  break;
-      case STAT_STAMINA:                  id = 22;  break;
-      case STAT_INTELLECT:                id = 23;  break;
-      case STAT_SPIRIT:                   id = 24;  break;
-      case STAT_SPELL_POWER:              id = 123; break;
-      case STAT_ATTACK_POWER:             id = 77;  break;
-      case STAT_EXPERTISE_RATING:         id = 117; break;
-      case STAT_HIT_RATING:               id = 119; break;
-      case STAT_CRIT_RATING:              id = 96;  break;
-      case STAT_DODGE_RATING:             id = 45;  break;
-      case STAT_PARRY_RATING:             id = 46;  break;
-      case STAT_HASTE_RATING:             id = 103; break;
-      case STAT_ARMOR:                    id = 41;  break;
-      case STAT_BONUS_ARMOR:              id = 109; break;
-      case STAT_MASTERY_RATING:           id = 170; break;
-      case STAT_WEAPON_DPS:
-        if ( HUNTER == p -> type ) id = 138; else id = 32;  break;
-      default: break;
-    }
-    if ( !hit_expertise && ( i == STAT_HIT_RATING || i == STAT_EXPERTISE_RATING ) )
-    {
-      value = worst_value;
+    case STAT_STRENGTH:                 id = 20;  break;
+    case STAT_AGILITY:                  id = 21;  break;
+    case STAT_STAMINA:                  id = 22;  break;
+    case STAT_INTELLECT:                id = 23;  break;
+    case STAT_SPIRIT:                   id = 24;  break;
+    case STAT_SPELL_POWER:              id = 123; break;
+    case STAT_ATTACK_POWER:             id = 77;  break;
+    case STAT_CRIT_RATING:              id = 96;  break;
+    case STAT_HASTE_RATING:             id = 103; break;
+    case STAT_ARMOR:                    id = 41;  break;
+    case STAT_BONUS_ARMOR:              id = 109; break;
+    case STAT_MASTERY_RATING:           id = 170; break;
+    case STAT_VERSATILITY_RATING:       id = 215; break;
+    case STAT_MULTISTRIKE_RATING:       id = 200; break;
+    case STAT_WEAPON_DPS:
+      if ( HUNTER == p -> type ) id = 138; else id = 32;  break;
+    default: break;
     }
 
     if ( id )
     {
-      if ( ! first )
+      if ( !first )
       {
         id_string += ":";
         value_string += ":";
@@ -2357,7 +2342,7 @@ std::string chart::gear_weights_wowhead( player_t* p, bool hit_expertise )
     }
   }
 
-  s += "wt="  +    id_string + ";";
+  s += "wt=" + id_string + ";";
   s += "wtv=" + value_string + ";";
 
   return s;
@@ -2526,77 +2511,6 @@ std::string chart::gear_weights_askmrrobot( player_t* p )
   // softweights, softcaps, hardcaps would go here if we supported them
 
   return util::encode_html( ss.str() );
-
-}
-
-// chart::gear_weights_pawn =================================================
-
-std::string chart::gear_weights_pawn( player_t* p,
-                                      bool hit_expertise )
-{
-  std::vector<stat_e> stats;
-  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-    stats.push_back( i );
-
-  std::string s = std::string();
-  char buffer[ 1024 ];
-  bool first = true;
-
-  s.clear();
-  snprintf( buffer, sizeof( buffer ), "( Pawn: v1: \"%s\": ", p -> name() );
-  s += buffer;
-
-  double maxR = 0;
-  double maxB = 0;
-  double maxY = 0;
-    
-  scale_metric_e sm = p -> sim -> scaling -> scaling_metric;
-  bool positive_normalizing_value = p -> scaling[ sm ].get_stat( p -> normalize_by() ) >= 0;
-  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-  {
-    stat_e stat = stats[ i ];
-
-    double value = positive_normalizing_value ? p -> scaling[ sm ].get_stat( stat ) : -p -> scaling[ sm ].get_stat( stat );
-    if ( value == 0 ) continue;
-
-    if ( ! hit_expertise )
-      if ( stat == STAT_HIT_RATING || stat == STAT_EXPERTISE_RATING )
-        value = 0;
-
-    const char* name = 0;
-    switch ( stat )
-    {
-      case STAT_STRENGTH:                 name = "Strength";         if ( value * 20 > maxR ) maxR = value * 20; break;
-      case STAT_AGILITY:                  name = "Agility";          if ( value * 20 > maxR ) maxR = value * 20; break;
-      case STAT_STAMINA:                  name = "Stamina";          if ( value * 20 > maxB ) maxB = value * 20; break;
-      case STAT_INTELLECT:                name = "Intellect";        if ( value * 20 > maxY ) maxY = value * 20; break;
-      case STAT_SPIRIT:                   name = "Spirit";           if ( value * 20 > maxB ) maxB = value * 20; break;
-      case STAT_SPELL_POWER:              name = "SpellDamage";      if ( value * 20 > maxR ) maxR = value * 20; break;
-      case STAT_ATTACK_POWER:             name = "Ap";               if ( value * 20 > maxR ) maxR = value * 20; break;
-      case STAT_EXPERTISE_RATING:         name = "ExpertiseRating";  if ( value * 20 > maxR ) maxR = value * 20; break;
-      case STAT_HIT_RATING:               name = "HitRating";        if ( value * 20 > maxY ) maxY = value * 20; break;
-      case STAT_CRIT_RATING:              name = "CritRating";       if ( value * 20 > maxY ) maxY = value * 20; break;
-      case STAT_HASTE_RATING:             name = "HasteRating";      if ( value * 20 > maxY ) maxY = value * 20; break;
-      case STAT_MASTERY_RATING:           name = "MasteryRating";    if ( value * 20 > maxY ) maxY = value * 20; break;
-      case STAT_ARMOR:                    name = "Armor";            break;
-      case STAT_BONUS_ARMOR:              name = "BonusArmor";      break;
-      case STAT_WEAPON_DPS:
-        if ( HUNTER == p -> type ) name = "RangedDps"; else name = "MeleeDps";  break;
-      default: break;
-    }
-
-    if ( name )
-    {
-      if ( ! first ) s += ",";
-      first = false;
-      snprintf( buffer, sizeof( buffer ), " %s=%.*f", name, p -> sim -> report_precision, value );
-      s += buffer;
-    }
-  }
-
-  s += " )";
-
-  return s;
 }
 
 /* Generates a nice looking normal distribution chart,

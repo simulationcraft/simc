@@ -661,21 +661,13 @@ void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, player
     writer.end_tag( "scale_lag_ms" );
   }
 
-
   std::string lootrank    = ri.gear_weights_lootrank_link;
   std::string wowhead_std = ri.gear_weights_wowhead_std_link;
-  std::string wowhead_alt = ri.gear_weights_wowhead_alt_link;
 
   writer.begin_tag( "link" );
   writer.print_attribute( "name", "wowhead" );
   writer.print_attribute( "type", "ranking" );
   writer.print_attribute_unescaped( "href", wowhead_std );
-  writer.end_tag( "link" );
-
-  writer.begin_tag( "link" );
-  writer.print_attribute( "name", "wowhead_alt" );
-  writer.print_attribute( "type", "ranking" );
-  writer.print_attribute_unescaped( "href", wowhead_alt );
   writer.end_tag( "link" );
 
   writer.begin_tag( "link" );

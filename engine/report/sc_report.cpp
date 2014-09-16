@@ -1051,11 +1051,8 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
 #if LOOTRANK_ENABLED == 1
     ri.gear_weights_lootrank_link        = chart::gear_weights_lootrank   ( p );
 #endif
-    ri.gear_weights_wowhead_std_link     = chart::gear_weights_wowhead    ( p, true );
-    ri.gear_weights_wowhead_alt_link     = chart::gear_weights_wowhead    ( p, false );
+    ri.gear_weights_wowhead_std_link     = chart::gear_weights_wowhead    ( p );
     ri.gear_weights_askmrrobot_link      = chart::gear_weights_askmrrobot ( p );
-    ri.gear_weights_pawn_std_string      = chart::gear_weights_pawn       ( p, true  );
-    ri.gear_weights_pawn_alt_string      = chart::gear_weights_pawn       ( p, false );
   }
 
   // Create html profile str

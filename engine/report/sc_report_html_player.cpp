@@ -1711,10 +1711,6 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
         os.printf(
           "<li><a href=\"%s\" class=\"ext\">wowhead</a></li>\n",
           ri.gear_weights_wowhead_std_link.c_str() );
-      if ( !ri.gear_weights_wowhead_alt_link.empty() )
-        os.printf(
-          "<li><a href=\"%s\" class=\"ext\">wowhead (caps merged)</a></li>\n",
-          ri.gear_weights_wowhead_alt_link.c_str() );
       if ( !ri.gear_weights_lootrank_link.empty() )
         os.printf(
           "<li><a href=\"%s\" class=\"ext\">lootrank</a></li>\n",
@@ -1766,47 +1762,6 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
 
         os.printf( "%s", util::stat_type_abbrev( p -> scaling_stats[ i ] ) );
       }
-      os << "</ul>\n"
-         << "</td>\n"
-         << "</tr>\n";
-
-      os.printf(
-        "<tr class=\"left\">\n"
-        "<th>Pawn string</th>\n"
-        "<td onClick=\"HighlightText('pawn_std_%i');\" colspan=\"%i\" class=\"filler\" style=\"vertical-align: top;\">\n"
-        "<div style=\"position: relative;\">\n"
-        "<div style=\"position: absolute; overflow: hidden; width: 100%%; white-space: nowrap;\">\n"
-        "<ul class=\"float\">\n"
-        "<li><small id=\"pawn_std_%i\" title='%s'>%s</small></li>\n"
-        "</ul>\n"
-        "</div>\n"
-        "</div>\n"
-        "</td>\n"
-        "</tr>\n",
-        p -> index,
-        colspan,
-        p -> index,
-        ri.gear_weights_pawn_std_string.c_str(),
-        ri.gear_weights_pawn_std_string.c_str() );
-
-      os.printf(
-        "<tr class=\"left\">\n"
-        "<th>Zero hit/exp</th>\n"
-        "<td onClick=\"HighlightText('pawn_alt_%i');\" colspan=\"%i\" class=\"filler\" style=\"vertical-align: top;\">\n"
-        "<div style=\"position: relative;\">\n"
-        "<div style=\"position: absolute; overflow: hidden; width: 100%%; white-space: nowrap;\">\n"
-        "<ul class=\"float\">\n"
-        "<li><small id=\"pawn_alt_%i\" title='%s'>%s</small></li>\n"
-        "</ul>\n"
-        "</div>\n"
-        "</div>\n"
-        "</td>\n"
-        "</tr>\n",
-        p -> index,
-        colspan,
-        p -> index,
-        ri.gear_weights_pawn_alt_string.c_str(),
-        ri.gear_weights_pawn_alt_string.c_str() );
 
       os << "</table>\n";
       if ( sim -> iterations < 10000 )

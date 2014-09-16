@@ -868,11 +868,9 @@ void print_html_scale_factors( report::sc_html_stream& os, sim_t* sim )
     }
     os.printf(
       "<td class=\"small\"><a href=\"%s\"> wowhead </a></td>\n"
-      "<td class=\"small\"><a href=\"%s\"> wowhead (caps merged)</a></td>\n"
       "<td class=\"small\"><a href=\"%s\"> lootrank</a></td>\n"
       "</tr>\n",
       p -> report_information.gear_weights_wowhead_std_link.c_str(),
-      p -> report_information.gear_weights_wowhead_alt_link.c_str(),
       p -> report_information.gear_weights_lootrank_link.c_str() );
   }
   os << "</table>\n";
