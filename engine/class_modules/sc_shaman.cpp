@@ -5364,7 +5364,7 @@ void shaman_t::init_action_list()
     def -> add_talent( this, "Elemental Mastery", "if=action.lava_burst.cast_time>=1.2" );
 
     def -> add_talent( this, "Ancestral Swiftness", "if=!buff.ascendance.up" );
-    def -> add_talent( this, "Storm Elemental Totem", "if=!talent.primal_elementalist.enabled" );
+    def -> add_talent( this, "Storm Elemental Totem" );
     def -> add_action( this, "Fire Elemental Totem", "if=!active" );
 
     // Use Ascendance preferably with a haste CD up, but dont overdo the
@@ -5380,7 +5380,6 @@ void shaman_t::init_action_list()
     def -> add_action( this, "Ascendance", ascendance_opts );
 
     def -> add_talent( this, "Liquid Magma", "if=pet.searing_totem.remains>=15|pet.fire_elemental_totem.remains>=15" );
-    def -> add_talent( this, "Storm Elemental Totem", "if=cooldown.fire_elemental_totem.remains>=60" );
 
     // Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
     def -> add_action( init_use_profession_actions().erase( 0, 1 ) );
