@@ -1435,7 +1435,9 @@ private slots:
   }
   void linkClickedSlot( const QUrl& url )
   {
-    if ( url.isLocalFile() )
+    QString clickedurl = url.toString();
+
+    if ( url.isLocalFile() || clickedurl.contains( "battle.net" ) ) // Make sure that battle.net profiles are loaded in simcraft.
       load( url );
     else
       QDesktopServices::openUrl( url );
