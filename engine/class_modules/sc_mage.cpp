@@ -2644,7 +2644,7 @@ struct frostbolt_t : public mage_spell_t
     double am = mage_spell_t::action_multiplier();
     if ( p() -> buffs.frozen_thoughts -> up() )
     {
-      am *=  1.0 + p() -> buffs.frozen_thoughts -> data().effectN( 1 ).percent();
+      am *= 1.0 + p() -> buffs.frozen_thoughts -> data().effectN( 1 ).percent();
     }
 
     return am;
@@ -4332,7 +4332,7 @@ void mage_t::init_spells()
 
 
   // Passive Spells
-  passives.nether_attunement = find_spell( "Nether Attunement" );
+  passives.nether_attunement = find_specialization_spell( "Nether Attunement" ); // BUG: Not in spell lists at present.
   passives.nether_attunement = ( find_spell( 117957 ) -> is_level( level ) ) ? find_spell( 117957 ) : spell_data_t::not_found();
   passives.shatter           = find_specialization_spell( "Shatter" );
   passives.frost_armor       = find_specialization_spell( "Frost Armor" );
