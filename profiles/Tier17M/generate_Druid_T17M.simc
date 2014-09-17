@@ -35,21 +35,21 @@ role=attack
 position=back
 talents=0002032
 glyphs=savage_roar/master_shapeshifter
-head=primal_gladiators_headcover,id=111285
-neck=primal_gladiators_necklace_of_prowess,id=111080,enchant=gift_of_mastery
-shoulders=primal_gladiators_dragonhide_spaulders,id=111111
-back=primal_gladiators_cape_of_cruelty,id=111077,enchant=gift_of_mastery
-chest=primal_gladiators_tunic,id=111273
-wrists=primal_gladiators_bindings_of_prowess,id=111148
-hands=primal_gladiators_dragonhide_gloves,id=111107
-waist=primal_gladiators_belt_of_cruelty,id=111142
-legs=primal_gladiators_legguards,id=111276
-feet=primal_gladiators_boots_of_victory,id=111146
-finger1=primal_gladiators_ring_of_cruelty,id=111081,enchant=gift_of_mastery
-finger2=primal_gladiators_ring_of_prowess,id=111271,enchant=gift_of_mastery
-trinket1=primal_gladiators_badge_of_conquest,id=111222
-trinket2=primal_gladiators_insignia_of_conquest,id=111223
-main_hand=primal_gladiators_pike,id=111075,enchant=mark_of_the_frostwolf
+head=living_wood_headpiece,id=115542,bonus_id=567
+neck=darklight_necklace,id=113865,enchant=gift_of_critical_strike,bonus_id=567
+shoulders=living_wood_spaulders,id=115544,bonus_id=567
+back=drape_of_the_dark_hunt,id=113971,enchant=gift_of_critical_strike,bonus_id=567
+chest=living_wood_raiment,id=115540,bonus_id=567
+wrists=bracers_of_shattered_stalactites,id=113935,bonus_id=567
+hands=living_wood_grips,id=115541,bonus_id=567
+waist=conductors_multipocket_girdle,id=113964,bonus_id=567
+legs=living_wood_legguards,id=115543,bonus_id=567
+feet=furnace_tenders_treads,id=113895,bonus_id=567
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_critical_strike,bonus_id=524
+finger2=unexploded_explosive_shard,id=113877,enchant=gift_of_critical_strike,bonus_id=567
+trinket1=meaty_dragonspine_trophy,id=118114,bonus_id=567
+trinket2=humming_blackiron_trigger,id=113985,bonus_id=567
+main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,enchant=mark_of_the_thunderlord,bonus_id=567
 save=Druid_Feral_T17M.simc
 
 # Balance Druid T17M

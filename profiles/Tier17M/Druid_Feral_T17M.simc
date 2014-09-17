@@ -33,7 +33,6 @@ actions+=/skull_bash
 actions+=/incarnation,sync=berserk
 actions+=/berserk,if=cooldown.tigers_fury.remains<8
 actions+=/potion,name=draenic_agility,if=target.time_to_die<=40
-actions+=/use_item,slot=trinket1,sync=tigers_fury
 actions+=/blood_fury,sync=tigers_fury
 actions+=/berserking,sync=tigers_fury
 actions+=/arcane_torrent,sync=tigers_fury
@@ -57,34 +56,35 @@ actions+=/rake,cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&act
 actions+=/moonfire,cycle_targets=1,if=remains<=duration*0.3&active_enemies=1
 actions+=/swipe,if=combo_points<5&active_enemies>1
 actions+=/shred,if=combo_points<5&active_enemies=1
-actions+=/rejuvenation,cycle_targets=1,max_cycle_targets=3,if=talent.natures_vigil.enabled&!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
+actions+=/rejuvenation,cycle_targets=1,max_cycle_targets=2,if=talent.natures_vigil.enabled&!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
 actions+=/natures_vigil
-actions+=/rejuvenation,cycle_targets=1,if=talent.natures_vigil.enabled&!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
-actions+=/rejuvenation,cycle_targets=1,if=talent.natures_vigil.enabled&buff.natures_vigil.up
+actions+=/rejuvenation,cycle_targets=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
+actions+=/rejuvenation,cycle_targets=1,if=buff.natures_vigil.up
 
-head=primal_gladiators_headcover,id=111285
-neck=primal_gladiators_necklace_of_prowess,id=111080,enchant=gift_of_mastery
-shoulders=primal_gladiators_dragonhide_spaulders,id=111111
-back=primal_gladiators_cape_of_cruelty,id=111077,enchant=gift_of_mastery
-chest=primal_gladiators_tunic,id=111273
-wrists=primal_gladiators_bindings_of_prowess,id=111148
-hands=primal_gladiators_dragonhide_gloves,id=111107
-waist=primal_gladiators_belt_of_cruelty,id=111142
-legs=primal_gladiators_legguards,id=111276
-feet=primal_gladiators_boots_of_victory,id=111146
-finger1=primal_gladiators_ring_of_cruelty,id=111081,enchant=gift_of_mastery
-finger2=primal_gladiators_ring_of_prowess,id=111271,enchant=gift_of_mastery
-trinket1=primal_gladiators_badge_of_conquest,id=111222
-trinket2=primal_gladiators_insignia_of_conquest,id=111223
-main_hand=primal_gladiators_pike,id=111075,enchant=mark_of_the_frostwolf
+head=living_wood_headpiece,id=115542,bonus_id=567
+neck=darklight_necklace,id=113865,bonus_id=567,enchant=gift_of_critical_strike
+shoulders=living_wood_spaulders,id=115544,bonus_id=567
+back=drape_of_the_dark_hunt,id=113971,bonus_id=567,enchant=gift_of_critical_strike
+chest=living_wood_raiment,id=115540,bonus_id=567
+wrists=bracers_of_shattered_stalactites,id=113935,bonus_id=567
+hands=living_wood_grips,id=115541,bonus_id=567
+waist=conductors_multipocket_girdle,id=113964,bonus_id=567
+legs=living_wood_legguards,id=115543,bonus_id=567
+feet=furnace_tenders_treads,id=113895,bonus_id=567
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,bonus_id=524,enchant=gift_of_critical_strike
+finger2=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_critical_strike
+trinket1=meaty_dragonspine_trophy,id=118114,bonus_id=567
+trinket2=humming_blackiron_trigger,id=113985,bonus_id=567
+main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=567,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_agility=2588
-# gear_stamina=3250
-# gear_crit_rating=858
-# gear_haste_rating=89
-# gear_mastery_rating=1440
-# gear_armor=950
-# gear_multistrike_rating=525
-# gear_versatility_rating=249
-# set_bonus=pvp_2pc=1
+# gear_agility=3594
+# gear_stamina=4519
+# gear_crit_rating=1703
+# gear_haste_rating=517
+# gear_mastery_rating=652
+# gear_armor=1147
+# gear_multistrike_rating=1257
+# gear_versatility_rating=111
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1

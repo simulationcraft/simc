@@ -56,10 +56,10 @@ actions+=/thrash_cat,if=dot.thrash_cat.remains<4.5&active_enemies>1
 actions+=/rake,cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&active_enemies<9&combo_points<5
 actions+=/swipe,if=combo_points<5&active_enemies>1
 actions+=/shred,if=combo_points<5&active_enemies=1
-actions+=/rejuvenation,cycle_targets=1,max_cycle_targets=3,if=talent.natures_vigil.enabled&!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
+actions+=/rejuvenation,cycle_targets=1,max_cycle_targets=2,if=talent.natures_vigil.enabled&!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
 actions+=/natures_vigil
-actions+=/rejuvenation,cycle_targets=1,if=talent.natures_vigil.enabled&!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
-actions+=/rejuvenation,cycle_targets=1,if=talent.natures_vigil.enabled&buff.natures_vigil.up
+actions+=/rejuvenation,cycle_targets=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
+actions+=/rejuvenation,cycle_targets=1,if=buff.natures_vigil.up
 
 head=headpiece_of_the_shattered_vale,id=99328,upgrade=2,gems=capacitive_primal_8agi_9agi
 neck=immerseus_crystalline_eye,id=105407,upgrade=2
