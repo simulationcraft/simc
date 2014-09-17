@@ -707,7 +707,7 @@ void SC_ImportTab::setSpecDropDown( const int player_class )
 }
 
 QString defaultOptions = "AC#=action.$ability.charges>=#\nAE#=active_enemies>=#\nDR=target.dot.$ability.remains\nDR#=target.dot.$ability.remains>=#\nE=target.health.pct<=20\nE#=target.health.pct<=#\nNT=!ticking\nNF=target.debuff.flying.down\nW#=/wait,sec=cooldown.$ability.remains,if=cooldown.$ability.remains<=#\n\n";
-QString defaultOperators = "BU=buff.$operand.up\nBA=buff.$operand.react\nBR=buff.$operand.remains\nBR#=buff.$operand.remains>#\nBC#=buff.$operand.charges>=#\nCD=cooldown.$operand.remains\nCD#=cooldown.$operand.remains>#\nDR=target.dot.$operand.remains\nDR#=target.dot.$operand.remains>=#\nDT=dot.$operand.ticking\nGCD=cooldown.$operand.remains<=gcd\nGCD#=cooldown.$operand.remains<=gcd*#\nT=talent.$operand.enabled\nG=glyph.$operand.enabled\n";
+QString defaultOperators = "BU=buff.$operand.up\nBA=buff.$operand.react\nBR=buff.$operand.remains\nBR#=buff.$operand.remains>#\nBC#=buff.$operand.charges>=#\nBS#=buff.$operand.stack>=#\nCD=cooldown.$operand.remains\nCD#=cooldown.$operand.remains>#\nDR=target.dot.$operand.remains\nDR#=target.dot.$operand.remains>=#\nDT=dot.$operand.ticking\nGCD=cooldown.$operand.remains<=gcd\nGCD#=cooldown.$operand.remains<=gcd*#\nT=talent.$operand.enabled\nG=glyph.$operand.enabled\n";
 
 // constant for sidebar text (this will eventually get really long)
 QString sidebarText[ 11 ][ 4 ] = {
@@ -860,17 +860,17 @@ QString sidebarText[ 11 ][ 4 ] = {
     "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n"
-    "AA=auto_attack\nAS=avengers_shield\nCons=consecration\nCS=crusader_strike\nEF=eternal_flame\nES=execution_sentence\nHotR=hammer_of_the_righteous\nHoW=hammer_of_wrath\nHPr=holy_prism\nHW=holy_wrath\nJ=judgment\nLH=lights_hammer\nSS=sacred_shield\nSoI=seal_of_insight\nSoR=seal_of_righteousness\nSoT=seal_of_truth\nSP=seraphim\nSotR=shield_of_the_righteous\nWoG=word_of_glory\n\n"
-    "DJ=double_jeopardy\nDP=divine_purpose\nFW=holy_wrath,if=glyph.final_wrath.enabled&target.health.pct<=20\nGC=grand_crusader\nHA=holy_avenger\nSP=seraphim\nSotR=shield_of_the_righteous\nSW=sanctified_wrath\n\n"
+    "AA=auto_attack\nAS=avengers_shield\nCons=consecration\nCS=crusader_strike\nEF=eternal_flame\nES=execution_sentence\nFoL=flash_of_light\nHotR=hammer_of_the_righteous\nHoW=hammer_of_wrath\nHPr=holy_prism\nHW=holy_wrath\nJ=judgment\nLH=lights_hammer\nSS=sacred_shield\nSoI=seal_of_insight\nSoR=seal_of_righteousness\nSoT=seal_of_truth\nSP=seraphim\nSotR=shield_of_the_righteous\nWoG=word_of_glory\n\n"
+    "DJ=double_jeopardy\nDP=divine_purpose\nFW=holy_wrath,if=glyph.final_wrath.enabled&target.health.pct<=20\nGC=grand_crusader\nHA=holy_avenger\nSP=seraphim\nSotR=shield_of_the_righteous\nSH=selfless_healer\nSW=sanctified_wrath\n\n"
     "Additional ability, buff, glyph, and talent shorthands can be added here"
-    "\n\n:::Options:::\n" + defaultOptions + "HP=holy_power\nHP#=holy_power>=#\nFW=glyph.final_wrath.enabled&target.health.pct<=20\nEverything below this line is redundant with the buff syntax method, just here for ease of use\nDP=buff.divine_purpose.react\nSW=talent.sanctified_wrath.enabled\nSP=buff.seraphim.react\n\nGC=buff.grand_crusader.react\nGC#=buff.grand_crusader.remains<#\n"
+    "\n\n:::Options:::\n" + defaultOptions + "HP=holy_power\nHP#=holy_power>=#\nFW=glyph.final_wrath.enabled&target.health.pct<=20\nEverything below this line is redundant with the buff syntax method, just here for ease of use\nDP=buff.divine_purpose.react\nSH#=buff.selfless_healer.stack>=#\nSW=talent.sanctified_wrath.enabled\nSP=buff.seraphim.react\n\nGC=buff.grand_crusader.react\nGC#=buff.grand_crusader.remains<#\n"
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
 
     ":::Abilities, Buffs, Glyphs, and Talents:::\n"
     "AA=auto_attack\nCS=crusader_strike\nJ=judgment\nEXO=exorcism\nHotR=hammer_of_the_righteous\nHoW=hammer_of_wrath\nTV=templars_verdict\nFV=final_verdict\nDS=divine_storm\nES=execution_sentence\nHPr=holy_prism\nLH=lights_hammer\nSP=seraphim\nSoT=seal_of_truth\nSoR=seal_of_righteousness\nSoI=seal_of_insight\nAW=avenging_wrath\nHA=holy_avenger\n\n"
-    "AW=avenging_wrath\nDP=divine_purpose\nHA=holy_avenger\nDC=divine_crusader\nSP=seraphim\nSW=sanctified_wrath\nDJ=double_jeopardy\n\n"
+    "AW=avenging_wrath\nDP=divine_purpose\nHA=holy_avenger\nDC=divine_crusader\nSP=seraphim\nSH=selfless_healer\nSW=sanctified_wrath\nDJ=double_jeopardy\n\n"
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "HP#=holy_power>=#\nHPL#=holy_power<=#\n"
     "Additional option shorthands can be added here"
