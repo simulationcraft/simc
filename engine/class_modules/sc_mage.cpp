@@ -3158,11 +3158,11 @@ struct living_bomb_explosion_t : public mage_spell_t
 
 struct living_bomb_t : public mage_spell_t
 {
-  living_bomb_explosion_t* explosion_spell;
+  living_bomb_explosion_t* explosion;
 
   living_bomb_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "living_bomb", p, p -> talents.living_bomb ),
-    explosion_spell( new living_bomb_explosion_t( p ) )
+    explosion( new living_bomb_explosion_t( p ) )
   {
     parse_options( NULL, options_str );
   }
@@ -3174,7 +3174,8 @@ struct living_bomb_t : public mage_spell_t
       dot_t* dot = get_dot( s -> target );
       if ( dot -> is_ticking() && dot -> remains() < dot_duration * 0.3 )
       {
-        explosion_spell -> execute();
+        explosion -> target = s -> target;
+        explosion -> execute();
       }
     }
     mage_spell_t::impact( s );
@@ -3183,8 +3184,12 @@ struct living_bomb_t : public mage_spell_t
   void tick( dot_t* d )
   {
     mage_spell_t::tick( d );
+
     if ( d -> ticks_left() == 0 )
-      explosion_spell -> execute();
+    {
+      explosion -> target = d -> target;
+      explosion -> execute();
+    }
   }
 };
 
