@@ -4,7 +4,7 @@ talent_format=armory
 # Warrior Fury 1h T17M
 warrior="Warrior_Fury_1h_T17M"
 level=100
-race=Troll
+race=troll
 spec=fury
 role=attack
 position=back
@@ -31,7 +31,7 @@ save=Warrior_Fury_1h_T17M.simc
 # Warrior Fury 2h T17M
 warrior="Warrior_Fury_2h_T17M"
 level=100
-race=Troll
+race=troll
 spec=fury
 role=attack
 position=back
@@ -58,7 +58,7 @@ save=Warrior_Fury_2h_T17M.simc
 # Warrior Arms T17M
 warrior="Warrior_Arms_T17M"
 level=100
-race=Tauren
+race=tauren
 spec=Arms
 role=attack
 position=back
@@ -84,7 +84,7 @@ save=Warrior_Arms_T17M.simc
 # Warrior Protection T17M
 warrior="Warrior_Protection_T17M"
 level=100
-race=Tauren
+race=tauren
 role=tank
 position=front
 talents=2213323
@@ -111,19 +111,19 @@ save=Warrior_Protection_T17M.simc
 # Warrior Gladiator T17M
 warrior="Warrior_Gladiator_T17M"
 level=100
-race=Tauren
+race=tauren
 role=attack
 position=back
 talents=1213323
-glyphs=unending_rage/death_from_above/cleave
+glyphs=unending_rage/death_from_above/cleave/bull_rush
 spec=prot
 head=blackhands_faceguard,id=115584,bonus_id=567
 neck=gluttons_kerchief,id=113882,bonus_id=567/448,enchant=gift_of_critical_strike
-shoulders=overdriven_spaulders,id=113990,bonus_id=566
+shoulders=blackhands_shoulderguards,id=115581,bonus_id=567
 back=gronnstitched_greatcloak,id=113873,bonus_id=567/448,enchant=gift_of_critical_strike
 chest=blackhands_chestguard,id=115582,bonus_id=567
 wrists=bracers_of_visceral_force,id=119331,bonus_id=567/448
-hands=blackhands_handguards,id=115583,bonus_id=567
+hands=gauntlets_of_dramatic_blows,id=113906,bonus_id=567
 waist=ironcrushers_collar,id=113950,bonus_id=567/448
 legs=blackhands_legguards,id=115580,bonus_id=567
 feet=iron_bellow_sabatons,id=113961,bonus_id=567/448

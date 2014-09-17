@@ -16,11 +16,11 @@ spec=protection
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_strength_flask
-actions.precombat+=/food,type=blackrock_barbecue
+actions.precombat+=/food,type=nagrand_tempura
 actions.precombat+=/stance,choose=gladiator
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 # Generic on-use trinket line if needed when swapping trinkets out. 
-#actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&buff.ravager.up)
+#actions+=/use_item,slot=trinket1,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_armor
 
@@ -28,38 +28,36 @@ actions.precombat+=/potion,name=draenic_armor
 
 actions=charge
 actions+=/auto_attack
-actions+=/blood_fury,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<15
-actions+=/berserking,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<15
-actions+=/arcane_torrent,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<15
+actions+=/avatar
+actions+=/bloodbath
+actions+=/blood_fury,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10
+actions+=/berserking,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10
+actions+=/arcane_torrent,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10
 actions+=/potion,name=draenic_armor,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up
 actions+=/berserker_rage,if=buff.enrage.down
-actions+=/call_action_list,name=gladiator,if=active_enemies<4
-actions+=/call_action_list,name=gladiator_aoe,if=active_enemies>3
+actions+=/call_action_list,name=single,if=active_enemies=1
+actions+=/call_action_list,name=aoe,if=active_enemies>=2
 
-actions.gladiator=shield_charge,if=buff.shield_charge.down&cooldown.shield_slam.remains=0&(cooldown.bloodbath.remains>15|!talent.bloodbath.enabled)
-actions.gladiator+=/heroic_strike,if=buff.shield_charge.up|buff.ultimatum.up|rage>=90|target.time_to_die<=3|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.max_stack)
-actions.gladiator+=/bloodbath
-actions.gladiator+=/avatar
-actions.gladiator+=/heroic_leap,if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled
-actions.gladiator+=/shield_slam
-actions.gladiator+=/revenge
-actions.gladiator+=/storm_bolt,if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled
-actions.gladiator+=/dragon_roar,if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled
-actions.gladiator+=/devastate,if=cooldown.shield_slam.remains>execute_time*0.4
+actions.single=shield_charge,if=(!buff.shield_charge.up&!cooldown.shield_slam.remains)|charges=2
+actions.single+=/heroic_strike,if=buff.shield_charge.up|buff.ultimatum.up|rage>=90|target.time_to_die<=3|talent.unyielding_strikes.enabled
+actions.single+=/heroic_leap,if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled
+actions.single+=/shield_slam
+actions.single+=/revenge
+actions.single+=/storm_bolt
+actions.single+=/dragon_roar
+actions.single+=/devastate
 
-actions.gladiator_aoe=bloodbath
-actions.gladiator_aoe+=/avatar
-actions.gladiator_aoe+=/shield_charge,if=buff.shield_charge.down&cooldown.shield_slam.remains=0&(cooldown.bloodbath.remains>15|!talent.bloodbath.enabled)
-actions.gladiator_aoe+=/thunder_clap,if=!dot.deep_wounds.ticking
-actions.gladiator_aoe+=/bladestorm
-actions.gladiator_aoe+=/heroic_strike,if=buff.ultimatum.up|active_enemies<4|rage>110
-actions.gladiator_aoe+=/heroic_leap,if=(buff.bloodbath.up|cooldown.bloodbath.remains>5|!talent.bloodbath.enabled)
-actions.gladiator_aoe+=/revenge
-actions.gladiator_aoe+=/shield_slam
-actions.gladiator_aoe+=/thunder_clap
-actions.gladiator_aoe+=/dragon_roar,if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled
-actions.gladiator_aoe+=/storm_bolt,if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled
-actions.gladiator_aoe+=/devastate,if=cooldown.shield_slam.remains>execute_time*0.4
+actions.aoe=shield_charge,if=(!buff.shield_charge.up&!cooldown.shield_slam.remains)|charges=2
+actions.aoe+=/thunder_clap,if=!dot.deep_wounds.ticking
+actions.aoe+=/bladestorm
+actions.aoe+=/heroic_strike,if=buff.shield_charge.up|buff.ultimatum.up|rage>=100|target.time_to_die<=3|talent.unyielding_strikes.enabled
+actions.aoe+=/heroic_leap,if=(buff.bloodbath.up|cooldown.bloodbath.remains>5|!talent.bloodbath.enabled)
+actions.aoe+=/revenge
+actions.aoe+=/shield_slam
+actions.aoe+=/thunder_clap
+actions.aoe+=/dragon_roar,if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled
+actions.aoe+=/storm_bolt,if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled
+actions.aoe+=/devastate,if=cooldown.shield_slam.remains>execute_time*0.4
 
 head=blackhands_faceguard,id=115584,bonus_id=566
 neck=gluttons_kerchief,id=113882,bonus_id=566,enchant=gift_of_critical_strike
