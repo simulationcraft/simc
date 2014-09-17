@@ -152,6 +152,7 @@ public:
     // Mana
     gain_t* divine_plea;
     gain_t* extra_regen;
+    gain_t* glyph_of_divinity;
 
     // Holy Power
     gain_t* hp_beacon_of_light;
@@ -296,6 +297,7 @@ public:
     const spell_data_t* divine_shield;
     const spell_data_t* divine_storm;
     const spell_data_t* divine_wrath;
+    const spell_data_t* divinity;
     const spell_data_t* double_jeopardy;
     const spell_data_t* flash_of_light;
     const spell_data_t* final_wrath;
@@ -2677,7 +2679,11 @@ struct lay_on_hands_t : public paladin_heal_t
 
     // unbreakable spirit reduces cooldown
     if ( p -> talents.unbreakable_spirit -> ok() )
-      cooldown -> duration = data().cooldown() * ( 1 + p -> talents.unbreakable_spirit -> effectN( 1 ).percent() );
+        cooldown -> duration = data().cooldown() * ( 1 + p -> talents.unbreakable_spirit -> effectN( 1 ).percent() );
+
+    //Glyph of Divinity Phillipuh
+    if ( p -> glyphs.divinity -> ok() )
+        cooldown -> duration += p -> glyphs.divinity -> effectN( 1 ).time_value();
 
     use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
@@ -2691,6 +2697,16 @@ struct lay_on_hands_t : public paladin_heal_t
 
     target -> debuffs.forbearance -> trigger();
   }
+  virtual void impact( action_state_t* s )
+  {
+      paladin_heal_t::impact( s );
+
+      if ( p() -> glyphs.divinity -> ok() ){
+          p() -> resource_gain(RESOURCE_MANA, .1 * p() -> resources.max[RESOURCE_MANA], p() -> gains.glyph_of_divinity);
+      }
+
+  }
+
 
   virtual bool ready()
   {
@@ -4712,10 +4728,11 @@ void paladin_t::init_gains()
   // Mana
   gains.divine_plea                 = get_gain( "divine_plea"            );
   gains.extra_regen                 = get_gain( ( specialization() == PALADIN_RETRIBUTION ) ? "sword_of_light" : "guarded_by_the_light" );
+  gains.glyph_of_divinity           = get_gain( "glyph_of_divinity" );
 
   // Health
   gains.holy_shield                 = get_gain( "holy_shield_absorb" );
-  gains.seal_of_insight             = get_gain( "seal_of_insight"  );
+  gains.seal_of_insight             = get_gain( "seal_of_insight" );
   gains.glyph_divine_storm          = get_gain( "glyph_of_divine_storm" );
   gains.glyph_divine_shield         = get_gain( "glyph_of_divine_shield" );
 
@@ -5153,6 +5170,18 @@ void paladin_t::generate_action_prio_list_holy()
   // Potions
   if ( sim -> allow_potions )
     def -> add_action( "potion,name=mana_potion,if=mana.pct<=75" );
+  // Potions
+
+    // Phillipuh
+  if (sim -> allow_potions && level >= 80){
+      std::string potion_action= "potion,name=";
+      if ( level > 90 )
+          potion_action += "potion,name=draenic_intellect";
+      else
+          potion_action += ( level > 85 ) ? "mogu power" : "jade serpent";
+      precombat -> add_action( potion_action);
+
+  }
 
   def -> add_action( "/auto_attack" );
   def -> add_talent( this, "Speed of Light", "if=movement.remains>1" );
@@ -5340,6 +5369,7 @@ void paladin_t::init_spells()
   glyphs.divine_protection        = find_glyph_spell( "Glyph of Divine Protection" );
   glyphs.divine_storm             = find_glyph_spell( "Glyph of Divine Storm" );
   glyphs.divine_wrath             = find_glyph_spell( "Glyph of Divine Wrath" );
+  glyphs.divinity                 = find_glyph_spell( "Glyph of Divinity" );
   glyphs.double_jeopardy          = find_glyph_spell( "Glyph of Double Jeopardy" );
   glyphs.flash_of_light           = find_glyph_spell( "Glyph of Flash of Light" );
   glyphs.final_wrath              = find_glyph_spell( "Glyph of Final Wrath" );
