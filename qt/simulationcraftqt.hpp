@@ -41,13 +41,13 @@ class PaperdollProfile;
 enum main_tabs_e
 {
   TAB_WELCOME = 0,
-  TAB_OPTIONS,
   TAB_IMPORT,
+  TAB_OPTIONS,
   TAB_SIMULATE,
+  TAB_RESULTS,
   TAB_OVERRIDES,
   TAB_HELP,
   TAB_LOG,
-  TAB_RESULTS,
   TAB_SPELLQUERY
 #ifdef SC_PAPERDOLL
   , TAB_PAPERDOLL
@@ -1089,18 +1089,19 @@ public:
 
   void createCmdLine();
   void createWelcomeTab();
-  void createOptionsTab();
   void createImportTab();
-  void createBestInSlotTab();
-  void createCustomTab();
+  void createOptionsTab();
   void createSimulateTab();
+  void createResultsTab();
   void createOverridesTab();
   void createHelpTab();
   void createLogTab();
-  void createResultsTab();
   void createSpellQueryTab();
   void createToolTips();
   void createTabShortcuts();
+  void createBestInSlotTab();
+  void createCustomTab();
+
 #ifdef SC_PAPERDOLL
   void createPaperdoll();
 #endif
@@ -1434,7 +1435,9 @@ private slots:
   }
   void linkClickedSlot( const QUrl& url )
   {
-    if ( url.isLocalFile() )
+    QString clickedurl = url.toString();
+
+    if ( url.isLocalFile() || clickedurl.contains( "battle.net" ) ) // Make sure that battle.net profiles are loaded in simcraft.
       load( url );
     else
       QDesktopServices::openUrl( url );
