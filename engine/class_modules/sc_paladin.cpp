@@ -2672,8 +2672,9 @@ struct illuminated_healing_t : public paladin_absorb_t
 
 struct lay_on_hands_t : public paladin_heal_t
 {
+  double mana_return_pct;
   lay_on_hands_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "lay_on_hands", p, p -> find_class_spell( "Lay on Hands" ) )
+    paladin_heal_t( "lay_on_hands", p, p -> find_class_spell( "Lay on Hands" ) ), mana_return_pct( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -2689,6 +2690,9 @@ struct lay_on_hands_t : public paladin_heal_t
     trigger_gcd = timespan_t::zero();
 
     pct_heal = 1.0;
+
+    if ( p -> glyphs.divinity -> ok() )
+      mana_return_pct = p -> find_spell( 54986 ) -> effectN( 1 ).percent();
   }
 
   virtual void execute()
@@ -2699,12 +2703,10 @@ struct lay_on_hands_t : public paladin_heal_t
   }
   virtual void impact( action_state_t* s )
   {
-      paladin_heal_t::impact( s );
+    paladin_heal_t::impact( s );
 
-      if ( p() -> glyphs.divinity -> ok() ){
-          p() -> resource_gain(RESOURCE_MANA, .1 * p() -> resources.max[RESOURCE_MANA], p() -> gains.glyph_of_divinity);
-      }
-
+    if ( mana_return_pct > 0 )
+      p() -> resource_gain( RESOURCE_MANA, mana_return_pct * p() -> resources.max[ RESOURCE_MANA ], p() -> gains.glyph_of_divinity );
   }
 
 
