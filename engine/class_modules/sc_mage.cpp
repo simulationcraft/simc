@@ -842,6 +842,8 @@ struct prismatic_crystal_t : public pet_t
       o() -> action_list[ i ] -> target_cache.is_valid = false;
   }
 
+  double composite_mitigation_versatility() const { return 0; }
+
   double composite_player_vulnerability( school_e school ) const
   {
     double m = pet_t::composite_player_vulnerability( school );
