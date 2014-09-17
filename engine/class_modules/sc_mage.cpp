@@ -1564,14 +1564,15 @@ static void trigger_unstable_magic( action_state_t* s )
 
   if ( !p -> explode )
   {
-   p -> explode = new unstable_magic_explosion_t( p );
-   p -> explode -> init();
+    p -> explode = new unstable_magic_explosion_t( p );
+    p -> explode -> init();
   }
 
+  p -> explode -> target = s -> target;
   p -> explode -> base_dd_max = s -> result_amount;
   p -> explode -> base_dd_min = s -> result_amount;
   p -> explode -> execute();
-  
+
   return;
 }
 
@@ -2512,7 +2513,6 @@ struct frost_bomb_t : public mage_spell_t
     mage_spell_t( "frost_bomb", p, p -> talents.frost_bomb )
   {
     parse_options( NULL, options_str );
-    harmful = false;
   }
 
   virtual void execute()
@@ -2530,11 +2530,6 @@ struct frost_bomb_t : public mage_spell_t
       }
       p.last_bomb_target = execute_state -> target;
     }
-  }
-
-  virtual void last_tick( dot_t* d )
-  {
-    mage_spell_t::last_tick( d );
   }
 
   virtual void impact( action_state_t* s )
@@ -2905,12 +2900,12 @@ struct ice_lance_t : public mage_spell_t
 {
 
   double fof_multiplier;
-  frost_bomb_explosion_t* frost_bomb_explode;
+  frost_bomb_explosion_t* frost_bomb_explosion;
 
   ice_lance_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "ice_lance", p, p -> find_class_spell( "Ice Lance" ) ),
     fof_multiplier( 0 ),
-    frost_bomb_explode( new frost_bomb_explosion_t( p ) )
+    frost_bomb_explosion( new frost_bomb_explosion_t( p ) )
   {
     parse_options( NULL, options_str );
 
@@ -2955,7 +2950,10 @@ struct ice_lance_t : public mage_spell_t
     if ( p() -> talents.frost_bomb -> ok() )
     {
       if ( td( s -> target ) -> debuffs.frost_bomb -> up() && frozen && !result_is_multistrike( s -> result) )
-        frost_bomb_explode -> execute();
+      {
+        frost_bomb_explosion -> target = s -> target;
+        frost_bomb_explosion -> execute();
+      }
     }
   }
 
