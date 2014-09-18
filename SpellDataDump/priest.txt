@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18850)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18888)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 Resource         : 2.4% Base Mana (3840 @Level 100)
@@ -43,10 +43,11 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=95)       : Apply Aura (6) | Periodic Heal: every 3 seconds (8)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.55000
-Description      : Heals the target for $?s95649[${$m1*0.6} and then an additional ][]${$m1*4} over $d.
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.44000
+#2 (id=256131)   : Direct Heal (10)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.22000
+Description      : Heals the target for $?s95649[$s2 and then an additional ][]$o1 over $d.
 Tooltip          : Healing $w1 health every $t1 sec.
-Variables        : $total=${$m1*4}
 
 Name             : Purify (id=527) [Spell Family (6)] 
 Class            : Discipline Holy Priest
@@ -132,7 +133,7 @@ Tooltip          : Reduced threat level$?$w2=0[][ and $55684s1% less damage take
 
 Name             : Shadow Word: Pain (id=589) [Spell Family (6)] 
 Class            : Priest
-Resource         : 1% Base Mana (1600 @Level 100)
+Resource         : 0.25% Base Mana (400 @Level 100)
 Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -176,7 +177,7 @@ Description      : A powerful prayer heals the friendly target's party members w
 
 Name             : Dominate Mind (id=605) [Spell Family (6)] 
 Class            : Priest
-Resource         : 2% Base Mana (3200 @Level 100)
+Resource         : 0.5% Base Mana (800 @Level 100)
 Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 1.8 seconds
@@ -358,13 +359,13 @@ Description      : Attack with an equipped wand.
 Name             : Wrath (Solar) (id=5176) [Scaling Spell (2), Spell Family (7)] 
 Class            : Warrior, Hunter, Rogue, Priest, Death Knight, Mage, Monk, Druid
 Race             : Night Elf
-Resource         : 8.8% Base Mana (0 @Level 100) w/ Balance (id=166163)
+Resource         : 3.5% Base Mana (0 @Level 100) w/ Balance (id=166163)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Item - Druid T9 Balance 4P Bonus (Starfire) (67126), Item - Druid T12 Balance 4P Bonus (99049), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Clearcasting (135700), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Dream of Cenarius (158504), Solar Empowerment (164545), Item - Druid T17 Balance 2P Bonus (165433)
+Affecting spells : Item - Druid T9 Balance 4P Bonus (Starfire) (67126), Item - Druid T12 Balance 4P Bonus (99049), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Dream of Cenarius (158504), Solar Empowerment (164545), Item - Druid T17 Balance 2P Bonus (165433)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -463,13 +464,13 @@ Description      : Creates 3 vials of Anti-Venom.
 
 Name             : Mind Blast (id=8092) [Spell Family (6)] 
 Class            : Shadow Priest
-Resource         : 1% Base Mana (1600 @Level 100)
+Resource         : 0.25% Base Mana (400 @Level 100)
 Spell Level      : 21
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
-Affecting spells : Mastery: Mental Anguish (77486), Glyph of Mind Spike (81292), Mind Spike (87178), Dark Flames (99158), Shadowy Insight (124430), Lucidity (137323), Item - Priest T16 Shadow 2P Bonus (145174), Empowered Shadows (145180), Clarity of Power (155246), Glyph of Mind Harvest (162532), Mana Attunement (165201)
+Affecting spells : Mastery: Mental Anguish (77486), Glyph of Mind Spike (81292), Mind Spike (87178), Dark Flames (99158), Shadowy Insight (124430), Lucidity (137323), Item - Priest T16 Shadow 2P Bonus (145174), Empowered Shadows (145180), Clarity of Power (155246), Glyph of Mind Harvest (162532), Mind Blast (165201)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -629,7 +630,7 @@ Tooltip          : $15286s1% of any single-target Shadow spell damage you deal h
 Name             : Mind Flay (id=15407) [Spell Family (6)] 
 Replaces         : Smite (id=585)
 Class            : Shadow Priest
-Resource         : 1% Base Mana (1600 @Level 100)
+Resource         : 0.25% Base Mana (400 @Level 100)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -914,7 +915,7 @@ Description      : Dispels magic in a $32375a1 yard radius, removing all harmful
 
 Name             : Shadow Word: Death (id=32379) [Spell Family (6)] 
 Class            : Shadow Priest
-Resource         : 2.6% Base Mana (4160 @Level 100)
+Resource         : 0.5% Base Mana (800 @Level 100)
 Spell Level      : 46
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1126,7 +1127,7 @@ Description      : Heals up to $?s55675[6][5] injured party or raid members with
 
 Name             : Vampiric Touch (id=34914) [Spell Family (6)] 
 Class            : Shadow Priest
-Resource         : 1.5% Base Mana (2400 @Level 100)
+Resource         : 0.38% Base Mana (608 @Level 100)
 Spell Level      : 28
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -1310,8 +1311,10 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=39728)    : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: 8 | Scaled Value: 8
-Description      : Increases all healing done by $s1%.
+                   Base Value: 20 | Scaled Value: 20
+#2 (id=256019)   : Apply Aura (6) | Unknown effect sub type (421)
+                   Base Value: 20 | Scaled Value: 20
+Description      : Increases all healing and absorption done by $s1%.
 
 Name             : Rapture (id=47536) [Spell Family (6), Passive] 
 Class            : Discipline Priest
@@ -1468,7 +1471,7 @@ Tooltip          : Increased healing received by $w1%$?$w1<100[ and will prevent
 
 Name             : Mind Sear (id=48045) [Spell Family (6)] 
 Class            : Priest
-Resource         : 3% Base Mana (4800 @Level 100)
+Resource         : 0.75% Base Mana (1200 @Level 100)
 Spell Level      : 28
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2500,7 +2503,7 @@ Description      : You pull the spirit of the friendly party or raid target, ins
 
 Name             : Mind Spike (id=73510) [Spell Family (6)] 
 Class            : Shadow Priest
-Resource         : 0.5% Base Mana (800 @Level 100)
+Resource         : 0.12% Base Mana (191 @Level 100)
 Spell Level      : 44
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -2938,7 +2941,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=89212)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 25 | Scaled Value: 25
-                   Affected Spells: Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Flash Heal (101062)
+                   Affected Spells: Renew (139), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Flash Heal (101062), Glyph of Mind Flay (120587)
 #2 (id=185725)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 22
                    Affected Spells: Renew (139), Glyph of Mind Flay (120587)
@@ -3124,7 +3127,10 @@ Effects          :
                    Affected Spells: Renew (139), Glyph of Mind Flay (120587)
 #2 (id=168174)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15
-Description      : Your Renew heals for an additional $s1% and instantly heals the target for $s2% of the total periodic effect.
+#3 (id=256130)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 15 | Scaled Value: 15
+                   Affected Spells: Renew (139), Glyph of Mind Flay (120587)
+Description      : Your Renew heals for an additional $s1% and also instantly heals the target for $139s2.
 
 Name             : Shadow Orbs (id=95740) [Spell Family (6), Passive] 
 Class            : Shadow Priest
@@ -3313,7 +3319,7 @@ Description      : Alters the appearance of your Shadowform to be less transpare
 
 Name             : Void Tendrils (id=108920) [Spell Family (6)] 
 Class            : Priest
-Resource         : 4% Base Mana (6400 @Level 100)
+Resource         : 1% Base Mana (1600 @Level 100)
 Spell Level      : 12
 GCD              : 1.5 seconds
 Duration         : 0.5 seconds
@@ -3917,7 +3923,7 @@ Tooltip          : Movement speed increased by $s1%.
 
 Name             : Halo (id=120644) [Spell Family (6)] 
 Class            : Priest
-Resource         : 4.5% Base Mana (7200 @Level 100)
+Resource         : 1% Base Mana (1600 @Level 100)
 Spell Level      : 46
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -4068,7 +4074,7 @@ Description      : Increases your chance to hit with Penance, Smite, Power Word:
 
 Name             : Divine Star (id=122121) [Spell Family (6)] 
 Class            : Priest
-Resource         : 2.5% Base Mana (4000 @Level 100)
+Resource         : 0.5% Base Mana (800 @Level 100)
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
@@ -4498,7 +4504,7 @@ Description      : $@spelldesc127632
 
 Name             : Cascade (id=127632) [Spell Family (6)] 
 Class            : Priest
-Resource         : 3% Base Mana (4800 @Level 100)
+Resource         : 0.75% Base Mana (1200 @Level 100)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 25 seconds
@@ -4561,7 +4567,7 @@ Spell Level      : 1
 Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 0.5 yards/sec
-Duration         : 7 seconds
+Duration         : 9 seconds
 Cooldown         : 10 seconds
 Affecting spells : Chakra: Chastise (81209), Glyph of Holy Fire (119853), Lucidity (137323), Glyph of the Inquisitor (159624)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -4576,7 +4582,7 @@ Effects          :
 #2 (id=168466)   : Apply Aura (6) | Periodic Damage: holy every 1 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.02210
 #3 (id=180854)   : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100
+                   Base Value: 200 | Scaled Value: 200
 #4 (id=186787)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 Description      : Strike an enemy with heavenly power, dealing $s1 Holy damage, an additional $o2 Holy damage over $d, and restoring ${$m3/100}% of maximum mana.$?s81749[ This damage triggers Atonement.][ This damage will heal a nearby injured ally for $81749s1% of the damage dealt, or half as much if it heals the Priest.]
@@ -4782,7 +4788,7 @@ Class            : Priest
 Range            : 50000 yards
 Velocity         : 15 yards/sec
 Attributes       : ........ ........ ..x..... .......x   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ x....... .x...... ......x. 
+                 : ........ ........ ........ ........   ........ ........ .x...... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5065,17 +5071,18 @@ Name             : Saving Grace (id=152116) [Spell Family (6)]
 Class            : Priest
 Resource         : 3% Base Mana (4800 @Level 100)
 Range            : 40 yards
+Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Affecting spells : Enhanced Leap of Faith (157146)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=210593)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 7.93600
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 6.30000
 #2 (id=215759)   : Trigger Spell: Saving Grace (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 155274
 Description      : Instantly heals a friendly target for $s1. Reduces your absorbs and healing done by $155274s1% for $155274d, stacking up to $155274u times.
@@ -5175,7 +5182,7 @@ Description      : Your Shadowy Apparitions grant you 1 Shadow Orb instead of de
 
 Name             : Saving Grace (id=155274) 
 Class            : Priest
-Duration         : 10 seconds
+Duration         : 8 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -5320,7 +5327,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=219096)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100
-Description      : The next Prayer of Healing you cast after activating Archangel has $s1% increased critical strike chance.
+Description      : The next Prayer of Healing or Flash Heal that you cast after activating Archangel has $s1% increased critical strike chance.
 
 Name             : Enhanced Chakras (id=157206) [Spell Family (6), Passive] 
 Class            : Priest
@@ -5808,7 +5815,7 @@ Effects          :
 #3 (id=228496)   : Apply Aura (6) | Unknown effect sub type (466)
                    Base Value: -100 | Scaled Value: -100
 
-Name             : Mana Attunement (Passive) (id=165201) [Spell Family (6), Passive, Hidden] 
+Name             : Mind Blast (Passive) (id=165201) [Spell Family (6), Passive, Hidden] 
 Class            : Shadow Priest
 Spell Level      : 10
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -5818,13 +5825,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=233104)   : Apply Aura (6) | Mod Power Regen (110)
+#1 (id=233104)   : Apply Aura (6) | Dummy (4)
                    Base Value: 300 | Scaled Value: 300
 #2 (id=233187)   : Apply Aura (6) | Unknown effect sub type (347)
                    Base Value: 100 | Scaled Value: 100
                    Affected Spells: Mind Blast (8092)
-Description      : Your mana regeneration is increased by $s1%.
-Tooltip          : Increases your mana regeneration by $s1%.
 
 Name             : Divine Providence (id=165362) [Passive] 
 Class            : Holy Priest
@@ -5844,7 +5849,7 @@ Description      : You gain $s1% more of the Multistrike stat from all sources.
 
 Also increases the damage, healing, and absorption of your multistrikes by $s2%.
 
-Name             : Haste Attunement (id=165370) [Passive] 
+Name             : Mastermind (id=165370) [Passive] 
 Class            : Shadow Priest
 Spell Level      : 90
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6088,20 +6093,4 @@ Effects          :
 #1 (id=251176)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Choose a level 90 talent.
-
-Name             : Discipline (id=178291) [Spell Family (6), Passive, Hidden] 
-Class            : Discipline Priest
-Spell Level      : 10
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=255769)   : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 127
-#2 (id=255770)   : Apply Aura (6) | Modify Absorb% Done (422)
-                   Base Value: 10 | Scaled Value: 10
-Description      : Increases healing and absorption done by $s1%.
 

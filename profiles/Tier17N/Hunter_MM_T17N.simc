@@ -42,6 +42,7 @@ actions+=/powershot,if=focus.time_to_max%(1+buff.steady_focus.value)>cast_time
 actions+=/barrage
 # Pool max focus for rapid fire so we can spam AimedShot with Careful Aim buff
 actions+=/steady_shot,if=buff.careful_aim.down&cast_time*focus.deficit%(14+focus.regen*(1+buff.steady_focus.value))>cooldown.rapid_fire.remains
+actions+=/focusing_shot,if=buff.careful_aim.down&cast_time*focus.deficit%(50+focus.regen*(1+buff.steady_focus.value))>cooldown.rapid_fire.remains&focus<100
 actions+=/steady_shot,if=buff.pre_steady_focus.up&focus+14+18*(1+buff.steady_focus.value)<focus.max
 actions+=/aimed_shot,if=talent.focusing_shot.enabled
 actions+=/aimed_shot,if=focus+focus.regen*(1+buff.steady_focus.value)*cast_time>=85
@@ -76,14 +77,14 @@ trinket2=scales_of_doom,id=113612
 main_hand=mouth_of_the_fury,id=113885,enchant=megawatt_filament
 
 # Gear Summary
-# gear_agility=2711
-# gear_stamina=3437
-# gear_crit_rating=1484
+# gear_agility=2664
+# gear_stamina=3367
+# gear_crit_rating=1452
 # gear_haste_rating=589
 # gear_mastery_rating=410
 # gear_armor=1286
 # gear_multistrike_rating=630
-# gear_versatility_rating=180
+# gear_versatility_rating=151
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 summon_pet=cat

@@ -2682,9 +2682,9 @@ struct illuminated_healing_t : public paladin_absorb_t
 
 struct lay_on_hands_t : public paladin_heal_t
 {
-    double mana_return_pct;
+  double mana_return_pct;
   lay_on_hands_t( paladin_t* p, const std::string& options_str ) :
-   paladin_heal_t( "lay_on_hands", p, p -> find_class_spell( "Lay on Hands" ) ), mana_return_pct( 0 )
+    paladin_heal_t( "lay_on_hands", p, p -> find_class_spell( "Lay on Hands" ) ), mana_return_pct( 0 )
   {
       parse_options( NULL, options_str );
 
@@ -2699,9 +2699,10 @@ struct lay_on_hands_t : public paladin_heal_t
       use_off_gcd = true;
       trigger_gcd = timespan_t::zero();
 
-      pct_heal = 1.0;
-      if ( p -> glyphs.divinity -> ok() )
-          mana_return_pct = p -> find_spell( 54986 ) -> effectN( 1 ).percent();
+    pct_heal = 1.0;
+
+    if ( p -> glyphs.divinity -> ok() )
+      mana_return_pct = p -> find_spell( 54986 ) -> effectN( 1 ).percent();
   }
 
   virtual void execute()

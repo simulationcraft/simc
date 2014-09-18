@@ -3698,6 +3698,7 @@ void hunter_t::apl_mm()
   default_list -> add_talent( this, "Powershot", "if=focus.time_to_max%(1+buff.steady_focus.value)>cast_time" );
   default_list -> add_talent( this, "Barrage" );
   default_list -> add_action( this, "Steady Shot", "if=buff.careful_aim.down&cast_time*focus.deficit%(14+focus.regen*(1+buff.steady_focus.value))>cooldown.rapid_fire.remains", "Pool max focus for rapid fire so we can spam AimedShot with Careful Aim buff" );
+  default_list -> add_talent( this, "Focusing Shot", "if=buff.careful_aim.down&cast_time*focus.deficit%(50+focus.regen*(1+buff.steady_focus.value))>cooldown.rapid_fire.remains&focus<100" ); 
   default_list -> add_action( this, "Steady Shot", "if=buff.pre_steady_focus.up&focus+14+18*(1+buff.steady_focus.value)<focus.max" );
   default_list -> add_action( this, "Aimed Shot", "if=talent.focusing_shot.enabled" );
   default_list -> add_action( this, "Aimed Shot", "if=focus+focus.regen*(1+buff.steady_focus.value)*cast_time>=85" );

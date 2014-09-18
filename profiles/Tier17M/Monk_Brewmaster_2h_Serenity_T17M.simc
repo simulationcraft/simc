@@ -1,0 +1,91 @@
+monk="Monk_Brewmaster_2h_Serenity_T17M"
+level=100
+race=blood_elf
+role=tank
+position=front
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.01.112
+spec=brewmaster
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_stamina_flask
+actions.precombat+=//food,type=rylak_crepes
+actions.precombat+=/stance,choose=sturdy_ox
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_agility
+actions.precombat+=/dampen_harm
+
+# Executed every time the actor is available.
+
+actions=auto_attack
+actions+=/blood_fury,if=energy<=40
+actions+=/berserking,if=energy<=40
+actions+=/arcane_torrent,if=energy<=40
+actions+=/chi_brew,if=talent.chi_brew.enabled&chi.max-chi>=2&buff.elusive_brew_stacks.stack<=10
+actions+=/gift_of_the_ox,if=buff.gift_of_the_ox.react&incoming_damage_1500ms
+actions+=/dampen_harm,if=incoming_damage_1500ms&buff.fortifying_brew.down&buff.elusive_brew_activated.down
+actions+=/fortifying_brew,if=incoming_damage_1500ms&buff.dampen_harm.down&buff.elusive_brew_activated.down
+actions+=/elusive_brew,if=buff.elusive_brew_stacks.react>=9&buff.dampen_harm.down&buff.elusive_brew_activated.down
+actions+=/invoke_xuen,if=talent.invoke_xuen.enabled&time>5
+actions+=/serenity,if=talent.serenity.enabled&energy<=40
+actions+=/call_action_list,name=st,if=active_enemies<3
+actions+=/call_action_list,name=aoe,if=active_enemies>=3
+
+actions.st=blackout_kick,if=buff.shuffle.down
+actions.st+=/purifying_brew,if=!talent.chi_explosion.enabled&stagger.heavy
+actions.st+=/guard
+actions.st+=/keg_smash,if=chi.max-chi>=2&!buff.serenity.remains
+actions.st+=/chi_burst,if=talent.chi_burst.enabled&energy.time_to_max>3
+actions.st+=/chi_wave,if=talent.chi_wave.enabled&energy.time_to_max>3
+actions.st+=/zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking
+actions.st+=/chi_explosion,if=chi>=3
+actions.st+=/blackout_kick,if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=1.5
+actions.st+=/blackout_kick,if=buff.serenity.up
+actions.st+=/blackout_kick,if=chi>=4
+actions.st+=/expel_harm,if=chi.max-chi>=1&cooldown.expel_harm.remains=0&cooldown.keg_smash.remains>=1.5
+actions.st+=/jab,if=chi.max-chi>=1&cooldown.keg_smash.remains>=1.5&cooldown.expel_harm.remains>=1.5
+actions.st+=/purifying_brew,if=!talent.chi_explosion.enabled&stagger.moderate&buff.shuffle.remains>=6
+actions.st+=/tiger_palm,if=(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40
+actions.st+=/tiger_palm,if=cooldown.keg_smash.remains>=1.5
+
+actions.aoe=guard
+actions.aoe+=/breath_of_fire,if=chi>=3&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=1.5
+actions.aoe+=/chi_explosion,if=chi>=4
+actions.aoe+=/keg_smash,if=chi.max-chi>=2&!buff.serenity.remains
+actions.aoe+=/expel_harm,if=chi.max-chi>=1&cooldown.expel_harm.remains=0&cooldown.keg_smash.remains>=1.5&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40
+actions.aoe+=/rushing_jade_wind,if=talent.rushing_jade_wind.enabled
+actions.aoe+=/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled
+
+head=acidic_jaws,id=113880,bonus_id=567
+neck=choker_of_bestial_force,id=113952,bonus_id=567,enchant=gift_of_versatility
+shoulders=flamebenders_shoulderguards,id=113924,bonus_id=567
+back=gronnstitched_greatcloak,id=113873,bonus_id=567,enchant=gift_of_versatility
+chest=vest_of_the_somber_gaze,id=115558,bonus_id=567
+wrists=bracers_of_shattered_limbs,id=119333,bonus_id=567
+hands=handwraps_of_the_somber_gaze,id=115555,bonus_id=567
+waist=belt_of_bloody_guts,id=113636,bonus_id=567
+legs=nether_blast_leggings,id=113856,bonus_id=567
+feet=ironflecked_sandals,id=119340,bonus_id=567
+finger1=timeless_solium_band_of_the_bulwark,id=118298,bonus_id=567,enchant=gift_of_versatility
+finger2=stonefist_band,id=113938,bonus_id=567,enchant=gift_of_versatility
+trinket1=pillar_of_the_earth,id=113650,bonus_id=567
+trinket2=blast_furnace_door,id=113893,bonus_id=567
+main_hand=headlopper_skullscythe,id=119448,bonus_id=567,enchant_id=5352
+
+# Gear Summary
+# gear_agility=2982
+# gear_stamina=4871
+# gear_crit_rating=1256
+# gear_haste_rating=569
+# gear_mastery_rating=893
+# gear_armor=1133
+# gear_bonus_armor=966
+# gear_versatility_rating=1130
+# set_bonus=tier17_2pc=1

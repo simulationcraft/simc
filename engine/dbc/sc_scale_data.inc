@@ -1,4 +1,4 @@
-// Level scaling data, wow build 18865
+// Level scaling data, wow build 18888
 static double __gt_octhp_per_stamina[100] = {
   14.000000000000000,   14.000000000000000,   15.000000000000000,   16.000000000000000,   17.000000000000000, 
   18.000000000000000,   18.000000000000000,   18.000000000000000,   18.000000000000000,   18.000000000000000, 
@@ -24,7 +24,7 @@ static double __gt_octhp_per_stamina[100] = {
 };
 
 
-// Spell scaling multipliers for levels 1 - 100, wow build 18865
+// Spell scaling multipliers for levels 1 - 100, wow build 18888
 static double __gt_spell_scaling[][100] = {
   // Constant scaling
   {
@@ -420,7 +420,7 @@ static double __gt_spell_scaling[][100] = {
 };
 
 
-// Class based scaling multipliers for levels 1 - 100, wow build 18865
+// Class based scaling multipliers for levels 1 - 100, wow build 18888
 static double __gt_chance_to_melee_crit_base[][100] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -699,7 +699,7 @@ static double __gt_chance_to_melee_crit_base[][100] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 100, wow build 18865
+// Class based scaling multipliers for levels 1 - 100, wow build 18888
 static double __gt_chance_to_spell_crit_base[][100] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -978,7 +978,7 @@ static double __gt_chance_to_spell_crit_base[][100] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 100, wow build 18865
+// Class based scaling multipliers for levels 1 - 100, wow build 18888
 static double __gt_chance_to_melee_crit[][100] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -1257,7 +1257,7 @@ static double __gt_chance_to_melee_crit[][100] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 100, wow build 18865
+// Class based scaling multipliers for levels 1 - 100, wow build 18888
 static double __gt_chance_to_spell_crit[][100] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -1536,7 +1536,7 @@ static double __gt_chance_to_spell_crit[][100] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 100, wow build 18865
+// Class based scaling multipliers for levels 1 - 100, wow build 18888
 static double __gt_regen_mpper_spt[][100] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -1815,7 +1815,7 @@ static double __gt_regen_mpper_spt[][100] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 100, wow build 18865
+// Class based scaling multipliers for levels 1 - 100, wow build 18888
 static double __gt_octbase_hpby_class[][100] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -2094,7 +2094,7 @@ static double __gt_octbase_hpby_class[][100] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 100, wow build 18865
+// Class based scaling multipliers for levels 1 - 100, wow build 18888
 static double __gt_octbase_mpby_class[][100] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -2374,7 +2374,7 @@ static double __gt_octbase_mpby_class[][100] = {
 };
 
 
-// Combat ratings for levels 1 - 100, wow build 18865 
+// Combat ratings for levels 1 - 100, wow build 18888 
 static double __gt_combat_ratings[][100] = {
   // Dodge rating multipliers
   {
@@ -2885,7 +2885,7 @@ static double __gt_combat_ratings[][100] = {
 };
 
 
-// Item Level scaling data, wow build 18865
+// Item Level scaling data, wow build 18888
 static double __gt_item_socket_cost_per_level[1000] = {
    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000, 
    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000, 
@@ -3091,7 +3091,7 @@ static double __gt_item_socket_cost_per_level[1000] = {
 };
 
 
-// Monster(?) Level scaling data, wow build 18865
+// Monster(?) Level scaling data, wow build 18888
 static double __gt_armor_mitigation_by_lvl[103] = {
       157.0000000000,       167.0000000000,       177.0000000000,       187.0000000000,       197.0000000000, 
       207.0000000000,       217.0000000000,       227.0000000000,       237.0000000000,       247.0000000000, 

@@ -42,7 +42,7 @@ actions.prot+=/shield_wall,if=incoming_damage_2500ms>health.max*0.1&!(debuff.dem
 actions.prot+=/last_stand,if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)
 actions.prot+=/potion,name=draenic_armor,if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)
 actions.prot+=/call_action_list,name=prot_aoe,if=active_enemies>3
-actions.prot+=/heroic_strike,if=buff.ultimatum.up|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.stack>=5)
+actions.prot+=/heroic_strike,if=buff.ultimatum.up|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.stack>=6)
 actions.prot+=/bloodbath,if=talent.bloodbath.enabled&((cooldown.dragon_roar.remains=0&talent.dragon_roar.enabled)|(cooldown.stormbolt.remains=0&talent.stormbolt.enabled)|talent.shockwave.enabled)
 actions.prot+=/avatar,if=talent.avatar.enabled&((cooldown.ravager.remains=0&talent.ravager.enabled)|(cooldown.dragon_roar.remains=0&talent.dragon_roar.enabled)|(talent.stormbolt.enabled&cooldown.stormbolt.remains=0)|(!(talent.dragon_roar.enabled|talent.ravager.enabled|talent.stormbolt.enabled)))
 actions.prot+=/shield_slam
@@ -59,7 +59,7 @@ actions.prot+=/devastate
 actions.prot_aoe=bloodbath
 actions.prot_aoe+=/avatar
 actions.prot_aoe+=/thunder_clap,if=!dot.deep_wounds.ticking
-actions.prot_aoe+=/heroic_strike,if=buff.ultimatum.up|rage>110|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.stack>=5)
+actions.prot_aoe+=/heroic_strike,if=buff.ultimatum.up|rage>110|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.stack>=6)
 actions.prot_aoe+=/heroic_leap,if=(buff.bloodbath.up|cooldown.bloodbath.remains>5|!talent.bloodbath.enabled)
 actions.prot_aoe+=/shield_slam,if=buff.shield_block.up
 actions.prot_aoe+=/ravager,if=(buff.avatar.up|cooldown.avatar.remains>10)|!talent.avatar.enabled
@@ -90,14 +90,14 @@ main_hand=taners_terrible_spine,id=113862,bonus_id=566/448,enchant=mark_of_the_t
 off_hand=kromogs_protecting_palm,id=113926,bonus_id=567/448
 
 # Gear Summary
-# gear_strength=3629
-# gear_stamina=4564
+# gear_strength=3647
+# gear_stamina=4590
 # gear_crit_rating=1510
 # gear_haste_rating=501
 # gear_mastery_rating=503
 # gear_armor=3048
-# gear_bonus_armor=474
+# gear_bonus_armor=487
 # gear_multistrike_rating=965
-# gear_versatility_rating=687
+# gear_versatility_rating=698
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

@@ -1,9 +1,9 @@
-monk="Monk_WW_1h_CE_T17M"
+monk="Monk_Windwalker_1h_T17M"
 level=100
 race=troll
 role=dps
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!.01..11
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!.02..12
 spec=windwalker
 
 # This default action priority list is automatically created based on your character.
@@ -43,6 +43,7 @@ actions+=/call_action_list,name=aoe,if=active_enemies>=3
 actions+=/call_action_list,name=st,if=active_enemies<3
 
 actions.st=fists_of_fury,if=energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&!buff.serenity.remains
+actions.st+=/touch_of_death,if=target.health.percent<10
 actions.st+=/hurricane_strike,if=talent.hurricane_strike.enabled&energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&buff.energizing_brew.down
 actions.st+=/energizing_brew,if=cooldown.fists_of_fury.remains>6&(!talent.serenity.enabled|(!buff.serenity.remains&cooldown.serenity.remains>4))&energy+energy.regen*gcd<50
 actions.st+=/rising_sun_kick,if=!talent.chi_explosion.enabled
@@ -65,30 +66,30 @@ actions.aoe+=/rising_sun_kick,if=chi=chi.max
 actions.aoe+=/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled
 
 head=helm_of_the_somber_gaze,id=115556,bonus_id=567
-neck=flechetteriddled_chain,id=113647,bonus_id=567,enchant=gift_of_haste
+neck=darklight_necklace,id=113865,bonus_id=567,enchant=gift_of_multistrike
 shoulders=mantle_of_the_somber_gaze,id=115559,bonus_id=567
-back=drape_of_the_dark_hunt,id=113971,bonus_id=567,enchant=gift_of_haste
-chest=vest_of_the_somber_gaze,id=115558,bonus_id=567
-wrists=bracers_of_spare_skin,id=113634,bonus_id=567
-hands=treacherous_palms,id=113832,bonus_id=567
-waist=girdle_of_unconquered_glory,id=113907,bonus_id=567
+back=drape_of_the_dark_hunt,id=113971,bonus_id=567,enchant=gift_of_multistrike
+chest=vest_of_forceful_fury,id=113870,bonus_id=567
+wrists=bracers_of_shattered_limbs,id=119333,bonus_id=567
+hands=handwraps_of_the_somber_gaze,id=115555,bonus_id=567
+waist=conductors_multipocket_girdle,id=113964,bonus_id=567
 legs=legwraps_of_the_somber_gaze,id=115557,bonus_id=567
-feet=ironflecked_sandals,id=119340,bonus_id=567
-finger1=spellsink_signet,id=113843,bonus_id=567,enchant=gift_of_haste
-finger2=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_haste
+feet=furnace_tenders_treads,id=113895,bonus_id=567
+finger1=cinderwolf_signet,id=113917,bonus_id=567,enchant=gift_of_multistrike
+finger2=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_multistrike
 trinket1=humming_blackiron_trigger,id=113985,bonus_id=567
-trinket2=meaty_dragonspine_trophy,id=118114,bonus_id=567
-main_hand=hansgars_forgehammer,id=113897,bonus_id=567,enchant=mark_of_warsong
-off_hand=hansgars_forgehammer,id=113897,bonus_id=567,enchant=mark_of_warsong
+trinket2=scales_of_doom,id=113612,bonus_id=567
+main_hand=hansgars_forgehammer,id=113897,bonus_id=567,enchant=mark_of_the_frostwolf
+off_hand=hansgars_forgehammer,id=113897,bonus_id=567,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_agility=3472
-# gear_stamina=4335
-# gear_crit_rating=1129
-# gear_haste_rating=1620
-# gear_mastery_rating=153
-# gear_armor=1137
-# gear_multistrike_rating=1076
-# gear_versatility_rating=89
+# gear_agility=3512
+# gear_stamina=4435
+# gear_crit_rating=1305
+# gear_haste_rating=392
+# gear_mastery_rating=306
+# gear_armor=1147
+# gear_multistrike_rating=1951
+# gear_versatility_rating=215
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

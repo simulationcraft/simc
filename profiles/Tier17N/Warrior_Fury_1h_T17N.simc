@@ -29,30 +29,28 @@ actions.precombat+=/potion,name=draenic_strength
 actions=charge
 actions+=/auto_attack
 actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25
-# This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'
-actions+=/recklessness,if=(target.time_to_die>190|target.health.pct<20)&(!talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)|buff.bloodbath.up)|target.time_to_die<=10
+# This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown, unless the boss will die before the ability is usable again, and then use it with execute.'
+actions+=/recklessness,if=((target.time_to_die>190|target.health.pct<20)&(buff.bloodbath.up|!talent.bloodbath.enabled))|target.time_to_die<=10
 actions+=/avatar,if=(buff.recklessness.up|target.time_to_die<=25)
-actions+=/berserker_rage,if=debuff.colossus_smash.up&buff.raging_blow.stack<2
-actions+=/blood_fury,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
-actions+=/berserking,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
-actions+=/arcane_torrent,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
+actions+=/berserker_rage,if=buff.enrage.down
+actions+=/blood_fury,if=buff.bloodbath.up|!talent.bloodbath.enabled|buff.recklessness.up
+actions+=/berserking,if=buff.bloodbath.up|!talent.bloodbath.enabled|buff.recklessness.up
+actions+=/arcane_torrent,if=buff.bloodbath.up|!talent.bloodbath.enabled|buff.recklessness.up
 actions+=/call_action_list,name=single_target,if=active_enemies=1
 actions+=/call_action_list,name=two_targets,if=active_enemies=2
 actions+=/call_action_list,name=three_targets,if=active_enemies=3
 actions+=/call_action_list,name=aoe,if=active_enemies>3
 
-actions.single_target=bloodbath,if=(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20)
-actions.single_target+=/heroic_leap,if=debuff.colossus_smash.up
-actions.single_target+=/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&!talent.unquenchable_thirst.enabled
+actions.single_target=bloodbath
+actions.single_target+=/heroic_leap
+actions.single_target+=/bloodthirst,if=!talent.unquenchable_thirst.enabled
 actions.single_target+=/bloodthirst,if=talent.unquenchable_thirst.enabled&buff.enrage.down&rage<100
-actions.single_target+=/storm_bolt,if=cooldown.colossus_smash.remains>5|debuff.colossus_smash.up
-actions.single_target+=/dragon_roar,if=(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
-actions.single_target+=/ravager,if=cooldown.colossus_smash.remains<4
-actions.single_target+=/colossus_smash
-actions.single_target+=/raging_blow,if=debuff.colossus_smash.up
-actions.single_target+=/execute,if=debuff.colossus_smash.up|rage>70|target.time_to_die<12|buff.sudden_death.up
-actions.single_target+=/wild_strike,if=buff.bloodsurge.up|((debuff.colossus_smash.up|rage>70)&target.health.pct>20)
-actions.single_target+=/raging_blow,if=cooldown.colossus_smash.remains>4
+actions.single_target+=/storm_bolt
+actions.single_target+=/dragon_roar,if=buff.bloodbath.up|!talent.bloodbath.enabled
+actions.single_target+=/ravager
+actions.single_target+=/raging_blow
+actions.single_target+=/execute,if=rage>70|target.time_to_die<12|buff.sudden_death.up
+actions.single_target+=/wild_strike,if=buff.bloodsurge.up|(rage>70&target.health.pct>20)
 actions.single_target+=/siegebreaker
 actions.single_target+=/shockwave
 actions.single_target+=/impending_victory
@@ -62,9 +60,8 @@ actions.two_targets=bloodbath
 actions.two_targets+=/heroic_leap,if=buff.enrage.up
 actions.two_targets+=/ravager
 actions.two_targets+=/bladestorm
-actions.two_targets+=/dragon_roar,if=!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)
-actions.two_targets+=/colossus_smash
-actions.two_targets+=/storm_bolt,if=debuff.colossus_smash.up
+actions.two_targets+=/dragon_roar,if=buff.bloodbath.up|!talent.bloodbath.enabled
+actions.two_targets+=/storm_bolt
 actions.two_targets+=/bloodthirst,if=(talent.unquenchable_thirst.enabled&buff.enrage.down)|!talent.unquenchable_thirst.enabled
 actions.two_targets+=/shockwave
 actions.two_targets+=/raging_blow,if=buff.meat_cleaver.up
@@ -76,10 +73,9 @@ actions.three_targets=bloodbath
 actions.three_targets+=/heroic_leap,if=buff.enrage.up
 actions.three_targets+=/ravager
 actions.three_targets+=/bladestorm,if=buff.enrage.remains>4
-actions.three_targets+=/dragon_roar,if=!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)
+actions.three_targets+=/dragon_roar,if=buff.bloodbath.up|!talent.bloodbath.enabled
 actions.three_targets+=/bloodthirst,if=(talent.unquenchable_thirst.enabled&buff.enrage.down)|!talent.unquenchable_thirst.enabled
-actions.three_targets+=/colossus_smash
-actions.three_targets+=/storm_bolt,if=debuff.colossus_smash.up
+actions.three_targets+=/storm_bolt
 actions.three_targets+=/raging_blow,if=buff.meat_cleaver.stack>=2
 actions.three_targets+=/whirlwind
 actions.three_targets+=/bloodthirst
@@ -91,8 +87,7 @@ actions.aoe+=/bladestorm
 actions.aoe+=/bloodthirst,if=(talent.unquenchable_thirst.enabled&buff.enrage.down)|!talent.unquenchable_thirst.enabled
 actions.aoe+=/raging_blow,if=buff.meat_cleaver.stack>=3
 actions.aoe+=/whirlwind
-actions.aoe+=/dragon_roar,if=debuff.colossus_smash.down&(buff.bloodbath.up|!talent.bloodbath.enabled)
-actions.aoe+=/colossus_smash
+actions.aoe+=/dragon_roar,if=buff.bloodbath.up|!talent.bloodbath.enabled
 actions.aoe+=/storm_bolt
 actions.aoe+=/shockwave
 actions.aoe+=/bloodthirst
@@ -115,13 +110,13 @@ main_hand=taners_terrible_spine,id=113862,enchant=mark_of_the_thunderlord
 off_hand=taners_terrible_spine,id=113862,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_strength=2683
-# gear_stamina=3394
-# gear_crit_rating=1435
+# gear_strength=2676
+# gear_stamina=3384
+# gear_crit_rating=1430
 # gear_haste_rating=369
 # gear_mastery_rating=674
 # gear_armor=2052
-# gear_multistrike_rating=789
+# gear_multistrike_rating=785
 # gear_versatility_rating=244
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

@@ -56,7 +56,6 @@ actions+=/rake,cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&act
 actions+=/moonfire,cycle_targets=1,if=remains<=duration*0.3&active_enemies=1
 actions+=/swipe,if=combo_points<5&active_enemies>1
 actions+=/shred,if=combo_points<5&active_enemies=1
-actions+=/rejuvenation,cycle_targets=1,max_cycle_targets=2,if=talent.natures_vigil.enabled&!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
 actions+=/natures_vigil
 actions+=/rejuvenation,cycle_targets=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
 actions+=/rejuvenation,cycle_targets=1,if=buff.natures_vigil.up
@@ -78,13 +77,13 @@ trinket2=humming_blackiron_trigger,id=113985,bonus_id=567
 main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=567,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_agility=3594
-# gear_stamina=4519
-# gear_crit_rating=1703
+# gear_agility=3612
+# gear_stamina=4545
+# gear_crit_rating=1715
 # gear_haste_rating=517
 # gear_mastery_rating=652
 # gear_armor=1147
 # gear_multistrike_rating=1257
-# gear_versatility_rating=111
+# gear_versatility_rating=122
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

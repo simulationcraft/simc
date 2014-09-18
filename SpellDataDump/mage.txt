@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18850)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18888)
 Name             : Blizzard (id=10) [Spell Family (3)] 
 Class            : Frost Mage
 Resource         : 5% Base Mana (8000 @Level 100)
@@ -339,7 +339,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=882)      : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.62775
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25000
 Description      : Scorch the enemy for $s1 Fire damage.  Castable while moving.
 
 Name             : Heavy Linen Bandage (id=3276) 
@@ -429,13 +429,13 @@ Arcane Missiles has a chance to be activated after each of your damaging spell c
 Name             : Wrath (Solar) (id=5176) [Scaling Spell (2), Spell Family (7)] 
 Class            : Warrior, Hunter, Rogue, Priest, Death Knight, Mage, Monk, Druid
 Race             : Night Elf
-Resource         : 8.8% Base Mana (0 @Level 100) w/ Balance (id=166163)
+Resource         : 3.5% Base Mana (0 @Level 100) w/ Balance (id=166163)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Item - Druid T9 Balance 4P Bonus (Starfire) (67126), Item - Druid T12 Balance 4P Bonus (99049), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Clearcasting (135700), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Dream of Cenarius (158504), Solar Empowerment (164545), Item - Druid T17 Balance 2P Bonus (165433)
+Affecting spells : Item - Druid T9 Balance 4P Bonus (Starfire) (67126), Item - Druid T12 Balance 4P Bonus (99049), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Dream of Cenarius (158504), Solar Empowerment (164545), Item - Druid T17 Balance 2P Bonus (165433)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -486,7 +486,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2716)     : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.21960
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.26500
 Description      : $@spelldesc5143
 
 Name             : Frost Armor (id=7302) [Spell Family (3), Passive] 
@@ -1283,7 +1283,7 @@ $piercing2=$?s12952[${1.04}][${$<piercing1>}]
 $piercing3=$?s12953[${1.06}][${$<piercing2>}]
 $mult=${$<arctic5>*$<piercing3>}
 
-Name             : Arcane Barrage (id=44425) [Scaling Spell (4), Spell Family (3)] 
+Name             : Arcane Barrage (id=44425) [Spell Family (3)] 
 Replaces         : Fire Blast (id=2136)
 Class            : Arcane Mage
 Resource         : 0.5% Base Mana (800 @Level 100)
@@ -1301,7 +1301,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=36330)    : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.2) | SP Coefficient: 0.75000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.75000
 #2 (id=157070)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 Description      : Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. Consumes all Arcane Charges.
@@ -2345,7 +2345,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68491)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2
+                   Base Value: 3 | Scaled Value: 3
 #2 (id=164985)   : Apply Aura (6) | Unknown effect sub type (408)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 5143
 Description      : Your offensive spells have a chance to activate Arcane Missiles. This effect can accumulate up to $79683s1 charges and lasts $79683d.
@@ -4068,7 +4068,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards
 #2 (id=215516)   : Summon (28)
                    Base Value: 90 | Scaled Value: 90 | Misc Value: 76933 | Misc Value 2: 0xd96
-Description      : Conjures a prismatic crystal at the target location, which is attackable by only the Mage, and takes $155153s1% additional damage. 
+#3 (id=256214)   : Dummy (3)
+                   Base Value: 50 | Scaled Value: 50
+Description      : Conjures a prismatic crystal at the target location, which is attackable by only the Mage, and takes $?s84714[$s3][$155153s1]% additional damage. 
 
 When the crystal takes damage, it instantly releases a burst of energy dealing that damage, split evenly between all enemies within 8 yards.
 
@@ -4248,6 +4250,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=215514)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7f
+#2 (id=256210)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
+                   Base Value: -200 | Scaled Value: -200
+#3 (id=256211)   : Apply Aura (6) | Unknown effect sub type (402)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161
+#4 (id=256217)   : Apply Aura (6) | Mod Power Regen (110)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 3
 Description      : $@spelldesc152087
 
 Name             : Meteor Burn (id=155158) 
@@ -4552,7 +4560,7 @@ Effects          :
 #3 (id=226055)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30
 #4 (id=226056)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40
+                   Base Value: 50 | Scaled Value: 50
 Description      : Arcane Blast, Fireball, Frostfire Bolt, and Frostbolt have a $?s112965[$s2%]?s12042[$s1%][$s3%] chance to explode on impact, dealing an additional $s4% damage to the target, and to all other enemies within $157977A1 yards.
 
 Name             : Unstable Magic (id=157977) [Spell Family (3)] 

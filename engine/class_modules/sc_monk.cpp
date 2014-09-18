@@ -1701,7 +1701,7 @@ struct keg_smash_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
 
-    base_multiplier *= 10.5; // hardcoded into tooltip
+    base_multiplier *= 14.5; // hardcoded into tooltip
   }
 
   virtual void execute()
@@ -1741,6 +1741,7 @@ struct touch_of_death_t : public monk_melee_attack_t
       cooldown -> duration += p -> glyph.touch_of_death -> effectN( 1 ).time_value();
       base_costs[RESOURCE_CHI] *= 1.0 + p -> glyph.touch_of_death -> effectN( 2 ).percent();
     }
+    may_crit = may_miss = may_dodge = may_parry = may_multistrike = false;
   }
 
   virtual void impact(action_state_t* s)
@@ -1983,7 +1984,7 @@ struct chi_brew_t: public monk_spell_t
     parse_options( nullptr, options_str );
 
     harmful = false;
-    cooldown -> duration = timespan_t::from_seconds( 45.0 );
+    cooldown -> duration = timespan_t::from_seconds( 60.0 ); // Hardcoded in Cooldown
     cooldown -> charges = 2;
     trigger_gcd = timespan_t::zero();
   }
@@ -4198,33 +4199,43 @@ void monk_t::apl_combat_brewmaster()
     def -> add_action( racial_actions[i] + ",if=energy<=40" );
 
   def -> add_action( this, "chi_sphere", "if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4" );
-  def -> add_talent( this, "Chi Brew", "if=talent.chi_brew.enabled&chi=0" );
+  def -> add_talent( this, "Chi Brew", "if=talent.chi_brew.enabled&chi.max-chi>=2&buff.elusive_brew_stacks.stack<=10" );
   def -> add_action( this, "Gift of the Ox", "if=buff.gift_of_the_ox.react&incoming_damage_1500ms");
   def -> add_talent( this, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down&buff.elusive_brew_activated.down" );
   def -> add_action( this, "Fortifying Brew", "if=incoming_damage_1500ms&buff.dampen_harm.down&buff.elusive_brew_activated.down" );
   def -> add_action( this, "Elusive Brew", "if=buff.elusive_brew_stacks.react>=9&buff.dampen_harm.down&buff.elusive_brew_activated.down" );
   def -> add_action( "invoke_xuen,if=talent.invoke_xuen.enabled&time>5" );
+  def -> add_talent( this, "Serenity", "if=talent.serenity.enabled&energy<=40" );
   def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
   def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
 
-  st -> add_action( this, "Guard", "if=chi>=4" );
-  st -> add_action( this, "Keg Smash", "if=chi<=4" );
+  st -> add_action( this, "Blackout Kick", "if=buff.shuffle.down");
+  st -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.heavy" );
+  st -> add_action( this, "Guard" );
+  st -> add_action( this, "Keg Smash", "if=chi.max-chi>=2&!buff.serenity.remains" );
   st -> add_talent( this, "Chi Burst", "if=talent.chi_burst.enabled&energy.time_to_max>3" );
   st -> add_talent( this, "Chi Wave", "if=talent.chi_wave.enabled&energy.time_to_max>3" );
   st -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking" );
   st -> add_talent( this, "Chi Explosion", "if=chi>=3" );
-  st -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.amount&stagger.amount%health.max*100>20-buff.shuffle.remains", "Purify off stagger, being more liberal the longer time remains on shuffle." );
-  st -> add_action( this, "Blackout Kick", "if=!talent.chi_explosion.enabled&buff.shuffle.remains<=1.5" );
-  st -> add_action( this, "Blackout Kick", "if=!talent.chi_explosion.enabled&chi=chi.max&energy.time_to_max<=2" );
-  st -> add_action( this, "Blackout Kick", "if=!talent.chi_explosion.enabled&chi>=chi.max-1&cooldown.keg_smash.remains<=1" );
-  st -> add_action( this, "Expel Harm", "if=chi<=4&cooldown.expel_harm.remains=0&cooldown.keg_smash.remains>=1.5" );
-  st -> add_action( this, "Jab", "if=chi<=3&cooldown.keg_smash.remains>=1.5&cooldown.expel_harm.remains>=1.5" );
+  st -> add_action( this, "Blackout Kick", "if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=1.5" );
+  st -> add_action( this, "Blackout Kick", "if=buff.serenity.up" );
+  st -> add_action( this, "Blackout Kick", "if=chi>=4" );
+  st -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.expel_harm.remains=0&cooldown.keg_smash.remains>=1.5" );
+  st -> add_action( this, "Jab", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=1.5&cooldown.expel_harm.remains>=1.5" );
+  st -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.moderate&buff.shuffle.remains>=6");
   st -> add_action( this, "Tiger Palm", "if=(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
   st -> add_action( this, "Tiger Palm", "if=cooldown.keg_smash.remains>=1.5" );
 
-  aoe->add_action(this, "Breath of Fire", "if=chi>=3&buff.shuffle.remains>=6&target.debuff.dizzying_haze.up");
+  aoe->add_action(this, "Guard");
+  if (level >= 100)
+    aoe -> add_action( this, "Breath of Fire", "if=chi>=3&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=1.5" );
+  else
+    aoe -> add_action( this, "Breath of Fire", "if=chi>=3&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=1.5&target.debuff.dizzying_haze.up" );
+  aoe -> add_talent( this, "Chi Explosion", "if=chi>=4" );
+  aoe -> add_action( this, "Keg Smash", "if=chi.max-chi>=2&!buff.serenity.remains" );
+  aoe -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.expel_harm.remains=0&cooldown.keg_smash.remains>=1.5&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
   aoe -> add_talent( this, "Rushing Jade Wind", "if=talent.rushing_jade_wind.enabled" );
-  aoe -> add_action( this, "Spinning Crane Kick" );
+  aoe -> add_action( this, "Spinning Crane Kick", "if=!talent.rushing_jade_wind.enabled" );
 }
 
 // Windwalker Combat Action Priority List ===============================
@@ -4267,10 +4278,11 @@ void monk_t::apl_combat_windwalker()
   def -> add_action( this, "Rising Sun Kick", "if=(debuff.rising_sun_kick.down|debuff.rising_sun_kick.remains<3)" );
   def -> add_action( this, "Tiger Palm", "if=buff.tiger_power.down&debuff.rising_sun_kick.remains>1&energy.time_to_max>1" );
   def -> add_talent( this, "Serenity", "if=talent.serenity.enabled&chi>=2&buff.tiger_power.up&debuff.rising_sun_kick.up" );
-  def->add_action("call_action_list,name=aoe,if=active_enemies>=3");
+  def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
   def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
 
   st -> add_action( this, "Fists of Fury", "if=energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&!buff.serenity.remains" );
+  st -> add_action( this, "Touch of Death", "if=target.health.percent<10" );
   st -> add_talent( this, "Hurricane Strike", "if=talent.hurricane_strike.enabled&energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&buff.energizing_brew.down" );
   st -> add_action( this, "Energizing Brew", "if=cooldown.fists_of_fury.remains>6&(!talent.serenity.enabled|(!buff.serenity.remains&cooldown.serenity.remains>4))&energy+energy.regen*gcd<50" );
   st -> add_action( this, "Rising Sun Kick", "if=!talent.chi_explosion.enabled");
@@ -4289,8 +4301,8 @@ void monk_t::apl_combat_windwalker()
   aoe -> add_action( "zen_sphere,cycle_targets=1,if=!dot.zen_sphere.ticking" );
   aoe -> add_talent( this, "Chi Wave" );
   aoe -> add_talent( this, "Chi Burst", "if=chi>=4" );
-  aoe -> add_action(this, "Rising Sun Kick", "if=chi=chi.max");
-  aoe -> add_action(this, "Spinning Crane Kick", "if=!talent.rushing_jade_wind.enabled");
+  aoe -> add_action( this, "Rising Sun Kick", "if=chi=chi.max" );
+  aoe -> add_action( this, "Spinning Crane Kick", "if=!talent.rushing_jade_wind.enabled" );
 }
 
 // Mistweaver Combat Action Priority List ==================================

@@ -282,7 +282,8 @@ public:
     buff_t* haunting_spirits;
     buff_t* demonbolt;
 
-    buff_t* tier17_4pc_ember_fillup;
+    buff_t* tier17_4pc_chaotic_infusion;
+
     buff_t* tier16_4pc_ember_fillup;
     buff_t* tier16_2pc_destructive_influence;
     buff_t* tier16_2pc_empowered_grasp;
@@ -1951,6 +1952,24 @@ public:
     }
   }
 
+  void trigger_multistrike( action_state_t* state )
+  {
+      result_e r = calculate_multistrike_result( state );
+
+      action_state_t* ms_state = get_state( state );
+      ms_state -> target = state -> target;
+      ms_state -> n_targets = 1;
+      ms_state -> chain_target = 0;
+      ms_state -> result = r;
+      // Multistrikes can be blocked
+      ms_state -> block_result = calculate_block_result( state );
+
+      multistrike_direct( state, ms_state );
+
+      new ( *sim ) multistrike_execute_event_t( ms_state );
+
+  }
+
   void trigger_extra_tick( dot_t* dot, double multiplier )
   {
     if ( ! dot -> is_ticking() ) return;
@@ -2000,13 +2019,9 @@ public:
       p -> buffs.tier16_4pc_ember_fillup -> trigger();
     }
 
-    if ( p -> sets.has_set_bonus( WARLOCK_DESTRUCTION, T17, B4 ) && //check whether we fill one up.
-         ( ( p-> resources.current[RESOURCE_BURNING_EMBER] < 1.0 && p -> resources.current[RESOURCE_BURNING_EMBER] + amount >= 1.0 ) ||
-         ( p -> resources.current[RESOURCE_BURNING_EMBER] < 2.0 && p -> resources.current[RESOURCE_BURNING_EMBER] + amount >= 2.0 ) ||
-         ( p -> resources.current[RESOURCE_BURNING_EMBER] < 3.0 && p -> resources.current[RESOURCE_BURNING_EMBER] + amount >= 3.0 ) ||
-         ( p -> resources.current[RESOURCE_BURNING_EMBER] < 4.0 && p -> resources.current[RESOURCE_BURNING_EMBER] + amount >= 4.0 ) ) )
-    {
-      p -> buffs.tier17_4pc_ember_fillup -> trigger();
+    // Proc T17 4pc destro trigger
+    if ( p -> sets.has_set_bonus(WARLOCK_DESTRUCTION, T17, B4)){
+        p -> buffs.tier17_4pc_chaotic_infusion ->trigger();
     }
 
     p -> resource_gain( RESOURCE_BURNING_EMBER, amount, gain );
@@ -3216,9 +3231,6 @@ struct chaos_bolt_t: public warlock_spell_t
     if ( p() -> buffs.dark_soul -> check() )
       c *= 1.0 + p() -> sets.set( SET_CASTER, T15, B2 ) -> effectN( 2 ).percent();
 
-    if ( p() -> buffs.tier17_4pc_ember_fillup -> check() )
-      c *= 0;
-
     return c;
   }
 
@@ -3236,26 +3248,28 @@ struct chaos_bolt_t: public warlock_spell_t
     return m;
   }
 
-  virtual timespan_t execute_time() const
-  {
-    timespan_t t = warlock_spell_t::execute_time();
-
-    if ( p() -> buffs.tier17_4pc_ember_fillup -> check() )
-      t *= 0.5;
-
-    return t;
-  }
-
   virtual void execute()
   {
     if ( p() -> talents.charred_remains -> ok() && p() -> buffs.fire_and_brimstone -> up() )
       aoe = -1;
     warlock_spell_t::execute();
 
-    p() -> buffs.tier17_4pc_ember_fillup -> decrement();
-
     if ( ! result_is_hit( execute_state -> result ) ) refund_embers( p() );
     aoe = 0;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    warlock_spell_t::impact( s );
+
+    if ( p() -> buffs.tier17_4pc_chaotic_infusion -> up() ){
+
+        trigger_multistrike( s );
+        trigger_multistrike( s );
+        trigger_multistrike( s );
+
+        p() -> buffs.tier17_4pc_chaotic_infusion -> expire();
+    }
   }
 };
 
@@ -5209,8 +5223,8 @@ void warlock_t::create_buffs()
   buffs.tier16_4pc_ember_fillup = buff_creator_t( this, "ember_master", find_spell( 145164 ) )
     .cd( find_spell( 145165 ) -> duration() )
     .add_invalidate( CACHE_CRIT );
-  buffs.tier17_4pc_ember_fillup = buff_creator_t( this, "t17_4pc_destruction", find_spell( 170001 ) )
-    .chance( find_spell( 165452 ) -> effectN( 5 ).percent() );
+
+  buffs.tier17_4pc_chaotic_infusion = buff_creator_t( this, "tier17_4pc_chaotic_infusion", find_spell( 170000 ) );
 
   buffs.tier16_2pc_destructive_influence = buff_creator_t( this, "destructive_influence", find_spell( 145075 ) )
     .chance( sets.set( SET_CASTER, T16, B2 ) -> effectN( 4 ).percent() )
@@ -5454,7 +5468,7 @@ void warlock_t::apl_destruction()
     "Immolate", "if=remains<=cast_time" );
   add_action( "Conflagrate", "if=charges=2" );
   action_list_str += "/cataclysm";
-  add_action( "Chaos Bolt", "if=set_bonus.tier17_4pc&buff.t17_4pc_destruction.react" );
+  add_action( "Chaos Bolt", "if=set_bonus.tier17_4pc&buff.tier17_4pc_chaotic_infusion.react" );
   add_action( "Chaos Bolt", "if=set_bonus.tier17_2pc&buff.backdraft.stack<3&(burning_ember>=2.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
   add_action( "Chaos Bolt", "if=talent.charred_remains.enabled&buff.backdraft.stack<3&(burning_ember>=2.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
   add_action( "Chaos Bolt", "if=buff.backdraft.stack<3&(burning_ember>=3.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );

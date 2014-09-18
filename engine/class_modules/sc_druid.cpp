@@ -102,8 +102,7 @@ public:
   double eclipse_change; // Amount of seconds until eclipse changes.
   double time_to_next_lunar; // Amount of seconds until eclipse energy reaches 100 (Lunar Eclipse)
   double time_to_next_solar; // Amount of seconds until eclipse energy reaches -100 (Solar Eclipse)
-  // NYI: active_rejuvenations is not working properly yet
-  double active_rejuvenations; // Number of rejuvenations on raid.  May be useful for Nature's Vigil timing or resto stuff.
+  int active_rejuvenations; // Number of rejuvenations on raid.  May be useful for Nature's Vigil timing or resto stuff.
 
   // Active
   action_t* t16_2pc_starfall_bolt;
@@ -3667,8 +3666,8 @@ struct rejuvenation_t : public druid_heal_t
 
   virtual void last_tick( dot_t* d )
   {
-    druid_heal_t::last_tick( d );
     p() -> active_rejuvenations -= 1;
+    druid_heal_t::last_tick( d );
   }
 
 };
@@ -6083,7 +6082,6 @@ void druid_t::apl_feral()
   def -> add_action( this, "Shred", "if=combo_points<5&active_enemies=1" );
 
   // Add in rejuv blanketing for nature's vigil -- not fully optimized
-  def -> add_action( this, "rejuvenation", "cycle_targets=1,max_cycle_targets=2,if=talent.natures_vigil.enabled&!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)" );
   def -> add_talent( this, "Nature's Vigil" );
   def -> add_action( this, "rejuvenation", "cycle_targets=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)" );  
   def -> add_action( this, "rejuvenation", "cycle_targets=1,if=buff.natures_vigil.up" );  
