@@ -2037,8 +2037,11 @@ struct flash_of_light_t : public paladin_heal_t
     }
         
     // Grant Holy Power if healing the beacon target
-    if ( s -> target == p() -> beacon_target )
-      p() -> resource_gain( RESOURCE_MANA, p() -> find_spell( 88852 ) -> effectN(1).percent() * p() -> resources.max[RESOURCE_MANA], p() -> gains.mana_beacon_of_light );
+    if ( s -> target == p() -> beacon_target ){
+        int g = p() -> find_spell( 88852 ) -> effectN(1).percent() * flash_of_light_t::cost();
+        p() -> resource_gain( RESOURCE_MANA, g, p() -> gains.mana_beacon_of_light );
+
+    }
   }
 };
 
@@ -2209,8 +2212,11 @@ struct holy_light_t : public paladin_heal_t
     paladin_heal_t::impact( s );
     
     // Grant Holy Power if healing the beacon target
-    if ( s -> target == p() -> beacon_target )
-      p() -> resource_gain( RESOURCE_MANA, p() -> find_spell( 88852 ) -> effectN(1).percent() * p() -> resources.max[RESOURCE_MANA], p() -> gains.mana_beacon_of_light );
+    if ( s -> target == p() -> beacon_target ){
+        int g = p() -> find_spell( 88852 ) -> effectN(1).percent() * holy_light_t::cost();
+        p() -> resource_gain( RESOURCE_MANA, g, p() -> gains.mana_beacon_of_light );
+
+    }
   }
 
 };
