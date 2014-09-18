@@ -91,14 +91,14 @@ trinket2=quiescent_runestone,id=113859,bonus_id=566
 main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_stamina=3967
-# gear_intellect=3128
+# gear_stamina=3993
+# gear_intellect=3146
 # gear_spell_power=1524
 # gear_crit_rating=117
 # gear_haste_rating=935
-# gear_mastery_rating=1368
+# gear_mastery_rating=1381
 # gear_armor=1370
 # gear_multistrike_rating=1531
-# gear_versatility_rating=94
+# gear_versatility_rating=103
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

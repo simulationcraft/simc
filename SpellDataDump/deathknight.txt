@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18850)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18888)
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -75,13 +75,13 @@ Tooltip          : Grants the ability to walk across water.
 Name             : Wrath (Solar) (id=5176) [Scaling Spell (2), Spell Family (7)] 
 Class            : Warrior, Hunter, Rogue, Priest, Death Knight, Mage, Monk, Druid
 Race             : Night Elf
-Resource         : 8.8% Base Mana (0 @Level 100) w/ Balance (id=166163)
+Resource         : 3.5% Base Mana (0 @Level 100) w/ Balance (id=166163)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Item - Druid T9 Balance 4P Bonus (Starfire) (67126), Item - Druid T12 Balance 4P Bonus (99049), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Clearcasting (135700), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Dream of Cenarius (158504), Solar Empowerment (164545), Item - Druid T17 Balance 2P Bonus (165433)
+Affecting spells : Item - Druid T9 Balance 4P Bonus (Starfire) (67126), Item - Druid T12 Balance 4P Bonus (99049), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Dream of Cenarius (158504), Solar Empowerment (164545), Item - Druid T17 Balance 2P Bonus (165433)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -685,7 +685,7 @@ Resource         : 30 Runic Power
 Spell Level      : 55
 Range            : 40 yards
 GCD              : 1 seconds
-Affecting spells : Glyph of Death Coil (63333), Glyph of Tranquil Grip (63335), Item - Death Knight T8 Tank 2P Bonus (64744), Sudden Doom (81340)
+Affecting spells : Glyph of Tranquil Grip (63335), Item - Death Knight T8 Tank 2P Bonus (64744), Sudden Doom (81340)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -964,7 +964,6 @@ Name             : Lichborne (id=49039) [Spell Family (15)]
 Class            : Death Knight
 Duration         : 10 seconds
 Cooldown         : 120 seconds
-Affecting spells : Shadow Infusion (49572)
 Attributes       : ........ ........ ..x..... ........   .....x.. ..x....x .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -986,6 +985,7 @@ Description      : Draw upon unholy energy to increase Leech by $s1%, and make y
 Tooltip          : Leech increased by $s1% and immune to Charm, Fear and Sleep.  Undead.
 
 Name             : Frost Strike (id=49143) [Scaling Spell (1), Spell Family (15)] 
+Replaces         : Death Coil (id=47541)
 Class            : Frost Death Knight
 Resource         : 40 Runic Power
 Spell Level      : 55
@@ -1146,7 +1146,6 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=41695)    : Apply Aura (6) | Proc Trigger Spell: Shadow Infusion (42)
                    Base Value: 10 | Scaled Value: 10 | Trigger Spell: 91342
-                   Affected Spells: Lichborne (49039)
 Description      : Your successful Death Coils empower your active Ghoul, increasing its damage dealt by $91342s1% for $91342d.  Stacks up to 5 times.
 
 Name             : Death Grip (id=49576) [Spell Family (15)] 
@@ -1320,7 +1319,7 @@ Internal Cooldown: 0.008 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
-Affecting spells : Might of the Frozen Wastes (81333), Improved Razorice (157376), Biting Cold (166057)
+Affecting spells : Might of the Frozen Wastes (81333), Improved Runeforges (157376), Biting Cold (166057)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... x.x..... ......x. 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -1405,7 +1404,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=43101)    : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.79920 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.60000 | Radius: 0 - 10 yards
 Description      : Deals $s1 Shadow damage to all enemies within $A1 yards, and spreads your existing diseases from your target to all other enemies hit$?s49509[, refreshing them to full duration. Also increases the healing from your next Death Strike by $50421s1%][].$?s56835[  
 
 The Rune spent on this ability will become a Death Rune when it activates. Death Runes count as any type of Rune.][]
@@ -1715,7 +1714,7 @@ Range            : 40 yards
 Duration         : 15 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Enhanced Fallen Crusader (157437)
+Affecting spells : Improved Runeforges (157376), Enhanced Fallen Crusader (157437)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1724,7 +1723,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=46012)    : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value 2: 0x1
+                   Base Value: 20 | Scaled Value: 20 | Misc Value 2: 0x1
 #2 (id=46013)    : Direct Heal% (136)
                    Base Value: 3 | Scaled Value: 3
 Description      : Affixes your rune weapon with a rune that has a chance to heal you for $53365s2% and increase total Strength by $53365s1% for $53365d.
@@ -2877,7 +2876,7 @@ Effects          :
                    Affected Spells: Dark Simulacrum (77606)
 Description      : Reduces the cooldown of Dark Simulacrum by ${$63331m1/-1000} sec and increases its duration by ${$63331m2/1000} sec.
 
-Name             : Glyph of Death Coil (id=63333) [Spell Family (15), Passive, Hidden] 
+Name             : Glyph of Death Coil (Blood, Unholy) (id=63333) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2888,7 +2887,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=57460)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Death Coil (47541)
 Description      : Your Death Coil spell is now usable on all allies.  When cast on a non-undead ally, Death Coil shrouds them with a protective barrier that absorbs up to $<damage> damage.
 Variables        : $mastery=$?s55090[${((100+$77515m1)/100)}][${1.00}]
 $blood=$?a48263[${1.2}][${1.0}]
@@ -3676,7 +3674,7 @@ Range            : 5 - 30 yards
 Velocity         : 30 yards/sec
 Cooldown         : 30 seconds
 Attributes       : ....x... ........ ........ .....x..   .....x.. ..x..... .x...... ........ 
-                 : ........ ........ ...x.... ....x...   ........ ........ xx...... ........ 
+                 : ........ ........ ........ ....x...   ........ ........ xx...... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5128,7 +5126,7 @@ Attributes       : ........ ........ .....x.. ........   ...x...x ........ .....
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=215544)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Radius: 12 yards
+                   Base Value: 10 | Scaled Value: 10 | Radius: 12 yards
 #2 (id=215545)   : School Damage: shadowfrost (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.00000 | Radius: 12 yards
 Description      : $@spelldesc152279
@@ -5275,7 +5273,7 @@ Effects          :
                    Base Value: 12 | Scaled Value: 12
 Description      : The target of your Death Grip will now automatically have Chains of Ice applied to them.
 
-Name             : Improved Razorice (id=157376) [Spell Family (15), Passive] 
+Name             : Improved Runeforges (id=157376) [Spell Family (15), Passive] 
 Class            : Death Knight
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5287,7 +5285,12 @@ Effects          :
 #1 (id=219452)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 3
                    Affected Spells: Razorice (50401)
-Description      : Rune of Razorice deals an additional $s1% weapon damage when it triggers.
+#2 (id=256025)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 3
+                   Affected Spells: Unholy Strength (53365)
+Description      : Rune of Razorice deals an additional $s1% weapon damage when it triggers.
+
+Rune of the Fallen Crusader increases Strength by an additional $s2%.
 
 Name             : Empowered Pillar of Frost (id=157389) [Spell Family (15), Passive] 
 Class            : Death Knight
@@ -5379,7 +5382,7 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | Radius: 100 yards
 #2 (id=255132)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: -60 | Scaled Value: -60 | Misc Value: 127
-#3 (id=255133)   : Apply Aura (6) | Modify Absorb% Done (422)
+#3 (id=255133)   : Apply Aura (6) | Unknown effect sub type (421)
                    Base Value: -60 | Scaled Value: -60
 Description      : Increases your healing and absorption done to yourself, based on Stamina and damage taken (before avoidance and mitigation) in the last 10 sec.
 

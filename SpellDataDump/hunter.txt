@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18850)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18888)
 Name             : Mend Pet (id=136) [Scaling Spell (3), Spell Family (9)] 
 Class            : Hunter
 Spell Level      : 16
@@ -184,7 +184,7 @@ Range            : 40 yards
 GCD              : 1 seconds
 Velocity         : 15 yards/sec
 Cooldown         : 20 seconds
-Affecting spells : Camouflage (51755), Camouflage (119450), Sniper Training (168811)
+Affecting spells : Camouflage (51755), Camouflage (119450), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : ........ ........ x....... ........   ........ ..x....x .x...... ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -222,7 +222,7 @@ Spell Level      : 24
 Range            : 40 yards
 GCD              : 1 seconds
 Velocity         : 30 yards/sec
-Affecting spells : Freezing Trap (3355), Refocus (24531), Thrill of the Hunt (34720), Mortal Shots (36413), Shot Power (37508), Camouflage (51755), Bombardment (82921), Burning Adrenaline (99060), Camouflage (119450), Item - Hunter T16 2P Bonus (144637), Sniper Training (168811)
+Affecting spells : Freezing Trap (3355), Refocus (24531), Thrill of the Hunt (34720), Mortal Shots (36413), Shot Power (37508), Camouflage (51755), Bombardment (82921), Burning Adrenaline (99060), Camouflage (119450), Item - Hunter T16 2P Bonus (144637), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -244,7 +244,7 @@ Range            : 40 yards
 Cast Time        : Ranged Shot
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
-Affecting spells : Freezing Trap (3355), Thrill of the Hunt (34720), Mortal Shots (36413), Shot Power (37508), Camouflage (51755), Item - Hunter T8 2P Bonus (64854), Burning Adrenaline (99060), Camouflage (119450), Item - Hunter T16 2P Bonus (144637), Lone Wolf (155228), 
+Affecting spells : Freezing Trap (3355), Thrill of the Hunt (34720), Mortal Shots (36413), Shot Power (37508), Camouflage (51755), Item - Hunter T8 2P Bonus (64854), Burning Adrenaline (99060), Camouflage (119450), Item - Hunter T16 2P Bonus (144637), Lone Wolf (155228), Guide: Sharpshooting (178549)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -348,7 +348,7 @@ GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Duration         : 20 seconds
 Cooldown         : 30 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Trap Cooldown Reduction (61255), Trap Mastery (63458), Item - Hunter T11 4P Bonus (89925), Camouflage (119450), Lone Wolf (155228), 
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Trap Cooldown Reduction (61255), Trap Mastery (63458), Item - Hunter T11 4P Bonus (89925), Camouflage (119450), Lone Wolf (155228), Guide: Sharpshooting (178549)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ...x.... ........ ...x....   ........ ........ ........ ........ 
@@ -375,7 +375,7 @@ GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Duration         : 6 seconds
 Cooldown         : 5 seconds
-Affecting spells : Freezing Trap (3355), Mortal Shots (36413), Camouflage (51755), Burning Adrenaline (99060), Camouflage (119450), Glyph of Distracting Shot (123632), Sniper Training (168811)
+Affecting spells : Freezing Trap (3355), Mortal Shots (36413), Camouflage (51755), Burning Adrenaline (99060), Camouflage (119450), Glyph of Distracting Shot (123632), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -415,13 +415,13 @@ Tooltip          : $w1% increased movement speed.  Dazed if struck.
 Name             : Wrath (Solar) (id=5176) [Scaling Spell (2), Spell Family (7)] 
 Class            : Warrior, Hunter, Rogue, Priest, Death Knight, Mage, Monk, Druid
 Race             : Night Elf
-Resource         : 8.8% Base Mana (0 @Level 100) w/ Balance (id=166163)
+Resource         : 3.5% Base Mana (0 @Level 100) w/ Balance (id=166163)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Item - Druid T9 Balance 4P Bonus (Starfire) (67126), Item - Druid T12 Balance 4P Bonus (99049), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Clearcasting (135700), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Dream of Cenarius (158504), Solar Empowerment (164545), Item - Druid T17 Balance 2P Bonus (165433)
+Affecting spells : Item - Druid T9 Balance 4P Bonus (Starfire) (67126), Item - Druid T12 Balance 4P Bonus (99049), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Dream of Cenarius (158504), Solar Empowerment (164545), Item - Druid T17 Balance 2P Bonus (165433)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -803,7 +803,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Sniper Training (168811)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x..x... ........ x...x... ........   ........ ..x..... .x...... ...x.... 
                  : ........ ........ .x...... ........   x....... ........ ........ ........ 
                  : ........ ........ .......x ...x....   .....x.. ........ ........ ........ 
@@ -840,8 +840,8 @@ Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1 seconds
-Velocity         : 40 yards/sec
-Affecting spells : Freezing Trap (3355), Refocus (24531), Thrill of the Hunt (34720), Mortal Shots (36413), Shot Power (37508), Camouflage (51755), Glyph of Freezing Trap (56845), Item - Hunter T8 2P Bonus (64854), Burning Adrenaline (99060), Camouflage (119450), Item - Hunter T14 4P Bonus (123091), Item - Hunter T16 2P Bonus (144637), Item - Hunter T16 4P Bonus (144641), Lone Wolf (155228), Sniper Training (168811)
+Velocity         : 100 yards/sec
+Affecting spells : Freezing Trap (3355), Refocus (24531), Thrill of the Hunt (34720), Mortal Shots (36413), Shot Power (37508), Camouflage (51755), Glyph of Freezing Trap (56845), Item - Hunter T8 2P Bonus (64854), Burning Adrenaline (99060), Camouflage (119450), Item - Hunter T14 4P Bonus (123091), Item - Hunter T16 2P Bonus (144637), Item - Hunter T16 4P Bonus (144641), Lone Wolf (155228), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -1015,7 +1015,7 @@ Spell Level      : 35
 Range            : 40 yards
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Burning Adrenaline (99060), Glyph of Tranquilizing Shot (119384), Camouflage (119450), Sniper Training (168811)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Burning Adrenaline (99060), Glyph of Tranquilizing Shot (119384), Camouflage (119450), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x...... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1159,7 +1159,7 @@ GCD              : 1 seconds
 Velocity         : 80 yards/sec
 Duration         : 6 seconds
 Cooldown         : 8 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Burning Adrenaline (99060), Camouflage (119450), Sniper Training (168811)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Burning Adrenaline (99060), Camouflage (119450), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x...... ........ x....... ........   ........ .x...... .x...... ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ...x.... ........ ........   ........ ........ ........ ........ 
@@ -1455,7 +1455,7 @@ Spell Level      : 42
 Range            : 100 yards
 Duration         : 8 seconds
 Cooldown         : 30 seconds
-Affecting spells : Camouflage (51755), Camouflage (119450)
+Affecting spells : Camouflage (51755), Camouflage (119450), Guide: Sharpshooting (178549)
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ...x.... ..x..... 
                  : ...x.... ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -1845,7 +1845,7 @@ Spell Level      : 60
 Range            : 40 yards
 GCD              : 1 seconds
 Cooldown         : 9 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Burning Adrenaline (99060), Camouflage (119450), Item - Hunter T14 2P Bonus (123090), Lone Wolf (155228), Sniper Training (168811)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Burning Adrenaline (99060), Camouflage (119450), Item - Hunter T14 2P Bonus (123090), Lone Wolf (155228), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1928,7 +1928,7 @@ Class            : Hunter
 Spell Level      : 74
 Range            : 40 yards
 Cooldown         : 45 seconds
-Affecting spells : Camouflage (51755), Camouflage (119450)
+Affecting spells : Camouflage (51755), Camouflage (119450), Guide: Sharpshooting (178549)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
@@ -1965,7 +1965,7 @@ GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Duration         : 2 seconds
 Cooldown         : 6 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Burning Adrenaline (99060), Camouflage (119450), Item - Hunter T14 2P Bonus (123090), Lone Wolf (155228), Empowered Explosive Shot (157748), Lock and Load (168980), Black Fire (171103)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Burning Adrenaline (99060), Camouflage (119450), Item - Hunter T14 2P Bonus (123090), Lone Wolf (155228), Empowered Explosive Shot (157748), Lock and Load (168980), Black Fire (171103), Guide: Sharpshooting (178549)
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1979,7 +1979,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 Description      : You fire an explosive charge into the enemy target, dealing ${$<explosive>} Fire damage initially and every second for $d.
 Tooltip          : Taking Fire damage every second.
-Variables        : $explosive=${$AP*0.42*(1+$76658m1*.01)}
+Variables        : $explosive=${$AP*0.39*(1+$76658m1*.01)}
 
 Name             : Kill Shot (id=53351) [Scaling Spell (3), Spell Family (9)] 
 Class            : Beast Mastery Marksmanship Hunter
@@ -1989,7 +1989,7 @@ Cast Time        : Ranged Shot
 GCD              : 1 seconds
 Velocity         : 80 yards/sec
 Cooldown         : 10 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Lone Wolf (155228), Sniper Training (168811)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Lone Wolf (155228), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
@@ -2274,7 +2274,7 @@ Velocity         : 40 yards/sec
 Proc Chance      : 100%
 Proc Flags       : ........ x...x... ........ ........ 
                  : Yellow Ranged, AOE Hostile Spell
-Affecting spells : Freezing Trap (3355), Mortal Shots (36413), Shot Power (37508), Camouflage (51755), Item - Hunter T9 4P Bonus (Steady Shot) (67151), Item - Hunter T11 4P Bonus (96411), Camouflage (119450), Lone Wolf (155228), Sniper Training (168811)
+Affecting spells : Freezing Trap (3355), Mortal Shots (36413), Shot Power (37508), Camouflage (51755), Item - Hunter T9 4P Bonus (Steady Shot) (67151), Item - Hunter T11 4P Bonus (96411), Camouflage (119450), Lone Wolf (155228), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -3036,7 +3036,7 @@ Name             : Bullheaded (id=63896) [Spell Family (9)]
 Class            : Hunter
 Spell Level      : 1
 Duration         : 12 seconds
-Affecting spells : Freezing Trap (3355), Mortal Shots (36413), Camouflage (51755), Camouflage (119450), Enhanced Traps (157751), Sniper Training (168811)
+Affecting spells : Freezing Trap (3355), Mortal Shots (36413), Camouflage (51755), Camouflage (119450), Enhanced Traps (157751), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3236,9 +3236,9 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Item - Hunter T11 4P Bonus (96411), Camouflage (119450), Lone Wolf (155228), 
-Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ .x..x... ........   ........ ........ ........ ........ 
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Item - Hunter T11 4P Bonus (96411), Camouflage (119450), Lone Wolf (155228), Guide: Sharpshooting (178549)
+Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ........ 
+                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
@@ -3729,7 +3729,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=97958)    : Apply Raid Aura (65) | Modify Rating (189)
                    Base Value: 5 | Scaled Value: 549.927 (avg=2.107) | Misc Value: 33554432 | Radius: 100 yards
-Description      : The beast lets out a roar of courage, increasing the mastery of all party and raid members by $s1 within $a1 yards. Lasts for $d.
+Description      : The beast lets out a roar of courage, increasing the mastery of all party and raid members by $s1 within $a1 yards.
 Tooltip          : Mastery increased by $s1.
 
 Name             : Rest (Bonus Ability) (id=94019) [Spell Family (9)] 
@@ -3914,7 +3914,7 @@ Class            : Hunter
 Range            : 30 yards
 Duration         : 10 seconds
 Cooldown         : 45 seconds
-Affecting spells : Camouflage (51755), Camouflage (119450), Sniper Training (168811)
+Affecting spells : Camouflage (51755), Camouflage (119450), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : ....x... ........ ........ ........   ........ ........ .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -3936,9 +3936,9 @@ Cast Time        : 2.25 seconds
 GCD              : 1 seconds
 Velocity         : 100 yards/sec
 Cooldown         : 45 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Sniper Training (168811)
-Attributes       : .x..x... ........ x.x...x. ........   ........ ......x. ........ ........ 
-                 : ........ ........ .x..x... ........   ........ ........ ........ ........ 
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Sniper Training (168811), Guide: Sharpshooting (178549)
+Attributes       : .x..x... ........ x.x...x. ........   ........ .x....x. ........ ........ 
+                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...xx...   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ x....... ........ ........ 
@@ -4107,7 +4107,7 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 15 seconds
 Cooldown         : 15 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (119450), Sniper Training (168811)
+Affecting spells : Freezing Trap (3355), Camouflage (119450), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : ....x... ........ x.x..... .....x..   ........ ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -4154,7 +4154,7 @@ Spell Level      : 10
 Range            : 40 yards
 Cast Time        : Ranged Shot
 Duration         : 15 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Item - Hunter T11 2P Bonus (89923), Camouflage (119450)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Item - Hunter T11 2P Bonus (89923), Camouflage (119450), Guide: Sharpshooting (178549)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ........ 
                  : ..x..... ........ .x...... ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .x...... ........ ........ 
@@ -4163,7 +4163,7 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=134592)   : Apply Aura (6) | Periodic Damage: nature every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.6) | AP Coefficient: 0.35000
+                   Base Value: 1 | Scaled Value: 0 (avg=2.6) | AP Coefficient: 0.32000
 Description      : Causes $o1 Nature damage over $d.
 Tooltip          : Causes $w1 Nature damage every $t1 seconds.
 
@@ -4384,7 +4384,7 @@ GCD              : 1 seconds
 Velocity         : 30 yards/sec
 Duration         : 3 seconds
 Cooldown         : 20 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Sniper Training (168811)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : ........ ........ x....... ........   ..x...x. .x....x. ........ ..x.x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ .x...... ........ ........ 
@@ -4405,7 +4405,7 @@ Class            : Hunter
 Spell Level      : 24
 Range            : 40 yards
 Velocity         : 30 yards/sec
-Affecting spells : Freezing Trap (3355), Sniper Training (168811), 
+Affecting spells : Freezing Trap (3355), Sniper Training (168811), Guide: Sharpshooting (178549), 
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ .x...... ........ ......x. 
                  : .......x ........ ........ ........   ........ .......x ........ ........ 
@@ -4428,7 +4428,7 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 15 seconds
 Cooldown         : 30 seconds
-Affecting spells : Camouflage (51755), Camouflage (119450), Sniper Training (168811)
+Affecting spells : Camouflage (51755), Camouflage (119450), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4486,7 +4486,7 @@ Effects          :
 Name             : Glaive Toss (id=120761) [Spell Family (9)] 
 Class            : Hunter
 Duration         : 3 seconds
-Affecting spells : Freezing Trap (3355), Sniper Training (168811)
+Affecting spells : Freezing Trap (3355), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ .x...... ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4504,7 +4504,7 @@ Tooltip          : Movement speed slowed by $s2%.
 Name             : Glaive Toss (id=121414) [Spell Family (9)] 
 Class            : Hunter
 Duration         : 3 seconds
-Affecting spells : Freezing Trap (3355), Sniper Training (168811)
+Affecting spells : Freezing Trap (3355), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ .x...... ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4526,7 +4526,7 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 20 seconds
 Cooldown         : 300 seconds
-Affecting spells : Sniper Training (168811)
+Affecting spells : Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4742,7 +4742,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .x...
 Effects          :
 #1 (id=163848)   : Apply Raid Aura (65) | Modify All Haste% (193)
                    Base Value: 5 | Scaled Value: 5 | Radius: 100 yards
-Description      : The hyena lets out a cackling howl, increasing the haste of all party and raid members within $a1 yards by $s1% for $d.
+Description      : The hyena lets out a cackling howl, increasing the haste of all party and raid members within $a1 yards by $s1%.
 Tooltip          : Haste increased by $s1%.
 
 Name             : Serpent's Cunning (Special Ability) (id=128433) 
@@ -4856,8 +4856,8 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Affecting spells : Camouflage (51755), Mastery: Master of Beasts (76657), Camouflage (119450), Sniper Training (168811)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Affecting spells : Camouflage (51755), Mastery: Master of Beasts (76657), Camouflage (119450), Sniper Training (168811), Guide: Sharpshooting (178549)
+Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
@@ -4874,7 +4874,7 @@ Class            : Hunter
 Spell Level      : 1
 Range            : 100 yards
 Velocity         : 1.5 yards/sec
-Affecting spells : Camouflage (51755), Mastery: Master of Beasts (76657), Camouflage (119450), Sniper Training (168811)
+Affecting spells : Camouflage (51755), Mastery: Master of Beasts (76657), Camouflage (119450), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : ........ ........ x......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4905,7 +4905,7 @@ Class            : Hunter
 Spell Level      : 38
 Range            : 50000 yards
 Duration         : 20 seconds
-Affecting spells : Camouflage (51755), Camouflage (119450), Sniper Training (168811)
+Affecting spells : Camouflage (51755), Camouflage (119450), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : ........ ........ ........ ........   ........ ..x..... .x...... ........ 
                  : ..x..... ........ ......x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -5264,7 +5264,7 @@ Range            : 40 yards
 Velocity         : 120 yards/sec
 Duration         : 3 seconds
 Cooldown         : 24 seconds
-Affecting spells : Sniper Training (168811)
+Affecting spells : Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x...... ........ x....... ........   ........ .x...... .x...... ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5360,7 +5360,7 @@ Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1 seconds
 Velocity         : 180 yards/sec
-Affecting spells : Sniper Training (168811)
+Affecting spells : Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -5815,7 +5815,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=224156)   : Apply Raid Aura (65) | Modify Total Stat% (137)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 1 | Misc Value 2: 0xb | Radius: 100 yards
-Description      : Increases your raid member's Strength, Agility, and Intellect by $s1% for $d.  
+Description      : Increases your raid member's Strength, Agility, and Intellect by $s1%.  
 Tooltip          : Strength, Agility, and Intellect increased by $s1%.
 
 Name             : Agile Reflexes (Special Ability) (id=160011) [Spell Family (9)] 
@@ -5852,7 +5852,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=224209)   : Apply Raid Aura (65) | Modify Total Stat% (137)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 1 | Misc Value 2: 0xb | Radius: 100 yards
-Description      : Increases your raid member's Strength, Agility, and Intellect by $s1% for $d.  
+Description      : Increases your raid member's Strength, Agility, and Intellect by $s1%.  
 Tooltip          : Strength, Agility, and Intellect increased by $s1%.
 
 Name             : Strength of the Pack (Special Ability) (id=160052) [Spell Family (9)] 
@@ -6219,7 +6219,7 @@ Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1 seconds
 Velocity         : 180 yards/sec
-Affecting spells : Sniper Training (168811)
+Affecting spells : Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -6423,7 +6423,7 @@ Class            : Hunter
 Spell Level      : 60
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Burning Adrenaline (99060), Camouflage (119450), Item - Hunter T14 2P Bonus (123090), Lone Wolf (155228), Sniper Training (168811)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Burning Adrenaline (99060), Camouflage (119450), Item - Hunter T14 2P Bonus (123090), Lone Wolf (155228), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6434,7 +6434,7 @@ Effects          :
 #1 (id=243431)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=243432)   : Weapon Damage% (31)
-                   Base Value: 465 | Scaled Value: 4.65 (avg=0)
+                   Base Value: 510 | Scaled Value: 5.1 (avg=0)
 Description      : $@spelldesc53209
 
 Name             : Chimaera Shot (id=171457) [Spell Family (9)] 
@@ -6442,7 +6442,7 @@ Class            : Hunter
 Spell Level      : 60
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Burning Adrenaline (99060), Camouflage (119450), Item - Hunter T14 2P Bonus (123090), Lone Wolf (155228), Sniper Training (168811)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Burning Adrenaline (99060), Camouflage (119450), Item - Hunter T14 2P Bonus (123090), Lone Wolf (155228), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6453,7 +6453,7 @@ Effects          :
 #1 (id=243435)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=243436)   : Weapon Damage% (31)
-                   Base Value: 465 | Scaled Value: 4.65 (avg=0)
+                   Base Value: 510 | Scaled Value: 5.1 (avg=0)
 Description      : $@spelldesc53209
 
 Name             : Aspect of the Fox (id=172106) [Spell Family (9)] 
@@ -6512,7 +6512,7 @@ Cast Time        : 2.25 seconds
 GCD              : 1 seconds
 Velocity         : 100 yards/sec
 Cooldown         : 45 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Sniper Training (168811)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x..x... ........ x.x...x. ........   ........ ......x. ........ ........ 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...xx...   ........ ........ ........ ........ 

@@ -1537,7 +1537,7 @@ struct storm_elemental_t : public primal_elemental_t
     resources.base[ RESOURCE_HEALTH ] = 32268; // TODO-WOD: FE values, placeholder
     resources.base[ RESOURCE_MANA   ] = 8908;
 
-    owner_coeff.sp_from_sp = 0.1000;
+    owner_coeff.sp_from_sp = 1.0000;
   }
 
   void init_action_list()

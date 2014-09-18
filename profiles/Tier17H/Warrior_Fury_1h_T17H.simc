@@ -48,7 +48,6 @@ actions.single_target+=/bloodthirst,if=talent.unquenchable_thirst.enabled&buff.e
 actions.single_target+=/storm_bolt,if=cooldown.colossus_smash.remains>5|debuff.colossus_smash.up
 actions.single_target+=/dragon_roar,if=(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
 actions.single_target+=/ravager,if=cooldown.colossus_smash.remains<4
-actions.single_target+=/colossus_smash
 actions.single_target+=/raging_blow,if=debuff.colossus_smash.up
 actions.single_target+=/execute,if=debuff.colossus_smash.up|rage>70|target.time_to_die<12|buff.sudden_death.up
 actions.single_target+=/wild_strike,if=buff.bloodsurge.up|((debuff.colossus_smash.up|rage>70)&target.health.pct>20)
@@ -63,7 +62,6 @@ actions.two_targets+=/heroic_leap,if=buff.enrage.up
 actions.two_targets+=/ravager
 actions.two_targets+=/bladestorm
 actions.two_targets+=/dragon_roar,if=!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)
-actions.two_targets+=/colossus_smash
 actions.two_targets+=/storm_bolt,if=debuff.colossus_smash.up
 actions.two_targets+=/bloodthirst,if=(talent.unquenchable_thirst.enabled&buff.enrage.down)|!talent.unquenchable_thirst.enabled
 actions.two_targets+=/shockwave
@@ -78,7 +76,6 @@ actions.three_targets+=/ravager
 actions.three_targets+=/bladestorm,if=buff.enrage.remains>4
 actions.three_targets+=/dragon_roar,if=!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)
 actions.three_targets+=/bloodthirst,if=(talent.unquenchable_thirst.enabled&buff.enrage.down)|!talent.unquenchable_thirst.enabled
-actions.three_targets+=/colossus_smash
 actions.three_targets+=/storm_bolt,if=debuff.colossus_smash.up
 actions.three_targets+=/raging_blow,if=buff.meat_cleaver.stack>=2
 actions.three_targets+=/whirlwind
@@ -92,7 +89,6 @@ actions.aoe+=/bloodthirst,if=(talent.unquenchable_thirst.enabled&buff.enrage.dow
 actions.aoe+=/raging_blow,if=buff.meat_cleaver.stack>=3
 actions.aoe+=/whirlwind
 actions.aoe+=/dragon_roar,if=debuff.colossus_smash.down&(buff.bloodbath.up|!talent.bloodbath.enabled)
-actions.aoe+=/colossus_smash
 actions.aoe+=/storm_bolt
 actions.aoe+=/shockwave
 actions.aoe+=/bloodthirst

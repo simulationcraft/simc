@@ -184,7 +184,7 @@ std::vector< std::vector< const spell_data_t* > > ptr_class_family_index;
 } // ANONYMOUS namespace ====================================================
 
 int dbc::build_level( bool ptr )
-{ return maybe_ptr( ptr ) ? 17345 : 18865; }
+{ return maybe_ptr( ptr ) ? 17345 : 18888; }
 
 const char* dbc::wow_version( bool ptr )
 { return maybe_ptr( ptr ) ? "5.4.0" : "6.0.2"; }

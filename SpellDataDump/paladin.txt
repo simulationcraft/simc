@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18850)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18888)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -45,7 +45,7 @@ Affecting spells : Glyph of Divinity (54939), Glyph of Flash of Light (54957), G
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ..xx....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ .....x.. ........ ........   ........ .....x.. ........ ........ 
 Effects          :
@@ -743,7 +743,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=14488)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.11200
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.69000
 Description      : Hurls a magical hammer that strikes an enemy for $s1 Holy damage$?s53503[ and generates a charge of Holy Power][]. Only usable on enemies that have 20% or less health$?s53503[ or during Avenging Wrath][].
 
 Name             : Forbearance (id=25771) [Spell Family (10)] 
@@ -1364,7 +1364,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Eternal Flame (114163), Word of Glory (130551), Word of Glory (136494), Eternal Flame (156322)
 Description      : Your heals, including multistrikes, on other party or raid members will also heal the Beacon of Light target for up to $s1% of the amount healed. Your Flash of Light and Holy Light on the Beacon of Light target will also refund $88852s1% of their Mana cost.
-Tooltip          : Healed whenever the Paladin directly heals a nearby ally.
+Tooltip          : Healed whenever the Paladin heals a nearby ally.
 
 Name             : Infusion of Light (id=53576) [Spell Family (10), Passive] 
 Class            : Holy Paladin
@@ -1402,7 +1402,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 126 | Misc Value 2: 0x1
 #2 (id=46250)    : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 15 | Scaled Value: 15 | Misc Value 2: 0x4
-#3 (id=87654)    : Apply Aura (6) | Unknown effect sub type (21)
+#3 (id=87654)    : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15
 #4 (id=134929)   : Apply Aura (6) | Add Percent Modifier: Spell Global Cooldown (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 21
@@ -1472,7 +1472,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=46256)    : School Damage: holy (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.60000
-Description      : Instantly slam the target with your shield, causing $s1 Holy damage, reducing the physical damage you take by ${$clamp($132403m1*-1,25,80)}% for $132403d, and causing Bastion of Glory.
+Description      : Instantly slam the target with your shield, causing $s1 Holy damage, reducing the physical damage you take by ${$clamp($132403m1*-1,20,80)}% for $132403d, and causing Bastion of Glory.
 
 |cFFFFFFFFBastion of Glory|r
 $@spelldesc114637
@@ -2832,7 +2832,7 @@ Attributes       : ........ ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=86389)    : Weapon Damage% (31)
-                   Base Value: 185 | Scaled Value: 1.85 (avg=0)
+                   Base Value: 200 | Scaled Value: 2 (avg=0)
 #2 (id=131736)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 Description      : A powerful weapon strike that deals $sw1 Physical damage.
@@ -2960,7 +2960,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=87655)    : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Trigger Spell: 90174
-Description      : $?s114163[Eternal Flame][Word of Glory]$?s53600[ and Shield of the Righteous have]?s53563[ and Light of Dawn have]?s85256[, Templar's Verdict, and Divine Storm have][ has] a $s1% chance to cause your next Word of Glory or Light of Dawn to consume no Holy Power but cast as if 3 were consumed.
+Description      : $?s114163[Eternal Flame][Word of Glory]$?s53600[ and Shield of the Righteous have]?s53563[ and Light of Dawn have]?s85256[, Templar's Verdict, and Divine Storm have][ has] a $s1% chance to cause your next $?s114163[Eternal Flame][Word of Glory] or $?s53600[Shield of the Righteous]?s53563[Light of Dawn]?s157048[Final Verdict or Divine Storm][Templar's Verdict or Divine Storm] to consume no Holy Power but cast as if 3 were consumed.
 
 Name             : Illuminated Healing (Rank 1) (id=86273) [Spell Family (10)] 
 Class            : Paladin
@@ -3585,6 +3585,8 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 11
 #4 (id=218364)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 3 | Scaled Value: 3
+#5 (id=256092)   : Apply Aura (6) | Unknown effect sub type (21)
+                   Base Value: 15 | Scaled Value: 15
 Description      : Decreases damage taken by $s1%, increases your chance to dodge by $s3%, and reduces the chance for your attacks to be parried by $s4%.
 
 Name             : Holy Avenger (id=105809) [Spell Family (10)] 
@@ -3727,9 +3729,9 @@ Description      : Places a Hand on the friendly target, reducing damage taken b
 Tooltip          : Damage over time taken reduced by $s1%.
 Damage taken reduced by $s2%.
 
-Name             : Unbreakable Spirit (id=114154) [Spell Family (10), Passive, Hidden] 
+Name             : Unbreakable Spirit (id=114154) [Spell Family (10), Passive] 
 Class            : Paladin
-Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
+Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3961,7 +3963,7 @@ Velocity         : 100 yards/sec
 Cooldown         : 20 seconds
 Affecting spells : Glyph of Flash of Light (54957), Lucidity (137288), Exorcism (138162)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ....x...   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ....x.x.   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
@@ -5337,9 +5339,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=210813)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 1500 | Scaled Value: 1499.71 (avg=5.746) | Misc Value: 1913523968
+                   Base Value: 1000 | Scaled Value: 999.802 (avg=3.83066) | Misc Value: 1913523968
 #2 (id=218844)   : Apply Aura (6) | Unknown effect sub type (465)
-                   Base Value: 1500 | Scaled Value: 1499.71 (avg=5.746)
+                   Base Value: 1500 | Scaled Value: 999.802 (avg=3.83066)
 Description      : The Light temporarily magnifies your power, increasing your Haste, Critical Strike, Mastery, Multistrike, Versatility, and Bonus Armor by $s1 for $d.
 Tooltip          : Haste, Critical Strike, Mastery, Multistrike, Versatility, and Bonus Armor increased by $s1.
 
@@ -5354,10 +5356,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=210814)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-Description      : Your Seals also cause your Judgment to empower you with an additional beneficial effect which persists through changing Seals:
+Description      : Your Seals also cause your Judgment to empower you with an additional beneficial effect which persists through changing Seals:$?s53385[
 
 |cFFFFFFFFJudgment of Justice|r
-Increases your movement speed by $156987s1% for $156987d.
+Increases your movement speed by $156987s1% for $156987d.][]
 
 |cFFFFFFFFJudgment of Insight|r
 Heals you for $156988s1% of your maximum health every $156988t1 sec for $156988d.
@@ -5475,7 +5477,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=218704)   : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 10 | Scaled Value: 10
+                   Base Value: 15 | Scaled Value: 15
 Description      : $@spelldesc152263
 Tooltip          : Haste increased by $s1%.
 
@@ -5555,7 +5557,7 @@ Attributes       : ........ ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=218849)   : Weapon Damage% (31)
-                   Base Value: 185 | Scaled Value: 1.85 (avg=0)
+                   Base Value: 200 | Scaled Value: 2 (avg=0)
 #2 (id=218850)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=243842)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
@@ -5766,7 +5768,7 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | Radius: 100 yards
 #2 (id=255132)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: -60 | Scaled Value: -60 | Misc Value: 127
-#3 (id=255133)   : Apply Aura (6) | Modify Absorb% Done (422)
+#3 (id=255133)   : Apply Aura (6) | Unknown effect sub type (421)
                    Base Value: -60 | Scaled Value: -60
 Description      : Increases your healing and absorption done to yourself, based on Stamina and damage taken (before avoidance and mitigation) in the last 10 sec.
 
