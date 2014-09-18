@@ -8,7 +8,12 @@
 // ==========================================================================
 //
 // TODO:
-// T17 Set bonusses. T17 4pc affli, 2/4pc demo, 4p destruction.
+// T17 Set bonusses. T17 4pc affli,
+//  2PC Demo, 2->3 Charges, 10% chance on corruption to add a charge. Needs work at the general charging module. Also T16 doesnt work for a similar reason
+//  4PC Demo,proc on HoG/CW
+//    proc seems to have ICD of less than 45-60 secs
+//    Inner Demon Summon(166862) .c.f wild IMP
+//    Demon casts  Soul Fire (166864)
 // check pet coefficients
 // Update action lists, especially AoE
 // Proper spell ids for drain_soul triggered Corruption/UA/Agony ticks.
