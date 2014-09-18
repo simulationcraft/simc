@@ -178,7 +178,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <SmallerTypeCheck>false</SmallerTypeCheck>
       <FloatingPointModel>Precise</FloatingPointModel>
-      <BrowseInformation>true</BrowseInformation>
+      <BrowseInformation>false</BrowseInformation>
     </ClCompile>
     <Link>
       <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
@@ -317,7 +317,7 @@
       <FloatingPointModel>Precise</FloatingPointModel>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <BrowseInformation>true</BrowseInformation>
+      <BrowseInformation>false</BrowseInformation>
     </ClCompile>
     <Link>
       <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
@@ -352,7 +352,7 @@
       <FloatingPointModel>Precise</FloatingPointModel>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <BrowseInformation>true</BrowseInformation>
+      <BrowseInformation>false</BrowseInformation>
     </ClCompile>
     <Link>
       <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>

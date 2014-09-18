@@ -313,6 +313,7 @@ public:
     const spell_data_t* devastate;
     const spell_data_t* last_stand;
     const spell_data_t* mocking_banner;
+    const spell_data_t* protection; // Weird spec passive that increases damage of bladestorm/execute.
     const spell_data_t* resolve;
     const spell_data_t* revenge;
     const spell_data_t* riposte;
@@ -1269,7 +1270,7 @@ struct bladestorm_tick_t: public warrior_attack_t
   {
     dual = true;
     aoe = -1;
-    if ( p -> specialization() == WARRIOR_ARMS )
+    if ( p -> specialization() == WARRIOR_ARMS ) // Not a clue why Arms bladestorm hits for this amount. The Arms specific bladestorm says 120% weapon damage, not 90%~.
       weapon_multiplier *= 1.302;
   }
 
@@ -1277,8 +1278,8 @@ struct bladestorm_tick_t: public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p() -> specialization() == WARRIOR_PROTECTION && p() -> has_shield_equipped() )
-      am *= 1.0 + 1 / 3;
+    if ( p() -> has_shield_equipped() )
+      am *= 1.0 + p() -> spec.protection -> effectN( 1 ).percent();
 
     return am;
   }
@@ -1729,6 +1730,8 @@ struct execute_t: public warrior_attack_t
     else if ( p() -> main_hand_weapon.group() == WEAPON_1H &&
               p() -> off_hand_weapon.group() == WEAPON_1H )
               am *= 1.0 + p() -> spec.singleminded_fury -> effectN( 3 ).percent();
+    else if ( p() -> has_shield_equipped() )
+      am *= 1.0 + p() -> spec.protection -> effectN( 1 ).percent();
 
     return am;
   }
@@ -3840,6 +3843,7 @@ void warrior_t::init_spells()
   spec.mocking_banner           = find_specialization_spell( "Mocking Banner" );
   spec.mortal_strike            = find_specialization_spell( "Mortal Strike" );
   spec.piercing_howl            = find_specialization_spell( "Piercing Howl" );
+  spec.protection               = find_specialization_spell( "Protection" );
   spec.raging_blow              = find_specialization_spell( "Raging Blow" );
   spec.rallying_cry             = find_specialization_spell( "Rallying Cry" );
   spec.recklessness             = find_specialization_spell( "Recklessness" );
