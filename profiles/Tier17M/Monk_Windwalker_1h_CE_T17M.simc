@@ -1,4 +1,4 @@
-monk="Monk_WW_2h_CE_T17M"
+monk="Monk_Windwalker_1h_CE_T17M"
 level=100
 race=troll
 role=dps
@@ -43,6 +43,7 @@ actions+=/call_action_list,name=aoe,if=active_enemies>=3
 actions+=/call_action_list,name=st,if=active_enemies<3
 
 actions.st=fists_of_fury,if=energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&!buff.serenity.remains
+actions.st+=/touch_of_death,if=target.health.percent<10
 actions.st+=/hurricane_strike,if=talent.hurricane_strike.enabled&energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&buff.energizing_brew.down
 actions.st+=/energizing_brew,if=cooldown.fists_of_fury.remains>6&(!talent.serenity.enabled|(!buff.serenity.remains&cooldown.serenity.remains>4))&energy+energy.regen*gcd<50
 actions.st+=/rising_sun_kick,if=!talent.chi_explosion.enabled
@@ -78,16 +79,17 @@ finger1=spellsink_signet,id=113843,bonus_id=567,enchant=gift_of_haste
 finger2=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_haste
 trinket1=humming_blackiron_trigger,id=113985,bonus_id=567
 trinket2=meaty_dragonspine_trophy,id=118114,bonus_id=567
-main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=567,enchant=mark_of_warsong
+main_hand=hansgars_forgehammer,id=113897,bonus_id=567,enchant=mark_of_warsong
+off_hand=hansgars_forgehammer,id=113897,bonus_id=567,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_agility=3520
-# gear_stamina=4406
-# gear_crit_rating=1351
-# gear_haste_rating=1432
+# gear_agility=3472
+# gear_stamina=4335
+# gear_crit_rating=1129
+# gear_haste_rating=1620
 # gear_mastery_rating=153
 # gear_armor=1137
-# gear_multistrike_rating=1102
+# gear_multistrike_rating=1076
 # gear_versatility_rating=89
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

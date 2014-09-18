@@ -44,6 +44,7 @@ actions+=/call_action_list,name=aoe,if=active_enemies>=3
 actions+=/call_action_list,name=st,if=active_enemies<3
 
 actions.st=fists_of_fury,if=energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&!buff.serenity.remains
+actions.st+=/touch_of_death,if=target.health.percent<10
 actions.st+=/hurricane_strike,if=talent.hurricane_strike.enabled&energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&buff.energizing_brew.down
 actions.st+=/energizing_brew,if=cooldown.fists_of_fury.remains>6&(!talent.serenity.enabled|(!buff.serenity.remains&cooldown.serenity.remains>4))&energy+energy.regen*gcd<50
 actions.st+=/rising_sun_kick,if=!talent.chi_explosion.enabled
