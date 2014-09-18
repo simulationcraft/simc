@@ -1897,7 +1897,7 @@ struct heroic_leap_t: public warrior_attack_t
     movement_directionality = MOVEMENT_OMNI;
     base_teleport_distance = data().max_range();
     base_teleport_distance += p -> glyphs.death_from_above -> effectN( 2 ).percent();
-    attack_power_mod.direct = data().effectN( 2 ).trigger() -> effectN( 1 ).ap_coeff();
+    //attack_power_mod.direct = data().effectN( 2 ).trigger() -> effectN( 1 ).ap_coeff();
     time_to_travel = timespan_t::from_seconds( 0.25 );
 
     cooldown -> duration = p -> cooldown.heroic_leap -> duration;
@@ -3828,7 +3828,7 @@ void warrior_t::init_spells()
   spec.blood_craze              = find_specialization_spell( "Blood Craze" );
   spec.bloodsurge               = find_specialization_spell( "Bloodsurge" );
   spec.bloodthirst              = find_specialization_spell( "Bloodthirst" );
-  spec.colossus_smash           = find_specialization_spell( "Colossus Smash" );
+  spec.colossus_smash           = find_spell( "Colossus Smash" );
   spec.crazed_berserker         = find_specialization_spell( "Crazed Berserker" );
   spec.cruelty                  = find_specialization_spell( "Cruelty" );
   spec.deep_wounds              = find_specialization_spell( "Deep Wounds" );
