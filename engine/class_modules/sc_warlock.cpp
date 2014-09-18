@@ -3263,10 +3263,7 @@ struct chaos_bolt_t: public warlock_spell_t
     warlock_spell_t::impact( s );
 
     if ( p() -> buffs.tier17_4pc_chaotic_infusion -> up() ){
-        // 3 Chaos Bolt Multistrikes
-        if ( sim -> log ){
-          sim -> out_log.printf( "DEBUG: BONUS MULTISTRIKES" );
-        }
+
         trigger_multistrike( s );
         trigger_multistrike( s );
         trigger_multistrike( s );
