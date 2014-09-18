@@ -1476,14 +1476,17 @@ struct icicle_state_t : public action_state_t
 
 struct icicle_t : public mage_spell_t
 {
-  icicle_t( mage_t* p ) : mage_spell_t( "icicle", p, p -> find_spell( 148022 ) )
+  int splitting_ice_aoe;
+
+  icicle_t( mage_t* p ) : mage_spell_t( "icicle", p, p -> find_spell( 148022 ) ),
+    splitting_ice_aoe( p -> glyphs.splitting_ice -> effectN( 1 ).base_value() + 1 )
   {
     may_crit = false;
     proc = background = true;
 
     if ( p -> glyphs.splitting_ice -> ok() )
     {
-      aoe = p -> glyphs.splitting_ice -> effectN( 1 ).base_value() + 1;
+      aoe = splitting_ice_aoe;
       base_aoe_multiplier *= p -> glyphs.splitting_ice -> effectN( 2 ).percent();
     }
   }
@@ -1495,7 +1498,12 @@ struct icicle_t : public mage_spell_t
     const icicle_state_t* is = debug_cast<const icicle_state_t*>( pre_execute_state );
     stats = is -> source;
 
+    if ( pre_execute_state -> target == p() -> pets.prismatic_crystal )
+    {
+      aoe = 0;
+    }
     mage_spell_t::execute();
+    aoe = splitting_ice_aoe;
   }
 
   action_state_t* new_state()
@@ -2920,17 +2928,19 @@ struct ice_lance_t : public mage_spell_t
 
   double fof_multiplier;
   frost_bomb_explosion_t* frost_bomb_explosion;
+  int splitting_ice_aoe;
 
   ice_lance_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "ice_lance", p, p -> find_class_spell( "Ice Lance" ) ),
     fof_multiplier( 0 ),
-    frost_bomb_explosion( new frost_bomb_explosion_t( p ) )
+    frost_bomb_explosion( new frost_bomb_explosion_t( p ) ),
+    splitting_ice_aoe( p -> glyphs.splitting_ice -> effectN( 1 ).base_value() + 1 )
   {
     parse_options( NULL, options_str );
 
     if ( p -> glyphs.splitting_ice -> ok() )
     {
-      aoe = p -> glyphs.splitting_ice -> effectN( 1 ).base_value() + 1;
+      aoe = splitting_ice_aoe;
       base_aoe_multiplier *= p -> glyphs.splitting_ice -> effectN( 2 ).percent();
     }
 
@@ -2942,7 +2952,13 @@ struct ice_lance_t : public mage_spell_t
     // Ice Lance treats the target as frozen with FoF up
     frozen = p() -> buffs.fingers_of_frost -> check() > 0;
 
+    if ( pre_execute_state -> target == p() -> pets.prismatic_crystal )
+    {
+      aoe = 0;
+    }
     mage_spell_t::execute();
+    aoe = splitting_ice_aoe;
+
 
     if ( p() -> talents.thermal_void -> ok() && p() -> buffs.icy_veins -> up() )
       p() -> buffs.icy_veins -> extend_duration( p(), timespan_t::from_seconds( p() -> talents.thermal_void -> effectN( 1 ).base_value() ) );
