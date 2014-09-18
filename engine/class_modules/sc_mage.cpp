@@ -111,6 +111,9 @@ public:
   std::vector<icicle_tuple_t> icicles;
   action_t* icicle;
   core_event_t* icicle_event;
+  // RNG
+  real_ppm_t rppm_pyromaniac; // RPPM object for T17 Fire 4pc
+  real_ppm_t rppm_arcane_instability; // RPPM object for T17 Arcane 4pc
 
   // Active
   actions::ignite_t* active_ignite;
@@ -154,6 +157,7 @@ public:
     buff_t* enhanced_pyrotechnics;
     buff_t* enhanced_frostbolt;
     buff_t* incanters_flow;
+    buff_t* pyromaniac;
   } buffs;
 
   // Cooldowns
@@ -363,7 +367,8 @@ public:
     spec( specializations_t() ),
     talents( talents_list_t() ),
     pyro_switch( pyro_switch_t() ),
-    current_arcane_charges()
+    current_arcane_charges(),
+    rppm_pyromaniac( *this, 0, RPPM_HASTE )
   {
 
     //Active
@@ -1282,6 +1287,8 @@ public:
         p -> procs.hotstreak  -> occur();
         p -> buffs.heating_up -> expire();
         p -> buffs.pyroblast  -> trigger();
+        if ( p -> sets.has_set_bonus( MAGE_FIRE, T17, B4 ) && p -> rppm_pyromaniac.trigger() )
+          p -> buffs.pyromaniac -> trigger();
       }
     }
     else
@@ -3048,6 +3055,14 @@ struct inferno_blast_t : public mage_spell_t
     may_hot_streak = true;
     cooldown -> duration = timespan_t::from_seconds( 8.0 );
 
+    if ( p -> sets.has_set_bonus( MAGE_FIRE, T17, B2 ) )
+    {
+      cooldown -> duration = timespan_t::from_seconds( 8.0 );
+      cooldown -> charges = 2;
+    }
+    else
+      cooldown -> duration = timespan_t::from_seconds( 8.0 );
+
     max_spread_targets = 3;
     max_spread_targets += p -> glyphs.inferno_blast -> ok() ? p -> glyphs.inferno_blast -> effectN( 1 ).base_value() : 0;
     max_spread_targets += p -> perks.improved_inferno_blast ? p -> perks.improved_inferno_blast -> effectN( 1 ).base_value() : 0;
@@ -3434,7 +3449,7 @@ struct pyroblast_t : public mage_spell_t
 
   virtual timespan_t execute_time() const
   {
-    if ( p() -> buffs.pyroblast -> check() )
+    if ( p() -> buffs.pyroblast -> check() || p() -> buffs.pyromaniac -> check() )
     {
       return timespan_t::zero();
     }
@@ -3444,7 +3459,7 @@ struct pyroblast_t : public mage_spell_t
 
   virtual double cost() const
   {
-    if ( p() -> buffs.pyroblast -> check() )
+    if ( p() -> buffs.pyroblast -> check() || p() -> buffs.pyromaniac -> check() )
       return 0.0;
 
     return mage_spell_t::cost();
@@ -3502,7 +3517,7 @@ struct pyroblast_t : public mage_spell_t
 
     c += p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 2 ).percent();
 
-    if ( p() -> buffs.fiery_adept -> check() )
+    if ( p() -> buffs.fiery_adept -> check() || p() -> buffs.pyromaniac -> check() )
       c += 1.0;
 
     return c;
@@ -4412,6 +4427,9 @@ void mage_t::init_spells()
   // Active spells
   if ( spec.ignite -> ok()  ) active_ignite = new actions::ignite_t( this );
   if ( spec.icicles -> ok() ) icicle = new actions::icicle_t( this );
+  // RPPM
+  rppm_pyromaniac.set_frequency( 1.5 ); //RPPM coef is in the tooltip, but not in the spell data.
+  rppm_arcane_instability.set_frequency( find_spell( 165476 ) -> real_ppm() );
 
 }
 
@@ -4512,6 +4530,7 @@ void mage_t::create_buffs()
   buffs.rune_of_power        = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) )
                                .duration( timespan_t::from_minutes( 3 ) )
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.pyromaniac           = buff_creator_t( this, "pyromaniac", find_spell( 18764 ) ).duration( find_spell( 18764 ) -> duration() ).chance( sets.has_set_bonus( MAGE_FIRE,T17,B4 ) );
 
   buffs.heating_up           = buff_creator_t( this, "heating_up", find_specialization_spell( "Pyroblast" ) -> ok() ? find_spell( 48107 ) : spell_data_t::not_found() );
   buffs.pyroblast            = buff_creator_t( this, "pyroblast",  find_specialization_spell( "Pyroblast" ) -> ok() ? find_spell( 48108 ) : spell_data_t::not_found() );
@@ -5211,6 +5230,8 @@ void mage_t::reset()
   rotation.reset();
   icicles.clear();
   core_event_t::cancel( icicle_event );
+  rppm_pyromaniac.reset();
+  rppm_arcane_instability.reset();
   active_bomb_targets = 0;
   last_bomb_target = 0;
   pyro_switch.reset();
