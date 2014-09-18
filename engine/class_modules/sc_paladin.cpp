@@ -5418,8 +5418,8 @@ void paladin_t::init_spells()
   }
   else if ( specialization() == PALADIN_PROTECTION )
   {
-    extra_regen_period  = passives.guarded_by_the_light -> effectN( 3 ).period();
-    extra_regen_percent = passives.guarded_by_the_light -> effectN( 3 ).percent();
+    extra_regen_period  = passives.sanctuary -> effectN( 5 ).period();
+    extra_regen_percent = passives.sanctuary -> effectN( 5 ).percent();
   }
 
   if ( find_class_spell( "Beacon of Light" ) -> ok() )
