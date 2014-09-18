@@ -81,12 +81,12 @@ main_hand=iron_soldiers_saber,id=113980,bonus_id=567,enchant_id=5352
 off_hand=the_bladefist,id=113591,bonus_id=567,enchant_id=5352
 
 # Gear Summary
-# gear_agility=2932
-# gear_stamina=4797
+# gear_agility=2923
+# gear_stamina=4783
 # gear_crit_rating=1245
 # gear_haste_rating=645
 # gear_mastery_rating=677
 # gear_armor=1133
-# gear_bonus_armor=972
-# gear_versatility_rating=1213
+# gear_bonus_armor=966
+# gear_versatility_rating=1207
 # set_bonus=tier17_2pc=1
