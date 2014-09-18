@@ -1984,7 +1984,7 @@ struct chi_brew_t: public monk_spell_t
     parse_options( nullptr, options_str );
 
     harmful = false;
-    cooldown -> duration = timespan_t::from_seconds( 45.0 );
+    cooldown -> duration = timespan_t::from_seconds( 60.0 ); // Hardcoded in Cooldown
     cooldown -> charges = 2;
     trigger_gcd = timespan_t::zero();
   }
@@ -4217,25 +4217,37 @@ void monk_t::apl_combat_brewmaster()
   st -> add_talent( this, "Chi Wave", "if=talent.chi_wave.enabled&energy.time_to_max>3" );
   st -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking" );
   st -> add_talent( this, "Chi Explosion", "if=chi>=3" );
-  st -> add_action( this, "Blackout Kick", "if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=1.5" );
+  st -> add_action( this, "Blackout Kick", "if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=1" );
   st -> add_action( this, "Blackout Kick", "if=buff.serenity.up" );
   st -> add_action( this, "Blackout Kick", "if=chi>=4" );
   st -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.expel_harm.remains=0&cooldown.keg_smash.remains>=1.5" );
   st -> add_action( this, "Jab", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=1.5&cooldown.expel_harm.remains>=1.5" );
   st -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.moderate&buff.shuffle.remains>=6");
   st -> add_action( this, "Tiger Palm", "if=(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
-  st -> add_action( this, "Tiger Palm", "if=cooldown.keg_smash.remains>=1.5" );
+  st -> add_action( this, "Tiger Palm", "if=cooldown.keg_smash.remains>=1" );
 
   aoe->add_action(this, "Guard");
   if (level >= 100)
-    aoe -> add_action( this, "Breath of Fire", "if=chi>=3&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=1.5" );
+    aoe -> add_action( this, "Breath of Fire", "if=chi>=3&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=1" );
   else
-    aoe -> add_action( this, "Breath of Fire", "if=chi>=3&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=1.5&target.debuff.dizzying_haze.up" );
+    aoe -> add_action( this, "Breath of Fire", "if=chi>=3&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=1&target.debuff.dizzying_haze.up" );
   aoe -> add_talent( this, "Chi Explosion", "if=chi>=4" );
+  aoe -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.heavy" );
+  aoe -> add_action( this, "Guard" );
   aoe -> add_action( this, "Keg Smash", "if=chi.max-chi>=2&!buff.serenity.remains" );
+  aoe -> add_talent( this, "Chi Burst", "if=talent.chi_burst.enabled&energy.time_to_max>3" );
+  aoe -> add_talent( this, "Chi Wave", "if=talent.chi_wave.enabled&energy.time_to_max>3" );
+  aoe -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking" );
+  aoe -> add_action( this, "Blackout Kick", "if=talent.rushing_jade_wind.enabled&buff.shuffle.remains<=3&cooldown.keg_smash.remains>=1" );
+  aoe -> add_action( this, "Blackout Kick", "if=talent.rushing_jade_wind.enabled&buff.serenity.up" );
+  aoe -> add_action( this, "Blackout Kick", "if=talent.rushing_jade_wind.enabled&chi>=4" );
   aoe -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.expel_harm.remains=0&cooldown.keg_smash.remains>=1.5&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
-  aoe -> add_talent( this, "Rushing Jade Wind", "if=talent.rushing_jade_wind.enabled" );
-  aoe -> add_action( this, "Spinning Crane Kick", "if=!talent.rushing_jade_wind.enabled" );
+  aoe -> add_talent( this, "Rushing Jade Wind", "if=chi.max-chi>=1&talent.rushing_jade_wind.enabled" );
+  aoe -> add_action( this, "Spinning Crane Kick", "if=chi.max-chi>=1&!talent.rushing_jade_wind.enabled" );
+  aoe -> add_action( this, "Jab", "if=talent.rushing_jade_wind.enabled&chi.max-chi>=1&cooldown.keg_smash.remains>=1.5&cooldown.expel_harm.remains>=1.5" );
+  aoe -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&talent.rushing_jade_wind.enabled&stagger.moderate&buff.shuffle.remains>=6");
+  aoe -> add_action( this, "Tiger Palm", "if=talent.rushing_jade_wind.enabled&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
+  aoe -> add_action( this, "Tiger Palm", "if=talent.rushing_jade_wind.enabled&cooldown.keg_smash.remains>=1" );
 }
 
 // Windwalker Combat Action Priority List ===============================
@@ -4298,11 +4310,18 @@ void monk_t::apl_combat_windwalker()
 
   aoe -> add_talent( this, "Chi Explosion", "if=chi>=4" );
   aoe -> add_talent( this, "Rushing Jade Wind" );
+  aoe -> add_action( this, "Rising Sun Kick", "if=!talent.rushing_jade_wind.enabled&chi=chi.max" );
+  aoe -> add_action( this, "Fists of Fury", "if=talent.rushing_jade_wind.enabled&energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&!buff.serenity.remains" );
+  aoe -> add_action( this, "Touch of Death", "if=target.health.percent<10" );
+  aoe -> add_talent( this, "Hurricane Strike", "if=talent.rushing_jade_wind.enabled&talent.hurricane_strike.enabled&energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&buff.energizing_brew.down" );
   aoe -> add_action( "zen_sphere,cycle_targets=1,if=!dot.zen_sphere.ticking" );
-  aoe -> add_talent( this, "Chi Wave" );
-  aoe -> add_talent( this, "Chi Burst", "if=chi>=4" );
-  aoe -> add_action( this, "Rising Sun Kick", "if=chi=chi.max" );
+  aoe -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down");
+  aoe -> add_talent( this, "Chi Burst", "if=talent.chi_burst.enabled&energy.time_to_max>2&buff.serenity.down" );
+  aoe -> add_action( this, "Blackout Kick", "if=talent.rushing_jade_wind.enabled&!talent.chi_explosion.enabled&(buff.combo_breaker_bok.react|buff.serenity.up)" );
+  aoe -> add_action( this, "Tiger Palm", "if=talent.rushing_jade_wind.enabled&buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2" );
+  aoe -> add_action( this, "Blackout Kick", "if=talent.rushing_jade_wind.enabled&!talent.chi_explosion.enabled&chi.max-chi<2" );
   aoe -> add_action( this, "Spinning Crane Kick", "if=!talent.rushing_jade_wind.enabled" );
+  aoe -> add_action( this, "Jab", "if=talent.rushing_jade_wind.enabled&chi.max-chi>=2" );
 }
 
 // Mistweaver Combat Action Priority List ==================================

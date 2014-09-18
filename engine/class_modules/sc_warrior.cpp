@@ -313,6 +313,7 @@ public:
     const spell_data_t* devastate;
     const spell_data_t* last_stand;
     const spell_data_t* mocking_banner;
+    const spell_data_t* protection; // Weird spec passive that increases damage of bladestorm/execute.
     const spell_data_t* resolve;
     const spell_data_t* revenge;
     const spell_data_t* riposte;
@@ -1269,7 +1270,7 @@ struct bladestorm_tick_t: public warrior_attack_t
   {
     dual = true;
     aoe = -1;
-    if ( p -> specialization() == WARRIOR_ARMS )
+    if ( p -> specialization() == WARRIOR_ARMS ) // Not a clue why Arms bladestorm hits for this amount. The Arms specific bladestorm says 120% weapon damage, not 90%~.
       weapon_multiplier *= 1.302;
   }
 
@@ -1277,8 +1278,8 @@ struct bladestorm_tick_t: public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p() -> specialization() == WARRIOR_PROTECTION && p() -> has_shield_equipped() )
-      am *= 1.0 + 1 / 3;
+    if ( p() -> has_shield_equipped() )
+      am *= 1.0 + p() -> spec.protection -> effectN( 1 ).percent();
 
     return am;
   }
@@ -1729,6 +1730,8 @@ struct execute_t: public warrior_attack_t
     else if ( p() -> main_hand_weapon.group() == WEAPON_1H &&
               p() -> off_hand_weapon.group() == WEAPON_1H )
               am *= 1.0 + p() -> spec.singleminded_fury -> effectN( 3 ).percent();
+    else if ( p() -> has_shield_equipped() )
+      am *= 1.0 + p() -> spec.protection -> effectN( 1 ).percent();
 
     return am;
   }
@@ -1819,7 +1822,7 @@ struct heroic_strike_t: public warrior_attack_t
     double c = warrior_attack_t::cost();
 
     if ( p() -> buff.unyielding_strikes -> up() )
-      c -= p() -> buff.unyielding_strikes -> current_stack * p() -> buff.unyielding_strikes -> default_value;
+      c += p() -> buff.unyielding_strikes -> current_stack * p() -> buff.unyielding_strikes -> default_value;
 
     if ( p() -> buff.ultimatum -> check() )
       c *= 1 + p() -> buff.ultimatum -> data().effectN( 1 ).percent();
@@ -3840,6 +3843,7 @@ void warrior_t::init_spells()
   spec.mocking_banner           = find_specialization_spell( "Mocking Banner" );
   spec.mortal_strike            = find_specialization_spell( "Mortal Strike" );
   spec.piercing_howl            = find_specialization_spell( "Piercing Howl" );
+  spec.protection               = find_specialization_spell( "Protection" );
   spec.raging_blow              = find_specialization_spell( "Raging Blow" );
   spec.rallying_cry             = find_specialization_spell( "Rallying Cry" );
   spec.recklessness             = find_specialization_spell( "Recklessness" );
@@ -4245,13 +4249,13 @@ void warrior_t::apl_prot()
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&buff.ravager.up)" );
   }
   for ( size_t i = 0; i < racial_actions.size(); i++ )
-    default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|buff.avatar.up" );
+  default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|buff.avatar.up" );
   default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
   default_list -> add_action( "call_action_list,name=prot" );
 
   //defensive
-  prot -> add_action( this, "Shield Block", "if=!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)|action.shield_block.charges_fractional>=2" );
-  prot -> add_action( this, "Shield Barrier", "if=(rage>=120)&buff.shield_barrier.down" );
+  prot -> add_action( this, "Shield Block", "if=!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)|action.shield_block.charges_fractional>=1" );
+  prot -> add_action( this, "Shield Barrier", "if=buff.shield_barrier.down&((buff.shield_block.down&action.shield_block.charges<1)|rage>=85)" );
   prot -> add_action( this, "Demoralizing Shout", "if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)" );
   prot -> add_talent( this, "Enraged Regeneration", "if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)" );
   prot -> add_action( this, "Shield Wall", "if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)" );
@@ -4279,7 +4283,7 @@ void warrior_t::apl_prot()
   prot -> add_talent( this, "Impending Victory", "if=talent.impending_victory.enabled&cooldown.shield_slam.remains<=execute_time" );
   prot -> add_action( this, "Victory Rush", "if=!talent.impending_victory.enabled&cooldown.shield_slam.remains<=execute_time" );
   prot -> add_action( this, "Thunder Clap", "if=glyph.resonating_power.enabled&cooldown.shield_slam.remains<=execute_time" );
-  prot -> add_action( this, "Execute", "if=talent.sudden_death.enabled&buff.sudden_death.up&cooldown.shield_slam.remains<=execute_time" );
+  prot -> add_action( this, "Execute", "if=talent.sudden_death.enabled&buff.sudden_death.up" );
   prot -> add_action( this, "Devastate" );
 
   //dps-aoe

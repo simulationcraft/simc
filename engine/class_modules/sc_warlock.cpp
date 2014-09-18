@@ -8,7 +8,12 @@
 // ==========================================================================
 //
 // TODO:
-// T17 Set bonusses. T17 4pc affli, 2/4pc demo, 4p destruction.
+// T17 Set bonusses. T17 4pc affli,
+//  2PC Demo, 2->3 Charges, 10% chance on corruption to add a charge. Needs work at the general charging module. Also T16 doesnt work for a similar reason
+//  4PC Demo,proc on HoG/CW
+//    proc seems to have ICD of less than 45-60 secs
+//    Inner Demon Summon(166862) .c.f wild IMP
+//    Demon casts  Soul Fire (166864)
 // check pet coefficients
 // Update action lists, especially AoE
 // Proper spell ids for drain_soul triggered Corruption/UA/Agony ticks.
@@ -5468,7 +5473,7 @@ void warlock_t::apl_destruction()
     "Immolate", "if=remains<=cast_time" );
   add_action( "Conflagrate", "if=charges=2" );
   action_list_str += "/cataclysm";
-  add_action( "Chaos Bolt", "if=set_bonus.tier17_4pc&buff.t17_4pc_destruction.react" );
+  add_action( "Chaos Bolt", "if=set_bonus.tier17_4pc&buff.tier17_4pc_chaotic_infusion.react" );
   add_action( "Chaos Bolt", "if=set_bonus.tier17_2pc&buff.backdraft.stack<3&(burning_ember>=2.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
   add_action( "Chaos Bolt", "if=talent.charred_remains.enabled&buff.backdraft.stack<3&(burning_ember>=2.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
   add_action( "Chaos Bolt", "if=buff.backdraft.stack<3&(burning_ember>=3.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );

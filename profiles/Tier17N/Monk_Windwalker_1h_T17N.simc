@@ -59,11 +59,18 @@ actions.st+=/jab,if=chi.max-chi>=2
 
 actions.aoe=chi_explosion,if=chi>=4
 actions.aoe+=/rushing_jade_wind
+actions.aoe+=/rising_sun_kick,if=!talent.rushing_jade_wind.enabled&chi=chi.max
+actions.aoe+=/fists_of_fury,if=talent.rushing_jade_wind.enabled&energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&!buff.serenity.remains
+actions.aoe+=/touch_of_death,if=target.health.percent<10
+actions.aoe+=/hurricane_strike,if=talent.rushing_jade_wind.enabled&talent.hurricane_strike.enabled&energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&buff.energizing_brew.down
 actions.aoe+=/zen_sphere,cycle_targets=1,if=!dot.zen_sphere.ticking
-actions.aoe+=/chi_wave
-actions.aoe+=/chi_burst,if=chi>=4
-actions.aoe+=/rising_sun_kick,if=chi=chi.max
+actions.aoe+=/chi_wave,if=energy.time_to_max>2&buff.serenity.down
+actions.aoe+=/chi_burst,if=talent.chi_burst.enabled&energy.time_to_max>2&buff.serenity.down
+actions.aoe+=/blackout_kick,if=talent.rushing_jade_wind.enabled&!talent.chi_explosion.enabled&(buff.combo_breaker_bok.react|buff.serenity.up)
+actions.aoe+=/tiger_palm,if=talent.rushing_jade_wind.enabled&buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2
+actions.aoe+=/blackout_kick,if=talent.rushing_jade_wind.enabled&!talent.chi_explosion.enabled&chi.max-chi<2
 actions.aoe+=/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled
+actions.aoe+=/jab,if=talent.rushing_jade_wind.enabled&chi.max-chi>=2
 
 head=helm_of_the_somber_gaze,id=115556
 neck=darklight_necklace,id=113865,enchant=gift_of_multistrike

@@ -24,6 +24,7 @@ actions.precombat+=/seal_of_insight
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_intellect
+actions.precombat+=/beacon_of_light,target=healing_target
 
 # Executed every time the actor is available.
 
