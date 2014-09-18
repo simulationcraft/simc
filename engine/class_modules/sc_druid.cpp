@@ -2904,8 +2904,7 @@ struct maul_t : public bear_attack_t
       may_multistrike = 0;
       target = player;
 
-      /* Coeff is hardcoded into tooltip and isn't in spell data, so hardcode coeff.
-         Used to be able to use FR coeff * x but can't anymore because of recent changes. */
+      // Coeff is in tooltip but not spell data, so hardcode the value here.
       attack_power_mod.direct = 2.40;
     }
 
@@ -3266,8 +3265,9 @@ struct frenzied_regeneration_t : public druid_heal_t
     may_crit = false;
     may_multistrike = 0;
     target = p;
-    // Hardcode AP coeff because spelldata is incorrect. According to Arielle coeff is 2.4 AP as of 9/12/2014
-    attack_power_mod.direct = 2.40;
+    /* As of build 18837 & 18850 the spell data is no longer
+       accurate so we have to hardcode the coefficient */
+    attack_power_mod.direct = 6.00;
     maximum_rage_cost = data().effectN( 2 ).base_value();
 
     if ( p -> sets.has_set_bonus( SET_TANK, T16, B2 ) )
