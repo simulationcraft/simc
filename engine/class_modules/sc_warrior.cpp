@@ -1906,9 +1906,6 @@ struct heroic_leap_t: public warrior_attack_t
 
   void impact( action_state_t* s )
   {
-    if ( p() -> current.distance_to_move >  // Hack so that heroic leap doesn't deal damage if the target is far away.
-         data().effectN( 2 ).trigger() -> effectN( 1 ).radius() )
-         s -> result_amount = 0;
     warrior_attack_t::impact( s );
     p() -> buff.heroic_leap_glyph -> trigger();
   }
