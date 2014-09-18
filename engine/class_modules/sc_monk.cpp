@@ -1701,7 +1701,7 @@ struct keg_smash_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
 
-    base_multiplier *= 10.5; // hardcoded into tooltip
+    base_multiplier *= 14.5; // hardcoded into tooltip
   }
 
   virtual void execute()
