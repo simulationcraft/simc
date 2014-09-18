@@ -1161,7 +1161,7 @@ struct feral_spirit_pet_t : public pet_t
             o -> proc.wasted_mw -> occur();
         }
 
-        if ( o -> buff.feral_spirit -> up() && rng().roll( o -> spec.windfury -> proc_chance() ) )
+        if ( o -> buff.feral_spirit -> up() && rng().roll( p() -> wf_driver -> proc_chance() ) )
         {
           wf -> target = state -> target;
           wf -> schedule_execute();
@@ -1174,6 +1174,7 @@ struct feral_spirit_pet_t : public pet_t
 
   melee_t* melee;
   const spell_data_t* command;
+  const spell_data_t* wf_driver;
 
   feral_spirit_pet_t( shaman_t* owner ) :
     pet_t( owner -> sim, owner, "spirit_wolf", true, true ), melee( 0 )
@@ -1187,6 +1188,7 @@ struct feral_spirit_pet_t : public pet_t
     owner_coeff.ap_from_ap = 0.66;
 
     command = owner -> find_spell( 65222 );
+    wf_driver = owner -> find_spell( 170523 );
     regen_type = REGEN_DISABLED;
   }
 
