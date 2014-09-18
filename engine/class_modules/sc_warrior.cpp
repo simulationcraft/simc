@@ -847,7 +847,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     if ( dmg == 0.0 )
       return 0;
 
-    if ( weapon -> slot == SLOT_OFF_HAND && !p() -> bugs ) // Currently enrage is deactivating off-hand damage multipliers.
+    if ( weapon -> slot == SLOT_OFF_HAND )
     {
       dmg *= 1.0 + p() -> spec.crazed_berserker -> effectN( 2 ).percent();
 
@@ -1630,7 +1630,7 @@ struct devastate_t: public warrior_attack_t
       p() -> active_deep_wounds -> execute();
       if ( p() -> talents.unyielding_strikes -> ok() )
       {
-        if ( p() -> buff.unyielding_strikes -> current_stack != 5 )
+        if ( p() -> buff.unyielding_strikes -> current_stack != 6 )
           p() -> buff.unyielding_strikes -> trigger( 1 );
       }
     }
@@ -1819,7 +1819,7 @@ struct heroic_strike_t: public warrior_attack_t
     double c = warrior_attack_t::cost();
 
     if ( p() -> buff.unyielding_strikes -> up() )
-      c -= p() -> buff.unyielding_strikes -> current_stack * 6;
+      c -= p() -> buff.unyielding_strikes -> current_stack * p() -> buff.unyielding_strikes -> default_value;
 
     if ( p() -> buff.ultimatum -> check() )
       c *= 1 + p() -> buff.ultimatum -> data().effectN( 1 ).percent();
@@ -4741,7 +4741,7 @@ void warrior_t::create_buffs()
 
   buff.unyielding_strikes = buff_creator_t( this, "unyielding_strikes", talents.unyielding_strikes -> effectN( 1 ).trigger() )
     .default_value( talents.unyielding_strikes -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ) )
-    .max_stack( 5 );
+    .max_stack( 6 );
 
   buff.ultimatum = buff_creator_t( this, "ultimatum", spec.ultimatum -> effectN( 1 ).trigger() );
 }
