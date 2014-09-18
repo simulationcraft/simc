@@ -1898,7 +1898,7 @@ struct heroic_leap_t: public warrior_attack_t
     base_teleport_distance = data().max_range();
     base_teleport_distance += p -> glyphs.death_from_above -> effectN( 2 ).percent();
     attack_power_mod.direct = data().effectN( 2 ).trigger() -> effectN( 1 ).ap_coeff();
-    time_to_travel = 0.25;
+    time_to_travel = timespan_t::from_seconds( 0.25 );
 
     cooldown -> duration = p -> cooldown.heroic_leap -> duration;
     cooldown -> duration += p -> glyphs.death_from_above -> effectN( 1 ).time_value();
