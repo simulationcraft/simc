@@ -4249,13 +4249,13 @@ void warrior_t::apl_prot()
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&buff.ravager.up)" );
   }
   for ( size_t i = 0; i < racial_actions.size(); i++ )
-    default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|buff.avatar.up" );
+  default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|buff.avatar.up" );
   default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
   default_list -> add_action( "call_action_list,name=prot" );
 
   //defensive
-  prot -> add_action( this, "Shield Block", "if=!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)|action.shield_block.charges_fractional>=2" );
-  prot -> add_action( this, "Shield Barrier", "if=(rage>=120)&buff.shield_barrier.down" );
+  prot -> add_action( this, "Shield Block", "if=!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)|action.shield_block.charges_fractional>=1" );
+  prot -> add_action( this, "Shield Barrier", "if=buff.shield_barrier.down&((buff.shield_block.down&action.shield_block.charges<1)|rage>=85)" );
   prot -> add_action( this, "Demoralizing Shout", "if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)" );
   prot -> add_talent( this, "Enraged Regeneration", "if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)" );
   prot -> add_action( this, "Shield Wall", "if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)" );
@@ -4283,7 +4283,7 @@ void warrior_t::apl_prot()
   prot -> add_talent( this, "Impending Victory", "if=talent.impending_victory.enabled&cooldown.shield_slam.remains<=execute_time" );
   prot -> add_action( this, "Victory Rush", "if=!talent.impending_victory.enabled&cooldown.shield_slam.remains<=execute_time" );
   prot -> add_action( this, "Thunder Clap", "if=glyph.resonating_power.enabled&cooldown.shield_slam.remains<=execute_time" );
-  prot -> add_action( this, "Execute", "if=talent.sudden_death.enabled&buff.sudden_death.up&cooldown.shield_slam.remains<=execute_time" );
+  prot -> add_action( this, "Execute", "if=talent.sudden_death.enabled&buff.sudden_death.up" );
   prot -> add_action( this, "Devastate" );
 
   //dps-aoe
