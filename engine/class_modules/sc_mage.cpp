@@ -1466,9 +1466,10 @@ struct icicle_t : public mage_spell_t
     proc = background = true;
 
     if ( p -> glyphs.splitting_ice -> ok() )
+    {
       aoe = p -> glyphs.splitting_ice -> effectN( 1 ).base_value() + 1;
-
-    base_aoe_multiplier *= p -> glyphs.splitting_ice -> effectN( 2 ).percent();
+      base_aoe_multiplier *= p -> glyphs.splitting_ice -> effectN( 2 ).percent();
+    }
   }
 
   void execute()
@@ -2905,10 +2906,10 @@ struct ice_lance_t : public mage_spell_t
     parse_options( NULL, options_str );
 
     if ( p -> glyphs.splitting_ice -> ok() )
+    {
       aoe = p -> glyphs.splitting_ice -> effectN( 1 ).base_value() + 1;
-
-    if ( p -> glyphs.splitting_ice -> ok() )
       base_aoe_multiplier *= p -> glyphs.splitting_ice -> effectN( 2 ).percent();
+    }
 
     fof_multiplier = p -> find_specialization_spell( "Fingers of Frost" ) -> ok() ? p -> find_spell( 44544 ) -> effectN( 2 ).percent() : 0.0;
   }
