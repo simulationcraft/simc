@@ -1,6 +1,6 @@
 talent_format=armory
 
-# Windwalker 1h Chi Explosion
+# Windwalker 1h Serenity
 monk="Monk_Windwalker_1h_T17P"
 level=100
 race=troll
@@ -27,7 +27,7 @@ main_hand=primal_gladiators_cleaver,id=111067,bonus_id=0,upgrade=0,gem_id=0/0/0/
 off_hand=primal_gladiators_cleaver,id=111067,bonus_id=0,upgrade=0,gem_id=0/0/0/,enchant_id=53343
 save=Monk_Windwalker_1h_T17P.simc
 
-# Windwalker 2h Chi Explosion
+# Windwalker 2h Serenity
 monk="Monk_Windwalker_2h_T17P"
 level=100
 race=troll

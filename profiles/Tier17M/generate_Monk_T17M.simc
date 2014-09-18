@@ -1,7 +1,7 @@
 talent_format=armory
 
 # Windwalker 1h Serentiy
-monk="Monk_Windwalker_1h_Serenity_T17M"
+monk="Monk_Windwalker_1h_T17M"
 level=100
 race=troll
 spec=windwalker
@@ -27,35 +27,8 @@ main_hand=hansgars_forgehammer,id=113897,bonus_id=567,enchant=mark_of_the_frostw
 off_hand=hansgars_forgehammer,id=113897,bonus_id=567,enchant=mark_of_the_frostwolf
 save=Monk_Windwalker_1h_T17M.simc
 
-# Windwalker 1h Chi Explosion
-monk="Monk_Windwalker_1h_CE_T17M"
-level=100
-race=troll
-spec=windwalker
-role=hybrid
-position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!.01..11
-
-head=helm_of_the_somber_gaze,id=115556,bonus_id=567
-neck=flechetteriddled_chain,id=113647,bonus_id=567,enchant=gift_of_haste
-shoulders=mantle_of_the_somber_gaze,id=115559,bonus_id=567
-back=drape_of_the_dark_hunt,id=113971,bonus_id=567,enchant=gift_of_haste
-chest=vest_of_the_somber_gaze,id=115558,bonus_id=567
-wrists=bracers_of_spare_skin,id=113634,bonus_id=567
-hands=treacherous_palms,id=113832,bonus_id=567
-waist=girdle_of_unconquered_glory,id=113907,bonus_id=567
-legs=legwraps_of_the_somber_gaze,id=115557,bonus_id=567
-feet=ironflecked_sandals,id=119340,bonus_id=567
-finger1=spellsink_signet,id=113843,bonus_id=567,enchant=gift_of_haste
-finger2=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_haste
-trinket1=humming_blackiron_trigger,id=113985,bonus_id=567
-trinket2=meaty_dragonspine_trophy,id=118114,bonus_id=567
-main_hand=hansgars_forgehammer,id=113897,bonus_id=567,enchant=mark_of_warsong
-off_hand=hansgars_forgehammer,id=113897,bonus_id=567,enchant=mark_of_warsong
-save=Monk_Windwalker_1h_CE_T17M.simc
-
 # Windwalker 2h Serenity
-monk="Monk_Windwalker_2h_Serenity_T17M"
+monk="Monk_Windwalker_2h_T17M"
 level=100
 race=troll
 spec=windwalker
@@ -78,33 +51,7 @@ finger2=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_multis
 trinket1=humming_blackiron_trigger,id=113985,bonus_id=567
 trinket2=scales_of_doom,id=113612,bonus_id=56
 main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=567,enchant=mark_of_the_frostwolf
-save=Monk_Windwalker_2h_Serenity_T17M.simc
-
-# Windwalker 2h Chi Explosion
-monk="Monk_Windwalker_2h_CE_T17M"
-level=100
-race=troll
-spec=windwalker
-role=hybrid
-position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!.01..11
-
-head=helm_of_the_somber_gaze,id=115556,bonus_id=567
-neck=flechetteriddled_chain,id=113647,bonus_id=567,enchant=gift_of_haste
-shoulders=mantle_of_the_somber_gaze,id=115559,bonus_id=567
-back=drape_of_the_dark_hunt,id=113971,bonus_id=567,enchant=gift_of_haste
-chest=vest_of_the_somber_gaze,id=115558,bonus_id=567
-wrists=bracers_of_spare_skin,id=113634,bonus_id=567
-hands=treacherous_palms,id=113832,bonus_id=567
-waist=girdle_of_unconquered_glory,id=113907,bonus_id=567
-legs=legwraps_of_the_somber_gaze,id=115557,bonus_id=567
-feet=ironflecked_sandals,id=119340,bonus_id=567
-finger1=spellsink_signet,id=113843,bonus_id=567,enchant=gift_of_haste
-finger2=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_haste
-trinket1=humming_blackiron_trigger,id=113985,bonus_id=567
-trinket2=meaty_dragonspine_trophy,id=118114,bonus_id=567
-main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=567,enchant=mark_of_warsong
-save=Monk_Windwalker_2h_CE_T17M.simc
+save=Monk_Windwalker_2h_T17M.simc
 
 # Brewmaster 1h Chi Explosion
 monk="Monk_Brewmaster_1h_CE_T17M"
