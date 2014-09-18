@@ -5224,7 +5224,8 @@ void warlock_t::create_buffs()
     .cd( find_spell( 145165 ) -> duration() )
     .add_invalidate( CACHE_CRIT );
 
-  buffs.tier17_4pc_chaotic_infusion = buff_creator_t( this, "tier17_4pc_chaotic_infusion", find_spell( 170000 ) );
+  buffs.tier17_4pc_chaotic_infusion = buff_creator_t( this, "tier17_4pc_chaotic_infusion", find_spell( 170000 ) )
+     .chance( find_spell( 165452 ) -> effectN( 5 ).percent() );;
 
   buffs.tier16_2pc_destructive_influence = buff_creator_t( this, "destructive_influence", find_spell( 145075 ) )
     .chance( sets.set( SET_CASTER, T16, B2 ) -> effectN( 4 ).percent() )
