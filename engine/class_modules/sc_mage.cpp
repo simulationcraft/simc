@@ -843,7 +843,14 @@ struct prismatic_crystal_t : public pet_t
   {
     double m = pet_t::composite_player_vulnerability( school );
 
-    m *= 1.0 + damage_taken -> effectN( 1 ).percent();
+    if ( o() -> specialization() == MAGE_FROST )
+    {
+      m *= 1.5;
+    }
+    else
+    {
+      m *= 1.0 + damage_taken -> effectN( 1 ).percent();
+    }
 
     return m;
   }
