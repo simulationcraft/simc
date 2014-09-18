@@ -3557,6 +3557,15 @@ struct regrowth_t : public druid_heal_t
     init_living_seed();
   }
 
+  virtual double cost() const
+  {
+    // Feral doesn't have Regrowth so don't need to worry about checking that, for now.
+    if ( p() -> buff.omen_of_clarity -> check() )
+      return 0;
+
+    return druid_heal_t::cost();
+  }
+
   virtual void consume_resource()
   {
     druid_heal_t::consume_resource();
@@ -3568,14 +3577,6 @@ struct regrowth_t : public druid_heal_t
       p() -> gain.omen_of_clarity -> add( RESOURCE_MANA, c );
       p() -> buff.omen_of_clarity -> expire();
     }
-  }
-
-  virtual double cost() const
-  {
-    if ( p() -> buff.omen_of_clarity -> check() )
-      return 0;
-
-    return druid_heal_t::cost();
   }
 
   virtual void impact( action_state_t* state )
