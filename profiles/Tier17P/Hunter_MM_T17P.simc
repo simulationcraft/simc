@@ -43,6 +43,7 @@ actions+=/powershot,if=focus.time_to_max%(1+buff.steady_focus.value)>cast_time
 actions+=/barrage
 # Pool max focus for rapid fire so we can spam AimedShot with Careful Aim buff
 actions+=/steady_shot,if=buff.careful_aim.down&cast_time*focus.deficit%(14+focus.regen*(1+buff.steady_focus.value))>cooldown.rapid_fire.remains
+actions+=/focusing_shot,if=buff.careful_aim.down&cast_time*focus.deficit%(50+focus.regen*(1+buff.steady_focus.value))>cooldown.rapid_fire.remains&focus<100
 actions+=/steady_shot,if=buff.pre_steady_focus.up&focus+14+18*(1+buff.steady_focus.value)<focus.max
 actions+=/aimed_shot,if=talent.focusing_shot.enabled
 actions+=/aimed_shot,if=focus+focus.regen*(1+buff.steady_focus.value)*cast_time>=85
