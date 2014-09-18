@@ -2082,8 +2082,8 @@ struct heroic_charge_t: public warrior_attack_t
 
     if ( p() -> cooldown.heroic_leap -> up() )
     { // We are moving 10 yards, and heroic leap always executes in 0.25 seconds.
-      // Do some hacky math to ensure it will only take 0.25 seconds, since it will certainly be
-      // The highest temporary movement speed buff.
+      // Do some hacky math to ensure it will only take 0.25 seconds, since it will certainly
+      // be the highest temporary movement speed buff.
       double speed;
       speed = 10 / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() ) ) / 0.25;
       p() -> buff.heroic_charge -> trigger( 1, speed, 1, timespan_t::from_millis( 250 ) );
@@ -2150,10 +2150,7 @@ struct mortal_strike_t: public warrior_attack_t
   void update_ready( timespan_t cd_duration )
   {
     if ( p() -> buff.tier17_4pc_arms -> up() )
-    {
-      cd_duration = cooldown -> duration;
       cd_duration *= 1.0 + p() -> buff.tier17_4pc_arms -> data().effectN( 1 ).percent();
-    }
 
     warrior_attack_t::update_ready( cd_duration );
   }
@@ -3500,6 +3497,9 @@ struct shield_charge_t: public warrior_spell_t
   bool ready()
   {
     if ( !p() -> cooldown.shield_charge_cd -> up() )
+      return false;
+
+    if ( p() -> heroic_charge )
       return false;
 
     if ( !p() -> has_shield_equipped() )
