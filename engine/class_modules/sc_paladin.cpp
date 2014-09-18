@@ -4980,23 +4980,30 @@ void paladin_t::generate_action_prio_list_prot()
     def -> add_action( racial_actions[ i ] );
 
   def -> add_talent( this, "Holy Avenger" );
-  def -> add_action( this, "Divine Protection" ); // use on cooldown
+  def -> add_action( this, "Divine Protection", "if=buff.seraphim.down" ); // use on cooldown
   def -> add_action( this, "Guardian of Ancient Kings", "if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down" ); 
   def -> add_action( this, "Ardent Defender", "if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down");
   def -> add_talent( this, "Eternal Flame", "if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react|buff.bastion_of_power.react)" );
   def -> add_talent( this, "Eternal Flame", "if=buff.bastion_of_power.react&buff.bastion_of_glory.react>=5" );
-  def -> add_action( this, "Shield of the Righteous", "if=holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3" );
+  def -> add_talent( this, "Seraphim", "if=buff.divine_protection.down&cooldown.divine_protection.remains>0" );
+  def -> add_action( this, "Shield of the Righteous", "if=(holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3)&(!talent.seraphim.enabled|cooldown.seraphim.remains>5)" );
   def -> add_action( this, "Crusader Strike" );
   def -> add_action( this, "Judgment" );
+  def -> add_action( this, "Holy Wrath", "if=talent.sanctified_wrath.enabled" );
   def -> add_action( this, "Avenger's Shield" );
-  def -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<5" );
-  def -> add_action( this, "Holy Wrath" );
   def -> add_talent( this, "Execution Sentence" );
-  def -> add_talent( this, "Light's Hammer" );
   def -> add_action( this, "Hammer of Wrath" );
+  def -> add_talent( this, "Light's Hammer" );
+  def -> add_action( this, "Holy Wrath", "if=glyph.final_wrath.enabled&target.health.pct<=20" );
+  def -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<5" );
   def -> add_action( this, "Consecration", "if=target.debuff.flying.down&!ticking" );
+  def -> add_action( this, "Holy Wrath" );
   def -> add_talent( this, "Holy Prism" );
+  def -> add_action( this, "Seal of Insight", "if=talent.empowered_seals.enabled&buff.uthers_insight.remains<buff.liadrins_righteousness.remains&buff.uthers_insight.remains<buff.maraads_truth.remains" );
+  def -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&buff.liadrins_righteousness.remains<buff.uthers_insight.remains&buff.liadrins_righteousness.remains<buff.maraads_truth.remains" );
+  def -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&buff.maraads_truth.remains<buff.uthers_insight.remains&buff.maraads_truth.remains<buff.liadrins_righteousness.remains" );
   def -> add_talent( this, "Sacred Shield" );
+  def -> add_action( this, "Flash of Light", "if=talent.selfless_healer.enabled" );
 }
 
 // ==========================================================================
