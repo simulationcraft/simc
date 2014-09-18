@@ -3060,14 +3060,22 @@ struct inferno_blast_t : public mage_spell_t
 
       int spread_remaining = max_spread_targets;
       std::vector< player_t* >& tl = target_list();
+      //Skip cleave entirely if primary target is PC.
+      bool cleave = true;
+      if ( s -> target == p() -> pets.prismatic_crystal )
+        cleave = false;
+
       // Randomly choose spread targets
       std::random_shuffle( tl.begin(), tl.end() );
 
-      for ( size_t i = 0, actors = tl.size(); i < actors; i++ )
+      for ( size_t i = 0, actors = tl.size(); i < actors && cleave; i++ )
       {
         player_t* t = tl[ i ];
 
         if ( t == s -> target )
+          continue;
+        //Skip PC if trying to cleave to it.
+        if ( t == p() -> pets.prismatic_crystal )
           continue;
 
         if ( combustion_dot -> is_ticking() )
