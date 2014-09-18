@@ -1902,14 +1902,13 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
   int              combo_point_gain;
   double           base_dd_bonus;
   double           base_td_bonus;
-  bool             consume_ooc;
 
   cat_attack_t( const std::string& token, druid_t* p,
                 const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options = std::string() ) :
     base_t( token, p, s ),
     requires_stealth( false ), combo_point_gain( 0 ),
-    base_dd_bonus( 0.0 ), base_td_bonus( 0.0 ), consume_ooc( true )
+    base_dd_bonus( 0.0 ), base_td_bonus( 0.0 )
   {
     parse_options( 0, options );
 
@@ -1946,7 +1945,7 @@ public:
     if ( c == 0 )
       return 0;
 
-    if ( consume_ooc && p() -> buff.omen_of_clarity -> check() )
+    if ( p() -> buff.omen_of_clarity -> check() )
       return 0;
 
     if ( p() -> buff.berserk -> check() )
@@ -2056,9 +2055,9 @@ public:
                               p() -> gain.soul_of_the_forest );
     }
 
-    if ( consume_ooc && base_t::cost() > 0 && p() -> buff.omen_of_clarity -> up() )
+    if ( base_t::cost() > 0 && p() -> buff.omen_of_clarity -> up() )
     {
-      // Treat the savings like a energy gain.
+      // Treat the savings like a energy gain for tracking purposes.
       p() -> gain.omen_of_clarity -> add( RESOURCE_ENERGY, base_t::cost() );
       p() -> buff.omen_of_clarity -> expire();
     }
@@ -2123,13 +2122,6 @@ struct cat_melee_t : public cat_attack_t
     special = false;
   }
 
-  virtual void init()
-  {
-    cat_attack_t::init();
-
-    consume_ooc = false;
-  }
-
   virtual timespan_t execute_time() const
   {
     if ( ! player -> in_combat )
@@ -2164,7 +2156,6 @@ struct feral_charge_cat_t : public cat_attack_t
   {
     cat_attack_t::init();
 
-    consume_ooc         = false;
     consume_bloodtalons = false;
   }
 
@@ -2979,8 +2970,10 @@ struct maul_t : public bear_attack_t
     if ( result_is_hit( s -> result ) && p() -> buff.tooth_and_claw -> up() )
     {
       if ( p() -> sets.has_set_bonus( DRUID_GUARDIAN, T17, B2 ) )
+      {
+        // Treat the savings like a rage gain for tracking purposes.
         p() -> gain.tier17_2pc_tank -> add( RESOURCE_RAGE, cost_reduction );
-
+      }
       absorb -> execute();
       p() -> buff.tooth_and_claw -> decrement(); // Only decrements on hit, tested 6/27/2014 by Zerrahki
     }
@@ -3063,37 +3056,10 @@ private:
 public:
   typedef druid_spell_base_t base_t;
 
-  bool consume_ooc;
-
   druid_spell_base_t( const std::string& n, druid_t* player,
                       const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, player, s ),
-    consume_ooc( true )
+    ab( n, player, s )
   {}
-
-  virtual void consume_resource()
-  {
-    ab::consume_resource();
-    druid_t& p = *this -> p();
-
-    if ( consume_ooc && ab::cost() > 0 && ( this -> execute_time() != timespan_t::zero() || p.specialization() == DRUID_FERAL ) && p.buff.omen_of_clarity -> up() )
-    {
-      // Treat the savings like a mana gain.
-      p.gain.omen_of_clarity -> add( RESOURCE_MANA, ab::cost() );
-      p.buff.omen_of_clarity -> expire();
-    }
-  }
-
-  virtual double cost() const
-  {
-    if ( consume_ooc && ( this -> execute_time() != timespan_t::zero() || ab::id == 155625 ) && this -> p() -> buff.omen_of_clarity -> check() )
-      return 0;
-
-    return std::max( 0.0, ab::cost() * ( 1.0 + cost_reduction() ) );
-  }
-
-  virtual double cost_reduction() const
-  { return 0.0; }
 
   virtual double composite_haste() const
   {
@@ -3356,8 +3322,6 @@ struct healing_touch_t : public druid_heal_t
   healing_touch_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( "healing_touch", p, p -> find_class_spell( "Healing Touch" ), options_str )
   {
-    consume_ooc      = true;
-
     init_living_seed();
   }
 
@@ -3582,7 +3546,6 @@ struct regrowth_t : public druid_heal_t
     druid_heal_t( "regrowth", p, p -> find_class_spell( "Regrowth" ), options_str )
   {
     base_crit   += 0.6;
-    consume_ooc  = true;
 
     if ( p -> glyph.regrowth -> ok() )
     {
@@ -3592,6 +3555,28 @@ struct regrowth_t : public druid_heal_t
     }
 
     init_living_seed();
+  }
+
+  virtual double cost() const
+  {
+    // Feral doesn't have Regrowth so don't need to worry about checking that, for now.
+    if ( p() -> buff.omen_of_clarity -> check() )
+      return 0;
+
+    return druid_heal_t::cost();
+  }
+
+  virtual void consume_resource()
+  {
+    druid_heal_t::consume_resource();
+    double c = druid_heal_t::cost();
+
+    if ( c > 0 && p() -> buff.omen_of_clarity -> up() )
+    {
+      // Treat the savings like a mana gain for tracking purposes.
+      p() -> gain.omen_of_clarity -> add( RESOURCE_MANA, c );
+      p() -> buff.omen_of_clarity -> expire();
+    }
   }
 
   virtual void impact( action_state_t* state )
@@ -3722,8 +3707,6 @@ struct swiftmend_t : public druid_heal_t
     druid_heal_t( "swiftmend", p, p -> find_class_spell( "Swiftmend" ), options_str ),
     aoe_heal( new swiftmend_aoe_heal_t( p, &data() ) )
   {
-    consume_ooc = true;
-
     init_living_seed();
   }
 

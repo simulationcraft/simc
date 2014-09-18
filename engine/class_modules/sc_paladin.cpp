@@ -153,9 +153,10 @@ public:
     gain_t* divine_plea;
     gain_t* extra_regen;
     gain_t* glyph_of_divinity;
+    gain_t* glyph_of_illumination;
+    gain_t* mana_beacon_of_light;
 
     // Holy Power
-    gain_t* hp_beacon_of_light;
     gain_t* hp_blazing_contempt;
     gain_t* hp_blessed_life;
     gain_t* hp_crusader_strike;
@@ -306,6 +307,7 @@ public:
     const spell_data_t* hand_of_sacrifice;
     const spell_data_t* harsh_words;
     const spell_data_t* immediate_truth;
+    const spell_data_t* illumination;
     const spell_data_t* judgment;
     const spell_data_t* mass_exorcism;
     const spell_data_t* merciful_wrath;
@@ -2036,7 +2038,7 @@ struct flash_of_light_t : public paladin_heal_t
         
     // Grant Holy Power if healing the beacon target
     if ( s -> target == p() -> beacon_target )
-      p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_beacon_of_light );
+      p() -> resource_gain( RESOURCE_MANA, p() -> find_spell( 88852 ) -> effectN(1).percent() * p() -> resources.max[RESOURCE_MANA], p() -> gains.mana_beacon_of_light );
   }
 };
 
@@ -2208,7 +2210,7 @@ struct holy_light_t : public paladin_heal_t
     
     // Grant Holy Power if healing the beacon target
     if ( s -> target == p() -> beacon_target )
-      p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_beacon_of_light );
+      p() -> resource_gain( RESOURCE_MANA, p() -> find_spell( 88852 ) -> effectN(1).percent() * p() -> resources.max[RESOURCE_MANA], p() -> gains.mana_beacon_of_light );
   }
 
 };
@@ -2422,7 +2424,7 @@ struct holy_shock_damage_t : public paladin_spell_t
     background = true;
     trigger_gcd = timespan_t::zero();
 
-    // this grabs the 25% base crit bonus from 20473
+    // this grabs the 100% base crit bonus from 20473
     crit_chance_multiplier = p -> find_class_spell( "Holy Shock" ) -> effectN( 1 ).base_value() / 10.0;
   }
 
@@ -2455,6 +2457,10 @@ struct holy_shock_damage_t : public paladin_spell_t
                               p() -> buffs.holy_avenger -> value() - g,
                               p() -> gains.hp_holy_avenger );
       }
+      //phillipuh
+      if ( p() -> glyphs.illumination -> ok())
+         p() -> resource_gain(RESOURCE_MANA, .01 * p() -> resources.max[RESOURCE_MANA], p() -> gains.glyph_of_illumination);
+
     }
   }
   
@@ -2506,6 +2512,9 @@ struct holy_shock_heal_t : public paladin_heal_t
     p() -> resource_gain( RESOURCE_HOLY_POWER,
                           g,
                           p() -> gains.hp_holy_shock );
+    if ( p() -> glyphs.illumination -> ok() )
+       p() -> resource_gain(RESOURCE_MANA, .01 * p() -> resources.max[RESOURCE_MANA], p() -> gains.glyph_of_illumination);
+
     if ( p() -> buffs.holy_avenger -> check() )
     {
       p() -> resource_gain( RESOURCE_HOLY_POWER,
@@ -2515,6 +2524,7 @@ struct holy_shock_heal_t : public paladin_heal_t
 
     if ( execute_state -> result == RESULT_CRIT )
       p() -> buffs.infusion_of_light -> trigger();
+
   }
 
   virtual void impact ( action_state_t* s )
@@ -2676,18 +2686,18 @@ struct lay_on_hands_t : public paladin_heal_t
   lay_on_hands_t( paladin_t* p, const std::string& options_str ) :
     paladin_heal_t( "lay_on_hands", p, p -> find_class_spell( "Lay on Hands" ) ), mana_return_pct( 0 )
   {
-    parse_options( NULL, options_str );
+      parse_options( NULL, options_str );
 
-    // unbreakable spirit reduces cooldown
-    if ( p -> talents.unbreakable_spirit -> ok() )
-        cooldown -> duration = data().cooldown() * ( 1 + p -> talents.unbreakable_spirit -> effectN( 1 ).percent() );
+      // unbreakable spirit reduces cooldown
+      if ( p -> talents.unbreakable_spirit -> ok() )
+          cooldown -> duration = data().cooldown() * ( 1 + p -> talents.unbreakable_spirit -> effectN( 1 ).percent() );
 
-    //Glyph of Divinity Phillipuh
-    if ( p -> glyphs.divinity -> ok() )
-        cooldown -> duration += p -> glyphs.divinity -> effectN( 1 ).time_value();
+      //Glyph of Divinity Phillipuh
+      if ( p -> glyphs.divinity -> ok() )
+          cooldown -> duration += p -> glyphs.divinity -> effectN( 1 ).time_value();
 
-    use_off_gcd = true;
-    trigger_gcd = timespan_t::zero();
+      use_off_gcd = true;
+      trigger_gcd = timespan_t::zero();
 
     pct_heal = 1.0;
 
@@ -2700,15 +2710,10 @@ struct lay_on_hands_t : public paladin_heal_t
     paladin_heal_t::execute();
 
     target -> debuffs.forbearance -> trigger();
+    if ( p() -> glyphs.divinity -> ok() ){
+        p() -> resource_gain(RESOURCE_MANA, p() -> find_spell( 54986 ) -> effectN(1).percent() * p() -> resources.max[RESOURCE_MANA], p() -> gains.glyph_of_divinity);
+    }
   }
-  virtual void impact( action_state_t* s )
-  {
-    paladin_heal_t::impact( s );
-
-    if ( mana_return_pct > 0 )
-      p() -> resource_gain( RESOURCE_MANA, mana_return_pct * p() -> resources.max[ RESOURCE_MANA ], p() -> gains.glyph_of_divinity );
-  }
-
 
   virtual bool ready()
   {
@@ -4731,6 +4736,8 @@ void paladin_t::init_gains()
   gains.divine_plea                 = get_gain( "divine_plea"            );
   gains.extra_regen                 = get_gain( ( specialization() == PALADIN_RETRIBUTION ) ? "sword_of_light" : "guarded_by_the_light" );
   gains.glyph_of_divinity           = get_gain( "glyph_of_divinity" );
+  gains.glyph_of_illumination       = get_gain( "glyph_of_illumination" );
+  gains.mana_beacon_of_light        = get_gain( "beacon_of_light" );
 
   // Health
   gains.holy_shield                 = get_gain( "holy_shield_absorb" );
@@ -4739,7 +4746,6 @@ void paladin_t::init_gains()
   gains.glyph_divine_shield         = get_gain( "glyph_of_divine_shield" );
 
   // Holy Power
-  gains.hp_beacon_of_light          = get_gain( "beacon_of_light" );
   gains.hp_blessed_life             = get_gain( "blessed_life" );
   gains.hp_crusader_strike          = get_gain( "crusader_strike" );
   gains.hp_exorcism                 = get_gain( "exorcism" );
@@ -5380,6 +5386,7 @@ void paladin_t::init_spells()
   glyphs.hand_of_sacrifice        = find_glyph_spell( "Glyph of Hand of Sacrifice" );
   glyphs.harsh_words              = find_glyph_spell( "Glyph of Harsh Words" );
   glyphs.immediate_truth          = find_glyph_spell( "Glyph of Immediate Truth" );
+  glyphs.illumination                 = find_glyph_spell( "Glyph of Illumination" );
   glyphs.judgment                 = find_glyph_spell( "Glyph of Judgment" );
   glyphs.mass_exorcism            = find_glyph_spell( "Glyph of Mass Exorcism" );
   glyphs.merciful_wrath           = find_glyph_spell( "Glyph of Merciful Wrath" );

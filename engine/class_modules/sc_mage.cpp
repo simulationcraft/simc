@@ -1466,9 +1466,10 @@ struct icicle_t : public mage_spell_t
     proc = background = true;
 
     if ( p -> glyphs.splitting_ice -> ok() )
+    {
       aoe = p -> glyphs.splitting_ice -> effectN( 1 ).base_value() + 1;
-
-    base_aoe_multiplier *= p -> glyphs.splitting_ice -> effectN( 2 ).percent();
+      base_aoe_multiplier *= p -> glyphs.splitting_ice -> effectN( 2 ).percent();
+    }
   }
 
   void execute()
@@ -2905,10 +2906,10 @@ struct ice_lance_t : public mage_spell_t
     parse_options( NULL, options_str );
 
     if ( p -> glyphs.splitting_ice -> ok() )
+    {
       aoe = p -> glyphs.splitting_ice -> effectN( 1 ).base_value() + 1;
-
-    if ( p -> glyphs.splitting_ice -> ok() )
       base_aoe_multiplier *= p -> glyphs.splitting_ice -> effectN( 2 ).percent();
+    }
 
     fof_multiplier = p -> find_specialization_spell( "Fingers of Frost" ) -> ok() ? p -> find_spell( 44544 ) -> effectN( 2 ).percent() : 0.0;
   }
@@ -3060,14 +3061,22 @@ struct inferno_blast_t : public mage_spell_t
 
       int spread_remaining = max_spread_targets;
       std::vector< player_t* >& tl = target_list();
+      //Skip cleave entirely if primary target is PC.
+      bool cleave = true;
+      if ( s -> target == p() -> pets.prismatic_crystal )
+        cleave = false;
+
       // Randomly choose spread targets
       std::random_shuffle( tl.begin(), tl.end() );
 
-      for ( size_t i = 0, actors = tl.size(); i < actors; i++ )
+      for ( size_t i = 0, actors = tl.size(); i < actors && cleave; i++ )
       {
         player_t* t = tl[ i ];
 
         if ( t == s -> target )
+          continue;
+        //Skip PC if trying to cleave to it.
+        if ( t == p() -> pets.prismatic_crystal )
           continue;
 
         if ( combustion_dot -> is_ticking() )
