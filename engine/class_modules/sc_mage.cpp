@@ -157,7 +157,9 @@ public:
     buff_t* enhanced_pyrotechnics;
     buff_t* enhanced_frostbolt;
     buff_t* incanters_flow;
-    buff_t* pyromaniac;
+    buff_t* pyromaniac; // T17 4pc fire
+    buff_t* arcane_affinity; // T17 2pc arcane
+    buff_t* arcane_instability; // T17 4pc arcane
   } buffs;
 
   // Cooldowns
@@ -1653,6 +1655,9 @@ struct arcane_blast_t : public mage_spell_t
       c *= 1.0 - p() -> buffs.profound_magic -> stack() * 0.25;
     }
 
+    if ( p() -> buffs.arcane_affinity -> check() )
+      c *= ( 1.0 + p() -> find_spell( 166871 ) -> effectN( 1 ).percent() );
+
     return c;
   }
 
@@ -1681,14 +1686,17 @@ struct arcane_blast_t : public mage_spell_t
 
   virtual timespan_t execute_time() const
   {
+    timespan_t t = mage_spell_t::execute_time();
+
       if ( p() -> buffs.arcane_charge -> check() )
       {
-          timespan_t t = mage_spell_t::execute_time();
           t *= ( 1.0 - ( p() -> buffs.arcane_charge -> stack() * p() -> perks.enhanced_arcane_blast -> effectN( 1 ).percent() ) );
-          return t;
       }
-      else
-          return mage_spell_t::execute_time();
+
+      if ( p() -> buffs.arcane_affinity -> check() )
+        t *= ( 1.0 + p() -> find_spell( 166871 ) -> effectN( 1 ).percent() );
+
+      return t;
   }
 
   virtual void impact( action_state_t* s )
@@ -2380,7 +2388,8 @@ public:
     p.buffs.arcane_charge -> expire();
     mage_spell_t::execute();
 
-
+    if ( p.sets.has_set_bonus( MAGE_ARCANE, T17, B2 ) )
+      p.buffs.arcane_affinity -> trigger();
     // evocation automatically causes a switch to dpm rotation
     if ( p.rotation.current == ROTATION_DPS )
     {
@@ -4501,6 +4510,10 @@ void mage_t::create_buffs()
   buffs.arcane_charge        = buff_creator_t( this, "arcane_charge", spec.arcane_charge )
                                .max_stack( find_spell( 36032 ) -> max_stacks() )
                                .duration( find_spell( 36032 ) -> duration() );
+  buffs.arcane_affinity      = buff_creator_t( this, "arcane_affinity", 
+                                             ( sets.has_set_bonus( MAGE_ARCANE, T17, B2 ) && 
+                                             specialization() == MAGE_ARCANE ) ? find_spell( 166871 ) : spell_data_t::not_found() )
+                                             .chance( sets.has_set_bonus( MAGE_ARCANE, T17, B2 ) );
   buffs.arcane_missiles      = buff_creator_t( this, "arcane_missiles", find_class_spell( "Arcane Missiles" ) -> ok() ? find_spell( 79683 ) : spell_data_t::not_found() )
                                 .chance( find_spell( 79684 ) -> proc_chance() ).max_stack( find_spell( 79683 ) -> max_stacks() );
 
