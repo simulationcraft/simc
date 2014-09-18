@@ -1630,7 +1630,7 @@ struct devastate_t: public warrior_attack_t
       p() -> active_deep_wounds -> execute();
       if ( p() -> talents.unyielding_strikes -> ok() )
       {
-        if ( p() -> buff.unyielding_strikes -> current_stack != 6 )
+        if ( p() -> buff.unyielding_strikes -> current_stack != p() -> buff.unyielding_strikes -> max_stack )
           p() -> buff.unyielding_strikes -> trigger( 1 );
       }
     }
@@ -4273,7 +4273,7 @@ void warrior_t::apl_prot()
 
   //dps-single-target
   prot -> add_action( "call_action_list,name=prot_aoe,if=active_enemies>3" );
-  prot -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.stack>=5)" );
+  prot -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.stack>=6)" );
   prot -> add_talent( this, "Bloodbath", "if=talent.bloodbath.enabled&((cooldown.dragon_roar.remains=0&talent.dragon_roar.enabled)|(cooldown.stormbolt.remains=0&talent.stormbolt.enabled)|talent.shockwave.enabled)" );
   prot -> add_talent( this, "Avatar", "if=talent.avatar.enabled&((cooldown.ravager.remains=0&talent.ravager.enabled)|(cooldown.dragon_roar.remains=0&talent.dragon_roar.enabled)|(talent.stormbolt.enabled&cooldown.stormbolt.remains=0)|(!(talent.dragon_roar.enabled|talent.ravager.enabled|talent.stormbolt.enabled)))" );
   prot -> add_action( this, "Shield Slam" );
@@ -4291,7 +4291,7 @@ void warrior_t::apl_prot()
   prot_aoe -> add_talent( this, "Bloodbath" );
   prot_aoe -> add_talent( this, "Avatar" );
   prot_aoe -> add_action( this, "Thunder Clap", "if=!dot.deep_wounds.ticking" );
-  prot_aoe -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up|rage>110|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.stack>=5)" );
+  prot_aoe -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up|rage>110|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.stack>=6)" );
   prot_aoe -> add_action( this, "Heroic Leap", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>5|!talent.bloodbath.enabled)" );
   prot_aoe -> add_action( this, "Shield Slam", "if=buff.shield_block.up" );
   prot_aoe -> add_talent( this, "Ravager", "if=(buff.avatar.up|cooldown.avatar.remains>10)|!talent.avatar.enabled" );
