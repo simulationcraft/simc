@@ -5973,7 +5973,7 @@ void paladin_t::target_mitigation( school_e school,
 
     // clamp is hardcoded in tooltip, not shown in effects
     sotr_mitigation = std::max( -0.80, sotr_mitigation );
-    sotr_mitigation = std::min( -0.25, sotr_mitigation );
+    sotr_mitigation = std::min( -0.20, sotr_mitigation );
 
     s -> result_amount *= 1.0 + sotr_mitigation; 
 
