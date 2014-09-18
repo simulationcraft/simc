@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18888)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18898)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -509,7 +509,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3235)     : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.44405
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.12500
 Description      : Heals a friendly target for $s1.$?s62099[  Healing increased by 100% when cast on self][]
 
 Name             : Earth Shock (id=8042) [Spell Family (11)] 
@@ -1555,7 +1555,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ..x..... ...x.
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=44468)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.80000 | Radius: 0 - 40 yards
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.52500 | Radius: 0 - 40 yards
 Description      : Heals the most injured nearby raid or party member.
 
 Name             : Water Shield (id=52127) [Scaling Spell (-1), Spell Family (11)] 
@@ -3285,7 +3285,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.44405 | Chain Multiplier: 0.2
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.12500 | Chain Multiplier: 0.2
 Description      : Heals a friendly target for $s1.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
@@ -6478,6 +6478,24 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=241955)   : School Damage: physical (2)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000
+Description      : $@spelldesc165610
+
+Name             : Feral Spirit Windfury Driver (id=170523) [Spell Family (11), Hidden] 
+Class            : Shaman
+Range            : 100 yards
+Duration         : 30 seconds
+Proc Chance      : 30%
+Proc Flags       : ..x.x.x. x.x.x.x. x.x..xxx ........ 
+                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered, Melee Off-Hand
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=241969)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000
 Description      : $@spelldesc165610
 

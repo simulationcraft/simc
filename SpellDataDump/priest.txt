@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18888)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18898)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 Resource         : 2.4% Base Mana (3840 @Level 100)
@@ -224,7 +224,7 @@ Spell Level      : 34
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Rapid Healing (24546), Healing Trance (37706), Serendipity (63735), Spiritual Healing (87336), Holy Word: Serenity (88684), Item - Priest T11 Healer 2P Bonus (89910), Temporal Boon (105826), Lucidity (137323), Enhanced Leap of Faith (157146)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Grace (47517), Serendipity (63735), Spiritual Healing (87336), Holy Word: Serenity (88684), Item - Priest T11 Healer 2P Bonus (89910), Temporal Boon (105826), Lucidity (137323), Enhanced Leap of Faith (157146)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -243,7 +243,7 @@ Spell Level      : 7
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Rapid Healing (24546), Healing Trance (37706), Archangel (81700), Spiritual Healing (87336), Holy Word: Serenity (88684), Temporal Boon (105826), Spirit Shell (109964), Surge of Light (114255), Item - Priest T14 Healer 2P Bonus (123111), Lucidity (137323), Enhanced Leap of Faith (157146)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Grace (47517), Archangel (81700), Spiritual Healing (87336), Holy Word: Serenity (88684), Temporal Boon (105826), Spirit Shell (109964), Surge of Light (114255), Item - Priest T14 Healer 2P Bonus (123111), Lucidity (137323), Enhanced Leap of Faith (157146)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1314,6 +1314,9 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20
 #2 (id=256019)   : Apply Aura (6) | Unknown effect sub type (421)
                    Base Value: 20 | Scaled Value: 20
+#3 (id=256463)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 10 | Scaled Value: 10
+                   Affected Spells: Heal (2060), Flash Heal (2061), Flash Heal (101062)
 Description      : Increases all healing and absorption done by $s1%.
 
 Name             : Rapture (id=47536) [Spell Family (6), Passive] 
@@ -1407,7 +1410,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=39995)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=8.309, dl=0.122) | SP Coefficient: 2.00000
+                   Base Value: 1 | Scaled Value: 0 (avg=8.309, dl=0.122) | SP Coefficient: 2.20000
 Description      : $@spelldesc47540
 
 Name             : Divine Aegis (id=47753) [Spell Family (6)] 
@@ -3195,7 +3198,7 @@ Class            : Priest
 Spell Level      : 7
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Rapid Healing (24546), Healing Trance (37706), Archangel (81700), Spiritual Healing (87336), Holy Word: Serenity (88684), Temporal Boon (105826), Spirit Shell (109964), Surge of Light (114255), Item - Priest T14 Healer 2P Bonus (123111), Lucidity (137323), Enhanced Leap of Faith (157146)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Grace (47517), Archangel (81700), Spiritual Healing (87336), Holy Word: Serenity (88684), Temporal Boon (105826), Spirit Shell (109964), Surge of Light (114255), Item - Priest T14 Healer 2P Bonus (123111), Lucidity (137323), Enhanced Leap of Faith (157146)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5120,7 +5123,7 @@ Effects          :
 Description      : Shields the target with a protective ward, absorbing ${$SP*6.00*$<mastery>} damage within $d.
 Tooltip          : Absorbs $w1 damage.
 Variables        : $masteryMod=${$cond($gt($pl,79),1,0)}
-$mastery=$?s47540[${((100+$<masteryMod>*$77484m1)/100)}][${1.00}]
+$mastery=$?s47540[${1.1*((100+$<masteryMod>*$77484m1)/100)}][${1.1}]
 
 
 Name             : Clarity of Purpose (id=155245) [Spell Family (6)] 

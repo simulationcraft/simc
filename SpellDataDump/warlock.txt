@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18888)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18898)
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
 Resource         : 4% Base Mana (6400 @Level 100)
@@ -3070,7 +3070,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17962 | Misc Value 2: 0x1e640
 #17 (id=157572)   : Apply Aura (6) | Unknown effect sub type (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 108685 | Misc Value 2: 0x1e641
-#18 (id=157574)   : Apply Aura (6) | Unknown effect sub type (403)
+#18 (id=157574)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 116858 | Misc Value 2: 0x1e642
 #19 (id=157578)   : Apply Aura (6) | Unknown effect sub type (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 116854 | Misc Value 2: 0x1e643

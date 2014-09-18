@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18888)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18898)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -462,7 +462,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=10981)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=11.04, dl=0.115) | SP Coefficient: 2.50000
+                   Base Value: 1 | Scaled Value: 0 (avg=11.04, dl=0.115) | SP Coefficient: 3.00000
 Description      : Heals a friendly target for $s1. $?s57955[In addition, the value of your next heal on the target within $54957d will be increased by $57955s1%.][]
 
 Name             : Repentance (id=20066) [Spell Family (10)] 
@@ -2738,7 +2738,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=81809)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.50000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.00000
 Description      : Heals a friendly target for $s1.
 
 Name             : Holy Radiance (id=82327) [Scaling Spell (6), Spell Family (10)] 

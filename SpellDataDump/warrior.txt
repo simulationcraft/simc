@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18888)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18898)
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 9
@@ -1105,7 +1105,7 @@ Effects          :
 #1 (id=14120)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=134421)   : Weapon Damage% (31)
-                   Base Value: 72 | Scaled Value: 0.72 (avg=0)
+                   Base Value: 50 | Scaled Value: 0.5 (avg=0)
 #3 (id=156242)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: rage
 #4 (id=226744)   : Dummy (3)
@@ -1231,7 +1231,7 @@ Reduces the Rage cost of Thunder Clap by $s2%.
 
 Name             : Sudden Death (id=29725) [Spell Family (4), Passive] 
 Class            : Warrior
-Proc Chance      : 10%
+Proc Chance      : 20%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -1615,6 +1615,7 @@ Duration         : 10 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
+Affecting spells : Single-Minded Fury (81099)
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2675,6 +2676,9 @@ Effects          :
 #3 (id=229541)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 15 | Scaled Value: 15
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (168874)
+#4 (id=256424)   : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 18
+                   Affected Spells: Sudden Death (52437)
 Description      : When you dual-wield one-handed weapons, all damage is increased by $s1%, and your off-hand weapon will deal an additional $s2% damage.
 
 Increases the damage of Execute by $s3%.
@@ -2813,7 +2817,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 20 seconds
-Affecting spells : Recklessness (1719), Mastery: Weapons Master (76838), Glyph of Colossus Smash (89003), Headlong Rush (158836), Item - Warrior T17 Arms 2P Bonus (165336)
+Affecting spells : Recklessness (1719), Mastery: Weapons Master (76838), Headlong Rush (158836), Item - Warrior T17 Arms 2P Bonus (165336)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2874,38 +2878,6 @@ Effects          :
 #1 (id=90403)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Starts combat by attacking a target with a melee weapon.
-
-Name             : Glyph of Colossus Smash (Arms) (id=89003) [Spell Family (4), Passive, Hidden] 
-Class            : Warrior
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=91585)    : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
-                   Base Value: 13500 | Scaled Value: 13500 | Misc Value: 1
-                   Affected Spells: Colossus Smash (86346), Colossus Smash (108126), Colossus Smash (167105)
-#2 (id=226518)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: -60 | Scaled Value: -60 | Misc Value: 12
-                   Affected Spells: Colossus Smash (86346), Colossus Smash (108126), Colossus Smash (167105)
-#3 (id=226519)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 11
-                   Affected Spells: Colossus Smash (86346), Colossus Smash (108126), Colossus Smash (167105)
-Description      : The duration of your Colossus Smash is increased by ${$m1/1000}.1 sec, but it now causes your attacks to only ignore $s3% of the victim's armor.
-
-Name             : Colossus Smash (Arms, Fury) (id=89814) [Spell Family (4)] 
-Class            : Warrior
-Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=92746)    : Unknown effect type (74)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 927
 
 Name             : Rend (id=94009) [Spell Family (4)] 
 Class            : Warrior
@@ -3292,7 +3264,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 20 seconds
-Affecting spells : Recklessness (1719), Mastery: Weapons Master (76838), Glyph of Colossus Smash (89003), Headlong Rush (158836), Item - Warrior T17 Arms 2P Bonus (165336)
+Affecting spells : Recklessness (1719), Mastery: Weapons Master (76838), Headlong Rush (158836), Item - Warrior T17 Arms 2P Bonus (165336)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   .......x ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5580,7 +5552,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 20 seconds
-Affecting spells : Recklessness (1719), Mastery: Weapons Master (76838), Glyph of Colossus Smash (89003), Headlong Rush (158836), Item - Warrior T17 Arms 2P Bonus (165336)
+Affecting spells : Recklessness (1719), Mastery: Weapons Master (76838), Headlong Rush (158836), Item - Warrior T17 Arms 2P Bonus (165336)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5731,7 +5703,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=240559)   : Apply Aura (6) | Add Flat Modifier: Spell Resource Cost (107)
-                   Base Value: -150 | Scaled Value: -150 | Misc Value: 14
+                   Base Value: -250 | Scaled Value: -250 | Misc Value: 14
                    Affected Spells: Wild Strike (100130)
 Description      : Wild Strike costs ${$m1/-10} less Rage.
 

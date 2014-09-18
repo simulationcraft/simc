@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18888)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18898)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 1
@@ -457,7 +457,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1839)     : Direct Heal (10)
-                   Base Value: 36 | Scaled Value: 0 (avg=18.388, dl=0.166) | Points Per Level: 0.8 | Value Range: 15 | SP Coefficient: 3.60000
+                   Base Value: -1 | Scaled Value: 0 - 2 (avg=0) | Value Range: 3 | SP Coefficient: 3.60000
 Description      : Heals a friendly target for $s1$?s54825[ and reduces your remaining cooldown on Nature's Swiftness by $54825m1 sec][].$?s24858[  Healing increased by 50% when cast on self.][]
 
 Name             : Mighty Bash (id=5211) [Spell Family (7)] 
@@ -545,7 +545,7 @@ Effects          :
 #2 (id=1860)     : Add Combo Points (80)
                    Base Value: 1 | Scaled Value: 1
 #3 (id=1861)     : Weapon Damage% (31)
-                   Base Value: 315 | Scaled Value: 3.15 (avg=0)
+                   Base Value: 500 | Scaled Value: 5 (avg=0)
 Description      : Shred the target, causing $sw1 Physical damage to the target$?s48484[ and reducing the target's movement speed by $58180s1% for $58180d][].  Awards $s2 combo $lpoint:points;.
 
 Being stealthed increases damage by $5215m4% and doubles critical strike chance. Damage increased by $106785s2% against bleeding targets.
@@ -569,7 +569,7 @@ Effects          :
                    Base Value: 120 | Scaled Value: 120 | Misc Value: 1
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438)
 #4 (id=253735)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 14
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 14
                    Affected Spells: Rejuvenation (774)
 #5 (id=253736)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 22
@@ -1166,7 +1166,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... ....x
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=12790)    : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | AP Coefficient: 3.21000 | Chain Multiplier: 0.7
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | AP Coefficient: 5.00000 | Chain Multiplier: 0.7
 #2 (id=12791)    : None (0)
                    Base Value: 25 | Scaled Value: 25
 Description      : Finishing move that causes damage per combo point$?s67598[, consumes up to 25 additional Energy to increase damage by up to 100%, and heals you for $67598m1% of your total maximum health for each $67598m2 Energy used.][ and consumes up to 25 additional Energy to increase damage by up to 100%.]$?s1079[
@@ -2746,7 +2746,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68119)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.25000
-                   Affected Spells: Healing Touch (5185), Regrowth (8936), Swiftmend (18562)
+                   Affected Spells: Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Healing Touch (113828)
 #2 (id=90631)    : Apply Aura (6) | Dummy (4)
                    Base Value: 125 | Scaled Value: 125
 Description      : Your direct healing is increased by an additional $77495s1% and casting your direct healing spells grants you an additional $77495s1% bonus to periodic healing for $100977d.
@@ -4387,12 +4387,13 @@ Effects          :
 Description      : Roots the target in place for $d.  Damage caused may interrupt the effect.
 Tooltip          : Rooted.
 
-Name             : Healing Touch (id=113828) 
+Name             : Healing Touch (id=113828) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 0.5 seconds
+Affecting spells : Mastery: Harmony (77495)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4401,7 +4402,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=126851)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.72750 | Radius: 0 - 40 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.60000 | Radius: 0 - 40 yards
 Description      : Heals one of the most injured nearby friendly targets for $s1.
 
 Name             : Soul of the Forest (id=114107) [Spell Family (7), Passive] 
@@ -6065,9 +6066,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=216287)   : Apply Aura (6) | Periodic Damage: arcane every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.11455
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.65000
 #2 (id=216288)   : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.15984
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.75000
 #3 (id=216290)   : Add Combo Points (80)
                    Base Value: 1 | Scaled Value: 1
 Description      : Burns the enemy for $s2 Arcane damage and then an additional $o1 Arcane damage over $d. Generates $s3 combo point.
