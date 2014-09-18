@@ -1822,7 +1822,7 @@ struct heroic_strike_t: public warrior_attack_t
     double c = warrior_attack_t::cost();
 
     if ( p() -> buff.unyielding_strikes -> up() )
-      c -= p() -> buff.unyielding_strikes -> current_stack * p() -> buff.unyielding_strikes -> default_value;
+      c += p() -> buff.unyielding_strikes -> current_stack * p() -> buff.unyielding_strikes -> default_value;
 
     if ( p() -> buff.ultimatum -> check() )
       c *= 1 + p() -> buff.ultimatum -> data().effectN( 1 ).percent();
