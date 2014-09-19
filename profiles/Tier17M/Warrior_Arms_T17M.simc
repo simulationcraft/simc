@@ -61,7 +61,7 @@ actions.aoe+=/ravager
 actions.aoe+=/colossus_smash
 actions.aoe+=/dragon_roar,if=!debuff.colossus_smash.up
 actions.aoe+=/execute,if=active_enemies<=3&((rage>60&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|target.time_to_die<5)
-actions.aoe+=/whirlwind,if=active_enemies>=4|active_enemies<=3&(rage>60|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20
+actions.aoe+=/whirlwind,if=active_enemies>=4|(active_enemies<=3&(rage>60|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20)
 actions.aoe+=/bladestorm,interrupt_if=!cooldown.colossus_smash.remains|!cooldown.ravager.remains
 actions.aoe+=/rend,cycle_targets=1,if=!ticking
 actions.aoe+=/siegebreaker,if=active_enemies=2

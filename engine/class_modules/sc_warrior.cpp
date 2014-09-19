@@ -4168,7 +4168,7 @@ void warrior_t::apl_arms()
   aoe -> add_action( this, "Colossus Smash" );
   aoe -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up" );
   aoe -> add_action( this, "Execute", "if=active_enemies<=3&((rage>60&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|target.time_to_die<5)" );
-  aoe -> add_action( this, "Whirlwind", "if=active_enemies>=4|active_enemies<=3&(rage>60|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20" );
+  aoe -> add_action( this, "Whirlwind", "if=active_enemies>=4|(active_enemies<=3&(rage>60|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20)" );
   aoe -> add_action( "bladestorm,interrupt_if=!cooldown.colossus_smash.remains|!cooldown.ravager.remains" );
   aoe -> add_action( this, "Rend", "cycle_targets=1,if=!ticking" );
   aoe -> add_talent( this, "Siegebreaker", "if=active_enemies=2" );

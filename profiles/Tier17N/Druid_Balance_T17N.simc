@@ -70,14 +70,14 @@ trinket2=primal_gladiators_insignia_of_dominance,id=115755
 main_hand=infernoflame_staff,id=113869,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_stamina=3249
-# gear_intellect=2588
-# gear_spell_power=1265
-# gear_crit_rating=752
-# gear_haste_rating=872
-# gear_mastery_rating=800
-# gear_armor=950
-# gear_multistrike_rating=660
-# gear_versatility_rating=77
-# set_bonus=pvp_2pc=1
-# set_bonus=pvp_4pc=1
+# gear_stamina=3408
+# gear_intellect=2700
+# gear_spell_power=1325
+# gear_crit_rating=446
+# gear_haste_rating=795
+# gear_mastery_rating=1412
+# gear_armor=946
+# gear_multistrike_rating=529
+# gear_versatility_rating=85
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1
