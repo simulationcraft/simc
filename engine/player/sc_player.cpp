@@ -4863,6 +4863,9 @@ void player_t::target_mitigation( school_e school,
     }
   }
 
+  if ( s -> action -> is_aoe() )
+    s -> result_amount *= 1.0 - cache.avoidance();
+
   // TODO-WOD: Where should this be? Or does it matter?
   s -> result_amount *= 1.0 - cache.mitigation_versatility();
   
@@ -5768,6 +5771,8 @@ struct snapshot_stats_t : public action_t
     buffed_stats.damage_versatility = p -> cache.damage_versatility();
     buffed_stats.heal_versatility = p -> cache.heal_versatility();
     buffed_stats.mitigation_versatility = p -> cache.mitigation_versatility();
+    buffed_stats.run_speed = p -> cache.run_speed();
+    buffed_stats.avoidance = p -> cache.avoidance();
 
     buffed_stats.spell_power  = util::round( p -> cache.spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
     buffed_stats.spell_hit    = p -> cache.spell_hit();

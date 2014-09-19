@@ -4118,7 +4118,7 @@ struct player_collected_data_t
     double spell_haste, spell_speed, attack_haste, attack_speed;
     double mastery_value, multistrike, readiness;
     double damage_versatility, heal_versatility, mitigation_versatility;
-    double leech, run_speed;
+    double leech, run_speed, avoidance;
   } buffed_stats_snapshot;
 
   player_collected_data_t( const std::string& player_name, sim_t& );
