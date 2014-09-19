@@ -102,6 +102,10 @@ public:
     buff_t* guardian_of_ancient_kings;
     buff_t* grand_crusader;
     buff_t* infusion_of_light;
+    buff_t* seal_of_insight;
+    buff_t* seal_of_justice;
+    buff_t* seal_of_righteousness;
+    buff_t* seal_of_truth;
     buff_t* shield_of_the_righteous;
 
     // glyphs
@@ -4120,7 +4124,34 @@ struct paladin_seal_t : public paladin_melee_attack_t
       p() -> active_seal = SEAL_NONE;
     }
     else
+    {
       p() -> active_seal = seal_type; // set the new seal
+
+      // now handle the buffs (for reporting only)
+
+      // cancel all existing buffs
+      p() -> buffs.seal_of_insight -> expire();
+      p() -> buffs.seal_of_justice -> expire();
+      p() -> buffs.seal_of_righteousness -> expire();
+      p() -> buffs.seal_of_truth -> expire();
+      // now trigger the new buff
+      switch ( seal_type )
+      {
+      case SEAL_OF_INSIGHT:
+        p() -> buffs.seal_of_insight -> trigger();
+        p() -> invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
+        break;
+      case SEAL_OF_JUSTICE:
+        p() -> buffs.seal_of_justice -> trigger();
+        break;
+      case SEAL_OF_RIGHTEOUSNESS:
+        p() -> buffs.seal_of_righteousness -> trigger();
+        break;
+      case SEAL_OF_TRUTH:
+        p() -> buffs.seal_of_truth -> trigger();
+        break;
+      }
+    }
 
     // if we've swapped to or from Seal of Insight, we'll need to refresh spell haste cache
 
@@ -4272,52 +4303,6 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 };
 
 // Templar's Verdict / Final Verdict ========================================================
-
-//struct final_verdict_cleave_t : public paladin_melee_attack_t 
-//{
-//  final_verdict_cleave_t( paladin_t* p ) 
-//    : paladin_melee_attack_t( "final_verdict_cleave", p, p -> find_talent_spell( "Final Verdict" ) )
-//  {
-//    base_multiplier *= data().effectN( 1 ).percent();
-//    aoe = -1;
-//    trigger_seal = true; // TODO: test, works w/ SoI
-//    background = true;
-//    trigger_gcd = timespan_t::zero();
-//    resource_consumed = RESOURCE_NONE;
-//    
-//    // Tier 13 Retribution 4-piece boosts damage (TODO: Test?)
-//    base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T13, B4 ) -> effectN( 1 ).percent();
-//    // Tier 14 Retribution 2-piece boosts damage (TODO: Test?)
-//    base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
-//  }
-//
-//  
-//    
-//  // FV AoE does not hit the main target
-//  size_t available_targets( std::vector< player_t* >& tl ) const
-//  {
-//    tl.clear();
-//
-//    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
-//    {
-//      if ( ! sim -> actor_list[ i ] -> is_sleeping() &&
-//             sim -> actor_list[ i ] -> is_enemy() &&
-//             sim -> actor_list[ i ] != target )
-//        tl.push_back( sim -> actor_list[ i ] );
-//    }
-//
-//    return tl.size();
-//  }
-//
-//  virtual void impact( action_state_t* s )
-//  {
-//    paladin_melee_attack_t::impact( s );
-//
-//    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
-//      trigger_hand_of_light( s );
-//  }
-//
-//};
 
 struct final_verdict_t : public paladin_melee_attack_t
 {
@@ -4850,6 +4835,10 @@ void paladin_t::create_buffs()
                                  .cd( timespan_t::zero() ) // Let the ability handle the CD
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.hand_of_purity         = buff_creator_t( this, "hand_of_purity", find_talent_spell( "Hand of Purity" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
+  buffs.seal_of_insight        = buff_creator_t( this, "seal_of_insight", find_class_spell( "Seal of Insight" ) );
+  buffs.seal_of_justice        = buff_creator_t( this, "seal_of_justice", find_class_spell( "Seal of Justice" ) );
+  buffs.seal_of_righteousness  = buff_creator_t( this, "seal_of_righteousness", find_class_spell( "Seal of Righteousness" ) );
+  buffs.seal_of_truth          = buff_creator_t( this, "seal_of_truth", find_class_spell( "Seal of Truth" ) );
 
   // Holy
   buffs.daybreak               = buff_creator_t( this, "daybreak", find_spell( 88819 ) );
@@ -5836,7 +5825,7 @@ double paladin_t::composite_block() const
   if ( buffs.shield_of_glory -> check() )
     b += buffs.shield_of_glory -> data().effectN( 1 ).percent();
 
-  // Protection T17 2-piece bonus
+  // Protection T17 2-piece bonus not affected by DR (confirmed 9/19)
   if ( buffs.faith_barricade -> check() )
     b += buffs.faith_barricade -> value();
 
