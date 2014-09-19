@@ -2318,7 +2318,7 @@ struct rake_t : public cat_attack_t
     special = true;
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
 
-    bleed_spell = p -> find_spell( 155722 );
+    bleed_spell           = p -> find_spell( 155722 );
     dot_behavior          = DOT_REFRESH;
     base_td               = bleed_spell -> effectN( 1 ).base_value();
     attack_power_mod.tick = bleed_spell -> effectN( 1 ).ap_coeff();
@@ -6070,9 +6070,6 @@ void druid_t::apl_feral()
 
   // Fillers
   def -> add_action( this, "Swipe", "if=combo_points<5&active_enemies>=3" );
-  // Disabled until Rake perk + Incarnation is fixed.
-  /* def -> add_action( this, "Rake", "if=combo_points<5&hit_damage>=action.shred.hit_damage",
-                        "Rake for CP if it hits harder than Shred." ); */
   def -> add_action( this, "Shred", "if=combo_points<5&active_enemies<3" );
 
   // Add in rejuv blanketing for nature's vigil -- not fully optimized
