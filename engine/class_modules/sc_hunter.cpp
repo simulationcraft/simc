@@ -1254,9 +1254,9 @@ struct kill_command_t: public hunter_main_pet_attack_t
     background = proc = true;
     school = SCHOOL_PHYSICAL;
 
-    // The hardcoded parameter is taken from the $damage value in teh tooltip. e.g., 1.89 below
-    // $damage = ${ 1.5*($83381m1 + ($RAP*  1.89   ))*$<bmMastery> }
-    attack_power_mod.direct  = 1.89; // Hard-coded in tooltip.
+    // The hardcoded parameter is taken from the $damage value in teh tooltip. e.g., 1.36 below
+    // $damage = ${ 1.5*($83381m1 + ($RAP*  1.36   ))*$<bmMastery> }
+    attack_power_mod.direct  = 1.36; // Hard-coded in tooltip.
   }
 
   double action_multiplier() const
@@ -1502,6 +1502,10 @@ struct dire_critter_t: public hunter_pet_t
       background = repeating = may_glance = may_crit = true;
       special = false;
       focus_gain = player -> find_spell( 120694 ) -> effectN( 1 ).base_value();
+      
+      // Dire Beast is only giving 2 focus per hit in game
+      if ( p.o() -> bugs )
+        focus_gain = 2;
     }
 
     virtual void impact( action_state_t* s )
