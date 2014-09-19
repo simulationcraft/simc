@@ -1965,7 +1965,8 @@ void sim_t::merge()
 void sim_t::run()
 {
   iterate();
-  parent -> merge( *this );
+  if ( iterations > 0 )
+    parent -> merge( *this );
 }
 
 // sim_t::partition =========================================================
