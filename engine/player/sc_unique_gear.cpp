@@ -1410,11 +1410,18 @@ void item::spellbound_runic_band( special_effect_t& effect,
   const spell_data_t* driver = p -> find_spell( effect.spell_id );
   buff_t* buff = 0;
 
-  if ( p -> convert_hybrid_stat( STAT_STRENGTH ) )
+  if ( item.has_item_stat( STAT_STR_AGI ) )
+  {
+    if ( p -> convert_hybrid_stat( STAT_STR_AGI ) == STAT_AGILITY )
+      buff = buff_t::find( p, "archmages_greater_incandescence_agi" );
+    else if ( p -> convert_hybrid_stat( STAT_STR_AGI ) == STAT_STRENGTH )
+      buff = buff_t::find( p, "archmages_greater_incandescence_str" );
+  }
+  else if ( item.has_item_stat( STAT_STRENGTH ) )
     buff = buff_t::find( p, "archmages_greater_incandescence_str" );
-  else if ( p -> convert_hybrid_stat( STAT_AGILITY ) )
+  else if ( item.has_item_stat( STAT_AGILITY ) )
     buff = buff_t::find( p, "archmages_greater_incandescence_agi" );
-  else if ( p -> convert_hybrid_stat( STAT_INTELLECT ) )
+  else if ( item.has_item_stat( STAT_STRENGTH ) )
     buff = buff_t::find( p, "archmages_greater_incandescence_int" );
 
   effect.ppm_ = -1.0 * driver -> real_ppm();
@@ -1433,11 +1440,18 @@ void item::spellbound_solium_band( special_effect_t& effect,
   const spell_data_t* driver = p -> find_spell( effect.spell_id );
   buff_t* buff = 0;
 
-  if ( p -> convert_hybrid_stat( STAT_STRENGTH ) )
+  if ( item.has_item_stat( STAT_STR_AGI ) )
+  {
+    if ( p -> convert_hybrid_stat( STAT_STR_AGI ) == STAT_AGILITY )
+      buff = buff_t::find( p, "archmages_incandescence_agi" );
+    else if ( p -> convert_hybrid_stat( STAT_STR_AGI ) == STAT_STRENGTH )
+      buff = buff_t::find( p, "archmages_incandescence_str" );
+  }
+  else if ( item.has_item_stat( STAT_STRENGTH ) )
     buff = buff_t::find( p, "archmages_incandescence_str" );
-  else if ( p -> convert_hybrid_stat( STAT_AGILITY ) )
+  else if ( item.has_item_stat( STAT_AGILITY ) )
     buff = buff_t::find( p, "archmages_incandescence_agi" );
-  else if ( p -> convert_hybrid_stat( STAT_INTELLECT ) )
+  else if ( item.has_item_stat( STAT_STRENGTH ) )
     buff = buff_t::find( p, "archmages_incandescence_int" );
 
   effect.ppm_ = -1.0 * driver -> real_ppm();
