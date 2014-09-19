@@ -4,7 +4,7 @@ race=troll
 role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!1110211
-glyphs=unending_rage/death_from_above/bull_rush
+glyphs=unending_rage/death_from_above/raging_whirlwind
 spec=fury
 
 # This default action priority list is automatically created based on your character.
@@ -108,17 +108,17 @@ finger1=spellbound_runic_band_of_elemental_power,id=118305,bonus_id=524,enchant=
 finger2=seal_of_the_savage_howl,id=113940,bonus_id=567/448,enchant=gift_of_critical_strike
 trinket1=forgemasters_insignia,id=113983,bonus_id=567/448
 trinket2=bottle_of_infesting_spores,id=113658,bonus_id=567/448
-main_hand=taners_terrible_spine,id=113862,bonus_id=566/448,enchant=mark_of_the_thunderlord
-off_hand=taners_terrible_spine,id=113862,bonus_id=566/448,enchant=mark_of_the_thunderlord
+main_hand=taners_terrible_spine,id=113862,bonus_id=567/448,enchant=mark_of_the_thunderlord
+off_hand=taners_terrible_spine,id=113862,bonus_id=567/448,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_strength=3626
-# gear_stamina=4559
-# gear_crit_rating=1842
+# gear_strength=3660
+# gear_stamina=4611
+# gear_crit_rating=1866
 # gear_haste_rating=731
 # gear_mastery_rating=655
 # gear_armor=2271
-# gear_multistrike_rating=1079
+# gear_multistrike_rating=1103
 # gear_versatility_rating=341
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

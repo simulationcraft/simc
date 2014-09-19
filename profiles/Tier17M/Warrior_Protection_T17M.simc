@@ -86,18 +86,18 @@ finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,enchant=gift_
 finger2=siege_bombers_band,id=113963,bonus_id=567/448,enchant=gift_of_critical_strike
 trinket1=forgemasters_insignia,id=113983,bonus_id=567/448
 trinket2=bottle_of_infesting_spores,id=113658,bonus_id=567/448
-main_hand=taners_terrible_spine,id=113862,bonus_id=566/448,enchant=mark_of_the_thunderlord
+main_hand=taners_terrible_spine,id=113862,bonus_id=567/448,enchant=mark_of_the_thunderlord
 off_hand=kromogs_protecting_palm,id=113926,bonus_id=567/448
 
 # Gear Summary
-# gear_strength=3647
-# gear_stamina=4590
-# gear_crit_rating=1510
+# gear_strength=3664
+# gear_stamina=4616
+# gear_crit_rating=1522
 # gear_haste_rating=501
 # gear_mastery_rating=503
 # gear_armor=3048
 # gear_bonus_armor=487
-# gear_multistrike_rating=965
+# gear_multistrike_rating=977
 # gear_versatility_rating=698
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

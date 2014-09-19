@@ -40,7 +40,7 @@ role=attack
 position=back
 professions=engineering=600/blacksmithing=600
 talents=222132
-glyphs=unending_rage/death_from_above/bull_rush
+glyphs=unending_rage/death_from_above/raging_whirlwind
 
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=capacitive_primal_16crit_8haste_8crit_9str
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
@@ -70,7 +70,7 @@ role=attack
 position=back
 professions=engineering=600/blacksmithing=600
 talents=232122
-glyphs=unending_rage/death_from_above/bull_rush
+glyphs=unending_rage/death_from_above/raging_whirlwind
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=capacitive_primal_16crit_8haste_8crit_9str
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
 shoulders=spaulders_of_the_fallen_warchief,id=104645,upgrade=2,gems=16crit_16crit_6str,enchant=10str_5crit

@@ -5,7 +5,7 @@ role=attack
 position=back
 professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!121011.
-glyphs=unending_rage/death_from_above/bull_rush
+glyphs=unending_rage/death_from_above/raging_whirlwind
 spec=fury
 
 # This default action priority list is automatically created based on your character.
