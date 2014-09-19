@@ -4241,7 +4241,6 @@ void warrior_t::apl_prot()
   prot -> add_talent( this, "Dragon Roar" );
   prot -> add_talent( this, "Impending Victory", "if=talent.impending_victory.enabled&cooldown.shield_slam.remains<=execute_time" );
   prot -> add_action( this, "Victory Rush", "if=!talent.impending_victory.enabled&cooldown.shield_slam.remains<=execute_time" );
-  prot -> add_action( this, "Thunder Clap", "if=glyph.resonating_power.enabled&cooldown.shield_slam.remains<=execute_time" );
   prot -> add_action( this, "Execute", "if=talent.sudden_death.enabled&buff.sudden_death.up" );
   prot -> add_action( this, "Devastate" );
 

@@ -52,7 +52,6 @@ actions.prot+=/storm_bolt
 actions.prot+=/dragon_roar
 actions.prot+=/impending_victory,if=talent.impending_victory.enabled&cooldown.shield_slam.remains<=execute_time
 actions.prot+=/victory_rush,if=!talent.impending_victory.enabled&cooldown.shield_slam.remains<=execute_time
-actions.prot+=/thunder_clap,if=glyph.resonating_power.enabled&cooldown.shield_slam.remains<=execute_time
 actions.prot+=/execute,if=talent.sudden_death.enabled&buff.sudden_death.up
 actions.prot+=/devastate
 
