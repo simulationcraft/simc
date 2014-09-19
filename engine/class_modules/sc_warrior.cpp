@@ -5087,6 +5087,10 @@ double warrior_t::composite_block() const
   b += spec.bastion_of_defense -> effectN( 1 ).percent();
   b += perk.improved_block -> effectN( 1 ).percent();
 
+  // shield block adds 100% block chance
+  if ( buff.shield_block -> up() )
+      b += 1.0;
+
   return b;
 }
 
