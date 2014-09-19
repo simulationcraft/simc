@@ -5089,7 +5089,7 @@ double warrior_t::composite_block() const
 
   // shield block adds 100% block chance
   if ( buff.shield_block -> up() )
-      b += 1.0;
+      b += buff.shield_block -> data().effectN( 1 ).percent();
 
   return b;
 }
