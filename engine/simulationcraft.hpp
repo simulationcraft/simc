@@ -1619,6 +1619,7 @@ struct gear_stats_t
     versatility_rating += right.versatility_rating;
     leech_rating += right.leech_rating;
     speed_rating += right.speed_rating;
+    avoidance_rating += right.avoidance_rating;
     range::transform ( attribute, right.attribute, attribute.begin(), std::plus<double>() );
     range::transform ( resource, right.resource, resource.begin(), std::plus<int>() );
     return *this;
