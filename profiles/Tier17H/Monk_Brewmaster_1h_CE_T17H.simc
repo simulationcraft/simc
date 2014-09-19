@@ -75,9 +75,9 @@ actions.aoe+=/purifying_brew,if=!talent.chi_explosion.enabled&talent.rushing_jad
 actions.aoe+=/tiger_palm,if=talent.rushing_jade_wind.enabled&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40
 actions.aoe+=/tiger_palm,if=talent.rushing_jade_wind.enabled&cooldown.keg_smash.remains>=1
 
-head=acidic_jaws,id=113880,bonus_id=566
+head=helm_of_the_somber_gaze,id=115556,bonus_id=566
 neck=choker_of_bestial_force,id=113952,bonus_id=566,enchant=gift_of_versatility
-shoulders=flamebenders_shoulderguards,id=113924,bonus_id=566
+shoulders=mantle_of_the_somber_gaze,id=115559,bonus_id=566
 back=gronnstitched_greatcloak,id=113873,bonus_id=566,enchant=gift_of_versatility
 chest=vest_of_the_somber_gaze,id=115558,bonus_id=566
 wrists=bracers_of_shattered_limbs,id=119333,bonus_id=566
@@ -95,10 +95,12 @@ off_hand=the_bladefist,id=113591,bonus_id=566,enchant_id=5352
 # Gear Summary
 # gear_agility=2542
 # gear_stamina=4160
-# gear_crit_rating=1082
-# gear_haste_rating=561
-# gear_mastery_rating=590
+# gear_crit_rating=788
+# gear_haste_rating=738
+# gear_mastery_rating=580
 # gear_armor=1045
 # gear_bonus_armor=840
-# gear_versatility_rating=1084
+# gear_multistrike_rating=310
+# gear_versatility_rating=907
 # set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1
