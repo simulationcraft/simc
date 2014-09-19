@@ -4514,7 +4514,7 @@ void mage_t::create_buffs()
   buffs.rune_of_power        = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) )
                                .duration( timespan_t::from_minutes( 3 ) )
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.pyromaniac           = buff_creator_t( this, "pyromaniac", find_spell( 18764 ) ).duration( find_spell( 18764 ) -> duration() ).chance( sets.has_set_bonus( MAGE_FIRE,T17,B4 ) );
+  buffs.pyromaniac           = buff_creator_t( this, "pyromaniac", find_spell( 166868 ) ).duration( find_spell( 166868 ) -> duration() ).chance( sets.has_set_bonus( MAGE_FIRE,T17,B4 ) );
 
   buffs.heating_up           = buff_creator_t( this, "heating_up", find_specialization_spell( "Pyroblast" ) -> ok() ? find_spell( 48107 ) : spell_data_t::not_found() );
   buffs.pyroblast            = buff_creator_t( this, "pyroblast",  find_specialization_spell( "Pyroblast" ) -> ok() ? find_spell( 48108 ) : spell_data_t::not_found() );
