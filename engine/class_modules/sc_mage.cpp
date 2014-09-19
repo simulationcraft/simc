@@ -2340,6 +2340,8 @@ public:
 
   virtual void last_tick( dot_t* d )
   {
+    mage_t& p = *this -> p();
+
     mage_spell_t::last_tick( d );
     if ( p.sets.has_set_bonus( MAGE_ARCANE, T17, B2 ) )
       p.buffs.arcane_affinity -> trigger();
