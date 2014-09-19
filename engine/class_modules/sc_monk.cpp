@@ -4079,7 +4079,7 @@ void monk_t::apl_pre_brewmaster()
   if ( sim -> allow_food && level >= 80 )
   {
     if ( level >= 90 )
-      pre -> add_action( "/food,type=rylak_crepes" );
+      pre -> add_action( "/food,type=sleeper_surprise" );
     else if ( level >= 85 )
       pre -> add_action( "/food,type=mogu_fish_stew" );
     else
@@ -4220,34 +4220,35 @@ void monk_t::apl_combat_brewmaster()
   st -> add_action( this, "Blackout Kick", "if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=1" );
   st -> add_action( this, "Blackout Kick", "if=buff.serenity.up" );
   st -> add_action( this, "Blackout Kick", "if=chi>=4" );
-  st -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.expel_harm.remains=0&cooldown.keg_smash.remains>=1.5" );
-  st -> add_action( this, "Jab", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=1.5&cooldown.expel_harm.remains>=1.5" );
+  st -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.expel_harm.remains>=gcd&cooldown.keg_smash.remains>=gcd" );
+  st -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.expel_harm.remains>=gcd&cooldown.keg_smash.remains>=gcd" );
+  st -> add_action( this, "Jab", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd" );
   st -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.moderate&buff.shuffle.remains>=6");
   st -> add_action( this, "Tiger Palm", "if=(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
-  st -> add_action( this, "Tiger Palm", "if=cooldown.keg_smash.remains>=1" );
+  st -> add_action( this, "Tiger Palm", "if=cooldown.keg_smash.remains>=gcd" );
 
   aoe->add_action(this, "Guard");
   if (level >= 100)
-    aoe -> add_action( this, "Breath of Fire", "if=chi>=3&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=1" );
+    aoe -> add_action( this, "Breath of Fire", "if=chi>=3&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=gcd" );
   else
     aoe -> add_action( this, "Breath of Fire", "if=chi>=3&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=1&target.debuff.dizzying_haze.up" );
   aoe -> add_talent( this, "Chi Explosion", "if=chi>=4" );
+  aoe -> add_talent( this, "Rushing Jade Wind", "if=chi.max-chi>=1&talent.rushing_jade_wind.enabled" );
   aoe -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.heavy" );
   aoe -> add_action( this, "Guard" );
   aoe -> add_action( this, "Keg Smash", "if=chi.max-chi>=2&!buff.serenity.remains" );
   aoe -> add_talent( this, "Chi Burst", "if=talent.chi_burst.enabled&energy.time_to_max>3" );
   aoe -> add_talent( this, "Chi Wave", "if=talent.chi_wave.enabled&energy.time_to_max>3" );
   aoe -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking" );
-  aoe -> add_action( this, "Blackout Kick", "if=talent.rushing_jade_wind.enabled&buff.shuffle.remains<=3&cooldown.keg_smash.remains>=1" );
+  aoe -> add_action( this, "Blackout Kick", "if=talent.rushing_jade_wind.enabled&buff.shuffle.remains<=3&cooldown.keg_smash.remains>=gcd" );
   aoe -> add_action( this, "Blackout Kick", "if=talent.rushing_jade_wind.enabled&buff.serenity.up" );
   aoe -> add_action( this, "Blackout Kick", "if=talent.rushing_jade_wind.enabled&chi>=4" );
-  aoe -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.expel_harm.remains=0&cooldown.keg_smash.remains>=1.5&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
-  aoe -> add_talent( this, "Rushing Jade Wind", "if=chi.max-chi>=1&talent.rushing_jade_wind.enabled" );
+  aoe -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.expel_harm.remains=0&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
   aoe -> add_action( this, "Spinning Crane Kick", "if=chi.max-chi>=1&!talent.rushing_jade_wind.enabled" );
-  aoe -> add_action( this, "Jab", "if=talent.rushing_jade_wind.enabled&chi.max-chi>=1&cooldown.keg_smash.remains>=1.5&cooldown.expel_harm.remains>=1.5" );
+  aoe -> add_action( this, "Jab", "if=talent.rushing_jade_wind.enabled&chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd" );
   aoe -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&talent.rushing_jade_wind.enabled&stagger.moderate&buff.shuffle.remains>=6");
   aoe -> add_action( this, "Tiger Palm", "if=talent.rushing_jade_wind.enabled&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
-  aoe -> add_action( this, "Tiger Palm", "if=talent.rushing_jade_wind.enabled&cooldown.keg_smash.remains>=1" );
+  aoe -> add_action( this, "Tiger Palm", "if=talent.rushing_jade_wind.enabled&cooldown.keg_smash.remains>=gcd" );
 }
 
 // Windwalker Combat Action Priority List ===============================
