@@ -1852,6 +1852,7 @@ void player_t::init_scaling()
     scales_with[ STAT_READINESS_RATING          ] = false; // No longer a stat in game.
     scales_with[ STAT_VERSATILITY_RATING        ] = true;
     scales_with[ STAT_SPEED_RATING              ] = true;
+    scales_with[ STAT_AVOIDANCE_RATING          ] = true;
 
     scales_with[ STAT_WEAPON_DPS   ] = attack;
     scales_with[ STAT_WEAPON_OFFHAND_DPS   ] = false;
@@ -1905,6 +1906,10 @@ void player_t::init_scaling()
 
         case STAT_SPEED_RATING:
           initial.stats.speed_rating += v;
+          break;
+
+        case STAT_AVOIDANCE_RATING:
+          initial.stats.avoidance_rating += v;
           break;
 
         case STAT_WEAPON_DPS:
@@ -2717,6 +2722,14 @@ double player_t::composite_run_speed() const
   return composite_speed_rating() / current.rating.speed;
 }
 
+// player_t::composite_avoidance ================================================
+
+double player_t::composite_avoidance() const
+{
+  return composite_avoidance_rating() / current.rating.avoidance;
+}
+
+
 // player_t::composite_player_multiplier ====================================
 
 double player_t::composite_player_multiplier( school_e /* school */ ) const
@@ -2942,6 +2955,8 @@ double player_t::composite_rating( rating_e rating ) const
       v = current.stats.leech_rating; break;
     case RATING_SPEED:
       v = current.stats.speed_rating; break;
+    case RATING_AVOIDANCE:
+      v = current.stats.avoidance_rating; break;
     default: break;
   }
 
@@ -9296,6 +9311,18 @@ double player_stat_cache_t::run_speed() const
   else assert( _leech == player -> composite_run_speed() );
   return _run_speed;
 }
+
+double player_stat_cache_t::avoidance() const
+{
+  if ( !active || !valid[CACHE_AVOIDANCE] )
+  {
+    valid[CACHE_AVOIDANCE] = true;
+    _avoidance = player -> composite_avoidance();
+  }
+  else assert( _leech == player -> composite_avoidance() );
+  return _avoidance;
+}
+
 
 // player_stat_cache_t::mastery =============================================
 

@@ -615,6 +615,7 @@ std::string chart::stat_color( stat_e type )
     case STAT_MULTISTRIKE_RATING:       return color::mix( color::red, color::tan );
     case STAT_VERSATILITY_RATING:       return class_color( DRUID );
     case STAT_SPEED_RATING:             return color::mix( color::blue, color::darker_silver );
+    case STAT_AVOIDANCE_RATING:         return color::mix( color::red, color::darker_silver );
     case STAT_DODGE_RATING:             return class_color( MONK );
     case STAT_PARRY_RATING:             return color::teal;
     case STAT_ARMOR:                    return class_color( PRIEST );

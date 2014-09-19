@@ -418,8 +418,8 @@ enum item_mod_type {
   ITEM_MOD_READINESS_RATING         = 60,
   ITEM_MOD_SPEED_RATING             = 61,
   ITEM_MOD_LEECH_RATING             = 62,
-  ITEM_MOD_WOD_3                    = 63,
-  ITEM_MOD_WOD_4                    = 64,
+  ITEM_MOD_AVOIDANCE_RATING         = 63,
+  ITEM_MOD_INDESTRUCTIBLE           = 64,
   ITEM_MOD_WOD_5                    = 65,
   ITEM_MOD_WOD_6                    = 66,
   ITEM_MOD_STRENGTH_AGILITY_INTELLECT = 71,
@@ -451,7 +451,6 @@ enum rating_mod_type {
   RATING_MOD_VERS_DAMAGE  = 0x10000000,
   RATING_MOD_VERS_HEAL    = 0x20000000,
   RATING_MOD_VERS_MITIG   = 0x40000000,
-  RATING_MOD_RUN_SPEED    = 0x80000000,
 
 };
 

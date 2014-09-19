@@ -1445,6 +1445,7 @@ const char* util::stat_type_string( stat_e stat )
 
     case STAT_LEECH_RATING: return "leech_rating";
     case STAT_SPEED_RATING: return "speed_rating";
+    case STAT_AVOIDANCE_RATING: return "avoidance_rating";
 
     case STAT_ALL: return "all";
 
@@ -1516,6 +1517,7 @@ const char* util::stat_type_abbrev( stat_e stat )
 
     case STAT_LEECH_RATING: return "Leech";
     case STAT_SPEED_RATING: return "Speed";
+    case STAT_AVOIDANCE_RATING: return "Avoidance";
 
     case STAT_ALL: return "All";
 
@@ -1572,6 +1574,7 @@ const char* util::stat_type_wowhead( stat_e stat )
 
     case STAT_LEECH_RATING: return "lifesteal";
     case STAT_SPEED_RATING: return "speed";
+    case STAT_AVOIDANCE_RATING: return "avoidance";
 
     case STAT_MAX: return "__all";
     default: return "unknown";
@@ -1966,6 +1969,7 @@ stat_e util::translate_item_mod( int item_mod )
     case ITEM_MOD_VERSATILITY_RATING:  return STAT_VERSATILITY_RATING;
     case ITEM_MOD_LEECH_RATING:        return STAT_LEECH_RATING;
     case ITEM_MOD_SPEED_RATING:        return STAT_SPEED_RATING;
+    case ITEM_MOD_AVOIDANCE_RATING:    return STAT_AVOIDANCE_RATING;
     default:                           return STAT_NONE;
   }
 }
@@ -2001,6 +2005,7 @@ int util::translate_stat( stat_e stat )
     case STAT_VERSATILITY_RATING: return ITEM_MOD_VERSATILITY_RATING;
     case STAT_LEECH_RATING:       return ITEM_MOD_LEECH_RATING;
     case STAT_SPEED_RATING:       return ITEM_MOD_SPEED_RATING;
+    case STAT_AVOIDANCE_RATING:   return ITEM_MOD_AVOIDANCE_RATING;
     default:                      return ITEM_MOD_NONE;
   }
 }
@@ -2052,8 +2057,6 @@ stat_e util::translate_rating_mod( unsigned ratings )
     return STAT_READINESS_RATING;
   else if ( ratings & RATING_MOD_LEECH )
     return STAT_LEECH_RATING;
-  else if ( ratings & RATING_MOD_RUN_SPEED )
-    return STAT_SPEED_RATING;
 
   return STAT_NONE;
 }
@@ -3123,6 +3126,7 @@ double stat_itemization_weight( stat_e s )
     case STAT_VERSATILITY_RATING:
     case STAT_BONUS_ARMOR:
     case STAT_SPEED_RATING:
+    case STAT_AVOIDANCE_RATING:
     case STAT_SPIRIT:
       return 2;
     default:
