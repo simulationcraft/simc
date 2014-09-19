@@ -102,6 +102,10 @@ public:
     buff_t* guardian_of_ancient_kings;
     buff_t* grand_crusader;
     buff_t* infusion_of_light;
+    buff_t* seal_of_insight;
+    buff_t* seal_of_justice;
+    buff_t* seal_of_righteousness;
+    buff_t* seal_of_truth;
     buff_t* shield_of_the_righteous;
 
     // glyphs
@@ -4120,7 +4124,34 @@ struct paladin_seal_t : public paladin_melee_attack_t
       p() -> active_seal = SEAL_NONE;
     }
     else
+    {
       p() -> active_seal = seal_type; // set the new seal
+
+      // now handle the buffs (for reporting only)
+
+      // cancel all existing buffs
+      p() -> buffs.seal_of_insight -> expire();
+      p() -> buffs.seal_of_justice -> expire();
+      p() -> buffs.seal_of_righteousness -> expire();
+      p() -> buffs.seal_of_truth -> expire();
+      // now trigger the new buff
+      switch ( seal_type )
+      {
+      case SEAL_OF_INSIGHT:
+        p() -> buffs.seal_of_insight -> trigger();
+        p() -> invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
+        break;
+      case SEAL_OF_JUSTICE:
+        p() -> buffs.seal_of_justice -> trigger();
+        break;
+      case SEAL_OF_RIGHTEOUSNESS:
+        p() -> buffs.seal_of_righteousness -> trigger();
+        break;
+      case SEAL_OF_TRUTH:
+        p() -> buffs.seal_of_truth -> trigger();
+        break;
+      }
+    }
 
     // if we've swapped to or from Seal of Insight, we'll need to refresh spell haste cache
 
@@ -4804,6 +4835,10 @@ void paladin_t::create_buffs()
                                  .cd( timespan_t::zero() ) // Let the ability handle the CD
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.hand_of_purity         = buff_creator_t( this, "hand_of_purity", find_talent_spell( "Hand of Purity" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
+  buffs.seal_of_insight        = buff_creator_t( this, "seal_of_insight", find_class_spell( "Seal of Insight" ) );
+  buffs.seal_of_justice        = buff_creator_t( this, "seal_of_justice", find_class_spell( "Seal of Justice" ) );
+  buffs.seal_of_righteousness  = buff_creator_t( this, "seal_of_righteousness", find_class_spell( "Seal of Righteousness" ) );
+  buffs.seal_of_truth          = buff_creator_t( this, "seal_of_truth", find_class_spell( "Seal of Truth" ) );
 
   // Holy
   buffs.daybreak               = buff_creator_t( this, "daybreak", find_spell( 88819 ) );
