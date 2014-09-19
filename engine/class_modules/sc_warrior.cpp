@@ -1885,6 +1885,8 @@ struct heroic_leap_t: public warrior_attack_t
 
   void impact( action_state_t* s )
   {
+    if ( p() -> current.distance_to_move > data().min_range() )
+      s -> result_amount = 0;
     warrior_attack_t::impact( s );
     p() -> buff.heroic_leap_glyph -> trigger();
   }
