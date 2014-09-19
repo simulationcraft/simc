@@ -1094,10 +1094,10 @@ void warrior_attack_t::impact( action_state_t* s )
 
 struct melee_t: public warrior_attack_t
 {
-  double sudden_death_chance;
   bool first;
   bool mh_lost_melee_contact;
   bool oh_lost_melee_contact;
+  double sudden_death_chance;
   melee_t( const std::string& name, warrior_t* p ):
     warrior_attack_t( name, p, spell_data_t::nil() ),
     first( true ), mh_lost_melee_contact( false ), oh_lost_melee_contact( false ),
