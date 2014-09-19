@@ -577,7 +577,7 @@ player_t* heal_t::smart_target() const
     injured_targets = sim -> healing_no_pet_list.data();
   }
   // Choose a random member of injured_targets
-  target = injured_targets[static_cast<__int64>(rng().real() * injured_targets.size() )];
+  target = injured_targets[static_cast<long long int>(rng().real() * injured_targets.size() )];
   return target;
 }
 

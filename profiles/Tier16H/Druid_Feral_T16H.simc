@@ -27,7 +27,7 @@ actions.precombat+=/potion,name=virmens_bite
 
 # Executed every time the actor is available.
 
-actions=rake,if=buff.prowl.up
+actions=rake,if=buff.prowl.up|buff.shadowmeld.up
 actions+=/auto_attack
 actions+=/skull_bash
 actions+=/incarnation,sync=berserk
@@ -38,23 +38,23 @@ actions+=/blood_fury,sync=tigers_fury
 actions+=/berserking,sync=tigers_fury
 actions+=/arcane_torrent,sync=tigers_fury
 actions+=/tigers_fury,if=(!buff.omen_of_clarity.react&energy.max-energy>=60)|energy.max-energy>=80
+actions+=/shadowmeld,if=(buff.bloodtalons.up|!talent.bloodtalons.enabled)&dot.rake.remains<0.3*dot.rake.duration
 # Keep Rip from falling off during execute range.
 actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<25
 actions+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)
 actions+=/savage_roar,if=buff.savage_roar.remains<3
 actions+=/potion,name=virmens_bite,sync=berserk,if=target.health.pct<25
 actions+=/thrash_cat,if=buff.omen_of_clarity.react&remains<=duration*0.3&active_enemies>1
-actions+=/rip,cycle_targets=1,if=combo_points=5&dot.rip.ticking&persistent_multiplier>dot.rip.pmultiplier
 actions+=/ferocious_bite,cycle_targets=1,if=combo_points=5&target.health.pct<25&dot.rip.ticking
 actions+=/rip,cycle_targets=1,if=combo_points=5&remains<=duration*0.3
 actions+=/savage_roar,if=combo_points=5&(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<42*0.3
 actions+=/ferocious_bite,if=combo_points=5&(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)
-actions+=/rake,cycle_targets=1,if=remains<=duration*0.3&active_enemies<9&combo_points<5
+actions+=/rake,cycle_targets=1,if=remains<=duration*0.3&combo_points<5
 actions+=/pool_resource,for_next=1
-actions+=/thrash_cat,if=dot.thrash_cat.remains<4.5&active_enemies>1
-actions+=/rake,cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&active_enemies<9&combo_points<5
-actions+=/swipe,if=combo_points<5&active_enemies>1
-actions+=/shred,if=combo_points<5&active_enemies=1
+actions+=/thrash_cat,if=remains<=duration*0.3&active_enemies>1
+actions+=/rake,cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&combo_points<5
+actions+=/swipe,if=combo_points<5&active_enemies>=3
+actions+=/shred,if=combo_points<5&active_enemies<3
 actions+=/natures_vigil
 actions+=/rejuvenation,cycle_targets=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
 actions+=/rejuvenation,cycle_targets=1,if=buff.natures_vigil.up
