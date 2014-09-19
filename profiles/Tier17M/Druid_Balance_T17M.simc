@@ -29,7 +29,6 @@ actions=potion,name=draenic_intellect,if=buff.celestial_alignment.up
 actions+=/blood_fury,if=buff.celestial_alignment.up
 actions+=/berserking,if=buff.celestial_alignment.up
 actions+=/arcane_torrent,if=buff.celestial_alignment.up
-actions+=/use_item,slot=trinket1
 actions+=/force_of_nature,if=trinket.stat.intellect.up|charges=3|target.time_to_die<21
 actions+=/run_action_list,name=single_target,if=active_enemies=1
 actions+=/run_action_list,name=aoe,if=active_enemies>1
@@ -64,7 +63,7 @@ hands=cannonball_loaders_grips,id=113949,bonus_id=567/448
 waist=conductors_multipocket_girdle,id=113964,bonus_id=567/448
 legs=living_wood_legguards,id=115543,bonus_id=567/448
 feet=treads_of_the_dark_hunt,id=113974,bonus_id=567/448
-finger1=spellbound_runic_band_of_the_allseeing_eye,id=113947,bonus_id=524,enchant=gift_of_mastery
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,bonus_id=524,enchant=gift_of_mastery
 finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567/448,enchant=gift_of_mastery
 trinket1=blackiron_micro_crucible,id=113984,bonus_id=567/448
 trinket2=darmacs_unstable_talisman,id=113948,bonus_id=567/448
