@@ -3969,12 +3969,19 @@ void warrior_t::apl_precombat( bool probablynotgladiator )
     precombat -> add_action( food_action );
   }
 
-  if ( specialization() != WARRIOR_PROTECTION )
+  if ( specialization() == WARRIOR_ARMS )
   {
     precombat -> add_action( "stance,choose=battle" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
                              "# Generic on-use trinket line if needed when swapping trinkets out. \n"
                              "#actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&buff.ravager.up)" );
+  }
+  else if ( specialization() == WARRIOR_FURY )
+  {
+    precombat -> add_action( "stance,choose=battle" );
+    precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
+                             "# Generic on-use trinket line if needed when swapping trinkets out. \n"
+                             "#actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&(buff.avatar.up|!talent.avatar.enabled)))|(active_enemies>=2&buff.ravager.up)" );
   }
   else if ( !probablynotgladiator )
   {
@@ -3996,7 +4003,7 @@ void warrior_t::apl_precombat( bool probablynotgladiator )
   {
     if ( level >= 90 )
     {
-      if ( primary_role() == ROLE_ATTACK && specialization() != WARRIOR_PROTECTION )
+      if ( specialization() != WARRIOR_PROTECTION )
         precombat -> add_action( "potion,name=draenic_strength" );
       else
         precombat -> add_action( "potion,name=draenic_armor" );
@@ -4057,17 +4064,19 @@ void warrior_t::apl_fury()
 
   single_target -> add_talent( this, "Bloodbath" );
   single_target -> add_action( this, "Heroic Leap" );
-  single_target -> add_action( this, "Bloodthirst", "if=!talent.unquenchable_thirst.enabled" );
-  single_target -> add_action( this, "Bloodthirst", "if=talent.unquenchable_thirst.enabled&buff.enrage.down&rage<100" );
+  single_target -> add_action( this, "Bloodthirst", "if=!talent.unquenchable_thirst.enabled&(buff.enrage.down|rage<50)" );
+  single_target -> add_action( this, "Bloodthirst", "if=talent.unquenchable_thirst.enabled&rage<100" );
   single_target -> add_talent( this, "Storm Bolt" );
   single_target -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   single_target -> add_talent( this, "Ravager" );
+  single_target -> add_action( this, "Execute", "if=buff.enrage.up|target.time_to_die<12|buff.sudden_death.up|rage>60" );
   single_target -> add_action( this, "Raging Blow" );
-  single_target -> add_action( this, "Execute", "if=rage>70|target.time_to_die<12|buff.sudden_death.up" );
-  single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up|(rage>70&target.health.pct>20)" );
+  single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up" );
+  single_target -> add_action( this, "Whirlwind", "if=buff.enrage.up&target.health.pct>20&!talent.unquenchable_thirst.enabled&rage<50" );
+  single_target -> add_action( this, "Wild Strike", "if=buff.enrage.up&target.health.pct>20" );
   single_target -> add_talent( this, "Siegebreaker" );
   single_target -> add_talent( this, "Shockwave" );
-  single_target -> add_talent( this, "Impending Victory" );
+  single_target -> add_talent( this, "Impending Victory", "if=!talent.unquenchable_thirst.enabled" );
   single_target -> add_action( this, "Bloodthirst", "if=talent.unquenchable_thirst.enabled" );
 
   two_targets -> add_talent( this, "Bloodbath" );

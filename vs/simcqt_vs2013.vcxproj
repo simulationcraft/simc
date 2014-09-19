@@ -72,7 +72,7 @@
     <ProjectGuid>{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}</ProjectGuid>
     <RootNamespace>simcqt12</RootNamespace>
     <Keyword>Qt5VSv3.1</Keyword>
-    <ProjectName>SimcGUI_qt5.3.1</ProjectName>
+    <ProjectName>SimcGUI_qt5.3.2</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">

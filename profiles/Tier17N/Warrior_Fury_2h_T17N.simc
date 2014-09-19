@@ -20,7 +20,7 @@ actions.precombat+=/food,type=blackrock_barbecue
 actions.precombat+=/stance,choose=battle
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 # Generic on-use trinket line if needed when swapping trinkets out. 
-#actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&buff.ravager.up)
+#actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&(buff.avatar.up|!talent.avatar.enabled)))|(active_enemies>=2&buff.ravager.up)
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_strength
 
@@ -43,17 +43,19 @@ actions+=/call_action_list,name=aoe,if=active_enemies>3
 
 actions.single_target=bloodbath
 actions.single_target+=/heroic_leap
-actions.single_target+=/bloodthirst,if=!talent.unquenchable_thirst.enabled
-actions.single_target+=/bloodthirst,if=talent.unquenchable_thirst.enabled&buff.enrage.down&rage<100
+actions.single_target+=/bloodthirst,if=!talent.unquenchable_thirst.enabled&(buff.enrage.down|rage<50)
+actions.single_target+=/bloodthirst,if=talent.unquenchable_thirst.enabled&rage<100
 actions.single_target+=/storm_bolt
 actions.single_target+=/dragon_roar,if=buff.bloodbath.up|!talent.bloodbath.enabled
 actions.single_target+=/ravager
+actions.single_target+=/execute,if=buff.enrage.up|target.time_to_die<12|buff.sudden_death.up|rage>60
 actions.single_target+=/raging_blow
-actions.single_target+=/execute,if=rage>70|target.time_to_die<12|buff.sudden_death.up
-actions.single_target+=/wild_strike,if=buff.bloodsurge.up|(rage>70&target.health.pct>20)
+actions.single_target+=/wild_strike,if=buff.bloodsurge.up
+actions.single_target+=/whirlwind,if=buff.enrage.up&target.health.pct>20&!talent.unquenchable_thirst.enabled&rage<50
+actions.single_target+=/wild_strike,if=buff.enrage.up&target.health.pct>20
 actions.single_target+=/siegebreaker
 actions.single_target+=/shockwave
-actions.single_target+=/impending_victory
+actions.single_target+=/impending_victory,if=!talent.unquenchable_thirst.enabled
 actions.single_target+=/bloodthirst,if=talent.unquenchable_thirst.enabled
 
 actions.two_targets=bloodbath
