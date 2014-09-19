@@ -4273,52 +4273,6 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 
 // Templar's Verdict / Final Verdict ========================================================
 
-//struct final_verdict_cleave_t : public paladin_melee_attack_t 
-//{
-//  final_verdict_cleave_t( paladin_t* p ) 
-//    : paladin_melee_attack_t( "final_verdict_cleave", p, p -> find_talent_spell( "Final Verdict" ) )
-//  {
-//    base_multiplier *= data().effectN( 1 ).percent();
-//    aoe = -1;
-//    trigger_seal = true; // TODO: test, works w/ SoI
-//    background = true;
-//    trigger_gcd = timespan_t::zero();
-//    resource_consumed = RESOURCE_NONE;
-//    
-//    // Tier 13 Retribution 4-piece boosts damage (TODO: Test?)
-//    base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T13, B4 ) -> effectN( 1 ).percent();
-//    // Tier 14 Retribution 2-piece boosts damage (TODO: Test?)
-//    base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
-//  }
-//
-//  
-//    
-//  // FV AoE does not hit the main target
-//  size_t available_targets( std::vector< player_t* >& tl ) const
-//  {
-//    tl.clear();
-//
-//    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
-//    {
-//      if ( ! sim -> actor_list[ i ] -> is_sleeping() &&
-//             sim -> actor_list[ i ] -> is_enemy() &&
-//             sim -> actor_list[ i ] != target )
-//        tl.push_back( sim -> actor_list[ i ] );
-//    }
-//
-//    return tl.size();
-//  }
-//
-//  virtual void impact( action_state_t* s )
-//  {
-//    paladin_melee_attack_t::impact( s );
-//
-//    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
-//      trigger_hand_of_light( s );
-//  }
-//
-//};
-
 struct final_verdict_t : public paladin_melee_attack_t
 {
   //final_verdict_cleave_t* cleave;
@@ -5836,7 +5790,7 @@ double paladin_t::composite_block() const
   if ( buffs.shield_of_glory -> check() )
     b += buffs.shield_of_glory -> data().effectN( 1 ).percent();
 
-  // Protection T17 2-piece bonus
+  // Protection T17 2-piece bonus not affected by DR (confirmed 9/19)
   if ( buffs.faith_barricade -> check() )
     b += buffs.faith_barricade -> value();
 
