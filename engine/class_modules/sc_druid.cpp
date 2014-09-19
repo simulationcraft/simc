@@ -6030,7 +6030,10 @@ void druid_t::apl_feral()
 
   // Main List =============================================================
 
-  def -> add_action( this, "Rake", "if=buff.prowl.up" );
+  if ( race == RACE_NIGHT_ELF )
+    def -> add_action( this, "Rake", "if=buff.prowl.up|buff.shadowmeld.up" );
+  else
+    def -> add_action( this, "Rake", "if=buff.prowl.up" );
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Skull Bash" );
   def -> add_action( "incarnation,sync=berserk" );
@@ -6044,6 +6047,8 @@ void druid_t::apl_feral()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ] + ",sync=tigers_fury" );
   def -> add_action( this, "Tiger's Fury", "if=(!buff.omen_of_clarity.react&energy.max-energy>=60)|energy.max-energy>=80" );
+  if ( race == RACE_NIGHT_ELF )
+    def -> add_action( "shadowmeld,if=(buff.bloodtalons.up|!talent.bloodtalons.enabled)&dot.rake.remains<0.3*dot.rake.duration" );
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<25",
                      "Keep Rip from falling off during execute range." );
   def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" );
@@ -6058,19 +6063,19 @@ void druid_t::apl_feral()
   def -> add_action( this, "Savage Roar", "if=combo_points=5&(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<42*0.3" );
   def -> add_action( this, "Ferocious Bite", "if=combo_points=5&(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)" );
 
-  def -> add_action( this, "Rake", "cycle_targets=1,if=remains<=duration*0.3&active_enemies<9&combo_points<5" );
+  def -> add_action( this, "Rake", "cycle_targets=1,if=remains<=duration*0.3&combo_points<5" );
   def -> add_action( "pool_resource,for_next=1" );
   def -> add_action( "thrash_cat,if=remains<=duration*0.3&active_enemies>1" );
   if ( level >= 100 )
-    def -> add_action( "moonfire,cycle_targets=1,if=remains<=duration*0.3&active_enemies=1" );
-  def -> add_action( this, "Rake", "cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&active_enemies<9&combo_points<5" );
+    def -> add_action( "moonfire,cycle_targets=1,if=remains<=duration*0.3&active_enemies<=10" );
+  def -> add_action( this, "Rake", "cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&combo_points<5" );
 
   // Fillers
-  def -> add_action( this, "Swipe", "if=combo_points<5&active_enemies>1" );
+  def -> add_action( this, "Swipe", "if=combo_points<5&active_enemies>=3" );
   // Disabled until Rake perk + Incarnation is fixed.
   /* def -> add_action( this, "Rake", "if=combo_points<5&hit_damage>=action.shred.hit_damage",
                         "Rake for CP if it hits harder than Shred." ); */
-  def -> add_action( this, "Shred", "if=combo_points<5&active_enemies=1" );
+  def -> add_action( this, "Shred", "if=combo_points<5&active_enemies<3" );
 
   // Add in rejuv blanketing for nature's vigil -- not fully optimized
   def -> add_talent( this, "Nature's Vigil" );
