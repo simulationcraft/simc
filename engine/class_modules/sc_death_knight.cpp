@@ -400,7 +400,7 @@ public:
     const spell_data_t* empowered_icebound_fortitude;
     const spell_data_t* empowered_pillar_of_frost;
     const spell_data_t* empowered_obliterate;
-    const spell_data_t* improved_razorice;
+    const spell_data_t* improved_runeforges;
 
     // Unholy
     const spell_data_t* empowered_gargoyle;
@@ -447,7 +447,7 @@ public:
     active_presence(),
     t16_tank_2pc_driver(),
     runic_power_decay_rate(),
-    fallen_crusader( find_spell( 53365 ) -> effectN( 1 ).percent() ),
+    fallen_crusader( find_spell( 53365 ) -> effectN( 1 ).percent() + find_spell( 157376 ) -> effectN( 2 ).percent() ),
     fallen_crusader_rppm( find_spell( 166441 ) -> real_ppm() ),
     buffs( buffs_t() ),
     runeforge( runeforge_t() ),
@@ -5704,11 +5704,11 @@ void death_knight_t::init_spells()
   spell.necrotic_plague_energize  = find_spell( 155165 );
 
   // Perks
-  
+
   // Shared
   perk.improved_diseases               = find_perk_spell( "Improved Diseases" );
   perk.enhanced_death_strike           = find_perk_spell( "Enhanced Death Strike" );
-    
+
   // Blood
   perk.enhanced_bone_shield            = find_perk_spell( "Enhanced Bone Shield" );
   perk.enhanced_death_coil_blood       = find_perk_spell( "Enhanced Death Coil", DEATH_KNIGHT_BLOOD );
@@ -5721,7 +5721,7 @@ void death_knight_t::init_spells()
   perk.empowered_icebound_fortitude    = find_perk_spell( "Empowered Icebound Fortitude" );
   perk.empowered_pillar_of_frost       = find_perk_spell( "Empowered Pillar of Frost" );
   perk.empowered_obliterate            = find_perk_spell( "Empowered Obliterate" );
-  perk.improved_razorice               = find_perk_spell( "Improved Razorice" );
+  perk.improved_runeforges             = find_perk_spell( "Improved Runeforges" );
 
   // Unholy
   perk.empowered_gargoyle             = find_perk_spell( "Empowered Gargoyle" );
@@ -6214,7 +6214,7 @@ void runeforge::razorice_attack( special_effect_t& effect,
       may_miss    = callbacks = false;
       background  = proc = true;
 
-      weapon_multiplier += player -> perk.improved_razorice -> effectN( 1 ).percent();
+      weapon_multiplier += player -> perk.improved_runeforges -> effectN( 1 ).percent();
       weapon = &( player -> main_hand_weapon );
       /*
       if ( item.slot == SLOT_OFF_HAND )
