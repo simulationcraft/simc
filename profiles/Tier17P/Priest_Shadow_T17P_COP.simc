@@ -27,6 +27,7 @@ actions.precombat+=/mind_spike
 # Executed every time the actor is available.
 
 actions=shadowform,if=!buff.shadowform.up
+actions+=/use_item,slot=trinket1
 actions+=/potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_to_die<=40
 actions+=/power_infusion,if=talent.power_infusion.enabled
 actions+=/blood_fury
@@ -164,15 +165,15 @@ legs=primal_gladiators_leggings_of_prowess,id=111085
 feet=primal_gladiators_treads_of_prowess,id=111097
 finger1=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_mastery
 finger2=primal_gladiators_band_of_prowess,id=111135,enchant=gift_of_mastery
-trinket1=primal_gladiators_medallion_of_cruelty,id=111229
+trinket1=primal_gladiators_badge_of_dominance,id=111227
 trinket2=primal_gladiators_insignia_of_dominance,id=111228
 main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_warsong
 
 # Gear Summary
 # gear_stamina=3250
-# gear_intellect=2378
+# gear_intellect=2588
 # gear_spell_power=1265
-# gear_crit_rating=852
+# gear_crit_rating=642
 # gear_haste_rating=570
 # gear_mastery_rating=1000
 # gear_armor=677
