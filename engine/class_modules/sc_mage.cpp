@@ -2341,6 +2341,8 @@ public:
   virtual void last_tick( dot_t* d )
   {
     mage_spell_t::last_tick( d );
+    if ( p.sets.has_set_bonus( MAGE_ARCANE, T17, B2 ) )
+      p.buffs.arcane_affinity -> trigger();
   }
 
   virtual void execute()
@@ -2351,8 +2353,6 @@ public:
     p.buffs.arcane_charge -> expire();
     mage_spell_t::execute();
 
-    if ( p.sets.has_set_bonus( MAGE_ARCANE, T17, B2 ) )
-      p.buffs.arcane_affinity -> trigger();
     // evocation automatically causes a switch to dpm rotation
     if ( p.rotation.current == ROTATION_DPS )
     {
@@ -2368,6 +2368,7 @@ public:
       sim -> out_log.printf( "%s switches to DPM spell rotation", player -> name() );
     p.rotation.current = ROTATION_DPM;
   }
+
 };
 
 // Fire Blast Spell =========================================================
