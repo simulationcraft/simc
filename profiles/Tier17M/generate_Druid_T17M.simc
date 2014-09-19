@@ -35,7 +35,7 @@ role=attack
 position=back
 talents=0002032
 glyphs=savage_roar/master_shapeshifter
-head=living_wood_headpiece,id=115542,bonus_id=567
+head=sorkas_nightshade_cowl,id=113978,bonus_id=567
 neck=darklight_necklace,id=113865,enchant=gift_of_critical_strike,bonus_id=567
 shoulders=living_wood_spaulders,id=115544,bonus_id=567
 back=drape_of_the_dark_hunt,id=113971,enchant=gift_of_critical_strike,bonus_id=567
@@ -47,9 +47,9 @@ legs=living_wood_legguards,id=115543,bonus_id=567
 feet=furnace_tenders_treads,id=113895,bonus_id=567
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_critical_strike,bonus_id=524
 finger2=unexploded_explosive_shard,id=113877,enchant=gift_of_critical_strike,bonus_id=567
-trinket1=meaty_dragonspine_trophy,id=118114,bonus_id=567
+trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=567
 trinket2=humming_blackiron_trigger,id=113985,bonus_id=567
-main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,enchant=mark_of_the_thunderlord,bonus_id=567
+main_hand=headlopper_skullscythe,id=119448,enchant=mark_of_the_thunderlord,bonus_id=567
 save=Druid_Feral_T17M.simc
 
 # Balance Druid T17M

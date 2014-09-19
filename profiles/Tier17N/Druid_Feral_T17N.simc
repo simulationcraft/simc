@@ -27,7 +27,7 @@ actions.precombat+=/potion,name=draenic_agility
 
 # Executed every time the actor is available.
 
-actions=rake,if=buff.prowl.up
+actions=rake,if=buff.prowl.up|buff.shadowmeld.up
 actions+=/auto_attack
 actions+=/skull_bash
 actions+=/incarnation,sync=berserk
@@ -38,6 +38,7 @@ actions+=/blood_fury,sync=tigers_fury
 actions+=/berserking,sync=tigers_fury
 actions+=/arcane_torrent,sync=tigers_fury
 actions+=/tigers_fury,if=(!buff.omen_of_clarity.react&energy.max-energy>=60)|energy.max-energy>=80
+actions+=/shadowmeld,if=buff.bloodtalons.up&dot.rake.remains<0.3*dot.rake.duration
 # Keep Rip from falling off during execute range.
 actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<25
 actions+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)
