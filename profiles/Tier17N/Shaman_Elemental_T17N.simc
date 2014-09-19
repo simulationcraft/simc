@@ -87,18 +87,18 @@ feet=railwalkers_ratcheted_boots,id=113954
 finger1=epicenter_loop,id=113947,enchant=gift_of_multistrike
 finger2=ukuroggs_corrupted_seal,id=113975,enchant=gift_of_multistrike
 trinket1=darmacs_unstable_talisman,id=113948
-trinket2=quiescent_runestone,id=113859
+trinket2=blackiron_micro_crucible,id=113984
 main_hand=infernoflame_staff,id=113869,enchant=mark_of_the_frostwolf
 
 # Gear Summary
 # gear_stamina=3408
-# gear_intellect=2691
+# gear_intellect=2710
 # gear_spell_power=1325
 # gear_crit_rating=180
-# gear_haste_rating=813
+# gear_haste_rating=679
 # gear_mastery_rating=1073
 # gear_armor=1286
-# gear_multistrike_rating=1367
+# gear_multistrike_rating=1233
 # gear_versatility_rating=92
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

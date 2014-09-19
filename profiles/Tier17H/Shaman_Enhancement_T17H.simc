@@ -4,7 +4,7 @@ race=draenei
 role=attack
 position=back
 professions=engineering=600/enchanting=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...1.10
+talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...1.01
 glyphs=chain_lightning
 spec=enhancement
 
@@ -29,6 +29,7 @@ actions=wind_shear
 # Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
 actions+=/bloodlust,if=target.health.pct<25|time>0.500
 actions+=/auto_attack
+actions+=/use_item,name=beating_heart_of_the_mountain
 # In-combat potion is preferentially linked to the Fire or Storm Elemental, depending on talents, unless combat will end shortly
 actions+=/potion,name=draenic_agility,if=(talent.storm_elemental_totem.enabled&pet.storm_elemental_totem.remains>=25)|(!talent.storm_elemental_totem.enabled&pet.fire_elemental_totem.remains>=25)|target.time_to_die<=30
 actions+=/blood_fury
@@ -93,17 +94,17 @@ legs=windspeakers_legwraps,id=115575,bonus_id=566
 feet=slagstomper_treads,id=113888,bonus_id=566
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_haste
 finger2=cinderwolf_signet,id=113917,bonus_id=566,enchant=gift_of_haste
-trinket1=captive_microaberration,id=113853,bonus_id=566
+trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=566
 trinket2=meaty_dragonspine_trophy,id=118114,bonus_id=566
 main_hand=hansgars_forgehammer,id=113897,bonus_id=566,enchant=mark_of_warsong
 off_hand=hansgars_forgehammer,id=113897,bonus_id=566,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_agility=3104
+# gear_agility=3126
 # gear_stamina=3930
 # gear_crit_rating=567
-# gear_haste_rating=1999
-# gear_mastery_rating=919
+# gear_haste_rating=1845
+# gear_mastery_rating=765
 # gear_armor=1370
 # gear_multistrike_rating=612
 # gear_versatility_rating=337

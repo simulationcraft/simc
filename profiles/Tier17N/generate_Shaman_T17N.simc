@@ -23,7 +23,7 @@ feet=railwalkers_ratcheted_boots,id=113954
 finger1=epicenter_loop,id=113947,enchant=gift_of_multistrike
 finger2=ukuroggs_corrupted_seal,id=113975,enchant=gift_of_multistrike
 trinket1=darmacs_unstable_talisman,id=113948
-trinket2=quiescent_runestone,id=113859
+trinket2=blackiron_micro_crucible,id=113984
 main_hand=infernoflame_staff,id=113869,enchant=mark_of_the_frostwolf
 save=Shaman_Elemental_T17N.simc
 
@@ -36,7 +36,7 @@ spec=enhancement
 role=attack
 position=back
 professions=engineering=600/enchanting=600
-talents=0002021
+talents=0002012
 glyphs=chain_lightning
 head=gronnskin_crown,id=113863
 neck=engineers_grounded_gorget,id=113892,enchant=gift_of_haste
@@ -50,7 +50,7 @@ legs=windspeakers_legwraps,id=115575
 feet=slagstomper_treads,id=113888
 finger1=unexploded_explosive_shard,id=113877,enchant=gift_of_haste
 finger2=cinderwolf_signet,id=113917,enchant=gift_of_haste
-trinket1=captive_microaberration,id=113853
+trinket1=beating_heart_of_the_mountain,id=113931
 trinket2=meaty_dragonspine_trophy,id=118114
 main_hand=hansgars_forgehammer,id=113897,enchant=mark_of_warsong
 off_hand=hansgars_forgehammer,id=113897,enchant=mark_of_bleeding_hollow

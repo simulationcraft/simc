@@ -23,7 +23,7 @@ feet=railwalkers_ratcheted_boots,id=113954,bonus_id=566
 finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
 finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant=gift_of_multistrike
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
-trinket2=quiescent_runestone,id=113859,bonus_id=566
+trinket2=blackiron_micro_crucible,id=113984,bonus_id=566
 main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_the_frostwolf
 save=Shaman_Elemental_T17H.simc
 
@@ -36,7 +36,7 @@ spec=enhancement
 role=attack
 position=back
 professions=engineering=600/enchanting=600
-talents=0002021
+talents=0002012
 glyphs=chain_lightning
 head=gronnskin_crown,id=113863,bonus_id=566
 neck=engineers_grounded_gorget,id=113892,bonus_id=566,enchant=gift_of_haste
@@ -50,7 +50,7 @@ legs=windspeakers_legwraps,id=115575,bonus_id=566
 feet=slagstomper_treads,id=113888,bonus_id=566
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_haste
 finger2=cinderwolf_signet,id=113917,bonus_id=566,enchant=gift_of_haste
-trinket1=captive_microaberration,id=113853,bonus_id=566
+trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=566
 trinket2=meaty_dragonspine_trophy,id=118114,bonus_id=566
 main_hand=hansgars_forgehammer,id=113897,bonus_id=566,enchant=mark_of_warsong
 off_hand=hansgars_forgehammer,id=113897,bonus_id=566,enchant=mark_of_bleeding_hollow
