@@ -61,30 +61,30 @@ actions+=/natures_vigil
 actions+=/rejuvenation,cycle_targets=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
 actions+=/rejuvenation,cycle_targets=1,if=buff.natures_vigil.up
 
-head=sorkas_nightshade_cowl,id=113978,bonus_id=567
-neck=darklight_necklace,id=113865,bonus_id=567,enchant=gift_of_critical_strike
+head=sorkas_nightshade_cowl,id=113978,bonus_id=567/448
+neck=darklight_necklace,id=113865,bonus_id=567/448,enchant=gift_of_critical_strike
 shoulders=living_wood_spaulders,id=115544,bonus_id=567
-back=drape_of_the_dark_hunt,id=113971,bonus_id=567,enchant=gift_of_critical_strike
+back=drape_of_the_dark_hunt,id=113971,bonus_id=567/448,enchant=gift_of_critical_strike
 chest=living_wood_raiment,id=115540,bonus_id=567
-wrists=bracers_of_shattered_stalactites,id=113935,bonus_id=567
+wrists=bracers_of_shattered_stalactites,id=113935,bonus_id=567/448
 hands=living_wood_grips,id=115541,bonus_id=567
-waist=conductors_multipocket_girdle,id=113964,bonus_id=567
+waist=conductors_multipocket_girdle,id=113964,bonus_id=567/448
 legs=living_wood_legguards,id=115543,bonus_id=567
-feet=furnace_tenders_treads,id=113895,bonus_id=567
+feet=furnace_tenders_treads,id=113895,bonus_id=567/448
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,bonus_id=524,enchant=gift_of_critical_strike
-finger2=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_critical_strike
-trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=567
-trinket2=humming_blackiron_trigger,id=113985,bonus_id=567
-main_hand=headlopper_skullscythe,id=119448,bonus_id=567,enchant=mark_of_the_thunderlord
+finger2=unexploded_explosive_shard,id=113877,bonus_id=567/448,enchant=gift_of_critical_strike
+trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=567/448
+trinket2=humming_blackiron_trigger,id=113985,bonus_id=567/448
+main_hand=headlopper_skullscythe,id=119448,bonus_id=567/448,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_agility=3612
-# gear_stamina=4545
-# gear_crit_rating=1458
+# gear_agility=3742
+# gear_stamina=4695
+# gear_crit_rating=1505
 # gear_haste_rating=338
-# gear_mastery_rating=1057
-# gear_armor=1147
-# gear_multistrike_rating=1296
+# gear_mastery_rating=1087
+# gear_armor=1166
+# gear_multistrike_rating=1350
 # gear_versatility_rating=122
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

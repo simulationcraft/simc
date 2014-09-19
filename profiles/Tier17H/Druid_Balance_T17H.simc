@@ -55,7 +55,7 @@ actions.aoe+=/starfire,if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_
 
 head=living_wood_headpiece,id=115542,bonus_id=566
 neck=gruuls_lip_ring,id=113872,bonus_id=566,enchant=gift_of_mastery
-shoulders=living_wood_spaulders,bonus_id=566,id=115544
+shoulders=living_wood_spaulders,id=115544,bonus_id=566
 back=runefrenzy_greatcloak,id=113937,bonus_id=566,enchant=gift_of_mastery
 chest=living_wood_raiment,id=115540,bonus_id=566
 wrists=bracers_of_shattered_stalactites,id=113935,bonus_id=566
@@ -70,14 +70,14 @@ trinket2=darmacs_unstable_talisman,id=113948,bonus_id=566
 main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_stamina=3249
-# gear_intellect=2588
-# gear_spell_power=1265
-# gear_crit_rating=752
-# gear_haste_rating=872
-# gear_mastery_rating=800
-# gear_armor=950
-# gear_multistrike_rating=660
-# gear_versatility_rating=77
-# set_bonus=pvp_2pc=1
-# set_bonus=pvp_4pc=1
+# gear_stamina=3921
+# gear_intellect=3120
+# gear_spell_power=1524
+# gear_crit_rating=603
+# gear_haste_rating=794
+# gear_mastery_rating=1560
+# gear_armor=1057
+# gear_multistrike_rating=647
+# gear_versatility_rating=106
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1
