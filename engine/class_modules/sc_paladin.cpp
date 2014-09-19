@@ -7,6 +7,7 @@
   5.4: Remove Unbreakable Spirit code
   Selfless Healer?
   Sacred Shield proxy buff for APL trickery
+  Not sure if it's intended, but currently Hammer of Wrath procs seals on beta. 8/30/14 - Alex
 */
 #include "simulationcraft.hpp"
 
@@ -2038,7 +2039,7 @@ struct flash_of_light_t : public paladin_heal_t
         
     // Grant Holy Power if healing the beacon target
     if ( s -> target == p() -> beacon_target ){
-        int g = p() -> find_spell( 88852 ) -> effectN(1).percent() * flash_of_light_t::cost();
+        int g = static_cast<int>( p() -> find_spell( 88852 ) -> effectN(1).percent() * flash_of_light_t::cost() );
         p() -> resource_gain( RESOURCE_MANA, g, p() -> gains.mana_beacon_of_light );
 
     }
@@ -2213,7 +2214,7 @@ struct holy_light_t : public paladin_heal_t
     
     // Grant Holy Power if healing the beacon target
     if ( s -> target == p() -> beacon_target ){
-        int g = p() -> find_spell( 88852 ) -> effectN(1).percent() * holy_light_t::cost();
+        int g = static_cast<int>( p() -> find_spell( 88852 ) -> effectN(1).percent() * holy_light_t::cost() );
         p() -> resource_gain( RESOURCE_MANA, g, p() -> gains.mana_beacon_of_light );
 
     }

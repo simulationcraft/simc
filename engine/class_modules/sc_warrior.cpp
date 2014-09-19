@@ -4939,16 +4939,7 @@ double warrior_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buff.enrage -> data().effectN( 2 ).percent();
 
     if ( mastery.unshackled_fury -> ok() )
-    { // Mastery is flooring at the moment. 9.99% = 9.00% damage increase.
-      double us = cache.mastery_value();
-      if ( bugs )
-      {
-        us *= 100;
-        us = std::floor( us );
-        us /= 100;
-      }
-      m *= 1.0 + us;
-    }
+      m *= 1.0 + cache.mastery_value();
   }
 
   if ( main_hand_weapon.group() == WEAPON_1H &&
