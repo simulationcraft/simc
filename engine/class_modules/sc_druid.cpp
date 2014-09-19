@@ -13,9 +13,6 @@ namespace { // UNNAMED NAMESPACE
  /* WoD -- TODO:
     = Feral =
     Update LI implementation to work like in-game
-    Damage check:
-      Thrash (both forms) // Checked, is correct as of 9/14
-      Swipe
 
     = Balance =
     PvP/Tier Bonuses
@@ -2323,6 +2320,7 @@ struct rake_t : public cat_attack_t
 
     bleed_spell = p -> find_spell( 155722 );
     dot_behavior          = DOT_REFRESH;
+    base_td               = bleed_spell -> effectN( 1 ).base_value();
     attack_power_mod.tick = bleed_spell -> effectN( 1 ).ap_coeff();
     dot_duration          = bleed_spell -> duration();
     base_tick_time        = bleed_spell -> effectN( 1 ).period();

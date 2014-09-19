@@ -21,7 +21,7 @@ legs=primal_gladiators_leggings_of_prowess,id=111085
 feet=primal_gladiators_treads_of_prowess,id=111097
 finger1=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_mastery
 finger2=primal_gladiators_band_of_prowess,id=111135,enchant=gift_of_mastery
-trinket1=primal_gladiators_medallion_of_cruelty,id=111229
+trinket1=primal_gladiators_badge_of_dominance,id=111227
 trinket2=primal_gladiators_insignia_of_dominance,id=111228
 main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_warsong
 set_bonus=tier17_2pc=1
@@ -42,7 +42,7 @@ legs=primal_gladiators_leggings_of_prowess,id=111085
 feet=primal_gladiators_treads_of_prowess,id=111097
 finger1=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_haste
 finger2=primal_gladiators_band_of_prowess,id=111135,enchant=gift_of_haste
-trinket1=primal_gladiators_medallion_of_cruelty,id=111229
+trinket1=primal_gladiators_badge_of_dominance,id=111227
 trinket2=primal_gladiators_insignia_of_dominance,id=111228
 main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_warsong
 set_bonus=tier17_2pc=1
@@ -63,7 +63,7 @@ legs=primal_gladiators_leggings_of_prowess,id=111085
 feet=primal_gladiators_treads_of_prowess,id=111097
 finger1=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_critical_strike
 finger2=primal_gladiators_band_of_prowess,id=111135,enchant=gift_of_critical_strike
-trinket1=primal_gladiators_medallion_of_cruelty,id=111229
+trinket1=primal_gladiators_badge_of_dominance,id=111227
 trinket2=primal_gladiators_insignia_of_dominance,id=111228
 main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_warsong
 set_bonus=tier17_2pc=1
@@ -119,7 +119,7 @@ legs=primal_gladiators_leggings_of_prowess,id=111085
 feet=primal_gladiators_treads_of_prowess,id=111097
 finger1=primal_gladiators_band_of_meditation,id=111137,enchant=gift_of_multistrike
 finger2=primal_gladiators_band_of_contemplation,id=111138,enchant=gift_of_multistrike
-trinket1=primal_gladiators_medallion_of_meditation,id=111231
+trinket1=primal_gladiators_badge_of_dominance,id=111227
 trinket2=primal_gladiators_insignia_of_dominance,id=111228
 main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_the_frostwolf
 save=Priest_Holy_T17P_Dmg.simc
@@ -175,7 +175,7 @@ legs=primal_gladiators_leggings_of_prowess,id=111085
 feet=primal_gladiators_treads_of_prowess,id=111097
 finger1=primal_gladiators_band_of_meditation,id=111137,enchant=gift_of_critical_strike
 finger2=primal_gladiators_band_of_contemplation,id=111138,enchant=gift_of_critical_strike
-trinket1=primal_gladiators_medallion_of_meditation,id=111231
+trinket1=primal_gladiators_badge_of_dominance,id=111227
 trinket2=primal_gladiators_insignia_of_dominance,id=111228
 main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_thunderlord
 save=Priest_Discipline_T17P_Dmg.simc

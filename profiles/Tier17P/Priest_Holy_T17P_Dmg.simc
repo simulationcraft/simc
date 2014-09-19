@@ -26,7 +26,8 @@ actions.precombat+=/smite
 
 # Executed every time the actor is available.
 
-actions=potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_to_die<=40
+actions=use_item,slot=trinket1
+actions+=/potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_to_die<=40
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
@@ -53,13 +54,13 @@ legs=primal_gladiators_leggings_of_prowess,id=111085
 feet=primal_gladiators_treads_of_prowess,id=111097
 finger1=primal_gladiators_band_of_meditation,id=111137,enchant=gift_of_multistrike
 finger2=primal_gladiators_band_of_contemplation,id=111138,enchant=gift_of_multistrike
-trinket1=primal_gladiators_medallion_of_meditation,id=111231
+trinket1=primal_gladiators_badge_of_dominance,id=111227
 trinket2=primal_gladiators_insignia_of_dominance,id=111228
 main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_the_frostwolf
 
 # Gear Summary
 # gear_stamina=3250
-# gear_intellect=2378
+# gear_intellect=2588
 # gear_spell_power=1265
 # gear_crit_rating=541
 # gear_haste_rating=493
