@@ -62,9 +62,9 @@ role=tank
 position=front
 talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.01.111
 
-head=acidic_jaws,id=113880,bonus_id=566
+head=helm_of_the_somber_gaze,id=115556,bonus_id=566
 neck=choker_of_bestial_force,id=113952,enchant=gift_of_versatility,bonus_id=566
-shoulders=flamebenders_shoulderguards,id=113924,bonus_id=566
+shoulders=mantle_of_the_somber_gaze,id=115559,bonus_id=566
 back=gronn-stitched_greatcloak,id=113873,enchant=gift_of_versatility,bonus_id=566
 chest=vest_of_the_somber_gaze,id=115558,bonus_id=566
 wrists=bracers_of_shattered_limbs,id=119333,bonus_id=566
@@ -89,9 +89,9 @@ role=tank
 position=front
 talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.01.112
 
-head=acidic_jaws,id=113880,bonus_id=566
+head=helm_of_the_somber_gaze,id=115556,bonus_id=566
 neck=choker_of_bestial_force,id=113952,enchant=gift_of_versatility,bonus_id=566
-shoulders=flamebenders_shoulderguards,id=113924,bonus_id=566
+shoulders=mantle_of_the_somber_gaze,id=115559,bonus_id=566
 back=gronn-stitched_greatcloak,id=113873,enchant=gift_of_versatility,bonus_id=566
 chest=vest_of_the_somber_gaze,id=115558,bonus_id=566
 wrists=bracers_of_shattered_limbs,id=119333,bonus_id=566
@@ -116,9 +116,9 @@ role=tank
 position=front
 talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.01.111
 
-head=acidic_jaws,id=113880,bonus_id=566
+head=helm_of_the_somber_gaze,id=115556,bonus_id=566
 neck=choker_of_bestial_force,id=113952,enchant=gift_of_versatility,bonus_id=566
-shoulders=flamebenders_shoulderguards,id=113924,bonus_id=566
+shoulders=mantle_of_the_somber_gaze,id=115559,bonus_id=566
 back=gronn-stitched_greatcloak,id=113873,enchant=gift_of_versatility,bonus_id=566
 chest=vest_of_the_somber_gaze,id=115558,bonus_id=566
 wrists=bracers_of_shattered_limbs,id=119333,bonus_id=566
@@ -142,9 +142,9 @@ role=tank
 position=front
 talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.01.112
 
-head=acidic_jaws,id=113880,bonus_id=566
+head=helm_of_the_somber_gaze,id=115556,bonus_id=566
 neck=choker_of_bestial_force,id=113952,enchant=gift_of_versatility,bonus_id=566
-shoulders=flamebenders_shoulderguards,id=113924,bonus_id=566
+shoulders=mantle_of_the_somber_gaze,id=115559,bonus_id=566
 back=gronn-stitched_greatcloak,id=113873,enchant=gift_of_versatility,bonus_id=566
 chest=vest_of_the_somber_gaze,id=115558,bonus_id=566
 wrists=bracers_of_shattered_limbs,id=119333,bonus_id=566

@@ -54,7 +54,7 @@ main_hand=primal_gladiators_pike,id=111075,bonus_id=0,upgrade=0,gem_id=0/0/0/,en
 save=Monk_Windwalker_2h_T17P.simc
 
 # Brewmaster 1H Chi Explosion
-monk="Monk_Brewmaster_1h_T17P_CE"
+monk="Monk_Brewmaster_1h_CE_T17P"
 level=100
 race=blood_elf
 spec=brewmaster
@@ -81,7 +81,7 @@ off_hand=primal_gladiators_cleaver,id=111067,enchant_id=5352
 save=Monk_Brewmaster_1h_T17P_CE.simc
 
 # Brewmaster 1H Serenity
-monk="Monk_Brewmaster_1h_T17P_Serenity"
+monk="Monk_Brewmaster_1h_Serenity_T17P"
 level=100
 race=blood_elf
 spec=brewmaster
@@ -108,7 +108,7 @@ off_hand=primal_gladiators_cleaver,id=111067,enchant_id=5352
 save=Monk_Brewmaster_1h_T17P_Serenity.simc
 
 # Brewmaster 2H Chi Explosion
-monk="Monk_Brewmaster_2h_T17P_CE"
+monk="Monk_Brewmaster_2h_CE_T17P"
 level=100
 race=blood_elf
 spec=brewmaster
@@ -134,7 +134,7 @@ main_hand=primal_gladiators_pike,id=111075,enchant_id=5352
 save=Monk_Brewmaster_2h_T17P_CE.simc
 
 # Brewmaster 2H Serenity
-monk="Monk_Brewmaster_2h_T17P_Serenity"
+monk="Monk_Brewmaster_2h_Serenity_T17P"
 level=100
 race=blood_elf
 spec=brewmaster
