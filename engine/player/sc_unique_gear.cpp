@@ -1410,19 +1410,20 @@ void item::spellbound_runic_band( special_effect_t& effect,
   const spell_data_t* driver = p -> find_spell( effect.spell_id );
   buff_t* buff = 0;
 
-  if ( item.has_item_stat( STAT_STR_AGI ) )
+  switch( p -> convert_hybrid_stat( STAT_STR_AGI_INT ) )
   {
-    if ( p -> convert_hybrid_stat( STAT_STR_AGI ) == STAT_AGILITY )
-      buff = buff_t::find( p, "archmages_greater_incandescence_agi" );
-    else if ( p -> convert_hybrid_stat( STAT_STR_AGI ) == STAT_STRENGTH )
+    case STAT_STRENGTH:
       buff = buff_t::find( p, "archmages_greater_incandescence_str" );
+      break;
+    case STAT_AGILITY:
+      buff = buff_t::find( p, "archmages_greater_incandescence_agi" );
+      break;
+    case STAT_INTELLECT:
+      buff = buff_t::find( p, "archmages_greater_incandescence_int" );
+      break;
+    default:
+      break;
   }
-  else if ( item.has_item_stat( STAT_STRENGTH ) )
-    buff = buff_t::find( p, "archmages_greater_incandescence_str" );
-  else if ( item.has_item_stat( STAT_AGILITY ) )
-    buff = buff_t::find( p, "archmages_greater_incandescence_agi" );
-  else if ( item.has_item_stat( STAT_STRENGTH ) )
-    buff = buff_t::find( p, "archmages_greater_incandescence_int" );
 
   effect.ppm_ = -1.0 * driver -> real_ppm();
   effect.custom_buff = buff;
