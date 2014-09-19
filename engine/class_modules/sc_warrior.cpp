@@ -4609,7 +4609,8 @@ void warrior_t::create_buffs()
 
   buff.hamstring = buff_creator_t( this, "hamstring", glyphs.hamstring -> effectN( 1 ).trigger() );
 
-  buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", find_spell( 133278 ) );
+  buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", find_spell( 133278 ) )
+    .chance( glyphs.heroic_leap ? 1.0 : 0 );
 
   buff.heroic_charge = buff_creator_t( this, "heroic_charge" )
     .quiet( true ); // The reason this is used, is to model the time it takes to reach the target while charging. 
