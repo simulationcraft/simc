@@ -1,10 +1,10 @@
-talent_format=armory
 paladin="Paladin_Holy_T17P”
+"
 level=100
 race=blood_elf
 role=heal
 position=back
-talents=2132232
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ba!1021121
 glyphs=divinity/protector_of_the_innocent/
 spec=holy
 
@@ -16,30 +16,28 @@ spec=holy
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_intellect_flask
-actions.precombat+=/food,type=sleeper_surprise
-actions.precombat+=/blessing_of_kings,if=!aura.str_agi_int.up
+actions.precombat=flask,type=greator_draenic_intellect_flask
+actions.precombat+=/food,type=blackrock_barbecue
+actions.precombat+=/blessing_of_kings,if=(!aura.str_agi_int.up)&(aura.mastery.up)
 actions.precombat+=/blessing_of_might,if=!aura.mastery.up
 actions.precombat+=/seal_of_insight
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=draenic_intellect
-actions.precombat+=/beacon_of_light,target=healing_target
+actions.precombat+=/potion,name=potion,name=draenic_intellect
 
 # Executed every time the actor is available.
 
-actions=mana_potion,if=mana.pct<=75
-actions+=/divine_plea,if=mana.pct<=60
+actions=potion,name=mana_potion,if=mana.pct<=75
+actions+=//auto_attack
+actions+=/speed_of_light,if=movement.remains>1
+actions+=//use_item,name=primal_gladiators_badge_of_dominance
+actions+=/blood_fury
+actions+=/berserking
+actions+=/arcane_torrent
 actions+=/avenging_wrath
-actions+=/guardian_of_ancient_kings
-actions+=/lay_on_hands,if=incoming_damage_5s>health.max*0.7
-actions+=/sacred_shield,if=buff.sacred_shield.down
-actions+=/eternal_flame,if=holy_power>=3
 actions+=/word_of_glory,if=holy_power>=3
 actions+=/holy_shock,if=holy_power<=3
 actions+=/flash_of_light,if=target.health.pct<=30
-actions+=/judgment,if=holy_power<3
-actions+=/lay_on_hands,if=mana.pct<=5
 actions+=/holy_light
 
 head=primal_gladiators_plate_helm,id=111211
@@ -60,13 +58,13 @@ main_hand=primal_gladiators_gavel,id=115645,enchant=mark_of_shadowmoon
 off_hand=primal_gladiators_barrier,id=115667
 
 # Gear Summary
-# gear_strength=2824
-# gear_stamina=3533
-# gear_crit_rating=536
-# gear_haste_rating=1570
-# gear_mastery_rating=776
-# gear_armor=2070
-# gear_multistrike_rating=194
-# gear_versatility_rating=269
-# set_bonus=tier17_2pc=1
-# set_bonus=tier17_4pc=1
+# gear_stamina=3245
+# gear_intellect=2584
+# gear_spirit=320
+# gear_spell_power=1244
+# gear_crit_rating=632
+# gear_haste_rating=392
+# gear_mastery_rating=416
+# gear_armor=2783
+# gear_multistrike_rating=1250
+# gear_versatility_rating=147
