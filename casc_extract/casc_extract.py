@@ -163,18 +163,31 @@ if __name__ == '__main__':
 				parser.error('No file found with md5sum %s' % args[0][4:])
 		else:
 			file_md5s = root.GetFileMD5(args[0])
+			keys = encoding.GetFileKeys(file_md5s[0])
 			print args[0], len(file_md5s) and file_md5s[0] or 0
-			sys.exit(0)
+			#sys.exit(0)
 
 		if len(keys) > 1:
 			parser.error('Found multiple file keys with %s' % args[0])
 
-		file_location = index.GetIndexData(keys[0])
-		if file_location[0] == -1:
-			parser.error('No file location found for %s' % args[0])
-
 		blte = casc.BLTEExtract(opts)
+		if not opts.online:
+			file_location = index.GetIndexData(keys[0])
+			if file_location[0] == -1:
+				parser.error('No file location found for %s' % args[0])
 
-		if not blte.extract_file(keys[0], md5s and md5s.decode('hex') or None, None, *file_location):
-			sys.exit(1)
+
+			if not blte.extract_file(keys[0], md5s and md5s.decode('hex') or None, None, *file_location):
+				sys.exit(1)
+		else:
+			file_name = args[0]
+			data = build.fetch_file(keys[0])
+			if not data:
+				print 'No data for a given key %s' % keys[0].encode('hex')
+				sys.exit(1)
+
+			output_path = os.path.join(opts.output, build.build())
+			blte.extract_buffer_to_file(data, os.path.join(output_path, file_name.replace('\\', '/')))
+
+
 

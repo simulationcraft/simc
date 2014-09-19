@@ -508,16 +508,16 @@ class IlevelScalingDataGenerator(DataGenerator):
 
 class CombatRatingsDataGenerator(DataGenerator):
     # From UIParent.lua, seems to match to gtCombatRatings too for lvl80 stuff
-    _combat_ratings = [ 'Dodge',        'Parry',        'Block',       'Melee hit',  'Ranged hit', 
-                        'Spell hit',    'Melee crit',   'Ranged crit', 'Spell crit', 'PvP Resilience',
-                        'Melee haste',  'Ranged haste', 'Spell haste', 'Expertise',  'Mastery',
-                        'PvP Power',    'Multistrike',  'Readiness',
-                        'Damage Versatility', 'Healing Versatility', 'Mitigation Versatility', 'Leech' ]
-    _combat_rating_ids = [ 2, 3, 4, 5, 6,
-                           7, 8, 9, 10, 15, 
-                           17, 18, 19, 23, 25, 
-                           26, 11, 12, 
-                           28, 29, 30, 16 ]
+    _combat_ratings = [ 'Dodge',               'Parry',                  'Block',       'Melee hit',   'Ranged hit',
+                        'Spell hit',           'Melee crit',             'Ranged crit', 'Spell crit',  'Multistrike',
+                        'Readiness',           'PvP Resilience',         'Leech',       'Melee haste', 'Ranged haste',
+                        'Spell haste',         'Expertise',              'Mastery',     'PvP Power',   'Damage Versatility',
+                        'Healing Versatility', 'Mitigation Versatility', 'Speed',       'Avoidance' ]
+    _combat_rating_ids = [  2,  3,  4,  5,  6,
+                            7,  8,  9, 10, 11,
+                           12, 15, 16, 17, 18,
+                           19, 23, 25, 26, 28,
+                           29, 30, 13, 20 ]
     def __init__(self, options):
         # Hardcode these, as we need two different kinds of databases for output, using the same combat rating ids
         self._dbc = [ 'gtCombatRatings' ]
