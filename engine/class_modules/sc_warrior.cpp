@@ -4618,7 +4618,7 @@ void warrior_t::create_buffs()
   buff.last_stand = new buffs::last_stand_t( *this, "last_stand", spec.last_stand );
 
   buff.meat_cleaver = buff_creator_t( this, "meat_cleaver", spec.meat_cleaver -> effectN( 1 ).trigger() )
-    .max_stack( spec.meat_cleaver -> effectN( 1 ).trigger() -> max_stacks() + perk.enhanced_whirlwind -> effectN( 1 ).base_value() );
+    .max_stack( perk.enhanced_whirlwind ? 4 : 3 );
 
   buff.raging_blow = buff_creator_t( this, "raging_blow", find_spell( 131116 ) )
     .cd( timespan_t::zero() );
