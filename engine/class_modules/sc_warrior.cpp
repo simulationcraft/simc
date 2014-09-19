@@ -467,6 +467,7 @@ public:
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual double    composite_armor_multiplier() const;
   virtual double    composite_block() const;
+  virtual double    composite_block_reduction() const;
   virtual double    composite_parry_rating() const;
   virtual double    composite_parry() const;
   virtual double    composite_melee_expertise( weapon_t* ) const;
@@ -5086,15 +5087,28 @@ double warrior_t::composite_block() const
   b += spec.bastion_of_defense -> effectN( 1 ).percent();
   b += perk.improved_block -> effectN( 1 ).percent();
 
-  if ( buff.shield_block -> up() )
-  {
-    b += buff.shield_block -> data().effectN( 1 ).percent();
-    if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )
-      b += spec.shield_mastery -> effectN( 1 ).percent(); // For some reason, it uses this spec's spell data.
-  }
-
   return b;
 }
+
+
+// warrior_t::composite_block_reduction =======================================
+
+double warrior_t::composite_block_reduction() const
+{
+  double br = player_t::composite_block_reduction();
+
+  // Prot T17 4-pc increases block value by 30% while shield block is active (additive)
+  if ( buff.shield_block -> up() )
+  {
+      if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )
+          br += 0.3; //spec.shield_mastery -> effectN( 1 ).percent(); //should be shield Mastery (id=169688) [Spell Family (4)]
+  }
+
+  return br;
+}
+
+
+
 
 // warrior_t::composite_melee_attack_power ==================================
 

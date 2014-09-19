@@ -115,6 +115,8 @@ public:
     buff_t* pyromaniac; // T17 4pc fire
     buff_t* arcane_affinity; // T17 2pc arcane
     buff_t* arcane_instability; // T17 4pc arcane
+    buff_t* frozen_orb_active;
+    buff_t* ice_shard;
   } buffs;
 
   // Cooldowns
@@ -2562,9 +2564,10 @@ struct frostbolt_t : public mage_spell_t
     timespan_t cast = mage_spell_t::execute_time();
 
     if ( p() -> buffs.enhanced_frostbolt -> check() )
-      cast *= 1 + p() -> perks.enhanced_frostbolt -> effectN( 1 ).time_value().total_seconds() /
+      cast *= 1.0 + p() -> perks.enhanced_frostbolt -> effectN( 1 ).time_value().total_seconds() /
                   base_execute_time.total_seconds();
-
+    if ( p() -> buffs.ice_shard -> up() )
+      cast *= 1.0 - ( p() -> buffs.ice_shard -> stack() * 0.04 );
     return cast;
   }
 
@@ -2637,6 +2640,8 @@ struct frostbolt_t : public mage_spell_t
       am *= 1.0 + p() -> buffs.frozen_thoughts -> data().effectN( 1 ).percent();
     }
 
+    if ( p() -> buffs.ice_shard -> up() )
+      am *= 1.0 + ( p() -> buffs.ice_shard -> stack() * 0.04 );
     return am;
   }
 };
@@ -2852,6 +2857,14 @@ struct frozen_orb_t : public mage_spell_t
     tick_action = new frozen_orb_bolt_t( p );
   }
 
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+    if( p() -> sets.has_set_bonus( MAGE_FROST, T17, B2 ) )
+      p() -> buffs.frozen_orb_active -> trigger();
+
+  }
+
   virtual void impact( action_state_t* s )
   {
     mage_spell_t::impact( s );
@@ -2917,9 +2930,12 @@ struct ice_lance_t : public mage_spell_t
     mage_spell_t::execute();
     aoe = splitting_ice_aoe;
 
+    if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B4 ) && p() -> buffs.frozen_orb_active -> up() )
+      p() -> buffs.ice_shard -> trigger();
 
     if ( p() -> talents.thermal_void -> ok() && p() -> buffs.icy_veins -> up() )
       p() -> buffs.icy_veins -> extend_duration( p(), timespan_t::from_seconds( p() -> talents.thermal_void -> effectN( 1 ).base_value() ) );
+
 
 
 
@@ -2940,6 +2956,8 @@ struct ice_lance_t : public mage_spell_t
 
     mage_spell_t::impact( s );
 
+
+
     if ( p() -> talents.frost_bomb -> ok() )
     {
       if ( td( s -> target ) -> debuffs.frost_bomb -> up() && frozen && !result_is_multistrike( s -> result) )
@@ -2954,7 +2972,7 @@ struct ice_lance_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    if ( p() -> buffs.fingers_of_frost -> up() )
+    if ( p() -> buffs.fingers_of_frost -> up() || p() -> buffs.frozen_orb_active -> up() )
     {
       am *= 2.0; // Built in bonus against frozen targets
       am *= 1.0 + fof_multiplier; // Buff from Fingers of Frost
@@ -4513,7 +4531,7 @@ void mage_t::create_buffs()
                                .default_value( perks.improved_blink -> effectN( 1 ).percent() );
   buffs.mage_armor           = stat_buff_creator_t( this, "mage_armor" ).spell( find_spell( 6117 ) );
   buffs.molten_armor         = buff_creator_t( this, "molten_armor", find_spell( 30482 ) ).add_invalidate( CACHE_SPELL_CRIT );
-  buffs.presence_of_mind     = buff_creator_t( this, "presence_of_mind", find_spell(12043) ).duration( timespan_t::zero() ).activated( true );
+  buffs.presence_of_mind     = buff_creator_t( this, "presence_of_mind", find_spell( 12043 ) ).duration( timespan_t::zero() ).activated( true );
   buffs.rune_of_power        = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) )
                                .duration( timespan_t::from_minutes( 3 ) )
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -4539,6 +4557,8 @@ void mage_t::create_buffs()
                                .chance( 1.0 );
 
   buffs.incanters_flow = new incanters_flow_t( this );
+  buffs.frozen_orb_active    = buff_creator_t( this, "frozen_orb_active" ).duration( find_spell( 84714 ) -> duration() );
+  buffs.ice_shard            = buff_creator_t( this, "ice_shard" ).duration( timespan_t::from_seconds( 10.0 ) ).max_stack( 10 );
 }
 
 // mage_t::init_gains =======================================================
