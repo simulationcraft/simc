@@ -1954,14 +1954,22 @@ public:
     return c;
   }
 
-  virtual bool stealthed() const
+  virtual bool prowling() const // For effects that specifically trigger only when "prowling."
   {
     // Make sure we call all three methods for accurate benefit tracking.
     bool prowl = p() -> buff.prowl -> up(),
-           inc = p() -> buff.king_of_the_jungle -> up(),
-    shadowmeld = p() -> buffs.shadowmeld -> up();
+           inc = p() -> buff.king_of_the_jungle -> up();
 
-    return prowl || inc || shadowmeld;
+    return prowl || inc;
+  }
+
+  virtual bool stealthed() const // For effects that require any form of stealth.
+  {
+    // Make sure we call all three methods for accurate benefit tracking.
+    bool shadowmeld = p() -> buffs.shadowmeld -> up(),
+              prowl = prowling();
+
+    return prowl || shadowmeld;
   }
 
   void trigger_glyph_of_savage_roar()
@@ -2362,9 +2370,7 @@ struct rake_t : public cat_attack_t
 
   virtual void execute()
   {
-    /* Glyph of Savage Roar triggers both during Prowl and Incarnation despite what the tooltip indicates,
-       but not all forms of stealth as it doesn't trigger in Shadowmeld.  (Checked 9/18/2014) */
-    if ( p() -> glyph.savage_roar -> ok() && ( p() -> buff.prowl -> check() || p() -> buff.king_of_the_jungle -> check() ) )
+    if ( p() -> glyph.savage_roar -> ok() && prowling() )
       trigger_glyph_of_savage_roar();
 
     cat_attack_t::execute();
@@ -6023,10 +6029,7 @@ void druid_t::apl_feral()
 
   // Main List =============================================================
 
-  if( race == RACE_NIGHT_ELF )
-    def -> add_action(this, "Rake", "if=buff.prowl.up|buff.shadowmeld.up");
-  else
-    def -> add_action( this, "Rake", "if=buff.prowl.up" );
+  def -> add_action( this, "Rake", "if=buff.prowl.up" );
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Skull Bash" );
   def -> add_action( "incarnation,sync=berserk" );
@@ -6040,8 +6043,6 @@ void druid_t::apl_feral()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ] + ",sync=tigers_fury" );
   def -> add_action( this, "Tiger's Fury", "if=(!buff.omen_of_clarity.react&energy.max-energy>=60)|energy.max-energy>=80" );
-  if( race == RACE_NIGHT_ELF )
-    def -> add_action( "shadowmeld,if=buff.bloodtalons.up&dot.rake.remains<0.3*dot.rake.duration");
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<25",
                      "Keep Rip from falling off during execute range." );
   def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" );
