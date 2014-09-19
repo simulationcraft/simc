@@ -1851,6 +1851,7 @@ void player_t::init_scaling()
     scales_with[ STAT_MULTISTRIKE_RATING        ] = true;
     scales_with[ STAT_READINESS_RATING          ] = false; // No longer a stat in game.
     scales_with[ STAT_VERSATILITY_RATING        ] = true;
+    scales_with[ STAT_SPEED_RATING              ] = true;
 
     scales_with[ STAT_WEAPON_DPS   ] = attack;
     scales_with[ STAT_WEAPON_OFFHAND_DPS   ] = false;
@@ -1900,6 +1901,10 @@ void player_t::init_scaling()
 
         case STAT_VERSATILITY_RATING:
           initial.stats.versatility_rating += v;
+          break;
+
+        case STAT_SPEED_RATING:
+          initial.stats.speed_rating += v;
           break;
 
         case STAT_WEAPON_DPS:
@@ -2704,6 +2709,14 @@ double player_t::composite_leech() const
   return composite_leech_rating() / current.rating.leech;
 }
 
+
+// player_t::composite_run_speed ================================================
+
+double player_t::composite_run_speed() const
+{
+  return composite_speed_rating() / current.rating.speed;
+}
+
 // player_t::composite_player_multiplier ====================================
 
 double player_t::composite_player_multiplier( school_e /* school */ ) const
@@ -2796,6 +2809,7 @@ double player_t::passive_movement_modifier() const
   double passive = passive_modifier;
 
   passive += racials.quickness -> effectN( 2 ).percent();
+  passive += composite_run_speed();
 
   return passive;
 }
@@ -2926,6 +2940,8 @@ double player_t::composite_rating( rating_e rating ) const
       v = current.stats.readiness_rating; break;
     case RATING_LEECH:
       v = current.stats.leech_rating; break;
+    case RATING_SPEED:
+      v = current.stats.speed_rating; break;
     default: break;
   }
 
@@ -8339,6 +8355,7 @@ void player_t::create_options()
     opt_float( "gear_versatility_rating", gear.versatility_rating ),
     opt_float( "gear_bonus_armor",      gear.bonus_armor ),
     opt_float( "gear_leech_rating",     gear.leech_rating ),
+    opt_float( "gear_run_speed_rating", gear.speed_rating ),
 
     // Stat Enchants
     opt_float( "enchant_strength",         enchant.attribute[ ATTR_STRENGTH  ] ),
@@ -8359,6 +8376,7 @@ void player_t::create_options()
     opt_float( "enchant_versatility_rating", enchant.versatility_rating ),
     opt_float( "enchant_bonus_armor",      enchant.bonus_armor ),
     opt_float( "enchant_leech_rating",     enchant.leech_rating ),
+    opt_float( "enchant_run_speed_rating", enchant.speed_rating ),
     opt_float( "enchant_health",           enchant.resource[ RESOURCE_HEALTH ] ),
     opt_float( "enchant_mana",             enchant.resource[ RESOURCE_MANA   ] ),
     opt_float( "enchant_rage",             enchant.resource[ RESOURCE_RAGE   ] ),
@@ -9266,6 +9284,17 @@ double player_stat_cache_t::leech() const
   }
   else assert( _leech == player -> composite_leech() );
   return _leech;
+}
+
+double player_stat_cache_t::run_speed() const
+{
+  if ( !active || !valid[CACHE_RUN_SPEED] )
+  {
+    valid[CACHE_RUN_SPEED] = true;
+    _run_speed = player -> composite_run_speed();
+  }
+  else assert( _leech == player -> composite_run_speed() );
+  return _run_speed;
 }
 
 // player_stat_cache_t::mastery =============================================

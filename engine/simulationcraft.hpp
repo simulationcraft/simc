@@ -745,6 +745,7 @@ enum stat_e
   STAT_ARMOR, STAT_BONUS_ARMOR, STAT_RESILIENCE_RATING, STAT_DODGE_RATING, STAT_PARRY_RATING,
   STAT_BLOCK_RATING, STAT_PVP_POWER,
   STAT_MULTISTRIKE_RATING, STAT_READINESS_RATING, STAT_VERSATILITY_RATING, STAT_LEECH_RATING,
+  STAT_SPEED_RATING,
   STAT_ALL,
   STAT_MAX
 };
@@ -798,7 +799,7 @@ enum cache_e
   CACHE_MASTERY,
   CACHE_DODGE, CACHE_PARRY, CACHE_BLOCK, CACHE_CRIT_BLOCK, CACHE_ARMOR, CACHE_BONUS_ARMOR,
   CACHE_CRIT_AVOIDANCE, CACHE_MISS,
-  CACHE_MULTISTRIKE, CACHE_READINESS, CACHE_LEECH,
+  CACHE_MULTISTRIKE, CACHE_READINESS, CACHE_LEECH, CACHE_RUN_SPEED,
   CACHE_PLAYER_DAMAGE_MULTIPLIER,
   CACHE_PLAYER_HEAL_MULTIPLIER,
   CACHE_MAX
@@ -838,6 +839,7 @@ inline cache_e cache_from_stat( stat_e st )
     case STAT_READINESS_RATING: return CACHE_READINESS;
     case STAT_VERSATILITY_RATING: return CACHE_VERSATILITY;
     case STAT_LEECH_RATING: return CACHE_LEECH;
+    case STAT_SPEED_RATING: return CACHE_RUN_SPEED;
     default: break;
   }
   return CACHE_NONE;
@@ -1569,6 +1571,7 @@ struct gear_stats_t
   double readiness_rating;
   double versatility_rating;
   double leech_rating;
+  double speed_rating;
 
   gear_stats_t() :
     attribute(), resource(),
@@ -1576,7 +1579,7 @@ struct gear_stats_t
     hit_rating( 0.0 ), hit_rating2( 0.0 ), crit_rating( 0.0 ), haste_rating( 0.0 ), weapon_dps( 0.0 ), weapon_speed( 0.0 ),
     weapon_offhand_dps( 0.0 ), weapon_offhand_speed( 0.0 ), armor( 0.0 ), bonus_armor( 0.0 ), dodge_rating( 0.0 ),
     parry_rating( 0.0 ), block_rating( 0.0 ), mastery_rating( 0.0 ), resilience_rating( 0.0 ), pvp_power( 0.0 ),
-    multistrike_rating( 0.0 ), readiness_rating( 0.0 ), versatility_rating( 0.0 ), leech_rating( 0.0 )
+    multistrike_rating( 0.0 ), readiness_rating( 0.0 ), versatility_rating( 0.0 ), leech_rating( 0.0 ), speed_rating( 0.0 )
   { }
 
   friend gear_stats_t operator+( const gear_stats_t& left, const gear_stats_t& right )
@@ -1612,6 +1615,7 @@ struct gear_stats_t
     readiness_rating += right.readiness_rating;
     versatility_rating += right.versatility_rating;
     leech_rating += right.leech_rating;
+    speed_rating += right.speed_rating;
     range::transform ( attribute, right.attribute, attribute.begin(), std::plus<double>() );
     range::transform ( resource, right.resource, resource.begin(), std::plus<int>() );
     return *this;
@@ -3097,7 +3101,7 @@ enum rating_e
   RATING_DAMAGE_VERSATILITY,
   RATING_HEAL_VERSATILITY,
   RATING_MITIGATION_VERSATILITY,
-//  RATING_SPEED,
+  RATING_SPEED,
 //  RATING_AVOIDANCE,
   RATING_MAX
 };
@@ -3128,6 +3132,7 @@ inline cache_e cache_from_rating( rating_e r )
     case RATING_HEAL_VERSATILITY: return CACHE_HEAL_VERSATILITY;
     case RATING_MITIGATION_VERSATILITY: return CACHE_MITIGATION_VERSATILITY;
     case RATING_LEECH: return CACHE_LEECH;
+    case RATING_SPEED: return CACHE_RUN_SPEED;
     default: break;
   }
   assert( false ); return CACHE_NONE;
@@ -3145,7 +3150,7 @@ struct rating_t
   double multistrike;
   double readiness;
   double damage_versatility, heal_versatility, mitigation_versatility;
-  double leech;
+  double leech, speed;
 
   double& get( rating_e r )
   {
@@ -3173,6 +3178,7 @@ struct rating_t
       case RATING_HEAL_VERSATILITY: return heal_versatility;
       case RATING_MITIGATION_VERSATILITY: return mitigation_versatility;
       case RATING_LEECH: return leech;
+      case RATING_SPEED: return speed;
       default: break;
     }
     assert( false ); return mastery;
@@ -3845,7 +3851,7 @@ private:
   mutable double _mastery, _mastery_value, _crit_avoidance, _miss, _multistrike, _readiness;
   mutable double _player_mult[SCHOOL_MAX + 1], _player_heal_mult[SCHOOL_MAX + 1];
   mutable double _damage_versatility, _heal_versatility, _mitigation_versatility;
-  mutable double _leech;
+  mutable double _leech, _run_speed;
 public:
   bool active; // runtime active-flag
   void invalidate_all();
@@ -3888,6 +3894,7 @@ public:
   double heal_versatility() const;
   double mitigation_versatility() const;
   double leech() const;
+  double run_speed() const;
 #else
   // Passthrough cache stat functions for inactive cache
   double strength() const  { return _player -> strength();  }
@@ -3921,6 +3928,7 @@ public:
   double heal_versatility() const { return _player -> composite_heal_versatility(); }
   double mitigation_versatility() const { return _player -> composite_mitigation_versatility(); }
   double leech() const { return _player -> composite_leech(); }
+  double run_speed() const { return _player -> composite_run_speed(); }
 #endif
 };
 
@@ -4103,7 +4111,7 @@ struct player_collected_data_t
     double spell_haste, spell_speed, attack_haste, attack_speed;
     double mastery_value, multistrike, readiness;
     double damage_versatility, heal_versatility, mitigation_versatility;
-    double leech;
+    double leech, run_speed;
   } buffed_stats_snapshot;
 
   player_collected_data_t( const std::string& player_name, sim_t& );
@@ -4738,6 +4746,7 @@ struct player_t : public actor_t
   virtual double composite_mitigation_versatility() const;
 
   virtual double composite_leech() const;
+  virtual double composite_run_speed() const;
 
   virtual double composite_armor() const;
   virtual double composite_armor_multiplier() const;
@@ -4831,6 +4840,9 @@ struct player_t : public actor_t
 
   virtual double composite_leech_rating() const
   { return composite_rating( RATING_LEECH ); }
+
+  virtual double composite_speed_rating() const
+  { return composite_rating( RATING_SPEED ); }
 
   double get_attribute( attribute_e a ) const
   { return util::floor( composite_attribute( a ) * composite_attribute_multiplier( a ) ); }
@@ -5895,6 +5907,7 @@ public:
   virtual double composite_versatility( const action_state_t* ) const { return 1.0; }
   virtual double composite_resolve( const action_state_t* ) const { return 1.0; }
   virtual double composite_leech( const action_state_t* ) const { return player -> cache.leech(); }
+  virtual double composite_run_speed() const { return player -> cache.run_speed(); }
 
   // the direct amount multiplier due to debuffs on the target
   virtual double composite_target_da_multiplier( player_t* target ) const { return composite_target_multiplier( target ); }

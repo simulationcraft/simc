@@ -416,7 +416,7 @@ enum item_mod_type {
   ITEM_MOD_PVP_POWER                = 57,
   ITEM_MOD_MULTISTRIKE_RATING       = 59,
   ITEM_MOD_READINESS_RATING         = 60,
-  ITEM_MOD_SPEED                    = 61,
+  ITEM_MOD_SPEED_RATING             = 61,
   ITEM_MOD_LEECH_RATING             = 62,
   ITEM_MOD_WOD_3                    = 63,
   ITEM_MOD_WOD_4                    = 64,
@@ -451,6 +451,7 @@ enum rating_mod_type {
   RATING_MOD_VERS_DAMAGE  = 0x10000000,
   RATING_MOD_VERS_HEAL    = 0x20000000,
   RATING_MOD_VERS_MITIG   = 0x40000000,
+  RATING_MOD_RUN_SPEED    = 0x80000000,
 
 };
 
