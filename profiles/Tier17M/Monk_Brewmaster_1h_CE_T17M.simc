@@ -46,11 +46,10 @@ actions.st+=/chi_burst,if=talent.chi_burst.enabled&energy.time_to_max>3
 actions.st+=/chi_wave,if=talent.chi_wave.enabled&energy.time_to_max>3
 actions.st+=/zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking
 actions.st+=/chi_explosion,if=chi>=3
-actions.st+=/blackout_kick,if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=1
+actions.st+=/blackout_kick,if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=gcd
 actions.st+=/blackout_kick,if=buff.serenity.up
 actions.st+=/blackout_kick,if=chi>=4
-actions.st+=/expel_harm,if=chi.max-chi>=1&cooldown.expel_harm.remains>=gcd&cooldown.keg_smash.remains>=gcd
-actions.st+=/expel_harm,if=chi.max-chi>=1&cooldown.expel_harm.remains>=gcd&cooldown.keg_smash.remains>=gcd
+actions.st+=/expel_harm,if=chi.max-chi>=1&cooldown.expel_harm.remains>=0&cooldown.keg_smash.remains>=gcd
 actions.st+=/jab,if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd
 actions.st+=/purifying_brew,if=!talent.chi_explosion.enabled&stagger.moderate&buff.shuffle.remains>=6
 actions.st+=/tiger_palm,if=(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40

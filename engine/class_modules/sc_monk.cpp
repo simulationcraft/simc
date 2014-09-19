@@ -4216,11 +4216,10 @@ void monk_t::apl_combat_brewmaster()
   st -> add_talent( this, "Chi Wave", "if=talent.chi_wave.enabled&energy.time_to_max>3" );
   st -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking" );
   st -> add_talent( this, "Chi Explosion", "if=chi>=3" );
-  st -> add_action( this, "Blackout Kick", "if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=1" );
+  st -> add_action( this, "Blackout Kick", "if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=gcd" );
   st -> add_action( this, "Blackout Kick", "if=buff.serenity.up" );
   st -> add_action( this, "Blackout Kick", "if=chi>=4" );
-  st -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.expel_harm.remains>=gcd&cooldown.keg_smash.remains>=gcd" );
-  st -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.expel_harm.remains>=gcd&cooldown.keg_smash.remains>=gcd" );
+  st -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.expel_harm.remains>=0&cooldown.keg_smash.remains>=gcd" );
   st -> add_action( this, "Jab", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd" );
   st -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.moderate&buff.shuffle.remains>=6");
   st -> add_action( this, "Tiger Palm", "if=(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
