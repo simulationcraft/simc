@@ -1450,6 +1450,36 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
         a -> initial.stats.bonus_armor );
       j++;
     }
+    if ( buffed_stats.run_speed > 0 )
+    {
+      os.printf(
+        "<tr%s>\n"
+        "<th class=\"left\">Run Speed</th>\n"
+        "<td class=\"right\">%.0f</td>\n"
+        "<td class=\"right\">%.0f</td>\n"
+        "<td class=\"right\">%.0f</td>\n"
+        "</tr>\n",
+        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+        buffed_stats.run_speed,
+        a -> composite_run_speed(),
+        a -> initial.stats.speed_rating );
+      j++;
+    }
+    if ( buffed_stats.avoidance > 0 )
+    {
+      os.printf(
+        "<tr%s>\n"
+        "<th class=\"left\">Avoidance</th>\n"
+        "<td class=\"right\">%.0f</td>\n"
+        "<td class=\"right\">%.0f</td>\n"
+        "<td class=\"right\">%.0f</td>\n"
+        "</tr>\n",
+        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+        buffed_stats.avoidance,
+        a -> composite_avoidance(),
+        a -> initial.stats.avoidance_rating );
+      j++;
+    }
     if ( a -> primary_role() == ROLE_TANK )
     {
       os.printf(

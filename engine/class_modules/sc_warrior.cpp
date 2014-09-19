@@ -1876,7 +1876,7 @@ struct heroic_leap_t: public warrior_attack_t
     movement_directionality = MOVEMENT_OMNI;
     base_teleport_distance = data().max_range();
     base_teleport_distance += p -> glyphs.death_from_above -> effectN( 2 ).percent();
-    //attack_power_mod.direct = data().effectN( 2 ).trigger() -> effectN( 1 ).ap_coeff();
+    attack_power_mod.direct = p -> find_spell( 52174 ) -> effectN( 1 ).ap_coeff();
     time_to_travel = timespan_t::from_seconds( 0.25 );
 
     cooldown -> duration = p -> cooldown.heroic_leap -> duration;
@@ -1885,6 +1885,8 @@ struct heroic_leap_t: public warrior_attack_t
 
   void impact( action_state_t* s )
   {
+    if ( p() -> current.distance_to_move > data().min_range() )
+      s -> result_amount = 0;
     warrior_attack_t::impact( s );
     p() -> buff.heroic_leap_glyph -> trigger();
   }
@@ -4607,7 +4609,8 @@ void warrior_t::create_buffs()
 
   buff.hamstring = buff_creator_t( this, "hamstring", glyphs.hamstring -> effectN( 1 ).trigger() );
 
-  buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", glyphs.heroic_leap );
+  buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", find_spell( 133278 ) )
+    .chance( glyphs.heroic_leap ? 1.0 : 0 );
 
   buff.heroic_charge = buff_creator_t( this, "heroic_charge" )
     .quiet( true ); // The reason this is used, is to model the time it takes to reach the target while charging. 
@@ -4615,7 +4618,7 @@ void warrior_t::create_buffs()
   buff.last_stand = new buffs::last_stand_t( *this, "last_stand", spec.last_stand );
 
   buff.meat_cleaver = buff_creator_t( this, "meat_cleaver", spec.meat_cleaver -> effectN( 1 ).trigger() )
-    .max_stack( perk.enhanced_whirlwind ? 3 : perk.enhanced_whirlwind -> effectN( 2 ).base_value() );
+    .max_stack( perk.enhanced_whirlwind ? 4 : 3 );
 
   buff.raging_blow = buff_creator_t( this, "raging_blow", find_spell( 131116 ) )
     .cd( timespan_t::zero() );
