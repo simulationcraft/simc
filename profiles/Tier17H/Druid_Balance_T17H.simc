@@ -29,7 +29,6 @@ actions=potion,name=draenic_intellect,if=buff.celestial_alignment.up
 actions+=/blood_fury,if=buff.celestial_alignment.up
 actions+=/berserking,if=buff.celestial_alignment.up
 actions+=/arcane_torrent,if=buff.celestial_alignment.up
-actions+=/use_item,slot=trinket1
 actions+=/force_of_nature,if=trinket.stat.intellect.up|charges=3|target.time_to_die<21
 actions+=/run_action_list,name=single_target,if=active_enemies=1
 actions+=/run_action_list,name=aoe,if=active_enemies>1
