@@ -205,6 +205,7 @@ public:
     const spell_data_t* way_of_the_monk;
     const spell_data_t* zen_meditaiton;
     const spell_data_t* touch_of_death;
+    const spell_data_t* spinning_crane_kick;
 
     // Brewmaster
     const spell_data_t* bladed_armor;
@@ -1369,7 +1370,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
   spinning_crane_kick_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( p -> talent.rushing_jade_wind -> ok() ? "rushing_jade_wind" : "spinning_crane_kick",
     p,
-    p -> talent.rushing_jade_wind -> ok() ? p -> talent.rushing_jade_wind : p -> find_class_spell( "Spinning Crane Kick" ) ),
+    p -> talent.rushing_jade_wind -> ok() ? p -> talent.rushing_jade_wind : p -> spec.spinning_crane_kick ),
     crane( 0 ), jade( 0 )
   {
     parse_options( nullptr, options_str );
@@ -1379,6 +1380,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
 
     if ( p -> talent.rushing_jade_wind -> ok() )
     {
+      channeled = false;
       school = SCHOOL_NATURE; // Application is Nature but the actual damage ticks is Physical
       jade = new rushing_jade_wind_tick_t( p, p -> talent.rushing_jade_wind );
       add_child( jade );
@@ -1426,12 +1428,8 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
 
     if ( execute_state -> n_targets >= 3 )
     {
-      double chi_gain;
-      if ( p() -> talent.rushing_jade_wind -> ok() )
-        chi_gain = 1.0;
-      else
-        chi_gain = data().effectN( 4 ).base_value();
-      player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.spinning_crane_kick, this );
+      player -> resource_gain( RESOURCE_CHI, p() -> spec.spinning_crane_kick -> effectN( 4 ).base_value(),
+        p() -> gain.spinning_crane_kick, this );
     }
   }
 };
@@ -3246,6 +3244,7 @@ void monk_t::init_spells()
   spec.rising_sun_kick            = find_specialization_spell( "Rising Sun Kick" );
   spec.legacy_of_the_white_tiger  = find_specialization_spell( "Legacy of the White Tiger" );
   spec.touch_of_death             = find_specialization_spell( "Touch of Death" );
+  spec.spinning_crane_kick        = find_specialization_spell( "Spinning Crane Kick" );
 
   // Windwalker Passives
   spec.brewing_tigereye_brew      = find_specialization_spell( "Brewing: Tigereye Brew" );
