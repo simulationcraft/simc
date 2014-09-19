@@ -4,7 +4,7 @@ race=draenei
 role=attack
 position=back
 professions=engineering=600/enchanting=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...1.10
+talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...1.01
 glyphs=chain_lightning
 spec=enhancement
 
@@ -103,7 +103,7 @@ off_hand=primal_gladiators_ripper,id=115596,enchant=mark_of_bleeding_hollow
 # gear_agility=2553
 # gear_stamina=3196
 # gear_crit_rating=580
-# gear_haste_rating=1745
+# gear_haste_rating=1317
 # gear_mastery_rating=892
 # gear_armor=1258
 # gear_multistrike_rating=326

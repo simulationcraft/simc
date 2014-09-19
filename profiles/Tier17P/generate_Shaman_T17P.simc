@@ -36,7 +36,7 @@ spec=enhancement
 role=attack
 position=back
 professions=engineering=600/enchanting=600
-talents=0002021
+talents=0002012
 glyphs=chain_lightning
 head=primal_gladiators_ringmail_helm,id=115722
 neck=primal_gladiators_necklace_of_prowess,id=115607,enchant=gift_of_haste

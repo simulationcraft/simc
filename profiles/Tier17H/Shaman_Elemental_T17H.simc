@@ -84,21 +84,21 @@ hands=windspeakers_handwraps,id=115578,bonus_id=566
 waist=grenadiers_belt,id=113955,bonus_id=566
 legs=windspeakers_legwraps,id=115575,bonus_id=566
 feet=railwalkers_ratcheted_boots,id=113954,bonus_id=566
-finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
+finger1=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_multistrike
 finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant=gift_of_multistrike
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=566
 main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_stamina=3993
-# gear_intellect=3168
+# gear_stamina=3942
+# gear_intellect=3134
 # gear_spell_power=1524
 # gear_crit_rating=117
 # gear_haste_rating=781
-# gear_mastery_rating=1381
+# gear_mastery_rating=1355
 # gear_armor=1370
 # gear_multistrike_rating=1377
-# gear_versatility_rating=103
+# gear_versatility_rating=86
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

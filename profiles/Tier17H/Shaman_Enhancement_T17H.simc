@@ -92,7 +92,7 @@ hands=windspeakers_handwraps,id=115578,bonus_id=566
 waist=earthgrasp_girdle,id=113930,bonus_id=566
 legs=windspeakers_legwraps,id=115575,bonus_id=566
 feet=slagstomper_treads,id=113888,bonus_id=566
-finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_haste
+finger1=spellbound_solium_band_of_fatal_strikes,id=118302,enchant=gift_of_haste
 finger2=cinderwolf_signet,id=113917,bonus_id=566,enchant=gift_of_haste
 trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=566
 trinket2=meaty_dragonspine_trophy,id=118114,bonus_id=566
@@ -100,13 +100,13 @@ main_hand=hansgars_forgehammer,id=113897,bonus_id=566,enchant=mark_of_warsong
 off_hand=hansgars_forgehammer,id=113897,bonus_id=566,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_agility=3126
-# gear_stamina=3930
-# gear_crit_rating=567
+# gear_agility=3092
+# gear_stamina=3879
+# gear_crit_rating=543
 # gear_haste_rating=1845
 # gear_mastery_rating=765
 # gear_armor=1370
 # gear_multistrike_rating=612
-# gear_versatility_rating=337
+# gear_versatility_rating=316
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
