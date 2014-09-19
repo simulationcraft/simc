@@ -13,9 +13,6 @@ namespace { // UNNAMED NAMESPACE
  /* WoD -- TODO:
     = Feral =
     Update LI implementation to work like in-game
-    Damage check:
-      Thrash (both forms) // Checked, is correct as of 9/14
-      Swipe
 
     = Balance =
     PvP/Tier Bonuses
