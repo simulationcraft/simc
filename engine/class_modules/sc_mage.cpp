@@ -2,52 +2,7 @@
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
-// WoD To-do
-// OH MY GOD CLEAN UP THE TODO SECTION - lots of love, collision.
-// change the syntax around frostfirebolts implimentation of Enhanced pyrotechnics to match fireballs
-// Need to add in Improved Scorch
-// Shatter is changed Shatter: Now Frost only. Multiplies the critical strike chance of all your spells against frozen targets by 1.5 plus an additional 50%. needs to be coded.
-// Improved Arcane Power needs to have a check for the perk to exist so it functions pre-90 correctly.
-// Need to Add Improved Blink
-// Evocation: need to test that it works, with a character template that does not have RoP.
-// The IV glyph works by making IV gives 35% MS. The perk then improves this to 45% MS.
-// All new spells need to have their damage cross-checked with in game values.
-// Is the ignite from Inferno Blast spread?
-// Automate which spells use Unstable Magic
-// Arcane Orb needs to be treated as a flying object that can hit multiple targets in a line, instead of as something which is basically just an explosion around a single target.
-// Need to do some basic d=vt calcs to have a more realistic travel time for AO.
-// Improve the delay between tick and aoe for NT by applying a guassian distribution centered around 1.25s with stddev such that travel time is ~1.2-1.3s
-// Removing hardcoding of Inferno Blast CD once it has returned to the spell data
 
-// Are Meteor ticks effected by haste? - Maybe? They are bugged on Beta as of 8/11/2014 (http://us.battle.net/wow/en/forum/topic/13780228135)
-
-// To-do Completed:
-//  Frost bomb is hitting too hard - DONE!
-//  BUG IGNITE TRIGGERS ON MISSES. Fixing this breaks icicles. Need to investigate - DONE!
-//  Enhanced Pyrotechnics is giving global crit chance increase (not just FB/FFB). Fix this! - DONE!
-// Enhanced Frostbolt keeps trying to trigger for non-Frost specs (causes debug log to look ugly, prolly slows down the sim) - DONE!
-//  Multistrike triggering ignite? - Confirmed by celestalon to interact with one another
-//  Ice Lance MS should not be procing Frost Bomb explosion (as per in game testing 7/20/2014) - DONE!
-//  Need to figure out how to not hard-code 2 charges and their CD for the "nova" spells. - This value is hardcoded in the spelldata it seems.
-//  Frostbomb should be working correctly.
-//  All "nova" talents have the 100% damage mod applied to the primary and AoE effects - it should only be on the primary target. - DONE!
-//  Need to not hardcode Overpowered - DONE!
-//  Add the delay between tick and aoe for NT - DONE!
-//  Does the IV glyph still have a hidden proc-rate increase for FoF? - Assuming no, DONE!
-//  Brainfreeze doesn't look correct in the spelldata (and isn't correct on the beta) in regards to proc chance. Fixed. -DONE!
-//  Imp. Arcane Barrage needs to be tested. - DONE!
-//  Fix how Ivy Veins interacts with spells. - DONE!
-//  Multi-strikes proc UM. Add this! - DONE!
-//  Improved Evocation is no longer hardcoded.
-//  Can Meteor ticks crit and miss? - Miss no, Crit yes. - DONE!
-//  Remove pyromaniac - DONE!
-//  Imp. Arcane Explosion needs to be tested. -- DONE
-//  Arcane Blast cast time reduction perk testing? - DONE! Working correctly. (I think. may be very minor problems due to it not effecting base_execute_time. But tools to do that easily are not inplace yet.)
-//  Living Bomb spell data has completely changed - need to re-do the entire thing. - DONE! (I think?)
-//  Comet Storm now have meteor split applied to its damage.
-// Misc Notes:
-//  Unstable Magic Trigger is very sensative to double dipping - as we encounter new modifiers, need to check there is double dipping going on!
-//  Multistrike triggering ignite/Icicles? - Yes.
 
 
 
