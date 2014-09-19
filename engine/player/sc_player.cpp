@@ -4890,7 +4890,7 @@ void player_t::target_mitigation( school_e school,
 
     if ( s -> block_result == BLOCK_RESULT_BLOCKED )
     {
-      s -> result_amount *= ( 1 - composite_block_reduction() );
+      s -> result_amount *= std::max( 0.0, 1 - composite_block_reduction() );
       if ( s -> result_amount <= 0 ) return;
     }
 
