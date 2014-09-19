@@ -581,7 +581,7 @@ public:
   {
     double a = ab::target_armor( t );
 
-    a *= 1.0 - td( t ) -> debuffs_colossus_smash -> default_value;
+    a *= 1.0 - td( t ) -> debuffs_colossus_smash -> current_value;
 
     return a;
   }
@@ -1558,7 +1558,7 @@ struct colossus_smash_t: public warrior_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      td( s -> target ) -> debuffs_colossus_smash -> trigger();
+      td( s -> target ) -> debuffs_colossus_smash -> trigger( 1, data().effectN( 2 ).percent() );
       p() -> buff.colossus_smash -> trigger();
     }
   }
@@ -3777,7 +3777,7 @@ void warrior_t::init_spells()
   spec.blood_craze              = find_specialization_spell( "Blood Craze" );
   spec.bloodsurge               = find_specialization_spell( "Bloodsurge" );
   spec.bloodthirst              = find_specialization_spell( "Bloodthirst" );
-  spec.colossus_smash           = find_spell( "Colossus Smash" );
+  spec.colossus_smash           = find_specialization_spell( "Colossus Smash" );
   spec.crazed_berserker         = find_specialization_spell( "Crazed Berserker" );
   spec.cruelty                  = find_specialization_spell( "Cruelty" );
   spec.deep_wounds              = find_specialization_spell( "Deep Wounds" );
@@ -4540,7 +4540,6 @@ actor_pair_t( target, &p ), warrior( p )
   dots_rend        = target -> get_dot( "rend", &p );
 
   debuffs_colossus_smash = buff_creator_t( *this, "colossus_smash" )
-    .default_value( p.spec.colossus_smash -> effectN( 1 ).percent() )
     .duration( p.spec.colossus_smash -> duration() )
     .cd( timespan_t::zero() );
 
