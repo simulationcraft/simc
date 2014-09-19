@@ -23,6 +23,7 @@ actions.precombat+=/stance,choose=defensive
 # Generic on-use trinket line if needed when swapping trinkets out. 
 #actions+=/use_item,slot=trinket1,if=buff.bloodbath.up|buff.avatar.up|target.time_to_die<10
 actions.precombat+=/snapshot_stats
+actions.precombat+=/shield_wall
 actions.precombat+=/potion,name=draenic_armor
 
 # Executed every time the actor is available.

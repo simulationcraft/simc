@@ -3999,6 +3999,7 @@ void warrior_t::apl_precombat( bool probablynotgladiator )
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
       "# Generic on-use trinket line if needed when swapping trinkets out. \n"
       "#actions+=/use_item,slot=trinket1,if=buff.bloodbath.up|buff.avatar.up|target.time_to_die<10" );
+    precombat -> add_action( this, "Shield Wall" );
   }
 
   //Pre-pot
@@ -5104,7 +5105,7 @@ double warrior_t::composite_block_reduction() const
   if ( buff.shield_block -> up() )
   {
       if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )
-          br += 0.3; //spec.shield_mastery -> effectN( 1 ).percent(); //should be shield Mastery (id=169688) [Spell Family (4)]
+          br += find_spell( 169688 ) -> effectN( 1 ).percent();
   }
 
   return br;
