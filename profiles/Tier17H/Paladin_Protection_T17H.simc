@@ -32,23 +32,30 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
 actions+=/holy_avenger
-actions+=/divine_protection
+actions+=/divine_protection,if=buff.seraphim.down
 actions+=/guardian_of_ancient_kings,if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down
 actions+=/ardent_defender,if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down
 actions+=/eternal_flame,if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react|buff.bastion_of_power.react)
 actions+=/eternal_flame,if=buff.bastion_of_power.react&buff.bastion_of_glory.react>=5
-actions+=/shield_of_the_righteous,if=holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3
+actions+=/seraphim,if=buff.divine_protection.down&cooldown.divine_protection.remains>0
+actions+=/shield_of_the_righteous,if=(holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3)&(!talent.seraphim.enabled|cooldown.seraphim.remains>5)
 actions+=/crusader_strike
 actions+=/judgment
+actions+=/holy_wrath,if=talent.sanctified_wrath.enabled
 actions+=/avengers_shield
-actions+=/sacred_shield,if=target.dot.sacred_shield.remains<5
-actions+=/holy_wrath
 actions+=/execution_sentence
-actions+=/lights_hammer
 actions+=/hammer_of_wrath
+actions+=/lights_hammer
+actions+=/holy_wrath,if=glyph.final_wrath.enabled&target.health.pct<=20
+actions+=/sacred_shield,if=target.dot.sacred_shield.remains<5
 actions+=/consecration,if=target.debuff.flying.down&!ticking
+actions+=/holy_wrath
 actions+=/holy_prism
+actions+=/seal_of_insight,if=talent.empowered_seals.enabled&buff.uthers_insight.remains<buff.liadrins_righteousness.remains&buff.uthers_insight.remains<buff.maraads_truth.remains
+actions+=/seal_of_righteousness,if=talent.empowered_seals.enabled&buff.liadrins_righteousness.remains<buff.uthers_insight.remains&buff.liadrins_righteousness.remains<buff.maraads_truth.remains
+actions+=/seal_of_truth,if=talent.empowered_seals.enabled&buff.maraads_truth.remains<buff.uthers_insight.remains&buff.maraads_truth.remains<buff.liadrins_righteousness.remains
 actions+=/sacred_shield
+actions+=/flash_of_light,if=talent.selfless_healer.enabled
 
 head=helmet_of_guiding_light,id=115568,bonus_id=566
 neck=vertebrae_protector,id=113900,bonus_id=566/448,enchant=gift_of_haste
@@ -71,7 +78,7 @@ off_hand=kromogs_protecting_palm,id=113926,bonus_id=566/448
 # gear_strength=3232
 # gear_stamina=4045
 # gear_crit_rating=666
-# gear_haste_rating=1433
+# gear_haste_rating=1861
 # gear_mastery_rating=758
 # gear_armor=2952
 # gear_bonus_armor=110

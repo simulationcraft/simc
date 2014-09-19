@@ -103,7 +103,6 @@ public:
     buff_t* raging_wind;
     buff_t* rude_interruption;
     // Arms and Fury
-    buff_t* colossus_smash;
     buff_t* die_by_the_sword;
     buff_t* rallying_cry;
     buff_t* recklessness;
@@ -114,6 +113,7 @@ public:
     buff_t* meat_cleaver;
     buff_t* raging_blow;
     // Arms only
+    buff_t* colossus_smash;
     buff_t* slam;
     buff_t* sweeping_strikes;
     // Prot only
@@ -183,7 +183,6 @@ public:
     gain_t* drawn_sword_glyph;
     // Fury Only
     gain_t* bloodthirst;
-    gain_t* colossus_smash;
     gain_t* melee_off_hand;
     // Arms Only
     gain_t* melee_crit;
@@ -226,7 +225,6 @@ public:
     const spell_data_t* unending_rage;
     const spell_data_t* victory_rush;
     // Fury and Arms
-    const spell_data_t* colossus_smash;
     const spell_data_t* drawn_sword;
     const spell_data_t* rallying_cry;
     const spell_data_t* recklessness;
@@ -276,6 +274,7 @@ public:
     //All specs
     const spell_data_t* execute;
     //Arms-only
+    const spell_data_t* colossus_smash;
     const spell_data_t* mortal_strike;
     const spell_data_t* rend;
     const spell_data_t* seasoned_soldier;
@@ -284,7 +283,6 @@ public:
     //Arms and Prot
     const spell_data_t* thunder_clap;
     //Arms and Fury
-    const spell_data_t* colossus_smash;
     const spell_data_t* die_by_the_sword;
     const spell_data_t* inspiring_presence;
     const spell_data_t* shield_barrier;
@@ -376,7 +374,6 @@ public:
     const spell_data_t* enhanced_sweeping_strikes;
     //Fury only
     const spell_data_t* enhanced_whirlwind;
-    const spell_data_t* improved_colossus_smash;
     //Protection only
     const spell_data_t* improved_block;
     const spell_data_t* improved_defensive_stance;
@@ -584,7 +581,7 @@ public:
   {
     double a = ab::target_armor( t );
 
-    a *= 1.0 - td( t ) -> debuffs_colossus_smash -> current_value;
+    a *= 1.0 - td( t ) -> debuffs_colossus_smash -> default_value;
 
     return a;
   }
@@ -1082,7 +1079,7 @@ void warrior_attack_t::impact( action_state_t* s )
               trigger_bloodbath_dot( s -> target, s -> result_amount );
           }
           if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && td( s -> target ) ->  debuffs_colossus_smash -> up() && // Melee tier 16 2 piece.
-               ( this ->  weapon == &( p() -> main_hand_weapon ) || this -> id == 100130 ) && // Only procs once per ability used.
+               this ->  weapon == &( p() -> main_hand_weapon ) && // Only procs once per ability used.
                this -> id != 12328 ) // Doesn't proc from sweeping strikes.
                p() -> resource_gain( RESOURCE_RAGE,
                p() -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).base_value(),
@@ -1097,18 +1094,26 @@ void warrior_attack_t::impact( action_state_t* s )
 
 struct melee_t: public warrior_attack_t
 {
+  double sudden_death_chance;
   bool first;
   bool mh_lost_melee_contact;
   bool oh_lost_melee_contact;
   melee_t( const std::string& name, warrior_t* p ):
     warrior_attack_t( name, p, spell_data_t::nil() ),
-    first( true ), mh_lost_melee_contact( false ), oh_lost_melee_contact( false )
+    first( true ), mh_lost_melee_contact( false ), oh_lost_melee_contact( false ),
+    sudden_death_chance( 0.0 )
   {
     school = SCHOOL_PHYSICAL;
     special = false;
     background = repeating = auto_attack = may_glance = true;
     trigger_gcd = timespan_t::zero();
-
+    sudden_death_chance += p -> talents.sudden_death -> proc_chance();
+    if ( sudden_death_chance > 0 )
+    {
+      if ( p -> main_hand_weapon.group() == WEAPON_1H &&
+           p -> off_hand_weapon.group() == WEAPON_1H )
+           sudden_death_chance += p -> spec.singleminded_fury -> effectN( 4 ).percent();
+    }
     if ( p -> dual_wield() )
       base_hit -= 0.19;
   }
@@ -1174,17 +1179,12 @@ struct melee_t: public warrior_attack_t
     if ( result_is_hit( s -> result ) || result_is_block( s -> block_result ) )
     {
       trigger_t15_2pc_melee( this );
-      if ( p() -> talents.sudden_death -> ok() )
+      if ( rng().roll( sudden_death_chance ) )
       {
-        bool sudden_death = false;
         if ( p() -> buff.sudden_death -> check() )
-          sudden_death = true;
-        if ( p() -> buff.sudden_death -> trigger() )
-        {
-          p() -> proc.sudden_death -> occur();
-          if ( sudden_death )
-            p() -> proc.sudden_death_wasted -> occur();
-        }
+          p() -> proc.sudden_death_wasted -> occur();
+        p() -> buff.sudden_death -> trigger();
+        p() -> proc.sudden_death -> occur();
       }
       trigger_rage_gain( s );
       if ( p() -> perk.enhanced_rend -> ok() && td( s -> target ) -> dots_rend -> is_ticking() )
@@ -1543,16 +1543,13 @@ struct colossus_smash_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( p() -> specialization() == WARRIOR_ARMS )
-    {
-      if ( p() -> sets.has_set_bonus( WARRIOR_ARMS, T17, B2 ) )
-        p() -> resource_gain( RESOURCE_RAGE,
-        p() -> sets.set( WARRIOR_ARMS, T17, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
-        p() -> gain.tier17_2pc_arms );
-      if ( p() -> sets.set( WARRIOR_ARMS, T17, B4 ) )
-        if ( p() -> buff.tier17_4pc_arms -> trigger() )
-          p() -> proc.t17_4pc_arms -> occur();
-    }
+    if ( p() -> sets.has_set_bonus( WARRIOR_ARMS, T17, B2 ) )
+      p() -> resource_gain( RESOURCE_RAGE,
+      p() -> sets.set( WARRIOR_ARMS, T17, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
+      p() -> gain.tier17_2pc_arms );
+    if ( p() -> sets.set( WARRIOR_ARMS, T17, B4 ) )
+      if ( p() -> buff.tier17_4pc_arms -> trigger() )
+        p() -> proc.t17_4pc_arms -> occur();
   }
 
   void impact( action_state_t* s )
@@ -1561,23 +1558,8 @@ struct colossus_smash_t: public warrior_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p() -> glyphs.colossus_smash -> ok() )
-      {
-        td( s -> target ) -> debuffs_colossus_smash -> trigger( 1, p() -> glyphs.colossus_smash -> effectN( 3 ).percent() );
-        p() -> buff.colossus_smash -> trigger( 1, p() -> glyphs.colossus_smash -> effectN( 3 ).percent() );
-      }
-      else
-      {
-        td( s -> target ) -> debuffs_colossus_smash -> trigger( 1, data().effectN( 2 ).percent() );
-        p() -> buff.colossus_smash -> trigger( 1, data().effectN( 2 ).percent() );
-      }
-
-      if ( s -> result == RESULT_CRIT && p() -> specialization() != WARRIOR_ARMS )
-        p() -> enrage();
-
-      p() -> resource_gain( RESOURCE_RAGE,
-                            p() -> perk.improved_colossus_smash -> effectN( 1 ).base_value(),
-                            p() -> gain.colossus_smash );
+      td( s -> target ) -> debuffs_colossus_smash -> trigger();
+      p() -> buff.colossus_smash -> trigger();
     }
   }
 };
@@ -1685,19 +1667,13 @@ struct execute_off_hand_t: public warrior_attack_t
     dual = true;
     may_miss = may_dodge = may_parry = may_block = false;
     weapon = &( p -> off_hand_weapon );
+
+    if ( p -> main_hand_weapon.group() == WEAPON_1H &&
+         p -> off_hand_weapon.group() == WEAPON_1H )
+         weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
+
     if ( !p -> bugs )
       weapon_multiplier = 3.0;
-  }
-
-  double action_multiplier() const
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p() -> main_hand_weapon.group() == WEAPON_1H &&
-         p() -> off_hand_weapon.group() == WEAPON_1H )
-         am *= 1.0 + p() -> spec.singleminded_fury -> effectN( 3 ).percent();
-
-    return am;
   }
 };
 
@@ -1715,6 +1691,9 @@ struct execute_t: public warrior_attack_t
     {
       oh_attack = new execute_off_hand_t( p, "execute_oh", p -> find_spell( 163558 ) );
       add_child( oh_attack );
+      if ( p -> main_hand_weapon.group() == WEAPON_1H &&
+           p -> off_hand_weapon.group() == WEAPON_1H )
+           weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
     }
   }
 
@@ -1727,9 +1706,6 @@ struct execute_t: public warrior_attack_t
       if ( !p() -> buff.sudden_death -> check() )
         am *= 4.0 * std::min( 40.0, p() -> resources.current[RESOURCE_RAGE] ) / 40;
     }
-    else if ( p() -> main_hand_weapon.group() == WEAPON_1H &&
-              p() -> off_hand_weapon.group() == WEAPON_1H )
-              am *= 1.0 + p() -> spec.singleminded_fury -> effectN( 3 ).percent();
     else if ( p() -> has_shield_equipped() )
       am *= 1.0 + p() -> spec.protection -> effectN( 1 ).percent();
 
@@ -2234,19 +2210,6 @@ struct raging_blow_t: public warrior_attack_t
     oh_attack = new raging_blow_attack_t( p, "raging_blow_oh", data().effectN( 2 ).trigger() );
     oh_attack -> weapon = &( p -> off_hand_weapon );
     add_child( oh_attack );
-  }
-
-  void impact( action_state_t* s )
-  {
-    warrior_attack_t::impact( s );
-    if ( !p() -> wild_strike_extension )
-    {
-      if ( result_is_hit( s -> result ) && td( s -> target ) -> debuffs_colossus_smash -> up() )
-      {
-        td( s -> target ) -> debuffs_colossus_smash -> extend_duration( s -> target, timespan_t::from_seconds( p() -> cs_extension ) );
-        p() -> buff.colossus_smash -> extend_duration( p(), timespan_t::from_seconds( p() -> cs_extension ) );
-      }
-    }
   }
 
   void execute()
@@ -2998,20 +2961,6 @@ struct wild_strike_t: public warrior_attack_t
       c = 0; // No spell data at the moment.
 
     return c;
-  }
-
-  void impact( action_state_t * s )
-  {
-    warrior_attack_t::impact( s );
-
-    if ( p() -> wild_strike_extension )
-    {
-      if ( result_is_hit( s -> result ) && td( s -> target ) -> debuffs_colossus_smash -> up() )
-      {
-        td( s -> target ) -> debuffs_colossus_smash -> extend_duration( s -> target, timespan_t::from_seconds( p() -> cs_extension ) );
-        p() -> buff.colossus_smash -> extend_duration( p(), timespan_t::from_seconds( p() -> cs_extension ) );
-      }
-    }
   }
 
   void execute()
@@ -3908,7 +3857,6 @@ void warrior_t::init_spells()
 
   perk.enhanced_sweeping_strikes     = find_perk_spell( "Enhanced Sweeping Strikes" );
   perk.improved_die_by_the_sword     = find_perk_spell( "Improved Die by The Sword" );
-  perk.improved_colossus_smash       = find_perk_spell( "Improved Colossus Smash" );
   perk.enhanced_rend                 = find_perk_spell( "Enhanced Rend" );
 
   perk.enhanced_whirlwind            = find_perk_spell( "Enhanced Whirlwind" );
@@ -3921,7 +3869,6 @@ void warrior_t::init_spells()
   glyphs.bloodthirst            = find_glyph_spell( "Glyph of Bloodthirst" );
   glyphs.bull_rush              = find_glyph_spell( "Glyph of Bull Rush" );
   glyphs.cleave                 = find_glyph_spell( "Glyph of Cleave" );
-  glyphs.colossus_smash         = find_glyph_spell( "Glyph of Colossus Smash" );
   glyphs.death_from_above       = find_glyph_spell( "Glyph of Death From Above" );
   glyphs.drawn_sword            = find_glyph_spell( "Glyph of the Drawn Sword" );
   glyphs.enraged_speed          = find_glyph_spell( "Glyph of Enraged Speed" );
@@ -4246,7 +4193,7 @@ void warrior_t::apl_prot()
   for ( int i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&buff.ravager.up)" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=active_enemies=1&(buff.bloodbath.up|!talent.bloodbath.enabled)|(active_enemies>=2&buff.ravager.up)" );
   }
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|buff.avatar.up" );
@@ -4593,8 +4540,8 @@ actor_pair_t( target, &p ), warrior( p )
   dots_rend        = target -> get_dot( "rend", &p );
 
   debuffs_colossus_smash = buff_creator_t( *this, "colossus_smash" )
-    .duration( p.glyphs.colossus_smash -> effectN( 1 ).time_value() +
-    p.spec.colossus_smash -> duration() )
+    .default_value( p.spec.colossus_smash -> effectN( 1 ).percent() )
+    .duration( p.spec.colossus_smash -> duration() )
     .cd( timespan_t::zero() );
 
   debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this );
@@ -4628,7 +4575,7 @@ void warrior_t::create_buffs()
   buff.bloodsurge = new buffs::bloodsurge_t( *this, "bloodsurge", spec.bloodsurge -> effectN( 1 ).trigger() );
 
   buff.colossus_smash = buff_creator_t( this, "colossus_smash_up", spec.colossus_smash )
-    .duration( glyphs.colossus_smash -> effectN( 1 ).time_value() + spec.colossus_smash -> duration() )
+    .duration( spec.colossus_smash -> duration() )
     .cd( timespan_t::zero() );
 
   buff.defensive_stance = new buffs::defensive_stance_t( *this, "defensive_stance", find_class_spell( "Defensive Stance" ) );
@@ -4704,8 +4651,7 @@ void warrior_t::create_buffs()
   buff.slam = buff_creator_t( this, "slam", talents.slam )
     .can_cancel( false );
 
-  buff.sudden_death = buff_creator_t( this, "sudden_death", talents.sudden_death -> effectN( 1 ).trigger() )
-    .chance( talents.sudden_death -> proc_chance() );
+  buff.sudden_death = buff_creator_t( this, "sudden_death", talents.sudden_death -> effectN( 1 ).trigger() );
 
   buff.sweeping_strikes = buff_creator_t( this, "sweeping_strikes", spec.sweeping_strikes )
     .duration( spec.sweeping_strikes -> duration() + perk.enhanced_sweeping_strikes -> effectN( 1 ).time_value() )
@@ -4769,7 +4715,6 @@ void warrior_t::init_gains()
   gain.avoided_attacks        = get_gain( "avoided_attacks" );
   gain.bloodthirst            = get_gain( "bloodthirst" );
   gain.charge                 = get_gain( "charge" );
-  gain.colossus_smash         = get_gain( "colossus_smash" );
   gain.critical_block         = get_gain( "critical_block" );
   gain.defensive_stance       = get_gain( "defensive_stance" );
   gain.drawn_sword_glyph      = get_gain( "drawn_sword_glyph" );

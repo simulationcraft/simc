@@ -28,7 +28,7 @@ actions.precombat+=/potion,name=draenic_armor
 
 actions=charge
 actions+=/auto_attack
-actions+=/use_item,name=primal_gladiators_badge_of_victory,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&buff.ravager.up)
+actions+=/use_item,name=primal_gladiators_badge_of_victory,if=active_enemies=1&(buff.bloodbath.up|!talent.bloodbath.enabled)|(active_enemies>=2&buff.ravager.up)
 actions+=/blood_fury,if=buff.bloodbath.up|buff.avatar.up
 actions+=/berserking,if=buff.bloodbath.up|buff.avatar.up
 actions+=/arcane_torrent,if=buff.bloodbath.up|buff.avatar.up
