@@ -5810,7 +5810,8 @@ void druid_t::create_buffs()
                                .source( get_stats( "primal_tenacity" ) )
                                .gain( get_gain( "primal_tenacity" ) );
   buff.pulverize             = buff_creator_t( this, "pulverize", find_spell( 158792 ) )
-                               .default_value( find_spell( 158792 ) -> effectN( 1 ).percent() );
+                               .default_value( find_spell( 158792 ) -> effectN( 1 ).percent() )
+                               .duration( timespan_t::from_seconds( 12.0 ) );
   buff.savage_defense        = buff_creator_t( this, "savage_defense", find_class_spell( "Savage Defense" ) -> ok() ? find_spell( 132402 ) : spell_data_t::not_found() )
                                .add_invalidate( CACHE_DODGE )
                                .duration( find_spell( 132402 ) -> duration() + talent.guardian_of_elune -> effectN( 2 ).time_value() )
@@ -6052,7 +6053,6 @@ void druid_t::apl_feral()
   def -> add_action( "thrash_cat,if=buff.omen_of_clarity.react&remains<=duration*0.3&active_enemies>1" );
 
   // Finishers
-  def -> add_action( this, "Rip", "cycle_targets=1,if=combo_points=5&dot.rip.ticking&persistent_multiplier>dot.rip.pmultiplier" );
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=combo_points=5&target.health.pct<25&dot.rip.ticking" );
   def -> add_action( this, "Rip", "cycle_targets=1,if=combo_points=5&remains<=duration*0.3" );
   def -> add_action( this, "Savage Roar", "if=combo_points=5&(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<42*0.3" );
@@ -6060,10 +6060,10 @@ void druid_t::apl_feral()
 
   def -> add_action( this, "Rake", "cycle_targets=1,if=remains<=duration*0.3&active_enemies<9&combo_points<5" );
   def -> add_action( "pool_resource,for_next=1" );
-  def -> add_action( "thrash_cat,if=dot.thrash_cat.remains<4.5&active_enemies>1" );
-  def -> add_action( this, "Rake", "cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&active_enemies<9&combo_points<5" );
+  def -> add_action( "thrash_cat,if=remains<=duration*0.3&active_enemies>1" );
   if ( level >= 100 )
     def -> add_action( "moonfire,cycle_targets=1,if=remains<=duration*0.3&active_enemies=1" );
+  def -> add_action( this, "Rake", "cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&active_enemies<9&combo_points<5" );
 
   // Fillers
   def -> add_action( this, "Swipe", "if=combo_points<5&active_enemies>1" );
