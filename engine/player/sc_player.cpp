@@ -9324,7 +9324,7 @@ double player_stat_cache_t::avoidance() const
     valid[CACHE_AVOIDANCE] = true;
     _avoidance = player -> composite_avoidance();
   }
-  else assert( _leech == player -> composite_avoidance() );
+  else assert( _avoidance == player -> composite_avoidance() );
   return _avoidance;
 }
 
