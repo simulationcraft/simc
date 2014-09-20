@@ -2358,12 +2358,7 @@ struct rake_t : public cat_attack_t
     cat_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
-    {
       p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.rake );
-
-      if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B2 ) )
-        p() -> resource_gain( RESOURCE_ENERGY, 3.0, p() -> gain.tier17_2pc_melee );
-    }
   }
 
   virtual void execute()
@@ -2652,12 +2647,7 @@ struct thrash_cat_t : public cat_attack_t
     cat_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
-    {
       this -> td( s -> target ) -> dots.thrash_bear -> cancel();
-
-      if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B2 ) )
-        p() -> resource_gain( RESOURCE_ENERGY, 3.0, p() -> gain.tier17_2pc_melee );
-    }
   }
 
   // Treat direct damage as "bleed"
@@ -3042,12 +3032,7 @@ struct thrash_bear_t : public bear_attack_t
     bear_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
-    {
       this -> td( s -> target ) -> dots.thrash_cat -> cancel();
-
-      if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B2 ) )
-        p() -> resource_gain( RESOURCE_ENERGY, 3.0, p() -> gain.tier17_2pc_melee );
-    }
   }
 
   // Treat direct damage as "bleed"
