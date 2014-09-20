@@ -1714,10 +1714,7 @@ struct envenom_t : public rogue_attack_t
     p() -> buffs.enhanced_vendetta -> expire();
 
     if ( p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T17, B4 ) )
-    {
       p() -> trigger_combo_point_gain( execute_state, 1, p() -> gains.t17_4pc_assassination );
-      p() -> buffs.blindside -> trigger();
-    }
   }
 
   double action_multiplier() const
@@ -1849,7 +1846,6 @@ struct eviscerate_t : public rogue_attack_t
   {
     rogue_attack_t::consume_resource();
 
-    // TODO: DfA + Deceit interaction?
     p() -> buffs.deceit -> expire();
   }
 
