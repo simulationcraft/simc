@@ -2961,7 +2961,11 @@ struct frozen_runeblade_attack_t : public death_knight_melee_attack_t
 {
   frozen_runeblade_attack_t( death_knight_t* player ) :
     death_knight_melee_attack_t( "frozen_runeblade", player, player -> find_spell( 170205 ) -> effectN( 1 ).trigger() )
-  { background = true; }
+  {
+    background = true;
+    // Implicitly uses main hand weapon
+    weapon = &( player -> main_hand_weapon );
+  }
 
   bool usable_moving() const
   { return true; }
