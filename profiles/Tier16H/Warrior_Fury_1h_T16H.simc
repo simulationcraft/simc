@@ -3,9 +3,8 @@ level=90
 race=orc
 role=attack
 position=back
-professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!111021.
-glyphs=unending_rage/death_from_above/raging_whirlwind
+glyphs=unending_rage/death_from_above/raging_wind
 spec=fury
 
 # This default action priority list is automatically created based on your character.
