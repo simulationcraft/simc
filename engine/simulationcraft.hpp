@@ -4564,6 +4564,7 @@ struct player_t : public actor_t
   {
     buff_t* aspect_of_the_pack;
     buff_t* beacon_of_light;
+    buff_t* beacon_of_faith;
     buff_t* blood_fury;
     buff_t* body_and_soul;
     buff_t* darkflight;
@@ -5636,7 +5637,10 @@ struct action_t : public noncopyable
   // option will _MAJORLY_ mess up the action list for the actor, as there's no
   // guarantee cycle_targets will end up on the "initial target" when an
   // iteration ends.
+
+  // Phillipuh to-do: added a secondary target for beacon of faith usage in Holy Paladin module
   player_t* target, * default_target;
+  player_t* target_2, * secondary_target;
 
   /* Target Cache System
    * - list: contains the cached target pointers
