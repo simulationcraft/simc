@@ -2173,21 +2173,26 @@ struct raging_blow_attack_t: public warrior_attack_t
     dual = true;
   }
 
-  void execute()
+  void impact( action_state_t* s )
   {
-    aoe = p() -> buff.meat_cleaver -> stack();
-    if ( aoe ) ++aoe;
+    warrior_attack_t::impact( s );
 
-    warrior_attack_t::execute();
-
-    if ( execute_state -> result == RESULT_CRIT )
-    {
+    if ( s -> result == RESULT_CRIT )
+    { // Can proc off MH/OH individually from each meat cleaver hit.
       if ( rng().roll( p() -> sets.set( WARRIOR_FURY, T17, B2 ) -> proc_chance() ) )
       {
         p() -> enrage();
         p() -> proc.t17_2pc_fury -> occur();
       }
     }
+  }
+
+  void execute()
+  {
+    aoe = p() -> buff.meat_cleaver -> stack();
+    if ( aoe ) ++aoe;
+
+    warrior_attack_t::execute();
   }
 };
 
