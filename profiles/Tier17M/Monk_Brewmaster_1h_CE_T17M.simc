@@ -49,7 +49,7 @@ actions.st+=/chi_explosion,if=chi>=3
 actions.st+=/blackout_kick,if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=gcd
 actions.st+=/blackout_kick,if=buff.serenity.up
 actions.st+=/blackout_kick,if=chi>=4
-actions.st+=/expel_harm,if=chi.max-chi>=1&cooldown.expel_harm.remains>=0&cooldown.keg_smash.remains>=gcd
+actions.st+=/expel_harm,if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd
 actions.st+=/jab,if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd
 actions.st+=/purifying_brew,if=!talent.chi_explosion.enabled&stagger.moderate&buff.shuffle.remains>=6
 actions.st+=/tiger_palm,if=(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40
@@ -68,7 +68,7 @@ actions.aoe+=/zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_s
 actions.aoe+=/blackout_kick,if=talent.rushing_jade_wind.enabled&buff.shuffle.remains<=3&cooldown.keg_smash.remains>=gcd
 actions.aoe+=/blackout_kick,if=talent.rushing_jade_wind.enabled&buff.serenity.up
 actions.aoe+=/blackout_kick,if=talent.rushing_jade_wind.enabled&chi>=4
-actions.aoe+=/expel_harm,if=chi.max-chi>=1&cooldown.expel_harm.remains=0&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40
+actions.aoe+=/expel_harm,if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40
 actions.aoe+=/spinning_crane_kick,if=chi.max-chi>=1&!talent.rushing_jade_wind.enabled
 actions.aoe+=/jab,if=talent.rushing_jade_wind.enabled&chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd
 actions.aoe+=/purifying_brew,if=!talent.chi_explosion.enabled&talent.rushing_jade_wind.enabled&stagger.moderate&buff.shuffle.remains>=6
