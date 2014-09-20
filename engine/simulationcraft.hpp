@@ -6222,6 +6222,23 @@ struct absorb_t : public spell_base_t
   virtual absorb_buff_creator_t& creator()
   { return creator_; }
 
+  // Allows customization of the absorb_buff_t that we are creating.
+  virtual absorb_buff_t* create_buff( const action_state_t* s )
+  {
+    buff_t* b = buff_t::find( s -> target, name_str );
+    if ( b )
+      return debug_cast<absorb_buff_t*>( b );
+
+    std::string stats_obj_name = name_str;
+    if ( s -> target != player )
+      stats_obj_name += "_" + player -> name_str;
+    stats_t* stats_obj = player -> get_stats( stats_obj_name, this );
+    creator_.source( stats_obj );
+    creator_.actors( s -> target );
+
+    return creator();
+  }
+
   virtual void execute();
   virtual void assess_damage( dmg_e, action_state_t* );
   virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const

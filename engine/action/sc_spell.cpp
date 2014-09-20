@@ -696,15 +696,7 @@ void absorb_t::assess_damage( dmg_e    heal_type,
 
 
   if ( target_specific[ s -> target ] == 0 )
-  {
-    std::string stats_obj_name = name_str + "_" + player -> name_str;
-    //stats_t* target_stats = s -> target -> get_stats( stats_obj_name, this );
-    //stats -> add_child( target_stats );
-    creator_.actors( s -> target );
-    //creator_.source( target_stats );
-
-    target_specific[ s -> target ] = creator_;
-  }
+    target_specific[ s -> target ] = create_buff( s );
 
   if ( result_is_hit( s -> result ) )
   {
@@ -725,7 +717,7 @@ void absorb_t::assess_damage( dmg_e    heal_type,
                      util::result_type_string( s -> result ) );
   }
 
-  stats -> add_result( s -> result_amount, s -> result_total, heal_type, s -> result, s -> block_result, s -> target );
+  //stats -> add_result( s -> result_amount, s -> result_total, heal_type, s -> result, s -> block_result, s -> target );
 }
 
 void absorb_t::multistrike_direct( const action_state_t* source_state, action_state_t* ms_state )
