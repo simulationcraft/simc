@@ -117,7 +117,6 @@ public:
     buff_t* slam;
     buff_t* sweeping_strikes;
     // Prot only
-    buff_t* bladed_armor;
     buff_t* blood_craze;
     buff_t* last_stand;
     absorb_buff_t* shield_barrier;
@@ -4602,9 +4601,6 @@ void warrior_t::create_buffs()
 
   buff.berserker_rage = buff_creator_t( this, "berserker_rage", find_class_spell( "Berserker Rage" ) );
 
-  buff.bladed_armor = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
-    .add_invalidate( CACHE_ATTACK_POWER );
-
   buff.bloodbath = buff_creator_t( this, "bloodbath", talents.bloodbath )
     .cd( timespan_t::zero() );
 
@@ -4905,9 +4901,6 @@ void warrior_t::combat_begin()
 
   if ( specialization() == WARRIOR_PROTECTION )
     resolve_manager.start();
-
-  if ( spec.bladed_armor )
-    buff.bladed_armor -> trigger();
 }
 
 // warrior_t::reset =========================================================
@@ -5146,7 +5139,7 @@ double warrior_t::composite_melee_attack_power() const
 {
   double ap = player_t::composite_melee_attack_power();
 
-  ap += buff.bladed_armor -> data().effectN( 1 ).percent() * current.stats.get_stat( STAT_BONUS_ARMOR );
+  ap += spec.bladed_armor -> effectN( 1 ).percent() * current.stats.get_stat( STAT_BONUS_ARMOR );
 
   return ap;
 }
