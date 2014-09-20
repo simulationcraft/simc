@@ -5394,10 +5394,9 @@ void shaman_t::init_action_list()
     if ( find_item( "unerring_vision_of_lei_shen" ) )
       single -> add_action( this, "Flame Shock", "if=buff.perfect_aim.react&crit_pct<100" );
     single -> add_action( this, spec.fulmination, "earth_shock", "if=buff.lightning_shield.react=buff.lightning_shield.max_stack" );
-    single -> add_action( this, "Flame Shock", "if=talent.elemental_fusion.enabled&(!ticking|(buff.elemental_fusion.stack=2&dot.flame_shock.remains<15))" );
     single -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)" );
-    single -> add_action( this, "Flame Shock", "if=!talent.elemental_fusion.enabled&dot.flame_shock.remains<9" );
-    single -> add_action( this, spec.fulmination, "earth_shock", "if=(talent.elemental_fusion.enabled&(buff.lightning_shield.react>12|buff.elemental_fusion.stack=2)&dot.flame_shock.remains>=15)|(!talent.elemental_fusion.enabled&buff.lightning_shield.react>15)" );
+    single -> add_action( this, "Flame Shock", "if=dot.flame_shock.remains<=9" );
+    single -> add_action( this, spec.fulmination, "earth_shock", "if=(set_bonus.tier17_4pc&buff.lightning_shield.react>=12)|(!set_bonus.tier17_4pc&buff.lightning_shield.react>=15)" );
     single -> add_action( this, "Earthquake", "if=((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=2.3)&target.time_to_die>10&buff.elemental_mastery.down&buff.bloodlust.down" );
     single -> add_action( this, "Earthquake", "if=((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=3)&target.time_to_die>10&(buff.elemental_mastery.up|buff.bloodlust.up)" );
     single -> add_action( this, "Earthquake", "if=((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=2.3)&target.time_to_die>10&(buff.elemental_mastery.remains>=10|buff.bloodlust.remains>=10)" );

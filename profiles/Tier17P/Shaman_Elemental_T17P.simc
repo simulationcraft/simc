@@ -50,10 +50,9 @@ actions+=/call_action_list,name=aoe,if=active_enemies>1
 actions.single=unleash_flame,if=talent.unleashed_fury.enabled&!buff.ascendance.up
 actions.single+=/spiritwalkers_grace,moving=1,if=buff.ascendance.up
 actions.single+=/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
-actions.single+=/flame_shock,if=talent.elemental_fusion.enabled&(!ticking|(buff.elemental_fusion.stack=2&dot.flame_shock.remains<15))
 actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)
-actions.single+=/flame_shock,if=!talent.elemental_fusion.enabled&dot.flame_shock.remains<9
-actions.single+=/earth_shock,if=(talent.elemental_fusion.enabled&(buff.lightning_shield.react>12|buff.elemental_fusion.stack=2)&dot.flame_shock.remains>=15)|(!talent.elemental_fusion.enabled&buff.lightning_shield.react>15)
+actions.single+=/flame_shock,if=dot.flame_shock.remains<=9
+actions.single+=/earth_shock,if=(set_bonus.tier17_4pc&buff.lightning_shield.react>=12)|(!set_bonus.tier17_4pc&buff.lightning_shield.react>=15)
 actions.single+=/earthquake,if=((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=2.3)&target.time_to_die>10&buff.elemental_mastery.down&buff.bloodlust.down
 actions.single+=/earthquake,if=((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=3)&target.time_to_die>10&(buff.elemental_mastery.up|buff.bloodlust.up)
 actions.single+=/earthquake,if=((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=2.3)&target.time_to_die>10&(buff.elemental_mastery.remains>=10|buff.bloodlust.remains>=10)
