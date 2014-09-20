@@ -2514,6 +2514,7 @@ struct shield_charge_2pc_t: public warrior_attack_t
   shield_charge_2pc_t( warrior_t* p ):
     warrior_attack_t( "shield_charge_t17_2pc_proc", p, p -> find_spell( 156321 ) )
   {
+    background = true;
   }
 
   void execute()
@@ -2531,6 +2532,7 @@ struct shield_block_2pc_t: public warrior_attack_t
   shield_block_2pc_t( warrior_t* p ):
     warrior_attack_t( "shield_block_t17_2pc_proc", p, p -> find_class_spell( "Shield Block" ) )
   {
+    background = true;
   }
 
   void execute()
