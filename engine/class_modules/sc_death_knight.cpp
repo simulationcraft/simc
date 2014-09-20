@@ -219,6 +219,7 @@ public:
     stat_buff_t* riposte;
     buff_t* shadow_of_death;
     buff_t* conversion;
+    buff_t* frozen_runeblade;
   } buffs;
 
   struct runeforge_t
@@ -245,6 +246,7 @@ public:
     spell_t* blood_plague;
     spell_t* frost_fever;
     melee_attack_t* frozen_power;
+    spell_t* frozen_runeblade;
     spell_t* necrotic_plague;
     spell_t* breath_of_sindragosa;
     spell_t* necrosis;
@@ -532,6 +534,7 @@ public:
   void      trigger_blood_charge( double rpcost );
   void      trigger_shadow_infusion( double rpcost );
   void      trigger_necrosis( const action_state_t* );
+  void      trigger_t17_4pc_frost( const action_state_t* );
   void      apply_diseases( action_state_t* state, unsigned diseases );
   int       runes_count( rune_type rt, bool include_death, int position );
   double    runes_cooldown_any( rune_type rt, bool include_death, int position );
@@ -2516,6 +2519,7 @@ void death_knight_melee_attack_t::impact( action_state_t* state )
   base_t::impact( state );
 
   trigger_t16_4pc_melee( state );
+  p() -> trigger_t17_4pc_frost( state );
 }
 
 // death_knight_melee_attack_t::ready() =====================================
@@ -2938,6 +2942,38 @@ struct necrosis_t : public death_knight_spell_t
     death_knight_spell_t( "necrosis", player, player -> spec.necrosis -> effectN( 2 ).trigger() )
   {
     background = true;
+  }
+};
+
+// Frozen Runeblade =========================================================
+
+struct frozen_runeblade_attack_t : public death_knight_melee_attack_t
+{
+  frozen_runeblade_attack_t( death_knight_t* player ) :
+    death_knight_melee_attack_t( "frozen_runeblade", player, player -> find_spell( 170205 ) -> effectN( 1 ).trigger() )
+  { background = true; }
+
+  bool usable_moving() const
+  { return true; }
+};
+
+struct frozen_runeblade_driver_t : public death_knight_spell_t
+{
+  frozen_runeblade_attack_t* attack;
+
+  frozen_runeblade_driver_t( death_knight_t* player ) :
+    death_knight_spell_t( "frozen_runeblade_driver", player, player -> find_spell( 170205 ) ),
+    attack( new frozen_runeblade_attack_t( player ) )
+  {
+    background = proc = dual = quiet = true;
+    callbacks = may_miss = may_crit = hasted_ticks = tick_may_crit = false;
+  }
+
+  void tick( dot_t* dot )
+  {
+    death_knight_spell_t::tick( dot );
+
+    attack -> schedule_execute();
   }
 };
 
@@ -4419,6 +4455,8 @@ struct pillar_of_frost_t : public death_knight_spell_t
 
     if ( p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T17, B2 ) )
       p() -> resource_gain( RESOURCE_RUNIC_POWER, p() -> sets.set( DEATH_KNIGHT_FROST, T17, B2 ) -> effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ), p() -> gains.t17_2pc_frost );
+
+    p() -> buffs.frozen_runeblade -> trigger();
   }
 
   bool ready()
@@ -5272,6 +5310,41 @@ struct vampiric_blood_buff_t : public buff_t
   }
 };
 
+struct frozen_runeblade_buff_t : public buff_t
+{
+  int stack_count;
+
+  frozen_runeblade_buff_t( death_knight_t* p ) :
+    buff_t( buff_creator_t( p, "frozen_runeblade", p -> sets.set( DEATH_KNIGHT_FROST, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
+                           .chance( p -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T17, B4 ) ).refresh_behavior( BUFF_REFRESH_DISABLED ) ),
+    stack_count( 0 )
+  { }
+
+  void execute( int stacks, double value, timespan_t duration )
+  {
+    buff_t::execute( stacks, value, duration );
+
+    stack_count = current_stack;
+  }
+
+  void expire_override()
+  {
+    death_knight_t* p = debug_cast< death_knight_t* >( player );
+    p -> active_spells.frozen_runeblade -> dot_duration = stack_count * p -> active_spells.frozen_runeblade -> data().effectN( 1 ).period();
+    p -> active_spells.frozen_runeblade -> schedule_execute();
+
+    buff_t::expire_override();
+
+    stack_count = 0;
+  }
+
+void reset()
+{
+  buff_t::reset();
+  stack_count = 0;
+}
+};
+
 } // UNNAMED NAMESPACE
 
 // ==========================================================================
@@ -5741,6 +5814,9 @@ void death_knight_t::init_spells()
 
     active_spells.frozen_power = new frozen_power_t( this );
   }
+
+  if ( sets.has_set_bonus( DEATH_KNIGHT_FROST, T17, B4 ) )
+    active_spells.frozen_runeblade = new frozen_runeblade_driver_t( this );
 
 }
 
@@ -6478,6 +6554,7 @@ void death_knight_t::create_buffs()
 
   buffs.conversion = buff_creator_t( this, "conversion", talent.conversion ).duration( timespan_t::zero() );
 
+  buffs.frozen_runeblade = new frozen_runeblade_buff_t( this );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -7126,6 +7203,28 @@ void death_knight_t::trigger_necrosis( const action_state_t* state )
 
   active_spells.necrosis -> target = state -> target;
   active_spells.necrosis -> schedule_execute();
+}
+
+void death_knight_t::trigger_t17_4pc_frost( const action_state_t* state )
+{
+  if ( ! sets.has_set_bonus( DEATH_KNIGHT_FROST, T17, B4 ) )
+    return;
+
+  if ( ! state -> action -> special || state -> action -> proc ||
+       state -> action -> background )
+    return;
+
+  if ( state -> result_amount == 0 )
+    return;
+
+  if ( state -> action -> result_is_multistrike( state -> result ) ||
+       ! state -> action -> result_is_hit( state -> result ) )
+    return;
+
+  if ( ! buffs.frozen_runeblade -> check() )
+    return;
+
+  buffs.frozen_runeblade -> trigger();
 }
 
 // death_knight_t::trigger_plaguebearer =====================================
