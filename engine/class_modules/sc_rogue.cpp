@@ -2120,8 +2120,6 @@ struct marked_for_death_t : public rogue_attack_t
   }
 };
 
-
-
 // Mutilate =================================================================
 
 struct mutilate_strike_t : public rogue_attack_t
@@ -2144,26 +2142,6 @@ struct mutilate_strike_t : public rogue_attack_t
                             p() -> sets.set( ROGUE_ASSASSINATION, T17, B2 ) -> effectN( 1 ).base_value(),
                             p() -> gains.t17_2pc_assassination,
                             this );
-  }
-
-  double action_multiplier() const
-  {
-    double m = rogue_attack_t::action_multiplier();
-
-    if ( ! p() -> reflection_attack && p() -> perk.empowered_envenom -> ok() && p() -> buffs.envenom -> up() )
-      m *= 1.0 + p() -> perk.empowered_envenom -> effectN( 1 ).percent();
-
-    return m;
-  }
-
-  double composite_crit() const
-  {
-    double c = rogue_attack_t::composite_crit();
-
-    if ( ! p() -> reflection_attack && p() -> buffs.enhanced_vendetta -> up() )
-      c += p() -> buffs.enhanced_vendetta -> data().effectN( 1 ).percent();
-
-    return c;
   }
 };
 
@@ -2195,6 +2173,26 @@ struct mutilate_t : public rogue_attack_t
     add_child( oh_strike );
   }
 
+  double action_multiplier() const
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    if ( !p() -> reflection_attack && p() -> perk.empowered_envenom -> ok() && p() -> buffs.envenom -> up() )
+      m *= 1.0 + p() -> perk.empowered_envenom -> effectN( 1 ).percent();
+
+    return m;
+  }
+
+  double composite_crit() const
+  {
+    double c = rogue_attack_t::composite_crit();
+
+    if ( !p() -> reflection_attack && p() -> buffs.enhanced_vendetta -> up() )
+      c += p() -> buffs.enhanced_vendetta -> data().effectN( 1 ).percent();
+
+    return c;
+  }
+
   void consume_resource()
   {
     rogue_attack_t::consume_resource();
@@ -2222,8 +2220,8 @@ struct mutilate_t : public rogue_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      mh_strike -> execute();
-      oh_strike -> execute();
+      mh_strike -> schedule_execute( mh_strike -> get_state( execute_state ) );
+      oh_strike -> schedule_execute( oh_strike -> get_state( execute_state ) );
     }
   }
 
