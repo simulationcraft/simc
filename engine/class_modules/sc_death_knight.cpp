@@ -234,6 +234,7 @@ public:
   struct cooldowns_t
   {
     cooldown_t* bone_shield_icd;
+    cooldown_t* vampiric_blood;
   } cooldown;
 
   // Diseases
@@ -468,6 +469,8 @@ public:
 
     cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
     cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 1.0 );
+
+    cooldown.vampiric_blood = get_cooldown( "vampiric_blood" );
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[ CACHE_HASTE ] = true;
@@ -3673,6 +3676,12 @@ struct death_strike_t : public death_knight_melee_attack_t
       heal -> schedule_execute();
     }
 
+    if ( p() -> sets.has_set_bonus( DEATH_KNIGHT_BLOOD, T17, B2 ) && p() -> buffs.scent_of_blood -> check() )
+    {
+      timespan_t reduction = p() -> sets.set( DEATH_KNIGHT_BLOOD, T17, B2 ) -> effectN( 1 ).time_value() * p() -> buffs.scent_of_blood -> check();
+      p() -> cooldown.vampiric_blood -> ready -= reduction;
+    }
+
     p() -> buffs.scent_of_blood -> expire();
     p() -> buffs.deathbringer -> decrement();
   }
@@ -4362,12 +4371,6 @@ struct blood_boil_t : public death_knight_spell_t
       // implemented in blood_boil_spread_t
       spread -> target = target;
       spread -> schedule_execute();
-    }
-
-    if ( p() -> sets.has_set_bonus( DEATH_KNIGHT_BLOOD, T17, B2 ) )
-    {
-      if ( p() -> buffs.blood_shield -> check() )
-        p() -> buffs.blood_shield -> current_value *= 1.0 + p() -> sets.set( DEATH_KNIGHT_BLOOD, T17, B2 ) -> effectN( 1 ).percent();
     }
   }
 
