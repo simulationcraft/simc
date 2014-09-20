@@ -320,7 +320,7 @@ public:
     cooldowns.explosive_shot  = get_cooldown( "explosive_shot" );
     cooldowns.bestial_wrath   = get_cooldown( "bestial_wrath" );
     cooldowns.kill_shot_reset = get_cooldown( "kill_shot_reset" );
-    cooldowns.kill_shot_reset -> duration = timespan_t::from_seconds( 6 );
+    cooldowns.kill_shot_reset -> duration = timespan_t::from_seconds( 10 );
     cooldowns.rapid_fire      = get_cooldown( "rapid_fire" );
     cooldowns.sniper_training = get_cooldown( "sniper_training" );
     cooldowns.sniper_training -> duration = timespan_t::from_seconds( 3 );
@@ -1758,7 +1758,8 @@ struct ranged_t: public hunter_ranged_attack_t
           residual_action::trigger(
             p() -> active.poisoned_ammo, // ignite spell
             s -> target, // target
-            p() -> cache.attack_power() * 0.4 );
+            p() -> cache.attack_power() * ( p() -> find_spell( 170661 ) -> effectN( 1 ).ap_coeff() * 
+            ( p() -> find_spell( 170661 ) -> duration() / p() -> find_spell( 170661 ) -> effectN( 1 ).period() ) ) );
         }
         else if ( p() -> active.ammo == FROZEN_AMMO )
           p() -> active.frozen_ammo -> execute();
