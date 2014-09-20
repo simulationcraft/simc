@@ -66,15 +66,16 @@ public:
   std::vector<icicle_tuple_t> icicles;
   action_t* icicle;
   core_event_t* icicle_event;
-  // RNG
-  real_ppm_t rppm_pyromaniac; // RPPM object for T17 Fire 4pc
-  real_ppm_t rppm_arcane_instability; // RPPM object for T17 Arcane 4pc
 
   // Active
   actions::ignite_t* active_ignite;
   int active_bomb_targets;
   action_t* explode; // Explode helps with handling Unstable Magic.
   player_t* last_bomb_target;
+
+  // RPPM objects
+  real_ppm_t rppm_pyromaniac; // T17 Fire 4pc
+  real_ppm_t rppm_arcane_instability; // T17 Arcane 4pc
 
   // Benefits
   struct benefits_t
@@ -313,6 +314,7 @@ public:
     active_ignite( 0 ),
     active_bomb_targets( 0 ),
     last_bomb_target( 0 ),
+    rppm_pyromaniac( *this, 0, RPPM_HASTE ),
     benefits( benefits_t() ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
@@ -326,8 +328,7 @@ public:
     spec( specializations_t() ),
     talents( talents_list_t() ),
     pyro_switch( pyro_switch_t() ),
-    current_arcane_charges(),
-    rppm_pyromaniac( *this, 0, RPPM_HASTE )
+    current_arcane_charges()
   {
 
     //Active
