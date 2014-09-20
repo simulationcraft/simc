@@ -3604,6 +3604,15 @@ struct death_coil_t : public death_knight_spell_t
 
 // Death Strike =============================================================
 
+struct blood_shield_buff_t : public absorb_buff_t
+{
+  blood_shield_buff_t( death_knight_t* player ) :
+    absorb_buff_t( absorb_buff_creator_t( player, "blood_shield", player -> find_spell( 77535 ) )
+                   .school( SCHOOL_PHYSICAL )
+                   .source( player -> get_stats( "blood_shield" ) ) )
+  { }
+};
+
 struct death_strike_offhand_t : public death_knight_melee_attack_t
 {
   death_strike_offhand_t( death_knight_t* p ) :
@@ -3615,12 +3624,36 @@ struct death_strike_offhand_t : public death_knight_melee_attack_t
   }
 };
 
+struct blood_shield_t : public absorb_t
+{
+  blood_shield_t( death_knight_t* p ) :
+    absorb_t( "blood_shield", p, p -> find_spell( 77535 ) )
+  {
+    may_miss = may_crit = may_multistrike = callbacks = false;
+    background = proc = true;
+  }
+
+  // Self only so we can do this in a simple way
+  absorb_buff_t* create_buff( const action_state_t* )
+  { return debug_cast<death_knight_t*>( player ) -> buffs.blood_shield; }
+
+  void init()
+  {
+    absorb_t::init();
+
+    snapshot_flags = update_flags = 0;
+  }
+};
+
 struct death_strike_heal_t : public death_knight_heal_t
 {
+  blood_shield_t* blood_shield;
+
   death_strike_heal_t( death_knight_t* p ) :
-    death_knight_heal_t( "death_strike_heal", p, p -> find_spell( 45470 ) )
+    death_knight_heal_t( "death_strike_heal", p, p -> find_spell( 45470 ) ),
+    blood_shield( p -> specialization() == DEATH_KNIGHT_BLOOD ? new blood_shield_t( p ) : 0 )
   {
-    may_crit   = false;
+    may_crit   = may_multistrike = callbacks = false;
     background = true;
     target     = p;
   }
@@ -3642,27 +3675,37 @@ struct death_strike_heal_t : public death_knight_heal_t
     trigger_blood_shield( state );
   }
 
+  void consume_resource()
+  {
+    death_knight_heal_t::consume_resource();
+
+    p() -> buffs.scent_of_blood -> expire();
+  }
+
   void trigger_blood_shield( action_state_t* state )
   {
     if ( p() -> specialization() != DEATH_KNIGHT_BLOOD )
       return;
 
-    double amount = p() -> buffs.blood_shield -> current_value;
+    double current_value = 0;
+    if ( blood_shield -> target_specific[ state -> target ] )
+      current_value = blood_shield -> target_specific[ state -> target ] -> current_value;
 
+    double amount = current_value;
     if ( p() -> mastery.blood_shield -> ok() )
-      amount += state -> result_amount * p() -> cache.mastery_value();
+      amount += state -> result_total * p() -> cache.mastery_value();
 
     amount = std::min( p() -> resources.max[ RESOURCE_HEALTH ], amount );
 
     if ( sim -> debug )
       sim -> out_debug.printf( "%s Blood Shield buff trigger, old_value=%f added_value=%f new_value=%f",
-                     player -> name(), p() -> buffs.blood_shield -> current_value,
+                     player -> name(), current_value,
                      state -> result_amount * p() -> cache.mastery_value(),
                      amount );
 
-    p() -> buffs.blood_shield -> trigger( 1, amount );
+    blood_shield -> base_dd_min = blood_shield -> base_dd_max = amount;
+    blood_shield -> execute();
   }
-
 };
 
 struct death_strike_t : public death_knight_melee_attack_t
@@ -3733,7 +3776,6 @@ struct death_strike_t : public death_knight_melee_attack_t
       p() -> cooldown.vampiric_blood -> ready -= reduction;
     }
 
-    p() -> buffs.scent_of_blood -> expire();
     p() -> buffs.deathbringer -> decrement();
   }
 
@@ -5353,11 +5395,11 @@ struct frozen_runeblade_buff_t : public buff_t
     stack_count = 0;
   }
 
-void reset()
-{
-  buff_t::reset();
-  stack_count = 0;
-}
+  void reset()
+  {
+    buff_t::reset();
+    stack_count = 0;
+  }
 };
 
 } // UNNAMED NAMESPACE
@@ -6473,10 +6515,7 @@ void death_knight_t::create_buffs()
 
   buffs.army_of_the_dead    = buff_creator_t( this, "army_of_the_dead", find_class_spell( "Army of the Dead" ) )
                               .cd( timespan_t::zero() );
-  buffs.blood_shield        = absorb_buff_creator_t( this, "blood_shield", find_spell( 77535 ) )
-                              .school( SCHOOL_PHYSICAL )
-                              .source( get_stats( "blood_shield" ) )
-                              .gain( get_gain( "blood_shield" ) );
+  buffs.blood_shield        = new blood_shield_buff_t( this );
   buffs.rune_tap            = buff_creator_t( this, "rune_tap", find_specialization_spell( "Rune Tap" ) -> effectN( 1 ).trigger() );
 
   buffs.antimagic_shell     = buff_creator_t( this, "antimagic_shell", find_class_spell( "Anti-Magic Shell" ) )
