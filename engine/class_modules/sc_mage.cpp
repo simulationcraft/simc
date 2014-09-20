@@ -77,6 +77,9 @@ public:
   real_ppm_t rppm_pyromaniac; // T17 Fire 4pc
   real_ppm_t rppm_arcane_instability; // T17 Arcane 4pc
 
+  // Miscellaneous
+  double pet_multiplier;
+
   // Benefits
   struct benefits_t
   {
@@ -315,6 +318,7 @@ public:
     active_bomb_targets( 0 ),
     last_bomb_target( 0 ),
     rppm_pyromaniac( *this, 0, RPPM_HASTE ),
+    pet_multiplier( 1.0 ),
     benefits( benefits_t() ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
@@ -542,9 +546,8 @@ struct water_elemental_pet_t : public pet_t
     {
       m *= 1.0 + ( o() -> buffs.incanters_flow -> current_stack ) * ( find_spell( 116267 ) -> effectN( 1 ).percent() );
     }
-    // Orc racial
-    if ( owner -> race == RACE_ORC )
-      m *= 1.0 + find_spell( 21563 ) -> effectN( 1 ).percent();
+
+    m *= o() -> pet_multiplier;
 
     return m;
   }
@@ -4469,6 +4472,9 @@ void mage_t::init_base_stats()
   // Reduce fire mage distance to avoid proc munching at high haste
   if ( specialization() == MAGE_FIRE )
     base.distance = 20;
+
+  if ( race == RACE_ORC )
+    pet_multiplier *= 1.0 + find_racial_spell( "Command" ) -> effectN( 1 ).percent();
 }
 
 // mage_t::init_scaling =====================================================
