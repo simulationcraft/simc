@@ -10,6 +10,7 @@ namespace
 
 // ==========================================================================
 // Hunter
+// Currently on beta enhanced basic attacks seem to proc 50% of the time, rather than 15% from spell data.
 // ==========================================================================
 
 struct hunter_t;
@@ -40,7 +41,7 @@ public:
   core_event_t* sniper_training;
   const spell_data_t* sniper_training_cd;
   timespan_t movement_ended;
-
+  double enhanced_auto;
   // Active
   std::vector<pets::hunter_main_pet_t*> hunter_main_pets;
   struct actives_t
@@ -328,6 +329,7 @@ public:
     summon_pet_str = "";
     base.distance = 40;
     base_gcd = timespan_t::from_seconds( 1.0 );
+    enhanced_auto = 0.5;
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[ CACHE_HASTE ] = true;
@@ -1222,8 +1224,9 @@ struct basic_attack_t: public hunter_main_pet_attack_t
 
   void update_ready( timespan_t cd_duration )
   {
-    hunter_main_pet_attack_t::update_ready( cd_duration );
-    if ( o() -> rng().roll( o() -> perks.enhanced_basic_attacks -> effectN( 1 ).percent() ) )
+    hunter_main_pet_attack_t::update_ready( cd_duration ); // Currently on beta enhanced basic attacks seems to proc 50% of the time, rather than 15%.
+    // Added in an option to tweak it for now, default set at 50%
+    if ( o() -> rng().roll( o() -> bugs ? o() -> enhanced_auto : o() -> perks.enhanced_basic_attacks -> effectN( 1 ).percent() ) )
     {
       cooldown -> reset( true );
       p() -> buffs.enhanced_basic_attacks -> trigger();
@@ -3987,6 +3990,7 @@ void hunter_t::create_options()
   option_t hunter_options[] =
   {
     opt_string( "summon_pet", summon_pet_str ),
+    opt_float( "enhanced_auto", enhanced_auto ),
     opt_null()
   };
 
@@ -4013,6 +4017,7 @@ void hunter_t::copy_from( player_t* source )
   hunter_t* p = debug_cast<hunter_t*>( source );
 
   summon_pet_str = p -> summon_pet_str;
+  enhanced_auto = p -> enhanced_auto;
 }
 
 // hunter_t::armory_extensions ==============================================
