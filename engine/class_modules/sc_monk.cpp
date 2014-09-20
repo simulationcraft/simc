@@ -1068,7 +1068,7 @@ struct dot_blackout_kick_t: public residual_action::residual_periodic_action_t <
 
 struct heal_blackout_kick_t : public monk_heal_t
 {
-  heal_blackout_kick_t( monk_t& p, const std::string& options_str ) :
+  heal_blackout_kick_t( monk_t& p ) :
     monk_heal_t( "blackout_kick_heal" , p, p.find_spell( 128591 ) )
   {
     may_miss = may_crit = false;
