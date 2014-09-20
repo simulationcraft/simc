@@ -222,7 +222,6 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left -> addRow( tr(  "Length (sec)" ),    choice.fight_length = addValidatorToComboBox( 1, 1000, createChoice( 10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) ) );
   globalsLayout_left -> addRow( tr(   "Vary Length" ),  choice.fight_variance = createChoice( 3, "0%", "10%", "20%" ) );
   globalsLayout_left -> addRow( tr(   "Fight Style" ),     choice.fight_style = createChoice( 6, "Patchwerk", "HecticAddCleave", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement" ) );
-  globalsLayout_left -> addRow( tr(   "Num Enemies" ),      choice.num_target = createChoice( 9, "1", "2", "3", "4", "5", "6", "7", "8", "20" ) );
   globalsLayout_left -> addRow( tr( "Challenge Mode" ), choice.challenge_mode = createChoice( 2, "Disabled", "Enabled" ) );
   globalsLayout_left -> addRow( tr(  "Player Skill" ),    choice.player_skill = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
   globalsLayout_left -> addRow( tr( "Default Role" ),     choice.default_role = createChoice( 4, "Auto", "DPS", "Heal", "Tank" ) );
@@ -234,6 +233,7 @@ void SC_OptionsTab::createGlobalsTab()
   QFormLayout* globalsLayout_middle = new QFormLayout();
   globalsLayout_middle -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 
+  globalsLayout_middle -> addRow( tr( "Num Enemies" ), choice.num_target = createChoice( 9, "1", "2", "3", "4", "5", "6", "7", "8", "20" ) );
   globalsLayout_middle -> addRow( tr( "Target Level" ), choice.target_level = createChoice( 4, "Raid Boss", "5-Man Heroic", "5-Man Normal", "Max Player Level" ) );
   globalsLayout_middle -> addRow( tr( "Target Race" ),   choice.target_race = createChoice( 7, "Humanoid", "Beast", "Demon", "Dragonkin", "Elemental", "Giant", "Undead" ) );
 

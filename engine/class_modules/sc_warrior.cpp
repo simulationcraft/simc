@@ -21,7 +21,7 @@ enum warrior_stance { STANCE_BATTLE = 2, STANCE_DEFENSE = 4, STANCE_GLADIATOR = 
 
 static bool bloodbath_blacklist( unsigned spell_id )
 {
-  // These spells do not proc bloodbath. Tested 9-9-14, spell ids are in the following order
+  // These spells do not proc bloodbath. Tested 9-19-14, spell ids are in the following order
   // Heroic Throw, Execute Off-hand, Storm Bolt Off-Hand, Ravager, Deep Wounds, Siegebreaker Off-hand, Rend Burst, Enhanced Rend
   static const unsigned blacklist[] = { 57755, 163558, 145585, 156287, 115768, 176318, 94009, 174736 };
 
@@ -263,7 +263,6 @@ public:
     proc_t* t15_2pc_melee;
     proc_t* t17_4pc_arms;
     proc_t* t17_2pc_fury;
-    proc_t* t17_2pc_prot;
   } proc;
 
   real_ppm_t t15_2pc_melee;
@@ -2510,12 +2509,50 @@ struct siegebreaker_t: public warrior_attack_t
 
 // Shield Slam ==============================================================
 
+struct shield_charge_2pc_t: public warrior_attack_t
+{
+  shield_charge_2pc_t( warrior_t* p ):
+    warrior_attack_t( "shield_charge_t17_2pc_proc", p, p -> find_spell( 156321 ) )
+  {
+  }
+
+  void execute()
+  {
+    warrior_attack_t::execute();
+    if ( p() -> buff.shield_charge -> check() )
+      p() -> buff.shield_charge -> extend_duration( p(), p() -> buff.shield_charge -> data().duration() );
+    else
+      p() -> buff.shield_charge -> trigger();
+  }
+};
+
+struct shield_block_2pc_t: public warrior_attack_t
+{
+  shield_block_2pc_t( warrior_t* p ):
+    warrior_attack_t( "shield_block_t17_2pc_proc", p, p -> find_class_spell( "Shield Block" ) )
+  {
+  }
+
+  void execute()
+  {
+    warrior_attack_t::execute();
+    if ( p() -> buff.shield_block -> check() )
+      p() -> buff.shield_block -> extend_duration( p(), p() -> buff.shield_block -> data().duration() );
+    else
+      p() -> buff.shield_block -> trigger();
+  }
+};
+
 struct shield_slam_t: public warrior_attack_t
 {
   double rage_gain;
+  attack_t* shield_charge_2pc;
+  attack_t* shield_block_2pc;
   shield_slam_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "shield_slam", p, p -> spec.shield_slam ),
-    rage_gain( 0.0 )
+    rage_gain( 0.0 ),
+    shield_charge_2pc( new shield_charge_2pc_t( p ) ),
+    shield_block_2pc( new shield_block_2pc_t( p ) )
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
@@ -2559,21 +2596,10 @@ struct shield_slam_t: public warrior_attack_t
 
     if ( rng().roll( p() -> sets.set( WARRIOR_PROTECTION, T17, B2 ) -> proc_chance() ) )
     {
-      p() -> proc.t17_2pc_prot -> occur();
       if ( p() -> active_stance == STANCE_GLADIATOR )
-      {
-        if ( p() -> buff.shield_charge -> check() )
-          p() -> buff.shield_charge -> extend_duration( p(), p() -> buff.shield_charge -> data().duration() );
-        else
-          p() -> buff.shield_charge -> trigger();
-      }
+        shield_charge_2pc -> execute();
       else
-      {
-        if ( p() -> buff.shield_block -> check() )
-          p() -> buff.shield_block -> extend_duration( p(), p() -> buff.shield_block -> data().duration() );
-        else
-          p() -> buff.shield_block -> trigger();
-      }
+        shield_block_2pc -> execute();
     }
 
     double rage_from_snb = 0;
@@ -4776,7 +4802,6 @@ void warrior_t::init_procs()
   proc.t15_2pc_melee           = get_proc( "t15_2pc_melee" );
   proc.t17_2pc_fury            = get_proc( "t17_2pc_fury" );
   proc.t17_4pc_arms            = get_proc( "t17_4pc_arms" );
-  proc.t17_2pc_prot            = get_proc( "t17_2pc_prot" );
 }
 
 // warrior_t::init_rng ======================================================
