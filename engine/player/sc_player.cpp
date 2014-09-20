@@ -9329,7 +9329,7 @@ double player_stat_cache_t::avoidance() const
 }
 
 
-// player_stat_cache_t::mastery =============================================
+// player_stat_cache_t::player_multiplier =============================================
 
 double player_stat_cache_t::player_multiplier( school_e s ) const
 {
@@ -9342,7 +9342,7 @@ double player_stat_cache_t::player_multiplier( school_e s ) const
   return _player_mult[ s ];
 }
 
-// player_stat_cache_t::mastery =============================================
+// player_stat_cache_t::player_heal_multiplier =============================================
 
 double player_stat_cache_t::player_heal_multiplier( const action_state_t* s ) const
 {

@@ -2146,13 +2146,6 @@ struct mutilate_strike_t : public rogue_attack_t
                             this );
   }
 
-  void consume_resource()
-  {
-    rogue_attack_t::consume_resource();
-
-    p() -> buffs.enhanced_vendetta -> expire();
-  }
-
   double action_multiplier() const
   {
     double m = rogue_attack_t::action_multiplier();
@@ -2202,7 +2195,14 @@ struct mutilate_t : public rogue_attack_t
     add_child( oh_strike );
   }
 
-  virtual double cost() const
+  void consume_resource()
+  {
+    rogue_attack_t::consume_resource();
+
+    p() -> buffs.enhanced_vendetta -> expire();
+  }
+  
+  double cost() const
   {
     double c = rogue_attack_t::cost();
     if ( p() -> buffs.t16_2pc_melee -> up() )
@@ -2214,7 +2214,7 @@ struct mutilate_t : public rogue_attack_t
     return c;
   }
 
-  virtual void execute()
+  void execute()
   {
     rogue_attack_t::execute();
 
@@ -2227,7 +2227,7 @@ struct mutilate_t : public rogue_attack_t
     }
   }
 
-  virtual void impact( action_state_t* state )
+  void impact( action_state_t* state )
   {
     rogue_attack_t::impact( state );
 
