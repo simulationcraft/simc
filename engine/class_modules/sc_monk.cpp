@@ -3870,6 +3870,10 @@ void monk_t::invalidate_cache( cache_e c )
     if ( current_stance() == WISE_SERPENT || current_stance() == SPIRITED_CRANE )
       player_t::invalidate_cache( CACHE_ATTACK_POWER );
     break;
+  case CACHE_BONUS_ARMOR:
+    if ( spec.bladed_armor -> ok() )
+      player_t::invalidate_cache( CACHE_ATTACK_POWER );
+    break;
   default: break;
   }
 }

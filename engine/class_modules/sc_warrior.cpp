@@ -5292,6 +5292,10 @@ void warrior_t::invalidate_cache( cache_e c )
   }
   if ( c == CACHE_MASTERY && mastery.unshackled_fury -> ok() )
     player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  
+  if ( c == CACHE_BONUS_ARMOR && spec.bladed_armor -> ok() )
+    player_t::invalidate_cache( CACHE_ATTACK_POWER );
+
 }
 
 // warrior_t::primary_role() ================================================
