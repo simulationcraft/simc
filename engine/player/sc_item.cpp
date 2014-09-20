@@ -1254,6 +1254,7 @@ bool item_t::decode_equip_effect()
   {
     if ( ( ret = proc::parse_special_effect_encoding( effect, *this, option_equip_str ) ) )
     {
+      effect.name_str = name_str;
       effect.type = SPECIAL_EFFECT_EQUIP;
       effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
       parsed.special_effects.push_back( effect );
