@@ -2510,7 +2510,7 @@ struct sinister_strike_t : public rogue_attack_t
       p() -> buffs.bandits_guile -> trigger();
 
       rogue_td_t* td = this -> td( state -> target );
-      double proc_chance = td -> dots.revealing_strike -> current_action -> data().proc_chance();
+      double proc_chance = td -> dots.revealing_strike -> current_action -> data().effectN( 6 ).percent();
       proc_chance += p() -> sets.set( ROGUE_COMBAT, T17, B2 ) -> effectN( 1 ).percent();
 
       if ( td -> dots.revealing_strike -> is_ticking() && rng().roll( proc_chance ) )
