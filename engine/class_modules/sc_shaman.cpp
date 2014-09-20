@@ -4965,6 +4965,8 @@ void shaman_t::trigger_tier17_4pc_elemental( int stacks )
 
   proc.lava_surge -> occur();
   buff.lava_surge -> trigger();
+
+  cooldown.lava_burst -> reset( false );
 }
 
 
