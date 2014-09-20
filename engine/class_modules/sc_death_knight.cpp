@@ -188,7 +188,6 @@ public:
   {
     buff_t* army_of_the_dead;
     buff_t* antimagic_shell;
-    buff_t* bladed_armor;
     buff_t* blood_charge;
     buff_t* blood_presence;
     buff_t* bone_wall;
@@ -302,6 +301,7 @@ public:
     const spell_data_t* multistrike_attunement;
 
     // Blood
+    const spell_data_t* bladed_armor;
     const spell_data_t* blood_rites;
     const spell_data_t* veteran_of_the_third_war;
     const spell_data_t* scent_of_blood;
@@ -5766,6 +5766,7 @@ void death_knight_t::init_spells()
   spec.multistrike_attunement     = find_specialization_spell( "Multistrike Attunement" );
 
   // Blood
+  spec.bladed_armor               = find_specialization_spell( "Bladed Armor" );
   spec.blood_rites                = find_specialization_spell( "Blood Rites" );
   spec.veteran_of_the_third_war   = find_specialization_spell( "Veteran of the Third War" );
   spec.scent_of_blood             = find_specialization_spell( "Scent of Blood" );
@@ -6538,8 +6539,6 @@ void death_knight_t::create_buffs()
 
   buffs.antimagic_shell     = buff_creator_t( this, "antimagic_shell", find_class_spell( "Anti-Magic Shell" ) )
                               .cd( timespan_t::zero() );
-  buffs.bladed_armor           = buff_creator_t( this, "bladed_armor", find_specialization_spell( "Bladed Armor" ) )
-                                 .add_invalidate( CACHE_ATTACK_POWER );
   buffs.blood_charge        = buff_creator_t( this, "blood_charge", find_spell( 114851 ) )
                               .chance( find_talent_spell( "Blood Tap" ) -> ok() );
   buffs.blood_presence      = buff_creator_t( this, "blood_presence", find_class_spell( "Blood Presence" ) )
@@ -6730,9 +6729,6 @@ void death_knight_t::combat_begin()
 
   if ( specialization() == DEATH_KNIGHT_BLOOD )
     resolve_manager.start();
-
-  if ( find_specialization_spell( "Bladed Armor" ) )
-    buffs.bladed_armor -> trigger();
 }
 
 // death_knight_t::assess_heal ==============================================
@@ -7034,7 +7030,7 @@ double death_knight_t::composite_melee_attack_power() const
 {
   double ap = player_t::composite_melee_attack_power();
 
-  ap += buffs.bladed_armor -> data().effectN( 1 ).percent() * current.stats.get_stat( STAT_BONUS_ARMOR );
+  ap += spec.bladed_armor -> effectN( 1 ).percent() * current.stats.get_stat( STAT_BONUS_ARMOR );
 
   return ap;
 }
@@ -7109,6 +7105,10 @@ void death_knight_t::invalidate_cache( cache_e c )
       if ( spec.riposte -> ok() )
         player_t::invalidate_cache( CACHE_PARRY );
       break;
+    case CACHE_BONUS_ARMOR:
+      if ( spec.bladed_armor -> ok() )
+        player_t::invalidate_cache( CACHE_ATTACK_POWER );
+      break;
     case CACHE_MASTERY:
       player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
       if ( specialization() == DEATH_KNIGHT_BLOOD )
@@ -7127,6 +7127,9 @@ role_e death_knight_t::primary_role() const
 
   if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_ATTACK )
     return ROLE_ATTACK;
+
+  if ( specialization() == DEATH_KNIGHT_BLOOD )
+    return ROLE_TANK;
 
   return ROLE_ATTACK;
 }
