@@ -4893,7 +4893,7 @@ void rogue_t::arise()
   resources.current[ RESOURCE_COMBO_POINT ] = 0;
 
   if ( perk.improved_slice_and_dice -> ok() )
-    buffs.slice_and_dice -> trigger( 1, buffs.slice_and_dice -> data().effectN( 1 ).percent(), -1.0, timespan_t::min() );
+    buffs.slice_and_dice -> trigger( 1, buffs.slice_and_dice -> data().effectN( 1 ).percent(), -1.0, timespan_t::zero() );
 
 
   if ( ! sim -> overrides.haste && dbc.spell( 113742 ) -> is_level( level ) ) sim -> auras.haste -> trigger();
