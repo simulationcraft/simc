@@ -7429,6 +7429,15 @@ expr_t* player_t::create_expression( action_t* a,
       };
       return new spell_haste_expr_t( *this );
     }
+    else if ( util::str_compare_ci( "multistrike_pct", splits[ 1 ] ) )
+    {
+      struct ms_expr_t : public player_expr_t
+      {
+        ms_expr_t( player_t& p ) : player_expr_t( "ms_pct", p ) { }
+        double evaluate() { return player.cache.multistrike() * 100.0; }
+      };
+      return new ms_expr_t( *this );
+    }
 
     stat_e stat = util::parse_stat_type( splits[ 1 ] );
     switch ( stat )
