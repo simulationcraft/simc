@@ -5703,7 +5703,7 @@ struct action_t : public noncopyable
   core_event_t* execute_event;
   timespan_t time_to_execute, time_to_travel;
   double travel_speed, resource_consumed;
-  int moving, wait_on_ready, interrupt, chain, cycle_targets, max_cycle_targets, target_number;
+  int moving, wait_on_ready, interrupt, chain, cycle_targets, cycle_players, max_cycle_targets, target_number;
   bool round_base_dmg;
   std::string if_expr_str;
   expr_t* if_expr;
