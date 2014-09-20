@@ -2222,8 +2222,8 @@ struct mutilate_t : public rogue_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      mh_strike -> schedule_execute( mh_strike -> get_state( execute_state ) );
-      oh_strike -> schedule_execute( oh_strike -> get_state( execute_state ) );
+      mh_strike -> execute();
+      oh_strike -> execute();
     }
   }
 
