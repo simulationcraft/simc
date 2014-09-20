@@ -1846,7 +1846,6 @@ struct eviscerate_t : public rogue_attack_t
   {
     rogue_attack_t::consume_resource();
 
-    // TODO: DfA + Deceit interaction?
     p() -> buffs.deceit -> expire();
   }
 
