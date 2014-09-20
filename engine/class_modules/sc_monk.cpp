@@ -1458,7 +1458,10 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
       p() -> proc.tier15_2pc_melee -> occur();
     }
 
-    if ( execute_state -> n_targets >= 3 )
+    std::vector<player_t*>& tl = sim -> player_no_pet_list.data();
+    size_t num_targets = tl.size();
+
+    if ( num_targets >= 3 )
     {
       player -> resource_gain( RESOURCE_CHI, p() -> spec.spinning_crane_kick -> effectN( 4 ).base_value(),
         p() -> gain.spinning_crane_kick, this );
