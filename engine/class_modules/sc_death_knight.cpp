@@ -3611,6 +3611,24 @@ struct blood_shield_buff_t : public absorb_buff_t
                    .school( SCHOOL_PHYSICAL )
                    .source( player -> get_stats( "blood_shield" ) ) )
   { }
+
+  // Clamp shield value so that if T17 4PC is used, we have at least 5% of
+  // current max health of absorb left, if Vampiric Blood is up
+  void absorb_used( double )
+  {
+    death_knight_t* p = debug_cast<death_knight_t*>( player );
+    if ( p -> sets.has_set_bonus( DEATH_KNIGHT_BLOOD, T17, B4 ) && p -> buffs.vampiric_blood -> up() )
+    {
+      double min_absorb = p -> resources.max[ RESOURCE_HEALTH ] *
+                          p -> sets.set( DEATH_KNIGHT_BLOOD, T17, B4 ) -> effectN( 1 ).percent();
+
+      if ( sim -> debug )
+        sim -> out_debug.printf( "%s blood_shield absorb clamped to %f", player -> name(), min_absorb );
+
+      if ( current_value < min_absorb )
+        current_value = min_absorb;
+    }
+  }
 };
 
 struct death_strike_offhand_t : public death_knight_melee_attack_t

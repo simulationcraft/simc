@@ -4675,8 +4675,17 @@ double account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
         p.sim -> out_debug.printf( "Damage to %s after %s is %f", s -> target -> name(), ab -> name(), s -> result_amount );
     }
 
-    ab -> expire();
-    assert( p.absorb_buff_list.empty() || p.absorb_buff_list[ 0 ] != ab );
+    // So, it turns out it's possible to have absorb buff behavior, where
+    // there's a "minimum value" for the absorb buff, even after absorbing
+    // damage more than its current value. In this case, the absorb buff should
+    // not be expired, as the current_value still has something left.
+    if ( ab -> current_value <= 0 )
+    {
+      ab -> expire();
+      assert( p.absorb_buff_list.empty() || p.absorb_buff_list[ 0 ] != ab );
+    }
+    else
+      offset++;
   } // end of absorb list loop
 
   p.iteration_absorb_taken += result_ignoring_external_absorbs - s -> result_amount;
