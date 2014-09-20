@@ -1965,7 +1965,7 @@ void sim_t::merge()
 void sim_t::run()
 {
   iterate();
-  if ( iterations > 0 )
+  if ( total_events_processed > 0 )
     parent -> merge( *this );
 }
 
