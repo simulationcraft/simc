@@ -4415,24 +4415,7 @@ struct pillar_of_frost_t : public death_knight_spell_t
     p() -> buffs.pillar_of_frost -> trigger();
 
     if ( p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T17, B2 ) )
-    {
-      unsigned gained = 0, overflow = 0;
-      for ( size_t i = 0; i < p() -> _runes.slot.size(); i++ )
-      {
-        if ( ! p() -> _runes.slot[ i ].is_ready() )
-          gained++;
-        else
-          overflow++;
-
-        p() -> _runes.slot[ i ].type |= RUNE_TYPE_DEATH;
-        p() -> _runes.slot[ i ].fill_rune();
-      }
-
-      p() -> gains.t17_2pc_frost -> add( RESOURCE_RUNE, gained + overflow, overflow );
-
-      if ( sim -> debug )
-        log_rune_status( p() );
-    }
+      p() -> resource_gain( RESOURCE_RUNIC_POWER, p() -> sets.set( DEATH_KNIGHT_FROST, T17, B2 ) -> effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ), p() -> gains.t17_2pc_frost );
   }
 
   bool ready()
