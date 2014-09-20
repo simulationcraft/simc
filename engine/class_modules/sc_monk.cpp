@@ -9,6 +9,12 @@
   - Crackling Jade Lightning
   Change expel harm to heal later on.
 
+  GENERAL:
+  - Healing Elixers - something is wrong with it's implementation
+
+  WINDWALKER:
+  - Make Sure the healing for Blackout Kick is working
+
   MISTWEAVER: Pretty much everything. I have no plans of fixing mistweaver. -alex 8/26/14
   Implement the following spells:
   - Renewing Mist
@@ -76,6 +82,7 @@ public:
   struct active_actions_t
   {
     action_t* blackout_kick_dot;
+    action_t* blackout_kick_heal;
     action_t* chi_explosion_dot;
     actions::spells::stagger_self_damage_t* stagger_self_damage;
   } active_actions;
@@ -1055,7 +1062,17 @@ struct dot_blackout_kick_t: public residual_action::residual_periodic_action_t <
   dot_blackout_kick_t( monk_t* p ):
     base_t( "blackout_kick_dot", p, p -> find_spell( 128531 ) )
   {
-    may_miss = false;
+    may_miss = may_crit = false;
+  }
+};
+
+struct heal_blackout_kick_t : public monk_heal_t
+{
+  heal_blackout_kick_t( monk_t& p, const std::string& options_str ) :
+    monk_heal_t( "blackout_kick_heal" , p, p.find_spell( 128591 ) )
+  {
+    may_miss = may_crit = false;
+    target = player;
   }
 };
 
@@ -1069,6 +1086,16 @@ struct blackout_kick_t: public monk_melee_attack_t
       p -> active_actions.blackout_kick_dot,
       t,
       dmg );
+  }
+
+  void trigger_blackout_kick_heal( blackout_kick_t* s, player_t* t, double heal )
+  {
+    monk_t* p = s -> p();
+
+    residual_action::trigger(
+      p -> active_actions.blackout_kick_heal,
+      t,
+      heal);
   }
 
   blackout_kick_t( monk_t* p, const std::string& options_str ):
@@ -1117,8 +1144,13 @@ struct blackout_kick_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::assess_damage( type, s );
 
-    if ( p() -> specialization() == MONK_WINDWALKER )
-      trigger_blackout_kick_dot( this, s -> target, s -> result_amount * data().effectN( 2 ).percent() );
+    if (p()->specialization() == MONK_WINDWALKER)
+    {
+      //if ( p() -> current.position == POSITION_BACK )
+        trigger_blackout_kick_dot( this, s -> target, s -> result_amount * data().effectN( 2 ).percent() );
+      //else
+      //  trigger_blackout_kick_heal( this, s -> target, s -> result_amount * data().effectN( 2 ).percent() );
+    }
   }
 
   virtual double cost() const
@@ -3299,6 +3331,7 @@ void monk_t::init_spells()
 
   //SPELLS
   active_actions.blackout_kick_dot = new actions::dot_blackout_kick_t( this );
+  //active_actions.blackout_kick_heal = new actions::heal_blackout_kick_t( this );
   active_actions.chi_explosion_dot = new actions::dot_chi_explosion_t( this );
 
   if ( specialization() == MONK_BREWMASTER )
