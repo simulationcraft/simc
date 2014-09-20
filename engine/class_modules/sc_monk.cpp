@@ -1426,12 +1426,13 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     }
   };
 
-  rushing_jade_wind_tick_t* jade = NULL;
-  spinning_crane_kick_tick_t* crane = NULL;
+  rushing_jade_wind_tick_t* jade;
+  spinning_crane_kick_tick_t* crane;
   spinning_crane_kick_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( p -> talent.rushing_jade_wind -> ok() ? "rushing_jade_wind" : "spinning_crane_kick",
     p,
-    p -> talent.rushing_jade_wind -> ok() ? p -> talent.rushing_jade_wind : p -> spec.spinning_crane_kick )
+    p -> talent.rushing_jade_wind -> ok() ? p -> talent.rushing_jade_wind : p -> spec.spinning_crane_kick ),
+    jade( 0 ), crane( 0 )
   {
     parse_options( nullptr, options_str );
     stancemask = STURDY_OX | FIERCE_TIGER | WISE_SERPENT | SPIRITED_CRANE;
