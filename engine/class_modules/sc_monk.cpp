@@ -2700,14 +2700,6 @@ struct expel_harm_heal_t: public monk_heal_t
       p() -> proc.tier15_2pc_melee -> occur();
     }
   }
-
-  virtual void update_ready( timespan_t cd )
-  {
-    if ( p() -> spec.desperate_measures -> ok() && p() -> health_percentage() <= 35.0 )
-      cd = timespan_t::zero();
-
-    monk_heal_t::update_ready( cd );
-  }
 };
 
 // ==========================================================================
@@ -4219,7 +4211,7 @@ void monk_t::apl_combat_brewmaster()
   st -> add_action( this, "Blackout Kick", "if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=gcd" );
   st -> add_action( this, "Blackout Kick", "if=buff.serenity.up" );
   st -> add_action( this, "Blackout Kick", "if=chi>=4" );
-  st -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.expel_harm.remains>=0&cooldown.keg_smash.remains>=gcd" );
+  st -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd" );
   st -> add_action( this, "Jab", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd" );
   st -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.moderate&buff.shuffle.remains>=6");
   st -> add_action( this, "Tiger Palm", "if=(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
@@ -4241,7 +4233,7 @@ void monk_t::apl_combat_brewmaster()
   aoe -> add_action( this, "Blackout Kick", "if=talent.rushing_jade_wind.enabled&buff.shuffle.remains<=3&cooldown.keg_smash.remains>=gcd" );
   aoe -> add_action( this, "Blackout Kick", "if=talent.rushing_jade_wind.enabled&buff.serenity.up" );
   aoe -> add_action( this, "Blackout Kick", "if=talent.rushing_jade_wind.enabled&chi>=4" );
-  aoe -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.expel_harm.remains=0&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
+  aoe -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
   aoe -> add_action( this, "Spinning Crane Kick", "if=chi.max-chi>=1&!talent.rushing_jade_wind.enabled" );
   aoe -> add_action( this, "Jab", "if=talent.rushing_jade_wind.enabled&chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd" );
   aoe -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&talent.rushing_jade_wind.enabled&stagger.moderate&buff.shuffle.remains>=6");
