@@ -3659,7 +3659,10 @@ struct renewal_t : public druid_heal_t
 {
   renewal_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( "renewal", p, p -> find_talent_spell( "Renewal" ), options_str )
-  {}
+  {
+    may_crit = false;
+    may_multistrike = 0;
+  }
 
   virtual void init()
   {
