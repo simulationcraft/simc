@@ -148,6 +148,7 @@ public:
     gain_t* serenity;
     gain_t* soothing_mist;
     gain_t* spinning_crane_kick;
+    gain_t* rushing_jade_wind;
     gain_t* surging_mist;
     gain_t* tier15_2pc_melee;
     gain_t* tier16_4pc_melee;
@@ -1419,7 +1420,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
       if ( execute_state -> n_targets >= 3 && chi_refund )
       {
         player -> resource_gain( RESOURCE_CHI, p() -> find_spell( 129881 ) -> effectN( 1 ).base_value(),
-                                 p() -> gain.spinning_crane_kick, this );
+                                 p() -> gain.rushing_jade_wind, this );
         chi_refund = false; // Only let one tick refund chi.
       }
     }
@@ -1430,7 +1431,8 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
   spinning_crane_kick_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( p -> talent.rushing_jade_wind -> ok() ? "rushing_jade_wind" : "spinning_crane_kick",
     p,
-    p -> talent.rushing_jade_wind -> ok() ? p -> talent.rushing_jade_wind : p -> spec.spinning_crane_kick )
+    p -> talent.rushing_jade_wind -> ok() ? p -> talent.rushing_jade_wind : p -> spec.spinning_crane_kick ),
+    jade( 0 ), crane( 0 )
   {
     parse_options( nullptr, options_str );
     stancemask = STURDY_OX | FIERCE_TIGER | WISE_SERPENT | SPIRITED_CRANE;
@@ -1472,9 +1474,9 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
   void tick( dot_t*d )
   {
     monk_melee_attack_t::tick( d );
-    if ( crane )
+    if ( crane != NULL )
       crane -> execute();
-    else if ( jade )
+    else if ( jade != NULL )
       jade -> execute();
   }
 
@@ -3550,6 +3552,7 @@ void monk_t::init_gains()
   gain.serenity = get_gain( "serenity" );
   gain.soothing_mist = get_gain( "soothing_mist" );
   gain.spinning_crane_kick = get_gain( "spinning_crane_kick" );
+  gain.rushing_jade_wind = get_gain( "rushing_jade_wind" );
   gain.surging_mist = get_gain( "surging_mist" );
   gain.tier15_2pc_melee = get_gain( "tier15_2pc_melee" );
   gain.gift_of_the_ox = get_gain( "gift_of_the_ox" );
@@ -3866,6 +3869,10 @@ void monk_t::invalidate_cache( cache_e c )
   {
   case CACHE_SPELL_POWER:
     if ( current_stance() == WISE_SERPENT || current_stance() == SPIRITED_CRANE )
+      player_t::invalidate_cache( CACHE_ATTACK_POWER );
+    break;
+  case CACHE_BONUS_ARMOR:
+    if ( spec.bladed_armor -> ok() )
       player_t::invalidate_cache( CACHE_ATTACK_POWER );
     break;
   default: break;

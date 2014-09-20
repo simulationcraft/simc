@@ -5983,8 +5983,44 @@ void paladin_t::target_mitigation( school_e school,
 
         s -> result_amount *= 1.0 + sotr_mitigation;
 
-        if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-            sim -> out_debug.printf( "Damage to %s after SotR mitigation is %f", s -> target -> name(), s -> result_amount );
+    if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
+      sim -> out_debug.printf( "Damage to %s after SotR mitigation is %f", s -> target -> name(), s -> result_amount );
+  }
+  
+  // Ardent Defender
+  if ( buffs.ardent_defender -> check() )
+  {
+    // glyph of ardent defender removes damage mitigation
+    if ( ! glyphs.ardent_defender -> ok() )
+      s -> result_amount *= 1.0 - buffs.ardent_defender -> data().effectN( 1 ).percent();
+
+    if ( s -> result_amount > 0 && s -> result_amount >= resources.current[ RESOURCE_HEALTH ] )
+    {
+      // Ardent defender is a little odd - it doesn't heal you *for* 12%, it heals you *to* 12%.
+      // It does this by either absorbing all damage and healing you for the difference between 12% and your current health (if current < 12%)
+      // or absorbing any damage that would take you below 12% (if current > 12%).
+      // To avoid complications with absorb modeling, we're just going to kludge it by adjusting the amount gained or lost accordingly.
+      // Also arbitrarily capping at 3x max health because if you're seriously simming bosses that hit for >300% player health I hate you.
+      s -> result_amount = 0.0;
+      double AD_health_threshold = resources.max[ RESOURCE_HEALTH ] * buffs.ardent_defender -> data().effectN( 2 ).percent();
+      if ( resources.current[ RESOURCE_HEALTH ] >= AD_health_threshold )
+      {
+        resource_loss( RESOURCE_HEALTH,
+                       resources.current[ RESOURCE_HEALTH ] - AD_health_threshold,
+                       nullptr,
+                       s -> action );
+      }
+      else
+      {
+        // completely arbitrary heal-capping here at 3x max health, done just so paladin health timelines don't look so insane
+        resource_gain( RESOURCE_HEALTH,
+                       std::min( AD_health_threshold - resources.current[ RESOURCE_HEALTH ], 3 * resources.max[ RESOURCE_HEALTH ] ),
+                       nullptr,
+                       s -> action );
+      }
+      buffs.ardent_defender -> use_oneup();
+      buffs.ardent_defender -> expire();
+>>>>>>> b7da414b1e93da966afe7425ff106d4eae640853
     }
 
     // Ardent Defender

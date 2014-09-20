@@ -6406,6 +6406,10 @@ void druid_t::invalidate_cache( cache_e c )
       if ( mastery.total_eclipse -> ok() )
         player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
       break;
+    case CACHE_BONUS_ARMOR:
+      if ( spec.bladed_armor -> ok() )
+        player_t::invalidate_cache( CACHE_ATTACK_POWER );
+      break;
     default: break;
   }
 }

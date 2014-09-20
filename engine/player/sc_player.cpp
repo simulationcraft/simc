@@ -3026,8 +3026,6 @@ void player_t::invalidate_cache( cache_e c )
       break;
     case CACHE_BONUS_ARMOR:
       invalidate_cache( CACHE_ARMOR );
-      if ( primary_role() == ROLE_TANK || specialization() == WARRIOR_PROTECTION ) //Gladiator Stance
-        invalidate_cache( CACHE_ATTACK_POWER );
     default: break;
   }
 
@@ -4675,8 +4673,17 @@ double account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
         p.sim -> out_debug.printf( "Damage to %s after %s is %f", s -> target -> name(), ab -> name(), s -> result_amount );
     }
 
-    ab -> expire();
-    assert( p.absorb_buff_list.empty() || p.absorb_buff_list[ 0 ] != ab );
+    // So, it turns out it's possible to have absorb buff behavior, where
+    // there's a "minimum value" for the absorb buff, even after absorbing
+    // damage more than its current value. In this case, the absorb buff should
+    // not be expired, as the current_value still has something left.
+    if ( ab -> current_value <= 0 )
+    {
+      ab -> expire();
+      assert( p.absorb_buff_list.empty() || p.absorb_buff_list[ 0 ] != ab );
+    }
+    else
+      offset++;
   } // end of absorb list loop
 
   p.iteration_absorb_taken += result_ignoring_external_absorbs - s -> result_amount;
@@ -7419,6 +7426,15 @@ expr_t* player_t::create_expression( action_t* a,
         double evaluate() { return 1.0 / player.cache.spell_haste() - 1.0; }
       };
       return new spell_haste_expr_t( *this );
+    }
+    else if ( util::str_compare_ci( "multistrike_pct", splits[ 1 ] ) )
+    {
+      struct ms_expr_t : public player_expr_t
+      {
+        ms_expr_t( player_t& p ) : player_expr_t( "ms_pct", p ) { }
+        double evaluate() { return player.cache.multistrike() * 100.0; }
+      };
+      return new ms_expr_t( *this );
     }
 
     stat_e stat = util::parse_stat_type( splits[ 1 ] );

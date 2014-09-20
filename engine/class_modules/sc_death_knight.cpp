@@ -188,7 +188,6 @@ public:
   {
     buff_t* army_of_the_dead;
     buff_t* antimagic_shell;
-    buff_t* bladed_armor;
     buff_t* blood_charge;
     buff_t* blood_presence;
     buff_t* bone_wall;
@@ -302,6 +301,7 @@ public:
     const spell_data_t* multistrike_attunement;
 
     // Blood
+    const spell_data_t* bladed_armor;
     const spell_data_t* blood_rites;
     const spell_data_t* veteran_of_the_third_war;
     const spell_data_t* scent_of_blood;
@@ -3604,6 +3604,33 @@ struct death_coil_t : public death_knight_spell_t
 
 // Death Strike =============================================================
 
+struct blood_shield_buff_t : public absorb_buff_t
+{
+  blood_shield_buff_t( death_knight_t* player ) :
+    absorb_buff_t( absorb_buff_creator_t( player, "blood_shield", player -> find_spell( 77535 ) )
+                   .school( SCHOOL_PHYSICAL )
+                   .source( player -> get_stats( "blood_shield" ) ) )
+  { }
+
+  // Clamp shield value so that if T17 4PC is used, we have at least 5% of
+  // current max health of absorb left, if Vampiric Blood is up
+  void absorb_used( double )
+  {
+    death_knight_t* p = debug_cast<death_knight_t*>( player );
+    if ( p -> sets.has_set_bonus( DEATH_KNIGHT_BLOOD, T17, B4 ) && p -> buffs.vampiric_blood -> up() )
+    {
+      double min_absorb = p -> resources.max[ RESOURCE_HEALTH ] *
+                          p -> sets.set( DEATH_KNIGHT_BLOOD, T17, B4 ) -> effectN( 1 ).percent();
+
+      if ( sim -> debug )
+        sim -> out_debug.printf( "%s blood_shield absorb clamped to %f", player -> name(), min_absorb );
+
+      if ( current_value < min_absorb )
+        current_value = min_absorb;
+    }
+  }
+};
+
 struct death_strike_offhand_t : public death_knight_melee_attack_t
 {
   death_strike_offhand_t( death_knight_t* p ) :
@@ -3615,12 +3642,36 @@ struct death_strike_offhand_t : public death_knight_melee_attack_t
   }
 };
 
+struct blood_shield_t : public absorb_t
+{
+  blood_shield_t( death_knight_t* p ) :
+    absorb_t( "blood_shield", p, p -> find_spell( 77535 ) )
+  {
+    may_miss = may_crit = may_multistrike = callbacks = false;
+    background = proc = true;
+  }
+
+  // Self only so we can do this in a simple way
+  absorb_buff_t* create_buff( const action_state_t* )
+  { return debug_cast<death_knight_t*>( player ) -> buffs.blood_shield; }
+
+  void init()
+  {
+    absorb_t::init();
+
+    snapshot_flags = update_flags = 0;
+  }
+};
+
 struct death_strike_heal_t : public death_knight_heal_t
 {
+  blood_shield_t* blood_shield;
+
   death_strike_heal_t( death_knight_t* p ) :
-    death_knight_heal_t( "death_strike_heal", p, p -> find_spell( 45470 ) )
+    death_knight_heal_t( "death_strike_heal", p, p -> find_spell( 45470 ) ),
+    blood_shield( p -> specialization() == DEATH_KNIGHT_BLOOD ? new blood_shield_t( p ) : 0 )
   {
-    may_crit   = false;
+    may_crit   = may_multistrike = callbacks = false;
     background = true;
     target     = p;
   }
@@ -3642,27 +3693,37 @@ struct death_strike_heal_t : public death_knight_heal_t
     trigger_blood_shield( state );
   }
 
+  void consume_resource()
+  {
+    death_knight_heal_t::consume_resource();
+
+    p() -> buffs.scent_of_blood -> expire();
+  }
+
   void trigger_blood_shield( action_state_t* state )
   {
     if ( p() -> specialization() != DEATH_KNIGHT_BLOOD )
       return;
 
-    double amount = p() -> buffs.blood_shield -> current_value;
+    double current_value = 0;
+    if ( blood_shield -> target_specific[ state -> target ] )
+      current_value = blood_shield -> target_specific[ state -> target ] -> current_value;
 
+    double amount = current_value;
     if ( p() -> mastery.blood_shield -> ok() )
-      amount += state -> result_amount * p() -> cache.mastery_value();
+      amount += state -> result_total * p() -> cache.mastery_value();
 
     amount = std::min( p() -> resources.max[ RESOURCE_HEALTH ], amount );
 
     if ( sim -> debug )
       sim -> out_debug.printf( "%s Blood Shield buff trigger, old_value=%f added_value=%f new_value=%f",
-                     player -> name(), p() -> buffs.blood_shield -> current_value,
+                     player -> name(), current_value,
                      state -> result_amount * p() -> cache.mastery_value(),
                      amount );
 
-    p() -> buffs.blood_shield -> trigger( 1, amount );
+    blood_shield -> base_dd_min = blood_shield -> base_dd_max = amount;
+    blood_shield -> execute();
   }
-
 };
 
 struct death_strike_t : public death_knight_melee_attack_t
@@ -3733,7 +3794,6 @@ struct death_strike_t : public death_knight_melee_attack_t
       p() -> cooldown.vampiric_blood -> ready -= reduction;
     }
 
-    p() -> buffs.scent_of_blood -> expire();
     p() -> buffs.deathbringer -> decrement();
   }
 
@@ -5353,11 +5413,11 @@ struct frozen_runeblade_buff_t : public buff_t
     stack_count = 0;
   }
 
-void reset()
-{
-  buff_t::reset();
-  stack_count = 0;
-}
+  void reset()
+  {
+    buff_t::reset();
+    stack_count = 0;
+  }
 };
 
 } // UNNAMED NAMESPACE
@@ -5706,6 +5766,7 @@ void death_knight_t::init_spells()
   spec.multistrike_attunement     = find_specialization_spell( "Multistrike Attunement" );
 
   // Blood
+  spec.bladed_armor               = find_specialization_spell( "Bladed Armor" );
   spec.blood_rites                = find_specialization_spell( "Blood Rites" );
   spec.veteran_of_the_third_war   = find_specialization_spell( "Veteran of the Third War" );
   spec.scent_of_blood             = find_specialization_spell( "Scent of Blood" );
@@ -6473,16 +6534,11 @@ void death_knight_t::create_buffs()
 
   buffs.army_of_the_dead    = buff_creator_t( this, "army_of_the_dead", find_class_spell( "Army of the Dead" ) )
                               .cd( timespan_t::zero() );
-  buffs.blood_shield        = absorb_buff_creator_t( this, "blood_shield", find_spell( 77535 ) )
-                              .school( SCHOOL_PHYSICAL )
-                              .source( get_stats( "blood_shield" ) )
-                              .gain( get_gain( "blood_shield" ) );
+  buffs.blood_shield        = new blood_shield_buff_t( this );
   buffs.rune_tap            = buff_creator_t( this, "rune_tap", find_specialization_spell( "Rune Tap" ) -> effectN( 1 ).trigger() );
 
   buffs.antimagic_shell     = buff_creator_t( this, "antimagic_shell", find_class_spell( "Anti-Magic Shell" ) )
                               .cd( timespan_t::zero() );
-  buffs.bladed_armor           = buff_creator_t( this, "bladed_armor", find_specialization_spell( "Bladed Armor" ) )
-                                 .add_invalidate( CACHE_ATTACK_POWER );
   buffs.blood_charge        = buff_creator_t( this, "blood_charge", find_spell( 114851 ) )
                               .chance( find_talent_spell( "Blood Tap" ) -> ok() );
   buffs.blood_presence      = buff_creator_t( this, "blood_presence", find_class_spell( "Blood Presence" ) )
@@ -6673,9 +6729,6 @@ void death_knight_t::combat_begin()
 
   if ( specialization() == DEATH_KNIGHT_BLOOD )
     resolve_manager.start();
-
-  if ( find_specialization_spell( "Bladed Armor" ) )
-    buffs.bladed_armor -> trigger();
 }
 
 // death_knight_t::assess_heal ==============================================
@@ -6977,7 +7030,7 @@ double death_knight_t::composite_melee_attack_power() const
 {
   double ap = player_t::composite_melee_attack_power();
 
-  ap += buffs.bladed_armor -> data().effectN( 1 ).percent() * current.stats.get_stat( STAT_BONUS_ARMOR );
+  ap += spec.bladed_armor -> effectN( 1 ).percent() * current.stats.get_stat( STAT_BONUS_ARMOR );
 
   return ap;
 }
@@ -7052,6 +7105,10 @@ void death_knight_t::invalidate_cache( cache_e c )
       if ( spec.riposte -> ok() )
         player_t::invalidate_cache( CACHE_PARRY );
       break;
+    case CACHE_BONUS_ARMOR:
+      if ( spec.bladed_armor -> ok() )
+        player_t::invalidate_cache( CACHE_ATTACK_POWER );
+      break;
     case CACHE_MASTERY:
       player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
       if ( specialization() == DEATH_KNIGHT_BLOOD )
@@ -7070,6 +7127,9 @@ role_e death_knight_t::primary_role() const
 
   if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_ATTACK )
     return ROLE_ATTACK;
+
+  if ( specialization() == DEATH_KNIGHT_BLOOD )
+    return ROLE_TANK;
 
   return ROLE_ATTACK;
 }

@@ -394,7 +394,7 @@ public:
 
   // Public mage functions:
   icicle_data_t get_icicle_object();
-  void trigger_icicle( bool chain = false );
+  void trigger_icicle( const action_state_t* trigger_state, bool chain = false );
 
   void              apl_precombat();
   void              apl_arcane();
@@ -1270,7 +1270,7 @@ public:
     assert( as<int>( p() -> icicles.size() ) <= p() -> spec.icicles -> effectN( 2 ).base_value() );
     // Shoot one
     if ( as<int>( p() -> icicles.size() ) == p() -> spec.icicles -> effectN( 2 ).base_value() )
-      p() -> trigger_icicle();
+      p() -> trigger_icicle( state );
     p() -> icicles.push_back( icicle_tuple_t( p() -> sim -> current_time, icicle_data_t( amount, stats ) ) );
 
     if ( p() -> sim -> debug )
@@ -2948,7 +2948,7 @@ struct ice_lance_t : public mage_spell_t
 
     p() -> buffs.fingers_of_frost -> decrement();
     p() -> buffs.frozen_thoughts -> expire();
-    p() -> trigger_icicle( true );
+    p() -> trigger_icicle( execute_state, true );
   }
 
   virtual void impact( action_state_t* s )
@@ -4177,10 +4177,11 @@ namespace events {
 struct icicle_event_t : public event_t
 {
   mage_t* mage;
+  player_t* target;
   icicle_data_t state;
 
-  icicle_event_t( mage_t& m, const icicle_data_t& s, bool first = false ) :
-    event_t( m, "icicle_event" ), mage( &m ), state( s )
+  icicle_event_t( mage_t& m, const icicle_data_t& s, player_t* t, bool first = false ) :
+    event_t( m, "icicle_event" ), mage( &m ), target( t ), state( s )
   {
     double cast_time = first ? 0.25 : 0.75;
     cast_time *= mage -> cache.spell_speed();
@@ -4190,8 +4191,19 @@ struct icicle_event_t : public event_t
 
   void execute()
   {
+    // If the target of the icicle is ded, stop the chain
+    if ( target -> is_sleeping() )
+    {
+      if ( mage -> sim -> debug )
+        mage -> sim -> out_debug.printf( "%s icicle use on %s (sleeping target), stopping",
+            mage -> name(), target -> name() );
+      mage -> icicle_event = 0;
+      return;
+    }
+
     actions::icicle_state_t* new_s = debug_cast<actions::icicle_state_t*>( mage -> icicle -> get_state() );
     new_s -> source = state.second;
+    new_s -> target = target;
 
     mage -> icicle -> base_dd_min = mage -> icicle -> base_dd_max = state.first;
     mage -> icicle -> schedule_execute( new_s );
@@ -4199,10 +4211,10 @@ struct icicle_event_t : public event_t
     icicle_data_t new_state = mage -> get_icicle_object();
     if ( new_state.first > 0 )
     {
-      mage -> icicle_event = new ( sim() ) icicle_event_t( *mage, new_state );
+      mage -> icicle_event = new ( sim() ) icicle_event_t( *mage, new_state, target );
       if ( mage -> sim -> debug )
-        mage -> sim -> out_debug.printf( "%s icicle use (chained), damage=%f, total=%u",
-                               mage -> name(), new_state.first, as<unsigned>( mage -> icicles.size() ) );
+        mage -> sim -> out_debug.printf( "%s icicle use on %s (chained), damage=%f, total=%u",
+                               mage -> name(), target -> name(), new_state.first, as<unsigned>( mage -> icicles.size() ) );
     }
     else
       mage -> icicle_event = 0;
@@ -5662,7 +5674,7 @@ icicle_data_t mage_t::get_icicle_object()
   return icicle_data_t( 0, 0 );
 }
 
-void mage_t::trigger_icicle( bool chain )
+void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain )
 {
   if ( ! spec.icicles -> ok() )
     return;
@@ -5675,7 +5687,7 @@ void mage_t::trigger_icicle( bool chain )
   if ( chain && ! icicle_event )
   {
     d = get_icicle_object();
-    icicle_event = new ( *sim ) events::icicle_event_t( *this, d, true );
+    icicle_event = new ( *sim ) events::icicle_event_t( *this, d, trigger_state -> target, true );
   }
   else if ( ! chain )
   {
@@ -5683,6 +5695,7 @@ void mage_t::trigger_icicle( bool chain )
     icicle -> base_dd_min = icicle -> base_dd_max = d.first;
 
     actions::icicle_state_t* new_state = debug_cast<actions::icicle_state_t*>( icicle -> get_state() );
+    new_state -> target = trigger_state -> target;
     new_state -> source = d.second;
     icicle -> schedule_execute( new_state );
   }
