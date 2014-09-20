@@ -1380,6 +1380,16 @@ struct spinning_crane_kick_tick_t: public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
     base_multiplier *= 0.75; // hardcoded into tooltip
   }
+
+  void execute( bool refund )
+  {
+    monk_melee_attack_t::execute();
+    if ( execute_state -> n_targets >= 3 && refund )
+    {
+      player -> resource_gain( RESOURCE_CHI, p() -> spec.spinning_crane_kick -> effectN( 4 ).base_value(),
+                               p() -> gain.spinning_crane_kick, this );
+    }
+  }
 };
 
 struct rushing_jade_wind_tick_t: public monk_melee_attack_t
@@ -1393,17 +1403,28 @@ struct rushing_jade_wind_tick_t: public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
     base_multiplier *= 0.6; // hardcoded into tooltip
   }
+
+  void execute( bool refund )
+  {
+    monk_melee_attack_t::execute();
+    if ( execute_state -> n_targets >= 3 && refund )
+    {
+      player -> resource_gain( RESOURCE_CHI, p() -> spec.spinning_crane_kick -> effectN( 4 ).base_value(),
+                               p() -> gain.spinning_crane_kick, this );
+    }
+  }
 };
 
 struct spinning_crane_kick_t: public monk_melee_attack_t
 {
   spinning_crane_kick_tick_t* crane;
   rushing_jade_wind_tick_t* jade;
+  bool chi_refund;
   spinning_crane_kick_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( p -> talent.rushing_jade_wind -> ok() ? "rushing_jade_wind" : "spinning_crane_kick",
     p,
     p -> talent.rushing_jade_wind -> ok() ? p -> talent.rushing_jade_wind : p -> spec.spinning_crane_kick ),
-    crane( 0 ), jade( 0 )
+    crane( 0 ), jade( 0 ), chi_refund( true )
   {
     parse_options( nullptr, options_str );
     stancemask = STURDY_OX | FIERCE_TIGER | WISE_SERPENT | SPIRITED_CRANE;
@@ -1432,9 +1453,10 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::tick( d );
     if ( crane )
-      crane -> execute();
+      crane -> execute( chi_refund );
     else
-      jade -> execute();
+      jade -> execute( chi_refund );
+    chi_refund = false; // Only let one tick refund chi.
   }
 
   void update_ready( timespan_t cd_duration )
@@ -1445,8 +1467,9 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     monk_melee_attack_t::update_ready( cd_duration );
   }
 
-  virtual void execute()
+  void execute()
   {
+    chi_refund = true;
     monk_melee_attack_t::execute();
 
     if ( p() -> talent.rushing_jade_wind -> ok() )
@@ -1456,15 +1479,6 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc_melee );
       p() -> proc.tier15_2pc_melee -> occur();
-    }
-
-    std::vector<player_t*>& tl = sim -> player_no_pet_list.data();
-    size_t num_targets = tl.size();
-
-    if ( num_targets >= 3 )
-    {
-      player -> resource_gain( RESOURCE_CHI, p() -> spec.spinning_crane_kick -> effectN( 4 ).base_value(),
-        p() -> gain.spinning_crane_kick, this );
     }
   }
 };
@@ -3271,7 +3285,7 @@ void monk_t::init_spells()
   spec.rising_sun_kick            = find_specialization_spell( "Rising Sun Kick" );
   spec.legacy_of_the_white_tiger  = find_specialization_spell( "Legacy of the White Tiger" );
   spec.touch_of_death             = find_specialization_spell( "Touch of Death" );
-  spec.spinning_crane_kick        = find_specialization_spell( "Spinning Crane Kick" );
+  spec.spinning_crane_kick        = find_class_spell( "Spinning Crane Kick" );
 
   // Windwalker Passives
   spec.brewing_tigereye_brew      = find_specialization_spell( "Brewing: Tigereye Brew" );
