@@ -288,6 +288,10 @@ public:
     gain_t* hp_death_siphon;
     gain_t* t15_4pc_tank;
     gain_t* t17_2pc_frost;
+    gain_t* t17_4pc_unholy_blood;
+    gain_t* t17_4pc_unholy_unholy;
+    gain_t* t17_4pc_unholy_frost;
+    gain_t* t17_4pc_unholy_waste;
   } gains;
 
   // Specialization
@@ -535,6 +539,7 @@ public:
   void      trigger_shadow_infusion( double rpcost );
   void      trigger_necrosis( const action_state_t* );
   void      trigger_t17_4pc_frost( const action_state_t* );
+  void      trigger_t17_4pc_unholy( const action_state_t* );
   void      apply_diseases( action_state_t* state, unsigned diseases );
   int       runes_count( rune_type rt, bool include_death, int position );
   double    runes_cooldown_any( rune_type rt, bool include_death, int position );
@@ -647,10 +652,11 @@ struct np_spread_event_t : public event_t
 
 // Log rune status ==========================================================
 
-static void log_rune_status( const death_knight_t* p )
+static void log_rune_status( const death_knight_t* p, bool debug = false )
 {
   std::string rune_str;
   std::string runeval_str;
+
   for ( int j = 0; j < RUNE_SLOT_MAX; ++j )
   {
     char rune_letter = rune_symbols[p -> _runes.slot[j].get_type()];
@@ -665,7 +671,11 @@ static void log_rune_status( const death_knight_t* p )
     rune_str += rune_letter;
     runeval_str += '[' + runeval + ']';
   }
-  p -> sim -> out_log.printf( "%s runes: %s %s", p -> name(), rune_str.c_str(), runeval_str.c_str() );
+
+  if ( ! debug )
+    p -> sim -> out_log.printf( "%s runes: %s %s", p -> name(), rune_str.c_str(), runeval_str.c_str() );
+  else
+    p -> sim -> out_debug .printf( "%s runes: %s %s", p -> name(), rune_str.c_str(), runeval_str.c_str() );
 }
 
 // Count Death Runes ========================================================
@@ -894,7 +904,7 @@ static double ready_in( const death_knight_t* player, int blood, int frost, int 
   range::fill( use, false );
 
   if ( player -> sim -> debug )
-    log_rune_status( player );
+    log_rune_status( player, true );
 
   double min_ready_blood = 9999, min_ready_frost = 9999, min_ready_unholy = 9999;
 
@@ -1066,7 +1076,7 @@ static int random_depleted_rune( death_knight_t* p )
 
   if ( num_depleted > 0 )
   {
-    if ( p -> sim -> debug ) log_rune_status( p );
+    if ( p -> sim -> debug ) log_rune_status( p, true );
 
     return depleted_runes[ ( int ) p -> rng().range( 0, num_depleted ) ];
   }
@@ -3219,7 +3229,7 @@ struct blood_tap_t : public death_knight_spell_t
       return;
     }
 
-    if ( sim -> debug ) log_rune_status( p() );
+    if ( sim -> debug ) log_rune_status( p(), true );
 
     rune_t* regen_rune = &( p() -> _runes.slot[ selected_rune ] );
 
@@ -3382,6 +3392,7 @@ struct dark_transformation_t : public death_knight_spell_t
 
     p() -> buffs.dark_transformation -> trigger();
     p() -> buffs.shadow_infusion -> expire();
+    p() -> trigger_t17_4pc_unholy( execute_state );
   }
 
   virtual bool ready()
@@ -6597,6 +6608,10 @@ void death_knight_t::init_gains()
   gains.hp_death_siphon                  = get_gain( "hp_death_siphon"            );
   gains.t15_4pc_tank                     = get_gain( "t15_4pc_tank"               );
   gains.t17_2pc_frost                    = get_gain( "t17_2pc_frost"              );
+  gains.t17_4pc_unholy_blood             = get_gain( "Unholy T17 4PC: Blood runes" );
+  gains.t17_4pc_unholy_frost             = get_gain( "Unholy T17 4PC: Frost runes" );
+  gains.t17_4pc_unholy_unholy            = get_gain( "Unholy T17 4PC: Unholy runes" );
+  gains.t17_4pc_unholy_waste             = get_gain( "Unholy T17 4PC: Wasted runes" );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -7225,6 +7240,41 @@ void death_knight_t::trigger_t17_4pc_frost( const action_state_t* state )
     return;
 
   buffs.frozen_runeblade -> trigger();
+}
+
+void death_knight_t::trigger_t17_4pc_unholy( const action_state_t* )
+{
+  if ( ! sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T17, B4 ) )
+    return;
+
+  size_t max_runes = sets.set( DEATH_KNIGHT_UNHOLY, T17, B4 ) -> effectN( 2 ).base_value();
+  size_t n_regened = 0;
+  for ( size_t i = 0; i < _runes.slot.size() && n_regened < max_runes; i++ )
+  {
+    if ( _runes.slot[ i ].state != STATE_REGENERATING )
+      continue;
+
+    rune_t* regen_rune = &( _runes.slot[ i ] );
+
+    regen_rune -> fill_rune();
+    regen_rune -> type |= RUNE_TYPE_DEATH;
+
+    if ( regen_rune -> is_blood() )
+      gains.t17_4pc_unholy_blood -> add( RESOURCE_RUNE, 1, 0 );
+    else if ( regen_rune -> is_frost() )
+      gains.t17_4pc_unholy_frost -> add( RESOURCE_RUNE, 1, 0 );
+    else if ( regen_rune -> is_unholy() )
+      gains.t17_4pc_unholy_unholy -> add( RESOURCE_RUNE, 1, 0 );
+
+    if ( sim -> log ) sim -> out_log.printf( "%s regened rune %d", name(), i );
+    n_regened++;
+  }
+
+  for ( size_t i = 0; i < max_runes - n_regened; i++ )
+    gains.t17_4pc_unholy_waste -> add( RESOURCE_RUNE, 1, 0 );
+
+  if ( sim -> debug )
+    log_rune_status( this, true );
 }
 
 // death_knight_t::trigger_plaguebearer =====================================
