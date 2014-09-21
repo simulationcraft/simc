@@ -88,6 +88,9 @@ void core_event_t::reschedule( timespan_t new_time )
     _sim.out_debug.printf( "Rescheduling event %s (%d) from %.2f to %.2f",
                 name, id, time.total_seconds(), reschedule_time.total_seconds() );
 }
+
+// event_t::add_event =======================================================
+
 void core_event_t::add_event( timespan_t delta_time )
 {
   _sim.add_event( this, delta_time );

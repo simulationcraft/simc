@@ -712,6 +712,7 @@ void raid_event_t::schedule()
       raid_event( re )
     {
       sim().add_event( this, time );
+      re -> set_next( time );
     }
 
     virtual void execute()
@@ -729,6 +730,7 @@ void raid_event_t::schedule()
       raid_event( re )
     {
       sim().add_event( this, time );
+      re -> set_next( time );
     }
 
     virtual void execute()
