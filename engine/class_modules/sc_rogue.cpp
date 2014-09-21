@@ -3295,6 +3295,9 @@ void rogue_t::trigger_t17_4pc_combat( const action_state_t* state )
   if ( attack -> base_costs[ RESOURCE_COMBO_POINT ] == 0 )
     return;
 
+  if ( ! attack -> harmful )
+    return;
+
   if ( ! attack -> result_is_hit( state -> result ) )
     return;
 
