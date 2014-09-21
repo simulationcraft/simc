@@ -152,31 +152,31 @@ actions.cop_advanced_mfi_dots+=/insanity,interrupt=1,chain=1,if=active_enemies<=
 actions.cop_advanced_mfi_dots+=/mind_spike,if=(target.dot.shadow_word_pain.ticking&target.dot.shadow_word_pain.remains<gcd*2)|(target.dot.vampiric_touch.ticking&target.dot.vampiric_touch.remains<gcd*2)
 actions.cop_advanced_mfi_dots+=/mind_flay,chain=1,interrupt=1
 
-head=soul_priests_hood,id=115563
-neck=gruuls_lip_ring,id=113872,enchant=gift_of_critical_strike
-shoulders=soul_priests_shoulderguards,id=115561
-back=runefrenzy_greatcloak,id=113937,enchant=gift_of_critical_strike
-chest=soul_priests_raiment,id=115560
-wrists=bracers_of_enkindled_power,id=113956
-hands=soul_priests_gloves,id=115562
-waist=deckhands_rope_belt,id=113967
-legs=turret_mechanics_legwraps,id=113970
-feet=cavedwellers_climbers,id=113864
-finger1=ukuroggs_corrupted_seal,id=113975,enchant=gift_of_critical_strike
-finger2=epicenter_loop,id=113947,enchant=gift_of_critical_strike
-trinket1=darmacs_unstable_talisman,id=113948
-trinket2=goren_soul_repository,id=119194
-main_hand=blackhand_doomstaff,id=113988,enchant=mark_of_warsong
+head=soul_priests_hood,id=115563,bonus_id=567/448
+neck=gruuls_lip_ring,id=113872,bonus_id=567/448,enchant=gift_of_critical_strike
+shoulders=soul_priests_shoulderguards,id=115561,bonus_id=567/448
+back=runefrenzy_greatcloak,id=113937,bonus_id=567/448,enchant=gift_of_critical_strike
+chest=soul_priests_raiment,id=115560,bonus_id=567/448
+wrists=bracers_of_enkindled_power,id=113956,bonus_id=567/448
+hands=soul_priests_gloves,id=115562,bonus_id=567/448
+waist=deckhands_rope_belt,id=113967,bonus_id=567/448
+legs=turret_mechanics_legwraps,id=113970,bonus_id=567/448
+feet=cavedwellers_climbers,id=113864,bonus_id=567/448
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,bonus_id=524,enchant=gift_of_critical_strike
+finger2=epicenter_loop,id=113947,bonus_id=567/448,enchant=gift_of_critical_strike
+trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567/448
+trinket2=goren_soul_repository,id=119194,bonus_id=567/448
+main_hand=blackhand_doomstaff,id=113988,bonus_id=567/448,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_stamina=3408
-# gear_intellect=2710
-# gear_spell_power=1325
-# gear_crit_rating=1399
-# gear_haste_rating=592
-# gear_mastery_rating=786
-# gear_armor=700
-# gear_multistrike_rating=374
-# gear_versatility_rating=92
+# gear_stamina=4785
+# gear_intellect=3800
+# gear_spell_power=1852
+# gear_crit_rating=1847
+# gear_haste_rating=701
+# gear_mastery_rating=1129
+# gear_armor=909
+# gear_multistrike_rating=522
+# gear_versatility_rating=231
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

@@ -48,29 +48,31 @@ actions+=/mutilate,if=target.health.pct>35&combo_points<5&active_enemies<5
 actions+=/dispatch,if=(combo_points<5|(talent.anticipation.enabled&anticipation_charges<4))&active_enemies<4
 actions+=/mutilate,if=active_enemies<5
 
-head=primal_gladiators_helm,id=111275
-neck=primal_gladiators_necklace_of_cruelty,id=111079,enchant=gift_of_critical_strike
-shoulders=primal_gladiators_spaulders,id=111277
-back=primal_gladiators_cape_of_cruelty,id=111077,enchant=gift_of_critical_strike
-chest=primal_gladiators_tunic,id=111273
-wrists=primal_gladiators_bindings_of_victory,id=111149
-hands=primal_gladiators_gloves,id=111274
-waist=primal_gladiators_belt_of_prowess,id=111141
-legs=primal_gladiators_legguards,id=111276
-feet=primal_gladiators_boots_of_prowess,id=111145
-finger1=primal_gladiators_ring_of_cruelty,id=111081,enchant=gift_of_critical_strike
-finger2=primal_gladiators_ring_of_prowess,id=111082,enchant=gift_of_critical_strike
-trinket1=primal_gladiators_insignia_of_conquest,id=111223
-trinket2=primal_gladiators_badge_of_conquest,id=111222
-main_hand=primal_gladiators_shanker,id=111068,enchant=mark_of_the_thunderlord
-off_hand=primal_gladiators_shanker,id=111068,enchant=mark_of_the_thunderlord
+head=poisoners_helmet,id=115572,bonus_id=567/448
+neck=engineers_grounded_gorget,id=113892,bonus_id=567/448,enchant=gift_of_mastery
+shoulders=poisoners_spaulders,id=115574,bonus_id=567/448
+back=drape_of_the_dark_hunt,id=113971,bonus_id=567/448,enchant=gift_of_mastery
+chest=poisoners_tunic,id=115570,bonus_id=567/448
+wrists=bracers_of_shattered_stalactites,id=113935,bonus_id=567/448
+hands=poisoners_gloves,id=115571,bonus_id=567/448
+waist=conductors_multipocket_girdle,id=113964,bonus_id=567/448
+legs=shattering_smash_leggings,id=113989,bonus_id=567/448
+feet=treads_of_the_dark_hunt,id=113974,bonus_id=567/448
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,bonus_id=524,enchant=gift_of_mastery
+finger2=unexploded_explosive_shard,id=113877,bonus_id=567/448,enchant=gift_of_mastery
+trinket1=scales_of_doom,id=113612,bonus_id=567/448
+trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=567/448
+main_hand=oregorgers_acidetched_gutripper,id=113874,bonus_id=567/448,enchant=mark_of_bleeding_hollow
+off_hand=oregorgers_acidetched_gutripper,id=113874,bonus_id=567/448,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_agility=2553
-# gear_stamina=3197
-# gear_crit_rating=1277
-# gear_haste_rating=541
-# gear_mastery_rating=861
-# gear_armor=950
-# gear_multistrike_rating=359
-# gear_versatility_rating=77
+# gear_agility=3723
+# gear_stamina=4708
+# gear_crit_rating=909
+# gear_haste_rating=358
+# gear_mastery_rating=1399
+# gear_armor=1186
+# gear_multistrike_rating=1600
+# gear_versatility_rating=122
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1
