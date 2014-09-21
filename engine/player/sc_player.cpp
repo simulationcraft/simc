@@ -4919,6 +4919,8 @@ void player_t::target_mitigation( school_e school,
 
 void player_t::assess_heal( school_e, dmg_e, action_state_t* s )
 {
+  // Increases to healing taken should modify result_total in order to correctly calculate overhealing
+  // and other effects based on raw healing.
   if ( buffs.guardian_spirit -> up() )
     s -> result_total *= 1.0 + buffs.guardian_spirit -> data().effectN( 1 ).percent();
   
