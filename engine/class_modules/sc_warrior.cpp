@@ -4102,7 +4102,7 @@ void warrior_t::apl_fury()
   single_target -> add_action( this, "Heroic Leap" );
   single_target -> add_action( this, "Execute", "if=buff.sudden_death.up" );
   single_target -> add_action( this, "Bloodthirst", "if=!talent.unquenchable_thirst.enabled&(buff.enrage.down|rage<50)" );
-  single_target -> add_action( this, "Bloodthirst", "if=talent.unquenchable_thirst.enabled&(buff.enrage.down|rage<100)" );
+  single_target -> add_action( this, "Bloodthirst", "if=talent.unquenchable_thirst.enabled&(buff.enrage.down&rage<100)" );
   single_target -> add_talent( this, "Ravager" );
   single_target -> add_talent( this, "Storm Bolt" );
   single_target -> add_talent( this, "Siegebreaker" );
