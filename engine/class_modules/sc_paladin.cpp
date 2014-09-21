@@ -4696,7 +4696,8 @@ void paladin_t::init_base_stats()
       base.distance = 30;
       break;
     case PALADIN_PROTECTION:
-      role = ROLE_TANK;
+      if ( role == ROLE_HYBRID )
+        role = ROLE_TANK;
       break;
     default:
       break;
@@ -4897,65 +4898,105 @@ void paladin_t::generate_action_prio_list_prot()
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
   //Flask
-  if ( sim -> allow_flasks && level >= 80 )
-  {
-    std::string flask_action = "flask,type=";
+  if ( sim -> allow_flasks )
+  { 
+    std::string flask_type = "";
     if ( level >= 90 )
-      flask_action += "greater_draenic_stamina_flask";
+    {
+      if ( primary_role() == ROLE_ATTACK )
+        flask_type += "greater_draenic_strength_flask";
+      else
+        flask_type += "greater_draenic_stamina_flask";
+    }
     else if ( level > 85 )
-      flask_action += "earth";
-    else
-      flask_action += "steelskin";
+      flask_type += "earth";
+    else if ( level >= 80 )
+      flask_type += "steelskin";
 
-    precombat -> add_action( flask_action );
+    if ( flask_type.length() > 0 )
+      precombat -> add_action( "flask,type=" + flask_type );
   }
 
   // Food
-  if ( sim -> allow_food && level >= 80 )
+  if ( sim -> allow_food )
   {
-    std::string food_action = "food,type=";
+    std::string food_type = "";
     if ( level >= 90 )
-      food_action += "talador_surf_and_turf";
-    else
-      food_action += ( level > 85 ) ? "chun_tian_spring_rolls" : "seafood_magnifique_feast";
+    {
+      if ( primary_role() == ROLE_ATTACK )
+        food_type += "blackrock_barbecue";
+      else
+        food_type += "talador_surf_and_turf";
+    }
+    else if ( level > 85 )
+      food_type += "chun_tian_spring_rolls";
+    else if ( level >= 80 )
+        "seafood_magnifique_feast";
 
-    precombat -> add_action( food_action );
+    if ( food_type.length() > 0 )
+      precombat -> add_action( "food,type=" + food_type );
   }
 
   precombat -> add_action( this, "Blessing of Kings", "if=(!aura.str_agi_int.up)&(aura.mastery.up)" );
   precombat -> add_action( this, "Blessing of Might", "if=!aura.mastery.up" );
-  precombat -> add_action( this, "Seal of Insight" );
+  if ( primary_role() == ROLE_ATTACK )
+    precombat -> add_action( this, "Seal of Righteousness" );
+  else
+    precombat -> add_action( this, "Seal of Insight" );
   precombat -> add_talent( this, "Sacred Shield" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  // Pre-potting (disabled for now)
-  /*
-  if (sim -> allow_potions && level >= 80 )
-    precombat -> add_action( ( level > 85 ) ? "potion,name=_potion" : "potion,name=golemblood_potion" );
+  // Pre-potting
+  std::string potion_type = "";
+  if ( sim -> allow_potions )
+  {
+    if ( level >= 90 )
+    {
+      if ( primary_role() == ROLE_ATTACK )
+        potion_type += "draenic_strength";
+      else
+        potion_type += "draenic_armor";
+    }
+    else if ( level >= 80 )
+    {
+      if ( primary_role() == ROLE_ATTACK )
+        potion_type += "mogu_power";
+      else
+        potion_type += "mountains";
+    }
 
-  */
+    if ( potion_type.length() > 0 )
+      precombat -> add_action( "potion,name=" + potion_type );
+  }
 
   ///////////////////////
   // Action Priority List
   ///////////////////////
 
   action_priority_list_t* def = get_action_priority_list( "default" );
-
-  // potion placeholder; need to think about realistic conditions
-  // def -> add_action( "potion,name=potion_of_the_mountains,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60" );
+  action_priority_list_t* dps = get_action_priority_list( "max_dps" );
+  action_priority_list_t* surv = get_action_priority_list( "max_survival" );
 
   def -> add_action( "/auto_attack" );
   def -> add_talent( this, "Speed of Light", "if=movement.remains>1" );
 
+  // usable items
   int num_items = ( int ) items.size();
   for ( int i = 0; i < num_items; i++ )
-  {
     if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-    {
       def -> add_action ( "/use_item,name=" + items[ i ].name_str );
-    }
+
+  // potions
+  if ( sim -> allow_potions && potion_type.length() > 0 )
+  {
+    std::string potion_action = "potion,name=" + potion_type;
+    if ( primary_role() == ROLE_ATTACK )
+      potion_action += ",if=buff.holy_avenger.react|buff.bloodlust.react|target.time_to_die<=60";
+    else
+      potion_action += ",if=buff.shield_of_the_righteous.down&buff.seraphim.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down&buff.ardent_defender.down";
+    def -> add_action( potion_action );
   }
 
   // profession actions
@@ -4968,31 +5009,94 @@ void paladin_t::generate_action_prio_list_prot()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ] );
 
-  def -> add_talent( this, "Holy Avenger" );
-  def -> add_action( this, "Divine Protection", "if=buff.seraphim.down" ); // use on cooldown
+  def -> add_action( "run_action_list,name=max_dps,if=role.attack|target.current_target=" + this -> name_str,
+                     "This line will shortcut to a high-DPS (but low-survival) action list. Remove the conditionals if you want it to do this all the time." );
+  def -> add_action( "run_action_list,name=max_survival,if=0",
+                     "This line will shortcut to a high-survival (but low-DPS) action list. Change 0 to 1 if you want it to do this all the time." );
+
+  def -> add_talent( this, "Holy Avenger", "", "Standard survival priority list starts here\n# This section covers off-GCD spells." );
+  def -> add_action( this, "Divine Protection", "if=buff.seraphim.down" );
+  def -> add_talent( this, "Seraphim", "if=buff.divine_protection.down&cooldown.divine_protection.remains>0" );
   def -> add_action( this, "Guardian of Ancient Kings", "if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down" ); 
   def -> add_action( this, "Ardent Defender", "if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down");
   def -> add_talent( this, "Eternal Flame", "if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react|buff.bastion_of_power.react)" );
   def -> add_talent( this, "Eternal Flame", "if=buff.bastion_of_power.react&buff.bastion_of_glory.react>=5" );
-  def -> add_talent( this, "Seraphim", "if=buff.divine_protection.down&cooldown.divine_protection.remains>0" );
   def -> add_action( this, "Shield of the Righteous", "if=(holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3)&(!talent.seraphim.enabled|cooldown.seraphim.remains>5)" );
-  def -> add_action( this, "Crusader Strike" );
+  
+  def -> add_action( this, "Crusader Strike", "", "GCD-bound spells start here" );
   def -> add_action( this, "Judgment" );
   def -> add_action( this, "Holy Wrath", "if=talent.sanctified_wrath.enabled" );
+  def -> add_action( this, "Seal of Insight", "if=talent.empowered_seals.enabled&!seal.insight&buff.uthers_insight.remains<cooldown.judgment.remains" );
+  def -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.uthers_insight.remains>cooldown.judgment.remains&buff.liadrins_righteousness.down" );
+  def -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&!seal.truth&buff.uthers_insight.remains>cooldown.judgment.remains&buff.liadrins_righteousness.remains>cooldown.judgment.remains&buff.maraads_truth.down" );
   def -> add_action( this, "Avenger's Shield" );
   def -> add_talent( this, "Execution Sentence" );
   def -> add_action( this, "Hammer of Wrath" );
   def -> add_talent( this, "Light's Hammer" );
   def -> add_action( this, "Holy Wrath", "if=glyph.final_wrath.enabled&target.health.pct<=20" );
-  def -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<5" );
+  def -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<2" );
   def -> add_action( this, "Consecration", "if=target.debuff.flying.down&!ticking" );
   def -> add_action( this, "Holy Wrath" );
   def -> add_talent( this, "Holy Prism" );
-  def -> add_action( this, "Seal of Insight", "if=talent.empowered_seals.enabled&buff.uthers_insight.remains<buff.liadrins_righteousness.remains&buff.uthers_insight.remains<buff.maraads_truth.remains" );
-  def -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&buff.liadrins_righteousness.remains<buff.uthers_insight.remains&buff.liadrins_righteousness.remains<buff.maraads_truth.remains" );
-  def -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&buff.maraads_truth.remains<buff.uthers_insight.remains&buff.maraads_truth.remains<buff.liadrins_righteousness.remains" );
+  def -> add_action( this, "Seal of Insight", "if=talent.empowered_seals.enabled&!seal.insight&buff.uthers_insight.remains<buff.liadrins_righteousness.remains&buff.uthers_insight.remains<buff.maraads_truth.remains" );
+  def -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.liadrins_righteousness.remains<buff.uthers_insight.remains&buff.liadrins_righteousness.remains<buff.maraads_truth.remains" );
+  def -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&!seal.truth&buff.maraads_truth.remains<buff.uthers_insight.remains&buff.maraads_truth.remains<buff.liadrins_righteousness.remains" );
   def -> add_talent( this, "Sacred Shield" );
   def -> add_action( this, "Flash of Light", "if=talent.selfless_healer.enabled" );
+
+  
+  // Max-DPS priority queue
+  dps -> add_talent( this, "Holy Avenger", "", "Max-DPS priority list starts here.\n# This section covers off-GCD spells." );
+  dps -> add_talent( this, "Seraphim" );
+  dps -> add_talent( this, "Divine Protection", "if=buff.seraphim.down&cooldown.seraphim.remains>5" );
+  dps -> add_action( this, "Shield of the Righteous", "if=holy_power>=5|buff.divine_purpose.react|(talent.holy_avenger.enabled&holy_power>=3)" );
+
+  dps -> add_action( this, "Holy Wrath", "if=glyph.final_wrath.enabled&target.health.pct<=20", "#GCD-bound spells start here." );
+  dps -> add_action( this, "Hammer of Wrath" );
+  dps -> add_action( this, "Holy Wrath", "if=talent.sanctified_wrath.enabled" );
+  dps -> add_talent( this, "Execution Sentence" );
+  dps -> add_action( this, "Crusader Strike" );
+  dps -> add_action( this, "Judgment" );
+  dps -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.liadrins_righteousness.remains<cooldown.judgment.remains" );
+  dps -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&!seal.truth&buff.liadrins_righteousness.remains>cooldown.judgment.remains&buff.maraads_truth.down" );
+  dps -> add_action( this, "Avenger's Shield" );
+  dps -> add_talent( this, "Light's Hammer" );
+  dps -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<2" );
+  dps -> add_action( this, "Consecration", "if=target.debuff.flying.down&!ticking" );
+  dps -> add_action( this, "Holy Wrath" );
+  dps -> add_talent( this, "Holy Prism" );
+  dps -> add_action( this, "Seal of Insight", "if=talent.empowered_seals.enabled&!seal.insight&buff.uthers_insight.remains<buff.liadrins_righteousness.remains&buff.uthers_insight.remains<buff.maraads_truth.remains" );
+  dps -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.liadrins_righteousness.remains<buff.uthers_insight.remains&buff.liadrins_righteousness.remains<buff.maraads_truth.remains" );
+  dps -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&!seal.truth&buff.maraads_truth.remains<buff.uthers_insight.remains&buff.maraads_truth.remains<buff.liadrins_righteousness.remains" );
+  dps -> add_talent( this, "Sacred Shield" );
+  dps -> add_action( this, "Flash of Light", "if=talent.selfless_healer.enabled" );
+
+
+  // Max Survival priority queue
+  surv -> add_talent( this, "Holy Avenger", "", "Max survival priority list starts here\n# This section covers off-GCD spells." );
+  surv -> add_action( this, "Divine Protection", "if=buff.seraphim.down" );
+  surv -> add_talent( this, "Seraphim", "if=buff.divine_protection.down&cooldown.divine_protection.remains>0" );
+  surv -> add_action( this, "Guardian of Ancient Kings", "if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down" ); 
+  surv -> add_action( this, "Ardent Defender", "if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down");
+  surv -> add_talent( this, "Eternal Flame", "if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react|buff.bastion_of_power.react)" );
+  surv -> add_talent( this, "Eternal Flame", "if=buff.bastion_of_power.react&buff.bastion_of_glory.react>=5" );
+  surv -> add_action( this, "Shield of the Righteous", "if=(holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3)&(!talent.seraphim.enabled|cooldown.seraphim.remains>5)" );
+  
+  surv -> add_action( this, "Crusader Strike", "", "GCD-bound spells start here" );
+  surv -> add_action( this, "Judgment" );
+  surv -> add_action( this, "Holy Wrath", "if=talent.sanctified_wrath.enabled" );
+  surv -> add_action( this, "Avenger's Shield" );
+  surv -> add_action( this, "Flash of Light", "if=talent.selfless_healer.enabled" );
+  surv -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<2" );
+  surv -> add_talent( this, "Execution Sentence" );
+  surv -> add_action( this, "Hammer of Wrath" );
+  surv -> add_talent( this, "Light's Hammer" );
+  surv -> add_action( this, "Holy Wrath", "if=glyph.final_wrath.enabled&target.health.pct<=20" );
+  surv -> add_action( this, "Consecration", "if=target.debuff.flying.down&!ticking" );
+  surv -> add_action( this, "Holy Wrath" );
+  surv -> add_talent( this, "Holy Prism" );
+  surv -> add_talent( this, "Sacred Shield" );
+
 }
 
 // ==========================================================================
@@ -5429,8 +5533,8 @@ void paladin_t::init_spells()
 
 role_e paladin_t::primary_role() const
 {
-  if ( player_t::primary_role() == ROLE_DPS || specialization() == PALADIN_RETRIBUTION )
-    return ROLE_HYBRID;
+  if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_ATTACK || specialization() == PALADIN_RETRIBUTION )
+    return ROLE_ATTACK;
 
   if ( player_t::primary_role() == ROLE_TANK || specialization() == PALADIN_PROTECTION  )
     return ROLE_TANK;
