@@ -1386,7 +1386,8 @@ public:
         tl.push_back( t );
     }
 
-    if ( ! p() -> pets.prismatic_crystal -> is_sleeping() )
+    if ( target != p() -> pets.prismatic_crystal &&
+         ! p() -> pets.prismatic_crystal -> is_sleeping() )
       tl.push_back( p() -> pets.prismatic_crystal );
 
     return tl.size();
