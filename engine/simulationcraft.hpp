@@ -1545,6 +1545,7 @@ public:
   static void combat_begin( sim_t* );
   static void combat_end( sim_t* ) {}
   const char* name() const { return name_str.c_str(); }
+  static double evaluate_raid_event_expression(sim_t* s, std::string& type, std::string& filter );
 };
 
 // Gear Stats ===============================================================
