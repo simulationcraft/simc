@@ -3786,10 +3786,11 @@ struct cooldown_t
   void set_recharge_multiplier( double );
 
   expr_t* create_expression( action_t* a, const std::string& name_str );
-private:
+
   static timespan_t ready_init()
   { return timespan_t::from_seconds( -60 * 60 ); }
 
+private:
   double recharge_multiplier;
 };
 
