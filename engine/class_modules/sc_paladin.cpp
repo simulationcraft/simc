@@ -4150,6 +4150,8 @@ struct paladin_seal_t : public paladin_melee_attack_t
       case SEAL_OF_TRUTH:
         p() -> buffs.seal_of_truth -> trigger();
         break;
+      default:
+        break;
       }
     }
 
