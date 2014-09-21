@@ -160,6 +160,17 @@ void cooldown_t::adjust( timespan_t amount, bool require_reaction )
   }
 }
 
+void cooldown_t::reset_init()
+{
+  ready = ready_init();
+  last_start = timespan_t::zero();
+
+  current_charge = charges;
+
+  recharge_event = 0;
+  ready_trigger_event = 0;
+}
+
 void cooldown_t::reset( bool require_reaction )
 {
   bool was_down = down();

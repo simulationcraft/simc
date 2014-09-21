@@ -3763,6 +3763,8 @@ struct cooldown_t
   void start( action_t* action, timespan_t override = timespan_t::min(), timespan_t delay = timespan_t::zero() );
   void start( timespan_t override = timespan_t::min(), timespan_t delay = timespan_t::zero() );
 
+  void reset_init();
+
   timespan_t remains() const
   { return std::max( timespan_t::zero(), ready - sim.current_time ); }
 

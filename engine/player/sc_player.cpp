@@ -3543,7 +3543,7 @@ void player_t::reset()
     action_list[ i ] -> reset();
 
   for ( size_t i = 0; i < cooldown_list.size(); ++i )
-    cooldown_list[ i ] -> reset( false );
+    cooldown_list[ i ] -> reset_init();
 
   for ( size_t i = 0; i < dot_list.size(); ++i )
     dot_list[ i ] -> reset();
