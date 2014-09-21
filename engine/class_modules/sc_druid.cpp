@@ -2839,17 +2839,10 @@ struct mangle_t : public bear_attack_t
 
     rage_amount = data().effectN( 3 ).resource( RESOURCE_RAGE ) + player -> talent.soul_of_the_forest -> effectN( 1 ).resource( RESOURCE_RAGE );
 
-    base_multiplier *= 1.0 + player -> talent.soul_of_the_forest -> effectN( 2 ).percent();
-  }
-
-  virtual double composite_crit() const
-  {
-    double c = bear_attack_t::composite_crit();
-
     if ( p() -> specialization() == DRUID_GUARDIAN )
-      c += p() -> talent.dream_of_cenarius -> effectN( 3 ).percent();
+      base_crit += p() -> talent.dream_of_cenarius -> effectN( 3 ).percent();
 
-    return c;
+    base_multiplier *= 1.0 + player -> talent.soul_of_the_forest -> effectN( 2 ).percent();
   }
 
   void update_ready( timespan_t )
@@ -2879,6 +2872,8 @@ struct mangle_t : public bear_attack_t
 
     if ( result_is_multistrike( s -> result ) )
       trigger_ursa_major();
+    if ( p() -> talent.dream_of_cenarius -> ok() && s -> result == RESULT_CRIT )
+      p() -> buff.dream_of_cenarius -> trigger();
   }
 };
 
