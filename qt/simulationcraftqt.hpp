@@ -1437,9 +1437,10 @@ private slots:
   {
     QString clickedurl = url.toString();
 
-    if ( url.isLocalFile() || clickedurl.contains( "battle.net" ) ) // Make sure that battle.net profiles are loaded in simcraft.
+    if ( url.isLocalFile() || clickedurl.contains( "battle.net" ) || clickedurl.contains( "google.com" ) || clickedurl.contains( "simulationcraft.org" ) ) 
+      // Make sure that battle.net profiles and simulationcraft wiki/website are loaded in gui.
       load( url );
-    else
+    else // Wowhead links tend to crash the gui, so we'll send them to an external browser.
       QDesktopServices::openUrl( url );
   }
 
