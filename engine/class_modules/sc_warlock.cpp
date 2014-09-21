@@ -5450,7 +5450,7 @@ void warlock_t::apl_demonology()
 
     action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&buff.dark_soul.down&demonic_fury<=650&demonic_fury%(40%gcd)<target.time_to_die";
     action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&cooldown.metamorphosis.remains<=3&action.hand_of_guldan.charges=2";
-    action_list_str += "/demonbolt,if=buff.dark_soul.up";
+    action_list_str += "/demonbolt,if=buff.dark_soul.up|(cooldown.dark_soul.remains>(40%(1%spell_haste))&buff.demonbolt.stack<2)";
 
     add_action( "touch of chaos", "if=buff.metamorphosis.up" );
     add_action( "metamorphosis", "if=buff.dark_soul.remains>gcd" );
