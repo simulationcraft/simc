@@ -34,7 +34,7 @@ spec=feral
 role=attack
 position=back
 talents=0002032
-glyphs=savage_roar/master_shapeshifter
+glyphs=savage_roar/master_shapeshifter/cat_form
 head=primal_gladiators_headcover,id=111285
 neck=primal_gladiators_necklace_of_prowess,id=111080,enchant=gift_of_critical_strike
 shoulders=primal_gladiators_dragonhide_spaulders,id=111111

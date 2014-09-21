@@ -25,6 +25,12 @@ namespace { // UNNAMED NAMESPACE
 
     = Restoration =
     Err'thing
+
+
+    = To add to wiki = 
+    New Options :
+      target_self - bool - changes target of spell to caster
+      active_rejuvenations - int - number of ticking rejuvenations on the raid
 */
 
 // Forward declarations
@@ -3084,14 +3090,24 @@ namespace heals {
 struct druid_heal_t : public druid_spell_base_t<heal_t>
 {
   action_t* living_seed;
+  bool target_self;
 
   druid_heal_t( const std::string& token, druid_t* p,
                 const spell_data_t* s = spell_data_t::nil(),
-                const std::string& options = std::string() ) :
+                const std::string& options_str = std::string() ) :
     base_t( token, p, s ),
-    living_seed( nullptr )
+    living_seed( nullptr ),
+    target_self( 0 )
   {
-    parse_options( 0, options );
+    option_t options[] = 
+    {
+      opt_bool( "target_self", target_self ),
+      opt_null()
+    };
+    parse_options( options, options_str );
+
+    if( target_self )
+      target = p;
 
     dot_behavior      = DOT_REFRESH;
     may_miss          = false;
@@ -6032,7 +6048,10 @@ void druid_t::apl_feral()
     def -> add_action( "shadowmeld,if=(buff.bloodtalons.up|!talent.bloodtalons.enabled)&dot.rake.remains<0.3*dot.rake.duration" );
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<25",
                      "Keep Rip from falling off during execute range." );
-  def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" );
+  if( glyph.cat_form -> ok() )
+    def -> add_action( this, "Healing Touch", "target_self=1,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" , "Take advantage of Glyph of Cat Form");
+  else
+    def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" );
   def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
   if ( sim -> allow_potions && level >= 80 )
     def -> add_action( potion_action + ",sync=berserk,if=target.health.pct<25" );
@@ -6057,6 +6076,9 @@ void druid_t::apl_feral()
 
   // Add in rejuv blanketing for nature's vigil -- not fully optimized
   def -> add_talent( this, "Nature's Vigil" );
+  if( glyph.cat_form -> ok() )
+    def -> add_action( this, "rejuvenation", "target_self=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)" , "Take advantage of Glyph of Cat Form");    
+  def -> add_action( this, "rejuvenation", "cycle_targets=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)" );  
   def -> add_action( this, "rejuvenation", "cycle_targets=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)" );  
   def -> add_action( this, "rejuvenation", "cycle_targets=1,if=buff.natures_vigil.up" );  
 
@@ -7010,7 +7032,6 @@ void druid_t::assess_heal( school_e school,
 {
   s -> result_amount *= 1.0 + buff.frenzied_regeneration -> check();
   s -> result_amount *= 1.0 + buff.cat_form -> check() * glyph.cat_form -> effectN( 1 ).percent();
-
   player_t::assess_heal( school, dmg_type, s );
 }
 
