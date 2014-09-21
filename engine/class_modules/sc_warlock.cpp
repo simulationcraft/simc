@@ -2271,7 +2271,7 @@ struct hand_of_guldan_t: public warlock_spell_t
     aoe = -1;
 
     cooldown -> duration = timespan_t::from_seconds( 15 );
-    cooldown -> charges = 2;
+    cooldown -> charges = 2 + p -> sets.set( WARLOCK_DEMONOLOGY, T17, B2 ) -> effectN( 1 ).base_value();
 
     shadowflame = new shadowflame_t( p );
     add_child( shadowflame );
@@ -2558,11 +2558,18 @@ struct corruption_t: public warlock_spell_t
         {
           timespan_t cd_reduction = p() -> sets.set( WARLOCK_AFFLICTION, T17, B4 ) -> effectN( 1 ).time_value();
 
-          p() -> cooldowns.dark_soul -> adjust(-cd_reduction);
+          p() -> cooldowns.dark_soul -> adjust(- cd_reduction);
         }
       }
     }
 
+    if ( p() -> sets.has_set_bonus( WARLOCK_DEMONOLOGY, T17, B2 )
+        && rng().roll( p() -> sets.set( WARLOCK_DEMONOLOGY, T17, B2 ) -> effectN( 2 ).percent() )
+        && ( p() -> cooldowns.hand_of_guldan -> current_charge < p() -> cooldowns.hand_of_guldan -> charges ))
+    {
+        p() -> cooldowns.hand_of_guldan -> adjust( -p() -> cooldowns.hand_of_guldan -> duration); //decrease remaining time by the duration of one charge, i.e., add one charge
+    }
+        
     if ( p() -> glyphs.siphon_life -> ok() )
     {
       if ( d -> state -> result_amount > 0 )
