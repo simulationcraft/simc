@@ -56,55 +56,51 @@ actions.aoe+=/plague_leech,if=unholy=1
 actions.aoe+=/plague_strike,if=unholy=1
 actions.aoe+=/empower_rune_weapon
 
-actions.single_target=plague_leech,if=disease.min_remains<1
-actions.single_target+=/outbreak,if=!disease.min_ticking
-actions.single_target+=/unholy_blight,if=!disease.min_ticking
+actions.single_target=blood_tap,if=buff.blood_charge.stack>10&(runic_power>76|(runic_power>=20&buff.killing_machine.react))
 actions.single_target+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35
 actions.single_target+=/blood_tap,if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains=0)
+actions.single_target+=/blood_tap,if=talent.defile.enabled&cooldown.defile.remains=0
+actions.single_target+=/frost_strike,if=buff.killing_machine.react|runic_power>88
+actions.single_target+=/frost_strike,if=cooldown.antimagic_shell.remains<1&runic_power>=50&!buff.antimagic_shell.up
+actions.single_target+=/howling_blast,if=death>1|frost>1
+actions.single_target+=/unholy_blight,if=!disease.ticking
 actions.single_target+=/howling_blast,if=!talent.necrotic_plague.enabled&!dot.frost_fever.ticking
 actions.single_target+=/howling_blast,if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking
-actions.single_target+=/plague_strike,if=!talent.necrotic_plague.enabled&!dot.blood_plague.ticking
+actions.single_target+=/plague_strike,if=!talent.necrotic_plague.enabled&!dot.blood_plague.remains<10&unholy>0
 actions.single_target+=/howling_blast,if=buff.rime.react
-actions.single_target+=/obliterate,if=buff.killing_machine.react
-actions.single_target+=/blood_tap,if=buff.killing_machine.react
-actions.single_target+=/blood_tap,if=buff.blood_charge.stack>10&runic_power>76
 actions.single_target+=/frost_strike,if=runic_power>76
-actions.single_target+=/obliterate,if=blood=2|frost=2|unholy=2
-actions.single_target+=/plague_leech,if=disease.min_remains<3
-actions.single_target+=/outbreak,if=disease.min_remains<3
-actions.single_target+=/unholy_blight,if=disease.min_remains<3
-actions.single_target+=/frost_strike,if=talent.runic_empowerment.enabled&(frost=0|unholy=0|blood=0)
-actions.single_target+=/frost_strike,if=talent.blood_tap.enabled&buff.blood_charge.stack<=10
-actions.single_target+=/obliterate
-actions.single_target+=/blood_tap,if=buff.blood_charge.stack>10&runic_power>=20
-actions.single_target+=/frost_strike
+actions.single_target+=/obliterate,if=unholy>0&!buff.killing_machine.react
+actions.single_target+=/howling_blast,if=!(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains<2)|death+frost>=2
+actions.single_target+=/blood_tap,if=target.health.pct-3*(target.health.pct%target.time_to_die)>35|buff.blood_charge.stack>=8
+actions.single_target+=/blood_tap
 actions.single_target+=/plague_leech
 actions.single_target+=/empower_rune_weapon
 
 head=ogreskull_boneplate_greathelm,id=115539,bonus_id=567
 neck=thogars_serrated_chain,id=113959,bonus_id=567/448,enchant=gift_of_mastery
 shoulders=overdriven_spaulders,id=113990,bonus_id=567/448
-back=charbreath_firecloak,id=113916,bonus_id=567/448,enchant=gift_of_mastery
+back=cloak_of_sanguine_terror,id=113972,bonus_id=567/448,enchant=gift_of_mastery
 chest=ogreskull_boneplate_breastplate,id=115537,bonus_id=567
-wrists=bracers_of_visceral_force,id=119331,bonus_id=567/448
+wrists=bracers_of_martial_perfection,id=113871,bonus_id=567/448
 hands=ogreskull_boneplate_gauntlets,id=115538,bonus_id=567
 waist=ironcrushers_collar,id=113950,bonus_id=567/448
 legs=ogreskull_boneplate_greaves,id=115535,bonus_id=567
 feet=sabatons_of_fractal_earth,id=113936,bonus_id=567/448
-finger1=phosphorescent_seal,id=113866,bonus_id=567/448,enchant=gift_of_mastery
-finger2=seal_of_the_savage_howl,id=113940,bonus_id=567/448,enchant=gift_of_mastery
+finger1=spellbound_runic_band_of_elemental_power,id=118305,bonus_id=524,enchant=gift_of_mastery
+finger2=phosphorescent_seal,id=113866,bonus_id=567/448,enchant=gift_of_mastery
 trinket1=horn_of_screaming_spirits,id=119193,bonus_id=567/448
 trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=567/448
-main_hand=kagrazs_burning_blade,id=113913,bonus_id=567/448,enchant=rune_of_the_fallen_crusader
+main_hand=kromogs_brutal_fist,id=113927,bonus_id=567/448,enchant=rune_of_the_fallen_crusader
+off_hand=kromogs_brutal_fist,id=113927,bonus_id=567/448,enchant=rune_of_razorice
 
 # Gear Summary
-# gear_strength=3721
-# gear_stamina=4664
-# gear_crit_rating=602
-# gear_haste_rating=691
-# gear_mastery_rating=1229
+# gear_strength=3686
+# gear_stamina=4611
+# gear_crit_rating=606
+# gear_haste_rating=628
+# gear_mastery_rating=1387
 # gear_armor=2271
-# gear_multistrike_rating=1678
-# gear_versatility_rating=154
+# gear_multistrike_rating=1426
+# gear_versatility_rating=269
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

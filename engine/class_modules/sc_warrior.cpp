@@ -2126,10 +2126,13 @@ struct mortal_strike_t: public warrior_attack_t
 
   void update_ready( timespan_t cd_duration )
   {
+    cd_duration = cooldown -> duration;
+    if ( headlongrush )
+      cd_duration *= p() -> cache.attack_haste();
     if ( p() -> buff.tier17_4pc_arms -> up() )
       cd_duration *= 1.0 + p() -> buff.tier17_4pc_arms -> data().effectN( 1 ).percent();
 
-    warrior_attack_t::update_ready( cd_duration );
+    action_t::update_ready( cd_duration );
   }
 
   bool ready()
@@ -4102,7 +4105,7 @@ void warrior_t::apl_fury()
   single_target -> add_action( this, "Heroic Leap" );
   single_target -> add_action( this, "Execute", "if=buff.sudden_death.up" );
   single_target -> add_action( this, "Bloodthirst", "if=!talent.unquenchable_thirst.enabled&(buff.enrage.down|rage<50)" );
-  single_target -> add_action( this, "Bloodthirst", "if=talent.unquenchable_thirst.enabled&rage<100" );
+  single_target -> add_action( this, "Bloodthirst", "if=talent.unquenchable_thirst.enabled&(buff.enrage.down&rage<100)" );
   single_target -> add_talent( this, "Ravager" );
   single_target -> add_talent( this, "Storm Bolt" );
   single_target -> add_talent( this, "Siegebreaker" );
@@ -4324,6 +4327,7 @@ void warrior_t::apl_glad()
   gladiator -> add_action( this, "Heroic Strike", "if=buff.shield_charge.up|buff.ultimatum.up|rage>=90|target.time_to_die<=3|talent.unyielding_strikes.enabled" );
   gladiator -> add_action( this, "Heroic Leap", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
   gladiator -> add_action( this, "Shield Slam" );
+  gladiator -> add_action( this, "Execute", "if=buff.sudden_death.up" );
   gladiator -> add_action( this, "Revenge" );
   gladiator -> add_talent( this, "Storm Bolt" );
   gladiator -> add_talent( this, "Dragon Roar" );

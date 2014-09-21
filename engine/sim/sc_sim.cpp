@@ -2166,6 +2166,33 @@ expr_t* sim_t::create_expression( action_t* a,
     return make_ref_expr( name_str, target -> actor_index );
   }
 
+  // conditionals that handle upcoming raid events
+
+  if ( splits.size() >= 3 && util::str_compare_ci( splits[ 0 ], "raid_event" ) )
+  {
+    std::string type = splits[ 1 ];
+    std::string filter = splits[ 2 ];
+
+    struct raid_event_expr_t : public expr_t
+    {
+      sim_t* s;
+      std::string type;
+      std::string filter;
+
+      raid_event_expr_t( sim_t* s, std::string& type, std::string& filter ) :
+        expr_t( "raid_event" ), s( s ), type( type ), filter( filter )
+      {}
+
+      double evaluate()
+      {
+        return raid_event_t::evaluate_raid_event_expression( s, type, filter );
+      }
+
+    };
+
+    return new raid_event_expr_t( this, type, filter );
+  }
+
   // If nothing else works, check to see if the string matches an actor in the sim.
   // If so, return their actor index
   if ( splits.size() == 1 )

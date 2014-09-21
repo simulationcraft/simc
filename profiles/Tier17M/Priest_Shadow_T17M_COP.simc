@@ -152,31 +152,31 @@ actions.cop_advanced_mfi_dots+=/insanity,interrupt=1,chain=1,if=active_enemies<=
 actions.cop_advanced_mfi_dots+=/mind_spike,if=(target.dot.shadow_word_pain.ticking&target.dot.shadow_word_pain.remains<gcd*2)|(target.dot.vampiric_touch.ticking&target.dot.vampiric_touch.remains<gcd*2)
 actions.cop_advanced_mfi_dots+=/mind_flay,chain=1,interrupt=1
 
-head=soul_priests_hood,id=115563
-neck=gruuls_lip_ring,id=113872,enchant=gift_of_mastery
-shoulders=earthripple_shoulderpads,id=113928
-back=runefrenzy_greatcloak,id=113937,enchant=gift_of_mastery
-chest=soul_priests_raiment,id=115560
-wrists=bracers_of_darkened_skies,id=119332
-hands=soul_priests_gloves,id=115562
-waist=seeking_ember_girdle,id=113941
-legs=soul_priests_leggings,id=115564
-feet=cavedwellers_climbers,id=113864
-finger1=ukuroggs_corrupted_seal,id=113975,enchant=gift_of_mastery
-finger2=solium_band_of_wisdom,id=118291,enchant=gift_of_mastery
-trinket1=darmacs_unstable_talisman,id=113948
-trinket2=goren_soul_repository,id=119194
-main_hand=infernoflame_staff,id=113869,enchant=mark_of_bleeding_hollow
+head=soul_priests_hood,id=115563,bonus_id=567/448
+neck=gruuls_lip_ring,id=113872,bonus_id=567/448,enchant=gift_of_mastery
+shoulders=earthripple_shoulderpads,id=113928,bonus_id=567/448
+back=runefrenzy_greatcloak,id=113937,bonus_id=567/448,enchant=gift_of_mastery
+chest=soul_priests_raiment,id=115560,bonus_id=567/448
+wrists=bracers_of_darkened_skies,id=119332,bonus_id=567/448
+hands=soul_priests_gloves,id=115562,bonus_id=567/448
+waist=seeking_ember_girdle,id=113941,bonus_id=567/448
+legs=soul_priests_leggings,id=115564,bonus_id=567/448
+feet=cavedwellers_climbers,id=113864,bonus_id=567/448
+finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=567/448,enchant=gift_of_mastery
+finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,bonus_id=524,enchant=gift_of_mastery
+trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567/448
+trinket2=goren_soul_repository,id=119194,bonus_id=567/448
+main_hand=infernoflame_staff,id=113869,bonus_id=567/448,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_stamina=3367
-# gear_intellect=2683
-# gear_spell_power=1325
-# gear_crit_rating=557
-# gear_haste_rating=1010
-# gear_mastery_rating=1395
-# gear_armor=700
-# gear_multistrike_rating=214
-# gear_versatility_rating=54
+# gear_stamina=4785
+# gear_intellect=3800
+# gear_spell_power=1852
+# gear_crit_rating=780
+# gear_haste_rating=1411
+# gear_mastery_rating=1880
+# gear_armor=909
+# gear_multistrike_rating=298
+# gear_versatility_rating=103
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

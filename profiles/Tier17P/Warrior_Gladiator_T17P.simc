@@ -43,6 +43,7 @@ actions.single=shield_charge,if=(!buff.shield_charge.up&!cooldown.shield_slam.re
 actions.single+=/heroic_strike,if=buff.shield_charge.up|buff.ultimatum.up|rage>=90|target.time_to_die<=3|talent.unyielding_strikes.enabled
 actions.single+=/heroic_leap,if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled
 actions.single+=/shield_slam
+actions.single+=/execute,if=buff.sudden_death.up
 actions.single+=/revenge
 actions.single+=/storm_bolt
 actions.single+=/dragon_roar

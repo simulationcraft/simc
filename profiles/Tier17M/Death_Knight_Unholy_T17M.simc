@@ -33,7 +33,6 @@ actions+=/antimagic_shell,damage=100000
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
-actions+=/use_item,slot=trinket2
 actions+=/potion,name=draenic_strength,if=buff.dark_transformation.up&target.time_to_die<=60
 actions+=/run_action_list,name=aoe,if=active_enemies>=3
 actions+=/run_action_list,name=single_target,if=active_enemies<3
@@ -85,30 +84,29 @@ actions.single_target+=/death_coil
 actions.single_target+=/blood_tap,if=buff.blood_charge.stack>=8
 actions.single_target+=/empower_rune_weapon
 
-head=hardened_greathelm,id=113910,bonus_id=567/448
+head=ogreskull_boneplate_greathelm,id=115539,bonus_id=567/448
 neck=thogars_serrated_chain,id=113959,bonus_id=567/448,enchant=gift_of_mastery
 shoulders=ogreskull_boneplate_pauldrons,id=115536,bonus_id=567
 back=cloak_of_sanguine_terror,id=113972,bonus_id=567/448,enchant=gift_of_mastery
 chest=ogreskull_boneplate_breastplate,id=115537,bonus_id=567
 wrists=fleshmelter_bracers,id=113896,bonus_id=567/448
-hands=ogreskull_boneplate_gauntlets,id=115538,bonus_id=567
+hands=gauntlets_of_dramatic_blows,id=113906,bonus_id=567
 waist=uktars_belt_of_chiming_rings,id=113976,bonus_id=567/448
 legs=ogreskull_boneplate_greaves,id=115535,bonus_id=567
 feet=sabatons_of_fractal_earth,id=113936,bonus_id=567/448
-finger1=phosphorescent_seal,id=113866,bonus_id=567/448,enchant=gift_of_mastery
+finger1=spellbound_runic_band_of_elemental_power,id=118305,bonus_id=524,enchant=gift_of_mastery
 finger2=seal_of_the_savage_howl,id=113940,bonus_id=567/448,enchant=gift_of_mastery
 trinket1=forgemasters_insignia,id=113983,bonus_id=567/448
-trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=567/448
+trinket2=horn_of_screaming_spirits,id=119193,bonus_id=567/448
 main_hand=kagrazs_burning_blade,id=113913,bonus_id=567/448,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_strength=3726
-# gear_stamina=4671
-# gear_crit_rating=584
-# gear_haste_rating=595
-# gear_mastery_rating=1841
+# gear_strength=3742
+# gear_stamina=4695
+# gear_crit_rating=713
+# gear_haste_rating=499
+# gear_mastery_rating=1796
 # gear_armor=2271
-# gear_multistrike_rating=1102
-# gear_versatility_rating=222
+# gear_multistrike_rating=1348
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

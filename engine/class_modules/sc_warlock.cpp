@@ -2560,10 +2560,7 @@ struct corruption_t: public warlock_spell_t
         {
           timespan_t cd_reduction = p() -> sets.set( WARLOCK_AFFLICTION, T17, B4 ) -> effectN( 1 ).time_value();
 
-          if ( p() -> cooldowns.dark_soul -> remains() > cd_reduction )
-          {
-            //p() -> cooldowns.dark_soul -> adjust(-cd_reduction); TODO Fix WITH AD.
-          }
+          p() -> cooldowns.dark_soul -> adjust(-cd_reduction);
         }
       }
     }

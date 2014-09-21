@@ -1496,7 +1496,7 @@ protected:
   sim_t* sim;
   std::string name_str;
   int64_t num_starts;
-  timespan_t first, last;
+  timespan_t first, last, next;
   timespan_t cooldown;
   timespan_t cooldown_stddev;
   timespan_t cooldown_min;
@@ -1529,10 +1529,15 @@ public:
 
   timespan_t cooldown_time();
   timespan_t duration_time();
+  timespan_t next_time() { return next; }
+  double distance() { return distance_max; }
+  double min_distance() { return distance_min; }
+  double max_distance() { return distance_max; }
   void schedule();
   void reset();
   void start();
   void finish();
+  void set_next( timespan_t t ) { next = t; }
   void parse_options( option_t*, const std::string& options_str );
   static raid_event_t* create( sim_t* sim, const std::string& name, const std::string& options_str );
   static void init( sim_t* );
@@ -1540,6 +1545,7 @@ public:
   static void combat_begin( sim_t* );
   static void combat_end( sim_t* ) {}
   const char* name() const { return name_str.c_str(); }
+  static double evaluate_raid_event_expression(sim_t* s, std::string& type, std::string& filter );
 };
 
 // Gear Stats ===============================================================
@@ -3758,6 +3764,8 @@ struct cooldown_t
   void start( action_t* action, timespan_t override = timespan_t::min(), timespan_t delay = timespan_t::zero() );
   void start( timespan_t override = timespan_t::min(), timespan_t delay = timespan_t::zero() );
 
+  void reset_init();
+
   timespan_t remains() const
   { return std::max( timespan_t::zero(), ready - sim.current_time ); }
 
@@ -3781,10 +3789,11 @@ struct cooldown_t
   void set_recharge_multiplier( double );
 
   expr_t* create_expression( action_t* a, const std::string& name_str );
-private:
+
   static timespan_t ready_init()
   { return timespan_t::from_seconds( -60 * 60 ); }
 
+private:
   double recharge_multiplier;
 };
 
@@ -4564,7 +4573,6 @@ struct player_t : public actor_t
   {
     buff_t* aspect_of_the_pack;
     buff_t* beacon_of_light;
-    buff_t* beacon_of_faith;
     buff_t* blood_fury;
     buff_t* body_and_soul;
     buff_t* darkflight;
@@ -5637,10 +5645,7 @@ struct action_t : public noncopyable
   // option will _MAJORLY_ mess up the action list for the actor, as there's no
   // guarantee cycle_targets will end up on the "initial target" when an
   // iteration ends.
-
-  // Phillipuh to-do: added a secondary target for beacon of faith usage in Holy Paladin module
   player_t* target, * default_target;
-  player_t* target_2, * secondary_target;
 
   /* Target Cache System
    * - list: contains the cached target pointers

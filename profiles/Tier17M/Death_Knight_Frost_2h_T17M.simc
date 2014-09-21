@@ -82,29 +82,29 @@ actions.single_target+=/plague_leech
 actions.single_target+=/empower_rune_weapon
 
 head=ogreskull_boneplate_greathelm,id=115539,bonus_id=567
-neck=thogars_serrated_chain,id=113959,bonus_id=567/448,enchant=gift_of_mastery
-shoulders=overdriven_spaulders,id=113990,bonus_id=567/448
-back=charbreath_firecloak,id=113916,bonus_id=567/448,enchant=gift_of_mastery
+neck=vertebrae_protector,id=113900,bonus_id=567/448,enchant=gift_of_multistrike
+shoulders=unstable_slag_shoulderplates,id=113884,bonus_id=567/448
+back=charbreath_firecloak,id=113916,bonus_id=567/448,enchant=gift_of_multistrike
 chest=ogreskull_boneplate_breastplate,id=115537,bonus_id=567
 wrists=bracers_of_visceral_force,id=119331,bonus_id=567/448
 hands=ogreskull_boneplate_gauntlets,id=115538,bonus_id=567
 waist=ironcrushers_collar,id=113950,bonus_id=567/448
 legs=ogreskull_boneplate_greaves,id=115535,bonus_id=567
-feet=sabatons_of_fractal_earth,id=113936,bonus_id=567/448
-finger1=phosphorescent_seal,id=113866,bonus_id=567/448,enchant=gift_of_mastery
-finger2=seal_of_the_savage_howl,id=113940,bonus_id=567/448,enchant=gift_of_mastery
+feet=iron_bellow_sabatons,id=113961,bonus_id=567/448
+finger1=spellbound_runic_band_of_elemental_power,id=118305,bonus_id=524,enchant=gift_of_multistrike
+finger2=phosphorescent_seal,id=113866,bonus_id=567/448,enchant=gift_of_multistrike
 trinket1=horn_of_screaming_spirits,id=119193,bonus_id=567/448
 trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=567/448
-main_hand=kagrazs_burning_blade,id=113913,bonus_id=567/448,enchant=rune_of_the_fallen_crusader
+main_hand=crescent_of_living_magma,id=113886,bonus_id=567/448,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_strength=3721
-# gear_stamina=4664
-# gear_crit_rating=602
-# gear_haste_rating=691
-# gear_mastery_rating=1229
+# gear_strength=3737
+# gear_stamina=4688
+# gear_crit_rating=1105
+# gear_haste_rating=1171
+# gear_mastery_rating=219
 # gear_armor=2271
-# gear_multistrike_rating=1678
-# gear_versatility_rating=154
+# gear_multistrike_rating=1580
+# gear_versatility_rating=284
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
