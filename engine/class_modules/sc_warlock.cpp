@@ -8,8 +8,8 @@
 // ==========================================================================
 //
 // TODO:
-// T17 Set bonusses. T17 4pc affli,
-//  2PC Demo, 2->3 Charges, 10% chance on corruption to add a charge. Needs work at the general charging module. Also T16 doesnt work for a similar reason
+// T17 Set bonusses.
+//  2PC Demo, 2->3 Charges, 10% chance on corruption to add a charge. (Currently works not only for the latest but all)
 //  4PC Demo,proc on HoG/CW
 //    proc has an ICD of 45 secs.
 //    Inner Demon Summon(166862) .c.f wild IMP
@@ -1847,7 +1847,7 @@ public:
     //sb:haunt buff
     if ( p() -> buffs.haunting_spirits -> check() && ( channeled || spell_power_mod.tick ) ) // Only applies to channeled or dots
     {
-      m *= 1.0 + p() -> buffs.haunting_spirits -> data().effectN( 1 ).percent();//TODO double check correct effectN
+      m *= 1.0 + p() -> buffs.haunting_spirits -> data().effectN( 1 ).percent();
     }
 
     return spell_t::composite_target_multiplier( t ) * m;
@@ -2360,13 +2360,11 @@ struct shadow_bolt_t: public warlock_spell_t
 
   virtual void execute()
   {
-    // FIXME!!! Ugly hack to ensure we don't proc any on-spellcast trinkets
     if ( p() -> bugs && p() -> glyphs.shadow_bolt -> ok() ) background = true;
     warlock_spell_t::execute();
     background = false;
 
-    // This section currently asserts.
-    /*if ( p() -> sets.has_set_bonus( SET_CASTER, T16, B4 ) && rng().roll( 0.08 ) )//FIX after dbc update
+    if ( p() -> sets.has_set_bonus( SET_CASTER, T16, B4 ) && rng().roll( 0.08 ) )
     {
       hand_of_guldan -> target = target;
       int current_charge = hand_of_guldan -> cooldown -> current_charge;
@@ -2379,7 +2377,7 @@ struct shadow_bolt_t: public warlock_spell_t
 
       hand_of_guldan -> execute();
       if ( !pre_execute_add ) hand_of_guldan -> cooldown -> current_charge++;
-    }*/ 
+    }
 
     if ( p() -> buffs.demonic_calling -> up() )
     {
@@ -2917,7 +2915,6 @@ struct conflagrate_t: public warlock_spell_t
   {
     warlock_spell_t::init();
 
-    // FIXME: No longer in the spell data for some reason
     cooldown -> duration = timespan_t::from_seconds( 12.0 );
     cooldown -> charges = 2;
   }
@@ -3462,7 +3459,7 @@ struct touch_of_chaos_t: public warlock_spell_t
     }
 
     //cast CW
-    if ( p() -> sets.has_set_bonus( SET_CASTER, T16, B4 ) && rng().roll( 0.08 ) )//FIX after dbc update
+    if ( p() -> sets.has_set_bonus( SET_CASTER, T16, B4 ) && rng().roll( 0.08 ) )
     {
       chaos_wave -> target = target;
       int current_charge = chaos_wave -> cooldown -> current_charge;
