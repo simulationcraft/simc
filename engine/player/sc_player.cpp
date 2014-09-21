@@ -4920,10 +4920,10 @@ void player_t::target_mitigation( school_e school,
 void player_t::assess_heal( school_e, dmg_e, action_state_t* s )
 {
   if ( buffs.guardian_spirit -> up() )
-    s -> result_amount *= 1.0 + buffs.guardian_spirit -> data().effectN( 1 ).percent();
+    s -> result_total *= 1.0 + buffs.guardian_spirit -> data().effectN( 1 ).percent();
   
   // process heal
-  s -> result_amount = resource_gain( RESOURCE_HEALTH, s -> result_amount, 0, s -> action );
+  s -> result_amount = resource_gain( RESOURCE_HEALTH, s -> result_total, 0, s -> action );
 
   // if the target is a tank record this event on damage timeline
   if ( ! is_pet() && role == ROLE_TANK )

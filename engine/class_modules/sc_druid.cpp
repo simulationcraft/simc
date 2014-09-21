@@ -13,6 +13,7 @@ namespace { // UNNAMED NAMESPACE
  /* WoD -- TODO:
     = Feral =
     Update LI implementation to work like in-game
+    Update Glyph of Ferocious Bite to be a heal
 
     = Balance =
     PvP/Tier Bonuses
@@ -7030,8 +7031,8 @@ void druid_t::assess_heal( school_e school,
                            dmg_e    dmg_type,
                            action_state_t* s )
 {
-  s -> result_amount *= 1.0 + buff.frenzied_regeneration -> check();
-  s -> result_amount *= 1.0 + buff.cat_form -> check() * glyph.cat_form -> effectN( 1 ).percent();
+  s -> result_total *= 1.0 + buff.frenzied_regeneration -> check();
+  s -> result_total *= 1.0 + buff.cat_form -> check() * glyph.cat_form -> effectN( 1 ).percent();
   player_t::assess_heal( school, dmg_type, s );
 }
 
