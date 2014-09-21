@@ -4324,6 +4324,7 @@ void warrior_t::apl_glad()
   gladiator -> add_action( this, "Heroic Strike", "if=buff.shield_charge.up|buff.ultimatum.up|rage>=90|target.time_to_die<=3|talent.unyielding_strikes.enabled" );
   gladiator -> add_action( this, "Heroic Leap", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
   gladiator -> add_action( this, "Shield Slam" );
+  gladiator -> add_action( this, "Execute", "if=buff.sudden_death.up" );
   gladiator -> add_action( this, "Revenge" );
   gladiator -> add_talent( this, "Storm Bolt" );
   gladiator -> add_talent( this, "Dragon Roar" );
