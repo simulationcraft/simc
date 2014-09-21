@@ -566,6 +566,9 @@ struct rogue_attack_t : public melee_attack_t
     return p() -> buffs.vanish -> check() || p() -> buffs.stealth -> check() || player -> buffs.shadowmeld -> check();
   }
 
+  virtual bool procs_poison() const
+  { return weapon != 0; }
+
   // Adjust poison proc chance
   virtual double composite_poison_flat_modifier( const action_state_t* ) const
   { return 0.0; }
@@ -1167,10 +1170,10 @@ void rogue_attack_t::impact( action_state_t* state )
 
   if ( result_is_hit( state -> result ) )
   {
-    if ( weapon && p() -> active_lethal_poison )
+    if ( procs_poison() && p() -> active_lethal_poison )
       p() -> active_lethal_poison -> trigger( state );
 
-    if ( weapon && p() -> active_nonlethal_poison )
+    if ( procs_poison() && p() -> active_nonlethal_poison )
       p() -> active_nonlethal_poison -> trigger( state );
 
     // Legendary Daggers buff handling
@@ -2825,6 +2828,9 @@ struct main_gauche_t : public rogue_attack_t
     may_crit        = true;
     proc = true; // it's proc; therefore it cannot trigger main_gauche for chain-procs
   }
+
+  bool procs_poison() const
+  { return false; }
 };
 
 struct blade_flurry_attack_t : public rogue_attack_t
