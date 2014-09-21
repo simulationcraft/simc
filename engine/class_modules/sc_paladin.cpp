@@ -5151,7 +5151,7 @@ void paladin_t::generate_action_prio_list_holy()
   {
     std::string flask_action = "flask,type=";
     if ( level > 90 ) 
-      flask_action += "greator_draenic_intellect_flask";
+      flask_action += "greater_draenic_intellect_flask";
     else
     flask_action += ( level > 85 ) ? "warm_sun" : "draconic_mind";
 
@@ -5179,23 +5179,13 @@ void paladin_t::generate_action_prio_list_holy()
   
   // action priority list
   action_priority_list_t* def = get_action_priority_list( "default" );
-
+  
   // Potions
-  if ( sim -> allow_potions )
+  if (sim -> allow_potions && level >= 80)
+    def -> add_action( "potion,name=draenic_intellect" );
+  else
     def -> add_action( "potion,name=mana_potion,if=mana.pct<=75" );
-  // Potions
-
-    // Phillipuh
-  if (sim -> allow_potions && level >= 80){
-      std::string potion_action= "potion,name=";
-      if ( level > 90 )
-          potion_action += "potion,name=draenic_intellect";
-      else
-          potion_action += ( level > 85 ) ? "mogu power" : "jade serpent";
-      precombat -> add_action( potion_action);
-
-  }
-
+  
   def -> add_action( "/auto_attack" );
   def -> add_talent( this, "Speed of Light", "if=movement.remains>1" );
 
