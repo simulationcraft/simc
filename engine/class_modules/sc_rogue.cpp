@@ -2449,6 +2449,9 @@ struct shuriken_toss_t : public rogue_attack_t
   {
     adds_combo_points = 1; // it has an effect but with no base value :rollseyes:
   }
+
+  bool procs_poison() const
+  { return true; }
 };
 
 // Sinister Strike ==========================================================
