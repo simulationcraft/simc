@@ -956,11 +956,6 @@ void player_t::init_base_stats()
 
   if ( primary_role() == ROLE_TANK )
   {
-    // set position to front
-    base.position = POSITION_FRONT;
-    initial.position = POSITION_FRONT;
-    change_position( POSITION_FRONT );
-
     // Collect DTPS data for tanks even for statistics_level == 1
     if ( sim -> statistics_level >= 1  )
       collected_data.dtps.change_mode( false );
@@ -1142,12 +1137,18 @@ void player_t::init_position()
       sim -> errorf( "Player %s has an invalid position of %s.\n", name(), position_str.c_str() );
     }
   }
+  // if the position string is empty and we're a tank, assume they want to be in front
+  else if ( primary_role() == ROLE_TANK )
+  {
+    // set position to front
+    base.position = POSITION_FRONT;
+    initial.position = POSITION_FRONT;
+    change_position( POSITION_FRONT );
+  }
 
   // default to back when we have an invalid position
   if ( base.position == POSITION_NONE )
-  {
     base.position = POSITION_BACK;
-  }
 
   position_str = util::position_type_string( base.position );
 

@@ -4701,9 +4701,6 @@ void paladin_t::init_base_stats()
     default:
       break;
   }
-
-  // this fixes the position output in the HTML file
-  position_str = util::position_type_string( base.position );
 }
 
 // paladin_t::reset =========================================================
