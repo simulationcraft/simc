@@ -2213,7 +2213,7 @@ expr_t* sim_t::create_expression( action_t* a,
           return 1.0;
 
         // now go through the list of matching raid events and look for the one happening first
-        raid_event_t* e;
+        raid_event_t* e = 0;
         timespan_t time_to_event = timespan_t::from_seconds( -1 );
 
         for ( size_t i = 0; i < matching_type.size(); i++ )

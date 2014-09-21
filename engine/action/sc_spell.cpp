@@ -689,7 +689,7 @@ void absorb_t::impact( action_state_t* s )
 
 // absorb_t::assess_damage ==================================================
 
-void absorb_t::assess_damage( dmg_e    heal_type,
+void absorb_t::assess_damage( dmg_e  /* heal_type */, // commented to remove compiler warning, uncomment if needed
                               action_state_t* s )
 {
   //s -> result_amount = s -> target -> resource_gain( RESOURCE_HEALTH, s -> result_amount, 0, this );
