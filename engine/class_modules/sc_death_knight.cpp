@@ -188,7 +188,6 @@ public:
   {
     buff_t* army_of_the_dead;
     buff_t* antimagic_shell;
-    buff_t* bladed_armor;
     buff_t* blood_charge;
     buff_t* blood_presence;
     buff_t* bone_wall;
@@ -219,6 +218,7 @@ public:
     stat_buff_t* riposte;
     buff_t* shadow_of_death;
     buff_t* conversion;
+    buff_t* frozen_runeblade;
   } buffs;
 
   struct runeforge_t
@@ -234,6 +234,7 @@ public:
   struct cooldowns_t
   {
     cooldown_t* bone_shield_icd;
+    cooldown_t* vampiric_blood;
   } cooldown;
 
   // Diseases
@@ -244,6 +245,7 @@ public:
     spell_t* blood_plague;
     spell_t* frost_fever;
     melee_attack_t* frozen_power;
+    spell_t* frozen_runeblade;
     spell_t* necrotic_plague;
     spell_t* breath_of_sindragosa;
     spell_t* necrosis;
@@ -285,6 +287,10 @@ public:
     gain_t* hp_death_siphon;
     gain_t* t15_4pc_tank;
     gain_t* t17_2pc_frost;
+    gain_t* t17_4pc_unholy_blood;
+    gain_t* t17_4pc_unholy_unholy;
+    gain_t* t17_4pc_unholy_frost;
+    gain_t* t17_4pc_unholy_waste;
   } gains;
 
   // Specialization
@@ -295,6 +301,7 @@ public:
     const spell_data_t* multistrike_attunement;
 
     // Blood
+    const spell_data_t* bladed_armor;
     const spell_data_t* blood_rites;
     const spell_data_t* veteran_of_the_third_war;
     const spell_data_t* scent_of_blood;
@@ -469,6 +476,8 @@ public:
     cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
     cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 1.0 );
 
+    cooldown.vampiric_blood = get_cooldown( "vampiric_blood" );
+
     regen_type = REGEN_DYNAMIC;
     regen_caches[ CACHE_HASTE ] = true;
     regen_caches[ CACHE_ATTACK_HASTE ] = true;
@@ -529,6 +538,8 @@ public:
   void      trigger_blood_charge( double rpcost );
   void      trigger_shadow_infusion( double rpcost );
   void      trigger_necrosis( const action_state_t* );
+  void      trigger_t17_4pc_frost( const action_state_t* );
+  void      trigger_t17_4pc_unholy( const action_state_t* );
   void      apply_diseases( action_state_t* state, unsigned diseases );
   int       runes_count( rune_type rt, bool include_death, int position );
   double    runes_cooldown_any( rune_type rt, bool include_death, int position );
@@ -641,10 +652,11 @@ struct np_spread_event_t : public event_t
 
 // Log rune status ==========================================================
 
-static void log_rune_status( const death_knight_t* p )
+static void log_rune_status( const death_knight_t* p, bool debug = false )
 {
   std::string rune_str;
   std::string runeval_str;
+
   for ( int j = 0; j < RUNE_SLOT_MAX; ++j )
   {
     char rune_letter = rune_symbols[p -> _runes.slot[j].get_type()];
@@ -659,7 +671,11 @@ static void log_rune_status( const death_knight_t* p )
     rune_str += rune_letter;
     runeval_str += '[' + runeval + ']';
   }
-  p -> sim -> out_log.printf( "%s runes: %s %s", p -> name(), rune_str.c_str(), runeval_str.c_str() );
+
+  if ( ! debug )
+    p -> sim -> out_log.printf( "%s runes: %s %s", p -> name(), rune_str.c_str(), runeval_str.c_str() );
+  else
+    p -> sim -> out_debug .printf( "%s runes: %s %s", p -> name(), rune_str.c_str(), runeval_str.c_str() );
 }
 
 // Count Death Runes ========================================================
@@ -888,7 +904,7 @@ static double ready_in( const death_knight_t* player, int blood, int frost, int 
   range::fill( use, false );
 
   if ( player -> sim -> debug )
-    log_rune_status( player );
+    log_rune_status( player, true );
 
   double min_ready_blood = 9999, min_ready_frost = 9999, min_ready_unholy = 9999;
 
@@ -1060,7 +1076,7 @@ static int random_depleted_rune( death_knight_t* p )
 
   if ( num_depleted > 0 )
   {
-    if ( p -> sim -> debug ) log_rune_status( p );
+    if ( p -> sim -> debug ) log_rune_status( p, true );
 
     return depleted_runes[ ( int ) p -> rng().range( 0, num_depleted ) ];
   }
@@ -2513,6 +2529,7 @@ void death_knight_melee_attack_t::impact( action_state_t* state )
   base_t::impact( state );
 
   trigger_t16_4pc_melee( state );
+  p() -> trigger_t17_4pc_frost( state );
 }
 
 // death_knight_melee_attack_t::ready() =====================================
@@ -2938,6 +2955,42 @@ struct necrosis_t : public death_knight_spell_t
   }
 };
 
+// Frozen Runeblade =========================================================
+
+struct frozen_runeblade_attack_t : public death_knight_melee_attack_t
+{
+  frozen_runeblade_attack_t( death_knight_t* player ) :
+    death_knight_melee_attack_t( "frozen_runeblade", player, player -> find_spell( 170205 ) -> effectN( 1 ).trigger() )
+  {
+    background = true;
+    // Implicitly uses main hand weapon
+    weapon = &( player -> main_hand_weapon );
+  }
+
+  bool usable_moving() const
+  { return true; }
+};
+
+struct frozen_runeblade_driver_t : public death_knight_spell_t
+{
+  frozen_runeblade_attack_t* attack;
+
+  frozen_runeblade_driver_t( death_knight_t* player ) :
+    death_knight_spell_t( "frozen_runeblade_driver", player, player -> find_spell( 170205 ) ),
+    attack( new frozen_runeblade_attack_t( player ) )
+  {
+    background = proc = dual = quiet = true;
+    callbacks = may_miss = may_crit = hasted_ticks = tick_may_crit = false;
+  }
+
+  void tick( dot_t* dot )
+  {
+    death_knight_spell_t::tick( dot );
+
+    attack -> schedule_execute();
+  }
+};
+
 // Soul Reaper ==============================================================
 
 struct soul_reaper_dot_t : public death_knight_melee_attack_t
@@ -3180,7 +3233,7 @@ struct blood_tap_t : public death_knight_spell_t
       return;
     }
 
-    if ( sim -> debug ) log_rune_status( p() );
+    if ( sim -> debug ) log_rune_status( p(), true );
 
     rune_t* regen_rune = &( p() -> _runes.slot[ selected_rune ] );
 
@@ -3343,6 +3396,7 @@ struct dark_transformation_t : public death_knight_spell_t
 
     p() -> buffs.dark_transformation -> trigger();
     p() -> buffs.shadow_infusion -> expire();
+    p() -> trigger_t17_4pc_unholy( execute_state );
   }
 
   virtual bool ready()
@@ -3550,6 +3604,33 @@ struct death_coil_t : public death_knight_spell_t
 
 // Death Strike =============================================================
 
+struct blood_shield_buff_t : public absorb_buff_t
+{
+  blood_shield_buff_t( death_knight_t* player ) :
+    absorb_buff_t( absorb_buff_creator_t( player, "blood_shield", player -> find_spell( 77535 ) )
+                   .school( SCHOOL_PHYSICAL )
+                   .source( player -> get_stats( "blood_shield" ) ) )
+  { }
+
+  // Clamp shield value so that if T17 4PC is used, we have at least 5% of
+  // current max health of absorb left, if Vampiric Blood is up
+  void absorb_used( double )
+  {
+    death_knight_t* p = debug_cast<death_knight_t*>( player );
+    if ( p -> sets.has_set_bonus( DEATH_KNIGHT_BLOOD, T17, B4 ) && p -> buffs.vampiric_blood -> up() )
+    {
+      double min_absorb = p -> resources.max[ RESOURCE_HEALTH ] *
+                          p -> sets.set( DEATH_KNIGHT_BLOOD, T17, B4 ) -> effectN( 1 ).percent();
+
+      if ( sim -> debug )
+        sim -> out_debug.printf( "%s blood_shield absorb clamped to %f", player -> name(), min_absorb );
+
+      if ( current_value < min_absorb )
+        current_value = min_absorb;
+    }
+  }
+};
+
 struct death_strike_offhand_t : public death_knight_melee_attack_t
 {
   death_strike_offhand_t( death_knight_t* p ) :
@@ -3561,12 +3642,36 @@ struct death_strike_offhand_t : public death_knight_melee_attack_t
   }
 };
 
+struct blood_shield_t : public absorb_t
+{
+  blood_shield_t( death_knight_t* p ) :
+    absorb_t( "blood_shield", p, p -> find_spell( 77535 ) )
+  {
+    may_miss = may_crit = may_multistrike = callbacks = false;
+    background = proc = true;
+  }
+
+  // Self only so we can do this in a simple way
+  absorb_buff_t* create_buff( const action_state_t* )
+  { return debug_cast<death_knight_t*>( player ) -> buffs.blood_shield; }
+
+  void init()
+  {
+    absorb_t::init();
+
+    snapshot_flags = update_flags = 0;
+  }
+};
+
 struct death_strike_heal_t : public death_knight_heal_t
 {
+  blood_shield_t* blood_shield;
+
   death_strike_heal_t( death_knight_t* p ) :
-    death_knight_heal_t( "death_strike_heal", p, p -> find_spell( 45470 ) )
+    death_knight_heal_t( "death_strike_heal", p, p -> find_spell( 45470 ) ),
+    blood_shield( p -> specialization() == DEATH_KNIGHT_BLOOD ? new blood_shield_t( p ) : 0 )
   {
-    may_crit   = false;
+    may_crit   = may_multistrike = callbacks = false;
     background = true;
     target     = p;
   }
@@ -3588,27 +3693,37 @@ struct death_strike_heal_t : public death_knight_heal_t
     trigger_blood_shield( state );
   }
 
+  void consume_resource()
+  {
+    death_knight_heal_t::consume_resource();
+
+    p() -> buffs.scent_of_blood -> expire();
+  }
+
   void trigger_blood_shield( action_state_t* state )
   {
     if ( p() -> specialization() != DEATH_KNIGHT_BLOOD )
       return;
 
-    double amount = p() -> buffs.blood_shield -> current_value;
+    double current_value = 0;
+    if ( blood_shield -> target_specific[ state -> target ] )
+      current_value = blood_shield -> target_specific[ state -> target ] -> current_value;
 
+    double amount = current_value;
     if ( p() -> mastery.blood_shield -> ok() )
-      amount += state -> result_amount * p() -> cache.mastery_value();
+      amount += state -> result_total * p() -> cache.mastery_value();
 
     amount = std::min( p() -> resources.max[ RESOURCE_HEALTH ], amount );
 
     if ( sim -> debug )
       sim -> out_debug.printf( "%s Blood Shield buff trigger, old_value=%f added_value=%f new_value=%f",
-                     player -> name(), p() -> buffs.blood_shield -> current_value,
+                     player -> name(), current_value,
                      state -> result_amount * p() -> cache.mastery_value(),
                      amount );
 
-    p() -> buffs.blood_shield -> trigger( 1, amount );
+    blood_shield -> base_dd_min = blood_shield -> base_dd_max = amount;
+    blood_shield -> execute();
   }
-
 };
 
 struct death_strike_t : public death_knight_melee_attack_t
@@ -3673,7 +3788,12 @@ struct death_strike_t : public death_knight_melee_attack_t
       heal -> schedule_execute();
     }
 
-    p() -> buffs.scent_of_blood -> expire();
+    if ( p() -> sets.has_set_bonus( DEATH_KNIGHT_BLOOD, T17, B2 ) && p() -> buffs.scent_of_blood -> check() )
+    {
+      timespan_t reduction = p() -> sets.set( DEATH_KNIGHT_BLOOD, T17, B2 ) -> effectN( 1 ).time_value() * p() -> buffs.scent_of_blood -> check();
+      p() -> cooldown.vampiric_blood -> ready -= reduction;
+    }
+
     p() -> buffs.deathbringer -> decrement();
   }
 
@@ -4363,12 +4483,6 @@ struct blood_boil_t : public death_knight_spell_t
       spread -> target = target;
       spread -> schedule_execute();
     }
-
-    if ( p() -> sets.has_set_bonus( DEATH_KNIGHT_BLOOD, T17, B2 ) )
-    {
-      if ( p() -> buffs.blood_shield -> check() )
-        p() -> buffs.blood_shield -> current_value *= 1.0 + p() -> sets.set( DEATH_KNIGHT_BLOOD, T17, B2 ) -> effectN( 1 ).percent();
-    }
   }
 
   void impact( action_state_t* state )
@@ -4415,24 +4529,9 @@ struct pillar_of_frost_t : public death_knight_spell_t
     p() -> buffs.pillar_of_frost -> trigger();
 
     if ( p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T17, B2 ) )
-    {
-      unsigned gained = 0, overflow = 0;
-      for ( size_t i = 0; i < p() -> _runes.slot.size(); i++ )
-      {
-        if ( ! p() -> _runes.slot[ i ].is_ready() )
-          gained++;
-        else
-          overflow++;
+      p() -> resource_gain( RESOURCE_RUNIC_POWER, p() -> sets.set( DEATH_KNIGHT_FROST, T17, B2 ) -> effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ), p() -> gains.t17_2pc_frost );
 
-        p() -> _runes.slot[ i ].type |= RUNE_TYPE_DEATH;
-        p() -> _runes.slot[ i ].fill_rune();
-      }
-
-      p() -> gains.t17_2pc_frost -> add( RESOURCE_RUNE, gained + overflow, overflow );
-
-      if ( sim -> debug )
-        log_rune_status( p() );
-    }
+    p() -> buffs.frozen_runeblade -> trigger();
   }
 
   bool ready()
@@ -5286,6 +5385,41 @@ struct vampiric_blood_buff_t : public buff_t
   }
 };
 
+struct frozen_runeblade_buff_t : public buff_t
+{
+  int stack_count;
+
+  frozen_runeblade_buff_t( death_knight_t* p ) :
+    buff_t( buff_creator_t( p, "frozen_runeblade", p -> sets.set( DEATH_KNIGHT_FROST, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
+                           .chance( p -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T17, B4 ) ).refresh_behavior( BUFF_REFRESH_DISABLED ) ),
+    stack_count( 0 )
+  { }
+
+  void execute( int stacks, double value, timespan_t duration )
+  {
+    buff_t::execute( stacks, value, duration );
+
+    stack_count = current_stack;
+  }
+
+  void expire_override()
+  {
+    death_knight_t* p = debug_cast< death_knight_t* >( player );
+    p -> active_spells.frozen_runeblade -> dot_duration = stack_count * p -> active_spells.frozen_runeblade -> data().effectN( 1 ).period();
+    p -> active_spells.frozen_runeblade -> schedule_execute();
+
+    buff_t::expire_override();
+
+    stack_count = 0;
+  }
+
+  void reset()
+  {
+    buff_t::reset();
+    stack_count = 0;
+  }
+};
+
 } // UNNAMED NAMESPACE
 
 // ==========================================================================
@@ -5632,6 +5766,7 @@ void death_knight_t::init_spells()
   spec.multistrike_attunement     = find_specialization_spell( "Multistrike Attunement" );
 
   // Blood
+  spec.bladed_armor               = find_specialization_spell( "Bladed Armor" );
   spec.blood_rites                = find_specialization_spell( "Blood Rites" );
   spec.veteran_of_the_third_war   = find_specialization_spell( "Veteran of the Third War" );
   spec.scent_of_blood             = find_specialization_spell( "Scent of Blood" );
@@ -5755,6 +5890,9 @@ void death_knight_t::init_spells()
 
     active_spells.frozen_power = new frozen_power_t( this );
   }
+
+  if ( sets.has_set_bonus( DEATH_KNIGHT_FROST, T17, B4 ) )
+    active_spells.frozen_runeblade = new frozen_runeblade_driver_t( this );
 
 }
 
@@ -6396,16 +6534,11 @@ void death_knight_t::create_buffs()
 
   buffs.army_of_the_dead    = buff_creator_t( this, "army_of_the_dead", find_class_spell( "Army of the Dead" ) )
                               .cd( timespan_t::zero() );
-  buffs.blood_shield        = absorb_buff_creator_t( this, "blood_shield", find_spell( 77535 ) )
-                              .school( SCHOOL_PHYSICAL )
-                              .source( get_stats( "blood_shield" ) )
-                              .gain( get_gain( "blood_shield" ) );
+  buffs.blood_shield        = new blood_shield_buff_t( this );
   buffs.rune_tap            = buff_creator_t( this, "rune_tap", find_specialization_spell( "Rune Tap" ) -> effectN( 1 ).trigger() );
 
   buffs.antimagic_shell     = buff_creator_t( this, "antimagic_shell", find_class_spell( "Anti-Magic Shell" ) )
                               .cd( timespan_t::zero() );
-  buffs.bladed_armor           = buff_creator_t( this, "bladed_armor", find_specialization_spell( "Bladed Armor" ) )
-                                 .add_invalidate( CACHE_ATTACK_POWER );
   buffs.blood_charge        = buff_creator_t( this, "blood_charge", find_spell( 114851 ) )
                               .chance( find_talent_spell( "Blood Tap" ) -> ok() );
   buffs.blood_presence      = buff_creator_t( this, "blood_presence", find_class_spell( "Blood Presence" ) )
@@ -6492,6 +6625,7 @@ void death_knight_t::create_buffs()
 
   buffs.conversion = buff_creator_t( this, "conversion", talent.conversion ).duration( timespan_t::zero() );
 
+  buffs.frozen_runeblade = new frozen_runeblade_buff_t( this );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -6534,6 +6668,10 @@ void death_knight_t::init_gains()
   gains.hp_death_siphon                  = get_gain( "hp_death_siphon"            );
   gains.t15_4pc_tank                     = get_gain( "t15_4pc_tank"               );
   gains.t17_2pc_frost                    = get_gain( "t17_2pc_frost"              );
+  gains.t17_4pc_unholy_blood             = get_gain( "Unholy T17 4PC: Blood runes" );
+  gains.t17_4pc_unholy_frost             = get_gain( "Unholy T17 4PC: Frost runes" );
+  gains.t17_4pc_unholy_unholy            = get_gain( "Unholy T17 4PC: Unholy runes" );
+  gains.t17_4pc_unholy_waste             = get_gain( "Unholy T17 4PC: Wasted runes" );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -6591,9 +6729,6 @@ void death_knight_t::combat_begin()
 
   if ( specialization() == DEATH_KNIGHT_BLOOD )
     resolve_manager.start();
-
-  if ( find_specialization_spell( "Bladed Armor" ) )
-    buffs.bladed_armor -> trigger();
 }
 
 // death_knight_t::assess_heal ==============================================
@@ -6895,7 +7030,7 @@ double death_knight_t::composite_melee_attack_power() const
 {
   double ap = player_t::composite_melee_attack_power();
 
-  ap += buffs.bladed_armor -> data().effectN( 1 ).percent() * current.stats.get_stat( STAT_BONUS_ARMOR );
+  ap += spec.bladed_armor -> effectN( 1 ).percent() * current.stats.get_stat( STAT_BONUS_ARMOR );
 
   return ap;
 }
@@ -6970,6 +7105,10 @@ void death_knight_t::invalidate_cache( cache_e c )
       if ( spec.riposte -> ok() )
         player_t::invalidate_cache( CACHE_PARRY );
       break;
+    case CACHE_BONUS_ARMOR:
+      if ( spec.bladed_armor -> ok() )
+        player_t::invalidate_cache( CACHE_ATTACK_POWER );
+      break;
     case CACHE_MASTERY:
       player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
       if ( specialization() == DEATH_KNIGHT_BLOOD )
@@ -6988,6 +7127,9 @@ role_e death_knight_t::primary_role() const
 
   if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_ATTACK )
     return ROLE_ATTACK;
+
+  if ( specialization() == DEATH_KNIGHT_BLOOD )
+    return ROLE_TANK;
 
   return ROLE_ATTACK;
 }
@@ -7140,6 +7282,63 @@ void death_knight_t::trigger_necrosis( const action_state_t* state )
 
   active_spells.necrosis -> target = state -> target;
   active_spells.necrosis -> schedule_execute();
+}
+
+void death_knight_t::trigger_t17_4pc_frost( const action_state_t* state )
+{
+  if ( ! sets.has_set_bonus( DEATH_KNIGHT_FROST, T17, B4 ) )
+    return;
+
+  if ( ! state -> action -> special || state -> action -> proc ||
+       state -> action -> background )
+    return;
+
+  if ( state -> result_amount == 0 )
+    return;
+
+  if ( state -> action -> result_is_multistrike( state -> result ) ||
+       ! state -> action -> result_is_hit( state -> result ) )
+    return;
+
+  if ( ! buffs.frozen_runeblade -> check() )
+    return;
+
+  buffs.frozen_runeblade -> trigger();
+}
+
+void death_knight_t::trigger_t17_4pc_unholy( const action_state_t* )
+{
+  if ( ! sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T17, B4 ) )
+    return;
+
+  size_t max_runes = sets.set( DEATH_KNIGHT_UNHOLY, T17, B4 ) -> effectN( 2 ).base_value();
+  size_t n_regened = 0;
+  for ( size_t i = 0; i < _runes.slot.size() && n_regened < max_runes; i++ )
+  {
+    if ( _runes.slot[ i ].state != STATE_REGENERATING )
+      continue;
+
+    rune_t* regen_rune = &( _runes.slot[ i ] );
+
+    regen_rune -> fill_rune();
+    regen_rune -> type |= RUNE_TYPE_DEATH;
+
+    if ( regen_rune -> is_blood() )
+      gains.t17_4pc_unholy_blood -> add( RESOURCE_RUNE, 1, 0 );
+    else if ( regen_rune -> is_frost() )
+      gains.t17_4pc_unholy_frost -> add( RESOURCE_RUNE, 1, 0 );
+    else if ( regen_rune -> is_unholy() )
+      gains.t17_4pc_unholy_unholy -> add( RESOURCE_RUNE, 1, 0 );
+
+    if ( sim -> log ) sim -> out_log.printf( "%s regened rune %d", name(), i );
+    n_regened++;
+  }
+
+  for ( size_t i = 0; i < max_runes - n_regened; i++ )
+    gains.t17_4pc_unholy_waste -> add( RESOURCE_RUNE, 1, 0 );
+
+  if ( sim -> debug )
+    log_rune_status( this, true );
 }
 
 // death_knight_t::trigger_plaguebearer =====================================

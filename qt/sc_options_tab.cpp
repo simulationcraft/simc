@@ -233,7 +233,7 @@ void SC_OptionsTab::createGlobalsTab()
   QFormLayout* globalsLayout_middle = new QFormLayout();
   globalsLayout_middle -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 
-  globalsLayout_middle -> addRow( tr( "Num Enemies" ), choice.num_target = createChoice( 9, "1", "2", "3", "4", "5", "6", "7", "8", "20" ) );
+  globalsLayout_middle -> addRow( tr( "Num Enemies" ), choice.num_target = createChoice( 20, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20" ) );
   globalsLayout_middle -> addRow( tr( "Target Level" ), choice.target_level = createChoice( 4, "Raid Boss", "5-Man Heroic", "5-Man Normal", "Max Player Level" ) );
   globalsLayout_middle -> addRow( tr( "Target Race" ),   choice.target_race = createChoice( 7, "Humanoid", "Beast", "Demon", "Dragonkin", "Elemental", "Giant", "Undead" ) );
 

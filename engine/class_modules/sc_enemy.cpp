@@ -14,7 +14,7 @@ namespace { // UNNAMED NAMESPACE
 enum tmi_boss_e
 {
   TMI_NONE = 0,
-  TMI_T15LFR, TMI_T15N, TMI_T15H, TMI_T16_10N, TMI_T16_25N, TMI_T16_10H, TMI_T16_25H, TMI_T17_N, TMI_T17_H, TMI_T17_20M
+  TMI_T15LFR, TMI_T15N, TMI_T15H, TMI_T16_10N, TMI_T16_25N, TMI_T16_10H, TMI_T16_25H, TMI_T17N, TMI_T17H, TMI_T17M
 };
 
 
@@ -713,26 +713,26 @@ tmi_boss_e enemy_t::convert_tmi_string( const std::string& tmi_string )
 {
   // this function translates between the "tmi_boss" option string and the tmi_boss_e enum
   // eventually plan on using regular expressions here
-  if ( tmi_string == "T15LFR" || tmi_string == "T15N10" )
+  if ( util::str_compare_ci( tmi_string, "T15LFR" ) || util::str_compare_ci( tmi_string, "T15N10" ) )
     return TMI_T15LFR;
-  if ( tmi_string == "T15N" || tmi_string == "T15N25" || tmi_string == "T15H10" )
+  if ( util::str_compare_ci( tmi_string, "T15N" ) || util::str_compare_ci( tmi_string, "T15N25" ) || util::str_compare_ci( tmi_string, "T15H10" ) )
     return TMI_T15N;
-  if ( tmi_string == "T15H" || tmi_string == "T15H25" )
+  if ( util::str_compare_ci( tmi_string, "T15H" ) || util::str_compare_ci( tmi_string, "T15H25" ) )
     return TMI_T15H;
-  if ( tmi_string == "T16Q" || tmi_string == "T16N10" )
+  if ( util::str_compare_ci( tmi_string, "T16Q" ) || util::str_compare_ci( tmi_string, "T16N10" ) )
     return TMI_T16_10N;
-  if ( tmi_string == "T16N" || tmi_string == "T16N25" )
+  if ( util::str_compare_ci( tmi_string, "T16N" ) || util::str_compare_ci( tmi_string, "T16N25" ) )
     return TMI_T16_25N;
-  if ( tmi_string == "T16H10" )
+  if ( util::str_compare_ci( tmi_string, "T16H10" ) )
     return TMI_T16_10H;
-  if ( tmi_string == "T16H" || tmi_string == "T16H25" )
+  if ( util::str_compare_ci( tmi_string, "T16H" ) || util::str_compare_ci( tmi_string, "T16H25" ) )
     return TMI_T16_25H;
-  if ( tmi_string == "T17N" )
-    return TMI_T17_N;
-  if ( tmi_string == "T17H" )
-    return TMI_T17_H;
-  if ( tmi_string == "T17M" || tmi_string == "TMI20M" )
-    return TMI_T17_20M;
+  if ( util::str_compare_ci( tmi_string, "T17N" ) )
+    return TMI_T17N;
+  if ( util::str_compare_ci( tmi_string, "T17H" ) )
+    return TMI_T17H;
+  if ( util::str_compare_ci( tmi_string, "T17M" ) )
+    return TMI_T17M;
 
   if ( ! tmi_string.empty() && sim -> debug )
     sim -> out_debug.printf( "Unknown TMI string input provided: %s", tmi_string.c_str() );
@@ -898,10 +898,10 @@ std::string enemy_t::fluffy_pillow_action_list()
   level_mult = std::pow( level_mult, 1.5 );
 
   // this is the standard Fluffy Pillow action list
-  als += "/auto_attack,damage=" + util::to_string( 15000 * level_mult ) + ",attack_speed=2,aoe_tanks=1";
-  als += "/spell_dot,damage=" + util::to_string( 6000 * level_mult ) + ",tick_time=2,dot_duration=20,cooldown=40,aoe_tanks=1,if=!ticking";
-  als += "/spell_nuke,damage=" + util::to_string( 10000 * level_mult ) + ",cooldown=35,attack_speed=3,aoe_tanks=1";
-  als += "/melee_nuke,damage=" + util::to_string( 16000 * level_mult ) + ",cooldown=27,attack_speed=3,aoe_tanks=1";
+  als += "/auto_attack,damage=" + util::to_string( 100000 * level_mult ) + ",attack_speed=2,aoe_tanks=1";
+  als += "/spell_dot,damage=" + util::to_string( 60000 * level_mult ) + ",tick_time=2,dot_duration=20,cooldown=40,aoe_tanks=1,if=!ticking";
+  als += "/spell_nuke,damage=" + util::to_string( 100000 * level_mult ) + ",cooldown=35,attack_speed=3,aoe_tanks=1";
+  als += "/melee_nuke,damage=" + util::to_string( 200000 * level_mult ) + ",cooldown=27,attack_speed=3,aoe_tanks=1";
   
   return als;
 }

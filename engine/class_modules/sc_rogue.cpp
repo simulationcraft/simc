@@ -1714,10 +1714,7 @@ struct envenom_t : public rogue_attack_t
     p() -> buffs.enhanced_vendetta -> expire();
 
     if ( p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T17, B4 ) )
-    {
       p() -> trigger_combo_point_gain( execute_state, 1, p() -> gains.t17_4pc_assassination );
-      p() -> buffs.blindside -> trigger();
-    }
   }
 
   double action_multiplier() const
@@ -1849,7 +1846,6 @@ struct eviscerate_t : public rogue_attack_t
   {
     rogue_attack_t::consume_resource();
 
-    // TODO: DfA + Deceit interaction?
     p() -> buffs.deceit -> expire();
   }
 
@@ -2146,13 +2142,6 @@ struct mutilate_strike_t : public rogue_attack_t
                             this );
   }
 
-  void consume_resource()
-  {
-    rogue_attack_t::consume_resource();
-
-    p() -> buffs.enhanced_vendetta -> expire();
-  }
-
   double action_multiplier() const
   {
     double m = rogue_attack_t::action_multiplier();
@@ -2202,7 +2191,14 @@ struct mutilate_t : public rogue_attack_t
     add_child( oh_strike );
   }
 
-  virtual double cost() const
+  void consume_resource()
+  {
+    rogue_attack_t::consume_resource();
+
+    p() -> buffs.enhanced_vendetta -> expire();
+  }
+  
+  double cost() const
   {
     double c = rogue_attack_t::cost();
     if ( p() -> buffs.t16_2pc_melee -> up() )
@@ -2214,7 +2210,7 @@ struct mutilate_t : public rogue_attack_t
     return c;
   }
 
-  virtual void execute()
+  void execute()
   {
     rogue_attack_t::execute();
 
@@ -2222,12 +2218,12 @@ struct mutilate_t : public rogue_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      mh_strike -> schedule_execute( mh_strike -> get_state( execute_state ) );
-      oh_strike -> schedule_execute( oh_strike -> get_state( execute_state ) );
+      mh_strike -> execute();
+      oh_strike -> execute();
     }
   }
 
-  virtual void impact( action_state_t* state )
+  void impact( action_state_t* state )
   {
     rogue_attack_t::impact( state );
 
@@ -2510,7 +2506,7 @@ struct sinister_strike_t : public rogue_attack_t
       p() -> buffs.bandits_guile -> trigger();
 
       rogue_td_t* td = this -> td( state -> target );
-      double proc_chance = td -> dots.revealing_strike -> current_action -> data().proc_chance();
+      double proc_chance = td -> dots.revealing_strike -> current_action -> data().effectN( 6 ).percent();
       proc_chance += p() -> sets.set( ROGUE_COMBAT, T17, B2 ) -> effectN( 1 ).percent();
 
       if ( td -> dots.revealing_strike -> is_ticking() && rng().roll( proc_chance ) )
@@ -4893,7 +4889,8 @@ void rogue_t::arise()
   resources.current[ RESOURCE_COMBO_POINT ] = 0;
 
   if ( perk.improved_slice_and_dice -> ok() )
-    buffs.slice_and_dice -> trigger();
+    buffs.slice_and_dice -> trigger( 1, buffs.slice_and_dice -> data().effectN( 1 ).percent(), -1.0, timespan_t::zero() );
+
 
   if ( ! sim -> overrides.haste && dbc.spell( 113742 ) -> is_level( level ) ) sim -> auras.haste -> trigger();
   if ( ! sim -> overrides.multistrike && dbc.spell( 113742 ) -> is_level( level ) ) sim -> auras.multistrike -> trigger();

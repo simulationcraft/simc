@@ -4564,6 +4564,7 @@ struct player_t : public actor_t
   {
     buff_t* aspect_of_the_pack;
     buff_t* beacon_of_light;
+    buff_t* beacon_of_faith;
     buff_t* blood_fury;
     buff_t* body_and_soul;
     buff_t* darkflight;
@@ -5636,7 +5637,10 @@ struct action_t : public noncopyable
   // option will _MAJORLY_ mess up the action list for the actor, as there's no
   // guarantee cycle_targets will end up on the "initial target" when an
   // iteration ends.
+
+  // Phillipuh to-do: added a secondary target for beacon of faith usage in Holy Paladin module
   player_t* target, * default_target;
+  player_t* target_2, * secondary_target;
 
   /* Target Cache System
    * - list: contains the cached target pointers
@@ -5703,7 +5707,7 @@ struct action_t : public noncopyable
   core_event_t* execute_event;
   timespan_t time_to_execute, time_to_travel;
   double travel_speed, resource_consumed;
-  int moving, wait_on_ready, interrupt, chain, cycle_targets, max_cycle_targets, target_number;
+  int moving, wait_on_ready, interrupt, chain, cycle_targets, cycle_players, max_cycle_targets, target_number;
   bool round_base_dmg;
   std::string if_expr_str;
   expr_t* if_expr;
@@ -6221,6 +6225,23 @@ struct absorb_t : public spell_base_t
 
   virtual absorb_buff_creator_t& creator()
   { return creator_; }
+
+  // Allows customization of the absorb_buff_t that we are creating.
+  virtual absorb_buff_t* create_buff( const action_state_t* s )
+  {
+    buff_t* b = buff_t::find( s -> target, name_str );
+    if ( b )
+      return debug_cast<absorb_buff_t*>( b );
+
+    std::string stats_obj_name = name_str;
+    if ( s -> target != player )
+      stats_obj_name += "_" + player -> name_str;
+    stats_t* stats_obj = player -> get_stats( stats_obj_name, this );
+    creator_.source( stats_obj );
+    creator_.actors( s -> target );
+
+    return creator();
+  }
 
   virtual void execute();
   virtual void assess_damage( dmg_e, action_state_t* );

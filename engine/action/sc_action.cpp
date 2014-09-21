@@ -320,6 +320,7 @@ action_t::action_t( action_e       ty,
   interrupt                      = 0;
   chain                          = 0;
   cycle_targets                  = 0;
+  cycle_players                  = 0;
   max_cycle_targets              = 0;
   target_number                  = 0;
   round_base_dmg                 = true;
@@ -585,6 +586,7 @@ void action_t::parse_options( option_t*          options,
     opt_bool( "interrupt", interrupt ),
     opt_bool( "chain", chain ),
     opt_bool( "cycle_targets", cycle_targets ),
+    opt_bool( "cycle_players", cycle_players ),
     opt_int( "max_cycle_targets", max_cycle_targets ),
     opt_bool( "moving", moving ),
     opt_string( "sync", sync_str ),
@@ -1515,7 +1517,7 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
         delay = timespan_t::zero();
     }
 
-    cooldown -> start( this, cd_duration, delay );
+    cooldown -> start( this, cd_duration * cooldown_reduction(), delay );
 
     if ( sim -> debug )
       sim -> out_debug.printf( "%s starts cooldown for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready.total_seconds() );
@@ -1588,6 +1590,38 @@ bool action_t::ready()
     }
 
     cycle_targets = 1;
+
+    if ( found_ready ) return true;
+
+    target = saved_target;
+
+    return false;
+  }
+
+  if ( cycle_players ) // Used when healing players in the raid. 
+  {
+    player_t* saved_target = target;
+    cycle_players = 0;
+    bool found_ready = false;
+
+    std::vector<player_t*>& tl = sim -> player_no_pet_list.data();
+
+    size_t num_targets = tl.size();
+
+    if ( ( max_cycle_targets > 0 ) && ( (size_t)max_cycle_targets < num_targets ) )
+      num_targets = max_cycle_targets;
+
+    for ( size_t i = 0; i < num_targets; i++ )
+    {
+      target = tl[i];
+      if ( ready() )
+      {
+        found_ready = true;
+        break;
+      }
+    }
+
+    cycle_players = 1;
 
     if ( found_ready ) return true;
 

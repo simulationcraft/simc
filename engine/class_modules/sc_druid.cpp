@@ -2358,12 +2358,7 @@ struct rake_t : public cat_attack_t
     cat_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
-    {
       p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.rake );
-
-      if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B2 ) )
-        p() -> resource_gain( RESOURCE_ENERGY, 3.0, p() -> gain.tier17_2pc_melee );
-    }
   }
 
   virtual void execute()
@@ -2652,12 +2647,7 @@ struct thrash_cat_t : public cat_attack_t
     cat_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
-    {
       this -> td( s -> target ) -> dots.thrash_bear -> cancel();
-
-      if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B2 ) )
-        p() -> resource_gain( RESOURCE_ENERGY, 3.0, p() -> gain.tier17_2pc_melee );
-    }
   }
 
   // Treat direct damage as "bleed"
@@ -2849,17 +2839,10 @@ struct mangle_t : public bear_attack_t
 
     rage_amount = data().effectN( 3 ).resource( RESOURCE_RAGE ) + player -> talent.soul_of_the_forest -> effectN( 1 ).resource( RESOURCE_RAGE );
 
-    base_multiplier *= 1.0 + player -> talent.soul_of_the_forest -> effectN( 2 ).percent();
-  }
-
-  virtual double composite_crit() const
-  {
-    double c = bear_attack_t::composite_crit();
-
     if ( p() -> specialization() == DRUID_GUARDIAN )
-      c += p() -> talent.dream_of_cenarius -> effectN( 3 ).percent();
+      base_crit += p() -> talent.dream_of_cenarius -> effectN( 3 ).percent();
 
-    return c;
+    base_multiplier *= 1.0 + player -> talent.soul_of_the_forest -> effectN( 2 ).percent();
   }
 
   void update_ready( timespan_t )
@@ -2889,6 +2872,8 @@ struct mangle_t : public bear_attack_t
 
     if ( result_is_multistrike( s -> result ) )
       trigger_ursa_major();
+    if ( p() -> talent.dream_of_cenarius -> ok() && s -> result == RESULT_CRIT )
+      p() -> buff.dream_of_cenarius -> trigger();
   }
 };
 
@@ -3042,12 +3027,7 @@ struct thrash_bear_t : public bear_attack_t
     bear_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
-    {
       this -> td( s -> target ) -> dots.thrash_cat -> cancel();
-
-      if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B2 ) )
-        p() -> resource_gain( RESOURCE_ENERGY, 3.0, p() -> gain.tier17_2pc_melee );
-    }
   }
 
   // Treat direct damage as "bleed"
@@ -3674,7 +3654,10 @@ struct renewal_t : public druid_heal_t
 {
   renewal_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( "renewal", p, p -> find_talent_spell( "Renewal" ), options_str )
-  {}
+  {
+    may_crit = false;
+    may_multistrike = 0;
+  }
 
   virtual void init()
   {
@@ -6420,6 +6403,10 @@ void druid_t::invalidate_cache( cache_e c )
         player_t::invalidate_cache( CACHE_ATTACK_POWER );
       if ( mastery.total_eclipse -> ok() )
         player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+      break;
+    case CACHE_BONUS_ARMOR:
+      if ( spec.bladed_armor -> ok() )
+        player_t::invalidate_cache( CACHE_ATTACK_POWER );
       break;
     default: break;
   }
