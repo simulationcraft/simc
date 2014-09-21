@@ -2126,10 +2126,13 @@ struct mortal_strike_t: public warrior_attack_t
 
   void update_ready( timespan_t cd_duration )
   {
+    cd_duration = cooldown -> duration;
+    if ( headlongrush )
+      cd_duration *= p() -> cache.attack_haste();
     if ( p() -> buff.tier17_4pc_arms -> up() )
       cd_duration *= 1.0 + p() -> buff.tier17_4pc_arms -> data().effectN( 1 ).percent();
 
-    warrior_attack_t::update_ready( cd_duration );
+    action_t::update_ready( cd_duration );
   }
 
   bool ready()
