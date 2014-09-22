@@ -3033,7 +3033,8 @@ struct ice_lance_t : public mage_spell_t
     mage_spell_t::execute();
     aoe = splitting_ice_aoe;
 
-
+    if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B4 ) && td( execute_state -> target) -> dots.frozen_orb -> is_ticking() )
+      p() -> buffs.ice_shard -> trigger();
 
     if ( p() -> talents.thermal_void -> ok() && p() -> buffs.icy_veins -> up() )
       p() -> buffs.icy_veins -> extend_duration( p(), timespan_t::from_seconds( p() -> talents.thermal_void -> effectN( 1 ).base_value() ) );
@@ -3058,8 +3059,7 @@ struct ice_lance_t : public mage_spell_t
 
     mage_spell_t::impact( s );
 
-    if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B4 ) && td( s -> target) -> dots.frozen_orb -> is_ticking() )
-      p() -> buffs.ice_shard -> trigger();
+
 
     if ( p() -> talents.frost_bomb -> ok() )
     {
