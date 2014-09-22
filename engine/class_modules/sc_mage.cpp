@@ -4495,7 +4495,7 @@ void mage_t::init_spells()
   if ( spec.ignite -> ok()  ) active_ignite = new actions::ignite_t( this );
   if ( spec.icicles -> ok() ) icicle = new actions::icicle_t( this );
   // RPPM
-  rppm_pyromaniac.set_frequency( 1.5 ); //RPPM coef is in the tooltip, but not in the spell data
+  rppm_pyromaniac.set_frequency( find_spell( 165459 ) -> real_ppm() ); 
   rppm_arcane_instability.set_frequency( find_spell( 165476 ) -> real_ppm() );
 
 }
