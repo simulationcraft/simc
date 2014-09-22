@@ -1,0 +1,106 @@
+shaman="Shaman_Elemental_T17B"
+level=100
+race=dwarf
+role=spell
+position=back
+professions=blacksmithing=600/engineering=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Wa!...0.00
+glyphs=chain_lightning
+spec=elemental
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_intellect_flask
+actions.precombat+=/food,type=calamari_crepes
+actions.precombat+=/lightning_shield,if=!buff.lightning_shield.up
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_intellect
+
+# Executed every time the actor is available.
+
+actions=wind_shear
+# Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
+actions+=/bloodlust,if=target.health.pct<25|time>0.500
+# In-combat potion is preferentially linked to Ascendance, unless combat will end shortly
+actions+=/potion,name=draenic_intellect,if=buff.ascendance.up|target.time_to_die<=30
+actions+=/berserking,if=!buff.bloodlust.up&!buff.elemental_mastery.up&(set_bonus.tier15_4pc_caster=1|(buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)))
+actions+=/blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)
+actions+=/arcane_torrent
+actions+=/elemental_mastery,if=action.lava_burst.cast_time>=1.2
+actions+=/ancestral_swiftness,if=!buff.ascendance.up
+actions+=/storm_elemental_totem
+actions+=/fire_elemental_totem,if=!active
+actions+=/ascendance,if=active_enemies>1|(dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up|time>=60)&cooldown.lava_burst.remains>0)
+actions+=/liquid_magma,if=pet.searing_totem.remains>=15|pet.fire_elemental_totem.remains>=15
+# If only one enemy, priority follows the 'single' action list.
+actions+=/call_action_list,name=single,if=active_enemies=1
+# On multiple enemies, the priority follows the 'aoe' action list.
+actions+=/call_action_list,name=aoe,if=active_enemies>1
+
+# Single target action priority list
+
+actions.single=unleash_flame,if=talent.unleashed_fury.enabled&!buff.ascendance.up
+actions.single+=/spiritwalkers_grace,moving=1,if=buff.ascendance.up
+actions.single+=/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
+actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)
+actions.single+=/flame_shock,if=dot.flame_shock.remains<=9
+actions.single+=/earth_shock,if=(set_bonus.tier17_4pc&buff.lightning_shield.react>12&!buff.lava_surge.up)|(!set_bonus.tier17_4pc&buff.lightning_shield.react>=15)
+actions.single+=/earthquake,if=!talent.unleashed_fury.enabled&((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=(1.5+(1.25*0.226305)+1.25*(2*0.226305*stat.multistrike_pct%100)))&target.time_to_die>10&buff.elemental_mastery.down&buff.bloodlust.down
+actions.single+=/earthquake,if=!talent.unleashed_fury.enabled&((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=1.3*(1.5+(1.25*0.226305)+1.25*(2*0.226305*stat.multistrike_pct%100)))&target.time_to_die>10&(buff.elemental_mastery.up|buff.bloodlust.up)
+actions.single+=/earthquake,if=!talent.unleashed_fury.enabled&((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=(1.5+(1.25*0.226305)+1.25*(2*0.226305*stat.multistrike_pct%100)))&target.time_to_die>10&(buff.elemental_mastery.remains>=10|buff.bloodlust.remains>=10)
+actions.single+=/earthquake,if=talent.unleashed_fury.enabled&((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=((1.3*1.5)+(1.25*0.226305)+1.25*(2*0.226305*stat.multistrike_pct%100)))&target.time_to_die>10&buff.elemental_mastery.down&buff.bloodlust.down
+actions.single+=/earthquake,if=talent.unleashed_fury.enabled&((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=1.3*((1.3*1.5)+(1.25*0.226305)+1.25*(2*0.226305*stat.multistrike_pct%100)))&target.time_to_die>10&(buff.elemental_mastery.up|buff.bloodlust.up)
+actions.single+=/earthquake,if=talent.unleashed_fury.enabled&((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=((1.3*1.5)+(1.25*0.226305)+1.25*(2*0.226305*stat.multistrike_pct%100)))&target.time_to_die>10&(buff.elemental_mastery.remains>=10|buff.bloodlust.remains>=10)
+actions.single+=/elemental_blast
+# After the initial Ascendance, use Flame Shock pre-emptively just before Ascendance to guarantee Flame Shock staying up for the full duration of the Ascendance buff
+actions.single+=/flame_shock,if=time>60&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<duration
+# Keep Searing Totem up, unless Fire Elemental Totem is coming off cooldown in the next 20 seconds
+actions.single+=/searing_totem,if=(!talent.liquid_magma.enabled&!totem.fire.active)|(talent.liquid_magma.enabled&pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up)
+actions.single+=/spiritwalkers_grace,moving=1,if=((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))
+actions.single+=/lightning_bolt
+
+# Multi target action priority list
+
+actions.aoe=earthquake,if=(buff.enhanced_chain_lightning.up|level<=90)&active_enemies>=2
+actions.aoe+=/lava_beam
+actions.aoe+=/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
+actions.aoe+=/thunderstorm,if=active_enemies>=10
+actions.aoe+=/searing_totem,if=(!talent.liquid_magma.enabled&!totem.fire.active)|(talent.liquid_magma.enabled&pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up)
+actions.aoe+=/chain_lightning,if=active_enemies>=2
+actions.aoe+=/lightning_bolt
+
+head=windspeakers_faceguard,id=115579,bonus_id=567/523/448,gem_id=115813
+neck=gruuls_lip_ring,id=113872,bonus_id=567/523/448,gem_id=115813,enchant=gift_of_multistrike
+shoulders=windspeakers_mantle,id=115576,bonus_id=567/523/448,gem_id=115813
+back=runescribed_gronncloak,id=120078,bonus_id=567/523/448,gem_id=115813,enchant=gift_of_multistrike
+chest=chestguard_of_the_siegemaker,id=113982,bonus_id=567/523/448,gem_id=115813
+wrists=bloodwhirl_bracers,id=113968,bonus_id=567/523/448,gem_id=115813
+hands=windspeakers_handwraps,id=115578,bonus_id=567/523/448,gem_id=115813
+waist=grenadiers_belt,id=113955,bonus_id=567/523/448,gem_id=115813
+legs=windspeakers_legwraps,id=115575,bonus_id=567/523/448,gem_id=115813
+feet=railwalkers_ratcheted_boots,id=113954,bonus_id=567/523/448,gem_id=115813
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
+finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567/523/448,gem_id=115813,enchant=gift_of_multistrike
+trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567/448
+trinket2=blackiron_micro_crucible,id=113984,bonus_id=567/448
+main_hand=infernoflame_staff,id=113869,bonus_id=567/523/448,gem_id=115813,enchant=mark_of_the_frostwolf
+
+# Gear Summary
+# gear_stamina=4785
+# gear_intellect=3800
+# gear_spell_power=1852
+# gear_crit_rating=142
+# gear_haste_rating=948
+# gear_mastery_rating=1648
+# gear_armor=1503
+# gear_multistrike_rating=3533
+# gear_versatility_rating=103
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1

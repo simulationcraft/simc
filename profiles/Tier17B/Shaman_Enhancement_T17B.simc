@@ -1,0 +1,112 @@
+shaman="Shaman_Enhancement_T17B"
+level=100
+race=draenei
+role=attack
+position=back
+professions=engineering=600/enchanting=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...1.01
+glyphs=chain_lightning
+spec=enhancement
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_agility_flask
+actions.precombat+=/food,type=frosty_stew
+actions.precombat+=/lightning_shield,if=!buff.lightning_shield.up
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_agility
+
+# Executed every time the actor is available.
+
+actions=wind_shear
+# Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
+actions+=/bloodlust,if=target.health.pct<25|time>0.500
+actions+=/auto_attack
+actions+=/use_item,name=beating_heart_of_the_mountain
+# In-combat potion is preferentially linked to the Fire or Storm Elemental, depending on talents, unless combat will end shortly
+actions+=/potion,name=draenic_agility,if=(talent.storm_elemental_totem.enabled&pet.storm_elemental_totem.remains>=25)|(!talent.storm_elemental_totem.enabled&pet.fire_elemental_totem.remains>=25)|target.time_to_die<=30
+actions+=/blood_fury
+actions+=/arcane_torrent
+actions+=/berserking
+actions+=/elemental_mastery
+actions+=/storm_elemental_totem
+actions+=/fire_elemental_totem
+actions+=/ascendance,if=cooldown.strike.remains>=3
+actions+=/feral_spirit
+actions+=/liquid_magma,if=pet.searing_totem.remains>=15|pet.magma_totem.remains>=15|pet.fire_elemental_totem.remains>=15
+actions+=/ancestral_swiftness
+# If only one enemy, priority follows the 'single' action list.
+actions+=/call_action_list,name=single,if=active_enemies=1
+# On multiple enemies, the priority follows the 'aoe' action list.
+actions+=/call_action_list,name=aoe,if=active_enemies>1
+
+# Single target action priority list
+
+actions.single=searing_totem,if=!totem.fire.active
+actions.single+=/unleash_elements,if=(talent.unleashed_fury.enabled|set_bonus.tier16_2pc_melee=1)
+actions.single+=/elemental_blast,if=buff.maelstrom_weapon.react>=1
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react=5|(buff.maelstrom_weapon.react>=4&!buff.ascendance.up)|(buff.ancestral_swiftness.up&buff.maelstrom_weapon.react>=3)
+actions.single+=/windstrike
+actions.single+=/stormstrike
+actions.single+=/lava_lash
+actions.single+=/flame_shock,if=(talent.elemental_fusion.enabled&buff.elemental_fusion.stack=2&buff.unleash_flame.up&dot.flame_shock.remains<16)|(!talent.elemental_fusion.enabled&buff.unleash_flame.up&dot.flame_shock.remains<=9)|!ticking
+actions.single+=/unleash_elements
+actions.single+=/frost_shock,if=(talent.elemental_fusion.enabled&dot.flame_shock.remains>=16)|!talent.elemental_fusion.enabled
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=1&!buff.ascendance.up
+actions.single+=/searing_totem,if=pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up
+
+# Multi target action priority list
+
+actions.aoe=fire_nova,if=active_dot.flame_shock>=3
+actions.aoe+=/wait,sec=cooldown.fire_nova.remains,if=active_dot.flame_shock>=4&cooldown.fire_nova.remains<=action.fire_nova.gcd
+actions.aoe+=/magma_totem,if=!totem.fire.active
+actions.aoe+=/lava_lash,if=dot.flame_shock.ticking
+actions.aoe+=/elemental_blast,if=buff.maelstrom_weapon.react>=1
+actions.aoe+=/chain_lightning,if=glyph.chain_lightning.enabled&active_enemies>=4&(buff.maelstrom_weapon.react=5|(buff.ancestral_swiftness.up&buff.maelstrom_weapon.react>=3))
+actions.aoe+=/unleash_elements
+actions.aoe+=/flame_shock,cycle_targets=1,if=!ticking
+actions.aoe+=/lightning_bolt,if=(!glyph.chain_lightning.enabled|active_enemies<=3)&(buff.maelstrom_weapon.react=5|(buff.ancestral_swiftness.up&buff.maelstrom_weapon.react>=3))
+actions.aoe+=/windstrike
+actions.aoe+=/fire_nova,if=active_dot.flame_shock>=2
+actions.aoe+=/chain_lightning,if=active_enemies>=2&buff.maelstrom_weapon.react>=1
+actions.aoe+=/stormstrike
+actions.aoe+=/frost_shock,if=active_enemies<4
+actions.aoe+=/chain_lightning,if=glyph.chain_lightning.enabled&active_enemies>=4&buff.maelstrom_weapon.react>=1
+actions.aoe+=/lightning_bolt,if=(!glyph.chain_lightning.enabled|active_enemies<=3)&buff.maelstrom_weapon.react>=1
+actions.aoe+=/fire_nova,if=active_dot.flame_shock>=1
+
+head=gronnskin_crown,id=113863,bonus_id=567/523/448,gem_id=115813
+neck=engineers_grounded_gorget,id=113892,bonus_id=567/523/448,gem_id=115813,enchant=gift_of_haste
+shoulders=windspeakers_mantle,id=115576,bonus_id=567/523/448,gem_id=115813
+back=cloak_of_delving_secrets,id=113929,bonus_id=567/523/448,gem_id=115813,enchant=gift_of_haste
+chest=windspeakers_tunic,id=115577,bonus_id=567/523/448,gem_id=115813
+wrists=bracers_of_callous_disregard,id=119334,bonus_id=567/523/448,gem_id=115811
+hands=windspeakers_handwraps,id=115578,bonus_id=567/523/448,gem_id=115811
+waist=earthgrasp_girdle,id=113930,bonus_id=567/523/448,gem_id=115811
+legs=windspeakers_legwraps,id=115575,bonus_id=567/523/448,gem_id=115811
+feet=slagstomper_treads,id=113888,bonus_id=567/523/448,gem_id=115811
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_haste
+finger2=cinderwolf_signet,id=113917,bonus_id=567/523/448,gem_id=115811,enchant=gift_of_haste
+trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=567/448
+trinket2=meaty_dragonspine_trophy,id=118114,bonus_id=567/448
+main_hand=hansgars_forgehammer,id=113897,bonus_id=567/523/448,gem_id=115811,enchant=mark_of_warsong
+off_hand=hansgars_forgehammer,id=113897,bonus_id=567/523/448,gem_id=115811,enchant=mark_of_bleeding_hollow
+
+# Gear Summary
+# gear_agility=3749
+# gear_stamina=4708
+# gear_crit_rating=660
+# gear_haste_rating=3371
+# gear_mastery_rating=929
+# gear_armor=1503
+# gear_multistrike_rating=1540
+# gear_versatility_rating=383
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1

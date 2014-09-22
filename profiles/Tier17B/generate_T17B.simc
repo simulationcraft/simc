@@ -34,7 +34,7 @@ generate_Monk_T17B.simc
 #generate_Rogue_T17B.simc UPDATE
 
 # Shaman
-#generate_Shaman_T17B.simc UPDATE
+generate_Shaman_T17B.simc
 
 # Warlock
 #generate_Warlock_T17B.simc UPDATE
