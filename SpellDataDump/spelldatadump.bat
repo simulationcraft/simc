@@ -10,4 +10,5 @@ simc64 spell_query="spell.class=warlock">spelldatadump/warlock.txt
 simc64 spell_query="spell.class=druid">spelldatadump/druid.txt
 simc64 spell_query="spell.class=deathknight">spelldatadump/deathknight.txt
 simc64 spell_query="spell.class=priest">spelldatadump/priest.txt
+simc64 spell_query="spell">spelldatadump/all.txt
 pause
