@@ -32,11 +32,18 @@ actions+=/power_infusion,if=talent.power_infusion.enabled
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
-actions+=/run_action_list,name=cop_advanced_mfi_dots,if=target.health.pct>=20&(shadow_orb=5|target.dot.shadow_word_pain.ticking|target.dot.vampiric_touch.ticking|target.dot.devouring_plague.ticking)&talent.clarity_of_power.enabled&talent.insanity.enabled&talent.twist_of_fate.enabled
-actions+=/run_action_list,name=cop_advanced_mfi,if=target.health.pct>=20&talent.clarity_of_power.enabled&talent.insanity.enabled&talent.twist_of_fate.enabled
-actions+=/run_action_list,name=cop_mfi,if=talent.clarity_of_power.enabled&talent.insanity.enabled
-actions+=/run_action_list,name=cop,if=talent.clarity_of_power.enabled
-actions+=/run_action_list,name=main
+actions+=/call_action_list,name=pvp_dispersion,if=set_bonus.pvp_2pc
+actions+=/call_action_list,name=decision
+
+actions.decision=call_action_list,name=cop_advanced_mfi_dots,if=target.health.pct>=20&(shadow_orb=5|target.dot.shadow_word_pain.ticking|target.dot.vampiric_touch.ticking|target.dot.devouring_plague.ticking)&talent.clarity_of_power.enabled&talent.insanity.enabled&talent.twist_of_fate.enabled
+actions.decision+=/call_action_list,name=cop_advanced_mfi,if=target.health.pct>=20&talent.clarity_of_power.enabled&talent.insanity.enabled&talent.twist_of_fate.enabled
+actions.decision+=/call_action_list,name=cop_mfi,if=talent.clarity_of_power.enabled&talent.insanity.enabled
+actions.decision+=/call_action_list,name=cop,if=talent.clarity_of_power.enabled
+actions.decision+=/call_action_list,name=main
+
+actions.pvp_dispersion=call_action_list,name=decision,if=cooldown.dispersion.remains>0
+actions.pvp_dispersion+=/dispersion,interrupt=1
+actions.pvp_dispersion+=/call_action_list,name=decision
 
 actions.main=mindbender,if=talent.mindbender.enabled
 actions.main+=/shadowfiend,if=!talent.mindbender.enabled
