@@ -9,7 +9,6 @@ role=tank
 position=front
 talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.01.111
 
-monk="Monk_Brewmaster_1h_CE_T17PR"
 head=blackwater_helm,id=109979,bonus_id=524
 neck=reinforced_bloodsteel_gorget,id=109966,bonus_id=524,enchant=gift_of_versatility
 shoulders=crystalbinder_shoulderpads,id=109936,bonus_id=524
@@ -38,7 +37,6 @@ role=tank
 position=front
 talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.01.112
 
-monk="Monk_Brewmaster_1h_Serenity_T17PR"
 head=blackwater_helm,id=109979,bonus_id=524
 neck=reinforced_bloodsteel_gorget,id=109966,bonus_id=524,enchant=gift_of_versatility
 shoulders=crystalbinder_shoulderpads,id=109936,bonus_id=524
