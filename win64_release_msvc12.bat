@@ -1,4 +1,3 @@
-
 :: Necessary Qt dlls are packaged with every release.
 :: These dlls are not included in GIT.
 :: They need to be copied into the dev area from the Qt install.
@@ -7,7 +6,6 @@
 :: If you build SimC with MSVC 2013, then you need to use dlls from Qt-Framework
 :: As of this writing, the default locations from which to gather the dlls are:
 :: Qt-Framework: C:\Qt\Qt5.3.2\
-
 
 For /f "tokens=2-4 delims=/ " %%a in ('date /t') do (set mydate=%%a-%%b)
 
@@ -25,7 +23,6 @@ set redist="C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\x64\Mi
 :: Delete old folder/files
 
 rd %install% /s /q
-:: Copying new dlls
 
 for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\12.0" /v MSBuildToolsPath') do SET MSBUILDDIR=%%B
 
@@ -33,6 +30,8 @@ for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBui
 
 del /s simc_cache.dat
 forfiles -s -m generate_????.simc -c "cmd /c echo Running @path && %~dp0simc64.exe @file"
+
+:: Copying new dlls
 
 xcopy %qt_dir%\plugins\imageformats %install%\imageformats\
 xcopy %redist%\msvcp120.dll %install%\
@@ -64,7 +63,6 @@ xcopy %qt_dir%\bin\D3DCompiler_47.dll %install%\
 xcopy %qt_dir%\plugins\platforms\qminimal.dll %install%\platforms\
 xcopy %qt_dir%\plugins\platforms\qwindows.dll %install%\platforms\
 
-
 :: Copy other relevant files for windows release
 xcopy Welcome.html %install%\
 xcopy Welcome.png %install%\
@@ -91,7 +89,6 @@ remove-item -path $destfile
 $file = [convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($code))
 $file | Out-File E:\simulationcraft\encoded.txt
 
-
 :Encoded
 Powershell -EncodedCommand WwBSAGUAZgBsAGUAYwB0AGkAbwBuAC4AQQBzAHMAZQBtAGIAbAB5AF0AOgA6AEwAbwBhAGQAVwBpAHQAaABQAGEAc^
 gB0AGkAYQBsAE4AYQBtAGUAKAAgACIAUwB5AHMAdABlAG0ALgBJAE8ALgBDAG8AbQBwAHIAZQBzAHMAaQBvAG4ALgBGAGkAbABlAFMAeQBzAHQAZQBtA^
@@ -106,3 +103,4 @@ QAuAEkATwAuAEMAbwBtAHAAcgBlAHMAcwBpAG8AbgAuAFoAaQBwAEYAaQBsAGUAXQA6ADoAQwByAGUAY
 HIAeQAoACQAcwByAGMAXwBmAG8AbABkAGUAcgAsACQAZABlAHMAdABmAGkAbABlACwAJABjAG8AbQBwAHIAZQBzAHMAaQBvAG4ATABlAHYAZQBsACwAI^
 AAkAGkAbgBjAGwAdQBkAGUAYgBhAHMAZQBkAGkAcgAgACkA
 
+rd %install% /s /q

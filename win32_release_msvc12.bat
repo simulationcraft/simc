@@ -1,4 +1,3 @@
-
 :: Necessary Qt dlls are packaged with every release.
 :: These dlls are not included in the GIT.
 :: They need to be copied into the dev area from the Qt install.
@@ -9,7 +8,6 @@
 :: Qt-Framework: C:\Qt\Qt5.3.2\
 
 For /f "tokens=2-4 delims=/ " %%a in ('date /t') do (set mydate=%%a-%%b)
-
 
 :: Update the qt_dir as necessary
 set qt_dir=C:\Qt\Qt5.3.2\5.3\msvc2013
@@ -64,7 +62,6 @@ xcopy %qt_dir%\bin\D3DCompiler_47.dll %install%\
 xcopy %qt_dir%\plugins\platforms\qminimal.dll %install%\platforms\
 xcopy %qt_dir%\plugins\platforms\qwindows.dll %install%\platforms\
 
-
 :: Copy other relevant files for windows release
 xcopy Welcome.html %install%\
 xcopy Welcome.png %install%\
@@ -103,3 +100,5 @@ cwBlAGQAaQByACAAPQAgACQAZgBhAGwAcwBlAA0ACgByAGUAbQBvAHYAZQAtAGkAdABlAG0AIAAtAHAA
 wAZQANAAoAWwBTAHkAcwB0AGUAbQAuAEkATwAuAEMAbwBtAHAAcgBlAHMAcwBpAG8AbgAuAFoAaQBwAEYAaQBsAGUAXQA6ADoAQwByAGUAYQB0^
 AGUARgByAG8AbQBEAGkAcgBlAGMAdABvAHIAeQAoACQAcwByAGMAXwBmAG8AbABkAGUAcgAsACQAZABlAHMAdABmAGkAbABlACwAJABjAG8AbQ^
 BwAHIAZQBzAHMAaQBvAG4ATABlAHYAZQBsACwAIAAkAGkAbgBjAGwAdQBkAGUAYgBhAHMAZQBkAGkAcgAgACkA
+
+rd %install% /s /q
