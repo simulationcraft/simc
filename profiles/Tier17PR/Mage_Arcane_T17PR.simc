@@ -1,0 +1,121 @@
+mage="Mage_Arcane_T17PR"
+level=100
+race=troll
+role=spell
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!0...012
+glyphs=arcane_power
+spec=arcane
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_intellect_flask
+actions.precombat+=/food,type=sleeper_surprise
+actions.precombat+=/arcane_brilliance
+actions.precombat+=/snapshot_stats
+actions.precombat+=/rune_of_power
+actions.precombat+=/mirror_image
+actions.precombat+=/potion,name=draenic_intellect
+actions.precombat+=/arcane_blast
+
+# Executed every time the actor is available.
+
+actions=counterspell,if=target.debuff.casting.react
+actions+=/blink,if=movement.distance>10
+actions+=/blazing_speed,if=movement.remains>0
+actions+=/cold_snap,if=health.pct<30
+actions+=/time_warp,if=target.health.pct<25|time>5
+actions+=/rune_of_power,if=buff.rune_of_power.remains<cast_time
+actions+=/mirror_image
+actions+=/call_action_list,name=init_crystal,if=talent.prismatic_crystal.enabled
+actions+=/call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active
+actions+=/call_action_list,name=aoe,if=active_enemies>=6
+actions+=/call_action_list,name=burn,if=buff.arcane_power.up&cooldown.evocation.remains<buff.arcane_power.remains&mana.pct>15&talent.prismatic_crystal.enabled
+actions+=/call_action_list,name=conserve
+
+# Conditions for initiating Prismatic Crystal burn phase
+actions.init_crystal=prismatic_crystal,if=cooldown.arcane_power.remains=0&buff.arcane_charge.stack=4
+actions.init_crystal+=/prismatic_crystal,if=buff.arcane_charge.stack=4&(glyph.arcane_power.enabled&cooldown.arcane_power.remains>45)|(!glyph.arcane_power.enabled&cooldown.arcane_power.remains>15)
+
+# Actions while Prismatic Crystal is active
+actions.crystal_sequence=call_action_list,name=cooldowns
+actions.crystal_sequence+=/nether_tempest,if=current_target=prismatic_crystal&buff.arcane_charge.stack=4&!ticking&cooldown.prismatic_crystal.remains>58
+actions.crystal_sequence+=/call_action_list,name=burn,if=cooldown.evocation.remains<cooldown.prismatic_crystal.remains-50
+actions.crystal_sequence+=/call_action_list,name=conserve
+
+# Consolidated damage cooldown abilities
+actions.cooldowns=arcane_power
+actions.cooldowns+=/blood_fury
+actions.cooldowns+=/berserking
+actions.cooldowns+=/arcane_torrent
+actions.cooldowns+=/potion,name=draenic_intellect,if=buff.arcane_power.up&(!talent.prismatic_crystal.enabled|pet.prismatic_crystal.active)
+actions.cooldowns+=/use_item,slot=trinket1
+actions.cooldowns+=/use_item,slot=trinket2
+
+# AoE sequence
+actions.aoe=nether_tempest,if=buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))
+actions.aoe+=/supernova
+actions.aoe+=/arcane_barrage,if=buff.arcane_charge.stack=4
+actions.aoe+=/arcane_orb,if=buff.arcane_charge.stack<4
+actions.aoe+=/arcane_explosion
+
+# High mana usage, "Burn" sequence
+actions.burn=arcane_missiles,if=buff.arcane_missiles.react=3
+actions.burn+=/supernova,if=charges=2
+actions.burn+=/nether_tempest,cycle_targets=1,if=target!=prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))
+actions.burn+=/arcane_blast,if=mana.pct>95&buff.arcane_charge.stack=4
+actions.burn+=/arcane_missiles,if=buff.arcane_charge.stack=4
+actions.burn+=/supernova
+actions.burn+=/arcane_barrage,if=buff.presence_of_mind.up&buff.arcane_charge.stack=4
+actions.burn+=/presence_of_mind
+actions.burn+=/arcane_blast
+
+# Low mana usage, "Conserve" sequence
+actions.conserve=evocation,interrupt_if=mana.pct>92,if=mana.pct<65
+actions.conserve+=/call_action_list,name=cooldowns,if=time_to_die<30|(buff.arcane_charge.stack=4&!(glyph.arcane_power.enabled&talent.prismatic_crystal.enabled)&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>20))
+actions.conserve+=/arcane_missiles,if=buff.arcane_missiles.react=3|(talent.overpowered.enabled&buff.arcane_power.up&buff.arcane_power.remains<3)
+actions.conserve+=/arcane_blast,if=buff.arcane_charge.stack=4&(mana.pct>95|(talent.unstable_magic.enabled&mana.pct>92))
+actions.conserve+=/nether_tempest,cycle_targets=1,if=target!=prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))
+actions.conserve+=/supernova,if=time_to_die<8|charges=2
+actions.conserve+=/arcane_missiles,if=buff.arcane_charge.stack=4&(!talent.overpowered.enabled|cooldown.arcane_power.remains>8)
+actions.conserve+=/supernova,if=(buff.arcane_missiles.stack<2|buff.arcane_charge.stack=4)&(buff.arcane_power.up|current_target=prismatic_crystal|(charges=1&cooldown.arcane_power.remains>recharge_time)&(!talent.prismatic_crystal.enabled|(charges=1&cooldown.prismatic_crystal.remains>recharge_time)))
+actions.conserve+=/arcane_orb,if=buff.arcane_charge.stack<2
+actions.conserve+=/nether_tempest,cycle_targets=1,if=target!=prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<8*spell_haste))
+actions.conserve+=/arcane_barrage,if=buff.arcane_charge.stack=4&mana.pct<95
+actions.conserve+=/presence_of_mind,if=buff.arcane_charge.stack<2&cooldown.arcane_power.remains>15&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>15)
+actions.conserve+=/arcane_blast
+actions.conserve+=/ice_floes,moving=1
+actions.conserve+=/arcane_barrage,moving=1
+
+head=hood_of_swirling_light,id=109972,bonus_id=524
+neck=alcs_pendant_of_fiery_dreams,id=109957,bonus_id=524,enchant=gift_of_mastery
+shoulders=frosttouched_shoulderpads,id=109931,bonus_id=524
+back=cloak_of_arcane_mysteries,id=109908,bonus_id=524,enchant=gift_of_mastery
+chest=lightbinder_robes,id=109902,bonus_id=524
+wrists=frosttouched_wristwraps,id=109865,bonus_id=524
+hands=gloves_of_arcane_mystery,id=109844,bonus_id=524
+waist=frosttouched_cord,id=109825,bonus_id=524
+legs=leggings_of_swirling_light,id=109806,bonus_id=524
+feet=lightbinder_treads,id=109796,bonus_id=524
+finger1=darkflame_loop,id=109766,bonus_id=524,enchant=gift_of_mastery
+finger2=golems_gleaming_eye,id=109765,bonus_id=524,enchant=gift_of_mastery
+trinket1=fleshrenders_meathook,id=110002,bonus_id=524
+trinket2=ragewings_firefang,id=110003,bonus_id=524
+main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant=mark_of_warsong
+
+# Gear Summary
+# gear_stamina=2465
+# gear_intellect=1960
+# gear_spell_power=958
+# gear_crit_rating=314
+# gear_haste_rating=581
+# gear_mastery_rating=1300
+# gear_armor=552
+# gear_multistrike_rating=176
+# gear_versatility_rating=52
