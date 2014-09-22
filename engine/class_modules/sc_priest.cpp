@@ -1810,11 +1810,6 @@ struct dispersion_t final : public priest_spell_t
     priest.buffs.dispersion -> trigger( 1, 0, 1, dot_duration);// timespan_t::from_seconds( 6.0 ) + priest.glyphs.delayed_coalescence -> effectN( 1 ).time_value() );
   }
 
-  double composite_haste() const
-  {
-      return 1.0;
-  }
-
   timespan_t composite_dot_duration()
   {
       return timespan_t::from_seconds( 6.0 ) + priest.glyphs.delayed_coalescence -> effectN( 1 ).time_value();
@@ -5876,7 +5871,7 @@ void priest_t::create_buffs()
                             .add_invalidate( CACHE_HASTE );
 
   buffs.clear_thoughts = buff_creator_t( this, "clear_thoughts" )
-                          .spell( find_spell( 171150 ) )
+                          .spell( sets.set( PRIEST_DISCIPLINE, T17, B4 ) -> effectN( 1 ).trigger() )
                           .chance( sets.set( PRIEST_DISCIPLINE, T17, B4 ) -> proc_chance() );
 
   buffs.shadow_power = buff_creator_t( this, "shadow_power" )
