@@ -564,9 +564,9 @@ void SC_MainWindow::createBestInSlotTab()
 
   const int TIER_MAX = 2;
 #if SC_BETA == 1
-  const char* tierNames[] = { "" }; // For the beta include ALL profiles
+  const char* tierNames[] = { "T16", "T17" };
 #else
-  const char* tierNames[] = { "T15", "T16" };
+  const char* tierNames[] = { "T16", "T17" };
 #endif
   QTreeWidgetItem* playerItems[ PLAYER_MAX ];
   range::fill( playerItems, 0 );
@@ -767,11 +767,7 @@ void SC_MainWindow::createCustomTab()
 void SC_MainWindow::createSimulateTab()
 {
   simulateTab = new SC_SimulateTab( mainTab, recentlyClosedTabModel );
-
-
-
   mainTab -> addTab( simulateTab, tr( "Simulate" ) );
-
 }
 
 void SC_MainWindow::createOverridesTab()

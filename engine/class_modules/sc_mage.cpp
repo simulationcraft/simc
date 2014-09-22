@@ -1109,8 +1109,6 @@ public:
     if ( p() -> cooldowns.bolt -> up() && p() -> specialization() == MAGE_FROST )
       p() -> buffs.enhanced_frostbolt -> trigger();
 
-
-
     return spell_t::ready();
   }
 
