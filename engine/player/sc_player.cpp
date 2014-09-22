@@ -7193,6 +7193,8 @@ expr_t* player_t::create_expression( action_t* a,
     return make_ref_expr( "level", level );
   if ( expression_str == "name" )
     return make_ref_expr( "name", actor_index );
+  if ( expression_str == "self" )
+    return make_ref_expr( "self", actor_index );
   if ( expression_str == "multiplier" )
   {
     struct multiplier_expr_t : public player_expr_t

@@ -5009,7 +5009,7 @@ void paladin_t::generate_action_prio_list_prot()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ] );
 
-  def -> add_action( "run_action_list,name=max_dps,if=role.attack|target.current_target=" + this -> name_str,
+  def -> add_action( "run_action_list,name=max_dps,if=role.attack|target.current_target!=self",
                      "This line will shortcut to a high-DPS (but low-survival) action list. Remove the conditionals if you want it to do this all the time." );
   def -> add_action( "run_action_list,name=max_survival,if=0",
                      "This line will shortcut to a high-survival (but low-DPS) action list. Change 0 to 1 if you want it to do this all the time." );
