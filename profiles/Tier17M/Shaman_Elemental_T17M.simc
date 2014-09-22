@@ -76,31 +76,31 @@ actions.aoe+=/searing_totem,if=(!talent.liquid_magma.enabled&!totem.fire.active)
 actions.aoe+=/chain_lightning,if=active_enemies>=2
 actions.aoe+=/lightning_bolt
 
-head=windspeakers_faceguard,id=115579,bonus_id=567/448
-neck=gruuls_lip_ring,id=113872,bonus_id=567/448,enchant=gift_of_multistrike
-shoulders=windspeakers_mantle,id=115576,bonus_id=567/448
-back=runescribed_gronncloak,id=120078,bonus_id=567/448,enchant=gift_of_multistrike
-chest=chestguard_of_the_siegemaker,id=113982,bonus_id=567/448
-wrists=bloodwhirl_bracers,id=113968,bonus_id=567/448
-hands=windspeakers_handwraps,id=115578,bonus_id=567/448
-waist=grenadiers_belt,id=113955,bonus_id=567/448
-legs=windspeakers_legwraps,id=115575,bonus_id=567/448
-feet=railwalkers_ratcheted_boots,id=113954,bonus_id=567/448
+head=windspeakers_faceguard,id=115579,bonus_id=567
+neck=gruuls_lip_ring,id=113872,bonus_id=567,enchant=gift_of_multistrike
+shoulders=windspeakers_mantle,id=115576,bonus_id=567
+back=runescribed_gronncloak,id=120078,bonus_id=567,enchant=gift_of_multistrike
+chest=chestguard_of_the_siegemaker,id=113982,bonus_id=567
+wrists=bloodwhirl_bracers,id=113968,bonus_id=567
+hands=windspeakers_handwraps,id=115578,bonus_id=567
+waist=grenadiers_belt,id=113955,bonus_id=567
+legs=windspeakers_legwraps,id=115575,bonus_id=567
+feet=railwalkers_ratcheted_boots,id=113954,bonus_id=567
 finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
-finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567/448,enchant=gift_of_multistrike
-trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567/448
-trinket2=blackiron_micro_crucible,id=113984,bonus_id=567/448
-main_hand=infernoflame_staff,id=113869,bonus_id=567/448,enchant=mark_of_the_frostwolf
+finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant=gift_of_multistrike
+trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567
+trinket2=blackiron_micro_crucible,id=113984,bonus_id=567
+main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_stamina=4785
-# gear_intellect=3800
-# gear_spell_power=1852
-# gear_crit_rating=142
-# gear_haste_rating=948
-# gear_mastery_rating=1648
-# gear_armor=1503
-# gear_multistrike_rating=1613
+# gear_stamina=4545
+# gear_intellect=3612
+# gear_spell_power=1753
+# gear_crit_rating=134
+# gear_haste_rating=897
+# gear_mastery_rating=1568
+# gear_armor=1463
+# gear_multistrike_rating=1541
 # gear_versatility_rating=103
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

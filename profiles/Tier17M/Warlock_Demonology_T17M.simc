@@ -56,31 +56,31 @@ actions+=/life_tap,if=mana.pct<40
 actions+=/shadow_bolt
 actions+=/life_tap
 
-head=shadow_councils_hood,id=115586,bonus_id=567/448
-neck=gruuls_lip_ring,id=113872,bonus_id=567/448,enchant=gift_of_mastery
-shoulders=shadow_councils_mantle,id=115589,bonus_id=567/448
-back=runefrenzy_greatcloak,id=113937,bonus_id=567/448,enchant=gift_of_mastery
-chest=shadow_councils_robes,id=115588,bonus_id=567/448
-wrists=bracers_of_darkened_skies,id=119332,bonus_id=567/448
-hands=shadow_councils_gloves,id=115585,bonus_id=567/448
-waist=seeking_ember_girdle,id=113941,bonus_id=567/448
-legs=turret_mechanics_legwraps,id=113970,bonus_id=567/448
-feet=cavedwellers_climbers,id=113864,bonus_id=567/448
-finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,bonus_id=524,enchant=gift_of_mastery
-finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567/448,enchant=gift_of_mastery
-trinket1=blackiron_micro_crucible,id=113984,bonus_id=567/448
-trinket2=goren_soul_repository,id=119194,bonus_id=567/448
-main_hand=infernoflame_staff,id=113869,bonus_id=567/448,enchant=mark_of_bleeding_hollow
+head=shadow_councils_hood,id=115586,bonus_id=567
+neck=gruuls_lip_ring,id=113872,bonus_id=567,enchant=gift_of_mastery
+shoulders=shadow_councils_mantle,id=115589,bonus_id=567
+back=runefrenzy_greatcloak,id=113937,bonus_id=567,enchant=gift_of_mastery
+chest=shadow_councils_robes,id=115588,bonus_id=567
+wrists=bracers_of_darkened_skies,id=119332,bonus_id=567
+hands=shadow_councils_gloves,id=115585,bonus_id=567
+waist=seeking_ember_girdle,id=113941,bonus_id=567
+legs=turret_mechanics_legwraps,id=113970,bonus_id=567
+feet=cavedwellers_climbers,id=113864,bonus_id=567
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_mastery
+finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant=gift_of_mastery
+trinket1=blackiron_micro_crucible,id=113984,bonus_id=567
+trinket2=goren_soul_repository,id=119194,bonus_id=567
+main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_stamina=4785
-# gear_intellect=3800
-# gear_spell_power=1852
-# gear_crit_rating=913
-# gear_haste_rating=1065
-# gear_mastery_rating=2110
-# gear_armor=909
-# gear_multistrike_rating=267
+# gear_stamina=4545
+# gear_intellect=3612
+# gear_spell_power=1753
+# gear_crit_rating=865
+# gear_haste_rating=1007
+# gear_mastery_rating=2021
+# gear_armor=870
+# gear_multistrike_rating=252
 # gear_versatility_rating=103
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

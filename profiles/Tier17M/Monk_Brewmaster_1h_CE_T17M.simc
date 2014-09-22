@@ -85,7 +85,7 @@ hands=handwraps_of_the_somber_gaze,id=115555,bonus_id=567
 waist=belt_of_bloody_guts,id=113636,bonus_id=567
 legs=nether_blast_leggings,id=113856,bonus_id=567
 feet=ironflecked_sandals,id=119340,bonus_id=567
-finger1=timeless_solium_band_of_the_bulwark,id=118298,bonus_id=567,enchant=gift_of_versatility
+finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,enchant=gift_of_versatility
 finger2=stonefist_band,id=113938,bonus_id=567,enchant=gift_of_versatility
 trinket1=pillar_of_the_earth,id=113650,bonus_id=567
 trinket2=blast_furnace_door,id=113893,bonus_id=567

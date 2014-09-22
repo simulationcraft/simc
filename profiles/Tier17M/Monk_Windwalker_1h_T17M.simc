@@ -72,31 +72,31 @@ actions.aoe+=/blackout_kick,if=talent.rushing_jade_wind.enabled&!talent.chi_expl
 actions.aoe+=/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled
 actions.aoe+=/jab,if=talent.rushing_jade_wind.enabled&chi.max-chi>=2
 
-head=helm_of_the_somber_gaze,id=115556,bonus_id=567/448
-neck=darklight_necklace,id=113865,bonus_id=567/448,enchant=gift_of_multistrike
-shoulders=mantle_of_the_somber_gaze,id=115559,bonus_id=567/448
-back=drape_of_the_dark_hunt,id=113971,bonus_id=567/448,enchant=gift_of_multistrike
-chest=vest_of_forceful_fury,id=113870,bonus_id=567/448
-wrists=bracers_of_shattered_limbs,id=119333,bonus_id=567/448
-hands=handwraps_of_the_somber_gaze,id=115555,bonus_id=567/448
-waist=conductors_multipocket_girdle,id=113964,bonus_id=567/448
-legs=legwraps_of_the_somber_gaze,id=115557,bonus_id=567/448
-feet=furnace_tenders_treads,id=113895,bonus_id=567/448
-finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,bonus_id=524,enchant=gift_of_multistrike
-finger2=unexploded_explosive_shard,id=113877,bonus_id=567/448,enchant=gift_of_multistrike
-trinket1=humming_blackiron_trigger,id=113985,bonus_id=567/448
-trinket2=scales_of_doom,id=113612,bonus_id=567/448
-main_hand=hansgars_forgehammer,id=113897,bonus_id=567/448,enchant=mark_of_the_frostwolf
-off_hand=hansgars_forgehammer,id=113897,bonus_id=567/448,enchant=mark_of_the_frostwolf
+head=helm_of_the_somber_gaze,id=115556,bonus_id=567
+neck=darklight_necklace,id=113865,bonus_id=567,enchant=gift_of_multistrike
+shoulders=mantle_of_the_somber_gaze,id=115559,bonus_id=567
+back=drape_of_the_dark_hunt,id=113971,bonus_id=567,enchant=gift_of_multistrike
+chest=vest_of_forceful_fury,id=113870,bonus_id=567
+wrists=bracers_of_shattered_limbs,id=119333,bonus_id=567
+hands=handwraps_of_the_somber_gaze,id=115555,bonus_id=567
+waist=conductors_multipocket_girdle,id=113964,bonus_id=567
+legs=legwraps_of_the_somber_gaze,id=115557,bonus_id=567
+feet=furnace_tenders_treads,id=113895,bonus_id=567
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_multistrike
+finger2=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_multistrike
+trinket1=humming_blackiron_trigger,id=113985,bonus_id=567
+trinket2=scales_of_doom,id=113612,bonus_id=567
+main_hand=hansgars_forgehammer,id=113897,bonus_id=567,enchant=mark_of_the_frostwolf
+off_hand=hansgars_forgehammer,id=113897,bonus_id=567,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_agility=3723
-# gear_stamina=4708
-# gear_crit_rating=1518
-# gear_haste_rating=414
-# gear_mastery_rating=324
-# gear_armor=1186
-# gear_multistrike_rating=1905
-# gear_versatility_rating=257
+# gear_agility=3538
+# gear_stamina=4474
+# gear_crit_rating=1443
+# gear_haste_rating=392
+# gear_mastery_rating=306
+# gear_armor=1147
+# gear_multistrike_rating=1820
+# gear_versatility_rating=250
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
