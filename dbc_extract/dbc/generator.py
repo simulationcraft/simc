@@ -7,7 +7,7 @@ def _rune_cost(generator, filter_data, record, *args):
     for rune_type in xrange(0, 4):
         for i in xrange(0, getattr(record, 'rune_cost_%d' % (rune_type + 1))):
             cost |= 1 << (rune_type * 2 + i)
-    
+
     return args[0] % cost
 
 class DataGenerator(object):
@@ -27,7 +27,7 @@ class DataGenerator(object):
             return self._options.build >= build
         else:
             return self._options.wowversion >= wow and self._options.build >= build
-    
+
     def __init__(self, options):
         self._options = options
 
@@ -48,9 +48,9 @@ class DataGenerator(object):
 
             self._race_map[DataGenerator._race_names[i]] = i
             self._race_map[1 << (i - 1)] = i
-        
+
         #print self._class_map, self._race_map
-    
+
     def format_str(self, string):
         return '%s%s%s' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
@@ -60,7 +60,7 @@ class DataGenerator(object):
     def initialize(self):
         for i in self._dbc:
             dbcname = i.replace('-', '_').lower()
-            setattr(self, '_%s' % dbcname, 
+            setattr(self, '_%s' % dbcname,
                 parser.DBCParser(self._options, os.path.abspath(os.path.join(self._options.path, i))))
             dbc = getattr(self, '_%s' % dbcname)
 
@@ -85,7 +85,7 @@ class DataGenerator(object):
             fn = f[:f.find('.')]
             if fn in self._dbc:
                 cache_files.append((fn, os.path.abspath(os.path.join(self._options.cache_dir, f))))
-        
+
         cache_parsers = { }
         for cache_file in cache_files:
             if cache_file[0] not in cache_parsers:
@@ -145,7 +145,7 @@ class RealPPMModifierGenerator(DataGenerator):
 
     def generate(self, ids = None):
         output_data = []
-        
+
         for i, data in self._spellprocsperminutemod_db.iteritems():
             if data.id_chr_spec not in self._specmap.keys() or data.id_chr_spec == 0:
                 continue
@@ -154,7 +154,7 @@ class RealPPMModifierGenerator(DataGenerator):
             for aopts_id, aopts_data in self._spellauraoptions_db.iteritems():
                 if aopts_data.id_ppm != data.id_ppm:
                     continue
-                
+
                 spell_id = aopts_data.id_spell
                 break
 
@@ -162,7 +162,7 @@ class RealPPMModifierGenerator(DataGenerator):
                 continue
 
             output_data.append((data.id_chr_spec, data.coefficient, spell_id))
-        
+
         output_data.sort(cmp = lambda l, r: l[2] - r[2])
 
         s = '#include "specialization.hpp"\n'
@@ -188,10 +188,10 @@ class RealPPMModifierGenerator(DataGenerator):
 class SpecializationEnumGenerator(DataGenerator):
     def __init__(self, options):
         self._dbc = [ 'ChrSpecialization' ]
-        
+
         DataGenerator.__init__(self, options)
-    
-    
+
+
     def generate(self, ids = None):
         enum_ids = [
             [ None, None, None, None ], # pets come here
@@ -207,7 +207,7 @@ class SpecializationEnumGenerator(DataGenerator):
             [ None, None, None, None ],
             [ None, None, None, None ],
         ]
-        
+
         spec_translations = [
             [],
             [],
@@ -222,7 +222,7 @@ class SpecializationEnumGenerator(DataGenerator):
             [],
             [],
         ]
-        
+
         spec_to_idx_map = [ ]
         max_specialization = 0
         for spec_id, spec_data in self._chrspecialization_db.iteritems():
@@ -246,7 +246,7 @@ class SpecializationEnumGenerator(DataGenerator):
 
             for i in xrange(0, (max_specialization + 1) - len(enum_ids[ spec_data.class_id ] ) ):
                 enum_ids[ spec_data.class_id ].append( None )
-            
+
             enum_ids[ spec_data.class_id ][ spec_data.spec_id ] = { 'id': spec_id, 'name': spec_name }
 
         spec_arr = []
@@ -256,7 +256,7 @@ class SpecializationEnumGenerator(DataGenerator):
         for cls in xrange(0, len(enum_ids)):
             if enum_ids[cls][0] == None:
                 continue
-            
+
             for spec in xrange(0, len(enum_ids[cls])):
                 if enum_ids[cls][spec] == None:
                     continue
@@ -265,7 +265,7 @@ class SpecializationEnumGenerator(DataGenerator):
                     enum_ids[cls][spec]['name'],
                     ( 21 - len(enum_ids[cls][spec]['name']) ) * ' ',
                     enum_ids[cls][spec]['id'] )
-                
+
                 s += enum_str
                 spec_arr.append('%s' % enum_ids[cls][spec]['name'])
         s += '};\n\n'
@@ -290,16 +290,16 @@ class SpecializationEnumGenerator(DataGenerator):
         s += 'inline specialization_e spec_id( unsigned idx )\n{ assert( idx < n_specs ); return __specs[ idx ]; }\n\n'
         s += 'inline int spec_idx( specialization_e spec )\n{ assert( spec < %d ); return __idx_specs[ spec ]; }\n\n' % len(spec_to_idx_map)
         s += '}\n'
-               
+
         return s
 
 class SpecializationListGenerator(DataGenerator):
     def __init__(self, options):
         self._dbc = [ 'ChrSpecialization' ]
-        
+
         DataGenerator.__init__(self, options)
-    
-    
+
+
     def generate(self, ids = None):
         enum_ids = [
             [ None, None, None, None ], # pets come here
@@ -315,7 +315,7 @@ class SpecializationListGenerator(DataGenerator):
             [ None, None, None, None ],
             [ None, None, None, None ],
         ]
-        
+
         spec_translations = [
             [],
             [],
@@ -330,7 +330,7 @@ class SpecializationListGenerator(DataGenerator):
             [],
             [],
         ]
-        
+
         max_specialization = 0
         for spec_id, spec_data in self._chrspecialization_db.iteritems():
             if spec_data.class_id > 0:
@@ -342,15 +342,15 @@ class SpecializationListGenerator(DataGenerator):
                 spec_name = 'PET_%s' % (
                     spec_data.name.upper().replace(" ", "_")
                 )
-                
+
             if spec_data.spec_id > max_specialization:
                 max_specialization = spec_data.spec_id
-            
+
             for i in xrange(0, (max_specialization + 1) - len(enum_ids[ spec_data.class_id ] ) ):
                 enum_ids[ spec_data.class_id ].append( None )
-            
+
             enum_ids[ spec_data.class_id ][ spec_data.spec_id ] = { 'id': spec_id, 'name': spec_name }
-        
+
         s  = '#define MAX_SPECS_PER_CLASS (%u)\n' % (max_specialization + 1)
         s += '#define MAX_SPEC_CLASS  (%u)\n\n' % len(enum_ids)
 
@@ -361,7 +361,7 @@ class SpecializationListGenerator(DataGenerator):
                 s += '    SPEC_NONE,\n'
                 s += '  },\n'
                 continue
-            
+
             s += '  {\n'
             for spec in xrange(0, len(enum_ids[cls])):
                 if enum_ids[cls][spec] == None:
@@ -371,9 +371,9 @@ class SpecializationListGenerator(DataGenerator):
                 s += '    %s,\n' % enum_ids[cls][spec]['name']
 
             s += '  },\n'
-            
+
         s += '};\n\n'
-        
+
         return s
 
 class BaseScalingDataGenerator(DataGenerator):
@@ -390,7 +390,7 @@ class BaseScalingDataGenerator(DataGenerator):
 
         for i in self._dbc:
             s += '// Base scaling data for classes, wow build %d\n' % self._options.build
-            s += 'static double __%s%s%s[] = {\n' % ( 
+            s += 'static double __%s%s%s[] = {\n' % (
                 self._options.prefix and ('%s_' % self._options.prefix) or '',
                 re.sub(r'([A-Z]+)', r'_\1', i).lower(),
                 self._options.suffix and ('_%s' % self._options.suffix) or '' )
@@ -403,7 +403,7 @@ class BaseScalingDataGenerator(DataGenerator):
 
                 if k > 0 and (k + 2) % 5 == 0:
                     s += '\n'
-            
+
             s += '\n};\n\n'
 
         return s
@@ -422,7 +422,7 @@ class LevelScalingDataGenerator(DataGenerator):
 
         for i in self._dbc:
             s += '// Level scaling data, wow build %d\n' % self._options.build
-            s += 'static double __%s%s%s[%u] = {\n' % ( 
+            s += 'static double __%s%s%s[%u] = {\n' % (
                 self._options.prefix and ('%s_' % self._options.prefix) or '',
                 re.sub(r'([A-Z]+)', r'_\1', i).lower(),
                 self._options.suffix and ('_%s' % self._options.suffix) or '',
@@ -454,7 +454,7 @@ class MonsterLevelScalingDataGenerator(DataGenerator):
 
         for i in self._dbc:
             s += '// Monster(?) Level scaling data, wow build %d\n' % self._options.build
-            s += 'static double __%s%s%s[%u] = {\n' % ( 
+            s += 'static double __%s%s%s[%u] = {\n' % (
                 self._options.prefix and ('%s_' % self._options.prefix) or '',
                 re.sub(r'([A-Z]+)', r'_\1', i).lower(),
                 self._options.suffix and ('_%s' % self._options.suffix) or '',
@@ -488,7 +488,7 @@ class IlevelScalingDataGenerator(DataGenerator):
 
         for i in self._dbc:
             s += '// Item Level scaling data, wow build %d\n' % self._options.build
-            s += 'static double __%s%s%s[%u] = {\n' % ( 
+            s += 'static double __%s%s%s[%u] = {\n' % (
                 self._options.prefix and ('%s_' % self._options.prefix) or '',
                 re.sub(r'([A-Z]+)', r'_\1', i).lower(),
                 self._options.suffix and ('_%s' % self._options.suffix) or '',
@@ -528,12 +528,12 @@ class CombatRatingsDataGenerator(DataGenerator):
         s = ''
 
         db = self._gtcombatratings_db
-        s += '// Combat ratings for levels 1 - %d, wow build %d \n' % ( 
+        s += '// Combat ratings for levels 1 - %d, wow build %d \n' % (
             self._options.level, self._options.build )
-        s += 'static double __%s%s%s[][%d] = {\n' % ( 
+        s += 'static double __%s%s%s[][%d] = {\n' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             re.sub(r'([A-Z]+)', r'_\1', self._dbc[0]).lower(),
-            self._options.suffix and ('_%s' % self._options.suffix) or '', 
+            self._options.suffix and ('_%s' % self._options.suffix) or '',
             self._options.level )
         for j in xrange(0, len(CombatRatingsDataGenerator._combat_rating_ids)):
             s += '  // %s rating multipliers\n' % CombatRatingsDataGenerator._combat_ratings[j]
@@ -545,14 +545,14 @@ class CombatRatingsDataGenerator(DataGenerator):
                     db[k + 3].gt_value, db[k + 4].gt_value )
 
             s += '  },\n'
-        
+
         s += '};\n\n'
 
 #        db = self._gtoctclasscombatratingscalar_db
 #        s += '// Combat Rating scalar multipliers for classes, wow build %d\n' % self._options.build
-#        s += 'static double __%s%s%s[][%d] = {\n' % ( 
+#        s += 'static double __%s%s%s[][%d] = {\n' % (
 #            self._options.prefix and ('%s_' % self._options.prefix) or '',
-#            re.sub(r'([A-Z]+)', r'_\1', self._dbc[1]).lower(), 
+#            re.sub(r'([A-Z]+)', r'_\1', self._dbc[1]).lower(),
 #            self._options.suffix and ('_%s' % self._options.suffix) or '',
 #            len(self._class_names))
 #        for i in xrange(0, len(CombatRatingsDataGenerator._combat_rating_ids)):
@@ -570,7 +570,7 @@ class CombatRatingsDataGenerator(DataGenerator):
 #            s += '    %20.15f, %20.15f\n' % ( db[i * 10 + 10].gt_value, db[i * 10 + 11].gt_value )
 #
 #            s += '  },\n'
-#        
+#
 #       s += '};\n\n'
 
         return s
@@ -588,27 +588,27 @@ class ClassScalingDataGenerator(DataGenerator):
         s = ''
         for i in self._dbc:
             db = getattr(self, '_%s_db' % i.lower())
-            s += '// Class based scaling multipliers for levels 1 - %d, wow build %d\n' % ( 
+            s += '// Class based scaling multipliers for levels 1 - %d, wow build %d\n' % (
                 self._options.level, self._options.build )
-            s += 'static double __%s%s%s[][%d] = {\n' % ( 
+            s += 'static double __%s%s%s[][%d] = {\n' % (
                 self._options.prefix and ('%s_' % self._options.prefix) or '',
-                re.sub(r'([A-Z]+)', r'_\1', i).lower(), 
+                re.sub(r'([A-Z]+)', r'_\1', i).lower(),
                 self._options.suffix and ('_%s' % self._options.suffix) or '',
                 self._options.level )
-            
+
             for j in xrange(0, len(self._class_names)):
                 # Last entry is the fixed data
                 if j < len(self._class_names) and self._class_names[j] != None:
                     s += '  // %s\n' % self._class_names[j]
-            
+
                 s += '  {\n'
                 for k in xrange((j - 1) * 123, (j - 1) * 123 + self._options.level, 5):
                     s += '    %20.15f, %20.15f, %20.15f, %20.15f, %20.15f,\n' % (
-                        db[k].gt_value, db[k + 1].gt_value, db[k + 2].gt_value, 
+                        db[k].gt_value, db[k + 1].gt_value, db[k + 2].gt_value,
                         db[k + 3].gt_value, db[k + 4].gt_value
                     )
                 s += '  },\n'
-            
+
             s += '};\n\n'
 
         return s
@@ -623,29 +623,29 @@ class SpellScalingDataGenerator(DataGenerator):
         db = self._gtspellscaling_db
 
         s = ''
-        s += '// Spell scaling multipliers for levels 1 - %d, wow build %d\n' % ( 
+        s += '// Spell scaling multipliers for levels 1 - %d, wow build %d\n' % (
             self._options.level, self._options.build )
-        s += 'static double __%s%s%s[][%d] = {\n' % ( 
+        s += 'static double __%s%s%s[][%d] = {\n' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
-            re.sub(r'([A-Z]+)', r'_\1', self._dbc[0]).lower(), 
+            re.sub(r'([A-Z]+)', r'_\1', self._dbc[0]).lower(),
             self._options.suffix and ('_%s' % self._options.suffix) or '',
             self._options.level )
-        
+
         for j in xrange(0, len(self._class_names) + 5):
             # Last entry is the fixed data
             if j < len(self._class_names) and self._class_names[j] != None:
                 s += '  // %s\n' % self._class_names[j]
             else:
                 s += '  // Constant scaling\n'
-        
+
             s += '  {\n'
             for k in xrange((j - 1) * 123, (j - 1) * 123 + self._options.level, 5):
                 s += '    %20.15f, %20.15f, %20.15f, %20.15f, %20.15f,\n' % (
-                    db[k].gt_value, db[k + 1].gt_value, db[k + 2].gt_value, 
+                    db[k].gt_value, db[k + 1].gt_value, db[k + 2].gt_value,
                     db[k + 3].gt_value, db[k + 4].gt_value
                 )
             s += '  },\n'
-        
+
         s += '};\n\n'
 
         return s
@@ -663,7 +663,7 @@ class TalentDataGenerator(DataGenerator):
 
         for talent_id, talent_data in self._talent_db.iteritems():
             # Make sure at least one spell id is defined
-            if talent_data.id_spell == 0: 
+            if talent_data.id_spell == 0:
                 continue
 
             # Make sure the "base spell" exists
@@ -677,7 +677,7 @@ class TalentDataGenerator(DataGenerator):
     def generate(self, ids = None):
         # Sort keys
         ids.sort()
-        
+
         s = '#define %sTALENT%s_SIZE (%d)\n\n' % (
             (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
             (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
@@ -703,11 +703,11 @@ class TalentDataGenerator(DataGenerator):
             fields += [ '%#.2x' % 0 ]
             fields += [ '%#.04x' % (DataGenerator._class_masks[talent.class_id] or 0) ]
             fields += talent.field('spec_id')
-                           
+
             fields += talent.field('col','row', 'id_spell', 'id_replace' )
             # Pad struct with empty pointers for direct rank based spell data access
             fields += [ ' 0' ]
-        
+
             s += '  { %s },\n' % (', '.join(fields))
 
             index += 1
@@ -730,15 +730,15 @@ class RulesetItemUpgradeGenerator(DataGenerator):
         for id_ in sorted(self._rulesetitemupgrade_db.keys()) + [ 0 ]:
             rule = self._rulesetitemupgrade_db[id_]
             s += '  { %s },\n' % (', '.join(rule.field('id', 'upgrade_level', 'id_upgrade_base', 'id_item')))
-        
+
         s += '};\n\n'
-        
+
         return s
 
 class ItemUpgradeDataGenerator(DataGenerator):
     def __init__(self, options):
         self._dbc = [ 'ItemUpgrade' ]
-        
+
         DataGenerator.__init__(self, options)
 
     def generate(self, ids = None):
@@ -749,9 +749,9 @@ class ItemUpgradeDataGenerator(DataGenerator):
         for id_ in sorted(self._itemupgrade_db.keys()) + [ 0 ]:
             upgrade = self._itemupgrade_db[id_]
             s += '  { %s },\n' % (', '.join(upgrade.field('id', 'upgrade_ilevel')))
-        
+
         s += '};\n\n'
-        
+
         return s
 
 class ItemDataGenerator(DataGenerator):
@@ -761,16 +761,16 @@ class ItemDataGenerator(DataGenerator):
         40948, 41605, 41606, 43336,
         43337, 43362, 43384, 55156,
         55159, 65015, 65104, 51951,
-        51953, 52313, 52315, 
+        51953, 52313, 52315,
         68711, 68713, 68710, 68709,                 # Tol Barad trinkets have three versions, only need two, blacklist the "non faction" one
         62343, 62345, 62346, 62333,                 # Therazane enchants that have faction requirements
         50338, 50337, 50336, 50335,                 # Sons of Hodir enchants that have faction requirements
         50370, 50368, 50367, 50369, 50373, 50372,   # Wotlk head enchants that have faction requirements
-        62367, 68719, 62368, 68763, 68718, 62366,   # Obsolete Cataclysm head enchants 
+        62367, 68719, 62368, 68763, 68718, 62366,   # Obsolete Cataclysm head enchants
         68721, 62369, 62422, 68722,                 #
         43097,                                      #
     ]
-    
+
     _item_name_blacklist = [
         "^(Lesser |)Arcanum of",
         "^Scroll of Enchant",
@@ -781,7 +781,7 @@ class ItemDataGenerator(DataGenerator):
         "zzOLD",
         "NYI",
     ]
-    
+
     _type_flags = {
         "Raid Finder"   : 0x01,
         "Heroic"        : 0x02,
@@ -814,7 +814,7 @@ class ItemDataGenerator(DataGenerator):
                 continue
 
             spell.add_effect(spell_effect_data)
-        
+
         # Map JournalEncounterItem.dbc data to items.
         for id, journal_item_data in self._journalencounteritem_db.iteritems():
             if self._item_sparse_db[journal_item_data.id_item]:
@@ -825,24 +825,24 @@ class ItemDataGenerator(DataGenerator):
             item = self._item_sparse_db[data.id_item]
             if not item.id:
                 continue
-            
+
             item.spells.append(data)
 
         return True
-    
+
     def filter(self):
         ids = []
         for item_id, data in self._item_sparse_db.iteritems():
             blacklist_item = False
-            
+
             classdata = self._item_db[item_id]
             if item_id in self._item_blacklist:
                 continue
-                
+
             for pat in self._item_name_blacklist:
                 if data.name and re.search(pat, data.name):
                     blacklist_item = True
-            
+
             if blacklist_item:
                 continue
 
@@ -884,10 +884,10 @@ class ItemDataGenerator(DataGenerator):
                                 filter_ilevel = False
                 elif classdata.subclass == 3:
                     filter_ilevel = False
-                # Permanent Item Enchants (not strictly needed for simc, but 
+                # Permanent Item Enchants (not strictly needed for simc, but
                 # paperdoll will like them)
                 elif classdata.subclass == 6:
-                   filter_ilevel = False 
+                   filter_ilevel = False
                 else:
                     continue
             # Hunter scopes and whatnot
@@ -913,7 +913,7 @@ class ItemDataGenerator(DataGenerator):
                     for effect in spell._effects:
                         if not effect or effect.type != 53:
                             continue
-                        
+
                         valid = True
                         break
 
@@ -937,21 +937,21 @@ class ItemDataGenerator(DataGenerator):
             # All else is filtered based on item level
             elif filter_ilevel and (data.ilevel < self._options.min_ilevel or data.ilevel > self._options.max_ilevel):
                 continue
-            
+
             ids.append(item_id)
-        
+
         return ids
-    
+
     def generate(self, ids = None):
         ids.sort()
-        
+
         s = '#include "data_definitions.hh"\n\n'
         s += '#define %sITEM%s_SIZE (%d)\n\n' % (
             (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
             (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
             len(ids)
         )
-        s += '// %d items, ilevel %d-%d, wow build level %d\n' % ( len(ids), 
+        s += '// %d items, ilevel %d-%d, wow build level %d\n' % ( len(ids),
             self._options.min_ilevel, self._options.max_ilevel, self._options.build )
         s += 'static struct item_data_t __%sitem%s_data[] = {\n' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
@@ -962,12 +962,12 @@ class ItemDataGenerator(DataGenerator):
         for id in ids + [ 0 ]:
             item = self._item_sparse_db[id]
             item2 = self._item_db[id]
-            
+
             if not item.id and id > 0:
-                sys.stderr.write('Item id %d not found\n' % id) 
+                sys.stderr.write('Item id %d not found\n' % id)
                 continue
 
-            # Aand, hack classs 12 (quest item) to be 0, 6 
+            # Aand, hack classs 12 (quest item) to be 0, 6
             # so we get item enchants clumped in the same category, sigh ..
             if item2.classs == 12:
                 item2.classs = 0
@@ -993,7 +993,7 @@ class ItemDataGenerator(DataGenerator):
             fields += [ '%#.2x' % flag_types ]
             fields += item.field('ilevel', 'req_level', 'req_skill', 'req_skill_rank', 'quality', 'inv_type')
             fields += item2.field('classs', 'subclass')
-            fields += item.field( 'bonding', 'delay', 'weapon_damage_range', 'item_damage_modifier', 'race_mask', 'class_mask') 
+            fields += item.field( 'bonding', 'delay', 'weapon_damage_range', 'item_damage_modifier', 'race_mask', 'class_mask')
             fields += [ '{ %s }' % ', '.join(item.field('stat_type_1', 'stat_type_2', 'stat_type_3', 'stat_type_4', 'stat_type_5', 'stat_type_6', 'stat_type_7', 'stat_type_8', 'stat_type_9', 'stat_type_10')) ]
             fields += [ '{ %s }' % ', '.join(item.field('stat_val_1', 'stat_val_2', 'stat_val_3', 'stat_val_4', 'stat_val_5', 'stat_val_6', 'stat_val_7', 'stat_val_8', 'stat_val_9', 'stat_val_10')) ]
             fields += [ '{ %s }' % ', '.join(item.field('stat_alloc_1', 'stat_alloc_2', 'stat_alloc_3', 'stat_alloc_4', 'stat_alloc_5', 'stat_alloc_6', 'stat_alloc_7', 'stat_alloc_8', 'stat_alloc_9', 'stat_alloc_10')) ]
@@ -1024,7 +1024,7 @@ class ItemDataGenerator(DataGenerator):
             fields += item.field('gem_props', 'socket_bonus', 'item_set', 'rand_suffix' )
 
             s += '  { %s },\n' % (', '.join(fields))
-            
+
             index += 1
         s += '};\n\n'
 
@@ -1047,7 +1047,7 @@ class RandomPropertyHTMLParser(HTMLParser.HTMLParser):
                 if attr[0] == 'class' and 'color-q' in attr[1]:
                     self.__getSuffix = True
                     break
-                
+
 
     def handle_data(self, data):
         if self.__getSuffix:
@@ -1084,13 +1084,13 @@ class RandomSuffixGroupGenerator(ItemDataGenerator):
         'nature resistance' : 55,
         'arcane resistance' : 56,
     }
-    
+
     _quality_str = [ '', '', 'uncm', 'rare', 'epic' ]
 
     def random_suffix_type(self, id):
         item = self._item_sparse_db[id]
         item2 = self._item_db[id]
-      
+
         f = -1
 
         if item2.classs == 2:
@@ -1112,24 +1112,24 @@ class RandomSuffixGroupGenerator(ItemDataGenerator):
 
     def __init__(self, options):
         ItemDataGenerator.__init__(self, options)
-        
+
     def initialize(self):
         self._dbc += [ 'SpellItemEnchantment', 'ItemRandomSuffix', 'RandPropPoints' ]
 
         return ItemDataGenerator.initialize(self)
-        
+
     def filter(self):
         item_ids = ItemDataGenerator.filter(self)
 
         ids = []
-        # Generate an ID list of random suffix ids, to which we need to figure 
+        # Generate an ID list of random suffix ids, to which we need to figure
         # out the random suffix grouping, based on web crawling of battle.net
         for id in item_ids:
             if self._item_sparse_db[id].rand_suffix > 0:
                 ids.append(id)
-                
+
         return ids
-        
+
     def generate(self, ids = None):
         rsuffix_groups = { }
         parsed_rsuffix_groups = { }
@@ -1137,9 +1137,9 @@ class RandomSuffixGroupGenerator(ItemDataGenerator):
             item = self._item_sparse_db[id]
             if item.rand_suffix not in rsuffix_groups.keys():
                 rsuffix_groups[item.rand_suffix] = [ ]
-                
+
             rsuffix_groups[item.rand_suffix].append(id)
-            
+
         for rsuffix_group, rsuffix_items in rsuffix_groups.iteritems():
             # Take first item of the group, we could revert to more items here
             # if the url returns 404 or such
@@ -1155,7 +1155,7 @@ class RandomSuffixGroupGenerator(ItemDataGenerator):
             html = RandomPropertyHTMLParser(smap)
             html.feed(url.read())
             html.close()
-    
+
             for suffix, stats in smap.iteritems():
                 html_stats = [ ]
                 splits = stats.split(',')
@@ -1164,33 +1164,33 @@ class RandomSuffixGroupGenerator(ItemDataGenerator):
                     stat_re = re.match(r'^[\+\-]([0-9]+) ([a-z ]+)', stat_str.lower().strip())
                     if not stat_re:
                         continue
-                    
+
                     stat_val = int(stat_re.group(1))
                     stat_id = self._stat_map.get(stat_re.group(2))
-                    
+
                     if stat_id == None:
                         #sys.stderr.write('Unknown stat %s\n' % stat_str.lower().strip())
                         continue
-                        
+
                     html_stats.append((stat_id, stat_val))
-                
+
                 for suffix_id, suffix_data in self._itemrandomsuffix_db.iteritems():
                     if suffix_data.name_sfx != suffix:
                         continue
 
                     # Name matches, we need to check the stats
                     rsuffix_stats = [ ]
-                        
-                    # Then, scan through the suffix properties, 
+
+                    # Then, scan through the suffix properties,
                     for sp_id in xrange(1, 6):
                         item_ench_id = getattr(suffix_data, 'id_property_%d' % sp_id)
                         item_ench_alloc = getattr(suffix_data, 'property_pct_%d' % sp_id)
                         if item_ench_id == 0:
                             continue
-                            
+
                         rprop = self._randproppoints_db[item.ilevel]
                         f = self.random_suffix_type(item.id)
-                            
+
                         points = getattr(rprop, '%s_points_%d' % (self._quality_str[item.quality], f + 1))
                         amount = points * item_ench_alloc / 10000.0
 
@@ -1200,22 +1200,22 @@ class RandomSuffixGroupGenerator(ItemDataGenerator):
                             ie_stat_prop = getattr(item_ench, 'id_property_%d' % ie_id)
                             if ie_stat_type != 5:
                                 continue
-                            
+
                             rsuffix_stats.append((ie_stat_prop, int(amount)))
-                    
+
                     # Compare lists, need at least as many matches as html stats
                     match = 0
                     for i in xrange(0, len(html_stats)):
                         if html_stats[i] in rsuffix_stats:
                             match += 1
-                        
+
                     if match == len(html_stats):
                         if not rsuffix_group in parsed_rsuffix_groups.keys():
                             parsed_rsuffix_groups[rsuffix_group] = [ ]
-                        
+
                         parsed_rsuffix_groups[rsuffix_group].append(suffix_data.id)
                         break
-        
+
         s = '#define %sRAND_SUFFIX_GROUP%s_SIZE (%d)\n\n' % (
             (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
             (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
@@ -1229,31 +1229,31 @@ class RandomSuffixGroupGenerator(ItemDataGenerator):
         for group_id in sorted(parsed_rsuffix_groups.keys()):
             data = parsed_rsuffix_groups[group_id]
             s += '  { %4u, { %s, 0 } },\n' % (group_id, ', '.join(['%3u' % d for d in sorted(data)]))
-        
+
         s += '  {    0, {   0 } }\n'
         s += '};\n\n'
-        
+
         return s
 
 class SpellDataGenerator(DataGenerator):
     _spell_ref_rx = r'\$(?:\?[A-z]|@spell(?:name|desc|icon|tooltip))?([0-9]+)(?:\[|[A-z][0-9]?|)'
-    
+
 
     # Pattern based whitelist, these will always be added
     _spell_name_whitelist = [
         re.compile(r'^Item\s+-\s+(.+)\s+T([0-9]+)\s+([A-z\s]*)\s*([0-9]+)P')
     ]
 
-    # Explicitly included list of spells per class, that cannot be 
+    # Explicitly included list of spells per class, that cannot be
     # found from talents, or based on a SkillLine category
-    # The list contains a tuple ( spell_id, category[, activated ] ), 
+    # The list contains a tuple ( spell_id, category[, activated ] ),
     # where category is an entry in the _class_categories class-specific
     # tuples, e.g. general = 0, specialization0..3 = 1..4 and pets as a whole
-    # are 5. The optional activated parameter forces the spell to appear (if set 
-    # to True) or disappear (if set to False) from the class activated spell list, 
+    # are 5. The optional activated parameter forces the spell to appear (if set
+    # to True) or disappear (if set to False) from the class activated spell list,
     # regardless of the automated activated check.
     # Manually entered general spells ("tree" 0) do not appear in class activated lists, even if
-    # they pass the "activated" check, but will appear there if the optional activated parameter 
+    # they pass the "activated" check, but will appear there if the optional activated parameter
     # exists, and is set to True.
     # The first tuple in the list is for non-class related, generic spells that are whitelisted,
     # without a category
@@ -1268,7 +1268,7 @@ class SpellDataGenerator(DataGenerator):
          138537,                    # Death Knight Tier15 2PC melee pet special attack
          137597,                    # Legendary meta gem Lightning Strike
          137323, 137288, 137247,    # Healer legendary meta
-         137331, 137326, 
+         137331, 137326,
          146137,                    # Cleave
          146071,                    # Multistrike
          120032, 142530,            # Dancing Steel
@@ -1281,7 +1281,7 @@ class SpellDataGenerator(DataGenerator):
          177172, 177175, 177176,    # WoD Legendary ring, phase 1(?)
          177161, 177159, 177160,    # WoD Legendary ring, phase 1(?)
         ),
-        
+
         # Warrior:
         (
             ( 118340, 0 ),          # Impending Victory Heal
@@ -1296,9 +1296,9 @@ class SpellDataGenerator(DataGenerator):
             ( 165349, 0 ),          # Fury T17 4 piece
             ( 165338, 0 ),          # Prot T17 2 piece
             ( 165351, 0 ),          # Prot T17 4 piece
-            
+
         ),
-        
+
         # Paladin:
         (
             ( 86700, 5 ),           # Ancient Power
@@ -1313,8 +1313,8 @@ class SpellDataGenerator(DataGenerator):
             ( 136494, 0, False ),   # World of Glory false positive for activated
             ( 113075, 0, False ),   # Barkskin (from Symbiosis)
             ( 144569, 0, False ),   # Bastion of Power (prot T16 4-piece bonus)
-        ),  
-        
+        ),
+
         # Hunter:
         ( ( 83381, 0 ), # Kill Command base dmg
           ( 82928, 0 ), # Aimed Shot Master Marksman
@@ -1324,7 +1324,7 @@ class SpellDataGenerator(DataGenerator):
           ( 171454, 0 ), # Chimaera Shot - Frost
           ( 171457, 0 ), # Chimaera Shot - Nature
         ),
-          
+
         # Rogue:
         (
             ( 121474, 0 ),          # Shadow Blades off hand
@@ -1340,8 +1340,8 @@ class SpellDataGenerator(DataGenerator):
             ( 168971, 0 ),          # Sinister Calling: Garrote
             ( 168963, 0 ),          # Sinister Calling: Rupture
             ( 115189, 0 ),          # Anticipation buff
-        ),  
-        
+        ),
+
         # Priest:
         (   (  63619, 5 ), # Shadowfiend "Shadowcrawl"
             (  94472, 0 ), # Atonement Crit
@@ -1353,14 +1353,14 @@ class SpellDataGenerator(DataGenerator):
             ( 129197, 3 ), # Mind Flay (Insanity)
             ( 165628, 0 ), # Item - Priest T17 Shadow 2P Bonus
             ( 165623, 0 ), # Item - Priest T17 Shadow 2P Bonus - dot spell
-            
+
             ( 165621, 0 ), # Item - Priest T17 Holy 2P Bonus
             ( 165614, 0 ), # Item - Priest T17 Discipline 2P Bonus
             ( 167694, 0 ), # Item - Priest T17 Discipline 4P Bonus
             ( 167684, 0 ), # Item - Priest T17 Holy 4P Bonus
             ( 165629, 0 ), # Item - Priest T17 Shadow 4P Bonus
-        ), 
-        
+        ),
+
         # Death Knight:
         ( ( 70890, 0 ), # weird Scourge Strike secondary effect
           ( 51963, 5 ), # gargoyle strike
@@ -1380,8 +1380,8 @@ class SpellDataGenerator(DataGenerator):
           ( 144909, 0 ), # T16 dps 4PC frost driver spell
           ( 57330, 0, True ), # Horn of Winter needs to be explicitly put in the general tree, as our (over)zealous filtering thinks it's not an active ability
           ( 47568, 0, True ), # Same goes for Empower Rune Weapon
-        ),  
-        
+        ),
+
         # Shaman:
         ( (  77451, 0 ), (  45284, 0 ), (  45297, 0 ),  #  Overloads
           ( 114093, 0 ),                                # Ascendance: Stormblast, offhand melee swing,
@@ -1398,9 +1398,9 @@ class SpellDataGenerator(DataGenerator):
           ( 173183, 0 ),                                # Elemental Blast buffs
           ( 170512, 0 ), ( 170523, 0 )                  # Feral Spirit windfury (t17 enhance 4pc set bonus)
         ),
-        
+
         # Mage:
-        ( 
+        (
           ( 48107, 0, False ), ( 48108, 0, False ), # Heating Up and Pyroblast! buffs
           ( 79058, 0 ), # Mage: Mana Gem, Frostfire Orb x2, Arcane Brilliance
           ( 88084, 5 ), ( 59637, 5 ), ( 88082, 5 ), ( 59638, 5 ), # Mirror Image spells.
@@ -1413,11 +1413,12 @@ class SpellDataGenerator(DataGenerator):
           ( 148022, 0 ),                                          # Icicle
           ( 155152, 5 ),                                          # Prismatic Crystal nuke
           ( 157978, 0 ), ( 157979, 0 ), ( 157977, 0 ),            # Unstable magic aoe
-        ), 
-        
+        ),
+
         # Warlock:
         (   (  85692, 5 ),       # doomguard doom bolt
             ( 115746, 5 ),       # fel imp felbolt
+            ( 166864, 5 ),       # inner demon soulfire
             ( 115778, 5 ),       # observer tongue lash
             ( 115748, 5 ),       # shivarra bladedance
             ( 115770, 5 ),       # shivarra fellash
@@ -1453,7 +1454,7 @@ class SpellDataGenerator(DataGenerator):
             ( 89653, 0 ),         # Drain Life heal
             ( 157698, 1 ),        # Soulburn: Haunt buff
         ),
-        
+
         # Monk:
         ( ( 118864, 3 ), # Combo Breaker: Tiger Palm
           ( 116768, 3 ), # Combo Breaker: Blackout Kick
@@ -1462,7 +1463,7 @@ class SpellDataGenerator(DataGenerator):
           ( 126890, 0, False ), # Eminence false positives for activatable abilities
           ( 117895, 0, False ),
         ),
-        
+
         # Druid:
         ( (  93402, 1, True ), # Sunfire
           ( 106996, 1, True ), # Astral Storm
@@ -1490,7 +1491,7 @@ class SpellDataGenerator(DataGenerator):
 	  ( 166638, 0 ),       # tier17_4pc_melee debuff
 	  ( 166639, 0 ),       # tier17_4pc_melee proc driver
 	  ( 177969, 0 ),       # tier17_4pc_tank buff
-        ), 
+        ),
     ]
 
     # Class specific item sets, T13, T14, T15
@@ -1509,7 +1510,7 @@ class SpellDataGenerator(DataGenerator):
         ( ( ),                   ( 1131, 1132, 1133, ),       ( 1159, 1160, 1161 ),       ( 1191, 1192, 1193 ),       ), # Monk
         ( ( 1059, 1058, 1060 ),  ( 1125, 1126, 1127, 1128, ), ( 1153, 1154, 1155, 1156 ), ( 1196, 1197, 1198, 1199 ), ), # Druid
     ]
-  
+
     _profession_enchant_categories = [
         165,  # Leatherworking
         171,  # Alchemy
@@ -1518,7 +1519,7 @@ class SpellDataGenerator(DataGenerator):
         333,  # Enchanting
         773,  # Inscription
     ]
-    
+
     # General
     _skill_categories = [
           0,
@@ -1534,7 +1535,7 @@ class SpellDataGenerator(DataGenerator):
         829,    # Monk
         798,    # Druid
     ]
-    
+
     _pet_skill_categories = [
         ( ),
         ( ),         # Warrior
@@ -1549,8 +1550,8 @@ class SpellDataGenerator(DataGenerator):
         ( ),         # Monk
         ( ),         # Druid
     ]
-    
-    # Specialization categories, Spec0 | Spec1 | Spec2 
+
+    # Specialization categories, Spec0 | Spec1 | Spec2
     # Note, these are reset for MoP
     _spec_skill_categories = [
         (),
@@ -1566,11 +1567,11 @@ class SpellDataGenerator(DataGenerator):
         ( 268, 270, 269,   0 ), # Monk
         ( 102, 103, 104, 105 ), # Druid
     ]
-    
+
     _race_categories = [
         (),
         ( 754, ),                # Human     0x0001
-        ( 125, ),                # Orc       0x0002   
+        ( 125, ),                # Orc       0x0002
         ( 101, ),                # Dwarf     0x0004
         ( 126, ),                # Night-elf 0x0008
         ( 220, ),                # Undead    0x0010
@@ -1593,14 +1594,14 @@ class SpellDataGenerator(DataGenerator):
         ( 789, ),                # Worgen   0x200000
         (),                      # Gilnean
     ]
-    
+
     _skill_category_blacklist = [
         148,                # Horse Riding
         762,                # Riding
         183,                # Generic (DND)
     ]
 
-    # Any spell with this effect type, will be automatically 
+    # Any spell with this effect type, will be automatically
     # blacklisted
     # http://github.com/mangos/mangos/blob/400/src/game/SharedDefines.h
     _effect_type_blacklist = [
@@ -1615,18 +1616,18 @@ class SpellDataGenerator(DataGenerator):
         71,     # SPELL_EFFECT_PICKPOCKET
         94,     # SPELL_EFFECT_SELF_RESURRECT
         97,     # SPELL_EFFECT_SUMMON_ALL_TOTEMS
-        109,    # SPELL_EFFECT_SUMMON_DEAD_PET 
+        109,    # SPELL_EFFECT_SUMMON_DEAD_PET
         110,    # SPELL_EFFECT_DESTROY_ALL_TOTEMS
         118,    # SPELL_EFFECT_SKILL
         126,    # SPELL_STEAL_BENEFICIAL_BUFF
     ]
-    
-    # http://github.com/mangos/mangos/blob/400/src/game/SpellAuraDefines.h 
+
+    # http://github.com/mangos/mangos/blob/400/src/game/SpellAuraDefines.h
     _aura_type_blacklist = [
         1,      # SPELL_AURA_BIND_SIGHT
-        2,      # SPELL_AURA_MOD_POSSESS  
+        2,      # SPELL_AURA_MOD_POSSESS
         5,      # SPELL_AURA_MOD_CONFUSE
-        6,      # SPELL_AURA_MOD_CHARM 
+        6,      # SPELL_AURA_MOD_CHARM
         7,      # SPELL_AURA_MOD_FEAR
         #8,      # SPELL_AURA_PERIODIC_HEAL
         17,     # SPELL_AURA_MOD_STEALTH_DETECT
@@ -1636,7 +1637,7 @@ class SpellDataGenerator(DataGenerator):
         44,     # SPELL_AURA_TRACK_CREATURES
         45,     # SPELL_AURA_TRACK_RESOURCES
         56,     # SPELL_AURA_TRANSFORM
-        58,     # SPELL_AURA_MOD_INCREASE_SWIM_SPEED 
+        58,     # SPELL_AURA_MOD_INCREASE_SWIM_SPEED
         75,     # SPELL_AURA_MOD_LANGUAGE
         78,     # SPELL_AURA_MOUNTED
         82,     # SPELL_AURA_WATER_BREATHING
@@ -1645,12 +1646,12 @@ class SpellDataGenerator(DataGenerator):
         104,    # SPELL_AURA_WATER_WALK,
         105,    # SPELL_AURA_FEATHER_FALL
         151,    # SPELL_AURA_TRACK_STEALTHED
-        154,    # SPELL_AURA_MOD_STEALTH_LEVEL 
-        156,    # SPELL_AURA_MOD_REPUTATION_GAIN 
+        154,    # SPELL_AURA_MOD_STEALTH_LEVEL
+        156,    # SPELL_AURA_MOD_REPUTATION_GAIN
         206,    # SPELL_AURA_MOD_FLIGHT_SPEED_xx begin
-        207, 
+        207,
         208,
-        209, 
+        209,
         210,
         211,
         212     # SPELL_AURA_MOD_FLIGHT_SPEED_xx ends
@@ -1677,7 +1678,7 @@ class SpellDataGenerator(DataGenerator):
         68978,  # Flayer (worgen racial)
         68996,  # Two forms (worgen racial)
     ]
-    
+
     _spell_name_blacklist = [
         "^Languages",
         "^Teleport:",
@@ -1699,13 +1700,13 @@ class SpellDataGenerator(DataGenerator):
         'deathknight': 15,
         'monk': 53
     }
-    
+
     def __init__(self, options):
         DataGenerator.__init__(self, options)
 
         self._dbc = [
             'Spell', 'SpellEffect', 'SpellScaling', 'SpellCooldowns', 'SpellRange', 'SpellClassOptions',
-            'SpellDuration', 'SpellPower', 'SpellLevels', 'SpellCategories', 'Talent', 
+            'SpellDuration', 'SpellPower', 'SpellLevels', 'SpellCategories', 'Talent',
             'SkillLineAbility', 'SpellAuraOptions', 'SpellRuneCost', 'SpellRadius', 'GlyphProperties',
             'SpellCastTimes', 'ItemSet', 'SpellDescriptionVariables', 'SpellItemEnchantment', 'Item-sparse',
             'Item', 'SpellEquippedItems', 'SpellIcon', 'SpecializationSpells', 'ChrSpecialization', 'SpellEffectScaling',
@@ -1724,7 +1725,7 @@ class SpellDataGenerator(DataGenerator):
                 continue
 
             spell.add_effect(spell_effect_data)
-        
+
         # Map Spell effect scaling to Spell Effects
         for ses_id,ses_data in self._spelleffectscaling_db.iteritems():
             if not ses_data.id_effect:
@@ -1740,22 +1741,22 @@ class SpellDataGenerator(DataGenerator):
         for spell_power_id, spell_power_data in self._spellpower_db.iteritems():
             if not spell_power_data.id_spell:
                 continue
-        
+
             spell = self._spell_db[spell_power_data.id_spell]
             if not spell.id:
                 continue
-        
+
             spell.add_power(spell_power_data)
-        
+
         # For builds 15589+, map SpellMisc.dbc to spell ids
         #for spell_misc_id, spell_misc_data in self._spellmisc_db.iteritems():
         #    if not spell_misc_data.id_spell:
         #        continue
-        #    
+        #
         #    spell = self._spell_db[spell_misc_data.id_spell]
         #    if not spell.id:
         #        continue
-        #    
+        #
         #    spell.add_misc(spell_misc_data)
 
         # For WoD, map ItemSetSpell.dbc to ItemSet.dbc
@@ -1763,7 +1764,7 @@ class SpellDataGenerator(DataGenerator):
             item_set = self._itemset_db[data.id_item_set]
             if not item_set.id:
                 continue
-            
+
             item_set.bonus.append(data)
 
         # For WoD, map ItemEffect to Item-sparse
@@ -1771,25 +1772,25 @@ class SpellDataGenerator(DataGenerator):
             item = self._item_sparse_db[data.id_item]
             if not item.id:
                 continue
-            
+
             item.spells.append(data)
-        
+
         return True
-    
+
     def class_mask_by_skill(self, skill):
         for i in xrange(0, len(self._skill_categories)):
             if self._skill_categories[i] == skill:
                 return DataGenerator._class_masks[i]
-        
+
         return 0
-    
+
     def class_mask_by_spec_skill(self, spec_skill):
         for i in xrange(0, len(self._spec_skill_categories)):
             if spec_skill in self._spec_skill_categories[i]:
                 return DataGenerator._class_masks[i]
-        
+
         return 0
-    
+
     def class_mask_by_pet_skill(self, pet_skill):
         for i in xrange(0, len(self._pet_skill_categories)):
             if pet_skill in self._pet_skill_categories[i]:
@@ -1801,15 +1802,15 @@ class SpellDataGenerator(DataGenerator):
         for i in xrange(0, len(self._race_categories)):
             if skill in self._race_categories[i]:
                 return DataGenerator._race_masks[i]
-        
+
         return 0
-    
+
     def process_spell(self, spell_id, result_dict, mask_class = 0, mask_race = 0, state = True):
         filter_list = { }
         lst = self.generate_spell_filter_list(spell_id, mask_class, mask_race, filter_list, state)
         if not lst:
             return
-            
+
         for k, v in lst.iteritems():
             if result_dict.get(k):
                 result_dict[k]['mask_class'] |= v['mask_class']
@@ -1839,15 +1840,15 @@ class SpellDataGenerator(DataGenerator):
         # Make sure we can filter based on effects even if there's no map of relevant effects
         if enabled_effects == None:
             enabled_effects = [ True ] * ( spell.max_effect_index + 1 )
-        
+
         # Effect blacklist processing
         for effect_index in xrange(0, len(spell._effects)):
             if not spell._effects[effect_index]:
                 enabled_effects[effect_index] = False
                 continue
-        
+
             effect = spell._effects[effect_index]
-        
+
             # Blacklist by effect type
             if effect.type in SpellDataGenerator._effect_type_blacklist:
                 enabled_effects[effect.index] = False
@@ -1855,7 +1856,7 @@ class SpellDataGenerator(DataGenerator):
             # Blacklist by apply aura (party, raid)
             if effect.type in [ 6, 35, 65 ] and effect.sub_type in SpellDataGenerator._aura_type_blacklist:
                 enabled_effects[effect.index] = False
-    
+
         # If we do not find a true value in enabled effects, this spell is completely
         # blacklisted, as it has no effects enabled that interest us
         if True not in enabled_effects:
@@ -1863,29 +1864,29 @@ class SpellDataGenerator(DataGenerator):
             return False
 
         return True
-    
+
     def generate_spell_filter_list(self, spell_id, mask_class, mask_race, filter_list = { }, state = True):
         spell = self._spell_db[spell_id]
         enabled_effects = [ True ] * ( spell.max_effect_index + 1 )
 
         if not spell.id:
             return None
-            
+
         if state and not self.spell_state(spell, enabled_effects):
             return None
-        
+
         filter_list[spell.id] = { 'mask_class': mask_class, 'mask_race': mask_race, 'effect_list': enabled_effects }
 
         # Add spell triggers to the filter list recursively
         for effect in spell._effects:
             if not effect or spell.id == effect.trigger_spell:
                 continue
-            
+
             # Regardless of trigger_spell or not, if the effect is not enabled,
             # we do not process it
             if not enabled_effects[effect.index]:
                 continue
-                
+
             if effect.trigger_spell > 0:
                 if effect.trigger_spell in filter_list.keys():
                     continue
@@ -1893,14 +1894,14 @@ class SpellDataGenerator(DataGenerator):
                 lst = self.generate_spell_filter_list(effect.trigger_spell, mask_class, mask_race, filter_list)
                 if not lst:
                     continue
-                
+
                 for k, v in lst.iteritems():
                     if filter_list.get(k):
                         filter_list[k]['mask_class'] |= v['mask_class']
                         filter_list[k]['mask_race'] |= v['mask_race']
                     else:
                         filter_list[k] = { 'mask_class': v['mask_class'], 'mask_race' : v['mask_race'], 'effect_list': v['effect_list'] }
-        
+
         spell_refs = re.findall(SpellDataGenerator._spell_ref_rx, spell.desc or '')
         spell_refs += re.findall(SpellDataGenerator._spell_ref_rx, spell.tt or '')
         if spell.id_desc_var and self._spelldescriptionvariables_db.get(spell.id_desc_var):
@@ -1911,14 +1912,14 @@ class SpellDataGenerator(DataGenerator):
             rsid = int(ref_spell_id)
             if rsid == spell.id:
                 continue
-            
+
             if rsid in filter_list.keys():
                 continue
-            
+
             lst = self.generate_spell_filter_list(rsid, mask_class, mask_race, filter_list)
             if not lst:
                 continue
-            
+
             for k, v in lst.iteritems():
                 if filter_list.get(k):
                     filter_list[k]['mask_class'] |= v['mask_class']
@@ -1934,7 +1935,7 @@ class SpellDataGenerator(DataGenerator):
         # First, get spells from talents. Pet and character class alike
         for talent_id, talent_data in self._talent_db.iteritems():
             mask_class = 0
-            
+
             # These may now be pet talents
             if talent_data.class_id > 0:
                 mask_class = DataGenerator._class_masks[talent_data.class_id]
@@ -1958,12 +1959,12 @@ class SpellDataGenerator(DataGenerator):
 
             if ability_data.id_skill in SpellDataGenerator._skill_category_blacklist:
                 continue
-            
+
             # Guess class based on skill category identifier
             mask_class_category = self.class_mask_by_skill(ability_data.id_skill)
             if mask_class_category == 0:
                 mask_class_category = self.class_mask_by_spec_skill(ability_data.id_skill)
-            
+
             if mask_class_category == 0:
                 mask_class_category = self.class_mask_by_pet_skill(ability_data.id_skill)
 
@@ -1973,7 +1974,7 @@ class SpellDataGenerator(DataGenerator):
             # Make sure there's a class or a race for an ability we are using
             if not ability_data.mask_class and not ability_data.mask_race and not mask_class_category and not mask_race_category:
                 continue
-                
+
             spell = self._spell_db[ability_data.id_spell]
             if not spell.id:
                 continue
@@ -1990,26 +1991,26 @@ class SpellDataGenerator(DataGenerator):
             spell = self._spell_db[spec_spell_data.spell_id]
             if not spell.id:
                 continue
-            
+
             mask_class = 0
             if spec_data.class_id > 0:
                 mask_class = DataGenerator._class_masks[spec_data.class_id]
             # Hunter pet classes have a class id of 0, tag them as "hunter spells" like before
             else:
                 mask_class = DataGenerator._class_masks[3]
-            
+
             self.process_spell(spell.id, ids, mask_class, 0, False)
             if ids.has_key(spell.id):
                 ids[spell.id]['replace_spell_id'] = spec_spell_data.replace_spell_id
-        
+
         for spec_id, spec_data in self._chrspecialization_db.iteritems():
             s = self._spell_db[spec_data.id_mastery]
             if s.id == 0:
                 continue
-            
+
             if self._spellmisc_db[s.id_misc].flags_12694 & 0x20000000:
                 self.process_spell(s.id, ids, DataGenerator._class_masks[spec_data.class_id], 0, False)
-        
+
 
         # Get spells relating to item enchants, so we can populate a (nice?) list
         for enchant_id, enchant_data in self._spellitemenchantment_db.iteritems():
@@ -2020,18 +2021,18 @@ class SpellDataGenerator(DataGenerator):
                 # "combat spell", "equip spell", "use spell"
                 if getattr(enchant_data, type_field_str) not in [ 1, 3, 7 ]:
                     continue
-                
+
                 spell_id = getattr(enchant_data, id_field_str)
                 if not spell_id:
                     continue
-                
+
                 self.process_spell(spell_id, ids, 0, 0)
 
         # Get spells that create item enchants
         for ability_id, ability_data in self._skilllineability_db.iteritems():
             if ability_data.id_skill not in self._profession_enchant_categories:
                 continue;
-            
+
             spell = self._spell_db[ability_data.id_spell]
             if not spell.id:
                 continue
@@ -2067,7 +2068,7 @@ class SpellDataGenerator(DataGenerator):
                     #   (spell_item_ench.req_skill > 0 and spell_item_ench.req_skill_value <= 375):
                     #    continue
                     enchant_spell_id = spell.id
-                
+
                 if enchant_spell_id > 0:
                     break
 
@@ -2078,15 +2079,15 @@ class SpellDataGenerator(DataGenerator):
         # Rest of the Item enchants relevant to us, such as Shoulder / Head enchants
         for item_id, data in self._item_sparse_db.iteritems():
             blacklist_item = False
-            
+
             classdata = self._item_db[item_id]
             if item_id in ItemDataGenerator._item_blacklist:
                 continue
-                
+
             for pat in ItemDataGenerator._item_name_blacklist:
                 if data.name and re.search(pat, data.name):
                     blacklist_item = True
-            
+
             if blacklist_item:
                 continue
 
@@ -2095,8 +2096,8 @@ class SpellDataGenerator(DataGenerator):
                (classdata.classs != 7 or classdata.subclass not in [3]) and \
                (classdata.classs != 0 or classdata.subclass not in [1, 2, 3, 5, 6]):
                 continue
-            
-            # Grab relevant spells from quest items, this in essence only 
+
+            # Grab relevant spells from quest items, this in essence only
             # includes certain permanent enchants
             if classdata.classs == 12:
                 for spell in data.spells:
@@ -2108,7 +2109,7 @@ class SpellDataGenerator(DataGenerator):
                     for effect in spell._effects:
                         if not effect or effect.type != 53:
                             continue
-                        
+
                         self.process_spell(spell_id, ids, 0, 0)
             # Grab relevant spells from consumables as well
             elif classdata.classs == 0:
@@ -2139,8 +2140,8 @@ class SpellDataGenerator(DataGenerator):
 
                             if effect.type == 53:
                                 self.process_spell(spell.id, ids, 0, 0)
-        
-        # Item sets, loop through ItemSet.dbc getting class-specific tier sets and add 
+
+        # Item sets, loop through ItemSet.dbc getting class-specific tier sets and add
         # their bonuses to the spell list
         for itemset_id, itemset_data in self._itemset_db.iteritems():
             mask_class_category = 0
@@ -2196,7 +2197,7 @@ class SpellDataGenerator(DataGenerator):
                 glyph_data = self._glyphproperties_db[effect.misc_value]
                 if not glyph_data.id or not glyph_data.id_spell:
                     continue
-                
+
                 self.process_spell(glyph_data.id_spell, ids, ability_data.mask_class, 0)
 
         # Item enchantments that use a spell
@@ -2206,21 +2207,21 @@ class SpellDataGenerator(DataGenerator):
                 if attr_type == 1 or attr_type == 3 or attr_type == 7:
                     sid = getattr(data, 'id_property_%d' % attr_id)
                     self.process_spell(sid, ids, 0, 0)
-        
+
         # Items with a spell identifier as "stats"
         for iid, data in self._item_sparse_db.iteritems():
             # Allow trinkets, weapons, 2hweapons to bypass ilevel checking
             if data.inv_type not in [ 12, 13, 15, 17, 21, 22, 26 ] and \
                (data.ilevel < self._options.min_ilevel or data.ilevel > self._options.max_ilevel):
                 continue
-            
+
             for spell in data.spells:
                 if spell.id_spell == 0:
                     continue
 
                 self.process_spell(spell.id_spell, ids, 0, 0)
-        
-        # Last, get the explicitly defined spells in _spell_id_list on a class basis and the 
+
+        # Last, get the explicitly defined spells in _spell_id_list on a class basis and the
         # generic spells from SpellDataGenerator._spell_id_list[0]
         for generic_spell_id in SpellDataGenerator._spell_id_list[0]:
             if generic_spell_id in ids.keys():
@@ -2240,8 +2241,8 @@ class SpellDataGenerator(DataGenerator):
                 if pattern.match(spell_data.name):
                     self.process_spell(spell_id, ids, 0, 0)
 
-        
-        # After normal spells have been fetched, go through all spell ids, 
+
+        # After normal spells have been fetched, go through all spell ids,
         # and get all the relevant aura_ids for selected spells
         more_ids = { }
         for spell_id, spell_data in ids.iteritems():
@@ -2249,16 +2250,16 @@ class SpellDataGenerator(DataGenerator):
             for power in spell._powers:
                 if not power or power.aura_id == 0:
                     continue
-                
+
                 self.process_spell(power.aura_id, more_ids, spell_data['mask_class'], spell_data['mask_race'])
-        
+
         for id, data in more_ids.iteritems():
             if not ids.has_key(id):
                 ids[ id ] = data
             else:
                 ids[id]['mask_class'] |= data['mask_class']
                 ids[id]['mask_race'] |= data['mask_race']
-        
+
         return ids
 
     def generate(self, ids = None):
@@ -2287,7 +2288,7 @@ class SpellDataGenerator(DataGenerator):
             if not spell.id and id > 0:
                 sys.stderr.write('Spell id %d not found\n') % id
                 continue
-            
+
             #if len(spell._misc) > 1:
             #    sys.stderr.write('Spell id %u (%s) has more than one SpellMisc.dbc entry\n' % ( spell.id, spell.name ) )
             #    continue
@@ -2295,13 +2296,13 @@ class SpellDataGenerator(DataGenerator):
             for power in spell._powers:
                 if power == None:
                     continue
-                
+
                 powers.add( power )
 
             if index % 20 == 0:
               s += '//{ Name                                ,     Id,Flags,PrjSp,  Sch, Class,  Race,Sca,MSL,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,  Cat,  Duration,  RCost, RPG,Stac, PCh,PCr, ProcFlags,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, RplcId, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10,     Attr11,     Attr12 }, {     Flags1,     Flags2,     Flags3,     Flags4 }, Family, Description, Tooltip, Description Variable, Icon, ActiveIcon, Effect1, Effect2, Effect3 },\n'
-            
-            fields = spell.field('name', 'id') 
+
+            fields = spell.field('name', 'id')
             fields += [ '%#.2x' % 0 ]
             fields += self._spellmisc_db[spell.id_misc].field('prj_speed', 'mask_school')
 
@@ -2337,9 +2338,9 @@ class SpellDataGenerator(DataGenerator):
                 fields += self._spellprocsperminute_db[aura.id_ppm].field('ppm')
             else:
                 fields += [ '%5.3f' % 0 ]
-            
+
             fields += self._spellequippeditems_db[spell.id_equip_items].field('item_class', 'mask_inv_type', 'mask_sub_class')
-            
+
             if spell.id_scaling:
                 fields += self._spellscaling_db[spell.id_scaling].field('cast_min', 'cast_max', 'cast_div')
                 fields += self._spellscaling_db[spell.id_scaling].field('c_scaling', 'c_scaling_threshold')
@@ -2352,7 +2353,7 @@ class SpellDataGenerator(DataGenerator):
                 fields += [ '%6u' % ids[id]['replace_spell_id'] ]
             else:
                 fields += [ '%6u' % 0 ]
-            
+
             s_effect = []
             effect_ids = []
             for effect in spell._effects:
@@ -2382,11 +2383,11 @@ class SpellDataGenerator(DataGenerator):
             fields += [ '0', '0' ]
 
             s += '  { %s }, /* %s */\n' % (', '.join(fields), ', '.join(effect_ids))
-            
+
             index += 1
-        
+
         s += '};\n\n'
-        
+
         s += '#define __%sSPELLEFFECT%s_SIZE (%d)\n\n' % (
             (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
             (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
@@ -2409,7 +2410,7 @@ class SpellDataGenerator(DataGenerator):
                 s += '//{     Id,Flags,   SpId,Idx, EffectType                  , EffectSubType                              ,       Average,         Delta,       Unknown,   Coefficient, APCoefficient,  Ampl,  Radius,  RadMax,   BaseV,   MiscV,  MiscV2, {     Flags1,     Flags2,     Flags3,     Flags4 }, Trigg,   DmgMul,  CboP, RealP,Die, 0, 0 },\n'
 
             fields = effect.field('id')
-            fields += [ '%#.2x' % 0 ] 
+            fields += [ '%#.2x' % 0 ]
             fields += effect.field('id_spell', 'index')
             tmp_fields = []
             if constants.effect_type.get(effect.type):
@@ -2443,19 +2444,19 @@ class SpellDataGenerator(DataGenerator):
             index += 1
 
         s += '};\n\n'
-        
+
         index = 0
         def sortf( a, b ):
             if a.id > b.id:
                 return 1
             elif a.id < b.id:
                 return -1
-            
+
             return 0
-        
+
         powers = list(powers)
         powers.sort(sortf)
-        
+
         s += '#define __%s_SIZE (%d)\n\n' % ( self.format_str( "spellpower" ).upper(), len(powers) )
         s += '// %d effects, wow build level %d\n' % ( len(powers), self._options.build )
         s += 'static struct spellpower_data_t __%s_data[] = {\n' % ( self.format_str( "spellpower" ) )
@@ -2464,7 +2465,7 @@ class SpellDataGenerator(DataGenerator):
             fields = power.field('id', 'id_spell', 'aura_id', 'type_power', 'cost', 'cost_2', 'cost_per_second', 'cost_per_second2' )
 
             s += '  { %s },\n' % (', '.join(fields))
-            
+
         s += '};\n\n'
 
         return s
@@ -2472,7 +2473,7 @@ class SpellDataGenerator(DataGenerator):
 class MasteryAbilityGenerator(DataGenerator):
     def __init__(self, options):
         DataGenerator.__init__(self, options)
-        
+
         self._dbc = [ 'Spell', 'ChrSpecialization' ]
 
         if options.build >= 15589:
@@ -2483,38 +2484,38 @@ class MasteryAbilityGenerator(DataGenerator):
         for k, v in self._chrspecialization_db.iteritems():
             if v.class_id == 0:
                 continue
-            
+
             s = self._spell_db[v.id_mastery]
             if s.id == 0:
                 continue
-            
+
             if self._spellmisc_db[s.id_misc].flags_12694 & 0x20000000:
                 ids[v.id_mastery] = { 'mask_class' : v.class_id, 'category' : v.spec_id, 'spec_name' : v.name }
-            
+
         return ids
 
     def generate(self, ids = None):
         max_ids = 0
         mastery_class = 0
-        keys    = [ 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
+        keys    = [
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
         ]
-        
+
         for k, v in ids.iteritems():
             keys[v['mask_class']][v['category']].append( ( self._spell_db[k].name, k, v['spec_name'] ) )
-        
-        
+
+
         # Find out the maximum size of a key array
         for cls in keys:
             for spec in cls:
@@ -2525,7 +2526,7 @@ class MasteryAbilityGenerator(DataGenerator):
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '',
         )
-        
+
         s = '#define %s_SIZE (%d)\n\n' % (
             data_str.upper(),
             max_ids
@@ -2535,11 +2536,11 @@ class MasteryAbilityGenerator(DataGenerator):
             data_str,
             data_str.upper(),
         )
-        
+
         for cls in xrange(0, len(keys)):
             if SpellDataGenerator._class_names[cls]:
                 s += '  // Class mastery abilities for %s\n' % ( SpellDataGenerator._class_names[cls] )
-                
+
             s += '  {\n'
             for spec in xrange(0, len(keys[cls])):
                 if len(keys[cls][spec]) > 0:
@@ -2553,36 +2554,36 @@ class MasteryAbilityGenerator(DataGenerator):
 
                 s += '    },\n'
             s += '  },\n'
-        
+
         s += '};\n'
-        
+
         return s
-    
+
 class RacialSpellGenerator(SpellDataGenerator):
     def __init__(self, options):
         SpellDataGenerator.__init__(self, options)
-        
+
         SpellDataGenerator._class_categories = []
-        
+
     def filter(self):
         ids = { }
-        
+
         for ability_id, ability_data in self._skilllineability_db.iteritems():
             racial_spell = 0
-            
+
             # Take only racial spells to this
             for j in xrange(0, len(SpellDataGenerator._race_categories)):
                 if ability_data.id_skill in SpellDataGenerator._race_categories[j]:
                     racial_spell = j
                     break
-            
+
             if not racial_spell:
                 continue
-            
+
             spell = self._spell_db[ability_data.id_spell]
             if not self.spell_state(spell):
                 continue
-                
+
             if ids.get(ability_data.id_spell):
                 ids[ability_data.id_spell]['mask_class'] |= ability_data.mask_class
                 ids[ability_data.id_spell]['mask_race'] |= (ability_data.mask_race or (1 << (racial_spell - 1)))
@@ -2590,7 +2591,7 @@ class RacialSpellGenerator(SpellDataGenerator):
                 ids[ability_data.id_spell] = { 'mask_class': ability_data.mask_class, 'mask_race' : ability_data.mask_race or (1 << (racial_spell - 1)) }
 
         return ids
-    
+
     def generate(self, ids = None):
         keys = [ ]
         max_ids = 0
@@ -2605,13 +2606,13 @@ class RacialSpellGenerator(SpellDataGenerator):
             for race_bit in xrange(0, len(DataGenerator._race_names)):
                 if not DataGenerator._race_names[race_bit]:
                     continue
-                
+
                 if v['mask_race'] & (1 << (race_bit - 1)):
                     if v['mask_class']:
                         for class_bit in xrange(0, len(DataGenerator._class_names)):
                             if not DataGenerator._class_names[class_bit]:
                                 continue
-                                
+
                             if v['mask_class'] & (1 << (class_bit - 1)):
                                 spell = self._spell_db[k]
                                 keys[race_bit][class_bit].append( ( spell.name, k ) )
@@ -2619,7 +2620,7 @@ class RacialSpellGenerator(SpellDataGenerator):
                     else:
                         spell = self._spell_db[k]
                         keys[race_bit][0].append( ( spell.name, k ) )
-        
+
         # Figure out tree with most abilities
         for race in xrange(0, len(keys)):
             for cls in xrange(0, len(keys[race])):
@@ -2652,9 +2653,9 @@ class RacialSpellGenerator(SpellDataGenerator):
         for race in xrange(0, len(keys)):
             if DataGenerator._race_names[race]:
                 s += '  // Racial abilities for %s\n' % DataGenerator._race_names[race]
-            
+
             s += '  {\n'
-            
+
             for cls in xrange(0, len(keys[race])):
                 if len(keys[race][cls]) > 0:
                     if cls == 0:
@@ -2665,42 +2666,42 @@ class RacialSpellGenerator(SpellDataGenerator):
                 else:
                     s += '    { %5d, },\n' % 0
                     continue
-                
+
                 for ability in sorted(keys[race][cls], key = lambda i: i[0]):
                     s += '      %5d, // %s\n' % ( ability[1], ability[0] )
-                    
+
                 if len(keys[race][cls]) < max_ids:
                     s += '      %5d,\n' % 0
-                    
+
                 s += '    },\n'
             s += '  },\n'
         s += '};\n'
-        
+
         return s
 
 class SpecializationSpellGenerator(DataGenerator):
     def __init__(self, options):
         self._dbc = [ 'Spell', 'SpecializationSpells', 'ChrSpecialization' ]
-        
+
         DataGenerator.__init__(self, options)
-    
+
     def generate(self, ids = None):
         max_ids = 0
-        keys = [ 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ] 
+        keys = [
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ]
         ]
-        
+
         for ssid, data in self._specializationspells_db.iteritems():
             chrspec = self._chrspecialization_db[data.spec_id]
             if chrspec.id == 0:
@@ -2709,7 +2710,7 @@ class SpecializationSpellGenerator(DataGenerator):
             spell = self._spell_db[data.spell_id]
             if spell.id == 0:
                 continue
-            
+
             keys[chrspec.class_id][chrspec.spec_id].append( ( self._spell_db[data.spell_id].name, data.spell_id, chrspec.name ) )
 
         # Figure out tree with most abilities
@@ -2728,7 +2729,7 @@ class SpecializationSpellGenerator(DataGenerator):
             max_ids
         )
 
-        s += '// Talent tree specialization abilities, wow build %d\n' % self._options.build 
+        s += '// Talent tree specialization abilities, wow build %d\n' % self._options.build
         s += 'static unsigned __%s_data[][MAX_SPECS_PER_CLASS][%s_SIZE] = {\n' % (
             data_str,
             data_str.upper(),
@@ -2757,28 +2758,28 @@ class SpecializationSpellGenerator(DataGenerator):
 class PerkSpellGenerator(DataGenerator):
     def __init__(self, options):
         self._dbc = [ 'ChrSpecialization', 'MinorTalent', 'Spell' ]
-        
+
         DataGenerator.__init__(self, options)
-    
+
     def generate(self, ids = None):
         max_ids = 0
-        keys = [ 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ], 
-            [ [], [], [], [] ] 
+        keys = [
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ],
+            [ [], [], [], [] ]
         ]
 
         spec_map = { }
-        
+
         for ssid, data in self._chrspecialization_db.iteritems():
             spec_map[ssid] = (data.class_id, data.spec_id, data.name)
 
@@ -2806,7 +2807,7 @@ class PerkSpellGenerator(DataGenerator):
             max_ids
         )
 
-        s += '// Perk specialization abilities, wow build %d\n' % self._options.build 
+        s += '// Perk specialization abilities, wow build %d\n' % self._options.build
         s += 'static unsigned __%s_data[][MAX_SPECS_PER_CLASS][%s_SIZE] = {\n' % (
             data_str,
             data_str.upper(),
@@ -2874,7 +2875,7 @@ class SpellListGenerator(SpellDataGenerator):
                 self.debug( "Spell id %u (%s) has no sensible rune cost" % ( spell.id, spell.name ) )
                 return False
 
-        # Filter out any "Rank x" string, as there should no longer be such things. This should filter out 
+        # Filter out any "Rank x" string, as there should no longer be such things. This should filter out
         # some silly left over? things, or things not shown to player anyhow, so should be all good.
         if spell.ofs_rank > 0 and 'Rank ' in spell.rank:
             self.debug( "Spell id %u (%s) has a rank defined" % ( spell.id, spell.name ) )
@@ -2886,15 +2887,15 @@ class SpellListGenerator(SpellDataGenerator):
             if range.max_range > 100.0 or range.max_range_2 > 100.0:
                 self.debug( "Spell id %u (%s) has a high range (%f, %f)" % ( spell.id, spell.name, range.max_range, range.max_range_2 ) )
                 return False
-        
-        # And finally, spells that are forcibly activated/disabled in whitelisting for 
+
+        # And finally, spells that are forcibly activated/disabled in whitelisting for
         for cls in xrange(1, len(SpellDataGenerator._spell_id_list)):
             for spell_tuple in SpellDataGenerator._spell_id_list[cls]:
                 if  spell_tuple[0] == spell.id and len(spell_tuple) == 2 and spell_tuple[1] == 0:
                     return False
                 elif spell_tuple[0] == spell.id and len(spell_tuple) == 3:
                     return spell_tuple[2]
-        
+
         return True
 
     def filter(self):
@@ -2943,7 +2944,7 @@ class SpellListGenerator(SpellDataGenerator):
             if ids.get(ability_data.id_spell):
                 ids[ability_data.id_spell]['mask_class'] |= ability_data.mask_class or mask_class
             else:
-                ids[ability_data.id_spell] = { 
+                ids[ability_data.id_spell] = {
                     'mask_class': ability_data.mask_class or mask_class,
                     'tree'      : [ spell_tree ]
                 }
@@ -2954,21 +2955,21 @@ class SpellListGenerator(SpellDataGenerator):
 
             if chrspec.class_id == 0:
                 continue
-            
+
             spell = self._spell_db[ss_data.spell_id]
             if not spell.id:
                 continue
-            
+
             # Check generic SpellDataGenerator spell state filtering before anything else
             if not self.spell_state(spell):
                 continue
-        
+
             if ids.get(ss_data.spell_id):
                 ids[ss_data.spell_id]['mask_class'] |= DataGenerator._class_masks[chrspec.class_id]
                 if chrspec.spec_id + 1 not in ids[ss_data.spell_id]['tree']:
                     ids[ss_data.spell_id]['tree'].append( chrspec.spec_id + 1 )
             else:
-                ids[ss_data.spell_id] = { 
+                ids[ss_data.spell_id] = {
                     'mask_class': DataGenerator._class_masks[chrspec.class_id],
                     'tree'      : [ chrspec.spec_id + 1 ]
                 }
@@ -2993,8 +2994,8 @@ class SpellListGenerator(SpellDataGenerator):
                     if spell_tuple[1] not in ids[spell_tuple[0]]['tree']:
                         ids[spell_tuple[0]]['tree'].append( spell_tuple[1] )
                 else:
-                    ids[spell_tuple[0]] = { 
-                        'mask_class': self._class_masks[cls], 
+                    ids[spell_tuple[0]] = {
+                        'mask_class': self._class_masks[cls],
                         'tree'      : [ spell_tuple[1] ],
                     }
 
@@ -3008,20 +3009,20 @@ class SpellListGenerator(SpellDataGenerator):
         return ids
 
     def generate(self, ids = None):
-        keys = [ 
+        keys = [
             # General | Spec0 | Spec1 | Spec2 | Spec3 | Pet
-            [ [], [], [], [], [], [] ], 
-            [ [], [], [], [], [], [] ], 
-            [ [], [], [], [], [], [] ], 
-            [ [], [], [], [], [], [] ], 
-            [ [], [], [], [], [], [] ], 
-            [ [], [], [], [], [], [] ], 
-            [ [], [], [], [], [], [] ], 
-            [ [], [], [], [], [], [] ], 
-            [ [], [], [], [], [], [] ], 
-            [ [], [], [], [], [], [] ], 
-            [ [], [], [], [], [], [] ], 
-            [ [], [], [], [], [], [] ], 
+            [ [], [], [], [], [], [] ],
+            [ [], [], [], [], [], [] ],
+            [ [], [], [], [], [], [] ],
+            [ [], [], [], [], [], [] ],
+            [ [], [], [], [], [], [] ],
+            [ [], [], [], [], [], [] ],
+            [ [], [], [], [], [], [] ],
+            [ [], [], [], [], [], [] ],
+            [ [], [], [], [], [], [] ],
+            [ [], [], [], [], [], [] ],
+            [ [], [], [], [], [], [] ],
+            [ [], [], [], [], [], [] ],
         ]
 
         # Sort a suitable list for us
@@ -3080,7 +3081,7 @@ class SpellListGenerator(SpellDataGenerator):
                             if chrspec_data.class_id == i and chrspec_data.spec_id == j - 1:
                                 tree_name = chrspec_data.name
                                 break
-                    
+
                     s += '    // %s tree, %d abilities\n' % ( tree_name, len(keys[i][j]) )
                     break
                 s += '    {\n'
@@ -3154,7 +3155,7 @@ class ClassFlagGenerator(SpellDataGenerator):
             # Assign this spell to bitfield entries
             for i in xrange(1, 5):
                 f = getattr(copts, 'spell_family_flags_%u' % i)
-                
+
                 for bit in xrange(0, 32):
                     if not (f & (1 << bit)):
                         continue
@@ -3177,7 +3178,7 @@ class ClassFlagGenerator(SpellDataGenerator):
                         spell_data[bfield]['effects'].append( effect )
 
         # Build effect data
-        
+
         for bit_data in spell_data:
             for effect in bit_data['effects']:
                 if not effect_data.has_key(effect.id_spell):
@@ -3190,7 +3191,7 @@ class ClassFlagGenerator(SpellDataGenerator):
                     effect_data[effect.id_spell]['effects'][effect.index] = []
 
                 effect_data[effect.id_spell]['effects'][effect.index] += bit_data['spells']
-        
+
         field = 0
         for bit_field in spell_data:
             field += 1
@@ -3203,7 +3204,7 @@ class ClassFlagGenerator(SpellDataGenerator):
             s += '  [%-3d] ===================================================\n' % field
             for spell in sorted(bit_field['spells'], key = lambda s: s.name):
                 s += '       %s (%u)\n' % ( spell.name, spell.id )
-            
+
             for effect in sorted(bit_field['effects'], key = lambda e: e.id_spell):
                 rstr = ''
                 if self._spell_db[effect.id_spell].rank:
@@ -3211,7 +3212,7 @@ class ClassFlagGenerator(SpellDataGenerator):
                 s += '         [%u] {%u} %s%s\n' % ( effect.index, effect.id_spell, self._spell_db[effect.id_spell].name, rstr)
 
             s += '\n'
-        
+
         for spell_id in sorted(effect_data.keys()):
             spell = effect_data[spell_id]['spell']
             s += 'Spell: %s (%u)' % (spell.name, spell.id)
@@ -3229,7 +3230,7 @@ class ClassFlagGenerator(SpellDataGenerator):
                     s += '\n'
                 s += '\n'
             s += '\n'
-        
+
         return s
 
 class GlyphPropertyGenerator(DataGenerator):
@@ -3240,7 +3241,7 @@ class GlyphPropertyGenerator(DataGenerator):
 
     def filter(self):
         return None
-        
+
     def generate(self, ids = None):
         data_str = "%sglyph_property_data%s" % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
@@ -3265,7 +3266,7 @@ class GlyphPropertyGenerator(DataGenerator):
         s += content_str
         s += '  { %5u, %6u }\n' % (0, 0)
         s += '};\n'
-        
+
         return s
 
 class GlyphListGenerator(SpellDataGenerator):
@@ -3300,29 +3301,29 @@ class GlyphListGenerator(SpellDataGenerator):
                     ids[glyph_data.id_spell] = { 'mask_class': ability_data.mask_class, 'glyph_slot' : glyph_data.flags }
 
         return ids
-        
+
     def generate(self, ids = None):
         max_ids = 0
-        keys = [ 
-            [ [], [], [] ], 
-            [ [], [], [] ], 
-            [ [], [], [] ], 
-            [ [], [], [] ], 
-            [ [], [], [] ], 
-            [ [], [], [] ], 
-            [ [], [], [] ], 
-            [ [], [], [] ], 
-            [ [], [], [] ], 
-            [ [], [], [] ], 
-            [ [], [], [] ], 
-            [ [], [], [] ] 
+        keys = [
+            [ [], [], [] ],
+            [ [], [], [] ],
+            [ [], [], [] ],
+            [ [], [], [] ],
+            [ [], [], [] ],
+            [ [], [], [] ],
+            [ [], [], [] ],
+            [ [], [], [] ],
+            [ [], [], [] ],
+            [ [], [], [] ],
+            [ [], [], [] ],
+            [ [], [], [] ]
         ]
 
         glyph_slot_names = [ 'Major', 'Minor', 'Prime' ]
 
         for k, v in ids.iteritems():
             keys[self._class_map[v['mask_class']]][v['glyph_slot']].append( ( self._spell_db[k].name, k ) )
-        
+
         # Figure out tree with most abilities
         for cls in xrange(0, len(keys)):
             for glyph_slot in xrange(0, len(keys[cls])):
@@ -3344,26 +3345,26 @@ class GlyphListGenerator(SpellDataGenerator):
             data_str,
             data_str.upper(),
         )
-        
+
         for cls in xrange(0, len(keys)):
             if DataGenerator._class_names[cls]:
                 s += '  // Glyph spells for %s\n' % DataGenerator._class_names[cls]
             s += '  {\n'
-            
+
             for glyph_slot in xrange(0, len(keys[cls])):
                 if len(keys[cls][glyph_slot]) > 0:
                     s += '    // %s Glyphs (%d spells)\n' % (glyph_slot_names[glyph_slot], len(keys[cls][glyph_slot]))
                 s += '    {\n'
                 for glyph in sorted(keys[cls][glyph_slot], key = lambda i: i[0]):
                     s += '      %6u, // %s\n' % ( glyph[1], glyph[0] )
-                    
+
                 if len(keys[cls][glyph_slot]) < max_ids:
                     s += '      %6u,\n' % 0
-                    
+
                 s += '    },\n'
             s += '  },\n'
         s += '};\n'
-        
+
         return s
 
 class SetBonusListGenerator(DataGenerator):
@@ -3700,7 +3701,7 @@ class ItemSetListGenerator(SpellDataGenerator):
         mask_class_category = 0
         tier_id = 0
 
-        # Item sets, loop through ItemSet.dbc getting class-specific tier sets and add 
+        # Item sets, loop through ItemSet.dbc getting class-specific tier sets and add
         # their bonuses to the spell list
         for itemset_id, itemset_data in self._itemset_db.iteritems():
             mask_class_category = 0
@@ -3724,7 +3725,7 @@ class ItemSetListGenerator(SpellDataGenerator):
                 if spell_id:
                     f = { }
                     self.process_spell(spell_id, f, mask_class_category, 0)
-                    
+
                     if spell_id not in f:
                         continue
 
@@ -3736,7 +3737,7 @@ class ItemSetListGenerator(SpellDataGenerator):
                     }
 
         return ids
-        
+
     def generate(self, ids = None):
         max_ids = 0
         s = ''
@@ -3769,7 +3770,7 @@ class ItemSetListGenerator(SpellDataGenerator):
             data_str.upper(),
             max_ids
         )
-        
+
         s += '#define %s_MAX_TIER (%d)\n\n' % (
             data_str.upper(),
             len(keys[cls]) + 1
@@ -3784,30 +3785,30 @@ class ItemSetListGenerator(SpellDataGenerator):
         s += 'static unsigned __%s_data[][%s_MAX_TIER][%s_SIZE] = {\n' % (
             data_str,
             data_str.upper(),
-            data_str.upper(),            
+            data_str.upper(),
         )
 
         for cls in xrange(0, len(keys)):
             if DataGenerator._class_names[cls]:
                 s += '  // Tier bonuses for %s\n' % DataGenerator._class_names[cls]
             s += '  {\n'
-            
+
             for tier_id in xrange(0, len(keys[cls])):
                 if len(keys[cls][tier_id]) > 0:
                     s += '    // Tier %d bonuses (%d spells)\n' % (self._tier_base + tier_id, len(keys[cls][tier_id]))
                 s += '    {\n'
                 for tier_bonus in sorted(keys[cls][tier_id], key = lambda i: i[0]):
-                    s += '      %5d, // %s - %d Piece Bonus (%s)\n' % ( 
+                    s += '      %5d, // %s - %d Piece Bonus (%s)\n' % (
                         tier_bonus[0],
                         tier_bonus[1],
                         tier_bonus[2],
                         self._spell_db[tier_bonus[0]].name)
-                    
+
                 if len(keys[cls][tier_id]) < max_ids:
                     s += '      %5d,\n' % 0
-                    
+
                 s += '    },\n'
-            s += '    {\n'	
+            s += '    {\n'
             s += '      %5d,\n' % 0
             s += '    },\n'
             s += '  },\n'
@@ -3823,13 +3824,13 @@ class RandomSuffixGenerator(DataGenerator):
 
     def filter(self):
         ids = set()
-        # Let's do some modest filtering here, take only "stat" enchants, 
+        # Let's do some modest filtering here, take only "stat" enchants,
         # and take out the test items as well
         for id, data in self._itemrandomsuffix_db.iteritems():
             # of the Test, of the Paladin Testing
             if id == 46 or id == 48:
                 continue
-            
+
             has_non_stat_enchant = False
             # For now, naively presume type_1 of SpellItemEnchantment will tell us
             # if it's a relevant enchantment for us (ie. a stat one )
@@ -3838,16 +3839,16 @@ class RandomSuffixGenerator(DataGenerator):
                 if not item_ench:
                     self.debug( "No item enchantment found for %s (%s)" % (data.name_sfx, data.name_int) )
                     continue
-                
+
                 if item_ench.type_1 != 5:
                     has_non_stat_enchant = True
                     break
-                
+
             if has_non_stat_enchant:
                 continue
-            
+
             ids.add( id )
-            
+
         return list(ids)
 
     def generate(self, ids = None):
@@ -3863,10 +3864,10 @@ class RandomSuffixGenerator(DataGenerator):
         s += 'static struct random_suffix_data_t __%srand_suffix%s_data[] = {\n' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' )
-        
+
         for id in ids + [ 0 ]:
             rs = self._itemrandomsuffix_db[id]
-            
+
             fields  = rs.field('id', 'suffix')
             fields += [ '{ %s }' % ', '.join(rs.field('id_property_1', 'id_property_2', 'id_property_3', 'id_property_4', 'id_property_5')) ]
             fields += [ '{ %s }' % ', '.join(rs.field('property_pct_1', 'property_pct_2', 'property_pct_3', 'property_pct_4', 'property_pct_5')) ]
@@ -3876,7 +3877,7 @@ class RandomSuffixGenerator(DataGenerator):
             s += '\n'
 
         s += '};\n'
-    
+
         return s
 
 class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
@@ -3897,8 +3898,8 @@ class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
                 continue
 
             spell.add_effect(spell_effect_data)
-        
-        # Map spell ids to spellitemenchantments, as there's no direct 
+
+        # Map spell ids to spellitemenchantments, as there's no direct
         # link between them, and 5.4+, we need/want to scale enchants properly
         for id, data in self._spell_db.iteritems():
             enchant = False
@@ -4013,8 +4014,8 @@ class WeaponDamageDataGenerator(DataGenerator):
         s = ''
         for dbname in self._dbc:
             db = getattr(self, '_%s_db' % dbname.lower() )
-            
-            s += '// Item damage data from %s.dbc, ilevels 1-%d, wow build %d\n' % ( 
+
+            s += '// Item damage data from %s.dbc, ilevels 1-%d, wow build %d\n' % (
                 dbname, self._options.scale_ilevel, self._options.build )
             s += 'static struct item_scale_data_t __%s%s%s_data[] = {\n' % (
                 self._options.prefix and ('%s_' % self._options.prefix) or '',
@@ -4049,9 +4050,9 @@ class ArmorValueDataGenerator(DataGenerator):
         for dbname in self._dbc:
             db = getattr(self, '_%s_db' % dbname.lower() )
 
-            s += '// Item armor values data from %s.dbc, ilevels 1-%d, wow build %d\n' % ( 
+            s += '// Item armor values data from %s.dbc, ilevels 1-%d, wow build %d\n' % (
                 dbname, self._options.scale_ilevel, self._options.build )
-            
+
             s += 'static struct %s __%s%s%s_data[] = {\n' % (
                 (dbname != 'ItemArmorTotal') and 'item_scale_data_t' or 'item_armor_type_data_t',
                 self._options.prefix and ('%s_' % self._options.prefix) or '',
@@ -4087,7 +4088,7 @@ class ArmorSlotDataGenerator(DataGenerator):
 
     def generate(self, ids = None):
         s = '// Inventory type based armor multipliers, wow build %d\n' % ( self._options.build )
-        
+
         s += 'static struct item_armor_type_data_t __%sarmor_slot%s_data[] = {\n' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' )
@@ -4113,14 +4114,14 @@ class GemPropertyDataGenerator(DataGenerator):
         for id, data in self._gemproperties_db.iteritems():
             if not data.color or not data.id_enchant:
                 continue
-                
+
             ids.append(id)
         return ids
 
     def generate(self, ids = None):
         ids.sort()
         s = '// Gem properties, wow build %d\n' % ( self._options.build )
-        
+
         s += 'static struct gem_property_data_t __%sgem_property%s_data[] = {\n' % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' )
@@ -4144,7 +4145,7 @@ class ItemBonusDataGenerator(DataGenerator):
 
     def generate(self, ids):
         # Bonus trees
-        
+
         data_str = "%sitem_bonus_tree%s" % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '',
@@ -4163,7 +4164,7 @@ class ItemBonusDataGenerator(DataGenerator):
             s += '  { %s },\n' % (', '.join(fields))
 
         s += '};\n\n'
-        
+
         # Bonus definitions
 
         data_str = "%sitem_bonus%s" % (
@@ -4182,7 +4183,7 @@ class ItemBonusDataGenerator(DataGenerator):
             s += '  { %s },\n' % (', '.join(fields))
 
         s += '};\n\n'
-        
+
         # Item bonuses (unsure as of yet if we need this, depends on how
         # Blizzard exports the bonus id to third parties)
         data_str = "%sitem_bonus_map%s" % (
@@ -4201,5 +4202,5 @@ class ItemBonusDataGenerator(DataGenerator):
             s += '  { %s },\n' % (', '.join(fields))
 
         s += '};\n\n'
-        
+
         return s
