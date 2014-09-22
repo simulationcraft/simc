@@ -67,7 +67,7 @@ void SC_MainWindow::updateSimProgress()
 void SC_MainWindow::loadHistory()
 {
   QSettings settings;
-  QVariant size = settings.value( "gui/size");
+  QVariant size = settings.value( "gui/size" );
   QRect savedApplicationGeometry = geometry();
   if ( size.isValid() )
   {
@@ -96,11 +96,11 @@ void SC_MainWindow::loadHistory()
   http::cache_load( cache_file_str.c_str() );
 
 
-  QVariant simulateHistory = settings.value( "user_data/simulateHistory");
+  QVariant simulateHistory = settings.value( "user_data/simulateHistory" );
   if ( simulateHistory.isValid() )
   {
     QList<QVariant> a = simulateHistory.toList();
-    for( int i = 0; i < a.size(); ++i )
+    for ( int i = 0; i < a.size(); ++i )
     {
       const QVariant& entry = a.at( i );
       if ( entry.isValid() )
@@ -115,11 +115,11 @@ void SC_MainWindow::loadHistory()
     }
   }
 
-  QVariant history = settings.value( "user_data/historyList");
+  QVariant history = settings.value( "user_data/historyList" );
   if ( history.isValid() )
   {
     QList<QVariant> a = history.toList();
-    for( int i = 0; i < a.size(); ++i )
+    for ( int i = 0; i < a.size(); ++i )
     {
       const QVariant& entry = a.at( i );
       if ( entry.isValid() )
@@ -143,7 +143,7 @@ void SC_MainWindow::loadHistory()
 QPoint SC_MainWindow::getMiddleOfScreen( int screen )
 {
   QRect currentScreenGeometry = desktopWidget.availableGeometry( screen );
-  int currentScreenGeometryMiddleX = currentScreenGeometry.x() + ( currentScreenGeometry.width()  / 2 );
+  int currentScreenGeometryMiddleX = currentScreenGeometry.x() + ( currentScreenGeometry.width() / 2 );
   int currentScreenGeometryMiddleY = currentScreenGeometry.y() + ( currentScreenGeometry.height() / 2 );
 
   return QPoint( currentScreenGeometryMiddleX, currentScreenGeometryMiddleY );
@@ -189,7 +189,7 @@ void SC_MainWindow::applyAdequateApplicationGeometry( QRect preferredGeometry )
   // get the smallest available geometry that would fit on any screen
   QRect smallestScreenGeometry = getSmallestScreenGeometry();
   // Does the preferred geometry fit on screen?
-  if ( smallestScreenGeometry.width()  < preferredGeometry.width() ||
+  if ( smallestScreenGeometry.width() < preferredGeometry.width() ||
        smallestScreenGeometry.height() < preferredGeometry.height() )
   {
     // preferred geometry is too big to fit on screen
@@ -198,8 +198,8 @@ void SC_MainWindow::applyAdequateApplicationGeometry( QRect preferredGeometry )
     int absoluteMinimumApplicationHeight = 100;
     int widthOffset = 100;
     int heightOffset = 100;
-    int newMinimumWidth  = qMax< int >( smallestScreenGeometry.width() - widthOffset,
-                                        absoluteMinimumApplicationWidth );
+    int newMinimumWidth = qMax< int >( smallestScreenGeometry.width() - widthOffset,
+                                       absoluteMinimumApplicationWidth );
     int newMinimumHeight = qMax< int >( smallestScreenGeometry.height() - heightOffset,
                                         absoluteMinimumApplicationHeight );
     setMinimumSize( newMinimumWidth, newMinimumHeight );
@@ -207,7 +207,7 @@ void SC_MainWindow::applyAdequateApplicationGeometry( QRect preferredGeometry )
     QRect geometryThatWorks( currentScreenGlobalTopLeftPoint.x(), currentScreenGlobalTopLeftPoint.y(),
                              minimumSize().width(), minimumSize().height() );
     // make sure that the new geometry fits on the current screen, if not, move it
-    if ( ! currentScreenGeometry.contains( geometryThatWorks ) )
+    if ( !currentScreenGeometry.contains( geometryThatWorks ) )
     {
       QPoint middleOfCurrentScreen = getMiddleOfScreen( screen );
       // adjust the point so it points to new top left of the minimum size
@@ -225,12 +225,12 @@ void SC_MainWindow::applyAdequateApplicationGeometry( QRect preferredGeometry )
     int absoluteMinimumApplicationHeight = qMin< int >( minimumHeight(), 550 );
     int widthOffset = 100;
     int heightOffset = 100;
-    int newMinimumWidth  = qMin< int >( smallestScreenGeometry.width() - widthOffset,
-                                        absoluteMinimumApplicationWidth );
+    int newMinimumWidth = qMin< int >( smallestScreenGeometry.width() - widthOffset,
+                                       absoluteMinimumApplicationWidth );
     int newMinimumHeight = qMin< int >( smallestScreenGeometry.height() - heightOffset,
                                         absoluteMinimumApplicationHeight );
     setMinimumSize( newMinimumWidth, newMinimumHeight );
-    if ( ! currentScreenGeometry.contains( preferredGeometry ) )
+    if ( !currentScreenGeometry.contains( preferredGeometry ) )
     {
       // the preferred geometry is not on the screen, fix that
       QPoint middleOfCurrentScreen = getMiddleOfScreen( screen );
@@ -281,7 +281,7 @@ void SC_MainWindow::saveHistory()
     QStringList entry;
     entry << simulateTab -> tabText( i );
     entry << tab -> toPlainText();
-    simulateHist.append( QVariant(entry) );
+    simulateHist.append( QVariant( entry ) );
   }
   settings.setValue( "simulateHistory", simulateHist );
   // end simulate tab history
@@ -305,21 +305,21 @@ void SC_MainWindow::saveHistory()
 
 SC_MainWindow::SC_MainWindow( QWidget *parent )
   : QWidget( parent ),
-    visibleWebView( 0 ),
-    cmdLine( nullptr ), // segfault in updateWebView() if not null
-    recentlyClosedTabModel( nullptr ),
-    sim( 0 ),
-    import_sim( 0 ),
-    paperdoll_sim( 0 ),
-    simPhase( "%p%" ),
-    importSimPhase( "%p%" ),
-    simProgress( 100 ),
-    importSimProgress( 100 ),
-    simResults( 0 ),
-    AppDataDir( "." ),
-    ResultsDestDir( "." ),
-    TmpDir( "." ),
-    consecutiveSimulationsRun( 0 )
+  visibleWebView( 0 ),
+  cmdLine( nullptr ), // segfault in updateWebView() if not null
+  recentlyClosedTabModel( nullptr ),
+  sim( 0 ),
+  import_sim( 0 ),
+  paperdoll_sim( 0 ),
+  simPhase( "%p%" ),
+  importSimPhase( "%p%" ),
+  simProgress( 100 ),
+  importSimProgress( 100 ),
+  simResults( 0 ),
+  AppDataDir( "." ),
+  ResultsDestDir( "." ),
+  TmpDir( "." ),
+  consecutiveSimulationsRun( 0 )
 {
   setWindowTitle( QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion() );
   setAttribute( Qt::WA_AlwaysShowToolTips );
@@ -338,7 +338,7 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
 
 #if QT_VERSION_5
   QStringList s = QStandardPaths::standardLocations( QStandardPaths::CacheLocation );
-  if ( ! s.empty() )
+  if ( !s.empty() )
   {
     QDir a( s.first() );
     if ( a.isReadable() )
@@ -347,7 +347,7 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   else
   {
     s = QStandardPaths::standardLocations( QStandardPaths::TempLocation ); // Fallback
-    if ( ! s.empty() )
+    if ( !s.empty() )
     {
       QDir a( s.first() );
       if ( a.isReadable() )
@@ -357,7 +357,7 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
 
   // Set ResultsDestDir
   s = QStandardPaths::standardLocations( QStandardPaths::DocumentsLocation );
-  if ( ! s.empty() )
+  if ( !s.empty() )
   {
     QDir a( s.first() );
     if ( a.isReadable() )
@@ -366,7 +366,7 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   else
   {
     s = QStandardPaths::standardLocations( QStandardPaths::HomeLocation ); // Fallback, just use home path
-    if ( ! s.empty() )
+    if ( !s.empty() )
     {
       QDir a( s.first() );
       if ( a.isReadable() )
@@ -376,15 +376,15 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
 #endif
 
 #ifdef SC_TO_INSTALL // GUI will be installed, use default AppData location for files created
-  #if QT_VERSION_5
-    QStringList z = QStandardPaths::standardLocations( QStandardPaths::DataLocation );
-    if ( ! z.empty() )
-    {
-      QDir a( z.first() );
-      if ( a.isReadable() )
-        AppDataDir = z.first();
-    }
-  #endif
+#if QT_VERSION_5
+  QStringList z = QStandardPaths::standardLocations( QStandardPaths::DataLocation );
+  if ( ! z.empty() )
+  {
+    QDir a( z.first() );
+    if ( a.isReadable() )
+      AppDataDir = z.first();
+  }
+#endif
 #endif
 #if defined( SC_LINUX_PACKAGING )
   QString path_prefix;
@@ -403,8 +403,8 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   QDir::root().mkpath( AppDataDir );
 #endif
 
-  logFileText =  AppDataDir + "/" + "log.txt";
-  resultsFileText =  AppDataDir + "/" + "results.html";
+  logFileText = AppDataDir + "/" + "log.txt";
+  resultsFileText = AppDataDir + "/" + "results.html";
 
   mainTab = new SC_MainTab( this );
   createWelcomeTab();
@@ -436,7 +436,7 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   connect( timer, SIGNAL( timeout() ), this, SLOT( updateSimProgress() ) );
 
   importThread = new ImportThread( this );
-  connect(   importThread, SIGNAL( finished() ), this, SLOT(  importFinished() ) );
+  connect( importThread, SIGNAL( finished() ), this, SLOT( importFinished() ) );
 
   simulateThread = new SimulateThread( this );
   connect( simulateThread, SIGNAL( simulationFinished( sim_t* ) ), this, SLOT( simulateFinished( sim_t* ) ) );
@@ -500,8 +500,8 @@ void SC_MainWindow::createOptionsTab()
   connect( optionsTab, SIGNAL( armory_region_changed( const QString& ) ), this, SLOT( armoryRegionChanged( const QString& ) ) );
 }
 
-SC_WelcomeTabWidget::SC_WelcomeTabWidget( SC_MainWindow* parent ) :
-  QWebView( parent )
+SC_WelcomeTabWidget::SC_WelcomeTabWidget( SC_MainWindow* parent ):
+QWebView( parent )
 {
   QString welcomeFile = QDir::currentPath() + "/Welcome.html";
 
@@ -545,9 +545,9 @@ void SC_MainWindow::createImportTab()
   importTab -> createAutomationTab();
 
   connect( historyList, SIGNAL( itemDoubleClicked( QListWidgetItem* ) ), this, SLOT( historyDoubleClicked( QListWidgetItem* ) ) );
-  connect( importTab,   SIGNAL( currentChanged( int ) ),                 this, SLOT( importTabChanged( int ) ) );
+  connect( importTab, SIGNAL( currentChanged( int ) ), this, SLOT( importTabChanged( int ) ) );
   connect( recentlyClosedTabImport, SIGNAL( restoreTab( QWidget*, const QString&, const QString&, const QIcon& ) ),
-           this,                    SLOT  ( simulateTabRestored( QWidget*, const QString&, const QString&, const QIcon& ) ) );
+           this, SLOT( simulateTabRestored( QWidget*, const QString&, const QString&, const QIcon& ) ) );
 
   // Commenting out until it is more fleshed out.
   // createCustomTab();
@@ -564,25 +564,25 @@ void SC_MainWindow::createBestInSlotTab()
 
   const int TIER_MAX = 2;
 #if SC_BETA == 1
-  const char* tierNames[] = { "" }; // For the beta include ALL profiles
+  const char* tierNames[] = { "T16", "T17" };
 #else
-  const char* tierNames[] = { "T15", "T16" };
+  const char* tierNames[] = { "T16", "T17" };
 #endif
-  QTreeWidgetItem* playerItems[ PLAYER_MAX ];
+  QTreeWidgetItem* playerItems[PLAYER_MAX];
   range::fill( playerItems, 0 );
-  QTreeWidgetItem* rootItems[ PLAYER_MAX ][ TIER_MAX ];
+  QTreeWidgetItem* rootItems[PLAYER_MAX][TIER_MAX];
   for ( player_e i = DEATH_KNIGHT; i <= WARRIOR; i++ )
   {
-    range::fill( rootItems[ i ], 0 );
+    range::fill( rootItems[i], 0 );
   }
 
-// Scan all subfolders in /profiles/ and create a list
+  // Scan all subfolders in /profiles/ and create a list
 #if ! defined( Q_WS_MAC ) && ! defined( Q_OS_MAC )
-  #if defined( SC_LINUX_PACKAGING )
-    QDir tdir( SC_LINUX_PACKAGING "/profiles" );
-  #else
-    QDir tdir( "profiles" );
-  #endif
+#if defined( SC_LINUX_PACKAGING )
+  QDir tdir( SC_LINUX_PACKAGING "/profiles" );
+#else
+  QDir tdir( "profiles" );
+#endif
 #else
   CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "profiles" ), 0, 0 );
   QDir tdir;
@@ -604,18 +604,18 @@ void SC_MainWindow::createBestInSlotTab()
   for ( int i = 0; i < tnumProfiles; i++ )
   {
 #if ! defined( Q_WS_MAC ) && ! defined( Q_OS_MAC )
-  #if defined( SC_LINUX_PACKAGING )
+#if defined( SC_LINUX_PACKAGING )
     QDir dir( SC_LINUX_PACKAGING "/profiles/" + tprofileList[ i ] );
-  #else
-    QDir dir = QString( "profiles/" + tprofileList[ i ] );
-  #endif
+#else
+    QDir dir = QString( "profiles/" + tprofileList[i] );
+#endif
 #else
     CFURLRef fileRef = CFBundleCopyResourceURL( CFBundleGetMainBundle(),
-                       CFStringCreateWithCString( NULL,
-                           tprofileList[ i ].toUtf8().constData(),
-                           kCFStringEncodingUTF8 ),
-                       0,
-                       CFSTR( "profiles" ) );
+                                                CFStringCreateWithCString( NULL,
+                                                tprofileList[ i ].toUtf8().constData(),
+                                                kCFStringEncodingUTF8 ),
+                                                0,
+                                                CFSTR( "profiles" ) );
     QDir dir;
     if ( fileRef )
     {
@@ -636,7 +636,7 @@ void SC_MainWindow::createBestInSlotTab()
     {
       QString profile = dir.absolutePath() + "/";
       profile = QDir::toNativeSeparators( profile );
-      profile += profileList[ i ];
+      profile += profileList[i];
 
       player_e player = PLAYER_MAX;
 
@@ -661,28 +661,28 @@ void SC_MainWindow::createBestInSlotTab()
 
       int tier = TIER_MAX;
       for ( int j = 0; j < TIER_MAX && tier == TIER_MAX; j++ )
-        if ( profile.contains( tierNames[ j ] ) )
+        if ( profile.contains( tierNames[j] ) )
           tier = j;
 
       if ( player != PLAYER_MAX && tier != TIER_MAX )
       {
-        if ( !rootItems[ player ][ tier ] )
+        if ( !rootItems[player][tier] )
         {
-          if ( !playerItems[ player ] )
+          if ( !playerItems[player] )
           {
             QTreeWidgetItem* top = new QTreeWidgetItem( QStringList( util::inverse_tokenize( util::player_type_string( player ) ).c_str() ) );
-            playerItems[ player ] = top;
+            playerItems[player] = top;
           }
 
-          if ( !rootItems[ player ][ tier ] )
+          if ( !rootItems[player][tier] )
           {
-            QTreeWidgetItem* tieritem = new QTreeWidgetItem( QStringList( tierNames[ tier ] ) );
-            playerItems[ player ] -> addChild( rootItems[ player ][ tier ] =  tieritem );
+            QTreeWidgetItem* tieritem = new QTreeWidgetItem( QStringList( tierNames[tier] ) );
+            playerItems[player] -> addChild( rootItems[player][tier] = tieritem );
           }
         }
 
-        QTreeWidgetItem* item = new QTreeWidgetItem( QStringList() << profileList[ i ] << profile );
-        rootItems[ player ][ tier ] -> addChild( item );
+        QTreeWidgetItem* item = new QTreeWidgetItem( QStringList() << profileList[i] << profile );
+        rootItems[player][tier] -> addChild( item );
       }
     }
   }
@@ -690,15 +690,15 @@ void SC_MainWindow::createBestInSlotTab()
   // Register all the added profiles ( done here so they show up alphabetically )
   for ( player_e i = DEATH_KNIGHT; i <= WARRIOR; i++ )
   {
-    if ( playerItems[ i ] )
+    if ( playerItems[i] )
     {
-      bisTree -> addTopLevelItem( playerItems[ i ] );
+      bisTree -> addTopLevelItem( playerItems[i] );
       for ( int j = 0; j < TIER_MAX; j++ )
       {
-        if ( rootItems[ i ][ j ] )
+        if ( rootItems[i][j] )
         {
-          rootItems[ i ][ j ] -> setExpanded( true ); // Expand the subclass Tier bullets by default
-          rootItems[ i ][ j ] -> sortChildren( 0, Qt::AscendingOrder );
+          rootItems[i][j] -> setExpanded( true ); // Expand the subclass Tier bullets by default
+          rootItems[i][j] -> sortChildren( 0, Qt::AscendingOrder );
         }
       }
     }
@@ -712,10 +712,10 @@ void SC_MainWindow::createBestInSlotTab()
 
   QFormLayout* bisIntroductionFormLayout = new QFormLayout();
   QLabel* bisText = new QLabel( tr( "These sample profiles are attempts at creating the best possible gear, talent, glyph and action priority list setups to achieve the highest possible average damage per second.\n"
-                                    "The profiles are created with a lot of help from the theorycrafting community.\n"
-                                    "They are only as good as the thorough testing done on them, and the feedback and critic we receive from the community, including yourself.\n"
-                                    "If you have ideas for improvements, try to simulate them. If they result in increased dps, please open a ticket on our Issue tracker.\n"
-                                    "The more people help improve BiS profiles, the better will they reach their goal of representing the highest possible dps." ) );
+    "The profiles are created with a lot of help from the theorycrafting community.\n"
+    "They are only as good as the thorough testing done on them, and the feedback and critic we receive from the community, including yourself.\n"
+    "If you have ideas for improvements, try to simulate them. If they result in increased dps, please open a ticket on our Issue tracker.\n"
+    "The more people help improve BiS profiles, the better will they reach their goal of representing the highest possible dps." ) );
   bisIntroductionFormLayout -> addRow( bisText );
 
   QWidget* bisIntroduction = new QWidget();
@@ -767,11 +767,7 @@ void SC_MainWindow::createCustomTab()
 void SC_MainWindow::createSimulateTab()
 {
   simulateTab = new SC_SimulateTab( mainTab, recentlyClosedTabModel );
-
-
-
   mainTab -> addTab( simulateTab, tr( "Simulate" ) );
-
 }
 
 void SC_MainWindow::createOverridesTab()
@@ -782,14 +778,14 @@ void SC_MainWindow::createOverridesTab()
   // Set a bigger font size, it's not like people put much into the override tab
   QFont override_font = QFont();
   override_font.setPixelSize( 24 );
-  overridesText -> setFont ( override_font );
+  overridesText -> setFont( override_font );
 
   mainTab -> addTab( overridesText, tr( "Overrides" ) );
 }
 
 void SC_MainWindow::createLogTab()
 {
-  logText = new SC_TextEdit(  this, false );
+  logText = new SC_TextEdit( this, false );
   //logText -> document() -> setDefaultFont( QFont( "fixed" ) );
   logText -> setReadOnly( true );
   logText -> setPlainText( "Look here for error messages and simple text-only reporting.\n" );
@@ -805,10 +801,9 @@ void SC_MainWindow::createHelpTab()
 
 void SC_MainWindow::createResultsTab()
 {
-
   resultsTab = new SC_ResultTab( this );
   resultsTab -> setTabsClosable( true );
-  connect( resultsTab, SIGNAL( currentChanged( int ) ),    this, SLOT( resultsTabChanged( int ) )      );
+  connect( resultsTab, SIGNAL( currentChanged( int ) ), this, SLOT( resultsTabChanged( int ) ) );
   connect( resultsTab, SIGNAL( tabCloseRequested( int ) ), this, SLOT( resultsTabCloseRequest( int ) ) );
   mainTab -> addTab( resultsTab, tr( "Results" ) );
 }
@@ -827,9 +822,9 @@ void SC_MainWindow::createToolTips()
 void SC_MainWindow::createTabShortcuts()
 {
   Qt::Key keys[] = { Qt::Key_1, Qt::Key_2, Qt::Key_3, Qt::Key_4, Qt::Key_5, Qt::Key_6, Qt::Key_7, Qt::Key_8, Qt::Key_9, Qt::Key_unknown };
-  for( int i = 0; keys[i] != Qt::Key_unknown; i++ )
+  for ( int i = 0; keys[i] != Qt::Key_unknown; i++ )
   {
-// OS X needs to set the sequence to Cmd-<number>, since Alt is used for normal keys in certain cases
+    // OS X needs to set the sequence to Cmd-<number>, since Alt is used for normal keys in certain cases
 #if ! defined( Q_WS_MAC ) && ! defined( Q_OS_MAC )
     QShortcut* shortcut = new QShortcut( QKeySequence( Qt::ALT + keys[i] ), this );
 #else
@@ -856,7 +851,6 @@ void SC_MainWindow::createPaperdoll()
 
   paperdollMainLayout -> addWidget( items );
   paperdollMainLayout -> addWidget( paperdoll );
-
 
   mainTab -> addTab( paperdollTab, "Paperdoll" );
 }
@@ -918,7 +912,7 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
     bool logFileOpenedSuccessfully = false;
     QFile logFile( QString::fromStdString( output_file_str ) );
     if ( sim_control_was_not_zero && // sim -> setup() was not called, output file was not opened
-         logFile.open( QIODevice::ReadWrite| QIODevice::Text ) ) // ReadWrite failure indicates permission issues
+         logFile.open( QIODevice::ReadWrite | QIODevice::Text ) ) // ReadWrite failure indicates permission issues
     {
       contents = QString::fromUtf8( logFile.readAll() );
       logFile.close();
@@ -927,12 +921,12 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
 
     logText -> clear();
 
-    if ( ! simulateThread -> success )
+    if ( !simulateThread -> success )
       logText -> setformat_error();
 
-    if ( ! logFileOpenedSuccessfully )
+    if ( !logFileOpenedSuccessfully )
     {
-      for( std::vector< std::string >::iterator it = errorListCopy.begin(); it != errorListCopy.end(); ++it )
+      for ( std::vector< std::string >::iterator it = errorListCopy.begin(); it != errorListCopy.end(); ++it )
       {
         contents.append( QString::fromStdString( *it + "\n" ) );
       }
@@ -943,24 +937,24 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
       std::string windowsPermissionRecommendation;
       std::string suggestions;
 #ifdef SC_WINDOWS
-      if ( QSysInfo::WindowsVersion >= QSysInfo::WV_VISTA  )
+      if ( QSysInfo::WindowsVersion >= QSysInfo::WV_VISTA )
       {
         windowsPermissionRecommendation = "Try running the program with administrative privileges by right clicking and selecting \"Run as administrator\"\n Or even installing the program to a different directory may help resolve these permission issues.";
       }
 #endif
-      for( std::list< std::string >::iterator it = files.begin(); it != files.end(); ++it )
+      for ( std::list< std::string >::iterator it = files.begin(); it != files.end(); ++it )
       {
-        if ( ! (*it).empty() )
+        if ( !( *it ).empty() )
         {
           QFileInfo file( QString::fromStdString( *it ) );
           if ( file.isDir() )
           {
             filesThatAreDirectories.push_back( file.absoluteFilePath() );
           }
-          else if ( ! file.isWritable() )
+          else if ( !file.isWritable() )
           {
             QFileInfo filesDirectory( file.absolutePath() );
-            if ( ! filesDirectory.isWritable() )
+            if ( !filesDirectory.isWritable() )
               directoriesWithPermissionIssues.push_back( file.absolutePath() );
             filesWithPermissionIssues.push_back( file.absoluteFilePath() );
           }
@@ -971,25 +965,25 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
       {
         suggestions.append( "The following files are directories, SimulationCraft uses these as files, please rename them\n" );
       }
-      for( std::list< QString >::iterator it = filesThatAreDirectories.begin(); it != filesThatAreDirectories.end(); ++it )
+      for ( std::list< QString >::iterator it = filesThatAreDirectories.begin(); it != filesThatAreDirectories.end(); ++it )
       {
-        suggestions.append( "   " + (*it).toStdString() + "\n" );
+        suggestions.append( "   " + ( *it ).toStdString() + "\n" );
       }
       if ( filesWithPermissionIssues.size() != 0 )
       {
         suggestions.append( "The following files have permission issues and are unwritable\n SimulationCraft needs to write to these files to simulate\n" );
       }
-      for( std::list< QString >::iterator it = filesWithPermissionIssues.begin(); it != filesWithPermissionIssues.end(); ++it )
+      for ( std::list< QString >::iterator it = filesWithPermissionIssues.begin(); it != filesWithPermissionIssues.end(); ++it )
       {
-        suggestions.append( "   " + (*it).toStdString() + "\n" );
+        suggestions.append( "   " + ( *it ).toStdString() + "\n" );
       }
       if ( directoriesWithPermissionIssues.size() != 0 )
       {
         suggestions.append( "The following directories have permission issues and are unwritable\n meaning SimulationCraft cannot create files in these directories\n" );
       }
-      for( std::list< QString >::iterator it = directoriesWithPermissionIssues.begin(); it != directoriesWithPermissionIssues.end(); ++it )
+      for ( std::list< QString >::iterator it = directoriesWithPermissionIssues.begin(); it != directoriesWithPermissionIssues.end(); ++it )
       {
-        suggestions.append( "   " + (*it).toStdString() + "\n" );
+        suggestions.append( "   " + ( *it ).toStdString() + "\n" );
       }
       if ( suggestions.length() != 0 )
       {
@@ -1065,7 +1059,7 @@ bool SC_MainWindow::importRunning()
 
 void SC_MainWindow::itemWasEnqueuedTryToSim()
 {
-  if ( ! simRunning() )
+  if ( !simRunning() )
   {
     startSim();
   }
@@ -1090,11 +1084,11 @@ void SC_MainWindow::importFinished()
     label += QString::fromUtf8( importThread -> player -> origin_str.c_str() );
 
     bool found = false;
-    for ( int i = 0; i < historyList -> count() && ! found; i++ )
+    for ( int i = 0; i < historyList -> count() && !found; i++ )
       if ( historyList -> item( i ) -> text() == label )
         found = true;
 
-    if ( ! found )
+    if ( !found )
     {
       QListWidgetItem* item = new QListWidgetItem( label );
       //item -> setFont( QFont( "fixed" ) );
@@ -1117,7 +1111,7 @@ void SC_MainWindow::importFinished()
     simulateTab -> current_Text() -> resetformat(); // Reset font
   }
 
-  if ( ! simRunning() )
+  if ( !simRunning() )
   {
     timer -> stop();
   }
@@ -1293,7 +1287,7 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
   simProgress = 100;
   cmdLine -> setSimulatingProgress( simProgress, simPhase.c_str(), tr( "Finished!" ) );
   bool sim_was_debug = sim -> debug;
-  if ( ! simulateThread -> success )
+  if ( !simulateThread -> success )
   {
     logText -> setformat_error();
     logText -> append( "Simulation failed!" );
@@ -1311,11 +1305,11 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
       QList< Qt::KeyboardModifier > s;
       s.push_back( Qt::ControlModifier );
       QList< Qt::KeyboardModifier > emptyList;
-      if ( resultsTab -> count () == 1 )
+      if ( resultsTab -> count() == 1 )
       {
-          SC_SingleResultTab* resultsEntry_one = static_cast < SC_SingleResultTab* >( resultsTab -> widget ( 0 ) );
-          resultsEntry_one -> addIgnoreKeyPressEvent( Qt::Key_Tab, s );
-          resultsEntry_one -> addIgnoreKeyPressEvent( Qt::Key_Backtab, emptyList );
+        SC_SingleResultTab* resultsEntry_one = static_cast <SC_SingleResultTab*>( resultsTab -> widget( 0 ) );
+        resultsEntry_one -> addIgnoreKeyPressEvent( Qt::Key_Tab, s );
+        resultsEntry_one -> addIgnoreKeyPressEvent( Qt::Key_Backtab, emptyList );
       }
       resultsEntry -> addIgnoreKeyPressEvent( Qt::Key_Tab, s );
       resultsEntry -> addIgnoreKeyPressEvent( Qt::Key_Backtab, emptyList );
@@ -1383,12 +1377,12 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
     }
 
   }
-  if ( simulationQueue.isEmpty() && ! importRunning() )
+  if ( simulationQueue.isEmpty() && !importRunning() )
     timer -> stop();
 
-  deleteSim( sim, simulateThread -> success == true ? 0:logText ); SC_MainWindow::sim = 0;
+  deleteSim( sim, simulateThread -> success == true ? 0 : logText ); SC_MainWindow::sim = 0;
 
-  if ( ! simulationQueue.isEmpty() )
+  if ( !simulationQueue.isEmpty() )
   {
     startSim(); // Continue simming what is left in the queue
   }
@@ -1462,14 +1456,14 @@ void SC_MainWindow::cmdLineTextEdited( const QString& s )
 {
   switch ( mainTab -> currentTab() )
   {
-    case TAB_WELCOME:   cmdLineText = s; break;
-    case TAB_OPTIONS:   cmdLineText = s; break;
-    case TAB_SIMULATE:  cmdLineText = s; break;
-    case TAB_OVERRIDES: cmdLineText = s; break;
-    case TAB_HELP:      cmdLineText = s; break;
-    case TAB_LOG:       logFileText = s; break;
-    case TAB_RESULTS:   resultsFileText = s; break;
-    default:  break;
+  case TAB_WELCOME:   cmdLineText = s; break;
+  case TAB_OPTIONS:   cmdLineText = s; break;
+  case TAB_SIMULATE:  cmdLineText = s; break;
+  case TAB_OVERRIDES: cmdLineText = s; break;
+  case TAB_HELP:      cmdLineText = s; break;
+  case TAB_LOG:       logFileText = s; break;
+  case TAB_RESULTS:   resultsFileText = s; break;
+  default:  break;
   }
 }
 
@@ -1486,12 +1480,12 @@ void SC_MainWindow::cmdLineReturnPressed()
     }
     else
     {
-      if ( ! sim ) cmdLine -> mainButtonClicked();
+      if ( !sim ) cmdLine -> mainButtonClicked();
     }
   }
   else
   {
-    if ( ! sim ) cmdLine -> mainButtonClicked();
+    if ( !sim ) cmdLine -> mainButtonClicked();
   }
 }
 
@@ -1499,27 +1493,27 @@ void SC_MainWindow::mainButtonClicked( bool /* checked */ )
 {
   switch ( mainTab -> currentTab() )
   {
-    case TAB_WELCOME:   enqueueSim(); break;
-    case TAB_OPTIONS:   enqueueSim(); break;
-    case TAB_SIMULATE:  enqueueSim(); break;
-    case TAB_OVERRIDES: enqueueSim(); break;
-    case TAB_HELP:      enqueueSim(); break;
-    case TAB_IMPORT:
-      switch ( importTab -> currentTab() )
-      {
-        case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine -> commandLineText() ); break;
-        case TAB_RECENT:     recentlyClosedTabImport -> restoreCurrentlySelected(); break;
-        default: break;
-      }
-      break;
-    case TAB_LOG: saveLog(); break;
-    case TAB_RESULTS: saveResults(); break;
-    case TAB_SPELLQUERY: spellQueryTab -> run_spell_query();
+  case TAB_WELCOME:   enqueueSim(); break;
+  case TAB_OPTIONS:   enqueueSim(); break;
+  case TAB_SIMULATE:  enqueueSim(); break;
+  case TAB_OVERRIDES: enqueueSim(); break;
+  case TAB_HELP:      enqueueSim(); break;
+  case TAB_IMPORT:
+    switch ( importTab -> currentTab() )
+    {
+    case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine -> commandLineText() ); break;
+    case TAB_RECENT:     recentlyClosedTabImport -> restoreCurrentlySelected(); break;
+    default: break;
+    }
+    break;
+  case TAB_LOG: saveLog(); break;
+  case TAB_RESULTS: saveResults(); break;
+  case TAB_SPELLQUERY: spellQueryTab -> run_spell_query();
 #ifdef SC_PAPERDOLL
-    case TAB_PAPERDOLL: start_paperdoll_sim(); break;
+  case TAB_PAPERDOLL: start_paperdoll_sim(); break;
 #endif
-    case TAB_COUNT:
-      break;
+  case TAB_COUNT:
+    break;
   }
 }
 
@@ -1527,14 +1521,14 @@ void SC_MainWindow::cancelButtonClicked()
 {
   switch ( mainTab -> currentTab() )
   {
-    case TAB_IMPORT:
-      if ( simRunning() )
-      {
-        stopSim();
-      }
-      break;
-    default:
-      break;
+  case TAB_IMPORT:
+    if ( simRunning() )
+    {
+      stopSim();
+    }
+    break;
+  default:
+    break;
   }
 }
 
@@ -1547,10 +1541,10 @@ void SC_MainWindow::importButtonClicked()
 {
   switch ( importTab -> currentTab() )
   {
-    case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine -> commandLineText( TAB_BATTLE_NET ) ); break;
-    case TAB_RECENT:     recentlyClosedTabImport -> restoreCurrentlySelected(); break;
-    case TAB_AUTOMATION: startAutomationImport( TAB_AUTOMATION ); break;
-    default: break;
+  case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine -> commandLineText( TAB_BATTLE_NET ) ); break;
+  case TAB_RECENT:     recentlyClosedTabImport -> restoreCurrentlySelected(); break;
+  case TAB_AUTOMATION: startAutomationImport( TAB_AUTOMATION ); break;
+  default: break;
   }
 }
 
@@ -1569,7 +1563,7 @@ void SC_MainWindow::backButtonClicked( bool /* checked */ )
 {
   if ( visibleWebView )
   {
-    if ( mainTab -> currentTab() == TAB_RESULTS && ! visibleWebView->history()->canGoBack() )
+    if ( mainTab -> currentTab() == TAB_RESULTS && !visibleWebView->history()->canGoBack() )
     {
       visibleWebView -> loadHtml();
 
@@ -1588,9 +1582,9 @@ void SC_MainWindow::backButtonClicked( bool /* checked */ )
   {
     switch ( mainTab -> currentTab() )
     {
-      case TAB_OPTIONS:   break;
-      case TAB_OVERRIDES: break;
-      default:            break;
+    case TAB_OPTIONS:   break;
+    case TAB_OVERRIDES: break;
+    default:            break;
     }
   }
 }
@@ -1618,11 +1612,11 @@ void SC_MainWindow::mainTabChanged( int index )
   visibleWebView = 0;
   if ( index == TAB_IMPORT )
   {
-    cmdLine -> setTab( static_cast< import_tabs_e >( importTab -> currentIndex() ) );
+    cmdLine -> setTab( static_cast<import_tabs_e>( importTab -> currentIndex() ) );
   }
   else
   {
-    cmdLine -> setTab( static_cast< main_tabs_e >( index ) );
+    cmdLine -> setTab( static_cast<main_tabs_e>( index ) );
   }
 
   // clear spell_query entries when changing tabs
@@ -1631,36 +1625,36 @@ void SC_MainWindow::mainTabChanged( int index )
 
   switch ( index )
   {
-    case TAB_WELCOME:
-    case TAB_OPTIONS:
-    case TAB_SIMULATE:
-    case TAB_OVERRIDES:
+  case TAB_WELCOME:
+  case TAB_OPTIONS:
+  case TAB_SIMULATE:
+  case TAB_OVERRIDES:
 #ifdef SC_PAPERDOLL
-    case TAB_PAPERDOLL:
+  case TAB_PAPERDOLL:
 #endif
-    case TAB_HELP:      break;
-    case TAB_LOG:       cmdLine -> setCommandLineText( TAB_LOG, logFileText ); break;
-    case TAB_IMPORT:
-      importTabChanged( importTab->currentIndex() );
-      break;
-    case TAB_RESULTS:
-      resultsTabChanged( resultsTab -> currentIndex() );
-      break;
-    case TAB_SPELLQUERY:
-      break;
-    default: assert( 0 );
+  case TAB_HELP:      break;
+  case TAB_LOG:       cmdLine -> setCommandLineText( TAB_LOG, logFileText ); break;
+  case TAB_IMPORT:
+    importTabChanged( importTab->currentIndex() );
+    break;
+  case TAB_RESULTS:
+    resultsTabChanged( resultsTab -> currentIndex() );
+    break;
+  case TAB_SPELLQUERY:
+    break;
+  default: assert( 0 );
   }
 }
 
 void SC_MainWindow::importTabChanged( int index )
 {
-  if ( index == TAB_BIS     ||
-       index == TAB_CUSTOM  ||
+  if ( index == TAB_BIS ||
+       index == TAB_CUSTOM ||
        index == TAB_HISTORY ||
        index == TAB_AUTOMATION ||
        index == TAB_RECENT )
   {
-    cmdLine -> setTab( static_cast< import_tabs_e >( index ) );
+    cmdLine -> setTab( static_cast<import_tabs_e>( index ) );
     visibleWebView = 0;
   }
   else
@@ -1684,10 +1678,10 @@ void SC_MainWindow::resultsTabCloseRequest( int index )
   if ( confirm == QMessageBox::Yes )
   {
     resultsTab -> removeTab( index );
-    if ( resultsTab -> count() == 1)
+    if ( resultsTab -> count() == 1 )
     {
-        SC_SingleResultTab* tab = static_cast < SC_SingleResultTab* >( resultsTab -> widget ( 0 ) );
-        tab -> removeAllIgnoreKeyPressEvent();
+      SC_SingleResultTab* tab = static_cast <SC_SingleResultTab*>( resultsTab -> widget( 0 ) );
+      tab -> removeAllIgnoreKeyPressEvent();
     }
     else if ( resultsTab -> count() == 0 )
     {
@@ -1766,13 +1760,13 @@ void SC_MainWindow::switchToASubTab( int direction )
 
   if ( direction > 0 )
   {
-  if ( tabWidget -> count() - new_index > 1 )
-    tabWidget -> setCurrentIndex( new_index + 1 );
+    if ( tabWidget -> count() - new_index > 1 )
+      tabWidget -> setCurrentIndex( new_index + 1 );
   }
   else if ( direction < 0 )
   {
     if ( new_index > 0 )
-      tabWidget -> setCurrentIndex( new_index - 1);
+      tabWidget -> setCurrentIndex( new_index - 1 );
   }
 }
 
@@ -1817,7 +1811,7 @@ void SC_MainWindow::screenResized( int screen )
 void SimulateThread::run()
 {
   QByteArray utf8_profile = options.toUtf8();
-  QFile file( mainWindow -> AppDataDir + QDir::separator () + "simc_gui.simc" );
+  QFile file( mainWindow -> AppDataDir + QDir::separator() + "simc_gui.simc" );
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
     file.write( utf8_profile );
@@ -1826,7 +1820,7 @@ void SimulateThread::run()
 
   sim -> output_file_str = ( mainWindow -> AppDataDir + QDir::separator() + SIMC_LOG_FILE ).toStdString();
   sim -> html_file_str = ( mainWindow -> AppDataDir + QDir::separator() + "simc_report.html" ).toStdString();
-  sim -> xml_file_str  = ( mainWindow -> AppDataDir + QDir::separator() + "simc_report.xml" ).toStdString();
+  sim -> xml_file_str = ( mainWindow -> AppDataDir + QDir::separator() + "simc_report.xml" ).toStdString();
   sim -> reforge_plot_output_file_str = ( mainWindow -> AppDataDir + QDir::separator() + "simc_plot_data.csv" ).toStdString();
   sim -> csv_output_file_str = ( mainWindow -> AppDataDir + QDir::separator() + "simc_report.csv" ).toStdString();
 
@@ -1869,28 +1863,28 @@ void SimulateThread::run()
 // SC_CommandLine
 // ============================================================================
 
-SC_CommandLine::SC_CommandLine( QWidget* parent ) :
-    QLineEdit( parent )
+SC_CommandLine::SC_CommandLine( QWidget* parent ):
+QLineEdit( parent )
 {
-  QShortcut* altUp    = new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Up ), this );
-  QShortcut* altLeft  = new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Left ), this );
-  QShortcut* altDown  = new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Down ), this );
+  QShortcut* altUp = new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Up ), this );
+  QShortcut* altLeft = new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Left ), this );
+  QShortcut* altDown = new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Down ), this );
   QShortcut* altRight = new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Right ), this );
-  QShortcut* ctrlDel  = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_Delete ), this );
+  QShortcut* ctrlDel = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_Delete ), this );
 
-  connect( altUp,    SIGNAL( activated() ), this, SIGNAL( switchToLeftSubTab() ) );
-  connect( altLeft,  SIGNAL( activated() ), this, SIGNAL( switchToLeftSubTab() ) );
-  connect( altDown,  SIGNAL( activated() ), this, SIGNAL( switchToRightSubTab() ) );
+  connect( altUp, SIGNAL( activated() ), this, SIGNAL( switchToLeftSubTab() ) );
+  connect( altLeft, SIGNAL( activated() ), this, SIGNAL( switchToLeftSubTab() ) );
+  connect( altDown, SIGNAL( activated() ), this, SIGNAL( switchToRightSubTab() ) );
   connect( altRight, SIGNAL( activated() ), this, SIGNAL( switchToRightSubTab() ) );
-  connect( ctrlDel,  SIGNAL( activated() ), this, SIGNAL( currentlyViewedTabCloseRequest() ) );
+  connect( ctrlDel, SIGNAL( activated() ), this, SIGNAL( currentlyViewedTabCloseRequest() ) );
 }
 
 // ==========================================================================
 // SC_ReforgeButtonGroup
 // ==========================================================================
 
-SC_ReforgeButtonGroup::SC_ReforgeButtonGroup( QObject* parent ) :
-  QButtonGroup( parent ), selected( 0 )
+SC_ReforgeButtonGroup::SC_ReforgeButtonGroup( QObject* parent ):
+QButtonGroup( parent ), selected( 0 )
 {}
 
 void SC_ReforgeButtonGroup::setSelected( int state )
@@ -1905,7 +1899,7 @@ void SC_ReforgeButtonGroup::setSelected( int state )
   {
     QList< QAbstractButton* > b = buttons();
     for ( QList< QAbstractButton* >::iterator i = b.begin(); i != b.end(); ++i )
-      if ( ! ( *i ) -> isChecked() )
+      if ( !( *i ) -> isChecked() )
         ( *i ) -> setEnabled( false );
   }
   // Less than three selected, allow selection of all/any
@@ -1928,7 +1922,7 @@ void PersistentCookieJar::save()
   {
     QDataStream out( &file );
     QList<QNetworkCookie> cookies = allCookies();
-    qint32 count = ( qint32 ) cookies.count();
+    qint32 count = (qint32)cookies.count();
     out << count;
     for ( int i = 0; i < count; i++ )
     {
@@ -2039,9 +2033,9 @@ void SC_SingleResultTab::TabChanged( int /* index */ )
 
 }
 
-SC_ResultTab::SC_ResultTab( SC_MainWindow* mw ) :
-  SC_RecentlyClosedTab( mw ),
-  mainWindow( mw )
+SC_ResultTab::SC_ResultTab( SC_MainWindow* mw ):
+SC_RecentlyClosedTab( mw ),
+mainWindow( mw )
 {
   setMovable( true );
   enableDragHoveredOverTabSignal( true );
