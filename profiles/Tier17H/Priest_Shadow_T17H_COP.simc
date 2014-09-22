@@ -170,7 +170,7 @@ waist=seeking_ember_girdle,id=113941,bonus_id=566
 legs=soul_priests_leggings,id=115564,bonus_id=566
 feet=cavedwellers_climbers,id=113864,bonus_id=566
 finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant=gift_of_mastery
-finger2=spellbound_solium_band_of_the_kirin_tor,id=118301,enchant=gift_of_mastery
+finger2=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_mastery
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
 trinket2=goren_soul_repository,id=119194,bonus_id=566
 main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_bleeding_hollow

@@ -5369,7 +5369,7 @@ void paladin_t::generate_action_prio_list_holy()
 
 
   // this is just sort of made up to test things - a real Holy dev should probably come up with something useful here eventually
-  single->add_action(this,"Lay on Hands","if=if=target.health.pct<=5");
+  single->add_action(this,"Lay on Hands","if=target.health.pct<=5");
   single->add_action(this,"Hand of Sacrifice");
   single->add_action(this,"Sacred Shield","if=buff.sacred_shield.down");
   single->add_action(this,"Eternal Flame","if=holy_power>=3");

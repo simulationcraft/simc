@@ -51,7 +51,7 @@ main_hand=primal_gladiators_hacker,id=111198,enchant=mark_of_warsong
 off_hand=primal_gladiators_shield_wall,id=111221
 save=Paladin_Protection_T17P.simc
 
-paladin="Paladin_Holy_T17P”
+paladin="Paladin_Holy_T17P"
 level=100
 race=blood_elf
 role=heal

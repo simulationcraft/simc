@@ -1,5 +1,4 @@
-paladin="Paladin_Holy_T17P”
-"
+paladin="Paladin_Holy_T17P"
 level=100
 race=blood_elf
 role=heal
@@ -38,7 +37,7 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
 
-actions.single=lay_on_hands,if=if=target.health.pct<=5
+actions.single=lay_on_hands,if=target.health.pct<=5
 actions.single+=/hand_of_sacrifice
 actions.single+=/sacred_shield,if=buff.sacred_shield.down
 
