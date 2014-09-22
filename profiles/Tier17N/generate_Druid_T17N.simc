@@ -68,8 +68,8 @@ hands=toothbreaker_grips,id=113876
 waist=conductors_multipocket_girdle,id=113964
 legs=living_wood_legguards,id=115543
 feet=treads_of_the_dark_hunt,id=113974
-finger1=aryus_puzzle_ring,id=118864,enchant=gift_of_mastery
-finger2=ukuroggs_corrupted_seal,id=113975,enchant=gift_of_mastery
+finger1=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_mastery
+finger2=aryus_puzzle_ring,id=118864,enchant=gift_of_mastery
 trinket1=blackiron_micro_crucible,id=113984
 trinket2=primal_gladiators_insignia_of_dominance,id=115755
 main_hand=infernoflame_staff,id=113869,enchant=mark_of_warsong
