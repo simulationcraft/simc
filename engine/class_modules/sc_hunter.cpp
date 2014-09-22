@@ -2188,6 +2188,7 @@ struct chimaera_shot_impact_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( name, p, s )
   {
     dual = true;
+    aoe = 2;
   }
 
   virtual double action_multiplier() const
@@ -2214,7 +2215,6 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
     nature = new chimaera_shot_impact_t( player, "chimaera_shot_nature", player -> find_spell( 171457 ) );
     add_child( nature );
     school = SCHOOL_FROSTSTRIKE; // Just so the report shows a mixture of the two colors.
-    aoe = 2;
   }
 
   void execute()
