@@ -27,7 +27,7 @@ generate_Monk_T17PR.simc
 #generate_Rogue_T17PR.simc
 
 # Shaman
-#generate_Shaman_T17PR.simc
+generate_Shaman_T17PR.simc
 
 # Warlock
 #generate_Warlock_T17PR.simc
