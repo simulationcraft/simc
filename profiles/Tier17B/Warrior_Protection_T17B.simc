@@ -1,0 +1,103 @@
+warrior="Warrior_Protection_T17B"
+level=100
+race=tauren
+role=tank
+position=front
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!1102212
+glyphs=unending_rage/death_from_above/cleave
+spec=protection
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_stamina_flask
+actions.precombat+=/food,type=nagrand_tempura
+actions.precombat+=/stance,choose=defensive
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+# Generic on-use trinket line if needed when swapping trinkets out. 
+#actions+=/use_item,slot=trinket1,if=buff.bloodbath.up|buff.avatar.up|target.time_to_die<10
+actions.precombat+=/snapshot_stats
+actions.precombat+=/shield_wall
+actions.precombat+=/potion,name=draenic_armor
+
+# Executed every time the actor is available.
+
+actions=charge
+actions+=/auto_attack
+actions+=/blood_fury,if=buff.bloodbath.up|buff.avatar.up
+actions+=/berserking,if=buff.bloodbath.up|buff.avatar.up
+actions+=/arcane_torrent,if=buff.bloodbath.up|buff.avatar.up
+actions+=/berserker_rage,if=buff.enrage.down
+actions+=/call_action_list,name=prot
+
+actions.prot=shield_block,if=!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)|action.shield_block.charges_fractional>=1
+actions.prot+=/shield_barrier,if=buff.shield_barrier.down&((buff.shield_block.down&action.shield_block.charges<1)|rage>=85)
+actions.prot+=/demoralizing_shout,if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)
+actions.prot+=/enraged_regeneration,if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)
+actions.prot+=/shield_wall,if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)
+actions.prot+=/last_stand,if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)
+actions.prot+=/potion,name=draenic_armor,if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)
+actions.prot+=/call_action_list,name=prot_aoe,if=active_enemies>3
+actions.prot+=/heroic_strike,if=buff.ultimatum.up|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.stack>=6)
+actions.prot+=/bloodbath,if=talent.bloodbath.enabled&((cooldown.dragon_roar.remains=0&talent.dragon_roar.enabled)|(cooldown.stormbolt.remains=0&talent.stormbolt.enabled)|talent.shockwave.enabled)
+actions.prot+=/avatar,if=talent.avatar.enabled&((cooldown.ravager.remains=0&talent.ravager.enabled)|(cooldown.dragon_roar.remains=0&talent.dragon_roar.enabled)|(talent.stormbolt.enabled&cooldown.stormbolt.remains=0)|(!(talent.dragon_roar.enabled|talent.ravager.enabled|talent.stormbolt.enabled)))
+actions.prot+=/shield_slam
+actions.prot+=/revenge
+actions.prot+=/ravager
+actions.prot+=/storm_bolt
+actions.prot+=/dragon_roar
+actions.prot+=/impending_victory,if=talent.impending_victory.enabled&cooldown.shield_slam.remains<=execute_time
+actions.prot+=/victory_rush,if=!talent.impending_victory.enabled&cooldown.shield_slam.remains<=execute_time
+actions.prot+=/execute,if=talent.sudden_death.enabled&buff.sudden_death.up
+actions.prot+=/devastate
+
+actions.prot_aoe=bloodbath
+actions.prot_aoe+=/avatar
+actions.prot_aoe+=/thunder_clap,if=!dot.deep_wounds.ticking
+actions.prot_aoe+=/heroic_strike,if=buff.ultimatum.up|rage>110|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.stack>=6)
+actions.prot_aoe+=/heroic_leap,if=(buff.bloodbath.up|cooldown.bloodbath.remains>5|!talent.bloodbath.enabled)
+actions.prot_aoe+=/shield_slam,if=buff.shield_block.up
+actions.prot_aoe+=/ravager,if=(buff.avatar.up|cooldown.avatar.remains>10)|!talent.avatar.enabled
+actions.prot_aoe+=/dragon_roar,if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled
+actions.prot_aoe+=/shockwave
+actions.prot_aoe+=/revenge
+actions.prot_aoe+=/thunder_clap
+actions.prot_aoe+=/shield_slam
+actions.prot_aoe+=/storm_bolt
+actions.prot_aoe+=/shield_slam
+actions.prot_aoe+=/devastate
+
+head=blackhands_faceguard,id=115584,bonus_id=567
+neck=gluttons_kerchief,id=113882,bonus_id=567,enchant=gift_of_critical_strike
+shoulders=overdriven_spaulders,id=113990,bonus_id=566
+back=gronnstitched_greatcloak,id=113873,bonus_id=567,enchant=gift_of_critical_strike
+chest=blackhands_chestguard,id=115582,bonus_id=567
+wrists=bracers_of_visceral_force,id=119331,bonus_id=567
+hands=blackhands_handguards,id=115583,bonus_id=567
+waist=ironcrushers_collar,id=113950,bonus_id=567
+legs=blackhands_legguards,id=115580,bonus_id=567
+feet=iron_bellow_sabatons,id=113961,bonus_id=567
+finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,enchant=gift_of_critical_strike
+finger2=siege_bombers_band,id=113963,bonus_id=567,enchant=gift_of_critical_strike
+trinket1=forgemasters_insignia,id=113983,bonus_id=567
+trinket2=bottle_of_infesting_spores,id=113658,bonus_id=567
+main_hand=taners_terrible_spine,id=113862,bonus_id=567,enchant=mark_of_the_thunderlord
+off_hand=kromogs_protecting_palm,id=113926,bonus_id=567
+
+# Gear Summary
+# gear_strength=3551
+# gear_stamina=4493
+# gear_crit_rating=1486
+# gear_haste_rating=486
+# gear_mastery_rating=503
+# gear_armor=3029
+# gear_bonus_armor=468
+# gear_multistrike_rating=951
+# gear_versatility_rating=667
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1

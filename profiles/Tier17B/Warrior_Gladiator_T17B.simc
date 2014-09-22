@@ -1,0 +1,91 @@
+warrior="Warrior_Gladiator_T17B"
+level=100
+race=tauren
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!0102212
+glyphs=unending_rage/death_from_above/cleave/bull_rush
+spec=protection
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_strength_flask
+actions.precombat+=/food,type=nagrand_tempura
+actions.precombat+=/stance,choose=gladiator
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+# Generic on-use trinket line if needed when swapping trinkets out. 
+#actions+=/use_item,slot=trinket1,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_armor
+
+# Executed every time the actor is available.
+
+actions=charge
+actions+=/auto_attack
+actions+=/avatar
+actions+=/bloodbath
+actions+=/blood_fury,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10
+actions+=/berserking,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10
+actions+=/arcane_torrent,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10
+actions+=/potion,name=draenic_armor,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up
+actions+=/berserker_rage,if=buff.enrage.down
+actions+=/call_action_list,name=single,if=active_enemies=1
+actions+=/call_action_list,name=aoe,if=active_enemies>=2
+
+actions.single=shield_charge,if=(!buff.shield_charge.up&!cooldown.shield_slam.remains)|charges=2
+actions.single+=/heroic_strike,if=buff.shield_charge.up|buff.ultimatum.up|rage>=90|target.time_to_die<=3|talent.unyielding_strikes.enabled
+actions.single+=/heroic_leap,if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled
+actions.single+=/shield_slam
+actions.single+=/execute,if=buff.sudden_death.up
+actions.single+=/revenge
+actions.single+=/storm_bolt
+actions.single+=/dragon_roar
+actions.single+=/devastate
+
+actions.aoe=shield_charge,if=(!buff.shield_charge.up&!cooldown.shield_slam.remains)|charges=2
+actions.aoe+=/thunder_clap,if=!dot.deep_wounds.ticking
+actions.aoe+=/bladestorm
+actions.aoe+=/heroic_strike,if=buff.shield_charge.up|buff.ultimatum.up|rage>=100|target.time_to_die<=3|talent.unyielding_strikes.enabled
+actions.aoe+=/heroic_leap,if=(buff.bloodbath.up|cooldown.bloodbath.remains>5|!talent.bloodbath.enabled)
+actions.aoe+=/revenge
+actions.aoe+=/shield_slam
+actions.aoe+=/thunder_clap
+actions.aoe+=/dragon_roar,if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled
+actions.aoe+=/storm_bolt,if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled
+actions.aoe+=/devastate,if=cooldown.shield_slam.remains>execute_time*0.4
+
+head=blackhands_faceguard,id=115584,bonus_id=567
+neck=gluttons_kerchief,id=113882,bonus_id=567,enchant=gift_of_critical_strike
+shoulders=blackhands_shoulderguards,id=115581,bonus_id=567
+back=gronnstitched_greatcloak,id=113873,bonus_id=567,enchant=gift_of_critical_strike
+chest=blackhands_chestguard,id=115582,bonus_id=567
+wrists=bracers_of_visceral_force,id=119331,bonus_id=567
+hands=gauntlets_of_dramatic_blows,id=113906,bonus_id=567
+waist=ironcrushers_collar,id=113950,bonus_id=567
+legs=blackhands_legguards,id=115580,bonus_id=567
+feet=iron_bellow_sabatons,id=113961,bonus_id=567
+finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,enchant=gift_of_critical_strike
+finger2=siege_bombers_band,id=113963,bonus_id=567,enchant=gift_of_critical_strike
+trinket1=forgemasters_insignia,id=113983,bonus_id=567
+trinket2=bottle_of_infesting_spores,id=113658,bonus_id=567
+main_hand=taners_terrible_spine,id=113862,bonus_id=567,enchant=mark_of_the_thunderlord
+off_hand=kromogs_protecting_palm,id=113926,bonus_id=567
+
+# Gear Summary
+# gear_strength=3581
+# gear_stamina=4538
+# gear_crit_rating=1628
+# gear_haste_rating=639
+# gear_mastery_rating=517
+# gear_armor=3041
+# gear_bonus_armor=468
+# gear_multistrike_rating=687
+# gear_versatility_rating=667
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1
