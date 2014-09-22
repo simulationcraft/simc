@@ -47,30 +47,30 @@ actions+=/heal,if=buff.serendipity.react>=2&mana.pct>40
 actions+=/prayer_of_mending
 actions+=/heal
 
-head=soul_priests_hood,id=115563
-neck=talisman_of_the_fomor,id=113932,enchant=gift_of_multistrike
-shoulders=soul_priests_shoulderguards,id=115561
-back=flame_infusion_drape,id=113945,enchant=gift_of_multistrike
-chest=soul_priests_raiment,id=115560
-wrists=bracers_of_enkindled_power,id=113956
-hands=soul_priests_gloves,id=115562
-waist=seeking_ember_girdle,id=113941
-legs=soul_priests_leggings,id=115564
-feet=cavedwellers_climbers,id=113864
-finger1=sixeyed_band,id=113901,enchant=gift_of_multistrike
-finger2=firemenders_smoldering_signet,id=113957,enchant=gift_of_multistrike
-trinket1=autorepairing_autoclave,id=113986
-trinket2=ironspike_chew_toy,id=119192
-main_hand=infernoflame_staff,id=113869,enchant=mark_of_shadowmoon
+head=soul_priests_hood,id=115563,bonus_id=566
+neck=talisman_of_the_fomor,id=113932,bonus_id=566,enchant=gift_of_multistrike
+shoulders=soul_priests_shoulderguards,id=115561,bonus_id=566
+back=flame_infusion_drape,id=113945,bonus_id=566,enchant=gift_of_multistrike
+chest=soul_priests_raiment,id=115560,bonus_id=566
+wrists=bracers_of_enkindled_power,id=113956,bonus_id=566
+hands=soul_priests_gloves,id=115562,bonus_id=566
+waist=seeking_ember_girdle,id=113941,bonus_id=566
+legs=soul_priests_leggings,id=115564,bonus_id=566
+feet=cavedwellers_climbers,id=113864,bonus_id=566
+finger1=sixeyed_band,id=113901,bonus_id=566,enchant=gift_of_multistrike
+finger2=firemenders_smoldering_signet,id=113957,bonus_id=566,enchant=gift_of_multistrike
+trinket1=autorepairing_autoclave,id=113986,bonus_id=566
+trinket2=ironspike_chew_toy,id=119192,bonus_id=566
+main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_shadowmoon
 
 # Gear Summary
-# gear_stamina=3408
-# gear_intellect=2490
-# gear_spell_power=1325
-# gear_crit_rating=707
-# gear_haste_rating=814
-# gear_mastery_rating=701
-# gear_armor=700
-# gear_multistrike_rating=690
+# gear_stamina=3921
+# gear_intellect=2867
+# gear_spell_power=1524
+# gear_crit_rating=813
+# gear_haste_rating=936
+# gear_mastery_rating=806
+# gear_armor=780
+# gear_multistrike_rating=753
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

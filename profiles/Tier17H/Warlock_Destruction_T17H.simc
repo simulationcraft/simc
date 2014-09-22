@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!....201
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!....001
 spec=destruction
 
 # This default action priority list is automatically created based on your character.
@@ -27,8 +27,7 @@ actions.precombat+=/incinerate
 
 # Executed every time the actor is available.
 
-actions=use_item,name=primal_gladiators_badge_of_dominance
-actions+=/potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20
+actions=potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/berserking
 actions+=/blood_fury
 actions+=/arcane_torrent
@@ -39,39 +38,40 @@ actions+=/shadowburn,if=talent.charred_remains.enabled&(burning_ember>=2.5|targe
 actions+=/immolate,if=remains<=cast_time
 actions+=/conflagrate,if=charges=2
 actions+=/cataclysm
-actions+=/chaos_bolt,if=set_bonus.tier17_4pc&buff.tier17_4pc_chaotic_infusion.react
-actions+=/chaos_bolt,if=set_bonus.tier17_2pc&buff.backdraft.stack<3&(burning_ember>=2.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)
+actions+=/chaos_bolt,if=set_bonus.tier17_4pc=1&buff.tier17_4pc_chaotic_infusion.react
+actions+=/chaos_bolt,if=set_bonus.tier17_2pc=1&buff.backdraft.stack<3&(burning_ember>=2.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)
 actions+=/chaos_bolt,if=talent.charred_remains.enabled&buff.backdraft.stack<3&(burning_ember>=2.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)
 actions+=/chaos_bolt,if=buff.backdraft.stack<3&(burning_ember>=3.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)
 actions+=/immolate,if=remains<=(duration*0.3)
 actions+=/conflagrate
 actions+=/incinerate
 
-head=primal_gladiators_hood_of_prowess,id=111084
-neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_critical_strike
-shoulders=primal_gladiators_felweave_amice,id=111238
-back=primal_gladiators_drape_of_cruelty,id=111124,enchant=gift_of_critical_strike
-chest=primal_gladiators_felweave_raiment,id=111237
-wrists=primal_gladiators_cuffs_of_prowess,id=111099
-hands=primal_gladiators_gloves_of_prowess,id=111083
-waist=primal_gladiators_cord_of_victory,id=111095
-legs=primal_gladiators_felweave_trousers,id=111236
-feet=primal_gladiators_treads_of_prowess,id=111097
-finger1=primal_gladiators_band_of_victory,id=111136,enchant=gift_of_critical_strike
-finger2=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_critical_strike
-trinket1=primal_gladiators_badge_of_dominance,id=111227
-trinket2=primal_gladiators_insignia_of_dominance,id=111228
-main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_the_thunderlord
+head=shadow_councils_hood,id=115586,bonus_id=566
+neck=gruuls_lip_ring,id=113872,bonus_id=566,enchant=gift_of_critical_strike
+shoulders=shadow_councils_mantle,id=115589,bonus_id=566
+back=runefrenzy_greatcloak,id=113937,bonus_id=566,enchant=gift_of_critical_strike
+chest=shadow_councils_robes,id=115588,bonus_id=566
+wrists=bracers_of_darkened_skies,id=119332,bonus_id=566
+hands=shadow_councils_gloves,id=115585,bonus_id=566
+waist=deckhands_rope_belt,id=113967,bonus_id=566
+legs=turret_mechanics_legwraps,id=113970,bonus_id=566
+feet=cavedwellers_climbers,id=113864,bonus_id=566
+finger1=epicenter_loop,id=113947,bonus_id=566,enchant=gift_of_critical_strike
+finger2=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_critical_strike
+trinket1=goren_soul_repository,id=119194,bonus_id=566
+trinket2=blackiron_micro_crucible,id=113984,bonus_id=566
+main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_stamina=3250
-# gear_intellect=2588
-# gear_spell_power=1265
-# gear_crit_rating=1263
-# gear_haste_rating=371
-# gear_mastery_rating=875
-# gear_armor=677
-# gear_multistrike_rating=550
-# gear_versatility_rating=102
-# set_bonus=pvp_2pc=1
+# gear_stamina=3942
+# gear_intellect=3134
+# gear_spell_power=1524
+# gear_crit_rating=1433
+# gear_haste_rating=485
+# gear_mastery_rating=1226
+# gear_armor=780
+# gear_multistrike_rating=365
+# gear_versatility_rating=192
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1
 default_pet=felhunter
