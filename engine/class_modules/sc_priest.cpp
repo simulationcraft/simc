@@ -1810,14 +1810,9 @@ struct dispersion_t final : public priest_spell_t
     priest.buffs.dispersion -> trigger( 1, 0, 1, dot_duration);// timespan_t::from_seconds( 6.0 ) + priest.glyphs.delayed_coalescence -> effectN( 1 ).time_value() );
   }
 
-  timespan_t composite_dot_duration()
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
       return timespan_t::from_seconds( 6.0 ) + priest.glyphs.delayed_coalescence -> effectN( 1 ).time_value();
-  }
-
-  timespan_t tick_time()
-  {
-      return timespan_t::from_seconds( 1.0 );
   }
 
   virtual void last_tick( dot_t* d ) override
