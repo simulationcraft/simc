@@ -1444,7 +1444,7 @@ struct icicle_t : public mage_spell_t
   icicle_t( mage_t* p ) : mage_spell_t( "icicle", p, p -> find_spell( 148022 ) ),
     splitting_ice_aoe( p -> glyphs.splitting_ice -> effectN( 1 ).base_value() + 1 )
   {
-    may_crit = false;
+    may_crit = may_multistrike = false;
     proc = background = true;
 
     if ( p -> glyphs.splitting_ice -> ok() )
@@ -1454,19 +1454,51 @@ struct icicle_t : public mage_spell_t
     }
   }
 
+  int n_targets() const
+  {
+    if ( pre_execute_state && pre_execute_state -> target == p() -> pets.prismatic_crystal )
+      return 0;
+
+    return aoe;
+  }
+
+  // To correctly record damage and execute information to the correct source
+  // action (FB or FFB), we set the stats object of the icicle cast to the
+  // source stats object, carried from trigger_icicle() to here through the
+  // execute_event_t.
   void execute()
   {
-    assert( pre_execute_state );
-
     const icicle_state_t* is = debug_cast<const icicle_state_t*>( pre_execute_state );
+    assert( is -> source );
     stats = is -> source;
 
-    if ( pre_execute_state -> target == p() -> pets.prismatic_crystal )
-    {
-      aoe = 0;
-    }
     mage_spell_t::execute();
-    aoe = splitting_ice_aoe;
+  }
+
+  // Due to the mage targeting system, the pre_execute_state in is emptied by
+  // the mage_spell_t::execute() call (before getting to action_t::execute()),
+  // thus we need to "re-set" the stats object into the state object that is
+  // used for the next leg of the execution path (execute() using travel event
+  // to impact()). This is done in schedule_travel().
+  void schedule_travel( action_state_t* state )
+  {
+    icicle_state_t* is = debug_cast<icicle_state_t*>( state );
+    is -> source = stats;
+
+    mage_spell_t::schedule_travel( state );
+  }
+
+  // And again, once the icicle impacts, we set the stats object here again
+  // because multiple icicles can be executing, causing the state object to be
+  // set to another object between the execution of this specific icicle, and
+  // the impact.
+  void impact( action_state_t* state )
+  {
+    const icicle_state_t* is = debug_cast<const icicle_state_t*>( state );
+    assert( is -> source );
+    stats = is -> source;
+
+    mage_spell_t::impact( state );
   }
 
   action_state_t* new_state()
@@ -3018,17 +3050,20 @@ struct ice_lance_t : public mage_spell_t
     fof_multiplier = p -> find_specialization_spell( "Fingers of Frost" ) -> ok() ? p -> find_spell( 44544 ) -> effectN( 2 ).percent() : 0.0;
   }
 
+  int n_targets() const
+  {
+    if ( pre_execute_state && pre_execute_state -> target == p() -> pets.prismatic_crystal )
+      return 0;
+
+    return aoe;
+  }
+
   virtual void execute()
   {
     // Ice Lance treats the target as frozen with FoF up
     frozen = p() -> buffs.fingers_of_frost -> check() > 0;
 
-    if ( pre_execute_state -> target == p() -> pets.prismatic_crystal )
-    {
-      aoe = 0;
-    }
     mage_spell_t::execute();
-    aoe = splitting_ice_aoe;
 
     if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B4 ) && td( execute_state -> target) -> dots.frozen_orb -> is_ticking() )
       p() -> buffs.ice_shard -> trigger();
