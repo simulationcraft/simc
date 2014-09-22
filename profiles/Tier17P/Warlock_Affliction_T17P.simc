@@ -47,20 +47,20 @@ actions+=/drain_soul,interrupt=1,chain=1
 actions+=/life_tap
 
 head=primal_gladiators_hood_of_prowess,id=111084
-neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_mastery
+neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_haste
 shoulders=primal_gladiators_amice_of_prowess,id=111087
-back=primal_gladiators_drape_of_prowess,id=111125,enchant=gift_of_mastery
+back=primal_gladiators_drape_of_prowess,id=111125,enchant=gift_of_haste
 chest=primal_gladiators_robes_of_prowess,id=111086
 wrists=primal_gladiators_cuffs_of_prowess,id=111099
 hands=primal_gladiators_felweave_handguards,id=111234
 waist=primal_gladiators_cord_of_prowess,id=111094
 legs=primal_gladiators_leggings_of_prowess,id=111085
 feet=primal_gladiators_treads_of_cruelty,id=111096
-finger1=primal_gladiators_band_of_prowess,id=111135,enchant=gift_of_mastery
-finger2=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_mastery
+finger1=primal_gladiators_band_of_prowess,id=111135,enchant=gift_of_haste
+finger2=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_haste
 trinket1=primal_gladiators_badge_of_dominance,id=111227
 trinket2=primal_gladiators_insignia_of_dominance,id=111228
-main_hand=primal_gladiators_mageblade,id=111119,enchant=mark_of_bleeding_hollow
+main_hand=primal_gladiators_mageblade,id=111119,enchant=mark_of_warsong
 off_hand=primal_gladiators_reprieve,id=111133
 
 # Gear Summary
@@ -68,8 +68,8 @@ off_hand=primal_gladiators_reprieve,id=111133
 # gear_intellect=2584
 # gear_spell_power=1244
 # gear_crit_rating=387
-# gear_haste_rating=941
-# gear_mastery_rating=1233
+# gear_haste_rating=1644
+# gear_mastery_rating=958
 # gear_armor=677
 # gear_multistrike_rating=596
 default_pet=felhunter
