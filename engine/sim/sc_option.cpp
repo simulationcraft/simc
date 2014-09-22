@@ -488,11 +488,11 @@ option_db_t::option_db_t()
     for ( int i = 0; i < ( N_TIER - 1 ); i++ )
     {
       auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "B|";
-	  auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "H|";
+      auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "H|";
       auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "N|";
       auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "M|";
       auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "P|";
-	  auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "PR|";
+      auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "PR|";
     }
   }
 
