@@ -5337,8 +5337,8 @@ void paladin_t::generate_action_prio_list_holy()
   //Phillipuh to-do:
   //FIGURE OUT HOW TO MAKE ACTIVE FRIENDS!!!
 
-  default_list -> add_action( "call_action_list,name=single,if=active_enemies=1" );
-  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>1" );
+  def -> add_action( "call_action_list,name=single,if=active_enemies=1" );
+  def -> add_action( "call_action_list,name=aoe,if=active_enemies>1" );
   
   // Potions
   if (sim -> allow_potions && level >= 80)
