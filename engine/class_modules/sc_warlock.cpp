@@ -5458,7 +5458,7 @@ void warlock_t::apl_demonology()
     add_action( "metamorphosis", "if=(action.hand_of_guldan.charges=0|(!dot.shadowflame.ticking&!action.hand_of_guldan.in_flight_to_target))&demonic_fury>=750&cooldown.dark_soul.remains>=8" );
     add_action( "metamorphosis", "if=(action.hand_of_guldan.charges=0|(!dot.shadowflame.ticking&!action.hand_of_guldan.in_flight_to_target))&demonic_fury%(40%gcd)>=target.time_to_die" );
     add_action( "metamorphosis", "if=(action.hand_of_guldan.charges=0|(!dot.shadowflame.ticking&!action.hand_of_guldan.in_flight_to_target))&demonic_fury>=500&cooldown.dark_soul.remains>=8&dot.corruption.remains<=(dot.corruption.duration*0.3)" );
-    add_action( "Hand of Gul'dan", "if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&(charges=2|dot.shadowflame.remains>travel_time|(charges=1&recharge_time<4))" );
+    add_action( "Hand of Gul'dan", "if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&(((charges=2&set_bonus.tier17_4pc=0)|(charges=3&set_bonus.tier17_4pc=1))|dot.shadowflame.remains>travel_time|(charges=1&recharge_time<4))" );
     add_action( "Soul Fire", "if=buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)" );
     add_action( "Life Tap", "if=mana.pct<40" );
     add_action( "Shadow Bolt" );
@@ -5475,8 +5475,8 @@ void warlock_t::apl_destruction()
     "Immolate", "if=remains<=cast_time" );
   add_action( "Conflagrate", "if=charges=2" );
   action_list_str += "/cataclysm";
-  add_action( "Chaos Bolt", "if=set_bonus.tier17_4pc&buff.tier17_4pc_chaotic_infusion.react" );
-  add_action( "Chaos Bolt", "if=set_bonus.tier17_2pc&buff.backdraft.stack<3&(burning_ember>=2.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
+  add_action( "Chaos Bolt", "if=set_bonus.tier17_4pc=1&buff.tier17_4pc_chaotic_infusion.react" );
+  add_action( "Chaos Bolt", "if=set_bonus.tier17_2pc=1&buff.backdraft.stack<3&(burning_ember>=2.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
   add_action( "Chaos Bolt", "if=talent.charred_remains.enabled&buff.backdraft.stack<3&(burning_ember>=2.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
   add_action( "Chaos Bolt", "if=buff.backdraft.stack<3&(burning_ember>=3.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
   add_action( "Immolate", "if=remains<=(duration*0.3)" );
