@@ -1,9 +1,9 @@
-mage="Mage_Arcane_T17H"
+mage="Mage_Arcane_T17PR"
 level=100
 race=troll
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!0...010
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!0...012
 glyphs=arcane_power
 spec=arcane
 
@@ -37,6 +37,7 @@ actions+=/call_action_list,name=init_crystal,if=talent.prismatic_crystal.enabled
 actions+=/call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active
 actions+=/call_action_list,name=aoe,if=active_enemies>=6
 actions+=/call_action_list,name=burn,if=buff.arcane_power.up&cooldown.evocation.remains<buff.arcane_power.remains&mana.pct>15&talent.prismatic_crystal.enabled
+actions+=/call_action_list,name=burn,if=cooldown.evocation.remains<buff.arcane_power.remains&mana.pct>30&talent.arcane_orb.enabled
 actions+=/call_action_list,name=evocation
 
 # Conditions for initiating Prismatic Crystal burn phase
@@ -56,6 +57,7 @@ actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent
 actions.cooldowns+=/potion,name=draenic_intellect,if=buff.arcane_power.up&(!talent.prismatic_crystal.enabled|pet.prismatic_crystal.active)
 actions.cooldowns+=/use_item,slot=trinket1
+actions.cooldowns+=/use_item,slot=trinket2
 
 # AoE sequence
 actions.aoe=nether_tempest,if=buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))
@@ -71,7 +73,7 @@ actions.burn+=/nether_tempest,cycle_targets=1,if=target!=prismatic_crystal&buff.
 actions.burn+=/arcane_blast,if=mana.pct>95&buff.arcane_charge.stack=4
 actions.burn+=/arcane_missiles,if=buff.arcane_charge.stack=4
 actions.burn+=/supernova
-actions.burn+=/arcane_barrage,if=buff.presence_of_mind.up&buff.arcane_charge.stack=4
+actions.burn+=/arcane_barrage,if=buff.presence_of_mind.up&buff.arcane_charge.stack=4|cooldown.arcane_orb.remains<1
 actions.burn+=/presence_of_mind
 actions.burn+=/arcane_blast
 
@@ -93,34 +95,32 @@ actions.conserve+=/arcane_barrage,moving=1
 # Makes Evocation interrupt channeling properly
 actions.evocation=call_action_list,name=conserve,if=cooldown.evocation.remains>0
 actions.evocation+=/evocation,interrupt_if=mana.pct>92,if=mana.pct<65
-actions.evocation+=/evocation,interrupt_if=mana.pct>0,if=buff.arcane_charge.stack=0
+actions.evocation+=/evocation,interrupt_if=mana.pct>0,if=buff.arcane_charge.stack=0&talent.overpowered.enabled&set_bonus.tier17_2pc
 actions.evocation+=/call_action_list,name=conserve
 
-head=arcanoshatter_hood,id=115553,bonus_id=566
-neck=gruuls_lip_ring,id=113872,bonus_id=566,enchant=gift_of_mastery
-shoulders=arcanoshatter_mantle,id=115551,bonus_id=566
-back=runefrenzy_greatcloak,id=113937,bonus_id=566,enchant=gift_of_mastery
-chest=arcanoshatter_robes,id=115550,bonus_id=566
-wrists=bracers_of_enkindled_power,id=113956,bonus_id=566
-hands=arcanoshatter_gloves,id=115552,bonus_id=566
-waist=seeking_ember_girdle,id=113941,bonus_id=566
-legs=turret_mechanics_legwraps,id=113970,bonus_id=566
-feet=cavedwellers_climbers,id=113864,bonus_id=566
-finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant=gift_of_mastery
-finger2=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_mastery
-trinket1=shards_of_nothing,id=113835,bonus_id=566
-trinket2=darmacs_unstable_talisman,id=113948,bonus_id=566
-main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_warsong
+head=hood_of_swirling_light,id=109972,bonus_id=524
+neck=alcs_pendant_of_fiery_dreams,id=109957,bonus_id=524,enchant=gift_of_mastery
+shoulders=frosttouched_shoulderpads,id=109931,bonus_id=524
+back=cloak_of_arcane_mysteries,id=109908,bonus_id=524,enchant=gift_of_mastery
+chest=lightbinder_robes,id=109902,bonus_id=524
+wrists=frosttouched_wristwraps,id=109865,bonus_id=524
+hands=gloves_of_arcane_mystery,id=109844,bonus_id=524
+waist=frosttouched_cord,id=109825,bonus_id=524
+legs=leggings_of_swirling_light,id=109806,bonus_id=524
+feet=lightbinder_treads,id=109796,bonus_id=524
+finger1=darkflame_loop,id=109766,bonus_id=524,enchant=gift_of_mastery
+finger2=golems_gleaming_eye,id=109765,bonus_id=524,enchant=gift_of_mastery
+trinket1=fleshrenders_meathook,id=110002,bonus_id=524
+trinket2=ragewings_firefang,id=110003,bonus_id=524
+main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_stamina=3942
-# gear_intellect=3112
-# gear_spell_power=1524
-# gear_crit_rating=723
-# gear_haste_rating=948
-# gear_mastery_rating=1776
-# gear_armor=780
-# gear_multistrike_rating=190
-# gear_versatility_rating=86
-# set_bonus=tier17_2pc=1
-# set_bonus=tier17_4pc=1
+# gear_stamina=2465
+# gear_intellect=1960
+# gear_spell_power=958
+# gear_crit_rating=314
+# gear_haste_rating=581
+# gear_mastery_rating=1300
+# gear_armor=552
+# gear_multistrike_rating=176
+# gear_versatility_rating=52
