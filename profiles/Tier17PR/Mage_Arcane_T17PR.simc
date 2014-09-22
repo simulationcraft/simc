@@ -1,10 +1,9 @@
-mage="Mage_Arcane_T16H"
-level=90
+mage="Mage_Arcane_T17PR"
+level=100
 race=troll
 role=spell
 position=back
-professions=tailoring=600/engineering=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!0...01.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!0...012
 glyphs=arcane_power
 spec=arcane
 
@@ -16,13 +15,13 @@ spec=arcane
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=warm_sun
-actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat=flask,type=greater_draenic_intellect_flask
+actions.precombat+=/food,type=sleeper_surprise
 actions.precombat+=/arcane_brilliance
 actions.precombat+=/snapshot_stats
 actions.precombat+=/rune_of_power
 actions.precombat+=/mirror_image
-actions.precombat+=/potion,name=jade_serpent
+actions.precombat+=/potion,name=draenic_intellect
 actions.precombat+=/arcane_blast
 
 # Executed every time the actor is available.
@@ -38,6 +37,7 @@ actions+=/call_action_list,name=init_crystal,if=talent.prismatic_crystal.enabled
 actions+=/call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active
 actions+=/call_action_list,name=aoe,if=active_enemies>=6
 actions+=/call_action_list,name=burn,if=buff.arcane_power.up&cooldown.evocation.remains<buff.arcane_power.remains&mana.pct>15&talent.prismatic_crystal.enabled
+actions+=/call_action_list,name=burn,if=cooldown.evocation.remains<buff.arcane_power.remains&mana.pct>30&talent.arcane_orb.enabled
 actions+=/call_action_list,name=evocation
 
 # Conditions for initiating Prismatic Crystal burn phase
@@ -55,7 +55,9 @@ actions.cooldowns=arcane_power
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent
-actions.cooldowns+=/potion,name=jade_serpent,if=buff.arcane_power.up&(!talent.prismatic_crystal.enabled|pet.prismatic_crystal.active)
+actions.cooldowns+=/potion,name=draenic_intellect,if=buff.arcane_power.up&(!talent.prismatic_crystal.enabled|pet.prismatic_crystal.active)
+actions.cooldowns+=/use_item,slot=trinket1
+actions.cooldowns+=/use_item,slot=trinket2
 
 # AoE sequence
 actions.aoe=nether_tempest,if=buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))
@@ -71,7 +73,7 @@ actions.burn+=/nether_tempest,cycle_targets=1,if=target!=prismatic_crystal&buff.
 actions.burn+=/arcane_blast,if=mana.pct>95&buff.arcane_charge.stack=4
 actions.burn+=/arcane_missiles,if=buff.arcane_charge.stack=4
 actions.burn+=/supernova
-actions.burn+=/arcane_barrage,if=buff.presence_of_mind.up&buff.arcane_charge.stack=4
+actions.burn+=/arcane_barrage,if=buff.presence_of_mind.up&buff.arcane_charge.stack=4|cooldown.arcane_orb.remains<1
 actions.burn+=/presence_of_mind
 actions.burn+=/arcane_blast
 
@@ -93,38 +95,32 @@ actions.conserve+=/arcane_barrage,moving=1
 # Makes Evocation interrupt channeling properly
 actions.evocation=call_action_list,name=conserve,if=cooldown.evocation.remains>0
 actions.evocation+=/evocation,interrupt_if=mana.pct>92,if=mana.pct<65
-actions.evocation+=/evocation,interrupt_if=mana.pct>0,if=buff.arcane_charge.stack=0
+actions.evocation+=/evocation,interrupt_if=mana.pct>0,if=buff.arcane_charge.stack=0&talent.overpowered.enabled&set_bonus.tier17_2pc
 actions.evocation+=/call_action_list,name=conserve
 
-head=ebon_ritual_hood,id=105647,upgrade=2,gems=sinister_primal_8haste_8mastery_9int
-neck=untainted_guardians_chain,id=105465,upgrade=2
-shoulders=chronomancer_mantle,id=99401,upgrade=2,gems=8haste_8mastery_8haste_8mastery_6int,enchant=10int_5crit
-back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=4int_8mastery_3int,enchant=9crit
-chest=chronomancer_robes,id=99400,upgrade=2,gems=8haste_8mastery_8haste_8mastery_8haste_8mastery_9int,enchant=4all
-wrists=avools_ancestral_bracers,id=105591,upgrade=2,enchant=9int
-hands=chronomancer_gloves,id=99397,upgrade=2,gems=8haste_8mastery_8haste_8mastery_6int,enchant=9mastery
-waist=belt_of_ominous_trembles,id=105515,upgrade=2,gems=8haste_8mastery_8crit_8mastery_16mastery_6int
-legs=chronomancer_leggings,id=99399,upgrade=2,gems=16mastery_16mastery_6int,enchant=14int_8crit
-feet=boneinlaid_sandals,id=105493,upgrade=2,gems=16mastery_3hit,enchant=7mastery
-finger1=iyyokuks_hereditary_seal,id=105628,upgrade=2
-finger2=signet_of_the_dinomancers,id=105606,upgrade=2,gems=16mastery
-trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
-trinket2=kardris_toxic_totem,id=105540,upgrade=2
-main_hand=immaculately_preserved_wand,id=105594,upgrade=2,gems=8haste_8mastery_3int,enchant=jade_spirit
-off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=8haste_8mastery_3int,enchant=8int
+head=hood_of_swirling_light,id=109972,bonus_id=524
+neck=alcs_pendant_of_fiery_dreams,id=109957,bonus_id=524,enchant=gift_of_mastery
+shoulders=frosttouched_shoulderpads,id=109931,bonus_id=524
+back=cloak_of_arcane_mysteries,id=109908,bonus_id=524,enchant=gift_of_mastery
+chest=lightbinder_robes,id=109902,bonus_id=524
+wrists=frosttouched_wristwraps,id=109865,bonus_id=524
+hands=gloves_of_arcane_mystery,id=109844,bonus_id=524
+waist=frosttouched_cord,id=109825,bonus_id=524
+legs=leggings_of_swirling_light,id=109806,bonus_id=524
+feet=lightbinder_treads,id=109796,bonus_id=524
+finger1=darkflame_loop,id=109766,bonus_id=524,enchant=gift_of_mastery
+finger2=golems_gleaming_eye,id=109765,bonus_id=524,enchant=gift_of_mastery
+trinket1=fleshrenders_meathook,id=110002,bonus_id=524
+trinket2=ragewings_firefang,id=110003,bonus_id=524
+main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_strength=4
-# gear_agility=4
-# gear_stamina=1536
-# gear_intellect=1047
-# gear_spell_power=590
-# gear_hit_rating=3
-# gear_crit_rating=443
-# gear_haste_rating=446
-# gear_mastery_rating=736
-# gear_armor=350
-# gear_multistrike_rating=99
-# meta_gem=sinister_primal
-# set_bonus=tier16_2pc_caster=1
-# set_bonus=tier16_4pc_caster=1
+# gear_stamina=2465
+# gear_intellect=1960
+# gear_spell_power=958
+# gear_crit_rating=314
+# gear_haste_rating=581
+# gear_mastery_rating=1300
+# gear_armor=552
+# gear_multistrike_rating=176
+# gear_versatility_rating=52

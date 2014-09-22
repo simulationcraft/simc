@@ -1,0 +1,83 @@
+mage="Mage_Frost_T17M"
+level=100
+race=troll
+role=spell
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#eb!0...011
+glyphs=icy_veins/splitting_ice
+spec=frost
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_intellect_flask
+actions.precombat+=/food,type=calamari_crepes
+actions.precombat+=/arcane_brilliance
+actions.precombat+=/water_elemental
+actions.precombat+=/snapshot_stats
+actions.precombat+=/rune_of_power
+actions.precombat+=/mirror_image
+actions.precombat+=/potion,name=draenic_intellect
+actions.precombat+=/frostbolt
+
+# Executed every time the actor is available.
+
+actions=counterspell,if=target.debuff.casting.react
+actions+=/blink,if=movement.distance>10
+actions+=/blazing_speed,if=movement.remains>0
+actions+=/cold_snap,if=health.pct<30
+actions+=/time_warp,if=target.health.pct<25|time>5
+actions+=/mirror_image
+actions+=/rune_of_power,if=buff.rune_of_power.remains<cast_time
+actions+=/rune_of_power,if=cooldown.icy_veins.remains=0&buff.rune_of_power.remains<20
+actions+=/frozen_orb,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.remains=0
+actions+=/prismatic_crystal
+actions+=/icy_veins,if=(time_to_bloodlust>160&(buff.brain_freeze.react|buff.fingers_of_frost.react))|target.time_to_die<22,moving=0
+actions+=/blood_fury,if=buff.icy_veins.up|target.time_to_die<18
+actions+=/berserking,if=buff.icy_veins.up|target.time_to_die<18
+actions+=/arcane_torrent,if=buff.icy_veins.up|target.time_to_die<18
+actions+=/use_item,slot=trinket1
+actions+=/use_item,slot=trinket2
+actions+=/comet_storm
+actions+=/frozen_orb,if=!talent.prismatic_crystal.enabled&buff.fingers_of_frost.stack<2
+actions+=/frost_bomb,if=debuff.frost_bomb.remains<cast_time&buff.fingers_of_frost.stack>=1
+actions+=/frostfire_bolt,if=!pet.prismatic_crystal.active&buff.brain_freeze.react
+actions+=/ice_lance,if=talent.frost_bomb.enabled&buff.fingers_of_frost.react&debuff.frost_bomb.remains>travel_time
+actions+=/ice_lance,if=!talent.frost_bomb.enabled&buff.fingers_of_frost.react
+actions+=/frostfire_bolt,if=buff.brain_freeze.react
+actions+=/ice_nova,if=(charges=1&recharge_time<3&cooldown.icy_veins.remains>5&cooldown.prismatic_crystal.remains>5)|buff.icy_veins.react|pet.prismatic_crystal.active
+actions+=/frostbolt
+actions+=/ice_floes,moving=1
+actions+=/ice_lance,moving=1
+
+head=hood_of_swirling_light,id=109972,bonus_id=524
+neck=alcs_pendant_of_fiery_dreams,id=109957,bonus_id=524,enchant=gift_of_multistrike
+shoulders=mantle_of_arcane_mystery,id=109930,bonus_id=524
+back=cloak_of_arcane_mysteries,id=109908,bonus_id=524,enchant=gift_of_multistrike
+chest=lightbinder_robes,id=109902,bonus_id=524
+wrists=felflame_bracers,id=109881,bonus_id=524
+hands=gloves_of_arcane_mystery,id=109844,bonus_id=524
+waist=lightbinder_girdle,id=109827,bonus_id=524
+legs=leggings_of_swirling_light,id=109806,bonus_id=524
+feet=lightbinder_treads,id=109796,bonus_id=524
+finger1=darkflame_loop,id=109766,bonus_id=524,enchant=gift_of_multistrike
+finger2=golems_gleaming_eye,id=109765,bonus_id=524,enchant=gift_of_multistrike
+trinket1=fleshrenders_meathook,id=110002,bonus_id=524
+trinket2=ragewings_firefang,id=110003,bonus_id=524
+main_hand=portalrippers_staff,id=110039,bonus_id=524,enchant=mark_of_frostwolf
+
+# Gear Summary
+# gear_stamina=2465
+# gear_intellect=1960
+# gear_spell_power=958
+# gear_crit_rating=69
+# gear_haste_rating=830
+# gear_mastery_rating=692
+# gear_armor=552
+# gear_multistrike_rating=778
+# gear_versatility_rating=52
