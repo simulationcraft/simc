@@ -4,7 +4,7 @@ race=draenei
 role=spell
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!0002021
-glyphs=mind_flay/fade/sha
+glyphs=mind_flay/fade/sha/dispersion
 spec=shadow
 
 # This default action priority list is automatically created based on your character.
@@ -160,15 +160,15 @@ actions.cop_advanced_mfi_dots+=/insanity,interrupt=1,chain=1,if=active_enemies<=
 actions.cop_advanced_mfi_dots+=/mind_spike,if=(target.dot.shadow_word_pain.ticking&target.dot.shadow_word_pain.remains<gcd*2)|(target.dot.vampiric_touch.ticking&target.dot.vampiric_touch.remains<gcd*2)
 actions.cop_advanced_mfi_dots+=/mind_flay,chain=1,interrupt=1
 
-head=primal_gladiators_hood_of_prowess,id=111084
+head=primal_gladiators_satin_hood,id=111184
 neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_haste
-shoulders=primal_gladiators_amice_of_prowess,id=111087
+shoulders=primal_gladiators_satin_mantle,id=111187
 back=primal_gladiators_drape_of_cruelty,id=111124,enchant=gift_of_haste
-chest=primal_gladiators_robes_of_prowess,id=111086
+chest=primal_gladiators_satin_robe,id=111186
 wrists=primal_gladiators_cuffs_of_cruelty,id=111100
-hands=primal_gladiators_handguards_of_cruelty,id=111088
+hands=primal_gladiators_satin_gloves,id=111183
 waist=primal_gladiators_cord_of_victory,id=111095
-legs=primal_gladiators_leggings_of_prowess,id=111085
+legs=primal_gladiators_satin_leggings,id=111185
 feet=primal_gladiators_treads_of_prowess,id=111097
 finger1=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_haste
 finger2=primal_gladiators_band_of_prowess,id=111135,enchant=gift_of_haste
@@ -181,10 +181,12 @@ main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_warsong
 # gear_intellect=2588
 # gear_spell_power=1265
 # gear_crit_rating=642
-# gear_haste_rating=1273
-# gear_mastery_rating=725
+# gear_haste_rating=1310
+# gear_mastery_rating=688
 # gear_armor=677
-# gear_multistrike_rating=737
-# gear_versatility_rating=212
+# gear_multistrike_rating=847
+# gear_versatility_rating=102
+# set_bonus=pvp_2pc=1
+# set_bonus=pvp_4pc=1
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
