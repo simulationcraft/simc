@@ -1,0 +1,93 @@
+druid="Druid_Feral_T17B"
+level=100
+race=night_elf
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!.0.1.21
+glyphs=savage_roar/master_shapeshifter/cat_form
+spec=feral
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_agility_flask
+actions.precombat+=/food,type=blackrock_barbecue
+actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
+actions.precombat+=/healing_touch,if=talent.bloodtalons.enabled
+actions.precombat+=/cat_form
+actions.precombat+=/prowl
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_agility
+
+# Executed every time the actor is available.
+
+actions=rake,if=buff.prowl.up|buff.shadowmeld.up
+actions+=/auto_attack
+actions+=/skull_bash
+actions+=/incarnation,sync=berserk
+actions+=/berserk,if=cooldown.tigers_fury.remains<8
+actions+=/potion,name=draenic_agility,if=target.time_to_die<=40
+actions+=/use_item,slot=trinket1,sync=tigers_fury
+actions+=/blood_fury,sync=tigers_fury
+actions+=/berserking,sync=tigers_fury
+actions+=/arcane_torrent,sync=tigers_fury
+actions+=/tigers_fury,if=(!buff.omen_of_clarity.react&energy.max-energy>=60)|energy.max-energy>=80
+actions+=/shadowmeld,if=(buff.bloodtalons.up|!talent.bloodtalons.enabled)&dot.rake.remains<0.3*dot.rake.duration
+# Keep Rip from falling off during execute range.
+actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<25
+# Take advantage of Glyph of Cat Form
+actions+=/healing_touch,target_self=1,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)
+actions+=/savage_roar,if=buff.savage_roar.remains<3
+actions+=/potion,name=draenic_agility,sync=berserk,if=target.health.pct<25
+actions+=/thrash_cat,if=buff.omen_of_clarity.react&remains<=duration*0.3&active_enemies>1
+actions+=/ferocious_bite,cycle_targets=1,if=combo_points=5&target.health.pct<25&dot.rip.ticking
+actions+=/rip,cycle_targets=1,if=combo_points=5&remains<=duration*0.3
+actions+=/savage_roar,if=combo_points=5&(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<42*0.3
+actions+=/ferocious_bite,if=combo_points=5&(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)
+actions+=/rake,cycle_targets=1,if=remains<=duration*0.3&combo_points<5
+actions+=/pool_resource,for_next=1
+actions+=/thrash_cat,if=remains<=duration*0.3&active_enemies>1
+actions+=/moonfire,cycle_targets=1,if=remains<=duration*0.3&active_enemies<=10
+actions+=/rake,cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&combo_points<5
+actions+=/swipe,if=combo_points<5&active_enemies>=3
+actions+=/shred,if=combo_points<5&active_enemies<3
+actions+=/natures_vigil
+# Take advantage of Glyph of Cat Form
+actions+=/rejuvenation,target_self=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
+actions+=/rejuvenation,cycle_targets=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
+actions+=/rejuvenation,cycle_targets=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
+actions+=/rejuvenation,cycle_targets=1,if=buff.natures_vigil.up
+
+head=acidic_jaws,id=113880,bonus_id=567/448
+neck=darklight_necklace,id=113865,bonus_id=567/448,enchant=gift_of_critical_strike
+shoulders=living_wood_spaulders,id=115544,bonus_id=567/448
+back=drape_of_the_dark_hunt,id=113971,bonus_id=567/448,enchant=gift_of_critical_strike
+chest=living_wood_raiment,id=115540,bonus_id=567/448
+wrists=bracers_of_shattered_limbs,id=119333,bonus_id=567/448
+hands=living_wood_grips,id=115541,bonus_id=567/448
+waist=conductors_multipocket_girdle,id=113964,bonus_id=567/448
+legs=living_wood_legguards,id=115543,bonus_id=567/448
+feet=furnace_tenders_treads,id=113895,bonus_id=567/448
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,bonus_id=524,enchant=gift_of_critical_strike
+finger2=unexploded_explosive_shard,id=113877,bonus_id=567/448,enchant=gift_of_critical_strike
+trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=567/448
+trinket2=humming_blackiron_trigger,id=113985,bonus_id=567/448
+main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=567/448,enchant=mark_of_the_thunderlord
+
+# Gear Summary
+# gear_agility=3800
+# gear_stamina=4785
+# gear_crit_rating=1871
+# gear_haste_rating=358
+# gear_mastery_rating=567
+# gear_armor=1186
+# gear_multistrike_rating=1209
+# gear_versatility_rating=473
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1

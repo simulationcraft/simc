@@ -1,0 +1,84 @@
+druid="Druid_Balance_T17PR"
+level=100
+race=troll
+role=spell
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!.0.2.01
+spec=balance
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_intellect_flask
+actions.precombat+=/food,type=sleeper_surprise
+actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
+actions.precombat+=/moonkin_form
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_intellect
+actions.precombat+=/stellar_flare
+
+# Executed every time the actor is available.
+
+actions=potion,name=draenic_intellect,if=buff.celestial_alignment.up
+actions+=/blood_fury,if=buff.celestial_alignment.up
+actions+=/berserking,if=buff.celestial_alignment.up
+actions+=/arcane_torrent,if=buff.celestial_alignment.up
+actions+=/use_item,slot=trinket1
+actions+=/force_of_nature,if=trinket.stat.intellect.up|charges=3|target.time_to_die<21
+actions+=/run_action_list,name=single_target,if=active_enemies=1
+actions+=/run_action_list,name=aoe,if=active_enemies>1
+
+actions.single_target=starsurge,if=buff.lunar_empowerment.down&eclipse_energy>20
+actions.single_target+=/starsurge,if=buff.solar_empowerment.down&eclipse_energy<-20
+actions.single_target+=/starsurge,if=(charges=2&recharge_time<15)|charges=3
+actions.single_target+=/celestial_alignment,if=lunar_max<8|target.time_to_die<20
+actions.single_target+=/incarnation,if=buff.celestial_alignment.up
+actions.single_target+=/sunfire,if=remains<7|buff.solar_peak.up
+actions.single_target+=/stellar_flare,if=remains<7
+actions.single_target+=/moonfire,if=buff.lunar_peak.up&remains<eclipse_change+20|remains<4|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2&remains<eclipse_change+20)
+actions.single_target+=/wrath,if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)
+actions.single_target+=/starfire,if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)
+
+actions.aoe=celestial_alignment,if=lunar_max<8|target.time_to_die<20
+actions.aoe+=/incarnation,if=buff.celestial_alignment.up
+actions.aoe+=/sunfire,if=remains<8
+actions.aoe+=/starfall
+actions.aoe+=/moonfire,cycle_targets=1,if=remains<12
+actions.aoe+=/stellar_flare,cycle_targets=1,if=remains<7
+actions.aoe+=/wrath,if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)
+actions.aoe+=/starfire,if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)
+
+head=primal_gladiators_dragonhide_helm,id=111108
+neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_mastery
+shoulders=primal_gladiators_spaulders,id=111277
+back=primal_gladiators_drape_of_cruelty,id=111124,enchant=gift_of_mastery
+chest=primal_gladiators_dragonhide_robes,id=111110
+wrists=primal_gladiators_bindings_of_victory,id=111149
+hands=primal_gladiators_dragonhide_gloves,id=111107
+waist=primal_gladiators_belt_of_prowess,id=111141
+legs=primal_gladiators_dragonhide_legguards,id=111109
+feet=primal_gladiators_boots_of_prowess,id=111145
+finger1=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_mastery
+finger2=primal_gladiators_band_of_prowess,id=111135,enchant=gift_of_mastery
+trinket1=primal_gladiators_badge_of_dominance,id=115754
+trinket2=primal_gladiators_insignia_of_dominance,id=115755
+main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_warsong
+
+# Gear Summary
+# gear_stamina=3249
+# gear_intellect=2588
+# gear_spell_power=1265
+# gear_crit_rating=752
+# gear_haste_rating=872
+# gear_mastery_rating=800
+# gear_armor=950
+# gear_multistrike_rating=660
+# gear_versatility_rating=77
+# set_bonus=pvp_2pc=1
+# set_bonus=pvp_4pc=1

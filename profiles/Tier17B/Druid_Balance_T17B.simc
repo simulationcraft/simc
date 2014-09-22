@@ -1,0 +1,83 @@
+druid="Druid_Balance_T17B"
+level=100
+race=troll
+role=spell
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!.0.2.01
+spec=balance
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_intellect_flask
+actions.precombat+=/food,type=sleeper_surprise
+actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
+actions.precombat+=/moonkin_form
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_intellect
+actions.precombat+=/stellar_flare
+
+# Executed every time the actor is available.
+
+actions=potion,name=draenic_intellect,if=buff.celestial_alignment.up
+actions+=/blood_fury,if=buff.celestial_alignment.up
+actions+=/berserking,if=buff.celestial_alignment.up
+actions+=/arcane_torrent,if=buff.celestial_alignment.up
+actions+=/force_of_nature,if=trinket.stat.intellect.up|charges=3|target.time_to_die<21
+actions+=/run_action_list,name=single_target,if=active_enemies=1
+actions+=/run_action_list,name=aoe,if=active_enemies>1
+
+actions.single_target=starsurge,if=buff.lunar_empowerment.down&eclipse_energy>20
+actions.single_target+=/starsurge,if=buff.solar_empowerment.down&eclipse_energy<-20
+actions.single_target+=/starsurge,if=(charges=2&recharge_time<15)|charges=3
+actions.single_target+=/celestial_alignment,if=lunar_max<8|target.time_to_die<20
+actions.single_target+=/incarnation,if=buff.celestial_alignment.up
+actions.single_target+=/sunfire,if=remains<7|buff.solar_peak.up
+actions.single_target+=/stellar_flare,if=remains<7
+actions.single_target+=/moonfire,if=buff.lunar_peak.up&remains<eclipse_change+20|remains<4|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2&remains<eclipse_change+20)
+actions.single_target+=/wrath,if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)
+actions.single_target+=/starfire,if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)
+
+actions.aoe=celestial_alignment,if=lunar_max<8|target.time_to_die<20
+actions.aoe+=/incarnation,if=buff.celestial_alignment.up
+actions.aoe+=/sunfire,if=remains<8
+actions.aoe+=/starfall
+actions.aoe+=/moonfire,cycle_targets=1,if=remains<12
+actions.aoe+=/stellar_flare,cycle_targets=1,if=remains<7
+actions.aoe+=/wrath,if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)
+actions.aoe+=/starfire,if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)
+
+head=living_wood_headpiece,id=115542,bonus_id=567/448
+neck=gruuls_lip_ring,id=113872,bonus_id=567/448,enchant=gift_of_mastery
+shoulders=living_wood_spaulders,id=115544,bonus_id=567/448
+back=runefrenzy_greatcloak,id=113937,bonus_id=567/448,enchant=gift_of_mastery
+chest=living_wood_raiment,id=115540,bonus_id=567/448
+wrists=bracers_of_shattered_stalactites,id=113935,bonus_id=567/448
+hands=cannonball_loaders_grips,id=113949,bonus_id=567/448
+waist=conductors_multipocket_girdle,id=113964,bonus_id=567/448
+legs=living_wood_legguards,id=115543,bonus_id=567/448
+feet=treads_of_the_dark_hunt,id=113974,bonus_id=567/448
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,bonus_id=524,enchant=gift_of_mastery
+finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567/448,enchant=gift_of_mastery
+trinket1=blackiron_micro_crucible,id=113984,bonus_id=567/448
+trinket2=darmacs_unstable_talisman,id=113948,bonus_id=567/448
+main_hand=infernoflame_staff,id=113869,bonus_id=567/448,enchant=mark_of_warsong
+
+# Gear Summary
+# gear_stamina=4785
+# gear_intellect=3800
+# gear_spell_power=1852
+# gear_crit_rating=624
+# gear_haste_rating=965
+# gear_mastery_rating=1987
+# gear_armor=1186
+# gear_multistrike_rating=786
+# gear_versatility_rating=103
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1
