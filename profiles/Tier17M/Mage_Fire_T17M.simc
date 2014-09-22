@@ -81,7 +81,6 @@ actions.st_combust+=/meteor,if=spell_haste>0.667
 actions.st_combust+=/blood_fury
 actions.st_combust+=/berserking
 actions.st_combust+=/arcane_torrent
-actions.st_combust+=/use_item,slot=trinket1
 actions.st_combust+=/potion,name=draenic_intellect
 actions.st_combust+=/meteor
 # Single target PC Combustions utilize PC for double ticks, and avoid spending all pyro buffs, leaving some for use on PC
@@ -105,7 +104,6 @@ actions.crystal_combust+=/inferno_blast,cycle_targets=1,if=talent.living_bomb.en
 actions.crystal_combust+=/blood_fury
 actions.crystal_combust+=/berserking
 actions.crystal_combust+=/arcane_torrent
-actions.crystal_combust+=/use_item,slot=trinket1
 actions.crystal_combust+=/potion,name=draenic_intellect
 actions.crystal_combust+=/fireball,if=!dot.ignite.ticking&!action.fireball.in_flight
 actions.crystal_combust+=/pyroblast,if=buff.pyroblast.up
@@ -149,21 +147,21 @@ hands=arcanoshatter_gloves,id=115552,bonus_id=567
 waist=seeking_ember_girdle,id=113941,bonus_id=567
 legs=arcanoshatter_leggings,id=115554,bonus_id=567
 feet=cavedwellers_climbers,id=113864,bonus_id=567
-finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant=gift_of_critical_strike
-finger2=epicenter_loop,id=113947,bonus_id=567,enchant=gift_of_critical_strike
-trinket1=shards_of_nothing,id=113835,bonus_id=567
-trinket2=blackiron_micro_crucible,id=113984,bonus_id=567
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_critical_strike
+finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant=gift_of_critical_strike
+trinket1=goren_soul_repository,id=119194,bonus_id=567
+trinket2=darmacs_unstable_talisman,id=113948,bonus_id=567
 main_hand=blackhand_doomstaff,id=113988,bonus_id=567,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_stamina=4506
-# gear_intellect=3560
+# gear_stamina=4545
+# gear_intellect=3612
 # gear_spell_power=1753
-# gear_crit_rating=1593
+# gear_crit_rating=1490
 # gear_haste_rating=1115
-# gear_mastery_rating=1160
+# gear_mastery_rating=1309
 # gear_armor=870
 # gear_multistrike_rating=219
-# gear_versatility_rating=121
+# gear_versatility_rating=103
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

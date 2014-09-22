@@ -26,7 +26,7 @@ main_hand=primal_gladiators_greatsword,id=111204,enchant=mark_of_bleeding_hollow
 save=Paladin_Retribution_T17P.simc
 
 paladin="Paladin_Protection_T17P"
-talents=3122323
+talents=3132221
 level=100
 race=blood_elf
 spec=protection

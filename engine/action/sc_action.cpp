@@ -1813,8 +1813,8 @@ void action_t::reset()
   {
     action_state_t::release( pre_execute_state );
   }
-  cooldown -> reset( false );
-  line_cooldown.reset( false );
+  cooldown -> reset_init();
+  line_cooldown.reset_init();
   execute_event = 0;
   travel_events.clear();
   target = default_target;

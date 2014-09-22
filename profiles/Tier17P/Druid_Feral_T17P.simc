@@ -3,7 +3,7 @@ level=100
 race=night_elf
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!...1.21
+talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!.0.1.21
 glyphs=savage_roar/master_shapeshifter/cat_form
 spec=feral
 
@@ -30,6 +30,7 @@ actions.precombat+=/potion,name=draenic_agility
 actions=rake,if=buff.prowl.up|buff.shadowmeld.up
 actions+=/auto_attack
 actions+=/skull_bash
+actions+=/force_of_nature,if=charges=3|trinket.proc.all.react|target.time_to_die<20
 actions+=/incarnation,sync=berserk
 actions+=/berserk,if=cooldown.tigers_fury.remains<8
 actions+=/potion,name=draenic_agility,if=target.time_to_die<=40
@@ -43,7 +44,6 @@ actions+=/shadowmeld,if=(buff.bloodtalons.up|!talent.bloodtalons.enabled)&dot.ra
 actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<25
 # Take advantage of Glyph of Cat Form
 actions+=/healing_touch,target_self=1,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)
-actions+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)
 actions+=/savage_roar,if=buff.savage_roar.remains<3
 actions+=/potion,name=draenic_agility,sync=berserk,if=target.health.pct<25
 actions+=/thrash_cat,if=buff.omen_of_clarity.react&remains<=duration*0.3&active_enemies>1

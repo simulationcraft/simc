@@ -1,7 +1,7 @@
 paladin="Paladin_Retribution_T17H"
 level=100
 race=blood_elf
-role=hybrid
+role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#bb!1001121
 glyphs=winged_vengeance/templars_verdict/righteous_retreat/fire_from_the_heavens/judgment/
@@ -77,29 +77,29 @@ actions+=/final_verdict
 actions+=/holy_prism
 
 head=helmet_of_guiding_light,id=115568,bonus_id=566
-neck=vertebrae_protector,id=113900,bonus_id=566/448,enchant=gift_of_haste
+neck=vertebrae_protector,id=113900,bonus_id=566,enchant=gift_of_haste
 shoulders=pauldrons_of_guiding_light,id=115565,bonus_id=566
-back=charbreath_firecloak,id=113916,bonus_id=566/448,enchant=gift_of_haste
+back=charbreath_firecloak,id=113916,bonus_id=566,enchant=gift_of_haste
 chest=battleplate_of_guiding_light,id=115566,bonus_id=566
-wrists=bracers_of_martial_perfection,id=113871,bonus_id=566/448
+wrists=bracers_of_martial_perfection,id=113871,bonus_id=566
 hands=gauntlets_of_guiding_light,id=115567,bonus_id=566
-waist=uktars_belt_of_chiming_rings,id=113976,bonus_id=566/448
-legs=firestorm_legplates,id=113921,bonus_id=566/448
-feet=iron_bellow_sabatons,id=113961,bonus_id=566/448
-finger1=phosphorescent_seal,id=113866,bonus_id=566/448,enchant=gift_of_haste
-finger2=ransackers_ring_of_plunder,id=118868,bonus_id=566/448,enchant=gift_of_haste
-trinket1=forgemasters_insignia,id=113983,bonus_id=566/448
-trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=566/448
-main_hand=thogars_control_rod,id=113953,bonus_id=566/448,enchant=mark_of_warsong
+waist=uktars_belt_of_chiming_rings,id=113976,bonus_id=566
+legs=firestorm_legplates,id=113921,bonus_id=566
+feet=iron_bellow_sabatons,id=113961,bonus_id=566
+finger1=phosphorescent_seal,id=113866,bonus_id=566,enchant=gift_of_haste
+finger2=spellbound_solium_band_of_sorcerous_strength,id=118300,enchant=gift_of_haste
+trinket1=forgemasters_insignia,id=113983,bonus_id=566
+trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=566
+main_hand=thogars_control_rod,id=113953,bonus_id=566,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_strength=3240
-# gear_stamina=4059
-# gear_crit_rating=616
-# gear_haste_rating=2191
-# gear_mastery_rating=892
-# gear_armor=2169
-# gear_multistrike_rating=223
-# gear_versatility_rating=309
+# gear_strength=3134
+# gear_stamina=3942
+# gear_crit_rating=714
+# gear_haste_rating=2037
+# gear_mastery_rating=763
+# gear_armor=2148
+# gear_multistrike_rating=317
+# gear_versatility_rating=293
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

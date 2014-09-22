@@ -20,7 +20,7 @@ waist=seeking_ember_girdle,id=113941
 legs=soul_priests_leggings,id=115564
 feet=cavedwellers_climbers,id=113864
 finger1=ukuroggs_corrupted_seal,id=113975,enchant=gift_of_mastery
-finger2=solium_band_of_wisdom,id=118291,enchant=gift_of_mastery
+finger2=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_mastery
 trinket1=darmacs_unstable_talisman,id=113948
 trinket2=goren_soul_repository,id=119194
 main_hand=infernoflame_staff,id=113869,enchant=mark_of_bleeding_hollow
@@ -39,7 +39,7 @@ waist=seeking_ember_girdle,id=113941
 legs=soul_priests_leggings,id=115564
 feet=cavedwellers_climbers,id=113864
 finger1=ukuroggs_corrupted_seal,id=113975,enchant=gift_of_haste
-finger2=solium_band_of_wisdom,id=118291,enchant=gift_of_haste
+finger2=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_haste
 trinket1=darmacs_unstable_talisman,id=113948
 trinket2=goren_soul_repository,id=119194
 main_hand=infernoflame_staff,id=113869,enchant=mark_of_warsong
@@ -58,7 +58,7 @@ waist=deckhands_rope_belt,id=113967
 legs=turret_mechanics_legwraps,id=113970
 feet=cavedwellers_climbers,id=113864
 finger1=ukuroggs_corrupted_seal,id=113975,enchant=gift_of_critical_strike
-finger2=epicenter_loop,id=113947,enchant=gift_of_critical_strike
+finger2=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_critical_strike
 trinket1=darmacs_unstable_talisman,id=113948
 trinket2=goren_soul_repository,id=119194
 main_hand=blackhand_doomstaff,id=113988,enchant=mark_of_warsong

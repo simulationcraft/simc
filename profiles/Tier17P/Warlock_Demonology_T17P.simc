@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!....101
+talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!....200
 glyphs=imp_swarm/dark_soul
 spec=demonology
 
@@ -44,14 +44,14 @@ actions+=/corruption,if=target.time_to_die>=6&remains<=(0.3*duration)&cooldown.d
 actions+=/corruption,if=target.time_to_die>=6&remains<=action.shadow_bolt.cast_time
 actions+=/cancel_metamorphosis,if=buff.metamorphosis.up&buff.dark_soul.down&demonic_fury<=650&demonic_fury%(40%gcd)<target.time_to_die
 actions+=/cancel_metamorphosis,if=buff.metamorphosis.up&cooldown.metamorphosis.remains<=3&action.hand_of_guldan.charges=2
-actions+=/demonbolt,if=buff.dark_soul.up
+actions+=/demonbolt,if=buff.dark_soul.up|(cooldown.dark_soul.remains>(40%(1%spell_haste))&buff.demonbolt.stack<2)
 actions+=/touch_of_chaos,if=buff.metamorphosis.up
 actions+=/metamorphosis,if=buff.dark_soul.remains>gcd
 actions+=/metamorphosis,if=demonic_fury>=950
 actions+=/metamorphosis,if=(action.hand_of_guldan.charges=0|(!dot.shadowflame.ticking&!action.hand_of_guldan.in_flight_to_target))&demonic_fury>=750&cooldown.dark_soul.remains>=8
 actions+=/metamorphosis,if=(action.hand_of_guldan.charges=0|(!dot.shadowflame.ticking&!action.hand_of_guldan.in_flight_to_target))&demonic_fury%(40%gcd)>=target.time_to_die
 actions+=/metamorphosis,if=(action.hand_of_guldan.charges=0|(!dot.shadowflame.ticking&!action.hand_of_guldan.in_flight_to_target))&demonic_fury>=500&cooldown.dark_soul.remains>=8&dot.corruption.remains<=(dot.corruption.duration*0.3)
-actions+=/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&(charges=2|dot.shadowflame.remains>travel_time|(charges=1&recharge_time<4))
+actions+=/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&(((charges=2&set_bonus.tier17_4pc=0)|(charges=3&set_bonus.tier17_4pc=1))|dot.shadowflame.remains>travel_time|(charges=1&recharge_time<4))
 actions+=/soul_fire,if=buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)
 actions+=/life_tap,if=mana.pct<40
 actions+=/shadow_bolt

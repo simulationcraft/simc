@@ -85,21 +85,21 @@ hands=handwraps_of_the_somber_gaze,id=115555,bonus_id=566
 waist=belt_of_bloody_guts,id=113636,bonus_id=566
 legs=nether_blast_leggings,id=113856,bonus_id=566
 feet=ironflecked_sandals,id=119340,bonus_id=566
-finger1=timeless_solium_band_of_the_bulwark,id=118298,bonus_id=566,enchant=gift_of_versatility
+finger1=spellbound_solium_band_of_sorcerous_invincibility,id=118303,enchant=gift_of_versatility
 finger2=stonefist_band,id=113938,bonus_id=566,enchant=gift_of_versatility
 trinket1=pillar_of_the_earth,id=113650,bonus_id=566
 trinket2=blast_furnace_door,id=113893,bonus_id=566
 main_hand=headlopper_skullscythe,id=119448,bonus_id=566,enchant_id=5352
 
 # Gear Summary
-# gear_agility=2594
-# gear_stamina=4238
+# gear_agility=2586
+# gear_stamina=4226
 # gear_crit_rating=799
 # gear_haste_rating=672
 # gear_mastery_rating=768
 # gear_armor=1045
-# gear_bonus_armor=840
+# gear_bonus_armor=835
 # gear_multistrike_rating=310
-# gear_versatility_rating=841
+# gear_versatility_rating=837
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

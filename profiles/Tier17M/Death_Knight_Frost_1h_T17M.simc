@@ -1,5 +1,4 @@
-deathknight="Death_Knight_Frost_1h_T17M”
-"
+deathknight="Death_Knight_Frost_1h_T17M"
 level=100
 race=orc
 role=attack
@@ -77,30 +76,30 @@ actions.single_target+=/plague_leech
 actions.single_target+=/empower_rune_weapon
 
 head=ogreskull_boneplate_greathelm,id=115539,bonus_id=567
-neck=thogars_serrated_chain,id=113959,bonus_id=567/448,enchant=gift_of_mastery
-shoulders=overdriven_spaulders,id=113990,bonus_id=567/448
-back=cloak_of_sanguine_terror,id=113972,bonus_id=567/448,enchant=gift_of_mastery
+neck=thogars_serrated_chain,id=113959,bonus_id=567,enchant=gift_of_mastery
+shoulders=overdriven_spaulders,id=113990,bonus_id=567
+back=cloak_of_sanguine_terror,id=113972,bonus_id=567,enchant=gift_of_mastery
 chest=ogreskull_boneplate_breastplate,id=115537,bonus_id=567
-wrists=bracers_of_martial_perfection,id=113871,bonus_id=567/448
+wrists=bracers_of_martial_perfection,id=113871,bonus_id=567
 hands=ogreskull_boneplate_gauntlets,id=115538,bonus_id=567
-waist=ironcrushers_collar,id=113950,bonus_id=567/448
+waist=ironcrushers_collar,id=113950,bonus_id=567
 legs=ogreskull_boneplate_greaves,id=115535,bonus_id=567
-feet=sabatons_of_fractal_earth,id=113936,bonus_id=567/448
-finger1=spellbound_runic_band_of_elemental_power,id=118305,bonus_id=524,enchant=gift_of_mastery
-finger2=phosphorescent_seal,id=113866,bonus_id=567/448,enchant=gift_of_mastery
-trinket1=horn_of_screaming_spirits,id=119193,bonus_id=567/448
-trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=567/448
-main_hand=kromogs_brutal_fist,id=113927,bonus_id=567/448,enchant=rune_of_the_fallen_crusader
-off_hand=kromogs_brutal_fist,id=113927,bonus_id=567/448,enchant=rune_of_razorice
+feet=sabatons_of_fractal_earth,id=113936,bonus_id=567
+finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_mastery
+finger2=phosphorescent_seal,id=113866,bonus_id=567,enchant=gift_of_mastery
+trinket1=horn_of_screaming_spirits,id=119193,bonus_id=567
+trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=567
+main_hand=kromogs_brutal_fist,id=113927,bonus_id=567,enchant=rune_of_the_fallen_crusader
+off_hand=kromogs_brutal_fist,id=113927,bonus_id=567,enchant=rune_of_razorice
 
 # Gear Summary
-# gear_strength=3686
-# gear_stamina=4611
-# gear_crit_rating=606
-# gear_haste_rating=628
-# gear_mastery_rating=1387
-# gear_armor=2271
-# gear_multistrike_rating=1426
-# gear_versatility_rating=269
+# gear_strength=3564
+# gear_stamina=4474
+# gear_crit_rating=600
+# gear_haste_rating=613
+# gear_mastery_rating=1341
+# gear_armor=2250
+# gear_multistrike_rating=1388
+# gear_versatility_rating=255
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

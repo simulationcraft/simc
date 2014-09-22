@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Va!....001
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Va!....000
 spec=affliction
 
 # This default action priority list is automatically created based on your character.
@@ -26,7 +26,7 @@ actions.precombat+=/potion,name=draenic_intellect
 
 # Executed every time the actor is available.
 
-actions=use_item,name=primal_gladiators_badge_of_dominance
+actions=use_item,name=shards_of_nothing
 actions+=/potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/berserking
 actions+=/blood_fury
@@ -46,30 +46,32 @@ actions+=/life_tap,if=mana.pct<40
 actions+=/drain_soul,interrupt=1,chain=1
 actions+=/life_tap
 
-head=primal_gladiators_hood_of_prowess,id=111084
-neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_mastery
-shoulders=primal_gladiators_amice_of_prowess,id=111087
-back=primal_gladiators_drape_of_prowess,id=111125,enchant=gift_of_mastery
-chest=primal_gladiators_robes_of_prowess,id=111086
-wrists=primal_gladiators_cuffs_of_prowess,id=111099
-hands=primal_gladiators_felweave_handguards,id=111234
-waist=primal_gladiators_cord_of_prowess,id=111094
-legs=primal_gladiators_leggings_of_prowess,id=111085
-feet=primal_gladiators_treads_of_cruelty,id=111096
-finger1=primal_gladiators_band_of_prowess,id=111135,enchant=gift_of_mastery
-finger2=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_mastery
-trinket1=primal_gladiators_badge_of_dominance,id=111227
-trinket2=primal_gladiators_insignia_of_dominance,id=111228
-main_hand=primal_gladiators_mageblade,id=111119,enchant=mark_of_bleeding_hollow
-off_hand=primal_gladiators_reprieve,id=111133
+head=shadow_councils_hood,id=115586,bonus_id=567
+neck=gruuls_lip_ring,id=113872,bonus_id=567,enchant=gift_of_haste
+shoulders=shadow_councils_mantle,id=115589,bonus_id=567
+back=runefrenzy_greatcloak,id=113937,bonus_id=567,enchant=gift_of_haste
+chest=shadow_councils_robes,id=115588,bonus_id=567
+wrists=bracers_of_enkindled_power,id=113956,bonus_id=567
+hands=shadow_councils_gloves,id=115585,bonus_id=567
+waist=seeking_ember_girdle,id=113941,bonus_id=567
+legs=turret_mechanics_legwraps,id=113970,bonus_id=567
+feet=cavedwellers_climbers,id=113864,bonus_id=567
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_haste
+finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant=gift_of_haste
+trinket1=shards_of_nothing,id=113835,bonus_id=567
+trinket2=darmacs_unstable_talisman,id=113948,bonus_id=567
+main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_stamina=3245
-# gear_intellect=2584
-# gear_spell_power=1244
-# gear_crit_rating=387
-# gear_haste_rating=941
-# gear_mastery_rating=1233
-# gear_armor=677
-# gear_multistrike_rating=596
+# gear_stamina=4545
+# gear_intellect=3586
+# gear_spell_power=1753
+# gear_crit_rating=960
+# gear_haste_rating=1836
+# gear_mastery_rating=1637
+# gear_armor=870
+# gear_multistrike_rating=134
+# gear_versatility_rating=103
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1
 default_pet=felhunter

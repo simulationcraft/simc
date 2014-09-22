@@ -82,31 +82,31 @@ actions.aoe+=/chain_lightning,if=glyph.chain_lightning.enabled&active_enemies>=4
 actions.aoe+=/lightning_bolt,if=(!glyph.chain_lightning.enabled|active_enemies<=3)&buff.maelstrom_weapon.react>=1
 actions.aoe+=/fire_nova,if=active_dot.flame_shock>=1
 
-head=gronnskin_crown,id=113863,bonus_id=567/448
-neck=engineers_grounded_gorget,id=113892,bonus_id=567/448,enchant=gift_of_haste
-shoulders=windspeakers_mantle,id=115576,bonus_id=567/448
-back=cloak_of_delving_secrets,id=113929,bonus_id=567/448,enchant=gift_of_haste
-chest=windspeakers_tunic,id=115577,bonus_id=567/448
-wrists=bracers_of_callous_disregard,id=119334,bonus_id=567/448
-hands=windspeakers_handwraps,id=115578,bonus_id=567/448
-waist=earthgrasp_girdle,id=113930,bonus_id=567/448
-legs=windspeakers_legwraps,id=115575,bonus_id=567/448
-feet=slagstomper_treads,id=113888,bonus_id=567/448
+head=gronnskin_crown,id=113863,bonus_id=567
+neck=engineers_grounded_gorget,id=113892,bonus_id=567,enchant=gift_of_haste
+shoulders=windspeakers_mantle,id=115576,bonus_id=567
+back=cloak_of_delving_secrets,id=113929,bonus_id=567,enchant=gift_of_haste
+chest=windspeakers_tunic,id=115577,bonus_id=567
+wrists=bracers_of_callous_disregard,id=119334,bonus_id=567
+hands=windspeakers_handwraps,id=115578,bonus_id=567
+waist=earthgrasp_girdle,id=113930,bonus_id=567
+legs=windspeakers_legwraps,id=115575,bonus_id=567
+feet=slagstomper_treads,id=113888,bonus_id=567
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_haste
-finger2=cinderwolf_signet,id=113917,bonus_id=567/448,enchant=gift_of_haste
-trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=567/448
-trinket2=meaty_dragonspine_trophy,id=118114,bonus_id=567/448
-main_hand=hansgars_forgehammer,id=113897,bonus_id=567/448,enchant=mark_of_warsong
-off_hand=hansgars_forgehammer,id=113897,bonus_id=567/448,enchant=mark_of_bleeding_hollow
+finger2=cinderwolf_signet,id=113917,bonus_id=567,enchant=gift_of_haste
+trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=567
+trinket2=meaty_dragonspine_trophy,id=118114,bonus_id=567
+main_hand=hansgars_forgehammer,id=113897,bonus_id=567,enchant=mark_of_warsong
+off_hand=hansgars_forgehammer,id=113897,bonus_id=567,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_agility=3749
-# gear_stamina=4708
-# gear_crit_rating=660
-# gear_haste_rating=2091
-# gear_mastery_rating=929
-# gear_armor=1503
-# gear_multistrike_rating=740
-# gear_versatility_rating=383
+# gear_agility=3564
+# gear_stamina=4474
+# gear_crit_rating=632
+# gear_haste_rating=2018
+# gear_mastery_rating=879
+# gear_armor=1463
+# gear_multistrike_rating=703
+# gear_versatility_rating=369
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

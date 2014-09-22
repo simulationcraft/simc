@@ -13,6 +13,7 @@ namespace { // UNNAMED NAMESPACE
  /* WoD -- TODO:
     = Feral =
     Update LI implementation to work like in-game
+    Update Glyph of Ferocious Bite to be a heal
 
     = Balance =
     PvP/Tier Bonuses
@@ -6033,6 +6034,7 @@ void druid_t::apl_feral()
     def -> add_action( this, "Rake", "if=buff.prowl.up" );
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Skull Bash" );
+  def -> add_talent( this, "Force of Nature", "if=charges=3|trinket.proc.all.react|target.time_to_die<20");
   def -> add_action( "incarnation,sync=berserk" );
   def -> add_action( this, "Berserk", "if=cooldown.tigers_fury.remains<8" );
   if ( sim -> allow_potions && level >= 80 )
@@ -7030,8 +7032,8 @@ void druid_t::assess_heal( school_e school,
                            dmg_e    dmg_type,
                            action_state_t* s )
 {
-  s -> result_amount *= 1.0 + buff.frenzied_regeneration -> check();
-  s -> result_amount *= 1.0 + buff.cat_form -> check() * glyph.cat_form -> effectN( 1 ).percent();
+  s -> result_total *= 1.0 + buff.frenzied_regeneration -> check();
+  s -> result_total *= 1.0 + buff.cat_form -> check() * glyph.cat_form -> effectN( 1 ).percent();
   player_t::assess_heal( school, dmg_type, s );
 }
 

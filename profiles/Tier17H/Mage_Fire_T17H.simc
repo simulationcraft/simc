@@ -149,21 +149,21 @@ hands=arcanoshatter_gloves,id=115552,bonus_id=566
 waist=seeking_ember_girdle,id=113941,bonus_id=566
 legs=arcanoshatter_leggings,id=115554,bonus_id=566
 feet=cavedwellers_climbers,id=113864,bonus_id=566
-finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant=gift_of_critical_strike
+finger1=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_critical_strike
 finger2=epicenter_loop,id=113947,bonus_id=566,enchant=gift_of_critical_strike
 trinket1=shards_of_nothing,id=113835,bonus_id=566
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=566
 main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_stamina=3921
-# gear_intellect=3098
+# gear_stamina=3942
+# gear_intellect=3112
 # gear_spell_power=1524
 # gear_crit_rating=1421
-# gear_haste_rating=972
-# gear_mastery_rating=1008
+# gear_haste_rating=871
+# gear_mastery_rating=1034
 # gear_armor=780
 # gear_multistrike_rating=190
-# gear_versatility_rating=106
+# gear_versatility_rating=192
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

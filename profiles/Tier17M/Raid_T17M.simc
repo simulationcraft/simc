@@ -1,23 +1,45 @@
+# TxM
+# Tier x Mythic
+# * Ilvl Cap: 695
+# * No Random Gems (ie. Bonus RNG Gem Slots)
+# * No Tertiary Stats
+# * No Ranked Gear (ie. Thunderforged/Warforged)
+# * No Legendaries
+# * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
+# * EXCEPTION: 710 Legendary Ring can be used. (accessibility)
+
 optimal_raid=1
 
-# Raid Tier17N
+# Raid Tier17M
 
 Death_Knight_Frost_1h_T17M.simc
 Death_Knight_Frost_2h_T17M.simc
 Death_Knight_Unholy_T17M.simc
+Death_Knight_Blood_T17M.simc
 
 Druid_Feral_T17M.simc
 Druid_Balance_T17M.simc
+Druid_Guardian_T17M.simc
 
 Hunter_BM_T17M.simc
 Hunter_MM_T17M.simc
 Hunter_SV_T17M.simc
 
+Mage_Arcane_T17M.simc
+Mage_Fire_T17M.simc
+Mage_Frost_T17M.simc
+
+Monk_Brewmaster_1h_Serenity_T17M.simc
+Monk_Brewmaster_2h_Serenity_T17M.simc
 Monk_Windwalker_1h_T17M.simc
 Monk_Windwalker_2h_T17M.simc
 
+Paladin_Protection_T17M.simc
 Paladin_Retribution_T17M.simc
 
+Priest_Discipline_T17M_Heal.simc
+Priest_Holy_T17M_Heal.simc
+Priest_Holy_T17M_Dmg.simc
 Priest_Shadow_T17M_COP.simc
 Priest_Shadow_T17M_VE.simc
 Priest_Shadow_T17M_AS.simc
@@ -29,7 +51,12 @@ Rogue_Subtlety_T17M.simc
 Shaman_Elemental_T17M.simc
 Shaman_Enhancement_T17M.simc
 
+Warlock_Affliction_T17M.simc
+#Warlock_Destruction_T17M.simc
+Warlock_Demonology_T17M.simc
+
 Warrior_Arms_T17M.simc
 Warrior_Fury_1h_T17M.simc
 Warrior_Fury_2h_T17M.simc
+Warrior_Protection_T17M.simc
 Warrior_Gladiator_T17M.simc

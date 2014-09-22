@@ -14,6 +14,7 @@
 
   WINDWALKER:
   - Make Sure the healing for Blackout Kick is working
+  - Implement Storm, Earth, and Fire
 
   MISTWEAVER: Pretty much everything. I have no plans of fixing mistweaver. -alex 8/26/14
   Implement the following spells:
@@ -110,6 +111,7 @@ public:
     buff_t* rushing_jade_wind;
     buff_t* serenity;
     buff_t* shuffle;
+    buff_t* storm_earth_and_fire;
     buff_t* gift_of_the_ox;
     buff_t* tiger_power;
     buff_t* tiger_strikes;
@@ -321,6 +323,7 @@ public:
     const spell_data_t* surging_mist;
     const spell_data_t* tier15_2pc_melee;
     const spell_data_t* healing_elixirs;
+    const spell_data_t* storm_earth_and_fire;
 
   } passives;
 
@@ -2262,6 +2265,50 @@ struct xuen_spell_t: public summon_pet_t
 };
 
 // ==========================================================================
+// Storm, Earth, and Fire
+// =========================================================S=================
+
+struct sef_fire_spell_t : public summon_pet_t
+{
+  sef_fire_spell_t( monk_t* p, const std::string& options_str ) :
+    summon_pet_t( "storm_earth_and_fire", "sef_fire_spirit", p, p -> find_spell( 138123 ) )
+  {
+    parse_options( nullptr, options_str );
+
+    trigger_gcd = timespan_t::zero();
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    pet -> summon( timespan_t::zero() );
+    summon_pet_t::execute();
+
+    p() -> buff.storm_earth_and_fire -> trigger();
+  }
+};
+
+struct sef_earth_spell_t : public summon_pet_t
+{
+  sef_earth_spell_t( monk_t* p, const std::string& options_str ) :
+    summon_pet_t( "storm_earth_and_fire", "sef_earth_spirit", p, p -> find_spell( 138121 ) )
+  {
+    parse_options( nullptr, options_str );
+
+    trigger_gcd = timespan_t::zero();
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    pet -> summon( timespan_t::zero() );
+    summon_pet_t::execute();
+
+    p() -> buff.storm_earth_and_fire -> trigger();
+  }
+};
+
+// ==========================================================================
 // Chi Sphere
 // ==========================================================================
 
@@ -3238,6 +3285,9 @@ pet_t* monk_t::create_pet( const std::string& name,
   using namespace pets;
   if ( name == "xuen_the_white_tiger" ) return new xuen_pet_t( sim, this );
 
+  // if ( name == "sef_fire_spirit" ) return new sef_fire_spell_t( sim, this );
+  // if ( name == "sef_earth_spirit" ) return new sef_earth_spell_t( sim, this );
+
   return nullptr;
 }
 
@@ -3248,6 +3298,8 @@ void monk_t::create_pets()
   base_t::create_pets();
 
   create_pet( "xuen_the_white_tiger" );
+  //create_pet( "sef_fire_spirit" );
+  //create_pet( "sef_earth_spirit" );
 }
 
 // monk_t::init_spells ======================================================
@@ -3379,6 +3431,7 @@ void monk_t::init_spells()
   passives.enveloping_mist        = find_class_spell( "Enveloping Mist" );
   passives.surging_mist           = find_class_spell( "Surging Mist" );
   passives.healing_elixirs        = find_spell( 134563 );
+  passives.storm_earth_and_fire   = find_spell( 138228 );
 
   // GLYPHS
   glyph.touch_of_death     = find_glyph( "Glyph of Touch of Death" );
@@ -3387,7 +3440,6 @@ void monk_t::init_spells()
   glyph.fortifying_brew    = find_glyph( "Glyph of Fortifying Brew"    );
   glyph.guard              = find_glyph( "Glyph of Guard" );
   glyph.mana_tea           = find_glyph( "Glyph of Mana Tea" );
-
 
   //MASTERY
   mastery.bottled_fury        = find_mastery_spell( MONK_WINDWALKER );
@@ -3526,6 +3578,9 @@ void monk_t::create_buffs()
     .period( timespan_t::zero() ); // Tigereye Brew does not tick, despite what the spelldata implies.
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use", spec.tigereye_brew ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.tigereye_brew_use -> buff_duration += sets.set( SET_MELEE, PVP, B4 ) -> effectN( 1 ).time_value();
+
+  buff.storm_earth_and_fire = buff_creator_t( this, "storm_earth_and_fire", spec.storm_earth_and_fire )
+    .max_stack( spec.storm_earth_and_fire -> effectN( 1 ).base_value() );
 
   buff.forceful_winds = buff_creator_t( this, "forceful_winds", find_spell( 166603 ) );
 }
@@ -3701,6 +3756,14 @@ double monk_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + active_stance_data( FIERCE_TIGER ).effectN( 3 ).percent();
 
   m *= 1.0 + buff.tigereye_brew_use -> value();
+
+  if ( buff.storm_earth_and_fire -> up() )
+  {
+    if ( buff.storm_earth_and_fire -> stack() == 1 )
+      m *= passives.storm_earth_and_fire -> effectN( 1 ).percent();
+    else if ( buff.storm_earth_and_fire -> stack() == 2 )
+      m *= passives.storm_earth_and_fire -> effectN( 2 ).percent();
+  }
 
   return m;
 }

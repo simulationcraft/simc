@@ -3,7 +3,7 @@ level=100
 race=orc
 role=attack
 position=ranged_back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#YZ!...1012
+talents=http://us.battle.net/wow/en/tool/talent-calculator#YZ!...2212
 spec=marksmanship
 
 # This default action priority list is automatically created based on your character.
@@ -71,20 +71,20 @@ waist=grenadiers_belt,id=113955,bonus_id=566
 legs=rylakstalkers_legguards,id=115546,bonus_id=566
 feet=slagstomper_treads,id=113888,bonus_id=566
 finger1=unexploded_explosive_shard,id=113877,bonus_id=566,enchant=gift_of_critical_strike
-finger2=solium_band_of_dexterity,id=118292,bonus_id=566,enchant=gift_of_critical_strike
+finger2=spellbound_solium_band_of_fatal_strikes,id=118302,enchant=gift_of_critical_strike
 trinket1=humming_blackiron_trigger,id=113985,bonus_id=566
 trinket2=scales_of_doom,id=113612,bonus_id=566
 main_hand=mouth_of_the_fury,id=113885,bonus_id=566,enchant=megawatt_filament
 
 # Gear Summary
-# gear_agility=3067
-# gear_stamina=3874
-# gear_crit_rating=1629
+# gear_agility=3112
+# gear_stamina=3942
+# gear_crit_rating=1660
 # gear_haste_rating=677
 # gear_mastery_rating=472
 # gear_armor=1370
 # gear_multistrike_rating=724
-# gear_versatility_rating=173
+# gear_versatility_rating=201
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 summon_pet=cat

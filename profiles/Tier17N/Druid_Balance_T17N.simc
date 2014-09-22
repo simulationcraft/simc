@@ -63,21 +63,21 @@ hands=toothbreaker_grips,id=113876
 waist=conductors_multipocket_girdle,id=113964
 legs=living_wood_legguards,id=115543
 feet=treads_of_the_dark_hunt,id=113974
-finger1=aryus_puzzle_ring,id=118864,enchant=gift_of_mastery
-finger2=ukuroggs_corrupted_seal,id=113975,enchant=gift_of_mastery
+finger1=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_mastery
+finger2=aryus_puzzle_ring,id=118864,enchant=gift_of_mastery
 trinket1=blackiron_micro_crucible,id=113984
 trinket2=primal_gladiators_insignia_of_dominance,id=115755
 main_hand=infernoflame_staff,id=113869,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_stamina=3408
-# gear_intellect=2700
+# gear_stamina=3437
+# gear_intellect=2720
 # gear_spell_power=1325
 # gear_crit_rating=446
-# gear_haste_rating=795
-# gear_mastery_rating=1412
+# gear_haste_rating=707
+# gear_mastery_rating=1440
 # gear_armor=946
 # gear_multistrike_rating=529
-# gear_versatility_rating=85
+# gear_versatility_rating=163
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

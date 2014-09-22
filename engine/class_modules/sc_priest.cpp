@@ -97,6 +97,7 @@ public:
     buff_t* absolution; // t16 4pc heal holy word
     buff_t* resolute_spirit; // t16 4pc heal spirit shell
     buff_t* clear_thoughts; //t17 4pc disc
+    buff_t* shadow_power; //WoD Shadow 2pc PvP
   } buffs;
 
   // Talents
@@ -1791,14 +1792,38 @@ struct dispersion_t final : public priest_spell_t
   {
     parse_options( nullptr, options_str );
 
-    base_tick_time    = timespan_t::from_seconds( 1.0 );
-    dot_duration = timespan_t::from_seconds( 6.0 );
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    dot_duration = timespan_t::from_seconds( 6.0 ) + priest.glyphs.delayed_coalescence -> effectN( 1 ).time_value();
 
     channeled         = true;
     harmful           = false;
     tick_may_crit     = false;
+    //hasted_ticks      = false;
 
     cooldown -> duration = data().cooldown() + priest.glyphs.dispersion -> effectN( 1 ).time_value();
+  }
+
+  virtual void execute() override
+  {
+    priest_spell_t::execute();
+
+    priest.buffs.dispersion -> trigger( 1, 0, 1, dot_duration);// timespan_t::from_seconds( 6.0 ) + priest.glyphs.delayed_coalescence -> effectN( 1 ).time_value() );
+  }
+
+  timespan_t composite_dot_duration()
+  {
+      return timespan_t::from_seconds( 6.0 ) + priest.glyphs.delayed_coalescence -> effectN( 1 ).time_value();
+  }
+
+  timespan_t tick_time()
+  {
+      return timespan_t::from_seconds( 1.0 );
+  }
+
+  virtual void last_tick( dot_t* d ) override
+  {
+    priest_spell_t::last_tick( d );
+    priest.buffs.dispersion -> expire();
   }
 };
 
@@ -4905,6 +4930,21 @@ struct archangel_t final : public priest_buff_t<buff_t>
   }
 };
 
+struct dispersion_t final : public priest_buff_t<buff_t>
+{
+  dispersion_t( priest_t& p ) :
+    base_t( p, buff_creator_t( &p, "dispersion" ).spell( p.find_class_spell( "Dispersion" ) ) )
+  {
+
+  }
+
+  void expire_override()
+  {
+    priest.buffs.shadow_power -> trigger();
+    buff_t::expire_override();
+  }
+};
+
 struct spirit_shell_t final : public priest_buff_t<buff_t>
 {
   spirit_shell_t( priest_t& p ) :
@@ -5665,7 +5705,7 @@ void priest_t::init_spells()
   glyphs.spirit_of_redemption         = find_glyph_spell( "Glyph of Spirit of Redemption" );    //NYI
 
   //Shadow
-  glyphs.delayed_coalescence          = find_glyph_spell( "Glyph of Delayed Coalescence" );     //NYI
+  glyphs.delayed_coalescence          = find_glyph_spell( "Glyph of Delayed Coalescence" );
   glyphs.dispersion                   = find_glyph_spell( "Glyph of Dispersion" );
   glyphs.focused_mending              = find_glyph_spell( "Glyph of Focused Mending" );         //NYI
   glyphs.free_action                  = find_glyph_spell( "Glyph of Free Action" );
@@ -5803,7 +5843,7 @@ void priest_t::create_buffs()
                                               .max_stack( 1 )
                                               .duration( timespan_t::from_seconds( 9.0 ) ); // data in the old deprecated glyph. Leave hardcoded for now, 3/12/2012; 9.0sec ICD in 5.4 (2013/08/18)
 
-  buffs.dispersion = buff_creator_t( this, "dispersion" ).spell( find_class_spell( "Dispersion" ) );
+  buffs.dispersion = new buffs::dispersion_t( *this );
 
   //Set Bonuses
   buffs.empowered_shadows = buff_creator_t( this, "empowered_shadows" )
@@ -5833,6 +5873,11 @@ void priest_t::create_buffs()
   buffs.clear_thoughts = buff_creator_t( this, "clear_thoughts" )
                           .spell( sets.set( PRIEST_DISCIPLINE, T17, B4 ) -> effectN( 1 ).trigger() )
                           .chance( sets.set( PRIEST_DISCIPLINE, T17, B4 ) -> proc_chance() );
+
+  buffs.shadow_power = buff_creator_t( this, "shadow_power" )
+                       .spell( find_spell( 171150 ) )
+                       .chance( sets.has_set_bonus( PRIEST_SHADOW, PVP, B2 ) )
+                       .add_invalidate( CACHE_VERSATILITY );
 }
 
 // ALL Spec Pre-Combat Action Priority List
@@ -5993,6 +6038,8 @@ void priest_t::apl_default()
 void priest_t::apl_shadow()
 {
   action_priority_list_t* default_list = get_action_priority_list( "default" );
+  action_priority_list_t* decision = get_action_priority_list( "decision" );
+  action_priority_list_t* pvp_dispersion = get_action_priority_list( "pvp_dispersion" );
   action_priority_list_t* main = get_action_priority_list( "main" );
   action_priority_list_t* cop = get_action_priority_list( "cop" );
   action_priority_list_t* cop_mfi = get_action_priority_list( "cop_mfi" );
@@ -6029,11 +6076,18 @@ void priest_t::apl_shadow()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[ i ] );
 
-  default_list -> add_action( "run_action_list,name=cop_advanced_mfi_dots,if=target.health.pct>=20&(shadow_orb=5|target.dot.shadow_word_pain.ticking|target.dot.vampiric_touch.ticking|target.dot.devouring_plague.ticking)&talent.clarity_of_power.enabled&talent.insanity.enabled&talent.twist_of_fate.enabled" );//&set_bonus.tier17_2pc" );
-  default_list -> add_action( "run_action_list,name=cop_advanced_mfi,if=target.health.pct>=20&talent.clarity_of_power.enabled&talent.insanity.enabled&talent.twist_of_fate.enabled" );//&set_bonus.tier17_2pc" );
-  default_list -> add_action( "run_action_list,name=cop_mfi,if=talent.clarity_of_power.enabled&talent.insanity.enabled" );
-  default_list -> add_action( "run_action_list,name=cop,if=talent.clarity_of_power.enabled" );
-  default_list -> add_action( "run_action_list,name=main" );
+  default_list -> add_action( "call_action_list,name=pvp_dispersion,if=set_bonus.pvp_2pc" );
+  default_list -> add_action( "call_action_list,name=decision" );
+
+  pvp_dispersion -> add_action( "call_action_list,name=decision,if=cooldown.dispersion.remains>0" );
+  pvp_dispersion -> add_action( "dispersion,interrupt=1" );
+  pvp_dispersion -> add_action( "call_action_list,name=decision" );
+
+  decision -> add_action( "call_action_list,name=cop_advanced_mfi_dots,if=target.health.pct>=20&(shadow_orb=5|target.dot.shadow_word_pain.ticking|target.dot.vampiric_touch.ticking|target.dot.devouring_plague.ticking)&talent.clarity_of_power.enabled&talent.insanity.enabled&talent.twist_of_fate.enabled" );//&set_bonus.tier17_2pc" );
+  decision -> add_action( "call_action_list,name=cop_advanced_mfi,if=target.health.pct>=20&talent.clarity_of_power.enabled&talent.insanity.enabled&talent.twist_of_fate.enabled" );//&set_bonus.tier17_2pc" );
+  decision -> add_action( "call_action_list,name=cop_mfi,if=talent.clarity_of_power.enabled&talent.insanity.enabled" );
+  decision -> add_action( "call_action_list,name=cop,if=talent.clarity_of_power.enabled" );
+  decision -> add_action( "call_action_list,name=main" );
 
   // Main action list, if you don't have CoP selected
   main -> add_action( "mindbender,if=talent.mindbender.enabled" );
@@ -6474,7 +6528,21 @@ void priest_t::target_mitigation( school_e school,
 
   if ( buffs.dispersion -> check() )
   {
-    s -> result_amount *= 1.0 + buffs.dispersion -> data().effectN( 1 ).percent();
+    double extraReduction = 0;
+
+    if ( glyphs.delayed_coalescence && buffs.dispersion -> remains().total_seconds() <= 2.0 )
+    {
+      if ( buffs.dispersion -> remains().total_seconds() < 1.0 )
+      {
+        extraReduction = 0.6;
+      }
+      else
+      {
+        extraReduction = 0.3;
+      }
+    }
+
+    s -> result_amount *= 1.0 + ( buffs.dispersion -> data().effectN( 1 ).percent() + extraReduction );
   }
 
   if ( buffs.focused_will -> check() )

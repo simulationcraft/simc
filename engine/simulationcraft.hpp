@@ -1545,6 +1545,7 @@ public:
   static void combat_begin( sim_t* );
   static void combat_end( sim_t* ) {}
   const char* name() const { return name_str.c_str(); }
+  static double evaluate_raid_event_expression(sim_t* s, std::string& type, std::string& filter );
 };
 
 // Gear Stats ===============================================================
@@ -3763,6 +3764,8 @@ struct cooldown_t
   void start( action_t* action, timespan_t override = timespan_t::min(), timespan_t delay = timespan_t::zero() );
   void start( timespan_t override = timespan_t::min(), timespan_t delay = timespan_t::zero() );
 
+  void reset_init();
+
   timespan_t remains() const
   { return std::max( timespan_t::zero(), ready - sim.current_time ); }
 
@@ -3786,10 +3789,11 @@ struct cooldown_t
   void set_recharge_multiplier( double );
 
   expr_t* create_expression( action_t* a, const std::string& name_str );
-private:
+
   static timespan_t ready_init()
   { return timespan_t::from_seconds( -60 * 60 ); }
 
+private:
   double recharge_multiplier;
 };
 

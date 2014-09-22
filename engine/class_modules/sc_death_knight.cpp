@@ -454,7 +454,7 @@ public:
     active_presence(),
     t16_tank_2pc_driver(),
     runic_power_decay_rate(),
-    fallen_crusader( find_spell( 53365 ) -> effectN( 1 ).percent() + find_spell( 157376 ) -> effectN( 2 ).percent() ),
+    fallen_crusader( 0 ),
     fallen_crusader_rppm( find_spell( 166441 ) -> real_ppm() ),
     buffs( buffs_t() ),
     runeforge( runeforge_t() ),
@@ -5894,6 +5894,8 @@ void death_knight_t::init_spells()
   if ( sets.has_set_bonus( DEATH_KNIGHT_FROST, T17, B4 ) )
     active_spells.frozen_runeblade = new frozen_runeblade_driver_t( this );
 
+  fallen_crusader += find_spell( 53365 ) -> effectN( 1 ).percent();
+  fallen_crusader += perk.improved_runeforges -> effectN( 2 ).percent();
 }
 
 // death_knight_t::default_apl_blood ========================================
@@ -6736,7 +6738,7 @@ void death_knight_t::combat_begin()
 void death_knight_t::assess_heal( school_e school, dmg_e t, action_state_t* s )
 {
   if ( buffs.vampiric_blood -> up() )
-    s -> result_amount *= 1.0 + buffs.vampiric_blood -> data().effectN( 1 ).percent() +
+    s -> result_total *= 1.0 + buffs.vampiric_blood -> data().effectN( 1 ).percent() +
                                 glyph.vampiric_blood -> effectN( 1 ).percent();
 
   player_t::assess_heal( school, t, s );

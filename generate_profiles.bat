@@ -10,12 +10,12 @@ if exist simc.exe goto 32
 goto exit
 :64
 @echo on
-forfiles -s -m generate_????.simc -c "cmd /c echo Running @path && %~dp0simc64.exe @file"
+forfiles -s -m generate_T1?*.simc -c "cmd /c echo Running @path && %~dp0simc64.exe @file"
 pause
 exit
 :32
 @echo on
-forfiles -s -m generate_????.simc -c "cmd /c echo Running @path && %~dp0simc.exe @file"
+forfiles -s -m generate_T1?*.simc -c "cmd /c echo Running @path && %~dp0simc.exe @file"
 pause
 exit
 :exit

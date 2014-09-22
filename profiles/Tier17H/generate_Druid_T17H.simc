@@ -33,23 +33,23 @@ race=night_elf
 spec=feral
 role=attack
 position=back
-talents=0002032
+talents=0102032
 glyphs=savage_roar/master_shapeshifter/cat_form
-head=sorkas_nightshade_cowl,id=113978,bonus_id=566
-neck=darklight_necklace,id=113865,enchant=gift_of_critical_strike,bonus_id=566
+head=acidic_jaws,id=113880,bonus_id=566
+neck=darklight_necklace,id=113865,bonus_id=566,enchant=gift_of_critical_strike
 shoulders=living_wood_spaulders,id=115544,bonus_id=566
-back=drape_of_the_dark_hunt,id=113971,enchant=gift_of_critical_strike,bonus_id=566
+back=drape_of_the_dark_hunt,id=113971,bonus_id=566,enchant=gift_of_critical_strike
 chest=living_wood_raiment,id=115540,bonus_id=566
-wrists=bracers_of_shattered_stalactites,id=113935,bonus_id=566
+wrists=bracers_of_shattered_limbs,id=119333,bonus_id=566
 hands=living_wood_grips,id=115541,bonus_id=566
 waist=conductors_multipocket_girdle,id=113964,bonus_id=566
 legs=living_wood_legguards,id=115543,bonus_id=566
 feet=furnace_tenders_treads,id=113895,bonus_id=566
-finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_critical_strike
-finger2=unexploded_explosive_shard,id=113877,enchant=gift_of_critical_strike,bonus_id=566
+finger1=spellbound_solium_band_of_fatal_strikes,id=118302,enchant=gift_of_critical_strike
+finger2=unexploded_explosive_shard,id=113877,bonus_id=566,enchant=gift_of_critical_strike
 trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=566
 trinket2=humming_blackiron_trigger,id=113985,bonus_id=566
-main_hand=headlopper_skullscythe,id=119448,enchant=mark_of_the_thunderlord,bonus_id=566
+main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=566,enchant=mark_of_the_thunderlord
 save=Druid_Feral_T17H.simc
 
 # Balance Druid T17H
@@ -68,8 +68,8 @@ hands=cannonball_loaders_grips,id=113949,bonus_id=566
 waist=conductors_multipocket_girdle,id=113964,bonus_id=566
 legs=living_wood_legguards,id=115543,bonus_id=566
 feet=treads_of_the_dark_hunt,id=113974,bonus_id=566
-finger1=epicenter_loop,id=113947,bonus_id=566,enchant=gift_of_mastery
-finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant=gift_of_mastery
+finger1=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_mastery
+finger2=epicenter_loop,id=113947,bonus_id=566,enchant=gift_of_mastery
 trinket1=blackiron_micro_crucible,id=113984,bonus_id=566
 trinket2=darmacs_unstable_talisman,id=113948,bonus_id=566
 main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_warsong

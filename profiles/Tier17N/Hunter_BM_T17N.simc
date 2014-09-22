@@ -59,20 +59,20 @@ waist=grenadiers_belt,id=113955
 legs=rylakstalkers_legguards,id=115546
 feet=railwalkers_ratcheted_boots,id=113954
 finger1=unexploded_explosive_shard,id=113877,enchant=gift_of_haste
-finger2=cinderwolf_signet,id=113917,enchant=gift_of_critical_strike
+finger2=timeless_solium_band_of_the_assassin,id=118297,enchant=gift_of_critical_strike
 trinket1=humming_blackiron_trigger,id=113985
 trinket2=meaty_dragonspine_trophy,id=118114
 main_hand=mouth_of_the_fury,id=113885,enchant=megawatt_filament
 
 # Gear Summary
-# gear_agility=2710
-# gear_stamina=3408
-# gear_crit_rating=867
+# gear_agility=2730
+# gear_stamina=3437
+# gear_crit_rating=971
 # gear_haste_rating=1116
 # gear_mastery_rating=706
 # gear_armor=1286
-# gear_multistrike_rating=854
-# gear_versatility_rating=153
+# gear_multistrike_rating=755
+# gear_versatility_rating=180
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 summon_pet=cat

@@ -457,14 +457,16 @@ struct heal_event_t : public raid_event_t
 {
   double amount;
   double amount_range;
+  double to_pct;
 
   heal_event_t( sim_t* s, const std::string& options_str ) :
-    raid_event_t( s, "heal" ), amount( 1 ), amount_range( 0 )
+    raid_event_t( s, "heal" ), amount( 1 ), amount_range( 0 ), to_pct( 0 )
   {
     option_t options[] =
     {
       opt_float( "amount",       amount       ),
       opt_float( "amount_range", amount_range ),
+      opt_float( "to_pct",       to_pct ),
       opt_null()
     };
     parse_options( options, options_str );
@@ -477,10 +479,24 @@ struct heal_event_t : public raid_event_t
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
-
-      double x = sim -> rng().range( amount - amount_range, amount + amount_range );
-      if ( sim -> log ) sim -> out_log.printf( "%s takes %.0f raid heal.", p -> name(), x );
-      p -> resource_gain( RESOURCE_HEALTH, x );
+      double x; // amount to heal
+      
+      // to_pct tells this event to heal each player up to a percent of their max health
+      if ( to_pct > 0 )
+      {
+        x = p -> resources.max[ RESOURCE_HEALTH ] * to_pct / 100;
+        x -= p -> resources.current[ RESOURCE_HEALTH ];
+      }
+      else
+      {
+        x = sim -> rng().range( amount - amount_range, amount + amount_range );
+        if ( sim -> log ) sim -> out_log.printf( "%s takes %.0f raid heal.", p -> name(), x );
+        p -> resource_gain( RESOURCE_HEALTH, x );
+      }
+      
+      // heal if there's any healing to be done
+      if ( x > 0 )
+        p -> resource_gain( RESOURCE_HEALTH, x );
     }
   }
 
@@ -597,6 +613,7 @@ raid_event_t::raid_event_t( sim_t* s, const std::string& n ) :
   num_starts( 0 ),
   first( timespan_t::zero() ),
   last( timespan_t::zero() ),
+  next( timespan_t::zero() ),
   cooldown( timespan_t::zero() ),
   cooldown_stddev( timespan_t::zero() ),
   cooldown_min( timespan_t::zero() ),
@@ -962,4 +979,65 @@ bool raid_event_t::filter_player( const player_t* p )
     return true;
 
   return false;
+}
+
+double raid_event_t::evaluate_raid_event_expression( sim_t* s, std::string& type, std::string& filter )
+{
+  // correct for "damage" type event
+  if ( util::str_compare_ci( type, "damage" ) )
+    type = "raid_damage_";
+
+  // fetch raid event list
+  const std::vector<raid_event_t*> raid_events = s -> raid_events;
+
+  // filter the list for raid events that match the type requested
+  std::vector<raid_event_t*> matching_type;
+  for ( size_t i = 0; i < raid_events.size(); i++ )
+    if ( util::str_prefix_ci( raid_events[ i ] -> name(), type ) )
+      matching_type.push_back( raid_events[ i ] );
+
+  if ( matching_type.size() == 0 )
+  {
+    if ( util::str_compare_ci( filter, "in" ) || util::str_compare_ci( filter, "cooldown" ) )
+      return 1.0e10; // ridiculously large number
+    else
+      return 0.0;
+    // return constant based on filter
+  }
+  else if ( util::str_compare_ci( filter, "exists" ) )
+    return 1.0;
+
+  // now go through the list of matching raid events and look for the one happening first
+  raid_event_t* e = 0;
+  timespan_t time_to_event = timespan_t::from_seconds( -1 );
+
+  for ( size_t i = 0; i < matching_type.size(); i++ )
+    if ( time_to_event < timespan_t::zero() || matching_type[ i ] -> next_time() - s -> current_time < time_to_event )
+    {
+    e = matching_type[ i ];
+    time_to_event = e -> next_time() - s -> current_time;
+    }
+
+  // now that we have the event in question, use the filter to figure out return
+  if ( util::str_compare_ci( filter, "in" ) )
+    return time_to_event.total_seconds();
+  else if ( util::str_compare_ci( filter, "duration" ) )
+    return e -> duration_time().total_seconds();
+  else if ( util::str_compare_ci( filter, "cooldown" ) )
+    return e -> cooldown_time().total_seconds();
+  else if ( util::str_compare_ci( filter, "distance" ) )
+    return e -> distance();
+  else if ( util::str_compare_ci( filter, "max_distance" ) )
+    return e -> max_distance();
+  else if ( util::str_compare_ci( filter, "min_distance" ) )
+    return e -> min_distance();
+  else if ( util::str_compare_ci( filter, "amount" ) )
+    return dynamic_cast<damage_event_t*>( e ) -> amount;
+  else if ( util::str_compare_ci( filter, "to_pct" ) )
+    return dynamic_cast<heal_event_t*>( e ) -> to_pct;
+
+  // if we have no idea what filter they've specified, return 0
+  // todo: should this generate an error or something instead?
+  else
+    return 0.0;
 }

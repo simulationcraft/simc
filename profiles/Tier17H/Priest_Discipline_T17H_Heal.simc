@@ -41,30 +41,30 @@ actions+=/heal,if=buff.power_infusion.up|mana.pct>20
 actions+=/prayer_of_mending
 actions+=/heal
 
-head=soul_priests_hood,id=115563
-neck=feldspars_control_choker,id=113890,enchant=gift_of_critical_strike
-shoulders=soul_priests_shoulderguards,id=115561
-back=barrage_dodger_cloak,id=113878,enchant=gift_of_critical_strike
-chest=soul_priests_raiment,id=115560
-wrists=bracers_of_enkindled_power,id=113956
-hands=soul_priests_gloves,id=115562
-waist=seeking_ember_girdle,id=113941
-legs=soul_priests_leggings,id=115564
-feet=cavedwellers_climbers,id=113864
-finger1=sixeyed_band,id=113901,enchant=gift_of_critical_strike
-finger2=firemenders_smoldering_signet,id=113957,enchant=gift_of_critical_strike
-trinket1=autorepairing_autoclave,id=113986
-trinket2=ironspike_chew_toy,id=119192
-main_hand=blackhand_doomstaff,id=113988,enchant=mark_of_shadowmoon
+head=soul_priests_hood,id=115563,bonus_id=566
+neck=feldspars_control_choker,id=113890,bonus_id=566,enchant=gift_of_critical_strike
+shoulders=soul_priests_shoulderguards,id=115561,bonus_id=566
+back=barrage_dodger_cloak,id=113878,bonus_id=566,enchant=gift_of_critical_strike
+chest=soul_priests_raiment,id=115560,bonus_id=566
+wrists=bracers_of_enkindled_power,id=113956,bonus_id=566
+hands=soul_priests_gloves,id=115562,bonus_id=566
+waist=seeking_ember_girdle,id=113941,bonus_id=566
+legs=soul_priests_leggings,id=115564,bonus_id=566
+feet=cavedwellers_climbers,id=113864,bonus_id=566
+finger1=sixeyed_band,id=113901,bonus_id=566,enchant=gift_of_critical_strike
+finger2=firemenders_smoldering_signet,id=113957,bonus_id=566,enchant=gift_of_critical_strike
+trinket1=autorepairing_autoclave,id=113986,bonus_id=566
+trinket2=ironspike_chew_toy,id=119192,bonus_id=566
+main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant=mark_of_shadowmoon
 
 # Gear Summary
-# gear_stamina=3408
-# gear_intellect=2490
-# gear_spell_power=1325
-# gear_crit_rating=1335
-# gear_haste_rating=597
-# gear_mastery_rating=657
-# gear_armor=700
-# gear_multistrike_rating=339
+# gear_stamina=3921
+# gear_intellect=2867
+# gear_spell_power=1524
+# gear_crit_rating=1493
+# gear_haste_rating=687
+# gear_mastery_rating=756
+# gear_armor=780
+# gear_multistrike_rating=390
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

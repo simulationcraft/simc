@@ -2185,71 +2185,12 @@ expr_t* sim_t::create_expression( action_t* a,
 
       double evaluate()
       {
-        // TODO: Perhaps all of this should be a sim_t method we can just call
-        // (see incoming_damage_x expression in player_t)
-
-        // correct for "damage" type event
-        if ( util::str_compare_ci( type, "damage" ) )
-          type = "raid_damage_";
-
-        // fetch raid event list
-        const std::vector<raid_event_t*> raid_events = s -> raid_events;
-
-        // filter the list for raid events that match the type requested
-        std::vector<raid_event_t*> matching_type;
-        for ( size_t i = 0; i < raid_events.size(); i++ )
-          if ( util::str_prefix_ci( raid_events[ i ] -> name(), type ) )
-            matching_type.push_back( raid_events[ i ] );
-
-        if ( matching_type.size() == 0 )
-        {
-          if ( util::str_compare_ci( filter, "in" ) || util::str_compare_ci( filter, "cooldown") )
-            return 1.0e10; // ridiculously large number
-          else
-            return 0.0;
-          // return constant based on filter
-        }
-        else if ( util::str_compare_ci( filter, "exists" ) )
-          return 1.0;
-
-        // now go through the list of matching raid events and look for the one happening first
-        raid_event_t* e = 0;
-        timespan_t time_to_event = timespan_t::from_seconds( -1 );
-
-        for ( size_t i = 0; i < matching_type.size(); i++ )
-          if ( time_to_event < timespan_t::zero() || matching_type[ i ] -> next_time() - s -> current_time < time_to_event )
-          {
-            e = matching_type[ i ];
-            time_to_event = e -> next_time() - s -> current_time;
-          }
-
-        // now that we have the event in question, use the filter to figure out return
-        if ( util::str_compare_ci( filter, "in" ) )
-          return time_to_event.total_seconds();
-        else if ( util::str_compare_ci( filter, "duration" ) )
-          return e -> duration_time().total_seconds();
-        else if ( util::str_compare_ci( filter, "cooldown" ) )
-          return e -> cooldown_time().total_seconds();
-        else if ( util::str_compare_ci( filter, "distance" ) )
-          return e -> distance();
-        else if ( util::str_compare_ci( filter, "max_distance" ) )
-          return e -> max_distance();
-        else if ( util::str_compare_ci( filter, "min_distance" ) )
-          return e -> min_distance();
-        // This doesn't work, because "amount" only exists in certain event types
-        // TODO: figure out how to get to that?
-        else if ( util::str_compare_ci( filter, "amount" ) )
-          return 0;
-
-        // if we have no idea what filter they've specified, return 0
-        // TODO: should this generate an error or something instead?
-        else
-          return 0.0;
+        return raid_event_t::evaluate_raid_event_expression( s, type, filter );
       }
+
     };
 
     return new raid_event_expr_t( this, type, filter );
-
   }
 
   // If nothing else works, check to see if the string matches an actor in the sim.

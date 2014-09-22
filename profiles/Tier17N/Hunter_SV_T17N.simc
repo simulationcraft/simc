@@ -3,7 +3,7 @@ level=100
 race=orc
 role=attack
 position=ranged_back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Yb!...1002
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Yb!...1202
 spec=survival
 
 # This default action priority list is automatically created based on your character.
@@ -60,20 +60,20 @@ waist=grenadiers_belt,id=113955
 legs=rylakstalkers_legguards,id=115546
 feet=treads_of_the_veteran_smith,id=119339
 finger1=unexploded_explosive_shard,id=113877,enchant=gift_of_multistrike
-finger2=cinderwolf_signet,id=113917,enchant=gift_of_multistrike
+finger2=timeless_solium_band_of_the_assassin,id=118297,enchant=gift_of_multistrike
 trinket1=beating_heart_of_the_mountain,id=113931
 trinket2=scales_of_doom,id=113612
 main_hand=garans_brutal_spearlauncher,id=113966,enchant=oglethorpes_missile_splitter
 
 # Gear Summary
-# gear_agility=2691
-# gear_stamina=3408
-# gear_crit_rating=528
+# gear_agility=2711
+# gear_stamina=3437
+# gear_crit_rating=632
 # gear_haste_rating=443
 # gear_mastery_rating=490
 # gear_armor=1286
-# gear_multistrike_rating=1608
-# gear_versatility_rating=185
+# gear_multistrike_rating=1509
+# gear_versatility_rating=212
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 summon_pet=cat

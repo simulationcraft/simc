@@ -996,7 +996,8 @@ struct hunter_main_pet_attack_t: public hunter_main_pet_action_t < melee_attack_
                             const spell_data_t* s = spell_data_t::nil() ):
                             base_t( n, player, s )
   {
-    special = may_crit = true;
+    special = true;
+    may_crit = true;
   }
 
   virtual bool ready()
@@ -1028,7 +1029,10 @@ static bool trigger_beast_cleave( action_state_t* s )
     beast_cleave_attack_t( hunter_main_pet_t* p ):
       hunter_main_pet_attack_t( "beast_cleave_attack", p, p -> find_spell( 22482 ) )
     {
-      may_miss = may_crit = proc = callbacks = false;
+      may_miss = false;
+      may_crit = false;
+      proc = false;
+      callbacks = false;
       background = true;
       school = SCHOOL_PHYSICAL;
       aoe = -1;
@@ -1086,7 +1090,9 @@ struct pet_melee_t: public hunter_main_pet_attack_t
     special = false;
     weapon = &( player -> main_hand_weapon );
     base_execute_time = weapon -> swing_time;
-    background = repeating = auto_attack = true;
+    background = true;
+    repeating = true;
+    auto_attack = true;
     school = SCHOOL_PHYSICAL;
   }
 
@@ -1254,7 +1260,8 @@ struct kill_command_t: public hunter_main_pet_attack_t
   kill_command_t( hunter_main_pet_t* p ):
     hunter_main_pet_attack_t( "kill_command", p, p -> find_spell( 83381 ) )
   {
-    background = proc = true;
+    background = true;
+    proc = true;
     school = SCHOOL_PHYSICAL;
 
     // The hardcoded parameter is taken from the $damage value in teh tooltip. e.g., 1.36 below
@@ -1395,7 +1402,8 @@ struct froststorm_breath_t: public hunter_main_pet_spell_t
       hunter_main_pet_spell_t( "froststorm_breath_tick", player, player -> find_spell( 95725 ) )
     {
       attack_power_mod.direct = 0.144; // hardcoded into tooltip, 29/08/2012
-      background = direct_tick = true;
+      background = true;
+      direct_tick = true;
     }
   };
 
@@ -1499,10 +1507,13 @@ struct dire_critter_t: public hunter_pet_t
       weapon_multiplier = 0;
       base_execute_time = weapon -> swing_time;
       base_dd_min = base_dd_max = player -> dbc.spell_scaling( p.o() -> type, p.o() -> level );
-      attack_power_mod.direct = 0.575;
+      attack_power_mod.direct = 0.5714;
       school = SCHOOL_PHYSICAL;
       trigger_gcd = timespan_t::zero();
-      background = repeating = may_glance = may_crit = true;
+      background = true;
+      repeating = true;
+      may_glance = true;
+      may_crit = true;
       special = false;
       focus_gain = player -> find_spell( 120694 ) -> effectN( 1 ).base_value();
       
@@ -1608,8 +1619,11 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
     if ( player -> main_hand_weapon.type == WEAPON_NONE )
       background = true;
 
-    special = may_crit = tick_may_crit = true;
-    may_parry = may_block = false;
+    special = true;
+    may_crit = true;
+    tick_may_crit = true;
+    may_parry = false;
+    may_block = false;
     dot_behavior = DOT_REFRESH;
   }
 
@@ -1717,7 +1731,8 @@ struct ranged_t: public hunter_ranged_attack_t
     school = SCHOOL_PHYSICAL;
     weapon = &( player -> main_hand_weapon );
     base_execute_time = weapon -> swing_time;
-    background = repeating = true;
+    background = true;
+    repeating = true;
     special = false;
   }
 
@@ -1818,7 +1833,8 @@ struct exotic_munitions_poisoned_ammo_t: public residual_action::residual_period
     base_t( name, p, s )
   {
     may_multistrike = 1;
-    may_crit = tick_may_crit = true;
+    may_crit = true;
+    tick_may_crit = true;
   }
 
   void init()
@@ -1860,7 +1876,8 @@ struct exotic_munitions_t: public hunter_ranged_attack_t
     };
     parse_options( options, options_str );
 
-    callbacks = harmful = false;
+    callbacks = false;
+    harmful = false;
 
     if ( !ammo_type.empty() )
     {
@@ -1953,7 +1970,10 @@ struct glaive_toss_strike_t: public ranged_attack_t
     ranged_attack_t( "glaive_toss_strike", player, player -> find_spell( 120761 ) )
   {
     repeating = false;
-    background = dual = may_crit = special = true;
+    background = true;
+    dual = true;
+    may_crit = true;
+    special = true;
     travel_speed = player -> talents.glaive_toss -> effectN( 3 ).trigger() -> missile_speed();
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
@@ -1980,7 +2000,8 @@ struct glaive_toss_t: public hunter_ranged_attack_t
     primary_strike( new glaive_toss_strike_t( p() ) )
   {
     parse_options( NULL, options_str );
-    may_miss = may_crit = false;
+    may_miss = false;
+    may_crit = false;
     school = SCHOOL_PHYSICAL;
     primary_strike -> stats = stats;
     dot_duration = timespan_t::zero();
@@ -2124,7 +2145,8 @@ struct explosive_trap_tick_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( name, player, player -> find_spell( 13812 ) )
   {
     aoe = -1;
-    background = direct_tick = true;
+    background = true;
+    direct_tick = true;
     base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
   }
 };
@@ -2180,24 +2202,24 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
 {
   chimaera_shot_impact_t* frost;
   chimaera_shot_impact_t* nature;
+
   chimaera_shot_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "chimaera_shot", player, player -> specs.chimaera_shot ),
     frost( NULL ), nature( NULL )
   {
     parse_options( NULL, options_str );
-
+    callbacks = false;
+    aoe = 2;
     frost = new chimaera_shot_impact_t( player, "chimaera_shot_frost", player -> find_spell( 171454 ) );
     add_child( frost );
-
     nature = new chimaera_shot_impact_t( player, "chimaera_shot_nature", player -> find_spell( 171457 ) );
     add_child( nature );
     school = SCHOOL_FROSTSTRIKE; // Just so the report shows a mixture of the two colors.
-    aoe = 2;
   }
 
-  void execute()
+  virtual void impact( action_state_t* s )
   {
-    hunter_ranged_attack_t::execute();
+    hunter_ranged_attack_t::impact( s );
 
     if ( rng().roll( 0.5 ) ) // Chimaera shot has a 50/50 chance to roll frost or nature damage... for the flavorz.
       frost -> execute();

@@ -956,11 +956,6 @@ void player_t::init_base_stats()
 
   if ( primary_role() == ROLE_TANK )
   {
-    // set position to front
-    base.position = POSITION_FRONT;
-    initial.position = POSITION_FRONT;
-    change_position( POSITION_FRONT );
-
     // Collect DTPS data for tanks even for statistics_level == 1
     if ( sim -> statistics_level >= 1  )
       collected_data.dtps.change_mode( false );
@@ -1142,12 +1137,18 @@ void player_t::init_position()
       sim -> errorf( "Player %s has an invalid position of %s.\n", name(), position_str.c_str() );
     }
   }
+  // if the position string is empty and we're a tank, assume they want to be in front
+  else if ( primary_role() == ROLE_TANK )
+  {
+    // set position to front
+    base.position = POSITION_FRONT;
+    initial.position = POSITION_FRONT;
+    change_position( POSITION_FRONT );
+  }
 
   // default to back when we have an invalid position
   if ( base.position == POSITION_NONE )
-  {
     base.position = POSITION_BACK;
-  }
 
   position_str = util::position_type_string( base.position );
 
@@ -3543,7 +3544,7 @@ void player_t::reset()
     action_list[ i ] -> reset();
 
   for ( size_t i = 0; i < cooldown_list.size(); ++i )
-    cooldown_list[ i ] -> reset( false );
+    cooldown_list[ i ] -> reset_init();
 
   for ( size_t i = 0; i < dot_list.size(); ++i )
     dot_list[ i ] -> reset();
@@ -4918,11 +4919,13 @@ void player_t::target_mitigation( school_e school,
 
 void player_t::assess_heal( school_e, dmg_e, action_state_t* s )
 {
+  // Increases to healing taken should modify result_total in order to correctly calculate overhealing
+  // and other effects based on raw healing.
   if ( buffs.guardian_spirit -> up() )
-    s -> result_amount *= 1.0 + buffs.guardian_spirit -> data().effectN( 1 ).percent();
+    s -> result_total *= 1.0 + buffs.guardian_spirit -> data().effectN( 1 ).percent();
   
   // process heal
-  s -> result_amount = resource_gain( RESOURCE_HEALTH, s -> result_amount, 0, s -> action );
+  s -> result_amount = resource_gain( RESOURCE_HEALTH, s -> result_total, 0, s -> action );
 
   // if the target is a tank record this event on damage timeline
   if ( ! is_pet() && role == ROLE_TANK )
@@ -7306,8 +7309,10 @@ expr_t* player_t::create_expression( action_t* a,
     }
   }
 
+  // everything from here on requires splits
   std::vector<std::string> splits = util::string_split( expression_str, "." );
 
+  // player variables
   if ( splits[ 0 ] == "variable" && splits.size() == 2 )
   {
     struct variable_expr_t : public expr_t
@@ -7341,12 +7346,15 @@ expr_t* player_t::create_expression( action_t* a,
     else
       return expr;
   }
+
+  // trinkets
   if ( splits[ 0 ] == "trinket" )
   {
     if ( expr_t* expr = unique_gear::create_expression( a, expression_str ) )
       return expr;
   }
 
+  // race
   if ( splits[ 0 ] == "race" && splits.size() == 2 )
   {
     struct race_expr_t : public expr_t
@@ -7361,6 +7369,26 @@ expr_t* player_t::create_expression( action_t* a,
     return new race_expr_t( *this, splits[ 1 ] );
   }
 
+  // role
+  if ( splits[ 0 ] == "role" && splits.size() == 2 )
+  {
+    struct role_expr_t : public expr_t
+    {
+      player_t& player;
+      std::string role;
+      role_expr_t( player_t& p, const std::string& r ) :
+        expr_t( "role" ), player( p ), role( r )
+      {}
+      virtual double evaluate() 
+      { 
+        std::string player_role = util::role_type_string( player.primary_role() );
+        return util::str_compare_ci( player_role, role ); 
+      }
+    };
+    return new role_expr_t( *this, splits[ 1 ] );
+  }
+
+  // pet
   if ( splits[ 0 ] == "pet" && splits.size() >= 3 )
   {
     struct pet_expr_t : public expr_t
@@ -7406,6 +7434,7 @@ expr_t* player_t::create_expression( action_t* a,
     return pet -> create_expression( a, expression_str.substr( splits[ 1 ].length() + 5 ) );
   }
 
+  // owner
   else if ( splits[ 0 ] == "owner" )
   {
     if ( pet_t* pet = dynamic_cast<pet_t*>( this ) )
@@ -7416,6 +7445,7 @@ expr_t* player_t::create_expression( action_t* a,
     // FIXME: report failure.
   }
 
+  // stat
   else if ( splits[ 0 ] == "stat" && splits.size() == 2 )
   {
     if ( util::str_compare_ci( "spell_haste", splits[ 1 ] ) )
@@ -7505,6 +7535,7 @@ expr_t* player_t::create_expression( action_t* a,
 
     // FIXME: report error and return?
   }
+
 
   else if ( splits.size() == 3 )
   {

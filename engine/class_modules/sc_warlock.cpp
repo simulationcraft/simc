@@ -8,8 +8,8 @@
 // ==========================================================================
 //
 // TODO:
-// T17 Set bonusses. T17 4pc affli,
-//  2PC Demo, 2->3 Charges, 10% chance on corruption to add a charge. Needs work at the general charging module. Also T16 doesnt work for a similar reason
+// T17 Set bonusses.
+//  2PC Demo, 2->3 Charges, 10% chance on corruption to add a charge. (Currently works not only for the latest but all)
 //  4PC Demo,proc on HoG/CW
 //    proc has an ICD of 45 secs.
 //    Inner Demon Summon(166862) .c.f wild IMP
@@ -1847,7 +1847,7 @@ public:
     //sb:haunt buff
     if ( p() -> buffs.haunting_spirits -> check() && ( channeled || spell_power_mod.tick ) ) // Only applies to channeled or dots
     {
-      m *= 1.0 + p() -> buffs.haunting_spirits -> data().effectN( 1 ).percent();//TODO double check correct effectN
+      m *= 1.0 + p() -> buffs.haunting_spirits -> data().effectN( 1 ).percent();
     }
 
     return spell_t::composite_target_multiplier( t ) * m;
@@ -2271,7 +2271,7 @@ struct hand_of_guldan_t: public warlock_spell_t
     aoe = -1;
 
     cooldown -> duration = timespan_t::from_seconds( 15 );
-    cooldown -> charges = 2;
+    cooldown -> charges = 2 + p -> sets.set( WARLOCK_DEMONOLOGY, T17, B2 ) -> effectN( 1 ).base_value();
 
     shadowflame = new shadowflame_t( p );
     add_child( shadowflame );
@@ -2360,13 +2360,11 @@ struct shadow_bolt_t: public warlock_spell_t
 
   virtual void execute()
   {
-    // FIXME!!! Ugly hack to ensure we don't proc any on-spellcast trinkets
     if ( p() -> bugs && p() -> glyphs.shadow_bolt -> ok() ) background = true;
     warlock_spell_t::execute();
     background = false;
 
-    // This section currently asserts.
-    /*if ( p() -> sets.has_set_bonus( SET_CASTER, T16, B4 ) && rng().roll( 0.08 ) )//FIX after dbc update
+    if ( p() -> sets.has_set_bonus( SET_CASTER, T16, B4 ) && rng().roll( 0.08 ) )
     {
       hand_of_guldan -> target = target;
       int current_charge = hand_of_guldan -> cooldown -> current_charge;
@@ -2379,7 +2377,7 @@ struct shadow_bolt_t: public warlock_spell_t
 
       hand_of_guldan -> execute();
       if ( !pre_execute_add ) hand_of_guldan -> cooldown -> current_charge++;
-    }*/ 
+    }
 
     if ( p() -> buffs.demonic_calling -> up() )
     {
@@ -2560,14 +2558,18 @@ struct corruption_t: public warlock_spell_t
         {
           timespan_t cd_reduction = p() -> sets.set( WARLOCK_AFFLICTION, T17, B4 ) -> effectN( 1 ).time_value();
 
-          if ( p() -> cooldowns.dark_soul -> remains() > cd_reduction )
-          {
-            //p() -> cooldowns.dark_soul -> adjust(-cd_reduction); TODO Fix WITH AD.
-          }
+          p() -> cooldowns.dark_soul -> adjust(- cd_reduction);
         }
       }
     }
 
+    if ( p() -> sets.has_set_bonus( WARLOCK_DEMONOLOGY, T17, B2 )
+        && rng().roll( p() -> sets.set( WARLOCK_DEMONOLOGY, T17, B2 ) -> effectN( 2 ).percent() )
+        && ( p() -> cooldowns.hand_of_guldan -> current_charge < p() -> cooldowns.hand_of_guldan -> charges ))
+    {
+        p() -> cooldowns.hand_of_guldan -> adjust( -p() -> cooldowns.hand_of_guldan -> duration); //decrease remaining time by the duration of one charge, i.e., add one charge
+    }
+        
     if ( p() -> glyphs.siphon_life -> ok() )
     {
       if ( d -> state -> result_amount > 0 )
@@ -2920,7 +2922,6 @@ struct conflagrate_t: public warlock_spell_t
   {
     warlock_spell_t::init();
 
-    // FIXME: No longer in the spell data for some reason
     cooldown -> duration = timespan_t::from_seconds( 12.0 );
     cooldown -> charges = 2;
   }
@@ -3465,7 +3466,7 @@ struct touch_of_chaos_t: public warlock_spell_t
     }
 
     //cast CW
-    if ( p() -> sets.has_set_bonus( SET_CASTER, T16, B4 ) && rng().roll( 0.08 ) )//FIX after dbc update
+    if ( p() -> sets.has_set_bonus( SET_CASTER, T16, B4 ) && rng().roll( 0.08 ) )
     {
       chaos_wave -> target = target;
       int current_charge = chaos_wave -> cooldown -> current_charge;
@@ -5449,7 +5450,7 @@ void warlock_t::apl_demonology()
 
     action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&buff.dark_soul.down&demonic_fury<=650&demonic_fury%(40%gcd)<target.time_to_die";
     action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&cooldown.metamorphosis.remains<=3&action.hand_of_guldan.charges=2";
-    action_list_str += "/demonbolt,if=buff.dark_soul.up";
+    action_list_str += "/demonbolt,if=buff.dark_soul.up|(cooldown.dark_soul.remains>(40%(1%spell_haste))&buff.demonbolt.stack<2)";
 
     add_action( "touch of chaos", "if=buff.metamorphosis.up" );
     add_action( "metamorphosis", "if=buff.dark_soul.remains>gcd" );
@@ -5457,7 +5458,7 @@ void warlock_t::apl_demonology()
     add_action( "metamorphosis", "if=(action.hand_of_guldan.charges=0|(!dot.shadowflame.ticking&!action.hand_of_guldan.in_flight_to_target))&demonic_fury>=750&cooldown.dark_soul.remains>=8" );
     add_action( "metamorphosis", "if=(action.hand_of_guldan.charges=0|(!dot.shadowflame.ticking&!action.hand_of_guldan.in_flight_to_target))&demonic_fury%(40%gcd)>=target.time_to_die" );
     add_action( "metamorphosis", "if=(action.hand_of_guldan.charges=0|(!dot.shadowflame.ticking&!action.hand_of_guldan.in_flight_to_target))&demonic_fury>=500&cooldown.dark_soul.remains>=8&dot.corruption.remains<=(dot.corruption.duration*0.3)" );
-    add_action( "Hand of Gul'dan", "if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&(charges=2|dot.shadowflame.remains>travel_time|(charges=1&recharge_time<4))" );
+    add_action( "Hand of Gul'dan", "if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&(((charges=2&set_bonus.tier17_4pc=0)|(charges=3&set_bonus.tier17_4pc=1))|dot.shadowflame.remains>travel_time|(charges=1&recharge_time<4))" );
     add_action( "Soul Fire", "if=buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)" );
     add_action( "Life Tap", "if=mana.pct<40" );
     add_action( "Shadow Bolt" );
@@ -5474,8 +5475,8 @@ void warlock_t::apl_destruction()
     "Immolate", "if=remains<=cast_time" );
   add_action( "Conflagrate", "if=charges=2" );
   action_list_str += "/cataclysm";
-  add_action( "Chaos Bolt", "if=set_bonus.tier17_4pc&buff.tier17_4pc_chaotic_infusion.react" );
-  add_action( "Chaos Bolt", "if=set_bonus.tier17_2pc&buff.backdraft.stack<3&(burning_ember>=2.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
+  add_action( "Chaos Bolt", "if=set_bonus.tier17_4pc=1&buff.tier17_4pc_chaotic_infusion.react" );
+  add_action( "Chaos Bolt", "if=set_bonus.tier17_2pc=1&buff.backdraft.stack<3&(burning_ember>=2.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
   add_action( "Chaos Bolt", "if=talent.charred_remains.enabled&buff.backdraft.stack<3&(burning_ember>=2.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
   add_action( "Chaos Bolt", "if=buff.backdraft.stack<3&(burning_ember>=3.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
   add_action( "Immolate", "if=remains<=(duration*0.3)" );

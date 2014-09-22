@@ -44,6 +44,7 @@ struct mage_td_t : public actor_pair_t
     dot_t* living_bomb;
     dot_t* nether_tempest;
     dot_t* pyroblast;
+    dot_t* frozen_orb;
   } dots;
 
   struct debuffs_t
@@ -71,6 +72,7 @@ public:
   actions::ignite_t* active_ignite;
   int active_bomb_targets;
   action_t* explode; // Explode helps with handling Unstable Magic.
+  action_t* FoF_renew;
   player_t* last_bomb_target;
 
   // RPPM objects
@@ -119,7 +121,6 @@ public:
     buff_t* pyromaniac; // T17 4pc fire
     buff_t* arcane_affinity; // T17 2pc arcane
     buff_t* arcane_instability; // T17 4pc arcane
-    buff_t* frozen_orb_active;
     buff_t* ice_shard;
   } buffs;
 
@@ -318,6 +319,7 @@ public:
     active_bomb_targets( 0 ),
     last_bomb_target( 0 ),
     rppm_pyromaniac( *this, 0, RPPM_HASTE ),
+    rppm_arcane_instability( *this, 0, RPPM_HASTE ),
     pet_multiplier( 1.0 ),
     benefits( benefits_t() ),
     buffs( buffs_t() ),
@@ -337,6 +339,7 @@ public:
 
     //Active
     explode                  = 0;
+    FoF_renew                = 0;
 
     // Cooldowns
     cooldowns.evocation      = get_cooldown( "evocation"     );
@@ -1106,8 +1109,6 @@ public:
     if ( p() -> cooldowns.bolt -> up() && p() -> specialization() == MAGE_FROST )
       p() -> buffs.enhanced_frostbolt -> trigger();
 
-
-
     return spell_t::ready();
   }
 
@@ -1386,7 +1387,8 @@ public:
         tl.push_back( t );
     }
 
-    if ( ! p() -> pets.prismatic_crystal -> is_sleeping() )
+    if ( target != p() -> pets.prismatic_crystal &&
+         ! p() -> pets.prismatic_crystal -> is_sleeping() )
       tl.push_back( p() -> pets.prismatic_crystal );
 
     return tl.size();
@@ -1499,6 +1501,50 @@ void mage_spell_t::trigger_ignite( action_state_t* state )
   trigger( p.active_ignite, state -> target, amount );
 }
 
+// T17 Frost 2pc Driver =============================================================
+
+static void Frost_orb_FoF_renew( action_state_t* s )
+{
+
+  struct frost_orb_FoF_renew_t: public mage_spell_t
+  {
+    frost_orb_FoF_renew_t( mage_t* p ):
+      mage_spell_t( "FoF_Renew", p )
+    {
+      may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
+      base_costs[RESOURCE_MANA] = 0;
+      cooldown -> duration = timespan_t::zero();
+      trigger_gcd = timespan_t::zero();
+      background = true;
+      harmful = false;
+      base_execute_time = timespan_t::zero();
+      base_tick_time = timespan_t::from_seconds( 0.5 );
+      dot_duration = timespan_t::from_seconds( 10.5 );
+      hasted_ticks = false;
+    }
+
+    void tick( dot_t* d )
+    {
+      mage_spell_t::tick( d );
+
+      if ( td( d -> target ) -> dots.frozen_orb -> is_ticking() )
+      {
+        p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+      }
+    }
+  };
+
+
+  mage_t* p = debug_cast<mage_t*>( s -> action -> player );
+
+  if ( !p -> FoF_renew )
+  {
+    p -> FoF_renew = new frost_orb_FoF_renew_t( p );
+    p -> FoF_renew -> init();
+  }
+
+  p -> FoF_renew -> execute();
+}
 // Unstable Magic Trigger ====================================================
 
 static void trigger_unstable_magic( action_state_t* s )
@@ -1643,6 +1689,10 @@ struct arcane_blast_t : public mage_spell_t
 
     p() -> buffs.arcane_charge -> trigger();
     p() -> buffs.profound_magic -> expire();
+
+    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) && p() -> rppm_arcane_instability.trigger() )
+      p() -> buffs.arcane_instability -> trigger();
+
   }
 
   virtual double action_multiplier() const
@@ -1731,6 +1781,9 @@ struct arcane_explosion_t : public mage_spell_t
       if ( rng().roll ( data().effectN( 2 ).percent() ) )
       {
         p() -> buffs.arcane_charge -> trigger();
+
+        if( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) && p() -> rppm_arcane_instability.trigger() )
+          p() -> buffs.arcane_instability -> trigger();
       }
       else
       {
@@ -1750,6 +1803,15 @@ struct arcane_missiles_tick_t : public mage_spell_t
     background  = true;
     dot_duration = timespan_t::zero();
   }
+
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) && p() -> buffs.arcane_instability -> up() )
+      p() -> buffs.arcane_instability -> expire();
+  
+  
+  }
 };
 
 struct arcane_missiles_t : public mage_spell_t
@@ -1761,14 +1823,16 @@ struct arcane_missiles_t : public mage_spell_t
     may_miss = false;
     may_proc_missiles = false;
 
-    base_tick_time    = timespan_t::from_seconds( 0.4 );
     dot_duration      = timespan_t::from_seconds( 2.0 );
+
+
+    base_tick_time = timespan_t::from_seconds( 0.4 );
     channeled         = true;
     hasted_ticks      = false;
-
     dynamic_tick_action = true;
     tick_action = new arcane_missiles_tick_t( p );
   }
+
 
   virtual double action_multiplier() const
   {
@@ -1791,8 +1855,13 @@ struct arcane_missiles_t : public mage_spell_t
       p() -> benefits.arcane_charge[ i ] -> update( as<int>( i ) == p() -> buffs.arcane_charge -> check() );
     }
 
+    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) )
+    {
+      base_tick_time = ( p() -> buffs.arcane_instability -> up() ? timespan_t::from_seconds( 0.2 ) : timespan_t::from_seconds( 0.4 ) );
+    }
 
     mage_spell_t::execute();
+
 
 
     if ( p() -> buffs.arcane_power -> up() && p() -> talents.overpowered -> ok() )
@@ -1810,6 +1879,13 @@ struct arcane_missiles_t : public mage_spell_t
     {
       p() -> buffs.arcane_missiles -> decrement();
     }
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    mage_spell_t::impact( s );
+
+
   }
 
   virtual void last_tick (dot_t * d)
@@ -1874,7 +1950,8 @@ struct arcane_orb_t : public mage_spell_t
     }
     mage_spell_t::execute();
 
-    p() -> buffs.arcane_charge -> trigger();
+    if( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) && p() -> rppm_arcane_instability.trigger() )
+      p() -> buffs.arcane_instability -> trigger();
   }
 
 
@@ -2881,8 +2958,7 @@ struct frozen_orb_t : public mage_spell_t
   virtual void execute()
   {
     mage_spell_t::execute();
-    if( p() -> sets.has_set_bonus( MAGE_FROST, T17, B2 ) )
-      p() -> buffs.frozen_orb_active -> trigger();
+
 
   }
 
@@ -2891,6 +2967,9 @@ struct frozen_orb_t : public mage_spell_t
     mage_spell_t::impact( s );
 
     p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
+
+    if( p() -> sets.has_set_bonus( MAGE_FROST, T17, B2 ) )
+      Frost_orb_FoF_renew( s );
   }
 };
 
@@ -2951,7 +3030,7 @@ struct ice_lance_t : public mage_spell_t
     mage_spell_t::execute();
     aoe = splitting_ice_aoe;
 
-    if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B4 ) && p() -> buffs.frozen_orb_active -> up() )
+    if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B4 ) && td( execute_state -> target) -> dots.frozen_orb -> is_ticking() )
       p() -> buffs.ice_shard -> trigger();
 
     if ( p() -> talents.thermal_void -> ok() && p() -> buffs.icy_veins -> up() )
@@ -2993,7 +3072,7 @@ struct ice_lance_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    if ( p() -> buffs.fingers_of_frost -> up() || p() -> buffs.frozen_orb_active -> up() )
+    if ( p() -> buffs.fingers_of_frost -> up() )
     {
       am *= 2.0; // Built in bonus against frozen targets
       am *= 1.0 + fof_multiplier; // Buff from Fingers of Frost
@@ -4262,6 +4341,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   dots.living_bomb    = target -> get_dot( "living_bomb",    mage );
   dots.nether_tempest = target -> get_dot( "nether_tempest", mage );
   dots.pyroblast      = target -> get_dot( "pyroblast",      mage );
+  dots.frozen_orb     = target -> get_dot( "frozen_orb",     mage );
 
   debuffs.slow = buff_creator_t( *this, "slow" ).spell( mage -> spec.slow );
   debuffs.frost_bomb = buff_creator_t( *this, "frost_bomb" ).spell( mage -> talents.frost_bomb );
@@ -4462,7 +4542,7 @@ void mage_t::init_spells()
   if ( spec.ignite -> ok()  ) active_ignite = new actions::ignite_t( this );
   if ( spec.icicles -> ok() ) icicle = new actions::icicle_t( this );
   // RPPM
-  rppm_pyromaniac.set_frequency( 1.5 ); //RPPM coef is in the tooltip, but not in the spell data
+  rppm_pyromaniac.set_frequency( find_spell( 165459 ) -> real_ppm() ); 
   rppm_arcane_instability.set_frequency( find_spell( 165476 ) -> real_ppm() );
 
 }
@@ -4539,6 +4619,8 @@ void mage_t::create_buffs()
                                 .duration( find_spell( 36032 ) -> duration() );
   buffs.arcane_affinity       = buff_creator_t( this, "arcane_affinity", find_spell( 166871 ))
                                 .chance( sets.has_set_bonus( MAGE_ARCANE, T17, B2 ) );
+  buffs.arcane_instability    = buff_creator_t( this, "arcane_instability", find_spell( 166872 ) )
+                                .duration( find_spell( 166872 ) -> duration() ).chance( sets.has_set_bonus( MAGE_ARCANE , T17 , B4 ) );
   buffs.arcane_missiles       = buff_creator_t( this, "arcane_missiles", find_class_spell( "Arcane Missiles" ) -> ok() ? find_spell( 79683 ) : spell_data_t::not_found() )
                                 .chance( find_spell( 79684 ) -> proc_chance() ).max_stack( find_spell( 79683 ) -> max_stacks() );
 
@@ -4590,7 +4672,6 @@ void mage_t::create_buffs()
                                 .chance( 1.0 );
 
   buffs.incanters_flow        = new incanters_flow_t( this );
-  buffs.frozen_orb_active     = buff_creator_t( this, "frozen_orb_active" ).duration( find_spell( 84714 ) -> duration() );
   buffs.ice_shard             = buff_creator_t( this, "ice_shard" ).duration( timespan_t::from_seconds( 10.0 ) ).max_stack( 10 );
 }
 
@@ -4765,7 +4846,7 @@ void mage_t::apl_arcane()
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe"              );
   action_priority_list_t* burn                = get_action_priority_list( "burn"             );
   action_priority_list_t* conserve            = get_action_priority_list( "conserve"         );
-
+  action_priority_list_t* evocation           = get_action_priority_list( "evocation"        );
 
   default_list -> add_action( this, "Counterspell",
                               "if=target.debuff.casting.react" );
@@ -4784,8 +4865,7 @@ void mage_t::apl_arcane()
   default_list -> add_action( "call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=6" );
   default_list -> add_action( "call_action_list,name=burn,if=buff.arcane_power.up&cooldown.evocation.remains<buff.arcane_power.remains&mana.pct>15&talent.prismatic_crystal.enabled" );
-  default_list -> add_action( "call_action_list,name=conserve" );
-
+  default_list -> add_action( "call_action_list,name=evocation" );
 
   init_crystal -> add_talent( this, "Prismatic Crystal",
                               "if=cooldown.arcane_power.remains=0&buff.arcane_charge.stack=4",
@@ -4799,7 +4879,7 @@ void mage_t::apl_arcane()
   crystal_sequence -> add_talent( this, "Nether Tempest",
                                   "if=current_target=prismatic_crystal&buff.arcane_charge.stack=4&!ticking&cooldown.prismatic_crystal.remains>58" );
   crystal_sequence -> add_action( "call_action_list,name=burn,if=cooldown.evocation.remains<cooldown.prismatic_crystal.remains-50" );
-  crystal_sequence -> add_action( "call_action_list,name=conserve" );
+  crystal_sequence -> add_action( "call_action_list,name=evocation" );
 
 
   cooldowns -> add_action( this, "Arcane Power",
@@ -4843,10 +4923,12 @@ void mage_t::apl_arcane()
   burn -> add_action( this, "Presence of Mind" );
   burn -> add_action( this, "Arcane Blast" );
 
-
-  conserve -> add_action( this, "Evocation",
-                          "interrupt_if=mana.pct>92,if=mana.pct<65",
-                          "Low mana usage, \"Conserve\" sequence" );
+//Proxy Action List to work around the behavior of interrupt_if, as it only interrupts if there is a higher priority action available
+  evocation -> add_action( "call_action_list,name=conserve,if=cooldown.evocation.remains>0", "Makes Evocation interrupt channeling properly" );
+  evocation -> add_action( this, "Evocation", "interrupt_if=mana.pct>92,if=mana.pct<65" );
+  evocation -> add_action( this, "Evocation", "interrupt_if=mana.pct>0,if=buff.arcane_charge.stack=0" );
+  evocation -> add_action( "call_action_list,name=conserve" );
+  
   conserve -> add_action( "call_action_list,name=cooldowns,if=time_to_die<30|(buff.arcane_charge.stack=4&!(glyph.arcane_power.enabled&talent.prismatic_crystal.enabled)&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>20))" );
   conserve -> add_action( this, "Arcane Missiles",
                           "if=buff.arcane_missiles.react=3|(talent.overpowered.enabled&buff.arcane_power.up&buff.arcane_power.remains<3)" );

@@ -65,20 +65,20 @@ waist=deckhands_rope_belt,id=113967,bonus_id=566
 legs=arcanoshatter_leggings,id=115554,bonus_id=566
 feet=inferno_breath_sandals,id=113942,bonus_id=566
 finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant=gift_of_multistrike
-finger2=epicenter_loop,id=113947,bonus_id=566,enchant=gift_of_multistrike
+finger2=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_multistrike
 trinket1=shards_of_nothing,id=113835,bonus_id=566
 trinket2=quiescent_runestone,id=113859,bonus_id=566
 main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_frostwolf
 
 # Gear Summary
-# gear_stamina=3921
-# gear_intellect=3076
+# gear_stamina=3942
+# gear_intellect=3090
 # gear_spell_power=1524
-# gear_crit_rating=908
+# gear_crit_rating=818
 # gear_haste_rating=852
-# gear_mastery_rating=852
+# gear_mastery_rating=975
 # gear_armor=780
 # gear_multistrike_rating=1284
-# gear_versatility_rating=106
+# gear_versatility_rating=86
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

@@ -1,4 +1,5 @@
 talent_format=armory
+
 mage=Mage_Arcane_T17M
 level=100
 race=troll
@@ -10,16 +11,16 @@ neck=gruuls_lip_ring,id=113872,bonus_id=567,enchant=gift_of_mastery
 shoulder=arcanoshatter_mantle,id=115551,bonus_id=567
 back=runefrenzy_greatcloak,id=113937,bonus_id=567,enchant=gift_of_mastery
 chest=arcanoshatter_robes,id=115550,bonus_id=567
-wrist=bracers_of_enkindled_power,id=113956,bonus_id=567
+wrist=bracers_of_darkened_skies,id=119332,bonus_id=567
 hands=arcanoshatter_gloves,id=115552,bonus_id=567
 waist=seeking_ember_girdle,id=113941,bonus_id=567
 legs=turret_mechanics_legwraps,id=113970,bonus_id=567
 feet=cavedwellers_climbers,id=113864,bonus_id=567
 ring1=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant=gift_of_mastery
-ring2=epicenter_loop,id=113947,bonus_id=567,enchant=gift_of_mastery
+ring2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_mastery
 trinket1=shards_of_nothing,id=113835,bonus_id=567
 trinket2=darmacs_unstable_talisman,id=113948,bonus_id=567
-main_hand=inferno-flame_staff,id=113869,bonus_id=567,enchant=mark_of_warsong
+main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant=mark_of_warsong
 save=Mage_Arcane_T17M.simc
 
 mage=Mage_Fire_T17M
@@ -38,10 +39,10 @@ hands=arcanoshatter_gloves,id=115552,bonus_id=567
 waist=seeking_ember_girdle,id=113941,bonus_id=567
 legs=arcanoshatter_leggings,id=115554,bonus_id=567
 feet=cavedwellers_climbers,id=113864,bonus_id=567
-ring1=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant=gift_of_critical_strike
-ring2=epicenter_loop,id=113947,bonus_id=567,enchant=gift_of_critical_strike
-trinket1=shards_of_nothing,id=113835,bonus_id=567
-trinket2=blackiron_micro_crucible,id=113984,bonus_id=567
+ring1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_critical_strike
+ring2=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant=gift_of_critical_strike
+trinket1=goren_soul_repository,id=119194,bonus_id=567
+trinket2=darmacs_unstable_talisman,id=113948,bonus_id=567
 main_hand=blackhand_doomstaff,id=113988,bonus_id=567,enchant=mark_of_the_thunderlord
 save=Mage_Fire_T17M.simc
 
@@ -51,8 +52,8 @@ race=troll
 spec=frost
 talents=1000122
 glyphs=icy_veins/splitting_ice
-head=arcanoshatter_hood,id=115553,bonus_id=567
-neck=gruuls_lip_ring,id=113872,bonus_id=567,enchant=gift_of_multistrike
+head=flareeyed_hood,id=113868,bonus_id=567
+neck=choker_of_bloody_flame,id=120077,bonus_id=567,enchant=gift_of_multistrike
 shoulder=arcanoshatter_mantle,id=115551,bonus_id=567
 back=runescribed_gronncloak,id=120078,bonus_id=567,enchant=gift_of_multistrike
 chest=arcanoshatter_robes,id=115550,bonus_id=567
@@ -61,9 +62,9 @@ hands=arcanoshatter_gloves,id=115552,bonus_id=567
 waist=deckhands_rope_belt,id=113967,bonus_id=567
 legs=arcanoshatter_leggings,id=115554,bonus_id=567
 feet=inferno_breath_sandals,id=113942,bonus_id=567
-ring1=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant=gift_of_multistrike
-ring2=epicenter_loop,id=113947,bonus_id=567,enchant=gift_of_multistrike
-trinket1=shards_of_nothing,id=113835,bonus_id=567
-trinket2=quiescent_runestone,id=113859,bonus_id=567
+ring1=epicenter_loop,id=113947,bonus_id=567,enchant=gift_of_multistrike
+ring2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
+trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567
+trinket2=blackiron_micro_crucible,id=113984,bonus_id=567
 main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant=mark_of_frostwolf
 save=Mage_Frost_T17M.simc
