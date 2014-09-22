@@ -1507,7 +1507,7 @@ struct dire_critter_t: public hunter_pet_t
       weapon_multiplier = 0;
       base_execute_time = weapon -> swing_time;
       base_dd_min = base_dd_max = player -> dbc.spell_scaling( p.o() -> type, p.o() -> level );
-      attack_power_mod.direct = 0.575;
+      attack_power_mod.direct = 0.5714;
       school = SCHOOL_PHYSICAL;
       trigger_gcd = timespan_t::zero();
       background = true;
