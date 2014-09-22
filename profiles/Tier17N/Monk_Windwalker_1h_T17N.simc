@@ -83,20 +83,20 @@ waist=conductors_multipocket_girdle,id=113964
 legs=legwraps_of_the_somber_gaze,id=115557
 feet=furnace_tenders_treads,id=113895
 finger1=cinderwolf_signet,id=113917,enchant=gift_of_multistrike
-finger2=unexploded_explosive_shard,id=113877,enchant=gift_of_multistrike
+finger2=timeless_solium_band_of_the_assassin,id=118297,enchant=gift_of_multistrike
 trinket1=humming_blackiron_trigger,id=113985
 trinket2=scales_of_doom,id=113612
 main_hand=hansgars_forgehammer,id=113897,enchant=mark_of_the_frostwolf
 off_hand=hansgars_forgehammer,id=113897,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_agility=2656
-# gear_stamina=3355
-# gear_crit_rating=988
+# gear_agility=2676
+# gear_stamina=3384
+# gear_crit_rating=1004
 # gear_haste_rating=296
 # gear_mastery_rating=232
 # gear_armor=976
-# gear_multistrike_rating=1543
-# gear_versatility_rating=163
+# gear_multistrike_rating=1458
+# gear_versatility_rating=256
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

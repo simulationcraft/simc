@@ -20,7 +20,7 @@ waist=conductors_multipocket_girdle,id=113964
 legs=legwraps_of_the_somber_gaze,id=115557
 feet=furnace_tenders_treads,id=113895
 finger1=cinderwolf_signet,id=113917,enchant=gift_of_multistrike
-finger2=unexploded_explosive_shard,id=113877,enchant=gift_of_multistrike
+finger2=timeless_solium_band_of_the_assassin,id=118297,enchant=gift_of_multistrike
 trinket1=humming_blackiron_trigger,id=113985
 trinket2=scales_of_doom,id=113612
 main_hand=hansgars_forgehammer,id=113897,enchant=mark_of_the_frostwolf
@@ -47,7 +47,7 @@ waist=conductors_multipocket_girdle,id=113964
 legs=legwraps_of_the_somber_gaze,id=115557
 feet=furnace_tenders_treads,id=113895
 finger1=cinderwolf_signet,id=113917,enchant=gift_of_multistrike
-finger2=unexploded_explosive_shard,id=113877,enchant=gift_of_multistrike
+finger2=timeless_solium_band_of_the_assassin,id=118297,enchant=gift_of_multistrike
 trinket1=humming_blackiron_trigger,id=113985
 trinket2=scales_of_doom,id=113612
 main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,enchant=mark_of_the_frostwolf
@@ -72,7 +72,7 @@ hands=handwraps_of_the_somber_gaze,id=115555
 waist=belt_of_bloody_guts,id=113636
 legs=nether_blast_leggings,id=113856
 feet=iron-flecked_sandals,id=119340
-finger1=solium_band_of_endurance,id=118293,enchant=gift_of_versatility
+finger1=timeless_solium_band_of_the_bulwark,id=118298,enchant=gift_of_versatility
 finger2=stonefist_band,id=113938,enchant=gift_of_versatility
 trinket1=pillar_of_the_earth,id=113650
 trinket2=blast_furnace_door,id=113893
@@ -99,7 +99,7 @@ hands=handwraps_of_the_somber_gaze,id=115555
 waist=belt_of_bloody_guts,id=113636
 legs=nether_blast_leggings,id=113856
 feet=iron-flecked_sandals,id=119340
-finger1=solium_band_of_endurance,id=118293,enchant=gift_of_versatility
+finger1=timeless_solium_band_of_the_bulwark,id=118298,enchant=gift_of_versatility
 finger2=stonefist_band,id=113938,enchant=gift_of_versatility
 trinket1=pillar_of_the_earth,id=113650
 trinket2=blast_furnace_door,id=113893
@@ -126,7 +126,7 @@ hands=handwraps_of_the_somber_gaze,id=115555
 waist=belt_of_bloody_guts,id=113636
 legs=nether_blast_leggings,id=113856
 feet=iron-flecked_sandals,id=119340
-finger1=solium_band_of_endurance,id=118293,enchant=gift_of_versatility
+finger1=timeless_solium_band_of_the_bulwark,id=118298,enchant=gift_of_versatility
 finger2=stonefist_band,id=113938,enchant=gift_of_versatility
 trinket1=pillar_of_the_earth,id=113650
 trinket2=blast_furnace_door,id=113893
@@ -152,7 +152,7 @@ hands=handwraps_of_the_somber_gaze,id=115555
 waist=belt_of_bloody_guts,id=113636
 legs=nether_blast_leggings,id=113856
 feet=iron-flecked_sandals,id=119340
-finger1=solium_band_of_endurance,id=118293,enchant=gift_of_versatility
+finger1=timeless_solium_band_of_the_bulwark,id=118298,enchant=gift_of_versatility
 finger2=stonefist_band,id=113938,enchant=gift_of_versatility
 trinket1=pillar_of_the_earth,id=113650
 trinket2=blast_furnace_door,id=113893
