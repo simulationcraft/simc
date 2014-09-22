@@ -6034,7 +6034,7 @@ void druid_t::apl_feral()
     def -> add_action( this, "Rake", "if=buff.prowl.up" );
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Skull Bash" );
-  def -> add_action( this, "Force of Nature", "if=charges=3|trinket.proc.all.react|target.time_to_die<20");
+  def -> add_talent( this, "Force of Nature", "if=charges=3|trinket.proc.all.react|target.time_to_die<20");
   def -> add_action( "incarnation,sync=berserk" );
   def -> add_action( this, "Berserk", "if=cooldown.tigers_fury.remains<8" );
   if ( sim -> allow_potions && level >= 80 )
