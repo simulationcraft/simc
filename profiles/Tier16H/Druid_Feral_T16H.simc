@@ -30,6 +30,7 @@ actions.precombat+=/potion,name=virmens_bite
 actions=rake,if=buff.prowl.up|buff.shadowmeld.up
 actions+=/auto_attack
 actions+=/skull_bash
+actions+=/force_of_nature,if=charges=3|trinket.proc.all.react|target.time_to_die<20
 actions+=/incarnation,sync=berserk
 actions+=/berserk,if=cooldown.tigers_fury.remains<8
 actions+=/potion,name=virmens_bite,if=target.time_to_die<=40

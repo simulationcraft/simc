@@ -1508,19 +1508,20 @@ void mage_spell_t::trigger_ignite( action_state_t* state )
 static void Frost_orb_FoF_renew( action_state_t* s )
 {
 
-  struct frost_orb_FoF_renew_t : public mage_spell_t
+  struct frost_orb_FoF_renew_t: public mage_spell_t
   {
-    frost_orb_FoF_renew_t( mage_t* p ) :
+    frost_orb_FoF_renew_t( mage_t* p ):
       mage_spell_t( "FoF_Renew", p )
     {
       may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
-      base_costs[ RESOURCE_MANA ] = 0;
-      cooldown -> duration  = timespan_t::zero();
+      base_costs[RESOURCE_MANA] = 0;
+      cooldown -> duration = timespan_t::zero();
       trigger_gcd = timespan_t::zero();
-      background=true;
-      harmful=false;
+      background = true;
+      harmful = false;
+      base_execute_time = timespan_t::zero();
       base_tick_time = timespan_t::from_seconds( 0.5 );
-      dot_duration   = timespan_t::from_seconds( 10.5 );
+      dot_duration = timespan_t::from_seconds( 10.5 );
       hasted_ticks = false;
     }
 
@@ -1529,12 +1530,10 @@ static void Frost_orb_FoF_renew( action_state_t* s )
       mage_spell_t::tick( d );
 
       if ( td( d -> target ) -> dots.frozen_orb -> is_ticking() )
-      { p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 ); }
+      {
+        p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+      }
     }
-
-    virtual timespan_t execute_time()
-    { return timespan_t::zero(); }
-
   };
 
 

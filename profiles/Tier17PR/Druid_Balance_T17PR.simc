@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!.0.2.01
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!.0.2000
 spec=balance
 
 # This default action priority list is automatically created based on your character.
@@ -30,6 +30,7 @@ actions+=/blood_fury,if=buff.celestial_alignment.up
 actions+=/berserking,if=buff.celestial_alignment.up
 actions+=/arcane_torrent,if=buff.celestial_alignment.up
 actions+=/use_item,slot=trinket1
+actions+=/use_item,slot=trinket2
 actions+=/force_of_nature,if=trinket.stat.intellect.up|charges=3|target.time_to_die<21
 actions+=/run_action_list,name=single_target,if=active_enemies=1
 actions+=/run_action_list,name=aoe,if=active_enemies>1
@@ -54,31 +55,28 @@ actions.aoe+=/stellar_flare,cycle_targets=1,if=remains<7
 actions.aoe+=/wrath,if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)
 actions.aoe+=/starfire,if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)
 
-head=primal_gladiators_dragonhide_helm,id=111108
-neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_mastery
-shoulders=primal_gladiators_spaulders,id=111277
-back=primal_gladiators_drape_of_cruelty,id=111124,enchant=gift_of_mastery
-chest=primal_gladiators_dragonhide_robes,id=111110
-wrists=primal_gladiators_bindings_of_victory,id=111149
-hands=primal_gladiators_dragonhide_gloves,id=111107
-waist=primal_gladiators_belt_of_prowess,id=111141
-legs=primal_gladiators_dragonhide_legguards,id=111109
-feet=primal_gladiators_boots_of_prowess,id=111145
-finger1=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_mastery
-finger2=primal_gladiators_band_of_prowess,id=111135,enchant=gift_of_mastery
-trinket1=primal_gladiators_badge_of_dominance,id=115754
-trinket2=primal_gladiators_insignia_of_dominance,id=115755
-main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_warsong
+head=bloodfeather_cowl,id=109976
+neck=magisters_chain,id=109954,enchant=gift_of_mastery
+shoulders=blackwater_spaulders,id=109938
+back=drape_of_frozen_dreams,id=109926,enchant=gift_of_mastery
+chest=bloodfeather_chestwrap,id=109885
+wrists=bracers_of_burning_focus,id=109868
+hands=crystalbinder_gloves,id=109850
+waist=crystalhide_belt,id=115379
+legs=bloodfeather_leggings,id=109810
+feet=boots_of_burning_focus,id=109787
+finger1=darkflame_loop,id=109766,enchant=gift_of_mastery
+finger2=mark_of_ice,id=109764,enchant=gift_of_mastery
+trinket1=fleshrenders_meathook,id=110002
+trinket2=ragewings_firefang,id=110003
+main_hand=spire_of_the_furious_construct,id=110031,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_stamina=3249
-# gear_intellect=2588
-# gear_spell_power=1265
-# gear_crit_rating=752
-# gear_haste_rating=872
-# gear_mastery_rating=800
-# gear_armor=950
-# gear_multistrike_rating=660
-# gear_versatility_rating=77
-# set_bonus=pvp_2pc=1
-# set_bonus=pvp_4pc=1
+# gear_stamina=2465
+# gear_intellect=1960
+# gear_spell_power=958
+# gear_crit_rating=1040
+# gear_haste_rating=60
+# gear_mastery_rating=1158
+# gear_armor=814
+# gear_multistrike_rating=174

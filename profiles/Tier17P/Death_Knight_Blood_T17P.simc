@@ -2,7 +2,7 @@ deathknight="Death_Knight_Blood_T17P"
 level=100
 race=tauren
 role=tank
-position=back
+position=front
 talents=http://us.battle.net/wow/en/tool/talent-calculator#da!1.022.1
 spec=blood
 
