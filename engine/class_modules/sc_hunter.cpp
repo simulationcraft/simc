@@ -2188,6 +2188,7 @@ struct chimaera_shot_impact_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( name, p, s )
   {
     dual = true;
+    callbacks = false;
   }
 
   virtual double action_multiplier() const
@@ -2202,6 +2203,7 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
 {
   chimaera_shot_impact_t* frost;
   chimaera_shot_impact_t* nature;
+
   chimaera_shot_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "chimaera_shot", player, player -> specs.chimaera_shot ),
     frost( NULL ), nature( NULL )
@@ -2217,9 +2219,9 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
     aoe = 2;
   }
 
-  void execute()
+  virtual void impact( action_state_t* s )
   {
-    hunter_ranged_attack_t::execute();
+    hunter_ranged_attack_t::impact( s );
 
     if ( rng().roll( 0.5 ) ) // Chimaera shot has a 50/50 chance to roll frost or nature damage... for the flavorz.
       frost -> execute();
