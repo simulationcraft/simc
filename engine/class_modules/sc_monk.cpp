@@ -2407,7 +2407,7 @@ struct fortifying_brew_t: public monk_spell_t
   {
     parse_options( nullptr, options_str );
 
-    harmful = false;
+    harmful = may_crit = false;
     trigger_gcd = timespan_t::zero();
   }
 
