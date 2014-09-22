@@ -1,4 +1,3 @@
-
 :: Necessary Qt dlls are packaged with every release.
 :: These dlls are not included in the SVN.
 :: They need to be copied into the dev area from the Qt install.
@@ -53,7 +52,6 @@ xcopy %qt_dir%\bin\D3DCompiler_46.dll %install%\
 
 xcopy %qt_dir%\plugins\platforms\qminimal.dll %install%\platforms\
 xcopy %qt_dir%\plugins\platforms\qwindows.dll %install%\platforms\
-
 
 :: Copy other relevant files for windows release
 xcopy Welcome.html %install%\
