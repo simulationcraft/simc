@@ -63,7 +63,7 @@ hands=cannonball_loaders_grips,id=113949,bonus_id=567
 waist=conductors_multipocket_girdle,id=113964,bonus_id=567
 legs=living_wood_legguards,id=115543,bonus_id=567
 feet=treads_of_the_dark_hunt,id=113974,bonus_id=567
-finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,bonus_id=524,enchant=gift_of_mastery
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_mastery
 finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant=gift_of_mastery
 trinket1=blackiron_micro_crucible,id=113984,bonus_id=567
 trinket2=darmacs_unstable_talisman,id=113948,bonus_id=567

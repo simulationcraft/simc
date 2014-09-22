@@ -73,31 +73,31 @@ actions.prot_aoe+=/shield_slam
 actions.prot_aoe+=/devastate
 
 head=blackhands_faceguard,id=115584,bonus_id=567
-neck=gluttons_kerchief,id=113882,bonus_id=567/448,enchant=gift_of_critical_strike
+neck=gluttons_kerchief,id=113882,bonus_id=567,enchant=gift_of_critical_strike
 shoulders=overdriven_spaulders,id=113990,bonus_id=566
-back=gronnstitched_greatcloak,id=113873,bonus_id=567/448,enchant=gift_of_critical_strike
+back=gronnstitched_greatcloak,id=113873,bonus_id=567,enchant=gift_of_critical_strike
 chest=blackhands_chestguard,id=115582,bonus_id=567
-wrists=bracers_of_visceral_force,id=119331,bonus_id=567/448
+wrists=bracers_of_visceral_force,id=119331,bonus_id=567
 hands=blackhands_handguards,id=115583,bonus_id=567
-waist=ironcrushers_collar,id=113950,bonus_id=567/448
+waist=ironcrushers_collar,id=113950,bonus_id=567
 legs=blackhands_legguards,id=115580,bonus_id=567
-feet=iron_bellow_sabatons,id=113961,bonus_id=567/448
+feet=iron_bellow_sabatons,id=113961,bonus_id=567
 finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,enchant=gift_of_critical_strike
-finger2=siege_bombers_band,id=113963,bonus_id=567/448,enchant=gift_of_critical_strike
-trinket1=forgemasters_insignia,id=113983,bonus_id=567/448
-trinket2=bottle_of_infesting_spores,id=113658,bonus_id=567/448
-main_hand=taners_terrible_spine,id=113862,bonus_id=567/448,enchant=mark_of_the_thunderlord
-off_hand=kromogs_protecting_palm,id=113926,bonus_id=567/448
+finger2=siege_bombers_band,id=113963,bonus_id=567,enchant=gift_of_critical_strike
+trinket1=forgemasters_insignia,id=113983,bonus_id=567
+trinket2=bottle_of_infesting_spores,id=113658,bonus_id=567
+main_hand=taners_terrible_spine,id=113862,bonus_id=567,enchant=mark_of_the_thunderlord
+off_hand=kromogs_protecting_palm,id=113926,bonus_id=567
 
 # Gear Summary
-# gear_strength=3664
-# gear_stamina=4616
-# gear_crit_rating=1522
-# gear_haste_rating=501
+# gear_strength=3551
+# gear_stamina=4493
+# gear_crit_rating=1486
+# gear_haste_rating=486
 # gear_mastery_rating=503
-# gear_armor=3048
-# gear_bonus_armor=487
-# gear_multistrike_rating=977
-# gear_versatility_rating=698
+# gear_armor=3029
+# gear_bonus_armor=468
+# gear_multistrike_rating=951
+# gear_versatility_rating=667
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

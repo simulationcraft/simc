@@ -60,31 +60,31 @@ actions.careful_aim+=/aimed_shot
 actions.careful_aim+=/focusing_shot,if=focus+50+12*(1+buff.steady_focus.value)<focus.max
 actions.careful_aim+=/steady_shot
 
-head=rylakstalkers_headguard,id=115545,bonus_id=567/448
-neck=darklight_necklace,id=113865,bonus_id=567/448,enchant=gift_of_critical_strike
-shoulders=neckbreaker_shoulderguards,id=113899,bonus_id=567/448
-back=drape_of_the_dark_hunt,id=113971,bonus_id=567/448,enchant=gift_of_critical_strike
-chest=rylakstalkers_tunic,id=115548,bonus_id=567/448
-wrists=bracers_of_the_wolfs_cunning,id=113943,bonus_id=567/448
-hands=rylakstalkers_gloves,id=115549,bonus_id=567/448
-waist=grenadiers_belt,id=113955,bonus_id=567/448
-legs=rylakstalkers_legguards,id=115546,bonus_id=567/448
-feet=slagstomper_treads,id=113888,bonus_id=567/448
-finger1=unexploded_explosive_shard,id=113877,bonus_id=567/448,enchant=gift_of_critical_strike
-finger2=spellbound_runic_band_of_unrelenting_slaughter,id=118307,bonus_id=524,enchant=gift_of_critical_strike
-trinket1=humming_blackiron_trigger,id=113985,bonus_id=567/448
-trinket2=scales_of_doom,id=113612,bonus_id=567/448
-main_hand=mouth_of_the_fury,id=113885,bonus_id=567/448,enchant=megawatt_filament
+head=rylakstalkers_headguard,id=115545,bonus_id=567
+neck=darklight_necklace,id=113865,bonus_id=567,enchant=gift_of_critical_strike
+shoulders=neckbreaker_shoulderguards,id=113899,bonus_id=567
+back=drape_of_the_dark_hunt,id=113971,bonus_id=567,enchant=gift_of_critical_strike
+chest=rylakstalkers_tunic,id=115548,bonus_id=567
+wrists=bracers_of_the_wolfs_cunning,id=113943,bonus_id=567
+hands=rylakstalkers_gloves,id=115549,bonus_id=567
+waist=grenadiers_belt,id=113955,bonus_id=567
+legs=rylakstalkers_legguards,id=115546,bonus_id=567
+feet=slagstomper_treads,id=113888,bonus_id=567
+finger1=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_critical_strike
+finger2=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_critical_strike
+trinket1=humming_blackiron_trigger,id=113985,bonus_id=567
+trinket2=scales_of_doom,id=113612,bonus_id=567
+main_hand=mouth_of_the_fury,id=113885,bonus_id=567,enchant=megawatt_filament
 
 # Gear Summary
-# gear_agility=3774
-# gear_stamina=4785
-# gear_crit_rating=1957
-# gear_haste_rating=824
-# gear_mastery_rating=573
-# gear_armor=1503
-# gear_multistrike_rating=879
-# gear_versatility_rating=243
+# gear_agility=3586
+# gear_stamina=4545
+# gear_crit_rating=1875
+# gear_haste_rating=779
+# gear_mastery_rating=543
+# gear_armor=1463
+# gear_multistrike_rating=833
+# gear_versatility_rating=237
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 summon_pet=cat

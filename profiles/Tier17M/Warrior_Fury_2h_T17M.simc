@@ -89,30 +89,30 @@ actions.aoe+=/dragon_roar,if=buff.bloodbath.up|!talent.bloodbath.enabled
 actions.aoe+=/bloodthirst
 
 head=blackhands_faceguard,id=115584,bonus_id=567
-neck=vertebrae_protector,id=113900,bonus_id=567/448,enchant=gift_of_critical_strike
-shoulders=overdriven_spaulders,id=113990,bonus_id=567/448
-back=charbreath_firecloak,id=113916,bonus_id=567/448,enchant=gift_of_critical_strike
+neck=vertebrae_protector,id=113900,bonus_id=567,enchant=gift_of_critical_strike
+shoulders=overdriven_spaulders,id=113990,bonus_id=567
+back=charbreath_firecloak,id=113916,bonus_id=567,enchant=gift_of_critical_strike
 chest=blackhands_chestguard,id=115582,bonus_id=567
-wrists=bracers_of_visceral_force,id=119331,bonus_id=567/448
+wrists=bracers_of_visceral_force,id=119331,bonus_id=567
 hands=blackhands_handguards,id=115583,bonus_id=567
-waist=ironcrushers_collar,id=113950,bonus_id=567/448
+waist=ironcrushers_collar,id=113950,bonus_id=567
 legs=blackhands_legguards,id=115580,bonus_id=567
-feet=iron_bellow_sabatons,id=113961,bonus_id=567/448
-finger1=spellbound_runic_band_of_elemental_power,id=118305,bonus_id=524,enchant=gift_of_critical_strike
-finger2=seal_of_the_savage_howl,id=113940,bonus_id=567/448,enchant=gift_of_critical_strike
-trinket1=forgemasters_insignia,id=113983,bonus_id=567/448
-trinket2=bottle_of_infesting_spores,id=113658,bonus_id=567/448
-main_hand=crescent_of_living_magma,id=113886,bonus_id=567/448,enchant=mark_of_the_thunderlord
-off_hand=crescent_of_living_magma,id=113886,bonus_id=567/448,enchant=mark_of_the_thunderlord
+feet=iron_bellow_sabatons,id=113961,bonus_id=567
+finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_critical_strike
+finger2=seal_of_the_savage_howl,id=113940,bonus_id=567,enchant=gift_of_critical_strike
+trinket1=forgemasters_insignia,id=113983,bonus_id=567
+trinket2=bottle_of_infesting_spores,id=113658,bonus_id=567
+main_hand=crescent_of_living_magma,id=113886,bonus_id=567,enchant=mark_of_the_thunderlord
+off_hand=crescent_of_living_magma,id=113886,bonus_id=567,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_strength=4034
-# gear_stamina=5173
-# gear_crit_rating=2146
-# gear_haste_rating=731
-# gear_mastery_rating=655
-# gear_armor=2271
-# gear_multistrike_rating=1299
-# gear_versatility_rating=341
+# gear_strength=3892
+# gear_stamina=5004
+# gear_crit_rating=2085
+# gear_haste_rating=704
+# gear_mastery_rating=640
+# gear_armor=2250
+# gear_multistrike_rating=1255
+# gear_versatility_rating=323
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

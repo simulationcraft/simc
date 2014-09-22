@@ -74,7 +74,7 @@ hands=living_wood_grips,id=115541,bonus_id=567
 waist=conductors_multipocket_girdle,id=113964,bonus_id=567
 legs=living_wood_legguards,id=115543,bonus_id=567
 feet=furnace_tenders_treads,id=113895,bonus_id=567
-finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,bonus_id=524,enchant=gift_of_critical_strike
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_critical_strike
 finger2=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_critical_strike
 trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=567
 trinket2=humming_blackiron_trigger,id=113985,bonus_id=567
