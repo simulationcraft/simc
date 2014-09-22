@@ -163,20 +163,20 @@ waist=deckhands_rope_belt,id=113967
 legs=turret_mechanics_legwraps,id=113970
 feet=cavedwellers_climbers,id=113864
 finger1=ukuroggs_corrupted_seal,id=113975,enchant=gift_of_critical_strike
-finger2=epicenter_loop,id=113947,enchant=gift_of_critical_strike
+finger2=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_critical_strike
 trinket1=darmacs_unstable_talisman,id=113948
 trinket2=goren_soul_repository,id=119194
 main_hand=blackhand_doomstaff,id=113988,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_stamina=3408
-# gear_intellect=2710
+# gear_stamina=3437
+# gear_intellect=2730
 # gear_spell_power=1325
-# gear_crit_rating=1399
+# gear_crit_rating=1321
 # gear_haste_rating=592
-# gear_mastery_rating=786
+# gear_mastery_rating=899
 # gear_armor=700
 # gear_multistrike_rating=374
-# gear_versatility_rating=92
+# gear_versatility_rating=78
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
