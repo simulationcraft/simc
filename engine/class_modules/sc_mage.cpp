@@ -3954,6 +3954,10 @@ struct choose_target_t : public action_t
       sim -> out_debug.printf( "%s swapping target from %s to %s", player -> name(), p -> current_target -> name(), selected_target -> name() );
 
     p -> current_target = selected_target;
+
+    // Invalidate target caches
+    for ( size_t i = 0, end = p -> action_list.size(); i < end; i++ )
+      p -> action_list[ i ] -> target_cache.is_valid = false;
   }
 
   bool ready()
