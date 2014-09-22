@@ -37,6 +37,7 @@ actions+=/call_action_list,name=init_crystal,if=talent.prismatic_crystal.enabled
 actions+=/call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active
 actions+=/call_action_list,name=aoe,if=active_enemies>=6
 actions+=/call_action_list,name=burn,if=buff.arcane_power.up&cooldown.evocation.remains<buff.arcane_power.remains&mana.pct>15&talent.prismatic_crystal.enabled
+actions+=/call_action_list,name=burn,if=cooldown.evocation.remains<buff.arcane_power.remains&mana.pct>30&talent.arcane_orb.enabled
 actions+=/call_action_list,name=evocation
 
 # Conditions for initiating Prismatic Crystal burn phase
@@ -71,7 +72,7 @@ actions.burn+=/nether_tempest,cycle_targets=1,if=target!=prismatic_crystal&buff.
 actions.burn+=/arcane_blast,if=mana.pct>95&buff.arcane_charge.stack=4
 actions.burn+=/arcane_missiles,if=buff.arcane_charge.stack=4
 actions.burn+=/supernova
-actions.burn+=/arcane_barrage,if=buff.presence_of_mind.up&buff.arcane_charge.stack=4
+actions.burn+=/arcane_barrage,if=buff.presence_of_mind.up&buff.arcane_charge.stack=4|cooldown.arcane_orb.remains<1
 actions.burn+=/presence_of_mind
 actions.burn+=/arcane_blast
 
@@ -93,7 +94,7 @@ actions.conserve+=/arcane_barrage,moving=1
 # Makes Evocation interrupt channeling properly
 actions.evocation=call_action_list,name=conserve,if=cooldown.evocation.remains>0
 actions.evocation+=/evocation,interrupt_if=mana.pct>92,if=mana.pct<65
-actions.evocation+=/evocation,interrupt_if=mana.pct>0,if=buff.arcane_charge.stack=0
+actions.evocation+=/evocation,interrupt_if=mana.pct>0,if=buff.arcane_charge.stack=0&talent.overpowered.enabled&set_bonus.tier17_2pc
 actions.evocation+=/call_action_list,name=conserve
 
 head=arcanoshatter_hood,id=115553,bonus_id=566
