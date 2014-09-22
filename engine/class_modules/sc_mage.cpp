@@ -4865,7 +4865,6 @@ void mage_t::apl_arcane()
   default_list -> add_action( "call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=6" );
   default_list -> add_action( "call_action_list,name=burn,if=buff.arcane_power.up&cooldown.evocation.remains<buff.arcane_power.remains&mana.pct>15&talent.prismatic_crystal.enabled" );
-  default_list -> add_action( "call_action_list,name=burn,if=cooldown.evocation.remains<buff.arcane_power.remains&mana.pct>30&talent.arcane_orb.enabled" );
   default_list -> add_action( "call_action_list,name=evocation" );
 
   init_crystal -> add_talent( this, "Prismatic Crystal",
@@ -4919,16 +4918,15 @@ void mage_t::apl_arcane()
   burn -> add_action( this, "Arcane Missiles",
                       "if=buff.arcane_charge.stack=4" );
   burn -> add_talent( this, "Supernova" );
-  burn -> add_talent( this, "Arcane Orb, if=buff.arcane_charge.stack<=2" );
   burn -> add_action( this, "Arcane Barrage",
-                      "if=buff.presence_of_mind.up&buff.arcane_charge.stack=4|cooldown.arcane_orb.remains<1" );
+                      "if=buff.presence_of_mind.up&buff.arcane_charge.stack=4" );
   burn -> add_action( this, "Presence of Mind" );
   burn -> add_action( this, "Arcane Blast" );
 
 //Proxy Action List to work around the behavior of interrupt_if, as it only interrupts if there is a higher priority action available
   evocation -> add_action( "call_action_list,name=conserve,if=cooldown.evocation.remains>0", "Makes Evocation interrupt channeling properly" );
   evocation -> add_action( this, "Evocation", "interrupt_if=mana.pct>92,if=mana.pct<65" );
-  evocation -> add_action( this, "Evocation", "interrupt_if=mana.pct>0,if=buff.arcane_charge.stack=0&talent.overpowered.enabled&set_bonus.tier17_2pc" );
+  evocation -> add_action( this, "Evocation", "interrupt_if=mana.pct>0,if=buff.arcane_charge.stack=0" );
   evocation -> add_action( "call_action_list,name=conserve" );
   
   conserve -> add_action( "call_action_list,name=cooldowns,if=time_to_die<30|(buff.arcane_charge.stack=4&!(glyph.arcane_power.enabled&talent.prismatic_crystal.enabled)&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>20))" );
