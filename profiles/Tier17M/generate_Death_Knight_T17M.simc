@@ -1,7 +1,7 @@
 ﻿
 talent_format=armory
 
-deathknight="Death_Knight_Unholy_T17M”
+deathknight="Death_Knight_Unholy_T17M"
 level=100
 race=orc
 spec=unholy
@@ -26,7 +26,7 @@ main_hand=kagrazs_burning_blade,id=113913,bonus_id=567,enchant=rune_of_the_falle
 
 save=Death_Knight_Unholy_T17M.simc
 
-deathknight="Death_Knight_Frost_2h_T17M”
+deathknight="Death_Knight_Frost_2h_T17M"
 level=100
 race=orc
 spec=frost
@@ -51,7 +51,7 @@ trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=567
 main_hand=crescent_of_living_magma,id=113886,bonus_id=567,enchant=rune_of_the_fallen_crusader
 save=Death_Knight_Frost_2h_T17M.simc
 
-deathknight="Death_Knight_Frost_1h_T17M”
+deathknight="Death_Knight_Frost_1h_T17M"
 level=100
 race=orc
 spec=frost
@@ -77,7 +77,7 @@ main_hand=kromogs_brutal_fist,id=113927,bonus_id=567,enchant=rune_of_the_fallen_
 off_hand=kromogs_brutal_fist,id=113927,bonus_id=567,enchant=rune_of_razorice
 save=Death_Knight_Frost_1h_T17M.simc
 
-deathknight="Death_Knight_Blood_T17M”
+deathknight="Death_Knight_Blood_T17M"
 level=100
 race=tauren
 role=tank
@@ -99,3 +99,4 @@ trinket1=primal_gladiators_medallion_of_cruelty,id=111229
 trinket2=primal_gladiators_insignia_of_victory,id=111233
 main_hand=primal_gladiators_decapitator,id=111202,enchant=rune_of_stoneskin_gargoyle
 save=Death_Knight_Blood_T17M.simc
+
