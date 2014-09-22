@@ -1,4 +1,4 @@
-warlock="Warlock_Affliction_T17M"
+warlock="Warlock_Affliction_T17PR"
 level=100
 race=troll
 role=spell
@@ -26,7 +26,7 @@ actions.precombat+=/potion,name=draenic_intellect
 
 # Executed every time the actor is available.
 
-actions=use_item,name=shards_of_nothing
+actions=use_item,name=fleshrenders_meathook
 actions+=/potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/berserking
 actions+=/blood_fury
@@ -46,32 +46,29 @@ actions+=/life_tap,if=mana.pct<40
 actions+=/drain_soul,interrupt=1,chain=1
 actions+=/life_tap
 
-head=shadow_councils_hood,id=115586,bonus_id=567
-neck=gruuls_lip_ring,id=113872,bonus_id=567,enchant=gift_of_haste
-shoulders=shadow_councils_mantle,id=115589,bonus_id=567
-back=runefrenzy_greatcloak,id=113937,bonus_id=567,enchant=gift_of_haste
-chest=shadow_councils_robes,id=115588,bonus_id=567
-wrists=bracers_of_enkindled_power,id=113956,bonus_id=567
-hands=shadow_councils_gloves,id=115585,bonus_id=567
-waist=seeking_ember_girdle,id=113941,bonus_id=567
-legs=turret_mechanics_legwraps,id=113970,bonus_id=567
-feet=cavedwellers_climbers,id=113864,bonus_id=567
-finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_haste
-finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant=gift_of_haste
-trinket1=shards_of_nothing,id=113835,bonus_id=567
-trinket2=darmacs_unstable_talisman,id=113948,bonus_id=567
-main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant=mark_of_warsong
+head=hood_of_swirling_light,id=109972,bonus_id=524
+neck=alcs_pendant_of_fiery_dreams,id=109957,bonus_id=524,enchant=gift_of_haste
+shoulders=frosttouched_shoulderpads,id=109931,bonus_id=524
+back=cloak_of_arcane_mysteries,id=109908,bonus_id=524,enchant=gift_of_haste
+chest=lightbinder_robes,id=109902,bonus_id=524
+wrists=bracers_of_arcane_mystery,id=109864,bonus_id=524
+hands=gloves_of_arcane_mystery,id=109844,bonus_id=524
+waist=lightbinder_girdle,id=109827,bonus_id=524
+legs=windcrystal_leggings,id=115374,bonus_id=524
+feet=lightbinder_treads,id=109796,bonus_id=524
+finger1=darkflame_loop,id=109766,bonus_id=524,enchant=gift_of_haste
+finger2=diamondglow_circle,id=109763,bonus_id=524,enchant=gift_of_haste
+trinket1=fleshrenders_meathook,id=110002,bonus_id=524
+trinket2=coagulated_genesaur_blood,id=110004,bonus_id=524
+main_hand=portalrippers_staff,id=110039,bonus_id=524,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_stamina=4545
-# gear_intellect=3586
-# gear_spell_power=1753
-# gear_crit_rating=960
-# gear_haste_rating=1836
-# gear_mastery_rating=1637
-# gear_armor=870
-# gear_multistrike_rating=134
-# gear_versatility_rating=103
-# set_bonus=tier17_2pc=1
-# set_bonus=tier17_4pc=1
+# gear_stamina=2465
+# gear_intellect=1960
+# gear_spell_power=958
+# gear_crit_rating=129
+# gear_haste_rating=1725
+# gear_mastery_rating=767
+# gear_armor=552
+# gear_multistrike_rating=232
 default_pet=felhunter

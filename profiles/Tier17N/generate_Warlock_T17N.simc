@@ -6,20 +6,20 @@ race=troll
 spec=affliction
 talents=0000111
 head=shadow_councils_hood,id=115586
-neck=gruuls_lip_ring,id=113872,enchant=gift_of_mastery
+neck=gruuls_lip_ring,id=113872,enchant=gift_of_haste
 shoulders=shadow_councils_mantle,id=115589
-back=runefrenzy_greatcloak,id=113937,enchant=gift_of_mastery
+back=runefrenzy_greatcloak,id=113937,enchant=gift_of_haste
 chest=shadow_councils_robes,id=115588
 wrists=bracers_of_enkindled_power,id=113956
 hands=shadow_councils_gloves,id=115585
 waist=seeking_ember_girdle,id=113941
 legs=turret_mechanics_legwraps,id=113970
 feet=cavedwellers_climbers,id=113864
-finger1=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_mastery
-finger2=ukuroggs_corrupted_seal,id=113975,enchant=gift_of_mastery
+finger1=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_haste
+finger2=ukuroggs_corrupted_seal,id=113975,enchant=gift_of_haste
 trinket1=shards_of_nothing,id=113835
 trinket2=darmacs_unstable_talisman,id=113948
-main_hand=infernoflame_staff,id=113869,enchant=mark_of_bleeding_hollow
+main_hand=infernoflame_staff,id=113869,enchant=mark_of_warsong
 save=Warlock_Affliction_T17N.simc
 
 warlock=Warlock_Demonology_T17N

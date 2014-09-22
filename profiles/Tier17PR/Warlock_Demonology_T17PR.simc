@@ -1,4 +1,4 @@
-warlock="Warlock_Demonology_T17P"
+warlock="Warlock_Demonology_T17PR"
 level=100
 race=troll
 role=spell
@@ -27,7 +27,7 @@ actions.precombat+=/soul_fire
 
 # Executed every time the actor is available.
 
-actions=use_item,name=primal_gladiators_badge_of_dominance
+actions=use_item,name=fleshrenders_meathook
 actions+=/potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/berserking
 actions+=/blood_fury
@@ -57,31 +57,29 @@ actions+=/life_tap,if=mana.pct<40
 actions+=/shadow_bolt
 actions+=/life_tap
 
-head=primal_gladiators_hood_of_prowess,id=111084
-neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_mastery
-shoulders=primal_gladiators_felweave_amice,id=111238
-back=primal_gladiators_drape_of_prowess,id=111125,enchant=gift_of_mastery
-chest=primal_gladiators_raiment_of_cruelty,id=111091
-wrists=primal_gladiators_cuffs_of_prowess,id=111099
-hands=primal_gladiators_gloves_of_prowess,id=111083
-waist=primal_gladiators_cord_of_victory,id=111095
-legs=primal_gladiators_felweave_trousers,id=111236
-feet=primal_gladiators_treads_of_prowess,id=111097
-finger1=primal_gladiators_band_of_victory,id=111136,enchant=gift_of_mastery
-finger2=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_mastery
-trinket1=primal_gladiators_badge_of_dominance,id=111227
-trinket2=primal_gladiators_insignia_of_dominance,id=111228
-main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_bleeding_hollow
+head=hood_of_arcane_mystery,id=109970,bonus_id=524
+neck=alcs_pendant_of_fiery_dreams,id=109957,bonus_id=524,enchant=gift_of_mastery
+shoulders=felflame_spaulders,id=109948,bonus_id=524
+back=cloak_of_arcane_mysteries,id=109908,bonus_id=524,enchant=gift_of_mastery
+chest=robes_of_swirling_light,id=109901,bonus_id=524
+wrists=frosttouched_wristwraps,id=109865,bonus_id=524
+hands=gloves_of_swirling_light,id=109846,bonus_id=524
+waist=frosttouched_cord,id=109825,bonus_id=524
+legs=leggings_of_swirling_light,id=109806,bonus_id=524
+feet=lightbinder_treads,id=109796,bonus_id=524
+finger1=darkflame_loop,id=109766,bonus_id=524,enchant=gift_of_mastery
+finger2=mark_of_ice,id=109764,bonus_id=524,enchant=gift_of_mastery
+trinket1=fleshrenders_meathook,id=110002,bonus_id=524
+trinket2=tovras_lightning_repository,id=110001,bonus_id=524
+main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_stamina=3250
-# gear_intellect=2588
-# gear_spell_power=1265
-# gear_crit_rating=752
-# gear_haste_rating=313
-# gear_mastery_rating=1150
-# gear_armor=677
-# gear_multistrike_rating=697
-# gear_versatility_rating=249
-# set_bonus=pvp_2pc=1
+# gear_stamina=2465
+# gear_intellect=1960
+# gear_spell_power=958
+# gear_crit_rating=661
+# gear_haste_rating=203
+# gear_mastery_rating=1290
+# gear_armor=552
+# gear_multistrike_rating=444
 default_pet=felguard

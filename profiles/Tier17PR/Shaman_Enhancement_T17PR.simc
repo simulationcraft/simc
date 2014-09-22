@@ -1,0 +1,108 @@
+shaman="Shaman_Enhancement_T17PR"
+level=100
+race=draenei
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...1.01
+glyphs=chain_lightning
+spec=enhancement
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_agility_flask
+actions.precombat+=/food,type=frosty_stew
+actions.precombat+=/lightning_shield,if=!buff.lightning_shield.up
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_agility
+
+# Executed every time the actor is available.
+
+actions=wind_shear
+# Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
+actions+=/bloodlust,if=target.health.pct<25|time>0.500
+actions+=/auto_attack
+actions+=/use_item,name=kihras_adrenaline_injector
+# In-combat potion is preferentially linked to the Fire or Storm Elemental, depending on talents, unless combat will end shortly
+actions+=/potion,name=draenic_agility,if=(talent.storm_elemental_totem.enabled&pet.storm_elemental_totem.remains>=25)|(!talent.storm_elemental_totem.enabled&pet.fire_elemental_totem.remains>=25)|target.time_to_die<=30
+actions+=/blood_fury
+actions+=/arcane_torrent
+actions+=/berserking
+actions+=/elemental_mastery
+actions+=/storm_elemental_totem
+actions+=/fire_elemental_totem
+actions+=/ascendance,if=cooldown.strike.remains>=3
+actions+=/feral_spirit
+actions+=/liquid_magma,if=pet.searing_totem.remains>=15|pet.magma_totem.remains>=15|pet.fire_elemental_totem.remains>=15
+actions+=/ancestral_swiftness
+# If only one enemy, priority follows the 'single' action list.
+actions+=/call_action_list,name=single,if=active_enemies=1
+# On multiple enemies, the priority follows the 'aoe' action list.
+actions+=/call_action_list,name=aoe,if=active_enemies>1
+
+# Single target action priority list
+
+actions.single=searing_totem,if=!totem.fire.active
+actions.single+=/unleash_elements,if=(talent.unleashed_fury.enabled|set_bonus.tier16_2pc_melee=1)
+actions.single+=/elemental_blast,if=buff.maelstrom_weapon.react>=1
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react=5|(buff.maelstrom_weapon.react>=4&!buff.ascendance.up)|(buff.ancestral_swiftness.up&buff.maelstrom_weapon.react>=3)
+actions.single+=/windstrike
+actions.single+=/stormstrike
+actions.single+=/lava_lash
+actions.single+=/flame_shock,if=(talent.elemental_fusion.enabled&buff.elemental_fusion.stack=2&buff.unleash_flame.up&dot.flame_shock.remains<16)|(!talent.elemental_fusion.enabled&buff.unleash_flame.up&dot.flame_shock.remains<=9)|!ticking
+actions.single+=/unleash_elements
+actions.single+=/frost_shock,if=(talent.elemental_fusion.enabled&dot.flame_shock.remains>=16)|!talent.elemental_fusion.enabled
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=1&!buff.ascendance.up
+actions.single+=/searing_totem,if=pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up
+
+# Multi target action priority list
+
+actions.aoe=fire_nova,if=active_dot.flame_shock>=3
+actions.aoe+=/wait,sec=cooldown.fire_nova.remains,if=active_dot.flame_shock>=4&cooldown.fire_nova.remains<=action.fire_nova.gcd
+actions.aoe+=/magma_totem,if=!totem.fire.active
+actions.aoe+=/lava_lash,if=dot.flame_shock.ticking
+actions.aoe+=/elemental_blast,if=buff.maelstrom_weapon.react>=1
+actions.aoe+=/chain_lightning,if=glyph.chain_lightning.enabled&active_enemies>=4&(buff.maelstrom_weapon.react=5|(buff.ancestral_swiftness.up&buff.maelstrom_weapon.react>=3))
+actions.aoe+=/unleash_elements
+actions.aoe+=/flame_shock,cycle_targets=1,if=!ticking
+actions.aoe+=/lightning_bolt,if=(!glyph.chain_lightning.enabled|active_enemies<=3)&(buff.maelstrom_weapon.react=5|(buff.ancestral_swiftness.up&buff.maelstrom_weapon.react>=3))
+actions.aoe+=/windstrike
+actions.aoe+=/fire_nova,if=active_dot.flame_shock>=2
+actions.aoe+=/chain_lightning,if=active_enemies>=2&buff.maelstrom_weapon.react>=1
+actions.aoe+=/stormstrike
+actions.aoe+=/frost_shock,if=active_enemies<4
+actions.aoe+=/chain_lightning,if=glyph.chain_lightning.enabled&active_enemies>=4&buff.maelstrom_weapon.react>=1
+actions.aoe+=/lightning_bolt,if=(!glyph.chain_lightning.enabled|active_enemies<=3)&buff.maelstrom_weapon.react>=1
+actions.aoe+=/fire_nova,if=active_dot.flame_shock>=1
+
+head=rockhide_casque,id=109982,bonus_id=524
+neck=windseal_necklace,id=109953,bonus_id=524,enchant=gift_of_haste
+shoulders=lavalink_spaulders,id=109942,bonus_id=524
+back=cloak_of_violent_harmony,id=109906,bonus_id=524,enchant=gift_of_haste
+chest=streamslither_chestguard,id=109887,bonus_id=524
+wrists=rockhide_wristguards,id=109874,bonus_id=524
+hands=morningscale_gauntlet,id=109863,bonus_id=524
+waist=morningscale_waistguard,id=109843,bonus_id=524
+legs=rockhide_leggings,id=109815,bonus_id=524
+feet=lavalink_stompers,id=109800,bonus_id=524
+finger1=signet_of_radiant_leaves,id=109762,bonus_id=524,enchant=gift_of_haste
+finger2=ceds_chiming_circle,id=109760,bonus_id=524,enchant=gift_of_haste
+trinket1=witherbarks_branch,id=109999,bonus_id=524
+trinket2=kihras_adrenaline_injector,id=109997,bonus_id=524
+main_hand=gugrokks_smasher,id=110042,bonus_id=524,enchant=mark_of_warsong
+off_hand=gugrokks_smasher,id=110042,bonus_id=524,enchant=mark_of_bleeding_hollow
+
+# Gear Summary
+# gear_agility=1933
+# gear_stamina=2426
+# gear_crit_rating=67
+# gear_haste_rating=1706
+# gear_mastery_rating=799
+# gear_armor=1111
+# gear_multistrike_rating=236

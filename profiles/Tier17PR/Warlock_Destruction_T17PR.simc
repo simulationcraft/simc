@@ -1,4 +1,4 @@
-warlock="Warlock_Destruction_T17P"
+warlock="Warlock_Destruction_T17PR"
 level=100
 race=troll
 role=spell
@@ -27,8 +27,7 @@ actions.precombat+=/incinerate
 
 # Executed every time the actor is available.
 
-actions=use_item,name=primal_gladiators_badge_of_dominance
-actions+=/potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20
+actions=potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/berserking
 actions+=/blood_fury
 actions+=/arcane_torrent
@@ -47,31 +46,29 @@ actions+=/immolate,if=remains<=(duration*0.3)
 actions+=/conflagrate
 actions+=/incinerate
 
-head=primal_gladiators_hood_of_prowess,id=111084
-neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_critical_strike
-shoulders=primal_gladiators_felweave_amice,id=111238
-back=primal_gladiators_drape_of_cruelty,id=111124,enchant=gift_of_critical_strike
-chest=primal_gladiators_felweave_raiment,id=111237
-wrists=primal_gladiators_cuffs_of_prowess,id=111099
-hands=primal_gladiators_gloves_of_prowess,id=111083
-waist=primal_gladiators_cord_of_victory,id=111095
-legs=primal_gladiators_felweave_trousers,id=111236
-feet=primal_gladiators_treads_of_prowess,id=111097
-finger1=primal_gladiators_band_of_victory,id=111136,enchant=gift_of_critical_strike
-finger2=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_critical_strike
-trinket1=primal_gladiators_badge_of_dominance,id=111227
-trinket2=primal_gladiators_insignia_of_dominance,id=111228
-main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_the_thunderlord
+head=hood_of_arcane_mystery,id=109970,bonus_id=524
+neck=magisters_chain,id=109954,bonus_id=524,enchant=gift_of_critical_strike
+shoulders=felflame_spaulders,id=109948,bonus_id=524
+back=drape_of_frozen_dreams,id=109926,bonus_id=524,enchant=gift_of_critical_strike
+chest=robes_of_swirling_light,id=109901,bonus_id=524
+wrists=frosttouched_wristwraps,id=109865,bonus_id=524
+hands=gloves_of_swirling_light,id=109846,bonus_id=524
+waist=frosttouched_cord,id=109825,bonus_id=524
+legs=lightbinder_leggings,id=109807,bonus_id=524
+feet=sandals_of_arcane_mystery,id=109784,bonus_id=524
+finger1=golems_gleaming_eye,id=109765,bonus_id=524,enchant=gift_of_critical_strike
+finger2=mark_of_ice,id=109764,bonus_id=524,enchant=gift_of_critical_strike
+trinket1=coagulated_genesaur_blood,id=110004,bonus_id=524
+trinket2=crushtos_runic_alarm,id=110000,bonus_id=524
+main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_stamina=3250
-# gear_intellect=2588
-# gear_spell_power=1265
-# gear_crit_rating=1263
-# gear_haste_rating=371
-# gear_mastery_rating=875
-# gear_armor=677
-# gear_multistrike_rating=550
-# gear_versatility_rating=102
-# set_bonus=pvp_2pc=1
+# gear_stamina=2465
+# gear_intellect=1960
+# gear_spell_power=958
+# gear_crit_rating=1475
+# gear_mastery_rating=789
+# gear_armor=552
+# gear_multistrike_rating=268
+# gear_versatility_rating=52
 default_pet=felhunter
