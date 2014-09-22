@@ -5026,10 +5026,10 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_action( this, "Crusader Strike", "", "GCD-bound spells start here" );
   def -> add_action( this, "Judgment" );
   def -> add_action( this, "Holy Wrath", "if=talent.sanctified_wrath.enabled" );
+  def -> add_action( this, "Avenger's Shield" );
   def -> add_action( this, "Seal of Insight", "if=talent.empowered_seals.enabled&!seal.insight&buff.uthers_insight.remains<cooldown.judgment.remains" );
   def -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.uthers_insight.remains>cooldown.judgment.remains&buff.liadrins_righteousness.down" );
   def -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&!seal.truth&buff.uthers_insight.remains>cooldown.judgment.remains&buff.liadrins_righteousness.remains>cooldown.judgment.remains&buff.maraads_truth.down" );
-  def -> add_action( this, "Avenger's Shield" );
   def -> add_talent( this, "Execution Sentence" );
   def -> add_action( this, "Hammer of Wrath" );
   def -> add_talent( this, "Light's Hammer" );
@@ -5057,17 +5057,16 @@ void paladin_t::generate_action_prio_list_prot()
   dps -> add_talent( this, "Execution Sentence" );
   dps -> add_action( this, "Crusader Strike" );
   dps -> add_action( this, "Judgment" );
-  dps -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.liadrins_righteousness.remains<cooldown.judgment.remains" );
-  dps -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&!seal.truth&buff.liadrins_righteousness.remains>cooldown.judgment.remains&buff.maraads_truth.down" );
   dps -> add_action( this, "Avenger's Shield" );
+  dps -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&!seal.truth&buff.maraads_truth.remains<cooldown.judgment.remains" );
+  dps -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.maraads_truth.remains>cooldown.judgment.remains&buff.liadrins_righteousness.down" );
   dps -> add_talent( this, "Light's Hammer" );
   dps -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<2" );
   dps -> add_action( this, "Consecration", "if=target.debuff.flying.down&!ticking" );
   dps -> add_action( this, "Holy Wrath" );
   dps -> add_talent( this, "Holy Prism" );
-  dps -> add_action( this, "Seal of Insight", "if=talent.empowered_seals.enabled&!seal.insight&buff.uthers_insight.remains<buff.liadrins_righteousness.remains&buff.uthers_insight.remains<buff.maraads_truth.remains" );
-  dps -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.liadrins_righteousness.remains<buff.uthers_insight.remains&buff.liadrins_righteousness.remains<buff.maraads_truth.remains" );
-  dps -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&!seal.truth&buff.maraads_truth.remains<buff.uthers_insight.remains&buff.maraads_truth.remains<buff.liadrins_righteousness.remains" );
+  dps -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&!seal.truth&buff.maraads_truth.remains<buff.liadrins_righteousness.remains" );
+  dps -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.liadrins_righteousness.remains<buff.maraads_truth.remains" );
   dps -> add_talent( this, "Sacred Shield" );
   dps -> add_action( this, "Flash of Light", "if=talent.selfless_healer.enabled" );
 
@@ -5086,6 +5085,8 @@ void paladin_t::generate_action_prio_list_prot()
   surv -> add_action( this, "Judgment" );
   surv -> add_action( this, "Holy Wrath", "if=talent.sanctified_wrath.enabled" );
   surv -> add_action( this, "Avenger's Shield" );
+  surv -> add_action( this, "Seal of Insight", "if=talent.empowered_seals.enabled&!seal.insight&buff.uthers_insight.remains<cooldown.judgment.remains" );
+  surv -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.uthers_insight.remains>cooldown.judgment.remains&buff.liadrins_righteousness.down" );
   surv -> add_action( this, "Flash of Light", "if=talent.selfless_healer.enabled" );
   surv -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<2" );
   surv -> add_talent( this, "Execution Sentence" );
@@ -5095,6 +5096,8 @@ void paladin_t::generate_action_prio_list_prot()
   surv -> add_action( this, "Consecration", "if=target.debuff.flying.down&!ticking" );
   surv -> add_action( this, "Holy Wrath" );
   surv -> add_talent( this, "Holy Prism" );
+  surv -> add_action( this, "Seal of Insight", "if=talent.empowered_seals.enabled&!seal.insight&buff.uthers_insight.remains<buff.liadrins_righteousness.remains" );
+  surv -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.liadrins_righteousness.remains<buff.uthers_insight.remains" );
   surv -> add_talent( this, "Sacred Shield" );
 
 }
