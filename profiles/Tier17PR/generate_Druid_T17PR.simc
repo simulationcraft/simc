@@ -36,20 +36,20 @@ position=back
 talents=0102032
 glyphs=savage_roar/master_shapeshifter/cat_form
 head=bloodfeather_cowl,id=109976,bonus_id=524
-neck=fireblade_collar,id=109951,enchant=gift_of_critical_strike
-shoulders=blackwater_spaulders,id=109938
-back=sootscarred_longcloak,id=109918,enchant=gift_of_critical_strike
-chest=chestguard_of_burning_focus,id=109884
-wrists=leafmender_wraps,id=109871
-hands=gauntlets_of_burning_focus,id=109848
-waist=leafmender_girdle,id=109832
-legs=bloodfeather_leggings,id=109810
-feet=boots_of_burning_focus,id=109787
-finger1=ancient_draenic_loop,id=109779,enchant=gift_of_critical_strike
-finger2=rogers_brown_diamond_seal,id=109759,enchant=gift_of_critical_strike
-trinket1=blood_seal_of_azzakel,id=109995
-trinket2=gorashans_lodestone_spike,id=109998
-main_hand=crushtos_neck_separator,id=110040,enchant=mark_of_the_thunderlord
+neck=fireblade_collar,id=109951,bonus_id=524,enchant=gift_of_critical_strike
+shoulders=blackwater_spaulders,bonus_id=524,id=109938
+back=sootscarred_longcloak,id=109918,bonus_id=524,enchant=gift_of_critical_strike
+chest=chestguard_of_burning_focus,id=109884,bonus_id=524
+wrists=leafmender_wraps,id=109871,bonus_id=524
+hands=gauntlets_of_burning_focus,id=109848,bonus_id=524
+waist=leafmender_girdle,id=109832,bonus_id=524
+legs=bloodfeather_leggings,id=109810,bonus_id=524
+feet=boots_of_burning_focus,id=109787,bonus_id=524
+finger1=ancient_draenic_loop,id=109779,bonus_id=524,enchant=gift_of_critical_strike
+finger2=rogers_brown_diamond_seal,id=109759,bonus_id=524,enchant=gift_of_critical_strike
+trinket1=blood_seal_of_azzakel,id=109995,bonus_id=524
+trinket2=gorashans_lodestone_spike,id=109998,bonus_id=524
+main_hand=crushtos_neck_separator,id=110040,bonus_id=524,enchant=mark_of_the_thunderlord
 save=Druid_Feral_T17PR.simc
 
 # Balance Druid T17PR
