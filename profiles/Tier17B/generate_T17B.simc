@@ -1,0 +1,36 @@
+
+#
+talent_format=armory
+
+# Death Knight
+#generate_Death_Knight_T17B.simc
+
+# Druid
+generate_Druid_T17B.simc
+
+# Hunter
+#generate_Hunter_T17B.simc
+
+# Mage
+#generate_Mage_T17B.simc
+
+# Monk
+generate_Monk_T17B.simc
+
+# Paladin
+#generate_Paladin_T17B.simc
+
+# Priest
+#generate_Priest_T17B.simc
+
+# Rogue
+#generate_Rogue_T17B.simc
+
+# Shaman
+#generate_Shaman_T17B.simc
+
+# Warlock
+#generate_Warlock_T17B.simc
+
+# Warrior
+#generate_Warrior_T17B.simc

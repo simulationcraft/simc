@@ -52,29 +52,31 @@ actions.generator+=/sinister_strike
 actions.finisher=crimson_tempest,if=active_enemies>7&dot.crimson_tempest_dot.ticks_remain<=1
 actions.finisher+=/eviscerate
 
-head=primal_gladiators_helm,id=111275
-neck=primal_gladiators_necklace_of_cruelty,id=111079,enchant=gift_of_haste
-shoulders=primal_gladiators_spaulders,id=111277
-back=primal_gladiators_cape_of_cruelty,id=111077,enchant=gift_of_haste
-chest=primal_gladiators_tunic,id=111273
-wrists=primal_gladiators_bindings_of_victory,id=111149
-hands=primal_gladiators_gloves,id=111274
-waist=primal_gladiators_belt_of_prowess,id=111141
-legs=primal_gladiators_legguards,id=111276
-feet=primal_gladiators_boots_of_prowess,id=111145
-finger1=primal_gladiators_ring_of_cruelty,id=111081,enchant=gift_of_haste
-finger2=primal_gladiators_ring_of_prowess,id=111082,enchant=gift_of_haste
-trinket1=primal_gladiators_insignia_of_conquest,id=111223
-trinket2=primal_gladiators_badge_of_conquest,id=111222
-main_hand=primal_gladiators_quickblade,id=111071,enchant=mark_of_warsong
-off_hand=primal_gladiators_quickblade,id=111071,enchant=mark_of_warsong
+head=poisoners_helmet,id=115572
+neck=engineers_grounded_gorget,id=113892,enchant=gift_of_mastery
+shoulders=poisoners_spaulders,id=115574
+back=cloak_of_delving_secrets,id=113929,enchant=gift_of_mastery
+chest=poisoners_tunic,id=115570
+wrists=squires_electroplated_bracers,id=113962
+hands=poisoners_gloves,id=115571
+waist=girdle_of_unconquered_glory,id=113907
+legs=shattering_smash_leggings,id=113989
+feet=treads_of_the_dark_hunt,id=113974
+finger1=timeless_solium_band_of_the_assassin,id=118297,enchant=gift_of_mastery
+finger2=flensers_hookring,id=113611,enchant=gift_of_mastery
+trinket1=meaty_dragonspine_trophy,id=118114
+trinket2=beating_heart_of_the_mountain,id=113931
+main_hand=molten_edge_eviscerator,id=113918,enchant=mark_of_bleeding_hollow
+off_hand=sorkas_chainfist,id=113965,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_agility=2553
-# gear_stamina=3197
-# gear_crit_rating=1002
-# gear_haste_rating=1244
-# gear_mastery_rating=861
-# gear_armor=950
-# gear_multistrike_rating=359
-# gear_versatility_rating=77
+# gear_agility=2684
+# gear_stamina=3366
+# gear_crit_rating=239
+# gear_haste_rating=722
+# gear_mastery_rating=1380
+# gear_armor=976
+# gear_multistrike_rating=764
+# gear_versatility_rating=93
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1

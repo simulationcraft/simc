@@ -53,31 +53,31 @@ actions.aoe+=/stellar_flare,cycle_targets=1,if=remains<7
 actions.aoe+=/wrath,if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)
 actions.aoe+=/starfire,if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)
 
-head=living_wood_headpiece,id=115542,bonus_id=567/448
-neck=gruuls_lip_ring,id=113872,bonus_id=567/448,enchant=gift_of_mastery
-shoulders=living_wood_spaulders,id=115544,bonus_id=567/448
-back=runefrenzy_greatcloak,id=113937,bonus_id=567/448,enchant=gift_of_mastery
-chest=living_wood_raiment,id=115540,bonus_id=567/448
-wrists=bracers_of_shattered_stalactites,id=113935,bonus_id=567/448
-hands=cannonball_loaders_grips,id=113949,bonus_id=567/448
-waist=conductors_multipocket_girdle,id=113964,bonus_id=567/448
-legs=living_wood_legguards,id=115543,bonus_id=567/448
-feet=treads_of_the_dark_hunt,id=113974,bonus_id=567/448
-finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,bonus_id=524,enchant=gift_of_mastery
-finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567/448,enchant=gift_of_mastery
-trinket1=blackiron_micro_crucible,id=113984,bonus_id=567/448
-trinket2=darmacs_unstable_talisman,id=113948,bonus_id=567/448
-main_hand=infernoflame_staff,id=113869,bonus_id=567/448,enchant=mark_of_warsong
+head=living_wood_headpiece,id=115542,bonus_id=567
+neck=gruuls_lip_ring,id=113872,bonus_id=567,enchant=gift_of_mastery
+shoulders=living_wood_spaulders,id=115544,bonus_id=567
+back=runefrenzy_greatcloak,id=113937,bonus_id=567,enchant=gift_of_mastery
+chest=living_wood_raiment,id=115540,bonus_id=567
+wrists=bracers_of_shattered_stalactites,id=113935,bonus_id=567
+hands=cannonball_loaders_grips,id=113949,bonus_id=567
+waist=conductors_multipocket_girdle,id=113964,bonus_id=567
+legs=living_wood_legguards,id=115543,bonus_id=567
+feet=treads_of_the_dark_hunt,id=113974,bonus_id=567
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_mastery
+finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant=gift_of_mastery
+trinket1=blackiron_micro_crucible,id=113984,bonus_id=567
+trinket2=darmacs_unstable_talisman,id=113948,bonus_id=567
+main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_stamina=4785
-# gear_intellect=3800
-# gear_spell_power=1852
-# gear_crit_rating=624
-# gear_haste_rating=965
-# gear_mastery_rating=1987
-# gear_armor=1186
-# gear_multistrike_rating=786
+# gear_stamina=4545
+# gear_intellect=3612
+# gear_spell_power=1753
+# gear_crit_rating=591
+# gear_haste_rating=912
+# gear_mastery_rating=1902
+# gear_armor=1147
+# gear_multistrike_rating=744
 # gear_versatility_rating=103
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

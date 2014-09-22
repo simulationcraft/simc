@@ -52,31 +52,31 @@ actions.generator+=/sinister_strike
 actions.finisher=crimson_tempest,if=active_enemies>7&dot.crimson_tempest_dot.ticks_remain<=1
 actions.finisher+=/eviscerate
 
-head=poisoners_helmet,id=115572,bonus_id=567/448
-neck=engineers_grounded_gorget,id=113892,bonus_id=567/448,enchant=gift_of_mastery
-shoulders=poisoners_spaulders,id=115574,bonus_id=567/448
-back=cloak_of_delving_secrets,id=113929,bonus_id=567/448,enchant=gift_of_mastery
-chest=poisoners_tunic,id=115570,bonus_id=567/448
-wrists=squires_electroplated_bracers,id=113962,bonus_id=567/448
-hands=poisoners_gloves,id=115571,bonus_id=567/448
-waist=girdle_of_unconquered_glory,id=113907,bonus_id=567/448
-legs=shattering_smash_leggings,id=113989,bonus_id=567/448
-feet=treads_of_the_dark_hunt,id=113974,bonus_id=567/448
-finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,bonus_id=524,enchant=gift_of_mastery
-finger2=flensers_hookring,id=113611,bonus_id=567/448,enchant=gift_of_mastery
-trinket1=meaty_dragonspine_trophy,id=118114,bonus_id=567/448
-trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=567/448
-main_hand=molten_edge_eviscerator,id=113918,bonus_id=567/448,enchant=mark_of_bleeding_hollow
-off_hand=sorkas_chainfist,id=113965,bonus_id=567/448,enchant=mark_of_bleeding_hollow
+head=poisoners_helmet,id=115572,bonus_id=567
+neck=engineers_grounded_gorget,id=113892,bonus_id=567,enchant=gift_of_mastery
+shoulders=poisoners_spaulders,id=115574,bonus_id=567
+back=cloak_of_delving_secrets,id=113929,bonus_id=567,enchant=gift_of_mastery
+chest=poisoners_tunic,id=115570,bonus_id=567
+wrists=squires_electroplated_bracers,id=113962,bonus_id=567
+hands=poisoners_gloves,id=115571,bonus_id=567
+waist=girdle_of_unconquered_glory,id=113907,bonus_id=567
+legs=shattering_smash_leggings,id=113989,bonus_id=567
+feet=treads_of_the_dark_hunt,id=113974,bonus_id=567
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_mastery
+finger2=flensers_hookring,id=113611,bonus_id=567,enchant=gift_of_mastery
+trinket1=meaty_dragonspine_trophy,id=118114,bonus_id=567
+trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=567
+main_hand=molten_edge_eviscerator,id=113918,bonus_id=567,enchant=mark_of_bleeding_hollow
+off_hand=sorkas_chainfist,id=113965,bonus_id=567,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_agility=3733
-# gear_stamina=4684
-# gear_crit_rating=327
-# gear_haste_rating=1008
-# gear_mastery_rating=1818
-# gear_armor=1186
-# gear_multistrike_rating=1066
+# gear_agility=3549
+# gear_stamina=4451
+# gear_crit_rating=317
+# gear_haste_rating=956
+# gear_mastery_rating=1734
+# gear_armor=1147
+# gear_multistrike_rating=1010
 # gear_versatility_rating=122
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

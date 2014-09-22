@@ -318,6 +318,7 @@ public:
     active_bomb_targets( 0 ),
     last_bomb_target( 0 ),
     rppm_pyromaniac( *this, 0, RPPM_HASTE ),
+    rppm_arcane_instability( *this, 0, RPPM_HASTE ),
     pet_multiplier( 1.0 ),
     benefits( benefits_t() ),
     buffs( buffs_t() ),
@@ -1644,6 +1645,10 @@ struct arcane_blast_t : public mage_spell_t
 
     p() -> buffs.arcane_charge -> trigger();
     p() -> buffs.profound_magic -> expire();
+
+    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) && p() -> rppm_arcane_instability.trigger() )
+      p() -> buffs.arcane_instability -> trigger();
+
   }
 
   virtual double action_multiplier() const
@@ -1732,6 +1737,9 @@ struct arcane_explosion_t : public mage_spell_t
       if ( rng().roll ( data().effectN( 2 ).percent() ) )
       {
         p() -> buffs.arcane_charge -> trigger();
+
+        if( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) && p() -> rppm_arcane_instability.trigger() )
+          p() -> buffs.arcane_instability -> trigger();
       }
       else
       {
@@ -1751,6 +1759,15 @@ struct arcane_missiles_tick_t : public mage_spell_t
     background  = true;
     dot_duration = timespan_t::zero();
   }
+
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) && p() -> buffs.arcane_instability -> up() )
+      p() -> buffs.arcane_instability -> expire();
+  
+  
+  }
 };
 
 struct arcane_missiles_t : public mage_spell_t
@@ -1762,14 +1779,16 @@ struct arcane_missiles_t : public mage_spell_t
     may_miss = false;
     may_proc_missiles = false;
 
-    base_tick_time    = timespan_t::from_seconds( 0.4 );
     dot_duration      = timespan_t::from_seconds( 2.0 );
+
+
+    base_tick_time = timespan_t::from_seconds( 0.4 );
     channeled         = true;
     hasted_ticks      = false;
-
     dynamic_tick_action = true;
     tick_action = new arcane_missiles_tick_t( p );
   }
+
 
   virtual double action_multiplier() const
   {
@@ -1792,8 +1811,13 @@ struct arcane_missiles_t : public mage_spell_t
       p() -> benefits.arcane_charge[ i ] -> update( as<int>( i ) == p() -> buffs.arcane_charge -> check() );
     }
 
+    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) )
+    {
+      base_tick_time = ( p() -> buffs.arcane_instability -> up() ? timespan_t::from_seconds( 0.2 ) : timespan_t::from_seconds( 0.4 ) );
+    }
 
     mage_spell_t::execute();
+
 
 
     if ( p() -> buffs.arcane_power -> up() && p() -> talents.overpowered -> ok() )
@@ -1811,6 +1835,13 @@ struct arcane_missiles_t : public mage_spell_t
     {
       p() -> buffs.arcane_missiles -> decrement();
     }
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    mage_spell_t::impact( s );
+
+
   }
 
   virtual void last_tick (dot_t * d)
@@ -1875,7 +1906,8 @@ struct arcane_orb_t : public mage_spell_t
     }
     mage_spell_t::execute();
 
-    p() -> buffs.arcane_charge -> trigger();
+    if( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) && p() -> rppm_arcane_instability.trigger() )
+      p() -> buffs.arcane_instability -> trigger();
   }
 
 
@@ -4463,7 +4495,7 @@ void mage_t::init_spells()
   if ( spec.ignite -> ok()  ) active_ignite = new actions::ignite_t( this );
   if ( spec.icicles -> ok() ) icicle = new actions::icicle_t( this );
   // RPPM
-  rppm_pyromaniac.set_frequency( 1.5 ); //RPPM coef is in the tooltip, but not in the spell data
+  rppm_pyromaniac.set_frequency( find_spell( 165459 ) -> real_ppm() ); 
   rppm_arcane_instability.set_frequency( find_spell( 165476 ) -> real_ppm() );
 
 }
@@ -4540,6 +4572,8 @@ void mage_t::create_buffs()
                                 .duration( find_spell( 36032 ) -> duration() );
   buffs.arcane_affinity       = buff_creator_t( this, "arcane_affinity", find_spell( 166871 ))
                                 .chance( sets.has_set_bonus( MAGE_ARCANE, T17, B2 ) );
+  buffs.arcane_instability    = buff_creator_t( this, "arcane_instability", find_spell( 166872 ) )
+                                .duration( find_spell( 166872 ) -> duration() ).chance( sets.has_set_bonus( MAGE_ARCANE , T17 , B4 ) );
   buffs.arcane_missiles       = buff_creator_t( this, "arcane_missiles", find_class_spell( "Arcane Missiles" ) -> ok() ? find_spell( 79683 ) : spell_data_t::not_found() )
                                 .chance( find_spell( 79684 ) -> proc_chance() ).max_stack( find_spell( 79683 ) -> max_stacks() );
 

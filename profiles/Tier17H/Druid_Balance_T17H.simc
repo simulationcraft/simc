@@ -63,21 +63,21 @@ hands=cannonball_loaders_grips,id=113949,bonus_id=566
 waist=conductors_multipocket_girdle,id=113964,bonus_id=566
 legs=living_wood_legguards,id=115543,bonus_id=566
 feet=treads_of_the_dark_hunt,id=113974,bonus_id=566
-finger1=epicenter_loop,id=113947,bonus_id=566,enchant=gift_of_mastery
-finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant=gift_of_mastery
+finger1=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_mastery
+finger2=epicenter_loop,id=113947,bonus_id=566,enchant=gift_of_mastery
 trinket1=blackiron_micro_crucible,id=113984,bonus_id=566
 trinket2=darmacs_unstable_talisman,id=113948,bonus_id=566
 main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_stamina=3921
-# gear_intellect=3120
+# gear_stamina=3942
+# gear_intellect=3134
 # gear_spell_power=1524
 # gear_crit_rating=603
-# gear_haste_rating=794
-# gear_mastery_rating=1560
+# gear_haste_rating=693
+# gear_mastery_rating=1586
 # gear_armor=1057
 # gear_multistrike_rating=647
-# gear_versatility_rating=106
+# gear_versatility_rating=192
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

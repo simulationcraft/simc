@@ -20,7 +20,7 @@ waist=grenadiers_belt,id=113955,bonus_id=566
 legs=rylakstalkers_legguards,id=115546,bonus_id=566
 feet=railwalkers_ratcheted_boots,id=113954,bonus_id=566
 finger1=unexploded_explosive_shard,id=113877,enchant=gift_of_haste,bonus_id=566
-finger2=cinderwolf_signet,id=113917,enchant=gift_of_critical_strike,bonus_id=566
+finger2=spellbound_solium_band_of_fatal_strikes,id=118302,enchant=gift_of_critical_strike
 trinket1=humming_blackiron_trigger,id=113985,bonus_id=566
 trinket2=meaty_dragonspine_trophy,id=118114,bonus_id=566
 main_hand=mouth_of_the_fury,id=113885,enchant=megawatt_filament,bonus_id=566
@@ -33,7 +33,7 @@ race=orc
 spec=marksmanship
 position=ranged_back
 role=attack
-talents=0002123
+talents=0003323
 head=rylakstalkers_headguard,id=115545,bonus_id=566
 neck=darklight_necklace,id=113865,enchant=gift_of_critical_strike,bonus_id=566
 shoulders=neckbreaker_shoulderguards,id=113899,bonus_id=566
@@ -45,7 +45,7 @@ waist=grenadiers_belt,id=113955,bonus_id=566
 legs=rylakstalkers_legguards,id=115546,bonus_id=566
 feet=slagstomper_treads,id=113888,bonus_id=566
 finger1=unexploded_explosive_shard,id=113877,enchant=gift_of_critical_strike,bonus_id=566
-finger2=solium_band_of_dexterity,id=118292,enchant=gift_of_critical_strike,bonus_id=566
+finger2=spellbound_solium_band_of_fatal_strikes,id=118302,enchant=gift_of_critical_strike
 trinket1=humming_blackiron_trigger,id=113985,bonus_id=566
 trinket2=scales_of_doom,id=113612,bonus_id=566
 main_hand=mouth_of_the_fury,id=113885,enchant=megawatt_filament,bonus_id=566
@@ -58,7 +58,7 @@ race=orc
 spec=survival
 position=ranged_back
 role=attack
-talents=0002113
+talents=0002313
 head=blastproof_cowl,id=113891,bonus_id=566
 neck=darklight_necklace,id=113865,enchant=gift_of_multistrike,bonus_id=566
 shoulders=rylakstalkers_spaulders,id=115547,bonus_id=566
@@ -70,7 +70,7 @@ waist=grenadiers_belt,id=113955,bonus_id=566
 legs=rylakstalkers_legguards,id=115546,bonus_id=566
 feet=treads_of_the_veteran_smith,id=119339,bonus_id=566
 finger1=unexploded_explosive_shard,id=113877,enchant=gift_of_multistrike,bonus_id=566
-finger2=cinderwolf_signet,id=113917,enchant=gift_of_multistrike,bonus_id=566
+finger2=spellbound_solium_band_of_fatal_strikes,id=118302,enchant=gift_of_multistrike
 trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=566
 trinket2=scales_of_doom,id=113612,bonus_id=566
 main_hand=garans_brutal_spearlauncher,id=113966,enchant=oglethorpes_missile_splitter,bonus_id=566

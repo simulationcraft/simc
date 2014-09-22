@@ -41,7 +41,6 @@ actions+=/icy_veins,if=(time_to_bloodlust>160&(buff.brain_freeze.react|buff.fing
 actions+=/blood_fury,if=buff.icy_veins.up|target.time_to_die<18
 actions+=/berserking,if=buff.icy_veins.up|target.time_to_die<18
 actions+=/arcane_torrent,if=buff.icy_veins.up|target.time_to_die<18
-actions+=/use_item,slot=trinket1
 actions+=/comet_storm
 actions+=/frozen_orb,if=!talent.prismatic_crystal.enabled&buff.fingers_of_frost.stack<2
 actions+=/frost_bomb,if=debuff.frost_bomb.remains<cast_time&buff.fingers_of_frost.stack>=1
@@ -54,8 +53,8 @@ actions+=/frostbolt
 actions+=/ice_floes,moving=1
 actions+=/ice_lance,moving=1
 
-head=arcanoshatter_hood,id=115553,bonus_id=567
-neck=gruuls_lip_ring,id=113872,bonus_id=567,enchant=gift_of_multistrike
+head=flareeyed_hood,id=113868,bonus_id=567
+neck=choker_of_bloody_flame,id=120077,bonus_id=567,enchant=gift_of_multistrike
 shoulders=arcanoshatter_mantle,id=115551,bonus_id=567
 back=runescribed_gronncloak,id=120078,bonus_id=567,enchant=gift_of_multistrike
 chest=arcanoshatter_robes,id=115550,bonus_id=567
@@ -64,21 +63,21 @@ hands=arcanoshatter_gloves,id=115552,bonus_id=567
 waist=deckhands_rope_belt,id=113967,bonus_id=567
 legs=arcanoshatter_leggings,id=115554,bonus_id=567
 feet=inferno_breath_sandals,id=113942,bonus_id=567
-finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant=gift_of_multistrike
-finger2=epicenter_loop,id=113947,bonus_id=567,enchant=gift_of_multistrike
-trinket1=shards_of_nothing,id=113835,bonus_id=567
-trinket2=quiescent_runestone,id=113859,bonus_id=567
+finger1=epicenter_loop,id=113947,bonus_id=567,enchant=gift_of_multistrike
+finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
+trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567
+trinket2=blackiron_micro_crucible,id=113984,bonus_id=567
 main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant=mark_of_frostwolf
 
 # Gear Summary
-# gear_stamina=4506
-# gear_intellect=3534
+# gear_stamina=4545
+# gear_intellect=3612
 # gear_spell_power=1753
-# gear_crit_rating=1043
-# gear_haste_rating=978
-# gear_mastery_rating=981
+# gear_crit_rating=1046
+# gear_haste_rating=704
+# gear_mastery_rating=694
 # gear_armor=870
-# gear_multistrike_rating=1433
-# gear_versatility_rating=121
+# gear_multistrike_rating=1256
+# gear_versatility_rating=521
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

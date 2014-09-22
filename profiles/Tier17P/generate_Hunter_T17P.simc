@@ -32,7 +32,7 @@ race=orc
 spec=marksmanship
 position=ranged_back
 role=attack
-talents=0002123
+talents=0003323
 head=primal_gladiators_helm,id=111280
 neck=primal_gladiators_necklace_of_cruelty,id=111079,enchant=gift_of_critical_strike
 shoulders=primal_gladiators_spaulders,id=111282
@@ -57,7 +57,7 @@ race=orc
 spec=survival
 position=ranged_back
 role=attack
-talents=0002113
+talents=0002313
 head=primal_gladiators_helm,id=111280
 neck=primal_gladiators_necklace_of_cruelty,id=111079,enchant=gift_of_multistrike
 shoulders=primal_gladiators_chain_spaulders,id=111116

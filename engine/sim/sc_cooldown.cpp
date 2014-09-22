@@ -164,6 +164,7 @@ void cooldown_t::reset_init()
 {
   ready = ready_init();
   last_start = timespan_t::zero();
+  reset_react = timespan_t::zero();
 
   current_charge = charges;
 
