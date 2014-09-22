@@ -1388,7 +1388,9 @@ struct auto_melee_attack_t : public action_t
 
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
 
-    p -> melee_main_hand = new melee_t( "auto_attack_mh", p, sync_weapons );
+    p -> melee_main_hand = debug_cast<melee_t*>( p -> find_action( "auto_attack_mh" ) );
+    if ( ! p -> melee_main_hand )
+      p -> melee_main_hand = new melee_t( "auto_attack_mh", p, sync_weapons );
 
     p -> main_hand_attack = p -> melee_main_hand;
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
@@ -1396,7 +1398,9 @@ struct auto_melee_attack_t : public action_t
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      p -> melee_off_hand = new melee_t( "auto_attack_oh", p, sync_weapons );
+      p -> melee_off_hand = debug_cast<melee_t*>( p -> find_action( "auto_attack_oh" ) );
+      if ( ! p -> melee_off_hand )
+        p -> melee_off_hand = new melee_t( "auto_attack_oh", p, sync_weapons );
 
       p -> off_hand_attack = p -> melee_off_hand;
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
