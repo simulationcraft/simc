@@ -2673,6 +2673,7 @@ struct frostbolt_t : public mage_spell_t
     parse_options( NULL, options_str );
 
     stats -> add_child( icicle );
+    icicle -> school = school;
     icicle -> action_list.push_back( p -> icicle );
   }
 
@@ -2810,6 +2811,7 @@ struct frostfire_bolt_t : public mage_spell_t
     }
 
     stats -> add_child( icicle );
+    icicle -> school = school;
     icicle -> action_list.push_back( p -> icicle );
   }
 
