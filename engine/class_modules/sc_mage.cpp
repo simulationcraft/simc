@@ -4846,7 +4846,7 @@ void mage_t::apl_arcane()
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe"              );
   action_priority_list_t* burn                = get_action_priority_list( "burn"             );
   action_priority_list_t* conserve            = get_action_priority_list( "conserve"         );
-  action_priority_list_t* evocation           = get_action_priority_list( "evocation"        );
+
 
   default_list -> add_action( this, "Counterspell",
                               "if=target.debuff.casting.react" );
@@ -4865,7 +4865,8 @@ void mage_t::apl_arcane()
   default_list -> add_action( "call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=6" );
   default_list -> add_action( "call_action_list,name=burn,if=buff.arcane_power.up&cooldown.evocation.remains<buff.arcane_power.remains&mana.pct>15&talent.prismatic_crystal.enabled" );
-  default_list -> add_action( "call_action_list,name=evocation" );
+  default_list -> add_action( "call_action_list,name=conserve" );
+
 
   init_crystal -> add_talent( this, "Prismatic Crystal",
                               "if=cooldown.arcane_power.remains=0&buff.arcane_charge.stack=4",
@@ -4879,7 +4880,7 @@ void mage_t::apl_arcane()
   crystal_sequence -> add_talent( this, "Nether Tempest",
                                   "if=current_target=prismatic_crystal&buff.arcane_charge.stack=4&!ticking&cooldown.prismatic_crystal.remains>58" );
   crystal_sequence -> add_action( "call_action_list,name=burn,if=cooldown.evocation.remains<cooldown.prismatic_crystal.remains-50" );
-  crystal_sequence -> add_action( "call_action_list,name=evocation" );
+  crystal_sequence -> add_action( "call_action_list,name=conserve" );
 
 
   cooldowns -> add_action( this, "Arcane Power",
@@ -4923,12 +4924,10 @@ void mage_t::apl_arcane()
   burn -> add_action( this, "Presence of Mind" );
   burn -> add_action( this, "Arcane Blast" );
 
-//Proxy Action List to work around the behavior of interrupt_if, as it only interrupts if there is a higher priority action available
-  evocation -> add_action( "call_action_list,name=conserve,if=cooldown.evocation.remains>0", "Makes Evocation interrupt channeling properly" );
-  evocation -> add_action( this, "Evocation", "interrupt_if=mana.pct>92,if=mana.pct<65" );
-  evocation -> add_action( this, "Evocation", "interrupt_if=mana.pct>0,if=buff.arcane_charge.stack=0" );
-  evocation -> add_action( "call_action_list,name=conserve" );
-  
+
+  conserve -> add_action( this, "Evocation",
+                          "interrupt_if=mana.pct>92,if=mana.pct<65",
+                          "Low mana usage, \"Conserve\" sequence" );
   conserve -> add_action( "call_action_list,name=cooldowns,if=time_to_die<30|(buff.arcane_charge.stack=4&!(glyph.arcane_power.enabled&talent.prismatic_crystal.enabled)&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>20))" );
   conserve -> add_action( this, "Arcane Missiles",
                           "if=buff.arcane_missiles.react=3|(talent.overpowered.enabled&buff.arcane_power.up&buff.arcane_power.remains<3)" );
