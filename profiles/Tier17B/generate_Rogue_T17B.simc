@@ -1,17 +1,16 @@
-# TxH
-# Tier x Heroic
-# * Ilvl Cap: 680
-# * No Random Gems (ie. Bonus RNG Gem Slots)
-# * No Tertiary Stats
-# * No Ranked Gear (ie. Thunderforged/Warforged)
-# * No Legendaries
-# * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
-# * EXCEPTION: 690 Legendary Ring can be used. (accessibility)
+# TxB
+# Tier x BIS
+# * No Ilvl Cap
+# * Use Gems
+# * Use Tertiary Stats
+# * Use Ranked Gear (ie. Thunderforged/Warforged)
+# * Use Legendaries
+# * Use Bonus Boss Loot
 
 talent_format=armory
 
 # Assassination
-rogue="Rogue_Assassination_T17H"
+rogue="Rogue_Assassination_T17B"
 level=100
 race=troll
 role=attack
@@ -35,10 +34,10 @@ trinket1=scales_of_doom,id=113612,bonus_id=566
 trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=566
 main_hand=oregorgers_acidetched_gutripper,id=113874,bonus_id=566,enchant=mark_of_bleeding_hollow
 off_hand=oregorgers_acidetched_gutripper,id=113874,bonus_id=566,enchant=mark_of_bleeding_hollow
-save=Rogue_Assassination_T17H.simc
+save=Rogue_Assassination_T17B.simc
 
 # Combat
-rogue="Rogue_Combat_T17H"
+rogue="Rogue_Combat_T17B"
 level=100
 race=troll
 role=attack
@@ -61,10 +60,10 @@ trinket1=meaty_dragonspine_trophy,id=118114,bonus_id=566
 trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=566
 main_hand=molten_edge_eviscerator,id=113918,bonus_id=566,enchant=mark_of_bleeding_hollow
 off_hand=sorkas_chainfist,id=113965,bonus_id=566,enchant=mark_of_bleeding_hollow
-save=Rogue_Combat_T17H.simc
+save=Rogue_Combat_T17B.simc
 
 # Subtlety
-rogue="Rogue_Subtlety_T17H"
+rogue="Rogue_Subtlety_T17B"
 level=100
 race=troll
 role=attack
@@ -88,4 +87,4 @@ trinket1=scales_of_doom,id=113612,bonus_id=566
 trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=566
 main_hand=oregorgers_acidetched_gutripper,id=113874,bonus_id=566,enchant=mark_of_the_frostwolf
 off_hand=oregorgers_acidetched_gutripper,id=113874,bonus_id=566,enchant=mark_of_the_frostwolf
-save=Rogue_Subtlety_T17H.simc
+save=Rogue_Subtlety_T17B.simc

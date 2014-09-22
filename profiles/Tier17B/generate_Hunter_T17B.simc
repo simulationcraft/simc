@@ -1,16 +1,15 @@
-# TxH
-# Tier x Heroic
-# * Ilvl Cap: 680
-# * No Random Gems (ie. Bonus RNG Gem Slots)
-# * No Tertiary Stats
-# * No Ranked Gear (ie. Thunderforged/Warforged)
-# * No Legendaries
-# * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
-# * EXCEPTION: 690 Legendary Ring can be used. (accessibility)
+# TxB
+# Tier x BIS
+# * No Ilvl Cap
+# * Use Gems
+# * Use Tertiary Stats
+# * Use Ranked Gear (ie. Thunderforged/Warforged)
+# * Use Legendaries
+# * Use Bonus Boss Loot
 
 talent_format=armory
 # BM
-hunter=Hunter_BM_T17H
+hunter=Hunter_BM_T17B
 level=100
 race=orc
 spec=beast_mastery
@@ -32,10 +31,10 @@ finger2=spellbound_solium_band_of_fatal_strikes,id=118302,enchant=gift_of_critic
 trinket1=humming_blackiron_trigger,id=113985,bonus_id=566
 trinket2=meaty_dragonspine_trophy,id=118114,bonus_id=566
 main_hand=mouth_of_the_fury,id=113885,enchant=megawatt_filament,bonus_id=566
-save=Hunter_BM_T17H.simc
+save=Hunter_BM_T17B.simc
 
 # MM
-hunter=Hunter_MM_T17H
+hunter=Hunter_MM_T17B
 level=100
 race=orc
 spec=marksmanship
@@ -57,10 +56,10 @@ finger2=spellbound_solium_band_of_fatal_strikes,id=118302,enchant=gift_of_critic
 trinket1=humming_blackiron_trigger,id=113985,bonus_id=566
 trinket2=scales_of_doom,id=113612,bonus_id=566
 main_hand=mouth_of_the_fury,id=113885,enchant=megawatt_filament,bonus_id=566
-save=Hunter_MM_T17H.simc
+save=Hunter_MM_T17B.simc
 
 # SV
-hunter=Hunter_SV_T17H
+hunter=Hunter_SV_T17B
 level=100
 race=orc
 spec=survival
@@ -82,4 +81,4 @@ finger2=spellbound_solium_band_of_fatal_strikes,id=118302,enchant=gift_of_multis
 trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=566
 trinket2=scales_of_doom,id=113612,bonus_id=566
 main_hand=garans_brutal_spearlauncher,id=113966,enchant=oglethorpes_missile_splitter,bonus_id=566
-save=Hunter_SV_T17H.simc
+save=Hunter_SV_T17B.simc

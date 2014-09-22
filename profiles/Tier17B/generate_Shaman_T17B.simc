@@ -1,17 +1,16 @@
-# TxH
-# Tier x Heroic
-# * Ilvl Cap: 680
-# * No Random Gems (ie. Bonus RNG Gem Slots)
-# * No Tertiary Stats
-# * No Ranked Gear (ie. Thunderforged/Warforged)
-# * No Legendaries
-# * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
-# * EXCEPTION: 690 Legendary Ring can be used. (accessibility)
+# TxB
+# Tier x BIS
+# * No Ilvl Cap
+# * Use Gems
+# * Use Tertiary Stats
+# * Use Ranked Gear (ie. Thunderforged/Warforged)
+# * Use Legendaries
+# * Use Bonus Boss Loot
 
 talent_format=armory
 # Elemental
 
-shaman="Shaman_Elemental_T17H"
+shaman="Shaman_Elemental_T17B"
 level=100
 race=dwarf
 spec=elemental
@@ -35,11 +34,11 @@ finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant=gift_of_multistri
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=566
 main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_the_frostwolf
-save=Shaman_Elemental_T17H.simc
+save=Shaman_Elemental_T17B.simc
 
 
 # Enhancement
-shaman="Shaman_Enhancement_T17H"
+shaman="Shaman_Enhancement_T17B"
 level=100
 race=draenei
 spec=enhancement
@@ -64,4 +63,4 @@ trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=566
 trinket2=meaty_dragonspine_trophy,id=118114,bonus_id=566
 main_hand=hansgars_forgehammer,id=113897,bonus_id=566,enchant=mark_of_warsong
 off_hand=hansgars_forgehammer,id=113897,bonus_id=566,enchant=mark_of_bleeding_hollow
-save=Shaman_Enhancement_T17H.simc
+save=Shaman_Enhancement_T17B.simc

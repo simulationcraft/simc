@@ -1,14 +1,14 @@
-# TxH
-# Tier x Heroic
-# * Ilvl Cap: 680
-# * No Random Gems (ie. Bonus RNG Gem Slots)
-# * No Tertiary Stats
-# * No Ranked Gear (ie. Thunderforged/Warforged)
-# * No Legendaries
-# * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
-# * EXCEPTION: 690 Legendary Ring can be used. (accessibility)
+# TxB
+# Tier x BIS
+# * No Ilvl Cap
+# * Use Gems
+# * Use Tertiary Stats
+# * Use Ranked Gear (ie. Thunderforged/Warforged)
+# * Use Legendaries
+# * Use Bonus Boss Loot
+
 talent_format=armory
-paladin="Paladin_Retribution_T17H"
+paladin="Paladin_Retribution_T17B"
 level=100
 race=blood_elf
 role=hybrid
@@ -32,9 +32,9 @@ finger2=spellbound_solium_band_oF_sorcerous_strength,id=118300,enchant=gift_of_h
 trinket1=forgemasters_insignia,id=113983,bonus_id=566
 trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=566
 main_hand=thogars_control_rod,id=113953,bonus_id=566,enchant=mark_of_warsong
-save=Paladin_Retribution_T17H.simc
+save=Paladin_Retribution_T17B.simc
 
-paladin="Paladin_Protection_T17H"
+paladin="Paladin_Protection_T17B"
 talents=3132221
 level=100
 race=blood_elf
@@ -59,4 +59,4 @@ trinket1=forgemaster's_insignia,id=113983,bonus_id=566
 trinket2=horn_of_screaming_spirits,id=119193,bonus_id=566
 main_hand=kromogs_brutal_fist,id=113927,bonus_id=566,enchant=mark_of_warsong
 off_hand=kromogs_protecting_palm,id=113926,bonus_id=566
-save=Paladin_Protection_T17H.simc
+save=Paladin_Protection_T17B.simc

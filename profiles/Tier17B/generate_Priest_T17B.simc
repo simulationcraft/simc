@@ -1,17 +1,16 @@
-# TxH
-# Tier x Heroic
-# * Ilvl Cap: 680
-# * No Random Gems (ie. Bonus RNG Gem Slots)
-# * No Tertiary Stats
-# * No Ranked Gear (ie. Thunderforged/Warforged)
-# * No Legendaries
-# * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
-# * EXCEPTION: 690 Legendary Ring can be used. (accessibility)
+# TxB
+# Tier x BIS
+# * No Ilvl Cap
+# * Use Gems
+# * Use Tertiary Stats
+# * Use Ranked Gear (ie. Thunderforged/Warforged)
+# * Use Legendaries
+# * Use Bonus Boss Loot
 
 talent_format=armory
 
 # Shadow
-priest="Priest_Shadow_T17H_COP"
+priest="Priest_Shadow_T17B_COP"
 talents=1133131
 level=100
 race=draenei
@@ -34,9 +33,9 @@ finger2=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_mastery
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
 trinket2=goren_soul_repository,id=119194,bonus_id=566
 main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_bleeding_hollow
-save=Priest_Shadow_T17H_COP.simc
+save=Priest_Shadow_T17B_COP.simc
 
-copy="Priest_Shadow_T17H_VE"
+copy="Priest_Shadow_T17B_VE"
 talents=1113132
 head=soul_priests_hood,id=115563,bonus_id=566
 neck=gruuls_lip_ring,id=113872,bonus_id=566,enchant=gift_of_haste
@@ -53,9 +52,9 @@ finger2=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_haste
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
 trinket2=goren_soul_repository,id=119194,bonus_id=566
 main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_warsong
-save=Priest_Shadow_T17H_VE.simc
+save=Priest_Shadow_T17B_VE.simc
 
-copy="Priest_Shadow_T17H_AS"
+copy="Priest_Shadow_T17B_AS"
 talents=1113133
 head=soul_priests_hood,id=115563,bonus_id=566
 neck=gruuls_lip_ring,id=113872,bonus_id=566,enchant=gift_of_critical_strike
@@ -72,10 +71,10 @@ finger2=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_critica
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
 trinket2=goren_soul_repository,id=119194,bonus_id=566
 main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant=mark_of_warsong
-save=Priest_Shadow_T17H_AS.simc
+save=Priest_Shadow_T17B_AS.simc
 
 # Holy Heal
-priest="Priest_Holy_T17H_Heal"
+priest="Priest_Holy_T17B_Heal"
 talents=3223332
 level=100
 race=draenei
@@ -98,10 +97,10 @@ finger2=firemenders_smoldering_signet,id=113957,bonus_id=566,enchant=gift_of_mul
 trinket1=autorepairing_autoclave,id=113986,bonus_id=566
 trinket2=ironspike_chew_toy,id=119192,bonus_id=566
 main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_shadowmoon
-save=Priest_Holy_T17H_Heal.simc
+save=Priest_Holy_T17B_Heal.simc
 
 # Holy DMG
-priest="Priest_Holy_T17H_DMG"
+priest="Priest_Holy_T17B_DMG"
 talents=3223232
 level=100
 race=draenei
@@ -125,10 +124,10 @@ trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
 trinket2=goren_soul_repository,id=119194,bonus_id=566
 main_hand=franzoks_headsmasher,id=113904,bonus_id=566,enchant=mark_of_the_frostwolf
 off_hand=enginestokers_lantern,id=113960,bonus_id=566
-save=Priest_Holy_T17H_Dmg.simc
+save=Priest_Holy_T17B_Dmg.simc
 
 # Discipline Heal
-priest="Priest_Discipline_T17H_Heal"
+priest="Priest_Discipline_T17B_Heal"
 talents=3223232
 level=100
 race=draenei
@@ -151,10 +150,10 @@ finger2=firemenders_smoldering_signet,id=113957,bonus_id=566,enchant=gift_of_cri
 trinket1=autorepairing_autoclave,id=113986,bonus_id=566
 trinket2=ironspike_chew_toy,id=119192,bonus_id=566
 main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant=mark_of_shadowmoon
-save=Priest_Discipline_T17H_Heal.simc
+save=Priest_Discipline_T17B_Heal.simc
 
 # Discipline Dmg
-priest="Priest_Discipline_T17H_Dmg"
+priest="Priest_Discipline_T17B_Dmg"
 talents=3223232
 level=100
 race=draenei
@@ -178,4 +177,4 @@ trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
 trinket2=goren_soul_repository,id=119194,bonus_id=566
 main_hand=franzoks_headsmasher,id=113904,bonus_id=566,enchant=mark_of_thunderlord
 off_hand=enginestokers_lantern,id=113960,bonus_id=566
-save=Priest_Discipline_T17H_Dmg.simc
+save=Priest_Discipline_T17B_Dmg.simc

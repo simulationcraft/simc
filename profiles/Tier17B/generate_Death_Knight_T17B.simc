@@ -1,16 +1,15 @@
-﻿# TxH
-# Tier x Heroic
-# * Ilvl Cap: 680
-# * No Random Gems (ie. Bonus RNG Gem Slots)
-# * No Tertiary Stats
-# * No Ranked Gear (ie. Thunderforged/Warforged)
-# * No Legendaries
-# * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
-# * EXCEPTION: 690 Legendary Ring can be used. (accessibility)
+﻿# TxB
+# Tier x BIS
+# * No Ilvl Cap
+# * Use Gems
+# * Use Tertiary Stats
+# * Use Ranked Gear (ie. Thunderforged/Warforged)
+# * Use Legendaries
+# * Use Bonus Boss Loot
 
 talent_format=armory
 
-deathknight="Death_Knight_Unholy_T17H”
+deathknight="Death_Knight_Unholy_T17B”
 level=100
 race=orc
 spec=unholy
@@ -33,9 +32,9 @@ trinket1=forgemasters_insignia,id=113983,bonus_id=566
 trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=566
 main_hand=kagrazs_burning_blade,id=113913,bonus_id=566,enchant=rune_of_the_fallen_crusader
 
-save=Death_Knight_Unholy_T17H.simc
+save=Death_Knight_Unholy_T17B.simc
 
-deathknight="Death_Knight_Frost_2h_T17H”
+deathknight="Death_Knight_Frost_2h_T17B”
 level=100
 race=orc
 spec=frost
@@ -58,9 +57,9 @@ finger2=spellbound_solium_band_of_sorcerous_strength,id=118300,enchant=gift_of_m
 trinket1=horn_of_screaming_spirits,id=119193,bonus_id=566
 trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=566
 main_hand=kagrazs_burning_blade,id=113913,bonus_id=566,enchant=rune_of_the_fallen_crusader
-save=Death_Knight_Frost_2h_T17H.simc
+save=Death_Knight_Frost_2h_T17B.simc
 
-deathknight="Death_Knight_Frost_1h_T17H”
+deathknight="Death_Knight_Frost_1h_T17B”
 level=100
 race=orc
 spec=frost
@@ -84,9 +83,9 @@ trinket1=horn_of_screaming_spirits,id=119193,bonus_id=566
 trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=566
 main_hand=kromogs_brutal_fist,id=113927,bonus_id=566,enchant=rune_of_the_fallen_crusader
 off_hand=kromogs_brutal_fist,id=113927,bonus_id=566,enchant=rune_of_razorice
-save=Death_Knight_Frost_1h_T17H.simc
+save=Death_Knight_Frost_1h_T17B.simc
 
-deathknight="Death_Knight_Blood_T17H”
+deathknight="Death_Knight_Blood_T17B”
 level=100
 race=tauren
 role=tank
@@ -107,4 +106,4 @@ finger2=primal_gladiators_signet_of_accuracy,id=111220,enchant=gift_of_multistri
 trinket1=primal_gladiators_medallion_of_cruelty,id=111229
 trinket2=primal_gladiators_insignia_of_victory,id=111233
 main_hand=primal_gladiators_decapitator,id=111202,enchant=rune_of_stoneskin_gargoyle
-save=Death_Knight_Blood_T17H.simc
+save=Death_Knight_Blood_T17B.simc

@@ -7,6 +7,7 @@
 # * No Legendaries
 # * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
 # * EXCEPTION: 680 Legendary Ring can be used. (accessibility)
+
 talent_format=armory
 
 # Death Knight

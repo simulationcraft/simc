@@ -1,14 +1,15 @@
-# TxH
-# Tier x Heroic
-# * Ilvl Cap: 680
-# * No Random Gems (ie. Bonus RNG Gem Slots)
-# * No Tertiary Stats
-# * No Ranked Gear (ie. Thunderforged/Warforged)
-# * No Legendaries
-# * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
-# * EXCEPTION: 690 Legendary Ring can be used. (accessibility)
+# TxB
+# Tier x BIS
+# * No Ilvl Cap
+# * Use Gems
+# * Use Tertiary Stats
+# * Use Ranked Gear (ie. Thunderforged/Warforged)
+# * Use Legendaries
+# * Use Bonus Boss Loot
+
 talent_format=armory
-mage=Mage_Arcane_T17H
+
+mage=Mage_Arcane_T17B
 level=100
 race=troll
 spec=arcane
@@ -29,9 +30,9 @@ ring2=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_mastery
 trinket1=shards_of_nothing,id=113835,bonus_id=566
 trinket2=darmacs_unstable_talisman,id=113948,bonus_id=566
 main_hand=inferno-flame_staff,id=113869,bonus_id=566,enchant=mark_of_warsong
-save=Mage_Arcane_T17H.simc
+save=Mage_Arcane_T17B.simc
 
-mage=Mage_Fire_T17H
+mage=Mage_Fire_T17B
 level=100
 race=troll
 spec=fire
@@ -52,9 +53,9 @@ ring2=epicenter_loop,id=113947,bonus_id=566,enchant=gift_of_critical_strike
 trinket1=shards_of_nothing,id=113835,bonus_id=566
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=566
 main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant=mark_of_the_thunderlord
-save=Mage_Fire_T17H.simc
+save=Mage_Fire_T17B.simc
 
-mage=Mage_Frost_T17H
+mage=Mage_Frost_T17B
 level=100
 race=troll
 spec=frost
@@ -75,4 +76,4 @@ ring2=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_multistri
 trinket1=shards_of_nothing,id=113835,bonus_id=566
 trinket2=quiescent_runestone,id=113859,bonus_id=566
 main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_frostwolf
-save=Mage_Frost_T17H.simc
+save=Mage_Frost_T17B.simc
