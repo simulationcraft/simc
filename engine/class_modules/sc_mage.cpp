@@ -44,6 +44,7 @@ struct mage_td_t : public actor_pair_t
     dot_t* living_bomb;
     dot_t* nether_tempest;
     dot_t* pyroblast;
+    dot_t* frozen_orb;
   } dots;
 
   struct debuffs_t
@@ -71,6 +72,7 @@ public:
   actions::ignite_t* active_ignite;
   int active_bomb_targets;
   action_t* explode; // Explode helps with handling Unstable Magic.
+  action_t* FoF_renew;
   player_t* last_bomb_target;
 
   // RPPM objects
@@ -119,7 +121,6 @@ public:
     buff_t* pyromaniac; // T17 4pc fire
     buff_t* arcane_affinity; // T17 2pc arcane
     buff_t* arcane_instability; // T17 4pc arcane
-    buff_t* frozen_orb_active;
     buff_t* ice_shard;
   } buffs;
 
@@ -338,6 +339,7 @@ public:
 
     //Active
     explode                  = 0;
+    FoF_renew                = 0;
 
     // Cooldowns
     cooldowns.evocation      = get_cooldown( "evocation"     );
@@ -1501,6 +1503,51 @@ void mage_spell_t::trigger_ignite( action_state_t* state )
   trigger( p.active_ignite, state -> target, amount );
 }
 
+// T17 Frost 2pc Driver =============================================================
+
+static void Frost_orb_FoF_renew( action_state_t* s )
+{
+
+  struct frost_orb_FoF_renew_t : public mage_spell_t
+  {
+    frost_orb_FoF_renew_t( mage_t* p ) :
+      mage_spell_t( "FoF_Renew", p )
+    {
+      may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
+      base_costs[ RESOURCE_MANA ] = 0;
+      cooldown -> duration  = timespan_t::zero();
+      trigger_gcd = timespan_t::zero();
+      background=true;
+      harmful=false;
+      base_tick_time = timespan_t::from_seconds( 0.5 );
+      dot_duration   = timespan_t::from_seconds( 10.5 );
+      hasted_ticks = false;
+    }
+
+    void tick( dot_t* d )
+    {
+      mage_spell_t::tick( d );
+
+      if ( td( d -> target ) -> dots.frozen_orb -> is_ticking() )
+      { p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 ); }
+    }
+
+    virtual timespan_t execute_time()
+    { return timespan_t::zero(); }
+
+  };
+
+
+  mage_t* p = debug_cast<mage_t*>( s -> action -> player );
+
+  if ( !p -> FoF_renew )
+  {
+    p -> FoF_renew = new frost_orb_FoF_renew_t( p );
+    p -> FoF_renew -> init();
+  }
+
+  p -> FoF_renew -> execute();
+}
 // Unstable Magic Trigger ====================================================
 
 static void trigger_unstable_magic( action_state_t* s )
@@ -2914,8 +2961,7 @@ struct frozen_orb_t : public mage_spell_t
   virtual void execute()
   {
     mage_spell_t::execute();
-    if( p() -> sets.has_set_bonus( MAGE_FROST, T17, B2 ) )
-      p() -> buffs.frozen_orb_active -> trigger();
+
 
   }
 
@@ -2924,6 +2970,9 @@ struct frozen_orb_t : public mage_spell_t
     mage_spell_t::impact( s );
 
     p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
+
+    if( p() -> sets.has_set_bonus( MAGE_FROST, T17, B2 ) )
+      Frost_orb_FoF_renew( s );
   }
 };
 
@@ -2984,7 +3033,7 @@ struct ice_lance_t : public mage_spell_t
     mage_spell_t::execute();
     aoe = splitting_ice_aoe;
 
-    if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B4 ) && p() -> buffs.frozen_orb_active -> up() )
+    if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B4 ) && td( execute_state -> target) -> dots.frozen_orb -> is_ticking() )
       p() -> buffs.ice_shard -> trigger();
 
     if ( p() -> talents.thermal_void -> ok() && p() -> buffs.icy_veins -> up() )
@@ -3026,7 +3075,7 @@ struct ice_lance_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    if ( p() -> buffs.fingers_of_frost -> up() || p() -> buffs.frozen_orb_active -> up() )
+    if ( p() -> buffs.fingers_of_frost -> up() )
     {
       am *= 2.0; // Built in bonus against frozen targets
       am *= 1.0 + fof_multiplier; // Buff from Fingers of Frost
@@ -4295,6 +4344,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   dots.living_bomb    = target -> get_dot( "living_bomb",    mage );
   dots.nether_tempest = target -> get_dot( "nether_tempest", mage );
   dots.pyroblast      = target -> get_dot( "pyroblast",      mage );
+  dots.frozen_orb     = target -> get_dot( "frozen_orb",     mage );
 
   debuffs.slow = buff_creator_t( *this, "slow" ).spell( mage -> spec.slow );
   debuffs.frost_bomb = buff_creator_t( *this, "frost_bomb" ).spell( mage -> talents.frost_bomb );
@@ -4625,7 +4675,6 @@ void mage_t::create_buffs()
                                 .chance( 1.0 );
 
   buffs.incanters_flow        = new incanters_flow_t( this );
-  buffs.frozen_orb_active     = buff_creator_t( this, "frozen_orb_active" ).duration( find_spell( 84714 ) -> duration() );
   buffs.ice_shard             = buff_creator_t( this, "ice_shard" ).duration( timespan_t::from_seconds( 10.0 ) ).max_stack( 10 );
 }
 
