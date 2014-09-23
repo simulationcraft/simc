@@ -2374,7 +2374,8 @@ struct hand_of_guldan_t: public warlock_spell_t
   {
       warlock_spell_t::impact( s );
       if ( p() -> sets.has_set_bonus( WARLOCK_DEMONOLOGY, T17, B4 ) ){
-        p() -> pets.inner_demon -> summon();
+        //Wait until inner demon works for realsies.
+        //p() -> pets.inner_demon -> summon();
         p() -> procs.inner_demon -> occur();
       }
   }
