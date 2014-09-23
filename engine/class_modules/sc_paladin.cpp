@@ -5220,8 +5220,8 @@ void paladin_t::generate_action_prio_list_ret()
   single -> add_action( this, "Divine Storm","if=buff.divine_crusader.react&holy_power=5&talent.final_verdict.enabled&buff.final_verdict.up" );
   single -> add_action( this, "Templar's Verdict","if=holy_power=5|buff.holy_avenger.up&holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)" );
   single -> add_action( this, "Templar's Verdict", "if=buff.divine_purpose.react&buff.divine_purpose.remains<4" );
-  single -> add_action( this, "Final Verdict", "if=holy_power=5|buff.holy_avenger.up&holy_power>=3" );
-  single -> add_action( this, "Final Verdict","if=buff.divine_purpose.react&buff.divine_purpose.remains<4" );
+  single -> add_talent( this, "Final Verdict", "if=holy_power=5|buff.holy_avenger.up&holy_power>=3" );
+  single -> add_talent( this, "Final Verdict","if=buff.divine_purpose.react&buff.divine_purpose.remains<4" );
   single -> add_action( this, "Divine Storm","if=buff.divine_crusader.react&holy_power=5&(!talent.final_verdict.enabled|buff.final_verdict.up)" );
   single -> add_action( this, "Judgment","if=talent.empowered_seals.enabled&buff.maraads_truth.remains<=3" );
   single -> add_action( this, "Exorcism","if=buff.blazing_contempt.up&holy_power<=2" );
@@ -5230,7 +5230,7 @@ void paladin_t::generate_action_prio_list_ret()
   single -> add_action( "wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2" );
   single -> add_action( this, "Divine Storm","if=buff.divine_crusader.react&buff.avenging_wrath.up&talent.final_verdict.enabled&buff.final_verdict.up" );
   single -> add_action( this, "Templar's Verdict","if=buff.avenging_wrath.up&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)" );
-  single -> add_action( this, "Final Verdict","if=buff.avenging_wrath.up" );
+  single -> add_talent( this, "Final Verdict","if=buff.avenging_wrath.up" );
   single -> add_action( this, "Divine Storm","if=buff.divine_crusader.react&buff.avenging_wrath.up&(!talent.final_verdict.enabled|buff.final_verdict.up)" );
   single -> add_action( this, "Crusader Strike");
   single -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2");
@@ -5238,17 +5238,17 @@ void paladin_t::generate_action_prio_list_ret()
   single -> add_action( "wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.2" );
   single -> add_action( this, "Divine Storm","if=buff.divine_crusader.react&talent.final_verdict.enabled&buff.final_verdict.up" );
   single -> add_action( this, "Templar's Verdict","if=buff.divine_purpose.react" );
-  single -> add_action( this, "Final Verdict","if=buff.divine_purpose.react" );
+  single -> add_talent( this, "Final Verdict","if=buff.divine_purpose.react" );
   single -> add_action( this, "Divine Storm","if=buff.divine_crusader.react&(!talent.final_verdict.enabled|buff.final_verdict.up)" );
   single -> add_action( this, "Exorcism" );
   single -> add_action( "wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2" );
   single -> add_action( this, "Templar's Verdict","if=(!talent.seraphim.enabled|cooldown.seraphim.remains>3)" );
-  single -> add_action( this, "Final Verdict" );
+  single -> add_talent( this, "Final Verdict" );
   single -> add_talent( this, "Holy Prism" );
 
   //Executed if three to five targets are present.
 
-  cleave -> add_action( this, "Final Verdict","if=buff.final_verdict.down" );
+  cleave -> add_talent( this, "Final Verdict","if=buff.final_verdict.down" );
   cleave -> add_action( this, "Divine Storm","if=buff.divine_crusader.react&talent.final_verdict.enabled&buff.final_verdict.up" );
   cleave -> add_action( this, "Divine Storm","if=talent.final_verdict.enabled&buff.final_verdict.up" );
   cleave -> add_action( this, "Exorcism","if=buff.blazing_contempt.up&holy_power<=2" );
@@ -5269,7 +5269,7 @@ void paladin_t::generate_action_prio_list_ret()
 
   //Executed if more than five targets are present
 
-  aoe -> add_action( this, "Final Verdict","if=talent.final_verdict.enabled&buff.final_verdict.down" );
+  aoe -> add_talent( this, "Final Verdict","if=talent.final_verdict.enabled&buff.final_verdict.down" );
   aoe -> add_action( this, "Divine Storm","if=buff.divine_crusader.react&talent.final_verdict.enabled&buff.final_verdict.up" );
   aoe -> add_action( this, "Divine Storm","if=talent.final_verdict.enabled&buff.final_verdict.up" );
   aoe -> add_action( this, "Divine Storm","if=(!talent.seraphim.enabled|cooldown.seraphim.remains>3)" );
