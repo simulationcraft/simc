@@ -488,12 +488,12 @@ struct water_elemental_pet_t : public pet_t
     { return static_cast<water_elemental_pet_t*>( player ); }
 
     virtual timespan_t travel_time() const
-    { 
+    {
       timespan_t t = spell_t::travel_time();
       t = timespan_t::from_seconds( 1.0 );
       return t;
     }
-    
+
     virtual void impact( action_state_t* s )
     {
       spell_t::impact( s );
@@ -501,7 +501,7 @@ struct water_elemental_pet_t : public pet_t
       td( s -> target ) -> water_jet -> trigger();
     }
 
-    virtual void last_tick( dot_t* d ) 
+    virtual void last_tick( dot_t* d )
     {
       spell_t::last_tick( d );
       td( p() -> target ) -> water_jet -> expire();
@@ -554,9 +554,9 @@ struct water_elemental_pet_t : public pet_t
   water_elemental_pet_t( sim_t* sim, mage_t* owner ) :
     pet_t( sim, owner, "water_elemental" )
   {
-    action_list_str  ="water_jet";
-    action_list_str  += "/waterbolt";
     owner_coeff.sp_from_sp = 0.75;
+
+    action_list_str  = "waterbolt";
   }
 
   mage_t* o()
