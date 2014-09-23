@@ -822,8 +822,8 @@ double action_t::calculate_direct_amount( action_state_t* state )
   if ( state -> action -> split_aoe_damage )
     amount /= state -> n_targets;
 
-  // Spell goes over the maximum number of AOE targets
-  if ( ! state -> action -> split_aoe_damage && state -> n_targets > static_cast< size_t >( sim -> max_aoe_enemies ) )
+  // Spell goes over the maximum number of AOE targets - ignore for enemies
+  if ( ! state -> action -> split_aoe_damage && state -> n_targets > static_cast< size_t >( sim -> max_aoe_enemies ) && ! state -> action -> player -> is_enemy() )
     amount *= sim -> max_aoe_enemies / static_cast< double >( state -> n_targets );
 
   // Record initial amount to state
