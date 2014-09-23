@@ -1353,9 +1353,6 @@ struct execute_pet_action_t : public action_t
     }
   }
 
-  virtual timespan_t execute_time() const
-  { return pet_action -> execute_time(); }
-
   virtual void execute()
   {
     pet_action -> execute();
