@@ -110,6 +110,10 @@ void set_bonus_t::initialize_items()
 
 void set_bonus_t::initialize()
 {
+  // Disable all set bonuses, and set bonus options if challenge mode is set
+  if ( actor -> sim -> challenge_mode == 1 )
+    return;
+
   initialize_items();
 
   // Enable set bonuses then. This is a combination of item-based enablation
