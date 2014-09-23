@@ -1453,6 +1453,7 @@ class SpellDataGenerator(DataGenerator):
             ( 104225, 0 ),
             ( 89653, 0 ),         # Drain Life heal
             ( 157698, 1 ),        # Soulburn: Haunt buff
+			( 166864, 0 ),        # T17 4 piece Demo spell.
         ),
 
         # Monk:
