@@ -3,6 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+// TODO:
+//  Add proper travel time to Welly:water_jet
 
 
 
@@ -450,26 +452,30 @@ struct water_elemental_pet_t : public pet_t
       if ( result_is_hit( s -> result ) )
         p -> o() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
     }
+
   };
 
   struct water_jet_tick_t : public spell_t
   {
     water_jet_tick_t( water_elemental_pet_t* p ) :
-      spell_t( "water_jet_tick", p, p -> find_pet_spell( "water_jet" ) )
+      spell_t( "water_jet_tick", p, p -> find_spell( 135029 ) )
     {
-      background = true;
+      background   = true;
       dot_duration = timespan_t::zero();
+      spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
     }
   };
   struct water_jet_t : public spell_t
   {
     water_jet_t( water_elemental_pet_t* p, const std::string& options_str ) :
-      spell_t( "water_jet", p, p -> find_pet_spell( "water_jet" ) )
+      spell_t( "water_jet", p, p -> find_spell( 135029 ) )
     {
       parse_options( NULL, options_str );
-      channeled = true;
+      channeled           = true;
       dynamic_tick_action = true;
-      tick_action = new water_jet_tick_t( p );
+      dot_duration        = timespan_t::from_seconds( 4.0 );
+      base_tick_time      = timespan_t::from_seconds( 0.8 );
+      tick_action         = new water_jet_tick_t( p );
     }
 
     water_elemental_pet_td_t* td( player_t* t = 0 ) const
@@ -481,12 +487,27 @@ struct water_elemental_pet_t : public pet_t
     const water_elemental_pet_t* p() const
     { return static_cast<water_elemental_pet_t*>( player ); }
 
+    virtual timespan_t travel_time() const
+    { 
+      timespan_t t = spell_t::travel_time();
+      t = timespan_t::from_seconds( 1.0 );
+      return t;
+    }
+    
     virtual void impact( action_state_t* s )
     {
       spell_t::impact( s );
 
       td( s -> target ) -> water_jet -> trigger();
     }
+
+    virtual void last_tick( dot_t* d ) 
+    {
+      spell_t::last_tick( d );
+      td( p() -> target ) -> water_jet -> expire();
+    }
+
+
   };
 
   water_elemental_pet_td_t* td( player_t* t ) const
@@ -509,13 +530,32 @@ struct water_elemental_pet_t : public pet_t
       parse_options( NULL, options_str );
       may_crit = true;
     }
+
+    water_elemental_pet_td_t* td( player_t* t = 0 ) const
+    { return p() -> get_target_data( t ? t : target ); }
+
+    water_elemental_pet_t* p()
+    { return static_cast<water_elemental_pet_t*>( player ); }
+
+    const water_elemental_pet_t* p() const
+    { return static_cast<water_elemental_pet_t*>( player ); }
+
+    virtual bool ready()
+    {
+      if ( td( p() -> target ) -> water_jet -> check() )
+        return false;
+
+      return spell_t::ready();
+
+    }
+
   };
 
   water_elemental_pet_t( sim_t* sim, mage_t* owner ) :
     pet_t( sim, owner, "water_elemental" )
   {
-    action_list_str  = "waterbolt";
-
+    action_list_str  ="water_jet";
+    action_list_str  += "/waterbolt";
     owner_coeff.sp_from_sp = 0.75;
   }
 
@@ -1854,15 +1894,13 @@ struct arcane_missiles_t : public mage_spell_t
     parse_options( NULL, options_str );
     may_miss = false;
     may_proc_missiles = false;
-
     dot_duration      = timespan_t::from_seconds( 2.0 );
-
-
     base_tick_time = timespan_t::from_seconds( 0.4 );
     channeled         = true;
     hasted_ticks      = false;
     dynamic_tick_action = true;
     tick_action = new arcane_missiles_tick_t( p );
+    may_miss = false;
   }
 
 
