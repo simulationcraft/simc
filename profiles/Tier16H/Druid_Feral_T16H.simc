@@ -89,7 +89,5 @@ main_hand=halberd_of_inner_shadows,id=105560,upgrade=2,gems=4agi_8crit_3agi,ench
 # gear_armor=536
 # gear_multistrike_rating=99
 # meta_gem=capacitive_primal
-# set_bonus=tier13_2pc_melee=1
-# set_bonus=tier13_4pc_melee=1
 # set_bonus=tier16_2pc_melee=1
 # set_bonus=tier16_4pc_melee=1
