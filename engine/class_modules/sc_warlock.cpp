@@ -195,7 +195,9 @@ public:
 
   real_ppm_t grimoire_of_synergy; //caster ppm, i.e., if it procs, the wl will create a buff for the pet.
   real_ppm_t grimoire_of_synergy_pet; //pet ppm, i.e., if it procs, the pet will create a buff for the wl.
-    
+  real_ppm_t rppm_chaotic_infusion;
+
+
   // Perks
   struct
   {
@@ -290,7 +292,7 @@ public:
     buff_t* haunting_spirits;
     buff_t* demonbolt;
 
-    buff_t* tier17_4pc_chaotic_infusion;
+    buff_t* chaotic_infusion;
 
     buff_t* tier16_4pc_ember_fillup;
     buff_t* tier16_2pc_destructive_influence;
@@ -344,16 +346,16 @@ public:
 
     //the 6.0 dot mechanics make it close to irrelevant how the dots were buffed when inhaling, as they are dynamically recalculated every tick.
     //thus we only store the whether the dot is up and its duration( and agony stacks).
-      
-      
-    
+
+
+
     bool agony_was_inhaled;
     timespan_t agony_remains;
     int agony_stack;
-      
+
     bool corruption_was_inhaled;
     timespan_t corruption_remains;
-      
+
     bool unstable_affliction_was_inhaled;
     timespan_t unstable_affliction_remains;
 
@@ -1111,7 +1113,7 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   if ( o() -> buffs.tier16_2pc_fiery_wrath -> up() )
     m *= 1.0 + o() -> buffs.tier16_2pc_fiery_wrath -> value();
-    
+
   if ( buffs.demonic_synergy -> up() )
     m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
 
@@ -2046,8 +2048,9 @@ public:
 
       multistrike_direct( state, ms_state );
 
-      new ( *sim ) multistrike_execute_event_t( ms_state );
+      schedule_travel( ms_state );
 
+      schedule_multistrike( ms_state, amount_type( ms_state ) );
   }
 
   void trigger_extra_tick( dot_t* dot, double multiplier )
@@ -2090,18 +2093,17 @@ public:
     if ( ! p -> rng().roll( chance ) ) return;
 
 
-    if ( p -> sets.has_set_bonus( SET_CASTER, T16, B4 ) && //check whether we fill one up.
+    if ( ( p -> sets.has_set_bonus( SET_CASTER, T16, B4 ) || p -> sets.has_set_bonus( WARLOCK_DESTRUCTION, T17, B4 )) && //check whether we fill one up.
          ( ( p -> resources.current[RESOURCE_BURNING_EMBER] < 1.0 && p -> resources.current[RESOURCE_BURNING_EMBER] + amount >= 1.0 ) ||
          ( p -> resources.current[RESOURCE_BURNING_EMBER] < 2.0 && p -> resources.current[RESOURCE_BURNING_EMBER] + amount >= 2.0 ) ||
          ( p -> resources.current[RESOURCE_BURNING_EMBER] < 3.0 && p -> resources.current[RESOURCE_BURNING_EMBER] + amount >= 3.0 ) ||
          ( p -> resources.current[RESOURCE_BURNING_EMBER] < 4.0 && p -> resources.current[RESOURCE_BURNING_EMBER] + amount >= 4.0 ) ) )
     {
-      p -> buffs.tier16_4pc_ember_fillup -> trigger();
-    }
+      if(p -> sets.has_set_bonus( SET_CASTER, T16, B4 ))
+        p -> buffs.tier16_4pc_ember_fillup -> trigger();
 
-    // Proc T17 4pc destro trigger
-    if ( p -> sets.has_set_bonus(WARLOCK_DESTRUCTION, T17, B4)){
-        p -> buffs.tier17_4pc_chaotic_infusion ->trigger();
+      if( p -> sets.has_set_bonus( WARLOCK_DESTRUCTION, T17, B4 ) && p -> rppm_chaotic_infusion.trigger())
+        p -> buffs.chaotic_infusion ->trigger();
     }
 
     p -> resource_gain( RESOURCE_BURNING_EMBER, amount, gain );
@@ -2653,7 +2655,7 @@ struct corruption_t: public warlock_spell_t
     {
         p() -> cooldowns.hand_of_guldan -> adjust( -p() -> cooldowns.hand_of_guldan -> duration); //decrease remaining time by the duration of one charge, i.e., add one charge
     }
-        
+
     if ( p() -> glyphs.siphon_life -> ok() )
     {
       if ( d -> state -> result_amount > 0 )
@@ -3352,13 +3354,13 @@ struct chaos_bolt_t: public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    if ( p() -> buffs.tier17_4pc_chaotic_infusion -> up() ){
-//        Remove Until Bug is Fixed
-//        trigger_multistrike( s );
-//        trigger_multistrike( s );
-//        trigger_multistrike( s );
+    if ( p() -> buffs.chaotic_infusion -> up() ){
 
-        p() -> buffs.tier17_4pc_chaotic_infusion -> expire();
+        trigger_multistrike( s );
+        trigger_multistrike( s );
+        trigger_multistrike( s );
+
+        p() -> buffs.chaotic_infusion -> expire();
     }
   }
 };
@@ -4279,7 +4281,7 @@ struct soul_swap_t: public warlock_spell_t
           agony -> execute();
           td( target ) -> agony_stack = p() -> soul_swap_buffer.agony_stack;
           td( target ) -> dots_agony -> trigger(p() -> soul_swap_buffer.agony_remains);
-          
+
         p() -> soul_swap_buffer.agony_was_inhaled = false;
       }
 
@@ -4296,7 +4298,7 @@ struct soul_swap_t: public warlock_spell_t
           corruption -> execute();
           td( target ) -> dots_corruption -> trigger(p() -> soul_swap_buffer.corruption_remains);
           p() -> soul_swap_buffer.corruption_was_inhaled = false;
-          
+
       }
       if ( p() -> soul_swap_buffer.seed_of_corruption_was_inhaled )
       {
@@ -4304,7 +4306,7 @@ struct soul_swap_t: public warlock_spell_t
           seed_of_corruption -> execute();
           td( target ) -> dots_seed_of_corruption -> trigger(p() -> soul_swap_buffer.seed_of_corruption_remains);
           p() -> soul_swap_buffer.seed_of_corruption_was_inhaled = false;
-          
+
       }
     }
     else if ( p() -> buffs.soulburn -> up() ) /// SB:SS, just cast Agony/Corruption/UA no matter what the SS buff is.
@@ -4332,7 +4334,7 @@ struct soul_swap_t: public warlock_spell_t
           p() -> soul_swap_buffer.agony_was_inhaled = true; //dot is ticking, so copy the state into our buffer dot
           p() -> soul_swap_buffer.agony_remains = td( target ) -> dots_agony -> remains();
           p() -> soul_swap_buffer.agony_stack = td( target ) -> agony_stack;
-          
+
       }
       if ( td( target ) -> dots_corruption -> is_ticking() )
       {
@@ -4346,7 +4348,7 @@ struct soul_swap_t: public warlock_spell_t
         p() -> soul_swap_buffer.unstable_affliction_remains = td( target ) -> dots_unstable_affliction -> remains();
       }
 
-      
+
 
       if ( td( target ) -> dots_seed_of_corruption -> is_ticking() )
       {
@@ -4771,6 +4773,7 @@ glyphs( glyphs_t() ),
 mastery_spells( mastery_spells_t() ),
 grimoire_of_synergy( *this ),
 grimoire_of_synergy_pet( *this ),
+rppm_chaotic_infusion( *this ),
 perk(),
 cooldowns( cooldowns_t() ),
 spec( specs_t() ),
@@ -5206,7 +5209,7 @@ void warlock_t::init_spells()
   perk.improved_drain_soul          = find_perk_spell( "Improved Drain Soul" );
   perk.improved_ember_tap           = find_perk_spell( "Improved Ember Tap" );
 
-  // Glyphs  
+  // Glyphs
   glyphs.carrion_swarm          = find_glyph_spell( "Glyph of Carrion Swarm" );
   glyphs.conflagrate            = find_glyph_spell( "Glyph of Conflagrate" );
   glyphs.crimson_banish         = find_glyph_spell( "Glyph of Crimson Banish" );
@@ -5254,7 +5257,7 @@ void warlock_t::init_spells()
   spec.imp_swarm = ( glyphs.imp_swarm -> ok() ) ? find_spell( 104316 ) : spell_data_t::not_found();
 
   spells.tier15_2pc = find_spell( 138483 );
-
+  rppm_chaotic_infusion.set_frequency( find_spell( 165452 ) -> real_ppm() );
 }
 
 void warlock_t::init_base_stats()
@@ -5322,7 +5325,7 @@ void warlock_t::create_buffs()
     .cd( find_spell( 145165 ) -> duration() )
     .add_invalidate( CACHE_CRIT );
 
-  buffs.tier17_4pc_chaotic_infusion = buff_creator_t( this, "tier17_4pc_chaotic_infusion", find_spell( 170000 ) );
+  buffs.chaotic_infusion = buff_creator_t( this, "chaotic_infusion", find_spell( 170000 ) );
 
   buffs.tier16_2pc_destructive_influence = buff_creator_t( this, "destructive_influence", find_spell( 145075 ) )
     .chance( sets.set( SET_CASTER, T16, B2 ) -> effectN( 4 ).percent() )
@@ -5568,7 +5571,7 @@ void warlock_t::apl_destruction()
     "Immolate", "if=remains<=cast_time" );
   add_action( "Conflagrate", "if=charges=2" );
   action_list_str += "/cataclysm";
-  add_action( "Chaos Bolt", "if=set_bonus.tier17_4pc=1&buff.tier17_4pc_chaotic_infusion.react" );
+  add_action( "Chaos Bolt", "if=set_bonus.tier17_4pc=1&buff.chaotic_infusion.react" );
   add_action( "Chaos Bolt", "if=set_bonus.tier17_2pc=1&buff.backdraft.stack<3&(burning_ember>=2.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
   add_action( "Chaos Bolt", "if=talent.charred_remains.enabled&buff.backdraft.stack<3&(burning_ember>=2.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
   add_action( "Chaos Bolt", "if=buff.backdraft.stack<3&(burning_ember>=3.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
