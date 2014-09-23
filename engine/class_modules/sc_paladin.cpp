@@ -5307,10 +5307,10 @@ void paladin_t::generate_action_prio_list_holy()
   if ( sim -> allow_flasks && level >= 80 )
   {
     std::string flask_action = "flask,type=";
-    if ( level > 90 ) 
+    if ( level > 90 )
       flask_action += "greater_draenic_intellect_flask";
     else
-    flask_action += ( level > 85 ) ? "warm_sun" : "draconic_mind";
+      flask_action += ( level > 85 ) ? "warm_sun" : "draconic_mind";
 
     precombat -> add_action( flask_action );
   }
@@ -5329,33 +5329,28 @@ void paladin_t::generate_action_prio_list_holy()
   precombat -> add_action( this, "Blessing of Kings", "if=(!aura.str_agi_int.up)&(aura.mastery.up)" );
   precombat -> add_action( this, "Blessing of Might", "if=!aura.mastery.up" );
   precombat -> add_action( this, "Seal of Insight" );
-  precombat -> add_action( this, "Beacon of Light", "target=Healing_Target");
+  precombat -> add_action( this, "Beacon of Light" , "target=healing_target");
   // Beacon probably goes somewhere here?
   // Damn right it does, Theckie-poo.
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-  
+
   // action priority list
   action_priority_list_t* def = get_action_priority_list( "default" );
-  action_priority_list_t* single = get_action_priority_list( "single" );
-  action_priority_list_t* aoe = get_action_priority_list( "aoe" );
 
-  //Phillipuh to-do:
-  //FIGURE OUT HOW TO MAKE ACTIVE FRIENDS!!!
+  // Potions
+  if ( sim -> allow_potions )
+      def -> add_action( "potion,name=mana_potion,if=mana.pct<=75" );
 
-  def -> add_action( "call_action_list,name=single,if=active_enemies=1" );
-  def -> add_action( "call_action_list,name=aoe,if=active_enemies>1" );
-  
   // Potions
   if (sim -> allow_potions && level >= 80)
     def -> add_action( "potion,name=draenic_intellect" );
   else
     def -> add_action( "potion,name=mana_potion,if=mana.pct<=75" );
-  
+
   def -> add_action( "/auto_attack" );
   def -> add_talent( this, "Speed of Light", "if=movement.remains>1" );
-  def -> add_action( this, "Avenging Wrath" );
 
   int num_items = ( int ) items.size();
   for ( int i = 0; i < num_items; i++ )
@@ -5374,12 +5369,21 @@ void paladin_t::generate_action_prio_list_holy()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ] );
 
-
   // this is just sort of made up to test things - a real Holy dev should probably come up with something useful here eventually
-  single->add_action(this,"Lay on Hands","if=target.health.pct<=5");
-  single->add_action(this,"Hand of Sacrifice");
-  single->add_action(this,"Sacred Shield","if=buff.sacred_shield.down");
-  single->add_action(this,"Eternal Flame","if=holy_power>=3");
+  // Workin on it. Phillipuh to-do
+  def -> add_action( this, "Avenging Wrath" );
+  def -> add_action( this, "Lay on Hands","if=incoming_damage_5s>health.max*0.7" );
+  def -> add_action( this, "Judgment", "if=talent.selfless_healer.enabled&buff.selfless_healer<3" );
+  def -> add_action( this, "Sacred Shield","if=buff.sacred_shield.down" );
+  def -> add_action( this, "Eternal Flame", "if=holy_power>=3" );
+  def -> add_action( this, "Word of Glory", "if=holy_power>=3" );
+  def -> add_action( "wait,if=target.health.pct>=75&mana_pct<=10" );
+  def -> add_action( this, "Holy Shock", "if=holy_power<=3" );
+  def -> add_action( this, "Flash of Light", "if=target.health.pct<=30" );
+  def -> add_action( this, "Divine Plea", "if=mana_pct<75" );
+  def -> add_action( this, "Judgment", "if=holy_power<3" );
+  def -> add_action( this, "Lay on Hands", "if=mana.pct<5" );
+  def -> add_action( this, "Holy Light" );
 
 }
 
