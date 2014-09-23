@@ -36,6 +36,7 @@ struct warlock_t;
 
 namespace pets {
 struct wild_imp_pet_t;
+struct inner_demon_pet_t;
 }
 
 struct warlock_td_t: public actor_pair_t
@@ -84,6 +85,7 @@ public:
     pet_t* last;
     static const int WILD_IMP_LIMIT = 25;
     std::array<pets::wild_imp_pet_t*, WILD_IMP_LIMIT> wild_imps;
+    pet_t* inner_demon;
   } pets;
 
   // Talents
@@ -223,6 +225,7 @@ public:
     cooldown_t* imp_swarm;
     cooldown_t* hand_of_guldan;
     cooldown_t* dark_soul;
+    cooldown_t* inner_demon;
   } cooldowns;
 
   // Passives
@@ -322,6 +325,7 @@ public:
   struct procs_t
   {
     proc_t* wild_imp;
+    proc_t* inner_demon;
   } procs;
 
   struct spells_t
@@ -675,6 +679,16 @@ struct firebolt_t: public warlock_pet_spell_t
     }
 
     return t;
+  }
+};
+
+struct inner_demon_soul_fire_t: public warlock_pet_spell_t
+{
+  inner_demon_soul_fire_t( warlock_pet_t* p ):
+    warlock_pet_spell_t( "inner_demon_soul_fire", p, p -> find_spell(166864) )
+  {
+    if ( p -> owner -> bugs )
+      min_gcd = timespan_t::from_seconds( 1.5 );
   }
 };
 
@@ -1316,6 +1330,67 @@ struct doomguard_pet_t: public warlock_pet_t
     return warlock_pet_t::create_action( name, options_str );
   }
 };
+
+/* Demonology T17 4pc "Inner Demon" proc */
+struct inner_demon_pet_t: public warlock_pet_t
+{
+  stats_t** inner_demon_soul_fire_stats;
+  stats_t* regular_stats;
+
+  inner_demon_pet_t( sim_t* sim, warlock_t* owner ):
+    warlock_pet_t( sim, owner, "inner_demon", PET_INNER_DEMON, true )
+  {
+    //0.85694689398393102096805800509504
+    owner_coeff.sp_from_sp = 0.85694689398393102096805800509504;
+    // determine if this is accurate...
+    regular_stats = owner -> get_stats( "soul_fire" );
+
+  }
+
+  virtual void init_base_stats()
+  {
+    warlock_pet_t::init_base_stats();
+
+    action_list_str = "inner_demon_soul_fire";
+
+    //Determine if inner demon has resources.
+    resources.base[RESOURCE_ENERGY] = 10;
+    base_energy_regen_per_second = 0;
+  }
+
+  virtual timespan_t available() const
+  {
+    return timespan_t::from_seconds( 45.0 );
+  }
+
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str )
+  {
+    if ( name == "inner_demon_soul_fire" )
+    {
+      action_t* a = new actions::inner_demon_soul_fire_t( this );
+      inner_demon_soul_fire_stats = &( a -> stats );
+      return a;
+    }
+
+    return warlock_pet_t::create_action( name, options_str );
+  }
+
+  void trigger()
+  {
+    *inner_demon_soul_fire_stats = regular_stats;
+    summon();
+  }
+
+  virtual void pre_analyze_hook()
+  {
+    warlock_pet_t::pre_analyze_hook();
+
+    *inner_demon_soul_fire_stats = regular_stats;
+
+  }
+};
+
 
 struct wild_imp_pet_t: public warlock_pet_t
 {
@@ -2291,6 +2366,15 @@ struct hand_of_guldan_t: public warlock_spell_t
     /* Executed at the same time as HoG and given a travel time,
        so that it can snapshot meta at the appropriate time. */
     shadowflame -> execute();
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+      warlock_spell_t::impact( s );
+      if ( p() -> sets.has_set_bonus( WARLOCK_DEMONOLOGY, T17, B4 ) ){
+        p() -> pets.inner_demon -> summon();
+        p() -> procs.inner_demon -> occur();
+      }
   }
 
   virtual bool ready()
@@ -3269,10 +3353,10 @@ struct chaos_bolt_t: public warlock_spell_t
     warlock_spell_t::impact( s );
 
     if ( p() -> buffs.tier17_4pc_chaotic_infusion -> up() ){
-
-        trigger_multistrike( s );
-        trigger_multistrike( s );
-        trigger_multistrike( s );
+//        Remove Until Bug is Fixed
+//        trigger_multistrike( s );
+//        trigger_multistrike( s );
+//        trigger_multistrike( s );
 
         p() -> buffs.tier17_4pc_chaotic_infusion -> expire();
     }
@@ -4706,9 +4790,12 @@ shard_react( timespan_t::zero() )
 
   cooldowns.infernal = get_cooldown( "summon_infernal" );
   cooldowns.doomguard = get_cooldown( "summon_doomguard" );
+  cooldowns.inner_demon = get_cooldown( "inner_demon" );
   cooldowns.imp_swarm = get_cooldown( "imp_swarm" );
   cooldowns.hand_of_guldan = get_cooldown( "hand_of_guldan" );
   cooldowns.dark_soul = get_cooldown( "dark_soul" );
+
+
 
   regen_type = REGEN_DYNAMIC;
 }
@@ -4968,6 +5055,9 @@ pet_t* warlock_t::create_pet( const std::string& pet_name,
   if ( pet_name == "infernal"     ) return new    infernal_pet_t( sim, this );
   if ( pet_name == "doomguard"    ) return new   doomguard_pet_t( sim, this );
 
+  // Tier 17 Demonology 4pc
+  if ( pet_name == "inner_demon"  ) return new inner_demon_pet_t( sim, this );
+
   if ( pet_name == "wrathguard"   ) return new  wrathguard_pet_t( sim, this );
   if ( pet_name == "observer"     ) return new    observer_pet_t( sim, this );
   if ( pet_name == "fel_imp"      ) return new     fel_imp_pet_t( sim, this );
@@ -5005,7 +5095,9 @@ void warlock_t::create_pets()
   {
     create_pet( "felguard"   );
     create_pet( "wrathguard" );
-
+    //T17 4pc Demonology
+    create_pet( "inner_demon" );
+    create_pet( "doomguard"  );
     create_pet( "service_felguard" );
 
     for ( size_t i = 0; i < pets.wild_imps.size(); i++ )
@@ -5289,6 +5381,7 @@ void warlock_t::init_procs()
   player_t::init_procs();
 
   procs.wild_imp = get_proc( "wild_imp" );
+  procs.inner_demon = get_proc( "inner_demon" );
 }
 
 void warlock_t::apl_precombat()
