@@ -1782,7 +1782,7 @@ public:
     ab::tick( d );
 
     if ( ab::p() -> sets.has_set_bonus( DRUID_FERAL, T17, B2 ) && dbc::is_school( ab::school, SCHOOL_PHYSICAL ) )
-      ab::p() -> resource_gain( RESOURCE_ENERGY, 3.0, ab::p() -> gain.tier17_2pc_melee );
+      ab::p() -> resource_gain( RESOURCE_ENERGY, 2.0, ab::p() -> gain.tier17_2pc_melee );
   }
 
   virtual double composite_persistent_multiplier( const action_state_t* s ) const
