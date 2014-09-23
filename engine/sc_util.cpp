@@ -504,7 +504,6 @@ const char* util::pet_type_string( pet_e type )
     case PET_IMP:                 return "imp";
     case PET_VOIDWALKER:          return "voidwalker";
     case PET_SUCCUBUS:            return "succubus";
-    case PET_INNER_DEMON:         return "inner_demon";
     case PET_INFERNAL:            return "infernal";
     case PET_DOOMGUARD:           return "doomguard";
     case PET_GHOUL:               return "ghoul";
