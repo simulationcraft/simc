@@ -299,14 +299,15 @@ public:
   {
     // General
     const spell_data_t* fortifying_brew;
-    const spell_data_t* expel_harm;
-    const spell_data_t* guard;
+    const spell_data_t* targeted_expulsion;
     const spell_data_t* touch_of_death;
     // Brewmaster
+    const spell_data_t* expel_harm;
+    const spell_data_t* guard;
     // Mistweaver
     const spell_data_t* mana_tea;
-    const spell_data_t* targeted_expulsion;
     // Windwalker
+    const spell_data_t* blackout_kick;
     // Minor
   } glyph;
 
@@ -1150,7 +1151,7 @@ struct blackout_kick_t: public monk_melee_attack_t
 
     if (p()->specialization() == MONK_WINDWALKER)
     {
-      //if ( p() -> current.position == POSITION_BACK )
+      if ( p() -> current.position == POSITION_BACK || p() -> glyph.blackout_kick )
         trigger_blackout_kick_dot( this, s -> target, s -> result_amount * data().effectN( 2 ).percent() );
       //else
       //  trigger_blackout_kick_heal( this, s -> target, s -> result_amount * data().effectN( 2 ).percent() );
@@ -3434,12 +3435,13 @@ void monk_t::init_spells()
   passives.storm_earth_and_fire   = find_spell( 138228 );
 
   // GLYPHS
-  glyph.touch_of_death     = find_glyph( "Glyph of Touch of Death" );
-  glyph.targeted_expulsion = find_glyph( "Glyph of Targeted Expulsion" );
   glyph.expel_harm         = find_glyph( "Glyph of Expel Harm" );
+  glyph.targeted_expulsion = find_glyph( "Glyph of Targeted Expulsion" );
+  glyph.touch_of_death     = find_glyph( "Glyph of Touch of Death" );
   glyph.fortifying_brew    = find_glyph( "Glyph of Fortifying Brew"    );
   glyph.guard              = find_glyph( "Glyph of Guard" );
   glyph.mana_tea           = find_glyph( "Glyph of Mana Tea" );
+  glyph.blackout_kick      = find_glyph( "Glyph of Blackout Kick" );
 
   //MASTERY
   mastery.bottled_fury        = find_mastery_spell( MONK_WINDWALKER );
@@ -3457,7 +3459,7 @@ void monk_t::init_base_stats()
   if ( specialization() != MONK_MISTWEAVER )
     base_gcd = timespan_t::from_seconds( 1.0 );
 
-  resources.base[RESOURCE_CHI] = 4 + talent.ascension->effectN(1).base_value() + perk.empowered_chi->effectN(1).base_value();
+  resources.base[RESOURCE_CHI] = 4 + talent.ascension -> effectN( 1 ).base_value() + perk.empowered_chi -> effectN( 1 ).base_value();
   resources.base[RESOURCE_ENERGY] = 100;
   resources.base_multiplier[RESOURCE_MANA] *= 1.0 + talent.ascension -> effectN( 2 ).percent();
 
