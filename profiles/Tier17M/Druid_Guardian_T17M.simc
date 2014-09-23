@@ -74,3 +74,5 @@ main_hand=primal_gladiators_pike,id=111075,enchant=mark_of_the_frostwolf
 # gear_multistrike_rating=525
 # gear_versatility_rating=249
 # set_bonus=pvp_2pc=1
+# set_bonus=tier14_2pc_tank=1
+# set_bonus=tier14_4pc_tank=1

@@ -372,6 +372,7 @@ public:
     const spell_data_t* enhanced_sweeping_strikes;
     //Fury only
     const spell_data_t* enhanced_whirlwind;
+    const spell_data_t* empowered_execute;
     //Protection only
     const spell_data_t* improved_block;
     const spell_data_t* improved_defensive_stance;
@@ -1666,13 +1667,14 @@ struct execute_off_hand_t: public warrior_attack_t
     dual = true;
     may_miss = may_dodge = may_parry = may_block = false;
     weapon = &( p -> off_hand_weapon );
+    if ( !p -> bugs )
+      weapon_multiplier = 3.0;
 
     if ( p -> main_hand_weapon.group() == WEAPON_1H &&
          p -> off_hand_weapon.group() == WEAPON_1H )
          weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
 
-    if ( !p -> bugs )
-      weapon_multiplier = 3.0;
+    weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
   }
 };
 
@@ -1694,6 +1696,7 @@ struct execute_t: public warrior_attack_t
            p -> off_hand_weapon.group() == WEAPON_1H )
            weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
     }
+    weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
   }
 
   double action_multiplier() const
@@ -3898,6 +3901,7 @@ void warrior_t::init_spells()
   perk.enhanced_rend                 = find_perk_spell( "Enhanced Rend" );
 
   perk.enhanced_whirlwind            = find_perk_spell( "Enhanced Whirlwind" );
+  perk.empowered_execute             = find_perk_spell( "Empowered Execute" );
 
   perk.improved_heroic_throw         = find_perk_spell( "Improved Heroic Throw" );
   perk.improved_defensive_stance     = find_perk_spell( "Improved Defensive Stance" );

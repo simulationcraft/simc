@@ -90,5 +90,7 @@ main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=566,enchant
 # gear_armor=1057
 # gear_multistrike_rating=995
 # gear_versatility_rating=389
+# set_bonus=tier13_2pc_melee=1
+# set_bonus=tier13_4pc_melee=1
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
