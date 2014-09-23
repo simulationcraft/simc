@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18898)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18922)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 Resource         : 2.4% Base Mana (3840 @Level 100)
@@ -1312,7 +1312,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=39728)    : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 20 | Scaled Value: 20
-#2 (id=256019)   : Apply Aura (6) | Unknown effect sub type (421)
+#2 (id=256019)   : Apply Aura (6) | Modify Absorb% Done (421)
                    Base Value: 20 | Scaled Value: 20
 #3 (id=256463)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 10 | Scaled Value: 10
@@ -3059,7 +3059,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=92640)    : Apply Aura (6) | Modify Total Stat% (137)
@@ -5088,7 +5088,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 6.30000
 #2 (id=215759)   : Trigger Spell: Saving Grace (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 155274
-Description      : Instantly heals a friendly target for $s1. Reduces your absorbs and healing done by $155274s1% for $155274d, stacking up to $155274u times.
+Description      : Heals a friendly target for $s1. Reduces your absorbs and healing done by $155274s1% for $155274d, stacking up to $155274u times.
 
 Name             : Words of Mending (id=152117) [Spell Family (6), Passive] 
 Class            : Priest

@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18898)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18922)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 1
@@ -512,6 +512,7 @@ Class            : Feral Druid
 Spell Level      : 10
 Duration         : 8 seconds
 Cooldown         : 30 seconds
+Affecting spells : Barkskin Duration Increase (60142)
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1218,7 +1219,7 @@ Class            : Balance Guardian Restoration Druid
 Spell Level      : 44
 Duration         : 12 seconds
 Cooldown         : 60 seconds
-Affecting spells : Item - Druid T9 Feral 4P Bonus (67123), Item - Druid T10 Feral 4P Bonus (70726), Glyph of Imbued Bark (159434)
+Affecting spells : Barkskin Duration Increase (60142), Item - Druid T9 Feral 4P Bonus (67123), Item - Druid T10 Feral 4P Bonus (70726), Glyph of Imbued Bark (159434)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ .x...... ........ 
@@ -2360,6 +2361,23 @@ Effects          :
                    Base Value: -60000 | Scaled Value: -60000 | Misc Value: 11
                    Affected Spells: Dash (1850), Displacer Beast (137452)
 Description      : Reduces the cooldown of your Dash ability by ${$m1/-1000} sec.
+
+Name             : Barkskin Duration Increase (id=60142) [Spell Family (7), Passive, Hidden] 
+Class            : Druid
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ...x.... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=53838)    : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
+                   Base Value: 3000 | Scaled Value: 3000 | Misc Value: 1
+                   Affected Spells: Barkskin (22812)
+#2 (id=53839)    : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
+                   Base Value: -3000 | Scaled Value: -3000 | Misc Value: 11
+                   Affected Spells: Tiger's Fury (5217)
+Description      : Increases the duration of Barkskin by $/1000;s1 seconds and decreases the cooldown of Tiger's Fury by $/1000;s2 seconds.
 
 Name             : Maim Damage (id=61252) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -3761,25 +3779,6 @@ Effects          :
 Description      : Feral: Ferocious Bite now refreshes the duration of your Rip on targets with $s2% or less health.
 Guardian: Reduces the rage cost of your Savage Defense by ${$m1/-10}.
 
-Name             : Item - Druid T13 Feral 4P Bonus (Might of Ursoc and Stampede) (id=105735) [Spell Family (7), Passive, Hidden] 
-Class            : Druid
-Proc Chance      : 100%
-Proc Flags       : ....x.x. x.x.x.x. x....... ........ 
-                 : Yellow Melee, White Ranged, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=121557)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#2 (id=119088)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15
-Description      : Feral: Using Tiger's Fury will trigger your Omen of Clarity ability.
-Guardian: Might of Ursoc also affects all raid and party members.
-
 Name             : Item - Druid T13 Restoration 4P Bonus (Rejuvenation) (id=105770) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -4738,19 +4737,6 @@ Effects          :
                    Base Value: 4000 | Scaled Value: 4000 | Misc Value: 1
                    Affected Spells: Rip (1079)
 Description      : Increases the duration of your Rip by ${$m1/1000} sec.
-
-Name             : Item - Druid T14 Guardian 2P Bonus (id=123086) [Spell Family (7), Passive, Hidden] 
-Class            : Druid
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-Effects          :
-#1 (id=155154)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
-                   Base Value: -60000 | Scaled Value: -60000 | Misc Value: 11
-Description      : Reduces the cooldown of your Might of Ursoc ability by ${$m1/-1000} sec.
 
 Name             : Item - Druid T14 Guardian 4P Bonus (id=123087) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -6488,7 +6474,7 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | Radius: 100 yards
 #2 (id=255132)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: -60 | Scaled Value: -60 | Misc Value: 127
-#3 (id=255133)   : Apply Aura (6) | Unknown effect sub type (421)
+#3 (id=255133)   : Apply Aura (6) | Modify Absorb% Done (421)
                    Base Value: -60 | Scaled Value: -60
 Description      : Increases your healing and absorption done to yourself, based on Stamina and damage taken (before avoidance and mitigation) in the last 10 sec.
 
@@ -6618,7 +6604,7 @@ Description      : $@spelldesc77758
 Name             : Pulverize (id=158792) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 50
-Duration         : 10 seconds
+Duration         : 12 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7372,7 +7358,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
 Effects          :
 #1 (id=233485)   : Apply Aura (6) | Proc Trigger Spell: Scent of Blood (42)
-                   Base Value: 3 | Scaled Value: 3 | Trigger Spell: 169752
+                   Base Value: 2 | Scaled Value: 2 | Trigger Spell: 169752
 Description      : Dealing bleed damage generates $s1 Energy.
 
 Name             : Item - Druid T17 Feral 4P Bonus (id=165432) [Spell Family (7), Passive, Hidden] 
@@ -7388,7 +7374,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
 Effects          :
 #1 (id=233486)   : Apply Aura (6) | Proc Trigger Spell: Item - Druid T17 Feral 4P Bonus Proc Driver (42)
-                   Base Value: 15 | Scaled Value: 15 | Trigger Spell: 166639
+                   Base Value: 35 | Scaled Value: 35 | Trigger Spell: 166639
 Description      : While Berserk is active, special attacks deal an additional $s1% bleed damage to the target over $166638d.
 
 Name             : Mana Attunement (Passive) (id=166142) [Spell Family (7), Passive, Hidden] 
@@ -7602,7 +7588,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
 Effects          :
 #1 (id=240687)   : Energize Power (30)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: energy
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: energy
 Description      : $@spelldesc165432
 
 Name             : Lunar Peak (id=171743) [Spell Family (7)] 
@@ -7755,7 +7741,7 @@ Effects          :
 #1 (id=244078)   : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1206
 
-Name             : Glyph of Nature's Cure (Restoration) (id=171924) [Spell Family (6), Passive, Hidden] 
+Name             : Glyph of Nature's Cure (Restoration) (id=171924) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18898)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18922)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -4234,7 +4234,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=129139)   : Weapon Damage% (31)
-                   Base Value: 170 | Scaled Value: 1.7 (avg=0)
+                   Base Value: 250 | Scaled Value: 2.5 (avg=0)
 #2 (id=197633)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc115356
@@ -4253,7 +4253,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=129143)   : Weapon Damage% (31)
-                   Base Value: 170 | Scaled Value: 1.7 (avg=0)
+                   Base Value: 250 | Scaled Value: 2.5 (avg=0)
 #2 (id=197634)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc115356
@@ -6478,14 +6478,14 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=241955)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50000
 Description      : $@spelldesc165610
 
 Name             : Feral Spirit Windfury Driver (id=170523) [Spell Family (11), Hidden] 
 Class            : Shaman
 Range            : 100 yards
 Duration         : 30 seconds
-Proc Chance      : 30%
+Proc Chance      : 20%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..xxx ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered, Melee Off-Hand
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -6499,7 +6499,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000
 Description      : $@spelldesc165610
 
-Name             : Glyph of Purify Spirit (Restoration) (id=171933) [Spell Family (6), Passive, Hidden] 
+Name             : Glyph of Purify Spirit (Restoration) (id=171933) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

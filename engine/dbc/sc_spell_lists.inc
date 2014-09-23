@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 18912
+// Class based active abilities, wow build 18922
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1003,7 +1003,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (28)
 
-// Talent tree specialization abilities, wow build 18912
+// Talent tree specialization abilities, wow build 18922
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1941,7 +1941,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 18912
+// Class mastery abilities, wow build 18922
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2164,7 +2164,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 18912
+// Racial abilities, wow build 18922
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2887,7 +2887,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (41)
 
-// Glyph spells for classes, wow build 18912
+// Glyph spells for classes, wow build 18922
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3527,7 +3527,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 18912
+// Tier item set bonuses for class, wow build 18922
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
     {
@@ -3903,24 +3903,24 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   {
     // Tier 13 bonuses (6 spells)
     {
+      60142, // Deep Earth Battlegarb - 4 Piece Bonus (Barkskin Duration Increase)
       105715, // Deep Earth Vestments - 2 Piece Bonus (Item - Druid T13 Restoration 2P Bonus (Healing Touch and Rejuv))
       105717, // Deep Earth Regalia - 4 Piece Bonus (Item - Druid T13 Balance 4P Bonus (Starsurge))
       105722, // Deep Earth Regalia - 2 Piece Bonus (Item - Druid T13 Balance 2P Bonus (Insect Swarm))
       105725, // Deep Earth Battlegarb - 2 Piece Bonus (Item - Druid T13 Feral 2P Bonus (Savage Defense and Blood In The Water))
-      105735, // Deep Earth Battlegarb - 4 Piece Bonus (Item - Druid T13 Feral 4P Bonus (Might of Ursoc and Stampede))
       105770, // Deep Earth Vestments - 4 Piece Bonus (Item - Druid T13 Restoration 4P Bonus (Rejuvenation))
           0,
     },
-    // Tier 14 bonuses (8 spells)
+    // Tier 14 bonuses (7 spells)
     {
       123082, // Regalia of the Eternal Blossom - 2 Piece Bonus (Item - Druid T14 Balance 2P Bonus)
       123083, // Regalia of the Eternal Blossom - 4 Piece Bonus (Item - Druid T14 Balance 4P Bonus)
       123084, // Battlegear of the Eternal Blossom - 2 Piece Bonus (Item - Druid T14 Feral 2P Bonus)
       123085, // Battlegear of the Eternal Blossom - 4 Piece Bonus (Item - Druid T14 Feral 4P Bonus)
-      123086, // Armor of the Eternal Blossom - 2 Piece Bonus (Item - Druid T14 Guardian 2P Bonus)
       123087, // Armor of the Eternal Blossom - 4 Piece Bonus (Item - Druid T14 Guardian 4P Bonus)
       123088, // Vestments of the Eternal Blossom - 2 Piece Bonus (Item - Druid T14 Restoration 2P Bonus)
       123089, // Vestments of the Eternal Blossom - 4 Piece Bonus (Item - Druid T14 Restoration 4P Bonus)
+          0,
     },
     // Tier 15 bonuses (8 spells)
     {
@@ -3950,9 +3950,9 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   },
 };
 
-#define SET_BONUS_DATA_SIZE (543)
+#define SET_BONUS_DATA_SIZE (544)
 
-// Set bonus data, wow build 18912
+// Set bonus data, wow build 18922
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,  1230,    0,   2,   1,                { 0 },    3,   71, 165636, { 111239, 111240, 111241, 111242, 111243,  0 } },
@@ -4299,7 +4299,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Deep Earth Regalia"                         ,  1059,   13,   2,  11,           { 102, 0 },    3,    0, 105722, {  77018,  77019,  77020,  77021,  77022,  0 } },
   { "Deep Earth Regalia"                         ,  1059,   13,   4,  11,           { 102, 0 },    3,    0, 105717, {  77018,  77019,  77020,  77021,  77022,  0 } },
   { "Deep Earth Battlegarb"                      ,  1058,   13,   2,  11,           { 103, 0 },    2,    0, 105725, {  77013,  77014,  77015,  77016,  77017,  0 } },
-  { "Deep Earth Battlegarb"                      ,  1058,   13,   4,  11,           { 103, 0 },    2,    0, 105735, {  77013,  77014,  77015,  77016,  77017,  0 } },
+  { "[PH] Druid Feral T13 4P Bonus"              ,     0,   13,   4,  11,           { 103, 0 },    2,    0, 105735, {  0 } },
   { "Deep Earth Vestments"                       ,  1060,   13,   2,  11,           { 105, 0 },    1,    0, 105715, {  76749,  76750,  76751,  76752,  76753,  0 } },
   { "Deep Earth Vestments"                       ,  1060,   13,   4,  11,           { 105, 0 },    1,    0, 105770, {  76749,  76750,  76751,  76752,  76753,  0 } },
   { "Battleplate of Resounding Rings"            ,  1144,   14,   2,   1,      {  71,  72, 0 },    2,    0, 123142, {  85329,  85330,  85331,  85332,  85333,  0 } },
@@ -4346,7 +4346,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Battlegear of the Eternal Blossom"          ,  1127,   14,   2,  11,           { 103, 0 },    2,    0, 123084, {  85309,  85310,  85311,  85312,  85313,  0 } },
   //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Battlegear of the Eternal Blossom"          ,  1127,   14,   4,  11,           { 103, 0 },    2,    0, 123085, {  85309,  85310,  85311,  85312,  85313,  0 } },
-  { "Armor of the Eternal Blossom"               ,  1128,   14,   2,  11,           { 104, 0 },    0,    0, 123086, {  85383,  85382,  85381,  85380,  85379,  0 } },
+  { "[PH] Druid Guardian T14 2P Bonus"           ,     0,   14,   2,  11,           { 104, 0 },    0,    0, 123086, {  0 } },
   { "Armor of the Eternal Blossom"               ,  1128,   14,   4,  11,           { 104, 0 },    0,    0, 123087, {  85383,  85382,  85381,  85380,  85379,  0 } },
   { "Vestments of the Eternal Blossom"           ,  1125,   14,   2,  11,           { 105, 0 },    1,    0, 123088, {  85354,  85355,  85356,  85357,  85358,  0 } },
   { "Vestments of the Eternal Blossom"           ,  1125,   14,   4,  11,           { 105, 0 },    1,    0, 123089, {  85354,  85355,  85356,  85357,  85358,  0 } },
@@ -4445,10 +4445,11 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Battlegear of the Shattered Vale"           ,  1199,   16,   2,  11,           { 103, 0 },    2,    0, 144864, {  99180,  99181,  99182,  99183,  99184,  0 } },
   { "Battlegear of the Shattered Vale"           ,  1199,   16,   4,  11,           { 103, 0 },    2,    0, 144841, {  99180,  99181,  99182,  99183,  99184,  0 } },
   { "Armor of the Shattered Vale"                ,  1196,   16,   2,  11,           { 104, 0 },    0,    0, 144879, {  99163,  99164,  99165,  99166,  99170,  0 } },
+  { "Armor of the Eternal Blossom"               ,  1128,   16,   2,  11,           { 104, 0 },    0,    0, 144879, {  85383,  85382,  85381,  85380,  85379,  0 } },
   { "Armor of the Shattered Vale"                ,  1196,   16,   4,  11,           { 104, 0 },    0,    0, 144887, {  99163,  99164,  99165,  99166,  99170,  0 } },
   { "Vestments of the Shattered Vale"            ,  1198,   16,   2,  11,           { 105, 0 },    1,    0, 144869, {  99171,  99172,  99173,  99178,  99185,  0 } },
-  { "Vestments of the Shattered Vale"            ,  1198,   16,   4,  11,           { 105, 0 },    1,    0, 144875, {  99171,  99172,  99173,  99178,  99185,  0 } },
   //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Vestments of the Shattered Vale"            ,  1198,   16,   4,  11,           { 105, 0 },    1,    0, 144875, {  99171,  99172,  99173,  99178,  99185,  0 } },
   { "Blackhand's Battlegear"                     ,  1242,   17,   2,   1,                { 0 },    2,   71, 165336, { 115580, 115581, 115582, 115583, 115584,  0 } },
   { "Blackhand's Battlegear"                     ,  1242,   17,   4,   1,                { 0 },    2,   71, 165345, { 115580, 115581, 115582, 115583, 115584,  0 } },
   { "Blackhand's Battlegear"                     ,  1242,   17,   2,   1,                { 0 },    2,   72, 165337, { 115580, 115581, 115582, 115583, 115584,  0 } },
@@ -4473,8 +4474,8 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Poisoner's Battlegear"                      ,  1240,   17,   4,   4,                { 0 },    2,  260, 165478, { 115570, 115571, 115572, 115573, 115574,  0 } },
   { "Poisoner's Battlegear"                      ,  1240,   17,   2,   4,                { 0 },    2,  261, 165482, { 115570, 115571, 115572, 115573, 115574,  0 } },
   { "Poisoner's Battlegear"                      ,  1240,   17,   4,   4,                { 0 },    2,  261, 165514, { 115570, 115571, 115572, 115573, 115574,  0 } },
-  { "Soul Priest's Raiment"                      ,  1239,   17,   2,   5,                { 0 },    1,  256, 165614, { 115560, 115561, 115562, 115563, 115564,  0 } },
   //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Soul Priest's Raiment"                      ,  1239,   17,   2,   5,                { 0 },    1,  256, 165614, { 115560, 115561, 115562, 115563, 115564,  0 } },
   { "Soul Priest's Raiment"                      ,  1239,   17,   4,   5,                { 0 },    1,  256, 167694, { 115560, 115561, 115562, 115563, 115564,  0 } },
   { "Soul Priest's Raiment"                      ,  1239,   17,   2,   5,                { 0 },    1,  257, 165621, { 115560, 115561, 115562, 115563, 115564,  0 } },
   { "Soul Priest's Raiment"                      ,  1239,   17,   4,   5,                { 0 },    1,  257, 167684, { 115560, 115561, 115562, 115563, 115564,  0 } },
@@ -4499,8 +4500,8 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Arcanoshatter Regalia"                      ,  1235,   17,   2,   8,                { 0 },    3,   64, 165470, { 115550, 115551, 115552, 115553, 115554,  0 } },
   { "Arcanoshatter Regalia"                      ,  1235,   17,   4,   8,                { 0 },    3,   64, 165469, { 115550, 115551, 115552, 115553, 115554,  0 } },
   { "Shadow Council's Garb"                      ,  1243,   17,   2,   9,                { 0 },    3,  265, 165448, { 115585, 115586, 115587, 115588, 115589,  0 } },
-  { "Shadow Council's Garb"                      ,  1243,   17,   4,   9,                { 0 },    3,  265, 165449, { 115585, 115586, 115587, 115588, 115589,  0 } },
   //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Shadow Council's Garb"                      ,  1243,   17,   4,   9,                { 0 },    3,  265, 165449, { 115585, 115586, 115587, 115588, 115589,  0 } },
   { "Shadow Council's Garb"                      ,  1243,   17,   2,   9,                { 0 },    3,  266, 165451, { 115585, 115586, 115587, 115588, 115589,  0 } },
   { "Shadow Council's Garb"                      ,  1243,   17,   4,   9,                { 0 },    3,  266, 165450, { 115585, 115586, 115587, 115588, 115589,  0 } },
   { "Shadow Council's Garb"                      ,  1243,   17,   2,   9,                { 0 },    3,  267, 165455, { 115585, 115586, 115587, 115588, 115589,  0 } },
@@ -4523,7 +4524,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 
 #define PERK_SIZE (4)
 
-// Perk specialization abilities, wow build 18912
+// Perk specialization abilities, wow build 18922
 static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     {
@@ -4550,7 +4551,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
     // Fury
     {
       157452, // 0: Improved Die by the Sword
-      157457, // 1: Improved Colossus Smash
+      157454, // 1: Empowered Execute
       157473, // 2: Enhanced Whirlwind
       176051, // 3: Improved Recklessness
     },
@@ -4831,8 +4832,8 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   },
 };
 
-// Glyph properties, wow build 18912
-static glyph_property_data_t __glyph_property_data[499] = {
+// Glyph properties, wow build 18922
+static glyph_property_data_t __glyph_property_data[500] = {
   {   162,  54811 },
   {   163,  54812 },
   {   164, 114338 },
@@ -5201,6 +5202,7 @@ static glyph_property_data_t __glyph_property_data[499] = {
   {  1052, 126745 },
   {  1053, 126746 },
   {  1054, 131113 },
+  {  1055, 132005 },
   {  1058, 135557 },
   {  1060, 145722 },
   {  1061, 147707 },

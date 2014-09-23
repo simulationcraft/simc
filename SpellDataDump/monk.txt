@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18898)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18922)
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -794,6 +794,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #4 (id=156068)   : Apply Aura (6) | Unknown effect sub type (263)
                    Base Value: 1 | Scaled Value: 1
+                   Affected Spells: Chi Brew (115399)
 Description      : You spin while kicking in the air, $?a115070&s116645[healing up to 6 allies within $117640A1 yards for ${4*$117640m1} over $d.][dealing ${(4*0.75*$<low>+4*0.75*$<high>)/2} damage over $d to enemies within $107270A1 yards]. Generates $129881m1 Chi if it strikes 3 or more targets.$?c1[
 
 Channeling Spinning Crane Kick does not prevent avoiding attacks.][]
@@ -1685,6 +1686,7 @@ Description      : Increases your maximum Chi by $s1, your Energy regeneration b
 Name             : Chi Brew (id=115399) [Scaling Spell (5), Spell Family (53)] 
 Class            : Monk
 Spell Level      : 1
+Affecting spells : Spinning Crane Kick (101546)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -6159,7 +6161,7 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | Radius: 100 yards
 #2 (id=255132)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: -60 | Scaled Value: -60 | Misc Value: 127
-#3 (id=255133)   : Apply Aura (6) | Unknown effect sub type (421)
+#3 (id=255133)   : Apply Aura (6) | Modify Absorb% Done (421)
                    Base Value: -60 | Scaled Value: -60
 Description      : Increases your healing and absorption done to yourself, based on Stamina and damage taken (before avoidance and mitigation) in the last 10 sec.
 
@@ -6684,7 +6686,7 @@ Effects          :
 Description      : Strong winds whirl around the monk and $G his:her; allies, granting all nearby party and raid members $s1% multistrike chance.
 Tooltip          : Multistrike chance increased by $s1%.
 
-Name             : Glyph of Detoxing (Mistweaver) (id=171926) [Spell Family (6), Passive, Hidden] 
+Name             : Glyph of Detoxing (Mistweaver) (id=171926) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

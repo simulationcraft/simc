@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18898)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18922)
 Name             : Mend Pet (id=136) [Scaling Spell (3), Spell Family (9)] 
 Class            : Hunter
 Spell Level      : 16
@@ -339,7 +339,7 @@ Effects          :
 Description      : Place an ice trap that freezes the first enemy that approaches, incapacitating them for $3355d.  Any damage caused will break the ice. Only one target can be Freezing Trapped at a time. Trap will exist for $d.
 Tooltip          : Incapacitated.
 
-Name             : Black Arrow (id=3674) [Scaling Spell (3), Spell Family (9)] 
+Name             : Black Arrow (id=3674) [Spell Family (9)] 
 Class            : Survival Hunter
 Resource         : 35 Focus
 Spell Level      : 50
@@ -357,7 +357,7 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1289)     : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.126) | AP Coefficient: 0.50000
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.40000
 #2 (id=254557)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20
 Description      : Fires a Black Arrow at the target, dealing $3674o1 damage over $3674d.
@@ -760,7 +760,7 @@ Class            : Hunter
 Spell Level      : 78
 Duration         : 5 seconds
 Cooldown         : 5 seconds
-Affecting spells : Camouflage (51755), Glyph of Deterrence (56850), Item - Hunter T8 4P Bonus (64860), Crouching Tiger, Hidden Chimaera (118675), Camouflage (119450)
+Affecting spells : Camouflage (51755), Glyph of Deterrence (56850), Item - Hunter T8 4P Bonus (64860), Glyph of Mirrored Blades (83495), Crouching Tiger, Hidden Chimaera (118675), Camouflage (119450)
 Attributes       : ....x... ........ x.x..... ........   ....x... ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -774,6 +774,8 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000
 #3 (id=10567)    : Apply Aura (6) | Unknown effect sub type (264)
                    Base Value: 0 | Scaled Value: 0
+#4 (id=171911)   : Apply Aura (6) | Spell Reflection (28)
+                   Base Value: 0 | Scaled Value: 0
 #5 (id=186277)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | SP Coefficient: 1.00000 | Misc Value: 0x7f
 #6 (id=200879)   : Apply Aura (6) | Mechanic Immunity (77)
@@ -784,8 +786,6 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000
 #9 (id=227888)   : Apply Aura (6) | Unknown effect sub type (185)
                    Base Value: -100 | Scaled Value: -100
-#10 (id=227889)   : Apply Aura (6) | Spell Reflection (28)
-                   Base Value: 0 | Scaled Value: 0
 Description      : You deflect all attacks and take $s5% less damage for $d, but you cannot attack.$?s83495[  Additionally, you have a $83495s1% chance to reflect spells back at the attacker][]
 Tooltip          : Deflecting all attacks.
 Damage taken reduced by $w5%.
@@ -3444,8 +3444,9 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=83894)    : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 23
+#1 (id=83894)    : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
+                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 32
+                   Affected Spells: Deterrence (19263)
 #2 (id=83895)    : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 Description      : When attacked by a spell while in Deterrence, you have a $s1% chance to reflect it back at the attacker.
@@ -4227,7 +4228,7 @@ Name             : Posthaste (id=118922) [Spell Family (9)]
 Class            : Hunter
 Duration         : 8 seconds
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4453,7 +4454,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=140521)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5
+                   Base Value: 2 | Scaled Value: 2
 
 Name             : Glaive Toss (id=120755) [Spell Family (9), Hidden] 
 Class            : Hunter

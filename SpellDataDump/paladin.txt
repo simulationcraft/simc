@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18898)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18922)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -1133,7 +1133,7 @@ Tooltip          : Interrupted.
 
 Name             : Crusader Strike (id=35395) [Spell Family (10)] 
 Class            : Paladin
-Resource         : 5% Base Mana (1600 @Level 100)
+Resource         : 10% Base Mana (3200 @Level 100)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -3578,7 +3578,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=115800)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -15 | Scaled Value: -15 | Misc Value: 0x7f
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7f
 #2 (id=132822)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 1
 #3 (id=166229)   : Apply Aura (6) | Modify Dodge% (49)
@@ -5768,7 +5768,7 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | Radius: 100 yards
 #2 (id=255132)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: -60 | Scaled Value: -60 | Misc Value: 127
-#3 (id=255133)   : Apply Aura (6) | Unknown effect sub type (421)
+#3 (id=255133)   : Apply Aura (6) | Modify Absorb% Done (421)
                    Base Value: -60 | Scaled Value: -60
 Description      : Increases your healing and absorption done to yourself, based on Stamina and damage taken (before avoidance and mitigation) in the last 10 sec.
 
@@ -6264,7 +6264,7 @@ Effects          :
                    Affected Spells: Holy Wrath (119072)
 Description      : Your Holy Wrath now generates $s2 Holy Power, and deals $s1% additional damage.
 
-Name             : Glyph of Cleanse (Holy) (id=171929) [Spell Family (6), Passive, Hidden] 
+Name             : Glyph of Cleanse (Holy) (id=171929) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18898)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18922)
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 9
@@ -215,7 +215,7 @@ Effects          :
 #1 (id=462)      : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=119511)   : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1 (avg=0)
+                   Base Value: 150 | Scaled Value: 1.5 (avg=0)
 #3 (id=197622)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50
                    Affected Spells: Slam (1464)
@@ -500,7 +500,7 @@ Resource         : 30 Rage
 Spell Level      : 7 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Recklessness (1719), Sudden Death (52437), Mastery: Weapons Master (76838), Single-Minded Fury (81099), Protection (131086), Headlong Rush (158836)
+Affecting spells : Recklessness (1719), Sudden Death (52437), Mastery: Weapons Master (76838), Single-Minded Fury (81099), Protection (131086), Empowered Execute (157454), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
@@ -580,7 +580,7 @@ GCD              : 1.5 seconds
 Cooldown         : 9 seconds
 Affecting spells : Recklessness (1719), Headlong Rush (158836), Shield Charge (169667)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2592,10 +2592,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68041)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.50000
                    Affected Spells: Heroic Strike (78), Execute (5308), Mortal Strike (12294), Colossus Smash (86346), Colossus Smash (108126), Ignite Weapon (156288), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Execute (168874)
 #2 (id=89760)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 220 | Scaled Value: 220
+                   Base Value: 350 | Scaled Value: 350
 Description      : Increases the damage of your Mortal Strike, $?s156288[Ignite Weapon, ][]Colossus Smash, and Execute abilities by $s1%.
 
 Name             : Mastery: Unshackled Fury (id=76856) [Spell Family (4), Passive] 
@@ -3903,7 +3903,7 @@ Effects          :
 Name             : Demoralizing Shout (id=125565) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 56
-Duration         : 11 seconds
+Duration         : 9 seconds
 Affecting spells : Bladestorm (46924)
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4817,7 +4817,7 @@ Effects          :
                    Affected Spells: Die by the Sword (118038)
 Description      : Increases the damage reduction from Die by the Sword by $s1%.
 
-Name             : Improved Colossus Smash (id=157457) [Spell Family (4), Passive] 
+Name             : Empowered Execute (id=157454) [Spell Family (4), Passive] 
 Class            : Warrior
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4826,22 +4826,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=219563)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10
-Description      : Colossus Smash now generates ${$157459m1/10} Rage when hitting a target.
-
-Name             : Improved Colossus Smash (id=157459) [Spell Family (4)] 
-Class            : Warrior
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=219565)   : Energize Power (30)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: rage
-Description      : $@spelldesc157457
+#1 (id=219559)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 20 | Scaled Value: 20
+                   Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (168874)
+Description      : Increases the damage of Execute by $s1%.
 
 Name             : Enhanced Sweeping Strikes (id=157461) [Spell Family (4), Passive] 
 Class            : Warrior
@@ -4939,7 +4927,7 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | Radius: 100 yards
 #2 (id=255132)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: -60 | Scaled Value: -60 | Misc Value: 127
-#3 (id=255133)   : Apply Aura (6) | Unknown effect sub type (421)
+#3 (id=255133)   : Apply Aura (6) | Modify Absorb% Done (421)
                    Base Value: -60 | Scaled Value: -60
 Description      : Increases your healing and absorption done to yourself, based on Stamina and damage taken (before avoidance and mitigation) in the last 10 sec.
 
@@ -5306,7 +5294,7 @@ Resource         : 10 Rage
 Spell Level      : 7 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Recklessness (1719), Sudden Death (52437), Mastery: Weapons Master (76838), Single-Minded Fury (81099), Protection (131086), Headlong Rush (158836)
+Affecting spells : Recklessness (1719), Sudden Death (52437), Mastery: Weapons Master (76838), Single-Minded Fury (81099), Protection (131086), Empowered Execute (157454), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
@@ -5327,7 +5315,7 @@ Class            : Warrior
 Spell Level      : 7 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Recklessness (1719), Sudden Death (52437), Mastery: Weapons Master (76838), Single-Minded Fury (81099), Protection (131086), Headlong Rush (158836)
+Affecting spells : Recklessness (1719), Sudden Death (52437), Mastery: Weapons Master (76838), Single-Minded Fury (81099), Protection (131086), Empowered Execute (157454), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x....... 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
@@ -5362,7 +5350,7 @@ Description      : Colossus Smash now generates 30 rage.
 
 Name             : Item - Warrior T17 Fury 2P Bonus (id=165337) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
-Proc Chance      : 25%
+Proc Chance      : 10%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -5394,7 +5382,7 @@ Description      : Shield Slam has a $h% chance to automatically cast $?s152276[
 
 Name             : Item - Warrior T17 Arms 4P Bonus (id=165345) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
-Proc Chance      : 50%
+Proc Chance      : 40%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -5538,7 +5526,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
 Effects          :
 #1 (id=235406)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
-                   Base Value: 5 | Scaled Value: 5
+                   Base Value: 6 | Scaled Value: 6
 #2 (id=235407)   : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 5 | Scaled Value: 5
 Description      : $@spelldesc165349
@@ -5610,7 +5598,7 @@ Resource         : 10 Rage
 Spell Level      : 7 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Recklessness (1719), Sudden Death (52437), Mastery: Weapons Master (76838), Single-Minded Fury (81099), Protection (131086), Headlong Rush (158836)
+Affecting spells : Recklessness (1719), Sudden Death (52437), Mastery: Weapons Master (76838), Single-Minded Fury (81099), Protection (131086), Empowered Execute (157454), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
