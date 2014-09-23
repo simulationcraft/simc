@@ -457,11 +457,15 @@ struct water_elemental_pet_t : public pet_t
 
   struct water_jet_t : public spell_t
   {
+    // queued water jet spell, auto cast water jet spell
+    bool queued, autocast;
+
     water_jet_t( water_elemental_pet_t* p, const std::string& options_str ) :
-      spell_t( "water_jet", p, p -> find_spell( 135029 ) )
+      spell_t( "water_jet", p, p -> find_spell( 135029 ) ),
+      queued( false ), autocast( true )
     {
       parse_options( NULL, options_str );
-      channeled           = true;
+      channeled = tick_may_crit = true;
     }
 
     water_elemental_pet_td_t* td( player_t* t = 0 ) const
@@ -472,6 +476,15 @@ struct water_elemental_pet_t : public pet_t
 
     const water_elemental_pet_t* p() const
     { return static_cast<water_elemental_pet_t*>( player ); }
+
+    void execute()
+    {
+      spell_t::execute();
+
+      // If this is a queued execute, disable queued status
+      if ( ! autocast && queued )
+        queued = false;
+    }
 
     virtual void impact( action_state_t* s )
     {
@@ -486,7 +499,21 @@ struct water_elemental_pet_t : public pet_t
       td( p() -> target ) -> water_jet -> expire();
     }
 
+    bool ready()
+    {
+      // Not ready, until the owner gives permission to cast
+      if ( ! autocast && ! queued )
+        return false;
 
+      return spell_t::ready();
+    }
+
+    void reset()
+    {
+      spell_t::reset();
+
+      queued = false;
+    }
   };
 
   water_elemental_pet_td_t* td( player_t* t ) const
@@ -509,25 +536,6 @@ struct water_elemental_pet_t : public pet_t
       parse_options( NULL, options_str );
       may_crit = true;
     }
-
-    water_elemental_pet_td_t* td( player_t* t = 0 ) const
-    { return p() -> get_target_data( t ? t : target ); }
-
-    water_elemental_pet_t* p()
-    { return static_cast<water_elemental_pet_t*>( player ); }
-
-    const water_elemental_pet_t* p() const
-    { return static_cast<water_elemental_pet_t*>( player ); }
-
-    virtual bool ready()
-    {
-      if ( td( p() -> target ) -> water_jet -> check() )
-        return false;
-
-      return spell_t::ready();
-
-    }
-
   };
 
   water_elemental_pet_t( sim_t* sim, mage_t* owner ) :
@@ -535,7 +543,7 @@ struct water_elemental_pet_t : public pet_t
   {
     owner_coeff.sp_from_sp = 0.75;
 
-    action_list_str  = "waterbolt";
+    action_list_str  = "water_jet/waterbolt";
   }
 
   mage_t* o()
@@ -4276,6 +4284,61 @@ struct choose_rotation_t : public action_t
     return true;
   }
 };
+
+// Proxy cast Water Jet ====================================================
+
+struct water_jet_t : public action_t
+{
+  pets::water_elemental_pet_t::water_jet_t* action;
+
+  water_jet_t( mage_t* p, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "water_jet", p ), action( 0 )
+  {
+    parse_options( 0, options_str );
+
+    may_miss = may_crit = callbacks = false;
+    quiet = dual = true;
+    trigger_gcd = timespan_t::zero();
+  }
+
+  void reset()
+  {
+    action_t::reset();
+
+    if ( ! action )
+    {
+      mage_t* m = debug_cast<mage_t*>( player );
+      action = debug_cast<pets::water_elemental_pet_t::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
+      assert( action );
+      action -> autocast = false;
+    }
+  }
+
+  // Execute simply enables water jet, on next available cast on the Water
+  // Elemental
+  void execute()
+  {
+    action -> queued = true;
+  }
+
+  bool ready()
+  {
+    // Ensure that the Water Elemental's water_jet is ready. Note that this
+    // skips the water_jet_t::ready() call, and simply checks the "base" ready
+    // properties of the spell (most importantly, the cooldown). If normal
+    // ready() was called, this would always return false, as queued = false,
+    // before this action executes.
+    if ( ! action -> spell_t::ready() )
+      return false;
+
+    // Don't re-execute if water jet is already queued
+    if ( action -> queued == true )
+      return false;
+
+    return action_t::ready();
+  }
+};
+
 /*
 // Alter Time Spell =========================================================
 
@@ -4469,6 +4532,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "water_elemental"   ) return new  summon_water_elemental_t( this, options_str );
   if ( name == "prismatic_crystal" ) return new prismatic_crystal_t( this, options_str );
   if ( name == "choose_target"     ) return new choose_target_t( this, options_str );
+  if ( name == "water_jet"         ) return new water_jet_t( this, options_str );
   //if ( name == "alter_time"        ) return new              alter_time_t( this, options_str );
 
   return player_t::create_action( name, options_str );
