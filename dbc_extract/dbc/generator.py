@@ -3376,7 +3376,9 @@ class SetBonusListGenerator(DataGenerator):
     # spells
     tier_spell_map = {
             # Ret T10 bonus is re-used in T14
-            2980: 14
+            2980: 14,
+            # Guardian T16 2pc set bonus is also used in T14
+            3381: 14,
     }
 
     # Older set bonuses (T16 and before) need to be mapped to "roles" in
@@ -3408,7 +3410,49 @@ class SetBonusListGenerator(DataGenerator):
 
         self._regex = re.compile(r'^Item\s+-\s+(.+)\s+T([0-9]+)\s+([A-z\s]*)\s*([0-9]+)P\s+Bonus')
 
+        # Make a set bonus to spec map, so we only need one "blizzard formatted"
+        # spell per set bonus, to determine all relevant information for that
+        # tier/class/spec combo
+        self.set_bonus_to_spec_map = {
+        }
+
         DataGenerator.__init__(self, options)
+
+    def initialize_set_bonus_map(self):
+        for id, set_spell_data in self._itemsetspell_db.iteritems():
+            if set_spell_data.id_item_set in self.set_bonus_to_spec_map:
+                continue
+
+            spell_data = self._spell_db[set_spell_data.id_spell]
+
+            mobj = self._regex.match(spell_data.name)
+            if not mobj:
+                continue
+
+            set_class = self._class_map[mobj.group(1)]
+            set_tier_derived = int(mobj.group(2))
+            set_tier_spec_string = mobj.group(3).strip()
+            set_role = -1
+
+            if id in SetBonusListGenerator.tier_spell_map:
+                set_tier_derived = SetBonusListGenerator.tier_spell_map[id]
+
+            set_spec_arr_derived = []
+
+            if set_spell_data.unk_wod_1 == 0:
+                set_spec_arr_derived, set_role = self.derive_specs(set_class, set_tier_spec_string)
+
+            item_set = self._itemset_db[set_spell_data.id_item_set]
+            if not item_set.id:
+                continue
+
+            self.set_bonus_to_spec_map[item_set.id] = {
+                'derived_class': set_class,
+                'derived_tier' : set_tier_derived,
+                'derived_specs': set_spec_arr_derived,
+                'derived_role' : set_role
+            }
+
 
     def initialize(self):
         DataGenerator.initialize(self)
@@ -3422,6 +3466,8 @@ class SetBonusListGenerator(DataGenerator):
                 self.spec_type_map[spec_data.class_id][spec_data.spec_type] = []
 
             self.spec_type_map[spec_data.class_id][spec_data.spec_type].append(spec_id)
+
+        self.initialize_set_bonus_map()
 
         return True
 
@@ -3467,28 +3513,22 @@ class SetBonusListGenerator(DataGenerator):
         for id, set_spell_data in self._itemsetspell_db.iteritems():
             spell_data = self._spell_db[set_spell_data.id_spell]
 
-            mobj = self._regex.match(spell_data.name)
-            if not mobj:
+            #mobj = self._regex.match(spell_data.name)
+            #if not mobj:
+            #    continue
+
+            if set_spell_data.id_item_set not in self.set_bonus_to_spec_map:
                 continue
 
-            set_spell_id = set_spell_data.id_spell
-            set_class = self._class_map[mobj.group(1)]
-            set_tier_derived = int(mobj.group(2))
-            set_tier_spec_string = mobj.group(3).strip()
-            set_tier_bonus_derived = int(mobj.group(4))
-            set_spec = 0
-            set_role = -1
+            bonus_data = self.set_bonus_to_spec_map[set_spell_data.id_item_set]
 
-            if id in SetBonusListGenerator.tier_spell_map:
-                set_tier_derived = SetBonusListGenerator.tier_spell_map[id]
+            set_spec_arr_derived = bonus_data.get('derived_specs', [ 0, ])
+            set_role = bonus_data.get('derived_role', -1)
+            set_spec = -1
 
-            set_spec_arr_derived = []
-
-            if set_spell_data.unk_wod_1 == 0:
-                set_spec_arr_derived, set_role = self.derive_specs(set_class, set_tier_spec_string)
             # We have a spec. Figure out class from it too and stop guessing by
             # name.
-            else:
+            if set_spell_data.unk_wod_1 > 0:
                 set_spec = set_spell_data.unk_wod_1
                 for spec_id, spec_data in self._chrspecialization_db.iteritems():
                     if spec_id == set_spec:
@@ -3498,10 +3538,10 @@ class SetBonusListGenerator(DataGenerator):
                 set_spec_arr_derived.append(0)
 
             data.append({
-                'derived_class': set_class,
-                'derived_tier' : set_tier_derived,
-                'derived_spell': set_spell_id,
-                'derived_bonus': set_tier_bonus_derived,
+                'derived_class': bonus_data['derived_class'],
+                'derived_tier' : bonus_data['derived_tier'],
+                'derived_spell': set_spell_data.id_spell,
+                'derived_bonus': set_spell_data.n_req_items,
                 'derived_specs': set_spec_arr_derived,
                 'spec'         : set_spec,
                 'role'         : set_role,
@@ -3530,18 +3570,19 @@ class SetBonusListGenerator(DataGenerator):
 
             found = False
             for entry in data:
-                if entry['derived_class'] == set_class and \
+                if entry['derived_spell'] == id:
+                    found = True
+                    break
+                elif entry['derived_class'] == set_class and \
                    entry['derived_tier'] == set_tier_derived and \
                    entry['derived_bonus'] == set_tier_bonus_derived:
-                    found = True
 
                     # Do the spec check spearately. It will need to flip the found to
                     # False if the specs dont match reasonably.
-                    if found:
-                        if entry['spec'] > 0 and set_spec_arr_derived[0] != entry['spec']:
-                            found = False
-                        elif entry['spec'] == 0 and set_spec_arr_derived != entry['derived_specs']:
-                            found = False
+                    if entry['spec'] > 0 and entry['spec'] in set_spec_arr_derived:
+                        found = True
+                    elif entry['spec'] == -1 and set_spec_arr_derived == entry['derived_specs']:
+                        found = True
 
                     if found:
                         break
@@ -3557,7 +3598,7 @@ class SetBonusListGenerator(DataGenerator):
                 'derived_specs': set_spec_arr_derived,
                 'spec'         : 0,
                 'role'         : set_role,
-                'set_id'       : 0,
+                'set_id'       : -1,
                 'set_bonus_id' : 0 })
 
 
@@ -3579,7 +3620,7 @@ class SetBonusListGenerator(DataGenerator):
                 'derived_bonus' : set_spell_data.n_req_items,
                 'derived_specs' : [ 0 ],
                 'spec'          : set_spell_data.unk_wod_1,
-                'role'          : SetBonusListGenerator.role_map.get(spec_id, spec_data.spec_type),
+                'role'          : SetBonusListGenerator.role_map.get(set_spell_data.unk_wod_1, spec_data.spec_type),
                 'set_id'        : itemset.id,
                 'set_bonus_id'  : id
             }
@@ -3606,7 +3647,10 @@ class SetBonusListGenerator(DataGenerator):
                             if a['derived_bonus'] != b['derived_bonus']:
                                 return a['derived_bonus'] - b['derived_bonus']
                             else:
-                                return 0
+                                if a['set_bonus_id'] != b['set_bonus_id']:
+                                    return a['set_bonus_id'] - b['set_bonus_id']
+                                else:
+                                    return 0
 
         ids.sort(cmp = sorter)
 
@@ -3674,7 +3718,7 @@ class SetBonusListGenerator(DataGenerator):
 
             spec_str += '0'
 
-            s += '  { %-45s, %5u, %4u, %3u, %3u, %20s, %4u, %4u, %6u, %s },\n' % (
+            s += '  { %-45s, %5d, %4u, %3u, %3u, %20s, %4u, %4u, %6u, %s },\n' % (
                 '"%s"' % item_set_str.replace('"', '\\"'),
                 entry['set_id'],
                 entry['derived_tier'],

@@ -19,7 +19,7 @@ struct talent_data_t;
 struct item_bonus_tree_entry_t
 {
   unsigned id;
-  unsigned tree_id;
+  int      tree_id;
   unsigned index; // Unsure
   unsigned child_id; // Child item_bouns_tree_entry_t
   unsigned bonus_id; // Node ID in ItemBonus.db2
