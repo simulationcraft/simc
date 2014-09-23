@@ -4950,22 +4950,25 @@ void paladin_t::generate_action_prio_list_prot()
 
   // Pre-potting
   std::string potion_type = "";
+  std::string def_pot = "";
+  std::string off_pot = "";
   if ( sim -> allow_potions )
   {
     if ( level >= 90 )
     {
-      if ( primary_role() == ROLE_ATTACK )
-        potion_type += "draenic_strength";
-      else
-        potion_type += "draenic_armor";
+      off_pot = "draenic_strength";
+      def_pot = "draenic_armor";
     }
     else if ( level >= 80 )
     {
-      if ( primary_role() == ROLE_ATTACK )
-        potion_type += "mogu_power";
-      else
-        potion_type += "mountains";
+      off_pot = "mogu_power";
+      def_pot = "mountains";
     }
+
+    if ( primary_role() == ROLE_ATTACK )
+      potion_type = off_pot;
+    else
+      potion_type = def_pot;
 
     if ( potion_type.length() > 0 )
       precombat -> add_action( "potion,name=" + potion_type );
@@ -4988,17 +4991,6 @@ void paladin_t::generate_action_prio_list_prot()
     if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
       def -> add_action ( "/use_item,name=" + items[ i ].name_str );
 
-  // potions
-  if ( sim -> allow_potions && potion_type.length() > 0 )
-  {
-    std::string potion_action = "potion,name=" + potion_type;
-    if ( primary_role() == ROLE_ATTACK )
-      potion_action += ",if=buff.holy_avenger.react|buff.bloodlust.react|target.time_to_die<=60";
-    else
-      potion_action += ",if=buff.shield_of_the_righteous.down&buff.seraphim.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down&buff.ardent_defender.down";
-    def -> add_action( potion_action );
-  }
-
   // profession actions
   std::vector<std::string> profession_actions = get_profession_actions();
   for ( size_t i = 0; i < profession_actions.size(); i++ )
@@ -5009,11 +5001,21 @@ void paladin_t::generate_action_prio_list_prot()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ] );
 
-  def -> add_action( "run_action_list,name=max_dps,if=role.attack|target.current_target!=self",
-                     "This line will shortcut to a high-DPS (but low-survival) action list. Remove the conditionals if you want it to do this all the time." );
+  def -> add_action( "run_action_list,name=max_dps,if=role.attack|0",
+                     "This line will shortcut to a high-DPS (but low-survival) action list. Change 0 to 1 if you want to do this all the time." );
   def -> add_action( "run_action_list,name=max_survival,if=0",
                      "This line will shortcut to a high-survival (but low-DPS) action list. Change 0 to 1 if you want it to do this all the time." );
-
+  // potions
+  if ( sim -> allow_potions && potion_type.length() > 0 )
+  {
+    std::string potion_action = "potion,name=" + potion_type;
+    if ( primary_role() == ROLE_ATTACK )
+      potion_action += ",if=buff.holy_avenger.react|buff.bloodlust.react|target.time_to_die<=60";
+    else
+      potion_action += ",if=buff.shield_of_the_righteous.down&buff.seraphim.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down&buff.ardent_defender.down";
+    def -> add_action( potion_action );
+  }
+  
   def -> add_talent( this, "Holy Avenger", "", "Standard survival priority list starts here\n# This section covers off-GCD spells." );
   def -> add_action( this, "Divine Protection", "if=buff.seraphim.down" );
   def -> add_talent( this, "Seraphim", "if=buff.divine_protection.down&cooldown.divine_protection.remains>0" );
@@ -5046,6 +5048,7 @@ void paladin_t::generate_action_prio_list_prot()
 
   
   // Max-DPS priority queue
+  dps -> add_action( "potion,name=" + off_pot + ",if=buff.holy_avenger.react|buff.bloodlust.react|target.time_to_die<=60" );
   dps -> add_talent( this, "Holy Avenger", "", "Max-DPS priority list starts here.\n# This section covers off-GCD spells." );
   dps -> add_talent( this, "Seraphim" );
   dps -> add_talent( this, "Divine Protection", "if=buff.seraphim.down&cooldown.seraphim.remains>5" );
@@ -5072,6 +5075,7 @@ void paladin_t::generate_action_prio_list_prot()
 
 
   // Max Survival priority queue
+  surv -> add_action( "potion,name=" + def_pot + ",if=buff.shield_of_the_righteous.down&buff.seraphim.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down&buff.ardent_defender.down" );
   surv -> add_talent( this, "Holy Avenger", "", "Max survival priority list starts here\n# This section covers off-GCD spells." );
   surv -> add_action( this, "Divine Protection", "if=buff.seraphim.down" );
   surv -> add_talent( this, "Seraphim", "if=buff.divine_protection.down&cooldown.divine_protection.remains>0" );
