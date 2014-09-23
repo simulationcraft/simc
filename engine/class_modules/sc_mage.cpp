@@ -455,16 +455,6 @@ struct water_elemental_pet_t : public pet_t
 
   };
 
-  struct water_jet_tick_t : public spell_t
-  {
-    water_jet_tick_t( water_elemental_pet_t* p ) :
-      spell_t( "water_jet_tick", p, p -> find_spell( 135029 ) )
-    {
-      background   = true;
-      dot_duration = timespan_t::zero();
-      spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
-    }
-  };
   struct water_jet_t : public spell_t
   {
     water_jet_t( water_elemental_pet_t* p, const std::string& options_str ) :
@@ -472,10 +462,6 @@ struct water_elemental_pet_t : public pet_t
     {
       parse_options( NULL, options_str );
       channeled           = true;
-      dynamic_tick_action = true;
-      dot_duration        = timespan_t::from_seconds( 4.0 );
-      base_tick_time      = timespan_t::from_seconds( 0.8 );
-      tick_action         = new water_jet_tick_t( p );
     }
 
     water_elemental_pet_td_t* td( player_t* t = 0 ) const
@@ -486,13 +472,6 @@ struct water_elemental_pet_t : public pet_t
 
     const water_elemental_pet_t* p() const
     { return static_cast<water_elemental_pet_t*>( player ); }
-
-    virtual timespan_t travel_time() const
-    {
-      timespan_t t = spell_t::travel_time();
-      t = timespan_t::from_seconds( 1.0 );
-      return t;
-    }
 
     virtual void impact( action_state_t* s )
     {
