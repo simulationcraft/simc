@@ -3005,7 +3005,7 @@ struct surging_mist_t: public monk_heal_t
       player -> resource_gain( RESOURCE_CHI, p() -> passives.surging_mist -> effectN( 2 ).base_value(), p() -> gain.surging_mist, this );
   }
 
-  virtual void impact(action_state_t* s)
+  virtual void impact(action_state_t* /*s*/)
   {
     //if (result_is_multistrike(s->result) && p() -> sets.has_set_bonus( MONK_MISTWEAVER, T17, B4 ) )
 

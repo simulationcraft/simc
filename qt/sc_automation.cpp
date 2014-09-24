@@ -1139,7 +1139,7 @@ void SC_ImportTab::compTypeChanged( const int comp )
   }
 }
 
-void SC_MainWindow::startAutomationImport( int tab )
+void SC_MainWindow::startAutomationImport( int /*tab*/ )
 {
   QString profile;
 
