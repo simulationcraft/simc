@@ -85,7 +85,7 @@ hands=handwraps_of_the_somber_gaze,id=115555,bonus_id=567
 waist=belt_of_bloody_guts,id=113636,bonus_id=567
 legs=legwraps_of_the_somber_gaze,id=115557,bonus_id=567
 feet=sandals_of_mycoid_musing,id=113664,bonus_id=567
-finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,bonus_id=567,enchant=gift_of_versatility
+finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,enchant=gift_of_versatility
 finger2=stonefist_band,id=113938,bonus_id=567,enchant=gift_of_versatility
 trinket1=blast_furnace_door,id=113893,bonus_id=567
 trinket2=pillar_of_the_earth,id=113650,bonus_id=567
@@ -93,14 +93,14 @@ main_hand=the_bladefist,id=113591,bonus_id=567,enchant_id=5352
 off_hand=the_bladefist,id=113591,bonus_id=567,enchant_id=5352
 
 # Gear Summary
-# gear_agility=2982
-# gear_stamina=4872
+# gear_agility=2918
+# gear_stamina=4776
 # gear_crit_rating=1159
 # gear_haste_rating=219
 # gear_mastery_rating=580
 # gear_armor=1135
-# gear_bonus_armor=995
+# gear_bonus_armor=950
 # gear_multistrike_rating=332
-# gear_versatility_rating=1550
+# gear_versatility_rating=1512
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

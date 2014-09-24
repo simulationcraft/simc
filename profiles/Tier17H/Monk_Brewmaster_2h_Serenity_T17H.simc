@@ -75,31 +75,31 @@ actions.aoe+=/purifying_brew,if=!talent.chi_explosion.enabled&talent.rushing_jad
 actions.aoe+=/tiger_palm,if=talent.rushing_jade_wind.enabled&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40
 actions.aoe+=/tiger_palm,if=talent.rushing_jade_wind.enabled&cooldown.keg_smash.remains>=gcd
 
-head=helm_of_the_somber_gaze,id=115556,bonus_id=566
-neck=choker_of_bestial_force,id=113952,bonus_id=566,enchant=gift_of_versatility
+head=acidic_jaws,id=113880,bonus_id=566
+neck=fiery_links_of_courage,id=113923,bonus_id=566,enchant=gift_of_versatility
 shoulders=mantle_of_the_somber_gaze,id=115559,bonus_id=566
 back=gronnstitched_greatcloak,id=113873,bonus_id=566,enchant=gift_of_versatility
 chest=vest_of_the_somber_gaze,id=115558,bonus_id=566
 wrists=bracers_of_shattered_limbs,id=119333,bonus_id=566
 hands=handwraps_of_the_somber_gaze,id=115555,bonus_id=566
 waist=belt_of_bloody_guts,id=113636,bonus_id=566
-legs=nether_blast_leggings,id=113856,bonus_id=566
-feet=ironflecked_sandals,id=119340,bonus_id=566
+legs=legwraps_of_the_somber_gaze,id=115557,bonus_id=566
+feet=sandals_of_mycoid_musing,id=113664,bonus_id=566
 finger1=spellbound_solium_band_of_sorcerous_invincibility,id=118303,enchant=gift_of_versatility
 finger2=stonefist_band,id=113938,bonus_id=566,enchant=gift_of_versatility
-trinket1=pillar_of_the_earth,id=113650,bonus_id=566
-trinket2=blast_furnace_door,id=113893,bonus_id=566
+trinket1=blast_furnace_door,id=113893,bonus_id=566
+trinket2=pillar_of_the_earth,id=113650,bonus_id=566
 main_hand=headlopper_skullscythe,id=119448,bonus_id=566,enchant_id=5352
 
 # Gear Summary
-# gear_agility=2586
-# gear_stamina=4226
-# gear_crit_rating=799
-# gear_haste_rating=672
-# gear_mastery_rating=768
-# gear_armor=1045
-# gear_bonus_armor=835
-# gear_multistrike_rating=310
-# gear_versatility_rating=837
+# gear_agility=2592
+# gear_stamina=4234
+# gear_crit_rating=1029
+# gear_haste_rating=190
+# gear_mastery_rating=693
+# gear_armor=1046
+# gear_bonus_armor=821
+# gear_multistrike_rating=289
+# gear_versatility_rating=1212
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

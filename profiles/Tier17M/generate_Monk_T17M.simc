@@ -80,7 +80,7 @@ hands=handwraps_of_the_somber_gaze,id=115555,bonus_id=567
 waist=belt_of_bloody_guts,id=113636,bonus_id=567
 legs=legwraps_of_the_somber_gaze,id=115557,bonus_id=567
 feet=sandals_of_mycoid_musing,id=113664,bonus_id=567
-finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,bonus_id=567,enchant=gift_of_versatility
+finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,enchant=gift_of_versatility
 finger2=stonefist_band,id=113938,bonus_id=567,enchant=gift_of_versatility
 trinket1=blast_furnace_door,id=113893,bonus_id=567
 trinket2=pillar_of_the_earth,id=113650,bonus_id=567
@@ -107,7 +107,7 @@ hands=handwraps_of_the_somber_gaze,id=115555,bonus_id=567
 waist=belt_of_bloody_guts,id=113636,bonus_id=567
 legs=legwraps_of_the_somber_gaze,id=115557,bonus_id=567
 feet=sandals_of_mycoid_musing,id=113664,bonus_id=567
-finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,bonus_id=567,enchant=gift_of_versatility
+finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,enchant=gift_of_versatility
 finger2=stonefist_band,id=113938,bonus_id=567,enchant=gift_of_versatility
 trinket1=blast_furnace_door,id=113893,bonus_id=567
 trinket2=pillar_of_the_earth,id=113650,bonus_id=567
@@ -134,7 +134,7 @@ hands=handwraps_of_the_somber_gaze,id=115555,bonus_id=567
 waist=belt_of_bloody_guts,id=113636,bonus_id=567
 legs=legwraps_of_the_somber_gaze,id=115557,bonus_id=567
 feet=sandals_of_mycoid_musing,id=113664,bonus_id=567
-finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,bonus_id=567,enchant=gift_of_versatility
+finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,enchant=gift_of_versatility
 finger2=stonefist_band,id=113938,bonus_id=567,enchant=gift_of_versatility
 trinket1=blast_furnace_door,id=113893,bonus_id=567
 trinket2=pillar_of_the_earth,id=113650,bonus_id=567
@@ -160,7 +160,7 @@ hands=handwraps_of_the_somber_gaze,id=115555,bonus_id=567
 waist=belt_of_bloody_guts,id=113636,bonus_id=567
 legs=legwraps_of_the_somber_gaze,id=115557,bonus_id=567
 feet=sandals_of_mycoid_musing,id=113664,bonus_id=567
-finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,bonus_id=567,enchant=gift_of_versatility
+finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,enchant=gift_of_versatility
 finger2=stonefist_band,id=113938,bonus_id=567,enchant=gift_of_versatility
 trinket1=blast_furnace_door,id=113893,bonus_id=567
 trinket2=pillar_of_the_earth,id=113650,bonus_id=567
