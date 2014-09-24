@@ -42,29 +42,29 @@ actions+=/prayer_of_mending
 actions+=/heal
 
 head=soul_priests_hood,id=115563
-neck=choker_of_bloody_flame,id=120077,enchant=gift_of_critical_strike
-shoulders=soul_priests_shoulderguards,id=115561
-back=runescribed_gronncloak,id=120078,enchant=gift_of_critical_strike
-chest=eyecatching_gilded_robe,id=113898
-wrists=bracers_of_enkindled_power,id=113956
-hands=soul_priests_gloves,id=115562
-waist=deckhands_rope_belt,id=113967
-legs=leggings_of_the_molten_torrent,id=113914
-feet=inferno_breath_sandals,id=113942
-finger1=epicenter_loop,id=113947,enchant=gift_of_critical_strike
-finger2=signet_of_crystalline_barrage,id=113651,enchant=gift_of_critical_strike
-trinket1=darmacs_unstable_talisman,id=113948
-trinket2=goren_soul_repository,id=119194
-main_hand=franzoks_headsmasher,id=113904,enchant=mark_of_thunderlord
-off_hand=enginestokers_lantern,id=113960
+neck=choker_of_bloody_flame,id=120077,bonus_id=567,enchant=gift_of_critical_strike
+shoulders=soul_priests_shoulderguards,id=115561,bonus_id=567
+back=runescribed_gronncloak,id=120078,bonus_id=567,enchant=gift_of_critical_strike
+chest=eyecatching_gilded_robe,id=113898,bonus_id=567
+wrists=bracers_of_enkindled_power,id=113956,bonus_id=567
+hands=soul_priests_gloves,id=115562,bonus_id=567
+waist=deckhands_rope_belt,id=113967,bonus_id=567
+legs=leggings_of_the_molten_torrent,id=113914,bonus_id=567
+feet=inferno_breath_sandals,id=113942,bonus_id=567
+finger1=epicenter_loop,id=113947,bonus_id=567,enchant=gift_of_critical_strike
+finger2=signet_of_crystalline_barrage,id=113651,bonus_id=567,enchant=gift_of_critical_strike
+trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567
+trinket2=goren_soul_repository,id=119194,bonus_id=567
+main_hand=franzoks_headsmasher,id=113904,bonus_id=567,enchant=mark_of_thunderlord
+off_hand=enginestokers_lantern,id=113960,bonus_id=567
 
 # Gear Summary
-# gear_stamina=3386
-# gear_intellect=2696
-# gear_spell_power=1307
-# gear_crit_rating=1175
-# gear_haste_rating=881
-# gear_armor=700
-# gear_multistrike_rating=832
-# gear_versatility_rating=327
+# gear_stamina=4364
+# gear_intellect=3491
+# gear_spell_power=1729
+# gear_crit_rating=1410
+# gear_haste_rating=1120
+# gear_armor=848
+# gear_multistrike_rating=1098
+# gear_versatility_rating=432
 # set_bonus=tier17_2pc=1
