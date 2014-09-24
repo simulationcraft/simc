@@ -5905,11 +5905,17 @@ void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain )
   if ( chain && ! icicle_event )
   {
     d = get_icicle_object();
+    if ( d.first == 0 )
+      return;
+
     icicle_event = new ( *sim ) events::icicle_event_t( *this, d, trigger_state -> target, true );
   }
   else if ( ! chain )
   {
     d = get_icicle_object();
+    if ( d.first == 0 )
+      return;
+
     icicle -> base_dd_min = icicle -> base_dd_max = d.first;
 
     actions::icicle_state_t* new_state = debug_cast<actions::icicle_state_t*>( icicle -> get_state() );
