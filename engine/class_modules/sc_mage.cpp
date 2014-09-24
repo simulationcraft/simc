@@ -1476,7 +1476,7 @@ struct icicle_t : public mage_spell_t
 
   int n_targets() const
   {
-    if ( pre_execute_state && pre_execute_state -> target == p() -> pets.prismatic_crystal )
+    if ( target == p() -> pets.prismatic_crystal )
       return 0;
 
     return aoe;
@@ -3072,7 +3072,7 @@ struct ice_lance_t : public mage_spell_t
 
   int n_targets() const
   {
-    if ( pre_execute_state && pre_execute_state -> target == p() -> pets.prismatic_crystal )
+    if ( target == p() -> pets.prismatic_crystal )
       return 0;
 
     return aoe;
