@@ -62,7 +62,7 @@ off_hand=kromogs_protecting_palm,id=113926,bonus_id=566
 save=Paladin_Protection_T17H.simc
 
 talent_format=armory
-paladin="Paladin_Holy_T17H”
+paladin="Paladin_Holy_T17H"
 level=100
 race=blood_elf
 role=heal

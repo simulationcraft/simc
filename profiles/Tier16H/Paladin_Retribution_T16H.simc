@@ -46,7 +46,7 @@ actions+=/seraphim
 actions+=/judgment,if=talent.empowered_seals.enabled&buff.maraads_truth.down
 actions+=/call_action_list,name=single,if=active_enemies<=2
 actions+=/call_action_list,name=cleave,if=active_enemies>=3
-actions+=/call_action_list,name=aoe,if=active_enemies>=6
+actions+=/call_action_list,name=aoe,if=active_enemies>=5
 
 actions.single=divine_storm,if=buff.divine_crusader.react&holy_power=5&talent.final_verdict.enabled&buff.final_verdict.up
 actions.single+=/templars_verdict,if=holy_power=5|buff.holy_avenger.up&holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)
@@ -55,13 +55,13 @@ actions.single+=/final_verdict,if=holy_power=5|buff.holy_avenger.up&holy_power>=
 actions.single+=/final_verdict,if=buff.divine_purpose.react&buff.divine_purpose.remains<4
 actions.single+=/divine_storm,if=buff.divine_crusader.react&holy_power=5&(!talent.final_verdict.enabled|buff.final_verdict.up)
 actions.single+=/judgment,if=talent.empowered_seals.enabled&buff.maraads_truth.remains<=3
-actions.single+=/exorcism,if=buff.blazing_contempt.up&holy_power<=2
-actions.single+=/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2&buff.blazing_contempt.up
 actions.single+=/hammer_of_wrath
 actions.single+=/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2
+actions.single+=/exorcism,if=buff.blazing_contempt.up&holy_power<=2
+actions.single+=/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2&buff.blazing_contempt.up
 actions.single+=/divine_storm,if=buff.divine_crusader.react&buff.avenging_wrath.up&talent.final_verdict.enabled&buff.final_verdict.up
 actions.single+=/templars_verdict,if=buff.avenging_wrath.up&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)
-actions.single+=/final_verdict,if=buff.avenging_wrath.up
+actions.single+=/final_verdict
 actions.single+=/divine_storm,if=buff.divine_crusader.react&buff.avenging_wrath.up&(!talent.final_verdict.enabled|buff.final_verdict.up)
 actions.single+=/crusader_strike
 actions.single+=/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2
@@ -69,21 +69,19 @@ actions.single+=/judgment
 actions.single+=/wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.2
 actions.single+=/divine_storm,if=buff.divine_crusader.react&talent.final_verdict.enabled&buff.final_verdict.up
 actions.single+=/templars_verdict,if=buff.divine_purpose.react
-actions.single+=/final_verdict,if=buff.divine_purpose.react
 actions.single+=/divine_storm,if=buff.divine_crusader.react&(!talent.final_verdict.enabled|buff.final_verdict.up)
 actions.single+=/exorcism
 actions.single+=/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2
 actions.single+=/templars_verdict,if=(!talent.seraphim.enabled|cooldown.seraphim.remains>3)
-actions.single+=/final_verdict
 actions.single+=/holy_prism
 
 actions.cleave=final_verdict,if=buff.final_verdict.down
 actions.cleave+=/divine_storm,if=buff.divine_crusader.react&talent.final_verdict.enabled&buff.final_verdict.up
 actions.cleave+=/divine_storm,if=talent.final_verdict.enabled&buff.final_verdict.up
+actions.cleave+=/judgment,if=talent.empowered_seals.enabled&buff.maraads_truth.remains<=3
 actions.cleave+=/exorcism,if=buff.blazing_contempt.up&holy_power<=2
 actions.cleave+=/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2&buff.blazing_contempt.up
 actions.cleave+=/divine_storm,if=active_enemies>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)
-actions.cleave+=/judgment,if=talent.empowered_seals.enabled&buff.maraads_truth.remains<=3
 actions.cleave+=/hammer_of_wrath
 actions.cleave+=/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2
 actions.cleave+=/crusader_strike
@@ -95,9 +93,8 @@ actions.cleave+=/exorcism
 actions.cleave+=/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2
 actions.cleave+=/holy_prism
 
-actions.aoe=final_verdict,if=talent.final_verdict.enabled&buff.final_verdict.down
+actions.aoe=final_verdict,if=buff.final_verdict.down&buff.divine_crusader.up
 actions.aoe+=/divine_storm,if=buff.divine_crusader.react&talent.final_verdict.enabled&buff.final_verdict.up
-actions.aoe+=/divine_storm,if=talent.final_verdict.enabled&buff.final_verdict.up
 actions.aoe+=/divine_storm,if=(!talent.seraphim.enabled|cooldown.seraphim.remains>3)
 actions.aoe+=/judgment,if=talent.empowered_seals.enabled&buff.maraads_truth.remains<=3
 actions.aoe+=/exorcism,if=buff.blazing_contempt.up&holy_power<=2
