@@ -4689,19 +4689,10 @@ void paladin_t::init_base_stats()
   // Holy Insight increases max mana for Holy
   resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + passives.holy_insight -> effectN( 1 ).percent();
   
-  switch ( specialization() )
-  {
-    case PALADIN_HOLY:
-      role = ROLE_HEAL;
-      base.distance = 30;
-      break;
-    case PALADIN_PROTECTION:
-      if ( role == ROLE_HYBRID )
-        role = ROLE_TANK;
-      break;
-    default:
-      break;
-  }
+  // move holy paladins to range
+  if ( specialization() == PALADIN_HOLY)
+    base.distance = 30;
+
 }
 
 // paladin_t::reset =========================================================
@@ -5591,13 +5582,16 @@ void paladin_t::init_spells()
 
 role_e paladin_t::primary_role() const
 {
-  if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_ATTACK || specialization() == PALADIN_RETRIBUTION )
+  if ( player_t::primary_role() != ROLE_NONE )
+    return player_t::primary_role();
+  
+  if ( specialization() == PALADIN_RETRIBUTION )
     return ROLE_ATTACK;
 
-  if ( player_t::primary_role() == ROLE_TANK || specialization() == PALADIN_PROTECTION  )
+  if ( specialization() == PALADIN_PROTECTION  )
     return ROLE_TANK;
 
-  if ( player_t::primary_role() == ROLE_HEAL || specialization() == PALADIN_HOLY )
+  if ( specialization() == PALADIN_HOLY )
     return ROLE_HEAL; 
 
   return ROLE_HYBRID;

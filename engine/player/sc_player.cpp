@@ -504,7 +504,7 @@ player_t::player_t( sim_t*             s,
 
   // (static) attributes
   race( r ),
-  role( ROLE_HYBRID ),
+  role( ROLE_NONE ),
   level( default_level ),
   party( 0 ),
   ready_type( READY_POLL ),
@@ -4928,7 +4928,7 @@ void player_t::assess_heal( school_e, dmg_e, action_state_t* s )
   s -> result_amount = resource_gain( RESOURCE_HEALTH, s -> result_total, 0, s -> action );
 
   // if the target is a tank record this event on damage timeline
-  if ( ! is_pet() && role == ROLE_TANK )
+  if ( ! is_pet() && primary_role() == ROLE_TANK )
   {
     // health_changes and timeline_healing_taken record everything, accounting for overheal and so on
     collected_data.timeline_healing_taken.add( sim -> current_time, - ( s -> result_amount ) );
