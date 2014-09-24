@@ -3883,7 +3883,7 @@ struct summon_water_elemental_t : public mage_spell_t
   }
 };
 
-// Prismatic Crystal =========================================================
+// Prismatic Crystal Spell =========================================================
 
 struct prismatic_crystal_t : public mage_spell_t
 {
@@ -3892,6 +3892,8 @@ struct prismatic_crystal_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     may_miss = may_crit = harmful = callbacks = false;
+    trigger_gcd = timespan_t::zero();
+    use_off_gcd = true;
   }
 
   void execute()
