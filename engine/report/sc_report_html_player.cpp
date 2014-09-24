@@ -1332,7 +1332,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       100 * a -> composite_damage_versatility(),
       a -> initial.stats.versatility_rating );
     j++;
-    if ( a -> role == ROLE_TANK )
+    if ( a -> primary_role() == ROLE_TANK )
     {
       os.printf(
         "<tr%s>\n"

@@ -10003,11 +10003,20 @@ struct manager_t::update_event_t final : public event_t
 manager_t::manager_t( player_t& p ) :
     _player( p ),
     _update_event( nullptr ),
+    _init( false ),
     _started( false ),
     _diminishing_return_list( new diminishing_returns_list_t() ),
     _damage_list( new damage_event_list_t() )
 {
 
+}
+
+/* Initialize Resolve
+*/
+void manager_t::init()
+{
+  // this is just for testing if the spec has the effect
+  _init = true;
 }
 
 /* Start Resolve

@@ -1735,14 +1735,14 @@ void action_t::init()
   if ( ( spell_power_mod.direct > 0 || spell_power_mod.tick > 0 ) )
   {
     snapshot_flags |= STATE_SP;
-    if ( player -> role == ROLE_TANK )
+    if ( player -> resolve_manager.is_init() )
       snapshot_flags |= STATE_RESOLVE;
   }
 
   if ( ( weapon_power_mod > 0 || attack_power_mod.direct > 0 || attack_power_mod.tick > 0 ) )
   {
     snapshot_flags |= STATE_AP;
-    if ( player -> role == ROLE_TANK )
+    if ( player -> resolve_manager.is_init() )
       snapshot_flags |= STATE_RESOLVE;
   }
 

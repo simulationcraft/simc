@@ -3973,6 +3973,10 @@ void warrior_t::init_base_stats()
   base.dodge += spec.bastion_of_defense -> effectN( 3 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.5 );
+
+  // initialize resolve for prot
+  if ( specialization() == WARRIOR_PROTECTION )
+    resolve_manager.init();
 }
 
 //Pre-combat Action Priority List============================================

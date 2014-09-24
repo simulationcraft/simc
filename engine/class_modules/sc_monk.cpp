@@ -3474,6 +3474,10 @@ void monk_t::init_base_stats()
   // Mistweaver
   if ( spec.mana_meditation -> ok() )
     base.mana_regen_from_spirit_multiplier = spec.mana_meditation -> effectN( 1 ).percent();
+
+  // initialize resolve for Berwmaster
+  if ( specialization() == MONK_BREWMASTER )
+    resolve_manager.init();
 }
 
 // monk_t::init_scaling =====================================================

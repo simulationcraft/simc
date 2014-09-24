@@ -4224,11 +4224,14 @@ namespace resolve {
 struct manager_t
 {
   manager_t( player_t& );
+  void init();
   void start();
   void stop();
   void update();
   bool is_started() const
   { return _started; }
+  bool is_init() const
+  { return _init; }
   void add_diminishing_return_entry( const player_t* actor, double raw_dps, timespan_t current_time );
   int get_diminsihing_return_rank( int actor_spawn_index );
   void add_damage_event( double amount, timespan_t current_time );
@@ -4239,6 +4242,7 @@ private:
   player_t& _player;
   core_event_t* _update_event;
   bool _started;
+  bool _init;
   std::shared_ptr<diminishing_returns_list_t> _diminishing_return_list;
   std::shared_ptr<damage_event_list_t >_damage_list;
 };

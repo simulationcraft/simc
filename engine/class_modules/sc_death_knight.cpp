@@ -5745,6 +5745,10 @@ void death_knight_t::init_base_stats()
 
   base_gcd = timespan_t::from_seconds( 1.0 );
 
+  // initialize resolve for prot
+  if ( specialization() == DEATH_KNIGHT_BLOOD )
+    resolve_manager.init();
+
   // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats().
   // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
   // Just need to add class- or spec-based modifiers here.

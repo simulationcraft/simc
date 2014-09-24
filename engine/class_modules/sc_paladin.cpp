@@ -4693,6 +4693,10 @@ void paladin_t::init_base_stats()
   if ( specialization() == PALADIN_HOLY)
     base.distance = 30;
 
+  // initialize resolve for prot
+  if ( specialization() == PALADIN_PROTECTION )
+    resolve_manager.init();
+
 }
 
 // paladin_t::reset =========================================================

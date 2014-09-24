@@ -5681,6 +5681,10 @@ void druid_t::init_base_stats()
   base.mana_regen_per_second *= 1.0 + spec.mana_attunement -> effectN( 1 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.5 );
+
+  // initialize resolve for Guardians
+  if ( specialization() == DRUID_GUARDIAN )
+    resolve_manager.init();
 }
 
 // druid_t::init_buffs ======================================================
