@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18922)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18927)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 Resource         : 2.4% Base Mana (3840 @Level 100)
@@ -5927,7 +5927,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
 Effects          :
 #1 (id=233824)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1000 | Scaled Value: 1000
+                   Base Value: 500 | Scaled Value: 500
 Description      : Consuming Shadow Orbs reduces the cooldown of Mind Blast by ${$m1/1000}.1 sec per Shadow Orb consumed.
 
 Name             : Item - Priest T17 Shadow 4P Bonus (id=165629) [Spell Family (6), Passive, Hidden] 
@@ -5972,7 +5972,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
 Effects          :
 #1 (id=236476)   : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 3 | Scaled Value: 3
+                   Base Value: 1 | Scaled Value: 1
 Description      : $@spelldesc165629
 Tooltip          : Haste increased by $s1%.
 

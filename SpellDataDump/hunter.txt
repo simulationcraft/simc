@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18922)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18927)
 Name             : Mend Pet (id=136) [Scaling Spell (3), Spell Family (9)] 
 Class            : Hunter
 Spell Level      : 16
@@ -4229,7 +4229,7 @@ Class            : Hunter
 Duration         : 8 seconds
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5123,12 +5123,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Trigger Spell: 138366
 Description      : Your Arcane Shot, Multi-Shot, and Aimed Shot have a chance to trigger a Lightning Arrow at the target, dealing $138366s2% weapon damage as Nature.  (Approximately ${$procrppm}.2 procs per minute)
 
-Name             : Lightning Blast (id=138374) 
+Name             : Lightning Blast (id=138374) [Scaling Spell (-1)] 
 Class            : Hunter
 Resource         : 1000% Base Mana (0 @Level 100)
 Spell Level      : 30
+Max Scaling Level: 90
 Range            : 40 yards
-Cast Time        : 1.5 seconds
+Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -5139,7 +5140,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=181839)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 2 - 4 (avg=0) | Value Range: 3 | SP Coefficient: 0.80000
+                   Base Value: 0 | Scaled Value: 626.048 - 939.072 (avg=11.68, dl=0.4)
 Description      : Blasts a target for $s1 Nature damage.
 
 Name             : Ancient Zandalari Knowledge (id=138430) [Hidden] 

@@ -1,12 +1,12 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18922)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18927)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
 Resource         : 35 Energy
 Spell Level      : 40
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Item - Rogue T9 4P Bonus (Hemorrhage, Sinister Strike, Backstab, and Mutilate) (67211), Vendetta (79140), Item - Rogue T11 2P Bonus (90460), Item - Rogue T11 4P Bonus (90473), Item - Rogue T14 2P Bonus (123116), Sanguinary Vein (124271), Silent Blades (145193), Sleight of Hand (145211), Quick Blades (165509)
+Affecting spells : Item - Rogue T9 4P Bonus (Hemorrhage, Sinister Strike, Backstab, and Mutilate) (67211), Vendetta (79140), Item - Rogue T11 2P Bonus (90460), Item - Rogue T11 4P Bonus (90473), Item - Rogue T14 2P Bonus (123116), Sanguinary Vein (124271), Silent Blades (145193), Sleight of Hand (145211)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17,7 +17,7 @@ Effects          :
 #1 (id=30)       : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
 #2 (id=31)       : Weapon Damage% (31)
-                   Base Value: 156 | Scaled Value: 1.56 (avg=0) | SP Coefficient: 1.00000
+                   Base Value: 175 | Scaled Value: 1.75 (avg=0) | SP Coefficient: 1.00000
 #3 (id=32)       : Add Combo Points (80)
                    Base Value: 1 | Scaled Value: 1
 Description      : Backstab the target, causing $sw2 Physical damage.  Must not be in front of the target.  Awards $s3 combo $lpoint:points;.
@@ -30,7 +30,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 1 seconds
 Cooldown         : 20 seconds
-Affecting spells : Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Vendetta (79140), Fury of the Destroyer (109949), Sanguinary Vein (124271), Prey on the Weak (131511), Quick Blades (165509), Ruthlessness (174597)
+Affecting spells : Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Vendetta (79140), Fury of the Destroyer (109949), Sanguinary Vein (124271), Prey on the Weak (131511), Ruthlessness (174597)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ..x...x. ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ...x.... ........ ........   ........ ........ ........ ........ 
@@ -71,7 +71,7 @@ Spell Level      : 48
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 18 seconds
-Affecting spells : Stealth (1784), Shadow Dance (51713), Vendetta (79140), Sanguinary Vein (124271), Cloak and Dagger (138106), Silent Blades (145193), Quick Blades (165509)
+Affecting spells : Stealth (1784), Shadow Dance (51713), Vendetta (79140), Sanguinary Vein (124271), Cloak and Dagger (138106), Silent Blades (145193)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -135,7 +135,7 @@ Spell Level      : 28
 Range            : 30 yards
 GCD              : 1 seconds
 Cooldown         : 30 seconds
-Affecting spells : Glyph of Distract (58032), Quick Blades (165509)
+Affecting spells : Glyph of Distract (58032)
 Attributes       : ....x... ........ ..x..... ......x.   .....x.. x.x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -166,7 +166,7 @@ Effects          :
 #2 (id=536)      : Add Combo Points (80)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=101522)   : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1 (avg=0)
+                   Base Value: 160 | Scaled Value: 1.6 (avg=0)
 Description      : An instant strike that causes $sw3 Physical damage.$?s79327[  Awards $s2 combo $lpoint:points;.][]
 
 Name             : Kick (id=1766) [Spell Family (8)] 
@@ -175,7 +175,7 @@ Spell Level      : 18
 Range            : 5 yards
 Duration         : 5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Glyph of Kick (56805), Vendetta (79140), Item - Rogue T13 2P Bonus (Tricks of the Trade) (105849), Item - Shaman T13 Enhancement 2P Bonus (Maelstrom Weapon) (105866), Sanguinary Vein (124271), Quick Blades (165509)
+Affecting spells : Glyph of Kick (56805), Vendetta (79140), Item - Rogue T13 2P Bonus (Tricks of the Trade) (105849), Item - Shaman T13 Enhancement 2P Bonus (Maelstrom Weapon) (105866), Sanguinary Vein (124271)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -199,7 +199,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Glyph of Gouge (56809), Vendetta (79140), Dirty Tricks (108216), Sanguinary Vein (124271), Prey on the Weak (131511), Quick Blades (165509)
+Affecting spells : Glyph of Gouge (56809), Vendetta (79140), Dirty Tricks (108216), Sanguinary Vein (124271), Prey on the Weak (131511)
 Attributes       : ....x... ...x.... x.x.x... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   .x.x.... ..x..... ........ ..x..... 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -272,7 +272,7 @@ Spell Level      : 30
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
-Affecting spells : Shadow Dance (51713), Glyph of Cheap Shot (56801), Vendetta (79140), Sanguinary Vein (124271), Prey on the Weak (131511), Cloak and Dagger (138106), Silent Blades (145193), Quick Blades (165509)
+Affecting spells : Shadow Dance (51713), Glyph of Cheap Shot (56801), Vendetta (79140), Sanguinary Vein (124271), Prey on the Weak (131511), Cloak and Dagger (138106), Silent Blades (145193)
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -331,7 +331,7 @@ Spell Level      : 46
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Item - Rogue T8 4P Bonus (64915), Mastery: Executioner (76808), Vendetta (79140), Sanguinary Vein (79147), Fury of the Destroyer (109949), Sanguinary Vein (124271), Quick Blades (165509), Ruthlessness (174597)
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Item - Rogue T8 4P Bonus (64915), Mastery: Executioner (76808), Vendetta (79140), Sanguinary Vein (79147), Fury of the Destroyer (109949), Sanguinary Vein (124271), Ruthlessness (174597)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ....x... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ....x... ........   ........ ........ ........ ........ 
@@ -368,7 +368,7 @@ Resource         : 20 Energy
 Spell Level      : 44
 GCD              : 1 seconds
 Duration         : 5 seconds
-Affecting spells : Glyph of Feint (56804), Elusiveness (79008), Quick Blades (165509)
+Affecting spells : Glyph of Feint (56804), Elusiveness (79008)
 Attributes       : ....x... ........ x.x..... ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -396,7 +396,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Dirty Tricks (108216), Prey on the Weak (131511), Quick Blades (165509)
+Affecting spells : Dirty Tricks (108216), Prey on the Weak (131511)
 Attributes       : ....x... ........ x...x... ......x.   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   x....... ........ x....... ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -418,7 +418,7 @@ Resource         : 35 Energy
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Glyph of Debilitation (56802), Relentless Strikes (58423), Item - Rogue T8 4P Bonus (64915), Mastery: Executioner (76808), Vendetta (79140), Deadly Scheme (90472), Fury of the Destroyer (109949), Sanguinary Vein (124271), Item - Rogue T15 4P Bonus (138150), Death from Above (163786), Quick Blades (165509), Deceit (166878), Ruthlessness (174597)
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Glyph of Debilitation (56802), Relentless Strikes (58423), Item - Rogue T8 4P Bonus (64915), Mastery: Executioner (76808), Vendetta (79140), Deadly Scheme (90472), Fury of the Destroyer (109949), Sanguinary Vein (124271), Item - Rogue T15 4P Bonus (138150), Death from Above (163786), Deceit (166878), Ruthlessness (174597)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ....x... ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -496,7 +496,7 @@ Class            : Rogue
 Spell Level      : 26
 Duration         : 8 seconds
 Cooldown         : 60 seconds
-Affecting spells : Glyph of Sprint (56811), Vendetta (79140), Sanguinary Vein (124271), Quick Blades (165509)
+Affecting spells : Glyph of Sprint (56811), Vendetta (79140), Sanguinary Vein (124271)
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -601,7 +601,7 @@ Spell Level      : 14
 Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Energetic Recovery (79152), Fury of the Destroyer (109949), Sanguinary Vein (124271), Improved Slice and Dice (157513), Quick Blades (165509), Ruthlessness (174597)
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Energetic Recovery (79152), Fury of the Destroyer (109949), Sanguinary Vein (124271), Improved Slice and Dice (157513), Ruthlessness (174597)
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ......x. ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -688,7 +688,7 @@ Spell Level      : 74
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
-Affecting spells : Glyph of Shiv (56810), Vendetta (79140), Sanguinary Vein (124271), Quick Blades (165509)
+Affecting spells : Glyph of Shiv (56810), Vendetta (79140), Sanguinary Vein (124271)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
@@ -712,7 +712,7 @@ Range            : 10 yards
 GCD              : 1 seconds
 Duration         : 60 seconds
 Proc Chance      : 100%
-Affecting spells : Shadow Dance (51713), Vendetta (79140), Sanguinary Vein (124271), Prey on the Weak (131511), Quick Blades (165509)
+Affecting spells : Shadow Dance (51713), Vendetta (79140), Sanguinary Vein (124271), Prey on the Weak (131511)
 Attributes       : ....x... ........ x.x.xx.. ........   .....x.. x.x..... ..x..... ...x.... 
                  : ........ ........ ........ ........   x....... ........ xx...... ........ 
                  : ........ ........ .......x ........   .....x.. ........ ........ ........ 
@@ -774,7 +774,7 @@ Resource         : 60 Energy
 Spell Level      : 6
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Stealth (1784), Shadow Dance (51713), Glyph of Ambush (56813), Vendetta (79140), Sanguinary Vein (124271), Cloak and Dagger (138106), Silent Blades (145193), Sleight of Hand (145211), Enhanced Vendetta (158108), Quick Blades (165509), Cold Blood (170882)
+Affecting spells : Stealth (1784), Shadow Dance (51713), Glyph of Ambush (56813), Vendetta (79140), Sanguinary Vein (124271), Cloak and Dagger (138106), Silent Blades (145193), Sleight of Hand (145211), Enhanced Vendetta (158108), Cold Blood (170882)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1084,7 +1084,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 24 seconds
-Affecting spells : Glyph of Hemorrhage (56807), Item - Rogue T8 2P Bonus (64914), Item - Rogue T9 4P Bonus (Hemorrhage, Sinister Strike, Backstab, and Mutilate) (67211), Vendetta (79140), Sanguinary Vein (124271), Silent Blades (145193), Quick Blades (165509)
+Affecting spells : Glyph of Hemorrhage (56807), Item - Rogue T8 2P Bonus (64914), Item - Rogue T9 4P Bonus (Hemorrhage, Sinister Strike, Backstab, and Mutilate) (67211), Vendetta (79140), Sanguinary Vein (124271), Silent Blades (145193)
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   .x...... ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1095,7 +1095,7 @@ Effects          :
 #1 (id=8231)     : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=8232)     : Weapon Damage% (31)
-                   Base Value: 78 | Scaled Value: 0.78 (avg=0)
+                   Base Value: 40 | Scaled Value: 0.4 (avg=0)
 #3 (id=8233)     : Add Combo Points (80)
                    Base Value: 1 | Scaled Value: 1
 #4 (id=134070)   : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
@@ -1221,7 +1221,7 @@ Range            : 30 yards
 GCD              : 1 seconds
 Velocity         : 50 yards/sec
 Duration         : 6 seconds
-Affecting spells : Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Fury of the Destroyer (109949), Sanguinary Vein (124271), Quick Blades (165509), Ruthlessness (174597)
+Affecting spells : Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Mastery: Executioner (76808), Vendetta (79140), Fury of the Destroyer (109949), Sanguinary Vein (124271), Ruthlessness (174597)
 Attributes       : ....x... ........ x.....x. ........   ........ .x...... ....x... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -1612,7 +1612,7 @@ Resource         : 35 Energy
 Spell Level      : 66
 GCD              : 1 seconds
 Velocity         : 18 yards/sec
-Affecting spells : Vendetta (79140), Sanguinary Vein (124271), Silent Blades (145193), Quick Blades (165509)
+Affecting spells : Vendetta (79140), Sanguinary Vein (124271), Silent Blades (145193)
 Attributes       : ....x... ........ x....... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -2591,7 +2591,7 @@ Resource         : 30 Energy
 Spell Level      : 16
 Range            : 100 yards
 GCD              : 1 seconds
-Affecting spells : Ruthlessness (14161), Relentless Strikes (58423), Improved Recuperate (61249), Fury of the Destroyer (109949), Quick Blades (165509), Ruthlessness (174597)
+Affecting spells : Ruthlessness (14161), Relentless Strikes (58423), Improved Recuperate (61249), Fury of the Destroyer (109949), Ruthlessness (174597)
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ......x. ...x.... 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -2654,7 +2654,7 @@ Spell Level      : 85
 GCD              : 1 seconds
 Duration         : 5 seconds
 Cooldown         : 180 seconds
-Affecting spells : Glyph of Smoke Bomb (56819), Quick Blades (165509)
+Affecting spells : Glyph of Smoke Bomb (56819)
 Attributes       : ....x... ........ ........ ........   .....x.. ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2912,7 +2912,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=85480)    : Weapon Damage% (31)
-                   Base Value: 75 | Scaled Value: 0.75 (avg=0)
+                   Base Value: 120 | Scaled Value: 1.2 (avg=0)
 #2 (id=85481)    : Add Combo Points (80)
                    Base Value: 1 | Scaled Value: 1
 #3 (id=85482)    : Apply Aura (6) | Dummy (4)
@@ -2987,7 +2987,7 @@ Effects          :
 #1 (id=87938)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=101077)   : Weapon Damage% (31)
-                   Base Value: 225 | Scaled Value: 2.25 (avg=0)
+                   Base Value: 140 | Scaled Value: 1.4 (avg=0)
 Description      : A vicious attack that deals $86392sw2 Physical damage with your off-hand.
 
 Name             : Smoke Bomb (id=88611) [Spell Family (8)] 
@@ -2995,7 +2995,7 @@ Class            : Rogue
 Spell Level      : 85
 Range            : 100 yards
 Duration         : 5 seconds
-Affecting spells : Glyph of Smoke Bomb (56819), Quick Blades (165509)
+Affecting spells : Glyph of Smoke Bomb (56819)
 Attributes       : ........ x....... ........ ..x.....   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ xx...... ......x. 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3245,7 +3245,6 @@ Name             : Burst of Speed (id=108212) [Spell Family (8)]
 Class            : Rogue
 Resource         : 30 Energy
 Duration         : 0.1 seconds
-Affecting spells : Quick Blades (165509)
 Attributes       : ........ x....... ........ ........   ........ .......x ........ ....x... 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3403,7 +3402,7 @@ Resource         : 40 Energy
 Range            : 30 yards
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
-Affecting spells : Vendetta (79140), Sanguinary Vein (124271), Silent Blades (145193), Quick Blades (165509)
+Affecting spells : Vendetta (79140), Sanguinary Vein (124271), Silent Blades (145193)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3616,7 +3615,7 @@ Resource         : 35 Energy
 Spell Level      : 83
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Mastery: Executioner (76808), Vendetta (79140), Sanguinary Vein (124271), Quick Blades (165509)
+Affecting spells : Mastery: Executioner (76808), Vendetta (79140), Sanguinary Vein (124271)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ....x... ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -3659,7 +3658,6 @@ Class            : Rogue
 Spell Level      : 83
 Range            : 100 yards
 Duration         : 12 seconds
-Affecting spells : Quick Blades (165509)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4173,7 +4171,7 @@ Range            : 15 yards
 GCD              : 2 seconds
 Duration         : 1 seconds
 Cooldown         : 20 seconds
-Affecting spells : Mastery: Executioner (76808), Quick Blades (165509)
+Affecting spells : Mastery: Executioner (76808)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -4711,7 +4709,7 @@ Name             : Death from Above (id=163786) [Spell Family (8), Hidden]
 Class            : Rogue
 Range            : 15 yards
 Duration         : 3 seconds
-Affecting spells : Mastery: Executioner (76808), Quick Blades (165509)
+Affecting spells : Mastery: Executioner (76808)
 Attributes       : .......x ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4775,7 +4773,6 @@ Name             : Crimson Tempest (id=168952) [Spell Family (8)]
 Class            : Rogue
 Spell Level      : 83
 Range            : 100 yards
-Affecting spells : Quick Blades (165509)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .x....x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4791,7 +4788,7 @@ Name             : Rupture (id=168963) [Spell Family (8)]
 Class            : Rogue
 Spell Level      : 46
 Range            : 5 yards
-Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Item - Rogue T8 4P Bonus (64915), Mastery: Executioner (76808), Vendetta (79140), Sanguinary Vein (79147), Fury of the Destroyer (109949), Sanguinary Vein (124271), Quick Blades (165509), Ruthlessness (174597)
+Affecting spells : Adrenaline Rush (13750), Ruthlessness (14161), Rogue Tier 6 Trinket (40460), Relentless Strikes (58423), Item - Rogue T8 4P Bonus (64915), Mastery: Executioner (76808), Vendetta (79140), Sanguinary Vein (79147), Fury of the Destroyer (109949), Sanguinary Vein (124271), Ruthlessness (174597)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ .x...x.. 
                  : ...x.... x....... ........ ........   ........ ........ ........ ........ 
@@ -4807,7 +4804,7 @@ Name             : Garrote (id=168971) [Spell Family (8)]
 Class            : Rogue
 Spell Level      : 48
 Range            : 5 yards
-Affecting spells : Stealth (1784), Shadow Dance (51713), Vendetta (79140), Sanguinary Vein (124271), Cloak and Dagger (138106), Silent Blades (145193), Quick Blades (165509)
+Affecting spells : Stealth (1784), Shadow Dance (51713), Vendetta (79140), Sanguinary Vein (124271), Cloak and Dagger (138106), Silent Blades (145193)
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

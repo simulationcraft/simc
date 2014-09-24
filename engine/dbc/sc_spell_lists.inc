@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 18922
+// Class based active abilities, wow build 18927
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -685,7 +685,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warlock
   {
-    // General tree, 33 abilities
+    // General tree, 32 abilities
     {
          710, // Banish
          172, // Corruption
@@ -701,7 +701,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       111896, // Grimoire: Succubus (Summon)
       111895, // Grimoire: Voidwalker (Summon)
         5484, // Howl of Terror
-        1454, // Life Tap
       114790, // Seed of Corruption
          686, // Shadow Bolt
       119678, // Soul Swap (Soulburn)
@@ -722,7 +721,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       104773, // Unending Resolve
            0,
     },
-    // Affliction tree, 11 abilities
+    // Affliction tree, 12 abilities
     {
          980, // Agony
       113860, // Dark Soul: Misery
@@ -730,6 +729,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       103103, // Drain Soul
        48181, // Haunt
          755, // Health Funnel
+        1454, // Life Tap
       114790, // Seed of Corruption
        27243, // Seed of Corruption
        86121, // Soul Swap
@@ -737,7 +737,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        30108, // Unstable Affliction
            0,
     },
-    // Demonology tree, 15 abilities
+    // Demonology tree, 16 abilities
     {
       124916, // Chaos Wave (Metamorphosis)
       113861, // Dark Soul: Knowledge
@@ -748,6 +748,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          755, // Health Funnel
         1949, // Hellfire
       104025, // Immolation Aura (Metamorphosis)
+        1454, // Life Tap
       103958, // Metamorphosis
         6353, // Soul Fire
       104027, // Soul Fire (Metamorphosis)
@@ -1003,7 +1004,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (28)
 
-// Talent tree specialization abilities, wow build 18922
+// Talent tree specialization abilities, wow build 18927
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1670,6 +1671,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        48181, // Haunt
          755, // Health Funnel
       137043, // Hotfix Passive
+        1454, // Life Tap
        77215, // Mastery: Potent Afflictions
       108558, // Nightfall
        27243, // Seed of Corruption
@@ -1695,6 +1697,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
          755, // Health Funnel
         1949, // Hellfire
       137044, // Hotfix Passive
+        1454, // Life Tap
        77219, // Mastery: Master Demonologist
       103958, // Metamorphosis
       122351, // Molten Core
@@ -1941,7 +1944,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 18922
+// Class mastery abilities, wow build 18927
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2164,7 +2167,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 18922
+// Racial abilities, wow build 18927
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2887,7 +2890,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (41)
 
-// Glyph spells for classes, wow build 18922
+// Glyph spells for classes, wow build 18927
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3527,7 +3530,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 18922
+// Tier item set bonuses for class, wow build 18927
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
     {
@@ -3952,7 +3955,7 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
 
 #define SET_BONUS_DATA_SIZE (543)
 
-// Set bonus data, wow build 18922
+// Set bonus data, wow build 18927
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,  1230,    0,   2,   1,                { 0 },    2,   71, 165636, { 111239, 111240, 111241, 111242, 111243,  0 } },
@@ -4523,7 +4526,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 
 #define PERK_SIZE (4)
 
-// Perk specialization abilities, wow build 18922
+// Perk specialization abilities, wow build 18927
 static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     {
@@ -4831,7 +4834,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   },
 };
 
-// Glyph properties, wow build 18922
+// Glyph properties, wow build 18927
 static glyph_property_data_t __glyph_property_data[500] = {
   {   162,  54811 },
   {   163,  54812 },

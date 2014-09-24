@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18922)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18927)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 1
@@ -7697,9 +7697,9 @@ Effects          :
 #1 (id=243859)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 155836 | Scaled Value: 155836 | Misc Value: 52610
 #2 (id=243860)   : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5
+                   Base Value: 10 | Scaled Value: 10
 #3 (id=245911)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 35 | Scaled Value: 35 | Misc Value: 1
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 1
 Description      : Savage Roar is now always active passively, but its effect is reduced by $s2%.
 
 Name             : Savagery (id=171753) 

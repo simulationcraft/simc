@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18922)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18927)
 Name             : Blizzard (id=10) [Spell Family (3)] 
 Class            : Frost Mage
 Resource         : 5% Base Mana (8000 @Level 100)
@@ -330,7 +330,7 @@ Spell Level      : 22
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Arcane Charge (36032), Arcane Charge (114664), Critical Mass (117216)
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Arcane Charge (114664), Critical Mass (117216)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1206,10 +1206,10 @@ Attributes       : ........ ........ ..x..... ..x..x..   ........ ..x..... .....
 Effects          :
 #1 (id=26313)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50
-                   Affected Spells: Scorch (2948), Arcane Missiles (7268), Arcane Blast (30451), Arcane Barrage (44425)
+                   Affected Spells: Arcane Missiles (7268), Arcane Blast (30451), Arcane Barrage (44425)
 #2 (id=26314)    : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: 150 | Scaled Value: 150 | Misc Value: 14
-                   Affected Spells: Scorch (2948), Arcane Blast (30451)
+                   Affected Spells: Arcane Blast (30451)
 #3 (id=127870)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17
                    Affected Spells: Arcane Barrage (44425)
@@ -3048,7 +3048,7 @@ Attributes       : ........ ........ x.x....x x..x....   ........ ........ .....
                  : ........ ........ x....... ........   .x...... ........ .....x.. ........ 
 Effects          :
 #1 (id=125807)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=4.4198) | SP Coefficient: 1.50000
+                   Base Value: 1 | Scaled Value: 0 (avg=4.4198) | SP Coefficient: 1.20000
 #2 (id=125808)   : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 0 (avg=2.2106) | SP Coefficient: 0.75000 | Radius: 0 - 10 yards
 Description      : $@spelldesc112948

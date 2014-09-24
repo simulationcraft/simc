@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18922)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18927)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -5318,7 +5318,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=210812)   : Apply Aura (6) | Modify Block% (51)
-                   Base Value: 10 | Scaled Value: 10
+                   Base Value: 15 | Scaled Value: 15
 #2 (id=218981)   : Apply Aura (6) | Proc Trigger Spell: Holy Shield (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 157122
 #3 (id=232078)   : Apply Aura (6) | Absorb Damage (69)
@@ -5587,7 +5587,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=218982)   : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.50000
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.75000
 Description      : $@spelldesc152261
 
 Name             : Saved by the Light (id=157128) 

@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18922)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18927)
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 9
@@ -955,6 +955,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 30
 #4 (id=200921)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 23
+#5 (id=256727)   : Apply Aura (6) | Increase Speed% (31)
+                   Base Value: 0 | Scaled Value: 0
 Description      : You go berserk, removing and granting immunity to Fear, Sap and Incapacitate effects for $d.
 Tooltip          : Immune to Fear, Sap, and Incapacitate effects.
 
@@ -2327,7 +2329,7 @@ Effects          :
                    Base Value: -15000 | Scaled Value: -15000 | Misc Value: 11
                    Affected Spells: Heroic Leap (6544), Heroic Leap (52174)
 #2 (id=255194)   : Apply Aura (6) | Add Flat Modifier: Spell Range (107)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 5
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 5
                    Affected Spells: Heroic Leap (6544), Heroic Leap (52174)
 Description      : Reduces the cooldown on Heroic Leap by ${$63325m1/-1000} sec, but the range of Heroic Leap is also reduced by $s2 yds.
 
@@ -3292,10 +3294,10 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=124622)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.35000 | Misc Value: 127
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 127
 Description      : Raise your shield, absorbing $<barrier> damage for the next $d. Consumes up to 40 additional Rage to increase the amount absorbed.
 Tooltip          : Absorbs $w1 damage.
-Variables        : $barrier=${$AP*2.35}
+Variables        : $barrier=${$AP*1.125}
 
 Name             : Crow Feast (id=112792) 
 Class            : Warrior
@@ -3998,7 +4000,10 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=168884)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 40 | Scaled Value: 40
-                   Affected Spells: Execute (5308), Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Execute (163201), Execute Off-Hand (163558), Execute (168874), Bladestorm (168969)
+                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (168969)
+#2 (id=256725)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 100 | Scaled Value: 100
+                   Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (168874)
 
 Name             : Raging Blow! (id=131116) [Spell Family (4)] 
 Class            : Warrior
@@ -5326,7 +5331,7 @@ Effects          :
 #1 (id=230085)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=230086)   : Weapon Damage% (31)
-                   Base Value: 150 | Scaled Value: 1.5 (avg=0)
+                   Base Value: 300 | Scaled Value: 3 (avg=0)
 Description      : $@spelldesc5308
 
 Name             : Item - Warrior T17 Arms 2P Bonus (id=165336) [Spell Family (4), Passive, Hidden] 
@@ -5823,10 +5828,10 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=249710)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.35000 | Misc Value: 127
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 127
 Description      : Improve your defenses, absorbing $<barrier> damage for the next $d. Consumes up to 40 additional Rage to increase the amount absorbed.
 Tooltip          : Absorbs $w1 damage.
-Variables        : $barrier=${$AP*2.35}
+Variables        : $barrier=${$AP*1.125}
 
 Name             : Concussion Blow (id=175708) 
 Class            : Warrior

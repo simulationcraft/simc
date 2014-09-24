@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18922)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18927)
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
 Resource         : 4% Base Mana (6400 @Level 100)
@@ -164,7 +164,7 @@ Effects          :
 #1 (id=271)      : Apply Aura (6) | Periodic Damage: shadow every 1 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25050
 #2 (id=92509)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 10
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 10
 #3 (id=186635)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 10
 Description      : Drains life from the target, causing ${($689m1*6)} Shadow damage$?a104315&!a54879[,][ and] restoring $?s63302[${2*6*($689m2/10)}][${6*($689m2/10)}]% of the caster's health$?a104315&!a54879[ and generating ${$m3*6} Demonic Fury][] over $d.
@@ -359,7 +359,7 @@ Effects          :
 Description      : Summons a Infernal from the Twisting Nether, impacting for $22703s1 Fire damage and stunning all enemy targets in the area for $22703d.  The Infernal will serve under your command for $111685d.
 
 Name             : Life Tap (id=1454) [Scaling Spell (10), Spell Family (5)] 
-Class            : Warlock
+Class            : Affliction Demonology Warlock
 Spell Level      : 16
 GCD              : 1.5 seconds
 Affecting spells : Glyph of Life Tap (63320), Metamorphosis (103958), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
@@ -3781,7 +3781,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=119700)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100
+                   Base Value: 60 | Scaled Value: 60
 Description      : Your most recently applied Corruption has a ${$m1/10}.1% chance when it deals damage to cause you to regain a Soul Shard.
 
 Name             : Burning Embers (id=108647) [Spell Family (5), Passive] 
@@ -4068,7 +4068,6 @@ Description      : Iincrease your movement speed by $s1%, but also deals damage 
 Tooltip          : Movement speed increased by $s1%.
 
 Name             : Chaotic Energy (id=111546) [Spell Family (5), Passive, Hidden] 
-Replaces         : Life Tap (id=1454)
 Class            : Destruction Warlock
 Spell Level      : 10
 Proc Chance      : 101%
@@ -4622,7 +4621,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128032)   : Direct Heal% (136)
-                   Base Value: 11 | Scaled Value: 11
+                   Base Value: 5 | Scaled Value: 5
 #2 (id=129091)   : Dummy (3)
                    Base Value: 150 | Scaled Value: 150
 #3 (id=181881)   : Apply Aura (6) | Periodic Heal%: every 2 seconds (20)
@@ -6699,7 +6698,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
 Effects          :
 #1 (id=235824)   : School Damage: shadowflame (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.80000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.64000
 Description      : Blasts a target for $s1 Shadowflame damage.
 
 Name             : Blood Pact (id=166928) [Passive] 
