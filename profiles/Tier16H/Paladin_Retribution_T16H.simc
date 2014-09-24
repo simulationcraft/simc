@@ -1,7 +1,7 @@
 paladin="Paladin_Retribution_T16H"
 level=90
 race=tauren
-role=attack
+role=hybrid
 position=back
 professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#bb!110112.
