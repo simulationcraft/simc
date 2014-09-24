@@ -1667,8 +1667,6 @@ struct execute_off_hand_t: public warrior_attack_t
     dual = true;
     may_miss = may_dodge = may_parry = may_block = false;
     weapon = &( p -> off_hand_weapon );
-    if ( !p -> bugs )
-      weapon_multiplier = 3.0;
 
     if ( p -> main_hand_weapon.group() == WEAPON_1H &&
          p -> off_hand_weapon.group() == WEAPON_1H )
@@ -1709,7 +1707,7 @@ struct execute_t: public warrior_attack_t
         am *= 4.0 * std::min( 40.0, p() -> resources.current[RESOURCE_RAGE] ) / 40;
     }
     else if ( p() -> has_shield_equipped() )
-      am *= 1.0 + p() -> spec.protection -> effectN( 1 ).percent();
+      am *= 1.0 + p() -> spec.protection -> effectN( 2 ).percent();
 
     return am;
   }
@@ -3377,6 +3375,7 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     use_off_gcd = true;
     melee_range = -1;
     target = player;
+    attack_power_mod.direct = 1.125; // No spell data.
   }
 
   double cost() const
