@@ -1,11 +1,7 @@
 #ifndef SC_OPTIONSTAB_HPP
 #define SC_OPTIONSTAB_HPP
 
-#ifdef QT_VERSION_5
 #include <QtWidgets/QtWidgets>
-#else
-#include <QtGui/QtGui>
-#endif
 
 class SC_MainWindow;
 class SC_ReforgeButtonGroup;

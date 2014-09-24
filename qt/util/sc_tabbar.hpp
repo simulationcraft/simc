@@ -7,11 +7,8 @@
 
 #include "config.hpp"
 
-#ifdef QT_VERSION_5
 #include <QtWidgets/QtWidgets>
-#endif
 #include <QtGui/QtGui>
-
 
 // ============================================================================
 // SC_TabBar

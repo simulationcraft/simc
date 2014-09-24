@@ -12,15 +12,11 @@
 #include <QtCore/QTranslator>
 #include <QtNetwork/QtNetwork>
 
-#if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
+#if defined( Q_OS_MAC )
 #include <CoreFoundation/CoreFoundation.h>
 #endif
-#ifdef QT_VERSION_5
 #include <QtWidgets/QtWidgets>
 #include <QtWebKitWidgets/QtWebKitWidgets>
-#endif
-
-
 
 class SC_MainWindow;
 class SC_SearchBox;
@@ -1215,7 +1211,7 @@ protected:
 
     QString html;
     QString errorHtmlFile = QDir::currentPath() + "/Error.html";
-#if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
+#if defined( Q_OS_MAC )
     CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "Error" ), CFSTR( "html" ), 0 );
     if ( fileRef )
     {
@@ -1298,7 +1294,7 @@ public:
     setPage( page );
     page -> setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
 
-    // Add QT Major Version to avoid "mysterious" problems resulting in qBadAlloc. Qt4 and Qt5 webcache do not like each other
+    // Add QT Major Version to avoid "mysterious" problems resulting in qBadAlloc.
     QDir dir( mainWindow -> TmpDir + QDir::separator() + "simc_webcache_qt" + std::string( QT_VERSION_STR ).substr( 0, 3 ).c_str() );
     if ( ! dir.exists() ) dir.mkpath( "." );
 

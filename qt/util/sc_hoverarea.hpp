@@ -6,13 +6,7 @@
 #pragma once
 
 #include "config.hpp"
-
-#ifdef QT_VERSION_5
 #include <QtWidgets/QWidget>
-#else
-#include <QtGui/QWidget>
-#endif
-
 #include <QTimer>
 #include <QEvent>
 

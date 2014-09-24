@@ -12,12 +12,10 @@
 #include "simcpaperdoll.hpp"
 #endif
 #include <QtWebKit/QtWebKit>
-#if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
+#if defined( Q_OS_MAC )
 #include <CoreFoundation/CoreFoundation.h>
 #endif
-#if QT_VERSION_5
 #include <QStandardPaths>
-#endif
 
 namespace { // UNNAMED NAMESPACE
 
@@ -324,7 +322,7 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   setWindowTitle( QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion() );
   setAttribute( Qt::WA_AlwaysShowToolTips );
 
-#if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
+#if defined( Q_OS_MAC )
   QDir::home().mkpath( "Library/Application Support/SimulationCraft" );
   AppDataDir = ResultsDestDir = TmpDir = QDir::home().absoluteFilePath( "Library/Application Support/SimulationCraft" );
 #endif
@@ -336,7 +334,6 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
 #endif
 #endif
 
-#if QT_VERSION_5
   QStringList s = QStandardPaths::standardLocations( QStandardPaths::CacheLocation );
   if ( !s.empty() )
   {
@@ -373,10 +370,8 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
         ResultsDestDir = s.first();
     }
   }
-#endif
 
 #ifdef SC_TO_INSTALL // GUI will be installed, use default AppData location for files created
-#if QT_VERSION_5
   QStringList z = QStandardPaths::standardLocations( QStandardPaths::DataLocation );
   if ( ! z.empty() )
   {
@@ -384,7 +379,6 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
     if ( a.isReadable() )
       AppDataDir = z.first();
   }
-#endif
 #endif
 #if defined( SC_LINUX_PACKAGING )
   QString path_prefix;
@@ -505,7 +499,7 @@ QWebView( parent )
 {
   QString welcomeFile = QDir::currentPath() + "/Welcome.html";
 
-#if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
+#if defined( Q_OS_MAC )
   CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "Welcome" ), CFSTR( "html" ), 0 );
   if ( fileRef )
   {
@@ -577,7 +571,7 @@ void SC_MainWindow::createBestInSlotTab()
   }
 
   // Scan all subfolders in /profiles/ and create a list
-#if ! defined( Q_WS_MAC ) && ! defined( Q_OS_MAC )
+#if ! defined( Q_OS_MAC )
 #if defined( SC_LINUX_PACKAGING )
   QDir tdir( SC_LINUX_PACKAGING "/profiles" );
 #else
@@ -597,13 +591,12 @@ void SC_MainWindow::createBestInSlotTab()
 #endif
   tdir.setFilter( QDir::Dirs );
 
-
   QStringList tprofileList = tdir.entryList();
   int tnumProfiles = tprofileList.count();
   // Main loop through all subfolders of ./profiles/
   for ( int i = 0; i < tnumProfiles; i++ )
   {
-#if ! defined( Q_WS_MAC ) && ! defined( Q_OS_MAC )
+#if ! defined( Q_OS_MAC )
 #if defined( SC_LINUX_PACKAGING )
     QDir dir( SC_LINUX_PACKAGING "/profiles/" + tprofileList[ i ] );
 #else
@@ -825,7 +818,7 @@ void SC_MainWindow::createTabShortcuts()
   for ( int i = 0; keys[i] != Qt::Key_unknown; i++ )
   {
     // OS X needs to set the sequence to Cmd-<number>, since Alt is used for normal keys in certain cases
-#if ! defined( Q_WS_MAC ) && ! defined( Q_OS_MAC )
+#if ! defined( Q_OS_MAC )
     QShortcut* shortcut = new QShortcut( QKeySequence( Qt::ALT + keys[i] ), this );
 #else
     QShortcut* shortcut = new QShortcut( QKeySequence( Qt::CTRL + keys[i] ), this );

@@ -1,11 +1,7 @@
 #include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
 #include <QLocale>
-#ifdef QT_VERSION_5
 #include <QtWidgets/QApplication>
-#else
-#include <QApplication>
-#endif
 #include <locale>
 
 /* Parse additional arguments

@@ -1,11 +1,7 @@
 #ifndef SC_SPELLQUERYTAB_HPP
 #define SC_SPELLQUERYTAB_HPP
 
-#ifdef QT_VERSION_5
 #include <QtWidgets/QtWidgets>
-#else
-#include <QtGui/QtGui>
-#endif
 
 class SC_MainWindow;
 class SC_TextEdit;
