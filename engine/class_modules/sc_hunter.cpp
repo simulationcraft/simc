@@ -3969,7 +3969,7 @@ double hunter_t::composite_player_critical_damage_multiplier() const
     // deadly_aim_driver
     double seconds_buffed = floor( buffs.rapid_fire -> elapsed( sim -> current_time ).total_seconds() );
     // from Nimox
-    cdm += bugs ? std::min(0.15, seconds_buffed * 0.03 )
+    cdm += bugs ? std::min(15.0, seconds_buffed) * 0.03 
                 : seconds_buffed * sets.set( HUNTER_MARKSMANSHIP, T17, B4 ) -> effectN( 1 ).percent();
   }
 
