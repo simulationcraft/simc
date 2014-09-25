@@ -2161,7 +2161,8 @@ struct explosive_trap_t: public hunter_ranged_attack_t
       cooldown -> duration *= ( 1.0 + p() -> perks.enhanced_traps -> effectN( 1 ).percent() );
 
     tick_zero = true;
-    hasted_ticks = harmful = false;
+    hasted_ticks = false;
+    harmful = false;
     dot_duration  = p() -> find_spell( 13812 ) -> duration();
     base_tick_time = p() -> find_spell( 13812 ) -> effectN( 2 ).period();
     add_child( explosive_trap_tick );
@@ -2270,11 +2271,13 @@ struct explosive_shot_tick_t: public residual_action::residual_periodic_action_t
   explosive_shot_tick_t( hunter_t* p ):
     base_t( "explosive_shot_tick", p, p -> specs.explosive_shot )
   {
-    tick_may_crit = dual = true;
+    tick_may_crit = true;
+    dual = true;
     may_multistrike = 1;
 
     // suppress direct damage in the dot.
-    base_dd_min = base_dd_max = 0;
+    base_dd_min = 0;
+    base_dd_max = 0;
 
     if ( p -> perks.empowered_explosive_shot -> ok() )
       dot_duration += p -> perks.empowered_explosive_shot -> effectN( 1 ).time_value();
@@ -2420,7 +2423,10 @@ struct serpent_sting_t: public hunter_ranged_attack_t
   serpent_sting_t( hunter_t* player ):
     hunter_ranged_attack_t( "serpent_sting", player, player -> find_spell( 118253 ) )
   {
-    background = proc = tick_may_crit = tick_zero = true;
+    background = true;
+    proc = true;
+    tick_may_crit = true;
+    tick_zero = true;
     hasted_ticks = false;
   }
 };
@@ -2615,7 +2621,8 @@ struct lightning_arrow_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "lightning_arrow" + attack_suffix, p, p -> find_spell( 138366 ) )
   {
     school = SCHOOL_NATURE;
-    proc = background = true;
+    proc = true;
+    background = true;
   }
 };
 
@@ -2725,7 +2732,8 @@ struct barrage_t: public hunter_spell_t
     barrage_damage_t( hunter_t* player ):
       attacks::hunter_ranged_attack_t( "barrage_primary", player, player -> talents.barrage -> effectN( 2 ).trigger() )
     {
-      background = may_crit = true;
+      background = true;
+      may_crit = true;
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
 
@@ -2740,8 +2748,11 @@ struct barrage_t: public hunter_spell_t
   {
     parse_options( NULL, options_str );
 
-    may_block = hasted_ticks = false;
-    channeled = tick_zero = dynamic_tick_action = true;
+    may_block = false;
+    hasted_ticks = false;
+    channeled = true;
+    tick_zero = true;
+    dynamic_tick_action = true;
     travel_speed = 0.0;
     // FIXME still needs to AoE component
     tick_action = new barrage_damage_t( player );
@@ -2769,8 +2780,10 @@ struct peck_t: public ranged_attack_t
   peck_t( hunter_t* player, const std::string& name ):
     ranged_attack_t( name, player, player -> find_spell( 131900 ) )
   {
-    dual = may_crit = true;
-    may_parry = may_block = false;
+    dual = true;
+    may_crit = true;
+    may_parry = false;
+    may_block = false;
     travel_speed = 0.0;
 
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
@@ -2796,7 +2809,10 @@ struct moc_t: public ranged_attack_t
   {
     parse_options( NULL, options_str );
     add_child( peck );
-    hasted_ticks = callbacks = may_crit = may_miss = false;
+    hasted_ticks = false;
+    callbacks = false;
+    may_crit = false;
+    may_miss = false;
   }
 
   hunter_t* p() const { return static_cast<hunter_t*>( player ); }
@@ -2830,7 +2846,10 @@ struct dire_beast_t: public hunter_spell_t
     hunter_spell_t( "dire_beast", player, player -> talents.dire_beast )
   {
     parse_options( NULL, options_str );
-    harmful = hasted_ticks = may_crit = may_miss = false;
+    harmful = false;
+    hasted_ticks = false;
+    may_crit = false;
+    may_miss = false;
     school = SCHOOL_PHYSICAL;
   }
 
@@ -2913,7 +2932,9 @@ struct fervor_t: public hunter_spell_t
   {
     parse_options( NULL, options_str );
 
-    harmful = callbacks = hasted_ticks = false;
+    harmful = false;
+    callbacks = false;
+    hasted_ticks = false;
     trigger_gcd = timespan_t::zero();
     base_gain = data().effectN( 1 ).base_value();
     tick_gain = data().effectN( 2 ).base_value();
@@ -3069,7 +3090,8 @@ struct summon_pet_t: public hunter_spell_t
     hunter_spell_t( "summon_pet", player ),
     pet( 0 )
   {
-    harmful = callbacks = false;
+    harmful = false;
+    callbacks = false;
     std::string pet_name = options_str.empty() ? p() -> summon_pet_str : options_str;
     pet = p() -> find_pet( pet_name );
     if ( !pet )
@@ -3105,7 +3127,8 @@ struct stampede_t: public hunter_spell_t
     hunter_spell_t( "stampede", p, p -> talents.stampede )
   {
     parse_options( NULL, options_str );
-    harmful = callbacks = false;
+    harmful = false;
+    callbacks = false;
     school = SCHOOL_PHYSICAL;
   }
 
