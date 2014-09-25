@@ -59,7 +59,7 @@ actions.single+=/hammer_of_wrath
 actions.single+=/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2
 actions.single+=/exorcism,if=buff.blazing_contempt.up&holy_power<=2
 actions.single+=/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2&buff.blazing_contempt.up
-actions.single+=/divine_storm,if=buff.divine_crusader.react&buff.avenging_wrath.up&talent.final_verdict.enabled&buff.final_verdict.up
+actions.single+=/divine_storm,if=buff.divine_crusader.react&talent.final_verdict.enabled&buff.final_verdict.up
 actions.single+=/templars_verdict,if=buff.avenging_wrath.up&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)
 actions.single+=/final_verdict
 actions.single+=/divine_storm,if=buff.divine_crusader.react&buff.avenging_wrath.up&(!talent.final_verdict.enabled|buff.final_verdict.up)
@@ -67,7 +67,6 @@ actions.single+=/crusader_strike
 actions.single+=/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2
 actions.single+=/judgment
 actions.single+=/wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.2
-actions.single+=/divine_storm,if=buff.divine_crusader.react&talent.final_verdict.enabled&buff.final_verdict.up
 actions.single+=/templars_verdict,if=buff.divine_purpose.react
 actions.single+=/divine_storm,if=buff.divine_crusader.react&(!talent.final_verdict.enabled|buff.final_verdict.up)
 actions.single+=/exorcism
