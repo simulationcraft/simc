@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#eb!0...011
+talents=http://us.battle.net/wow/en/tool/talent-calculator#eb!0...001
 glyphs=splitting_ice
 spec=frost
 
@@ -65,7 +65,6 @@ actions.cooldowns+=/use_item,slot=trinket2
 
 # AoE sequence
 actions.aoe=frost_bomb,if=cooldown.frozen_orb.remains<gcd|buff.fingers_of_frost.react
-# AoE sequence
 actions.aoe+=/frozen_orb
 actions.aoe+=/ice_lance,if=buff.fingers_of_frost.react&debuff.frost_bomb.up
 actions.aoe+=/comet_storm

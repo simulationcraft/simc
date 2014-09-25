@@ -4,7 +4,7 @@ race=troll
 role=spell
 position=back
 professions=tailoring=600/engineering=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#eb!0...11.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#eb!0...00.
 glyphs=icy_veins/splitting_ice
 spec=frost
 
@@ -64,7 +64,6 @@ actions.cooldowns+=/potion,name=jade_serpent,if=buff.bloodlust.up|buff.icy_veins
 
 # AoE sequence
 actions.aoe=frost_bomb,if=cooldown.frozen_orb.remains<gcd|buff.fingers_of_frost.react
-# AoE sequence
 actions.aoe+=/frozen_orb
 actions.aoe+=/ice_lance,if=buff.fingers_of_frost.react&debuff.frost_bomb.up
 actions.aoe+=/comet_storm

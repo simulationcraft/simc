@@ -5327,9 +5327,7 @@ void mage_t::apl_frost()
   aoe -> add_talent( this, "Frost Bomb",
                      "if=cooldown.frozen_orb.remains<gcd|buff.fingers_of_frost.react",
                      "AoE sequence" );
-  aoe -> add_action( this, "Frozen Orb",
-                     "",
-                     "AoE sequence" );
+  aoe -> add_action( this, "Frozen Orb" );
   aoe -> add_action( this, "Ice Lance",
                      "if=buff.fingers_of_frost.react&debuff.frost_bomb.up" );
   aoe -> add_talent( this, "Comet Storm" );
