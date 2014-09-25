@@ -4175,7 +4175,7 @@ stat_e player_t::normalize_by() const
   role_e role = primary_role();
   if ( role == ROLE_SPELL || role == ROLE_HEAL )
     return STAT_INTELLECT;
-  else if ( role == ROLE_TANK && ( sm == SCALE_METRIC_TMI || sm == SCALE_METRIC_TMI || sm == SCALE_METRIC_DEATHS ) )
+  else if ( role == ROLE_TANK && ( sm == SCALE_METRIC_TMI || sm == SCALE_METRIC_DEATHS ) )
     return STAT_STAMINA;
   else if ( type == DRUID || type == HUNTER || type == SHAMAN || type == ROGUE || type == MONK )
     return STAT_AGILITY;
