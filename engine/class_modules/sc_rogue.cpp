@@ -2513,14 +2513,17 @@ struct sinister_strike_t : public rogue_attack_t
       p() -> buffs.bandits_guile -> trigger();
 
       rogue_td_t* td = this -> td( state -> target );
-      double proc_chance = td -> dots.revealing_strike -> current_action -> data().effectN( 6 ).percent();
-      proc_chance += p() -> sets.set( ROGUE_COMBAT, T17, B2 ) -> effectN( 1 ).percent();
-
-      if ( td -> dots.revealing_strike -> is_ticking() && rng().roll( proc_chance ) )
+      if ( td -> dots.revealing_strike -> is_ticking() )
       {
-        p() -> trigger_combo_point_gain( state );
-        if ( p() -> buffs.t16_2pc_melee -> trigger() )
-          p() -> procs.t16_2pc_melee -> occur();
+        double proc_chance = td -> dots.revealing_strike -> current_action -> data().effectN( 6 ).percent();
+        proc_chance += p() -> sets.set( ROGUE_COMBAT, T17, B2 ) -> effectN( 1 ).percent();
+
+        if ( rng().roll( proc_chance ) )
+        {
+          p() -> trigger_combo_point_gain( state );
+          if ( p() -> buffs.t16_2pc_melee -> trigger() )
+            p() -> procs.t16_2pc_melee -> occur();
+        }
       }
     }
   }
