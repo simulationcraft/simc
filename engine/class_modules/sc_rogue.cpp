@@ -168,7 +168,6 @@ struct rogue_t : public player_t
     buff_t* anticipation;
     buff_t* deceit;
     buff_t* enhanced_vendetta;
-    buff_t* quick_blades;
     buff_t* shadow_strikes;
   } buffs;
 
@@ -199,6 +198,7 @@ struct rogue_t : public player_t
     gain_t* shadow_strikes;
     gain_t* t17_2pc_assassination;
     gain_t* t17_4pc_assassination;
+    gain_t* t17_2pc_subtlety;
     gain_t* venomous_wounds;
     gain_t* vitality;
 
@@ -1235,9 +1235,6 @@ double rogue_attack_t::cost() const
 
   if ( p() -> sets.has_set_bonus( SET_MELEE, T15, B2 ) && p() -> buffs.tier13_2pc -> check() )
     c *= 1.0 + p() -> spell.tier13_2pc -> effectN( 1 ).percent();
-
-  if ( p() -> buffs.quick_blades -> check() )
-    c *= 1.0 + p() -> buffs.quick_blades -> data().effectN( 1 ).percent();
 
   if ( c <= 0 )
     c = 0;
@@ -2613,7 +2610,10 @@ struct shadow_dance_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     p() -> buffs.shadow_dance -> trigger();
-    p() -> buffs.quick_blades -> trigger();
+    if ( p() -> sets.has_set_bonus( ROGUE_SUBTLETY, T17, B2 ) )
+      p() -> resource_gain( RESOURCE_ENERGY,
+                            p() -> sets.set( ROGUE_SUBTLETY, T17, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_ENERGY ),
+                            p() -> gains.t17_2pc_subtlety );
   }
 };
 
@@ -3335,10 +3335,11 @@ void rogue_t::trigger_t17_4pc_subtlety( const action_state_t* state )
   if ( ! attack -> result_is_hit( state -> result ) )
     return;
 
-  if ( ! buffs.shadow_strikes -> up() )
+  if ( ! buffs.shadow_strikes -> check() )
     return;
 
   trigger_combo_point_gain( state, buffs.shadow_strikes-> data().effectN( 1 ).base_value(), gains.shadow_strikes );
+  buffs.shadow_strikes -> expire();
 }
 
 namespace buffs {
@@ -4650,6 +4651,7 @@ void rogue_t::init_gains()
   gains.shadow_strikes          = get_gain( "shadow_strikes" );
   gains.t17_2pc_assassination   = get_gain( "t17_2pc_assassination" );
   gains.t17_4pc_assassination   = get_gain( "t17_4pc_assassination" );
+  gains.t17_2pc_subtlety        = get_gain( "t17_2pc_subtlety" );
   gains.venomous_wounds         = get_gain( "venomous_vim"       );
 }
 
@@ -4801,9 +4803,7 @@ void rogue_t::create_buffs()
                             .chance( talent.anticipation -> ok() );
   buffs.deceit            = buff_creator_t( this, "deceit", sets.set( ROGUE_COMBAT, T17, B4 ) -> effectN( 1 ).trigger() )
                             .chance( sets.has_set_bonus( ROGUE_COMBAT, T17, B4 ) );
-  buffs.quick_blades      = buff_creator_t( this, "quick_blades", sets.set( ROGUE_SUBTLETY, T17, B2 ) -> effectN( 1 ).trigger() )
-                            .chance( sets.has_set_bonus( ROGUE_SUBTLETY, T17, B2 ) );
-  buffs.shadow_strikes    = buff_creator_t( this, "shadow_strikes", find_spell( 166881 ) )
+  buffs.shadow_strikes    = buff_creator_t( this, "shadow_strikes", find_spell( 170107 ) )
                             .chance( sets.has_set_bonus( ROGUE_SUBTLETY, T17, B4 ) );
 
   buffs.burst_of_speed    = buff_creator_t( this, "burst_of_speed", find_spell( 137573 ) );
