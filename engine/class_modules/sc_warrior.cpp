@@ -5,10 +5,6 @@
 
 #include "simulationcraft.hpp"
 
-// ==========================================================================
-//
-// ==========================================================================
-
 namespace
 { // UNNAMED NAMESPACE
 // ==========================================================================
@@ -1469,13 +1465,6 @@ struct charge_t: public warrior_attack_t
       cooldown -> charges = 2;
     else if ( p -> talents.juggernaut -> ok() )
       cooldown -> duration += p -> talents.juggernaut -> effectN( 1 ).time_value();
-  }
-
-  timespan_t travel_time() const
-  {
-    if ( p() -> buff.heroic_charge -> check() )
-      return p() -> buff.heroic_charge -> remains();
-    return timespan_t::zero();
   }
 
   void execute()
@@ -3690,7 +3679,6 @@ struct sweeping_strikes_t: public warrior_spell_t
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE;
-    use_off_gcd = true;
     cooldown -> duration = data().cooldown();
     cooldown -> duration += p -> perk.enhanced_sweeping_strikes -> effectN( 2 ).time_value();
   }

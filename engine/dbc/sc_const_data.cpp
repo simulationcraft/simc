@@ -184,10 +184,10 @@ std::vector< std::vector< const spell_data_t* > > ptr_class_family_index;
 } // ANONYMOUS namespace ====================================================
 
 int dbc::build_level( bool ptr )
-{ return maybe_ptr( ptr ) ? 17345 : 18934; }
+{ return maybe_ptr( ptr ) ? 18934 : 18934; }
 
 const char* dbc::wow_version( bool ptr )
-{ return maybe_ptr( ptr ) ? "5.4.0" : "6.0.2"; }
+{ return maybe_ptr( ptr ) ? "6.0.2" : "6.0.2"; }
 
 const char* dbc::wow_ptr_status( bool ptr )
 { return ( maybe_ptr( ptr ) ?
@@ -305,8 +305,8 @@ void dbc::apply_hotfixes()
   assert( s -> internal_cooldown() != timespan_t::from_seconds( 0.25 ) && "Capacitive Primal Diamond" );
   if ( s && s -> ok() )
     s -> _internal_cooldown = 250;
-  
-  // Hunter, hotfixes from 2013-09-23
+
+  // Hunter
 
   // Mage
 
