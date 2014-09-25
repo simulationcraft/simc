@@ -2736,6 +2736,7 @@ public:
   std::string reference_player_str;
   std::vector<player_t*> players_by_dps;
   std::vector<player_t*> players_by_hps;
+  std::vector<player_t*> players_by_hps_plus_aps;
   std::vector<player_t*> players_by_dtps;
   std::vector<player_t*> players_by_tmi;
   std::vector<player_t*> players_by_name;
