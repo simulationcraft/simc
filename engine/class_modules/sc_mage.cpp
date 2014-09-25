@@ -82,7 +82,8 @@ public:
   real_ppm_t rppm_arcane_instability; // T17 Arcane 4pc
 
   // Miscellaneous
-  double pet_multiplier;
+  double incanters_flow_stack_mult,
+         pet_multiplier;
 
   // Benefits
   struct benefits_t
@@ -349,6 +350,9 @@ public:
     cooldowns.combustion     = get_cooldown( "combustion"    );
     cooldowns.bolt           = get_cooldown( "enhanced_frostbolt" );
 
+    // Miscellaneous
+    incanters_flow_stack_mult = find_spell( 116267 ) -> effectN( 1 ).percent();
+
     // Options
     base.distance = 40;
     regen_type = REGEN_DYNAMIC;
@@ -574,7 +578,8 @@ struct water_elemental_pet_t : public pet_t
     }
     if ( o() -> talents.incanters_flow -> ok() )
     {
-      m *= 1.0 + ( o() -> buffs.incanters_flow -> current_stack ) * ( find_spell( 116267 ) -> effectN( 1 ).percent() );
+      m *= 1.0 + o() -> buffs.incanters_flow -> current_stack *
+                 o() -> incanters_flow_stack_mult;
     }
 
     m *= o() -> pet_multiplier;
@@ -5456,7 +5461,7 @@ double mage_t::composite_player_multiplier( school_e school ) const
 
   if ( talents.incanters_flow -> ok() )
   {
-    m *= 1.0 + ( buffs.incanters_flow -> stack() ) * ( find_spell( 116267 ) -> effectN( 1 ).percent() );
+    m *= 1.0 + buffs.incanters_flow -> stack() * incanters_flow_stack_mult;
   }
   cache.player_mult_valid[ school ] = false;
 
