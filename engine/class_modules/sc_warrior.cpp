@@ -444,7 +444,6 @@ public:
 
   // Character Definition
   virtual void      init_spells();
-  virtual void      init_defense();
   virtual void      init_base_stats();
   virtual void      init_scaling();
   virtual void      create_buffs();
@@ -483,7 +482,6 @@ public:
   virtual action_t* create_proc_action( const std::string& name );
   virtual bool      create_profile( std::string& profile_str, save_e type, bool save_html );
   virtual void      invalidate_cache( cache_e );
-  virtual double    passive_movement_modifier() const;
   virtual double    temporary_movement_modifier() const;
 
   void              apl_precombat(bool);
@@ -3933,13 +3931,6 @@ void warrior_t::init_spells()
   active_t16_2pc            = new tier16_2pc_tank_heal_t( this );
 }
 
-// warrior_t::init_defense ==================================================
-
-void warrior_t::init_defense()
-{
-  player_t::init_defense();
-}
-
 // warrior_t::init_base =====================================================
 
 void warrior_t::init_base_stats()
@@ -5113,7 +5104,6 @@ double warrior_t::composite_block() const
   return b;
 }
 
-
 // warrior_t::composite_block_reduction =======================================
 
 double warrior_t::composite_block_reduction() const
@@ -5129,9 +5119,6 @@ double warrior_t::composite_block_reduction() const
 
   return br;
 }
-
-
-
 
 // warrior_t::composite_melee_attack_power ==================================
 
@@ -5257,15 +5244,6 @@ double warrior_t::temporary_movement_modifier() const
     temporary = std::max( buff.heroic_charge -> value(), temporary );
 
   return temporary;
-}
-
-// warrior_t::passive_movement_modifier===================================
-
-double warrior_t::passive_movement_modifier() const
-{
-  double ms = player_t::passive_movement_modifier();
-
-  return ms;
 }
 
 // warrior_t::invalidate_cache ==============================================
