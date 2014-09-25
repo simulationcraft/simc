@@ -491,7 +491,6 @@ option_db_t::option_db_t()
       auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "H|";
       auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "N|";
       auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "M|";
-      auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "P|";
       auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "PR|";
     }
   }
