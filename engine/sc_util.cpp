@@ -3008,9 +3008,6 @@ void util::fuzzy_stats( std::string&       encoding_str,
   // TODO: WOW-MULTISTRIKE
 }
 
-
-
-
 /* Determine number of digits for a given Number
  *
  * generic solution

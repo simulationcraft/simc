@@ -899,7 +899,6 @@ QString SC_OptionsTab::mergeOptions()
 
   if ( buttons.at( 1 )->isChecked() ) options += "positive_scale_delta=1\n";
   if ( buttons.at( buttons.size() - 1 )->isChecked() ) options += "scale_lag=1\n";
-  if ( buttons.at( 15 )->isChecked() || buttons.at( 17 )->isChecked() ) options += "weapon_speed_scale_factors=1\n";
 
   options += "scale_only=none";
   for ( int i = 2; scalingOptions[ i ].label; i++ )
