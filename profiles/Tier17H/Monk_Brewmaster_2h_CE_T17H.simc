@@ -84,7 +84,7 @@ wrists=bracers_of_shattered_limbs,id=119333,bonus_id=566
 hands=handwraps_of_the_somber_gaze,id=115555,bonus_id=566
 waist=belt_of_bloody_guts,id=113636,bonus_id=566
 legs=legwraps_of_the_somber_gaze,id=115557,bonus_id=566
-feet=sandals_of_mycoid_musing,id=113664,bonus_id=566
+feet=ironflecked_sandals,id=119340,bonus_id=566
 finger1=spellbound_solium_band_of_sorcerous_invincibility,id=118303,enchant=gift_of_versatility
 finger2=stonefist_band,id=113938,bonus_id=566,enchant=gift_of_versatility
 trinket1=blast_furnace_door,id=113893,bonus_id=566
@@ -92,14 +92,14 @@ trinket2=pillar_of_the_earth,id=113650,bonus_id=566
 main_hand=headlopper_skullscythe,id=119448,bonus_id=566,enchant_id=5352
 
 # Gear Summary
-# gear_agility=2592
-# gear_stamina=4234
-# gear_crit_rating=1029
-# gear_haste_rating=190
-# gear_mastery_rating=693
-# gear_armor=1046
+# gear_agility=2610
+# gear_stamina=4261
+# gear_crit_rating=1166
+# gear_haste_rating=317
+# gear_mastery_rating=558
+# gear_armor=1052
 # gear_bonus_armor=821
 # gear_multistrike_rating=289
-# gear_versatility_rating=1212
+# gear_versatility_rating=1114
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
