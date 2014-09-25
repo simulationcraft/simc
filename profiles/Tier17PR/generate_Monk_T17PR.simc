@@ -8,7 +8,7 @@ talent_format=armory
 # Brewmaster 1H Chi Explosion
 monk="Monk_Brewmaster_1h_CE_T17PR"
 level=100
-race=blood_elf
+race=night_elf
 spec=brewmaster
 role=tank
 position=front
@@ -36,11 +36,11 @@ save=Monk_Brewmaster_1h_CE_T17PR.simc
 # Brewmaster 1H Serenity
 monk="Monk_Brewmaster_1h_Serenity_T17PR"
 level=100
-race=blood_elf
+race=night_elf
 spec=brewmaster
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.01.112
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.02.112
 
 head=blackwater_helm,id=109979,bonus_id=524
 neck=reinforced_bloodsteel_gorget,id=109966,bonus_id=524,enchant=gift_of_versatility
@@ -64,7 +64,7 @@ save=Monk_Brewmaster_1h_Serenity_T17PR.simc
 # Brewmaster 2H Chi Explosion
 monk="Monk_Brewmaster_2h_CE_T17PR"
 level=100
-race=blood_elf
+race=night_elf
 spec=brewmaster
 role=tank
 position=front
@@ -91,11 +91,11 @@ save=Monk_Brewmaster_2h_CE_T17PR.simc
 # Brewmaster 2H Serenity
 monk="Monk_Brewmaster_2h_Serenity_T17PR"
 level=100
-race=blood_elf
+race=night_elf
 spec=brewmaster
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.01.112
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.02.112
 
 head=blackwater_helm,id=109979,bonus_id=524
 neck=reinforced_bloodsteel_gorget,id=109966,bonus_id=524,enchant=gift_of_versatility

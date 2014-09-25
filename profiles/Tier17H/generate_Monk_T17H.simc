@@ -65,7 +65,7 @@ save=Monk_Windwalker_2h_T17H.simc
 # Brewmaster 1h Chi Explosion
 monk="Monk_Brewmaster_1h_CE_T17H"
 level=100
-race=blood_elf
+race=night_elf
 spec=brewmaster
 role=tank
 position=front
@@ -92,11 +92,11 @@ save=Monk_Brewmaster_1h_CE_T17H.simc
 # Brewmaster 1h Serenity
 monk="Monk_Brewmaster_1h_Serenity_T17H"
 level=100
-race=blood_elf
+race=night_elf
 spec=brewmaster
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.01.112
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.02.112
 
 head=acidic_jaws,id=113880,bonus_id=566
 neck=fiery_links_of_courage,id=113923,bonus_id=566,enchant=gift_of_versatility
@@ -119,7 +119,7 @@ save=Monk_Brewmaster_1h_Serenity_T17H.simc
 # Brewmaster 2h Chi Explosion
 monk="Monk_Brewmaster_2h_CE_T17H"
 level=100
-race=blood_elf
+race=night_elf
 spec=brewmaster
 role=tank
 position=front
@@ -145,11 +145,11 @@ save=Monk_Brewmaster_2h_CE_T17H.simc
 # Brewmaster 2h Serenity
 monk="Monk_Brewmaster_2h_Serenity_T17H"
 level=100
-race=blood_elf
+race=night_elf
 spec=brewmaster
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.01.112
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.02.112
 
 head=acidic_jaws,id=113880,bonus_id=566
 neck=fiery_links_of_courage,id=113923,bonus_id=566,enchant=gift_of_versatility

@@ -64,11 +64,11 @@ save=Monk_Windwalker_2h_T17M.simc
 # Brewmaster 1h Chi Explosion
 monk="Monk_Brewmaster_1h_CE_T17M"
 level=100
-race=blood_elf
+race=night_elf
 spec=brewmaster
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.01.111
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.02.111
 
 head=acidic_jaws,id=113880,bonus_id=567
 neck=fiery_links_of_courage,id=113923,bonus_id=567,enchant=gift_of_versatility
@@ -91,11 +91,11 @@ save=Monk_Brewmaster_1h_CE_T17M.simc
 # Brewmaster 1h Serenity
 monk="Monk_Brewmaster_1h_Serenity_T17M"
 level=100
-race=blood_elf
+race=night_elf
 spec=brewmaster
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.01.112
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.02.112
 
 head=acidic_jaws,id=113880,bonus_id=567
 neck=fiery_links_of_courage,id=113923,bonus_id=567,enchant=gift_of_versatility
@@ -118,7 +118,7 @@ save=Monk_Brewmaster_1h_Serenity_T17M.simc
 # Brewmaster 2h Chi Explosion
 monk="Monk_Brewmaster_2h_CE_T17M"
 level=100
-race=blood_elf
+race=night_elf
 spec=brewmaster
 role=tank
 position=front
@@ -141,14 +141,14 @@ trinket2=pillar_of_the_earth,id=113650,bonus_id=567
 main_hand=head-lopper_skullscythe,id=119448,enchant_id=5352,bonus_id=567
 save=Monk_Brewmaster_2h_CE_T17M.simc
 
-# Brewmaster 2h Chi Explosion
+# Brewmaster 2h Serenity
 monk="Monk_Brewmaster_2h_Serenity_T17M"
 level=100
-race=blood_elf
+race=night_elf
 spec=brewmaster
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.01.112
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.02.112
 
 head=acidic_jaws,id=113880,bonus_id=567
 neck=fiery_links_of_courage,id=113923,bonus_id=567,enchant=gift_of_versatility
