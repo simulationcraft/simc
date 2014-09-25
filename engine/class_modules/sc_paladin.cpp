@@ -4926,7 +4926,7 @@ void paladin_t::generate_action_prio_list_prot()
     else if ( level > 85 )
       food_type += "chun_tian_spring_rolls";
     else if ( level >= 80 )
-        "seafood_magnifique_feast";
+        food_type += "seafood_magnifique_feast";
 
     if ( food_type.length() > 0 )
       precombat -> add_action( "food,type=" + food_type );
