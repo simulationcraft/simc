@@ -4871,8 +4871,8 @@ void paladin_t::create_buffs()
   buffs.crusaders_fury         = buff_creator_t( this, "crusaders_fury", sets.set( PALADIN_RETRIBUTION, T17, B2 ) -> effectN( 1 ).trigger() )
                                  .chance( sets.set( PALADIN_RETRIBUTION, T17, B2 ) -> proc_chance() );
   buffs.blazing_contempt       = buff_creator_t( this, "blazing_contempt", sets.set( PALADIN_RETRIBUTION, T17, B4 ) -> effectN( 1 ).trigger() )
-                                 .default_value( sets.set( PALADIN_RETRIBUTION, T17, B4 ) -> effectN( 1 ).base_value() )
-                                 .chance( sets.has_set_bonus( PALADIN_RETRIBUTION, T17, B2 ) ? 1 : 0 );
+                                 .default_value( sets.set( PALADIN_RETRIBUTION, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
+                                 .chance( sets.set( PALADIN_RETRIBUTION, T17, B2 ) -> proc_chance() );
   buffs.faith_barricade        = buff_creator_t( this, "faith_barricade", sets.set( PALADIN_PROTECTION, T17, B2 ) -> effectN( 1 ).trigger() )
                                  .default_value( sets.set( PALADIN_PROTECTION, T17, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
                                  .add_invalidate( CACHE_BLOCK );
