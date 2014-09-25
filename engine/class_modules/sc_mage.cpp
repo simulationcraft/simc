@@ -1126,9 +1126,6 @@ public:
       if ( p() -> rotation.current != ROTATION_DPM )
         return false;
 
-    if ( p() -> cooldowns.bolt -> up() && p() -> specialization() == MAGE_FROST )
-      p() -> buffs.enhanced_frostbolt -> trigger();
-
     return spell_t::ready();
   }
 
@@ -2694,6 +2691,18 @@ struct frostbolt_t : public mage_spell_t
     icicle -> school = school;
     icicle -> action_list.push_back( p -> icicle );
   }
+
+  virtual void schedule_execute( action_state_t* execute_state )
+  {
+    if ( p() -> cooldowns.bolt -> up() && p() -> specialization() == MAGE_FROST )
+      p() -> buffs.enhanced_frostbolt -> trigger();
+
+    mage_spell_t::schedule_execute( execute_state );
+
+  }
+
+
+
 
   virtual int schedule_multistrike( action_state_t* s, dmg_e dmg_type, double tick_multiplier )
   {
