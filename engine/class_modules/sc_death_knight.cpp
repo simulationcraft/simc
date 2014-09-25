@@ -3387,7 +3387,10 @@ struct dark_transformation_t : public death_knight_spell_t
     harmful = false;
 
     if ( p -> perk.enhanced_dark_transformation -> ok() )
+    {
       cost_blood = cost_unholy = cost_frost = cost_death = 0;
+      rp_gain = 0;
+    }
   }
 
   virtual void execute()
@@ -7272,10 +7275,7 @@ void death_knight_t::trigger_shadow_infusion( double rpcost )
   }
 
   if ( stacks > 0 )
-  {
     buffs.shadow_infusion -> trigger( stacks );
-    shadow_infusion_counter -= stacks;
-  }
 }
 
 void death_knight_t::trigger_necrosis( const action_state_t* state )
