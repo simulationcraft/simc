@@ -1257,6 +1257,9 @@ struct chi_explosion_t: public monk_melee_attack_t
       if ( ( resource_consumed >= 3 ) && ( p() -> has_stagger() ) )
       {
         p() -> clear_stagger();
+
+        if (p()->sets.has_set_bonus(MONK_BREWMASTER, T17, B4))
+          trigger_brew(p()->sets.set(MONK_BREWMASTER, T17, B4)->effectN(1).base_value());
       }
     }
     else if ( p() -> specialization() == MONK_WINDWALKER )
