@@ -2591,7 +2591,7 @@ struct shield_slam_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( p() -> sets.has_set_bonus( WARRIOR_PROTECTION, T17, B2 )
+    if ( p() -> sets.has_set_bonus( WARRIOR_PROTECTION, T17, B2 ) )
     {
       if ( rng().roll( p() -> bugs ? 0.08 : p() -> sets.set( WARRIOR_PROTECTION, T17, B2 ) -> proc_chance() ) )
       {
