@@ -441,8 +441,7 @@ public:
   virtual double composite_multistrike_multiplier( const action_state_t* s ) const
   { 
     double m = ab::composite_multistrike_multiplier( s );
-    m *= 1.0 + p() -> buffs.heavy_shot -> value();
-    m *= 1.0 + p() -> specs.survivalist -> effectN( 2 ).percent();
+    m *= 1.0 + p() -> buffs.heavy_shot -> value() + p() -> specs.survivalist -> effectN( 2 ).percent();
     return m; 
   }
 
