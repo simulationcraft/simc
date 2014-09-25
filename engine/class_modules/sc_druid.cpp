@@ -211,6 +211,7 @@ public:
   struct cooldowns_t
   {
     cooldown_t* berserk;
+    cooldown_t* celestial_alignment;
     cooldown_t* faerie_fire;
     cooldown_t* growl;
     cooldown_t* mangle;
@@ -502,6 +503,7 @@ public:
     }
     
     cooldown.berserk             = get_cooldown( "berserk"             );
+    cooldown.celestial_alignment = get_cooldown( "celestial_alignment" );
     cooldown.faerie_fire         = get_cooldown( "faerie_fire"         );
     cooldown.growl               = get_cooldown( "growl"               );
     cooldown.mangle              = get_cooldown( "mangle"              );
@@ -4095,6 +4097,7 @@ struct celestial_alignment_t : public druid_spell_t
     druid_spell_t( "celestial_alignment", player, player -> spec.celestial_alignment , options_str )
   {
     parse_options( NULL, options_str );
+    cooldown = player -> cooldown.celestial_alignment;
     harmful = false;
     dot_duration = timespan_t::zero();
   }
@@ -4962,6 +4965,7 @@ struct starfire_t : public druid_spell_t
     druid_spell_t( "starfire", player, player -> spec.starfire )
   {
     parse_options( NULL, options_str );
+    base_execute_time *= 1 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
   }
 
   double action_multiplier() const
@@ -4980,7 +4984,7 @@ struct starfire_t : public druid_spell_t
     timespan_t casttime = druid_spell_t::execute_time();
 
     if ( p() -> buff.lunar_empowerment -> up() && p() -> talent.euphoria -> ok() )
-      casttime /= 1 + std::abs( p() -> talent.euphoria -> effectN( 2 ).percent() );
+      casttime *= 1 + p() -> talent.euphoria -> effectN( 2 ).percent();
 
     return casttime;
   }
@@ -4988,6 +4992,9 @@ struct starfire_t : public druid_spell_t
   void execute()
   {
     druid_spell_t::execute();
+
+    if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T17, B4 ) )
+      p() -> cooldown.celestial_alignment -> adjust( -1 * p() -> sets.set( DRUID_BALANCE, T17, B4 ) -> effectN( 1 ).time_value() );
 
     if ( p() -> eclipse_amount < 0 && !p() -> buff.celestial_alignment -> up() )
       p() -> proc.wrong_eclipse_starfire -> occur();
@@ -5225,6 +5232,7 @@ struct wrath_t : public druid_spell_t
     druid_spell_t( "wrath", player, player -> find_class_spell( "Wrath" ) )
   {
     parse_options( NULL, options_str );
+    base_execute_time *= 1 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
   }
 
   double action_multiplier() const
@@ -5250,7 +5258,7 @@ struct wrath_t : public druid_spell_t
     timespan_t casttime = druid_spell_t::execute_time();
 
     if ( p() -> buff.solar_empowerment -> up() && p() -> talent.euphoria -> ok() )
-      casttime /= 1 + std::abs( p() -> talent.euphoria -> effectN( 2 ).percent() );
+      casttime *= 1 + p() -> talent.euphoria -> effectN( 2 ).percent();
 
     return casttime;
   }
@@ -5266,6 +5274,9 @@ struct wrath_t : public druid_spell_t
   void execute()
   {
     druid_spell_t::execute();
+
+    if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T17, B4 ) )
+      p() -> cooldown.celestial_alignment -> adjust( -1 * p() -> sets.set( DRUID_BALANCE, T17, B4 ) -> effectN( 1 ).time_value() );
 
     if ( p() -> eclipse_amount > 0 && !p() -> buff.celestial_alignment -> up() )
       p() -> proc.wrong_eclipse_wrath -> occur();
