@@ -3374,6 +3374,7 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
     use_off_gcd = true;
     melee_range = -1;
+    may_crit = 0;
     target = player;
     attack_power_mod.direct = 1.125; // No spell data.
   }
