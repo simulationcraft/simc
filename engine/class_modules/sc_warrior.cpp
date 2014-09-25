@@ -2591,7 +2591,7 @@ struct shield_slam_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( rng().roll( p() -> sets.set( WARRIOR_PROTECTION, T17, B2 ) -> proc_chance() ) )
+    if ( rng().roll( p() -> bugs ? 0.08 : p() -> sets.set( WARRIOR_PROTECTION, T17, B2 ) -> proc_chance() ) )
     {
       if ( p() -> active_stance == STANCE_GLADIATOR )
         shield_charge_2pc -> execute();
@@ -4667,7 +4667,7 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_BLOCK );
 
   buff.shield_charge = buff_creator_t( this, "shield_charge", find_spell( 169667 ) )
-    .default_value( find_spell( 169667 ) -> effectN( 1 ).percent() + sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent() )
+    .default_value( find_spell( 169667 ) -> effectN( 1 ).percent() + ( bugs ? 0.05 : sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent() ) )
     .cd( timespan_t::zero() );
 
   buff.shield_wall = buff_creator_t( this, "shield_wall", spec.shield_wall )
@@ -5114,7 +5114,7 @@ double warrior_t::composite_block_reduction() const
   if ( buff.shield_block -> up() )
   {
       if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )
-          br += find_spell( 169688 ) -> effectN( 1 ).percent();
+          br += ( bugs ? 0.05 : find_spell( 169688 ) -> effectN( 1 ).percent() );
   }
 
   return br;
