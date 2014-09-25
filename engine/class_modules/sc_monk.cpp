@@ -706,7 +706,7 @@ public:
     double m = ab::composite_multistrike_multiplier( s );
 
     if ( p() -> buff.forceful_winds -> up() )
-      m += p() -> buff.forceful_winds -> value();
+      m *= 1 + p() -> buff.forceful_winds -> value();
 
     return m;
   }
@@ -2020,8 +2020,8 @@ struct tigereye_brew_t: public monk_spell_t
 
     if (p()->sets.has_set_bonus(MONK_WINDWALKER, T17, B4))
     {
-      double fw_use_value = teb_stacks_used * p()->buff.forceful_winds->s_data->effectN(1).percent();
-      p()->buff.forceful_winds->trigger(1, fw_use_value);
+      double fw_use_value = teb_stacks_used * p() -> buff.forceful_winds -> s_data -> effectN( 1 ).percent();
+      p() -> buff.forceful_winds -> trigger( 1, fw_use_value );
     }
   }
 };
