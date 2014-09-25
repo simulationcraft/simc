@@ -2015,11 +2015,14 @@ struct tigereye_brew_t: public monk_spell_t
     // EEIN: Seperated teb_stacks_used from use_value so it can be used to track focus of xuen.
     double use_value = value() * teb_stacks_used;
 
-    if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T17, B4 ) )
-      p() -> buff.forceful_winds-> trigger( (int)teb_stacks_used, buff_t::DEFAULT_VALUE(), 100.0 );
-
     p() -> buff.tigereye_brew_use -> trigger( 1, use_value );
     p() -> buff.tigereye_brew -> decrement( max_stacks_consumable );
+
+    if (p()->sets.has_set_bonus(MONK_WINDWALKER, T17, B4))
+    {
+      double fw_use_value = teb_stacks_used * p()->buff.forceful_winds->s_data->effectN(1).percent();
+      p()->buff.forceful_winds->trigger(1, fw_use_value);
+    }
   }
 };
 
@@ -3590,7 +3593,7 @@ void monk_t::create_buffs()
 
   buff.storm_earth_and_fire = buff_creator_t( this, "storm_earth_and_fire", spec.storm_earth_and_fire );
 
-  buff.forceful_winds = buff_creator_t( this, "forceful_winds", find_spell( 166603 ) );
+  buff.forceful_winds = buff_creator_t( this, "forceful_winds", find_spell(166603) );
 }
 
 // monk_t::init_gains =======================================================
