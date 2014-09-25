@@ -47,11 +47,11 @@ position=back
 professions=engineering=600/enchanting=600
 talents=0002012
 glyphs=chain_lightning
-head=gronnskin_crown,id=113863,bonus_id=567/523/448,gem_id=115813
-neck=engineers_grounded_gorget,id=113892,bonus_id=567/523/448,gem_id=115813,enchant=gift_of_haste
-shoulders=windspeakers_mantle,id=115576,bonus_id=567/523/448,gem_id=115813
-back=cloak_of_delving_secrets,id=113929,bonus_id=567/523/448,gem_id=115813,enchant=gift_of_haste
-chest=windspeakers_tunic,id=115577,bonus_id=567/523/448,gem_id=115813
+head=gronnskin_crown,id=113863,bonus_id=567/523/448,gem_id=115811
+neck=engineers_grounded_gorget,id=113892,bonus_id=567/523/448,gem_id=115811,enchant=gift_of_haste
+shoulders=windspeakers_mantle,id=115576,bonus_id=567/523/448,gem_id=115811
+back=cloak_of_delving_secrets,id=113929,bonus_id=567/523/448,gem_id=115811,enchant=gift_of_haste
+chest=windspeakers_tunic,id=115577,bonus_id=567/523/448,gem_id=115811
 wrists=bracers_of_callous_disregard,id=119334,bonus_id=567/523/448,gem_id=115811
 hands=windspeakers_handwraps,id=115578,bonus_id=567/523/448,gem_id=115811
 waist=earthgrasp_girdle,id=113930,bonus_id=567/523/448,gem_id=115811
