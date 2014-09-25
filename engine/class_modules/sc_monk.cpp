@@ -4349,6 +4349,7 @@ void monk_t::apl_combat_brewmaster()
 
   st -> add_action( this, "Blackout Kick", "if=buff.shuffle.down");
   st -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.heavy" );
+  st -> add_action( this, "Purifying Brew", "if=!buff.serenity.up" );
   st -> add_action( this, "Guard" );
   st -> add_action( this, "Keg Smash", "if=chi.max-chi>=2&!buff.serenity.remains" );
   st -> add_talent( this, "Chi Burst", "if=talent.chi_burst.enabled&energy.time_to_max>3" );

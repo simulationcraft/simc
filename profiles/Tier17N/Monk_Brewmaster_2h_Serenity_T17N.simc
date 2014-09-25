@@ -3,7 +3,7 @@ level=100
 race=night_elf
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.02.112
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.01.112
 spec=brewmaster
 
 # This default action priority list is automatically created based on your character.
@@ -40,6 +40,7 @@ actions+=/call_action_list,name=aoe,if=active_enemies>=3
 
 actions.st=blackout_kick,if=buff.shuffle.down
 actions.st+=/purifying_brew,if=!talent.chi_explosion.enabled&stagger.heavy
+actions.st+=/purifying_brew,if=!buff.serenity.up
 actions.st+=/guard
 actions.st+=/keg_smash,if=chi.max-chi>=2&!buff.serenity.remains
 actions.st+=/chi_burst,if=talent.chi_burst.enabled&energy.time_to_max>3
