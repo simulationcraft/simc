@@ -41,7 +41,7 @@ public:
   core_event_t* sniper_training;
   const spell_data_t* sniper_training_cd;
   timespan_t movement_ended;
-  double enhanced_auto;
+  
   // Active
   std::vector<pets::hunter_main_pet_t*> hunter_main_pets;
   struct actives_t
@@ -329,7 +329,6 @@ public:
     summon_pet_str = "";
     base.distance = 40;
     base_gcd = timespan_t::from_seconds( 1.0 );
-    enhanced_auto = 0.5;
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[ CACHE_HASTE ] = true;
@@ -1232,7 +1231,7 @@ struct basic_attack_t: public hunter_main_pet_attack_t
   {
     hunter_main_pet_attack_t::update_ready( cd_duration ); // Currently on beta enhanced basic attacks seems to proc 50% of the time, rather than 15%.
     // Added in an option to tweak it for now, default set at 50%
-    if ( o() -> rng().roll( o() -> bugs ? o() -> enhanced_auto : o() -> perks.enhanced_basic_attacks -> effectN( 1 ).percent() ) )
+    if ( o() -> rng().roll( o() -> perks.enhanced_basic_attacks -> effectN( 1 ).percent() ) )
     {
       cooldown -> reset( true );
       p() -> buffs.enhanced_basic_attacks -> trigger();
@@ -1516,10 +1515,6 @@ struct dire_critter_t: public hunter_pet_t
       may_crit = true;
       special = false;
       focus_gain = player -> find_spell( 120694 ) -> effectN( 1 ).base_value();
-      
-      // Dire Beast is only giving 2 focus per hit in game
-      if ( p.o() -> bugs )
-        focus_gain = 2;
     }
 
     virtual void impact( action_state_t* s )
@@ -3033,9 +3028,9 @@ struct kill_command_t: public hunter_spell_t
     if ( !p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T17, B2 ) )
       return false;
 
-    bool procced;
-
-    if ( ( procced = p() -> tier17_2pc_bm.trigger() ) != false )
+    // from Nimox
+    bool procced = p() -> bugs ? rng().roll( 0.12 ) : p() -> tier17_2pc_bm.trigger();
+    if ( procced )
     {
       p() -> cooldowns.bestial_wrath -> reset( true );
       p() -> procs.tier17_2pc_bm -> occur();
@@ -3452,6 +3447,7 @@ void hunter_t::create_buffs()
   buffs.tier16_4pc_bm_brutal_kinship = buff_creator_t( this, 144670, "tier16_4pc_brutal_kinship" )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
+  // from Nimox
   buffs.heavy_shot   = buff_creator_t( this, 167165, "heavy_shot" )
     .default_value( find_spell( 167165 ) -> effectN( 1 ).percent() )
     .refresh_behavior( BUFF_REFRESH_EXTEND );
@@ -3949,7 +3945,9 @@ double hunter_t::composite_player_critical_damage_multiplier() const
   {
     // deadly_aim_driver
     double seconds_buffed = floor( buffs.rapid_fire -> elapsed( sim -> current_time ).total_seconds() );
-    cdm += seconds_buffed * sets.set( HUNTER_MARKSMANSHIP, T17, B4 ) -> effectN( 1 ).percent();
+    // from Nimox
+    cdm += bugs ? std::min(0.15, seconds_buffed * 0.03 )
+                : seconds_buffed * sets.set( HUNTER_MARKSMANSHIP, T17, B4 ) -> effectN( 1 ).percent();
   }
 
   return cdm;
@@ -4012,7 +4010,6 @@ void hunter_t::create_options()
   option_t hunter_options[] =
   {
     opt_string( "summon_pet", summon_pet_str ),
-    opt_float( "enhanced_auto", enhanced_auto ),
     opt_null()
   };
 
@@ -4039,7 +4036,6 @@ void hunter_t::copy_from( player_t* source )
   hunter_t* p = debug_cast<hunter_t*>( source );
 
   summon_pet_str = p -> summon_pet_str;
-  enhanced_auto = p -> enhanced_auto;
 }
 
 // hunter_t::armory_extensions ==============================================
