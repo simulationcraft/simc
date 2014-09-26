@@ -52,31 +52,31 @@ actions.generator+=/sinister_strike
 actions.finisher=crimson_tempest,if=active_enemies>7&dot.crimson_tempest_dot.ticks_remain<=1
 actions.finisher+=/eviscerate
 
-head=poisoners_helmet,id=115572,bonus_id=567
-neck=engineers_grounded_gorget,id=113892,bonus_id=567,enchant=gift_of_mastery
+head=sorkas_nightshade_cowl,id=113978,bonus_id=567
+neck=engineers_grounded_gorget,id=113892,bonus_id=567,enchant=gift_of_haste
 shoulders=poisoners_spaulders,id=115574,bonus_id=567
-back=cloak_of_delving_secrets,id=113929,bonus_id=567,enchant=gift_of_mastery
+back=cloak_of_delving_secrets,id=113929,bonus_id=567,enchant=gift_of_haste
 chest=poisoners_tunic,id=115570,bonus_id=567
 wrists=squires_electroplated_bracers,id=113962,bonus_id=567
 hands=poisoners_gloves,id=115571,bonus_id=567
 waist=girdle_of_unconquered_glory,id=113907,bonus_id=567
-legs=shattering_smash_leggings,id=113989,bonus_id=567
-feet=treads_of_the_dark_hunt,id=113974,bonus_id=567
-finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_mastery
-finger2=flensers_hookring,id=113611,bonus_id=567,enchant=gift_of_mastery
+legs=poisoners_legguards,id=115573,bonus_id=567
+feet=ironflecked_sandals,id=119340,bonus_id=567
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_haste
+finger2=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_haste
 trinket1=meaty_dragonspine_trophy,id=118114,bonus_id=567
 trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=567
-main_hand=molten_edge_eviscerator,id=113918,bonus_id=567,enchant=mark_of_bleeding_hollow
-off_hand=sorkas_chainfist,id=113965,bonus_id=567,enchant=mark_of_bleeding_hollow
+main_hand=hansgars_forgehammer,id=113897,bonus_id=567,enchant=mark_of_bleeding_hollow
+off_hand=hansgars_forgehammer,id=113897,bonus_id=567,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_agility=3549
-# gear_stamina=4451
-# gear_crit_rating=317
-# gear_haste_rating=956
-# gear_mastery_rating=1734
+# gear_agility=3564
+# gear_stamina=4474
+# gear_crit_rating=616
+# gear_haste_rating=1933
+# gear_mastery_rating=860
 # gear_armor=1147
-# gear_multistrike_rating=1010
+# gear_multistrike_rating=1089
 # gear_versatility_rating=122
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

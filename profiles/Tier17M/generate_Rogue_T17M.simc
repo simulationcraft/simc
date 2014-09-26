@@ -45,22 +45,22 @@ role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#cZ!2000010
 spec=combat
-head=poisoners_helmet,id=115572,bonus_id=567
-neck=engineers_grounded_gorget,id=113892,bonus_id=567,enchant=gift_of_mastery
+head=sorkas_nightshade_cowl,id=113978,bonus_id=567
+neck=engineers_grounded_gorget,id=113892,bonus_id=567,enchant=gift_of_haste
 shoulders=poisoners_spaulders,id=115574,bonus_id=567
-back=cloak_of_delving_secrets,id=113929,bonus_id=567,enchant=gift_of_mastery
+back=cloak_of_delving_secrets,id=113929,bonus_id=567,enchant=gift_of_haste
 chest=poisoners_tunic,id=115570,bonus_id=567
 wrists=squires_electroplated_bracers,id=113962,bonus_id=567
 hands=poisoners_gloves,id=115571,bonus_id=567
 waist=girdle_of_unconquered_glory,id=113907,bonus_id=567
-legs=shattering_smash_leggings,id=113989,bonus_id=567
-feet=treads_of_the_dark_hunt,id=113974,bonus_id=567
-finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_mastery
-finger2=flensers_hookring,id=113611,bonus_id=567,enchant=gift_of_mastery
+legs=poisoners_legguards,id=115573,bonus_id=567
+feet=ironflecked_sandals,id=119340,bonus_id=567
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_haste
+finger2=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_haste
 trinket1=meaty_dragonspine_trophy,id=118114,bonus_id=567
 trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=567
-main_hand=molten_edge_eviscerator,id=113918,bonus_id=567,enchant=mark_of_bleeding_hollow
-off_hand=sorkas_chainfist,id=113965,bonus_id=567,enchant=mark_of_bleeding_hollow
+main_hand=hansgars_forgehammer,id=113897,bonus_id=567,enchant=mark_of_bleeding_hollow
+off_hand=hansgars_forgehammer,id=113897,bonus_id=567,enchant=mark_of_bleeding_hollow
 save=Rogue_Combat_T17M.simc
 
 # Subtlety

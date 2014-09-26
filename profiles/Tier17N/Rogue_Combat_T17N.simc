@@ -52,31 +52,31 @@ actions.generator+=/sinister_strike
 actions.finisher=crimson_tempest,if=active_enemies>7&dot.crimson_tempest_dot.ticks_remain<=1
 actions.finisher+=/eviscerate
 
-head=poisoners_helmet,id=115572
-neck=engineers_grounded_gorget,id=113892,enchant=gift_of_mastery
+head=sorkas_nightshade_cowl,id=113978
+neck=engineers_grounded_gorget,id=113892,enchant=gift_of_haste
 shoulders=poisoners_spaulders,id=115574
-back=cloak_of_delving_secrets,id=113929,enchant=gift_of_mastery
+back=cloak_of_delving_secrets,id=113929,enchant=gift_of_haste
 chest=poisoners_tunic,id=115570
 wrists=squires_electroplated_bracers,id=113962
 hands=poisoners_gloves,id=115571
 waist=girdle_of_unconquered_glory,id=113907
-legs=shattering_smash_leggings,id=113989
-feet=treads_of_the_dark_hunt,id=113974
-finger1=timeless_solium_band_of_the_assassin,id=118297,enchant=gift_of_mastery
-finger2=flensers_hookring,id=113611,enchant=gift_of_mastery
+legs=poisoners_legguards,id=115573
+feet=ironflecked_sandals,id=119340
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_haste
+finger2=unexploded_explosive_shard,id=113877,enchant=gift_of_haste
 trinket1=meaty_dragonspine_trophy,id=118114
 trinket2=beating_heart_of_the_mountain,id=113931
-main_hand=molten_edge_eviscerator,id=113918,enchant=mark_of_bleeding_hollow
-off_hand=sorkas_chainfist,id=113965,enchant=mark_of_bleeding_hollow
+main_hand=hansgars_forgehammer,id=113897,enchant=mark_of_bleeding_hollow
+off_hand=hansgars_forgehammer,id=113897,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_agility=2684
-# gear_stamina=3366
-# gear_crit_rating=239
-# gear_haste_rating=722
-# gear_mastery_rating=1380
+# gear_agility=2743
+# gear_stamina=3456
+# gear_crit_rating=499
+# gear_haste_rating=1632
+# gear_mastery_rating=651
 # gear_armor=976
-# gear_multistrike_rating=764
-# gear_versatility_rating=93
+# gear_multistrike_rating=824
+# gear_versatility_rating=122
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
