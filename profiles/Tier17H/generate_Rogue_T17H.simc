@@ -55,7 +55,7 @@ hands=poisoners_gloves,id=115571,bonus_id=566
 waist=girdle_of_unconquered_glory,id=113907,bonus_id=566
 legs=poisoners_legguards,id=115573,bonus_id=566
 feet=ironflecked_sandals,id=119340,bonus_id=566
-finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_haste
+finger1=spellbound_solium_band_of_fatal_strikes,id=118302,enchant=gift_of_haste
 finger2=unexploded_explosive_shard,id=113877,bonus_id=566,enchant=gift_of_haste
 trinket1=meaty_dragonspine_trophy,id=118114,bonus_id=566
 trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=566
