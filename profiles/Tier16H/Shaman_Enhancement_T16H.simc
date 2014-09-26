@@ -5,7 +5,7 @@ role=attack
 position=back
 professions=engineering=600/herbalism=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...1.1.
-glyphs=chain_lightning
+glyphs=chain_lightning/frost_shock
 spec=enhancement
 
 # This default action priority list is automatically created based on your character.
