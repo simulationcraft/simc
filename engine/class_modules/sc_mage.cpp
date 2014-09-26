@@ -5163,14 +5163,10 @@ void mage_t::apl_fire()
   combust_sequence -> add_talent( this, "Meteor" );
   combust_sequence -> add_action( this, "Pyroblast",
                                   "if=execute_time=gcd" );
-  combust_sequence -> add_action( this, "Combustion",
-                                  "if=talent.meteor.enabled&dot.meteor_burn.ticking",
-                                  "Meteor-talented Combustions need to wait for Meteor impact for maximum ignite size" );
   combust_sequence -> add_action( this, "Inferno Blast",
-                                  "if=talent.meteor.enabled",
+                                  "if=talent.meteor.enabled&cooldown.meteor.duration-cooldown.meteor.remains<gcd*3",
                                   "Meteor Combustions may run out of Pyro procs before impact. IB fills the GCD before Combustion should be triggered" );
-  combust_sequence -> add_action( this, "Combustion",
-                                  "if=!talent.meteor.enabled" );
+  combust_sequence -> add_action( this, "Combustion" );
 
 
   active_talents -> add_talent( this, "Meteor",
