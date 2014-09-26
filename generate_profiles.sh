@@ -1,5 +1,5 @@
 
-for tier in 16H 17H 17M 17N 17P 17PR 17B
+for tier in 16H 17B 17H 17M 17N 17PR
 do
   PROFDIR='profiles/Tier'$tier'/'
   cd $PROFDIR
