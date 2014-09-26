@@ -1703,6 +1703,16 @@ struct compare_hps
   }
 };
 
+// compare_hps_plus_aps ====================================================
+
+struct compare_hps_plus_aps
+{
+  bool operator()( player_t* l, player_t* r ) const
+  {
+    return ( l -> collected_data.hps.mean() + l -> collected_data.aps.mean() ) > ( r -> collected_data.hps.mean() + r -> collected_data.aps.mean() );
+  }
+};
+
 // compare_dtps ==============================================================
 
 struct compare_dtps
@@ -1771,6 +1781,7 @@ void sim_t::analyze()
 
   range::sort( players_by_dps,  compare_dps() );
   range::sort( players_by_hps,  compare_hps() );
+  range::sort( players_by_hps_plus_aps, compare_hps_plus_aps() );
   range::sort( players_by_dtps, compare_dtps() );
   range::sort( players_by_tmi,  compare_tmi() );
   range::sort( players_by_name, compare_name() );

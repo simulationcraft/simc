@@ -654,7 +654,7 @@ void print_html_raid_summary( report::sc_html_stream& os, const sim_t* sim, cons
   }
   os << "</div>\n";
 
-  // Right side charts: hps
+  // Right side charts: hps+aps
   os << "<div class=\"charts\">\n";
 
   for ( size_t i = 0; i < ri.hps_charts.size(); i++ )
