@@ -4363,10 +4363,6 @@ struct blood_boil_spread_t : public death_knight_spell_t
     // in the first place
     if ( p() -> spec.scent_of_blood -> ok() )
     {
-      // The scent-of-blood based logic ignores main target(?)
-      if ( target == s -> target )
-        return;
-
       if ( bp )
       {
         p() -> active_spells.blood_plague -> target = s -> target;
