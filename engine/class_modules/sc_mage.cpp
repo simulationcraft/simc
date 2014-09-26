@@ -715,9 +715,7 @@ struct mirror_image_pet_t : public pet_t
   {
     double m = pet_t::composite_player_multiplier( school );
 
-    // Orc racial
-    if ( owner -> race == RACE_ORC )
-      m *= 1.0 + find_spell( 21563 ) -> effectN( 1 ).percent();
+    m *= o() -> pet_multiplier;
 
     return m;
   }
