@@ -60,7 +60,7 @@ druid="Druid_Balance_T17PR"
 level=100
 race=troll
 spec=balance
-talents=0103111
+talents=0001011
 head=bloodfeather_cowl,id=109976
 neck=magisters_chain,id=109954,enchant=gift_of_mastery
 shoulder=blackwater_spaulders,id=109938

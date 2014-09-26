@@ -2853,9 +2853,6 @@ struct devouring_plague_t final : public priest_spell_t
         }
 
         priest.cooldowns.mind_blast -> adjust( - timespan_t::from_seconds( resource_consumed * priest.sets.set( PRIEST_SHADOW, T17, B2 ) -> effectN( 1 ).time_value().total_seconds() ), true );
-
-        for ( int x = 0; x < resource_consumed; x++ )
-          priest.procs.t17_2pc_caster_mind_blast_reset_overflow_seconds -> occur();
       }
     }
 
@@ -3840,9 +3837,6 @@ struct void_entropy_t : public priest_spell_t
         }
 
         priest.cooldowns.mind_blast -> adjust( - timespan_t::from_seconds( resource_consumed * priest.sets.set( PRIEST_SHADOW, T17, B2 ) -> effectN( 1 ).time_value().total_seconds() ), true );
-
-        for ( int x = 0; x < resource_consumed; x++ )
-          priest.procs.t17_2pc_caster_mind_blast_reset_overflow_seconds -> occur();
       }
     }
 
