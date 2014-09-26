@@ -1794,6 +1794,11 @@ public:
     if ( ab::p() -> talent.bloodtalons -> ok() && consume_bloodtalons && ab::p() -> buff.bloodtalons -> check() )
       pm *= 1.0 + ab::p() -> buff.bloodtalons -> data().effectN( 1 ).percent();
 
+
+    if ( ! ab::p() -> buff.bear_form -> check() && dbc::is_school( ab::school, SCHOOL_PHYSICAL ) )
+      pm *= 1.0 + ab::p() -> buff.savage_roar -> check() * ab::p() -> buff.savage_roar -> default_value; // Avoid using value() to prevent skewing benefit_pct.
+
+
     return pm;
   }
   
@@ -6490,9 +6495,6 @@ double druid_t::composite_player_multiplier( school_e school ) const
         m *= 1.0 + buff.chosen_of_elune -> default_value;
     }
   }
-
-  if ( ! buff.bear_form -> check() && dbc::is_school( school, SCHOOL_PHYSICAL ) )
-    m *= 1.0 + buff.savage_roar -> check() * buff.savage_roar -> default_value; // Avoid using value() to prevent skewing benefit_pct.
 
   return m;
 }
