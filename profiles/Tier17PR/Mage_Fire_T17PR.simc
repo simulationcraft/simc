@@ -32,31 +32,23 @@ actions+=/blazing_speed,if=movement.remains>0
 actions+=/cold_snap,if=health.pct<30
 actions+=/time_warp,if=target.health.pct<25|time>5
 actions+=/rune_of_power,if=buff.rune_of_power.remains<cast_time
-actions+=/call_action_list,name=crystal_targeting,if=pet.prismatic_crystal.active
 actions+=/call_action_list,name=combust_sequence,if=pyro_chain
 actions+=/call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active
 actions+=/call_action_list,name=init_combust
-actions+=/call_action_list,name=init_crystal,if=talent.prismatic_crystal.enabled&glyph.combustion.enabled
+actions+=/call_action_list,name=init_crystal,if=talent.prismatic_crystal.enabled
 # Utilize level 90 active talents while avoiding pyro munching
 actions+=/rune_of_power,if=buff.rune_of_power.remains<2*(action.fireball.execute_time+gcd)&(buff.heating_up.down|buff.pyroblast.down|!action.fireball.in_flight)
 actions+=/mirror_image,if=buff.heating_up.down|buff.pyroblast.down|!action.fireball.in_flight
 actions+=/call_action_list,name=aoe,if=active_enemies>=5
 actions+=/call_action_list,name=single_target
 
-# Target selection when Prismatic Crystal is up
-# PC is mostly used in combo with Combustion for double ticks on single target, or supercharged ticks for spreading in AOE
-actions.crystal_targeting=choose_target,if=!pet.prismatic_crystal.dot.combustion.ticking&((active_dot.combustion>0&cooldown.inferno_blast.up)|cooldown.combustion.up)
-actions.crystal_targeting+=/choose_target,name=prismatic_crystal,if=pet.prismatic_crystal.dot.combustion.ticking
-
 # Prismatic Crystal sequence initialization
 # This sequence is triggered only when Combustion is glyphed, on even numbered PCs which are not used in conjunction with it
 actions.init_crystal=prismatic_crystal,if=cooldown.combustion.remains>0&buff.pyroblast.up&buff.heating_up.up&(!talent.living_bomb.enabled|(dot.living_bomb.ticking&dot.living_bomb.remains<10))
+actions.init_crystal+=/prismatic_crystal,if=buff.pyromaniac.react
 
 # Action list while Prismatic Crystal is up
-# This line attempts to spread any ticking Combustion onto PC
-actions.crystal_sequence=inferno_blast,cycle_targets=1,if=dot.combustion.ticking&!pet.prismatic_crystal.dot.combustion.ticking
-# This line attempts to spread any LB that will explode within PC's duration onto it
-actions.crystal_sequence+=/inferno_blast,cycle_targets=1,if=talent.living_bomb.enabled&dot.living_bomb.ticking&dot.living_bomb.remains<cooldown.prismatic_crystal.remains-50&!pet.prismatic_crystal.dot.living_bomb.ticking
+actions.crystal_sequence=inferno_blast,cycle_targets=1,if=dot.combustion.ticking&active_dot.combustion<active_enemies
 # Use pyros before PC's expiration
 actions.crystal_sequence+=/pyroblast,if=current_target=prismatic_crystal&buff.pyroblast.up&cooldown.prismatic_crystal.remains-50<gcd+travel_time&cooldown.prismatic_crystal.remains-50>travel_time
 actions.crystal_sequence+=/call_action_list,name=single_target,if=current_target=prismatic_crystal
@@ -66,52 +58,24 @@ actions.crystal_sequence+=/call_action_list,name=single_target,if=current_target
 actions.init_combust=start_pyro_chain,if=talent.meteor.enabled&cooldown.combustion.remains<action.scorch.gcd*3&cooldown.meteor.up&buff.pyroblast.up&((buff.heating_up.down&action.fireball.in_flight)|(buff.heating_up.up&!action.fireball.in_flight))
 actions.init_combust+=/start_pyro_chain,if=talent.prismatic_crystal.enabled&(!talent.living_bomb.enabled|dot.living_bomb.remains>action.scorch.execute_time*3)&cooldown.combustion.remains<action.scorch.gcd*2&cooldown.prismatic_crystal.up&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight
 actions.init_combust+=/start_pyro_chain,if=!(talent.prismatic_crystal.enabled|talent.meteor.enabled)&cooldown.combustion.remains<action.scorch.gcd*4&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight
+actions.init_combust+=/start_pyro_chain,if=buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%action.pyroblast.gcd)*action.pyroblast.gcd|(talent.kindling.enabled&cooldown.combustion.remains<ceil(buff.pyromaniac.remains%action.pyroblast.gcd)*(1+action.pyroblast.gcd)))
 
-# Combustion sequence
-# This sequence decides whether Combustion should be used on the current target or PC for supercharged AOE ticks
-actions.combust_sequence=call_action_list,name=crystal_combust,if=glyph.combustion.enabled&talent.prismatic_crystal.enabled&active_enemies>=3
-actions.combust_sequence+=/call_action_list,name=crystal_combust,if=!glyph.combustion.enabled&talent.prismatic_crystal.enabled&active_enemies>=6
-actions.combust_sequence+=/call_action_list,name=st_combust
-
-# Single target Combustion
-actions.st_combust=stop_pyro_chain,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.remains>0
-actions.st_combust+=/stop_pyro_chain,if=!talent.prismatic_crystal.enabled&cooldown.combustion.remains>10
-# At low haste, Meteor should be casted before using CDs. This is due to Meteor's snapshot timing
-actions.st_combust+=/meteor,if=spell_haste>0.667
-actions.st_combust+=/blood_fury
-actions.st_combust+=/berserking
-actions.st_combust+=/arcane_torrent
-actions.st_combust+=/use_item,slot=trinket1
-actions.st_combust+=/use_item,slot=trinket2
-actions.st_combust+=/potion,name=draenic_intellect
-actions.st_combust+=/meteor
-# Single target PC Combustions utilize PC for double ticks, and avoid spending all pyro buffs, leaving some for use on PC
-actions.st_combust+=/combustion,if=talent.prismatic_crystal.enabled&buff.heating_up.down
-actions.st_combust+=/prismatic_crystal,if=cooldown.combustion.remains>10
+# Combustion Sequence
+actions.combust_sequence=stop_pyro_chain,if=cooldown.combustion.duration-cooldown.combustion.remains<15
+actions.combust_sequence+=/prismatic_crystal
+actions.combust_sequence+=/blood_fury
+actions.combust_sequence+=/berserking
+actions.combust_sequence+=/arcane_torrent
+actions.combust_sequence+=/use_item,slot=trinket1
+actions.combust_sequence+=/use_item,slot=trinket2
+actions.combust_sequence+=/potion,name=draenic_intellect
+actions.combust_sequence+=/meteor
+actions.combust_sequence+=/pyroblast,if=execute_time=gcd
 # Meteor-talented Combustions need to wait for Meteor impact for maximum ignite size
-actions.st_combust+=/combustion,if=talent.meteor.enabled&dot.meteor_burn.ticking
-# Kindling, PC or regular combustions can use IB for additional Pyro procs during setup
-actions.st_combust+=/inferno_blast,if=!talent.meteor.enabled&((buff.heating_up.up&buff.pyroblast.down|buff.heating_up.down&buff.pyroblast.down))
-actions.st_combust+=/pyroblast,if=buff.pyroblast.up
+actions.combust_sequence+=/combustion,if=talent.meteor.enabled&dot.meteor_burn.ticking
 # Meteor Combustions may run out of Pyro procs before impact. IB fills the GCD before Combustion should be triggered
-actions.st_combust+=/inferno_blast,if=talent.meteor.enabled
-actions.st_combust+=/combustion,if=!talent.meteor.enabled
-
-# Prismatic Crystal Combustion
-# This sequence is used for creating large combustions on PC, to be spread on multiple target fights
-actions.crystal_combust=stop_pyro_chain,if=(!cooldown.prismatic_crystal.up&!pet.prismatic_crystal.active)|(cooldown.combustion.remains>10&!cooldown.inferno_blast.up)
-actions.crystal_combust+=/prismatic_crystal
-actions.crystal_combust+=/inferno_blast,if=dot.combustion.ticking&active_dot.combustion<active_enemies
-actions.crystal_combust+=/inferno_blast,cycle_targets=1,if=talent.living_bomb.enabled&dot.living_bomb.ticking&dot.living_bomb.remains<cooldown.prismatic_crystal.remains-50&!pet.prismatic_crystal.dot.living_bomb.ticking&buff.heating_up.down
-actions.crystal_combust+=/blood_fury
-actions.crystal_combust+=/berserking
-actions.crystal_combust+=/arcane_torrent
-actions.crystal_combust+=/use_item,slot=trinket1
-actions.crystal_combust+=/use_item,slot=trinket2
-actions.crystal_combust+=/potion,name=draenic_intellect
-actions.crystal_combust+=/fireball,if=!dot.ignite.ticking&!action.fireball.in_flight
-actions.crystal_combust+=/pyroblast,if=buff.pyroblast.up
-actions.crystal_combust+=/combustion
+actions.combust_sequence+=/inferno_blast,if=talent.meteor.enabled
+actions.combust_sequence+=/combustion,if=!talent.meteor.enabled
 
 # Active talents usage
 # This sequence summarizes all usage of active talents (BW, LB, Met), and their optimizations with Incanter's Flow and Prismatic Crystal
@@ -134,6 +98,7 @@ actions.aoe+=/flamestrike
 actions.single_target=inferno_blast,if=(dot.combustion.ticking&active_dot.combustion<active_enemies)|(dot.living_bomb.ticking&active_dot.living_bomb<active_enemies)
 # Use Pyro procs before they run out
 actions.single_target+=/pyroblast,if=buff.pyroblast.up&buff.pyroblast.remains<action.fireball.execute_time
+actions.single_target+=/pyroblast,if=buff.pyromaniac.react
 # Pyro camp during regular sequence; Do not use Pyro procs without HU and first using fireball
 actions.single_target+=/pyroblast,if=buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight
 actions.single_target+=/call_action_list,name=active_talents
