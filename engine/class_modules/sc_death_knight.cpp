@@ -5198,15 +5198,10 @@ struct death_pact_t : public death_knight_heal_t
     death_knight_heal_t( "death_pact", p, p -> find_talent_spell( "Death Pact" ) )
   {
     may_crit = false;
+    pct_heal = data().effectN( 1 ).percent();
 
     parse_options( NULL, options_str );
   }
-
-  double base_da_min( const action_state_t* ) const
-  { return p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent(); }
-
-  double base_da_max( const action_state_t* ) const
-  { return p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent(); }
 };
 
 // Expressions
