@@ -29,6 +29,7 @@
   - Non-glyphed Mana Tea
 
   BREWMASTER:
+  - Fix Tier 16 2-piece to properly lower the cooldown by 30 seconds.
   - Purifying Brew - mostly implemented
   - Level 75 talents - dampen harm added - currently stacks are consumed on all attacks, not just above 15% max hp
   - Black Ox Statue
@@ -154,6 +155,7 @@ public:
     gain_t* surging_mist;
     gain_t* tier15_2pc_melee;
     gain_t* tier16_4pc_melee;
+    gain_t* tier16_4pc_tank;
     gain_t* healing_elixirs;
   } gain;
 
@@ -2570,10 +2572,18 @@ struct purifying_brew_t: public monk_spell_t
   {
     monk_spell_t::execute();
 
+    // Tier 16 4 pieces Brewmaster: Purifying Brew also heals you for 15% of the amount of staggered damage cleared.
+    if ( p() -> sets.has_set_bonus( SET_TANK, T16, B4 ) )
+    {
+      double stagger_heal = p() -> current_stagger_dmg() * p() -> sets.set( SET_TANK, T16, B4 ) -> effectN( 1 ).percent();
+      player -> resource_gain( RESOURCE_HEALTH, stagger_heal, p() -> gain.tier16_4pc_tank, this);
+    }
+
     // Optional addition: Track and report amount of damage cleared
     p() -> active_actions.stagger_self_damage -> clear_all_damage();
 
-    if ( p() -> sets.has_set_bonus(MONK_BREWMASTER, T17, B4) )
+    // Tier 17 4 pieces Brewmaster: Purifying Brew generates 1 stacks of Elusive Brew.
+    if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) )
       trigger_brew( p() -> sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
   }
 
@@ -3621,6 +3631,8 @@ void monk_t::init_gains()
   gain.rushing_jade_wind = get_gain( "rushing_jade_wind" );
   gain.surging_mist = get_gain( "surging_mist" );
   gain.tier15_2pc_melee = get_gain( "tier15_2pc_melee" );
+  gain.tier16_4pc_melee = get_gain( "tier16_4pc_melee" );
+  gain.tier16_4pc_tank = get_gain( "tier16_4pc_tank" );
   gain.gift_of_the_ox = get_gain( "gift_of_the_ox" );
 }
 
