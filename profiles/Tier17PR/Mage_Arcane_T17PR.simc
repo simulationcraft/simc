@@ -37,7 +37,7 @@ actions+=/call_action_list,name=init_crystal,if=talent.prismatic_crystal.enabled
 actions+=/call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active
 actions+=/call_action_list,name=aoe,if=active_enemies>=6
 actions+=/call_action_list,name=burn,if=buff.arcane_power.up&cooldown.evocation.remains<buff.arcane_power.remains&mana.pct>15&talent.prismatic_crystal.enabled
-actions+=/call_action_list,name=conserve
+actions+=/call_action_list,name=evocation
 
 # Conditions for initiating Prismatic Crystal burn phase
 actions.init_crystal=prismatic_crystal,if=cooldown.arcane_power.remains=0&buff.arcane_charge.stack=4
@@ -47,7 +47,7 @@ actions.init_crystal+=/prismatic_crystal,if=buff.arcane_charge.stack=4&(glyph.ar
 actions.crystal_sequence=call_action_list,name=cooldowns
 actions.crystal_sequence+=/nether_tempest,if=current_target=prismatic_crystal&buff.arcane_charge.stack=4&!ticking&cooldown.prismatic_crystal.remains>58
 actions.crystal_sequence+=/call_action_list,name=burn,if=cooldown.evocation.remains<cooldown.prismatic_crystal.remains-50
-actions.crystal_sequence+=/call_action_list,name=conserve
+actions.crystal_sequence+=/call_action_list,name=evocation
 
 # Consolidated damage cooldown abilities
 actions.cooldowns=arcane_power
@@ -76,9 +76,7 @@ actions.burn+=/arcane_barrage,if=buff.presence_of_mind.up&buff.arcane_charge.sta
 actions.burn+=/presence_of_mind
 actions.burn+=/arcane_blast
 
-# Low mana usage, "Conserve" sequence
-actions.conserve=evocation,interrupt_if=mana.pct>92,if=mana.pct<65
-actions.conserve+=/call_action_list,name=cooldowns,if=time_to_die<30|(buff.arcane_charge.stack=4&!(glyph.arcane_power.enabled&talent.prismatic_crystal.enabled)&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>20))
+actions.conserve=call_action_list,name=cooldowns,if=time_to_die<30|(buff.arcane_charge.stack=4&!(glyph.arcane_power.enabled&talent.prismatic_crystal.enabled)&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>20))
 actions.conserve+=/arcane_missiles,if=buff.arcane_missiles.react=3|(talent.overpowered.enabled&buff.arcane_power.up&buff.arcane_power.remains<3)
 actions.conserve+=/arcane_blast,if=buff.arcane_charge.stack=4&(mana.pct>95|(talent.unstable_magic.enabled&mana.pct>92))
 actions.conserve+=/nether_tempest,cycle_targets=1,if=target!=prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))
@@ -92,6 +90,11 @@ actions.conserve+=/presence_of_mind,if=buff.arcane_charge.stack<2&cooldown.arcan
 actions.conserve+=/arcane_blast
 actions.conserve+=/ice_floes,moving=1
 actions.conserve+=/arcane_barrage,moving=1
+
+actions.evocation=call_action_list,name=conserve,if=cooldown.evocation.remains>0
+actions.evocation+=/evocation,interrupt_if=mana.pct>92,if=mana.pct<65
+actions.evocation+=/evocation,interrupt_if=mana.pct>92&set_bonus.tier17_2pc
+actions.evocation+=/call_action_list,name=conserve
 
 head=hood_of_swirling_light,id=109972,bonus_id=524
 neck=alcs_pendant_of_fiery_dreams,id=109957,bonus_id=524,enchant=gift_of_mastery
