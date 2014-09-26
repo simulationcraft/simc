@@ -2520,6 +2520,7 @@ void death_knight_melee_attack_t::execute()
     p() -> buffs.crimson_scourge -> trigger();
 
   trigger_t15_2pc_melee();
+  p() -> trigger_t17_4pc_frost( execute_state );
 }
 
 // death_knight_melee_attack_t::impact() ====================================
@@ -2529,7 +2530,6 @@ void death_knight_melee_attack_t::impact( action_state_t* state )
   base_t::impact( state );
 
   trigger_t16_4pc_melee( state );
-  p() -> trigger_t17_4pc_frost( state );
 }
 
 // death_knight_melee_attack_t::ready() =====================================
@@ -2957,12 +2957,13 @@ struct necrosis_t : public death_knight_spell_t
 
 // Frozen Runeblade =========================================================
 
-struct frozen_runeblade_attack_t : public death_knight_melee_attack_t
+struct frozen_runeblade_attack_t : public melee_attack_t
 {
   frozen_runeblade_attack_t( death_knight_t* player ) :
-    death_knight_melee_attack_t( "frozen_runeblade", player, player -> find_spell( 170205 ) -> effectN( 1 ).trigger() )
+    melee_attack_t( "frozen_runeblade", player, player -> find_spell( 170205 ) -> effectN( 1 ).trigger() )
   {
-    background = true;
+    background = may_crit = special = true;
+    callbacks = false;
     // Implicitly uses main hand weapon
     weapon = &( player -> main_hand_weapon );
   }
@@ -5399,7 +5400,7 @@ struct frozen_runeblade_buff_t : public buff_t
   void expire_override()
   {
     death_knight_t* p = debug_cast< death_knight_t* >( player );
-    p -> active_spells.frozen_runeblade -> dot_duration = stack_count * p -> active_spells.frozen_runeblade -> data().effectN( 1 ).period();
+    p -> active_spells.frozen_runeblade -> dot_duration = ( stack_count + 1 ) * p -> active_spells.frozen_runeblade -> data().effectN( 1 ).period();
     p -> active_spells.frozen_runeblade -> schedule_execute();
 
     buff_t::expire_override();
