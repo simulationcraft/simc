@@ -3743,7 +3743,6 @@ struct death_strike_t : public death_knight_melee_attack_t
     special = true;
     may_parry = false;
     base_multiplier = 1.0 + p -> spec.veteran_of_the_third_war -> effectN( 7 ).percent();
-    base_multiplier = 1.0 + p -> perk.enhanced_death_strike -> effectN( 1 ).percent();
 
     always_consume = true; // Death Strike always consumes runes, even if doesn't hit
 
@@ -5841,7 +5840,6 @@ void death_knight_t::init_spells()
 
   // Shared
   perk.improved_diseases               = find_perk_spell( "Improved Diseases" );
-  perk.enhanced_death_strike           = find_perk_spell( "Enhanced Death Strike" );
 
   // Blood
   perk.enhanced_bone_shield            = find_perk_spell( "Enhanced Bone Shield" );
