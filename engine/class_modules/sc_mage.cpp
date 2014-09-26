@@ -5332,7 +5332,7 @@ void mage_t::apl_frost()
   single_target -> add_talent( this, "Ice Nova",
                                "if=(!talent.prismatic_crystal.enabled|(charges=1&cooldown.prismatic_crystal.remains>recharge_time)|set_bonus.tier17_2pc)&(buff.icy_veins.up|(charges=1&cooldown.icy_veins.remains>recharge_time))" );
   single_target -> add_action( this, "Ice Lance",
-                               "if=talent.thermal_void.enabled&buff.icy_veins.up&buff.icy_veins.remains<3&(set_bonus.tier17_2pc&cooldown.frozen_orb.remains<15)",
+                               "if=talent.thermal_void.enabled&buff.icy_veins.up&buff.icy_veins.remains<6&buff.icy_veins.remains<cooldown.icy_veins.remains",
                                "Thermal Void IV extension" );
   single_target -> add_action( "water_elemental:water_jet,if=buff.fingers_of_frost.react=0" );
   single_target -> add_action( this, "Frostbolt" );
