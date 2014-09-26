@@ -3874,17 +3874,6 @@ struct rain_of_fire_tick_t: public warlock_spell_t
       trigger_ember_gain( p(), 0.2, p() -> gains.rain_of_fire, 0.125 );
   }
 
-  virtual double action_multiplier() const
-  {
-    double m = warlock_spell_t::action_multiplier();
-
-    if ( p() -> buffs.mannoroths_fury -> up() )
-    {
-      m *= 1.0 + p() -> talents.mannoroths_fury -> effectN( 3 ).percent();
-    }
-    return m;
-  }
-
   virtual proc_types proc_type() const override
   {
     return PROC1_PERIODIC;
@@ -3922,7 +3911,13 @@ struct rain_of_fire_t: public warlock_spell_t
     if ( td( t ) -> dots_immolate -> is_ticking() )
       m *= 1.5;
 
+    if ( p() -> buffs.mannoroths_fury -> up() )
+    {
+      m *= 1.0 + p() -> talents.mannoroths_fury -> effectN( 3 ).percent();
+    }
+
     return m;
+
   }
 };
 
@@ -5491,6 +5486,7 @@ void warlock_t::apl_destruction()
   add_action( "Chaos Bolt", "if=talent.charred_remains.enabled&buff.backdraft.stack<3&(burning_ember>=2.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
   add_action( "Chaos Bolt", "if=buff.backdraft.stack<3&(burning_ember>=3.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
   add_action( "Immolate", "if=remains<=(duration*0.3)" );
+  add_action( "Rain of Fire", "if=(!ticking|(talent.mannoroths_fury.enabled&buff.mannoroths_fury.up&buff.mannoroths_fury.remains<1))&(!buff.backdraft.down|(talent.mannoroths_fury.enabled&buff.mannoroths_fury.up))" );
   add_action( "Conflagrate" );
   add_action( "Incinerate" );
 }

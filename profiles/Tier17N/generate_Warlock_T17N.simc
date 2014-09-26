@@ -37,7 +37,6 @@ level=100
 race=troll
 spec=demonology
 talents=0000311
-glyphs=imp_swarm/dark_soul
 head=shadow_councils_hood,id=115586
 neck=gruuls_lip_ring,id=113872,enchant=gift_of_mastery
 shoulders=shadow_councils_mantle,id=115589
@@ -60,7 +59,7 @@ level=100
 race=troll
 role=spell
 spec=destruction
-talents=0000112
+talents=0000132
 head=shadow_councils_hood,id=115586
 neck=gruuls_lip_ring,id=113872,enchant=gift_of_critical_strike
 shoulders=shadow_councils_mantle,id=115589
