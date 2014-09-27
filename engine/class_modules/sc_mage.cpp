@@ -1474,14 +1474,6 @@ struct icicle_t : public mage_spell_t
     }
   }
 
-  int n_targets() const
-  {
-    if ( target == p() -> pets.prismatic_crystal )
-      return 0;
-
-    return aoe;
-  }
-
   // To correctly record damage and execute information to the correct source
   // action (FB or FFB), we set the stats object of the icicle cast to the
   // source stats object, carried from trigger_icicle() to here through the
@@ -3082,14 +3074,6 @@ struct ice_lance_t : public mage_spell_t
     fof_multiplier = p -> find_specialization_spell( "Fingers of Frost" ) -> ok() ? p -> find_spell( 44544 ) -> effectN( 2 ).percent() : 0.0;
   }
 
-  int n_targets() const
-  {
-    if ( target == p() -> pets.prismatic_crystal )
-      return 0;
-
-    return aoe;
-  }
-
   virtual void execute()
   {
     // Ice Lance treats the target as frozen with FoF up
@@ -3252,14 +3236,11 @@ struct inferno_blast_t : public mage_spell_t
       int spread_remaining = max_spread_targets;
       std::vector< player_t* >& tl = target_list();
       //Skip cleave entirely if primary target is PC.
-      bool cleave = true;
-      if ( s -> target == p() -> pets.prismatic_crystal )
-        cleave = false;
 
       // Randomly choose spread targets
       std::random_shuffle( tl.begin(), tl.end() );
 
-      for ( size_t i = 0, actors = tl.size(); i < actors && cleave; i++ )
+      for ( size_t i = 0, actors = tl.size(); i < actors; i++ )
       {
         player_t* t = tl[ i ];
 
