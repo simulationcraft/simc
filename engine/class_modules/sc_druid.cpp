@@ -1595,9 +1595,11 @@ private:
 public:
   typedef druid_action_t base_t;
 
+  bool triggers_natures_vigil;
+
   druid_action_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, player, s )
+    ab( n, player, s ), triggers_natures_vigil( true )
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
@@ -1618,7 +1620,7 @@ public:
     if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
       trigger_gushing_wound( s -> target, s -> result_amount );
 
-    if ( ab::aoe == 0 && s -> result_total > 0 && p() -> buff.natures_vigil -> up() ) 
+    if ( ab::aoe == 0 && s -> result_total > 0 && p() -> buff.natures_vigil -> up() && triggers_natures_vigil ) 
       p() -> active.natures_vigil -> trigger( ab::harmful ? s -> result_amount :  s -> result_total , ab::harmful ); // Natures Vigil procs from overhealing
   }
 
@@ -1629,7 +1631,7 @@ public:
     if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
       trigger_gushing_wound( d -> target, d -> state -> result_amount );
 
-    if ( ab::aoe == 0 && d -> state -> result_total > 0 && p() -> buff.natures_vigil -> up() )
+    if ( ab::aoe == 0 && d -> state -> result_total > 0 && p() -> buff.natures_vigil -> up() && triggers_natures_vigil )
       p() -> active.natures_vigil -> trigger( ab::harmful ? d -> state -> result_amount : d -> state -> result_total, ab::harmful );
   }
 
@@ -1640,7 +1642,7 @@ public:
     if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
       trigger_gushing_wound( ms_state -> target, ms_state -> result_amount );
 
-    if ( ab::aoe == 0 && ms_state -> result_total > 0 && p() -> buff.natures_vigil -> up() )
+    if ( ab::aoe == 0 && ms_state -> result_total > 0 && p() -> buff.natures_vigil -> up() && triggers_natures_vigil )
       p() -> active.natures_vigil -> trigger( ab::harmful ? ms_state -> result_amount : ms_state -> result_total, ab::harmful );
   }
 
@@ -3220,6 +3222,8 @@ struct frenzied_regeneration_t : public druid_heal_t
        accurate so we have to hardcode the coefficient */
     attack_power_mod.direct = 6.00;
     maximum_rage_cost = data().effectN( 2 ).base_value();
+
+    triggers_natures_vigil = false;
 
     if ( p -> sets.has_set_bonus( SET_TANK, T16, B2 ) )
       p -> active.ursocs_vigor = new ursocs_vigor_t( p );
@@ -6978,7 +6982,7 @@ void druid_t::assess_damage( school_e school,
          ! ( s -> result == RESULT_DODGE || s -> result == RESULT_MISS ) &&
          ! buff.primal_tenacity -> check() ) 
     {
-      // Base absorb amount
+      // TODO: Does this really scale with versatility?
       double pt_amount = s -> result_mitigated * cache.mastery_value() * ( 1 + cache.heal_versatility() );
 
       /* Primal Tenacity may only occur if the amount of damage PT absorbed from the triggering attack
