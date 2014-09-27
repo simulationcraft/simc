@@ -41,7 +41,7 @@ role=attack
 position=back
 professions=engineering=600/herbalism=600
 talents=000202
-glyphs=chain_lightning
+glyphs=chain_lightning/frost_shock
 head=helmet_of_celestial_harmony,id=99341,upgrade=4,gems=capacitive_primal_10mastery_10crit_11agi
 neck=immerseus_crystalline_eye,id=105407,upgrade=4
 shoulders=quarantine_shoulderguards,id=105455,upgrade=4,gems=20crit_20crit_8agi,enchant=13agi_6crit

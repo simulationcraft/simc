@@ -11,8 +11,7 @@
 // DRW breath of sindragosa?
 // Blood T17 4pc bonus
 // Blood tanking side in general
-// Frost T17 4pc bonus
-// Unholy T17 4pc bonus
+//  -> Will of the Necropolis
 
 #include "simulationcraft.hpp"
 
@@ -391,20 +390,12 @@ public:
   // Perks
   struct perks_t
   {
-    // Shared
-    const spell_data_t* improved_diseases;
-    const spell_data_t* enhanced_death_strike;
-
     // Blood
     const spell_data_t* enhanced_bone_shield;
-    const spell_data_t* enhanced_death_coil_blood;
+    const spell_data_t* enhanced_death_coil;
     const spell_data_t* enhanced_rune_tap;
-    const spell_data_t* enhanced_will_of_the_necropolis;
-    const spell_data_t* improved_death_strike;
-    const spell_data_t* improved_pestilence;
 
     // Frost
-    const spell_data_t* empowered_icebound_fortitude;
     const spell_data_t* empowered_pillar_of_frost;
     const spell_data_t* empowered_obliterate;
     const spell_data_t* improved_runeforges;
@@ -413,9 +404,6 @@ public:
     const spell_data_t* empowered_gargoyle;
     const spell_data_t* enhanced_dark_transformation;
     const spell_data_t* enhanced_fallen_crusader;
-    const spell_data_t* improved_death_coil;
-    const spell_data_t* improved_festering_strike;
-    const spell_data_t* improved_scourge_strike;
     const spell_data_t* improved_soul_reaper;
   } perk;
 
@@ -2198,7 +2186,7 @@ struct shadow_of_death_t : public buff_t
   int health_gain;
 
   shadow_of_death_t( death_knight_t* p ) :
-    buff_t( buff_creator_t( p, "shadow_of_death", p -> find_spell( 164047 ) ).chance( p -> perk.enhanced_death_coil_blood -> ok() ).refresh_behavior( BUFF_REFRESH_DISABLED ) ),
+    buff_t( buff_creator_t( p, "shadow_of_death", p -> find_spell( 164047 ) ).chance( p -> perk.enhanced_death_coil -> ok() ).refresh_behavior( BUFF_REFRESH_DISABLED ) ),
     health_gain( 0 )
   { }
 
@@ -2520,6 +2508,7 @@ void death_knight_melee_attack_t::execute()
     p() -> buffs.crimson_scourge -> trigger();
 
   trigger_t15_2pc_melee();
+  p() -> trigger_t17_4pc_frost( execute_state );
 }
 
 // death_knight_melee_attack_t::impact() ====================================
@@ -2529,7 +2518,6 @@ void death_knight_melee_attack_t::impact( action_state_t* state )
   base_t::impact( state );
 
   trigger_t16_4pc_melee( state );
-  p() -> trigger_t17_4pc_frost( state );
 }
 
 // death_knight_melee_attack_t::ready() =====================================
@@ -2836,7 +2824,6 @@ struct blood_plague_t : public death_knight_spell_t
     base_multiplier *= 1.0 + p -> spec.crimson_scourge -> effectN( 3 ).percent();
     if ( p -> glyph.enduring_infection -> ok() )
       base_multiplier += p -> find_spell( 58671 ) -> effectN( 1 ).percent();
-    base_multiplier *= 1.0 + p -> perk.improved_diseases -> effectN( 1 ).percent();
   }
 
   // WODO-TOD: Crit suppression hijinks?
@@ -2864,7 +2851,6 @@ struct frost_fever_t : public death_knight_spell_t
     base_multiplier *= 1.0 + p -> spec.crimson_scourge -> effectN( 3 ).percent();
     if ( p -> glyph.enduring_infection -> ok() )
       base_multiplier *= 1.0 + p -> find_spell( 58671 ) -> effectN( 1 ).percent();
-    base_multiplier *= 1.0 + p -> perk.improved_diseases -> effectN( 1 ).percent();
   }
 
   virtual double composite_crit() const
@@ -2882,7 +2868,6 @@ struct necrotic_plague_t : public death_knight_spell_t
     hasted_ticks = may_miss = may_crit = false;
     background = tick_may_crit = true;
     base_multiplier *= 1.0 + p -> spec.ebon_plaguebringer -> effectN( 2 ).percent();
-    base_multiplier *= 1.0 + p -> perk.improved_diseases -> effectN( 2 ).percent();
     dot_behavior = DOT_REFRESH;
   }
 
@@ -2957,12 +2942,13 @@ struct necrosis_t : public death_knight_spell_t
 
 // Frozen Runeblade =========================================================
 
-struct frozen_runeblade_attack_t : public death_knight_melee_attack_t
+struct frozen_runeblade_attack_t : public melee_attack_t
 {
   frozen_runeblade_attack_t( death_knight_t* player ) :
-    death_knight_melee_attack_t( "frozen_runeblade", player, player -> find_spell( 170205 ) -> effectN( 1 ).trigger() )
+    melee_attack_t( "frozen_runeblade", player, player -> find_spell( 170205 ) -> effectN( 1 ).trigger() )
   {
-    background = true;
+    background = may_crit = special = true;
+    callbacks = false;
     // Implicitly uses main hand weapon
     weapon = &( player -> main_hand_weapon );
   }
@@ -3565,8 +3551,6 @@ struct death_coil_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     attack_power_mod.direct = 0.85;
-
-    base_multiplier *= 1.0 + p -> perk.improved_death_coil -> effectN( 2 ).percent();
   }
 
   virtual double cost() const
@@ -3684,7 +3668,6 @@ struct death_strike_heal_t : public death_knight_heal_t
     double m = death_knight_heal_t::action_multiplier();
 
     m *= 1.0 + p() -> buffs.scent_of_blood -> check() * p() -> buffs.scent_of_blood -> data().effectN( 1 ).percent();
-    m *= 1.0 + p() -> perk.improved_death_strike -> effectN( 1 ).percent();
 
     return m;
   }
@@ -3742,7 +3725,6 @@ struct death_strike_t : public death_knight_melee_attack_t
     special = true;
     may_parry = false;
     base_multiplier = 1.0 + p -> spec.veteran_of_the_third_war -> effectN( 7 ).percent();
-    base_multiplier = 1.0 + p -> perk.enhanced_death_strike -> effectN( 1 ).percent();
 
     always_consume = true; // Death Strike always consumes runes, even if doesn't hit
 
@@ -3852,8 +3834,6 @@ struct festering_strike_t : public death_knight_melee_attack_t
 
     if ( p -> spec.reaping -> ok() )
       convert_runes = 1.0;
-
-    base_multiplier *= 1.0 + p -> perk.improved_festering_strike -> effectN( 1 ).percent();
   }
 
   virtual void impact( action_state_t* s )
@@ -4363,10 +4343,6 @@ struct blood_boil_spread_t : public death_knight_spell_t
     // in the first place
     if ( p() -> spec.scent_of_blood -> ok() )
     {
-      // The scent-of-blood based logic ignores main target(?)
-      if ( target == s -> target )
-        return;
-
       if ( bp )
       {
         p() -> active_spells.blood_plague -> target = s -> target;
@@ -4449,7 +4425,6 @@ struct blood_boil_t : public death_knight_spell_t
       convert_runes = 1.0;
 
     base_multiplier *= 1.0 + p -> spec.crimson_scourge -> effectN( 1 ).percent();
-    base_multiplier *= 1.0 + p -> perk.improved_pestilence -> effectN( 1 ).percent();
 
     aoe = -1;
   }
@@ -4767,8 +4742,6 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       weapon = &( player -> main_hand_weapon );
       dual = true;
       school = SCHOOL_SHADOW;
-
-      base_multiplier *= 1.0 + p -> perk.improved_scourge_strike -> effectN( 1 ).percent();
     }
 
     void impact( action_state_t* state )
@@ -4789,7 +4762,6 @@ struct scourge_strike_t : public death_knight_melee_attack_t
 
     special = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
-    base_multiplier *= 1.0 + p -> perk.improved_scourge_strike -> effectN( 1 ).percent();
 
     // TODO-WOD: Do we need to inherit damage or is it a separate roll in WoD?
     add_child( scourge_strike_shadow );
@@ -5202,15 +5174,10 @@ struct death_pact_t : public death_knight_heal_t
     death_knight_heal_t( "death_pact", p, p -> find_talent_spell( "Death Pact" ) )
   {
     may_crit = false;
+    pct_heal = data().effectN( 1 ).percent();
 
     parse_options( NULL, options_str );
   }
-
-  double base_da_min( const action_state_t* ) const
-  { return p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent(); }
-
-  double base_da_max( const action_state_t* ) const
-  { return p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent(); }
 };
 
 // Expressions
@@ -5408,7 +5375,7 @@ struct frozen_runeblade_buff_t : public buff_t
   void expire_override()
   {
     death_knight_t* p = debug_cast< death_knight_t* >( player );
-    p -> active_spells.frozen_runeblade -> dot_duration = stack_count * p -> active_spells.frozen_runeblade -> data().effectN( 1 ).period();
+    p -> active_spells.frozen_runeblade -> dot_duration = ( stack_count + 1 ) * p -> active_spells.frozen_runeblade -> data().effectN( 1 ).period();
     p -> active_spells.frozen_runeblade -> schedule_execute();
 
     buff_t::expire_override();
@@ -5847,20 +5814,12 @@ void death_knight_t::init_spells()
 
   // Perks
 
-  // Shared
-  perk.improved_diseases               = find_perk_spell( "Improved Diseases" );
-  perk.enhanced_death_strike           = find_perk_spell( "Enhanced Death Strike" );
-
   // Blood
   perk.enhanced_bone_shield            = find_perk_spell( "Enhanced Bone Shield" );
-  perk.enhanced_death_coil_blood       = find_perk_spell( "Enhanced Death Coil", DEATH_KNIGHT_BLOOD );
+  perk.enhanced_death_coil             = find_perk_spell( "Enhanced Death Coil" );
   perk.enhanced_rune_tap               = find_perk_spell( "Enhanced Rune Tap" );
-  perk.enhanced_will_of_the_necropolis = find_perk_spell( "Enhanced Will of the Necropolis" );
-  perk.improved_death_strike           = find_perk_spell( "Improved Death Strike" );
-  perk.improved_pestilence             = find_perk_spell( "Improved Pestilence" );
 
   // Frost
-  perk.empowered_icebound_fortitude    = find_perk_spell( "Empowered Icebound Fortitude" );
   perk.empowered_pillar_of_frost       = find_perk_spell( "Empowered Pillar of Frost" );
   perk.empowered_obliterate            = find_perk_spell( "Empowered Obliterate" );
   perk.improved_runeforges             = find_perk_spell( "Improved Runeforges" );
@@ -5869,9 +5828,6 @@ void death_knight_t::init_spells()
   perk.empowered_gargoyle             = find_perk_spell( "Empowered Gargoyle" );
   perk.enhanced_dark_transformation   = find_perk_spell( "Enhanced Dark Transformation" );
   perk.enhanced_fallen_crusader       = find_perk_spell( "Enhanced Fallen Crusader" );
-  perk.improved_festering_strike      = find_perk_spell( "Improved Festering Strike" );
-  perk.improved_scourge_strike        = find_perk_spell( "Improved Scourge Strike" );
-  perk.improved_death_coil            = find_perk_spell( "Improved Death Coil" );
   perk.improved_soul_reaper            = find_perk_spell( "Improved Soul Reaper" );
 
   // Active Spells
@@ -6616,9 +6572,9 @@ void death_knight_t::create_buffs()
                               .add_invalidate( CACHE_HASTE );
   buffs.vampiric_blood      = new vampiric_blood_buff_t( this );
   buffs.will_of_the_necropolis_dr = buff_creator_t( this, "will_of_the_necropolis_dr", find_spell( 81162 ) )
-                                    .cd( timespan_t::from_seconds( 45 ) + perk.enhanced_will_of_the_necropolis -> effectN( 1 ).time_value() );
+                                    .cd( timespan_t::from_seconds( 45 ) );
   buffs.will_of_the_necropolis_rt = buff_creator_t( this, "will_of_the_necropolis_rt", find_spell( 96171 ) )
-                                    .cd( timespan_t::from_seconds( 45 ) + perk.enhanced_will_of_the_necropolis -> effectN( 1 ).time_value() );
+                                    .cd( timespan_t::from_seconds( 45 ) );
 
   runeforge.rune_of_the_fallen_crusader = buff_creator_t( this, "unholy_strength", find_spell( 53365 ) )
                                           .add_invalidate( CACHE_STRENGTH );
@@ -6836,7 +6792,7 @@ void death_knight_t::target_mitigation( school_e school, dmg_e type, action_stat
     state -> result_amount *= 1.0 + buffs.bone_shield -> data().effectN( 1 ).percent();
 
   if ( buffs.icebound_fortitude -> up() )
-    state -> result_amount *= 1.0 + buffs.icebound_fortitude -> data().effectN( 3 ).percent() + spec.sanguine_fortitude -> effectN( 1 ).percent() + perk.empowered_icebound_fortitude -> effectN( 1 ).percent();
+    state -> result_amount *= 1.0 + buffs.icebound_fortitude -> data().effectN( 3 ).percent() + spec.sanguine_fortitude -> effectN( 1 ).percent();
 
   if ( buffs.will_of_the_necropolis_dr -> up() )
     state -> result_amount *= 1.0 + spec.will_of_the_necropolis -> effectN( 1 ).percent();

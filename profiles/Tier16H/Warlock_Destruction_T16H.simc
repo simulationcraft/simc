@@ -44,6 +44,7 @@ actions+=/chaos_bolt,if=set_bonus.tier17_2pc=1&buff.backdraft.stack<3&(burning_e
 actions+=/chaos_bolt,if=talent.charred_remains.enabled&buff.backdraft.stack<3&(burning_ember>=2.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)
 actions+=/chaos_bolt,if=buff.backdraft.stack<3&(burning_ember>=3.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)
 actions+=/immolate,if=remains<=(duration*0.3)
+actions+=/rain_of_fire,if=(!ticking|(talent.mannoroths_fury.enabled&buff.mannoroths_fury.up&buff.mannoroths_fury.remains<1))&(!buff.backdraft.down|(talent.mannoroths_fury.enabled&buff.mannoroths_fury.up))
 actions+=/conflagrate
 actions+=/incinerate
 

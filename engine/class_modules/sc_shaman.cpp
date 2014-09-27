@@ -1736,11 +1736,7 @@ struct molten_earth_spell_event_t : public event_t
 {
   molten_earth_driver_t* driver;
 
-  molten_earth_spell_event_t( shaman_t* shaman, molten_earth_driver_t* driver ) :
-    event_t( *shaman, "molten_earth" ), driver( driver )
-  {
-    sim().add_event( this, timespan_t::from_seconds( rng().range( 0, 4.0 * shaman -> cache.spell_speed() ) ) );
-  }
+  molten_earth_spell_event_t( shaman_t*, molten_earth_driver_t* );
 
   // Execute the nuke
   void execute();
@@ -1796,6 +1792,12 @@ struct molten_earth_driver_t : public spell_t
     scheduled_bolts.clear();
   }
 };
+
+inline molten_earth_spell_event_t::molten_earth_spell_event_t( shaman_t* shaman, molten_earth_driver_t* driver ) :
+  event_t( *shaman, "molten_earth" ), driver( driver )
+{
+  sim().add_event( this, timespan_t::from_seconds( rng().range( 0, ( driver -> base_tick_time * 2 * shaman -> cache.spell_speed() ).total_seconds() ) ) );
+}
 
 inline void molten_earth_spell_event_t::execute()
 {
@@ -4765,6 +4767,9 @@ void shaman_t::init_scaling()
 void shaman_t::trigger_molten_earth( const action_state_t* state )
 {
   if ( ! mastery.molten_earth -> ok() )
+    return;
+
+  if ( ! state -> action -> harmful )
     return;
 
   if ( ! state -> action -> result_is_hit( state -> result ) )

@@ -715,9 +715,7 @@ struct mirror_image_pet_t : public pet_t
   {
     double m = pet_t::composite_player_multiplier( school );
 
-    // Orc racial
-    if ( owner -> race == RACE_ORC )
-      m *= 1.0 + find_spell( 21563 ) -> effectN( 1 ).percent();
+    m *= o() -> pet_multiplier;
 
     return m;
   }
@@ -788,13 +786,15 @@ struct prismatic_crystal_t : public pet_t
   };
 
   prismatic_crystal_aoe_t* aoe_spell;
-  const spell_data_t* damage_taken;
+  const spell_data_t* damage_taken,
+                    * frost_damage_taken;
   std::vector<stats_t*> proxy_stats;
 
   prismatic_crystal_t( sim_t* sim, mage_t* owner ) :
     pet_t( sim, owner, "prismatic_crystal", true ),
     aoe_spell( 0 ),
-    damage_taken( owner -> find_spell( 155153 ) )
+    damage_taken( owner -> find_spell( 155153 ) ),
+    frost_damage_taken( owner -> find_spell( 152087 ) )
   { }
 
   void add_proxy_stats( action_t* owner_action )
@@ -846,7 +846,14 @@ struct prismatic_crystal_t : public pet_t
   {
     double m = pet_t::composite_player_vulnerability( school );
 
-    m *= 1.0 + damage_taken -> effectN( 1 ).percent();
+    if ( o() -> specialization() == MAGE_FROST )
+    {
+      m *= 1.0 + frost_damage_taken -> effectN( 3 ).percent();
+    }
+    else
+    {
+      m *= 1.0 + damage_taken -> effectN( 1 ).percent();
+    }
 
     return m;
   }
@@ -1474,14 +1481,6 @@ struct icicle_t : public mage_spell_t
       aoe = splitting_ice_aoe;
       base_aoe_multiplier *= p -> glyphs.splitting_ice -> effectN( 2 ).percent();
     }
-  }
-
-  int n_targets() const
-  {
-    if ( target == p() -> pets.prismatic_crystal )
-      return 0;
-
-    return aoe;
   }
 
   // To correctly record damage and execute information to the correct source
@@ -3084,14 +3083,6 @@ struct ice_lance_t : public mage_spell_t
     fof_multiplier = p -> find_specialization_spell( "Fingers of Frost" ) -> ok() ? p -> find_spell( 44544 ) -> effectN( 2 ).percent() : 0.0;
   }
 
-  int n_targets() const
-  {
-    if ( target == p() -> pets.prismatic_crystal )
-      return 0;
-
-    return aoe;
-  }
-
   virtual void execute()
   {
     // Ice Lance treats the target as frozen with FoF up
@@ -3254,14 +3245,11 @@ struct inferno_blast_t : public mage_spell_t
       int spread_remaining = max_spread_targets;
       std::vector< player_t* >& tl = target_list();
       //Skip cleave entirely if primary target is PC.
-      bool cleave = true;
-      if ( s -> target == p() -> pets.prismatic_crystal )
-        cleave = false;
 
       // Randomly choose spread targets
       std::random_shuffle( tl.begin(), tl.end() );
 
-      for ( size_t i = 0, actors = tl.size(); i < actors && cleave; i++ )
+      for ( size_t i = 0, actors = tl.size(); i < actors; i++ )
       {
         player_t* t = tl[ i ];
 
@@ -4976,6 +4964,7 @@ void mage_t::apl_arcane()
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe"              );
   action_priority_list_t* burn                = get_action_priority_list( "burn"             );
   action_priority_list_t* conserve            = get_action_priority_list( "conserve"         );
+  action_priority_list_t* evocation           = get_action_priority_list( "evocation"        );
 
 
   default_list -> add_action( this, "Counterspell",
@@ -4995,7 +4984,7 @@ void mage_t::apl_arcane()
   default_list -> add_action( "call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=6" );
   default_list -> add_action( "call_action_list,name=burn,if=buff.arcane_power.up&cooldown.evocation.remains<buff.arcane_power.remains&mana.pct>15&talent.prismatic_crystal.enabled" );
-  default_list -> add_action( "call_action_list,name=conserve" );
+  default_list -> add_action( "call_action_list,name=evocation" );
 
 
   init_crystal -> add_talent( this, "Prismatic Crystal",
@@ -5010,7 +4999,7 @@ void mage_t::apl_arcane()
   crystal_sequence -> add_talent( this, "Nether Tempest",
                                   "if=current_target=prismatic_crystal&buff.arcane_charge.stack=4&!ticking&cooldown.prismatic_crystal.remains>58" );
   crystal_sequence -> add_action( "call_action_list,name=burn,if=cooldown.evocation.remains<cooldown.prismatic_crystal.remains-50" );
-  crystal_sequence -> add_action( "call_action_list,name=conserve" );
+  crystal_sequence -> add_action( "call_action_list,name=evocation" );
 
 
   cooldowns -> add_action( this, "Arcane Power",
@@ -5054,10 +5043,11 @@ void mage_t::apl_arcane()
   burn -> add_action( this, "Presence of Mind" );
   burn -> add_action( this, "Arcane Blast" );
 
+  evocation -> add_action( "call_action_list,name=conserve,if=cooldown.evocation.remains>0" );
+  evocation -> add_action( this, "Evocation", "interrupt_if=mana.pct>92,if=mana.pct<65");
+  evocation -> add_action( this, "Evocation", "interrupt_if=mana.pct>92&set_bonus.tier17_2pc");
+  evocation -> add_action( "call_action_list,name=conserve" );
 
-  conserve -> add_action( this, "Evocation",
-                          "interrupt_if=mana.pct>92,if=mana.pct<65",
-                          "Low mana usage, \"Conserve\" sequence" );
   conserve -> add_action( "call_action_list,name=cooldowns,if=time_to_die<30|(buff.arcane_charge.stack=4&!(glyph.arcane_power.enabled&talent.prismatic_crystal.enabled)&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>20))" );
   conserve -> add_action( this, "Arcane Missiles",
                           "if=buff.arcane_missiles.react=3|(talent.overpowered.enabled&buff.arcane_power.up&buff.arcane_power.remains<3)" );
@@ -5165,14 +5155,10 @@ void mage_t::apl_fire()
   combust_sequence -> add_talent( this, "Meteor" );
   combust_sequence -> add_action( this, "Pyroblast",
                                   "if=execute_time=gcd" );
-  combust_sequence -> add_action( this, "Combustion",
-                                  "if=talent.meteor.enabled&dot.meteor_burn.ticking",
-                                  "Meteor-talented Combustions need to wait for Meteor impact for maximum ignite size" );
   combust_sequence -> add_action( this, "Inferno Blast",
-                                  "if=talent.meteor.enabled",
+                                  "if=talent.meteor.enabled&cooldown.meteor.duration-cooldown.meteor.remains<gcd*3",
                                   "Meteor Combustions may run out of Pyro procs before impact. IB fills the GCD before Combustion should be triggered" );
-  combust_sequence -> add_action( this, "Combustion",
-                                  "if=!talent.meteor.enabled" );
+  combust_sequence -> add_action( this, "Combustion" );
 
 
   active_talents -> add_talent( this, "Meteor",
@@ -5334,7 +5320,7 @@ void mage_t::apl_frost()
   single_target -> add_talent( this, "Ice Nova",
                                "if=(!talent.prismatic_crystal.enabled|(charges=1&cooldown.prismatic_crystal.remains>recharge_time)|set_bonus.tier17_2pc)&(buff.icy_veins.up|(charges=1&cooldown.icy_veins.remains>recharge_time))" );
   single_target -> add_action( this, "Ice Lance",
-                               "if=talent.thermal_void.enabled&buff.icy_veins.up&buff.icy_veins.remains<3&(set_bonus.tier17_2pc&cooldown.frozen_orb.remains<15)",
+                               "if=talent.thermal_void.enabled&buff.icy_veins.up&buff.icy_veins.remains<6&buff.icy_veins.remains<cooldown.icy_veins.remains",
                                "Thermal Void IV extension" );
   single_target -> add_action( "water_elemental:water_jet,if=buff.fingers_of_frost.react=0" );
   single_target -> add_action( this, "Frostbolt" );

@@ -55,7 +55,7 @@ mage=Mage_Frost_T17M
 level=100
 race=troll
 spec=frost
-talents=1000112
+talents=1000111
 glyphs=splitting_ice
 head=hood_of_swirling_light,id=109972,bonus_id=524
 neck=alcs_pendant_of_fiery_dreams,id=109957,bonus_id=524,enchant=gift_of_multistrike

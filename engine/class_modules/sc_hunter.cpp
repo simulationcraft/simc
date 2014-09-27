@@ -318,7 +318,7 @@ public:
     cooldowns.explosive_shot  = get_cooldown( "explosive_shot" );
     cooldowns.bestial_wrath   = get_cooldown( "bestial_wrath" );
     cooldowns.kill_shot_reset = get_cooldown( "kill_shot_reset" );
-    cooldowns.kill_shot_reset -> duration = timespan_t::from_seconds( 10 );
+    cooldowns.kill_shot_reset -> duration = find_spell( 90967 ) -> duration();
     cooldowns.rapid_fire      = get_cooldown( "rapid_fire" );
     cooldowns.sniper_training = get_cooldown( "sniper_training" );
     cooldowns.sniper_training -> duration = timespan_t::from_seconds( 3 );

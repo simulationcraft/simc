@@ -5,7 +5,7 @@ role=attack
 position=back
 professions=engineering=600/enchanting=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...1.01
-glyphs=chain_lightning
+glyphs=chain_lightning/frost_shock
 spec=enhancement
 
 # This default action priority list is automatically created based on your character.
@@ -103,7 +103,7 @@ off_hand=hansgars_forgehammer,id=113897,bonus_id=567/523/448,gem_id=115811,encha
 # gear_agility=3749
 # gear_stamina=4708
 # gear_crit_rating=660
-# gear_haste_rating=2741
+# gear_haste_rating=2313
 # gear_mastery_rating=929
 # gear_armor=1503
 # gear_multistrike_rating=740

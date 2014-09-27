@@ -69,11 +69,9 @@ actions.combust_sequence+=/arcane_torrent
 actions.combust_sequence+=/potion,name=draenic_intellect
 actions.combust_sequence+=/meteor
 actions.combust_sequence+=/pyroblast,if=execute_time=gcd
-# Meteor-talented Combustions need to wait for Meteor impact for maximum ignite size
-actions.combust_sequence+=/combustion,if=talent.meteor.enabled&dot.meteor_burn.ticking
 # Meteor Combustions may run out of Pyro procs before impact. IB fills the GCD before Combustion should be triggered
-actions.combust_sequence+=/inferno_blast,if=talent.meteor.enabled
-actions.combust_sequence+=/combustion,if=!talent.meteor.enabled
+actions.combust_sequence+=/inferno_blast,if=talent.meteor.enabled&cooldown.meteor.duration-cooldown.meteor.remains<gcd*3
+actions.combust_sequence+=/combustion
 
 # Active talents usage
 # This sequence summarizes all usage of active talents (BW, LB, Met), and their optimizations with Incanter's Flow and Prismatic Crystal

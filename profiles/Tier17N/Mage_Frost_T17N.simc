@@ -91,7 +91,7 @@ actions.single_target+=/frostbolt,if=buff.ice_shard.remains>cast_time
 actions.single_target+=/ice_lance,if=buff.fingers_of_frost.react&!talent.frost_bomb.enabled&(!talent.thermal_void.enabled|cooldown.icy_veins.remains>8)
 actions.single_target+=/ice_nova,if=(!talent.prismatic_crystal.enabled|(charges=1&cooldown.prismatic_crystal.remains>recharge_time)|set_bonus.tier17_2pc)&(buff.icy_veins.up|(charges=1&cooldown.icy_veins.remains>recharge_time))
 # Thermal Void IV extension
-actions.single_target+=/ice_lance,if=talent.thermal_void.enabled&buff.icy_veins.up&buff.icy_veins.remains<3&(set_bonus.tier17_2pc&cooldown.frozen_orb.remains<15)
+actions.single_target+=/ice_lance,if=talent.thermal_void.enabled&buff.icy_veins.up&buff.icy_veins.remains<6&buff.icy_veins.remains<cooldown.icy_veins.remains
 actions.single_target+=/water_elemental:water_jet,if=buff.fingers_of_frost.react=0
 actions.single_target+=/frostbolt
 actions.single_target+=/ice_floes,moving=1
