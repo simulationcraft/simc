@@ -6221,7 +6221,7 @@ public:
 
       // apply variable bonus based on current value
       if ( state -> target == player )
-        m += player -> buffs.resolve -> current_value / 100.0;
+        m *= 1.0 + player -> buffs.resolve -> current_value / 100.0;
     }
 
     return m;
@@ -6298,7 +6298,7 @@ struct absorb_t : public spell_base_t
 
       // apply variable bonus based on current value
       if ( state -> target == player )
-        m += player -> buffs.resolve -> current_value / 100.0;
+        m *= 1.0 + player -> buffs.resolve -> current_value / 100.0;
     }
 
     return m;
