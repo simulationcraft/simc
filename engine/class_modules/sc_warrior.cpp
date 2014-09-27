@@ -1045,13 +1045,13 @@ void warrior_attack_t::impact( action_state_t* s )
   {
     if ( ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) ) )
     {
-      if ( p() -> talents.second_wind->ok() )
+      if ( p() -> talents.second_wind -> ok() )
       {
         if ( p() -> resources.current[RESOURCE_HEALTH] < p() -> resources.max[RESOURCE_HEALTH] * 0.35 )
         {
-          p()->active_second_wind->base_dd_min = s->result_amount;
-          p()->active_second_wind->base_dd_max = s->result_amount;
-          p()->active_second_wind->execute();
+          p() -> active_second_wind -> base_dd_min = s -> result_amount;
+          p() -> active_second_wind -> base_dd_max = s -> result_amount;
+          p() -> active_second_wind -> execute();
         }
       }
       if ( p() -> buff.rallying_cry -> up() && p() -> glyphs.rallying_cry -> ok() )
@@ -1072,12 +1072,18 @@ void warrior_attack_t::impact( action_state_t* s )
             if ( !bloodbath_blacklist( this -> id ) || !p() -> bugs )
               trigger_bloodbath_dot( s -> target, s -> result_amount );
           }
-          if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && td( s -> target ) ->  debuffs_colossus_smash -> up() && // Melee tier 16 2 piece.
-               this ->  weapon == &( p() -> main_hand_weapon ) && // Only procs once per ability used.
-               this -> id != 12328 ) // Doesn't proc from sweeping strikes.
-               p() -> resource_gain( RESOURCE_RAGE,
-               p() -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).base_value(),
-               p() -> gain.tier16_2pc_melee );
+          if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> specialization() == WARRIOR_ARMS )
+          {
+            if ( td( s -> target ) -> debuffs_colossus_smash -> up() )
+            {
+              if ( this ->  weapon == &( p() -> main_hand_weapon ) && this -> id != 12328 ) // Doesn't proc from sweeping strikes.
+              {
+                p() -> resource_gain( RESOURCE_RAGE,
+                                      p() -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).base_value(),
+                                      p() -> gain.tier16_2pc_melee );
+              }
+            }
+          }
         }
       }
     }
