@@ -309,6 +309,7 @@ public:
       pyro_switch_t() { reset(); }
   } pyro_switch;
 
+
 public:
   int current_arcane_charges;
 
@@ -4089,7 +4090,7 @@ struct stop_pyro_chain_t : public action_t
   }
 };
 
-// Choose Rotation Action =================================================================================
+// Choose Rotation Action =====================================================
 
 struct choose_rotation_t : public action_t
 {
@@ -4294,7 +4295,7 @@ struct choose_rotation_t : public action_t
   }
 };
 
-// Proxy cast Water Jet Action ====================================================
+// Proxy cast Water Jet Action ================================================
 
 struct water_jet_t : public action_t
 {
@@ -5810,7 +5811,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
     return new incanters_flow_dir_expr_t( * this );
   }
 
-  // Pyro Chain Flag Expression =====================================================
+  // Pyro Chain Flag Expression ===============================================
   if ( name_str == "pyro_chain" )
   {
     struct pyro_chain_expr_t : public mage_expr_t
@@ -5819,24 +5820,29 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
       pyro_chain_expr_t( mage_t& m ) : mage_expr_t( "pyro_chain", m ), mage( &m )
       {}
       virtual double evaluate()
-    { return mage -> pyro_switch.dump_state; }
+      { return mage -> pyro_switch.dump_state; }
     };
 
     return new pyro_chain_expr_t( *this );
   }
 
-  // Prismatic Crystal Uptime Remaing Expression ======================================
-
+  // Prismatic Crystal Uptime Remaing Expression ==============================
   if ( name_str == "crystal_remains" )
   {
     struct crystal_remains_expr_t : public mage_expr_t
     {
       mage_t* mage;
-      crystal_remains_expr_t( mage_t& m ) : mage_expr_t( "crystal_remains", m ), mage( &m )
+
+      crystal_remains_expr_t( mage_t& m ) :
+        mage_expr_t( "crystal_remains", m ),
+        mage( &m )
       {}
+
       virtual double evaluate()
-      { return std::max( ( mage -> cooldowns.prismatic_crystal -> remains().total_seconds() - 50.0 ),
-                           0.0 ); }
+      {
+        return std::max( mage -> cooldowns.prismatic_crystal -> remains().total_seconds() - 50.0,
+                         0.0 );
+      }
     };
 
     return new crystal_remains_expr_t( *this );
