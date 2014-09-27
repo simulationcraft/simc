@@ -5510,6 +5510,7 @@ void mage_t::reset()
   active_bomb_targets = 0;
   last_bomb_target = 0;
   pyro_switch.reset();
+  crystal_uptime.reset();
 }
 
 // mage_t::regen  ===========================================================
