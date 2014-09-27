@@ -18,20 +18,20 @@ position=ranged_back
 role=attack
 talents=0002213
 head=rylakstalkers_headguard,id=115545,bonus_id=566
-neck=darklight_necklace,id=113865,enchant=gift_of_haste,bonus_id=566
+neck=darklight_necklace,id=113865,bonus_id=566,enchant=gift_of_critical_strike
 shoulders=rylakstalkers_spaulders,id=115547,bonus_id=566
-back=cloak_of_delving_secrets,id=113929,enchant=gift_of_mastery,bonus_id=566
-chest=rylakstalkers_tunic,id=115548,bonus_id=566
+back=drape_of_the_dark_hunt,id=113971,bonus_id=566,enchant=gift_of_critical_strike
+chest=chestguard_of_the_siegemaker,id=113982,bonus_id=566
 wrists=bracers_of_the_wolfs_cunning,id=113943,bonus_id=566
 hands=rylakstalkers_gloves,id=115549,bonus_id=566
 waist=grenadiers_belt,id=113955,bonus_id=566
 legs=rylakstalkers_legguards,id=115546,bonus_id=566
-feet=railwalkers_ratcheted_boots,id=113954,bonus_id=566
-finger1=unexploded_explosive_shard,id=113877,enchant=gift_of_haste,bonus_id=566
+feet=slagstomper_treads,id=113888,bonus_id=566
+finger1=unexploded_explosive_shard,id=113877,bonus_id=566,enchant=gift_of_critical_strike
 finger2=spellbound_solium_band_of_fatal_strikes,id=118302,enchant=gift_of_critical_strike
 trinket1=humming_blackiron_trigger,id=113985,bonus_id=566
-trinket2=meaty_dragonspine_trophy,id=118114,bonus_id=566
-main_hand=mouth_of_the_fury,id=113885,enchant=megawatt_filament,bonus_id=566
+trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=566
+main_hand=mouth_of_the_fury,id=113885,bonus_id=566,enchant=megawatt_filament
 save=Hunter_BM_T17H.simc
 
 # MM

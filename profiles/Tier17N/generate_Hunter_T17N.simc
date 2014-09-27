@@ -18,19 +18,19 @@ position=ranged_back
 role=attack
 talents=0002213
 head=rylakstalkers_headguard,id=115545
-neck=darklight_necklace,id=113865,enchant=gift_of_haste
+neck=darklight_necklace,id=113865,enchant=gift_of_critical_strike
 shoulders=rylakstalkers_spaulders,id=115547
-back=cloak_of_delving_secrets,id=113929,enchant=gift_of_mastery
-chest=rylakstalkers_tunic,id=115548
+back=drape_of_the_dark_hunt,id=113971,enchant=gift_of_critical_strike
+chest=chestguard_of_the_siegemaker,id=113982
 wrists=bracers_of_the_wolfs_cunning,id=113943
 hands=rylakstalkers_gloves,id=115549
 waist=grenadiers_belt,id=113955
 legs=rylakstalkers_legguards,id=115546
-feet=railwalkers_ratcheted_boots,id=113954
-finger1=unexploded_explosive_shard,id=113877,enchant=gift_of_haste
+feet=slagstomper_treads,id=113888
+finger1=unexploded_explosive_shard,id=113877,enchant=gift_of_critical_strike
 finger2=timeless_solium_band_of_the_assassin,id=118297,enchant=gift_of_critical_strike
 trinket1=humming_blackiron_trigger,id=113985
-trinket2=meaty_dragonspine_trophy,id=118114
+trinket2=beating_heart_of_the_mountain,id=113931
 main_hand=mouth_of_the_fury,id=113885,enchant=megawatt_filament
 save=Hunter_BM_T17N.simc
 
