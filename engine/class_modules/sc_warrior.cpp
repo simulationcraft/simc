@@ -5110,7 +5110,7 @@ double warrior_t::composite_block_reduction() const
 {
   double br = player_t::composite_block_reduction();
 
-  // Prot T17 4-pc increases block value by 30% while shield block is active (additive)
+  // Prot T17 4-pc increases block value by 5% while shield block is active (additive)
   if ( buff.shield_block -> up() )
   {
       if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )
