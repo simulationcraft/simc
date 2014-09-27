@@ -4389,6 +4389,8 @@ struct incarnation_bear_t : public druid_spell_t
     p() -> cooldown.maul   -> reset( false );
     if ( ! p() -> perk.enhanced_faerie_fire -> ok() )
       p() -> cooldown.faerie_fire -> reset( false ); 
+
+    p() -> buff.son_of_ursoc -> trigger(); 
   }
 };
 
