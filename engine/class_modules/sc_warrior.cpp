@@ -2043,6 +2043,7 @@ struct heroic_charge_t: public warrior_attack_t
     trigger_gcd = timespan_t::zero();
     use_off_gcd = true;
     callbacks = may_crit = false;
+    cooldown = p -> cooldown.charge;
   }
 
   void execute()
@@ -2069,7 +2070,7 @@ struct heroic_charge_t: public warrior_attack_t
 
   bool ready()
   {
-    if ( p() -> cooldown.rage_from_charge -> up() && p() -> cooldown.charge -> up() )
+    if ( p() -> cooldown.rage_from_charge -> up() )
       return warrior_attack_t::ready();
     else
       return false;
@@ -4887,7 +4888,7 @@ void warrior_t::halt()
   player_t::halt();
 }
 
-void warrior_t::teleport( double yards, timespan_t duration )
+void warrior_t::teleport( double /*yards*/, timespan_t /*duration*/ )
 {
   return; // All movement "teleports" are modeled.
 }
