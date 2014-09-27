@@ -83,7 +83,10 @@ public:
     buff_t* battle_stance;
     buff_t* berserker_rage;
     buff_t* defensive_stance;
-    buff_t* heroic_charge;
+    buff_t* heroic_leap_movement;
+    buff_t* charge_movement;
+    buff_t* shield_charge_movement;
+    buff_t* intervene_movement;
     // Talents
     buff_t* avatar;
     buff_t* bloodbath;
@@ -1326,14 +1329,6 @@ struct bladestorm_t: public warrior_attack_t
     if ( bladestorm_mh -> result_is_hit( execute_state -> result ) && bladestorm_oh )
       bladestorm_oh -> execute();
   }
-
-  void update_ready( timespan_t cd_duration )
-  {
-    if ( p() -> specialization() != WARRIOR_PROTECTION )
-      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
-
-    warrior_attack_t::update_ready( cd_duration );
-  }
   // Bladestorm is not modified by haste effects
   double composite_haste() const { return 1.0; }
 };
@@ -1437,14 +1432,6 @@ struct bloodthirst_t: public warrior_attack_t
     if ( s -> result == RESULT_CRIT )
       p() -> enrage();
   }
-
-  void update_ready( timespan_t cd_duration )
-  {
-    if ( p() -> talents.unquenchable_thirst -> ok() )
-      return;
-
-    warrior_attack_t::update_ready( cd_duration );
-  }
 };
 
 // Charge ===================================================================
@@ -1459,9 +1446,8 @@ struct charge_t: public warrior_attack_t
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
-    base_teleport_distance = data().max_range();
-    base_teleport_distance += p -> glyphs.long_charge -> effectN( 1 ).base_value();
-    melee_range = base_teleport_distance;
+    melee_range = data().max_range();
+    melee_range += p -> glyphs.long_charge -> effectN( 1 ).base_value();
     movement_directionality = MOVEMENT_OMNI;
     cooldown -> duration = data().cooldown();
     use_off_gcd = true;
@@ -1475,7 +1461,7 @@ struct charge_t: public warrior_attack_t
   {
     if ( p() -> current.distance_to_move > data().min_range() )
     {
-      p() -> buff.heroic_charge -> trigger( 1, movement_speed_increase, 1,
+      p() -> buff.charge_movement -> trigger( 1, movement_speed_increase, 1,
       timespan_t::from_millis( p() -> current.distance_to_move / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() + movement_speed_increase ) ) ) );
       p() -> current.moving_away = 0;
     }
@@ -1501,7 +1487,6 @@ struct charge_t: public warrior_attack_t
   void reset()
   {
     action_t::reset();
-
     first_charge = true;
   }
 
@@ -1510,9 +1495,11 @@ struct charge_t: public warrior_attack_t
     if ( first_charge == true ) // Assumes that we charge into combat, instead of setting initial distance to 20 yards.
       return warrior_attack_t::ready();
 
-    if ( p() -> current.distance_to_move > base_teleport_distance ||
-         p() -> current.distance_to_move < data().min_range() ) // Cannot charge unless target is in range.
-         return false;
+    if ( p() -> current.distance_to_move < data().min_range() ) // Cannot charge unless target is in range.
+      return false;
+
+    if ( p() -> buff.heroic_leap_movement -> check() || p() -> buff.intervene_movement -> check() || p() -> buff.shield_charge -> check() )
+      return false;
 
     return warrior_attack_t::ready();
   }
@@ -1574,12 +1561,6 @@ struct demoralizing_shout: public warrior_attack_t
     if ( result_is_hit( s -> result ) )
       td( s -> target ) -> debuffs_demoralizing_shout -> trigger( 1, data().effectN( 1 ).percent() );
   }
-
-  void update_ready( timespan_t cd_duration )
-  {
-    cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
-    warrior_attack_t::update_ready( cd_duration );
-  }
 };
 
 // Devastate ================================================================
@@ -1640,14 +1621,6 @@ struct dragon_roar_t: public warrior_attack_t
   double composite_crit() const { return 1.0; }
 
   double composite_target_crit( player_t* ) const { return 0.0; }
-
-  void update_ready( timespan_t cd_duration )
-  {
-    if ( p() -> specialization() != WARRIOR_PROTECTION )
-      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
-
-    warrior_attack_t::update_ready( cd_duration );
-  }
 };
 
 // Execute ==================================================================
@@ -1869,6 +1842,7 @@ struct heroic_leap_t: public warrior_attack_t
     movement_directionality = MOVEMENT_OMNI;
     base_teleport_distance = data().max_range();
     base_teleport_distance += p -> glyphs.death_from_above -> effectN( 2 ).percent();
+    melee_range = -1;
     attack_power_mod.direct = p -> find_spell( 52174 ) -> effectN( 1 ).ap_coeff();
     time_to_travel = timespan_t::from_seconds( 0.25 );
 
@@ -1876,19 +1850,31 @@ struct heroic_leap_t: public warrior_attack_t
     cooldown -> duration += p -> glyphs.death_from_above -> effectN( 1 ).time_value();
   }
 
+  void execute()
+  {
+    warrior_attack_t::execute();
+    if ( p() -> current.distance_to_move > 0 && !p() -> buff.heroic_leap_movement -> check() )
+    {
+      double speed;
+      speed = std::min( p() -> current.distance_to_move, base_teleport_distance ) / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() ) ) / time_to_travel.total_seconds();
+      p() -> buff.heroic_leap_movement -> trigger( 1, speed, 1, time_to_travel );
+    }
+  }
+
   void impact( action_state_t* s )
   {
-    if ( p() -> current.distance_to_move > data().min_range() )
+    if ( p() -> current.distance_to_move > p() -> find_spell( 52174 ) -> effectN( 1 ).radius() )
       s -> result_amount = 0;
     warrior_attack_t::impact( s );
     p() -> buff.heroic_leap_glyph -> trigger();
   }
 
-  void update_ready( timespan_t cd_duration )
+  bool ready()
   {
-    cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
+    if ( p() -> buff.intervene_movement -> check() || p() -> buff.charge_movement -> check() || p() -> buff.shield_charge -> check() )
+      return false;
 
-    warrior_attack_t::update_ready( cd_duration );
+    return warrior_attack_t::ready();
   }
 };
 
@@ -1960,19 +1946,31 @@ struct impending_victory_t: public warrior_attack_t
 
 struct intervene_t: public warrior_attack_t
 {
+  double movement_speed_increase;
   intervene_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "intervene", p, p -> spell.intervene )
+    warrior_attack_t( "intervene", p, p -> spell.intervene ),
+    movement_speed_increase( 5.0 )
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
-    base_teleport_distance = data().max_range();
-    melee_range = base_teleport_distance;
+    melee_range = data().max_range();
     movement_directionality = MOVEMENT_OMNI;
+  }
+
+  void execute()
+  {
+    warrior_attack_t::execute();
+    if ( p() -> current.distance_to_move > 0 )
+    {
+      p() -> buff.intervene_movement -> trigger( 1, movement_speed_increase, 1,
+                                              timespan_t::from_millis( p() -> current.distance_to_move / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() + movement_speed_increase ) ) ) );
+      p() -> current.moving_away = 0;
+    }
   }
 
   bool ready()
   {
-    if ( p() -> current.distance_to_move > base_teleport_distance )
+    if ( p() -> buff.heroic_leap_movement -> check() || p() -> buff.charge_movement -> check() || p() -> buff.shield_charge -> check() )
       return false;
 
     return warrior_attack_t::ready();
@@ -2028,7 +2026,7 @@ struct heroic_charge_movement_ticker_t: public event_t
     if ( next > timespan_t::zero() )
       warrior -> heroic_charge = new ( sim() ) heroic_charge_movement_ticker_t( sim(), warrior, next );
     else
-      warrior -> buff.heroic_charge -> expire();
+      warrior -> buff.heroic_leap_movement -> expire();
   }
 };
 
@@ -2052,12 +2050,12 @@ struct heroic_charge_t: public warrior_attack_t
     warrior_attack_t::execute();
 
     if ( p() -> cooldown.heroic_leap -> up() )
-    { // We are moving 10 yards, and heroic leap always executes in 0.25 seconds.
+    {// We are moving 10 yards, and heroic leap always executes in 0.25 seconds.
       // Do some hacky math to ensure it will only take 0.25 seconds, since it will certainly
       // be the highest temporary movement speed buff.
       double speed;
       speed = 10 / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() ) ) / 0.25;
-      p() -> buff.heroic_charge -> trigger( 1, speed, 1, timespan_t::from_millis( 250 ) );
+      p() -> buff.heroic_leap_movement -> trigger( 1, speed, 1, timespan_t::from_millis( 250 ) );
       leap -> execute();
       p() -> trigger_movement( 10.0, MOVEMENT_BOOMERANG ); // Leap 10 yards out, because it's impossible to precisely land 8 yards away.
       p() -> heroic_charge = new ( *sim ) heroic_charge_movement_ticker_t( *sim, p() );
@@ -2071,8 +2069,6 @@ struct heroic_charge_t: public warrior_attack_t
 
   bool ready()
   {
-    if ( p() -> current.moving_away > 0 )
-      return false;
     if ( p() -> cooldown.rage_from_charge -> up() && p() -> cooldown.charge -> up() )
       return warrior_attack_t::ready();
     else
@@ -2719,8 +2715,7 @@ struct shockwave_t: public warrior_attack_t
 
   void update_ready( timespan_t cd_duration )
   {
-    if ( p() -> specialization() != WARRIOR_PROTECTION )
-      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
+    cd_duration = cooldown -> duration;
 
     if ( execute_state -> n_targets >= 3 )
     {
@@ -2777,14 +2772,6 @@ struct storm_bolt_t: public warrior_attack_t
     if ( oh_attack && result_is_hit( execute_state -> result ) &&
          p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, OH does not execute.
          oh_attack -> execute();
-  }
-
-  void update_ready( timespan_t cd_duration )
-  {
-    if ( p() -> specialization() != WARRIOR_PROTECTION )
-      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
-
-    warrior_attack_t::update_ready( cd_duration );
   }
 
   bool ready()
@@ -3041,14 +3028,6 @@ struct avatar_t: public warrior_spell_t
 
     p() -> buff.avatar -> trigger();
   }
-
-  void update_ready( timespan_t cd_duration )
-  {
-    if ( p() -> specialization() != WARRIOR_PROTECTION )
-      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
-
-    warrior_spell_t::update_ready( cd_duration );
-  }
 };
 
 // Battle Shout =============================================================
@@ -3112,14 +3091,6 @@ struct bloodbath_t: public warrior_spell_t
 
     p() -> buff.bloodbath -> trigger();
   }
-
-  void update_ready( timespan_t cd_duration )
-  {
-    if ( p() -> specialization() != WARRIOR_PROTECTION )
-      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
-
-    warrior_spell_t::update_ready( cd_duration );
-  }
 };
 
 // Commanding Shout =========================================================
@@ -3174,12 +3145,6 @@ struct die_by_the_sword_t: public warrior_spell_t
     p() -> buff.die_by_the_sword -> trigger();
   }
 
-  void update_ready( timespan_t cd_duration )
-  {
-    cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
-    warrior_spell_t::update_ready( cd_duration );
-  }
-
   bool ready()
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
@@ -3232,12 +3197,6 @@ struct last_stand_t: public warrior_spell_t
   {
     warrior_spell_t::execute();
     p() -> buff.last_stand -> trigger();
-  }
-
-  void update_ready( timespan_t cd_duration )
-  {
-    cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
-    warrior_spell_t::update_ready( cd_duration );
   }
 };
 
@@ -3347,12 +3306,6 @@ struct recklessness_t: public warrior_spell_t
     if ( p() -> sets.has_set_bonus( WARRIOR_FURY, T17, B4 ) )
       p() -> buff.tier17_4pc_fury_driver -> trigger();
   }
-
-  void update_ready( timespan_t cd_duration )
-  {
-    cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
-    warrior_spell_t::update_ready( cd_duration );
-  }
 };
 
 // Shield Barrier ===========================================================
@@ -3453,15 +3406,16 @@ struct shield_block_t: public warrior_spell_t
 
 struct shield_charge_t: public warrior_spell_t
 {
+  double movement_speed_increase;
   shield_charge_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "shield_charge", p, p -> find_spell( 156321 ) )
+    warrior_spell_t( "shield_charge", p, p -> find_spell( 156321 ) ),
+    movement_speed_increase( 5.0 )
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_GLADIATOR;
     cooldown -> charges = 2;
     cooldown -> duration = timespan_t::from_seconds( 15 );
-    base_teleport_distance = data().max_range();
-    melee_range = base_teleport_distance;
+    melee_range = data().max_range();
     movement_directionality = MOVEMENT_OMNI;
     use_off_gcd = true;
   }
@@ -3469,6 +3423,14 @@ struct shield_charge_t: public warrior_spell_t
   void execute()
   {
     warrior_spell_t::execute();
+
+    if ( p() -> current.distance_to_move > 0 )
+    {
+      p() -> buff.shield_charge_movement -> trigger( 1, movement_speed_increase, 1,
+                                            timespan_t::from_millis( p() -> current.distance_to_move / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() + movement_speed_increase ) ) ) );
+      p() -> current.moving_away = 0;
+    }
+
     p() -> cooldown.shield_charge_cd -> start();
 
     if ( p() -> buff.shield_charge -> check() )
@@ -3482,13 +3444,10 @@ struct shield_charge_t: public warrior_spell_t
     if ( !p() -> cooldown.shield_charge_cd -> up() )
       return false;
 
-    if ( p() -> heroic_charge )
+    if ( p() -> buff.heroic_leap_movement -> check() || p() -> buff.charge_movement -> check() || p() -> buff.intervene_movement -> check() )
       return false;
-
+  
     if ( !p() -> has_shield_equipped() )
-      return false;
-
-    if ( p() -> current.distance_to_move > base_teleport_distance )
       return false;
 
     return warrior_spell_t::ready();
@@ -3519,12 +3478,6 @@ struct shield_wall_t: public warrior_spell_t
     value += p() -> glyphs.shield_wall -> effectN( 2 ).percent();
 
     p() -> buff.shield_wall -> trigger( 1, value );
-  }
-
-  void update_ready( timespan_t cd_duration )
-  {
-    cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
-    warrior_spell_t::update_ready( cd_duration );
   }
 };
 
@@ -4631,8 +4584,10 @@ void warrior_t::create_buffs()
   buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", find_spell( 133278 ) )
     .chance( glyphs.heroic_leap ? 1.0 : 0 );
 
-  buff.heroic_charge = buff_creator_t( this, "heroic_charge" )
-    .quiet( true ); // The reason this is used, is to model the time it takes to reach the target while charging. 
+  buff.heroic_leap_movement = buff_creator_t( this, "heroic_charge" );
+  buff.charge_movement = buff_creator_t( this, "charge_movement" );
+  buff.shield_charge_movement = buff_creator_t( this, "shield_charge_movement" );
+  buff.intervene_movement = buff_creator_t( this, "intervene_movement" );
 
   buff.last_stand = new buffs::last_stand_t( *this, "last_stand", spec.last_stand );
 
@@ -4656,7 +4611,7 @@ void warrior_t::create_buffs()
 
   buff.recklessness = buff_creator_t( this, "recklessness", spec.recklessness )
     .duration( spec.recklessness -> duration() * ( 1.0 + glyphs.recklessness -> effectN( 2 ).percent() ) )
-    .cd( timespan_t::zero() ); //Necessary for readiness.
+    .cd( timespan_t::zero() );
 
   buff.rude_interruption = buff_creator_t( this, "rude_interruption", glyphs.rude_interruption -> effectN( 1 ).trigger() )
     .default_value( glyphs.rude_interruption -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
@@ -4919,7 +4874,10 @@ void warrior_t::moving()
 
 void warrior_t::interrupt()
 {
-  buff.heroic_charge -> expire();
+  buff.charge_movement -> expire();
+  buff.heroic_leap_movement -> expire();
+  buff.shield_charge_movement -> expire();
+  buff.intervene_movement -> expire();
   core_event_t::cancel( heroic_charge );
   player_t::interrupt();
 }
@@ -4931,10 +4889,7 @@ void warrior_t::halt()
 
 void warrior_t::teleport( double yards, timespan_t duration )
 {
-  if ( buff.heroic_charge -> check() ) // Let the movement event take care of it.
-    return;
-
-  player_t::teleport( yards, duration );
+  return; // All movement "teleports" are modeled.
 }
 
 void warrior_t::update_movement( timespan_t duration )
@@ -4942,7 +4897,7 @@ void warrior_t::update_movement( timespan_t duration )
   if ( heroic_charge )
     player_t::update_movement( duration );
   else
-  {
+  { // Cancel heroic leap if it's running to make sure nothing weird happens when movement from another source is attempted.
     core_event_t::cancel( heroic_charge );
     player_t::update_movement( duration );
   }
@@ -5244,8 +5199,17 @@ double warrior_t::temporary_movement_modifier() const
   if ( buff.enraged_speed -> up() )
     temporary = std::max( buff.enraged_speed -> data().effectN( 1 ).percent(), temporary );
 
-  if ( buff.heroic_charge -> up() )
-    temporary = std::max( buff.heroic_charge -> value(), temporary );
+  if ( buff.charge_movement -> up() )
+    temporary = std::max( buff.charge_movement -> value(), temporary );
+
+  if ( buff.heroic_leap_movement -> up() )
+    temporary = std::max( buff.heroic_leap_movement -> value(), temporary );
+
+  if ( buff.shield_charge_movement -> up() )
+    temporary = std::max( buff.shield_charge_movement -> value(), temporary );
+
+  if ( buff.intervene_movement -> up() )
+    temporary = std::max( buff.intervene_movement -> value(), temporary );
 
   return temporary;
 }
