@@ -38,6 +38,7 @@ actions+=/call_action_list,name=init_crystal,if=talent.prismatic_crystal.enabled
 actions+=/call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active
 actions+=/call_action_list,name=aoe,if=active_enemies>=6
 actions+=/call_action_list,name=burn,if=buff.arcane_power.up&cooldown.evocation.remains<buff.arcane_power.remains&mana.pct>15&talent.prismatic_crystal.enabled
+actions+=/call_action_list,name=burn,if=(cooldown.evocation.remains<buff.arcane_power.remains|time_to_die<15)&mana.pct>15
 actions+=/call_action_list,name=evocation
 
 # Conditions for initiating Prismatic Crystal burn phase
@@ -65,13 +66,13 @@ actions.aoe+=/arcane_orb,if=buff.arcane_charge.stack<4
 actions.aoe+=/arcane_explosion
 
 # High mana usage, "Burn" sequence
-actions.burn=arcane_missiles,if=buff.arcane_missiles.react=3
+actions.burn=call_action_list,name=cooldowns
+actions.burn+=/arcane_missiles,if=buff.arcane_missiles.react=3|buff.arcane_instability.react|buff.arcane_instability.react
 actions.burn+=/supernova,if=charges=2
 actions.burn+=/nether_tempest,cycle_targets=1,if=target!=prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))
 actions.burn+=/arcane_blast,if=mana.pct>95&buff.arcane_charge.stack=4
 actions.burn+=/arcane_missiles,if=buff.arcane_charge.stack=4
 actions.burn+=/supernova
-actions.burn+=/arcane_barrage,if=buff.presence_of_mind.up&buff.arcane_charge.stack=4
 actions.burn+=/presence_of_mind
 actions.burn+=/arcane_blast
 
@@ -90,9 +91,9 @@ actions.conserve+=/arcane_blast
 actions.conserve+=/ice_floes,moving=1
 actions.conserve+=/arcane_barrage,moving=1
 
+# Evocation list to ensure proper interruption of evocation when channeling
 actions.evocation=call_action_list,name=conserve,if=cooldown.evocation.remains>0
 actions.evocation+=/evocation,interrupt_if=mana.pct>92,if=mana.pct<65
-actions.evocation+=/evocation,interrupt_if=mana.pct>92&set_bonus.tier17_2pc
 actions.evocation+=/call_action_list,name=conserve
 
 head=ebon_ritual_hood,id=105647,upgrade=2,gems=sinister_primal_8haste_8mastery_9int
