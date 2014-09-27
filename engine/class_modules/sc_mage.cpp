@@ -133,6 +133,7 @@ public:
     cooldown_t* evocation;
     cooldown_t* inferno_blast;
     cooldown_t* combustion;
+    cooldown_t* prismatic_crystal;
     cooldown_t* bolt; // Cooldown to handle enhanced_frostbolt perk.
   } cooldowns;
 
@@ -308,7 +309,12 @@ public:
       pyro_switch_t() { reset(); }
   } pyro_switch;
 
-
+  struct crystal_remains_control_t
+  {
+    double crystal_remains;
+    void reset() { crystal_remains = 0; }
+    crystal_remains_control_t() { reset(); }
+  } crystal_uptime;
 
 public:
   int current_arcane_charges;
@@ -337,6 +343,7 @@ public:
     spec( specializations_t() ),
     talents( talents_list_t() ),
     pyro_switch( pyro_switch_t() ),
+    crystal_uptime( crystal_remains_control_t() ),
     current_arcane_charges()
   {
 
@@ -345,10 +352,11 @@ public:
     FoF_renew                = 0;
 
     // Cooldowns
-    cooldowns.evocation      = get_cooldown( "evocation"     );
-    cooldowns.inferno_blast  = get_cooldown( "inferno_blast" );
-    cooldowns.combustion     = get_cooldown( "combustion"    );
-    cooldowns.bolt           = get_cooldown( "enhanced_frostbolt" );
+    cooldowns.evocation         = get_cooldown( "evocation"     );
+    cooldowns.inferno_blast     = get_cooldown( "inferno_blast" );
+    cooldowns.combustion        = get_cooldown( "combustion"    );
+    cooldowns.bolt              = get_cooldown( "enhanced_frostbolt" );
+    cooldowns.prismatic_crystal = get_cooldown( "prismatic_crystal" );
 
     // Miscellaneous
     incanters_flow_stack_mult = find_spell( 116267 ) -> effectN( 1 ).percent();
@@ -3905,7 +3913,12 @@ struct prismatic_crystal_t : public mage_spell_t
   }
 };
 
-// Choose target ============================================================
+// ================================================================================
+// Mage Custom Actions
+// ================================================================================
+
+
+// Choose Target Action ============================================================
 
 struct choose_target_t : public action_t
 {
@@ -4025,7 +4038,7 @@ struct choose_target_t : public action_t
 };
 
 
-// Combustion Pyroblast Chaining Switch ==========================================================
+// Combustion Pyroblast Chaining Switch Action ==========================================================
 
 
 struct start_pyro_chain_t : public action_t
@@ -4083,7 +4096,7 @@ struct stop_pyro_chain_t : public action_t
   }
 };
 
-// Choose Rotation =================================================================================
+// Choose Rotation Action =================================================================================
 
 struct choose_rotation_t : public action_t
 {
@@ -4288,7 +4301,7 @@ struct choose_rotation_t : public action_t
   }
 };
 
-// Proxy cast Water Jet ====================================================
+// Proxy cast Water Jet Action ====================================================
 
 struct water_jet_t : public action_t
 {
@@ -5794,7 +5807,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
     return new incanters_flow_dir_expr_t( * this );
   }
 
-
+  // Pyro Chain Flag Expression =====================================================
   if ( name_str == "pyro_chain" )
   {
     struct pyro_chain_expr_t : public mage_expr_t
@@ -5808,6 +5821,26 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
 
     return new pyro_chain_expr_t( *this );
   }
+
+  // Prismatic Crystal Uptime Remaing Expression ======================================
+
+  if ( name_str == "crystal_remains" )
+  {
+    struct crystal_remains_expr_t : public mage_expr_t
+    {
+      mage_t* mage;
+      crystal_remains_expr_t( mage_t& m ) : mage_expr_t( "crystal_remains", m ), mage( &m )
+      {}
+      virtual double evaluate()
+      { return mage -> crystal_uptime.crystal_remains = 
+        std::max( ( mage -> cooldowns.prismatic_crystal -> remains().total_seconds() - 50.0 ),
+                    0.0 ); }
+    };
+
+    return new crystal_remains_expr_t( *this );
+  }
+
+
 
   if ( util::str_compare_ci( name_str, "shooting_icicles" ) )
   {
