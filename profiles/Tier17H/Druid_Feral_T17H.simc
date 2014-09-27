@@ -4,7 +4,7 @@ race=night_elf
 role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!.0.1.21
-glyphs=savage_roar/master_shapeshifter/cat_form
+glyphs=savage_roar/ferocious_bite/cat_form
 spec=feral
 
 # This default action priority list is automatically created based on your character.
@@ -61,9 +61,9 @@ actions+=/shred,if=combo_points<5&active_enemies<3
 actions+=/natures_vigil
 # Take advantage of Glyph of Cat Form
 actions+=/rejuvenation,target_self=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
-actions+=/rejuvenation,cycle_targets=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
-actions+=/rejuvenation,cycle_targets=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
-actions+=/rejuvenation,cycle_targets=1,if=buff.natures_vigil.up
+actions+=/rejuvenation,cycle_players=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
+actions+=/rejuvenation,cycle_players=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
+actions+=/rejuvenation,cycle_players=1,if=buff.natures_vigil.up
 
 head=acidic_jaws,id=113880,bonus_id=566
 neck=darklight_necklace,id=113865,bonus_id=566,enchant=gift_of_critical_strike

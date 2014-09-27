@@ -42,7 +42,7 @@ spec=feral
 role=attack
 position=back
 talents=0102032
-glyphs=savage_roar/master_shapeshifter/cat_form
+glyphs=savage_roar/ferocious_bite/cat_form
 head=acidic_jaws,id=113880,bonus_id=566
 neck=darklight_necklace,id=113865,bonus_id=566,enchant=gift_of_critical_strike
 shoulders=living_wood_spaulders,id=115544,bonus_id=566

@@ -6094,9 +6094,9 @@ void druid_t::apl_feral()
   def -> add_talent( this, "Nature's Vigil" );
   if( glyph.cat_form -> ok() )
     def -> add_action( this, "rejuvenation", "target_self=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)" , "Take advantage of Glyph of Cat Form");    
-  def -> add_action( this, "rejuvenation", "cycle_targets=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)" );  
-  def -> add_action( this, "rejuvenation", "cycle_targets=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)" );  
-  def -> add_action( this, "rejuvenation", "cycle_targets=1,if=buff.natures_vigil.up" );  
+  def -> add_action( this, "rejuvenation", "cycle_players=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)" );  
+  def -> add_action( this, "rejuvenation", "cycle_players=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)" );  
+  def -> add_action( this, "rejuvenation", "cycle_players=1,if=buff.natures_vigil.up" );  
 
 }
 
