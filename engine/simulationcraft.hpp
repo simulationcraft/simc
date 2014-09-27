@@ -4234,6 +4234,7 @@ struct manager_t
   void add_diminishing_return_entry( const player_t* actor, double raw_dps, timespan_t current_time );
   int get_diminsihing_return_rank( int actor_spawn_index );
   void add_damage_event( double amount, timespan_t current_time );
+  const spell_data_t* resolve;
 private:
   struct update_event_t;
   struct diminishing_returns_list_t;
@@ -6213,8 +6214,15 @@ public:
   {
     double m = 1.0;
 
-    if ( player -> resolve_manager.is_started() && state -> target == player )
-      m += player -> buffs.resolve -> current_value / 100.0;
+    if ( player -> resolve_manager.is_started() )
+    {
+      // apply -60% healing effect
+      m *= 1.0 + player -> resolve_manager.resolve -> effectN( 3 ).percent();
+
+      // apply variable bonus based on current value
+      if ( state -> target == player )
+        m += player -> buffs.resolve -> current_value / 100.0;
+    }
 
     return m;
   }
@@ -6283,8 +6291,15 @@ struct absorb_t : public spell_base_t
   {
     double m = 1.0;
 
-    if ( player -> resolve_manager.is_started() && state -> target == player )
-      m += player -> buffs.resolve -> current_value / 100.0;
+    if ( player -> resolve_manager.is_started() )
+    {
+      // apply -60% healing effect
+      m *= 1.0 + player -> resolve_manager.resolve -> effectN( 2 ).percent();
+
+      // apply variable bonus based on current value
+      if ( state -> target == player )
+        m += player -> buffs.resolve -> current_value / 100.0;
+    }
 
     return m;
   }
