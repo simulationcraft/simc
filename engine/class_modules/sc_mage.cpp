@@ -83,7 +83,8 @@ public:
 
   // Miscellaneous
   double incanters_flow_stack_mult,
-         pet_multiplier;
+         pet_multiplier,
+         crystal_frost_multiplier;
 
   // Benefits
   struct benefits_t
@@ -353,6 +354,7 @@ public:
 
     // Miscellaneous
     incanters_flow_stack_mult = find_spell( 116267 ) -> effectN( 1 ).percent();
+    crystal_frost_multiplier  = find_spell( 152087 ) -> effectN( 3 ).percent();
 
     // Options
     base.distance = 40;
@@ -2992,41 +2994,52 @@ struct frozen_orb_bolt_t : public mage_spell_t
   virtual void impact( action_state_t* s )
   {
     mage_spell_t::impact( s );
-
     double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent();
 
-    // TODO: Verify that hidden FoF proc increase from glyph of IV is removed
-    /*if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
-    {
-      fof_proc_chance *= 1.2;
-    }*/
     p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
   }
 };
 
 struct frozen_orb_t : public mage_spell_t
 {
+  frozen_orb_bolt_t* frozen_orb_bolt;
   frozen_orb_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "frozen_orb", p, p -> find_class_spell( "Frozen Orb" ) )
+    mage_spell_t( "frozen_orb", p, p -> find_class_spell( "Frozen Orb" ) ),
+    frozen_orb_bolt( new frozen_orb_bolt_t( p ) )
   {
     parse_options( NULL, options_str );
 
     hasted_ticks = false;
-    base_tick_time = timespan_t::from_seconds( 1.0 );
+    base_tick_time    = timespan_t::from_seconds( 1.0 );
     dot_duration      = data().duration();
+    add_child( frozen_orb_bolt );
     may_miss       = false;
     may_crit       = false;
 
     dynamic_tick_action = true;
-    tick_action = new frozen_orb_bolt_t( p );
   }
 
   virtual void execute()
   {
     mage_spell_t::execute();
-
-
   }
+
+  virtual double composite_target_ta_multiplier( player_t* target ) const
+  {
+    double ctm = mage_spell_t::composite_target_multiplier( target );
+
+    if ( target == p() -> pets.prismatic_crystal )
+      ctm *= 1.0 + p() -> crystal_frost_multiplier;
+    return ctm;
+  }
+
+  void tick( dot_t* d )
+  {
+    mage_spell_t::tick(d);
+    frozen_orb_bolt -> execute();
+  }
+
+
 
   virtual void impact( action_state_t* s )
   {
