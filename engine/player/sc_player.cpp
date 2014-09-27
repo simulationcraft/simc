@@ -1717,6 +1717,8 @@ void player_t::init_spells()
   racials.endurance               = find_racial_spell( "Endurance" );
   racials.viciousness             = find_racial_spell( "Viciousness" );
 
+  resolve_manager.resolve = find_specialization_spell( "Resolve" );
+
   if ( ! is_enemy() )
   {
     const spell_data_t* s = find_mastery_spell( specialization() );
@@ -10008,7 +10010,7 @@ manager_t::manager_t( player_t& p ) :
     _started( false ),
     _diminishing_return_list( new diminishing_returns_list_t() ),
     _damage_list( new damage_event_list_t() ),
-    resolve( p.find_specialization_spell( "Resolve" ) )
+    resolve( spell_data_t::not_found() )
 {
 }
 
