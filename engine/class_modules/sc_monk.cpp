@@ -373,7 +373,6 @@ public:
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    composite_player_heal_multiplier( const action_state_t* s ) const;
-  virtual double    composite_player_absorb_multiplier( const action_state_t* s ) const;
   virtual double    composite_melee_expertise( weapon_t* weapon ) const;
   virtual double    composite_melee_attack_power() const;
   virtual double    composite_parry() const;
@@ -3815,24 +3814,7 @@ double monk_t::composite_player_heal_multiplier( const action_state_t* s ) const
 
   if ( buff.guard -> up() )
     m *= 1.0 + spec.guard -> effectN( 2 ).percent();
-
-  // Resolve applies a blanket -60% healing for tanks
-  if ( spec.resolve -> ok() )
-    m *= 1.0 + spec.resolve -> effectN( 2 ).percent();
-
-  return m;
-}
-
-// monk_t::composite_player_absorb_multiplier ==================================
-
-double monk_t::composite_player_absorb_multiplier( const action_state_t* s ) const
-{
-  double m = base_t::composite_player_absorb_multiplier( s );
-
-  // Resolve applies a blanket -60% healing & absorb for tanks
-  if ( spec.resolve -> ok() )
-    m *= 1.0 + spec.resolve -> effectN( 3 ).percent();
-
+  
   return m;
 }
 

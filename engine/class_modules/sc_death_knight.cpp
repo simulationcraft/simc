@@ -497,8 +497,6 @@ public:
   virtual double    composite_multistrike() const;
   virtual double    composite_melee_expertise( weapon_t* ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
-  virtual double    composite_player_heal_multiplier( const action_state_t* s ) const;
-  virtual double    composite_player_absorb_multiplier( const action_state_t* s ) const;
   virtual double    composite_crit_avoidance() const;
   virtual double    passive_movement_modifier() const;
   virtual double    temporary_movement_modifier() const;
@@ -6962,34 +6960,6 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + spec.improved_blood_presence -> effectN( 2 ).percent();
 
   return m;
-}
-
-// death_knight_t::composite_player_heal_multiplier ==============================
-
-double death_knight_t::composite_player_heal_multiplier( const action_state_t* s ) const
-{
-  double m = player_t::composite_player_heal_multiplier( s );
-
-  // Resolve applies a blanket -60% healing & absorb for tanks
-  if ( spec.resolve -> ok() )
-    m *= 1.0 + spec.resolve -> effectN( 2 ).percent();
-
-  return m;
-
-}
-
-// death_knight_t::composite_player_absorb_multiplier ==============================
-
-double death_knight_t::composite_player_absorb_multiplier( const action_state_t* s ) const
-{
-  double m = player_t::composite_player_absorb_multiplier( s );
-
-  // Resolve applies a blanket -60% healing & absorb for tanks
-  if ( spec.resolve -> ok() )
-    m *= 1.0 + spec.resolve -> effectN( 3 ).percent();
-
-  return m;
-
 }
 
 // death_knight_t::composite_melee_attack_power ==================================
