@@ -874,7 +874,7 @@ struct yseras_gift_t : public heal_t
     heal_t( "yseras_gift", p, p -> talent.yseras_gift )
   {
     base_tick_time = data().effectN( 1 ).period();
-    dot_duration   = 2 * sim -> expected_iteration_time; // infinite duration
+    dot_duration = 2 * sim -> max_time; // "infinite" duration
     harmful = tick_may_crit = hasted_ticks = false;
     may_multistrike = 0;
     background = proc = dual = true;
@@ -900,14 +900,10 @@ struct yseras_gift_t : public heal_t
 
   virtual void execute()
   {
-    if( player -> health_percentage() < 100 )
-    {
+    if ( player -> health_percentage() < 100 )
       target = player;
-    }
     else
-    { 
-    target = smart_target();
-    }
+      target = smart_target();
 
     heal_t::execute();
   }
