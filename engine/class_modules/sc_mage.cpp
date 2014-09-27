@@ -5031,7 +5031,7 @@ void mage_t::apl_arcane()
   burn -> add_action( "call_action_list,name=cooldowns",
                       "High mana usage, \"Burn\" sequence" );
   burn -> add_action( this, "Arcane Missiles",
-                      "if=buff.arcane_missiles.react=3|buff.arcane_instability.react|buff.arcane_instability.react" );
+                      "if=buff.arcane_missiles.react=3|buff.arcane_instability.react" );
   burn -> add_talent( this, "Supernova",
                       "if=charges=2" );
   burn -> add_talent( this, "Nether Tempest",
