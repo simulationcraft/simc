@@ -3019,31 +3019,15 @@ struct frozen_orb_t : public mage_spell_t
     add_child( frozen_orb_bolt );
     may_miss       = false;
     may_crit       = false;
-
-    dynamic_tick_action = true;
-  }
-
-  virtual void execute()
-  {
-    mage_spell_t::execute();
-  }
-
-  virtual double composite_target_ta_multiplier( player_t* target ) const
-  {
-    double ctm = mage_spell_t::composite_target_multiplier( target );
-
-    if ( target == p() -> pets.prismatic_crystal )
-      ctm *= 1.0 + p() -> crystal_frost_multiplier;
-    return ctm;
   }
 
   void tick( dot_t* d )
   {
-    mage_spell_t::tick(d);
+    mage_spell_t::tick( d );
+
+    frozen_orb_bolt -> target = d -> target;
     frozen_orb_bolt -> execute();
   }
-
-
 
   virtual void impact( action_state_t* s )
   {
