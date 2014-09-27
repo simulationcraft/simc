@@ -5374,9 +5374,12 @@ struct frozen_runeblade_buff_t : public buff_t
 
   void expire_override()
   {
-    death_knight_t* p = debug_cast< death_knight_t* >( player );
-    p -> active_spells.frozen_runeblade -> dot_duration = ( stack_count + 1 ) * p -> active_spells.frozen_runeblade -> data().effectN( 1 ).period();
-    p -> active_spells.frozen_runeblade -> schedule_execute();
+    if ( stack_count > 0 )
+    {
+      death_knight_t* p = debug_cast< death_knight_t* >( player );
+      p -> active_spells.frozen_runeblade -> dot_duration = ( stack_count + 1 ) * p -> active_spells.frozen_runeblade -> data().effectN( 1 ).period();
+      p -> active_spells.frozen_runeblade -> schedule_execute();
+    }
 
     buff_t::expire_override();
 
