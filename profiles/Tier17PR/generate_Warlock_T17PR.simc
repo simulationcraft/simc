@@ -34,7 +34,7 @@ level=100
 race=troll
 spec=demonology
 talents=0000311
-glyphs=imp_swarm/dark_soul
+glyphs=dark_soul
 
 head=hood_of_arcane_mystery,id=109970,bonus_id=524
 neck=alcs_pendant_of_fiery_dreams,id=109957,enchant=gift_of_mastery,bonus_id=524

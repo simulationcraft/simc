@@ -4,6 +4,7 @@ race=troll
 role=spell
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!....200
+glyphs=dark_soul
 spec=demonology
 
 # This default action priority list is automatically created based on your character.
