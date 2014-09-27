@@ -1622,31 +1622,30 @@ static void trigger_unstable_magic( action_state_t* s )
       trigger_gcd = timespan_t::zero();
     }
 
-  virtual double composite_player_multipler() const
-  { return 1; }
+    double composite_target_multiplier( player_t* target ) const
+    {
+      // For now, PC doubledips on UM
+      if ( target == p() -> pets.prismatic_crystal )
+        return p() -> pets.prismatic_crystal -> composite_player_vulnerability( school );
 
-  virtual double composite_target_multipler() const
-  { return 1; }
+      return 1.0;
+    }
 
-  virtual double composite_versaility() const
-  { return 1; }
+    virtual void init()
+    {
+      mage_spell_t::init();
+      // disable the snapshot_flags for all multipliers
+      snapshot_flags &= STATE_NO_MULTIPLIER;
+      snapshot_flags |= STATE_TGT_MUL_DA;
+    }
 
-  virtual void init()
-  {
-    mage_spell_t::init();
-    // disable the snapshot_flags for all multipliers
-    snapshot_flags &= STATE_NO_MULTIPLIER;
-  }
+    virtual void execute()
+    {
+      base_dd_max *= pct_damage; // Deals 50% of original triggering spell damage
+      base_dd_min *= pct_damage;
 
-  virtual void execute()
-  {
-
-    base_dd_max *= pct_damage; // Deals 50% of original triggering spell damage
-    base_dd_min *= pct_damage;
-
-
-    mage_spell_t::execute();
-  }
+      mage_spell_t::execute();
+    }
   };
 
   mage_t* p = debug_cast<mage_t*>( s -> action -> player );
