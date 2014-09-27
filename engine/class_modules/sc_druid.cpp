@@ -42,7 +42,6 @@ struct cenarion_ward_hot_t;
 struct gushing_wound_t;
 struct leader_of_the_pack_t;
 struct natures_vigil_proc_t;
-struct primal_tenacity_t;
 struct ursocs_vigor_t;
 struct yseras_gift_t;
 namespace buffs {
@@ -118,7 +117,6 @@ public:
     gushing_wound_t*      gushing_wound;
     leader_of_the_pack_t* leader_of_the_pack;
     natures_vigil_proc_t* natures_vigil;
-    primal_tenacity_t*    primal_tenacity;
     ursocs_vigor_t*       ursocs_vigor;
     yseras_gift_t*        yseras_gift;
   } active;
@@ -866,55 +864,6 @@ struct leader_of_the_pack_t : public heal_t
 
     cooldown -> duration = timespan_t::from_seconds( 6.0 );
     pct_heal = data().effectN( 1 ).percent();
-  }
-};
-
-// Primal Tenacity ==========================================================
-
-struct primal_tenacity_t : public absorb_t
-{
-  double absorb_remaining; // The absorb value the druid had when they took the triggering attack
-
-  primal_tenacity_t( druid_t* p ) :
-    absorb_t( "primal_tenacity", p, p -> mastery.primal_tenacity ),
-    absorb_remaining( 0.0 )
-  {
-    harmful = may_crit = false;
-    may_multistrike = 0;
-    background = proc = dual = true;
-    target = p;
-  }
-
-  druid_t* p() const
-  { return static_cast<druid_t*>( player ); }
-
-  virtual void init()
-  {
-    absorb_t::init();
-
-    snapshot_flags &= ~STATE_RESOLVE; // Is not affected by resolve.
-  }
-
-  virtual double action_multiplier() const
-  {
-    double am = absorb_t::action_multiplier();
-
-    am *= p() -> cache.mastery_value();
-
-    return am;
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    /* Primal Tenacity may only occur if the amount of damage PT absorbed from the triggering attack
-       is less than 20% of the size of the new absorb. */
-    if ( absorb_remaining < s -> result_amount * 0.2 )
-    {
-      // Subtract the amount absorbed from the triggering attack from the new absorb.
-      s -> result_amount -= absorb_remaining;
-
-      p() -> buff.primal_tenacity -> trigger( 1, s -> result_amount );
-    }
   }
 };
 
@@ -5591,8 +5540,6 @@ void druid_t::init_spells()
     active.yseras_gift        = new yseras_gift_t( this );
   if ( sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
     active.gushing_wound      = new gushing_wound_t( this );
-  if ( mastery.primal_tenacity -> ok() )
-    active.primal_tenacity = new primal_tenacity_t( this );
 
   // Spells
   spell.bear_form                       = find_class_spell( "Bear Form"                   ) -> ok() ? find_spell( 1178   ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
@@ -6987,9 +6934,11 @@ void druid_t::assess_damage( school_e school,
 {
   /* Store the amount primal_tenacity absorb remaining so we can use it 
     later to determine if we need to apply the absorb. */
-  if ( mastery.primal_tenacity -> ok() && school == SCHOOL_PHYSICAL &&
-       ! ( s -> result == RESULT_DODGE || s -> result == RESULT_MISS ) )
-    active.primal_tenacity -> absorb_remaining = buff.primal_tenacity -> value();
+  double pt_pre_amount;
+  if ( mastery.primal_tenacity -> ok() )
+    if ( school == SCHOOL_PHYSICAL && // Check attack eligibility
+         ! ( s -> result == RESULT_DODGE || s -> result == RESULT_MISS ) )
+      pt_pre_amount = buff.primal_tenacity -> value();
 
   if ( sets.has_set_bonus( SET_TANK, T15, B2 ) && s -> result == RESULT_DODGE && buff.savage_defense -> check() )
     buff.tier15_2pc_tank -> trigger();
@@ -7023,17 +6972,25 @@ void druid_t::assess_damage( school_e school,
   player_t::assess_damage( school, dtype, s );
 
   // Primal Tenacity
-  if ( mastery.primal_tenacity -> ok() && school == SCHOOL_PHYSICAL &&
-       ! ( s -> result == RESULT_DODGE || s -> result == RESULT_MISS ) &&
-       ! buff.primal_tenacity -> check() ) // Check attack eligibility
+  if ( mastery.primal_tenacity -> ok() )
   {
-    // Set the absorb amount (mastery and resolve multipliers are managed by the action itself)
-    active.primal_tenacity -> base_dd_min =
-    active.primal_tenacity -> base_dd_max = s -> result_mitigated;
-    /* Execute absorb, if too large of an absorb was present for the triggering attack then the
-       absorb will not be reapplied. The outcome depends on the size of the resulting absorb
-       so we must execute on every eligible attack; see primal_tenacity_t::impact() for details. */
-    active.primal_tenacity -> execute();
+    if ( school == SCHOOL_PHYSICAL && // Check attack eligibility
+         ! ( s -> result == RESULT_DODGE || s -> result == RESULT_MISS ) &&
+         ! buff.primal_tenacity -> check() ) 
+    {
+      // Base absorb amount
+      double pt_amount = s -> result_mitigated * cache.mastery_value() * ( 1 + cache.heal_versatility() );
+
+      /* Primal Tenacity may only occur if the amount of damage PT absorbed from the triggering attack
+          is less than 20% of the size of the new absorb. */
+      if ( pt_pre_amount < pt_amount * 0.2 )
+      {
+        // Subtract the amount absorbed from the triggering attack from the new absorb.
+        pt_amount -= pt_pre_amount;
+
+        buff.primal_tenacity -> trigger( 1, pt_amount );
+      }
+    }
   }
 }
 
