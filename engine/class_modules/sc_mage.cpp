@@ -69,7 +69,7 @@ public:
   std::vector<icicle_tuple_t> icicles;
   action_t* icicle;
   core_event_t* icicle_event;
-
+  double distance_from_rune;
   // Active
   actions::ignite_t* active_ignite;
   int active_bomb_targets;
@@ -346,7 +346,7 @@ public:
     crystal_uptime( crystal_remains_control_t() ),
     current_arcane_charges()
   {
-
+    distance_from_rune = 0;
     //Active
     explode                  = 0;
     FoF_renew                = 0;
@@ -391,8 +391,8 @@ public:
   virtual double    composite_spell_haste() const;
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
+  virtual void      update_movement( timespan_t duration );
   virtual void      stun();
-  virtual void      moving();
   virtual double    temporary_movement_modifier() const;
   virtual void      arise();
   virtual action_t* select_action( const action_priority_list_t& );
@@ -3734,6 +3734,7 @@ struct rune_of_power_t : public mage_spell_t
     mage_spell_t::execute();
 
     // Assume they're always in it
+    p() -> distance_from_rune = 0;
     p() -> buffs.rune_of_power -> trigger();
   }
 };
@@ -5575,15 +5576,22 @@ void mage_t::stun()
   player_t::stun();
 }
 
-// mage_t::moving============================================================
+// mage_t::update_movement==================================================
 
-void mage_t::moving()
+void mage_t::update_movement( timespan_t duration )
 {
-  //FIXME, only remove the buff if we are moving more than RoPs radius
-  buffs.rune_of_power -> expire();
-  if ( sim -> debug ) sim -> out_debug.printf( "%s lost Rune of Power due to movement.", name() );
+  double distance = current.distance_to_move;
 
-  player_t::moving();
+  player_t::update_movement( duration );
+
+  distance -= current.distance_to_move;
+  distance_from_rune += distance;
+
+  if ( distance_from_rune > talents.rune_of_power -> effectN( 2 ).radius() )
+  {
+    buffs.rune_of_power -> expire();
+    if ( sim -> debug ) sim -> out_debug.printf( "%s lost Rune of Power due to moving more than 8 yards away from it.", name() );
+  }
 }
 
 // mage_t::temporary_movement_modifier ==================================

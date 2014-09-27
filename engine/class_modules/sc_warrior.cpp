@@ -4278,7 +4278,6 @@ void warrior_t::apl_prot()
   prot_aoe -> add_talent( this, "Storm Bolt" );
   prot_aoe -> add_action( this, "Shield Slam" );
   prot_aoe -> add_action( this, "Devastate" );
-
 }
 
 // Gladiator Warrior Action Priority List ========================================
@@ -4331,7 +4330,6 @@ void warrior_t::apl_glad()
   gladiator_aoe -> add_talent( this, "Dragon Roar", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
   gladiator_aoe -> add_talent( this, "Storm Bolt", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled" );
   gladiator_aoe -> add_action( this, "Devastate", "if=cooldown.shield_slam.remains>execute_time*0.4" );
-
 }
 
 // NO Spec Combat Action Priority List
