@@ -4991,6 +4991,7 @@ void mage_t::apl_arcane()
   default_list -> add_action( "call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=6" );
   default_list -> add_action( "call_action_list,name=burn,if=buff.arcane_power.up&cooldown.evocation.remains<buff.arcane_power.remains&mana.pct>15&talent.prismatic_crystal.enabled" );
+  default_list -> add_action( "call_action_list,name=burn,if=(cooldown.evocation.remains<buff.arcane_power.remains|time_to_die<15)&mana.pct>15" );
   default_list -> add_action( "call_action_list,name=evocation" );
 
 
@@ -5036,7 +5037,7 @@ void mage_t::apl_arcane()
   burn -> add_action( "call_action_list,name=cooldowns",
                       "High mana usage, \"Burn\" sequence" );
   burn -> add_action( this, "Arcane Missiles",
-                      "if=buff.arcane_missiles.react=3|buff.arcane_instability.react" );
+                      "if=buff.arcane_missiles.react=3|buff.arcane_instability.react|buff.arcane_instability.react" );
   burn -> add_talent( this, "Supernova",
                       "if=charges=2" );
   burn -> add_talent( this, "Nether Tempest",
@@ -5052,7 +5053,6 @@ void mage_t::apl_arcane()
 
   evocation -> add_action( "call_action_list,name=conserve,if=cooldown.evocation.remains>0", "Evocation list to ensure proper interruption of evocation when channeling" );
   evocation -> add_action( this, "Evocation", "interrupt_if=mana.pct>92,if=mana.pct<65");
-  evocation -> add_action( this, "Evocation", "interrupt_if=mana.pct>92,if=set_bonus.tier17_2pc&buff.arcane_charge.stacks=0");
   evocation -> add_action( "call_action_list,name=conserve" );
 
   conserve -> add_action( "call_action_list,name=cooldowns,if=time_to_die<30|(buff.arcane_charge.stack=4&!(glyph.arcane_power.enabled&talent.prismatic_crystal.enabled)&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>20))" );
