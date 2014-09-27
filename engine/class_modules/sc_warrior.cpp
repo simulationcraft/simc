@@ -1775,7 +1775,7 @@ struct heroic_strike_t: public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     if ( p() -> buff.shield_charge -> up() )
-      am *= 1.0 + p() -> find_spell( 169667 ) -> effectN( 1 ).percent() + ( p() -> sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) ? 0.05 : 0 );
+      am *= 1.0 + p() -> buff.shield_charge -> default_value;
 
     return am;
   }
@@ -2262,7 +2262,7 @@ struct revenge_t: public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     if ( p() -> buff.shield_charge -> up() )
-      am *= 1.0 + p() -> find_spell( 169667 ) -> effectN( 1 ).percent() + ( p() -> sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) ? 0.05 : 0 );
+      am *= 1.0 + p() -> buff.shield_charge -> default_value;
 
     return am;
   }
@@ -2564,7 +2564,7 @@ struct shield_slam_t: public warrior_attack_t
 
     if ( p() -> buff.shield_charge -> up() )
     {
-      am *= 1.0 + p() -> find_spell( 169667 ) -> effectN( 1 ).percent() + ( p() -> sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) ? 0.05 : 0 );
+      am *= 1.0 + p() -> buff.shield_charge -> default_value;
       if ( p() -> talents.heavy_repercussions -> ok() )
         am *= 1.0 + p() -> talents.heavy_repercussions -> effectN( 1 ).percent();
     }
@@ -2591,15 +2591,12 @@ struct shield_slam_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( p() -> sets.has_set_bonus( WARRIOR_PROTECTION, T17, B2 ) )
+    if ( rng().roll( p() -> sets.set( WARRIOR_PROTECTION, T17, B2 ) -> proc_chance() ) )
     {
-      if ( rng().roll( p() -> bugs ? 0.08 : p() -> sets.set( WARRIOR_PROTECTION, T17, B2 ) -> proc_chance() ) )
-      {
-        if ( p() -> active_stance == STANCE_GLADIATOR )
-          shield_charge_2pc -> execute();
-        else
-          shield_block_2pc -> execute();
-      }
+      if ( p() -> active_stance == STANCE_GLADIATOR )
+        shield_charge_2pc -> execute();
+      else
+        shield_block_2pc -> execute();
     }
 
     double rage_from_snb = 0;
@@ -4670,6 +4667,7 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_BLOCK );
 
   buff.shield_charge = buff_creator_t( this, "shield_charge", find_spell( 169667 ) )
+    .default_value( find_spell( 169667 ) -> effectN( 1 ).percent() + sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent() )
     .cd( timespan_t::zero() );
 
   buff.shield_wall = buff_creator_t( this, "shield_wall", spec.shield_wall )
@@ -5116,7 +5114,7 @@ double warrior_t::composite_block_reduction() const
   if ( buff.shield_block -> up() )
   {
       if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )
-          br += ( bugs ? 0.05 : find_spell( 169688 ) -> effectN( 1 ).percent() );
+        br += find_spell( 169688 ) -> effectN( 1 ).percent();
   }
 
   return br;
