@@ -84,7 +84,8 @@ public:
   // Miscellaneous
   double incanters_flow_stack_mult,
          pet_multiplier,
-         crystal_frost_multiplier;
+         crystal_frost_multiplier,
+         crystal_fire_arcane_multiplier;
 
   // Benefits
   struct benefits_t
@@ -355,6 +356,7 @@ public:
     // Miscellaneous
     incanters_flow_stack_mult = find_spell( 116267 ) -> effectN( 1 ).percent();
     crystal_frost_multiplier  = find_spell( 152087 ) -> effectN( 3 ).percent();
+    crystal_fire_arcane_multiplier = find_spell( 155153 ) -> effectN( 1 ).percent();
 
     // Options
     base.distance = 40;
@@ -1632,14 +1634,27 @@ static void trigger_unstable_magic( action_state_t* s )
   virtual void init()
   {
     mage_spell_t::init();
-    // disable the snapshot_flags for all multipliers
-    snapshot_flags &= STATE_NO_MULTIPLIER;
   }
 
   virtual void execute()
   {
+
     base_dd_max *= pct_damage; // Deals 50% of original triggering spell damage
     base_dd_min *= pct_damage;
+
+    if ( p() -> target == p() -> pets.prismatic_crystal )
+    {
+      if ( ( p() -> specialization() == MAGE_FIRE ) || ( p() -> specialization() == MAGE_ARCANE ) )
+      {
+        base_dd_max *= 1.0 + p() -> crystal_fire_arcane_multiplier;
+        base_dd_min *= 1.0 + p() -> crystal_fire_arcane_multiplier;
+      }
+      if ( ( p() -> specialization() == MAGE_FROST ) )
+      {
+        base_dd_max *= 1.0 + p() -> crystal_frost_multiplier;
+        base_dd_min *= 1.0 + p() -> crystal_frost_multiplier;
+      }
+    }
 
     mage_spell_t::execute();
   }
