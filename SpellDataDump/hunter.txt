@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18927)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18935)
 Name             : Mend Pet (id=136) [Scaling Spell (3), Spell Family (9)] 
 Class            : Hunter
 Spell Level      : 16
@@ -3620,6 +3620,20 @@ Effects          :
 Description      : Increases party and raid members' Stamina by $s1% and spell power by $s2%..
 Tooltip          : Increases Stamina by $s1%.
 Increases spell power by $s2%.
+
+Name             : Kill Shot (id=90967) [Spell Family (9), Hidden] 
+Class            : Hunter
+Range            : 50000 yards
+Duration         : 6 seconds
+Attributes       : .......x x....... ........ ...x.x..   ........ ..x..... ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ....x... ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=94364)    : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
 
 Name             : Energize (id=91954) 
 Class            : Hunter

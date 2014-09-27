@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18927)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18935)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 1
@@ -70,7 +70,7 @@ Tooltip          : Healing all party and raid members within $a1 yards for $1579
 
 Name             : Cat Form (Shapeshift) (id=768) [Spell Family (7)] 
 Class            : Druid
-Resource         : 3.7% Base Mana (1184 @Level 100)
+Resource         : 7.4% Base Mana (2368 @Level 100)
 Spell Level      : 6
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -153,7 +153,7 @@ $bloom=${$<gift>*$<genesis3>*$<mstrshape>*$<gotem3>*$<tol>}
 
 Name             : Travel Form (Shapeshift) (id=783) [Spell Family (7)] 
 Class            : Druid
-Resource         : 5.6% Base Mana (1791 @Level 100)
+Resource         : 7.4% Base Mana (2368 @Level 100)
 Spell Level      : 16
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -597,7 +597,7 @@ Description      : Increases swimming speed by $s1% and allow's the druid to bre
 
 Name             : Bear Form (Shapeshift) (id=5487) [Spell Family (7)] 
 Class            : Druid
-Resource         : 3.7% Base Mana (1184 @Level 100)
+Resource         : 7.4% Base Mana (2368 @Level 100)
 Spell Level      : 8
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -1167,7 +1167,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... ....x
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=12790)    : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | AP Coefficient: 5.00000 | Chain Multiplier: 0.7
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | AP Coefficient: 4.25000 | Chain Multiplier: 0.7
 #2 (id=12791)    : None (0)
                    Base Value: 25 | Scaled Value: 25
 Description      : Finishing move that causes damage per combo point$?s67598[, consumes up to 25 additional Energy to increase damage by up to 100%, and heals you for $67598m1% of your total maximum health for each $67598m2 Energy used.][ and consumes up to 25 additional Energy to increase damage by up to 100%.]$?s1079[
@@ -7633,7 +7633,7 @@ Tooltip          : Increases the damage of your next Sunfire by $s1%.
 
 Name             : Claws of Shirvallah (Shapeshift) (id=171745) [Spell Family (7)] 
 Class            : Druid
-Resource         : 3.7% Base Mana (1184 @Level 100)
+Resource         : 7.4% Base Mana (2368 @Level 100)
 Spell Level      : 6
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)

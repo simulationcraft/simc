@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18927)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18935)
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 9
@@ -4787,8 +4787,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .xx..... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=217568)   : Charge (96)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 126664
+#1 (id=217568)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
 #2 (id=242676)   : Trigger Spell: Warrior Charge Drop Fire Periodic (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 126661
 Description      : Raise your shield and charge a short distance to your target, increasing the damage of Shield Slam, Revenge, and Heroic Strike by $169667s1% for $169667d.
@@ -5371,7 +5371,7 @@ Description      : Raging Blow critical strikes have a $h% chance to activate En
 
 Name             : Item - Warrior T17 Protection 2P Bonus (id=165338) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
-Proc Chance      : 25%
+Proc Chance      : 8%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -5777,7 +5777,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
 Effects          :
 #1 (id=240576)   : Apply Aura (6) | Unknown effect sub type (150)
-                   Base Value: 30 | Scaled Value: 30
+                   Base Value: 5 | Scaled Value: 5
 Description      : $@spelldesc165338
 Tooltip          : Your blocks are $s1% more effective.
 

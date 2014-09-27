@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18927)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18935)
 Name             : Blizzard (id=10) [Spell Family (3)] 
 Class            : Frost Mage
 Resource         : 5% Base Mana (8000 @Level 100)
@@ -486,7 +486,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2716)     : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.26500
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.20000
 Description      : $@spelldesc5143
 
 Name             : Frost Armor (id=7302) [Spell Family (3), Passive] 
@@ -936,7 +936,7 @@ Tooltip          : Healing $/5;s2% every $t1 seconds.
 Name             : Arcane Blast (id=30451) [Spell Family (3)] 
 Replaces         : Frostfire Bolt (id=44614)
 Class            : Arcane Mage
-Resource         : 1.67% Base Mana (2672 @Level 100)
+Resource         : 2% Base Mana (3200 @Level 100)
 Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 2.25 seconds
@@ -950,7 +950,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=20028)    : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.86520
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.85000
 #2 (id=20029)    : Trigger Spell: Arcane Charge (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 36032
 Description      : Blasts the target with energy, dealing $30451s1 Arcane damage and generating an Arcane Charge.
@@ -1208,7 +1208,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50
                    Affected Spells: Arcane Missiles (7268), Arcane Blast (30451), Arcane Barrage (44425)
 #2 (id=26314)    : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: 150 | Scaled Value: 150 | Misc Value: 14
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 14
                    Affected Spells: Arcane Blast (30451)
 #3 (id=127870)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17
@@ -1301,7 +1301,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=36330)    : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.75000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.57500
 #2 (id=157070)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 Description      : Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. Consumes all Arcane Charges.
@@ -4069,7 +4069,7 @@ Effects          :
 #2 (id=215516)   : Summon (28)
                    Base Value: 90 | Scaled Value: 90 | Misc Value: 76933 | Misc Value 2: 0xd96
 #3 (id=256214)   : Dummy (3)
-                   Base Value: 30 | Scaled Value: 30
+                   Base Value: 10 | Scaled Value: 10
 Description      : Conjures a prismatic crystal at the target location, which is attackable by only the Mage, and takes $?s84714[$s3][$155153s1]% additional damage. 
 
 When the crystal takes damage, it instantly releases a burst of energy dealing that damage, split evenly between all enemies within 8 yards.
