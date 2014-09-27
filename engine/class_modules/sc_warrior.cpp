@@ -1462,7 +1462,7 @@ struct charge_t: public warrior_attack_t
     if ( p() -> current.distance_to_move > data().min_range() )
     {
       p() -> buff.charge_movement -> trigger( 1, movement_speed_increase, 1,
-      timespan_t::from_millis( p() -> current.distance_to_move / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() + movement_speed_increase ) ) ) );
+                                              timespan_t::from_seconds( p() -> current.distance_to_move / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() + movement_speed_increase ) ) ) );
       p() -> current.moving_away = 0;
     }
     warrior_attack_t::execute();
@@ -1963,7 +1963,7 @@ struct intervene_t: public warrior_attack_t
     if ( p() -> current.distance_to_move > 0 )
     {
       p() -> buff.intervene_movement -> trigger( 1, movement_speed_increase, 1,
-                                              timespan_t::from_millis( p() -> current.distance_to_move / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() + movement_speed_increase ) ) ) );
+                                                 timespan_t::from_seconds( p() -> current.distance_to_move / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() + movement_speed_increase ) ) ) );
       p() -> current.moving_away = 0;
     }
   }
@@ -2026,7 +2026,10 @@ struct heroic_charge_movement_ticker_t: public event_t
     if ( next > timespan_t::zero() )
       warrior -> heroic_charge = new ( sim() ) heroic_charge_movement_ticker_t( sim(), warrior, next );
     else
+    {
+      warrior -> heroic_charge = 0;
       warrior -> buff.heroic_leap_movement -> expire();
+    }
   }
 };
 
@@ -2062,14 +2065,14 @@ struct heroic_charge_t: public warrior_attack_t
     }
     else
     {
-      p() -> trigger_movement( 8.0, MOVEMENT_BOOMERANG );
+      p() -> trigger_movement( 9.0, MOVEMENT_BOOMERANG );
       p() -> heroic_charge = new ( *sim ) heroic_charge_movement_ticker_t( *sim, p() );
     }
   }
 
   bool ready()
   {
-    if ( p() -> cooldown.rage_from_charge -> up() && p() -> cooldown.charge -> up() && !p() -> heroic_charge )
+    if ( p() -> cooldown.rage_from_charge -> up() && p() -> cooldown.charge -> up() && !p() -> buffs.raid_movement -> check() )
       return warrior_attack_t::ready();
     else
       return false;
@@ -3427,7 +3430,8 @@ struct shield_charge_t: public warrior_spell_t
     if ( p() -> current.distance_to_move > 0 )
     {
       p() -> buff.shield_charge_movement -> trigger( 1, movement_speed_increase, 1,
-                                            timespan_t::from_millis( p() -> current.distance_to_move / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() + movement_speed_increase ) ) ) );
+                                                     timespan_t::from_seconds( p() -> current.distance_to_move / ( p() -> base_movement_speed * 
+                                                     ( 1 + p() -> passive_movement_modifier() + movement_speed_increase ) ) ) );
       p() -> current.moving_away = 0;
     }
 
@@ -4584,7 +4588,7 @@ void warrior_t::create_buffs()
   buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", find_spell( 133278 ) )
     .chance( glyphs.heroic_leap ? 1.0 : 0 );
 
-  buff.heroic_leap_movement = buff_creator_t( this, "heroic_charge" );
+  buff.heroic_leap_movement = buff_creator_t( this, "heroic_leap_movement" );
   buff.charge_movement = buff_creator_t( this, "charge_movement" );
   buff.shield_charge_movement = buff_creator_t( this, "shield_charge_movement" );
   buff.intervene_movement = buff_creator_t( this, "intervene_movement" );
@@ -4861,6 +4865,7 @@ void warrior_t::reset()
 
   active_stance = STANCE_BATTLE;
   swapping = false;
+  heroic_charge = 0;
 
   t15_2pc_melee.reset();
 }
