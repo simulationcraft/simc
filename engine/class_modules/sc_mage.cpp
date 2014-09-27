@@ -5587,10 +5587,13 @@ void mage_t::update_movement( timespan_t duration )
   distance -= current.distance_to_move;
   distance_from_rune += distance;
 
-  if ( distance_from_rune > talents.rune_of_power -> effectN( 2 ).radius() )
+  if ( buffs.rune_of_power -> check() )
   {
-    buffs.rune_of_power -> expire();
-    if ( sim -> debug ) sim -> out_debug.printf( "%s lost Rune of Power due to moving more than 8 yards away from it.", name() );
+    if ( distance_from_rune > talents.rune_of_power -> effectN( 2 ).radius() )
+    {
+      buffs.rune_of_power -> expire();
+      if ( sim -> debug ) sim -> out_debug.printf( "%s lost Rune of Power due to moving more than 8 yards away from it.", name() );
+    }
   }
 }
 
