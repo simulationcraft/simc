@@ -2043,7 +2043,6 @@ struct heroic_charge_t: public warrior_attack_t
     trigger_gcd = timespan_t::zero();
     use_off_gcd = true;
     callbacks = may_crit = false;
-    cooldown = p -> cooldown.charge;
   }
 
   void execute()
@@ -2070,7 +2069,7 @@ struct heroic_charge_t: public warrior_attack_t
 
   bool ready()
   {
-    if ( p() -> cooldown.rage_from_charge -> up() )
+    if ( p() -> cooldown.rage_from_charge -> up() && p() -> cooldown.charge -> up() && !p() -> heroic_charge )
       return warrior_attack_t::ready();
     else
       return false;
