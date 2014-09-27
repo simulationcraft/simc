@@ -3567,6 +3567,7 @@ void monk_t::create_buffs()
     .cd( timespan_t::zero() );
 
   buff.guard = absorb_buff_creator_t( this, "guard", spec.guard )
+    .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
     .source( get_stats( "guard" ) )
     .cd( timespan_t::zero() );
 
