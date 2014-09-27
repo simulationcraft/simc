@@ -5033,9 +5033,10 @@ void mage_t::apl_arcane()
   aoe -> add_action( this, "Arcane Explosion" );
 
 
-  burn -> add_action( this, "Arcane Missiles",
-                      "if=buff.arcane_missiles.react=3",
+  burn -> add_action( "call_action_list,name=cooldowns",
                       "High mana usage, \"Burn\" sequence" );
+  burn -> add_action( this, "Arcane Missiles",
+                      "if=buff.arcane_missiles.react=3|buff.arcane_instability.react" );
   burn -> add_talent( this, "Supernova",
                       "if=charges=2" );
   burn -> add_talent( this, "Nether Tempest",
@@ -5045,14 +5046,13 @@ void mage_t::apl_arcane()
   burn -> add_action( this, "Arcane Missiles",
                       "if=buff.arcane_charge.stack=4" );
   burn -> add_talent( this, "Supernova" );
-  burn -> add_action( this, "Arcane Barrage",
-                      "if=buff.presence_of_mind.up&buff.arcane_charge.stack=4" );
   burn -> add_action( this, "Presence of Mind" );
   burn -> add_action( this, "Arcane Blast" );
 
-  evocation -> add_action( "call_action_list,name=conserve,if=cooldown.evocation.remains>0" );
+
+  evocation -> add_action( "call_action_list,name=conserve,if=cooldown.evocation.remains>0", "Evocation list to ensure proper interruption of evocation when channeling" );
   evocation -> add_action( this, "Evocation", "interrupt_if=mana.pct>92,if=mana.pct<65");
-  evocation -> add_action( this, "Evocation", "interrupt_if=mana.pct>92&set_bonus.tier17_2pc");
+  evocation -> add_action( this, "Evocation", "interrupt_if=mana.pct>92,if=set_bonus.tier17_2pc&buff.arcane_charge.stacks=0");
   evocation -> add_action( "call_action_list,name=conserve" );
 
   conserve -> add_action( "call_action_list,name=cooldowns,if=time_to_die<30|(buff.arcane_charge.stack=4&!(glyph.arcane_power.enabled&talent.prismatic_crystal.enabled)&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>20))" );
