@@ -72,7 +72,6 @@ public:
   double distance_from_rune;
   // Active
   actions::ignite_t* active_ignite;
-  int active_bomb_targets;
   action_t* explode; // Explode helps with handling Unstable Magic.
   action_t* FoF_renew;
   player_t* last_bomb_target;
@@ -83,9 +82,7 @@ public:
 
   // Miscellaneous
   double incanters_flow_stack_mult,
-         pet_multiplier,
-         crystal_frost_multiplier,
-         crystal_fire_arcane_multiplier;
+         pet_multiplier;
 
   // Benefits
   struct benefits_t
@@ -321,7 +318,6 @@ public:
     icicle( 0 ),
     icicle_event( 0 ),
     active_ignite( 0 ),
-    active_bomb_targets( 0 ),
     last_bomb_target( 0 ),
     rppm_pyromaniac( *this, 0, RPPM_HASTE ),
     rppm_arcane_instability( *this, 0, RPPM_HASTE ),
@@ -355,8 +351,6 @@ public:
 
     // Miscellaneous
     incanters_flow_stack_mult = find_spell( 116267 ) -> effectN( 1 ).percent();
-    crystal_frost_multiplier  = find_spell( 152087 ) -> effectN( 3 ).percent();
-    crystal_fire_arcane_multiplier = find_spell( 155153 ) -> effectN( 1 ).percent();
 
     // Options
     base.distance = 40;
@@ -5501,7 +5495,6 @@ void mage_t::reset()
   core_event_t::cancel( icicle_event );
   rppm_pyromaniac.reset();
   rppm_arcane_instability.reset();
-  active_bomb_targets = 0;
   last_bomb_target = 0;
   pyro_switch.reset();
 }
@@ -5825,29 +5818,6 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
 
     return new pyro_chain_expr_t( *this );
   }
-
-  // Prismatic Crystal Uptime Remaing Expression ==============================
-  if ( name_str == "crystal_remains" )
-  {
-    struct crystal_remains_expr_t : public mage_expr_t
-    {
-      mage_t* mage;
-
-      crystal_remains_expr_t( mage_t& m ) :
-        mage_expr_t( "crystal_remains", m ),
-        mage( &m )
-      {}
-
-      virtual double evaluate()
-      {
-        return std::max( mage -> cooldowns.prismatic_crystal -> remains().total_seconds() - 50.0,
-                         0.0 );
-      }
-    };
-
-    return new crystal_remains_expr_t( *this );
-  }
-
 
 
   if ( util::str_compare_ci( name_str, "shooting_icicles" ) )
