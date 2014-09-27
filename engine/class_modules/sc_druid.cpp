@@ -874,7 +874,9 @@ struct yseras_gift_t : public heal_t
     heal_t( "yseras_gift", p, p -> talent.yseras_gift )
   {
     base_tick_time = data().effectN( 1 ).period();
-    dot_duration = 2 * sim -> max_time * ( 1.0 + sim -> vary_combat_length ); // "infinite" duration
+    dot_duration = sim -> expected_iteration_time > timespan_t::zero() ?
+                   2 * sim -> expected_iteration_time :
+                   2 * sim -> max_time * ( 1.0 + sim -> vary_combat_length ); // "infinite" duration
     harmful = tick_may_crit = hasted_ticks = false;
     may_multistrike = 0;
     background = proc = dual = true;
