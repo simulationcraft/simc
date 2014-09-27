@@ -1618,7 +1618,7 @@ static void trigger_unstable_magic( action_state_t* s )
       aoe = -1;
       base_costs[ RESOURCE_MANA ] = 0;
       cooldown -> duration  = timespan_t::zero();
-      pct_damage = p -> talents.unstable_magic -> effectN( 2 ).percent();
+      pct_damage = p -> find_spell( 157976 ) -> effectN( 4 ).percent();
       trigger_gcd = timespan_t::zero();
     }
 
@@ -1634,6 +1634,8 @@ static void trigger_unstable_magic( action_state_t* s )
   virtual void init()
   {
     mage_spell_t::init();
+    // disable the snapshot_flags for all multipliers
+    snapshot_flags &= STATE_NO_MULTIPLIER;
   }
 
   virtual void execute()
@@ -1642,19 +1644,6 @@ static void trigger_unstable_magic( action_state_t* s )
     base_dd_max *= pct_damage; // Deals 50% of original triggering spell damage
     base_dd_min *= pct_damage;
 
-    if ( p() -> target == p() -> pets.prismatic_crystal )
-    {
-      if ( ( p() -> specialization() == MAGE_FIRE ) || ( p() -> specialization() == MAGE_ARCANE ) )
-      {
-        base_dd_max *= 1.0 + p() -> crystal_fire_arcane_multiplier;
-        base_dd_min *= 1.0 + p() -> crystal_fire_arcane_multiplier;
-      }
-      if ( ( p() -> specialization() == MAGE_FROST ) )
-      {
-        base_dd_max *= 1.0 + p() -> crystal_frost_multiplier;
-        base_dd_min *= 1.0 + p() -> crystal_frost_multiplier;
-      }
-    }
 
     mage_spell_t::execute();
   }
