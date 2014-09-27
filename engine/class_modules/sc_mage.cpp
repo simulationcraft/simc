@@ -786,13 +786,15 @@ struct prismatic_crystal_t : public pet_t
   };
 
   prismatic_crystal_aoe_t* aoe_spell;
-  const spell_data_t* damage_taken;
+  const spell_data_t* damage_taken,
+                    * frost_damage_taken;
   std::vector<stats_t*> proxy_stats;
 
   prismatic_crystal_t( sim_t* sim, mage_t* owner ) :
     pet_t( sim, owner, "prismatic_crystal", true ),
     aoe_spell( 0 ),
-    damage_taken( owner -> find_spell( 155153 ) )
+    damage_taken( owner -> find_spell( 155153 ) ),
+    frost_damage_taken( owner -> find_spell( 152087 ) )
   { }
 
   void add_proxy_stats( action_t* owner_action )
@@ -844,7 +846,14 @@ struct prismatic_crystal_t : public pet_t
   {
     double m = pet_t::composite_player_vulnerability( school );
 
-    m *= 1.0 + damage_taken -> effectN( 1 ).percent();
+    if ( o() -> specialization() == MAGE_FROST )
+    {
+      m *= 1.0 + frost_damage_taken -> effectN( 3 ).percent();
+    }
+    else
+    {
+      m *= 1.0 + damage_taken -> effectN( 1 ).percent();
+    }
 
     return m;
   }
