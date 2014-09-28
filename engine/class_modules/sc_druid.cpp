@@ -2996,6 +2996,9 @@ struct thrash_bear_t : public bear_attack_t
     dot_behavior           = DOT_REFRESH;
     spell_power_mod.direct = 0;
 
+    // 9/28/2014: Damage multiplier to fix damage inconsistency vs in-game.
+    base_multiplier *= 4.0;
+
     rage_amount = rage_tick_amount = p() -> find_spell( 158723 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
   }
 
