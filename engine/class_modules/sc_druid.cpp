@@ -897,6 +897,27 @@ struct yseras_gift_t : public heal_t
   virtual double calculate_tick_amount( action_state_t* state, double /* dmg_multiplier */ ) // dmg_multiplier is unused, this removes compiler warning.
   {
     double amount = state -> action -> player -> resources.max[ RESOURCE_HEALTH ] * tick_pct_heal;
+    
+    // Record initial amount to state
+    state -> result_raw = amount;
+
+    // Multipliers removed here to avoid unneccesary code.
+    // Refer to heal_t::calculate_tick_amount if mechanics change.
+
+    // replicate debug output of calculate_tick_amount
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "%s amount for %s on %s: ta=%.0f pct=%.3f b_ta=%.0f bonus_ta=%.0f s_mod=%.2f s_power=%.0f a_mod=%.2f a_power=%.0f mult=%.2f",
+        player -> name(), name(), target -> name(), amount,
+        tick_pct_heal, base_ta( state ), bonus_ta( state ),
+        spell_tick_power_coefficient( state ), state -> composite_spell_power(),
+        attack_tick_power_coefficient( state ), state -> composite_attack_power(),
+        state -> composite_ta_multiplier() );
+    }
+
+    // Record total amount to state
+    state -> result_total = amount;
+
     return amount;
   }
 
@@ -6920,7 +6941,7 @@ void druid_t::assess_damage( school_e school,
 {
   /* Store the amount primal_tenacity absorb remaining so we can use it 
     later to determine if we need to apply the absorb. */
-  double pt_pre_amount;
+  double pt_pre_amount = 0.0;
   if ( mastery.primal_tenacity -> ok() )
     if ( school == SCHOOL_PHYSICAL && // Check attack eligibility
          ! ( s -> result == RESULT_DODGE || s -> result == RESULT_MISS ) )
