@@ -1248,7 +1248,7 @@ void action_t::tick( dot_t* d )
     if ( tick_may_crit && rng().roll( d -> state -> composite_crit() ) )
       d -> state -> result = RESULT_CRIT;
 
-    d -> state -> result_total = calculate_tick_amount( d -> state, d -> get_last_tick_factor() );
+    d -> state -> result_amount = calculate_tick_amount( d -> state, d -> get_last_tick_factor() );
 
     assess_damage( amount_type( d -> state, true ), d -> state );
 
