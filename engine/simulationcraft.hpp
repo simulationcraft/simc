@@ -6216,14 +6216,16 @@ public:
 
     if ( player -> resolve_manager.is_started() )
     {
-      // apply -60% healing effect
-      m *= 1.0 + player -> resolve_manager.resolve -> effectN( 3 ).percent();
+      if ( ( state -> result_type == HEAL_OVER_TIME && tick_pct_heal == 0.0 ) || ( state -> result_type == HEAL_DIRECT && pct_heal == 0.0 ) )
+      {
+        // apply -60% healing effect
+        m *= 1.0 + player -> resolve_manager.resolve -> effectN( 3 ).percent();
 
-      // apply variable bonus based on current value
-      if ( state -> target == player )
-        m *= 1.0 + player -> buffs.resolve -> current_value / 100.0;
+        // apply variable bonus based on current value
+        if ( state -> target == player )
+          m *= 1.0 + player -> buffs.resolve -> current_value / 100.0;
+      }
     }
-
     return m;
   }
 
