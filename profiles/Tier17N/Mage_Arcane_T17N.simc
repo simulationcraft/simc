@@ -67,7 +67,7 @@ actions.aoe+=/arcane_explosion
 
 # High mana usage, "Burn" sequence
 actions.burn=call_action_list,name=cooldowns
-actions.burn+=/arcane_missiles,if=buff.arcane_missiles.react=3|buff.arcane_instability.react|buff.arcane_instability.react
+actions.burn+=/arcane_missiles,if=buff.arcane_missiles.react=3|buff.arcane_instability.react
 actions.burn+=/supernova,if=charges=2
 actions.burn+=/nether_tempest,cycle_targets=1,if=target!=prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))
 actions.burn+=/arcane_blast,if=mana.pct>95&buff.arcane_charge.stack=4
