@@ -97,6 +97,8 @@ const sdata_field_t _spell_data_fields[] =
   { SD_TYPE_DOUBLE,   "max_range"     },
   { SD_TYPE_UNSIGNED, "cooldown"      },
   { SD_TYPE_UNSIGNED, "gcd"           },
+  { SD_TYPE_UNSIGNED, "charges"       },
+  { SD_TYPE_UNSIGNED, "charge_cooldown" },
   { SD_TYPE_UNSIGNED, "category"      },
   { SD_TYPE_DOUBLE,   "duration"      },
   { SD_TYPE_UNSIGNED, ""              }, // Runes (spell_rune_expr_t)
