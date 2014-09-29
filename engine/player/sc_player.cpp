@@ -1171,7 +1171,7 @@ void player_t::init_race()
   else
   {
     race = util::parse_race_type( race_str );
-    if ( race == RACE_NONE )
+    if ( race == RACE_UNKNOWN )
     {
       sim -> errorf( "%s has unknown race string specified", name() );
       race_str = util::race_type_string( race );

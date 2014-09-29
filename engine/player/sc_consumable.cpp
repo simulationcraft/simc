@@ -639,6 +639,8 @@ struct food_t : public action_t
       case FOOD_FEAST_OF_BLOOD:
       case FOOD_FEAST_OF_THE_WATERS:
         if ( gain_amount <= 0.0 ) gain_amount = 50;
+      case FOOD_SAVAGE_FEAST:
+        if ( gain_amount <= 0.0 ) gain_amount = 100;
 
         if ( p -> current.stats.dodge_rating > 0 )
         {
