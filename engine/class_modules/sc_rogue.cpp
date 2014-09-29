@@ -92,6 +92,14 @@ struct rogue_td_t : public actor_pair_t
 
   rogue_td_t( player_t* target, rogue_t* source );
 
+  bool poisoned() const
+  {
+    return dots.deadly_poison -> is_ticking() ||
+           debuffs.wound_poison -> check() ||
+           debuffs.crippling_poison -> check() ||
+           debuffs.leeching_poison -> check();
+  }
+
   bool sanguinary_veins();
 };
 
@@ -3134,7 +3142,11 @@ void rogue_t::trigger_venomous_wounds( const action_state_t* state )
   if ( ! spec.venomous_wounds -> ok() )
     return;
 
-  if ( ! state -> action -> result_is_hit( state -> result ) && ! state -> action -> result_is_multistrike( state -> result ) )
+  if ( ! get_target_data( state -> target ) -> poisoned() )
+    return;
+
+  if ( ! state -> action -> result_is_hit( state -> result ) &&
+       ! state -> action -> result_is_multistrike( state -> result ) )
     return;
 
   double chance = spec.venomous_wounds -> proc_chance();
