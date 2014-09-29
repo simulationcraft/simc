@@ -2063,8 +2063,8 @@ struct chi_brew_t: public monk_spell_t
     parse_options( nullptr, options_str );
 
     harmful = false;
-    cooldown -> duration = timespan_t::from_seconds( 60.0 ); // Hardcoded in Cooldown
-    cooldown -> charges = 2;
+    cooldown -> duration = data().charge_cooldown();
+    cooldown -> charges = data().charges();
     trigger_gcd = timespan_t::zero();
   }
 
