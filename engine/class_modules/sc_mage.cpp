@@ -5280,9 +5280,10 @@ void mage_t::apl_frost()
     cooldowns -> add_action( item_actions[i] );
 
 
-  aoe -> add_talent( this, "Frost Bomb",
-                     "if=cooldown.frozen_orb.remains<gcd|buff.fingers_of_frost.react",
+  aoe -> add_action( "call_action_list,name=cooldowns",
                      "AoE sequence" );
+  aoe -> add_talent( this, "Frost Bomb",
+                     "if=remains<action.ice_lance.travel_time&(cooldown.frozen_orb.remains<gcd|buff.fingers_of_frost.react=2)" );
   aoe -> add_action( this, "Frozen Orb" );
   aoe -> add_action( this, "Ice Lance",
                      "if=buff.fingers_of_frost.react&debuff.frost_bomb.up" );
@@ -5290,7 +5291,8 @@ void mage_t::apl_frost()
   aoe -> add_talent( this, "Ice Nova" );
   aoe -> add_action( this, "Cone of Cold",
                      "if=glyph.cone_of_cold.enabled" );
-  aoe -> add_action( this, "Blizzard" );
+  aoe -> add_action( this, "Blizzard",
+                     "interrupt_if=cooldown.frozen_orb.up|(talent.frost_bomb.enabled&buff.fingers_of_frost.react=2)" );
   aoe -> add_talent( this, "Ice Floes", "moving=1" );
 
 
