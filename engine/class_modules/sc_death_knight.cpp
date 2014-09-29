@@ -6391,10 +6391,29 @@ void runeforge::fallen_crusader( special_effect_t& effect,
   if ( ! b )
     return;
 
+  action_t* heal = item.player -> find_action( "unholy_strength" );
+  if ( ! heal )
+  {
+    struct fallen_crusader_heal_t : public death_knight_heal_t
+    {
+      fallen_crusader_heal_t( death_knight_t* dk, const spell_data_t* data ) :
+        death_knight_heal_t( "unholy_strength", dk, data )
+      {
+        background = true;
+        callbacks = may_crit = may_multistrike = false;
+        pct_heal = data -> effectN( 2 ).percent();
+        pct_heal += dk -> perk.enhanced_fallen_crusader -> effectN( 1 ).percent();
+      }
+    };
+
+    heal = new fallen_crusader_heal_t( debug_cast< death_knight_t* >( item.player ), &b -> data() );
+  }
+
   const death_knight_t* dk = debug_cast<const death_knight_t*>( item.player );
 
   effect.ppm_ = -1.0 * dk -> fallen_crusader_rppm;
   effect.custom_buff = b;
+  effect.execute_action = heal;
 
   new dbc_proc_callback_t( item, effect );
 }
