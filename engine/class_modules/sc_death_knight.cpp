@@ -1610,7 +1610,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 3.0;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 3.5 );
 
-    owner_coeff.ap_from_ap = 1.0;
+    owner_coeff.ap_from_ap = 1/3.0;
     regen_type = REGEN_DISABLED;
   }
 
