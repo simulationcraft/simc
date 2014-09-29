@@ -2502,7 +2502,9 @@ void death_knight_melee_attack_t::execute()
   if ( ! result_is_hit( execute_state -> result ) && ! always_consume && resource_consumed > 0 )
     p() -> resource_gain( RESOURCE_RUNIC_POWER, resource_consumed * RUNIC_POWER_REFUND, p() -> gains.power_refund );
 
-  if ( result_is_hit( execute_state -> result ) && td( execute_state -> target ) -> dots_blood_plague -> is_ticking() )
+  if ( result_is_hit( execute_state -> result ) &&
+      ( td( execute_state -> target ) -> dots_blood_plague -> is_ticking() ||
+      ( p() -> talent.necrotic_plague -> ok() && td( execute_state -> target ) -> dots_necrotic_plague -> is_ticking() ) ) )
     p() -> buffs.crimson_scourge -> trigger();
 
   trigger_t15_2pc_melee();
