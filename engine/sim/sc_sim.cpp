@@ -2435,7 +2435,7 @@ bool sim_t::parse_option( const std::string& name,
 
 // sim_t::setup =============================================================
 
-bool sim_t::setup( sim_control_t* c )
+void sim_t::setup( sim_control_t* c )
 {
   // Limitation: setup+execute is a one-way action that cannot be repeated or reset
 
@@ -2532,8 +2532,6 @@ bool sim_t::setup( sim_control_t* c )
 
     threads = 1;
   }
-
-  return true;
 }
 
 // sim_t::cancel ============================================================

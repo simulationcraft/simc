@@ -2827,7 +2827,7 @@ public:
   void      create_options();
   bool      parse_option( const std::string& name, const std::string& value );
   bool      parse_options( int argc, char** argv );
-  bool      setup( sim_control_t* );
+  void      setup( sim_control_t* );
   bool      time_to_think( timespan_t proc_time );
   timespan_t total_reaction_time ();
   player_t* find_player( const std::string& name ) ;
