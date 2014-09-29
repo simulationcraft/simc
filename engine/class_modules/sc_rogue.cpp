@@ -2863,7 +2863,12 @@ struct blade_flurry_attack_t : public rogue_attack_t
     weapon_multiplier = 0;
     if ( p -> perk.enhanced_blade_flurry -> ok() )
       aoe = -1;
+
+    snapshot_flags |= STATE_MUL_DA;
   }
+
+  bool procs_poison() const
+  { return false; }
 
   double composite_da_multiplier( const action_state_t* state ) const
   {
