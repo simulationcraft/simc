@@ -289,6 +289,7 @@ public:
     gain_t* t17_4pc_unholy_unholy;
     gain_t* t17_4pc_unholy_frost;
     gain_t* t17_4pc_unholy_waste;
+    gain_t* veteran_of_the_third_war;
   } gains;
 
   // Specialization
@@ -6648,6 +6649,7 @@ void death_knight_t::init_gains()
   gains.t17_4pc_unholy_frost             = get_gain( "Unholy T17 4PC: Frost runes" );
   gains.t17_4pc_unholy_unholy            = get_gain( "Unholy T17 4PC: Unholy runes" );
   gains.t17_4pc_unholy_waste             = get_gain( "Unholy T17 4PC: Wasted runes" );
+  gains.veteran_of_the_third_war         = get_gain( "Veteran of the Third War" );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -6699,12 +6701,37 @@ void death_knight_t::reset()
 
 // death_knight_t::combat_begin =============================================
 
+struct vottw_regen_event_t : public event_t
+{
+  death_knight_t* dk;
+
+  vottw_regen_event_t( death_knight_t* player ) :
+    event_t( *player, "veteran_of_the_third_war" ),
+    dk( player )
+  {
+    sim().add_event( this, timespan_t::from_seconds( 1 ) );
+  }
+
+  void execute()
+  {
+    dk -> resource_gain( RESOURCE_RUNIC_POWER,
+                         dk -> spec.veteran_of_the_third_war -> effectN( 8 ).base_value(),
+                         dk -> gains.veteran_of_the_third_war );
+
+    new ( sim() ) vottw_regen_event_t( dk );
+  }
+};
+
+
 void death_knight_t::combat_begin()
 {
   player_t::combat_begin();
 
   if ( specialization() == DEATH_KNIGHT_BLOOD )
+  {
     resolve_manager.start();
+    new ( *sim ) vottw_regen_event_t( this );
+  }
 }
 
 // death_knight_t::assess_heal ==============================================
