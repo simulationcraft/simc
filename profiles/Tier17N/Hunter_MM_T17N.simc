@@ -26,12 +26,12 @@ actions.precombat+=/aimed_shot
 # Executed every time the actor is available.
 
 actions=auto_shot
+actions+=/arcane_torrent,if=focus.deficit>=20
 actions+=/blood_fury
 actions+=/berserking
-actions+=/arcane_torrent
-actions+=/potion,name=draenic_agility,if=buff.rapid_fire.up
+actions+=/potion,name=draenic_agility,if=((buff.rapid_fire.up|buff.bloodlust.up)&(!talent.stampede.enabled|cooldown.stampede.remains<1))|target.time_to_die<=20
 actions+=/rapid_fire
-actions+=/stampede,if=focus.time_to_max%(1+buff.steady_focus.value)>action.aimed_shot.cast_time
+actions+=/stampede,if=buff.rapid_fire.up|buff.bloodlust.up|target.time_to_die<=20
 actions+=/a_murder_of_crows
 actions+=/dire_beast,if=focus.time_to_max%(1+buff.steady_focus.value)>action.aimed_shot.cast_time
 actions+=/run_action_list,name=careful_aim,if=buff.careful_aim.up

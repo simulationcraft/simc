@@ -26,10 +26,12 @@ actions.precombat+=/potion,name=draenic_agility
 # Executed every time the actor is available.
 
 actions=auto_shot
+actions+=/arcane_torrent,if=focus.deficit>=20
 actions+=/blood_fury
 actions+=/berserking
-actions+=/arcane_torrent
-actions+=/potion,name=draenic_agility
+actions+=/potion,name=draenic_agility,if=(!talent.stampede.enabled|cooldown.stampede.remains<1)&(!talent.a_murder_of_crows.enabled|cooldown.a_murder_of_crows.remains<1)|target.time_to_die<=20
+# Add a test for trinket.proc.multistrike.up'here and in potion if you have a multistrike trinket
+actions+=/stampede
 actions+=/explosive_trap,if=active_enemies>1
 actions+=/black_arrow,if=!ticking
 actions+=/arcane_shot,if=buff.lock_and_load.react&focus.time_to_max<=gcd
@@ -41,7 +43,6 @@ actions+=/powershot
 actions+=/barrage
 actions+=/multishot,if=active_enemies>3
 actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react
-actions+=/stampede,if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))
 actions+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&focus+14+8*(1+buff.steady_focus.value)<80
 actions+=/arcane_shot,if=focus>=67&active_enemies<2
 actions+=/arcane_shot,if=talent.focusing_shot.enabled&active_enemies<2
