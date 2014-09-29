@@ -1294,7 +1294,7 @@ public:
     if ( ! p() -> spec.icicles -> ok() )
       return;
 
-    if ( ! result_is_hit( state -> result ) )
+    if ( ! ( result_is_hit( state -> result ) | result_is_multistrike( state -> result ) ) )
       return;
 
     // Icicles do not double dip on target based multipliers
