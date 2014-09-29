@@ -3697,7 +3697,7 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "Barrage");
   default_list -> add_talent( this, "Powershot", "if=focus.time_to_max>cast_time");
   default_list -> add_action( this, "Cobra Shot", "if=active_enemies>5");
-  default_list -> add_action( this, "Arcane Shot", "if=buff.thrill_of_the_hunt.react|buff.bestial_wrath.up");
+  default_list -> add_action( this, "Arcane Shot", "if=(buff.thrill_of_the_hunt.react&focus>35)|buff.bestial_wrath.up");
   default_list -> add_action( "focus_fire,five_stacks=1");
   default_list -> add_action( this, "Arcane Shot", "if=focus>=64");
   if ( level >= 81 )
@@ -3770,11 +3770,12 @@ void hunter_t::apl_surv()
   default_list -> add_talent( this, "Stampede", "", "Add a test for trinket.proc.multistrike.up'here and in potion if you have a multistrike trinket");
   
   default_list -> add_action( this, "Explosive Trap", "if=active_enemies>1" );
-  default_list -> add_action( this, "Black Arrow", "if=!ticking" );
-  default_list -> add_action( this, "Arcane Shot", "if=buff.lock_and_load.react&focus.time_to_max<=gcd" );
   default_list -> add_action( this, "Explosive Shot" );
+  default_list -> add_action( this, "Black Arrow", "if=!ticking" );
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Dire Beast" );
+  default_list -> add_action( this, "Arcane Shot", "if=buff.thrill_of_the_hunt.react&focus>35&focus.time_to_max<=gcd|dot.serpent_sting.remains<=3",
+    "Cast arcane when it's cheap or when it is neeed to keep up serpent_sting");
   default_list -> add_talent( this, "Glaive Toss" );
   default_list -> add_talent( this, "Powershot" );
   default_list -> add_talent( this, "Barrage" );
