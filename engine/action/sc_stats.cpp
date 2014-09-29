@@ -264,6 +264,8 @@ void stats_t::datacollection_end()
   num_refreshes.add( iteration_num_refreshes );
   num_direct_results.add( idr );
   num_tick_results.add( itr );
+
+  timeline_amount.add( sim.current_time, 0.0 );
 }
 
 // stats_t::analyze =========================================================

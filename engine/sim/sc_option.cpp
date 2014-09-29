@@ -313,7 +313,7 @@ bool option_db_t::parse_file( FILE* file )
 
 // option_db_t::parse_text ==================================================
 
-bool option_db_t::parse_text( const std::string& text )
+void option_db_t::parse_text( const std::string& text )
 {
   // Split a chunk of text into lines to parse.
   std::string::size_type first = 0;
@@ -334,42 +334,39 @@ bool option_db_t::parse_text( const std::string& text )
     }
     if ( text[ first ] != '#' )
     {
-      if ( ! parse_line( text.substr( first, last - first ) ) )
-        return false;
+      parse_line( text.substr( first, last - first ) );
     }
 
     first = last;
   }
 
-  return true;
 }
 
 // option_db_t::parse_line ==================================================
 
-bool option_db_t::parse_line( const std::string& line )
+void option_db_t::parse_line( const std::string& line )
 {
-  if ( line[ 0 ] == '#' ) return true;
+  if ( line[ 0 ] == '#' )
+    return;
 
   std::vector<std::string> tokens;
   size_t num_tokens = util::string_split_allow_quotes( tokens, line, " \t\n\r" );
 
   for ( size_t i = 0; i < num_tokens; ++i )
   {
-    if ( ! parse_token( tokens[ i ] ) )
-      return false;
+    parse_token( tokens[ i ] );
   }
 
-  return true;
 }
 
 // option_db_t::parse_token =================================================
 
-bool option_db_t::parse_token( const std::string& token )
+void option_db_t::parse_token( const std::string& token )
 {
   if ( token == "-" )
   {
     parse_file( stdin );
-    return true;
+    return;
   }
 
   std::string::size_type cut_pt = token.find( '=' );
@@ -379,12 +376,12 @@ bool option_db_t::parse_token( const std::string& token )
     io::cfile file = io::cfile( open_file( auto_path, token ) );
     if ( ! file )
     {
-      // FIXME no way for the GUI to get this failure through sim_t -> errorf()
-      printf( "Unexpected parameter '%s'. Expected format: name=value\n", token.c_str() );
-      return false;
+      std::stringstream s;
+      s << "Unexpected parameter '" << token << "'. Expected format: name=value";
+      throw std::invalid_argument( s.str() );
     }
     parse_file( file );
-    return true;
+    return;
   }
 
   std::string name( token, 0, cut_pt ), value( token, cut_pt + 1, token.npos );
@@ -395,8 +392,9 @@ bool option_db_t::parse_token( const std::string& token )
     std::string::size_type end = value.find( ')', start );
     if ( end == std::string::npos )
     {
-      printf( "Variable syntax error: %s\n", token.c_str() );
-      return false;
+      std::stringstream s;
+      s << "Variable syntax error: '" << token << "'";
+      throw std::invalid_argument( s.str() );
     }
 
     value.replace( start, ( end - start ) + 1,
@@ -407,20 +405,21 @@ bool option_db_t::parse_token( const std::string& token )
   {
     if ( name.size() < 3 || name[ 1 ] != '(' || name[ name.size() - 1 ] != ')' )
     {
-      printf( "Variable syntax error: %s\n", token.c_str() );
-      return false;
+      std::stringstream s;
+      s << "Variable syntax error: '" << token << "'";
+      throw std::invalid_argument( s.str() );
     }
     std::string var_name( name, 2, name.size() - 3 );
     var_map[ var_name ] = value;
-    if ( false ) printf( "%s = %s", var_name.c_str(), value.c_str() );
   }
   else if ( name == "input" )
   {
-    io::cfile file = open_file( auto_path, value );
+    io::cfile file( open_file( auto_path, value ) );
     if ( ! file )
     {
-      printf( "Unable to open input parameter file '%s'\n", value.c_str() );
-      return false;
+      std::stringstream s;
+      s << "Unable to open input parameter file '" << value << "'";
+      throw std::invalid_argument( s.str() );
     }
     parse_file( file );
   }
@@ -428,19 +427,14 @@ bool option_db_t::parse_token( const std::string& token )
   {
     add( "global", name, value );
   }
-
-  return true;
 }
 
 // option_db_t::parse_args ==================================================
 
-bool option_db_t::parse_args( const std::vector<std::string>& args )
+void option_db_t::parse_args( const std::vector<std::string>& args )
 {
   for ( size_t i = 0; i < args.size(); ++i )
-    if ( ! parse_token( args[ i ] ) )
-      return false;
-
-  return true;
+    parse_token( args[ i ] );
 }
 
 // option_db_t::option_db_t =================================================
@@ -495,8 +489,8 @@ option_db_t::option_db_t()
     }
   }
 
-  if ( *( auto_path.end() - 1 ) == '|' )
-    *( auto_path.end() - 1 ) = 0;
+  if ( auto_path[ auto_path.size() - 1 ] == '|' )
+    auto_path.erase( auto_path.size() - 1 );
 }
 
 #undef SC_SHARED_DATA

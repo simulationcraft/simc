@@ -208,8 +208,7 @@ public:
     buff_t* tier13_4pc_melee;
     buff_t* unholy_presence;
     buff_t* vampiric_blood;
-    buff_t* will_of_the_necropolis_dr;
-    buff_t* will_of_the_necropolis_rt;
+    buff_t* will_of_the_necropolis;
 
     absorb_buff_t* blood_shield;
     buff_t* rune_tap;
@@ -290,6 +289,7 @@ public:
     gain_t* t17_4pc_unholy_unholy;
     gain_t* t17_4pc_unholy_frost;
     gain_t* t17_4pc_unholy_waste;
+    gain_t* veteran_of_the_third_war;
   } gains;
 
   // Specialization
@@ -497,8 +497,6 @@ public:
   virtual double    composite_multistrike() const;
   virtual double    composite_melee_expertise( weapon_t* ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
-  virtual double    composite_player_heal_multiplier( const action_state_t* s ) const;
-  virtual double    composite_player_absorb_multiplier( const action_state_t* s ) const;
   virtual double    composite_crit_avoidance() const;
   virtual double    passive_movement_modifier() const;
   virtual double    temporary_movement_modifier() const;
@@ -1612,7 +1610,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 3.0;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 3.5 );
 
-    owner_coeff.ap_from_ap = 1.0;
+    owner_coeff.ap_from_ap = 1/3.0;
     regen_type = REGEN_DISABLED;
   }
 
@@ -2186,13 +2184,23 @@ struct shadow_of_death_t : public buff_t
   int health_gain;
 
   shadow_of_death_t( death_knight_t* p ) :
-    buff_t( buff_creator_t( p, "shadow_of_death", p -> find_spell( 164047 ) ).chance( p -> perk.enhanced_death_coil -> ok() ).refresh_behavior( BUFF_REFRESH_DISABLED ) ),
+    buff_t( buff_creator_t( p, "shadow_of_death", p -> find_spell( 164047 ) )
+            .chance( p -> perk.enhanced_death_coil -> ok() )
+            .refresh_behavior( BUFF_REFRESH_DISABLED ) ),
     health_gain( 0 )
   { }
 
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
-    int gain = ( int ) floor( player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent() );
+    double multiplier = 1.0;
+    if ( expiration )
+      multiplier = expiration -> remains() / data().duration();
+    int gain = ( int ) floor( player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent() * multiplier );
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s %s health_gain=%d, multiplier=%f remains=%.3f",
+          player -> name(), name(), gain, multiplier,
+          ( expiration ) ? expiration -> remains().total_seconds() : data().duration().total_seconds() );
+
     player -> stat_gain( STAT_MAX_HEALTH, gain, 0, 0, true );
     health_gain += gain;
 
@@ -2504,7 +2512,9 @@ void death_knight_melee_attack_t::execute()
   if ( ! result_is_hit( execute_state -> result ) && ! always_consume && resource_consumed > 0 )
     p() -> resource_gain( RESOURCE_RUNIC_POWER, resource_consumed * RUNIC_POWER_REFUND, p() -> gains.power_refund );
 
-  if ( result_is_hit( execute_state -> result ) && td( execute_state -> target ) -> dots_blood_plague -> is_ticking() )
+  if ( result_is_hit( execute_state -> result ) &&
+      ( td( execute_state -> target ) -> dots_blood_plague -> is_ticking() ||
+      ( p() -> talent.necrotic_plague -> ok() && td( execute_state -> target ) -> dots_necrotic_plague -> is_ticking() ) ) )
     p() -> buffs.crimson_scourge -> trigger();
 
   trigger_t15_2pc_melee();
@@ -5115,20 +5125,12 @@ struct rune_tap_t : public death_knight_spell_t
     death_knight_spell_t( "rune_tap", p, p -> find_specialization_spell( "Rune Tap" ) )
   {
     parse_options( NULL, options_str );
-    cooldown -> charges = 2;
-    cooldown -> duration = timespan_t::from_seconds( 40 );
+    cooldown -> charges = data().charges();
+    cooldown -> duration = data().charge_cooldown();
     cooldown -> duration += p -> perk.enhanced_rune_tap -> effectN( 1 ).time_value();
     ability_cooldown = p -> get_cooldown( "Rune Tap Ability Cooldown" );
     ability_cooldown -> duration = data().cooldown(); // Can only use it once per second.
     use_off_gcd = true;
-  }
-
-  void consume_resource()
-  {
-    if ( p() -> buffs.will_of_the_necropolis_rt -> check() )
-      return;
-
-    death_knight_spell_t::consume_resource();
   }
 
   void execute()
@@ -5137,26 +5139,10 @@ struct rune_tap_t : public death_knight_spell_t
     ability_cooldown -> start();
 
     p() -> buffs.rune_tap -> trigger();
-
-    p() -> buffs.will_of_the_necropolis_rt -> expire();
-  }
-
-  double cost() const
-  {
-    if ( p() -> buffs.will_of_the_necropolis_rt -> check() )
-      return 0;
-    return death_knight_spell_t::cost();
   }
 
   bool ready()
   {
-    if ( p() -> buffs.will_of_the_necropolis_rt-> check() )
-    {
-      cost_blood = 0;
-      bool r = death_knight_spell_t::ready();
-      cost_blood  = 1;
-      return r;
-    }
     if ( ability_cooldown -> up() )
       return death_knight_spell_t::ready();
 
@@ -5326,7 +5312,7 @@ struct vampiric_blood_buff_t : public buff_t
   int health_gain;
 
   vampiric_blood_buff_t( death_knight_t* p ) :
-    buff_t( buff_creator_t( p, "vampiric_blood", p -> find_specialization_spell( "Vampiric Blood" ) ) ),
+    buff_t( buff_creator_t( p, "vampiric_blood", p -> find_specialization_spell( "Vampiric Blood" ) ).cd( timespan_t::zero() ) ),
     health_gain ( 0 )
   { }
 
@@ -5374,9 +5360,18 @@ struct frozen_runeblade_buff_t : public buff_t
 
   void expire_override()
   {
-    death_knight_t* p = debug_cast< death_knight_t* >( player );
-    p -> active_spells.frozen_runeblade -> dot_duration = ( stack_count + 1 ) * p -> active_spells.frozen_runeblade -> data().effectN( 1 ).period();
-    p -> active_spells.frozen_runeblade -> schedule_execute();
+    // The set bonus seems to give stacks + 1 hits with Frozen Runeblade.
+    // Simulationcraft procs the initial stack instantly when Pillar of Frost
+    // is executed, so the "extra" stack is already included in the stack
+    // count. If the buff only has a single stack, the actor never used a
+    // special attack during the Pillar of Frost, and thus the set bonus isnt
+    // triggered.
+    if ( stack_count > 1 )
+    {
+      death_knight_t* p = debug_cast< death_knight_t* >( player );
+      p -> active_spells.frozen_runeblade -> dot_duration = stack_count * p -> active_spells.frozen_runeblade -> data().effectN( 1 ).period();
+      p -> active_spells.frozen_runeblade -> schedule_execute();
+    }
 
     buff_t::expire_override();
 
@@ -6372,10 +6367,29 @@ void runeforge::fallen_crusader( special_effect_t& effect,
   if ( ! b )
     return;
 
+  action_t* heal = item.player -> find_action( "unholy_strength" );
+  if ( ! heal )
+  {
+    struct fallen_crusader_heal_t : public death_knight_heal_t
+    {
+      fallen_crusader_heal_t( death_knight_t* dk, const spell_data_t* data ) :
+        death_knight_heal_t( "unholy_strength", dk, data )
+      {
+        background = true;
+        callbacks = may_crit = may_multistrike = false;
+        pct_heal = data -> effectN( 2 ).percent();
+        pct_heal += dk -> perk.enhanced_fallen_crusader -> effectN( 1 ).percent();
+      }
+    };
+
+    heal = new fallen_crusader_heal_t( debug_cast< death_knight_t* >( item.player ), &b -> data() );
+  }
+
   const death_knight_t* dk = debug_cast<const death_knight_t*>( item.player );
 
   effect.ppm_ = -1.0 * dk -> fallen_crusader_rppm;
   effect.custom_buff = b;
+  effect.execute_action = heal;
 
   new dbc_proc_callback_t( item, effect );
 }
@@ -6571,10 +6585,8 @@ void death_knight_t::create_buffs()
                                               spec.improved_unholy_presence -> effectN( 1 ).percent() )
                               .add_invalidate( CACHE_HASTE );
   buffs.vampiric_blood      = new vampiric_blood_buff_t( this );
-  buffs.will_of_the_necropolis_dr = buff_creator_t( this, "will_of_the_necropolis_dr", find_spell( 81162 ) )
-                                    .cd( timespan_t::from_seconds( 45 ) );
-  buffs.will_of_the_necropolis_rt = buff_creator_t( this, "will_of_the_necropolis_rt", find_spell( 96171 ) )
-                                    .cd( timespan_t::from_seconds( 45 ) );
+  buffs.will_of_the_necropolis = buff_creator_t( this, "will_of_the_necropolis", find_spell( 157335 ) )
+                                 .cd( find_spell( 157335 ) -> duration() );
 
   runeforge.rune_of_the_fallen_crusader = buff_creator_t( this, "unholy_strength", find_spell( 53365 ) )
                                           .add_invalidate( CACHE_STRENGTH );
@@ -6637,6 +6649,7 @@ void death_knight_t::init_gains()
   gains.t17_4pc_unholy_frost             = get_gain( "Unholy T17 4PC: Frost runes" );
   gains.t17_4pc_unholy_unholy            = get_gain( "Unholy T17 4PC: Unholy runes" );
   gains.t17_4pc_unholy_waste             = get_gain( "Unholy T17 4PC: Wasted runes" );
+  gains.veteran_of_the_third_war         = get_gain( "Veteran of the Third War" );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -6688,12 +6701,37 @@ void death_knight_t::reset()
 
 // death_knight_t::combat_begin =============================================
 
+struct vottw_regen_event_t : public event_t
+{
+  death_knight_t* dk;
+
+  vottw_regen_event_t( death_knight_t* player ) :
+    event_t( *player, "veteran_of_the_third_war" ),
+    dk( player )
+  {
+    sim().add_event( this, timespan_t::from_seconds( 1 ) );
+  }
+
+  void execute()
+  {
+    dk -> resource_gain( RESOURCE_RUNIC_POWER,
+                         dk -> spec.veteran_of_the_third_war -> effectN( 8 ).base_value(),
+                         dk -> gains.veteran_of_the_third_war );
+
+    new ( sim() ) vottw_regen_event_t( dk );
+  }
+};
+
+
 void death_knight_t::combat_begin()
 {
   player_t::combat_begin();
 
   if ( specialization() == DEATH_KNIGHT_BLOOD )
+  {
     resolve_manager.start();
+    new ( *sim ) vottw_regen_event_t( this );
+  }
 }
 
 // death_knight_t::assess_heal ==============================================
@@ -6756,10 +6794,11 @@ void death_knight_t::assess_damage( school_e     school,
     }
   }
 
-  if ( health_pct >= 35 && health_percentage() < 35 )
+  if ( health_pct >= spec.will_of_the_necropolis -> effectN( 1 ).base_value() &&
+       health_percentage() < spec.will_of_the_necropolis -> effectN( 1 ).base_value() )
   {
-    buffs.will_of_the_necropolis_dr -> trigger();
-    buffs.will_of_the_necropolis_rt -> trigger();
+    buffs.will_of_the_necropolis -> trigger();
+    buffs.rune_tap -> trigger();
   }
 
   if ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY )
@@ -6793,9 +6832,6 @@ void death_knight_t::target_mitigation( school_e school, dmg_e type, action_stat
 
   if ( buffs.icebound_fortitude -> up() )
     state -> result_amount *= 1.0 + buffs.icebound_fortitude -> data().effectN( 3 ).percent() + spec.sanguine_fortitude -> effectN( 1 ).percent();
-
-  if ( buffs.will_of_the_necropolis_dr -> up() )
-    state -> result_amount *= 1.0 + spec.will_of_the_necropolis -> effectN( 1 ).percent();
 
   if ( buffs.army_of_the_dead -> check() )
     state -> result_amount *= 1.0 - buffs.army_of_the_dead -> value();
@@ -6959,34 +6995,6 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + spec.improved_blood_presence -> effectN( 2 ).percent();
 
   return m;
-}
-
-// death_knight_t::composite_player_heal_multiplier ==============================
-
-double death_knight_t::composite_player_heal_multiplier( const action_state_t* s ) const
-{
-  double m = player_t::composite_player_heal_multiplier( s );
-
-  // Resolve applies a blanket -60% healing & absorb for tanks
-  if ( spec.resolve -> ok() )
-    m *= 1.0 + spec.resolve -> effectN( 2 ).percent();
-
-  return m;
-
-}
-
-// death_knight_t::composite_player_absorb_multiplier ==============================
-
-double death_knight_t::composite_player_absorb_multiplier( const action_state_t* s ) const
-{
-  double m = player_t::composite_player_absorb_multiplier( s );
-
-  // Resolve applies a blanket -60% healing & absorb for tanks
-  if ( spec.resolve -> ok() )
-    m *= 1.0 + spec.resolve -> effectN( 3 ).percent();
-
-  return m;
-
 }
 
 // death_knight_t::composite_melee_attack_power ==================================

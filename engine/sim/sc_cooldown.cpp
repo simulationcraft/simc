@@ -29,7 +29,7 @@ struct recharge_event_t : event_t
 
     if ( cooldown -> current_charge < cooldown -> charges )
     {
-      cooldown -> recharge_event = new ( sim() ) recharge_event_t( *p(), cooldown, action, cd_time( cooldown -> duration ) );
+      cooldown -> recharge_event = new ( sim() ) recharge_event_t( *p(), cooldown, action, cooldown -> duration );
     }
     else
     {

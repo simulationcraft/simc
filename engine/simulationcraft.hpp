@@ -246,7 +246,8 @@ enum race_e
   RACE_NIGHT_ELF, RACE_HUMAN, RACE_GNOME, RACE_DWARF, RACE_DRAENEI, RACE_WORGEN,
   RACE_ORC, RACE_TROLL, RACE_UNDEAD, RACE_BLOOD_ELF, RACE_TAUREN, RACE_GOBLIN,
   RACE_PANDAREN, RACE_PANDAREN_ALLIANCE, RACE_PANDAREN_HORDE,
-  RACE_MAX
+  RACE_MAX,
+  RACE_UNKNOWN
 };
 
 inline bool is_pandaren( race_e r ) { return RACE_PANDAREN <= r && r <= RACE_PANDAREN_HORDE; }
@@ -973,6 +974,7 @@ enum food_e
   FOOD_PAN_SEARED_TALBUK,
   FOOD_RYLAK_CREPES,
   FOOD_SALTED_SKULKER,
+  FOOD_SAVAGE_FEAST,
   FOOD_SLEEPER_SURPRISE,
   FOOD_STARFLOWER_SANDWICH,
   FOOD_STEAMED_SCORPION,
@@ -2331,10 +2333,10 @@ struct option_db_t : public std::vector<option_tuple_t>
     push_back( option_tuple_t( scope, name, value ) );
   }
   bool parse_file( FILE* file );
-  bool parse_token( const std::string& token );
-  bool parse_line( const std::string& line );
-  bool parse_text( const std::string& text );
-  bool parse_args( const std::vector<std::string>& args );
+  void parse_token( const std::string& token );
+  void parse_line( const std::string& line );
+  void parse_text( const std::string& text );
+  void parse_args( const std::vector<std::string>& args );
 };
 
 struct player_description_t
@@ -2646,6 +2648,7 @@ struct sim_t : public core_sim_t, private sc_thread_t
 
   bool challenge_mode; // if active, players will get scaled down to 620 and set bonuses are deactivated
   int scale_to_itemlevel; //itemlevel to scale to. if -1, we don't scale down
+  bool disable_set; // Disables set bonuses.
 
   // Actor tracking
   int active_enemies;
@@ -2824,7 +2827,7 @@ public:
   void      create_options();
   bool      parse_option( const std::string& name, const std::string& value );
   bool      parse_options( int argc, char** argv );
-  bool      setup( sim_control_t* );
+  void      setup( sim_control_t* );
   bool      time_to_think( timespan_t proc_time );
   timespan_t total_reaction_time ();
   player_t* find_player( const std::string& name ) ;
@@ -4234,16 +4237,17 @@ struct manager_t
   void add_diminishing_return_entry( const player_t* actor, double raw_dps, timespan_t current_time );
   int get_diminsihing_return_rank( int actor_spawn_index );
   void add_damage_event( double amount, timespan_t current_time );
+  const spell_data_t* resolve;
 private:
   struct update_event_t;
   struct diminishing_returns_list_t;
   struct damage_event_list_t;
   player_t& _player;
   core_event_t* _update_event;
-  bool _started;
   bool _init;
-  std::shared_ptr<diminishing_returns_list_t> _diminishing_return_list;
+  bool _started;
   std::shared_ptr<damage_event_list_t >_damage_list;
+  std::shared_ptr<diminishing_returns_list_t> _diminishing_return_list;
 };
 
 } // resolve
@@ -6213,9 +6217,18 @@ public:
   {
     double m = 1.0;
 
-    if ( player -> resolve_manager.is_started() && state -> target == player )
-      m += player -> buffs.resolve -> current_value / 100.0;
+    if ( player -> resolve_manager.is_started() )
+    {
+      if ( ( state -> result_type == HEAL_OVER_TIME && tick_pct_heal == 0.0 ) || ( state -> result_type == HEAL_DIRECT && pct_heal == 0.0 ) )
+      {
+        // apply -60% healing effect
+        m *= 1.0 + player -> resolve_manager.resolve -> effectN( 3 ).percent();
 
+        // apply variable bonus based on current value
+        if ( state -> target == player )
+          m *= 1.0 + player -> buffs.resolve -> current_value / 100.0;
+      }
+    }
     return m;
   }
 
@@ -6283,8 +6296,15 @@ struct absorb_t : public spell_base_t
   {
     double m = 1.0;
 
-    if ( player -> resolve_manager.is_started() && state -> target == player )
-      m += player -> buffs.resolve -> current_value / 100.0;
+    if ( player -> resolve_manager.is_started() )
+    {
+      // apply -60% healing effect
+      m *= 1.0 + player -> resolve_manager.resolve -> effectN( 2 ).percent();
+
+      // apply variable bonus based on current value
+      if ( state -> target == player )
+        m *= 1.0 + player -> buffs.resolve -> current_value / 100.0;
+    }
 
     return m;
   }

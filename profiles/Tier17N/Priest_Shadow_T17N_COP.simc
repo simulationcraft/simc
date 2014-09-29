@@ -1,6 +1,6 @@
 priest="Priest_Shadow_T17N_COP"
 level=100
-race=draenei
+race=troll
 role=spell
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!0022020
@@ -35,8 +35,8 @@ actions+=/arcane_torrent
 actions+=/call_action_list,name=pvp_dispersion,if=set_bonus.pvp_2pc
 actions+=/call_action_list,name=decision
 
-actions.decision=call_action_list,name=cop_advanced_mfi_dots,if=target.health.pct>=20&(shadow_orb=5|target.dot.shadow_word_pain.ticking|target.dot.vampiric_touch.ticking|target.dot.devouring_plague.ticking)&talent.clarity_of_power.enabled&talent.insanity.enabled&talent.twist_of_fate.enabled
-actions.decision+=/call_action_list,name=cop_advanced_mfi,if=target.health.pct>=20&talent.clarity_of_power.enabled&talent.insanity.enabled&talent.twist_of_fate.enabled
+actions.decision=call_action_list,name=cop_advanced_mfi_dots,if=target.health.pct>=20&(shadow_orb=5|target.dot.shadow_word_pain.ticking|target.dot.vampiric_touch.ticking|target.dot.devouring_plague.ticking)&talent.clarity_of_power.enabled&talent.insanity.enabled
+actions.decision+=/call_action_list,name=cop_advanced_mfi,if=target.health.pct>=20&talent.clarity_of_power.enabled&talent.insanity.enabled
 actions.decision+=/call_action_list,name=cop_mfi,if=talent.clarity_of_power.enabled&talent.insanity.enabled
 actions.decision+=/call_action_list,name=cop,if=talent.clarity_of_power.enabled
 actions.decision+=/call_action_list,name=main
@@ -159,9 +159,9 @@ actions.cop_advanced_mfi_dots+=/insanity,interrupt=1,chain=1,if=active_enemies<=
 actions.cop_advanced_mfi_dots+=/mind_spike,if=(target.dot.shadow_word_pain.ticking&target.dot.shadow_word_pain.remains<gcd*2)|(target.dot.vampiric_touch.ticking&target.dot.vampiric_touch.remains<gcd*2)
 actions.cop_advanced_mfi_dots+=/mind_flay,chain=1,interrupt=1
 
-head=soul_priests_hood,id=115563
+head=slagbombers_hood,id=113981
 neck=gruuls_lip_ring,id=113872,enchant=gift_of_mastery
-shoulders=earthripple_shoulderpads,id=113928
+shoulders=soul_priests_shoulderguards,id=115561
 back=runefrenzy_greatcloak,id=113937,enchant=gift_of_mastery
 chest=soul_priests_raiment,id=115560
 wrists=bracers_of_darkened_skies,id=119332
@@ -179,11 +179,11 @@ main_hand=infernoflame_staff,id=113869,enchant=mark_of_bleeding_hollow
 # gear_stamina=3437
 # gear_intellect=2730
 # gear_spell_power=1325
-# gear_crit_rating=557
-# gear_haste_rating=1010
-# gear_mastery_rating=1431
+# gear_crit_rating=373
+# gear_haste_rating=944
+# gear_mastery_rating=1548
 # gear_armor=700
-# gear_multistrike_rating=214
+# gear_multistrike_rating=338
 # gear_versatility_rating=78
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

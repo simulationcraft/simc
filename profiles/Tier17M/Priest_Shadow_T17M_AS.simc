@@ -1,9 +1,9 @@
 priest="Priest_Shadow_T17M_AS"
 level=100
-race=draenei
+race=worgen
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!0002022
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!0022022
 glyphs=mind_flay/fade/sha
 spec=shadow
 
@@ -35,8 +35,8 @@ actions+=/arcane_torrent
 actions+=/call_action_list,name=pvp_dispersion,if=set_bonus.pvp_2pc
 actions+=/call_action_list,name=decision
 
-actions.decision=call_action_list,name=cop_advanced_mfi_dots,if=target.health.pct>=20&(shadow_orb=5|target.dot.shadow_word_pain.ticking|target.dot.vampiric_touch.ticking|target.dot.devouring_plague.ticking)&talent.clarity_of_power.enabled&talent.insanity.enabled&talent.twist_of_fate.enabled
-actions.decision+=/call_action_list,name=cop_advanced_mfi,if=target.health.pct>=20&talent.clarity_of_power.enabled&talent.insanity.enabled&talent.twist_of_fate.enabled
+actions.decision=call_action_list,name=cop_advanced_mfi_dots,if=target.health.pct>=20&(shadow_orb=5|target.dot.shadow_word_pain.ticking|target.dot.vampiric_touch.ticking|target.dot.devouring_plague.ticking)&talent.clarity_of_power.enabled&talent.insanity.enabled
+actions.decision+=/call_action_list,name=cop_advanced_mfi,if=target.health.pct>=20&talent.clarity_of_power.enabled&talent.insanity.enabled
 actions.decision+=/call_action_list,name=cop_mfi,if=talent.clarity_of_power.enabled&talent.insanity.enabled
 actions.decision+=/call_action_list,name=cop,if=talent.clarity_of_power.enabled
 actions.decision+=/call_action_list,name=main
@@ -160,11 +160,11 @@ actions.cop_advanced_mfi_dots+=/mind_spike,if=(target.dot.shadow_word_pain.ticki
 actions.cop_advanced_mfi_dots+=/mind_flay,chain=1,interrupt=1
 
 head=soul_priests_hood,id=115563,bonus_id=567
-neck=gruuls_lip_ring,id=113872,bonus_id=567,enchant=gift_of_critical_strike
+neck=odyssian_choker,id=113833,bonus_id=567,enchant=gift_of_critical_strike
 shoulders=soul_priests_shoulderguards,id=115561,bonus_id=567
-back=runefrenzy_greatcloak,id=113937,bonus_id=567,enchant=gift_of_critical_strike
+back=cloak_of_searing_shadows,id=113847,bonus_id=567,enchant=gift_of_critical_strike
 chest=soul_priests_raiment,id=115560,bonus_id=567
-wrists=bracers_of_enkindled_power,id=113956,bonus_id=567
+wrists=bracers_of_spattered_steel,id=113887,bonus_id=567
 hands=soul_priests_gloves,id=115562,bonus_id=567
 waist=deckhands_rope_belt,id=113967,bonus_id=567
 legs=turret_mechanics_legwraps,id=113970,bonus_id=567
@@ -176,14 +176,14 @@ trinket2=goren_soul_repository,id=119194,bonus_id=567
 main_hand=blackhand_doomstaff,id=113988,bonus_id=567,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_stamina=4545
-# gear_intellect=3612
+# gear_stamina=4499
+# gear_intellect=3582
 # gear_spell_power=1753
-# gear_crit_rating=1763
-# gear_haste_rating=663
-# gear_mastery_rating=1075
-# gear_armor=870
-# gear_multistrike_rating=494
+# gear_crit_rating=2018
+# gear_haste_rating=397
+# gear_mastery_rating=846
+# gear_armor=865
+# gear_multistrike_rating=688
 # gear_versatility_rating=224
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

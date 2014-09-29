@@ -459,8 +459,6 @@ public:
   virtual double    composite_attribute( attribute_e attr ) const;
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
-  virtual double    composite_player_heal_multiplier( const action_state_t* s ) const;
-  virtual double    composite_player_absorb_multiplier( const action_state_t* s ) const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual double    composite_armor_multiplier() const;
   virtual double    composite_block() const;
@@ -4586,7 +4584,7 @@ void warrior_t::create_buffs()
   buff.hamstring = buff_creator_t( this, "hamstring", glyphs.hamstring -> effectN( 1 ).trigger() );
 
   buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", find_spell( 133278 ) )
-    .chance( glyphs.heroic_leap ? 1.0 : 0 );
+    .chance( glyphs.heroic_leap -> ok() ? 1.0 : 0 );
 
   buff.heroic_leap_movement = buff_creator_t( this, "heroic_leap_movement" );
   buff.charge_movement = buff_creator_t( this, "charge_movement" );
@@ -4596,7 +4594,7 @@ void warrior_t::create_buffs()
   buff.last_stand = new buffs::last_stand_t( *this, "last_stand", spec.last_stand );
 
   buff.meat_cleaver = buff_creator_t( this, "meat_cleaver", spec.meat_cleaver -> effectN( 1 ).trigger() )
-    .max_stack( perk.enhanced_whirlwind ? 4 : 3 );
+    .max_stack( perk.enhanced_whirlwind -> ok() ? 4 : 3 );
 
   buff.raging_blow = buff_creator_t( this, "raging_blow", find_spell( 131116 ) )
     .cd( timespan_t::zero() );
@@ -4611,7 +4609,7 @@ void warrior_t::create_buffs()
 
   buff.ravager = buff_creator_t( this, "ravager", talents.ravager )
     .add_invalidate( CACHE_PARRY )
-    .chance( spec.shield_slam ? 1.0 : 0 );
+    .chance( spec.shield_slam -> ok() ? 1.0 : 0 );
 
   buff.recklessness = buff_creator_t( this, "recklessness", spec.recklessness )
     .duration( spec.recklessness -> duration() * ( 1.0 + glyphs.recklessness -> effectN( 2 ).percent() ) )
@@ -4939,32 +4937,6 @@ double warrior_t::composite_player_multiplier( school_e school ) const
 
   if ( active_stance == STANCE_GLADIATOR && school == SCHOOL_PHYSICAL )
     m *= 1.0 + buff.gladiator_stance -> data().effectN( 1 ).percent();
-
-  return m;
-}
-
-// warrior_t::composite_player_heal_multiplier ================================
-
-double warrior_t::composite_player_heal_multiplier( const action_state_t* s ) const
-{
-  double m = player_t::composite_player_heal_multiplier( s );
-
-  // Resolve applies a blanket -60% healing for tanks
-  if ( spec.resolve -> ok() )
-    m *= 1.0 + spec.resolve -> effectN( 2 ).percent();
-
-  return m;
-}
-
-// warrior_t::composite_player_absorb_multiplier ================================
-
-double warrior_t::composite_player_absorb_multiplier( const action_state_t* s ) const
-{
-  double m = player_t::composite_player_absorb_multiplier( s );
-  
-  // Resolve applies a blanket -60% healing for tanks
-  if ( spec.resolve -> ok() )
-    m *= 1.0 + spec.resolve -> effectN( 3 ).percent();
 
   return m;
 }

@@ -1110,6 +1110,7 @@ const char* util::food_type_string( food_e food )
     case FOOD_PAN_SEARED_TALBUK:                return "pan_seared_talbuk";
     case FOOD_RYLAK_CREPES:                     return "rylak_crepes";
     case FOOD_SALTED_SKULKER:                   return "salted_skulker";
+    case FOOD_SAVAGE_FEAST:                     return "savage_feast";
     case FOOD_SLEEPER_SURPRISE:                 return "sleeper_surprise";
     case FOOD_STARFLOWER_SANDWICH:              return "starflower_sandwich";
     case FOOD_STEAMED_SCORPION:                 return "steamed_scorpion";

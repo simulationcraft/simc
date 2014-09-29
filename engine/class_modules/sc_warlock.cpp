@@ -5396,7 +5396,7 @@ void warlock_t::apl_precombat()
     action_list_str += "/felguard:felstorm";
     action_list_str += "/wrathguard:wrathstorm";
   }
-
+  /*
   int multidot_max = 3;
 
   switch ( specialization() )
@@ -5412,7 +5412,7 @@ void warlock_t::apl_precombat()
     break;
   default:
     break;
-  }
+  }*/
 
   //  action_list_str += "/run_action_list,name=aoe,if=active_enemies>"
   //      + util::to_string( multidot_max );

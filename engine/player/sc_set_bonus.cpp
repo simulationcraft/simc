@@ -114,6 +114,9 @@ void set_bonus_t::initialize()
   if ( actor -> sim -> challenge_mode == 1 )
     return;
 
+  if ( actor -> sim -> disable_set == 1 ) // Or if global disable set bonus override is used.
+    return;
+
   initialize_items();
 
   // Enable set bonuses then. This is a combination of item-based enablation

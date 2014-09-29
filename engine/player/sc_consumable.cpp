@@ -639,6 +639,8 @@ struct food_t : public action_t
       case FOOD_FEAST_OF_BLOOD:
       case FOOD_FEAST_OF_THE_WATERS:
         if ( gain_amount <= 0.0 ) gain_amount = 50;
+      case FOOD_SAVAGE_FEAST:
+        if ( gain_amount <= 0.0 ) gain_amount = 100;
 
         if ( p -> current.stats.dodge_rating > 0 )
         {
@@ -815,7 +817,6 @@ struct dbc_potion_t : public action_t
     harmful = callbacks = may_miss = may_crit = may_block = may_glance = may_dodge = may_parry = false;
     proc = true;
     trigger_gcd = timespan_t::zero();
-    target = player;
 
     option_t options[] =
     {

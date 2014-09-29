@@ -42,7 +42,6 @@ struct cenarion_ward_hot_t;
 struct gushing_wound_t;
 struct leader_of_the_pack_t;
 struct natures_vigil_proc_t;
-struct primal_tenacity_t;
 struct ursocs_vigor_t;
 struct yseras_gift_t;
 namespace buffs {
@@ -118,7 +117,6 @@ public:
     gushing_wound_t*      gushing_wound;
     leader_of_the_pack_t* leader_of_the_pack;
     natures_vigil_proc_t* natures_vigil;
-    primal_tenacity_t*    primal_tenacity;
     ursocs_vigor_t*       ursocs_vigor;
     yseras_gift_t*        yseras_gift;
   } active;
@@ -552,7 +550,6 @@ public:
   virtual double    passive_movement_modifier() const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    composite_player_heal_multiplier( const action_state_t* s ) const;
-  virtual double    composite_player_absorb_multiplier( const action_state_t* s ) const;
   virtual double    composite_spell_crit() const;
   virtual double    composite_spell_power( school_e school ) const;
   virtual double    composite_attribute( attribute_e attr ) const;
@@ -869,55 +866,6 @@ struct leader_of_the_pack_t : public heal_t
   }
 };
 
-// Primal Tenacity ==========================================================
-
-struct primal_tenacity_t : public absorb_t
-{
-  double absorb_remaining; // The absorb value the druid had when they took the triggering attack
-
-  primal_tenacity_t( druid_t* p ) :
-    absorb_t( "primal_tenacity", p, p -> mastery.primal_tenacity ),
-    absorb_remaining( 0.0 )
-  {
-    harmful = may_crit = false;
-    may_multistrike = 0;
-    background = proc = dual = true;
-    target = p;
-  }
-
-  druid_t* p() const
-  { return static_cast<druid_t*>( player ); }
-
-  virtual void init()
-  {
-    absorb_t::init();
-
-    snapshot_flags &= ~STATE_RESOLVE; // Is not affected by resolve.
-  }
-
-  virtual double action_multiplier() const
-  {
-    double am = absorb_t::action_multiplier();
-
-    am *= p() -> cache.mastery_value();
-
-    return am;
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    /* Primal Tenacity may only occur if the amount of damage PT absorbed from the triggering attack
-       is less than 20% of the size of the new absorb. */
-    if ( absorb_remaining < s -> result_amount * 0.2 )
-    {
-      // Subtract the amount absorbed from the triggering attack from the new absorb.
-      s -> result_amount -= absorb_remaining;
-
-      p() -> buff.primal_tenacity -> trigger( 1, s -> result_amount );
-    }
-  }
-};
-
 // Ysera's Gift ==============================================================
 
 struct yseras_gift_t : public heal_t
@@ -926,7 +874,9 @@ struct yseras_gift_t : public heal_t
     heal_t( "yseras_gift", p, p -> talent.yseras_gift )
   {
     base_tick_time = data().effectN( 1 ).period();
-    dot_duration   = 2 * sim -> expected_iteration_time; // infinite duration
+    dot_duration = sim -> expected_iteration_time > timespan_t::zero() ?
+                   2 * sim -> expected_iteration_time :
+                   2 * sim -> max_time * ( 1.0 + sim -> vary_combat_length ); // "infinite" duration
     harmful = tick_may_crit = hasted_ticks = false;
     may_multistrike = 0;
     background = proc = dual = true;
@@ -947,19 +897,36 @@ struct yseras_gift_t : public heal_t
   virtual double calculate_tick_amount( action_state_t* state, double /* dmg_multiplier */ ) // dmg_multiplier is unused, this removes compiler warning.
   {
     double amount = state -> action -> player -> resources.max[ RESOURCE_HEALTH ] * tick_pct_heal;
+    
+    // Record initial amount to state
+    state -> result_raw = amount;
+
+    // Multipliers removed here to avoid unneccesary code.
+    // Refer to heal_t::calculate_tick_amount if mechanics change.
+
+    // replicate debug output of calculate_tick_amount
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "%s amount for %s on %s: ta=%.0f pct=%.3f b_ta=%.0f bonus_ta=%.0f s_mod=%.2f s_power=%.0f a_mod=%.2f a_power=%.0f mult=%.2f",
+        player -> name(), name(), target -> name(), amount,
+        tick_pct_heal, base_ta( state ), bonus_ta( state ),
+        spell_tick_power_coefficient( state ), state -> composite_spell_power(),
+        attack_tick_power_coefficient( state ), state -> composite_attack_power(),
+        state -> composite_ta_multiplier() );
+    }
+
+    // Record total amount to state
+    state -> result_total = amount;
+
     return amount;
   }
 
   virtual void execute()
   {
-    if( player -> health_percentage() < 100 )
-    {
+    if ( player -> health_percentage() < 100 )
       target = player;
-    }
     else
-    { 
-    target = smart_target();
-    }
+      target = smart_target();
 
     heal_t::execute();
   }
@@ -1646,9 +1613,11 @@ private:
 public:
   typedef druid_action_t base_t;
 
+  bool triggers_natures_vigil;
+
   druid_action_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, player, s )
+    ab( n, player, s ), triggers_natures_vigil( true )
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
@@ -1669,7 +1638,7 @@ public:
     if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
       trigger_gushing_wound( s -> target, s -> result_amount );
 
-    if ( ab::aoe == 0 && s -> result_total > 0 && p() -> buff.natures_vigil -> up() ) 
+    if ( ab::aoe == 0 && s -> result_total > 0 && p() -> buff.natures_vigil -> up() && triggers_natures_vigil ) 
       p() -> active.natures_vigil -> trigger( ab::harmful ? s -> result_amount :  s -> result_total , ab::harmful ); // Natures Vigil procs from overhealing
   }
 
@@ -1680,7 +1649,7 @@ public:
     if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
       trigger_gushing_wound( d -> target, d -> state -> result_amount );
 
-    if ( ab::aoe == 0 && d -> state -> result_total > 0 && p() -> buff.natures_vigil -> up() )
+    if ( ab::aoe == 0 && d -> state -> result_total > 0 && p() -> buff.natures_vigil -> up() && triggers_natures_vigil )
       p() -> active.natures_vigil -> trigger( ab::harmful ? d -> state -> result_amount : d -> state -> result_total, ab::harmful );
   }
 
@@ -1691,7 +1660,7 @@ public:
     if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
       trigger_gushing_wound( ms_state -> target, ms_state -> result_amount );
 
-    if ( ab::aoe == 0 && ms_state -> result_total > 0 && p() -> buff.natures_vigil -> up() )
+    if ( ab::aoe == 0 && ms_state -> result_total > 0 && p() -> buff.natures_vigil -> up() && triggers_natures_vigil )
       p() -> active.natures_vigil -> trigger( ab::harmful ? ms_state -> result_amount : ms_state -> result_total, ab::harmful );
   }
 
@@ -3027,6 +2996,9 @@ struct thrash_bear_t : public bear_attack_t
     dot_behavior           = DOT_REFRESH;
     spell_power_mod.direct = 0;
 
+    // 9/28/2014: Damage multiplier to fix damage inconsistency vs in-game.
+    base_multiplier *= 4.0;
+
     rage_amount = rage_tick_amount = p() -> find_spell( 158723 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
   }
 
@@ -3271,6 +3243,8 @@ struct frenzied_regeneration_t : public druid_heal_t
        accurate so we have to hardcode the coefficient */
     attack_power_mod.direct = 6.00;
     maximum_rage_cost = data().effectN( 2 ).base_value();
+
+    triggers_natures_vigil = false;
 
     if ( p -> sets.has_set_bonus( SET_TANK, T16, B2 ) )
       p -> active.ursocs_vigor = new ursocs_vigor_t( p );
@@ -4441,6 +4415,8 @@ struct incarnation_bear_t : public druid_spell_t
     p() -> cooldown.maul   -> reset( false );
     if ( ! p() -> perk.enhanced_faerie_fire -> ok() )
       p() -> cooldown.faerie_fire -> reset( false ); 
+
+    p() -> buff.son_of_ursoc -> trigger(); 
   }
 };
 
@@ -5591,8 +5567,6 @@ void druid_t::init_spells()
     active.yseras_gift        = new yseras_gift_t( this );
   if ( sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
     active.gushing_wound      = new gushing_wound_t( this );
-  if ( mastery.primal_tenacity -> ok() )
-    active.primal_tenacity = new primal_tenacity_t( this );
 
   // Spells
   spell.bear_form                       = find_class_spell( "Bear Form"                   ) -> ok() ? find_spell( 1178   ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
@@ -6507,23 +6481,6 @@ double druid_t::composite_player_heal_multiplier( const action_state_t* s ) cons
 
   m *= 1.0 + buff.heart_of_the_wild -> heal_multiplier();
 
-  // Resolve applies a blanket -60% healing for tanks
-  if ( spec.resolve -> ok() )
-    m *= 1.0 + spec.resolve -> effectN( 2 ).percent();
-
-  return m;
-}
-
-// druid_t::composite_player_absorb_multiplier ================================
-
-double druid_t::composite_player_absorb_multiplier( const action_state_t* s ) const
-{
-  double m = player_t::composite_player_absorb_multiplier( s );
-  
-  // Resolve applies a blanket -60% healing for tanks
-  if ( spec.resolve -> ok() )
-    m *= 1.0 + spec.resolve -> effectN( 3 ).percent();
-
   return m;
 }
 
@@ -6987,9 +6944,11 @@ void druid_t::assess_damage( school_e school,
 {
   /* Store the amount primal_tenacity absorb remaining so we can use it 
     later to determine if we need to apply the absorb. */
-  if ( mastery.primal_tenacity -> ok() && school == SCHOOL_PHYSICAL &&
-       ! ( s -> result == RESULT_DODGE || s -> result == RESULT_MISS ) )
-    active.primal_tenacity -> absorb_remaining = buff.primal_tenacity -> value();
+  double pt_pre_amount = 0.0;
+  if ( mastery.primal_tenacity -> ok() )
+    if ( school == SCHOOL_PHYSICAL && // Check attack eligibility
+         ! ( s -> result == RESULT_DODGE || s -> result == RESULT_MISS ) )
+      pt_pre_amount = buff.primal_tenacity -> value();
 
   if ( sets.has_set_bonus( SET_TANK, T15, B2 ) && s -> result == RESULT_DODGE && buff.savage_defense -> check() )
     buff.tier15_2pc_tank -> trigger();
@@ -7023,17 +6982,25 @@ void druid_t::assess_damage( school_e school,
   player_t::assess_damage( school, dtype, s );
 
   // Primal Tenacity
-  if ( mastery.primal_tenacity -> ok() && school == SCHOOL_PHYSICAL &&
-       ! ( s -> result == RESULT_DODGE || s -> result == RESULT_MISS ) &&
-       ! buff.primal_tenacity -> check() ) // Check attack eligibility
+  if ( mastery.primal_tenacity -> ok() )
   {
-    // Set the absorb amount (mastery and resolve multipliers are managed by the action itself)
-    active.primal_tenacity -> base_dd_min =
-    active.primal_tenacity -> base_dd_max = s -> result_mitigated;
-    /* Execute absorb, if too large of an absorb was present for the triggering attack then the
-       absorb will not be reapplied. The outcome depends on the size of the resulting absorb
-       so we must execute on every eligible attack; see primal_tenacity_t::impact() for details. */
-    active.primal_tenacity -> execute();
+    if ( school == SCHOOL_PHYSICAL && // Check attack eligibility
+         ! ( s -> result == RESULT_DODGE || s -> result == RESULT_MISS ) &&
+         ! buff.primal_tenacity -> check() ) 
+    {
+      // TODO: Does this really scale with versatility?
+      double pt_amount = s -> result_mitigated * cache.mastery_value() * ( 1 + cache.heal_versatility() );
+
+      /* Primal Tenacity may only occur if the amount of damage PT absorbed from the triggering attack
+          is less than 20% of the size of the new absorb. */
+      if ( pt_pre_amount < pt_amount * 0.2 )
+      {
+        // Subtract the amount absorbed from the triggering attack from the new absorb.
+        pt_amount -= pt_pre_amount;
+
+        buff.primal_tenacity -> trigger( 1, pt_amount );
+      }
+    }
   }
 }
 

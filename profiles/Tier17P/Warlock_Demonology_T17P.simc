@@ -1,0 +1,84 @@
+warlock="Warlock_Demonology_T17P"
+level=100
+race=troll
+role=spell
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!....200
+glyphs=dark_soul
+spec=demonology
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_intellect_flask
+actions.precombat+=/food,type=sleeper_surprise
+actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
+actions.precombat+=/summon_pet,if=!talent.demonic_servitude.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down)
+actions.precombat+=/summon_doomguard,if=talent.demonic_servitude.enabled
+actions.precombat+=/snapshot_stats
+actions.precombat+=/service_pet,if=talent.grimoire_of_service.enabled
+actions.precombat+=/potion,name=draenic_intellect
+actions.precombat+=/soul_fire
+
+# Executed every time the actor is available.
+
+actions=use_item,name=fleshrenders_meathook
+actions+=/potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20
+actions+=/berserking
+actions+=/blood_fury
+actions+=/arcane_torrent
+actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(buff.demonbolt.remains>=buff.dark_soul.duration|!buff.demonbolt.remains)&(charges=2|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react|target.health.pct<=10))
+actions+=/service_pet,if=talent.grimoire_of_service.enabled
+actions+=/felguard:felstorm
+actions+=/wrathguard:wrathstorm
+actions+=/summon_doomguard,if=!talent.demonic_servitude.enabled
+actions+=/cataclysm,if=buff.metamorphosis.up
+actions+=/doom,if=buff.metamorphosis.up&target.time_to_die>=30&remains<=(duration*0.3)&(remains<cooldown.cataclysm.remains|!talent.cataclysm.enabled)
+actions+=/corruption,if=target.time_to_die>=6&remains<=(0.3*duration)&cooldown.dark_soul.remains<=8
+actions+=/corruption,if=target.time_to_die>=6&remains<=action.shadow_bolt.cast_time
+actions+=/cancel_metamorphosis,if=buff.metamorphosis.up&buff.dark_soul.down&demonic_fury<=650&demonic_fury%(40%gcd)<target.time_to_die
+actions+=/cancel_metamorphosis,if=buff.metamorphosis.up&cooldown.metamorphosis.remains<=3&action.hand_of_guldan.charges=2
+actions+=/demonbolt,if=buff.dark_soul.up|(cooldown.dark_soul.remains>(40%(1%spell_haste))&buff.demonbolt.stack<2)
+actions+=/touch_of_chaos,if=buff.metamorphosis.up
+actions+=/metamorphosis,if=buff.dark_soul.remains>gcd
+actions+=/metamorphosis,if=demonic_fury>=950
+actions+=/metamorphosis,if=(action.hand_of_guldan.charges=0|(!dot.shadowflame.ticking&!action.hand_of_guldan.in_flight_to_target))&demonic_fury>=750&cooldown.dark_soul.remains>=8
+actions+=/metamorphosis,if=(action.hand_of_guldan.charges=0|(!dot.shadowflame.ticking&!action.hand_of_guldan.in_flight_to_target))&demonic_fury%(40%gcd)>=target.time_to_die
+actions+=/metamorphosis,if=(action.hand_of_guldan.charges=0|(!dot.shadowflame.ticking&!action.hand_of_guldan.in_flight_to_target))&demonic_fury>=500&cooldown.dark_soul.remains>=8&dot.corruption.remains<=(dot.corruption.duration*0.3)
+actions+=/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&(((charges=2&set_bonus.tier17_2pc=0)|(charges=3&set_bonus.tier17_2pc=1))|dot.shadowflame.remains>travel_time|(charges=1&recharge_time<4))
+actions+=/soul_fire,if=buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)
+actions+=/life_tap,if=mana.pct<40
+actions+=/shadow_bolt
+actions+=/life_tap
+
+head=hood_of_arcane_mystery,id=109970,bonus_id=524
+neck=alcs_pendant_of_fiery_dreams,id=109957,bonus_id=524,enchant=gift_of_mastery
+shoulders=felflame_spaulders,id=109948,bonus_id=524
+back=cloak_of_arcane_mysteries,id=109908,bonus_id=524,enchant=gift_of_mastery
+chest=robes_of_swirling_light,id=109901,bonus_id=524
+wrists=frosttouched_wristwraps,id=109865,bonus_id=524
+hands=gloves_of_swirling_light,id=109846,bonus_id=524
+waist=frosttouched_cord,id=109825,bonus_id=524
+legs=leggings_of_swirling_light,id=109806,bonus_id=524
+feet=lightbinder_treads,id=109796,bonus_id=524
+finger1=darkflame_loop,id=109766,bonus_id=524,enchant=gift_of_mastery
+finger2=mark_of_ice,id=109764,bonus_id=524,enchant=gift_of_mastery
+trinket1=fleshrenders_meathook,id=110002,bonus_id=524
+trinket2=tovras_lightning_repository,id=110001,bonus_id=524
+main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant=mark_of_bleeding_hollow
+
+# Gear Summary
+# gear_stamina=2465
+# gear_intellect=1960
+# gear_spell_power=958
+# gear_crit_rating=661
+# gear_haste_rating=203
+# gear_mastery_rating=1290
+# gear_armor=552
+# gear_multistrike_rating=444
+default_pet=felguard

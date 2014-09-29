@@ -409,11 +409,11 @@ _DBC_FIELDS = {
           'id', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6'
     ],
     'SpellCategory.dbc' : [
-          'id', 'field', 'f2', 'f3', 'f4', 'f5'
+          'id', 'f1', 'f2', 'f3', ( 'charges', '%3d' ), ( 'charge_cooldown', '%7u' )
     ],
     'SpellCategories.dbc' : [
           'id',              'id_spell', 'unk_15589_1', ( 'category', '%4u' ), 'dmg_class', 'dispel', 'mechanic', 
-          'type_prevention', 'start_recovery_category', 'unk_15464'
+          'type_prevention', 'start_recovery_category', 'id_category'
     ],
     'SpellCooldowns.dbc' : [
         'id', 'id_spell', 'unk_15589_1', ( 'category_cooldown', '%7u' ), ( 'cooldown', '%7u' ), ( 'gcd_cooldown', '%4u' )

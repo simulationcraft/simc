@@ -92,6 +92,14 @@ struct rogue_td_t : public actor_pair_t
 
   rogue_td_t( player_t* target, rogue_t* source );
 
+  bool poisoned() const
+  {
+    return dots.deadly_poison -> is_ticking() ||
+           debuffs.wound_poison -> check() ||
+           debuffs.crippling_poison -> check() ||
+           debuffs.leeching_poison -> check();
+  }
+
   bool sanguinary_veins();
 };
 
@@ -2848,14 +2856,19 @@ struct blade_flurry_attack_t : public rogue_attack_t
   blade_flurry_attack_t( rogue_t* p ) :
     rogue_attack_t( "blade_flurry_attack", p, p -> find_spell( 22482 ) )
   {
-    may_miss = may_crit = proc = callbacks = may_dodge = may_parry = may_block = false;
+    may_miss = may_crit = may_multistrike = proc = callbacks = may_dodge = may_parry = may_block = false;
     background = true;
     aoe = p -> spec.blade_flurry -> effectN( 4 ).base_value();
     weapon = &p -> main_hand_weapon;
     weapon_multiplier = 0;
     if ( p -> perk.enhanced_blade_flurry -> ok() )
       aoe = -1;
+
+    snapshot_flags |= STATE_MUL_DA;
   }
+
+  bool procs_poison() const
+  { return false; }
 
   double composite_da_multiplier( const action_state_t* state ) const
   {
@@ -3134,7 +3147,11 @@ void rogue_t::trigger_venomous_wounds( const action_state_t* state )
   if ( ! spec.venomous_wounds -> ok() )
     return;
 
-  if ( ! state -> action -> result_is_hit( state -> result ) && ! state -> action -> result_is_multistrike( state -> result ) )
+  if ( ! get_target_data( state -> target ) -> poisoned() )
+    return;
+
+  if ( ! state -> action -> result_is_hit( state -> result ) &&
+       ! state -> action -> result_is_multistrike( state -> result ) )
     return;
 
   double chance = spec.venomous_wounds -> proc_chance();

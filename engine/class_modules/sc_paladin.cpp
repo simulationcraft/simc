@@ -404,7 +404,6 @@ public:
   virtual double    composite_spell_haste() const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    composite_player_heal_multiplier( const action_state_t* s ) const;
-  virtual double    composite_player_absorb_multiplier( const action_state_t* s ) const;
   virtual double    composite_spell_power( school_e school ) const;
   virtual double    composite_spell_power_multiplier() const;
   virtual double    composite_crit_avoidance() const;
@@ -5873,24 +5872,6 @@ double paladin_t::composite_player_heal_multiplier( const action_state_t* s ) co
 
   if ( buffs.avenging_wrath -> check() )
     m *= 1.0 + buffs.avenging_wrath -> get_healing_mod();
-
-  // Resolve applies a blanket -60% healing & absorb for tanks
-  if ( passives.resolve -> ok() )
-    m *= 1.0 + passives.resolve -> effectN( 2 ).percent();
-
-  return m;
-
-}
-
-// paladin_t::composite_player_absorb_multiplier ==============================
-
-double paladin_t::composite_player_absorb_multiplier( const action_state_t* s ) const
-{
-  double m = player_t::composite_player_absorb_multiplier( s );
-
-  // Resolve applies a blanket -60% healing & absorb for tanks
-  if ( passives.resolve -> ok() )
-    m *= 1.0 + passives.resolve -> effectN( 3 ).percent();
 
   return m;
 

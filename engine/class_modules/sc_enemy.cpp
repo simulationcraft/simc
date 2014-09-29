@@ -908,9 +908,10 @@ std::string enemy_t::fluffy_pillow_action_list()
 
 std::string enemy_t::tmi_boss_action_list()
 {
+  // Bosses are (roughly) standardized based on content level. dot damage should be 2/15 of melee damage (0.1333 multiplier)
   std::string als = "";
   int aa_damage[ 11 ] = { 0, 5500, 7500, 9000, 12500, 15000, 25000, 45000, 100000, 150000, 200000 };
-  int dot_damage[ 11 ] = { 0, 2700, 3750, 4500, 6250, 10000, 15000, 35000, 60000, 90000, 120000 };
+  int dot_damage[ 11 ] = { 0, 733, 1000, 1200, 1667, 2000, 3333, 6000, 13333, 20000, 26667 };
 
   als += "/auto_attack,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] ) + ",attack_speed=1.5,aoe_tanks=1";
   als += "/spell_dot,damage=" + util::to_string( dot_damage[ tmi_boss_enum ] ) + ",tick_time=2,dot_duration=30,aoe_tanks=1,if=!ticking";
@@ -1063,6 +1064,7 @@ double enemy_t::resource_loss( resource_e resource_type,
 
 void enemy_t::create_options()
 {
+  // this first part handles enemy options that are sim-wide
   option_t target_options[] =
   {
     opt_float( "enemy_health", fixed_health ),
@@ -1071,14 +1073,23 @@ void enemy_t::create_options()
     opt_float( "health_recalculation_dampening_exponent", health_recalculation_dampening_exponent ),
     opt_float( "enemy_size", size ),
     opt_string( "enemy_tank", target_str ),
-    opt_string( "tmi_boss", tmi_boss_str ),
     opt_int( "apply_debuff", apply_damage_taken_debuff ),
     opt_null()
   };
 
   option_t::copy( sim -> options, target_options );
 
+  // the next part handles actor-specific options for enemies
   player_t::create_options();
+
+  option_t enemy_options[] = 
+  {
+    opt_string( "tmi_boss", tmi_boss_str ),
+    opt_null()
+  };
+
+  option_t::copy( options, enemy_options );
+
 }
 
 // enemy_t::create_add ======================================================

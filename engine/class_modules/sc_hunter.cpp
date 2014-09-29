@@ -292,7 +292,7 @@ public:
   double pet_multiplier;
 
   hunter_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE ):
-    player_t( sim, HUNTER, name, r == RACE_NONE ? RACE_NIGHT_ELF : r ),
+    player_t( sim, HUNTER, name, r ),
     sniper_training( 0 ),
     active( actives_t() ),
     pet_dire_beasts(),
@@ -1965,12 +1965,10 @@ struct glaive_toss_strike_t: public ranged_attack_t
   glaive_toss_strike_t( hunter_t* player ):
     ranged_attack_t( "glaive_toss_strike", player, player -> find_spell( 120761 ) )
   {
-    repeating = false;
     background = true;
     dual = true;
     may_crit = true;
     special = true;
-    travel_speed = player -> talents.glaive_toss -> effectN( 3 ).trigger() -> missile_speed();
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
     aoe = -1;
@@ -2001,6 +1999,7 @@ struct glaive_toss_t: public hunter_ranged_attack_t
     school = SCHOOL_PHYSICAL;
     primary_strike -> stats = stats;
     dot_duration = timespan_t::zero();
+    travel_speed = player -> talents.glaive_toss -> effectN( 3 ).trigger() -> missile_speed();
   }
 
   virtual void execute()

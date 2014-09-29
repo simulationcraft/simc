@@ -357,6 +357,9 @@ public:
   // SpellCooldown.dbc
   unsigned    _cooldown;           // Cooldown in milliseconds
   unsigned    _gcd;                // GCD in milliseconds
+  // SpellCategory.dbc
+  unsigned    _charges;            // Number of charges
+  unsigned    _charge_cooldown;    // Cooldown duration of charges
   // SpellCategories.dbc
   unsigned    _category;           // Spell category (for shared cooldowns, effects?)
   // SpellDuration.dbc
@@ -409,6 +412,12 @@ public:
 
   timespan_t cooldown() const
   { return timespan_t::from_millis( _cooldown ); }
+
+  unsigned charges() const
+  { return _charges; }
+
+  timespan_t charge_cooldown() const
+  { return timespan_t::from_millis( _charge_cooldown ); }
 
   const char* desc() const
   { return ok() ? _desc : ""; }

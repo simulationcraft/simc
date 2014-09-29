@@ -1708,7 +1708,7 @@ class SpellDataGenerator(DataGenerator):
 
         self._dbc = [
             'Spell', 'SpellEffect', 'SpellScaling', 'SpellCooldowns', 'SpellRange', 'SpellClassOptions',
-            'SpellDuration', 'SpellPower', 'SpellLevels', 'SpellCategories', 'Talent',
+            'SpellDuration', 'SpellPower', 'SpellLevels', 'SpellCategories', 'SpellCategory', 'Talent',
             'SkillLineAbility', 'SpellAuraOptions', 'SpellRuneCost', 'SpellRadius', 'GlyphProperties',
             'SpellCastTimes', 'ItemSet', 'SpellDescriptionVariables', 'SpellItemEnchantment', 'Item-sparse',
             'Item', 'SpellEquippedItems', 'SpellIcon', 'SpecializationSpells', 'ChrSpecialization', 'SpellEffectScaling',
@@ -2302,7 +2302,7 @@ class SpellDataGenerator(DataGenerator):
                 powers.add( power )
 
             if index % 20 == 0:
-              s += '//{ Name                                ,     Id,Flags,PrjSp,  Sch, Class,  Race,Sca,MSL,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,  Cat,  Duration,  RCost, RPG,Stac, PCh,PCr, ProcFlags,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, RplcId, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10,     Attr11,     Attr12 }, {     Flags1,     Flags2,     Flags3,     Flags4 }, Family, Description, Tooltip, Description Variable, Icon, ActiveIcon, Effect1, Effect2, Effect3 },\n'
+              s += '//{ Name                                ,     Id,Flags,PrjSp,  Sch, Class,  Race,Sca,MSL,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,Chg, ChrgCd, Cat,  Duration,  RCost, RPG,Stac, PCh,PCr, ProcFlags,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, RplcId, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10,     Attr11,     Attr12 }, {     Flags1,     Flags2,     Flags3,     Flags4 }, Family, Description, Tooltip, Description Variable, Icon, ActiveIcon, Effect1, Effect2, Effect3 },\n'
 
             fields = spell.field('name', 'id')
             fields += [ '%#.2x' % 0 ]
@@ -2321,6 +2321,8 @@ class SpellDataGenerator(DataGenerator):
             fields += self._spellrange_db[self._spellmisc_db[spell.id_misc].id_range].field('min_range')
             fields += self._spellrange_db[self._spellmisc_db[spell.id_misc].id_range].field('max_range')
             fields += self._spellcooldowns_db[spell.id_cooldowns].field('cooldown_duration', 'gcd_cooldown')
+            category = self._spellcategories_db[spell.id_categories]
+            fields += self._spellcategory_db[category.id_category].field('charges', 'charge_cooldown')
 
             fields += self._spellcategories_db[spell.id_categories].field('category')
             fields += self._spellduration_db[self._spellmisc_db[spell.id_misc].id_duration].field('duration_1')

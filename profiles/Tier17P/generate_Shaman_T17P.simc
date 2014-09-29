@@ -1,0 +1,60 @@
+# TxPR
+# Tier x Pre Raid
+# * Ilvl Cap: 630
+# * Standard Heroic 5 Man Loot Only.
+
+talent_format=armory
+
+# Elemental
+shaman="Shaman_Elemental_T17P"
+level=100
+race=dwarf
+spec=elemental
+role=attack
+position=back
+talents=0001011
+glyphs=chain_lightning
+head=morningscale_cowl,id=109984,bonus_id=524
+neck=alcs_pendant_of_fiery_dreams,id=109957,bonus_id=524,enchant=gift_of_multistrike
+shoulders=rockhide_shoulderguards,id=109941,bonus_id=524
+back=forgeflame_greatcloak,id=109925,bonus_id=524,enchant=gift_of_multistrike
+chest=lavalink_ringmail,id=109890,bonus_id=524
+wrists=morningscale_bracers,id=109883,bonus_id=524
+hands=sharpeye_gauntlets,id=109853,bonus_id=524
+waist=sharpeye_belt,id=109834,bonus_id=524
+legs=lavalink_kilt,id=109816,bonus_id=524
+feet=rockhide_treads,id=109792,bonus_id=524
+finger1=mark_of_ice,id=109764,bonus_id=524,enchant=gift_of_multistrike
+finger2=darkflame_loop,id=109766,bonus_id=524,enchant=gift_of_multistrike
+trinket1=coagulated_genesaur_blood,id=110004,bonus_id=524
+trinket2=fleshrenders_meathook,id=110002,bonus_id=524
+main_hand=portalrippers_staff,id=110039,bonus_id=524,enchant=mark_of_the_frostwolf
+save=Shaman_Elemental_T17P.simc
+
+
+# Enhancement
+shaman="Shaman_Enhancement_T17P"
+level=100
+race=draenei
+spec=enhancement
+role=attack
+position=back
+talents=0002012
+glyphs=chain_lightning/frost_shock
+head=rockhide_casque,id=109982,bonus_id=524
+neck=windseal_necklace,id=109953,bonus_id=524,enchant=gift_of_haste
+shoulders=lavalink_spaulders,id=109942,bonus_id=524
+back=cloak_of_violent_harmony,id=109906,bonus_id=524,enchant=gift_of_haste
+chest=streamslither_chestguard,id=109887,bonus_id=524
+wrists=rockhide_wristguards,id=109874,bonus_id=524
+hands=morningscale_gauntlet,id=109863,bonus_id=524
+waist=morningscale_waistguard,id=109843,bonus_id=524
+legs=rockhide_leggings,id=109815,bonus_id=524
+feet=lavalink_stompers,id=109800,bonus_id=524
+finger1=signet_of_radiant_leaves,id=109762,bonus_id=524,enchant=gift_of_haste
+finger2=ceds_chiming_circle,id=109760,bonus_id=524,enchant=gift_of_haste
+trinket1=witherbarks_branch,id=109999,bonus_id=524
+trinket2=kihras_adrenaline_injector,id=109997,bonus_id=524
+main_hand=gugrokks_smasher,id=110042,bonus_id=524,enchant=mark_of_warsong
+off_hand=gugrokks_smasher,id=110042,bonus_id=524,enchant=mark_of_bleeding_hollow
+save=Shaman_Enhancement_T17P.simc

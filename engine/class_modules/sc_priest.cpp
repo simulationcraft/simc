@@ -6072,8 +6072,8 @@ void priest_t::apl_shadow()
   pvp_dispersion -> add_action( "dispersion,interrupt=1" );
   pvp_dispersion -> add_action( "call_action_list,name=decision" );
 
-  decision -> add_action( "call_action_list,name=cop_advanced_mfi_dots,if=target.health.pct>=20&(shadow_orb=5|target.dot.shadow_word_pain.ticking|target.dot.vampiric_touch.ticking|target.dot.devouring_plague.ticking)&talent.clarity_of_power.enabled&talent.insanity.enabled&talent.twist_of_fate.enabled" );//&set_bonus.tier17_2pc" );
-  decision -> add_action( "call_action_list,name=cop_advanced_mfi,if=target.health.pct>=20&talent.clarity_of_power.enabled&talent.insanity.enabled&talent.twist_of_fate.enabled" );//&set_bonus.tier17_2pc" );
+  decision -> add_action( "call_action_list,name=cop_advanced_mfi_dots,if=target.health.pct>=20&(shadow_orb=5|target.dot.shadow_word_pain.ticking|target.dot.vampiric_touch.ticking|target.dot.devouring_plague.ticking)&talent.clarity_of_power.enabled&talent.insanity.enabled" );
+  decision -> add_action( "call_action_list,name=cop_advanced_mfi,if=target.health.pct>=20&talent.clarity_of_power.enabled&talent.insanity.enabled" );
   decision -> add_action( "call_action_list,name=cop_mfi,if=talent.clarity_of_power.enabled&talent.insanity.enabled" );
   decision -> add_action( "call_action_list,name=cop,if=talent.clarity_of_power.enabled" );
   decision -> add_action( "call_action_list,name=main" );
