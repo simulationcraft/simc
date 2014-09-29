@@ -5326,7 +5326,7 @@ struct vampiric_blood_buff_t : public buff_t
   int health_gain;
 
   vampiric_blood_buff_t( death_knight_t* p ) :
-    buff_t( buff_creator_t( p, "vampiric_blood", p -> find_specialization_spell( "Vampiric Blood" ) ) ),
+    buff_t( buff_creator_t( p, "vampiric_blood", p -> find_specialization_spell( "Vampiric Blood" ) ).cd( timespan_t::zero() ) ),
     health_gain ( 0 )
   { }
 
