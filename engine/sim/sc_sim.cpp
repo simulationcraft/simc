@@ -2423,8 +2423,6 @@ void sim_t::create_options()
 bool sim_t::parse_option( const std::string& name,
                           const std::string& value )
 {
-  if ( canceled ) return false;
-
   if ( active_player )
     if ( option_t::parse( this, active_player -> options, name, value ) )
       return true;
@@ -2452,8 +2450,9 @@ bool sim_t::setup( sim_control_t* c )
     if ( o.scope != "global" ) continue;
     if ( ! parse_option( o.name, o.value ) )
     {
-      errorf( "Unknown option \"%s\" with value \"%s\"\n", o.name.c_str(), o.value.c_str() );
-      return false;
+      std::stringstream s;
+      s << "Unknown option '" << o.name << "' with value '" << o.value << "'";
+      throw std::invalid_argument( s.str() );
     }
   }
 
@@ -2474,23 +2473,25 @@ bool sim_t::setup( sim_control_t* c )
     option_tuple_t& o = control -> options[ i ];
     if ( o.scope == "global" ) continue;
     player_t* p = find_player( o.scope );
-    if ( p )
+    if ( !p )
     {
-      if ( ! option_t::parse( this, p -> options, o.name, o.value ) )
-        return false;
+      std::stringstream s;
+      s << "Unable to locate player '" << o.scope << "' for option '" << o.name << "' with value '" << o.value << "'";
+      throw std::invalid_argument( s.str() );
     }
-    else
+    if (!option_t::parse(this, p->options, o.name, o.value))
     {
-      errorf( "sim_t::setup: Unable to locate player %s for option %s with value %s\n", o.scope.c_str(), o.name.c_str(), o.value.c_str() );
-      return false;
+      std::stringstream s;
+      s << "Unable to parse option '" << o.name << "' with value '" << o.value
+          << "' for player '" << p->name() << "'";
+      throw std::invalid_argument(s.str());
     }
+
   }
 
-  if ( player_list.empty() && spell_query == NULL )
+  if ( player_list.empty() && spell_query == nullptr )
   {
-    errorf( "Nothing to sim!\n" );
-    cancel();
-    return false;
+    throw std::runtime_error( "Nothing to sim!" );
   }
 
   if ( parent )
@@ -2511,9 +2512,9 @@ bool sim_t::setup( sim_control_t* c )
     }
     else
     {
-      errorf( "Unable to open output file '%s'\n", output_file_str.c_str() );
-      cancel();
-      return false;
+      std::stringstream s;
+      s << "Unable to open output file '" << output_file_str << "'";
+      throw std::runtime_error( s.str() );
     }
   }
   if ( debug_each )

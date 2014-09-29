@@ -2333,10 +2333,10 @@ struct option_db_t : public std::vector<option_tuple_t>
     push_back( option_tuple_t( scope, name, value ) );
   }
   bool parse_file( FILE* file );
-  bool parse_token( const std::string& token );
-  bool parse_line( const std::string& line );
-  bool parse_text( const std::string& text );
-  bool parse_args( const std::vector<std::string>& args );
+  void parse_token( const std::string& token );
+  void parse_line( const std::string& line );
+  void parse_text( const std::string& text );
+  void parse_args( const std::vector<std::string>& args );
 };
 
 struct player_description_t
