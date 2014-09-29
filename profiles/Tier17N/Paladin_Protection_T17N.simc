@@ -48,13 +48,13 @@ actions+=/eternal_flame,if=buff.eternal_flame.remains<2&buff.bastion_of_glory.re
 actions+=/eternal_flame,if=buff.bastion_of_power.react&buff.bastion_of_glory.react>=5
 actions+=/shield_of_the_righteous,if=(holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3)&(!talent.seraphim.enabled|cooldown.seraphim.remains>5)
 # GCD-bound spells start here
+actions+=/seal_of_insight,if=talent.empowered_seals.enabled&!seal.insight&buff.uthers_insight.remains<cooldown.judgment.remains
+actions+=/seal_of_righteousness,if=talent.empowered_seals.enabled&!seal.righteousness&buff.uthers_insight.remains>cooldown.judgment.remains&buff.liadrins_righteousness.down
+actions+=/seal_of_truth,if=talent.empowered_seals.enabled&!seal.truth&buff.uthers_insight.remains>cooldown.judgment.remains&buff.liadrins_righteousness.remains>cooldown.judgment.remains&buff.maraads_truth.down
 actions+=/crusader_strike
 actions+=/judgment
 actions+=/holy_wrath,if=talent.sanctified_wrath.enabled
 actions+=/avengers_shield
-actions+=/seal_of_insight,if=talent.empowered_seals.enabled&!seal.insight&buff.uthers_insight.remains<cooldown.judgment.remains
-actions+=/seal_of_righteousness,if=talent.empowered_seals.enabled&!seal.righteousness&buff.uthers_insight.remains>cooldown.judgment.remains&buff.liadrins_righteousness.down
-actions+=/seal_of_truth,if=talent.empowered_seals.enabled&!seal.truth&buff.uthers_insight.remains>cooldown.judgment.remains&buff.liadrins_righteousness.remains>cooldown.judgment.remains&buff.maraads_truth.down
 actions+=/execution_sentence
 actions+=/hammer_of_wrath
 actions+=/lights_hammer
@@ -63,11 +63,11 @@ actions+=/sacred_shield,if=target.dot.sacred_shield.remains<2
 actions+=/consecration,if=target.debuff.flying.down&!ticking
 actions+=/holy_wrath
 actions+=/holy_prism
-actions+=/seal_of_insight,if=talent.empowered_seals.enabled&!seal.insight&buff.uthers_insight.remains<buff.liadrins_righteousness.remains&buff.uthers_insight.remains<buff.maraads_truth.remains
-actions+=/seal_of_righteousness,if=talent.empowered_seals.enabled&!seal.righteousness&buff.liadrins_righteousness.remains<buff.uthers_insight.remains&buff.liadrins_righteousness.remains<buff.maraads_truth.remains
+actions+=/seal_of_insight,if=talent.empowered_seals.enabled&!seal.insight&buff.uthers_insight.remains<=buff.liadrins_righteousness.remains&buff.uthers_insight.remains<=buff.maraads_truth.remains
+actions+=/seal_of_righteousness,if=talent.empowered_seals.enabled&!seal.righteousness&buff.liadrins_righteousness.remains<=buff.uthers_insight.remains&buff.liadrins_righteousness.remains<=buff.maraads_truth.remains
 actions+=/seal_of_truth,if=talent.empowered_seals.enabled&!seal.truth&buff.maraads_truth.remains<buff.uthers_insight.remains&buff.maraads_truth.remains<buff.liadrins_righteousness.remains
 actions+=/sacred_shield
-actions+=/flash_of_light,if=talent.selfless_healer.enabled
+actions+=/flash_of_light,if=talent.selfless_healer.enabled&buff.selfless_healer.stack>=3
 
 actions.max_dps=potion,name=draenic_strength,if=buff.holy_avenger.react|buff.bloodlust.react|target.time_to_die<=60
 # Max-DPS priority list starts here.
@@ -93,7 +93,7 @@ actions.max_dps+=/holy_prism
 actions.max_dps+=/seal_of_truth,if=talent.empowered_seals.enabled&!seal.truth&buff.maraads_truth.remains<buff.liadrins_righteousness.remains
 actions.max_dps+=/seal_of_righteousness,if=talent.empowered_seals.enabled&!seal.righteousness&buff.liadrins_righteousness.remains<buff.maraads_truth.remains
 actions.max_dps+=/sacred_shield
-actions.max_dps+=/flash_of_light,if=talent.selfless_healer.enabled
+actions.max_dps+=/flash_of_light,if=talent.selfless_healer.enabled&buff.selfless_healer.stack>=3
 
 actions.max_survival=potion,name=draenic_armor,if=buff.shield_of_the_righteous.down&buff.seraphim.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down&buff.ardent_defender.down
 # Max survival priority list starts here
@@ -111,9 +111,7 @@ actions.max_survival+=/crusader_strike
 actions.max_survival+=/judgment
 actions.max_survival+=/holy_wrath,if=talent.sanctified_wrath.enabled
 actions.max_survival+=/avengers_shield
-actions.max_survival+=/seal_of_insight,if=talent.empowered_seals.enabled&!seal.insight&buff.uthers_insight.remains<cooldown.judgment.remains
-actions.max_survival+=/seal_of_righteousness,if=talent.empowered_seals.enabled&!seal.righteousness&buff.uthers_insight.remains>cooldown.judgment.remains&buff.liadrins_righteousness.down
-actions.max_survival+=/flash_of_light,if=talent.selfless_healer.enabled
+actions.max_survival+=/flash_of_light,if=talent.selfless_healer.enabled&buff.selfless_healer.stack>=3
 actions.max_survival+=/sacred_shield,if=target.dot.sacred_shield.remains<2
 actions.max_survival+=/execution_sentence
 actions.max_survival+=/hammer_of_wrath
@@ -122,8 +120,6 @@ actions.max_survival+=/holy_wrath,if=glyph.final_wrath.enabled&target.health.pct
 actions.max_survival+=/consecration,if=target.debuff.flying.down&!ticking
 actions.max_survival+=/holy_wrath
 actions.max_survival+=/holy_prism
-actions.max_survival+=/seal_of_insight,if=talent.empowered_seals.enabled&!seal.insight&buff.uthers_insight.remains<buff.liadrins_righteousness.remains
-actions.max_survival+=/seal_of_righteousness,if=talent.empowered_seals.enabled&!seal.righteousness&buff.liadrins_righteousness.remains<buff.uthers_insight.remains
 actions.max_survival+=/sacred_shield
 
 head=helmet_of_guiding_light,id=115568
