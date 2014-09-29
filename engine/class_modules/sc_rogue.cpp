@@ -2867,9 +2867,6 @@ struct blade_flurry_attack_t : public rogue_attack_t
     snapshot_flags |= STATE_MUL_DA;
   }
 
-  bool procs_poison() const
-  { return false; }
-
   double composite_da_multiplier( const action_state_t* state ) const
   {
     double m = rogue_attack_t::composite_da_multiplier( state );
