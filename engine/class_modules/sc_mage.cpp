@@ -5021,9 +5021,10 @@ void mage_t::apl_arcane()
     cooldowns -> add_action( item_actions[i] );
 
 
-  aoe -> add_talent( this, "Nether Tempest",
-                     "cycle_targets=1,if=buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))",
+  aoe -> add_action( "call_action_list,name=cooldowns",
                      "AoE sequence" );
+  aoe -> add_talent( this, "Nether Tempest",
+                     "cycle_targets=1,if=buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))" );
   aoe -> add_talent( this, "Supernova" );
   aoe -> add_action( this, "Arcane Barrage",
                      "if=buff.arcane_charge.stack=4" );

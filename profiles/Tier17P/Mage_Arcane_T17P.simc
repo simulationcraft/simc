@@ -61,7 +61,8 @@ actions.cooldowns+=/use_item,slot=trinket1
 actions.cooldowns+=/use_item,slot=trinket2
 
 # AoE sequence
-actions.aoe=nether_tempest,cycle_targets=1,if=buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))
+actions.aoe=call_action_list,name=cooldowns
+actions.aoe+=/nether_tempest,cycle_targets=1,if=buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))
 actions.aoe+=/supernova
 actions.aoe+=/arcane_barrage,if=buff.arcane_charge.stack=4
 actions.aoe+=/arcane_orb,if=buff.arcane_charge.stack<4
