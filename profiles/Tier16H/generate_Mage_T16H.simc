@@ -30,7 +30,7 @@ race=troll
 spec=fire
 professions=tailoring=600/engineering=600
 talents=100022
-glyphs=inferno_blast,combustion
+glyphs=inferno_blast/combustion/dragons_breath
 
 head=ebon_ritual_hood,id=105647,upgrade=2,gems=sinister_primal_8haste_8mastery_9int
 neck=untainted_guardians_chain,id=105465,upgrade=2
