@@ -5026,6 +5026,8 @@ void mage_t::apl_arcane()
                      "if=buff.arcane_charge.stack=4" );
   aoe -> add_talent( this, "Arcane Orb",
                      "if=buff.arcane_charge.stack<4" );
+  aoe -> add_action( this, "Cone of Cold",
+                     "if=glyph.cone_of_cold.enabled" );
   aoe -> add_action( this, "Arcane Explosion" );
 
 

@@ -5,7 +5,7 @@ race=troll
 spec=arcane
 professions=tailoring=600/engineering=600
 talents=100012
-glyphs=arcane_power
+glyphs=arcane_power/cone_of_cold
 head=ebon_ritual_hood,id=105647,upgrade=2,gems=sinister_primal_8haste_8mastery_9int,reforge=haste_hit
 neck=untainted_guardians_chain,id=105465,upgrade=2,reforge=hit_haste
 shoulders=chronomancer_mantle,id=99401,upgrade=2,gems=8haste_8mastery_8haste_8mastery_6int,enchant=10int_5crit,reforge=crit_mastery

@@ -10,7 +10,7 @@ level=100
 race=troll
 spec=arcane
 talents=1000121
-glyphs=arcane_power
+glyphs=arcane_power/cone_of_cold
 head=hood_of_swirling_light,id=109972,bonus_id=524
 neck=alcs_pendant_of_fiery_dreams,id=109957,bonus_id=524,enchant=gift_of_mastery
 shoulder=frosttouched_shoulderpads,id=109931,bonus_id=524

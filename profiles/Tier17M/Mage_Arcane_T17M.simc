@@ -4,7 +4,7 @@ race=troll
 role=spell
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!0...010
-glyphs=arcane_power
+glyphs=arcane_power/cone_of_cold
 spec=arcane
 
 # This default action priority list is automatically created based on your character.
@@ -64,6 +64,7 @@ actions.aoe=nether_tempest,cycle_targets=1,if=buff.arcane_charge.stack=4&(active
 actions.aoe+=/supernova
 actions.aoe+=/arcane_barrage,if=buff.arcane_charge.stack=4
 actions.aoe+=/arcane_orb,if=buff.arcane_charge.stack<4
+actions.aoe+=/cone_of_cold,if=glyph.cone_of_cold.enabled
 actions.aoe+=/arcane_explosion
 
 # High mana usage, "Burn" sequence
