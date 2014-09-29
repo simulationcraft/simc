@@ -815,7 +815,6 @@ struct dbc_potion_t : public action_t
     harmful = callbacks = may_miss = may_crit = may_block = may_glance = may_dodge = may_parry = false;
     proc = true;
     trigger_gcd = timespan_t::zero();
-    target = player;
 
     option_t options[] =
     {
