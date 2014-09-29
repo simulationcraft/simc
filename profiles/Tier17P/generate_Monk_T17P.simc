@@ -6,7 +6,7 @@
 talent_format=armory
 
 # Brewmaster 1H Chi Explosion
-monk="Monk_Brewmaster_1h_CE_T17PR"
+monk="Monk_Brewmaster_1h_CE_T17P"
 level=100
 race=night_elf
 spec=brewmaster
@@ -30,11 +30,11 @@ trinket1=torias_unseeing_eye,id=110015,bonus_id=524
 trinket2=blood_seal_of_azzakel,id=109995,bonus_id=524
 main_hand=tharbeks_unholy_charge,id=118725,bonus_id=524,enchant_id=5352
 off_hand=bloodied_hand_of_woe,id=110058,bonus_id=524,enchant_id=5352
-save=Monk_Brewmaster_1h_CE_T17PR.simc
+save=Monk_Brewmaster_1h_CE_T17P.simc
 
 
 # Brewmaster 1H Serenity
-monk="Monk_Brewmaster_1h_Serenity_T17PR"
+monk="Monk_Brewmaster_1h_Serenity_T17P"
 level=100
 race=night_elf
 spec=brewmaster
@@ -58,11 +58,11 @@ trinket1=torias_unseeing_eye,id=110015,bonus_id=524
 trinket2=blood_seal_of_azzakel,id=109995,bonus_id=524
 main_hand=tharbeks_unholy_charge,id=118725,bonus_id=524,enchant_id=5352
 off_hand=bloodied_hand_of_woe,id=110058,bonus_id=524,enchant_id=5352
-save=Monk_Brewmaster_1h_Serenity_T17PR.simc
+save=Monk_Brewmaster_1h_Serenity_T17P.simc
 
 
 # Brewmaster 2H Chi Explosion
-monk="Monk_Brewmaster_2h_CE_T17PR"
+monk="Monk_Brewmaster_2h_CE_T17P"
 level=100
 race=night_elf
 spec=brewmaster
@@ -85,11 +85,11 @@ finger2=signet_of_the_glorious_protector,id=109778,bonus_id=524,enchant=gift_of_
 trinket1=torias_unseeing_eye,id=110015,bonus_id=524
 trinket2=blood_seal_of_azzakel,id=109995,bonus_id=524
 main_hand=crushtos_neck_separator,id=110040,bonus_id=524,enchant_id=5352
-save=Monk_Brewmaster_2h_CE_T17PR.simc
+save=Monk_Brewmaster_2h_CE_T17P.simc
 
 
 # Brewmaster 2H Serenity
-monk="Monk_Brewmaster_2h_Serenity_T17PR"
+monk="Monk_Brewmaster_2h_Serenity_T17P"
 level=100
 race=night_elf
 spec=brewmaster
@@ -112,4 +112,4 @@ finger2=signet_of_the_glorious_protector,id=109778,bonus_id=524,enchant=gift_of_
 trinket1=torias_unseeing_eye,id=110015,bonus_id=524
 trinket2=blood_seal_of_azzakel,id=109995,bonus_id=524
 main_hand=crushtos_neck_separator,id=110040,bonus_id=524,enchant_id=5352
-save=Monk_Brewmaster_2h_Serenity_T17PR.simc
+save=Monk_Brewmaster_2h_Serenity_T17P.simc

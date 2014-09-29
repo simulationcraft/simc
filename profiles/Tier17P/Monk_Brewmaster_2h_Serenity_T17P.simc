@@ -1,9 +1,9 @@
-monk="Monk_Brewmaster_2h_CE_T17PR"
+monk="Monk_Brewmaster_2h_Serenity_T17P"
 level=100
 race=night_elf
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.01.111
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.02.112
 spec=brewmaster
 
 # This default action priority list is automatically created based on your character.

@@ -4,8 +4,8 @@
 # * Standard Heroic 5 Man Loot Only.
 
 talent_format=armory
-# Guardian Druid T17PR
-druid="Druid_Guardian_T17PR"
+# Guardian Druid T17P
+druid="Druid_Guardian_T17P"
 level=100
 race=night_elf
 spec=guardian
@@ -27,10 +27,10 @@ finger2=primal_gladiators_ring_of_prowess,id=111271,enchant=gift_of_mastery
 trinket1=primal_gladiators_badge_of_conquest,id=111222
 trinket2=primal_gladiators_insignia_of_conquest,id=111223
 main_hand=primal_gladiators_pike,id=111075,enchant=mark_of_the_frostwolf
-save=Druid_Guardian_T17PR.simc
+save=Druid_Guardian_T17P.simc
 
-# Feral Druid T17PR
-druid="Druid_Feral_T17PR"
+# Feral Druid T17P
+druid="Druid_Feral_T17P"
 level=100
 race=night_elf
 spec=feral
@@ -53,10 +53,10 @@ finger2=rogers_brown_diamond_seal,id=109759,bonus_id=524,enchant=gift_of_critica
 trinket1=blood_seal_of_azzakel,id=109995,bonus_id=524
 trinket2=gorashans_lodestone_spike,id=109998,bonus_id=524
 main_hand=crushtos_neck_separator,id=110040,bonus_id=524,enchant=mark_of_the_thunderlord
-save=Druid_Feral_T17PR.simc
+save=Druid_Feral_T17P.simc
 
-# Balance Druid T17PR
-druid="Druid_Balance_T17PR"
+# Balance Druid T17P
+druid="Druid_Balance_T17P"
 level=100
 race=troll
 spec=balance
@@ -76,4 +76,4 @@ finger2=mark_of_ice,id=109764,enchant=gift_of_mastery
 main_hand=spire_of_the_furious_construct,id=110031,enchant=mark_of_warsong
 trinket1=fleshrenders_meathook,id=110002
 trinket2=ragewings_firefang,id=110003
-save=Druid_Balance_T17PR.simc
+save=Druid_Balance_T17P.simc

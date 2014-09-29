@@ -1,0 +1,39 @@
+# TxPR
+# Tier x Pre Raid
+# * Ilvl Cap: 630
+# * Standard Heroic 5 Man Loot Only.
+
+talent_format=armory
+
+# Death Knight
+#generate_Death_Knight_T17P.simc UPDATE
+
+# Druid
+generate_Druid_T17P.simc
+
+# Hunter
+#generate_Hunter_T17P.simc UPDATE
+
+# Mage
+generate_Mage_T17P.simc
+
+# Monk
+generate_Monk_T17P.simc
+
+# Paladin
+#generate_Paladin_T17P.simc UPDATE
+
+# Priest
+#generate_Priest_T17P.simc UPDATE
+
+# Rogue
+#generate_Rogue_T17P.simc UPDATE
+
+# Shaman
+generate_Shaman_T17P.simc
+
+# Warlock
+#generate_Warlock_T17P.simc UPDATE
+
+# Warrior
+#generate_Warrior_T17P.simc UPDATE

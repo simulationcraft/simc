@@ -5,7 +5,7 @@
 
 talent_format=armory
 # BM
-hunter=Hunter_BM_T17PR
+hunter=Hunter_BM_T17P
 level=100
 race=orc
 spec=beast_mastery
@@ -28,10 +28,10 @@ finger2=rogers_brown_diamond_seal,id=109759,enchant=gift_of_critical_strike
 trinket1=gorashans_lodestone_spike,id=109998
 trinket2=kihras_adrenaline_injector,id=109997
 main_hand=azzakels_boltslinger,id=110048,enchant=oglethorpes_missile_splitter
-save=Hunter_BM_T17PR.simc
+save=Hunter_BM_T17P.simc
 
 # MM
-hunter=Hunter_MM_T17PR
+hunter=Hunter_MM_T17P
 level=100
 race=orc
 spec=marksmanship
@@ -54,10 +54,10 @@ finger2=rogers_brown_diamond_seal,id=109759,enchant=gift_of_critical_strike
 trinket1=gorashans_lodestone_spike,id=109998
 trinket2=blood_seal_of_azzakel,id=109995
 main_hand=bonetooth_longbow,id=110037,enchant=megawatt_filament
-save=Hunter_MM_T17PR.simc
+save=Hunter_MM_T17P.simc
 
 # SV
-hunter=Hunter_SV_T17PR
+hunter=Hunter_SV_T17P
 level=100
 race=orc
 spec=survival
@@ -80,4 +80,4 @@ finger2=rogers_brown_diamond_seal,id=109759,enchant=gift_of_multistrike
 trinket1=gorashans_lodestone_spike,id=109998
 trinket2=blood_seal_of_azzakel,id=109995
 main_hand=azzakels_boltslinger,id=110048,enchant=oglethorpes_missile_splitter
-save=Hunter_SV_T17PR.simc
+save=Hunter_SV_T17P.simc

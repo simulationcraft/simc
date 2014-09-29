@@ -5,7 +5,7 @@
 
 talent_format=armory
 
-mage=Mage_Arcane_T17PR
+mage=Mage_Arcane_T17P
 level=100
 race=troll
 spec=arcane
@@ -26,7 +26,7 @@ ring2=golems_gleaming_eye,id=109765,bonus_id=524,enchant=gift_of_mastery
 trinket1=fleshrenders_meathook,id=110002,bonus_id=524
 trinket2=ragewings_firefang,id=110003,bonus_id=524
 main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant=mark_of_warsong
-save=Mage_Arcane_T17PR.simc
+save=Mage_Arcane_T17P.simc
 
 mage=Mage_Fire_T17M
 level=100
@@ -49,7 +49,7 @@ ring2=golems_gleaming_eye,id=109765,bonus_id=524,enchant=gift_of_critical_strike
 trinket1=fleshrenders_meathook,id=110002,bonus_id=524
 trinket2=ragewings_firefang,id=110003,bonus_id=524
 main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant=mark_of_the_thunderlord
-save=Mage_Fire_T17PR.simc
+save=Mage_Fire_T17P.simc
 
 mage=Mage_Frost_T17M
 level=100
@@ -72,4 +72,4 @@ ring2=golems_gleaming_eye,id=109765,bonus_id=524,enchant=gift_of_multistrike
 trinket1=fleshrenders_meathook,id=110002,bonus_id=524
 trinket2=ragewings_firefang,id=110003,bonus_id=524
 main_hand=portalrippers_staff,id=110039,bonus_id=524,enchant=mark_of_frostwolf
-save=Mage_Frost_T17PR.simc
+save=Mage_Frost_T17P.simc

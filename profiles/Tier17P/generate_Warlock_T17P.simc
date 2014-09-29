@@ -5,7 +5,7 @@
 
 talent_format=armory
 
-warlock=Warlock_Affliction_T17PR
+warlock=Warlock_Affliction_T17P
 level=100
 race=troll
 spec=affliction
@@ -26,10 +26,10 @@ finger2=diamondglow_circle,id=109763,enchant=gift_of_haste,bonus_id=524
 trinket1=fleshrenders_meathook,id=110002,bonus_id=524
 trinket2=coagulated_genesaur_blood,id=110004,bonus_id=524
 main_hand=portalrippers_staff,id=110039,enchant=mark_of_warsong,bonus_id=524
-save=Warlock_Affliction_T17PR.simc
+save=Warlock_Affliction_T17P.simc
 
 
-warlock=Warlock_Demonology_T17PR
+warlock=Warlock_Demonology_T17P
 level=100
 race=troll
 spec=demonology
@@ -51,10 +51,10 @@ finger2=mark_of_ice,id=109764,enchant=gift_of_mastery,bonus_id=524
 trinket1=fleshrenders_meathook,id=110002,bonus_id=524
 trinket2=tovras_lightning_repository,id=110001,bonus_id=524
 main_hand=spire_of_the_furious_construct,id=110031,enchant=mark_of_bleeding_hollow,bonus_id=524
-save=Warlock_Demonology_T17PR.simc
+save=Warlock_Demonology_T17P.simc
 
 
-warlock=Warlock_Destruction_T17PR
+warlock=Warlock_Destruction_T17P
 level=100
 race=troll
 role=spell
@@ -76,4 +76,4 @@ finger2=mark_of_ice,id=109764,enchant=gift_of_critical_strike,bonus_id=524
 trinket1=coagulated_genesaur_blood,id=110004,bonus_id=524
 trinket2=crushtos_runic_alarm,id=110000,bonus_id=524
 main_hand=spire_of_the_furious_construct,id=110031,enchant=mark_of_the_thunderlord,bonus_id=524
-save=Warlock_Destruction_T17PR.simc
+save=Warlock_Destruction_T17P.simc

@@ -1,9 +1,9 @@
-monk="Monk_Brewmaster_1h_Serenity_T17PR"
+monk="Monk_Brewmaster_2h_CE_T17P"
 level=100
 race=night_elf
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.02.112
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.01.111
 spec=brewmaster
 
 # This default action priority list is automatically created based on your character.
@@ -90,15 +90,14 @@ finger1=band_of_the_stalwart_stanchion,id=109783,bonus_id=524,enchant=gift_of_ve
 finger2=signet_of_the_glorious_protector,id=109778,bonus_id=524,enchant=gift_of_versatility
 trinket1=torias_unseeing_eye,id=110015,bonus_id=524
 trinket2=blood_seal_of_azzakel,id=109995,bonus_id=524
-main_hand=tharbeks_unholy_charge,id=118725,bonus_id=524,enchant_id=5352
-off_hand=bloodied_hand_of_woe,id=110058,bonus_id=524,enchant_id=5352
+main_hand=crushtos_neck_separator,id=110040,bonus_id=524,enchant_id=5352
 
 # Gear Summary
-# gear_agility=1774
-# gear_stamina=2426
-# gear_crit_rating=590
-# gear_mastery_rating=174
+# gear_agility=1801
+# gear_stamina=2465
+# gear_crit_rating=657
+# gear_mastery_rating=186
 # gear_armor=814
 # gear_bonus_armor=419
 # gear_multistrike_rating=776
-# gear_versatility_rating=924
+# gear_versatility_rating=877
