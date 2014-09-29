@@ -208,8 +208,7 @@ public:
     buff_t* tier13_4pc_melee;
     buff_t* unholy_presence;
     buff_t* vampiric_blood;
-    buff_t* will_of_the_necropolis_dr;
-    buff_t* will_of_the_necropolis_rt;
+    buff_t* will_of_the_necropolis;
 
     absorb_buff_t* blood_shield;
     buff_t* rune_tap;
@@ -5133,40 +5132,16 @@ struct rune_tap_t : public death_knight_spell_t
     use_off_gcd = true;
   }
 
-  void consume_resource()
-  {
-    if ( p() -> buffs.will_of_the_necropolis_rt -> check() )
-      return;
-
-    death_knight_spell_t::consume_resource();
-  }
-
   void execute()
   {
     death_knight_spell_t::execute();
     ability_cooldown -> start();
 
     p() -> buffs.rune_tap -> trigger();
-
-    p() -> buffs.will_of_the_necropolis_rt -> expire();
-  }
-
-  double cost() const
-  {
-    if ( p() -> buffs.will_of_the_necropolis_rt -> check() )
-      return 0;
-    return death_knight_spell_t::cost();
   }
 
   bool ready()
   {
-    if ( p() -> buffs.will_of_the_necropolis_rt-> check() )
-    {
-      cost_blood = 0;
-      bool r = death_knight_spell_t::ready();
-      cost_blood  = 1;
-      return r;
-    }
     if ( ability_cooldown -> up() )
       return death_knight_spell_t::ready();
 
@@ -6609,10 +6584,8 @@ void death_knight_t::create_buffs()
                                               spec.improved_unholy_presence -> effectN( 1 ).percent() )
                               .add_invalidate( CACHE_HASTE );
   buffs.vampiric_blood      = new vampiric_blood_buff_t( this );
-  buffs.will_of_the_necropolis_dr = buff_creator_t( this, "will_of_the_necropolis_dr", find_spell( 81162 ) )
-                                    .cd( timespan_t::from_seconds( 45 ) );
-  buffs.will_of_the_necropolis_rt = buff_creator_t( this, "will_of_the_necropolis_rt", find_spell( 96171 ) )
-                                    .cd( timespan_t::from_seconds( 45 ) );
+  buffs.will_of_the_necropolis = buff_creator_t( this, "will_of_the_necropolis", find_spell( 157335 ) )
+                                 .cd( find_spell( 157335 ) -> duration() );
 
   runeforge.rune_of_the_fallen_crusader = buff_creator_t( this, "unholy_strength", find_spell( 53365 ) )
                                           .add_invalidate( CACHE_STRENGTH );
@@ -6794,10 +6767,11 @@ void death_knight_t::assess_damage( school_e     school,
     }
   }
 
-  if ( health_pct >= 35 && health_percentage() < 35 )
+  if ( health_pct >= spec.will_of_the_necropolis -> effectN( 1 ).base_value() &&
+       health_percentage() < spec.will_of_the_necropolis -> effectN( 1 ).base_value() )
   {
-    buffs.will_of_the_necropolis_dr -> trigger();
-    buffs.will_of_the_necropolis_rt -> trigger();
+    buffs.will_of_the_necropolis -> trigger();
+    buffs.rune_tap -> trigger();
   }
 
   if ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY )
@@ -6831,9 +6805,6 @@ void death_knight_t::target_mitigation( school_e school, dmg_e type, action_stat
 
   if ( buffs.icebound_fortitude -> up() )
     state -> result_amount *= 1.0 + buffs.icebound_fortitude -> data().effectN( 3 ).percent() + spec.sanguine_fortitude -> effectN( 1 ).percent();
-
-  if ( buffs.will_of_the_necropolis_dr -> up() )
-    state -> result_amount *= 1.0 + spec.will_of_the_necropolis -> effectN( 1 ).percent();
 
   if ( buffs.army_of_the_dead -> check() )
     state -> result_amount *= 1.0 - buffs.army_of_the_dead -> value();
