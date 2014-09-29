@@ -843,7 +843,7 @@ void print_html_scale_factors( report::sc_html_stream& os, sim_t* sim )
           os << "<th class=\"small\">" << util::stat_type_abbrev( j ) << "</th>\n";
         }
       }
-      os << "<th colspan=\"2\" class=\"small\">wowhead</th>\n"
+      os << "<th class=\"small\">wowhead</th>\n"
          << "<th class=\"small\">lootrank</th>\n"
          << "</tr>\n";
     }
