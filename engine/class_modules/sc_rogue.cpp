@@ -2856,7 +2856,7 @@ struct blade_flurry_attack_t : public rogue_attack_t
   blade_flurry_attack_t( rogue_t* p ) :
     rogue_attack_t( "blade_flurry_attack", p, p -> find_spell( 22482 ) )
   {
-    may_miss = may_crit = proc = callbacks = may_dodge = may_parry = may_block = false;
+    may_miss = may_crit = may_multistrike = proc = callbacks = may_dodge = may_parry = may_block = false;
     background = true;
     aoe = p -> spec.blade_flurry -> effectN( 4 ).base_value();
     weapon = &p -> main_hand_weapon;
