@@ -2968,7 +2968,10 @@ struct frostfire_bolt_t : public mage_spell_t
       am *= ( 1.0 + p() -> buffs.frozen_thoughts -> data().effectN( 1 ).percent() );
     }
 
-    am *= 1.0 + brain_freeze_bonus;
+    if ( p() -> buffs.brain_freeze -> up() )
+    {
+      am *= 1.0 + brain_freeze_bonus;
+    }
 
     return am;
   }
