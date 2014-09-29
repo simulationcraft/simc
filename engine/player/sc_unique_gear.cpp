@@ -1843,9 +1843,15 @@ expr_t* unique_gear::create_expression( action_t* a, const std::string& name_str
 
   if ( ptype != PROC_COOLDOWN )
   {
-    stat = util::parse_stat_type( splits[ stat_idx ] );
-    if ( stat == STAT_NONE )
-      return 0;
+    // Use "all stat" to indicate "any" ..
+    if ( util::str_compare_ci( splits[ stat_idx ], "any" ) )
+      stat = STAT_ALL;
+    else
+    {
+      stat = util::parse_stat_type( splits[ stat_idx ] );
+      if ( stat == STAT_NONE )
+        return 0;
+    }
   }
 
   if ( pexprtype == PROC_ENABLED && ptype != PROC_COOLDOWN && splits.size() >= 4 )
@@ -1861,7 +1867,8 @@ expr_t* unique_gear::create_expression( action_t* a, const std::string& name_str
         if ( t1 )
         {
           const special_effect_t& e = a -> player -> items[ SLOT_TRINKET_1 ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
-          if ( e.stat_type() == s && ( ( ! stacking && e.max_stack() <= 1 ) || ( stacking && e.max_stack() > 1 ) ) )
+          if ( ( ( s == STAT_ALL && e.is_stat_buff() ) || e.stat_type() == s ) &&
+               ( ( ! stacking && e.max_stack() <= 1 ) || ( stacking && e.max_stack() > 1 ) ) )
           {
             buff_t* b1 = buff_t::find( a -> player, e.name() );
             if ( b1 ) bexpr1 = buff_t::create_expression( b1 -> name(), a, expr, b1 );
@@ -1871,7 +1878,8 @@ expr_t* unique_gear::create_expression( action_t* a, const std::string& name_str
         if ( t2 )
         {
           const special_effect_t& e = a -> player -> items[ SLOT_TRINKET_2 ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
-          if ( e.stat_type() == s && ( ( ! stacking && e.max_stack() <= 1 ) || ( stacking && e.max_stack() > 1 ) ) )
+          if ( ( ( s == STAT_ALL && e.is_stat_buff() ) || e.stat_type() == s ) &&
+               ( ( ! stacking && e.max_stack() <= 1 ) || ( stacking && e.max_stack() > 1 ) ) )
           {
             buff_t* b2 = buff_t::find( a -> player, e.name() );
             if ( b2 ) bexpr2 = buff_t::create_expression( b2 -> name(), a, expr, b2 );
@@ -1998,13 +2006,13 @@ expr_t* unique_gear::create_expression( action_t* a, const std::string& name_str
           if ( t1 )
           {
             const special_effect_t& e = p -> items[ SLOT_TRINKET_1 ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
-            if ( e.stat_type() == s ) has_t1 = true;
+            if ( ( s == STAT_ALL && e.is_stat_buff() ) || e.stat_type() == s ) has_t1 = true;
           }
 
           if ( t2 )
           {
             const special_effect_t& e = p -> items[ SLOT_TRINKET_2 ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
-            if ( e.stat_type() == s ) has_t2 = true;
+            if ( ( s == STAT_ALL && e.is_stat_buff() ) || e.stat_type() == s ) has_t2 = true;
           }
         }
 
