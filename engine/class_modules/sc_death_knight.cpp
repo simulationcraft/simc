@@ -2184,13 +2184,23 @@ struct shadow_of_death_t : public buff_t
   int health_gain;
 
   shadow_of_death_t( death_knight_t* p ) :
-    buff_t( buff_creator_t( p, "shadow_of_death", p -> find_spell( 164047 ) ).chance( p -> perk.enhanced_death_coil -> ok() ).refresh_behavior( BUFF_REFRESH_DISABLED ) ),
+    buff_t( buff_creator_t( p, "shadow_of_death", p -> find_spell( 164047 ) )
+            .chance( p -> perk.enhanced_death_coil -> ok() )
+            .refresh_behavior( BUFF_REFRESH_DISABLED ) ),
     health_gain( 0 )
   { }
 
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
-    int gain = ( int ) floor( player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent() );
+    double multiplier = 1.0;
+    if ( expiration )
+      multiplier = expiration -> remains() / data().duration();
+    int gain = ( int ) floor( player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent() * multiplier );
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s %s health_gain=%d, multiplier=%f remains=%.3f",
+          player -> name(), name(), gain, multiplier,
+          ( expiration ) ? expiration -> remains().total_seconds() : data().duration().total_seconds() );
+
     player -> stat_gain( STAT_MAX_HEALTH, gain, 0, 0, true );
     health_gain += gain;
 
