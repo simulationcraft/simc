@@ -4243,10 +4243,10 @@ private:
   struct damage_event_list_t;
   player_t& _player;
   core_event_t* _update_event;
-  bool _started;
   bool _init;
-  std::shared_ptr<diminishing_returns_list_t> _diminishing_return_list;
+  bool _started;
   std::shared_ptr<damage_event_list_t >_damage_list;
+  std::shared_ptr<diminishing_returns_list_t> _diminishing_return_list;
 };
 
 } // resolve
