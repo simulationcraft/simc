@@ -490,7 +490,7 @@ option_db_t::option_db_t()
   }
 
   if ( auto_path[ auto_path.size() - 1 ] == '|' )
-    auto_path.erase( auto_path.end() );
+    auto_path.erase( auto_path.size() - 1 );
 }
 
 #undef SC_SHARED_DATA
