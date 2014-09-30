@@ -3660,10 +3660,12 @@ void hunter_t::add_potion_action( action_priority_list_t* list, const std::strin
 {
   std::string action_options = options.empty() ? options : "," + options;
   if ( sim -> allow_potions )    
+  {
     if ( level >= 90 )
       list -> add_action( "potion,name=" + big_potion + action_options );
     else if ( level >= 85 )
       list -> add_action( "potion,name=" + little_potion + action_options );
+  }
     
 }
 
