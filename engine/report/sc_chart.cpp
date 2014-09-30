@@ -122,7 +122,7 @@ const std::string teal          = "009090";
 const std::string darker_blue   = "59ADCC";
 const std::string darker_silver = "8A8A8A";
 const std::string darker_yellow = "C0B84F";
-const std::string red_blue      = "660066"; // Our color mixer thinks red + blue = poo brown.
+const std::string red_blue      = "9900CC"; // Our color mixer thinks red + blue = poo brown.
 
 /* Creates the average color of two given colors
  */
