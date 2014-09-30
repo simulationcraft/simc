@@ -2572,6 +2572,7 @@ void death_knight_spell_t::consume_resource()
 void death_knight_spell_t::execute()
 {
   base_t::execute();
+  p() -> trigger_t17_4pc_frost( execute_state );
 }
 
 // death_knight_spell_t::impact() ===========================================
