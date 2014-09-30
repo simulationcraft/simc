@@ -1056,11 +1056,6 @@ bool player_t::init_items()
 
   switch ( type )
   {
-    case MAGE:
-    case PRIEST:
-    case WARLOCK:
-      matching_gear = true;
-      break;
     default:
       matching_gear = true;
       for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
