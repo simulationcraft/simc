@@ -6550,7 +6550,7 @@ void priest_t::create_options()
   {
     opt_string( "atonement_target", options.atonement_target_str ),
     opt_deprecated( "double_dot", "action_list=double_dot" ),
-    opt_int( "initial_shadow_orbs", options.initial_shadow_orbs ),
+    opt_int( "initial_shadow_orbs", options.initial_shadow_orbs, 0, 3 ),
     opt_bool( "autounshift", options.autoUnshift ),
     opt_null()
   };
