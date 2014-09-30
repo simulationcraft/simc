@@ -48,10 +48,12 @@ actions+=/savage_roar,if=buff.savage_roar.remains<3
 actions+=/potion,name=draenic_agility,sync=berserk,if=target.health.pct<25
 actions+=/thrash_cat,if=buff.omen_of_clarity.react&remains<=duration*0.3&active_enemies>1
 actions+=/ferocious_bite,cycle_targets=1,if=combo_points=5&target.health.pct<25&dot.rip.ticking
-actions+=/rip,cycle_targets=1,if=combo_points=5&remains<=duration*0.3
+actions+=/rip,cycle_targets=1,if=combo_points=5&remains<=3
+actions+=/rip,cycle_targets=1,if=combo_points=5&remains<=duration*0.3&persistent_multiplier>dot.rip.pmultiplier
 actions+=/savage_roar,if=combo_points=5&(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<42*0.3
 actions+=/ferocious_bite,if=combo_points=5&(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)
-actions+=/rake,cycle_targets=1,if=remains<=duration*0.3&combo_points<5
+actions+=/rake,cycle_targets=1,if=remains<=3&combo_points<5
+actions+=/rake,cycle_targets=1,if=remains<=duration*0.3&combo_points<5&persistent_multiplier>dot.rake.pmultiplier
 actions+=/pool_resource,for_next=1
 actions+=/thrash_cat,if=remains<=duration*0.3&active_enemies>1
 actions+=/moonfire,cycle_targets=1,if=remains<=duration*0.3&active_enemies<=10

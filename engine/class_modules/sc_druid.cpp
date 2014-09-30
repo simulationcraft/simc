@@ -6049,11 +6049,13 @@ void druid_t::apl_feral()
 
   // Finishers
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=combo_points=5&target.health.pct<25&dot.rip.ticking" );
-  def -> add_action( this, "Rip", "cycle_targets=1,if=combo_points=5&remains<=duration*0.3" );
+  def -> add_action( this, "Rip", "cycle_targets=1,if=combo_points=5&remains<=3" );
+  def -> add_action( this, "Rip", "cycle_targets=1,if=combo_points=5&remains<=duration*0.3&persistent_multiplier>dot.rip.pmultiplier" );
   def -> add_action( this, "Savage Roar", "if=combo_points=5&(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<42*0.3" );
   def -> add_action( this, "Ferocious Bite", "if=combo_points=5&(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)" );
 
-  def -> add_action( this, "Rake", "cycle_targets=1,if=remains<=duration*0.3&combo_points<5" );
+  def -> add_action( this, "Rake", "cycle_targets=1,if=remains<=3&combo_points<5" );
+  def -> add_action( this, "Rake", "cycle_targets=1,if=remains<=duration*0.3&combo_points<5&persistent_multiplier>dot.rake.pmultiplier" );
   def -> add_action( "pool_resource,for_next=1" );
   def -> add_action( "thrash_cat,if=remains<=duration*0.3&active_enemies>1" );
   if ( level >= 100 )
