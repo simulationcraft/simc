@@ -6641,6 +6641,8 @@ void death_knight_t::create_buffs()
                                           .add_invalidate( CACHE_STRENGTH );
 
   runeforge.rune_of_the_stoneskin_gargoyle = buff_creator_t( this, "stoneskin_gargoyle", find_spell( 62157 ) )
+                                             .add_invalidate( CACHE_ARMOR )
+                                             .add_invalidate( CACHE_STAMINA )
                                              .chance( 0 );
   runeforge.rune_of_spellshattering = buff_creator_t( this, "rune_of_spellshattering", find_spell( 53362 ) )
                                       .chance( 0 );
