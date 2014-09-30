@@ -2726,7 +2726,7 @@ struct frostbolt_t : public mage_spell_t
       cast *= 1.0 + p() -> perks.enhanced_frostbolt -> effectN( 1 ).time_value().total_seconds() /
                   base_execute_time.total_seconds();
     if ( p() -> buffs.ice_shard -> up() )
-      cast *= 1.0 - ( p() -> buffs.ice_shard -> stack() * 0.02 );
+      cast *= 1.0 + ( p() -> buffs.ice_shard -> stack() * p() -> buffs.ice_shard -> data().effectN( 1 ).percent() );
     return cast;
   }
 
@@ -2800,7 +2800,7 @@ struct frostbolt_t : public mage_spell_t
     }
 
     if ( p() -> buffs.ice_shard -> up() )
-      am *= 1.0 + ( p() -> buffs.ice_shard -> stack() * 0.02 );
+      am *= 1.0 + ( p() -> buffs.ice_shard -> stack() * p() -> buffs.ice_shard -> data().effectN( 2 ).percent() );
     return am;
   }
 };
