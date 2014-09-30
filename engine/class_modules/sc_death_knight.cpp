@@ -2954,13 +2954,12 @@ struct necrosis_t : public death_knight_spell_t
 
 struct frozen_runeblade_attack_t : public melee_attack_t
 {
-  frozen_runeblade_attack_t( death_knight_t* player ) :
-    melee_attack_t( "frozen_runeblade", player, player -> find_spell( 170205 ) -> effectN( 1 ).trigger() )
+  frozen_runeblade_attack_t( death_knight_t* player, const std::string& name, const spell_data_t* spell, weapon_t* w ) :
+    melee_attack_t( name, player, spell  )
   {
     background = may_crit = special = true;
     callbacks = false;
-    // Implicitly uses main hand weapon
-    weapon = &( player -> main_hand_weapon );
+    weapon = w;
   }
 
   bool usable_moving() const
@@ -2969,21 +2968,45 @@ struct frozen_runeblade_attack_t : public melee_attack_t
 
 struct frozen_runeblade_driver_t : public death_knight_spell_t
 {
-  frozen_runeblade_attack_t* attack;
+  frozen_runeblade_attack_t* attack, * oh_attack;
 
   frozen_runeblade_driver_t( death_knight_t* player ) :
     death_knight_spell_t( "frozen_runeblade_driver", player, player -> find_spell( 170205 ) ),
-    attack( new frozen_runeblade_attack_t( player ) )
+    attack( 0 ), oh_attack( 0 )
   {
     background = proc = dual = quiet = true;
     callbacks = may_miss = may_crit = hasted_ticks = tick_may_crit = false;
+
+    if ( player -> main_hand_weapon.type != WEAPON_NONE )
+    {
+      attack = new frozen_runeblade_attack_t( player, "frozen_runeblade",
+                                              data().effectN( 1 ).trigger(),
+                                              &( player -> main_hand_weapon ) );
+    }
+
+    if ( player -> off_hand_weapon.type != WEAPON_NONE )
+    {
+      oh_attack = new frozen_runeblade_attack_t( player, "frozen_runeblade_offhand",
+                                                 data().effectN( 2 ).trigger(),
+                                                 &( player -> off_hand_weapon ) );
+    }
   }
 
   void tick( dot_t* dot )
   {
     death_knight_spell_t::tick( dot );
 
-    attack -> schedule_execute();
+    if ( attack )
+    {
+      attack -> target = dot -> target;
+      attack -> schedule_execute();
+    }
+
+    if ( oh_attack )
+    {
+      oh_attack -> target = dot -> target;
+      oh_attack -> schedule_execute();
+    }
   }
 };
 
