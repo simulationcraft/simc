@@ -1280,6 +1280,7 @@ class SpellDataGenerator(DataGenerator):
          156060, 156055, 173287,    # Hunter Scopes
          177172, 177175, 177176,    # WoD Legendary ring, phase 1(?)
          177161, 177159, 177160,    # WoD Legendary ring, phase 1(?)
+         143924,                    # Leech
         ),
 
         # Warrior:
