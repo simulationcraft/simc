@@ -2709,9 +2709,6 @@ struct frostbolt_t : public mage_spell_t
 
   }
 
-
-
-
   virtual int schedule_multistrike( action_state_t* s, dmg_e dmg_type, double tick_multiplier )
   {
     int sm = mage_spell_t::schedule_multistrike( s, dmg_type, tick_multiplier );
@@ -2729,7 +2726,7 @@ struct frostbolt_t : public mage_spell_t
       cast *= 1.0 + p() -> perks.enhanced_frostbolt -> effectN( 1 ).time_value().total_seconds() /
                   base_execute_time.total_seconds();
     if ( p() -> buffs.ice_shard -> up() )
-      cast *= 1.0 - ( p() -> buffs.ice_shard -> stack() * 0.04 );
+      cast *= 1.0 - ( p() -> buffs.ice_shard -> stack() * 0.02 );
     return cast;
   }
 
@@ -2803,7 +2800,7 @@ struct frostbolt_t : public mage_spell_t
     }
 
     if ( p() -> buffs.ice_shard -> up() )
-      am *= 1.0 + ( p() -> buffs.ice_shard -> stack() * 0.04 );
+      am *= 1.0 + ( p() -> buffs.ice_shard -> stack() * 0.02 );
     return am;
   }
 };
