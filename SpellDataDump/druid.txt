@@ -2715,7 +2715,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10
                    Affected Spells: Entangling Roots (339), Healing Touch (5185), Rebirth (20484), Entangling Roots (113770)
 #4 (id=232446)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 50 | Scaled Value: 50
+                   Base Value: 20 | Scaled Value: 20
                    Affected Spells: Healing Touch (5185)
 Description      : $@spelldesc16974
 Tooltip          : Your next Entangling Roots, Healing Touch, or Rebirth will be instant, free, and castable in all forms, and heal for $s4% more.
@@ -3952,7 +3952,7 @@ Tooltip          : Bleeding for $w2 damage every $t2 sec.
 
 Name             : Thrash (id=106832) [Spell Family (7)] 
 Class            : Druid
-Spell Level      : 28
+Spell Level      : 14
 Range            : 5 yards
 Attributes       : ........ x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4815,7 +4815,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 #4 (id=215347)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40
-Description      : While active, all single-target healing spells also damage a nearby enemy target for $s3% of the healing done, and all single-target healing and damage spells and abilities also heal a nearby friendly target based on the amount done, $s3% for heals, $s4% for damage spells.
+Description      : While active, $?s85101[all single-target healing spells also damage a nearby enemy target for $s3% of the healing done, and ][]all single-target healing and damage spells and abilities also heal a nearby friendly target based on the amount done, $s3% for heals, $s4% for damage spells.
 Tooltip          : Single-target damage and healing done also heals a nearby target and single-target healing done also damages a nearby target.
 
 Name             : Nature's Vigil (id=124988) [Spell Family (7)] 

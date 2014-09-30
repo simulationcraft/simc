@@ -3453,7 +3453,7 @@ struct touch_of_chaos_t: public warlock_spell_t
 
     chaos_wave               -> background = true;
     chaos_wave               -> base_costs[RESOURCE_DEMONIC_FURY] = 0;
-
+    base_tick_time = timespan_t::from_seconds( 2.0 ); //FIX: It got lost in some dbc update. Somebody should try to find it correctly in the dbc.
   }
 
   virtual void impact( action_state_t* s )

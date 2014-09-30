@@ -1022,7 +1022,7 @@ Attributes       : ....x... ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
 Effects          :
 #1 (id=21513)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 127
+                   Base Value: 8 | Scaled Value: 8 | Misc Value: 127
 #2 (id=21514)    : Apply Aura (6) | Dummy (4)
                    Base Value: 12 | Scaled Value: 12
 Description      : $?s159548[][Reduce damage taken by $s1% for $d. ]While Ardent Defender is active, the next attack that would otherwise kill you will instead cause you to be healed for $s2% of your maximum health.$?s159548[ If this effect expires without triggering, its cooldown will be reset to $159548s1 sec.][]

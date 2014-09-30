@@ -35,6 +35,7 @@ actions+=/arcane_torrent
 actions+=/potion,name=draenic_armor_potion,if=buff.potion.down&buff.blood_shield.down&!unholy&!frost
 actions+=/antimagic_shell
 actions+=/conversion,if=!buff.conversion.up&runic_power>50&health.pct<90
+actions+=/lichborne,if=health.pct<90
 actions+=/death_strike,if=incoming_damage_5s>=health.max*0.65
 actions+=/army_of_the_dead,if=buff.bone_shield.down&buff.dancing_rune_weapon.down&buff.icebound_fortitude.down&buff.vampiric_blood.down
 actions+=/bone_shield,if=buff.army_of_the_dead.down&buff.bone_shield.down&buff.dancing_rune_weapon.down&buff.icebound_fortitude.down&buff.vampiric_blood.down
@@ -71,7 +72,7 @@ finger1=primal_gladiators_signet_of_cruelty,id=111219,enchant=gift_of_multistrik
 finger2=primal_gladiators_signet_of_accuracy,id=111220,enchant=gift_of_multistrike
 trinket1=primal_gladiators_medallion_of_cruelty,id=111229
 trinket2=primal_gladiators_insignia_of_victory,id=111233
-main_hand=primal_gladiators_decapitator,id=111202,enchant=rune_of_stoneskin_gargoyle
+main_hand=primal_gladiators_decapitator,id=111202,enchant=rune_of_the_stoneskin_gargoyle
 
 # Gear Summary
 # gear_strength=2378

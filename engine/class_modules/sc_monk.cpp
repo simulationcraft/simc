@@ -91,9 +91,6 @@ public:
 
   double track_chi_consumption;
 
-  attack_t* storm_earth_fire_one;
-  attack_t* storm_earth_fire_two;
-
   struct buffs_t
   {
     absorb_buff_t* guard;
@@ -360,8 +357,6 @@ public:
   {
     // actives
     _active_stance = FIERCE_TIGER;
-    storm_earth_fire_one = 0;
-    storm_earth_fire_two = 0;
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
@@ -927,62 +922,6 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
     return m;
   }
 };
-
-// trigger_storm_earth_and_fire =================================================
-
-static void trigger_storm_earth_and_fire( action_state_t* s )
-{
-  struct storm_earth_and_fire_t: public monk_melee_attack_t
-  {
-    double pct_damage;
-    storm_earth_and_fire_t( monk_t* p ):
-      monk_melee_attack_t( "sweeping_strikes_attack", p, p -> spec.storm_earth_and_fire )
-    {
-      may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
-      weapon_multiplier = 0;
-    }
-
-    double target_armor( player_t* ) const
-    {
-      return 0; // Armor accounted for in previous attack.
-    }
-
-    double composite_player_multiplier() const
-    {
-      return 1; // No double dipping
-    }
-
-    void execute()
-    {
-      monk_melee_attack_t::execute();
-    }
-  };
-
-  monk_t* p = debug_cast<monk_t*>( s -> action -> player );
-
-  if ( !p -> buff.storm_earth_and_fire -> check() )
-    return;
-
-  if ( !s -> action -> weapon )
-    return;
-
-  if ( !s -> action -> result_is_hit( s -> result ) )
-    return;
-
-  if ( s -> action -> sim -> active_enemies == 1 )
-    return;
-
-  p -> storm_earth_fire_one -> execute_state = s -> action -> execute_state;
-  p -> storm_earth_fire_one -> execute();
-
-  if ( p -> buff.storm_earth_and_fire -> current_stack == 2 )
-  {
-    p -> storm_earth_fire_two -> execute_state = s -> action -> execute_state;
-    p -> storm_earth_fire_two -> execute();
-  }
-
-  return;
-}
 
 // ==========================================================================
 // Jab
