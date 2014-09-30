@@ -617,7 +617,7 @@ public:
     if ( !ab::ready() )
       return false;
 
-    if ( p() -> current.distance_to_move > melee_range && melee_range != -1 ) 
+    if ( p() -> current.distance_to_move > melee_range && melee_range != -1 )
       // -1 melee range implies that the ability can be used at any distance from the target. Battle shout, stance swaps, etc.
       return false;
 
@@ -1026,10 +1026,14 @@ void warrior_attack_t::impact( action_state_t* s )
 
   if ( s -> result_amount > 0 )
   {
-    if ( p() -> buff.bloodbath -> up() )
-      trigger_bloodbath_dot( s -> target, s -> result_amount );
     if ( ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) ) )
     {
+      if ( p() -> buff.bloodbath -> up() )
+        trigger_bloodbath_dot( s -> target, s -> result_amount );
+
+      if ( p() -> buff.sweeping_strikes -> up() && !aoe )
+        trigger_sweeping_strikes( s );
+
       if ( p() -> talents.second_wind -> ok() )
       {
         if ( p() -> resources.current[RESOURCE_HEALTH] < p() -> resources.max[RESOURCE_HEALTH] * 0.35 )
@@ -1045,30 +1049,10 @@ void warrior_attack_t::impact( action_state_t* s )
         p() -> active_rallying_cry_heal -> base_dd_max = s -> result_amount;
         p() -> active_rallying_cry_heal -> execute();
       }
-
-      if ( !proc ) // No procs allowed.
-      {
-        if ( p() -> buff.sweeping_strikes -> up() && !aoe )
-          trigger_sweeping_strikes( s );
-        if ( special )
-        {
-          if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> specialization() == WARRIOR_ARMS )
-          {
-            if ( td( s -> target ) -> debuffs_colossus_smash -> up() )
-            {
-              if ( this ->  weapon == &( p() -> main_hand_weapon ) && this -> id != 12328 ) // Doesn't proc from sweeping strikes.
-              {
-                p() -> resource_gain( RESOURCE_RAGE,
-                                      p() -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).base_value(),
-                                      p() -> gain.tier16_2pc_melee );
-              }
-            }
-          }
-        }
-      }
     }
   }
 }
+
 
 // Melee Attack =============================================================
 
@@ -1358,7 +1342,8 @@ struct bloodthirst_t: public warrior_attack_t
 
     weapon = &( p -> main_hand_weapon );
     bloodthirst_heal = new bloodthirst_heal_t( p );
-    weapon_multiplier += p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 2 ).percent();
+    weapon_multiplier *= 1.0 +  p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 2 ).percent();
+    weapon_multiplier *= 1.0 +  p -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
   }
 
   double composite_crit() const
@@ -2067,7 +2052,8 @@ struct mortal_strike_t: public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
 
     weapon = &( p -> main_hand_weapon );
-    weapon_multiplier += p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
+    weapon_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
+    weapon_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s )
