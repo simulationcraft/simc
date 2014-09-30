@@ -8,7 +8,7 @@
 # * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
 # * EXCEPTION: 690 Legendary Ring can be used. (accessibility)
 talent_format=armory
-mage=Mage_Arcane_T17H
+mage="Mage_Arcane_T17H"
 level=100
 race=troll
 spec=arcane
@@ -31,7 +31,7 @@ trinket2=darmacs_unstable_talisman,id=113948,bonus_id=566
 main_hand=inferno-flame_staff,id=113869,bonus_id=566,enchant=mark_of_warsong
 save=Mage_Arcane_T17H.simc
 
-mage=Mage_Fire_T17H
+mage="Mage_Fire_T17H"
 level=100
 race=troll
 spec=fire
@@ -54,7 +54,7 @@ trinket2=blackiron_micro_crucible,id=113984,bonus_id=566
 main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant=mark_of_the_thunderlord
 save=Mage_Fire_T17H.simc
 
-mage=Mage_Frost_T17H
+mage="Mage_Frost_T17H"
 level=100
 race=troll
 spec=frost

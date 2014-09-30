@@ -10,7 +10,7 @@
 
 talent_format=armory
 
-deathknight="Death_Knight_Unholy_T17H”
+deathknight="Death_Knight_Unholy_T17H"
 level=100
 race=orc
 spec=unholy
@@ -35,7 +35,7 @@ main_hand=kagrazs_burning_blade,id=113913,bonus_id=566,enchant=rune_of_the_falle
 
 save=Death_Knight_Unholy_T17H.simc
 
-deathknight="Death_Knight_Frost_2h_T17H”
+deathknight="Death_Knight_Frost_2h_T17H"
 level=100
 race=orc
 spec=frost
@@ -60,7 +60,7 @@ trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=566
 main_hand=kagrazs_burning_blade,id=113913,bonus_id=566,enchant=rune_of_the_fallen_crusader
 save=Death_Knight_Frost_2h_T17H.simc
 
-deathknight="Death_Knight_Frost_1h_T17H”
+deathknight="Death_Knight_Frost_1h_T17H"
 level=100
 race=orc
 spec=frost
@@ -86,7 +86,7 @@ main_hand=kromogs_brutal_fist,id=113927,bonus_id=566,enchant=rune_of_the_fallen_
 off_hand=kromogs_brutal_fist,id=113927,bonus_id=566,enchant=rune_of_razorice
 save=Death_Knight_Frost_1h_T17H.simc
 
-deathknight="Death_Knight_Blood_T17H”
+deathknight="Death_Knight_Blood_T17H"
 level=100
 race=tauren
 role=tank

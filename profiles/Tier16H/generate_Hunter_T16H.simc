@@ -3,7 +3,7 @@
 talent_format=armory
 
 # BM
-hunter=Hunter_BM_T16H
+hunter="Hunter_BM_T16H"
 level=90
 race=orc
 spec=beast_mastery
@@ -29,7 +29,7 @@ trinket1=assurance_of_consequence,id=105472,upgrade=4
 save=Hunter_BM_T16H.simc
 
 # MM
-hunter=Hunter_MM_T16H
+hunter="Hunter_MM_T16H"
 level=90
 race=orc
 spec=marksmanship
@@ -55,7 +55,7 @@ main_hand=hiseks_reserve_longbow,id=105623,upgrade=4,gems=10agi_4agi,enchant=lor
 save=Hunter_MM_T16H.simc
 
 # SV
-hunter=Hunter_SV_T16H
+hunter="Hunter_SV_T16H"
 level=90
 race=orc
 spec=survival

@@ -1,5 +1,5 @@
 talent_format=armory
-mage=Mage_Arcane_T16H
+mage="Mage_Arcane_T16H"
 level=90
 race=troll
 spec=arcane
@@ -24,7 +24,7 @@ main_hand=immaculately_preserved_wand,id=105594,upgrade=4,gems=10haste_10mastery
 off_hand=revelations_of_yshaarj,id=105650,upgrade=4,gems=10haste_10mastery_4int,enchant=11int
 save=Mage_Arcane_T16H.simc
 
-mage=Mage_Fire_T16H
+mage="Mage_Fire_T16H"
 level=90
 race=troll
 spec=fire
@@ -50,7 +50,7 @@ main_hand=immaculately_preserved_wand,id=105594,upgrade=4,gems=10haste_10mastery
 off_hand=revelations_of_yshaarj,id=105650,upgrade=4,gems=10haste_10mastery_4int,enchant=8int
 save=Mage_Fire_T16H.simc
 
-mage=Mage_Frost_T16H
+mage="Mage_Frost_T16H"
 level=90
 race=troll
 spec=frost

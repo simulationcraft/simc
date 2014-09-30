@@ -10,7 +10,7 @@
 
 talent_format=armory
 # BM
-hunter=Hunter_BM_T17H
+hunter="Hunter_BM_T17H"
 level=100
 race=orc
 spec=beast_mastery
@@ -35,7 +35,7 @@ main_hand=mouth_of_the_fury,id=113885,bonus_id=566,enchant=megawatt_filament
 save=Hunter_BM_T17H.simc
 
 # MM
-hunter=Hunter_MM_T17H
+hunter="Hunter_MM_T17H"
 level=100
 race=orc
 spec=marksmanship
@@ -60,7 +60,7 @@ main_hand=mouth_of_the_fury,id=113885,enchant=megawatt_filament,bonus_id=566
 save=Hunter_MM_T17H.simc
 
 # SV
-hunter=Hunter_SV_T17H
+hunter="Hunter_SV_T17H"
 level=100
 race=orc
 spec=survival
