@@ -517,8 +517,6 @@ option_db_t::option_db_t()
 
     prefix += "/";
 
-    auto_path.push_back( prefix + "PreRaid" );
-
     // Add profiles for each tier, except pvp
     for ( int i = 0; i < ( N_TIER - 1 ); i++ )
     {
@@ -526,7 +524,7 @@ option_db_t::option_db_t()
       auto_path.push_back( prefix + "Tier" + util::to_string( MIN_TIER + i ) + "H" );
       auto_path.push_back( prefix + "Tier" + util::to_string( MIN_TIER + i ) + "N" );
       auto_path.push_back( prefix + "Tier" + util::to_string( MIN_TIER + i ) + "M" );
-      auto_path.push_back( prefix + "Tier" + util::to_string( MIN_TIER + i ) + "PR" );
+      auto_path.push_back( prefix + "Tier" + util::to_string( MIN_TIER + i ) + "P" );
     }
   }
 
