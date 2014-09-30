@@ -435,8 +435,9 @@ struct rogue_t : public player_t
   void trigger_shadow_reflection( const action_state_t* );
   void trigger_combo_point_gain( const action_state_t*, int = -1, gain_t* gain = 0 );
   void spend_combo_points( const action_state_t* );
-  void trigger_t17_4pc_combat( const action_state_t* );
+  bool trigger_t17_4pc_combat( const action_state_t* );
   void trigger_t17_4pc_subtlety( const action_state_t* );
+  void trigger_anticipation_replenish( const action_state_t* );
 
   target_specific_t<rogue_td_t*> target_data;
 
@@ -1256,12 +1257,11 @@ void rogue_attack_t::consume_resource()
 {
   melee_attack_t::consume_resource();
 
-  p() -> spend_combo_points( execute_state );
+  if ( ! p() -> buffs.shadow_strikes -> up() )
+    p() -> spend_combo_points( execute_state );
 
   if ( result_is_miss( execute_state -> result ) && resource_consumed > 0 )
     p() -> trigger_energy_refund( execute_state );
-
-  p() -> trigger_relentless_strikes( execute_state );
 }
 
 // rogue_attack_t::execute ==================================================
@@ -1270,13 +1270,22 @@ void rogue_attack_t::execute()
 {
   melee_attack_t::execute();
 
+  // T17 4PC combat has to occur before combo point gain, so we can get
+  // Ruthlessness to function properly with Anticipation
+  bool combat_t17_4pc_triggered = p() -> trigger_t17_4pc_combat( execute_state );
+
   p() -> trigger_auto_attack( execute_state );
   p() -> trigger_main_gauche( execute_state );
   p() -> trigger_shadow_reflection( execute_state );
   p() -> trigger_ruthlessness( execute_state );
   p() -> trigger_combo_point_gain( execute_state );
-  p() -> trigger_t17_4pc_combat( execute_state );
-  p() -> trigger_t17_4pc_subtlety( execute_state );
+
+  // Anticipation only refreshes Combo Points, if the Combat and Subtlety T17
+  // 4pc set bonuses are not in effect
+  if ( ! combat_t17_4pc_triggered && ! p() -> buffs.shadow_strikes -> check() )
+    p() -> trigger_anticipation_replenish( execute_state );
+
+  p() -> trigger_relentless_strikes( execute_state );
 
   if ( harmful && stealthed() )
   {
@@ -1285,6 +1294,9 @@ void rogue_attack_t::execute()
     else if ( ! p() -> buffs.subterfuge -> check() )
       p() -> buffs.subterfuge -> trigger();
   }
+
+  if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
+    p() -> buffs.shadow_strikes -> expire();
 }
 
 // rogue_attack_t::ready() ==================================================
@@ -3075,15 +3087,14 @@ void rogue_t::trigger_ruthlessness( const action_state_t* state )
   if ( ! state -> action -> result_is_hit( state -> result ) )
     return;
 
-  actions::rogue_attack_t* attack = debug_cast<actions::rogue_attack_t*>( state -> action );
-  if ( ! attack -> base_costs[ RESOURCE_COMBO_POINT ] )
+  if ( ! state -> action -> base_costs[ RESOURCE_COMBO_POINT ] )
     return;
 
   const actions::rogue_attack_state_t* s = actions::rogue_attack_t::cast_state( state );
   if ( s -> cp == 0 )
     return;
 
-  if ( attack -> harmful )
+  if ( state -> action -> harmful )
   {
     timespan_t reduction = spell.ruthlessness -> effectN( 3 ).time_value() * s -> cp;
 
@@ -3094,14 +3105,7 @@ void rogue_t::trigger_ruthlessness( const action_state_t* state )
 
   double cp_chance = spell.ruthlessness -> effectN( 1 ).pp_combo_points() * s -> cp / 100.0;
   if ( rng().roll( cp_chance ) )
-  {
-    // Ruthlessness does not refund a combo point, if Anticipation has
-    // refreshed combo points to max upon using a finisher
-    if ( resources.current[ RESOURCE_COMBO_POINT ] < resources.max[ RESOURCE_COMBO_POINT ] )
-      trigger_combo_point_gain( state, spell.ruthlessness -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(), gains.ruthlessness );
-    else
-      procs.combo_points_wasted -> occur();
-  }
+    trigger_combo_point_gain( state, spell.ruthlessness -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(), gains.ruthlessness );
 
   double energy_chance = spell.ruthlessness -> effectN( 2 ).pp_combo_points() * s -> cp / 100.0;
   if ( rng().roll( energy_chance ) )
@@ -3284,6 +3288,28 @@ void rogue_t::trigger_combo_point_gain( const action_state_t* state, int cp_over
   assert( resources.current[ RESOURCE_COMBO_POINT ] <= 5 );
 }
 
+void rogue_t::trigger_anticipation_replenish( const action_state_t* state )
+{
+  if ( ! buffs.anticipation -> check() )
+    return;
+
+  if ( state -> action -> base_costs[ RESOURCE_COMBO_POINT ] == 0 )
+    return;
+
+  if ( ! state -> action -> result_is_hit( state -> result ) )
+    return;
+
+  if ( ! state -> action -> harmful )
+    return;
+
+  if ( sim -> log )
+    sim -> out_log.printf( "%s replenishes %d combo_points through anticipation",
+        name(), buffs.anticipation -> check() );
+
+  resource_gain( RESOURCE_COMBO_POINT, buffs.anticipation -> check(), 0, state ? state -> action : 0 );
+  buffs.anticipation -> expire();
+}
+
 void rogue_t::spend_combo_points( const action_state_t* state )
 {
   if ( state -> action -> base_costs[ RESOURCE_COMBO_POINT ] == 0 )
@@ -3298,42 +3324,32 @@ void rogue_t::spend_combo_points( const action_state_t* state )
   state -> action -> stats -> consume_resource( RESOURCE_COMBO_POINT, resources.current[ RESOURCE_COMBO_POINT ] );
   resource_loss( RESOURCE_COMBO_POINT, resources.current[ RESOURCE_COMBO_POINT ], 0, state ? state -> action : 0 );
 
-  if ( state -> action -> harmful && buffs.anticipation -> stack() > 0 )
-  {
-    if ( sim -> log )
-      sim -> out_log.printf( "%s replenishes %d combo_points through anticipation",
-          name(), buffs.anticipation -> check() );
-
-    resource_gain( RESOURCE_COMBO_POINT, buffs.anticipation -> check(), 0, state ? state -> action : 0 );
-    buffs.anticipation -> expire();
-  }
-
   if ( event_premeditation )
     core_event_t::cancel( event_premeditation );
 }
 
-void rogue_t::trigger_t17_4pc_combat( const action_state_t* state )
+bool rogue_t::trigger_t17_4pc_combat( const action_state_t* state )
 {
   using namespace actions;
 
   if ( ! sets.has_set_bonus( ROGUE_COMBAT, T17, B4 ) )
-    return;
+    return false;
 
-  rogue_attack_t* attack = state ? debug_cast<rogue_attack_t*>( state -> action ) : 0;
-  if ( attack -> base_costs[ RESOURCE_COMBO_POINT ] == 0 )
-    return;
+  if ( state -> action -> base_costs[ RESOURCE_COMBO_POINT ] == 0 )
+    return false;
 
-  if ( ! attack -> harmful )
-    return;
+  if ( ! state -> action -> harmful )
+    return false;
 
-  if ( ! attack -> result_is_hit( state -> result ) )
-    return;
+  if ( ! state -> action -> result_is_hit( state -> result ) )
+    return false;
 
   if ( ! rng().roll( sets.set( ROGUE_COMBAT, T17, B4 ) -> proc_chance() ) )
-    return;
+    return false;
 
   trigger_combo_point_gain( state, buffs.deceit -> data().effectN( 2 ).base_value(), gains.deceit );
   buffs.deceit -> trigger();
+  return true;
 }
 
 void rogue_t::trigger_t17_4pc_subtlety( const action_state_t* state )
@@ -3343,14 +3359,13 @@ void rogue_t::trigger_t17_4pc_subtlety( const action_state_t* state )
   if ( ! sets.has_set_bonus( ROGUE_SUBTLETY, T17, B4 ) )
     return;
 
-  rogue_attack_t* attack = state ? debug_cast<rogue_attack_t*>( state -> action ) : 0;
-  if ( attack -> base_costs[ RESOURCE_COMBO_POINT ] == 0 )
-    return;
-
-  if ( ! attack -> result_is_hit( state -> result ) )
-    return;
-
   if ( ! buffs.shadow_strikes -> check() )
+    return;
+
+  if ( state -> action -> base_costs[ RESOURCE_COMBO_POINT ] == 0 )
+    return;
+
+  if ( ! state -> action -> result_is_hit( state -> result ) )
     return;
 
   trigger_combo_point_gain( state, buffs.shadow_strikes-> data().effectN( 1 ).base_value(), gains.shadow_strikes );
@@ -4847,10 +4862,6 @@ struct honor_among_thieves_callback_t : public dbc_proc_callback_t
     // doesn't proc it either .. except in WoD, the rogue's own autoattacks
     // can also proc HaT
     if ( a -> player != rogue && ( ! a -> special || a -> repeating ) )
-      return;
-
-    // Doesn't proc from pets (only tested for hunter pets though)
-    if ( a -> player -> is_pet() )
       return;
 
     if ( rogue -> cooldowns.honor_among_thieves -> down() )
