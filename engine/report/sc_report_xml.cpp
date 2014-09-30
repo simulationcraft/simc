@@ -210,7 +210,7 @@ void print_xml_player_stats( xml_writer_t & writer, player_t * p )
                                 buffed_stats.attribute[ i ] );
   }
   print_xml_player_attribute( writer, "mastery_value",
-                              p -> cache.mastery_value(), p -> initial.stats.mastery_rating, buffed_stats.mastery_value );
+                              100 * p -> cache.mastery_value(), p -> initial.stats.mastery_rating, 100 * buffed_stats.mastery_value );
   print_xml_player_attribute( writer, "spellpower",
                               p -> cache.spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier(), p -> initial.stats.spell_power, buffed_stats.spell_power );
   print_xml_player_attribute( writer, "spellhit",
@@ -225,7 +225,7 @@ void print_xml_player_stats( xml_writer_t & writer, player_t * p )
                               p -> mana_regen_per_second(), 0, buffed_stats.manareg_per_second );
   print_xml_player_attribute( writer, "attackpower",
                               p -> cache.attack_power() * p -> composite_attack_power_multiplier(), p -> initial.stats.attack_power, buffed_stats.attack_power );
-  print_xml_player_attribute( writer, "attackhit",
+  print_xml_player_attribute( writer, " ",
                               100 * p -> cache.attack_hit(), p -> initial.stats.hit_rating, 100 * buffed_stats.attack_hit );
   print_xml_player_attribute( writer, "attackcrit",
                               100 * p -> cache.attack_crit(), p -> initial.stats.crit_rating, 100 * buffed_stats.attack_crit );
@@ -237,6 +237,14 @@ void print_xml_player_stats( xml_writer_t & writer, player_t * p )
                               100 * ( 1 / p -> cache.attack_haste() - 1 ), p -> initial.stats.haste_rating, 100 * ( 1 / buffed_stats.attack_haste - 1 ) );
   print_xml_player_attribute( writer, "attackspeed",
                               100 * ( 1 / p -> cache.attack_speed() - 1 ), p -> initial.stats.haste_rating, 100 * ( 1 / buffed_stats.attack_speed - 1 ) );
+  print_xml_player_attribute( writer, "multistrike",
+                              100 * p -> cache.multistrike(), p -> initial.stats.multistrike_rating, 100 * buffed_stats.multistrike );
+  print_xml_player_attribute( writer, "damage_versatility",
+                              100 * p -> cache.damage_versatility() , p -> initial.stats.versatility_rating, 100 * buffed_stats.damage_versatility );
+  print_xml_player_attribute( writer, "heal_versatility",
+                              100 * p -> cache.heal_versatility(), p -> initial.stats.versatility_rating, 100 * buffed_stats.heal_versatility );
+  print_xml_player_attribute( writer, "mitigation_versatility",
+                              100 * p -> cache.mitigation_versatility(), p -> initial.stats.versatility_rating, 100 * buffed_stats.mitigation_versatility );
   print_xml_player_attribute( writer, "armor",
                               p -> cache.armor(), p -> initial.stats.armor, buffed_stats.armor );
   print_xml_player_attribute( writer, "miss",
