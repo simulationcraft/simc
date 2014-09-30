@@ -54,6 +54,7 @@ Class            : Warrior
 Spell Level      : 3
 Range            : 8 - 25 yards
 Cooldown         : 20 seconds
+Charges          : 0 (20 seconds cooldown)
 Affecting spells : Glyph of Long Charge (58097), Glyph of Bull Rush (94372), Juggernaut (103826), Double Time (103827)
 Attributes       : ....x... ........ x.x..... .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -322,6 +323,7 @@ Class            : Protection Warrior
 Resource         : 60 Rage
 Spell Level      : 18
 Cooldown         : 1.5 seconds
+Charges          : 2 (12 seconds cooldown)
 Affecting spells : Unwavering Sentinel (29144), Bladestorm (46924), Item - Warrior T8 Protection 4P Bonus (64936), Item - Warrior T9 Tank 4P Bonus (Shield Block) (67273), Bastion of Defense (84608), Item - Warrior T14 Protection 4P Bonus (123147), Gladiator Stance (156291)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
@@ -4779,6 +4781,7 @@ Resource         : 20 Rage
 Spell Level      : 18
 Range            : 10 yards
 Cooldown         : 1.5 seconds
+Charges          : 2 (15 seconds cooldown)
 Affecting spells : Unwavering Sentinel (29144), Bladestorm (46924), Item - Warrior T8 Protection 4P Bonus (64936), Item - Warrior T9 Tank 4P Bonus (Shield Block) (67273), Bastion of Defense (84608), Item - Warrior T14 Protection 4P Bonus (123147), Gladiator Stance (156291)
 Attributes       : ....x... ........ x.x..... ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 

@@ -134,6 +134,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 300 seconds
+Charges          : 0 (300 seconds cooldown)
 Affecting spells : Clemency (105622), Lucidity (137288)
 Attributes       : ........ ........ x.x..... ........   ........ .......x ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -157,6 +158,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 120 seconds
+Charges          : 0 (120 seconds cooldown)
 Affecting spells : Clemency (105622), Lucidity (137288)
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -178,6 +180,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 25 seconds
+Charges          : 0 (25 seconds cooldown)
 Affecting spells : Clemency (105622), Item - Paladin T13 Protection 2P Bonus (Judgment) (105800), Lucidity (137288)
 Attributes       : ........ ........ x.x..... ........   ........ .......x .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -262,6 +265,7 @@ Spell Level      : 20
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 8 seconds
+Charges          : 1 (8 seconds cooldown)
 Affecting spells : Sacred Cleansing (53551), Guarded by the Light (53592), Lucidity (137288)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -285,6 +289,7 @@ Spell Level      : 80
 Range            : 40 yards
 Duration         : 12 seconds
 Cooldown         : 120 seconds
+Charges          : 0 (120 seconds cooldown)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
@@ -5274,6 +5279,7 @@ Resource         : 14.4% Base Mana (4608 @Level 100)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
+Charges          : 3 (10 seconds cooldown)
 Affecting spells : Sacred Shield Overridde (Holy) (148040)
 Attributes       : ........ ...x.... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

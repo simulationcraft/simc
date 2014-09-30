@@ -760,6 +760,7 @@ Class            : Hunter
 Spell Level      : 78
 Duration         : 5 seconds
 Cooldown         : 5 seconds
+Charges          : 2 (180 seconds cooldown)
 Affecting spells : Camouflage (51755), Glyph of Deterrence (56850), Item - Hunter T8 4P Bonus (64860), Glyph of Mirrored Blades (83495), Crouching Tiger, Hidden Chimaera (118675), Camouflage (119450)
 Attributes       : ....x... ........ x.x..... ........   ....x... ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

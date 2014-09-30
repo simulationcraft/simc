@@ -902,6 +902,7 @@ Rune Cost        : 1 Blood Rune
 Spell Level      : 64
 Power Gain       : 10 Runic Power
 Cooldown         : 1 seconds
+Charges          : 2 (40 seconds cooldown)
 Affecting spells : Item - Death Knight T15 Blood 2P Bonus (138195), Glyph of Rune Tap (159428), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 

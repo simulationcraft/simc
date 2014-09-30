@@ -241,6 +241,7 @@ Spell Level      : 7
 GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 15 seconds
+Charges          : 0 (15 seconds cooldown)
 Affecting spells : Arcane Power (12042), Reduced Blink GCD (44301), Glyph of Blink (56365), Tome of Blink (168795)
 Attributes       : ........ ........ x....... ........   ........ ..x....x ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2807,6 +2808,7 @@ Name             : Ice Floes (id=108839) [Spell Family (3)]
 Class            : Mage
 Spell Level      : 1
 Duration         : 15 seconds
+Charges          : 3 (20 seconds cooldown)
 Internal Cooldown: 0.1 seconds
 Stacks           : 1 initial, 3 maximum
 Proc Chance      : 100%
@@ -2850,6 +2852,7 @@ Resource         : 2% Base Mana (3200 @Level 100)
 Spell Level      : 24
 Range            : 40 yards
 GCD              : 1.5 seconds
+Charges          : 1 (8 seconds cooldown)
 Affecting spells : Glyph of Inferno Blast (89926), Improved Inferno Blast (157629), Item - Mage T17 Fire 2P Bonus (165458)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4613,6 +4616,7 @@ Class            : Mage
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
+Charges          : 2 (25 seconds cooldown)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
@@ -4636,6 +4640,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
+Charges          : 2 (25 seconds cooldown)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4660,6 +4665,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
+Charges          : 2 (25 seconds cooldown)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken

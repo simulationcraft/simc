@@ -1480,6 +1480,7 @@ Class            : Druid
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 15 seconds
+Charges          : 3 (20 seconds cooldown)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1790,6 +1791,7 @@ Spell Level      : 76
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 10 seconds
+Charges          : 3 (30 seconds cooldown)
 Affecting spells : Hurricane (16914), Astral Storm (106996), Item - Druid T14 Balance 2P Bonus (123082), Lucidity (137247)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2400,6 +2402,7 @@ Class            : Feral Guardian Druid
 Spell Level      : 56
 Duration         : 6 seconds
 Cooldown         : 12 seconds
+Charges          : 2 (180 seconds cooldown)
 Affecting spells : Item - Druid T8 Feral 4P Bonus (64754), Item - Druid T11 Feral 4P Bonus (90165), Glyph of Survival Instincts (114223), 
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2495,6 +2498,7 @@ Class            : Guardian Druid
 Resource         : 60 Rage
 Spell Level      : 10
 Cooldown         : 1.5 seconds
+Charges          : 2 (12 seconds cooldown)
 Affecting spells : Bear Form (5487), Item - Druid T13 Feral 2P Bonus (Savage Defense and Blood In The Water) (105725), Item - Druid T14 Guardian 4P Bonus (123087), Guardian of Elune (155578), 
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2800,6 +2804,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
+Charges          : 3 (30 seconds cooldown)
 Affecting spells : Item - Druid T11 Balance 4P Bonus (90163), Item - Druid T13 Balance 4P Bonus (Starsurge) (105717), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Lucidity (137247), Item - Druid T15 Balance 2P Bonus (138348), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Enhanced Starsurge (157232)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -3078,6 +3083,7 @@ Resource         : 15.8% Base Mana (5056 @Level 100)
 Spell Level      : 22
 Range            : 40 yards
 GCD              : 1.5 seconds
+Charges          : 1 (8 seconds cooldown)
 Affecting spells : Lucidity (137247)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3636,6 +3642,7 @@ Class            : Druid
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 15 seconds
+Charges          : 3 (20 seconds cooldown)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3654,6 +3661,7 @@ Class            : Druid
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 15 seconds
+Charges          : 3 (20 seconds cooldown)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3672,6 +3680,7 @@ Class            : Druid
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 15 seconds
+Charges          : 3 (20 seconds cooldown)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5986,6 +5995,7 @@ Spell Level      : 76
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 10 seconds
+Charges          : 3 (30 seconds cooldown)
 Affecting spells : Hurricane (16914), Astral Storm (106996), Item - Druid T14 Balance 2P Bonus (123082), Lucidity (137247)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 

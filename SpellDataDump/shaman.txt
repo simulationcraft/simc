@@ -3222,6 +3222,7 @@ Resource         : 16.4% Base Mana (5247 @Level 100)
 Spell Level      : 18
 Range            : 40 yards
 GCD              : 1.5 seconds
+Charges          : 1 (8 seconds cooldown)
 Affecting spells : Lucidity (137326), Echo of the Elements (159105), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

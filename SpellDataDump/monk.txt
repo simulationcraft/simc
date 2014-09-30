@@ -885,6 +885,7 @@ Resource         : 2 Chi
 Spell Level      : 56
 Range            : 5 yards
 GCD              : 1.5 seconds
+Charges          : 1 (8 seconds cooldown)
 Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Rising Sun Kick (130320), Focus and Harmony (154555), Pool of Mists (173841)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1010,6 +1011,7 @@ Name             : Roll (id=109132) [Spell Family (53)]
 Class            : Monk
 Spell Level      : 5
 Cooldown         : 0.8 seconds
+Charges          : 2 (20 seconds cooldown)
 Affecting spells : Celerity (115173), Rapid Rolling (147364), Enhanced Roll (157361), 
 Attributes       : ....x... ........ x......x ........   .....x.. ..x..... .x...... ....x... 
                  : ........ ........ ........ ........   ..x..... .....x.. ........ ........ 
@@ -1063,6 +1065,7 @@ Name             : Chi Torpedo (Talent) (id=115008) [Spell Family (53)]
 Class            : Monk
 Spell Level      : 75
 Duration         : 1.1 seconds
+Charges          : 2 (20 seconds cooldown)
 Affecting spells : Celerity (115173), Rapid Rolling (147364), Enhanced Roll (157361), 
 Attributes       : ....x... ........ x......x ........   .....x.. ..x..... .x...... ....x... 
                  : ........ ........ ........ ........   ..x..... .....x.. ........ ........ 
@@ -1325,6 +1328,7 @@ Spell Level      : 24
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
+Charges          : 1 (8 seconds cooldown)
 Affecting spells : Thunder Focus Tea (116680), Lucidity (137331), Improved Renewing Mist (157398), Pool of Mists (173841)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ .x...... ........ ..x...x. 
@@ -1532,6 +1536,7 @@ Resource         : 2 Chi
 Spell Level      : 26
 Duration         : 30 seconds
 Cooldown         : 30 seconds
+Charges          : 0 (30 seconds cooldown)
 Affecting spells : Item - Monk T14 Brewmaster 4P Bonus (123159), Glyph of Guard (123401), Improved Guard (157363)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1686,6 +1691,7 @@ Description      : Increases your maximum Chi by $s1, your Energy regeneration b
 Name             : Chi Brew (id=115399) [Scaling Spell (5), Spell Family (53)] 
 Class            : Monk
 Spell Level      : 1
+Charges          : 2 (60 seconds cooldown)
 Affecting spells : Spinning Crane Kick (101546)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1709,6 +1715,7 @@ Resource         : 2.6% Base Mana (4160 @Level 100) w/ Stance of the Spirited Cr
 Spell Level      : 20
 Range            : 40 yards
 GCD              : 1.5 seconds
+Charges          : 1 (8 seconds cooldown)
 Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Internal Medicine (115451), Lucidity (137331)
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -3062,6 +3069,7 @@ GCD              : 1 seconds
 Velocity         : 30 yards/sec
 Duration         : 15 seconds
 Cooldown         : 8 seconds
+Charges          : 0 (8 seconds cooldown)
 Affecting spells : Glyph of Keg Smash (159495)
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

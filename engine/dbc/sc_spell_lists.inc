@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 18935
+// Class based active abilities, wow build 18950
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -28,7 +28,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warrior
   {
-    // General tree, 20 abilities
+    // General tree, 23 abilities
     {
         6673, // Battle Shout
         2457, // Battle Stance
@@ -44,9 +44,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         3411, // Intervene
         5246, // Intimidating Shout
         6552, // Pummel
+      156287, // Ravager
        64382, // Shattering Throw
       112048, // Shield Barrier
+      176318, // Siegebreaker Off-Hand
        23920, // Spell Reflection
+      145585, // Storm Bolt Off-Hand
          355, // Taunt
       175710, // Unleashed Rage
        34428, // Victory Rush
@@ -1004,7 +1007,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (28)
 
-// Talent tree specialization abilities, wow build 18935
+// Talent tree specialization abilities, wow build 18950
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1944,7 +1947,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 18935
+// Class mastery abilities, wow build 18950
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2167,7 +2170,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 18935
+// Racial abilities, wow build 18950
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2890,7 +2893,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (41)
 
-// Glyph spells for classes, wow build 18935
+// Glyph spells for classes, wow build 18950
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3530,7 +3533,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 18935
+// Tier item set bonuses for class, wow build 18950
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
     {
@@ -3565,7 +3568,7 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
     },
     // Tier 16 bonuses (4 spells)
     {
-      144436, // Battleplate of the Prehistoric Marauder - 2 Piece Bonus (Item - Warrior T16 DPS 2P Bonus)
+      60174, // Battleplate of the Prehistoric Marauder - 2 Piece Bonus (Mortal Strike and Bloodthirst Damage Up)
       144441, // Battleplate of the Prehistoric Marauder - 4 Piece Bonus (Item - Warrior T16 DPS 4P Bonus)
       144502, // Plate of the Prehistoric Marauder - 4 Piece Bonus (Item - Warrior T16 Protection 4P Bonus)
       144503, // Plate of the Prehistoric Marauder - 2 Piece Bonus (Item - Warrior T16 Protection 2P Bonus)
@@ -3955,7 +3958,7 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
 
 #define SET_BONUS_DATA_SIZE (543)
 
-// Set bonus data, wow build 18935
+// Set bonus data, wow build 18950
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,  1230,    0,   2,   1,                { 0 },    2,   71, 165636, { 111239, 111240, 111241, 111242, 111243,  0 } },
@@ -4401,7 +4404,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Vestments of the Haunted Forest"            ,  1154,   15,   2,  11,           { 105, 0 },    1,    0, 138284, {  95240,  95241,  95242,  95243,  95244,  0 } },
   //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Vestments of the Haunted Forest"            ,  1154,   15,   4,  11,           { 105, 0 },    1,    0, 138286, {  95240,  95241,  95242,  95243,  95244,  0 } },
-  { "Battleplate of the Prehistoric Marauder"    ,  1180,   16,   2,   1,      {  71,  72, 0 },    2,    0, 144436, {  99197,  99198,  99199,  99200,  99206,  0 } },
+  { "Battleplate of the Prehistoric Marauder"    ,  1180,   16,   2,   1,      {  71,  72, 0 },    2,    0,  60174, {  99197,  99198,  99199,  99200,  99206,  0 } },
   { "Battleplate of the Prehistoric Marauder"    ,  1180,   16,   4,   1,      {  71,  72, 0 },    2,    0, 144441, {  99197,  99198,  99199,  99200,  99206,  0 } },
   { "Plate of the Prehistoric Marauder"          ,  1179,   16,   2,   1,           {  73, 0 },    0,    0, 144503, {  99195,  99196,  99201,  99202,  99203,  0 } },
   { "Plate of the Prehistoric Marauder"          ,  1179,   16,   4,   1,           {  73, 0 },    0,    0, 144502, {  99195,  99196,  99201,  99202,  99203,  0 } },
@@ -4452,8 +4455,8 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Vestments of the Shattered Vale"            ,  1198,   16,   2,  11,           { 105, 0 },    1,    0, 144869, {  99171,  99172,  99173,  99178,  99185,  0 } },
   { "Vestments of the Shattered Vale"            ,  1198,   16,   4,  11,           { 105, 0 },    1,    0, 144875, {  99171,  99172,  99173,  99178,  99185,  0 } },
   //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
-  { "Blackhand's Battlegear"                     ,  1242,   17,   2,   1,                { 0 },    2,   71, 165336, { 115580, 115581, 115582, 115583, 115584,  0 } },
-  { "Blackhand's Battlegear"                     ,  1242,   17,   4,   1,                { 0 },    2,   71, 165345, { 115580, 115581, 115582, 115583, 115584,  0 } },
+  { "Blackhand's Battlegear"                     ,  1242,   17,   2,   1,                { 0 },    2,   71, 165345, { 115580, 115581, 115582, 115583, 115584,  0 } },
+  { "Blackhand's Battlegear"                     ,  1242,   17,   4,   1,                { 0 },    2,   71, 165336, { 115580, 115581, 115582, 115583, 115584,  0 } },
   { "Blackhand's Battlegear"                     ,  1242,   17,   2,   1,                { 0 },    2,   72, 165337, { 115580, 115581, 115582, 115583, 115584,  0 } },
   { "Blackhand's Battlegear"                     ,  1242,   17,   4,   1,                { 0 },    2,   72, 165349, { 115580, 115581, 115582, 115583, 115584,  0 } },
   { "Blackhand's Battlegear"                     ,  1242,   17,   2,   1,                { 0 },    0,   73, 165338, { 115580, 115581, 115582, 115583, 115584,  0 } },
@@ -4499,8 +4502,8 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Arcanoshatter Regalia"                      ,  1235,   17,   4,   8,                { 0 },    3,   62, 165476, { 115550, 115551, 115552, 115553, 115554,  0 } },
   { "Arcanoshatter Regalia"                      ,  1235,   17,   2,   8,                { 0 },    3,   63, 165458, { 115550, 115551, 115552, 115553, 115554,  0 } },
   { "Arcanoshatter Regalia"                      ,  1235,   17,   4,   8,                { 0 },    3,   63, 165459, { 115550, 115551, 115552, 115553, 115554,  0 } },
-  { "Arcanoshatter Regalia"                      ,  1235,   17,   2,   8,                { 0 },    3,   64, 165470, { 115550, 115551, 115552, 115553, 115554,  0 } },
-  { "Arcanoshatter Regalia"                      ,  1235,   17,   4,   8,                { 0 },    3,   64, 165469, { 115550, 115551, 115552, 115553, 115554,  0 } },
+  { "Arcanoshatter Regalia"                      ,  1235,   17,   2,   8,                { 0 },    3,   64, 165469, { 115550, 115551, 115552, 115553, 115554,  0 } },
+  { "Arcanoshatter Regalia"                      ,  1235,   17,   4,   8,                { 0 },    3,   64, 165470, { 115550, 115551, 115552, 115553, 115554,  0 } },
   { "Shadow Council's Garb"                      ,  1243,   17,   2,   9,                { 0 },    3,  265, 165448, { 115585, 115586, 115587, 115588, 115589,  0 } },
   { "Shadow Council's Garb"                      ,  1243,   17,   4,   9,                { 0 },    3,  265, 165449, { 115585, 115586, 115587, 115588, 115589,  0 } },
   //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
@@ -4526,7 +4529,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 
 #define PERK_SIZE (4)
 
-// Perk specialization abilities, wow build 18935
+// Perk specialization abilities, wow build 18950
 static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     {
@@ -4834,8 +4837,8 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   },
 };
 
-// Glyph properties, wow build 18935
-static glyph_property_data_t __glyph_property_data[500] = {
+// Glyph properties, wow build 18950
+static glyph_property_data_t __glyph_property_data[489] = {
   {   162,  54811 },
   {   163,  54812 },
   {   164, 114338 },
@@ -4956,17 +4959,14 @@ static glyph_property_data_t __glyph_property_data[500] = {
   {   364,  53299 },
   {   365,  19560 },
   {   366, 119464 },
-  {   368, 126095 },
   {   369,  19573 },
   {   371, 119407 },
-  {   391,  56808 },
   {   392,  56813 },
   {   393,  56800 },
   {   394,  56818 },
   {   396,  56806 },
   {   397,  56799 },
   {   398, 146625 },
-  {   399,  56803 },
   {   400,  56804 },
   {   401,  56812 },
   {   402, 125044 },
@@ -4975,7 +4975,6 @@ static glyph_property_data_t __glyph_property_data[500] = {
   {   405,  56819 },
   {   406,  56801 },
   {   407, 146631 },
-  {   409, 146629 },
   {   410,  56810 },
   {   411,  56811 },
   {   431,  57856 },
@@ -5081,7 +5080,6 @@ static glyph_property_data_t __glyph_property_data[500] = {
   {   691, 119384 },
   {   692, 119462 },
   {   693,  63068 },
-  {   694,  63069 },
   {   695,  83495 },
   {   696,  63090 },
   {   697,  86209 },
@@ -5092,7 +5090,6 @@ static glyph_property_data_t __glyph_property_data[500] = {
   {   703,  63220 },
   {   704,  63222 },
   {   706,  63224 },
-  {   707,  63225 },
   {   708,  63229 },
   {   709, 119850 },
   {   710, 119866 },
@@ -5145,7 +5142,6 @@ static glyph_property_data_t __glyph_property_data[500] = {
   {   935, 114280 },
   {   936,  47180 },
   {   937, 125047 },
-  {   945,  96279 },
   {   948,  98397 },
   {   950, 101052 },
   {   961, 107906 },
@@ -5200,18 +5196,15 @@ static glyph_property_data_t __glyph_property_data[500] = {
   {  1047, 126152 },
   {  1048, 126174 },
   {  1049, 126094 },
-  {  1050, 126179 },
   {  1052, 126745 },
   {  1053, 126746 },
   {  1054, 131113 },
-  {  1055, 132005 },
   {  1058, 135557 },
   {  1060, 145722 },
   {  1061, 147707 },
   {  1062, 145529 },
   {  1063, 146645 },
   {  1065, 146648 },
-  {  1066, 146650 },
   {  1067, 146956 },
   {  1068, 146957 },
   {  1069, 147762 },
@@ -5220,7 +5213,6 @@ static glyph_property_data_t __glyph_property_data[500] = {
   {  1072, 146970 },
   {  1073, 146971 },
   {  1074, 146652 },
-  {  1075, 146653 },
   {  1076, 146654 },
   {  1077, 146656 },
   {  1078, 146656 },

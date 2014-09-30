@@ -981,6 +981,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
+Charges          : 2 (12 seconds cooldown)
 Affecting spells : Glyph of Conflagrate (56235), Item - Warlock T8 2P Bonus (64931), Mastery: Emberstorm (77220), Havoc (80240), Metamorphosis (103958), Fire and Brimstone (108683), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Charred Remains (157696), 
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3436,6 +3437,7 @@ Spell Level      : 19
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 1.3 yards/sec
+Charges          : 2 (15 seconds cooldown)
 Affecting spells : Glyph of Hand of Gul'dan (56248), Metamorphosis (103958), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -3848,6 +3850,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
+Charges          : 2 (12 seconds cooldown)
 Affecting spells : Glyph of Conflagrate (56235), Glyph of Hand of Gul'dan (56248), Item - Warlock T8 2P Bonus (64931), Mastery: Emberstorm (77220), Metamorphosis (103958), Fire and Brimstone (108683), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Charred Remains (157696), 
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4459,6 +4462,7 @@ Resource         : 5% Base Mana (8000 @Level 100)
 Spell Level      : 84
 Duration         : 20 seconds
 Cooldown         : 120 seconds
+Charges          : 0 (120 seconds cooldown)
 Affecting spells : Glyph of Dark Soul (56228), Metamorphosis (103958), Archimonde's Darkness (108505), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Glyph of Dark Soul (159665), 
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4482,6 +4486,7 @@ Resource         : 5% Base Mana (8000 @Level 100)
 Spell Level      : 84
 Duration         : 20 seconds
 Cooldown         : 120 seconds
+Charges          : 0 (120 seconds cooldown)
 Affecting spells : Glyph of Dark Soul (56228), Metamorphosis (103958), Archimonde's Darkness (108505), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Glyph of Dark Soul (159665), 
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4505,6 +4510,7 @@ Resource         : 5% Base Mana (8000 @Level 100)
 Spell Level      : 84
 Duration         : 20 seconds
 Cooldown         : 120 seconds
+Charges          : 0 (120 seconds cooldown)
 Affecting spells : Glyph of Dark Soul (56228), Metamorphosis (103958), Archimonde's Darkness (108505), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Glyph of Dark Soul (159665), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ...x.... ........   ........ ........ ........ ........ 
@@ -5423,6 +5429,7 @@ Spell Level      : 62
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
+Charges          : 2 (15 seconds cooldown)
 Affecting spells : Glyph of Hand of Gul'dan (56248), Metamorphosis (103958), Kil'jaeden's Cunning (137587), Dark Soul (138483)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
