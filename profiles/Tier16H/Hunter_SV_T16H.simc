@@ -51,31 +51,32 @@ actions+=/multishot,if=focus>67&active_enemies>1
 actions+=/focusing_shot
 actions+=/cobra_shot
 
-head=headguard_of_the_unblinking_vigil,id=99402,upgrade=2,gems=capacitive_primal_8agi_9agi
-neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=2
-shoulders=spaulders_of_the_unblinking_vigil,id=99404,upgrade=2,gems=8agi_8agi_6agi,enchant=10agi_5crit
-back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=8agi_3agi,enchant=9hit
-chest=tunic_of_the_unblinking_vigil,id=99405,upgrade=2,gems=8agi_8agi_8agi_9agi,enchant=4agi_4sta
-wrists=wristguards_of_ruination,id=105562,upgrade=2,enchant=9agi
-hands=gloves_of_the_unblinking_vigil,id=99406,upgrade=2,gems=8agi_8agi_6agi,enchant=9haste
-waist=arrowflight_girdle,id=105584,upgrade=2,gems=8agi_4agi_8crit_8agi_6agi
-legs=leggings_of_unabashed_anger,id=105454,upgrade=2,gems=4agi_8crit_4agi_8crit_6agi,enchant=14agi_8crit
-feet=puddle_punishers,id=105410,upgrade=2,gems=8agi_3mastery,enchant=7agi
-finger1=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=8agi_3crit
-finger2=ring_of_restless_energy,id=105558,upgrade=2,gems=8agi_3crit
-trinket1=assurance_of_consequence,id=105472,upgrade=2
-trinket2=haromms_talisman,id=105527,upgrade=2
-main_hand=hiseks_reserve_longbow,id=105623,upgrade=2,gems=8agi_3agi,enchant=lord_blastingtons_scope_of_doom
+head=headguard_of_the_unblinking_vigil,id=99402,upgrade=4,gems=capacitive_primal_10agi_11agi
+neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=4
+shoulders=spaulders_of_the_unblinking_vigil,id=99404,upgrade=4,gems=10agi_10agi_8agi,enchant=15agi_5crit
+back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=10agi_4agi,enchant=12crit
+chest=tunic_of_the_unblinking_vigil,id=99405,upgrade=4,gems=10agi_10agi_10agi_11agi,enchant=5all
+wrists=wristguards_of_ruination,id=105562,upgrade=4,enchant=12agi
+hands=gloves_of_the_unblinking_vigil,id=99406,upgrade=4,gems=10agi_10agi_8agi,enchant=11haste
+waist=arrowflight_girdle,id=105584,upgrade=4,gems=10agi_5agi_10crit_10agi_8agi
+legs=leggings_of_unabashed_anger,id=105454,upgrade=4,gems=5agi_10crit_5agi_10crit_8agi,enchant=19agi_11crit
+feet=puddle_punishers,id=105410,upgrade=4,gems=10agi_4mastery,enchant=9agi
+finger1=kilruks_band_of_ascendancy,id=105624,upgrade=4,gems=10agi_4crit
+finger2=ring_of_restless_energy,id=105558,upgrade=4,gems=10agi_4crit
+trinket1=assurance_of_consequence,id=105472,upgrade=4
+trinket2=haromms_talisman,id=105527,upgrade=4
+main_hand=hiseks_reserve_longbow,id=105623,upgrade=4,gems=10agi_4agi,enchant=lord_blastingtons_scope_of_doom
 
 # Gear Summary
-# gear_agility=1173
-# gear_stamina=1539
-# gear_hit_rating=9
-# gear_crit_rating=652
-# gear_haste_rating=535
-# gear_mastery_rating=173
-# gear_armor=750
-# gear_multistrike_rating=99
+# gear_strength=5
+# gear_agility=1320
+# gear_stamina=1663
+# gear_intellect=5
+# gear_crit_rating=724
+# gear_haste_rating=581
+# gear_mastery_rating=189
+# gear_armor=826
+# gear_multistrike_rating=107
 # meta_gem=capacitive_primal
 # set_bonus=tier16_2pc_melee=1
 # set_bonus=tier16_4pc_melee=1

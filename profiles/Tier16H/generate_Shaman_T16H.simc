@@ -14,20 +14,20 @@ talents=000103
 glyphs=chain_lightning
 head=headpiece_of_celestial_harmony,id=99332,upgrade=4,gems=sinister_primal_10haste_10mastery_11int
 neck=untainted_guardians_chain,id=105465,upgrade=4
-shoulders=shoulderwraps_of_celestial_harmony,id=99334,upgrade=4,gems=10haste_10mastery_10haste_10mastery_8int,enchant=13int_6crit
-back=xingho_breath_of_yulon,id=102246,upgrade=4,gems=10haste_10mastery_4int,enchant=11int,addon=goblin_glider
+shoulders=shoulderwraps_of_celestial_harmony,id=99334,upgrade=4,gems=10haste_10mastery_10haste_10mastery_8int,enchant=15int_5crit
+back=xingho_breath_of_yulon,id=102246,upgrade=4,gems=10haste_10mastery_4int,enchant=12int,addon=goblin_glider
 chest=hauberk_of_celestial_harmony,id=99344,upgrade=4,gems=10haste_10mastery_10haste_10mastery_10haste_10mastery_11int,enchant=5all
-wrists=bracers_of_the_pristine_purifier,id=105598,upgrade=4,enchant=11int
+wrists=bracers_of_the_pristine_purifier,id=105598,upgrade=4,enchant=12int
 hands=grips_of_tidal_force,id=105501,upgrade=4,gems=10haste_10mastery_20mastery_8int,enchant=11mastery
 waist=chitinlink_chain_belt,id=105597,upgrade=4,gems=10haste_10mastery_20mastery_8int
-legs=leggings_of_celestial_harmony,id=99333,upgrade=4,gems=20mastery_20mastery_8int,enchant=18int_10crit
+legs=leggings_of_celestial_harmony,id=99333,upgrade=4,gems=20mastery_20mastery_8int,enchant=19int_11crit
 feet=powderstained_totemic_treads,id=105618,upgrade=4,gems=10haste_10crit_4spi,enchant=9mastery
 finger1=signet_of_the_dinomancers,id=105606,upgrade=4,gems=10haste_10mastery_4haste
 finger2=iyyokuks_hereditary_seal,id=105628,upgrade=4
 trinket1=purified_bindings_of_immerseus,id=105422,upgrade=4
 trinket2=kardris_toxic_totem,id=105540,upgrade=4
 main_hand=kardris_scepter,id=105541,upgrade=4,gems=10haste_10mastery_4int,enchant=jade_spirit
-off_hand=revelations_of_yshaarj,id=105650,upgrade=4,gems=10haste_10mastery_4int,enchant=10int
+off_hand=revelations_of_yshaarj,id=105650,upgrade=4,gems=10haste_10mastery_4int,enchant=11int
 save=Shaman_Elemental_T16H.simc
 
 
@@ -44,13 +44,13 @@ talents=000202
 glyphs=chain_lightning/frost_shock
 head=helmet_of_celestial_harmony,id=99341,upgrade=4,gems=capacitive_primal_10mastery_10crit_11agi
 neck=immerseus_crystalline_eye,id=105407,upgrade=4
-shoulders=quarantine_shoulderguards,id=105455,upgrade=4,gems=20crit_20crit_8agi,enchant=13agi_6crit
-back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=10mastery_10crit_4agi,enchant=11crit
+shoulders=quarantine_shoulderguards,id=105455,upgrade=4,gems=20crit_20crit_8agi,enchant=15agi_5crit
+back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=10mastery_10crit_4agi,enchant=12crit
 chest=cuirass_of_celestial_harmony,id=99347,upgrade=4,gems=10haste_10crit_10haste_10crit_10haste_10crit_11agi,enchant=5all
-wrists=bracers_of_infinite_pipes,id=105617,upgrade=4,enchant=11agi
+wrists=bracers_of_infinite_pipes,id=105617,upgrade=4,enchant=12agi
 hands=grips_of_celestial_harmony,id=99340,upgrade=4,gems=10haste_10crit_10haste_10crit_8agi,enchant=11haste
 waist=cannoneers_multipocket_gunbelt,id=105486,upgrade=4,gems=10haste_10crit_10haste_10crit_20crit_8agi
-legs=legguards_of_celestial_harmony,id=99342,upgrade=4,gems=20crit_20crit_8agi,enchant=18agi_10crit
+legs=legguards_of_celestial_harmony,id=99342,upgrade=4,gems=20crit_20crit_8agi,enchant=19agi_11crit
 feet=ravagers_pathwalkers,id=105553,upgrade=4,gems=10haste_10crit_4agi,enchant=9agi
 finger1=swift_serpent_signet,id=105483,upgrade=4,gems=20crit_4crit
 finger2=kilruks_band_of_ascendancy,id=105624,upgrade=4,gems=10haste_10crit_4crit

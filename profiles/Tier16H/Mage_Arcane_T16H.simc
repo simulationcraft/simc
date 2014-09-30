@@ -98,35 +98,34 @@ actions.conserve+=/arcane_blast
 actions.conserve+=/ice_floes,moving=1
 actions.conserve+=/arcane_barrage,moving=1
 
-head=ebon_ritual_hood,id=105647,upgrade=2,gems=sinister_primal_8haste_8mastery_9int
-neck=untainted_guardians_chain,id=105465,upgrade=2
-shoulders=chronomancer_mantle,id=99401,upgrade=2,gems=8haste_8mastery_8haste_8mastery_6int,enchant=10int_5crit
-back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=4int_8mastery_3int,enchant=9crit
-chest=chronomancer_robes,id=99400,upgrade=2,gems=8haste_8mastery_8haste_8mastery_8haste_8mastery_9int,enchant=4all
-wrists=avools_ancestral_bracers,id=105591,upgrade=2,enchant=9int
-hands=chronomancer_gloves,id=99397,upgrade=2,gems=8haste_8mastery_8haste_8mastery_6int,enchant=9mastery
-waist=belt_of_ominous_trembles,id=105515,upgrade=2,gems=8haste_8mastery_8crit_8mastery_16mastery_6int
-legs=chronomancer_leggings,id=99399,upgrade=2,gems=16mastery_16mastery_6int,enchant=14int_8crit
-feet=boneinlaid_sandals,id=105493,upgrade=2,gems=16mastery_3hit,enchant=7mastery
-finger1=iyyokuks_hereditary_seal,id=105628,upgrade=2
-finger2=signet_of_the_dinomancers,id=105606,upgrade=2,gems=16mastery
-trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
-trinket2=kardris_toxic_totem,id=105540,upgrade=2
-main_hand=immaculately_preserved_wand,id=105594,upgrade=2,gems=8haste_8mastery_3int,enchant=jade_spirit
-off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=8haste_8mastery_3int,enchant=8int
+head=ebon_ritual_hood,id=105647,upgrade=4,gems=sinister_primal_10haste_10mastery_11int
+neck=untainted_guardians_chain,id=105465,upgrade=4
+shoulders=chronomancer_mantle,id=99401,upgrade=4,gems=10haste_10mastery_10haste_10mastery_8int,enchant=15int_5crit
+back=xingho_breath_of_yulon,id=102246,upgrade=4,gems=5int_10mastery_4int,enchant=12crit
+chest=chronomancer_robes,id=99400,upgrade=4,gems=10haste_10mastery_10haste_10mastery_10haste_10mastery_11int,enchant=5all
+wrists=avools_ancestral_bracers,id=105591,upgrade=4,enchant=12int
+hands=chronomancer_gloves,id=99397,upgrade=4,gems=10haste_10mastery_10haste_10mastery_8int,enchant=11mastery
+waist=belt_of_ominous_trembles,id=105515,upgrade=4,gems=10haste_10mastery_10crit_10mastery_20mastery_8int
+legs=chronomancer_leggings,id=99399,upgrade=4,gems=20mastery_20mastery_8int,enchant=19int_11crit
+feet=boneinlaid_sandals,id=105493,upgrade=4,gems=20mastery_4crit,enchant=9mastery
+finger1=iyyokuks_hereditary_seal,id=105628,upgrade=4
+finger2=signet_of_the_dinomancers,id=105606,upgrade=4,gems=20mastery_4haste
+trinket1=purified_bindings_of_immerseus,id=105422,upgrade=4
+trinket2=kardris_toxic_totem,id=105540,upgrade=4
+main_hand=immaculately_preserved_wand,id=105594,upgrade=4,gems=10haste_10mastery_4int,enchant=jade_spirit
+off_hand=revelations_of_yshaarj,id=105650,upgrade=4,gems=10haste_10mastery_4int,enchant=11int
 
 # Gear Summary
-# gear_strength=4
-# gear_agility=4
-# gear_stamina=1536
-# gear_intellect=1047
-# gear_spell_power=590
-# gear_hit_rating=3
-# gear_crit_rating=443
-# gear_haste_rating=446
-# gear_mastery_rating=736
-# gear_armor=350
-# gear_multistrike_rating=99
+# gear_strength=5
+# gear_agility=5
+# gear_stamina=1660
+# gear_intellect=1165
+# gear_spell_power=640
+# gear_crit_rating=487
+# gear_haste_rating=502
+# gear_mastery_rating=831
+# gear_armor=384
+# gear_multistrike_rating=107
 # meta_gem=sinister_primal
 # set_bonus=tier16_2pc_caster=1
 # set_bonus=tier16_4pc_caster=1

@@ -80,32 +80,31 @@ actions.single_target+=/frost_strike
 actions.single_target+=/plague_leech
 actions.single_target+=/empower_rune_weapon
 
-head=helmet_of_cyclopean_dread,id=99337,upgrade=2,gems=capacitive_primal_4str_8crit_9str
-neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
-shoulders=tusks_of_mannoroth,id=105642,upgrade=2,gems=4str_8crit_4str_8crit_4str_8crit_9str,enchant=10str_5crit
-back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=4str_8crit_3str,enchant=9crit
-chest=breastplate_of_cyclopean_dread,id=99335,upgrade=2,gems=4str_8crit_4str__8crit_4str_8crit_9str,enchant=4all
-wrists=bracers_of_blind_hatred,id=105456,upgrade=2,gems=16crit,enchant=9str
-hands=gauntlets_of_cyclopean_dread,id=99336,upgrade=2,gems=16crit_4str_8crit_4str_8crit_6str,enchant=9str,addon=synapse_springs_mark_ii
-waist=ashen_wall_girdle,id=105533,upgrade=2,gems=4str_8crit_8crit_8crit_16crit_6str
-legs=greaves_of_cyclopean_dread,id=99338,upgrade=2,gems=16crit_16crit_6str,enchant=14str_8crit
-feet=greaves_of_sublime_superiority,id=105478,upgrade=2,gems=4str_8crit_3crit,enchant=9haste
-finger1=devilfang_band,id=105611,upgrade=2,gems=4str_8crit_3exp
-finger2=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=4str_8crit_3haste
-trinket1=evil_eye_of_galakras,id=105491,upgrade=2
-trinket2=thoks_tail_tip,id=105609,upgrade=2
-main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=4str_8crit_3str,enchant=rune_of_razorice
+head=helmet_of_cyclopean_dread,id=99337,upgrade=4,gems=capacitive_primal_5str_10crit_11str
+neck=malkoroks_tainted_dog_tags,id=105566,upgrade=4
+shoulders=tusks_of_mannoroth,id=105642,upgrade=4,gems=5str_10crit_5str_10crit_5str_10crit_11str,enchant=15str_5crit
+back=gonglu_strength_of_xuen,id=102249,upgrade=4,gems=5str_10crit_4str,enchant=12crit
+chest=breastplate_of_cyclopean_dread,id=99335,upgrade=4,gems=5str_10crit_5str_10crit_5str_10crit_11str,enchant=5all
+wrists=bracers_of_blind_hatred,id=105456,upgrade=4,enchant=18str
+hands=gauntlets_of_cyclopean_dread,id=99336,upgrade=4,gems=5str_10crit_5str_10crit_8str,enchant=11str
+waist=ashen_wall_girdle,id=105533,upgrade=4,gems=5str_10crit_8crit_8crit_20crit_8str
+legs=greaves_of_cyclopean_dread,id=99338,upgrade=4,gems=20crit_20crit_8str,enchant=19str_11crit
+feet=greaves_of_sublime_superiority,id=105478,upgrade=4,gems=5str_10crit_4crit,enchant=11haste
+finger1=devilfang_band,id=105611,upgrade=4,gems=5str_10crit_4haste
+finger2=seal_of_the_forgotten_kings,id=105589,upgrade=4,gems=5str_10crit_4haste
+trinket1=evil_eye_of_galakras,id=105491,upgrade=4
+trinket2=thoks_tail_tip,id=105609,upgrade=4
+main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=4,gems=5str_10crit_4str,enchant=rune_of_razorice
 
 # Gear Summary
-# gear_strength=1100
-# gear_agility=4
-# gear_stamina=1537
-# gear_intellect=4
-# gear_expertise_rating=3
-# gear_crit_rating=773
-# gear_haste_rating=313
-# gear_mastery_rating=464
-# gear_armor=1283
+# gear_strength=1236
+# gear_agility=5
+# gear_stamina=1660
+# gear_intellect=5
+# gear_crit_rating=832
+# gear_haste_rating=344
+# gear_mastery_rating=503
+# gear_armor=1414
 # meta_gem=capacitive_primal
 # set_bonus=tier16_2pc_melee=1
 # set_bonus=tier16_4pc_melee=1

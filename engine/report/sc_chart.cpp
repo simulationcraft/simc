@@ -301,9 +301,7 @@ std::string school_color( school_e type )
     case SCHOOL_HOLYSTORM:    return color::mix( school_color( SCHOOL_HOLY ), school_color( SCHOOL_NATURE ) );
     case SCHOOL_SHADOWLIGHT:  return color::mix( school_color( SCHOOL_SHADOW ), school_color( SCHOOL_HOLY ) );
       //-- Three or more schools
-    case SCHOOL_ELEMENTAL:    return color::mix_multiple( school_color( SCHOOL_FIRE ) +
-                                       school_color( SCHOOL_FROST ) +
-                                       school_color( SCHOOL_NATURE ) );
+    case SCHOOL_ELEMENTAL:    return color::jade_green;
     case SCHOOL_CHROMATIC:    return color::mix_multiple( school_color( SCHOOL_FIRE ) +
                                        school_color( SCHOOL_FROST ) +
                                        school_color( SCHOOL_ARCANE ) +

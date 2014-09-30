@@ -123,33 +123,33 @@ actions.max_survival+=/holy_wrath
 actions.max_survival+=/holy_prism
 actions.max_survival+=/sacred_shield
 
-head=faceguard_of_winged_triumph,id=99370,upgrade=2,gems=indomitable_primal_8haste_8haste_14sta
-neck=juggernauts_ignition_keys,id=105513,upgrade=2
-shoulders=shoulderguards_of_winged_triumph,id=99364,upgrade=2,gems=16haste_16haste,enchant=15sta_5dodge
-back=qianying_fortitude_of_niuzao,id=102250,upgrade=2,gems=8haste_8haste_90sta,enchant=10sta
-chest=chestguard_of_winged_triumph,id=99368,upgrade=2,gems=8haste_8haste_8haste_8haste_8haste_8haste_14sta,enchant=15sta
-wrists=bubbleburst_bracers,id=105411,upgrade=2,enchant=9mastery
-hands=handguards_of_winged_triumph,id=99369,upgrade=2,gems=16haste_16haste,enchant=9haste
-waist=demolishers_reinforced_belt,id=105509,upgrade=2,gems=16haste_16haste_16haste
-legs=legplates_of_unthinking_strife,id=105640,upgrade=2,gems=16haste_16haste_16haste,enchant=22sta_8dodge
-feet=wolfrider_spurs,id=105531,upgrade=2,gems=16haste_3crit,enchant=9haste
-finger1=asgorathian_blood_seal,id=105620,upgrade=2,gems=8haste_8haste_3haste
-finger2=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=8haste_8haste_3haste
-trinket1=vial_of_living_corruption,id=105568,upgrade=2
-trinket2=thoks_tail_tip,id=105609,upgrade=2
-main_hand=siegecrafters_forge_hammer,id=105621,upgrade=2,gems=16haste,enchant=windsong
-off_hand=bulwark_of_the_fallen_general,id=105556,upgrade=2,gems=16haste,enchant=9parry
+head=faceguard_of_winged_triumph,id=99370,upgrade=4,gems=indomitable_primal_20haste_17sta
+neck=juggernauts_ignition_keys,id=105513,upgrade=4
+shoulders=shoulderguards_of_winged_triumph,id=99364,upgrade=4,gems=20haste_20haste,enchant=15sta_5dodge
+back=qianying_fortitude_of_niuzao,id=102250,upgrade=4,gems=20haste_6sta,enchant=13sta
+chest=chestguard_of_winged_triumph,id=99368,upgrade=4,gems=20haste_20haste_20haste_17sta,enchant=15sta
+wrists=bubbleburst_bracers,id=105411,upgrade=4,enchant=12mastery
+hands=handguards_of_winged_triumph,id=99369,upgrade=4,gems=20haste_20haste,enchant=11haste
+waist=demolishers_reinforced_belt,id=105509,upgrade=4,gems=20haste_20haste_20haste
+legs=legplates_of_unthinking_strife,id=105640,upgrade=4,gems=20haste_20haste_20haste,enchant=28sta_11dodge
+feet=wolfrider_spurs,id=105531,upgrade=4,gems=20haste_4crit,enchant=11haste
+finger1=asgorathian_blood_seal,id=105620,upgrade=4,gems=20haste_4haste
+finger2=seal_of_the_forgotten_kings,id=105589,upgrade=4,gems=20haste_4haste
+trinket1=vial_of_living_corruption,id=105568,upgrade=4
+trinket2=thoks_tail_tip,id=105609,upgrade=4
+main_hand=siegecrafters_forge_hammer,id=105621,upgrade=4,gems=20haste,enchant=windsong
+off_hand=bulwark_of_the_fallen_general,id=105556,upgrade=4,gems=20haste,enchant=11parry
 
 # Gear Summary
-# gear_strength=939
-# gear_stamina=1881
-# gear_crit_rating=395
-# gear_haste_rating=830
-# gear_mastery_rating=368
-# gear_armor=1842
-# gear_bonus_armor=39
-# gear_dodge_rating=13
-# gear_parry_rating=9
+# gear_strength=1024
+# gear_stamina=1947
+# gear_crit_rating=428
+# gear_haste_rating=957
+# gear_mastery_rating=401
+# gear_armor=2033
+# gear_bonus_armor=42
+# gear_dodge_rating=16
+# gear_parry_rating=11
 # meta_gem=indomitable_primal
 # set_bonus=tier16_2pc_tank=1
 # set_bonus=tier16_4pc_tank=1

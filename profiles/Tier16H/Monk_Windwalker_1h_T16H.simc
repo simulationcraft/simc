@@ -73,33 +73,33 @@ actions.aoe+=/blackout_kick,if=talent.rushing_jade_wind.enabled&!talent.chi_expl
 actions.aoe+=/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled
 actions.aoe+=/jab,if=talent.rushing_jade_wind.enabled&chi.max-chi>=2
 
-head=headpiece_of_seven_sacred_seals,id=99393,upgrade=2,gems=capacitive_primal_4agi_8crit_9agi
-neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=2
-shoulders=spaulders_of_seven_sacred_seals,id=99395,upgrade=2,gems=4agi_8crit_4agi_8crit_6agi,enchant=10agi_5crit
-back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=4agi_8crit_3agi,enchant=9crit
-chest=tunic_of_seven_sacred_seals,id=99396,upgrade=2,gems=4agi_8crit_4agi_8crit_4agi_8crit_9agi,enchant=4all
-wrists=mantid_carapace_augments,id=105583,upgrade=2,enchant=9agi
-hands=gloves_of_the_golden_protector,id=105453,upgrade=2,gems=4agi_8crit_4agi_8crit_6agi,enchant=9haste
-waist=cord_of_black_dreams,id=105635,upgrade=2,gems=4agi_8crit_4agi_8crit_4agi_8crit_6agi
-legs=leggings_of_seven_sacred_seals,id=99394,upgrade=2,gems=4agi_8crit_4agi_8crit_6agi,enchant=14agi_8crit
-feet=pandaren_roofsprinters,id=105582,upgrade=2,gems=4agi_8crit_3mastery,enchant=7agi
-finger1=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=4agi_8crit_3crit
-finger2=ring_of_restless_energy,id=105558,upgrade=2,gems=4agi_8crit_3crit
-trinket1=ticking_ebon_detonator,id=105612,upgrade=2
-trinket2=haromms_talisman,id=105527,upgrade=2
-main_hand=korvens_crimson_crescent,id=105625,upgrade=2,gems=4agi_8crit_3agi,enchant=dancing_steel
-off_hand=softfoots_last_resort,id=105430,upgrade=2,gems=4agi_8crit_3agi,enchant=dancing_steel
+head=headpiece_of_seven_sacred_seals,id=99393,upgrade=4,gems=capacitive_primal_5agi_10crit_11agi
+neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=4
+shoulders=spaulders_of_seven_sacred_seals,id=99395,upgrade=4,gems=5agi_10crit_5agi_10crit_8agi,enchant=15agi_5crit
+back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=5agi_10crit_4agi,enchant=12crit
+chest=tunic_of_seven_sacred_seals,id=99396,upgrade=4,gems=5agi_10crit_5agi_10crit_5agi_10crit_11agi,enchant=5all
+wrists=mantid_carapace_augments,id=105583,upgrade=4,enchant=12agi
+hands=gloves_of_the_golden_protector,id=105453,upgrade=4,gems=5agi_10crit_5agi_10crit_8agi,enchant=11haste
+waist=cord_of_black_dreams,id=105635,upgrade=4,gems=5agi_10crit_5agi_10crit_5agi_10crit_8agi
+legs=leggings_of_seven_sacred_seals,id=99394,upgrade=4,gems=5agi_10crit_5agi_10crit_8agi,enchant=19agi_11crit
+feet=pandaren_roofsprinters,id=105582,upgrade=4,gems=5agi_10crit_4mastery,enchant=9agi
+finger1=kilruks_band_of_ascendancy,id=105624,upgrade=4,gems=5agi_10crit_4crit
+finger2=ring_of_restless_energy,id=105558,upgrade=4,gems=5agi_10crit_4crit
+trinket1=ticking_ebon_detonator,id=105612,upgrade=4
+trinket2=haromms_talisman,id=105527,upgrade=4
+main_hand=korvens_crimson_crescent,id=105625,upgrade=4,gems=5agi_10crit_4agi,enchant=dancing_steel
+off_hand=softfoots_last_resort,id=105430,upgrade=4,gems=5agi_10crit_4agi,enchant=dancing_steel
 
 # Gear Summary
-# gear_strength=4
-# gear_agility=1097
-# gear_stamina=1512
-# gear_intellect=4
-# gear_crit_rating=739
-# gear_haste_rating=427
-# gear_mastery_rating=403
-# gear_armor=534
-# gear_multistrike_rating=99
+# gear_strength=5
+# gear_agility=1232
+# gear_stamina=1634
+# gear_intellect=5
+# gear_crit_rating=829
+# gear_haste_rating=464
+# gear_mastery_rating=439
+# gear_armor=589
+# gear_multistrike_rating=107
 # meta_gem=capacitive_primal
 # set_bonus=tier16_2pc_melee=1
 # set_bonus=tier16_4pc_melee=1

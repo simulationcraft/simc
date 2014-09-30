@@ -52,33 +52,33 @@ actions.generator+=/sinister_strike
 actions.finisher=crimson_tempest,if=active_enemies>7&dot.crimson_tempest_dot.ticks_remain<=1
 actions.finisher+=/eviscerate
 
-head=helmet_of_the_barbed_assassin,id=99348,upgrade=2,gems=capacitive_primal_8agi_9agi
-neck=immerseus_crystalline_eye,id=105407,upgrade=2
-shoulders=shoulderguards_of_the_righteous_stand,id=105551,upgrade=2,gems=4agi_8haste_4agi_8haste_6agi,enchant=10agi_5crit
-back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=8agi_3agi,enchant=9crit
-chest=tunic_of_the_barbed_assassin,id=99356,upgrade=2,gems=8agi_8agi_8agi_9agi,enchant=4all
-wrists=bombers_blackened_wristwatch,id=105616,upgrade=2,gems=8agi,enchant=9agi
-hands=gloves_of_the_barbed_assassin,id=99355,upgrade=2,gems=8agi_8agi_8agi_6agi,enchant=9haste
-waist=damrons_belt_of_darkness,id=105528,upgrade=2,gems=8agi_4agi_8crit_8agi_6agi
-legs=legguards_of_the_barbed_assassin,id=99349,upgrade=2,gems=4agi_8haste_4agi_8haste_6agi,enchant=14agi_8crit
-feet=stonetoes_tormented_treads,id=105431,upgrade=2,gems=8agi_3mastery,enchant=7agi
-finger1=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=8agi_3crit
-finger2=ring_of_restless_energy,id=105558,upgrade=2,gems=8agi_3crit
-trinket1=assurance_of_consequence,id=105472,upgrade=2
-trinket2=haromms_talisman,id=105527,upgrade=2
-main_hand=enchanted_shaotien_saber,id=105581,upgrade=2,gems=8agi_3agi,enchant=dancing_steel
-off_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=8agi_3agi,enchant=dancing_steel
+head=helmet_of_the_barbed_assassin,id=99348,upgrade=4,gems=capacitive_primal_10agi_11agi
+neck=immerseus_crystalline_eye,id=105407,upgrade=4
+shoulders=shoulderguards_of_the_righteous_stand,id=105551,upgrade=4,gems=5agi_10haste_5agi_10haste_8agi,enchant=15agi_5crit
+back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=8agi_4agi,enchant=12crit
+chest=tunic_of_the_barbed_assassin,id=99356,upgrade=4,gems=10agi_10agi_10agi_11agi,enchant=5all
+wrists=bombers_blackened_wristwatch,id=105616,upgrade=4,enchant=11agi
+hands=gloves_of_the_barbed_assassin,id=99355,upgrade=4,gems=10agi_10agi_8agi,enchant=11haste
+waist=damrons_belt_of_darkness,id=105528,upgrade=4,gems=10agi_5agi_10crit_10agi_8agi
+legs=legguards_of_the_barbed_assassin,id=99349,upgrade=4,gems=5agi_10haste_5agi_10haste_8agi,enchant=19agi_11crit
+feet=stonetoes_tormented_treads,id=105431,upgrade=4,gems=10agi_4mastery,enchant=9agi
+finger1=kilruks_band_of_ascendancy,id=105624,upgrade=4,gems=10agi_4crit
+finger2=ring_of_restless_energy,id=105558,upgrade=4,gems=10agi_4crit
+trinket1=assurance_of_consequence,id=105472,upgrade=4
+trinket2=haromms_talisman,id=105527,upgrade=4
+main_hand=enchanted_shaotien_saber,id=105581,upgrade=4,gems=10agi_4agi,enchant=dancing_steel
+off_hand=hvitserks_formidable_shanker,id=105601,upgrade=4,gems=10agi_4agi,enchant=dancing_steel
 
 # Gear Summary
-# gear_strength=4
-# gear_agility=1169
-# gear_stamina=1512
-# gear_intellect=4
-# gear_crit_rating=270
-# gear_haste_rating=613
-# gear_mastery_rating=481
-# gear_armor=535
-# gear_multistrike_rating=99
+# gear_strength=5
+# gear_agility=1299
+# gear_stamina=1634
+# gear_intellect=5
+# gear_crit_rating=298
+# gear_haste_rating=673
+# gear_mastery_rating=524
+# gear_armor=591
+# gear_multistrike_rating=107
 # meta_gem=capacitive_primal
 # set_bonus=tier16_2pc_melee=1
 # set_bonus=tier16_4pc_melee=1

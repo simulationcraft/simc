@@ -48,35 +48,33 @@ actions+=/life_tap,if=mana.pct<40
 actions+=/drain_soul,interrupt=1,chain=1
 actions+=/life_tap
 
-head=flameslingers_fiery_cowl,id=105495,upgrade=2,gems=sinister_primal_16haste_9int
-neck=untainted_guardians_chain,id=105465,upgrade=2
-shoulders=mantle_of_the_horned_nightmare,id=99417,upgrade=2,gems=8exp_8haste_8exp_8haste_6int,enchant=10int_5crit
-back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=4int_8haste_3int,enchant=9crit
-chest=robes_of_the_tendered_heart,id=105440,upgrade=2,gems=8exp_8haste_16haste_8haste_8crit_9int,enchant=4all
-wrists=avools_ancestral_bracers,id=105591,upgrade=2,enchant=9int
-hands=gloves_of_the_horned_nightmare,id=99424,upgrade=2,gems=8exp_8haste_8exp_8haste_6int,enchant=9mastery
-waist=belt_of_ominous_trembles,id=105515,upgrade=2,gems=8exp_8haste_8haste_8crit_16haste_6int
-legs=leggings_of_furious_flame,id=105516,upgrade=2,gems=8haste_8crit_8haste_8crit_6int,enchant=14int_8crit
-feet=boneinlaid_sandals,id=105493,upgrade=2,gems=16haste_3hit,enchant=7mastery
-finger1=signet_of_the_dinomancers,id=105606,upgrade=2,gems=16haste
-finger2=extinguished_ember_of_galakras,id=105498,upgrade=2
-trinket1=black_blood_of_yshaarj,id=105648,upgrade=2
-trinket2=purified_bindings_of_immerseus,id=105422,upgrade=2
-main_hand=arcweaver_spell_sword,id=105550,upgrade=2,gems=4int_8haste_3int,enchant=jade_spirit
-off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=4int_8haste_3int,enchant=8int
+head=flameslingers_fiery_cowl,id=105495,upgrade=4,gems=sinister_primal_20haste_11int
+neck=untainted_guardians_chain,id=105465,upgrade=4
+shoulders=mantle_of_the_horned_nightmare,id=99417,upgrade=4,gems=10crit_10haste_10crit_10haste_8int,enchant=15int_5crit
+back=xingho_breath_of_yulon,id=102246,upgrade=4,gems=5int_10haste_4int,enchant=12crit
+chest=robes_of_the_tendered_heart,id=105440,upgrade=4,gems=10crit_10haste_20haste_8haste_8crit_11int,enchant=5all
+wrists=avools_ancestral_bracers,id=105591,upgrade=4,enchant=12int
+hands=gloves_of_the_horned_nightmare,id=99424,upgrade=4,gems=10crit_10haste_10crit_10haste_8int,enchant=11mastery
+waist=belt_of_ominous_trembles,id=105515,upgrade=4,gems=10crit_10haste_8haste_8crit_20haste_8int
+legs=leggings_of_furious_flame,id=105516,upgrade=4,gems=10haste_10crit_10haste_10crit_8int,enchant=19int_11crit
+feet=boneinlaid_sandals,id=105493,upgrade=4,gems=20haste_4haste,enchant=9mastery
+finger1=signet_of_the_dinomancers,id=105606,upgrade=4,gems=20haste_4haste
+finger2=extinguished_ember_of_galakras,id=105498,upgrade=4
+trinket1=black_blood_of_yshaarj,id=105648,upgrade=4
+trinket2=purified_bindings_of_immerseus,id=105422,upgrade=4
+main_hand=arcweaver_spell_sword,id=105550,upgrade=4,gems=5int_10haste_4int,enchant=jade_spirit
+off_hand=revelations_of_yshaarj,id=105650,upgrade=4,gems=5int_10haste_4int,enchant=11int
 
 # Gear Summary
-# gear_strength=4
-# gear_agility=4
-# gear_stamina=1554
-# gear_intellect=1067
-# gear_spell_power=590
-# gear_expertise_rating=48
-# gear_hit_rating=3
-# gear_crit_rating=398
-# gear_haste_rating=863
-# gear_mastery_rating=407
-# gear_armor=357
+# gear_strength=5
+# gear_agility=5
+# gear_stamina=1680
+# gear_intellect=1187
+# gear_spell_power=640
+# gear_crit_rating=495
+# gear_haste_rating=969
+# gear_mastery_rating=444
+# gear_armor=392
 # meta_gem=sinister_primal
 # set_bonus=tier16_2pc_caster=1
 default_pet=felhunter

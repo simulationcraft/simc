@@ -73,32 +73,32 @@ actions.prot_aoe+=/storm_bolt
 actions.prot_aoe+=/shield_slam
 actions.prot_aoe+=/devastate
 
-head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=capacitive_primal_16crit_8haste_8crit_9str
-neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
-shoulders=spaulders_of_the_fallen_warchief,id=104645,upgrade=2,gems=16crit_16crit_6str,enchant=10str_5crit
-back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=8haste_8crit_3str,enchant=9crit
-chest=breastplate_of_shamanic_mirrors,id=105532,upgrade=2,gems=8haste_8crit_8haste_8crit_16crit_6str,enchant=3all
+head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=4,gems=capacitive_primal_20crit_10haste_10crit_11str
+neck=malkoroks_tainted_dog_tags,id=105566,upgrade=4
+shoulders=spaulders_of_the_fallen_warchief,id=104645,upgrade=4,gems=20crit_20crit_8str,enchant=15str_5crit
+back=gonglu_strength_of_xuen,id=102249,upgrade=4,gems=10haste_10crit_4str,enchant=12crit
+chest=breastplate_of_shamanic_mirrors,id=105532,upgrade=4,gems=10haste_10crit_10haste_10crit_20crit_8str,enchant=5all
 shirt=precious_ribbon,id=52019
-wrists=bracers_of_blind_hatred,id=105456,upgrade=2,enchant=9mastery
-hands=gauntlets_of_the_prehistoric_marauder,id=99412,upgrade=2,gems=8haste_8crit_8haste_8crit_6str,enchant=9mastery
-waist=demolishers_reinforced_belt,id=104513,upgrade=2,gems=8haste_8crit_16crit_16crit_6str
-legs=legplates_of_willful_doom,id=104569,upgrade=2,gems=16crit_16crit_16crit,enchant=14str_8crit
-feet=greaves_of_sublime_superiority,id=105478,upgrade=2,gems=8haste_8crit_3str,enchant=7mastery
-finger1=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=16crit_3str
-finger2=sorrowpath_signet,id=105436,upgrade=2
-trinket1=evil_eye_of_galakras,id=105491,upgrade=2
-trinket2=thoks_tail_tip,id=105609,upgrade=2
-main_hand=encapsulated_essence_of_immerseus,id=105417,upgrade=2
-off_hand=shield_of_mockery,id=105481,upgrade=2
+wrists=bracers_of_blind_hatred,id=105456,upgrade=4,enchant=11mastery
+hands=gauntlets_of_the_prehistoric_marauder,id=99412,upgrade=4,gems=10haste_10crit_10haste_10crit_8str,enchant=11mastery
+waist=demolishers_reinforced_belt,id=104513,upgrade=4,gems=10haste_10crit_20crit_20crit_8str
+legs=legplates_of_willful_doom,id=104569,upgrade=4,gems=20crit_20crit_20crit,enchant=19str_11crit
+feet=greaves_of_sublime_superiority,id=105478,upgrade=4,gems=10haste_10crit_4str,enchant=9mastery
+finger1=seal_of_the_forgotten_kings,id=105589,upgrade=4,gems=20crit_4str
+finger2=sorrowpath_signet,id=105436,upgrade=4
+trinket1=evil_eye_of_galakras,id=105491,upgrade=4
+trinket2=thoks_tail_tip,id=105609,upgrade=4
+main_hand=encapsulated_essence_of_immerseus,id=105417,upgrade=4
+off_hand=shield_of_mockery,id=105481,upgrade=4
 
 # Gear Summary
-# gear_strength=1008
-# gear_agility=3
-# gear_stamina=1528
-# gear_intellect=3
-# gear_crit_rating=871
-# gear_haste_rating=300
-# gear_mastery_rating=424
-# gear_armor=1836
-# gear_bonus_armor=36
+# gear_strength=1117
+# gear_agility=5
+# gear_stamina=1653
+# gear_intellect=5
+# gear_crit_rating=982
+# gear_haste_rating=335
+# gear_mastery_rating=464
+# gear_armor=2026
+# gear_bonus_armor=39
 # meta_gem=capacitive_primal

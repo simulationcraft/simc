@@ -54,34 +54,34 @@ actions.aoe+=/stellar_flare,cycle_targets=1,if=remains<7
 actions.aoe+=/wrath,if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)
 actions.aoe+=/starfire,if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)
 
-head=darkfang_mask,id=105542,upgrade=2,gems=sinister_primal_16crit_9int
-neck=untainted_guardians_chain,id=105465,upgrade=2
-shoulders=shoulderwraps_of_the_shattered_vale,id=99428,upgrade=2,gems=4int_8crit_4int_8crit_6int,enchant=10int_5crit
-back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=4int_8crit_3int,enchant=9int
-chest=vestment_of_the_shattered_vale,id=99427,upgrade=2,gems=8haste_8crit_8haste_8crit_8haste_8crit_9int,enchant=4all
-wrists=bracers_of_purified_spirit,id=105425,upgrade=2,enchant=9int
-hands=gloves_of_the_shattered_vale,id=99432,upgrade=2,gems=8haste_8crit_8haste_8crit_6int,enchant=9mastery
-waist=seal_of_karmic_return,id=105651,upgrade=2,gems=8haste_8crit_16crit_16crit_6int
-legs=leggings_of_the_shattered_vale,id=99434,upgrade=2,gems=16crit_16crit_6int,enchant=14int_8crit
-feet=boots_of_perilous_infusion,id=105576,upgrade=2,gems=8crit_8crit_3spi,enchant=7mastery
-finger1=signet_of_the_dinomancers,id=105606,upgrade=2,gems=4int_8crit_3haste
-finger2=seal_of_sullen_fury,id=105574,upgrade=2,gems=4int_8crit_3spi
-trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
-trinket2=kardris_toxic_totem,id=105540,upgrade=2
-main_hand=kardris_scepter,id=105541,upgrade=2,gems=4int_8crit_3int,enchant=jade_spirit
-off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=4int_8crit_3int,enchant=8int
+head=darkfang_mask,id=105542,upgrade=4,gems=sinister_primal_20crit_11int
+neck=untainted_guardians_chain,id=105465,upgrade=4
+shoulders=shoulderwraps_of_the_shattered_vale,id=99428,upgrade=4,gems=5int_10crit_5int_10crit_8int,enchant=15int_5crit
+back=xingho_breath_of_yulon,id=102246,upgrade=4,gems=5int_10crit_4int,enchant=12int
+chest=vestment_of_the_shattered_vale,id=99427,upgrade=4,gems=10haste_10crit_10haste_10crit_10haste_10crit_11int,enchant=5all
+wrists=bracers_of_purified_spirit,id=105425,upgrade=4,enchant=12int
+hands=gloves_of_the_shattered_vale,id=99432,upgrade=4,gems=10haste_10crit_10haste_10crit_8int,enchant=11mastery
+waist=seal_of_karmic_return,id=105651,upgrade=4,gems=10haste_10crit_20crit_20crit_8int
+legs=leggings_of_the_shattered_vale,id=99434,upgrade=4,gems=20crit_20crit_8int,enchant=19int_11crit
+feet=boots_of_perilous_infusion,id=105576,upgrade=4,gems=20crit_4crit,enchant=9mastery
+finger1=signet_of_the_dinomancers,id=105606,upgrade=4,gems=5int_10crit_4haste
+finger2=extinguished_ember_of_galakras,id=105498,upgrade=4
+trinket1=purified_bindings_of_immerseus,id=105422,upgrade=4
+trinket2=kardris_toxic_totem,id=105540,upgrade=4
+main_hand=kardris_scepter,id=105541,upgrade=4,gems=5int_10crit_4int,enchant=jade_spirit
+off_hand=revelations_of_yshaarj,id=105650,upgrade=4,gems=5int_10crit_4int,enchant=11int
 
 # Gear Summary
-# gear_strength=4
-# gear_agility=4
-# gear_stamina=1536
-# gear_intellect=1076
-# gear_spell_power=590
-# gear_crit_rating=662
-# gear_haste_rating=406
-# gear_mastery_rating=470
-# gear_armor=535
-# gear_multistrike_rating=99
+# gear_strength=5
+# gear_agility=5
+# gear_stamina=1660
+# gear_intellect=1202
+# gear_spell_power=640
+# gear_crit_rating=749
+# gear_haste_rating=491
+# gear_mastery_rating=514
+# gear_armor=591
+# gear_multistrike_rating=107
 # meta_gem=sinister_primal
 # set_bonus=tier16_2pc_caster=1
 # set_bonus=tier16_4pc_caster=1

@@ -48,36 +48,34 @@ actions+=/rain_of_fire,if=(!ticking|(talent.mannoroths_fury.enabled&buff.mannoro
 actions+=/conflagrate
 actions+=/incinerate
 
-head=hood_of_the_horned_nightmare,id=99425,upgrade=2,gems=sinister_primal_8exp_8mastery_9int
-neck=untainted_guardians_chain,id=105465,upgrade=2
-shoulders=rimerift_shoulders,id=105464,upgrade=2,gems=8exp_8mastery_8crit_8mastery_6int,enchant=10int_5crit
-back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=8exp_8mastery_3int,enchant=9crit
-chest=robes_of_the_horned_nightmare,id=99416,upgrade=2,gems=8exp_8mastery_8exp_8mastery_8exp_8mastery_9int,enchant=4all
-wrists=avools_ancestral_bracers,id=105591,upgrade=2,enchant=9int
-hands=gloves_of_the_horned_nightmare,id=99424,upgrade=2,gems=8exp_8mastery_8exp_8mastery_6int,enchant=9mastery
-waist=belt_of_ominous_trembles,id=105515,upgrade=2,gems=8exp_8mastery_8crit_8mastery_16mastery_6int
-legs=leggings_of_the_horned_nightmare,id=99426,upgrade=2,gems=16mastery_16mastery_6int,enchant=14int_8crit
-feet=boneinlaid_sandals,id=105493,upgrade=2,gems=16mastery_3hit,enchant=7mastery
-finger1=iyyokuks_hereditary_seal,id=105628,upgrade=2
-finger2=signet_of_the_dinomancers,id=105606,upgrade=2,gems=8exp_8mastery_3haste
-trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
-trinket2=kardris_toxic_totem,id=105540,upgrade=2
-main_hand=immaculately_preserved_wand,id=105594,upgrade=2,gems=8exp_8mastery_3int,enchant=jade_spirit
-off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=8exp_8mastery_3int,enchant=8int
+head=hood_of_the_horned_nightmare,id=99425,upgrade=4,gems=sinister_primal_10crit_10mastery_11int
+neck=untainted_guardians_chain,id=105465,upgrade=4
+shoulders=rimerift_shoulders,id=105464,upgrade=4,gems=10crit_10mastery_10crit_10mastery_8int,enchant=15int_5crit
+back=xingho_breath_of_yulon,id=102246,upgrade=4,gems=10crit_10mastery_4int,enchant=12crit
+chest=robes_of_the_horned_nightmare,id=99416,upgrade=4,gems=10crit_10mastery_10crit_10mastery_10crit_10mastery_11int,enchant=5all
+wrists=avools_ancestral_bracers,id=105591,upgrade=4,enchant=12int
+hands=gloves_of_the_horned_nightmare,id=99424,upgrade=4,gems=10crit_10mastery_10crit_10mastery_8int,enchant=11mastery
+waist=belt_of_ominous_trembles,id=105515,upgrade=4,gems=10crit_10mastery_10crit_10mastery_20mastery_8int
+legs=leggings_of_the_horned_nightmare,id=99426,upgrade=4,gems=20mastery_20mastery_8int,enchant=19int_11crit
+feet=boneinlaid_sandals,id=105493,upgrade=4,gems=20mastery_4crit,enchant=9mastery
+finger1=iyyokuks_hereditary_seal,id=105628,upgrade=4
+finger2=signet_of_the_dinomancers,id=105606,upgrade=4,gems=10crit_10mastery_4haste
+trinket1=purified_bindings_of_immerseus,id=105422,upgrade=4
+trinket2=kardris_toxic_totem,id=105540,upgrade=4
+main_hand=immaculately_preserved_wand,id=105594,upgrade=4,gems=10crit_10mastery_4int,enchant=jade_spirit
+off_hand=revelations_of_yshaarj,id=105650,upgrade=4,gems=10crit_10mastery_4int,enchant=11int
 
 # Gear Summary
-# gear_strength=4
-# gear_agility=4
-# gear_stamina=1534
-# gear_intellect=1041
-# gear_spell_power=590
-# gear_expertise_rating=96
-# gear_hit_rating=3
-# gear_crit_rating=417
-# gear_haste_rating=320
-# gear_mastery_rating=801
-# gear_armor=350
-# gear_multistrike_rating=99
+# gear_strength=5
+# gear_agility=5
+# gear_stamina=1657
+# gear_intellect=1159
+# gear_spell_power=640
+# gear_crit_rating=581
+# gear_haste_rating=347
+# gear_mastery_rating=900
+# gear_armor=384
+# gear_multistrike_rating=107
 # meta_gem=sinister_primal
 # set_bonus=tier16_2pc_caster=1
 # set_bonus=tier16_4pc_caster=1

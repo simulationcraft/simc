@@ -75,33 +75,32 @@ actions.single_target+=/blood_tap
 actions.single_target+=/plague_leech
 actions.single_target+=/empower_rune_weapon
 
-head=helmet_of_cyclopean_dread,id=99337,upgrade=2,gems=capacitive_primal_4str_8mastery_9str
-neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
-shoulders=pauldrons_of_cyclopean_dread,id=99339,upgrade=2,gems=4str_8mastery_4str_8mastery_6str,enchant=10str_5crit
-back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=4str_8mastery_3str,enchant=9crit
-chest=breastplate_of_cyclopean_dread,id=99335,upgrade=2,gems=4str_8mastery_4str_8mastery_4str_8mastery_9str,enchant=4all
-wrists=bracers_of_blind_hatred,id=105456,upgrade=2,gems=16mastery,enchant=9str
-hands=gauntlets_of_cyclopean_dread,id=99336,upgrade=2,gems=16mastery_4str_8mastery_4str_8mastery_6str,enchant=9str,addon=synapse_springs_mark_ii
-waist=demolishers_reinforced_belt,id=105509,upgrade=2,gems=4str_8mastery_16mastery_16mastery_6str
-legs=legplates_of_willful_doom,id=105565,upgrade=2,gems=8mastery_8crit_8mastery_8crit_4str_8mastery_6str,enchant=14str_8crit
-feet=malkoroks_giant_stompers,id=105563,upgrade=2,gems=16mastery,enchant=7mastery
-finger1=devilfang_band,id=105611,upgrade=2,gems=4str_8mastery_3exp
-finger2=bloodclaw_band,id=105534,upgrade=2,gems=16mastery_3haste
-trinket1=evil_eye_of_galakras,id=105491,upgrade=2
-trinket2=thoks_tail_tip,id=105609,upgrade=2
-main_hand=xifeng_longblade_of_the_titanic_guardian,id=105460,upgrade=2,gems=4str_8mastery_3str,enchant=rune_of_the_fallen_crusader
-off_hand=xifeng_longblade_of_the_titanic_guardian,id=105460,upgrade=2,gems=4str_8mastery_3str,enchant=rune_of_razorice
+head=helmet_of_cyclopean_dread,id=99337,upgrade=4,gems=capacitive_primal_5str_10mastery_11str
+neck=malkoroks_tainted_dog_tags,id=105566,upgrade=4
+shoulders=pauldrons_of_cyclopean_dread,id=99339,upgrade=4,gems=5str_10mastery_5str_10mastery_8str,enchant=15str_5crit
+back=gonglu_strength_of_xuen,id=102249,upgrade=4,gems=5str_10mastery_4str,enchant=12crit
+chest=breastplate_of_cyclopean_dread,id=99335,upgrade=4,gems=5str_10mastery_5str_10mastery_5str_10mastery_11str,enchant=5all
+wrists=bracers_of_blind_hatred,id=105456,upgrade=4,enchant=18str
+hands=gauntlets_of_cyclopean_dread,id=99336,upgrade=4,gems=5str_10mastery_5str_10mastery_8str,enchant=11str
+waist=demolishers_reinforced_belt,id=105509,upgrade=4,gems=5str_10mastery_20mastery_20mastery_8str
+legs=legplates_of_willful_doom,id=105565,upgrade=4,gems=10mastery_10crit_10mastery_10crit_5str_10mastery_8str,enchant=19str_11crit
+feet=malkoroks_giant_stompers,id=105563,upgrade=4,gems=20mastery,enchant=9mastery
+finger1=devilfang_band,id=105611,upgrade=4,gems=5str_10mastery_4haste
+finger2=bloodclaw_band,id=105534,upgrade=4,gems=20mastery_4haste
+trinket1=evil_eye_of_galakras,id=105491,upgrade=4
+trinket2=thoks_tail_tip,id=105609,upgrade=4
+main_hand=xifeng_longblade_of_the_titanic_guardian,id=105460,upgrade=4,gems=5str_10mastery_4str,enchant=rune_of_the_fallen_crusader
+off_hand=xifeng_longblade_of_the_titanic_guardian,id=105460,upgrade=4,gems=5str_10mastery_4str,enchant=rune_of_razorice
 
 # Gear Summary
-# gear_strength=1077
-# gear_agility=4
-# gear_stamina=1514
-# gear_intellect=4
-# gear_expertise_rating=3
-# gear_crit_rating=518
-# gear_haste_rating=214
-# gear_mastery_rating=817
-# gear_armor=1284
+# gear_strength=1212
+# gear_agility=5
+# gear_stamina=1637
+# gear_intellect=5
+# gear_crit_rating=566
+# gear_haste_rating=236
+# gear_mastery_rating=884
+# gear_armor=1416
 # meta_gem=capacitive_primal
 # set_bonus=tier16_2pc_melee=1
 # set_bonus=tier16_4pc_melee=1

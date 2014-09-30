@@ -83,13 +83,13 @@ actions.aoe+=/fire_nova,if=active_dot.flame_shock>=1
 
 head=helmet_of_celestial_harmony,id=99341,upgrade=4,gems=capacitive_primal_10mastery_10crit_11agi
 neck=immerseus_crystalline_eye,id=105407,upgrade=4
-shoulders=quarantine_shoulderguards,id=105455,upgrade=4,gems=20crit_20crit_8agi,enchant=13agi_6crit
-back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=10mastery_10crit_4agi,enchant=11crit
+shoulders=quarantine_shoulderguards,id=105455,upgrade=4,gems=20crit_20crit_8agi,enchant=15agi_5crit
+back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=10mastery_10crit_4agi,enchant=12crit
 chest=cuirass_of_celestial_harmony,id=99347,upgrade=4,gems=10haste_10crit_10haste_10crit_10haste_10crit_11agi,enchant=5all
-wrists=bracers_of_infinite_pipes,id=105617,upgrade=4,enchant=11agi
+wrists=bracers_of_infinite_pipes,id=105617,upgrade=4,enchant=12agi
 hands=grips_of_celestial_harmony,id=99340,upgrade=4,gems=10haste_10crit_10haste_10crit_8agi,enchant=11haste
 waist=cannoneers_multipocket_gunbelt,id=105486,upgrade=4,gems=10haste_10crit_10haste_10crit_20crit_8agi
-legs=legguards_of_celestial_harmony,id=99342,upgrade=4,gems=20crit_20crit_8agi,enchant=18agi_10crit
+legs=legguards_of_celestial_harmony,id=99342,upgrade=4,gems=20crit_20crit_8agi,enchant=19agi_11crit
 feet=ravagers_pathwalkers,id=105553,upgrade=4,gems=10haste_10crit_4agi,enchant=9agi
 finger1=swift_serpent_signet,id=105483,upgrade=4,gems=20crit_4crit
 finger2=kilruks_band_of_ascendancy,id=105624,upgrade=4,gems=10haste_10crit_4crit
@@ -100,10 +100,10 @@ off_hand=korvens_crimson_crescent,id=105625,upgrade=4,gems=10haste_10crit_4agi,e
 
 # Gear Summary
 # gear_strength=5
-# gear_agility=1137
+# gear_agility=1141
 # gear_stamina=1634
 # gear_intellect=5
-# gear_crit_rating=497
+# gear_crit_rating=498
 # gear_haste_rating=681
 # gear_mastery_rating=753
 # gear_armor=825

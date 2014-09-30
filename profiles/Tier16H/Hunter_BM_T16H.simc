@@ -50,32 +50,31 @@ actions+=/focus_fire,five_stacks=1
 actions+=/arcane_shot,if=focus>=64
 actions+=/cobra_shot
 
-head=headguard_of_the_unblinking_vigil,id=99402,upgrade=2,gems=capacitive_primal_8haste_8crit_9agi
-neck=immerseus_crystalline_eye,id=105407,upgrade=2
-shoulders=spaulders_of_the_unblinking_vigil,id=99404,upgrade=2,gems=8agi_8agi_6agi,enchant=10agi_5crit
-back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=8agi_3agi,enchant=9hit
-chest=ancient_archers_chestguard,id=105585,upgrade=2,gems=8agi_8agi_4agi_8mastery_9agi,enchant=4all
-wrists=bracers_of_infinite_pipes,id=105617,upgrade=2,enchant=9agi
-hands=gloves_of_the_unblinking_vigil,id=99406,upgrade=2,gems=8agi_8agi_6agi,enchant=9haste
-waist=arrowflight_girdle,id=105584,upgrade=2,gems=8agi_4agi_8mastery_8agi_6agi
-legs=legguards_of_the_unblinking_vigil,id=99403,upgrade=2,gems=4agi_8mastery_4agi_8mastery_6agi,enchant=14agi_8crit
-feet=ravagers_pathwalkers,id=105553,upgrade=2,gems=8agi_3agi,enchant=7agi
-finger1=ring_of_restless_energy,id=105558,upgrade=2,gems=8agi_3crit
-finger2=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=8agi_3crit
-trinket1=assurance_of_consequence,id=105472,upgrade=2
-trinket2=ticking_ebon_detonator,id=105612,upgrade=2
-main_hand=korkron_hand_cannon,id=105559,upgrade=2,gems=8agi_3agi,enchant=lord_blastingtons_scope_of_doom
+head=headguard_of_the_unblinking_vigil,id=99402,upgrade=4,gems=capacitive_primal_10haste_10crit_11agi
+neck=immerseus_crystalline_eye,id=105407,upgrade=4
+shoulders=spaulders_of_the_unblinking_vigil,id=99404,upgrade=4,gems=10agi_10agi_8agi,enchant=15agi_5crit
+back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=10agi_4agi,enchant=12crit
+chest=ancient_archers_chestguard,id=105585,upgrade=4,gems=10agi_10agi_5agi_10mastery_11agi,enchant=5all
+wrists=bracers_of_infinite_pipes,id=105617,upgrade=4,enchant=12agi
+hands=gloves_of_the_unblinking_vigil,id=99406,upgrade=4,gems=10agi_10agi_8agi,enchant=11haste
+waist=arrowflight_girdle,id=105584,upgrade=4,gems=10agi_5agi_10mastery_10agi_8agi
+legs=legguards_of_the_unblinking_vigil,id=99403,upgrade=4,gems=5agi_10mastery_5agi_10mastery_8agi,enchant=111agi_11crit
+feet=ravagers_pathwalkers,id=105553,upgrade=4,gems=10agi_4agi,enchant=11agi
+finger1=ring_of_restless_energy,id=105558,upgrade=4,gems=10agi_4crit
+finger2=kilruks_band_of_ascendancy,id=105624,upgrade=4,gems=10agi_4crit
+trinket1=assurance_of_consequence,id=105472,upgrade=4
+trinket2=ticking_ebon_detonator,id=105612,upgrade=4
+main_hand=korkron_hand_cannon,id=105559,upgrade=4,gems=10agi_4agi,enchant=lord_blastingtons_scope_of_doom
 
 # Gear Summary
-# gear_strength=4
-# gear_agility=1168
-# gear_stamina=1539
-# gear_intellect=4
-# gear_hit_rating=9
-# gear_crit_rating=494
-# gear_haste_rating=487
-# gear_mastery_rating=507
-# gear_armor=751
+# gear_strength=5
+# gear_agility=1407
+# gear_stamina=1663
+# gear_intellect=5
+# gear_crit_rating=550
+# gear_haste_rating=530
+# gear_mastery_rating=554
+# gear_armor=827
 # meta_gem=capacitive_primal
 # set_bonus=tier16_2pc_melee=1
 # set_bonus=tier16_4pc_melee=1

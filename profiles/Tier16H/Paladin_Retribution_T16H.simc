@@ -109,30 +109,29 @@ actions.aoe+=/exorcism
 actions.aoe+=/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2
 actions.aoe+=/holy_prism
 
-head=helmet_of_winged_triumph,id=99379,upgrade=2,gems=capacitive_primal_8haste_8haste_9str
-neck=juggernauts_ignition_keys,id=105513,upgrade=2
-shoulders=pauldrons_of_winged_triumph,id=99373,upgrade=2,gems=8haste_8haste_8haste_8haste_6str,enchant=10str_5crit
-back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=4str_8haste_3str,enchant=9hit
-chest=battleplate_of_winged_triumph,id=99387,upgrade=2,gems=8haste_8haste_8haste_8haste_8haste_8haste_9str,enchant=4all
-wrists=bubbleburst_bracers,id=105411,upgrade=2,enchant=9str
-hands=gauntlets_of_winged_triumph,id=99380,upgrade=2,gems=4str_8haste_4str_8haste_6str,enchant=9str
-waist=demolishers_reinforced_belt,id=105509,upgrade=2,gems=8haste_8haste_16haste_16haste_6str
-legs=legplates_of_unthinking_strife,id=105640,upgrade=2,gems=8crit_8haste_8crit_8haste_8haste_8haste_9str,enchant=14str_8crit
-feet=wolfrider_spurs,id=105531,upgrade=2,gems=16haste_3crit,enchant=9haste
-finger1=asgorathian_blood_seal,id=105620,upgrade=2,gems=4str_8haste_3haste
-finger2=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=4str_8haste_3haste
-trinket1=evil_eye_of_galakras,id=105491,upgrade=2
-trinket2=thoks_tail_tip,id=105609,upgrade=2
-main_hand=britomarts_jagged_pike,id=105610,upgrade=2,gems=16haste_3str,enchant=dancing_steel
+head=helmet_of_winged_triumph,id=99379,upgrade=4,gems=capacitive_primal_20haste_11str
+neck=juggernauts_ignition_keys,id=105513,upgrade=4
+shoulders=pauldrons_of_winged_triumph,id=99373,upgrade=4,gems=20haste_20haste_8str,enchant=15str_5crit
+back=gonglu_strength_of_xuen,id=102249,upgrade=4,gems=5str_10haste_4str,enchant=12crit
+chest=battleplate_of_winged_triumph,id=99387,upgrade=4,gems=20haste_20haste_20haste_11str,enchant=5all
+wrists=bubbleburst_bracers,id=105411,upgrade=4,enchant=18str
+hands=gauntlets_of_winged_triumph,id=99380,upgrade=4,gems=5str_10haste_5str_10haste_8str,enchant=11str
+waist=demolishers_reinforced_belt,id=105509,upgrade=4,gems=20haste_20haste_20haste_8str
+legs=legplates_of_unthinking_strife,id=105640,upgrade=4,gems=10crit_10haste_10crit_10haste_20haste_11str,enchant=19str_11crit
+feet=wolfrider_spurs,id=105531,upgrade=4,gems=20haste_4crit,enchant=9haste
+finger1=asgorathian_blood_seal,id=105620,upgrade=4,gems=5str_10haste_4haste
+finger2=seal_of_the_forgotten_kings,id=105589,upgrade=4,gems=5str_10haste_4haste
+trinket1=evil_eye_of_galakras,id=105491,upgrade=4
+trinket2=thoks_tail_tip,id=105609,upgrade=4
+main_hand=britomarts_jagged_pike,id=105610,upgrade=4,gems=20haste_4str,enchant=dancing_steel
 
 # Gear Summary
-# gear_strength=1062
-# gear_stamina=1539
-# gear_hit_rating=9
-# gear_crit_rating=341
-# gear_haste_rating=845
-# gear_mastery_rating=416
-# gear_armor=1284
+# gear_strength=1187
+# gear_stamina=1663
+# gear_crit_rating=384
+# gear_haste_rating=957
+# gear_mastery_rating=451
+# gear_armor=1416
 # meta_gem=capacitive_primal
 # set_bonus=tier16_2pc_melee=1
 # set_bonus=tier16_4pc_melee=1
