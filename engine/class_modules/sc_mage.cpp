@@ -5,7 +5,6 @@
 
 // TODO:
 //  Add proper travel time to Welly:water_jet
-//  Currently using Frostbolt's Velocity.
 
 #include "simulationcraft.hpp"
 
@@ -466,7 +465,6 @@ struct water_elemental_pet_t : public pet_t
     {
       parse_options( NULL, options_str );
       channeled = tick_may_crit = true;
-      travel_speed = p -> find_spell( 116 ) -> missile_speed(); // Use frostbolt's velocity for now.
     }
 
     water_elemental_pet_td_t* td( player_t* t = 0 ) const
