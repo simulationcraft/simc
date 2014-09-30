@@ -101,13 +101,13 @@ legs=legplates_of_willful_doom,id=104569,upgrade=4,gems=20crit_20crit_20crit,enc
 feet=greaves_of_sublime_superiority,id=105478,upgrade=4,gems=10haste_10crit_4str,enchant=9mastery
 finger1=seal_of_the_forgotten_kings,id=105589,upgrade=4,gems=20crit_4str
 finger2=sorrowpath_signet,id=105436,upgrade=4
-trinket1=evil_eye_of_galakras,id=105491,upgrade=4
+trinket1=skeers_bloodsoaked_talisman,id=105632,upgrade=4
 trinket2=thoks_tail_tip,id=105609,upgrade=4
 main_hand=malkoroks_skullcleaver,id=105567,upgrade=4,gems=10haste_10crit_4str,enchant=dancing_steel
 off_hand=malkoroks_skullcleaver,id=105567,upgrade=4,gems=10haste_10crit_4str,enchant=dancing_steel
 
 # Gear Summary
-# gear_strength=1109
+# gear_strength=1216
 # gear_agility=5
 # gear_stamina=1630
 # gear_intellect=5
