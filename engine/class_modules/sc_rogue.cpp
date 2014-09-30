@@ -436,7 +436,6 @@ struct rogue_t : public player_t
   void trigger_combo_point_gain( const action_state_t*, int = -1, gain_t* gain = 0 );
   void spend_combo_points( const action_state_t* );
   bool trigger_t17_4pc_combat( const action_state_t* );
-  void trigger_t17_4pc_subtlety( const action_state_t* );
   void trigger_anticipation_replenish( const action_state_t* );
 
   target_specific_t<rogue_td_t*> target_data;
@@ -1295,7 +1294,7 @@ void rogue_attack_t::execute()
       p() -> buffs.subterfuge -> trigger();
   }
 
-  if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
+  if ( result_is_hit( execute_state -> result ) && base_costs[ RESOURCE_COMBO_POINT ] > 0 )
     p() -> buffs.shadow_strikes -> expire();
 }
 
@@ -3350,26 +3349,6 @@ bool rogue_t::trigger_t17_4pc_combat( const action_state_t* state )
   trigger_combo_point_gain( state, buffs.deceit -> data().effectN( 2 ).base_value(), gains.deceit );
   buffs.deceit -> trigger();
   return true;
-}
-
-void rogue_t::trigger_t17_4pc_subtlety( const action_state_t* state )
-{
-  using namespace actions;
-
-  if ( ! sets.has_set_bonus( ROGUE_SUBTLETY, T17, B4 ) )
-    return;
-
-  if ( ! buffs.shadow_strikes -> check() )
-    return;
-
-  if ( state -> action -> base_costs[ RESOURCE_COMBO_POINT ] == 0 )
-    return;
-
-  if ( ! state -> action -> result_is_hit( state -> result ) )
-    return;
-
-  trigger_combo_point_gain( state, buffs.shadow_strikes-> data().effectN( 1 ).base_value(), gains.shadow_strikes );
-  buffs.shadow_strikes -> expire();
 }
 
 namespace buffs {
