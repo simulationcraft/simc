@@ -1564,7 +1564,7 @@ static void Frost_orb_FoF_renew( action_state_t* s )
       background = true;
       harmful = false;
       base_execute_time = timespan_t::zero();
-      base_tick_time = timespan_t::from_seconds( 0.5 );
+      base_tick_time = timespan_t::from_seconds( 2.5 );
       dot_duration = timespan_t::from_seconds( 10.5 );
       hasted_ticks = false;
     }
