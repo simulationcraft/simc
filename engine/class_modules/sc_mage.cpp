@@ -2822,7 +2822,7 @@ struct frostfire_bolt_t : public mage_spell_t
   frostfire_bolt_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "frostfire_bolt", p, p -> find_spell( 44614 ) ),
     frigid_blast( new frigid_blast_t( p ) ),
-    icicle( p -> get_stats( "icicle_ffb" ) ),
+    icicle( 0 ),
     brain_freeze_bonus( p -> find_spell( 44549 ) -> effectN( 3 ).percent() )
   {
     parse_options( NULL, options_str );
@@ -2834,10 +2834,13 @@ struct frostfire_bolt_t : public mage_spell_t
     {
       add_child( frigid_blast );
     }
-
-    stats -> add_child( icicle );
-    icicle -> school = school;
-    icicle -> action_list.push_back( p -> icicle );
+    if ( p -> specialization() == MAGE_FROST )
+    {
+      icicle = p -> get_stats( "icicle_ffb" );
+      stats -> add_child( icicle );
+      icicle -> school = school;
+      icicle -> action_list.push_back( p -> icicle );
+    }
   }
 
   virtual double cost() const
