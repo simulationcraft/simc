@@ -4798,7 +4798,7 @@ void mage_t::create_buffs()
                                 .chance( 1.0 );
 
   buffs.incanters_flow        = new incanters_flow_t( this );
-  buffs.ice_shard             = buff_creator_t( this, "ice_shard" ).duration( timespan_t::from_seconds( 10.0 ) ).max_stack( 10 );
+  buffs.ice_shard             = buff_creator_t( this, "ice_shard", find_spell( 166869 ) );
 }
 
 // mage_t::init_gains =======================================================
