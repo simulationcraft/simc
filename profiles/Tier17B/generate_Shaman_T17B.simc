@@ -31,8 +31,8 @@ legs=windspeakers_legwraps,id=115575,bonus_id=567/523/448,gem_id=115813
 feet=railwalkers_ratcheted_boots,id=113954,bonus_id=567/523/448,gem_id=115813
 finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
 finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567/523/448,gem_id=115813,enchant=gift_of_multistrike
-trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567/448
-trinket2=blackiron_micro_crucible,id=113984,bonus_id=567/448
+trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567/523/448,gem_id=115813
+trinket2=blackiron_micro_crucible,id=113984,bonus_id=567/523/448,gem_id=115813
 main_hand=infernoflame_staff,id=113869,bonus_id=567/523/448,enchant=mark_of_the_frostwolf,gem_id=115813
 save=Shaman_Elemental_T17B.simc
 
@@ -59,8 +59,8 @@ legs=windspeakers_legwraps,id=115575,bonus_id=567/523/448,gem_id=115811
 feet=slagstomper_treads,id=113888,bonus_id=567/523/448,gem_id=115811
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_haste
 finger2=cinderwolf_signet,id=113917,bonus_id=567/523/448,gem_id=115811,enchant=gift_of_haste
-trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=567/448
-trinket2=meaty_dragonspine_trophy,id=118114,bonus_id=567/448
+trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=567/523/448,gem_id=115811
+trinket2=meaty_dragonspine_trophy,id=118114,bonus_id=567/523/448,gem_id=115811
 main_hand=hansgars_forgehammer,id=113897,bonus_id=567/523/448,gem_id=115811,enchant=mark_of_warsong
 off_hand=hansgars_forgehammer,id=113897,bonus_id=567/523/448,gem_id=115811,enchant=mark_of_bleeding_hollow
 save=Shaman_Enhancement_T17B.simc

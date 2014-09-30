@@ -88,8 +88,8 @@ legs=windspeakers_legwraps,id=115575,bonus_id=567/523/448,gem_id=115813
 feet=railwalkers_ratcheted_boots,id=113954,bonus_id=567/523/448,gem_id=115813
 finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
 finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567/523/448,gem_id=115813,enchant=gift_of_multistrike
-trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567/448
-trinket2=blackiron_micro_crucible,id=113984,bonus_id=567/448
+trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567/523/448,gem_id=115813
+trinket2=blackiron_micro_crucible,id=113984,bonus_id=567/523/448,gem_id=115813
 main_hand=infernoflame_staff,id=113869,bonus_id=567/523/448,gem_id=115813,enchant=mark_of_the_frostwolf
 
 # Gear Summary
@@ -100,7 +100,7 @@ main_hand=infernoflame_staff,id=113869,bonus_id=567/523/448,gem_id=115813,enchan
 # gear_haste_rating=948
 # gear_mastery_rating=1648
 # gear_armor=1503
-# gear_multistrike_rating=2213
+# gear_multistrike_rating=2313
 # gear_versatility_rating=103
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
