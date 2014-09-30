@@ -1174,10 +1174,11 @@ void rogue_attack_t::impact( action_state_t* state )
     p() -> trigger_seal_fate( state );
 
   p() -> trigger_combat_potency( state );
-  p() -> trigger_blade_flurry( state );
 
   if ( result_is_hit( state -> result ) )
   {
+    if ( state -> result_amount > 0 && !aoe )
+      p() -> trigger_blade_flurry( state );
     if ( procs_poison() && p() -> active_lethal_poison )
       p() -> active_lethal_poison -> trigger( state );
 
@@ -2853,27 +2854,42 @@ struct main_gauche_t : public rogue_attack_t
 
 struct blade_flurry_attack_t : public rogue_attack_t
 {
+  double pct_damage;
   blade_flurry_attack_t( rogue_t* p ) :
     rogue_attack_t( "blade_flurry_attack", p, p -> find_spell( 22482 ) )
   {
-    may_miss = may_crit = may_multistrike = proc = callbacks = may_dodge = may_parry = may_block = false;
+    may_miss = may_crit = proc = callbacks = may_dodge = may_parry = may_block = false;
+    may_multistrike = 0;
     background = true;
     aoe = p -> spec.blade_flurry -> effectN( 4 ).base_value();
     weapon = &p -> main_hand_weapon;
     weapon_multiplier = 0;
     if ( p -> perk.enhanced_blade_flurry -> ok() )
       aoe = -1;
-
-    snapshot_flags |= STATE_MUL_DA;
+    pct_damage = p -> spec.blade_flurry -> effectN( 3 ).percent();
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const
+  double target_armor( player_t* ) const
   {
-    double m = rogue_attack_t::composite_da_multiplier( state );
+    return 0; // Armor accounted for in previous attack.
+  }
 
-    m *= p() -> spec.blade_flurry -> effectN( 3 ).percent();
+  double composite_player_multiplier() const
+  {
+    return 1; // No double dipping
+  }
 
-    return m;
+  void execute()
+  {
+    base_dd_max *= pct_damage; //Deals 40% of original damage
+    base_dd_min *= pct_damage;
+
+    rogue_attack_t::execute();
+  }
+
+  bool procs_poison() const
+  {
+    return false;
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const
@@ -3181,10 +3197,9 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
   if ( state -> action -> n_targets() != 0 )
     return;
 
-  // Note, unmitigated damage
-  active_blade_flurry -> base_dd_min = state -> result_total;
-  active_blade_flurry -> base_dd_max = state -> result_total;
-  active_blade_flurry -> schedule_execute();
+  active_blade_flurry -> base_dd_min = state -> result_amount;
+  active_blade_flurry -> base_dd_max = state -> result_amount;
+  active_blade_flurry -> execute();
 }
 
 void rogue_t::trigger_shadow_reflection( const action_state_t* state )
