@@ -1,7 +1,7 @@
 paladin="Paladin_Retribution_T17M"
 level=100
 race=blood_elf
-role=hybrid
+role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#bb!1001222
 glyphs=winged_vengeance/templars_verdict/righteous_retreat/fire_from_the_heavens/judgment/glyph_of_immediate_truth
@@ -19,8 +19,8 @@ actions.precombat=flask,type=greater_draenic_strength_flask
 actions.precombat+=/food,type=sleeper_surprise
 actions.precombat+=/blessing_of_kings,if=!aura.str_agi_int.up
 actions.precombat+=/blessing_of_might,if=!aura.mastery.up
-actions.precombat+=/seal_of_truth,if=active_enemies<6
-actions.precombat+=/seal_of_righteousness,if=active_enemies>=6
+actions.precombat+=/seal_of_truth,if=active_enemies<5
+actions.precombat+=/seal_of_righteousness,if=active_enemies>=5
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_strength
@@ -33,7 +33,6 @@ actions+=/auto_attack
 actions+=/speed_of_light,if=movement.remains>1
 actions+=/execution_sentence
 actions+=/lights_hammer
-actions+=/judgment,if=buff.maraads_truth.down&talent.empowered_seals.enabled
 actions+=/holy_avenger,sync=seraphim,if=talent.seraphim.enabled
 actions+=/holy_avenger,if=holy_power<=2&!talent.seraphim.enabled
 actions+=/avenging_wrath,sync=seraphim,if=talent.seraphim.enabled
@@ -45,24 +44,25 @@ actions+=/arcane_torrent
 actions+=/seraphim
 actions+=/judgment,if=talent.empowered_seals.enabled&buff.maraads_truth.down
 actions+=/call_action_list,name=single,if=active_enemies<=2
-actions+=/call_action_list,name=cleave,if=active_enemies>=3
+actions+=/call_action_list,name=cleave,if=active_enemies<=4
 actions+=/call_action_list,name=aoe,if=active_enemies>=5
 
-actions.single=divine_storm,if=buff.divine_crusader.react&holy_power=5&talent.final_verdict.enabled&buff.final_verdict.up
-actions.single+=/templars_verdict,if=holy_power=5|buff.holy_avenger.up&holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)
+actions.single=divine_storm,if=buff.divine_crusader.react&holy_power>=5&talent.final_verdict.enabled&buff.final_verdict.up
+actions.single+=/templars_verdict,if=holy_power>=5|buff.holy_avenger.up&holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)
 actions.single+=/templars_verdict,if=buff.divine_purpose.react&buff.divine_purpose.remains<4
-actions.single+=/final_verdict,if=holy_power=5|buff.holy_avenger.up&holy_power>=3
+actions.single+=/final_verdict,if=holy_power>=5|buff.holy_avenger.up&holy_power>=3
 actions.single+=/final_verdict,if=buff.divine_purpose.react&buff.divine_purpose.remains<4
 actions.single+=/divine_storm,if=buff.divine_crusader.react&holy_power=5&(!talent.final_verdict.enabled|buff.final_verdict.up)
 actions.single+=/judgment,if=talent.empowered_seals.enabled&buff.maraads_truth.remains<=3
+actions.single+=/wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.2&talent.empowered_seals.enabled
 actions.single+=/hammer_of_wrath
 actions.single+=/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2
-actions.single+=/exorcism,if=buff.blazing_contempt.up&holy_power<=2
+actions.single+=/exorcism,if=buff.blazing_contempt.up&holy_power<=2&buff.holy_avenger.down
 actions.single+=/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2&buff.blazing_contempt.up
 actions.single+=/divine_storm,if=buff.divine_crusader.react&talent.final_verdict.enabled&buff.final_verdict.up
 actions.single+=/templars_verdict,if=buff.avenging_wrath.up&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)
 actions.single+=/final_verdict
-actions.single+=/divine_storm,if=buff.divine_crusader.react&buff.avenging_wrath.up&(!talent.final_verdict.enabled|buff.final_verdict.up)
+actions.single+=/divine_storm,if=talent.divine_purpose.enabled&buff.divine_crusader.react&buff.avenging_wrath.up&(!talent.final_verdict.enabled|buff.final_verdict.up)
 actions.single+=/crusader_strike
 actions.single+=/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2
 actions.single+=/judgment
@@ -78,25 +78,25 @@ actions.cleave=final_verdict,if=buff.final_verdict.down
 actions.cleave+=/divine_storm,if=buff.divine_crusader.react&talent.final_verdict.enabled&buff.final_verdict.up
 actions.cleave+=/divine_storm,if=talent.final_verdict.enabled&buff.final_verdict.up
 actions.cleave+=/judgment,if=talent.empowered_seals.enabled&buff.maraads_truth.remains<=3
-actions.cleave+=/exorcism,if=buff.blazing_contempt.up&holy_power<=2
+actions.cleave+=/wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.2&talent.empowered_seals.enabled
+actions.cleave+=/exorcism,if=buff.blazing_contempt.up&holy_power<=2&buff.holy_avenger.down
 actions.cleave+=/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2&buff.blazing_contempt.up
-actions.cleave+=/divine_storm,if=active_enemies>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)
 actions.cleave+=/hammer_of_wrath
 actions.cleave+=/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2
+actions.cleave+=/divine_storm,if=active_enemies>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)
 actions.cleave+=/crusader_strike
 actions.cleave+=//wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2
-actions.cleave+=/exorcism,if=active_enemies>=3&glyph.mass_exorcism.enabled
+actions.cleave+=/divine_storm,if=(!talent.seraphim.enabled|cooldown.seraphim.remains>3)
 actions.cleave+=/judgment
 actions.cleave+=/wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.2
 actions.cleave+=/exorcism
 actions.cleave+=/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2
 actions.cleave+=/holy_prism
 
-actions.aoe=final_verdict,if=buff.final_verdict.down&buff.divine_crusader.up
-actions.aoe+=/divine_storm,if=buff.divine_crusader.react&talent.final_verdict.enabled&buff.final_verdict.up
-actions.aoe+=/divine_storm,if=(!talent.seraphim.enabled|cooldown.seraphim.remains>3)
+actions.aoe=divine_storm,if=(!talent.seraphim.enabled|cooldown.seraphim.remains>3)
 actions.aoe+=/judgment,if=talent.empowered_seals.enabled&buff.maraads_truth.remains<=3
-actions.aoe+=/exorcism,if=buff.blazing_contempt.up&holy_power<=2
+actions.aoe+=/wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.2&talent.empowered_seals.enabled
+actions.aoe+=/exorcism,if=buff.blazing_contempt.up&holy_power<=2&buff.holy_avenger.down
 actions.aoe+=/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2&buff.blazing_contempt.up
 actions.aoe+=/hammer_of_wrath
 actions.aoe+=/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2
@@ -110,17 +110,17 @@ actions.aoe+=/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&
 actions.aoe+=/holy_prism
 
 head=helmet_of_guiding_light,id=115568,bonus_id=567
-neck=vertebrae_protector,id=113900,bonus_id=567,enchant=gift_of_mastery
+neck=thogars_serrated_chain,id=113959,bonus_id=567,enchant=gift_of_mastery
 shoulders=pauldrons_of_guiding_light,id=115565,bonus_id=567
-back=charbreath_firecloak,id=113916,bonus_id=567,enchant=gift_of_mastery
+back=cloak_of_sanguine_terror,id=113972,bonus_id=567,enchant=gift_of_mastery
 chest=battleplate_of_guiding_light,id=115566,bonus_id=567
 wrists=bracers_of_visceral_force,id=119331,bonus_id=567
 hands=gauntlets_of_guiding_light,id=115567,bonus_id=567
-waist=uktars_belt_of_chiming_rings,id=113976,bonus_id=567
-legs=firestorm_legplates,id=113921,bonus_id=567
-feet=iron_bellow_sabatons,id=113961,bonus_id=567
-finger1=phosphorescent_seal,id=113866,bonus_id=567,enchant=gift_of_mastery
-finger2=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_mastery
+waist=ironcrushers_collar,id=113950,bonus_id=567
+legs=legplates_of_guiding_light,id=115569,bonus_id=567
+feet=sabatons_of_fractal_earth,id=113936,bonus_id=567
+finger1=seal_of_the_savage_howl,id=113940,bonus_id=567,enchant=gift_of_haste
+finger2=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_haste
 trinket1=horn_of_screaming_spirits,id=119193,bonus_id=567
 trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=567
 main_hand=thogars_control_rod,id=113953,bonus_id=567,enchant=mark_of_bleeding_hollow
@@ -128,11 +128,11 @@ main_hand=thogars_control_rod,id=113953,bonus_id=567,enchant=mark_of_bleeding_ho
 # Gear Summary
 # gear_strength=3612
 # gear_stamina=4545
-# gear_crit_rating=828
-# gear_haste_rating=1643
-# gear_mastery_rating=1035
+# gear_crit_rating=906
+# gear_haste_rating=924
+# gear_mastery_rating=1280
 # gear_armor=2250
-# gear_multistrike_rating=488
-# gear_versatility_rating=227
+# gear_multistrike_rating=989
+# gear_versatility_rating=146
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
