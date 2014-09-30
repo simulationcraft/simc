@@ -1819,17 +1819,10 @@ void SimulateThread::run()
 
   sim_control_t description;
 
-  success = description.options.parse_text( utf8_profile.constData() );
+  description.options.parse_text( utf8_profile.constData() );
 
-  if ( success )
-  {
-    success = sim -> setup( &description );
-  }
-  else
-  {
-    // sim -> setup() opens the output_file_str so there is no detailed information to user about this failure
-    sim -> errorf( "Failed to parse text" );
-  }
+  sim -> setup( &description );
+
   if ( sim -> challenge_mode ) sim -> scale_to_itemlevel = 620; //Check
 
   if ( sim -> spell_query != 0 )
@@ -1838,11 +1831,7 @@ void SimulateThread::run()
     report::print_spell_query( sim, MAX_LEVEL );
     success = false;
   }
-
-  if ( success )
-  {
-    success = sim -> execute();
-  }
+  success = sim -> execute();
   if ( success )
   {
     sim -> scaling -> analyze();

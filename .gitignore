@@ -3,6 +3,7 @@
 *.dat
 *.dll
 *.exe
+*.gcda
 *.ncb
 *.sdf
 *.suo

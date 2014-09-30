@@ -3,16 +3,10 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-// TODO:
-//  Add proper travel time to Welly:water_jet
-
-
 
 #include "simulationcraft.hpp"
 
 using namespace residual_action;
-
-
 
 namespace { // UNNAMED NAMESPACE
 
@@ -1294,7 +1288,7 @@ public:
     if ( ! p() -> spec.icicles -> ok() )
       return;
 
-    if ( ! result_is_hit( state -> result ) )
+    if ( ! ( result_is_hit( state -> result ) | result_is_multistrike( state -> result ) ) )
       return;
 
     // Icicles do not double dip on target based multipliers
@@ -2617,6 +2611,16 @@ struct flamestrike_t : public mage_spell_t
     cooldown -> duration = timespan_t::zero(); // Flamestrike Perk modifying the cooldown
     aoe = -1;
   }
+  
+  virtual void impact( action_state_t* s )
+  {
+
+    mage_spell_t::impact( s );
+
+    trigger_ignite( s );
+  }
+
+
 };
 
 // Frost Bomb Spell ===============================================================
@@ -2828,7 +2832,7 @@ struct frostfire_bolt_t : public mage_spell_t
   frostfire_bolt_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "frostfire_bolt", p, p -> find_spell( 44614 ) ),
     frigid_blast( new frigid_blast_t( p ) ),
-    icicle( p -> get_stats( "icicle_ffb" ) ),
+    icicle( 0 ),
     brain_freeze_bonus( p -> find_spell( 44549 ) -> effectN( 3 ).percent() )
   {
     parse_options( NULL, options_str );
@@ -2840,10 +2844,13 @@ struct frostfire_bolt_t : public mage_spell_t
     {
       add_child( frigid_blast );
     }
-
-    stats -> add_child( icicle );
-    icicle -> school = school;
-    icicle -> action_list.push_back( p -> icicle );
+    if ( p -> specialization() == MAGE_FROST )
+    {
+      icicle = p -> get_stats( "icicle_ffb" );
+      stats -> add_child( icicle );
+      icicle -> school = school;
+      icicle -> action_list.push_back( p -> icicle );
+    }
   }
 
   virtual double cost() const
@@ -2968,7 +2975,10 @@ struct frostfire_bolt_t : public mage_spell_t
       am *= ( 1.0 + p() -> buffs.frozen_thoughts -> data().effectN( 1 ).percent() );
     }
 
-    am *= 1.0 + brain_freeze_bonus;
+    if ( p() -> buffs.brain_freeze -> up() )
+    {
+      am *= 1.0 + brain_freeze_bonus;
+    }
 
     return am;
   }
@@ -5018,14 +5028,17 @@ void mage_t::apl_arcane()
     cooldowns -> add_action( item_actions[i] );
 
 
-  aoe -> add_talent( this, "Nether Tempest",
-                     "cycle_targets=1,if=buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))",
+  aoe -> add_action( "call_action_list,name=cooldowns",
                      "AoE sequence" );
+  aoe -> add_talent( this, "Nether Tempest",
+                     "cycle_targets=1,if=buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))" );
   aoe -> add_talent( this, "Supernova" );
   aoe -> add_action( this, "Arcane Barrage",
                      "if=buff.arcane_charge.stack=4" );
   aoe -> add_talent( this, "Arcane Orb",
                      "if=buff.arcane_charge.stack<4" );
+  aoe -> add_action( this, "Cone of Cold",
+                     "if=glyph.cone_of_cold.enabled" );
   aoe -> add_action( this, "Arcane Explosion" );
 
 
@@ -5280,9 +5293,10 @@ void mage_t::apl_frost()
     cooldowns -> add_action( item_actions[i] );
 
 
-  aoe -> add_talent( this, "Frost Bomb",
-                     "if=cooldown.frozen_orb.remains<gcd|buff.fingers_of_frost.react",
+  aoe -> add_action( "call_action_list,name=cooldowns",
                      "AoE sequence" );
+  aoe -> add_talent( this, "Frost Bomb",
+                     "if=remains<action.ice_lance.travel_time&(cooldown.frozen_orb.remains<gcd|buff.fingers_of_frost.react=2)" );
   aoe -> add_action( this, "Frozen Orb" );
   aoe -> add_action( this, "Ice Lance",
                      "if=buff.fingers_of_frost.react&debuff.frost_bomb.up" );
@@ -5290,7 +5304,8 @@ void mage_t::apl_frost()
   aoe -> add_talent( this, "Ice Nova" );
   aoe -> add_action( this, "Cone of Cold",
                      "if=glyph.cone_of_cold.enabled" );
-  aoe -> add_action( this, "Blizzard" );
+  aoe -> add_action( this, "Blizzard",
+                     "interrupt_if=cooldown.frozen_orb.up|(talent.frost_bomb.enabled&buff.fingers_of_frost.react=2)" );
   aoe -> add_talent( this, "Ice Floes", "moving=1" );
 
 

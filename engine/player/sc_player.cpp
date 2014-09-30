@@ -1053,26 +1053,15 @@ bool player_t::init_items()
     item_stats += item.stats;
   }
 
-
-  switch ( type )
-  {
-    case MAGE:
-    case PRIEST:
-    case WARLOCK:
-      matching_gear = true;
-      break;
-    default:
-      matching_gear = true;
-      for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
+    matching_gear = true;
+    for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
+    {
+      if ( !slots[i] )
       {
-        if ( ! slots[ i ] )
-        {
-          matching_gear = false;
-          break;
-        }
+        matching_gear = false;
+        break;
       }
-      break;
-  }
+    }
 
   init_meta_gem( item_stats );
 

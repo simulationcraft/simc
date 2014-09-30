@@ -5,7 +5,7 @@ race=troll
 spec=arcane
 professions=tailoring=600/engineering=600
 talents=100012
-glyphs=arcane_power
+glyphs=arcane_power/cone_of_cold
 head=ebon_ritual_hood,id=105647,upgrade=2,gems=sinister_primal_8haste_8mastery_9int,reforge=haste_hit
 neck=untainted_guardians_chain,id=105465,upgrade=2,reforge=hit_haste
 shoulders=chronomancer_mantle,id=99401,upgrade=2,gems=8haste_8mastery_8haste_8mastery_6int,enchant=10int_5crit,reforge=crit_mastery
@@ -30,7 +30,7 @@ race=troll
 spec=fire
 professions=tailoring=600/engineering=600
 talents=100022
-glyphs=inferno_blast,combustion
+glyphs=inferno_blast/combustion/dragons_breath
 
 head=ebon_ritual_hood,id=105647,upgrade=2,gems=sinister_primal_8haste_8mastery_9int
 neck=untainted_guardians_chain,id=105465,upgrade=2
@@ -56,7 +56,7 @@ race=troll
 spec=frost
 professions=tailoring=600/engineering=600
 talents=100011
-glyphs=icy_veins/splitting_ice
+glyphs=icy_veins/splitting_ice/cone_of_cold
 head=chronomancer_hood,id=99398,upgrade=2,gems=sinister_primal_8haste_8mastery_9int,reforge=crit_mastery
 neck=untainted_guardians_chain,id=105465,upgrade=2,reforge=hit_haste
 shoulders=chronomancer_mantle,id=99401,upgrade=2,gems=8haste_8mastery_8haste_8mastery_6int,enchant=10int_5crit,reforge=haste_mastery

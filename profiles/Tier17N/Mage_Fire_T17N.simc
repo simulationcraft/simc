@@ -3,8 +3,8 @@ level=100
 race=troll
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!0...112
-glyphs=inferno_blast,combustion
+talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!0...012
+glyphs=inferno_blast/combustion/dragons_breath
 spec=fire
 
 # This default action priority list is automatically created based on your character.
