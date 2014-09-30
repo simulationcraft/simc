@@ -23,10 +23,8 @@ char* skip_white_space( char* s )
 
 // option_db_t::open_file ===================================================
 
-io::cfile open_file( const std::string& auto_path, const std::string& name )
+io::cfile open_file( const std::vector<std::string>& splits, const std::string& name )
 {
-  std::vector<std::string> splits = util::string_split( auto_path, ",;|" );
-
   for ( size_t i = 0; i < splits.size(); i++ )
   {
     FILE* f = io::fopen( splits[ i ] + "/" + name, "r" );
@@ -441,7 +439,7 @@ void option_db_t::parse_args( const std::vector<std::string>& args )
 
 #ifndef SC_SHARED_DATA
   #if defined( SC_LINUX_PACKAGING )
-    #define SC_SHARED_DATA SC_LINUX_PACKAGING "/profiles/"
+    #define SC_SHARED_DATA SC_LINUX_PACKAGING "/profiles"
   #else
     #define SC_SHARED_DATA ".."
   #endif
@@ -457,7 +455,7 @@ option_db_t::option_db_t()
   // This makes baby pandas cry a bit less, but still makes them weep.
 
   // Add current directory automagically.
-  auto_path = ".|";
+  auto_path.push_back( "." );
 
   // Automatically add "./profiles" and "../profiles", because the command line
   // client is ran both from the engine/ subdirectory, as well as the source
@@ -472,25 +470,24 @@ option_db_t::option_db_t()
     if ( prefix.empty() )
       continue;
 
-    if ( *( prefix.end() - 1 ) != '/' )
-      prefix += "/";
+    auto_path.push_back( prefix );
 
-    auto_path += prefix + "|";
-    auto_path += prefix + "PreRaid|";
+    prefix += "/";
+
+    auto_path.push_back( prefix + "PreRaid" );
 
     // Add profiles for each tier, except pvp
     for ( int i = 0; i < ( N_TIER - 1 ); i++ )
     {
-      auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "B|";
-      auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "H|";
-      auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "N|";
-      auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "M|";
-      auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "PR|";
+      auto_path.push_back( prefix + "Tier" + util::to_string( MIN_TIER + i ) + "B" );
+      auto_path.push_back( prefix + "Tier" + util::to_string( MIN_TIER + i ) + "H" );
+      auto_path.push_back( prefix + "Tier" + util::to_string( MIN_TIER + i ) + "N" );
+      auto_path.push_back( prefix + "Tier" + util::to_string( MIN_TIER + i ) + "M" );
+      auto_path.push_back( prefix + "Tier" + util::to_string( MIN_TIER + i ) + "PR" );
     }
   }
 
-  if ( auto_path[ auto_path.size() - 1 ] == '|' )
-    auto_path.erase( auto_path.size() - 1 );
+
 }
 
 #undef SC_SHARED_DATA

@@ -2324,7 +2324,7 @@ struct option_tuple_t
 
 struct option_db_t : public std::vector<option_tuple_t>
 {
-  std::string auto_path;
+  std::vector<std::string> auto_path;
   std::unordered_map<std::string, std::string> var_map;
 
   option_db_t();
