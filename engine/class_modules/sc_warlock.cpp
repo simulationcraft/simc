@@ -8,12 +8,14 @@
 // ==========================================================================
 //
 // TODO:
+// Shadow bolt costs no mana
 // T17 Set bonusses.
-//  2PC Demo, 2->3 Charges, 10% chance on corruption to add a charge. (Currently works not only for the latest but all)
+//  4PC Destro, fix multistrike mechanic
 //  4PC Demo,proc on HoG/CW
 //    proc has an ICD of 45 secs.
 //    Inner Demon Summon(166862) .c.f wild IMP
 //    Demon casts  Soul Fire (166864)
+// Determine why cancel metamorphosis APL isn't dumping resource properly.
 // check pet coefficients
 // Update action lists, especially AoE
 // Proper spell ids for drain_soul triggered Corruption/UA/Agony ticks.
