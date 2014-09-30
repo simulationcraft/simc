@@ -11,6 +11,18 @@
 
 namespace { // UNNAMED NAMESPACE
 
+enum boss_type_e
+{
+  BOSS_NONE = 0,
+  BOSS_FLUFFY_PILLOW, BOSS_TMI_STANDARD, BOSS_TANK_DUMMY
+};
+
+enum tank_dummy_e
+{
+  TANK_DUMMY_NONE = 0,
+  TANK_DUMMY_WEAK, TANK_DUMMY_DUNGEON, TANK_DUMMY_RAID, TANK_DUMMY_MYTHIC
+};
+
 enum tmi_boss_e
 {
   TMI_NONE = 0,
@@ -24,8 +36,13 @@ struct enemy_t : public player_t
   double fixed_health_percentage, initial_health_percentage;
   double health_recalculation_dampening_exponent;
   timespan_t waiting_time;
+  std::string boss_type_str;
+  boss_type_e boss_type_enum;
+  std::string tank_dummy_str;
+  tank_dummy_e tank_dummy_enum;
   std::string tmi_boss_str;
   tmi_boss_e tmi_boss_enum;
+
   int current_target;
   int apply_damage_taken_debuff;
 
@@ -37,6 +54,10 @@ struct enemy_t : public player_t
     fixed_health_percentage( 0 ), initial_health_percentage( 100.0 ),
     health_recalculation_dampening_exponent( 1.0 ),
     waiting_time( timespan_t::from_seconds( 1.0 ) ),
+    boss_type_str( "none" ),
+    boss_type_enum( BOSS_NONE ),
+    tank_dummy_str( "none" ),
+    tank_dummy_enum( TANK_DUMMY_NONE ),
     tmi_boss_str( "none" ),
     tmi_boss_enum( TMI_NONE ),
     current_target( 0 ),
@@ -59,9 +80,10 @@ struct enemy_t : public player_t
   virtual void create_buffs();
   virtual void init_resources( bool force = false );
   virtual void init_target();
-  virtual std::string  fluffy_pillow_action_list();
-  virtual std::string  tmi_boss_action_list();
-  virtual std::string  retrieve_action_list();
+  virtual std::string fluffy_pillow_action_list();
+  virtual std::string tmi_boss_action_list();
+  virtual std::string tank_dummy_action_list();
+  virtual std::string retrieve_action_list();
   virtual void init_action_list();
   virtual void init_stats();
   virtual double resource_loss( resource_e, double, gain_t*, action_t* );
@@ -76,7 +98,9 @@ struct enemy_t : public player_t
   virtual expr_t* create_expression( action_t* action, const std::string& type );
   virtual timespan_t available() const { return waiting_time; }
 
+  virtual boss_type_e convert_boss_type( const std::string& boss_type );
   virtual tmi_boss_e convert_tmi_string( const std::string& tmi_string );
+  virtual tank_dummy_e convert_tank_dummy_string( const std::string& tank_dummy_string );
 
   virtual bool taunt( player_t* source );
 };
@@ -707,12 +731,32 @@ action_t* enemy_t::create_action( const std::string& name,
   return a;
 }
 
+// enemy_t::convert_boss_type ===========================================
+boss_type_e enemy_t::convert_boss_type( const std::string& boss_type )
+{
+  if ( util::str_compare_ci( boss_type, "none" ) )
+    return BOSS_NONE;
+  if ( util::str_compare_ci( boss_type, "tank_dummy" ) )
+    return BOSS_TANK_DUMMY;
+  if ( util::str_compare_ci( boss_type, "tmi_standard_boss" ) )
+    return BOSS_TMI_STANDARD;
+  if ( util::str_compare_ci( boss_type, "fluffy_pillow" ) || util::str_compare_ci( boss_type, "none" ) )
+    return BOSS_FLUFFY_PILLOW;
+
+  if ( ! boss_type.empty() && sim -> debug )
+    sim -> out_debug.printf( "Unknown boss category string input provided: %s", boss_type.c_str() );
+
+  return BOSS_NONE;
+}
+
 // enemy_t::convert_tmi_string ==============================================
 
 tmi_boss_e enemy_t::convert_tmi_string( const std::string& tmi_string )
 {
   // this function translates between the "tmi_boss" option string and the tmi_boss_e enum
   // eventually plan on using regular expressions here
+  if ( util::str_compare_ci( tmi_string, "none" ) )
+    return TMI_NONE;
   if ( util::str_compare_ci( tmi_string, "T15LFR" ) || util::str_compare_ci( tmi_string, "T15N10" ) )
     return TMI_T15LFR;
   if ( util::str_compare_ci( tmi_string, "T15N" ) || util::str_compare_ci( tmi_string, "T15N25" ) || util::str_compare_ci( tmi_string, "T15H10" ) )
@@ -741,6 +785,27 @@ tmi_boss_e enemy_t::convert_tmi_string( const std::string& tmi_string )
 
 }
 
+// enemy_t::convert_tank_dummy_string =========================================
+
+tank_dummy_e enemy_t::convert_tank_dummy_string( const std::string& tank_dummy_string )
+{
+  if ( util::str_compare_ci( tank_dummy_string, "none" ) )
+    return TANK_DUMMY_NONE;
+  if ( util::str_compare_ci( tank_dummy_string, "weak" ) )
+    return TANK_DUMMY_WEAK;
+  if ( util::str_compare_ci( tank_dummy_string, "dungeon" ) )
+    return TANK_DUMMY_DUNGEON;
+  if ( util::str_compare_ci( tank_dummy_string, "raid" ) )
+    return TANK_DUMMY_RAID;
+  if ( util::str_compare_ci( tank_dummy_string, "mythic" ) )
+    return TANK_DUMMY_MYTHIC;
+
+  if ( ! tank_dummy_string.empty() &&  sim -> debug )
+    sim -> out_debug.printf( "Unknown Tank Dummy string input provided: %s", tank_dummy_string.c_str() );
+
+  return TANK_DUMMY_NONE;
+}
+
 // enemy_t::init_base =======================================================
 
 void enemy_t::init_base_stats()
@@ -749,12 +814,29 @@ void enemy_t::init_base_stats()
 
   resources.infinite_resource[ RESOURCE_HEALTH ] = false;
 
-  tmi_boss_enum = convert_tmi_string( tmi_boss_str );
+  // check if the user has specified a boss type via the gui or cli
+  boss_type_enum = convert_boss_type( boss_type_str );
+
+  // logic to determine appropriate boss type. TMI bosses take precedence over Tank dummies
+  if ( boss_type_enum == BOSS_TMI_STANDARD || boss_type_enum == BOSS_NONE )
+  {
+    tmi_boss_enum = convert_tmi_string( tmi_boss_str );
+    if ( tmi_boss_enum != TMI_NONE )
+      boss_type_enum = BOSS_TMI_STANDARD;
+  }
+  if ( boss_type_enum == BOSS_TANK_DUMMY || boss_type_enum == BOSS_NONE )
+  {
+    tank_dummy_enum = convert_tank_dummy_string( tank_dummy_str );
+    if ( tank_dummy_enum != TANK_DUMMY_NONE )
+      boss_type_enum = BOSS_TANK_DUMMY;
+  }
+  
 
   if ( level == 0 )
     level = sim -> max_player_level + 3;
 
-  if ( tmi_boss_enum == TMI_NONE ) // skip overrides for TMI standard bosses
+  // skip overrides for TMI standard bosses and raid dummies
+  if ( boss_type_enum == BOSS_TMI_STANDARD || boss_type_enum == BOSS_TANK_DUMMY ) 
   {
     // target_level override
     if ( sim -> target_level >= 0 )
@@ -772,6 +854,18 @@ void enemy_t::init_base_stats()
     {
       race = util::parse_race_type( sim -> target_race );
       race_str = util::race_type_string( race );
+    }
+  }
+  else if ( boss_type_enum == BOSS_TANK_DUMMY )
+  {
+    switch ( tank_dummy_enum )
+    {
+      case TANK_DUMMY_DUNGEON:
+        level = 102; break;
+      case TANK_DUMMY_WEAK:
+        level = 100; break;
+      default:
+        level = 103;
     }
   }
 
@@ -910,8 +1004,11 @@ std::string enemy_t::tmi_boss_action_list()
 {
   // Bosses are (roughly) standardized based on content level. dot damage should be 2/15 of melee damage (0.1333 multiplier)
   std::string als = "";
-  int aa_damage[ 11 ] = { 0, 5500, 7500, 9000, 12500, 15000, 25000, 45000, 100000, 150000, 200000 };
-  int dot_damage[ 11 ] = { 0, 733, 1000, 1200, 1667, 2000, 3333, 6000, 13333, 20000, 26667 };
+  const int num_bosses = 11;
+  int aa_damage[ num_bosses ] = { 0, 5500, 7500, 9000, 12500, 15000, 25000, 45000, 100000, 150000, 200000 };
+  int dot_damage[ num_bosses ] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  for ( int i = 0; i < num_bosses; i++ )
+    dot_damage[ i ] = aa_damage[ i ] * 2 / 15;
 
   als += "/auto_attack,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] ) + ",attack_speed=1.5,aoe_tanks=1";
   als += "/spell_dot,damage=" + util::to_string( dot_damage[ tmi_boss_enum ] ) + ",tick_time=2,dot_duration=30,aoe_tanks=1,if=!ticking";
@@ -919,17 +1016,34 @@ std::string enemy_t::tmi_boss_action_list()
   return als;
 }
 
+std::string enemy_t::tank_dummy_action_list()
+{
+  std::string als = "";
+  int aa_damage[ 5 ] = { 0, 5000, 75000, 250000, 375000 };
+  int aa_damage_var[ 5 ] = { 0, 0, 15000, 50000, 75000 };
+  int dummy_strike_damage[ 5 ] = { 0, 0, 50, 50, 50 }; // TODO: put in values
+  int uber_strike_damage[ 5 ] = { 0, 0, 0, 0, 100 }; // TODO: put in values
+
+  als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_enum ] ) + ",range=" + util::to_string( aa_damage_var[ tank_dummy_enum ] ) + ",attack_speed=1.5,aoe_tanks=1";
+  if ( tank_dummy_enum > TANK_DUMMY_WEAK )
+    als += "/melee_nuke,damage=" + util::to_string( dummy_strike_damage[ tank_dummy_enum ] ) + "attack_speed=0,cooldown=6,aoe_tanks=1";
+  if ( tank_dummy_enum > TANK_DUMMY_RAID )
+    als += "/spell_nuke,damage=" + util::to_string( uber_strike_damage[ tank_dummy_enum ] ) + "attack_speed=1,cooldown=10,aoe_tanks=1,apply_debuff=5";
+
+  return als;
+}
+
 std::string enemy_t::retrieve_action_list()
 {
-  // in theory, we could change tmi_boss_enum to boss_enum and support a wider variety of bosses here
-  switch ( tmi_boss_enum )
+  switch ( boss_type_enum )
   {
   // Fluffy Pillow
-  case TMI_NONE:
-    return fluffy_pillow_action_list();
-  // TMI bosses
-  default:
+  case BOSS_TMI_STANDARD:
     return tmi_boss_action_list();
+  case BOSS_TANK_DUMMY:
+    return tank_dummy_action_list();
+  default:
+    return fluffy_pillow_action_list();
   }  
 }
 
@@ -1084,6 +1198,8 @@ void enemy_t::create_options()
 
   option_t enemy_options[] = 
   {
+    opt_string( "boss_type", boss_type_str ),
+    opt_string( "tank_dummy", tank_dummy_str ),
     opt_string( "tmi_boss", tmi_boss_str ),
     opt_null()
   };

@@ -166,6 +166,8 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
   connect( choice.challenge_mode,     SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.debug,              SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.default_role,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.boss_type,          SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.tank_dummy,         SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.tmi_boss,           SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.tmi_window,         SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.show_etmi,          SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
@@ -237,7 +239,9 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_middle -> addRow( tr( "Target Level" ), choice.target_level = createChoice( 4, "Raid Boss", "5-Man Heroic", "5-Man Normal", "Max Player Level" ) );
   globalsLayout_middle -> addRow( tr( "Target Race" ),   choice.target_race = createChoice( 7, "Humanoid", "Beast", "Demon", "Dragonkin", "Elemental", "Giant", "Undead" ) );
 
-  globalsLayout_middle -> addRow( tr( "TMI Standard Boss" ),  choice.tmi_boss = createChoice( 8, "Custom", "T17M", "T17H", "T17N", "T16H25", "T16H10", "T16N25", "T16N10" ) );
+  globalsLayout_middle -> addRow( tr( "Target Type" ),       choice.boss_type = createChoice( 4, "Custom", "Fluffy Pillow", "Tank Dummy", "TMI Standard Boss" ) );
+  globalsLayout_middle -> addRow( tr( "Tank Dummy" ),       choice.tank_dummy = createChoice( 5, "None", "Weak", "Dungeon", "Raid", "Mythic" ) );
+  globalsLayout_middle -> addRow( tr( "TMI Standard Boss" ),  choice.tmi_boss = createChoice( 8, "None", "T17M", "T17H", "T17N", "T16H25", "T16H10", "T16N25", "T16N10" ) );
   globalsLayout_middle -> addRow( tr( "TMI Window (sec)" ), choice.tmi_window = createChoice( 10, "0", "2", "3", "4", "5", "6", "7", "8", "9", "10" ) );
   globalsLayout_middle -> addRow( tr( "Show ETMI" ),         choice.show_etmi = createChoice( 2, "Only when in group", "Always" ) );
 
@@ -550,7 +554,9 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "armory_region", choice.armory_region );
   load_setting( settings, "armory_spec", choice.armory_spec );
   load_setting( settings, "default_role", choice.default_role );
-  load_setting( settings, "tmi_boss", choice.tmi_boss, "T17M" );
+  load_setting( settings, "boss_type", choice.boss_type, "Custom" );
+  load_setting( settings, "tank_dummy", choice.tank_dummy, "None" );
+  load_setting( settings, "tmi_boss", choice.tmi_boss, "None" );
   load_setting( settings, "tmi_window_global", choice.tmi_window, "6" );
   load_setting( settings, "show_etmi", choice.show_etmi );
   load_setting( settings, "world_lag", choice.world_lag, "Medium - 100 ms" );
@@ -643,6 +649,8 @@ void SC_OptionsTab::encodeOptions()
   settings.setValue( "armory_region", choice.armory_region -> currentText() );
   settings.setValue( "armory_spec", choice.armory_spec -> currentText() );
   settings.setValue( "default_role", choice.default_role -> currentText() );
+  settings.setValue( "boss_type", choice.boss_type -> currentText() );
+  settings.setValue( "tank_dummy", choice.tank_dummy -> currentText() );
   settings.setValue( "tmi_boss", choice.tmi_boss -> currentText() );
   settings.setValue( "tmi_window_global", choice.tmi_window -> currentText() );
   settings.setValue( "show_etmi", choice.show_etmi -> currentText() );
@@ -733,8 +741,14 @@ void SC_OptionsTab::createToolTips()
 
   choice.default_role -> setToolTip( tr( "Specify the character role during import to ensure correct action priority list." ) );
 
-  choice.tmi_boss -> setToolTip( tr( "Specify boss damage output based on a TMI standard.\n"
-                                     "Leaving at *custom* will use the SimC defaults unless overwritten by the user." ) );
+  choice.boss_type -> setToolTip( tr( "Choose the type of target. Some choices can be refined further by the next two drop-down boxes" ) );
+
+  choice.tank_dummy -> setToolTip( tr( "If \"Tank Dummy\" is chosen above, this drop-down selects the type of tank dummy used."
+                                       "Leaving at *None* will default back to a Fluffy Pillow.\n" ) );
+  
+  choice.tmi_boss -> setToolTip( tr( "If \"TMI Standard Boss\" is chosen in \"Target Type\", this box selects the TMI standard."
+                                     "TMI Standard Bosses provide damage output similar to bosses in the appropriate tier.\n"
+                                     "Leaving at *None* will default back to a Fluffy Pillow.\n" ) );
 
   choice.tmi_window -> setToolTip( tr( "Specify window duration for calculating TMI. Default is 6 sec.\n"
                                        "Reducing this increases the metric's sensitivity to shorter damage spikes.\n"
@@ -823,16 +837,26 @@ QString SC_OptionsTab::get_globalSettings()
   if ( choice.tmi_window -> currentIndex() != 0 )
     options += "tmi_window_global=" + choice.tmi_window-> currentText() + "\n";
 
-  if ( choice.tmi_boss -> currentIndex() != 0 )
+  if ( choice.boss_type -> currentIndex() > 1 )
   {
-    // boss setup
-    options += "enemy=TMI_Standard_Boss_";
-    options += choice.tmi_boss -> currentText();
-    options += "\n";
-    options += "tmi_boss=" + choice.tmi_boss -> currentText();
-    options += "\n";
-    options += "role=tank\n";
-    options += "position=front\n";
+    if ( choice.boss_type -> currentText() == "Tank Dummy" && choice.tank_dummy -> currentIndex() != 0 )
+    {
+      // boss setup
+      options += "enemy=Tank_Dummy_" + choice.tank_dummy -> currentText() + "\n";
+      options += "boss_type=tank_dummy\n";
+      options += "tank_dummy=" + choice.tank_dummy -> currentText() + "\n";
+    }
+
+    if ( choice.boss_type -> currentText() == "TMI Standard Boss" && choice.tmi_boss -> currentIndex() != 0 )
+    {
+      // boss setup
+      options += "enemy=TMI_Standard_Boss_" + choice.tmi_boss -> currentText() + "\n";
+      options += "boss_type=tmi_standard_boss\n";
+      options += "tmi_boss=" + choice.tmi_boss -> currentText();
+      options += "\n";
+      options += "role=tank\n";
+      options += "position=front\n";
+    }
   }
   else
   {
