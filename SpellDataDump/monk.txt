@@ -627,10 +627,10 @@ Effects          :
 
 Name             : Jab (id=100780) [Spell Family (53)] 
 Class            : Monk
-Resource         : 2.6% Base Mana (4160 @Level 100) w/ Stance of the Wise Serpent (id=115070)
+Resource         : 3.5% Base Mana (5600 @Level 100) w/ Stance of the Wise Serpent (id=115070)
 Resource         : 45 Energy w/ Stance of the Fierce Tiger (id=103985)
 Resource         : 45 Energy w/ Stance of the Sturdy Ox (id=115069)
-Resource         : 2.6% Base Mana (4160 @Level 100) w/ Stance of the Spirited Crane (id=154436)
+Resource         : 3.5% Base Mana (5600 @Level 100) w/ Stance of the Spirited Crane (id=154436)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -925,10 +925,10 @@ Effects          :
 
 Name             : Jab (id=108557) [Scaling Spell (8), Spell Family (53)] 
 Class            : Monk
-Resource         : 2.6% Base Mana (4160 @Level 100) w/ Stance of the Wise Serpent (id=115070)
+Resource         : 3.5% Base Mana (5600 @Level 100) w/ Stance of the Wise Serpent (id=115070)
 Resource         : 45 Energy w/ Stance of the Fierce Tiger (id=103985)
 Resource         : 45 Energy w/ Stance of the Sturdy Ox (id=115069)
-Resource         : 2.6% Base Mana (4160 @Level 100) w/ Stance of the Spirited Crane (id=154436)
+Resource         : 3.5% Base Mana (5600 @Level 100) w/ Stance of the Spirited Crane (id=154436)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -978,9 +978,6 @@ Effects          :
 
 Name             : Monk Weapon Override Driver (id=108562) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
-Proc Chance      : 100%
-Proc Flags       : ....x.x. x.x.x.x. x....... ........ 
-                 : Yellow Melee, White Ranged, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6046,7 +6043,7 @@ Effects          :
 #1 (id=219858)   : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.21500
 #2 (id=219868)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.35000 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.21500 | Radius: 0 - 8 yards
 Description      : Consumes up to 4 Chi to cause the target to explode with Chi energy, causing additional effects based on Chi consumed:
 
 1+ Chi: Heals an ally for $s1 plus $s1 per Chi consumed.
@@ -6799,4 +6796,32 @@ Effects          :
 #1 (id=251171)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Choose a level 60 talent.
+
+Name             : Player Damage Reduction Level 95 (id=178839) [Passive, Hidden] 
+Class            : Death Knight, Shaman, Mage, Warlock, Monk
+Spell Level      : 95
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ....x... 
+                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=256906)   : Apply Aura (6) | Unknown effect sub type (309)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2
+Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
+
+Name             : Player Damage Reduction Level 100 (id=178840) [Passive, Hidden] 
+Class            : Death Knight, Shaman, Mage, Warlock, Monk
+Spell Level      : 100
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ....x... 
+                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=256907)   : Apply Aura (6) | Unknown effect sub type (309)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2
+Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
 
