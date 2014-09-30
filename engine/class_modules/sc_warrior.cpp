@@ -15,19 +15,6 @@ struct warrior_t;
 
 enum warrior_stance { STANCE_BATTLE = 2, STANCE_DEFENSE = 4, STANCE_GLADIATOR = 8 };
 
-static bool bloodbath_blacklist( unsigned spell_id )
-{
-  // These spells do not proc bloodbath. Tested 9-19-14, spell ids are in the following order
-  // Heroic Throw, Execute Off-hand, Storm Bolt Off-Hand, Ravager, Deep Wounds, Siegebreaker Off-hand, Rend Burst, Enhanced Rend
-  static const unsigned blacklist[] = { 57755, 163558, 145585, 156287, 115768, 176318, 94009, 174736 };
-
-  for ( size_t i = 0; i < sizeof_array( blacklist ); i++ )
-    if ( spell_id == blacklist[i] )
-      return true;
-
-  return false;
-}
-
 struct warrior_td_t: public actor_pair_t
 {
   dot_t* dots_bloodbath;
@@ -129,7 +116,7 @@ public:
     // Tier bonuses
     buff_t* tier15_2pc_tank;
     buff_t* tier16_reckless_defense;
-    buff_t* tier17_4pc_arms;
+    buff_t* tier17_2pc_arms;
     buff_t* tier17_4pc_fury;
     buff_t* tier17_4pc_fury_driver;
     buff_t* pvp_2pc_fury;
@@ -195,7 +182,7 @@ public:
     gain_t* tier15_4pc_tank;
     gain_t* tier16_2pc_melee;
     gain_t* tier16_4pc_tank;
-    gain_t* tier17_2pc_arms;
+    gain_t* tier17_4pc_arms;
   } gain;
 
   // Spells
@@ -259,7 +246,7 @@ public:
 
     //Tier bonuses
     proc_t* t15_2pc_melee;
-    proc_t* t17_4pc_arms;
+    proc_t* t17_2pc_arms;
     proc_t* t17_2pc_fury;
   } proc;
 
@@ -935,11 +922,6 @@ static void trigger_sweeping_strikes( action_state_t* s )
       pct_damage = data().effectN( 1 ).percent();
     }
 
-    double target_armor( player_t* ) const
-    {
-      return 0; // Armor accounted for in previous attack.
-    }
-
     double composite_player_multiplier() const
     {
       return 1; // No double dipping
@@ -997,8 +979,8 @@ static void trigger_sweeping_strikes( action_state_t* s )
     p -> active_sweeping_strikes -> init();
   }
 
-  p -> active_sweeping_strikes -> base_dd_min = s -> result_amount;
-  p -> active_sweeping_strikes -> base_dd_max = s -> result_amount;
+  p -> active_sweeping_strikes -> base_dd_min = s -> result_total;
+  p -> active_sweeping_strikes -> base_dd_max = s -> result_total;
   p -> active_sweeping_strikes -> execute();
 
   return;
@@ -1044,6 +1026,8 @@ void warrior_attack_t::impact( action_state_t* s )
 
   if ( s -> result_amount > 0 )
   {
+    if ( p() -> buff.bloodbath -> up() )
+      trigger_bloodbath_dot( s -> target, s -> result_amount );
     if ( ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) ) )
     {
       if ( p() -> talents.second_wind -> ok() )
@@ -1068,11 +1052,6 @@ void warrior_attack_t::impact( action_state_t* s )
           trigger_sweeping_strikes( s );
         if ( special )
         {
-          if ( p() -> buff.bloodbath -> up() )
-          {
-            if ( !bloodbath_blacklist( this -> id ) || !p() -> bugs )
-              trigger_bloodbath_dot( s -> target, s -> result_amount );
-          }
           if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> specialization() == WARRIOR_ARMS )
           {
             if ( td( s -> target ) -> debuffs_colossus_smash -> up() )
@@ -1514,20 +1493,20 @@ struct colossus_smash_t: public warrior_attack_t
     stancemask = STANCE_BATTLE;
 
     weapon = &( player -> main_hand_weapon );
-    base_costs[RESOURCE_RAGE] *= 1.0 + p -> sets.set( WARRIOR_ARMS, T17, B2 ) -> effectN( 2 ).percent();
+    base_costs[RESOURCE_RAGE] *= 1.0 + p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 2 ).percent();
   }
 
   void execute()
   {
     warrior_attack_t::execute();
 
-    if ( p() -> sets.has_set_bonus( WARRIOR_ARMS, T17, B2 ) )
+    if ( p() -> sets.has_set_bonus( WARRIOR_ARMS, T17, B4 ) )
       p() -> resource_gain( RESOURCE_RAGE,
-      p() -> sets.set( WARRIOR_ARMS, T17, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
-      p() -> gain.tier17_2pc_arms );
-    if ( p() -> sets.set( WARRIOR_ARMS, T17, B4 ) )
-      if ( p() -> buff.tier17_4pc_arms -> trigger() )
-        p() -> proc.t17_4pc_arms -> occur();
+      p() -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
+      p() -> gain.tier17_4pc_arms );
+    if ( p() -> sets.set( WARRIOR_ARMS, T17, B2 ) )
+      if ( p() -> buff.tier17_2pc_arms -> trigger() )
+        p() -> proc.t17_2pc_arms -> occur();
   }
 
   void impact( action_state_t* s )
@@ -2120,8 +2099,8 @@ struct mortal_strike_t: public warrior_attack_t
     cd_duration = cooldown -> duration;
     if ( headlongrush )
       cd_duration *= p() -> cache.attack_haste();
-    if ( p() -> buff.tier17_4pc_arms -> up() )
-      cd_duration *= 1.0 + p() -> buff.tier17_4pc_arms -> data().effectN( 1 ).percent();
+    if ( p() -> buff.tier17_2pc_arms -> up() )
+      cd_duration *= 1.0 + p() -> buff.tier17_2pc_arms -> data().effectN( 1 ).percent();
 
     action_t::update_ready( cd_duration );
   }
@@ -4651,8 +4630,8 @@ void warrior_t::create_buffs()
 
   buff.tier16_reckless_defense = buff_creator_t( this, "tier16_reckless_defense", find_spell( 144500 ) );
 
-  buff.tier17_4pc_arms = buff_creator_t( this, "tier17_4pc_arms", sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).trigger() )
-    .chance( sets.set( WARRIOR_ARMS, T17, B4 ) -> proc_chance() );
+  buff.tier17_2pc_arms = buff_creator_t( this, "tier17_2pc_arms", sets.set( WARRIOR_ARMS, T17, B2 ) -> effectN( 1 ).trigger() )
+    .chance( sets.set( WARRIOR_ARMS, T17, B2 ) -> proc_chance() );
 
   buff.tier17_4pc_fury = buff_creator_t( this, "rampage", sets.set( WARRIOR_FURY, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
     .default_value( sets.set( WARRIOR_FURY, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
@@ -4718,7 +4697,7 @@ void warrior_t::init_gains()
   gain.tier15_4pc_tank        = get_gain( "tier15_4pc_tank" );
   gain.tier16_2pc_melee       = get_gain( "tier16_2pc_melee" );
   gain.tier16_4pc_tank        = get_gain( "tier16_4pc_tank" );
-  gain.tier17_2pc_arms        = get_gain( "tier17_2pc_arms" );
+  gain.tier17_4pc_arms        = get_gain( "tier17_4pc_arms" );
 }
 
 // warrior_t::init_position ====================================================
@@ -4750,7 +4729,7 @@ void warrior_t::init_procs()
 
   proc.t15_2pc_melee           = get_proc( "t15_2pc_melee" );
   proc.t17_2pc_fury            = get_proc( "t17_2pc_fury" );
-  proc.t17_4pc_arms            = get_proc( "t17_4pc_arms" );
+  proc.t17_2pc_arms            = get_proc( "t17_2pc_arms" );
 }
 
 // warrior_t::init_rng ======================================================
