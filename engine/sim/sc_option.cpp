@@ -35,6 +35,18 @@ io::cfile open_file( const std::vector<std::string>& splits, const std::string& 
   return io::cfile( name, "r" );
 }
 
+template<typename T>
+inline void check_boundaries( bool clamp, std::string name, T v, double min, double max) {
+
+  if (clamp) {
+    if (v < min || v > max) {
+      std::stringstream s;
+      s << "Option '" << name << "' with value '" << v
+          << "' not within valid boundaries [" << min << " - " << max << "]";
+      throw std::invalid_argument(s.str());
+    }
+  }
+}
 } // UNNAMED NAMESPACE ======================================================
 
 // option_t::print ==========================================================
@@ -139,15 +151,22 @@ bool option_t::parse( sim_t*             sim,
         break;
       case INT:
         *static_cast<int*>( data.address ) = strtol( v.c_str(), nullptr, 10 );
+        check_boundaries( clamp, name, *static_cast<int*>( data.address ), min, max );
         break;
       case UINT:
         *static_cast<unsigned*>( data.address ) = strtoul( v.c_str(), nullptr, 10 );
+        check_boundaries( clamp, name, *static_cast<unsigned*>( data.address ), min, max );
         break;
       case FLT:
         *static_cast<double*>( data.address ) = strtod( v.c_str(), nullptr );
+        check_boundaries( clamp, name, *static_cast<double*>( data.address ), min, max );
         break;
       case TIMESPAN:
-        *static_cast<timespan_t*>( data.address ) = timespan_t::from_seconds( strtod( v.c_str(), nullptr ) );
+        {
+          double val = strtod( v.c_str(), nullptr );
+          *static_cast<timespan_t*>( data.address ) = timespan_t::from_seconds( val );
+          check_boundaries( clamp, name, val, min, max );
+        }
         break;
       case INT_BOOL:
         if ( v != "0" && v != "1" ) {
