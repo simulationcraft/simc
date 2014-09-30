@@ -273,7 +273,7 @@ std::string school_color( school_e type )
     case SCHOOL_PHYSICAL:     return color::tan;
     case SCHOOL_HOLY:         return color::from_pct( 1.0, 0.9, 0.5 );
     case SCHOOL_FIRE:         return color::red;
-    case SCHOOL_NATURE:       return color::green;
+    case SCHOOL_NATURE:       return color::hunter_green;
     case SCHOOL_FROST:        return color::blue;
     case SCHOOL_SHADOW:       return color::purple;
     case SCHOOL_ARCANE:       return color::light_blue;
