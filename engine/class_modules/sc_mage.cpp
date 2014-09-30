@@ -3,8 +3,6 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-// TODO:
-//  Add proper travel time to Welly:water_jet
 
 #include "simulationcraft.hpp"
 
