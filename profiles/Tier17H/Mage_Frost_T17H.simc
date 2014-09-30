@@ -38,7 +38,7 @@ actions+=/rune_of_power,if=(cooldown.icy_veins.remains<gcd&buff.rune_of_power.re
 actions+=/call_action_list,name=cooldowns,if=time_to_die<24
 actions+=/call_action_list,name=init_crystal,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.remains<action.frozen_orb.gcd
 actions+=/call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active
-actions+=/call_action_list,name=aoe,if=active_enemies>5
+actions+=/call_action_list,name=aoe,if=active_enemies>=5
 actions+=/call_action_list,name=single_target
 
 # Conditions for initiating Prismatic Crystal burn phase
