@@ -2856,7 +2856,8 @@ struct blade_flurry_attack_t : public rogue_attack_t
   blade_flurry_attack_t( rogue_t* p ) :
     rogue_attack_t( "blade_flurry_attack", p, p -> find_spell( 22482 ) )
   {
-    may_miss = may_crit = may_multistrike = proc = callbacks = may_dodge = may_parry = may_block = false;
+    may_miss = may_crit = proc = callbacks = may_dodge = may_parry = may_block = false;
+    may_multistrike = 0;
     background = true;
     aoe = p -> spec.blade_flurry -> effectN( 4 ).base_value();
     weapon = &p -> main_hand_weapon;
@@ -2867,14 +2868,8 @@ struct blade_flurry_attack_t : public rogue_attack_t
     snapshot_flags |= STATE_MUL_DA;
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const
-  {
-    double m = rogue_attack_t::composite_da_multiplier( state );
-
-    m *= p() -> spec.blade_flurry -> effectN( 3 ).percent();
-
-    return m;
-  }
+  double composite_da_multiplier( const action_state_t* ) const
+  { return p() -> spec.blade_flurry -> effectN( 3 ).percent(); }
 
   size_t available_targets( std::vector< player_t* >& tl ) const
   {
@@ -3166,6 +3161,9 @@ void rogue_t::trigger_venomous_wounds( const action_state_t* state )
 
 void rogue_t::trigger_blade_flurry( const action_state_t* state )
 {
+  if ( state -> result_total <= 0 )
+    return;
+
   if ( ! buffs.blade_flurry -> check() )
     return;
 
