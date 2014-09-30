@@ -217,6 +217,7 @@ public:
     buff_t* shadow_of_death;
     buff_t* conversion;
     buff_t* frozen_runeblade;
+    buff_t* lichborne;
   } buffs;
 
   struct runeforge_t
@@ -346,6 +347,8 @@ public:
     const spell_data_t* plaguebearer;
     const spell_data_t* plague_leech;
     const spell_data_t* unholy_blight;
+
+    const spell_data_t* lichborne;
 
     const spell_data_t* deaths_advance;
 
@@ -495,6 +498,7 @@ public:
   virtual double    composite_parry() const;
   virtual double    composite_dodge() const;
   virtual double    composite_multistrike() const;
+  virtual double    composite_leech() const;
   virtual double    composite_melee_expertise( weapon_t* ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    composite_crit_avoidance() const;
@@ -4733,6 +4737,24 @@ struct deaths_advance_t: public death_knight_spell_t
   }
 };
 
+// Lichborne ===============================================================
+
+struct lichborne_t: public death_knight_spell_t
+{
+  lichborne_t( death_knight_t* p, const std::string& options_str ):
+    death_knight_spell_t( "lichborne", p, p -> talent.lichborne )
+  {
+    parse_options( NULL, options_str );
+  }
+
+  virtual void execute()
+  {
+    death_knight_spell_t::execute();
+
+    p() -> buffs.lichborne -> trigger();
+  }
+};
+
 // Raise Dead ===============================================================
 
 struct raise_dead_t : public death_knight_spell_t
@@ -5468,6 +5490,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "breath_of_sindragosa"     ) return new breath_of_sindragosa_t     ( this, options_str );
   if ( name == "defile"                   ) return new defile_t                   ( this, options_str );
   if ( name == "conversion"               ) return new conversion_t               ( this, options_str );
+  if ( name == "lichborne"                ) return new lichborne_t                ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -5797,6 +5820,8 @@ void death_knight_t::init_spells()
   talent.plague_leech             = find_talent_spell( "Plague Leech" );
   talent.unholy_blight            = find_talent_spell( "Unholy Blight" );
 
+  talent.lichborne                = find_talent_spell( "Lichborne" );
+
   talent.deaths_advance           = find_talent_spell( "Death's Advance" );
   spell.deaths_advance            = find_spell( 124285 ); // Passive movement speed is in a completely unlinked spell id.
 
@@ -5943,6 +5968,7 @@ void death_knight_t::default_apl_blood()
 
     def -> add_action( this, "Anti-Magic Shell" );
     def -> add_talent( this, "Conversion", "if=!buff.conversion.up&runic_power>50&health.pct<90" );
+    def -> add_talent( this, "Lichborne", "if=health.pct<90" );
     def -> add_action( this, "Death Strike", "if=incoming_damage_5s>=health.max*0.65" );
     def -> add_action( this, "Army of the Dead", "if=buff.bone_shield.down&buff.dancing_rune_weapon.down&buff.icebound_fortitude.down&buff.vampiric_blood.down" );
     def -> add_action( this, "Bone Shield", "if=buff.army_of_the_dead.down&buff.bone_shield.down&buff.dancing_rune_weapon.down&buff.icebound_fortitude.down&buff.vampiric_blood.down" );
@@ -6626,6 +6652,10 @@ void death_knight_t::create_buffs()
   buffs.conversion = buff_creator_t( this, "conversion", talent.conversion ).duration( timespan_t::zero() );
 
   buffs.frozen_runeblade = new frozen_runeblade_buff_t( this );
+
+  buffs.lichborne = buff_creator_t( this, "lichborne", talent.lichborne )
+                    .cd( timespan_t::zero() )
+                    .add_invalidate( CACHE_LEECH );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -6957,6 +6987,18 @@ double death_knight_t::composite_multistrike() const
   return multistrike;
 }
 
+// death_knight_t::composite_leech ========================================
+
+double death_knight_t::composite_leech() const
+{
+  double leech = player_t::composite_leech();
+
+  // TODO: Additive or multiplicative?
+  leech += buffs.lichborne -> data().effectN( 1 ).percent();
+
+  return leech;
+}
+
 // death_knight_t::composite_melee_expertise ===============================
 
 double death_knight_t::composite_melee_expertise( weapon_t* ) const
@@ -6967,6 +7009,7 @@ double death_knight_t::composite_melee_expertise( weapon_t* ) const
 
   return expertise;
 }
+
 // warrior_t::composite_parry_rating() ========================================
 
 double death_knight_t::composite_parry_rating() const
