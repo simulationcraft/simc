@@ -131,32 +131,57 @@ bool option_t::parse( sim_t*             sim,
   {
     switch ( type )
     {
-      case STRING: *static_cast<std::string*>( data.address ) = v;                        break;
-      case APPEND: *static_cast<std::string*>( data.address ) += v;                       break;
-      case INT:    *static_cast<int*>( data.address )      = strtol( v.c_str(), 0, 10 );  break;
-      case UINT:   *static_cast<unsigned*>( data.address ) = strtoul( v.c_str(), 0, 10 ); break;
-      case FLT:    *static_cast<double*>( data.address )   = atof( v.c_str() );           break;
-      case TIMESPAN: *( reinterpret_cast<timespan_t*>( data.address ) ) = timespan_t::from_seconds( atof( v.c_str() ) ); break;
+      case STRING:
+        *static_cast<std::string*>( data.address ) = v;
+        break;
+      case APPEND:
+        *static_cast<std::string*>( data.address ) += v;
+        break;
+      case INT:
+        *static_cast<int*>( data.address ) = strtol( v.c_str(), nullptr, 10 );
+        break;
+      case UINT:
+        *static_cast<unsigned*>( data.address ) = strtoul( v.c_str(), nullptr, 10 );
+        break;
+      case FLT:
+        *static_cast<double*>( data.address ) = strtod( v.c_str(), nullptr );
+        break;
+      case TIMESPAN:
+        *static_cast<timespan_t*>( data.address ) = timespan_t::from_seconds( strtod( v.c_str(), nullptr ) );
+        break;
       case INT_BOOL:
-        *( ( int* ) data.address ) = atoi( v.c_str() ) ? 1 : 0;
-        if ( v != "0" && v != "1" ) sim -> errorf( "Acceptable values for '%s' are '1' or '0'\n", name );
+        if ( v != "0" && v != "1" ) {
+          std::stringstream s;
+          s << "Acceptable values for '" << name << "' are '1' or '0'";
+          throw std::invalid_argument( s.str() );
+        }
+        *static_cast<int*>( data.address ) = strtol( v.c_str(), nullptr, 10 ) ? 1 : 0;
         break;
       case BOOL:
-        *static_cast<bool*>( data.address ) = atoi( v.c_str() ) != 0;
-        if ( v != "0" && v != "1" ) sim -> errorf( "Acceptable values for '%s' are '1' or '0'\n", name );
+        if ( v != "0" && v != "1" ) {
+          std::stringstream s;
+          s << "Acceptable values for '" << name << "' are '1' or '0'";
+          throw std::invalid_argument( s.str() );
+        }
+        *static_cast<bool*>( data.address ) = strtol( v.c_str(), nullptr, 10 ) ? 1 : 0;
         break;
       case LIST:
-        ( ( std::vector<std::string>* ) data.address ) -> push_back( v );
+        static_cast<std::vector<std::string>*>( data.address ) -> push_back( v );
         break;
       case FUNC:
         return ( *data.func )( sim, n, v );
       case DEPRECATED:
-        sim -> errorf( "Option '%s' has been deprecated.\n", name );
-        if ( data.cstr ) sim -> errorf( "Please use option '%s' instead.\n", data.cstr );
-        sim -> cancel();
+        {
+          std::stringstream s;
+          s << "Option '" << name << "' has been deprecated.";
+          if ( data.cstr ) {
+            s << " Please use option '" << data.cstr << "' instead.";
+          }
+          throw std::invalid_argument( s.str() );
+        }
         break;
       default:
-        assert( 0 );
+        assert( false && "Unhandled Option Type" );
         return false;
     }
     return true;
@@ -175,7 +200,7 @@ bool option_t::parse( sim_t*             sim,
     {
       if ( name == n.substr( 0, dot + 1 ) )
       {
-        std::map<std::string, std::string>* m = ( std::map<std::string, std::string>* ) data.address;
+        std::map<std::string, std::string>* m = static_cast<std::map<std::string, std::string>*>( data.address );
         std::string& value = ( *m )[ n.substr( dot + 1, last - dot ) ];
         value = append ? ( value + v ) : v;
         return true;
@@ -204,7 +229,7 @@ bool option_t::parse( sim_t*                 sim,
 
 // option_t::parse ==========================================================
 
-bool option_t::parse( sim_t*                 sim,
+void option_t::parse( sim_t*                 sim,
                       const char*            context,
                       std::vector<option_t>& options,
                       const std::vector<std::string>& splits )
@@ -216,8 +241,9 @@ bool option_t::parse( sim_t*                 sim,
 
     if ( index == std::string::npos )
     {
-      sim -> errorf( "%s: Unexpected parameter '%s'. Expected format: name=value\n", context, s.c_str() );
-      return false;
+      std::stringstream stream;
+      stream << context << ": Unexpected parameter '" << s << "'. Expected format: name=value";
+      throw std::invalid_argument( stream.str() );
     }
 
     std::string n = s.substr( 0, index );
@@ -225,47 +251,45 @@ bool option_t::parse( sim_t*                 sim,
 
     if ( ! option_t::parse( sim, options, n, v ) )
     {
-      sim -> errorf( "%s: Unexpected parameter '%s'.\n", context, n.c_str() );
-      return false;
+      std::stringstream stream;
+      stream << context << ": Unexpected parameter '" << n << "'.";
+      throw std::invalid_argument( stream.str() );
     }
   }
-
-  return true;
 }
 
 // option_t::parse ==========================================================
 
-bool option_t::parse( sim_t*                 sim,
+void option_t::parse( sim_t*                 sim,
                       const char*            context,
                       std::vector<option_t>& options,
                       const std::string&     options_str )
 {
-  std::vector<std::string> splits = util::string_split( options_str, "," );
-  return option_t::parse( sim, context, options, splits );
+  option_t::parse( sim, context, options, util::string_split( options_str, "," ) );
 }
 
 // option_t::parse ==========================================================
 
-bool option_t::parse( sim_t*             sim,
+void option_t::parse( sim_t*             sim,
                       const char*        context,
                       const option_t*    options,
                       const std::string& options_str )
 {
   std::vector<option_t> options_vector;
   option_t::copy( options_vector, options );
-  return parse( sim, context, options_vector, options_str );
+  parse( sim, context, options_vector, options_str );
 }
 
 // option_t::parse ==========================================================
 
-bool option_t::parse( sim_t*             sim,
+void option_t::parse( sim_t*             sim,
                       const char*        context,
                       const option_t*    options,
                       const std::vector<std::string>& strings )
 {
   std::vector<option_t> options_vector;
   option_t::copy( options_vector, options );
-  return parse( sim, context, options_vector, strings );
+  parse( sim, context, options_vector, strings );
 }
 
 // option_t::merge ==========================================================

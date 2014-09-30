@@ -601,9 +601,13 @@ void action_t::parse_options( option_t*          options,
   std::vector<option_t> merged_options;
   option_t::merge( merged_options, options, base_options );
 
-  if ( ! option_t::parse( sim, name(), merged_options, options_str ) )
+  try
   {
-    sim -> errorf( "%s %s: Unable to parse options str '%s'.\n", player -> name(), name(), options_str.c_str() );
+    option_t::parse( sim, name(), merged_options, options_str );
+  }
+  catch ( const std::exception& e )
+  {
+    sim -> errorf( "%s %s: Unable to parse options str '%s': %s", player -> name(), name(), options_str.c_str(), e.what() );
     sim -> cancel();
   }
 

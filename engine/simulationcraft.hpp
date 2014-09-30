@@ -1150,10 +1150,10 @@ public:
 
   static void copy( std::vector<option_t>& opt_vector, const option_t* opt_array );
   static bool parse( sim_t*, std::vector<option_t>&, const std::string& name, const std::string& value );
-  static bool parse( sim_t*, const char* context, std::vector<option_t>&, const std::string& options_str );
-  static bool parse( sim_t*, const char* context, std::vector<option_t>&, const std::vector<std::string>& strings );
-  static bool parse( sim_t*, const char* context, const option_t*,        const std::vector<std::string>& strings );
-  static bool parse( sim_t*, const char* context, const option_t*,        const std::string& options_str );
+  static void parse( sim_t*, const char* context, std::vector<option_t>&, const std::string& options_str );
+  static void parse( sim_t*, const char* context, std::vector<option_t>&, const std::vector<std::string>& strings );
+  static void parse( sim_t*, const char* context, const option_t*,        const std::vector<std::string>& strings );
+  static void parse( sim_t*, const char* context, const option_t*,        const std::string& options_str );
   static bool parse_file( sim_t*, FILE* file );
   static bool parse_line( sim_t*, const char* line );
   static bool parse_token( sim_t*, const std::string& token );
