@@ -77,7 +77,7 @@ actions.combust_sequence+=/combustion
 
 # Active talents usage
 # This sequence summarizes all usage of active talents (BW, LB, Met), and their optimizations with Incanter's Flow and Prismatic Crystal
-actions.active_talents=meteor,if=glyph.combustion.enabled&(!talent.incanters_flow.enabled|buff.incanters_flow.stack+incanters_flow_dir>=4)&cooldown.meteor.duration-cooldown.combustion.remains<10
+actions.active_talents=meteor,if=active_enemies>=5|(glyph.combustion.enabled&(!talent.incanters_flow.enabled|buff.incanters_flow.stack+incanters_flow_dir>=4)&cooldown.meteor.duration-cooldown.combustion.remains<10)
 actions.active_talents+=/call_action_list,name=living_bomb,if=talent.living_bomb.enabled
 actions.active_talents+=/blast_wave,if=(!talent.incanters_flow.enabled|buff.incanters_flow.stack>=4)&(time_to_die<10|!talent.prismatic_crystal.enabled|(charges=1&cooldown.prismatic_crystal.remains>recharge_time)|charges=2|current_target=prismatic_crystal)
 
@@ -86,11 +86,12 @@ actions.living_bomb=inferno_blast,cycle_targets=1,if=dot.living_bomb.ticking&act
 actions.living_bomb+=/living_bomb,cycle_targets=1,if=(((!talent.incanters_flow.enabled|incanters_flow_dir<0|buff.incanters_flow.stack=5)&remains<3.6)|((incanters_flow_dir>0|buff.incanters_flow.stack=1)&remains<gcd)|!ticking)&target.time_to_die>remains+12&current_target!=prismatic_crystal
 
 # AoE sequence
-actions.aoe=inferno_blast,cycle_targets=1,if=(dot.combustion.ticking&active_dot.combustion<active_enemies)|(dot.living_bomb.ticking&active_dot.living_bomb<active_enemies)|(dot.pyroblast.ticking&active_dot.pyroblast<active_enemies)
+actions.aoe=inferno_blast,cycle_targets=1,if=(dot.combustion.ticking&active_dot.combustion<active_enemies)|(dot.pyroblast.ticking&active_dot.pyroblast<active_enemies)
 actions.aoe+=/call_action_list,name=active_talents
+actions.aoe+=/pyroblast,if=buff.pyroblast.react|buff.pyromaniac.react
+actions.aoe+=/pyroblast,if=active_dot.pyroblast=0&!in_flight
 actions.aoe+=/dragons_breath,if=glyph.dragons_breath.enabled
-actions.aoe+=/pyroblast,if=active_dot.pyroblast=0
-actions.aoe+=/flamestrike
+actions.aoe+=/flamestrike,if=mana.pct>10
 
 # Single target sequence
 actions.single_target=inferno_blast,if=(dot.combustion.ticking&active_dot.combustion<active_enemies)|(dot.living_bomb.ticking&active_dot.living_bomb<active_enemies)

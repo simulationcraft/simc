@@ -5178,7 +5178,7 @@ void mage_t::apl_fire()
 
 
   active_talents -> add_talent( this, "Meteor",
-                                "if=glyph.combustion.enabled&(!talent.incanters_flow.enabled|buff.incanters_flow.stack+incanters_flow_dir>=4)&cooldown.meteor.duration-cooldown.combustion.remains<10",
+                                "if=active_enemies>=5|(glyph.combustion.enabled&(!talent.incanters_flow.enabled|buff.incanters_flow.stack+incanters_flow_dir>=4)&cooldown.meteor.duration-cooldown.combustion.remains<10)",
                                 "Active talents usage\n"
                                 "# This sequence summarizes all usage of active talents (BW, LB, Met), and their optimizations with Incanter's Flow and Prismatic Crystal" );
   active_talents -> add_action( "call_action_list,name=living_bomb,if=talent.living_bomb.enabled" );
@@ -5194,14 +5194,17 @@ void mage_t::apl_fire()
 
 
   aoe -> add_action( this, "Inferno Blast",
-                     "cycle_targets=1,if=(dot.combustion.ticking&active_dot.combustion<active_enemies)|(dot.living_bomb.ticking&active_dot.living_bomb<active_enemies)|(dot.pyroblast.ticking&active_dot.pyroblast<active_enemies)",
+                     "cycle_targets=1,if=(dot.combustion.ticking&active_dot.combustion<active_enemies)|(dot.pyroblast.ticking&active_dot.pyroblast<active_enemies)",
                      "AoE sequence" );
   aoe -> add_action( "call_action_list,name=active_talents" );
+  aoe -> add_action( this, "Pyroblast",
+                     "if=buff.pyroblast.react|buff.pyromaniac.react" );
+  aoe -> add_action( this, "Pyroblast",
+                     "if=active_dot.pyroblast=0&!in_flight" );
   aoe -> add_action( this, "Dragon's Breath",
                      "if=glyph.dragons_breath.enabled" );
-  aoe -> add_action( this, "Pyroblast",
-                     "if=active_dot.pyroblast=0" );
-  aoe -> add_action( this, "Flamestrike" );
+  aoe -> add_action( this, "Flamestrike",
+                     "if=mana.pct>10"  );
 
 
   single_target -> add_action( this, "Inferno Blast",
