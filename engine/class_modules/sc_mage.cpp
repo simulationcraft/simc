@@ -718,7 +718,7 @@ struct mirror_image_pet_t : public pet_t
 // Pet Prismatic Crystal
 // ==========================================================================
 
-struct prismatic_crystal_t : public pet_t 
+struct prismatic_crystal_t : public pet_t
 {
   struct prismatic_crystal_aoe_state_t : public action_state_t
   {
@@ -788,7 +788,9 @@ struct prismatic_crystal_t : public pet_t
     aoe_spell( 0 ),
     damage_taken( owner -> find_spell( 155153 ) ),
     frost_damage_taken( owner -> find_spell( 152087 ) )
-  { }
+  {
+    level = 101;
+  }
 
   void add_proxy_stats( action_t* owner_action )
   {
