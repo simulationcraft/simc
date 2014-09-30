@@ -2611,6 +2611,16 @@ struct flamestrike_t : public mage_spell_t
     cooldown -> duration = timespan_t::zero(); // Flamestrike Perk modifying the cooldown
     aoe = -1;
   }
+  
+  virtual void impact( action_state_t* s )
+  {
+
+    mage_spell_t::impact( s );
+
+    trigger_ignite( s );
+  }
+
+
 };
 
 // Frost Bomb Spell ===============================================================
