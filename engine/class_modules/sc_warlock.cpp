@@ -10,7 +10,6 @@
 // TODO:
 // Shadow bolt costs no mana
 // T17 Set bonusses.
-//  4PC Destro, fix multistrike mechanic
 //  4PC Demo,proc on HoG/CW
 //    proc has an ICD of 45 secs.
 //    Inner Demon Summon(166862) .c.f wild IMP
@@ -1961,25 +1960,6 @@ public:
     }
   }
 
-  void trigger_multistrike( action_state_t* state )
-  {
-      result_e r = calculate_multistrike_result( state );
-
-      action_state_t* ms_state = get_state( state );
-      ms_state -> target = state -> target;
-      ms_state -> n_targets = 1;
-      ms_state -> chain_target = 0;
-      ms_state -> result = r;
-      // Multistrikes can be blocked
-      ms_state -> block_result = calculate_block_result( state );
-
-      multistrike_direct( state, ms_state );
-
-      schedule_travel( ms_state );
-
-      schedule_multistrike( ms_state, amount_type( ms_state ) );
-  }
-
   void trigger_extra_tick( dot_t* dot, double multiplier )
   {
     if ( ! dot -> is_ticking() ) return;
@@ -3275,20 +3255,47 @@ struct chaos_bolt_t: public warlock_spell_t
     if ( ! result_is_hit( execute_state -> result ) ) refund_embers( p() );
     aoe = 0;
   }
-
-  virtual void impact( action_state_t* s )
-  {
-    warlock_spell_t::impact( s );
-
-    if ( p() -> buffs.chaotic_infusion -> up() ){
-
-        trigger_multistrike( s );
-        trigger_multistrike( s );
-        trigger_multistrike( s );
-
-        p() -> buffs.chaotic_infusion -> expire();
+    //overwrite MS behavior for the T17 4pc buff
+    int schedule_multistrike( action_state_t* state, dmg_e type, double tick_multiplier )
+    {
+        if ( ! may_multistrike )
+            return 0;
+        
+        if ( state -> result_amount <= 0 )
+            return 0;
+        
+        if ( ! result_is_hit( state -> result ) )
+            return 0;
+        
+        int n_strikes = 0;
+        
+        if ( p() -> buffs.chaotic_infusion -> up())
+        {
+            int extra_ms = p() -> buffs.chaotic_infusion -> value();
+            for  (int i = 0; i < extra_ms ; i++)
+            {
+                result_e r = RESULT_MULTISTRIKE_CRIT;
+                action_state_t* ms_state = get_state( state );
+                ms_state -> target = state -> target;
+                ms_state -> n_targets = 1;
+                ms_state -> chain_target = 0;
+                ms_state -> result = r;
+                // Multistrikes can be blocked
+                ms_state -> block_result = calculate_block_result( state );
+                
+                multistrike_direct( state, ms_state );
+                
+                // Schedule multistrike "execute"; in reality it calls either impact, or
+                // assess_damage (for ticks).
+                new ( *sim ) multistrike_execute_event_t( ms_state );
+                
+                n_strikes++;
+            }
+            p() -> buffs.chaotic_infusion -> expire();
+        }
+        
+        return n_strikes + action_t::schedule_multistrike(state, type, tick_multiplier);
     }
-  }
 };
 
 struct life_tap_t: public warlock_spell_t
@@ -5238,7 +5245,8 @@ void warlock_t::create_buffs()
     .cd( find_spell( 145165 ) -> duration() )
     .add_invalidate( CACHE_CRIT );
 
-  buffs.chaotic_infusion = buff_creator_t( this, "chaotic_infusion", find_spell( 170000 ) );
+  buffs.chaotic_infusion = buff_creator_t( this, "chaotic_infusion", find_spell( 170000 ) )
+    .default_value( find_spell( 170000 ) -> effectN( 1 ).base_value());
 
   buffs.tier16_2pc_destructive_influence = buff_creator_t( this, "destructive_influence", find_spell( 145075 ) )
     .chance( sets.set( SET_CASTER, T16, B2 ) -> effectN( 4 ).percent() )
