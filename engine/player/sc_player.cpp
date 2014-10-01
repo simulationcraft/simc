@@ -3065,7 +3065,7 @@ void player_t::sequence_add( const action_t* a, const player_t* target, const ti
     if ( ( a -> sim -> iterations <= 1 && a -> sim -> current_iteration == 0 ) ||
          ( a -> sim -> iterations > 1 && a -> sim -> current_iteration == 1 ) )
     {
-      if ( collected_data.action_sequence.size() <= sim -> expected_max_time() * 2.0 )
+      if ( collected_data.action_sequence.size() <= sim -> expected_max_time() * 2.0 + 3.0 )
       {
         if ( in_combat )
           collected_data.action_sequence.push_back( new player_collected_data_t::action_sequence_data_t( a, target, ts, this ) );
