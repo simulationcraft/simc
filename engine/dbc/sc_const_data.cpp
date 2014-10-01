@@ -1008,7 +1008,7 @@ double dbc_t::melee_crit_base( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
 
-  assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_LEVEL );
+  assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_SCALING_LEVEL );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_chance_to_melee_crit_base[ class_id ][ level - 1 ]
     : __gt_chance_to_melee_crit_base[ class_id ][ level - 1 ];
@@ -1026,7 +1026,7 @@ double dbc_t::spell_crit_base( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
 
-  assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_LEVEL );
+  assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_SCALING_LEVEL );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_chance_to_spell_crit_base[ class_id ][ level - 1 ]
              : __gt_chance_to_spell_crit_base[ class_id ][ level - 1 ];
@@ -1151,7 +1151,7 @@ double dbc_t::spell_scaling( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
 
-  assert( class_id < dbc_t::class_max_size() + 5 && level > 0 && level <= MAX_LEVEL );
+  assert( class_id < dbc_t::class_max_size() + 5 && level > 0 && level <= MAX_SCALING_LEVEL );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_spell_scaling[ class_id ][ level - 1 ]
              : __gt_spell_scaling[ class_id ][ level - 1 ];
@@ -1164,7 +1164,7 @@ double dbc_t::melee_crit_scaling( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
 
-  assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_LEVEL );
+  assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_SCALING_LEVEL );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_chance_to_melee_crit[ class_id ][ level - 1 ]
              : __gt_chance_to_melee_crit[ class_id ][ level - 1 ];
@@ -1182,7 +1182,7 @@ double dbc_t::spell_crit_scaling( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
 
-  assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_LEVEL );
+  assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_SCALING_LEVEL );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_chance_to_spell_crit[ class_id ][ level - 1 ]
              : __gt_chance_to_spell_crit[ class_id ][ level - 1 ];
@@ -1230,7 +1230,7 @@ double dbc_t::health_base( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
 
-  assert( class_id < MAX_CLASS && level > 0 && level <= MAX_LEVEL );
+  assert( class_id < MAX_CLASS && level > 0 && level <= MAX_SCALING_LEVEL );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_octbase_hpby_class[ class_id ][ level - 1 ]
              : __gt_octbase_hpby_class[ class_id ][ level - 1 ];
@@ -1243,7 +1243,7 @@ double dbc_t::resource_base( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
 
-  assert( class_id < MAX_CLASS && level > 0 && level <= MAX_LEVEL );
+  assert( class_id < MAX_CLASS && level > 0 && level <= MAX_SCALING_LEVEL );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_octbase_mpby_class[ class_id ][ level - 1 ]
              : __gt_octbase_mpby_class[ class_id ][ level - 1 ];
@@ -1260,7 +1260,7 @@ double dbc_t::regen_spirit( player_e t, unsigned level ) const
 
   assert( class_id < dbc_t::class_max_size() );
   assert( level > 0 );
-  assert( level <= MAX_LEVEL );
+  assert( level <= MAX_SCALING_LEVEL );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_regen_mpper_spt[ class_id ][ level - 1 ]
              : __gt_regen_mpper_spt[ class_id ][ level - 1 ];
@@ -1276,7 +1276,7 @@ double dbc_t::regen_spirit( pet_e t, unsigned level ) const
 
 double dbc_t::health_per_stamina( unsigned level ) const
 {
-  assert( level > 0 && level <= MAX_LEVEL );
+  assert( level > 0 && level <= MAX_SCALING_LEVEL );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_octhp_per_stamina[ level - 1 ]
              : __gt_octhp_per_stamina[ level - 1 ];
@@ -1308,7 +1308,7 @@ double dbc_t::combat_rating( unsigned combat_rating_id, unsigned level ) const
 {
   ;
   assert( combat_rating_id < RATING_MAX );
-  assert( level <= MAX_LEVEL );
+  assert( level <= MAX_SCALING_LEVEL );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_combat_ratings[ combat_rating_id ][ level - 1 ] * 100.0
              : __gt_combat_ratings[ combat_rating_id ][ level - 1 ] * 100.0;
@@ -1670,7 +1670,7 @@ const item_armor_type_data_t& dbc_t::item_armor_total( unsigned ilevel ) const
 
 double dbc_t::armor_mitigation_constant( unsigned level ) const
 {
-  assert( level > 0 && level <= ( MAX_LEVEL + 3 ) );
+  assert( level > 0 && level <= ( MAX_SCALING_LEVEL + 3 ) );
 #if SC_USE_PTR
   return ptr ? __ptr___gt_armor_mitigation_by_lvl[ level - 1 ] : __gt_armor_mitigation_by_lvl[ level - 1 ];
 #else
@@ -1861,7 +1861,7 @@ double spelleffect_data_t::scaled_average( double budget, unsigned level ) const
 
 double spelleffect_data_t::average( const player_t* p, unsigned level ) const
 {
-  assert( level <= MAX_LEVEL );
+  assert( level <= MAX_SCALING_LEVEL );
 
   double m_scale = 0;
 
@@ -1898,7 +1898,7 @@ double spelleffect_data_t::scaled_delta( double budget ) const
 
 double spelleffect_data_t::delta( const player_t* p, unsigned level ) const
 {
-  assert( level <= MAX_LEVEL );
+  assert( level <= MAX_SCALING_LEVEL );
 
   double m_scale = 0;
   if ( _m_delta != 0 && _spell -> scaling_class() != 0 )
@@ -1972,7 +1972,7 @@ double spelleffect_data_t::scaled_max( double avg, double delta ) const
 
 double spelleffect_data_t::min( const player_t* p, unsigned level ) const
 {
-  assert( level <= MAX_LEVEL );
+  assert( level <= MAX_SCALING_LEVEL );
 
   return scaled_min( average( p, level ), delta( p, level ) );
 }
@@ -1986,7 +1986,7 @@ double spelleffect_data_t::min( const item_t* item ) const
 
 double spelleffect_data_t::max( const player_t* p, unsigned level ) const
 {
-  assert( level <= MAX_LEVEL );
+  assert( level <= MAX_SCALING_LEVEL );
 
   return scaled_max( average( p, level ), delta( p, level ) );
 }
@@ -2205,7 +2205,7 @@ double dbc_t::effect_average( unsigned effect_id, unsigned level ) const
 {
   const spelleffect_data_t* e = effect( effect_id );
 
-  assert( e && ( level > 0 ) && ( level <= MAX_LEVEL ) );
+  assert( e && ( level > 0 ) && ( level <= MAX_SCALING_LEVEL ) );
 
   if ( e -> m_average() != 0 && e -> _spell -> scaling_class() != 0 )
   {
@@ -2236,7 +2236,7 @@ double dbc_t::effect_delta( unsigned effect_id, unsigned level ) const
 
   const spelleffect_data_t* e = effect( effect_id );
 
-  assert( e && ( level > 0 ) && ( level <= MAX_LEVEL ) );
+  assert( e && ( level > 0 ) && ( level <= MAX_SCALING_LEVEL ) );
 
   if ( e -> m_delta() != 0 && e -> _spell -> scaling_class() != 0 )
   {
@@ -2260,7 +2260,7 @@ double dbc_t::effect_bonus( unsigned effect_id, unsigned level ) const
 
   const spelleffect_data_t* e = effect( effect_id );
 
-  assert( e && ( level > 0 ) && ( level <= MAX_LEVEL ) );
+  assert( e && ( level > 0 ) && ( level <= MAX_SCALING_LEVEL ) );
 
   if ( e -> m_unk() != 0 && e -> _spell -> scaling_class() != 0 )
   {
@@ -2286,7 +2286,7 @@ double dbc_t::effect_min( unsigned effect_id, unsigned level ) const
   double avg, result;
 
   assert( e && ( level > 0 ) );
-  assert( ( level <= MAX_LEVEL ) );
+  assert( ( level <= MAX_SCALING_LEVEL ) );
 
   unsigned c_id = util::class_id( e -> _spell -> scaling_class() );
   avg = effect_average( effect_id, level );
@@ -2327,7 +2327,7 @@ double dbc_t::effect_max( unsigned effect_id, unsigned level ) const
   const spelleffect_data_t* e = effect( effect_id );
   double avg, result;
 
-  assert( e && ( level > 0 ) && ( level <= MAX_LEVEL ) );
+  assert( e && ( level > 0 ) && ( level <= MAX_SCALING_LEVEL ) );
 
   unsigned c_id = util::class_id( e -> _spell -> scaling_class() );
   avg = effect_average( effect_id, level );

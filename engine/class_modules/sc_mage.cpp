@@ -788,7 +788,7 @@ struct prismatic_crystal_t : public pet_t
     aoe_spell( 0 ),
     damage_taken( owner -> find_spell( 155153 ) ),
     frost_damage_taken( owner -> find_spell( 152087 ) )
-  { }
+  { level = 101; }
 
   void add_proxy_stats( action_t* owner_action )
   {

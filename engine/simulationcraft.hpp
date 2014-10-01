@@ -1449,6 +1449,10 @@ std::ostream& stream_printf( std::ostream&, const char* format, ... );
 #define MAX_LEVEL (100)
 #endif
 
+#ifndef MAX_SCALING_LEVEL
+#define MAX_SCALING_LEVEL (105)
+#endif
+
 // Include DBC Module
 #include "dbc/dbc.hpp"
 

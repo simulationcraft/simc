@@ -28,8 +28,8 @@ parser.add_option("-t", "--type", dest = "type",
                               'glyph_list', 'glyph_property_list', 'class_flags', 'set_list', 'random_property_points', 'random_suffix',
                               'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties', 'random_suffix_groups', 'spec_enum', 'spec_list', 'item_upgrade', 'rppm_coeff', 'set_list2', 'item_bonus' ]), 
 parser.add_option("-l", "--level", dest = "level", 
-                  help    = "Scaling values up to level [100]", 
-                  default = 100, action = "store", type = "int")
+                  help    = "Scaling values up to level [105]", 
+                  default = 105, action = "store", type = "int")
 parser.add_option("-p", "--path", dest = "path", 
                   help    = "DBC input directory [cwd]", 
                   default = r'.', action = "store", type = "string")
@@ -69,7 +69,7 @@ if options.build == 0 and options.type != 'header' and options.type != 'patch':
 if options.min_ilevel < 0 or options.max_ilevel > 999:
     parser.error('--min/max-ilevel range is 0..999')
 
-if options.level % 5 != 0 or options.level > 100:
+if options.level % 5 != 0 or options.level > 105:
     parser.error('-l must be given as a multiple of 5 and be smaller than 100')
 
 if options.type == 'view' and len(args) == 0:

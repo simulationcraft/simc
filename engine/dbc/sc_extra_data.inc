@@ -1595,7 +1595,7 @@ static double __gt_HorizontalShift[] =
 // from http://us.battle.net/wow/en/forum/topic/14058407204?page=2#39
 // using 1 as placeholder for unknown to avoid divide-by-zero errors
 
-static double _gt_resolve_dps_by_level[] = 
+static double _gt_resolve_dps_by_level[100] = 
 { 
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1,       //01-10
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1,       //11-20
