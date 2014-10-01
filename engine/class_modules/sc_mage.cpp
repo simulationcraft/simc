@@ -123,12 +123,11 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
-    cooldown_t* bolt; // Cooldown to handle enhanced_frostbolt perk.
     cooldown_t* combustion;
     cooldown_t* evocation;
+    cooldown_t* enhanced_frostbolt;
     cooldown_t* frozen_orb;
     cooldown_t* inferno_blast;
-    cooldown_t* prismatic_crystal;
   } cooldowns;
 
   // Gains
@@ -338,12 +337,11 @@ public:
     FoF_renew                = 0;
 
     // Cooldowns
-    cooldowns.bolt              = get_cooldown( "enhanced_frostbolt" );
-    cooldowns.combustion        = get_cooldown( "combustion"         );
-    cooldowns.evocation         = get_cooldown( "evocation"          );
-    cooldowns.frozen_orb        = get_cooldown( "frozen_orb"         );
-    cooldowns.inferno_blast     = get_cooldown( "inferno_blast"      );
-    cooldowns.prismatic_crystal = get_cooldown( "prismatic_crystal"  );
+    cooldowns.combustion         = get_cooldown( "combustion"         );
+    cooldowns.enhanced_frostbolt = get_cooldown( "enhanced_frostbolt" );
+    cooldowns.evocation          = get_cooldown( "evocation"          );
+    cooldowns.frozen_orb         = get_cooldown( "frozen_orb"         );
+    cooldowns.inferno_blast      = get_cooldown( "inferno_blast"      );
 
     // Miscellaneous
     incanters_flow_stack_mult = find_spell( 116267 ) -> effectN( 1 ).percent();
@@ -2712,7 +2710,8 @@ struct frostbolt_t : public mage_spell_t
 
   virtual void schedule_execute( action_state_t* execute_state )
   {
-    if ( p() -> cooldowns.bolt -> up() && p() -> specialization() == MAGE_FROST )
+    if ( p() -> cooldowns.enhanced_frostbolt -> up() &&
+         p() -> specialization() == MAGE_FROST )
       p() -> buffs.enhanced_frostbolt -> trigger();
 
     mage_spell_t::schedule_execute( execute_state );
@@ -2748,8 +2747,8 @@ struct frostbolt_t : public mage_spell_t
 
     if ( p() -> buffs.enhanced_frostbolt -> up() )
     {
-      p() -> cooldowns.bolt -> duration = enhanced_frostbolt_duration;
-      p() -> cooldowns.bolt -> start();
+      p() -> cooldowns.enhanced_frostbolt -> duration = enhanced_frostbolt_duration;
+      p() -> cooldowns.enhanced_frostbolt -> start();
       p() -> buffs.enhanced_frostbolt -> expire();
     }
 
