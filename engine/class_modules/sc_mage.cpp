@@ -1756,9 +1756,10 @@ struct arcane_blast_t : public mage_spell_t
   {
     timespan_t t = mage_spell_t::execute_time();
 
-    if ( p() -> buffs.arcane_charge -> check() )
+    if ( p() -> perks.enhanced_arcane_blast -> ok() )
     {
-      t *=  1.0 - p() -> buffs.arcane_charge -> stack() * p() -> perks.enhanced_arcane_blast -> effectN( 1 ).percent();
+      t *=  1.0 - p() -> buffs.arcane_charge -> stack() *
+                  p() -> perks.enhanced_arcane_blast -> effectN( 1 ).percent();
     }
 
     if ( p() -> buffs.arcane_affinity -> check() )
@@ -2450,7 +2451,11 @@ public:
     hasted_ticks      = false;
 
     cooldown = p -> cooldowns.evocation;
-    cooldown -> duration = data().cooldown() + timespan_t::from_millis( p -> perks.improved_evocation -> effectN( 1 ).base_value() );
+    if ( p -> perks.improved_evocation -> ok() )
+    {
+      cooldown -> duration += p -> perks.improved_evocation
+                                -> effectN( 1 ).time_value();
+    }
 
     timespan_t duration = data().duration();
 
@@ -2591,11 +2596,16 @@ struct fireball_t : public mage_spell_t
 
   virtual double composite_crit() const
   {
-      double c = mage_spell_t::composite_crit();
+    double c = mage_spell_t::composite_crit();
 
-      c += ( p() -> buffs.enhanced_pyrotechnics -> check() ) * p() -> perks.enhanced_pyrotechnics -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
+    if ( p() -> perks.enhanced_pyrotechnics -> ok() )
+    {
+      c += p() -> buffs.enhanced_pyrotechnics -> stack() *
+           p() -> perks.enhanced_pyrotechnics -> effectN( 1 ).trigger()
+                                              -> effectN( 1 ).percent();
+    }
 
-      return c;
+    return c;
   }
 
   double composite_crit_multiplier() const
@@ -2943,11 +2953,16 @@ struct frostfire_bolt_t : public mage_spell_t
 
   virtual double composite_crit() const
   {
-      double c = mage_spell_t::composite_crit();
+    double c = mage_spell_t::composite_crit();
 
-      if ( p() -> specialization() == MAGE_FIRE )  c += ( p() -> buffs.enhanced_pyrotechnics -> check() ) * p() -> perks.enhanced_pyrotechnics -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
+    if ( p() -> perks.enhanced_pyrotechnics -> ok() )
+    {
+      c += p() -> buffs.enhanced_pyrotechnics -> stack() *
+           p() -> perks.enhanced_pyrotechnics -> effectN( 1 ).trigger()
+                                              -> effectN( 1 ).percent();
+    }
 
-      return c;
+    return c;
   }
 
   double composite_target_crit( player_t* target ) const
@@ -3236,8 +3251,16 @@ struct inferno_blast_t : public mage_spell_t
       cooldown -> duration = timespan_t::from_seconds( 8.0 );
 
     max_spread_targets = 3;
-    max_spread_targets += p -> glyphs.inferno_blast -> ok() ? p -> glyphs.inferno_blast -> effectN( 1 ).base_value() : 0;
-    max_spread_targets += p -> perks.improved_inferno_blast ? p -> perks.improved_inferno_blast -> effectN( 1 ).base_value() : 0;
+    if ( p -> glyphs.inferno_blast -> ok() )
+    {
+      max_spread_targets += p -> glyphs.inferno_blast
+                              -> effectN( 1 ).base_value();
+    }
+    if ( p -> perks.improved_inferno_blast -> ok() )
+    {
+      max_spread_targets += p -> perks.improved_inferno_blast
+                              -> effectN( 1 ).base_value();
+    }
   }
 
   virtual void impact( action_state_t* s )
