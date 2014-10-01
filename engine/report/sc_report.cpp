@@ -550,12 +550,8 @@ void report::print_spell_query( sim_t* sim, unsigned level )
 void report::print_suite( sim_t* sim )
 {
   std::cout << "\nGenerating reports...";
-  std::flush( *sim -> out_std.get_stream() );
-  FILE* report_out = stdout;
-  io::cfile report_f( sim -> output_file_str, "a" );
-  if ( report_f )
-    report_out = report_f;
-  report::print_text( report_out, sim, sim -> report_details != 0 );
+
+  report::print_text( sim, sim -> report_details != 0 );
 
   report::print_html( sim );
   report::print_xml( sim );

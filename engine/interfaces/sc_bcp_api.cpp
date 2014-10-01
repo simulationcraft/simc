@@ -761,7 +761,7 @@ bool bcp_api::download_guild( sim_t* sim,
   for ( std::size_t i = 0, n = names.size(); i < n; ++i )
   {
     const std::string& cname = names[ i ];
-    sim -> out_std.printf( "Downloading character: %s\n", cname.c_str() );
+    std::cout << "Downloading character: " << cname << std::endl;
     download_player( sim, region, server, cname, "active", caching );
   }
 

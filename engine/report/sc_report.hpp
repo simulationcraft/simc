@@ -63,7 +63,7 @@ void print_html_sample_data ( report::sc_html_stream&, const sim_t*, const exten
 
 void print_spell_query ( sim_t*, unsigned level );
 void print_profiles    ( sim_t* );
-void print_text        ( FILE*, sim_t*, bool detail );
+void print_text        ( sim_t*, bool detail );
 void print_html        ( sim_t* );
 void print_html_player ( report::sc_html_stream&, player_t*, int );
 void print_xml         ( sim_t* );

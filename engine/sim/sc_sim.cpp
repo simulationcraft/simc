@@ -558,7 +558,7 @@ bool parse_fight_style( sim_t*             sim,
   }
   else
   {
-    sim -> out_std.printf( "Custom fight style specified: %s", value.c_str() );
+    std::cout << "Custom fight style specified: " << value << std::endl;
     sim -> fight_style = value;
   }
 

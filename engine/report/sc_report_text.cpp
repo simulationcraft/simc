@@ -917,8 +917,15 @@ void print_text_player( FILE* file, player_t* p )
 
 namespace report {
 
-void print_text( FILE* file, sim_t* sim, bool detail )
+void print_text( sim_t* sim, bool detail )
 {
+  std::flush( *sim -> out_std.get_stream() );
+  FILE* file = stdout;
+  io::cfile report_f( sim -> output_file_str, "a" );
+  if ( report_f )
+    file = report_f;
+
+
   if ( sim -> simulation_length.mean() == 0 ) return;
 
 #if SC_BETA

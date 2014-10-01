@@ -335,14 +335,10 @@ void scaling_t::analyze_stats()
 
     if ( debug_scale_factors )
     {
-      io::cfile report_f( sim -> output_file_str, "a" );
-      if ( report_f )
-      {
-        ref_sim -> out_std.printf( "\nref_sim report for %s...\n", util::stat_type_string( stat ) );
-        report::print_text( report_f,   ref_sim, true );
-        delta_sim -> out_std.printf( "\ndelta_sim report for %s...\n", util::stat_type_string( stat ) );
-        report::print_text( report_f, delta_sim, true );
-      }
+      std::cout << "\nref_sim report for '" << util::stat_type_string( stat ) << "'..." << std::endl;
+      report::print_text( ref_sim, true );
+      std::cout << "\ndelta_sim report for '" << util::stat_type_string( stat ) << "'..." << std::endl;
+      report::print_text( delta_sim, true );
     }
 
     if ( ref_sim != baseline_sim && ref_sim != sim )
