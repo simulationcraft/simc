@@ -2165,6 +2165,7 @@ enum token_e
   TOK_SUB,
   TOK_AND,
   TOK_OR,
+  TOK_XOR,
   TOK_NOT,
   TOK_EQ,
   TOK_NOTEQ,

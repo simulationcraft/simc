@@ -102,6 +102,17 @@ public:
   { return left -> eval() || right -> eval(); }
 };
 
+class logical_xor_t : public binary_base_t
+{
+public:
+  logical_xor_t( const std::string& n, expr_t* l, expr_t* r ) :
+    binary_base_t( n, l, r )
+  {}
+
+  double evaluate() // override
+  { return bool( left -> eval() ) != bool( right -> eval() ); }
+};
+
 template <template<typename> class F>
 class expr_binary_t : public binary_base_t
 {
@@ -120,6 +131,7 @@ expr_t* select_binary( const std::string& name, token_e op, expr_t* left, expr_t
   {
     case TOK_AND:   return new logical_and_t                     ( name, left, right );
     case TOK_OR:    return new logical_or_t                      ( name, left, right );
+    case TOK_XOR:   return new logical_xor_t                     ( name, left, right );
 
     case TOK_ADD:   return new expr_binary_t<std::plus>          ( name, left, right );
     case TOK_SUB:   return new expr_binary_t<std::minus>         ( name, left, right );
@@ -175,6 +187,7 @@ int expression_t::precedence( token_e expr_token_type )
 
     case TOK_AND:
     case TOK_OR:
+    case TOK_XOR:
       return 1;
 
     default:
@@ -218,6 +231,7 @@ bool expression_t::is_binary( token_e expr_token_type )
     case TOK_GT:
     case TOK_GTEQ:
     case TOK_AND:
+    case TOK_XOR:
     case TOK_OR:
     case TOK_IN:
     case TOK_NOTIN:
@@ -255,6 +269,11 @@ token_e expression_t::next_token( action_t* action, const std::string& expr_str,
   {
     if ( expr_str[ current_index ] == '|' ) current_index++;
     return TOK_OR;
+  }
+  if ( c == '^' )
+  {
+    if ( expr_str[ current_index ] == '^' ) current_index++;
+    return TOK_XOR;
   }
   if ( c == '~' )
   {
