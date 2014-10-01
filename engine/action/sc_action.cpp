@@ -124,9 +124,7 @@ struct action_execute_event_t : public event_t
 
     if ( ! p() -> channeling )
     {
-      if ( p() -> readying )
-        sim().out_error.printf( "Danger Will Robinson!  Danger!  action %s player %s\n",
-                    action -> name(), p() -> name() );
+      assert( ! p() -> readying && "Danger Will Robinson!  Danger! Channeling action is trying to block player readying state, but player is already in it." );
 
       p() -> schedule_ready( timespan_t::zero() );
     }

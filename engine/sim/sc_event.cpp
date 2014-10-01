@@ -107,8 +107,8 @@ void core_event_t::cancel( core_event_t*& e )
     e -> actor -> event_counter--;
     if ( e -> actor -> event_counter < 0 )
     {
-      e -> _sim.out_error.printf( "event_t::cancel assertion error: e -> player -> events < 0, event %s from %s.\n",
-                       e -> name, e -> actor -> name() );
+      std::cerr << "event_t::cancel assertion error: e -> player -> events < 0."
+          << "event '" << e -> name << "' from '" << e -> actor -> name() << "'.\n";
       assert( false );
     }
   }

@@ -4312,7 +4312,7 @@ void ascendance_buff_t::ascendance( attack_t* mh, attack_t* oh, timespan_t lvb_c
 #ifndef NDEBUG
       if ( time_to_hit < timespan_t::zero() )
       {
-        sim -> out_error.printf( "Ascendance %s time_to_hit=%f", player -> main_hand_attack -> name(), time_to_hit.total_seconds() );
+        util::fprintf( stderr, "Ascendance %s time_to_hit=%f", player -> main_hand_attack -> name(), time_to_hit.total_seconds() );
         assert( 0 );
       }
 #endif
@@ -4346,7 +4346,7 @@ void ascendance_buff_t::ascendance( attack_t* mh, attack_t* oh, timespan_t lvb_c
 #ifndef NDEBUG
         if ( time_to_hit < timespan_t::zero() )
         {
-          sim -> out_error.printf( "Ascendance %s time_to_hit=%f", player -> off_hand_attack -> name(), time_to_hit.total_seconds() );
+          util::fprintf( stderr, "Ascendance %s time_to_hit=%f", player -> off_hand_attack -> name(), time_to_hit.total_seconds() );
           assert( 0 );
         }
 #endif

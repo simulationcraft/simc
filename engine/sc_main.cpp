@@ -172,7 +172,7 @@ int sim_t::main( const std::vector<std::string>& args )
 
   if ( canceled ) return 1;
 
-  out_std.raw().printf( "\nSimulationCraft %s for World of Warcraft %s %s (build level %s)\n",
+  util::printf( "\nSimulationCraft %s for World of Warcraft %s %s (build level %s)\n",
                  SC_VERSION, dbc.wow_version(), dbc.wow_ptr_status(), util::to_string( dbc.build_level() ).c_str() );
 
   if ( spell_query )
@@ -183,16 +183,15 @@ int sim_t::main( const std::vector<std::string>& args )
   else if ( need_to_save_profiles( this ) )
   {
     init();
-    out_std.raw() << "\nGenerating profiles... \n";
+    std::cout << "\nGenerating profiles... \n";
     report::print_profiles( this );
   }
   else
   {
-    out_std.raw().printf(
-                   "\nSimulating... ( iterations=%d, max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, fight_style=%s )\n",
+    util::printf( "\nSimulating... ( iterations=%d, max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, fight_style=%s )\n",
                    iterations, max_time.total_seconds(), vary_combat_length, optimal_raid, fight_style.c_str() );
 
-    out_std.raw() << "\nGenerating baseline... \n";
+    std::cout << "\nGenerating baseline... " << std::endl;
 
     sim_phase_str = "Generating baseline:   ";
     if ( execute() )
@@ -200,12 +199,13 @@ int sim_t::main( const std::vector<std::string>& args )
       scaling      -> analyze();
       plot         -> analyze();
       reforge_plot -> analyze();
-      util::fprintf( stdout, "\nGenerating reports...\n" ); fflush( stdout );
       report::print_suite( this );
     }
     else
       canceled = 1;
   }
+
+  std::cout << std::endl;
 
   return canceled;
 }

@@ -1027,7 +1027,6 @@ void sim_t::combat( int iteration )
       out_std = o;
       out_debug = o;
       out_log = o;
-      out_error = o;
 
       out_std.printf( "------ Iteration #%i ------", iteration + 1 );
       std::flush( *out_std.get_stream() );
@@ -2505,7 +2504,6 @@ void sim_t::setup( sim_control_t* c )
       out_std = o;
       out_debug = o;
       out_log = o;
-      out_error = o;
     }
     else
     {
@@ -2647,7 +2645,7 @@ void sim_t::errorf( const char* format, ... )
 
   util::replace_all( s, "\n", "" );
 
-  out_error.raw() << s << "\n";
+  std::cerr << s << "\n";
   error_list.push_back( s );
 }
 

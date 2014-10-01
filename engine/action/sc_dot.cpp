@@ -597,8 +597,7 @@ void dot_t::last_tick()
   // If channeled, bring player back to life
   if ( current_action -> channeled )
   {
-    if ( current_action -> player -> readying )
-      sim.out_error << "Danger Will Robinson!  Danger! " << name();
+      assert( !current_action -> player -> readying && "Danger Will Robinson! Channeled Dot is trying to schedule ready event for player already having one." );
 
     current_action -> player -> schedule_ready( timespan_t::zero() );
   }

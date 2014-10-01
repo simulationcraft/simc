@@ -218,7 +218,6 @@ core_sim_t::core_sim_t() :
   em(),
   current_time( timespan_t::zero() ),
   out_std( *this, &std::cout, sim_ostream_t::no_close() ),
-  out_error( *this, &std::cerr, sim_ostream_t::no_close() ),
   out_log( *this, &std::cout, sim_ostream_t::no_close() ),
   out_debug(*this, &std::cout, sim_ostream_t::no_close() ),
   debug( false ),
@@ -326,7 +325,7 @@ void core_sim_t::combat( int iteration )
       e -> actor -> event_counter--;
       if ( e -> actor -> event_counter < 0 )
       {
-        out_error.printf( "sim_t::combat assertion error! canceling event %s leaves negative event count for user %s.\n", e -> name, e -> actor -> name() );
+        util::fprintf( stderr, "sim_t::combat assertion error! canceling event %s leaves negative event count for user %s.\n", e -> name, e -> actor -> name() );
         assert( false );
       }
     }

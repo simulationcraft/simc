@@ -2555,7 +2555,6 @@ public:
 
   // Output
   sim_ostream_t out_std;
-  sim_ostream_t out_error;
   sim_ostream_t out_log;
   sim_ostream_t out_debug;
   bool debug;
