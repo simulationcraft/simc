@@ -6430,6 +6430,7 @@ void runeforge::fallen_crusader( special_effect_t& effect,
         death_knight_heal_t( "unholy_strength", dk, data )
       {
         background = true;
+        target = player;
         callbacks = may_crit = may_multistrike = false;
         pct_heal = data -> effectN( 2 ).percent();
         pct_heal += dk -> perk.enhanced_fallen_crusader -> effectN( 1 ).percent();
