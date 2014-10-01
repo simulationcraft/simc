@@ -2211,7 +2211,8 @@ struct ferocious_bite_t : public cat_attack_t
                           p() -> glyph.ferocious_bite -> effectN( 2 ).base_value();
         double amount = p() -> resources.max[ RESOURCE_HEALTH ] * heal_pct;
         p() -> resource_gain( RESOURCE_HEALTH, amount, p() -> gain.glyph_ferocious_bite );
-        p() -> active.natures_vigil -> trigger( amount , 0 ); // Natures Vigil procs from glyph
+        if( p() -> buff.natures_vigil -> up() )
+          p() -> active.natures_vigil -> trigger( amount , 0 ); // Natures Vigil procs from glyph
       }
 
       double health_percentage = 25.0;
