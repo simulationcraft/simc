@@ -5377,7 +5377,7 @@ void mage_t::apl_frost()
   single_target -> add_action( this, "Ice Lance",
                                "if=talent.thermal_void.enabled&buff.icy_veins.up&buff.icy_veins.remains<6&buff.icy_veins.remains<cooldown.icy_veins.remains",
                                "Thermal Void IV extension" );
-  single_target -> add_action( "water_elemental:water_jet,if=buff.fingers_of_frost.react=0" );
+  single_target -> add_action( "water_jet,if=buff.fingers_of_frost.react=0" );
   single_target -> add_action( this, "Frostbolt" );
   single_target -> add_talent( this, "Ice Floes", "moving=1" );
   single_target -> add_action( this, "Ice Lance", "moving=1" );
