@@ -1002,16 +1002,13 @@ std::string enemy_t::fluffy_pillow_action_list()
 
 std::string enemy_t::tmi_boss_action_list()
 {
-  // Bosses are (roughly) standardized based on content level. dot damage should be 2/15 of melee damage (0.1333 multiplier)
+  // Bosses are (roughly) standardized based on content level. dot damage is 2/15 of melee damage (0.1333 multiplier)
   std::string als = "";
   const int num_bosses = 11;
   int aa_damage[ num_bosses ] = { 0, 5500, 7500, 9000, 12500, 15000, 25000, 45000, 100000, 150000, 200000 };
-  int dot_damage[ num_bosses ] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-  for ( int i = 0; i < num_bosses; i++ )
-    dot_damage[ i ] = aa_damage[ i ] * 2 / 15;
 
   als += "/auto_attack,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] ) + ",attack_speed=1.5,aoe_tanks=1";
-  als += "/spell_dot,damage=" + util::to_string( dot_damage[ tmi_boss_enum ] ) + ",tick_time=2,dot_duration=30,aoe_tanks=1,if=!ticking";
+  als += "/spell_dot,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] * 2 / 15 ) + ",tick_time=2,dot_duration=30,aoe_tanks=1,if=!ticking";
 
   return als;
 }
@@ -1019,16 +1016,16 @@ std::string enemy_t::tmi_boss_action_list()
 std::string enemy_t::tank_dummy_action_list()
 {
   std::string als = "";
-  int aa_damage[ 5 ] = { 0, 5000, 75000, 250000, 375000 };
-  int aa_damage_var[ 5 ] = { 0, 0, 15000, 50000, 75000 };
-  int dummy_strike_damage[ 5 ] = { 0, 0, 50, 50, 50 }; // TODO: put in values
-  int uber_strike_damage[ 5 ] = { 0, 0, 0, 0, 100 }; // TODO: put in values
+  int aa_damage[ 5 ] = { 0, 5000, 37500, 125000, 175000 };
+  int aa_damage_var[ 5 ] = { 0, 0, 7500, 25000, 35000 };
+  int dummy_strike_damage[ 5 ] = { 0, 0, 50, 50, 50 }; // % weapon damage multipliers for dummy_strike
+  int uber_strike_damage[ 5 ] = { 0, 0, 0, 0, 50 }; // % weapon damage multipliers for uber_strike
 
   als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_enum ] ) + ",range=" + util::to_string( aa_damage_var[ tank_dummy_enum ] ) + ",attack_speed=1.5,aoe_tanks=1";
   if ( tank_dummy_enum > TANK_DUMMY_WEAK )
-    als += "/melee_nuke,damage=" + util::to_string( dummy_strike_damage[ tank_dummy_enum ] ) + "attack_speed=0,cooldown=6,aoe_tanks=1";
+    als += "/melee_nuke,damage=" + util::to_string( aa_damage[ tank_dummy_enum] * dummy_strike_damage[ tank_dummy_enum ] / 100 ) + ",range=" + util::to_string( aa_damage_var[ tank_dummy_enum ] * dummy_strike_damage[ tank_dummy_enum ] / 100 ) + "attack_speed=0,cooldown=6,aoe_tanks=1";
   if ( tank_dummy_enum > TANK_DUMMY_RAID )
-    als += "/spell_nuke,damage=" + util::to_string( uber_strike_damage[ tank_dummy_enum ] ) + "attack_speed=1,cooldown=10,aoe_tanks=1,apply_debuff=5";
+    als += "/spell_nuke,damage=" + util::to_string( aa_damage[ tank_dummy_enum] * uber_strike_damage[ tank_dummy_enum ] / 100 ) + ",range=" + util::to_string( aa_damage_var[ tank_dummy_enum ] * uber_strike_damage[ tank_dummy_enum ] / 100 ) + "attack_speed=1,cooldown=10,aoe_tanks=1,apply_debuff=5";
 
   return als;
 }
