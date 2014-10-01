@@ -5277,6 +5277,8 @@ void mage_t::apl_frost()
   crystal_sequence -> add_action( this, "Ice Lance",
                                   "if=buff.fingers_of_frost.react" );
   crystal_sequence -> add_talent( this, "Ice Nova" );
+  crystal_sequence -> add_action( this, "Blizzard",
+                                 "interrupt_if=cooldown.frozen_orb.up|(talent.frost_bomb.enabled&buff.fingers_of_frost.react=2),if=active_enemies>=5" );
   crystal_sequence -> add_action( this, "Frostbolt" );
 
 
