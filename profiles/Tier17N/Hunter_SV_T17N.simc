@@ -33,7 +33,9 @@ actions+=/potion,name=draenic_agility,if=(!talent.stampede.enabled|cooldown.stam
 # Add a test for trinket.proc.multistrike.up'here and in potion if you have a multistrike trinket
 actions+=/stampede
 actions+=/explosive_trap,if=active_enemies>1
-actions+=/explosive_shot
+actions+=/explosive_shot,if=buff.lock_and_load.react
+actions+=/barrage,if=active_enemies>2
+actions+=/explosive_shot,if=active_enemies=1
 actions+=/black_arrow,if=!ticking
 actions+=/a_murder_of_crows
 actions+=/dire_beast

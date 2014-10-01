@@ -9,7 +9,7 @@
 # * EXCEPTION: 680 Legendary Ring can be used. (accessibility)
 
 optimal_raid=1
-iterations=25000
+
 
 # Raid Tier17N
 
@@ -30,7 +30,7 @@ talents=0003233
 Hunter_SV_T17N.simc
 talents=0003233
 
-Mage_Arcane_T17N.simc
+#Mage_Arcane_T17N.simc
 Mage_Fire_T17N.simc
 Mage_Frost_T17N.simc
 
