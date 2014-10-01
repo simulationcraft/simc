@@ -123,11 +123,12 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
-    cooldown_t* evocation;
-    cooldown_t* inferno_blast;
-    cooldown_t* combustion;
-    cooldown_t* prismatic_crystal;
     cooldown_t* bolt; // Cooldown to handle enhanced_frostbolt perk.
+    cooldown_t* combustion;
+    cooldown_t* evocation;
+    cooldown_t* frozen_orb;
+    cooldown_t* inferno_blast;
+    cooldown_t* prismatic_crystal;
   } cooldowns;
 
   // Gains
@@ -337,11 +338,12 @@ public:
     FoF_renew                = 0;
 
     // Cooldowns
-    cooldowns.evocation         = get_cooldown( "evocation"     );
-    cooldowns.inferno_blast     = get_cooldown( "inferno_blast" );
-    cooldowns.combustion        = get_cooldown( "combustion"    );
     cooldowns.bolt              = get_cooldown( "enhanced_frostbolt" );
-    cooldowns.prismatic_crystal = get_cooldown( "prismatic_crystal" );
+    cooldowns.combustion        = get_cooldown( "combustion"         );
+    cooldowns.evocation         = get_cooldown( "evocation"          );
+    cooldowns.frozen_orb        = get_cooldown( "frozen_orb"         );
+    cooldowns.inferno_blast     = get_cooldown( "inferno_blast"      );
+    cooldowns.prismatic_crystal = get_cooldown( "prismatic_crystal"  );
 
     // Miscellaneous
     incanters_flow_stack_mult = find_spell( 116267 ) -> effectN( 1 ).percent();
@@ -2133,6 +2135,14 @@ struct blizzard_shard_t : public mage_spell_t
       {
         fof_proc_chance *= 1.2;
       }*/
+
+      if ( p() -> perks.improved_blizzard -> ok() )
+      {
+        p() -> cooldowns.frozen_orb -> adjust(
+          - p() -> perks.improved_blizzard -> effectN( 1 ).time_value() * 10.0
+        );
+      }
+
       p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
     }
   }
