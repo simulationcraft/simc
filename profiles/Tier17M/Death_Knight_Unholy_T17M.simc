@@ -3,7 +3,7 @@ level=100
 race=orc
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#db!2..2..0
+talents=http://us.battle.net/wow/en/tool/talent-calculator#db!1..2..1
 spec=unholy
 
 # This default action priority list is automatically created based on your character.
@@ -43,6 +43,7 @@ actions.aoe+=/blood_boil,if=blood=2|(frost=2&death=2)
 actions.aoe+=/summon_gargoyle
 actions.aoe+=/dark_transformation
 actions.aoe+=/blood_tap,if=buff.shadow_infusion.stack=5
+actions.aoe+=/defile
 actions.aoe+=/death_and_decay,if=unholy=1
 actions.aoe+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=45
 actions.aoe+=/scourge_strike,if=unholy=2
@@ -58,16 +59,17 @@ actions.aoe+=/empower_rune_weapon
 
 actions.single_target=blood_tap,if=buff.blood_charge.stack>10&runic_power>=32
 actions.single_target+=/unholy_blight,if=!talent.necrotic_plague.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
-actions.single_target+=/unholy_blight,if=talent.necrotic_plague.enabled&(dot.necrotic_plague.remains<3)
+actions.single_target+=/unholy_blight,if=talent.necrotic_plague.enabled&dot.necrotic_plague.remains<1
 actions.single_target+=/outbreak,if=!talent.necrotic_plague.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
-actions.single_target+=/outbreak,if=talent.necrotic_plague.enabled&(dot.necrotic_plague.remains<3)
+actions.single_target+=/outbreak,if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking
 actions.single_target+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=45
 actions.single_target+=/blood_tap,if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=45&cooldown.soul_reaper.remains=0)
 actions.single_target+=/plague_strike,if=!talent.necrotic_plague.enabled&(!dot.blood_plague.ticking|!dot.frost_fever.ticking)
-actions.single_target+=/plague_strike,if=talent.necrotic_plague.enabled&(!dot.necrotic_plague.ticking)
+actions.single_target+=/plague_strike,if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking
 actions.single_target+=/summon_gargoyle
 actions.single_target+=/dark_transformation
 actions.single_target+=/death_coil,if=runic_power>90
+actions.single_target+=/defile
 actions.single_target+=/death_and_decay,if=unholy=2
 actions.single_target+=/blood_tap,if=unholy=2&cooldown.death_and_decay.remains=0
 actions.single_target+=/scourge_strike,if=unholy=2
@@ -78,6 +80,8 @@ actions.single_target+=/blood_tap,if=cooldown.death_and_decay.remains=0
 actions.single_target+=/death_coil,if=buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)
 actions.single_target+=/scourge_strike
 actions.single_target+=/plague_leech,if=cooldown.outbreak.remains<1
+actions.single_target+=/plague_leech,if=!talent.necrotic_plague.enabled&(dot.blood_plague.remains<1&dot.frost_fever.remains<1)
+actions.single_target+=/plague_leech,if=talent.necrotic_plague.enabled&(dot.necrotic_plague.remains<1)
 actions.single_target+=/festering_strike
 actions.single_target+=/death_coil
 actions.single_target+=/blood_tap,if=buff.blood_charge.stack>=8

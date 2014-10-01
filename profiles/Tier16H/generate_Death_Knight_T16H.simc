@@ -8,7 +8,7 @@ spec=unholy
 role=attack
 position=back
 professions=blacksmithing=600/engineering=600
-talents=300100
+talents=200100
 head=helmet_of_cyclopean_dread,id=99337,gems=capacitive_primal_5str_10crit_11str,upgrade=4
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=4
 shoulders=tusks_of_mannoroth,id=105642,gems=5str_10crit_5str_10crit_5str_10crit_11str,enchant=15str_5crit,upgrade=4

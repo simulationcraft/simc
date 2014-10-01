@@ -6276,18 +6276,17 @@ void death_knight_t::init_action_list()
 
     // Diseases for free
     st -> add_talent( this, "Unholy Blight", "if=!talent.necrotic_plague.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)" );
-    st -> add_talent( this, "Unholy Blight", "if=talent.necrotic_plague.enabled&(dot.necrotic_plague.remains<3)" );
+    st -> add_talent( this, "Unholy Blight", "if=talent.necrotic_plague.enabled&dot.necrotic_plague.remains<1" );
     st -> add_action( this, "Outbreak", "if=!talent.necrotic_plague.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)" );
-    st -> add_action( this, "Outbreak", "if=talent.necrotic_plague.enabled&(dot.necrotic_plague.remains<3)" );
+    st -> add_action( this, "Outbreak", "if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking" );
 
     // Soul Reaper
     st -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
     st -> add_talent( this, "Blood Tap", "if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)" );
 
-
     // Diseases for Runes
     st -> add_action( this, "Plague Strike", "if=!talent.necrotic_plague.enabled&(!dot.blood_plague.ticking|!dot.frost_fever.ticking)" );
-    st -> add_action( this, "Plague Strike", "if=talent.necrotic_plague.enabled&(!dot.necrotic_plague.ticking)" );
+    st -> add_action( this, "Plague Strike", "if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking" );
 
     // GCD Cooldowns
     st -> add_action( this, "Summon Gargoyle" );
@@ -6296,6 +6295,8 @@ void death_knight_t::init_action_list()
 
     // Don't waste runic power
     st -> add_action( this, "Death Coil", "if=runic_power>90" );
+
+    st -> add_talent( this, "Defile" );
 
     // Get runes on cooldown
     st -> add_action( this, "Death and Decay", "if=unholy=2" );
@@ -6310,6 +6311,8 @@ void death_knight_t::init_action_list()
     st -> add_action( this, "Death Coil", "if=buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)" );
     st -> add_action( this, "Scourge Strike" );
     st -> add_talent( this, "Plague Leech", "if=cooldown.outbreak.remains<1" );
+    st -> add_talent( this, "Plague Leech", "if=!talent.necrotic_plague.enabled&(dot.blood_plague.remains<1&dot.frost_fever.remains<1)" );
+    st -> add_talent( this, "Plague Leech", "if=talent.necrotic_plague.enabled&(dot.necrotic_plague.remains<1)" );
     st -> add_action( this, "Festering Strike" );
     st -> add_action( this, "Death Coil" );
 
@@ -6325,6 +6328,7 @@ void death_knight_t::init_action_list()
     aoe -> add_action( this, "Summon Gargoyle" );
     aoe -> add_action( this, "Dark Transformation" );
     aoe -> add_talent( this, "Blood Tap", "if=buff.shadow_infusion.stack=5" );
+    aoe -> add_talent( this, "Defile" );
     aoe -> add_action( this, "Death and Decay", "if=unholy=1" );
     aoe -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
     aoe -> add_action( this, "Scourge Strike", "if=unholy=2" );
