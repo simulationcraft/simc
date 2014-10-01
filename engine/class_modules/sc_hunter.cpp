@@ -3773,7 +3773,7 @@ void hunter_t::apl_surv()
   default_list -> add_talent( this, "Stampede", "", "Add a test for trinket.proc.multistrike.up'here and in potion if you have a multistrike trinket");
 
   default_list -> add_action( this, "Explosive Trap", "if=active_enemies>1" );
-  default_list -> add_action( this, "Explosive Shot", "if=buff.lock_and_load.react" );
+  default_list -> add_action( this, "Explosive Shot", "if=buff.lock_and_load.react&cooldown.barrage.remains>0" );
   default_list -> add_talent( this, "Barrage", "if=active_enemies>2" );
   default_list -> add_action( this, "Explosive Shot", "if=active_enemies=1" );
   default_list -> add_action( this, "Black Arrow", "if=!ticking" );
