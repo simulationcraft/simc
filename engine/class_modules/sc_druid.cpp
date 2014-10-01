@@ -709,7 +709,7 @@ struct natures_vigil_proc_t : public spell_t
       return lowest_player_found;
     }
   };
-
+/*
   struct damage_proc_t : public spell_t
   {
     damage_proc_t( druid_t* p ) :
@@ -750,24 +750,26 @@ struct natures_vigil_proc_t : public spell_t
       return sim-> target_list[ t ];
     }
   };
-
-  damage_proc_t* damage;
+*/
+//  damage_proc_t* damage;
   heal_proc_t*   heal;
 
   natures_vigil_proc_t( druid_t* p ) :
     spell_t( "natures_vigil", p, spell_data_t::nil() )
   {
-    damage  = new damage_proc_t( p );
+//    damage  = new damage_proc_t( p );
     heal    = new heal_proc_t( p );
   }
 
   void trigger( double amount, bool harmful = true )
   {
+    /*
     if ( ! harmful )
     {
       damage -> base_dd_min = damage -> base_dd_max = amount;
       damage -> execute();
-    }
+    }  
+    */
     heal -> base_dd_min = heal -> base_dd_max = amount;
     heal -> fromDmg = harmful;
     heal -> execute();
@@ -2209,7 +2211,8 @@ struct ferocious_bite_t : public cat_attack_t
                           p() -> glyph.ferocious_bite -> effectN( 2 ).base_value();
         double amount = p() -> resources.max[ RESOURCE_HEALTH ] * heal_pct;
         p() -> resource_gain( RESOURCE_HEALTH, amount, p() -> gain.glyph_ferocious_bite );
-        p() -> active.natures_vigil -> trigger( amount , 0 ); // Natures Vigil procs from glyph
+        if( p() -> buff.natures_vigil -> up() )
+          p() -> active.natures_vigil -> trigger( amount , 0 ); // Natures Vigil procs from glyph
       }
 
       double health_percentage = 25.0;
@@ -6038,10 +6041,12 @@ void druid_t::apl_feral()
     def -> add_action( "shadowmeld,if=(buff.bloodtalons.up|!talent.bloodtalons.enabled)&dot.rake.remains<0.3*dot.rake.duration" );
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<25",
                      "Keep Rip from falling off during execute range." );
+  /*
   if( glyph.cat_form -> ok() )
     def -> add_action( this, "Healing Touch", "target_self=1,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" , "Take advantage of Glyph of Cat Form");
   else
-    def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" );
+  */
+  def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" );
   def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
   if ( sim -> allow_potions && level >= 80 )
     def -> add_action( potion_action + ",sync=berserk,if=target.health.pct<25" );
@@ -6065,7 +6070,7 @@ void druid_t::apl_feral()
   // Fillers
   def -> add_action( this, "Swipe", "if=combo_points<5&active_enemies>=3" );
   def -> add_action( this, "Shred", "if=combo_points<5&active_enemies<3" );
-
+/*
   // Add in rejuv blanketing for nature's vigil -- not fully optimized
   def -> add_talent( this, "Nature's Vigil" );
   if( glyph.cat_form -> ok() )
@@ -6073,6 +6078,7 @@ void druid_t::apl_feral()
   def -> add_action( this, "rejuvenation", "cycle_players=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)" );  
   def -> add_action( this, "rejuvenation", "cycle_players=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)" );  
   def -> add_action( this, "rejuvenation", "cycle_players=1,if=buff.natures_vigil.up" );  
+  */
 
 }
 

@@ -36,8 +36,8 @@ race=night_elf
 spec=feral
 role=attack
 position=back
-talents=0102032
-glyphs=savage_roar/ferocious_bite/cat_form
+talents=0002002
+glyphs=savage_roar
 head=bloodfeather_cowl,id=109976,bonus_id=524
 neck=fireblade_collar,id=109951,bonus_id=524,enchant=gift_of_critical_strike
 shoulders=blackwater_spaulders,bonus_id=524,id=109938

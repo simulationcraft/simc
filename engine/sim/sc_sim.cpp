@@ -256,7 +256,7 @@ private:
   { return s.size() == 2; }
 
 public:
-  struct error {};
+  typedef std::runtime_error error;
   struct option_error : public error {};
 
   std::vector<std::string> names;
@@ -288,10 +288,7 @@ public:
     {
       if ( names[ i ].find( '=' ) != std::string::npos )
       {
-        if ( ! option_t::parse( sim, context.c_str(), options, names[ i ] ) )
-        {
-          throw option_error();
-        }
+        option_t::parse( sim, context.c_str(), options, names[ i ] );
       }
       else
       {
@@ -2446,7 +2443,7 @@ void sim_t::setup( sim_control_t* c )
   // Global Options
   for ( size_t i = 0; i < control -> options.size(); i++ )
   {
-    option_tuple_t& o = control -> options[ i ];
+    const option_tuple_t& o = control -> options[ i ];
     if ( o.scope != "global" ) continue;
     if ( ! parse_option( o.name, o.value ) )
     {

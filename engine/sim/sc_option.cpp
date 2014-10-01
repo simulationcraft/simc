@@ -23,10 +23,8 @@ char* skip_white_space( char* s )
 
 // option_db_t::open_file ===================================================
 
-io::cfile open_file( const std::string& auto_path, const std::string& name )
+io::cfile open_file( const std::vector<std::string>& splits, const std::string& name )
 {
-  std::vector<std::string> splits = util::string_split( auto_path, ",;|" );
-
   for ( size_t i = 0; i < splits.size(); i++ )
   {
     FILE* f = io::fopen( splits[ i ] + "/" + name, "r" );
@@ -37,6 +35,18 @@ io::cfile open_file( const std::string& auto_path, const std::string& name )
   return io::cfile( name, "r" );
 }
 
+template<typename T>
+inline void check_boundaries( bool clamp, std::string name, T v, double min, double max) {
+
+  if (clamp) {
+    if (v < min || v > max) {
+      std::stringstream s;
+      s << "Option '" << name << "' with value '" << v
+          << "' not within valid boundaries [" << min << " - " << max << "]";
+      throw std::invalid_argument(s.str());
+    }
+  }
+}
 } // UNNAMED NAMESPACE ======================================================
 
 // option_t::print ==========================================================
@@ -133,32 +143,64 @@ bool option_t::parse( sim_t*             sim,
   {
     switch ( type )
     {
-      case STRING: *static_cast<std::string*>( data.address ) = v;                        break;
-      case APPEND: *static_cast<std::string*>( data.address ) += v;                       break;
-      case INT:    *static_cast<int*>( data.address )      = strtol( v.c_str(), 0, 10 );  break;
-      case UINT:   *static_cast<unsigned*>( data.address ) = strtoul( v.c_str(), 0, 10 ); break;
-      case FLT:    *static_cast<double*>( data.address )   = atof( v.c_str() );           break;
-      case TIMESPAN: *( reinterpret_cast<timespan_t*>( data.address ) ) = timespan_t::from_seconds( atof( v.c_str() ) ); break;
+      case STRING:
+        *static_cast<std::string*>( data.address ) = v;
+        break;
+      case APPEND:
+        *static_cast<std::string*>( data.address ) += v;
+        break;
+      case INT:
+        *static_cast<int*>( data.address ) = strtol( v.c_str(), nullptr, 10 );
+        check_boundaries( clamp, name, *static_cast<int*>( data.address ), min, max );
+        break;
+      case UINT:
+        *static_cast<unsigned*>( data.address ) = strtoul( v.c_str(), nullptr, 10 );
+        check_boundaries( clamp, name, *static_cast<unsigned*>( data.address ), min, max );
+        break;
+      case FLT:
+        *static_cast<double*>( data.address ) = strtod( v.c_str(), nullptr );
+        check_boundaries( clamp, name, *static_cast<double*>( data.address ), min, max );
+        break;
+      case TIMESPAN:
+        {
+          double val = strtod( v.c_str(), nullptr );
+          *static_cast<timespan_t*>( data.address ) = timespan_t::from_seconds( val );
+          check_boundaries( clamp, name, val, min, max );
+        }
+        break;
       case INT_BOOL:
-        *( ( int* ) data.address ) = atoi( v.c_str() ) ? 1 : 0;
-        if ( v != "0" && v != "1" ) sim -> errorf( "Acceptable values for '%s' are '1' or '0'\n", name );
+        if ( v != "0" && v != "1" ) {
+          std::stringstream s;
+          s << "Acceptable values for '" << name << "' are '1' or '0'";
+          throw std::invalid_argument( s.str() );
+        }
+        *static_cast<int*>( data.address ) = strtol( v.c_str(), nullptr, 10 ) ? 1 : 0;
         break;
       case BOOL:
-        *static_cast<bool*>( data.address ) = atoi( v.c_str() ) != 0;
-        if ( v != "0" && v != "1" ) sim -> errorf( "Acceptable values for '%s' are '1' or '0'\n", name );
+        if ( v != "0" && v != "1" ) {
+          std::stringstream s;
+          s << "Acceptable values for '" << name << "' are '1' or '0'";
+          throw std::invalid_argument( s.str() );
+        }
+        *static_cast<bool*>( data.address ) = strtol( v.c_str(), nullptr, 10 ) ? 1 : 0;
         break;
       case LIST:
-        ( ( std::vector<std::string>* ) data.address ) -> push_back( v );
+        static_cast<std::vector<std::string>*>( data.address ) -> push_back( v );
         break;
       case FUNC:
         return ( *data.func )( sim, n, v );
       case DEPRECATED:
-        sim -> errorf( "Option '%s' has been deprecated.\n", name );
-        if ( data.cstr ) sim -> errorf( "Please use option '%s' instead.\n", data.cstr );
-        sim -> cancel();
+        {
+          std::stringstream s;
+          s << "Option '" << name << "' has been deprecated.";
+          if ( data.cstr ) {
+            s << " Please use option '" << data.cstr << "' instead.";
+          }
+          throw std::invalid_argument( s.str() );
+        }
         break;
       default:
-        assert( 0 );
+        assert( false && "Unhandled Option Type" );
         return false;
     }
     return true;
@@ -177,7 +219,7 @@ bool option_t::parse( sim_t*             sim,
     {
       if ( name == n.substr( 0, dot + 1 ) )
       {
-        std::map<std::string, std::string>* m = ( std::map<std::string, std::string>* ) data.address;
+        std::map<std::string, std::string>* m = static_cast<std::map<std::string, std::string>*>( data.address );
         std::string& value = ( *m )[ n.substr( dot + 1, last - dot ) ];
         value = append ? ( value + v ) : v;
         return true;
@@ -206,7 +248,7 @@ bool option_t::parse( sim_t*                 sim,
 
 // option_t::parse ==========================================================
 
-bool option_t::parse( sim_t*                 sim,
+void option_t::parse( sim_t*                 sim,
                       const char*            context,
                       std::vector<option_t>& options,
                       const std::vector<std::string>& splits )
@@ -218,8 +260,9 @@ bool option_t::parse( sim_t*                 sim,
 
     if ( index == std::string::npos )
     {
-      sim -> errorf( "%s: Unexpected parameter '%s'. Expected format: name=value\n", context, s.c_str() );
-      return false;
+      std::stringstream stream;
+      stream << context << ": Unexpected parameter '" << s << "'. Expected format: name=value";
+      throw std::invalid_argument( stream.str() );
     }
 
     std::string n = s.substr( 0, index );
@@ -227,47 +270,45 @@ bool option_t::parse( sim_t*                 sim,
 
     if ( ! option_t::parse( sim, options, n, v ) )
     {
-      sim -> errorf( "%s: Unexpected parameter '%s'.\n", context, n.c_str() );
-      return false;
+      std::stringstream stream;
+      stream << context << ": Unexpected parameter '" << n << "'.";
+      throw std::invalid_argument( stream.str() );
     }
   }
-
-  return true;
 }
 
 // option_t::parse ==========================================================
 
-bool option_t::parse( sim_t*                 sim,
+void option_t::parse( sim_t*                 sim,
                       const char*            context,
                       std::vector<option_t>& options,
                       const std::string&     options_str )
 {
-  std::vector<std::string> splits = util::string_split( options_str, "," );
-  return option_t::parse( sim, context, options, splits );
+  option_t::parse( sim, context, options, util::string_split( options_str, "," ) );
 }
 
 // option_t::parse ==========================================================
 
-bool option_t::parse( sim_t*             sim,
+void option_t::parse( sim_t*             sim,
                       const char*        context,
                       const option_t*    options,
                       const std::string& options_str )
 {
   std::vector<option_t> options_vector;
   option_t::copy( options_vector, options );
-  return parse( sim, context, options_vector, options_str );
+  parse( sim, context, options_vector, options_str );
 }
 
 // option_t::parse ==========================================================
 
-bool option_t::parse( sim_t*             sim,
+void option_t::parse( sim_t*             sim,
                       const char*        context,
                       const option_t*    options,
                       const std::vector<std::string>& strings )
 {
   std::vector<option_t> options_vector;
   option_t::copy( options_vector, options );
-  return parse( sim, context, options_vector, strings );
+  parse( sim, context, options_vector, strings );
 }
 
 // option_t::merge ==========================================================
@@ -441,7 +482,7 @@ void option_db_t::parse_args( const std::vector<std::string>& args )
 
 #ifndef SC_SHARED_DATA
   #if defined( SC_LINUX_PACKAGING )
-    #define SC_SHARED_DATA SC_LINUX_PACKAGING "/profiles/"
+    #define SC_SHARED_DATA SC_LINUX_PACKAGING "/profiles"
   #else
     #define SC_SHARED_DATA ".."
   #endif
@@ -457,7 +498,7 @@ option_db_t::option_db_t()
   // This makes baby pandas cry a bit less, but still makes them weep.
 
   // Add current directory automagically.
-  auto_path = ".|";
+  auto_path.push_back( "." );
 
   // Automatically add "./profiles" and "../profiles", because the command line
   // client is ran both from the engine/ subdirectory, as well as the source
@@ -472,25 +513,22 @@ option_db_t::option_db_t()
     if ( prefix.empty() )
       continue;
 
-    if ( *( prefix.end() - 1 ) != '/' )
-      prefix += "/";
+    auto_path.push_back( prefix );
 
-    auto_path += prefix + "|";
-    auto_path += prefix + "PreRaid|";
+    prefix += "/";
 
     // Add profiles for each tier, except pvp
     for ( int i = 0; i < ( N_TIER - 1 ); i++ )
     {
-      auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "B|";
-      auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "H|";
-      auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "N|";
-      auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "M|";
-      auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "PR|";
+      auto_path.push_back( prefix + "Tier" + util::to_string( MIN_TIER + i ) + "B" );
+      auto_path.push_back( prefix + "Tier" + util::to_string( MIN_TIER + i ) + "H" );
+      auto_path.push_back( prefix + "Tier" + util::to_string( MIN_TIER + i ) + "N" );
+      auto_path.push_back( prefix + "Tier" + util::to_string( MIN_TIER + i ) + "M" );
+      auto_path.push_back( prefix + "Tier" + util::to_string( MIN_TIER + i ) + "P" );
     }
   }
 
-  if ( auto_path[ auto_path.size() - 1 ] == '|' )
-    auto_path.erase( auto_path.size() - 1 );
+
 }
 
 #undef SC_SHARED_DATA

@@ -423,8 +423,14 @@ bool item_t::parse_options()
     opt_null()
   };
 
-  if ( ! option_t::parse( sim, option_name_str.c_str(), options, remainder ) )
+  try
+  {
+    option_t::parse( sim, option_name_str.c_str(), options, remainder );
+  }
+  catch( ... )
+  {
     return false;
+  }
 
   util::tokenize( option_name_str );
 

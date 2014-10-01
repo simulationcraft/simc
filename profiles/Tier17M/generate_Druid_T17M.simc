@@ -41,8 +41,8 @@ race=night_elf
 spec=feral
 role=attack
 position=back
-talents=0102032
-glyphs=savage_roar/ferocious_bite/cat_form
+talents=0002002
+glyphs=savage_roar
 head=acidic_jaws,id=113880,bonus_id=567
 neck=darklight_necklace,id=113865,bonus_id=567,enchant=gift_of_critical_strike
 shoulders=living_wood_spaulders,id=115544,bonus_id=567

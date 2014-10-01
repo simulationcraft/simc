@@ -3,8 +3,8 @@ level=100
 race=night_elf
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!.0.1.21
-glyphs=savage_roar/ferocious_bite/cat_form
+talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!...1..1
+glyphs=savage_roar
 spec=feral
 
 # This default action priority list is automatically created based on your character.
@@ -42,8 +42,7 @@ actions+=/tigers_fury,if=(!buff.omen_of_clarity.react&energy.max-energy>=60)|ene
 actions+=/shadowmeld,if=(buff.bloodtalons.up|!talent.bloodtalons.enabled)&dot.rake.remains<0.3*dot.rake.duration
 # Keep Rip from falling off during execute range.
 actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<25
-# Take advantage of Glyph of Cat Form
-actions+=/healing_touch,target_self=1,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)
+actions+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)
 actions+=/savage_roar,if=buff.savage_roar.remains<3
 actions+=/potion,name=draenic_agility,sync=berserk,if=target.health.pct<25
 actions+=/thrash_cat,if=buff.omen_of_clarity.react&remains<=duration*0.3&active_enemies>1
@@ -60,12 +59,6 @@ actions+=/moonfire,cycle_targets=1,if=remains<=duration*0.3&active_enemies<=10
 actions+=/rake,cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&combo_points<5
 actions+=/swipe,if=combo_points<5&active_enemies>=3
 actions+=/shred,if=combo_points<5&active_enemies<3
-actions+=/natures_vigil
-# Take advantage of Glyph of Cat Form
-actions+=/rejuvenation,target_self=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
-actions+=/rejuvenation,cycle_players=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
-actions+=/rejuvenation,cycle_players=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)
-actions+=/rejuvenation,cycle_players=1,if=buff.natures_vigil.up
 
 head=acidic_jaws,id=113880,bonus_id=567
 neck=darklight_necklace,id=113865,bonus_id=567,enchant=gift_of_critical_strike

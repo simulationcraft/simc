@@ -36,7 +36,7 @@ actions+=/rune_of_power,if=buff.rune_of_power.remains<cast_time
 actions+=/mirror_image
 actions+=/call_action_list,name=init_crystal,if=talent.prismatic_crystal.enabled
 actions+=/call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active
-actions+=/call_action_list,name=aoe,if=active_enemies>=6
+actions+=/call_action_list,name=aoe,if=active_enemies>=5
 actions+=/call_action_list,name=burn,if=time_to_die<mana.pct*0.2*spell_haste|((cooldown.evocation.remains<buff.arcane_power.remains|cooldown.evocation.remains<(mana.pct-40)*0.2)&mana.pct>40)
 actions+=/call_action_list,name=conserve,if=!cooldown.evocation.up
 actions+=/evocation,interrupt_if=mana.pct>92,if=mana.pct<65

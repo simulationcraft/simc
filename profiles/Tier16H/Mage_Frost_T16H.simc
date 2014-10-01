@@ -39,7 +39,7 @@ actions+=/rune_of_power,if=(cooldown.icy_veins.remains<gcd&buff.rune_of_power.re
 actions+=/call_action_list,name=cooldowns,if=time_to_die<24
 actions+=/call_action_list,name=init_crystal,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.remains<action.frozen_orb.gcd
 actions+=/call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active
-actions+=/call_action_list,name=aoe,if=active_enemies>5
+actions+=/call_action_list,name=aoe,if=active_enemies>=5
 actions+=/call_action_list,name=single_target
 
 # Conditions for initiating Prismatic Crystal burn phase
@@ -53,6 +53,7 @@ actions.crystal_sequence+=/ice_lance,if=buff.fingers_of_frost.react=2
 actions.crystal_sequence+=/frostfire_bolt,if=buff.brain_freeze.react
 actions.crystal_sequence+=/ice_lance,if=buff.fingers_of_frost.react
 actions.crystal_sequence+=/ice_nova
+actions.crystal_sequence+=/blizzard,interrupt_if=cooldown.frozen_orb.up|(talent.frost_bomb.enabled&buff.fingers_of_frost.react=2),if=active_enemies>=5
 actions.crystal_sequence+=/frostbolt
 
 # Consolidated damage cooldown abilities

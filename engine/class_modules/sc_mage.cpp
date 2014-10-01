@@ -4798,7 +4798,7 @@ void mage_t::create_buffs()
                                 .chance( 1.0 );
 
   buffs.incanters_flow        = new incanters_flow_t( this );
-  buffs.ice_shard             = buff_creator_t( this, "ice_shard" ).duration( timespan_t::from_seconds( 10.0 ) ).max_stack( 10 );
+  buffs.ice_shard             = buff_creator_t( this, "ice_shard", find_spell( 166869 ) );
 }
 
 // mage_t::init_gains =======================================================
@@ -4989,7 +4989,7 @@ void mage_t::apl_arcane()
   default_list -> add_talent( this, "Mirror Image" );
   default_list -> add_action( "call_action_list,name=init_crystal,if=talent.prismatic_crystal.enabled" );
   default_list -> add_action( "call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active" );
-  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=6" );
+  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=5" );
   default_list -> add_action( "call_action_list,name=burn,if=time_to_die<mana.pct*0.2*spell_haste|((cooldown.evocation.remains<buff.arcane_power.remains|cooldown.evocation.remains<(mana.pct-40)*0.2)&mana.pct>40)" );
   default_list -> add_action( "call_action_list,name=conserve,if=!cooldown.evocation.up" );
   default_list -> add_action( this, "Evocation",
@@ -5178,7 +5178,7 @@ void mage_t::apl_fire()
 
 
   active_talents -> add_talent( this, "Meteor",
-                                "if=glyph.combustion.enabled&(!talent.incanters_flow.enabled|buff.incanters_flow.stack+incanters_flow_dir>=4)&cooldown.meteor.duration-cooldown.combustion.remains<10",
+                                "if=active_enemies>=5|(glyph.combustion.enabled&(!talent.incanters_flow.enabled|buff.incanters_flow.stack+incanters_flow_dir>=4)&cooldown.meteor.duration-cooldown.combustion.remains<10)",
                                 "Active talents usage\n"
                                 "# This sequence summarizes all usage of active talents (BW, LB, Met), and their optimizations with Incanter's Flow and Prismatic Crystal" );
   active_talents -> add_action( "call_action_list,name=living_bomb,if=talent.living_bomb.enabled" );
@@ -5194,14 +5194,17 @@ void mage_t::apl_fire()
 
 
   aoe -> add_action( this, "Inferno Blast",
-                     "cycle_targets=1,if=(dot.combustion.ticking&active_dot.combustion<active_enemies)|(dot.living_bomb.ticking&active_dot.living_bomb<active_enemies)|(dot.pyroblast.ticking&active_dot.pyroblast<active_enemies)",
+                     "cycle_targets=1,if=(dot.combustion.ticking&active_dot.combustion<active_enemies)|(dot.pyroblast.ticking&active_dot.pyroblast<active_enemies)",
                      "AoE sequence" );
   aoe -> add_action( "call_action_list,name=active_talents" );
+  aoe -> add_action( this, "Pyroblast",
+                     "if=buff.pyroblast.react|buff.pyromaniac.react" );
+  aoe -> add_action( this, "Pyroblast",
+                     "if=active_dot.pyroblast=0&!in_flight" );
   aoe -> add_action( this, "Dragon's Breath",
                      "if=glyph.dragons_breath.enabled" );
-  aoe -> add_action( this, "Pyroblast",
-                     "if=active_dot.pyroblast=0" );
-  aoe -> add_action( this, "Flamestrike" );
+  aoe -> add_action( this, "Flamestrike",
+                     "if=mana.pct>10"  );
 
 
   single_target -> add_action( this, "Inferno Blast",
@@ -5254,7 +5257,7 @@ void mage_t::apl_frost()
   default_list -> add_action( "call_action_list,name=cooldowns,if=time_to_die<24" );
   default_list -> add_action( "call_action_list,name=init_crystal,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.remains<action.frozen_orb.gcd" );
   default_list -> add_action( "call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active" );
-  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>5" );
+  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=5" );
   default_list -> add_action( "call_action_list,name=single_target" );
 
 
@@ -5274,6 +5277,8 @@ void mage_t::apl_frost()
   crystal_sequence -> add_action( this, "Ice Lance",
                                   "if=buff.fingers_of_frost.react" );
   crystal_sequence -> add_talent( this, "Ice Nova" );
+  crystal_sequence -> add_action( this, "Blizzard",
+                                 "interrupt_if=cooldown.frozen_orb.up|(talent.frost_bomb.enabled&buff.fingers_of_frost.react=2),if=active_enemies>=5" );
   crystal_sequence -> add_action( this, "Frostbolt" );
 
 

@@ -3688,6 +3688,7 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "Dire Beast");
   default_list -> add_talent( this, "Fervor", "if=focus<=65");
   default_list -> add_action( this, "Bestial Wrath", "if=focus>60&!buff.bestial_wrath.up");
+  default_list -> add_talent( this, "Barrage", "if=active_enemies>2" );
   default_list -> add_action( this, "Multi-Shot", "if=active_enemies>5|(active_enemies>1&pet.cat.buff.beast_cleave.down)");
   default_list -> add_talent( this, "Barrage", "if=active_enemies>1");
   default_list -> add_talent( this, "A Murder of Crows");
@@ -3770,9 +3771,11 @@ void hunter_t::apl_surv()
   add_potion_action( default_list, "draenic_agility", "virmens_bite", 
     "if=(!talent.stampede.enabled|cooldown.stampede.remains<1)&(!talent.a_murder_of_crows.enabled|cooldown.a_murder_of_crows.remains<1)|target.time_to_die<=20" );
   default_list -> add_talent( this, "Stampede", "", "Add a test for trinket.proc.multistrike.up'here and in potion if you have a multistrike trinket");
-  
+
   default_list -> add_action( this, "Explosive Trap", "if=active_enemies>1" );
-  default_list -> add_action( this, "Explosive Shot" );
+  default_list -> add_action( this, "Explosive Shot", "if=buff.lock_and_load.react&cooldown.barrage.remains>0" );
+  default_list -> add_talent( this, "Barrage", "if=active_enemies>2" );
+  default_list -> add_action( this, "Explosive Shot", "if=active_enemies=1" );
   default_list -> add_action( this, "Black Arrow", "if=!ticking" );
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Dire Beast" );
@@ -3781,12 +3784,12 @@ void hunter_t::apl_surv()
   default_list -> add_talent( this, "Glaive Toss" );
   default_list -> add_talent( this, "Powershot" );
   default_list -> add_talent( this, "Barrage" );
-  default_list -> add_action( this, "Multi-Shot" , "if=active_enemies>3" );
+  default_list -> add_action( this, "Multi-Shot" , "if=active_enemies>3&focus>80" );
   default_list -> add_action( this, "Arcane Shot", "if=buff.thrill_of_the_hunt.react" );
   default_list -> add_action( this, "Cobra Shot","if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&focus+14+8*(1+buff.steady_focus.value)<80" );
   default_list -> add_action( this, "Arcane Shot", "if=focus>=67&active_enemies<2" );
   default_list -> add_action( this, "Arcane Shot", "if=talent.focusing_shot.enabled&active_enemies<2" );
-  default_list -> add_action( this, "Multi-Shot", "if=focus>67&active_enemies>1" );
+  default_list -> add_action( this, "Multi-Shot", "if=focus>80&active_enemies>1" );
   default_list-> add_talent( this, "Focusing Shot" );
   if ( level >= 81 )
     default_list -> add_action( this, "Cobra Shot" );
