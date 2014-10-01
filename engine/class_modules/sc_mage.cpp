@@ -5503,11 +5503,13 @@ double mage_t::composite_multistrike() const
 
   if ( buffs.icy_veins -> up() && glyphs.icy_veins -> ok() )
   {
-    ms += buffs.icy_veins -> data().effectN( 3 ).percent();
-    if ( perks.improved_icy_veins -> ok() )
-      ms += perks.improved_icy_veins -> effectN( 2 ).percent();
-  }
+    ms += glyphs.icy_veins -> effectN( 1 ).percent();
 
+    if ( perks.improved_icy_veins -> ok() )
+    {
+      ms += perks.improved_icy_veins -> effectN( 2 ).percent();
+    }
+  }
 
   return ms;
 }
@@ -5518,11 +5520,18 @@ double mage_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
-  if ( buffs.icy_veins -> up() && !glyphs.icy_veins -> ok() && perks.improved_icy_veins -> ok() )
-    h *= 1.0 / ( 1.0 + buffs.icy_veins -> data().effectN( 1 ).percent() + perks.improved_icy_veins -> effectN( 1 ).percent() );
-  else if ( buffs.icy_veins -> up() && !glyphs.icy_veins -> ok() )
-    h *= 1.0 / ( 1.0 + buffs.icy_veins -> data().effectN( 1 ).percent() );
-  
+  if ( buffs.icy_veins -> up() && !glyphs.icy_veins -> ok() )
+  {
+    double iv_haste = buffs.icy_veins -> data().effectN( 1 ).percent();
+
+    if ( perks.improved_icy_veins -> ok() )
+    {
+      iv_haste += perks.improved_icy_veins -> effectN( 1 ).percent();
+    }
+
+    h /= 1.0 + iv_haste ;
+  }
+
   return h;
 }
 
