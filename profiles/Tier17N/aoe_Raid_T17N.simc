@@ -30,9 +30,12 @@ talents=0003233
 Hunter_SV_T17N.simc
 talents=0003233
 
-#Mage_Arcane_T17N.simc
+Mage_Arcane_T17N.simc
+talents=1000123
 Mage_Fire_T17N.simc
+talents=1000123
 Mage_Frost_T17N.simc
+talents=1000122
 
 #Monk_Brewmaster_1h_Serenity_T17N.simc
 #Monk_Brewmaster_2h_Serenity_T17N.simc
