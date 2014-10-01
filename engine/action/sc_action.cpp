@@ -153,7 +153,9 @@ struct aoe_target_list_callback_t
     action -> target_cache.is_valid = false;
   }
 };
-
+struct power_entry_without_aura {
+  bool operator()( const spellpower_data_t* p ) {return p -> aura_id() == 0;}
+};
 } // end anonymous namespace
 
 
@@ -438,8 +440,24 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   school               = spell_data.get_school_type();
   rp_gain              = spell_data.runic_power_gain();
 
-  if ( spell_data._power && spell_data._power -> size() == 1 )
-    resource_current = spell_data._power -> at( 0 ) -> resource();
+  if (spell_data._power)
+  {
+    if (spell_data._power->size() == 1)
+    {
+      resource_current = spell_data._power->at(0)->resource();
+    }
+    else
+    {
+      // Find the first power entry without a aura id
+      std::vector<const spellpower_data_t*>::iterator it = std::find_if(
+          spell_data._power -> begin(), spell_data._power -> end(),
+          power_entry_without_aura() );
+      if (it != spell_data._power -> end())
+      {
+        resource_current = (*it) -> resource();
+      }
+    }
+  }
 
   for ( size_t i = 0; spell_data._power && i < spell_data._power -> size(); i++ )
   {
