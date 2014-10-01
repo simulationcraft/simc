@@ -50,6 +50,7 @@ public:
   simple_sample_data_t cs_damage;
   simple_sample_data_t priority_damage;
   simple_sample_data_t all_damage;
+  simple_sample_data_t shield_charge_damage;
 
   // Active
   action_t* active_blood_craze;
@@ -493,6 +494,7 @@ public:
     cs_damage.merge( other_p.cs_damage );
     all_damage.merge( other_p.all_damage );
     priority_damage.merge( other_p.priority_damage );
+    shield_charge_damage.merge( other_p.shield_charge_damage );
 
     player_t::merge( other );
   }
@@ -1716,9 +1718,23 @@ struct heroic_strike_t: public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     if ( p() -> buff.shield_charge -> up() )
+    {
       am *= 1.0 + p() -> buff.shield_charge -> default_value;
+      am *= 1.0 + p() -> sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent();
+    }
 
     return am;
+  }
+
+  void assess_damage( dmg_e type, action_state_t* s )
+  {
+    warrior_attack_t::assess_damage( type, s );
+
+    if ( p() -> buff.shield_charge -> check() && s -> result_amount > 0 )
+    {
+      double original_damage = s -> result_amount;
+      p() -> shield_charge_damage.add( original_damage );
+    }
   }
 
   double cost() const
@@ -2230,7 +2246,10 @@ struct revenge_t: public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     if ( p() -> buff.shield_charge -> up() )
+    {
       am *= 1.0 + p() -> buff.shield_charge -> default_value;
+      am *= 1.0 + p() -> sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent();
+    }
 
     return am;
   }
@@ -2250,6 +2269,17 @@ struct revenge_t: public warrior_attack_t
           rage_gain * p() -> sets.set( SET_TANK, T15, B4 ) -> effectN( 1 ).percent(),
           p() -> gain.tier15_4pc_tank );
       }
+    }
+  }
+
+  void assess_damage( dmg_e type, action_state_t* s )
+  {
+    warrior_attack_t::assess_damage( type, s );
+
+    if ( p() -> buff.shield_charge -> check() && s -> result_amount > 0 )
+    {
+      double original_damage = s -> result_amount;
+      p() -> shield_charge_damage.add( original_damage );
     }
   }
 
@@ -2478,6 +2508,8 @@ struct shield_charge_2pc_t: public warrior_attack_t
     warrior_attack_t( "shield_charge_t17_2pc_proc", p, p -> find_spell( 156321 ) )
   {
     background = true;
+    base_costs[ RESOURCE_RAGE ] = 0;
+    cooldown -> duration = timespan_t::zero();
   }
 
   void execute()
@@ -2496,6 +2528,8 @@ struct shield_block_2pc_t: public warrior_attack_t
     warrior_attack_t( "shield_block_t17_2pc_proc", p, p -> find_class_spell( "Shield Block" ) )
   {
     background = true;
+    base_costs[RESOURCE_RAGE] = 0;
+    cooldown -> duration = timespan_t::zero();
   }
 
   void execute()
@@ -2523,7 +2557,7 @@ struct shield_slam_t: public warrior_attack_t
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
     cooldown = p -> cooldown.shield_slam;
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
-    attack_power_mod.direct = 3.18; //Hard-coded in tooltip.
+    attack_power_mod.direct = 3; //Hard-coded in tooltip.
   }
 
   double action_multiplier() const
@@ -2533,10 +2567,10 @@ struct shield_slam_t: public warrior_attack_t
     if ( p() -> buff.shield_charge -> up() )
     {
       am *= 1.0 + p() -> buff.shield_charge -> default_value;
-      if ( p() -> talents.heavy_repercussions -> ok() )
-        am *= 1.0 + p() -> talents.heavy_repercussions -> effectN( 1 ).percent();
+      am *= 1.0 + p() -> talents.heavy_repercussions -> effectN( 1 ).percent();
+      am *= 1.0 + p() -> sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent();
     }
-    else if ( p() -> buff.shield_block -> up() && p() -> talents.heavy_repercussions -> ok() )
+    else if ( p() -> buff.shield_block -> up() )
       am *= 1.0 + p() -> talents.heavy_repercussions -> effectN( 1 ).percent();
 
     return am;
@@ -2553,6 +2587,17 @@ struct shield_slam_t: public warrior_attack_t
     }
 
     return c;
+  }
+
+  void assess_damage( dmg_e type, action_state_t* s )
+  {
+    warrior_attack_t::assess_damage( type, s );
+
+    if ( p() -> buff.shield_charge -> check() && s -> result_amount > 0 )
+    {
+      double original_damage = s -> result_amount;
+      p() -> shield_charge_damage.add( original_damage );
+    }
   }
 
   void execute()
@@ -4593,7 +4638,7 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_BLOCK );
 
   buff.shield_charge = buff_creator_t( this, "shield_charge", find_spell( 169667 ) )
-    .default_value( find_spell( 169667 ) -> effectN( 1 ).percent() + sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent() )
+    .default_value( find_spell( 169667 ) -> effectN( 1 ).percent() )
     .cd( timespan_t::zero() );
 
   buff.shield_wall = buff_creator_t( this, "shield_wall", spec.shield_wall )
@@ -5473,6 +5518,7 @@ public:
     double cs_damage = p.cs_damage.sum();
     double all_damage = p.all_damage.sum();
     double priority_damage = p.priority_damage.sum();
+    double shield_charge_dmg = p.shield_charge_damage.sum();
 
     // Custom Class Section
     os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
@@ -5482,13 +5528,22 @@ public:
     os << p.name() << "\n<br>";
     os << "\t\t\t\t\t<p>Percentage of damage dealt to primary target</p>\n";
     os << "%" << ( ( priority_damage / all_damage ) * 100 ) << "</p>\n";
-    if ( p.specialization() != WARRIOR_PROTECTION )
+    if ( cs_damage > 0 )
     {
       os << "\t\t\t\t\t<p>Percentage of primary target damage that occurs inside of Colossus Smash</p>\n";
       os << "%" << ( ( cs_damage / priority_damage ) * 100 ) << "</p>\n";
     }
     os << "\t\t\t\t\t<p> Dps done to primary target </p>\n";
     os << ( ( priority_damage / all_damage ) * p.collected_data.dps.mean() ) << "</p>\n";
+
+    if ( shield_charge_dmg > 0 )
+    {
+      os << "\t\t\t\t\t<p> DPS occuring inside of shield charge + benefiting from shield charge </p>\n";
+      os << ( ( shield_charge_dmg / all_damage ) * p.collected_data.dps.mean() ) << "</p>\n";
+
+      os << "\t\t\t\t\t<p> Percentage of overall damage </p>\n";
+      os << ( ( shield_charge_dmg / all_damage ) * 100 ) << "</p>\n";
+    }
 
     os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";
   }
