@@ -44,12 +44,12 @@ actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react&focus>35&focus.time_to_ma
 actions+=/glaive_toss
 actions+=/powershot
 actions+=/barrage
-actions+=/multishot,if=active_enemies>3
+actions+=/multishot,if=active_enemies>3&focus>80
 actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react
 actions+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&focus+14+8*(1+buff.steady_focus.value)<80
 actions+=/arcane_shot,if=focus>=67&active_enemies<2
 actions+=/arcane_shot,if=talent.focusing_shot.enabled&active_enemies<2
-actions+=/multishot,if=focus>67&active_enemies>1
+actions+=/multishot,if=focus>80&active_enemies>1
 actions+=/focusing_shot
 actions+=/cobra_shot
 

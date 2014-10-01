@@ -3784,12 +3784,12 @@ void hunter_t::apl_surv()
   default_list -> add_talent( this, "Glaive Toss" );
   default_list -> add_talent( this, "Powershot" );
   default_list -> add_talent( this, "Barrage" );
-  default_list -> add_action( this, "Multi-Shot" , "if=active_enemies>3" );
+  default_list -> add_action( this, "Multi-Shot" , "if=active_enemies>3&focus>80" );
   default_list -> add_action( this, "Arcane Shot", "if=buff.thrill_of_the_hunt.react" );
   default_list -> add_action( this, "Cobra Shot","if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&focus+14+8*(1+buff.steady_focus.value)<80" );
   default_list -> add_action( this, "Arcane Shot", "if=focus>=67&active_enemies<2" );
   default_list -> add_action( this, "Arcane Shot", "if=talent.focusing_shot.enabled&active_enemies<2" );
-  default_list -> add_action( this, "Multi-Shot", "if=focus>67&active_enemies>1" );
+  default_list -> add_action( this, "Multi-Shot", "if=focus>80&active_enemies>1" );
   default_list-> add_talent( this, "Focusing Shot" );
   if ( level >= 81 )
     default_list -> add_action( this, "Cobra Shot" );
