@@ -2771,6 +2771,7 @@ struct barrage_t: public hunter_spell_t
       p() -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
     }
     trigger_tier16_bm_4pc_melee();
+    trigger_thrill_of_the_hunt();
   }
 };
 
