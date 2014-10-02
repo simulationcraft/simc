@@ -852,8 +852,19 @@ class ItemDataGenerator(DataGenerator):
             if data.flags & 0x10:
                 continue
 
+            # On-use armors/weapons
+            if classdata.classs in [ 2, 4 ]:
+                # All shirts
+                if data.inv_type == 4:
+                    filter_ilevel = False
+                else:
+                    # On-use item, with a valid spell (and cooldown)
+                    for item_effect in data.spells:
+                        if item_effect.trigger_type == 0 and item_effect.id_spell > 0 and item_effect.cooldown_group_duration > 0:
+                            filter_ilevel = False
+                            break
             # Gems
-            if classdata.classs == 3:
+            elif classdata.classs == 3:
                 if data.gem_props == 0:
                     continue
                 else:
@@ -926,9 +937,6 @@ class ItemDataGenerator(DataGenerator):
                 filter_ilevel = False
             # All tabards
             elif data.inv_type == 19:
-                filter_ilevel = False
-            # All shirts
-            elif data.inv_type == 4:
                 filter_ilevel = False
 
             # Item-level based non-equippable items
