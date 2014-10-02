@@ -218,6 +218,7 @@ public:
     const spell_data_t* zen_meditaiton;
     const spell_data_t* touch_of_death;
     const spell_data_t* spinning_crane_kick;
+    const spell_data_t* tiger_strikes;
 
     // Brewmaster
     const spell_data_t* bladed_armor;
@@ -516,7 +517,7 @@ private:
       hasted_ticks = may_miss = false;
       tick_zero = dynamic_tick_action = true; // trigger tick when t == 0
       base_tick_time = timespan_t::from_seconds( 1.0 ); // trigger a tick every second
-      cooldown->duration = timespan_t::from_seconds( 45.0 ); // we're done after 45 seconds
+      cooldown -> duration = timespan_t::from_seconds( 45.0 ); // we're done after 45 seconds
 
       tick_action = new crackling_tiger_lightning_tick_t( p );
     }
@@ -1349,7 +1350,8 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     monk_melee_attack_t( "rising_sun_kick", p, p -> spec.rising_sun_kick ),
     rsk_debuff( new rsk_debuff_t( p, p -> find_spell( 130320 ) ) )
   {
-    cooldown -> duration = timespan_t::from_seconds( 8.0 );
+    cooldown -> duration = data().charge_cooldown();
+    cooldown -> charges = data().charges();
     parse_options( nullptr, options_str );
     stancemask = FIERCE_TIGER;
     mh = &( player -> main_hand_weapon );
@@ -1776,6 +1778,7 @@ struct keg_smash_t: public monk_melee_attack_t
     aoe = -1;
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
+    cooldown -> duration = data().charge_cooldown();
 
     base_multiplier *= 14.5; // hardcoded into tooltip
   }
@@ -2200,11 +2203,13 @@ struct chi_burst_t: public monk_spell_t
 
 struct chi_torpedo_t: public monk_spell_t
 {
-  chi_torpedo_t( monk_t* player, const std::string& options_str ):
-    monk_spell_t( "chi_torpedo", player, player -> talent.chi_torpedo -> ok() ? player -> find_spell( 117993 ) : spell_data_t::not_found() )
+  chi_torpedo_t(monk_t* player, const std::string& options_str) :
+    monk_spell_t("chi_torpedo", player, player -> talent.chi_torpedo -> ok() ? player -> find_spell(117993) : spell_data_t::not_found())
   {
-    parse_options( nullptr, options_str );
+    parse_options(nullptr, options_str);
     aoe = -1;
+    cooldown -> duration = data().charge_cooldown();
+    cooldown -> charges = data().charges();
   }
 };
 
@@ -2857,7 +2862,8 @@ struct renewing_mist_t: public monk_heal_t
     base_execute_time = p.spec.renewing_mist -> cast_time( p.level );
     resource_current = RESOURCE_MANA;
     base_costs[RESOURCE_MANA] = p.spec.renewing_mist -> cost( POWER_MANA ) * p.resources.base[RESOURCE_MANA];
-    cooldown -> duration = p.spec.renewing_mist -> cooldown();
+    cooldown -> duration = p.spec.renewing_mist -> charge_cooldown();
+    cooldown -> charges = p.spec.renewing_mist -> charges();
 
     // Improved Renewing Mist
     dot_duration += p.perk.improved_renewing_mist -> effectN( 1 ).time_value();
@@ -3065,7 +3071,7 @@ struct zen_sphere_t: public monk_heal_t
     else
       attack_power_mod.tick = 0.156;  // hardcoded into tooltip
 
-    cooldown -> duration = timespan_t::from_seconds( 10.0 );
+    cooldown -> duration = data().cooldown();
   }
 
   virtual void tick( dot_t* d )
@@ -3176,6 +3182,7 @@ struct guard_t: public monk_absorb_t
     harmful = false;
     trigger_gcd = timespan_t::zero();
     target = &p;
+    cooldown -> duration = data().charge_cooldown();
     cooldown -> charges = p.perk.improved_guard -> effectN( 1 ).base_value();
     attack_power_mod.direct = 9; // hardcoded into tooltip 2014/09/09
     base_multiplier += p.sets.set( SET_TANK, T14, B4 ) -> effectN( 1 ).percent();
@@ -3375,6 +3382,7 @@ void monk_t::init_spells()
   spec.legacy_of_the_white_tiger  = find_specialization_spell( "Legacy of the White Tiger" );
   spec.touch_of_death             = find_specialization_spell( "Touch of Death" );
   spec.spinning_crane_kick        = find_class_spell( "Spinning Crane Kick" );
+  spec.tiger_strikes              = find_spell( 120272 );
 
   // Windwalker Passives
   spec.brewing_tigereye_brew      = find_specialization_spell( "Brewing: Tigereye Brew" );
@@ -3537,9 +3545,9 @@ void monk_t::create_buffs()
 
   buff.power_strikes = buff_creator_t( this, "power_strikes", talent.power_strikes -> effectN( 1 ).trigger() );
 
-  // hard code the 5% for dual welding since currently no effect shows that at this point.
+  double ts_proc_chance = main_hand_weapon.group() == WEAPON_1H ? ( spec.tiger_strikes -> proc_chance() / 8 * 5 ) : spec.tiger_strikes -> proc_chance();
   buff.tiger_strikes = buff_creator_t( this, "tiger_strikes", find_spell( 120273 ) )
-    .chance( main_hand_weapon.group() == WEAPON_1H ? 0.05 : 0.08 )
+    .chance( ts_proc_chance )
     .add_invalidate( CACHE_MULTISTRIKE );
 
   buff.tiger_power = buff_creator_t( this, "tiger_power", find_class_spell( "Tiger Palm" ) -> effectN( 2 ).trigger() );
