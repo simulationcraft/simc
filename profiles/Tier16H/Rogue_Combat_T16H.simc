@@ -64,7 +64,7 @@ legs=legguards_of_the_barbed_assassin,id=99349,upgrade=4,gems=5agi_10haste_5agi_
 feet=stonetoes_tormented_treads,id=105431,upgrade=4,gems=10agi_4mastery,enchant=9agi
 finger1=kilruks_band_of_ascendancy,id=105624,upgrade=4,gems=10agi_4crit
 finger2=ring_of_restless_energy,id=105558,upgrade=4,gems=10agi_4crit
-trinket1=assurance_of_consequence,id=105472,upgrade=4
+trinket1=ticking_ebon_detonator,id=105612,upgrade=4
 trinket2=haromms_talisman,id=105527,upgrade=4
 main_hand=enchanted_shaotien_saber,id=105581,upgrade=4,gems=10agi_4agi,enchant=dancing_steel
 off_hand=hvitserks_formidable_shanker,id=105601,upgrade=4,gems=10agi_4agi,enchant=dancing_steel
@@ -76,7 +76,7 @@ off_hand=hvitserks_formidable_shanker,id=105601,upgrade=4,gems=10agi_4agi,enchan
 # gear_intellect=5
 # gear_crit_rating=298
 # gear_haste_rating=673
-# gear_mastery_rating=524
+# gear_mastery_rating=631
 # gear_armor=591
 # gear_multistrike_rating=107
 # meta_gem=capacitive_primal

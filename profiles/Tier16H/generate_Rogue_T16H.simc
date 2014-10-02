@@ -25,7 +25,7 @@ back=fenyu_fury_of_xuen,id=102248,gems=10agi_4agi,enchant=12crit,upgrade=4
 finger1=kilruks_band_of_ascendancy,id=105624,gems=10agi_4crit,upgrade=4
 finger2=swift_serpent_signet,id=105483,gems=5agi_10haste_4crit,upgrade=4
 neck=immerseus_crystalline_eye,id=105407,upgrade=4
-trinket1=assurance_of_consequence,id=105472,upgrade=4
+trinket1=ticking_ebon_detonator,id=105612,upgrade=4
 trinket2=haromms_talisman,id=105527,upgrade=4
 save=Rogue_Assassination_T16H.simc
 
@@ -52,7 +52,7 @@ finger1=kilruks_band_of_ascendancy,id=105624,gems=10agi_4crit,upgrade=4
 finger2=ring_of_restless_energy,id=105558,gems=10agi_4crit,upgrade=4
 feet=stonetoes_tormented_treads,id=105431,gems=10agi_4mastery,enchant=9agi,upgrade=4
 neck=immerseus_crystalline_eye,id=105407,upgrade=4
-trinket1=assurance_of_consequence,id=105472,upgrade=4
+trinket1=ticking_ebon_detonator,id=105612,upgrade=4
 trinket2=haromms_talisman,id=105527,upgrade=4
 save=Rogue_Combat_T16H.simc
 
@@ -79,6 +79,6 @@ back=fenyu_fury_of_xuen,id=102248,gems=10agi_4agi,enchant=9crit,upgrade=4
 finger1=kilruks_band_of_ascendancy,id=105624,gems=10agi_4crit,upgrade=4
 finger2=swift_serpent_signet,id=105483,gems=5agi_10haste_4crit,upgrade=4
 neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=4
-trinket1=assurance_of_consequence,id=105472,upgrade=4
+trinket1=ticking_ebon_detonator,id=105612,upgrade=4
 trinket2=haromms_talisman,id=105527,upgrade=4
 save=Rogue_Subtlety_T16H.simc

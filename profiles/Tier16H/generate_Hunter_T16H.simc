@@ -21,11 +21,11 @@ finger2=kilruks_band_of_ascendancy,id=105624,gems=10agi_4crit,upgrade=4
 feet=ravagers_pathwalkers,id=105553,gems=10agi_4agi,enchant=11agi,upgrade=4
 hands=gloves_of_the_unblinking_vigil,id=99406,gems=10agi_10agi_8agi,enchant=11haste,upgrade=4
 main_hand=korkron_hand_cannon,id=105559,gems=10agi_4agi,enchant=lord_blastingtons_scope_of_doom,upgrade=4
-trinket2=ticking_ebon_detonator,id=105612,upgrade=4,upgrade=4
 head=headguard_of_the_unblinking_vigil,id=99402,gems=capacitive_primal_10haste_10crit_11agi,upgrade=4
 neck=immerseus_crystalline_eye,id=105407,upgrade=4
 back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=10agi_4agi,enchant=12crit
-trinket1=assurance_of_consequence,id=105472,upgrade=4
+trinket1=ticking_ebon_detonator,id=105612,upgrade=4
+trinket2=haromms_talisman,id=105527,upgrade=4
 save=Hunter_BM_T16H.simc
 
 # MM
@@ -49,7 +49,7 @@ legs=leggings_of_unabashed_anger,id=105454,upgrade=4,gems=5agi_10crit_5agi_10cri
 feet=puddle_punishers,id=105410,upgrade=4,gems=10agi_4mastery,enchant=9agi
 ring1=kilruks_band_of_ascendancy,id=105624,upgrade=4,gems=10agi_4crit
 ring2=ring_of_restless_energy,id=105558,upgrade=4,gems=10agi_4crit
-trinket1=assurance_of_consequence,id=105472,upgrade=4
+trinket1=ticking_ebon_detonator,id=105612,upgrade=4
 trinket2=haromms_talisman,id=105527,upgrade=4
 main_hand=hiseks_reserve_longbow,id=105623,upgrade=4,gems=10agi_4agi,enchant=lord_blastingtons_scope_of_doom
 save=Hunter_MM_T16H.simc
@@ -75,7 +75,7 @@ legs=leggings_of_unabashed_anger,id=105454,upgrade=4,gems=5agi_10crit_5agi_10cri
 feet=puddle_punishers,id=105410,upgrade=4,gems=10agi_4mastery,enchant=9agi
 ring1=kilruks_band_of_ascendancy,id=105624,upgrade=4,gems=10agi_4crit
 ring2=ring_of_restless_energy,id=105558,upgrade=4,gems=10agi_4crit
-trinket1=assurance_of_consequence,id=105472,upgrade=4
+trinket1=ticking_ebon_detonator,id=105612,upgrade=4
 trinket2=haromms_talisman,id=105527,upgrade=4
 main_hand=hiseks_reserve_longbow,id=105623,upgrade=4,gems=10agi_4agi,enchant=lord_blastingtons_scope_of_doom
 save=Hunter_SV_T16H.simc

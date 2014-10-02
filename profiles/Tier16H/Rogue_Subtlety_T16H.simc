@@ -79,7 +79,7 @@ legs=rious_vigilant_leggings,id=105529,upgrade=4,gems=5agi_10crit_5agi_10crit_8a
 feet=stonetoes_tormented_treads,id=105431,upgrade=4,gems=10agi_4mastery,enchant=9agi
 finger1=kilruks_band_of_ascendancy,id=105624,upgrade=4,gems=10agi_4crit
 finger2=swift_serpent_signet,id=105483,upgrade=4,gems=5agi_10haste_4crit
-trinket1=assurance_of_consequence,id=105472,upgrade=4
+trinket1=ticking_ebon_detonator,id=105612,upgrade=4
 trinket2=haromms_talisman,id=105527,upgrade=4
 main_hand=hvitserks_formidable_shanker,id=105601,upgrade=4,gems=10agi_4agi,enchant=dancing_steel
 off_hand=hvitserks_formidable_shanker,id=105601,upgrade=4,gems=10agi_4agi,enchant=dancing_steel
@@ -91,7 +91,7 @@ off_hand=hvitserks_formidable_shanker,id=105601,upgrade=4,gems=10agi_4agi,enchan
 # gear_intellect=5
 # gear_crit_rating=406
 # gear_haste_rating=599
-# gear_mastery_rating=477
+# gear_mastery_rating=584
 # gear_armor=591
 # gear_multistrike_rating=107
 # meta_gem=capacitive_primal
