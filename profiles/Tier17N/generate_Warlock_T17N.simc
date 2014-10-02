@@ -44,9 +44,9 @@ shoulders=shadow_councils_mantle,id=115589
 back=runefrenzy_greatcloak,id=113937,enchant=gift_of_mastery
 chest=shadow_councils_robes,id=115588
 wrists=bracers_of_darkened_skies,id=119332
-hands=shadow_councils_gloves,id=115585
+hands=toothbreaker_grips,id=113876
 waist=seeking_ember_girdle,id=113941
-legs=turret_mechanics_legwraps,id=113970
+legs=shadow_councils_leggings,id=115587
 feet=cavedwellers_climbers,id=113864
 finger1=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_mastery
 finger2=ukuroggs_corrupted_seal,id=113975,enchant=gift_of_mastery
@@ -60,7 +60,7 @@ level=100
 race=troll
 role=spell
 spec=destruction
-talents=0000132
+talents=0000133
 head=shadow_councils_hood,id=115586
 neck=gruuls_lip_ring,id=113872,enchant=gift_of_critical_strike
 shoulders=shadow_councils_mantle,id=115589

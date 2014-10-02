@@ -76,9 +76,9 @@ shoulders=shadow_councils_mantle,id=115589
 back=runefrenzy_greatcloak,id=113937,enchant=gift_of_mastery
 chest=shadow_councils_robes,id=115588
 wrists=bracers_of_darkened_skies,id=119332
-hands=shadow_councils_gloves,id=115585
+hands=toothbreaker_grips,id=113876
 waist=seeking_ember_girdle,id=113941
-legs=turret_mechanics_legwraps,id=113970
+legs=shadow_councils_leggings,id=115587
 feet=cavedwellers_climbers,id=113864
 finger1=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_mastery
 finger2=ukuroggs_corrupted_seal,id=113975,enchant=gift_of_mastery
@@ -90,11 +90,11 @@ main_hand=infernoflame_staff,id=113869,enchant=mark_of_bleeding_hollow
 # gear_stamina=3437
 # gear_intellect=2730
 # gear_spell_power=1325
-# gear_crit_rating=653
-# gear_haste_rating=763
-# gear_mastery_rating=1596
+# gear_crit_rating=376
+# gear_haste_rating=905
+# gear_mastery_rating=1575
 # gear_armor=700
-# gear_multistrike_rating=192
+# gear_multistrike_rating=346
 # gear_versatility_rating=78
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

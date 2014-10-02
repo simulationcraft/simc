@@ -59,7 +59,7 @@ level=100
 race=troll
 role=spell
 spec=destruction
-talents=0000112
+talents=0000113
 
 head=hood_of_arcane_mystery,id=109970,bonus_id=524
 neck=magisters_chain,id=109954,enchant=gift_of_critical_strike,bonus_id=524

@@ -60,7 +60,7 @@ level=100
 race=troll
 role=spell
 spec=destruction
-talents=0000132
+talents=0000133
 head=shadow_councils_hood,id=115586,bonus_id=567
 neck=gruuls_lip_ring,id=113872,enchant=gift_of_critical_strike,bonus_id=567
 shoulders=shadow_councils_mantle,id=115589,bonus_id=567
