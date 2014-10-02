@@ -5475,8 +5475,7 @@ void warlock_t::apl_demonology()
     add_action( "corruption", "if=target.time_to_die>=6&remains<=(0.3*duration)&buff.metamorphosis.down" );
     add_action( "corruption", "if=target.time_to_die>=6&remains<=action.shadow_bolt.cast_time" );
 
-    action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&buff.demonbolt.stack>3&buff.dark_soul.down&demonic_fury<=800&target.time_to_die>buff.demonbolt.remains";
-    action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&buff.demonbolt.stack>3&buff.dark_soul.up&target.time_to_die>buff.demonbolt.remains&demonic_fury<=800";
+    action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&buff.demonbolt.stack>3&demonic_fury<=800&target.time_to_die>buff.demonbolt.remains";
 
     action_list_str += "/demonbolt,if=(buff.demonbolt.stack<4&buff.dark_soul.up)";
     action_list_str += "/demonbolt,if=buff.demonbolt.stack=0|(buff.demonbolt.stack<4&buff.demonbolt.remains>(40-cast_time)%(1%spell_haste))";
