@@ -1621,11 +1621,12 @@ void player_t::override_talent( std::string override_str )
       talent_data_t* td = talent_data_t::find( type, j, i, SPEC_NONE, dbc.ptr );
       if ( td && ( td -> spell_id() == spell_id ) )
       {
-        if ( level < ( j + 1 ) * 15 )
+        if ( level < std::min( ( j + 1 ) * 15, 100 ) )
         {
           sim -> errorf( "Override talent %s is too high level for player %s.\n", override_str.c_str(), name() );
           return;
         }
+
         if ( sim -> debug )
         {
           if ( talent_points.has_row_col( j, i ) )
@@ -6803,7 +6804,7 @@ void player_t::replace_spells()
   {
     for ( int i = 0; i < MAX_TALENT_COLS; i++ )
     {
-      if ( talent_points.has_row_col( j, i ) && ( level >= ( ( j + 1 ) * 15 ) ) )
+      if ( talent_points.has_row_col( j, i ) && level < std::min( ( j + 1 ) * 15, 100 ) )
       {
         talent_data_t* td = talent_data_t::find( type, j, i, SPEC_NONE, dbc.ptr );
         if ( td && td -> replace_id() )
