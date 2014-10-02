@@ -3428,6 +3428,7 @@ struct flame_shock_t : public shaman_spell_t
     cooldown -> duration  = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
     shock                 = true;
     uses_elemental_fusion = true;
+    uses_unleash_flame    = true; // Disabled in spell data for some weird reason
   }
 
   void execute()
