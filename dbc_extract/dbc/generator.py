@@ -1325,6 +1325,7 @@ class SpellDataGenerator(DataGenerator):
           ( 171454, 0 ), # Chimaera Shot - Frost
           ( 171457, 0 ), # Chimaera Shot - Nature
           ( 90967, 0 ),  # Kill Command cooldown
+          ( 157708, 0 ), # Marks Kill Shot
         ),
 
         # Rogue:
