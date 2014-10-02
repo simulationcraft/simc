@@ -207,6 +207,7 @@ struct rogue_t : public player_t
     gain_t* t17_2pc_assassination;
     gain_t* t17_4pc_assassination;
     gain_t* t17_2pc_subtlety;
+    gain_t* t17_4pc_subtlety;
     gain_t* venomous_wounds;
     gain_t* vitality;
 
@@ -3378,6 +3379,15 @@ struct shadow_dance_t : public buff_t
 
     rogue_t* rogue = debug_cast<rogue_t*>( player );
     rogue -> buffs.shadow_strikes -> trigger();
+    // Currently in game, Sub T17 4PC grants up to 5 CP when you exit Shadow
+    // Dance, in addition to the Shadow Strikes buff.
+    if ( player -> sets.has_set_bonus( ROGUE_SUBTLETY, T17, B4 ) )
+    {
+      double cp = player -> resources.max[ RESOURCE_COMBO_POINT ] - player -> resources.current[ RESOURCE_COMBO_POINT ];
+
+      if ( cp > 0 )
+        player -> resource_gain( RESOURCE_COMBO_POINT, cp, rogue -> gains.t17_4pc_subtlety );
+    }
   }
 };
 struct shadow_reflection_t : public buff_t
@@ -4667,6 +4677,7 @@ void rogue_t::init_gains()
   gains.t17_2pc_assassination   = get_gain( "t17_2pc_assassination" );
   gains.t17_4pc_assassination   = get_gain( "t17_4pc_assassination" );
   gains.t17_2pc_subtlety        = get_gain( "t17_2pc_subtlety" );
+  gains.t17_4pc_subtlety        = get_gain( "t17_4pc_subtlety" );
   gains.venomous_wounds         = get_gain( "venomous_vim"       );
 }
 
