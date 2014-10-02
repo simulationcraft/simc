@@ -3546,7 +3546,7 @@ void monk_t::create_buffs()
 
   buff.power_strikes = buff_creator_t( this, "power_strikes", talent.power_strikes -> effectN( 1 ).trigger() );
 
-  double ts_proc_chance = main_hand_weapon.group() == WEAPON_1H ? ( spec.tiger_strikes -> proc_chance() / 8 * 5 ) : spec.tiger_strikes -> proc_chance();
+  double ts_proc_chance = main_hand_weapon.group() == WEAPON_1H ? ( spec.tiger_strikes -> proc_chance() / 10 * 5 ) : spec.tiger_strikes -> proc_chance();
   buff.tiger_strikes = buff_creator_t( this, "tiger_strikes", find_spell( 120273 ) )
     .chance( ts_proc_chance )
     .add_invalidate( CACHE_MULTISTRIKE );
