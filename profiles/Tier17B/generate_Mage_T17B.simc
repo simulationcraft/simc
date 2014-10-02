@@ -36,7 +36,7 @@ mage=Mage_Fire_T17B
 level=100
 race=troll
 spec=fire
-talents=1000123
+talents=1000223
 glyphs=inferno_blast/combustion/dragons_breath
 head=arcanoshatter_hood,id=115553,bonus_id=566
 neck=gruuls_lip_ring,id=113872,bonus_id=566,enchant=gift_of_critical_strike
