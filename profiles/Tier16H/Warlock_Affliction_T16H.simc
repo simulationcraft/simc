@@ -34,7 +34,7 @@ actions+=/berserking
 actions+=/blood_fury
 actions+=/arcane_torrent
 actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(buff.demonbolt.remains>=buff.dark_soul.duration|!buff.demonbolt.remains)&(charges=2|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react|target.health.pct<=10))
-actions+=/service_pet,if=talent.grimoire_of_service.enabled
+actions+=/service_pet,if=talent.grimoire_of_service.enabled&!talent.demonbolt.enabled
 actions+=/summon_doomguard,if=!talent.demonic_servitude.enabled
 actions+=/cataclysm
 actions+=/haunt,if=shard_react&!talent.soulburn_haunt.enabled&!in_flight_to_target&(dot.haunt.remains<cast_time+travel_time|soul_shard=4)&(trinket.proc.intellect.react|buff.dark_soul.up|soul_shard>2|soul_shard*14<=target.time_to_die)
