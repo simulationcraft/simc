@@ -4,7 +4,7 @@ race=troll
 role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#cb!2000020
-glyphs=energy/disappearance
+glyphs=energy
 spec=subtlety
 
 # This default action priority list is automatically created based on your character.
