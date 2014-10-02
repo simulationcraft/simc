@@ -995,8 +995,9 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   {
     double m = base_t::composite_multistrike_multiplier( state );
 
-    m *= 1.0 + ( p() -> spec.elemental_overload -> effectN( 3 ).percent() +
-                 p() -> buff.focus_of_the_elements -> value() );
+    m *= 1.0 + p() -> spec.elemental_overload -> effectN( 3 ).percent();
+
+    m *= 1.0 + p() -> buff.focus_of_the_elements -> value();
 
     return m;
   }
