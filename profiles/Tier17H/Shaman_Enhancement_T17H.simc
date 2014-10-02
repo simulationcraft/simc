@@ -82,7 +82,7 @@ actions.aoe+=/chain_lightning,if=glyph.chain_lightning.enabled&active_enemies>=4
 actions.aoe+=/lightning_bolt,if=(!glyph.chain_lightning.enabled|active_enemies<=3)&buff.maelstrom_weapon.react>=1
 actions.aoe+=/fire_nova,if=active_dot.flame_shock>=1
 
-head=gronnskin_crown,id=113863,bonus_id=566
+head=blastproof_cowl,id=113891,bonus_id=566
 neck=engineers_grounded_gorget,id=113892,bonus_id=566,enchant=gift_of_haste
 shoulders=windspeakers_mantle,id=115576,bonus_id=566
 back=cloak_of_delving_secrets,id=113929,bonus_id=566,enchant=gift_of_haste
@@ -102,11 +102,11 @@ off_hand=hansgars_forgehammer,id=113897,bonus_id=566,enchant=mark_of_bleeding_ho
 # Gear Summary
 # gear_agility=3092
 # gear_stamina=3879
-# gear_crit_rating=723
-# gear_haste_rating=1237
+# gear_crit_rating=543
+# gear_haste_rating=1380
 # gear_mastery_rating=592
 # gear_armor=1370
-# gear_multistrike_rating=612
-# gear_versatility_rating=489
+# gear_multistrike_rating=810
+# gear_versatility_rating=316
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
