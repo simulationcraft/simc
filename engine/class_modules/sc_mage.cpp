@@ -1851,33 +1851,28 @@ struct arcane_missiles_tick_t : public mage_spell_t
     background  = true;
     dot_duration = timespan_t::zero();
   }
-
-  virtual void execute()
-  {
-    mage_spell_t::execute();
-
-    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) && p() -> buffs.arcane_instability -> up() )
-      p() -> buffs.arcane_instability -> expire();
-  }
 };
 
 struct arcane_missiles_t : public mage_spell_t
 {
+  timespan_t missiles_tick_time;
+
   arcane_missiles_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "arcane_missiles", p, p -> find_class_spell( "Arcane Missiles" ) )
   {
     parse_options( NULL, options_str );
     may_miss = false;
     may_proc_missiles = false;
-    dot_duration      = timespan_t::from_seconds( 2.0 );
-    base_tick_time = timespan_t::from_seconds( 0.4 );
+    dot_duration      = data().duration();
+    base_tick_time    = data().effectN( 2).period();
     channeled         = true;
     hasted_ticks      = false;
     dynamic_tick_action = true;
     tick_action = new arcane_missiles_tick_t( p );
     may_miss = false;
-  }
 
+    missiles_tick_time = base_tick_time;
+  }
 
   virtual double action_multiplier() const
   {
@@ -1900,14 +1895,16 @@ struct arcane_missiles_t : public mage_spell_t
       p() -> benefits.arcane_charge[ i ] -> update( as<int>( i ) == p() -> buffs.arcane_charge -> check() );
     }
 
-    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) )
+    // 4T17 : Increase the number of missiles by reducing base_tick_time
+    base_tick_time = missiles_tick_time;
+    if ( p() -> buffs.arcane_instability -> check() )
     {
-      base_tick_time = ( p() -> buffs.arcane_instability -> up() ? timespan_t::from_seconds( 0.2 ) : timespan_t::from_seconds( 0.4 ) );
+      base_tick_time *= 1 + p() -> buffs.arcane_instability
+                                -> data().effectN( 1 ).percent() ;
+      p() -> buffs.arcane_instability -> expire();
     }
 
     mage_spell_t::execute();
-
-
 
     if ( p() -> buffs.arcane_power -> up() && p() -> talents.overpowered -> ok() )
       p() -> buffs.arcane_power -> extend_duration( p(), timespan_t::from_seconds( p() -> talents.overpowered -> effectN( 1 ).base_value() ) );
@@ -1926,20 +1923,17 @@ struct arcane_missiles_t : public mage_spell_t
     }
   }
 
-  virtual void impact( action_state_t* s )
-  {
-    mage_spell_t::impact( s );
-
-
-  }
-
   virtual void last_tick (dot_t * d)
   {
     mage_spell_t::last_tick( d );
+
     p() -> buffs.arcane_charge -> trigger();
 
-    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) && p() -> rppm_arcane_instability.trigger() )
+    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) &&
+         p() -> rppm_arcane_instability.trigger() )
+    {
       p() -> buffs.arcane_instability -> trigger();
+    }
   }
 
   virtual bool ready()
