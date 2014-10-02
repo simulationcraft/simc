@@ -4962,7 +4962,7 @@ void shaman_t::trigger_tier17_4pc_elemental( int stacks )
   if ( ! sets.has_set_bonus( SHAMAN_ELEMENTAL, T17, B4 ) )
     return;
 
-  if ( stacks <= sets.set( SHAMAN_ELEMENTAL, T17, B4 ) -> effectN( 1 ).base_value() )
+  if ( stacks < sets.set( SHAMAN_ELEMENTAL, T17, B4 ) -> effectN( 1 ).base_value() )
     return;
 
   if ( buff.lava_surge -> check() )
