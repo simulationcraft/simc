@@ -232,11 +232,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        53351, // Kill Shot
            0,
     },
-    // Marksmanship tree, 4 abilities
+    // Marksmanship tree, 5 abilities
     {
        19434, // Aimed Shot
        53209, // Chimaera Shot
        53351, // Kill Shot
+      157708, // Kill Shot
         3045, // Rapid Fire
            0,
     },

@@ -2413,10 +2413,6 @@ struct rend_t: public warrior_attack_t
     if ( p() -> mastery_rend )
       am *= 1.0 + p() -> cache.mastery_value();
 
-    if ( p() -> bugs )
-      am /= 1.0 + p() -> spec.seasoned_soldier -> effectN( 1 ).percent(); // Seasoned Soldier isn't being applied to the rend dot, but it does apply to the burst.
-      //Divide it out here to cancel it out in composite_player_multiplier.
-
     return am;
   }
 
