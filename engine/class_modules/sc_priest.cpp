@@ -5197,7 +5197,6 @@ void priest_t::init_resources( bool force )
   base_t::init_resources( force );
   resources.current[ RESOURCE_SHADOW_ORB ] = resources.initial[ RESOURCE_SHADOW_ORB ] = clamp( as<double>( options.initial_shadow_orbs ), 0.0, resources.base[ RESOURCE_SHADOW_ORB ] );
 
-  std::cerr << options.initial_shadow_orbs << " " << resources.initial[ RESOURCE_SHADOW_ORB ] << std::endl;
 }
 
 // priest_t::composite_armor ================================================
