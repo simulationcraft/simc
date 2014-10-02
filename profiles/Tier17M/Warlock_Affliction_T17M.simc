@@ -32,7 +32,7 @@ actions+=/berserking
 actions+=/blood_fury
 actions+=/arcane_torrent
 actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(buff.demonbolt.remains>=buff.dark_soul.duration|!buff.demonbolt.remains)&(charges=2|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react|target.health.pct<=10))
-actions+=/service_pet,if=talent.grimoire_of_service.enabled
+actions+=/service_pet,if=talent.grimoire_of_service.enabled&!talent.demonbolt.enabled
 actions+=/summon_doomguard,if=!talent.demonic_servitude.enabled
 actions+=/cataclysm
 actions+=/haunt,if=shard_react&!talent.soulburn_haunt.enabled&!in_flight_to_target&(dot.haunt.remains<cast_time+travel_time|soul_shard=4)&(trinket.proc.intellect.react|buff.dark_soul.up|soul_shard>2|soul_shard*14<=target.time_to_die)
@@ -47,17 +47,17 @@ actions+=/drain_soul,interrupt=1,chain=1
 actions+=/life_tap
 
 head=shadow_councils_hood,id=115586,bonus_id=567
-neck=gruuls_lip_ring,id=113872,bonus_id=567,enchant=gift_of_haste
+neck=gruuls_lip_ring,id=113872,bonus_id=567,enchant=gift_of_mastery
 shoulders=shadow_councils_mantle,id=115589,bonus_id=567
-back=runefrenzy_greatcloak,id=113937,bonus_id=567,enchant=gift_of_haste
+back=runefrenzy_greatcloak,id=113937,bonus_id=567,enchant=gift_of_mastery
 chest=shadow_councils_robes,id=115588,bonus_id=567
-wrists=bracers_of_enkindled_power,id=113956,bonus_id=567
-hands=shadow_councils_gloves,id=115585,bonus_id=567
+wrists=bracers_of_darkened_skies,id=119332,bonus_id=567
+hands=toothbreaker_grips,id=113876,bonus_id=567
 waist=seeking_ember_girdle,id=113941,bonus_id=567
-legs=turret_mechanics_legwraps,id=113970,bonus_id=567
+legs=shadow_councils_leggings,id=115587,bonus_id=567
 feet=cavedwellers_climbers,id=113864,bonus_id=567
-finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_haste
-finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant=gift_of_haste
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_mastery
+finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant=gift_of_mastery
 trinket1=shards_of_nothing,id=113835,bonus_id=567
 trinket2=darmacs_unstable_talisman,id=113948,bonus_id=567
 main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant=mark_of_warsong
@@ -66,11 +66,11 @@ main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant=mark_of_warsong
 # gear_stamina=4545
 # gear_intellect=3586
 # gear_spell_power=1753
-# gear_crit_rating=960
-# gear_haste_rating=1408
-# gear_mastery_rating=1637
+# gear_crit_rating=499
+# gear_haste_rating=1196
+# gear_mastery_rating=1994
 # gear_armor=870
-# gear_multistrike_rating=134
+# gear_multistrike_rating=456
 # gear_versatility_rating=103
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

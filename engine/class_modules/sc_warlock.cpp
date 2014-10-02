@@ -5376,11 +5376,14 @@ void warlock_t::apl_precombat()
   {
     // Potion
     if ( level == 100 )
-      action_list_str +=
-      "/potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20";
+    {
+      if ( specialization() == WARLOCK_DEMONOLOGY )
+        action_list_str += "/potion,name=draenic_intellect,if=buff.bloodlust.react|(buff.dark_soul.up&(trinket.proc.crit.react)&!buff.demonbolt.remains)|target.health.pct<20";
+      else
+        action_list_str += "/potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20";
+    }
     else if ( level >= 90 )
-      action_list_str +=
-      "/potion,name=jade_serpent,if=buff.bloodlust.react|target.health.pct<=20";
+      action_list_str += "/potion,name=jade_serpent,if=buff.bloodlust.react|target.health.pct<=20";
   }
 
   action_list_str += init_use_profession_actions();
@@ -5391,15 +5394,23 @@ void warlock_t::apl_precombat()
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
     if ( spec.imp_swarm->ok() )
-      action_list_str +=
-      "/imp_swarm,if=(buff.dark_soul.up|(cooldown.dark_soul.remains>(120%(1%spell_haste)))|time_to_die<32)&time>3";
+      action_list_str += "/imp_swarm,if=(buff.dark_soul.up|(cooldown.dark_soul.remains>(120%(1%spell_haste)))|time_to_die<32)&time>3";
   }
 
-  add_action(
-    spec.dark_soul,
-    "if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(buff.demonbolt.remains>=buff.dark_soul.duration|!buff.demonbolt.remains)&(charges=2|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react|target.health.pct<=10))" );
+  if ( specialization() == WARLOCK_DEMONOLOGY )
+  {
+    action_list_str += "/dark_soul,if=!talent.archimondes_darkness.enabled";
+    action_list_str += "/dark_soul,if=talent.archimondes_darkness.enabled&(charges=2|target.time_to_die<buff.demonbolt.remains)";
+    action_list_str += "/dark_soul,if=!buff.demonbolt.remains&demonic_fury>800";
+    action_list_str += "/dark_soul,if=talent.cataclysm.enabled&target.time_to_die<=action.cataclysm.cooldown|(action.cataclysm.cooldown<gcd&demonic_fury>400)";
+  }
+  else
+    add_action( spec.dark_soul, "if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(buff.demonbolt.remains>=buff.dark_soul.duration|!buff.demonbolt.remains)&(charges=2|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react|target.health.pct<=10))" );
 
-  action_list_str += "/service_pet,if=talent.grimoire_of_service.enabled";
+  if ( specialization() == WARLOCK_DEMONOLOGY )
+    action_list_str += "/call_action_list,name=opener,if=time<3";
+
+  action_list_str += "/service_pet,if=talent.grimoire_of_service.enabled&!talent.demonbolt.enabled";
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
@@ -5460,25 +5471,38 @@ void warlock_t::apl_demonology()
 {
   {
     action_list_str += "/cataclysm,if=buff.metamorphosis.up";
-    add_action( spec.doom, "if=buff.metamorphosis.up&target.time_to_die>=30&remains<=(duration*0.3)&(remains<cooldown.cataclysm.remains|!talent.cataclysm.enabled)" );
-    add_action( "corruption", "if=target.time_to_die>=6&remains<=(0.3*duration)&cooldown.dark_soul.remains<=8" );
+    add_action( spec.doom, "if=buff.metamorphosis.up&target.time_to_die>=30%(1%spell_haste)&remains<=(duration*0.3)&(remains<cooldown.cataclysm.remains|!talent.cataclysm.enabled)&buff.dark_soul.down&(buff.demonbolt.remains|!talent.demonbolt.enabled)" );
+    add_action( "corruption", "if=target.time_to_die>=6&remains<=(0.3*duration)&buff.metamorphosis.down" );
     add_action( "corruption", "if=target.time_to_die>=6&remains<=action.shadow_bolt.cast_time" );
 
-    action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&buff.dark_soul.down&demonic_fury<=650&demonic_fury%(40%gcd)<target.time_to_die";
-    action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&cooldown.metamorphosis.remains<=3&action.hand_of_guldan.charges=2";
-    action_list_str += "/demonbolt,if=buff.dark_soul.up|(cooldown.dark_soul.remains>(40%(1%spell_haste))&buff.demonbolt.stack<2)";
+    action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&buff.demonbolt.stack>3&buff.dark_soul.down&demonic_fury<=800&target.time_to_die>buff.demonbolt.remains";
+    action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&buff.demonbolt.stack>3&buff.dark_soul.up&target.time_to_die>buff.demonbolt.remains&demonic_fury<=800";
 
-    add_action( "Soul Fire", "if=buff.metamorphosis.up&buff.dark_soul.up&buff.molten_core.react" );
-    add_action( "touch of chaos", "if=buff.metamorphosis.up" );
+    action_list_str += "/demonbolt,if=(buff.demonbolt.stack<4&buff.dark_soul.up)";
+    action_list_str += "/demonbolt,if=buff.demonbolt.stack=0|(buff.demonbolt.stack<4&buff.demonbolt.remains>(40-cast_time)%(1%spell_haste))";
+
+    add_action( "Soul Fire", "if=buff.metamorphosis.up&buff.molten_core.react&target.health.pct<=25&((target.time_to_die<buff.demonbolt.remains|demonic_fury>750&buff.demonbolt.remains)|!talent.demonbolt.enabled)" );
+    add_action( "touch of chaos", "if=buff.metamorphosis.up&((target.time_to_die<buff.demonbolt.remains|demonic_fury>750&buff.demonbolt.remains)|!talent.demonbolt.enabled)" );
+    add_action( "Soul Fire", "if=buff.metamorphosis.up&buff.molten_core.react&buff.dark_soul.remains>cast_time&demonic_fury>150" );
     add_action( "metamorphosis", "if=buff.dark_soul.remains>gcd" );
-    add_action( "metamorphosis", "if=demonic_fury>=950" );
-    add_action( "metamorphosis", "if=(action.hand_of_guldan.charges=0|(!dot.shadowflame.ticking&!action.hand_of_guldan.in_flight_to_target))&demonic_fury>=750&cooldown.dark_soul.remains>=8" );
-    add_action( "metamorphosis", "if=(action.hand_of_guldan.charges=0|(!dot.shadowflame.ticking&!action.hand_of_guldan.in_flight_to_target))&demonic_fury%(40%gcd)>=target.time_to_die" );
-    add_action( "metamorphosis", "if=(action.hand_of_guldan.charges=0|(!dot.shadowflame.ticking&!action.hand_of_guldan.in_flight_to_target))&demonic_fury>=500&cooldown.dark_soul.remains>=8&dot.corruption.remains<=(dot.corruption.duration*0.3)" );
-    add_action( "Hand of Gul'dan", "if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&(((charges=2&set_bonus.tier17_2pc=0)|(charges=3&set_bonus.tier17_2pc=1))|dot.shadowflame.remains>travel_time|(charges=1&recharge_time<4))" );
+    add_action( "metamorphosis", "if=talent.demonbolt.enabled&action.dark_soul.charges=0&buff.demonbolt.down&demonic_fury>480" );
+    add_action( "metamorphosis", "if=target.time_to_die>=30%(1%spell_haste)&!dot.doom.ticking" );
+    add_action( "metamorphosis", "if=demonic_fury>750&buff.demonbolt.remains>=10" );
+    add_action( "metamorphosis", "if=demonic_fury>950&!talent.demonbolt.enabled" );
+    add_action( "Hand of Gul'dan", "if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&((charges=2&set_bonus.tier17_2pc=0)|(charges=3&set_bonus.tier17_2pc=1))" );
+    add_action( "Hand of Gul'dan", "if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&dot.shadowflame.remains>travel_time" );
+    add_action( "Hand of Gul'dan", "if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&((charges=1&recharge_time<4&set_bonus.tier17_2pc=0)|charges=2&recharge_time<7.5)" );
+
+    action_list_str += "/cancel_metamorphosis";
+
     add_action( "Soul Fire", "if=buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)" );
     add_action( "Life Tap", "if=mana.pct<40" );
     add_action( "Shadow Bolt" );
+
+    add_action( "Hand of Gul'dan", "if=!in_flight&!dot.shadowflame.ticking|(dot.corruption.ticking&cooldown.summon_doomguard.remains>0)", "opener" );
+    add_action( "corruption", "if=!ticking", "opener" );
+    add_action( "Summon Doomguard", "if=!talent.demonic_servitude.enabled", "opener" );
+    get_action_priority_list( "opener" ) -> action_list_str += "/service_pet,if=talent.grimoire_of_service.enabled";
   }
 }
 
