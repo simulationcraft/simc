@@ -1855,10 +1855,9 @@ struct arcane_missiles_tick_t : public mage_spell_t
   virtual void execute()
   {
     mage_spell_t::execute();
+
     if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) && p() -> buffs.arcane_instability -> up() )
       p() -> buffs.arcane_instability -> expire();
-  
-  
   }
 };
 
@@ -1938,6 +1937,9 @@ struct arcane_missiles_t : public mage_spell_t
   {
     mage_spell_t::last_tick( d );
     p() -> buffs.arcane_charge -> trigger();
+
+    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) && p() -> rppm_arcane_instability.trigger() )
+      p() -> buffs.arcane_instability -> trigger();
   }
 
   virtual bool ready()
