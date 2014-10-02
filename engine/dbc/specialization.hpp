@@ -115,4 +115,3 @@ inline int spec_idx( specialization_e spec )
 }
 
 #endif
-

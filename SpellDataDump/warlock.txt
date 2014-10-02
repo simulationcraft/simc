@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18935)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18967)
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
 Resource         : 4% Base Mana (6400 @Level 100)
@@ -90,7 +90,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=246)      : Apply Aura (6) | Periodic Damage: shadow every 15 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.20000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.44000
 Description      : Inflicts impending doom upon the target, causing $o1 Shadow damage over $d. Doom critical strikes summon a Wild Imp to attack the target.
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -112,7 +112,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=267)      : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.05000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.26000
 #2 (id=114949)   : Energize Power (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: demonic_fury
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage$?a104315[ and generating $m2 Demonic Fury][].$?s103958[
@@ -308,7 +308,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=374)      : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.02625
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.03000
 #2 (id=198244)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 1 | Scaled Value: 1
 Description      : Inflicts increasing agony on the target, causing ${$o1*10} Shadow damage over $d.  Damage starts low and increases over the duration.
@@ -696,7 +696,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2210)     : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.68000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.81600
 #2 (id=114966)   : Energize Power (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: demonic_fury
 Description      : Burn the enemy's soul, causing $s1 Fire damage$?a104315&!a54879[ and generating $s2 Demonic Fury][].  Soul Fire always critically strikes and your critical strike chance increases its damage.
@@ -1132,7 +1132,7 @@ Attributes       : ....x... ........ x.x..... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=11232)    : School Damage: fire (2)
-                   Base Value: 25 | Scaled Value: 0 (avg=0.1) | Points Per Level: 0.5 | SP Coefficient: 0.15000 | Radius: 0 - 8 yards
+                   Base Value: 25 | Scaled Value: 0 (avg=0.1) | Points Per Level: 0.5 | SP Coefficient: 0.22500 | Radius: 0 - 8 yards
 #2 (id=242870)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 #3 (id=242871)   : Trigger Spell w/ Value: Demonic Synergy (142)
@@ -1354,7 +1354,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=19677)    : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.27500
 Description      : Causes $o1 damage over $d.  If dispelled, the dispeller suffers ${$m1*8} instant Shadow damage and is silenced for $31117d. This damage is always a critical strike.
 Tooltip          : Suffering $w2 Shadow damage every $t1 sec.
 If dispelled, will cause ${$m1*8} damage to the dispeller, will always critically strike, and silence them for $31117d.
@@ -1627,7 +1627,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=40146)    : Apply Aura (6) | Periodic Damage: shadowflame every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.137) | SP Coefficient: 0.18000
+                   Base Value: 1 | Scaled Value: 0 (avg=0.137) | SP Coefficient: 0.21600
 #2 (id=153992)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: 0 | Scaled Value: 0
 Description      : Deals $47960o1 Shadowflame damage over $47960d. Generates 2 Demonic Fury every time it deals damage.
@@ -1651,7 +1651,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=40331)    : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.75000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.12500
 #2 (id=40332)    : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100
 #3 (id=40333)    : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
@@ -2762,7 +2762,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=87009)    : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.08000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.62000
 #2 (id=155200)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 #3 (id=242864)   : Trigger Spell w/ Value: Demonic Synergy (142)
@@ -2785,7 +2785,7 @@ Attributes       : ........ ........ .......x ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=87492)    : School Damage: shadowflame (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.575) | SP Coefficient: 1.37600 | Radius: 0 - 6 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=0.575) | SP Coefficient: 1.65000 | Radius: 0 - 6 yards
 Description      : $@spelldesc105174
 
 Name             : Nethermancy (Passive) (id=86091) [Passive, Hidden] 
@@ -3139,7 +3139,7 @@ Attributes       : x....... ........ x....... ........   ..x..... ......x. .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=112098)   : Apply Aura (6) | Periodic Damage: shadow every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.19000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.20900
 #2 (id=171006)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=171007)   : Apply Aura (6) | Dummy (4)
@@ -3213,7 +3213,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=113200)   : School Damage: chaos (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.56000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.67200
 #2 (id=127331)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0
 Description      : Unleashes energy at the enemy, causing $s1 Chaos damage and extending the duration of Corruption.
@@ -3255,7 +3255,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=113307)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.68000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.81600
 Description      : $@spelldesc6353
 
 Name             : Rain of Fire (id=104232) [Spell Family (5)] 
@@ -5416,7 +5416,7 @@ Attributes       : ........ ........ .......x ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=158226)   : School Damage: chaos (2)
-                   Base Value: 100 | Scaled Value: 0 (avg=1) | SP Coefficient: 2.10000 | Radius: 0 - 6 yards
+                   Base Value: 100 | Scaled Value: 0 (avg=1) | SP Coefficient: 2.50000 | Radius: 0 - 6 yards
 #2 (id=165681)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
 Description      : $@spelldesc124916
@@ -5471,7 +5471,7 @@ Attributes       : ........ ........ x......x x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=170041)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.10000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.11000
 Description      : $@spelldesc30108
 Tooltip          : $@spellaura30108
 
@@ -5488,7 +5488,7 @@ Attributes       : ........ ........ x......x x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=170042)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01048
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01200
 Description      : $@spelldesc980
 Tooltip          : $@spellaura980
 
@@ -5505,7 +5505,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=170045)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.08640
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.10400
 Description      : $@spelldesc172
 Tooltip          : $@spellaura172
 
@@ -6049,7 +6049,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=198369)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.21600
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.26000
 Description      : $@spelldesc172
 Tooltip          : Suffering $w2 Shadow damage every $t2 sec.
 
@@ -6369,7 +6369,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219885)   : School Damage: chaos (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.75000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.12500
 #2 (id=245223)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 20 | Scaled Value: 20
                    Affected Spells: Demonbolt (157695)
@@ -6977,4 +6977,5 @@ Effects          :
 #1 (id=256907)   : Apply Aura (6) | Unknown effect sub type (309)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
+
 

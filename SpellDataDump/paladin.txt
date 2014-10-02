@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18935)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18967)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -596,7 +596,7 @@ Effects          :
 #1 (id=11241)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16000 | AP Coefficient: 0.16000
 #2 (id=199737)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16000 | AP Coefficient: 0.16000 | Radius: 100 yards
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16000 | AP Coefficient: 0.16000
 Description      : $@spelldesc20165
 
 Name             : Seal of Justice (id=20170) [Spell Family (10)] 
@@ -1019,10 +1019,10 @@ Attributes       : ....x... ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ....x...   ........ ........ ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ ..x..... ........ 
 Effects          :
 #1 (id=21513)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 8 | Scaled Value: 8 | Misc Value: 127
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 127
 #2 (id=21514)    : Apply Aura (6) | Dummy (4)
                    Base Value: 12 | Scaled Value: 12
 Description      : $?s159548[][Reduce damage taken by $s1% for $d. ]While Ardent Defender is active, the next attack that would otherwise kill you will instead cause you to be healed for $s2% of your maximum health.$?s159548[ If this effect expires without triggering, its cooldown will be reset to $159548s1 sec.][]
@@ -2765,9 +2765,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50
 #2 (id=110901)   : Direct Heal (10)
                    Base Value: 51 | Scaled Value: 0 (avg=4.96, dl=0.2) | Value Range: 12 | SP Coefficient: 1.51319 | Radius: 0 - 10 yards
-Description      : Imbues a friendly target with radiant energy, healing that target for $s2 and up to 6 allies within $A2 yards for half that amount. Grants 1 Holy Power.
-
-Healing effectiveness diminishes for each player target beyond 6.
+Description      : Imbues a friendly target with radiant energy, healing that target for $s2 and up to 6 allies within $A2 yards for half that amount. Grants 1 Holy Power.
 
 Name             : Consecration (id=82366) [Spell Family (10), Hidden] 
 Class            : Paladin
@@ -3377,7 +3375,7 @@ Attributes       : ........ ........ ..x..x.. ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=109840)   : Weapon Damage% (31)
-                   Base Value: 5 | Scaled Value: 0.05 (avg=0) | Radius: 0 - 8 yards
+                   Base Value: 12 | Scaled Value: 0.12 (avg=0) | Radius: 0 - 8 yards
 #2 (id=136531)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
 Description      : Fills you with Holy Light, causing melee attacks to deal $101423sw1 Holy damage to all targets within $101423A1 yards.
@@ -3951,9 +3949,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128371)   : School Damage: holy (2)
-                   Base Value: 0 | Scaled Value: 1 - 3 (avg=0) | Value Range: 3 | SP Coefficient: 1.65000
+                   Base Value: 0 | Scaled Value: 1 - 3 (avg=0) | Value Range: 3 | SP Coefficient: 3.00000
 #2 (id=128372)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 1 - 3 (avg=0) | Value Range: 3 | SP Coefficient: 1.20585 | Radius: 0 - 15 yards
+                   Base Value: 0 | Scaled Value: 1 - 3 (avg=0) | Value Range: 3 | SP Coefficient: 3.00000 | Radius: 0 - 15 yards
 #3 (id=128388)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 15 yards
 Description      : $@spelldesc114165
@@ -3975,9 +3973,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128396)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=14.131, dl=0.2) | SP Coefficient: 1.78928
+                   Base Value: 1 | Scaled Value: 0 (avg=14.131, dl=0.2) | SP Coefficient: 4.00000
 #2 (id=128397)   : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=9.529, dl=0.2) | SP Coefficient: 2.35000 | Radius: 0 - 15 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=9.529, dl=0.2) | SP Coefficient: 2.25000 | Radius: 0 - 15 yards
 #3 (id=128398)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 15 yards
 Description      : $@spelldesc114165
@@ -4054,7 +4052,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ........ ...x.
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128470)   : School Damage: holy (2)
-                   Base Value: 0 | Scaled Value: 1 - 3 (avg=0) | Value Range: 3 | SP Coefficient: 0.51678 | Radius: 0 - 10 yards
+                   Base Value: 0 | Scaled Value: 1 - 3 (avg=0) | Value Range: 3 | SP Coefficient: 0.86000 | Radius: 0 - 10 yards
 #2 (id=185691)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Radius: 0 - 10 yards
 Description      : $@spelldesc114158
@@ -4390,7 +4388,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=139112)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=3.179, dl=0.2) | SP Coefficient: 0.40243 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=3.179, dl=0.2) | SP Coefficient: 0.67000 | Radius: 0 - 10 yards
 Description      : $@spelldesc114158
 
 Name             : Glyph of Double Jeopardy (id=121027) [Spell Family (10)] 
@@ -6324,4 +6322,5 @@ Effects          :
 #1 (id=251173)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Choose a level 90 talent.
+
 

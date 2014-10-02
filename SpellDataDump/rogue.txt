@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18935)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18967)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
 Resource         : 35 Energy
@@ -17,7 +17,7 @@ Effects          :
 #1 (id=30)       : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
 #2 (id=31)       : Weapon Damage% (31)
-                   Base Value: 175 | Scaled Value: 1.75 (avg=0) | SP Coefficient: 1.00000
+                   Base Value: 145 | Scaled Value: 1.45 (avg=0) | SP Coefficient: 1.00000
 #3 (id=32)       : Add Combo Points (80)
                    Base Value: 1 | Scaled Value: 1
 Description      : Backstab the target, causing $sw2 Physical damage.  Must not be in front of the target.  Awards $s3 combo $lpoint:points;.
@@ -340,7 +340,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... ....x
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=586)      : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.08220
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06740
 #2 (id=239409)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 1 | Scaled Value: 1
 Description      : Finishing move that causes damage over time.  Lasts longer per combo point:
@@ -360,7 +360,7 @@ $dur5=$?s56801[${6+10+4}][${6+10}]
 $sang=$?s79147[${1.1*1.2}][${1*1}]
 $resolve=$?s84601[${1.2}][${1}]
 $imprupture=$?s157570[${1.2}][${1}]
-$bonus=$?s31220[${(((100+$76808m1))/100)*$<sang>}][${$<resolve>*$<imprupture>}]
+$bonus=$?s31220[${0.82*(((100+$76808m1))/100)*$<sang>}][${0.82*$<resolve>*$<imprupture>}]
 
 Name             : Feint (id=1966) [Spell Family (8)] 
 Class            : Rogue
@@ -434,7 +434,7 @@ Description      : Finishing move that causes damage per combo point:
    3 points: ${($AP*0.577)*$<mult>*3} damage
    4 points: ${($AP*0.577)*$<mult>*4} damage
    5 points: ${($AP*0.577)*$<mult>*5} damage
-Variables        : $mult=$?s16511[${(((100+$76808m1))/100)}][${1.00}]
+Variables        : $mult=$?s16511[${(((100+$76808m1))*0.82/100)}][${1.00*0.82}]
 
 Name             : Deadly Poison (id=2818) [Scaling Spell (8), Spell Family (8)] 
 Class            : Rogue
@@ -640,7 +640,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.30000
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.17000
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -678,7 +678,7 @@ Effects          :
 #1 (id=1920)     : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=99543)    : Weapon Damage% (31)
-                   Base Value: 200 | Scaled Value: 2 (avg=0)
+                   Base Value: 210 | Scaled Value: 2.1 (avg=0)
 Description      : Instantly attacks for $5374sw2 Physical damage.  Awards 2 combo points.
 
 Name             : Shiv (id=5938) [Spell Family (8)] 
@@ -785,7 +785,7 @@ Effects          :
 #1 (id=3612)     : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=3613)     : Weapon Damage% (31)
-                   Base Value: 300 | Scaled Value: 3 (avg=0) | SP Coefficient: 1.00000
+                   Base Value: 245 | Scaled Value: 2.45 (avg=0) | SP Coefficient: 1.00000
 #3 (id=3614)     : Add Combo Points (80)
                    Base Value: 2 | Scaled Value: 2
 Description      : Ambush the target, causing $sw2 Physical damage to the target (damage increased 40% if a dagger is equipped)$?s138106[ and causes you to appear behind the target][].  Awards $s3 combo $lpoint:points;.$?s91023[  For the next $91021d, your attacks bypass up to $91021s1% of that enemy's armor.][]
@@ -1257,7 +1257,7 @@ Effects          :
 #1 (id=17065)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 0 (avg=0.25)
 #2 (id=99544)    : Weapon Damage% (31)
-                   Base Value: 200 | Scaled Value: 2 (avg=0)
+                   Base Value: 210 | Scaled Value: 2.1 (avg=0)
 Description      : Instantly attacks for $5374sw2 Physical damage.  Awards 2 combo points.
 
 Name             : Fleet Footed (Passive) (id=31209) [Passive] 
@@ -1399,7 +1399,7 @@ Description      : Finishing move that deals instant Nature damage$?s157513[][, 
 
 Replaces Eviscerate. 
 Tooltip          : Poison application chance increased by $s2%.
-Variables        : $mult2=$?s84601[${1.15}][${1.00}]
+Variables        : $mult2=$?s84601[${1.15*1.05}][${1.00*1.05}]
 $mult=$?s76803[${$<mult2>*((100+$76803m1)/100)}][$<mult2>*${1.00}]
 
 Name             : Interrupt (id=32747) 
@@ -2776,7 +2776,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68389)    : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.55) | AP Coefficient: 0.32000
+                   Base Value: 1 | Scaled Value: 0 (avg=0.55) | AP Coefficient: 0.33600
 Description      : Venom seeps into your enemies bleeding wounds, dealing $s1 Nature damage.
 
 Name             : Vendetta (id=79140) [Spell Family (8)] 
@@ -2796,7 +2796,7 @@ Attributes       : ........ ........ ........ ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=68390)    : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 30 | Scaled Value: 30
-                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Eviscerate (2098), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Shiv (5938), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Deadly Throw (26679), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Venomous Wound (79136), Dispatch (111240), Deadly Poison (113780), Shuriken Toss (114014), Debilitating Poison (115196), Crimson Tempest (121411), Throw (121733), Shuriken Toss (137584), Instant Poison (157584), Instant Poison (157607), Rupture (168963), Garrote (168971)
+                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Eviscerate (2098), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Shiv (5938), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Deadly Throw (26679), Mutilate Off-Hand (27576), Envenom (32645), Fan of Knives (51723), Venomous Wound (79136), Dispatch (111240), Deadly Poison (113780), Shuriken Toss (114014), Debilitating Poison (115196), Crimson Tempest (121411), Throw (121733), Shuriken Toss (137584), Internal Bleeding (154953), Instant Poison (157584), Instant Poison (157607), Rupture (168963), Garrote (168971)
 #2 (id=68391)    : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=87043)    : Apply Aura (6) | Stalked (68)
@@ -3289,7 +3289,7 @@ Effects          :
 #1 (id=123503)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=123504)   : Weapon Damage% (31)
-                   Base Value: 315 | Scaled Value: 3.15 (avg=0) | SP Coefficient: 1.00000
+                   Base Value: 330 | Scaled Value: 3.3 (avg=0) | SP Coefficient: 1.00000
 #3 (id=123505)   : Add Combo Points (80)
                    Base Value: 1 | Scaled Value: 1
 Description      : Exploits the vulnerability of foes with less than 35% health, causing $sw2 Physical damage to the target. Awards $s3 combo $lpoint:points;.
@@ -3633,7 +3633,7 @@ Description      : Finishing move that slashes at the flesh of all enemies withi
    3 points: ${(($m1+$M1)/2)+(($AP*0.0602)*3*$<mult>))} damage
    4 points: ${(($m1+$M1)/2)+(($AP*0.0602)*4*$<mult>))} damage
    5 points: ${(($m1+$M1)/2)+(($AP*0.0602)*5*$<mult>))} damage
-Variables        : $mult=$?s16511[${(((100+$76808m1))/100)}][${1.00}]
+Variables        : $mult=$?s16511[${(((100+$76808m1))*0.82/100)}][${1.00*0.82}]
 
 Name             : Throw (id=121733) [Scaling Spell (8), Spell Family (8)] 
 Class            : Rogue
@@ -3669,7 +3669,7 @@ Effects          :
                    Base Value: 240 | Scaled Value: 240
 Description      : $@spelldesc121411
 Tooltip          : Suffering $w1 damage every $t1 sec.
-Variables        : $mult=$?s16511[${(((100+$76808m1))/100)}][${1.00}]
+Variables        : $mult=$?s16511[${(((100+$76808m1))*0.82/100)}][${1.00*0.82}]
 
 Name             : Item - Rogue T14 2P Bonus (id=123116) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
@@ -4268,6 +4268,7 @@ Class            : Rogue
 Spell Level      : 75
 Range            : 100 yards
 Duration         : 12 seconds
+Affecting spells : Vendetta (79140)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ...x.... ........ ....x... ........   ........ ........ ........ ........ 
@@ -4830,4 +4831,5 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Points Per Combo Point: 20 | Trigger Spell: 139569
                    Affected Spells: Kidney Shot (408), Rupture (1943), Eviscerate (2098), Slice and Dice (5171), Deadly Throw (26679), Recuperate (73651), Rupture (168963)
 Description      : For each combo point spent, your finishing moves reduce the cooldown on your Adrenaline Rush, Killing Spree, and Sprint by ${$m3/1000} sec, and have a $b1% chance to grant a combo point and restore $14181s1 Energy.
+
 

@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18935)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18967)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -539,7 +539,7 @@ Range            : 25 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 6 seconds
-Affecting spells : Flurry (16282), Elemental Reach (29000), Mental Quickness (30814), Shaman Shock Range Bonus (32973), Elemental Fury (60188), Item - Shaman T8 Elemental 2P Bonus (64925), Item - Shaman T8 Elemental 4P Bonus (64928), Item - Shaman T9 Enhancment 4P Bonus (Stormstrike) (67221), Item - Shaman T9 Elemental 2P Bonus (Flame Shock) (67227), Item - Shaman T11 Elemental 2P Bonus (90503), Stormfire (99212), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Glyph of Shocks (159649), Unleash Flame (165462)
+Affecting spells : Flurry (16282), Elemental Reach (29000), Mental Quickness (30814), Shaman Shock Range Bonus (32973), Elemental Fury (60188), Item - Shaman T8 Elemental 2P Bonus (64925), Item - Shaman T8 Elemental 4P Bonus (64928), Item - Shaman T9 Enhancment 4P Bonus (Stormstrike) (67221), Item - Shaman T9 Elemental 2P Bonus (Flame Shock) (67227), Item - Shaman T11 Elemental 2P Bonus (90503), Stormfire (99212), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Glyph of Shocks (159649)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -3146,7 +3146,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.05000
 #2 (id=66867)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 30 | Scaled Value: 30
-                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Riptide (61295), Healing Wave (77472)
+                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Wave (77472)
 #3 (id=90747)    : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22
                    Affected Spells: Riptide (61295)
@@ -4922,8 +4922,8 @@ Tooltip          : Damage taken reduced by $s1%.
 Name             : Item - Shaman T16 Enhancement 2P Bonus (id=144962) [Spell Family (11), Passive] 
 Class            : Shaman
 Proc Chance      : 101%
-Proc Flags       : ........ ........ x....... ........ 
-                 : Hostile Spell
+Proc Flags       : ........ ......x. x....... ........ 
+                 : Heal, Hostile Spell
 Attributes       : ......x. ........ ..x..... x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ..x..... 
                  : .......x ........ x....... ........   ...x.... ........ .xx..... ........ 
@@ -6328,7 +6328,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=233535)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 40 | Scaled Value: 40
-                   Affected Spells: Flame Shock (8050), Fire Nova (8349), Lava Burst (51505), Lava Beam (114074), Elemental Blast (117014)
+                   Affected Spells: Fire Nova (8349), Lava Burst (51505), Lava Beam (114074), Elemental Blast (117014)
 Description      : Unleashes elemental forces of Flame, increasing the damage dealt by the Shaman's next Fire spell by $s2%.
 Tooltip          : Damage dealt by the next Fire spell increased by $w2%.
 
@@ -6650,4 +6650,5 @@ Effects          :
 #1 (id=256907)   : Apply Aura (6) | Unknown effect sub type (309)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
+
 

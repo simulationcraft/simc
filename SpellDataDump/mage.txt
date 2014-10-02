@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18935)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18967)
 Name             : Blizzard (id=10) [Spell Family (3)] 
 Class            : Frost Mage
 Resource         : 5% Base Mana (8000 @Level 100)
@@ -70,7 +70,7 @@ Effects          :
 #1 (id=75)       : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
 #2 (id=76)       : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.35000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.19100
 Description      : Launches a bolt of frost at the enemy, causing $s2 Frost damage and slowing movement speed by $s1% for $d.
 Tooltip          : $?$w1=0[][Movement slowed by $w1%.]
 
@@ -156,7 +156,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=91)       : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.48500
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.58600
 Description      : Hurls a fiery ball that causes $s1 Fire damage.
 
 Name             : Remove Curse (id=475) [Spell Family (3)] 
@@ -261,7 +261,7 @@ Tooltip          : Blinking.
 
 Name             : Flamestrike (id=2120) [Scaling Spell (4), Spell Family (3)] 
 Class            : Fire Mage
-Resource         : 6% Base Mana (9600 @Level 100)
+Resource         : 3% Base Mana (4800 @Level 100)
 Spell Level      : 44
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -277,7 +277,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
 Effects          :
 #1 (id=126904)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.456, dl=0.202) | SP Coefficient: 0.38850 | Radius: 8 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=0.456, dl=0.202) | SP Coefficient: 0.77700 | Radius: 8 yards
 #2 (id=630)      : Apply Aura (6) | Periodic Damage: fire every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 0 (avg=0.119) | SP Coefficient: 0.10125 | Radius: 8 yards
 #3 (id=225960)   : Apply Aura (6) | Decrease Movement Speed% (33)
@@ -445,7 +445,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.30000
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.17000
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -487,7 +487,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2716)     : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.20000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.23500
 Description      : $@spelldesc5143
 
 Name             : Frost Armor (id=7302) [Spell Family (3), Passive] 
@@ -634,9 +634,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=4785)     : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.98, dl=0.238) | SP Coefficient: 2.07000
+                   Base Value: 1 | Scaled Value: 0 (avg=1.98, dl=0.238) | SP Coefficient: 2.21200
 #2 (id=4786)     : Apply Aura (6) | Periodic Damage: fire every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.36) | SP Coefficient: 0.38700
+                   Base Value: 1 | Scaled Value: 0 (avg=0.36) | SP Coefficient: 0.41300
 #3 (id=169381)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage and an additional $o2 Fire damage over $d.
@@ -951,7 +951,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=20028)    : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.85000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
 #2 (id=20029)    : Trigger Spell: Arcane Charge (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 36032
 Description      : Blasts the target with energy, dealing $30451s1 Arcane damage and generating an Arcane Charge.
@@ -979,7 +979,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=20036)    : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.335, dl=0.25) | SP Coefficient: 0.72360 | Chain Multiplier: 0.5
+                   Base Value: 1 | Scaled Value: 0 (avg=0.335, dl=0.25) | SP Coefficient: 0.63000 | Chain Multiplier: 0.5
 #2 (id=85836)    : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 Description      : Deals $?a44544[${$m1*$<fingersMult>} to ${$M1*$<fingersMult>}][$s1] Frost damage to an enemy target$?s56377&!a44544[, and ${$m1*$56377m2/100} to ${$M1*$56377m2/100} Frost damage to a second nearby target][]$?s56377&a44544[, and ${$m1*$<fingersMult>*$56377m2/100} to ${$M1*$<fingersMult>*$56377m2/100} Frost damage to a second nearby target][].
@@ -1056,7 +1056,7 @@ Attributes       : ........ ........ x...x... ........   ...x...x ........ .....
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=21276)    : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.967, dl=0.15) | SP Coefficient: 0.61425 | Radius: 12 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=1.967, dl=0.15) | SP Coefficient: 0.86000 | Radius: 12 yards
 #2 (id=21277)    : Apply Aura (6) | Confuse (5)
                    Base Value: 0 | Scaled Value: 0 | Radius: 12 yards
 Description      : Targets in a cone in front of the caster take $s1 Fire damage and are disoriented for $d.  
@@ -1102,7 +1102,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=21340)    : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.5, dl=0.25) | SP Coefficient: 0.55000
+                   Base Value: 1 | Scaled Value: 0 (avg=0.5, dl=0.25) | SP Coefficient: 0.48500
 Description      : Deals $s1 Frost damage to the target.
 
 Name             : Invisibility (id=32612) [Spell Family (3)] 
@@ -1302,7 +1302,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=36330)    : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.57500
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.67900
 #2 (id=157070)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 Description      : Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. Consumes all Arcane Charges.
@@ -1342,7 +1342,7 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=36371)    : Apply Aura (6) | Periodic Damage: fire every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.18750
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.12500
 #2 (id=253823)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 Description      : The target becomes a Living Bomb, taking $44457o1 Fire damage over $44457d. When this effect ends, or the target dies, it explodes to deal an additional $44461s1 Fire damage to the target and all other enemies within $44461A1 yards.
@@ -1363,7 +1363,7 @@ Attributes       : ........ ........ x.x..... x..x....   ........ ........ .....
                  : ........ ........ x....... ........   ........ ........ .....x.. ........ 
 Effects          :
 #1 (id=36375)    : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.50000 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.90000 | Radius: 0 - 10 yards
 Description      : $@spelldesc44457
 
 Name             : Fingers of Frost (id=44544) [Spell Family (3)] 
@@ -1464,7 +1464,7 @@ Effects          :
 #1 (id=36562)    : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -40 | Scaled Value: -40
 #2 (id=36563)    : School Damage: frostfire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.5, dl=0.24) | SP Coefficient: 1.48500
+                   Base Value: 1 | Scaled Value: 0 (avg=1.5, dl=0.24) | SP Coefficient: 1.58600
 Description      : Launches a bolt of frostfire at the enemy, causing $?a57761[${$m2*1.25} to ${$M2*1.25}][$s2] Frostfire damage and slowing the target's movement by $s1% for $d.
 Tooltip          : Movement slowed by $s1%.
 Variables        : $arctic1=$?s31674[${1.01}][${1}]
@@ -2861,7 +2861,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=120062)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.12500
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.19800
 #2 (id=219802)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : Blasts the enemy for $s1 Fire damage and spreads your Fire damage effects on the target to up to $s2 enemies within $118280A1 yards.  Inferno Blast will always deal a critical strike. 
@@ -3650,7 +3650,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=176124)   : Apply Aura (6) | Periodic Damage: frost every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.32, dl=0.25) | SP Coefficient: 0.32000
+                   Base Value: 1 | Scaled Value: 0 (avg=0.32, dl=0.25) | SP Coefficient: 0.28200
 Description      : Channels a jet of icy water at the target, dealing $o1 Frost damage to the target over $d.
 
 The Mage's Frostbolts that hit the target while it is being blasted with icy water will grant a charge of Fingers of Frost.
@@ -4903,4 +4903,5 @@ Effects          :
 #1 (id=256907)   : Apply Aura (6) | Unknown effect sub type (309)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
+
 

@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18935)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18967)
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -93,7 +93,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.30000
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.17000
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -652,7 +652,7 @@ Jab has a $137384m1% chance to make your next Tiger Palm or Blackout Kick cost n
 
 Not useable in Stance of the Wise Serpent.][]
 Variables        : $stnc=$?a103985[${1.2}][${1.0}]
-$dwm=$?a108561|a115697[${1}][${0.898882275}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
 
 $offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
@@ -692,7 +692,7 @@ Eminence healing from this ability heals up to $139598s2 targets for $139598s3% 
 
 Not useable in Stance of the Wise Serpent.][]
 Variables        : $stnc=$?a103985[${1.2}][${1.0}]
-$dwm=$?a108561|a115697[${1}][${0.898882275}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
 
 $offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
@@ -726,7 +726,7 @@ Description      : Attack with the palm of your hand, dealing $?s116645[${6.00*$
 
 Not useable in Stance of the Wise Serpent.][]
 Variables        : $stnc=$?a103985[${1.2}][${1.0}]
-$dwm=$?a108561|a115697[${1}][${0.898882275}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
 
 $offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
@@ -802,7 +802,7 @@ Tooltip          : Attacking all nearby enemies for physical damage every $10154
 
 Movement speed is reduced by $101546s2%. ]
 Variables        : $stnc=$?a103985[${1.2}][${1.0}]
-$dwm=$?a108561|a115697[${1}][${0.898882275}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
 
 $offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
@@ -898,7 +898,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 Description      : You kick upwards, dealing ${8*$<low>} to ${8*$<high>} damage$?s128595[, reducing the effectiveness of healing on the target for $115804d,][] and causing all enemies within $130320A1 yards to take $130320m1% increased damage from your abilities for $130320d.
 Variables        : $stnc=$?a103985[${1.2}][${1.0}]
-$dwm=$?a108561|a115697[${1}][${0.898882275}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
 
 $offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
@@ -950,7 +950,7 @@ Jab has a $137384m1% chance to make your next Tiger Palm or Blackout Kick cost n
 
 Not useable in Stance of the Wise Serpent.][]
 Variables        : $stnc=$?a103985[${1.2}][${1.0}]
-$dwm=$?a108561|a115697[${1}][${0.898882275}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
 
 $offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
@@ -1048,7 +1048,7 @@ Effects          :
 Description      : Pummel all targets in front of you,$?s159490[][ stunning them and] dealing ${(5*5.875*$<low>+5*5.875*$<high>)/2} damage over $113656d. Deals reduced damage to secondary targets.$?s125671[  Your parry chance is increased by 100% while channeling.][]
 Tooltip          : $w2 damage every $t2 sec. $?s125671[Parrying all attacks.][]
 Variables        : $stnc=$?a103985[${1.2}][${1.0}]
-$dwm=$?a108561|a115697[${1}][${0.898882275}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
 
 $offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
@@ -2311,7 +2311,7 @@ Description      : Summon a whirling tornado around you, causing $?a115070[${$16
 Replaces Spinning Crane Kick.
 Tooltip          : Dealing physical damage to nearby enemies or healing to nearby allies every $116847t1 sec.
 Variables        : $stnc=$?a103985[${1.2}][${1.0}]
-$dwm=$?a108561|a115697[${1}][${0.898882275}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
 
 $offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
@@ -2882,7 +2882,7 @@ Description      : Increases your Agility by $s1% while wearing only Leather arm
 Name             : Tiger Strikes (id=120272) [Passive] 
 Class            : Monk
 Spell Level      : 10
-Proc Chance      : 8%
+Proc Chance      : 10%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
 Attributes       : ......x. ........ ..x..... ........   ........ ........ ........ ........ 
@@ -3082,7 +3082,7 @@ Effects          :
 Description      : Smash a keg of brew on the target, dealing ${14.5*$<low>} to ${14.5*$<high>} damage to all enemies within $A1 yards and reducing their movement speed by $m2% for $d. Generates $127796m1 Chi.
 Tooltip          : Movement speed reduced by $m2%
 Variables        : $stnc=$?a103985[${1.2}][${1.0}]
-$dwm=$?a108561|a115697[${1}][${0.898882275}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
 
 $offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
@@ -3510,7 +3510,7 @@ Effects          :
 Description      : $@spelldesc101545
 Tooltip          : Movement speed reduced by $m2%.
 Variables        : $stnc=$?a103985[${1.2}][${1.0}]
-$dwm=$?a108561|a115697[${1}][${0.898882275}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
 
 $offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
@@ -5195,7 +5195,7 @@ Proc Flags       : ....x.x. x.x.x.x. x.x..x.. .x......
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -5755,7 +5755,7 @@ Effects          :
 Description      : Unleash a rapid series of kicks toward random enemies within $158221A1 yards, dealing a total of ${15*2*$<low>} to ${15*2*$<high>} damage over $d. While kicking, you are immune to movement impairing and loss of control effects.
 Tooltip          : Unleashing kicks rapidly, and immune to movement impairing and loss of control effects.
 Variables        : $stnc=$?a103985[${1.2}][${1.0}]
-$dwm=$?a108561|a115697[${1}][${0.898882275}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
 
 $offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
@@ -6824,4 +6824,5 @@ Effects          :
 #1 (id=256907)   : Apply Aura (6) | Unknown effect sub type (309)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
+
 

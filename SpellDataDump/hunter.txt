@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18935)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18967)
 Name             : Mend Pet (id=136) [Scaling Spell (3), Spell Family (9)] 
 Class            : Hunter
 Spell Level      : 16
@@ -233,7 +233,7 @@ Effects          :
 #1 (id=800)      : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
 #2 (id=101372)   : Weapon Damage% (31)
-                   Base Value: 30 | Scaled Value: 0.3 (avg=0) | Radius: 0 - 8 yards
+                   Base Value: 40 | Scaled Value: 0.4 (avg=0) | Radius: 0 - 8 yards
 Description      : Fires several missiles, hitting your current target and all enemies within $A2 yards for $sw2 Physical damage.
 
 Name             : Arcane Shot (id=3044) [Scaling Spell (3), Spell Family (9)] 
@@ -255,7 +255,7 @@ Effects          :
 #1 (id=909)      : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 0 (avg=1.85)
 #2 (id=101528)   : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1 (avg=0)
+                   Base Value: 110 | Scaled Value: 1.1 (avg=0)
 Description      : An instant shot that causes $sw2 Arcane damage.$?p131564[  Grants $142978s1 PvP Power for $142978d.][]
 
 Name             : Rapid Fire (id=3045) [Spell Family (9)] 
@@ -357,7 +357,7 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1289)     : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.40000
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.44000
 #2 (id=254557)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20
 Description      : Fires a Black Arrow at the target, dealing $3674o1 damage over $3674d.
@@ -430,7 +430,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.30000
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.17000
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -1980,7 +1980,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 Description      : You fire an explosive charge into the enemy target, dealing ${$<explosive>} Fire damage initially and every second for $d.
 Tooltip          : Taking Fire damage every second.
-Variables        : $explosive=${$AP*0.39*(1+$76658m1*.01)}
+Variables        : $explosive=${$AP*0.429*(1+$76658m1*.01)}
 
 Name             : Kill Shot (id=53351) [Scaling Spell (3), Spell Family (9)] 
 Class            : Beast Mastery Marksmanship Hunter
@@ -2001,7 +2001,7 @@ Effects          :
 #1 (id=45989)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=45990)    : Weapon Damage% (31)
-                   Base Value: 660 | Scaled Value: 6.6 (avg=0)
+                   Base Value: 759 | Scaled Value: 7.59 (avg=0)
 Description      : You attempt to finish off a wounded target, dealing $sw2 Physical damage. Only usable on enemies with less than 20% health.  If the target dies, the Hunter will regain $164851s1% of maximum health.
 
 If Kill Shot fails to kill the target, the cooldown is reset.
@@ -3248,7 +3248,7 @@ Effects          :
 #1 (id=68175)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=68176)    : Weapon Damage% (31)
-                   Base Value: 60 | Scaled Value: 0.6 (avg=0)
+                   Base Value: 66 | Scaled Value: 0.66 (avg=0)
 Description      : Deals $sw2 Nature damage and generates $91954s1 Focus.
 
 Usable while moving.
@@ -4179,7 +4179,7 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=134592)   : Apply Aura (6) | Periodic Damage: nature every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.6) | AP Coefficient: 0.32000
+                   Base Value: 1 | Scaled Value: 0 (avg=2.6) | AP Coefficient: 0.35200
 Description      : Causes $o1 Nature damage over $d.
 Tooltip          : Causes $w1 Nature damage every $t1 seconds.
 
@@ -6431,7 +6431,7 @@ Attributes       : .x...... ........ ..x..... ........   ........ ........ .....
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=242178)   : Apply Aura (6) | Periodic Damage: nature every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06000
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.04000
 Description      : $@spelldesc162537
 Tooltip          : Deals $w1 Nature damage every $t sec.
 
@@ -6575,4 +6575,5 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3
 Description      : $@spelldesc177667
 Tooltip          : Focus regeneration increased by $w1%.
+
 

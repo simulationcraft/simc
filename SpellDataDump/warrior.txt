@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18935)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18967)
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 9
@@ -155,7 +155,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=310)      : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.91944
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.96600
 Description      : Wounds the target, causing $o1 bleed damage over $d, and a final burst of $94009s1 bleed damage when the effect expires.
 Tooltip          : Bleeding for $w1 damage every $t1 sec and a final large burst of damage when the effect expires.
 
@@ -243,7 +243,7 @@ Effects          :
 #1 (id=512)      : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 8 yards
 #2 (id=513)      : Weapon Damage% (31)
-                   Base Value: 120 | Scaled Value: 1.2 (avg=0) | Radius: 0 - 8 yards
+                   Base Value: 100 | Scaled Value: 1 (avg=0) | Radius: 0 - 8 yards
 Description      : In a whirlwind of steel you attack all enemies within $A1 yards, causing $?s12294[$168695sw2][$sw2] Physical damage with your main-hand weapon$?s23881[ and $44949sw2 Physical damage with your off-hand weapon][] to each enemy.$?s12950[
 
 Dealing damage with Whirlwind increases the number of targets that your Raging Blow hits by $85739s1, stacking up to $85739u times.][]
@@ -427,7 +427,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.30000
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.17000
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -514,7 +514,7 @@ Effects          :
 #1 (id=1900)     : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=229536)   : Weapon Damage% (31)
-                   Base Value: 300 | Scaled Value: 3 (avg=0)
+                   Base Value: 320 | Scaled Value: 3.2 (avg=0)
 Description      : Attempt to finish off a wounded foe, causing $sw2 Physical damage$?s23881[ with your main-hand and $163558sw2 Physical damage with your off-hand][]. Only usable on enemies that have less than 20% health.$?s146971[ Successfully killing an enemy with Execute grants you $147352s1 rage.][]
 
 Name             : Thunder Clap (id=6343) [Spell Family (4)] 
@@ -743,7 +743,7 @@ Effects          :
 #2 (id=5275)     : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000
 #3 (id=99581)    : Weapon Damage% (31)
-                   Base Value: 215 | Scaled Value: 2.15 (avg=0)
+                   Base Value: 225 | Scaled Value: 2.25 (avg=0)
 #4 (id=156241)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage
 #5 (id=160440)   : Apply Aura (6) | Unknown effect sub type (118)
@@ -905,7 +905,7 @@ Attributes       : ....x.x. ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=5821)     : Apply Aura (6) | Proc Trigger Spell: Enrage (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 12880
-Description      : $?s23881[Bloodthirst and Colossus Smash critical strikes,][Shield Slam and Devastate critical strikes, critical blocks,] and activating Berserker Rage will Enrage you, generating ${$12880m1/10} Rage and increasing damage done by $12880s2% for $12880d.
+Description      : $?s23881[Bloodthirst critical strikes][Shield Slam and Devastate critical strikes, critical blocks,] and activating Berserker Rage will Enrage you, generating ${$12880m1/10} Rage and increasing damage done by $12880s2% for $12880d.
 
 Name             : Second Wind (id=16491) [Spell Family (4), Passive] 
 Class            : Warrior
@@ -1379,7 +1379,7 @@ Effects          :
 #1 (id=36871)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 8 yards
 #2 (id=36872)    : Weapon Damage% (31)
-                   Base Value: 120 | Scaled Value: 1.2 (avg=0) | Radius: 0 - 8 yards
+                   Base Value: 100 | Scaled Value: 1 (avg=0) | Radius: 0 - 8 yards
 Description      : $@spelldesc1680
 
 Name             : Mayhem Projection Goggles (id=46114) 
@@ -2849,7 +2849,7 @@ Effects          :
 #2 (id=87897)    : Apply Aura (6) | Unknown effect sub type (345)
                    Base Value: 100 | Scaled Value: 100
 #3 (id=100835)   : Weapon Damage% (31)
-                   Base Value: 140 | Scaled Value: 1.4 (avg=0)
+                   Base Value: 150 | Scaled Value: 1.5 (avg=0)
 #4 (id=166619)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
 Description      : Smashes a target for $sw3 Physical damage and causes your attacks to bypass $?s89003[$s2%][all] of their armor for $s4 sec. Bypasses less armor on players. Using this ability in Defensive Stance activates Battle Stance.
@@ -2911,7 +2911,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=98699)    : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.10180
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.22500
 Description      : $@spelldesc772
 
 Name             : Altered Form (Racial Passive) (id=94293) [Passive, Hidden] 
@@ -5316,7 +5316,7 @@ Effects          :
 #1 (id=229520)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=229537)   : Weapon Damage% (31)
-                   Base Value: 150 | Scaled Value: 1.5 (avg=0)
+                   Base Value: 160 | Scaled Value: 1.6 (avg=0)
 #3 (id=239183)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 Description      : Attempt to finish off a foe, causing $sw2 Physical damage to the target, and consuming up to $m3 additional Rage to deal up to $168874sw2 additional damage. Only usable on enemies that have less than 20% health. $?s146971[ Successfully killing an enemy with Execute grants you $147352s1 rage.][]
@@ -5337,7 +5337,7 @@ Effects          :
 #1 (id=230085)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=230086)   : Weapon Damage% (31)
-                   Base Value: 300 | Scaled Value: 3 (avg=0)
+                   Base Value: 320 | Scaled Value: 3.2 (avg=0)
 Description      : $@spelldesc5308
 
 Name             : Item - Warrior T17 Arms 2P Bonus (id=165336) [Spell Family (4), Passive, Hidden] 
@@ -5449,7 +5449,7 @@ Effects          :
 #1 (id=233381)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1
 #2 (id=240579)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 3
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 3
                    Affected Spells: Shield Charge (169667)
 Description      : $?s152276[While Shield Block is active, your shield block value is increased by $169688s1%. Shield Charge increases the damage of Heroic Strike, Slam, and Revenge by an additional $s2%][While Shield Block is active, your shield block value is increased by $169688s1%].
 
@@ -5564,7 +5564,7 @@ Effects          :
 #2 (id=236211)   : Apply Aura (6) | Unknown effect sub type (345)
                    Base Value: 100 | Scaled Value: 100
 #3 (id=236212)   : Weapon Damage% (31)
-                   Base Value: 140 | Scaled Value: 1.4 (avg=0)
+                   Base Value: 150 | Scaled Value: 1.5 (avg=0)
 #4 (id=236213)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
 Description      : Smashes a target for $sw3 Physical damage and causes your attacks to bypass $?s89003[$s2%][all] of their armor for $s4 sec. Bypasses less armor on players. Using this ability in Defensive Stance activates Battle Stance.
@@ -5620,7 +5620,7 @@ Effects          :
 #1 (id=239184)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=239185)   : Weapon Damage% (31)
-                   Base Value: 300 | Scaled Value: 3 (avg=0)
+                   Base Value: 320 | Scaled Value: 3.2 (avg=0)
 #3 (id=239186)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 
@@ -5670,7 +5670,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .xx..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=240547)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 30 | Scaled Value: 30
+                   Base Value: 25 | Scaled Value: 25
                    Affected Spells: Heroic Strike (78), Revenge (6572), Shield Slam (23922), Ignite Weapon (156288)
 #2 (id=253230)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0
@@ -5944,4 +5944,5 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=254885)   : Apply Aura (6) | Unknown effect sub type (478)
                    Base Value: 0 | Scaled Value: 0
+
 
