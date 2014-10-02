@@ -44,8 +44,7 @@ actions+=/cataclysm,if=buff.metamorphosis.up
 actions+=/doom,if=buff.metamorphosis.up&target.time_to_die>=30%(1%spell_haste)&remains<=(duration*0.3)&(remains<cooldown.cataclysm.remains|!talent.cataclysm.enabled)&buff.dark_soul.down&(buff.demonbolt.remains|!talent.demonbolt.enabled)
 actions+=/corruption,if=target.time_to_die>=6&remains<=(0.3*duration)&buff.metamorphosis.down
 actions+=/corruption,if=target.time_to_die>=6&remains<=action.shadow_bolt.cast_time
-actions+=/cancel_metamorphosis,if=buff.metamorphosis.up&buff.demonbolt.stack>3&buff.dark_soul.down&demonic_fury<=800&target.time_to_die>buff.demonbolt.remains
-actions+=/cancel_metamorphosis,if=buff.metamorphosis.up&buff.demonbolt.stack>3&buff.dark_soul.up&target.time_to_die>buff.demonbolt.remains&demonic_fury<=800
+actions+=/cancel_metamorphosis,if=buff.metamorphosis.up&buff.demonbolt.stack>3&demonic_fury<=800&target.time_to_die>buff.demonbolt.remains
 actions+=/demonbolt,if=(buff.demonbolt.stack<4&buff.dark_soul.up)
 actions+=/demonbolt,if=buff.demonbolt.stack=0|(buff.demonbolt.stack<4&buff.demonbolt.remains>(40-cast_time)%(1%spell_haste))
 actions+=/soul_fire,if=buff.metamorphosis.up&buff.molten_core.react&target.health.pct<=25&((target.time_to_die<buff.demonbolt.remains|demonic_fury>750&buff.demonbolt.remains)|!talent.demonbolt.enabled)
