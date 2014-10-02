@@ -1828,8 +1828,8 @@ struct eviscerate_t : public rogue_attack_t
     weapon_multiplier = weapon_power_mod = 0;
 
     attack_power_mod.direct = 0.577;
-    if ( p -> specialization() == ROGUE_SUBTLETY ) // Hard-coded tooltip.
-      attack_power_mod.direct *= 0.82;
+    // Hard-coded tooltip.
+    attack_power_mod.direct *= 0.82;
   }
 
   timespan_t gcd() const
@@ -1944,8 +1944,8 @@ struct crimson_tempest_t : public rogue_attack_t
     attack_power_mod.direct = 0.0602;
     weapon = &( p -> main_hand_weapon );
     weapon_power_mod = weapon_multiplier = 0;
-    if ( p -> specialization() == ROGUE_SUBTLETY ) // Hard-coded tooltip.
-      attack_power_mod.direct *= 0.82;
+    // Hard-coded tooltip.
+    attack_power_mod.direct *= 0.82;
     ct_dot = new crimson_tempest_dot_t( p );
   }
 
