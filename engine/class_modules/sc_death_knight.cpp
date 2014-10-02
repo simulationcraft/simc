@@ -5406,16 +5406,12 @@ struct frozen_runeblade_buff_t : public buff_t
 
   void expire_override()
   {
-    // The set bonus seems to give stacks + 1 hits with Frozen Runeblade.
-    // Simulationcraft procs the initial stack instantly when Pillar of Frost
-    // is executed, so the "extra" stack is already included in the stack
-    // count. If the buff only has a single stack, the actor never used a
-    // special attack during the Pillar of Frost, and thus the set bonus isnt
-    // triggered.
+    // Stack_count - 1 is used, because Simulationcraft uses the initial stack
+    // to "enable" the bonus when Pillar of Frost is used.
     if ( stack_count > 1 )
     {
       death_knight_t* p = debug_cast< death_knight_t* >( player );
-      p -> active_spells.frozen_runeblade -> dot_duration = stack_count * p -> active_spells.frozen_runeblade -> data().effectN( 1 ).period();
+      p -> active_spells.frozen_runeblade -> dot_duration = ( stack_count - 1 ) * p -> active_spells.frozen_runeblade -> data().effectN( 1 ).period();
       p -> active_spells.frozen_runeblade -> schedule_execute();
     }
 
