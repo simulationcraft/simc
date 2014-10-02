@@ -387,6 +387,7 @@ public:
   virtual void      init_spells() override;
   virtual void      create_buffs() override;
   virtual void      init_scaling() override;
+  virtual void      init_resources( bool force ) override;
   virtual void      reset() override;
   virtual void      create_options() override;
   virtual bool      create_profile( std::string& profile_str, save_e = SAVE_ALL, bool save_html = false ) override;
@@ -397,7 +398,6 @@ public:
   virtual resource_e primary_resource() const override { return RESOURCE_MANA; }
   virtual role_e    primary_role() const override;
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
-  virtual void      combat_begin() override;
   virtual double    composite_armor() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    composite_spell_speed() const override;
@@ -5191,13 +5191,13 @@ expr_t* priest_t::create_expression( action_t* a,
   }
 }
 
-// priest_t::combat_begin ===================================================
-
-void priest_t::combat_begin()
+void priest_t::init_resources( bool force )
 {
-  base_t::combat_begin();
 
-  resources.current[ RESOURCE_SHADOW_ORB ] = clamp( as<double>( options.initial_shadow_orbs ), 0.0, resources.base[ RESOURCE_SHADOW_ORB ] );
+  base_t::init_resources( force );
+  resources.current[ RESOURCE_SHADOW_ORB ] = resources.initial[ RESOURCE_SHADOW_ORB ] = clamp( as<double>( options.initial_shadow_orbs ), 0.0, resources.base[ RESOURCE_SHADOW_ORB ] );
+
+  std::cerr << options.initial_shadow_orbs << " " << resources.initial[ RESOURCE_SHADOW_ORB ] << std::endl;
 }
 
 // priest_t::composite_armor ================================================
@@ -6550,7 +6550,7 @@ void priest_t::create_options()
   {
     opt_string( "atonement_target", options.atonement_target_str ),
     opt_deprecated( "double_dot", "action_list=double_dot" ),
-    opt_int( "initial_shadow_orbs", options.initial_shadow_orbs, 0, 3 ),
+    opt_int( "initial_shadow_orbs", options.initial_shadow_orbs, 0, 5 ),
     opt_bool( "autounshift", options.autoUnshift ),
     opt_null()
   };
