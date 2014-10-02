@@ -66,7 +66,7 @@ race=orc
 spec=survival
 position=ranged_back
 role=attack
-talents=0002313
+talents=0002333
 head=blastproof_cowl,id=113891,bonus_id=567
 neck=darklight_necklace,id=113865,enchant=gift_of_multistrike,bonus_id=567
 shoulders=rylakstalkers_spaulders,id=115547,bonus_id=567

@@ -21,6 +21,7 @@ actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/exotic_munitions,ammo_type=poisoned
+actions.precombat+=/exotic_munitions,ammo_type=incendiary,if=active_enemies>=3
 actions.precombat+=/potion,name=draenic_agility
 actions.precombat+=/aimed_shot
 
