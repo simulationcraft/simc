@@ -902,7 +902,7 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
     }
 
     if ( player -> dual_wield() )
-      total_dmg *= 0.898882275;
+      total_dmg *= 0.857143;
 
     if ( !mh && !oh )
       total_dmg += base_t::calculate_weapon_damage( ap );

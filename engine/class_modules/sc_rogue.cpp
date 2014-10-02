@@ -1722,6 +1722,7 @@ struct envenom_t : public rogue_attack_t
     attack_power_mod.direct       = 0.306;
     dot_duration = timespan_t::zero();
     weapon_multiplier = weapon_power_mod = 0.0;
+    base_multiplier *= 1.05; // Hard-coded tooltip.
   }
 
   double base_da_min( const action_state_t* s ) const
@@ -1827,6 +1828,8 @@ struct eviscerate_t : public rogue_attack_t
     weapon_multiplier = weapon_power_mod = 0;
 
     attack_power_mod.direct = 0.577;
+    if ( p -> specialization() == ROGUE_SUBTLETY ) // Hard-coded tooltip.
+      attack_power_mod.direct *= 0.82;
   }
 
   timespan_t gcd() const
@@ -1941,6 +1944,8 @@ struct crimson_tempest_t : public rogue_attack_t
     attack_power_mod.direct = 0.0602;
     weapon = &( p -> main_hand_weapon );
     weapon_power_mod = weapon_multiplier = 0;
+    if ( p -> specialization() == ROGUE_SUBTLETY ) // Hard-coded tooltip.
+      attack_power_mod.direct *= 0.82;
     ct_dot = new crimson_tempest_dot_t( p );
   }
 
@@ -2384,6 +2389,7 @@ struct rupture_t : public rogue_attack_t
     {
       sinister_calling = new sinister_calling_t( "rupture_sc", p, p -> find_spell( 168963 ) );
       add_child( sinister_calling );
+      base_multiplier *= 0.82; // Hardcoded tooltip.
     }
   }
 

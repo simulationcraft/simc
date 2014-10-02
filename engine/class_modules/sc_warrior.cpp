@@ -1718,10 +1718,7 @@ struct heroic_strike_t: public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     if ( p() -> buff.shield_charge -> up() )
-    {
       am *= 1.0 + p() -> buff.shield_charge -> default_value;
-      am *= 1.0 + p() -> sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent();
-    }
 
     return am;
   }
@@ -2246,10 +2243,7 @@ struct revenge_t: public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     if ( p() -> buff.shield_charge -> up() )
-    {
       am *= 1.0 + p() -> buff.shield_charge -> default_value;
-      am *= 1.0 + p() -> sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent();
-    }
 
     return am;
   }
@@ -2564,7 +2558,6 @@ struct shield_slam_t: public warrior_attack_t
     {
       am *= 1.0 + p() -> buff.shield_charge -> default_value;
       am *= 1.0 + p() -> talents.heavy_repercussions -> effectN( 1 ).percent();
-      am *= 1.0 + p() -> sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent();
     }
     else if ( p() -> buff.shield_block -> up() )
       am *= 1.0 + p() -> talents.heavy_repercussions -> effectN( 1 ).percent();
@@ -4634,7 +4627,7 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_BLOCK );
 
   buff.shield_charge = buff_creator_t( this, "shield_charge", find_spell( 169667 ) )
-    .default_value( find_spell( 169667 ) -> effectN( 1 ).percent() )
+    .default_value( find_spell( 169667 ) -> effectN( 1 ).percent() + sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent() )
     .cd( timespan_t::zero() );
 
   buff.shield_wall = buff_creator_t( this, "shield_wall", spec.shield_wall )
