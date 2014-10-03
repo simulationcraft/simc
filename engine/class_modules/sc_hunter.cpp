@@ -857,10 +857,11 @@ public:
     o() -> active.pet = this;
   }
 
-  void tier17_4pc_bm( timespan_t duration )
+  bool tier17_4pc_bm_summon( timespan_t duration )
   {
-    if ( this == o() -> active.pet || buffs.stampede -> check() )
-      return;
+    // More than one 4pc pet could be up at a time
+    if ( this == o() -> active.pet || buffs.stampede -> check() || buffs.tier17_4pc_bm -> check() )
+      return false;
 
     type = PLAYER_GUARDIAN;
 
@@ -876,6 +877,7 @@ public:
 
     // pet swings immediately (without an execute time)
     if ( !main_hand_attack -> execute_event ) main_hand_attack -> execute();
+    return true;
   }
 
   void stampede_summon( timespan_t duration )
@@ -2310,7 +2312,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     parse_options( NULL, options_str );
     may_block = false;
 
-    attack_power_mod.tick = 0.429; //Welcome to the hard-coded tooltip club!
+    attack_power_mod.tick = 0.463; //Welcome to the hard-coded tooltip club!
     attack_power_mod.direct = attack_power_mod.tick;
     // the inital impact is not part of the rolling dot
     dot_duration = timespan_t::zero();
@@ -2908,8 +2910,13 @@ struct bestial_wrath_t: public hunter_spell_t
     p() -> active.pet -> buffs.bestial_wrath -> trigger();
     if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T17, B4 ) )
     {
-      for ( unsigned int i = 0; i < p() -> hunter_main_pets.size() && i < 2; ++i )
-        p() -> hunter_main_pets[i] -> tier17_4pc_bm( p() -> buffs.bestial_wrath -> buff_duration );
+      // start from the back so we don't overlap stampede pets in reporting
+      for ( size_t i = p() -> hunter_main_pets.size() - 1; i >= 0; --i )
+      {
+        timespan_t duration = p() -> buffs.bestial_wrath -> buff_duration;
+        if ( p() -> hunter_main_pets[i] -> tier17_4pc_bm_summon( duration ) ) 
+          break;
+      }
     }
     hunter_spell_t::execute();
   }
@@ -3167,7 +3174,7 @@ action_t* hunter_t::create_action( const std::string& name,
 
   if ( name == "auto_shot"             ) return new           start_attack_t( this, options_str );
   if ( name == "aimed_shot"            ) return new             aimed_shot_t( this, options_str );
-  if ( name == "arcane_shot"           ) return new            arcane_shot_t( this, options_str );
+  if ( name == "crearcane_shot"           ) return new            arcane_shot_t( this, options_str );
   if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
   if ( name == "black_arrow"           ) return new            black_arrow_t( this, options_str );
   if ( name == "chimaera_shot"         ) return new          chimaera_shot_t( this, options_str );
@@ -3232,7 +3239,9 @@ void hunter_t::create_pets()
   create_pet( "raptor", "raptor" );
   create_pet( "hyena", "hyena" );
   create_pet( "wolf", "wolf" );
-  create_pet( "spider", "spider" );
+  create_pet( "wasp", "wasp" );
+  create_pet( "t17_pet_2", "wolf" );
+  create_pet( "t17_pet_1", "wolf" );
   //  create_pet( "chimaera",      "chimaera"      );
   //  create_pet( "wind_serpent", "wind_serpent" );
 
@@ -3340,7 +3349,7 @@ void hunter_t::init_spells()
   glyphs.tame_beast          = find_glyph_spell( "Glyph of Tame Beast" );
   glyphs.the_cheetah         = find_glyph_spell( "Glyph of the Cheetah" );
 
-  // Attunments
+  // Attunments 
   specs.lethal_shots       = find_specialization_spell( "Lethal Shots" );
   specs.animal_handler    = find_specialization_spell( "Animal Handler" );
   specs.lightning_reflexes = find_specialization_spell( "Lightning Reflexes" );
