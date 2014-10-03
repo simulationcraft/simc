@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18967)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18973)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 1
@@ -4162,10 +4162,10 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 22
                    Affected Spells: Tranquility (740), Rejuvenation (774), Healing Touch (5185), Cenarion Ward (102351), Cenarion Ward (102352), Tranquility (157982)
 #3 (id=119356)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 200 | Scaled Value: 200
+                   Base Value: 140 | Scaled Value: 140
                    Affected Spells: Starfire (2912), Wrath (5176), Moonfire (8921), Hurricane (16914), Hurricane (42231), Sunfire (93402), Astral Storm (106996), Astral Storm (106998), Wrath (113769), Moonfire (164812), Sunfire (164815)
 #4 (id=139705)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: 22
+                   Base Value: 140 | Scaled Value: 140 | Misc Value: 22
                    Affected Spells: Starfire (2912), Wrath (5176), Moonfire (8921), Hurricane (16914), Hurricane (42231), Sunfire (93402), Astral Storm (106996), Astral Storm (106998), Wrath (113769), Moonfire (164812), Sunfire (164815)
 #5 (id=139706)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14
@@ -7384,7 +7384,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
 Effects          :
 #1 (id=233486)   : Apply Aura (6) | Proc Trigger Spell: Item - Druid T17 Feral 4P Bonus Proc Driver (42)
-                   Base Value: 35 | Scaled Value: 35 | Trigger Spell: 166639
+                   Base Value: 25 | Scaled Value: 25 | Trigger Spell: 166639
 Description      : While Berserk is active, special attacks deal an additional $s1% bleed damage to the target over $166638d.
 
 Name             : Mana Attunement (Passive) (id=166142) [Spell Family (7), Passive, Hidden] 

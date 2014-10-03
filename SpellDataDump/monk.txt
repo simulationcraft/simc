@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18967)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18973)
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5424,6 +5424,19 @@ Effects          :
 #2 (id=186476)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 40 | Scaled Value: 40
 Description      : $@spelldesc120277
+
+Name             : Way of the Monk (Passive) (id=140737) [Passive, Hidden] 
+Class            : Monk
+Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=186498)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
+                   Base Value: 40 | Scaled Value: 40
+Description      : $@spelldesc108977
 
 Name             : Player Damage Reduction Level 90 (id=142689) [Passive, Hidden] 
 Class            : Death Knight, Shaman, Mage, Warlock, Monk
