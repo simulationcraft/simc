@@ -2400,7 +2400,6 @@ struct rupture_t : public rogue_attack_t
     {
       sinister_calling = new sinister_calling_t( "rupture_sc", p, p -> find_spell( 168963 ) );
       add_child( sinister_calling );
-      base_multiplier *= 0.82; // Hardcoded tooltip.
     }
   }
 
