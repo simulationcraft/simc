@@ -1351,6 +1351,7 @@ class SpellDataGenerator(DataGenerator):
             ( 168971, 0 ),          # Sinister Calling: Garrote
             ( 168963, 0 ),          # Sinister Calling: Rupture
             ( 115189, 0 ),          # Anticipation buff
+            ( 157562, 0 ),          # Crimson Poison (Enhanced Crimson Tempest perk)
         ),
 
         # Priest:

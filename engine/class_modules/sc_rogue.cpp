@@ -87,7 +87,6 @@ struct rogue_td_t : public actor_pair_t
     buff_t* wound_poison;
     buff_t* crippling_poison;
     buff_t* leeching_poison;
-    buff_t* enhanced_crimson_tempest;
   } debuffs;
 
   rogue_td_t( player_t* target, rogue_t* source );
@@ -177,6 +176,7 @@ struct rogue_t : public player_t
     buff_t* deceit;
     buff_t* enhanced_vendetta;
     buff_t* shadow_strikes;
+    buff_t* crimson_poison;
   } buffs;
 
   // Cooldowns
@@ -787,22 +787,15 @@ struct rogue_poison_t : public rogue_attack_t
     execute();
   }
 
-  virtual double composite_target_multiplier( player_t* target ) const
-  {
-    double m = rogue_attack_t::composite_target_multiplier( target );
-
-    if ( td( target ) -> debuffs.enhanced_crimson_tempest -> up() )
-      m *= 1.0 + td( target ) -> debuffs.enhanced_crimson_tempest -> data().effectN( 1 ).percent();
-
-    return m;
-  }
-
   virtual double action_da_multiplier() const
   {
     double m = rogue_attack_t::action_da_multiplier();
 
     if ( p() -> mastery.potent_poisons -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
+
+    if ( p() -> buffs.crimson_poison -> check() )
+      m *= 1.0 + p() -> buffs.crimson_poison -> data().effectN( 1 ).percent();
 
     return m;
   }
@@ -813,6 +806,9 @@ struct rogue_poison_t : public rogue_attack_t
 
     if ( p() -> mastery.potent_poisons -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
+
+    if ( p() -> buffs.crimson_poison -> check() )
+      m *= 1.0 + p() -> buffs.crimson_poison -> data().effectN( 2 ).percent();
 
     return m;
   }
@@ -1933,6 +1929,7 @@ struct crimson_tempest_t : public rogue_attack_t
     crimson_tempest_dot_t( rogue_t * p ) :
       residual_periodic_action_t<rogue_attack_t>( "crimson_tempest", p, p -> find_spell( 122233 ) )
     {
+      dual = true;
       if ( p -> spec.sinister_calling -> ok() )
       {
         sinister_calling = new sinister_calling_t( "crimson_tempest_sc", p, p -> find_spell( 168952 ) );
@@ -1970,10 +1967,9 @@ struct crimson_tempest_t : public rogue_attack_t
 
       if ( p() -> perk.enhanced_crimson_tempest -> ok() )
       {
-        rogue_td_t* tdata = td( s -> target );
         rogue_attack_state_t* state = debug_cast<rogue_attack_state_t*>( s );
         timespan_t duration = timespan_t::from_seconds( 1 + state -> cp );
-        tdata -> debuffs.enhanced_crimson_tempest -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+        p() -> buffs.crimson_poison -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
       }
     }
   }
@@ -3657,7 +3653,6 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.wound_poison = new buffs::wound_poison_t( *this );
   debuffs.crippling_poison = new buffs::crippling_poison_t( *this );
   debuffs.leeching_poison = new buffs::leeching_poison_t( *this );
-  debuffs.enhanced_crimson_tempest = buff_creator_t( *this, "enhanced_crimson_tempest", source -> find_spell( 157561 ) );
 }
 
 // ==========================================================================
@@ -4825,6 +4820,7 @@ void rogue_t::create_buffs()
     .cd( timespan_t::zero() );
   buffs.shadowstep        = buff_creator_t( this, "shadowstep", talent.shadowstep )
     .cd( timespan_t::zero() );
+  buffs.crimson_poison    = buff_creator_t( this, "crimson_poison", find_spell( 157562 ) );
 }
 
 // trigger_honor_among_thieves ==============================================
