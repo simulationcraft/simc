@@ -9,7 +9,7 @@
 // Event Memory Management
 // ==========================================================================
 
-void* core_event_t::allocate( std::size_t size, core_sim_t::event_managment_t& em )
+void* core_event_t::allocate( std::size_t size, core_sim_t::event_management_t& em )
 {
   static const std::size_t SIZE = 2 * sizeof( core_event_t );
   assert( SIZE > size ); ( void ) size;

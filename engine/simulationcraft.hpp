@@ -108,13 +108,13 @@ struct sc_timeline_t : public timeline_t
   // Add 'value' at corresponding time, replacing existing entry if new value is larger
   void add_max( timespan_t current_time, double new_value )
   {
-    size_t index = static_cast<size_t>( current_time.total_millis() / 1000 / bin_size );    
+    size_t index = static_cast<size_t>( current_time.total_millis() / 1000 / bin_size );
     if ( data().size() == 0 || data().size() <= index )
       add( current_time, new_value );
     else if ( new_value > data().at( index ) )
     {
       add( current_time, new_value - data().at( index ) );
-    }  
+    }
   }
 
   void build_derivative_timeline( sc_timeline_t& out ) const
@@ -433,7 +433,7 @@ enum full_result_e
 {
   FULLTYPE_UNKNOWN = -1,
   FULLTYPE_NONE = 0,
-  FULLTYPE_MISS, FULLTYPE_DODGE, FULLTYPE_PARRY, 
+  FULLTYPE_MISS, FULLTYPE_DODGE, FULLTYPE_PARRY,
   FULLTYPE_GLANCE_CRITBLOCK, FULLTYPE_GLANCE_BLOCK, FULLTYPE_GLANCE,
   FULLTYPE_CRIT_CRITBLOCK, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT,
   FULLTYPE_HIT_CRITBLOCK, FULLTYPE_HIT_BLOCK, FULLTYPE_HIT,
@@ -2523,7 +2523,7 @@ struct core_sim_t
 {
 public:
   // Collection of most event-related functionality
-  struct event_managment_t
+  struct event_management_t
   {
     int events_remaining;
     uint64_t events_processed;
@@ -2537,8 +2537,8 @@ public:
 
   private:
     friend struct core_sim_t;
-    event_managment_t();
-    ~event_managment_t();
+    event_management_t();
+    ~event_management_t();
     void add_event( core_event_t*, timespan_t delta_time, timespan_t current_time );
     void flush_events();
     void preallocate_events( unsigned num );
@@ -2551,7 +2551,7 @@ public:
   core_sim_t();
   virtual ~core_sim_t();
 
-  event_managment_t em; // Timing Wheel Event Management
+  event_management_t em; // Timing Wheel Event Management
   timespan_t current_time;
 
   // Output
@@ -2833,10 +2833,10 @@ public:
   bool      check_actors();
   bool      init_parties();
   bool      init_actors();
- private: 
+ private:
   bool      init_items();
   bool      init_actions();
- public: 
+ public:
   bool      init();
   void      analyze();
   void      merge( sim_t& other_sim );
@@ -3093,7 +3093,7 @@ struct core_event_t
 
   static void cancel( core_event_t*& e );
 
-  static void* allocate( std::size_t size, core_sim_t::event_managment_t& );
+  static void* allocate( std::size_t size, core_sim_t::event_management_t& );
   static void  recycle( core_event_t* );
   static void  release( core_event_t*& );
 
@@ -3715,7 +3715,7 @@ struct set_bonus_t
   // Fast accessor to a set bonus spell, returns the spell, or spell_data_t::not_found()
   const spell_data_t* set( specialization_e spec, tier_e tier, set_bonus_e bonus ) const
   {
-    assert( static_cast<unsigned>( tier ) == PVP || 
+    assert( static_cast<unsigned>( tier ) == PVP ||
            ( static_cast<unsigned>( tier ) >= TIER_THRESHOLD && static_cast<unsigned>( tier ) <= max_tier() ) );
     return set_bonus_spec_data[ tier ][ specdata::spec_idx( spec ) ][ bonus ].spell;
   }
@@ -3834,7 +3834,7 @@ struct player_callbacks_t
   typedef std::array<proc_on_array_t, PROC1_TYPE_MAX> proc_array_t;
 
   proc_array_t procs;
-  
+
   virtual ~player_callbacks_t()
   { range::sort( all_callbacks ); dispose( all_callbacks.begin(), range::unique( all_callbacks ) ); }
 
@@ -4082,7 +4082,7 @@ struct player_collected_data_t
       }
       else
         return timeline.get_bin_size();
-    }  
+    }
 
     void update_divisor( timespan_t sim_length )
     {
@@ -4100,7 +4100,7 @@ struct player_collected_data_t
 
   health_changes_timeline_t health_changes;     //records all health changes
   health_changes_timeline_t health_changes_tmi; //records only health changes due to damage and self-healng/self-absorb
-  
+
   struct resolve_timeline_t
   {
     sc_timeline_t iteration_timeline;
@@ -4553,7 +4553,7 @@ struct player_t : public actor_t
 
   // All Data collected during / end of combat
   player_collected_data_t collected_data;
-  
+
   // Damage
   double iteration_dmg, iteration_dmg_taken; // temporary accumulators
   double dpr;
@@ -5092,10 +5092,10 @@ struct player_t : public actor_t
   rng_t& rng() { return sim -> rng(); }
   rng_t& rng() const { return sim -> rng(); }
   std::vector<action_variable_t> variables;
-  // Add 1ms of time to ensure that we finish this run. This is necessary due 
+  // Add 1ms of time to ensure that we finish this run. This is necessary due
   // to the millisecond accuracy in our timing system.
   virtual timespan_t time_to_move() const
-  { 
+  {
     if ( current.distance_to_move > 0 || current.moving_away > 0 )
       return timespan_t::from_seconds( ( current.distance_to_move + current.moving_away ) / composite_movement_speed() + 0.001 );
     else
@@ -5135,7 +5135,7 @@ struct player_t : public actor_t
 
     if ( sim -> debug )
       sim -> out_debug.printf( "Player %s movement, direction=%s speed=%f distance_covered=%f to_go=%f duration=%f",
-          name(), 
+          name(),
           util::movement_direction_string( movement_direction() ),
           composite_movement_speed(),
           yards,
@@ -5150,7 +5150,7 @@ struct player_t : public actor_t
 
     if ( sim -> debug )
       sim -> out_debug.printf( "Player %s warp, direction=%s speed=LIGHTSPEED! distance_covered=%f to_go=%f",
-          name(), 
+          name(),
           util::movement_direction_string( movement_direction() ),
           yards,
           current.distance_to_move );
@@ -5636,7 +5636,7 @@ struct action_state_t : public noncopyable
   // triggers the "amount" procs
   virtual proc_types2 impact_proc_type2() const
   {
-    // Don't allow impact procs that do not do damage or heal anyone; they 
+    // Don't allow impact procs that do not do damage or heal anyone; they
     // should all be handled by execute_proc_type2(). Note that this is based
     // on the _total_ amount done. This is so that fully overhealed heals are
     // still alowed to proc things.
@@ -5649,7 +5649,7 @@ struct action_state_t : public noncopyable
       return PROC2_CRIT;
     else if ( result == RESULT_GLANCE )
       return PROC2_GLANCE;
-    // Multistrike can only generate procs on impact, though this could be 
+    // Multistrike can only generate procs on impact, though this could be
     // moved to execute_proc_type2() too.
     else if ( result == RESULT_MULTISTRIKE )
       return PROC2_MULTISTRIKE;
@@ -5856,7 +5856,7 @@ struct action_t : public noncopyable
   virtual double      dodge_chance( double /* expertise */, player_t* /* target */ ) const { return 0; }
   virtual double      parry_chance( double /* expertise */, player_t* /* target */ ) const { return 0; }
   virtual double     glance_chance( int /* delta_level */ ) const { return 0; }
-  virtual double      block_chance( action_state_t* /* state */ ) const { return 0; }  
+  virtual double      block_chance( action_state_t* /* state */ ) const { return 0; }
   virtual double crit_block_chance( action_state_t* /* state */  ) const { return 0; }
 
   virtual double total_crit_bonus() const; // Check if we want to move this into the stateless system.
@@ -5992,7 +5992,7 @@ public:
 
   core_event_t* start_action_execute_event( timespan_t time, action_state_t* execute_state = 0 );
 
-  // Overridable base proc type for direct results, needed for dynamic aoe 
+  // Overridable base proc type for direct results, needed for dynamic aoe
   // stuff and such.
   virtual proc_types proc_type() const
   { return PROC1_INVALID; }
@@ -6224,7 +6224,7 @@ public:
     double m = action_multiplier() * action_ta_multiplier() *
            player -> cache.player_heal_multiplier( s ) *
            player -> composite_player_th_multiplier( get_school() );
-           
+
     return m;
   }
 
@@ -6575,8 +6575,8 @@ private:
 public:
   static double proc_chance( player_t*         player,
                              double            PPM,
-                             const timespan_t& last_trigger, 
-                             const timespan_t& last_successful_proc, 
+                             const timespan_t& last_trigger,
+                             const timespan_t& last_successful_proc,
                              rppm_scale_e      scales_with )
   {
     double coeff = 1.0;
@@ -6731,7 +6731,7 @@ struct action_callback_t
 struct dbc_proc_callback_t : public action_callback_t
 {
   static const item_t default_item_;
-  
+
   const item_t& item;
   const special_effect_t& effect;
   cooldown_t* cooldown;
@@ -6813,9 +6813,9 @@ private:
    * Base rules for proc execution.
    * 1) If we proc a buff, trigger it
    * 2a) If the buff triggered and is at max stack, and we have an action,
-   *     execute the action on the target of the action that triggered this 
+   *     execute the action on the target of the action that triggered this
    *     proc.
-   * 2b) If we have no buff, trigger the action on the target of the action 
+   * 2b) If we have no buff, trigger the action on the target of the action
    *     that triggered this proc.
    *
    * TODO: Ticking buffs, though that'd be better served by fusing tick_buff_t
@@ -6830,7 +6830,7 @@ private:
     if ( proc_buff )
       triggered = proc_buff -> trigger();
 
-    if ( triggered && proc_action && 
+    if ( triggered && proc_action &&
          ( ! proc_buff || proc_buff -> check() == proc_buff -> max_stack() ) )
     {
       action_state_t* proc_state = proc_action -> get_state();

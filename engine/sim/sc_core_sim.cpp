@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 
-core_sim_t::event_managment_t::event_managment_t() :
+core_sim_t::event_management_t::event_management_t() :
   events_remaining( 0 ),
   events_processed( 0 ),
   timing_slice( 0 ),
@@ -26,7 +26,7 @@ core_sim_t::event_managment_t::event_managment_t() :
 
 /* Preallocate a certain amount of events and put them into the recycled list
  */
-void core_sim_t::event_managment_t::preallocate_events( unsigned num )
+void core_sim_t::event_management_t::preallocate_events( unsigned num )
 {
   all_events_ever_created.reserve( num );
   for ( size_t i = 0; i < num; ++i )
@@ -49,14 +49,14 @@ void core_sim_t::event_managment_t::preallocate_events( unsigned num )
 /* Destructor
  * Release all remaining events.
  */
-core_sim_t::event_managment_t::~event_managment_t()
+core_sim_t::event_management_t::~event_management_t()
 {
   core_event_t::release( recycled_event_list );
 }
 
 /* Add new event to the timing wheel
  */
-void core_sim_t::event_managment_t::add_event( core_event_t* e,
+void core_sim_t::event_management_t::add_event( core_event_t* e,
                                                timespan_t delta_time,
                                                timespan_t current_time )
 {
@@ -98,7 +98,7 @@ void core_sim_t::event_managment_t::add_event( core_event_t* e,
 
 /* Flush all remaining active events
  */
-void core_sim_t::event_managment_t::flush_events()
+void core_sim_t::event_management_t::flush_events()
 {
   /* Instead of iterating over the whole timing wheel,
    * we directly flush the remaining active events == ( all_events_ever_created - recycled_events )
@@ -124,7 +124,7 @@ void core_sim_t::event_managment_t::flush_events()
 
 /* Initialize Event Manager
  */
-void core_sim_t::event_managment_t::init()
+void core_sim_t::event_management_t::init()
 {
   // Timing wheel depth defaults to about 17 minutes with a granularity of 32 buckets per second.
   // This makes wheel_size = 32K and it's fully used.
@@ -150,7 +150,7 @@ void core_sim_t::event_managment_t::init()
 
 /* Select the next event to process
  */
-core_event_t* core_sim_t::event_managment_t::next_event()
+core_event_t* core_sim_t::event_management_t::next_event()
 {
   if ( events_remaining == 0 )
     return nullptr;
@@ -180,7 +180,7 @@ core_event_t* core_sim_t::event_managment_t::next_event()
 
 /* Reset
  */
-void core_sim_t::event_managment_t::reset()
+void core_sim_t::event_management_t::reset()
 {
   global_event_id = 0;
 }
@@ -188,7 +188,7 @@ void core_sim_t::event_managment_t::reset()
 /* This basically does the exact same thing as std::set_difference
  * std::set_difference( from.begin(),from.end(), exluding.begin(), exluding.end(), back_inserter( out ) );
  */
-std::vector<core_event_t*> core_sim_t::event_managment_t::get_events_to_flush() const
+std::vector<core_event_t*> core_sim_t::event_management_t::get_events_to_flush() const
 {
   std::vector<core_event_t*> out;
   const std::vector<core_event_t*>& from = all_events_ever_created;
