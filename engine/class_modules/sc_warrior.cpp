@@ -969,10 +969,13 @@ static void trigger_sweeping_strikes( action_state_t* s )
   if ( !s -> action -> weapon )
     return;
 
-  if ( !s -> action -> result_is_hit( s -> result ) )
+  if ( !s -> action -> result_is_miss( s -> result ) )
     return;
 
   if ( s -> action -> sim -> active_enemies == 1 )
+    return;
+
+  if ( s -> action -> id == p -> spec.sweeping_strikes -> id() )
     return;
 
   if ( !p -> active_sweeping_strikes )
@@ -1018,6 +1021,8 @@ static bool trigger_t15_2pc_melee( warrior_attack_t* a )
 void warrior_attack_t::execute()
 {
   base_t::execute();
+  if ( p() -> buff.sweeping_strikes -> up() )
+    trigger_sweeping_strikes( execute_state );
 }
 
 // warrior_attack_t::impact =================================================
@@ -1032,9 +1037,6 @@ void warrior_attack_t::impact( action_state_t* s )
     {
       if ( p() -> buff.bloodbath -> up() )
         trigger_bloodbath_dot( s -> target, s -> result_amount );
-
-      if ( p() -> buff.sweeping_strikes -> up() && !aoe )
-        trigger_sweeping_strikes( s );
 
       if ( p() -> talents.second_wind -> ok() )
       {
@@ -1247,13 +1249,6 @@ struct bladestorm_tick_t: public warrior_attack_t
       am *= 1.0 + p() -> spec.protection -> effectN( 1 ).percent();
 
     return am;
-  }
-
-  void execute()
-  {
-    warrior_attack_t::execute();
-    if ( p() -> buff.sweeping_strikes -> up() )
-      trigger_sweeping_strikes( execute_state );
   }
 };
 
@@ -2932,9 +2927,6 @@ struct whirlwind_t: public warrior_attack_t
   void execute()
   {
     warrior_attack_t::execute();
-
-    if ( p() -> buff.sweeping_strikes -> up() )
-      trigger_sweeping_strikes( execute_state );
 
     if ( oh_attack )
       oh_attack -> execute();
