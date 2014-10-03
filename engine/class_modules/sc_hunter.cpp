@@ -3174,7 +3174,7 @@ action_t* hunter_t::create_action( const std::string& name,
 
   if ( name == "auto_shot"             ) return new           start_attack_t( this, options_str );
   if ( name == "aimed_shot"            ) return new             aimed_shot_t( this, options_str );
-  if ( name == "crearcane_shot"           ) return new            arcane_shot_t( this, options_str );
+  if ( name == "arcane_shot"           ) return new            arcane_shot_t( this, options_str );
   if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
   if ( name == "black_arrow"           ) return new            black_arrow_t( this, options_str );
   if ( name == "chimaera_shot"         ) return new          chimaera_shot_t( this, options_str );
