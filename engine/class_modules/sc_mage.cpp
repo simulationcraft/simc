@@ -5015,10 +5015,8 @@ void mage_t::apl_arcane()
   default_list -> add_talent( this, "Rune of Power",
                               "if=buff.rune_of_power.remains<cast_time" );
   default_list -> add_talent( this, "Mirror Image" );
-  default_list -> add_action( "call_action_list,name=init_crystal,if=talent.prismatic_crystal.enabled" );
-  default_list -> add_action( "call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=5" );
-  default_list -> add_action( "call_action_list,name=burn,if=time_to_die<mana.pct*0.3*spell_haste|((cooldown.evocation.remains<buff.arcane_power.remains|cooldown.evocation.remains<(mana.pct-30)*0.35*spell_haste)&mana.pct>40)" );
+  default_list -> add_action( "call_action_list,name=burn,if=time_to_die<mana.pct*0.3*spell_haste|((cooldown.evocation.remains<buff.arcane_power.remains|cooldown.evocation.remains<(mana.pct-40)*0.35*spell_haste)&mana.pct>40)" );
   default_list -> add_action( "call_action_list,name=conserve,if=!cooldown.evocation.up" );
   default_list -> add_action( this, "Evocation",
                               "interrupt_if=mana.pct>92,if=mana.pct<65&time_to_die>10" );
@@ -5026,18 +5024,14 @@ void mage_t::apl_arcane()
 
 
   init_crystal -> add_talent( this, "Prismatic Crystal",
-                              "if=cooldown.arcane_power.up&buff.arcane_charge.stack=4",
-                              "Conditions for initiating Prismatic Crystal burn phase" );
-  init_crystal -> add_talent( this, "Prismatic Crystal",
-                              "if=buff.arcane_charge.stack=4&((glyph.arcane_power.enabled&cooldown.arcane_power.remains>45)|(!glyph.arcane_power.enabled&cooldown.arcane_power.remains>15))" );
+                              "if=buff.arcane_charge.stack=4",
+                              "Conditions for initiating Prismatic Crystal" );
 
 
   crystal_sequence -> add_action( "call_action_list,name=cooldowns",
-                                  "Actions while Prismatic Crystal is active" );
+                                  "Special actions while Prismatic Crystal is active" );
   crystal_sequence -> add_talent( this, "Nether Tempest",
                                   "if=buff.arcane_charge.stack=4&!ticking&pet.prismatic_crystal.remains>8" );
-  crystal_sequence -> add_action( "call_action_list,name=burn,if=cooldown.evocation.remains<pet.prismatic_crystal.remains|cooldown.evocation.remains<buff.arcane_power.remains" );
-  crystal_sequence -> add_action( "call_action_list,name=conserve" );
 
 
   cooldowns -> add_action( this, "Arcane Power",
@@ -5053,22 +5047,11 @@ void mage_t::apl_arcane()
     cooldowns -> add_action( item_actions[i] );
 
 
-  aoe -> add_action( "call_action_list,name=cooldowns",
-                     "AoE sequence" );
-  aoe -> add_talent( this, "Nether Tempest",
-                     "cycle_targets=1,if=buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))" );
-  aoe -> add_talent( this, "Supernova" );
-  aoe -> add_action( this, "Arcane Barrage",
-                     "if=buff.arcane_charge.stack=4" );
-  aoe -> add_talent( this, "Arcane Orb",
-                     "if=buff.arcane_charge.stack<4" );
-  aoe -> add_action( this, "Cone of Cold",
-                     "if=glyph.cone_of_cold.enabled" );
-  aoe -> add_action( this, "Arcane Explosion" );
-
 
   burn -> add_action( "call_action_list,name=cooldowns",
                       "High mana usage, \"Burn\" sequence" );
+  burn -> add_action( "call_action_list,name=init_crystal" );
+  burn -> add_action( "call_action_list,name=crystal_sequence" );
   burn -> add_action( this, "Arcane Missiles",
                       "if=buff.arcane_missiles.react=3" );
   burn -> add_action( this, "Arcane Missiles",
@@ -5116,6 +5099,20 @@ void mage_t::apl_arcane()
   conserve -> add_action( this, "Arcane Blast" );
   conserve -> add_talent( this, "Ice Floes", "moving=1" );
   conserve -> add_action( this, "Arcane Barrage", "moving=1" );
+
+
+  aoe -> add_action( "call_action_list,name=cooldowns",
+                     "AoE sequence" );
+  aoe -> add_talent( this, "Nether Tempest",
+                     "cycle_targets=1,if=buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))" );
+  aoe -> add_talent( this, "Supernova" );
+  aoe -> add_action( this, "Arcane Barrage",
+                     "if=buff.arcane_charge.stack=4" );
+  aoe -> add_talent( this, "Arcane Orb",
+                     "if=buff.arcane_charge.stack<4" );
+  aoe -> add_action( this, "Cone of Cold",
+                     "if=glyph.cone_of_cold.enabled" );
+  aoe -> add_action( this, "Arcane Explosion" );
 }
 
 // Fire Mage Action List ===================================================================================================
