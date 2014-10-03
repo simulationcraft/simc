@@ -3392,23 +3392,22 @@ struct earth_shock_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) )
+    int consuming_stacks = p() -> buff.lightning_shield -> stack() - 1;
+    if ( result_is_hit( execute_state -> result ) && consuming_stacks > 0 )
     {
-      int consuming_stacks = p() -> buff.lightning_shield -> stack() - 1;
-      if ( consuming_stacks > 0 )
-      {
-        p() -> active_lightning_charge -> target = execute_state -> target;
-        p() -> active_lightning_charge -> execute();
-
-        p() -> proc.fulmination[ consuming_stacks ] -> occur();
-
-        shaman_td_t* tdata = td( execute_state -> target );
-        tdata -> debuff.t16_2pc_caster -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0,
-            consuming_stacks * tdata -> debuff.t16_2pc_caster -> data().duration() );
-        p() -> buff.lightning_shield -> decrement( consuming_stacks );
-      }
-
+      // Tier17 2PC set bonus affects the Fulmination that procs it
       p() -> trigger_tier17_2pc_elemental( consuming_stacks );
+
+      p() -> active_lightning_charge -> target = execute_state -> target;
+      p() -> active_lightning_charge -> execute();
+
+      p() -> proc.fulmination[ consuming_stacks ] -> occur();
+
+      shaman_td_t* tdata = td( execute_state -> target );
+      tdata -> debuff.t16_2pc_caster -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0,
+          consuming_stacks * tdata -> debuff.t16_2pc_caster -> data().duration() );
+      p() -> buff.lightning_shield -> decrement( consuming_stacks );
+
       p() -> trigger_tier17_4pc_elemental( consuming_stacks );
     }
   }
