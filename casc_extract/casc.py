@@ -400,7 +400,7 @@ class CDNIndex(CASCObject):
 				continue
 
 			self.cdn_path = split[1]
-			self.cdn_host = split[2]
+			self.cdn_host = split[2].split(' ')[0]
 
 		if not self.cdn_path or not self.cdn_host:
 			print >>sys.stderr, 'Unable to extract CDN information'

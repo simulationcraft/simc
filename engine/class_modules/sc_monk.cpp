@@ -214,7 +214,8 @@ public:
     const spell_data_t* leather_specialization;
     const spell_data_t* legacy_of_the_white_tiger;
     const spell_data_t* rising_sun_kick;
-    const spell_data_t* way_of_the_monk;
+    const spell_data_t* way_of_the_monk_aa_damage;
+    const spell_data_t* way_of_the_monk_aa_speed;
     const spell_data_t* zen_meditaiton;
     const spell_data_t* touch_of_death;
     const spell_data_t* spinning_crane_kick;
@@ -1640,7 +1641,7 @@ struct melee_t: public monk_melee_attack_t
     if ( player -> dual_wield() )
     {
       base_hit -= 0.19;
-      base_multiplier *= 1.0 + player -> spec.way_of_the_monk -> effectN( 1 ).percent();
+      base_multiplier *= 1.0 + player -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent();
     }
   }
 
@@ -3375,10 +3376,10 @@ void monk_t::init_spells()
   perk.enhanced_transcendence           = find_perk_spell( "Enhanced Transcendence" );
 
   // General Passives
-  spec.way_of_the_monk            = find_spell( 108977 );
+  spec.way_of_the_monk_aa_damage  = find_spell( 108977 );
+  spec.way_of_the_monk_aa_speed   = find_spell( 140737 );
   spec.leather_specialization     = find_specialization_spell( "Leather Specialization" );
   spec.critical_strikes           = find_specialization_spell( "Critical Strikes" );
-  spec.way_of_the_monk            = find_specialization_spell( "Way of the Monk" );
   spec.rising_sun_kick            = find_specialization_spell( "Rising Sun Kick" );
   spec.legacy_of_the_white_tiger  = find_specialization_spell( "Legacy of the White Tiger" );
   spec.touch_of_death             = find_specialization_spell( "Touch of Death" );
@@ -3546,7 +3547,7 @@ void monk_t::create_buffs()
 
   buff.power_strikes = buff_creator_t( this, "power_strikes", talent.power_strikes -> effectN( 1 ).trigger() );
 
-  double ts_proc_chance = main_hand_weapon.group() == WEAPON_1H ? ( spec.tiger_strikes -> proc_chance() / 8 * 5 ) : spec.tiger_strikes -> proc_chance();
+  double ts_proc_chance = main_hand_weapon.group() == WEAPON_1H ? ( spec.tiger_strikes -> proc_chance() / 10 * 5 ) : spec.tiger_strikes -> proc_chance();
   buff.tiger_strikes = buff_creator_t( this, "tiger_strikes", find_spell( 120273 ) )
     .chance( ts_proc_chance )
     .add_invalidate( CACHE_MULTISTRIKE );
@@ -3752,7 +3753,7 @@ double monk_t::composite_melee_speed() const
   double cas = base_t::composite_melee_speed();
 
   if ( !dual_wield() )
-    cas *= 1.0 / ( 1.0 + spec.way_of_the_monk -> effectN( 2 ).percent() );
+    cas *= 1.0 / ( 1.0 + spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() );
 
   return cas;
 }

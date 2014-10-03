@@ -1341,17 +1341,19 @@ void action_t::update_resolve( dmg_e type,
       if ( get_school() != SCHOOL_PHYSICAL || type == DMG_OVER_TIME )
         raw_resolve_amount *= 2.5;
       
-      // update the player's resolve diminishing return list first!
-      target -> resolve_manager.add_diminishing_return_entry( source, source -> get_raw_dps( s ), sim -> current_time );
+      // Diminishing Returns hotfixed out 10/2/2014 - will clean up code once we're sure this is a permanent change
+      // http://us.battle.net/wow/en/forum/topic/14058407204?page=10#198
+      //// update the player's resolve diminishing return list first!
+      //target -> resolve_manager.add_diminishing_return_entry( source, source -> get_raw_dps( s ), sim -> current_time );
 
-      assert( source -> actor_spawn_index >= 0 && "Trying to register resolve damage event from a unspawned player!" );
+      //assert( source -> actor_spawn_index >= 0 && "Trying to register resolve damage event from a unspawned player!" );
 
-      // get diminishing returns - done at the time of the event, never recalculated
-      // see http://us.battle.net/wow/en/forum/topic/13087818929?page=6#105
-      int rank = target -> resolve_manager.get_diminsihing_return_rank( source -> actor_spawn_index );
+      //// get diminishing returns - done at the time of the event, never recalculated
+      //// see http://us.battle.net/wow/en/forum/topic/13087818929?page=6#105
+      //int rank = target -> resolve_manager.get_diminsihing_return_rank( source -> actor_spawn_index );
 
       // update the player's resolve damage table 
-      target -> resolve_manager.add_damage_event( raw_resolve_amount / rank, sim -> current_time );
+      target -> resolve_manager.add_damage_event( raw_resolve_amount, sim -> current_time );
     
       // cycle through the resolve damage table and add the appropriate amount of Resolve from each event
       target -> resolve_manager.update();
