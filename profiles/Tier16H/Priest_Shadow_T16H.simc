@@ -152,7 +152,7 @@ actions.cop_advanced_mfi+=/shadow_word_pain,moving=1,cycle_targets=1,if=primary_
 
 actions.cop_advanced_mfi_dots=devouring_plague,if=shadow_orb>=4&target.dot.shadow_word_pain.ticking&target.dot.vampiric_touch.ticking
 actions.cop_advanced_mfi_dots+=/mind_spike,if=(target.dot.shadow_word_pain.ticking&target.dot.shadow_word_pain.remains<gcd*0.5)|(target.dot.vampiric_touch.ticking&target.dot.vampiric_touch.remains<gcd*0.5)
-actions.cop_advanced_mfi_dots+=/shadow_word_pain,if=!ticking&miss_react&!target.dot.vapiric_touch.ticking
+actions.cop_advanced_mfi_dots+=/shadow_word_pain,if=!ticking&miss_react&!target.dot.vampiric_touch.ticking
 actions.cop_advanced_mfi_dots+=/vampiric_touch,if=!ticking&miss_react
 actions.cop_advanced_mfi_dots+=/mind_blast
 actions.cop_advanced_mfi_dots+=/insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies<=2,chain=1
