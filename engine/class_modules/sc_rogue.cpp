@@ -1952,7 +1952,7 @@ struct crimson_tempest_t : public rogue_attack_t
     ability_type = CRIMSON_TEMPEST;
     aoe = -1;
     base_costs[ RESOURCE_COMBO_POINT ] = 1;
-    attack_power_mod.direct = 0.0602;
+    attack_power_mod.direct = /* 0.0602 */ 0.10925; // Adjusted based on in-game testing, tooltip is out of date.
     weapon = &( p -> main_hand_weapon );
     weapon_power_mod = weapon_multiplier = 0;
     // Hard-coded tooltip.
