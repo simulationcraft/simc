@@ -21,7 +21,6 @@ struct residual_damage_state_t;
 struct rogue_poison_t;
 struct rogue_attack_t;
 struct rogue_poison_buff_t;
-struct sinister_calling_t;
 struct melee_t;
 }
 
@@ -509,9 +508,6 @@ struct rogue_attack_t : public melee_attack_t
   // Justshadowreflectthings
   ability_type_e ability_type;
 
-  // Sinister calling
-  sinister_calling_t* sinister_calling;
-
   // Combo point gains
   gain_t* cp_gain;
 
@@ -523,8 +519,7 @@ struct rogue_attack_t : public melee_attack_t
     adds_combo_points( 0 ),
     requires_weapon( WEAPON_NONE ),
     combo_points_spent( 0 ),
-    ability_type( ABILITY_NONE ),
-    sinister_calling( 0 )
+    ability_type( ABILITY_NONE )
   {
     parse_options( 0, options );
 
@@ -707,26 +702,6 @@ struct rogue_attack_t : public melee_attack_t
   }
 
   void trigger_sinister_calling( dot_t* dot );
-};
-
-struct sinister_calling_t : public rogue_attack_t
-{
-  sinister_calling_t( const std::string& token, rogue_t* p, const spell_data_t* s ) :
-    rogue_attack_t( token, p, s )
-  {
-    may_crit = callbacks = may_multistrike = may_miss = false;
-    proc = background = true;
-  }
-
-  dmg_e report_amount_type( const action_state_t* ) const
-  { return DMG_DIRECT; }
-
-  double target_armor( player_t* ) const
-  { return 0; }
-
-  // Sinister calling just replicates the damage of the tick
-  double calculate_direct_amount( action_state_t* state )
-  { return state -> result_amount; }
 };
 
 // ==========================================================================
@@ -1930,11 +1905,6 @@ struct crimson_tempest_t : public rogue_attack_t
       residual_periodic_action_t<rogue_attack_t>( "crimson_tempest", p, p -> find_spell( 122233 ) )
     {
       dual = true;
-      if ( p -> spec.sinister_calling -> ok() )
-      {
-        sinister_calling = new sinister_calling_t( "crimson_tempest_sc", p, p -> find_spell( 168952 ) );
-        add_child( sinister_calling );
-      }
     }
 
     action_state_t* new_state()
@@ -1985,12 +1955,6 @@ struct garrote_t : public rogue_attack_t
     may_crit          = false;
     requires_stealth  = true;
     attack_power_mod.tick    = 0.078;
-
-    if ( p -> spec.sinister_calling -> ok() )
-    {
-      sinister_calling = new sinister_calling_t( "garrote_sc", p, p -> find_spell( 168971 ) );
-      add_child( sinister_calling );
-    }
   }
 
   void impact( action_state_t* state )
@@ -2391,12 +2355,6 @@ struct rupture_t : public rogue_attack_t
     tick_may_crit         = true;
     dot_behavior          = DOT_REFRESH;
     base_multiplier      *= 1.0 + p -> spec.sanguinary_vein -> effectN( 1 ).percent();
-
-    if ( p -> spec.sinister_calling -> ok() )
-    {
-      sinister_calling = new sinister_calling_t( "rupture_sc", p, p -> find_spell( 168963 ) );
-      add_child( sinister_calling );
-    }
   }
 
   timespan_t gcd() const
