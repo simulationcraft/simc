@@ -1236,8 +1236,7 @@ struct bladestorm_tick_t: public warrior_attack_t
   {
     dual = true;
     aoe = -1;
-    if ( p -> specialization() == WARRIOR_ARMS ) // Not a clue why Arms bladestorm hits for this amount. The Arms specific bladestorm says 120% weapon damage, not 90%~.
-      weapon_multiplier *= 1.302;
+    weapon_multiplier *= 1.0 + p -> spec.seasoned_soldier -> effectN( 2 ).percent();
   }
 
   double action_multiplier() const
