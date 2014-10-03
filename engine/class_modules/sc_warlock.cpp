@@ -2234,8 +2234,8 @@ struct shadowflame_t: public warlock_spell_t
   {
     if ( result_is_hit( s -> result ) )
     {
-      if ( td( s -> target ) -> dots_shadowflame -> is_ticking() )
-        td( s -> target ) -> shadowflame_stack++;
+      if ( td( s-> target ) -> dots_shadowflame -> is_ticking() )
+        td( s -> target ) -> shadowflame_stack = 2;
       else
         td( s -> target ) -> shadowflame_stack = 1;
     }
