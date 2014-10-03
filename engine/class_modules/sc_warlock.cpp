@@ -5337,9 +5337,8 @@ void warlock_t::apl_precombat()
 
   precombat_list += "/summon_pet,if=!talent.demonic_servitude.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down)";
 
-  precombat_list +=
-    "/summon_doomguard,if=talent.demonic_servitude.enabled";
-
+  precombat_list += "/summon_doomguard,if=talent.demonic_servitude.enabled&active_enemies<8";    
+  precombat_list += "/summon_infernal,if=talent.demonic_servitude.enabled&active_enemies>=8";
   precombat_list += "/snapshot_stats";
 
   if ( specialization() != WARLOCK_DEMONOLOGY )
@@ -5438,9 +5437,8 @@ void warlock_t::apl_precombat()
   //  action_list_str += "/run_action_list,name=aoe,if=active_enemies>"
   //      + util::to_string( multidot_max );
 
-  add_action( "Summon Doomguard", "if=!talent.demonic_servitude.enabled" );
-  //  add_action( "Summon Infernal", "", "aoe" );
-
+  add_action( "Summon Doomguard", "if=!talent.demonic_servitude.enabled&active_enemies<8" );
+  add_action( "Summon Infernal", ",if=!talent.demonic_servitude.enabled&active_enemies>=8" );
 }
 
 void warlock_t::apl_global_filler()
@@ -5460,9 +5458,9 @@ void warlock_t::apl_affliction()
     add_action ( "Haunt","if=shard_react&talent.soulburn_haunt.enabled&!in_flight_to_target&!buff.soulburn.up&buff.haunting_spirits.remains>4&soul_shard=4");
   add_action( "Soulburn", "if=shard_react&talent.soulburn_haunt.enabled&buff.soulburn.down&(buff.haunting_spirits.down|soul_shard=4)" );
   add_action( "Haunt", "if=shard_react&talent.soulburn_haunt.enabled&!in_flight_to_target&((buff.soulburn.up&buff.haunting_spirits.remains<5)|soul_shard=4)" );
-  add_action( "Agony", "if=remains<=(duration*0.3)&((talent.cataclysm.enabled&remains<=(cooldown.cataclysm.remains+action.cataclysm.cast_time))|!talent.cataclysm.enabled)" );
-  add_action( "Unstable Affliction", "if=remains<=(duration*0.3)" );
-  add_action( "Corruption", "if=remains<=(duration*0.3)" );
+  add_action( "Agony", "cycle_targets=1,if=remains<=(duration*0.3)&((talent.cataclysm.enabled&remains<=(cooldown.cataclysm.remains+action.cataclysm.cast_time))|!talent.cataclysm.enabled)" );
+  add_action( "Unstable Affliction", "cycle_targets=1,if=remains<=(duration*0.3)" );
+  add_action( "Corruption", "cycle_targets=1,if=remains<=(duration*0.3)" );
   add_action( "Life Tap", "if=mana.pct<40" );
   add_action( "Drain Soul", "interrupt=1,chain=1" );
 }

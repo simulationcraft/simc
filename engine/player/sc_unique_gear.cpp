@@ -1871,7 +1871,7 @@ struct item_buff_expr_t : public item_effect_expr_t
       const special_effect_t* e = effects[ i ];
 
       buff_t* b = buff_t::find( a -> player, e -> name() );
-      if ( buff_has_stat( b, s ) && ( ! stacking || ( stacking && b -> max_stack() > 1 ) ) )
+      if ( buff_has_stat( b, s ) && ( ( ! stacking && b -> max_stack() <= 1 ) || ( stacking && b -> max_stack() > 1 ) ) )
       {
         if ( expr_t* expr_obj = buff_t::create_expression( b -> name(), a, expr_str, b ) )
           exprs.push_back( expr_obj );
