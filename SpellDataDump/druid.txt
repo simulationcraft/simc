@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18973)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18982)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 1
@@ -4410,7 +4410,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=126851)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.60000 | Radius: 0 - 40 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.80000 | Radius: 0 - 40 yards
 Description      : Heals one of the most injured nearby friendly targets for $s1.
 
 Name             : Soul of the Forest (id=114107) [Spell Family (7), Passive] 
@@ -7368,7 +7368,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
 Effects          :
 #1 (id=233485)   : Apply Aura (6) | Proc Trigger Spell: Scent of Blood (42)
-                   Base Value: 2 | Scaled Value: 2 | Trigger Spell: 169752
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 169752
 Description      : Dealing bleed damage generates $s1 Energy.
 
 Name             : Item - Druid T17 Feral 4P Bonus (id=165432) [Spell Family (7), Passive, Hidden] 
@@ -7384,7 +7384,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
 Effects          :
 #1 (id=233486)   : Apply Aura (6) | Proc Trigger Spell: Item - Druid T17 Feral 4P Bonus Proc Driver (42)
-                   Base Value: 25 | Scaled Value: 25 | Trigger Spell: 166639
+                   Base Value: 30 | Scaled Value: 30 | Trigger Spell: 166639
 Description      : While Berserk is active, special attacks deal an additional $s1% bleed damage to the target over $166638d.
 
 Name             : Mana Attunement (Passive) (id=166142) [Spell Family (7), Passive, Hidden] 
@@ -7598,7 +7598,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
 Effects          :
 #1 (id=240687)   : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: energy
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: energy
 Description      : $@spelldesc165432
 
 Name             : Lunar Peak (id=171743) [Spell Family (7)] 

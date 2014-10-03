@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18973)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18982)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -6481,7 +6481,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=241955)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40000
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.70000
 Description      : $@spelldesc165610
 
 Name             : Feral Spirit Windfury Driver (id=170523) [Spell Family (11), Hidden] 

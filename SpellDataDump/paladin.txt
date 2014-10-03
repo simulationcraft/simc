@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18973)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18982)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -615,7 +615,7 @@ Effects          :
 #1 (id=11243)    : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
 #2 (id=186978)   : Weapon Damage% (31)
-                   Base Value: 10 | Scaled Value: 0.1 (avg=0)
+                   Base Value: 12 | Scaled Value: 0.12 (avg=0)
 #3 (id=186979)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : Fills you with Holy Light, causing melee attacks to deal $20170sw2 additional Holy damage and reduce the target's movement speed by $20170s1% for $20170d.

@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18973)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18982)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 Resource         : 2.4% Base Mana (3840 @Level 100)

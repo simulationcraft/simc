@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18973)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18982)
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 9
@@ -5366,7 +5366,7 @@ Description      : Colossus Smash now generates 30 rage.
 
 Name             : Item - Warrior T17 Fury 2P Bonus (id=165337) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
-Proc Chance      : 10%
+Proc Chance      : 20%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -5454,7 +5454,7 @@ Effects          :
 #1 (id=233381)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1
 #2 (id=240579)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 3
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 3
                    Affected Spells: Shield Charge (169667)
 Description      : $?s152276[While Shield Block is active, your shield block value is increased by $169688s1%. Shield Charge increases the damage of Heroic Strike, Slam, and Revenge by an additional $s2%][While Shield Block is active, your shield block value is increased by $169688s1%].
 

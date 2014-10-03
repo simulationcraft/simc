@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18973)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18982)
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
 Resource         : 4% Base Mana (6400 @Level 100)
