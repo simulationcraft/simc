@@ -33,23 +33,18 @@ actions+=/cold_snap,if=health.pct<30
 actions+=/time_warp,if=target.health.pct<25|time>5
 actions+=/rune_of_power,if=buff.rune_of_power.remains<cast_time
 actions+=/mirror_image
-actions+=/call_action_list,name=init_crystal,if=talent.prismatic_crystal.enabled
-actions+=/call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active
 actions+=/call_action_list,name=aoe,if=active_enemies>=5
-actions+=/call_action_list,name=burn,if=time_to_die<mana.pct*0.2*spell_haste|((cooldown.evocation.remains<buff.arcane_power.remains|cooldown.evocation.remains<(mana.pct-40)*0.2)&mana.pct>40)
+actions+=/call_action_list,name=burn,if=time_to_die<mana.pct*0.3*spell_haste|((cooldown.evocation.remains<buff.arcane_power.remains|cooldown.evocation.remains<(mana.pct-40)*0.35*spell_haste)&mana.pct>40)
 actions+=/call_action_list,name=conserve,if=!cooldown.evocation.up
-actions+=/evocation,interrupt_if=mana.pct>92,if=mana.pct<65
+actions+=/evocation,interrupt_if=mana.pct>92,if=mana.pct<65&time_to_die>10
 actions+=/call_action_list,name=conserve
 
-# Conditions for initiating Prismatic Crystal burn phase
-actions.init_crystal=prismatic_crystal,if=cooldown.arcane_power.up&buff.arcane_charge.stack=4
-actions.init_crystal+=/prismatic_crystal,if=buff.arcane_charge.stack=4&((glyph.arcane_power.enabled&cooldown.arcane_power.remains>45)|(!glyph.arcane_power.enabled&cooldown.arcane_power.remains>15))
+# Conditions for initiating Prismatic Crystal
+actions.init_crystal=prismatic_crystal,if=buff.arcane_charge.stack=4
 
-# Actions while Prismatic Crystal is active
+# Special actions while Prismatic Crystal is active
 actions.crystal_sequence=call_action_list,name=cooldowns
 actions.crystal_sequence+=/nether_tempest,if=buff.arcane_charge.stack=4&!ticking&pet.prismatic_crystal.remains>8
-actions.crystal_sequence+=/call_action_list,name=burn,if=cooldown.evocation.remains<pet.prismatic_crystal.remains|cooldown.evocation.remains<buff.arcane_power.remains
-actions.crystal_sequence+=/call_action_list,name=conserve
 
 # Consolidated damage cooldown abilities
 actions.cooldowns=arcane_power
@@ -70,6 +65,8 @@ actions.aoe+=/arcane_explosion
 
 # High mana usage, "Burn" sequence
 actions.burn=call_action_list,name=cooldowns
+actions.burn+=/call_action_list,name=init_crystal
+actions.burn+=/call_action_list,name=crystal_sequence
 actions.burn+=/arcane_missiles,if=buff.arcane_missiles.react=3
 actions.burn+=/arcane_missiles,if=buff.arcane_instability.react&buff.arcane_instability.remains<action.arcane_blast.execute_time
 actions.burn+=/supernova,if=time_to_die<8|charges=2

@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18967)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18973)
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 9
@@ -804,13 +804,16 @@ Class            : Arms Warrior
 Spell Level      : 10
 Attributes       : ....x.x. ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=5570)     : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x1
+#2 (id=257018)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 50 | Scaled Value: 50
+                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (168969)
 Description      : While wielding a two-handed melee weapon, all damage dealt is increased by $s1%.
 
 Name             : Sweeping Strikes (id=12723) [Spell Family (4)] 
@@ -1180,6 +1183,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=16619)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
+#2 (id=257006)   : Weapon Damage% (31)
+                   Base Value: 50 | Scaled Value: 0.5 (avg=0)
 Description      : Your next melee weapon swing strikes an additional nearby opponent.
 Tooltip          : Sweeping Strikes.
 
@@ -1470,7 +1475,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 60 seconds
-Affecting spells : Recklessness (1719), Protection (131086)
+Affecting spells : Recklessness (1719), Seasoned Soldier (12712), Protection (131086)
 Attributes       : ....x... ........ x.x..... ........   ....x... .xx....x ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -1582,7 +1587,7 @@ Description      : Secondary component for allowing sheilds to be carried while 
 Name             : Bladestorm (id=50622) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 1
-Affecting spells : Recklessness (1719), Protection (131086)
+Affecting spells : Recklessness (1719), Seasoned Soldier (12712), Protection (131086)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : .......x .......x ........ ........   ........ .......x ........ ........ 
@@ -1593,7 +1598,7 @@ Effects          :
 #1 (id=42845)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 8 yards
 #2 (id=42846)    : Weapon Damage% (31)
-                   Base Value: 60 | Scaled Value: 0.6 (avg=0) | Radius: 0 - 8 yards
+                   Base Value: 160 | Scaled Value: 1.6 (avg=0) | Radius: 0 - 8 yards
 #3 (id=42847)    : Trigger Spell: Bladestorm Off-Hand (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 95738
 Description      : You become a whirling storm of destructive force, striking all nearby targets with your main hand weapon for $sw2 Physical damage.
@@ -2990,7 +2995,7 @@ Description      : Recklessness no longer increases damage taken.
 Name             : Bladestorm Off-Hand (id=95738) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 1
-Affecting spells : Recklessness (1719), Protection (131086)
+Affecting spells : Recklessness (1719), Seasoned Soldier (12712), Protection (131086)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
                  : .......x .......x ........ ........   ........ .......x ........ ........ 
@@ -3001,7 +3006,7 @@ Effects          :
 #1 (id=101423)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 8 yards
 #2 (id=101424)   : Weapon Damage% (31)
-                   Base Value: 60 | Scaled Value: 0.6 (avg=0) | Radius: 0 - 8 yards
+                   Base Value: 160 | Scaled Value: 1.6 (avg=0) | Radius: 0 - 8 yards
 Description      : You become a whirling storm of destructive force, striking all nearby targets with your off-hand weapon for $sw2 Physical damage.
 
 Name             : Raging Blow (id=96103) [Spell Family (4)] 
@@ -5627,7 +5632,7 @@ Effects          :
 Name             : Bladestorm (id=168969) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 1
-Affecting spells : Recklessness (1719), Protection (131086)
+Affecting spells : Recklessness (1719), Seasoned Soldier (12712), Protection (131086)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : .......x .......x ........ ........   ........ .......x ........ ........ 
@@ -5638,7 +5643,7 @@ Effects          :
 #1 (id=239417)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 8 yards
 #2 (id=239418)   : Weapon Damage% (31)
-                   Base Value: 120 | Scaled Value: 1.2 (avg=0) | Radius: 0 - 8 yards
+                   Base Value: 160 | Scaled Value: 1.6 (avg=0) | Radius: 0 - 8 yards
 #3 (id=239419)   : Trigger Spell: Bladestorm Off-Hand (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 95738
 Description      : You become a whirling storm of destructive force, striking all nearby targets with your main hand weapon for $sw2 Physical damage.

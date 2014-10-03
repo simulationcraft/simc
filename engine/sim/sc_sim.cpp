@@ -2419,6 +2419,8 @@ void sim_t::create_options()
 bool sim_t::parse_option( const std::string& name,
                           const std::string& value )
 {
+  if ( canceled ) return false;
+
   if ( active_player )
     if ( option_t::parse( this, active_player -> options, name, value ) )
       return true;
@@ -2431,7 +2433,7 @@ bool sim_t::parse_option( const std::string& name,
 
 // sim_t::setup =============================================================
 
-void sim_t::setup( sim_control_t* c )
+bool sim_t::setup( sim_control_t* c )
 {
   // Limitation: setup+execute is a one-way action that cannot be repeated or reset
 
@@ -2446,9 +2448,8 @@ void sim_t::setup( sim_control_t* c )
     if ( o.scope != "global" ) continue;
     if ( ! parse_option( o.name, o.value ) )
     {
-      std::stringstream s;
-      s << "Unknown option '" << o.name << "' with value '" << o.value << "'";
-      throw std::invalid_argument( s.str() );
+      errorf( "Unknown option \"%s\" with value \"%s\"\n", o.name.c_str(), o.value.c_str() );
+      return false;
     }
   }
 
@@ -2469,25 +2470,23 @@ void sim_t::setup( sim_control_t* c )
     option_tuple_t& o = control -> options[ i ];
     if ( o.scope == "global" ) continue;
     player_t* p = find_player( o.scope );
-    if ( !p )
+    if ( p )
     {
-      std::stringstream s;
-      s << "Unable to locate player '" << o.scope << "' for option '" << o.name << "' with value '" << o.value << "'";
-      throw std::invalid_argument( s.str() );
+      if ( ! option_t::parse( this, p -> options, o.name, o.value ) )
+        return false;
     }
-    if (!option_t::parse(this, p->options, o.name, o.value))
+    else
     {
-      std::stringstream s;
-      s << "Unable to parse option '" << o.name << "' with value '" << o.value
-          << "' for player '" << p->name() << "'";
-      throw std::invalid_argument(s.str());
+      errorf( "sim_t::setup: Unable to locate player %s for option %s with value %s\n", o.scope.c_str(), o.name.c_str(), o.value.c_str() );
+      return false;
     }
-
   }
 
-  if ( player_list.empty() && spell_query == nullptr )
+  if ( player_list.empty() && spell_query == NULL )
   {
-    throw std::runtime_error( "Nothing to sim!" );
+    errorf( "Nothing to sim!\n" );
+    cancel();
+    return false;
   }
 
   if ( parent )
@@ -2507,9 +2506,9 @@ void sim_t::setup( sim_control_t* c )
     }
     else
     {
-      std::stringstream s;
-      s << "Unable to open output file '" << output_file_str << "'";
-      throw std::runtime_error( s.str() );
+      errorf( "Unable to open output file '%s'\n", output_file_str.c_str() );
+      cancel();
+      return false;
     }
   }
   if ( debug_each )
@@ -2527,6 +2526,8 @@ void sim_t::setup( sim_control_t* c )
 
     threads = 1;
   }
+
+  return true;
 }
 
 // sim_t::cancel ============================================================

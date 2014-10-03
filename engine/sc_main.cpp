@@ -152,21 +152,14 @@ int sim_t::main( const std::vector<std::string>& args )
 
   sim_control_t control;
 
-  try
+  if ( ! control.options.parse_args( args ) )
   {
-    control.options.parse_args(args);
-  }
-  catch (const std::exception& e) {
-    std::cerr << "ERROR! Incorrect option format: " << e.what() << std::endl;
+    errorf( "ERROR! Incorrect option format..\n" );
     return 1;
   }
-
-  try
+  else if ( ! setup( &control ) )
   {
-    setup( &control );
-  }
-  catch( const std::exception& e ){
-    std::cerr <<  "ERROR! Setup failure: " << e.what() << std::endl;
+    errorf( "ERROR! Setup failure...\n" );
     return 1;
   }
 

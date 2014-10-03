@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18967)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18973)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -5677,7 +5677,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219988)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40
+                   Base Value: 60 | Scaled Value: 60
 Description      : $@spelldesc157765
 Tooltip          : Damage of your next Earthquake increased by $w1%.
 
