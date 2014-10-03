@@ -6,7 +6,7 @@
 talent_format=armory
 
 # Death Knight
-#generate_Death_Knight_T17P.simc UPDATE
+generate_Death_Knight_T17P.simc
 
 # Druid
 generate_Druid_T17P.simc
