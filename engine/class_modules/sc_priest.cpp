@@ -1160,8 +1160,8 @@ struct priest_heal_t : public priest_action_t<heal_t>
       absorb_buff_t& buff = *get_td( s -> target ).buffs.divine_aegis;
       // Divine Aegis caps absorbs at 40% of target's health
       double old_amount = buff.value();
-      
-      // when healing a tank that's below 0 life in the sim, Divine Aegis causes an exception because it tries to 
+
+      // when healing a tank that's below 0 life in the sim, Divine Aegis causes an exception because it tries to
       // clamp s -. result_amount between 0 and a negative number. This is a workaround that treats a tank with
       // negative life as being at maximum health for the purposes of Divine Aegis.
       double upper_limit = s -> target -> resources.current[ RESOURCE_HEALTH ] * 0.4 - old_amount;
@@ -2093,7 +2093,7 @@ struct mind_blast_t final : public priest_spell_t
       priest.cooldowns.mind_blast -> duration += timespan_t::from_millis( 6000 ); //priest.glyphs.mind_harvest -> effectN( 2 ).base_value() ); // Wrong data in DBC -- Twintop 2014/08/18
 
     if ( priest.talents.clarity_of_power -> ok() )
-      priest.cooldowns.mind_blast -> duration += priest.talents.clarity_of_power -> effectN( 3 ).time_value(); //Now Effect #3... wod.wowhead.com/spell=155246 
+      priest.cooldowns.mind_blast -> duration += priest.talents.clarity_of_power -> effectN( 3 ).time_value(); //Now Effect #3... wod.wowhead.com/spell=155246
   }
 
   virtual void execute() override
@@ -2410,7 +2410,7 @@ struct mind_spike_t final : public priest_spell_t
   virtual double composite_da_multiplier( const action_state_t* state ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( state );
-  
+
     if ( casted_with_surge_of_darkness )
     {
       d *= 1.0 + priest.active_spells.surge_of_darkness -> effectN( 4 ).percent();
@@ -5125,15 +5125,15 @@ stat_e priest_t::convert_hybrid_stat( stat_e s ) const
   // don't actually appear on cloth gear yet. TODO: confirm behavior
   case STAT_STR_AGI_INT:
   case STAT_STR_INT:
-  case STAT_AGI_INT: 
-    return STAT_INTELLECT; 
+  case STAT_AGI_INT:
+    return STAT_INTELLECT;
   case STAT_STR_AGI:
     return STAT_NONE;
   case STAT_SPIRIT:
       return STAT_NONE;
   case STAT_BONUS_ARMOR:
-      return STAT_NONE;     
-  default: return s; 
+      return STAT_NONE;
+  default: return s;
   }
 }
 
@@ -5706,7 +5706,7 @@ void priest_t::init_spells()
   glyphs.shadow_word_death            = find_glyph_spell( "Glyph of Shadow Word: Death" );
   glyphs.silence                      = find_glyph_spell( "Glyph of Silence" );                 //NYI
   glyphs.vampiric_embrace             = find_glyph_spell( "Glyph of Vampiric Embrace" );
-  
+
   if ( mastery_spells.echo_of_light -> ok() )
     active_spells.echo_of_light = new actions::heals::echo_of_light_t( *this );
 
@@ -6188,7 +6188,7 @@ void priest_t::apl_shadow()
   // Advanced "DoT Weaving" CoP Action List, for when you have T14 2P -- Part 2, the weaving
   cop_advanced_mfi_dots -> add_action( "devouring_plague,if=shadow_orb>=4&target.dot.shadow_word_pain.ticking&target.dot.vampiric_touch.ticking" );
   cop_advanced_mfi_dots -> add_action( "mind_spike,if=(target.dot.shadow_word_pain.ticking&target.dot.shadow_word_pain.remains<gcd*0.5)|(target.dot.vampiric_touch.ticking&target.dot.vampiric_touch.remains<gcd*0.5)" );
-  cop_advanced_mfi_dots -> add_action( "shadow_word_pain,if=!ticking&miss_react&!target.dot.vapiric_touch.ticking" );
+  cop_advanced_mfi_dots -> add_action( "shadow_word_pain,if=!ticking&miss_react&!target.dot.vampiric_touch.ticking" );
   cop_advanced_mfi_dots -> add_action( "vampiric_touch,if=!ticking&miss_react" );
   cop_advanced_mfi_dots -> add_action( "mind_blast" );
   cop_advanced_mfi_dots -> add_action( "insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies<=2,chain=1" );
