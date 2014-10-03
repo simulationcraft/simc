@@ -1257,8 +1257,7 @@ void rogue_attack_t::consume_resource()
 {
   melee_attack_t::consume_resource();
 
-  if ( ! p() -> buffs.shadow_strikes -> up() )
-    p() -> spend_combo_points( execute_state );
+  p() -> spend_combo_points( execute_state );
 
   if ( result_is_miss( execute_state -> result ) && resource_consumed > 0 )
     p() -> trigger_energy_refund( execute_state );
@@ -1281,7 +1280,9 @@ void rogue_attack_t::execute()
   p() -> trigger_combo_point_gain( execute_state );
 
   // Anticipation only refreshes Combo Points, if the Combat and Subtlety T17
-  // 4pc set bonuses are not in effect
+  // 4pc set bonuses are not in effect. Note that currently in game, Shadow
+  // Strikes (Sub 4PC) does not prevent the consumption of Anticipation, but
+  // presuming here that it is a bug.
   if ( ! combat_t17_4pc_triggered && ! p() -> buffs.shadow_strikes -> check() )
     p() -> trigger_anticipation_replenish( execute_state );
 
@@ -1295,8 +1296,17 @@ void rogue_attack_t::execute()
       p() -> buffs.subterfuge -> trigger();
   }
 
-  if ( result_is_hit( execute_state -> result ) && base_costs[ RESOURCE_COMBO_POINT ] > 0 )
+  // Subtlety T17 4PC set bonus processing on the "next finisher"
+  if ( result_is_hit( execute_state -> result ) &&
+       base_costs[ RESOURCE_COMBO_POINT ] > 0 &&
+       p() -> buffs.shadow_strikes -> check() )
+  {
     p() -> buffs.shadow_strikes -> expire();
+    double cp = player -> resources.max[ RESOURCE_COMBO_POINT ] - player -> resources.current[ RESOURCE_COMBO_POINT ];
+
+    if ( cp > 0 )
+      player -> resource_gain( RESOURCE_COMBO_POINT, cp, p() -> gains.t17_4pc_subtlety );
+  }
 }
 
 // rogue_attack_t::ready() ==================================================
@@ -3379,15 +3389,6 @@ struct shadow_dance_t : public buff_t
 
     rogue_t* rogue = debug_cast<rogue_t*>( player );
     rogue -> buffs.shadow_strikes -> trigger();
-    // Currently in game, Sub T17 4PC grants up to 5 CP when you exit Shadow
-    // Dance, in addition to the Shadow Strikes buff.
-    if ( player -> sets.has_set_bonus( ROGUE_SUBTLETY, T17, B4 ) )
-    {
-      double cp = player -> resources.max[ RESOURCE_COMBO_POINT ] - player -> resources.current[ RESOURCE_COMBO_POINT ];
-
-      if ( cp > 0 )
-        player -> resource_gain( RESOURCE_COMBO_POINT, cp, rogue -> gains.t17_4pc_subtlety );
-    }
   }
 };
 struct shadow_reflection_t : public buff_t
