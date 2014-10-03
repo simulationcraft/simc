@@ -15,7 +15,7 @@ spec=combat
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_agility_flask
-actions.precombat+=/food,type=frosty_stew
+actions.precombat+=/food,type=sea_mist_rice_noodles
 actions.precombat+=/apply_poison,lethal=deadly,nonlethal=crippling
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
