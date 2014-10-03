@@ -40,7 +40,7 @@ public:
   core_event_t* sniper_training;
   const spell_data_t* sniper_training_cd;
   timespan_t movement_ended;
-  
+
   // Active
   std::vector<pets::hunter_main_pet_t*> hunter_main_pets;
   struct actives_t
@@ -133,7 +133,7 @@ public:
     proc_t* tier15_4pc_melee_arcane_shot;
     proc_t* tier15_4pc_melee_multi_shot;
     proc_t* tier16_2pc_melee;
-    proc_t* tier16_4pc_melee;  
+    proc_t* tier16_4pc_melee;
     proc_t* tier17_2pc_bm;
   } procs;
 
@@ -345,7 +345,7 @@ public:
   virtual void      combat_begin();
   virtual void      arise();
   virtual void      reset();
- 
+
   virtual void      regen( timespan_t periodicity = timespan_t::from_seconds( 0.25 ) );
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_melee_crit() const;
@@ -444,11 +444,11 @@ public:
   }
 
   virtual double composite_multistrike_multiplier( const action_state_t* s ) const
-  { 
+  {
     double m = ab::composite_multistrike_multiplier( s );
     m *= 1.0 + p() -> specs.survivalist -> effectN( 2 ).percent();
     m *= 1.0 + p() -> buffs.heavy_shot -> value();
-    return m; 
+    return m;
   }
 
   virtual double cost() const
@@ -1278,7 +1278,7 @@ struct kill_command_t: public hunter_main_pet_attack_t
     am *= 1.0 + o() -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
     return am;
   }
-  
+
   // Override behavior so that Kill Command uses hunter's attack power rather than the pet's
   double composite_attack_power() const
   {
@@ -1632,7 +1632,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
       background = true;
     base_t::init();
   }
-  
+
   virtual bool usable_moving() const
   {
     return true;
@@ -1655,7 +1655,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 
     return t;
   }
-  
+
   virtual void try_steady_focus()
   {
     // Most ranged attacks reset the counter for two steady/cobra shots in a row
@@ -1668,7 +1668,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
     if ( !p() -> talents.steady_focus -> ok() )
       return;
 
-    if ( require_pre ) 
+    if ( require_pre )
     {
       p() -> buffs.pre_steady_focus -> trigger( 1 );
       if ( p() -> buffs.pre_steady_focus -> stack() < 2 )
@@ -1775,7 +1775,7 @@ struct ranged_t: public hunter_ranged_attack_t
           residual_action::trigger(
             p() -> active.poisoned_ammo, // ignite spell
             s -> target, // target
-            p() -> cache.attack_power() * ( p() -> find_spell( 170661 ) -> effectN( 1 ).ap_coeff() * 
+            p() -> cache.attack_power() * ( p() -> find_spell( 170661 ) -> effectN( 1 ).ap_coeff() *
             ( p() -> find_spell( 170661 ) -> duration() / p() -> find_spell( 170661 ) -> effectN( 1 ).period() ) ) );
         }
         else if ( p() -> active.ammo == FROZEN_AMMO )
@@ -1915,7 +1915,7 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "aimed_shot", p, p -> find_specialization_spell( "Aimed Shot" ) )
   {
     parse_options( NULL, options_str );
-     
+
     crit_gain = p -> perks.enhanced_aimed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS );
     crit_gain += p -> sets.set( HUNTER_MARKSMANSHIP, T17, B2 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
   }
@@ -2072,8 +2072,8 @@ struct black_arrow_t: public hunter_ranged_attack_t
   virtual void tick( dot_t* d )
   {
     hunter_ranged_attack_t::tick( d );
-   
-    // All LnL procs are pre-planned. The current_tick is the order of 
+
+    // All LnL procs are pre-planned. The current_tick is the order of
     // magnitude, so the lowest bit is for the zero_tick
     uint32_t proc_bit = 1 << ( d -> current_tick );
     if ( lnl_procs & proc_bit )
@@ -2087,7 +2087,7 @@ struct black_arrow_t: public hunter_ranged_attack_t
   virtual void execute()
   {
     hunter_ranged_attack_t::execute();
-   
+
     if ( p() -> sets.has_set_bonus( HUNTER_SURVIVAL, T17, B2 ) )
     {
       // guaranteed trigger (but we don't count that as a proc)
@@ -2095,7 +2095,7 @@ struct black_arrow_t: public hunter_ranged_attack_t
       p() -> cooldowns.explosive_shot -> reset( false );
     }
   }
-  
+
   virtual void impact( action_state_t* s )
   {
     hunter_ranged_attack_t::impact( s );
@@ -2104,9 +2104,9 @@ struct black_arrow_t: public hunter_ranged_attack_t
     // determine number of procs by rolling proc chance until it fails
     int num_ticks = get_dot( execute_state -> target ) -> num_ticks;
     int proc_count = 1; // guaranteed at least one proc
-    for ( int i = 0; i < num_ticks; i++ ) 
+    for ( int i = 0; i < num_ticks; i++ )
     {
-      if ( p() -> rng().roll( lnl_chance ) ) 
+      if ( p() -> rng().roll( lnl_chance ) )
         proc_count++;
       else
         break;
@@ -2244,7 +2244,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
     if ( p() -> sets.has_set_bonus( SET_MELEE, T13, B2 ) )
       focus_gain *= 2.0;
   }
-   
+
   virtual void try_steady_focus()
   {
     trigger_steady_focus( true );
@@ -2357,7 +2357,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     am *= 1.0 + p() -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 3 ).percent();
     return am;
   }
-  
+
   virtual void execute()
   {
     hunter_ranged_attack_t::execute();
@@ -2382,7 +2382,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
         p() -> active.explosive_ticks, // ignite spell
         s -> target,                   // target
         damage * tick_count );
-      
+
       if ( p() -> sets.has_set_bonus( HUNTER_SURVIVAL, T17, B4 ) )
         p() -> buffs.heavy_shot -> trigger();
     }
@@ -2552,14 +2552,14 @@ struct focusing_shot_t: public hunter_ranged_attack_t
   {
     return false;
   }
-  
+
   virtual double composite_target_crit( player_t* t ) const
   {
     double cc = hunter_ranged_attack_t::composite_target_crit( t );
     cc += p() -> buffs.careful_aim -> value( );
     return cc;
   }
-  
+
   virtual void try_steady_focus()
   {
     trigger_steady_focus( false );
@@ -2591,7 +2591,7 @@ struct steady_shot_t: public hunter_ranged_attack_t
     if ( p() -> sets.has_set_bonus( SET_MELEE, T13, B2 ) )
       focus_gain *= 2.0;
   }
-   
+
   virtual void try_steady_focus()
   {
     trigger_steady_focus( true );
@@ -2910,11 +2910,11 @@ struct bestial_wrath_t: public hunter_spell_t
     p() -> active.pet -> buffs.bestial_wrath -> trigger();
     if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T17, B4 ) )
     {
+      const timespan_t duration = p() -> buffs.bestial_wrath -> buff_duration;
       // start from the back so we don't overlap stampede pets in reporting
-      for ( size_t i = p() -> hunter_main_pets.size() - 1; i >= 0; --i )
+      for ( size_t i = p() -> hunter_main_pets.size(); i-- > 0; )
       {
-        timespan_t duration = p() -> buffs.bestial_wrath -> buff_duration;
-        if ( p() -> hunter_main_pets[i] -> tier17_4pc_bm_summon( duration ) ) 
+        if ( p() -> hunter_main_pets[i] -> tier17_4pc_bm_summon( duration ) )
           break;
       }
     }
@@ -3349,7 +3349,7 @@ void hunter_t::init_spells()
   glyphs.tame_beast          = find_glyph_spell( "Glyph of Tame Beast" );
   glyphs.the_cheetah         = find_glyph_spell( "Glyph of the Cheetah" );
 
-  // Attunments 
+  // Attunments
   specs.lethal_shots       = find_specialization_spell( "Lethal Shots" );
   specs.animal_handler    = find_specialization_spell( "Animal Handler" );
   specs.lightning_reflexes = find_specialization_spell( "Lightning Reflexes" );
@@ -3671,14 +3671,14 @@ void hunter_t::add_racial_actions( action_priority_list_t* list )
 void hunter_t::add_potion_action( action_priority_list_t* list, const std::string big_potion, const std::string little_potion, const std::string options )
 {
   std::string action_options = options.empty() ? options : "," + options;
-  if ( sim -> allow_potions )    
+  if ( sim -> allow_potions )
   {
     if ( level >= 90 )
       list -> add_action( "potion,name=" + big_potion + action_options );
     else if ( level >= 85 )
       list -> add_action( "potion,name=" + little_potion + action_options );
   }
-    
+
 }
 
 // Beastmastery Action List =============================================================
@@ -3698,7 +3698,7 @@ void hunter_t::apl_bm()
   add_potion_action( default_list, "draenic_agility", "virmens_bite",
    "if=talent.stampede.enabled&cooldown.stampede.remains<1&(buff.bloodlust.up|buff.focus_fire.up)|target.time_to_die<=20" );
   default_list -> add_talent( this, "Stampede", "if=buff.bloodlust.up|buff.focus_fire.up|target.time_to_die<=20");
-                              
+
   default_list -> add_talent( this, "Dire Beast");
   default_list -> add_talent( this, "Fervor", "if=focus<=65");
   default_list -> add_action( this, "Bestial Wrath", "if=focus>60&!buff.bestial_wrath.up");
@@ -3719,7 +3719,7 @@ void hunter_t::apl_bm()
   default_list -> add_action( this, "Arcane Shot", "if=focus>=64");
   if ( level >= 81 )
     default_list -> add_action( this, "Cobra Shot");
-  else              
+  else
     default_list -> add_action(this, "Steady Shot");
 }
 
@@ -3735,7 +3735,7 @@ void hunter_t::apl_mm()
   add_item_actions( default_list );
   add_racial_actions( default_list );
 
-  add_potion_action( default_list, "draenic_agility", "virmens_bite", 
+  add_potion_action( default_list, "draenic_agility", "virmens_bite",
     "if=((buff.rapid_fire.up|buff.bloodlust.up)&(!talent.stampede.enabled|cooldown.stampede.remains<1))|target.time_to_die<=20" );
   default_list -> add_action( this, "Rapid Fire");
   default_list -> add_talent( this, "Stampede", "if=buff.rapid_fire.up|buff.bloodlust.up|target.time_to_die<=20" );
@@ -3762,7 +3762,7 @@ void hunter_t::apl_mm()
   default_list -> add_talent( this, "Powershot", "if=focus.time_to_max%(1+buff.steady_focus.value)>cast_time" );
   default_list -> add_talent( this, "Barrage" );
   default_list -> add_action( this, "Steady Shot", "if=buff.careful_aim.down&cast_time*focus.deficit%(14+focus.regen*(1+buff.steady_focus.value))>cooldown.rapid_fire.remains", "Pool max focus for rapid fire so we can spam AimedShot with Careful Aim buff" );
-  default_list -> add_talent( this, "Focusing Shot", "if=buff.careful_aim.down&cast_time*focus.deficit%(50+focus.regen*(1+buff.steady_focus.value))>cooldown.rapid_fire.remains&focus<100" ); 
+  default_list -> add_talent( this, "Focusing Shot", "if=buff.careful_aim.down&cast_time*focus.deficit%(50+focus.regen*(1+buff.steady_focus.value))>cooldown.rapid_fire.remains&focus<100" );
   default_list -> add_action( this, "Steady Shot", "if=buff.pre_steady_focus.up&focus+14+18*(1+buff.steady_focus.value)<focus.max" );
   default_list -> add_action( this, "Aimed Shot", "if=talent.focusing_shot.enabled" );
   default_list -> add_action( this, "Aimed Shot", "if=focus+focus.regen*(1+buff.steady_focus.value)*cast_time>=85" );
@@ -3784,7 +3784,7 @@ void hunter_t::apl_surv()
   add_item_actions( default_list );
   add_racial_actions( default_list );
 
-  add_potion_action( default_list, "draenic_agility", "virmens_bite", 
+  add_potion_action( default_list, "draenic_agility", "virmens_bite",
     "if=(((cooldown.stampede.remains<1|!talent.stampede.enabled)&(!talent.a_murder_of_crows.enabled|cooldown.a_murder_of_crows.remains<1))&(trinket.stat.any.up|buff.archmages_greater_incandescence_agi.up))|target.time_to_die<=20" );
 
   default_list -> add_action( "call_action_list,name=single,if=active_enemies=1" );
@@ -3982,14 +3982,14 @@ double hunter_t::composite_player_critical_damage_multiplier() const
 
   if ( buffs.sniper_training -> up() )
     cdm += cache.mastery_value();
-  
+
   // we use check() for rapid_fire becuase it's usage is reported from value() above
   if ( sets.has_set_bonus( HUNTER_MARKSMANSHIP, T17, B4 ) && buffs.rapid_fire -> check() )
   {
     // deadly_aim_driver
     double seconds_buffed = floor( buffs.rapid_fire -> elapsed( sim -> current_time ).total_seconds() );
     // from Nimox
-    cdm += bugs ? std::min(15.0, seconds_buffed) * 0.03 
+    cdm += bugs ? std::min(15.0, seconds_buffed) * 0.03
                 : seconds_buffed * sets.set( HUNTER_MARKSMANSHIP, T17, B4 ) -> effectN( 1 ).percent();
   }
 
@@ -4242,7 +4242,7 @@ stat_e hunter_t::convert_hybrid_stat( stat_e s ) const
   case STAT_AGI_INT:
   case STAT_STR_AGI:
     return STAT_AGILITY;
-    // This is a guess at how STR/INT gear will work for Rogues, TODO: confirm  
+    // This is a guess at how STR/INT gear will work for Rogues, TODO: confirm
     // This should probably never come up since rogues can't equip plate, but....
   case STAT_STR_INT:
     return STAT_NONE;
@@ -4259,18 +4259,18 @@ stat_e hunter_t::convert_hybrid_stat( stat_e s ) const
 /* Set the careful_aim buff state based on rapid fire and the enemy health. */
 void hunter_t::schedule_ready( timespan_t delta_time, bool waiting )
 {
-  if ( specs.careful_aim -> ok() ) 
+  if ( specs.careful_aim -> ok() )
   {
     int ca_now = buffs.careful_aim -> check();
     int threshold = specs.careful_aim -> effectN( 2 ).base_value();
     if ( buffs.rapid_fire -> check() || target -> health_percentage() > threshold )
     {
-      if ( ! ca_now ) 
+      if ( ! ca_now )
         buffs.careful_aim -> trigger();
     }
     else
     {
-      if ( ca_now ) 
+      if ( ca_now )
         buffs.careful_aim -> expire();
     }
   }
