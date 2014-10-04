@@ -4198,7 +4198,7 @@ void warrior_t::apl_arms()
   single_target -> add_action( this, "Execute", "if=(rage>60&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|buff.sudden_death.up|target.time_to_die<5" );
   single_target -> add_talent( this, "Impending Victory", "if=rage<30&!debuff.colossus_smash.up&target.health.pct>20" );
   single_target -> add_talent( this, "Slam", "if=(rage>20|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20" );
-  single_target -> add_action( this, "Whirlwind", "if=(rage>60|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20&!talent.slam.enabled" );
+  single_target -> add_action( this, "Whirlwind", "if=target.health.pct>20&!talent.slam.enabled&(rage>40|set_bonus.tier17_4pc)" );
   single_target -> add_talent( this, "Shockwave" );
 
   aoe -> add_action( this, "Sweeping Strikes" );
