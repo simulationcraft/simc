@@ -10084,7 +10084,7 @@ void manager_t::update()
   damage_mod *= damage_mod_coefficient;
 
   // multiply by 100 for display purposes
-  double new_resolve = 100 * std::max( 0.0, 8.5 * ( 1 - std::exp( - 0.045 * damage_mod ) ) - 1.0 );
+  double new_resolve = 100 * std::max( 0.0, 3.4 * ( 1 - std::exp( - 0.045 * damage_mod ) ) - 1.0 );
 
   // updatee the buff
   _player.buffs.resolve -> trigger( 1, new_resolve, 1, timespan_t::zero() );
