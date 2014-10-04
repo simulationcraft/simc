@@ -60,7 +60,7 @@ mage=Mage_Frost_T17M
 level=100
 race=troll
 spec=frost
-talents=1000111
+talents=1000112
 glyphs=splitting_ice/cone_of_cold
 head=flareeyed_hood,id=113868,bonus_id=567
 neck=choker_of_bloody_flame,id=120077,bonus_id=567,enchant=gift_of_multistrike
