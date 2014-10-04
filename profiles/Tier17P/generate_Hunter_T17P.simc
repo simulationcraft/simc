@@ -37,7 +37,7 @@ race=orc
 spec=marksmanship
 position=ranged_back
 role=attack
-talents=0003323
+talents=0003313
 
 head=lavalink_helm,id=109983
 neck=stormshot_choker,id=109950,enchant=gift_of_critical_strike

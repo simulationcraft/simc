@@ -41,7 +41,7 @@ race=orc
 spec=marksmanship
 position=ranged_back
 role=attack
-talents=0003323
+talents=0003313
 head=rylakstalkers_headguard,id=115545
 neck=darklight_necklace,id=113865,enchant=gift_of_critical_strike
 shoulders=neckbreaker_shoulderguards,id=113899

@@ -3737,27 +3737,27 @@ void hunter_t::apl_mm()
 
   add_potion_action( default_list, "draenic_agility", "virmens_bite",
     "if=((buff.rapid_fire.up|buff.bloodlust.up)&(!talent.stampede.enabled|cooldown.stampede.remains<1))|target.time_to_die<=20" );
+
+  default_list -> add_action( this, "Chimaera Shot" );
+  default_list -> add_action( this, "Kill Shot", "if=focus.time_to_max%(1+buff.steady_focus.value)>action.aimed_shot.cast_time" );
+
   default_list -> add_action( this, "Rapid Fire");
   default_list -> add_talent( this, "Stampede", "if=buff.rapid_fire.up|buff.bloodlust.up|target.time_to_die<=20" );
 
-  default_list -> add_talent( this, "A Murder of Crows" );
-  default_list -> add_talent( this, "Dire Beast", "if=focus.time_to_max%(1+buff.steady_focus.value)>action.aimed_shot.cast_time" );
-
   default_list -> add_action( "run_action_list,name=careful_aim,if=buff.careful_aim.up" );
   {
-    careful_aim -> add_action( this, "Chimaera Shot" );
-    careful_aim -> add_action( this, "Kill Shot", "if=focus.time_to_max%(1+buff.steady_focus.value)>action.aimed_shot.cast_time" );
-    careful_aim -> add_talent( this, "Glaive Toss" );
-    careful_aim -> add_talent( this, "Powershot", "if=focus.time_to_max%(1+buff.steady_focus.value)>cast_time" );
-    careful_aim -> add_talent( this, "Barrage" );
-    careful_aim -> add_action( this, "Steady Shot", "if=buff.pre_steady_focus.up&focus+14+18*(1+buff.steady_focus.value)<focus.max" );
+    careful_aim -> add_talent( this, "Glaive Toss", "if=active_enemies>4" );
+    careful_aim -> add_talent( this, "Powershot", "if=active_enemies>1&focus.time_to_max%(1+buff.steady_focus.value)>cast_time" );
+    careful_aim -> add_talent( this, "Barrage", "if=active_enemies>4" );
+    // careful_aim -> add_action( this, "Steady Shot", "if=buff.pre_steady_focus.up&focus+14+18*(1+buff.steady_focus.value)<focus.max" );
     careful_aim -> add_action( this, "Aimed Shot" );
     careful_aim -> add_talent( this, "Focusing Shot", "if=focus+50+12*(1+buff.steady_focus.value)<focus.max" );
     careful_aim -> add_action( this, "Steady Shot" );
   }
 
-  default_list -> add_action( this, "Chimaera Shot" );
-  default_list -> add_action( this, "Kill Shot", "if=focus.time_to_max%(1+buff.steady_focus.value)>action.aimed_shot.cast_time" );
+  default_list -> add_talent( this, "A Murder of Crows" );
+  default_list -> add_talent( this, "Dire Beast", "if=focus.time_to_max%(1+buff.steady_focus.value)>action.aimed_shot.cast_time" );
+
   default_list -> add_talent( this, "Glaive Toss" );
   default_list -> add_talent( this, "Powershot", "if=focus.time_to_max%(1+buff.steady_focus.value)>cast_time" );
   default_list -> add_talent( this, "Barrage" );
