@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18982)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18988)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
 Resource         : 35 Energy
@@ -434,7 +434,7 @@ Description      : Finishing move that causes damage per combo point:
    3 points: ${($AP*0.577)*$<mult>*3} damage
    4 points: ${($AP*0.577)*$<mult>*4} damage
    5 points: ${($AP*0.577)*$<mult>*5} damage
-Variables        : $mult=$?s16511[${(((100+$76808m1))*0.82/100)}][${1.00*0.88}]
+Variables        : $mult=$?s16511[${(((100+$76808m1))*0.88/100)}][${1.00*0.88}]
 
 Name             : Deadly Poison (id=2818) [Scaling Spell (8), Spell Family (8)] 
 Class            : Rogue
@@ -3669,7 +3669,7 @@ Effects          :
                    Base Value: 240 | Scaled Value: 240
 Description      : $@spelldesc121411
 Tooltip          : Suffering $w1 damage every $t1 sec.
-Variables        : $mult=$?s16511[${(((100+$76808m1))*0.82/100)}][${1.00*0.88}]
+Variables        : $mult=$?s16511[${(((100+$76808m1))*0.88/100)}][${1.00*0.88}]
 
 Name             : Item - Rogue T14 2P Bonus (id=123116) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue

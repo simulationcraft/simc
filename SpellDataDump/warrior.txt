@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18982)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18988)
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 9
@@ -232,7 +232,7 @@ Class            : Arms Fury Warrior
 Resource         : 20 Rage
 Spell Level      : 26 (max 80)
 GCD              : 1.5 seconds
-Affecting spells : Recklessness (1719), Glyph of Wind and Thunder (63324), Raging Wind (115317), Headlong Rush (158836)
+Affecting spells : Recklessness (1719), Crazed Berserker (23588), Glyph of Wind and Thunder (63324), Raging Wind (115317), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -1075,6 +1075,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=92265)    : Apply Aura (6) | Unknown effect sub type (122)
                    Base Value: 25 | Scaled Value: 25
+#3 (id=257111)   : Apply Aura (6) | Add Flat Modifier: Spell Resource Cost (107)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 14
+                   Affected Spells: Whirlwind (1680), Whirlwind Off-Hand (44949), Whirlwind (168695)
+#4 (id=257112)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: -20 | Scaled Value: -20
+                   Affected Spells: Whirlwind (1680), Whirlwind Off-Hand (44949), Whirlwind (168695)
 Description      : You are a master of dual-wield combat, able to equip one-handed and two-handed weapons in both hands.
 
 You deal $81099s1% additional damage when wielding only one-handed weapons.
@@ -1373,7 +1379,7 @@ Effects          :
 Name             : Whirlwind Off-Hand (id=44949) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 36 (max 80)
-Affecting spells : Recklessness (1719), Glyph of Wind and Thunder (63324), Raging Wind (115317), Headlong Rush (158836)
+Affecting spells : Recklessness (1719), Crazed Berserker (23588), Glyph of Wind and Thunder (63324), Raging Wind (115317), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
                  : .......x .......x ........ ........   ........ .......x ........ ........ 
@@ -2784,7 +2790,7 @@ Effects          :
 #1 (id=86555)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=86556)    : Weapon Damage% (31)
-                   Base Value: 138 | Scaled Value: 1.38 (avg=0)
+                   Base Value: 200 | Scaled Value: 2 (avg=0)
 Description      : A mighty blow that deals $sw2 Physical damage.
 
 Name             : Meat Cleaver (id=85739) [Spell Family (4)] 
@@ -3024,7 +3030,7 @@ Effects          :
 #1 (id=101983)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=101984)   : Weapon Damage% (31)
-                   Base Value: 138 | Scaled Value: 1.38 (avg=0)
+                   Base Value: 200 | Scaled Value: 2 (avg=0)
 Description      : A mighty blow that deals $sw2 Physical damage.
 
 Name             : Rallying Cry (id=97462) [Spell Family (4)] 
@@ -3077,7 +3083,7 @@ Effects          :
 #2 (id=107865)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=107866)   : Weapon Damage% (31)
-                   Base Value: 270 | Scaled Value: 2.7 (avg=0)
+                   Base Value: 375 | Scaled Value: 3.75 (avg=0)
 Description      : A quick strike with your off-hand weapon that deals $sw3 Physical damage and reduces the effectiveness of healing on the target for $115804d.  Bloodthirst has a $46915s1% chance of granting $46915s2 charges of Wild Strike that cost no Rage.
 
 Name             : Juggernaut (id=103826) [Spell Family (4), Passive] 
@@ -4942,9 +4948,9 @@ Effects          :
 #1 (id=220939)   : Unknown effect type (174) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Radius: 100 yards
 #2 (id=255132)   : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: -60 | Scaled Value: -60 | Misc Value: 127
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127
 #3 (id=255133)   : Apply Aura (6) | Modify Absorb% Done (421)
-                   Base Value: -60 | Scaled Value: -60
+                   Base Value: 0 | Scaled Value: 0
 Description      : Increases your healing and absorption done to yourself, based on Stamina and damage taken (before avoidance and mitigation) in the last 10 sec.
 
 Name             : Headlong Rush (id=158836) [Spell Family (4), Passive, Hidden] 
@@ -5595,7 +5601,7 @@ Class            : Warrior
 Resource         : 30 Rage
 Spell Level      : 26 (max 80)
 GCD              : 1.5 seconds
-Affecting spells : Recklessness (1719), Glyph of Wind and Thunder (63324), Raging Wind (115317), Headlong Rush (158836)
+Affecting spells : Recklessness (1719), Crazed Berserker (23588), Glyph of Wind and Thunder (63324), Raging Wind (115317), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 

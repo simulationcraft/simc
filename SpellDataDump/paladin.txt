@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18982)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18988)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -1094,7 +1094,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=21607)    : School Damage: holy (2)
-                   Base Value: 0 | Scaled Value: 1 - 3 (avg=0) | Value Range: 3 | AP Coefficient: 1.33300
+                   Base Value: 0 | Scaled Value: 1 - 3 (avg=0) | Value Range: 3 | AP Coefficient: 1.60000
 #2 (id=135932)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.63500
 #3 (id=135933)   : Apply Aura (6) | Silence (27)
@@ -1476,7 +1476,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=46256)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.60000
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.92000
 Description      : Instantly slam the target with your shield, causing $s1 Holy damage, reducing the physical damage you take by ${$clamp($132403m1*-1,20,80)}% for $132403d, and causing Bastion of Glory.
 
 |cFFFFFFFFBastion of Glory|r
@@ -2684,7 +2684,7 @@ Attributes       : ........ ........ ........ x..x....   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=81788)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.11000 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.13200 | Radius: 0 - 8 yards
 Description      : Deals $s1 Holy damage to enemies within $A1 yards.
 
 Name             : Reinforced Bio-Optic Killshades (id=81714) 
@@ -4340,7 +4340,7 @@ Effects          :
 #1 (id=135938)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards
 #2 (id=136087)   : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.92000 | Radius: 0 - 10 yards
 Description      : Sends bolts of power in all directions, causing $s2 Holy damage $?s115738[to your target][divided among all enemies within $A1 yards], stunning Demons$?s54923[, Aberrations, Dragonkin, Elementals][] and Undead for $d.$?s171648[ Generates $171648s2 Holy Power.][]$?s54935[
 
 Causes $54935s1% additional damage to targets with less than 20% health.][]
@@ -5771,9 +5771,9 @@ Effects          :
 #1 (id=220939)   : Unknown effect type (174) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Radius: 100 yards
 #2 (id=255132)   : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: -60 | Scaled Value: -60 | Misc Value: 127
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127
 #3 (id=255133)   : Apply Aura (6) | Modify Absorb% Done (421)
-                   Base Value: -60 | Scaled Value: -60
+                   Base Value: 0 | Scaled Value: 0
 Description      : Increases your healing and absorption done to yourself, based on Stamina and damage taken (before avoidance and mitigation) in the last 10 sec.
 
 Name             : Healer Level 90 Mana Fix (Passive) (id=158920) [Passive, Hidden] 

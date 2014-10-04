@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18982)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18988)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 1
@@ -1853,7 +1853,7 @@ Attributes       : ........ ........ ........ ........   .......x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=42452)    : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.58, dl=0.15) | SP Coefficient: 0.22320
+                   Base Value: 1 | Scaled Value: 0 (avg=0.58, dl=0.15) | SP Coefficient: 0.20000
 Description      : $@spelldesc48505
 
 Name             : Survival Instincts (id=50322) [Spell Family (7), Hidden] 
@@ -6029,7 +6029,7 @@ Attributes       : ........ ........ ........ ........   .......x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=216251)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.22320
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.20000
 Description      : $@spelldesc155592
 
 Name             : Sunfall (id=155598) [Spell Family (7), Hidden] 
@@ -6483,9 +6483,9 @@ Effects          :
 #1 (id=220939)   : Unknown effect type (174) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Radius: 100 yards
 #2 (id=255132)   : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: -60 | Scaled Value: -60 | Misc Value: 127
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127
 #3 (id=255133)   : Apply Aura (6) | Modify Absorb% Done (421)
-                   Base Value: -60 | Scaled Value: -60
+                   Base Value: 0 | Scaled Value: 0
 Description      : Increases your healing and absorption done to yourself, based on Stamina and damage taken (before avoidance and mitigation) in the last 10 sec.
 
 Name             : Soul of the Forest (id=158476) [Spell Family (7), Passive] 

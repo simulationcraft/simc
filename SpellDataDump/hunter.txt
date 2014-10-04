@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18982)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18988)
 Name             : Mend Pet (id=136) [Scaling Spell (3), Spell Family (9)] 
 Class            : Hunter
 Spell Level      : 16
@@ -645,7 +645,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : ........ ........ ......x. ...x....   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=6178)     : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.1, dl=0.25) | AP Coefficient: 0.04269 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=0.1, dl=0.25) | AP Coefficient: 0.08500 | Radius: 0 - 10 yards
 #2 (id=6179)     : Apply Aura (6) | Periodic Damage: fire every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 0 (avg=0.022) | AP Coefficient: 0.04269 | Radius: 0 - 10 yards
 #3 (id=136700)   : Trigger Spell: Explosive Trap (64)
