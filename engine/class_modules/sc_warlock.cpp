@@ -560,7 +560,16 @@ public:
   double get_fury_gain( const spell_data_t& data )
   {
     if ( data._effects -> size() >= 3 && data.effectN( 3 ).trigger_spell_id() == 104330 )
-      return data.effectN( 3 ).base_value();
+    {
+      if ( p() -> o() -> talents.grimoire_of_supremacy -> ok() )
+      {
+        return  std::floor( data.effectN( 3 ).base_value() * ( 1 + p() -> o() -> talents.grimoire_of_supremacy -> effectN( 1 ).percent()) );
+      }
+      else 
+      {
+        return  data.effectN( 3 ).base_value();
+      }
+    }
     else
       return 0.0;
   }
