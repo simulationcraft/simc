@@ -2564,7 +2564,7 @@ struct shield_slam_t: public warrior_attack_t
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
     cooldown = p -> cooldown.shield_slam;
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
-    attack_power_mod.direct = 3; //Hard-coded in tooltip.
+    attack_power_mod.direct = 3.18; //Hard-coded in tooltip. (beta build 18764)
   }
 
   double action_multiplier() const
