@@ -37,13 +37,6 @@ public:
   int initial_rage;
   double arms_rage_mult;
   double crit_rage_mult;
-  double cs_extension;
-  bool wild_strike_extension;
-  bool mastery_rend;
-  bool mastery_whirlwind;
-  bool mastery_everything;
-  bool mastery_rend_burst;
-  double rend_burst_mastery;
   bool swapping; // Disables automated swapping when it's not required to use the ability.
   // Set to true whenever a player uses the swap option inside of stance_t, as we should assume they are intentionally sitting in defensive stance.
 
@@ -420,13 +413,6 @@ public:
     cooldown.storm_bolt               = get_cooldown( "storm_bolt" );
 
     initial_rage = 0;
-    wild_strike_extension = false;
-    mastery_everything = false;
-    mastery_rend = false;
-    mastery_rend_burst = false;
-    mastery_whirlwind = false;
-    rend_burst_mastery = 1;
-    cs_extension = 2.0;
     arms_rage_mult = 1.695;
     crit_rage_mult = 2.325;
     swapping = false;
@@ -588,9 +574,7 @@ public:
   {
     double am = ab::action_multiplier();
 
-    if ( p() -> mastery_everything && p() -> specialization() == WARRIOR_ARMS )
-      am *= 1.0 + ab::player -> cache.mastery_value();
-    else if ( weapons_master )
+    if ( weapons_master )
       am *= 1.0 + ab::player -> cache.mastery_value();
 
     return am;
@@ -2423,19 +2407,6 @@ struct rend_burst_t: public warrior_attack_t
     dual = true;
   }
 
-  double action_multiplier() const
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p() -> mastery_rend )
-      am *= 1.0 + p() -> cache.mastery_value();
-
-    if ( p() -> mastery_rend_burst )
-      am *= 1.0 + ( p() -> rend_burst_mastery * p() -> cache.mastery_value() );
-
-    return am;
-  }
-
   double target_armor( player_t* ) const
   {
     return 0.0;
@@ -2454,16 +2425,6 @@ struct rend_t: public warrior_attack_t
     dot_behavior = DOT_REFRESH;
     tick_may_crit = true;
     add_child( burst );
-  }
-
-  double action_multiplier() const
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p() -> mastery_rend )
-      am *= 1.0 + p() -> cache.mastery_value();
-
-    return am;
   }
 
   void impact( action_state_t* s )
@@ -2980,9 +2941,6 @@ struct whirlwind_t: public warrior_attack_t
     if ( p() -> buff.raging_wind ->  up() )
       am *= 1.0 + p() -> buff.raging_wind -> data().effectN( 1 ).percent();
 
-    if ( p() -> mastery_whirlwind && p() -> specialization() == WARRIOR_ARMS )
-      am *= 1.0 + p() -> cache.mastery_value();
-
     return am;
   }
 
@@ -3213,16 +3171,6 @@ struct enhanced_rend_t: public warrior_spell_t
     warrior_spell_t( "enhanced_rend", p, p -> find_spell( 174736 ) )
   {
     background = true;
-  }
-
-  double action_multiplier() const
-  {
-    double am = warrior_spell_t::action_multiplier();
-
-    if ( p() -> mastery_rend )
-      am *= 1.0 + p() -> cache.mastery_value();
-
-    return am;
   }
 
   double target_armor( player_t* ) const
@@ -5395,13 +5343,6 @@ void warrior_t::create_options()
     opt_float( "arms_rage_mult", arms_rage_mult ),
     opt_float( "crit_rage_mult", crit_rage_mult ),
     opt_bool( "swapping", swapping ),
-    opt_bool( "wild_strike_extension", wild_strike_extension ),
-    opt_bool( "mastery_whirlwind", mastery_whirlwind ),
-    opt_bool( "mastery_rend", mastery_rend ),
-    opt_bool( "mastery_everything", mastery_everything ),
-    opt_bool( "mastery_rend_burst", mastery_rend_burst ),
-    opt_float( "burst_mastery_multiplier", rend_burst_mastery ),
-    opt_float( "cs_extension", cs_extension ),
     opt_null()
   };
 
@@ -5464,13 +5405,6 @@ void warrior_t::copy_from( player_t* source )
   swapping = p -> swapping;
   arms_rage_mult = p -> arms_rage_mult;
   crit_rage_mult = p -> crit_rage_mult;
-  wild_strike_extension = p -> wild_strike_extension;
-  mastery_everything = p -> mastery_everything;
-  mastery_rend = p -> mastery_rend;
-  mastery_whirlwind = p -> mastery_whirlwind;
-  mastery_rend_burst = p -> mastery_rend_burst;
-  rend_burst_mastery = p -> rend_burst_mastery;
-  cs_extension = p -> cs_extension;
 }
 
 void warrior_t::stance_swap()

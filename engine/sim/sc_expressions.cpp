@@ -110,7 +110,7 @@ public:
   {}
 
   double evaluate() // override
-  { return bool( left -> eval() ) != bool( right -> eval() ); }
+  { return bool( left -> eval() != 0 ) != bool( right -> eval() != 0 ); }
 };
 
 template <template<typename> class F>
