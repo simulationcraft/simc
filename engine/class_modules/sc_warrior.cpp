@@ -4061,12 +4061,10 @@ void warrior_t::apl_fury()
   single_target -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   single_target -> add_action( this, "Execute", "if=buff.enrage.up|target.time_to_die<12|rage>60" );
   single_target -> add_action( this, "Raging Blow" );
-  single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up" );
-  single_target -> add_action( this, "Whirlwind", "if=buff.enrage.up&target.health.pct>20&!talent.unquenchable_thirst.enabled&rage<50" );
-  single_target -> add_action( this, "Wild Strike", "if=buff.enrage.up&target.health.pct>20" );
+  single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up|(buff.enrage.up&target.health.pct>20)" );
   single_target -> add_talent( this, "Shockwave", "if=!talent.unquenchable_thirst.enabled" );
   single_target -> add_talent( this, "Impending Victory", "if=!talent.unquenchable_thirst.enabled" );
-  single_target -> add_action( this, "Bloodthirst", "if=talent.unquenchable_thirst.enabled" );
+  single_target -> add_action( this, "Bloodthirst" );
 
   two_targets -> add_talent( this, "Bloodbath" );
   two_targets -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
