@@ -43,8 +43,8 @@ actions+=/potion,name=draenic_armor,if=buff.shield_of_the_righteous.down&buff.se
 actions+=/holy_avenger
 actions+=/divine_protection,if=buff.seraphim.down
 actions+=/seraphim,if=buff.divine_protection.down&cooldown.divine_protection.remains>0
-actions+=/guardian_of_ancient_kings,if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down
-actions+=/ardent_defender,if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down
+actions+=/guardian_of_ancient_kings,if=time<5|(buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down)
+actions+=/ardent_defender,if=time<5|(buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down)
 actions+=/eternal_flame,if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react|buff.bastion_of_power.react)
 actions+=/eternal_flame,if=buff.bastion_of_power.react&buff.bastion_of_glory.react>=5
 actions+=/shield_of_the_righteous,if=(holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3)&(!talent.seraphim.enabled|cooldown.seraphim.remains>5)

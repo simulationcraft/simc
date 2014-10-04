@@ -3271,7 +3271,7 @@ struct chaos_bolt_t: public warlock_spell_t
         
         if ( p() -> buffs.chaotic_infusion -> up())
         {
-            int extra_ms = p() -> buffs.chaotic_infusion -> value();
+            int extra_ms = static_cast<int>( p() -> buffs.chaotic_infusion -> value() );
             for  (int i = 0; i < extra_ms ; i++)
             {
                 result_e r = RESULT_MULTISTRIKE_CRIT;
