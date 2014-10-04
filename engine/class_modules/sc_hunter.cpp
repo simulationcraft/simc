@@ -3718,8 +3718,6 @@ void hunter_t::add_potion_action( action_priority_list_t* list, const std::strin
 void hunter_t::apl_bm()
 {
   action_priority_list_t* default_list = get_action_priority_list( "default" );
-  action_priority_list_t* single_target = get_action_priority_list( "single_target" );
-  action_priority_list_t* two_targets = get_action_priority_list( "two_targets" );
 
   default_list -> add_action( "auto_shot" );
 
