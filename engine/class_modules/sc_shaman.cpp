@@ -3390,14 +3390,15 @@ struct earth_shock_t : public shaman_spell_t
 
   virtual void execute()
   {
-    shaman_spell_t::execute();
-
     int consuming_stacks = p() -> buff.lightning_shield -> stack() - 1;
-    if ( result_is_hit( execute_state -> result ) && consuming_stacks > 0 )
-    {
-      // Tier17 2PC set bonus affects the Fulmination that procs it
+    // Tier17 2PC set bonus affects the Fulmination that procs it
+    if ( consuming_stacks > 0 )
       p() -> trigger_tier17_2pc_elemental( consuming_stacks );
 
+    shaman_spell_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) && consuming_stacks > 0 )
+    {
       p() -> active_lightning_charge -> target = execute_state -> target;
       p() -> active_lightning_charge -> execute();
 

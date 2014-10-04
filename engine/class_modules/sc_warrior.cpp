@@ -60,6 +60,7 @@ public:
   action_t* active_rallying_cry_heal;
   action_t* active_second_wind;
   attack_t* active_sweeping_strikes;
+  attack_t* active_aoe_sweeping_strikes;
 
   heal_t* active_t16_2pc;
   warrior_stance active_stance;
@@ -386,6 +387,7 @@ public:
     active_rallying_cry_heal  = 0;
     active_second_wind        = 0;
     active_sweeping_strikes   = 0;
+    active_aoe_sweeping_strikes = 0;
     active_enhanced_rend      = 0;
     active_t16_2pc            = 0;
     active_stance             = STANCE_BATTLE;
@@ -910,6 +912,56 @@ struct bloodbath_dot_t: public residual_action::residual_periodic_action_t < war
 
 static void trigger_sweeping_strikes( action_state_t* s )
 {
+  struct sweeping_strikes_aoe_attack_t: public warrior_attack_t
+  {
+    double pct_damage;
+    sweeping_strikes_aoe_attack_t( warrior_t* p ):
+      warrior_attack_t( "sweeping_strikes_attack", p, p -> spec.sweeping_strikes )
+    {
+      may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
+      aoe = 1;
+      school = SCHOOL_PHYSICAL;
+      weapon = &p -> main_hand_weapon;
+      weapon_multiplier = 1;
+      base_costs[RESOURCE_RAGE] = 0; //Resource consumption already accounted for in the buff application.
+      cooldown -> duration = timespan_t::zero(); // Cooldown accounted for in the buff.
+      pct_damage = data().effectN( 1 ).percent();
+    }
+
+    double composite_crit() const
+    {
+      return 0;
+    }
+
+    double action_multiplier() const
+    {
+      return ( 1.0 + p() -> cache.damage_versatility() ) * pct_damage; // Double dips on versatility.
+    }
+
+    size_t available_targets( std::vector< player_t* >& tl ) const
+    {
+      tl.clear();
+
+      for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+      {
+        player_t* t = sim -> actor_list[i];
+
+        if ( !t -> is_sleeping() && t -> is_enemy() && ( t != target ) )
+          tl.push_back( t );
+      }
+
+      return tl.size();
+    }
+
+    void impact( action_state_t* s )
+    {
+      warrior_attack_t::impact( s );
+
+      if ( result_is_hit( s -> result ) && p() -> glyphs.sweeping_strikes -> ok() )
+        p() -> resource_gain( RESOURCE_RAGE, p() -> glyphs.sweeping_strikes -> effectN( 1 ).base_value(), p() -> gain.sweeping_strikes );
+    }
+  };
+
   struct sweeping_strikes_attack_t: public warrior_attack_t
   {
     double pct_damage;
@@ -963,19 +1015,16 @@ static void trigger_sweeping_strikes( action_state_t* s )
 
   warrior_t* p = debug_cast<warrior_t*>( s -> action -> player );
 
-  if ( !p -> buff.sweeping_strikes -> check() )
+  if ( s -> action -> id == p -> spec.sweeping_strikes -> id() )
     return;
 
-  if ( !s -> action -> weapon )
-    return;
-
-  if ( !s -> action -> result_is_miss( s -> result ) )
+  if ( s -> action -> result_is_miss( s -> result ) )
     return;
 
   if ( s -> action -> sim -> active_enemies == 1 )
     return;
 
-  if ( s -> action -> id == p -> spec.sweeping_strikes -> id() )
+  if ( s -> result_total <= 0 )
     return;
 
   if ( !p -> active_sweeping_strikes )
@@ -984,9 +1033,22 @@ static void trigger_sweeping_strikes( action_state_t* s )
     p -> active_sweeping_strikes -> init();
   }
 
-  p -> active_sweeping_strikes -> base_dd_min = s -> result_total;
-  p -> active_sweeping_strikes -> base_dd_max = s -> result_total;
-  p -> active_sweeping_strikes -> execute();
+  if ( !p -> active_aoe_sweeping_strikes )
+  {
+    p -> active_aoe_sweeping_strikes = new sweeping_strikes_aoe_attack_t( p );
+    p -> active_aoe_sweeping_strikes -> init();
+  }
+
+  if ( !s -> action -> aoe )
+  {
+    p -> active_sweeping_strikes -> base_dd_min = s -> result_total;
+    p -> active_sweeping_strikes -> base_dd_max = s -> result_total;
+    p -> active_sweeping_strikes -> execute();
+  }
+  else
+    // For reasons unknown to mankind, aoe abilities proc a sweeping strike that deals half the damage of a autoattack, and double dips from versatility.
+    // Thus, we handle it in a different manner.
+    p -> active_aoe_sweeping_strikes -> execute();
 
   return;
 }
@@ -1023,7 +1085,7 @@ void warrior_attack_t::execute()
   base_t::execute();
   if ( p() -> buff.sweeping_strikes -> up() )
     trigger_sweeping_strikes( execute_state );
-}
+  }
 
 // warrior_attack_t::impact =================================================
 
@@ -4136,7 +4198,7 @@ void warrior_t::apl_arms()
   single_target -> add_action( this, "Execute", "if=(rage>60&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|buff.sudden_death.up|target.time_to_die<5" );
   single_target -> add_talent( this, "Impending Victory", "if=rage<30&!debuff.colossus_smash.up&target.health.pct>20" );
   single_target -> add_talent( this, "Slam", "if=(rage>20|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20" );
-  single_target -> add_action( this, "Whirlwind", "if=(rage>60|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20&!talent.slam.enabled" );
+  single_target -> add_action( this, "Whirlwind", "if=target.health.pct>20&!talent.slam.enabled&(rage>40|set_bonus.tier17_4pc)" );
   single_target -> add_talent( this, "Shockwave" );
 
   aoe -> add_action( this, "Sweeping Strikes" );
