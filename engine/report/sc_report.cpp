@@ -479,60 +479,60 @@ void report::print_profiles( sim_t* sim )
 
 // report::print_spell_query ================================================
 
-void report::print_spell_query( sim_t* sim, unsigned level )
+void report::print_spell_query( dbc_t& dbc, const std::string& spell_query_xml_output_file_str, const spell_data_expr_t& sq, unsigned level )
 {
-  spell_data_expr_t* sq = sim -> spell_query;
-  assert( sq );
-
   io::cfile file;
-  xml_node_t* root = NULL;
-  if ( ! sim -> spell_query_xml_output_file_str.empty() )
+  xml_node_t* root = nullptr;
+  if ( ! spell_query_xml_output_file_str.empty() )
   {
-    file = io::fopen( sim -> spell_query_xml_output_file_str.c_str(), "w" );
+    file = io::fopen( spell_query_xml_output_file_str.c_str(), "w" );
     if ( ! file )
     {
-      sim -> errorf( "Unable to open spell query xml output file '%s', using stdout instead\n", sim -> spell_query_xml_output_file_str.c_str() );
+      std::cerr << "Unable to open spell query xml output file '" << spell_query_xml_output_file_str << "', using stdout instead\n";
       file = io::cfile( stdout, io::cfile::no_close() );
     }
     root = new xml_node_t( "spell_query" );
   }
 
-  for ( std::vector<uint32_t>::iterator i = sq -> result_spell_list.begin(); i != sq -> result_spell_list.end(); ++i )
+  expr_data_e data_type = sq.data_type;
+  for ( std::vector<uint32_t>::const_iterator i = sq.result_spell_list.begin(); i != sq.result_spell_list.end(); ++i )
   {
-    if ( sq -> data_type == DATA_TALENT )
+    if ( data_type == DATA_TALENT )
     {
       if ( root )
-        spell_info::talent_to_xml( sim -> dbc, sim -> dbc.talent( *i ), root );
+        spell_info::talent_to_xml( dbc, dbc.talent( *i ), root );
       else
-        sim -> out_std.raw() << spell_info::talent_to_str( sim -> dbc, sim -> dbc.talent( *i ) );
+        std::cout << spell_info::talent_to_str( dbc, dbc.talent( *i ) );
     }
-    else if ( sq -> data_type == DATA_EFFECT )
+    else if ( data_type == DATA_EFFECT )
     {
       std::ostringstream sqs;
-      const spell_data_t* spell = sim -> dbc.spell( sim -> dbc.effect( *i ) -> spell_id() );
+      const spell_data_t* spell = dbc.spell( dbc.effect( *i ) -> spell_id() );
       if ( spell )
       {
         if ( root )
-          spell_info::effect_to_xml( sim -> dbc, spell, sim -> dbc.effect( *i ), root );
+          spell_info::effect_to_xml( dbc, spell, dbc.effect( *i ), root );
         else
-          spell_info::effect_to_str( sim -> dbc, spell, sim -> dbc.effect( *i ), sqs );
+        {
+          spell_info::effect_to_str( dbc, spell, dbc.effect( *i ), sqs );
+          std::cout << sqs.str();
+        }
       }
-      sim -> out_std.raw() << sqs.str();
     }
-    else if ( sq -> data_type == DATA_SET_BONUS )
+    else if ( data_type == DATA_SET_BONUS )
     {
       if ( root )
-        spell_info::talent_to_xml( sim -> dbc, sim -> dbc.talent( *i ), root );
+        spell_info::talent_to_xml( dbc, dbc.talent( *i ), root );
       else
-        sim -> out_std.raw() << spell_info::set_bonus_to_str( sim -> dbc, (dbc::set_bonus( sim -> dbc.ptr ) + *i) );
+        std::cout << spell_info::set_bonus_to_str( dbc, (dbc::set_bonus( dbc.ptr ) + *i) );
     }
     else
     {
-      const spell_data_t* spell = sim -> dbc.spell( *i );
+      const spell_data_t* spell = dbc.spell( *i );
       if ( root )
-        spell_info::to_xml( sim -> dbc, spell, root, level );
+        spell_info::to_xml( dbc, spell, root, level );
       else
-        sim -> out_std.raw() << spell_info::to_str( sim -> dbc, spell, level );
+        std::cout << spell_info::to_str( dbc, spell, level );
     }
   }
 

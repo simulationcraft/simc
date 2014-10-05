@@ -177,8 +177,15 @@ int sim_t::main( const std::vector<std::string>& args )
 
   if ( spell_query )
   {
-    spell_query -> evaluate();
-    report::print_spell_query( this, spell_query_level );
+    try
+    {
+      spell_query -> evaluate();
+      report::print_spell_query( dbc, spell_query_xml_output_file_str, *spell_query, spell_query_level );
+    }
+    catch( const std::exception& e ){
+      std::cerr <<  "ERROR! Spell Query failure: " << e.what() << std::endl;
+      return 1;
+    }
   }
   else if ( need_to_save_profiles( this ) )
   {
