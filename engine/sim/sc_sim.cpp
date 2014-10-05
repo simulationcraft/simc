@@ -2675,7 +2675,7 @@ std::vector<double> sc_timeline_t::build_divisor_timeline( const extended_sample
   for ( size_t i = 0; i < num_timelines; i++ )
   {
     size_t last = static_cast<size_t>( floor( simulation_length.data()[ i ] / bin_size ) );
-    assert( last < divisor_timeline.size() ); // We created it with max length
+    assert( last <= divisor_timeline.size() ); // We created it with max length
 
     // First add fully visited buckets.
     for ( size_t j = 0; j < last; j++ )
@@ -2687,6 +2687,7 @@ std::vector<double> sc_timeline_t::build_divisor_timeline( const extended_sample
     double remainder = simulation_length.data()[ i ] / bin_size - last;
     if ( remainder > 0.0 )
     {
+      assert( last < divisor_timeline.size() );
       divisor_timeline[ last ] += remainder;
     }
   }

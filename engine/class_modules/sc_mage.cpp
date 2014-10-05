@@ -465,7 +465,7 @@ struct water_elemental_pet_t : public pet_t
       channeled = tick_may_crit = true;
     }
 
-    water_elemental_pet_td_t* td( player_t* t = 0 ) const
+    water_elemental_pet_td_t* td( player_t* t ) const
     { return p() -> get_target_data( t ? t : target ); }
 
     water_elemental_pet_t* p()
@@ -493,7 +493,7 @@ struct water_elemental_pet_t : public pet_t
     virtual void last_tick( dot_t* d )
     {
       spell_t::last_tick( d );
-      td( p() -> target ) -> water_jet -> expire();
+      td( d -> target ) -> water_jet -> expire();
     }
 
     bool ready()
