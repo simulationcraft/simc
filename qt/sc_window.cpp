@@ -1828,7 +1828,7 @@ void SimulateThread::run()
   if ( sim -> spell_query != 0 )
   {
     sim -> spell_query -> evaluate();
-    report::print_spell_query( sim, MAX_LEVEL );
+    report::print_spell_query( sim -> dbc, sim -> spell_query_xml_output_file_str, *sim -> spell_query, sim -> spell_query_level );
     success = false;
   }
   success = sim -> execute();
