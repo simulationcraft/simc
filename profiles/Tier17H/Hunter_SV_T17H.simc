@@ -39,11 +39,12 @@ actions.single+=/explosive_shot
 actions.single+=/black_arrow,if=!ticking
 actions.single+=/a_murder_of_crows
 actions.single+=/dire_beast
-actions.single+=/arcane_shot,if=buff.thrill_of_the_hunt.react&focus>35&focus.time_to_max<=gcd|dot.serpent_sting.remains<=5|target.time_to_die<4.5
+actions.single+=/arcane_shot,if=buff.thrill_of_the_hunt.react&focus>35&cast_regen<=focus.deficit|dot.serpent_sting.remains<=5|target.time_to_die<4.5
 actions.single+=/glaive_toss
 actions.single+=/powershot
 actions.single+=/barrage
-actions.single+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&focus+14+8*(1+buff.steady_focus.value)<80
+# Cast a second shot for steady focus if that won't cap us.
+actions.single+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&(14+cast_regen)<=focus.deficit<80
 actions.single+=/arcane_shot,if=focus>=70|talent.focusing_shot.enabled
 actions.single+=/focusing_shot
 actions.single+=/cobra_shot
@@ -56,10 +57,10 @@ actions.aoe+=/black_arrow,if=!ticking
 actions.aoe+=/explosive_trap,if=dot.explosive_trap.remains<=5
 actions.aoe+=/a_murder_of_crows
 actions.aoe+=/dire_beast
-actions.aoe+=/multishot,if=buff.thrill_of_the_hunt.react&focus>50&focus.time_to_max<=gcd|dot.serpent_sting.remains<=5|target.time_to_die<4.5
+actions.aoe+=/multishot,if=buff.thrill_of_the_hunt.react&focus>50&cast_regen<=focus.deficit|dot.serpent_sting.remains<=5|target.time_to_die<4.5
 actions.aoe+=/glaive_toss
 actions.aoe+=/powershot
-actions.aoe+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&focus+14+8*(1+buff.steady_focus.value)<80
+actions.aoe+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&focus+14+cast_regen<80
 actions.aoe+=/multishot,if=focus>=70|talent.focusing_shot.enabled
 actions.aoe+=/focusing_shot
 actions.aoe+=/cobra_shot

@@ -466,7 +466,7 @@ public:
 
   virtual double cast_regen() const
   {    
-    double cast_seconds = execute_time().total_seconds();
+    double cast_seconds = ab::execute_time().total_seconds();
     double sf_seconds = std::min( cast_seconds, p() -> buffs.steady_focus -> remains().total_seconds() );
     double regen = p() -> focus_regen_per_second();
     return ( regen * cast_seconds ) + ( regen * p() -> buffs.steady_focus -> current_value * sf_seconds );
@@ -3741,7 +3741,7 @@ void hunter_t::apl_bm()
   default_list -> add_action( this, "Kill Shot","if=focus.time_to_max>gcd");
   default_list -> add_action( this, "Kill Command");
   default_list -> add_talent( this, "Focusing Shot", "if=focus<50");
-  default_list -> add_action( this, "Cobra Shot", "if=buff.pre_steady_focus.up&focus+14+18*(1+buff.steady_focus.value)<120" );
+  default_list -> add_action( this, "Cobra Shot", "if=buff.pre_steady_focus.up&(14+cast_regen)<=focus.deficit", "Cast a second shot for steady focus if that won't cap us." );
   default_list -> add_talent( this, "Glaive Toss");
   default_list -> add_talent( this, "Barrage");
   default_list -> add_talent( this, "Powershot", "if=focus.time_to_max>cast_time");
@@ -3827,11 +3827,11 @@ void hunter_t::apl_surv()
   single_target -> add_action( this, "Black Arrow", "if=!ticking" );
   single_target -> add_talent( this, "A Murder of Crows" );
   single_target -> add_talent( this, "Dire Beast" );
-  single_target -> add_action( this, "Arcane Shot", "if=buff.thrill_of_the_hunt.react&focus>35&focus.time_to_max<=gcd|dot.serpent_sting.remains<=5|target.time_to_die<4.5" );
+  single_target -> add_action( this, "Arcane Shot", "if=buff.thrill_of_the_hunt.react&focus>35&cast_regen<=focus.deficit|dot.serpent_sting.remains<=5|target.time_to_die<4.5" );
   single_target -> add_talent( this, "Glaive Toss" );
   single_target -> add_talent( this, "Powershot" );
   single_target -> add_talent( this, "Barrage" );
-  single_target -> add_action( this, "Cobra Shot", "if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&focus+14+8*(1+buff.steady_focus.value)<80" );
+  single_target -> add_action( this, "Cobra Shot", "if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&(14+cast_regen)<=focus.deficit<80", "Cast a second shot for steady focus if that won't cap us." );
   single_target -> add_action( this, "Arcane Shot", "if=focus>=70|talent.focusing_shot.enabled" );
   single_target -> add_talent( this, "Focusing Shot" );
   if ( level >= 81 )
@@ -3847,10 +3847,10 @@ void hunter_t::apl_surv()
   aoe -> add_action( this, "Explosive Trap", "if=dot.explosive_trap.remains<=5" );
   aoe -> add_talent( this, "A Murder of Crows" );
   aoe -> add_talent( this, "Dire Beast" );
-  aoe -> add_action( this, "Multi-shot", "if=buff.thrill_of_the_hunt.react&focus>50&focus.time_to_max<=gcd|dot.serpent_sting.remains<=5|target.time_to_die<4.5" );
+  aoe -> add_action( this, "Multi-shot", "if=buff.thrill_of_the_hunt.react&focus>50&cast_regen<=focus.deficit|dot.serpent_sting.remains<=5|target.time_to_die<4.5" );
   aoe -> add_talent( this, "Glaive Toss" );
   aoe -> add_talent( this, "Powershot" );
-  aoe -> add_action( this, "Cobra Shot", "if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&focus+14+8*(1+buff.steady_focus.value)<80" );
+  aoe -> add_action( this, "Cobra Shot", "if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&focus+14+cast_regen<80" );
   aoe -> add_action( this, "Multi-shot", "if=focus>=70|talent.focusing_shot.enabled" );
   aoe -> add_talent( this, "Focusing Shot" );
   if ( level >= 81 )
