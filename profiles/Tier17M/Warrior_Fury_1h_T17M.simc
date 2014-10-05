@@ -52,12 +52,10 @@ actions.single_target+=/siegebreaker
 actions.single_target+=/dragon_roar,if=buff.bloodbath.up|!talent.bloodbath.enabled
 actions.single_target+=/execute,if=buff.enrage.up|target.time_to_die<12|rage>60
 actions.single_target+=/raging_blow
-actions.single_target+=/wild_strike,if=buff.bloodsurge.up
-actions.single_target+=/whirlwind,if=buff.enrage.up&target.health.pct>20&!talent.unquenchable_thirst.enabled&rage<50
-actions.single_target+=/wild_strike,if=buff.enrage.up&target.health.pct>20
+actions.single_target+=/wild_strike,if=buff.bloodsurge.up|(buff.enrage.up&target.health.pct>20)
 actions.single_target+=/shockwave,if=!talent.unquenchable_thirst.enabled
 actions.single_target+=/impending_victory,if=!talent.unquenchable_thirst.enabled
-actions.single_target+=/bloodthirst,if=talent.unquenchable_thirst.enabled
+actions.single_target+=/bloodthirst
 
 actions.two_targets=bloodbath
 actions.two_targets+=/heroic_leap,if=buff.enrage.up

@@ -2896,6 +2896,7 @@ struct whirlwind_off_hand_t: public warrior_attack_t
     aoe = -1;
     melee_range = p -> spec.whirlwind -> effectN( 2 ).radius_max(); // 8 yard range.
     melee_range += p -> glyphs.wind_and_thunder -> effectN( 1 ).base_value(); // Increased by the glyph.
+    weapon_multiplier *= 1.0 + p -> spec.crazed_berserker -> effectN( 4 ).percent();
     weapon = &( p -> off_hand_weapon );
   }
 
@@ -2927,6 +2928,8 @@ struct whirlwind_t: public warrior_attack_t
     {
       oh_attack = new whirlwind_off_hand_t( p );
       add_child( oh_attack );
+      weapon_multiplier *= 1.0 + p -> spec.crazed_berserker -> effectN( 4 ).percent();
+      base_costs[RESOURCE_RAGE] += p -> spec.crazed_berserker -> effectN( 3 ).resource( RESOURCE_RAGE );
     }
     else
       weapon_multiplier *= 2;
@@ -4058,12 +4061,10 @@ void warrior_t::apl_fury()
   single_target -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   single_target -> add_action( this, "Execute", "if=buff.enrage.up|target.time_to_die<12|rage>60" );
   single_target -> add_action( this, "Raging Blow" );
-  single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up" );
-  single_target -> add_action( this, "Whirlwind", "if=buff.enrage.up&target.health.pct>20&!talent.unquenchable_thirst.enabled&rage<50" );
-  single_target -> add_action( this, "Wild Strike", "if=buff.enrage.up&target.health.pct>20" );
+  single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up|(buff.enrage.up&target.health.pct>20)" );
   single_target -> add_talent( this, "Shockwave", "if=!talent.unquenchable_thirst.enabled" );
   single_target -> add_talent( this, "Impending Victory", "if=!talent.unquenchable_thirst.enabled" );
-  single_target -> add_action( this, "Bloodthirst", "if=talent.unquenchable_thirst.enabled" );
+  single_target -> add_action( this, "Bloodthirst" );
 
   two_targets -> add_talent( this, "Bloodbath" );
   two_targets -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );

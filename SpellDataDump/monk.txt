@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18982)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18988)
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6178,9 +6178,9 @@ Effects          :
 #1 (id=220939)   : Unknown effect type (174) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Radius: 100 yards
 #2 (id=255132)   : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: -60 | Scaled Value: -60 | Misc Value: 127
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127
 #3 (id=255133)   : Apply Aura (6) | Modify Absorb% Done (421)
-                   Base Value: -60 | Scaled Value: -60
+                   Base Value: 0 | Scaled Value: 0
 Description      : Increases your healing and absorption done to yourself, based on Stamina and damage taken (before avoidance and mitigation) in the last 10 sec.
 
 Name             : Healer Level 90 Mana Fix (Passive) (id=158920) [Passive, Hidden] 

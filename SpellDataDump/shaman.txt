@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18982)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18988)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -5666,7 +5666,7 @@ Description      : Each target struck by your Chain Lightning or Lava Beam incre
 
 Name             : Improved Chain Lightning (id=157766) [Spell Family (11)] 
 Class            : Shaman
-Duration         : 10 seconds
+Duration         : 15 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5676,8 +5676,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=219988)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60
+#1 (id=219988)   : Apply Aura (6) | Unknown effect sub type (408)
+                   Base Value: 60 | Scaled Value: 60 | Trigger Spell: 61882
 Description      : $@spelldesc157765
 Tooltip          : Damage of your next Earthquake increased by $w1%.
 

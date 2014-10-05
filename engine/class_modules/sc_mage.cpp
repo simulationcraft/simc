@@ -5015,23 +5015,26 @@ void mage_t::apl_arcane()
   default_list -> add_talent( this, "Rune of Power",
                               "if=buff.rune_of_power.remains<cast_time" );
   default_list -> add_talent( this, "Mirror Image" );
+  default_list -> add_action( "call_action_list,name=init_crystal,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.up" );
+  default_list -> add_action( "call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=5" );
-  default_list -> add_action( "call_action_list,name=burn,if=time_to_die<mana.pct*0.3*spell_haste|((cooldown.evocation.remains<buff.arcane_power.remains|cooldown.evocation.remains<(mana.pct-40)*0.35*spell_haste)&mana.pct>40)" );
-  default_list -> add_action( "call_action_list,name=conserve,if=!cooldown.evocation.up" );
-  default_list -> add_action( this, "Evocation",
-                              "interrupt_if=mana.pct>92,if=mana.pct<65&time_to_die>10" );
+  default_list -> add_action( "call_action_list,name=burn,if=time_to_die<mana.pct*0.35*spell_haste|cooldown.evocation.remains<=buff.arcane_power.remains|cooldown.evocation.remains<=(mana.pct-40)*0.35*spell_haste" );
   default_list -> add_action( "call_action_list,name=conserve" );
 
 
-  init_crystal -> add_talent( this, "Prismatic Crystal",
-                              "if=buff.arcane_charge.stack=4",
+  init_crystal -> add_action( "call_action_list,name=conserve,if=buff.arcane_charge.stack<4",
                               "Conditions for initiating Prismatic Crystal" );
+  init_crystal -> add_talent( this, "Prismatic Crystal",
+                              "if=buff.arcane_charge.stack=4&cooldown.arcane_power.remains<0.5" );
+  init_crystal -> add_talent( this, "Prismatic Crystal",
+                              "if=glyph.arcane_power.enabled&buff.arcane_charge.stack=4&cooldown.arcane_power.remains>45" );
 
 
   crystal_sequence -> add_action( "call_action_list,name=cooldowns",
-                                  "Special actions while Prismatic Crystal is active" );
+                                  "Actions while Prismatic Crystal is active" );
   crystal_sequence -> add_talent( this, "Nether Tempest",
                                   "if=buff.arcane_charge.stack=4&!ticking&pet.prismatic_crystal.remains>8" );
+  crystal_sequence -> add_action( "call_action_list,name=burn" );
 
 
   cooldowns -> add_action( this, "Arcane Power",
@@ -5050,8 +5053,6 @@ void mage_t::apl_arcane()
 
   burn -> add_action( "call_action_list,name=cooldowns",
                       "High mana usage, \"Burn\" sequence" );
-  burn -> add_action( "call_action_list,name=init_crystal" );
-  burn -> add_action( "call_action_list,name=crystal_sequence" );
   burn -> add_action( this, "Arcane Missiles",
                       "if=buff.arcane_missiles.react=3" );
   burn -> add_action( this, "Arcane Missiles",
@@ -5062,17 +5063,23 @@ void mage_t::apl_arcane()
                       "cycle_targets=1,if=target!=prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))" );
   burn -> add_talent( this, "Arcane Orb",
                       "if=buff.arcane_charge.stack<4" );
+  burn -> add_talent( this, "Supernova",
+                      "if=current_target=prismatic_crystal" );
+  burn -> add_action( this, "Presence of Mind" );
   burn -> add_action( this, "Arcane Blast",
                       "if=buff.arcane_charge.stack=4&mana.pct>93" );
   burn -> add_action( this, "Arcane Missiles",
                       "if=buff.arcane_charge.stack=4" );
   burn -> add_talent( this, "Supernova",
                       "if=mana.pct<96" );
-  burn -> add_action( this, "Presence of Mind" );
+  burn -> add_action( "call_action_list,name=conserve,if=cooldown.evocation.duration-cooldown.evocation.remains<5",
+                      "APL hack for evocation interrupt" );
+  burn -> add_action( this, "Evocation",
+                      "interrupt_if=mana.pct>92,if=time_to_die>10&mana.pct<50" );
   burn -> add_action( this, "Arcane Blast" );
 
 
-  conserve -> add_action( "call_action_list,name=cooldowns,if=time_to_die<30|(buff.arcane_charge.stack=4&!(glyph.arcane_power.enabled&talent.prismatic_crystal.enabled)&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>15))",
+  conserve -> add_action( "call_action_list,name=cooldowns,if=time_to_die<30|(buff.arcane_charge.stack=4&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>15))",
                           "Low mana usage, \"Conserve\" sequence" );
   conserve -> add_action( this, "Arcane Missiles",
                           "if=buff.arcane_missiles.react=3|(talent.overpowered.enabled&buff.arcane_power.up&buff.arcane_power.remains<action.arcane_blast.execute_time)" );
@@ -5081,7 +5088,7 @@ void mage_t::apl_arcane()
   conserve -> add_talent( this, "Nether Tempest",
                           "cycle_targets=1,if=target!=prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))" );
   conserve -> add_talent( this, "Supernova",
-                          "if=time_to_die<8|charges=2" );
+                          "if=time_to_die<8|(charges=2&(buff.arcane_power.up|!cooldown.arcane_power.up)&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>5))" );
   conserve -> add_talent( this, "Arcane Orb",
                           "if=buff.arcane_charge.stack<2" );
   conserve -> add_action( this, "Arcane Blast",
@@ -5089,7 +5096,7 @@ void mage_t::apl_arcane()
   conserve -> add_action( this, "Arcane Missiles",
                           "if=buff.arcane_charge.stack=4&(!talent.overpowered.enabled|cooldown.arcane_power.remains>10*spell_haste)" );
   conserve -> add_talent( this, "Supernova",
-                          "if=mana.pct<96&(buff.arcane_missiles.stack<2|buff.arcane_charge.stack=4)&(buff.arcane_power.up|(charges=1&cooldown.arcane_power.remains>recharge_time))&(!talent.prismatic_crystal.enabled|current_target=prismatic_crystal|(charges=1&cooldown.prismatic_crystal.remains>recharge_time))" );
+                          "if=mana.pct<96&(buff.arcane_missiles.stack<2|buff.arcane_charge.stack=4)&(buff.arcane_power.up|(charges=1&cooldown.arcane_power.remains>recharge_time))&(!talent.prismatic_crystal.enabled|current_target=prismatic_crystal|(charges=1&cooldown.prismatic_crystal.remains>recharge_time+5))" );
   conserve -> add_talent( this, "Nether Tempest",
                           "cycle_targets=1,if=target!=prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<(10-3*talent.arcane_orb.enabled)*spell_haste))" );
   conserve -> add_action( this, "Arcane Barrage",
