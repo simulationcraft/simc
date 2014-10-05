@@ -106,8 +106,7 @@ public:
   }
 
   // Adjust timeline by dividing through divisor timeline
-  template <class A>
-  void adjust( const std::vector<A>& divisor_timeline )
+  void adjust( const std::vector<double>& divisor_timeline )
   {
 
     for ( size_t j = 0, size = std::min( data().size(), divisor_timeline.size() ); j < size; j++ )
@@ -336,4 +335,5 @@ public:
   size_t num_entries() const
   { return _num_entries; }
 };
+
 #endif // TIMELINE_HPP

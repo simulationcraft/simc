@@ -79,48 +79,6 @@ namespace std {using namespace tr1; }
 // Timeline
 #include "util/timeline.hpp"
 
-/* SimulationCraft timeline:
- * - data_type is double
- * - timespan_t add helper function
- */
-struct sc_timeline_t : public timeline_t
-{
-  typedef timeline_t base_t;
-  using timeline_t::add;
-  double bin_size;
-
-  sc_timeline_t() : timeline_t(), bin_size( 1.0 ) {}
-
-  // methods to modify/retrieve the bin size
-  void set_bin_size( double bin )
-  {
-    bin_size = bin;
-  }
-  double get_bin_size() const
-  {
-    return bin_size;
-  }
-
-  // Add 'value' at the corresponding time
-  void add( timespan_t current_time, double value )
-  { base_t::add( static_cast<size_t>( current_time.total_millis() / 1000 / bin_size ), value ); }
-
-  // Add 'value' at corresponding time, replacing existing entry if new value is larger
-  void add_max( timespan_t current_time, double new_value )
-  {
-    size_t index = static_cast<size_t>( current_time.total_millis() / 1000 / bin_size );
-    if ( data().size() == 0 || data().size() <= index )
-      add( current_time, new_value );
-    else if ( new_value > data().at( index ) )
-    {
-      add( current_time, new_value - data().at( index ) );
-    }
-  }
-
-  void build_derivative_timeline( sc_timeline_t& out ) const
-  { base_t::build_sliding_average_timeline( out, 20 ); }
-};
-
 // Random Number Generators
 #include "util/rng.hpp"
 
@@ -1085,6 +1043,53 @@ enum rppm_scale_e
   RPPM_HASTE,
   RPPM_SPELL_CRIT,
   RPPM_ATTACK_CRIT
+};
+
+/* SimulationCraft timeline:
+ * - data_type is double
+ * - timespan_t add helper function
+ */
+struct sc_timeline_t : public timeline_t
+{
+  typedef timeline_t base_t;
+  using timeline_t::add;
+  double bin_size;
+
+  sc_timeline_t() : timeline_t(), bin_size( 1.0 ) {}
+
+  // methods to modify/retrieve the bin size
+  void set_bin_size( double bin )
+  {
+    bin_size = bin;
+  }
+  double get_bin_size() const
+  {
+    return bin_size;
+  }
+
+  // Add 'value' at the corresponding time
+  void add( timespan_t current_time, double value )
+  { base_t::add( static_cast<size_t>( current_time.total_millis() / 1000 / bin_size ), value ); }
+
+  // Add 'value' at corresponding time, replacing existing entry if new value is larger
+  void add_max( timespan_t current_time, double new_value )
+  {
+    size_t index = static_cast<size_t>( current_time.total_millis() / 1000 / bin_size );
+    if ( data().size() == 0 || data().size() <= index )
+      add( current_time, new_value );
+    else if ( new_value > data().at( index ) )
+    {
+      add( current_time, new_value - data().at( index ) );
+    }
+  }
+
+  void adjust( sim_t& sim );
+
+  void build_derivative_timeline( sc_timeline_t& out ) const
+  { base_t::build_sliding_average_timeline( out, 20 ); }
+
+private:
+  static std::vector<double> build_divisor_timeline( const extended_sample_data_t& simulation_length, double bin_size );
 };
 
 // Cache Control ============================================================
@@ -2766,7 +2771,7 @@ public:
   std::vector<player_t*> players_by_name;
   std::vector<player_t*> targets_by_name;
   std::vector<std::string> id_dictionary;
-  std::vector<int> divisor_timeline;
+  std::map<double, std::vector<double> > divisor_timeline_cache;
   std::string output_file_str, html_file_str;
   std::string xml_file_str, xml_stylesheet_file_str;
   std::string reforge_plot_output_file_str;
@@ -4062,7 +4067,6 @@ struct player_collected_data_t
     sc_timeline_t timeline; // keeps only data per iteration
     sc_timeline_t timeline_normalized; // same as above, but normalized to current player health
     sc_timeline_t merged_timeline;
-    std::vector<int> divisor_timeline;
     bool collect; // whether we collect all this or not.
     health_changes_timeline_t() : previous_loss_level( 0.0 ), previous_gain_level( 0.0 ), collect( false ) {}
 
@@ -4082,19 +4086,6 @@ struct player_collected_data_t
       }
       else
         return timeline.get_bin_size();
-    }
-
-    void update_divisor( timespan_t sim_length )
-    {
-      int max_index = (int) ( sim_length.total_millis() / 1000 / get_bin_size() + 1 );
-      assert( max_index >= 0 );
-
-      // adjust the length if neccessary
-      if ( static_cast<size_t>( max_index ) > divisor_timeline.size() )
-        divisor_timeline.resize( max_index, 0 );
-
-      for ( int i = 0; i < max_index; i++ )
-        divisor_timeline[ i ] += 1;
     }
   };
 

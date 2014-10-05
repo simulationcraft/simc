@@ -1755,18 +1755,6 @@ void sim_t::analyze()
   simulation_length.analyze_all();
   if ( simulation_length.mean() == 0 ) return;
 
-  // divisor_timeline is necessary because not all iterations go the same length of time
-  int max_buckets = ( int ) simulation_length.max() + 1;
-  divisor_timeline.assign( max_buckets, 0 );
-
-  size_t num_timelines = simulation_length.data().size();
-  for ( size_t i = 0; i < num_timelines; i++ )
-  {
-    int last = ( int ) floor( simulation_length.data()[ i ] );
-    assert( last < ( int ) divisor_timeline.size() ); // We created it with max length
-    for ( int j = 0; j <= last; j++ ) divisor_timeline[ j ] += 1;
-  }
-
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> analyze();
 
@@ -2673,3 +2661,51 @@ void sim_t::toggle_pause()
   pause_mutex.unlock();
 }
 
+/* Build a divisor timeline vector appropriate to a given timeline
+ * bucket size, from given simulation length data.
+ */
+std::vector<double> sc_timeline_t::build_divisor_timeline( const extended_sample_data_t& simulation_length, double bin_size )
+{
+  std::vector<double> divisor_timeline;
+  // divisor_timeline is necessary because not all iterations go the same length of time
+  size_t max_buckets = static_cast<size_t>( ceil( simulation_length.max() / bin_size ) );
+  divisor_timeline.assign( max_buckets, 0.0 );
+
+  size_t num_timelines = simulation_length.data().size();
+  for ( size_t i = 0; i < num_timelines; i++ )
+  {
+    size_t last = static_cast<size_t>( floor( simulation_length.data()[ i ] / bin_size ) );
+    assert( last < divisor_timeline.size() ); // We created it with max length
+
+    // First add fully visited buckets.
+    for ( size_t j = 0; j < last; j++ )
+    {
+      divisor_timeline[ j ] += 1.0;
+    }
+
+    // Now add partial amount for the last incomplete bucket.
+    double remainder = simulation_length.data()[ i ] / bin_size - last;
+    if ( remainder > 0.0 )
+    {
+      divisor_timeline[ last ] += remainder;
+    }
+  }
+
+  return divisor_timeline;
+}
+/* This function adjusts the timeline by a appropriate divisor_timeline.
+ * Each bucket of the timeline is divided by the "amount of simulation time spent in that bucket"
+ */
+void sc_timeline_t::adjust( sim_t& sim )
+{
+  // Check if we have divisor timeline cached
+  std::map<double, std::vector<double> >::iterator it = sim.divisor_timeline_cache.find( bin_size );
+  if ( it == sim.divisor_timeline_cache.end() )
+  {
+    // If we don't have a cached divisor timeline, build one
+    sim.divisor_timeline_cache[ bin_size ] = build_divisor_timeline( sim.simulation_length, bin_size );
+  }
+
+  // Do the timeline adjustement
+  base_t::adjust( sim.divisor_timeline_cache[ bin_size ] );
+}

@@ -1110,7 +1110,7 @@ void buff_t::analyze()
 {
 
   if ( sim -> buff_uptime_timeline )
-    uptime_array.adjust( sim -> divisor_timeline );
+    uptime_array.adjust( *sim );
 }
 
 // buff_t::find =============================================================

@@ -3237,7 +3237,6 @@ void player_t::datacollection_end()
     collected_data.health_changes.timeline_normalized.add( sim -> current_time, 0.0 );
     collected_data.health_changes_tmi.timeline.add( sim -> current_time, 0.0 );
     collected_data.health_changes_tmi.timeline_normalized.add( sim -> current_time, 0.0 );
-    collected_data.health_changes.update_divisor( sim -> current_time );
   }
   collected_data.collect_data( *this );
 
@@ -9541,7 +9540,7 @@ void player_collected_data_t::analyze( const player_t& p )
   dpse.analyze_all();
   dmg_taken.analyze_all();
   dtps.analyze_all();
-  timeline_dmg_taken.adjust( p.sim -> divisor_timeline );
+  timeline_dmg_taken.adjust( *p.sim );
   // Heal
   heal.analyze_all();
   compound_heal.analyze_all();
@@ -9549,7 +9548,7 @@ void player_collected_data_t::analyze( const player_t& p )
   hpse.analyze_all();
   heal_taken.analyze_all();
   htps.analyze_all();
-  timeline_healing_taken.adjust( p.sim -> divisor_timeline );
+  timeline_healing_taken.adjust( *p.sim );
   // Absorb
   absorb.analyze_all();
   compound_absorb.analyze_all();
@@ -9564,19 +9563,19 @@ void player_collected_data_t::analyze( const player_t& p )
 
   for ( size_t i = 0; i <  resource_timelines.size(); ++i )
   {
-    resource_timelines[ i ].timeline.adjust( p.sim -> divisor_timeline );
+    resource_timelines[ i ].timeline.adjust( *p.sim );
   }
 
   for ( size_t i = 0; i < stat_timelines.size(); ++i )
   {
-    stat_timelines[ i ].timeline.adjust( p.sim -> divisor_timeline );
+    stat_timelines[ i ].timeline.adjust( *p.sim );
   }
 
   // health changes need their own divisor
-  health_changes.merged_timeline.adjust( health_changes.divisor_timeline );
-  health_changes_tmi.merged_timeline.adjust( health_changes.divisor_timeline );
+  health_changes.merged_timeline.adjust( *p.sim );
+  health_changes_tmi.merged_timeline.adjust( *p.sim );
 
-  resolve_timeline.merged_timeline.adjust( p.sim -> divisor_timeline );
+  resolve_timeline.merged_timeline.adjust( *p.sim );
 }
 
 //This is pretty much only useful for dev debugging at this point, would need to modify to make it useful to users
@@ -9994,13 +9993,13 @@ struct manager_t::update_event_t final : public event_t
 };
 
 manager_t::manager_t( player_t& p ) :
+    resolve( spell_data_t::not_found() ),
     _player( p ),
     _update_event( nullptr ),
     _init( false ),
     _started( false ),
-    _diminishing_return_list( new diminishing_returns_list_t() ),
     _damage_list( new damage_event_list_t() ),
-    resolve( spell_data_t::not_found() )
+    _diminishing_return_list( new diminishing_returns_list_t() )
 {
 }
 
