@@ -951,6 +951,10 @@ public:
     if ( o() -> sets.has_set_bonus( SET_MELEE, T16, B4 ) )
       m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> stack() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
 
+    // from Nimox
+    if ( buffs.tier17_4pc_bm -> up() && bugs )
+      m *= 2.0;
+
     // Pet combat experience
     if ( o() -> talents.adaptation -> ok() )
       m *= 1.0 + specs.adaptation_combat_experience -> effectN( 2 ).percent();
@@ -3090,7 +3094,6 @@ struct kill_command_t: public hunter_spell_t
     if ( !p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T17, B2 ) )
       return false;
 
-    // from Nimox
     bool procced = rng().roll( p() -> sets.set( HUNTER_BEAST_MASTERY, T17, B2 ) -> proc_chance() );
     if ( procced )
     {
@@ -3513,7 +3516,6 @@ void hunter_t::create_buffs()
   buffs.tier16_4pc_bm_brutal_kinship = buff_creator_t( this, 144670, "tier16_4pc_brutal_kinship" )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  // from Nimox
   buffs.heavy_shot   = buff_creator_t( this, 167165, "heavy_shot" )
     .default_value( find_spell( 167165 ) -> effectN( 1 ).percent() )
     .refresh_behavior( BUFF_REFRESH_EXTEND );
