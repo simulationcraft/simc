@@ -40,8 +40,8 @@ actions+=/potion,name=draenic_armor,if=buff.shield_of_the_righteous.down&buff.se
 # Standard survival priority list starts here
 # This section covers off-GCD spells.
 actions+=/holy_avenger
-actions+=/divine_protection,if=buff.seraphim.down
-actions+=/seraphim,if=buff.divine_protection.down&cooldown.divine_protection.remains>0
+actions+=/seraphim
+actions+=/divine_protection,if=time<5|!talent.seraphim.enabled|(buff.seraphim.down&cooldown.seraphim.remains>5)
 actions+=/guardian_of_ancient_kings,if=time<5|(buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down)
 actions+=/ardent_defender,if=time<5|(buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down)
 actions+=/eternal_flame,if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react|buff.bastion_of_power.react)
@@ -54,15 +54,17 @@ actions+=/seal_of_truth,if=talent.empowered_seals.enabled&!seal.truth&buff.uther
 actions+=/crusader_strike
 actions+=/judgment
 actions+=/holy_wrath,if=talent.sanctified_wrath.enabled
+actions+=/avengers_shield,if=buff.grand_crusader.react
+actions+=/sacred_shield,if=target.dot.sacred_shield.remains<2
+actions+=/holy_wrath,if=glyph.final_wrath.enabled&target.health.pct<=20
 actions+=/avengers_shield
 actions+=/execution_sentence
-actions+=/hammer_of_wrath
 actions+=/lights_hammer
-actions+=/holy_wrath,if=glyph.final_wrath.enabled&target.health.pct<=20
-actions+=/sacred_shield,if=target.dot.sacred_shield.remains<2
+actions+=/holy_prism
+actions+=/hammer_of_wrath
+actions+=/sacred_shield,if=target.dot.sacred_shield.remains<8
 actions+=/consecration,if=target.debuff.flying.down&!ticking
 actions+=/holy_wrath
-actions+=/holy_prism
 actions+=/seal_of_insight,if=talent.empowered_seals.enabled&!seal.insight&buff.uthers_insight.remains<=buff.liadrins_righteousness.remains&buff.uthers_insight.remains<=buff.maraads_truth.remains
 actions+=/seal_of_righteousness,if=talent.empowered_seals.enabled&!seal.righteousness&buff.liadrins_righteousness.remains<=buff.uthers_insight.remains&buff.liadrins_righteousness.remains<=buff.maraads_truth.remains
 actions+=/seal_of_truth,if=talent.empowered_seals.enabled&!seal.truth&buff.maraads_truth.remains<buff.uthers_insight.remains&buff.maraads_truth.remains<buff.liadrins_righteousness.remains
