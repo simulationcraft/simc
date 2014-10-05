@@ -8434,7 +8434,7 @@ void player_t::create_options()
     opt_null()
   };
 
-  option_t::copy( options, player_options );
+  opts::copy( options, player_options );
 }
 
 // player_t::create =========================================================

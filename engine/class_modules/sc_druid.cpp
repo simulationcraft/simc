@@ -6825,7 +6825,7 @@ void druid_t::create_options()
     opt_null()
   };
 
-  option_t::copy( options, druid_options );
+  opts::copy( options, druid_options );
 }
 
 // druid_t::create_profile ==================================================

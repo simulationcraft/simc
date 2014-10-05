@@ -4032,7 +4032,7 @@ void hunter_t::create_options()
     opt_null()
   };
 
-  option_t::copy( options, hunter_options );
+  opts::copy( options, hunter_options );
 }
 
 // hunter_t::create_profile =================================================

@@ -7266,7 +7266,7 @@ void death_knight_t::create_options()
     opt_null()
   };
 
-  option_t::copy( options, death_knight_options );
+  opts::copy( options, death_knight_options );
 }
 
 // death_knight_t::convert_hybrid_stat ==============================================

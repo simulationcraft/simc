@@ -539,7 +539,7 @@ void scaling_t::create_options()
     opt_null()
   };
 
-  option_t::copy( sim -> options, scaling_options );
+  opts::copy( sim -> options, scaling_options );
 }
 
 // scaling_t::has_scale_factors =============================================

@@ -5621,7 +5621,7 @@ void warlock_t::create_options()
     opt_null()
   };
 
-  option_t::copy( options, warlock_options );
+  opts::copy( options, warlock_options );
 }
 
 

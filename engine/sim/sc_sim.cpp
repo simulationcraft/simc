@@ -278,7 +278,7 @@ public:
     };
 
     std::vector<option_t> options;
-    option_t::merge( options, base_options, client_options );
+    opts::merge( options, base_options, client_options );
 
     names = util::string_split( input, "," );
 
@@ -288,7 +288,7 @@ public:
     {
       if ( names[ i ].find( '=' ) != std::string::npos )
       {
-        option_t::parse( sim, context.c_str(), options, names[ i ] );
+        opts::parse( sim, context.c_str(), options, names[ i ] );
       }
       else
       {
@@ -2392,7 +2392,7 @@ void sim_t::create_options()
     opt_null()
   };
 
-  option_t::copy( options, global_options );
+  opts::copy( options, global_options );
 }
 
 // sim_t::parse_option ======================================================
@@ -2401,10 +2401,10 @@ bool sim_t::parse_option( const std::string& name,
                           const std::string& value )
 {
   if ( active_player )
-    if ( option_t::parse( this, active_player -> options, name, value ) )
+    if ( opts::parse( this, active_player -> options, name, value ) )
       return true;
 
-  if ( option_t::parse( this, options, name, value ) )
+  if ( opts::parse( this, options, name, value ) )
     return true;
 
   return false;
@@ -2456,7 +2456,7 @@ void sim_t::setup( sim_control_t* c )
       s << "Unable to locate player '" << o.scope << "' for option '" << o.name << "' with value '" << o.value << "'";
       throw std::invalid_argument( s.str() );
     }
-    if (!option_t::parse(this, p->options, o.name, o.value))
+    if ( ! opts::parse(this, p->options, o.name, o.value))
     {
       std::stringstream s;
       s << "Unable to parse option '" << o.name << "' with value '" << o.value

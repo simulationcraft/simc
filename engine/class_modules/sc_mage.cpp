@@ -1118,7 +1118,7 @@ public:
       opt_null()
     };
     std::vector<option_t> merged_options;
-    spell_t::parse_options( option_t::merge( merged_options, options, base_options ), options_str );
+    spell_t::parse_options( opts::merge( merged_options, options, base_options ), options_str );
   }
 
   virtual bool ready()

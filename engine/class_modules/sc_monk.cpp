@@ -4082,7 +4082,7 @@ void monk_t::create_options()
     opt_null()
   };
 
-  option_t::copy( options, monk_options );
+  opts::copy( options, monk_options );
 }
 
 // monk_t::copy_from =========================================================

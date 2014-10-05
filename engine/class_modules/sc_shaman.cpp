@@ -4373,7 +4373,7 @@ void shaman_t::create_options()
     opt_null()
   };
 
-  option_t::copy( options, shaman_options );
+  opts::copy( options, shaman_options );
 }
 
 // shaman_t::create_action  =================================================

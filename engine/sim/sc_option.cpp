@@ -51,17 +51,17 @@ inline void check_boundaries( bool clamp, std::string name, T v, double min, dou
 
 // option_t::print ==========================================================
 
-std::ostream& operator<<( std::ostream& stream, const option_t& opt )
+std::ostream& operator<<( std::ostream& stream, const new_option_t& opt )
 {
-  switch ( opt.type )
+/*  switch ( opt -> type )
   {
-  case option_t::STRING:
+  case STRING:
   {
     const std::string& v = *static_cast<std::string*>( opt.data.address );
     stream << opt.name << "=" << v.c_str() << "\n";
   }
   break;
-  case option_t::INT_BOOL:
+  case INT_BOOL:
   {
     int v = *static_cast<int*>( opt.data.address );
     stream << opt.name << "=" << (v ? "true" : "false") << "\n";
@@ -118,22 +118,22 @@ std::ostream& operator<<( std::ostream& stream, const option_t& opt )
   }
   break;
   default: break;
-  }
+  }*/
   return stream;
 }
 
 // option_t::copy ===========================================================
 
-void option_t::copy( std::vector<option_t>& opt_vector,
+void opts::copy( std::vector<option_t>& opt_vector,
                      const option_t*        opt_array )
 {
-  while ( opt_array -> name )
+  while ( (*opt_array) -> name )
     opt_vector.push_back( *opt_array++ );
 }
 
 // option_t::parse ==========================================================
 
-bool option_t::parse( sim_t*             sim,
+bool new_option_t::parse( sim_t*             sim,
                       const std::string& n,
                       const std::string& v )
 {
@@ -232,7 +232,7 @@ bool option_t::parse( sim_t*             sim,
 
 // option_t::parse ==========================================================
 
-bool option_t::parse( sim_t*                 sim,
+bool opts::parse( sim_t*                 sim,
                       std::vector<option_t>& options,
                       const std::string&     name,
                       const std::string&     value )
@@ -240,7 +240,7 @@ bool option_t::parse( sim_t*                 sim,
   size_t num_options = options.size();
 
   for ( size_t i = 0; i < num_options; i++ )
-    if ( options[ i ].parse( sim, name, value ) )
+    if ( options[ i ] -> parse( sim, name, value ) )
       return true;
 
   return false;
@@ -248,7 +248,7 @@ bool option_t::parse( sim_t*                 sim,
 
 // option_t::parse ==========================================================
 
-void option_t::parse( sim_t*                 sim,
+void opts::parse( sim_t*                 sim,
                       const char*            context,
                       std::vector<option_t>& options,
                       const std::vector<std::string>& splits )
@@ -268,7 +268,7 @@ void option_t::parse( sim_t*                 sim,
     std::string n = s.substr( 0, index );
     std::string v = s.substr( index + 1 );
 
-    if ( ! option_t::parse( sim, options, n, v ) )
+    if ( ! opts::parse( sim, options, n, v ) )
     {
       std::stringstream stream;
       stream << context << ": Unexpected parameter '" << n << "'.";
@@ -279,47 +279,47 @@ void option_t::parse( sim_t*                 sim,
 
 // option_t::parse ==========================================================
 
-void option_t::parse( sim_t*                 sim,
+void opts::parse( sim_t*                 sim,
                       const char*            context,
                       std::vector<option_t>& options,
                       const std::string&     options_str )
 {
-  option_t::parse( sim, context, options, util::string_split( options_str, "," ) );
+  opts::parse( sim, context, options, util::string_split( options_str, "," ) );
 }
 
 // option_t::parse ==========================================================
 
-void option_t::parse( sim_t*             sim,
+void opts::parse( sim_t*             sim,
                       const char*        context,
                       const option_t*    options,
                       const std::string& options_str )
 {
   std::vector<option_t> options_vector;
-  option_t::copy( options_vector, options );
+  opts::copy( options_vector, options );
   parse( sim, context, options_vector, options_str );
 }
 
 // option_t::parse ==========================================================
 
-void option_t::parse( sim_t*             sim,
+void opts::parse( sim_t*             sim,
                       const char*        context,
                       const option_t*    options,
                       const std::vector<std::string>& strings )
 {
   std::vector<option_t> options_vector;
-  option_t::copy( options_vector, options );
+  opts::copy( options_vector, options );
   parse( sim, context, options_vector, strings );
 }
 
 // option_t::merge ==========================================================
 
-option_t* option_t::merge( std::vector<option_t>& merged_options,
+option_t* opts::merge( std::vector<option_t>& merged_options,
                            const option_t*        options1,
                            const option_t*        options2 )
 {
   merged_options.clear();
-  if ( options1 ) while ( options1 && options1 -> name ) merged_options.push_back( *options1++ );
-  if ( options2 ) while ( options2 && options2 -> name ) merged_options.push_back( *options2++ );
+  if ( options1 ) while ( options1 && (*options1) -> name ) merged_options.push_back( *options1++ );
+  if ( options2 ) while ( options2 && (*options2) -> name ) merged_options.push_back( *options2++ );
   merged_options.push_back( opt_null() );
   return &merged_options[ 0 ];
 }

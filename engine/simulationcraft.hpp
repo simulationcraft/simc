@@ -112,7 +112,6 @@ struct haste_buff_t;
 struct heal_t;
 struct item_t;
 struct module_t;
-struct option_t;
 struct pet_t;
 struct player_t;
 struct plot_t;
@@ -1106,13 +1105,13 @@ struct stat_data_t
 
 // Options ==================================================================
 
-struct option_t
+
+struct new_option_t
 {
 public:
   typedef bool function_t( sim_t* sim, const std::string& name, const std::string& value );
   typedef std::map<std::string, std::string> map_t;
   typedef std::vector<std::string> list_t;
-
   enum option_e
   {
     NONE = 0,
@@ -1129,8 +1128,6 @@ public:
     FUNC,          // function_t*
     DEPRECATED
   };
-
-private:
   const char* name;
   option_e type;
   bool clamp;
@@ -1146,81 +1143,86 @@ private:
   } data;
 
 public:
-  option_t( const char* n, option_e t, void* a ) :
+  new_option_t( const char* n, option_e t, void* a ) :
     name( n ), type( t ), clamp(), min(), max(), data( a ) {}
-  option_t( const char* n, option_e t, void* a, double min, double max ) :
+  new_option_t( const char* n, option_e t, void* a, double min, double max ) :
     name( n ), type( t ), clamp( true ), min( min ), max( max ), data( a ) {}
-  option_t( const char* n, const char* str ) : name( n ), type( DEPRECATED ), clamp(), min(),max(), data( str ) {}
-  option_t( const char* n, function_t* f ) : name( n ), type( FUNC ), clamp(), min(),max(), data( f ) {}
+  new_option_t( const char* n, const char* str ) : name( n ), type( DEPRECATED ), clamp(), min(),max(), data( str ) {}
+  new_option_t( const char* n, function_t* f ) : name( n ), type( FUNC ), clamp(), min(),max(), data( f ) {}
 
   const char* name_cstr() const { return name; }
 
-  friend std::ostream& operator<<( std::ostream& stream, const option_t& opt );
+  friend std::ostream& operator<<( std::ostream& stream, const new_option_t& opt );
   bool parse( sim_t*, const std::string& name, const std::string& value );
 
-  static void copy( std::vector<option_t>& opt_vector, const option_t* opt_array );
-  static bool parse( sim_t*, std::vector<option_t>&, const std::string& name, const std::string& value );
-  static void parse( sim_t*, const char* context, std::vector<option_t>&, const std::string& options_str );
-  static void parse( sim_t*, const char* context, std::vector<option_t>&, const std::vector<std::string>& strings );
-  static void parse( sim_t*, const char* context, const option_t*,        const std::vector<std::string>& strings );
-  static void parse( sim_t*, const char* context, const option_t*,        const std::string& options_str );
-  static bool parse_file( sim_t*, FILE* file );
-  static bool parse_line( sim_t*, const char* line );
-  static bool parse_token( sim_t*, const std::string& token );
-  static option_t* merge( std::vector<option_t>& out, const option_t* in1, const option_t* in2 );
 };
+
+typedef new_option_t* option_t;
+namespace opts {
+void copy( std::vector<option_t>& opt_vector, const option_t* opt_array );
+bool parse( sim_t*, std::vector<option_t>&, const std::string& name, const std::string& value );
+void parse( sim_t*, const char* context, std::vector<option_t>&, const std::string& options_str );
+void parse( sim_t*, const char* context, std::vector<option_t>&, const std::vector<std::string>& strings );
+void parse( sim_t*, const char* context, const option_t*,        const std::vector<std::string>& strings );
+void parse( sim_t*, const char* context, const option_t*,        const std::string& options_str );
+bool parse_file( sim_t*, FILE* file );
+bool parse_line( sim_t*, const char* line );
+bool parse_token( sim_t*, const std::string& token );
+option_t* merge( std::vector<option_t>& out, const option_t* in1, const option_t* in2 );
+
+} // opts
 
 
 inline option_t opt_string( const char* n, std::string& v )
-{ return option_t( n, option_t::STRING, &v ); }
+{ return new new_option_t( n, new_option_t::STRING, &v ); }
 
 inline option_t opt_append( const char* n, std::string& v )
-{ return option_t( n, option_t::APPEND, &v ); }
+{ return new new_option_t( n, new_option_t::APPEND, &v ); }
 
 inline option_t opt_bool( const char* n, int& v )
-{ return option_t( n, option_t::INT_BOOL, &v ); }
+{ return new new_option_t( n, new_option_t::INT_BOOL, &v ); }
 
 inline option_t opt_bool( const char* n, bool& v )
-{ return option_t( n, option_t::BOOL, &v ); }
+{ return new new_option_t( n, new_option_t::BOOL, &v ); }
 
 inline option_t opt_int( const char* n, int& v )
-{ return option_t( n, option_t::INT, &v ); }
+{ return new new_option_t( n, new_option_t::INT, &v ); }
 
 inline option_t opt_int( const char* n, int& v, int min, int max )
-{ return option_t( n, option_t::INT, &v, min, max ); }
+{ return new new_option_t( n, new_option_t::INT, &v, min, max ); }
 
 inline option_t opt_uint( const char* n, unsigned& v )
-{ return option_t( n, option_t::UINT, &v ); }
+{ return new new_option_t( n, new_option_t::UINT, &v ); }
 
 inline option_t opt_uint( const char* n, unsigned& v, unsigned min, unsigned max )
-{ return option_t( n, option_t::UINT, &v, min, max ); }
+{ return new new_option_t( n, new_option_t::UINT, &v, min, max ); }
 
 inline option_t opt_float( const char* n, double& v )
-{ return option_t( n, option_t::FLT, &v ); }
+{ return new new_option_t( n, new_option_t::FLT, &v ); }
 
 inline option_t opt_float( const char* n, double& v, double min, double max )
-{ return option_t( n, option_t::FLT, &v, min, max ); }
+{ return new new_option_t( n, new_option_t::FLT, &v, min, max ); }
 
 inline option_t opt_timespan( const char* n, timespan_t& v )
-{ return option_t( n, option_t::TIMESPAN, &v ); }
+{ return new new_option_t( n, new_option_t::TIMESPAN, &v ); }
 
 inline option_t opt_timespan( const char* n, timespan_t& v, timespan_t min, timespan_t max )
-{ return option_t( n, option_t::TIMESPAN, &v, min.total_seconds(), max.total_seconds() ); }
+{ return new new_option_t( n, new_option_t::TIMESPAN, &v, min.total_seconds(), max.total_seconds() ); }
 
-inline option_t opt_list( const char* n, option_t::list_t& v )
-{ return option_t( n, option_t::LIST, &v ); }
+inline option_t opt_list( const char* n, new_option_t::list_t& v )
+{ return new new_option_t( n, new_option_t::LIST, &v ); }
 
-inline option_t opt_map( const char* n, option_t::map_t& v )
-{ return option_t( n, option_t::MAP, &v ); }
+inline option_t opt_map( const char* n, new_option_t::map_t& v )
+{ return new new_option_t( n, new_option_t::MAP, &v ); }
 
-inline option_t opt_func( const char* name, option_t::function_t& f )
-{ return option_t( name, f ); }
+inline option_t opt_func( const char* name, new_option_t::function_t& f )
+{ return new new_option_t( name, f ); }
 
 inline option_t opt_deprecated( const char* n, const char* r )
-{ return option_t( n, r ); }
+{ return new new_option_t( n, r ); }
 
 inline option_t opt_null()
-{ return option_t( 0, option_t::NONE, ( void* )0 ); }
+{ return new new_option_t( 0, new_option_t::NONE, ( void* )0 ); }
 
 // Talent Translation =======================================================
 

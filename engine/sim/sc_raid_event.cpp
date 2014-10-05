@@ -834,11 +834,11 @@ void raid_event_t::parse_options( option_t*          options,
   };
 
   std::vector<option_t> merged_options;
-  option_t::merge( merged_options, options, base_options );
+  opts::merge( merged_options, options, base_options );
 
   try
   {
-    option_t::parse( sim, name_str.c_str(), merged_options, options_str );
+    opts::parse( sim, name_str.c_str(), merged_options, options_str );
   }
   catch( const std::exception& e )
   {

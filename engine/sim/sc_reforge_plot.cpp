@@ -342,5 +342,5 @@ void reforge_plot_t::create_options()
     opt_null()
   };
 
-  option_t::copy( sim -> options, plot_options );
+  opts::copy( sim -> options, plot_options );
 }

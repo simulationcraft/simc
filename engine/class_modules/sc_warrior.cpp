@@ -5351,7 +5351,7 @@ void warrior_t::create_options()
     opt_null()
   };
 
-  option_t::copy( options, warrior_options );
+  opts::copy( options, warrior_options );
 }
 
 // Specialized attacks =========================================================

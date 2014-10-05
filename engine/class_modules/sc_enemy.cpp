@@ -147,7 +147,7 @@ struct enemy_action_t : public ACTION_TYPE
 
     for ( i = 0; i < options.size(); i++ )
     {
-      if ( options[ i ].name_cstr() && util::str_compare_ci( options[ i ].name_cstr(), new_option.name_cstr() ) )
+      if ( options[ i ] -> name_cstr() && util::str_compare_ci( options[ i ] -> name_cstr(), new_option -> name_cstr() ) )
       {
         options[ i ] = new_option;
         break;
@@ -1203,7 +1203,7 @@ void enemy_t::create_options()
     opt_null()
   };
 
-  option_t::copy( sim -> options, target_options );
+  opts::copy( sim -> options, target_options );
 
   // the next part handles actor-specific options for enemies
   player_t::create_options();
@@ -1216,7 +1216,7 @@ void enemy_t::create_options()
     opt_null()
   };
 
-  option_t::copy( options, enemy_options );
+  opts::copy( options, enemy_options );
 
 }
 

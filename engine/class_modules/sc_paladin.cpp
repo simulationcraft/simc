@@ -6353,7 +6353,7 @@ void paladin_t::create_options()
     opt_null()
   };
 
-  option_t::copy( options, paladin_options );
+  opts::copy( options, paladin_options );
 }
 
 // paladin_t::combat_begin ==================================================

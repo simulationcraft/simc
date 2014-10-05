@@ -1064,7 +1064,7 @@ public:
     };
 
     std::vector<option_t> merged_options;
-    ab::parse_options( option_t::merge( merged_options, options, base_options ), options_str );
+    ab::parse_options( opts::merge( merged_options, options, base_options ), options_str );
   }
 
   virtual void update_ready( timespan_t cd_duration ) override
@@ -6547,7 +6547,7 @@ void priest_t::create_options()
     opt_null()
   };
 
-  option_t::copy( base_t::options, priest_options );
+  opts::copy( base_t::options, priest_options );
 }
 
 // priest_t::create_profile =================================================
