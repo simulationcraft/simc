@@ -1079,6 +1079,11 @@ void warrior_attack_t::impact( action_state_t* s )
 
   if ( s -> result_amount > 0 )
   {
+    if ( p() -> buff.sweeping_strikes -> up() )
+    {
+      if ( result_is_multistrike( s -> result) && !aoe )
+        trigger_sweeping_strikes( s );
+    }
     if ( ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) ) )
     {
       if ( p() -> buff.bloodbath -> up() )
@@ -1102,7 +1107,6 @@ void warrior_attack_t::impact( action_state_t* s )
     }
   }
 }
-
 
 // Melee Attack =============================================================
 
@@ -4113,7 +4117,7 @@ void warrior_t::apl_arms()
   for ( int i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>1&buff.ravager.up)" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))" );
   }
 
   if ( sim -> allow_potions )
@@ -4126,7 +4130,7 @@ void warrior_t::apl_arms()
 
   default_list -> add_action( this, "Recklessness", "if=(target.time_to_die>190|target.health.pct<20)&(!talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)|buff.bloodbath.up)|target.time_to_die<=10",
                               "This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'" );
-  default_list -> add_talent( this, "Bloodbath", "if=(active_enemies=1&cooldown.colossus_smash.remains<5)|(active_enemies>=2&buff.ravager.up)|target.time_to_die<=20" );
+  default_list -> add_talent( this, "Bloodbath", "if=(active_enemies=1&cooldown.colossus_smash.remains<5)|target.time_to_die<=20" );
   default_list -> add_talent( this, "Avatar", "if=buff.recklessness.up|target.time_to_die<=25" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -4153,7 +4157,7 @@ void warrior_t::apl_arms()
   aoe -> add_action( this, "Sweeping Strikes" );
   aoe -> add_action( "heroic_charge" );
   aoe -> add_action( this, "Rend", "if=active_enemies<=4&ticks_remain<2" );
-  aoe -> add_talent( this, "Ravager" );
+  aoe -> add_talent( this, "Ravager", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   aoe -> add_action( this, "Colossus Smash" );
   aoe -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up" );
   aoe -> add_action( this, "Execute", "if=active_enemies<=3&((rage>60&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|target.time_to_die<5)" );

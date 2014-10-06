@@ -32,7 +32,7 @@ actions+=/auto_attack
 actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25
 # This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'
 actions+=/recklessness,if=(target.time_to_die>190|target.health.pct<20)&(!talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)|buff.bloodbath.up)|target.time_to_die<=10
-actions+=/bloodbath,if=(active_enemies=1&cooldown.colossus_smash.remains<5)|(active_enemies>=2&buff.ravager.up)|target.time_to_die<=20
+actions+=/bloodbath,if=(active_enemies=1&cooldown.colossus_smash.remains<5)|target.time_to_die<=20
 actions+=/avatar,if=buff.recklessness.up|target.time_to_die<=25
 actions+=/blood_fury,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
 actions+=/berserking,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
@@ -58,7 +58,7 @@ actions.single+=/shockwave
 actions.aoe=sweeping_strikes
 actions.aoe+=/heroic_charge
 actions.aoe+=/rend,if=active_enemies<=4&ticks_remain<2
-actions.aoe+=/ravager
+actions.aoe+=/ravager,if=buff.bloodbath.up|!talent.bloodbath.enabled
 actions.aoe+=/colossus_smash
 actions.aoe+=/dragon_roar,if=!debuff.colossus_smash.up
 actions.aoe+=/execute,if=active_enemies<=3&((rage>60&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|target.time_to_die<5)
