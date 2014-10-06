@@ -5194,15 +5194,16 @@ action_priority_list_t* player_t::get_action_priority_list( const std::string& n
   action_priority_list_t* a = find_action_priority_list( name );
   if ( ! a )
   {
-    a = new action_priority_list_t( name, this );
-    a -> action_list_comment_str = comment;
-    a -> internal_id = as<unsigned>( action_list_id_++ );
-    a -> internal_id_mask = 1ULL << ( a -> internal_id );
     if ( action_list_id_ == 64 )
     {
       sim -> errorf( "%s maximum number of action lists is 64", name_str.c_str() );
       sim -> cancel();
     }
+
+    a = new action_priority_list_t( name, this );
+    a -> action_list_comment_str = comment;
+    a -> internal_id = action_list_id_++;
+    a -> internal_id_mask = 1ULL << ( a -> internal_id );
 
     action_priority_list.push_back( a );
   }
