@@ -4361,7 +4361,8 @@ struct water_jet_t : public action_t
   {
     mage_t* m = debug_cast<mage_t*>( player );
     action -> queued = true;
-    m -> pets.water_elemental -> interrupt();
+    if( m -> pets.water_elemental -> executing )
+      m -> pets.water_elemental -> executing -> interrupt_action();
     action -> schedule_execute();
   }
 
