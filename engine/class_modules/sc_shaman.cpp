@@ -2887,6 +2887,7 @@ struct fire_nova_t : public shaman_spell_t
     may_crit = may_miss = callbacks = false;
     uses_eoe  = true;
     aoe       = -1;
+    uses_unleash_flame = true;
 
     impact_action = new fire_nova_explosion_t( player );
   }
