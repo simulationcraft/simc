@@ -703,13 +703,14 @@ struct heal_enemy_t : public enemy_t
 
     resources.current[ RESOURCE_HEALTH ] = resources.base[ RESOURCE_HEALTH ] / 1.5;
   }
+
   virtual void init_base_stats()
   {
     enemy_t::init_base_stats();
 
     collected_data.htps.change_mode( false );
 
-    level = std::min( 90, level );
+    level = std::min( 100, level );
   }
   virtual resource_e primary_resource() const
   { return RESOURCE_HEALTH; }

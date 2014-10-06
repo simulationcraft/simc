@@ -1633,13 +1633,13 @@ bool sim_t::init()
         ++tanks;
     }
     if ( healers > 0 || healing > 0 )
-      heal_target = module_t::heal_enemy() -> create_player( this, "Healing_Target" );
+      heal_target = module_t::heal_enemy() -> create_player( this, "Healing_Target", RACE_NONE );
     if ( healing > 1 )
     {
       int targets_create = healing;
       do
       {
-        heal_target = module_t::heal_enemy() -> create_player( this, "Healing_Target_" + util::to_string( targets_create ) );
+        heal_target = module_t::heal_enemy() -> create_player( this, "Healing_Target_" + util::to_string( targets_create ), RACE_NONE );
         targets_create--;
       }
       while ( targets_create > 1 );
