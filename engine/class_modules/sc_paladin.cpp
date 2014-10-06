@@ -430,6 +430,7 @@ public:
 
   int     holy_power_stacks() const;
   double  get_hand_of_light();
+  bool    get_how_availability();
   double  jotp_haste();
   void    trigger_grand_crusader();
   void    trigger_shining_protector( action_state_t* );
@@ -3840,20 +3841,13 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
 
   virtual bool ready()
   {
-    // T17 Ret tier bonus makes this available regardless of health
-    if ( p() -> buffs.crusaders_fury -> check() )
-      return paladin_melee_attack_t::ready();
-
-    // Ret can use freely during Avenging Wrath thanks to Sword of Light
-    if ( p() -> passives.sword_of_light -> ok() && p() -> buffs.avenging_wrath -> check() )
-      return paladin_melee_attack_t::ready();
-
-    // Otherwise, not available if target is above 20% health. Improved HoW perk raises the threshold to 35%
-    double threshold = ( p() -> perk.empowered_hammer_of_wrath -> ok() ? 15 : 0 ) + 20;
-    if ( target -> health_percentage() > threshold )
-      return false;
-
-    return paladin_melee_attack_t::ready();
+    // this checks whether we're able to cast it (ignoring cooldowns)
+    // if so, continue to the standard ready() function for cooldowns/etc.
+   if ( p() -> get_how_availability() )
+     return paladin_melee_attack_t::ready();
+   else
+     // otherwise just return false to save some time
+     return false;
   }
 };
 
@@ -5017,23 +5011,28 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_talent( this, "Eternal Flame", "if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react|buff.bastion_of_power.react)" );
   def -> add_talent( this, "Eternal Flame", "if=buff.bastion_of_power.react&buff.bastion_of_glory.react>=5" );
   def -> add_action( this, "Shield of the Righteous", "if=(holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3)&(!talent.seraphim.enabled|cooldown.seraphim.remains>5)" );
+  def -> add_action( this, "Shield of the Righteous", "if=buff.holy_avenger.remains>time_to_hpg&(!talent.seraphim.enabled|cooldown.seraphim.remains>time_to_hpg)" );
   
   def -> add_action( this, "Seal of Insight", "if=talent.empowered_seals.enabled&!seal.insight&buff.uthers_insight.remains<cooldown.judgment.remains", "GCD-bound spells start here" );
   def -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.uthers_insight.remains>cooldown.judgment.remains&buff.liadrins_righteousness.down" );
   def -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&!seal.truth&buff.uthers_insight.remains>cooldown.judgment.remains&buff.liadrins_righteousness.remains>cooldown.judgment.remains&buff.maraads_truth.down" );
-  def -> add_action( this, "Crusader Strike", "" );
+  def -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react&active_enemies>1" );
+  def -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=3" );
+  def -> add_action( this, "Crusader Strike" );
   def -> add_action( this, "Judgment" );
+  def -> add_action( this, "Avenger's Shield", "if=active_enemies>1" );
   def -> add_action( this, "Holy Wrath", "if=talent.sanctified_wrath.enabled" );
   def -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react" );
   def -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<2" );
   def -> add_action( this, "Holy Wrath", "if=glyph.final_wrath.enabled&target.health.pct<=20" );
   def -> add_action( this, "Avenger's Shield" );
-  def -> add_talent( this, "Execution Sentence" );
   def -> add_talent( this, "Light's Hammer" );
   def -> add_talent( this, "Holy Prism" );
+  def -> add_action( this, "Consecration", "if=target.debuff.flying.down&active_enemies>=3" );
+  def -> add_talent( this, "Execution Sentence" );
   def -> add_action( this, "Hammer of Wrath" );
   def -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<8" );
-  def -> add_action( this, "Consecration", "if=target.debuff.flying.down&!ticking" );
+  def -> add_action( this, "Consecration", "if=target.debuff.flying.down" );
   def -> add_action( this, "Holy Wrath" );
   def -> add_action( this, "Seal of Insight", "if=talent.empowered_seals.enabled&!seal.insight&buff.uthers_insight.remains<=buff.liadrins_righteousness.remains&buff.uthers_insight.remains<=buff.maraads_truth.remains" );
   def -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.liadrins_righteousness.remains<=buff.uthers_insight.remains&buff.liadrins_righteousness.remains<=buff.maraads_truth.remains" );
@@ -5048,21 +5047,25 @@ void paladin_t::generate_action_prio_list_prot()
   dps -> add_talent( this, "Seraphim" );
   dps -> add_talent( this, "Divine Protection", "if=buff.seraphim.down&cooldown.seraphim.remains>5" );
   dps -> add_action( this, "Shield of the Righteous", "if=holy_power>=5|buff.divine_purpose.react|(talent.holy_avenger.enabled&holy_power>=3)" );
+  dps -> add_action( this, "Shield of the Righteous", "if=buff.holy_avenger.remains>time_to_hpg&(!talent.seraphim.enabled|cooldown.seraphim.remains>time_to_hpg)" );
 
   dps -> add_action( this, "Holy Wrath", "if=glyph.final_wrath.enabled&target.health.pct<=20", "#GCD-bound spells start here." );
   dps -> add_action( this, "Hammer of Wrath" );
   dps -> add_action( this, "Holy Wrath", "if=talent.sanctified_wrath.enabled" );
   dps -> add_talent( this, "Execution Sentence" );
+  dps -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=3" );
+  dps -> add_action( this, "Avenger's Shield", "if=active_enemies>1" );
   dps -> add_action( this, "Crusader Strike" );
   dps -> add_action( this, "Judgment" );
   dps -> add_action( this, "Avenger's Shield" );
   dps -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&!seal.truth&buff.maraads_truth.remains<cooldown.judgment.remains" );
   dps -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.maraads_truth.remains>cooldown.judgment.remains&buff.liadrins_righteousness.down" );
   dps -> add_talent( this, "Light's Hammer" );
-  dps -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<2" );
-  dps -> add_action( this, "Consecration", "if=target.debuff.flying.down&!ticking" );
-  dps -> add_action( this, "Holy Wrath" );
   dps -> add_talent( this, "Holy Prism" );
+  dps -> add_action( this, "Consecration", "if=target.debuff.flying.down&active_enemies>=3" );
+  dps -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<2" );
+  dps -> add_action( this, "Consecration", "if=target.debuff.flying.down" );
+  dps -> add_action( this, "Holy Wrath" );
   dps -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&!seal.truth&buff.maraads_truth.remains<buff.liadrins_righteousness.remains" );
   dps -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.liadrins_righteousness.remains<buff.maraads_truth.remains" );
   dps -> add_talent( this, "Sacred Shield" );
@@ -5079,20 +5082,26 @@ void paladin_t::generate_action_prio_list_prot()
   surv -> add_talent( this, "Eternal Flame", "if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react|buff.bastion_of_power.react)" );
   surv -> add_talent( this, "Eternal Flame", "if=buff.bastion_of_power.react&buff.bastion_of_glory.react>=5" );
   surv -> add_action( this, "Shield of the Righteous", "if=(holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3)&(!talent.seraphim.enabled|cooldown.seraphim.remains>5)" );
+  surv -> add_action( this, "Shield of the Righteous", "if=buff.holy_avenger.remains>time_to_hpg&(!talent.seraphim.enabled|cooldown.seraphim.remains>time_to_hpg)" );
   
-  surv -> add_action( this, "Crusader Strike", "", "GCD-bound spells start here" );
+  surv -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=3" );
+  surv -> add_action( this, "Crusader Strike" );
   surv -> add_action( this, "Judgment" );
+  surv -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react&active_enemies>1" );
   surv -> add_action( this, "Holy Wrath", "if=talent.sanctified_wrath.enabled" );
-  surv -> add_action( this, "Avenger's Shield" );
-  surv -> add_action( this, "Flash of Light", "if=talent.selfless_healer.enabled&buff.selfless_healer.stack>=3" );
+  surv -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react" );
   surv -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<2" );
-  surv -> add_talent( this, "Execution Sentence" );
-  surv -> add_action( this, "Hammer of Wrath" );
+  surv -> add_action( this, "Avenger's Shield" );
   surv -> add_talent( this, "Light's Hammer" );
+  surv -> add_talent( this, "Holy Prism" );
+  surv -> add_action( this, "Consecration", "if=target.debuff.flying.down&active_enemies>=3" );
+  surv -> add_talent( this, "Execution Sentence" );
+  surv -> add_action( this, "Flash of Light", "if=talent.selfless_healer.enabled&buff.selfless_healer.stack>=3" );
+  surv -> add_action( this, "Hammer of Wrath" );
+  surv -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<8" );
   surv -> add_action( this, "Holy Wrath", "if=glyph.final_wrath.enabled&target.health.pct<=20" );
   surv -> add_action( this, "Consecration", "if=target.debuff.flying.down&!ticking" );
   surv -> add_action( this, "Holy Wrath" );
-  surv -> add_talent( this, "Holy Prism" );
   surv -> add_talent( this, "Sacred Shield" );
 
 }
@@ -6369,6 +6378,24 @@ double paladin_t::get_hand_of_light()
   return cache.mastery_value(); // HoL is in effect 1
 }
 
+bool paladin_t::get_how_availability()
+{
+  // T17 Ret tier bonus makes this available regardless of health
+  if ( buffs.crusaders_fury -> check() )
+    return true;
+
+  // Ret can use freely during Avenging Wrath thanks to Sword of Light
+  if ( passives.sword_of_light -> ok() && buffs.avenging_wrath -> check() )
+    return true;
+
+  // Otherwise, not available if target is above 20% health. Improved HoW perk raises the threshold to 35%
+  double threshold = ( perk.empowered_hammer_of_wrath -> ok() ? 15 : 0 ) + 20;
+  if ( target -> health_percentage() > threshold )
+    return false;
+
+  return true;
+}
+
 // player_t::create_expression ==============================================
 
 expr_t* paladin_t::create_expression( action_t* a,
@@ -6413,6 +6440,57 @@ expr_t* paladin_t::create_expression( action_t* a,
   if ( splits[ 0 ] == "last_judgment_target" )
   {
     return new double_jeopardy_expr_t( name_str, *this );
+  }
+
+  struct time_to_hpg_expr_t : public paladin_expr_t
+  {
+    time_to_hpg_expr_t( const std::string& n, paladin_t& p ) :
+      paladin_expr_t( n, p ) {}
+    virtual double evaluate()
+    {
+      timespan_t gcd_ready = paladin.gcd_ready - paladin.sim -> current_time;
+      gcd_ready = std::max( gcd_ready, timespan_t::zero() );
+
+      if ( paladin.buffs.grand_crusader -> check() )
+        return gcd_ready.total_seconds();
+      
+      timespan_t shortest_hpg_time = paladin.get_cooldown( "crusader_strike" ) -> remains();
+
+      if ( paladin.get_cooldown( "judgment" ) -> remains() < shortest_hpg_time )
+        shortest_hpg_time = paladin.get_cooldown( "judgment" ) -> remains();
+
+      if ( paladin.specialization() == PALADIN_PROTECTION )
+      {
+        // Prot-specific HPG go here
+        if ( paladin.talents.sanctified_wrath -> ok() && paladin.get_cooldown( "holy_wrath" ) -> remains() < shortest_hpg_time )
+          shortest_hpg_time = paladin.get_cooldown( "holy_wrath" ) -> remains();
+      }
+      else if ( paladin.specialization() == PALADIN_RETRIBUTION )
+      {
+        // ret-specific HPG go here
+        if ( paladin.get_cooldown( "exorcism" ) -> remains() < shortest_hpg_time )
+          shortest_hpg_time = paladin.get_cooldown( "exorcism" ) -> remains();
+
+        if ( paladin.get_how_availability() && paladin.get_cooldown( "hammer_of_wrath" ) -> remains() < shortest_hpg_time )
+          shortest_hpg_time = paladin.get_cooldown( "hammer_of_wrath" ) -> remains();
+      }
+      else if ( paladin.specialization() == PALADIN_HOLY )
+      {
+        // holy-specific HPG go here
+        if ( paladin.get_cooldown( "holy_shock" ) -> remains() < shortest_hpg_time )
+          shortest_hpg_time = paladin.get_cooldown( "holy_shock" ) -> remains();
+      }
+
+      if ( gcd_ready > shortest_hpg_time )
+        return gcd_ready.total_seconds();
+      else
+        return shortest_hpg_time.total_seconds();
+    };
+  };
+
+  if ( splits[ 0 ] == "time_to_hpg" )
+  {
+    return new time_to_hpg_expr_t( name_str, *this );
   }
 
   return player_t::create_expression( a, name_str );
