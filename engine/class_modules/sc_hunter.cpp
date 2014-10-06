@@ -2344,7 +2344,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     parse_options( NULL, options_str );
     may_block = false;
 
-    attack_power_mod.tick = 0.463; //Welcome to the hard-coded tooltip club!
+    attack_power_mod.tick = 0.429; //Welcome to the hard-coded tooltip club!
     attack_power_mod.direct = attack_power_mod.tick;
     // the inital impact is not part of the rolling dot
     dot_duration = timespan_t::zero();
