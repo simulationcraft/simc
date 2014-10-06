@@ -1878,17 +1878,6 @@ struct stormstrike_attack_t : public shaman_attack_t
     weapon = w;
     base_multiplier *= 1.0 + p() -> perk.improved_stormstrike -> effectN( 1 ).percent();
   }
-
-  double action_multiplier() const
-  {
-    double m = shaman_attack_t::action_multiplier();
-
-    if ( p() -> buff.lightning_shield -> up() )
-      //m *= 1.0 + lightning_shield -> effectN( 3 ).percent();
-      m *= 1.13; // Hardcoding this for now, because the effect is apparnly gone from spell data. For some reason it is still thre in WoD Alpha client though
-
-    return m;
-  }
 };
 
 struct windstrike_attack_t : public stormstrike_attack_t
