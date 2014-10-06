@@ -35,97 +35,13 @@ io::cfile open_file( const std::vector<std::string>& splits, const std::string& 
   return io::cfile( name, "r" );
 }
 
-template<typename T>
-inline void check_boundaries( bool clamp, std::string name, T v, double min, double max) {
-
-  if (clamp) {
-    if (v < min || v > max) {
-      std::stringstream s;
-      s << "Option '" << name << "' with value '" << v
-          << "' not within valid boundaries [" << min << " - " << max << "]";
-      throw std::invalid_argument(s.str());
-    }
-  }
-}
 } // UNNAMED NAMESPACE ======================================================
-
-// option_t::print ==========================================================
-/*
-std::ostream& operator<<( std::ostream& stream, const option_base_t& opt )
-{
-  switch ( opt -> type )
-  {
-  case STRING:
-  {
-    const std::string& v = *static_cast<std::string*>( opt.data.address );
-    stream << opt.name << "=" << v.c_str() << "\n";
-  }
-  break;
-  case INT_BOOL:
-  {
-    int v = *static_cast<int*>( opt.data.address );
-    stream << opt.name << "=" << (v ? "true" : "false") << "\n";
-  }
-  break;
-  case option_t::BOOL:
-  {
-    bool v = *static_cast<bool*>( opt.data.address );
-    stream << opt.name << "=" << (v ? "true" : "false") << "\n";
-  }
-  break;
-  case option_t::INT:
-  {
-    int v = *static_cast<int*>( opt.data.address );
-    stream << opt.name << "=" << v << "\n";
-  }
-  break;
-  case option_t::UINT:
-  {
-    unsigned v = *static_cast<unsigned*>( opt.data.address );
-    stream << opt.name << "=" << v << "\n";
-  }
-  break;
-  case option_t::FLT:
-  {
-    double v = *static_cast<double*>( opt.data.address );
-    stream << opt.name << "=" << v << "\n";
-  }
-  break;
-  case option_t::TIMESPAN:
-  {
-    timespan_t v = *static_cast<timespan_t*>( opt.data.address );
-    stream << opt.name << "=" << v.total_seconds() << "\n";
-  }
-  break;
-  case option_t::LIST:
-  {
-    const std::vector<std::string>& v = *static_cast<std::vector<std::string>*>( opt.data.address );
-    stream << opt.name << "=";
-    for ( size_t i = 0; i < v.size(); ++i )
-    {
-      if ( i > 0 )
-        stream << " ";
-      stream << v[ i ];
-    }
-    stream << "\n";
-  }
-  break;
-  case option_t::MAP:
-  {
-    const std::map<std::string, std::string>& m = *static_cast<std::map<std::string, std::string>*>( opt.data.address );
-    for ( std::map<std::string, std::string>::const_iterator it = m.begin(), end = m.end(); it != end; ++it )
-      stream << opt.name << it->first << "="<< it->second << "\n";
-  }
-  break;
-  default: break;
-  }
-  return stream;
-}
-*/
-
 
 namespace opts {
 
+/* Option helper class
+ * Stores a reference of given type T
+ */
 template<class T>
 struct opts_helper_t : public option_base_t
 {
@@ -137,10 +53,15 @@ struct opts_helper_t : public option_base_t
 protected:
   T& _ref;
 };
+
+
 enum option_assignement_e {
   ASSIGN,
   APPEND,
 };
+
+/* Generic option class, tries to handle the most common numeric and string based options
+ */
 template<class T>
 struct opts_generic_t : public opts_helper_t<T>
 {
@@ -170,7 +91,42 @@ private:
   option_assignement_e _ass;
 };
 
+/* Generic option class + range checks, tries to handle numeric options
+ */
+template<class T>
+struct opts_generic_range_checked_t : public opts_helper_t<T>
+{
+  opts_generic_range_checked_t( const std::string& name, T& ref, T min, T max ) :
+    opts_helper_t<T>( name, ref ),
+    _min( min ),
+    _max( max )
+  { }
+protected:
+  bool parse( sim_t*, const std::string& n, const std::string& value ) const override
+  {
+    if ( n != this -> name() )
+      return false;
 
+    T v = util::from_string<T>( value );
+
+    // Range checking
+    if (v < _min || v > _max) {
+      std::stringstream s;
+      s << "Option '" << n << "' with value '" << value
+          << "' not within valid boundaries [" << _min << " - " << _max << "]";
+      throw std::invalid_argument(s.str());
+    }
+
+    this -> _ref = v;
+    return true;
+  }
+private:
+  T _min, _max;
+};
+
+/* Bool option, checks if user input is '0' or '1'
+ * template to support true bool as well as int
+ */
 template<class T>
 struct opts_bool_t : public opts_generic_t<T>
 {
@@ -237,6 +193,22 @@ protected:
   }
 };
 
+struct opts_list_t : public opts_helper_t<list_t>
+{
+  opts_list_t( const std::string& name, list_t& ref ) :
+    base_t( name, ref )
+  { }
+protected:
+  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
+  {
+    if ( name() != n )
+      return false;
+
+    _ref.push_back( v );
+
+    return false;
+  }
+};
 struct opts_deperecated_t : public option_base_t
 {
   opts_deperecated_t( const std::string& name, const std::string& new_option ) :
@@ -269,21 +241,6 @@ protected:
   bool parse( sim_t*, const std::string&, const std::string& ) const override
   { assert( false ); return false; };
 };
-
-} // opts
-
-typedef opts::option_base_t* option_t;
-namespace opts {
-void copy( std::vector<option_t>& opt_vector, const option_t* opt_array );
-bool parse( sim_t*, std::vector<option_t>&, const std::string& name, const std::string& value );
-void parse( sim_t*, const char* context, std::vector<option_t>&, const std::string& options_str );
-void parse( sim_t*, const char* context, std::vector<option_t>&, const std::vector<std::string>& strings );
-void parse( sim_t*, const char* context, const option_t*,        const std::vector<std::string>& strings );
-void parse( sim_t*, const char* context, const option_t*,        const std::string& options_str );
-bool parse_file( sim_t*, FILE* file );
-bool parse_line( sim_t*, const char* line );
-bool parse_token( sim_t*, const std::string& token );
-option_t* merge( std::vector<option_t>& out, const option_t* in1, const option_t* in2 );
 
 } // opts
 
@@ -615,29 +572,29 @@ option_t opt_bool( const std::string& n, bool& v )
 option_t opt_int( const std::string& n, int& v )
 { return new opts::opts_generic_t<int>( n, v ); }
 
-option_t opt_int( const std::string& n, int& v, int , int )
-{ return new opts::opts_generic_t<int>( n, v ); }
+option_t opt_int( const std::string& n, int& v, int min, int max )
+{ return new opts::opts_generic_range_checked_t<int>( n, v, min, max ); }
 
 option_t opt_uint( const std::string& n, unsigned& v )
 { return new opts::opts_generic_t<unsigned>( n, v ); }
 
-option_t opt_uint( const std::string& n, unsigned& v, unsigned , unsigned  )
-{ return new opts::opts_generic_t<unsigned>( n, v ); }
+option_t opt_uint( const std::string& n, unsigned& v, unsigned min, unsigned max )
+{ return new opts::opts_generic_range_checked_t<unsigned>( n, v, min, max ); }
 
 option_t opt_float( const std::string& n, double& v )
 { return new opts::opts_generic_t<double>( n, v ); }
 
-option_t opt_float( const std::string& n, double& v, double , double  )
-{ return new opts::opts_generic_t<double>( n, v ); }
+option_t opt_float( const std::string& n, double& v, double min, double max )
+{ return new opts::opts_generic_range_checked_t<double>( n, v, min, max ); }
 
 option_t opt_timespan( const std::string& n, timespan_t& v )
 { return new opts::opts_generic_t<timespan_t>( n, v ); }
 
-option_t opt_timespan( const std::string& n, timespan_t& v, timespan_t , timespan_t  )
-{ return new opts::opts_generic_t<timespan_t>( n, v ); }
+option_t opt_timespan( const std::string& n, timespan_t& v, timespan_t min, timespan_t max )
+{ return new opts::opts_generic_range_checked_t<timespan_t>( n, v, min, max ); }
 
-/*option_t opt_list( const std::string& n, option_base_t::list_t& v )
-{ return new option_base_t( n, option_base_t::LIST, &v ); } */
+option_t opt_list( const std::string& n, opts::list_t& v )
+{ return new opts::opts_list_t( n, v ); }
 
 option_t opt_map( const std::string& n, opts::map_t& v )
 { return new opts::opts_map_t( n, v ); }

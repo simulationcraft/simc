@@ -69,6 +69,11 @@ namespace std {using namespace tr1; }
 
 #define SC_USE_INTEGER_TIME
 #include "sc_timespan.hpp"
+inline std::ostream& operator<<(std::ostream &os, const timespan_t& x )
+{
+  os << x.total_seconds() << "seconds";
+  return os;
+}
 
 // Generic programming tools
 #include "util/generic.hpp"
@@ -1395,6 +1400,7 @@ protected:
 
 typedef std::map<std::string, std::string> map_t;
 typedef bool function_t( sim_t* sim, const std::string& name, const std::string& value );
+typedef std::vector<std::string> list_t;
 }
 // unique_ptr anyone?
 typedef opts::option_base_t* option_t;
@@ -1423,7 +1429,7 @@ option_t opt_float( const std::string& n, double& v );
 option_t opt_float( const std::string& n, double& v, double , double  );
 option_t opt_timespan( const std::string& n, timespan_t& v );
 option_t opt_timespan( const std::string& n, timespan_t& v, timespan_t , timespan_t  );
-//option_t opt_list( const std::string& n, option_base_t::list_t& v );
+option_t opt_list( const std::string& n, opts::list_t& v );
 option_t opt_map( const std::string& n, opts::map_t& v );
 option_t opt_func( const std::string& n, opts::function_t& f );
 option_t opt_deprecated( const std::string& n, const std::string& new_option = std::string() );
