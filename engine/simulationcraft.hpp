@@ -1103,127 +1103,6 @@ struct stat_data_t
   double spirit;
 };
 
-// Options ==================================================================
-
-
-struct new_option_t
-{
-public:
-  typedef bool function_t( sim_t* sim, const std::string& name, const std::string& value );
-  typedef std::map<std::string, std::string> map_t;
-  typedef std::vector<std::string> list_t;
-  enum option_e
-  {
-    NONE = 0,
-    BOOL,          // bool
-    INT,           // int
-    INT_BOOL,      // int (only valid values are 1 and 0)
-    UINT,          // unsigned int
-    FLT,           // double
-    STRING,        // std::string
-    APPEND,        // std::string (append)
-    TIMESPAN,      // timespan_t
-    LIST,          // std::vector<std::string>
-    MAP,           // std::map<std::string,std::string>
-    FUNC,          // function_t*
-    DEPRECATED
-  };
-  const char* name;
-  option_e type;
-  bool clamp;
-  double min, max;
-  union data_t
-  {
-    void* address;
-    const char* cstr;
-    function_t* func;
-    data_t( void* p ) : address( p ) {}
-    data_t( function_t* p ) : func( p ) {}
-    data_t( const char* p ) : cstr( p ) {}
-  } data;
-
-public:
-  new_option_t( const char* n, option_e t, void* a ) :
-    name( n ), type( t ), clamp(), min(), max(), data( a ) {}
-  new_option_t( const char* n, option_e t, void* a, double min, double max ) :
-    name( n ), type( t ), clamp( true ), min( min ), max( max ), data( a ) {}
-  new_option_t( const char* n, const char* str ) : name( n ), type( DEPRECATED ), clamp(), min(),max(), data( str ) {}
-  new_option_t( const char* n, function_t* f ) : name( n ), type( FUNC ), clamp(), min(),max(), data( f ) {}
-
-  const char* name_cstr() const { return name; }
-
-  friend std::ostream& operator<<( std::ostream& stream, const new_option_t& opt );
-  bool parse( sim_t*, const std::string& name, const std::string& value );
-
-};
-
-typedef new_option_t* option_t;
-namespace opts {
-void copy( std::vector<option_t>& opt_vector, const option_t* opt_array );
-bool parse( sim_t*, std::vector<option_t>&, const std::string& name, const std::string& value );
-void parse( sim_t*, const char* context, std::vector<option_t>&, const std::string& options_str );
-void parse( sim_t*, const char* context, std::vector<option_t>&, const std::vector<std::string>& strings );
-void parse( sim_t*, const char* context, const option_t*,        const std::vector<std::string>& strings );
-void parse( sim_t*, const char* context, const option_t*,        const std::string& options_str );
-bool parse_file( sim_t*, FILE* file );
-bool parse_line( sim_t*, const char* line );
-bool parse_token( sim_t*, const std::string& token );
-option_t* merge( std::vector<option_t>& out, const option_t* in1, const option_t* in2 );
-
-} // opts
-
-
-inline option_t opt_string( const char* n, std::string& v )
-{ return new new_option_t( n, new_option_t::STRING, &v ); }
-
-inline option_t opt_append( const char* n, std::string& v )
-{ return new new_option_t( n, new_option_t::APPEND, &v ); }
-
-inline option_t opt_bool( const char* n, int& v )
-{ return new new_option_t( n, new_option_t::INT_BOOL, &v ); }
-
-inline option_t opt_bool( const char* n, bool& v )
-{ return new new_option_t( n, new_option_t::BOOL, &v ); }
-
-inline option_t opt_int( const char* n, int& v )
-{ return new new_option_t( n, new_option_t::INT, &v ); }
-
-inline option_t opt_int( const char* n, int& v, int min, int max )
-{ return new new_option_t( n, new_option_t::INT, &v, min, max ); }
-
-inline option_t opt_uint( const char* n, unsigned& v )
-{ return new new_option_t( n, new_option_t::UINT, &v ); }
-
-inline option_t opt_uint( const char* n, unsigned& v, unsigned min, unsigned max )
-{ return new new_option_t( n, new_option_t::UINT, &v, min, max ); }
-
-inline option_t opt_float( const char* n, double& v )
-{ return new new_option_t( n, new_option_t::FLT, &v ); }
-
-inline option_t opt_float( const char* n, double& v, double min, double max )
-{ return new new_option_t( n, new_option_t::FLT, &v, min, max ); }
-
-inline option_t opt_timespan( const char* n, timespan_t& v )
-{ return new new_option_t( n, new_option_t::TIMESPAN, &v ); }
-
-inline option_t opt_timespan( const char* n, timespan_t& v, timespan_t min, timespan_t max )
-{ return new new_option_t( n, new_option_t::TIMESPAN, &v, min.total_seconds(), max.total_seconds() ); }
-
-inline option_t opt_list( const char* n, new_option_t::list_t& v )
-{ return new new_option_t( n, new_option_t::LIST, &v ); }
-
-inline option_t opt_map( const char* n, new_option_t::map_t& v )
-{ return new new_option_t( n, new_option_t::MAP, &v ); }
-
-inline option_t opt_func( const char* name, new_option_t::function_t& f )
-{ return new new_option_t( name, f ); }
-
-inline option_t opt_deprecated( const char* n, const char* r )
-{ return new new_option_t( n, r ); }
-
-inline option_t opt_null()
-{ return new new_option_t( 0, new_option_t::NONE, ( void* )0 ); }
-
 // Talent Translation =======================================================
 
 #ifndef MAX_TALENT_ROWS
@@ -1448,7 +1327,107 @@ bool contains_non_ascii( const std::string& );
 
 std::ostream& stream_printf( std::ostream&, const char* format, ... );
 
+template<class T>
+T from_string( const std::string& );
+
+template<>
+inline int from_string( const std::string& v )
+{
+  return strtol( v.c_str(), nullptr, 10 );
+}
+template<>
+inline bool from_string( const std::string& v )
+{
+  return from_string<int>( v );
+}
+
+template<>
+inline unsigned from_string( const std::string& v )
+{
+  return strtoul( v.c_str(), nullptr, 10 );
+}
+
+template<>
+inline double from_string( const std::string& v )
+{
+  return strtod( v.c_str(), nullptr );
+}
+template<>
+inline timespan_t from_string( const std::string& v )
+{
+  return timespan_t::from_seconds( util::from_string<double>( v ) );
+}
+template<>
+inline std::string from_string( const std::string& v )
+{
+  return v;
+}
+
 } // namespace util
+
+// Options ==================================================================
+
+
+
+namespace opts {
+struct option_base_t
+{
+public:
+  option_base_t( const std::string& name ) :
+    _name( name )
+{ }
+  virtual ~option_base_t() { }
+  friend std::ostream& operator<<( std::ostream& stream, const option_base_t& opt );
+  bool parse_option( sim_t* sim , const std::string& n, const std::string& value )
+  {
+    if ( n.empty() )
+      return false;
+
+    return parse( sim, n, value );
+  }
+  std::string name() const
+  { return _name; }
+protected:
+  virtual bool parse( sim_t*, const std::string& name, const std::string& value ) const = 0;
+
+  std::string _name;
+};
+
+typedef std::map<std::string, std::string> map_t;
+typedef bool function_t( sim_t* sim, const std::string& name, const std::string& value );
+}
+// unique_ptr anyone?
+typedef opts::option_base_t* option_t;
+namespace opts {
+void copy( std::vector<option_t>& opt_vector, const option_t* opt_array );
+bool parse( sim_t*, std::vector<option_t>&, const std::string& name, const std::string& value );
+void parse( sim_t*, const char* context, std::vector<option_t>&, const std::string& options_str );
+void parse( sim_t*, const char* context, std::vector<option_t>&, const std::vector<std::string>& strings );
+void parse( sim_t*, const char* context, const option_t*,        const std::vector<std::string>& strings );
+void parse( sim_t*, const char* context, const option_t*,        const std::string& options_str );
+bool parse_file( sim_t*, FILE* file );
+bool parse_line( sim_t*, const char* line );
+bool parse_token( sim_t*, const std::string& token );
+option_t* merge( std::vector<option_t>& out, const option_t* in1, const option_t* in2 );
+}
+
+option_t opt_string( const std::string& n, std::string& v );
+option_t opt_append( const std::string& n, std::string& v );
+option_t opt_bool( const std::string& n, int& v );
+option_t opt_bool( const std::string& n, bool& v );
+option_t opt_int( const std::string& n, int& v );
+option_t opt_int( const std::string& n, int& v, int , int );
+option_t opt_uint( const std::string& n, unsigned& v );
+option_t opt_uint( const std::string& n, unsigned& v, unsigned , unsigned  );
+option_t opt_float( const std::string& n, double& v );
+option_t opt_float( const std::string& n, double& v, double , double  );
+option_t opt_timespan( const std::string& n, timespan_t& v );
+option_t opt_timespan( const std::string& n, timespan_t& v, timespan_t , timespan_t  );
+//option_t opt_list( const std::string& n, option_base_t::list_t& v );
+option_t opt_map( const std::string& n, opts::map_t& v );
+option_t opt_func( const std::string& n, opts::function_t& f );
+option_t opt_deprecated( const std::string& n, const std::string& new_option = std::string() );
+option_t opt_null();
 
 
 // Data Access ==============================================================
@@ -1568,7 +1547,7 @@ public:
   void start();
   void finish();
   void set_next( timespan_t t ) { next = t; }
-  void parse_options( option_t*, const std::string& options_str );
+  void parse_options( const option_t*, const std::string& options_str );
   static raid_event_t* create( sim_t* sim, const std::string& name, const std::string& options_str );
   static void init( sim_t* );
   static void reset( sim_t* );

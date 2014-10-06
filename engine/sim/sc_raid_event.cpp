@@ -805,36 +805,31 @@ void raid_event_t::reset()
 
 // raid_event_t::parse_options ==============================================
 
-void raid_event_t::parse_options( option_t*          options,
+void raid_event_t::parse_options( const option_t*   options,
                                   const std::string& options_str )
 {
   std::string first_str, last_str;
 
   if ( options_str.empty() ) return;
 
-  option_t base_options[] =
-  {
-    opt_string( "first", first_str ),
-    opt_string( "last", last_str ),
-    opt_timespan( "period", cooldown ),
-    opt_timespan( "cooldown", cooldown ),
-    opt_timespan( "cooldown_stddev", cooldown_stddev ),
-    opt_timespan( "cooldown_min", cooldown_min ),
-    opt_timespan( "cooldown_max", cooldown_max ),
-    opt_timespan( "duration", duration ),
-    opt_timespan( "duration_stddev", duration_stddev ),
-    opt_timespan( "duration_min", duration_min ),
-    opt_timespan( "duration_max", duration_max ),
-    opt_bool( "players_only",  players_only ),
-    opt_float( "player_chance", player_chance ),
-    opt_float( "distance_min", distance_min ),
-    opt_float( "distance_max", distance_max ),
-    opt_string( "affected_role", affected_role_str ),
-    opt_null()
-  };
-
   std::vector<option_t> merged_options;
-  opts::merge( merged_options, options, base_options );
+  opts::copy( merged_options, options );
+  merged_options.push_back( opt_string( "first", first_str ) );
+  merged_options.push_back( opt_string( "last", last_str ) );
+  merged_options.push_back( opt_timespan( "period", cooldown ) );
+  merged_options.push_back( opt_timespan( "cooldown", cooldown ) );
+  merged_options.push_back( opt_timespan( "cooldown_stddev", cooldown_stddev ) );
+  merged_options.push_back( opt_timespan( "cooldown_min", cooldown_min ) );
+  merged_options.push_back( opt_timespan( "cooldown_max", cooldown_max ) );
+  merged_options.push_back( opt_timespan( "duration", duration ) );
+  merged_options.push_back( opt_timespan( "duration_stddev", duration_stddev ) );
+  merged_options.push_back( opt_timespan( "duration_min", duration_min ) );
+  merged_options.push_back( opt_timespan( "duration_max", duration_max ) );
+  merged_options.push_back( opt_bool( "players_only",  players_only ) );
+  merged_options.push_back( opt_float( "player_chance", player_chance ) );
+  merged_options.push_back( opt_float( "distance_min", distance_min ) );
+  merged_options.push_back( opt_float( "distance_max", distance_max ) );
+  merged_options.push_back( opt_string( "affected_role", affected_role_str ) );
 
   try
   {

@@ -265,20 +265,14 @@ public:
   cache::behavior_e cache;
 
   names_and_options_t( sim_t* sim, const std::string& context,
-                       const option_t* client_options, const std::string& input )
+                       const std::vector<option_t> client_options, const std::string& input )
   {
     int use_cache = 0;
 
-    option_t base_options[] =
-    {
-      opt_string( "region", region ),
-      opt_string( "server", server ),
-      opt_bool( "cache", use_cache ),
-      opt_null()
-    };
-
-    std::vector<option_t> options;
-    opts::merge( options, base_options, client_options );
+    std::vector<option_t> options( client_options );
+    options.push_back( opt_string( "region", region ) );
+    options.push_back( opt_string( "server", server ) );
+    options.push_back( opt_bool( "cache", use_cache ) );
 
     names = util::string_split( input, "," );
 
@@ -337,11 +331,8 @@ bool parse_armory( sim_t*             sim,
   {
     std::string spec = "active";
 
-    option_t options[] =
-    {
-      opt_string( "spec", spec ),
-      opt_null()
-    };
+    std::vector<option_t> options;
+    options.push_back( opt_string( "spec", spec ) );
 
     names_and_options_t stuff( sim, name, options, value );
 
@@ -410,13 +401,10 @@ bool parse_guild( sim_t*             sim,
     std::string ranks_str;
     int max_rank = 0;
 
-    option_t options[] =
-    {
-      opt_string( "class", type_str ),
-      opt_int( "max_rank", max_rank ),
-      opt_string( "ranks", ranks_str ),
-      opt_null()
-    };
+    std::vector<option_t> options;
+    options.push_back( opt_string( "class", type_str ) );
+    options.push_back( opt_int( "max_rank", max_rank ) );
+    options.push_back( opt_string( "ranks", ranks_str ) );
 
     names_and_options_t stuff( sim, name, options, value );
 
@@ -2298,7 +2286,7 @@ void sim_t::create_options()
     opt_bool( "average_gauss", average_gauss ),
     opt_int( "convergence_scale", convergence_scale ),
     // Misc
-    opt_list( "party", party_encoding ),
+    //opt_list( "party", party_encoding ),
     opt_func( "active", parse_active ),
     opt_int( "seed", seed ),
     opt_float( "wheel_granularity", em.wheel_granularity ),

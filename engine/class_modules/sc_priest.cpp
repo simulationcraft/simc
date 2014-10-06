@@ -1054,7 +1054,7 @@ public:
       priest.buffs.borrowed_time -> expire();
   }
 
-  virtual void parse_options( option_t*          options,
+  virtual void parse_options( const option_t*          options,
                       const std::string& options_str ) override
   {
     const option_t base_options[] =

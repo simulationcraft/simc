@@ -147,7 +147,7 @@ struct enemy_action_t : public ACTION_TYPE
 
     for ( i = 0; i < options.size(); i++ )
     {
-      if ( options[ i ] -> name_cstr() && util::str_compare_ci( options[ i ] -> name_cstr(), new_option -> name_cstr() ) )
+      if ( !options[ i ] -> name().empty() && util::str_compare_ci( options[ i ] -> name().c_str(), new_option -> name().c_str() ) )
       {
         options[ i ] = new_option;
         break;
