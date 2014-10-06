@@ -1705,13 +1705,8 @@ struct envenom_t : public rogue_attack_t
     dot_duration = timespan_t::zero();
     weapon_multiplier = weapon_power_mod = 0.0;
     base_multiplier *= 1.05; // Hard-coded tooltip.
+    base_dd_min = base_dd_max = 0;
   }
-
-  double base_da_min( const action_state_t* s ) const
-  { return base_dd_min * rogue_attack_t::cast_state( s ) -> cp; }
-
-  double base_da_max( const action_state_t* s ) const
-  { return base_dd_max * rogue_attack_t::cast_state( s ) -> cp; }
 
   void consume_resource()
   {
@@ -1811,7 +1806,7 @@ struct eviscerate_t : public rogue_attack_t
 
     attack_power_mod.direct = 0.577;
     // Hard-coded tooltip.
-    attack_power_mod.direct *= 0.82;
+    attack_power_mod.direct *= 0.88;
   }
 
   timespan_t gcd() const
@@ -1919,12 +1914,13 @@ struct crimson_tempest_t : public rogue_attack_t
     ability_type = CRIMSON_TEMPEST;
     aoe = -1;
     base_costs[ RESOURCE_COMBO_POINT ] = 1;
-    attack_power_mod.direct = /* 0.0602 */ 0.10925; // Adjusted based on in-game testing, tooltip is out of date.
+    attack_power_mod.direct = 0.0602;
     weapon = &( p -> main_hand_weapon );
     weapon_power_mod = weapon_multiplier = 0;
     // Hard-coded tooltip.
-    attack_power_mod.direct *= 0.82;
+    attack_power_mod.direct *= 1.5;
     ct_dot = new crimson_tempest_dot_t( p );
+    base_dd_min = base_dd_max = 0;
   }
 
   void impact( action_state_t* s )
