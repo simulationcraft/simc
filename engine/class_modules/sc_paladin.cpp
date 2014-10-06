@@ -3389,8 +3389,10 @@ struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
 
 struct melee_t : public paladin_melee_attack_t
 {
+  bool first;
   melee_t( paladin_t* p ) :
-    paladin_melee_attack_t( "melee", p, spell_data_t::nil(), true )
+    paladin_melee_attack_t( "melee", p, spell_data_t::nil(), true ),
+    first( true )
   {
     school = SCHOOL_PHYSICAL;
     special               = false;
@@ -3404,11 +3406,17 @@ struct melee_t : public paladin_melee_attack_t
   virtual timespan_t execute_time() const
   {
     if ( ! player -> in_combat ) return timespan_t::from_seconds( 0.01 );
-    return paladin_melee_attack_t::execute_time();
-  }
+    if ( first )
+      return timespan_t::zero();
+    else
+      return paladin_melee_attack_t::execute_time();
+  } 
 
   virtual void execute()
   {
+    if ( first )
+      first = false;
+
     paladin_melee_attack_t::execute();
     if ( result_is_hit( execute_state -> result ) )
     {
