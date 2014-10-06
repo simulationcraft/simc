@@ -1927,11 +1927,11 @@ struct crimson_tempest_t : public rogue_attack_t
   {
     rogue_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
     {
       residual_action::trigger( ct_dot, s -> target, s -> result_amount * ct_dot -> data().effectN( 1 ).percent() );
 
-      if ( p() -> perk.enhanced_crimson_tempest -> ok() )
+      if ( result_is_hit( s -> result ) && p() -> perk.enhanced_crimson_tempest -> ok() )
       {
         rogue_attack_state_t* state = debug_cast<rogue_attack_state_t*>( s );
         timespan_t duration = timespan_t::from_seconds( 1 + state -> cp );
