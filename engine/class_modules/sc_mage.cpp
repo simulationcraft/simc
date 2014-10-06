@@ -4339,7 +4339,7 @@ struct water_jet_t : public action_t
     may_miss = may_crit = callbacks = false;
     quiet = dual = true;
     trigger_gcd = timespan_t::zero();
-    //use_off_gcd = true;
+    use_off_gcd = true;
   }
 
   void reset()
