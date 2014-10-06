@@ -4339,7 +4339,7 @@ struct water_jet_t : public action_t
     may_miss = may_crit = callbacks = false;
     quiet = dual = true;
     trigger_gcd = timespan_t::zero();
-    use_off_gcd = true;
+    //use_off_gcd = true;
   }
 
   void reset()
@@ -4361,7 +4361,7 @@ struct water_jet_t : public action_t
   {
     mage_t* m = debug_cast<mage_t*>( player );
     action -> queued = true;
-    m -> pets.water_elemental -> executing -> interrupt_action();
+    m -> pets.water_elemental -> interrupt();
     action -> schedule_execute();
   }
 
