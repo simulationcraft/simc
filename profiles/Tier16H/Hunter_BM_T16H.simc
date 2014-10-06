@@ -20,7 +20,7 @@ actions.precombat+=/food,type=blackrock_barbecue
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/exotic_munitions,ammo_type=poisoned
+actions.precombat+=/exotic_munitions,ammo_type=poisoned,if=active_enemies<3
 actions.precombat+=/exotic_munitions,ammo_type=incendiary,if=active_enemies>=3
 actions.precombat+=/potion,name=draenic_agility
 
@@ -34,6 +34,7 @@ actions+=/potion,name=draenic_agility,if=!talent.stampede.enabled&buff.bestial_w
 actions+=/potion,name=draenic_agility,if=talent.stampede.enabled&cooldown.stampede.remains<1&(buff.bloodlust.up|buff.focus_fire.up)|target.time_to_die<=20
 actions+=/stampede,if=buff.bloodlust.up|buff.focus_fire.up|target.time_to_die<=20
 actions+=/dire_beast
+actions+=/explosive_trap,if=active_enemies>2
 actions+=/bestial_wrath,if=focus>60&!buff.bestial_wrath.up
 actions+=/barrage,if=active_enemies>2
 actions+=/multishot,if=active_enemies>5|(active_enemies>1&pet.cat.buff.beast_cleave.down)

@@ -109,7 +109,6 @@ public:
   struct gains_t
   {
     gain_t* invigoration;
-    gain_t* fervor;
     gain_t* focus_fire;
     gain_t* thrill_of_the_hunt;
     gain_t* steady_shot;
@@ -155,7 +154,6 @@ public:
     const spell_data_t* iron_hawk;
     const spell_data_t* spirit_bond;
 
-    const spell_data_t* fervor;
     const spell_data_t* steady_focus;
     const spell_data_t* dire_beast;
     const spell_data_t* thrill_of_the_hunt;
@@ -342,7 +340,6 @@ public:
   virtual void      init_rng();
   virtual void      init_scaling();
   virtual void      init_action_list();
-  virtual void      combat_begin();
   virtual void      arise();
   virtual void      reset();
 
@@ -376,9 +373,9 @@ public:
   void              apl_bm();
   void              apl_mm();
 
-  void              add_item_actions(action_priority_list_t* list);
-  void              add_racial_actions(action_priority_list_t* list);
-  void              add_potion_action(action_priority_list_t* list, const std::string big_potion, const std::string little_potion, const std::string options = std::string() );
+  void              add_item_actions( action_priority_list_t* list );
+  void              add_racial_actions( action_priority_list_t* list );
+  void              add_potion_action( action_priority_list_t* list, const std::string big_potion, const std::string little_potion, const std::string options = std::string() );
 
   target_specific_t<hunter_td_t*> target_data;
 
@@ -525,7 +522,7 @@ public:
   void consume_thrill_of_the_hunt()
   {
     // "up" is required to correctly track the buff benefit in reporting.
-    // focus cost savings is reported as a "gain" so that comparison with fervor is easy
+    // focus cost savings is reported as a "gain" so that comparison with steady focus is easy
     if ( p() -> buffs.thrill_of_the_hunt -> up() )
     {
       double benefit = -( p() -> buffs.thrill_of_the_hunt -> data().effectN( 1 ).base_value() );
@@ -548,7 +545,7 @@ public:
 // TODO BM Offensive abilities used during Bestial Wrath increase all damage you deal by 2% and all
 // damage dealt by your pet by 2%, stacking up to 15 times.
 // 1 stack for MoC, Lynx Rush, Glaive Toss, Barrage, Powershot, Focus Fire
-// no stack for Fervor or Dire Beast
+// no stack for Dire Beast
 void trigger_tier16_bm_4pc_brutal_kinship( hunter_t* p )
 {
   if ( p -> specialization() != HUNTER_BEAST_MASTERY )
@@ -685,7 +682,6 @@ public:
   // Gains
   struct gains_t
   {
-    gain_t* fervor;
     gain_t* focus_fire;
     gain_t* go_for_the_throat;
   } gains;
@@ -818,7 +814,6 @@ public:
   {
     base_t::init_gains();
 
-    gains.fervor            = get_gain( "fervor" );
     gains.focus_fire        = get_gain( "focus_fire" );
     gains.go_for_the_throat = get_gain( "go_for_the_throat" );
   }
@@ -2966,46 +2961,6 @@ struct bestial_wrath_t: public hunter_spell_t
   }
 };
 
-// Fervor ===================================================================
-
-struct fervor_t: public hunter_spell_t
-{
-  int base_gain;
-  int tick_gain;
-  fervor_t( hunter_t* player, const std::string& options_str ):
-    hunter_spell_t( "fervor", player, player -> talents.fervor )
-  {
-    parse_options( NULL, options_str );
-
-    harmful = false;
-    callbacks = false;
-    hasted_ticks = false;
-    trigger_gcd = timespan_t::zero();
-    base_gain = data().effectN( 1 ).base_value();
-    tick_gain = data().effectN( 2 ).base_value();
-  }
-
-  virtual void execute()
-  {
-    p() -> resource_gain( RESOURCE_FOCUS, base_gain, p() -> gains.fervor );
-
-    if ( p() -> active.pet )
-      p() -> active.pet -> resource_gain( RESOURCE_FOCUS, base_gain, p() -> active.pet -> gains.fervor );
-
-    hunter_spell_t::execute();
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    hunter_spell_t::tick( d );
-
-    p() -> resource_gain( RESOURCE_FOCUS, tick_gain, p() -> gains.fervor );
-
-    if ( p() -> active.pet )
-      p() -> active.pet -> resource_gain( RESOURCE_FOCUS, tick_gain, p() -> active.pet -> gains.fervor );
-  }
-};
-
 // Focus Fire ===============================================================
 
 struct focus_fire_t: public hunter_spell_t
@@ -3216,7 +3171,6 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "exotic_munitions"      ) return new       exotic_munitions_t( this, options_str );
   if ( name == "explosive_shot"        ) return new         explosive_shot_t( this, options_str );
   if ( name == "explosive_trap"        ) return new         explosive_trap_t( this, options_str );
-  if ( name == "fervor"                ) return new                 fervor_t( this, options_str );
   if ( name == "focus_fire"            ) return new             focus_fire_t( this, options_str );
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
   if ( name == "kill_shot"             ) return new              kill_shot_t( this, options_str );
@@ -3310,8 +3264,6 @@ void hunter_t::init_spells()
   talents.iron_hawk                         = find_talent_spell( "Iron Hawk" );
   talents.spirit_bond                       = find_talent_spell( "Spirit Bond" );
 
-  // TODO remove Fervor when it's gone from spell data.
-  talents.fervor                            = find_talent_spell( "Fervor" );
   talents.steady_focus                      = find_talent_spell( "Steady Focus" );
   talents.dire_beast                        = find_talent_spell( "Dire Beast" );
   talents.thrill_of_the_hunt                = find_talent_spell( "Thrill of the Hunt" );
@@ -3528,7 +3480,6 @@ void hunter_t::init_gains()
   player_t::init_gains();
 
   gains.invigoration         = get_gain( "invigoration" );
-  gains.fervor               = get_gain( "fervor" );
   gains.focus_fire           = get_gain( "focus_fire" );
   gains.thrill_of_the_hunt   = get_gain( "thrill_of_the_hunt_savings" );
   gains.steady_shot          = get_gain( "steady_shot" );
@@ -3645,7 +3596,7 @@ void hunter_t::init_action_list()
 
     precombat -> add_action( "summon_pet" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-    precombat -> add_action( "exotic_munitions,ammo_type=poisoned" );
+    precombat -> add_action( "exotic_munitions,ammo_type=poisoned,if=active_enemies<3" );
     precombat -> add_action( "exotic_munitions,ammo_type=incendiary,if=active_enemies>=3" );
 
     //Pre-pot
@@ -3712,7 +3663,6 @@ void hunter_t::add_potion_action( action_priority_list_t* list, const std::strin
     else if ( level >= 85 )
       list -> add_action( "potion,name=" + little_potion + action_options );
   }
-
 }
 
 // Beastmastery Action List =============================================================
@@ -3732,7 +3682,7 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "Stampede", "if=buff.bloodlust.up|buff.focus_fire.up|target.time_to_die<=20");
 
   default_list -> add_talent( this, "Dire Beast");
-  default_list -> add_talent( this, "Fervor", "if=focus<=65");
+  default_list -> add_action( this, "Explosive Trap", "if=active_enemies>2" );
   default_list -> add_action( this, "Bestial Wrath", "if=focus>60&!buff.bestial_wrath.up");
   default_list -> add_talent( this, "Barrage", "if=active_enemies>2" );
   default_list -> add_action( this, "Multi-Shot", "if=active_enemies>5|(active_enemies>1&pet.cat.buff.beast_cleave.down)");
@@ -3775,7 +3725,7 @@ void hunter_t::apl_mm()
 
   default_list -> add_action( this, "Rapid Fire");
   default_list -> add_talent( this, "Stampede", "if=buff.rapid_fire.up|buff.bloodlust.up|target.time_to_die<=20" );
-
+  default_list -> add_action( this, "Explosive Trap", "if=active_enemies>2" );
   default_list -> add_action( "run_action_list,name=careful_aim,if=buff.careful_aim.up" );
   {
     careful_aim -> add_talent( this, "Glaive Toss", "if=active_enemies>4" );
@@ -3819,25 +3769,24 @@ void hunter_t::apl_surv()
   add_potion_action( default_list, "draenic_agility", "virmens_bite",
     "if=(((cooldown.stampede.remains<1|!talent.stampede.enabled)&(!talent.a_murder_of_crows.enabled|cooldown.a_murder_of_crows.remains<1))&(trinket.stat.any.up|buff.archmages_greater_incandescence_agi.up))|target.time_to_die<=20" );
 
-  default_list -> add_action( "call_action_list,name=single,if=active_enemies=1" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>1" );
 
-  single_target -> add_talent( this, "Stampede", "if=buff.potion.up|(cooldown.potion.remains&(buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up))" );
-  single_target -> add_action( this, "Explosive Shot" );
-  single_target -> add_action( this, "Black Arrow", "if=!ticking" );
-  single_target -> add_talent( this, "A Murder of Crows" );
-  single_target -> add_talent( this, "Dire Beast" );
-  single_target -> add_action( this, "Arcane Shot", "if=buff.thrill_of_the_hunt.react&focus>35&cast_regen<=focus.deficit|dot.serpent_sting.remains<=5|target.time_to_die<4.5" );
-  single_target -> add_talent( this, "Glaive Toss" );
-  single_target -> add_talent( this, "Powershot" );
-  single_target -> add_talent( this, "Barrage" );
-  single_target -> add_action( this, "Cobra Shot", "if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&(14+cast_regen)<=focus.deficit<80", "Cast a second shot for steady focus if that won't cap us." );
-  single_target -> add_action( this, "Arcane Shot", "if=focus>=70|talent.focusing_shot.enabled" );
-  single_target -> add_talent( this, "Focusing Shot" );
+  default_list -> add_talent( this, "Stampede", "if=buff.potion.up|(cooldown.potion.remains&(buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up))" );
+  default_list -> add_action( this, "Explosive Shot" );
+  default_list -> add_action( this, "Black Arrow", "if=!ticking" );
+  default_list -> add_talent( this, "A Murder of Crows" );
+  default_list -> add_talent( this, "Dire Beast" );
+  default_list -> add_action( this, "Arcane Shot", "if=buff.thrill_of_the_hunt.react&focus>35&cast_regen<=focus.deficit|dot.serpent_sting.remains<=5|target.time_to_die<4.5" );
+  default_list -> add_talent( this, "Glaive Toss" );
+  default_list -> add_talent( this, "Powershot" );
+  default_list -> add_talent( this, "Barrage" );
+  default_list -> add_action( this, "Cobra Shot", "if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&(14+cast_regen)<=focus.deficit<80", "Cast a second shot for steady focus if that won't cap us." );
+  default_list -> add_action( this, "Arcane Shot", "if=focus>=70|talent.focusing_shot.enabled" );
+  default_list -> add_talent( this, "Focusing Shot" );
   if ( level >= 81 )
-    single_target -> add_action( this, "Cobra Shot" );
+    default_list -> add_action( this, "Cobra Shot" );
   else
-    single_target -> add_action( this, "Steady Shot" );
+    default_list -> add_action( this, "Steady Shot" );
 
   aoe -> add_talent( this, "Stampede", "if=buff.potion.up|(cooldown.potion.remains&(buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up|buff.archmages_incandescence_agi.up))" );
   aoe -> add_action( this, "Explosive Shot", "if=buff.lock_and_load.react&cooldown.barrage.remains>0" );
@@ -3866,13 +3815,6 @@ void hunter_t::apl_default()
   action_priority_list_t* default_list = get_action_priority_list( "default" );
 
   default_list -> add_action( this, "Arcane Shot" );
-}
-
-// hunter_t::combat_begin ===================================================
-
-void hunter_t::combat_begin()
-{
-  player_t::combat_begin();
 }
 
 // hunter_t::reset ==========================================================
@@ -3952,7 +3894,8 @@ double hunter_t::composite_rating_multiplier( rating_e rating ) const
   return m;
 }
 
-// hunter_t::regen ==============================
+// hunter_t::regen ===========================================================
+
 void hunter_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
@@ -3962,7 +3905,6 @@ void hunter_t::regen( timespan_t periodicity )
     resource_gain( RESOURCE_FOCUS, base * periodicity.total_seconds(), gains.steady_focus );
   }
 }
-
 
 // hunter_t::composite_attack_power_multiplier ==============================
 
@@ -4049,6 +3991,8 @@ double hunter_t::composite_player_multiplier( school_e school ) const
 
   return m;
 }
+
+// hunter_t::invalidate_cache ==============================================
 
 void hunter_t::invalidate_cache( cache_e c )
 {
