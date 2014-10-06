@@ -1731,80 +1731,38 @@ struct molten_earth_spell_t : public shaman_spell_t
   { return data().effectN( 1 ).sp_coeff() * player -> cache.mastery_value(); }
 };
 
-struct molten_earth_driver_t;
-
-struct molten_earth_spell_event_t : public event_t
-{
-  molten_earth_driver_t* driver;
-
-  molten_earth_spell_event_t( shaman_t*, molten_earth_driver_t* );
-
-  // Execute the nuke
-  void execute();
-};
-
 struct molten_earth_driver_t : public spell_t
 {
-  std::vector<molten_earth_spell_event_t*> scheduled_bolts;
   molten_earth_spell_t* nuke;
 
   molten_earth_driver_t( shaman_t* p ) :
-    spell_t( "molten_earth_driver", p, p -> find_spell( 170377 ) ),
-    nuke( new molten_earth_spell_t( p ) )
+    spell_t( "molten_earth_driver", p, p -> find_spell( 170377 ) )
   {
     may_miss = may_crit = callbacks = proc = tick_may_crit = false;
     background = hasted_ticks = quiet = dual = true;
+
+    nuke = new molten_earth_spell_t( p );
   }
+
+  timespan_t tick_time( double haste ) const
+  { return timespan_t::from_seconds( rng().range( 0.001, 2 * base_tick_time.total_seconds() * haste ) ); }
 
   void tick( dot_t* d )
   {
     spell_t::tick( d );
 
-    // Driver ticks, add a new scheduled bolt that will fire at [0..4/haste]
-    // time.
-    scheduled_bolts.push_back( new ( *sim ) molten_earth_spell_event_t( debug_cast<shaman_t*>( player ), this ) );
-  }
-
-  // When a bolt is fired, remove it's pointer from the list of scheduled bolts
-  void remove_event( molten_earth_spell_event_t* event )
-  {
-    std::vector<molten_earth_spell_event_t*>::iterator i;
-    i = std::find( scheduled_bolts.begin(), scheduled_bolts.end(), event );
-    if ( i != scheduled_bolts.end() )
-      scheduled_bolts.erase( i );
+    // Last tick will not cast a nuke like our normal dot system does
+    if ( d -> remains() > timespan_t::zero() )
+    {
+      nuke -> target = d -> target;
+      nuke -> schedule_execute();
+    }
   }
 
   // Maximum duration is extended by max of 6 seconds
   timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t ) const override
   { return data().duration(); }
-
-  void last_tick( dot_t* dot )
-  {
-    spell_t::last_tick( dot );
-
-    // Last tick, actor has not done anything for the past 6 seconds. Remove
-    // all scheduled bolts.
-    for ( size_t i = 0, end = scheduled_bolts.size(); i < end; i++ )
-    {
-      core_event_t* e = scheduled_bolts[ i ];
-      core_event_t::cancel( e );
-    }
-
-    scheduled_bolts.clear();
-  }
 };
-
-inline molten_earth_spell_event_t::molten_earth_spell_event_t( shaman_t* shaman, molten_earth_driver_t* driver ) :
-  event_t( *shaman, "molten_earth" ), driver( driver )
-{
-  sim().add_event( this, timespan_t::from_seconds( rng().range( 0, ( driver -> base_tick_time * 2 * shaman -> cache.spell_speed() ).total_seconds() ) ) );
-}
-
-inline void molten_earth_spell_event_t::execute()
-{
-  driver -> nuke -> schedule_execute();
-  driver -> remove_event( this );
-}
 
 struct ancestral_awakening_t : public shaman_heal_t
 {
