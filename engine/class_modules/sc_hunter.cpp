@@ -806,8 +806,9 @@ public:
     buffs.enhanced_basic_attacks = buff_creator_t( this, "enhanced_basic_attacks", o() -> perks.enhanced_basic_attacks );
 
     buffs.tier16_4pc_bm_brutal_kinship = buff_creator_t( this, 145737, "tier16_4pc_brutal_kinship" );
-    buffs.tier17_4pc_bm = buff_creator_t( this, "tier17_4pc_bm" )
-      .duration( o() -> specs.bestial_wrath -> duration() );
+    buffs.tier17_4pc_bm = buff_creator_t( this, 178875, "tier17_4pc_bm" )
+      .duration( o() -> specs.bestial_wrath -> duration() )
+      .default_value( owner -> find_spell( 178875 ) -> effectN( 2 ).percent() );
   }
 
   virtual void init_gains()
@@ -946,9 +947,9 @@ public:
     if ( o() -> sets.has_set_bonus( SET_MELEE, T16, B4 ) )
       m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> stack() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
 
-    // from Nimox
-    if ( buffs.tier17_4pc_bm -> up() && bugs )
-      m *= 2.0;
+    // from Nimox: 178875 is the 4pc BM pet damage buff
+    if ( buffs.tier17_4pc_bm -> up() )
+      m *= 1.0 + buffs.tier17_4pc_bm -> current_value;
 
     // Pet combat experience
     if ( o() -> talents.adaptation -> ok() )
