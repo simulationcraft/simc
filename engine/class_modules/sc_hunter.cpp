@@ -3758,13 +3758,12 @@ void hunter_t::apl_mm()
 void hunter_t::apl_surv()
 {
   action_priority_list_t* default_list  = get_action_priority_list( "default" );
-  action_priority_list_t* single_target = get_action_priority_list( "single" );
   action_priority_list_t* aoe = get_action_priority_list( "aoe" );
 
   default_list -> add_action( "auto_shot" );
 
   add_item_actions( default_list );
-  add_racial_actions( default_list );
+  add_racial_actions( default_list ); 
 
   add_potion_action( default_list, "draenic_agility", "virmens_bite",
     "if=(((cooldown.stampede.remains<1|!talent.stampede.enabled)&(!talent.a_murder_of_crows.enabled|cooldown.a_murder_of_crows.remains<1))&(trinket.stat.any.up|buff.archmages_greater_incandescence_agi.up))|target.time_to_die<=20" );
