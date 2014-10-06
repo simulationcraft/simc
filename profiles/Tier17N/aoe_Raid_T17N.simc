@@ -34,8 +34,8 @@ Mage_Arcane_T17N.simc
 talents=1000123
 Mage_Fire_T17N.simc
 talents=1000123
-#Mage_Frost_T17N.simc
-#talents=1000122
+Mage_Frost_T17N.simc
+talents=1000122
 
 #Monk_Brewmaster_1h_Serenity_T17N.simc
 #Monk_Brewmaster_2h_Serenity_T17N.simc
@@ -65,9 +65,9 @@ talents=0001013
 Shaman_Enhancement_T17N.simc
 talents=0001013
 
-Warlock_Affliction_T17N.simc
-Warlock_Destruction_T17N.simc
-Warlock_Demonology_T17N.simc
+#Warlock_Affliction_T17N.simc
+#Warlock_Destruction_T17N.simc
+#Warlock_Demonology_T17N.simc
 
 Warrior_Arms_T17N.simc
 talent_override=taste_for_blood
