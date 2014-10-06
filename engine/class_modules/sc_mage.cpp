@@ -2302,6 +2302,7 @@ struct comet_storm_projectile_t : public mage_spell_t
     aoe = -1;
     split_aoe_damage = true;
     background = true;
+    school = SCHOOL_FROST;
   }
 
   virtual timespan_t travel_time() const
@@ -2792,9 +2793,9 @@ struct frostbolt_t : public mage_spell_t
     if ( ! p() -> pets.water_elemental -> is_sleeping() )
     {
       pets::water_elemental_pet_td_t* we_td = p() -> pets.water_elemental -> get_target_data( execute_state -> target );
-      if ( we_td -> water_jet -> up() )
+      if ( we_td -> water_jet -> up() && !result_is_multistrike( s -> result ) )
       {
-        p() -> buffs.fingers_of_frost -> trigger();
+        p() -> buffs.fingers_of_frost -> trigger(1, buff_t::DEFAULT_VALUE(), 1.0);
       }
     }
 
@@ -4338,6 +4339,7 @@ struct water_jet_t : public action_t
     may_miss = may_crit = callbacks = false;
     quiet = dual = true;
     trigger_gcd = timespan_t::zero();
+    use_off_gcd = true;
   }
 
   void reset()
@@ -4357,7 +4359,10 @@ struct water_jet_t : public action_t
   // Elemental
   void execute()
   {
+    mage_t* m = debug_cast<mage_t*>( player );
     action -> queued = true;
+    m -> pets.water_elemental -> executing -> interrupt_action();
+    action -> schedule_execute();
   }
 
   bool ready()
