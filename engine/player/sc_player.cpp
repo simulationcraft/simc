@@ -4941,34 +4941,21 @@ void player_t::assess_heal( school_e, dmg_e, action_state_t* s )
 // player_t::summon_pet =====================================================
 
 void player_t::summon_pet( const std::string& pet_name,
-                           timespan_t  duration )
+                           const timespan_t duration )
 {
-  for ( size_t i = 0; i < pet_list.size(); ++i )
-  {
-    pet_t* p = pet_list[ i ];
-    if ( p -> name_str == pet_name )
-    {
-      p -> summon( duration );
-      return;
-    }
-  }
-  sim -> errorf( "Player %s is unable to summon pet '%s'\n", name(), pet_name.c_str() );
+  if ( pet_t* p = find_pet( pet_name ) )
+    p -> summon( duration );
+  else
+    sim -> errorf( "Player %s is unable to summon pet '%s'\n", name(), pet_name.c_str() );
 }
 
 // player_t::dismiss_pet ====================================================
 
 void player_t::dismiss_pet( const std::string& pet_name )
 {
-  for ( size_t i = 0; i < pet_list.size(); ++i )
-  {
-    pet_t* p = pet_list[ i ];
-    if ( p -> name_str == pet_name )
-    {
-      p -> dismiss();
-      return;
-    }
-  }
-  assert( 0 );
+  pet_t* p = find_pet( pet_name );
+  assert( p );
+  p -> dismiss();
 }
 
 // player_t::recent_cast ====================================================
@@ -4993,20 +4980,6 @@ dot_t* player_t::find_dot( const std::string& name,
   return 0;
 }
 
-// player_t::find_action_priority_list( const std::string& name ) ===========
-
-action_priority_list_t* player_t::find_action_priority_list( const std::string& name )
-{
-  for ( size_t i = 0; i < action_priority_list.size(); i++ )
-  {
-    action_priority_list_t* a = action_priority_list[ i ];
-    if ( a -> name_str == name )
-      return a;
-  }
-
-  return 0;
-}
-
 // player_t::clear_action_priority_lists() ==================================
 
 void player_t::clear_action_priority_lists() const
@@ -5022,7 +4995,7 @@ void player_t::clear_action_priority_lists() const
 template <typename T>
 T* find_vector_member( const std::vector<T*>& list, const std::string& name )
 {
-  for ( size_t i = 0; i < list.size(); ++i )
+  for ( size_t i = 0, s = list.size(); i < s; ++i )
   {
     T* t = list[ i ];
     if ( t -> name_str == name )
@@ -5030,6 +5003,11 @@ T* find_vector_member( const std::vector<T*>& list, const std::string& name )
   }
   return nullptr;
 }
+
+// player_t::find_action_priority_list( const std::string& name ) ===========
+
+action_priority_list_t* player_t::find_action_priority_list( const std::string& name )
+{ return find_vector_member( action_priority_list, name ); }
 
 pet_t* player_t::find_pet( const std::string& name ) const
 { return find_vector_member( pet_list, name ); }
