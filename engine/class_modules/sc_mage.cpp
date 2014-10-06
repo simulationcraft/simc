@@ -3143,7 +3143,7 @@ struct ice_lance_t : public mage_spell_t
 
     if ( p() -> talents.frost_bomb -> ok() )
     {
-      if ( td( s -> target ) -> debuffs.frost_bomb -> up() && frozen && !result_is_multistrike( s -> result) )
+      if ( td( s -> target ) -> debuffs.frost_bomb -> up() && frozen )
       {
         frost_bomb_explosion -> target = s -> target;
         frost_bomb_explosion -> execute();
