@@ -656,6 +656,7 @@ public:
     if ( p() -> passives.hand_of_light -> ok() )
     {
       p() -> active_hand_of_light_proc -> base_dd_max = p() -> active_hand_of_light_proc-> base_dd_min = s -> result_amount;
+      p() -> active_hand_of_light_proc -> target = s -> target;
       p() -> active_hand_of_light_proc -> execute();
     }
   }
@@ -2791,6 +2792,7 @@ struct lights_hammer_t : public paladin_spell_t
     dot_duration      = p -> find_spell( 122773 ) -> duration() - travel_time_;
     cooldown -> duration = p -> find_spell( 114158 ) -> cooldown();
     hasted_ticks   = false;
+    tick_zero = true;
 
     dynamic_tick_action = true;
     //tick_action = new lights_hammer_tick_t( p, p -> find_spell( 114919 ) );
