@@ -3,7 +3,7 @@ level=100
 race=orc
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#dZ!1..2..0
+talents=http://us.battle.net/wow/en/tool/talent-calculator#dZ!1..2..1
 spec=frost
 
 # This default action priority list is automatically created based on your character.
@@ -44,6 +44,7 @@ actions+=/run_action_list,name=single_target,if=active_enemies<3
 actions.aoe=unholy_blight
 actions.aoe+=/blood_boil,if=!talent.necrotic_plague.enabled&dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28
 actions.aoe+=/blood_boil,if=!talent.necrotic_plague.enabled&dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28
+actions.aoe+=/defile
 actions.aoe+=/howling_blast
 actions.aoe+=/blood_tap,if=buff.blood_charge.stack>10
 actions.aoe+=/frost_strike,if=runic_power>76
@@ -60,6 +61,8 @@ actions.single_target+=/outbreak,if=!disease.min_ticking
 actions.single_target+=/unholy_blight,if=!disease.min_ticking
 actions.single_target+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35
 actions.single_target+=/blood_tap,if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains=0)
+actions.single_target+=/defile
+actions.single_target+=/blood_tap,if=talent.defile.enabled&cooldown.defile.remains=0
 actions.single_target+=/howling_blast,if=!talent.necrotic_plague.enabled&!dot.frost_fever.ticking
 actions.single_target+=/howling_blast,if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking
 actions.single_target+=/plague_strike,if=!talent.necrotic_plague.enabled&!dot.blood_plague.ticking
