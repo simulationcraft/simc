@@ -1541,8 +1541,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
   {
     dot_behavior      = DOT_REFRESH;
     weapon_multiplier = 0.0;
-
-    can_trigger_atonement = false;
   }
 
   virtual void init() override
@@ -1577,7 +1575,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
       trigger_vampiric_embrace( s );
 
     if ( atonement )
-      trigger_atonment( type, s );
+      trigger_atonement( type, s );
   }
 
   /* Based on previous implementation ( pets don't count but get full heal )
@@ -1607,7 +1605,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
     }
   }
 
-  virtual void trigger_atonment( dmg_e type, action_state_t* s )
+  virtual void trigger_atonement( dmg_e type, action_state_t* s )
   {
     atonement -> trigger( s -> result_amount, direct_tick ? DMG_OVER_TIME : type, s -> result );
   }
@@ -3458,7 +3456,7 @@ struct smite_t final : public priest_spell_t
     priest_spell_t::snapshot_state( s, type );
   }
 
-  virtual void trigger_atonment( dmg_e type, action_state_t* s ) override
+  virtual void trigger_atonement( dmg_e type, action_state_t* s ) override
   {
     double atonement_dmg = s -> result_amount; // Normal dmg
 
