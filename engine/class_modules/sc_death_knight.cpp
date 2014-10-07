@@ -1771,11 +1771,6 @@ struct army_ghoul_pet_t : public death_knight_pet_t
 
   virtual void init_base_stats()
   {
-    //initial.stats.attack_power = -20;
-
-    // Ghouls don't appear to gain any crit from agi, they may also just have none
-    // initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
-
     resources.base[ RESOURCE_ENERGY ] = 100;
     base_energy_regen_per_second  = 10;
 
@@ -1910,7 +1905,7 @@ struct ghoul_pet_t : public death_knight_pet_t
     main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.8;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
 
-    action_list_str = "auto_attack/sweeping_claws/claw";
+    action_list_str = "auto_attack/monstrous_blow/sweeping_claws/claw";
   }
 
   struct ghoul_pet_melee_attack_t : public melee_attack_t
@@ -1982,6 +1977,25 @@ struct ghoul_pet_t : public death_knight_pet_t
     }
   };
 
+  struct ghoul_pet_monstrous_blow_t: public ghoul_pet_melee_attack_t
+  {
+    ghoul_pet_monstrous_blow_t( ghoul_pet_t* p ):
+      ghoul_pet_melee_attack_t( "monstrous_blow", p, p -> find_spell( 91797 ) )
+    {
+      special = true;
+    }
+
+    bool ready()
+    {
+      ghoul_pet_t* p = debug_cast<ghoul_pet_t*>( player );
+
+      if ( p -> o() -> buffs.dark_transformation -> check() ) // Only usable while dark transformed.
+        return ghoul_pet_melee_attack_t::ready();
+
+      return false;
+    }
+  };
+
   struct ghoul_pet_sweeping_claws_t : public ghoul_pet_melee_attack_t
   {
     ghoul_pet_sweeping_claws_t( ghoul_pet_t* p ) :
@@ -2004,13 +2018,9 @@ struct ghoul_pet_t : public death_knight_pet_t
 
   virtual void init_base_stats()
   {
-    //assert( owner -> specialization() != SPEC_NONE ); // Is there a reason for this?
-
-    //initial.stats.attack_power = -20;
-
     resources.base[ RESOURCE_ENERGY ] = 100;
     base_energy_regen_per_second  = 10;
-    owner_coeff.ap_from_ap = 0.2664;
+    owner_coeff.ap_from_ap = 0.5;
   }
 
   //Ghoul regen doesn't benefit from haste (even bloodlust/heroism)
@@ -2024,6 +2034,7 @@ struct ghoul_pet_t : public death_knight_pet_t
     if ( name == "auto_attack"    ) return new    ghoul_pet_auto_melee_attack_t( this );
     if ( name == "claw"           ) return new           ghoul_pet_claw_t( this );
     if ( name == "sweeping_claws" ) return new ghoul_pet_sweeping_claws_t( this );
+    if ( name == "monstrous_blow" ) return new ghoul_pet_monstrous_blow_t( this );
 
     return pet_t::create_action( name, options_str );
   }
@@ -3546,8 +3557,8 @@ struct defile_t : public death_knight_spell_t
     school = p -> find_spell( 156000 ) -> get_school_type();
     attack_power_mod.tick = p -> find_spell( 156000 ) -> effectN( 1 ).ap_coeff();
     dot_duration = data().duration();
-    tick_may_crit = tick_zero = true; // Zero tick or not?
-    hasted_ticks = false;
+    tick_may_crit = true;
+    hasted_ticks = tick_zero = false;
   }
 
   double composite_ta_multiplier( const action_state_t* state ) const
@@ -5041,8 +5052,6 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
 
     tick_action = new breath_of_sindragosa_tick_t( p, this );
     tick_action -> base_costs[ RESOURCE_RUNIC_POWER ] = base_costs[ RESOURCE_RUNIC_POWER ];
-    base_costs[ RESOURCE_RUNIC_POWER ] = 0;
-
     school = tick_action -> school;
   }
 
