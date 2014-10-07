@@ -507,39 +507,32 @@ void scaling_t::analyze()
 
 void scaling_t::create_options()
 {
-  option_t scaling_options[] =
-  {
-    // @option_doc loc=global/scale_factors title="Scale Factors"
-    opt_bool( "calculate_scale_factors", calculate_scale_factors ),
-    opt_func( "normalize_scale_factors", parse_normalize_scale_factors ),
-    opt_bool( "debug_scale_factors", debug_scale_factors ),
-    opt_bool( "center_scale_delta", center_scale_delta ),
-    opt_float( "scale_delta_multiplier", scale_delta_multiplier ), // multiplies all default scale deltas
-    opt_bool( "positive_scale_delta", positive_scale_delta ),
-    opt_bool( "scale_lag", scale_lag ),
-    opt_float( "scale_factor_noise", scale_factor_noise ),
-    opt_float( "scale_strength",  stats.attribute[ ATTR_STRENGTH  ] ),
-    opt_float( "scale_agility",   stats.attribute[ ATTR_AGILITY   ] ),
-    opt_float( "scale_stamina",   stats.attribute[ ATTR_STAMINA   ] ),
-    opt_float( "scale_intellect", stats.attribute[ ATTR_INTELLECT ] ),
-    opt_float( "scale_spirit",    stats.attribute[ ATTR_SPIRIT    ] ),
-    opt_float( "scale_spell_power", stats.spell_power ),
-    opt_float( "scale_attack_power", stats.attack_power ),
-    opt_float( "scale_crit_rating", stats.crit_rating ),
-    opt_float( "scale_haste_rating", stats.haste_rating ),
-    opt_float( "scale_mastery_rating", stats.mastery_rating ),
-    opt_float( "scale_multistrike_rating", stats.multistrike_rating ),
-    opt_float( "scale_readiness_rating", stats.readiness_rating ),
-    opt_float( "scale_versatility_rating", stats.versatility_rating ),
-    opt_float( "scale_weapon_dps", stats.weapon_dps ),
-    opt_float( "scale_offhand_weapon_dps", stats.weapon_offhand_dps ),
-    opt_string( "scale_only", scale_only_str ),
-    opt_string( "scale_over", scale_over ),
-    opt_string( "scale_over_player", scale_over_player ),
-    opt_null()
-  };
-
-  opts::copy( sim -> options, scaling_options );
+  sim->add_option(opt_bool("calculate_scale_factors", calculate_scale_factors));
+  sim->add_option(opt_func("normalize_scale_factors", parse_normalize_scale_factors));
+  sim->add_option(opt_bool("debug_scale_factors", debug_scale_factors));
+  sim->add_option(opt_bool("center_scale_delta", center_scale_delta));
+  sim->add_option(opt_float("scale_delta_multiplier", scale_delta_multiplier)); // multiplies all default scale deltas
+  sim->add_option(opt_bool("positive_scale_delta", positive_scale_delta));
+  sim->add_option(opt_bool("scale_lag", scale_lag));
+  sim->add_option(opt_float("scale_factor_noise", scale_factor_noise));
+  sim->add_option(opt_float("scale_strength", stats.attribute[ATTR_STRENGTH]));
+  sim->add_option(opt_float("scale_agility", stats.attribute[ATTR_AGILITY]));
+  sim->add_option(opt_float("scale_stamina", stats.attribute[ATTR_STAMINA]));
+  sim->add_option(opt_float("scale_intellect", stats.attribute[ATTR_INTELLECT]));
+  sim->add_option(opt_float("scale_spirit", stats.attribute[ATTR_SPIRIT]));
+  sim->add_option(opt_float("scale_spell_power", stats.spell_power));
+  sim->add_option(opt_float("scale_attack_power", stats.attack_power));
+  sim->add_option(opt_float("scale_crit_rating", stats.crit_rating));
+  sim->add_option(opt_float("scale_haste_rating", stats.haste_rating));
+  sim->add_option(opt_float("scale_mastery_rating", stats.mastery_rating));
+  sim->add_option(opt_float("scale_multistrike_rating", stats.multistrike_rating));
+  sim->add_option(opt_float("scale_readiness_rating", stats.readiness_rating));
+  sim->add_option(opt_float("scale_versatility_rating", stats.versatility_rating));
+  sim->add_option(opt_float("scale_weapon_dps", stats.weapon_dps));
+  sim->add_option(opt_float("scale_offhand_weapon_dps", stats.weapon_offhand_dps));
+  sim->add_option(opt_string("scale_only", scale_only_str));
+  sim->add_option(opt_string("scale_over", scale_over));
+  sim->add_option(opt_string("scale_over_player", scale_over_player));
 }
 
 // scaling_t::has_scale_factors =============================================

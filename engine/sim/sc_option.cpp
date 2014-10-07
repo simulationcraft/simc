@@ -244,18 +244,6 @@ protected:
 
 } // opts
 
-// option_t::copy ===========================================================
-
-void opts::copy( std::vector<option_t>& opt_vector,
-                     const option_t*        opt_array )
-{
-  if ( !opt_array )
-    return;
-
-  while ( !(*opt_array) -> name().empty() )
-    opt_vector.push_back( *opt_array++ );
-}
-
 // option_t::parse ==========================================================
 
 bool opts::parse( sim_t*                 sim,

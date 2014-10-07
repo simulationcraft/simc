@@ -1405,7 +1405,6 @@ typedef std::vector<std::string> list_t;
 // unique_ptr anyone?
 typedef opts::option_base_t* option_t;
 namespace opts {
-void copy( std::vector<option_t>& opt_vector, const option_t* opt_array );
 bool parse( sim_t*, std::vector<option_t>&, const std::string& name, const std::string& value );
 void parse( sim_t*, const char* context, std::vector<option_t>&, const std::string& options_str );
 void parse( sim_t*, const char* context, std::vector<option_t>&, const std::vector<std::string>& strings );
