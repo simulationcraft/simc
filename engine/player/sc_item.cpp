@@ -422,7 +422,7 @@ bool item_t::parse_options()
 
   try
   {
-    opts::parse( sim, option_name_str.c_str(), options, remainder );
+    opts::parse( sim, option_name_str, options, remainder );
   }
   catch( ... )
   {

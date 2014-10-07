@@ -802,7 +802,7 @@ void raid_event_t::parse_options( const std::string& options_str )
 
   try
   {
-    opts::parse( sim, name_str.c_str(), options, options_str );
+    opts::parse( sim, name_str, options, options_str );
   }
   catch( const std::exception& e )
   {

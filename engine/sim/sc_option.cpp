@@ -149,10 +149,11 @@ protected:
   }
 };
 
-struct opts_sim_func_t : public opts_helper_t<function_t>
+struct opts_sim_func_t : public option_base_t
 {
-  opts_sim_func_t( const std::string& name, function_t& ref ) :
-    base_t( name, ref )
+  opts_sim_func_t( const std::string& name, const function_t& ref ) :
+    option_base_t( name ),
+    _fun( ref )
   { }
 protected:
   bool parse( sim_t* sim, const std::string& n, const std::string& value ) const override
@@ -160,8 +161,10 @@ protected:
     if ( name() != n )
       return false;
 
-     return _ref( sim, n, value );
+     return _fun( sim, n, value );
   }
+private:
+  function_t _fun;
 };
 
 struct opts_map_t : public opts_helper_t<map_t>
@@ -232,16 +235,6 @@ private:
   std::string _new_option;
 };
 
-struct opts_null_t : public option_base_t
-{
-  opts_null_t() :
-    option_base_t( "" )
-  { }
-protected:
-  bool parse( sim_t*, const std::string&, const std::string& ) const override
-  { assert( false ); return false; };
-};
-
 } // opts
 
 // option_t::parse ==========================================================
@@ -263,7 +256,7 @@ bool opts::parse( sim_t*                 sim,
 // option_t::parse ==========================================================
 
 void opts::parse( sim_t*                 sim,
-                      const char*            context,
+    const std::string&            context,
                       std::vector<option_t>& options,
                       const std::vector<std::string>& splits )
 {
@@ -294,7 +287,7 @@ void opts::parse( sim_t*                 sim,
 // option_t::parse ==========================================================
 
 void opts::parse( sim_t*                 sim,
-                      const char*            context,
+    const std::string&            context,
                       std::vector<option_t>& options,
                       const std::string&     options_str )
 {
@@ -551,14 +544,11 @@ option_t opt_list( const std::string& n, opts::list_t& v )
 option_t opt_map( const std::string& n, opts::map_t& v )
 { return new opts::opts_map_t( n, v ); }
 
-option_t opt_func( const std::string& n, opts::function_t& f )
+option_t opt_func( const std::string& n, const opts::function_t& f )
 { return new opts::opts_sim_func_t( n, f ); }
 
 option_t opt_deprecated( const std::string& n, const std::string& new_option )
 { return new opts::opts_deperecated_t( n, new_option ); }
-
-option_t opt_null()
-{ return new opts::opts_null_t(); }
 
 #undef SC_SHARED_DATA
 

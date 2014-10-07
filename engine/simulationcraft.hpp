@@ -1375,6 +1375,7 @@ inline std::string from_string( const std::string& v )
 
 
 namespace opts {
+
 struct option_base_t
 {
 public:
@@ -1382,35 +1383,26 @@ public:
     _name( name )
 { }
   virtual ~option_base_t() { }
-  friend std::ostream& operator<<( std::ostream& stream, const option_base_t& opt );
   bool parse_option( sim_t* sim , const std::string& n, const std::string& value )
-  {
-    if ( n.empty() )
-      return false;
-
-    return parse( sim, n, value );
-  }
+  { return parse( sim, n, value ); }
   std::string name() const
   { return _name; }
 protected:
   virtual bool parse( sim_t*, const std::string& name, const std::string& value ) const = 0;
-
+private:
   std::string _name;
 };
 
 typedef std::map<std::string, std::string> map_t;
-typedef bool function_t( sim_t* sim, const std::string& name, const std::string& value );
+typedef std::function<bool(sim_t*,const std::string&, const std::string&)> function_t;
 typedef std::vector<std::string> list_t;
 }
 // unique_ptr anyone?
 typedef opts::option_base_t* option_t;
 namespace opts {
 bool parse( sim_t*, std::vector<option_t>&, const std::string& name, const std::string& value );
-void parse( sim_t*, const char* context, std::vector<option_t>&, const std::string& options_str );
-void parse( sim_t*, const char* context, std::vector<option_t>&, const std::vector<std::string>& strings );
-bool parse_file( sim_t*, FILE* file );
-bool parse_line( sim_t*, const char* line );
-bool parse_token( sim_t*, const std::string& token );
+void parse( sim_t*, const std::string& context, std::vector<option_t>&, const std::string& options_str );
+void parse( sim_t*, const std::string& context, std::vector<option_t>&, const std::vector<std::string>& strings );
 }
 
 option_t opt_string( const std::string& n, std::string& v );
@@ -1427,9 +1419,8 @@ option_t opt_timespan( const std::string& n, timespan_t& v );
 option_t opt_timespan( const std::string& n, timespan_t& v, timespan_t , timespan_t  );
 option_t opt_list( const std::string& n, opts::list_t& v );
 option_t opt_map( const std::string& n, opts::map_t& v );
-option_t opt_func( const std::string& n, opts::function_t& f );
+option_t opt_func( const std::string& n, const opts::function_t& f );
 option_t opt_deprecated( const std::string& n, const std::string& new_option );
-option_t opt_null();
 
 
 // Data Access ==============================================================
