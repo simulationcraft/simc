@@ -332,15 +332,9 @@ double reforge_plot_t::progress( std::string& phase, std::string* detailed )
 
 void reforge_plot_t::create_options()
 {
-  option_t plot_options[] =
-  {
-    opt_int( "reforge_plot_iterations", reforge_plot_iterations ),
-    opt_int( "reforge_plot_step", reforge_plot_step ),
-    opt_int( "reforge_plot_amount", reforge_plot_amount ),
-    opt_string( "reforge_plot_stat", reforge_plot_stat_str ),
-    opt_bool( "reforge_plot_debug", reforge_plot_debug ),
-    opt_null()
-  };
-
-  option_t::copy( sim -> options, plot_options );
+  sim->add_option(opt_int("reforge_plot_iterations", reforge_plot_iterations));
+  sim->add_option(opt_int("reforge_plot_step", reforge_plot_step));
+  sim->add_option(opt_int("reforge_plot_amount", reforge_plot_amount));
+  sim->add_option(opt_string("reforge_plot_stat", reforge_plot_stat_str));
+  sim->add_option(opt_bool("reforge_plot_debug", reforge_plot_debug));
 }

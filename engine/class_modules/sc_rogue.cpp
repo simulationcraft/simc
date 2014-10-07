@@ -522,7 +522,7 @@ struct rogue_attack_t : public melee_attack_t
     combo_points_spent( 0 ),
     ability_type( ABILITY_NONE )
   {
-    parse_options( 0, options );
+    parse_options( options );
 
     may_crit                  = true;
     may_glance                = false;
@@ -1082,13 +1082,9 @@ struct apply_poison_t : public action_t
     std::string lethal_str;
     std::string nonlethal_str;
 
-    option_t options[] =
-    {
-      opt_string( "lethal", lethal_str ),
-      opt_string( "nonlethal", nonlethal_str ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_string( "lethal", lethal_str ) );
+    add_option( opt_string( "nonlethal", nonlethal_str ) );
+    parse_options( options_str );
 
     trigger_gcd = timespan_t::zero();
     harmful = false;
@@ -1394,12 +1390,8 @@ struct auto_melee_attack_t : public action_t
     action_t( ACTION_OTHER, "auto_attack", p ),
     sync_weapons( 0 )
   {
-    option_t options[] =
-    {
-      opt_bool( "sync_weapons", sync_weapons ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_bool( "sync_weapons", sync_weapons ) );
+    parse_options( options_str );
 
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
 
@@ -2783,7 +2775,7 @@ struct stealth_t : public spell_t
   {
     harmful = false;
 
-    parse_options( NULL, options_str );
+    parse_options( options_str );
   }
 
   virtual void execute()

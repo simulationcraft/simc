@@ -35,177 +35,145 @@ io::cfile open_file( const std::vector<std::string>& splits, const std::string& 
   return io::cfile( name, "r" );
 }
 
-template<typename T>
-inline void check_boundaries( bool clamp, std::string name, T v, double min, double max) {
-
-  if (clamp) {
-    if (v < min || v > max) {
-      std::stringstream s;
-      s << "Option '" << name << "' with value '" << v
-          << "' not within valid boundaries [" << min << " - " << max << "]";
-      throw std::invalid_argument(s.str());
-    }
-  }
-}
 } // UNNAMED NAMESPACE ======================================================
 
-// option_t::print ==========================================================
+namespace opts {
 
-std::ostream& operator<<( std::ostream& stream, const option_t& opt )
+/* Option helper class
+ * Stores a reference of given type T
+ */
+template<class T>
+struct opts_helper_t : public option_base_t
 {
-  switch ( opt.type )
+  typedef opts_helper_t<T> base_t;
+  opts_helper_t( const std::string& name, T& ref ) :
+    option_base_t( name ),
+    _ref( ref )
+  { }
+protected:
+  T& _ref;
+};
+
+
+enum option_assignement_e {
+  ASSIGN,
+  APPEND,
+};
+
+/* Generic option class, tries to handle the most common numeric and string based options
+ */
+template<class T>
+struct opts_generic_t : public opts_helper_t<T>
+{
+  opts_generic_t( const std::string& name, T& ref, option_assignement_e ass = ASSIGN ) :
+    opts_helper_t<T>( name, ref ),
+    _ass( ass )
+  { }
+protected:
+  bool parse( sim_t*, const std::string& n, const std::string& value ) const override
   {
-  case option_t::STRING:
-  {
-    const std::string& v = *static_cast<std::string*>( opt.data.address );
-    stream << opt.name << "=" << v.c_str() << "\n";
-  }
-  break;
-  case option_t::INT_BOOL:
-  {
-    int v = *static_cast<int*>( opt.data.address );
-    stream << opt.name << "=" << (v ? "true" : "false") << "\n";
-  }
-  break;
-  case option_t::BOOL:
-  {
-    bool v = *static_cast<bool*>( opt.data.address );
-    stream << opt.name << "=" << (v ? "true" : "false") << "\n";
-  }
-  break;
-  case option_t::INT:
-  {
-    int v = *static_cast<int*>( opt.data.address );
-    stream << opt.name << "=" << v << "\n";
-  }
-  break;
-  case option_t::UINT:
-  {
-    unsigned v = *static_cast<unsigned*>( opt.data.address );
-    stream << opt.name << "=" << v << "\n";
-  }
-  break;
-  case option_t::FLT:
-  {
-    double v = *static_cast<double*>( opt.data.address );
-    stream << opt.name << "=" << v << "\n";
-  }
-  break;
-  case option_t::TIMESPAN:
-  {
-    timespan_t v = *static_cast<timespan_t*>( opt.data.address );
-    stream << opt.name << "=" << v.total_seconds() << "\n";
-  }
-  break;
-  case option_t::LIST:
-  {
-    const std::vector<std::string>& v = *static_cast<std::vector<std::string>*>( opt.data.address );
-    stream << opt.name << "=";
-    for ( size_t i = 0; i < v.size(); ++i )
+    if ( n != this -> name() )
+      return false;
+
+    T v = util::from_string<T>( value );
+    switch ( _ass )
     {
-      if ( i > 0 )
-        stream << " ";
-      stream << v[ i ];
-    }
-    stream << "\n";
-  }
-  break;
-  case option_t::MAP:
-  {
-    const std::map<std::string, std::string>& m = *static_cast<std::map<std::string, std::string>*>( opt.data.address );
-    for ( std::map<std::string, std::string>::const_iterator it = m.begin(), end = m.end(); it != end; ++it )
-      stream << opt.name << it->first << "="<< it->second << "\n";
-  }
-  break;
-  default: break;
-  }
-  return stream;
-}
-
-// option_t::copy ===========================================================
-
-void option_t::copy( std::vector<option_t>& opt_vector,
-                     const option_t*        opt_array )
-{
-  while ( opt_array -> name )
-    opt_vector.push_back( *opt_array++ );
-}
-
-// option_t::parse ==========================================================
-
-bool option_t::parse( sim_t*             sim,
-                      const std::string& n,
-                      const std::string& v )
-{
-  if ( ! name || n.empty() ) return false;
-
-  if ( n == name )
-  {
-    switch ( type )
-    {
-      case STRING:
-        *static_cast<std::string*>( data.address ) = v;
-        break;
-      case APPEND:
-        *static_cast<std::string*>( data.address ) += v;
-        break;
-      case INT:
-        *static_cast<int*>( data.address ) = strtol( v.c_str(), nullptr, 10 );
-        check_boundaries( clamp, name, *static_cast<int*>( data.address ), min, max );
-        break;
-      case UINT:
-        *static_cast<unsigned*>( data.address ) = strtoul( v.c_str(), nullptr, 10 );
-        check_boundaries( clamp, name, *static_cast<unsigned*>( data.address ), min, max );
-        break;
-      case FLT:
-        *static_cast<double*>( data.address ) = strtod( v.c_str(), nullptr );
-        check_boundaries( clamp, name, *static_cast<double*>( data.address ), min, max );
-        break;
-      case TIMESPAN:
-        {
-          double val = strtod( v.c_str(), nullptr );
-          *static_cast<timespan_t*>( data.address ) = timespan_t::from_seconds( val );
-          check_boundaries( clamp, name, val, min, max );
-        }
-        break;
-      case INT_BOOL:
-        if ( v != "0" && v != "1" ) {
-          std::stringstream s;
-          s << "Acceptable values for '" << name << "' are '1' or '0'";
-          throw std::invalid_argument( s.str() );
-        }
-        *static_cast<int*>( data.address ) = strtol( v.c_str(), nullptr, 10 ) ? 1 : 0;
-        break;
-      case BOOL:
-        if ( v != "0" && v != "1" ) {
-          std::stringstream s;
-          s << "Acceptable values for '" << name << "' are '1' or '0'";
-          throw std::invalid_argument( s.str() );
-        }
-        *static_cast<bool*>( data.address ) = strtol( v.c_str(), nullptr, 10 ) ? 1 : 0;
-        break;
-      case LIST:
-        static_cast<std::vector<std::string>*>( data.address ) -> push_back( v );
-        break;
-      case FUNC:
-        return ( *data.func )( sim, n, v );
-      case DEPRECATED:
-        {
-          std::stringstream s;
-          s << "Option '" << name << "' has been deprecated.";
-          if ( data.cstr ) {
-            s << " Please use option '" << data.cstr << "' instead.";
-          }
-          throw std::invalid_argument( s.str() );
-        }
-        break;
-      default:
-        assert( false && "Unhandled Option Type" );
-        return false;
+    case ASSIGN:
+      this -> _ref = v;
+      break;
+    case APPEND:
+      this -> _ref += v;
+      break;
     }
     return true;
   }
-  else if ( type == MAP )
+private:
+  option_assignement_e _ass;
+};
+
+/* Generic option class + range checks, tries to handle numeric options
+ */
+template<class T>
+struct opts_generic_range_checked_t : public opts_helper_t<T>
+{
+  opts_generic_range_checked_t( const std::string& name, T& ref, T min, T max ) :
+    opts_helper_t<T>( name, ref ),
+    _min( min ),
+    _max( max )
+  { }
+protected:
+  bool parse( sim_t*, const std::string& n, const std::string& value ) const override
+  {
+    if ( n != this -> name() )
+      return false;
+
+    T v = util::from_string<T>( value );
+
+    // Range checking
+    if (v < _min || v > _max) {
+      std::stringstream s;
+      s << "Option '" << n << "' with value '" << value
+          << "' not within valid boundaries [" << _min << " - " << _max << "]";
+      throw std::invalid_argument(s.str());
+    }
+
+    this -> _ref = v;
+    return true;
+  }
+private:
+  T _min, _max;
+};
+
+/* Bool option, checks if user input is '0' or '1'
+ * template to support true bool as well as int
+ */
+template<class T>
+struct opts_bool_t : public opts_generic_t<T>
+{
+  opts_bool_t( const std::string& name, T& ref ) :
+    opts_generic_t<T>( name, ref )
+  { }
+protected:
+  bool parse( sim_t* sim, const std::string& name, const std::string& value ) const override
+  {
+    if ( name != this -> name() )
+      return false;
+
+    if ( value != "0" && value != "1" )
+    {
+      std::stringstream s;
+      s << "Acceptable values for '" << name << "' are '1' or '0'";
+      throw std::invalid_argument( s.str() );
+    }
+    return opts_generic_t<T>::parse( sim, name, value );
+  }
+};
+
+struct opts_sim_func_t : public option_base_t
+{
+  opts_sim_func_t( const std::string& name, const function_t& ref ) :
+    option_base_t( name ),
+    _fun( ref )
+  { }
+protected:
+  bool parse( sim_t* sim, const std::string& n, const std::string& value ) const override
+  {
+    if ( name() != n )
+      return false;
+
+     return _fun( sim, n, value );
+  }
+private:
+  function_t _fun;
+};
+
+struct opts_map_t : public opts_helper_t<map_t>
+{
+  opts_map_t( const std::string& name, map_t& ref ) :
+    base_t( name, ref )
+  { }
+protected:
+  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
     std::string::size_type last = n.size() - 1;
     bool append = false;
@@ -217,22 +185,61 @@ bool option_t::parse( sim_t*             sim,
     std::string::size_type dot = n.rfind( ".", last );
     if ( dot != std::string::npos )
     {
-      if ( name == n.substr( 0, dot + 1 ) )
+      if ( name() == n.substr( 0, dot + 1 ) )
       {
-        std::map<std::string, std::string>* m = static_cast<std::map<std::string, std::string>*>( data.address );
-        std::string& value = ( *m )[ n.substr( dot + 1, last - dot ) ];
+        std::string& value = _ref[ n.substr( dot + 1, last - dot ) ];
         value = append ? ( value + v ) : v;
         return true;
       }
     }
+    return false;
   }
+};
 
-  return false;
-}
+struct opts_list_t : public opts_helper_t<list_t>
+{
+  opts_list_t( const std::string& name, list_t& ref ) :
+    base_t( name, ref )
+  { }
+protected:
+  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
+  {
+    if ( name() != n )
+      return false;
+
+    _ref.push_back( v );
+
+    return false;
+  }
+};
+struct opts_deperecated_t : public option_base_t
+{
+  opts_deperecated_t( const std::string& name, const std::string& new_option ) :
+    option_base_t( name ),
+    _new_option( new_option )
+  { }
+protected:
+  bool parse( sim_t*, const std::string& name, const std::string& ) const override
+  {
+    if ( name != this -> name() )
+      return false;
+    std::stringstream s;
+    s << "Option '" << name << "' has been deprecated.";
+    if ( !_new_option.empty() ) {
+      s << " Please use option '" << _new_option << "' instead.";
+    }
+    throw std::invalid_argument( s.str() );
+    return false;
+  }
+private:
+  std::string _new_option;
+};
+
+} // opts
 
 // option_t::parse ==========================================================
 
-bool option_t::parse( sim_t*                 sim,
+bool opts::parse( sim_t*                 sim,
                       std::vector<option_t>& options,
                       const std::string&     name,
                       const std::string&     value )
@@ -240,7 +247,7 @@ bool option_t::parse( sim_t*                 sim,
   size_t num_options = options.size();
 
   for ( size_t i = 0; i < num_options; i++ )
-    if ( options[ i ].parse( sim, name, value ) )
+    if ( options[ i ] -> parse_option( sim, name, value ) )
       return true;
 
   return false;
@@ -248,8 +255,8 @@ bool option_t::parse( sim_t*                 sim,
 
 // option_t::parse ==========================================================
 
-void option_t::parse( sim_t*                 sim,
-                      const char*            context,
+void opts::parse( sim_t*                 sim,
+    const std::string&            context,
                       std::vector<option_t>& options,
                       const std::vector<std::string>& splits )
 {
@@ -268,7 +275,7 @@ void option_t::parse( sim_t*                 sim,
     std::string n = s.substr( 0, index );
     std::string v = s.substr( index + 1 );
 
-    if ( ! option_t::parse( sim, options, n, v ) )
+    if ( ! opts::parse( sim, options, n, v ) )
     {
       std::stringstream stream;
       stream << context << ": Unexpected parameter '" << n << "'.";
@@ -279,50 +286,14 @@ void option_t::parse( sim_t*                 sim,
 
 // option_t::parse ==========================================================
 
-void option_t::parse( sim_t*                 sim,
-                      const char*            context,
+void opts::parse( sim_t*                 sim,
+    const std::string&            context,
                       std::vector<option_t>& options,
                       const std::string&     options_str )
 {
-  option_t::parse( sim, context, options, util::string_split( options_str, "," ) );
+  opts::parse( sim, context, options, util::string_split( options_str, "," ) );
 }
 
-// option_t::parse ==========================================================
-
-void option_t::parse( sim_t*             sim,
-                      const char*        context,
-                      const option_t*    options,
-                      const std::string& options_str )
-{
-  std::vector<option_t> options_vector;
-  option_t::copy( options_vector, options );
-  parse( sim, context, options_vector, options_str );
-}
-
-// option_t::parse ==========================================================
-
-void option_t::parse( sim_t*             sim,
-                      const char*        context,
-                      const option_t*    options,
-                      const std::vector<std::string>& strings )
-{
-  std::vector<option_t> options_vector;
-  option_t::copy( options_vector, options );
-  parse( sim, context, options_vector, strings );
-}
-
-// option_t::merge ==========================================================
-
-option_t* option_t::merge( std::vector<option_t>& merged_options,
-                           const option_t*        options1,
-                           const option_t*        options2 )
-{
-  merged_options.clear();
-  if ( options1 ) while ( options1 && options1 -> name ) merged_options.push_back( *options1++ );
-  if ( options2 ) while ( options2 && options2 -> name ) merged_options.push_back( *options2++ );
-  merged_options.push_back( opt_null() );
-  return &merged_options[ 0 ];
-}
 
 // option_db_t::parse_file ==================================================
 
@@ -530,6 +501,54 @@ option_db_t::option_db_t()
 
 
 }
+
+option_t opt_string( const std::string& n, std::string& v )
+{ return new opts::opts_generic_t<std::string>( n, v ); }
+
+option_t opt_append( const std::string& n, std::string& v )
+{ return new opts::opts_generic_t<std::string>( n, v, opts::APPEND ); }
+
+option_t opt_bool( const std::string& n, int& v )
+{ return new opts::opts_bool_t<int>( n, v ); }
+
+option_t opt_bool( const std::string& n, bool& v )
+{ return new opts::opts_bool_t<bool>( n, v ); }
+
+option_t opt_int( const std::string& n, int& v )
+{ return new opts::opts_generic_t<int>( n, v ); }
+
+option_t opt_int( const std::string& n, int& v, int min, int max )
+{ return new opts::opts_generic_range_checked_t<int>( n, v, min, max ); }
+
+option_t opt_uint( const std::string& n, unsigned& v )
+{ return new opts::opts_generic_t<unsigned>( n, v ); }
+
+option_t opt_uint( const std::string& n, unsigned& v, unsigned min, unsigned max )
+{ return new opts::opts_generic_range_checked_t<unsigned>( n, v, min, max ); }
+
+option_t opt_float( const std::string& n, double& v )
+{ return new opts::opts_generic_t<double>( n, v ); }
+
+option_t opt_float( const std::string& n, double& v, double min, double max )
+{ return new opts::opts_generic_range_checked_t<double>( n, v, min, max ); }
+
+option_t opt_timespan( const std::string& n, timespan_t& v )
+{ return new opts::opts_generic_t<timespan_t>( n, v ); }
+
+option_t opt_timespan( const std::string& n, timespan_t& v, timespan_t min, timespan_t max )
+{ return new opts::opts_generic_range_checked_t<timespan_t>( n, v, min, max ); }
+
+option_t opt_list( const std::string& n, opts::list_t& v )
+{ return new opts::opts_list_t( n, v ); }
+
+option_t opt_map( const std::string& n, opts::map_t& v )
+{ return new opts::opts_map_t( n, v ); }
+
+option_t opt_func( const std::string& n, const opts::function_t& f )
+{ return new opts::opts_sim_func_t( n, f ); }
+
+option_t opt_deprecated( const std::string& n, const std::string& new_option )
+{ return new opts::opts_deperecated_t( n, new_option ); }
 
 #undef SC_SHARED_DATA
 

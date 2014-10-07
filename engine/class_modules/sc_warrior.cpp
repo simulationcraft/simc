@@ -1233,7 +1233,7 @@ struct auto_attack_t: public warrior_attack_t
   auto_attack_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "auto_attack", p )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE | STANCE_BATTLE;
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
 
@@ -1312,7 +1312,7 @@ struct bladestorm_t: public warrior_attack_t
     bladestorm_mh( new bladestorm_tick_t( p, "bladestorm_mh" ) ),
     bladestorm_oh( 0 )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
 
     channeled = tick_zero = true;
@@ -1380,7 +1380,7 @@ struct bloodthirst_t: public warrior_attack_t
     warrior_attack_t( "bloodthirst", p, p -> spec.bloodthirst ),
     bloodthirst_heal( NULL )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
 
     if ( p -> talents.unquenchable_thirst -> ok() )
@@ -1452,7 +1452,7 @@ struct charge_t: public warrior_attack_t
     warrior_attack_t( "charge", p, p -> spell.charge ),
     first_charge( true ), movement_speed_increase( 5.0 )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     melee_range = data().max_range();
     melee_range += p -> glyphs.long_charge -> effectN( 1 ).base_value();
@@ -1520,7 +1520,7 @@ struct colossus_smash_t: public warrior_attack_t
   colossus_smash_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "colossus_smash", p, p -> spec.colossus_smash )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE;
 
     weapon = &( player -> main_hand_weapon );
@@ -1559,7 +1559,7 @@ struct demoralizing_shout: public warrior_attack_t
   demoralizing_shout( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "demoralizing_shout", p, p -> spec.demoralizing_shout )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 
@@ -1578,7 +1578,7 @@ struct devastate_t: public warrior_attack_t
   devastate_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "devastate", p, p -> spec.devastate )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
     weapon = &( p -> main_hand_weapon );
   }
@@ -1617,7 +1617,7 @@ struct dragon_roar_t: public warrior_attack_t
   dragon_roar_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "dragon_roar", p, p -> talents.dragon_roar )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     aoe = -1;
     may_dodge = may_parry = may_block = false;
     melee_range = p -> find_spell( 118000 ) -> effectN( 1 ).radius_max();
@@ -1656,7 +1656,7 @@ struct execute_t: public warrior_attack_t
   execute_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "execute", p, p -> spec.execute )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     weapon = &( p -> main_hand_weapon );
 
@@ -1732,7 +1732,7 @@ struct hamstring_t: public warrior_attack_t
   hamstring_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "hamstring", p, p -> find_class_spell( "Hamstring" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     weapon = &( p -> main_hand_weapon );
     use_off_gcd = true;
@@ -1746,7 +1746,7 @@ struct heroic_strike_t: public warrior_attack_t
   heroic_strike_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "heroic_strike", p, p -> find_class_spell( "Heroic Strike" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
 
     weapon = &( player -> main_hand_weapon );
@@ -1824,7 +1824,7 @@ struct heroic_throw_t: public warrior_attack_t
   heroic_throw_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "heroic_throw", p, p -> find_class_spell( "Heroic Throw" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     weapon = &( player -> main_hand_weapon );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
@@ -1854,7 +1854,7 @@ struct heroic_leap_t: public warrior_attack_t
   heroic_leap_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "heroic_leap", p, p -> spell.heroic_leap )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     aoe = -1;
     may_dodge = may_parry = may_miss = may_block = false;
@@ -1941,7 +1941,7 @@ struct impending_victory_t: public warrior_attack_t
     warrior_attack_t( "impending_victory", p, p -> talents.impending_victory ),
     impending_victory_heal( new impending_victory_heal_t( p ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     parse_effect_data( data().effectN( 2 ) ); //Both spell effects list an ap coefficient, #2 is correct.
   }
@@ -1970,7 +1970,7 @@ struct intervene_t: public warrior_attack_t
     warrior_attack_t( "intervene", p, p -> spell.intervene ),
     movement_speed_increase( 5.0 )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     melee_range = data().max_range();
     movement_directionality = MOVEMENT_OMNI;
@@ -2059,7 +2059,7 @@ struct heroic_charge_t: public warrior_attack_t
   heroic_charge_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "heroic_charge", p, spell_data_t::nil() )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_DEFENSE | STANCE_GLADIATOR | STANCE_BATTLE;
     leap = new heroic_leap_t( p, options_str );
     trigger_gcd = timespan_t::zero();
@@ -2105,7 +2105,7 @@ struct mortal_strike_t: public warrior_attack_t
   mortal_strike_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "mortal_strike", p, p -> spec.mortal_strike )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
 
     weapon = &( p -> main_hand_weapon );
@@ -2164,7 +2164,7 @@ struct pummel_t: public warrior_attack_t
   pummel_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "pummel", p, p -> find_class_spell( "Pummel" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
 
     may_miss = may_block = may_dodge = may_parry = false;
@@ -2222,7 +2222,7 @@ struct raging_blow_t: public warrior_attack_t
   {
     // Parent attack is only to determine miss/dodge/parry
     weapon_multiplier = attack_power_mod.direct = 0;
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
 
     mh_attack = new raging_blow_attack_t( p, "raging_blow_mh", data().effectN( 1 ).trigger() );
@@ -2275,7 +2275,7 @@ struct revenge_t: public warrior_attack_t
     warrior_attack_t( "revenge", p, p -> spec.revenge ),
     absorb_stats( 0 ), rage_gain( 0 )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
     base_add_multiplier = data().effectN( 3 ).percent();
     aoe = 3;
@@ -2383,7 +2383,7 @@ struct enraged_regeneration_t: public warrior_heal_t
   enraged_regeneration_t( warrior_t* p, const std::string& options_str ):
     warrior_heal_t( "enraged_regeneration", p, p -> talents.enraged_regeneration )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     dot_duration = data().duration();
     melee_range = -1;
@@ -2424,7 +2424,7 @@ struct rend_t: public warrior_attack_t
     warrior_attack_t( "rend", p, p -> spec.rend ),
     burst( new rend_burst_t( p ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     dot_behavior = DOT_REFRESH;
     tick_may_crit = true;
@@ -2482,7 +2482,7 @@ struct siegebreaker_t: public warrior_attack_t
     warrior_attack_t( "siegebreaker", p, p -> talents.siegebreaker ),
     oh_attack( 0 )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     may_dodge = may_parry = may_block = false;
 
@@ -2564,7 +2564,7 @@ struct shield_slam_t: public warrior_attack_t
     shield_charge_2pc( new shield_charge_2pc_t( p ) ),
     shield_block_2pc( new shield_block_2pc_t( p ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
     cooldown = p -> cooldown.shield_slam;
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
@@ -2679,7 +2679,7 @@ struct slam_t: public warrior_attack_t
   slam_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "slam", p, p -> talents.slam )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE;
     weapon = &( p -> main_hand_weapon );
     base_costs[RESOURCE_RAGE] = 10;
@@ -2727,7 +2727,7 @@ struct shockwave_t: public warrior_attack_t
   shockwave_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "shockwave", p, p -> talents.shockwave )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     may_dodge = may_parry = may_block = false;
     melee_range = data().effectN( 2 ).radius_max();
@@ -2772,7 +2772,7 @@ struct storm_bolt_t: public warrior_attack_t
     warrior_attack_t( "storm_bolt", p, p -> talents.storm_bolt ),
     oh_attack( 0 )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     may_dodge = may_parry = may_block = false;
     melee_range = data().max_range();
@@ -2811,7 +2811,7 @@ struct thunder_clap_t: public warrior_attack_t
   thunder_clap_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "thunder_clap", p, p -> spec.thunder_clap )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     aoe = -1;
     may_dodge = may_parry = may_block = false;
@@ -2864,7 +2864,7 @@ struct victory_rush_t: public warrior_attack_t
     warrior_attack_t( "victory_rush", p, p -> find_class_spell( "Victory Rush" ) ),
     victory_rush_heal( new victory_rush_heal_t( p ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
 
     cooldown -> duration = timespan_t::from_seconds( 1000.0 );
@@ -2922,7 +2922,7 @@ struct whirlwind_t: public warrior_attack_t
     warrior_attack_t( "whirlwind_mh", p, p -> spec.whirlwind ),
     oh_attack( 0 )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     aoe = -1;
 
@@ -2980,7 +2980,7 @@ struct wild_strike_t: public warrior_attack_t
   wild_strike_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "wild_strike", p, p -> spec.wild_strike )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
 
     base_costs[RESOURCE_RAGE] += p -> talents.furious_strikes -> effectN( 1 ).resource( RESOURCE_RAGE );
@@ -3034,7 +3034,7 @@ struct avatar_t: public warrior_spell_t
   avatar_t( warrior_t* p, const std::string& options_str ):
     warrior_spell_t( "avatar", p, p -> talents.avatar )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 
@@ -3053,7 +3053,7 @@ struct battle_shout_t: public warrior_spell_t
   battle_shout_t( warrior_t* p, const std::string& options_str ):
     warrior_spell_t( "battle_shout", p, p -> find_class_spell( "Battle Shout" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     melee_range = -1;
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     callbacks = false;
@@ -3075,7 +3075,7 @@ struct berserker_rage_t: public warrior_spell_t
   berserker_rage_t( warrior_t* p, const std::string& options_str ):
     warrior_spell_t( "berserker_rage", p, p -> find_class_spell( "Berserker Rage" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     melee_range = -1; // Just in case anyone wants to use berserker rage + enraged speed glyph to get somewhere a little faster... I guess.
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
@@ -3097,7 +3097,7 @@ struct bloodbath_t: public warrior_spell_t
   bloodbath_t( warrior_t* p, const std::string& options_str ):
     warrior_spell_t( "bloodbath", p, p -> talents.bloodbath )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 
@@ -3116,7 +3116,7 @@ struct commanding_shout_t: public warrior_spell_t
   commanding_shout_t( warrior_t* p, const std::string& options_str ):
     warrior_spell_t( "commanding_shout", p, p -> find_class_spell( "Commanding Shout" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     melee_range = -1;
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     callbacks = false;
@@ -3150,7 +3150,7 @@ struct die_by_the_sword_t: public warrior_spell_t
   die_by_the_sword_t( warrior_t* p, const std::string& options_str ):
     warrior_spell_t( "die_by_the_sword", p, p -> spec.die_by_the_sword )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     melee_range = -1;
     stancemask = STANCE_DEFENSE | STANCE_BATTLE;
   }
@@ -3193,7 +3193,7 @@ struct last_stand_t: public warrior_spell_t
   last_stand_t( warrior_t* p, const std::string& options_str ):
     warrior_spell_t( "last_stand", p, p -> spec.last_stand )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     cooldown -> duration = data().cooldown();
     cooldown -> duration += p -> sets.set( SET_TANK, T14, B2 ) -> effectN( 1 ).time_value();
@@ -3232,7 +3232,7 @@ struct rallying_cry_t: public warrior_spell_t
   rallying_cry_t( warrior_t* p, const std::string& options_str ):
     warrior_spell_t( "rallying_cry", p, p -> spec.rallying_cry )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     melee_range = -1;
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
@@ -3263,7 +3263,7 @@ struct ravager_t: public warrior_spell_t
     warrior_spell_t( "ravager", p, p -> talents.ravager ),
     ravager( new ravager_tick_t( p, "ravager_tick" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     hasted_ticks = callbacks = false;
     melee_range = data().max_range();
@@ -3295,7 +3295,7 @@ struct recklessness_t: public warrior_spell_t
     warrior_spell_t( "recklessness", p, p -> spec.recklessness ),
     bonus_crit( 0.0 )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE;
     bonus_crit = data().effectN( 1 ).percent();
     bonus_crit += p -> perk.improved_recklessness -> effectN( 1 ).percent();
@@ -3322,7 +3322,7 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     base_t( "shield_barrier", p, p -> specialization() == WARRIOR_PROTECTION ?
     p -> find_spell( 112048 ) : p -> spec.shield_barrier )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
     use_off_gcd = true;
     melee_range = -1;
@@ -3369,7 +3369,7 @@ struct shield_block_t: public warrior_spell_t
   shield_block_t( warrior_t* p, const std::string& options_str ):
     warrior_spell_t( "shield_block", p, p -> find_class_spell( "Shield Block" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_DEFENSE | STANCE_BATTLE;
     cooldown -> duration = timespan_t::from_seconds( 12.0 );
     cooldown -> charges = 2;
@@ -3417,7 +3417,7 @@ struct shield_charge_t: public warrior_spell_t
     warrior_spell_t( "shield_charge", p, p -> find_spell( 156321 ) ),
     movement_speed_increase( 5.0 )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_GLADIATOR;
     cooldown -> charges = 2;
     cooldown -> duration = timespan_t::from_seconds( 15 );
@@ -3468,7 +3468,7 @@ struct shield_wall_t: public warrior_spell_t
   shield_wall_t( warrior_t* p, const std::string& options_str ):
     warrior_spell_t( "shield_wall", p, p -> find_class_spell( "Shield Wall" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     harmful = false;
     melee_range = -1;
@@ -3495,7 +3495,7 @@ struct spell_reflection_t: public warrior_spell_t
   spell_reflection_t( warrior_t* p, const std::string& options_str ):
     warrior_spell_t( "spell_reflection", p, p -> find_class_spell( "Spell Reflection" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 };
@@ -3507,7 +3507,7 @@ struct mass_spell_reflection_t: public warrior_spell_t
   mass_spell_reflection_t( warrior_t* p, const std::string& options_str ):
     warrior_spell_t( "spell_reflection", p, p -> talents.mass_spell_reflection )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_DEFENSE | STANCE_GLADIATOR | STANCE_BATTLE;
   }
 };
@@ -3530,13 +3530,9 @@ struct stance_t: public warrior_spell_t
     warrior_spell_t( "stance", p ),
     switch_to_stance( STANCE_BATTLE ), stance_str( "" ), swap( 0 )
   {
-    option_t options[] =
-    {
-      opt_string( "choose", stance_str ),
-      opt_float( "swap", swap ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_string( "choose", stance_str ) );
+    add_option( opt_float( "swap", swap ) );
+    parse_options( options_str );
     melee_range = -1;
 
     if ( p -> specialization() != WARRIOR_PROTECTION )
@@ -3641,7 +3637,7 @@ struct sweeping_strikes_t: public warrior_spell_t
   sweeping_strikes_t( warrior_t* p, const std::string& options_str ):
     warrior_spell_t( "sweeping_strikes", p, p -> spec.sweeping_strikes )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE;
     cooldown -> duration = data().cooldown();
     cooldown -> duration += p -> perk.enhanced_sweeping_strikes -> effectN( 2 ).time_value();
@@ -3661,7 +3657,7 @@ struct taunt_t: public warrior_spell_t
   taunt_t( warrior_t* p, const std::string& options_str ):
     warrior_spell_t( "taunt", p, p -> find_class_spell( "Taunt" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     use_off_gcd = true;
     melee_range = data().max_range();
     stancemask = STANCE_DEFENSE | STANCE_GLADIATOR;
@@ -3683,7 +3679,7 @@ struct vigilance_t: public warrior_spell_t
   vigilance_t( warrior_t* p, const std::string& options_str ):
     warrior_spell_t( "vigilance", p, p -> talents.vigilance )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 };
@@ -5342,16 +5338,10 @@ void warrior_t::create_options()
 {
   player_t::create_options();
 
-  option_t warrior_options[] =
-  {
-    opt_int( "initial_rage", initial_rage ),
-    opt_float( "arms_rage_mult", arms_rage_mult ),
-    opt_float( "crit_rage_mult", crit_rage_mult ),
-    opt_bool( "swapping", swapping ),
-    opt_null()
-  };
-
-  option_t::copy( options, warrior_options );
+  add_option( opt_int( "initial_rage", initial_rage ) );
+  add_option( opt_float( "arms_rage_mult", arms_rage_mult ) );
+  add_option( opt_float( "crit_rage_mult", crit_rage_mult ) );
+  add_option( opt_bool( "swapping", swapping ) );
 }
 
 // Specialized attacks =========================================================
