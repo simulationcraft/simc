@@ -1314,7 +1314,7 @@ struct execute_pet_action_t : public action_t
     action_t( ACTION_OTHER, "execute_" + p -> name_str + "_" + as, player ),
     pet_action( 0 ), pet( p ), action_str( as )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     trigger_gcd = timespan_t::zero();
   }
 
@@ -5232,7 +5232,7 @@ struct start_moving_t : public action_t
   start_moving_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "start_moving", player )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     trigger_gcd = timespan_t::zero();
     cooldown -> duration = timespan_t::from_seconds( 0.5 );
     harmful = false;
@@ -5262,7 +5262,7 @@ struct stop_moving_t : public action_t
   stop_moving_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "stop_moving", player )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     trigger_gcd = timespan_t::zero();
     cooldown -> duration = timespan_t::from_seconds( 0.5 );
     harmful = false;
@@ -5305,16 +5305,12 @@ struct variable_t : public action_t
     double default_ = 0;
     timespan_t delay_;
 
-    option_t options[] =
-    {
-      opt_string( "name", name_ ),
-      opt_string( "value", value_ ),
-      opt_string( "op", operation_ ),
-      opt_float( "default", default_ ),
-      opt_timespan( "delay", delay_ ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_string( "name", name_ ) );
+    add_option( opt_string( "value", value_ ) );
+    add_option( opt_string( "op", operation_ ) );
+    add_option( opt_float( "default", default_ ) );
+    add_option( opt_timespan( "delay", delay_ ) );
+    parse_options( options_str );
 
     if ( name_.empty() || operation_.empty() )
     {
@@ -5457,7 +5453,7 @@ struct racial_spell_t : public spell_t
   racial_spell_t( player_t* p, const std::string token, const spell_data_t* spell, const std::string& options ) :
     spell_t( token, p, spell )
   {
-    parse_options( NULL, options );
+    parse_options( options );
   }
 
   void init()
@@ -5566,7 +5562,7 @@ struct darkflight_t : public racial_spell_t
   darkflight_t( player_t* p, const std::string& options_str ) :
     racial_spell_t( p, "darkflight", p -> find_racial_spell( "Darkflight" ), options_str )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
   }
 
   virtual void execute()
@@ -5584,7 +5580,7 @@ struct rocket_barrage_t : public racial_spell_t
   rocket_barrage_t( player_t* p, const std::string& options_str ) :
     racial_spell_t( p, "rocket_barrage", p -> find_racial_spell( "Rocket Barrage" ), options_str )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
   }
 };
 
@@ -5617,12 +5613,8 @@ struct restart_sequence_t : public action_t
     action_t( ACTION_OTHER, "restart_sequence", player ),
     seq( 0 ), seq_name_str( "default" ) // matches default name for sequences
   {
-    option_t options[] =
-    {
-      opt_string( "name", seq_name_str ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_string( "name", seq_name_str ) );
+    parse_options( options_str );
 
     trigger_gcd = timespan_t::zero();
   }
@@ -5682,12 +5674,8 @@ struct restore_mana_t : public action_t
     action_t( ACTION_OTHER, "restore_mana", player ),
     mana( 0 )
   {
-    option_t options[] =
-    {
-      opt_float( "mana", mana ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_float( "mana", mana ) );
+    parse_options( options_str );
 
     trigger_gcd = timespan_t::zero();
   }
@@ -5716,7 +5704,7 @@ struct snapshot_stats_t : public action_t
     action_t( ACTION_OTHER, "snapshot_stats", player ),
     completed( false )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     trigger_gcd = timespan_t::zero();
     harmful = false;
   }
@@ -5856,12 +5844,8 @@ struct wait_fixed_t : public wait_action_base_t
   {
     std::string sec_str = "1.0";
 
-    option_t options[] =
-    {
-      opt_string( "sec", sec_str ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_string( "sec", sec_str ) );
+    parse_options( options_str );
     interrupt_auto_attack = false; //Probably shouldn't interrupt autoattacks while waiting.
 
     time_expr = std::shared_ptr<expr_t>( expr_t::parse( this, sec_str ) );
@@ -5934,13 +5918,9 @@ struct use_item_t : public action_t
   {
     std::string item_name, item_slot;
 
-    option_t options[] =
-    {
-      opt_string( "name", item_name ),
-      opt_string( "slot", item_slot ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_string( "name", item_name ) );
+    add_option( opt_string( "slot", item_slot ) );
+    parse_options( options_str );
 
     if ( ! item_name.empty() )
     {
@@ -6059,12 +6039,8 @@ struct cancel_buff_t : public action_t
     action_t( ACTION_OTHER, "cancel_buff", player ), buff( 0 )
   {
     std::string buff_name;
-    option_t options[] =
-    {
-      opt_string( "name", buff_name ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_string( "name", buff_name ) );
+    parse_options( options_str );
 
     if ( buff_name.empty() )
     {
@@ -6117,12 +6093,8 @@ struct swap_action_list_t : public action_t
     action_t( ACTION_OTHER, name, player ), alist( 0 )
   {
     std::string alist_name;
-    option_t options[] =
-    {
-      opt_string( "name", alist_name ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_string( "name", alist_name ) );
+    parse_options( options_str );
 
     if ( alist_name.empty() )
     {
@@ -6198,15 +6170,11 @@ struct pool_resource_t : public action_t
   {
     quiet = true;
 
-    option_t options[] =
-    {
-      opt_timespan( "wait", wait ),
-      opt_bool( "for_next", for_next ),
-      opt_string( "resource", resource_str ),
-      opt_float( "extra_amount", amount ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_timespan( "wait", wait ) );
+    add_option( opt_bool( "for_next", for_next ) );
+    add_option( opt_string( "resource", resource_str ) );
+    add_option( opt_float( "extra_amount", amount ) );
+    parse_options( options_str );
 
     if ( !resource_str.empty() )
     {
@@ -8242,199 +8210,198 @@ void player_t::copy_from( player_t* source )
   enchant = source -> enchant;
 }
 
+void player_t::add_option( const option_t& opt )
+{
+  options.insert( options.begin(), opt );
+}
+
 // class_modules::create::options ===========================================
 
 void player_t::create_options()
 {
-  option_t player_options[] =
-  {
-    // General
-    opt_string( "name", name_str ),
-    opt_func( "origin", parse_origin ),
-    opt_string( "region", region_str ),
-    opt_string( "server", server_str ),
-    opt_string( "thumbnail", report_information.thumbnail_url ),
-    opt_string( "id", id_str ),
-    opt_func( "talents", parse_talent_url ),
-    opt_func( "talent_override", parse_talent_override ),
-    opt_string( "glyphs", glyphs_str ),
-    opt_string( "race", race_str ),
-    opt_func( "timeofday", parse_timeofday ),
-    opt_int( "level", level, 0, MAX_LEVEL ),
-    opt_bool( "ready_trigger", ready_type ),
-    opt_func( "role", parse_role_string ),
-    opt_string( "target", target_str ),
-    opt_float( "skill", base.skill, 0, 1.0 ),
-    opt_float( "distance", base.distance, 0, std::numeric_limits<double>::max() ),
-    opt_string( "position", position_str ),
-    opt_string( "professions", professions_str ),
-    opt_string( "actions", action_list_str ),
-    opt_append( "actions+", action_list_str ),
-    opt_map( "actions.", alist_map ),
-    opt_string( "action_list", choose_action_list ),
-    opt_bool( "sleeping", initial.sleeping ),
-    opt_bool( "quiet", quiet ),
-    opt_string( "save", report_information.save_str ),
-    opt_string( "save_gear", report_information.save_gear_str ),
-    opt_string( "save_talents", report_information.save_talents_str ),
-    opt_string( "save_actions", report_information.save_actions_str ),
-    opt_string( "comment", report_information.comment_str ),
-    opt_bool( "bugs", bugs ),
-    opt_func( "world_lag", parse_world_lag ),
-    opt_func( "world_lag_stddev", parse_world_lag_stddev ),
-    opt_func( "brain_lag", parse_brain_lag ),
-    opt_func( "brain_lag_stddev", parse_brain_lag_stddev ),
-    opt_bool( "scale_player", scale_player ),
-    opt_string( "tmi_output", tmi_debug_file_str ),
-    opt_float( "tmi_window", tmi_window, 0, std::numeric_limits<double>::max() ),
-    opt_func( "spec", parse_specialization ),
-    opt_func( "specialization", parse_specialization ),
-    opt_func( "stat_timelines", parse_stat_timelines ),
+  add_option( opt_string( "name", name_str ) );
+    add_option( opt_func( "origin", parse_origin ) );
+    add_option( opt_string( "region", region_str ) );
+    add_option( opt_string( "server", server_str ) );
+    add_option( opt_string( "thumbnail", report_information.thumbnail_url ) );
+    add_option( opt_string( "id", id_str ) );
+    add_option( opt_func( "talents", parse_talent_url ) );
+    add_option( opt_func( "talent_override", parse_talent_override ) );
+    add_option( opt_string( "glyphs", glyphs_str ) );
+    add_option( opt_string( "race", race_str ) );
+    add_option( opt_func( "timeofday", parse_timeofday ) );
+    add_option( opt_int( "level", level, 0, MAX_LEVEL ) );
+    add_option( opt_bool( "ready_trigger", ready_type ) );
+    add_option( opt_func( "role", parse_role_string ) );
+    add_option( opt_string( "target", target_str ) );
+    add_option( opt_float( "skill", base.skill, 0, 1.0 ) );
+    add_option( opt_float( "distance", base.distance, 0, std::numeric_limits<double>::max() ) );
+    add_option( opt_string( "position", position_str ) );
+    add_option( opt_string( "professions", professions_str ) );
+    add_option( opt_string( "actions", action_list_str ) );
+    add_option( opt_append( "actions+", action_list_str ) );
+    add_option( opt_map( "actions.", alist_map ) );
+    add_option( opt_string( "action_list", choose_action_list ) );
+    add_option( opt_bool( "sleeping", initial.sleeping ) );
+    add_option( opt_bool( "quiet", quiet ) );
+    add_option( opt_string( "save", report_information.save_str ) );
+    add_option( opt_string( "save_gear", report_information.save_gear_str ) );
+    add_option( opt_string( "save_talents", report_information.save_talents_str ) );
+    add_option( opt_string( "save_actions", report_information.save_actions_str ) );
+    add_option( opt_string( "comment", report_information.comment_str ) );
+    add_option( opt_bool( "bugs", bugs ) );
+    add_option( opt_func( "world_lag", parse_world_lag ) );
+    add_option( opt_func( "world_lag_stddev", parse_world_lag_stddev ) );
+    add_option( opt_func( "brain_lag", parse_brain_lag ) );
+    add_option( opt_func( "brain_lag_stddev", parse_brain_lag_stddev ) );
+    add_option( opt_bool( "scale_player", scale_player ) );
+    add_option( opt_string( "tmi_output", tmi_debug_file_str ) );
+    add_option( opt_float( "tmi_window", tmi_window, 0, std::numeric_limits<double>::max() ) );
+    add_option( opt_func( "spec", parse_specialization ) );
+    add_option( opt_func( "specialization", parse_specialization ) );
+    add_option( opt_func( "stat_timelines", parse_stat_timelines ) );
 
     // Items
-    opt_string( "meta_gem",  meta_gem_str ),
-    opt_string( "items",     items_str ),
-    opt_append( "items+",    items_str ),
-    opt_string( "head",      items[ SLOT_HEAD      ].options_str ),
-    opt_string( "neck",      items[ SLOT_NECK      ].options_str ),
-    opt_string( "shoulders", items[ SLOT_SHOULDERS ].options_str ),
-    opt_string( "shoulder",  items[ SLOT_SHOULDERS ].options_str ),
-    opt_string( "shirt",     items[ SLOT_SHIRT     ].options_str ),
-    opt_string( "chest",     items[ SLOT_CHEST     ].options_str ),
-    opt_string( "waist",     items[ SLOT_WAIST     ].options_str ),
-    opt_string( "legs",      items[ SLOT_LEGS      ].options_str ),
-    opt_string( "leg",       items[ SLOT_LEGS      ].options_str ),
-    opt_string( "feet",      items[ SLOT_FEET      ].options_str ),
-    opt_string( "foot",      items[ SLOT_FEET      ].options_str ),
-    opt_string( "wrists",    items[ SLOT_WRISTS    ].options_str ),
-    opt_string( "wrist",     items[ SLOT_WRISTS    ].options_str ),
-    opt_string( "hands",     items[ SLOT_HANDS     ].options_str ),
-    opt_string( "hand",      items[ SLOT_HANDS     ].options_str ),
-    opt_string( "finger1",   items[ SLOT_FINGER_1  ].options_str ),
-    opt_string( "finger2",   items[ SLOT_FINGER_2  ].options_str ),
-    opt_string( "ring1",     items[ SLOT_FINGER_1  ].options_str ),
-    opt_string( "ring2",     items[ SLOT_FINGER_2  ].options_str ),
-    opt_string( "trinket1",  items[ SLOT_TRINKET_1 ].options_str ),
-    opt_string( "trinket2",  items[ SLOT_TRINKET_2 ].options_str ),
-    opt_string( "back",      items[ SLOT_BACK      ].options_str ),
-    opt_string( "main_hand", items[ SLOT_MAIN_HAND ].options_str ),
-    opt_string( "off_hand",  items[ SLOT_OFF_HAND  ].options_str ),
-    opt_string( "tabard",    items[ SLOT_TABARD    ].options_str ),
+    add_option( opt_string( "meta_gem",  meta_gem_str ) );
+    add_option( opt_string( "items",     items_str ) );
+    add_option( opt_append( "items+",    items_str ) );
+    add_option( opt_string( "head",      items[ SLOT_HEAD      ].options_str ) );
+    add_option( opt_string( "neck",      items[ SLOT_NECK      ].options_str ) );
+    add_option( opt_string( "shoulders", items[ SLOT_SHOULDERS ].options_str ) );
+    add_option( opt_string( "shoulder",  items[ SLOT_SHOULDERS ].options_str ) );
+    add_option( opt_string( "shirt",     items[ SLOT_SHIRT     ].options_str ) );
+    add_option( opt_string( "chest",     items[ SLOT_CHEST     ].options_str ) );
+    add_option( opt_string( "waist",     items[ SLOT_WAIST     ].options_str ) );
+    add_option( opt_string( "legs",      items[ SLOT_LEGS      ].options_str ) );
+    add_option( opt_string( "leg",       items[ SLOT_LEGS      ].options_str ) );
+    add_option( opt_string( "feet",      items[ SLOT_FEET      ].options_str ) );
+    add_option( opt_string( "foot",      items[ SLOT_FEET      ].options_str ) );
+    add_option( opt_string( "wrists",    items[ SLOT_WRISTS    ].options_str ) );
+    add_option( opt_string( "wrist",     items[ SLOT_WRISTS    ].options_str ) );
+    add_option( opt_string( "hands",     items[ SLOT_HANDS     ].options_str ) );
+    add_option( opt_string( "hand",      items[ SLOT_HANDS     ].options_str ) );
+    add_option( opt_string( "finger1",   items[ SLOT_FINGER_1  ].options_str ) );
+    add_option( opt_string( "finger2",   items[ SLOT_FINGER_2  ].options_str ) );
+    add_option( opt_string( "ring1",     items[ SLOT_FINGER_1  ].options_str ) );
+    add_option( opt_string( "ring2",     items[ SLOT_FINGER_2  ].options_str ) );
+    add_option( opt_string( "trinket1",  items[ SLOT_TRINKET_1 ].options_str ) );
+    add_option( opt_string( "trinket2",  items[ SLOT_TRINKET_2 ].options_str ) );
+    add_option( opt_string( "back",      items[ SLOT_BACK      ].options_str ) );
+    add_option( opt_string( "main_hand", items[ SLOT_MAIN_HAND ].options_str ) );
+    add_option( opt_string( "off_hand",  items[ SLOT_OFF_HAND  ].options_str ) );
+    add_option( opt_string( "tabard",    items[ SLOT_TABARD    ].options_str ) );
 
     // Set Bonus
-    opt_int( "tier13_2pc_caster", sets.set_bonus_spec_data[ T13 ][ SET_CASTER ][ B2 ].overridden ),
-    opt_int( "tier13_4pc_caster", sets.set_bonus_spec_data[ T13 ][ SET_CASTER ][ B4 ].overridden ),
-    opt_int( "tier13_2pc_melee",  sets.set_bonus_spec_data[ T13 ][ SET_MELEE ][ B2 ].overridden ),
-    opt_int( "tier13_4pc_melee",  sets.set_bonus_spec_data[ T13 ][ SET_MELEE ][ B4 ].overridden ),
-    opt_int( "tier13_2pc_tank",   sets.set_bonus_spec_data[ T13 ][ SET_TANK ][ B2 ].overridden ),
-    opt_int( "tier13_4pc_tank",   sets.set_bonus_spec_data[ T13 ][ SET_TANK ][ B4 ].overridden ),
-    opt_int( "tier13_2pc_heal",   sets.set_bonus_spec_data[ T13 ][ SET_HEALER ][ B2 ].overridden ),
-    opt_int( "tier13_4pc_heal",   sets.set_bonus_spec_data[ T13 ][ SET_HEALER ][ B4 ].overridden ),
-    opt_int( "tier14_2pc_caster", sets.set_bonus_spec_data[ T14 ][ SET_CASTER ][ B2 ].overridden ),
-    opt_int( "tier14_4pc_caster", sets.set_bonus_spec_data[ T14 ][ SET_CASTER ][ B4 ].overridden ),
-    opt_int( "tier14_2pc_melee",  sets.set_bonus_spec_data[ T14 ][ SET_MELEE ][ B2 ].overridden ),
-    opt_int( "tier14_4pc_melee",  sets.set_bonus_spec_data[ T14 ][ SET_MELEE ][ B4 ].overridden ),
-    opt_int( "tier14_2pc_tank",   sets.set_bonus_spec_data[ T14 ][ SET_TANK ][ B2 ].overridden ),
-    opt_int( "tier14_4pc_tank",   sets.set_bonus_spec_data[ T14 ][ SET_TANK ][ B4 ].overridden ),
-    opt_int( "tier14_2pc_heal",   sets.set_bonus_spec_data[ T14 ][ SET_HEALER ][ B2 ].overridden ),
-    opt_int( "tier14_4pc_heal",   sets.set_bonus_spec_data[ T15 ][ SET_HEALER ][ B4 ].overridden ),
-    opt_int( "tier15_2pc_caster", sets.set_bonus_spec_data[ T15 ][ SET_CASTER ][ B2 ].overridden ),
-    opt_int( "tier15_4pc_caster", sets.set_bonus_spec_data[ T15 ][ SET_CASTER ][ B4 ].overridden ),
-    opt_int( "tier15_2pc_melee",  sets.set_bonus_spec_data[ T15 ][ SET_MELEE ][ B2 ].overridden ),
-    opt_int( "tier15_4pc_melee",  sets.set_bonus_spec_data[ T15 ][ SET_MELEE ][ B4 ].overridden ),
-    opt_int( "tier15_2pc_tank",   sets.set_bonus_spec_data[ T15 ][ SET_TANK ][ B2 ].overridden ),
-    opt_int( "tier15_4pc_tank",   sets.set_bonus_spec_data[ T15 ][ SET_TANK ][ B4 ].overridden ),
-    opt_int( "tier15_2pc_heal",   sets.set_bonus_spec_data[ T15 ][ SET_HEALER ][ B2 ].overridden ),
-    opt_int( "tier15_4pc_heal",   sets.set_bonus_spec_data[ T15 ][ SET_HEALER ][ B4 ].overridden ),
-    opt_int( "tier16_2pc_caster", sets.set_bonus_spec_data[ T16 ][ SET_CASTER ][ B2 ].overridden ),
-    opt_int( "tier16_4pc_caster", sets.set_bonus_spec_data[ T16 ][ SET_CASTER ][ B4 ].overridden ),
-    opt_int( "tier16_2pc_melee",  sets.set_bonus_spec_data[ T16 ][ SET_MELEE ][ B2 ].overridden ),
-    opt_int( "tier16_4pc_melee",  sets.set_bonus_spec_data[ T16 ][ SET_MELEE ][ B4 ].overridden ),
-    opt_int( "tier16_2pc_tank",   sets.set_bonus_spec_data[ T16 ][ SET_TANK ][ B2 ].overridden ),
-    opt_int( "tier16_4pc_tank",   sets.set_bonus_spec_data[ T16 ][ SET_TANK ][ B4 ].overridden ),
-    opt_int( "tier16_2pc_heal",   sets.set_bonus_spec_data[ T16 ][ SET_HEALER ][ B2 ].overridden ),
-    opt_int( "tier16_4pc_heal",   sets.set_bonus_spec_data[ T16 ][ SET_HEALER ][ B4 ].overridden ),
-    opt_func( "set_bonus",         parse_set_bonus                ),
+    add_option( opt_int( "tier13_2pc_caster", sets.set_bonus_spec_data[ T13 ][ SET_CASTER ][ B2 ].overridden ) );
+    add_option( opt_int( "tier13_4pc_caster", sets.set_bonus_spec_data[ T13 ][ SET_CASTER ][ B4 ].overridden ) );
+    add_option( opt_int( "tier13_2pc_melee",  sets.set_bonus_spec_data[ T13 ][ SET_MELEE ][ B2 ].overridden ) );
+    add_option( opt_int( "tier13_4pc_melee",  sets.set_bonus_spec_data[ T13 ][ SET_MELEE ][ B4 ].overridden ) );
+    add_option( opt_int( "tier13_2pc_tank",   sets.set_bonus_spec_data[ T13 ][ SET_TANK ][ B2 ].overridden ) );
+    add_option( opt_int( "tier13_4pc_tank",   sets.set_bonus_spec_data[ T13 ][ SET_TANK ][ B4 ].overridden ) );
+    add_option( opt_int( "tier13_2pc_heal",   sets.set_bonus_spec_data[ T13 ][ SET_HEALER ][ B2 ].overridden ) );
+    add_option( opt_int( "tier13_4pc_heal",   sets.set_bonus_spec_data[ T13 ][ SET_HEALER ][ B4 ].overridden ) );
+    add_option( opt_int( "tier14_2pc_caster", sets.set_bonus_spec_data[ T14 ][ SET_CASTER ][ B2 ].overridden ) );
+    add_option( opt_int( "tier14_4pc_caster", sets.set_bonus_spec_data[ T14 ][ SET_CASTER ][ B4 ].overridden ) );
+    add_option( opt_int( "tier14_2pc_melee",  sets.set_bonus_spec_data[ T14 ][ SET_MELEE ][ B2 ].overridden ) );
+    add_option( opt_int( "tier14_4pc_melee",  sets.set_bonus_spec_data[ T14 ][ SET_MELEE ][ B4 ].overridden ) );
+    add_option( opt_int( "tier14_2pc_tank",   sets.set_bonus_spec_data[ T14 ][ SET_TANK ][ B2 ].overridden ) );
+    add_option( opt_int( "tier14_4pc_tank",   sets.set_bonus_spec_data[ T14 ][ SET_TANK ][ B4 ].overridden ) );
+    add_option( opt_int( "tier14_2pc_heal",   sets.set_bonus_spec_data[ T14 ][ SET_HEALER ][ B2 ].overridden ) );
+    add_option( opt_int( "tier14_4pc_heal",   sets.set_bonus_spec_data[ T15 ][ SET_HEALER ][ B4 ].overridden ) );
+    add_option( opt_int( "tier15_2pc_caster", sets.set_bonus_spec_data[ T15 ][ SET_CASTER ][ B2 ].overridden ) );
+    add_option( opt_int( "tier15_4pc_caster", sets.set_bonus_spec_data[ T15 ][ SET_CASTER ][ B4 ].overridden ) );
+    add_option( opt_int( "tier15_2pc_melee",  sets.set_bonus_spec_data[ T15 ][ SET_MELEE ][ B2 ].overridden ) );
+    add_option( opt_int( "tier15_4pc_melee",  sets.set_bonus_spec_data[ T15 ][ SET_MELEE ][ B4 ].overridden ) );
+    add_option( opt_int( "tier15_2pc_tank",   sets.set_bonus_spec_data[ T15 ][ SET_TANK ][ B2 ].overridden ) );
+    add_option( opt_int( "tier15_4pc_tank",   sets.set_bonus_spec_data[ T15 ][ SET_TANK ][ B4 ].overridden ) );
+    add_option( opt_int( "tier15_2pc_heal",   sets.set_bonus_spec_data[ T15 ][ SET_HEALER ][ B2 ].overridden ) );
+    add_option( opt_int( "tier15_4pc_heal",   sets.set_bonus_spec_data[ T15 ][ SET_HEALER ][ B4 ].overridden ) );
+    add_option( opt_int( "tier16_2pc_caster", sets.set_bonus_spec_data[ T16 ][ SET_CASTER ][ B2 ].overridden ) );
+    add_option( opt_int( "tier16_4pc_caster", sets.set_bonus_spec_data[ T16 ][ SET_CASTER ][ B4 ].overridden ) );
+    add_option( opt_int( "tier16_2pc_melee",  sets.set_bonus_spec_data[ T16 ][ SET_MELEE ][ B2 ].overridden ) );
+    add_option( opt_int( "tier16_4pc_melee",  sets.set_bonus_spec_data[ T16 ][ SET_MELEE ][ B4 ].overridden ) );
+    add_option( opt_int( "tier16_2pc_tank",   sets.set_bonus_spec_data[ T16 ][ SET_TANK ][ B2 ].overridden ) );
+    add_option( opt_int( "tier16_4pc_tank",   sets.set_bonus_spec_data[ T16 ][ SET_TANK ][ B4 ].overridden ) );
+    add_option( opt_int( "tier16_2pc_heal",   sets.set_bonus_spec_data[ T16 ][ SET_HEALER ][ B2 ].overridden ) );
+    add_option( opt_int( "tier16_4pc_heal",   sets.set_bonus_spec_data[ T16 ][ SET_HEALER ][ B4 ].overridden ) );
+    add_option( opt_func( "set_bonus",         parse_set_bonus                ) );
 
     // Gear Stats
-    opt_float( "gear_strength",         gear.attribute[ ATTR_STRENGTH  ] ),
-    opt_float( "gear_agility",          gear.attribute[ ATTR_AGILITY   ] ),
-    opt_float( "gear_stamina",          gear.attribute[ ATTR_STAMINA   ] ),
-    opt_float( "gear_intellect",        gear.attribute[ ATTR_INTELLECT ] ),
-    opt_float( "gear_spirit",           gear.attribute[ ATTR_SPIRIT    ] ),
-    opt_float( "gear_spell_power",      gear.spell_power ),
-    opt_float( "gear_attack_power",     gear.attack_power ),
-    opt_float( "gear_expertise_rating", gear.expertise_rating ),
-    opt_float( "gear_haste_rating",     gear.haste_rating ),
-    opt_float( "gear_hit_rating",       gear.hit_rating ),
-    opt_float( "gear_crit_rating",      gear.crit_rating ),
-    opt_float( "gear_parry_rating",     gear.parry_rating ),
-    opt_float( "gear_dodge_rating",     gear.dodge_rating ),
-    opt_float( "gear_health",           gear.resource[ RESOURCE_HEALTH ] ),
-    opt_float( "gear_mana",             gear.resource[ RESOURCE_MANA   ] ),
-    opt_float( "gear_rage",             gear.resource[ RESOURCE_RAGE   ] ),
-    opt_float( "gear_energy",           gear.resource[ RESOURCE_ENERGY ] ),
-    opt_float( "gear_focus",            gear.resource[ RESOURCE_FOCUS  ] ),
-    opt_float( "gear_runic",            gear.resource[ RESOURCE_RUNIC_POWER  ] ),
-    opt_float( "gear_armor",            gear.armor ),
-    opt_float( "gear_mastery_rating",   gear.mastery_rating ),
-    opt_float( "gear_multistrike_rating", gear.multistrike_rating ),
-    opt_float( "gear_readiness_rating", gear.readiness_rating ),
-    opt_float( "gear_versatility_rating", gear.versatility_rating ),
-    opt_float( "gear_bonus_armor",      gear.bonus_armor ),
-    opt_float( "gear_leech_rating",     gear.leech_rating ),
-    opt_float( "gear_run_speed_rating", gear.speed_rating ),
+    add_option( opt_float( "gear_strength",         gear.attribute[ ATTR_STRENGTH  ] ) );
+    add_option( opt_float( "gear_agility",          gear.attribute[ ATTR_AGILITY   ] ) );
+    add_option( opt_float( "gear_stamina",          gear.attribute[ ATTR_STAMINA   ] ) );
+    add_option( opt_float( "gear_intellect",        gear.attribute[ ATTR_INTELLECT ] ) );
+    add_option( opt_float( "gear_spirit",           gear.attribute[ ATTR_SPIRIT    ] ) );
+    add_option( opt_float( "gear_spell_power",      gear.spell_power ) );
+    add_option( opt_float( "gear_attack_power",     gear.attack_power ) );
+    add_option( opt_float( "gear_expertise_rating", gear.expertise_rating ) );
+    add_option( opt_float( "gear_haste_rating",     gear.haste_rating ) );
+    add_option( opt_float( "gear_hit_rating",       gear.hit_rating ) );
+    add_option( opt_float( "gear_crit_rating",      gear.crit_rating ) );
+    add_option( opt_float( "gear_parry_rating",     gear.parry_rating ) );
+    add_option( opt_float( "gear_dodge_rating",     gear.dodge_rating ) );
+    add_option( opt_float( "gear_health",           gear.resource[ RESOURCE_HEALTH ] ) );
+    add_option( opt_float( "gear_mana",             gear.resource[ RESOURCE_MANA   ] ) );
+    add_option( opt_float( "gear_rage",             gear.resource[ RESOURCE_RAGE   ] ) );
+    add_option( opt_float( "gear_energy",           gear.resource[ RESOURCE_ENERGY ] ) );
+    add_option( opt_float( "gear_focus",            gear.resource[ RESOURCE_FOCUS  ] ) );
+    add_option( opt_float( "gear_runic",            gear.resource[ RESOURCE_RUNIC_POWER  ] ) );
+    add_option( opt_float( "gear_armor",            gear.armor ) );
+    add_option( opt_float( "gear_mastery_rating",   gear.mastery_rating ) );
+    add_option( opt_float( "gear_multistrike_rating", gear.multistrike_rating ) );
+    add_option( opt_float( "gear_readiness_rating", gear.readiness_rating ) );
+    add_option( opt_float( "gear_versatility_rating", gear.versatility_rating ) );
+    add_option( opt_float( "gear_bonus_armor",      gear.bonus_armor ) );
+    add_option( opt_float( "gear_leech_rating",     gear.leech_rating ) );
+    add_option( opt_float( "gear_run_speed_rating", gear.speed_rating ) );
 
     // Stat Enchants
-    opt_float( "enchant_strength",         enchant.attribute[ ATTR_STRENGTH  ] ),
-    opt_float( "enchant_agility",          enchant.attribute[ ATTR_AGILITY   ] ),
-    opt_float( "enchant_stamina",          enchant.attribute[ ATTR_STAMINA   ] ),
-    opt_float( "enchant_intellect",        enchant.attribute[ ATTR_INTELLECT ] ),
-    opt_float( "enchant_spirit",           enchant.attribute[ ATTR_SPIRIT    ] ),
-    opt_float( "enchant_spell_power",      enchant.spell_power ),
-    opt_float( "enchant_attack_power",     enchant.attack_power ),
-    opt_float( "enchant_expertise_rating", enchant.expertise_rating ),
-    opt_float( "enchant_armor",            enchant.armor ),
-    opt_float( "enchant_haste_rating",     enchant.haste_rating ),
-    opt_float( "enchant_hit_rating",       enchant.hit_rating ),
-    opt_float( "enchant_crit_rating",      enchant.crit_rating ),
-    opt_float( "enchant_mastery_rating",   enchant.mastery_rating ),
-    opt_float( "enchant_multistrike_rating", enchant.multistrike_rating ),
-    opt_float( "enchant_readiness_rating", enchant.readiness_rating ),
-    opt_float( "enchant_versatility_rating", enchant.versatility_rating ),
-    opt_float( "enchant_bonus_armor",      enchant.bonus_armor ),
-    opt_float( "enchant_leech_rating",     enchant.leech_rating ),
-    opt_float( "enchant_run_speed_rating", enchant.speed_rating ),
-    opt_float( "enchant_health",           enchant.resource[ RESOURCE_HEALTH ] ),
-    opt_float( "enchant_mana",             enchant.resource[ RESOURCE_MANA   ] ),
-    opt_float( "enchant_rage",             enchant.resource[ RESOURCE_RAGE   ] ),
-    opt_float( "enchant_energy",           enchant.resource[ RESOURCE_ENERGY ] ),
-    opt_float( "enchant_focus",            enchant.resource[ RESOURCE_FOCUS  ] ),
-    opt_float( "enchant_runic",            enchant.resource[ RESOURCE_RUNIC_POWER  ] ),
+    add_option( opt_float( "enchant_strength",         enchant.attribute[ ATTR_STRENGTH  ] ) );
+    add_option( opt_float( "enchant_agility",          enchant.attribute[ ATTR_AGILITY   ] ) );
+    add_option( opt_float( "enchant_stamina",          enchant.attribute[ ATTR_STAMINA   ] ) );
+    add_option( opt_float( "enchant_intellect",        enchant.attribute[ ATTR_INTELLECT ] ) );
+    add_option( opt_float( "enchant_spirit",           enchant.attribute[ ATTR_SPIRIT    ] ) );
+    add_option( opt_float( "enchant_spell_power",      enchant.spell_power ) );
+    add_option( opt_float( "enchant_attack_power",     enchant.attack_power ) );
+    add_option( opt_float( "enchant_expertise_rating", enchant.expertise_rating ) );
+    add_option( opt_float( "enchant_armor",            enchant.armor ) );
+    add_option( opt_float( "enchant_haste_rating",     enchant.haste_rating ) );
+    add_option( opt_float( "enchant_hit_rating",       enchant.hit_rating ) );
+    add_option( opt_float( "enchant_crit_rating",      enchant.crit_rating ) );
+    add_option( opt_float( "enchant_mastery_rating",   enchant.mastery_rating ) );
+    add_option( opt_float( "enchant_multistrike_rating", enchant.multistrike_rating ) );
+    add_option( opt_float( "enchant_readiness_rating", enchant.readiness_rating ) );
+    add_option( opt_float( "enchant_versatility_rating", enchant.versatility_rating ) );
+    add_option( opt_float( "enchant_bonus_armor",      enchant.bonus_armor ) );
+    add_option( opt_float( "enchant_leech_rating",     enchant.leech_rating ) );
+    add_option( opt_float( "enchant_run_speed_rating", enchant.speed_rating ) );
+    add_option( opt_float( "enchant_health",           enchant.resource[ RESOURCE_HEALTH ] ) );
+    add_option( opt_float( "enchant_mana",             enchant.resource[ RESOURCE_MANA   ] ) );
+    add_option( opt_float( "enchant_rage",             enchant.resource[ RESOURCE_RAGE   ] ) );
+    add_option( opt_float( "enchant_energy",           enchant.resource[ RESOURCE_ENERGY ] ) );
+    add_option( opt_float( "enchant_focus",            enchant.resource[ RESOURCE_FOCUS  ] ) );
+    add_option( opt_float( "enchant_runic",            enchant.resource[ RESOURCE_RUNIC_POWER  ] ) );
 
     // Regen
-    opt_bool( "infinite_energy", resources.infinite_resource[ RESOURCE_ENERGY ] ),
-    opt_bool( "infinite_focus",  resources.infinite_resource[ RESOURCE_FOCUS  ] ),
-    opt_bool( "infinite_health", resources.infinite_resource[ RESOURCE_HEALTH ] ),
-    opt_bool( "infinite_mana",   resources.infinite_resource[ RESOURCE_MANA   ] ),
-    opt_bool( "infinite_rage",   resources.infinite_resource[ RESOURCE_RAGE   ] ),
-    opt_bool( "infinite_runic",  resources.infinite_resource[ RESOURCE_RUNIC_POWER  ] ),
+    add_option( opt_bool( "infinite_energy", resources.infinite_resource[ RESOURCE_ENERGY ] ) );
+    add_option( opt_bool( "infinite_focus",  resources.infinite_resource[ RESOURCE_FOCUS  ] ) );
+    add_option( opt_bool( "infinite_health", resources.infinite_resource[ RESOURCE_HEALTH ] ) );
+    add_option( opt_bool( "infinite_mana",   resources.infinite_resource[ RESOURCE_MANA   ] ) );
+    add_option( opt_bool( "infinite_rage",   resources.infinite_resource[ RESOURCE_RAGE   ] ) );
+    add_option( opt_bool( "infinite_runic",  resources.infinite_resource[ RESOURCE_RUNIC_POWER  ] ) );
 
     // Misc
-    opt_string( "skip_actions", action_list_skip ),
-    opt_string( "modify_action", modify_action ),
-    opt_string( "elixirs", elixirs_str ),
-    opt_string( "flask", flask_str ),
-    opt_string( "food", food_str ),
-    opt_timespan( "reaction_time_mean", reaction_mean ),
-    opt_timespan( "reaction_time_stddev", reaction_stddev ),
-    opt_timespan( "reaction_time_nu", reaction_nu ),
-    opt_timespan( "reaction_time_offset", reaction_offset ),
-    opt_bool( "stat_cache", cache.active ),
-    opt_null()
-  };
+    add_option( opt_string( "skip_actions", action_list_skip ) );
+    add_option( opt_string( "modify_action", modify_action ) );
+    add_option( opt_string( "elixirs", elixirs_str ) );
+    add_option( opt_string( "flask", flask_str ) );
+    add_option( opt_string( "food", food_str ) );
+    add_option( opt_timespan( "reaction_time_mean", reaction_mean ) );
+    add_option( opt_timespan( "reaction_time_stddev", reaction_stddev ) );
+    add_option( opt_timespan( "reaction_time_nu", reaction_nu ) );
+    add_option( opt_timespan( "reaction_time_offset", reaction_offset ) );
+    add_option( opt_bool( "stat_cache", cache.active ) );
 
-  option_t::copy( options, player_options );
 }
 
 // player_t::create =========================================================

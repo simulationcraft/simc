@@ -256,18 +256,11 @@ void plot_t::analyze()
 
 void plot_t::create_options()
 {
-  option_t plot_options[] =
-  {
-    // @option_doc loc=global/scale_factors title="Plots"
-    opt_int( "dps_plot_iterations", dps_plot_iterations ),
-    opt_int( "dps_plot_points",     dps_plot_points ),
-    opt_string( "dps_plot_stat",    dps_plot_stat_str ),
-    opt_float( "dps_plot_step",     dps_plot_step ),
-    opt_bool( "dps_plot_debug",     dps_plot_debug ),
-    opt_bool( "dps_plot_positive", dps_plot_positive ),
-    opt_bool( "dps_plot_negative", dps_plot_negative ),
-    opt_null()
-  };
-
-  option_t::copy( sim -> options, plot_options );
+  sim->add_option(opt_int("dps_plot_iterations", dps_plot_iterations));
+  sim->add_option(opt_int("dps_plot_points", dps_plot_points));
+  sim->add_option(opt_string("dps_plot_stat", dps_plot_stat_str));
+  sim->add_option(opt_float("dps_plot_step", dps_plot_step));
+  sim->add_option(opt_bool("dps_plot_debug", dps_plot_debug));
+  sim->add_option(opt_bool("dps_plot_positive", dps_plot_positive));
+  sim->add_option(opt_bool("dps_plot_negative", dps_plot_negative));
 }

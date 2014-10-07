@@ -21,12 +21,8 @@ sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
   std::vector<std::string> splits = util::string_split( sub_action_str, ":" );
   if ( ! splits.empty() )
   {
-    option_t options[] =
-    {
-      opt_string( "name", name_str ),
-      opt_null()
-    };
-    parse_options( options, splits[ 0 ] );
+    add_option( opt_string( "name", name_str ) );
+    parse_options( splits[ 0 ] );
   }
 
   // First token is sequence options, so skip
@@ -140,12 +136,8 @@ strict_sequence_t::strict_sequence_t( player_t* p, const std::string& sub_action
   std::vector<std::string> splits = util::string_split( sub_action_str, ":" );
   if ( ! splits.empty() )
   {
-    option_t options[] =
-    {
-      opt_string( "name", seq_name_str ),
-      opt_null()
-    };
-    parse_options( options, splits[ 0 ] );
+    add_option( opt_string( "name", seq_name_str ) );
+    parse_options( splits[ 0 ] );
   }
 
   // First token is sequence options, so skip

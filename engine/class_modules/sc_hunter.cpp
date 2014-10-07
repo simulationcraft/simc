@@ -1146,7 +1146,7 @@ struct pet_auto_attack_t: public hunter_main_pet_attack_t
   pet_auto_attack_t( hunter_main_pet_t* player, const std::string& options_str ):
     hunter_main_pet_attack_t( "auto_attack", player, 0 )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     p() -> main_hand_attack = new pet_melee_t( player );
     trigger_gcd = timespan_t::zero();
@@ -1174,7 +1174,7 @@ struct basic_attack_t: public hunter_main_pet_attack_t
   basic_attack_t( hunter_main_pet_t* p, const std::string& name, const std::string& options_str ):
     hunter_main_pet_attack_t( name, p, p -> find_pet_spell( name ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     school = SCHOOL_PHYSICAL;
 
     attack_power_mod.direct = 1;
@@ -1282,7 +1282,7 @@ struct monstrous_bite_t: public hunter_main_pet_attack_t
   monstrous_bite_t( hunter_main_pet_t* p, const std::string& options_str ):
     hunter_main_pet_attack_t( "monstrous_bite", p, p -> find_spell( 54680 ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     school = SCHOOL_PHYSICAL;
     stats -> school = SCHOOL_PHYSICAL;
   }
@@ -1356,7 +1356,7 @@ struct furious_howl_t: public hunter_main_pet_spell_t
   furious_howl_t( hunter_main_pet_t* player, const std::string& options_str ):
     hunter_main_pet_spell_t( "furious_howl", player, player -> find_pet_spell( "Furious Howl" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     harmful = false;
     background = ( sim -> overrides.critical_strike != 0 );
@@ -1378,7 +1378,7 @@ struct roar_of_courage_t: public hunter_main_pet_spell_t
   roar_of_courage_t( hunter_main_pet_t* player, const std::string& options_str ):
     hunter_main_pet_spell_t( "roar_of_courage", player, player -> find_pet_spell( "Roar of Courage" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     harmful = false;
     background = ( sim -> overrides.str_agi_int != 0 );
@@ -1400,7 +1400,7 @@ struct qiraji_fortitude_t: public hunter_main_pet_spell_t
   qiraji_fortitude_t( hunter_main_pet_t* player, const std::string& options_str ):
     hunter_main_pet_spell_t( "qiraji_fortitude", player, player -> find_pet_spell( "Qiraji Fortitude" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     harmful = false;
     background = ( sim -> overrides.stamina != 0 );
@@ -1423,7 +1423,7 @@ struct cackling_howl_t: public hunter_main_pet_spell_t
   cackling_howl_t( hunter_main_pet_t* player, const std::string& options_str ):
     hunter_main_pet_spell_t( "cackling_howl", player, player -> find_pet_spell( "Cackling Howl" ) )
   {
-    parse_options( 0, options_str );
+    parse_options( options_str );
   }
 };
 
@@ -1446,7 +1446,7 @@ struct froststorm_breath_t: public hunter_main_pet_spell_t
   froststorm_breath_t( hunter_main_pet_t* player, const std::string& options_str ):
     hunter_main_pet_spell_t( "froststorm_breath", player, player -> find_pet_spell( "Froststorm Breath" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     channeled = true;
     tick_spell = new froststorm_breath_tick_t( player );
     add_child( tick_spell );
@@ -1837,7 +1837,7 @@ struct start_attack_t: public hunter_ranged_attack_t
   start_attack_t( hunter_t* p, const std::string& options_str ):
     hunter_ranged_attack_t( "start_auto_shot", p, spell_data_t::nil() )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     p -> main_hand_attack = new auto_shot_t( p );
     stats = p -> main_hand_attack -> stats;
@@ -1900,12 +1900,8 @@ struct exotic_munitions_t: public hunter_ranged_attack_t
   exotic_munitions_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "exotic_munitions", player, player -> talents.exotic_munitions )
   {
-    option_t options[] =
-    {
-      opt_string( "ammo_type", ammo_type ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_string( "ammo_type", ammo_type ) );
+    parse_options( options_str );
 
     callbacks = false;
     harmful = false;
@@ -1946,7 +1942,7 @@ struct aimed_shot_t: public hunter_ranged_attack_t
   aimed_shot_t( hunter_t* p, const std::string& options_str ):
     hunter_ranged_attack_t( "aimed_shot", p, p -> find_specialization_spell( "Aimed Shot" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     crit_gain = p -> perks.enhanced_aimed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS );
     crit_gain += p -> sets.set( HUNTER_MARKSMANSHIP, T17, B2 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
@@ -2028,7 +2024,7 @@ struct glaive_toss_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "glaive_toss", player, player -> talents.glaive_toss ),
     primary_strike( new glaive_toss_strike_t( p() ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     may_miss = false;
     may_crit = false;
     school = SCHOOL_PHYSICAL;
@@ -2053,7 +2049,7 @@ struct powershot_t: public hunter_ranged_attack_t
   powershot_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "powershot", player, player -> find_talent_spell( "Powershot" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     aoe = -1;
     // based on tooltip
     base_aoe_multiplier *= 0.5;
@@ -2083,7 +2079,7 @@ struct black_arrow_t: public hunter_ranged_attack_t
   black_arrow_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "black_arrow", player, player -> find_class_spell( "Black Arrow" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
     base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
@@ -2188,7 +2184,7 @@ struct explosive_trap_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "explosive_trap", player, player -> find_class_spell( "Explosive Trap" ) ),
     explosive_trap_tick( new explosive_trap_tick_t( player, "explosive_trap_tick" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     cooldown -> duration = data().cooldown();
     cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
@@ -2238,7 +2234,7 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "chimaera_shot", player, player -> specs.chimaera_shot ),
     frost( NULL ), nature( NULL )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     callbacks = false;
     aoe = 2;
     frost = new chimaera_shot_impact_t( player, "chimaera_shot_frost", player -> find_spell( 171454 ) );
@@ -2268,7 +2264,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
   cobra_shot_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "cobra_shot", player, player -> find_specialization_spell( "Cobra Shot" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     if ( p() -> talents.focusing_shot -> ok() )
       background = true;
     focus_gain = p() -> dbc.spell( 91954 ) -> effectN( 1 ).base_value();
@@ -2341,7 +2337,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
   explosive_shot_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "explosive_shot", player, player -> specs.explosive_shot )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     may_block = false;
 
     attack_power_mod.tick = 0.429; //Welcome to the hard-coded tooltip club!
@@ -2428,7 +2424,7 @@ struct kill_shot_t: public hunter_ranged_attack_t
   kill_shot_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "kill_shot", player, player -> find_specialization_spell( "Kill Shot" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
   }
 
   virtual void execute()
@@ -2473,7 +2469,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
   arcane_shot_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "arcane_shot", player, player -> find_spell( "Arcane Shot" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
   }
 
   virtual double cost() const
@@ -2514,7 +2510,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
   multi_shot_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "multi_shot", player, player -> find_class_spell( "Multi-Shot" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     aoe = -1;
   }
@@ -2576,7 +2572,7 @@ struct focusing_shot_t: public hunter_ranged_attack_t
   focusing_shot_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "focusing_shot", player, player -> talents.focusing_shot )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     focus_gain = data().effectN( 2 ).base_value();
   }
 
@@ -2614,7 +2610,7 @@ struct steady_shot_t: public hunter_ranged_attack_t
   steady_shot_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "steady_shot", player, player -> find_class_spell( "Steady Shot" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     if ( p() -> talents.focusing_shot -> ok() )
       background = true;
 
@@ -2708,12 +2704,8 @@ struct aspect_of_the_pack_t: public hunter_spell_t
     hunter_spell_t( "aspect_of_the_pack", player, player -> find_class_spell( "Aspect of the Pack" ) ),
     toggle( "" ), tog( true )
   {
-    option_t options[] =
-    {
-      opt_string( "toggle", toggle ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_string( "toggle", toggle ) );
+    parse_options( options_str );
 
     if ( !toggle.empty() )
     {
@@ -2781,7 +2773,7 @@ struct barrage_t: public hunter_spell_t
   barrage_t( hunter_t* player, const std::string& options_str ):
     hunter_spell_t( "barrage", player, player -> talents.barrage )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     may_block = false;
     hasted_ticks = false;
@@ -2843,7 +2835,7 @@ struct moc_t: public ranged_attack_t
     ranged_attack_t( "a_murder_of_crows", player, player -> talents.a_murder_of_crows ),
     peck( new peck_t( player, "crow_peck" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     add_child( peck );
     hasted_ticks = false;
     callbacks = false;
@@ -2881,7 +2873,7 @@ struct dire_beast_t: public hunter_spell_t
   dire_beast_t( hunter_t* player, const std::string& options_str ):
     hunter_spell_t( "dire_beast", player, player -> talents.dire_beast )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     harmful = false;
     hasted_ticks = false;
     may_crit = false;
@@ -2932,7 +2924,7 @@ struct bestial_wrath_t: public hunter_spell_t
   bestial_wrath_t( hunter_t* player, const std::string& options_str ):
     hunter_spell_t( "bestial_wrath", player, player -> specs.bestial_wrath )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     harmful = false;
   }
 
@@ -2972,12 +2964,8 @@ struct focus_fire_t: public hunter_spell_t
     hunter_spell_t( "focus_fire", player, player -> find_spell( 82692 ) ),
     five_stacks( 0 )
   {
-    option_t options[] =
-    {
-      opt_bool( "five_stacks", five_stacks ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_bool( "five_stacks", five_stacks ) );
+    parse_options( options_str );
 
     harmful = false;
   }
@@ -3018,7 +3006,7 @@ struct kill_command_t: public hunter_spell_t
   kill_command_t( hunter_t* player, const std::string& options_str ):
     hunter_spell_t( "kill_command", player, player -> specs.kill_command )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     harmful = false;
     for ( size_t i = 0, pets = p() -> pet_list.size(); i < pets; ++i )
@@ -3069,7 +3057,7 @@ struct rapid_fire_t: public hunter_spell_t
   rapid_fire_t( hunter_t* player, const std::string& options_str ):
     hunter_spell_t( "rapid_fire", player, player -> specs.rapid_fire )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     value = data().effectN( 1 ).percent();
   }
 
@@ -3126,7 +3114,7 @@ struct stampede_t: public hunter_spell_t
   stampede_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "stampede", p, p -> talents.stampede )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     harmful = false;
     callbacks = false;
     school = SCHOOL_PHYSICAL;
@@ -4026,13 +4014,7 @@ void hunter_t::create_options()
 {
   player_t::create_options();
 
-  option_t hunter_options[] =
-  {
-    opt_string( "summon_pet", summon_pet_str ),
-    opt_null()
-  };
-
-  option_t::copy( options, hunter_options );
+  add_option( opt_string( "summon_pet", summon_pet_str ) );
 }
 
 // hunter_t::create_profile =================================================

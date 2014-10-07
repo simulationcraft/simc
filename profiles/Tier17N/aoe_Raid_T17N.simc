@@ -53,8 +53,11 @@ talents=2000322
 #Priest_Holy_T17N_Heal.simc
 #Priest_Holy_T17N_Dmg.simc
 Priest_Shadow_T17N_COP.simc
+talents=0020132
 Priest_Shadow_T17N_VE.simc
+talents=0020132
 Priest_Shadow_T17N_AS.simc
+talents=0020133
 
 Rogue_Assassination_T17N.simc
 Rogue_Combat_T17N.simc
