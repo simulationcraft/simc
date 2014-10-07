@@ -4362,14 +4362,8 @@ void shaman_t::create_options()
 {
   player_t::create_options();
 
-  option_t shaman_options[] =
-  {
-    opt_timespan( "uf_expiration_delay",        uf_expiration_delay        ),
-    opt_timespan( "uf_expiration_delay_stddev", uf_expiration_delay_stddev ),
-    opt_null()
-  };
-
-  opts::copy( options, shaman_options );
+  add_option( opt_timespan( "uf_expiration_delay",        uf_expiration_delay        ) );
+  add_option( opt_timespan( "uf_expiration_delay_stddev", uf_expiration_delay_stddev ) );
 }
 
 // shaman_t::create_action  =================================================

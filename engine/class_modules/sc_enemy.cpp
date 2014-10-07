@@ -1185,15 +1185,9 @@ void enemy_t::create_options()
   // the next part handles actor-specific options for enemies
   player_t::create_options();
 
-  option_t enemy_options[] = 
-  {
-    opt_string( "boss_type", boss_type_str ),
-    opt_string( "tank_dummy", tank_dummy_str ),
-    opt_string( "tmi_boss", tmi_boss_str ),
-    opt_null()
-  };
-
-  opts::copy( options, enemy_options );
+  add_option( opt_string( "boss_type", boss_type_str ) );
+  add_option( opt_string( "tank_dummy", tank_dummy_str ) );
+  add_option( opt_string( "tmi_boss", tmi_boss_str ) );
 
 }
 

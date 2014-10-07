@@ -4064,13 +4064,7 @@ void monk_t::create_options()
 {
   base_t::create_options();
 
-  option_t monk_options[] =
-  {
-    opt_int( "initial_chi", user_options.initial_chi ),
-    opt_null()
-  };
-
-  opts::copy( options, monk_options );
+  add_option( opt_int( "initial_chi", user_options.initial_chi ) );
 }
 
 // monk_t::copy_from =========================================================

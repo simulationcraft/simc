@@ -4975,6 +4975,7 @@ struct player_t : public actor_t
   expr_t* create_resource_expression( const std::string& name );
 
   virtual void create_options();
+  void add_option( const option_t& );
   void recreate_talent_str( talent_format_e format = TALENT_FORMAT_NUMBERS );
   virtual bool create_profile( std::string& profile_str, save_e = SAVE_ALL, bool save_html = false );
 

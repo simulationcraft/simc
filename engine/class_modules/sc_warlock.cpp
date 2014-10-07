@@ -5613,15 +5613,9 @@ void warlock_t::create_options()
 {
   player_t::create_options();
 
-  option_t warlock_options[] =
-  {
-    opt_int( "burning_embers", initial_burning_embers ),
-    opt_int( "demonic_fury", initial_demonic_fury ),
-    opt_string( "default_pet", default_pet ),
-    opt_null()
-  };
-
-  opts::copy( options, warlock_options );
+  add_option( opt_int( "burning_embers", initial_burning_embers ) );
+  add_option( opt_int( "demonic_fury", initial_demonic_fury ) );
+  add_option( opt_string( "default_pet", default_pet ) );
 }
 
 

@@ -7250,14 +7250,9 @@ void death_knight_t::create_options()
 {
   player_t::create_options();
 
-  option_t death_knight_options[] =
-  {
-    opt_float( "fallen_crusader_str", fallen_crusader ),
-    opt_float( "fallen_crusader_rppm", fallen_crusader_rppm ),
-    opt_null()
-  };
+  add_option( opt_float( "fallen_crusader_str", fallen_crusader ) );
+  add_option( opt_float( "fallen_crusader_rppm", fallen_crusader_rppm ) );
 
-  opts::copy( options, death_knight_options );
 }
 
 // death_knight_t::convert_hybrid_stat ==============================================

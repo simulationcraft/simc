@@ -6816,12 +6816,6 @@ void druid_t::create_options()
 {
   player_t::create_options();
 
-  option_t druid_options[] =
-  {
-    opt_null()
-  };
-
-  opts::copy( options, druid_options );
 }
 
 // druid_t::create_profile ==================================================

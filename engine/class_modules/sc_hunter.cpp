@@ -4014,13 +4014,7 @@ void hunter_t::create_options()
 {
   player_t::create_options();
 
-  option_t hunter_options[] =
-  {
-    opt_string( "summon_pet", summon_pet_str ),
-    opt_null()
-  };
-
-  opts::copy( options, hunter_options );
+  add_option( opt_string( "summon_pet", summon_pet_str ) );
 }
 
 // hunter_t::create_profile =================================================

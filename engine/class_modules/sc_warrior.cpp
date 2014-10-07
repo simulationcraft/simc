@@ -5338,16 +5338,10 @@ void warrior_t::create_options()
 {
   player_t::create_options();
 
-  option_t warrior_options[] =
-  {
-    opt_int( "initial_rage", initial_rage ),
-    opt_float( "arms_rage_mult", arms_rage_mult ),
-    opt_float( "crit_rage_mult", crit_rage_mult ),
-    opt_bool( "swapping", swapping ),
-    opt_null()
-  };
-
-  opts::copy( options, warrior_options );
+  add_option( opt_int( "initial_rage", initial_rage ) );
+  add_option( opt_float( "arms_rage_mult", arms_rage_mult ) );
+  add_option( opt_float( "crit_rage_mult", crit_rage_mult ) );
+  add_option( opt_bool( "swapping", swapping ) );
 }
 
 // Specialized attacks =========================================================

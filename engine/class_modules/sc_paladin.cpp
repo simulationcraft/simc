@@ -6348,12 +6348,6 @@ void paladin_t::create_options()
 {
   player_t::create_options();
 
-  option_t paladin_options[] =
-  {
-    opt_null()
-  };
-
-  opts::copy( options, paladin_options );
 }
 
 // paladin_t::combat_begin ==================================================
