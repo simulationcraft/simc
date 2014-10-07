@@ -1958,15 +1958,6 @@ struct garrote_t : public rogue_attack_t
       td -> debuffs.find_weakness -> trigger();
     }
   }
-
-  virtual void tick( dot_t* d )
-  {
-    rogue_attack_t::tick( d );
-
-    rogue_td_t* td = this -> td( d -> state -> target );
-    if ( ! td -> dots.rupture -> is_ticking() )
-      p() -> trigger_venomous_wounds( d -> state );
-  }
 };
 
 // Hemorrhage ===============================================================
@@ -1980,9 +1971,9 @@ struct hemorrhage_t : public rogue_attack_t
     weapon = &( p -> main_hand_weapon );
   }
 
-  double action_multiplier() const
+  double action_da_multiplier() const
   {
-    double m = rogue_attack_t::action_multiplier();
+    double m = rogue_attack_t::action_da_multiplier();
 
     if ( weapon -> type == WEAPON_DAGGER )
       m *= 1.4;
@@ -3112,8 +3103,7 @@ void rogue_t::trigger_venomous_wounds( const action_state_t* state )
   if ( ! get_target_data( state -> target ) -> poisoned() )
     return;
 
-  if ( ! state -> action -> result_is_hit( state -> result ) &&
-       ! state -> action -> result_is_multistrike( state -> result ) )
+  if ( ! state -> action -> result_is_hit( state -> result ) )
     return;
 
   double chance = spec.venomous_wounds -> proc_chance();
@@ -3826,6 +3816,7 @@ struct shadow_reflection_pet_t : public pet_t
       {
         background = true;
         may_miss = may_dodge = may_parry = false;
+        weapon_multiplier = 0;
       }
     };
 
