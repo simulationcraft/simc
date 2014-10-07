@@ -86,6 +86,7 @@ struct rogue_td_t : public actor_pair_t
     buff_t* wound_poison;
     buff_t* crippling_poison;
     buff_t* leeching_poison;
+    buff_t* instant_poison; // Proxy instant poison buff for proper Venom Rush modeling
   } debuffs;
 
   rogue_td_t( player_t* target, rogue_t* source );
@@ -420,7 +421,7 @@ struct rogue_t : public player_t
   virtual double    passive_movement_modifier() const;
   virtual double    temporary_movement_modifier() const;
 
-  bool poisoned_enemy( player_t* target ) const;
+  bool poisoned_enemy( player_t* target, bool deadly_fade = false ) const;
 
   void trigger_auto_attack( const action_state_t* );
   void trigger_sinister_calling( const action_state_t* );
@@ -837,7 +838,9 @@ struct deadly_poison_t : public rogue_poison_t
     void impact( action_state_t* state )
     {
       if ( ! p() -> poisoned_enemy( state -> target ) && result_is_hit( state -> result ) )
+      {
         p() -> poisoned_enemies++;
+      }
 
       rogue_poison_t::impact( state );
     }
@@ -848,8 +851,12 @@ struct deadly_poison_t : public rogue_poison_t
 
       rogue_poison_t::last_tick( d );
 
-      if ( ! p() -> poisoned_enemy( t ) )
+      // Due to DOT system behavior, deliver "Deadly Poison DOT fade event" as
+      // a separate parmeter to poisoned_enemy() call.
+      if ( ! p() -> poisoned_enemy( t, true ) )
+      {
         p() -> poisoned_enemies--;
+      }
     }
   };
 
@@ -897,14 +904,24 @@ struct instant_poison_t : public rogue_poison_t
     {
       harmful = true;
     }
+
+    void impact( action_state_t* state )
+    {
+      rogue_poison_t::impact( state );
+
+      if ( result_is_hit( state -> result ) )
+      {
+        td( state -> target ) -> debuffs.instant_poison -> trigger();
+      }
+    }
   };
 
   instant_poison_dd_t* proc_instant;
 
   instant_poison_t( rogue_t* player ) :
-    rogue_poison_t( "instant_poison", player, player -> find_spell( 157584 ) )
+    rogue_poison_t( "instant_poison_driver", player, player -> find_spell( 157584 ) )
   {
-    dual = true;
+    dual = quiet = true;
     may_miss = may_crit = false;
 
     proc_instant = new instant_poison_dd_t( player );
@@ -2866,11 +2883,19 @@ struct blade_flurry_attack_t : public rogue_attack_t
 
 } // end namespace actions
 
-inline bool rogue_t::poisoned_enemy( player_t* target ) const
+// Due to how our DOT system functions, at the time when last_tick() is called
+// for Deadly Poison, is_ticking() for the dot object will still return true.
+// This breaks the is_ticking() check below, creating an inconsistent state in
+// the sim, if Deadly Poison was the only poison up on the target. As a
+// workaround, deliver the "Deadly Poison fade event" as an extra parameter.
+inline bool rogue_t::poisoned_enemy( player_t* target, bool deadly_fade ) const
 {
   const rogue_td_t* td = get_target_data( target );
 
-  if ( td -> dots.deadly_poison -> is_ticking() )
+  if ( ! deadly_fade && td -> dots.deadly_poison -> is_ticking() )
+    return true;
+
+  if ( td -> debuffs.instant_poison -> check() )
     return true;
 
   if ( td -> debuffs.wound_poison -> check() )
@@ -3570,6 +3595,18 @@ struct leeching_poison_t : public rogue_poison_buff_t
   { }
 };
 
+struct instant_poison_t : public rogue_poison_buff_t
+{
+  instant_poison_t( rogue_td_t& r ) :
+    rogue_poison_buff_t( r, "instant_poison", spell_data_t::nil() )
+  {
+    // Fake a 12 second hidden buff, so Venom Rush will lose a stack on the
+    // rogue for 12 seconds of inactivity of Instant Poison on that target
+    buff_duration = timespan_t::from_seconds( 12 );
+    quiet = true;
+  }
+};
+
 } // end namespace buffs
 
 // ==========================================================================
@@ -3607,6 +3644,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.wound_poison = new buffs::wound_poison_t( *this );
   debuffs.crippling_poison = new buffs::crippling_poison_t( *this );
   debuffs.leeching_poison = new buffs::leeching_poison_t( *this );
+  debuffs.instant_poison = new buffs::instant_poison_t( *this );
 }
 
 // ==========================================================================
@@ -4231,11 +4269,7 @@ void rogue_t::init_action_list()
   }
 
   // Lethal poison
-  std::string poison_str = "apply_poison,lethal=deadly,nonlethal=";
-  if ( talent.leeching_poison -> ok() )
-    poison_str += "leeching";
-  else
-    poison_str += "crippling";
+  std::string poison_str = "apply_poison,lethal=deadly";
 
   precombat -> add_action( poison_str );
 
@@ -4882,7 +4916,11 @@ double rogue_t::energy_regen_per_second() const
     r *= 1.0 + spec.blade_flurry -> effectN( 1 ).percent();
 
   if ( talent.venom_rush -> ok() )
-    r *= 1.0 + std::min( poisoned_enemies, 3U ) * spell.venom_rush -> effectN( 1 ).percent();
+  {
+    assert( poisoned_enemies <= sim -> target_list.size() );
+    unsigned n_poisoned_enemies = std::min( poisoned_enemies, 3U );
+    r *= 1.0 + n_poisoned_enemies * spell.venom_rush -> effectN( 1 ).percent();
+  }
 
   return r;
 }

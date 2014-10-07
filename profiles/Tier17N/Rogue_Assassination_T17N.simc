@@ -17,7 +17,7 @@ spec=assassination
 
 actions.precombat=flask,type=greater_draenic_agility_flask
 actions.precombat+=/food,type=sleeper_surprise
-actions.precombat+=/apply_poison,lethal=deadly,nonlethal=crippling
+actions.precombat+=/apply_poison,lethal=deadly
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_agility
