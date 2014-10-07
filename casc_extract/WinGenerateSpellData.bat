@@ -5,6 +5,7 @@ set /p wowdir=<hi.txt
 set /p oldname=<hi.txt
 set wowdir=%wowdir:~4,-14%
 ren %oldname% %wowdir%
+del hi.txt
 cd ..
 cd ..
 cd dbc_extract
