@@ -949,9 +949,6 @@ bool item_t::decode_warforged()
 
 bool item_t::is_matching_type()
 {
-  if ( player -> type == MAGE || player -> type == PRIEST || player -> type == WARLOCK )
-    return true;
-
   if ( ! util::is_match_slot( slot ) )
     return true;
 
