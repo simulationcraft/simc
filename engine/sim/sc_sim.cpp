@@ -269,7 +269,7 @@ public:
   {
     int use_cache = 0;
 
-    std::vector<option_t> options( client_options );
+    auto_dispose<std::vector<option_t> > options( client_options );
     options.push_back( opt_string( "region", region ) );
     options.push_back( opt_string( "server", server ) );
     options.push_back( opt_bool( "cache", use_cache ) );
@@ -2200,187 +2200,185 @@ void sim_t::print_options()
   out_log.raw() << "\n";
 }
 
+void sim_t::add_option( const option_t& opt )
+{
+  options.push_back( opt );
+}
+
 // sim_t::create_options ====================================================
 
 void sim_t::create_options()
 {
-  option_t global_options[] =
-  {
-    // Program control
-    opt_int( "iterations", iterations ),
-    opt_func( "thread_priority", parse_thread_priority ),
-    // General
-    opt_timespan( "max_time", max_time, timespan_t::zero(), timespan_t::max() ),
-    opt_bool( "fixed_time", fixed_time ),
-    opt_float( "vary_combat_length", vary_combat_length, 0.0, 1.0 ),
-    opt_func( "ptr", parse_ptr ),
-    opt_int( "threads", threads ),
-    opt_float( "confidence", confidence, 0.0, 1.0 ),
-    opt_func( "spell_query", parse_spell_query ),
-    opt_string( "spell_query_xml_output_file", spell_query_xml_output_file_str ),
-    opt_func( "item_db_source", parse_item_sources ),
-    opt_func( "proxy", parse_proxy ),
-    opt_int( "auto_ready_trigger", auto_ready_trigger ),
-    opt_int( "stat_cache", stat_cache ),
-    opt_int( "max_aoe_enemies", max_aoe_enemies ),
-    // Raid buff overrides
-    opt_func( "optimal_raid", parse_optimal_raid ),
-    opt_int( "override.attack_power_multiplier", overrides.attack_power_multiplier ),
-    opt_int( "override.critical_strike", overrides.critical_strike ),
-    opt_int( "override.mastery", overrides.mastery ),
-    opt_int( "override.haste", overrides.haste ),
-    opt_int( "override.multistrike", overrides.multistrike ),
-    opt_int( "override.spell_power_multiplier", overrides.spell_power_multiplier ),
-    opt_int( "override.stamina", overrides.stamina ),
-    opt_int( "override.str_agi_int", overrides.str_agi_int ),
-    opt_int( "override.versatility", overrides.versatility ),
-    opt_int( "override.mortal_wounds", overrides.mortal_wounds ),
-    opt_int( "override.bleeding", overrides.bleeding ),
-    opt_func( "override.spell_data", parse_override_spell_data ),
-    opt_float( "override.target_health", overrides.target_health ),
-    // Lag
-    opt_timespan( "channel_lag", channel_lag ),
-    opt_timespan( "channel_lag_stddev", channel_lag_stddev ),
-    opt_timespan( "gcd_lag", gcd_lag ),
-    opt_timespan( "gcd_lag_stddev", gcd_lag_stddev ),
-    opt_timespan( "queue_lag", queue_lag ),
-    opt_timespan( "queue_lag_stddev", queue_lag_stddev ),
-    opt_timespan( "queue_gcd_reduction", queue_gcd_reduction ),
-    opt_bool( "strict_gcd_queue", strict_gcd_queue ),
-    opt_timespan( "default_world_lag", world_lag ),
-    opt_timespan( "default_world_lag_stddev", world_lag_stddev ),
-    opt_timespan( "default_aura_delay", default_aura_delay ),
-    opt_timespan( "default_aura_delay_stddev", default_aura_delay_stddev ),
-    opt_float( "default_skill", default_skill ),
-    opt_timespan( "reaction_time", reaction_time ),
-    opt_float( "travel_variance", travel_variance ),
-    opt_timespan( "ignite_sampling_delta", ignite_sampling_delta ),
-    // Output
-    opt_bool( "save_profiles", save_profiles ),
-    opt_bool( "default_actions", default_actions ),
-    opt_bool( "debug", debug ),
-    opt_bool( "debug_each", debug_each ),
-    opt_string( "html", html_file_str ),
-    opt_bool( "hosted_html", hosted_html ),
-    opt_int( "healing", healing ),
-    opt_string( "xml", xml_file_str ),
-    opt_string( "xml_style", xml_stylesheet_file_str ),
-    opt_bool( "log", log ),
-    opt_string( "output", output_file_str ),
-    opt_bool( "save_raid_summary", save_raid_summary ),
-    opt_bool( "save_gear_comments", save_gear_comments ),
-    opt_bool( "buff_uptime_timeline", buff_uptime_timeline ),
-    // Bloodlust
-    opt_int( "bloodlust_percent", bloodlust_percent ),
-    opt_timespan( "bloodlust_time", bloodlust_time ),
-    // Overrides"
-    opt_bool( "override.allow_potions", allow_potions ),
-    opt_bool( "override.allow_food", allow_food ),
-    opt_bool( "override.allow_flasks", allow_flasks ),
-    opt_bool( "override.bloodlust", overrides.bloodlust ),
-    // Regen
-    opt_timespan( "regen_periodicity", regen_periodicity ),
-    // RNG
-    opt_bool( "deterministic_rng", deterministic_rng ),
-    opt_bool( "average_range", average_range ),
-    opt_bool( "average_gauss", average_gauss ),
-    opt_int( "convergence_scale", convergence_scale ),
-    // Misc
-    //opt_list( "party", party_encoding ),
-    opt_func( "active", parse_active ),
-    opt_int( "seed", seed ),
-    opt_float( "wheel_granularity", em.wheel_granularity ),
-    opt_int( "wheel_seconds", em.wheel_seconds ),
-    opt_int( "wheel_shift", em.wheel_shift ),
-    opt_string( "reference_player", reference_player_str ),
-    opt_string( "raid_events", raid_events_str ),
-    opt_append( "raid_events+", raid_events_str ),
-    opt_func( "fight_style", parse_fight_style ),
-    opt_string( "main_target", main_target_str ),
-    opt_float( "target_death_pct", target_death_pct ),
-    opt_int( "target_level", target_level ),
-    opt_int( "target_level+", rel_target_level ),
-    opt_string( "target_race", target_race ),
-    opt_bool( "challenge_mode", challenge_mode ),
-    opt_int( "scale_to_itemlevel", scale_to_itemlevel ),
-    opt_bool( "disable_set", disable_set ),
-    opt_int( "desired_targets", desired_targets ),
-    opt_bool( "show_etmi", show_etmi ),
-    opt_float( "tmi_window_global", tmi_window_global ),
-    opt_float( "tmi_bin_size", tmi_bin_size ),
-    opt_bool( "enable_taunts", enable_taunts ),
-    // Character Creation
-    opt_func( "death_knight", parse_player ),
-    opt_func( "deathknight", parse_player ),
-    opt_func( "druid", parse_player ),
-    opt_func( "hunter", parse_player ),
-    opt_func( "mage", parse_player ),
-    opt_func( "monk", parse_player ),
-    opt_func( "priest", parse_player ),
-    opt_func( "paladin", parse_player ),
-    opt_func( "rogue", parse_player ),
-    opt_func( "shaman", parse_player ),
-    opt_func( "warlock", parse_player ),
-    opt_func( "warrior", parse_player ),
-    opt_func( "enemy", parse_player ),
-    opt_func( "pet", parse_player ),
-    opt_func( "guardian", parse_player ),
-    opt_func( "copy", parse_player ),
-    opt_func( "armory", parse_armory ),
-    opt_func( "guild", parse_guild ),
-    opt_func( "wowhead", parse_armory ),
-    opt_func( "mopdev", parse_armory ),
-    opt_func( "mophead", parse_armory ),
-    opt_func( "local_json", parse_armory ),
-    opt_func( "http_clear_cache", http::clear_cache ),
-    opt_func( "cache_items", parse_cache ),
-    opt_func( "cache_players", parse_cache ),
-    opt_string( "default_region", default_region_str ),
-    opt_string( "default_server", default_server_str ),
-    opt_string( "save_prefix", save_prefix_str ),
-    opt_string( "save_suffix", save_suffix_str ),
-    opt_bool( "save_talent_str", save_talent_str ),
-    opt_func( "talent_format", parse_talent_format ),
-    // Stat Enchants
-    opt_float( "default_enchant_strength", enchant.attribute[ ATTR_STRENGTH  ] ),
-    opt_float( "default_enchant_agility", enchant.attribute[ ATTR_AGILITY   ] ),
-    opt_float( "default_enchant_stamina", enchant.attribute[ ATTR_STAMINA   ] ),
-    opt_float( "default_enchant_intellect", enchant.attribute[ ATTR_INTELLECT ] ),
-    opt_float( "default_enchant_spirit", enchant.attribute[ ATTR_SPIRIT    ] ),
-    opt_float( "default_enchant_spell_power", enchant.spell_power ),
-    opt_float( "default_enchant_attack_power", enchant.attack_power ),
-    opt_float( "default_enchant_haste_rating", enchant.haste_rating ),
-    opt_float( "default_enchant_mastery_rating", enchant.mastery_rating ),
-    opt_float( "default_enchant_crit_rating", enchant.crit_rating ),
-    opt_float( "default_enchant_multistrike_rating", enchant.multistrike_rating ),
-    opt_float( "default_enchant_versatility_rating", enchant.versatility_rating ),
-    opt_float( "default_enchant_health", enchant.resource[ RESOURCE_HEALTH ] ),
-    opt_float( "default_enchant_mana", enchant.resource[ RESOURCE_MANA   ] ),
-    opt_float( "default_enchant_rage", enchant.resource[ RESOURCE_RAGE   ] ),
-    opt_float( "default_enchant_energy", enchant.resource[ RESOURCE_ENERGY ] ),
-    opt_float( "default_enchant_focus", enchant.resource[ RESOURCE_FOCUS  ] ),
-    opt_float( "default_enchant_runic", enchant.resource[ RESOURCE_RUNIC_POWER  ] ),
-    // Report
-    opt_int( "print_styles", print_styles ),
-    opt_int( "report_precision", report_precision ),
-    opt_bool( "report_pets_separately", report_pets_separately ),
-    opt_bool( "report_targets", report_targets ),
-    opt_bool( "report_details", report_details ),
-    opt_bool( "report_raw_abilities", report_raw_abilities ),
-    opt_bool( "report_rng", report_rng ),
-    opt_int( "statistics_level", statistics_level ),
-    opt_bool( "separate_stats_by_actions", separate_stats_by_actions ),
-    opt_bool( "report_raid_summary", report_raid_summary ), // Force reporting of raid summary
-    opt_string( "reforge_plot_output_file", reforge_plot_output_file_str ),
-    opt_string( "csv_output_file_str", csv_output_file_str ),
-    opt_bool( "monitor_cpu", monitor_cpu ),
-    opt_func( "maximize_reporting", parse_maximize_reporting ),
-    opt_int( "global_item_upgrade_level", global_item_upgrade_level ),
-    opt_int( "wowhead_tooltips", wowhead_tooltips ),
-    opt_null()
-  };
-
-  opts::copy( options, global_options );
+  add_option( opt_int( "iterations", iterations ) );
+  add_option( opt_func( "thread_priority", parse_thread_priority ) );
+  // General
+  add_option( opt_timespan( "max_time", max_time, timespan_t::zero(), timespan_t::max() ) );
+  add_option( opt_bool( "fixed_time", fixed_time ) );
+  add_option( opt_float( "vary_combat_length", vary_combat_length, 0.0, 1.0 ) );
+  add_option( opt_func( "ptr", parse_ptr ) );
+  add_option( opt_int( "threads", threads ) );
+  add_option( opt_float( "confidence", confidence, 0.0, 1.0 ) );
+  add_option( opt_func( "spell_query", parse_spell_query ) );
+  add_option( opt_string( "spell_query_xml_output_file", spell_query_xml_output_file_str ) );
+  add_option( opt_func( "item_db_source", parse_item_sources ) );
+  add_option( opt_func( "proxy", parse_proxy ) );
+  add_option( opt_int( "auto_ready_trigger", auto_ready_trigger ) );
+  add_option( opt_int( "stat_cache", stat_cache ) );
+  add_option( opt_int( "max_aoe_enemies", max_aoe_enemies ) );
+  // Raid buff overrides
+  add_option( opt_func( "optimal_raid", parse_optimal_raid ) );
+  add_option( opt_int( "override.attack_power_multiplier", overrides.attack_power_multiplier ) );
+  add_option( opt_int( "override.critical_strike", overrides.critical_strike ) );
+  add_option( opt_int( "override.mastery", overrides.mastery ) );
+  add_option( opt_int( "override.haste", overrides.haste ) );
+  add_option( opt_int( "override.multistrike", overrides.multistrike ) );
+  add_option( opt_int( "override.spell_power_multiplier", overrides.spell_power_multiplier ) );
+  add_option( opt_int( "override.stamina", overrides.stamina ) );
+  add_option( opt_int( "override.str_agi_int", overrides.str_agi_int ) );
+  add_option( opt_int( "override.versatility", overrides.versatility ) );
+  add_option( opt_int( "override.mortal_wounds", overrides.mortal_wounds ) );
+  add_option( opt_int( "override.bleeding", overrides.bleeding ) );
+  add_option( opt_func( "override.spell_data", parse_override_spell_data ) );
+  add_option( opt_float( "override.target_health", overrides.target_health ) );
+  // Lag
+  add_option( opt_timespan( "channel_lag", channel_lag ) );
+  add_option( opt_timespan( "channel_lag_stddev", channel_lag_stddev ) );
+  add_option( opt_timespan( "gcd_lag", gcd_lag ) );
+  add_option( opt_timespan( "gcd_lag_stddev", gcd_lag_stddev ) );
+  add_option( opt_timespan( "queue_lag", queue_lag ) );
+  add_option( opt_timespan( "queue_lag_stddev", queue_lag_stddev ) );
+  add_option( opt_timespan( "queue_gcd_reduction", queue_gcd_reduction ) );
+  add_option( opt_bool( "strict_gcd_queue", strict_gcd_queue ) );
+  add_option( opt_timespan( "default_world_lag", world_lag ) );
+  add_option( opt_timespan( "default_world_lag_stddev", world_lag_stddev ) );
+  add_option( opt_timespan( "default_aura_delay", default_aura_delay ) );
+  add_option( opt_timespan( "default_aura_delay_stddev", default_aura_delay_stddev ) );
+  add_option( opt_float( "default_skill", default_skill ) );
+  add_option( opt_timespan( "reaction_time", reaction_time ) );
+  add_option( opt_float( "travel_variance", travel_variance ) );
+  add_option( opt_timespan( "ignite_sampling_delta", ignite_sampling_delta ) );
+  // Output
+  add_option( opt_bool( "save_profiles", save_profiles ) );
+  add_option( opt_bool( "default_actions", default_actions ) );
+  add_option( opt_bool( "debug", debug ) );
+  add_option( opt_bool( "debug_each", debug_each ) );
+  add_option( opt_string( "html", html_file_str ) );
+  add_option( opt_bool( "hosted_html", hosted_html ) );
+  add_option( opt_int( "healing", healing ) );
+  add_option( opt_string( "xml", xml_file_str ) );
+  add_option( opt_string( "xml_style", xml_stylesheet_file_str ) );
+  add_option( opt_bool( "log", log ) );
+  add_option( opt_string( "output", output_file_str ) );
+  add_option( opt_bool( "save_raid_summary", save_raid_summary ) );
+  add_option( opt_bool( "save_gear_comments", save_gear_comments ) );
+  add_option( opt_bool( "buff_uptime_timeline", buff_uptime_timeline ) );
+  // Bloodlust
+  add_option( opt_int( "bloodlust_percent", bloodlust_percent ) );
+  add_option( opt_timespan( "bloodlust_time", bloodlust_time ) );
+  // Overrides"
+  add_option( opt_bool( "override.allow_potions", allow_potions ) );
+  add_option( opt_bool( "override.allow_food", allow_food ) );
+  add_option( opt_bool( "override.allow_flasks", allow_flasks ) );
+  add_option( opt_bool( "override.bloodlust", overrides.bloodlust ) );
+  // Regen
+  add_option( opt_timespan( "regen_periodicity", regen_periodicity ) );
+  // RNG
+  add_option( opt_bool( "deterministic_rng", deterministic_rng ) );
+  add_option( opt_bool( "average_range", average_range ) );
+  add_option( opt_bool( "average_gauss", average_gauss ) );
+  add_option( opt_int( "convergence_scale", convergence_scale ) );
+  // Misc
+  add_option( opt_list( "party", party_encoding ) );
+  add_option( opt_func( "active", parse_active ) );
+  add_option( opt_int( "seed", seed ) );
+  add_option( opt_float( "wheel_granularity", em.wheel_granularity ) );
+  add_option( opt_int( "wheel_seconds", em.wheel_seconds ) );
+  add_option( opt_int( "wheel_shift", em.wheel_shift ) );
+  add_option( opt_string( "reference_player", reference_player_str ) );
+  add_option( opt_string( "raid_events", raid_events_str ) );
+  add_option( opt_append( "raid_events+", raid_events_str ) );
+  add_option( opt_func( "fight_style", parse_fight_style ) );
+  add_option( opt_string( "main_target", main_target_str ) );
+  add_option( opt_float( "target_death_pct", target_death_pct ) );
+  add_option( opt_int( "target_level", target_level ) );
+  add_option( opt_int( "target_level+", rel_target_level ) );
+  add_option( opt_string( "target_race", target_race ) );
+  add_option( opt_bool( "challenge_mode", challenge_mode ) );
+  add_option( opt_int( "scale_to_itemlevel", scale_to_itemlevel ) );
+  add_option( opt_bool( "disable_set", disable_set ) );
+  add_option( opt_int( "desired_targets", desired_targets ) );
+  add_option( opt_bool( "show_etmi", show_etmi ) );
+  add_option( opt_float( "tmi_window_global", tmi_window_global ) );
+  add_option( opt_float( "tmi_bin_size", tmi_bin_size ) );
+  add_option( opt_bool( "enable_taunts", enable_taunts ) );
+  // Character Creation
+  add_option( opt_func( "death_knight", parse_player ) );
+  add_option( opt_func( "deathknight", parse_player ) );
+  add_option( opt_func( "druid", parse_player ) );
+  add_option( opt_func( "hunter", parse_player ) );
+  add_option( opt_func( "mage", parse_player ) );
+  add_option( opt_func( "monk", parse_player ) );
+  add_option( opt_func( "priest", parse_player ) );
+  add_option( opt_func( "paladin", parse_player ) );
+  add_option( opt_func( "rogue", parse_player ) );
+  add_option( opt_func( "shaman", parse_player ) );
+  add_option( opt_func( "warlock", parse_player ) );
+  add_option( opt_func( "warrior", parse_player ) );
+  add_option( opt_func( "enemy", parse_player ) );
+  add_option( opt_func( "pet", parse_player ) );
+  add_option( opt_func( "guardian", parse_player ) );
+  add_option( opt_func( "copy", parse_player ) );
+  add_option( opt_func( "armory", parse_armory ) );
+  add_option( opt_func( "guild", parse_guild ) );
+  add_option( opt_func( "wowhead", parse_armory ) );
+  add_option( opt_func( "mopdev", parse_armory ) );
+  add_option( opt_func( "mophead", parse_armory ) );
+  add_option( opt_func( "local_json", parse_armory ) );
+  add_option( opt_func( "http_clear_cache", http::clear_cache ) );
+  add_option( opt_func( "cache_items", parse_cache ) );
+  add_option( opt_func( "cache_players", parse_cache ) );
+  add_option( opt_string( "default_region", default_region_str ) );
+  add_option( opt_string( "default_server", default_server_str ) );
+  add_option( opt_string( "save_prefix", save_prefix_str ) );
+  add_option( opt_string( "save_suffix", save_suffix_str ) );
+  add_option( opt_bool( "save_talent_str", save_talent_str ) );
+  add_option( opt_func( "talent_format", parse_talent_format ) );
+  // Stat Enchants
+  add_option( opt_float( "default_enchant_strength", enchant.attribute[ATTR_STRENGTH] ) );
+  add_option( opt_float( "default_enchant_agility", enchant.attribute[ATTR_AGILITY] ) );
+  add_option( opt_float( "default_enchant_stamina", enchant.attribute[ATTR_STAMINA] ) );
+  add_option( opt_float( "default_enchant_intellect", enchant.attribute[ATTR_INTELLECT] ) );
+  add_option( opt_float( "default_enchant_spirit", enchant.attribute[ATTR_SPIRIT] ) );
+  add_option( opt_float( "default_enchant_spell_power", enchant.spell_power ) );
+  add_option( opt_float( "default_enchant_attack_power", enchant.attack_power ) );
+  add_option( opt_float( "default_enchant_haste_rating", enchant.haste_rating ) );
+  add_option( opt_float( "default_enchant_mastery_rating", enchant.mastery_rating ) );
+  add_option( opt_float( "default_enchant_crit_rating", enchant.crit_rating ) );
+  add_option( opt_float( "default_enchant_multistrike_rating", enchant.multistrike_rating ) );
+  add_option( opt_float( "default_enchant_versatility_rating", enchant.versatility_rating ) );
+  add_option( opt_float( "default_enchant_health", enchant.resource[RESOURCE_HEALTH] ) );
+  add_option( opt_float( "default_enchant_mana", enchant.resource[RESOURCE_MANA] ) );
+  add_option( opt_float( "default_enchant_rage", enchant.resource[RESOURCE_RAGE] ) );
+  add_option( opt_float( "default_enchant_energy", enchant.resource[RESOURCE_ENERGY] ) );
+  add_option( opt_float( "default_enchant_focus", enchant.resource[RESOURCE_FOCUS] ) );
+  add_option( opt_float( "default_enchant_runic", enchant.resource[RESOURCE_RUNIC_POWER] ) );
+  // Report
+  add_option( opt_int( "print_styles", print_styles ) );
+  add_option( opt_int( "report_precision", report_precision ) );
+  add_option( opt_bool( "report_pets_separately", report_pets_separately ) );
+  add_option( opt_bool( "report_targets", report_targets ) );
+  add_option( opt_bool( "report_details", report_details ) );
+  add_option( opt_bool( "report_raw_abilities", report_raw_abilities ) );
+  add_option( opt_bool( "report_rng", report_rng ) );
+  add_option( opt_int( "statistics_level", statistics_level ) );
+  add_option( opt_bool( "separate_stats_by_actions", separate_stats_by_actions ) );
+  add_option( opt_bool( "report_raid_summary", report_raid_summary ) ); // Force reporting of raid summary
+  add_option( opt_string( "reforge_plot_output_file", reforge_plot_output_file_str ) );
+  add_option( opt_string( "csv_output_file_str", csv_output_file_str ) );
+  add_option( opt_bool( "monitor_cpu", monitor_cpu ) );
+  add_option( opt_func( "maximize_reporting", parse_maximize_reporting ) );
+  add_option( opt_int( "global_item_upgrade_level", global_item_upgrade_level ) );
+  add_option( opt_int( "wowhead_tooltips", wowhead_tooltips ) );
 }
 
 // sim_t::parse_option ======================================================

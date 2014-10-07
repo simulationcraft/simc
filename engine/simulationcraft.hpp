@@ -2672,7 +2672,7 @@ struct sim_t : public core_sim_t, private sc_thread_t
   int active_allies;
 
   std::unordered_map<std::string, std::string> var_map;
-  std::vector<option_t> options;
+  auto_dispose<std::vector<option_t> > options;
   std::vector<std::string> party_encoding;
   std::vector<std::string> item_db_sources;
 
@@ -2841,6 +2841,7 @@ public:
   void      partition();
   bool      execute();
   void      print_options();
+  void      add_option( const option_t& opt );
   void      create_options();
   bool      parse_option( const std::string& name, const std::string& value );
   bool      parse_options( int argc, char** argv );
@@ -4350,7 +4351,7 @@ struct player_t : public actor_t
   dbc_t       dbc;
 
   // Option Parsing
-  std::vector<option_t> options;
+  auto_dispose<std::vector<option_t> > options;
 
   // Stat Timelines to Display
   std::vector<stat_e> stat_timelines;

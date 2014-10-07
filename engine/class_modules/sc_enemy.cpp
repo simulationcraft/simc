@@ -122,8 +122,6 @@ struct enemy_action_t : public ACTION_TYPE
   timespan_t cooldown_;
   int aoe_tanks;
 
-  std::vector<option_t> options;
-
   enemy_action_t( const std::string& name, player_t* player ) :
     action_type_t( name, player ),
     apply_debuff( false ), num_debuff_stacks( -1000000 ), damage_range( -1 ),
@@ -1168,19 +1166,14 @@ double enemy_t::resource_loss( resource_e resource_type,
 void enemy_t::create_options()
 {
   // this first part handles enemy options that are sim-wide
-  option_t target_options[] =
-  {
-    opt_float( "enemy_health", fixed_health ),
-    opt_float( "enemy_initial_health_percentage", initial_health_percentage ),
-    opt_float( "enemy_fixed_health_percentage", fixed_health_percentage ),
-    opt_float( "health_recalculation_dampening_exponent", health_recalculation_dampening_exponent ),
-    opt_float( "enemy_size", size ),
-    opt_string( "enemy_tank", target_str ),
-    opt_int( "apply_debuff", apply_damage_taken_debuff ),
-    opt_null()
-  };
-
-  opts::copy( sim -> options, target_options );
+  // TODO: FIXME, as this surely isn't working as intended in all use cases.
+  add_option( opt_float( "enemy_health", fixed_health ) );
+  add_option( opt_float( "enemy_initial_health_percentage", initial_health_percentage ) );
+  add_option( opt_float( "enemy_fixed_health_percentage", fixed_health_percentage ) );
+  add_option( opt_float( "health_recalculation_dampening_exponent", health_recalculation_dampening_exponent ) );
+  add_option( opt_float( "enemy_size", size ) );
+  add_option( opt_string( "enemy_tank", target_str ) );
+  add_option( opt_int( "apply_debuff", apply_damage_taken_debuff ) );
 
   // the next part handles actor-specific options for enemies
   player_t::create_options();
