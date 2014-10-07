@@ -1112,13 +1112,12 @@ void warrior_attack_t::impact( action_state_t* s )
 
 struct melee_t: public warrior_attack_t
 {
-  bool first;
   bool mh_lost_melee_contact;
   bool oh_lost_melee_contact;
   double sudden_death_chance;
   melee_t( const std::string& name, warrior_t* p ):
     warrior_attack_t( name, p, spell_data_t::nil() ),
-    first( true ), mh_lost_melee_contact( false ), oh_lost_melee_contact( false ),
+    mh_lost_melee_contact( true ), oh_lost_melee_contact( true ),
     sudden_death_chance( 0.0 )
   {
     school = SCHOOL_PHYSICAL;
@@ -1139,19 +1138,16 @@ struct melee_t: public warrior_attack_t
   void reset()
   {
     warrior_attack_t::reset();
-    first = true;
-    mh_lost_melee_contact = false;
-    oh_lost_melee_contact = false;
+    mh_lost_melee_contact = true;
+    oh_lost_melee_contact = true;
   }
 
   timespan_t execute_time() const
   {
     timespan_t t = warrior_attack_t::execute_time();
-    if ( first )
-      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( t / 2 ) : timespan_t::zero();
-    else if ( weapon -> slot == SLOT_MAIN_HAND && mh_lost_melee_contact )
+    if ( weapon -> slot == SLOT_MAIN_HAND && mh_lost_melee_contact )
       return timespan_t::zero(); // If contact is lost, the attack is instant.
-    else if ( weapon -> slot == SLOT_OFF_HAND && oh_lost_melee_contact )
+    else if ( weapon -> slot == SLOT_OFF_HAND && oh_lost_melee_contact ) // Also used for the first attack.
       return timespan_t::zero();
     else
       return t;
@@ -1159,9 +1155,6 @@ struct melee_t: public warrior_attack_t
 
   void execute()
   {
-    if ( first )
-      first = false;
-
     if ( p() -> current.distance_to_move > 5 )
     { // Cancel autoattacks, auto_attack_t will restart them when we're back in range.
       if ( weapon -> slot == SLOT_MAIN_HAND )
