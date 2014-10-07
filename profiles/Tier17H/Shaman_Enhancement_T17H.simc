@@ -64,13 +64,14 @@ actions.single+=/searing_totem,if=pet.searing_totem.remains<=20&!pet.fire_elemen
 
 # Multi target action priority list
 
-actions.aoe=fire_nova,if=active_dot.flame_shock>=3
+actions.aoe=unleash_elements,if=active_enemies>=4&dot.flame_shock.ticking&(cooldown.shock.remains>cooldown.fire_nova.remains|cooldown.fire_nova.remains=0)
+actions.aoe+=/fire_nova,if=active_dot.flame_shock>=3
 actions.aoe+=/wait,sec=cooldown.fire_nova.remains,if=active_dot.flame_shock>=4&cooldown.fire_nova.remains<=action.fire_nova.gcd
 actions.aoe+=/magma_totem,if=!totem.fire.active
 actions.aoe+=/lava_lash,if=dot.flame_shock.ticking
 actions.aoe+=/elemental_blast,if=buff.maelstrom_weapon.react>=1
 actions.aoe+=/chain_lightning,if=glyph.chain_lightning.enabled&active_enemies>=4&(buff.maelstrom_weapon.react=5|(buff.ancestral_swiftness.up&buff.maelstrom_weapon.react>=3))
-actions.aoe+=/unleash_elements
+actions.aoe+=/unleash_elements,if=active_enemies<4
 actions.aoe+=/flame_shock,cycle_targets=1,if=!ticking
 actions.aoe+=/lightning_bolt,if=(!glyph.chain_lightning.enabled|active_enemies<=3)&(buff.maelstrom_weapon.react=5|(buff.ancestral_swiftness.up&buff.maelstrom_weapon.react>=3))
 actions.aoe+=/windstrike
