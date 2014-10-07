@@ -1657,6 +1657,8 @@ bool action_t::ready()
 
     if ( target ) is_ready = ready();
 
+    target_number = saved_target_number;
+
     if ( is_ready ) return true;
 
     target = saved_target;
