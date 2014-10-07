@@ -1409,12 +1409,9 @@ void copy( std::vector<option_t>& opt_vector, const option_t* opt_array );
 bool parse( sim_t*, std::vector<option_t>&, const std::string& name, const std::string& value );
 void parse( sim_t*, const char* context, std::vector<option_t>&, const std::string& options_str );
 void parse( sim_t*, const char* context, std::vector<option_t>&, const std::vector<std::string>& strings );
-void parse( sim_t*, const char* context, const option_t*,        const std::vector<std::string>& strings );
-void parse( sim_t*, const char* context, const option_t*,        const std::string& options_str );
 bool parse_file( sim_t*, FILE* file );
 bool parse_line( sim_t*, const char* line );
 bool parse_token( sim_t*, const std::string& token );
-option_t* merge( std::vector<option_t>& out, const option_t* in1, const option_t* in2 );
 }
 
 option_t opt_string( const std::string& n, std::string& v );
@@ -1432,7 +1429,7 @@ option_t opt_timespan( const std::string& n, timespan_t& v, timespan_t , timespa
 option_t opt_list( const std::string& n, opts::list_t& v );
 option_t opt_map( const std::string& n, opts::map_t& v );
 option_t opt_func( const std::string& n, opts::function_t& f );
-option_t opt_deprecated( const std::string& n, const std::string& new_option = std::string() );
+option_t opt_deprecated( const std::string& n, const std::string& new_option );
 option_t opt_null();
 
 

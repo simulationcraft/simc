@@ -395,33 +395,30 @@ bool item_t::parse_options()
     option_name_str = options_str.substr( 0, cut_pt );
   }
 
-  option_t options[] =
-  {
-    opt_uint( "id", parsed.data.id ),
-    opt_int( "upgrade", parsed.upgrade_level ),
-    opt_string( "stats", option_stats_str ),
-    opt_string( "gems", option_gems_str ),
-    opt_string( "enchant", option_enchant_str ),
-    opt_string( "addon", option_addon_str ),
-    opt_string( "equip", option_equip_str ),
-    opt_string( "use", option_use_str ),
-    opt_string( "weapon", option_weapon_str ),
-    opt_string( "warforged", option_warforged_str ),
-    opt_string( "lfr", option_lfr_str ),
-    opt_string( "heroic", option_heroic_str ),
-    opt_string( "mythic", option_mythic_str ),
-    opt_string( "type", option_armor_type_str ),
-    opt_string( "reforge", DUMMY_REFORGE ),
-    opt_int( "suffix", parsed.suffix_id ),
-    opt_string( "ilevel", option_ilevel_str ),
-    opt_string( "quality", option_quality_str ),
-    opt_string( "source", option_data_source_str ),
-    opt_string( "gem_id", option_gem_id_str ),
-    opt_string( "enchant_id", option_enchant_id_str ),
-    opt_string( "addon_id", option_addon_id_str ),
-    opt_string( "bonus_id", option_bonus_id_str ),
-    opt_null()
-  };
+  auto_dispose<std::vector<option_t> > options;
+  options.push_back(opt_uint("id", parsed.data.id));
+  options.push_back(opt_int("upgrade", parsed.upgrade_level));
+  options.push_back(opt_string("stats", option_stats_str));
+  options.push_back(opt_string("gems", option_gems_str));
+  options.push_back(opt_string("enchant", option_enchant_str));
+  options.push_back(opt_string("addon", option_addon_str));
+  options.push_back(opt_string("equip", option_equip_str));
+  options.push_back(opt_string("use", option_use_str));
+  options.push_back(opt_string("weapon", option_weapon_str));
+  options.push_back(opt_string("warforged", option_warforged_str));
+  options.push_back(opt_string("lfr", option_lfr_str));
+  options.push_back(opt_string("heroic", option_heroic_str));
+  options.push_back(opt_string("mythic", option_mythic_str));
+  options.push_back(opt_string("type", option_armor_type_str));
+  options.push_back(opt_string("reforge", DUMMY_REFORGE));
+  options.push_back(opt_int("suffix", parsed.suffix_id));
+  options.push_back(opt_string("ilevel", option_ilevel_str));
+  options.push_back(opt_string("quality", option_quality_str));
+  options.push_back(opt_string("source", option_data_source_str));
+  options.push_back(opt_string("gem_id", option_gem_id_str));
+  options.push_back(opt_string("enchant_id", option_enchant_id_str));
+  options.push_back(opt_string("addon_id", option_addon_id_str));
+  options.push_back(opt_string("bonus_id", option_bonus_id_str));
 
   try
   {

@@ -313,42 +313,6 @@ void opts::parse( sim_t*                 sim,
   opts::parse( sim, context, options, util::string_split( options_str, "," ) );
 }
 
-// option_t::parse ==========================================================
-
-void opts::parse( sim_t*             sim,
-                      const char*        context,
-                      const option_t*    options,
-                      const std::string& options_str )
-{
-  std::vector<option_t> options_vector;
-  opts::copy( options_vector, options );
-  parse( sim, context, options_vector, options_str );
-}
-
-// option_t::parse ==========================================================
-
-void opts::parse( sim_t*             sim,
-                      const char*        context,
-                      const option_t*    options,
-                      const std::vector<std::string>& strings )
-{
-  std::vector<option_t> options_vector;
-  opts::copy( options_vector, options );
-  parse( sim, context, options_vector, strings );
-}
-
-// option_t::merge ==========================================================
-
-option_t* opts::merge( std::vector<option_t>& merged_options,
-                           const option_t*        options1,
-                           const option_t*        options2 )
-{
-  merged_options.clear();
-  if ( options1 ) while ( options1 && (!(*options1) -> name().empty()) ) merged_options.push_back( *options1++ );
-  if ( options2 ) while ( options2 && (!(*options2) -> name().empty()) ) merged_options.push_back( *options2++ );
-  merged_options.push_back( opt_null() );
-  return &merged_options[ 0 ];
-}
 
 // option_db_t::parse_file ==================================================
 
