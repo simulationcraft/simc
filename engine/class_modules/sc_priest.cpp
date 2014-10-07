@@ -613,7 +613,7 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
     base_fiend_pet_t( sim, owner, PET_SHADOWFIEND, name ),
     mana_leech( find_spell( 34650, "mana_leech" ) )
   {
-    direct_power_mod = 1.0;
+    direct_power_mod = 0.75;
 
     main_hand_weapon.min_dmg = owner.dbc.spell_scaling( owner.type, owner.level ) * 2;
     main_hand_weapon.max_dmg = owner.dbc.spell_scaling( owner.type, owner.level ) * 2;
@@ -637,10 +637,10 @@ struct mindbender_pet_t final : public base_fiend_pet_t
     base_fiend_pet_t( sim, owner, PET_MINDBENDER, name ),
     mindbender_spell( owner.find_talent_spell( "Mindbender" ) )
   {
-    direct_power_mod = 0.88;
+    direct_power_mod = 0.75;
 
-    main_hand_weapon.min_dmg = owner.dbc.spell_scaling( owner.type, owner.level ) * 1.76;
-    main_hand_weapon.max_dmg = owner.dbc.spell_scaling( owner.type, owner.level ) * 1.76;
+    main_hand_weapon.min_dmg = owner.dbc.spell_scaling( owner.type, owner.level ) * 2;
+    main_hand_weapon.max_dmg = owner.dbc.spell_scaling( owner.type, owner.level ) * 2;
     main_hand_weapon.damage  = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
   }
 
@@ -2489,11 +2489,6 @@ struct mind_sear_t final : public priest_spell_t
   {
     double am = priest_spell_t::action_multiplier();
 
-    if ( priest.mastery_spells.mental_anguish -> ok() )
-    {
-      am *= 1.0 + priest.cache.mastery_value();
-    }
-
     priest_td_t& td = get_td( target );
     if ( priest.talents.clarity_of_power -> ok() && !td.dots.shadow_word_pain -> is_ticking() && !td.dots.vampiric_touch -> is_ticking() )
       am *= 1.0 + priest.talents.clarity_of_power -> effectN( 1 ).percent();
@@ -3728,12 +3723,11 @@ struct divine_star_base_t final : public Base
 {
 private:
   typedef Base ab; // the action base ("ab") type (priest_spell_t or priest_heal_t)
-protected:
+public:
   typedef divine_star_base_t base_t;
 
   divine_star_base_t* return_spell;
 
-public:
   divine_star_base_t( const std::string& n, priest_t& p, const spell_data_t* spell_data, bool is_return_spell = false ) :
     ab( n, p, spell_data ),
     return_spell( ( is_return_spell ? nullptr : new divine_star_base_t( n, p, spell_data, true ) ) )
@@ -3796,11 +3790,11 @@ private:
   {
     if ( priest.specialization() == PRIEST_SHADOW )
     {
-      return new divine_star_base_t<priest_spell_t>( "divine_star_damage", p, data().effectN( 1 ).trigger() );
+      return new divine_star_base_t<priest_spell_t>( "divine_star_damage", p, p.find_spell( 122128 ) );
     }
     else
     {
-       return new divine_star_base_t<priest_heal_t>( "divine_star_heal", p, data().effectN( 1 ).trigger() );
+      return new divine_star_base_t<priest_heal_t>( "divine_star_heal", p, p.find_spell( 110745 ) );
     }
   }
 };
