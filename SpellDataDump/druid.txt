@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18988)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18996)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 1
@@ -879,6 +879,9 @@ Effects          :
 #4 (id=138420)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14
                    Affected Spells: Thrash (77758)
+#5 (id=257150)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3
+                   Affected Spells: Ysera's Gift (145108)
 Description      : Reduces all magical damage taken by $s1%, and reduces the chance you'll be critically hit by attacks by $s2%.
 
 Reduces the chance for your attacks to be parried by $s3%.
@@ -4020,13 +4023,13 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .x...
 Effects          :
 #1 (id=117476)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -50 | Scaled Value: -50 | SP Coefficient: 1.00000 | Misc Value: 14
-                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Stampeding Roar (97993), Swipe (106785), Thrash (106830), Skull Bash (106839), Rake (150017), Moonfire (155625), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881)
+                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Stampeding Roar (97993), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Rake (150017), Moonfire (155625), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881)
 #2 (id=219222)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 3
-                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Stampeding Roar (97993), Swipe (106785), Thrash (106830), Skull Bash (106839), Rake (150017), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881)
+                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Stampeding Roar (97993), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Rake (150017), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881)
 #3 (id=219223)   : Apply Aura (6) | Unknown effect sub type (418)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 3
-                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Stampeding Roar (97993), Swipe (106785), Thrash (106830), Skull Bash (106839), Rake (150017), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881)
+                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Stampeding Roar (97993), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Rake (150017), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881)
 Description      : Reduces the cost of all Cat Form abilities by $s1% and lasts $d.
 Tooltip          : Reduces the cost of all Cat Form abilities by $s1%.
 
@@ -5633,9 +5636,10 @@ Effects          :
 Description      : $@spelldesc144887
 Tooltip          : Healing for $w1 every $t sec.
 
-Name             : Ysera's Gift (id=145108) [Passive] 
+Name             : Ysera's Gift (id=145108) [Spell Family (7), Passive] 
 Class            : Druid
 Range            : 100 yards
+Affecting spells : Thick Hide (16931), Berserk (106951), 
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

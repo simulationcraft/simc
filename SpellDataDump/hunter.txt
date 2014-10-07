@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18988)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18996)
 Name             : Mend Pet (id=136) [Scaling Spell (3), Spell Family (9)] 
 Class            : Hunter
 Spell Level      : 16
@@ -6599,5 +6599,20 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3
 Description      : $@spelldesc177667
 Tooltip          : Focus regeneration increased by $w1%.
+
+Name             : Stampede (id=178875) [Hidden] 
+Class            : Hunter
+Duration         : Aura (infinite)
+Attributes       : .......x x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=257004)   : Apply Aura (6) | Modify Healing% Done (136)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 127
+#2 (id=257005)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 0x7f
 
 

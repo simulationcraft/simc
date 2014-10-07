@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18988)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18996)
 Name             : Blizzard (id=10) [Spell Family (3)] 
 Class            : Frost Mage
 Resource         : 5% Base Mana (8000 @Level 100)
@@ -71,6 +71,8 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50
 #2 (id=76)       : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.19100
+#3 (id=257164)   : Server Side Script (77)
+                   Base Value: 0 | Scaled Value: 0
 Description      : Launches a bolt of frost at the enemy, causing $s2 Frost damage and slowing movement speed by $s1% for $d.
 Tooltip          : $?$w1=0[][Movement slowed by $w1%.]
 
@@ -982,6 +984,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 0 (avg=0.335, dl=0.25) | SP Coefficient: 0.40000 | Chain Multiplier: 0.5
 #2 (id=85836)    : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
+#3 (id=257156)   : Server Side Script (77)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.5
 Description      : Deals $?a44544[${$m1*$<fingersMult>} to ${$M1*$<fingersMult>}][$s1] Frost damage to an enemy target$?s56377&!a44544[, and ${$m1*$56377m2/100} to ${$M1*$56377m2/100} Frost damage to a second nearby target][]$?s56377&a44544[, and ${$m1*$<fingersMult>*$56377m2/100} to ${$M1*$<fingersMult>*$56377m2/100} Frost damage to a second nearby target][].
 
 Ice Lance damage is doubled against frozen targets.

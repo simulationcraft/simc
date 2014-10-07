@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18988)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18996)
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 9

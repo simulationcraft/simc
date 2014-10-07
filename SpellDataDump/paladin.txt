@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18988)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18996)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -2040,7 +2040,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=49485)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 40 | Scaled Value: 40
+                   Base Value: 30 | Scaled Value: 30
                    Affected Spells: Seal of Truth (42463)
 #2 (id=128994)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 22
