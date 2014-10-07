@@ -2386,28 +2386,68 @@ expr_t* action_t::create_expression( const std::string& name_str )
     return sim -> create_expression( this, name_str );
   }
 
-  if ( splits.size() > 2 && splits[ 0 ] == "target" )
+  if ( splits.size() >= 2 && splits[ 0 ] == "target" )
   {
     // Find target
-    player_t* expr_target;
+    player_t* expr_target = 0;
     if ( splits[ 1 ][ 0 ] >= '0' && splits[ 1 ][ 0 ] <= '9' )
+    {
       expr_target = find_target_by_number( atoi( splits[ 1 ].c_str() ) );
-    else
-      expr_target = sim -> find_player( splits[ 1 ] );
+      assert( expr_target );
+    }
+
     size_t start_rest = 2;
     if ( ! expr_target )
     {
       expr_target = target;
       start_rest = 1;
     }
+    else
+    {
+      if ( splits.size() == 2 )
+      {
+        sim -> errorf( "%s expression creation error: insufficient parameters for expression 'target.<number>.<expression>'",
+            player -> name() );
+        return 0;
+      }
+    }
 
-    assert( expr_target );
+    if ( util::str_compare_ci( splits[ start_rest ], "distance" ) )
+      return make_ref_expr( "distance", player -> base.distance );
 
     std::string rest = splits[ start_rest ];
     for ( size_t i = start_rest + 1; i < splits.size(); ++i )
       rest += '.' + splits[ i ];
 
-    return expr_target -> create_expression( this, rest );
+    // Proxy target based expression, allowing "dynamic switching" of targets
+    // for the "target.<expression>" expressions. Generates a suitable
+    // expression on demand for each target during run-time.
+    struct target_proxy_expr_t : public action_expr_t
+    {
+      std::vector<expr_t*> proxy_expr;
+      std::string suffix_expr_str;
+
+      target_proxy_expr_t( action_t& a, const std::string& expr_str ) :
+        action_expr_t( "target_proxy_expr", a ), suffix_expr_str( expr_str )
+      {
+        proxy_expr.resize( a.sim -> actor_list.size() + 1, 0 );
+      }
+
+      double evaluate()
+      {
+        if ( proxy_expr[ action.target -> actor_index ] == 0 )
+        {
+          proxy_expr[ action.target -> actor_index ] = action.target -> create_expression( &action, suffix_expr_str );
+        }
+
+        return proxy_expr[ action.target -> actor_index ] -> eval();
+      }
+
+      ~target_proxy_expr_t()
+      { range::dispose( proxy_expr ); }
+    };
+
+    return new target_proxy_expr_t( *this, rest );
   }
 
   // necessary for self.target.*, self.dot.*

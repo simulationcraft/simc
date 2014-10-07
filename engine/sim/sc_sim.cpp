@@ -2146,13 +2146,6 @@ expr_t* sim_t::create_expression( action_t* a,
       rest += '.' + splits[ i ];
     return actor -> create_expression( a, rest );
   }
-  if ( splits.size() >= 2 && splits[ 0 ] == "target" )
-  {
-    std::string rest = splits[1];
-    for ( size_t i = 2; i < splits.size(); ++i )
-      rest += '.' + splits[ i ];
-    return target -> create_expression( a, rest );
-  }
 
   if ( splits.size() == 1 && splits[ 0 ] == "target" )
   {
