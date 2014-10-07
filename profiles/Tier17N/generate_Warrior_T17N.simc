@@ -138,8 +138,8 @@ legs=blackhands_legguards,id=115580
 feet=iron_bellow_sabatons,id=113961
 finger1=timeless_solium_band_of_the_bulwark,id=118298,enchant=gift_of_critical_strike
 finger2=siege_bombers_band,id=113963,enchant=gift_of_critical_strike
-trinket1=forgemasters_insignia,id=113983
-trinket2=bottle_of_infesting_spores,id=113658
+trinket1=evergaze_arcane_eidolon,id=113861
+trinket2=tectus_beating_heart,id=113645
 main_hand=taners_terrible_spine,id=113862,enchant=mark_of_the_thunderlord
 off_hand=kromogs_protecting_palm,id=113926
 save=Warrior_Gladiator_T17N.simc

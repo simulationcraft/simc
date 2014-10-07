@@ -30,8 +30,8 @@ legs=blackhands_legguards,id=115580,bonus_id=567/523/448,gem_id=115809
 feet=iron_bellow_sabatons,id=113961,bonus_id=567/523/448,gem_id=115809
 finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_critical_strike
 finger2=seal_of_the_savage_howl,id=113940,bonus_id=567/523/448,gem_id=115809,enchant=gift_of_critical_strike
-trinket1=forgemasters_insignia,id=113983,bonus_id=567/448
-trinket2=bottle_of_infesting_spores,id=113658,bonus_id=567/448
+trinket1=forgemasters_insignia,id=113983,bonus_id=567/523/448,gem_id=115809
+trinket2=bottle_of_infesting_spores,id=113658,bonus_id=567/523/448,gem_id=115809
 main_hand=taners_terrible_spine,id=113862,bonus_id=567/523/448,gem_id=115809,enchant=mark_of_the_thunderlord
 off_hand=taners_terrible_spine,id=113862,bonus_id=567/523/448,gem_id=115809,enchant=mark_of_the_thunderlord
 save=Warrior_Fury_1h_T17B.simc
@@ -57,8 +57,8 @@ legs=blackhands_legguards,id=115580,bonus_id=567/523/448,gem_id=115809
 feet=iron_bellow_sabatons,id=113961,bonus_id=567/523/448,gem_id=115809
 finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_critical_strike
 finger2=seal_of_the_savage_howl,id=113940,bonus_id=567/523/448,gem_id=115809,enchant=gift_of_critical_strike
-trinket1=forgemasters_insignia,id=113983,bonus_id=567/448
-trinket2=bottle_of_infesting_spores,id=113658,bonus_id=567/448
+trinket1=forgemasters_insignia,id=113983,bonus_id=567/523/448,gem_id=115809
+trinket2=bottle_of_infesting_spores,id=113658,bonus_id=567/523/448,gem_id=115809
 main_hand=crescent_of_living_magma,id=113886,bonus_id=567/523/448,gem_id=115809,enchant=mark_of_the_thunderlord
 off_hand=crescent_of_living_magma,id=113886,bonus_id=567/523/448,gem_id=115809,enchant=mark_of_the_thunderlord
 save=Warrior_Fury_2h_T17B.simc
@@ -84,8 +84,8 @@ legs=blackhands_legguards,id=115580,bonus_id=567/523/448,gem_id=115809
 feet=iron_bellow_sabatons,id=113961,bonus_id=567/523/448,gem_id=115809
 finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_critical_strike
 finger2=seal_of_the_savage_howl,id=113940,bonus_id=567/523/448,gem_id=115809,enchant=gift_of_critical_strike
-trinket1=forgemasters_insignia,id=113983,bonus_id=567/448
-trinket2=bottle_of_infesting_spores,id=113658,bonus_id=567/448
+trinket1=forgemasters_insignia,id=113983,bonus_id=567/523/448,gem_id=115809
+trinket2=bottle_of_infesting_spores,id=113658,bonus_id=567/523/448,gem_id=115809
 main_hand=crescent_of_living_magma,id=113886,bonus_id=567/523/448,gem_id=115809,enchant=mark_of_the_thunderlord
 save=Warrior_Arms_T17B.simc
 
@@ -110,8 +110,8 @@ legs=blackhands_legguards,id=115580,bonus_id=567/523/448,gem_id=115809
 feet=iron_bellow_sabatons,id=113961,bonus_id=567/523/448,gem_id=115809
 finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,enchant=gift_of_critical_strike
 finger2=siege_bombers_band,id=113963,bonus_id=567/523/448,gem_id=115809,enchant=gift_of_critical_strike
-trinket1=forgemasters_insignia,id=113983,bonus_id=567/448
-trinket2=bottle_of_infesting_spores,id=113658,bonus_id=567/448
+trinket1=forgemasters_insignia,id=113983,bonus_id=567/523/448,gem_id=115809
+trinket2=bottle_of_infesting_spores,id=113658,bonus_id=567/523/448,gem_id=115809
 main_hand=taners_terrible_spine,id=113862,bonus_id=567/523/448,gem_id=115809,enchant=mark_of_the_thunderlord
 off_hand=kromogs_protecting_palm,id=113926,bonus_id=567/523/448,gem_id=115809
 save=Warrior_Protection_T17B.simc
@@ -137,8 +137,8 @@ legs=blackhands_legguards,id=115580,bonus_id=567/523/448,gem_id=115809
 feet=iron_bellow_sabatons,id=113961,bonus_id=567/523/448,gem_id=115809
 finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,enchant=gift_of_critical_strike
 finger2=siege_bombers_band,id=113963,bonus_id=567/523/448,gem_id=115809,enchant=gift_of_critical_strike
-trinket1=forgemasters_insignia,id=113983,bonus_id=567/448
-trinket2=bottle_of_infesting_spores,id=113658,bonus_id=567/448,
+trinket1=evergaze_arcane_eidolon,id=113861,bonus_id=567/523/448,gem_id=115809
+trinket2=tectus_beating_heart,id=113645,bonus_id=567/523/448,gem_id=115809
 main_hand=taners_terrible_spine,id=113862,bonus_id=567/523/448,gem_id=115809,enchant=mark_of_the_thunderlord
 off_hand=kromogs_protecting_palm,id=113926,bonus_id=567/523/448,gem_id=115809
 save=Warrior_Gladiator_T17B.simc

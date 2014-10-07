@@ -72,20 +72,20 @@ legs=blackhands_legguards,id=115580,bonus_id=567/523/448,gem_id=115809
 feet=iron_bellow_sabatons,id=113961,bonus_id=567/523/448,gem_id=115809
 finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,enchant=gift_of_critical_strike
 finger2=siege_bombers_band,id=113963,bonus_id=567/523/448,gem_id=115809,enchant=gift_of_critical_strike
-trinket1=forgemasters_insignia,id=113983,bonus_id=567/448
-trinket2=bottle_of_infesting_spores,id=113658,bonus_id=567/448
+trinket1=evergaze_arcane_eidolon,id=113861,bonus_id=567/523/448,gem_id=115809
+trinket2=tectus_beating_heart,id=113645,bonus_id=567/523/448,gem_id=115809
 main_hand=taners_terrible_spine,id=113862,bonus_id=567/523/448,gem_id=115809,enchant=mark_of_the_thunderlord
 off_hand=kromogs_protecting_palm,id=113926,bonus_id=567/523/448,gem_id=115809
 
 # Gear Summary
-# gear_strength=3769
+# gear_strength=3462
 # gear_stamina=4777
-# gear_crit_rating=2356
+# gear_crit_rating=2269
 # gear_haste_rating=675
-# gear_mastery_rating=547
+# gear_mastery_rating=828
 # gear_armor=3089
 # gear_bonus_armor=487
 # gear_multistrike_rating=725
-# gear_versatility_rating=698
+# gear_versatility_rating=511
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
