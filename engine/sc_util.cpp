@@ -2434,8 +2434,11 @@ unsigned util::to_unsigned( const char* str )
   errno = 0;
 
   unsigned l = strtoul( str, 0, 0 );
-  if ( errno == ERANGE )
+  if ( errno != 0 )
+  {
+    std::cerr << "Unable to parse unsigned integer '" << str << "':" << strerror( errno ) << std::endl;
     return 0;
+  }
 
   return l;
 }
@@ -2450,8 +2453,11 @@ int util::to_int( const char* str )
   errno = 0;
 
   long l = strtol( str, 0, 0 );
-  if ( errno == ERANGE || errno == EINVAL )
+  if ( errno != 0 )
+  {
+    std::cerr << "Unable to parse integer '" << str << "':" << strerror( errno ) << std::endl;
     return 0;
+  }
 
   return l;
 }
