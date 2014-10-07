@@ -67,9 +67,10 @@ actions.single_target+=/howling_blast,if=death>1|frost>1
 actions.single_target+=/unholy_blight,if=!disease.ticking
 actions.single_target+=/howling_blast,if=!talent.necrotic_plague.enabled&!dot.frost_fever.ticking
 actions.single_target+=/howling_blast,if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking
-actions.single_target+=/plague_strike,if=!talent.necrotic_plague.enabled&!dot.blood_plague.remains<10&unholy>0
+actions.single_target+=/plague_strike,if=!talent.necrotic_plague.enabled&!dot.blood_plague.ticking&unholy>0
 actions.single_target+=/howling_blast,if=buff.rime.react
-actions.single_target+=/frost_strike,if=runic_power>76
+actions.single_target+=/frost_strike,if=set_bonus.tier17_2pc=1&(runic_power>=50|(cooldown.pillar_of_frost.remains<5))
+actions.single_target+=/frost_strike,if=runic_power>=50
 actions.single_target+=/obliterate,if=unholy>0&!buff.killing_machine.react
 actions.single_target+=/howling_blast,if=!(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains<2)|death+frost>=2
 actions.single_target+=/blood_tap,if=target.health.pct-3*(target.health.pct%target.time_to_die)>35|buff.blood_charge.stack>=8
