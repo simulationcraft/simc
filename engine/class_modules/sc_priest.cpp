@@ -6065,7 +6065,7 @@ void priest_t::apl_shadow()
   pvp_dispersion -> add_action( "dispersion,interrupt=1" );
   pvp_dispersion -> add_action( "call_action_list,name=decision" );
 
-  decision -> add_action( "call_action_list,name=cop_advanced_mfi_dots,if=target.health.pct>=20&(shadow_orb=5|target.dot.shadow_word_pain.ticking|target.dot.vampiric_touch.ticking|target.dot.devouring_plague.ticking)&talent.clarity_of_power.enabled&talent.insanity.enabled" );
+  decision -> add_action( "call_action_list,name=cop_advanced_mfi_dots,if=target.health.pct>=20&(shadow_orb>=4|target.dot.shadow_word_pain.ticking|target.dot.vampiric_touch.ticking|target.dot.devouring_plague.ticking)&talent.clarity_of_power.enabled&talent.insanity.enabled" );
   decision -> add_action( "call_action_list,name=cop_advanced_mfi,if=target.health.pct>=20&talent.clarity_of_power.enabled&talent.insanity.enabled" );
   decision -> add_action( "call_action_list,name=cop_mfi,if=talent.clarity_of_power.enabled&talent.insanity.enabled" );
   decision -> add_action( "call_action_list,name=cop,if=talent.clarity_of_power.enabled" );
@@ -6180,11 +6180,11 @@ void priest_t::apl_shadow()
   cop_advanced_mfi -> add_action( "shadow_word_pain,moving=1,cycle_targets=1,if=primary_target=0" );
 
   // Advanced "DoT Weaving" CoP Action List, for when you have T14 2P -- Part 2, the weaving
-  cop_advanced_mfi_dots -> add_action( "devouring_plague,if=shadow_orb>=4&target.dot.shadow_word_pain.ticking&target.dot.vampiric_touch.ticking" );
   cop_advanced_mfi_dots -> add_action( "mind_spike,if=(target.dot.shadow_word_pain.ticking&target.dot.shadow_word_pain.remains<gcd*0.5)|(target.dot.vampiric_touch.ticking&target.dot.vampiric_touch.remains<gcd*0.5)" );
   cop_advanced_mfi_dots -> add_action( "shadow_word_pain,if=!ticking&miss_react&!target.dot.vampiric_touch.ticking" );
   cop_advanced_mfi_dots -> add_action( "vampiric_touch,if=!ticking&miss_react" );
   cop_advanced_mfi_dots -> add_action( "mind_blast" );
+  cop_advanced_mfi_dots -> add_action( "devouring_plague,if=shadow_orb>=3&target.dot.shadow_word_pain.ticking&target.dot.vampiric_touch.ticking" );
   cop_advanced_mfi_dots -> add_action( "insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies<=2,chain=1" );
   cop_advanced_mfi_dots -> add_action( "insanity,interrupt=1,chain=1,if=active_enemies<=2" );
   cop_advanced_mfi_dots -> add_action( "mind_spike,if=(target.dot.shadow_word_pain.ticking&target.dot.shadow_word_pain.remains<gcd*2)|(target.dot.vampiric_touch.ticking&target.dot.vampiric_touch.remains<gcd*2)" );

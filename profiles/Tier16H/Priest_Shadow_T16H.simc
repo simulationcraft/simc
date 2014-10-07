@@ -5,7 +5,7 @@ role=spell
 position=back
 professions=blacksmithing=600/engineering=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!002202.
-glyphs=mind_harvest/mind_flay/dark_archangel/shadowy_friends/shadow_ravens
+glyphs=mind_flay/dark_archangel/shadowy_friends/shadow_ravens
 spec=shadow
 
 # This default action priority list is automatically created based on your character.
@@ -36,7 +36,7 @@ actions+=/arcane_torrent
 actions+=/call_action_list,name=pvp_dispersion,if=set_bonus.pvp_2pc
 actions+=/call_action_list,name=decision
 
-actions.decision=call_action_list,name=cop_advanced_mfi_dots,if=target.health.pct>=20&(shadow_orb=5|target.dot.shadow_word_pain.ticking|target.dot.vampiric_touch.ticking|target.dot.devouring_plague.ticking)&talent.clarity_of_power.enabled&talent.insanity.enabled
+actions.decision=call_action_list,name=cop_advanced_mfi_dots,if=target.health.pct>=20&(shadow_orb>=4|target.dot.shadow_word_pain.ticking|target.dot.vampiric_touch.ticking|target.dot.devouring_plague.ticking)&talent.clarity_of_power.enabled&talent.insanity.enabled
 actions.decision+=/call_action_list,name=cop_advanced_mfi,if=target.health.pct>=20&talent.clarity_of_power.enabled&talent.insanity.enabled
 actions.decision+=/call_action_list,name=cop_mfi,if=talent.clarity_of_power.enabled&talent.insanity.enabled
 actions.decision+=/call_action_list,name=cop,if=talent.clarity_of_power.enabled
@@ -150,11 +150,11 @@ actions.cop_advanced_mfi+=/divine_star,moving=1,if=talent.divine_star.enabled&ta
 actions.cop_advanced_mfi+=/cascade,moving=1,if=talent.cascade.enabled&target.distance<=40
 actions.cop_advanced_mfi+=/shadow_word_pain,moving=1,cycle_targets=1,if=primary_target=0
 
-actions.cop_advanced_mfi_dots=devouring_plague,if=shadow_orb>=4&target.dot.shadow_word_pain.ticking&target.dot.vampiric_touch.ticking
-actions.cop_advanced_mfi_dots+=/mind_spike,if=(target.dot.shadow_word_pain.ticking&target.dot.shadow_word_pain.remains<gcd*0.5)|(target.dot.vampiric_touch.ticking&target.dot.vampiric_touch.remains<gcd*0.5)
+actions.cop_advanced_mfi_dots=mind_spike,if=(target.dot.shadow_word_pain.ticking&target.dot.shadow_word_pain.remains<gcd*0.5)|(target.dot.vampiric_touch.ticking&target.dot.vampiric_touch.remains<gcd*0.5)
 actions.cop_advanced_mfi_dots+=/shadow_word_pain,if=!ticking&miss_react&!target.dot.vampiric_touch.ticking
 actions.cop_advanced_mfi_dots+=/vampiric_touch,if=!ticking&miss_react
 actions.cop_advanced_mfi_dots+=/mind_blast
+actions.cop_advanced_mfi_dots+=/devouring_plague,if=shadow_orb>=3&target.dot.shadow_word_pain.ticking&target.dot.vampiric_touch.ticking
 actions.cop_advanced_mfi_dots+=/insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies<=2,chain=1
 actions.cop_advanced_mfi_dots+=/insanity,interrupt=1,chain=1,if=active_enemies<=2
 actions.cop_advanced_mfi_dots+=/mind_spike,if=(target.dot.shadow_word_pain.ticking&target.dot.shadow_word_pain.remains<gcd*2)|(target.dot.vampiric_touch.ticking&target.dot.vampiric_touch.remains<gcd*2)

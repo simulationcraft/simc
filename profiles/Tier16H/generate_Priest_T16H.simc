@@ -11,7 +11,7 @@ spec=shadow
 role=spell
 position=back
 professions=blacksmithing=600/engineering=600
-glyphs=mind_harvest/mind_flay/dark_archangel/shadowy_friends/shadow_ravens
+glyphs=mind_flay/dark_archangel/shadowy_friends/shadow_ravens
 head=hood_of_the_ternion_glory,id=99360,upgrade=4,gems=sinister_primal_5int_10mastery_11int
 neck=ashflare_pendant,id=105539,upgrade=4
 shoulders=shoulderguards_of_the_ternion_glory,id=99363,upgrade=4,gems=5int_10mastery_5int_10mastery_8int,enchant=15int_5crit
