@@ -2419,9 +2419,17 @@ expr_t* action_t::create_expression( const std::string& name_str )
     for ( size_t i = start_rest + 1; i < splits.size(); ++i )
       rest += '.' + splits[ i ];
 
+    // Target.1.foo expression, bail out early.
+    if ( expr_target )
+      return expr_target -> create_expression( this, rest );
+
     // Proxy target based expression, allowing "dynamic switching" of targets
     // for the "target.<expression>" expressions. Generates a suitable
     // expression on demand for each target during run-time.
+    //
+    // Note, if we ever go dynamic spawning of adds and such, this method needs
+    // to change (evaluate() has to resize the pointer array run-time, instead
+    // of statically sized one based on constructor).
     struct target_proxy_expr_t : public action_expr_t
     {
       std::vector<expr_t*> proxy_expr;
