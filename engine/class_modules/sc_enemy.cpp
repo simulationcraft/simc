@@ -671,6 +671,20 @@ struct add_t : public pet_t
     return remainder / divisor * 100.0;
   }
 
+  virtual timespan_t time_to_die() const
+  {
+    if ( duration > timespan_t::zero() )
+      return expiration -> remains();
+    else
+    {
+      timespan_t remains = sim -> expected_iteration_time - sim -> current_time;
+      if ( remains > timespan_t::zero() )
+        return remains;
+      else
+        return timespan_t::zero();
+    }
+  }
+
   virtual resource_e primary_resource() const
   { return RESOURCE_HEALTH; }
 
