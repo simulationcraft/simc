@@ -3263,7 +3263,7 @@ struct power_word_solace_t final : public holy_fire_base_t
 
   virtual void impact( action_state_t* s ) override
   {
-    priest_spell_t::impact( s );
+    holy_fire_base_t::impact( s );
 
     double amount = data().effectN( 3 ).percent() / 100.0 * priest.resources.max[ RESOURCE_MANA ];
     priest.resource_gain( RESOURCE_MANA, amount, priest.gains.power_word_solace );
