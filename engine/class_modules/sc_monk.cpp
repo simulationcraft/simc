@@ -28,14 +28,36 @@
   * BoK's cleave effect
   - Non-glyphed Mana Tea
 
+  http://us.battle.net/wow/en/forum/topic/14729563047?page=1#20
+  Gift of the Serpent Proc Coefficients:
+  119611 Renewing Mists 0.25
+  132463 Chi Wave 0.25
+  124081 Zen Sphere (Periodic) 0.20
+  124101 Zen Sphere (Detonate) 0.20
+  130654 Chi Burst 0.20
+  115175 Soothing Mists 0.67
+  125953 Soothing Mists (Statue) 0.33
+  132120 Enveloping Mist 0.25
+  116670 Uplift 0.40
+  130316 Uplift (Glyphed) 0.40
+  126890 Eminence (Self & Xuen) 0.27
+  117895 Eminence (Statue) 0.13
+  124040 Chi Torpedo 0.45
+  117640 Spinning Crane Kick 0.15
+  162530 Rushing Jade Wind 0.10
+  157590 Breath of the Serpent 0.20
+  157675 Chi Explosion 0.30
+  157681 Chi Explosion (Periodic) 0.02
+  159620 Chi Explosion (Crane) 0.40
+  115310 Revival 1.00
+  116995 Surging Mist 1.00
+  115072 Expel Harm 1.00
+
   BREWMASTER:
   - Fix Tier 16 2-piece to properly lower the cooldown by 30 seconds.
-  - Purifying Brew - mostly implemented
   - Level 75 talents - dampen harm added - currently stacks are consumed on all attacks, not just above 15% max hp
-  - Black Ox Statue
-
+  
   - Zen Meditation
-  - Cache stagger_pct
   */
 #include "simulationcraft.hpp"
 
@@ -467,7 +489,10 @@ struct jade_serpent_statue_t: public statue_t
   { }
 };
 
-struct xuen_pet_t: public pet_t
+// ==========================================================================
+// Xuen Pet
+// ==========================================================================
+struct xuen_pet_t : public pet_t
 {
 private:
   struct melee_t: public melee_attack_t
@@ -602,6 +627,54 @@ public:
 
     return pet_t::create_action( name, options_str );
   }
+};
+
+// ==========================================================================
+// Storm, Earth, and Fire Pet
+// ==========================================================================
+struct storm_earth_and_fire_pet_t : pet_t
+{
+private:
+  struct sef_spell_t : spell_t
+  {
+    sef_spell_t( const std::string& n, storm_earth_and_fire_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
+      spell_t( n, p, s )
+    {
+      background = true;
+    }
+
+    storm_earth_and_fire_pet_t* p()
+    { return static_cast<storm_earth_and_fire_pet_t*>( player ); }
+    const storm_earth_and_fire_pet_t* p() const
+    { return static_cast<storm_earth_and_fire_pet_t*>( player ); }
+
+    monk_t* o()
+    { return static_cast< monk_t* >( p() -> owner ); }
+    const monk_t* o() const
+    { return static_cast< monk_t* >( p() -> owner ); }
+  };
+
+  struct sef_melee_attack_t : public melee_attack_t
+  {
+    sef_melee_attack_t( const std::string& n, storm_earth_and_fire_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
+      melee_attack_t( n, p, s )
+    {
+      background = true;
+      special = true;
+      may_crit = true;
+      school = SCHOOL_PHYSICAL;
+    }
+
+    storm_earth_and_fire_pet_t* p()
+    { return static_cast<storm_earth_and_fire_pet_t*>( player ); }
+    const storm_earth_and_fire_pet_t* p() const
+    { return static_cast<storm_earth_and_fire_pet_t*>( player ); }
+
+    monk_t* o()
+    { return static_cast<monk_t*>( p() -> owner ); }
+    const monk_t* o() const
+    { return static_cast<monk_t*>( p() -> owner ); }
+  };
 };
 } // end namespace pets
 
