@@ -6270,13 +6270,14 @@ void death_knight_t::init_action_list()
       // Diseases for runes
       st -> add_action( this, "Howling Blast", "if=!talent.necrotic_plague.enabled&!dot.frost_fever.ticking" );
       st -> add_action( this, "Howling Blast", "if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking" );
-      st -> add_action( this, "Plague Strike", "if=!talent.necrotic_plague.enabled&!dot.blood_plague.remains<10&unholy>0" );
+      st -> add_action( this, "Plague Strike", "if=!talent.necrotic_plague.enabled&!dot.blood_plague.ticking&unholy>0" );
 
       // Rime
       st -> add_action( this, "Howling Blast", "if=buff.rime.react" );
 
       // Don't waste Runic Power
-      st -> add_action( this, "Frost Strike", "if=runic_power>76" );
+      st -> add_action( this, "Frost Strike", "if=set_bonus.tier17_2pc=1&(runic_power>=50|(cooldown.pillar_of_frost.remains<5))" );
+      st -> add_action( this, "Frost Strike", "if=runic_power>=50" );
 
       // Keep Runes on Cooldown
       st -> add_action( this, "Obliterate", "if=unholy>0&!buff.killing_machine.react" );
