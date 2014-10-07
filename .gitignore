@@ -33,6 +33,7 @@ log.txt
 bin
 int
 .project
+.pydevproject
 .externalToolBuilders
 .settings
 engine/simc_x64
