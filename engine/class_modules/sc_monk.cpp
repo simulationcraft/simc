@@ -1930,7 +1930,7 @@ struct touch_of_karma_t: public monk_melee_attack_t
     monk_melee_attack_t( "touch_of_karma", p, p -> spec.touch_of_karma ),
     touch_of_karma_dot( new touch_of_karma_dot_t( p ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     stancemask = FIERCE_TIGER;
     cooldown -> duration = data().cooldown();
 
