@@ -3833,7 +3833,7 @@ struct supernova_t : public mage_spell_t
        mage_spell_t( "supernova", p, p -> talents.supernova )
     {
         parse_options( NULL, options_str );
-        aoe = 1;
+        aoe = -1;
         base_multiplier *= 1.0 + p -> talents.supernova -> effectN( 1 ).percent();
         base_aoe_multiplier *= 0.5;
     }
