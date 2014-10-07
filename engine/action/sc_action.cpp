@@ -637,6 +637,8 @@ void action_t::parse_options( option_t*          options,
       // Numerical targeting is intended to be dynamic, so don't give an error message if we can't find the target yet
       if ( p ) target = p;
     }
+    else if ( util::str_compare_ci( target_str, "self" ) )
+      target = this -> player;
     else
     {
       player_t* p = sim -> find_player( target_str );
