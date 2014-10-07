@@ -1504,6 +1504,7 @@ struct ambush_t : public rogue_attack_t
 
     p() -> buffs.t16_2pc_melee -> expire();
     p() -> buffs.sleight_of_hand -> expire();
+    p() -> buffs.enhanced_vendetta -> expire();
   }
 
   void impact( action_state_t* state )
@@ -1519,13 +1520,6 @@ struct ambush_t : public rogue_attack_t
 
     if ( result_is_multistrike( state -> result ) )
       p() -> trigger_sinister_calling( state );
-  }
-
-  void consume_resource()
-  {
-    rogue_attack_t::consume_resource();
-
-    p() -> buffs.enhanced_vendetta -> expire();
   }
 
   double composite_crit() const
@@ -1670,12 +1664,6 @@ struct dispatch_t : public rogue_attack_t
                             p() -> sets.set( ROGUE_ASSASSINATION, T17, B2 ) -> effectN( 1 ).base_value(),
                             p() -> gains.t17_2pc_assassination,
                             this );
-  }
-
-  void consume_resource()
-  {
-    rogue_attack_t::consume_resource();
-
     p() -> buffs.enhanced_vendetta -> expire();
   }
 
@@ -1729,8 +1717,6 @@ struct envenom_t : public rogue_attack_t
   {
     rogue_attack_t::consume_resource();
 
-    p() -> buffs.enhanced_vendetta -> expire();
-
     if ( p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T17, B4 ) )
       p() -> trigger_combo_point_gain( execute_state, 1, p() -> gains.t17_4pc_assassination );
   }
@@ -1778,7 +1764,7 @@ struct envenom_t : public rogue_attack_t
       envenom_duration += p() -> buffs.envenom -> buff_period;
 
     p() -> buffs.envenom -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, envenom_duration );
-
+    p() -> buffs.enhanced_vendetta -> expire();
   }
 
   virtual double action_da_multiplier() const
@@ -2203,13 +2189,6 @@ struct mutilate_t : public rogue_attack_t
     add_child( oh_strike );
   }
 
-  void consume_resource()
-  {
-    rogue_attack_t::consume_resource();
-
-    p() -> buffs.enhanced_vendetta -> expire();
-  }
-  
   double cost() const
   {
     double c = rogue_attack_t::cost();
@@ -2230,9 +2209,14 @@ struct mutilate_t : public rogue_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
+      mh_strike -> target = execute_state -> target;
       mh_strike -> execute();
+
+      oh_strike -> target = execute_state -> target;
       oh_strike -> execute();
     }
+
+    p() -> buffs.enhanced_vendetta -> expire();
   }
 
   void impact( action_state_t* state )
