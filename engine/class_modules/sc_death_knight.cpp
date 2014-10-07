@@ -2171,45 +2171,61 @@ namespace { // UNNAMED NAMESPACE
 
 struct shadow_of_death_t : public buff_t
 {
-  int health_gain;
+  double current_health_gain;
 
   shadow_of_death_t( death_knight_t* p ) :
     buff_t( buff_creator_t( p, "shadow_of_death", p -> find_spell( 164047 ) )
-            .chance( p -> perk.enhanced_death_coil -> ok() )
-            .refresh_behavior( BUFF_REFRESH_DISABLED ) ),
-    health_gain( 0 )
+            .chance( p -> perk.enhanced_death_coil -> ok() ) ),
+    current_health_gain( 0 )
   { }
 
-  virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
+  void execute( int stacks, double value, timespan_t duration )
   {
-    double multiplier = 1.0;
+    double new_multiplier = data().effectN( 1 ).percent();
+
+    // Refresh, new value is x% + remaining portion of the ongoing buff.
+    // Current value of the buff is the current +max_health% of the buff.
     if ( expiration )
-      multiplier = expiration -> remains() / data().duration();
-    int gain = ( int ) floor( player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent() * multiplier );
+      new_multiplier += current_value * expiration -> remains() / data().duration();
+
+    // Base Health
+    double max_health_base = player -> resources.max[ RESOURCE_HEALTH ] - player -> resources.temporary[ RESOURCE_HEALTH ];
+    // Health from the new buff
+    double new_added_health = max_health_base * new_multiplier;
+    // Delta (can be negative)
+    double delta = new_added_health - current_health_gain;
+
     if ( sim -> debug )
-      sim -> out_debug.printf( "%s %s health_gain=%d, multiplier=%f remains=%.3f",
-          player -> name(), name(), gain, multiplier,
-          ( expiration ) ? expiration -> remains().total_seconds() : data().duration().total_seconds() );
+      sim -> out_debug.printf( "%s %s health_base=%.0f current_multiplier=%.3f new_multiplier=%.3f new_added_health=%.0f delta=%.0f",
+          player -> name(), name(), max_health_base, current_value, new_multiplier, new_added_health, delta );
 
-    player -> stat_gain( STAT_MAX_HEALTH, gain, 0, 0, true );
-    health_gain += gain;
+    // Adjust health
+    if ( delta > 0 )
+      player -> stat_gain( STAT_MAX_HEALTH, delta, 0, 0, true );
+    else if ( delta < 0 )
+      player -> stat_loss( STAT_MAX_HEALTH, std::fabs( delta ), 0, 0, true );
 
-    return buff_t::trigger( stacks, value, chance, duration );
+    // Execute buff, refreshing it to full duration
+    buff_t::execute( stacks, value, duration );
+
+    // Record current values
+    current_health_gain = new_added_health;
+    current_value = new_multiplier;
   }
 
   virtual void expire_override()
   {
-    player -> stat_loss( STAT_MAX_HEALTH, health_gain, 0, 0, true );
-
-    health_gain = 0;
     buff_t::expire_override();
+
+    player -> stat_loss( STAT_MAX_HEALTH, current_health_gain, 0, 0, true );
+    current_health_gain = 0;
   }
 
   void reset()
   {
     buff_t::reset();
 
-    health_gain = 0;
+    current_health_gain = 0;
   }
 };
 
