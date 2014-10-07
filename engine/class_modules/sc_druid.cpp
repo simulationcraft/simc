@@ -2550,6 +2550,7 @@ struct swipe_t : public cat_attack_t
     cat_attack_t( "swipe", player, player -> find_specialization_spell( "Swipe" ), options_str )
   {
     aoe = -1;
+    combo_point_gain = data().effectN( 1 ).base_value(); // Effect is not lebelled correctly as CP gain
   }
 
   virtual void impact( action_state_t* s )
