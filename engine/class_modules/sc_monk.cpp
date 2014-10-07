@@ -1895,7 +1895,7 @@ struct touch_of_death_t : public monk_melee_attack_t
       cooldown -> duration += p -> glyph.touch_of_death -> effectN( 1 ).time_value();
       base_costs[RESOURCE_CHI] *= 1.0 + p -> glyph.touch_of_death -> effectN( 2 ).percent();
     }
-    may_crit = may_miss = may_dodge = may_parry = may_multistrike = false;
+    may_crit = may_miss = may_dodge = may_parry = false;
   }
 
   virtual void impact(action_state_t* s)
@@ -1915,6 +1915,43 @@ struct touch_of_death_t : public monk_melee_attack_t
       return false;
 
     return monk_melee_attack_t::ready();
+  }
+};
+
+// ==========================================================================
+// Touch of Karma
+// ==========================================================================
+
+struct touch_of_karma_dot_t: public residual_action::residual_periodic_action_t < monk_melee_attack_t >
+{
+  touch_of_karma_dot_t( monk_t* p ):
+    base_t( "touch_of_karma", p, p -> find_spell( 124280 ) )
+  {
+    may_miss = may_crit = false;
+  }
+};
+
+struct touch_of_karma_t: public monk_melee_attack_t
+{
+  touch_of_karma_dot_t* touch_of_karma_dot;
+  touch_of_karma_t( monk_t* p, const std::string& options_str ):
+    monk_melee_attack_t( "touch_of_karma", p, p -> spec.touch_of_karma ),
+    touch_of_karma_dot( new touch_of_karma_dot_t( p ) )
+  {
+    parse_options( NULL, options_str );
+    stancemask = STURDY_OX | FIERCE_TIGER | SPIRITED_CRANE;
+    cooldown -> duration = data().cooldown();
+
+    may_crit = may_miss = may_dodge = may_parry = false;
+  }
+
+  void execute()
+  {
+    monk_melee_attack_t::execute();
+
+    residual_action::trigger( // For now, just assume it does maximum damage.
+      touch_of_karma_dot, execute_state -> target,
+      data().effectN( 3 ).percent() * player -> resources.max[RESOURCE_HEALTH] );
   }
 };
 
@@ -3334,6 +3371,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "rising_sun_kick"       ) return new        rising_sun_kick_t( this, options_str );
   if ( name == "stance"                ) return new                 stance_t( this, options_str );
   if ( name == "tigereye_brew"         ) return new          tigereye_brew_t( this, options_str );
+  if ( name == "touch_of_karma"        ) return new         touch_of_karma_t( this, options_str );
   if ( name == "energizing_brew"       ) return new        energizing_brew_t( this, options_str );
   if ( name == "provoke"               ) return new                provoke_t( this, options_str );
   if ( name == "touch_of_death"        ) return new         touch_of_death_t( this, options_str );
