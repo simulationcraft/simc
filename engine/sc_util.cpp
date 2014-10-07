@@ -2431,6 +2431,8 @@ unsigned util::to_unsigned( const std::string& str )
 
 unsigned util::to_unsigned( const char* str )
 {
+  errno = 0;
+
   unsigned l = strtoul( str, 0, 0 );
   if ( errno == ERANGE )
     return 0;
@@ -2445,6 +2447,8 @@ int util::to_int( const std::string& str )
 
 int util::to_int( const char* str )
 {
+  errno = 0;
+
   long l = strtol( str, 0, 0 );
   if ( errno == ERANGE || errno == EINVAL )
     return 0;
