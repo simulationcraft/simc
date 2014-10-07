@@ -129,33 +129,15 @@ struct enemy_action_t : public ACTION_TYPE
     apply_debuff( false ), num_debuff_stacks( -1000000 ), damage_range( -1 ),
     cooldown_( timespan_t::zero() ), aoe_tanks( 0 )
   {
-    options.push_back( opt_float( "damage", this -> base_dd_min ) );
-    options.push_back( opt_timespan( "attack_speed", this -> base_execute_time ) );
-    options.push_back( opt_int( "apply_debuff", num_debuff_stacks ) );
-    options.push_back( opt_int( "aoe_tanks", aoe_tanks ) );
-    options.push_back( opt_float( "range", damage_range ) );
-    options.push_back( opt_timespan( "cooldown", cooldown_ ) );
-    options.push_back( opt_string( "type", dmg_type_override ) );
-    options.push_back( opt_null() );
+    this -> add_option(  opt_float( "damage", this -> base_dd_min ) );
+    this -> add_option(  opt_timespan( "attack_speed", this -> base_execute_time ) );
+    this -> add_option(  opt_int( "apply_debuff", num_debuff_stacks ) );
+    this -> add_option(  opt_int( "aoe_tanks", aoe_tanks ) );
+    this -> add_option(  opt_float( "range", damage_range ) );
+    this -> add_option(  opt_timespan( "cooldown", cooldown_ ) );
+    this -> add_option(  opt_string( "type", dmg_type_override ) );
 
     dmg_type_override = "none";
-  }
-
-  void add_option( const option_t& new_option )
-  {
-    size_t i;
-
-    for ( i = 0; i < options.size(); i++ )
-    {
-      if ( !options[ i ] -> name().empty() && util::str_compare_ci( options[ i ] -> name().c_str(), new_option -> name().c_str() ) )
-      {
-        options[ i ] = new_option;
-        break;
-      }
-    }
-
-    if ( i == options.size() )
-      options.insert( options.begin(), new_option );
   }
 
   void init()
@@ -275,7 +257,7 @@ struct melee_t : public enemy_action_t<melee_attack_t>
     base_execute_time = timespan_t::from_seconds( 1.5 );
     repeating = true;
 
-    parse_options( options.data(), options_str );
+    parse_options( options_str );
   }
 
   void init()
@@ -318,7 +300,7 @@ struct auto_attack_t : public enemy_action_t<attack_t>
   auto_attack_t( player_t* p, const std::string& options_str ) :
     base_t( "auto_attack", p ), mh( 0 )
   {
-    parse_options( options.data(), options_str );
+    parse_options( options_str );
 
     use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
@@ -374,7 +356,7 @@ struct auto_attack_off_hand_t : public enemy_action_t<attack_t>
   auto_attack_off_hand_t( player_t* p, const std::string& options_str ) :
     base_t( "auto_attack_off_hand", p ), oh( 0 )
   {
-    parse_options( options.data(), options_str );
+    parse_options( options_str );
     
     use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
@@ -436,7 +418,7 @@ struct melee_nuke_t : public enemy_action_t<attack_t>
     base_execute_time = timespan_t::from_seconds( 3.0 );
     base_dd_min = 25000;
 
-    parse_options( options.data(), options_str );
+    parse_options( options_str );
   }
 
   void init()
@@ -466,7 +448,7 @@ struct spell_nuke_t : public enemy_action_t<spell_t>
     base_execute_time = timespan_t::from_seconds( 3.0 );
     base_dd_min       = 5000;
 
-    parse_options( options.data(), options_str );
+    parse_options( options_str );
   }
 
   void init()
@@ -503,8 +485,7 @@ struct spell_dot_t : public enemy_action_t<spell_t>
     add_option( opt_float( "damage", base_td ) );
     add_option( opt_timespan( "dot_duration", dot_duration ) );
     add_option( opt_timespan( "tick_time", base_tick_time ) );
-
-    parse_options( options.data(), options_str );
+    parse_options( options_str );
   }
 
   void init()
@@ -537,7 +518,7 @@ struct spell_aoe_t : public enemy_action_t<spell_t>
     aoe               = -1;
     may_crit          = false;
 
-    parse_options( options.data(), options_str );
+    parse_options( options_str );
   }
 
   void init()
@@ -581,14 +562,10 @@ struct summon_add_t : public spell_t
     spell_t( "summon_add", player, spell_data_t::nil() ),
     add_name( "" ), summoning_duration( timespan_t::zero() ), pet( 0 )
   {
-    option_t options[] =
-    {
-      opt_string( "name", add_name ),
-      opt_timespan( "duration", summoning_duration ),
-      opt_timespan( "cooldown", cooldown -> duration ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_string( "name", add_name ) );
+    add_option( opt_timespan( "duration", summoning_duration ) );
+    add_option( opt_timespan( "cooldown", cooldown->duration ) );
+    parse_options( options_str );
 
     school = SCHOOL_PHYSICAL;
     pet = p -> find_pet( add_name );

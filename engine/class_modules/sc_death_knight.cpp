@@ -2777,12 +2777,8 @@ struct auto_attack_t : public death_knight_melee_attack_t
   auto_attack_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "auto_attack", p ), sync_weapons( 0 )
   {
-    option_t options[] =
-    {
-      opt_bool( "sync_weapons", sync_weapons ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_bool( "sync_weapons", sync_weapons ) );
+    parse_options( options_str );
 
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
 
@@ -2829,7 +2825,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
   army_of_the_dead_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "army_of_the_dead", p, p -> find_class_spell( "Army of the Dead" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     harmful     = false;
   }
@@ -3105,7 +3101,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t( "soul_reaper", p, p -> specialization() != DEATH_KNIGHT_UNHOLY ? p -> find_specialization_spell( "Soul Reaper" ) : p -> find_spell( 130736 ) ),
     soul_reaper_dot( 0 )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     special   = true;
 
     weapon = &( p -> main_hand_weapon );
@@ -3194,7 +3190,7 @@ struct death_siphon_t : public death_knight_spell_t
     death_knight_spell_t( "death_siphon", p, p -> find_talent_spell( "Death Siphon" ) ),
     heal( new death_siphon_heal_t( p ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
   }
 
@@ -3247,7 +3243,7 @@ struct conversion_t : public death_knight_heal_t
   conversion_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_heal_t( "conversion", p, p -> talent.conversion )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     may_miss = may_crit = hasted_ticks = callbacks = false;
     dot_duration = sim -> max_time * 2;
@@ -3298,7 +3294,7 @@ struct blood_tap_t : public death_knight_spell_t
     death_knight_spell_t( "blood_tap", p, p -> find_talent_spell( "Blood Tap" ) ),
     consume_charges( 0 )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     harmful   = false;
     consume_charges = ( int  ) p -> find_spell( 114851 ) -> effectN( 1 ).base_value();
@@ -3371,7 +3367,7 @@ struct bone_shield_t : public death_knight_spell_t
   bone_shield_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "bone_shield", p, p -> find_specialization_spell( "Bone Shield" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     harmful = false;
   }
@@ -3417,7 +3413,7 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
   {
     may_miss = may_crit = may_dodge = may_parry = harmful = false;
 
-    parse_options( NULL, options_str );
+    parse_options( options_str );
   }
 
   virtual void execute()
@@ -3447,7 +3443,7 @@ struct dark_command_t: public death_knight_spell_t
   dark_command_t( death_knight_t* p, const std::string& options_str ):
     death_knight_spell_t( "dark_command", p, p -> find_class_spell( "Dark Command" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     use_off_gcd = true;
   }
 
@@ -3467,7 +3463,7 @@ struct dark_transformation_t : public death_knight_spell_t
   dark_transformation_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "dark_transformation", p, p -> find_class_spell( "Dark Transformation" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     harmful = false;
 
@@ -3503,7 +3499,7 @@ struct death_and_decay_t : public death_knight_spell_t
   death_and_decay_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "death_and_decay", p, p -> find_class_spell( "Death and Decay" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     aoe              = -1;
     attack_power_mod.tick = p -> find_spell( 52212 ) -> effectN( 1 ).ap_coeff();
@@ -3570,7 +3566,7 @@ struct defile_t : public death_knight_spell_t
   defile_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "defile", p, p -> find_talent_spell( "Defile" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     aoe = -1;
     base_dd_min = base_dd_max = 0;
@@ -3647,7 +3643,7 @@ struct death_coil_t : public death_knight_spell_t
   death_coil_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "death_coil", p, p -> find_class_spell( "Death Coil" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     attack_power_mod.direct = 0.85;
   }
@@ -3820,7 +3816,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t( "death_strike", p, p -> find_class_spell( "Death Strike" ) ),
     oh_attack( 0 ), heal( new death_strike_heal_t( p ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     special = true;
     may_parry = false;
     base_multiplier = 1.0 + p -> spec.veteran_of_the_third_war -> effectN( 7 ).percent();
@@ -3900,7 +3896,7 @@ struct empower_rune_weapon_t : public death_knight_spell_t
   empower_rune_weapon_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "empower_rune_weapon", p, p -> find_spell( 47568 ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     harmful = false;
   }
@@ -3929,7 +3925,7 @@ struct festering_strike_t : public death_knight_melee_attack_t
   festering_strike_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "festering_strike", p, p -> find_class_spell( "Festering Strike" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     if ( p -> spec.reaping -> ok() )
       convert_runes = 1.0;
@@ -3991,7 +3987,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
     special = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     weapon     = &( p -> main_hand_weapon );
 
@@ -4052,7 +4048,7 @@ struct horn_of_winter_t : public death_knight_spell_t
   horn_of_winter_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "horn_of_winter", p, p -> find_spell( 57330 ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     harmful = false;
   }
@@ -4073,7 +4069,7 @@ struct howling_blast_t : public death_knight_spell_t
   howling_blast_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "howling_blast", p, p -> find_class_spell( "Howling Blast" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     aoe                 = -1;
     base_aoe_multiplier = data().effectN( 1 ).percent();
@@ -4144,7 +4140,7 @@ struct icy_touch_t : public death_knight_spell_t
   icy_touch_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "icy_touch", p, p -> find_class_spell( "Icy Touch" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     attack_power_mod.direct = 0.319;
 
@@ -4220,7 +4216,7 @@ struct mind_freeze_t : public death_knight_spell_t
   mind_freeze_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "mind_freeze", p, p -> find_class_spell( "Mind Freeze" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
   }
@@ -4264,7 +4260,7 @@ struct obliterate_t : public death_knight_melee_attack_t
   obliterate_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "obliterate", p, p -> find_class_spell( "Obliterate" ) ), oh_attack( 0 )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     special = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
@@ -4342,7 +4338,7 @@ struct outbreak_t : public death_knight_spell_t
   outbreak_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "outbreak", p, p -> find_class_spell( "Outbreak" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     may_crit = false;
 
@@ -4518,7 +4514,7 @@ struct blood_boil_t : public death_knight_spell_t
     death_knight_spell_t( "blood_boil", p, p -> find_class_spell( "Blood Boil" ) ),
     spread( new blood_boil_spread_t( p ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     if ( p -> spec.reaping -> ok() )
       convert_runes = 1.0;
@@ -4588,7 +4584,7 @@ struct pillar_of_frost_t : public death_knight_spell_t
   pillar_of_frost_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "pillar_of_frost", p, p -> find_class_spell( "Pillar of Frost" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     harmful = false;
 
@@ -4641,7 +4637,7 @@ struct plague_strike_t : public death_knight_melee_attack_t
   plague_strike_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "plague_strike", p, p -> find_class_spell( "Plague Strike" ) ), oh_attack( 0 )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     special = true;
 
@@ -4692,7 +4688,7 @@ struct presence_t : public death_knight_spell_t
   presence_t( death_knight_t* p, const std::string& n, death_knight_presence pres, const std::string& options_str ) :
     death_knight_spell_t( n, p ), switch_to_presence( pres )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     trigger_gcd = timespan_t::zero();
     cooldown -> duration = timespan_t::from_seconds( 1.0 );
     harmful     = false;
@@ -4752,7 +4748,7 @@ struct blood_presence_t : public presence_t
   blood_presence_t( death_knight_t* p, const std::string& options_str ) :
     presence_t( p, "blood_presence", PRESENCE_BLOOD, options_str )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     id = p -> find_class_spell( "Blood Presence" ) -> id();
   }
 };
@@ -4764,7 +4760,7 @@ struct frost_presence_t : public presence_t
   frost_presence_t( death_knight_t* p, const std::string& options_str ) :
     presence_t( p, "frost_presence", PRESENCE_FROST, options_str )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     id = p -> find_class_spell( "Frost Presence" ) -> id();
   }
 };
@@ -4776,7 +4772,7 @@ struct unholy_presence_t : public presence_t
   unholy_presence_t( death_knight_t* p, const std::string& options_str ) :
     presence_t( p, "unholy_presence", PRESENCE_UNHOLY, options_str )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     id = p -> find_class_spell( "Unholy Presence" ) -> id();
   }
 };
@@ -4788,7 +4784,7 @@ struct deaths_advance_t: public death_knight_spell_t
   deaths_advance_t( death_knight_t* p, const std::string& options_str ):
     death_knight_spell_t( "raise_dead", p, p -> talent.deaths_advance )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
   }
 
   virtual void execute()
@@ -4806,7 +4802,7 @@ struct lichborne_t: public death_knight_spell_t
   lichborne_t( death_knight_t* p, const std::string& options_str ):
     death_knight_spell_t( "lichborne", p, p -> talent.lichborne )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
   }
 
   virtual void execute()
@@ -4824,7 +4820,7 @@ struct raise_dead_t : public death_knight_spell_t
   raise_dead_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "raise_dead", p, p -> find_specialization_spell( "Raise Dead" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     harmful = false;
   }
@@ -4875,7 +4871,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t( "scourge_strike", p, p -> find_class_spell( "Scourge Strike" ) ),
     scourge_strike_shadow( new scourge_strike_shadow_t( p ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     special = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
@@ -4906,7 +4902,7 @@ struct summon_gargoyle_t : public death_knight_spell_t
     death_knight_spell_t( "summon_gargoyle", p, p -> find_class_spell( "Summon Gargoyle" ) )
   {
     rp_gain = 0.0;  // For some reason, the inc file thinks we gain RP for this spell
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     dot_duration = timespan_t::zero();
     harmful = false;
   }
@@ -4947,7 +4943,7 @@ struct unholy_blight_t : public death_knight_spell_t
   unholy_blight_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "unholy_blight", p, p -> find_talent_spell( "Unholy Blight" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     may_crit     = false;
     may_miss     = false;
@@ -4969,7 +4965,7 @@ struct plague_leech_t : public death_knight_spell_t
   {
     may_crit = may_miss = false;
 
-    parse_options( NULL, options_str );
+    parse_options( options_str );
   }
 
   void impact( action_state_t* state )
@@ -5064,7 +5060,7 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
   breath_of_sindragosa_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "breath_of_sindragosa", p, p -> find_talent_spell( "Breath of Sindragosa" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     may_miss = may_crit = hasted_ticks = callbacks = false;
     tick_zero = true;
@@ -5120,15 +5116,10 @@ struct antimagic_shell_t : public death_knight_spell_t
     base_dd_min = base_dd_max = 0;
     target = player;
 
-    option_t options[] =
-    {
-      opt_float( "interval", interval ),
-      opt_float( "interval_stddev", interval_stddev_opt ),
-      opt_float( "damage", damage ),
-      opt_null()
-    };
-
-    parse_options( options, options_str );
+    add_option( opt_float( "interval", interval ) );
+    add_option( opt_float( "interval_stddev", interval_stddev_opt ) );
+    add_option( opt_float( "damage", damage ) );
+    parse_options( options_str );
 
     // Allow as low as 15 second intervals, due to new glyph
     if ( interval < 15.0 )
@@ -5192,7 +5183,7 @@ struct vampiric_blood_t : public death_knight_spell_t
   vampiric_blood_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "vampiric_blood", p, p -> find_specialization_spell( "Vampiric Blood" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     harmful = false;
     base_dd_min = base_dd_max = 0;
@@ -5213,7 +5204,7 @@ struct icebound_fortitude_t : public death_knight_spell_t
   icebound_fortitude_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "icebound_fortitude", p, p -> find_class_spell( "Icebound Fortitude" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     harmful = false;
 
@@ -5238,7 +5229,7 @@ struct rune_tap_t : public death_knight_spell_t
   rune_tap_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "rune_tap", p, p -> find_specialization_spell( "Rune Tap" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     cooldown -> charges = data().charges();
     cooldown -> duration = data().charge_cooldown();
     cooldown -> duration += p -> perk.enhanced_rune_tap -> effectN( 1 ).time_value();
@@ -5276,7 +5267,7 @@ struct death_pact_t : public death_knight_heal_t
     may_crit = false;
     pct_heal = data().effectN( 1 ).percent();
 
-    parse_options( NULL, options_str );
+    parse_options( options_str );
   }
 };
 

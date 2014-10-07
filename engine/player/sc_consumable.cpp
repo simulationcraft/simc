@@ -218,12 +218,8 @@ struct flask_t : public action_t
   {
     std::string type_str;
 
-    option_t options[] =
-    {
-      opt_string( "type", type_str ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_string( "type", type_str ) );
+    parse_options( options_str );
 
     trigger_gcd = timespan_t::zero();
     harmful = false;
@@ -366,12 +362,8 @@ struct elixir_t : public action_t
   {
     std::string type_str;
 
-    option_t options[] =
-    {
-      opt_string( "type", type_str ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_string( "type", type_str ) );
+    parse_options( options_str );
 
     trigger_gcd = timespan_t::zero();
     harmful = false;
@@ -461,12 +453,8 @@ struct food_t : public action_t
   {
     std::string type_str;
 
-    option_t options[] =
-    {
-      opt_string( "type", type_str ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_string( "type", type_str ) );
+    parse_options( options_str );
 
     trigger_gcd = timespan_t::zero();
     harmful = false;
@@ -702,14 +690,10 @@ struct mana_potion_t : public action_t
   mana_potion_t( player_t* p, const std::string& options_str ) :
     action_t( ACTION_USE, "mana_potion", p ), trigger( 0 ), min( 0 ), max( 0 )
   {
-    option_t options[] =
-    {
-      opt_int( "min",     min ),
-      opt_int( "max",     max ),
-      opt_int( "trigger", trigger ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_int( "min", min ) );
+    add_option( opt_int( "max", max ) );
+    add_option( opt_int( "trigger", trigger ) );
+    parse_options( options_str );
 
     if ( max <= 0 ) max = trigger;
 
@@ -761,7 +745,7 @@ struct health_stone_t : public heal_t
   health_stone_t( player_t* p, const std::string& options_str ) :
     heal_t( "health_stone", p ), charges( 3 )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     cooldown -> duration = timespan_t::from_minutes( 2 );
     trigger_gcd = timespan_t::zero();
@@ -818,13 +802,9 @@ struct dbc_potion_t : public action_t
     proc = true;
     trigger_gcd = timespan_t::zero();
 
-    option_t options[] =
-    {
-      opt_timespan( "pre_pot_time", pre_pot_time ),
-      opt_string( "name", consumable_name_str ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_timespan( "pre_pot_time", pre_pot_time ) );
+    add_option( opt_string( "name", consumable_name_str ) );
+    parse_options( options_str );
 
 
     const item_data_t* item = unique_gear::find_consumable( p -> dbc, consumable_name_str, ITEM_SUBCLASS_POTION );

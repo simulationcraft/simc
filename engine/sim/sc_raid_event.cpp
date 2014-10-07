@@ -25,15 +25,11 @@ struct adds_event_t : public raid_event_t
     count( 1 ), health( 100000 ), master_str( "Fluffy_Pillow" ), name_str( "Add" ),
     master( 0 )
   {
-    option_t options[] =
-    {
-      opt_string( "name",   name_str ),
-      opt_string( "master", master_str ),
-      opt_uint(   "count",  count ),
-      opt_float(  "health", health ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_string( "name", name_str ) );
+    add_option( opt_string( "master", master_str ) );
+    add_option( opt_uint( "count", count ) );
+    add_option( opt_float( "health", health ) );
+    parse_options( options_str );
 
     master = sim -> find_player( master_str );
     // If the master is not found, default the master to the first created enemy
@@ -101,7 +97,7 @@ struct casting_event_t : public raid_event_t
   casting_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "casting" )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
   }
 
   virtual void _start()
@@ -132,12 +128,8 @@ struct distraction_event_t : public raid_event_t
   {
     players_only = true; // Pets shouldn't have less "skill"
 
-    option_t options[] =
-    {
-      opt_float( "skill", skill ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_float( "skill", skill ) );
+    parse_options( options_str );
   }
 
   virtual void _start()
@@ -166,7 +158,7 @@ struct invulnerable_event_t : public raid_event_t
   invulnerable_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "invulnerable" )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
   }
 
   virtual void _start()
@@ -201,7 +193,7 @@ struct flying_event_t : public raid_event_t
   flying_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "flying" )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
   }
 
   virtual void _start()
@@ -290,13 +282,10 @@ struct movement_event_t : public raid_event_t
     move_distance( 0 ),
     direction( MOVEMENT_OMNI )
   {
-    option_t options[] =
-    {
-      opt_float( "distance", move_distance ),
-      opt_string( "direction", move_direction ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_float( "distance", move_distance ) );
+    add_option( opt_string( "direction", move_direction ) );
+    parse_options( options_str );
+
     if ( move_distance > 0 ) name_str = "movement_distance";
     if ( ! move_direction.empty() )
       direction = util::parse_movement_direction( move_direction );
@@ -336,7 +325,7 @@ struct stun_event_t : public raid_event_t
   stun_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "stun" )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
   }
 
   virtual void _start()
@@ -373,7 +362,7 @@ struct interrupt_event_t : public raid_event_t
   interrupt_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "interrupt" )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
   }
 
   virtual void _start()
@@ -403,14 +392,10 @@ struct damage_event_t : public raid_event_t
     amount( 1 ), amount_range( 0 ), raid_damage( 0 )
   {
     std::string type_str = "holy";
-    option_t options[] =
-    {
-      opt_float( "amount",       amount       ),
-      opt_float( "amount_range", amount_range ),
-      opt_string( "type",        type_str     ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_float( "amount", amount ) );
+    add_option( opt_float( "amount_range", amount_range ) );
+    add_option( opt_string( "type", type_str ) );
+    parse_options( options_str );
 
     assert( duration == timespan_t::zero() );
 
@@ -462,15 +447,11 @@ struct heal_event_t : public raid_event_t
   heal_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "heal" ), amount( 1 ), amount_range( 0 ), to_pct( 0 ), to_pct_range( 0 )
   {
-    option_t options[] =
-    {
-      opt_float( "amount",       amount       ),
-      opt_float( "amount_range", amount_range ),
-      opt_float( "to_pct",       to_pct ),
-      opt_float( "to_pct_range",   to_pct_range ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_float( "amount", amount ) );
+    add_option( opt_float( "amount_range", amount_range ) );
+    add_option( opt_float( "to_pct", to_pct ) );
+    add_option( opt_float( "to_pct_range", to_pct_range ) );
+    parse_options( options_str );
 
     assert( duration == timespan_t::zero() );
   }
@@ -525,12 +506,8 @@ struct damage_taken_debuff_event_t : public raid_event_t
   damage_taken_debuff_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "damage_taken" ), amount( 1 )
   {
-    option_t options[] =
-    {
-      opt_int( "amount", amount ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_int( "amount", amount ) );
+    parse_options( options_str );
 
     assert( duration == timespan_t::zero() );
   }
@@ -562,12 +539,8 @@ struct vulnerable_event_t : public raid_event_t
   vulnerable_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "vulnerable" ), multiplier( 2.0 )
   {
-    option_t options[] =
-    {
-      opt_float( "multiplier", multiplier ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_float( "multiplier", multiplier ) );
+    parse_options( options_str );
   }
 
   virtual void _start()
@@ -589,7 +562,7 @@ struct position_event_t : public raid_event_t
   position_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "position_switch" )
   {
-    parse_options( 0, options_str );
+    parse_options( options_str );
   }
 
   virtual void _start()
@@ -640,7 +613,25 @@ raid_event_t::raid_event_t( sim_t* s, const std::string& n ) :
   player_chance( 1.0 ),
   affected_role( ROLE_NONE ),
   saved_duration( timespan_t::zero() )
-{}
+{
+  add_option( opt_string( "first", first_str ) );
+  add_option( opt_string( "last", last_str ) );
+  add_option( opt_timespan( "period", cooldown ) );
+  add_option( opt_timespan( "cooldown", cooldown ) );
+  add_option( opt_timespan( "cooldown_stddev", cooldown_stddev ) );
+  add_option( opt_timespan( "cooldown_min", cooldown_min ) );
+  add_option( opt_timespan( "cooldown_max", cooldown_max ) );
+  add_option( opt_timespan( "duration", duration ) );
+  add_option( opt_timespan( "duration_stddev", duration_stddev ) );
+  add_option( opt_timespan( "duration_min", duration_min ) );
+  add_option( opt_timespan( "duration_max", duration_max ) );
+  add_option( opt_bool( "players_only",  players_only ) );
+  add_option( opt_float( "player_chance", player_chance ) );
+  add_option( opt_float( "distance_min", distance_min ) );
+  add_option( opt_float( "distance_max", distance_max ) );
+  add_option( opt_string( "affected_role", affected_role_str ) );
+
+}
 
 // raid_event_t::cooldown_time ==============================================
 
@@ -805,35 +796,13 @@ void raid_event_t::reset()
 
 // raid_event_t::parse_options ==============================================
 
-void raid_event_t::parse_options( const option_t*   options,
-                                  const std::string& options_str )
+void raid_event_t::parse_options( const std::string& options_str )
 {
-  std::string first_str, last_str;
-
   if ( options_str.empty() ) return;
-
-  std::vector<option_t> merged_options;
-  opts::copy( merged_options, options );
-  merged_options.push_back( opt_string( "first", first_str ) );
-  merged_options.push_back( opt_string( "last", last_str ) );
-  merged_options.push_back( opt_timespan( "period", cooldown ) );
-  merged_options.push_back( opt_timespan( "cooldown", cooldown ) );
-  merged_options.push_back( opt_timespan( "cooldown_stddev", cooldown_stddev ) );
-  merged_options.push_back( opt_timespan( "cooldown_min", cooldown_min ) );
-  merged_options.push_back( opt_timespan( "cooldown_max", cooldown_max ) );
-  merged_options.push_back( opt_timespan( "duration", duration ) );
-  merged_options.push_back( opt_timespan( "duration_stddev", duration_stddev ) );
-  merged_options.push_back( opt_timespan( "duration_min", duration_min ) );
-  merged_options.push_back( opt_timespan( "duration_max", duration_max ) );
-  merged_options.push_back( opt_bool( "players_only",  players_only ) );
-  merged_options.push_back( opt_float( "player_chance", player_chance ) );
-  merged_options.push_back( opt_float( "distance_min", distance_min ) );
-  merged_options.push_back( opt_float( "distance_max", distance_max ) );
-  merged_options.push_back( opt_string( "affected_role", affected_role_str ) );
 
   try
   {
-    opts::parse( sim, name_str.c_str(), merged_options, options_str );
+    opts::parse( sim, name_str.c_str(), options, options_str );
   }
   catch( const std::exception& e )
   {

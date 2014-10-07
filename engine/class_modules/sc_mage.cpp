@@ -435,7 +435,7 @@ struct water_elemental_pet_t : public pet_t
     freeze_t( water_elemental_pet_t* p, const std::string& options_str ):
       spell_t( "freeze", p, p -> find_pet_spell( "Freeze" ) )
     {
-      parse_options( NULL, options_str );
+      parse_options( options_str );
       aoe = -1;
       may_crit = true;
     }
@@ -461,7 +461,7 @@ struct water_elemental_pet_t : public pet_t
       spell_t( "water_jet", p, p -> find_spell( 135029 ) ),
       queued( false ), autocast( true )
     {
-      parse_options( NULL, options_str );
+      parse_options( options_str );
       channeled = tick_may_crit = true;
     }
 
@@ -530,7 +530,7 @@ struct water_elemental_pet_t : public pet_t
     waterbolt_t( water_elemental_pet_t* p, const std::string& options_str ):
       spell_t( "waterbolt", p, p -> find_pet_spell( "Waterbolt" ) )
     {
-      parse_options( NULL, options_str );
+      parse_options( options_str );
       may_crit = true;
     }
   };
@@ -614,7 +614,7 @@ struct mirror_image_pet_t : public pet_t
     arcane_blast_t( mirror_image_pet_t* p, const std::string& options_str ):
       mirror_image_spell_t( "arcane_blast", p, p -> find_pet_spell( "Arcane Blast" ) )
     {
-      parse_options( NULL, options_str );
+      parse_options( options_str );
     }
 
     virtual void execute()
@@ -640,7 +640,7 @@ struct mirror_image_pet_t : public pet_t
     fireball_t( mirror_image_pet_t* p, const std::string& options_str ):
       mirror_image_spell_t( "fireball", p, p -> find_pet_spell( "Fireball" ) )
     {
-      parse_options( NULL, options_str );
+      parse_options( options_str );
     }
   };
 
@@ -649,7 +649,7 @@ struct mirror_image_pet_t : public pet_t
     frostbolt_t( mirror_image_pet_t* p, const std::string& options_str ):
       mirror_image_spell_t( "frostbolt", p, p -> find_pet_spell( "Frostbolt" ) )
     {
-      parse_options( NULL, options_str );
+      parse_options( options_str );
     }
   };
 
@@ -1098,6 +1098,8 @@ public:
   {
     may_crit      = true;
     tick_may_crit = true;
+    add_option( opt_bool( "dps", dps_rotation ) );
+    add_option( opt_bool( "dpm", dpm_rotation ) );
   }
 
   mage_t* p()
@@ -1107,19 +1109,6 @@ public:
 
   mage_td_t* td( player_t* t ) const
   { return p() -> get_target_data( t ); }
-
-  virtual void parse_options( option_t*          options,
-                              const std::string& options_str )
-  {
-    option_t base_options[] =
-    {
-      opt_bool( "dps", dps_rotation ),
-      opt_bool( "dpm", dpm_rotation ),
-      opt_null()
-    };
-    std::vector<option_t> merged_options;
-    spell_t::parse_options( opts::merge( merged_options, options, base_options ), options_str );
-  }
 
   virtual bool ready()
   {
@@ -1659,7 +1648,7 @@ struct arcane_barrage_t : public mage_spell_t
   arcane_barrage_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "arcane_barrage", p, p -> find_class_spell( "Arcane Barrage" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
 
     base_aoe_multiplier *= data().effectN( 2 ).percent();
@@ -1698,7 +1687,7 @@ struct arcane_blast_t : public mage_spell_t
   arcane_blast_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "arcane_blast", p, p -> find_class_spell( "Arcane Blast" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
   }
 
@@ -1790,7 +1779,7 @@ struct arcane_brilliance_t : public mage_spell_t
   arcane_brilliance_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "arcane_brilliance", p, p -> find_class_spell( "Arcane Brilliance" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     base_costs[ current_resource() ] *= 1.0 + p -> glyphs.arcane_brilliance -> effectN( 1 ).percent();
     harmful = false;
@@ -1816,7 +1805,7 @@ struct arcane_explosion_t : public mage_spell_t
   arcane_explosion_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "arcane_explosion", p, p -> find_class_spell( "Arcane Explosion" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     aoe = -1;
   }
 
@@ -1860,7 +1849,7 @@ struct arcane_missiles_t : public mage_spell_t
   arcane_missiles_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "arcane_missiles", p, p -> find_class_spell( "Arcane Missiles" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     may_miss = false;
     may_proc_missiles = false;
     dot_duration      = data().duration();
@@ -1977,7 +1966,7 @@ struct arcane_orb_t : public mage_spell_t
     mage_spell_t( "arcane_orb", p, p -> find_talent_spell( "Arcane Orb" ) ),
     orb_bolt( new arcane_orb_bolt_t( p ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     may_miss       = false;
     may_crit       = false;
@@ -2022,7 +2011,7 @@ struct arcane_power_t : public mage_spell_t
   arcane_power_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "arcane_power", p, p -> find_class_spell( "Arcane Power" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     harmful = false;
 
     cooldown -> duration *= 1.0 + p -> glyphs.arcane_power -> effectN( 2 ).percent();
@@ -2043,7 +2032,7 @@ struct blast_wave_t : public mage_spell_t
     blast_wave_t( mage_t* p, const std::string& options_str ) :
        mage_spell_t( "blast_wave", p, p -> talents.blast_wave )
     {
-        parse_options( NULL, options_str );
+        parse_options( options_str );
         base_multiplier *= 1.0 + p -> talents.blast_wave -> effectN( 1 ).percent();
         base_aoe_multiplier *= 0.5;
         aoe = -1;
@@ -2066,7 +2055,7 @@ struct blazing_speed_t: public mage_spell_t
   blazing_speed_t( mage_t* p, const std::string& options_str ):
     mage_spell_t( "blazing_speed", p, p -> talents.blazing_speed )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
   }
 
   virtual void execute()
@@ -2084,7 +2073,7 @@ struct blink_t : public mage_spell_t
   blink_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "blink", p, p -> find_class_spell( "Blink" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     harmful = false;
     base_teleport_distance = 20;
@@ -2151,7 +2140,7 @@ struct blizzard_t : public mage_spell_t
     mage_spell_t( "blizzard", p, p -> find_class_spell( "Blizzard" ) ),
     shard( new blizzard_shard_t( p ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     channeled    = true;
     hasted_ticks = false;
@@ -2178,7 +2167,7 @@ struct cold_snap_t : public mage_spell_t
     mage_spell_t( "cold_snap", p, p -> talents.cold_snap ),
     cooldown_cofc( p -> get_cooldown( "cone_of_cold" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     trigger_gcd = timespan_t::zero();
     harmful = false;
@@ -2205,7 +2194,7 @@ struct combustion_t : public mage_spell_t
     // The "tick" portion of spell is specified in the DBC data in an alternate version of Combustion
     tick_spell( p -> find_spell( 83853, "combustion_dot" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     may_hot_streak = true;
 
@@ -2323,7 +2312,7 @@ struct comet_storm_t : public mage_spell_t
     projectile( new comet_storm_projectile_t( p ) )
   {
 
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     may_miss = false;
 
@@ -2359,7 +2348,7 @@ struct cone_of_cold_t : public mage_spell_t
   cone_of_cold_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "cone_of_cold", p, p -> find_class_spell( "Cone of Cold" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     aoe = -1;
   }
 
@@ -2394,7 +2383,7 @@ struct counterspell_t : public mage_spell_t
   counterspell_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "counterspell", p, p -> find_class_spell( "Counterspell" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     may_miss = may_crit = false;
   }
 
@@ -2415,7 +2404,7 @@ struct dragons_breath_t : public mage_spell_t
   dragons_breath_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "dragons_breath", p, p -> find_class_spell( "Dragon's Breath" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     aoe = -1;
   }
 };
@@ -2432,13 +2421,9 @@ public:
     mage_spell_t( "evocation", p,  p -> find_class_spell( "Evocation" ) ),
     pre_cast( timespan_t::zero() ), arcane_charges( 0 )
   {
-    option_t options[] =
-    {
-      opt_timespan( "precast", pre_cast ),
-      opt_null()
-    };
+    add_option( opt_timespan( "precast", pre_cast ) );
+    parse_options( options_str );
 
-    parse_options( options, options_str );
     pre_cast = std::max( pre_cast, timespan_t::zero() );
 
     base_tick_time    = timespan_t::from_seconds( 2.0 );
@@ -2527,7 +2512,7 @@ struct fire_blast_t : public mage_spell_t
   fire_blast_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "fire_blast", p, p -> find_class_spell( "Fire Blast" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     may_hot_streak = true;
 
   }
@@ -2542,7 +2527,7 @@ struct fireball_t : public mage_spell_t
   fireball_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "fireball", p, p -> find_class_spell( "Fireball" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     may_hot_streak = true;
   }
 
@@ -2622,7 +2607,7 @@ struct flamestrike_t : public mage_spell_t
   flamestrike_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "flamestrike", p, p -> find_specialization_spell( "Flamestrike" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     cooldown -> duration = timespan_t::zero(); // Flamestrike Perk modifying the cooldown
     aoe = -1;
   }
@@ -2663,7 +2648,7 @@ struct frost_bomb_t : public mage_spell_t
   frost_bomb_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "frost_bomb", p, p -> talents.frost_bomb )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
   }
 
   virtual void execute()
@@ -2708,7 +2693,7 @@ struct frostbolt_t : public mage_spell_t
     enhanced_frostbolt_duration( p -> find_spell( 157648 ) -> duration() ),
     icicle( p -> get_stats( "icicle_fb" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     stats -> add_child( icicle );
     icicle -> school = school;
@@ -2848,7 +2833,7 @@ struct frostfire_bolt_t : public mage_spell_t
     icicle( 0 ),
     brain_freeze_bonus( p -> find_spell( 44549 ) -> effectN( 3 ).percent() )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     may_hot_streak = true;
     base_execute_time += p -> glyphs.frostfire -> effectN( 1 ).time_value();
 
@@ -3032,7 +3017,7 @@ struct frozen_orb_t : public mage_spell_t
     mage_spell_t( "frozen_orb", p, p -> find_class_spell( "Frozen Orb" ) ),
     frozen_orb_bolt( new frozen_orb_bolt_t( p ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     hasted_ticks = false;
     base_tick_time    = timespan_t::from_seconds( 1.0 );
@@ -3068,7 +3053,7 @@ struct ice_floes_t : public mage_spell_t
   ice_floes_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "ice_floes", p, p -> talents.ice_floes )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     harmful = false;
   }
 
@@ -3095,7 +3080,7 @@ struct ice_lance_t : public mage_spell_t
     frost_bomb_explosion( new frost_bomb_explosion_t( p ) ),
     splitting_ice_aoe( p -> glyphs.splitting_ice -> effectN( 1 ).base_value() + 1 )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     if ( p -> glyphs.splitting_ice -> ok() )
     {
@@ -3182,7 +3167,7 @@ struct ice_nova_t : public mage_spell_t
     ice_nova_t( mage_t* p, const std::string& options_str ) :
        mage_spell_t( "ice_nova", p, p -> talents.ice_nova )
     {
-        parse_options( NULL, options_str );
+        parse_options( options_str );
         base_multiplier *= 1.0 + p -> talents.ice_nova -> effectN( 1 ).percent();
         base_aoe_multiplier *= 0.5;
         aoe = -1;
@@ -3208,7 +3193,7 @@ struct icy_veins_t : public mage_spell_t
     mage_spell_t( "icy_veins", p, p -> find_class_spell( "Icy Veins" ) )
   {
     check_spec( MAGE_FROST );
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     harmful = false;
 
     if ( player -> sets.has_set_bonus( SET_CASTER, T14, B4 ) )
@@ -3234,7 +3219,7 @@ struct inferno_blast_t : public mage_spell_t
     mage_spell_t( "inferno_blast", p,
                   p -> find_class_spell( "Inferno Blast" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     may_hot_streak = true;
     cooldown -> duration = timespan_t::from_seconds( 8.0 );
@@ -3377,7 +3362,7 @@ struct living_bomb_t : public mage_spell_t
     mage_spell_t( "living_bomb", p, p -> talents.living_bomb ),
     explosion( new living_bomb_explosion_t( p ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
   }
 
   void impact( action_state_t* s )
@@ -3450,12 +3435,9 @@ struct meteor_t : public mage_spell_t
     targets( -1 ),
     meteor_impact( new meteor_impact_t( p, targets ) )
   {
-    option_t options[] =
-    {
-      opt_int( "targets", targets ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_int( "targets", targets ) );
+    parse_options( options_str );
+
     callbacks = false;
     add_child( meteor_impact );
     dot_duration = timespan_t::zero();
@@ -3479,7 +3461,7 @@ struct mirror_image_t : public mage_spell_t
   mirror_image_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "mirror_image", p, p -> find_spell( 55342 ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     dot_duration = timespan_t::zero();
     harmful = false;
     if ( !p -> talents.mirror_image -> ok() )
@@ -3548,7 +3530,7 @@ struct nether_tempest_t : public mage_spell_t
     mage_spell_t( "nether_tempest", p, p -> talents.nether_tempest ),
     add_aoe( new nether_tempest_aoe_t( p ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     add_child( add_aoe );
   }
 
@@ -3601,7 +3583,7 @@ struct presence_of_mind_t : public mage_spell_t
   presence_of_mind_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "presence_of_mind", p, p -> find_class_spell( "Presence of Mind" )  )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     harmful = false;
   }
 
@@ -3624,7 +3606,7 @@ struct pyroblast_t : public mage_spell_t
     mage_spell_t( "pyroblast", p, p -> find_class_spell( "Pyroblast" ) ),
     is_hot_streak( false ), dot_is_hot_streak( false )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     may_hot_streak = true;
     dot_behavior = DOT_REFRESH;
   }
@@ -3748,7 +3730,7 @@ struct rune_of_power_t : public mage_spell_t
   rune_of_power_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "rune_of_power", p, p -> talents.rune_of_power )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     harmful = false;
   }
 
@@ -3769,7 +3751,7 @@ struct scorch_t : public mage_spell_t
   scorch_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "scorch", p, p -> find_specialization_spell( "Scorch" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     may_hot_streak = true;
     consumes_ice_floes = false;
@@ -3814,7 +3796,7 @@ struct slow_t : public mage_spell_t
   slow_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "slow", p, p -> find_class_spell( "Slow" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
   }
 
   virtual void impact( action_state_t* s )
@@ -3832,7 +3814,7 @@ struct supernova_t : public mage_spell_t
     supernova_t( mage_t* p, const std::string& options_str ) :
        mage_spell_t( "supernova", p, p -> talents.supernova )
     {
-        parse_options( NULL, options_str );
+        parse_options( options_str );
         aoe = -1;
         base_multiplier *= 1.0 + p -> talents.supernova -> effectN( 1 ).percent();
         base_aoe_multiplier *= 0.5;
@@ -3857,7 +3839,7 @@ struct time_warp_t : public mage_spell_t
   time_warp_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "time_warp", p, p -> find_class_spell( "Time Warp" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     harmful = false;
   }
 
@@ -3895,7 +3877,7 @@ struct summon_water_elemental_t : public mage_spell_t
   summon_water_elemental_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "water_elemental", p, p -> find_class_spell( "Summon Water Elemental" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     harmful = false;
     consumes_ice_floes = false;
     trigger_gcd = timespan_t::zero();
@@ -3924,7 +3906,7 @@ struct prismatic_crystal_t : public mage_spell_t
   prismatic_crystal_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "prismatic_crystal", p, p -> find_talent_spell( "Prismatic Crystal" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     may_miss = may_crit = harmful = callbacks = false;
     min_gcd = data().gcd();
   }
@@ -3959,13 +3941,9 @@ struct choose_target_t : public action_t
   {
     std::string target_name;
 
-    option_t options[] = {
-      opt_string( "name", target_name ),
-      opt_bool( "check_selected", check_selected ),
-      opt_null()
-    };
-
-    parse_options( options, options_str );
+    add_option( opt_string( "name", target_name ) );
+    add_option( opt_bool( "check_selected", check_selected ) );
+    parse_options( options_str );
 
     if ( ! target_name.empty() && ! util::str_compare_ci( target_name, "default" ) )
     {
@@ -4074,7 +4052,7 @@ struct start_pyro_chain_t : public action_t
     action_t( ACTION_USE, "start_pyro_chain", p ),
     last_execute( timespan_t::min() )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     trigger_gcd = timespan_t::zero();
     harmful = false;
   }
@@ -4108,7 +4086,7 @@ struct stop_pyro_chain_t : public action_t
   stop_pyro_chain_t( mage_t* p, const std::string& options_str ):
      action_t( ACTION_USE, "stop_pyro_chain", p )
   {
-      parse_options( NULL, options_str );
+      parse_options( options_str );
       trigger_gcd = timespan_t::zero();
       harmful = false;
   }
@@ -4140,17 +4118,13 @@ struct choose_rotation_t : public action_t
     final_burn_offset = timespan_t::from_seconds( 20 );
     oom_offset = 0;
 
-    option_t options[] =
-    {
-      opt_timespan( "cooldown", ( cooldown -> duration ) ),
-      opt_float( "evocation_pct", evocation_target_mana_percentage ),
-      opt_int( "force_dps", force_dps ),
-      opt_int( "force_dpm", force_dpm ),
-      opt_timespan( "final_burn_offset", ( final_burn_offset ) ),
-      opt_float( "oom_offset", oom_offset ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_timespan( "cooldown", ( cooldown->duration ) ) );
+    add_option( opt_float( "evocation_pct", evocation_target_mana_percentage ) );
+    add_option( opt_int( "force_dps", force_dps ) );
+    add_option( opt_int( "force_dpm", force_dpm ) );
+    add_option( opt_timespan( "final_burn_offset", ( final_burn_offset ) ) );
+    add_option( opt_float( "oom_offset", oom_offset ) );
+    parse_options( options_str );
 
     if ( cooldown -> duration < timespan_t::from_seconds( 1.0 ) )
     {
@@ -4334,7 +4308,7 @@ struct water_jet_t : public action_t
   water_jet_t( mage_t* p, const std::string& options_str ) :
     action_t( ACTION_OTHER, "water_jet", p ), action( 0 )
   {
-    parse_options( 0, options_str );
+    parse_options( options_str );
 
     may_miss = may_crit = callbacks = false;
     quiet = dual = true;
@@ -4392,7 +4366,7 @@ struct alter_time_t : public mage_spell_t
   alter_time_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "alter_time_activate", p, p -> find_spell( 108978 ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     harmful = false;
   }

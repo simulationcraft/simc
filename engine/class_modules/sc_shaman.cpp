@@ -926,7 +926,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     uses_elemental_fusion( false ),
     may_fulmination( false )
   {
-    parse_options( 0, options );
+    parse_options( options );
 
     crit_bonus_multiplier *= 1.0 + p -> spec.elemental_fury -> effectN( 1 ).percent() + p -> perk.improved_critical_strikes -> effectN( 1 ).percent();
   }
@@ -1024,7 +1024,7 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
     resurgence_gain( 0 ),
     proc_tidal_waves( false ), consume_tidal_waves( false )
   {
-    parse_options( 0, options );
+    parse_options( options );
   }
 
   shaman_heal_t( shaman_t* p, const spell_data_t* s = spell_data_t::nil(),
@@ -1034,7 +1034,7 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
     resurgence_gain( 0 ),
     proc_tidal_waves( false ), consume_tidal_waves( false )
   {
-    parse_options( 0, options );
+    parse_options( options );
   }
 
   double composite_spell_power() const
@@ -1304,7 +1304,7 @@ struct primal_elemental_t : public pet_t
                               const std::string& options = std::string() ) :
       spell_t( t, p, s ), p( p )
     {
-      parse_options( 0, options );
+      parse_options( options );
 
       may_crit                    = true;
       base_costs[ RESOURCE_MANA ] = 0;
@@ -2136,13 +2136,9 @@ struct auto_attack_t : public shaman_attack_t
     shaman_attack_t( "auto_attack", player, spell_data_t::nil() ),
     sync_weapons( 0 ), swing_timer_variance( 0.00 )
   {
-    option_t options[] =
-    {
-      opt_bool( "sync_weapons", sync_weapons ),
-      opt_float( "swing_timer_variance", swing_timer_variance ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_bool( "sync_weapons", sync_weapons ) );
+    add_option( opt_float( "swing_timer_variance", swing_timer_variance ) );
+    parse_options( options_str );
 
     assert( p() -> main_hand_weapon.type != WEAPON_NONE );
 
@@ -2199,7 +2195,7 @@ struct lava_lash_t : public shaman_attack_t
     base_multiplier *= 1.0 + player -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + player -> perk.improved_lava_lash_2 -> effectN( 1 ).percent();
 
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     weapon              = &( player -> off_hand_weapon );
 
@@ -2320,7 +2316,7 @@ struct primal_strike_t : public shaman_attack_t
   primal_strike_t( shaman_t* player, const std::string& options_str ) :
     shaman_attack_t( "primal_strike", player, player -> find_class_spell( "Primal Strike" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     weapon               = &( p() -> main_hand_weapon );
     cooldown             = p() -> cooldown.strike;
     cooldown -> duration = p() -> dbc.spell( id ) -> cooldown();
@@ -2340,7 +2336,7 @@ struct stormstrike_t : public shaman_attack_t
   {
     check_spec( SHAMAN_ENHANCEMENT );
 
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     may_proc_eoe         = true;
     weapon               = &( p() -> main_hand_weapon );
@@ -2414,7 +2410,7 @@ struct windstrike_t : public shaman_attack_t
   {
     check_spec( SHAMAN_ENHANCEMENT );
 
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     may_proc_eoe         = true;
     school               = SCHOOL_PHYSICAL;
@@ -2486,7 +2482,7 @@ struct unleash_elements_t : public shaman_attack_t
   unleash_elements_t( shaman_t* player, const std::string& options_str ) :
     shaman_attack_t( "unleash_elements", player, player -> find_specialization_spell( "Unleash Elements" ) )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
 
     may_crit     = false;
     may_miss     = false;

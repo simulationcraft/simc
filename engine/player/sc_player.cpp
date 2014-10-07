@@ -1314,7 +1314,7 @@ struct execute_pet_action_t : public action_t
     action_t( ACTION_OTHER, "execute_" + p -> name_str + "_" + as, player ),
     pet_action( 0 ), pet( p ), action_str( as )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     trigger_gcd = timespan_t::zero();
   }
 
@@ -5232,7 +5232,7 @@ struct start_moving_t : public action_t
   start_moving_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "start_moving", player )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     trigger_gcd = timespan_t::zero();
     cooldown -> duration = timespan_t::from_seconds( 0.5 );
     harmful = false;
@@ -5262,7 +5262,7 @@ struct stop_moving_t : public action_t
   stop_moving_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "stop_moving", player )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     trigger_gcd = timespan_t::zero();
     cooldown -> duration = timespan_t::from_seconds( 0.5 );
     harmful = false;
@@ -5305,16 +5305,12 @@ struct variable_t : public action_t
     double default_ = 0;
     timespan_t delay_;
 
-    option_t options[] =
-    {
-      opt_string( "name", name_ ),
-      opt_string( "value", value_ ),
-      opt_string( "op", operation_ ),
-      opt_float( "default", default_ ),
-      opt_timespan( "delay", delay_ ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_string( "name", name_ ) );
+    add_option( opt_string( "value", value_ ) );
+    add_option( opt_string( "op", operation_ ) );
+    add_option( opt_float( "default", default_ ) );
+    add_option( opt_timespan( "delay", delay_ ) );
+    parse_options( options_str );
 
     if ( name_.empty() || operation_.empty() )
     {
@@ -5457,7 +5453,7 @@ struct racial_spell_t : public spell_t
   racial_spell_t( player_t* p, const std::string token, const spell_data_t* spell, const std::string& options ) :
     spell_t( token, p, spell )
   {
-    parse_options( NULL, options );
+    parse_options( options );
   }
 
   void init()
@@ -5566,7 +5562,7 @@ struct darkflight_t : public racial_spell_t
   darkflight_t( player_t* p, const std::string& options_str ) :
     racial_spell_t( p, "darkflight", p -> find_racial_spell( "Darkflight" ), options_str )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
   }
 
   virtual void execute()
@@ -5584,7 +5580,7 @@ struct rocket_barrage_t : public racial_spell_t
   rocket_barrage_t( player_t* p, const std::string& options_str ) :
     racial_spell_t( p, "rocket_barrage", p -> find_racial_spell( "Rocket Barrage" ), options_str )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
   }
 };
 
@@ -5617,12 +5613,8 @@ struct restart_sequence_t : public action_t
     action_t( ACTION_OTHER, "restart_sequence", player ),
     seq( 0 ), seq_name_str( "default" ) // matches default name for sequences
   {
-    option_t options[] =
-    {
-      opt_string( "name", seq_name_str ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_string( "name", seq_name_str ) );
+    parse_options( options_str );
 
     trigger_gcd = timespan_t::zero();
   }
@@ -5682,12 +5674,8 @@ struct restore_mana_t : public action_t
     action_t( ACTION_OTHER, "restore_mana", player ),
     mana( 0 )
   {
-    option_t options[] =
-    {
-      opt_float( "mana", mana ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_float( "mana", mana ) );
+    parse_options( options_str );
 
     trigger_gcd = timespan_t::zero();
   }
@@ -5716,7 +5704,7 @@ struct snapshot_stats_t : public action_t
     action_t( ACTION_OTHER, "snapshot_stats", player ),
     completed( false )
   {
-    parse_options( NULL, options_str );
+    parse_options( options_str );
     trigger_gcd = timespan_t::zero();
     harmful = false;
   }
@@ -5856,12 +5844,8 @@ struct wait_fixed_t : public wait_action_base_t
   {
     std::string sec_str = "1.0";
 
-    option_t options[] =
-    {
-      opt_string( "sec", sec_str ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_string( "sec", sec_str ) );
+    parse_options( options_str );
     interrupt_auto_attack = false; //Probably shouldn't interrupt autoattacks while waiting.
 
     time_expr = std::shared_ptr<expr_t>( expr_t::parse( this, sec_str ) );
@@ -5934,13 +5918,9 @@ struct use_item_t : public action_t
   {
     std::string item_name, item_slot;
 
-    option_t options[] =
-    {
-      opt_string( "name", item_name ),
-      opt_string( "slot", item_slot ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_string( "name", item_name ) );
+    add_option( opt_string( "slot", item_slot ) );
+    parse_options( options_str );
 
     if ( ! item_name.empty() )
     {
@@ -6059,12 +6039,8 @@ struct cancel_buff_t : public action_t
     action_t( ACTION_OTHER, "cancel_buff", player ), buff( 0 )
   {
     std::string buff_name;
-    option_t options[] =
-    {
-      opt_string( "name", buff_name ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_string( "name", buff_name ) );
+    parse_options( options_str );
 
     if ( buff_name.empty() )
     {
@@ -6117,12 +6093,8 @@ struct swap_action_list_t : public action_t
     action_t( ACTION_OTHER, name, player ), alist( 0 )
   {
     std::string alist_name;
-    option_t options[] =
-    {
-      opt_string( "name", alist_name ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_string( "name", alist_name ) );
+    parse_options( options_str );
 
     if ( alist_name.empty() )
     {
@@ -6198,15 +6170,11 @@ struct pool_resource_t : public action_t
   {
     quiet = true;
 
-    option_t options[] =
-    {
-      opt_timespan( "wait", wait ),
-      opt_bool( "for_next", for_next ),
-      opt_string( "resource", resource_str ),
-      opt_float( "extra_amount", amount ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    add_option( opt_timespan( "wait", wait ) );
+    add_option( opt_bool( "for_next", for_next ) );
+    add_option( opt_string( "resource", resource_str ) );
+    add_option( opt_float( "extra_amount", amount ) );
+    parse_options( options_str );
 
     if ( !resource_str.empty() )
     {

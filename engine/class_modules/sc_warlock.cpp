@@ -915,7 +915,7 @@ struct immolation_t: public warlock_pet_spell_t
   immolation_t( warlock_pet_t* p, const std::string& options_str ):
     warlock_pet_spell_t( "immolation", p, p -> find_spell( 19483 ) )
   {
-    parse_options( 0, options_str );
+    parse_options( options_str );
 
     dot_duration = 1 * base_tick_time;
     hasted_ticks = false;
@@ -3122,10 +3122,10 @@ struct soul_fire_t: public warlock_spell_t
     }
   }
 
-  virtual void parse_options( option_t* o, const std::string& options_str )
+  virtual void parse_options( const std::string& options_str )
   {
-    warlock_spell_t::parse_options( o, options_str );
-    if ( meta_spell ) meta_spell -> parse_options( o, options_str );
+    warlock_spell_t::parse_options( options_str );
+    if ( meta_spell ) meta_spell -> parse_options( options_str );
   }
 
   virtual void execute()
@@ -4969,7 +4969,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "service_pet"           ) a = new grimoire_of_service_t( this, default_pet );
   else return player_t::create_action( action_name, options_str );
 
-  a -> parse_options( 0, options_str );
+  a -> parse_options( options_str );
 
   return a;
 }

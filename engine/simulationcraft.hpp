@@ -1520,6 +1520,7 @@ protected:
   timespan_t duration_stddev;
   timespan_t duration_min;
   timespan_t duration_max;
+  std::string first_str, last_str;
 
   // Player filter options
   double     distance_min; // Minimal player distance
@@ -1532,6 +1533,7 @@ protected:
 
   timespan_t saved_duration;
   std::vector<player_t*> affected_players;
+  auto_dispose<std::vector<option_t> > options;
 
   raid_event_t( sim_t*, const std::string& );
 private:
@@ -1542,6 +1544,8 @@ public:
 
   virtual bool filter_player( const player_t* );
 
+  void add_option( const option_t& new_option )
+  { options.push_back( new_option ); }
   timespan_t cooldown_time();
   timespan_t duration_time();
   timespan_t next_time() { return next; }
@@ -1553,7 +1557,7 @@ public:
   void start();
   void finish();
   void set_next( timespan_t t ) { next = t; }
-  void parse_options( const option_t*, const std::string& options_str );
+  void parse_options( const std::string& options_str );
   static raid_event_t* create( sim_t* sim, const std::string& name, const std::string& options_str );
   static void init( sim_t* );
   static void reset( sim_t* );
@@ -5743,6 +5747,7 @@ struct action_t : public noncopyable
   int64_t total_executions;
   cooldown_t line_cooldown;
   const action_priority_t* signature;
+  auto_dispose<std::vector<option_t> > options;
 
   // Movement stuff
   movement_direction_e movement_directionality;
@@ -5757,7 +5762,9 @@ struct action_t : public noncopyable
   void parse_spell_data( const spell_data_t& );
   void parse_effect_data( const spelleffect_data_t& );
 
-  virtual void   parse_options( option_t*, const std::string& options_str );
+  virtual void   parse_options( const std::string& options_str );
+  void add_option( const option_t& new_option )
+  { options.push_back( new_option ); }
   virtual double cost() const;
   virtual timespan_t gcd() const;
   virtual timespan_t execute_time() const { return base_execute_time; }

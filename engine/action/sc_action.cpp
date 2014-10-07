@@ -403,6 +403,35 @@ action_t::action_t( action_e       ty,
   }
 
   spec_list.clear();
+
+  add_option( opt_deprecated( "bloodlust", "if=buff.bloodlust.react" ) );
+  add_option( opt_deprecated( "haste<", "if=spell_haste>= or if=attack_haste>=" ) );
+  add_option( opt_deprecated( "health_percentage<", "if=target.health.pct<=" ) );
+  add_option( opt_deprecated( "health_percentage>", "if=target.health.pct>=" ) );
+  add_option( opt_deprecated( "invulnerable", "if=target.debuff.invulnerable.react" ) );
+  add_option( opt_deprecated( "not_flying", "if=target.debuff.flying.down" ) );
+  add_option( opt_deprecated( "flying", "if=target.debuff.flying.react" ) );
+  add_option( opt_deprecated( "time<", "if=time<=" ) );
+  add_option( opt_deprecated( "time>", "if=time>=" ) );
+  add_option( opt_deprecated( "travel_speed", "if=travel_speed" ) );
+  add_option( opt_deprecated( "vulnerable", "if=target.debuff.vulnerable.react" ) );
+  add_option( opt_deprecated( "use_off_gcd", "" ) );
+
+  add_option( opt_string( "if", if_expr_str ) );
+  add_option( opt_string( "interrupt_if", interrupt_if_expr_str ) );
+  add_option( opt_string( "early_chain_if", early_chain_if_expr_str ) );
+  add_option( opt_bool( "interrupt", interrupt ) );
+  add_option( opt_bool( "chain", chain ) );
+  add_option( opt_bool( "cycle_targets", cycle_targets ) );
+  add_option( opt_bool( "cycle_players", cycle_players ) );
+  add_option( opt_int( "max_cycle_targets", max_cycle_targets ) );
+  add_option( opt_bool( "moving", moving ) );
+  add_option( opt_string( "sync", sync_str ) );
+  add_option( opt_bool( "wait_on_ready", wait_on_ready ) );
+  add_option( opt_string( "target", target_str ) );
+  add_option( opt_string( "label", label_str ) );
+  add_option( opt_bool( "precombat", pre_combat ) );
+  add_option( opt_timespan( "line_cd", line_cooldown.duration ) );
 }
 
 action_t::~action_t()
@@ -577,49 +606,11 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
 
 // action_t::parse_options ==================================================
 
-void action_t::parse_options( option_t*          options,
-                              const std::string& options_str )
+void action_t::parse_options( const std::string& options_str )
 {
-  option_t base_options[] =
-  {
-    // deprecated options: Point users to the correct ones
-    opt_deprecated( "bloodlust", "if=buff.bloodlust.react" ),
-    opt_deprecated( "haste<", "if=spell_haste>= or if=attack_haste>=" ),
-    opt_deprecated( "health_percentage<", "if=target.health.pct<=" ),
-    opt_deprecated( "health_percentage>", "if=target.health.pct>=" ),
-    opt_deprecated( "invulnerable", "if=target.debuff.invulnerable.react" ),
-    opt_deprecated( "not_flying", "if=target.debuff.flying.down" ),
-    opt_deprecated( "flying", "if=target.debuff.flying.react" ),
-    opt_deprecated( "time<", "if=time<=" ),
-    opt_deprecated( "time>", "if=time>=" ),
-    opt_deprecated( "travel_speed", "if=travel_speed" ),
-    opt_deprecated( "vulnerable", "if=target.debuff.vulnerable.react" ),
-    opt_deprecated( "use_off_gcd", "" ),
-
-    opt_string( "if", if_expr_str ),
-    opt_string( "interrupt_if", interrupt_if_expr_str ),
-    opt_string( "early_chain_if", early_chain_if_expr_str ),
-    opt_bool( "interrupt", interrupt ),
-    opt_bool( "chain", chain ),
-    opt_bool( "cycle_targets", cycle_targets ),
-    opt_bool( "cycle_players", cycle_players ),
-    opt_int( "max_cycle_targets", max_cycle_targets ),
-    opt_bool( "moving", moving ),
-    opt_string( "sync", sync_str ),
-    opt_bool( "wait_on_ready", wait_on_ready ),
-    opt_string( "target", target_str ),
-    opt_string( "label", label_str ),
-    opt_bool( "precombat", pre_combat ),
-    opt_timespan( "line_cd", line_cooldown.duration ),
-    opt_null()
-  };
-
-  std::vector<option_t> merged_options;
-  opts::merge( merged_options, options, base_options );
-
   try
   {
-    opts::parse( sim, name(), merged_options, options_str );
+    opts::parse( sim, name(), options, options_str );
   }
   catch ( const std::exception& e )
   {
@@ -2749,13 +2740,9 @@ call_action_list_t::call_action_list_t( player_t* player, const std::string& opt
 {
   std::string alist_name;
   int randomtoggle = 0;
-  option_t options[] =
-  {
-    opt_string( "name", alist_name ),
-    opt_int( "random", randomtoggle ),
-    opt_null()
-  };
-  parse_options( options, options_str );
+  add_option( opt_string( "name", alist_name ) );
+  add_option( opt_int( "random", randomtoggle ) );
+  parse_options( options_str );
 
   if ( alist_name.empty() )
   {
