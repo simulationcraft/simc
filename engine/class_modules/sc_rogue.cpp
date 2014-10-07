@@ -4188,9 +4188,6 @@ double rogue_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.moderate_insight -> value();
 
     m *= 1.0 + buffs.deep_insight -> value();
-
-    if ( perk.empowered_bandits_guile -> ok() && buffs.deep_insight -> check() )
-      m *= 1.0 + perk.empowered_bandits_guile -> effectN( 1 ).percent();
   }
 
   if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
@@ -4731,7 +4728,7 @@ void rogue_t::create_buffs()
                              .default_value( find_spell( 84746 ) -> effectN( 1 ).percent() )
                              .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) );
   buffs.deep_insight       = new buffs::insight_buff_t( this, buff_creator_t( this, "deep_insight", find_spell( 84747 ) )
-                             .default_value( find_spell( 84747 ) -> effectN( 1 ).percent() )
+                             .default_value( find_spell( 84747 ) -> effectN( 1 ).percent() + perk.empowered_bandits_guile -> effectN( 1 ).percent() )
                              .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) );
   buffs.recuperate         = buff_creator_t( this, "recuperate" );
   buffs.shiv               = buff_creator_t( this, "shiv" );
