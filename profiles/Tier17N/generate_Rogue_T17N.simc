@@ -45,6 +45,7 @@ role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#cZ!2000010
 spec=combat
+glyphs=energy/disappearance
 head=sorkas_nightshade_cowl,id=113978
 neck=engineers_grounded_gorget,id=113892,enchant=gift_of_haste
 shoulders=poisoners_spaulders,id=115574

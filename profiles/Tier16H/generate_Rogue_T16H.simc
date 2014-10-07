@@ -38,6 +38,7 @@ position=back
 professions=blacksmithing=600/engineering=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#cZ!200002
 spec=combat
+glyphs=energy/disappearance
 legs=legguards_of_the_barbed_assassin,id=99349,gems=5agi_10haste_5agi_10haste_8agi,enchant=19agi_11crit,upgrade=4
 shoulders=shoulderguards_of_the_righteous_stand,id=105551,gems=5agi_10haste_5agi_10haste_8agi,enchant=15agi_5crit,upgrade=4
 wrists=bombers_blackened_wristwatch,id=105616,enchant=11agi,upgrade=4

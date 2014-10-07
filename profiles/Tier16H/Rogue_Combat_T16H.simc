@@ -5,6 +5,7 @@ role=attack
 position=back
 professions=blacksmithing=600/engineering=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#cZ!200002.
+glyphs=energy/disappearance
 spec=combat
 
 # This default action priority list is automatically created based on your character.

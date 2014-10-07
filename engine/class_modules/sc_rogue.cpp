@@ -1259,14 +1259,6 @@ void rogue_attack_t::execute()
 
   p() -> trigger_relentless_strikes( execute_state );
 
-  if ( harmful && stealthed() )
-  {
-    if ( ! p() -> talent.subterfuge -> ok() )
-      break_stealth( p() );
-    else if ( ! p() -> buffs.subterfuge -> check() )
-      p() -> buffs.subterfuge -> trigger();
-  }
-
   // Subtlety T17 4PC set bonus processing on the "next finisher"
   if ( result_is_hit( execute_state -> result ) &&
        base_costs[ RESOURCE_COMBO_POINT ] > 0 &&
@@ -1277,6 +1269,14 @@ void rogue_attack_t::execute()
 
     if ( cp > 0 )
       player -> resource_gain( RESOURCE_COMBO_POINT, cp, p() -> gains.t17_4pc_subtlety );
+  }
+
+  if ( ! background && harmful && stealthed() )
+  {
+    if ( ! p() -> talent.subterfuge -> ok() )
+      break_stealth( p() );
+    else if ( ! p() -> buffs.subterfuge -> check() )
+      p() -> buffs.subterfuge -> trigger();
   }
 }
 
