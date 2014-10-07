@@ -8212,7 +8212,7 @@ void player_t::copy_from( player_t* source )
 
 void player_t::add_option( const option_t& opt )
 {
-  options.push_back( opt );
+  options.insert( options.begin(), opt );
 }
 
 // class_modules::create::options ===========================================

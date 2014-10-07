@@ -269,7 +269,8 @@ public:
   {
     int use_cache = 0;
 
-    auto_dispose<std::vector<option_t> > options( client_options );
+    auto_dispose<std::vector<option_t> > options;
+    options.insert( options.begin(), client_options.begin(), client_options.end() );
     options.push_back( opt_string( "region", region ) );
     options.push_back( opt_string( "server", server ) );
     options.push_back( opt_bool( "cache", use_cache ) );
@@ -2202,7 +2203,7 @@ void sim_t::print_options()
 
 void sim_t::add_option( const option_t& opt )
 {
-  options.push_back( opt );
+  options.insert( options.begin(), opt );
 }
 
 // sim_t::create_options ====================================================

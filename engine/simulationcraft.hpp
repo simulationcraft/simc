@@ -1545,7 +1545,7 @@ public:
   virtual bool filter_player( const player_t* );
 
   void add_option( const option_t& new_option )
-  { options.push_back( new_option ); }
+  { options.insert( options.begin(), new_option ); }
   timespan_t cooldown_time();
   timespan_t duration_time();
   timespan_t next_time() { return next; }
@@ -5766,7 +5766,7 @@ struct action_t : public noncopyable
 
   virtual void   parse_options( const std::string& options_str );
   void add_option( const option_t& new_option )
-  { options.push_back( new_option ); }
+  { options.insert( options.begin(), new_option ); }
   virtual double cost() const;
   virtual timespan_t gcd() const;
   virtual timespan_t execute_time() const { return base_execute_time; }
