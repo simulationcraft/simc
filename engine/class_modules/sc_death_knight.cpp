@@ -182,6 +182,9 @@ public:
   double    blood_charge_counter;
   double    shadow_infusion_counter;
   double    fallen_crusader, fallen_crusader_rppm;
+
+  stats_t*  antimagic_shell;
+
   // Buffs
   struct buffs_t
   {
@@ -447,6 +450,7 @@ public:
     runic_power_decay_rate(),
     fallen_crusader( 0 ),
     fallen_crusader_rppm( find_spell( 166441 ) -> real_ppm() ),
+    antimagic_shell( 0 ),
     buffs( buffs_t() ),
     runeforge( runeforge_t() ),
     active_spells( active_spells_t() ),
@@ -5096,8 +5100,9 @@ struct antimagic_shell_t : public death_knight_spell_t
     death_knight_spell_t( "antimagic_shell", p, p -> find_class_spell( "Anti-Magic Shell" ) ),
     interval( 60 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), damage( 0 )
   {
-    harmful = false;
+    harmful = may_crit = may_miss = false;
     base_dd_min = base_dd_max = 0;
+    target = player;
 
     option_t options[] =
     {
@@ -5126,6 +5131,14 @@ struct antimagic_shell_t : public death_knight_spell_t
 
     if ( damage > 0 )
       cooldown -> set_recharge_multiplier( 1.0 );
+
+    // Setup an Absorb stats tracker for AMS if it's used "for reals"
+    if ( damage == 0 )
+    {
+      stats -> type = STATS_ABSORB;
+      if ( ! p -> antimagic_shell )
+        p -> antimagic_shell = stats;
+    }
   }
 
   void execute()
@@ -6859,7 +6872,10 @@ void death_knight_t::assess_damage_imminent( school_e school, dmg_e, action_stat
     s -> result_amount -= absorbed;
     s -> result_absorbed -= absorbed;
 
-    gains.antimagic_shell -> add( RESOURCE_HEALTH, absorbed );
+    //gains.antimagic_shell -> add( RESOURCE_HEALTH, absorbed );
+
+    if ( antimagic_shell )
+      antimagic_shell -> add_result( absorbed, absorbed, ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, this );
 
     resource_gain( RESOURCE_RUNIC_POWER, util::round( generated * 100.0 ), gains.antimagic_shell, s -> action );
   }
