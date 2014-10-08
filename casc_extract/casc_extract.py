@@ -164,8 +164,11 @@ if __name__ == '__main__':
 		else:
 			file_md5s = root.GetFileMD5(args[0])
 			keys = encoding.GetFileKeys(file_md5s[0])
-			print args[0], len(file_md5s) and file_md5s[0] or 0
+			#print args[0], len(file_md5s) and file_md5s[0].encode('hex') or 0, len(keys)
 			#sys.exit(0)
+
+		if len(keys) == 0:
+			parser.error('No encoding information found for %s' % args[0])
 
 		if len(keys) > 1:
 			parser.error('Found multiple file keys with %s' % args[0])

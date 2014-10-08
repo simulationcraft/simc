@@ -426,6 +426,11 @@ class CDNIndex(CASCObject):
 			self.cdn_hash = split[2]
 			self.cdn_version = split[-1].strip()
 
+			# Also take build configuration information from the versions file
+			# nowadays, as the "CDN" file builds option may have things like
+			# background downloader builds in it
+			self.build_cfg_hash = split[1]
+
 		if not self.cdn_hash:
 			print >>sys.stderr, 'Invalid version file'
 			sys.exit(1)
@@ -442,11 +447,11 @@ class CDNIndex(CASCObject):
 				self.archives = mobj.group(1).split(' ')
 				continue
 
-			mobj = re.match('^builds = (.+)', line)
-			if mobj:
-				# Always take the first build configuration
-				self.build_cfg_hash = mobj.group(1).split(' ')[0]
-				continue
+			#mobj = re.match('^builds = (.+)', line)
+			#if mobj:
+			#	# Always take the first build configuration
+			#	self.build_cfg_hash = mobj.group(1).split(' ')[0]
+			#	continue
 
 	def open_build_cfg(self):
 		path = os.path.join(self.cache_dir('config'), self.build_cfg_hash)
