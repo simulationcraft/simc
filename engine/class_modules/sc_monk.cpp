@@ -1770,6 +1770,7 @@ struct hurricane_strike_t: public monk_melee_attack_t
     channeled = true;
     dot_duration = data().duration();
     base_tick_time = dot_duration / 15;
+    tick_zero = false;
   }
 
   void tick( dot_t*d )
@@ -1785,6 +1786,11 @@ struct hurricane_strike_t: public monk_melee_attack_t
     double savings = base_costs[RESOURCE_CHI] - cost();
     if ( result_is_hit( execute_state -> result ) )
       p() -> track_chi_consumption += savings;
+  }
+
+  virtual timespan_t travel_time()
+  {
+    return timespan_t::zero();
   }
 };
 
