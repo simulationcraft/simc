@@ -87,6 +87,11 @@ protected:
     }
     return true;
   }
+  std::ostream& print( std::ostream& stream ) const override
+  {
+     stream << this -> name() << "=" << this -> _ref << "\n";
+     return stream;
+  }
 private:
   option_assignement_e _ass;
 };
@@ -119,6 +124,11 @@ protected:
 
     this -> _ref = v;
     return true;
+  }
+  std::ostream& print( std::ostream& stream ) const override
+  {
+     stream << this -> name() << "=" << this -> _ref << " (min=" << _min << " max:" << _max << ")\n";
+     return stream;
   }
 private:
   T _min, _max;
@@ -163,6 +173,8 @@ protected:
 
      return _fun( sim, n, value );
   }
+  std::ostream& print( std::ostream& stream ) const override
+  { return stream << "function option: " << name() << "\n"; }
 private:
   function_t _fun;
 };
@@ -194,6 +206,12 @@ protected:
     }
     return false;
   }
+  std::ostream& print( std::ostream& stream ) const override
+  {
+    for ( map_t::const_iterator it = _ref.begin(), end = _ref.end(); it != end; ++it )
+          stream << name() << it->first << "="<< it->second << "\n";
+     return stream;
+  }
 };
 
 struct opts_list_t : public opts_helper_t<list_t>
@@ -211,6 +229,14 @@ protected:
 
     return false;
   }
+  std::ostream& print( std::ostream& stream ) const override
+  {
+    stream << name() << "=";
+    for ( list_t::const_iterator it = _ref.begin(), end = _ref.end(); it != end; ++it )
+          stream << name() << (*it) << " ";
+    stream << "\n";
+    return stream;
+  }
 };
 struct opts_deperecated_t : public option_base_t
 {
@@ -225,11 +251,14 @@ protected:
       return false;
     std::stringstream s;
     s << "Option '" << name << "' has been deprecated.";
-    if ( !_new_option.empty() ) {
-      s << " Please use option '" << _new_option << "' instead.";
-    }
+    s << " Please use option '" << _new_option << "' instead.";
     throw std::invalid_argument( s.str() );
     return false;
+  }
+  std::ostream& print( std::ostream& stream ) const override
+  {
+    stream << "Option '" << name() << "' has been deprecated. Please use '" << _new_option << "'.\n";
+    return stream;
   }
 private:
   std::string _new_option;

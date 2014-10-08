@@ -1387,8 +1387,11 @@ public:
   { return parse( sim, n, value ); }
   std::string name() const
   { return _name; }
+  std::ostream& print_option( std::ostream& stream ) const
+  { return print( stream ); }
 protected:
   virtual bool parse( sim_t*, const std::string& name, const std::string& value ) const = 0;
+  virtual std::ostream& print( std::ostream& stream ) const = 0;
 private:
   std::string _name;
 };
@@ -1404,6 +1407,8 @@ bool parse( sim_t*, const std::vector<option_t>&, const std::string& name, const
 void parse( sim_t*, const std::string& context, const std::vector<option_t>&, const std::string& options_str );
 void parse( sim_t*, const std::string& context, const std::vector<option_t>&, const std::vector<std::string>& strings );
 }
+inline std::ostream& operator<<( std::ostream& stream, const option_t& opt )
+{ return opt -> print_option( stream ); }
 
 option_t opt_string( const std::string& n, std::string& v );
 option_t opt_append( const std::string& n, std::string& v );
