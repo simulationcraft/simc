@@ -54,7 +54,7 @@ legs=legguards_of_celestial_harmony,id=99342,upgrade=4,gems=20crit_20crit_8agi,e
 feet=ravagers_pathwalkers,id=105553,upgrade=4,gems=10haste_10crit_4agi,enchant=9agi
 finger1=swift_serpent_signet,id=105483,upgrade=4,gems=20crit_4crit
 finger2=kilruks_band_of_ascendancy,id=105624,upgrade=4,gems=10haste_10crit_4crit
-trinket1=ticking_ebon_detonator,id=105612,upgrade=4
+trinket1=assurance_of_consequence,id=105472,upgrade=4
 trinket2=haromms_talisman,id=105527,upgrade=4
 main_hand=korvens_crimson_crescent,id=105625,upgrade=4,gems=10haste_10crit_4agi,enchant=dancing_steel
 off_hand=korvens_crimson_crescent,id=105625,upgrade=4,gems=10haste_10crit_4agi,enchant=dancing_steel
