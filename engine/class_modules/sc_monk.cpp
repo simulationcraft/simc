@@ -1572,6 +1572,18 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
                                  p() -> gain.spinning_crane_kick, this );
         chi_refund = false; // Only let one tick refund chi.
       }
+
+      if ( p() -> buff.power_strikes -> up() && execute_state -> n_targets >= 3 )
+      {
+        if ( p() -> resources.current[RESOURCE_CHI]< p() -> resources.max[RESOURCE_CHI] )
+          p() -> resource_gain( RESOURCE_CHI,
+                                p() -> buff.power_strikes -> data().effectN( 1 ).base_value(),
+                                0, this );
+        else
+          p() -> buff.chi_sphere -> trigger();
+
+        p() -> buff.power_strikes -> expire();
+      }
     }
   };
 
@@ -1600,6 +1612,18 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
         player -> resource_gain( RESOURCE_CHI, p() -> find_spell( 129881 ) -> effectN( 1 ).base_value(),
                                  p() -> gain.rushing_jade_wind, this );
         chi_refund = false; // Only let one tick refund chi.
+      }
+
+      if ( p() -> buff.power_strikes -> up() && execute_state -> n_targets >= 3 )
+      {
+        if ( p() -> resources.current[RESOURCE_CHI] < p() -> resources.max[RESOURCE_CHI] )
+          p() -> resource_gain( RESOURCE_CHI,
+                                p() -> buff.power_strikes -> data().effectN( 1 ).base_value(),
+                                0, this );
+        else
+          p() -> buff.chi_sphere -> trigger();
+
+        p() -> buff.power_strikes -> expire();
       }
     }
   };
@@ -1679,6 +1703,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc_melee );
       p() -> proc.tier15_2pc_melee -> occur();
     }
+
   }
 };
 
@@ -1788,7 +1813,7 @@ struct hurricane_strike_t: public monk_melee_attack_t
       p() -> track_chi_consumption += savings;
   }
 
-  virtual timespan_t travel_time()
+  virtual timespan_t travel_time() const
   {
     return timespan_t::zero();
   }
@@ -2077,6 +2102,23 @@ struct expel_harm_t: public monk_melee_attack_t
       c += p() -> glyph.expel_harm -> effectN( 1 ).base_value();
 
     return c;
+  }
+
+  void execute()
+  {
+    monk_melee_attack_t::execute();
+
+    if ( p() -> buff.power_strikes -> up() )
+    {
+      if ( p() -> resources.current[RESOURCE_CHI]< p() -> resources.max[RESOURCE_CHI] )
+        p() -> resource_gain( RESOURCE_CHI,
+                              p() -> buff.power_strikes -> data().effectN( 1 ).base_value(),
+                              0, this );
+      else
+        p() -> buff.chi_sphere -> trigger();
+
+      p() -> buff.power_strikes -> expire();
+    }
   }
 
   double trigger_attack()
