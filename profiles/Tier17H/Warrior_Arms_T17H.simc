@@ -48,7 +48,7 @@ actions.single+=/colossus_smash
 actions.single+=/storm_bolt,if=(cooldown.colossus_smash.remains>4|debuff.colossus_smash.up)&rage<90
 actions.single+=/siegebreaker
 actions.single+=/dragon_roar,if=!debuff.colossus_smash.up
-actions.single+=/execute,if=(rage>60&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|buff.sudden_death.up|target.time_to_die<5
+actions.single+=/execute,if=(rage>60&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|buff.sudden_death.react|target.time_to_die<5
 actions.single+=/impending_victory,if=rage<30&!debuff.colossus_smash.up&target.health.pct>20
 actions.single+=/slam,if=(rage>20|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20
 actions.single+=/whirlwind,if=target.health.pct>20&!talent.slam.enabled&(rage>40|set_bonus.tier17_4pc)
