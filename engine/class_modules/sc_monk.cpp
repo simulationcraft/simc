@@ -654,14 +654,37 @@ private:
     { return static_cast< monk_t* >( p() -> owner ); }
   };
 
+  struct sef_heal_t : public heal_t
+  {
+    sef_heal_t( const std::string& n, storm_earth_and_fire_pet_t* p,  const spell_data_t* s = spell_data_t::nil() ) :
+      heal_t( n, p, s )
+    {
+      background = true;
+      harmful = false;
+    }
+
+    storm_earth_and_fire_pet_t* p()
+    { return static_cast<storm_earth_and_fire_pet_t*>( player ); }
+    const storm_earth_and_fire_pet_t* p() const
+    { return static_cast<storm_earth_and_fire_pet_t*>( player ); }
+
+    monk_t* o()
+    { return static_cast< monk_t* >( p() -> owner ); }
+    const monk_t* o() const
+    { return static_cast< monk_t* >( p() -> owner ); }
+  };
+
   struct sef_melee_attack_t : public melee_attack_t
   {
+    weapon_t* mh;
+    weapon_t* oh;
     sef_melee_attack_t( const std::string& n, storm_earth_and_fire_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-      melee_attack_t( n, p, s )
+      melee_attack_t( n, p, s ), mh( NULL ), oh( NULL )
     {
       background = true;
       special = true;
       may_crit = true;
+      may_glance = false;
       school = SCHOOL_PHYSICAL;
     }
 
@@ -674,7 +697,78 @@ private:
     { return static_cast<monk_t*>( p() -> owner ); }
     const monk_t* o() const
     { return static_cast<monk_t*>( p() -> owner ); }
+
+    // Special Monk Attack Weapon damage collection, if the pointers mh or oh are set, instead of the classical action_t::weapon
+    // Damage is divided instead of multiplied by the weapon speed, AP portion is not multiplied by weapon speed.
+    // Both MH and OH are directly weaved into one damage number
+    virtual double calculate_weapon_damage( double ap )
+    {
+      double total_dmg = 0;
+
+      // Main Hand
+      if ( mh != NULL && mh -> type != WEAPON_NONE && weapon_multiplier > 0 )
+      {
+        assert( mh -> slot != SLOT_OFF_HAND );
+        double dmg = sim -> averaged_range( mh -> min_dmg, mh -> max_dmg ) + mh -> bonus_dmg;
+        dmg /= mh -> swing_time.total_seconds();
+        total_dmg += dmg;
+
+        if ( sim -> debug )
+        {
+          sim -> out_debug.printf( "%s main hand weapon damage portion for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
+            player -> name(), name(), total_dmg, dmg, mh -> bonus_dmg, mh -> swing_time.total_seconds(), ap );
+        }
+      }
+
+      // Off Hand
+      if ( oh && oh -> type != WEAPON_NONE && weapon_multiplier > 0 )
+      {
+        assert( oh -> slot == SLOT_OFF_HAND );
+        double dmg = sim -> averaged_range( oh -> min_dmg, oh -> max_dmg) + oh -> bonus_dmg;
+        dmg /= oh -> swing_time.total_seconds();
+        // OH penalty
+        dmg *= 0.5;
+
+        total_dmg += dmg;
+
+        if ( sim -> debug )
+        {
+          sim -> out_debug.printf( "%s off-hand weapon damage portion for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
+            player -> name(), name(), total_dmg, dmg, oh -> bonus_dmg, oh -> swing_time.total_seconds(), ap );
+        }
+      }
+
+      if ( o() -> dual_wield() )
+        total_dmg *= 0.857143;
+
+      if ( !mh && !oh )
+        total_dmg += calculate_weapon_damage(ap);
+      else
+        total_dmg += weapon_power_mod * ap;
+
+      return total_dmg;
+    }
   };
+public:
+  storm_earth_and_fire_pet_t( sim_t* sim, monk_t* owner ) :
+    pet_t( sim, owner, "storm_earth_and_fire", true )
+  {
+    main_hand_weapon.type = owner -> main_hand_weapon.type;
+    main_hand_weapon.min_dmg = dbc.spell_scaling( owner -> type, level );
+    main_hand_weapon.max_dmg = dbc.spell_scaling( owner -> type, level );
+    main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = owner -> main_hand_weapon.swing_time;
+
+    off_hand_weapon.type = owner -> off_hand_weapon.type;
+    off_hand_weapon.min_dmg = dbc.spell_scaling( owner -> type, level );
+    off_hand_weapon.max_dmg = dbc.spell_scaling( owner -> type, level );
+    off_hand_weapon.damage = ( off_hand_weapon.min_dmg + off_hand_weapon.max_dmg ) / 2;
+    off_hand_weapon.swing_time = owner -> off_hand_weapon.swing_time;
+    owner_coeff.ap_from_ap = 1;
+
+  }
+  monk_t* o()
+  { return static_cast<monk_t*>( owner ); }
 };
 } // end namespace pets
 
