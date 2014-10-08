@@ -1792,6 +1792,10 @@ struct stay_of_execution_t : public paladin_heal_t
     tick_may_crit  = 1;
     benefits_from_seal_of_insight = false;
     background = true;
+    
+    // link with Execution Sentence's cooldown
+    cooldown = p -> get_cooldown( "execution_sentence" );
+    cooldown -> duration = data().cooldown();
 
     // Where the 0.0374151195 comes from
     // The whole dots scales with data().effectN( 2 ).base_value()/1000 * SP
