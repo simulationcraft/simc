@@ -2392,7 +2392,6 @@ expr_t* action_t::create_expression( const std::string& name_str )
     size_t start_rest = 2;
     if ( ! expr_target )
     {
-      expr_target = target;
       start_rest = 1;
     }
     else
