@@ -1969,6 +1969,8 @@ struct hemorrhage_t : public rogue_attack_t
   {
     ability_type = HEMORRHAGE;
     weapon = &( p -> main_hand_weapon );
+    tick_may_crit = false;
+    may_multistrike = true;
   }
 
   double action_da_multiplier() const
@@ -3621,6 +3623,17 @@ using namespace actions;
 
 struct shadow_reflection_pet_t : public pet_t
 {
+  struct shadow_reflection_td_t : public actor_pair_t
+  {
+    dot_t* revealing_strike;
+
+    shadow_reflection_td_t( player_t* target, shadow_reflection_pet_t* source ) :
+      actor_pair_t( target, source )
+    {
+      revealing_strike = target -> get_dot( "revealing_strike", source );
+    }
+  };
+
   struct shadow_reflection_attack_t : public melee_attack_t
   {
     rogue_attack_t* source_action;
@@ -3631,9 +3644,13 @@ struct shadow_reflection_pet_t : public pet_t
       source_action( 0 ),
       requires_position( POSITION_NONE )
     {
-      weapon = &( o() -> main_hand_weapon );
+      weapon = &( p -> main_hand_weapon );
       background = may_crit = special = tick_may_crit = true;
       hasted_ticks = may_glance = callbacks = false;
+
+      // Shadow Reflection attacks seem to not be normalized, but rather use
+      // the 1.8 attack speed for all computations
+      normalize_weapon_speed = false;
 
       for ( size_t i = 1; i <= data().effect_count(); i++ )
       {
@@ -3644,6 +3661,26 @@ struct shadow_reflection_pet_t : public pet_t
         else if ( effect.type() == E_SCHOOL_DAMAGE )
           base_dd_adder = effect.bonus( player );
       }
+    }
+
+    shadow_reflection_pet_t* p() const
+    { return debug_cast< shadow_reflection_pet_t* >( player ); }
+
+    shadow_reflection_pet_t* p()
+    { return debug_cast< shadow_reflection_pet_t* >( player ); }
+
+    shadow_reflection_td_t* td( player_t* t ) const
+    { return p() -> get_target_data( t ); }
+
+    double composite_target_multiplier( player_t* target ) const
+    {
+      double m = melee_attack_t::composite_target_multiplier( target );
+
+      shadow_reflection_td_t* tdata = td( target );
+      if ( base_costs[ RESOURCE_COMBO_POINT ] && tdata -> revealing_strike -> is_ticking() )
+          m *= 1.0 + tdata -> revealing_strike -> current_action -> data().effectN( 3 ).percent();
+
+      return m;
     }
 
     void snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt )
@@ -3701,20 +3738,6 @@ struct shadow_reflection_pet_t : public pet_t
       if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
         return attack_power_mod.tick * cast_state( s ) -> cp;
       return melee_attack_t::attack_tick_power_coefficient( s );
-    }
-
-    double spell_direct_power_coefficient( const action_state_t* s ) const
-    {
-      if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
-        return spell_power_mod.direct * cast_state( s ) -> cp;
-      return melee_attack_t::spell_direct_power_coefficient( s );
-    }
-
-    double spell_tick_power_coefficient( const action_state_t* s ) const
-    {
-      if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
-        return spell_power_mod.tick * cast_state( s ) -> cp;
-      return melee_attack_t::spell_tick_power_coefficient( s );
     }
 
     double bonus_da( const action_state_t* s ) const
@@ -3788,7 +3811,7 @@ struct shadow_reflection_pet_t : public pet_t
   {
     sr_hemorrhage_t( shadow_reflection_pet_t* p ) :
       shadow_reflection_attack_t( "hemorrhage", p, p -> find_spell( 16511 ) )
-    { }
+    { tick_may_crit = false; may_multistrike = true; }
   };
 
   struct sr_backstab_t : public shadow_reflection_attack_t
@@ -3816,7 +3839,6 @@ struct shadow_reflection_pet_t : public pet_t
       {
         background = true;
         may_miss = may_dodge = may_parry = false;
-        weapon_multiplier = 0;
       }
     };
 
@@ -3828,13 +3850,14 @@ struct shadow_reflection_pet_t : public pet_t
       mh_strike( 0 ), oh_strike( 0 )
     {
       may_crit = false;
+      weapon_multiplier = 0;
 
       mh_strike = new sr_mutilate_strike_t( p, "mutilate_mh", data().effectN( 2 ).trigger() );
-      mh_strike -> weapon = &( p -> o() -> main_hand_weapon );
+      mh_strike -> weapon = &( p -> main_hand_weapon );
       add_child( mh_strike );
 
       oh_strike = new sr_mutilate_strike_t( p, "mutilate_oh", data().effectN( 3 ).trigger() );
-      oh_strike -> weapon = &( p -> o() -> off_hand_weapon );
+      oh_strike -> weapon = &( p -> off_hand_weapon );
       add_child( oh_strike );
     }
 
@@ -3925,7 +3948,7 @@ struct shadow_reflection_pet_t : public pet_t
     {
       shadow_reflection_attack_t::impact( s );
 
-      if ( result_is_hit( s -> result ) )
+      if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
         residual_action::trigger( dot, s -> target, s -> result_amount * dot -> data().effectN( 1 ).percent() );
     }
   };
@@ -3950,6 +3973,7 @@ struct shadow_reflection_pet_t : public pet_t
     {
       may_miss = may_crit = false;
       channeled = tick_zero = true;
+      weapon_multiplier = 0;
       const spell_data_t* spell = p -> find_spell( 57841 );
 
       attack_mh = new sr_ks_tick_t( p, "killing_spree_mh", spell );
@@ -3958,7 +3982,7 @@ struct shadow_reflection_pet_t : public pet_t
       if ( p -> o() -> off_hand_weapon.type != WEAPON_NONE )
       {
         attack_oh = new sr_ks_tick_t( p, "killing_spree_oh", spell -> effectN( 2 ).trigger() );
-        attack_oh -> weapon = &( p -> o() -> off_hand_weapon );
+        attack_oh -> weapon = &( p -> off_hand_weapon );
         add_child( attack_oh );
       }
     }
@@ -3982,11 +4006,32 @@ struct shadow_reflection_pet_t : public pet_t
   };
 
   std::vector<shadow_reflection_attack_t*> attacks;
+  target_specific_t<shadow_reflection_td_t*> target_data;
 
   shadow_reflection_pet_t( rogue_t* owner ) :
     pet_t( owner -> sim, owner, "shadow_reflection", true, true ),
     attacks( ABILITY_MAX )
-  { regen_type = REGEN_DISABLED; }
+  {
+    owner_coeff.ap_from_ap = 0.924;
+    regen_type = REGEN_DISABLED;
+
+    // Very special main hand and off hand weapons for Shadow Reflection
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.8 );
+
+    off_hand_weapon.type       = WEAPON_BEAST;
+    off_hand_weapon.swing_time = timespan_t::from_seconds( 1.8 );
+  }
+
+  shadow_reflection_td_t* get_target_data( player_t* target ) const
+  {
+    shadow_reflection_td_t*& td = target_data[ target ];
+    if ( ! td )
+    {
+      td = new shadow_reflection_td_t( target, const_cast<shadow_reflection_pet_t*>(this) );
+    }
+    return td;
+  }
 
   rogue_t* o()
   { return debug_cast<rogue_t*>( owner ); }
@@ -4171,10 +4216,10 @@ double rogue_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.moderate_insight -> value();
 
     m *= 1.0 + buffs.deep_insight -> value();
-  }
 
-  if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
-    m *= 1.0 + spec.assassins_resolve -> effectN( 2 ).percent();
+    if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
+      m *= 1.0 + spec.assassins_resolve -> effectN( 2 ).percent();
+  }
 
   return m;
 }
