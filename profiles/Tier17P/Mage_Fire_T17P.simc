@@ -64,7 +64,6 @@ actions.combust_sequence+=/prismatic_crystal
 actions.combust_sequence+=/blood_fury
 actions.combust_sequence+=/berserking
 actions.combust_sequence+=/arcane_torrent
-actions.combust_sequence+=/use_item,slot=trinket1
 actions.combust_sequence+=/use_item,slot=trinket2
 actions.combust_sequence+=/potion,name=draenic_intellect
 actions.combust_sequence+=/meteor
@@ -104,19 +103,19 @@ actions.single_target+=/inferno_blast,if=(buff.pyroblast.down&buff.heating_up.up
 actions.single_target+=/fireball
 actions.single_target+=/scorch,moving=1
 
-head=hood_of_swirling_light,id=109972,bonus_id=524
-neck=alcs_pendant_of_fiery_dreams,id=109957,bonus_id=524,enchant=gift_of_critical_strike
-shoulders=frosttouched_shoulderpads,id=109931,bonus_id=524
-back=cloak_of_arcane_mysteries,id=109908,bonus_id=524,enchant=gift_of_critical_strike
-chest=lightbinder_robes,id=109902,bonus_id=524
-wrists=bracers_of_arcane_mystery,id=109864,bonus_id=524
-hands=gloves_of_arcane_mystery,id=109844,bonus_id=524
+head=frosttouched_hood,id=109971,bonus_id=524
+neck=magisters_chain,id=109954,bonus_id=524,enchant=gift_of_critical_strike
+shoulders=felflame_spaulders,id=109948,bonus_id=524
+back=drape_of_frozen_dreams,id=109926,bonus_id=524,enchant=gift_of_critical_strike
+chest=robes_of_swirling_light,id=109901,bonus_id=524
+wrists=frosttouched_wristwraps,id=109865,bonus_id=524
+hands=gloves_of_swirling_light,id=109846,bonus_id=524
 waist=frosttouched_cord,id=109825,bonus_id=524
-legs=leggings_of_swirling_light,id=109806,bonus_id=524
-feet=lightbinder_treads,id=109796,bonus_id=524
-finger1=darkflame_loop,id=109766,bonus_id=524,enchant=gift_of_critical_strike
-finger2=golems_gleaming_eye,id=109765,bonus_id=524,enchant=gift_of_critical_strike
-trinket1=fleshrenders_meathook,id=110002,bonus_id=524
+legs=lightbinder_leggings,id=109807,bonus_id=524
+feet=sandals_of_arcane_mystery,id=109784,bonus_id=524
+finger1=diamondglow_circle,id=109763,bonus_id=524,enchant=gift_of_critical_strike
+finger2=mark_of_ice,id=109764,bonus_id=524,enchant=gift_of_critical_strike
+trinket1=coagulated_genesaur_blood,id=110004,bonus_id=524
 trinket2=ragewings_firefang,id=110003,bonus_id=524
 main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant=mark_of_the_thunderlord
 
@@ -124,9 +123,8 @@ main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant=mark_of_
 # gear_stamina=2465
 # gear_intellect=1960
 # gear_spell_power=958
-# gear_crit_rating=604
-# gear_haste_rating=644
-# gear_mastery_rating=953
+# gear_crit_rating=1331
+# gear_haste_rating=160
+# gear_mastery_rating=669
 # gear_armor=552
-# gear_multistrike_rating=176
-# gear_versatility_rating=52
+# gear_multistrike_rating=268
