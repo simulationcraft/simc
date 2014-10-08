@@ -1158,6 +1158,7 @@ void rogue_attack_t::impact( action_state_t* state )
   if ( adds_combo_points )
     p() -> trigger_seal_fate( state );
 
+  p() -> trigger_main_gauche( state );
   p() -> trigger_combat_potency( state );
   p() -> trigger_blade_flurry( state );
 
@@ -1258,7 +1259,6 @@ void rogue_attack_t::execute()
   bool combat_t17_4pc_triggered = p() -> trigger_t17_4pc_combat( execute_state );
 
   p() -> trigger_auto_attack( execute_state );
-  p() -> trigger_main_gauche( execute_state );
   p() -> trigger_shadow_reflection( execute_state );
   p() -> trigger_ruthlessness( execute_state );
   p() -> trigger_combo_point_gain( execute_state );
