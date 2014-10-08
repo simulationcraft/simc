@@ -10,7 +10,7 @@ spec=arms
 role=attack
 position=back
 professions=engineering=600/blacksmithing=600
-talents=231122
+talents=131122
 glyphs=unending_rage/death_from_above/sweeping_strikes/resonating_power
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=4,gems=capacitive_primal_20crit_10haste_10crit_11str
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=4
@@ -38,7 +38,7 @@ race=orc
 spec=fury
 role=attack
 position=back
-talents=222132
+talents=122132
 glyphs=unending_rage/death_from_above/raging_wind
 
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=4,gems=capacitive_primal_20crit_10haste_10crit_11str
@@ -67,7 +67,7 @@ race=orc
 spec=fury
 role=attack
 position=back
-talents=232122
+talents=132122
 glyphs=unending_rage/death_from_above/raging_wind
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=4,gems=capacitive_primal_20crit_10haste_10crit_11str
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=4
@@ -94,7 +94,7 @@ level=90
 race=night_elf
 role=tank
 position=front
-talents=011221
+talents=111221
 glyphs=unending_rage
 professions=enchanting=600/inscription=600
 spec=prot

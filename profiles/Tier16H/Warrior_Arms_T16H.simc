@@ -4,7 +4,7 @@ race=orc
 role=attack
 position=back
 professions=engineering=600/blacksmithing=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Za!120011.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Za!020011.
 glyphs=unending_rage/death_from_above/sweeping_strikes/resonating_power
 spec=arms
 
@@ -29,6 +29,8 @@ actions.precombat+=/potion,name=draenic_strength
 
 actions=charge
 actions+=/auto_attack
+# This is mostly to prevent cooldowns from being accidentally used during movement.
+actions+=/call_action_list,name=movement,if=movement.distance>8
 actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25
 # This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'
 actions+=/recklessness,if=(target.time_to_die>190|target.health.pct<20)&(!talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)|buff.bloodbath.up)|target.time_to_die<=10
@@ -41,9 +43,16 @@ actions+=/heroic_leap,if=debuff.colossus_smash.up&rage>70
 actions+=/call_action_list,name=aoe,if=active_enemies>=2
 actions+=/call_action_list,name=single,if=active_enemies=1
 
+actions.movement=heroic_leap
+# May as well throw storm bolt if we can.
+actions.movement+=/storm_bolt
+actions.movement+=/heroic_throw
+
 actions.single=rend,if=ticks_remain<2&target.time_to_die>4
 actions.single+=/mortal_strike,if=target.health.pct>20
-actions.single+=/heroic_charge
+# Heroic Charge runs the warrior 10 yards away from the target, at which point the real charge line above will charge the warrior back.
+# This is generally only a dps increase for Arms, although it is partially negated by T17 4P, and can be difficult to do on some encounters.
+actions.single+=/heroic_charge,if=rage<50&swing.mh.remains>2
 actions.single+=/ravager,if=cooldown.colossus_smash.remains<3
 actions.single+=/colossus_smash
 actions.single+=/storm_bolt,if=(cooldown.colossus_smash.remains>4|debuff.colossus_smash.up)&rage<90
@@ -51,12 +60,14 @@ actions.single+=/siegebreaker
 actions.single+=/dragon_roar,if=!debuff.colossus_smash.up
 actions.single+=/execute,if=(rage>60&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|buff.sudden_death.react|target.time_to_die<5
 actions.single+=/impending_victory,if=rage<30&!debuff.colossus_smash.up&target.health.pct>20
+# Please don't use Slam at the moment. It's a dps decrease vs no talent in nearly every situation, only use when breaking crowd control is an issue.
 actions.single+=/slam,if=(rage>20|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20
 actions.single+=/whirlwind,if=target.health.pct>20&!talent.slam.enabled&(rage>40|set_bonus.tier17_4pc)
 actions.single+=/shockwave
 
 actions.aoe=sweeping_strikes
-actions.aoe+=/heroic_charge
+actions.aoe+=/heroic_charge,if=rage<50
+actions.aoe+=/bladestorm
 actions.aoe+=/rend,if=active_enemies<=4&ticks_remain<2
 actions.aoe+=/ravager,if=buff.bloodbath.up|!talent.bloodbath.enabled
 actions.aoe+=/colossus_smash

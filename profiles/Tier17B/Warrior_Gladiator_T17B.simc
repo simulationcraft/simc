@@ -28,6 +28,8 @@ actions.precombat+=/potion,name=draenic_armor
 
 actions=charge
 actions+=/auto_attack
+# This is mostly to prevent cooldowns from being accidentally used during movement.
+actions+=/call_action_list,name=movement,if=movement.distance>8
 actions+=/avatar
 actions+=/bloodbath
 actions+=/blood_fury,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10
@@ -37,6 +39,12 @@ actions+=/potion,name=draenic_armor,if=buff.bloodbath.up|buff.avatar.up|buff.shi
 actions+=/berserker_rage,if=buff.enrage.down
 actions+=/call_action_list,name=single,if=active_enemies=1
 actions+=/call_action_list,name=aoe,if=active_enemies>=2
+
+actions.movement=heroic_leap
+actions.movement+=/shield_charge
+# May as well throw storm bolt if we can.
+actions.movement+=/storm_bolt
+actions.movement+=/heroic_throw
 
 actions.single=shield_charge,if=(!buff.shield_charge.up&!cooldown.shield_slam.remains)|charges=2
 actions.single+=/heroic_strike,if=buff.shield_charge.up|buff.ultimatum.up|rage>=90|target.time_to_die<=3|talent.unyielding_strikes.enabled

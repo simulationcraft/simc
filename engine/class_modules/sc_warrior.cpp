@@ -1310,6 +1310,7 @@ struct bladestorm_t: public warrior_attack_t
 
     channeled = tick_zero = true;
     callbacks = interrupt_auto_attack = false;
+    base_execute_time = dot_duration;
 
     bladestorm_mh -> weapon = &( player -> main_hand_weapon );
     add_child( bladestorm_mh );
@@ -1856,10 +1857,13 @@ struct heroic_leap_t: public warrior_attack_t
     base_teleport_distance += p -> glyphs.death_from_above -> effectN( 2 ).percent();
     melee_range = -1;
     attack_power_mod.direct = p -> find_spell( 52174 ) -> effectN( 1 ).ap_coeff();
-    time_to_travel = timespan_t::from_seconds( 0.25 );
-
     cooldown -> duration = p -> cooldown.heroic_leap -> duration;
     cooldown -> duration += p -> glyphs.death_from_above -> effectN( 1 ).time_value();
+  }
+
+  timespan_t travel_time() const
+  {
+    return timespan_t::from_seconds( 0.25 );
   }
 
   void execute()
@@ -1868,8 +1872,8 @@ struct heroic_leap_t: public warrior_attack_t
     if ( p() -> current.distance_to_move > 0 && !p() -> buff.heroic_leap_movement -> check() )
     {
       double speed;
-      speed = std::min( p() -> current.distance_to_move, base_teleport_distance ) / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() ) ) / time_to_travel.total_seconds();
-      p() -> buff.heroic_leap_movement -> trigger( 1, speed, 1, time_to_travel );
+      speed = std::min( p() -> current.distance_to_move, base_teleport_distance ) / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() ) ) / travel_time().total_seconds();
+      p() -> buff.heroic_leap_movement -> trigger( 1, speed, 1, travel_time() );
     }
   }
 
@@ -4007,6 +4011,7 @@ void warrior_t::apl_fury()
   std::vector<std::string> racial_actions = get_racial_actions();
 
   action_priority_list_t* default_list        = get_action_priority_list( "default" );
+  action_priority_list_t* movement            = get_action_priority_list( "movement" );
   action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
   action_priority_list_t* two_targets         = get_action_priority_list( "two_targets" );
   action_priority_list_t* three_targets       = get_action_priority_list( "three_targets" );
@@ -4014,6 +4019,7 @@ void warrior_t::apl_fury()
 
   default_list -> add_action( this, "Charge" );
   default_list -> add_action( "auto_attack" );
+  default_list -> add_action( "call_action_list,name=movement,if=movement.distance>8", "This is mostly to prevent cooldowns from being accidentally used during movement." );
 
   int num_items = (int)items.size();
   for ( int i = 0; i < num_items; i++ )
@@ -4030,29 +4036,34 @@ void warrior_t::apl_fury()
       default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
   }
 
-  default_list -> add_action( this, "Recklessness", "if=((target.time_to_die>190|target.health.pct<20)&(buff.bloodbath.up|!talent.bloodbath.enabled))|target.time_to_die<=10",
+  default_list -> add_action( this, "Recklessness", "if=((target.time_to_die>190|target.health.pct<20)&(buff.bloodbath.up|!talent.bloodbath.enabled))|target.time_to_die<=10|talent.anger_management.enabled",
                               "This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown, unless the boss will die before the ability is usable again, and then use it with execute.'" );
   default_list -> add_talent( this, "Avatar", "if=(buff.recklessness.up|target.time_to_die<=25)" );
-  default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
+  default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down|(talent.unquenchable_thirst.enabled&buff.raging_blow.down)" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|!talent.bloodbath.enabled|buff.recklessness.up" );
 
+  default_list -> add_action( this, "Heroic Leap", "if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists" );
   default_list -> add_action( "call_action_list,name=single_target,if=active_enemies=1" );
   default_list -> add_action( "call_action_list,name=two_targets,if=active_enemies=2" );
   default_list -> add_action( "call_action_list,name=three_targets,if=active_enemies=3" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>3" );
 
+  movement -> add_action( this, "Heroic Leap" );
+  movement -> add_talent( this, "Storm Bolt", "", "May as well throw storm bolt if we can." );
+  movement -> add_action( this, "Heroic Throw" );
+
   single_target -> add_talent( this, "Bloodbath" );
-  single_target -> add_action( this, "Heroic Leap" );
+  single_target -> add_action( this, "Wild Strike", "if=rage>110&target.health.pct>20" );
+  single_target -> add_action( this, "Bloodthirst", "if=!talent.unquenchable_thirst.enabled&(buff.enrage.down|rage<80)" );
+  single_target -> add_action( this, "Bloodthirst", "if=talent.unquenchable_thirst.enabled&buff.enrage.down" );
+  single_target -> add_talent( this, "Ravager", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   single_target -> add_action( this, "Execute", "if=buff.sudden_death.react" );
-  single_target -> add_action( this, "Bloodthirst", "if=!talent.unquenchable_thirst.enabled&(buff.enrage.down|rage<50)" );
-  single_target -> add_action( this, "Bloodthirst", "if=talent.unquenchable_thirst.enabled&(buff.enrage.down&rage<100)" );
-  single_target -> add_talent( this, "Ravager" );
-  single_target -> add_talent( this, "Storm Bolt" );
   single_target -> add_talent( this, "Siegebreaker" );
-  single_target -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
+  single_target -> add_talent( this, "Storm Bolt" );
   single_target -> add_action( this, "Execute", "if=buff.enrage.up|target.time_to_die<12|rage>60" );
+  single_target -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   single_target -> add_action( this, "Raging Blow" );
   single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up|(buff.enrage.up&target.health.pct>20)" );
   single_target -> add_talent( this, "Shockwave", "if=!talent.unquenchable_thirst.enabled" );
@@ -4060,31 +4071,33 @@ void warrior_t::apl_fury()
   single_target -> add_action( this, "Bloodthirst" );
 
   two_targets -> add_talent( this, "Bloodbath" );
-  two_targets -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
-  two_targets -> add_talent( this, "Ravager" );
+  two_targets -> add_talent( this, "Ravager", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   two_targets -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   two_targets -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<50|buff.raging_blow.down" );
+  two_targets -> add_action( this, "Execute", "if=target.health.pct<20|buff.sudden_death.react" );
   two_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.up" );
   two_targets -> add_action( this, "Whirlwind", "if=!buff.meat_cleaver.up" );
-  two_targets -> add_action( this, "Execute" );
+  two_targets -> add_talent( this, "Bladestorm", "if=buff.enrage.up" );
   two_targets -> add_action( this, "Bloodthirst" );
 
   three_targets -> add_talent( this, "Bloodbath" );
-  three_targets -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
-  three_targets -> add_talent( this, "Ravager" );
+  three_targets -> add_talent( this, "Ravager", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   three_targets -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<50|buff.raging_blow.down" );
+  three_targets -> add_action( this, "Execute", "if=buff.sudden_death.react" );
   three_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack>=2" );
-  three_targets -> add_action( this, "Whirlwind" );
   three_targets -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
+  three_targets -> add_action( this, "Whirlwind" );
+  three_targets -> add_talent( this, "Bladestorm", "if=buff.enrage.up" );
   three_targets -> add_action( this, "Bloodthirst" );
 
   aoe -> add_talent( this, "Bloodbath" );
-  aoe -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
-  aoe -> add_talent( this, "Ravager" );
+  aoe -> add_talent( this, "Ravager", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   aoe -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack=4&buff.enrage.up" );
   aoe -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<50|buff.raging_blow.down" );
   aoe -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack=4" );
+  aoe -> add_talent( this, "Bladestorm", "if=buff.enrage.up" );
   aoe -> add_action( this, "Whirlwind" );
+  aoe -> add_action( this, "Execute", "if=buff.sudden_death.react" );
   aoe -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   aoe -> add_action( this, "Bloodthirst" );
 }
@@ -4096,11 +4109,13 @@ void warrior_t::apl_arms()
   std::vector<std::string> racial_actions = get_racial_actions();
 
   action_priority_list_t* default_list        = get_action_priority_list( "default" );
+  action_priority_list_t* movement            = get_action_priority_list( "movement" );
   action_priority_list_t* single_target       = get_action_priority_list( "single" );
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
 
   default_list -> add_action( this, "charge" );
   default_list -> add_action( "auto_attack" );
+  default_list -> add_action( "call_action_list,name=movement,if=movement.distance>8", "This is mostly to prevent cooldowns from being accidentally used during movement." );
 
   int num_items = (int)items.size();
   for ( int i = 0; i < num_items; i++ )
@@ -4129,9 +4144,13 @@ void warrior_t::apl_arms()
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=2" );
   default_list -> add_action( "call_action_list,name=single,if=active_enemies=1" );
 
+  movement -> add_action( this, "Heroic Leap" );
+  movement -> add_talent( this, "Storm Bolt", "", "May as well throw storm bolt if we can." );
+  movement -> add_action( this, "Heroic Throw" );
+
   single_target -> add_action( this, "Rend", "if=ticks_remain<2&target.time_to_die>4" );
   single_target -> add_action( this, "Mortal Strike", "if=target.health.pct>20" );
-  single_target -> add_action( "heroic_charge" );
+  single_target -> add_action( "heroic_charge,if=rage<50&swing.mh.remains>2", "Heroic Charge runs the warrior 10 yards away from the target, at which point the real charge line above will charge the warrior back.\n# This is generally only a dps increase for Arms, although it is partially negated by T17 4P, and can be difficult to do on some encounters." );
   single_target -> add_talent( this, "Ravager", "if=cooldown.colossus_smash.remains<3" );
   single_target -> add_action( this, "Colossus Smash" );
   single_target -> add_talent( this, "Storm Bolt", "if=(cooldown.colossus_smash.remains>4|debuff.colossus_smash.up)&rage<90" );
@@ -4139,12 +4158,13 @@ void warrior_t::apl_arms()
   single_target -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up" );
   single_target -> add_action( this, "Execute", "if=(rage>60&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|buff.sudden_death.react|target.time_to_die<5" );
   single_target -> add_talent( this, "Impending Victory", "if=rage<30&!debuff.colossus_smash.up&target.health.pct>20" );
-  single_target -> add_talent( this, "Slam", "if=(rage>20|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20" );
+  single_target -> add_talent( this, "Slam", "if=(rage>20|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20", "Please don't use Slam at the moment. It's a dps decrease vs no talent in nearly every situation, only use when breaking crowd control is an issue." );
   single_target -> add_action( this, "Whirlwind", "if=target.health.pct>20&!talent.slam.enabled&(rage>40|set_bonus.tier17_4pc)" );
   single_target -> add_talent( this, "Shockwave" );
 
   aoe -> add_action( this, "Sweeping Strikes" );
-  aoe -> add_action( "heroic_charge" );
+  aoe -> add_action( "heroic_charge,if=rage<50" );
+  aoe -> add_talent( this, "Bladestorm" );
   aoe -> add_action( this, "Rend", "if=active_enemies<=4&ticks_remain<2" );
   aoe -> add_talent( this, "Ravager", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   aoe -> add_action( this, "Colossus Smash" );
@@ -4240,11 +4260,13 @@ void warrior_t::apl_glad()
   std::vector<std::string> racial_actions = get_racial_actions();
 
   action_priority_list_t* default_list = get_action_priority_list( "default" );
+  action_priority_list_t* movement = get_action_priority_list( "movement" );
   action_priority_list_t* gladiator = get_action_priority_list( "single" );
   action_priority_list_t* gladiator_aoe = get_action_priority_list( "aoe" );
 
   default_list -> add_action( this, "Charge" );
   default_list -> add_action( "auto_attack" );
+  default_list -> add_action( "call_action_list,name=movement,if=movement.distance>8", "This is mostly to prevent cooldowns from being accidentally used during movement." );
   default_list -> add_talent( this, "Avatar" );
   default_list -> add_talent( this, "Bloodbath" );
   int num_items = (int)items.size();
@@ -4261,6 +4283,11 @@ void warrior_t::apl_glad()
   default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
   default_list -> add_action( "call_action_list,name=single,if=active_enemies=1" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=2" );
+
+  movement -> add_action( this, "Heroic Leap" );
+  movement -> add_action( "shield_charge" );
+  movement -> add_talent( this, "Storm Bolt", "", "May as well throw storm bolt if we can." );
+  movement -> add_action( this, "Heroic Throw" );
 
   gladiator -> add_action( "shield_charge,if=(!buff.shield_charge.up&!cooldown.shield_slam.remains)|charges=2" );
   gladiator -> add_action( this, "Heroic Strike", "if=buff.shield_charge.up|buff.ultimatum.up|rage>=90|target.time_to_die<=3|talent.unyielding_strikes.enabled" );
@@ -4882,7 +4909,7 @@ void warrior_t::halt()
   player_t::halt();
 }
 
-void warrior_t::teleport( double /*yards*/, timespan_t /*duration*/ )
+void warrior_t::teleport( double, timespan_t )
 {
   return; // All movement "teleports" are modeled.
 }

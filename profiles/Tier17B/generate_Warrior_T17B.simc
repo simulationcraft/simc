@@ -16,7 +16,7 @@ race=troll
 spec=fury
 role=attack
 position=back
-talents=2221322
+talents=1221322
 glyphs=unending_rage/death_from_above/raging_wind
 head=blackhands_faceguard,id=115584,bonus_id=567/523/448,gem_id=115809
 neck=vertebrae_protector,id=113900,bonus_id=567/523/448,gem_id=115809,enchant=gift_of_critical_strike
@@ -43,7 +43,7 @@ race=troll
 spec=fury
 role=attack
 position=back
-talents=2221322
+talents=1221322
 glyphs=unending_rage/death_from_above/raging_wind
 head=blackhands_faceguard,id=115584,bonus_id=567/523/448,gem_id=115809
 neck=vertebrae_protector,id=113900,bonus_id=567/523/448,gem_id=115809,enchant=gift_of_critical_strike
@@ -95,7 +95,7 @@ level=100
 race=tauren
 role=tank
 position=front
-talents=2113323
+talents=1113323
 glyphs=unending_rage/death_from_above/cleave
 spec=prot
 head=blackhands_faceguard,id=115584,bonus_id=567/523/448,gem_id=115809
