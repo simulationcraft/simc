@@ -1383,7 +1383,7 @@ public:
     _name( name )
 { }
   virtual ~option_base_t() { }
-  bool parse_option( sim_t* sim , const std::string& n, const std::string& value )
+  bool parse_option( sim_t* sim , const std::string& n, const std::string& value ) const
   { return parse( sim, n, value ); }
   std::string name() const
   { return _name; }
@@ -1400,9 +1400,9 @@ typedef std::vector<std::string> list_t;
 // unique_ptr anyone?
 typedef opts::option_base_t* option_t;
 namespace opts {
-bool parse( sim_t*, std::vector<option_t>&, const std::string& name, const std::string& value );
-void parse( sim_t*, const std::string& context, std::vector<option_t>&, const std::string& options_str );
-void parse( sim_t*, const std::string& context, std::vector<option_t>&, const std::vector<std::string>& strings );
+bool parse( sim_t*, const std::vector<option_t>&, const std::string& name, const std::string& value );
+void parse( sim_t*, const std::string& context, const std::vector<option_t>&, const std::string& options_str );
+void parse( sim_t*, const std::string& context, const std::vector<option_t>&, const std::vector<std::string>& strings );
 }
 
 option_t opt_string( const std::string& n, std::string& v );

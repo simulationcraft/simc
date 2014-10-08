@@ -240,7 +240,7 @@ private:
 // option_t::parse ==========================================================
 
 bool opts::parse( sim_t*                 sim,
-                      std::vector<option_t>& options,
+                  const std::vector<option_t>& options,
                       const std::string&     name,
                       const std::string&     value )
 {
@@ -257,7 +257,7 @@ bool opts::parse( sim_t*                 sim,
 
 void opts::parse( sim_t*                 sim,
     const std::string&            context,
-                      std::vector<option_t>& options,
+    const std::vector<option_t>& options,
                       const std::vector<std::string>& splits )
 {
   for ( size_t i = 0, size = splits.size(); i < size; ++i )
@@ -288,7 +288,7 @@ void opts::parse( sim_t*                 sim,
 
 void opts::parse( sim_t*                 sim,
     const std::string&            context,
-                      std::vector<option_t>& options,
+    const std::vector<option_t>& options,
                       const std::string&     options_str )
 {
   opts::parse( sim, context, options, util::string_split( options_str, "," ) );
