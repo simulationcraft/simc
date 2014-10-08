@@ -1705,7 +1705,7 @@ void item::readiness( special_effect_t& effect,
   const spell_data_t* cdr_spell = p -> find_spell( effect.spell_id );
   const random_prop_data_t& budget = p -> dbc.random_property( item.item_level() );
   //double cdr = 1.0 / ( 1.0 + budget.p_epic[ 0 ] * cdr_spell -> effectN( 1 ).m_average() / 100.0 );
-  double cdr = budget.p_epic[ 0 ] * cdr_spell -> effectN( 1 ).m_average() / 100.0;
+  double cdr = 1 - budget.p_epic[ 0 ] * cdr_spell -> effectN( 1 ).m_average() / 100.0;
 
   p -> buffs.cooldown_reduction -> s_data = cdr_spell;
   p -> buffs.cooldown_reduction -> default_value = cdr;
