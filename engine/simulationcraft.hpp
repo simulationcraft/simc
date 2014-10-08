@@ -4602,6 +4602,8 @@ struct player_t : public actor_t
     haste_buff_t* berserking;
     haste_buff_t* bloodlust;
 
+    buff_t* cooldown_reduction;
+
     // Legendary meta stuff
     buff_t* courageous_primal_diamond_lucidity;
     buff_t* tempus_repit;

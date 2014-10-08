@@ -53,6 +53,7 @@ namespace item
   void rune_of_reorigination( special_effect_t&, const item_t& );
   void spark_of_zandalar( special_effect_t&, const item_t& );
   void unerring_vision_of_leishen( special_effect_t&, const item_t& );
+  void readiness( special_effect_t&, const item_t& );
   /* Warlards of Draenor 6.0 */
   void blackiron_micro_crucible( special_effect_t&, const item_t& );
   void humming_blackiron_trigger( special_effect_t&, const item_t& );
@@ -219,6 +220,9 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 146219, "ProcOn/Hit",                                       0 }, /* Yu'lon's Bite */
   { 146251, "ProcOn/Hit",                                       0 }, /* Thok's Tail Tip (Str proc) */
 
+  { 145955, 0,                                    item::readiness },
+  { 146019, 0,                                    item::readiness },
+  { 146025, 0,                                    item::readiness },
 
   { 146183, 0,                       item::black_blood_of_yshaarj }, /* Black Blood of Y'Shaarj */
   { 146286, 0,                  item::skeers_bloodsoaked_talisman }, /* Skeer's Bloodsoaked Talisman */
@@ -1658,6 +1662,75 @@ void item::endurance_of_niuzao( special_effect_t& /* effect */,
 
   item.player -> legendary_tank_cloak_cd = item.player -> get_cooldown( "endurance_of_niuzao" );
   item.player -> legendary_tank_cloak_cd -> duration = cd -> duration();
+}
+
+void item::readiness( special_effect_t& effect,
+                      const item_t& item )
+{
+  maintenance_check( 528 );
+
+  struct cooldowns_t
+  {
+    specialization_e spec;
+    const char*      cooldowns[8];
+  };
+
+  static const cooldowns_t __cd[] =
+  {
+    // NOTE: Spells that trigger buffs must have the cooldown of their buffs removed if they have one, or this trinket may cause undesirable results.
+    { ROGUE_ASSASSINATION, { "evasion", "vanish", "cloak_of_shadows", "vendetta", 0, 0 } },
+    { ROGUE_COMBAT,        { "evasion", "adrenaline_rush", "cloak_of_shadows", "killing_spree", 0, 0 } },
+    { ROGUE_SUBTLETY,      { "evasion", "vanish", "cloak_of_shadows", "shadow_dance", 0, 0 } },
+    { SHAMAN_ENHANCEMENT,  { "earth_elemental_totem", "fire_elemental_totem", "shamanistic_rage", "ascendance", "feral_spirit", 0 } },
+    { DRUID_FERAL,         { "tigers_fury", "berserk", "barkskin", "survival_instincts", 0, 0, 0 } },
+    { DRUID_GUARDIAN,      { "might_of_ursoc", "berserk", "barkskin", "survival_instincts", 0, 0, 0 } },
+    { WARRIOR_FURY,        { "dragon_roar", "bladestorm", "shockwave", "avatar", "bloodbath", "recklessness", "storm_bolt", "heroic_leap" } },
+    { WARRIOR_ARMS,        { "dragon_roar", "bladestorm", "shockwave", "avatar", "bloodbath", "recklessness", "storm_bolt", "heroic_leap" } },
+    { WARRIOR_PROTECTION,  { "shield_wall", "demoralizing_shout", "last_stand", "recklessness", "heroic_leap", 0, 0 } },
+    { DEATH_KNIGHT_BLOOD,  { "antimagic_shell", "dancing_rune_weapon", "icebound_fortitude", "outbreak", "vampiric_blood", "bone_shield", 0 } },
+    { DEATH_KNIGHT_FROST,  { "antimagic_shell", "army_of_the_dead", "icebound_fortitude", "empower_rune_weapon", "outbreak", "pillar_of_frost", 0  } },
+    { DEATH_KNIGHT_UNHOLY, { "antimagic_shell", "army_of_the_dead", "icebound_fortitude", "outbreak", "summon_gargoyle", 0 } },
+    { MONK_BREWMASTER,	   { "fortifying_brew", "guard", "zen_meditation", 0, 0, 0, 0 } },
+    { MONK_WINDWALKER,     { "energizing_brew", "fists_of_fury", "fortifying_brew", "zen_meditation", 0, 0, 0 } },
+    { PALADIN_PROTECTION,  { "ardent_defender", "avenging_wrath", "divine_protection", "divine_shield", "guardian_of_ancient_kings", 0 } },
+    { PALADIN_RETRIBUTION, { "avenging_wrath", "divine_protection", "divine_shield", "guardian_of_ancient_kings", 0, 0 } },
+    { HUNTER_BEAST_MASTERY,{ "camouflage", "feign_death", "disengage", "stampede", "rapid_fire", "bestial_wrath", 0 } },
+    { HUNTER_MARKSMANSHIP, { "camouflage", "feign_death", "disengage", "stampede", "rapid_fire", 0, 0 } },
+    { HUNTER_SURVIVAL,     { "black_arrow", "camouflage", "feign_death", "disengage", "stampede", "rapid_fire", 0 } },
+    { SPEC_NONE,           { 0 } }
+  };
+
+  player_t* p = item.player;
+
+  const spell_data_t* cdr_spell = p -> find_spell( effect.spell_id );
+  const random_prop_data_t& budget = p -> dbc.random_property( item.item_level() );
+  //double cdr = 1.0 / ( 1.0 + budget.p_epic[ 0 ] * cdr_spell -> effectN( 1 ).m_average() / 100.0 );
+  double cdr = budget.p_epic[ 0 ] * cdr_spell -> effectN( 1 ).m_average() / 100.0;
+
+  p -> buffs.cooldown_reduction -> s_data = cdr_spell;
+  p -> buffs.cooldown_reduction -> default_value = cdr;
+  p -> buffs.cooldown_reduction -> default_chance = 1;
+
+  const cooldowns_t* cd = &( __cd[ 0 ] );
+  do
+  {
+    if ( p -> specialization() != cd -> spec )
+    {
+      cd++;
+      continue;
+    }
+
+    for ( size_t i = 0; i < 7; i++ )
+    {
+      if ( cd -> cooldowns[ i ] == 0 )
+        break;
+
+      cooldown_t* ability_cd = p -> get_cooldown( cd -> cooldowns[ i ] );
+      ability_cd -> set_recharge_multiplier( cdr );
+    }
+
+    break;
+  } while ( cd -> spec != SPEC_NONE );
 }
 
 } // UNNAMED NAMESPACE

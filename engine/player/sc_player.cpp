@@ -2180,6 +2180,8 @@ void player_t::create_buffs()
       buffs.nitro_boosts       = buff_creator_t( this, "nitro_boosts", find_spell( 54861 ) );
 
       debuffs.dazed            = buff_creator_t( this, "dazed", find_spell( 15571 ) );
+
+      buffs.cooldown_reduction = buff_creator_t( this, "readiness" );
     }
 
   }
@@ -3120,6 +3122,8 @@ void player_t::combat_begin()
   collected_data.health_changes.previous_loss_level = 0.0;
   collected_data.health_changes_tmi.previous_gain_level = 0.0;
 
+  if ( buffs.cooldown_reduction )
+    buffs.cooldown_reduction -> trigger();
 }
 
 // player_t::combat_end =====================================================
