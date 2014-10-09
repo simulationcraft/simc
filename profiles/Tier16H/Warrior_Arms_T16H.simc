@@ -50,9 +50,6 @@ actions.movement+=/heroic_throw
 
 actions.single=rend,if=ticks_remain<2&target.time_to_die>4
 actions.single+=/mortal_strike,if=target.health.pct>20
-# Heroic Charge runs the warrior 10 yards away from the target, at which point the real charge line above will charge the warrior back.
-# This is generally only a dps increase for Arms, although it is partially negated by T17 4P, and can be difficult to do on some encounters.
-actions.single+=/heroic_charge,if=rage<50&swing.mh.remains>2
 actions.single+=/ravager,if=cooldown.colossus_smash.remains<3
 actions.single+=/colossus_smash
 actions.single+=/storm_bolt,if=(cooldown.colossus_smash.remains>4|debuff.colossus_smash.up)&rage<90
@@ -66,7 +63,6 @@ actions.single+=/whirlwind,if=target.health.pct>20&!talent.slam.enabled&(rage>40
 actions.single+=/shockwave
 
 actions.aoe=sweeping_strikes
-actions.aoe+=/heroic_charge,if=rage<50
 actions.aoe+=/bladestorm
 actions.aoe+=/rend,if=active_enemies<=4&ticks_remain<2
 actions.aoe+=/ravager,if=buff.bloodbath.up|!talent.bloodbath.enabled
