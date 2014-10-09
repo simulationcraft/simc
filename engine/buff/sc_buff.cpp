@@ -418,8 +418,8 @@ timespan_t buff_t::refresh_duration( const timespan_t& new_duration ) const
     {
       timespan_t residual = remains() % buff_period;
       if ( sim -> debug )
-        sim -> out_debug.printf( "%s %s carryover duration from ongoing tick: %.3f",
-            player -> name(), name(), residual.total_seconds() );
+        sim -> out_debug.printf( "%s %s carryover duration from ongoing tick: %.3f, refresh_duration=%.3f new_duration=%.3f",
+            player -> name(), name(), residual.total_seconds(), new_duration.total_seconds(), ( new_duration + residual ).total_seconds() );
 
       return new_duration + residual;
     }
@@ -427,8 +427,8 @@ timespan_t buff_t::refresh_duration( const timespan_t& new_duration ) const
     {
       timespan_t residual = std::min( new_duration * 0.3, remains() );
       if ( sim -> debug )
-        sim -> out_debug.printf( "%s %s carryover from ongoing buff: %.3f",
-            player -> name(), name(), residual.total_seconds() );
+        sim -> out_debug.printf( "%s %s carryover duration from ongoing tick: %.3f, refresh_duration=%.3f new_duration=%.3f",
+            player -> name(), name(), residual.total_seconds(), new_duration.total_seconds(), ( new_duration + residual ).total_seconds() );
 
       return new_duration + residual;
     }

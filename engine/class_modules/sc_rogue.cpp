@@ -1701,7 +1701,7 @@ struct dispatch_t : public rogue_attack_t
 struct envenom_t : public rogue_attack_t
 {
   envenom_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "envenom", p, p -> find_class_spell( "Envenom" ), options_str )
+    rogue_attack_t( "envenom", p, p -> find_specialization_spell( "Envenom" ), options_str )
   {
     ability_type = ENVENOM;
     weapon = &( p -> main_hand_weapon );
@@ -1759,10 +1759,10 @@ struct envenom_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    timespan_t envenom_duration = p() -> buffs.envenom -> buff_period * ( 1 + cast_state( execute_state ) -> cp );
+    timespan_t envenom_duration = p() -> buffs.envenom -> data().duration() * ( 1 + cast_state( execute_state ) -> cp );
 
     if ( p() -> sets.has_set_bonus( SET_MELEE, T15, B2 ) )
-      envenom_duration += p() -> buffs.envenom -> buff_period;
+      envenom_duration += p() -> buffs.envenom -> data().duration();
 
     p() -> buffs.envenom -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, envenom_duration );
     p() -> buffs.enhanced_vendetta -> expire();
@@ -4842,9 +4842,9 @@ void rogue_t::create_buffs()
   //                           .cd( timespan_t::zero() )
   //                          .duration( find_spell( 11327 ) -> duration() + glyph.vanish -> effectN( 1 ).time_value() );
 
-  // Envenom is controlled by the non-harmful dot applied to player when envenom is used
   buffs.envenom            = buff_creator_t( this, "envenom", find_specialization_spell( "Envenom" ) )
                              .duration( timespan_t::min() )
+                             .period( timespan_t::zero() )
                              .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   buffs.slice_and_dice     = buff_creator_t( this, "slice_and_dice", find_class_spell( "Slice and Dice" ) )
                              .duration( perk.improved_slice_and_dice -> ok() ? timespan_t::zero() : timespan_t::min() )
