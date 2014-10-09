@@ -2813,12 +2813,10 @@ struct fire_nova_explosion_t : public shaman_spell_t
   {
     tl.clear();
 
-    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+    for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ )
     {
-      if ( ! sim -> actor_list[ i ] -> is_sleeping() &&
-             sim -> actor_list[ i ] -> is_enemy() &&
-             sim -> actor_list[ i ] != target )
-        tl.push_back( sim -> actor_list[ i ] );
+      if ( sim -> target_non_sleeping_list[ i ] != target )
+        tl.push_back( sim -> target_non_sleeping_list[ i ] );
     }
 
     return tl.size();
