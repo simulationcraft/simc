@@ -44,6 +44,7 @@ enum ability_type_e {
   FAN_OF_KNIVES,
   CRIMSON_TEMPEST,
   KILLING_SPREE,
+  VENDETTA,
   ABILITY_MAX
 };
 
@@ -2673,6 +2674,7 @@ struct vendetta_t : public rogue_attack_t
   vendetta_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "vendetta", p, p -> find_class_spell( "Vendetta" ), options_str )
   {
+    ability_type = VENDETTA;
     harmful = may_miss = may_crit = false;
   }
 
@@ -3642,10 +3644,22 @@ struct shadow_reflection_pet_t : public pet_t
   {
     dot_t* revealing_strike;
 
+    buff_t* vendetta;
+
     shadow_reflection_td_t( player_t* target, shadow_reflection_pet_t* source ) :
       actor_pair_t( target, source )
     {
       revealing_strike = target -> get_dot( "revealing_strike", source );
+
+      const spell_data_t* vd = source -> dbc.spell( 79140 );
+      double vendetta_value = vd -> effectN( 1 ).percent();
+      shadow_reflection_pet_t* sr = debug_cast<shadow_reflection_pet_t*>( source -> cast_pet() );
+      vendetta_value += sr -> o() -> glyph.vendetta -> effectN( 1 ).percent();
+
+      vendetta = buff_creator_t( *this, "vendetta", vd )
+                 .cd( timespan_t::zero() )
+                 .default_value( vendetta_value )
+                 .duration( vd -> duration() + sr -> o() -> glyph.vendetta -> effectN( 2 ).time_value() );
     }
   };
 
@@ -3694,6 +3708,8 @@ struct shadow_reflection_pet_t : public pet_t
       shadow_reflection_td_t* tdata = td( target );
       if ( base_costs[ RESOURCE_COMBO_POINT ] && tdata -> revealing_strike -> is_ticking() )
           m *= 1.0 + tdata -> revealing_strike -> current_action -> data().effectN( 3 ).percent();
+
+      m *= 1.0 + tdata -> vendetta -> value();
 
       return m;
     }
@@ -3934,6 +3950,22 @@ struct shadow_reflection_pet_t : public pet_t
     }
   };
 
+  struct sr_vendetta_t : public shadow_reflection_attack_t
+  {
+    sr_vendetta_t( shadow_reflection_pet_t* p ) :
+      shadow_reflection_attack_t( "vendetta", p, p -> find_spell( 79140 ) )
+    {
+      weapon_multiplier = 0;
+    }
+
+    void execute()
+    {
+      shadow_reflection_attack_t::execute();
+
+      td( execute_state -> target ) -> vendetta -> trigger();
+    }
+  };
+
   struct sr_crimson_tempest_t : public shadow_reflection_attack_t
   {
     struct sr_crimson_tempest_dot_t : public residual_periodic_action_t<attack_t>
@@ -4064,6 +4096,7 @@ struct shadow_reflection_pet_t : public pet_t
     attacks[ MUTILATE         ] = new sr_mutilate_t( this );
     attacks[ DISPATCH         ] = new sr_dispatch_t( this );
     attacks[ FAN_OF_KNIVES    ] = new sr_fan_of_knives_t( this );
+    attacks[ VENDETTA         ] = new sr_vendetta_t( this );
 
     _spec = ROGUE_COMBAT;
     attacks[ EVISCERATE       ] = new sr_eviscerate_t( this );
@@ -4348,8 +4381,8 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Crimson Tempest", "if=combo_points>4&active_enemies>=4&remains<8" );
     def -> add_action( this, "Fan of Knives", "if=combo_points<5&active_enemies>=4" );
     def -> add_action( this, "Rupture", "if=(remains<2|(combo_points=5&remains<=(duration*0.3)))&active_enemies=1" );
-    def -> add_action( this, "Vendetta" );
-    def -> add_talent( this, "Shadow Reflection", "if=debuff.vendetta.up" );
+    def -> add_talent( this, "Shadow Reflection", "if=cooldown.vendetta.remains=0" );
+    def -> add_action( this, "Vendetta", "if=buff.shadow_reflection.up|!talent.shadow_reflection.enabled" );
     def -> add_talent( this, "Death From Above", "if=combo_points>4" );
     def -> add_action( this, "Envenom", "cycle_targets=1,if=(combo_points>4&buff.envenom.remains<2&(cooldown.death_from_above.remains>2|!talent.death_from_above.enabled))&active_enemies<4&!dot.deadly_poison_dot.ticking" );
     def -> add_action( this, "Envenom", "if=(combo_points>4&buff.envenom.remains<2&(cooldown.death_from_above.remains>2|!talent.death_from_above.enabled))&active_enemies<4" );
