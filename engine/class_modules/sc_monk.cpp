@@ -1655,6 +1655,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
       hasted_ticks = true;
       school = SCHOOL_PHYSICAL;
       channeled = true;
+      cooldown -> duration *= 1 + p -> perk.empowered_spinning_crane_kick -> effectN( 1 ).percent();
       base_tick_time *= 1 + p -> perk.empowered_spinning_crane_kick -> effectN( 1 ).percent();
       crane = new spinning_crane_kick_tick_t( p, p -> find_spell( 107270 ) );
       add_child( crane );
@@ -4348,9 +4349,7 @@ void monk_t::combat_begin()
 
   if ( talent.power_strikes -> ok() )
   {
-    // Random start of the first tick.
-    timespan_t d = player_t::rng().real() * timespan_t::from_seconds( 15.0 );
-    new ( *sim ) power_strikes_event_t( *this, d );
+    new ( *sim ) power_strikes_event_t( *this, timespan_t::zero() );
   }
 
   if ( spec.bladed_armor -> ok() )
