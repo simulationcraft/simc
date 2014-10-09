@@ -4391,11 +4391,12 @@ void rogue_t::init_action_list()
 
     // Combo point generators
     action_priority_list_t* gen = get_action_priority_list( "generator", "Combo point generators" );
-    gen -> add_action( this, "Revealing Strike", "if=ticks_remain<2|buff.deep_insight.up|(buff.bandits_guile.stack=11&cooldown.adrenaline_rush.remains<10)" );
+    gen -> add_action( this, "Revealing Strike", "if=ticks_remain<2" );
     gen -> add_action( this, "Sinister Strike" );
 
     // Combo point finishers
     action_priority_list_t* finisher = get_action_priority_list( "finisher", "Combo point finishers" );
+    finisher -> add_action( this, "Death from Above" );
     finisher -> add_action( this, "Crimson Tempest", "if=active_enemies>7&dot.crimson_tempest_dot.ticks_remain<=1" );
     finisher -> add_action( this, "Eviscerate" );
   }
