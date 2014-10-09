@@ -2896,7 +2896,7 @@ inline bool rogue_t::poisoned_enemy( player_t* target, bool deadly_fade ) const
 
 void rogue_t::trigger_auto_attack( const action_state_t* state )
 {
-  if ( main_hand_attack -> execute_event || off_hand_attack -> execute_event )
+  if ( main_hand_attack -> execute_event || ! off_hand_attack || off_hand_attack -> execute_event )
     return;
 
   if ( ! state -> action -> harmful )
