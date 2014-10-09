@@ -54,7 +54,6 @@
   115072 Expel Harm 1.00
 
   BREWMASTER:
-  - Fix Tier 16 2-piece to properly lower the cooldown by 30 seconds.
   - Level 75 talents - dampen harm added - currently stacks are consumed on all attacks, not just above 15% max hp
   
   - Zen Meditation
@@ -1561,6 +1560,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
       mh = &( player -> main_hand_weapon );
       oh = &( player -> off_hand_weapon );
       base_multiplier *= 0.75; // hardcoded into tooltip
+      update_flags = ~STATE_HASTE;
     }
 
     void execute()
@@ -2665,6 +2665,7 @@ struct fortifying_brew_t: public monk_spell_t
 
     harmful = may_crit = false;
     trigger_gcd = timespan_t::zero();
+    cooldown -> duration += p.sets.set( SET_TANK, T16, B2 ) -> effectN( 1 ).time_value();
   }
 
   virtual void execute()
@@ -3785,8 +3786,7 @@ void monk_t::create_buffs()
 
   // General
   buff.fortifying_brew = buff_creator_t( this, "fortifying_brew", find_spell( 120954 ) );
-  buff.fortifying_brew -> cooldown -> duration += sets.set( SET_TANK, T16, B2 ) -> effectN( 1 ).time_value();
-
+  
   buff.power_strikes = buff_creator_t( this, "power_strikes", talent.power_strikes -> effectN( 1 ).trigger() );
 
   double ts_proc_chance = main_hand_weapon.group() == WEAPON_1H ? ( spec.tiger_strikes -> proc_chance() / 10 * 5 ) : spec.tiger_strikes -> proc_chance();
