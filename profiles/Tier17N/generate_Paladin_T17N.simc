@@ -82,7 +82,7 @@ hands=gauntlets_of_guiding_light,id=115567
 waist=uktars_belt_of_chiming_rings,id=113976
 legs=legplates_of_fractured_crystal,id=113648
 feet=iron_bellow_sabatons,id=113961
-finger1=seal_of_yen_ta,id=118866,enchant=gift_of_critical_strike
+finger1=timeless_solium_band_of_lifegiving,id=118299,enchant=gift_of_critical_strike
 finger2=firemenders_smoldering_signet,id=113957,enchant=gift_of_critical_strike
 trinket1=autorepairing_autoclave,id=113986
 trinket2=ironspike_chew_toy,id=119192
