@@ -4,7 +4,8 @@ talent_format=armory
 
 # Shadow
 priest="Priest_Shadow_T16H"
-talents=112323
+talents=113313
+glyphs=mind_flay/fade/sha
 level=90
 race=goblin
 spec=shadow

@@ -2180,7 +2180,17 @@ void player_t::create_buffs()
 
       debuffs.dazed            = buff_creator_t( this, "dazed", find_spell( 15571 ) );
 
-      buffs.cooldown_reduction = buff_creator_t( this, "readiness" );
+      buffs.cooldown_reduction = buff_creator_t( this, "readiness" ).chance( 0 );
+      buffs.amplification = buff_creator_t( this, "amplification", find_spell( 146051 ) )
+                            .add_invalidate( CACHE_MASTERY )
+                            .add_invalidate( CACHE_HASTE )
+                            .add_invalidate( CACHE_SPIRIT )
+                            .chance( 0 );
+      buffs.amplification_2 = buff_creator_t( this, "amplification_2", find_spell( 146051 ) )
+                              .add_invalidate( CACHE_MASTERY )
+                              .add_invalidate( CACHE_HASTE )
+                              .add_invalidate( CACHE_SPIRIT )
+                              .chance( 0 );
     }
 
   }
@@ -2884,6 +2894,12 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
       if ( sim -> auras.str_agi_int -> check() )
         m *= 1.0 + sim -> auras.str_agi_int -> value();
       break;
+    case ATTR_SPIRIT:
+      if ( buffs.amplification )
+        m *= 1.0 + buffs.amplification -> value();
+      if ( buffs.amplification_2 )
+        m *= 1.0 + buffs.amplification_2 -> value();
+      break;
     case ATTR_STAMINA:
       if ( sim -> auras.stamina -> check() )
         m *= 1.0 + sim -> auras.stamina -> value();
@@ -2897,9 +2913,31 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
 
 // player_t::composite_rating_multiplier ====================================
 
-double player_t::composite_rating_multiplier( rating_e ) const
+double player_t::composite_rating_multiplier( rating_e rating ) const
 {
-  return 1.0;
+  double v = 1.0;
+
+  switch( rating )
+  {
+    case RATING_SPELL_HASTE:
+    case RATING_MELEE_HASTE:
+    case RATING_RANGED_HASTE:
+      if ( buffs.amplification )
+        v *= 1.0 + buffs.amplification -> value();
+      if ( buffs.amplification_2 )
+        v *= 1.0 + buffs.amplification_2 -> value();
+      break;
+    case RATING_MASTERY:
+      if ( buffs.amplification )
+        v *= 1.0 + buffs.amplification -> value();
+      if ( buffs.amplification_2 )
+        v *= 1.0 + buffs.amplification_2 -> value();
+      break;
+    default:
+      break;
+  }
+
+  return v;
 }
 
 // player_t::composite_rating ===============================================
@@ -3123,6 +3161,12 @@ void player_t::combat_begin()
 
   if ( buffs.cooldown_reduction )
     buffs.cooldown_reduction -> trigger();
+
+  if ( buffs.amplification )
+    buffs.amplification -> trigger();
+
+  if ( buffs.amplification_2 )
+    buffs.amplification_2 -> trigger();
 }
 
 // player_t::combat_end =====================================================

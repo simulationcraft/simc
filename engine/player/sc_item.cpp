@@ -1278,7 +1278,7 @@ bool item_t::decode_equip_effect()
       // First phase initialization of the special effect. Sets up the relevant
       // fields in special_effect_t to create the proc. In the future, most of 
       // the manual field setup can also be removed ...
-      if ( ( ret = unique_gear::initialize_special_effect( effect, *this, parsed.data.id_spell[ i ] ) ) && 
+      if ( ( ret = unique_gear::initialize_special_effect( effect, *this, parsed.data.id_spell[ i ] ) ) &&
            effect.type != SPECIAL_EFFECT_NONE )
       {
         parsed.special_effects.push_back( effect );
