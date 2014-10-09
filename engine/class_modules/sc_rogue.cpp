@@ -3152,6 +3152,10 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
   if ( state -> action -> n_targets() != 0 )
     return;
 
+  // Invalidate target cache if target changes
+  if ( active_blade_flurry -> target != state -> target )
+    active_blade_flurry -> target_cache.is_valid = false;
+  active_blade_flurry -> target = state -> target;
   // Note, unmitigated damage
   active_blade_flurry -> base_dd_min = state -> result_total;
   active_blade_flurry -> base_dd_max = state -> result_total;
