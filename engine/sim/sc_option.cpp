@@ -62,12 +62,11 @@ enum option_assignement_e {
 
 /* Generic option class, tries to handle the most common numeric and string based options
  */
-template<class T>
+template<class T, option_assignement_e ass = ASSIGN>
 struct opts_generic_t : public opts_helper_t<T>
 {
-  opts_generic_t( const std::string& name, T& ref, option_assignement_e ass = ASSIGN ) :
-    opts_helper_t<T>( name, ref ),
-    _ass( ass )
+  opts_generic_t( const std::string& name, T& ref ) :
+    opts_helper_t<T>( name, ref )
   { }
 protected:
   bool parse( sim_t*, const std::string& n, const std::string& value ) const override
@@ -76,7 +75,7 @@ protected:
       return false;
 
     T v = util::from_string<T>( value );
-    switch ( _ass )
+    switch ( ass )
     {
     case ASSIGN:
       this -> _ref = v;
@@ -89,11 +88,19 @@ protected:
   }
   std::ostream& print( std::ostream& stream ) const override
   {
-     stream << this -> name() << "=" << this -> _ref << "\n";
+     stream << this -> name();
+     switch ( ass )
+     {
+     case ASSIGN:
+       stream << "=";
+       break;
+     case APPEND:
+       stream << "+=";
+       break;
+     }
+     stream << this -> _ref << "\n";
      return stream;
   }
-private:
-  option_assignement_e _ass;
 };
 
 /* Generic option class + range checks, tries to handle numeric options
@@ -535,7 +542,7 @@ option_t opt_string( const std::string& n, std::string& v )
 { return new opts::opts_generic_t<std::string>( n, v ); }
 
 option_t opt_append( const std::string& n, std::string& v )
-{ return new opts::opts_generic_t<std::string>( n, v, opts::APPEND ); }
+{ return new opts::opts_generic_t<std::string,opts::APPEND>( n, v ); }
 
 option_t opt_bool( const std::string& n, int& v )
 { return new opts::opts_bool_t<int>( n, v ); }
