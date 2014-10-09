@@ -709,7 +709,6 @@ player_t::base_initial_current_t::base_initial_current_t() :
   skill( 1.0 ),
   distance( 0 ),
   distance_to_move( 0 ),
-  moving_away( 0 ),
   armor_coeff( 0 ),
   sleeping( false ),
   rating(),
@@ -3766,7 +3765,6 @@ void player_t::demise()
   iteration_fight_length += sim -> current_time - arise_time;
   arise_time = timespan_t::min();
   current.distance_to_move = 0;
-  current.moving_away = 0;
 
   current.sleeping = true;
   if ( readying )
@@ -7586,8 +7584,8 @@ expr_t* player_t::create_expression( action_t* a,
 
           double evaluate()
           {
-            if ( player -> current.distance_to_move > 0 || player -> current.moving_away > 0 )
-              return ( ( player -> current.distance_to_move + player -> current.moving_away ) / player -> composite_movement_speed() );
+            if ( player -> current.distance_to_move > 0 )
+              return ( player -> current.distance_to_move / player -> composite_movement_speed() );
             else
               return player -> buffs.raid_movement -> remains().total_seconds();
           }

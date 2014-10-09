@@ -33,7 +33,6 @@ struct warrior_td_t: public actor_pair_t
 struct warrior_t: public player_t
 {
 public:
-  core_event_t* heroic_charge;
   int initial_rage;
   double arms_rage_mult;
   double crit_rage_mult;
@@ -362,7 +361,6 @@ public:
 
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ):
     player_t( sim, WARRIOR, name, r ),
-    heroic_charge( 0 ),
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),
     gain( gains_t() ),
@@ -450,7 +448,6 @@ public:
   virtual double    composite_melee_crit() const;
   virtual double    composite_spell_crit() const;
   virtual void      teleport( double yards, timespan_t duration );
-  virtual void      update_movement( timespan_t duration );
   virtual void      interrupt();
   virtual void      halt();
   virtual void      reset();
@@ -1465,7 +1462,6 @@ struct charge_t: public warrior_attack_t
     {
       p() -> buff.charge_movement -> trigger( 1, movement_speed_increase, 1,
                                               timespan_t::from_seconds( p() -> current.distance_to_move / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() + movement_speed_increase ) ) ) );
-      p() -> current.moving_away = 0;
     }
     warrior_attack_t::execute();
 
@@ -1980,7 +1976,6 @@ struct intervene_t: public warrior_attack_t
     {
       p() -> buff.intervene_movement -> trigger( 1, movement_speed_increase, 1,
                                                  timespan_t::from_seconds( p() -> current.distance_to_move / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() + movement_speed_increase ) ) ) );
-      p() -> current.moving_away = 0;
     }
   }
 
@@ -1990,108 +1985,6 @@ struct intervene_t: public warrior_attack_t
       return false;
 
     return warrior_attack_t::ready();
-  }
-};
-
-// Heroic Charge  ==============================================================
-
-struct heroic_charge_movement_ticker_t: public event_t
-{
-  timespan_t duration;
-  warrior_t* warrior;
-  heroic_charge_movement_ticker_t( sim_t& /*s*/, warrior_t*p, timespan_t d = timespan_t::zero() ):
-    event_t( *p -> sim, "Player Movement Event" ), warrior( p )
-  {
-    if ( d > timespan_t::zero() )
-      duration = d;
-    else
-      duration = next_execute();
-
-    add_event( duration );
-    if ( sim().debug ) sim().out_debug.printf( "New movement event" );
-  }
-
-  timespan_t next_execute() const
-  {
-    timespan_t min_time = timespan_t::max();
-    bool any_movement = false;
-    timespan_t time_to_finish = warrior -> time_to_move();
-    if ( time_to_finish != timespan_t::zero() )
-    {
-      any_movement = true;
-
-      if ( time_to_finish < min_time )
-        min_time = time_to_finish;
-    }
-
-    if ( min_time > timespan_t::from_seconds( 0.05 ) ) // Update a little more than usual, since we're moving a lot faster.
-      min_time = timespan_t::from_seconds( 0.05 );
-
-    if ( !any_movement )
-      return timespan_t::zero();
-    else
-      return min_time;
-  }
-
-  void execute()
-  {
-    if ( warrior -> time_to_move() > timespan_t::zero() )
-      warrior -> update_movement( duration );
-
-    timespan_t next = next_execute();
-    if ( next > timespan_t::zero() )
-      warrior -> heroic_charge = new ( sim() ) heroic_charge_movement_ticker_t( sim(), warrior, next );
-    else
-    {
-      warrior -> heroic_charge = 0;
-      warrior -> buff.heroic_leap_movement -> expire();
-    }
-  }
-};
-
-struct heroic_charge_t: public warrior_attack_t
-{
-  action_t*leap;
-  heroic_charge_movement_ticker_t* charge;
-  heroic_charge_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "heroic_charge", p, spell_data_t::nil() )
-  {
-    parse_options( options_str );
-    stancemask = STANCE_DEFENSE | STANCE_GLADIATOR | STANCE_BATTLE;
-    leap = new heroic_leap_t( p, options_str );
-    trigger_gcd = timespan_t::zero();
-    use_off_gcd = true;
-    callbacks = may_crit = false;
-  }
-
-  void execute()
-  {
-    warrior_attack_t::execute();
-
-    if ( p() -> cooldown.heroic_leap -> up() )
-    {// We are moving 10 yards, and heroic leap always executes in 0.25 seconds.
-      // Do some hacky math to ensure it will only take 0.25 seconds, since it will certainly
-      // be the highest temporary movement speed buff.
-      double speed;
-      speed = 10 / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() ) ) / 0.25;
-      p() -> buff.heroic_leap_movement -> trigger( 1, speed, 1, timespan_t::from_millis( 250 ) );
-      leap -> execute();
-      p() -> trigger_movement( 10.0, MOVEMENT_BOOMERANG ); // Leap 10 yards out, because it's impossible to precisely land 8 yards away.
-      p() -> heroic_charge = new ( *sim ) heroic_charge_movement_ticker_t( *sim, p() );
-    }
-    else
-    {
-      p() -> trigger_movement( 9.0, MOVEMENT_BOOMERANG );
-      p() -> heroic_charge = new ( *sim ) heroic_charge_movement_ticker_t( *sim, p() );
-    }
-  }
-
-  bool ready()
-  {
-    if ( p() -> cooldown.rage_from_charge -> up() && p() -> cooldown.charge -> up() && !p() -> buffs.raid_movement -> check() )
-      return warrior_attack_t::ready();
-    else
-      return false;
   }
 };
 
@@ -3432,7 +3325,6 @@ struct shield_charge_t: public warrior_spell_t
       p() -> buff.shield_charge_movement -> trigger( 1, movement_speed_increase, 1,
                                                      timespan_t::from_seconds( p() -> current.distance_to_move / ( p() -> base_movement_speed * 
                                                      ( 1 + p() -> passive_movement_modifier() + movement_speed_increase ) ) ) );
-      p() -> current.moving_away = 0;
     }
 
     p() -> cooldown.shield_charge_cd -> start();
@@ -3703,7 +3595,6 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "enraged_regeneration" ) return new enraged_regeneration_t ( this, options_str );
   if ( name == "execute"              ) return new execute_t              ( this, options_str );
   if ( name == "hamstring"            ) return new hamstring_t            ( this, options_str );
-  if ( name == "heroic_charge"        ) return new heroic_charge_t        ( this, options_str );
   if ( name == "heroic_leap"          ) return new heroic_leap_t          ( this, options_str );
   if ( name == "heroic_strike"        ) return new heroic_strike_t        ( this, options_str );
   if ( name == "heroic_throw"         ) return new heroic_throw_t         ( this, options_str );
@@ -4150,7 +4041,6 @@ void warrior_t::apl_arms()
 
   single_target -> add_action( this, "Rend", "if=ticks_remain<2&target.time_to_die>4" );
   single_target -> add_action( this, "Mortal Strike", "if=target.health.pct>20" );
-  single_target -> add_action( "heroic_charge,if=rage<50&swing.mh.remains>2", "Heroic Charge runs the warrior 10 yards away from the target, at which point the real charge line above will charge the warrior back.\n# This is generally only a dps increase for Arms, although it is partially negated by T17 4P, and can be difficult to do on some encounters." );
   single_target -> add_talent( this, "Ravager", "if=cooldown.colossus_smash.remains<3" );
   single_target -> add_action( this, "Colossus Smash" );
   single_target -> add_talent( this, "Storm Bolt", "if=(cooldown.colossus_smash.remains>4|debuff.colossus_smash.up)&rage<90" );
@@ -4163,7 +4053,6 @@ void warrior_t::apl_arms()
   single_target -> add_talent( this, "Shockwave" );
 
   aoe -> add_action( this, "Sweeping Strikes" );
-  aoe -> add_action( "heroic_charge,if=rage<50" );
   aoe -> add_talent( this, "Bladestorm" );
   aoe -> add_action( this, "Rend", "if=active_enemies<=4&ticks_remain<2" );
   aoe -> add_talent( this, "Ravager", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
@@ -4882,7 +4771,6 @@ void warrior_t::reset()
 
   active_stance = STANCE_BATTLE;
   swapping = false;
-  heroic_charge = 0;
 
   t15_2pc_melee.reset();
 }
@@ -4900,7 +4788,6 @@ void warrior_t::interrupt()
   buff.heroic_leap_movement -> expire();
   buff.shield_charge_movement -> expire();
   buff.intervene_movement -> expire();
-  core_event_t::cancel( heroic_charge );
   player_t::interrupt();
 }
 
@@ -4912,17 +4799,6 @@ void warrior_t::halt()
 void warrior_t::teleport( double, timespan_t )
 {
   return; // All movement "teleports" are modeled.
-}
-
-void warrior_t::update_movement( timespan_t duration )
-{
-  if ( heroic_charge )
-    player_t::update_movement( duration );
-  else
-  { // Cancel heroic leap if it's running to make sure nothing weird happens when movement from another source is attempted.
-    core_event_t::cancel( heroic_charge );
-    player_t::update_movement( duration );
-  }
 }
 
 // warrior_t::composite_player_multiplier ===================================
