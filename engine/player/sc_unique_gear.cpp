@@ -1877,6 +1877,9 @@ void item::cleave( special_effect_t& effect,
       if ( a )
       {
         a -> base_dd_min = a -> base_dd_max = state -> result_amount;
+        // Invalidate target cache if target changes
+        if ( a -> target != state -> target )
+          a -> target_cache.is_valid = false;
         a -> target = state -> target;
         a -> schedule_execute();
       }
