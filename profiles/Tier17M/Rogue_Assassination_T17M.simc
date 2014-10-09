@@ -1,6 +1,6 @@
 rogue="Rogue_Assassination_T17M"
 level=100
-race=troll
+race=blood_elf
 role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#ca!2....21
@@ -35,44 +35,50 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent,if=energy<60
 actions+=/vanish,if=time>10&!buff.stealth.up
-actions+=/shadow_reflection
 actions+=/rupture,if=combo_points=5&ticks_remain<3
 actions+=/rupture,cycle_targets=1,if=active_enemies>1&!ticking&combo_points=5
 actions+=/mutilate,if=buff.stealth.up
 actions+=/marked_for_death,if=combo_points=0
+actions+=/crimson_tempest,if=combo_points>4&active_enemies>=4&remains<8
 actions+=/fan_of_knives,if=combo_points<5&active_enemies>=4
 actions+=/rupture,if=(remains<2|(combo_points=5&remains<=(duration*0.3)))&active_enemies=1
 actions+=/vendetta
+actions+=/shadow_reflection,if=debuff.vendetta.up
+actions+=/envenom,cycle_targets=1,if=(combo_points>4&buff.envenom.remains<2&(cooldown.death_from_above.remains>2|!talent.death_from_above.enabled))&active_enemies<4&!dot.deadly_poison_dot.ticking
 actions+=/envenom,if=(combo_points>4&buff.envenom.remains<2&(cooldown.death_from_above.remains>2|!talent.death_from_above.enabled))&active_enemies<4
+actions+=/fan_of_knives,cycle_targets=1,if=active_enemies>2&!dot.deadly_poison_dot.ticking&debuff.vendetta.down
+actions+=/mutilate,cycle_targets=1,if=target.health.pct>35&combo_points<5&active_enemies=2&!dot.deadly_poison_dot.ticking&debuff.vendetta.down
 actions+=/mutilate,if=target.health.pct>35&combo_points<5&active_enemies<5
+actions+=/dispatch,cycle_targets=1,if=(combo_points<5|(talent.anticipation.enabled&anticipation_charges<4))&active_enemies=2&!dot.deadly_poison_dot.ticking&debuff.vendetta.down
 actions+=/dispatch,if=(combo_points<5|(talent.anticipation.enabled&anticipation_charges<4))&active_enemies<4
+actions+=/mutilate,cycle_targets=1,if=active_enemies=2&!dot.deadly_poison_dot.ticking&debuff.vendetta.down
 actions+=/mutilate,if=active_enemies<5
 
 head=poisoners_helmet,id=115572,bonus_id=567
-neck=engineers_grounded_gorget,id=113892,bonus_id=567,enchant=gift_of_mastery
-shoulders=poisoners_spaulders,id=115574,bonus_id=567
+neck=darklight_necklace,id=113865,bonus_id=567,enchant=gift_of_mastery
+shoulders=flamebenders_shoulderguards,id=113924,bonus_id=567
 back=drape_of_the_dark_hunt,id=113971,bonus_id=567,enchant=gift_of_mastery
 chest=poisoners_tunic,id=115570,bonus_id=567
 wrists=bracers_of_shattered_stalactites,id=113935,bonus_id=567
 hands=poisoners_gloves,id=115571,bonus_id=567
 waist=conductors_multipocket_girdle,id=113964,bonus_id=567
-legs=shattering_smash_leggings,id=113989,bonus_id=567
-feet=treads_of_the_dark_hunt,id=113974,bonus_id=567
+legs=poisoners_legguards,id=115573,bonus_id=567
+feet=furnace_tenders_treads,id=113895,bonus_id=567
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_mastery
 finger2=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_mastery
-trinket1=scales_of_doom,id=113612,bonus_id=567
+trinket1=humming_blackiron_trigger,id=113985,bonus_id=567
 trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=567
-main_hand=oregorgers_acidetched_gutripper,id=113874,bonus_id=567,enchant=mark_of_bleeding_hollow
-off_hand=oregorgers_acidetched_gutripper,id=113874,bonus_id=567,enchant=mark_of_bleeding_hollow
+main_hand=oregorgers_acidetched_gutripper,id=113874,bonus_id=567,enchant=mark_of_the_thunderlord
+off_hand=oregorgers_acidetched_gutripper,id=113874,bonus_id=567,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_agility=3538
+# gear_agility=3564
 # gear_stamina=4474
-# gear_crit_rating=867
-# gear_haste_rating=338
-# gear_mastery_rating=1337
+# gear_crit_rating=1469
+# gear_haste_rating=542
+# gear_mastery_rating=978
 # gear_armor=1147
-# gear_multistrike_rating=1515
+# gear_multistrike_rating=1102
 # gear_versatility_rating=122
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
