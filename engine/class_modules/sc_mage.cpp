@@ -121,11 +121,14 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
-    cooldown_t* combustion;
-    cooldown_t* evocation;
-    cooldown_t* enhanced_frostbolt;
-    cooldown_t* frozen_orb;
-    cooldown_t* inferno_blast;
+    cooldown_t* combustion,
+              * cone_of_cold,
+              * dragons_breath,
+              * evocation,
+              * enhanced_frostbolt,
+              * frozen_orb,
+              * inferno_blast,
+              * presence_of_mind;
   } cooldowns;
 
   // Gains
@@ -320,10 +323,13 @@ public:
 
     // Cooldowns
     cooldowns.combustion         = get_cooldown( "combustion"         );
+    cooldowns.combustion         = get_cooldown( "cone_of_cold"       );
+    cooldowns.dragons_breath     = get_cooldown( "dragons_breath"     );
     cooldowns.enhanced_frostbolt = get_cooldown( "enhanced_frostbolt" );
     cooldowns.evocation          = get_cooldown( "evocation"          );
     cooldowns.frozen_orb         = get_cooldown( "frozen_orb"         );
     cooldowns.inferno_blast      = get_cooldown( "inferno_blast"      );
+    cooldowns.presence_of_mind   = get_cooldown( "presence_of_mind"   );
 
     // Miscellaneous
     incanters_flow_stack_mult = find_spell( 116267 ) -> effectN( 1 ).percent();
@@ -2119,11 +2125,8 @@ struct blizzard_t : public mage_spell_t
 
 struct cold_snap_t : public mage_spell_t
 {
-  cooldown_t* cooldown_cofc;
-
   cold_snap_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "cold_snap", p, p -> talents.cold_snap ),
-    cooldown_cofc( p -> get_cooldown( "cone_of_cold" ) )
+    mage_spell_t( "cold_snap", p, p -> talents.cold_snap )
   {
     parse_options( options_str );
 
@@ -2137,7 +2140,20 @@ struct cold_snap_t : public mage_spell_t
 
     p() -> resource_gain( RESOURCE_HEALTH, p() -> resources.base[ RESOURCE_HEALTH ] * p() -> talents.cold_snap -> effectN( 2 ).percent() );
 
-    cooldown_cofc -> reset( false );
+    // NOTE: Include Frost Nova and Ice Block CD reset here if implemented
+
+    if ( p() -> specialization() == MAGE_ARCANE )
+    {
+      p() -> cooldowns.presence_of_mind -> reset( false );
+    }
+    else if ( p() -> specialization() == MAGE_FIRE )
+    {
+      p() -> cooldowns.dragons_breath -> reset( false );
+    }
+    else if ( p() -> specialization() == MAGE_FROST )
+    {
+      p() -> cooldowns.cone_of_cold -> reset( false );
+    }
   }
 };
 

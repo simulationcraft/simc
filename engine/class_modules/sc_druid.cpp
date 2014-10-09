@@ -1427,7 +1427,7 @@ struct moonkin_form_t : public druid_buff_t< buff_t >
   {
     base_t::expire_override();
 
-    sim -> auras.haste -> decrement();
+    sim -> auras.mastery -> decrement();
   }
 
   virtual void start( int stacks, double value, timespan_t duration )
@@ -1437,8 +1437,8 @@ struct moonkin_form_t : public druid_buff_t< buff_t >
 
     base_t::start( stacks, value, duration );
 
-    if ( ! sim -> overrides.haste )
-      sim -> auras.haste -> trigger();
+    if ( ! sim -> overrides.mastery )
+      sim -> auras.mastery -> trigger();
   }
 };
 
@@ -5840,7 +5840,7 @@ void druid_t::apl_precombat()
     if ( primary_role() == ROLE_TANK ) // Guardian
     {
       if ( level > 90 )
-        flask += "greater_draenic_stamina_flask";
+        flask += "greater_draenic_agility_flask";
       else if ( level > 85 )
       {
         elixir1 += "mad_hozen";
@@ -5951,8 +5951,12 @@ void druid_t::apl_precombat()
       precombat -> add_action( potion_action );
     }
   }
+
+  // Spec Specific Optimizations
   if ( specialization() == DRUID_BALANCE )
     precombat -> add_talent( this, "Stellar Flare" );
+  if ( specialization() == DRUID_GUARDIAN )
+    precombat -> add_talent( this, "Cenarion Ward" );
 }
 
 // NO Spec Combat Action Priority List ======================================
@@ -6141,30 +6145,29 @@ void druid_t::apl_guardian()
   std::vector<std::string> item_actions       = get_item_actions();
   std::vector<std::string> racial_actions     = get_racial_actions();
 
+  default_list -> add_action( "auto_attack" );
+  default_list -> add_action( this, "Skull Bash" );
+  default_list -> add_action( this, "Savage Defense" );
+
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] );
   for ( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] );
 
-  default_list -> add_action( "auto_attack" );
-  default_list -> add_action( this, "Skull Bash" );
-  default_list -> add_action( this, "Maul", "if=buff.tooth_and_claw.react&buff.tooth_and_claw_absorb.down&incoming_damage_1s" );
-  default_list -> add_action( this, "Frenzied Regeneration", "if=incoming_damage_3>(1+action.savage_defense.charges_fractional)*0.04*health.max",
-                              "Cast Frenzied Regeneration based on incoming damage, being more strict the closer we are to wasting SD charges." );
-  default_list -> add_action( this, "Savage Defense" );
   default_list -> add_action( this, "Barkskin" );
-  default_list -> add_talent( this, "Bristling Fur", "if=incoming_damage_4s>health.max*0.15" );
-  default_list -> add_talent( this, "Renewal", "if=incoming_damage_5>0.8*health.max" );
-  default_list -> add_talent( this, "Nature's Vigil", "if=!talent.incarnation.enabled|buff.son_of_ursoc.up|cooldown.incarnation.remains" );
-  default_list -> add_action( this, "Lacerate", "if=((remains<=duration*0.3)|(dot.lacerate.stack<3&dot.thrash_bear.remains>dot.thrash_bear.duration*0.3))&(buff.son_of_ursoc.up|buff.berserk.up)" );
-  default_list -> add_action( "thrash_bear,if=remains<=duration*0.3&(buff.son_of_ursoc.up|buff.berserk.up)" );
-  default_list -> add_talent( this, "Pulverize", "if=buff.pulverize.remains<gcd" );
-  default_list -> add_action( this, "Mangle" );
-  default_list -> add_action( "incarnation" );
-  default_list -> add_action( this, "Lacerate", "cycle_targets=1,if=remains<=duration*0.3|dot.lacerate.stack<3" );
-  default_list -> add_action( "thrash_bear,if=remains<=duration*0.3" );
+  default_list -> add_action( this, "Maul", "if=buff.tooth_and_claw.react&incoming_damage_1s&rage>=80" );
   default_list -> add_talent( this, "Cenarion Ward" );
-  default_list -> add_action( "thrash_bear,if=active_enemies>=3" );
+  default_list -> add_talent( this, "Renewal", "if=health.pct<30" );
+  default_list -> add_talent( this, "Heart of the Wild" );
+  default_list -> add_action( this, "Rejuvenation", "if=!ticking&buff.heart_of_the_wild.up" );
+  default_list -> add_talent( this, "Nature's Vigil" );
+  default_list -> add_action( this, "Healing Touch", "if=buff.dream_of_cenarius.react&health.pct<30" );
+  default_list -> add_talent( this, "Pulverize", "if=buff.pulverize.remains<0.5" );
+  default_list -> add_action( this, "Lacerate", "if=talent.pulverize.enabled&buff.pulverize.remains<=(3-dot.lacerate.stack)*gcd" );
+  default_list -> add_talent( this, "Incarnation" );
+  default_list -> add_action( this, "Mangle", "if=buff.son_of_ursoc.down" );
+  default_list -> add_action( "incarnation" );
+  default_list -> add_action( this, "Mangle" );
   default_list -> add_action( this, "Lacerate" );
 }
 

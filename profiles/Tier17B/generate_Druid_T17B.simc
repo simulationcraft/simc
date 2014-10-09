@@ -15,7 +15,7 @@ race=night_elf
 spec=guardian
 role=tank
 position=front
-talents=0101012
+talents=0301022
 head=primal_gladiators_headcover,id=111285
 neck=primal_gladiators_necklace_of_prowess,id=111080,enchant=gift_of_mastery
 shoulders=primal_gladiators_dragonhide_spaulders,id=111111

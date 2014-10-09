@@ -1162,7 +1162,7 @@ void action_t::execute()
 
 // action_t::calculate_multistrike_result ===================================
 
-result_e action_t::calculate_multistrike_result( action_state_t* s )
+result_e action_t::calculate_multistrike_result( action_state_t* s, dmg_e amount_type )
 {
   if ( ! s -> target ) return RESULT_NONE;
   if ( ! may_multistrike ) return RESULT_NONE;
@@ -1172,8 +1172,12 @@ result_e action_t::calculate_multistrike_result( action_state_t* s )
   {
     r = RESULT_MULTISTRIKE;
 
-    if ( rng().roll( std::max( s -> composite_crit(), 0.0 ) ) )
-      r = RESULT_MULTISTRIKE_CRIT;
+    if ( ( may_crit && ( amount_type == DMG_DIRECT || amount_type == HEAL_DIRECT || amount_type == ABSORB ) ) ||
+         ( tick_may_crit && ( amount_type == DMG_OVER_TIME || amount_type == HEAL_OVER_TIME ) ) )
+    {
+      if ( rng().roll( std::max( s -> composite_crit(), 0.0 ) ) )
+        r = RESULT_MULTISTRIKE_CRIT;
+    }
   }
 
   return r;
@@ -1200,7 +1204,7 @@ int action_t::schedule_multistrike( action_state_t* state, dmg_e type, double ti
   int n_strikes = 0;
   for ( int i = 0; i < 2; i++ )
   {
-    result_e r = calculate_multistrike_result( state );
+    result_e r = calculate_multistrike_result( state, type );
     if ( ! result_is_multistrike( r ) )
       continue;
 
