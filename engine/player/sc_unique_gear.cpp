@@ -58,6 +58,7 @@ namespace item
   void prismatic_prison_of_pride( special_effect_t&, const item_t& );
   void purified_bindings_of_immerseus( special_effect_t&, const item_t& );
   void thoks_tail_tip( special_effect_t&, const item_t& );
+  void cleave( special_effect_t&, const item_t& );
   /* Warlards of Draenor 6.0 */
   void blackiron_micro_crucible( special_effect_t&, const item_t& );
   void humming_blackiron_trigger( special_effect_t&, const item_t& );
@@ -228,6 +229,7 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 146019, 0,                                    item::readiness },
   { 146025, 0,                                    item::readiness },
   { 146051, 0,                                item::amplification },
+  { 146136, 0,                                       item::cleave },
 
   { 146183, 0,                       item::black_blood_of_yshaarj }, /* Black Blood of Y'Shaarj */
   { 146286, 0,                  item::skeers_bloodsoaked_talisman }, /* Skeer's Bloodsoaked Talisman */
@@ -1793,6 +1795,103 @@ void item::thoks_tail_tip( special_effect_t& effect,
 
   effect.type = SPECIAL_EFFECT_EQUIP;
   new dbc_proc_callback_t( item, effect );
+}
+
+template <typename T>
+struct cleave_t : public T
+{
+  cleave_t( const item_t* item, const std::string& name, school_e s ) :
+    T( name, item -> player )
+  {
+    this -> callbacks = false;
+    this -> may_crit = false;
+    this -> may_glance = false;
+    this -> may_miss = true;
+    this -> special = true;
+    this -> proc = true;
+    this -> background = true;
+    this -> school = s;
+    this -> aoe = 5;
+    if ( this -> type == ACTION_ATTACK )
+    {
+      this -> may_dodge = true;
+      this -> may_parry = true;
+      this -> may_block = true;
+    }
+  }
+
+  void init()
+  {
+    T::init();
+
+    this -> snapshot_flags = 0;
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const
+  {
+    tl.clear();
+
+    for ( size_t i = 0, actors = this -> sim -> target_non_sleeping_list.size(); i < actors; i++ )
+    {
+      player_t* t = this -> sim -> target_non_sleeping_list[ i ];
+
+      if ( t -> is_enemy() && ( t != this -> target ) )
+        tl.push_back( t );
+    }
+
+    return tl.size();
+  }
+
+  double target_armor( player_t* ) const
+  { return 0.0; }
+};
+
+void item::cleave( special_effect_t& effect,
+                   const item_t& item )
+{
+  maintenance_check( 528 );
+
+  struct cleave_callback_t : public dbc_proc_callback_t
+  {
+    cleave_t<spell_t>* cleave_spell;
+    cleave_t<attack_t>* cleave_attack;
+
+    cleave_callback_t( const item_t& i, const special_effect_t& data ) :
+      dbc_proc_callback_t( i, data )
+    {
+      cleave_spell = new cleave_t<spell_t>( &i, "cleave_spell", SCHOOL_NATURE );
+      cleave_attack = new cleave_t<attack_t>( &i, "cleave_attack", SCHOOL_PHYSICAL );
+
+    }
+
+    void execute( action_t* action, action_state_t* state )
+    {
+      action_t* a = 0;
+
+      if ( action -> type == ACTION_ATTACK )
+        a = cleave_attack;
+      else if ( action -> type == ACTION_SPELL )
+        a = cleave_spell;
+      // TODO: Heal
+
+      if ( a )
+      {
+        a -> base_dd_min = a -> base_dd_max = state -> result_amount;
+        a -> target = state -> target;
+        a -> schedule_execute();
+      }
+    }
+  };
+
+  player_t* p = item.player;
+  const random_prop_data_t& budget = p -> dbc.random_property( item.item_level() );
+  const spell_data_t* cleave_driver_spell = p -> find_spell( effect.spell_id );
+
+  // Needs a damaging result
+  effect.proc_flags2_ = PF2_ALL_HIT;
+  effect.proc_chance_ = budget.p_epic[ 0 ] * cleave_driver_spell -> effectN( 1 ).m_average() / 10000.0;
+
+  new cleave_callback_t( item, effect );
 }
 
 } // UNNAMED NAMESPACE
