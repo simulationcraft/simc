@@ -2648,14 +2648,14 @@ std::vector<double> sc_timeline_t::build_divisor_timeline( const extended_sample
 {
   std::vector<double> divisor_timeline;
   // divisor_timeline is necessary because not all iterations go the same length of time
-  size_t max_buckets = static_cast<size_t>( ceil( simulation_length.max() / bin_size ) );
+  size_t max_buckets = static_cast<size_t>( floor( simulation_length.max() / bin_size ) + 1);
   divisor_timeline.assign( max_buckets, 0.0 );
 
   size_t num_timelines = simulation_length.data().size();
   for ( size_t i = 0; i < num_timelines; i++ )
   {
     size_t last = static_cast<size_t>( floor( simulation_length.data()[ i ] / bin_size ) );
-    assert( last <= divisor_timeline.size() ); // We created it with max length
+    assert( last < divisor_timeline.size() ); // We created it with max length
 
     static const bool use_old_behaviour = true;
     if ( use_old_behaviour )
