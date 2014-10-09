@@ -41,12 +41,11 @@ actions+=/haunt,if=shard_react&!talent.soulburn_haunt.enabled&!in_flight_to_targ
 actions+=/haunt,if=shard_react&talent.soulburn_haunt.enabled&!in_flight_to_target&!buff.soulburn.up&buff.haunting_spirits.remains>4&soul_shard=4
 actions+=/soulburn,if=shard_react&talent.soulburn_haunt.enabled&buff.soulburn.down&(buff.haunting_spirits.down|soul_shard=4)
 actions+=/haunt,if=shard_react&talent.soulburn_haunt.enabled&!in_flight_to_target&((buff.soulburn.up&buff.haunting_spirits.remains<5)|soul_shard=4)
-actions+=/agony,cycle_targets=1,if=target.time_to_die>16&remains<=(duration*0.3)&((talent.cataclysm.enabled&remains<=(cooldown.cataclysm.remains+action.cataclysm.cast_time))|!talent.cataclysm.enabled)
-actions+=/unstable_affliction,cycle_targets=1,if=target.time_to_die>10&remains<=(duration*0.3)
-actions+=/corruption,cycle_targets=1,if=target.time_to_die>12&remains<=(duration*0.3)
+actions+=/agony,cycle_targets=1,if=remains<=(duration*0.3)&((talent.cataclysm.enabled&remains<=(cooldown.cataclysm.remains+action.cataclysm.cast_time))|!talent.cataclysm.enabled)
+actions+=/unstable_affliction,cycle_targets=1,if=remains<=(duration*0.3)
+actions+=/corruption,cycle_targets=1,if=remains<=(duration*0.3)
 actions+=/life_tap,if=mana.pct<40
 actions+=/drain_soul,interrupt=1,chain=1
-actions+=/agony,cycle_targets=1,moving=1,if=mana.pct>50
 actions+=/life_tap
 
 head=shadow_councils_hood,id=115586,bonus_id=566
