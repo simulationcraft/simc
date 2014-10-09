@@ -1523,7 +1523,8 @@ struct ambush_t : public rogue_attack_t
   {
     double c = rogue_attack_t::composite_crit();
 
-    if ( ! p() -> reflection_attack && p() -> buffs.enhanced_vendetta -> up() )
+    // Shadow Reflection benefits from the owner's Enhanced Vendetta
+    if ( p() -> buffs.enhanced_vendetta -> up() )
       c += p() -> buffs.enhanced_vendetta -> data().effectN( 1 ).percent();
 
     return c;
@@ -1668,7 +1669,8 @@ struct dispatch_t : public rogue_attack_t
   {
     double c = rogue_attack_t::composite_crit();
 
-    if ( ! p() -> reflection_attack && p() -> buffs.enhanced_vendetta -> up() )
+    // Shadow Reflection benefits from the owner's Enhanced Vendetta
+    if ( p() -> buffs.enhanced_vendetta -> up() )
       c += p() -> buffs.enhanced_vendetta -> data().effectN( 1 ).percent();
 
     return c;
@@ -1678,7 +1680,8 @@ struct dispatch_t : public rogue_attack_t
   {
     double m = rogue_attack_t::action_multiplier();
 
-    if ( ! p() -> reflection_attack && p() -> perk.empowered_envenom -> ok() && p() -> buffs.envenom -> up() )
+    // Shadow Reflection benefits from the owner's Empowered Envenom
+    if ( p() -> perk.empowered_envenom -> ok() && p() -> buffs.envenom -> up() )
       m *= 1.0 + p() -> perk.empowered_envenom -> effectN( 1 ).percent();
 
     return m;
@@ -1745,7 +1748,8 @@ struct envenom_t : public rogue_attack_t
   {
     double c = rogue_attack_t::composite_crit();
 
-    if ( ! p() -> reflection_attack && p() -> buffs.enhanced_vendetta -> up() )
+    // Shadow Reflection benefits from the owner's Enhanced Vendetta
+    if ( p() -> buffs.enhanced_vendetta -> up() )
       c += p() -> buffs.enhanced_vendetta -> data().effectN( 1 ).percent();
 
     return c;
@@ -2133,26 +2137,6 @@ struct mutilate_strike_t : public rogue_attack_t
                             p() -> gains.t17_2pc_assassination,
                             this );
   }
-
-  double action_multiplier() const
-  {
-    double m = rogue_attack_t::action_multiplier();
-
-    if ( ! p() -> reflection_attack && p() -> perk.empowered_envenom -> ok() && p() -> buffs.envenom -> up() )
-      m *= 1.0 + p() -> perk.empowered_envenom -> effectN( 1 ).percent();
-
-    return m;
-  }
-
-  double composite_crit() const
-  {
-    double c = rogue_attack_t::composite_crit();
-
-    if ( ! p() -> reflection_attack && p() -> buffs.enhanced_vendetta -> up() )
-      c += p() -> buffs.enhanced_vendetta -> data().effectN( 1 ).percent();
-
-    return c;
-  }
 };
 
 struct mutilate_t : public rogue_attack_t
@@ -2166,6 +2150,7 @@ struct mutilate_t : public rogue_attack_t
   {
     ability_type = MUTILATE;
     may_crit = false;
+    snapshot_flags |= STATE_MUL_DA;
 
     if ( p -> main_hand_weapon.type != WEAPON_DAGGER ||
          p ->  off_hand_weapon.type != WEAPON_DAGGER )
@@ -2195,6 +2180,28 @@ struct mutilate_t : public rogue_attack_t
     return c;
   }
 
+  double action_multiplier() const
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    // Shadow Reflection benefits from the owner's Empowered Envenom
+    if ( p() -> perk.empowered_envenom -> ok() && p() -> buffs.envenom -> up() )
+      m *= 1.0 + p() -> perk.empowered_envenom -> effectN( 1 ).percent();
+
+    return m;
+  }
+
+  double composite_crit() const
+  {
+    double c = rogue_attack_t::composite_crit();
+
+    // Shadow Reflection benefits from the owner's Enhanced Vendetta
+    if ( p() -> buffs.enhanced_vendetta -> up() )
+      c += p() -> buffs.enhanced_vendetta -> data().effectN( 1 ).percent();
+
+    return c;
+  }
+
   void execute()
   {
     rogue_attack_t::execute();
@@ -2203,11 +2210,13 @@ struct mutilate_t : public rogue_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
+      action_state_t* s = mh_strike -> get_state( execute_state );
       mh_strike -> target = execute_state -> target;
-      mh_strike -> execute();
+      mh_strike -> schedule_execute( s );
 
+      s = oh_strike -> get_state( execute_state );
       oh_strike -> target = execute_state -> target;
-      oh_strike -> execute();
+      oh_strike -> schedule_execute( s );
     }
 
     p() -> buffs.enhanced_vendetta -> expire();
@@ -3882,6 +3891,7 @@ struct shadow_reflection_pet_t : public pet_t
     {
       may_crit = false;
       weapon_multiplier = 0;
+      snapshot_flags |= STATE_MUL_DA;
 
       mh_strike = new sr_mutilate_strike_t( p, "mutilate_mh", data().effectN( 2 ).trigger() );
       mh_strike -> weapon = &( p -> main_hand_weapon );
@@ -4855,7 +4865,8 @@ void rogue_t::create_buffs()
 
   buffs.fof_fod           = new buffs::fof_fod_t( this );
 
-  buffs.enhanced_vendetta = buff_creator_t( this, "enhanced_vendetta", perk.enhanced_vendetta );
+  buffs.enhanced_vendetta = buff_creator_t( this, "enhanced_vendetta", find_spell( 158108 ) )
+                            .chance( perk.enhanced_vendetta -> ok() );
   buffs.shadow_reflection = new buffs::shadow_reflection_t( this );
   buffs.death_from_above  = buff_creator_t( this, "death_from_above", spell.death_from_above )
                             .quiet( true );
