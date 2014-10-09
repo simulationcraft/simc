@@ -923,12 +923,10 @@ static void trigger_sweeping_strikes( action_state_t* s )
     {
       tl.clear();
 
-      for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+      for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ )
       {
-        player_t* t = sim -> actor_list[i];
-
-        if ( !t -> is_sleeping() && t -> is_enemy() && ( t != target ) )
-          tl.push_back( t );
+        if ( sim -> target_non_sleeping_list[i] != target )
+          tl.push_back( sim -> target_non_sleeping_list[i] );
       }
 
       return tl.size();
@@ -974,12 +972,10 @@ static void trigger_sweeping_strikes( action_state_t* s )
     {
       tl.clear();
 
-      for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+      for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ )
       {
-        player_t* t = sim -> actor_list[i];
-
-        if ( !t -> is_sleeping() && t -> is_enemy() && ( t != target ) )
-          tl.push_back( t );
+        if ( sim -> target_non_sleeping_list[i] != target )
+          tl.push_back( sim -> target_non_sleeping_list[i] );
       }
 
       return tl.size();
