@@ -4,8 +4,7 @@ race=goblin
 role=spell
 position=back
 professions=blacksmithing=600/engineering=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!002202.
-glyphs=mind_flay/dark_archangel/shadowy_friends/shadow_ravens
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!001212.
 spec=shadow
 
 # This default action priority list is automatically created based on your character.
@@ -167,32 +166,32 @@ actions.cop_advanced_mfi_dots+=/insanity,if=active_enemies<=2,interrupt=1,chain=
 actions.cop_advanced_mfi_dots+=/mind_spike,if=(target.dot.shadow_word_pain.ticking&target.dot.shadow_word_pain.remains<gcd*2)|(target.dot.vampiric_touch.ticking&target.dot.vampiric_touch.remains<gcd*2)
 actions.cop_advanced_mfi_dots+=/mind_flay,chain=1,interrupt=1
 
-head=hood_of_the_ternion_glory,id=99360,upgrade=4,gems=sinister_primal_5int_10mastery_11int
+head=hood_of_the_ternion_glory,id=99360,upgrade=4,gems=sinister_primal_20crit_11int
 neck=ashflare_pendant,id=105539,upgrade=4
-shoulders=shoulderguards_of_the_ternion_glory,id=99363,upgrade=4,gems=5int_10mastery_5int_10mastery_8int,enchant=15int_5crit
-back=xingho_breath_of_yulon,id=102246,upgrade=4,gems=5int_10haste_4int,enchant=12int
-chest=raiment_of_the_ternion_glory,id=99362,upgrade=4,gems=5int_10haste_5int_10haste_5int_10haste_11int,enchant=5all
+shoulders=shoulderguards_of_the_ternion_glory,id=99363,upgrade=4,gems=20crit_20crit_8int,enchant=15int_5crit
+back=xingho_breath_of_yulon,id=102246,upgrade=4,gems=20crit_4int,enchant=12int
+chest=mantid_viziers_robes,id=105592,upgrade=4,gems=20crit_20crit_20haste_11int,enchant=5all
 wrists=bracers_of_sonic_projection,id=105626,upgrade=4,enchant=12int
-hands=gloves_of_the_ternion_glory,id=99359,upgrade=4,gems=5int_10mastery_5int_10mastery_8int,enchant=11haste
-waist=belt_of_the_broken_pact,id=105646,upgrade=4,gems=5int_10mastery_20mastery_20haste_8int
-legs=leggings_of_furious_flame,id=105516,upgrade=4,gems=16spi_16spi_8int,enchant=19int_11crit
-feet=boneinlaid_sandals,id=105493,upgrade=4,gems=20haste_4int,enchant=11haste
-finger1=signet_of_the_dinomancers,id=105606,upgrade=4,gems=5int_10mastery_4haste
-finger2=iyyokuks_hereditary_seal,id=105628,upgrade=4
-trinket1=purified_bindings_of_immerseus,id=105422,upgrade=4
-trinket2=kardris_toxic_totem,id=105540,upgrade=4
-main_hand=horned_mace_of_the_old_ones,id=105649,upgrade=4,gems=5int_10mastery_4int,enchant=jade_spirit
-off_hand=revelations_of_yshaarj,id=105650,upgrade=4,gems=5int_10mastery_4int,enchant=11int
+hands=gloves_of_the_ternion_glory,id=99359,upgrade=4,gems=20crit_20crit_8int,enchant=11haste
+waist=miasmic_skullbelt,id=105569,upgrade=4,gems=20crit_20crit_20crit_8int
+legs=leggings_of_the_ternion_glory,id=99361,upgrade=4,gems=20crit_20crit_8int,enchant=19int_11crit
+feet=skydancer_boots,id=105496,upgrade=4,gems=20crit_4crit,enchant=11crit
+finger1=extinguished_ember_of_galakras,id=105498,upgrade=4
+finger2=petrified_pennyroyal_ring,id=105443,upgrade=4
+trinket1=kardris_toxic_totem,id=105540,upgrade=4
+trinket2=purified_bindings_of_immerseus,id=105422,upgrade=4
+main_hand=rikkals_bloody_scalpel,id=105627,upgrade=4,gems=20crit_4int,enchant=jade_spirit
+off_hand=juggernauts_power_core,id=105521,upgrade=4,gems=20crit_4int,enchant=11int
 
 # Gear Summary
 # gear_strength=5
 # gear_agility=5
 # gear_stamina=1660
-# gear_intellect=1241
+# gear_intellect=1176
 # gear_spell_power=640
-# gear_crit_rating=354
-# gear_haste_rating=688
-# gear_mastery_rating=599
+# gear_crit_rating=979
+# gear_haste_rating=654
+# gear_mastery_rating=150
 # gear_armor=384
 # gear_multistrike_rating=107
 # meta_gem=sinister_primal
