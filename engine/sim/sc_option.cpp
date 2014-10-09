@@ -55,14 +55,14 @@ protected:
 };
 
 
-enum option_assignement_e {
-  ASSIGN,
+enum option_operator_e {
+  ASSIGNMENT,
   APPEND,
 };
 
 /* Generic option class, tries to handle the most common numeric and string based options
  */
-template<class T, option_assignement_e ass = ASSIGN>
+template<class T, option_operator_e op = ASSIGNMENT>
 struct opts_generic_t : public opts_helper_t<T>
 {
   opts_generic_t( const std::string& name, T& ref ) :
@@ -75,9 +75,9 @@ protected:
       return false;
 
     T v = util::from_string<T>( value );
-    switch ( ass )
+    switch ( op )
     {
-    case ASSIGN:
+    case ASSIGNMENT:
       this -> _ref = v;
       break;
     case APPEND:
@@ -89,9 +89,9 @@ protected:
   std::ostream& print( std::ostream& stream ) const override
   {
      stream << this -> name();
-     switch ( ass )
+     switch ( op )
      {
-     case ASSIGN:
+     case ASSIGNMENT:
        stream << "=";
        break;
      case APPEND:
