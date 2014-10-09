@@ -5753,7 +5753,7 @@ struct action_t : public noncopyable
   virtual timespan_t tick_time( double haste ) const;
   virtual timespan_t travel_time() const;
   virtual result_e calculate_result( action_state_t* /* state */ ) { assert( false ); return RESULT_UNKNOWN; }
-  virtual result_e calculate_multistrike_result( action_state_t* /* state */ );
+  virtual result_e calculate_multistrike_result( action_state_t* /* state */, dmg_e /* type */ );
   virtual block_result_e calculate_block_result( action_state_t* s );
   virtual double calculate_direct_amount( action_state_t* state );
   virtual double calculate_tick_amount( action_state_t* state, double multiplier );
