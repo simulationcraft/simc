@@ -5467,11 +5467,12 @@ void warlock_t::apl_affliction()
     add_action ( "Haunt","if=shard_react&talent.soulburn_haunt.enabled&!in_flight_to_target&!buff.soulburn.up&buff.haunting_spirits.remains>4&soul_shard=4");
   add_action( "Soulburn", "if=shard_react&talent.soulburn_haunt.enabled&buff.soulburn.down&(buff.haunting_spirits.down|soul_shard=4)" );
   add_action( "Haunt", "if=shard_react&talent.soulburn_haunt.enabled&!in_flight_to_target&((buff.soulburn.up&buff.haunting_spirits.remains<5)|soul_shard=4)" );
-  add_action( "Agony", "cycle_targets=1,if=remains<=(duration*0.3)&((talent.cataclysm.enabled&remains<=(cooldown.cataclysm.remains+action.cataclysm.cast_time))|!talent.cataclysm.enabled)" );
-  add_action( "Unstable Affliction", "cycle_targets=1,if=remains<=(duration*0.3)" );
-  add_action( "Corruption", "cycle_targets=1,if=remains<=(duration*0.3)" );
+  add_action( "Agony", "cycle_targets=1,if=target.time_to_die>16&remains<=(duration*0.3)&((talent.cataclysm.enabled&remains<=(cooldown.cataclysm.remains+action.cataclysm.cast_time))|!talent.cataclysm.enabled)" );
+  add_action( "Unstable Affliction", "cycle_targets=1,if=target.time_to_die>10&remains<=(duration*0.3)" );
+  add_action( "Corruption", "cycle_targets=1,if=target.time_to_die>12&remains<=(duration*0.3)" );
   add_action( "Life Tap", "if=mana.pct<40" );
   add_action( "Drain Soul", "interrupt=1,chain=1" );
+  add_action( "Agony", "cycle_targets=1,moving=1,if=mana.pct>50");
 }
 
 void warlock_t::apl_demonology()
