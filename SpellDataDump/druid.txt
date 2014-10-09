@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18996)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 19000)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 1
@@ -7608,7 +7608,7 @@ Description      : $@spelldesc165432
 Name             : Lunar Peak (id=171743) [Spell Family (7)] 
 Class            : Druid
 Duration         : 5 seconds
-Stacks           : 1 initial, 1 maximum
+Stacks           : 2 initial, 2 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell

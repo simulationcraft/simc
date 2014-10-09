@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18996)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 19000)
 Name             : Mend Pet (id=136) [Scaling Spell (3), Spell Family (9)] 
 Class            : Hunter
 Spell Level      : 16
@@ -6568,7 +6568,7 @@ Effects          :
 
 Name             : Steady Focus (id=177667) [Spell Family (9), Passive] 
 Class            : Hunter
-Spell Level      : 63
+Spell Level      : 1
 Proc Chance      : 100%
 Proc Flags       : ........ x...x... x....... ........ 
                  : Yellow Ranged, AOE Hostile Spell, Hostile Spell

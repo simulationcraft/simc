@@ -100,10 +100,10 @@ main_hand=gugrokks_smasher,id=110042,bonus_id=524,enchant=mark_of_warsong
 off_hand=gugrokks_smasher,id=110042,bonus_id=524,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_agility=1933
-# gear_stamina=2426
+# gear_agility=1937
+# gear_stamina=2428
 # gear_crit_rating=67
-# gear_haste_rating=1278
+# gear_haste_rating=1280
 # gear_mastery_rating=799
 # gear_armor=1111
-# gear_multistrike_rating=236
+# gear_multistrike_rating=238

@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18996)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 19000)
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6080,9 +6080,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219859)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.89100
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.62500
 #2 (id=219862)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.89100 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.62500 | Radius: 0 - 8 yards
 Description      : Consumes up to 4 Chi to cause the target to explode with Chi energy, causing additional effects based on Chi consumed:
 
 1+ Chi: Deals Nature damage to an enemy equal to $s1 plus $s1 per Chi consumed.

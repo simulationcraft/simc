@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18996)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 19000)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
 Resource         : 35 Energy
@@ -340,7 +340,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... ....x
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=586)      : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.07144
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06850
 #2 (id=239409)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 1 | Scaled Value: 1
 Description      : Finishing move that causes damage over time.  Lasts longer per combo point:
@@ -358,9 +358,8 @@ $dur3=$?s56801[${6+6+4}][${6+6}]
 $dur4=$?s56801[${6+8+4}][${6+8}]
 $dur5=$?s56801[${6+10+4}][${6+10}]
 $sang=$?s79147[${1.1*1.2}][${1*1}]
-$resolve=$?s84601[${1.2}][${1}]
-$imprupture=$?s157570[${1.2}][${1}]
-$bonus=$?s31220[${0.82*(((100+$76808m1))/100)*$<sang>}][${0.88*$<resolve>*$<imprupture>}]
+$resolve=$?s84601[${1.15}][${1}]
+$bonus=$?s31220[${(((100+$76808m1))/100)*$<sang>}][${$<resolve>}]
 
 Name             : Feint (id=1966) [Spell Family (8)] 
 Class            : Rogue

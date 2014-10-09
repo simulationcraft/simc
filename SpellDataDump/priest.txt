@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18996)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 19000)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 Resource         : 2.4% Base Mana (3840 @Level 100)
@@ -722,7 +722,7 @@ Effects          :
 
 Name             : Desperate Prayer (id=19236) [Scaling Spell (7), Spell Family (6)] 
 Class            : Priest
-Spell Level      : 18
+Spell Level      : 1
 Cooldown         : 120 seconds
 Affecting spells : Enhanced Leap of Faith (157146)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 

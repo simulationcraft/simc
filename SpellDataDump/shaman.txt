@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 18996)
+SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 19000)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -99,7 +99,7 @@ Description      : Fires a bolt of lightning at the target, dealing $s1 Nature d
 
 Name             : Chain Lightning (id=421) [Spell Family (11)] 
 Class            : Shaman
-Resource         : 3.5% Base Mana (1120 @Level 100)
+Resource         : 2% Base Mana (640 @Level 100)
 Spell Level      : 28
 Range            : 30 yards
 Cast Time        : 2 seconds
