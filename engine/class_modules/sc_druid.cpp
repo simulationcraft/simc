@@ -1427,7 +1427,7 @@ struct moonkin_form_t : public druid_buff_t< buff_t >
   {
     base_t::expire_override();
 
-    sim -> auras.haste -> decrement();
+    sim -> auras.mastery -> decrement();
   }
 
   virtual void start( int stacks, double value, timespan_t duration )
@@ -1437,8 +1437,8 @@ struct moonkin_form_t : public druid_buff_t< buff_t >
 
     base_t::start( stacks, value, duration );
 
-    if ( ! sim -> overrides.haste )
-      sim -> auras.haste -> trigger();
+    if ( ! sim -> overrides.mastery )
+      sim -> auras.mastery -> trigger();
   }
 };
 
