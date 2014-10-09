@@ -3,7 +3,7 @@ level=100
 race=night_elf
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Ub!.0.0.01
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Ub!.2.0.11
 spec=guardian
 
 # This default action priority list is automatically created based on your character.
@@ -14,38 +14,36 @@ spec=guardian
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_stamina_flask
+actions.precombat=flask,type=greater_draenic_agility_flask
 actions.precombat+=/food,type=sleeper_surprise
 actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions.precombat+=/bear_form
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/cenarion_ward
 
 # Executed every time the actor is available.
 
-actions=blood_fury
+actions=auto_attack
+actions+=/skull_bash
+actions+=/savage_defense
+actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
 actions+=/use_item,slot=trinket1
-actions+=/auto_attack
-actions+=/skull_bash
-actions+=/maul,if=buff.tooth_and_claw.react&buff.tooth_and_claw_absorb.down&incoming_damage_1s
-# Cast Frenzied Regeneration based on incoming damage, being more strict the closer we are to wasting SD charges.
-actions+=/frenzied_regeneration,if=incoming_damage_3>(1+action.savage_defense.charges_fractional)*0.04*health.max
-actions+=/savage_defense
 actions+=/barkskin
-actions+=/bristling_fur,if=incoming_damage_4s>health.max*0.15
-actions+=/renewal,if=incoming_damage_5>0.8*health.max
-actions+=/natures_vigil,if=!talent.incarnation.enabled|buff.son_of_ursoc.up|cooldown.incarnation.remains
-actions+=/lacerate,if=((remains<=duration*0.3)|(dot.lacerate.stack<3&dot.thrash_bear.remains>dot.thrash_bear.duration*0.3))&(buff.son_of_ursoc.up|buff.berserk.up)
-actions+=/thrash_bear,if=remains<=duration*0.3&(buff.son_of_ursoc.up|buff.berserk.up)
-actions+=/pulverize,if=buff.pulverize.remains<gcd
-actions+=/mangle
-actions+=/incarnation
-actions+=/lacerate,cycle_targets=1,if=remains<=duration*0.3|dot.lacerate.stack<3
-actions+=/thrash_bear,if=remains<=duration*0.3
+actions+=/maul,if=buff.tooth_and_claw.react&incoming_damage_1s&rage>=80
 actions+=/cenarion_ward
-actions+=/thrash_bear,if=active_enemies>=3
+actions+=/renewal,if=health.pct<30
+actions+=/heart_of_the_wild
+actions+=/rejuvenation,if=!ticking&buff.heart_of_the_wild.up
+actions+=/natures_vigil
+actions+=/healing_touch,if=buff.dream_of_cenarius.react&health.pct<30
+actions+=/pulverize,if=buff.pulverize.remains<0.5
+actions+=/lacerate,if=talent.pulverize.enabled&buff.pulverize.remains<=(3-dot.lacerate.stack)*gcd
+actions+=/mangle,if=buff.son_of_ursoc.down
+actions+=/incarnation
+actions+=/mangle
 actions+=/lacerate
 
 head=primal_gladiators_headcover,id=111285
