@@ -4425,7 +4425,7 @@ void rogue_t::init_action_list()
     def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=45" );
     def -> add_action( this, "Vanish", "if=energy>=45&energy<=75&combo_points<=3&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down" );
     def -> add_talent( this, "Marked for Death", "if=combo_points=0" );
-    def -> add_talent( this, "Shadow Reflection" );
+    def -> add_talent( this, "Shadow Reflection", "if=buff.shadow_dance.up" );
 
     // Rotation
     def -> add_action( "run_action_list,name=generator,if=talent.anticipation.enabled&anticipation_charges<4&buff.slice_and_dice.up&dot.rupture.remains>2&(buff.slice_and_dice.remains<6|dot.rupture.remains<4)" );
@@ -4436,7 +4436,7 @@ void rogue_t::init_action_list()
     // Combo point generators
     action_priority_list_t* gen = get_action_priority_list( "generator", "Combo point generators" );
     gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool,if=buff.master_of_subtlety.down&buff.shadow_dance.down&debuff.find_weakness.down&(energy+cooldown.shadow_dance.remains*energy.regen<80|energy+cooldown.vanish.remains*energy.regen<60)" );
-    gen -> add_action( this, "Fan of Knives", "if=active_enemies>=4" );
+    gen -> add_action( this, "Fan of Knives", "if=active_enemies>1" );
     gen -> add_action( this, "Hemorrhage", "if=(remains<8&target.time_to_die>10)|position_front" );
     gen -> add_talent( this, "Shuriken Toss", "if=energy<65&energy.regen<16" );
     gen -> add_action( this, "Backstab" );
@@ -4445,8 +4445,8 @@ void rogue_t::init_action_list()
     // Combo point finishers
     action_priority_list_t* finisher = get_action_priority_list( "finisher", "Combo point finishers" );
     finisher -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<4" );
-    finisher -> add_action( this, "Rupture", "if=(!ticking|remains<duration*0.3)&active_enemies<3" );
-    finisher -> add_action( this, "Crimson Tempest", "if=(active_enemies>1&dot.crimson_tempest_dot.ticks_remain<=2&combo_points=5)|active_enemies>=5" );
+    finisher -> add_action( this, "Rupture", "cycle_targets=1,if=(!ticking|remains<duration*0.3)&active_enemies<=3" );
+    finisher -> add_action( this, "Crimson Tempest", "if=(active_enemies>3&dot.crimson_tempest_dot.ticks_remain<=2&combo_points=5)|active_enemies>=5" );
     finisher -> add_action( this, "Eviscerate", "if=active_enemies<4|(active_enemies>3&dot.crimson_tempest_dot.ticks_remain>=2)" );
     finisher -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool" );
 

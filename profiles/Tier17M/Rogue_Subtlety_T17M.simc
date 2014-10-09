@@ -1,10 +1,10 @@
 rogue="Rogue_Subtlety_T17M"
 level=100
-race=troll
+race=blood_elf
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#cb!2000020
-glyphs=energy
+talents=http://us.battle.net/wow/en/tool/talent-calculator#cb!2000021
+glyphs=energy/hemorrhaging_veins
 spec=subtlety
 
 # This default action priority list is automatically created based on your character.
@@ -41,7 +41,7 @@ actions+=/shadow_dance,if=energy>=75&buff.stealth.down&buff.vanish.down&debuff.f
 actions+=/pool_resource,for_next=1,extra_amount=45
 actions+=/vanish,if=energy>=45&energy<=75&combo_points<=3&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
 actions+=/marked_for_death,if=combo_points=0
-actions+=/shadow_reflection
+actions+=/shadow_reflection,if=buff.shadow_dance.up
 actions+=/run_action_list,name=generator,if=talent.anticipation.enabled&anticipation_charges<4&buff.slice_and_dice.up&dot.rupture.remains>2&(buff.slice_and_dice.remains<6|dot.rupture.remains<4)
 actions+=/run_action_list,name=finisher,if=combo_points=5
 actions+=/run_action_list,name=generator,if=combo_points<4|energy>80|talent.anticipation.enabled
@@ -50,7 +50,7 @@ actions+=/run_action_list,name=pool
 # Combo point generators
 
 actions.generator=run_action_list,name=pool,if=buff.master_of_subtlety.down&buff.shadow_dance.down&debuff.find_weakness.down&(energy+cooldown.shadow_dance.remains*energy.regen<80|energy+cooldown.vanish.remains*energy.regen<60)
-actions.generator+=/fan_of_knives,if=active_enemies>=4
+actions.generator+=/fan_of_knives,if=active_enemies>1
 actions.generator+=/hemorrhage,if=(remains<8&target.time_to_die>10)|position_front
 actions.generator+=/shuriken_toss,if=energy<65&energy.regen<16
 actions.generator+=/backstab
@@ -59,8 +59,8 @@ actions.generator+=/run_action_list,name=pool
 # Combo point finishers
 
 actions.finisher=slice_and_dice,if=buff.slice_and_dice.remains<4
-actions.finisher+=/rupture,if=(!ticking|remains<duration*0.3)&active_enemies<3
-actions.finisher+=/crimson_tempest,if=(active_enemies>1&dot.crimson_tempest_dot.ticks_remain<=2&combo_points=5)|active_enemies>=5
+actions.finisher+=/rupture,cycle_targets=1,if=(!ticking|remains<duration*0.3)&active_enemies<=3
+actions.finisher+=/crimson_tempest,if=(active_enemies>3&dot.crimson_tempest_dot.ticks_remain<=2&combo_points=5)|active_enemies>=5
 actions.finisher+=/eviscerate,if=active_enemies<4|(active_enemies>3&dot.crimson_tempest_dot.ticks_remain>=2)
 actions.finisher+=/run_action_list,name=pool
 
@@ -69,17 +69,17 @@ actions.finisher+=/run_action_list,name=pool
 actions.pool=preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
 
 head=poisoners_helmet,id=115572,bonus_id=567
-neck=engineers_grounded_gorget,id=113892,bonus_id=567,enchant=gift_of_multistrike
+neck=darklight_necklace,id=113865,bonus_id=567,enchant=gift_of_critical_strike
 shoulders=poisoners_spaulders,id=115574,bonus_id=567
-back=drape_of_the_dark_hunt,id=113971,bonus_id=567,enchant=gift_of_multistrike
+back=drape_of_the_dark_hunt,id=113971,bonus_id=567,enchant=gift_of_critical_strike
 chest=poisoners_tunic,id=115570,bonus_id=567
 wrists=bracers_of_shattered_stalactites,id=113935,bonus_id=567
 hands=poisoners_gloves,id=115571,bonus_id=567
 waist=conductors_multipocket_girdle,id=113964,bonus_id=567
 legs=shattering_smash_leggings,id=113989,bonus_id=567
-feet=treads_of_the_dark_hunt,id=113974,bonus_id=567
-finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_multistrike
-finger2=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_multistrike
+feet=furnace_tenders_treads,id=113895,bonus_id=567
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_critical_strike
+finger2=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_critical_strike
 trinket1=scales_of_doom,id=113612,bonus_id=567
 trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=567
 main_hand=oregorgers_acidetched_gutripper,id=113874,bonus_id=567,enchant=mark_of_the_frostwolf
@@ -88,11 +88,11 @@ off_hand=oregorgers_acidetched_gutripper,id=113874,bonus_id=567,enchant=mark_of_
 # Gear Summary
 # gear_agility=3538
 # gear_stamina=4474
-# gear_crit_rating=867
+# gear_crit_rating=1406
 # gear_haste_rating=338
-# gear_mastery_rating=1062
+# gear_mastery_rating=833
 # gear_armor=1147
-# gear_multistrike_rating=1790
+# gear_multistrike_rating=1496
 # gear_versatility_rating=122
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
