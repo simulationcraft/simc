@@ -2467,6 +2467,7 @@ struct mind_sear_t final : public priest_spell_t
     may_crit     = false;
     hasted_ticks = false;
     dynamic_tick_action = true;
+    tick_zero    = true;
 
     tick_action = new mind_sear_tick_t( p, p.find_class_spell( "Mind Sear" ) );
   }
