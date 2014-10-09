@@ -2734,6 +2734,24 @@ struct death_from_above_t : public rogue_attack_t
     aoe = -1;
   }
 
+  double action_multiplier() const
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    // DFA benefits from Subtlety Mastery, we do not model it as a conventional
+    // finisher, so it needs to be explicitly put here
+    if ( p() -> mastery.executioner -> ok() )
+      m *= 1.0 + p() -> cache.mastery_value();
+
+    return m;
+  }
+
+  double attack_direct_power_coefficient( const action_state_t* ) const
+  {
+    return attack_power_mod.direct / player -> resources.max[ RESOURCE_COMBO_POINT ] *
+           player -> resources.current[ RESOURCE_COMBO_POINT ];
+  }
+
   void execute()
   {
     rogue_attack_t::execute();
@@ -4492,9 +4510,10 @@ void rogue_t::init_action_list()
     // Combo point finishers
     action_priority_list_t* finisher = get_action_priority_list( "finisher", "Combo point finishers" );
     finisher -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<4" );
-    finisher -> add_action( this, "Rupture", "cycle_targets=1,if=(!ticking|remains<duration*0.3)&active_enemies<=3" );
-    finisher -> add_action( this, "Crimson Tempest", "if=(active_enemies>3&dot.crimson_tempest_dot.ticks_remain<=2&combo_points=5)|active_enemies>=5" );
-    finisher -> add_action( this, "Eviscerate", "if=active_enemies<4|(active_enemies>3&dot.crimson_tempest_dot.ticks_remain>=2)" );
+    finisher -> add_talent( this, "Death from Above" );
+    finisher -> add_action( this, "Rupture", "cycle_targets=1,if=(!ticking|remains<duration*0.3)&active_enemies<=3&(cooldown.death_from_above.remains>0|!talent.death_from_above.enabled)" );
+    finisher -> add_action( this, "Crimson Tempest", "if=(active_enemies>3&dot.crimson_tempest_dot.ticks_remain<=2&combo_points=5)|active_enemies>=5&(cooldown.death_from_above.remains>0|!talent.death_from_above.enabled)" );
+    finisher -> add_action( this, "Eviscerate", "if=active_enemies<4|(active_enemies>3&dot.crimson_tempest_dot.ticks_remain>=2)&(cooldown.death_from_above.remains>0|!talent.death_from_above.enabled)" );
     finisher -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool" );
 
     // Resource pooling
