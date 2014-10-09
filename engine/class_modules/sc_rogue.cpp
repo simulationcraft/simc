@@ -574,6 +574,10 @@ struct rogue_attack_t : public melee_attack_t
   virtual bool procs_poison() const
   { return weapon != 0; }
 
+  // Generic rules for proccing Main Gauche, used by rogue_t::trigger_main_gauche()
+  virtual bool procs_main_gauche() const
+  { return callbacks && ! proc && weapon != 0 && weapon -> slot == SLOT_MAIN_HAND; }
+
   // Adjust poison proc chance
   virtual double composite_poison_flat_modifier( const action_state_t* ) const
   { return 0.0; }
@@ -1918,6 +1922,10 @@ struct crimson_tempest_t : public rogue_attack_t
     base_dd_min = base_dd_max = 0;
   }
 
+  // Apparently Crimson Tempest does not trigger Main Gauche?
+  bool trigger_main_gauche() const
+  { return false; }
+
   void impact( action_state_t* s )
   {
     rogue_attack_t::impact( s );
@@ -2831,6 +2839,9 @@ struct blade_flurry_attack_t : public rogue_attack_t
     snapshot_flags |= STATE_MUL_DA;
   }
 
+  bool procs_main_gauche() const
+  { return false; }
+
   double composite_da_multiplier( const action_state_t* ) const
   { return p() -> spec.blade_flurry -> effectN( 3 ).percent(); }
 
@@ -2985,13 +2996,14 @@ void rogue_t::trigger_main_gauche( const action_state_t* state )
   if ( ! mastery.main_gauche -> ok() )
     return;
 
-  if ( state -> action -> proc || ! state -> action -> callbacks )
+  if ( state -> result_total <= 0 )
     return;
 
-  if ( ! state -> action -> weapon )
+  if ( ! state -> action -> result_is_hit( state -> result ) )
     return;
 
-  if ( state -> action -> weapon -> slot != SLOT_MAIN_HAND )
+  actions::rogue_attack_t* attack = debug_cast<actions::rogue_attack_t*>( state -> action );
+  if ( ! attack -> procs_main_gauche() )
     return;
 
   if ( ! rng().roll( cache.mastery_value() ) )
@@ -3080,8 +3092,7 @@ void rogue_t::trigger_relentless_strikes( const action_state_t* state )
   if ( ! spell.relentless_strikes -> ok() )
     return;
 
-  actions::rogue_attack_t* attack = debug_cast<actions::rogue_attack_t*>( state -> action );
-  if ( ! attack -> base_costs[ RESOURCE_COMBO_POINT ] )
+  if ( ! state -> action -> base_costs[ RESOURCE_COMBO_POINT ] )
     return;
 
   const actions::rogue_attack_state_t* s = actions::rogue_attack_t::cast_state( state );
