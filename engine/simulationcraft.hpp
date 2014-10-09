@@ -1343,7 +1343,7 @@ inline int from_string( const std::string& v )
 template<>
 inline bool from_string( const std::string& v )
 {
-  return from_string<int>( v );
+  return from_string<int>( v ) != 0;
 }
 
 template<>
