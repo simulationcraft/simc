@@ -2288,6 +2288,7 @@ const char* util::item_quality_string( int quality )
     case 3:   return "rare";
     case 4:   return "epic";
     case 5:   return "legendary";
+    case 7:   return "heirloom";
     default:  return "poor";
   }
 }

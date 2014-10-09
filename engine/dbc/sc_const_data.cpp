@@ -2862,7 +2862,9 @@ double dbc_t::weapon_dps( const item_data_t* item_data, unsigned ilevel ) const
 {
   assert( item_data );
 
-  if ( item_data -> quality > 5 ) return 0.0;
+  unsigned quality = item_data -> quality;
+  if ( quality > 6 )
+    quality = 4; // Heirlooms default to epic values?
 
   unsigned ilvl = ilevel ? ilevel : item_data -> level;
 
@@ -2873,17 +2875,17 @@ double dbc_t::weapon_dps( const item_data_t* item_data, unsigned ilevel ) const
     case INVTYPE_WEAPONOFFHAND:
     {
       if ( item_data -> flags_2 & ITEM_FLAG2_CASTER_WEAPON )
-        return item_damage_caster_1h( ilvl ).values[ item_data -> quality ];
+        return item_damage_caster_1h( ilvl ).values[ quality ];
       else
-        return item_damage_1h( ilvl ).values[ item_data -> quality ];
+        return item_damage_1h( ilvl ).values[ quality ];
       break;
     }
     case INVTYPE_2HWEAPON:
     {
       if ( item_data -> flags_2 & ITEM_FLAG2_CASTER_WEAPON )
-        return item_damage_caster_2h( ilvl ).values[ item_data -> quality ];
+        return item_damage_caster_2h( ilvl ).values[ quality ];
       else
-        return item_damage_2h( ilvl ).values[ item_data -> quality ];
+        return item_damage_2h( ilvl ).values[ quality ];
       break;
     }
     case INVTYPE_RANGED:
@@ -2896,15 +2898,15 @@ double dbc_t::weapon_dps( const item_data_t* item_data, unsigned ilevel ) const
         case ITEM_SUBCLASS_WEAPON_GUN:
         case ITEM_SUBCLASS_WEAPON_CROSSBOW:
         {
-          return item_damage_ranged( ilvl ).values[ item_data -> quality ];
+          return item_damage_ranged( ilvl ).values[ quality ];
         }
         case ITEM_SUBCLASS_WEAPON_THROWN:
         {
-          return item_damage_thrown( ilvl ).values[ item_data -> quality ];
+          return item_damage_thrown( ilvl ).values[ quality ];
         }
         case ITEM_SUBCLASS_WEAPON_WAND:
         {
-          return item_damage_wand( ilvl ).values[ item_data -> quality ];
+          return item_damage_wand( ilvl ).values[ quality ];
         }
         default: break;
       }
