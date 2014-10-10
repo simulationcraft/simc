@@ -5854,7 +5854,7 @@ void druid_t::apl_precombat()
       if ( level > 90 )
         flask += "greater_draenic_agility_flask";
       else if ( level > 85 )
-        flask += "spring_blossoms";
+        flask += "winds";
       else
         flask += "winds";
     }
@@ -5894,7 +5894,7 @@ void druid_t::apl_precombat()
         food += "frosty_stew"; // PH: Attuned stat
     }
     else if ( level > 85 )
-      food += "pandaren_treasure_noodle_soup";
+      food += "seafood_magnifique_feast";
     else
       food += "seafood_magnifique_feast";
 
@@ -5935,7 +5935,7 @@ void druid_t::apl_precombat()
       if ( level > 90 )
         potion_action += "draenic_agility";
       else if ( level > 85 )
-        potion_action += "virmens_bite";
+        potion_action += "tolvir";
       else
         potion_action += "tolvir";
       precombat -> add_action( potion_action );
@@ -6016,7 +6016,7 @@ void druid_t::apl_feral()
   if ( level > 90 )
     potion_action += "draenic_agility";
   else if ( level > 85 )
-    potion_action += "virmens_bite";
+    potion_action += "tolvir";
   else
     potion_action += "tolvir";
 

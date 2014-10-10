@@ -3,8 +3,8 @@ level=90
 race=night_elf
 role=attack
 position=back
-professions=engineering=600/alchemy=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!...1...
+professions=inscription=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!...2...
 glyphs=savage_roar/master_shapeshifter
 spec=feral
 
@@ -16,14 +16,14 @@ spec=feral
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=spring_blossoms
+actions.precombat=flask,type=winds
 actions.precombat+=/food,type=pandaren_treasure_noodle_soup
 actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions.precombat+=/cat_form
 actions.precombat+=/prowl
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=virmens_bite
+actions.precombat+=/potion,name=tolvir
 
 # Executed every time the actor is available.
 
@@ -33,8 +33,7 @@ actions+=/skull_bash
 actions+=/force_of_nature,if=charges=3|trinket.proc.all.react|target.time_to_die<20
 actions+=/incarnation,sync=berserk
 actions+=/berserk,if=cooldown.tigers_fury.remains<8
-actions+=/potion,name=virmens_bite,if=target.time_to_die<=40
-actions+=/use_item,slot=waist,sync=tigers_fury
+actions+=/potion,name=tolvir,if=target.time_to_die<=40
 actions+=/blood_fury,sync=tigers_fury
 actions+=/berserking,sync=tigers_fury
 actions+=/arcane_torrent,sync=tigers_fury
@@ -44,7 +43,7 @@ actions+=/shadowmeld,if=(buff.bloodtalons.up|!talent.bloodtalons.enabled)&dot.ra
 actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<25
 actions+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)
 actions+=/savage_roar,if=buff.savage_roar.remains<3
-actions+=/potion,name=virmens_bite,sync=berserk,if=target.health.pct<25
+actions+=/potion,name=tolvir,sync=berserk,if=target.health.pct<25
 actions+=/thrash_cat,if=buff.omen_of_clarity.react&remains<=duration*0.3&active_enemies>1
 actions+=/ferocious_bite,cycle_targets=1,if=combo_points=5&target.health.pct<25&dot.rip.ticking
 actions+=/rip,cycle_targets=1,if=combo_points=5&remains<=3
@@ -59,31 +58,32 @@ actions+=/rake,cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&com
 actions+=/swipe,if=combo_points<5&active_enemies>=3
 actions+=/shred,if=combo_points<5&active_enemies<3
 
-head=headpiece_of_the_shattered_vale,id=99328,upgrade=4,gems=capacitive_primal_10agi_11agi
-neck=immerseus_crystalline_eye,id=105407,upgrade=4
-shoulders=spaulders_of_the_shattered_vale,id=99322,upgrade=4,gems=10agi_10agi_8agi,enchant=15agi_5crit
-back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=10agi_4agi,enchant=12crit,addon=goblin_glider
-chest=raiment_of_the_shattered_vale,id=99326,upgrade=4,gems=10agi_10agi_10agi_11agi,enchant=5all
-wrists=bombers_blackened_wristwatch,id=105616,upgrade=4,enchant=12agi
-hands=grips_of_the_shattered_vale,id=99327,upgrade=4,gems=10agi_10agi_8agi,enchant=11haste
-waist=cord_of_black_dreams,id=105635,upgrade=4,gems=10agi_5agi_10crit_10agi_8agi,addon=nitro_boosts
-legs=rious_vigilant_leggings,id=105529,upgrade=4,gems=5agi_10crit_5agi_10crit_8agi,enchant=19agi_11crit
-feet=pandaren_roofsprinters,id=105582,upgrade=4,gems=5agi_10crit_4mastery,enchant=9agi
-finger1=kilruks_band_of_ascendancy,id=105624,upgrade=4,gems=10agi_4crit
-finger2=ring_of_restless_energy,id=105558,upgrade=4,gems=10agi_4crit
-trinket1=rune_of_reorigination,id=96918,upgrade=4
+head=headpiece_of_the_shattered_vale,id=99328,upgrade=4,gems=capacitive_primal_10haste_10crit_11agi
+neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=4
+shoulders=spaulders_of_the_shattered_vale,id=99322,upgrade=4,gems=10haste_10crit_10haste_10crit_8agi,enchant=20agi_5crit
+back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=10crit_10haste_4agi,enchant=12agi
+chest=raiment_of_the_shattered_vale,id=99326,upgrade=4,gems=10haste_10crit_10haste_10crit_10haste_10crit_11agi,enchant=5all
+wrists=mantid_carapace_augments,id=105583,upgrade=4,enchant=14ap
+hands=gloves_of_the_golden_protector,id=105453,upgrade=4,gems=10haste_10crit_20crit_8agi,enchant=15agi
+waist=cord_of_black_dreams,id=105635,upgrade=4,gems=10haste_10crit_20crit_20crit_8agi
+legs=legguards_of_the_shattered_vale,id=99329,upgrade=4,gems=20crit_20crit_8agi,enchant=23ap_28crit
+feet=unrepentant_heels,id=105484,upgrade=4,gems=20crit_4mastery,enchant=10crit_10haste
+finger1=reality_ripper_ring,id=105451,upgrade=4,gems=20crit_4crit
+finger2=swift_serpent_signet,id=105483,upgrade=4,gems=20crit_4crit
+trinket1=assurance_of_consequence,id=105472,upgrade=4
 trinket2=haromms_talisman,id=105527,upgrade=4
-main_hand=halberd_of_inner_shadows,id=105560,upgrade=4,gems=5agi_10crit_4agi,enchant=dancing_steel
+main_hand=trident_of_corrupted_waters,id=105408,upgrade=4,gems=20crit_4agi,enchant=55ap
 
 # Gear Summary
 # gear_strength=5
-# gear_agility=1391
-# gear_stamina=1663
+# gear_agility=1146
+# gear_stamina=1660
 # gear_intellect=5
-# gear_crit_rating=538
-# gear_haste_rating=408
-# gear_mastery_rating=576
-# gear_armor=591
+# gear_attack_power=92
+# gear_crit_rating=1019
+# gear_haste_rating=594
+# gear_mastery_rating=211
+# gear_armor=589
 # gear_multistrike_rating=107
 # meta_gem=capacitive_primal
 # set_bonus=tier16_2pc_melee=1
