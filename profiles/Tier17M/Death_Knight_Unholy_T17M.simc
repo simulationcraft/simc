@@ -15,7 +15,7 @@ spec=unholy
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_strength_flask
-actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
+actions.precombat+=/food,type=calamari_crepes
 actions.precombat+=/horn_of_winter
 actions.precombat+=/unholy_presence
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
@@ -33,12 +33,20 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
 actions+=/potion,name=draenic_strength,if=buff.dark_transformation.up&target.time_to_die<=60
-actions+=/run_action_list,name=aoe,if=active_enemies>=3
-actions+=/run_action_list,name=single_target,if=active_enemies<3
+actions+=/run_action_list,name=aoe,if=active_enemies>=2
+actions+=/run_action_list,name=single_target,if=active_enemies<2
 
 actions.aoe=unholy_blight
 actions.aoe+=/plague_strike,if=!talent.necrotic_plague.enabled&(!dot.blood_plague.ticking|!dot.frost_fever.ticking)
 actions.aoe+=/plague_strike,if=talent.necrotic_plague.enabled&(!dot.necrotic_plague.ticking)
+actions.aoe+=/defile,if=talent.defile.enabled&runic_power<89
+actions.aoe+=/breath_of_sindragosa,if=cooldown.breath_of_sindragosa.remains<1&runic_power>75&talent.breath_of_sindragosa.enabled
+actions.aoe+=/death_and_decay,if=dot.breath_of_sindragosa.ticking&runic_power<88&talent.breath_of_sindragosa.enabled
+actions.aoe+=/blood_boil,if=dot.breath_of_sindragosa.ticking&runic_power<88&talent.breath_of_sindragosa.enabled
+actions.aoe+=/scourge_strike,if=dot.breath_of_sindragosa.ticking&runic_power<88&talent.breath_of_sindragosa.enabled&&unholy=1
+actions.aoe+=/icy_touch,if=cooldown.breath_of_sindragosa.remains<7&runic_power<88&talent.breath_of_sindragosa.enabled
+actions.aoe+=/blood_tap,if=dot.breath_of_sindragosa.ticking&buff.blood_charge.stack>=5&talent.breath_of_sindragosa.enabled
+actions.aoe+=/plague_leech,if=dot.breath_of_sindragosa.ticking&talent.breath_of_sindragosa.enabled
 actions.aoe+=/blood_boil,if=blood=2|(frost=2&death=2)
 actions.aoe+=/summon_gargoyle
 actions.aoe+=/dark_transformation
@@ -67,9 +75,20 @@ actions.single_target+=/blood_tap,if=(target.health.pct-3*(target.health.pct%tar
 actions.single_target+=/plague_strike,if=!talent.necrotic_plague.enabled&(!dot.blood_plague.ticking|!dot.frost_fever.ticking)
 actions.single_target+=/plague_strike,if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking
 actions.single_target+=/summon_gargoyle
+actions.single_target+=/defile,if=talent.defile.enabled&runic_power<89
 actions.single_target+=/dark_transformation
+actions.single_target+=/breath_of_sindragosa,if=cooldown.breath_of_sindragosa.remains<1&runic_power>75&talent.breath_of_sindragosa.enabled
+actions.single_target+=/death_and_decay,if=dot.breath_of_sindragosa.ticking&runic_power<88&talent.breath_of_sindragosa.enabled
+actions.single_target+=/festering_strike,if=dot.breath_of_sindragosa.ticking&runic_power<77&talent.breath_of_sindragosa.enabled
+actions.single_target+=/scourge_strike,if=dot.breath_of_sindragosa.ticking&runic_power<88&talent.breath_of_sindragosa.enabled
+actions.single_target+=/blood_tap,if=dot.breath_of_sindragosa.ticking&buff.blood_charge.stack>=5
+actions.single_target+=/plague_leech,if=dot.breath_of_sindragosa.ticking
+actions.single_target+=/empower_rune_weapon,if=dot.breath_of_sindragosa.ticking&talent.breath_of_sindragosa.enabled
+actions.single_target+=/death_coil,if=buff.sudden_doom.react&dot.breath_of_sindragosa.ticking&talent.breath_of_sindragosa.enabled
+actions.single_target+=/death_and_decay,if=cooldown.breath_of_sindragosa.remains<7&runic_power<88&talent.breath_of_sindragosa.enabled
+actions.single_target+=/scourge_strike,if=cooldown.breath_of_sindragosa.remains<7&runic_power<88&talent.breath_of_sindragosa.enabled
+actions.single_target+=/festering_strike,if=cooldown.breath_of_sindragosa.remains<7&runic_power<76&talent.breath_of_sindragosa.enabled
 actions.single_target+=/death_coil,if=runic_power>90
-actions.single_target+=/defile
 actions.single_target+=/death_and_decay,if=unholy=2
 actions.single_target+=/blood_tap,if=unholy=2&cooldown.death_and_decay.remains=0
 actions.single_target+=/scourge_strike,if=unholy=2
