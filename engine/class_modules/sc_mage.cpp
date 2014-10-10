@@ -4743,10 +4743,12 @@ void mage_t::apl_arcane()
   default_list -> add_talent( this, "Rune of Power",
                               "if=buff.rune_of_power.remains<cast_time" );
   default_list -> add_talent( this, "Mirror Image" );
+  default_list -> add_talent( this, "Cold Snap",
+                              "if=buff.presence_of_mind.down&cooldown.presence_of_mind.remains>75" );
   default_list -> add_action( "call_action_list,name=init_crystal,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.up" );
   default_list -> add_action( "call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=5" );
-  default_list -> add_action( "call_action_list,name=burn,if=time_to_die<mana.pct*0.35*spell_haste|cooldown.evocation.remains<=buff.arcane_power.remains|cooldown.evocation.remains<=(mana.pct-40)*0.35*spell_haste" );
+  default_list -> add_action( "call_action_list,name=burn,if=time_to_die<mana.pct*0.35*spell_haste|cooldown.evocation.remains<=(mana.pct-30)*0.3*spell_haste|(buff.arcane_power.up&cooldown.evocation.remains<=(mana.pct-30)*0.4*spell_haste)" );
   default_list -> add_action( "call_action_list,name=conserve" );
 
 
@@ -4793,7 +4795,8 @@ void mage_t::apl_arcane()
                       "if=buff.arcane_charge.stack<4" );
   burn -> add_talent( this, "Supernova",
                       "if=current_target=prismatic_crystal" );
-  burn -> add_action( this, "Presence of Mind" );
+  burn -> add_action( this, "Presence of Mind",
+                      "if=mana.pct>96" );
   burn -> add_action( this, "Arcane Blast",
                       "if=buff.arcane_charge.stack=4&mana.pct>93" );
   burn -> add_action( this, "Arcane Missiles",
@@ -4804,6 +4807,7 @@ void mage_t::apl_arcane()
                       "APL hack for evocation interrupt" );
   burn -> add_action( this, "Evocation",
                       "interrupt_if=mana.pct>92,if=time_to_die>10&mana.pct<50" );
+  burn -> add_action( this, "Presence of Mind" );
   burn -> add_action( this, "Arcane Blast" );
 
 
@@ -4816,21 +4820,23 @@ void mage_t::apl_arcane()
   conserve -> add_talent( this, "Nether Tempest",
                           "cycle_targets=1,if=target!=prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))" );
   conserve -> add_talent( this, "Supernova",
-                          "if=time_to_die<8|(charges=2&(buff.arcane_power.up|!cooldown.arcane_power.up)&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>5))" );
+                          "if=time_to_die<8|(charges=2&(buff.arcane_power.up|!cooldown.arcane_power.up)&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>8))" );
   conserve -> add_talent( this, "Arcane Orb",
                           "if=buff.arcane_charge.stack<2" );
+  conserve -> add_action( this, "Presence of Mind",
+                          "if=mana.pct>96" );
   conserve -> add_action( this, "Arcane Blast",
                           "if=buff.arcane_charge.stack=4&mana.pct>93" );
   conserve -> add_action( this, "Arcane Missiles",
                           "if=buff.arcane_charge.stack=4&(!talent.overpowered.enabled|cooldown.arcane_power.remains>10*spell_haste)" );
   conserve -> add_talent( this, "Supernova",
-                          "if=mana.pct<96&(buff.arcane_missiles.stack<2|buff.arcane_charge.stack=4)&(buff.arcane_power.up|(charges=1&cooldown.arcane_power.remains>recharge_time))&(!talent.prismatic_crystal.enabled|current_target=prismatic_crystal|(charges=1&cooldown.prismatic_crystal.remains>recharge_time+5))" );
+                          "if=mana.pct<96&(buff.arcane_missiles.stack<2|buff.arcane_charge.stack=4)&(buff.arcane_power.up|(charges=1&cooldown.arcane_power.remains>recharge_time))&(!talent.prismatic_crystal.enabled|current_target=prismatic_crystal|(charges=1&cooldown.prismatic_crystal.remains>recharge_time+8))" );
   conserve -> add_talent( this, "Nether Tempest",
                           "cycle_targets=1,if=target!=prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<(10-3*talent.arcane_orb.enabled)*spell_haste))" );
   conserve -> add_action( this, "Arcane Barrage",
                           "if=buff.arcane_charge.stack=4" );
   conserve -> add_action( this, "Presence of Mind",
-                          "if=buff.arcane_charge.stack<2&glyph.arcane_power.enabled&cooldown.arcane_power.remains>15" );
+                          "if=buff.arcane_charge.stack<2" );
   conserve -> add_action( this, "Arcane Blast" );
   conserve -> add_talent( this, "Ice Floes", "moving=1" );
   conserve -> add_action( this, "Arcane Barrage", "moving=1" );
@@ -4874,8 +4880,6 @@ void mage_t::apl_fire()
                               "if=movement.distance>10" );
   default_list -> add_talent( this, "Blazing Speed",
                               "if=movement.remains>0" );
-  default_list -> add_talent( this, "Cold Snap",
-                              "if=health.pct<30" );
   default_list -> add_action( this, "Time Warp",
                               "if=target.health.pct<25|time>5" );
   default_list -> add_talent( this, "Rune of Power",
@@ -4960,6 +4964,8 @@ void mage_t::apl_fire()
                      "if=buff.pyroblast.react|buff.pyromaniac.react" );
   aoe -> add_action( this, "Pyroblast",
                      "if=active_dot.pyroblast=0&!in_flight" );
+  aoe -> add_talent( this, "Cold Snap",
+                     "if=glyph.dragons_breath.enabled&!cooldown.dragons_breath.up" );
   aoe -> add_action( this, "Dragon's Breath",
                      "if=glyph.dragons_breath.enabled" );
   aoe -> add_action( this, "Flamestrike",
@@ -5006,8 +5012,6 @@ void mage_t::apl_frost()
                               "if=movement.distance>10" );
   default_list -> add_talent( this, "Blazing Speed",
                               "if=movement.remains>0" );
-  default_list -> add_talent( this, "Cold Snap",
-                              "if=health.pct<30" );
   default_list -> add_action( this, "Time Warp",
                               "if=target.health.pct<25|time>5" );
   default_list -> add_talent( this, "Mirror Image" );
@@ -5063,6 +5067,8 @@ void mage_t::apl_frost()
                      "if=buff.fingers_of_frost.react&debuff.frost_bomb.up" );
   aoe -> add_talent( this, "Comet Storm" );
   aoe -> add_talent( this, "Ice Nova" );
+  aoe -> add_talent( this, "Cold Snap",
+                     "if=glyph.cone_of_cold.enabled&!cooldown.cone_of_cold.up" );
   aoe -> add_action( this, "Cone of Cold",
                      "if=glyph.cone_of_cold.enabled" );
   aoe -> add_action( this, "Blizzard",

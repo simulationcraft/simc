@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!0...112
+talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!0..2112
 glyphs=inferno_blast/combustion/dragons_breath
 spec=fire
 
@@ -29,7 +29,6 @@ actions.precombat+=/pyroblast
 actions=counterspell,if=target.debuff.casting.react
 actions+=/blink,if=movement.distance>10
 actions+=/blazing_speed,if=movement.remains>0
-actions+=/cold_snap,if=health.pct<30
 actions+=/time_warp,if=target.health.pct<25|time>5
 actions+=/rune_of_power,if=buff.rune_of_power.remains<cast_time
 actions+=/call_action_list,name=combust_sequence,if=pyro_chain
@@ -87,6 +86,7 @@ actions.aoe=inferno_blast,cycle_targets=1,if=(dot.combustion.ticking&active_dot.
 actions.aoe+=/call_action_list,name=active_talents
 actions.aoe+=/pyroblast,if=buff.pyroblast.react|buff.pyromaniac.react
 actions.aoe+=/pyroblast,if=active_dot.pyroblast=0&!in_flight
+actions.aoe+=/cold_snap,if=glyph.dragons_breath.enabled&!cooldown.dragons_breath.up
 actions.aoe+=/dragons_breath,if=glyph.dragons_breath.enabled
 actions.aoe+=/flamestrike,if=mana.pct>10&remains<2.4
 

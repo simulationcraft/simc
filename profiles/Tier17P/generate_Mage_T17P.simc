@@ -9,7 +9,7 @@ mage=Mage_Arcane_T17P
 level=100
 race=troll
 spec=arcane
-talents=1000121
+talents=1003322
 glyphs=arcane_power/cone_of_cold
 head=hood_of_swirling_light,id=109972,bonus_id=524
 neck=alcs_pendant_of_fiery_dreams,id=109957,bonus_id=524,enchant=gift_of_mastery
@@ -32,7 +32,7 @@ mage=Mage_Fire_T17M
 level=100
 race=troll
 spec=fire
-talents=1000223
+talents=1003223
 glyphs=inferno_blast/combustion/dragons_breath
 head=frosttouched_hood,id=109971,bonus_id=524
 neck=magisters_chain,id=109954,bonus_id=524,enchant=gift_of_critical_strike
@@ -55,7 +55,7 @@ mage=Mage_Frost_T17M
 level=100
 race=troll
 spec=frost
-talents=1000112
+talents=1003112
 glyphs=icy_veins/splitting_ice/cone_of_cold
 head=hood_of_swirling_light,id=109972,bonus_id=524
 neck=alcs_pendant_of_fiery_dreams,id=109957,bonus_id=524,enchant=gift_of_multistrike

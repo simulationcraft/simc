@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#eb!0...001
+talents=http://us.battle.net/wow/en/tool/talent-calculator#eb!0..2001
 glyphs=icy_veins/splitting_ice/cone_of_cold
 spec=frost
 
@@ -30,7 +30,6 @@ actions.precombat+=/frostbolt
 actions=counterspell,if=target.debuff.casting.react
 actions+=/blink,if=movement.distance>10
 actions+=/blazing_speed,if=movement.remains>0
-actions+=/cold_snap,if=health.pct<30
 actions+=/time_warp,if=target.health.pct<25|time>5
 actions+=/mirror_image
 actions+=/rune_of_power,if=buff.rune_of_power.remains<cast_time
@@ -71,6 +70,7 @@ actions.aoe+=/frozen_orb
 actions.aoe+=/ice_lance,if=buff.fingers_of_frost.react&debuff.frost_bomb.up
 actions.aoe+=/comet_storm
 actions.aoe+=/ice_nova
+actions.aoe+=/cold_snap,if=glyph.cone_of_cold.enabled&!cooldown.cone_of_cold.up
 actions.aoe+=/cone_of_cold,if=glyph.cone_of_cold.enabled
 actions.aoe+=/blizzard,interrupt_if=cooldown.frozen_orb.up|(talent.frost_bomb.enabled&buff.fingers_of_frost.react=2)
 actions.aoe+=/ice_floes,moving=1
