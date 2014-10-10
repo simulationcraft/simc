@@ -6335,10 +6335,29 @@ void death_knight_t::init_action_list()
     if ( sim -> allow_potions && level >= 80 )
       def -> add_action( potion_str + ",if=buff.dark_transformation.up&target.time_to_die<=60" );
 
+    // Breath of Sindragosa specific APLs
+    action_priority_list_t* bos_st = get_action_priority_list( "bos_st" );
+    bos_st -> add_action( this, "Death and Decay", "if=runic_power<88");
+    bos_st -> add_action( this, "Festering Strike", "if=runic_power<77");
+    bos_st -> add_action( this, "Scourge Strike", "if=runic_power<88");
+    bos_st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=5");
+    bos_st -> add_talent( this, "Plague Leech" );
+    bos_st -> add_action( this, "Empower Rune Weapon" );
+    bos_st -> add_action( this, "Death Coil", "if=buff.sudden_doom.react" );
+
+    action_priority_list_t* bos_aoe = get_action_priority_list( "bos_aoe" );
+    bos_aoe -> add_action( this, "Death and Decay", "if=runic_power<88" );
+    bos_aoe -> add_action( this, "Blood Boil", "if=runic_power<88" );
+    bos_aoe -> add_action( this, "Scourge Strike", "if=runic_power<88&unholy=1" );
+    bos_aoe -> add_action( this, "Icy Touch", "if=runic_power<88" );
+    bos_aoe -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=5");
+    bos_aoe -> add_talent( this, "Plague Leech" );
+    bos_aoe -> add_talent( this, "Empower Rune Weapon" );
+    bos_aoe -> add_action( this, "Death Coil", "if=buff.sudden_doom.react" );
+
     //decide between single_target and aoe rotation
     def -> add_action( "run_action_list,name=aoe,if=active_enemies>=2" );
     def -> add_action( "run_action_list,name=single_target,if=active_enemies<2" );
-
 
     // Stop BT charges from capping
     st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10&runic_power>=32" );
@@ -6361,29 +6380,19 @@ void death_knight_t::init_action_list()
     st -> add_action( this, "Summon Gargoyle" );
 
     // Optimized placement of Defile
-    st -> add_talent( this, "Defile", "if=talent.defile.enabled&runic_power<89");
-
+    st -> add_talent( this, "Defile", "if=runic_power<89");
 
     st -> add_action( this, "Dark Transformation" );
-    st -> add_talent( this, "Blood Tap,if=buff.shadow_infusion.stack=5" );
+    st -> add_talent( this, "Blood Tap" "if=level<=90&buff.shadow_infusion.stack=5" );
 
     // Breath of Sindragosa in use, cast it and then keep it up
-
-    st -> add_talent( this, "Breath of Sindragosa", "if=cooldown.breath_of_sindragosa.remains<1&runic_power>75&talent.breath_of_sindragosa.enabled");
-    st -> add_action( this, "Death and Decay", "if=dot.breath_of_sindragosa.ticking&runic_power<88&talent.breath_of_sindragosa.enabled");      
-    st -> add_action( this, "Festering Strike", "if=dot.breath_of_sindragosa.ticking&runic_power<77&talent.breath_of_sindragosa.enabled");      
-    st -> add_action( this, "Scourge Strike", "if=dot.breath_of_sindragosa.ticking&runic_power<88&talent.breath_of_sindragosa.enabled");
-    st -> add_talent( this, "Blood Tap", "if=dot.breath_of_sindragosa.ticking&buff.blood_charge.stack>=5");
-    st -> add_talent( this, "Plague Leech", "if=dot.breath_of_sindragosa.ticking");
-    st -> add_action( this, "Empower Rune Weapon", "if=dot.breath_of_sindragosa.ticking&talent.breath_of_sindragosa.enabled");
-    st -> add_action( this, "Death Coil", "if=buff.sudden_doom.react&dot.breath_of_sindragosa.ticking&talent.breath_of_sindragosa.enabled");
-
+    st -> add_talent( this, "Breath of Sindragosa", "if=runic_power>75");
+    st -> add_action( "run_action_list,name=bos_st,if=dot.breath_of_sindragosa.ticking" );
 
     // Breath of Sindragosa coming off cooldown, get ready to use
     st -> add_action( this, "Death and Decay", "if=cooldown.breath_of_sindragosa.remains<7&runic_power<88&talent.breath_of_sindragosa.enabled");
     st -> add_action( this, "Scourge Strike", "if=cooldown.breath_of_sindragosa.remains<7&runic_power<88&talent.breath_of_sindragosa.enabled");
     st -> add_action( this, "Festering Strike", "if=cooldown.breath_of_sindragosa.remains<7&runic_power<76&talent.breath_of_sindragosa.enabled");
-
 
     // Don't waste runic power
     st -> add_action( this, "Death Coil", "if=runic_power>90" );
@@ -6419,14 +6428,8 @@ void death_knight_t::init_action_list()
     aoe -> add_talent( this, "Defile", "if=talent.defile.enabled&runic_power<89");
 
     // AoE Breath of Sindragosa in use, cast and then keep up
-    aoe -> add_talent( this, "Breath of Sindragosa", "if=cooldown.breath_of_sindragosa.remains<1&runic_power>75&talent.breath_of_sindragosa.enabled");
-    aoe -> add_action( this, "Death and Decay", "if=dot.breath_of_sindragosa.ticking&runic_power<88&talent.breath_of_sindragosa.enabled");
-    aoe -> add_action( this, "Blood Boil", "if=dot.breath_of_sindragosa.ticking&runic_power<88&talent.breath_of_sindragosa.enabled");
-    aoe -> add_action( this, "Scourge Strike", "if=dot.breath_of_sindragosa.ticking&runic_power<88&talent.breath_of_sindragosa.enabled&&unholy=1");
-    aoe -> add_action( this, "Icy Touch", "if=cooldown.breath_of_sindragosa.remains<7&runic_power<88&talent.breath_of_sindragosa.enabled");
-    aoe -> add_talent( this, "Blood Tap", "if=dot.breath_of_sindragosa.ticking&buff.blood_charge.stack>=5&talent.breath_of_sindragosa.enabled");
-    aoe -> add_talent( this, "Plague Leech", "if=dot.breath_of_sindragosa.ticking&talent.breath_of_sindragosa.enabled");
-    aoe -> add_talent( this, "Empower Rune Weapon", "if=dot.breath_of_sindragosa.ticking");    
+    aoe -> add_talent( this, "Breath of Sindragosa", "if=runic_power>75");
+    aoe -> add_action( this, "run_action_list,name=bos_aoe,if=dot.breath_of_sindragosa.ticking" );
 
     //AoE continued
     aoe -> add_action( this, "Blood Boil", "if=blood=2|(frost=2&death=2)" );
