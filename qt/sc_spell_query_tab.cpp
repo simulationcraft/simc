@@ -259,6 +259,10 @@ void SC_SpellQueryTab::run_spell_query()
   // local copy of the argument
   std::string arg = textbox.arg -> text().toStdString();
 
+  // bail if arg is empty
+  if ( arg.empty() )
+    return;
+
   // construct the query string
   QString command = "spell_query=";
 
