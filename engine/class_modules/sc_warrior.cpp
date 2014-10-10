@@ -1840,7 +1840,7 @@ struct heroic_leap_t: public warrior_attack_t
     may_dodge = may_parry = may_miss = may_block = false;
     movement_directionality = MOVEMENT_OMNI;
     base_teleport_distance = data().max_range();
-    base_teleport_distance += p -> glyphs.death_from_above -> effectN( 2 ).percent();
+    base_teleport_distance += p -> glyphs.death_from_above -> effectN( 2 ).base_value();
     melee_range = -1;
     attack_power_mod.direct = p -> find_spell( 52174 ) -> effectN( 1 ).ap_coeff();
     cooldown -> duration = p -> cooldown.heroic_leap -> duration;
