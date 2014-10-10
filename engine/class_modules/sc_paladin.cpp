@@ -4951,25 +4951,14 @@ void paladin_t::generate_action_prio_list_prot()
 
   // Pre-potting
   std::string potion_type = "";
-  std::string def_pot = "";
-  std::string off_pot = "";
   if ( sim -> allow_potions )
   {
-    if ( level >= 90 )
-    {
-      off_pot = "draenic_strength";
-      def_pot = "draenic_armor";
-    }
+    // no need for off/def pot options - Draenic Armor gives more AP than Draenic STR,
+    // and Mountains potion is pathetic at L90
+    if ( level > 90 ) //TODO: change back to >= once L100 available
+      potion_type = "draenic_armor";
     else if ( level >= 80 )
-    {
-      off_pot = "mogu_power";
-      def_pot = "mountains";
-    }
-
-    if ( primary_role() == ROLE_ATTACK )
-      potion_type = off_pot;
-    else
-      potion_type = def_pot;
+      potion_type = "mogu_power";
 
     if ( potion_type.length() > 0 )
       precombat -> add_action( "potion,name=" + potion_type );
@@ -5030,11 +5019,11 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_action( this, "Seal of Insight", "if=talent.empowered_seals.enabled&!seal.insight&buff.uthers_insight.remains<cooldown.judgment.remains", "GCD-bound spells start here" );
   def -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.uthers_insight.remains>cooldown.judgment.remains&buff.liadrins_righteousness.down" );
   def -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&!seal.truth&buff.uthers_insight.remains>cooldown.judgment.remains&buff.liadrins_righteousness.remains>cooldown.judgment.remains&buff.maraads_truth.down" );
-  def -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react&active_enemies>1" );
+  def -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react&active_enemies>1&!glyph.focused_shield.enabled" );
   def -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=3" );
   def -> add_action( this, "Crusader Strike" );
   def -> add_action( this, "Judgment" );
-  def -> add_action( this, "Avenger's Shield", "if=active_enemies>1" );
+  def -> add_action( this, "Avenger's Shield", "if=active_enemies>1&!glyph.focused_shield.enabled" );
   def -> add_action( this, "Holy Wrath", "if=talent.sanctified_wrath.enabled" );
   def -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react" );
   def -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<2" );
@@ -5056,28 +5045,31 @@ void paladin_t::generate_action_prio_list_prot()
 
   
   // Max-DPS priority queue
-  dps -> add_action( "potion,name=" + off_pot + ",if=buff.holy_avenger.react|buff.bloodlust.react|target.time_to_die<=60" );
+  dps -> add_action( "potion,name=" + potion_type + ",if=buff.holy_avenger.react|buff.bloodlust.react|target.time_to_die<=60" );
   dps -> add_talent( this, "Holy Avenger", "", "Max-DPS priority list starts here.\n# This section covers off-GCD spells." );
   dps -> add_talent( this, "Seraphim" );
-  dps -> add_talent( this, "Divine Protection", "if=buff.seraphim.down&cooldown.seraphim.remains>5" );
-  dps -> add_action( this, "Shield of the Righteous", "if=holy_power>=5|buff.divine_purpose.react|(talent.holy_avenger.enabled&holy_power>=3)" );
+  dps -> add_talent( this, "Divine Protection", "if=time<5|!talent.seraphim.enabled|(buff.seraphim.down&cooldown.seraphim.remains>5)" );
+  dps -> add_talent( this, "Guardian of Ancient Kings", "if=time<5|(buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down)" );
+  dps -> add_action( this, "Shield of the Righteous", "if=(holy_power>=5|buff.divine_purpose.react|talent.holy_avenger.enabled)&(!talent.seraphim.enabled|cooldown.seraphim.remains>5)" );
   dps -> add_action( this, "Shield of the Righteous", "if=buff.holy_avenger.remains>time_to_hpg&(!talent.seraphim.enabled|cooldown.seraphim.remains>time_to_hpg)" );
 
-  dps -> add_action( this, "Holy Wrath", "if=glyph.final_wrath.enabled&target.health.pct<=20", "#GCD-bound spells start here." );
-  dps -> add_action( this, "Hammer of Wrath" );
-  dps -> add_action( this, "Holy Wrath", "if=talent.sanctified_wrath.enabled" );
-  dps -> add_talent( this, "Execution Sentence" );
+  dps -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react&active_enemies>1&!glyph.focused_shield.enabled", "#GCD-bound spells start here." );
   dps -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=3" );
-  dps -> add_action( this, "Avenger's Shield", "if=active_enemies>1" );
+  dps -> add_action( this, "Holy Wrath", "if=talent.sanctified_wrath.enabled&buff.seraphim.react" );
   dps -> add_action( this, "Crusader Strike" );
   dps -> add_action( this, "Judgment" );
+  dps -> add_action( this, "Avenger's Shield", "if=active_enemies>1&!glyph.focused_shield.enabled" );
+  dps -> add_action( this, "Holy Wrath", "if=talent.sanctified_wrath.enabled" );
+  dps -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react" );
+  dps -> add_talent( this, "Execution Sentence" );
+  dps -> add_action( this, "Holy Wrath", "if=glyph.final_wrath.enabled&target.health.pct<=20" );
   dps -> add_action( this, "Avenger's Shield" );
   dps -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&!seal.truth&buff.maraads_truth.remains<cooldown.judgment.remains" );
   dps -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.maraads_truth.remains>cooldown.judgment.remains&buff.liadrins_righteousness.down" );
   dps -> add_talent( this, "Light's Hammer" );
   dps -> add_talent( this, "Holy Prism" );
   dps -> add_action( this, "Consecration", "if=target.debuff.flying.down&active_enemies>=3" );
-  dps -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<2" );
+  dps -> add_action( this, "Hammer of Wrath" );
   dps -> add_action( this, "Consecration", "if=target.debuff.flying.down" );
   dps -> add_action( this, "Holy Wrath" );
   dps -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&!seal.truth&buff.maraads_truth.remains<buff.liadrins_righteousness.remains" );
@@ -5087,7 +5079,7 @@ void paladin_t::generate_action_prio_list_prot()
 
 
   // Max Survival priority queue
-  surv -> add_action( "potion,name=" + def_pot + ",if=buff.shield_of_the_righteous.down&buff.seraphim.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down&buff.ardent_defender.down" );
+  surv -> add_action( "potion,name=" + potion_type + ",if=buff.shield_of_the_righteous.down&buff.seraphim.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down&buff.ardent_defender.down" );
   surv -> add_talent( this, "Holy Avenger", "", "Max survival priority list starts here\n# This section covers off-GCD spells." );
   surv -> add_action( this, "Divine Protection", "if=buff.seraphim.down" );
   surv -> add_talent( this, "Seraphim", "if=buff.divine_protection.down&cooldown.divine_protection.remains>0" );
