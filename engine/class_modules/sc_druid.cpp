@@ -91,6 +91,49 @@ struct druid_td_t : public actor_pair_t
   }
 };
 
+struct buff_counter_t
+{
+  const sim_t* sim;
+  druid_t* p;
+  buff_t* b;
+  double n_up;
+  double n_down;
+
+  buff_counter_t( druid_t* player , buff_t* buff );
+
+  void increment()
+  {
+    // Skip iteration 0 for non-debug, non-log sims
+    if ( sim -> current_iteration == 0 && sim -> iterations > sim -> threads && ! sim -> debug && ! sim -> log )
+      return;
+
+    b -> check() ? n_up++ : n_down++;
+  }
+
+  double divisor() const
+  {
+    if ( ! sim -> debug && ! sim -> log && sim -> iterations > sim -> threads )
+      return sim -> iterations - sim -> threads;
+    else
+      return std::min( sim -> iterations, sim -> threads );
+  }
+
+  double mean_up() const
+  { return n_up / divisor(); }
+
+  double mean_down() const
+  { return n_down / divisor(); }
+
+  double mean_total() const
+  { return ( n_up + n_down ) / divisor(); }
+
+  void merge( const buff_counter_t& other )
+  {
+    n_up += other.n_up;
+    n_down += other.n_down;
+  }
+};
+
 struct druid_t : public player_t
 {
 public:
@@ -106,6 +149,9 @@ public:
   double time_to_next_lunar; // Amount of seconds until eclipse energy reaches 100 (Lunar Eclipse)
   double time_to_next_solar; // Amount of seconds until eclipse energy reaches -100 (Solar Eclipse)
   int active_rejuvenations; // Number of rejuvenations on raid.  May be useful for Nature's Vigil timing or resto stuff.
+
+  // counters for snapshot tracking
+  std::vector<buff_counter_t*> counters;
 
   // Active
   action_t* t16_2pc_starfall_bolt;
@@ -528,6 +574,8 @@ public:
     regen_caches[ CACHE_ATTACK_HASTE ] = true;
   }
 
+  virtual           ~druid_t();
+
   // Character Definition
   virtual void      arise();
   virtual void      init_spells();
@@ -540,6 +588,7 @@ public:
   virtual void      invalidate_cache( cache_e );
   virtual void      combat_begin();
   virtual void      reset();
+  virtual void      merge( player_t& other );
   virtual void      regen( timespan_t periodicity );
   virtual timespan_t available() const;
   virtual double    composite_armor_multiplier() const;
@@ -616,6 +665,17 @@ public:
     w.swing_time = timespan_t::from_seconds( swing_time );
   }
 };
+
+druid_t::~druid_t()
+{
+  range::dispose( counters );
+}
+
+buff_counter_t::buff_counter_t( druid_t* player , buff_t* buff ) :
+  sim( player -> sim ), p( player ), b( buff ), n_up( 0 ), n_down( 0 )
+{
+  p -> counters.push_back( this );
+}
 
 // Gushing Wound (tier17_4pc_melee) ========================================================
 
@@ -1710,10 +1770,12 @@ public:
   typedef druid_attack_t base_t;
   
   bool consume_bloodtalons;
+  buff_counter_t* bt_counter;
+  buff_counter_t* tf_counter;
 
   druid_attack_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, player, s ), consume_bloodtalons( false )
+    ab( n, player, s ), consume_bloodtalons( false ), bt_counter( 0 ), tf_counter( 0 )
   {
     ab::may_glance    = false;
     ab::special       = true;
@@ -1722,13 +1784,23 @@ public:
   virtual void init()
   {
     ab::init();
-
+    
     consume_bloodtalons = ab::harmful && ab::special;
+    if ( consume_bloodtalons )
+      bt_counter = new buff_counter_t( ab::p() , ab::p() -> buff.bloodtalons );
+    if ( consume_bloodtalons )
+      tf_counter = new buff_counter_t( ab::p() , ab::p() -> buff.tigers_fury );
   }
 
   virtual void execute()
   {
     ab::execute();
+
+    if( consume_bloodtalons )
+    {
+      bt_counter -> increment();
+      tf_counter -> increment();
+    }
 
     if ( ab::p() -> talent.bloodtalons -> ok() && consume_bloodtalons & ab::p() -> buff.bloodtalons -> up() )
       ab::p() -> buff.bloodtalons -> decrement();
@@ -6347,6 +6419,18 @@ void druid_t::reset()
   }
 }
 
+// druid_t::merge ===========================================================
+
+void druid_t::merge( player_t& other )
+{
+  player_t::merge( other );
+
+  druid_t& od = static_cast<druid_t&>( other );
+
+  for ( size_t i = 0, end = counters.size(); i < end; i++ )
+    counters[ i ] -> merge( *od.counters[ i ] );
+}
+
 // druid_t::regen ===========================================================
 
 void druid_t::regen( timespan_t periodicity )
@@ -7225,21 +7309,161 @@ class druid_report_t : public player_report_extension_t
 public:
   druid_report_t( druid_t& player ) :
       p( player )
-  {
+  { }
 
+  void feral_snapshot_table( report::sc_html_stream& os )
+  {
+    // Write header
+    os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n"
+         << "<tr>\n"
+           << "<th colspan=2>Ability</th>\n"
+           << "<th colspan=3>Tiger's Fury</th>\n";
+    if ( p.talent.bloodtalons -> ok() )
+    {
+      os << "<th colspan=3>Bloodtalons</th>\n";
+    }
+    os << "</tr>\n";
+
+    os << "<tr>\n"
+         << "<th>Name</th>\n"
+         << "<th>Executes</th>\n"
+         << "<th>Buffed</th>\n"
+         << "<th>% Buffed</th>\n"
+         << "<th>% of Buff Usage</th>\n";
+    if ( p.talent.bloodtalons -> ok() )
+    {
+      os << "<th>Buffed</th>\n"
+         << "<th>% Buffed</th>\n"
+         << "<th>% of Buff Usage</th>\n";
+    }
+    os << "</tr>\n";
+
+    // Write contents
+    double tf_total_executes = 0, tf_total_up = 0, tf_total_down = 0;
+    double bt_total_executes = 0, bt_total_up = 0, bt_total_down = 0;
+
+    // Get Totals
+    for( size_t i = 0, end = p.stats_list.size(); i < end; i++ )
+    {
+      stats_t* stats = p.stats_list[ i ];
+
+      for ( size_t j = 0, end2 = stats -> action_list.size(); j < end2; j++ )
+      {
+        cat_attacks::cat_attack_t* a = dynamic_cast<cat_attacks::cat_attack_t*>( stats -> action_list[ j ] );
+        if ( ! a )
+          continue;
+
+        if ( ! a -> consume_bloodtalons )
+          continue;
+
+        tf_total_executes += a -> tf_counter -> mean_total();
+        tf_total_up += a -> tf_counter -> mean_up();
+        tf_total_down += a -> tf_counter -> mean_down();
+
+        if ( p.talent.bloodtalons -> ok() )
+        {
+          bt_total_executes += a -> bt_counter -> mean_total();
+          bt_total_up += a -> bt_counter -> mean_up();
+          bt_total_down += a -> bt_counter -> mean_down();
+        }
+      }
+    }
+
+    for ( size_t i = 0, end = p.stats_list.size(); i < end; i++ )
+    {
+      stats_t* stats = p.stats_list[ i ];
+      double tf_total = 0, tf_up = 0;
+      double bt_total = 0, bt_up = 0;
+      int n = 0;
+
+      for ( size_t j = 0, end2 = stats -> action_list.size(); j < end2; j++ )
+      {
+        cat_attacks::cat_attack_t* a = dynamic_cast<cat_attacks::cat_attack_t*>( stats -> action_list[ j ] );
+        if ( ! a )
+          continue;
+
+        if ( ! a -> consume_bloodtalons )
+          continue;
+
+        tf_total += a -> tf_counter -> mean_total();
+        tf_up += a -> tf_counter -> mean_up();
+        if ( p.talent.bloodtalons -> ok() )
+        {
+          bt_total += a -> bt_counter -> mean_total();
+          bt_up += a -> bt_counter -> mean_up();
+        }
+      }
+
+      if ( tf_total > 0 || bt_total > 0 )
+      {
+        wowhead::wowhead_e domain = SC_BETA ? wowhead::BETA : wowhead::LIVE;
+        if ( ! SC_BETA && p.dbc.ptr )
+          domain = wowhead::PTR;
+
+        std::string name_str = wowhead::decorated_action_name( stats -> name_str, 
+                                                               stats -> action_list[ 0 ],
+                                                               domain );
+        std::string row_class_str = "";
+        if ( ++n & 1 )
+          row_class_str = " class=\"odd\"";
+
+        // Table Row : Name, TF up, TF total, TF up/total, TF up/sum(TF up)
+        os.printf("<tr%s><td class=\"left\">%s</td><td class=\"right\">%.2f</td><td class=\"right\">%.2f</td><td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
+            row_class_str.c_str(),
+            name_str.c_str(),
+            util::round( tf_total, 2 ),
+            util::round( tf_up, 2 ),
+            util::round( tf_up / tf_total * 100, 2 ),
+            util::round( tf_up / tf_total_up * 100, 2 ) );
+
+        if ( p.talent.bloodtalons -> ok() )
+        {
+          // Table Row : Name, TF up, TF total, TF up/total, TF up/sum(TF up)
+          os.printf("<td class=\"right\">%.2f</td><td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
+              util::round( bt_up, 2 ),
+              util::round( bt_up / bt_total * 100, 2 ),
+              util::round( bt_up / bt_total_up * 100, 2 ) );
+        }
+
+        os << "</tr>";
+      }
+      
+    }
+
+    os.printf("<tr><td class=\"left\">Total</td><td class=\"right\">%.2f</td><td class=\"right\">%.2f</td><td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
+        util::round( tf_total_executes, 2 ),
+        util::round( tf_total_up, 2 ),
+        util::round( tf_total_up / tf_total_executes * 100, 2 ),
+        util::round( tf_total_up / tf_total_up * 100, 2 ) );
+
+    if ( p.talent.bloodtalons -> ok() )
+    {
+      os.printf("<td class=\"right\">%.2f</td><td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
+          util::round( bt_total_up, 2 ),
+          util::round( bt_total_up / bt_total_executes * 100, 2 ),
+          util::round( bt_total_up / bt_total_up * 100, 2 ) );
+    }
+
+    os << "</tr>";
+
+    // Write footer
+    os << "</table>\n";
   }
 
-  virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
+  virtual void html_customsection( report::sc_html_stream& os ) override
   {
-    (void) p;
-    /*// Custom Class Section
-    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
-        << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
-        << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+    if ( p.specialization() == DRUID_FERAL )
+    {
+      os << "<div class=\"player-section custom_section\">\n"
+          << "<h3 class=\"toggle open\">Snapshotting Details</h3>\n"
+          << "<div class=\"toggle-content\">\n";
 
-    os << p.name();
+          feral_snapshot_table( os );
 
-    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
+
+      os << "<div class=\"clear\"></div>\n";
+      os << "</div>\n" << "</div>\n";
+    }
   }
 private:
   druid_t& p;
