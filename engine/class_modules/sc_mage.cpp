@@ -2497,33 +2497,47 @@ struct fireball_t : public mage_spell_t
   virtual timespan_t travel_time() const
   {
     timespan_t t = mage_spell_t::travel_time();
-    return ( t > timespan_t::from_seconds( 0.75 ) ? timespan_t::from_seconds( 0.75 ) : t );
+
+    t = std::min( timespan_t::from_seconds( 0.75 ), t );
+
+    return t;
   }
 
   virtual void impact( action_state_t* s )
   {
     mage_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( p() -> perks.enhanced_pyrotechnics -> ok() &&
+         result_is_hit( s -> result ) )
     {
-        if ( s -> result == RESULT_CRIT )
-            p() -> buffs.enhanced_pyrotechnics -> expire();
-
-        else
-            p() -> buffs.enhanced_pyrotechnics -> trigger();
-
+      if ( s -> result == RESULT_CRIT )
+      {
+        p() -> buffs.enhanced_pyrotechnics -> expire();
+      }
+      else
+      {
+        p() -> buffs.enhanced_pyrotechnics -> trigger();
+      }
     }
 
     if ( p() -> talents.kindling -> ok() &&  s -> result == RESULT_CRIT )
-        p() -> cooldowns.combustion -> adjust( timespan_t::from_seconds( - p() -> talents.kindling -> effectN( 1 ).base_value() ) );
+    {
+      p() -> cooldowns.combustion -> adjust(
+        -1000 * p() -> talents.kindling -> effectN( 1 ).time_value()
+      );
+    }
 
     if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
     {
-        if ( p() -> talents.unstable_magic -> ok() && rng().roll( p() -> talents.unstable_magic -> effectN( 3 ).percent() ) )
-          trigger_unstable_magic( s );
-        trigger_ignite( s );
-    }
+      if ( p() -> talents.unstable_magic -> ok() &&
+           rng().roll( p() -> talents.unstable_magic
+                           -> effectN( 3 ).percent() ) )
+      {
+        trigger_unstable_magic( s );
+      }
 
+      trigger_ignite( s );
+    }
   }
 
   double composite_target_crit( player_t* target ) const
@@ -2533,7 +2547,8 @@ struct fireball_t : public mage_spell_t
     // Fire PvP 4pc set bonus
     if ( td( target ) -> debuffs.firestarter -> check() )
     {
-      c += td( target ) -> debuffs.firestarter -> data().effectN( 1 ).percent();
+      c += td( target ) -> debuffs.firestarter
+                        -> data().effectN( 1 ).percent();
     }
 
     return c;
@@ -2543,12 +2558,9 @@ struct fireball_t : public mage_spell_t
   {
     double c = mage_spell_t::composite_crit();
 
-    if ( p() -> perks.enhanced_pyrotechnics -> ok() )
-    {
-      c += p() -> buffs.enhanced_pyrotechnics -> stack() *
-           p() -> perks.enhanced_pyrotechnics -> effectN( 1 ).trigger()
-                                              -> effectN( 1 ).percent();
-    }
+    c += p() -> buffs.enhanced_pyrotechnics -> stack() *
+         p() -> perks.enhanced_pyrotechnics -> effectN( 1 ).trigger()
+                                            -> effectN( 1 ).percent();
 
     return c;
   }
@@ -2571,7 +2583,12 @@ struct flamestrike_t : public mage_spell_t
     mage_spell_t( "flamestrike", p, p -> find_specialization_spell( "Flamestrike" ) )
   {
     parse_options( options_str );
-    cooldown -> duration = timespan_t::zero(); // Flamestrike Perk modifying the cooldown
+
+    if ( p -> perks.improved_flamestrike -> ok() )
+    {
+      cooldown -> duration = timespan_t::zero();
+    }
+
     aoe = -1;
   }
 
