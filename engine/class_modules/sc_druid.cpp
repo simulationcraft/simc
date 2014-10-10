@@ -5025,7 +5025,6 @@ struct starfall_t : public druid_spell_t
 
     hasted_ticks = false;
     may_multistrike = 0;
-    tick_zero = true;
     cooldown = player -> cooldown.starfallsurge;
     base_multiplier *= 1.0 + player -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
     add_child( starfall );
