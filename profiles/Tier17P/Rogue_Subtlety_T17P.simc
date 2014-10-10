@@ -29,6 +29,7 @@ actions.precombat+=/slice_and_dice
 
 actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<40
 actions+=/kick
+actions+=/use_item,slot=trinket1,if=buff.shadow_dance.up
 actions+=/blood_fury,if=buff.shadow_dance.up
 actions+=/berserking,if=buff.shadow_dance.up
 actions+=/arcane_torrent,if=energy<60
@@ -69,27 +70,28 @@ actions.finisher+=/run_action_list,name=pool
 actions.pool=preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
 
 head=bloodfeather_cowl,id=109976,bonus_id=524
-neck=fireblade_collar,id=109951,bonus_id=524,enchant=gift_of_mastery
+neck=fireblade_collar,id=109951,bonus_id=524,enchant=gift_of_multistrike
 shoulders=crystalbinder_shoulderpads,id=109936,bonus_id=524
-back=cloak_of_violent_harmony,id=109906,bonus_id=524,enchant=gift_of_mastery
+back=cloak_of_violent_harmony,id=109906,bonus_id=524,enchant=gift_of_multistrike
 chest=chestguard_of_burning_focus,id=109884,bonus_id=524
 wrists=leafmender_wraps,id=109871,bonus_id=524
 hands=blackwater_grips,id=109862,bonus_id=524
-waist=crystalhide_belt,id=115379
+waist=belt_of_burning_focus,id=109829,bonus_id=524
 legs=bloodfeather_leggings,id=109810,bonus_id=524
 feet=boots_of_burning_focus,id=109787,bonus_id=524
-finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_mastery
-finger2=ancient_draenic_loop,id=109779,bonus_id=524,enchant=gift_of_mastery
-trinket1=munificent_emblem_of_terror,id=114427
+finger1=rogers_brown_diamond_seal,id=109759,bonus_id=524,enchant=gift_of_multistrike
+finger2=ancient_draenic_loop,id=109779,bonus_id=524,enchant=gift_of_multistrike
+trinket1=gorashans_lodestone_spike,id=109998,bonus_id=524
 trinket2=blood_seal_of_azzakel,id=109995,bonus_id=524
 main_hand=felshanker,id=118738,bonus_id=524,enchant=mark_of_the_frostwolf
 off_hand=felshanker,id=118738,bonus_id=524,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_agility=2020
-# gear_stamina=2584
-# gear_crit_rating=1012
-# gear_mastery_rating=723
+# gear_agility=1937
+# gear_stamina=2428
+# gear_crit_rating=855
+# gear_haste_rating=82
+# gear_mastery_rating=426
 # gear_armor=814
-# gear_multistrike_rating=610
-# gear_versatility_rating=344
+# gear_multistrike_rating=970
+# gear_versatility_rating=222

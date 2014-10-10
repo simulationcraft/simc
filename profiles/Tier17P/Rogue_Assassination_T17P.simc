@@ -61,21 +61,21 @@ back=sootscarred_longcloak,id=109918,bonus_id=524,enchant=gift_of_mastery
 chest=bloodfeather_chestwrap,id=109885,bonus_id=524
 wrists=bracers_of_burning_focus,id=109868,bonus_id=524
 hands=crystalbinder_gloves,id=109850,bonus_id=524
-waist=crystalhide_belt,id=115379
+waist=crystalbinder_belt,id=109831,bonus_id=524
 legs=blackwater_leggings,id=109823,bonus_id=524
 feet=boots_of_burning_focus,id=109787,bonus_id=524
-finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_mastery
-finger2=ancient_draenic_loop,id=109779,bonus_id=524,enchant=gift_of_mastery
+finger1=ancient_draenic_loop,id=109779,bonus_id=524,enchant=gift_of_mastery
+finger2=rogers_brown_diamond_seal,id=109759,bonus_id=524,enchant=gift_of_mastery
 trinket1=kihras_adrenaline_injector,id=109997,bonus_id=524
 trinket2=blood_seal_of_azzakel,id=109995,bonus_id=524
 main_hand=felshanker,id=118738,bonus_id=524,enchant=mark_of_the_thunderlord
 off_hand=felshanker,id=118738,bonus_id=524,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_agility=2041
-# gear_stamina=2584
-# gear_crit_rating=1199
-# gear_mastery_rating=1181
+# gear_agility=1937
+# gear_stamina=2428
+# gear_crit_rating=1106
+# gear_mastery_rating=1255
 # gear_armor=814
 # gear_multistrike_rating=108
-# gear_versatility_rating=180
+# gear_versatility_rating=58

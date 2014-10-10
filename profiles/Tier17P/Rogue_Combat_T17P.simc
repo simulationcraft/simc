@@ -55,28 +55,27 @@ actions.finisher+=/crimson_tempest,if=active_enemies>7&dot.crimson_tempest_dot.t
 actions.finisher+=/eviscerate
 
 head=crystalbinder_helm,id=109977,bonus_id=524
-neck=windseal_necklace,id=109953,bonus_id=524,enchant=gift_of_mastery
+neck=windseal_necklace,id=109953,bonus_id=524,enchant=gift_of_haste
 shoulders=crystalbinder_shoulderpads,id=109936,bonus_id=524
-back=cloak_of_cascading_blades,id=109904,bonus_id=524,enchant=gift_of_mastery
+back=cloak_of_cascading_blades,id=109904,bonus_id=524,enchant=gift_of_haste
 chest=leafmender_robes,id=109897,bonus_id=524
 wrists=bloodfeather_bracers,id=109869,bonus_id=524
-hands=crystalhide_grips,id=116944
+hands=leafmender_grips,id=109851,bonus_id=524
 waist=belt_of_burning_focus,id=109829,bonus_id=524
 legs=bloodfeather_leggings,id=109810,bonus_id=524
 feet=bloodfeather_treads,id=109788,bonus_id=524
-finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_mastery
-finger2=signet_of_radiant_leaves,id=109762,bonus_id=524,enchant=gift_of_mastery
+finger1=ceds_chiming_circle,id=109760,bonus_id=524,enchant=gift_of_haste
+finger2=signet_of_radiant_leaves,id=109762,bonus_id=524,enchant=gift_of_haste
 trinket1=witherbarks_branch,id=109999,bonus_id=524
 trinket2=kihras_adrenaline_injector,id=109997,bonus_id=524
-main_hand=gugrokks_smasher,id=110042,enchant=mark_of_warsong
-off_hand=gugrokks_smasher,id=110042,enchant=mark_of_warsong
+main_hand=gugrokks_smasher,id=110042,bonus_id=524,enchant=mark_of_warsong
+off_hand=gugrokks_smasher,id=110042,bonus_id=524,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_agility=2041
-# gear_stamina=2584
-# gear_crit_rating=310
-# gear_haste_rating=825
-# gear_mastery_rating=275
+# gear_agility=1937
+# gear_stamina=2428
+# gear_crit_rating=303
+# gear_haste_rating=1171
 # gear_armor=814
-# gear_multistrike_rating=642
-# gear_versatility_rating=491
+# gear_multistrike_rating=556
+# gear_versatility_rating=369
