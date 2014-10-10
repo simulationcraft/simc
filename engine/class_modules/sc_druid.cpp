@@ -4503,6 +4503,14 @@ struct sunfire_t: public druid_spell_t
       moonfire = new moonfire_CA_t( player );
   }
 
+  double spell_direct_power_coefficient( const action_state_t* s ) const
+  {
+    if ( s -> target != s -> action -> target )
+      return 0; // Sunfire will not deal direct damage to the targets that the dot is spread to.
+
+    return spell_direct_power_coefficient( s );
+  }
+
   double action_multiplier() const
   {
     double am = druid_spell_t::action_multiplier();
@@ -4538,8 +4546,6 @@ struct sunfire_t: public druid_spell_t
         moonfire -> execute();
       }
     }
-    if ( s -> target != s -> action -> target )
-      s -> result_amount = 0; // Sunfire will not deal direct damage to the targets that the dot is spread to.
     druid_spell_t::impact( s );
   }
 
