@@ -31,6 +31,7 @@ const QString sources[] =
   "glyph",
   "set_bonus",
   "effect",
+  "spell.effect",
   "perk_spell",
   NULL
 };
@@ -48,7 +49,6 @@ const FilterEntry filters[] =
   { "class",         true, true, "string (class name) " },
   { "pet_class",     false, true, "string (pet talent tree name) " },
   { "scaling",       true, false, "number (spell scaling type, -1 for \"generic scaling\", 0 for no scaling, otherwise class number) " },
-  { "extra_coeff",   true, false, "number (spell-wide coefficient, usually used for spells scaling with both SP and AP) " },
   { "level",         true, false, "number (spell learned level) " },
   { "max_level",     true, false, "number (spell \"maximum\" level in a scaling sense) " },
   { "min_range",     true, false, "number (minimum range in yards) " },
@@ -75,6 +75,11 @@ const FilterEntry filters[] =
   { "depend_rank",   false, true, "number (talent rank of talent id this talent depends on)" },
   { "col",           false, true, "number (talent column 0..3)" },
   { "row",           false, true, "number (talent \"tier\" 0..6) " },
+  { "charges",       true, false, "number (max amount of charges)" },
+  { "charge_cooldown", true, false, "number (recharge time in milliseconds)" },
+  { "ap_coeff",       false, false, "" }, // these are for effects only
+  { "sp_coeff",       false, false, "" },
+  { "type",           false, false, "" },
   { NULL,            NULL,  NULL, NULL }
 };
 
