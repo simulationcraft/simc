@@ -9,8 +9,7 @@ race=orc
 spec=beast_mastery
 position=ranged_back
 role=attack
-talents=000211
-professions=enchanting=600/engineering=600
+talents=000231
 chest=ancient_archers_chestguard,id=105585,gems=10agi_10agi_5agi_10mastery_11agi,enchant=5all,upgrade=4
 waist=arrowflight_girdle,id=105584,gems=10agi_5agi_10mastery_10agi_8agi,upgrade=4
 legs=legguards_of_the_unblinking_vigil,id=99403,gems=5agi_10mastery_5agi_10mastery_8agi,enchant=111agi_11crit,upgrade=4
@@ -24,7 +23,7 @@ main_hand=korkron_hand_cannon,id=105559,gems=10agi_4agi,enchant=lord_blastington
 head=headguard_of_the_unblinking_vigil,id=99402,gems=capacitive_primal_10haste_10crit_11agi,upgrade=4
 neck=immerseus_crystalline_eye,id=105407,upgrade=4
 back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=10agi_4agi,enchant=12crit
-trinket1=ticking_ebon_detonator,id=105612,upgrade=4
+trinket1=assurance_of_consequence,id=105472,upgrade=4
 trinket2=haromms_talisman,id=105527,upgrade=4
 save=Hunter_BM_T16H.simc
 
@@ -35,8 +34,7 @@ race=orc
 spec=marksmanship
 position=ranged_back
 role=attack
-talents=000111
-professions=enchanting=600/alchemy=600
+talents=000330
 head=headguard_of_the_unblinking_vigil,id=99402,upgrade=4,gems=capacitive_primal_10agi_11agi
 neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=4
 shoulder=spaulders_of_the_unblinking_vigil,id=99404,upgrade=4,gems=10agi_10agi_8agi,enchant=15agi_5crit
@@ -49,7 +47,7 @@ legs=leggings_of_unabashed_anger,id=105454,upgrade=4,gems=5agi_10crit_5agi_10cri
 feet=puddle_punishers,id=105410,upgrade=4,gems=10agi_4mastery,enchant=9agi
 ring1=kilruks_band_of_ascendancy,id=105624,upgrade=4,gems=10agi_4crit
 ring2=ring_of_restless_energy,id=105558,upgrade=4,gems=10agi_4crit
-trinket1=ticking_ebon_detonator,id=105612,upgrade=4
+trinket1=assurance_of_consequence,id=105472,upgrade=4
 trinket2=haromms_talisman,id=105527,upgrade=4
 main_hand=hiseks_reserve_longbow,id=105623,upgrade=4,gems=10agi_4agi,enchant=lord_blastingtons_scope_of_doom
 save=Hunter_MM_T16H.simc
@@ -61,8 +59,7 @@ race=orc
 spec=survival
 position=ranged_back
 role=attack
-talents=000311
-professions=enchanting=600/alchemy=600
+talents=000231
 head=headguard_of_the_unblinking_vigil,id=99402,upgrade=4,gems=capacitive_primal_10agi_11agi
 neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=4
 shoulder=spaulders_of_the_unblinking_vigil,id=99404,upgrade=4,gems=10agi_10agi_8agi,enchant=15agi_5crit
@@ -75,7 +72,7 @@ legs=leggings_of_unabashed_anger,id=105454,upgrade=4,gems=5agi_10crit_5agi_10cri
 feet=puddle_punishers,id=105410,upgrade=4,gems=10agi_4mastery,enchant=9agi
 ring1=kilruks_band_of_ascendancy,id=105624,upgrade=4,gems=10agi_4crit
 ring2=ring_of_restless_energy,id=105558,upgrade=4,gems=10agi_4crit
-trinket1=ticking_ebon_detonator,id=105612,upgrade=4
+trinket1=assurance_of_consequence,id=105472,upgrade=4
 trinket2=haromms_talisman,id=105527,upgrade=4
 main_hand=hiseks_reserve_longbow,id=105623,upgrade=4,gems=10agi_4agi,enchant=lord_blastingtons_scope_of_doom
 save=Hunter_SV_T16H.simc
