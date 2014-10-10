@@ -2333,6 +2333,7 @@ struct shadow_bolt_t: public warlock_spell_t
 
     hand_of_guldan               -> background = true;
     hand_of_guldan               -> base_costs[RESOURCE_MANA] = 0;
+    hand_of_guldan               -> cooldown = p -> get_cooldown( "t16_4pc_demo" );
 
 
     if ( p -> glyphs.shadow_bolt -> ok() )
@@ -2368,6 +2369,7 @@ struct shadow_bolt_t: public warlock_spell_t
     if ( p() -> sets.has_set_bonus( SET_CASTER, T16, B4 ) && rng().roll( 0.08 ) )
     {
       hand_of_guldan -> target = target;
+      /*
       int current_charge = hand_of_guldan -> cooldown -> current_charge;
       bool pre_execute_add = true;
       if ( current_charge == hand_of_guldan -> cooldown -> charges - 1 )
@@ -2375,9 +2377,9 @@ struct shadow_bolt_t: public warlock_spell_t
         pre_execute_add = false;
       }
       if ( pre_execute_add ) hand_of_guldan -> cooldown -> current_charge++;
-
+      */
       hand_of_guldan -> execute();
-      if ( !pre_execute_add ) hand_of_guldan -> cooldown -> current_charge++;
+      //if ( !pre_execute_add ) hand_of_guldan -> cooldown -> current_charge++;
     }
 
     if ( p() -> buffs.demonic_calling -> up() )
@@ -3469,6 +3471,7 @@ struct touch_of_chaos_t: public warlock_spell_t
 
     chaos_wave               -> background = true;
     chaos_wave               -> base_costs[RESOURCE_DEMONIC_FURY] = 0;
+    chaos_wave               -> cooldown = p -> get_cooldown( "t16_4pc_demo" );
     base_tick_time = timespan_t::from_seconds( 2.0 ); //FIX: It got lost in some dbc update. Somebody should try to find it correctly in the dbc.
   }
 
@@ -3497,6 +3500,7 @@ struct touch_of_chaos_t: public warlock_spell_t
     if ( p() -> sets.has_set_bonus( SET_CASTER, T16, B4 ) && rng().roll( 0.08 ) )
     {
       chaos_wave -> target = target;
+      /*
       int current_charge = chaos_wave -> cooldown -> current_charge;
       bool pre_execute_add = true;
       if ( current_charge == chaos_wave -> cooldown -> charges - 1 )
@@ -3504,8 +3508,9 @@ struct touch_of_chaos_t: public warlock_spell_t
         pre_execute_add = false;
       }
       if ( pre_execute_add ) chaos_wave -> cooldown -> current_charge++;
+      */
       chaos_wave -> execute();
-      if ( !pre_execute_add ) chaos_wave -> cooldown -> current_charge++;
+      //if ( !pre_execute_add ) chaos_wave -> cooldown -> current_charge++;
     }
 
   }
