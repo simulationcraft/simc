@@ -4999,7 +4999,6 @@ void mage_t::apl_frost()
 
   action_priority_list_t* default_list      = get_action_priority_list( "default"          );
 
-  action_priority_list_t* init_crystal      = get_action_priority_list( "init_crystal"     );
   action_priority_list_t* crystal_sequence  = get_action_priority_list( "crystal_sequence" );
   action_priority_list_t* cooldowns         = get_action_priority_list( "cooldowns"        );
   action_priority_list_t* aoe               = get_action_priority_list( "aoe"              );
@@ -5018,23 +5017,23 @@ void mage_t::apl_frost()
   default_list -> add_talent( this, "Rune of Power", "if=buff.rune_of_power.remains<cast_time" );
   default_list -> add_talent( this, "Rune of Power", "if=(cooldown.icy_veins.remains<gcd&buff.rune_of_power.remains<20)|(cooldown.prismatic_crystal.remains<gcd&buff.rune_of_power.remains<10)" );
   default_list -> add_action( "call_action_list,name=cooldowns,if=time_to_die<24" );
-  default_list -> add_action( "call_action_list,name=init_crystal,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.remains<action.frozen_orb.gcd" );
-  default_list -> add_action( "call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active" );
+  default_list -> add_action( "call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&(cooldown.prismatic_crystal.remains<=action.frozen_orb.gcd|pet.prismatic_crystal.active)" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=5" );
   default_list -> add_action( "call_action_list,name=single_target" );
 
 
-  init_crystal -> add_action( "call_action_list,name=cooldowns",
-                              "Conditions for initiating Prismatic Crystal burn phase" );
-  init_crystal -> add_action( this, "Frozen Orb" );
-  init_crystal -> add_talent( this, "Prismatic Crystal" );
-
-
-  crystal_sequence -> add_talent( this, "Frost Bomb",
-                                  "if=!ticking&buff.fingers_of_frost.react",
+  crystal_sequence -> add_action( "call_action_list,name=cooldowns",
                                   "Actions while Prismatic Crystal is active" );
+  crystal_sequence -> add_talent( this, "Frost Bomb",
+                                  "if=active_enemies=1&current_target!=prismatic_crystal&remains<12" );
+  crystal_sequence -> add_action( this, "Frozen Orb" );
+  crystal_sequence -> add_talent( this, "Prismatic Crystal" );
+  crystal_sequence -> add_talent( this, "Frost Bomb",
+                                  "if=active_enemies>1&current_target=prismatic_crystal&!ticking" );
   crystal_sequence -> add_action( this, "Ice Lance",
-                                  "if=buff.fingers_of_frost.react=2" );
+                                  "if=buff.fingers_of_frost.react=2|(buff.fingers_of_frost.react&set_bonus.tier17_2pc&dot.frozen_orb.ticking)" );
+  crystal_sequence -> add_talent( this, "Ice Nova",
+                                  "if=charges=2" );
   crystal_sequence -> add_action( this, "Frostfire Bolt",
                                   "if=buff.brain_freeze.react" );
   crystal_sequence -> add_action( this, "Ice Lance",
@@ -5050,7 +5049,7 @@ void mage_t::apl_frost()
                            "Consolidated damage cooldown abilities" );
 
   for( size_t i = 0; i < racial_actions.size(); i++ )
-    cooldowns -> add_action( racial_actions[i] + ",if=buff.icy_veins.up" );
+    cooldowns -> add_action( racial_actions[i] );
 
   cooldowns -> add_action( get_potion_action() + ",if=buff.bloodlust.up|buff.icy_veins.up" );
 
@@ -5083,30 +5082,27 @@ void mage_t::apl_frost()
   single_target -> add_action( this, "Frostfire Bolt",
                                "if=buff.brain_freeze.react&buff.brain_freeze.remains<action.frostbolt.execute_time" );
   single_target -> add_talent( this, "Frost Bomb",
-                               "if=!talent.prismatic_crystal.enabled&cooldown.frozen_orb.remains<execute_time&debuff.frost_bomb.remains<10+execute_time" );
+                               "if=!talent.prismatic_crystal.enabled&cooldown.frozen_orb.remains<gcd&debuff.frost_bomb.remains<10" );
   single_target -> add_action( this, "Frozen Orb",
-                               "if=buff.fingers_of_frost.stack<2&!talent.prismatic_crystal.enabled&(buff.icy_veins.up|cooldown.icy_veins.remains>45)" );
-  single_target -> add_action( this, "Frostbolt",
-                               "if=dot.water_jet.remains>cast_time+travel_time",
-                               "Cast Frostbolt during Water Jet channel for FoF procs" );
+                               "if=!talent.prismatic_crystal.enabled&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains>45" );
   single_target -> add_talent( this, "Frost Bomb",
-                               "if=remains<action.ice_lance.travel_time&buff.fingers_of_frost.react=2" );
-  single_target -> add_action( this, "Ice Lance",
-                               "if=(buff.fingers_of_frost.react=2|(set_bonus.tier17_2pc&cooldown.frozen_orb.remains>50))&(!talent.frost_bomb.enabled|debuff.frost_bomb.remains>travel_time)" );
-  single_target -> add_talent( this, "Comet Storm" );
+                               "if=remains<action.ice_lance.travel_time&(buff.fingers_of_frost.react=2|(buff.fingers_of_frost.react&buff.fingers_of_frost.remains<gcd*2))" );
   single_target -> add_talent( this, "Ice Nova",
-                               "if=time_to_die<10|charges=2" );
+                               "if=time_to_die<10|(charges=2&(!talent.prismatic_crystal.enabled|!cooldown.prismatic_crystal.up))" );
+  single_target -> add_action( this, "Ice Lance",
+                               "if=buff.fingers_of_frost.react=2|(talent.thermal_void.enabled&set_bonus.tier17_2pc&dot.frozen_orb.ticking)" );
+  single_target -> add_talent( this, "Comet Storm" );
   single_target -> add_action( this, "Frostfire Bolt",
                                "if=buff.brain_freeze.react" );
+  single_target -> add_talent( this, "Ice Nova",
+                               "if=(!talent.prismatic_crystal.enabled|(charges=1&cooldown.prismatic_crystal.remains>recharge_time))&(buff.icy_veins.up|(charges=1&cooldown.icy_veins.remains>recharge_time))" );
   single_target -> add_action( this, "Ice Lance",
                                "if=buff.fingers_of_frost.react&debuff.frost_bomb.remains>travel_time&(!talent.thermal_void.enabled|cooldown.icy_veins.remains>8)" );
   single_target -> add_action( this, "Frostbolt",
-                               "if=buff.ice_shard.remains>cast_time",
+                               "if=buff.ice_shard.up&!(talent.thermal_void.enabled&buff.icy_veins.up&buff.icy_veins.remains<10)",
                                "Camp procs and spam Frostbolt while 4T17 buff is up" );
   single_target -> add_action( this, "Ice Lance",
                                "if=buff.fingers_of_frost.react&!talent.frost_bomb.enabled&(!talent.thermal_void.enabled|cooldown.icy_veins.remains>8)" );
-  single_target -> add_talent( this, "Ice Nova",
-                               "if=(!talent.prismatic_crystal.enabled|(charges=1&cooldown.prismatic_crystal.remains>recharge_time)|set_bonus.tier17_2pc)&(buff.icy_veins.up|(charges=1&cooldown.icy_veins.remains>recharge_time))" );
   single_target -> add_action( this, "Ice Lance",
                                "if=talent.thermal_void.enabled&buff.icy_veins.up&buff.icy_veins.remains<6&buff.icy_veins.remains<cooldown.icy_veins.remains",
                                "Thermal Void IV extension" );
