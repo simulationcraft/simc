@@ -4462,9 +4462,9 @@ void monk_t::apl_pre_brewmaster()
   // Flask
   if ( sim -> allow_flasks && level >= 80 )
   {
-    if ( level >= 90 )
+    if ( level > 90 )
       pre -> add_action( "flask,type=greater_draenic_stamina_flask" );
-    else if ( level >= 90 )
+    else if ( level >= 85 )
       pre -> add_action( "flask,type=earth" );
     else
       pre -> add_action( "flask,type=steelskin" );
@@ -4472,7 +4472,7 @@ void monk_t::apl_pre_brewmaster()
 
   if ( sim -> allow_food && level >= 80 )
   {
-    if ( level >= 90 )
+    if ( level > 90 )
       pre -> add_action( "/food,type=sleeper_surprise" );
     else if ( level >= 85 )
       pre -> add_action( "/food,type=mogu_fish_stew" );
@@ -4505,7 +4505,7 @@ void monk_t::apl_pre_windwalker()
   if ( sim -> allow_flasks )
   {
     // Flask
-    if ( level >= 90 )
+    if ( level > 90 )
       precombat += "flask,type=greater_draenic_agility_flask";
     else
       precombat += "flask,type=spring_blossoms";
@@ -4514,7 +4514,7 @@ void monk_t::apl_pre_windwalker()
   if ( sim -> allow_food )
   {
     // Food
-    if ( level >= 90 )
+    if ( level > 90 )
       precombat += "/food,type=rylak_crepes";
     else
       precombat += "/food,type=sea_mist_rice_noodles";
@@ -4526,7 +4526,7 @@ void monk_t::apl_pre_windwalker()
   if ( sim -> allow_potions )
   {
     // Prepotion
-    if ( level >= 90 )
+    if ( level > 90 )
       precombat += "/potion,name=draenic_agility";
     else if ( level >= 85 )
       precombat += "/potion,name=virmens_bite";
@@ -4543,7 +4543,7 @@ void monk_t::apl_pre_mistweaver()
 
   if ( sim -> allow_flasks )
   {
-    if ( level >= 90 )
+    if ( level > 90 )
       precombat += "flask,type=greater_draenic_intellect_flask";
     // Flask
     if ( level >= 85 )
@@ -4555,7 +4555,7 @@ void monk_t::apl_pre_mistweaver()
   if ( sim -> allow_food )
   {
     // Food
-    if ( level >= 90 )
+    if ( level > 90 )
       precombat += "/food,type=rylak_crepes";
     else if ( level >= 85 )
       precombat += "/food,type=mogu_fish_stew";
@@ -4569,7 +4569,7 @@ void monk_t::apl_pre_mistweaver()
   if ( sim -> allow_potions )
   {
     // Prepotion
-    if ( level >= 90 )
+    if ( level > 90 )
       precombat += "/potion,name=draenic_intellect_potion";
     else if ( level >= 85 )
       precombat += "/potion,name=jade_serpent_potion";

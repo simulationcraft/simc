@@ -3568,7 +3568,10 @@ void hunter_t::init_action_list()
     if ( sim -> allow_flasks && level >= 80 )
     {
       std::string flask_action = "flask,type=";
+      if ( level > 90 )
         flask_action += "greater_draenic_agility_flask";
+      else
+        flask_action += "spring_blossoms";
       precombat -> add_action( flask_action );
     }
 
@@ -3576,7 +3579,7 @@ void hunter_t::init_action_list()
     if ( sim -> allow_food )
     {
       std::string food_action = "food,type=";
-      if ( level >= 90 )
+      if ( level > 90 )
         food_action += "blackrock_barbecue";
       else
         food_action += ( level > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
@@ -3647,7 +3650,7 @@ void hunter_t::add_potion_action( action_priority_list_t* list, const std::strin
   std::string action_options = options.empty() ? options : "," + options;
   if ( sim -> allow_potions )
   {
-    if ( level >= 90 )
+    if ( level > 90 )
       list -> add_action( "potion,name=" + big_potion + action_options );
     else if ( level >= 85 )
       list -> add_action( "potion,name=" + little_potion + action_options );

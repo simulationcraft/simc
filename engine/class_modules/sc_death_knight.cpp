@@ -5976,15 +5976,15 @@ void death_knight_t::default_apl_blood()
 
   if ( primary_role() == ROLE_TANK )
   {
-    potion_str += ( level >= 90 ) ? "draenic_armor_potion" : ( level >= 85 ) ? "mountains_potion" : "earthen_potion";
-    flask_str += ( level >= 90 ) ? "greater_draenic_stamina_flask" : ( level >= 85 ) ? "earth" : "steelskin";
-    food_str += ( level >= 90 ) ? "talador_surf_and_turf" : ( level >= 85 ) ? "chun_tian_spring_rolls" : "beer_basted_crocolisk";
+    potion_str += ( level > 90 ) ? "draenic_armor_potion" : ( level >= 85 ) ? "mountains_potion" : "earthen_potion";
+    flask_str += ( level > 90 ) ? "greater_draenic_stamina_flask" : ( level >= 85 ) ? "earth" : "steelskin";
+    food_str += ( level > 90 ) ? "talador_surf_and_turf" : ( level >= 85 ) ? "chun_tian_spring_rolls" : "beer_basted_crocolisk";
   }
   else
   {
-    potion_str += ( level >= 90 ) ? "draenic_strength_potion" : ( level >= 85 ) ? "mogu_power" : "golemblood";
-    flask_str += ( level >= 90 ) ? "greater_draenic_strength_flask" : ( level >= 85 ) ? "winters_bite" : "titanic_strength";
-    food_str += ( level >= 90 ) ? "calamari_crepes" : ( level >= 85 ) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
+    potion_str += ( level > 90 ) ? "draenic_strength_potion" : ( level >= 85 ) ? "mogu_power" : "golemblood";
+    flask_str += ( level > 90 ) ? "greater_draenic_strength_flask" : ( level >= 85 ) ? "winters_bite" : "titanic_strength";
+    food_str += ( level > 90 ) ? "calamari_crepes" : ( level >= 85 ) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
   }
 
   // Precombat actions
@@ -6118,13 +6118,13 @@ void death_knight_t::init_action_list()
   std::string food_mastery = "food,type=sleeper_surprise";
   std::string food_ms = "food,type=calamari_crepes";
   std::string potion_str = "potion,name=";
-  potion_str += ( level >= 90 ) ? "draenic_strength" : ( ( level >= 85 ) ? "mogu_power" : "golemblood" );
+  potion_str += ( level > 90 ) ? "draenic_strength" : ( ( level >= 85 ) ? "mogu_power" : "golemblood" );
   food_str += ( level >= 85 ) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
 
   if ( tree == DEATH_KNIGHT_UNHOLY )
-    flask_str += ( level >= 90 ) ? "greater_draenic_strength_flask" : ( ( level >= 85 ) ? "winters_bite" : "titanic_strength" );
+    flask_str += ( level > 90 ) ? "greater_draenic_strength_flask" : ( ( level >= 85 ) ? "winters_bite" : "titanic_strength" );
   else
-    flask_str += ( level >= 90 ) ? "greater_draenic_strength_flask" : ( ( level >= 85 ) ? "winters_bite" : "titanic_strength" );
+    flask_str += ( level > 90 ) ? "greater_draenic_strength_flask" : ( ( level >= 85 ) ? "winters_bite" : "titanic_strength" );
 
   if ( tree == DEATH_KNIGHT_FROST || tree == DEATH_KNIGHT_UNHOLY )
 

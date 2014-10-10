@@ -14,14 +14,14 @@ spec=survival
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_agility_flask
-actions.precombat+=/food,type=blackrock_barbecue
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/exotic_munitions,ammo_type=poisoned,if=active_enemies<3
 actions.precombat+=/exotic_munitions,ammo_type=incendiary,if=active_enemies>=3
-actions.precombat+=/potion,name=draenic_agility
+actions.precombat+=/potion,name=virmens_bite
 
 # Executed every time the actor is available.
 
@@ -29,7 +29,7 @@ actions=auto_shot
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
-actions+=/potion,name=draenic_agility,if=(((cooldown.stampede.remains<1|!talent.stampede.enabled)&(!talent.a_murder_of_crows.enabled|cooldown.a_murder_of_crows.remains<1))&(trinket.stat.any.up|buff.archmages_greater_incandescence_agi.up))|target.time_to_die<=20
+actions+=/potion,name=virmens_bite,if=(((cooldown.stampede.remains<1|!talent.stampede.enabled)&(!talent.a_murder_of_crows.enabled|cooldown.a_murder_of_crows.remains<1))&(trinket.stat.any.up|buff.archmages_greater_incandescence_agi.up))|target.time_to_die<=20
 actions+=/call_action_list,name=aoe,if=active_enemies>1
 actions+=/stampede,if=buff.potion.up|(cooldown.potion.remains&(buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up))
 actions+=/explosive_shot

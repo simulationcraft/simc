@@ -14,14 +14,14 @@ spec=marksmanship
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_agility_flask
-actions.precombat+=/food,type=blackrock_barbecue
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/exotic_munitions,ammo_type=poisoned,if=active_enemies<3
 actions.precombat+=/exotic_munitions,ammo_type=incendiary,if=active_enemies>=3
-actions.precombat+=/potion,name=draenic_agility
+actions.precombat+=/potion,name=virmens_bite
 actions.precombat+=/aimed_shot
 
 # Executed every time the actor is available.
@@ -30,7 +30,7 @@ actions=auto_shot
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
-actions+=/potion,name=draenic_agility,if=((buff.rapid_fire.up|buff.bloodlust.up)&(!talent.stampede.enabled|cooldown.stampede.remains<1))|target.time_to_die<=20
+actions+=/potion,name=virmens_bite,if=((buff.rapid_fire.up|buff.bloodlust.up)&(!talent.stampede.enabled|cooldown.stampede.remains<1))|target.time_to_die<=20
 actions+=/chimaera_shot
 actions+=/kill_shot,if=cast_regen+action.aimed_shot.cast_regen<focus.deficit
 actions+=/rapid_fire

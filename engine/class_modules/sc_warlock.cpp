@@ -5321,12 +5321,12 @@ void warlock_t::apl_precombat()
   std::string& precombat_list =
     get_action_priority_list( "precombat" )->action_list_str;
 
-  if ( sim->allow_flasks )
+  if ( sim-> allow_flasks )
   {
     // Flask
     if ( level == 100 )
       precombat_list = "flask,type=greater_draenic_intellect_flask";
-    else if ( level >= 90 )
+    else if ( level >= 85 )
       precombat_list = "flask,type=warm_sun";
   }
 
@@ -5337,7 +5337,7 @@ void warlock_t::apl_precombat()
       precombat_list += "/food,type=blackrock_barbecue";
     else if ( level == 100 )
       precombat_list += "/food,type=sleeper_surprise";
-    else if ( level >= 90 )
+    else if ( level >= 85 )
       precombat_list += "/food,type=mogu_fish_stew";
   }
 
@@ -5360,7 +5360,7 @@ void warlock_t::apl_precombat()
     // Pre-potion
     if ( level == 100 )
       precombat_list += "/potion,name=draenic_intellect";
-    else if ( level >= 90 )
+    else if ( level >= 85 )
       precombat_list += "/potion,name=jade_serpent";
   }
 
@@ -5390,7 +5390,7 @@ void warlock_t::apl_precombat()
       else
         action_list_str += "/potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20";
     }
-    else if ( level >= 90 )
+    else if ( level >= 85 )
       action_list_str += "/potion,name=jade_serpent,if=buff.bloodlust.react|target.health.pct<=20";
   }
 

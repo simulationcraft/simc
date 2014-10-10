@@ -3816,10 +3816,20 @@ void warrior_t::apl_precombat( bool probablynotgladiator )
   if ( sim -> allow_flasks && level >= 80 )
   {
     std::string flask_action = "flask,type=";
-    if ( primary_role() == ROLE_ATTACK || !probablynotgladiator )
-      flask_action += "greater_draenic_strength_flask";
-    else if ( primary_role() == ROLE_TANK )
-      flask_action += "greater_draenic_stamina_flask";
+    if ( level > 90 )
+    {
+      if ( primary_role() == ROLE_ATTACK || !probablynotgladiator )
+        flask_action += "greater_draenic_strength_flask";
+      else if ( primary_role() == ROLE_TANK )
+        flask_action += "greater_draenic_stamina_flask";
+    }
+    else
+    {
+      if ( primary_role() == ROLE_ATTACK )
+        flask_action += "winters_bite";
+      else if ( primary_role() == ROLE_TANK )
+        flask_action += "earth";
+    }
     precombat -> add_action( flask_action );
   }
 
@@ -3827,16 +3837,18 @@ void warrior_t::apl_precombat( bool probablynotgladiator )
   if ( sim -> allow_food )
   {
     std::string food_action = "food,type=";
-    if ( level >= 90 && ( specialization() != WARRIOR_PROTECTION  ) )
-      food_action += "blackrock_barbecue";
-    else
-      food_action += "nagrand_tempura";
-
-    if ( level < 90 )
+    if ( specialization() != WARRIOR_PROTECTION )
     {
-      if ( primary_role() == ROLE_ATTACK )
+      if ( level > 90 )
+        food_action += "blackrock_barbecue";
+      else
         food_action += "black_pepper_ribs_and_shrimp";
-      else if ( primary_role() == ROLE_TANK )
+    }
+    else
+    {
+      if ( level > 90 )
+        food_action += "nagrand_tempura";
+      else
         food_action += "chun_tian_spring_rolls";
     }
     precombat -> add_action( food_action );
@@ -3875,14 +3887,13 @@ void warrior_t::apl_precombat( bool probablynotgladiator )
   //Pre-pot
   if ( sim -> allow_potions )
   {
-    if ( level >= 90 )
+    if ( level > 90 )
     {
       if ( specialization() != WARRIOR_PROTECTION )
         precombat -> add_action( "potion,name=draenic_strength" );
       else
         precombat -> add_action( "potion,name=draenic_armor" );
     }
-    //Pre-pot
     else if ( level >= 80 )
     {
       if ( primary_role() == ROLE_ATTACK )
@@ -3919,7 +3930,7 @@ void warrior_t::apl_fury()
 
   if ( sim -> allow_potions )
   {
-    if ( level >= 90 )
+    if ( level > 90 )
       default_list -> add_action( "potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
     else if ( level >= 80 )
       default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
@@ -4015,7 +4026,7 @@ void warrior_t::apl_arms()
 
   if ( sim -> allow_potions )
   {
-    if ( level >= 90 )
+    if ( level > 90 )
       default_list -> add_action( "potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
     else if ( level >= 80 )
       default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
@@ -4103,7 +4114,7 @@ void warrior_t::apl_prot()
   //potion
   if ( sim -> allow_potions )
   {
-    if ( level >= 90 )
+    if ( level > 90 )
       prot -> add_action( "potion,name=draenic_armor,if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)|target.time_to_die<=25" );
     else if ( level >= 80 )
       prot -> add_action( "potion,name=mountains,if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)|target.time_to_die<=25" );

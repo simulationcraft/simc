@@ -15,14 +15,14 @@ spec=fury
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_strength_flask
-actions.precombat+=/food,type=blackrock_barbecue
+actions.precombat=flask,type=winters_bite
+actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
 actions.precombat+=/stance,choose=battle
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 # Generic on-use trinket line if needed when swapping trinkets out. 
 #actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&(buff.avatar.up|!talent.avatar.enabled)))|(active_enemies>=2&buff.ravager.up)
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=draenic_strength
+actions.precombat+=/potion,name=mogu_power
 
 # Executed every time the actor is available.
 
@@ -30,7 +30,7 @@ actions=charge
 actions+=/auto_attack
 # This is mostly to prevent cooldowns from being accidentally used during movement.
 actions+=/call_action_list,name=movement,if=movement.distance>8
-actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25
+actions+=/potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25
 # This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown, unless the boss will die before the ability is usable again, and then use it with execute.'
 actions+=/recklessness,if=((target.time_to_die>190|target.health.pct<20)&(buff.bloodbath.up|!talent.bloodbath.enabled))|target.time_to_die<=10|talent.anger_management.enabled
 actions+=/avatar,if=(buff.recklessness.up|target.time_to_die<=25)
