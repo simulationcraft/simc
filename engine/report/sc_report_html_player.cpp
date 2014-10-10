@@ -1620,6 +1620,179 @@ void print_html_talents( report::sc_html_stream& os, player_t* p )
   }
 }
 
+// print_html_player_scale_factor_table =====================================
+
+void print_html_player_scale_factor_table( report::sc_html_stream& os, sim_t* sim, player_t* p, player_processed_report_information_t& ri, scale_metric_e sm )
+{
+
+  int colspan = static_cast< int >( p -> scaling_stats.size() );
+
+  os << "<table class=\"sc mt\">\n";
+
+  os << "<tr>\n"
+    << "<th colspan=\"" << util::to_string( 1 + colspan ) << "\"><a href=\"#help-scale-factors\" class=\"help\">Scale Factors for " << p -> scaling_for_metric( sm ).name << "</a></th>\n"
+    << "</tr>\n";
+
+  os << "<tr>\n"
+    << "<th></th>\n";
+
+  for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
+  {
+    os.printf(
+      "<th>%s</th>\n",
+      util::stat_type_abbrev( p -> scaling_stats[ i ] ) );
+  }
+  if ( p -> sim -> scaling -> scale_lag )
+  {
+    os << "<th>ms Lag</th>\n";
+    colspan++;
+  }
+  os << "</tr>\n";
+  os << "<tr>\n"
+    << "<th class=\"left\">Scale Factors</th>\n";
+
+  for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
+  {
+    if ( std::abs( p -> scaling[ sm ].get_stat( p -> scaling_stats[ i ] ) > 1.0e5 ) )
+      os.printf(
+      "<td>%.*e</td>\n",
+      p -> sim -> report_precision,
+      p -> scaling[ sm ].get_stat( p -> scaling_stats[ i ] ) );
+    else
+      os.printf(
+      "<td>%.*f</td>\n",
+      p -> sim -> report_precision,
+      p -> scaling[ sm ].get_stat( p -> scaling_stats[ i ] ) );
+
+  }
+  if ( p -> sim -> scaling -> scale_lag )
+    os.printf(
+    "<td>%.*f</td>\n",
+    p -> sim -> report_precision,
+    p -> scaling_lag[ sm ] );
+  os << "</tr>\n";
+  os << "<tr>\n"
+    << "<th class=\"left\">Normalized</th>\n";
+
+  for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
+    os.printf(
+    "<td>%.*f</td>\n",
+    p -> sim -> report_precision,
+    p -> scaling_normalized[ sm ].get_stat( p -> scaling_stats[ i ] ) );
+  os << "</tr>\n";
+  os << "<tr>\n"
+    << "<th class=\"left\">Scale Deltas</th>\n";
+
+  for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
+  {
+    double value = p -> sim -> scaling -> stats.get_stat( p -> scaling_stats[ i ] );
+    std::string prefix;
+    if ( p -> sim -> scaling -> center_scale_delta == 1 &&
+      p -> scaling_stats[ i ] != STAT_SPIRIT &&
+      p -> scaling_stats[ i ] != STAT_HIT_RATING &&
+      p -> scaling_stats[ i ] != STAT_EXPERTISE_RATING )
+    {
+      value /= 2;
+      prefix = "+/- ";
+    }
+
+    os.printf( "<td>%s%.0f</td>\n", prefix.c_str(), value );
+
+  }
+  if ( p -> sim -> scaling -> scale_lag )
+    os << "<td>100</td>\n";
+  os << "</tr>\n";
+  os << "<tr>\n"
+    << "<th class=\"left\">Error</th>\n";
+
+  for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
+    if ( std::abs( p -> scaling[ sm ].get_stat( p -> scaling_stats[ i ] ) ) > 1.0e5 )
+      os.printf(
+      "<td>%.*e</td>\n",
+      p -> sim -> report_precision,
+      p -> scaling_error[ sm ].get_stat( p -> scaling_stats[ i ] ) );
+    else
+      os.printf(
+      "<td>%.*f</td>\n",
+      p -> sim -> report_precision,
+      p -> scaling_error[ sm ].get_stat( p -> scaling_stats[ i ] ) );
+
+  if ( p -> sim -> scaling -> scale_lag )
+    os.printf(
+    "<td>%.*f</td>\n",
+    p -> sim -> report_precision,
+    p -> scaling_lag_error[ sm ] );
+  os << "</tr>\n";
+
+  os.printf(
+    "<tr class=\"left\">\n"
+    "<th>Gear Ranking</th>\n"
+    "<td colspan=\"%i\" class=\"filler\">\n"
+    "<ul class=\"float\">\n",
+    colspan );
+  if ( !ri.gear_weights_wowhead_std_link.empty() )
+    os.printf(
+    "<li><a href=\"%s\" class=\"ext\">wowhead</a></li>\n",
+    ri.gear_weights_wowhead_std_link.c_str() );
+  if ( !ri.gear_weights_lootrank_link.empty() )
+    os.printf(
+    "<li><a href=\"%s\" class=\"ext\">lootrank</a></li>\n",
+    ri.gear_weights_lootrank_link.c_str() );
+  os << "</ul>\n";
+  os << "</td>\n";
+  os << "</tr>\n";
+
+  // Optimizers section
+  os.printf(
+    "<tr class=\"left\">\n"
+    "<th>Optimizers</th>\n"
+    "<td colspan=\"%i\" class=\"filler\">\n"
+    "<ul class=\"float\">\n",
+    colspan );
+
+  // askmrrobot
+  if ( !ri.gear_weights_askmrrobot_link.empty() )
+  {
+    os.printf(
+      "<li><a href=\"%s\" class=\"ext\">askmrrobot</a></li>\n",
+      ri.gear_weights_askmrrobot_link.c_str() );
+  }
+
+  // close optimizers section
+  os << "</ul>\n";
+  os << "</td>\n";
+  os << "</tr>\n";
+
+  // Text Ranking
+  os.printf(
+    "<tr class=\"left\">\n"
+    "<th><a href=\"#help-scale-factor-ranking\" class=\"help\">Ranking</a></th>\n"
+    "<td colspan=\"%i\" class=\"filler\">\n"
+    "<ul class=\"float\">\n"
+    "<li>",
+    colspan );
+
+  for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
+  {
+    if ( i > 0 )
+    {
+      // holy hell this was hard to read - splitting this out into human-readable code
+      double separation = fabs( p -> scaling[ sm ].get_stat( p -> scaling_stats[ i - 1 ] ) - p -> scaling[ sm ].get_stat( p -> scaling_stats[ i ] ) );
+      double error_est = sqrt( p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ i - 1 ] ) * p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ i - 1 ] ) / 4 
+                       + p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ i ] ) * p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ i ] ) / 4 );
+      if ( separation > (error_est * 2 ) )
+        os << " > ";
+      else
+        os << " ~= ";
+    }
+
+    os.printf( "%s", util::stat_type_abbrev( p -> scaling_stats[ i ] ) );
+  }
+
+  os << "</table>\n";
+
+}
+
 
 // print_html_player_scale_factors ==========================================
 
@@ -1630,170 +1803,23 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
   {
     if ( p -> sim -> scaling -> has_scale_factors() )
     {
-      int colspan = static_cast<int>(p -> scaling_stats.size());
+      // print the scale factors for the metric the user is requesting
+      scale_metric_e default_sm = p -> sim -> scaling -> scaling_metric;
+      print_html_player_scale_factor_table( os, sim, p, ri, default_sm );
 
-      os << "<table class=\"sc mt\">\n";
+      // create a collapsable section containing scale factors for other metrics
+      os << "<h3 class=\"toggle\">Scale Factors for other metrics</h3>\n"
+         << "<div class=\"toggle-content hide\">\n";
 
-      os << "<tr>\n"
-         << "<th colspan=\"" << util::to_string( 1 + colspan ) << "\"><a href=\"#help-scale-factors\" class=\"help\">Scale Factors for " << p -> scales_over().name << "</a></th>\n"
-         << "</tr>\n";
-
-      os << "<tr>\n"
-         << "<th></th>\n";
-
-      for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
+      for ( scale_metric_e sm = SCALE_METRIC_DPS; sm < SCALE_METRIC_MAX; sm++ )
       {
-          os.printf(
-            "<th>%s</th>\n",
-            util::stat_type_abbrev( p -> scaling_stats[ i ] ) );
+        if ( sm != default_sm && sm != SCALE_METRIC_DEATHS )
+          print_html_player_scale_factor_table( os, sim, p, ri, sm );
       }
-      if ( p -> sim -> scaling -> scale_lag )
-      {
-        os << "<th>ms Lag</th>\n";
-        colspan++;
-      }
-      os << "</tr>\n";
-      os << "<tr>\n"
-         << "<th class=\"left\">Scale Factors</th>\n";
       
-      scale_metric_e sm = p -> sim -> scaling -> scaling_metric;
-
-      for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
-      {
-        if ( std::abs( p -> scaling[ sm ].get_stat( p -> scaling_stats[ i ] ) > 1.0e5 ) )
-            os.printf(
-              "<td>%.*e</td>\n",
-              p -> sim -> report_precision,
-              p -> scaling[ sm ].get_stat( p -> scaling_stats[ i ] ) );
-          else
-            os.printf(
-              "<td>%.*f</td>\n",
-              p -> sim -> report_precision,
-              p -> scaling[ sm ].get_stat( p -> scaling_stats[ i ] ) );
-
-      }
-      if ( p -> sim -> scaling -> scale_lag )
-        os.printf(
-          "<td>%.*f</td>\n",
-          p -> sim -> report_precision,
-          p -> scaling_lag[ sm ] );
-      os << "</tr>\n";
-      os << "<tr>\n"
-         << "<th class=\"left\">Normalized</th>\n";
-
-      for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
-        os.printf(
-            "<td>%.*f</td>\n",
-            p -> sim -> report_precision,
-            p -> scaling_normalized[ sm ].get_stat( p -> scaling_stats[ i ] ) );
-      os << "</tr>\n";
-      os << "<tr>\n"
-         << "<th class=\"left\">Scale Deltas</th>\n";
-
-      for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
-      {
-        double value = p -> sim -> scaling -> stats.get_stat( p -> scaling_stats[ i ] );
-        std::string prefix;
-        if ( p -> sim -> scaling -> center_scale_delta == 1 && 
-            p -> scaling_stats[ i ] != STAT_SPIRIT && 
-            p -> scaling_stats[ i ] != STAT_HIT_RATING && 
-            p -> scaling_stats[ i ] != STAT_EXPERTISE_RATING )
-        {
-          value /= 2;
-          prefix = "+/- ";
-        }
-
-        os.printf( "<td>%s%.0f</td>\n", prefix.c_str(), value );
-
-      }
-      if ( p -> sim -> scaling -> scale_lag )
-        os << "<td>100</td>\n";
-      os << "</tr>\n";
-      os << "<tr>\n"
-         << "<th class=\"left\">Error</th>\n";
-
-      for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
-        if ( std::abs( p -> scaling[ sm ].get_stat( p -> scaling_stats[ i ] ) ) > 1.0e5 )
-            os.printf(
-              "<td>%.*e</td>\n",
-              p -> sim -> report_precision,
-              p -> scaling_error[ sm ].get_stat( p -> scaling_stats[ i ] ) );
-          else           
-            os.printf(
-              "<td>%.*f</td>\n",
-              p -> sim -> report_precision,
-              p -> scaling_error[ sm ].get_stat( p -> scaling_stats[ i ] ) );
-
-      if ( p -> sim -> scaling -> scale_lag )
-        os.printf(
-          "<td>%.*f</td>\n",
-          p -> sim -> report_precision,
-          p -> scaling_lag_error[ sm ] );
-      os << "</tr>\n";
-
-      os.printf(
-        "<tr class=\"left\">\n"
-        "<th>Gear Ranking</th>\n"
-        "<td colspan=\"%i\" class=\"filler\">\n"
-        "<ul class=\"float\">\n",
-        colspan );
-      if ( !ri.gear_weights_wowhead_std_link.empty() )
-        os.printf(
-          "<li><a href=\"%s\" class=\"ext\">wowhead</a></li>\n",
-          ri.gear_weights_wowhead_std_link.c_str() );
-      if ( !ri.gear_weights_lootrank_link.empty() )
-        os.printf(
-          "<li><a href=\"%s\" class=\"ext\">lootrank</a></li>\n",
-          ri.gear_weights_lootrank_link.c_str() );
-      os << "</ul>\n";
-      os << "</td>\n";
-      os << "</tr>\n";
-
-      // Optimizers section
-      os.printf(
-        "<tr class=\"left\">\n"
-        "<th>Optimizers</th>\n"
-        "<td colspan=\"%i\" class=\"filler\">\n"
-        "<ul class=\"float\">\n",
-        colspan );
-
-      // askmrrobot
-      if ( ! ri.gear_weights_askmrrobot_link.empty() )
-      {
-        os.printf(
-          "<li><a href=\"%s\" class=\"ext\">askmrrobot</a></li>\n",
-          ri.gear_weights_askmrrobot_link.c_str() );
-      }
-
-      // close optimizers section
-      os << "</ul>\n";
-      os << "</td>\n";
-      os << "</tr>\n";
-
-      // Text Ranking
-      os.printf(
-        "<tr class=\"left\">\n"
-        "<th><a href=\"#help-scale-factor-ranking\" class=\"help\">Ranking</a></th>\n"
-        "<td colspan=\"%i\" class=\"filler\">\n"
-        "<ul class=\"float\">\n"
-        "<li>",
-        colspan );
-
-      for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
-      {
-        if ( i > 0 )
-        {
-          if ( ( fabs( p -> scaling[ sm ].get_stat( p -> scaling_stats[ i - 1 ] ) - p -> scaling[ sm ].get_stat( p -> scaling_stats[ i ] ) )
-                 > sqrt ( p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ i - 1 ] ) * p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ i - 1 ] ) / 4 + p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ i ] ) * p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ i ] ) / 4 ) * 2 ) )
-            os << " > ";
-          else
-            os << " ~= ";
-        }
-
-        os.printf( "%s", util::stat_type_abbrev( p -> scaling_stats[ i ] ) );
-      }
-
-      os << "</table>\n";
+      os << "</div>\n";
+      
+      // produce warning if sim iterations are too low to produce reliable scale factors
       if ( sim -> iterations < 10000 )
       {
         os << "<div class=\"alert\">\n"
@@ -1801,7 +1827,7 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
            << "<p>Scale Factors generated using less than 10,000 iterations may vary significantly from run to run.</p>\n<br>";
         // Scale factor warnings:
         if ( sim -> scaling -> scale_factor_noise > 0 &&
-             sim -> scaling -> scale_factor_noise < p -> scaling_lag_error[ sm ] / fabs( p -> scaling_lag[ sm ] ) )
+             sim -> scaling -> scale_factor_noise < p -> scaling_lag_error[ default_sm ] / fabs( p -> scaling_lag[ default_sm ] ) )
           os.printf( "<p>Player may have insufficient iterations (%d) to calculate scale factor for lag (error is >%.0f%% delta score)</p>\n",
                      sim -> iterations, sim -> scaling -> scale_factor_noise * 100.0 );
         for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
