@@ -978,14 +978,14 @@ void enemy_t::init_target()
 std::string enemy_t::fluffy_pillow_action_list()
 {
   std::string als = "";
-  double level_mult = sim -> dbc.combat_rating( RATING_BLOCK, sim -> max_player_level ) / sim -> dbc.combat_rating( RATING_BLOCK, 100 );
-  level_mult = std::pow( level_mult, 1.5 );
+  double level_mult = sim -> dbc.combat_rating( RATING_MELEE_CRIT, sim -> max_player_level ) / sim -> dbc.combat_rating( RATING_MELEE_CRIT, 100 );
+  level_mult = std::pow( level_mult, 0.16 );
 
   // this is the standard Fluffy Pillow action list
-  als += "/auto_attack,damage=" + util::to_string( 100000 * level_mult ) + ",attack_speed=2,aoe_tanks=1";
-  als += "/spell_dot,damage=" + util::to_string( 60000 * level_mult ) + ",tick_time=2,dot_duration=20,cooldown=40,aoe_tanks=1,if=!ticking";
-  als += "/spell_nuke,damage=" + util::to_string( 100000 * level_mult ) + ",cooldown=35,attack_speed=3,aoe_tanks=1";
-  als += "/melee_nuke,damage=" + util::to_string( 200000 * level_mult ) + ",cooldown=27,attack_speed=3,aoe_tanks=1";
+  als += "/auto_attack,damage=" + util::to_string( 220e3 * level_mult ) + ",attack_speed=2,aoe_tanks=1";
+  als += "/spell_dot,damage=" + util::to_string( 50e3 * level_mult ) + ",tick_time=2,dot_duration=20,cooldown=40,aoe_tanks=1,if=!ticking";
+  als += "/spell_nuke,damage=" + util::to_string( 110e3 * level_mult ) + ",cooldown=35,attack_speed=2,aoe_tanks=1";
+  als += "/melee_nuke,damage=" + util::to_string( 260e3 * level_mult ) + ",cooldown=27,attack_speed=2,aoe_tanks=1";
   
   return als;
 }
