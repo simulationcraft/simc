@@ -2,8 +2,8 @@
 
 talent_format=armory
 
-# Feral Druid T16H
-T16M="Druid_Feral_T16H"
+# Feral Druid T16M
+druid="Druid_Feral_T16M"
 level=90
 race=night_elf
 role=attack
@@ -27,10 +27,10 @@ finger2=swift_serpent_signet,id=105483,upgrade=4,gems=20crit_4crit
 trinket1=assurance_of_consequence,upgrade=4,id=105472
 trinket2=haromms_talisman,id=105527,upgrade=4
 main_hand=trident_of_corrupted_waters,id=105408,upgrade=4,gems=20crit_4agi,enchant=mongoose
-save=Druid_Feral_T16H.simc
+save=Druid_Feral_T16M.simc
 
-# Balance Druid T16H
-T16M="Druid_Balance_T16H"
+# Balance Druid T16M
+druid="Druid_Balance_T16M"
 level=90
 race=troll
 spec=balance
@@ -52,4 +52,4 @@ finger2=extinguished_ember_of_galakras,id=105498,upgrade=4
 neck=untainted_guardians_chain,id=105465,upgrade=4
 trinket1=purified_bindings_of_immerseus,id=105422,upgrade=4
 trinket2=kardris_toxic_totem,id=105540,upgrade=4
-save=Druid_Balance_T16H.simc
+save=Druid_Balance_T16M.simc
