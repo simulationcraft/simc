@@ -1,0 +1,140 @@
+deathknight="Death_Knight_Unholy_T16M"
+level=90
+race=orc
+role=attack
+position=back
+professions=blacksmithing=600/engineering=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#db!1..0...
+spec=unholy
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=winters_bite
+actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
+actions.precombat+=/horn_of_winter
+actions.precombat+=/unholy_presence
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/army_of_the_dead
+actions.precombat+=/potion,name=mogu_power
+actions.precombat+=/raise_dead
+
+# Executed every time the actor is available.
+
+actions=auto_attack
+actions+=/deaths_advance,if=movement.remains>2
+actions+=/antimagic_shell,damage=100000
+actions+=/blood_fury
+actions+=/berserking
+actions+=/arcane_torrent
+actions+=/potion,name=mogu_power,if=buff.dark_transformation.up&target.time_to_die<=60
+actions+=/run_action_list,name=aoe,if=active_enemies>=2
+actions+=/run_action_list,name=single_target,if=active_enemies<2
+
+actions.aoe=unholy_blight
+actions.aoe+=/plague_strike,if=!talent.necrotic_plague.enabled&(!dot.blood_plague.ticking|!dot.frost_fever.ticking)
+actions.aoe+=/plague_strike,if=talent.necrotic_plague.enabled&(!dot.necrotic_plague.ticking)
+actions.aoe+=/defile,if=talent.defile.enabled&runic_power<89
+actions.aoe+=/breath_of_sindragosa,if=runic_power>75
+actions.aoe+=/blood_boil,if=blood=2|(frost=2&death=2)
+actions.aoe+=/summon_gargoyle
+actions.aoe+=/dark_transformation
+actions.aoe+=/blood_tap,if=buff.shadow_infusion.stack=5
+actions.aoe+=/defile
+actions.aoe+=/death_and_decay,if=unholy=1
+actions.aoe+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35
+actions.aoe+=/scourge_strike,if=unholy=2
+actions.aoe+=/blood_tap,if=buff.blood_charge.stack>10
+actions.aoe+=/death_coil,if=runic_power>90|buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)
+actions.aoe+=/blood_boil
+actions.aoe+=/icy_touch
+actions.aoe+=/scourge_strike,if=unholy=1
+actions.aoe+=/death_coil
+actions.aoe+=/blood_tap
+actions.aoe+=/plague_leech,if=unholy=1
+actions.aoe+=/empower_rune_weapon
+
+actions.single_target=blood_tap,if=buff.blood_charge.stack>10&runic_power>=32
+actions.single_target+=/unholy_blight,if=!talent.necrotic_plague.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
+actions.single_target+=/unholy_blight,if=talent.necrotic_plague.enabled&dot.necrotic_plague.remains<1
+actions.single_target+=/outbreak,if=!talent.necrotic_plague.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
+actions.single_target+=/outbreak,if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking
+actions.single_target+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35
+actions.single_target+=/blood_tap,if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains=0)
+actions.single_target+=/plague_strike,if=!talent.necrotic_plague.enabled&(!dot.blood_plague.ticking|!dot.frost_fever.ticking)
+actions.single_target+=/plague_strike,if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking
+actions.single_target+=/summon_gargoyle
+actions.single_target+=/defile,if=runic_power<89
+actions.single_target+=/dark_transformation
+actions.single_target+=/breath_of_sindragosa,if=runic_power>75
+actions.single_target+=/run_action_list,name=bos_st,if=dot.breath_of_sindragosa.ticking
+actions.single_target+=/death_and_decay,if=cooldown.breath_of_sindragosa.remains<7&runic_power<88&talent.breath_of_sindragosa.enabled
+actions.single_target+=/scourge_strike,if=cooldown.breath_of_sindragosa.remains<7&runic_power<88&talent.breath_of_sindragosa.enabled
+actions.single_target+=/festering_strike,if=cooldown.breath_of_sindragosa.remains<7&runic_power<76&talent.breath_of_sindragosa.enabled
+actions.single_target+=/death_coil,if=runic_power>90
+actions.single_target+=/death_and_decay,if=unholy=2
+actions.single_target+=/blood_tap,if=unholy=2&cooldown.death_and_decay.remains=0
+actions.single_target+=/scourge_strike,if=unholy=2
+actions.single_target+=/death_coil,if=runic_power>80
+actions.single_target+=/festering_strike,if=blood=2&frost=2
+actions.single_target+=/death_and_decay
+actions.single_target+=/blood_tap,if=cooldown.death_and_decay.remains=0
+actions.single_target+=/death_coil,if=buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)
+actions.single_target+=/scourge_strike
+actions.single_target+=/plague_leech,if=cooldown.outbreak.remains<1
+actions.single_target+=/plague_leech,if=!talent.necrotic_plague.enabled&(dot.blood_plague.remains<1&dot.frost_fever.remains<1)
+actions.single_target+=/plague_leech,if=talent.necrotic_plague.enabled&(dot.necrotic_plague.remains<1)
+actions.single_target+=/festering_strike
+actions.single_target+=/death_coil
+actions.single_target+=/blood_tap,if=buff.blood_charge.stack>=8
+actions.single_target+=/empower_rune_weapon
+
+actions.bos_st=death_and_decay,if=runic_power<88
+actions.bos_st+=/festering_strike,if=runic_power<77
+actions.bos_st+=/scourge_strike,if=runic_power<88
+actions.bos_st+=/blood_tap,if=buff.blood_charge.stack>=5
+actions.bos_st+=/plague_leech
+actions.bos_st+=/empower_rune_weapon
+actions.bos_st+=/death_coil,if=buff.sudden_doom.react
+
+actions.bos_aoe=death_and_decay,if=runic_power<88
+actions.bos_aoe+=/blood_boil,if=runic_power<88
+actions.bos_aoe+=/scourge_strike,if=runic_power<88&unholy=1
+actions.bos_aoe+=/icy_touch,if=runic_power<88
+actions.bos_aoe+=/blood_tap,if=buff.blood_charge.stack>=5
+actions.bos_aoe+=/plague_leech
+actions.bos_aoe+=/death_coil,if=buff.sudden_doom.react
+
+head=helmet_of_cyclopean_dread,id=99337,upgrade=4,gems=capacitive_primal_5str_10crit_11str
+neck=malkoroks_tainted_dog_tags,id=105566,upgrade=4
+shoulders=tusks_of_mannoroth,id=105642,upgrade=4,gems=5str_10crit_5str_10crit_5str_10crit_11str,enchant=15str_5crit
+back=gonglu_strength_of_xuen,id=102249,upgrade=4,gems=5str_10crit_4str,enchant=12crit
+chest=breastplate_of_shamanic_mirrors,id=105532,upgrade=4,gems=5str_10crit_5str_10crit_20crit_11str,enchant=5all
+wrists=bracers_of_blind_hatred,id=105456,upgrade=4,enchant=18str
+hands=gauntlets_of_cyclopean_dread,id=99336,upgrade=4,gems=5str_10crit_5str_10crit_8str,enchant=11str
+waist=ashen_wall_girdle,id=105533,upgrade=4,gems=5str_10crit_20crit_20crit_8str
+legs=legplates_of_willful_doom,id=105565,upgrade=4,gems=20crit_20crit_5str_10crit_8str,enchant=19str_11crit
+feet=greaves_of_sublime_superiority,id=105478,upgrade=4,gems=5str_10crit_4crit,enchant=11haste
+finger1=devilfang_band,id=105611,upgrade=4,gems=5str_10crit_4haste
+finger2=seal_of_the_forgotten_kings,id=105589,upgrade=4,gems=5str_10crit_4haste
+trinket1=evil_eye_of_galakras,id=105491,upgrade=4
+trinket2=thoks_tail_tip,id=105609,upgrade=4
+main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=4,gems=5str_10crit_4str,enchant=rune_of_the_fallen_crusader
+
+# Gear Summary
+# gear_strength=1244
+# gear_agility=5
+# gear_stamina=1680
+# gear_intellect=5
+# gear_crit_rating=929
+# gear_haste_rating=220
+# gear_mastery_rating=569
+# gear_armor=1447
+# meta_gem=capacitive_primal
+# set_bonus=tier16_2pc_melee=1

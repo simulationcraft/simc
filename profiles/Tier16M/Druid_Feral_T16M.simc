@@ -1,0 +1,90 @@
+T16M="Druid_Feral_T16H"
+level=90
+race=night_elf
+role=attack
+position=back
+professions=inscription=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!...2...
+glyphs=savage_roar/master_shapeshifter
+spec=feral
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=winds
+actions.precombat+=/food,type=seafood_magnifique_feast
+actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
+actions.precombat+=/cat_form
+actions.precombat+=/prowl
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=tolvir
+
+# Executed every time the actor is available.
+
+actions=rake,if=buff.prowl.up|buff.shadowmeld.up
+actions+=/auto_attack
+actions+=/skull_bash
+actions+=/force_of_nature,if=charges=3|trinket.proc.all.react|target.time_to_die<20
+actions+=/incarnation,sync=berserk
+actions+=/berserk,if=cooldown.tigers_fury.remains<8
+actions+=/potion,name=tolvir,if=target.time_to_die<=40
+actions+=/blood_fury,sync=tigers_fury
+actions+=/berserking,sync=tigers_fury
+actions+=/arcane_torrent,sync=tigers_fury
+actions+=/tigers_fury,if=(!buff.omen_of_clarity.react&energy.max-energy>=60)|energy.max-energy>=80
+actions+=/shadowmeld,if=(buff.bloodtalons.up|!talent.bloodtalons.enabled)&dot.rake.remains<0.3*dot.rake.duration
+# Keep Rip from falling off during execute range.
+actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<25
+actions+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)
+actions+=/savage_roar,if=buff.savage_roar.remains<3
+actions+=/potion,name=tolvir,sync=berserk,if=target.health.pct<25
+actions+=/thrash_cat,if=buff.omen_of_clarity.react&remains<=duration*0.3&active_enemies>1
+actions+=/ferocious_bite,cycle_targets=1,if=combo_points=5&target.health.pct<25&dot.rip.ticking
+actions+=/rip,cycle_targets=1,if=combo_points=5&remains<=3
+actions+=/rip,cycle_targets=1,if=combo_points=5&remains<=duration*0.3&persistent_multiplier>dot.rip.pmultiplier
+actions+=/savage_roar,if=combo_points=5&(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<42*0.3
+actions+=/ferocious_bite,if=combo_points=5&(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)
+actions+=/rake,cycle_targets=1,if=remains<=3&combo_points<5
+actions+=/rake,cycle_targets=1,if=remains<=duration*0.3&combo_points<5&persistent_multiplier>dot.rake.pmultiplier
+actions+=/pool_resource,for_next=1
+actions+=/thrash_cat,if=remains<=duration*0.3&active_enemies>1
+actions+=/rake,cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&combo_points<5
+actions+=/swipe,if=combo_points<5&active_enemies>=3
+actions+=/shred,if=combo_points<5&active_enemies<3
+
+head=headpiece_of_the_shattered_vale,id=99328,upgrade=4,gems=capacitive_primal_10haste_10crit_11agi
+neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=4
+shoulders=spaulders_of_the_shattered_vale,id=99322,upgrade=4,gems=10haste_10crit_10haste_10crit_8agi,enchant=20agi_5crit
+back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=10crit_10haste_4agi,enchant=12agi
+chest=raiment_of_the_shattered_vale,id=99326,upgrade=4,gems=10haste_10crit_10haste_10crit_10haste_10crit_11agi,enchant=5all
+wrists=mantid_carapace_augments,id=105583,upgrade=4,enchant=14ap
+hands=gloves_of_the_golden_protector,id=105453,upgrade=4,gems=10haste_10crit_20crit_8agi,enchant=15agi
+waist=cord_of_black_dreams,id=105635,upgrade=4,gems=10haste_10crit_20crit_20crit_8agi
+legs=legguards_of_the_shattered_vale,id=99329,upgrade=4,gems=20crit_20crit_8agi,enchant=23ap_28crit
+feet=unrepentant_heels,id=105484,upgrade=4,gems=20crit_4mastery,enchant=10crit_10haste
+finger1=reality_ripper_ring,id=105451,upgrade=4,gems=20crit_4crit
+finger2=swift_serpent_signet,id=105483,upgrade=4,gems=20crit_4crit
+trinket1=assurance_of_consequence,id=105472,upgrade=4
+trinket2=haromms_talisman,id=105527,upgrade=4
+main_hand=trident_of_corrupted_waters,id=105408,upgrade=4,gems=20crit_4agi,enchant=mongoose
+
+# Gear Summary
+# gear_strength=5
+# gear_agility=1146
+# gear_stamina=1660
+# gear_intellect=5
+# gear_attack_power=37
+# gear_crit_rating=1019
+# gear_haste_rating=594
+# gear_mastery_rating=211
+# gear_armor=589
+# gear_multistrike_rating=107
+# meta_gem=capacitive_primal
+# set_bonus=tier16_2pc_melee=1
+# set_bonus=tier16_4pc_melee=1
