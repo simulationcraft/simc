@@ -1433,7 +1433,7 @@ struct charge_t: public warrior_attack_t
   cooldown_t* rage_from_charge;
   charge_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "charge", p, p -> spell.charge ),
-    first_charge( true ), movement_speed_increase( 5.0 ), rage_from_charge( 0 )
+    first_charge( true ), movement_speed_increase( 5.0 ), rage_from_charge( NULL )
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
@@ -1442,7 +1442,7 @@ struct charge_t: public warrior_attack_t
     melee_range = data().max_range();
     melee_range += p -> glyphs.long_charge -> effectN( 1 ).base_value();
     movement_directionality = MOVEMENT_OMNI;
-
+    rage_from_charge = p -> get_cooldown( "rage_from_charge" );
     rage_from_charge -> duration = timespan_t::from_seconds( 12.0 );
     cooldown -> duration = data().cooldown();
 
@@ -1468,7 +1468,7 @@ struct charge_t: public warrior_attack_t
     if ( first_charge )
       first_charge = !first_charge;
 
-    if ( rage_from_charge -> up() )
+    if ( rage_from_charge )
     {
       rage_from_charge -> start();
       p() -> resource_gain( RESOURCE_RAGE,
