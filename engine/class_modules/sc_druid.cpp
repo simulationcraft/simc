@@ -4508,7 +4508,7 @@ struct sunfire_t: public druid_spell_t
     if ( s -> target != s -> action -> target )
       return 0; // Sunfire will not deal direct damage to the targets that the dot is spread to.
 
-    return spell_direct_power_coefficient( s );
+    return druid_spell_t::spell_direct_power_coefficient( s );
   }
 
   double action_multiplier() const

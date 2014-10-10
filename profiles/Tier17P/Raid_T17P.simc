@@ -39,9 +39,9 @@ Monk_Brewmaster_2h_Serenity_T17P.simc
 #Priest_Shadow_T17P_VE.simc
 #Priest_Shadow_T17P_AS.simc
 
-#Rogue_Assassination_T17P.simc
-#Rogue_Combat_T17P.simc
-#Rogue_Subtlety_T17P.simc
+Rogue_Assassination_T17P.simc
+Rogue_Combat_T17P.simc
+Rogue_Subtlety_T17P.simc
 
 Shaman_Elemental_T17P.simc
 Shaman_Enhancement_T17P.simc
