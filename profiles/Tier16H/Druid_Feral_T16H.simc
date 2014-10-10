@@ -72,14 +72,14 @@ finger1=reality_ripper_ring,id=105451,upgrade=4,gems=20crit_4crit
 finger2=swift_serpent_signet,id=105483,upgrade=4,gems=20crit_4crit
 trinket1=assurance_of_consequence,id=105472,upgrade=4
 trinket2=haromms_talisman,id=105527,upgrade=4
-main_hand=trident_of_corrupted_waters,id=105408,upgrade=4,gems=20crit_4agi,enchant=55ap
+main_hand=trident_of_corrupted_waters,id=105408,upgrade=4,gems=20crit_4agi,enchant=mongoose
 
 # Gear Summary
 # gear_strength=5
 # gear_agility=1146
 # gear_stamina=1660
 # gear_intellect=5
-# gear_attack_power=92
+# gear_attack_power=37
 # gear_crit_rating=1019
 # gear_haste_rating=594
 # gear_mastery_rating=211

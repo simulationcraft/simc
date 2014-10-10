@@ -26,7 +26,7 @@ finger1=reality_ripper_ring,id=105451,upgrade=4,gems=20crit_4crit
 finger2=swift_serpent_signet,id=105483,upgrade=4,gems=20crit_4crit
 trinket1=assurance_of_consequence,upgrade=4,id=105472
 trinket2=haromms_talisman,id=105527,upgrade=4
-main_hand=trident_of_corrupted_waters,id=105408,upgrade=4,gems=20crit_4agi,enchant=55ap
+main_hand=trident_of_corrupted_waters,id=105408,upgrade=4,gems=20crit_4agi,enchant=mongoose
 save=Druid_Feral_T16H.simc
 
 # Balance Druid T16H
