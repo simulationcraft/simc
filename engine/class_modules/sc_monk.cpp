@@ -398,6 +398,7 @@ public:
   virtual double    composite_player_heal_multiplier( const action_state_t* s ) const;
   virtual double    composite_melee_expertise( weapon_t* weapon ) const;
   virtual double    composite_melee_attack_power() const;
+  virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_parry() const;
   virtual double    composite_dodge() const;
   virtual double    composite_crit_avoidance() const;
@@ -4094,6 +4095,19 @@ double monk_t::composite_melee_attack_power() const
 
   return ap;
 }
+
+// monk_t::composite_attack_power_multiplier() ==========================
+
+double monk_t::composite_attack_power_multiplier() const
+{
+  double ap = player_t::composite_attack_power_multiplier();
+
+  if ( mastery.elusive_brawler -> ok() )
+    ap += cache.mastery() * mastery.elusive_brawler -> effectN( 2 ).mastery_value();
+
+  return ap;
+}
+
 
 // monk_t::composite_parry ==============================================
 
