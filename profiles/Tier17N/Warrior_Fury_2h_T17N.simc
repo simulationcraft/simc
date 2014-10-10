@@ -87,9 +87,9 @@ actions.three_targets+=/bloodthirst
 
 actions.aoe=bloodbath
 actions.aoe+=/ravager,if=buff.bloodbath.up|!talent.bloodbath.enabled
-actions.aoe+=/raging_blow,if=buff.meat_cleaver.stack=4&buff.enrage.up
+actions.aoe+=/raging_blow,if=buff.meat_cleaver.stack>=3&buff.enrage.up
 actions.aoe+=/bloodthirst,if=buff.enrage.down|rage<50|buff.raging_blow.down
-actions.aoe+=/raging_blow,if=buff.meat_cleaver.stack=4
+actions.aoe+=/raging_blow,if=buff.meat_cleaver.stack>=3
 actions.aoe+=/bladestorm,if=buff.enrage.up
 actions.aoe+=/whirlwind
 actions.aoe+=/execute,if=buff.sudden_death.react

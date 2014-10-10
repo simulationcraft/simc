@@ -3992,9 +3992,9 @@ void warrior_t::apl_fury()
 
   aoe -> add_talent( this, "Bloodbath" );
   aoe -> add_talent( this, "Ravager", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
-  aoe -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack=4&buff.enrage.up" );
+  aoe -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack>=3&buff.enrage.up" );
   aoe -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<50|buff.raging_blow.down" );
-  aoe -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack=4" );
+  aoe -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack>=3" );
   aoe -> add_talent( this, "Bladestorm", "if=buff.enrage.up" );
   aoe -> add_action( this, "Whirlwind" );
   aoe -> add_action( this, "Execute", "if=buff.sudden_death.react" );
