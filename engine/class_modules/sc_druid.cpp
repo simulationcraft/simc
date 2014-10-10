@@ -4454,53 +4454,53 @@ struct sunfire_t: public druid_spell_t
   // Sunfire also applies the Moonfire DoT during Celestial Alignment.
   struct moonfire_CA_t: public druid_spell_t
   {
-    moonfire_CA_t(druid_t* player):
-      druid_spell_t("moonfire", player, player -> find_spell(8921))
+    moonfire_CA_t( druid_t* player ):
+      druid_spell_t( "moonfire", player, player -> find_spell( 8921 ) )
     {
-      const spell_data_t* dmg_spell = player -> find_spell(164812);
+      const spell_data_t* dmg_spell = player -> find_spell( 164812 );
       dot_duration = dmg_spell -> duration();
-      dot_duration *= 1 + player -> spec.astral_showers -> effectN(1).percent();
-      dot_duration += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN(1).time_value();
-      base_tick_time = dmg_spell -> effectN(2).period();
-      spell_power_mod.tick = dmg_spell -> effectN(2).sp_coeff();
+      dot_duration *= 1 + player -> spec.astral_showers -> effectN( 1 ).percent();
+      dot_duration += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
+      base_tick_time = dmg_spell -> effectN( 2 ).period();
+      spell_power_mod.tick = dmg_spell -> effectN( 2 ).sp_coeff();
 
-      base_td_multiplier *= 1.0 + player -> talent.balance_of_power -> effectN(3).percent();
+      base_td_multiplier *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
 
       // Does no direct damage, costs no mana
       attack_power_mod.direct = 0;
       spell_power_mod.direct = 0;
-      range::fill(base_costs, 0);
+      range::fill( base_costs, 0 );
     }
 
-    void tick(dot_t* d)
+    void tick( dot_t* d )
     {
-      druid_spell_t::tick(d);
+      druid_spell_t::tick( d );
 
-      if ( result_is_hit(d -> state -> result) )
-        p() -> trigger_shooting_stars(d -> state);
+      if ( result_is_hit( d -> state -> result ) )
+        p() -> trigger_shooting_stars( d -> state );
     }
   };
 
   action_t* moonfire;
-  sunfire_t(druid_t* player, const std::string& options_str):
-    druid_spell_t("sunfire", player, player -> find_spell(93402))
+  sunfire_t( druid_t* player, const std::string& options_str ):
+    druid_spell_t( "sunfire", player, player -> find_spell( 93402 ) )
   {
     parse_options( options_str );
     dot_behavior = DOT_REFRESH;
-    const spell_data_t* dmg_spell = player -> find_spell(164815);
+    const spell_data_t* dmg_spell = player -> find_spell( 164815 );
     dot_duration = dmg_spell -> duration();
-    dot_duration += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN(1).time_value();
-    base_tick_time = dmg_spell -> effectN(2).period();
-    spell_power_mod.direct = dmg_spell-> effectN(1).sp_coeff();
-    spell_power_mod.tick = dmg_spell-> effectN(2).sp_coeff();
+    dot_duration += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
+    base_tick_time = dmg_spell -> effectN( 2 ).period();
+    spell_power_mod.direct = dmg_spell-> effectN( 1 ).sp_coeff();
+    spell_power_mod.tick = dmg_spell-> effectN( 2 ).sp_coeff();
 
-    base_td_multiplier *= 1.0 + player -> talent.balance_of_power -> effectN(3).percent();
+    base_td_multiplier *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
 
     if ( p() -> spec.astral_showers -> ok() )
       aoe = -1;
 
     if ( player -> specialization() == DRUID_BALANCE )
-      moonfire = new moonfire_CA_t(player);
+      moonfire = new moonfire_CA_t( player );
   }
 
   double action_multiplier() const
@@ -4508,7 +4508,7 @@ struct sunfire_t: public druid_spell_t
     double am = druid_spell_t::action_multiplier();
 
     if ( p() -> buff.solar_peak -> up() )
-      am *= 2;
+      am *= 1.0 + p() -> buff.solar_peak -> data().effectN( 1 ).percent();
 
     return am;
   }
@@ -4538,6 +4538,8 @@ struct sunfire_t: public druid_spell_t
         moonfire -> execute();
       }
     }
+    if ( s -> target != s -> action -> target )
+      s -> result_amount = 0; // Sunfire will not deal direct damage to the targets that the dot is spread to.
     druid_spell_t::impact( s );
   }
 
@@ -4626,7 +4628,7 @@ struct moonfire_t : public druid_spell_t
     double am = druid_spell_t::action_multiplier();
 
     if ( p() -> buff.lunar_peak -> up() )
-      am *= 2;
+      am *= 1.0 + p() -> buff.lunar_peak -> data().effectN( 1 ).percent();
 
     return am;
   }
