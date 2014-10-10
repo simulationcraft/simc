@@ -48,6 +48,7 @@ struct mage_td_t : public actor_pair_t
     buff_t* slow;
     buff_t* frost_bomb;
     buff_t* firestarter;
+    buff_t* water_jet; // Proxy water jet because our expression system sucks
   } debuffs;
 
   mage_td_t( player_t* target, mage_t* mage );
@@ -474,12 +475,17 @@ struct water_elemental_pet_t : public pet_t
       spell_t::impact( s );
 
       td( s -> target ) -> water_jet -> trigger();
+      // Trigger hidden proxy water jet for the mage, so
+      // debuff.water_jet.<expression> works
+      p() -> o() -> get_target_data( s -> target ) -> debuffs.water_jet -> trigger();
     }
 
     virtual void last_tick( dot_t* d )
     {
       spell_t::last_tick( d );
       td( d -> target ) -> water_jet -> expire();
+      // Aand expire proxy water jet debuff
+      p() -> o() -> get_target_data( d -> target ) -> debuffs.water_jet -> expire();
     }
 
     bool ready()
@@ -4230,7 +4236,10 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.slow = buff_creator_t( *this, "slow" ).spell( mage -> spec.slow );
   debuffs.frost_bomb = buff_creator_t( *this, "frost_bomb" ).spell( mage -> talents.frost_bomb );
   debuffs.firestarter = buff_creator_t( *this, "firestarter" ).chance( 1.0 ).duration( timespan_t::from_seconds( 10.0 ) );
-
+  debuffs.water_jet = buff_creator_t( *this, "water_jet", source -> find_spell( 135029 ) )
+                      .quiet( true )
+                      .cd( timespan_t::zero() )
+                      .duration( timespan_t::zero() );
 }
 
 // mage_t::create_action ====================================================
