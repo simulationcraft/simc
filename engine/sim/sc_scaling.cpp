@@ -161,6 +161,8 @@ void scaling_t::init_deltas()
 
   // Use block rating coefficient * 3.39 because it happens to result in nice round numbers both at level 85 and at level 90
   double default_delta = util::round( sim -> dbc.combat_rating( RATING_BLOCK, sim -> max_player_level ) * 0.0339 ) * scale_delta_multiplier;
+  if ( default_delta < 60 ) // Default delta at level 90 is too low, error margin is gigantic.
+    default_delta = 60;
 
   if ( stats.attribute[ ATTR_SPIRIT ] == 0 ) stats.attribute[ ATTR_SPIRIT ] = default_delta;
 
@@ -170,31 +172,7 @@ void scaling_t::init_deltas()
   }
 
   if ( stats.spell_power == 0 ) stats.spell_power = default_delta;
-
   if ( stats.attack_power == 0 ) stats.attack_power = default_delta;
-
-  if ( stats.expertise_rating == 0 )
-  {
-    stats.expertise_rating = default_delta;
-    if ( ! positive_scale_delta ) stats.expertise_rating *= -1;
-  }
-  if ( stats.expertise_rating2 == 0 )
-  {
-    stats.expertise_rating2 = default_delta;
-    if ( positive_scale_delta ) stats.expertise_rating2 *= -1;
-  }
-
-  if ( stats.hit_rating == 0 )
-  {
-    stats.hit_rating = default_delta;
-    if ( ! positive_scale_delta ) stats.hit_rating *= -1;
-  }
-  if ( stats.hit_rating2 == 0 )
-  {
-    stats.hit_rating2 = default_delta;
-    if ( positive_scale_delta ) stats.hit_rating2 *= -1;
-  }
-
   if ( stats.crit_rating  == 0 ) stats.crit_rating  = default_delta;
   if ( stats.haste_rating == 0 ) stats.haste_rating = default_delta;
   if ( stats.mastery_rating == 0 ) stats.mastery_rating = default_delta;
@@ -208,7 +186,6 @@ void scaling_t::init_deltas()
   if ( stats.dodge_rating  == 0 ) stats.dodge_rating  = default_delta;
   if ( stats.parry_rating  == 0 ) stats.parry_rating  = default_delta;
   if ( stats.block_rating  == 0 ) stats.block_rating  = default_delta;
-
 
   if ( stats.weapon_dps            == 0 ) stats.weapon_dps            = default_delta * 0.3;
   if ( stats.weapon_offhand_dps    == 0 ) stats.weapon_offhand_dps    = default_delta * 0.3;
