@@ -4902,7 +4902,7 @@ void paladin_t::generate_action_prio_list_prot()
   if ( sim -> allow_flasks )
   { 
     std::string flask_type = "";
-    if ( level >= 90 )
+    if ( level > 90 )
     {
       if ( primary_role() == ROLE_ATTACK )
         flask_type += "greater_draenic_strength_flask";
@@ -4922,7 +4922,7 @@ void paladin_t::generate_action_prio_list_prot()
   if ( sim -> allow_food )
   {
     std::string food_type = "";
-    if ( level >= 90 )
+    if ( level > 90 )
     {
       if ( primary_role() == ROLE_ATTACK )
         food_type += "blackrock_barbecue";
@@ -5128,7 +5128,7 @@ void paladin_t::generate_action_prio_list_ret()
   if ( sim -> allow_flasks && level >= 80 )
   {
     std::string flask_action = "flask,type=";
-    if ( level >= 90 )
+    if ( level > 90 )
       flask_action += "greater_draenic_strength_flask";
     else if ( level > 85 )
       flask_action += "winters_bite";
@@ -5142,7 +5142,7 @@ void paladin_t::generate_action_prio_list_ret()
   if ( sim -> allow_food && level >= 80 )
   {
     std::string food_action = "food,type=";
-    if ( level >= 90 )
+    if ( level > 90 )
       food_action += "sleeper_surprise";
     else
       food_action += ( level > 85 ) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
@@ -5161,7 +5161,7 @@ void paladin_t::generate_action_prio_list_ret()
   // Pre-potting
   if ( sim -> allow_potions && level >= 80 )
   {
-    if ( level >= 90 )
+    if ( level > 90 )
       precombat -> add_action( "potion,name=draenic_strength" );
     else
       precombat -> add_action( ( level > 85 ) ? "potion,name=mogu_power" : "potion,name=golemblood" );
