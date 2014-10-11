@@ -2165,45 +2165,31 @@ struct black_arrow_t: public hunter_ranged_attack_t
 
 // Explosive Trap ==============================================================
 
-struct explosive_trap_tick_t: public hunter_ranged_attack_t
-{
-  explosive_trap_tick_t( hunter_t* player, const std::string& name ):
-    hunter_ranged_attack_t( name, player, player -> find_spell( 13812 ) )
-  {
-    aoe = -1;
-    background = true;
-    direct_tick = true;
-    base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
-  }
-};
-
 struct explosive_trap_t: public hunter_ranged_attack_t
 {
-  attack_t* explosive_trap_tick;
   explosive_trap_t( hunter_t* player, const std::string& options_str ):
-    hunter_ranged_attack_t( "explosive_trap", player, player -> find_class_spell( "Explosive Trap" ) ),
-    explosive_trap_tick( new explosive_trap_tick_t( player, "explosive_trap_tick" ) )
+    hunter_ranged_attack_t( "explosive_trap", player, player -> find_class_spell( "Explosive Trap" ) )
   {
     parse_options( options_str );
+    aoe = -1;
 
     cooldown -> duration = data().cooldown();
     cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
     if ( p() -> perks.enhanced_traps -> ok() )
       cooldown -> duration *= ( 1.0 + p() -> perks.enhanced_traps -> effectN( 1 ).percent() );
-
-    tick_zero = true;
     hasted_ticks = false;
-    harmful = false;
+    harmful = false; // it can be launched without triggering combat
+    direct_tick = true;
     dot_duration  = p() -> find_spell( 13812 ) -> duration();
     base_tick_time = p() -> find_spell( 13812 ) -> effectN( 2 ).period();
-    add_child( explosive_trap_tick );
-  }
+    base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
+    attack_power_mod.direct = p() -> find_spell( 13812 ) -> effectN( 1 ).ap_coeff();
 
-  virtual void tick( dot_t* d )
-  {
-    hunter_ranged_attack_t::tick( d );
+    // BUG in game it uses the direct damage AP mltiplier for ticks as well.
+    attack_power_mod.tick = attack_power_mod.direct;
 
-    explosive_trap_tick -> execute();
+    // BUG simulate slow velocity of launch
+    travel_speed = 18.0;
   }
 };
 
