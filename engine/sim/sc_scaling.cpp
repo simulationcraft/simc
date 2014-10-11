@@ -73,18 +73,18 @@ bool parse_normalize_scale_factors( sim_t* sim,
 struct compare_scale_factors
 {
   player_t* player;
+  scale_metric_e scale_metric;
   bool normalized;
 
-  compare_scale_factors( player_t* p, bool use_normalized ) :
-    player( p ), normalized( use_normalized ) {}
+  compare_scale_factors( player_t* p, scale_metric_e sm, bool use_normalized ) :
+    player( p ), scale_metric( sm ), normalized( use_normalized ) {}
 
   bool operator()( const stat_e& l, const stat_e& r ) const
   {  
-    scale_metric_e sm = player -> sim -> scaling -> scaling_metric;
     if ( normalized )
-      return player -> scaling_normalized[ sm ].get_stat( l ) >  player -> scaling_normalized[ sm ].get_stat( r );
+      return player -> scaling_normalized[ scale_metric ].get_stat( l ) >  player -> scaling_normalized[ scale_metric ].get_stat( r );
     else
-      return player -> scaling[ sm ].get_stat( l ) >  player -> scaling[ sm ].get_stat( r );
+      return player -> scaling[ scale_metric ].get_stat( l ) >  player -> scaling[ scale_metric ].get_stat( r );
   }
 };
 
@@ -428,20 +428,22 @@ void scaling_t::normalize()
     player_t* p = sim -> player_list[ i ];
     if ( p -> quiet ) continue;
     
-    scale_metric_e sm = p -> sim -> scaling -> scaling_metric;
-    double divisor = p -> scaling[ sm ].get_stat( p -> normalize_by() );
-
-    if ( divisor == 0 ) continue;
-
-    // hack to deal with weirdness in TMI calculations - always normalize using negative divisor
-    if ( sm == SCALE_METRIC_TMI || sm == SCALE_METRIC_ETMI )
-      divisor = - std::abs( divisor );
-
-    for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
+    for ( scale_metric_e sm = SCALE_METRIC_NONE; sm < SCALE_METRIC_MAX; sm++ )
     {
-      if ( ! p -> scales_with[ j ] ) continue;
+      double divisor = p -> scaling[ sm ].get_stat( p -> normalize_by() );
 
-      p -> scaling_normalized[ sm ].set_stat( j, p -> scaling[ sm ].get_stat( j ) / divisor );
+      if ( divisor == 0 ) continue;
+
+      // hack to deal with weirdness in TMI calculations - always normalize using negative divisor
+      if ( sm == SCALE_METRIC_TMI || sm == SCALE_METRIC_ETMI )
+        divisor = -std::abs( divisor );
+
+      for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
+      {
+        if ( !p -> scales_with[ j ] ) continue;
+
+        p -> scaling_normalized[ sm ].set_stat( j, p -> scaling[ sm ].get_stat( j ) / divisor );
+      }
     }
   }
 }
@@ -451,7 +453,6 @@ void scaling_t::normalize()
 void scaling_t::analyze()
 {
   if ( sim -> is_canceled() ) return;
-  scaling_metric = util::parse_scale_metric( scale_over );
   init_deltas();
   analyze_stats();
   analyze_lag();
@@ -461,20 +462,23 @@ void scaling_t::analyze()
   {
     player_t* p = sim -> player_list[ i ];
     if ( p -> quiet ) continue;
-    
-    // Sort scaling results
-    for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
-    {
-      if ( p -> scales_with[ j ] )
-      {
-        double s = p -> scaling[ scaling_metric ].get_stat( j );
 
-        if ( s ) p -> scaling_stats.push_back( j );
+    for ( scale_metric_e sm = SCALE_METRIC_NONE; sm < SCALE_METRIC_MAX; sm++ )
+    {
+      // Sort scaling results
+      for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
+      {
+        if ( p -> scales_with[ j ] )
+        {
+          double s = p -> scaling[ sm ].get_stat( j );
+
+          if ( s ) p -> scaling_stats[ sm ].push_back( j );
+        }
       }
+      // more hack to deal with TMI weirdness, this just determines sorting order, not what gets displayed on the chart
+      bool use_normalized = p -> scaling_normalized[ sm ].get_stat( p -> normalize_by() ) > 0 || sm == SCALE_METRIC_TMI || sm == SCALE_METRIC_ETMI;
+      range::sort( p -> scaling_stats[ sm ], compare_scale_factors( p, sm, use_normalized ) );
     }
-    // more hack to deal with TMI weirdness, this just determines sorting order, not what gets displayed on the chart
-    bool use_normalized = p -> scaling_normalized[ scaling_metric ].get_stat( p -> normalize_by() ) > 0 || scaling_metric == SCALE_METRIC_TMI || scaling_metric == SCALE_METRIC_ETMI;
-    range::sort( p -> scaling_stats, compare_scale_factors( p, use_normalized ) );
   }
 }
 
