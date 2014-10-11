@@ -6037,8 +6037,6 @@ void druid_t::apl_feral()
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Skull Bash" );
   def -> add_talent( this, "Force of Nature", "if=charges=3|trinket.proc.all.react|target.time_to_die<20");
-  def -> add_action( "incarnation,sync=berserk" );
-  def -> add_action( this, "Berserk", "if=cooldown.tigers_fury.remains<8" );
   if ( sim -> allow_potions && level >= 80 )
     def -> add_action( potion_action + ",if=target.time_to_die<=40" );
   // On-Use Items
@@ -6047,16 +6045,16 @@ void druid_t::apl_feral()
   // Racials
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ] + ",sync=tigers_fury" );
+  if ( find_item( "assurance_of_consequence" ) )
+    def -> add_action( "incarnation,sync=tigers_fury" );
   def -> add_action( this, "Tiger's Fury", "if=(!buff.omen_of_clarity.react&energy.max-energy>=60)|energy.max-energy>=80" );
+  if ( ! find_item( "assurance_of_consequence" ) )
+    def -> add_action( "incarnation,sync=berserk" );
+  def -> add_action( this, "Berserk", "if=buff.tigers_fury.up" );
   if ( race == RACE_NIGHT_ELF )
     def -> add_action( "shadowmeld,if=(buff.bloodtalons.up|!talent.bloodtalons.enabled)&dot.rake.remains<0.3*dot.rake.duration" );
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<25",
                      "Keep Rip from falling off during execute range." );
-  /*
-  if( glyph.cat_form -> ok() )
-    def -> add_action( this, "Healing Touch", "target_self=1,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" , "Take advantage of Glyph of Cat Form");
-  else
-  */
   def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" );
   def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
   if ( sim -> allow_potions && level >= 80 )
@@ -6081,16 +6079,6 @@ void druid_t::apl_feral()
   // Fillers
   def -> add_action( this, "Swipe", "if=combo_points<5&active_enemies>=3" );
   def -> add_action( this, "Shred", "if=combo_points<5&active_enemies<3" );
-/*
-  // Add in rejuv blanketing for nature's vigil -- not fully optimized
-  def -> add_talent( this, "Nature's Vigil" );
-  if( glyph.cat_form -> ok() )
-    def -> add_action( this, "rejuvenation", "target_self=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)" , "Take advantage of Glyph of Cat Form");    
-  def -> add_action( this, "rejuvenation", "cycle_players=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)" );  
-  def -> add_action( this, "rejuvenation", "cycle_players=1,if=!ticking&(buff.natures_vigil.up|cooldown.natures_vigil.remains<15)" );  
-  def -> add_action( this, "rejuvenation", "cycle_players=1,if=buff.natures_vigil.up" );  
-  */
-
 }
 
 // Balance Combat Action Priority List ==============================
