@@ -615,6 +615,7 @@ struct add_t : public pet_t
   add_t( sim_t* s, enemy_t* o, const std::string& n, pet_e pt = PET_ENEMY ) :
     pet_t( s, o, n, pt )
   {
+    s -> target_list.push_back( this );
     level = default_level + 3;
   }
 
