@@ -6561,7 +6561,6 @@ struct paladin_module_t : public module_t
     {
       player_t* p = sim -> actor_list[i];
       p -> buffs.beacon_of_light          = buff_creator_t( p, "beacon_of_light", p -> find_spell( 53563 ) );
-      p -> buffs.illuminated_healing      = buff_creator_t( p, "illuminated_healing", p -> find_spell( 86273 ) );
       p -> buffs.hand_of_sacrifice        = new buffs::hand_of_sacrifice_t( p );
       p -> buffs.devotion_aura            = buff_creator_t( p, "devotion_aura", p -> find_spell( 31821 ) );
       p -> debuffs.forbearance            = buff_creator_t( p, "forbearance", p -> find_spell( 25771 ) );
