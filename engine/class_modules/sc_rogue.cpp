@@ -3460,13 +3460,14 @@ struct bandits_guile_t : public buff_t
     if ( current_stack < max_stack() )
       buff_t::execute( stacks, value, duration );
 
-    if ( current_stack == 4 )
+    if ( current_stack >= 4 && current_stack < 8 )
     {
       p -> buffs.shallow_insight -> trigger();
     }
-    else if ( current_stack == 8 )
+    else if ( current_stack >= 8 && current_stack < 12 )
     {
-      p -> buffs.shallow_insight -> insight_elevate_expire();
+      if ( current_stack == 8 )
+        p -> buffs.shallow_insight -> insight_elevate_expire();
       p -> buffs.moderate_insight -> trigger();
     }
     else if ( current_stack == 12 )
@@ -5011,7 +5012,7 @@ double rogue_t::energy_regen_per_second() const
 
   if ( talent.venom_rush -> ok() )
   {
-    assert( poisoned_enemies <= sim -> target_list.size() );
+    assert( poisoned_enemies <= sim -> target_non_sleeping_list.size() );
     unsigned n_poisoned_enemies = std::min( poisoned_enemies, 3U );
     r *= 1.0 + n_poisoned_enemies * spell.venom_rush -> effectN( 1 ).percent();
   }
