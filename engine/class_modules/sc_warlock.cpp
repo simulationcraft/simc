@@ -85,6 +85,7 @@ public:
     pet_t* last;
     static const int WILD_IMP_LIMIT = 25;
     std::array<pets::wild_imp_pet_t*, WILD_IMP_LIMIT> wild_imps;
+    pet_t* inner_demon;
   } pets;
 
   // Talents
@@ -226,6 +227,7 @@ public:
     cooldown_t* imp_swarm;
     cooldown_t* hand_of_guldan;
     cooldown_t* dark_soul;
+    cooldown_t* t17_4pc_demonology;
   } cooldowns;
 
   // Passives
@@ -442,6 +444,9 @@ public:
     }
     return td;
   }
+
+  void trigger_demonology_t17_4pc( const action_state_t* state ) const;
+  void trigger_demonology_t17_4pc_cast() const;
 private:
   void apl_precombat();
   void apl_default();
@@ -1563,6 +1568,79 @@ struct terrorguard_pet_t: public warlock_pet_t
   }
 };
 
+struct inner_demon_t : public pet_t
+{
+  struct soul_fire_t : public spell_t
+  {
+    soul_fire_t( inner_demon_t* p ) :
+      spell_t( "soul_fire", p, p -> find_spell( 166864 ) )
+    {
+      min_gcd = data().gcd();
+
+      // Serious case of AI lag
+      ability_lag = timespan_t::from_seconds( 0.4 );
+      ability_lag_stddev = timespan_t::from_seconds( 0.1 );
+    }
+
+    bool usable_moving() const
+    { return true; }
+  };
+
+  soul_fire_t* soul_fire;
+
+  inner_demon_t( warlock_t* owner ) :
+    pet_t( owner -> sim, owner, "inner_demon", true ),
+    soul_fire( 0 )
+  {
+    owner_coeff.sp_from_sp = 0.75;
+  }
+
+  void init_spells()
+  {
+    pet_t::init_spells();
+
+    soul_fire = new soul_fire_t( this );
+  }
+
+  warlock_t* o()
+  { return static_cast<warlock_t*>( owner ); }
+  const warlock_t* o() const
+  { return static_cast<warlock_t*>( owner ); }
+
+  void init_action_list()
+  {
+    pet_t::init_action_list();
+
+    action_list_str = "soul_fire";
+  }
+
+  action_t* create_action( const std::string& name, const std::string& options_str )
+  {
+    if ( name == "soul_fire" ) return soul_fire;
+
+    return pet_t::create_action( name, options_str );
+  }
+
+  // TODO: Orc racial?
+  double composite_player_multiplier( school_e school ) const
+  {
+    double m = pet_t::composite_player_multiplier( school );
+
+    if ( o() -> mastery_spells.master_demonologist -> ok() )
+      m *= 1.0 + o() -> cache.mastery() * o() -> mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
+
+    return m;
+  }
+
+  void summon( timespan_t duration )
+  {
+    // Enable Soul Fire cast on the next spell execute of the Warlock
+    soul_fire -> background = true;
+
+    pet_t::summon( duration );
+  }
+};
+
 } // end namespace pets
 
 // Spells
@@ -1788,6 +1866,8 @@ public:
         if ( procced ) my_pet -> buffs.demonic_synergy -> trigger();
       }
     }
+
+    p() -> trigger_demonology_t17_4pc_cast();
   }
 
   virtual timespan_t execute_time() const
@@ -2284,14 +2364,8 @@ struct hand_of_guldan_t: public warlock_spell_t
     /* Executed at the same time as HoG and given a travel time,
        so that it can snapshot meta at the appropriate time. */
     shadowflame -> execute();
-  }
 
-  virtual void impact( action_state_t* s )
-  {
-      warlock_spell_t::impact( s );
-      if ( p() -> sets.has_set_bonus( WARLOCK_DEMONOLOGY, T17, B4 ) ){
-        // INNER DEMON SUMMON HERE.
-      }
+    p() -> trigger_demonology_t17_4pc( execute_state );
   }
 
   virtual bool ready()
@@ -3443,6 +3517,13 @@ struct chaos_wave_t: public warlock_spell_t
 
     impact_action = new chaos_wave_dmg_t( p );
     impact_action -> stats = stats;
+  }
+
+  void execute()
+  {
+    warlock_spell_t::execute();
+
+    p() -> trigger_demonology_t17_4pc( execute_state );
   }
 
   virtual timespan_t travel_time() const
@@ -4738,6 +4819,7 @@ shard_react( timespan_t::zero() )
   cooldowns.imp_swarm = get_cooldown( "imp_swarm" );
   cooldowns.hand_of_guldan = get_cooldown( "hand_of_guldan" );
   cooldowns.dark_soul = get_cooldown( "dark_soul" );
+  cooldowns.t17_4pc_demonology = get_cooldown( "t17_4pc_demonology" );
 
   regen_type = REGEN_DYNAMIC;
 }
@@ -5043,6 +5125,9 @@ void warlock_t::create_pets()
       if ( i > 0 )
         pets.wild_imps[ i ] -> quiet = 1;
     }
+
+    if ( level >= 100 )
+      pets.inner_demon = new pets::inner_demon_t( this );
   }
 
   create_pet( "service_felhunter"  );
@@ -5673,6 +5758,43 @@ stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
     return STAT_NONE;
   default: return s;
   }
+}
+
+void warlock_t::trigger_demonology_t17_4pc( const action_state_t* state ) const
+{
+  if ( ! sets.has_set_bonus( WARLOCK_DEMONOLOGY, T17, B4 ) )
+    return;
+
+  // Hand of Gul'Dan / Chaos Wave can be cast as a "free (and background) cast"
+  // due to T16 4PC.  While in reality it's not possible to have T16 and T17
+  // 4PC, the sim will allow force-overriding of options, where that scenario
+  // can happen.
+  if ( state -> action -> background )
+    return;
+
+  if ( ! state -> action -> result_is_hit( state -> result ) )
+    return;
+
+  if ( cooldowns.t17_4pc_demonology -> down() )
+    return;
+
+  if ( level < 100 )
+    return;
+
+  pets.inner_demon -> summon( sets.set( WARLOCK_DEMONOLOGY, T17, B4 ) -> effectN( 1 ).trigger() -> duration() );
+
+  cooldowns.t17_4pc_demonology -> start( sets.set( WARLOCK_DEMONOLOGY, T17, B4 ) -> internal_cooldown() );
+}
+
+void warlock_t::trigger_demonology_t17_4pc_cast() const
+{
+  if ( ! pets.inner_demon || pets.inner_demon -> is_sleeping() )
+    return;
+
+  pets::inner_demon_t* demon = debug_cast<pets::inner_demon_t*>( pets.inner_demon );
+
+  // Allow inner demon to start casting soul fire
+  demon -> soul_fire -> background = false;
 }
 
 expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
