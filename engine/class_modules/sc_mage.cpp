@@ -324,7 +324,7 @@ public:
 
     // Cooldowns
     cooldowns.combustion         = get_cooldown( "combustion"         );
-    cooldowns.combustion         = get_cooldown( "cone_of_cold"       );
+    cooldowns.cone_of_cold       = get_cooldown( "cone_of_cold"       );
     cooldowns.dragons_breath     = get_cooldown( "dragons_breath"     );
     cooldowns.enhanced_frostbolt = get_cooldown( "enhanced_frostbolt" );
     cooldowns.evocation          = get_cooldown( "evocation"          );
