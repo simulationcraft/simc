@@ -1007,11 +1007,7 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
       logText -> moveCursor( QTextCursor::End );
     }
     logText -> resetformat();
-    if ( mainTab -> currentTab() == TAB_SPELLQUERY )
-    {
-      spellQueryTab -> textbox.result -> setText( contents );
-      spellQueryTab -> checkForSave();
-    }
+
   }
 }
 
@@ -1288,6 +1284,28 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
     logText -> resetformat();
     if ( mainTab -> currentTab() != TAB_SPELLQUERY )
       mainTab -> setCurrentTab( TAB_LOG );
+
+    // SPell Query
+    if ( mainTab -> currentTab() == TAB_SPELLQUERY )
+    {
+        QString result;
+        std::stringstream ss;
+        try
+        {
+          sim -> spell_query -> evaluate();
+          report::print_spell_query( ss, sim -> dbc, *sim -> spell_query, sim -> spell_query_level );
+        }
+        catch( const std::exception& e ){
+          ss <<  "ERROR! Spell Query failure: " << e.what() << std::endl;
+        }
+      result = QString::fromStdString( ss.str() );
+      if ( result.isEmpty() )
+      {
+          result = "No results found!";
+      }
+      spellQueryTab -> textbox.result -> setText( result );
+      spellQueryTab -> checkForSave();
+    }
   }
   else
   {
@@ -1827,9 +1845,8 @@ void SimulateThread::run()
 
   if ( sim -> spell_query != 0 )
   {
-    sim -> spell_query -> evaluate();
-    report::print_spell_query( sim -> dbc, sim -> spell_query_xml_output_file_str, *sim -> spell_query, sim -> spell_query_level );
     success = false;
+    return;
   }
   success = sim -> execute();
   if ( success )
