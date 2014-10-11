@@ -1127,7 +1127,8 @@ double warlock_pet_t::composite_melee_crit() const
 {
   double mc = pet_t::composite_melee_crit();
 
-  mc += o() -> perk.empowered_demons -> effectN( 1 ).percent();
+  if ( pet_type != PET_WILD_IMP )
+    mc += o() -> perk.empowered_demons -> effectN( 1 ).percent();
 
   return mc;
 }
@@ -1136,7 +1137,8 @@ double warlock_pet_t::composite_spell_crit() const
 {
   double sc = pet_t::composite_spell_crit();
 
-  sc += o() -> perk.empowered_demons -> effectN( 1 ).percent();
+  if ( pet_type != PET_WILD_IMP )
+    sc += o() -> perk.empowered_demons -> effectN( 1 ).percent();
 
   return sc;
 }
@@ -1145,7 +1147,8 @@ double warlock_pet_t::composite_melee_haste() const
 {
   double mh = pet_t::composite_melee_haste();
 
-  mh /= 1.0 + o() -> perk.empowered_demons -> effectN( 2 ).percent();
+  if ( pet_type != PET_WILD_IMP )
+    mh /= 1.0 + o() -> perk.empowered_demons -> effectN( 2 ).percent();
 
   return mh;
 }
@@ -1154,7 +1157,8 @@ double warlock_pet_t::composite_spell_haste() const
 {
   double sh = pet_t::composite_spell_haste();
 
-  sh /= 1.0 + o() -> perk.empowered_demons -> effectN( 2 ).percent();
+  if ( pet_type != PET_WILD_IMP )
+    sh /= 1.0 + o() -> perk.empowered_demons -> effectN( 2 ).percent();
 
   return sh;
 }
