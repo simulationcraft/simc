@@ -3703,7 +3703,6 @@ void hunter_t::apl_mm()
 
   default_list -> add_action( this, "Rapid Fire");
   default_list -> add_talent( this, "Stampede", "if=buff.rapid_fire.up|buff.bloodlust.up|target.time_to_die<=20" );
-  default_list -> add_action( this, "Explosive Trap", "if=active_enemies>2" );
   default_list -> add_action( "run_action_list,name=careful_aim,if=buff.careful_aim.up" );
   {
     careful_aim -> add_talent( this, "Glaive Toss", "if=active_enemies>4" );
@@ -3714,6 +3713,7 @@ void hunter_t::apl_mm()
     careful_aim -> add_talent( this, "Focusing Shot", "if=50+cast_regen<focus.deficit" );
     careful_aim -> add_action( this, "Steady Shot" );
   }
+  default_list -> add_action( this, "Explosive Trap", "if=active_enemies>2" );
 
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Dire Beast", "if=cast_regen+action.aimed_shot.cast_regen<focus.deficit" );
