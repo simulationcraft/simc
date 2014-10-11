@@ -3413,12 +3413,16 @@ struct smite_t final : public priest_spell_t
   {
     bool glyph_benefit = false;
 
-    priest_td_t& td = get_td( t );
+    if ( priest.glyphs.smite -> ok() )
+    {
+      const priest_td_t& td = get_td( t );
 
-    if ( priest.talents.power_word_solace -> ok() )
-      glyph_benefit = priest.glyphs.smite -> ok() && td. dots.power_word_solace -> is_ticking();
-    else
-      glyph_benefit = priest.glyphs.smite -> ok() && td.dots.holy_fire -> is_ticking();
+      const dot_t* dot = priest.talents.power_word_solace -> ok()
+            ? td.dots.power_word_solace
+            : td.dots.holy_fire;
+
+      glyph_benefit = dot -> is_ticking();
+    }
 
     return glyph_benefit;
   }
@@ -5885,7 +5889,10 @@ void priest_t::apl_precombat()
       switch ( specialization() )
       {
         case PRIEST_DISCIPLINE:
-          food_action += "blackrock_barbecue";
+          if ( primary_role() != ROLE_HEAL )
+            food_action += "calamari_crepes";
+          else
+            food_action += "blackrock_barbecue";
           break;
         case PRIEST_HOLY:
           food_action += "calamari_crepes";
@@ -6223,7 +6230,7 @@ void priest_t::apl_disc_heal()
 
 void priest_t::apl_disc_dmg()
 {
-  action_priority_list_t* def       = get_action_priority_list( "default"   );
+  action_priority_list_t* def = get_action_priority_list( "default" );
 
   // On-Use Items
   std::vector<std::string> item_actions = get_item_actions();
@@ -6262,24 +6269,26 @@ void priest_t::apl_disc_dmg()
       def -> add_action( racial_actions[ i ] );
   }
 
-  def -> add_action( "power_infusion,if=talent.power_infusion.enabled" );
+  def -> add_talent( this, "Power Infusion", "if=talent.power_infusion.enabled" );
 
-  def -> add_action( this, "Archangel", "if=buff.holy_evangelism.react=5" );
+  def -> add_action( this, "Shadow Word: Pain", "if=!ticking" );
+
   def -> add_action( this, "Penance" );
 
-  def -> add_action( this, "Holy Fire" );
-  def -> add_talent( this, "Power Word: Solace" );
+  def -> add_talent( this, "Power Word: Solace", "if=talent.power_word_solace.enabled" );
+  def -> add_action( this, "Holy Fire", "if=!talent.power_word_solace.enabled" );
 
-  def -> add_action( this, "Smite", "if=glyph.smite.enabled&dot.power_word_solace.remains>cast_time" );
-  def -> add_action( this, "Smite", "if=!talent.twist_of_fate.enabled&mana.pct>15" );
-  def -> add_action( this, "Smite", "if=talent.twist_of_fate.enabled&target.health.pct<35&mana.pct>target.health.pct" );
+  def -> add_action( this, "Smite", "if=glyph.smite.enabled&(dot.power_word_solace.remains+dot.holy_fire.remains)>cast_time" );
+  def -> add_action( this, "Shadow Word: Pain", "if=remains<(duration*0.3)" );
+  def -> add_action( this, "Smite" );
+  def -> add_action( this, "Shadow Word: Pain" );
 }
 
 // Holy Heal Combat Action Priority List
 
 void priest_t::apl_holy_heal()
 {
-  action_priority_list_t* def       = get_action_priority_list( "default"   );
+  action_priority_list_t* def = get_action_priority_list( "default" );
 
   // On-Use Items
   std::vector<std::string> item_actions = get_item_actions();
