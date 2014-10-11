@@ -11,6 +11,11 @@ namespace { // UNNAMED NAMESPACE
 // ==========================================================================
 
  /* WoD -- TODO:
+
+    Check error caused by AoC and Treants ::
+      Increasing number of treants in pet_force_of_nature seems to fix it, but 
+      cast interval is not low enough for this to make sense.
+
     = Feral =
     Update LI implementation to work like in-game
     Update Glyph of Ferocious Bite to be a heal
@@ -170,7 +175,7 @@ public:
   // Pets
   pet_t* pet_feral_spirit[ 2 ];
   pet_t* pet_mirror_images[ 3 ];
-  pet_t* pet_force_of_nature[ 3 ];
+  pet_t* pet_force_of_nature[ 4 ]; // Add another pet, you can(maybe?) have 4 up with AoC
 
   // Auto-attacks
   weapon_t caster_form_weapon;
@@ -4291,7 +4296,7 @@ struct force_of_nature_spell_t : public druid_spell_t
     druid_spell_t::execute();
     if ( p() -> pet_force_of_nature[0] )
     {
-      for ( int i = 0; i < 3; i++ )
+      for ( size_t i = 0; i < sizeof_array( p() -> pet_force_of_nature ); i++ )
       {
         if ( p() -> pet_force_of_nature[i] -> is_sleeping() )
         {
@@ -5503,12 +5508,12 @@ void druid_t::create_pets()
 {
   if ( specialization() == DRUID_BALANCE )
   {
-    for ( int i = 0; i < 3; ++i )
+    for ( size_t i = 0; i < sizeof_array( pet_force_of_nature ); ++i )
       pet_force_of_nature[ i ] = new pets::force_of_nature_balance_t( sim, this );
   }
   else if ( specialization() == DRUID_FERAL )
   {
-    for ( int i = 0; i < 3; ++i )
+    for ( size_t i = 0; i < sizeof_array( pet_force_of_nature ); ++i )
       pet_force_of_nature[ i ] = new pets::force_of_nature_feral_t( sim, this );
   }
   else if ( specialization() == DRUID_GUARDIAN )
