@@ -108,7 +108,7 @@ talents=3223232
 level=100
 race=draenei
 spec=holy
-role=dps
+role=spell
 position=back
 glyphs=smite/holy_fire/inquisitor
 head=soul_priests_hood,id=115563,bonus_id=567
@@ -161,7 +161,7 @@ talents=3223232
 level=100
 race=draenei
 spec=discipline
-role=heal
+role=spell
 position=back
 glyphs=smite/holy_fire/inquisitor
 head=soul_priests_hood,id=115563
