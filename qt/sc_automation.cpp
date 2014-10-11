@@ -558,14 +558,13 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
             continue;
 
           // otherwise, use regular expressions to determine the syntax and split into components
-          QRegularExpressionMatch match;
           QString operand;
           QString operation;
           QString numeric;
 
           // Checking for operand syntax: Operand.Operator[#] (e.g. DP.BA or DP.BR3)
           QRegularExpression rxb( "(\\D+)(\\.)(\\D+)(\\d*\\.?\\d*)" );
-          match = rxb.match( optionsBreakdown[ j ] );
+          QRegularExpressionMatch match = rxb.match( optionsBreakdown[ j ] );
           if ( match.hasMatch() )
           {
             // captures[ 0 ] is the whole string, captures[ 1 ] is the first match, captures[ 2 ] is the second match, etc.
