@@ -1021,7 +1021,7 @@ struct force_of_nature_balance_t : public pet_t
   force_of_nature_balance_t( sim_t* sim, druid_t* owner ) :
     pet_t( sim, owner, "treant", true /*GUARDIAN*/, true )
   {
-    owner_coeff.sp_from_sp = 1.0;
+    owner_coeff.sp_from_sp = 1/3;
     action_list_str = "wrath";
     regen_type = REGEN_DISABLED;
   }
@@ -4288,6 +4288,7 @@ struct force_of_nature_spell_t : public druid_spell_t
 
   void execute()
   {
+    druid_spell_t::execute();
     if ( p() -> pet_force_of_nature[0] )
     {
       for ( int i = 0; i < 3; i++ )
@@ -4302,7 +4303,6 @@ struct force_of_nature_spell_t : public druid_spell_t
       p() -> sim -> errorf( "Player %s ran out of treants.\n", p() -> name() );
       assert( false ); // Will only get here if there are no available treants
     }
-    druid_spell_t::execute();
   }
 };
 
@@ -5069,7 +5069,7 @@ struct starfire_t : public druid_spell_t
     druid_spell_t::impact( s );
 
     if ( p() -> talent.balance_of_power && result_is_hit( s -> result ) )
-      td( s -> target ) -> dots.moonfire -> extend_duration( timespan_t::from_seconds( p() -> talent.balance_of_power -> effectN( 1 ).base_value() ), timespan_t::zero(), 0 );
+      td( s -> target ) -> dots.moonfire -> extend_duration( p() -> talent.balance_of_power -> effectN( 1 ).time_value(), 0 );
   }
 };
 
@@ -5350,7 +5350,7 @@ struct wrath_t : public druid_spell_t
     druid_spell_t::impact( s );
 
     if ( p() -> talent.balance_of_power && result_is_hit( s -> result ) )
-      td( s -> target ) -> dots.sunfire -> extend_duration( timespan_t::from_seconds( p() -> talent.balance_of_power -> effectN( 2 ).base_value() ), timespan_t::zero(), 0 );
+      td( s -> target ) -> dots.sunfire -> extend_duration( timespan_t::from_seconds( p() -> talent.balance_of_power -> effectN( 2 ).base_value() ), 0 );
   }
 };
 
@@ -6436,6 +6436,8 @@ void druid_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
 
+  balance_tracker(); // So much for trying to optimize, too many edge cases messing up. 
+
   // player_t::regen() only regens your primary resource, so we need to account for that here
   if ( primary_resource() != RESOURCE_MANA && mana_regen_per_second() )
     resource_gain( RESOURCE_MANA, mana_regen_per_second() * periodicity.total_seconds(), gains.mp5_regen );
@@ -6445,6 +6447,7 @@ void druid_t::regen( timespan_t periodicity )
 }
 
 // druid_t::mana_regen_per_second ============================================================
+
 double druid_t::mana_regen_per_second() const
 {
   double mp5 = player_t::mana_regen_per_second();

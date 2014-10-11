@@ -3716,6 +3716,9 @@ void player_t::schedule_ready( timespan_t delta_time,
 
     if ( lag < timespan_t::zero() ) lag = timespan_t::zero();
 
+    if ( type == PLAYER_GUARDIAN )
+      lag = timespan_t::zero(); // Guardians do not seem to feel the effects of queue/gcd lag in WoD.
+
     delta_time += lag;
   }
 
