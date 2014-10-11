@@ -124,7 +124,6 @@ void SC_MainWindow::loadHistory()
       {
         QString s = entry.toString();
         historyList -> addItem( new QListWidgetItem( s ) );
-
       }
     }
   }
@@ -1837,9 +1836,25 @@ void SimulateThread::run()
 
   sim_control_t description;
 
-  description.options.parse_text( utf8_profile.constData() );
+  try
+  {
+    description.options.parse_text( utf8_profile.constData() );
+  }
+  catch( const std::exception& e )
+  {
+    // FIXME: report error.
+    return;
+  }
 
-  sim -> setup( &description );
+  try
+  {
+    sim -> setup( &description );
+  }
+  catch( const std::exception& e )
+  {
+    // FIXME: report error.
+    return;
+  }
 
   if ( sim -> challenge_mode ) sim -> scale_to_itemlevel = 620; //Check
 

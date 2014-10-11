@@ -146,7 +146,7 @@ int sim_t::main( const std::vector<std::string>& args )
 {
   sim_signal_handler_t handler( this );
 
-  cache_initializer_t cache_init( ( get_cache_directory() + "/simc_cache.dat" ).c_str() );
+  cache_initializer_t cache_init( get_cache_directory() + "/simc_cache.dat" );
   dbc_initializer_t dbc_init;
   module_t::init();
 

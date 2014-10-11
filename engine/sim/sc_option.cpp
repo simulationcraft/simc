@@ -421,7 +421,7 @@ void option_db_t::parse_token( const std::string& token )
 
   if ( cut_pt == token.npos )
   {
-    io::cfile file = io::cfile( open_file( auto_path, token ) );
+    io::cfile file = open_file( auto_path, token );
     if ( ! file )
     {
       std::stringstream s;
