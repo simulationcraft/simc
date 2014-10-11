@@ -2625,6 +2625,26 @@ bool sim_t::use_load_balancing() const
   return true;
 }
 
+void sim_t::print_spell_query()
+{
+  if ( ! spell_query_xml_output_file_str.empty() )
+  {
+    io::cfile file( spell_query_xml_output_file_str.c_str(), "w" );
+    if ( ! file )
+    {
+      std::cerr << "Unable to open spell query xml output file '" << spell_query_xml_output_file_str << "', using stdout instead\n";
+      file = io::cfile( stdout, io::cfile::no_close() );
+    }
+    std::shared_ptr<xml_node_t> root( new xml_node_t( "spell_query" ) );
+
+    report::print_spell_query( root.get(), file, dbc, *spell_query, spell_query_level );
+  }
+  else
+  {
+
+    report::print_spell_query( std::cout, dbc, *spell_query, spell_query_level );
+  }
+}
 void sim_t::toggle_pause()
 {
   if ( parent )

@@ -479,72 +479,75 @@ void report::print_profiles( sim_t* sim )
 
 // report::print_spell_query ================================================
 
-void report::print_spell_query( dbc_t& dbc, const std::string& spell_query_xml_output_file_str, const spell_data_expr_t& sq, unsigned level )
+void report::print_spell_query( std::ostream& out, dbc_t& dbc, const spell_data_expr_t& sq, unsigned level )
 {
-  io::cfile file;
-  xml_node_t* root = nullptr;
-  if ( ! spell_query_xml_output_file_str.empty() )
-  {
-    file = io::fopen( spell_query_xml_output_file_str.c_str(), "w" );
-    if ( ! file )
-    {
-      std::cerr << "Unable to open spell query xml output file '" << spell_query_xml_output_file_str << "', using stdout instead\n";
-      file = io::cfile( stdout, io::cfile::no_close() );
-    }
-    root = new xml_node_t( "spell_query" );
-  }
 
   expr_data_e data_type = sq.data_type;
   for ( std::vector<uint32_t>::const_iterator i = sq.result_spell_list.begin(); i != sq.result_spell_list.end(); ++i )
   {
-    if ( data_type == DATA_TALENT )
+    switch ( data_type )
     {
-      if ( root )
-        spell_info::talent_to_xml( dbc, dbc.talent( *i ), root );
-      else
-        std::cout << spell_info::talent_to_str( dbc, dbc.talent( *i ) );
-    }
-    else if ( data_type == DATA_EFFECT )
-    {
-      std::ostringstream sqs;
-      const spell_data_t* spell = dbc.spell( dbc.effect( *i ) -> spell_id() );
-      if ( spell )
+    case DATA_TALENT:
+      out << spell_info::talent_to_str( dbc, dbc.talent( *i ) );
+      break;
+    case DATA_EFFECT:
       {
-        if ( root )
-          spell_info::effect_to_xml( dbc, spell, dbc.effect( *i ), root );
-        else
+        std::ostringstream sqs;
+        const spell_data_t* spell = dbc.spell( dbc.effect( *i ) -> spell_id() );
+        if ( spell )
         {
           spell_info::effect_to_str( dbc, spell, dbc.effect( *i ), sqs );
-          std::cout << sqs.str();
+          out << sqs.str();
         }
       }
+      break;
+    case DATA_SET_BONUS:
+      out << spell_info::set_bonus_to_str( dbc, (dbc::set_bonus( dbc.ptr ) + *i) );
+      break;
+    default:
+      {
+        const spell_data_t* spell = dbc.spell( *i );
+        out << spell_info::to_str( dbc, spell, level );
+      }
     }
-    else if ( data_type == DATA_SET_BONUS )
-    {
-      if ( root )
-        spell_info::talent_to_xml( dbc, dbc.talent( *i ), root );
-      else
-        std::cout << spell_info::set_bonus_to_str( dbc, (dbc::set_bonus( dbc.ptr ) + *i) );
-    }
-    else
-    {
-      const spell_data_t* spell = dbc.spell( *i );
-      if ( root )
-        spell_info::to_xml( dbc, spell, root, level );
-      else
-        std::cout << spell_info::to_str( dbc, spell, level );
-    }
-  }
-
-
-  if ( root )
-  {
-    util::fprintf( file, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" );
-    root -> print_xml( file );
-    delete root;
   }
 }
 
+void report::print_spell_query( xml_node_t* root, FILE* file, dbc_t& dbc, const spell_data_expr_t& sq, unsigned level )
+{
+
+  expr_data_e data_type = sq.data_type;
+  for ( std::vector<uint32_t>::const_iterator i = sq.result_spell_list.begin(); i != sq.result_spell_list.end(); ++i )
+  {
+    switch ( data_type )
+    {
+    case DATA_TALENT:
+      spell_info::talent_to_xml( dbc, dbc.talent( *i ), root );
+      break;
+    case DATA_EFFECT:
+      {
+        std::ostringstream sqs;
+        const spell_data_t* spell = dbc.spell( dbc.effect( *i ) -> spell_id() );
+        if ( spell )
+        {
+          spell_info::effect_to_xml( dbc, spell, dbc.effect( *i ), root );
+        }
+      }
+      break;
+    case DATA_SET_BONUS:
+      spell_info::talent_to_xml( dbc, dbc.talent( *i ), root );
+      break;
+    default:
+      {
+        const spell_data_t* spell = dbc.spell( *i );
+        spell_info::to_xml( dbc, spell, root, level );
+      }
+    }
+  }
+
+  util::fprintf( file, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" );
+  root -> print_xml( file );
+}
 // report::print_suite ======================================================
 
 void report::print_suite( sim_t* sim )

@@ -180,7 +180,7 @@ int sim_t::main( const std::vector<std::string>& args )
     try
     {
       spell_query -> evaluate();
-      report::print_spell_query( dbc, spell_query_xml_output_file_str, *spell_query, spell_query_level );
+      print_spell_query();
     }
     catch( const std::exception& e ){
       std::cerr <<  "ERROR! Spell Query failure: " << e.what() << std::endl;
