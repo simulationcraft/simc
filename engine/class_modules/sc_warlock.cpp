@@ -327,6 +327,7 @@ public:
   struct procs_t
   {
     proc_t* wild_imp;
+    proc_t* t17_4pc_demo;
   } procs;
 
   struct spells_t
@@ -1576,14 +1577,20 @@ struct inner_demon_t : public pet_t
       spell_t( "soul_fire", p, p -> find_spell( 166864 ) )
     {
       min_gcd = data().gcd();
-
-      // Serious case of AI lag
-      ability_lag = timespan_t::from_seconds( 0.4 );
-      ability_lag_stddev = timespan_t::from_seconds( 0.1 );
     }
 
     bool usable_moving() const
     { return true; }
+
+    // Add ability lag through different means, because guardians in WoD do not
+    // suffer from it, except this one does.
+    timespan_t execute_time() const
+    {
+      timespan_t cast_time = spell_t::execute_time();
+      cast_time += rng().gauss( timespan_t::from_seconds( 0.2 ), timespan_t::from_seconds( 0.025 ) );
+
+      return cast_time;
+    }
   };
 
   soul_fire_t* soul_fire;
@@ -5404,6 +5411,7 @@ void warlock_t::init_procs()
   player_t::init_procs();
 
   procs.wild_imp = get_proc( "wild_imp" );
+  procs.t17_4pc_demo = get_proc( "t17_4pc_demo" );
 }
 
 void warlock_t::apl_precombat()
@@ -5783,6 +5791,7 @@ void warlock_t::trigger_demonology_t17_4pc( const action_state_t* state ) const
 
   pets.inner_demon -> summon( sets.set( WARLOCK_DEMONOLOGY, T17, B4 ) -> effectN( 1 ).trigger() -> duration() );
 
+  procs.t17_4pc_demo -> occur();
   cooldowns.t17_4pc_demonology -> start( sets.set( WARLOCK_DEMONOLOGY, T17, B4 ) -> internal_cooldown() );
 }
 
