@@ -1577,6 +1577,7 @@ struct inner_demon_t : public pet_t
       spell_t( "soul_fire", p, p -> find_spell( 166864 ) )
     {
       min_gcd = data().gcd();
+      may_crit = true;
     }
 
     bool usable_moving() const
