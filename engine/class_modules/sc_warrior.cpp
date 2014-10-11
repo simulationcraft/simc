@@ -113,6 +113,7 @@ public:
     buff_t* pvp_2pc_prot;
     buff_t* tier15_2pc_tank;
     buff_t* tier16_reckless_defense;
+    buff_t* tier16_4pc_death_sentence;
     buff_t* tier17_2pc_arms;
     buff_t* tier17_4pc_fury;
     buff_t* tier17_4pc_fury_driver;
@@ -1383,6 +1384,12 @@ struct bloodthirst_t: public warrior_attack_t
     return c;
   }
 
+  void execute()
+  {
+    warrior_attack_t::execute();
+    p() -> buff.tier16_4pc_death_sentence -> trigger();
+  }
+
   void impact( action_state_t* s )
   {
     warrior_attack_t::impact( s );
@@ -1658,7 +1665,7 @@ struct execute_t: public warrior_attack_t
     if ( p() -> mastery.weapons_master -> ok() )
     {
       if ( !p() -> buff.sudden_death -> check() )
-        am *= 4.0 * std::min( 40.0, p() -> resources.current[RESOURCE_RAGE] ) / 40;
+        am *= 4.0 * std::min( 40.0, p() -> resources.current[ RESOURCE_RAGE ] ) / 40;
     }
     else if ( p() -> has_shield_equipped() )
       am *= 1.0 + p() -> spec.protection -> effectN( 2 ).percent();
@@ -1673,8 +1680,11 @@ struct execute_t: public warrior_attack_t
     if ( p() -> mastery.weapons_master -> ok() )
       c = std::min( 40.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
 
+    if ( p() -> buff.tier16_4pc_death_sentence -> up() && target -> health_percentage() < 20 )
+      c *= 1.0 + p() -> buff.tier16_4pc_death_sentence -> data().effectN( 2 ).percent();
+
     if ( p() -> buff.sudden_death -> up() )
-      c = 0;
+      c *= 1.0 + p() -> buff.sudden_death -> data().effectN( 2 ).percent();
 
     return c;
   }
@@ -1688,6 +1698,7 @@ struct execute_t: public warrior_attack_t
          oh_attack -> execute();
 
     p() -> buff.sudden_death -> expire();
+    p() -> buff.tier16_4pc_death_sentence -> expire();
   }
 
   bool ready()
@@ -1695,7 +1706,7 @@ struct execute_t: public warrior_attack_t
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
 
-    if ( p() -> buff.sudden_death -> check() )
+    if ( p() -> buff.sudden_death -> check() || p() -> buff.tier16_4pc_death_sentence -> check() )
       return warrior_attack_t::ready();
 
     if ( target -> health_percentage() > 20 )
@@ -2002,6 +2013,12 @@ struct mortal_strike_t: public warrior_attack_t
       if ( sim -> overrides.mortal_wounds )
         s -> target -> debuffs.mortal_wounds -> trigger();
     }
+  }
+
+  void execute()
+  {
+    warrior_attack_t::execute();
+    p() -> buff.tier16_4pc_death_sentence -> trigger();
   }
 
   double composite_crit() const
@@ -4573,6 +4590,9 @@ void warrior_t::create_buffs()
   buff.tier15_2pc_tank = buff_creator_t( this, "tier15_2pc_tank", sets.set( SET_TANK, T15, B2 ) -> effectN( 1 ).trigger() );
 
   buff.tier16_reckless_defense = buff_creator_t( this, "tier16_reckless_defense", find_spell( 144500 ) );
+
+  buff.tier16_4pc_death_sentence = buff_creator_t( this, "death_sentence", find_spell( 144442 ) )
+    .chance( sets.set( SET_MELEE, T16, B4 ) -> effectN( 1 ).percent() );
 
   buff.tier17_2pc_arms = buff_creator_t( this, "tier17_2pc_arms", sets.set( WARRIOR_ARMS, T17, B2 ) -> effectN( 1 ).trigger() )
     .chance( sets.set( WARRIOR_ARMS, T17, B2 ) -> proc_chance() );
