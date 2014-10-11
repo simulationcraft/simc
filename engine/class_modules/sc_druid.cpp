@@ -4216,15 +4216,13 @@ struct force_of_nature_spell_t : public druid_spell_t
 
   void execute()
   {
-    druid_spell_t::execute();
-
-    if ( p() -> pet_force_of_nature[ 0 ] )
+    if ( p() -> pet_force_of_nature[0] )
     {
       for ( int i = 0; i < 3; i++ )
       {
-        if ( p() -> pet_force_of_nature[ i ] -> is_sleeping() )
+        if ( p() -> pet_force_of_nature[i] -> is_sleeping() )
         {
-          p() -> pet_force_of_nature[ i ] -> summon( p() -> talent.force_of_nature -> duration() );
+          p() -> pet_force_of_nature[i] -> summon( p() -> talent.force_of_nature -> duration() );
           return;
         }
       }
@@ -4232,6 +4230,7 @@ struct force_of_nature_spell_t : public druid_spell_t
       p() -> sim -> errorf( "Player %s ran out of treants.\n", p() -> name() );
       assert( false ); // Will only get here if there are no available treants
     }
+    druid_spell_t::execute();
   }
 };
 
