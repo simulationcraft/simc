@@ -1854,7 +1854,11 @@ struct heroic_leap_t: public warrior_attack_t
     base_teleport_distance += p -> glyphs.death_from_above -> effectN( 2 ).base_value();
     melee_range = -1;
     attack_power_mod.direct = p -> find_spell( 52174 ) -> effectN( 1 ).ap_coeff();
-    cooldown = p -> cooldown.heroic_leap;
+
+    cooldown -> duration = data().cooldown();
+    cooldown -> duration += p -> glyphs.death_from_above -> effectN( 1 ).time_value();
+    cooldown -> duration *= p -> buffs.cooldown_reduction -> default_value;
+    use_off_gcd = true;
   }
 
   timespan_t travel_time() const
@@ -1879,15 +1883,6 @@ struct heroic_leap_t: public warrior_attack_t
       s -> result_amount = 0;
     warrior_attack_t::impact( s );
     p() -> buff.heroic_leap_glyph -> trigger();
-  }
-
-  void update_ready( timespan_t cd_duration )
-  {
-    cd_duration = cooldown -> duration;
-
-    cd_duration += p() -> glyphs.death_from_above -> effectN( 1 ).time_value();
-
-    warrior_attack_t::update_ready( cd_duration );
   }
 
   bool ready()

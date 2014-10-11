@@ -2180,7 +2180,8 @@ void player_t::create_buffs()
 
       debuffs.dazed            = buff_creator_t( this, "dazed", find_spell( 15571 ) );
 
-      buffs.cooldown_reduction = buff_creator_t( this, "readiness" ).chance( 0 );
+      buffs.cooldown_reduction = buff_creator_t( this, "readiness" ).chance( 0 )
+        .default_value( 1 );
       buffs.amplification = buff_creator_t( this, "amplification", find_spell( 146051 ) )
                             .add_invalidate( CACHE_MASTERY )
                             .add_invalidate( CACHE_HASTE )
