@@ -4555,7 +4555,8 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
   dots.stay_of_execution  = target -> get_dot( "stay_of_execution",  paladin );
 
-  buffs.debuffs_censure    = buff_creator_t( *this, "censure", paladin -> find_spell( 31803 ) );
+  buffs.debuffs_censure    = buff_creator_t( *this, "censure", paladin -> find_spell( 31803 ) )
+                             .duration( timespan_t::from_seconds( 20 ) ); // artificially extend duration to fix last tick bug
   buffs.eternal_flame      = new buffs::eternal_flame_t( this );
   buffs.sacred_shield      = buff_creator_t( *this, "sacred_shield", paladin -> find_talent_spell( "Sacred Shield" ) )
                              .cd( timespan_t::zero() ) // let ability handle cooldown
