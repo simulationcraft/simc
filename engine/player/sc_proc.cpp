@@ -12,7 +12,7 @@ struct proc_parse_opt_t
   const char* opt;
   unsigned    flags;
 };
-  
+
 const proc_parse_opt_t __proc_opts[] =
 {
   { "aoespell",    PF_AOE_SPELL                                                },
@@ -35,17 +35,20 @@ const proc_parse_opt_t __proc_opts[] =
 
 const proc_parse_opt_t __proc2_opts[] =
 {
-  { "hit",        PF2_ALL_HIT         },
-  { "crit",       PF2_CRIT            },
-  { "glance",     PF2_GLANCE          },
-  { "dodge",      PF2_DODGE           },
-  { "parry",      PF2_PARRY           },
-  { "miss",       PF2_MISS            },
-  { "cast",       PF2_CAST            },
-  { "impact",     PF2_LANDED          },
-  { "tickheal",   PF2_PERIODIC_HEAL   },
-  { "tickdamage", PF2_PERIODIC_DAMAGE },
-  { 0,            0                   },
+  { "hit",         PF2_ALL_HIT          },
+  { "crit",        PF2_CRIT             },
+  { "glance",      PF2_GLANCE           },
+  { "dodge",       PF2_DODGE            },
+  { "parry",       PF2_PARRY            },
+  { "miss",        PF2_MISS             },
+  { "cast",        PF2_CAST             },
+  { "impact",      PF2_LANDED           },
+  { "tickheal",    PF2_PERIODIC_HEAL    },
+  { "tickdamage",  PF2_PERIODIC_DAMAGE  },
+  { "ms_hit",      PF2_MULTISTRIKE      },
+  { "ms_crit",     PF2_MULTISTRIKE_CRIT },
+  { "multistrike", PF2_ALL_MULTISTRIKE  },
+  { 0,             0                    },
 };
 
 bool has_proc( const std::vector<std::string>& opts, const std::string& proc )
