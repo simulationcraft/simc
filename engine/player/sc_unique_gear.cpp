@@ -1481,10 +1481,10 @@ void item::black_blood_of_yshaarj( special_effect_t& effect,
   new dbc_proc_callback_t( item.player, effect );
 }
 
-struct flurry_of_xuen_melee_t : public attack_t
+struct flurry_of_xuen_melee_t : public melee_attack_t
 {
   flurry_of_xuen_melee_t( player_t* player ) : 
-    attack_t( "flurry_of_xuen", player, player -> find_spell( 147891 ) )
+    melee_attack_t( "flurry_of_xuen", player, player -> find_spell( 147891 ) )
   {
     background = true;
     proc = false;
@@ -1530,11 +1530,8 @@ struct flurry_of_xuen_driver_t : public attack_t
 
   // Don't use tick action here, so we can get class specific snapshotting, if 
   // there is a custom proc action crated. Hack and workaround and ugly.
-  void tick( dot_t* dot )
+  void tick( dot_t* )
   {
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
-
     if ( ac )
       ac -> schedule_execute();
 

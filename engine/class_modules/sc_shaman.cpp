@@ -1797,6 +1797,7 @@ struct windfury_weapon_melee_attack_t : public shaman_attack_t
     weapon           = w;
     school           = SCHOOL_PHYSICAL;
     background       = true;
+    callbacks        = false;
 
     // Windfury can not proc itself
     may_proc_windfury = false;
@@ -1810,19 +1811,10 @@ struct unleash_wind_t : public shaman_attack_t
   {
     background = true;
     may_proc_maelstrom = may_dodge = may_parry = false;
-    normalize_weapon_speed = true;
+    callbacks = false;
 
-    // Unleash wind implicitly uses main hand weapon of the player to perform
-    // the damaging attack
-    weapon = &( player -> main_hand_weapon );
-    weapon_multiplier = 0;
     // Don't cooldown here, unleash elements will handle it
     cooldown -> duration = timespan_t::zero();
-  }
-
-  void execute()
-  {
-    shaman_attack_t::execute();
   }
 };
 
@@ -2486,6 +2478,7 @@ struct unleash_elements_t : public shaman_attack_t
 
     may_crit     = false;
     may_miss     = false;
+    callbacks    = false;
     may_proc_eoe = true;
   }
 
@@ -3252,6 +3245,7 @@ struct unleash_flame_t : public shaman_spell_t
     may_crit     = false;
     may_miss     = false;
     may_proc_eoe = true;
+    callbacks = false;
   }
 
   virtual void execute()
