@@ -9,7 +9,7 @@ race=orc
 spec=beast_mastery
 position=ranged_back
 role=attack
-talents=000231
+talents=000233
 chest=ancient_archers_chestguard,id=105585,gems=10agi_10agi_5agi_10mastery_11agi,enchant=5all,upgrade=4
 waist=arrowflight_girdle,id=105584,gems=10agi_5agi_10mastery_10agi_8agi,upgrade=4
 legs=legguards_of_the_unblinking_vigil,id=99403,gems=5agi_10mastery_5agi_10mastery_8agi,enchant=28agi_23crit,upgrade=4
@@ -34,7 +34,7 @@ race=orc
 spec=marksmanship
 position=ranged_back
 role=attack
-talents=000330
+talents=000133
 head=headguard_of_the_unblinking_vigil,id=99402,upgrade=4,gems=capacitive_primal_10agi_11agi
 neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=4
 shoulder=spaulders_of_the_unblinking_vigil,id=99404,upgrade=4,gems=10agi_10agi_8agi,enchant=15agi_5crit
@@ -59,7 +59,7 @@ race=orc
 spec=survival
 position=ranged_back
 role=attack
-talents=000231
+talents=000333
 head=headguard_of_the_unblinking_vigil,id=99402,upgrade=4,gems=capacitive_primal_10agi_11agi
 neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=4
 shoulder=spaulders_of_the_unblinking_vigil,id=99404,upgrade=4,gems=10agi_10agi_8agi,enchant=15agi_5crit
