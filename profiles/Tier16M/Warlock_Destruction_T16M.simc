@@ -3,7 +3,7 @@ level=90
 race=troll
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!....20.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!....00.
 spec=destruction
 
 # This default action priority list is automatically created based on your character.
@@ -32,6 +32,7 @@ actions=potion,name=jade_serpent,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/berserking
 actions+=/blood_fury
 actions+=/arcane_torrent
+actions+=/mannoroths_fury
 actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(buff.demonbolt.remains>=buff.dark_soul.duration|!buff.demonbolt.remains)&(charges=2|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react|target.health.pct<=10))
 actions+=/service_pet,if=talent.grimoire_of_service.enabled&!talent.demonbolt.enabled
 actions+=/summon_doomguard,if=!talent.demonic_servitude.enabled&active_enemies<5
@@ -45,39 +46,25 @@ actions+=/chaos_bolt,if=set_bonus.tier17_2pc=1&buff.backdraft.stack<3&(burning_e
 actions+=/chaos_bolt,if=talent.charred_remains.enabled&buff.backdraft.stack<3&(burning_ember>=2.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)
 actions+=/chaos_bolt,if=buff.backdraft.stack<3&(burning_ember>=3.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)
 actions+=/immolate,if=remains<=(duration*0.3)
-actions+=/rain_of_fire,if=(!ticking|(talent.mannoroths_fury.enabled&buff.mannoroths_fury.up&buff.mannoroths_fury.remains<1))&(!buff.backdraft.down|(talent.mannoroths_fury.enabled&buff.mannoroths_fury.up))
+actions+=/rain_of_fire,if=(!ticking|(talent.mannoroths_fury.enabled&buff.mannoroths_fury.up&buff.mannoroths_fury.remains<1))
 actions+=/conflagrate
 actions+=/incinerate
 
-head=hood_of_the_horned_nightmare,id=99425,upgrade=4,gems=sinister_primal_10crit_10mastery_11int
+head=hood_of_swirling_senses,id=105420,upgrade=4,gems=sinister_primal_10crit_10mastery_11int
 neck=untainted_guardians_chain,id=105465,upgrade=4
-shoulders=rimerift_shoulders,id=105464,upgrade=4,gems=10crit_10mastery_10crit_10mastery_8int,enchant=15int_5crit
-back=xingho_breath_of_yulon,id=102246,upgrade=4,gems=10crit_10mastery_4int,enchant=12crit
-chest=robes_of_the_horned_nightmare,id=99416,upgrade=4,gems=10crit_10mastery_10crit_10mastery_10crit_10mastery_11int,enchant=5all
-wrists=avools_ancestral_bracers,id=105591,upgrade=4,enchant=12int
-hands=gloves_of_the_horned_nightmare,id=99424,upgrade=4,gems=10crit_10mastery_10crit_10mastery_8int,enchant=11mastery
-waist=belt_of_ominous_trembles,id=105515,upgrade=4,gems=10crit_10mastery_10crit_10mastery_20mastery_8int
-legs=leggings_of_the_horned_nightmare,id=99426,upgrade=4,gems=20mastery_20mastery_8int,enchant=19int_11crit
-feet=boneinlaid_sandals,id=105493,upgrade=4,gems=20mastery_4crit,enchant=9mastery
+shoulders=mantle_of_the_horned_nightmare,id=99417,upgrade=4,gems=10haste_10crit_10haste_10crit_8int,enchant=15int_5crit
+back=xingho_breath_of_yulon,id=102246,upgrade=4,gems=10haste_10crit_4int,enchant=12crit
+chest=robes_of_the_horned_nightmare,id=99416,upgrade=4,gems=10haste_10crit_10haste_10crit_10haste_10crit_11int,enchant=5all
+wrists=bracers_of_broken_causation,id=105461,upgrade=4,enchant=12int
+hands=gloves_of_the_horned_nightmare,id=99424,upgrade=4,gems=10haste_10crit_10haste_10crit_8int,enchant=11mastery
+waist=belt_of_ominous_trembles,id=105515,upgrade=4,gems=10haste_10crit_10crit_10mastery_8int
+legs=leggings_of_the_horned_nightmare,id=99426,upgrade=4,gems=20crit_20crit_8int,enchant=19int_11crit
+feet=toxic_tornado_treads,id=105537,upgrade=4,gems=10crit_10mastery_4crit,enchant=9mastery
 finger1=iyyokuks_hereditary_seal,id=105628,upgrade=4
-finger2=signet_of_the_dinomancers,id=105606,upgrade=4,gems=10crit_10mastery_4haste
+finger2=signet_of_the_dinomancers,id=105606,upgrade=4,gems=10haste_10crit_4haste
 trinket1=purified_bindings_of_immerseus,id=105422,upgrade=4
 trinket2=kardris_toxic_totem,id=105540,upgrade=4
 main_hand=immaculately_preserved_wand,id=105594,upgrade=4,gems=10crit_10mastery_4int,enchant=jade_spirit
-off_hand=revelations_of_yshaarj,id=105650,upgrade=4,gems=10crit_10mastery_4int,enchant=11int
+off_hand=purehearted_cricket_cage,id=105444,upgrade=4,gems=10crit_10mastery_4int,enchant=11int
 
-# Gear Summary
-# gear_strength=5
-# gear_agility=5
-# gear_stamina=1657
-# gear_intellect=1159
-# gear_spell_power=640
-# gear_crit_rating=581
-# gear_haste_rating=347
-# gear_mastery_rating=900
-# gear_armor=384
-# gear_multistrike_rating=107
-# meta_gem=sinister_primal
-# set_bonus=tier16_2pc_caster=1
-# set_bonus=tier16_4pc_caster=1
 default_pet=felhunter
