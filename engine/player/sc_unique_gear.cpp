@@ -1532,9 +1532,6 @@ struct flurry_of_xuen_driver_t : public attack_t
   // there is a custom proc action crated. Hack and workaround and ugly.
   void tick( dot_t* dot )
   {
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
-
     if ( ac )
       ac -> schedule_execute();
 
