@@ -2165,45 +2165,29 @@ struct black_arrow_t: public hunter_ranged_attack_t
 
 // Explosive Trap ==============================================================
 
-struct explosive_trap_tick_t: public hunter_ranged_attack_t
-{
-  explosive_trap_tick_t( hunter_t* player, const std::string& name ):
-    hunter_ranged_attack_t( name, player, player -> find_spell( 13812 ) )
-  {
-    aoe = -1;
-    background = true;
-    direct_tick = true;
-    base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
-  }
-};
-
 struct explosive_trap_t: public hunter_ranged_attack_t
 {
-  attack_t* explosive_trap_tick;
   explosive_trap_t( hunter_t* player, const std::string& options_str ):
-    hunter_ranged_attack_t( "explosive_trap", player, player -> find_class_spell( "Explosive Trap" ) ),
-    explosive_trap_tick( new explosive_trap_tick_t( player, "explosive_trap_tick" ) )
+    hunter_ranged_attack_t( "explosive_trap", player, player -> find_class_spell( "Explosive Trap" ) )
   {
     parse_options( options_str );
+    aoe = -1;
 
     cooldown -> duration = data().cooldown();
     cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
     if ( p() -> perks.enhanced_traps -> ok() )
       cooldown -> duration *= ( 1.0 + p() -> perks.enhanced_traps -> effectN( 1 ).percent() );
-
-    tick_zero = true;
     hasted_ticks = false;
-    harmful = false;
     dot_duration  = p() -> find_spell( 13812 ) -> duration();
     base_tick_time = p() -> find_spell( 13812 ) -> effectN( 2 ).period();
-    add_child( explosive_trap_tick );
-  }
+    base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
+    attack_power_mod.direct = p() -> find_spell( 13812 ) -> effectN( 1 ).ap_coeff();
 
-  virtual void tick( dot_t* d )
-  {
-    hunter_ranged_attack_t::tick( d );
+    // BUG in game it uses the direct damage AP mltiplier for ticks as well.
+    attack_power_mod.tick = attack_power_mod.direct;
 
-    explosive_trap_tick -> execute();
+    // BUG simulate slow velocity of launch
+    travel_speed = 18.0;
   }
 };
 
@@ -3717,7 +3701,6 @@ void hunter_t::apl_mm()
 
   default_list -> add_action( this, "Rapid Fire");
   default_list -> add_talent( this, "Stampede", "if=buff.rapid_fire.up|buff.bloodlust.up|target.time_to_die<=20" );
-  default_list -> add_action( this, "Explosive Trap", "if=active_enemies>2" );
   default_list -> add_action( "run_action_list,name=careful_aim,if=buff.careful_aim.up" );
   {
     careful_aim -> add_talent( this, "Glaive Toss", "if=active_enemies>4" );
@@ -3728,6 +3711,7 @@ void hunter_t::apl_mm()
     careful_aim -> add_talent( this, "Focusing Shot", "if=50+cast_regen<focus.deficit" );
     careful_aim -> add_action( this, "Steady Shot" );
   }
+  default_list -> add_action( this, "Explosive Trap", "if=active_enemies>2" );
 
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Dire Beast", "if=cast_regen+action.aimed_shot.cast_regen<focus.deficit" );
