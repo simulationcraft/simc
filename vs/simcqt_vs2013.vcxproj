@@ -36,17 +36,17 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </ExcludedFromBuild>
       <SubType>Designer</SubType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\rcc.exe" -name simcqt ..\qt\%(Filename).qrc -o $(SolutionDir)qrc_simcqt.cpp</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='PGO|Win32'">"$(QTDIR)\bin\rcc.exe" -name simcqt ..\qt\%(Filename).qrc -o $(SolutionDir)qrc_simcqt.cpp</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\rcc.exe" -name simcqt ..\qt\%(Filename).qrc -o "$(SolutionDir)qrc_simcqt.cpp"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='PGO|Win32'">"$(QTDIR)\bin\rcc.exe" -name simcqt ..\qt\%(Filename).qrc -o "$(SolutionDir)qrc_simcqt.cpp"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Creating resource %(Identity) to $(SolutionDir)qrc_simcqt.cpp</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='PGO|Win32'">Creating resource %(Identity) to $(SolutionDir)qrc_simcqt.cpp</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)qrc_simcqt.cpp</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='PGO|Win32'">$(SolutionDir)qrc_simcqt.cpp</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\rcc.exe</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='PGO|Win32'">$(QTDIR)\bin\rcc.exe</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\rcc.exe" -name simcqt ..\qt\%(Filename).qrc -o $(SolutionDir)qrc_simcqt.cpp</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\rcc.exe" -name simcqt ..\qt\%(Filename).qrc -o $(SolutionDir)qrc_simcqt.cpp</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='PGO|x64'">"$(QTDIR)\bin\rcc.exe" -name simcqt ..\qt\%(Filename).qrc -o $(SolutionDir)qrc_simcqt.cpp</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\rcc.exe" -name simcqt ..\qt\%(Filename).qrc -o "$(SolutionDir)qrc_simcqt.cpp"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\rcc.exe" -name simcqt ..\qt\%(Filename).qrc -o "$(SolutionDir)qrc_simcqt.cpp"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='PGO|x64'">"$(QTDIR)\bin\rcc.exe" -name simcqt ..\qt\%(Filename).qrc -o "$(SolutionDir)qrc_simcqt.cpp"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Creating resource %(Identity) to $(SolutionDir)qrc_simcqt.cpp</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Creating resource %(Identity) to $(SolutionDir)qrc_simcqt.cpp</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='PGO|x64'">Creating resource %(Identity) to $(SolutionDir)qrc_simcqt.cpp</Message>
