@@ -858,6 +858,7 @@ struct prismatic_crystal_t : public pet_t
 
     // Reset target to an enemy to avoid infinite looping
     new_state -> target = aoe_spell -> target;
+    new_state -> result_type = DMG_DIRECT;
 
     // Set PC Aoe damage through base damage, so we can get correct split
     // shenanigans going on in calculate_direct_amount()
