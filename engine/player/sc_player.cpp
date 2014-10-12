@@ -4271,13 +4271,13 @@ void player_t::stat_gain( stat_e    stat,
   // bail out if this is a stat that doesn't work for this class
   if ( convert_hybrid_stat( stat ) == STAT_NONE ) return;
 
-  if ( sim -> log ) sim -> out_log.printf( "%s gains %.2f %s%s", name(), amount, util::stat_type_string( stat ), temporary_stat ? " (temporary)" : "" );
-
   int temp_value = temporary_stat ? 1 : 0;
 
   cache_e cache_type = cache_from_stat( stat );
   if ( regen_type == REGEN_DYNAMIC && regen_caches[ cache_type ] )
     do_dynamic_regen();
+
+  if ( sim -> log ) sim -> out_log.printf( "%s gains %.2f %s%s", name(), amount, util::stat_type_string( stat ), temporary_stat ? " (temporary)" : "" );
 
   switch ( stat )
   {
