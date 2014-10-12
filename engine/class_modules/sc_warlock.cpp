@@ -535,14 +535,6 @@ public:
     return static_cast<warlock_pet_t*>( ab::player );
   }
 
-  virtual bool ready()
-  {
-    if ( ab::background == false && ab::current_resource() == RESOURCE_ENERGY && ab::player -> resources.current[RESOURCE_ENERGY] < 130 )
-      return false;
-
-    return ab::ready();
-  }
-
   virtual void execute()
   {
     ab::execute();
@@ -945,13 +937,8 @@ struct immolation_t: public warlock_pet_spell_t
 struct doom_bolt_t: public warlock_pet_spell_t
 {
   doom_bolt_t( warlock_pet_t* p ):
-    warlock_pet_spell_t( p, "Doom Bolt" )
+    warlock_pet_spell_t( "Doom Bolt", p, p -> find_spell( 85692 ) )
   {
-  }
-
-  virtual timespan_t execute_time() const
-  {
-    return timespan_t::from_seconds( 3.0 );
   }
 
   virtual double composite_target_multiplier( player_t* target ) const
@@ -1329,6 +1316,7 @@ struct doomguard_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, "doomguard", PET_DOOMGUARD, true )
   {
     owner_coeff.ap_from_sp = 0.065934;
+    action_list_str = "doom_bolt";
   }
 
   virtual void init_base_stats()
@@ -1336,7 +1324,6 @@ struct doomguard_pet_t: public warlock_pet_t
     warlock_pet_t::init_base_stats();
 
     resources.base[RESOURCE_ENERGY] = 100;
-    action_list_str = "doom_bolt";
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
