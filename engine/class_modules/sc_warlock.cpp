@@ -945,14 +945,8 @@ struct immolation_t: public warlock_pet_spell_t
 struct doom_bolt_t: public warlock_pet_spell_t
 {
   doom_bolt_t( warlock_pet_t* p ):
-    warlock_pet_spell_t( p, "Doom Bolt" )
+    warlock_pet_spell_t("Doom Bolt", p, p -> find_spell( 85692 ) )
   {
-  }
-
-  virtual timespan_t execute_time() const
-  {
-    // FIXME: Not actually how it works, but this achieves a consistent 17 casts per summon, which seems to match reality
-    return timespan_t::from_seconds( 3.4 );
   }
 
   virtual double composite_target_multiplier( player_t* target ) const
@@ -963,7 +957,6 @@ struct doom_bolt_t: public warlock_pet_spell_t
     {
       m *= 1.0 + data().effectN( 2 ).percent();
     }
-
     return m;
   }
 };
