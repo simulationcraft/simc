@@ -3,7 +3,7 @@ level=90
 race=troll
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!....00.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!....20.
 spec=destruction
 
 # This default action priority list is automatically created based on your character.
@@ -67,4 +67,18 @@ trinket2=kardris_toxic_totem,id=105540,upgrade=4
 main_hand=immaculately_preserved_wand,id=105594,upgrade=4,gems=10crit_10mastery_4int,enchant=jade_spirit
 off_hand=purehearted_cricket_cage,id=105444,upgrade=4,gems=10crit_10mastery_4int,enchant=11int
 
+# Gear Summary
+# gear_strength=5
+# gear_agility=5
+# gear_stamina=1660
+# gear_intellect=1160
+# gear_spell_power=640
+# gear_crit_rating=778
+# gear_haste_rating=324
+# gear_mastery_rating=704
+# gear_armor=384
+# gear_multistrike_rating=107
+# meta_gem=sinister_primal
+# set_bonus=tier16_2pc_caster=1
+# set_bonus=tier16_4pc_caster=1
 default_pet=felhunter
