@@ -49,7 +49,14 @@ const proc_parse_opt_t __proc2_opts[] =
 };
 
 bool has_proc( const std::vector<std::string>& opts, const std::string& proc )
-{ return std::find( opts.begin(), opts.end(), proc ) != opts.end(); }
+{
+  for ( size_t i = 0, end = opts.size(); i < end; i++ )
+  {
+    if ( util::str_compare_ci( opts[ i ], proc ) )
+      return true;
+  }
+  return false;
+}
 
 void parse_proc_flags( const std::string&      flags,
                               const proc_parse_opt_t* opts,
@@ -132,13 +139,10 @@ void special_effect_t::reset()
   name_str.clear();
   trigger_str.clear();
   encoding_str.clear();
-  
-  trigger_type = PROC_NONE;
-  trigger_mask = 0;
 
   proc_flags_ = 0;
   proc_flags2_ = 0;
-  
+
   stat = STAT_NONE;
   stat_amount = 0;
 
@@ -146,7 +150,7 @@ void special_effect_t::reset()
   discharge_amount = 0;
   discharge_scaling = 0;
   aoe = 0;
-  
+
   // Must match buff creator defaults for now
   max_stacks = -1;
   proc_chance_ = -1;
@@ -164,7 +168,7 @@ void special_effect_t::reset()
   cooldown_ = timespan_t::min();
 
   tick = timespan_t::zero();
-  
+
   cost_reduction = false;
   refresh = -1;
   chance_to_discharge = false;
@@ -966,282 +970,6 @@ bool proc::parse_special_effect_encoding( special_effect_t& effect,
     {
       effect.trigger_spell_id = static_cast<int>( t.value );
     }
-    else if ( t.full == "ondamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = SCHOOL_ALL_MASK;
-    }
-    else if ( t.full == "onheal" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_HEAL;
-      effect.trigger_mask = SCHOOL_ALL_MASK;
-    }
-    else if ( t.full == "ontickdamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_TICK_DAMAGE;
-      effect.trigger_mask = SCHOOL_ALL_MASK;
-    }
-    else if ( t.full == "onspelltickdamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_SPELL_TICK_DAMAGE;
-      effect.trigger_mask = SCHOOL_ALL_MASK;
-    }
-    else if ( t.full == "ondirectdamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DIRECT_DAMAGE;
-      effect.trigger_mask = SCHOOL_ALL_MASK;
-    }
-    else if ( t.full == "ondirectcrit" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DIRECT_CRIT;
-      effect.trigger_mask = SCHOOL_ALL_MASK;
-    }
-    else if ( t.full == "onspelldirectdamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_SPELL_DIRECT_DAMAGE;
-      effect.trigger_mask = SCHOOL_ALL_MASK;
-    }
-    else if ( t.full == "ondirectharmfulspellhit" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DIRECT_HARMFUL_SPELL;
-      effect.trigger_mask = RESULT_HIT_MASK;
-    }
-    else if ( t.full == "onspelldamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = SCHOOL_SPELL_MASK;
-    }
-    else if ( t.full == "onattackdamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = SCHOOL_ATTACK_MASK;
-    }
-    else if ( t.full == "onattacktickdamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_TICK_DAMAGE;
-      effect.trigger_mask = SCHOOL_ATTACK_MASK;
-    }
-    else if ( t.full == "onattackdirectdamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DIRECT_DAMAGE;
-      effect.trigger_mask = SCHOOL_ATTACK_MASK;
-    }
-    else if ( t.full == "onarcanedamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_ARCANE );
-    }
-    else if ( t.full == "onbleeddamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_TICK_DAMAGE;
-      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_PHYSICAL );
-    }
-    else if ( t.full == "onchaosdamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_CHAOS );
-    }
-    else if ( t.full == "onfiredamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_FIRE );
-    }
-    else if ( t.full == "onfrostdamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_FROST );
-    }
-    else if ( t.full == "onfrostfiredamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_FROSTFIRE );
-    }
-    else if ( t.full == "onholydamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_HOLY );
-    }
-    else if ( t.full == "onnaturedamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_NATURE );
-    }
-    else if ( t.full == "onphysicaldamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_PHYSICAL );
-    }
-    else if ( t.full == "onshadowdamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_SHADOW );
-    }
-    else if ( t.full == "ondraindamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_DRAIN );
-    }
-    else if ( t.full == "ontick" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_TICK;
-      effect.trigger_mask = RESULT_ALL_MASK;
-    }
-    else if ( t.full == "ontickhit" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_TICK;
-      effect.trigger_mask = RESULT_HIT_MASK;
-    }
-    else if ( t.full == "ontickcrit" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_TICK;
-      effect.trigger_mask = RESULT_CRIT_MASK;
-    }
-    else if ( t.full == "onspellcast" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_SPELL;
-      effect.trigger_mask = RESULT_NONE_MASK;
-    }
-    else if ( t.full == "onspellhit" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_SPELL;
-      effect.trigger_mask = RESULT_HIT_MASK;
-    }
-    else if ( t.full == "onspellcrit" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_SPELL_AND_TICK;
-      effect.trigger_mask = RESULT_CRIT_MASK;
-    }
-    else if ( t.full == "onspelltickcrit" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_TICK;
-      effect.trigger_mask = RESULT_CRIT_MASK;
-    }
-    else if ( t.full == "onspelldirectcrit" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_SPELL;
-      effect.trigger_mask = RESULT_CRIT_MASK;
-    }
-    else if ( t.full == "onspellmiss" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_SPELL;
-      effect.trigger_mask = RESULT_MISS_MASK;
-    }
-    else if ( t.full == "onharmfulspellcast" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_HARMFUL_SPELL;
-      effect.trigger_mask = RESULT_NONE_MASK;
-    }
-    else if ( t.full == "onharmfulspellhit" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_HARMFUL_SPELL_LANDING;
-      effect.trigger_mask = RESULT_HIT_MASK;
-    }
-    else if ( t.full == "onharmfulspellcrit" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_HARMFUL_SPELL;
-      effect.trigger_mask = RESULT_CRIT_MASK;
-    }
-    else if ( t.full == "onharmfulspellmiss" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_HARMFUL_SPELL_LANDING;
-      effect.trigger_mask = RESULT_MISS_MASK;
-    }
-    else if ( t.full == "onhealcast" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_HEAL_SPELL;
-      effect.trigger_mask = RESULT_NONE_MASK;
-    }
-    else if ( t.full == "onhealhit" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_HEAL_SPELL;
-      effect.trigger_mask = RESULT_HIT_MASK;
-    }
-    else if ( t.full == "onhealdirectcrit" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_HEAL_SPELL;
-      effect.trigger_mask = RESULT_CRIT_MASK;
-    }
-    else if ( t.full == "onhealmiss" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_HEAL_SPELL;
-      effect.trigger_mask = RESULT_MISS_MASK;
-    }
-    else if ( t.full == "onattack" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_ATTACK;
-      effect.trigger_mask = RESULT_ALL_MASK;
-    }
-    else if ( t.full == "onattackhit" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_ATTACK;
-      effect.trigger_mask = RESULT_HIT_MASK;
-    }
-    else if ( t.full == "onattackcrit" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_ATTACK;
-      effect.trigger_mask = RESULT_CRIT_MASK;
-    }
-    else if ( t.full == "onattackmiss" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_ATTACK;
-      effect.trigger_mask = RESULT_MISS_MASK;
-    }
-    else if ( t.full == "onspelldamageheal" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE_HEAL;
-      effect.trigger_mask = SCHOOL_SPELL_MASK;
-    }
-    else if ( t.full == "ondamagehealspellcast" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_DAMAGE_HEAL_SPELL;
-      effect.trigger_mask = RESULT_NONE_MASK;
-    }
     else if ( util::str_in_str_ci( t.full, "procby" ) )
       parse_proc_flags( t.full, __proc_opts, effect.proc_flags_ );
     else if ( util::str_in_str_ci( t.full, "procon" ) )
@@ -1267,7 +995,7 @@ bool proc::parse_special_effect_encoding( special_effect_t& effect,
 bool proc::usable_proc( const special_effect_t& effect )
 {
   // Valid proc flags (either old- or new style), we can proc this effect.
-  if ( effect.trigger_type == PROC_NONE && effect.trigger_mask == 0 && effect.proc_flags() == 0 )
+  if ( effect.proc_flags() == 0 )
   {
     if ( effect.item && effect.item -> sim -> debug )
       effect.item -> sim -> out_debug.printf( "%s unusable proc %s: No proc flags / trigger type",

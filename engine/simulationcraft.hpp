@@ -412,31 +412,6 @@ enum full_result_e
 #define RESULT_MULTISTRIKE_MASK ( (1<<RESULT_MULTISTRIKE) | (1<<RESULT_MULTISTRIKE_CRIT) )
 #define RESULT_ALL_MASK  -1
 
-enum proc_e
-{
-  PROC_NONE = 0,
-  PROC_DAMAGE,
-  PROC_HEAL,
-  PROC_TICK_DAMAGE,
-  PROC_SPELL_TICK_DAMAGE,
-  PROC_DIRECT_HARMFUL_SPELL,
-  PROC_SPELL_DIRECT_DAMAGE,
-  PROC_DIRECT_DAMAGE,
-  PROC_DIRECT_CRIT,
-  PROC_DIRECT_HEAL,
-  PROC_TICK_HEAL,
-  PROC_ATTACK,
-  PROC_SPELL,
-  PROC_TICK,
-  PROC_SPELL_AND_TICK,
-  PROC_HEAL_SPELL,
-  PROC_HARMFUL_SPELL,
-  PROC_HARMFUL_SPELL_LANDING,
-  PROC_DAMAGE_HEAL,
-  PROC_DAMAGE_HEAL_SPELL,
-  PROC_MAX
-};
-
 enum special_effect_e
 {
   SPECIAL_EFFECT_NONE = -1,
@@ -3324,8 +3299,6 @@ struct special_effect_t
   special_effect_e type;
   special_effect_source_e source;
   std::string name_str, trigger_str, encoding_str;
-  proc_e trigger_type;
-  int64_t trigger_mask;
   unsigned proc_flags_; /* Proc-by */
   unsigned proc_flags2_; /* Proc-on (hit/damage/...) */
   stat_e stat;
