@@ -63,6 +63,7 @@ public:
   std::vector<icicle_tuple_t> icicles;
   action_t* icicle;
   core_event_t* icicle_event;
+
   // Active
   actions::ignite_t* active_ignite;
   action_t* unstable_magic_explosion;
@@ -133,7 +134,6 @@ public:
     cooldown_t* combustion,
               * cone_of_cold,
               * dragons_breath,
-              * enhanced_frostbolt,
               * frozen_orb,
               * inferno_blast,
               * presence_of_mind;
@@ -168,34 +168,33 @@ public:
   // Passives
   struct passives_t
   {
-    const spell_data_t* nether_attunement;
-    const spell_data_t* shatter;
     const spell_data_t* frost_armor;
     const spell_data_t* mage_armor;
     const spell_data_t* molten_armor;
+    const spell_data_t* nether_attunement;
+    const spell_data_t* shatter;
   } passives;
 
   // Perks
   struct perks_t
   {
-      //Arcane
-      const spell_data_t* enhanced_arcane_blast;
-      const spell_data_t* improved_arcane_power;
-      const spell_data_t* improved_evocation;
-      const spell_data_t* improved_blink;
+    //Arcane
+    const spell_data_t* enhanced_arcane_blast;
+    const spell_data_t* improved_arcane_power;
+    const spell_data_t* improved_evocation;
+    const spell_data_t* improved_blink;
 
-      //Fire
-      const spell_data_t* enhanced_pyrotechnics;
-      const spell_data_t* improved_flamestrike;
-      const spell_data_t* improved_inferno_blast;
-      const spell_data_t* improved_scorch;
+    //Fire
+    const spell_data_t* enhanced_pyrotechnics;
+    const spell_data_t* improved_flamestrike;
+    const spell_data_t* improved_inferno_blast;
+    const spell_data_t* improved_scorch;
 
-      //Frost
-      const spell_data_t* enhanced_frostbolt;
-      const spell_data_t* improved_blizzard;
-      const spell_data_t* improved_water_elemental;
-      const spell_data_t* improved_icy_veins;
-
+    //Frost
+    const spell_data_t* enhanced_frostbolt;
+    const spell_data_t* improved_blizzard;
+    const spell_data_t* improved_water_elemental;
+    const spell_data_t* improved_icy_veins;
   } perks;
 
   // Pets
@@ -214,23 +213,6 @@ public:
     proc_t* hotstreak;
   } procs;
 
-  // Spell Data
-  struct spells_t
-  {
-    const spell_data_t* arcane_missiles;
-    const spell_data_t* arcane_power;
-    const spell_data_t* icy_veins;
-
-    const spell_data_t* mana_adept;
-
-    const spell_data_t* stolen_time;
-
-    const spell_data_t* arcane_charge_arcane_blast;
-
-    const spell_data_t* icicles_driver;
-
-  } spells;
-
   // Specializations
   struct specializations_t
   {
@@ -241,10 +223,8 @@ public:
     //       It contains Spellsteal's mana cost reduction, Evocation's mana
     //       gain reduction, and a deprecated Scorch damage reduction.
     const spell_data_t* arcane_charge_passive;
-    const spell_data_t* mana_adept;
-    const spell_data_t* presence_of_mind;
-    const spell_data_t* slow;
     const spell_data_t* arcane_mind;
+    const spell_data_t* mana_adept;
 
     // Fire
     const spell_data_t* critical_mass;
@@ -252,12 +232,10 @@ public:
     const spell_data_t* incineration;
 
     // Frost
-    const spell_data_t* frostbolt;
     const spell_data_t* brain_freeze;
-    const spell_data_t* fingers_of_frost;
-    const spell_data_t* icicles;
     const spell_data_t* ice_shards;
-
+    const spell_data_t* icicles;
+    const spell_data_t* icicles_driver;
   } spec;
 
   // Talents
@@ -332,7 +310,6 @@ public:
     passives( passives_t() ),
     pets( pets_t() ),
     procs( procs_t() ),
-    spells( spells_t() ),
     spec( specializations_t() ),
     talents( talents_list_t() ),
     pyro_switch( pyro_switch_t() ),
@@ -345,7 +322,6 @@ public:
     cooldowns.combustion         = get_cooldown( "combustion"         );
     cooldowns.cone_of_cold       = get_cooldown( "cone_of_cold"       );
     cooldowns.dragons_breath     = get_cooldown( "dragons_breath"     );
-    cooldowns.enhanced_frostbolt = get_cooldown( "enhanced_frostbolt" );
     cooldowns.frozen_orb         = get_cooldown( "frozen_orb"         );
     cooldowns.inferno_blast      = get_cooldown( "inferno_blast"      );
     cooldowns.presence_of_mind   = get_cooldown( "presence_of_mind"   );
@@ -2451,7 +2427,8 @@ struct frost_bomb_t : public mage_spell_t
 struct frostbolt_t : public mage_spell_t
 {
   double bf_proc_chance;
-  timespan_t enhanced_frostbolt_duration;
+  timespan_t enhanced_frostbolt_duration,
+             last_enhanced_frostbolt;
   // Icicle stats variable to parent icicle damage to Frostbolt, instead of
   // clumping FB/FFB icicle damage together in reports.
   stats_t* icicle;
@@ -2471,12 +2448,11 @@ struct frostbolt_t : public mage_spell_t
 
   virtual void schedule_execute( action_state_t* execute_state )
   {
-    if ( p() -> cooldowns.enhanced_frostbolt -> up() &&
-         p() -> specialization() == MAGE_FROST )
+    if ( sim -> current_time > last_enhanced_frostbolt +
+                               enhanced_frostbolt_duration )
       p() -> buffs.enhanced_frostbolt -> trigger();
 
     mage_spell_t::schedule_execute( execute_state );
-
   }
 
   virtual int schedule_multistrike( action_state_t* s, dmg_e dmg_type, double tick_multiplier )
@@ -2508,9 +2484,8 @@ struct frostbolt_t : public mage_spell_t
 
     if ( p() -> buffs.enhanced_frostbolt -> up() )
     {
-      p() -> cooldowns.enhanced_frostbolt -> duration = enhanced_frostbolt_duration;
-      p() -> cooldowns.enhanced_frostbolt -> start();
       p() -> buffs.enhanced_frostbolt -> expire();
+      last_enhanced_frostbolt = sim -> current_time;
     }
 
     if ( result_is_hit( execute_state -> result ) )
@@ -2572,6 +2547,12 @@ struct frostbolt_t : public mage_spell_t
     if ( p() -> buffs.ice_shard -> up() )
       am *= 1.0 + ( p() -> buffs.ice_shard -> stack() * p() -> buffs.ice_shard -> data().effectN( 2 ).percent() );
     return am;
+  }
+
+  void reset()
+  {
+    action_t::reset();
+    last_enhanced_frostbolt = timespan_t::min();
   }
 };
 
@@ -3997,7 +3978,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   dots.pyroblast      = target -> get_dot( "pyroblast",      mage );
   dots.frozen_orb     = target -> get_dot( "frozen_orb",     mage );
 
-  debuffs.slow = buff_creator_t( *this, "slow" ).spell( mage -> spec.slow );
   debuffs.frost_bomb = buff_creator_t( *this, "frost_bomb" ).spell( mage -> talents.frost_bomb );
   debuffs.firestarter = buff_creator_t( *this, "firestarter" ).chance( 1.0 ).duration( timespan_t::from_seconds( 10.0 ) );
   debuffs.water_jet = buff_creator_t( *this, "water_jet", source -> find_spell( 135029 ) )
@@ -4181,13 +4161,10 @@ void mage_t::init_spells()
   // Spec Spells
   spec.arcane_charge         = find_spell( 36032 );
   spec.arcane_charge_passive = find_spell( 114664 );
-  spec.presence_of_mind      = find_specialization_spell( "Presence of Mind" );
-  spec.slow                  = find_class_spell( "Slow" );
+
+  spec.critical_mass         = find_specialization_spell( "Critical Mass" );
 
   spec.brain_freeze          = find_specialization_spell( "Brain Freeze" );
-  spec.critical_mass         = find_specialization_spell( "Critical Mass" );
-  spec.fingers_of_frost      = find_specialization_spell( "Fingers of Frost" );
-  spec.frostbolt             = find_specialization_spell( "Frostbolt" );
 
   // Attunments
   spec.arcane_mind           = find_specialization_spell( "Arcane Mind"  );
@@ -4196,11 +4173,9 @@ void mage_t::init_spells()
 
   // Mastery
   spec.icicles               = find_mastery_spell( MAGE_FROST );
+  spec.icicles_driver        = find_spell( 148012 );
   spec.ignite                = find_mastery_spell( MAGE_FIRE );
   spec.mana_adept            = find_mastery_spell( MAGE_ARCANE );
-
-  spells.stolen_time         = spell_data_t::find( 105791, "Stolen Time" );
-  spells.icicles_driver      = find_spell( 148012 );
 
   // Glyphs
   glyphs.arcane_brilliance   = find_glyph_spell( "Glyph of Arcane Brilliance" );
@@ -4365,8 +4340,7 @@ void mage_t::create_buffs()
   {
     buffs.icy_veins -> add_invalidate( CACHE_SPELL_HASTE );
   }
-  buffs.enhanced_frostbolt    = buff_creator_t( this, "enhanced_frostbolt", find_spell( 157646 ) )
-                                  .duration( find_spell( 157648 ) -> duration() );
+  buffs.enhanced_frostbolt    = buff_creator_t( this, "enhanced_frostbolt", find_spell( 157646 ) );
   buffs.frozen_thoughts       = buff_creator_t( this, "frozen_thoughts", find_spell( 146557 ) );
   buffs.frost_t17_2pc         = buff_creator_t( this, "frost_t17_2pc", find_spell( 165470 ) )
                                   .duration( find_spell( 84714 ) -> duration() )
@@ -5373,14 +5347,14 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
       {
         if ( mage.icicles.size() == 0 )
           return 0;
-        else if ( mage.sim -> current_time - mage.icicles[ 0 ].first < mage.spells.icicles_driver -> duration() )
+        else if ( mage.sim -> current_time - mage.icicles[ 0 ].first < mage.spec.icicles_driver -> duration() )
           return static_cast<double>(mage.icicles.size());
         else
         {
           size_t icicles = 0;
           for ( int i = as<int>( mage.icicles.size() - 1 ); i >= 0; i-- )
           {
-            if ( mage.sim -> current_time - mage.icicles[ i ].first >= mage.spells.icicles_driver -> duration() )
+            if ( mage.sim -> current_time - mage.icicles[ i ].first >= mage.spec.icicles_driver -> duration() )
               break;
 
             icicles++;
@@ -5433,7 +5407,7 @@ icicle_data_t mage_t::get_icicle_object()
   if ( icicles.size() == 0 )
     return icicle_data_t( 0, 0 );
 
-  timespan_t threshold = spells.icicles_driver -> duration();
+  timespan_t threshold = spec.icicles_driver -> duration();
 
   std::vector< icicle_tuple_t >::iterator idx = icicles.begin(),
                                          end = icicles.end();
