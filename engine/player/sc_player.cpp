@@ -5528,6 +5528,13 @@ struct shadowmeld_t : public racial_spell_t
     racial_spell_t::execute();
 
     player -> buffs.shadowmeld -> trigger();
+
+    // Shadowmeld stops autoattacks
+    if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
+      core_event_t::cancel( player -> main_hand_attack -> execute_event );
+
+    if ( player -> off_hand_attack && player -> off_hand_attack -> execute_event )
+      core_event_t::cancel( player -> off_hand_attack -> execute_event );
   }
 };
 
