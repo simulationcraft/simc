@@ -59,10 +59,10 @@ shoulders=spaulders_of_the_unblinking_vigil,id=99404,upgrade=4,gems=10agi_10agi_
 back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=10agi_4agi,enchant=12crit
 chest=ancient_archers_chestguard,id=105585,upgrade=4,gems=10agi_10agi_5agi_10mastery_11agi,enchant=5all
 wrists=bracers_of_infinite_pipes,id=105617,upgrade=4,enchant=12agi
-hands=gloves_of_the_unblinking_vigil,id=99406,upgrade=4,gems=10agi_10agi_8agi,enchant=11haste
+hands=gloves_of_the_unblinking_vigil,id=99406,upgrade=4,gems=10agi_10agi_8agi,enchant=15agi
 waist=arrowflight_girdle,id=105584,upgrade=4,gems=10agi_5agi_10mastery_10agi_8agi
-legs=legguards_of_the_unblinking_vigil,id=99403,upgrade=4,gems=5agi_10mastery_5agi_10mastery_8agi,enchant=111agi_11crit
-feet=ravagers_pathwalkers,id=105553,upgrade=4,gems=10agi_4agi,enchant=11agi
+legs=legguards_of_the_unblinking_vigil,id=99403,upgrade=4,gems=5agi_10mastery_5agi_10mastery_8agi,enchant=28agi_23crit
+feet=ravagers_pathwalkers,id=105553,upgrade=4,gems=10agi_4agi,enchant=10haste_10crit
 finger1=ring_of_restless_energy,id=105558,upgrade=4,gems=10agi_4crit
 finger2=kilruks_band_of_ascendancy,id=105624,upgrade=4,gems=10agi_4crit
 trinket1=assurance_of_consequence,id=105472,upgrade=4
@@ -71,11 +71,11 @@ main_hand=korkron_hand_cannon,id=105559,upgrade=4,gems=10agi_4agi,enchant=lord_b
 
 # Gear Summary
 # gear_strength=5
-# gear_agility=1407
+# gear_agility=1328
 # gear_stamina=1663
 # gear_intellect=5
-# gear_crit_rating=550
-# gear_haste_rating=530
+# gear_crit_rating=572
+# gear_haste_rating=529
 # gear_mastery_rating=447
 # gear_armor=827
 # gear_multistrike_rating=107
