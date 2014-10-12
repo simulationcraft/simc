@@ -1993,8 +1993,8 @@ struct glaive_toss_strike_t: public ranged_attack_t
 {
   // use ranged_attack_to to avoid triggering other hunter behaviors (like thrill of the hunt
   // TotH should be triggered by the glaive toss itself.
-  glaive_toss_strike_t( hunter_t* player ):
-    ranged_attack_t( "glaive_toss_strike", player, player -> find_spell( 120761 ) )
+  glaive_toss_strike_t( hunter_t* player, const std::string& name, int id ):
+    ranged_attack_t( name, player, player -> find_spell( id ) )
   {
     background = true;
     dual = true;
@@ -2002,43 +2002,123 @@ struct glaive_toss_strike_t: public ranged_attack_t
     special = true;
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
-    aoe = -1;
+    aoe = -1;    
   }
 
   virtual double composite_target_multiplier( player_t* target ) const
   {
     double m = ranged_attack_t::composite_target_multiplier( target );
-
     if ( target == this -> target )
       m *= static_cast<hunter_t*>( player ) -> talents.glaive_toss -> effectN( 1 ).base_value();
-
     return m;
+  }
+};
+  
+struct glaive_rebound_t: public ranged_attack_t
+{
+  // use ranged_attack_to to avoid triggering other hunter behaviors (like thrill of the hunt
+  // TotH should be triggered by the glaive toss itself.
+  glaive_rebound_t( hunter_t* player, const std::string& name, int id ):
+    ranged_attack_t( name, player, player -> find_spell( id ) )
+  {
+    background = true;
+    dual = true;
+    may_crit = true;
+    special = true;
+    weapon = &( player -> main_hand_weapon );
+    weapon_multiplier = 0;
+    aoe = -1;    
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const
+  {
+    tl.clear();
+
+    for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+    {
+      player_t* t = sim -> actor_list[i];
+      if ( !t -> is_sleeping() && t -> is_enemy() && ( t != target ) )
+        tl.push_back( t );
+    }
+    return tl.size();
+  }
+};
+
+struct glaive_t: public ranged_attack_t
+{
+  attack_t* glaive_strike;
+  attack_t* glaive_rebound;
+  bool is_rebound = false;
+
+  glaive_t( hunter_t* player, const std::string& name, int id ):
+    ranged_attack_t( name, player ),
+    glaive_strike( new glaive_toss_strike_t( player, name + "_strike", id ) ),
+    glaive_rebound( new glaive_rebound_t( player, name + "_rebound", id ) )
+  {
+    may_miss = false;
+    may_crit = false;
+    school = SCHOOL_PHYSICAL;
+    dual = true;
+    harmful = false;
+    glaive_strike -> stats = stats;
+    glaive_rebound -> stats = stats;
+    dot_duration = timespan_t::zero();
+    travel_speed = player -> talents.glaive_toss -> effectN( 3 ).trigger() -> missile_speed();
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    ranged_attack_t::impact( s );
+
+    if ( is_rebound )
+    {
+      glaive_rebound -> execute();
+      is_rebound = false;
+    }
+    else
+    {
+      glaive_strike -> execute();
+      is_rebound = true;
+      execute();
+    }
+  }
+
+  virtual void record_data( action_state_t* data ) override
+  {
+    // suppress reporting impact of the driver
   }
 };
 
 struct glaive_toss_t: public hunter_ranged_attack_t
 {
-  glaive_toss_strike_t* primary_strike;
+  attack_t* glaive_1;
+  attack_t* glaive_2;
 
   glaive_toss_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "glaive_toss", player, player -> talents.glaive_toss ),
-    primary_strike( new glaive_toss_strike_t( p() ) )
+    glaive_1( new glaive_t( p(), "glaive_1", 120761 ) ), 
+    glaive_2( new glaive_t( p(), "glaive_2", 121414 ) )
   {
     parse_options( options_str );
     may_miss = false;
     may_crit = false;
     school = SCHOOL_PHYSICAL;
-    primary_strike -> stats = stats;
+    harmful = false;
+    stats -> add_child( glaive_1 -> stats );
+    stats -> add_child( glaive_2 -> stats );
     dot_duration = timespan_t::zero();
-    travel_speed = player -> talents.glaive_toss -> effectN( 3 ).trigger() -> missile_speed();
   }
 
   virtual void execute()
   {
     hunter_ranged_attack_t::execute();
+    glaive_1 -> execute();
+    glaive_2 -> execute();
+  }
 
-    primary_strike -> execute();
-    primary_strike -> execute();
+  virtual void record_data( action_state_t* data ) override
+  {
+    // suppress reporting impact of the driver
   }
 };
 
