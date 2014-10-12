@@ -4330,7 +4330,7 @@ void mage_t::create_buffs()
                                   .default_value( perks.improved_blink -> effectN( 1 ).percent() );
   buffs.mage_armor            = stat_buff_creator_t( this, "mage_armor", find_spell( 6117 ) );
   buffs.profound_magic        = buff_creator_t( this, "profound_magic", find_spell( 145252 ) )
-                                  .chance( sets.has_set_bonus( MAGE_ARCANE, T16, B2 ) );
+                                  .chance( sets.has_set_bonus( SET_CASTER, T16, B2 ) );
   buffs.arcane_affinity       = buff_creator_t( this, "arcane_affinity", find_spell( 166871 ))
                                   .chance( sets.has_set_bonus( MAGE_ARCANE, T17, B2 ) );
   buffs.arcane_instability    = buff_creator_t( this, "arcane_instability", find_spell( 166872 ) )
@@ -4343,9 +4343,9 @@ void mage_t::create_buffs()
   buffs.pyroblast             = buff_creator_t( this, "pyroblast",  find_spell( 48108 ) );
   buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) );
   buffs.potent_flames         = stat_buff_creator_t( this, "potent_flames", find_spell( 145254 ) )
-                                  .chance( sets.has_set_bonus( MAGE_FIRE, T16, B2 ) );
+                                  .chance( sets.has_set_bonus( SET_CASTER, T16, B2 ) );
   buffs.fiery_adept           = buff_creator_t( this, "fiery_adept", find_spell( 145261 ) )
-                                  .chance( sets.has_set_bonus( MAGE_FIRE, T16, B4 ) );
+                                  .chance( sets.has_set_bonus( SET_CASTER, T16, B4 ) );
   buffs.pyromaniac            = buff_creator_t( this, "pyromaniac", find_spell( 166868 ) )
                                   .chance( sets.has_set_bonus( MAGE_FIRE, T17, B4 ) );
 
