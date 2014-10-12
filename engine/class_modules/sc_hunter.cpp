@@ -1993,8 +1993,8 @@ struct glaive_toss_strike_t: public ranged_attack_t
 {
   // use ranged_attack_to to avoid triggering other hunter behaviors (like thrill of the hunt
   // TotH should be triggered by the glaive toss itself.
-  glaive_toss_strike_t( hunter_t* player ):
-    ranged_attack_t( "glaive_toss_strike", player, player -> find_spell( 120761 ) )
+  glaive_toss_strike_t( hunter_t* player, const std::string& name, int id ):
+    ranged_attack_t( name, player, player -> find_spell( id ) )
   {
     background = true;
     dual = true;
@@ -2002,43 +2002,123 @@ struct glaive_toss_strike_t: public ranged_attack_t
     special = true;
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
-    aoe = -1;
+    aoe = -1;    
   }
 
   virtual double composite_target_multiplier( player_t* target ) const
   {
     double m = ranged_attack_t::composite_target_multiplier( target );
-
     if ( target == this -> target )
       m *= static_cast<hunter_t*>( player ) -> talents.glaive_toss -> effectN( 1 ).base_value();
-
     return m;
+  }
+};
+  
+struct glaive_rebound_t: public ranged_attack_t
+{
+  // use ranged_attack_to to avoid triggering other hunter behaviors (like thrill of the hunt
+  // TotH should be triggered by the glaive toss itself.
+  glaive_rebound_t( hunter_t* player, const std::string& name, int id ):
+    ranged_attack_t( name, player, player -> find_spell( id ) )
+  {
+    background = true;
+    dual = true;
+    may_crit = true;
+    special = true;
+    weapon = &( player -> main_hand_weapon );
+    weapon_multiplier = 0;
+    aoe = -1;    
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const
+  {
+    tl.clear();
+
+    for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+    {
+      player_t* t = sim -> actor_list[i];
+      if ( !t -> is_sleeping() && t -> is_enemy() && ( t != target ) )
+        tl.push_back( t );
+    }
+    return tl.size();
+  }
+};
+
+struct glaive_t: public ranged_attack_t
+{
+  attack_t* glaive_strike;
+  attack_t* glaive_rebound;
+  bool is_rebound = false;
+
+  glaive_t( hunter_t* player, const std::string& name, int id ):
+    ranged_attack_t( name, player ),
+    glaive_strike( new glaive_toss_strike_t( player, name + "_strike", id ) ),
+    glaive_rebound( new glaive_rebound_t( player, name + "_rebound", id ) )
+  {
+    may_miss = false;
+    may_crit = false;
+    school = SCHOOL_PHYSICAL;
+    dual = true;
+    harmful = false;
+    glaive_strike -> stats = stats;
+    glaive_rebound -> stats = stats;
+    dot_duration = timespan_t::zero();
+    travel_speed = player -> talents.glaive_toss -> effectN( 3 ).trigger() -> missile_speed();
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    ranged_attack_t::impact( s );
+
+    if ( is_rebound )
+    {
+      glaive_rebound -> execute();
+      is_rebound = false;
+    }
+    else
+    {
+      glaive_strike -> execute();
+      is_rebound = true;
+      execute();
+    }
+  }
+
+  virtual void record_data( action_state_t* data ) override
+  {
+    // suppress reporting impact of the driver
   }
 };
 
 struct glaive_toss_t: public hunter_ranged_attack_t
 {
-  glaive_toss_strike_t* primary_strike;
+  attack_t* glaive_1;
+  attack_t* glaive_2;
 
   glaive_toss_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "glaive_toss", player, player -> talents.glaive_toss ),
-    primary_strike( new glaive_toss_strike_t( p() ) )
+    glaive_1( new glaive_t( p(), "glaive_1", 120761 ) ), 
+    glaive_2( new glaive_t( p(), "glaive_2", 121414 ) )
   {
     parse_options( options_str );
     may_miss = false;
     may_crit = false;
     school = SCHOOL_PHYSICAL;
-    primary_strike -> stats = stats;
+    harmful = false;
+    stats -> add_child( glaive_1 -> stats );
+    stats -> add_child( glaive_2 -> stats );
     dot_duration = timespan_t::zero();
-    travel_speed = player -> talents.glaive_toss -> effectN( 3 ).trigger() -> missile_speed();
   }
 
   virtual void execute()
   {
     hunter_ranged_attack_t::execute();
+    glaive_1 -> execute();
+    glaive_2 -> execute();
+  }
 
-    primary_strike -> execute();
-    primary_strike -> execute();
+  virtual void record_data( action_state_t* data ) override
+  {
+    // suppress reporting impact of the driver
   }
 };
 
@@ -2165,45 +2245,29 @@ struct black_arrow_t: public hunter_ranged_attack_t
 
 // Explosive Trap ==============================================================
 
-struct explosive_trap_tick_t: public hunter_ranged_attack_t
-{
-  explosive_trap_tick_t( hunter_t* player, const std::string& name ):
-    hunter_ranged_attack_t( name, player, player -> find_spell( 13812 ) )
-  {
-    aoe = -1;
-    background = true;
-    direct_tick = true;
-    base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
-  }
-};
-
 struct explosive_trap_t: public hunter_ranged_attack_t
 {
-  attack_t* explosive_trap_tick;
   explosive_trap_t( hunter_t* player, const std::string& options_str ):
-    hunter_ranged_attack_t( "explosive_trap", player, player -> find_class_spell( "Explosive Trap" ) ),
-    explosive_trap_tick( new explosive_trap_tick_t( player, "explosive_trap_tick" ) )
+    hunter_ranged_attack_t( "explosive_trap", player, player -> find_class_spell( "Explosive Trap" ) )
   {
     parse_options( options_str );
+    aoe = -1;
 
     cooldown -> duration = data().cooldown();
     cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
     if ( p() -> perks.enhanced_traps -> ok() )
       cooldown -> duration *= ( 1.0 + p() -> perks.enhanced_traps -> effectN( 1 ).percent() );
-
-    tick_zero = true;
     hasted_ticks = false;
-    harmful = false;
     dot_duration  = p() -> find_spell( 13812 ) -> duration();
     base_tick_time = p() -> find_spell( 13812 ) -> effectN( 2 ).period();
-    add_child( explosive_trap_tick );
-  }
+    base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
+    attack_power_mod.direct = p() -> find_spell( 13812 ) -> effectN( 1 ).ap_coeff();
 
-  virtual void tick( dot_t* d )
-  {
-    hunter_ranged_attack_t::tick( d );
+    // BUG in game it uses the direct damage AP mltiplier for ticks as well.
+    attack_power_mod.tick = attack_power_mod.direct;
 
-    explosive_trap_tick -> execute();
+    // BUG simulate slow velocity of launch
+    travel_speed = 18.0;
   }
 };
 
@@ -3717,7 +3781,6 @@ void hunter_t::apl_mm()
 
   default_list -> add_action( this, "Rapid Fire");
   default_list -> add_talent( this, "Stampede", "if=buff.rapid_fire.up|buff.bloodlust.up|target.time_to_die<=20" );
-  default_list -> add_action( this, "Explosive Trap", "if=active_enemies>2" );
   default_list -> add_action( "run_action_list,name=careful_aim,if=buff.careful_aim.up" );
   {
     careful_aim -> add_talent( this, "Glaive Toss", "if=active_enemies>4" );
@@ -3728,6 +3791,7 @@ void hunter_t::apl_mm()
     careful_aim -> add_talent( this, "Focusing Shot", "if=50+cast_regen<focus.deficit" );
     careful_aim -> add_action( this, "Steady Shot" );
   }
+  default_list -> add_action( this, "Explosive Trap", "if=active_enemies>2" );
 
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Dire Beast", "if=cast_regen+action.aimed_shot.cast_regen<focus.deficit" );

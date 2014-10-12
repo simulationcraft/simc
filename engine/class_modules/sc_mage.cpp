@@ -23,7 +23,6 @@ namespace pets {
 struct water_elemental_pet_t;
 }
 
-enum mage_rotation_e { ROTATION_NONE = 0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
 // Icicle data, stored in an icicle container object. Contains a source stats object and the damage
 typedef std::pair< double, stats_t* > icicle_data_t;
 // Icicle container object, stored in a list to launch icicles at unsuspecting enemies!
@@ -89,34 +88,42 @@ public:
   // Buffs
   struct buffs_t
   {
-    buff_t* arcane_charge;
-    buff_t* arcane_missiles;
-    buff_t* arcane_power;
-    buff_t* blazing_speed;
-    buff_t* brain_freeze;
-    buff_t* fingers_of_frost;
-    buff_t* frost_armor;
-    buff_t* heating_up;
-    buff_t* ice_floes;
-    buff_t* icy_veins;
-    buff_t* improved_blink;
+    // Arcane
+    buff_t* arcane_charge,
+          * arcane_missiles,
+          * arcane_power,
+          * presence_of_mind,
+          * improved_blink,        // Perk
+          * profound_magic,        // T16 2pc Arcane
+          * arcane_affinity,       // T17 2pc Arcane
+          * arcane_instability;    // T17 4pc Arcane
+
     stat_buff_t* mage_armor;
-    buff_t* molten_armor;
-    buff_t* presence_of_mind;
-    buff_t* pyroblast;
-    buff_t* rune_of_power;
-    //buff_t* alter_time;
-    buff_t* profound_magic;
-    buff_t* potent_flames;
-    buff_t* frozen_thoughts;
-    buff_t* fiery_adept;
-    buff_t* enhanced_pyrotechnics;
-    buff_t* enhanced_frostbolt;
-    buff_t* incanters_flow;
-    buff_t* pyromaniac; // T17 4pc fire
-    buff_t* arcane_affinity; // T17 2pc arcane
-    buff_t* arcane_instability; // T17 4pc arcane
-    buff_t* ice_shard;
+
+    // Fire
+    buff_t* heating_up,
+          * molten_armor,
+          * pyroblast,
+          * enhanced_pyrotechnics, // Perk
+          * fiery_adept,           // T16 4pc Fire
+          * pyromaniac;            // T17 4pc Fire
+
+    stat_buff_t* potent_flames;    // T16 2pc Fire
+
+    // Frost
+    buff_t* brain_freeze,
+          * fingers_of_frost,
+          * frost_armor,
+          * icy_veins,
+          * enhanced_frostbolt,    // Perk
+          * frozen_thoughts,       // T16 2pc Frost
+          * ice_shard;             // T17 4pc Frost
+
+    // Talents
+    buff_t* blazing_speed,
+          * ice_floes,
+          * incanters_flow,
+          * rune_of_power;
   } buffs;
 
   // Cooldowns
@@ -125,7 +132,6 @@ public:
     cooldown_t* combustion,
               * cone_of_cold,
               * dragons_breath,
-              * evocation,
               * enhanced_frostbolt,
               * frozen_orb,
               * inferno_blast,
@@ -229,6 +235,11 @@ public:
   {
     // Arcane
     const spell_data_t* arcane_charge;
+    // NOTE: arcane_charge_passive is the Arcane passive added in patch 5.2,
+    //       called "Arcane Charge" (Spell ID: 114664).
+    //       It contains Spellsteal's mana cost reduction, Evocation's mana
+    //       gain reduction, and a deprecated Scorch damage reduction.
+    const spell_data_t* arcane_charge_passive;
     const spell_data_t* mana_adept;
     const spell_data_t* presence_of_mind;
     const spell_data_t* slow;
@@ -251,35 +262,42 @@ public:
   // Talents
   struct talents_list_t
   {
-    const spell_data_t* scorch;
-    const spell_data_t* ice_floes;
-    const spell_data_t* temporal_shield; // NYI
-    const spell_data_t* blazing_speed; // NYI
-    const spell_data_t* ice_barrier; // NYI
-    const spell_data_t* ring_of_frost; // NYI
-    const spell_data_t* ice_ward; // NYI
-    const spell_data_t* frostjaw; // NYI
-    const spell_data_t* greater_invis; // NYI
-    const spell_data_t* cauterize; // NYI
-    const spell_data_t* cold_snap;
-    const spell_data_t* nether_tempest;
-    const spell_data_t* living_bomb;
-    const spell_data_t* frost_bomb;
-    const spell_data_t* rune_of_power;
-    const spell_data_t* supernova;
-    const spell_data_t* blast_wave;
-    const spell_data_t* ice_nova;
-    const spell_data_t* kindling;
-    const spell_data_t* overpowered;
-    const spell_data_t* arcane_orb;
-    const spell_data_t* meteor;
-    const spell_data_t* unstable_magic;
-    const spell_data_t* mirror_image;
-    const spell_data_t* incanters_flow;
-    const spell_data_t* prismatic_crystal;
-    const spell_data_t* thermal_void;
-    const spell_data_t* comet_storm;
-
+    // Tier 15
+    const spell_data_t* evanesce, // NYI
+                      * blazing_speed,
+                      * ice_floes;
+    // Tier 30
+    const spell_data_t* alter_time, // NYI
+                      * flameglow, // NYI
+                      * ice_barrier;
+    // Tier 45
+    const spell_data_t* ring_of_frost, // NYI
+                      * ice_ward, // NYI
+                      * frostjaw; //NYI
+    // Tier 60
+    const spell_data_t* greater_invis, //NYI
+                      * cauterize, //NYI
+                      * cold_snap;
+    // Tier 75
+    const spell_data_t* nether_tempest,
+                      * living_bomb,
+                      * frost_bomb,
+                      * unstable_magic,
+                      * supernova,
+                      * blast_wave,
+                      * ice_nova;
+    // Tier 90
+    const spell_data_t* mirror_image,
+                      * rune_of_power,
+                      * incanters_flow;
+    // Tier 100
+    const spell_data_t* overpowered,
+                      * kindling,
+                      * thermal_void,
+                      * prismatic_crystal,
+                      * arcane_orb,
+                      * meteor,
+                      * comet_storm;
   } talents;
 
   struct pyro_switch_t
@@ -327,7 +345,6 @@ public:
     cooldowns.cone_of_cold       = get_cooldown( "cone_of_cold"       );
     cooldowns.dragons_breath     = get_cooldown( "dragons_breath"     );
     cooldowns.enhanced_frostbolt = get_cooldown( "enhanced_frostbolt" );
-    cooldowns.evocation          = get_cooldown( "evocation"          );
     cooldowns.frozen_orb         = get_cooldown( "frozen_orb"         );
     cooldowns.inferno_blast      = get_cooldown( "inferno_blast"      );
     cooldowns.presence_of_mind   = get_cooldown( "presence_of_mind"   );
@@ -621,8 +638,9 @@ struct mirror_image_pet_t : public pet_t
       double am = mirror_image_spell_t::action_multiplier();
 
       am *= 1.0 + p() -> arcane_charge -> stack() *
-                  p() -> o() -> spells.arcane_charge_arcane_blast -> effectN( 4 ).percent() *
-                  ( 1.0 + p() -> o() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).percent() );
+                  p() -> o() -> spec.arcane_charge -> effectN( 4 ).percent() *
+                  ( 1.0 + p() -> o() -> sets.set( SET_CASTER, T15, B4 )
+                                     -> effectN( 1 ).percent() );
 
       return am;
     }
@@ -691,9 +709,8 @@ struct mirror_image_pet_t : public pet_t
   {
     pet_t::create_buffs();
 
-    arcane_charge = buff_creator_t( this, "arcane_charge", o() -> spec.arcane_charge )
-                    .max_stack( find_spell( 36032 ) -> max_stacks() )
-                    .duration( find_spell( 36032 ) -> duration() );
+    arcane_charge = buff_creator_t( this, "arcane_charge",
+                                    o() -> spec.arcane_charge );
   }
 
 
@@ -711,7 +728,7 @@ struct mirror_image_pet_t : public pet_t
 // Pet Prismatic Crystal
 // ==========================================================================
 
-struct prismatic_crystal_t : public pet_t 
+struct prismatic_crystal_t : public pet_t
 {
   struct prismatic_crystal_aoe_state_t : public action_state_t
   {
@@ -874,189 +891,6 @@ struct prismatic_crystal_t : public pet_t
 };
 
 } // pets
-
-namespace buffs {
-
-namespace alter_time {
-
-// Class to save buff state information relevant to alter time for a buff
-struct buff_state_t
-{
-  buff_t* buff;
-  int stacks;
-  timespan_t remain_time;
-  double value;
-
-  buff_state_t( buff_t* b ) :
-    buff( b ),
-    stacks( b -> current_stack ),
-    remain_time( b -> remains() ),
-    value( b -> current_value )
-  {
-    if ( b -> sim -> debug )
-    {
-      b -> sim -> out_debug.printf( "Creating buff_state_t for buff %s of player %s",
-                          b -> name_str.c_str(), b -> player ? b -> player -> name() : "" );
-
-      b -> sim -> out_debug.printf( "Snapshoted values are: current_stacks=%d remaining_time=%.4f current_value=%.2f",
-                          stacks, remain_time.total_seconds(), value );
-    }
-  }
-
-  void write_back_state() const
-  {
-    if ( buff -> sim -> debug )
-      buff -> sim -> out_debug.printf( "Writing back buff_state_t for buff %s of player %s",
-                             buff -> name_str.c_str(), buff -> player ? buff -> player -> name() : "" );
-
-    timespan_t save_buff_cd = buff -> cooldown -> duration; // Temporarily save the buff cooldown duration
-    buff -> cooldown -> duration = timespan_t::zero(); // Don't restart the buff cooldown
-
-    if ( stacks )
-      buff -> execute( stacks, value, remain_time ); // Reset the buff
-    else
-      buff -> expire();
-
-    buff -> cooldown -> duration = save_buff_cd; // Restore the buff cooldown duration
-  }
-};
-
-/*
- * dynamic mage state, to collect data about the mage and all his buffs
- */
-struct mage_state_t
-{
-  mage_t& mage;
-  std::array<double, RESOURCE_MAX > resources;
-  // location
-  std::vector<buff_state_t> buff_states;
-  std::vector<icicle_tuple_t> icicle_states;
-
-
-  mage_state_t( mage_t& m ) : // Snapshot and start 6s event
-    mage( m )
-  {
-    range::fill( resources, 0.0 );
-  }
-
-  void snapshot_current_state()
-  {
-    resources = mage.resources.current;
-
-    if ( mage.sim -> debug )
-      mage.sim -> out_debug.printf( "Creating mage_state_t for mage %s", mage.name() );
-
-    for ( size_t i = 0; i < mage.buff_list.size(); ++i )
-    {
-      buff_t* b = mage.buff_list[ i ];
-
-      if ( b == static_cast<player_t&>( mage ).buffs.exhaustion )
-        continue;
-
-      buff_states.push_back( buff_state_t( b ) );
-    }
-
-    for ( size_t i = 0, end = mage.icicles.size(); i < end; i++ )
-      icicle_states.push_back( mage.icicles[ i ] );
-  }
-
-  void write_back_state()
-  {
-    // Do not restore state under any circumstances to a mage that is not
-    // active
-    if ( mage.is_sleeping() )
-      return;
-
-    mage.resources.current = resources;
-
-    for ( size_t i = 0; i < buff_states.size(); ++ i )
-    {
-      buff_states[ i ].write_back_state();
-    }
-
-    mage.icicles.clear();
-    for ( size_t i = 0, end = icicle_states.size(); i < end; i++ )
-      mage.icicles.push_back( icicle_states[ i ] );
-
-    clear_state();
-  }
-
-  void clear_state()
-  {
-    range::fill( resources, 0.0 );
-    buff_states.clear();
-    icicle_states.clear();
-  }
-};
-
-
-} // alter_time namespace
-
-/*struct alter_time_t : public buff_t
-{
-  alter_time::mage_state_t mage_state;
-
-  alter_time_t( mage_t* player ) :
-    buff_t( buff_creator_t( player, "alter_time" ).spell( player -> find_spell( 110909 ) ) ),
-    mage_state( *player )
-  { }
-
-  mage_t* p() const
-  { return static_cast<mage_t*>( player ); }
-
-  virtual bool trigger( int        stacks,
-                        double     value,
-                        double     chance,
-                        timespan_t duration )
-  {
-    mage_state.snapshot_current_state();
-
-    return buff_t::trigger( stacks, value, chance, duration );
-  }
-
-  virtual void expire_override()
-  {
-    buff_t::expire_override();
-
-    mage_state.write_back_state();
-  }
-
-  virtual void reset()
-  {
-    buff_t::reset();
-
-    mage_state.clear_state();
-  }
-};
-*/
-// Arcane Power Buff ========================================================
-
-struct arcane_power_t : public buff_t
-{
-  arcane_power_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "arcane_power", p -> find_class_spell( "Arcane Power" ) )
-            .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
-  {
-    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
-
-    buff_duration *= 1.0 + p -> glyphs.arcane_power -> effectN( 1 ).percent();
-  }
-};
-
-// Icy Veins Buff ===========================================================
-
-struct icy_veins_t : public buff_t
-{
-  icy_veins_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "icy_veins", p -> find_class_spell( "Icy Veins" ) ).add_invalidate( CACHE_SPELL_HASTE ) )
-  {
-    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
-  }
-};
-
-
-
-} // end buffs namespace
 
 namespace actions {
 // ==========================================================================
@@ -1643,8 +1477,10 @@ struct arcane_barrage_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
-      ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).percent() );
+    am *= 1.0 + p() -> buffs.arcane_charge -> stack() *
+                p() -> spec.arcane_charge -> effectN( 1 ).percent() *
+                ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 )
+                            -> effectN( 1 ).percent() );
 
     return am;
   }
@@ -1667,8 +1503,10 @@ struct arcane_blast_t : public mage_spell_t
 
     if ( p() -> buffs.arcane_charge -> check() )
     {
-      c *= 1.0 +  p() -> buffs.arcane_charge -> check() * p() -> spells.arcane_charge_arcane_blast -> effectN( 2 ).percent() *
-        ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).percent() );
+      c *= 1.0 +  p() -> buffs.arcane_charge -> check() *
+                  p() -> spec.arcane_charge -> effectN( 2 ).percent() *
+                  ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 )
+                              -> effectN( 1 ).percent() );
     }
 
     if ( p() -> buffs.profound_magic -> check() )
@@ -1705,8 +1543,10 @@ struct arcane_blast_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
-      ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).percent() );
+    am *= 1.0 + p() -> buffs.arcane_charge -> stack() *
+                p() -> spec.arcane_charge -> effectN( 1 ).percent() *
+                ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 )
+                            -> effectN( 1 ).percent() );
 
     return am;
   }
@@ -1837,8 +1677,10 @@ struct arcane_missiles_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
-      ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).percent() );
+    am *= 1.0 + p() -> buffs.arcane_charge -> stack() *
+                p() -> spec.arcane_charge -> effectN( 1 ).percent() *
+                ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 )
+                            -> effectN( 1 ).percent() );
     if ( p() -> sets.has_set_bonus( SET_CASTER, T14, B2 ) )
     {
       am *= 1.07;
@@ -1972,8 +1814,6 @@ struct arcane_orb_t : public mage_spell_t
   }
 };
 
-
-
 // Arcane Power Spell =======================================================
 
 struct arcane_power_t : public mage_spell_t
@@ -1984,7 +1824,10 @@ struct arcane_power_t : public mage_spell_t
     parse_options( options_str );
     harmful = false;
 
-    cooldown -> duration *= 1.0 + p -> glyphs.arcane_power -> effectN( 2 ).percent();
+    if ( p -> glyphs.arcane_power -> ok() )
+    {
+      cooldown -> duration *= 1.0 + p -> glyphs.arcane_power -> effectN( 2 ).percent();
+    }
   }
 
   virtual void execute()
@@ -2393,61 +2236,49 @@ struct dragons_breath_t : public mage_spell_t
 
 class evocation_t : public mage_spell_t
 {
-  timespan_t pre_cast;
   int arcane_charges;
 
 public:
   evocation_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "evocation", p,  p -> find_class_spell( "Evocation" ) ),
-    pre_cast( timespan_t::zero() ), arcane_charges( 0 )
+    arcane_charges( 0 )
   {
-    add_option( opt_timespan( "precast", pre_cast ) );
     parse_options( options_str );
 
-    pre_cast = std::max( pre_cast, timespan_t::zero() );
-
     base_tick_time    = timespan_t::from_seconds( 2.0 );
-    tick_zero         = true;
     channeled         = true;
+    dot_duration      = data().duration();
     harmful           = false;
     hasted_ticks      = false;
+    tick_zero         = true;
 
-    cooldown = p -> cooldowns.evocation;
     if ( p -> perks.improved_evocation -> ok() )
     {
       cooldown -> duration += p -> perks.improved_evocation
                                 -> effectN( 1 ).time_value();
     }
-
-    timespan_t duration = data().duration();
-
-
-    dot_duration = duration;
   }
 
   virtual void tick( dot_t* d )
   {
     mage_spell_t::tick( d );
 
-    double mana = p() -> resources.max[ RESOURCE_MANA ];
+    double mana_gain = p() -> resources.max[ RESOURCE_MANA ] *
+                       (data().effectN( 1 ).percent() +
+                        p() -> spec.arcane_charge_passive
+                            -> effectN( 3 ).percent());
 
     if ( p() -> passives.nether_attunement -> ok() )
-      mana /= p() -> cache.spell_speed();
-
-    if ( p() -> specialization() == MAGE_ARCANE )
     {
-      mana *= 0.1;
-
-      mana *= 1.0 + arcane_charges * p() -> spells.arcane_charge_arcane_blast -> effectN( 4 ).percent() *
-              ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4) -> effectN( 1 ).percent() );
-    }
-    else
-    {
-      mana *= data().effectN( 1 ).percent();
+      mana_gain /= p() -> cache.spell_speed();
     }
 
+    mana_gain *= 1.0 + arcane_charges *
+                       p() -> spec.arcane_charge -> effectN( 4 ).percent() *
+                       ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4)
+                                   -> effectN( 1 ).percent() );
 
-    p() -> resource_gain( RESOURCE_MANA, mana, p() -> gains.evocation );
+    p() -> resource_gain( RESOURCE_MANA, mana_gain, p() -> gains.evocation );
   }
 
   virtual void last_tick( dot_t* d )
@@ -3536,16 +3367,12 @@ struct nether_tempest_t : public mage_spell_t
     add_aoe -> schedule_execute( aoe_state );
   }
 
-  virtual void last_tick( dot_t* d )
-  {
-    mage_spell_t::last_tick( d );
-  }
-
   double composite_persistent_multiplier( const action_state_t* state ) const
   {
     double m = mage_spell_t::composite_persistent_multiplier( state );
 
-    m *= 1.0 +  p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
+    m *= 1.0 +  p() -> buffs.arcane_charge -> stack() *
+                p() -> spec.arcane_charge -> effectN( 1 ).percent();
 
     return m;
   }
@@ -4132,51 +3959,6 @@ struct water_jet_t : public action_t
   }
 };
 
-/*
-// Alter Time Spell =========================================================
-
-struct alter_time_t : public mage_spell_t
-{
-  alter_time_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "alter_time_activate", p, p -> find_spell( 108978 ) )
-  {
-    parse_options( options_str );
-
-    harmful = false;
-  }
-
-  virtual void execute()
-  {
-    // Buff trigger / Snapshot happens before resource is spent
-    if ( p() -> buffs.alter_time -> check() > 0 )
-      p() -> buffs.alter_time -> expire();
-    else
-      p() -> buffs.alter_time -> trigger();
-
-    mage_spell_t::execute();
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> buffs.alter_time -> check() ) // Allow execution if the buff is up, even tough cooldown already is started.
-    {
-      timespan_t cd_ready = cooldown -> ready;
-
-      cooldown -> ready = sim -> current_time;
-
-      bool ready = mage_spell_t::ready();
-
-      cooldown -> ready = cd_ready;
-
-      return ready;
-    }
-
-    return mage_spell_t::ready();
-  }
-};
-*/
-
-
 } // namespace actions
 
 namespace events {
@@ -4328,7 +4110,6 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "prismatic_crystal" ) return new prismatic_crystal_t( this, options_str );
   if ( name == "choose_target"     ) return new choose_target_t( this, options_str );
   if ( name == "water_jet"         ) return new water_jet_t( this, options_str );
-  //if ( name == "alter_time"        ) return new              alter_time_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -4357,34 +4138,42 @@ void mage_t::init_spells()
   player_t::init_spells();
 
   // Talents
-  talents.blazing_speed      = find_talent_spell( "Blazing Speed" );
-  talents.blast_wave         = find_talent_spell( "Blast Wave" );
-  talents.cauterize          = find_talent_spell( "Cauterize" );
-  talents.cold_snap          = find_talent_spell( "Cold Snap" );
-  talents.frostjaw           = find_talent_spell( "Frostjaw" );
-  talents.frost_bomb         = find_talent_spell( "Frost Bomb" );
+  // Tier 15
+  talents.evanesce           = find_talent_spell( "Evanesce"             );
+  talents.blazing_speed      = find_talent_spell( "Blazing Speed"        );
+  talents.ice_floes          = find_talent_spell( "Ice Floes"            );
+  // Tier 30
+  talents.alter_time         = find_talent_spell( "Alter Time"           );
+  talents.flameglow          = find_talent_spell( "Flameglow"            );
+  talents.ice_barrier        = find_talent_spell( "Ice Barrier"          );
+  // Tier 45
+  talents.ring_of_frost      = find_talent_spell( "Ring of Frost"        );
+  talents.ice_ward           = find_talent_spell( "Ice Ward"             );
+  talents.frostjaw           = find_talent_spell( "Frostjaw"             );
+  // Tier 60
   talents.greater_invis      = find_talent_spell( "Greater Invisibility" );
-  talents.ice_barrier        = find_talent_spell( "Ice Barrier" );
-  talents.ice_floes          = find_talent_spell( "Ice Floes" );
-  talents.ice_nova           = find_talent_spell( "Ice Nova" );
-  talents.ice_ward           = find_talent_spell( "Ice Ward" );
-  talents.kindling           = find_talent_spell( "Kindling" );
-  talents.living_bomb        = find_talent_spell( "Living Bomb" );
-  talents.nether_tempest     = find_talent_spell( "Nether Tempest" );
-  talents.ring_of_frost      = find_talent_spell( "Ring of Frost" );
-  talents.rune_of_power      = find_talent_spell( "Rune of Power" );
-  talents.scorch             = find_talent_spell( "Scorch" );
-  talents.temporal_shield    = find_talent_spell( "Temporal Shield" );
-  talents.supernova          = find_talent_spell( "Supernova" );
-  talents.overpowered        = find_talent_spell( "Overpowered" );
-  talents.arcane_orb         = find_talent_spell( "Arcane Orb" );
-  talents.unstable_magic     = find_talent_spell( "Unstable Magic" );
-  talents.mirror_image       = find_talent_spell( "Mirror Image" );
-  talents.incanters_flow     = find_talent_spell( "Incanter's Flow" );
-  talents.prismatic_crystal  = find_talent_spell( "Prismatic Crystal" );
-  talents.thermal_void       = find_talent_spell( "Thermal Void" );
-  talents.comet_storm        = find_talent_spell( "Comet Storm" );
-
+  talents.cauterize          = find_talent_spell( "Cauterize"            );
+  talents.cold_snap          = find_talent_spell( "Cold Snap"            );
+  // Tier 75
+  talents.nether_tempest     = find_talent_spell( "Nether Tempest"       );
+  talents.living_bomb        = find_talent_spell( "Living Bomb"          );
+  talents.frost_bomb         = find_talent_spell( "Frost Bomb"           );
+  talents.unstable_magic     = find_talent_spell( "Unstable Magic"       );
+  talents.supernova          = find_talent_spell( "Supernova"            );
+  talents.blast_wave         = find_talent_spell( "Blast Wave"           );
+  talents.ice_nova           = find_talent_spell( "Ice Nova"             );
+  // Tier 90
+  talents.mirror_image       = find_talent_spell( "Mirror Image"         );
+  talents.rune_of_power      = find_talent_spell( "Rune of Power"        );
+  talents.incanters_flow     = find_talent_spell( "Incanter's Flow"      );
+  // Tier 100
+  talents.overpowered        = find_talent_spell( "Overpowered"          );
+  talents.kindling           = find_talent_spell( "Kindling"             );
+  talents.thermal_void       = find_talent_spell( "Thermal Void"         );
+  talents.prismatic_crystal  = find_talent_spell( "Prismatic Crystal"    );
+  talents.arcane_orb         = find_talent_spell( "Arcane Orb"           );
+  talents.meteor             = find_talent_spell( "Meteor"               );
+  talents.comet_storm        = find_talent_spell( "Comet Storm"          );
 
   // Passive Spells
   passives.nether_attunement = find_specialization_spell( "Nether Attunement" ); // BUG: Not in spell lists at present.
@@ -4412,8 +4201,8 @@ void mage_t::init_spells()
   perks.improved_icy_veins                   = find_perk_spell( "Improved Icy Veins" );
 
   // Spec Spells
-  spec.arcane_charge         = find_specialization_spell( "Arcane Charge" );
-  spells.arcane_charge_arcane_blast = spec.arcane_charge -> ok() ? find_spell( 36032 ) : spell_data_t::not_found();
+  spec.arcane_charge         = find_spell( 36032 );
+  spec.arcane_charge_passive = find_spell( 114664 );
   spec.presence_of_mind      = find_specialization_spell( "Presence of Mind" );
   spec.slow                  = find_class_spell( "Slow" );
 
@@ -4524,65 +4313,76 @@ void mage_t::create_buffs()
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
-  buffs.arcane_charge         = buff_creator_t( this, "arcane_charge", spec.arcane_charge )
-                                .max_stack( find_spell( 36032 ) -> max_stacks() )
-                                .duration( find_spell( 36032 ) -> duration() );
-  buffs.arcane_affinity       = buff_creator_t( this, "arcane_affinity", find_spell( 166871 ))
-                                .chance( sets.has_set_bonus( MAGE_ARCANE, T17, B2 ) );
-  buffs.arcane_instability    = buff_creator_t( this, "arcane_instability", find_spell( 166872 ) )
-                                .duration( find_spell( 166872 ) -> duration() ).chance( sets.has_set_bonus( MAGE_ARCANE , T17 , B4 ) );
-  buffs.arcane_missiles       = buff_creator_t( this, "arcane_missiles", find_class_spell( "Arcane Missiles" ) -> ok() ? find_spell( 79683 ) : spell_data_t::not_found() )
-                                .chance( find_spell( 79684 ) -> proc_chance() ).max_stack( find_spell( 79683 ) -> max_stacks() );
-
-  buffs.arcane_power          = new buffs::arcane_power_t( this );
-  buffs.blazing_speed         = buff_creator_t( this, "blazing_speed", talents.blazing_speed )
-                                .default_value( talents.blazing_speed -> effectN( 1 ).percent() );
-  buffs.brain_freeze          = buff_creator_t( this, "brain_freeze", spec.brain_freeze )
-                                .duration( find_spell( 57761 ) -> duration() )
-                                .default_value( spec.brain_freeze -> effectN( 1 ).percent() ).max_stack( 2 ).chance( find_spell( 44549 ) -> effectN( 1 ).percent() );;
-
-  buffs.fingers_of_frost      = buff_creator_t( this, "fingers_of_frost", find_spell( 112965 ) ).chance( find_spell( 112965 ) -> effectN( 1 ).percent() )
-                                .duration( timespan_t::from_seconds( 15.0 ) )
-                                .max_stack( 2 );
-  buffs.frost_armor           = buff_creator_t( this, "frost_armor", find_spell( 7302 ) ).add_invalidate( CACHE_MULTISTRIKE );
-  if( glyphs.icy_veins -> ok () )
-    buffs.icy_veins           = buff_creator_t( this, "icy_veins", find_spell( 12472 ) ).add_invalidate( CACHE_MULTISTRIKE );
-  else
-    buffs.icy_veins           = buff_creator_t( this, "icy_veins", find_spell( 12472 ) ).add_invalidate( CACHE_SPELL_HASTE );
-
-  buffs.enhanced_frostbolt    = buff_creator_t( this, "enhanced_frostbolt", find_spell( 157646 ) ).duration( find_spell( 157648 ) -> duration() );
-  buffs.ice_floes             = buff_creator_t( this, "ice_floes", talents.ice_floes );
+  // Arcane
+  buffs.arcane_charge         = buff_creator_t( this, "arcane_charge", spec.arcane_charge );
+  buffs.arcane_missiles       = buff_creator_t( this, "arcane_missiles", find_spell( 79683 ) )
+                                  .chance( find_spell( 79684 ) -> proc_chance() );
+  buffs.arcane_power          = buff_creator_t( this, "arcane_power", find_spell( 12042 ) )
+                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  if ( glyphs.arcane_power -> ok () )
+  {
+    buffs.arcane_power -> buff_duration *= 1.0 + glyphs.arcane_power -> effectN( 1 ).percent();
+  }
+  buffs.presence_of_mind      = buff_creator_t( this, "presence_of_mind", find_spell( 12043 ) )
+                                  .activated( true )
+                                  .duration( timespan_t::zero() );
   buffs.improved_blink        = buff_creator_t( this, "improved_blink", perks.improved_blink )
-                                .default_value( perks.improved_blink -> effectN( 1 ).percent() );
-  buffs.mage_armor            = stat_buff_creator_t( this, "mage_armor" ).spell( find_spell( 6117 ) );
-  buffs.molten_armor          = buff_creator_t( this, "molten_armor", find_spell( 30482 ) ).add_invalidate( CACHE_SPELL_CRIT );
-  buffs.presence_of_mind      = buff_creator_t( this, "presence_of_mind", find_spell( 12043 ) ).duration( timespan_t::zero() ).activated( true );
-  buffs.rune_of_power         = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) )
-                                .duration( timespan_t::from_minutes( 3 ) )
-                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.pyromaniac            = buff_creator_t( this, "pyromaniac", find_spell( 166868 ) ).duration( find_spell( 166868 ) -> duration() ).chance( sets.has_set_bonus( MAGE_FIRE,T17,B4 ) );
+                                  .default_value( perks.improved_blink -> effectN( 1 ).percent() );
+  buffs.mage_armor            = stat_buff_creator_t( this, "mage_armor", find_spell( 6117 ) );
+  buffs.profound_magic        = buff_creator_t( this, "profound_magic", find_spell( 145252 ) )
+                                  .chance( sets.has_set_bonus( SET_CASTER, T16, B2 ) );
+  buffs.arcane_affinity       = buff_creator_t( this, "arcane_affinity", find_spell( 166871 ))
+                                  .chance( sets.has_set_bonus( MAGE_ARCANE, T17, B2 ) );
+  buffs.arcane_instability    = buff_creator_t( this, "arcane_instability", find_spell( 166872 ) )
+                                  .chance( sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) );
 
-  buffs.heating_up            = buff_creator_t( this, "heating_up", find_specialization_spell( "Pyroblast" ) -> ok() ? find_spell( 48107 ) : spell_data_t::not_found() );
-  buffs.pyroblast             = buff_creator_t( this, "pyroblast",  find_specialization_spell( "Pyroblast" ) -> ok() ? find_spell( 48108 ) : spell_data_t::not_found() );
-
-
-
-  //buffs.alter_time           = new buffs::alter_time_t( this );
+  // Fire
+  buffs.heating_up            = buff_creator_t( this, "heating_up",  find_spell( 48107 ) );
+  buffs.molten_armor          = buff_creator_t( this, "molten_armor", find_spell( 30482 ) )
+                                  .add_invalidate( CACHE_SPELL_CRIT );
+  buffs.pyroblast             = buff_creator_t( this, "pyroblast",  find_spell( 48108 ) );
   buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) );
+  buffs.potent_flames         = stat_buff_creator_t( this, "potent_flames", find_spell( 145254 ) )
+                                  .chance( sets.has_set_bonus( SET_CASTER, T16, B2 ) );
+  buffs.fiery_adept           = buff_creator_t( this, "fiery_adept", find_spell( 145261 ) )
+                                  .chance( sets.has_set_bonus( SET_CASTER, T16, B4 ) );
+  buffs.pyromaniac            = buff_creator_t( this, "pyromaniac", find_spell( 166868 ) )
+                                  .chance( sets.has_set_bonus( MAGE_FIRE, T17, B4 ) );
 
-
-  buffs.profound_magic        = buff_creator_t( this, "profound_magic" )
-                                .spell( find_spell( 145252 ) );
-  buffs.potent_flames         = stat_buff_creator_t( this, "potent_flames" )
-                                .spell( find_spell( 145254 ) );
-  buffs.frozen_thoughts       = buff_creator_t( this, "frozen_thoughts" )
-                                .spell( find_spell( 146557 ) );
-  buffs.fiery_adept           = buff_creator_t( this, "fiery_adept" )
-                                .spell( find_spell( 145261 ) )
-                                .chance( 1.0 );
-
-  buffs.incanters_flow        = new incanters_flow_t( this );
+  // Frost
+  buffs.brain_freeze          = buff_creator_t( this, "brain_freeze", spec.brain_freeze )
+                                  .duration( find_spell( 57761 ) -> duration() )
+                                  .default_value( spec.brain_freeze -> effectN( 1 ).percent() )
+                                  .max_stack( find_spell( 57761 ) -> max_stacks() )
+                                  .chance( find_spell( 44549 ) -> effectN( 1 ).percent() );
+  buffs.fingers_of_frost      = buff_creator_t( this, "fingers_of_frost", find_spell( 112965 ) )
+                                  .chance( find_spell( 112965 ) -> effectN( 1 ).percent() )
+                                  .duration( find_spell( 44544 ) -> duration() )
+                                  .max_stack( find_spell( 44544 ) -> max_stacks() );
+  buffs.frost_armor           = buff_creator_t( this, "frost_armor", find_spell( 7302 ) )
+                                  .add_invalidate( CACHE_MULTISTRIKE );
+  buffs.icy_veins             = buff_creator_t( this, "icy_veins", find_spell( 12472 ) );
+  if ( glyphs.icy_veins -> ok () )
+  {
+    buffs.icy_veins -> add_invalidate( CACHE_MULTISTRIKE );
+  }
+  else
+  {
+    buffs.icy_veins -> add_invalidate( CACHE_SPELL_HASTE );
+  }
+  buffs.enhanced_frostbolt    = buff_creator_t( this, "enhanced_frostbolt", find_spell( 157646 ) )
+                                  .duration( find_spell( 157648 ) -> duration() );
+  buffs.frozen_thoughts       = buff_creator_t( this, "frozen_thoughts", find_spell( 146557 ) );
   buffs.ice_shard             = buff_creator_t( this, "ice_shard", find_spell( 166869 ) );
+
+  // Talents
+  buffs.blazing_speed         = buff_creator_t( this, "blazing_speed", talents.blazing_speed )
+                                  .default_value( talents.blazing_speed -> effectN( 1 ).percent() );
+  buffs.ice_floes             = buff_creator_t( this, "ice_floes", talents.ice_floes );
+  buffs.incanters_flow        = new incanters_flow_t( this );
+  buffs.rune_of_power         = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) )
+                                  .duration( find_spell( 116011 ) -> duration() )
+                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
 
 // mage_t::init_gains =======================================================

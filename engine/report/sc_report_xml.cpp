@@ -633,17 +633,17 @@ void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, player
     }
   }
 
-  size_t num_scaling_stats = p -> scaling_stats.size();
+  size_t num_scaling_stats = p -> scaling_stats[ sm ].size();
   for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
     writer.begin_tag( "scaling_stat" );
-    writer.print_attribute( "name", util::stat_type_abbrev( p -> scaling_stats[ i ] ) );
+    writer.print_attribute( "name", util::stat_type_abbrev( p -> scaling_stats[ sm ][ i ] ) );
     writer.print_attribute( "index", util::to_string( ( int64_t )i ) );
 
     if ( i > 0 )
     {
-      if ( ( ( p -> scaling[ sm ].get_stat( p -> scaling_stats[ i - 1 ] ) - p -> scaling[ sm ].get_stat( p -> scaling_stats[ i ] ) )
-             > sqrt ( p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ i - 1 ] ) * p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ i - 1 ] ) / 4 + p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ i ] ) * p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ i ] ) / 4 ) * 2 ) )
+      if ( ( ( p -> scaling[ sm ].get_stat( p -> scaling_stats[ sm ][ i - 1 ] ) - p -> scaling[ sm ].get_stat( p -> scaling_stats[ sm ][ i ] ) )
+             > sqrt ( p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ sm ][ i - 1 ] ) * p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ sm ][ i - 1 ] ) / 4 + p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ sm ][ i ] ) * p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ sm ][ i ] ) / 4 ) * 2 ) )
         writer.print_attribute( "relative_to_previous", ">" );
       else
         writer.print_attribute( "relative_to_previous", "=" );

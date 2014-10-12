@@ -1625,7 +1625,8 @@ void print_html_talents( report::sc_html_stream& os, player_t* p )
 void print_html_player_scale_factor_table( report::sc_html_stream& os, sim_t* sim, player_t* p, player_processed_report_information_t& ri, scale_metric_e sm )
 {
 
-  int colspan = static_cast< int >( p -> scaling_stats.size() );
+  int colspan = static_cast< int >( p -> scaling_stats[ sm ].size() );
+  std::vector<stat_e> scaling_stats = p -> scaling_stats[ sm ];
 
   os << "<table class=\"sc mt\">\n";
 
@@ -1636,11 +1637,11 @@ void print_html_player_scale_factor_table( report::sc_html_stream& os, sim_t* si
   os << "<tr>\n"
     << "<th></th>\n";
 
-  for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
+  for ( size_t i = 0; i < scaling_stats.size(); i++ )
   {
     os.printf(
       "<th>%s</th>\n",
-      util::stat_type_abbrev( p -> scaling_stats[ i ] ) );
+      util::stat_type_abbrev( scaling_stats[ i ] ) );
   }
   if ( p -> sim -> scaling -> scale_lag )
   {
@@ -1651,18 +1652,18 @@ void print_html_player_scale_factor_table( report::sc_html_stream& os, sim_t* si
   os << "<tr>\n"
     << "<th class=\"left\">Scale Factors</th>\n";
 
-  for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
+  for ( size_t i = 0; i < scaling_stats.size(); i++ )
   {
-    if ( std::abs( p -> scaling[ sm ].get_stat( p -> scaling_stats[ i ] ) > 1.0e5 ) )
+    if ( std::abs( p -> scaling[ sm ].get_stat( scaling_stats[ i ] ) > 1.0e5 ) )
       os.printf(
       "<td>%.*e</td>\n",
       p -> sim -> report_precision,
-      p -> scaling[ sm ].get_stat( p -> scaling_stats[ i ] ) );
+      p -> scaling[ sm ].get_stat( scaling_stats[ i ] ) );
     else
       os.printf(
       "<td>%.*f</td>\n",
       p -> sim -> report_precision,
-      p -> scaling[ sm ].get_stat( p -> scaling_stats[ i ] ) );
+      p -> scaling[ sm ].get_stat( scaling_stats[ i ] ) );
 
   }
   if ( p -> sim -> scaling -> scale_lag )
@@ -1674,23 +1675,23 @@ void print_html_player_scale_factor_table( report::sc_html_stream& os, sim_t* si
   os << "<tr>\n"
     << "<th class=\"left\">Normalized</th>\n";
 
-  for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
+  for ( size_t i = 0; i < scaling_stats.size(); i++ )
     os.printf(
     "<td>%.*f</td>\n",
     p -> sim -> report_precision,
-    p -> scaling_normalized[ sm ].get_stat( p -> scaling_stats[ i ] ) );
+    p -> scaling_normalized[ sm ].get_stat( scaling_stats[ i ] ) );
   os << "</tr>\n";
   os << "<tr>\n"
     << "<th class=\"left\">Scale Deltas</th>\n";
 
-  for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
+  for ( size_t i = 0; i < scaling_stats.size(); i++ )
   {
-    double value = p -> sim -> scaling -> stats.get_stat( p -> scaling_stats[ i ] );
+    double value = p -> sim -> scaling -> stats.get_stat( scaling_stats[ i ] );
     std::string prefix;
     if ( p -> sim -> scaling -> center_scale_delta == 1 &&
-      p -> scaling_stats[ i ] != STAT_SPIRIT &&
-      p -> scaling_stats[ i ] != STAT_HIT_RATING &&
-      p -> scaling_stats[ i ] != STAT_EXPERTISE_RATING )
+      scaling_stats[ i ] != STAT_SPIRIT &&
+      scaling_stats[ i ] != STAT_HIT_RATING &&
+      scaling_stats[ i ] != STAT_EXPERTISE_RATING )
     {
       value /= 2;
       prefix = "+/- ";
@@ -1705,17 +1706,17 @@ void print_html_player_scale_factor_table( report::sc_html_stream& os, sim_t* si
   os << "<tr>\n"
     << "<th class=\"left\">Error</th>\n";
 
-  for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
-    if ( std::abs( p -> scaling[ sm ].get_stat( p -> scaling_stats[ i ] ) ) > 1.0e5 )
+  for ( size_t i = 0; i < scaling_stats.size(); i++ )
+    if ( std::abs( p -> scaling[ sm ].get_stat( scaling_stats[ i ] ) ) > 1.0e5 )
       os.printf(
       "<td>%.*e</td>\n",
       p -> sim -> report_precision,
-      p -> scaling_error[ sm ].get_stat( p -> scaling_stats[ i ] ) );
+      p -> scaling_error[ sm ].get_stat( scaling_stats[ i ] ) );
     else
       os.printf(
       "<td>%.*f</td>\n",
       p -> sim -> report_precision,
-      p -> scaling_error[ sm ].get_stat( p -> scaling_stats[ i ] ) );
+      p -> scaling_error[ sm ].get_stat( scaling_stats[ i ] ) );
 
   if ( p -> sim -> scaling -> scale_lag )
     os.printf(
@@ -1772,21 +1773,21 @@ void print_html_player_scale_factor_table( report::sc_html_stream& os, sim_t* si
     "<li>",
     colspan );
 
-  for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
+  for ( size_t i = 0; i < scaling_stats.size(); i++ )
   {
     if ( i > 0 )
     {
       // holy hell this was hard to read - splitting this out into human-readable code
-      double separation = fabs( p -> scaling[ sm ].get_stat( p -> scaling_stats[ i - 1 ] ) - p -> scaling[ sm ].get_stat( p -> scaling_stats[ i ] ) );
-      double error_est = sqrt( p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ i - 1 ] ) * p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ i - 1 ] ) / 4 
-                       + p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ i ] ) * p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ i ] ) / 4 );
+      double separation = fabs( p -> scaling[ sm ].get_stat( scaling_stats[ i - 1 ] ) - p -> scaling[ sm ].get_stat( scaling_stats[ i ] ) );
+      double error_est = sqrt( p -> scaling_compare_error[ sm ].get_stat( scaling_stats[ i - 1 ] ) * p -> scaling_compare_error[ sm ].get_stat( scaling_stats[ i - 1 ] ) / 4 
+                       + p -> scaling_compare_error[ sm ].get_stat( scaling_stats[ i ] ) * p -> scaling_compare_error[ sm ].get_stat( scaling_stats[ i ] ) / 4 );
       if ( separation > (error_est * 2 ) )
         os << " > ";
       else
         os << " ~= ";
     }
 
-    os.printf( "%s", util::stat_type_abbrev( p -> scaling_stats[ i ] ) );
+    os.printf( "%s", util::stat_type_abbrev( scaling_stats[ i ] ) );
   }
 
   os << "</table>\n";
@@ -1830,15 +1831,15 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
              sim -> scaling -> scale_factor_noise < p -> scaling_lag_error[ default_sm ] / fabs( p -> scaling_lag[ default_sm ] ) )
           os.printf( "<p>Player may have insufficient iterations (%d) to calculate scale factor for lag (error is >%.0f%% delta score)</p>\n",
                      sim -> iterations, sim -> scaling -> scale_factor_noise * 100.0 );
-        for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
+        for ( size_t i = 0; i < p -> scaling_stats[ default_sm ].size(); i++ )
         {
           scale_metric_e sm = p -> sim -> scaling -> scaling_metric;
-          double value = p -> scaling[ sm ].get_stat( p -> scaling_stats[ i ] );
-          double error = p -> scaling_error[ sm ].get_stat( p -> scaling_stats[ i ] );
+          double value = p -> scaling[ sm ].get_stat( p -> scaling_stats[ default_sm ][ i ] );
+          double error = p -> scaling_error[ sm ].get_stat( p -> scaling_stats[ default_sm ][ i ] );
           if ( sim -> scaling -> scale_factor_noise > 0 &&
                sim -> scaling -> scale_factor_noise < error / fabs( value ) )
             os.printf( "<p>Player may have insufficient iterations (%d) to calculate scale factor for stat %s (error is >%.0f%% delta score)</p>\n",
-                       sim -> iterations, util::stat_type_string( p -> scaling_stats[ i ] ), sim -> scaling -> scale_factor_noise * 100.0 );
+                       sim -> iterations, util::stat_type_string( p -> scaling_stats[ default_sm ][ i ] ), sim -> scaling -> scale_factor_noise * 100.0 );
         }
         os   << "</div>\n";
       }

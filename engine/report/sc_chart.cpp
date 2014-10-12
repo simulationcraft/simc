@@ -1380,7 +1380,7 @@ std::string chart::scale_factors( player_t* p )
   // TODO: eventually show all data
   scale_metric_e sm = p -> sim -> scaling -> scaling_metric;
 
-  for ( std::vector<stat_e>::const_iterator it = p -> scaling_stats.begin(), end = p -> scaling_stats.end(); it != end; ++it )
+  for ( std::vector<stat_e>::const_iterator it = p -> scaling_stats[ sm ].begin(), end = p -> scaling_stats[ sm ].end(); it != end; ++it )
   {
     if ( p -> scales_with[ *it ] )
       scaling_stats.push_back( *it );
