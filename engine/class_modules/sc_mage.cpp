@@ -67,7 +67,6 @@ public:
   // Active
   actions::ignite_t* active_ignite;
   action_t* explode; // Explode helps with handling Unstable Magic.
-  action_t* FoF_renew;
   player_t* last_bomb_target;
 
   // RPPM objects
@@ -117,6 +116,7 @@ public:
           * icy_veins,
           * enhanced_frostbolt,    // Perk
           * frozen_thoughts,       // T16 2pc Frost
+          * frost_t17_2pc,         // T17 2pc Frost
           * ice_shard;             // T17 4pc Frost
 
     // Talents
@@ -338,7 +338,6 @@ public:
     distance_from_rune = 0;
     //Active
     explode                  = 0;
-    FoF_renew                = 0;
 
     // Cooldowns
     cooldowns.combustion         = get_cooldown( "combustion"         );
@@ -1340,50 +1339,6 @@ void mage_spell_t::trigger_ignite( action_state_t* state )
   trigger( p.active_ignite, state -> target, amount );
 }
 
-// T17 Frost 2pc Driver =============================================================
-
-static void Frost_orb_FoF_renew( action_state_t* s )
-{
-
-  struct frost_orb_FoF_renew_t: public mage_spell_t
-  {
-    frost_orb_FoF_renew_t( mage_t* p ):
-      mage_spell_t( "FoF_Renew", p )
-    {
-      may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
-      base_costs[RESOURCE_MANA] = 0;
-      cooldown -> duration = timespan_t::zero();
-      trigger_gcd = timespan_t::zero();
-      background = true;
-      harmful = false;
-      base_execute_time = timespan_t::zero();
-      base_tick_time = timespan_t::from_seconds( 2.5 );
-      dot_duration = timespan_t::from_seconds( 10.5 );
-      hasted_ticks = false;
-    }
-
-    void tick( dot_t* d )
-    {
-      mage_spell_t::tick( d );
-
-      if ( td( d -> target ) -> dots.frozen_orb -> is_ticking() )
-      {
-        p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
-      }
-    }
-  };
-
-
-  mage_t* p = debug_cast<mage_t*>( s -> action -> player );
-
-  if ( !p -> FoF_renew )
-  {
-    p -> FoF_renew = new frost_orb_FoF_renew_t( p );
-    p -> FoF_renew -> init();
-  }
-
-  p -> FoF_renew -> execute();
-}
 // Unstable Magic Trigger ====================================================
 
 static void trigger_unstable_magic( action_state_t* s )
@@ -2846,14 +2801,21 @@ struct frozen_orb_t : public mage_spell_t
     frozen_orb_bolt -> execute();
   }
 
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+
+    if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B2 ) )
+    {
+      p() -> buffs.frost_t17_2pc -> trigger();
+    }
+  }
+
   virtual void impact( action_state_t* s )
   {
     mage_spell_t::impact( s );
 
     p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
-
-    if( p() -> sets.has_set_bonus( MAGE_FROST, T17, B2 ) )
-      Frost_orb_FoF_renew( s );
   }
 };
 
@@ -4305,6 +4267,23 @@ struct incanters_flow_t : public buff_t
 };
 
 
+// Buff callback functions
+
+static void frost_t17_2pc_fof_gain( buff_t* buff, int, int )
+{
+  mage_t* p = debug_cast<mage_t*>( buff -> player );
+
+  p -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
+  if ( p -> sim -> debug )
+  {
+    p -> sim -> out_debug.printf( "%s gains Fingers of Frost from 2T17",
+                                  p -> name() );
+  }
+}
+
+
+// mage_t::create_buffs =======================================================
+
 void mage_t::create_buffs()
 {
   player_t::create_buffs();
@@ -4373,6 +4352,11 @@ void mage_t::create_buffs()
   buffs.enhanced_frostbolt    = buff_creator_t( this, "enhanced_frostbolt", find_spell( 157646 ) )
                                   .duration( find_spell( 157648 ) -> duration() );
   buffs.frozen_thoughts       = buff_creator_t( this, "frozen_thoughts", find_spell( 146557 ) );
+  buffs.frost_t17_2pc         = buff_creator_t( this, "frost_t17_2pc", find_spell( 165470 ) )
+                                  .duration( find_spell( 84714 ) -> duration() )
+                                  .period( find_spell( 165470 ) -> effectN( 1 ).time_value() )
+                                  .quiet( true )
+                                  .tick_callback( frost_t17_2pc_fof_gain );
   buffs.ice_shard             = buff_creator_t( this, "ice_shard", find_spell( 166869 ) );
 
   // Talents
