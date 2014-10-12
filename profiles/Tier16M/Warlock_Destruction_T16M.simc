@@ -1,5 +1,5 @@
 warlock="Warlock_Destruction_T16M"
-level=100
+level=90
 race=troll
 role=spell
 position=back
@@ -29,7 +29,7 @@ actions.precombat+=/incinerate
 
 # Executed every time the actor is available.
 
-actions=potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20
+actions=potion,name=jade_serpent,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/berserking
 actions+=/blood_fury
 actions+=/arcane_torrent
