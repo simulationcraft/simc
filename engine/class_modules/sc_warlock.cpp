@@ -949,6 +949,11 @@ struct doom_bolt_t: public warlock_pet_spell_t
   {
   }
 
+  virtual timespan_t execute_time() const
+  {
+    return timespan_t::from_seconds( 3.0 );
+  }
+
   virtual double composite_target_multiplier( player_t* target ) const
   {
     double m = warlock_pet_spell_t::composite_target_multiplier( target );
