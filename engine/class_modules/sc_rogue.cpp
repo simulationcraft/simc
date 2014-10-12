@@ -4429,6 +4429,8 @@ void rogue_t::init_action_list()
     precombat -> add_talent( this, "Marked for Death" );
     precombat -> add_action( this, "Slice and Dice", "if=talent.marked_for_death.enabled" );
 
+    def -> add_action( this, "Preparation", "if=!buff.vanish.up&cooldown.vanish.remains>60" );
+
     for ( size_t i = 0; i < item_actions.size(); i++ )
       def -> add_action( item_actions[i] );
 
@@ -4443,6 +4445,7 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Blade Flurry", "if=(active_enemies>=2&!buff.blade_flurry.up)|(active_enemies<2&buff.blade_flurry.up)" );
     def -> add_talent( this, "Shadow Reflection", "if=(cooldown.killing_spree.remains<10&combo_points>3)|buff.adrenaline_rush.up" );
     def -> add_action( this, "Ambush" );
+    def -> add_action( this, "Vanish", "if=time>10&(combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)|(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4)))&((talent.shadow_focus.enabled&buff.adrenaline_rush.down&energy<20)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))" );
     def -> add_action( this, "Killing Spree", "if=energy<50&(!talent.shadow_reflection.enabled|cooldown.shadow_reflection.remains>30|buff.shadow_reflection.remains>3)" );
     def -> add_action( this, "Adrenaline Rush", "if=energy<35" );
 
