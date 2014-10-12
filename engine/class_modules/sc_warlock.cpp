@@ -945,7 +945,7 @@ struct immolation_t: public warlock_pet_spell_t
 struct doom_bolt_t: public warlock_pet_spell_t
 {
   doom_bolt_t( warlock_pet_t* p ):
-    warlock_pet_spell_t("Doom Bolt", p, p -> find_spell( 85692 ) )
+    warlock_pet_spell_t( p, "Doom Bolt" )
   {
   }
 
@@ -967,6 +967,8 @@ struct meteor_strike_t: public warlock_pet_spell_t
     warlock_pet_spell_t( "Meteor Strike", p, p -> find_spell( 171018 ) )
   {
     parse_options( options_str );
+    if ( !p -> owner -> find_talent_spell( "Demonic Servitude" ) )
+      background = true;
     aoe = -1;
   }
 };
@@ -1295,8 +1297,7 @@ struct infernal_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, "infernal", PET_INFERNAL, true )
   {
     action_list_str = "immolation,if=!ticking";
-    if ( owner -> talents.demonic_servitude -> ok() )
-      action_list_str += "/meteor_strike";
+    action_list_str += "/meteor_strike";
     owner_coeff.ap_from_sp = 0.065934;
   }
 
@@ -1540,8 +1541,7 @@ struct abyssal_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, "abyssal", PET_INFERNAL, true )
   {
     action_list_str = "immolation,if=!ticking";
-    if ( owner -> talents.demonic_servitude -> ok() )
-      action_list_str += "/meteor_strike";
+    action_list_str += "/meteor_strike";
     owner_coeff.ap_from_sp = 0.065934;
   }
 
