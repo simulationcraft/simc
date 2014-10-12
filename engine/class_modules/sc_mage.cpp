@@ -23,7 +23,6 @@ namespace pets {
 struct water_elemental_pet_t;
 }
 
-enum mage_rotation_e { ROTATION_NONE = 0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
 // Icicle data, stored in an icicle container object. Contains a source stats object and the damage
 typedef std::pair< double, stats_t* > icicle_data_t;
 // Icicle container object, stored in a list to launch icicles at unsuspecting enemies!
@@ -889,35 +888,6 @@ struct prismatic_crystal_t : public pet_t
 };
 
 } // pets
-
-namespace buffs {
-
-// Arcane Power Buff ========================================================
-
-struct arcane_power_t : public buff_t
-{
-  arcane_power_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "arcane_power", p -> find_class_spell( "Arcane Power" ) )
-            .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
-  {
-    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
-
-    buff_duration *= 1.0 + p -> glyphs.arcane_power -> effectN( 1 ).percent();
-  }
-};
-
-// Icy Veins Buff ===========================================================
-
-struct icy_veins_t : public buff_t
-{
-  icy_veins_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "icy_veins", p -> find_class_spell( "Icy Veins" ) ).add_invalidate( CACHE_SPELL_HASTE ) )
-  {
-    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
-  }
-};
-
-} // end buffs namespace
 
 namespace actions {
 // ==========================================================================
@@ -1833,8 +1803,6 @@ struct arcane_orb_t : public mage_spell_t
   }
 };
 
-
-
 // Arcane Power Spell =======================================================
 
 struct arcane_power_t : public mage_spell_t
@@ -1845,7 +1813,10 @@ struct arcane_power_t : public mage_spell_t
     parse_options( options_str );
     harmful = false;
 
-    cooldown -> duration *= 1.0 + p -> glyphs.arcane_power -> effectN( 2 ).percent();
+    if ( p -> glyphs.arcane_power -> ok() )
+    {
+      cooldown -> duration *= 1.0 + p -> glyphs.arcane_power -> effectN( 2 ).percent();
+    }
   }
 
   virtual void execute()
@@ -4353,7 +4324,12 @@ void mage_t::create_buffs()
                                   .max_stack( find_spell( 36032 ) -> max_stacks() );
   buffs.arcane_missiles       = buff_creator_t( this, "arcane_missiles", find_spell( 79683 ) )
                                   .chance( find_spell( 79684 ) -> proc_chance() );
-  buffs.arcane_power          = new buffs::arcane_power_t( this );
+  buffs.arcane_power          = buff_creator_t( this, "arcane_power", find_spell( 12042 ) )
+                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  if ( glyphs.arcane_power -> ok () )
+  {
+    buffs.arcane_power -> buff_duration *= 1.0 + glyphs.arcane_power -> effectN( 1 ).percent();
+  }
   buffs.presence_of_mind      = buff_creator_t( this, "presence_of_mind", find_spell( 12043 ) )
                                   .activated( true )
                                   .duration( timespan_t::zero() );
@@ -4393,7 +4369,7 @@ void mage_t::create_buffs()
   buffs.frost_armor           = buff_creator_t( this, "frost_armor", find_spell( 7302 ) )
                                   .add_invalidate( CACHE_MULTISTRIKE );
   buffs.icy_veins             = buff_creator_t( this, "icy_veins", find_spell( 12472 ) );
-  if( glyphs.icy_veins -> ok () )
+  if ( glyphs.icy_veins -> ok () )
   {
     buffs.icy_veins -> add_invalidate( CACHE_MULTISTRIKE );
   }
