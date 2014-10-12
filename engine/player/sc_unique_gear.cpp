@@ -314,9 +314,9 @@ static const special_effect_db_item_t __special_effect_db[] = {
   {  28093, "1PPM",                                             0 }, /* Mongoose */
 
   /* Engineering enchants */
-  { 109092, "1PPM",                                             0 }, /* Mirror Scope */
-  { 109085, "1PPM",                                             0 }, /* Lord Blastingtons Scope of Doom */
-  {  95713, "1PPM",                                             0 }, /* Gnomish XRay */
+  { 177708, "1PPM_109092Trigger",                               0 }, /* Mirror Scope */
+  { 177707, "1PPM_109085Trigger",                               0 }, /* Lord Blastingtons Scope of Doom */
+  {  95713, "1PPM_95712Trigger",                                0 }, /* Gnomish XRay */
 
   /* Profession perks */
   { 105574, 0,                    profession::zen_alchemist_stone }, /* Zen Alchemist Stone (stat proc) */
