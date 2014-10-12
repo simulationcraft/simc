@@ -105,7 +105,6 @@ public:
     buff_t* presence_of_mind;
     buff_t* pyroblast;
     buff_t* rune_of_power;
-    //buff_t* alter_time;
     buff_t* profound_magic;
     buff_t* potent_flames;
     buff_t* frozen_thoughts;
@@ -877,158 +876,6 @@ struct prismatic_crystal_t : public pet_t
 
 namespace buffs {
 
-namespace alter_time {
-
-// Class to save buff state information relevant to alter time for a buff
-struct buff_state_t
-{
-  buff_t* buff;
-  int stacks;
-  timespan_t remain_time;
-  double value;
-
-  buff_state_t( buff_t* b ) :
-    buff( b ),
-    stacks( b -> current_stack ),
-    remain_time( b -> remains() ),
-    value( b -> current_value )
-  {
-    if ( b -> sim -> debug )
-    {
-      b -> sim -> out_debug.printf( "Creating buff_state_t for buff %s of player %s",
-                          b -> name_str.c_str(), b -> player ? b -> player -> name() : "" );
-
-      b -> sim -> out_debug.printf( "Snapshoted values are: current_stacks=%d remaining_time=%.4f current_value=%.2f",
-                          stacks, remain_time.total_seconds(), value );
-    }
-  }
-
-  void write_back_state() const
-  {
-    if ( buff -> sim -> debug )
-      buff -> sim -> out_debug.printf( "Writing back buff_state_t for buff %s of player %s",
-                             buff -> name_str.c_str(), buff -> player ? buff -> player -> name() : "" );
-
-    timespan_t save_buff_cd = buff -> cooldown -> duration; // Temporarily save the buff cooldown duration
-    buff -> cooldown -> duration = timespan_t::zero(); // Don't restart the buff cooldown
-
-    if ( stacks )
-      buff -> execute( stacks, value, remain_time ); // Reset the buff
-    else
-      buff -> expire();
-
-    buff -> cooldown -> duration = save_buff_cd; // Restore the buff cooldown duration
-  }
-};
-
-/*
- * dynamic mage state, to collect data about the mage and all his buffs
- */
-struct mage_state_t
-{
-  mage_t& mage;
-  std::array<double, RESOURCE_MAX > resources;
-  // location
-  std::vector<buff_state_t> buff_states;
-  std::vector<icicle_tuple_t> icicle_states;
-
-
-  mage_state_t( mage_t& m ) : // Snapshot and start 6s event
-    mage( m )
-  {
-    range::fill( resources, 0.0 );
-  }
-
-  void snapshot_current_state()
-  {
-    resources = mage.resources.current;
-
-    if ( mage.sim -> debug )
-      mage.sim -> out_debug.printf( "Creating mage_state_t for mage %s", mage.name() );
-
-    for ( size_t i = 0; i < mage.buff_list.size(); ++i )
-    {
-      buff_t* b = mage.buff_list[ i ];
-
-      if ( b == static_cast<player_t&>( mage ).buffs.exhaustion )
-        continue;
-
-      buff_states.push_back( buff_state_t( b ) );
-    }
-
-    for ( size_t i = 0, end = mage.icicles.size(); i < end; i++ )
-      icicle_states.push_back( mage.icicles[ i ] );
-  }
-
-  void write_back_state()
-  {
-    // Do not restore state under any circumstances to a mage that is not
-    // active
-    if ( mage.is_sleeping() )
-      return;
-
-    mage.resources.current = resources;
-
-    for ( size_t i = 0; i < buff_states.size(); ++ i )
-    {
-      buff_states[ i ].write_back_state();
-    }
-
-    mage.icicles.clear();
-    for ( size_t i = 0, end = icicle_states.size(); i < end; i++ )
-      mage.icicles.push_back( icicle_states[ i ] );
-
-    clear_state();
-  }
-
-  void clear_state()
-  {
-    range::fill( resources, 0.0 );
-    buff_states.clear();
-    icicle_states.clear();
-  }
-};
-
-
-} // alter_time namespace
-
-/*struct alter_time_t : public buff_t
-{
-  alter_time::mage_state_t mage_state;
-
-  alter_time_t( mage_t* player ) :
-    buff_t( buff_creator_t( player, "alter_time" ).spell( player -> find_spell( 110909 ) ) ),
-    mage_state( *player )
-  { }
-
-  mage_t* p() const
-  { return static_cast<mage_t*>( player ); }
-
-  virtual bool trigger( int        stacks,
-                        double     value,
-                        double     chance,
-                        timespan_t duration )
-  {
-    mage_state.snapshot_current_state();
-
-    return buff_t::trigger( stacks, value, chance, duration );
-  }
-
-  virtual void expire_override()
-  {
-    buff_t::expire_override();
-
-    mage_state.write_back_state();
-  }
-
-  virtual void reset()
-  {
-    buff_t::reset();
-
-    mage_state.clear_state();
-  }
-};
-*/
 // Arcane Power Buff ========================================================
 
 struct arcane_power_t : public buff_t
@@ -1053,8 +900,6 @@ struct icy_veins_t : public buff_t
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
   }
 };
-
-
 
 } // end buffs namespace
 
@@ -4132,51 +3977,6 @@ struct water_jet_t : public action_t
   }
 };
 
-/*
-// Alter Time Spell =========================================================
-
-struct alter_time_t : public mage_spell_t
-{
-  alter_time_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "alter_time_activate", p, p -> find_spell( 108978 ) )
-  {
-    parse_options( options_str );
-
-    harmful = false;
-  }
-
-  virtual void execute()
-  {
-    // Buff trigger / Snapshot happens before resource is spent
-    if ( p() -> buffs.alter_time -> check() > 0 )
-      p() -> buffs.alter_time -> expire();
-    else
-      p() -> buffs.alter_time -> trigger();
-
-    mage_spell_t::execute();
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> buffs.alter_time -> check() ) // Allow execution if the buff is up, even tough cooldown already is started.
-    {
-      timespan_t cd_ready = cooldown -> ready;
-
-      cooldown -> ready = sim -> current_time;
-
-      bool ready = mage_spell_t::ready();
-
-      cooldown -> ready = cd_ready;
-
-      return ready;
-    }
-
-    return mage_spell_t::ready();
-  }
-};
-*/
-
-
 } // namespace actions
 
 namespace events {
@@ -4328,7 +4128,6 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "prismatic_crystal" ) return new prismatic_crystal_t( this, options_str );
   if ( name == "choose_target"     ) return new choose_target_t( this, options_str );
   if ( name == "water_jet"         ) return new water_jet_t( this, options_str );
-  //if ( name == "alter_time"        ) return new              alter_time_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -4567,7 +4366,6 @@ void mage_t::create_buffs()
 
 
 
-  //buffs.alter_time           = new buffs::alter_time_t( this );
   buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) );
 
 
