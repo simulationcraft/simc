@@ -255,37 +255,24 @@ static const special_effect_db_item_t __special_effect_db[] = {
   // TODO: Rook's unlucky Talisman (aoe damage reduction)
 
   /* Mists of Pandaria: 5.0 */
-  { 126660, "OnHarmfulSpellHit",                                0 }, /* Essence of Terror */
-  { 126650, "OnDirectDamage",                                   0 }, /* Terror in the Mists */
-  { 126658, "OnDirectDamage",                                   0 }, /* Darkmist Vortex */
-  { 126647, "OnAttackHit",                                      0 }, /* Stuff of Nightmares */
-  { 126579, "OnSpellTickDamage",                                0 }, /* Light of the Cosmos */
-  { 126552, "OnAttackHit",                                      0 }, /* Bottle of Infinite Stars */
-  { 126534, "OnAttackHit",                                      0 }, /* Vial of Dragon's Blood */
-  { 126583, "OnAttackHit",                                      0 }, /* Lei Shen's Final Orders */
-  { 126590, "OnHeal",                                           0 }, /* Qin-xi's Polarizing Seal */
+  { 126650, "ProcOn/Hit",                                       0 }, /* Terror in the Mists */
+  { 126658, "ProcOn/Hit",                                       0 }, /* Darkmist Vortex */
 
   /* Mists of Pandaria: Dungeon */
-  { 126473, "OnSpellDamage",                                    0 }, /* Vision of the Predator */
-  { 126516, "OnDirectDamage",                                   0 }, /* Carbonic Carbuncle */
-  { 126482, "OnDirectDamage",                                   0 }, /* Windswept Pages */
-  { 126490, "OnDirectCrit",                                     0 }, /* Searing Words */
-  { 126237, "OnAttackHit",                                      0 }, /* Iron Protector Talisman */
+  { 126473, "ProcOn/Hit",                                       0 }, /* Vision of the Predator */
+  { 126516, "ProcOn/Hit",                                       0 }, /* Carbonic Carbuncle */
+  { 126482, "ProcOn/Hit",                                       0 }, /* Windswept Pages */
+  { 126490, "ProcOn/Crit",                                      0 }, /* Searing Words */
 
   /* Mists of Pandaria: Player versus Player */
-  { 138704, "OnHarmfulSpellHit",                                0 }, /* Volatile Talisman of the Shado-Pan Assault */
-  { 138701, "OnDirectDamage",                                   0 }, /* Brutal Talisman of the Shado-Pan Assault */
-  { 138700, "OnDirectDamage",                                   0 }, /* Vicious Talisman of the Shado-Pan Assault */
+  { 138701, "ProcOn/Hit",                                       0 }, /* Brutal Talisman of the Shado-Pan Assault */
+  { 138700, "ProcOn/Hit",                                       0 }, /* Vicious Talisman of the Shado-Pan Assault */
 
-  { 126702, "OnAttackHit",                                      0 }, /* Gladiator's Insignia of Victory */
-  { 126706, "OnSpellDamage",                                    0 }, /* Gladiator's Insignia of Dominance */
-  { 126708, "OnAttackHit",                                      0 }, /* Gladiator's Insignia of Conquest */
+  { 126706, "ProcOn/Hit",                                       0 }, /* Gladiator's Insignia of Dominance */
 
-  /* Mists of Pandaria: Darkmoon Faire */ 
-  { 128990, "OnSpellDamage",                                    0 }, /* Relic of Yu'lon */
-  { 128991, "OnHeal",                                           0 }, /* Relic of Chi'ji */
-  { 128445, "OnAttackCrit",                                     0 }, /* Relic of Xuen (agi) */
-  { 128989, "OnAttackHit",                                      0 }, /* Relic of Xuen (str) */
+  /* Mists of Pandaria: Darkmoon Faire */
+  { 128990, "ProcOn/Hit",                                       0 }, /* Relic of Yu'lon */
+  { 128445, "ProcOn/Crit",                                      0 }, /* Relic of Xuen (agi) */
 
   /**
    * Enchants
@@ -332,15 +319,6 @@ static const special_effect_db_item_t __special_effect_db[] = {
   {  95713, "1PPM",                                             0 }, /* Gnomish XRay */
 
   /* Profession perks */
-  { 125484, "OnSpellDamageHeal",                                0 }, /* Lightweave Embroidery Rank 3 */
-  {  75171, "OnSpellDamageHeal",                                0 }, /* Lightweave Embroidery Rank 2 */
-  {  55640, "OnSpellDamageHeal",                                0 }, /* Lightweave Embroidery Rank 1 */
-  { 125488, "OnSpellDamageHeal",                                0 }, /* Darkglow Embroidery Rank 3 */
-  {  75174, "OnSpellDamageHeal",                                0 }, /* Darkglow Embroidery Rank 2 */
-  {  55768, "OnSpellDamageHeal",                                0 }, /* Darkglow Embroidery Rank 1 */
-  { 125486, "OnAttackHit",                                      0 }, /* Swordguard Embroidery Rank 3 */
-  {  75177, "OnAttackHit",                                      0 }, /* Swordguard Embroidery Rank 2 */
-  {  55776, "OnAttackHit",                                      0 }, /* Swordguard Embroidery Rank 1 */
   { 105574, 0,                    profession::zen_alchemist_stone }, /* Zen Alchemist Stone (stat proc) */
   { 157136, 0,             profession::draenor_philosophers_stone }, /* Draenor Philosopher's Stone (stat proc) */
   {  55004, 0,                           profession::nitro_boosts },
