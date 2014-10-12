@@ -4010,38 +4010,63 @@ action_t* mage_t::create_action( const std::string& name,
 {
   using namespace actions;
 
+  // Arcane
   if ( name == "arcane_barrage"    ) return new          arcane_barrage_t( this, options_str );
   if ( name == "arcane_blast"      ) return new            arcane_blast_t( this, options_str );
   if ( name == "arcane_brilliance" ) return new       arcane_brilliance_t( this, options_str );
   if ( name == "arcane_explosion"  ) return new        arcane_explosion_t( this, options_str );
   if ( name == "arcane_missiles"   ) return new         arcane_missiles_t( this, options_str );
+  if ( name == "arcane_orb"        ) return new              arcane_orb_t( this, options_str );
   if ( name == "arcane_power"      ) return new            arcane_power_t( this, options_str );
-  if ( name == "blazing_speed"     ) return new           blazing_speed_t( this, options_str );
-  if ( name == "blink"             ) return new                   blink_t( this, options_str );
-  if ( name == "blizzard"          ) return new                blizzard_t( this, options_str );
-  if ( name == "start_pyro_chain"  ) return new        start_pyro_chain_t( this, options_str );
-  if ( name == "stop_pyro_chain"   ) return new        stop_pyro_chain_t(  this, options_str );
-  if ( name == "cold_snap"         ) return new               cold_snap_t( this, options_str );
-  if ( name == "combustion"        ) return new              combustion_t( this, options_str );
-  if ( name == "cone_of_cold"      ) return new            cone_of_cold_t( this, options_str );
-  if ( name == "counterspell"      ) return new            counterspell_t( this, options_str );
-  if ( name == "dragons_breath"    ) return new          dragons_breath_t( this, options_str );
   if ( name == "evocation"         ) return new               evocation_t( this, options_str );
+  if ( name == "nether_tempest"    ) return new          nether_tempest_t( this, options_str );
+  if ( name == "presence_of_mind"  ) return new        presence_of_mind_t( this, options_str );
+  if ( name == "slow"              ) return new                    slow_t( this, options_str );
+  if ( name == "supernova"         ) return new               supernova_t( this, options_str );
+
+  // Fire
+  if ( name == "blast_wave"        ) return new              blast_wave_t( this, options_str );
+  if ( name == "combustion"        ) return new              combustion_t( this, options_str );
+  if ( name == "dragons_breath"    ) return new          dragons_breath_t( this, options_str );
   if ( name == "fire_blast"        ) return new              fire_blast_t( this, options_str );
   if ( name == "fireball"          ) return new                fireball_t( this, options_str );
   if ( name == "flamestrike"       ) return new             flamestrike_t( this, options_str );
-  if ( name == "frost_bomb"        ) return new              frost_bomb_t( this, options_str );
-  if ( name == "frostbolt"         ) return new               frostbolt_t( this, options_str );
-  if ( name == "frostfire_bolt"    ) return new          frostfire_bolt_t( this, options_str );
-  if ( name == "frozen_orb"        ) return new              frozen_orb_t( this, options_str );
-  if ( name == "ice_floes"         ) return new               ice_floes_t( this, options_str );
-  if ( name == "ice_lance"         ) return new               ice_lance_t( this, options_str );
-  if ( name == "icy_veins"         ) return new               icy_veins_t( this, options_str );
   if ( name == "inferno_blast"     ) return new           inferno_blast_t( this, options_str );
   if ( name == "living_bomb"       ) return new             living_bomb_t( this, options_str );
-  if ( name == "arcane_orb"        ) return new              arcane_orb_t( this, options_str );
   if ( name == "meteor"            ) return new                  meteor_t( this, options_str );
+  if ( name == "pyroblast"         ) return new               pyroblast_t( this, options_str );
+  if ( name == "scorch"            ) return new                  scorch_t( this, options_str );
+
+  if ( name == "start_pyro_chain"  ) return new        start_pyro_chain_t( this, options_str );
+  if ( name == "stop_pyro_chain"   ) return new        stop_pyro_chain_t(  this, options_str );
+
+  // Frost
+  if ( name == "blizzard"          ) return new                blizzard_t( this, options_str );
   if ( name == "comet_storm"       ) return new             comet_storm_t( this, options_str );
+  if ( name == "frost_bomb"        ) return new              frost_bomb_t( this, options_str );
+  if ( name == "frostbolt"         ) return new               frostbolt_t( this, options_str );
+  if ( name == "frozen_orb"        ) return new              frozen_orb_t( this, options_str );
+  if ( name == "ice_lance"         ) return new               ice_lance_t( this, options_str );
+  if ( name == "ice_nova"          ) return new                ice_nova_t( this, options_str );
+  if ( name == "icy_veins"         ) return new               icy_veins_t( this, options_str );
+  if ( name == "water_elemental"   ) return new  summon_water_elemental_t( this, options_str );
+  if ( name == "water_jet"         ) return new               water_jet_t( this, options_str );
+
+  // Shared spells
+  if ( name == "blink"             ) return new                   blink_t( this, options_str );
+  if ( name == "cone_of_cold"      ) return new            cone_of_cold_t( this, options_str );
+  if ( name == "counterspell"      ) return new            counterspell_t( this, options_str );
+  if ( name == "frostfire_bolt"    ) return new          frostfire_bolt_t( this, options_str );
+  if ( name == "time_warp"         ) return new               time_warp_t( this, options_str );
+
+  if ( name == "choose_target"     ) return new           choose_target_t( this, options_str );
+
+  // Shared talents
+  if ( name == "blazing_speed"     ) return new           blazing_speed_t( this, options_str );
+  if ( name == "ice_floes"         ) return new               ice_floes_t( this, options_str );
+  // TODO: Implement all T45 talents and enable freezing_grasp
+  // if ( name == "freezing_grasp"    )
+  if ( name == "cold_snap"         ) return new               cold_snap_t( this, options_str );
   if ( name == "mage_bomb"         )
   {
     if ( talents.frost_bomb -> ok() )
@@ -4058,20 +4083,8 @@ action_t* mage_t::create_action( const std::string& name,
     }
   }
   if ( name == "mirror_image"      ) return new            mirror_image_t( this, options_str );
-  if ( name == "nether_tempest"    ) return new          nether_tempest_t( this, options_str );
-  if ( name == "presence_of_mind"  ) return new        presence_of_mind_t( this, options_str );
-  if ( name == "pyroblast"         ) return new               pyroblast_t( this, options_str );
   if ( name == "rune_of_power"     ) return new           rune_of_power_t( this, options_str );
-  if ( name == "scorch"            ) return new                  scorch_t( this, options_str );
-  if ( name == "slow"              ) return new                    slow_t( this, options_str );
-  if ( name == "supernova"         ) return new               supernova_t( this, options_str );
-  if ( name == "blast_wave"        ) return new              blast_wave_t( this, options_str );
-  if ( name == "ice_nova"          ) return new                ice_nova_t( this, options_str );
-  if ( name == "time_warp"         ) return new               time_warp_t( this, options_str );
-  if ( name == "water_elemental"   ) return new  summon_water_elemental_t( this, options_str );
-  if ( name == "prismatic_crystal" ) return new prismatic_crystal_t( this, options_str );
-  if ( name == "choose_target"     ) return new choose_target_t( this, options_str );
-  if ( name == "water_jet"         ) return new water_jet_t( this, options_str );
+  if ( name == "prismatic_crystal" ) return new       prismatic_crystal_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
