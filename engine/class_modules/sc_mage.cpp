@@ -742,6 +742,14 @@ struct prismatic_crystal_t : public pet_t
       split_aoe_damage = true;
     }
 
+    void init()
+    {
+      spell_t::init();
+
+      // Don't snapshot anything
+      snapshot_flags = 0;
+    }
+
     prismatic_crystal_t* p()
     { return debug_cast<prismatic_crystal_t*>( player ); }
 
@@ -757,10 +765,6 @@ struct prismatic_crystal_t : public pet_t
 
       spell_t::execute();
     }
-
-    // Damage gets fully inherited from the Mage's own spell
-    double calculate_direct_amount( action_state_t* state )
-    { return state -> result_amount; }
 
     action_state_t* new_state()
     { return new prismatic_crystal_aoe_state_t( this, target ); }
@@ -846,24 +850,19 @@ struct prismatic_crystal_t : public pet_t
     if ( state -> result_amount == 0 )
       return;
 
-    // NOTE: We first use get_state() here to get a correct state object
-    // (prismatic_crystal_aoe_state_t), and then EXPLICITLY USE the base class
-    // copy_state to copy the owner's damage state to the PC damage state
-    // object. After that, we assign the owner_action member variable to the PC
-    // state, so we can do correct reporting.
-    //
-    // This is done so we can have a clean prismatic_crystal_aoe_state_t
-    // implementation, where copy_state() behaves in a logical way, because the
-    // rest of the execution path will only use prismatic_crystal_aoe_state_t
-    // objects.
+    // Get explicit state object so we can manually add the correct source
+    // action to the PC aoe, so reporting looks nice
     action_state_t* new_state = aoe_spell -> get_state();
-    new_state -> action_state_t::copy_state( state );
     prismatic_crystal_aoe_state_t* st = debug_cast<prismatic_crystal_aoe_state_t*>( new_state );
     st -> owner_action = state -> action;
 
     // Reset target to an enemy to avoid infinite looping
     new_state -> target = aoe_spell -> target;
 
+    // Set PC Aoe damage through base damage, so we can get correct split
+    // shenanigans going on in calculate_direct_amount()
+    aoe_spell -> base_dd_min = state -> result_total;
+    aoe_spell -> base_dd_max = state -> result_total;
     aoe_spell -> schedule_execute( new_state );
   }
 };
