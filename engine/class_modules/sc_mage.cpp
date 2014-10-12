@@ -132,7 +132,6 @@ public:
     cooldown_t* combustion,
               * cone_of_cold,
               * dragons_breath,
-              * evocation,
               * enhanced_frostbolt,
               * frozen_orb,
               * inferno_blast,
@@ -236,6 +235,11 @@ public:
   {
     // Arcane
     const spell_data_t* arcane_charge;
+    // NOTE: arcane_charge_passive is the Arcane passive added in patch 5.2,
+    //       called "Arcane Charge" (Spell ID: 114664).
+    //       It contains Spellsteal's mana cost reduction, Evocation's mana
+    //       gain reduction, and a deprecated Scorch damage reduction.
+    const spell_data_t* arcane_charge_passive;
     const spell_data_t* mana_adept;
     const spell_data_t* presence_of_mind;
     const spell_data_t* slow;
@@ -341,7 +345,6 @@ public:
     cooldowns.cone_of_cold       = get_cooldown( "cone_of_cold"       );
     cooldowns.dragons_breath     = get_cooldown( "dragons_breath"     );
     cooldowns.enhanced_frostbolt = get_cooldown( "enhanced_frostbolt" );
-    cooldowns.evocation          = get_cooldown( "evocation"          );
     cooldowns.frozen_orb         = get_cooldown( "frozen_orb"         );
     cooldowns.inferno_blast      = get_cooldown( "inferno_blast"      );
     cooldowns.presence_of_mind   = get_cooldown( "presence_of_mind"   );
@@ -635,8 +638,9 @@ struct mirror_image_pet_t : public pet_t
       double am = mirror_image_spell_t::action_multiplier();
 
       am *= 1.0 + p() -> arcane_charge -> stack() *
-                  p() -> o() -> spells.arcane_charge_arcane_blast -> effectN( 4 ).percent() *
-                  ( 1.0 + p() -> o() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).percent() );
+                  p() -> o() -> spec.arcane_charge -> effectN( 4 ).percent() *
+                  ( 1.0 + p() -> o() -> sets.set( SET_CASTER, T15, B4 )
+                                     -> effectN( 1 ).percent() );
 
       return am;
     }
@@ -705,9 +709,8 @@ struct mirror_image_pet_t : public pet_t
   {
     pet_t::create_buffs();
 
-    arcane_charge = buff_creator_t( this, "arcane_charge", o() -> spec.arcane_charge )
-                    .max_stack( find_spell( 36032 ) -> max_stacks() )
-                    .duration( find_spell( 36032 ) -> duration() );
+    arcane_charge = buff_creator_t( this, "arcane_charge",
+                                    o() -> spec.arcane_charge );
   }
 
 
@@ -1474,8 +1477,10 @@ struct arcane_barrage_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
-      ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).percent() );
+    am *= 1.0 + p() -> buffs.arcane_charge -> stack() *
+                p() -> spec.arcane_charge -> effectN( 1 ).percent() *
+                ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 )
+                            -> effectN( 1 ).percent() );
 
     return am;
   }
@@ -1498,8 +1503,10 @@ struct arcane_blast_t : public mage_spell_t
 
     if ( p() -> buffs.arcane_charge -> check() )
     {
-      c *= 1.0 +  p() -> buffs.arcane_charge -> check() * p() -> spells.arcane_charge_arcane_blast -> effectN( 2 ).percent() *
-        ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).percent() );
+      c *= 1.0 +  p() -> buffs.arcane_charge -> check() *
+                  p() -> spec.arcane_charge -> effectN( 2 ).percent() *
+                  ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 )
+                              -> effectN( 1 ).percent() );
     }
 
     if ( p() -> buffs.profound_magic -> check() )
@@ -1536,8 +1543,10 @@ struct arcane_blast_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
-      ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).percent() );
+    am *= 1.0 + p() -> buffs.arcane_charge -> stack() *
+                p() -> spec.arcane_charge -> effectN( 1 ).percent() *
+                ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 )
+                            -> effectN( 1 ).percent() );
 
     return am;
   }
@@ -1668,8 +1677,10 @@ struct arcane_missiles_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
-      ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).percent() );
+    am *= 1.0 + p() -> buffs.arcane_charge -> stack() *
+                p() -> spec.arcane_charge -> effectN( 1 ).percent() *
+                ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 )
+                            -> effectN( 1 ).percent() );
     if ( p() -> sets.has_set_bonus( SET_CASTER, T14, B2 ) )
     {
       am *= 1.07;
@@ -2225,61 +2236,49 @@ struct dragons_breath_t : public mage_spell_t
 
 class evocation_t : public mage_spell_t
 {
-  timespan_t pre_cast;
   int arcane_charges;
 
 public:
   evocation_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "evocation", p,  p -> find_class_spell( "Evocation" ) ),
-    pre_cast( timespan_t::zero() ), arcane_charges( 0 )
+    arcane_charges( 0 )
   {
-    add_option( opt_timespan( "precast", pre_cast ) );
     parse_options( options_str );
 
-    pre_cast = std::max( pre_cast, timespan_t::zero() );
-
     base_tick_time    = timespan_t::from_seconds( 2.0 );
-    tick_zero         = true;
     channeled         = true;
+    dot_duration      = data().duration();
     harmful           = false;
     hasted_ticks      = false;
+    tick_zero         = true;
 
-    cooldown = p -> cooldowns.evocation;
     if ( p -> perks.improved_evocation -> ok() )
     {
       cooldown -> duration += p -> perks.improved_evocation
                                 -> effectN( 1 ).time_value();
     }
-
-    timespan_t duration = data().duration();
-
-
-    dot_duration = duration;
   }
 
   virtual void tick( dot_t* d )
   {
     mage_spell_t::tick( d );
 
-    double mana = p() -> resources.max[ RESOURCE_MANA ];
+    double mana_gain = p() -> resources.max[ RESOURCE_MANA ] *
+                       (data().effectN( 1 ).percent() +
+                        p() -> spec.arcane_charge_passive
+                            -> effectN( 3 ).percent());
 
     if ( p() -> passives.nether_attunement -> ok() )
-      mana /= p() -> cache.spell_speed();
-
-    if ( p() -> specialization() == MAGE_ARCANE )
     {
-      mana *= 0.1;
-
-      mana *= 1.0 + arcane_charges * p() -> spells.arcane_charge_arcane_blast -> effectN( 4 ).percent() *
-              ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4) -> effectN( 1 ).percent() );
-    }
-    else
-    {
-      mana *= data().effectN( 1 ).percent();
+      mana_gain /= p() -> cache.spell_speed();
     }
 
+    mana_gain *= 1.0 + arcane_charges *
+                       p() -> spec.arcane_charge -> effectN( 4 ).percent() *
+                       ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4)
+                                   -> effectN( 1 ).percent() );
 
-    p() -> resource_gain( RESOURCE_MANA, mana, p() -> gains.evocation );
+    p() -> resource_gain( RESOURCE_MANA, mana_gain, p() -> gains.evocation );
   }
 
   virtual void last_tick( dot_t* d )
@@ -3368,16 +3367,12 @@ struct nether_tempest_t : public mage_spell_t
     add_aoe -> schedule_execute( aoe_state );
   }
 
-  virtual void last_tick( dot_t* d )
-  {
-    mage_spell_t::last_tick( d );
-  }
-
   double composite_persistent_multiplier( const action_state_t* state ) const
   {
     double m = mage_spell_t::composite_persistent_multiplier( state );
 
-    m *= 1.0 +  p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
+    m *= 1.0 +  p() -> buffs.arcane_charge -> stack() *
+                p() -> spec.arcane_charge -> effectN( 1 ).percent();
 
     return m;
   }
@@ -4206,8 +4201,8 @@ void mage_t::init_spells()
   perks.improved_icy_veins                   = find_perk_spell( "Improved Icy Veins" );
 
   // Spec Spells
-  spec.arcane_charge         = find_specialization_spell( "Arcane Charge" );
-  spells.arcane_charge_arcane_blast = spec.arcane_charge -> ok() ? find_spell( 36032 ) : spell_data_t::not_found();
+  spec.arcane_charge         = find_spell( 36032 );
+  spec.arcane_charge_passive = find_spell( 114664 );
   spec.presence_of_mind      = find_specialization_spell( "Presence of Mind" );
   spec.slow                  = find_class_spell( "Slow" );
 
@@ -4319,9 +4314,7 @@ void mage_t::create_buffs()
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
   // Arcane
-  buffs.arcane_charge         = buff_creator_t( this, "arcane_charge", spec.arcane_charge )
-                                  .duration( find_spell( 36032 ) -> duration() )
-                                  .max_stack( find_spell( 36032 ) -> max_stacks() );
+  buffs.arcane_charge         = buff_creator_t( this, "arcane_charge", spec.arcane_charge );
   buffs.arcane_missiles       = buff_creator_t( this, "arcane_missiles", find_spell( 79683 ) )
                                   .chance( find_spell( 79684 ) -> proc_chance() );
   buffs.arcane_power          = buff_creator_t( this, "arcane_power", find_spell( 12042 ) )
