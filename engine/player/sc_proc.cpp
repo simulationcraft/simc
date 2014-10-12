@@ -806,6 +806,9 @@ std::string special_effect_t::to_string() const
     s << cooldown().total_seconds();
   }
 
+  if ( weapon_proc )
+    s << " weaponproc";
+
   return s.str();
 }
 

@@ -6743,8 +6743,8 @@ struct dbc_proc_callback_t : public action_callback_t
     // (weapon_proc == true), dbc_proc_callback_t _REQUIRES_ that the action
     // has the correct weapon specified. Old style procs allowed actions
     // without any weapon to pass through.
-    if ( weapon && a -> weapon && a -> weapon != weapon ) return;
-
+    if ( weapon && ( ! a -> weapon || ( a -> weapon && a -> weapon != weapon ) ) )
+      return;
 
     bool triggered = roll( a );
     if ( listener -> sim -> debug )

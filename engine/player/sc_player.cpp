@@ -4401,11 +4401,11 @@ void player_t::stat_loss( stat_e    stat,
   // bail out if this is a stat that doesn't work for this class
   if ( convert_hybrid_stat( stat ) == STAT_NONE ) return;
 
-  if ( sim -> log ) sim -> out_log.printf( "%s loses %.2f %s%s", name(), amount, util::stat_type_string( stat ), ( temporary_buff ) ? " (temporary)" : "" );
-
   cache_e cache_type = cache_from_stat( stat );
   if ( regen_type == REGEN_DYNAMIC && regen_caches[ cache_type ] )
     do_dynamic_regen();
+
+  if ( sim -> log ) sim -> out_log.printf( "%s loses %.2f %s%s", name(), amount, util::stat_type_string( stat ), ( temporary_buff ) ? " (temporary)" : "" );
 
   int temp_value = temporary_buff ? 1 : 0;
   switch ( stat )
