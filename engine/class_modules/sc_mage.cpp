@@ -66,7 +66,7 @@ public:
   double distance_from_rune;
   // Active
   actions::ignite_t* active_ignite;
-  action_t* explode; // Explode helps with handling Unstable Magic.
+  action_t* unstable_magic_explosion;
   player_t* last_bomb_target;
 
   // RPPM objects
@@ -337,7 +337,7 @@ public:
   {
     distance_from_rune = 0;
     //Active
-    explode                  = 0;
+    unstable_magic_explosion = 0;
 
     // Cooldowns
     cooldowns.combustion         = get_cooldown( "combustion"         );
@@ -1386,16 +1386,16 @@ static void trigger_unstable_magic( action_state_t* s )
 
   mage_t* p = debug_cast<mage_t*>( s -> action -> player );
 
-  if ( !p -> explode )
+  if ( !p -> unstable_magic_explosion )
   {
-    p -> explode = new unstable_magic_explosion_t( p );
-    p -> explode -> init();
+    p -> unstable_magic_explosion = new unstable_magic_explosion_t( p );
+    p -> unstable_magic_explosion -> init();
   }
 
-  p -> explode -> target = s -> target;
-  p -> explode -> base_dd_max = s -> result_amount;
-  p -> explode -> base_dd_min = s -> result_amount;
-  p -> explode -> execute();
+  p -> unstable_magic_explosion -> target = s -> target;
+  p -> unstable_magic_explosion -> base_dd_max = s -> result_amount;
+  p -> unstable_magic_explosion -> base_dd_min = s -> result_amount;
+  p -> unstable_magic_explosion -> execute();
 
   return;
 }
