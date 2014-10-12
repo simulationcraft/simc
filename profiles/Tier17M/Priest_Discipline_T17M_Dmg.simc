@@ -16,7 +16,7 @@ spec=discipline
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_intellect_flask
-actions.precombat+=/food,type=calamari_crepes
+actions.precombat+=/food,type=blackrock_barbecue
 actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -32,14 +32,13 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
 actions+=/power_infusion,if=talent.power_infusion.enabled
-actions+=/shadow_word_pain,if=!ticking
+actions+=/archangel,if=buff.holy_evangelism.react=5
 actions+=/penance
-actions+=/power_word_solace,if=talent.power_word_solace.enabled
-actions+=/holy_fire,if=!talent.power_word_solace.enabled
-actions+=/smite,if=glyph.smite.enabled&(dot.power_word_solace.remains+dot.holy_fire.remains)>cast_time
-actions+=/shadow_word_pain,if=remains<(duration*0.3)
-actions+=/smite
-actions+=/shadow_word_pain
+actions+=/holy_fire
+actions+=/power_word_solace
+actions+=/smite,if=glyph.smite.enabled&dot.power_word_solace.remains>cast_time
+actions+=/smite,if=!talent.twist_of_fate.enabled&mana.pct>15
+actions+=/smite,if=talent.twist_of_fate.enabled&target.health.pct<35&mana.pct>target.health.pct
 
 head=soul_priests_hood,id=115563
 neck=choker_of_bloody_flame,id=120077,bonus_id=567,enchant=gift_of_critical_strike
