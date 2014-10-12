@@ -1299,6 +1299,7 @@ struct infernal_pet_t: public warlock_pet_t
   {
     warlock_pet_t::init_base_stats();
 
+    resources.base[RESOURCE_ENERGY] = 100;
     melee_attack = new actions::warlock_pet_melee_t( this );
   }
 
@@ -1322,6 +1323,7 @@ struct doomguard_pet_t: public warlock_pet_t
   {
     warlock_pet_t::init_base_stats();
 
+    resources.base[RESOURCE_ENERGY] = 100;
     action_list_str = "doom_bolt";
   }
 
@@ -1539,6 +1541,8 @@ struct abyssal_pet_t: public warlock_pet_t
   {
     warlock_pet_t::init_base_stats();
 
+    resources.base[RESOURCE_ENERGY] = 100;
+
     melee_attack = new actions::warlock_pet_melee_t( this );
   }
 
@@ -1557,6 +1561,13 @@ struct terrorguard_pet_t: public warlock_pet_t
   {
     action_list_str = "doom_bolt";
     owner_coeff.ap_from_sp = 0.065934;
+  }
+
+  virtual void init_base_stats()
+  {
+    warlock_pet_t::init_base_stats();
+
+    resources.base[RESOURCE_ENERGY] = 100;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
