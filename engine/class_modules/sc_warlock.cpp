@@ -961,6 +961,16 @@ struct doom_bolt_t: public warlock_pet_spell_t
   }
 };
 
+struct meteor_strike_t: public warlock_pet_spell_t
+{
+  meteor_strike_t( warlock_pet_t* p, const std::string& options_str ):
+    warlock_pet_spell_t( "Meteor Strike", p, p -> find_spell( 171018 ) )
+  {
+    parse_options( options_str );
+    aoe = -1;
+  }
+};
+
 struct wild_firebolt_t: public warlock_pet_spell_t
 {
   wild_firebolt_t( warlock_pet_t* p ):
@@ -1285,6 +1295,8 @@ struct infernal_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, "infernal", PET_INFERNAL, true )
   {
     action_list_str = "immolation,if=!ticking";
+    if ( owner -> talents.demonic_servitude -> ok() )
+      action_list_str += "/meteor_strike";
     owner_coeff.ap_from_sp = 0.065934;
   }
 
@@ -1299,6 +1311,7 @@ struct infernal_pet_t: public warlock_pet_t
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
   {
     if ( name == "immolation" ) return new actions::immolation_t( this, options_str );
+    if ( name == "meteor_strike" ) return new actions::meteor_strike_t( this, options_str );
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -1527,6 +1540,8 @@ struct abyssal_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, "abyssal", PET_INFERNAL, true )
   {
     action_list_str = "immolation,if=!ticking";
+    if ( owner -> talents.demonic_servitude -> ok() )
+      action_list_str += "/meteor_strike";
     owner_coeff.ap_from_sp = 0.065934;
   }
 
@@ -1542,6 +1557,7 @@ struct abyssal_pet_t: public warlock_pet_t
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
   {
     if ( name == "immolation" ) return new actions::immolation_t( this, options_str );
+    if ( name == "meteor_strike" ) return new actions::meteor_strike_t( this, options_str );
 
     return warlock_pet_t::create_action( name, options_str );
   }
