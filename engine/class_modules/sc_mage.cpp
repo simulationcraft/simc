@@ -133,7 +133,6 @@ public:
     cooldown_t* combustion,
               * cone_of_cold,
               * dragons_breath,
-              * enhanced_frostbolt,
               * frozen_orb,
               * inferno_blast,
               * presence_of_mind;
@@ -345,7 +344,6 @@ public:
     cooldowns.combustion         = get_cooldown( "combustion"         );
     cooldowns.cone_of_cold       = get_cooldown( "cone_of_cold"       );
     cooldowns.dragons_breath     = get_cooldown( "dragons_breath"     );
-    cooldowns.enhanced_frostbolt = get_cooldown( "enhanced_frostbolt" );
     cooldowns.frozen_orb         = get_cooldown( "frozen_orb"         );
     cooldowns.inferno_blast      = get_cooldown( "inferno_blast"      );
     cooldowns.presence_of_mind   = get_cooldown( "presence_of_mind"   );
@@ -2451,7 +2449,8 @@ struct frost_bomb_t : public mage_spell_t
 struct frostbolt_t : public mage_spell_t
 {
   double bf_proc_chance;
-  timespan_t enhanced_frostbolt_duration;
+  timespan_t enhanced_frostbolt_duration,
+             last_enhanced_frostbolt;
   // Icicle stats variable to parent icicle damage to Frostbolt, instead of
   // clumping FB/FFB icicle damage together in reports.
   stats_t* icicle;
@@ -2471,12 +2470,11 @@ struct frostbolt_t : public mage_spell_t
 
   virtual void schedule_execute( action_state_t* execute_state )
   {
-    if ( p() -> cooldowns.enhanced_frostbolt -> up() &&
-         p() -> specialization() == MAGE_FROST )
+    if ( sim -> current_time > last_enhanced_frostbolt +
+                               enhanced_frostbolt_duration )
       p() -> buffs.enhanced_frostbolt -> trigger();
 
     mage_spell_t::schedule_execute( execute_state );
-
   }
 
   virtual int schedule_multistrike( action_state_t* s, dmg_e dmg_type, double tick_multiplier )
@@ -2508,9 +2506,8 @@ struct frostbolt_t : public mage_spell_t
 
     if ( p() -> buffs.enhanced_frostbolt -> up() )
     {
-      p() -> cooldowns.enhanced_frostbolt -> duration = enhanced_frostbolt_duration;
-      p() -> cooldowns.enhanced_frostbolt -> start();
       p() -> buffs.enhanced_frostbolt -> expire();
+      last_enhanced_frostbolt = sim -> current_time;
     }
 
     if ( result_is_hit( execute_state -> result ) )
@@ -2572,6 +2569,12 @@ struct frostbolt_t : public mage_spell_t
     if ( p() -> buffs.ice_shard -> up() )
       am *= 1.0 + ( p() -> buffs.ice_shard -> stack() * p() -> buffs.ice_shard -> data().effectN( 2 ).percent() );
     return am;
+  }
+
+  void reset()
+  {
+    action_t::reset();
+    last_enhanced_frostbolt = timespan_t::min();
   }
 };
 
@@ -4365,8 +4368,7 @@ void mage_t::create_buffs()
   {
     buffs.icy_veins -> add_invalidate( CACHE_SPELL_HASTE );
   }
-  buffs.enhanced_frostbolt    = buff_creator_t( this, "enhanced_frostbolt", find_spell( 157646 ) )
-                                  .duration( find_spell( 157648 ) -> duration() );
+  buffs.enhanced_frostbolt    = buff_creator_t( this, "enhanced_frostbolt", find_spell( 157646 ) );
   buffs.frozen_thoughts       = buff_creator_t( this, "frozen_thoughts", find_spell( 146557 ) );
   buffs.frost_t17_2pc         = buff_creator_t( this, "frost_t17_2pc", find_spell( 165470 ) )
                                   .duration( find_spell( 84714 ) -> duration() )
