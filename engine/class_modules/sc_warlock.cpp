@@ -5807,6 +5807,9 @@ void warlock_t::trigger_demonology_t17_4pc( const action_state_t* state ) const
   if ( level < 100 )
     return;
 
+  if ( ! rng().roll( sets.set( WARLOCK_DEMONOLOGY, T17, B4 ) -> proc_chance() ) )
+      return;
+
   pets.inner_demon -> summon( sets.set( WARLOCK_DEMONOLOGY, T17, B4 ) -> effectN( 1 ).trigger() -> duration() );
 
   procs.t17_4pc_demo -> occur();
