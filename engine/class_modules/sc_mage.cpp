@@ -63,7 +63,6 @@ public:
   std::vector<icicle_tuple_t> icicles;
   action_t* icicle;
   core_event_t* icicle_event;
-  double distance_from_rune;
   // Active
   actions::ignite_t* active_ignite;
   action_t* unstable_magic_explosion;
@@ -74,7 +73,9 @@ public:
   real_ppm_t rppm_arcane_instability; // T17 Arcane 4pc
 
   // Miscellaneous
-  double incanters_flow_stack_mult,
+  double distance_from_rune,
+         incanters_flow_stack_mult,
+         iv_haste,
          pet_multiplier;
 
   // Benefits
@@ -320,6 +321,8 @@ public:
     last_bomb_target( 0 ),
     rppm_pyromaniac( *this, 0, RPPM_HASTE ),
     rppm_arcane_instability( *this, 0, RPPM_HASTE ),
+    distance_from_rune( 0.0 ),
+    iv_haste( 1.0 ),
     pet_multiplier( 1.0 ),
     benefits( benefits_t() ),
     buffs( buffs_t() ),
@@ -335,7 +338,6 @@ public:
     pyro_switch( pyro_switch_t() ),
     current_arcane_charges()
   {
-    distance_from_rune = 0;
     //Active
     unstable_magic_explosion = 0;
 
@@ -366,6 +368,7 @@ public:
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_benefits();
+  virtual void      init_stats();
   virtual void      reset();
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -4215,10 +4218,10 @@ void mage_t::init_spells()
   // Active spells
   if ( spec.ignite -> ok()  ) active_ignite = new actions::ignite_t( this );
   if ( spec.icicles -> ok() ) icicle = new actions::icicle_t( this );
-  // RPPM
-  rppm_pyromaniac.set_frequency( find_spell( 165459 ) -> real_ppm() ); 
-  rppm_arcane_instability.set_frequency( find_spell( 165476 ) -> real_ppm() );
 
+  // RPPM
+  rppm_pyromaniac.set_frequency( find_spell( 165459 ) -> real_ppm() );
+  rppm_arcane_instability.set_frequency( find_spell( 165476 ) -> real_ppm() );
 }
 
 // mage_t::init_base ========================================================
@@ -4413,6 +4416,21 @@ void mage_t::init_benefits()
     benefits.arcane_charge[ i ] = get_benefit( "Arcane Charge " + util::to_string( i )  );
   }
   benefits.water_elemental   = get_benefit( "water_elemental" );
+}
+
+// mage_t::init_stats =========================================================
+
+void mage_t::init_stats()
+{
+  player_t::init_stats();
+
+  // Cache Icy Veins haste multiplier for performance reasons
+  double haste = buffs.icy_veins -> data().effectN( 1 ).percent();
+  if ( perks.improved_icy_veins -> ok() )
+  {
+    haste += perks.improved_icy_veins -> effectN( 1 ).percent();
+  }
+  iv_haste = 1.0 / ( 1.0 + haste );
 }
 
 // mage_t::init_actions =====================================================
@@ -5073,14 +5091,7 @@ double mage_t::composite_spell_haste() const
 
   if ( buffs.icy_veins -> up() && !glyphs.icy_veins -> ok() )
   {
-    double iv_haste = buffs.icy_veins -> data().effectN( 1 ).percent();
-
-    if ( perks.improved_icy_veins -> ok() )
-    {
-      iv_haste += perks.improved_icy_veins -> effectN( 1 ).percent();
-    }
-
-    h /= 1.0 + iv_haste ;
+    h *= iv_haste;
   }
 
   return h;
@@ -5184,7 +5195,6 @@ void mage_t::arise()
     buffs.frost_armor -> trigger();
   else if ( passives.mage_armor -> ok() )
     buffs.mage_armor -> trigger();
-
 }
 
 // Copypasta, execept for target selection. This is a massive kludge. Buyer
