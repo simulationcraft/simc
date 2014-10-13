@@ -2048,12 +2048,13 @@ struct glaive_t: public ranged_attack_t
 {
   attack_t* glaive_strike;
   attack_t* glaive_rebound;
-  bool is_rebound = false;
+  bool is_rebound;
 
   glaive_t( hunter_t* player, const std::string& name, int id ):
     ranged_attack_t( name, player ),
     glaive_strike( new glaive_toss_strike_t( player, name + "_strike", id ) ),
-    glaive_rebound( new glaive_rebound_t( player, name + "_rebound", id ) )
+    glaive_rebound( new glaive_rebound_t( player, name + "_rebound", id ) ),
+    is_rebound(false)
   {
     may_miss = false;
     may_crit = false;
