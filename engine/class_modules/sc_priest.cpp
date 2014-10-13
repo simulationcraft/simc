@@ -5782,7 +5782,7 @@ void priest_t::create_buffs()
                         .spell( find_spell( 59889 ) )
                         .chance( specs.borrowed_time -> ok() )
                         .default_value( find_spell( 59889 ) -> effectN( 1 ).percent() )
-                        .add_invalidate( CACHE_SPELL_HASTE );
+                        .add_invalidate( CACHE_HASTE );
 
   buffs.holy_evangelism = buff_creator_t( this, "holy_evangelism" )
                           .spell( find_spell( 81661 ) )
