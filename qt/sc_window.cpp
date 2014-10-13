@@ -17,6 +17,8 @@
 #endif
 #include <QStandardPaths>
 
+static int SC_GUI_HISTORY_VERSION = 6;
+
 namespace { // UNNAMED NAMESPACE
 
 const char* SIMC_LOG_FILE = "simc_log.txt";
@@ -65,6 +67,11 @@ void SC_MainWindow::updateSimProgress()
 void SC_MainWindow::loadHistory()
 {
   QSettings settings;
+  
+  QVariant gui_version_number = settings.value( "gui/gui_version_number", 0 );
+  if ( gui_version_number.toInt() < SC_GUI_HISTORY_VERSION )
+    settings.clear();
+
   QVariant size = settings.value( "gui/size" );
   QRect savedApplicationGeometry = geometry();
   if ( size.isValid() )
@@ -258,6 +265,7 @@ void SC_MainWindow::saveHistory()
 {
   QSettings settings;
   settings.beginGroup( "gui" );
+  settings.setValue( "gui_version_number", SC_GUI_HISTORY_VERSION );
   settings.setValue( "size", normalGeometry().size() );
   settings.setValue( "position", normalGeometry().topLeft() );
   settings.setValue( "maximized", bool( windowState() & Qt::WindowMaximized ) );
