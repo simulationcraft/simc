@@ -41,8 +41,9 @@ actions+=/natures_vigil
 actions+=/healing_touch,if=buff.dream_of_cenarius.react&health.pct<30
 actions+=/pulverize,if=buff.pulverize.remains<0.5
 actions+=/lacerate,if=talent.pulverize.enabled&buff.pulverize.remains<=(3-dot.lacerate.stack)*gcd
-actions+=/mangle,if=buff.son_of_ursoc.down
 actions+=/incarnation
+actions+=/mangle,if=buff.son_of_ursoc.down
+actions+=/thrash_bear,if=!ticking
 actions+=/mangle
 actions+=/lacerate
 
