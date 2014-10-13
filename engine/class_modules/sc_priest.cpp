@@ -953,16 +953,13 @@ public:
   priest_action_t( const std::string& n, priest_t& p,
                    const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, &p, s ),
-    priest( p ),
-    _min_interval( p.get_cooldown( "min_interval_" + ab::name_str ) )
+    priest( p )
   {
     ab::may_crit          = true;
     ab::tick_may_crit     = true;
 
     ab::dot_behavior      = DOT_REFRESH;
     ab::weapon_multiplier = 0.0;
-
-    ab::add_option( opt_timespan( "min_interval", ( _min_interval -> duration ) ) );
 
     can_cancel_shadowform = p.options.autoUnshift;
     castable_in_shadowform = true;
@@ -1035,7 +1032,7 @@ public:
     if ( ! check_shadowform() )
       return false;
 
-    return ( _min_interval -> remains() <= timespan_t::zero() );
+    return true;
   }
 
   virtual double cost() const override
@@ -1058,20 +1055,6 @@ public:
     if ( ab::base_execute_time > timespan_t::zero() && ! this -> channeled )
       priest.buffs.borrowed_time -> expire();
   }
-
-  virtual void update_ready( timespan_t cd_duration ) override
-  {
-    ab::update_ready( cd_duration );
-
-    if ( _min_interval -> duration > timespan_t::zero() && ! this -> dual )
-    {
-      _min_interval -> start( timespan_t::min(), timespan_t::zero() );
-
-      if ( ab::sim -> debug )
-        ab::sim -> out_debug.printf( "%s starts min_interval for %s (%s). Will be ready at %.4f",
-                               priest.name(), this -> name(), _min_interval -> name(), _min_interval -> ready.total_seconds() );
-    }
-  }
 protected:
   bool castable_in_shadowform;
   bool can_cancel_shadowform;
@@ -1086,7 +1069,6 @@ protected:
 
 private:
   typedef Base ab; // typedef for the templated action type, eg. spell_t, attack_t, heal_t
-  cooldown_t* _min_interval; // Minimal interval / Forced cooldown of the action. Specifiable through option
 
   bool check_shadowform() const
   {
