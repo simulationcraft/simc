@@ -4,3 +4,29 @@
 # * Standard Heroic 5 Man Loot Only.
 
 talent_format=armory
+paladin="Paladin_Protection_T17P”
+talents=3132221
+level=100
+race=blood_elf
+spec=protection
+role=tank
+position=front
+glyphs=focused_shield/alabaster_shield/divine_protection
+
+head=verdant_plate_crown,id=109986,bonus_id=524
+neck=necklace_of_holy_deflection,id=109967,bonus_id=524,enchant=gift_of_mastery
+shoulders=verdant_plate_spaulders,id=109944,bonus_id=524
+back=rigid_scale_cloak,id=109915,bonus_id=524,enchant=gift_of_mastery
+chest=gutcrusher_chestplate,id=109895,bonus_id=524
+wrists=gutcrusher_bracers,id=109879,bonus_id=524
+hands=rivetsealed_crushers,id=109860,bonus_id=524
+waist=incarnadine_girdle,id=109837,bonus_id=524
+legs=verdant_plate_legguards,id=109819,bonus_id=524
+feet=gutcrusher_stompers,id=109802,bonus_id=524
+finger1=unsullied_signet,id=109777,bonus_id=524,enchant=gift_of_mastery
+finger2=band_of_the_stalwart_stanchion,id=109783,bonus_id=524,enchant=gift_of_mastery
+trinket1=solar_containment_unit,id=110016,bonus_id=524
+trinket2=torias_unseeing_eye,id=110015,bonus_id=524
+main_hand=scepter_of_brutality,id=110052,bonus_id=524,enchant=mark_of_bleeding_hollow
+off_hand=draconian_doomshield,id=118739,bonus_id=524
+save=Paladin_Protection_T17P.simc
