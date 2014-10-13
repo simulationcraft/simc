@@ -1027,6 +1027,7 @@ struct force_of_nature_balance_t : public pet_t
     pet_t( sim, owner, "treant", true /*GUARDIAN*/, true )
   {
     owner_coeff.sp_from_sp = 1/3;
+    owner_coeff.ap_from_ap = 1/3;
     action_list_str = "wrath";
     regen_type = REGEN_DISABLED;
   }
