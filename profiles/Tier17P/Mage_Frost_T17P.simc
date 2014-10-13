@@ -45,7 +45,7 @@ actions.crystal_sequence+=/frost_bomb,if=active_enemies=1&current_target!=prisma
 actions.crystal_sequence+=/frozen_orb
 actions.crystal_sequence+=/prismatic_crystal
 actions.crystal_sequence+=/frost_bomb,if=active_enemies>1&current_target=prismatic_crystal&!ticking
-actions.crystal_sequence+=/ice_lance,if=buff.fingers_of_frost.react=2|(buff.fingers_of_frost.react&set_bonus.tier17_2pc&dot.frozen_orb.ticking)
+actions.crystal_sequence+=/ice_lance,if=buff.fingers_of_frost.react=2|(buff.fingers_of_frost.react&set_bonus.tier17_4pc&dot.frozen_orb.ticking)
 actions.crystal_sequence+=/ice_nova,if=charges=2
 actions.crystal_sequence+=/frostfire_bolt,if=buff.brain_freeze.react
 actions.crystal_sequence+=/ice_lance,if=buff.fingers_of_frost.react
@@ -82,7 +82,7 @@ actions.single_target+=/frost_bomb,if=!talent.prismatic_crystal.enabled&cooldown
 actions.single_target+=/frozen_orb,if=!talent.prismatic_crystal.enabled&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains>45
 actions.single_target+=/frost_bomb,if=remains<action.ice_lance.travel_time&(buff.fingers_of_frost.react=2|(buff.fingers_of_frost.react&buff.fingers_of_frost.remains<gcd*2))
 actions.single_target+=/ice_nova,if=time_to_die<10|(charges=2&(!talent.prismatic_crystal.enabled|!cooldown.prismatic_crystal.up))
-actions.single_target+=/ice_lance,if=buff.fingers_of_frost.react=2|(talent.thermal_void.enabled&set_bonus.tier17_2pc&dot.frozen_orb.ticking)
+actions.single_target+=/ice_lance,if=buff.fingers_of_frost.react=2|(talent.thermal_void.enabled&set_bonus.tier17_4pc&dot.frozen_orb.ticking)
 actions.single_target+=/comet_storm
 actions.single_target+=/frostfire_bolt,if=buff.brain_freeze.react
 actions.single_target+=/ice_nova,if=(!talent.prismatic_crystal.enabled|(charges=1&cooldown.prismatic_crystal.remains>recharge_time))&(buff.icy_veins.up|(charges=1&cooldown.icy_veins.remains>recharge_time))

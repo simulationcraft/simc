@@ -118,8 +118,8 @@ public:
           * icy_veins,
           * enhanced_frostbolt,    // Perk
           * frozen_thoughts,       // T16 2pc Frost
-          * frost_t17_2pc,         // T17 2pc Frost
-          * ice_shard;             // T17 4pc Frost
+          * ice_shard,             // T17 2pc Frost
+          * frost_t17_4pc;         // T17 4pc Frost
 
     // Talents
     buff_t* blazing_speed,
@@ -2791,7 +2791,7 @@ struct frozen_orb_t : public mage_spell_t
 
     if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B2 ) )
     {
-      p() -> buffs.frost_t17_2pc -> trigger();
+      p() -> buffs.frost_t17_4pc -> trigger();
     }
   }
 
@@ -2855,7 +2855,7 @@ struct ice_lance_t : public mage_spell_t
 
     mage_spell_t::execute();
 
-    if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B4 ) && td( execute_state -> target) -> dots.frozen_orb -> is_ticking() )
+    if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B2 ) && td( execute_state -> target ) -> dots.frozen_orb -> is_ticking() )
       p() -> buffs.ice_shard -> trigger();
 
     if ( p() -> talents.thermal_void -> ok() && p() -> buffs.icy_veins -> up() )
@@ -4260,7 +4260,7 @@ struct incanters_flow_t : public buff_t
 
 // Buff callback functions
 
-static void frost_t17_2pc_fof_gain( buff_t* buff, int, int )
+static void frost_t17_4pc_fof_gain( buff_t* buff, int, int )
 {
   mage_t* p = debug_cast<mage_t*>( buff -> player );
 
@@ -4342,11 +4342,11 @@ void mage_t::create_buffs()
   }
   buffs.enhanced_frostbolt    = buff_creator_t( this, "enhanced_frostbolt", find_spell( 157646 ) );
   buffs.frozen_thoughts       = buff_creator_t( this, "frozen_thoughts", find_spell( 146557 ) );
-  buffs.frost_t17_2pc         = buff_creator_t( this, "frost_t17_2pc", find_spell( 165470 ) )
+  buffs.frost_t17_4pc         = buff_creator_t( this, "frost_t17_4pc", find_spell( 165470 ) )
                                   .duration( find_spell( 84714 ) -> duration() )
                                   .period( find_spell( 165470 ) -> effectN( 1 ).time_value() )
                                   .quiet( true )
-                                  .tick_callback( frost_t17_2pc_fof_gain );
+                                  .tick_callback( frost_t17_4pc_fof_gain );
   buffs.ice_shard             = buff_creator_t( this, "ice_shard", find_spell( 166869 ) );
 
   // Talents
@@ -4846,7 +4846,7 @@ void mage_t::apl_frost()
   crystal_sequence -> add_talent( this, "Frost Bomb",
                                   "if=active_enemies>1&current_target=prismatic_crystal&!ticking" );
   crystal_sequence -> add_action( this, "Ice Lance",
-                                  "if=buff.fingers_of_frost.react=2|(buff.fingers_of_frost.react&set_bonus.tier17_2pc&dot.frozen_orb.ticking)" );
+                                  "if=buff.fingers_of_frost.react=2|(buff.fingers_of_frost.react&set_bonus.tier17_4pc&dot.frozen_orb.ticking)" );
   crystal_sequence -> add_talent( this, "Ice Nova",
                                   "if=charges=2" );
   crystal_sequence -> add_action( this, "Frostfire Bolt",
@@ -4905,7 +4905,7 @@ void mage_t::apl_frost()
   single_target -> add_talent( this, "Ice Nova",
                                "if=time_to_die<10|(charges=2&(!talent.prismatic_crystal.enabled|!cooldown.prismatic_crystal.up))" );
   single_target -> add_action( this, "Ice Lance",
-                               "if=buff.fingers_of_frost.react=2|(talent.thermal_void.enabled&set_bonus.tier17_2pc&dot.frozen_orb.ticking)" );
+                               "if=buff.fingers_of_frost.react=2|(talent.thermal_void.enabled&set_bonus.tier17_4pc&dot.frozen_orb.ticking)" );
   single_target -> add_talent( this, "Comet Storm" );
   single_target -> add_action( this, "Frostfire Bolt",
                                "if=buff.brain_freeze.react" );
