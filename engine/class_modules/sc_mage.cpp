@@ -2658,7 +2658,7 @@ struct frostfire_bolt_t : public mage_spell_t
     {
       frigid_blast -> schedule_execute();
     }
-    p() -> buffs.brain_freeze -> expire();
+    p() -> buffs.brain_freeze -> decrement();
   }
 
   virtual timespan_t travel_time() const
