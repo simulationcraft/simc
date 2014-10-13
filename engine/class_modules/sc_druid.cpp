@@ -3990,7 +3990,8 @@ struct astral_communion_t : public druid_spell_t
   void tick( dot_t* d )
   {
     druid_spell_t::tick( d );
-    p() -> balance_tracker();
+    if ( p() -> specialization() == DRUID_BALANCE )
+      p() -> balance_tracker();
     if ( sim -> log || sim -> debug )
     {
       sim -> out_debug.printf( "Eclipse Position: %f Eclipse Direction: %f Time till next Eclipse Change: %f Time to next lunar %f Time to next Solar %f Time Till Maximum Eclipse: %f",
@@ -6429,7 +6430,8 @@ void druid_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
 
-  balance_tracker(); // So much for trying to optimize, too many edge cases messing up. 
+  if ( specialization() == DRUID_BALANCE )
+    balance_tracker(); // So much for trying to optimize, too many edge cases messing up. 
 
   // player_t::regen() only regens your primary resource, so we need to account for that here
   if ( primary_resource() != RESOURCE_MANA && mana_regen_per_second() )
