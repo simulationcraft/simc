@@ -154,6 +154,7 @@ public:
     const spell_data_t* blink;
     const spell_data_t* combustion;
     const spell_data_t* cone_of_cold;
+    const spell_data_t* dragons_breath;
     const spell_data_t* frostfire;
     const spell_data_t* icy_veins;
     const spell_data_t* inferno_blast;
@@ -2166,6 +2167,18 @@ struct dragons_breath_t : public mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
+  }
+
+  virtual double action_multiplier() const
+  {
+    double am = mage_spell_t::action_multiplier();
+
+    if ( p() -> glyphs.dragons_breath -> ok() )
+    {
+      am *=  1.0 + p() -> glyphs.dragons_breath -> effectN( 1 ).percent();
+    }
+
+    return am;
   }
 };
 
@@ -4198,17 +4211,18 @@ void mage_t::init_spells()
   spec.mana_adept            = find_mastery_spell( MAGE_ARCANE );
 
   // Glyphs
-  glyphs.arcane_brilliance   = find_glyph_spell( "Glyph of Arcane Brilliance" );
-  glyphs.arcane_power        = find_glyph_spell( "Glyph of Arcane Power" );
-  glyphs.blink               = find_glyph_spell( "Glyph of Blink" );
-  glyphs.combustion          = find_glyph_spell( "Glyph of Combustion" );
-  glyphs.cone_of_cold        = find_glyph_spell( "Glyph of Cone of Cold" );
-  glyphs.frostfire           = find_glyph_spell( "Glyph of Frostfire" );
-  glyphs.icy_veins           = find_glyph_spell( "Glyph of Icy Veins" );
-  glyphs.inferno_blast       = find_glyph_spell( "Glyph of Inferno Blast" );
-  glyphs.living_bomb         = find_glyph_spell( "Glyph of Living Bomb" );
-  glyphs.rapid_displacement  = find_glyph_spell( "Glyph of Rapid Displacement" );
-  glyphs.splitting_ice       = find_glyph_spell( "Glyph of Splitting Ice" );
+  glyphs.arcane_brilliance  = find_glyph_spell( "Glyph of Arcane Brilliance"  );
+  glyphs.arcane_power       = find_glyph_spell( "Glyph of Arcane Power"       );
+  glyphs.blink              = find_glyph_spell( "Glyph of Blink"              );
+  glyphs.combustion         = find_glyph_spell( "Glyph of Combustion"         );
+  glyphs.cone_of_cold       = find_glyph_spell( "Glyph of Cone of Cold"       );
+  glyphs.dragons_breath     = find_glyph_spell( "Glyph of Dragon's Breath"    );
+  glyphs.frostfire          = find_glyph_spell( "Glyph of Frostfire"          );
+  glyphs.icy_veins          = find_glyph_spell( "Glyph of Icy Veins"          );
+  glyphs.inferno_blast      = find_glyph_spell( "Glyph of Inferno Blast"      );
+  glyphs.living_bomb        = find_glyph_spell( "Glyph of Living Bomb"        );
+  glyphs.rapid_displacement = find_glyph_spell( "Glyph of Rapid Displacement" );
+  glyphs.splitting_ice      = find_glyph_spell( "Glyph of Splitting Ice"      );
 
   // Active spells
   if ( spec.ignite -> ok()  ) active_ignite = new actions::ignite_t( this );
