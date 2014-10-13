@@ -57,6 +57,7 @@ public:
   // Buffs
   struct
   {
+
     // Talents
     buff_t* glyph_of_levitate;
     buff_t* power_infusion;
@@ -573,48 +574,6 @@ struct base_fiend_pet_t : public priest_pet_t
       gains.fiend = get_gain( "basefiend" );
       break;
     }
-  }
-
-  virtual double composite_melee_speed() const
-  {
-    double s = o().composite_melee_speed();
-
-    return s;
-  }
-
-  virtual double composite_melee_haste() const
-  {
-    double h = o().composite_melee_haste();
-
-    return h;
-  }
-
-  virtual double composite_spell_haste() const
-  {
-    double h = o().composite_spell_haste();
-
-    return h;
-  }
-
-  virtual double composite_melee_crit() const
-  {
-    double c = o().composite_melee_crit();
-
-    return c;
-  }
-
-  virtual double composite_multistrike() const
-  {
-    double m = o().composite_multistrike();
-
-    return m;
-  }
-
-  virtual double composite_spell_power() const
-  {
-    double sp = o().composite_spell_power( SCHOOL_PHYSICAL );
-
-    return sp;
   }
 
   virtual void init_resources( bool force ) override
@@ -2238,7 +2197,7 @@ struct mind_blast_t final : public priest_spell_t
     double d = priest_spell_t::composite_da_multiplier( state );
 
     if ( priest.buffs.empowered_shadows -> check() )
-      d *= 1.0 + priest.buffs.empowered_shadows->current_value *  priest.buffs.empowered_shadows -> check();
+      d *= 1.0 + priest.buffs.empowered_shadows -> current_value *  priest.buffs.empowered_shadows -> check();
 
     if ( priest.mastery_spells.mental_anguish -> ok() )
       d *= 1.0 + priest.cache.mastery_value();
