@@ -106,6 +106,7 @@ public:
           * molten_armor,
           * pyroblast,
           * enhanced_pyrotechnics, // Perk
+          * improved_scorch,       // Perk
           * fiery_adept,           // T16 4pc Fire
           * pyromaniac;            // T17 4pc Fire
 
@@ -1839,7 +1840,8 @@ struct blink_t : public mage_spell_t
     if ( !p() -> glyphs.rapid_displacement -> ok() )
       player -> buffs.stunned -> expire();
 
-    p() -> buffs.improved_blink -> trigger();
+    if ( p() -> perks.improved_blink -> ok() )
+      p() -> buffs.improved_blink -> trigger();
   }
 };
 
@@ -3514,7 +3516,16 @@ struct scorch_t : public mage_spell_t
 
     may_hot_streak = true;
     consumes_ice_floes = false;
+  }
 
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+
+    if ( p() -> perks.improved_scorch -> ok() )
+    {
+      p() -> buffs.improved_scorch -> trigger();
+    }
   }
 
   virtual void impact( action_state_t* s )
@@ -3523,7 +3534,6 @@ struct scorch_t : public mage_spell_t
 
     if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
       trigger_ignite( s );
-
   }
 
   double composite_crit_multiplier() const
@@ -3538,10 +3548,9 @@ struct scorch_t : public mage_spell_t
   virtual bool usable_moving() const
   { return true; }
 
-  // delay 0.25s the removal of heating up on non-critting spell with travel time or scorch
+  // delay 0.25s the removal of heating up on non-critting scorch
   virtual void expire_heating_up()
   {
-    // we should delay heating up removal here
     mage_t* p = this -> p();
     if ( sim -> log ) sim -> out_log << "Heating up delay by 0.25s";
     p -> buffs.heating_up -> expire( timespan_t::from_millis( 250 ) );
@@ -4323,6 +4332,8 @@ void mage_t::create_buffs()
                                   .add_invalidate( CACHE_SPELL_CRIT );
   buffs.pyroblast             = buff_creator_t( this, "pyroblast",  find_spell( 48108 ) );
   buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) );
+  buffs.improved_scorch       = buff_creator_t( this, "improved_scorch", find_spell( 157633 ) )
+                                  .default_value( perks.improved_scorch -> effectN( 1 ).percent() );
   buffs.potent_flames         = stat_buff_creator_t( this, "potent_flames", find_spell( 145254 ) )
                                   .chance( sets.has_set_bonus( SET_CASTER, T16, B2 ) );
   buffs.fiery_adept           = buff_creator_t( this, "fiery_adept", find_spell( 145261 ) )
@@ -5158,6 +5169,9 @@ double mage_t::temporary_movement_modifier() const
 
   if ( buffs.improved_blink -> up() )
     temporary = std::max( buffs.improved_blink -> default_value, temporary );
+
+  if ( buffs.improved_scorch -> up() )
+    temporary = std::max( buffs.improved_scorch -> default_value, temporary );
 
   return temporary;
 }
