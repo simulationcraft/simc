@@ -959,8 +959,6 @@ struct meteor_strike_t: public warlock_pet_spell_t
     warlock_pet_spell_t( "Meteor Strike", p, p -> find_spell( 171018 ) )
   {
     parse_options( options_str );
-    if ( !p -> owner -> find_talent_spell( "Demonic Servitude" ) )
-      background = true;
     aoe = -1;
   }
 };
@@ -1288,15 +1286,15 @@ struct infernal_pet_t: public warlock_pet_t
   infernal_pet_t( sim_t* sim, warlock_t* owner ):
     warlock_pet_t( sim, owner, "infernal", PET_INFERNAL, true )
   {
-    action_list_str = "immolation,if=!ticking";
-    action_list_str += "/meteor_strike";
     owner_coeff.ap_from_sp = 0.065934;
   }
 
   virtual void init_base_stats()
   {
     warlock_pet_t::init_base_stats();
-
+    action_list_str = "immolation,if=!ticking";
+    if ( o() -> talents.demonic_servitude -> ok() )
+      action_list_str += "/meteor_strike";
     resources.base[RESOURCE_ENERGY] = 100;
     melee_attack = new actions::warlock_pet_melee_t( this );
   }
@@ -1532,14 +1530,15 @@ struct abyssal_pet_t: public warlock_pet_t
   abyssal_pet_t( sim_t* sim, warlock_t* owner ):
     warlock_pet_t( sim, owner, "abyssal", PET_INFERNAL, true )
   {
-    action_list_str = "immolation,if=!ticking";
-    action_list_str += "/meteor_strike";
     owner_coeff.ap_from_sp = 0.065934;
   }
 
   virtual void init_base_stats()
   {
     warlock_pet_t::init_base_stats();
+    action_list_str = "immolation,if=!ticking";
+    if ( o() -> talents.demonic_servitude -> ok() )
+      action_list_str += "/meteor_strike";
 
     resources.base[RESOURCE_ENERGY] = 100;
 
