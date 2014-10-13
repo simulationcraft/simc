@@ -864,7 +864,8 @@ struct prismatic_crystal_t : public pet_t
     // shenanigans going on in calculate_direct_amount()
     aoe_spell -> base_dd_min = state -> result_total;
     aoe_spell -> base_dd_max = state -> result_total;
-    aoe_spell -> schedule_execute( new_state );
+    aoe_spell -> pre_execute_state = new_state;
+    aoe_spell -> execute();
   }
 };
 
