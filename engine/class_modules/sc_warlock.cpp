@@ -959,8 +959,6 @@ struct meteor_strike_t: public warlock_pet_spell_t
     warlock_pet_spell_t( "Meteor Strike", p, p -> find_spell( 171018 ) )
   {
     parse_options( options_str );
-    if ( !p -> owner -> find_talent_spell( "Demonic Servitude" ) )
-      background = true;
     aoe = -1;
   }
 };
@@ -1288,15 +1286,15 @@ struct infernal_pet_t: public warlock_pet_t
   infernal_pet_t( sim_t* sim, warlock_t* owner ):
     warlock_pet_t( sim, owner, "infernal", PET_INFERNAL, true )
   {
-    action_list_str = "immolation,if=!ticking";
-    action_list_str += "/meteor_strike";
     owner_coeff.ap_from_sp = 0.065934;
   }
 
   virtual void init_base_stats()
   {
     warlock_pet_t::init_base_stats();
-
+    action_list_str = "immolation,if=!ticking";
+    if ( o() -> talents.demonic_servitude -> ok() )
+      action_list_str += "/meteor_strike";
     resources.base[RESOURCE_ENERGY] = 100;
     melee_attack = new actions::warlock_pet_melee_t( this );
   }
@@ -1532,14 +1530,15 @@ struct abyssal_pet_t: public warlock_pet_t
   abyssal_pet_t( sim_t* sim, warlock_t* owner ):
     warlock_pet_t( sim, owner, "abyssal", PET_INFERNAL, true )
   {
-    action_list_str = "immolation,if=!ticking";
-    action_list_str += "/meteor_strike";
     owner_coeff.ap_from_sp = 0.065934;
   }
 
   virtual void init_base_stats()
   {
     warlock_pet_t::init_base_stats();
+    action_list_str = "immolation,if=!ticking";
+    if ( o() -> talents.demonic_servitude -> ok() )
+      action_list_str += "/meteor_strike";
 
     resources.base[RESOURCE_ENERGY] = 100;
 
@@ -5516,7 +5515,7 @@ void warlock_t::apl_precombat()
     action_list_str += "/imp_swarm,if=(buff.dark_soul.up|(cooldown.dark_soul.remains>(120%(1%spell_haste)))|time_to_die<32)&time>3";
   }
   else
-    add_action( spec.dark_soul, "if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(buff.demonbolt.remains>=buff.dark_soul.duration|!buff.demonbolt.remains)&(charges=2|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react|target.health.pct<=10))" );
+    add_action( spec.dark_soul, "if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react>6|target.health.pct<=10))" );
 
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
@@ -5566,9 +5565,8 @@ void warlock_t::apl_affliction()
 {
   action_list_str += "/cataclysm";
 
-  add_action( "Haunt", "if=shard_react&!talent.soulburn_haunt.enabled&!in_flight_to_target&(dot.haunt.remains<cast_time+travel_time|soul_shard=4)&(trinket.proc.intellect.react|buff.dark_soul.up|soul_shard>2|soul_shard*14<=target.time_to_die)" );
-    add_action ( "Haunt","if=shard_react&talent.soulburn_haunt.enabled&!in_flight_to_target&!buff.soulburn.up&buff.haunting_spirits.remains>4&soul_shard=4");
-  add_action( "Soulburn", "if=shard_react&talent.soulburn_haunt.enabled&buff.soulburn.down&(buff.haunting_spirits.down|soul_shard=4)" );
+  add_action( "Haunt", "if=shard_react&!talent.soulburn_haunt.enabled&!in_flight_to_target&(dot.haunt.remains<cast_time+travel_time|soul_shard=4)&(trinket.proc.any.react|trinket.stacking_proc.any.react>6|buff.dark_soul.up|soul_shard>2|soul_shard*14<=target.time_to_die)" );
+  add_action( "Soulburn", "if=shard_react&talent.soulburn_haunt.enabled&buff.soulburn.down&(buff.haunting_spirits.down|soul_shard=4&buff.haunting_spirits.remains<5)" );
   add_action( "Haunt", "if=shard_react&talent.soulburn_haunt.enabled&!in_flight_to_target&((buff.soulburn.up&buff.haunting_spirits.remains<5)|soul_shard=4)" );
   add_action( "Agony", "cycle_targets=1,if=target.time_to_die>16&remains<=(duration*0.3)&((talent.cataclysm.enabled&remains<=(cooldown.cataclysm.remains+action.cataclysm.cast_time))|!talent.cataclysm.enabled)" );
   add_action( "Unstable Affliction", "cycle_targets=1,if=target.time_to_die>10&remains<=(duration*0.3)" );
@@ -5628,18 +5626,17 @@ void warlock_t::apl_demonology()
 
 void warlock_t::apl_destruction()
 {
-
-  add_action(
-    "Shadowburn",
-    "if=talent.charred_remains.enabled&(burning_ember>=2.5|target.time_to_die<20|trinket.proc.intellect.react|(trinket.stacking_proc.intellect.remains<cast_time*4&trinket.stacking_proc.intellect.remains>cast_time))" );
-  add_action(
-    "Immolate", "if=remains<=cast_time" );
+  if ( level == 100 )
+    add_action( "Shadowburn", "if=talent.charred_remains.enabled&(burning_ember>=2.5|target.time_to_die<20|trinket.proc.intellect.react|(trinket.stacking_proc.intellect.remains<cast_time*4&trinket.stacking_proc.intellect.remains>cast_time))" );
+  else
+    add_action( "Shadowburn", "if=(burning_ember>=3.5|target.time_to_die<20|trinket.proc.intellect.react|(trinket.stacking_proc.intellect.remains<cast_time*4&trinket.stacking_proc.intellect.remains>cast_time)|(burning_ember>=3&buff.ember_master.react))" );
+  add_action( "Immolate", "if=remains<=cast_time" );
   add_action( "Conflagrate", "if=charges=2" );
   action_list_str += "/cataclysm";
   add_action( "Chaos Bolt", "if=set_bonus.tier17_4pc=1&buff.chaotic_infusion.react" );
   add_action( "Chaos Bolt", "if=set_bonus.tier17_2pc=1&buff.backdraft.stack<3&(burning_ember>=2.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
   add_action( "Chaos Bolt", "if=talent.charred_remains.enabled&buff.backdraft.stack<3&(burning_ember>=2.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
-  add_action( "Chaos Bolt", "if=buff.backdraft.stack<3&(burning_ember>=3.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
+  add_action( "Chaos Bolt", "if=buff.backdraft.stack<3&(burning_ember>=3.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up|(burning_ember>=3&buff.ember_master.react))" );
   add_action( "Immolate", "if=remains<=(duration*0.3)" );
   if ( level == 100 )
     add_action( "Rain of Fire", "if=(!ticking|(talent.mannoroths_fury.enabled&buff.mannoroths_fury.up&buff.mannoroths_fury.remains<1))&(!buff.backdraft.down|(talent.mannoroths_fury.enabled&buff.mannoroths_fury.up))" );
