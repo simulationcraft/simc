@@ -500,6 +500,7 @@ struct warrior_action_t: public Base
 {
   int stancemask;
   bool headlongrush;
+  bool headlongrushgcd;
   bool recklessness;
   bool weapons_master;
   double melee_range;
@@ -513,6 +514,7 @@ public:
                     ab( n, player, s ),
                     stancemask( STANCE_BATTLE | STANCE_DEFENSE | STANCE_GLADIATOR ),
                     headlongrush( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 1 ) ) ),
+                    headlongrushgcd( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 2 ) ) ),
                     recklessness( ab::data().affected_by( player -> spec.recklessness -> effectN( 1 ) ) ),
                     weapons_master( ab::data().affected_by( player -> mastery.weapons_master -> effectN( 1 ) ) ),
                     melee_range( 5 )
@@ -545,18 +547,6 @@ public:
     return a;
   }
 
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    //Head Long Rush reduces the cooldown depending on the amount of haste.
-    if ( headlongrush )
-    {
-      if ( cd_duration < timespan_t::zero() )
-        cd_duration = ab::cooldown -> duration;
-      cd_duration *= ab::player -> cache.attack_haste();
-    }
-    ab::update_ready( cd_duration );
-  }
-
   virtual double action_multiplier() const
   {
     double am = ab::action_multiplier();
@@ -585,6 +575,49 @@ public:
       cdm *= 1.0 + p() -> buff.recklessness -> data().effectN( 2 ).percent() * 1.0 + p() -> glyphs.recklessness -> effectN( 1 ).percent();
 
     return cdm;
+  }
+
+  virtual void execute()
+  {
+    if ( p() -> cooldown.stance_swap -> up() && p() -> swapping == false && !p() -> talents.gladiators_resolve -> ok() )
+    {
+      if ( p() -> active_stance == STANCE_DEFENSE &&
+           p() -> specialization() != WARRIOR_PROTECTION &&
+           ( ( stancemask & STANCE_BATTLE ) != 0 ) )
+           p() -> stance_swap();
+      else if ( p() -> active_stance == STANCE_BATTLE &&
+                p() -> specialization() == WARRIOR_PROTECTION &&
+                ( ( stancemask & STANCE_DEFENSE ) != 0 ) )
+                p() -> stance_swap();
+    }
+    ab::execute();
+  }
+
+  virtual timespan_t gcd() const
+  {
+    timespan_t t = ab::action_t::gcd();
+
+    if ( t == timespan_t::zero() )
+      return t;
+
+    if ( headlongrushgcd )
+      t *= ab::player -> cache.attack_haste();
+    if ( t < ab::min_gcd )
+      t = ab::min_gcd;
+
+    return t;
+  }
+
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    //Head Long Rush reduces the cooldown depending on the amount of haste.
+    if ( headlongrush )
+    {
+      if ( cd_duration < timespan_t::zero() )
+        cd_duration = ab::cooldown -> duration;
+      cd_duration *= ab::player -> cache.attack_haste();
+    }
+    ab::update_ready( cd_duration );
   }
 
   virtual bool ready()
@@ -617,22 +650,6 @@ public:
   bool usable_moving() const
   { // All warrior abilities are usable while moving, the issue is being in range.
     return true;
-  }
-
-  virtual void execute()
-  {
-    if ( p() -> cooldown.stance_swap -> up() && p() -> swapping == false && !p() -> talents.gladiators_resolve -> ok() )
-    {
-      if ( p() -> active_stance == STANCE_DEFENSE &&
-           p() -> specialization() != WARRIOR_PROTECTION &&
-           ( ( stancemask & STANCE_BATTLE ) != 0 ) )
-           p() -> stance_swap();
-      else if ( p() -> active_stance == STANCE_BATTLE &&
-                p() -> specialization() == WARRIOR_PROTECTION &&
-                ( ( stancemask & STANCE_DEFENSE ) != 0 ) )
-                p() -> stance_swap();
-    }
-    ab::execute();
   }
 
   virtual void impact( action_state_t* s )
@@ -746,20 +763,6 @@ public:
         p() -> cooldown.shield_wall -> adjust( timespan_t::from_seconds( rage ) );
       }
     }
-  }
-
-  virtual timespan_t gcd() const
-  {
-    timespan_t t = ab::action_t::gcd();
-
-    if ( t == timespan_t::zero() )
-      return t;
-
-    t *= ab::player -> cache.attack_haste();
-    if ( t < ab::min_gcd )
-      t = ab::min_gcd;
-
-    return t;
   }
 };
 
