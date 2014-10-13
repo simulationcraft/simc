@@ -2973,19 +2973,17 @@ struct inferno_blast_t : public mage_spell_t
                   p -> find_class_spell( "Inferno Blast" ) )
   {
     parse_options( options_str );
-
     may_hot_streak = true;
     cooldown -> duration = timespan_t::from_seconds( 8.0 );
 
     if ( p -> sets.has_set_bonus( MAGE_FIRE, T17, B2 ) )
     {
-      cooldown -> duration = timespan_t::from_seconds( 8.0 );
-      cooldown -> charges = 2;
+      cooldown -> charges = data().charges() +
+                            p -> sets.set( MAGE_FIRE, T17, B2 )
+                              -> effectN( 1 ).base_value();
     }
-    else
-      cooldown -> duration = timespan_t::from_seconds( 8.0 );
 
-    max_spread_targets = 3;
+    max_spread_targets = data().effectN( 2 ).base_value();
     if ( p -> glyphs.inferno_blast -> ok() )
     {
       max_spread_targets += p -> glyphs.inferno_blast
@@ -3013,12 +3011,12 @@ struct inferno_blast_t : public mage_spell_t
 
       int spread_remaining = max_spread_targets;
       std::vector< player_t* >& tl = target_list();
-      //Skip cleave entirely if primary target is PC.
 
       // Randomly choose spread targets
       std::random_shuffle( tl.begin(), tl.end() );
 
-      for ( size_t i = 0, actors = tl.size(); i < actors; i++ )
+      for ( size_t i = 0, actors = tl.size();
+            i < actors && spread_remaining > 0; i++ )
       {
         player_t* t = tl[ i ];
 
@@ -3028,24 +3026,30 @@ struct inferno_blast_t : public mage_spell_t
         if ( t == p() -> pets.prismatic_crystal )
           continue;
 
-        if ( combustion_dot -> is_ticking() )
+        // Combustion does not spread to already afflicted targets
+        // Source : http://goo.gl/tCsaqr
+        if ( combustion_dot -> is_ticking() &&
+             !td( t ) -> dots.combustion -> is_ticking()  )
         {
-          // Combustion does not spread to targets already afflicted
-          // Source : http://goo.gl/tCsaqr
-          dot_t* target_combustion = t -> get_dot( "combustion", this -> p() );
-          if ( !target_combustion -> is_ticking() )
-            combustion_dot -> copy( t, DOT_COPY_CLONE );
+          combustion_dot -> copy( t, DOT_COPY_CLONE );
         }
 
         if ( ignite_dot -> is_ticking() )
         {
           if ( td( t ) -> dots.ignite -> is_ticking() )
           {
-            // TODO: This does nothing for now, fix this when bug is resolved
-            // Source: https://twitter.com/Celestalon/status/502030039240552448
+            // When the spread target has an ignite, add source ignite
+            // remaining bank damage of the  to the spread target's ignite,
+            // and reset ignite's tick count.
+            // TODO: Patch 6.0,2 inferno blast behavior exhibits a delay when
+            //       acquiring remaining number of igniteticks.
+            //       Verify implementation when bug is fixed.
+            residual_periodic_state_t* dot_state =
+              debug_cast<residual_periodic_state_t*>( ignite_dot -> state );
+            double ignite_bank = dot_state -> tick_amount *
+                                 ignite_dot -> ticks_left();
 
-            // residual_periodic_state_t* dot_state = debug_cast<residual_periodic_state_t*>( ignite_dot -> state );
-            // residual_action::trigger( p() -> active_ignite, t, dot_state -> tick_amount * ignite_dot -> ticks_left() );
+            residual_action::trigger( p() -> active_ignite, t, ignite_bank);
           }
           else
           {
@@ -3062,14 +3066,20 @@ struct inferno_blast_t : public mage_spell_t
         {
           pyroblast_dot -> copy( t, DOT_COPY_CLONE );
         }
-
-        if ( --spread_remaining == 0 )
-          break;
       }
 
       if ( s -> result == RESULT_CRIT && p() -> talents.kindling -> ok() )
-          p() -> cooldowns.combustion -> adjust( timespan_t::from_seconds( - p() -> talents.kindling -> effectN( 1 ).base_value() ) );
+      {
+        p() -> cooldowns.combustion
+            -> adjust( -1000 * p() -> talents.kindling
+                                   -> effectN( 1 ).time_value() );
+      }
 
+      spread_remaining--;
+    }
+
+    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    {
       trigger_ignite( s );
     }
   }
