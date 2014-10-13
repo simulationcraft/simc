@@ -4229,14 +4229,7 @@ struct seal_of_truth_proc_t : public paladin_melee_attack_t
       // Note that effect #2 is a lie, SoT uses unnormalized weapon speed, so we leave that as default (false)
       const spell_data_t* s = p -> find_spell( 42463 );
       if ( s && s -> ok() )
-      {
-        // Undocumented in spell info: proc is 80% smaller for protection
         weapon_multiplier      = s -> effectN( 1 ).percent();
-        if ( p -> specialization() == PALADIN_PROTECTION )
-        {
-          weapon_multiplier /= 5;
-        }
-      }
     }
 
     // Glyph of Immediate Truth increases direct damage
