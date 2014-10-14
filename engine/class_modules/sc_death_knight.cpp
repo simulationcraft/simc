@@ -3646,6 +3646,9 @@ struct death_coil_t : public death_knight_spell_t
     parse_options( options_str );
 
     attack_power_mod.direct = 0.85;
+
+    if ( p -> wod_19005_hotfix )
+      attack_power_mod.direct *= 0.95;
   }
 
   virtual double cost() const
@@ -3821,6 +3824,9 @@ struct death_strike_t : public death_knight_melee_attack_t
     may_parry = false;
     base_multiplier = 1.0 + p -> spec.veteran_of_the_third_war -> effectN( 7 ).percent();
 
+    if ( p -> wod_19005_hotfix )
+      attack_power_mod.direct *= 1.20;
+
     always_consume = true; // Death Strike always consumes runes, even if doesn't hit
 
     if ( p -> spec.blood_rites -> ok() )
@@ -3926,6 +3932,9 @@ struct festering_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t( "festering_strike", p, p -> find_class_spell( "Festering Strike" ) )
   {
     parse_options( options_str );
+
+    if ( p -> wod_19005_hotfix )
+      attack_power_mod.direct *= 0.95;
 
     if ( p -> spec.reaping -> ok() )
       convert_runes = 1.0;
@@ -4265,6 +4274,9 @@ struct obliterate_t : public death_knight_melee_attack_t
     special = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
+    if ( p -> wod_19005_hotfix )
+      attack_power_mod.direct *= 1.08;
+
     weapon = &( p -> main_hand_weapon );
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
@@ -4520,6 +4532,9 @@ struct blood_boil_t : public death_knight_spell_t
       convert_runes = 1.0;
 
     base_multiplier *= 1.0 + p -> spec.crimson_scourge -> effectN( 1 ).percent();
+
+    if ( p -> wod_19005_hotfix )
+      attack_power_mod.direct *= 1.20;
 
     aoe = -1;
   }
@@ -4875,6 +4890,9 @@ struct scourge_strike_t : public death_knight_melee_attack_t
 
     special = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
+
+    if ( p -> wod_19005_hotfix )
+      attack_power_mod.direct *= 0.95;
 
     // TODO-WOD: Do we need to inherit damage or is it a separate roll in WoD?
     add_child( scourge_strike_shadow );
