@@ -31,8 +31,8 @@ actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
 actions+=/potion,name=draenic_agility,if=((buff.rapid_fire.up|buff.bloodlust.up)&(!talent.stampede.enabled|cooldown.stampede.remains<1))|target.time_to_die<=20
-actions+=/chimaera_shot
 actions+=/kill_shot,if=cast_regen+action.aimed_shot.cast_regen<focus.deficit
+actions+=/chimaera_shot
 actions+=/rapid_fire
 actions+=/stampede,if=buff.rapid_fire.up|buff.bloodlust.up|target.time_to_die<=20
 actions+=/run_action_list,name=careful_aim,if=buff.careful_aim.up
@@ -56,7 +56,7 @@ actions+=/steady_shot
 
 actions.careful_aim=glaive_toss,if=active_enemies>4
 actions.careful_aim+=/powershot,if=active_enemies>1&cast_regen<focus.deficit
-actions.careful_aim+=/barrage,if=active_enemies>4
+actions.careful_aim+=/barrage,if=active_enemies>1
 actions.careful_aim+=/aimed_shot
 actions.careful_aim+=/focusing_shot,if=50+cast_regen<focus.deficit
 actions.careful_aim+=/steady_shot

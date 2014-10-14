@@ -3827,8 +3827,8 @@ void hunter_t::apl_mm()
   add_potion_action( default_list, "draenic_agility", "virmens_bite",
     "if=((buff.rapid_fire.up|buff.bloodlust.up)&(!talent.stampede.enabled|cooldown.stampede.remains<1))|target.time_to_die<=20" );
 
-  default_list -> add_action( this, "Chimaera Shot" );
   default_list -> add_action( this, "Kill Shot", "if=cast_regen+action.aimed_shot.cast_regen<focus.deficit" );
+  default_list -> add_action( this, "Chimaera Shot" );
 
   default_list -> add_action( this, "Rapid Fire");
   default_list -> add_talent( this, "Stampede", "if=buff.rapid_fire.up|buff.bloodlust.up|target.time_to_die<=20" );
@@ -3836,7 +3836,7 @@ void hunter_t::apl_mm()
   {
     careful_aim -> add_talent( this, "Glaive Toss", "if=active_enemies>4" );
     careful_aim -> add_talent( this, "Powershot", "if=active_enemies>1&cast_regen<focus.deficit" );
-    careful_aim -> add_talent( this, "Barrage", "if=active_enemies>4" );
+    careful_aim -> add_talent( this, "Barrage", "if=active_enemies>1" );
     // careful_aim -> add_action( this, "Steady Shot", "if=buff.pre_steady_focus.up&if=buff.pre_steady_focus.up&(14+cast_regen+action.aimed_shot.cast_regen)<=focus.deficit)" );
     careful_aim -> add_action( this, "Aimed Shot" );
     careful_aim -> add_talent( this, "Focusing Shot", "if=50+cast_regen<focus.deficit" );

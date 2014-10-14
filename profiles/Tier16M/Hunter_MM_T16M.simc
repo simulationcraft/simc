@@ -31,8 +31,8 @@ actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
 actions+=/potion,name=virmens_bite,if=((buff.rapid_fire.up|buff.bloodlust.up)&(!talent.stampede.enabled|cooldown.stampede.remains<1))|target.time_to_die<=20
-actions+=/chimaera_shot
 actions+=/kill_shot,if=cast_regen+action.aimed_shot.cast_regen<focus.deficit
+actions+=/chimaera_shot
 actions+=/rapid_fire
 actions+=/stampede,if=buff.rapid_fire.up|buff.bloodlust.up|target.time_to_die<=20
 actions+=/run_action_list,name=careful_aim,if=buff.careful_aim.up
@@ -56,34 +56,34 @@ actions+=/steady_shot
 
 actions.careful_aim=glaive_toss,if=active_enemies>4
 actions.careful_aim+=/powershot,if=active_enemies>1&cast_regen<focus.deficit
-actions.careful_aim+=/barrage,if=active_enemies>4
+actions.careful_aim+=/barrage,if=active_enemies>1
 actions.careful_aim+=/aimed_shot
 actions.careful_aim+=/focusing_shot,if=50+cast_regen<focus.deficit
 actions.careful_aim+=/steady_shot
 
-head=headguard_of_the_unblinking_vigil,id=99402,upgrade=4,gems=capacitive_primal_10agi_11agi
+head=headguard_of_the_unblinking_vigil,id=99402,upgrade=4,gems=capacitive_primal_10crit_10haste_11agi
 neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=4
-shoulders=spaulders_of_the_unblinking_vigil,id=99404,upgrade=4,gems=10agi_10agi_8agi,enchant=15agi_5crit
-back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=10agi_4agi,enchant=12crit
-chest=tunic_of_the_unblinking_vigil,id=99405,upgrade=4,gems=10agi_10agi_10agi_11agi,enchant=5all
+shoulders=spaulders_of_the_unblinking_vigil,id=99404,upgrade=4,gems=10crit_10haste_10crit_10haste_8agi,enchant=15agi_5crit
+back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=10crit_10haste_4agi,enchant=12crit
+chest=tunic_of_the_unblinking_vigil,id=99405,upgrade=4,gems=10crit_10haste_10crit_10haste_10crit_10haste_11agi,enchant=5all
 wrists=wristguards_of_ruination,id=105562,upgrade=4,enchant=12agi
-hands=gloves_of_the_unblinking_vigil,id=99406,upgrade=4,gems=10agi_10agi_8agi,enchant=15agi
-waist=arrowflight_girdle,id=105584,upgrade=4,gems=10agi_5agi_10crit_10agi_8agi
-legs=leggings_of_unabashed_anger,id=105454,upgrade=4,gems=5agi_10crit_5agi_10crit_8agi,enchant=28agi_23crit
-feet=puddle_punishers,id=105410,upgrade=4,gems=10agi_4mastery,enchant=10haste_10crit
-finger1=kilruks_band_of_ascendancy,id=105624,upgrade=4,gems=10agi_4crit
-finger2=ring_of_restless_energy,id=105558,upgrade=4,gems=10agi_4crit
+hands=gloves_of_the_unblinking_vigil,id=99406,upgrade=4,gems=10crit_10haste_10crit_10haste_8agi,enchant=11haste
+waist=arrowflight_girdle,id=105584,upgrade=4,gems=10crit_10haste_20crit_10crit_10haste_8agi
+legs=leggings_of_unabashed_anger,id=105454,upgrade=4,gems=20crit_20crit_8agi,enchant=19agi_11crit
+feet=puddle_punishers,id=105410,upgrade=4,gems=10crit_10haste_4mastery,enchant=9agi
+finger1=kilruks_band_of_ascendancy,id=105624,upgrade=4,gems=10crit_10haste_4crit
+finger2=ring_of_restless_energy,id=105558,upgrade=4,gems=10crit_10haste_4crit
 trinket1=assurance_of_consequence,id=105472,upgrade=4
 trinket2=haromms_talisman,id=105527,upgrade=4
-main_hand=hiseks_reserve_longbow,id=105623,upgrade=4,gems=10agi_4agi,enchant=lord_blastingtons_scope_of_doom
+main_hand=hiseks_reserve_longbow,id=105623,upgrade=4,gems=10crit_10haste_4agi,enchant=lord_blastingtons_scope_of_doom
 
 # Gear Summary
 # gear_strength=5
-# gear_agility=1335
+# gear_agility=1155
 # gear_stamina=1663
 # gear_intellect=5
-# gear_crit_rating=746
-# gear_haste_rating=580
+# gear_crit_rating=904
+# gear_haste_rating=731
 # gear_mastery_rating=189
 # gear_armor=826
 # gear_multistrike_rating=107
