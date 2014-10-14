@@ -35,8 +35,8 @@ actions+=/arcane_torrent,if=buff.bloodbath.up|buff.avatar.up
 actions+=/berserker_rage,if=buff.enrage.down
 actions+=/call_action_list,name=prot
 
-actions.prot=shield_block,if=!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)|action.shield_block.charges_fractional>=1
-actions.prot+=/shield_barrier,if=buff.shield_barrier.down&((buff.shield_block.down&action.shield_block.charges<1)|rage>=85)
+actions.prot=shield_block,if=!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)
+actions.prot+=/shield_barrier,if=buff.shield_barrier.down&((buff.shield_block.down&action.shield_block.charges_fractional<0.75)|rage>=85)
 actions.prot+=/demoralizing_shout,if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)
 actions.prot+=/enraged_regeneration,if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)
 actions.prot+=/shield_wall,if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)
@@ -71,6 +71,7 @@ actions.prot_aoe+=/thunder_clap
 actions.prot_aoe+=/shield_slam
 actions.prot_aoe+=/storm_bolt
 actions.prot_aoe+=/shield_slam
+actions.prot_aoe+=/execute,if=buff.sudden_death.react
 actions.prot_aoe+=/devastate
 
 head=blackhands_faceguard,id=115584
