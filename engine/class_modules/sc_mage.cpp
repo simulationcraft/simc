@@ -2863,7 +2863,7 @@ struct frozen_orb_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B2 ) )
+    if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B4 ) )
     {
       p() -> buffs.frost_t17_4pc -> trigger();
     }
