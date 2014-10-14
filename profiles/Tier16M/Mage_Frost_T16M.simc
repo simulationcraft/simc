@@ -41,12 +41,12 @@ actions+=/call_action_list,name=aoe,if=active_enemies>=5
 actions+=/call_action_list,name=single_target
 
 # Actions while Prismatic Crystal is active
-actions.crystal_sequence=call_action_list,name=cooldowns
-actions.crystal_sequence+=/frost_bomb,if=active_enemies=1&current_target!=prismatic_crystal&remains<10
+actions.crystal_sequence=frost_bomb,if=active_enemies=1&current_target!=prismatic_crystal&remains<10
 actions.crystal_sequence+=/frozen_orb
+actions.crystal_sequence+=/call_action_list,name=cooldowns
 actions.crystal_sequence+=/prismatic_crystal
 actions.crystal_sequence+=/frost_bomb,if=active_enemies>1&current_target=prismatic_crystal&!ticking
-actions.crystal_sequence+=/ice_lance,if=buff.fingers_of_frost.react=2|(buff.fingers_of_frost.react&set_bonus.tier17_4pc&dot.frozen_orb.ticking)
+actions.crystal_sequence+=/ice_lance,if=buff.fingers_of_frost.react=2|(buff.fingers_of_frost.react&active_dot.frozen_orb>=1)
 actions.crystal_sequence+=/ice_nova,if=charges=2
 actions.crystal_sequence+=/frostfire_bolt,if=buff.brain_freeze.react
 actions.crystal_sequence+=/ice_lance,if=buff.fingers_of_frost.react

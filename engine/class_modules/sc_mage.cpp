@@ -4976,16 +4976,16 @@ void mage_t::apl_frost()
   default_list -> add_action( "call_action_list,name=single_target" );
 
 
-  crystal_sequence -> add_action( "call_action_list,name=cooldowns",
-                                  "Actions while Prismatic Crystal is active" );
   crystal_sequence -> add_talent( this, "Frost Bomb",
-                                  "if=active_enemies=1&current_target!=prismatic_crystal&remains<10" );
+                                  "if=active_enemies=1&current_target!=prismatic_crystal&remains<10",
+                                  "Actions while Prismatic Crystal is active" );
   crystal_sequence -> add_action( this, "Frozen Orb" );
+  crystal_sequence -> add_action( "call_action_list,name=cooldowns" );
   crystal_sequence -> add_talent( this, "Prismatic Crystal" );
   crystal_sequence -> add_talent( this, "Frost Bomb",
                                   "if=active_enemies>1&current_target=prismatic_crystal&!ticking" );
   crystal_sequence -> add_action( this, "Ice Lance",
-                                  "if=buff.fingers_of_frost.react=2|(buff.fingers_of_frost.react&set_bonus.tier17_4pc&dot.frozen_orb.ticking)" );
+                                  "if=buff.fingers_of_frost.react=2|(buff.fingers_of_frost.react&active_dot.frozen_orb>=1)" );
   crystal_sequence -> add_talent( this, "Ice Nova",
                                   "if=charges=2" );
   crystal_sequence -> add_action( this, "Frostfire Bolt",
