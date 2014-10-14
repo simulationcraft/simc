@@ -1117,6 +1117,8 @@ struct melee_t: public warrior_attack_t
            p -> off_hand_weapon.group() == WEAPON_1H )
            sudden_death_chance += p -> spec.singleminded_fury -> effectN( 4 ).percent();
     }
+    if ( p -> wod_19005_hotfix )
+      sudden_death_chance = 0.1;
     if ( p -> dual_wield() )
       base_hit -= 0.19;
   }
