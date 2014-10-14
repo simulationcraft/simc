@@ -38,6 +38,7 @@ actions+=/vanish,if=time>10&!buff.stealth.up
 actions+=/rupture,if=combo_points=5&ticks_remain<3
 actions+=/rupture,cycle_targets=1,if=active_enemies>1&!ticking&combo_points=5
 actions+=/mutilate,if=buff.stealth.up
+actions+=/slice_and_dice,if=buff.slice_and_dice.remains<5
 actions+=/marked_for_death,if=combo_points=0
 actions+=/crimson_tempest,if=combo_points>4&active_enemies>=4&remains<8
 actions+=/fan_of_knives,if=combo_points<5&active_enemies>=4

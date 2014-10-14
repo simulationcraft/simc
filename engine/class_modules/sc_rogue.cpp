@@ -2551,10 +2551,10 @@ struct slice_and_dice_t : public rogue_attack_t
     double snd = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
     if ( p() -> mastery.executioner -> ok() )
       snd *= 1.0 + p() -> cache.mastery_value();
-    timespan_t snd_duration = 3 * ( cast_state( execute_state ) -> cp + 1 ) * p() -> buffs.slice_and_dice -> buff_period;
+    timespan_t snd_duration = ( cast_state( execute_state ) -> cp + 1 ) * p() -> buffs.slice_and_dice -> data().duration();
 
     if ( p() -> sets.has_set_bonus( SET_MELEE, T15, B2 ) )
-      snd_duration += 3 * p() -> buffs.slice_and_dice -> buff_period;
+      snd_duration += p() -> buffs.slice_and_dice -> data().duration();
 
     p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
   }
@@ -4424,6 +4424,7 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Rupture", "if=combo_points=5&ticks_remain<3" );
     def -> add_action( this, "Rupture", "cycle_targets=1,if=active_enemies>1&!ticking&combo_points=5" );
     def -> add_action( this, "Mutilate", "if=buff.stealth.up" );
+    def -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<5" );
     def -> add_talent( this, "Marked for Death", "if=combo_points=0" );
     def -> add_action( this, "Crimson Tempest", "if=combo_points>4&active_enemies>=4&remains<8" );
     def -> add_action( this, "Fan of Knives", "if=combo_points<5&active_enemies>=4" );
@@ -4889,8 +4890,9 @@ void rogue_t::create_buffs()
                              .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   buffs.slice_and_dice     = buff_creator_t( this, "slice_and_dice", find_class_spell( "Slice and Dice" ) )
                              .duration( perk.improved_slice_and_dice -> ok() ? timespan_t::zero() : timespan_t::min() )
-                             .tick_behavior( BUFF_TICK_REFRESH )
-                             .tick_callback( energetic_recovery )
+                             .tick_behavior( specialization() == ROGUE_SUBTLETY ? BUFF_TICK_REFRESH : BUFF_TICK_NONE )
+                             .tick_callback( specialization() == ROGUE_SUBTLETY ? energetic_recovery : 0 )
+                             .period( specialization() == ROGUE_SUBTLETY ? find_class_spell( "Slice and Dice" ) -> effectN( 2 ).period() : timespan_t::zero() )
                              .add_invalidate( CACHE_ATTACK_SPEED );
 
   // Legendary buffs
