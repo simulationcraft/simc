@@ -104,6 +104,43 @@ const char * _resource_strings[] =
   0
 };
 
+const char* _attribute_strings[] =
+{
+  0,                       "Ranged ability",        0,                        0,                     0,                       // 0
+  0,                       "Passive",               "Hidden",                 0,                     0,                       // 5
+  0,                       0,                       0,                        0,                     0,                       // 10
+  0,                       0,                       0,                        0,                     0,                       // 15
+  0,                       0,                       0,                        0,                     0,                       // 20
+  0,                       0,                       0,                        0,                     0,                       // 25
+  0,                       0,                       0,                        0,                     "Channeled",             // 30
+  0,                       0,                       0,                        "Channeled",           0,                       // 35
+  0,                       0,                       0,                        0,                     0,                       // 40
+  0,                       0,                       0,                        0,                     0,                       // 45
+  0,                       0,                       0,                        0,                     0,                       // 50
+  0,                       0,                       0,                        0,                     0,                       // 55
+  0,                       0,                       0,                        0,                     0,                       // 60
+  0,                       0,                       0,                        0,                     0,                       // 65
+  0,                       0,                       0,                        0,                     0,                       // 70
+  0,                       0,                       0,                        0,                     0,                       // 75
+  0,                       0,                       0,                        0,                     0,                       // 80
+  0,                       0,                       0,                        0,                     0,                       // 85
+  0,                       0,                       0,                        0,                     0,                       // 90
+  0,                       0,                       0,                        0,                     0,                       // 95
+  0,                       0,                       0,                        0,                     0,                       // 100
+  "Not a proc",            0,                       0,                        0,                     0,                       // 105
+  0,                       0,                       "Disable player procs",   "Disable target procs",0,                       // 110
+  0,                       0,                       0,                        0,                     0,                       // 115
+  0,                       0,                       0,                        0,                     0,                       // 120
+  0,                       0,                       0,                        0,                     0,                       // 125
+  0,                       0,                       0,                        0,                     0,                       // 130
+  0,                       0,                       0,                        0,                     0,                       // 135
+  0,                       0,                       0,                        0,                     0,                       // 140
+  0,                       0,                       0,                        0,                     0,                       // 145
+  0,                       "Disable weapon procs",  0,                        0,                     0,                       // 150
+  0,                       0,                       0,                        0,                     0,                       // 155
+  0,                       0,                       0,                        0,                     0,                       // 160
+};
+
 const char * _property_type_strings[] =
 {
   "Generic Modifier",      "Spell Duration",        "Spell Generated Threat", "Spell Effect 1",      "Stack Amount",          // 0
@@ -831,12 +868,24 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   }
 
   s << "Attributes       : ";
+  std::string attr_str;
   for ( unsigned i = 0; i < NUM_SPELL_FLAGS; i++ )
   {
     for ( unsigned flag = 0; flag < 32; flag++ )
     {
       if ( spell -> attribute( i ) & ( 1 << flag ) )
+      {
         s << "x";
+        size_t attr_idx = i * 32 + flag;
+        if ( attr_idx < sizeof_array( _attribute_strings ) - 1 && _attribute_strings[ attr_idx ] )
+        {
+          if ( ! attr_str.empty() )
+            attr_str += ", ";
+
+          attr_str += _attribute_strings[ attr_idx ];
+          attr_str += " (" + util::to_string( attr_idx ) + ")";
+        }
+      }
       else
         s << ".";
 
@@ -850,6 +899,9 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     if ( ( i + 1 ) % 2 == 0 && i < NUM_SPELL_FLAGS - 1 )
       s << std::endl << "                 : ";
   }
+
+  if ( ! attr_str.empty() )
+      s << std::endl << "                 : " + attr_str;
   s << std::endl;
 
   s << "Effects          :" << std::endl;

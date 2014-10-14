@@ -127,6 +127,8 @@ public:
     proc_t* lock_and_load;
     proc_t* explosive_shot_focus_starved;
     proc_t* black_arrow_focus_starved;
+    proc_t* chimaera_shot_focus_starved;
+    proc_t* barrage_focus_starved;
     proc_t* tier15_2pc_melee;
     proc_t* tier15_4pc_melee_aimed_shot;
     proc_t* tier15_4pc_melee_arcane_shot;
@@ -2309,6 +2311,17 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
     school = SCHOOL_FROSTSTRIKE; // Just so the report shows a mixture of the two colors.
   }
 
+  bool ready()
+  {
+    if ( cooldown -> up() && !p() -> resource_available( RESOURCE_FOCUS, cost() ) )
+    {
+      if ( sim -> log ) sim -> out_log.printf( "Player %s was focus starved when Chimaera Shot was ready.", p() -> name() );
+      p() -> procs.chimaera_shot_focus_starved -> occur();
+    }
+
+    return hunter_ranged_attack_t::ready();
+  }
+
   virtual void impact( action_state_t* s )
   {
     hunter_ranged_attack_t::impact( s );
@@ -2848,6 +2861,17 @@ struct barrage_t: public hunter_spell_t
     travel_speed = 0.0;
     // FIXME still needs to AoE component
     tick_action = new barrage_damage_t( player );
+  }
+
+  bool ready()
+  {
+    if ( cooldown -> up() && !p() -> resource_available( RESOURCE_FOCUS, cost() ) )
+    {
+      if ( sim -> log ) sim -> out_log.printf( "Player %s was focus starved when Barrage was ready.", p() -> name() );
+      p() -> procs.barrage_focus_starved -> occur();
+    }
+
+    return hunter_spell_t::ready();
   }
 
   virtual void schedule_execute( action_state_t* state = 0 )
@@ -3576,6 +3600,8 @@ void hunter_t::init_procs()
   procs.lock_and_load                = get_proc( "lock_and_load" );
   procs.explosive_shot_focus_starved = get_proc( "explosive_shot_focus_starved" );
   procs.black_arrow_focus_starved    = get_proc( "black_arrow_focus_starved" );
+  procs.chimaera_shot_focus_starved  = get_proc( "chimaera_shot_focus_starved" );
+  procs.barrage_focus_starved        = get_proc( "barrage_focus_starved" );
   procs.tier15_2pc_melee             = get_proc( "tier15_2pc_melee" );
   procs.tier15_4pc_melee_aimed_shot  = get_proc( "tier15_4pc_melee_aimed_shot" );
   procs.tier15_4pc_melee_arcane_shot = get_proc( "tier15_4pc_melee_arcane_shot" );

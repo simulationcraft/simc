@@ -2204,6 +2204,9 @@ struct mind_blast_t final : public priest_spell_t
 
     d *= 1.0 + priest.sets.set( SET_CASTER, T16, B2 ) -> effectN( 1 ).percent();
 
+    // Hotfix, via -- http://blue.mmo-champion.com/topic/318876-warlords-of-draenor-theorycraft-discussion/#post636 -- 2014/10/13
+    //d *= 1.1;
+
     return d;
   }
 };
@@ -2417,6 +2420,9 @@ struct mind_spike_t final : public priest_spell_t
     priest_td_t& td = get_td( target );
     if ( priest.talents.clarity_of_power -> ok() && !td.dots.shadow_word_pain -> is_ticking() && !td.dots.vampiric_touch -> is_ticking() )
       d *= 1.0 + priest.talents.clarity_of_power -> effectN( 1 ).percent();
+
+    // Hotfix, via -- http://blue.mmo-champion.com/topic/318876-warlords-of-draenor-theorycraft-discussion/#post636 -- 2014/10/13
+    //d *= 1.1;
 
     return d;
   }
@@ -2978,6 +2984,9 @@ struct mind_flay_base_t : public priest_spell_t
     {
       am *= 1.0 + priest.cache.mastery_value();
     }
+
+    // Hotfix, via -- http://blue.mmo-champion.com/topic/318876-warlords-of-draenor-theorycraft-discussion/#post636 -- 2014/10/13
+    //am *= 1.1;
 
     return am;
   }
@@ -5782,7 +5791,7 @@ void priest_t::create_buffs()
                         .spell( find_spell( 59889 ) )
                         .chance( specs.borrowed_time -> ok() )
                         .default_value( find_spell( 59889 ) -> effectN( 1 ).percent() )
-                        .add_invalidate( CACHE_SPELL_HASTE );
+                        .add_invalidate( CACHE_HASTE );
 
   buffs.holy_evangelism = buff_creator_t( this, "holy_evangelism" )
                           .spell( find_spell( 81661 ) )

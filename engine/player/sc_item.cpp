@@ -488,6 +488,8 @@ void item_t::encoded_item( xml_writer_t& writer )
   writer.begin_tag( "item" );
   writer.print_attribute( "name", name_str );
 
+  writer.print_attribute( "slot", util::to_string( slot ) );
+  
   if ( parsed.data.id )
     writer.print_attribute( "id", util::to_string( parsed.data.id ) );
 

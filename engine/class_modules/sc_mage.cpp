@@ -106,6 +106,7 @@ public:
           * molten_armor,
           * pyroblast,
           * enhanced_pyrotechnics, // Perk
+          * improved_scorch,       // Perk
           * fiery_adept,           // T16 4pc Fire
           * pyromaniac;            // T17 4pc Fire
 
@@ -153,6 +154,7 @@ public:
     const spell_data_t* blink;
     const spell_data_t* combustion;
     const spell_data_t* cone_of_cold;
+    const spell_data_t* dragons_breath;
     const spell_data_t* frostfire;
     const spell_data_t* icy_veins;
     const spell_data_t* inferno_blast;
@@ -1839,7 +1841,8 @@ struct blink_t : public mage_spell_t
     if ( !p() -> glyphs.rapid_displacement -> ok() )
       player -> buffs.stunned -> expire();
 
-    p() -> buffs.improved_blink -> trigger();
+    if ( p() -> perks.improved_blink -> ok() )
+      p() -> buffs.improved_blink -> trigger();
   }
 };
 
@@ -2164,6 +2167,18 @@ struct dragons_breath_t : public mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
+  }
+
+  virtual double action_multiplier() const
+  {
+    double am = mage_spell_t::action_multiplier();
+
+    if ( p() -> glyphs.dragons_breath -> ok() )
+    {
+      am *=  1.0 + p() -> glyphs.dragons_breath -> effectN( 1 ).percent();
+    }
+
+    return am;
   }
 };
 
@@ -2643,7 +2658,7 @@ struct frostfire_bolt_t : public mage_spell_t
     {
       frigid_blast -> schedule_execute();
     }
-    p() -> buffs.brain_freeze -> expire();
+    p() -> buffs.brain_freeze -> decrement();
   }
 
   virtual timespan_t travel_time() const
@@ -2973,19 +2988,17 @@ struct inferno_blast_t : public mage_spell_t
                   p -> find_class_spell( "Inferno Blast" ) )
   {
     parse_options( options_str );
-
     may_hot_streak = true;
     cooldown -> duration = timespan_t::from_seconds( 8.0 );
 
     if ( p -> sets.has_set_bonus( MAGE_FIRE, T17, B2 ) )
     {
-      cooldown -> duration = timespan_t::from_seconds( 8.0 );
-      cooldown -> charges = 2;
+      cooldown -> charges = data().charges() +
+                            p -> sets.set( MAGE_FIRE, T17, B2 )
+                              -> effectN( 1 ).base_value();
     }
-    else
-      cooldown -> duration = timespan_t::from_seconds( 8.0 );
 
-    max_spread_targets = 3;
+    max_spread_targets = data().effectN( 2 ).base_value();
     if ( p -> glyphs.inferno_blast -> ok() )
     {
       max_spread_targets += p -> glyphs.inferno_blast
@@ -3013,12 +3026,12 @@ struct inferno_blast_t : public mage_spell_t
 
       int spread_remaining = max_spread_targets;
       std::vector< player_t* >& tl = target_list();
-      //Skip cleave entirely if primary target is PC.
 
       // Randomly choose spread targets
       std::random_shuffle( tl.begin(), tl.end() );
 
-      for ( size_t i = 0, actors = tl.size(); i < actors; i++ )
+      for ( size_t i = 0, actors = tl.size();
+            i < actors && spread_remaining > 0; i++ )
       {
         player_t* t = tl[ i ];
 
@@ -3028,24 +3041,30 @@ struct inferno_blast_t : public mage_spell_t
         if ( t == p() -> pets.prismatic_crystal )
           continue;
 
-        if ( combustion_dot -> is_ticking() )
+        // Combustion does not spread to already afflicted targets
+        // Source : http://goo.gl/tCsaqr
+        if ( combustion_dot -> is_ticking() &&
+             !td( t ) -> dots.combustion -> is_ticking()  )
         {
-          // Combustion does not spread to targets already afflicted
-          // Source : http://goo.gl/tCsaqr
-          dot_t* target_combustion = t -> get_dot( "combustion", this -> p() );
-          if ( !target_combustion -> is_ticking() )
-            combustion_dot -> copy( t, DOT_COPY_CLONE );
+          combustion_dot -> copy( t, DOT_COPY_CLONE );
         }
 
         if ( ignite_dot -> is_ticking() )
         {
           if ( td( t ) -> dots.ignite -> is_ticking() )
           {
-            // TODO: This does nothing for now, fix this when bug is resolved
-            // Source: https://twitter.com/Celestalon/status/502030039240552448
+            // When the spread target has an ignite, add source ignite
+            // remaining bank damage of the  to the spread target's ignite,
+            // and reset ignite's tick count.
+            // TODO: Patch 6.0,2 inferno blast behavior exhibits a delay when
+            //       acquiring remaining number of igniteticks.
+            //       Verify implementation when bug is fixed.
+            residual_periodic_state_t* dot_state =
+              debug_cast<residual_periodic_state_t*>( ignite_dot -> state );
+            double ignite_bank = dot_state -> tick_amount *
+                                 ignite_dot -> ticks_left();
 
-            // residual_periodic_state_t* dot_state = debug_cast<residual_periodic_state_t*>( ignite_dot -> state );
-            // residual_action::trigger( p() -> active_ignite, t, dot_state -> tick_amount * ignite_dot -> ticks_left() );
+            residual_action::trigger( p() -> active_ignite, t, ignite_bank);
           }
           else
           {
@@ -3062,14 +3081,20 @@ struct inferno_blast_t : public mage_spell_t
         {
           pyroblast_dot -> copy( t, DOT_COPY_CLONE );
         }
-
-        if ( --spread_remaining == 0 )
-          break;
       }
 
       if ( s -> result == RESULT_CRIT && p() -> talents.kindling -> ok() )
-          p() -> cooldowns.combustion -> adjust( timespan_t::from_seconds( - p() -> talents.kindling -> effectN( 1 ).base_value() ) );
+      {
+        p() -> cooldowns.combustion
+            -> adjust( -1000 * p() -> talents.kindling
+                                   -> effectN( 1 ).time_value() );
+      }
 
+      spread_remaining--;
+    }
+
+    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    {
       trigger_ignite( s );
     }
   }
@@ -3504,7 +3529,16 @@ struct scorch_t : public mage_spell_t
 
     may_hot_streak = true;
     consumes_ice_floes = false;
+  }
 
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+
+    if ( p() -> perks.improved_scorch -> ok() )
+    {
+      p() -> buffs.improved_scorch -> trigger();
+    }
   }
 
   virtual void impact( action_state_t* s )
@@ -3513,7 +3547,6 @@ struct scorch_t : public mage_spell_t
 
     if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
       trigger_ignite( s );
-
   }
 
   double composite_crit_multiplier() const
@@ -3528,10 +3561,9 @@ struct scorch_t : public mage_spell_t
   virtual bool usable_moving() const
   { return true; }
 
-  // delay 0.25s the removal of heating up on non-critting spell with travel time or scorch
+  // delay 0.25s the removal of heating up on non-critting scorch
   virtual void expire_heating_up()
   {
-    // we should delay heating up removal here
     mage_t* p = this -> p();
     if ( sim -> log ) sim -> out_log << "Heating up delay by 0.25s";
     p -> buffs.heating_up -> expire( timespan_t::from_millis( 250 ) );
@@ -4179,17 +4211,18 @@ void mage_t::init_spells()
   spec.mana_adept            = find_mastery_spell( MAGE_ARCANE );
 
   // Glyphs
-  glyphs.arcane_brilliance   = find_glyph_spell( "Glyph of Arcane Brilliance" );
-  glyphs.arcane_power        = find_glyph_spell( "Glyph of Arcane Power" );
-  glyphs.blink               = find_glyph_spell( "Glyph of Blink" );
-  glyphs.combustion          = find_glyph_spell( "Glyph of Combustion" );
-  glyphs.cone_of_cold        = find_glyph_spell( "Glyph of Cone of Cold" );
-  glyphs.frostfire           = find_glyph_spell( "Glyph of Frostfire" );
-  glyphs.icy_veins           = find_glyph_spell( "Glyph of Icy Veins" );
-  glyphs.inferno_blast       = find_glyph_spell( "Glyph of Inferno Blast" );
-  glyphs.living_bomb         = find_glyph_spell( "Glyph of Living Bomb" );
-  glyphs.rapid_displacement  = find_glyph_spell( "Glyph of Rapid Displacement" );
-  glyphs.splitting_ice       = find_glyph_spell( "Glyph of Splitting Ice" );
+  glyphs.arcane_brilliance  = find_glyph_spell( "Glyph of Arcane Brilliance"  );
+  glyphs.arcane_power       = find_glyph_spell( "Glyph of Arcane Power"       );
+  glyphs.blink              = find_glyph_spell( "Glyph of Blink"              );
+  glyphs.combustion         = find_glyph_spell( "Glyph of Combustion"         );
+  glyphs.cone_of_cold       = find_glyph_spell( "Glyph of Cone of Cold"       );
+  glyphs.dragons_breath     = find_glyph_spell( "Glyph of Dragon's Breath"    );
+  glyphs.frostfire          = find_glyph_spell( "Glyph of Frostfire"          );
+  glyphs.icy_veins          = find_glyph_spell( "Glyph of Icy Veins"          );
+  glyphs.inferno_blast      = find_glyph_spell( "Glyph of Inferno Blast"      );
+  glyphs.living_bomb        = find_glyph_spell( "Glyph of Living Bomb"        );
+  glyphs.rapid_displacement = find_glyph_spell( "Glyph of Rapid Displacement" );
+  glyphs.splitting_ice      = find_glyph_spell( "Glyph of Splitting Ice"      );
 
   // Active spells
   if ( spec.ignite -> ok()  ) active_ignite = new actions::ignite_t( this );
@@ -4313,6 +4346,8 @@ void mage_t::create_buffs()
                                   .add_invalidate( CACHE_SPELL_CRIT );
   buffs.pyroblast             = buff_creator_t( this, "pyroblast",  find_spell( 48108 ) );
   buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) );
+  buffs.improved_scorch       = buff_creator_t( this, "improved_scorch", find_spell( 157633 ) )
+                                  .default_value( perks.improved_scorch -> effectN( 1 ).percent() );
   buffs.potent_flames         = stat_buff_creator_t( this, "potent_flames", find_spell( 145254 ) )
                                   .chance( sets.has_set_bonus( SET_CASTER, T16, B2 ) );
   buffs.fiery_adept           = buff_creator_t( this, "fiery_adept", find_spell( 145261 ) )
@@ -5148,6 +5183,9 @@ double mage_t::temporary_movement_modifier() const
 
   if ( buffs.improved_blink -> up() )
     temporary = std::max( buffs.improved_blink -> default_value, temporary );
+
+  if ( buffs.improved_scorch -> up() )
+    temporary = std::max( buffs.improved_scorch -> default_value, temporary );
 
   return temporary;
 }
