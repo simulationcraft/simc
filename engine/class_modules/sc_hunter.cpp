@@ -2166,6 +2166,10 @@ struct black_arrow_t: public hunter_ranged_attack_t
 
     cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
     base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
+    
+    // Last minute Celestalon fixes before WoD release #WatcherWasWrong
+    if ( p() -> wod_19005_hotfix )  base_multiplier *= 1.12;
+    
     may_multistrike = 1;
     lnl_chance = data().effectN( 2 ).percent();
   }
@@ -2423,6 +2427,9 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     // the inital impact is not part of the rolling dot
     dot_duration = timespan_t::zero();
     tick_count = player -> active.explosive_ticks -> dot_duration.total_seconds();
+
+    // Last minute Celestalon fixes before WoD release #WatcherWasWrong
+    if ( p() -> wod_19005_hotfix )  base_multiplier *= 1.12;
   }
 
   void init()
@@ -2537,6 +2544,9 @@ struct serpent_sting_t: public hunter_ranged_attack_t
     tick_may_crit = true;
     tick_zero = true;
     hasted_ticks = false;
+
+    // Last minute Celestalon fixes before WoD release #WatcherWasWrong
+    if ( p() -> wod_19005_hotfix )  base_multiplier *= 1.12;
   }
 };
 
