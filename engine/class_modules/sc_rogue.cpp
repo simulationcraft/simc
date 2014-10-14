@@ -1793,7 +1793,7 @@ struct envenom_t : public rogue_attack_t
       double snd = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
       if ( p() -> mastery.executioner -> ok() )
         snd *= 1.0 + p() -> cache.mastery_value();
-      timespan_t snd_duration = 3 * 6 * p() -> buffs.slice_and_dice -> buff_period;
+      timespan_t snd_duration = 6 * p() -> buffs.slice_and_dice -> data().duration();
 
       p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
     }
