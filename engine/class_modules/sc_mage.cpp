@@ -4881,6 +4881,8 @@ void mage_t::apl_fire()
   combust_sequence -> add_talent( this, "Meteor" );
   combust_sequence -> add_action( this, "Pyroblast",
                                   "if=buff.pyromaniac.up" );
+  combust_sequence -> add_action( this, "Inferno Blast",
+                                  "if=set_bonus.tier16_4pc_caster&(buff.pyroblast.up^buff.heating_up.up)" );
   combust_sequence -> add_action( this, "Fireball",
                                   "if=!dot.ignite.ticking&!in_flight" );
   combust_sequence -> add_action( this, "Pyroblast",
@@ -4928,6 +4930,8 @@ void mage_t::apl_fire()
   single_target -> add_action( this, "Pyroblast",
                                "if=buff.pyroblast.up&buff.pyroblast.remains<action.fireball.execute_time",
                                "Use Pyro procs before they run out" );
+  single_target -> add_action( this, "Pyroblast",
+                               "if=buff.pyroblast.up&buff.potent_flames.up&buff.potent_flames.remains<gcd" );
   single_target -> add_action( this, "Pyroblast",
                                "if=buff.pyromaniac.react" );
   single_target -> add_action( this, "Pyroblast",
