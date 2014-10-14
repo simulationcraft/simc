@@ -74,5 +74,3 @@ xcopy COPYING %install%\
 xcopy Profiles %install%\profiles\ /s /e
 xcopy C:\OpenSSL-Win64\bin\libeay32.dll %install%\
 xcopy C:\OpenSSL-Win64\bin\ssleay32.dll %install%\
-
-7z a -r -mx9 simc-602-1-win64.zip %install% 
