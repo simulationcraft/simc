@@ -1405,6 +1405,8 @@ struct chi_explosion_t: public monk_melee_attack_t
     monk_melee_attack_t( "chi_explosion", p, p -> talent.chi_explosion )
   {
     parse_options( options_str );
+    if ( p -> wod_19005_hotfix && p -> specialization() == MONK_BREWMASTER )
+      attack_power_mod.direct *= 0.7;
   }
 
   void execute()
@@ -1485,6 +1487,14 @@ struct chi_explosion_t: public monk_melee_attack_t
       p() -> buff.combo_breaker_ce -> expire();
     }
   }
+
+  bool ready()
+  {
+    if ( p() -> resources.current[RESOURCE_CHI] > 0 )
+      return monk_melee_attack_t::ready();
+
+    return false;
+  }
 };
 
 // ==========================================================================
@@ -1525,6 +1535,8 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     base_multiplier *= 8; // hardcoded into tooltip
+    if ( p -> wod_19005_hotfix )
+      base_multiplier *= 1.10;
   }
 
   virtual void impact( action_state_t* s )
@@ -1640,11 +1652,10 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     parse_options( options_str );
     stancemask = STURDY_OX | FIERCE_TIGER | WISE_SERPENT | SPIRITED_CRANE;
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
-    tick_zero = true;
+    tick_zero = hasted_ticks = true;
 
     if ( p -> talent.rushing_jade_wind -> ok() )
     {
-      hasted_ticks = false;
       channeled = false;
       update_flags &= ~STATE_HASTE;
       school = SCHOOL_NATURE; // Application is Nature but the actual damage ticks is Physical
@@ -1653,7 +1664,6 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     }
     else
     {
-      hasted_ticks = true;
       school = SCHOOL_PHYSICAL;
       channeled = true;
       cooldown -> duration *= 1 + p -> perk.empowered_spinning_crane_kick -> effectN( 1 ).percent();
@@ -1705,7 +1715,6 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc_melee );
       p() -> proc.tier15_2pc_melee -> occur();
     }
-
   }
 };
 
@@ -1726,6 +1735,8 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
     base_costs[RESOURCE_CHI] = 0;
     dot_duration = timespan_t::zero();
     trigger_gcd = timespan_t::zero();
+    if ( p -> wod_19005_hotfix )
+      base_multiplier *= 1.10;
   }
 };
 

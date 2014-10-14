@@ -1468,6 +1468,8 @@ struct ambush_t : public rogue_attack_t
     ability_type      = AMBUSH;
     requires_position = POSITION_BACK;
     requires_stealth  = true;
+    if ( p -> wod_19005_hotfix )
+      weapon_multiplier *= 1.13;
   }
 
   double action_multiplier() const
@@ -1558,6 +1560,8 @@ struct backstab_t : public rogue_attack_t
     ability_type      = BACKSTAB;
     requires_weapon   = WEAPON_DAGGER;
     requires_position = POSITION_BACK;
+    if ( p -> wod_19005_hotfix )
+      weapon_multiplier *= 1.13;
   }
 
   virtual double cost() const
@@ -3863,6 +3867,8 @@ struct shadow_reflection_pet_t : public pet_t
       shadow_reflection_attack_t( "ambush", p, p -> find_spell( 8676 ) )
     {
       requires_position = POSITION_BACK;
+      if ( p -> wod_19005_hotfix )
+        weapon_multiplier *= 1.13;
     }
   };
 
@@ -3879,6 +3885,8 @@ struct shadow_reflection_pet_t : public pet_t
       shadow_reflection_attack_t( "backstab", p, p -> find_spell( 53 ) )
     {
       requires_position = POSITION_BACK;
+      if ( p -> wod_19005_hotfix )
+        weapon_multiplier *= 1.13;
     }
   };
 
@@ -4295,7 +4303,12 @@ double rogue_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.deep_insight -> value();
 
     if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
-      m *= 1.0 + spec.assassins_resolve -> effectN( 2 ).percent();
+    {
+      if ( wod_19005_hotfix )
+        m *= 1.1;
+      else
+        m *= 1.0 + spec.assassins_resolve -> effectN( 2 ).percent();
+    }
   }
 
   return m;

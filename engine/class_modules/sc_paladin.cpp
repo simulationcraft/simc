@@ -990,6 +990,9 @@ struct avengers_shield_t : public paladin_spell_t
     // Focused Shield gives another multiplicative factor of 1.3 (tested 5/26/2013, multiplicative with HA)
     if ( p -> glyphs.focused_shield -> ok() )
       base_multiplier *= 1.0 + p -> glyphs.focused_shield -> effectN( 2 ).percent();
+
+    if ( p -> wod_19005_hotfix )
+      attack_power_mod.direct *= 1.05;
   }
 
   // Multiplicative damage effects
@@ -1333,6 +1336,8 @@ struct consecration_tick_t : public paladin_spell_t
     direct_tick = true;
     background  = true;
     may_crit    = true;
+    if ( p -> wod_19005_hotfix )
+      attack_power_mod.direct *= 1.05;
   }
 };
 
@@ -2653,7 +2658,9 @@ struct holy_wrath_t : public paladin_spell_t
     split_aoe_damage = true;
 
     base_multiplier += p -> talents.sanctified_wrath -> effectN( 1 ).percent();
-    hp_granted += (int) p -> talents.sanctified_wrath -> effectN( 2 ).base_value();   
+    hp_granted += (int) p -> talents.sanctified_wrath -> effectN( 2 ).base_value();
+    if ( p -> wod_19005_hotfix )
+      attack_power_mod.direct *= 1.05;
 
   }
 
@@ -4267,6 +4274,8 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 
     // no weapon multiplier
     weapon_multiplier = 0.0;
+    if ( p -> wod_19005_hotfix )
+      attack_power_mod.direct *= 1.05;
   }
 
   virtual void execute()
