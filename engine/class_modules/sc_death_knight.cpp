@@ -6196,10 +6196,38 @@ void death_knight_t::init_action_list()
     def -> add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
     def -> add_action( "run_action_list,name=single_target,if=active_enemies<3" );
 
+    // Breath of Sindragosa specific APLs
+    action_priority_list_t* bos_aoe = get_action_priority_list( "bos_aoe" );
+    bos_aoe -> add_action( this, "Howling Blast" );
+    bos_aoe -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10" );
+    bos_aoe -> add_action( this, "Death and Decay", "if=unholy=1" );
+    bos_aoe -> add_action( this, "Plague Strike", "if=unholy=2" );
+    bos_aoe -> add_talent( this, "Blood Tap" );
+    bos_aoe -> add_talent( this, "Plague Leech", "if=unholy=1" );
+    bos_aoe -> add_action( this, "Plague Strike", "if=unholy=1" );
+    bos_aoe -> add_action( this, "Empower Rune Weapon" );
+
+    action_priority_list_t* bos_st = get_action_priority_list( "bos_st" );
+
     if ( main_hand_weapon.group() == WEAPON_2H )
     {
+      // Breath of Sindragosa specific APLs
+      bos_st -> add_action( this, "Obliterate", "if=buff.killing_machine.react");
+      bos_st -> add_talent( this, "Blood Tap", "if=buff.killing_machine.react&buff.blood_charge.stack>=5");
+      bos_st -> add_talent( this, "Plague Leech", "if=buff.killing_machine.react");
+      bos_st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=5");
+      bos_st -> add_talent( this, "Plague Leech" );
+      bos_st -> add_action( this, "Obliterate", "if=runic_power<76");
+      bos_st -> add_action( this, "Howling Blast", "if=((death=1&frost=0&unholy=0)|death=0&frost=1&unholy=0)&runic_power<88");
+
       // Diseases for free
       st -> add_talent( this, "Plague Leech", "if=disease.min_remains<1" );
+
+      // Defile
+      st -> add_talent( this, "Defile" );
+      st -> add_talent( this, "Blood Tap", "if=talent.defile.enabled&cooldown.defile.remains=0" );
+
+      // Diseases for free
       st -> add_action( this, "Outbreak", "if=!disease.min_ticking" );
       st -> add_talent( this, "Unholy Blight", "if=!disease.min_ticking" );
 
@@ -6207,9 +6235,13 @@ void death_knight_t::init_action_list()
       st -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
       st -> add_talent( this, "Blood Tap", "if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)" );
 
-      // Defile
-      st -> add_talent( this, "Defile" );
-      st -> add_talent( this, "Blood Tap", "if=talent.defile.enabled&cooldown.defile.remains=0" );
+      // Breath of Sindragosa in use, cast it and then keep it up
+      st -> add_talent( this, "Breath of Sindragosa", "if=runic_power>75");
+      st -> add_action( this, "run_action_list,name=bos_st", "if=dot.breath_of_sindragosa.ticking" );
+
+      // Breath of Sindragosa coming off cooldown, get ready to use
+      st -> add_action( this, "Obliterate", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains<7&runic_power<76");
+      st -> add_action( this, "Howling Blast", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains<3&runic_power<88");
 
       // Diseases for runes
       st -> add_action( this, "Howling Blast", "if=!talent.necrotic_plague.enabled&!dot.frost_fever.ticking" );
@@ -6250,12 +6282,30 @@ void death_knight_t::init_action_list()
     }
     else
     {
+      // Breath of Sindragosa specific APLs
+      bos_st -> add_action( this, "Obliterate", "if=buff.killing_machine.react");
+      bos_st -> add_talent( this, "Blood Tap", "if=buff.killing_machine.react&buff.blood_charge.stack>=5");
+      bos_st -> add_talent( this, "Plague Leech", "if=buff.killing_machine.react");
+      bos_st -> add_action( this, "Howling Blast", "if=runic_power<88");
+      bos_st -> add_action( this, "Obliterate", "if=unholy>0&runic_power<76");
+      bos_st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=5");
+      bos_st -> add_talent( this, "Plague Leech");
+      bos_st -> add_action( this, "Empower Rune Weapon");
+
       st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10&(runic_power>76|(runic_power>=20&buff.killing_machine.react))" );
 
 
       // Soul Reaper
       st -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
       st -> add_talent( this, "Blood Tap", "if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)" );
+
+      // Breath of Sindragosa in use, cast it and then keep it up
+      st -> add_talent( this, "Breath of Sindragosa", "if=runic_power>75");
+      st -> add_action( this, "run_action_list,name=bos_st", "if=dot.breath_of_sindragosa.ticking" );
+
+      // Breath of Sindragosa coming off cooldown, get ready to use
+      st -> add_action( this, "Howling Blast", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains<7&runic_power<88");
+      st -> add_action( this, "Obliterate", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains<3&runic_power<76");
 
       // Defile
       st -> add_talent( this, "Defile" );
@@ -6301,6 +6351,8 @@ void death_knight_t::init_action_list()
     aoe -> add_action( this, "Blood Boil", "if=!talent.necrotic_plague.enabled&dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28" );
     aoe -> add_action( this, "Blood Boil", "if=!talent.necrotic_plague.enabled&dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28" );
     aoe -> add_talent( this, "Defile" );
+    aoe -> add_talent( this, "Breath of Sindragosa", "if=runic_power>75");
+    aoe -> add_action( this, "run_action_list,name=bos_aoe", "if=dot.breath_of_sindragosa.ticking" );
     aoe -> add_action( this, "Howling Blast" );
     aoe -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10" );
     aoe -> add_action( this, "Frost Strike", "if=runic_power>76" );
@@ -6425,7 +6477,7 @@ void death_knight_t::init_action_list()
 
     // AoE Breath of Sindragosa in use, cast and then keep up
     aoe -> add_talent( this, "Breath of Sindragosa", "if=runic_power>75");
-    aoe -> add_action( this, "run_action_list,name=bos_aoe,if=dot.breath_of_sindragosa.ticking" );
+    aoe -> add_action( this, "run_action_list,name=bos_aoe","if=dot.breath_of_sindragosa.ticking" );
 
     //AoE continued
     aoe -> add_action( this, "Blood Boil", "if=blood=2|(frost=2&death=2)" );
