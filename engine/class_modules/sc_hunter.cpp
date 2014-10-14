@@ -2446,6 +2446,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     assert( p() -> active.explosive_ticks );
     p() -> active.explosive_ticks -> stats = stats;
     stats -> action_list.push_back( p() -> active.explosive_ticks );
+    snapshot_flags |= STATE_MUL_TA;
   }
 
   virtual double cost() const
