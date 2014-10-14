@@ -1806,11 +1806,12 @@ struct ranged_t: public hunter_ranged_attack_t
       {
         if ( p() -> active.ammo == POISONED_AMMO )
         {
+          const spell_data_t* poisoned_tick = p() -> find_spell( 170661 );
           residual_action::trigger(
             p() -> active.poisoned_ammo, // ignite spell
             s -> target, // target
-            p() -> cache.attack_power() * ( p() -> find_spell( 170661 ) -> effectN( 1 ).ap_coeff() *
-            ( p() -> find_spell( 170661 ) -> duration() / p() -> find_spell( 170661 ) -> effectN( 1 ).period() ) ) );
+            p() -> cache.attack_power() * ( poisoned_tick -> effectN( 1 ).ap_coeff() *
+            ( poisoned_tick -> duration() / poisoned_tick -> effectN( 1 ).period() ) ) );
         }
         else if ( p() -> active.ammo == FROZEN_AMMO )
           p() -> active.frozen_ammo -> execute();
@@ -2446,7 +2447,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     assert( p() -> active.explosive_ticks );
     p() -> active.explosive_ticks -> stats = stats;
     stats -> action_list.push_back( p() -> active.explosive_ticks );
-    snapshot_flags |= STATE_MUL_TA;
+    ///snapshot_flags |= STATE_MUL_TA;
   }
 
   virtual double cost() const
