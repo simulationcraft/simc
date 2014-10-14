@@ -67,6 +67,7 @@ actions.combust_sequence+=/use_item,slot=trinket1
 actions.combust_sequence+=/potion,name=draenic_intellect
 actions.combust_sequence+=/meteor
 actions.combust_sequence+=/pyroblast,if=buff.pyromaniac.up
+actions.combust_sequence+=/inferno_blast,if=set_bonus.tier16_4pc_caster&(buff.pyroblast.up^buff.heating_up.up)
 actions.combust_sequence+=/fireball,if=!dot.ignite.ticking&!in_flight
 actions.combust_sequence+=/pyroblast,if=buff.pyroblast.up
 # Meteor Combustions can run out of Pyro procs before impact. Use IB to delay Combustion
@@ -95,6 +96,7 @@ actions.aoe+=/flamestrike,if=mana.pct>10&remains<2.4
 actions.single_target=inferno_blast,if=(dot.combustion.ticking&active_dot.combustion<active_enemies)|(dot.living_bomb.ticking&active_dot.living_bomb<active_enemies)
 # Use Pyro procs before they run out
 actions.single_target+=/pyroblast,if=buff.pyroblast.up&buff.pyroblast.remains<action.fireball.execute_time
+actions.single_target+=/pyroblast,if=buff.pyroblast.up&buff.potent_flames.up&buff.potent_flames.remains<gcd
 actions.single_target+=/pyroblast,if=buff.pyromaniac.react
 # Pyro camp during regular sequence; Do not use Pyro procs without HU and first using fireball
 actions.single_target+=/pyroblast,if=buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight
