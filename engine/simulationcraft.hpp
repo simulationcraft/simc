@@ -8,7 +8,7 @@
 #define SC_MAJOR_VERSION "602"
 #define SC_MINOR_VERSION "1"
 #define SC_USE_PTR ( 0 )
-#define SC_BETA ( 1 )
+#define SC_BETA ( 0 )
 #define SC_BETA_STR "wod"
 
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
