@@ -1571,6 +1571,8 @@ struct devastate_t: public warrior_attack_t
     parse_options( options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
     weapon = &( p -> main_hand_weapon );
+    if ( p -> wod_19005_hotfix )
+      weapon_multiplier *= 1.05;
   }
 
   void execute()
@@ -2089,6 +2091,8 @@ struct raging_blow_attack_t: public warrior_attack_t
   {
     may_miss = may_dodge = may_parry = may_block = false;
     dual = true;
+    if ( p -> wod_19005_hotfix )
+      weapon_multiplier *= 0.9;
   }
 
   void impact( action_state_t* s )
@@ -2183,6 +2187,8 @@ struct revenge_t: public warrior_attack_t
     base_add_multiplier = data().effectN( 3 ).percent();
     aoe = 3;
     rage_gain = data().effectN( 2 ).resource( RESOURCE_RAGE );
+    if ( p -> wod_19005_hotfix )
+      attack_power_mod.direct *= 1.05;
   }
 
   double action_multiplier() const
@@ -2472,6 +2478,8 @@ struct shield_slam_t: public warrior_attack_t
     cooldown = p -> cooldown.shield_slam;
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
     attack_power_mod.direct = 3.18; //Hard-coded in tooltip. (beta build 18764)
+    if ( p -> wod_19005_hotfix )
+      attack_power_mod.direct *= 1.05;
   }
 
   double action_multiplier() const
@@ -2889,6 +2897,8 @@ struct wild_strike_t: public warrior_attack_t
     base_costs[RESOURCE_RAGE] += p -> talents.furious_strikes -> effectN( 1 ).resource( RESOURCE_RAGE );
     weapon = &( player -> off_hand_weapon );
     min_gcd = data().gcd();
+    if ( p -> wod_19005_hotfix )
+      weapon_multiplier *= 0.92;
   }
 
   double cost() const
