@@ -3312,6 +3312,11 @@ void rogue_t::trigger_anticipation_replenish( const action_state_t* state )
     sim -> out_log.printf( "%s replenishes %d combo_points through anticipation",
         name(), buffs.anticipation -> check() );
 
+  int cp_left = resources.max[ RESOURCE_COMBO_POINT ] - resources.current[ RESOURCE_COMBO_POINT ];
+  int n_overflow = buffs.anticipation -> check() - cp_left;
+  for ( int i = 0; i < n_overflow; i++ )
+    procs.anticipation_wasted -> occur();
+
   resource_gain( RESOURCE_COMBO_POINT, buffs.anticipation -> check(), 0, state ? state -> action : 0 );
   buffs.anticipation -> expire();
 }
