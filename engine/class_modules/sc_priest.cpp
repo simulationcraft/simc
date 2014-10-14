@@ -2205,7 +2205,8 @@ struct mind_blast_t final : public priest_spell_t
     d *= 1.0 + priest.sets.set( SET_CASTER, T16, B2 ) -> effectN( 1 ).percent();
 
     // Hotfix, via -- http://blue.mmo-champion.com/topic/318876-warlords-of-draenor-theorycraft-discussion/#post636 -- 2014/10/13
-    //d *= 1.1;
+    if ( player -> wod_19005_hotfix )
+      d *= 1.1;
 
     return d;
   }
@@ -2422,7 +2423,8 @@ struct mind_spike_t final : public priest_spell_t
       d *= 1.0 + priest.talents.clarity_of_power -> effectN( 1 ).percent();
 
     // Hotfix, via -- http://blue.mmo-champion.com/topic/318876-warlords-of-draenor-theorycraft-discussion/#post636 -- 2014/10/13
-    //d *= 1.1;
+    if ( player -> wod_19005_hotfix )
+      d *= 1.1;
 
     return d;
   }
@@ -2986,8 +2988,9 @@ struct mind_flay_base_t : public priest_spell_t
     }
 
     // Hotfix, via -- http://blue.mmo-champion.com/topic/318876-warlords-of-draenor-theorycraft-discussion/#post636 -- 2014/10/13
-    //am *= 1.1;
-
+    if ( player -> wod_19005_hotfix )
+      am *= 1.1;
+    
     return am;
   }
 
