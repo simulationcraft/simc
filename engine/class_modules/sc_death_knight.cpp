@@ -4872,7 +4872,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       school = SCHOOL_SHADOW;
 
       if ( p -> wod_19005_hotfix )
-        attack_power_mod.direct *= 0.95
+        attack_power_mod.direct *= 0.95;
     }
 
     void impact( action_state_t* state )
