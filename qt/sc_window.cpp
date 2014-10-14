@@ -70,7 +70,12 @@ void SC_MainWindow::loadHistory()
   
   QVariant gui_version_number = settings.value( "gui/gui_version_number", 0 );
   if ( gui_version_number.toInt() < SC_GUI_HISTORY_VERSION )
+  {
     settings.clear();
+    QMessageBox msgBox;
+    msgBox.setText( "We have reset your configuration settings due to major changes to the GUI" );
+    msgBox.exec();
+  }
 
   QVariant size = settings.value( "gui/size" );
   QRect savedApplicationGeometry = geometry();
