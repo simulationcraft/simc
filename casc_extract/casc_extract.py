@@ -26,9 +26,6 @@ if __name__ == '__main__':
 	(opts, args) = parser.parse_args()
 	opts.parser = parser
 
-	if opts.online and not opts.ptr and not opts.beta:
-		parser.error("--cdn requires a data source (--ptr, or --beta)")
-
 	if not opts.mode and opts.online:
 		cdn = casc.CDNIndex(opts)
 		cdn.CheckVersion()
