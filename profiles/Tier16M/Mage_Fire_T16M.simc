@@ -108,13 +108,13 @@ actions.single_target+=/scorch,moving=1
 head=hood_of_swirling_senses,id=105420,upgrade=4,gems=sinister_primal_20crit_11int
 neck=untainted_guardians_chain,id=105465,upgrade=4
 shoulders=chronomancer_mantle,id=99401,upgrade=4,gems=10haste_10crit_10haste_10crit_8int,enchant=15int_5crit
-back=xingho_breath_of_yulon,id=102246,upgrade=4,gems=10haste_10crit_4int,enchant=12crit
-chest=chronomancer_robes,id=99400,upgrade=4,gems=10haste_10crit_10haste_10crit_10haste_10crit_11int,enchant=5all
-wrists=bracers_of_broken_causation,id=105461,upgrade=4,enchant=11int
-hands=chronomancer_gloves,id=99397,upgrade=4,gems=10haste_10crit_10haste_10crit_8int,enchant=11mastery
+back=xingho_breath_of_yulon,id=102246,upgrade=4,gems=10haste_10crit_4int,enchant=13crit
+chest=chronomancer_robes,id=99400,upgrade=4,gems=10haste_10crit_10haste_10crit_10haste_10crit_11int,enchant=glorious_stats
+wrists=bracers_of_broken_causation,id=105461,upgrade=4,enchant=12int
+hands=chronomancer_gloves,id=99397,upgrade=4,gems=10haste_10crit_10haste_10crit_8int,enchant=13mastery
 waist=belt_of_ominous_trembles,id=105515,upgrade=4,gems=10haste_10crit_20crit_20crit_8int
 legs=chronomancer_leggings,id=99399,upgrade=4,gems=20crit_20crit_8int,enchant=19int_11crit
-feet=toxic_tornado_treads,id=105537,upgrade=4,gems=20crit_4crit,enchant=9mastery
+feet=toxic_tornado_treads,id=105537,upgrade=4,gems=20crit_4crit,enchant=pandarens_step
 finger1=iyyokuks_hereditary_seal,id=105628,upgrade=4
 finger2=signet_of_the_dinomancers,id=105606,upgrade=4,gems=10haste_10crit_4haste
 trinket1=purified_bindings_of_immerseus,id=105422,upgrade=4
@@ -126,11 +126,11 @@ off_hand=juggernauts_power_core,id=105521,upgrade=4,gems=20crit_4int,enchant=8in
 # gear_strength=5
 # gear_agility=5
 # gear_stamina=1660
-# gear_intellect=1156
+# gear_intellect=1157
 # gear_spell_power=640
-# gear_crit_rating=928
+# gear_crit_rating=929
 # gear_haste_rating=336
-# gear_mastery_rating=560
+# gear_mastery_rating=562
 # gear_armor=384
 # gear_multistrike_rating=107
 # meta_gem=sinister_primal

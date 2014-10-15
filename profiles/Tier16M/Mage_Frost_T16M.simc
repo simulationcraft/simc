@@ -100,16 +100,16 @@ actions.single_target+=/frostbolt
 actions.single_target+=/ice_floes,moving=1
 actions.single_target+=/ice_lance,moving=1
 
-head=chronomancer_hood,id=99398,upgrade=4,gems=sinister_primal_10haste_10crit_11int
+head=hood_of_swirling_senses,id=105420,upgrade=4,gems=sinister_primal_10haste_10crit_11int
 neck=untainted_guardians_chain,id=105465,upgrade=4
 shoulders=chronomancer_mantle,id=99401,upgrade=4,gems=10haste_10crit_10haste_10crit_8int,enchant=15int_5crit
-back=xingho_breath_of_yulon,id=102246,upgrade=4,gems=10haste_10crit_4int,enchant=12crit
-chest=chronomancer_robes,id=99400,upgrade=4,gems=10haste_10crit_10haste_10crit_10haste_10crit_11int,enchant=5all
-wrists=avools_ancestral_bracers,id=105591,upgrade=4,enchant=11int
+back=xingho_breath_of_yulon,id=102246,upgrade=4,gems=10haste_10crit_4int,enchant=12int
+chest=akoliks_acidsoaked_robes,id=105604,upgrade=4,gems=10haste_10crit_10haste_10crit_20haste_11int,enchant=glorious_stats
+wrists=avools_ancestral_bracers,id=104595,upgrade=4,enchant=12int
 hands=chronomancer_gloves,id=99397,upgrade=4,gems=10haste_10crit_10haste_10crit_8int,enchant=11haste
 waist=belt_of_the_broken_pact,id=105646,upgrade=4,gems=10haste_10crit_10haste_10crit_10haste_10crit_8int
 legs=leggings_of_furious_flame,id=105516,upgrade=4,gems=10haste_10crit_10haste_10crit_8int,enchant=19int_11crit
-feet=boneinlaid_sandals,id=105493,upgrade=4,gems=10haste_10crit_4crit,enchant=9mastery
+feet=boneinlaid_sandals,id=105493,upgrade=4,gems=10haste_10crit_4crit,enchant=pandarens_step
 finger1=signet_of_the_dinomancers,id=105606,upgrade=4,gems=10haste_10crit_4haste
 finger2=extinguished_ember_of_galakras,id=105498,upgrade=4
 trinket1=purified_bindings_of_immerseus,id=105422,upgrade=4
@@ -120,14 +120,13 @@ off_hand=revelations_of_yshaarj,id=105650,upgrade=4,gems=10haste_10crit_4int,enc
 # Gear Summary
 # gear_strength=5
 # gear_agility=5
-# gear_stamina=1660
-# gear_intellect=1159
+# gear_stamina=1675
+# gear_intellect=1180
 # gear_spell_power=640
-# gear_crit_rating=582
-# gear_haste_rating=787
-# gear_mastery_rating=461
-# gear_armor=384
+# gear_crit_rating=587
+# gear_haste_rating=722
+# gear_mastery_rating=529
+# gear_armor=390
 # gear_multistrike_rating=107
 # meta_gem=sinister_primal
 # set_bonus=tier16_2pc_caster=1
-# set_bonus=tier16_4pc_caster=1
