@@ -1846,6 +1846,8 @@ void player_t::init_scaling()
     scales_with[ STAT_VERSATILITY_RATING        ] = true;
     scales_with[ STAT_SPEED_RATING              ] = true;
     scales_with[ STAT_AVOIDANCE_RATING          ] = true;
+    scales_with[ STAT_DODGE_RATING              ] = tank;
+    scales_with[ STAT_PARRY_RATING              ] = tank;
 
     scales_with[ STAT_WEAPON_DPS   ] = attack;
     scales_with[ STAT_WEAPON_OFFHAND_DPS   ] = false;
@@ -1895,6 +1897,14 @@ void player_t::init_scaling()
 
         case STAT_VERSATILITY_RATING:
           initial.stats.versatility_rating += v;
+          break;
+
+        case STAT_DODGE_RATING:
+          initial.stats.dodge_rating += v;
+          break;
+
+        case STAT_PARRY_RATING:
+          initial.stats.parry_rating += v;
           break;
 
         case STAT_SPEED_RATING:
