@@ -1888,12 +1888,6 @@ struct blizzard_shard_t : public mage_spell_t
     {
       double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 2 ).percent();
 
-      // TODO: Verify that hidden FoF proc increase from glyph of IV is removed
-      /*if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
-      {
-        fof_proc_chance *= 1.2;
-      }*/
-
       if ( p() -> perks.improved_blizzard -> ok() )
       {
         p() -> cooldowns.frozen_orb -> adjust(
@@ -2545,11 +2539,10 @@ struct frostbolt_t : public mage_spell_t
 
       fof_proc_chance += p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 3 ).percent();
 
-      // TODO: Verify that hidden FoF proc increase from glyph of IV is removed
-      /*if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
+      if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
       {
         fof_proc_chance *= 1.2;
-      }*/
+      }
 
       p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
       p() -> buffs.brain_freeze -> trigger(1, buff_t::DEFAULT_VALUE(), bf_proc_chance );
@@ -2686,11 +2679,12 @@ struct frostfire_bolt_t : public mage_spell_t
     if ( result_is_hit( execute_state -> result ) )
     {
       double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent();
-      // TODO: Verify that hidden FoF proc increase from glyph of IV is removed
-      /*if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
+
+      if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
       {
         fof_proc_chance *= 1.2;
-      }*/
+      }
+
       p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
     }
     p() -> buffs.frozen_thoughts -> expire();
