@@ -37,7 +37,7 @@ actions+=/berserking
 actions+=/elemental_mastery
 actions+=/storm_elemental_totem
 actions+=/fire_elemental_totem
-actions+=/ascendance,if=cooldown.strike.remains>=3
+actions+=/ascendance
 actions+=/feral_spirit
 actions+=/liquid_magma,if=pet.searing_totem.remains>=15|pet.magma_totem.remains>=15|pet.fire_elemental_totem.remains>=15
 actions+=/ancestral_swiftness
