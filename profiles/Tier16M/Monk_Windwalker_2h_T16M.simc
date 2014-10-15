@@ -73,30 +73,31 @@ actions.aoe+=/blackout_kick,if=talent.rushing_jade_wind.enabled&!talent.chi_expl
 actions.aoe+=/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled
 actions.aoe+=/jab,if=talent.rushing_jade_wind.enabled&chi.max-chi>=2
 
-head=crown_of_seven_sacred_seals,id=99384,upgrade=4,gems=capacitive_primal_10haste_10crit_11agi
-neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=4
-shoulders=shoulderguards_of_seven_sacred_seals,id=99386,upgrade=4,gems=10haste_10crit_10haste_10crit_8agi,enchant=15agi_5crit
+head=hood_of_blackened_tears,id=105409,upgrade=4,gems=capacitive_primal_10haste_10crit_11agi
+neck=immerseus_crystalline_eye,id=105407,upgrade=4
+shoulders=spaulders_of_seven_sacred_seals,id=99395,upgrade=4,gems=10haste_10crit_10haste_10crit_8agi,enchant=15agi_5crit
 back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=10haste_10crit_4agi,enchant=12crit
-chest=robes_of_the_blackened_watcher,id=105452,upgrade=4,gems=10haste_10crit_20crit_20crit_11agi,enchant=80all
-wrists=mantid_carapace_augments,id=105583,upgrade=4,enchant=12agi
-hands=gauntlets_of_seven_sacred_seals,id=99383,upgrade=4,gems=10haste_10crit_10haste_10crit_8agi,enchant=11haste
-waist=cord_of_black_dreams,id=105635,upgrade=4,gems=10haste_10crit_20crit_20crit_8agi
-legs=leggings_of_seven_sacred_seals,id=99394,upgrade=4,gems=20crit_20crit_8agi,enchant=18agi_10crit
-feet=unrepentant_heels,id=105484,upgrade=4,gems=20crit_4mastery,enchant=9agi
+chest=robes_of_the_blackened_watcher,id=105452,upgrade=4,gems=20haste_20crit_20crit_11agi,enchant=80all
+wrists=bombers_blackened_wristwatch,id=105616,upgrade=4,enchant=12agi
+hands=gloves_of_the_golden_protector,id=105453,upgrade=4,gems=10haste_10crit_20crit_8agi,enchant=11haste
+waist=cord_of_black_dreams,id=105635,upgrade=4,gems=20haste_20crit_10haste_10crit_8agi
+legs=leggings_of_seven_sacred_seals,id=99394,upgrade=4,gems=20crit_20haste_8agi,enchant=18agi_10crit
+feet=stonetoes_tormented_treads,id=105431,upgrade=4,gems=10haste_10crit_4mastery,enchant=9agi
 finger1=reality_ripper_ring,id=105451,upgrade=4,gems=20crit_4crit
-finger2=ring_of_restless_energy,id=105558,upgrade=4,gems=10haste_10crit_4crit
+finger2=kilruks_band_of_ascendancy,id=105624,upgrade=4,gems=20haste_4crit
 trinket1=haromms_talisman,id=105527,upgrade=4
 trinket2=assurance_of_consequence,id=105472,upgrade=4
-main_hand=trident_of_corrupted_waters,id=105408,upgrade=4,gems=20crit_4agi,enchant=dancing_steel
+main_hand=trident_of_corrupted_waters,id=105408,upgrade=4,gems=5agi_10crit_4agi,enchant=dancing_steel
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=1229
-# gear_stamina=1738
+# gear_agility=1245
+# gear_stamina=1755
 # gear_intellect=80
-# gear_crit_rating=934
-# gear_haste_rating=744
-# gear_mastery_rating=130
-# gear_armor=592
+# gear_crit_rating=805
+# gear_haste_rating=839
+# gear_mastery_rating=170
+# gear_armor=602
 # gear_multistrike_rating=107
 # meta_gem=capacitive_primal
+# set_bonus=tier16_2pc_melee=1
