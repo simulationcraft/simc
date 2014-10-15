@@ -54,116 +54,350 @@ protected:
   T& _ref;
 };
 
-
-enum option_operator_e {
-  ASSIGNMENT,
-  APPEND,
-};
-
-/* Generic option class, tries to handle the most common numeric and string based options
- */
-template<class T, option_operator_e op = ASSIGNMENT>
-struct opts_generic_t : public opts_helper_t<T>
+struct opt_string_t : public option_base_t
 {
-  opts_generic_t( const std::string& name, T& ref ) :
-    opts_helper_t<T>( name, ref )
+  opt_string_t( const std::string& name, std::string& addr ) :
+    option_base_t( name ),
+    _ref( addr )
   { }
 protected:
-  bool parse( sim_t*, const std::string& n, const std::string& value ) const override
+  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
-    if ( n != this -> name() )
+    if ( n != name() )
       return false;
 
-    T v = util::from_string<T>( value );
-    switch ( op )
-    {
-    case ASSIGNMENT:
-      this -> _ref = v;
-      break;
-    case APPEND:
-      this -> _ref += v;
-      break;
-    }
+    _ref = v;
     return true;
   }
   std::ostream& print( std::ostream& stream ) const override
   {
-     stream << this -> name();
-     switch ( op )
-     {
-     case ASSIGNMENT:
-       stream << "=";
-       break;
-     case APPEND:
-       stream << "+=";
-       break;
-     }
-     stream << this -> _ref << "\n";
+     stream << name() << "="  <<  _ref << "\n";
      return stream;
   }
+private:
+  std::string& _ref;
 };
 
-/* Generic option class + range checks, tries to handle numeric options
- */
-template<class T>
-struct opts_generic_range_checked_t : public opts_helper_t<T>
+struct opt_append_t : public option_base_t
 {
-  opts_generic_range_checked_t( const std::string& name, T& ref, T min, T max ) :
-    opts_helper_t<T>( name, ref ),
+  opt_append_t( const std::string& name, std::string& addr ) :
+    option_base_t( name ),
+    _ref( addr )
+  { }
+protected:
+  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
+  {
+    if ( n != name() )
+      return false;
+
+    _ref += v;
+    return true;
+  }
+  std::ostream& print( std::ostream& stream ) const override
+  {
+     stream << name() << "+="  <<  _ref << "\n";
+     return stream;
+  }
+private:
+  std::string& _ref;
+};
+
+struct opt_int_t : public option_base_t
+{
+  opt_int_t( const std::string& name, int& addr ) :
+    option_base_t( name ),
+    _ref( addr )
+  { }
+protected:
+  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
+  {
+    if ( n != name() )
+      return false;
+
+    _ref = strtol( v.c_str(), nullptr, 10 );
+    return true;
+  }
+  std::ostream& print( std::ostream& stream ) const override
+  {
+     stream << name() << "="  <<  _ref << "\n";
+     return stream;
+  }
+private:
+  int& _ref;
+};
+
+struct opt_int_mm_t : public option_base_t
+{
+  opt_int_mm_t( const std::string& name, int& addr, int min, int max ) :
+    option_base_t( name ),
+    _ref( addr ),
     _min( min ),
     _max( max )
   { }
 protected:
-  bool parse( sim_t*, const std::string& n, const std::string& value ) const override
+  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
-    if ( n != this -> name() )
+    if ( n != name() )
       return false;
 
-    T v = util::from_string<T>( value );
-
+    int tmp = strtol( v.c_str(), nullptr, 10 );
     // Range checking
-    if (v < _min || v > _max) {
+    if ( tmp < _min || tmp > _max ) {
       std::stringstream s;
-      s << "Option '" << n << "' with value '" << value
+      s << "Option '" << n << "' with value '" << v
           << "' not within valid boundaries [" << _min << " - " << _max << "]";
       throw std::invalid_argument(s.str());
     }
-
-    this -> _ref = v;
+    _ref = tmp;
     return true;
   }
   std::ostream& print( std::ostream& stream ) const override
   {
-     stream << this -> name() << "=" << this -> _ref << " (min=" << _min << " max:" << _max << ")\n";
+     stream << name() << "="  <<  _ref << "\n";
      return stream;
   }
 private:
-  T _min, _max;
+  int& _ref;
+  int _min, _max;
 };
 
-/* Bool option, checks if user input is '0' or '1'
- * template to support true bool as well as int
- */
-template<class T>
-struct opts_bool_t : public opts_generic_t<T>
+struct opt_uint_t : public option_base_t
 {
-  opts_bool_t( const std::string& name, T& ref ) :
-    opts_generic_t<T>( name, ref )
+  opt_uint_t( const std::string& name, unsigned int& addr ) :
+    option_base_t( name ),
+    _ref( addr )
   { }
 protected:
-  bool parse( sim_t* sim, const std::string& name, const std::string& value ) const override
+  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
-    if ( name != this -> name() )
+    if ( n != name() )
       return false;
 
-    if ( value != "0" && value != "1" )
+    _ref = strtoul( v.c_str(), nullptr, 10 );
+    return true;
+  }
+  std::ostream& print( std::ostream& stream ) const override
+  {
+     stream << name() << "="  <<  _ref << "\n";
+     return stream;
+  }
+private:
+  unsigned int& _ref;
+};
+
+struct opt_uint_mm_t : public option_base_t
+{
+  opt_uint_mm_t( const std::string& name, unsigned int& addr, unsigned int min, unsigned int max ) :
+    option_base_t( name ),
+    _ref( addr ),
+    _min( min ),
+    _max( max )
+  { }
+protected:
+  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
+  {
+    if ( n != name() )
+      return false;
+
+    unsigned int tmp = strtoul( v.c_str(), nullptr, 10 );
+    // Range checking
+    if ( tmp < _min || tmp > _max ) {
+      std::stringstream s;
+      s << "Option '" << n << "' with value '" << v
+          << "' not within valid boundaries [" << _min << " - " << _max << "]";
+      throw std::invalid_argument(s.str());
+    }
+    _ref = tmp;
+    return true;
+  }
+  std::ostream& print( std::ostream& stream ) const override
+  {
+     stream << name() << "="  <<  _ref << "\n";
+     return stream;
+  }
+private:
+  unsigned int& _ref;
+  unsigned int _min, _max;
+};
+
+struct opt_double_t : public option_base_t
+{
+  opt_double_t( const std::string& name, double& addr ) :
+    option_base_t( name ),
+    _ref( addr )
+  { }
+protected:
+  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
+  {
+    if ( n != name() )
+      return false;
+
+    _ref = strtod( v.c_str(), nullptr );
+    return true;
+  }
+  std::ostream& print( std::ostream& stream ) const override
+  {
+     stream << name() << "="  <<  _ref << "\n";
+     return stream;
+  }
+private:
+  double& _ref;
+};
+
+struct opt_double_mm_t : public option_base_t
+{
+  opt_double_mm_t( const std::string& name, double& addr, double min, double max ) :
+    option_base_t( name ),
+    _ref( addr ),
+    _min( min ),
+    _max( max )
+  { }
+protected:
+  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
+  {
+    if ( n != name() )
+      return false;
+
+    int tmp = strtod( v.c_str(), nullptr );
+    // Range checking
+    if ( tmp < _min || tmp > _max ) {
+      std::stringstream s;
+      s << "Option '" << n << "' with value '" << v
+          << "' not within valid boundaries [" << _min << " - " << _max << "]";
+      throw std::invalid_argument(s.str());
+    }
+    _ref = tmp;
+    return true;
+  }
+  std::ostream& print( std::ostream& stream ) const override
+  {
+     stream << name() << "="  <<  _ref << "\n";
+     return stream;
+  }
+private:
+  double& _ref;
+  double _min, _max;
+};
+
+struct opt_timespan_t : public option_base_t
+{
+  opt_timespan_t( const std::string& name, timespan_t& addr ) :
+    option_base_t( name ),
+    _ref( addr )
+  { }
+protected:
+  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
+  {
+    if ( n != name() )
+      return false;
+
+    _ref = timespan_t::from_seconds( strtod( v.c_str(), nullptr ) );
+    return true;
+  }
+  std::ostream& print( std::ostream& stream ) const override
+  {
+     stream << name() << "="  <<  _ref << "\n";
+     return stream;
+  }
+private:
+  timespan_t& _ref;
+};
+
+struct opt_timespan_mm_t : public option_base_t
+{
+  opt_timespan_mm_t( const std::string& name, timespan_t& addr, timespan_t min, timespan_t max ) :
+    option_base_t( name ),
+    _ref( addr ),
+    _min( min ),
+    _max( max )
+  { }
+protected:
+  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
+  {
+    if ( n != name() )
+      return false;
+
+    timespan_t tmp = timespan_t::from_seconds( strtod( v.c_str(), nullptr ) );
+    // Range checking
+    if ( tmp < _min || tmp > _max ) {
+      std::stringstream s;
+      s << "Option '" << n << "' with value '" << v
+          << "' not within valid boundaries [" << _min << " - " << _max << "]";
+      throw std::invalid_argument(s.str());
+    }
+    _ref = tmp;
+    return true;
+  }
+  std::ostream& print( std::ostream& stream ) const override
+  {
+     stream << name() << "="  <<  _ref << "\n";
+     return stream;
+  }
+private:
+  timespan_t& _ref;
+  timespan_t _min, _max;
+};
+
+struct opt_bool_t : public option_base_t
+{
+  opt_bool_t( const std::string& name, bool& addr ) :
+    option_base_t( name ),
+    _ref( addr )
+  { }
+protected:
+  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
+  {
+    if ( n != name() )
+      return false;
+
+    if ( v != "0" && v != "1" )
     {
       std::stringstream s;
-      s << "Acceptable values for '" << name << "' are '1' or '0'";
+      s << "Acceptable values for '" << n << "' are '1' or '0'";
       throw std::invalid_argument( s.str() );
     }
-    return opts_generic_t<T>::parse( sim, name, value );
+
+    _ref = strtol( v.c_str(), nullptr, 10 );
+    return true;
   }
+  std::ostream& print( std::ostream& stream ) const override
+  {
+     stream << name() << "="  <<  _ref << "\n";
+     return stream;
+  }
+private:
+  bool& _ref;
+};
+
+struct opt_bool_int_t : public option_base_t
+{
+  opt_bool_int_t( const std::string& name, int& addr ) :
+    option_base_t( name ),
+    _ref( addr )
+  { }
+protected:
+  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
+  {
+    if ( n != name() )
+      return false;
+
+    if ( v != "0" && v != "1" )
+    {
+      std::stringstream s;
+      s << "Acceptable values for '" << n << "' are '1' or '0'";
+      throw std::invalid_argument( s.str() );
+    }
+
+    _ref = strtol( v.c_str(), nullptr, 10 );
+    return true;
+  }
+  std::ostream& print( std::ostream& stream ) const override
+  {
+     stream << name() << "="  <<  _ref << "\n";
+     return stream;
+  }
+private:
+  int& _ref;
 };
 
 struct opts_sim_func_t : public option_base_t
@@ -186,10 +420,11 @@ private:
   function_t _fun;
 };
 
-struct opts_map_t : public opts_helper_t<map_t>
+struct opts_map_t : public option_base_t
 {
   opts_map_t( const std::string& name, map_t& ref ) :
-    base_t( name, ref )
+    option_base_t( name ),
+    _ref( ref )
   { }
 protected:
   bool parse( sim_t*, const std::string& n, const std::string& v ) const override
@@ -219,12 +454,14 @@ protected:
           stream << name() << it->first << "="<< it->second << "\n";
      return stream;
   }
+  map_t& _ref;
 };
 
-struct opts_list_t : public opts_helper_t<list_t>
+struct opts_list_t : public option_base_t
 {
   opts_list_t( const std::string& name, list_t& ref ) :
-    base_t( name, ref )
+    option_base_t( name ),
+    _ref( ref )
   { }
 protected:
   bool parse( sim_t*, const std::string& n, const std::string& v ) const override
@@ -244,7 +481,10 @@ protected:
     stream << "\n";
     return stream;
   }
+private:
+  list_t& _ref;
 };
+
 struct opts_deperecated_t : public option_base_t
 {
   opts_deperecated_t( const std::string& name, const std::string& new_option ) :
@@ -539,40 +779,40 @@ option_db_t::option_db_t()
 }
 
 option_t opt_string( const std::string& n, std::string& v )
-{ return new opts::opts_generic_t<std::string>( n, v ); }
+{ return new opts::opt_string_t( n, v ); }
 
 option_t opt_append( const std::string& n, std::string& v )
-{ return new opts::opts_generic_t<std::string,opts::APPEND>( n, v ); }
+{ return new opts::opt_append_t( n, v ); }
 
 option_t opt_bool( const std::string& n, int& v )
-{ return new opts::opts_bool_t<int>( n, v ); }
+{ return new opts::opt_bool_int_t( n, v ); }
 
 option_t opt_bool( const std::string& n, bool& v )
-{ return new opts::opts_bool_t<bool>( n, v ); }
+{ return new opts::opt_bool_t( n, v ); }
 
 option_t opt_int( const std::string& n, int& v )
-{ return new opts::opts_generic_t<int>( n, v ); }
+{ return new opts::opt_int_t( n, v ); }
 
 option_t opt_int( const std::string& n, int& v, int min, int max )
-{ return new opts::opts_generic_range_checked_t<int>( n, v, min, max ); }
+{ return new opts::opt_int_mm_t( n, v, min, max ); }
 
 option_t opt_uint( const std::string& n, unsigned& v )
-{ return new opts::opts_generic_t<unsigned>( n, v ); }
+{ return new opts::opt_uint_t( n, v ); }
 
 option_t opt_uint( const std::string& n, unsigned& v, unsigned min, unsigned max )
-{ return new opts::opts_generic_range_checked_t<unsigned>( n, v, min, max ); }
+{ return new opts::opt_uint_mm_t( n, v, min, max ); }
 
 option_t opt_float( const std::string& n, double& v )
-{ return new opts::opts_generic_t<double>( n, v ); }
+{ return new opts::opt_double_t( n, v ); }
 
 option_t opt_float( const std::string& n, double& v, double min, double max )
-{ return new opts::opts_generic_range_checked_t<double>( n, v, min, max ); }
+{ return new opts::opt_double_mm_t( n, v, min, max ); }
 
 option_t opt_timespan( const std::string& n, timespan_t& v )
-{ return new opts::opts_generic_t<timespan_t>( n, v ); }
+{ return new opts::opt_timespan_t( n, v ); }
 
 option_t opt_timespan( const std::string& n, timespan_t& v, timespan_t min, timespan_t max )
-{ return new opts::opts_generic_range_checked_t<timespan_t>( n, v, min, max ); }
+{ return new opts::opt_timespan_mm_t( n, v, min, max ); }
 
 option_t opt_list( const std::string& n, opts::list_t& v )
 { return new opts::opts_list_t( n, v ); }
