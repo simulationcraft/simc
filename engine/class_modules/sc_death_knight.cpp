@@ -3216,7 +3216,8 @@ struct conversion_heal_t : public death_knight_heal_t
   conversion_heal_t( death_knight_t* p ) :
     death_knight_heal_t( "conversion_heal", p, p -> find_spell( 119980 ) )
   {
-    may_crit = may_multistrike = false;
+    may_crit = false;
+    may_multistrike = 0;
     background = true;
     resource_current = RESOURCE_RUNIC_POWER;
     base_costs[ RESOURCE_RUNIC_POWER ] = 15;
@@ -3732,7 +3733,8 @@ struct blood_shield_t : public absorb_t
   blood_shield_t( death_knight_t* p ) :
     absorb_t( "blood_shield", p, p -> find_spell( 77535 ) )
   {
-    may_miss = may_crit = may_multistrike = callbacks = false;
+    may_miss = may_crit = callbacks = false;
+    may_multistrike = 0;
     background = proc = true;
   }
 
@@ -3756,7 +3758,8 @@ struct death_strike_heal_t : public death_knight_heal_t
     death_knight_heal_t( "death_strike_heal", p, p -> find_spell( 45470 ) ),
     blood_shield( p -> specialization() == DEATH_KNIGHT_BLOOD ? new blood_shield_t( p ) : 0 )
   {
-    may_crit   = may_multistrike = callbacks = false;
+    may_crit   = callbacks = false;
+    may_multistrike = 0;
     background = true;
     target     = p;
   }
@@ -6608,7 +6611,8 @@ void runeforge::fallen_crusader( special_effect_t& effect,
       {
         background = true;
         target = player;
-        callbacks = may_crit = may_multistrike = false;
+        callbacks = may_crit = false;
+        may_multistrike = 0;
         pct_heal = data -> effectN( 2 ).percent();
         pct_heal += dk -> perk.enhanced_fallen_crusader -> effectN( 1 ).percent();
       }

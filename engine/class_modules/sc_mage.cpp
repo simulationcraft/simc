@@ -1246,7 +1246,8 @@ struct icicle_t : public mage_spell_t
   icicle_t( mage_t* p ) : mage_spell_t( "icicle", p, p -> find_spell( 148022 ) ),
     splitting_ice_aoe( p -> glyphs.splitting_ice -> effectN( 1 ).base_value() + 1 )
   {
-    may_crit = may_multistrike = false;
+    may_crit = false;
+    may_multistrike = 0;
     proc = background = true;
 
     if ( p -> glyphs.splitting_ice -> ok() )

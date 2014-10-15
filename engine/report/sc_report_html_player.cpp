@@ -1622,7 +1622,7 @@ void print_html_talents( report::sc_html_stream& os, player_t* p )
 
 // print_html_player_scale_factor_table =====================================
 
-void print_html_player_scale_factor_table( report::sc_html_stream& os, sim_t* sim, player_t* p, player_processed_report_information_t& ri, scale_metric_e sm )
+void print_html_player_scale_factor_table( report::sc_html_stream& os, sim_t*, player_t* p, player_processed_report_information_t& ri, scale_metric_e sm )
 {
 
   int colspan = static_cast< int >( p -> scaling_stats[ sm ].size() );

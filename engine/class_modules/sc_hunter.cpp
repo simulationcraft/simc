@@ -2087,7 +2087,7 @@ struct glaive_t: public ranged_attack_t
     }
   }
 
-  virtual void record_data( action_state_t* data ) override
+  virtual void record_data( action_state_t* ) override
   {
     // suppress reporting impact of the driver
   }
@@ -2120,7 +2120,7 @@ struct glaive_toss_t: public hunter_ranged_attack_t
     glaive_2 -> execute();
   }
 
-  virtual void record_data( action_state_t* data ) override
+  virtual void record_data( action_state_t* ) override
   {
     // suppress reporting impact of the driver
   }
