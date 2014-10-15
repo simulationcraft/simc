@@ -5242,7 +5242,7 @@ void shaman_t::init_action_list()
     def -> add_talent( this, "Elemental Mastery" );
     def -> add_talent( this, "Storm Elemental Totem" );
     def -> add_action( this, "Fire Elemental Totem" );
-    def -> add_action( this, "Ascendance", "if=cooldown.strike.remains>=3" );
+    def -> add_action( this, "Ascendance" );
     def -> add_action( this, "Feral Spirit" );
     def -> add_talent( this, "Liquid Magma", "if=pet.searing_totem.remains>=15|pet.magma_totem.remains>=15|pet.fire_elemental_totem.remains>=15" );
     def -> add_talent( this, "Ancestral Swiftness" );
