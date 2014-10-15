@@ -1156,7 +1156,8 @@ struct force_of_nature_feral_t : public pet_t
     main_hand_weapon.min_dmg    = owner -> find_spell( 102703 ) -> effectN( 1 ).min( owner );
     main_hand_weapon.max_dmg    = owner -> find_spell( 102703 ) -> effectN( 1 ).max( owner );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    owner_coeff.ap_from_ap      = 1.0;
+    owner_coeff.sp_from_sp = 1.0 /3 ;
+    owner_coeff.ap_from_ap = 1.0 /3 ;
     regen_type = REGEN_DISABLED;
   }
 
