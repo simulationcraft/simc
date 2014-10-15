@@ -92,14 +92,12 @@ off_hand=softfoots_last_resort,id=105430,stats=44agi_72sta_26haste_32crit,weapon
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=1256
-# gear_stamina=1683
+# gear_agility=1067
+# gear_stamina=1403
 # gear_intellect=80
-# gear_crit_rating=653
-# gear_haste_rating=1048
-# gear_mastery_rating=87
-# gear_armor=580
+# gear_crit_rating=547
+# gear_haste_rating=922
+# gear_mastery_rating=81
+# gear_armor=449
 # gear_multistrike_rating=79
 # meta_gem=capacitive_primal
-# set_bonus=tier16_2pc_melee=1
-# set_bonus=tier16_4pc_melee=1

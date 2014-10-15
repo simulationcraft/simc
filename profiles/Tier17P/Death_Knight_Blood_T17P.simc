@@ -20,7 +20,7 @@ actions.precombat+=/blood_presence
 actions.precombat+=/horn_of_winter
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=draenic_armor_potion
+actions.precombat+=/potion,name=draenic_armor
 actions.precombat+=/bone_shield
 
 # Executed every time the actor is available.
@@ -32,7 +32,7 @@ actions+=/blood_fury
 actions+=/berserking
 # if=time>10
 actions+=/arcane_torrent
-actions+=/potion,name=draenic_armor_potion,if=buff.potion.down&buff.blood_shield.down&!unholy&!frost
+actions+=/potion,name=draenic_armor,if=buff.potion.down&buff.blood_shield.down&!unholy&!frost
 actions+=/antimagic_shell
 actions+=/conversion,if=!buff.conversion.up&runic_power>50&health.pct<90
 actions+=/lichborne,if=health.pct<90
