@@ -219,25 +219,26 @@ public:
   struct specializations_t
   {
     // Arcane
-    const spell_data_t* arcane_charge;
+    const spell_data_t* arcane_charge,
     // NOTE: arcane_charge_passive is the Arcane passive added in patch 5.2,
     //       called "Arcane Charge" (Spell ID: 114664).
     //       It contains Spellsteal's mana cost reduction, Evocation's mana
     //       gain reduction, and a deprecated Scorch damage reduction.
-    const spell_data_t* arcane_charge_passive;
-    const spell_data_t* arcane_mind;
-    const spell_data_t* mana_adept;
+                      * arcane_charge_passive,
+                      * arcane_mind,
+                      * mana_adept;
 
     // Fire
-    const spell_data_t* critical_mass;
-    const spell_data_t* ignite;
-    const spell_data_t* incineration;
+    const spell_data_t* critical_mass,
+                      * ignite,
+                      * incineration;
 
     // Frost
-    const spell_data_t* brain_freeze;
-    const spell_data_t* ice_shards;
-    const spell_data_t* icicles;
-    const spell_data_t* icicles_driver;
+    const spell_data_t* brain_freeze,
+                      * fingers_of_frost,
+                      * ice_shards,
+                      * icicles,
+                      * icicles_driver;
   } spec;
 
   // Talents
@@ -430,7 +431,8 @@ struct water_elemental_pet_t : public pet_t
       water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
 
       if ( result_is_hit( s -> result ) )
-        p -> o() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
+        p -> o() -> buffs.fingers_of_frost
+                 -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
     }
 
   };
@@ -1243,10 +1245,8 @@ struct icicle_state_t : public action_state_t
 
 struct icicle_t : public mage_spell_t
 {
-  int splitting_ice_aoe;
-
-  icicle_t( mage_t* p ) : mage_spell_t( "icicle", p, p -> find_spell( 148022 ) ),
-    splitting_ice_aoe( p -> glyphs.splitting_ice -> effectN( 1 ).base_value() + 1 )
+  icicle_t( mage_t* p ) :
+    mage_spell_t( "icicle", p, p -> find_spell( 148022 ) )
   {
     may_crit = false;
     may_multistrike = 0;
@@ -1254,8 +1254,9 @@ struct icicle_t : public mage_spell_t
 
     if ( p -> glyphs.splitting_ice -> ok() )
     {
-      aoe = splitting_ice_aoe;
-      base_aoe_multiplier *= p -> glyphs.splitting_ice -> effectN( 2 ).percent();
+      aoe = 1 + p -> glyphs.splitting_ice -> effectN( 1 ).base_value();
+      base_aoe_multiplier = p -> glyphs.splitting_ice
+                              -> effectN( 2 ).percent();
     }
   }
 
@@ -1886,7 +1887,6 @@ struct blizzard_shard_t : public mage_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 2 ).percent();
 
       if ( p() -> perks.improved_blizzard -> ok() )
       {
@@ -1895,7 +1895,10 @@ struct blizzard_shard_t : public mage_spell_t
         );
       }
 
-      p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
+      double fof_proc_chance = p() -> spec.fingers_of_frost
+                                   -> effectN( 2 ).percent();
+      p() -> buffs.fingers_of_frost
+          -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance);
     }
   }
 };
@@ -2535,7 +2538,8 @@ struct frostbolt_t : public mage_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent();
+      double fof_proc_chance = p() -> spec.fingers_of_frost
+                                   -> effectN( 1 ).percent();
 
       fof_proc_chance += p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 3 ).percent();
 
@@ -2544,8 +2548,10 @@ struct frostbolt_t : public mage_spell_t
         fof_proc_chance *= 1.2;
       }
 
-      p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
-      p() -> buffs.brain_freeze -> trigger(1, buff_t::DEFAULT_VALUE(), bf_proc_chance );
+      p() -> buffs.fingers_of_frost
+          -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
+      p() -> buffs.brain_freeze
+          -> trigger( 1, buff_t::DEFAULT_VALUE(), bf_proc_chance );
     }
 
     p() -> buffs.frozen_thoughts -> expire();
@@ -2554,21 +2560,23 @@ struct frostbolt_t : public mage_spell_t
 
   virtual void impact( action_state_t* s )
   {
-      mage_spell_t::impact( s );
-      if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result) )
-      {
-        if ( p() -> talents.unstable_magic -> ok() && rng().roll( p() -> talents.unstable_magic -> effectN( 3 ).percent() ) )
-          trigger_unstable_magic( s );
+    mage_spell_t::impact( s );
+    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result) )
+    {
+      if ( p() -> talents.unstable_magic -> ok() && rng().roll( p() -> talents.unstable_magic -> effectN( 3 ).percent() ) )
+        trigger_unstable_magic( s );
 
-        trigger_icicle_gain( s, icicle );
-      }
+      trigger_icicle_gain( s, icicle );
+    }
 
-    if ( ! p() -> pets.water_elemental -> is_sleeping() )
+    if ( result_is_hit( s -> result ) &&
+         ! p() -> pets.water_elemental -> is_sleeping() )
     {
       pets::water_elemental_pet_td_t* we_td = p() -> pets.water_elemental -> get_target_data( execute_state -> target );
-      if ( we_td -> water_jet -> up() && !result_is_multistrike( s -> result ) )
+      if ( we_td -> water_jet -> up() )
       {
-        p() -> buffs.fingers_of_frost -> trigger(1, buff_t::DEFAULT_VALUE(), 1.0);
+        p() -> buffs.fingers_of_frost
+            -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
       }
     }
 
@@ -2672,30 +2680,35 @@ struct frostfire_bolt_t : public mage_spell_t
   virtual void execute()
   {
     // Brain Freeze treats the target as frozen
-    frozen = p() -> buffs.brain_freeze -> check() > 0;
+    frozen = p() -> buffs.brain_freeze -> check();
     mage_spell_t::execute();
 
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent();
+      double fof_proc_chance = p() -> spec.fingers_of_frost
+                                   -> effectN( 1 ).percent();
 
       if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
       {
         fof_proc_chance *= 1.2;
       }
 
-      p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
+      p() -> buffs.fingers_of_frost
+          -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
     }
+
     p() -> buffs.frozen_thoughts -> expire();
     if ( p() -> buffs.brain_freeze -> check() && p() -> sets.has_set_bonus( SET_CASTER, T16, B2 ) )
     {
       p() -> buffs.frozen_thoughts -> trigger();
     }
+
     if ( rng().roll( p() -> sets.set( SET_CASTER, T16, B4 ) -> effectN( 2 ).percent() ) )
     {
       frigid_blast -> schedule_execute();
     }
+
     p() -> buffs.brain_freeze -> decrement();
   }
 
@@ -2813,9 +2826,11 @@ struct frozen_orb_bolt_t : public mage_spell_t
   virtual void impact( action_state_t* s )
   {
     mage_spell_t::impact( s );
-    double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent();
 
-    p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
+    double fof_proc_chance = p() -> spec.fingers_of_frost
+                                 -> effectN( 1 ).percent();
+    p() -> buffs.fingers_of_frost
+        -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
   }
 
   virtual double action_multiplier() const
@@ -2870,7 +2885,8 @@ struct frozen_orb_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
+    p() -> buffs.fingers_of_frost
+        -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
   }
 };
 
@@ -2897,32 +2913,26 @@ struct ice_floes_t : public mage_spell_t
 
 struct ice_lance_t : public mage_spell_t
 {
-
-  double fof_multiplier;
   frost_bomb_explosion_t* frost_bomb_explosion;
-  int splitting_ice_aoe;
 
   ice_lance_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "ice_lance", p, p -> find_class_spell( "Ice Lance" ) ),
-    fof_multiplier( 0 ),
-    frost_bomb_explosion( new frost_bomb_explosion_t( p ) ),
-    splitting_ice_aoe( p -> glyphs.splitting_ice -> effectN( 1 ).base_value() + 1 )
+    frost_bomb_explosion( new frost_bomb_explosion_t( p ) )
   {
     parse_options( options_str );
 
     if ( p -> glyphs.splitting_ice -> ok() )
     {
-      aoe = splitting_ice_aoe;
-      base_aoe_multiplier *= p -> glyphs.splitting_ice -> effectN( 2 ).percent();
+      aoe = 1 + p -> glyphs.splitting_ice -> effectN( 1 ).base_value();
+      base_aoe_multiplier = p -> glyphs.splitting_ice
+                              -> effectN( 2 ).percent();
     }
-
-    fof_multiplier = p -> find_specialization_spell( "Fingers of Frost" ) -> ok() ? p -> find_spell( 44544 ) -> effectN( 2 ).percent() : 0.0;
   }
 
   virtual void execute()
   {
     // Ice Lance treats the target as frozen with FoF up
-    frozen = p() -> buffs.fingers_of_frost -> check() > 0;
+    frozen = p() -> buffs.fingers_of_frost -> check();
 
     mage_spell_t::execute();
 
@@ -2963,10 +2973,14 @@ struct ice_lance_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
+    if ( frozen )
+    {
+      am *= 1.0 + data().effectN( 2 ).percent();
+    }
+
     if ( p() -> buffs.fingers_of_frost -> up() )
     {
-      am *= 2.0; // Built in bonus against frozen targets
-      am *= 1.0 + fof_multiplier; // Buff from Fingers of Frost
+      am *= 1.0 + p() -> buffs.fingers_of_frost -> data().effectN( 2 ).percent();
     }
 
     if ( p() -> sets.has_set_bonus( SET_CASTER, T14, B2 ) )
@@ -4295,14 +4309,15 @@ void mage_t::init_spells()
   spec.arcane_charge         = find_spell( 36032 );
   spec.arcane_charge_passive = find_spell( 114664 );
 
-  spec.critical_mass         = find_specialization_spell( "Critical Mass" );
+  spec.critical_mass         = find_specialization_spell( "Critical Mass"    );
 
-  spec.brain_freeze          = find_specialization_spell( "Brain Freeze" );
+  spec.brain_freeze          = find_specialization_spell( "Brain Freeze"     );
+  spec.fingers_of_frost      = find_specialization_spell( "Fingers of Frost" );
 
   // Attunments
-  spec.arcane_mind           = find_specialization_spell( "Arcane Mind"  );
-  spec.ice_shards            = find_specialization_spell( "Ice Shards"   );
-  spec.incineration          = find_specialization_spell( "Incineration" );
+  spec.arcane_mind           = find_specialization_spell( "Arcane Mind"      );
+  spec.ice_shards            = find_specialization_spell( "Ice Shards"       );
+  spec.incineration          = find_specialization_spell( "Incineration"     );
 
   // Mastery
   spec.icicles               = find_mastery_spell( MAGE_FROST );
@@ -4391,7 +4406,7 @@ static void frost_t17_4pc_fof_gain( buff_t* buff, int, int )
 {
   mage_t* p = debug_cast<mage_t*>( buff -> player );
 
-  p -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
+  p -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
   if ( p -> sim -> debug )
   {
     p -> sim -> out_debug.printf( "%s gains Fingers of Frost from 2T17",
@@ -4454,10 +4469,7 @@ void mage_t::create_buffs()
                                   .default_value( spec.brain_freeze -> effectN( 1 ).percent() )
                                   .max_stack( find_spell( 57761 ) -> max_stacks() )
                                   .chance( find_spell( 44549 ) -> effectN( 1 ).percent() );
-  buffs.fingers_of_frost      = buff_creator_t( this, "fingers_of_frost", find_spell( 112965 ) )
-                                  .chance( find_spell( 112965 ) -> effectN( 1 ).percent() )
-                                  .duration( find_spell( 44544 ) -> duration() )
-                                  .max_stack( find_spell( 44544 ) -> max_stacks() );
+  buffs.fingers_of_frost      = buff_creator_t( this, "fingers_of_frost", find_spell( 44544 ) );
   buffs.frost_armor           = buff_creator_t( this, "frost_armor", find_spell( 7302 ) )
                                   .add_invalidate( CACHE_MULTISTRIKE );
   buffs.icy_veins             = buff_creator_t( this, "icy_veins", find_spell( 12472 ) );
