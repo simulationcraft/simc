@@ -3254,7 +3254,7 @@ struct word_of_glory_t : public paladin_heal_t
 struct harsh_word_t : public paladin_spell_t
 {
   harsh_word_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "harsh_word", p, p -> find_class_spell( "Harsh_Word" ) )
+    paladin_spell_t( "harsh_word", p, p -> find_spell( 130552 ) )
   {
     parse_options( options_str );
     resource_consumed = RESOURCE_HOLY_POWER;

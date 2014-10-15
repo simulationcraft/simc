@@ -1323,6 +1323,7 @@ class SpellDataGenerator(DataGenerator):
             ( 136494, 0, False ),   # World of Glory false positive for activated
             ( 113075, 0, False ),   # Barkskin (from Symbiosis)
             ( 144569, 0, False ),   # Bastion of Power (prot T16 4-piece bonus)
+            ( 130552, 0, True ),    # Harsh Word
         ),
 
         # Hunter:
