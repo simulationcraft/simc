@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!.0.0..0
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!.0....0
 spec=balance
 
 # This default action priority list is automatically created based on your character.
@@ -54,30 +54,30 @@ actions.aoe+=/wrath,if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_ene
 actions.aoe+=/starfire,if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)
 
 head=living_wood_headpiece,id=115542
-neck=gruuls_lip_ring,id=113872,enchant=gift_of_mastery
+neck=gruuls_lip_ring,id=113872,enchant=gift_of_critical_strike
 shoulders=living_wood_spaulders,id=115544
-back=runefrenzy_greatcloak,id=113937,enchant=gift_of_mastery
+back=runefrenzy_greatcloak,id=113937,enchant=gift_of_critical_strike
 chest=living_wood_raiment,id=115540
 wrists=bracers_of_shattered_stalactites,id=113935
 hands=toothbreaker_grips,id=113876
 waist=conductors_multipocket_girdle,id=113964
 legs=living_wood_legguards,id=115543
-feet=treads_of_the_dark_hunt,id=113974
-finger1=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_mastery
-finger2=aryus_puzzle_ring,id=118864,enchant=gift_of_mastery
-trinket1=blackiron_micro_crucible,id=113984
-trinket2=primal_gladiators_insignia_of_dominance,id=115755
-main_hand=infernoflame_staff,id=113869,enchant=mark_of_warsong
+feet=ironflecked_sandals,id=119340
+finger1=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_critical_strike
+finger2=aryus_puzzle_ring,id=118864,enchant=gift_of_critical_strike
+trinket1=goren_soul_repository,id=119194
+trinket2=darmacs_unstable_talisman,id=113948
+main_hand=blackhand_doomstaff,id=113988,enchant=gift_of_the_thunderlord
 
 # Gear Summary
 # gear_stamina=3437
-# gear_intellect=2720
+# gear_intellect=2730
 # gear_spell_power=1325
-# gear_crit_rating=446
-# gear_haste_rating=707
-# gear_mastery_rating=1440
+# gear_crit_rating=1016
+# gear_haste_rating=674
+# gear_mastery_rating=1019
 # gear_armor=946
-# gear_multistrike_rating=529
+# gear_multistrike_rating=405
 # gear_versatility_rating=163
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
