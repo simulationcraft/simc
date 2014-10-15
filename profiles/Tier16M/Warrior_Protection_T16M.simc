@@ -5,7 +5,7 @@ role=tank
 position=front
 professions=enchanting=600/inscription=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!000221.
-glyphs=unending_rage
+glyphs=unending_rage/death_from_above/wind_and_thunder
 spec=protection
 
 # This default action priority list is automatically created based on your character.
@@ -75,32 +75,34 @@ actions.prot_aoe+=/shield_slam
 actions.prot_aoe+=/execute,if=buff.sudden_death.react
 actions.prot_aoe+=/devastate
 
-head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=4,gems=capacitive_primal_20crit_10haste_10crit_11str
-neck=malkoroks_tainted_dog_tags,id=105566,upgrade=4
-shoulders=spaulders_of_the_fallen_warchief,id=104645,upgrade=4,gems=20crit_20crit_8str,enchant=15str_5crit
-back=gonglu_strength_of_xuen,id=102249,upgrade=4,gems=10haste_10crit_4str,enchant=12crit
-chest=breastplate_of_shamanic_mirrors,id=105532,upgrade=4,gems=10haste_10crit_10haste_10crit_20crit_8str,enchant=5all
+head=rageblind_greathelm,id=105457,upgrade=4,gems=indomitable_primal_20stam_10crit_10mastery_17stam
+neck=choker_of_the_final_word,id=105480,upgrade=4
+shoulders=shoulderguards_of_the_prehistoric_marauder,id=99407,upgrade=4,gems=20haste_20mastery_8str,enchant=15str_5crit
+back=qianying_fortitude_of_niuzao,id=102250,upgrade=4,gems=10haste_10crit_6stam,enchant=12crit
+chest=breastplate_of_shamanic_mirrors,id=105532,upgrade=4,gems=10haste_10crit_10haste_10crit_20crit_11str,enchant=5all
 shirt=precious_ribbon,id=52019
-wrists=bracers_of_blind_hatred,id=105456,upgrade=4,enchant=11mastery
-hands=gauntlets_of_the_prehistoric_marauder,id=99412,upgrade=4,gems=10haste_10crit_10haste_10crit_8str,enchant=11mastery
-waist=demolishers_reinforced_belt,id=104513,upgrade=4,gems=10haste_10crit_20crit_20crit_8str
-legs=legplates_of_willful_doom,id=104569,upgrade=4,gems=20crit_20crit_20crit,enchant=19str_11crit
-feet=greaves_of_sublime_superiority,id=105478,upgrade=4,gems=10haste_10crit_4str,enchant=9mastery
-finger1=seal_of_the_forgotten_kings,id=105589,upgrade=4,gems=20crit_4str
-finger2=sorrowpath_signet,id=105436,upgrade=4
-trinket1=evil_eye_of_galakras,id=105491,upgrade=4
-trinket2=thoks_tail_tip,id=105609,upgrade=4
-main_hand=encapsulated_essence_of_immerseus,id=105417,upgrade=4
-off_hand=shield_of_mockery,id=105481,upgrade=4
+wrists=bracers_of_sordid_sleep,id=105415,upgrade=4,enchant=11mastery
+hands=calixian_bladebreakers,id=105619,upgrade=4,gems=10haste_10crit_20crit_8str,enchant=11mastery
+waist=untarnishable_greatbelt,id=105587,upgrade=4,gems=10haste_10crit_20crit_20crit_8str
+legs=legguards_of_the_prehistoric_marauder,id=99410,upgrade=4,gems=20crit_20crit_11stam,enchant=19str_11crit
+feet=treads_of_unchained_hate,id=105414,upgrade=4,gems=10haste_10crit_4crit,enchant=9mastery
+finger1=galakrond_control_band,id=105492,upgrade=4,gems=10mast_10crit_4crit
+finger2=ring_of_the_iron_tomb,id=105536,upgrade=4,gems=20crit_4crit
+trinket1=vial_of_living_corruption,id=105568,upgrade=4
+trinket2=juggernauts_focusing_crystal,id=105514,upgrade=4
+main_hand=encapsulated_essence_of_immerseus,id=105417,upgrade=4,gems=10haste_10crit_4str,enchant=rivers_song
+off_hand=shield_of_mockery,id=105481,upgrade=4,gems=10str_10haste_4str,enchant=10mastery
 
 # Gear Summary
-# gear_strength=1117
+# gear_strength=1131
 # gear_agility=5
-# gear_stamina=1653
+# gear_stamina=1858
 # gear_intellect=5
-# gear_crit_rating=982
-# gear_haste_rating=335
-# gear_mastery_rating=464
-# gear_armor=2026
-# gear_bonus_armor=39
-# meta_gem=capacitive_primal
+# gear_crit_rating=874
+# gear_haste_rating=142
+# gear_mastery_rating=633
+# gear_armor=2062
+# gear_bonus_armor=305
+# gear_leech_rating=107
+# meta_gem=indomitable_primal
+# set_bonus=tier16_2pc_tank=1
