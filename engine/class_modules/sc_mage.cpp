@@ -195,7 +195,7 @@ public:
     //Frost
     const spell_data_t* enhanced_frostbolt;
     const spell_data_t* improved_blizzard;
-    const spell_data_t* improved_water_elemental;
+    const spell_data_t* improved_water_ele;
     const spell_data_t* improved_icy_veins;
   } perks;
 
@@ -341,7 +341,6 @@ public:
   // Character Definition
   virtual void      init_spells();
   virtual void      init_base_stats();
-  virtual void      init_scaling();
   virtual void      create_buffs();
   virtual void      init_gains();
   virtual void      init_procs();
@@ -487,6 +486,9 @@ struct water_elemental_pet_t : public pet_t
 
     bool ready()
     {
+      if ( ! p() -> o() -> perks.improved_water_ele -> ok() )
+        return false;
+
       // Not ready, until the owner gives permission to cast
       if ( ! autocast && ! queued )
         return false;
@@ -4022,6 +4024,10 @@ struct water_jet_t : public action_t
 
   bool ready()
   {
+    mage_t* m = debug_cast<mage_t*>( player );
+    if ( ! m -> perks.improved_water_ele -> ok() )
+      return false;
+
     // Ensure that the Water Elemental's water_jet is ready. Note that this
     // skips the water_jet_t::ready() call, and simply checks the "base" ready
     // properties of the spell (most importantly, the cooldown). If normal
@@ -4276,20 +4282,20 @@ void mage_t::init_spells()
 
 
   // Perks - Fire
-  perks.enhanced_pyrotechnics                = find_perk_spell( "Enhanced Pyrotechnics" );
-  perks.improved_flamestrike                 = find_perk_spell( "Improved Flamestrike" );
-  perks.improved_inferno_blast               = find_perk_spell( "Improved Inferno Blast" );
-  perks.improved_scorch                      = find_perk_spell( "Improved Scorch" );
+  perks.enhanced_pyrotechnics  = find_perk_spell( "Enhanced Pyrotechnics"    );
+  perks.improved_flamestrike   = find_perk_spell( "Improved Flamestrike"     );
+  perks.improved_inferno_blast = find_perk_spell( "Improved Inferno Blast"   );
+  perks.improved_scorch        = find_perk_spell( "Improved Scorch"          );
   // Perks - Arcane
-  perks.enhanced_arcane_blast                = find_perk_spell( "Enhanced Arcane Blast" );
-  perks.improved_arcane_power                = find_perk_spell( "Improved Arcane Power" );
-  perks.improved_evocation                   = find_perk_spell( "Improved Evocation" );
-  perks.improved_blink                       = find_perk_spell( "Improved Blink" );
+  perks.enhanced_arcane_blast  = find_perk_spell( "Enhanced Arcane Blast"    );
+  perks.improved_arcane_power  = find_perk_spell( "Improved Arcane Power"    );
+  perks.improved_evocation     = find_perk_spell( "Improved Evocation"       );
+  perks.improved_blink         = find_perk_spell( "Improved Blink"           );
   // Perks - Frost
-  perks.enhanced_frostbolt                   = find_perk_spell( "Enhanced Frostbolt" );
-  perks.improved_blizzard                    = find_perk_spell( "Improved Blizzard" );
-  perks.improved_water_elemental             = find_perk_spell( "Improved Water Elemental" );
-  perks.improved_icy_veins                   = find_perk_spell( "Improved Icy Veins" );
+  perks.enhanced_frostbolt     = find_perk_spell( "Enhanced Frostbolt"       );
+  perks.improved_blizzard      = find_perk_spell( "Improved Blizzard"        );
+  perks.improved_water_ele     = find_perk_spell( "Improved Water Elemental" );
+  perks.improved_icy_veins     = find_perk_spell( "Improved Icy Veins"       );
 
   // Spec Spells
   spec.arcane_charge         = find_spell( 36032 );
@@ -4352,13 +4358,6 @@ void mage_t::init_base_stats()
 
   if ( race == RACE_ORC )
     pet_multiplier *= 1.0 + find_racial_spell( "Command" ) -> effectN( 1 ).percent();
-}
-
-// mage_t::init_scaling =====================================================
-
-void mage_t::init_scaling()
-{
-  player_t::init_scaling();
 }
 
 // mage_t::init_buffs =======================================================
