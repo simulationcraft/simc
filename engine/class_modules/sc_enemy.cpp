@@ -26,7 +26,8 @@ enum tank_dummy_e
 enum tmi_boss_e
 {
   TMI_NONE = 0,
-  TMI_T15LFR, TMI_T15N, TMI_T15H, TMI_T16_10N, TMI_T16_25N, TMI_T16_10H, TMI_T16_25H, TMI_T17N, TMI_T17H, TMI_T17M
+  TMI_T16L, TMI_T16N, TMI_T16H, TMI_T16M, TMI_17L, TMI_T17N, TMI_T17H, TMI_T17M, 
+  TMI_MAX
 };
 
 
@@ -747,20 +748,14 @@ tmi_boss_e enemy_t::convert_tmi_string( const std::string& tmi_string )
   // eventually plan on using regular expressions here
   if ( util::str_compare_ci( tmi_string, "none" ) )
     return TMI_NONE;
-  if ( util::str_compare_ci( tmi_string, "T15LFR" ) || util::str_compare_ci( tmi_string, "T15N10" ) )
-    return TMI_T15LFR;
-  if ( util::str_compare_ci( tmi_string, "T15N" ) || util::str_compare_ci( tmi_string, "T15N25" ) || util::str_compare_ci( tmi_string, "T15H10" ) )
-    return TMI_T15N;
-  if ( util::str_compare_ci( tmi_string, "T15H" ) || util::str_compare_ci( tmi_string, "T15H25" ) )
-    return TMI_T15H;
-  if ( util::str_compare_ci( tmi_string, "T16Q" ) || util::str_compare_ci( tmi_string, "T16N10" ) )
-    return TMI_T16_10N;
-  if ( util::str_compare_ci( tmi_string, "T16N" ) || util::str_compare_ci( tmi_string, "T16N25" ) )
-    return TMI_T16_25N;
-  if ( util::str_compare_ci( tmi_string, "T16H10" ) )
-    return TMI_T16_10H;
-  if ( util::str_compare_ci( tmi_string, "T16H" ) || util::str_compare_ci( tmi_string, "T16H25" ) )
-    return TMI_T16_25H;
+  if ( util::str_compare_ci( tmi_string, "T16L" )  )
+    return TMI_T16L;
+  if ( util::str_compare_ci( tmi_string, "T16N" ) || util::str_compare_ci( tmi_string, "T16N25" ) || util::str_compare_ci( tmi_string, "T16N10" ) )
+    return TMI_T16N;
+  if ( util::str_compare_ci( tmi_string, "T16H" ) || util::str_compare_ci( tmi_string, "T16H10" ) || util::str_compare_ci( tmi_string, "T16H25" ) )
+    return TMI_T16H;
+  if ( util::str_compare_ci( tmi_string, "T16M" ) )
+    return TMI_T16M;
   if ( util::str_compare_ci( tmi_string, "T17N" ) )
     return TMI_T17N;
   if ( util::str_compare_ci( tmi_string, "T17H" ) )
@@ -994,8 +989,9 @@ std::string enemy_t::tmi_boss_action_list()
 {
   // Bosses are (roughly) standardized based on content level. dot damage is 2/15 of melee damage (0.1333 multiplier)
   std::string als = "";
-  const int num_bosses = 11;
-  int aa_damage[ num_bosses ] = { 0, 5500, 7500, 9000, 12500, 15000, 25000, 45000, 100000, 150000, 200000 };
+  const int num_bosses = TMI_MAX;
+  assert( tmi_boss_enum < TMI_MAX );
+  int aa_damage[ num_bosses ] = { 0, 40000, 50000, 65000, 90000, 125000, 150000, 180000, 210000 };
 
   als += "/auto_attack,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] ) + ",attack_speed=1.5,aoe_tanks=1";
   als += "/spell_dot,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] * 2 / 15 ) + ",tick_time=2,dot_duration=30,aoe_tanks=1,if=!ticking";
