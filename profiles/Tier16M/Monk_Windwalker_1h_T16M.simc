@@ -87,8 +87,8 @@ finger1=reality_ripper_ring,id=105451,upgrade=4,gems=20crit_4crit
 finger2=kilruks_band_of_ascendancy,id=105624,upgrade=4,gems=20haste_4crit
 trinket1=haromms_talisman,id=105527,upgrade=4
 trinket2=assurance_of_consequence,id=105472,upgrade=4
-main_hand=enchanted_shaotien_saber,id=105581,upgrade=4,weapon=sword_2.6speed_287min_535max,gems=10haste_10crit_4agi,enchant=dancing_steel
-off_hand=softfoots_last_resort,id=105430,upgrade=4,weapon=fist_2.6speed_287min_535max,gems=10haste_10crit_4agi,enchant=dancing_steel
+main_hand=enchanted_shaotien_saber,id=105581,upgrade=4,gems=10haste_10crit_4agi,enchant=dancing_steel
+off_hand=softfoots_last_resort,id=105430,upgrade=4,gems=10haste_10crit_4agi,enchant=dancing_steel
 
 # Gear Summary
 # gear_strength=80
