@@ -1731,14 +1731,14 @@ void print_html_player_scale_factor_table( report::sc_html_stream& os, sim_t*, p
     "<td colspan=\"%i\" class=\"filler\">\n"
     "<ul class=\"float\">\n",
     colspan );
-  if ( !ri.gear_weights_wowhead_std_link.empty() )
+  if ( !ri.gear_weights_wowhead_std_link[ sm ].empty() )
     os.printf(
     "<li><a href=\"%s\" class=\"ext\">wowhead</a></li>\n",
-    ri.gear_weights_wowhead_std_link.c_str() );
-  if ( !ri.gear_weights_lootrank_link.empty() )
+    ri.gear_weights_wowhead_std_link[ sm ].c_str() );
+  if ( !ri.gear_weights_lootrank_link[ sm ].empty() )
     os.printf(
     "<li><a href=\"%s\" class=\"ext\">lootrank</a></li>\n",
-    ri.gear_weights_lootrank_link.c_str() );
+    ri.gear_weights_lootrank_link[ sm ].c_str() );
   os << "</ul>\n";
   os << "</td>\n";
   os << "</tr>\n";
@@ -1752,11 +1752,11 @@ void print_html_player_scale_factor_table( report::sc_html_stream& os, sim_t*, p
     colspan );
 
   // askmrrobot
-  if ( !ri.gear_weights_askmrrobot_link.empty() )
+  if ( !ri.gear_weights_askmrrobot_link[ sm ].empty() )
   {
     os.printf(
       "<li><a href=\"%s\" class=\"ext\">askmrrobot</a></li>\n",
-      ri.gear_weights_askmrrobot_link.c_str() );
+      ri.gear_weights_askmrrobot_link[ sm ].c_str() );
   }
 
   // close optimizers section

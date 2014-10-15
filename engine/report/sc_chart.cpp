@@ -2066,14 +2066,18 @@ std::string chart::distribution( int print_style,
 #if LOOTRANK_ENABLED == 1
 // chart::gear_weights_lootrank =============================================
 
-std::string chart::gear_weights_lootrank( player_t* p )
+std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_lootrank( player_t* p )
 {
-  char buffer[ 1024 ];
+  std::array<std::string, SCALE_METRIC_MAX> sa;
 
-  std::string s = "http://www.guildox.com/go/wr.asp?";
-
-  switch ( p -> type )
+  for ( scale_metric_e sm = SCALE_METRIC_NONE; sm < SCALE_METRIC_MAX; sm++ )
   {
+    char buffer[ 1024 ];
+
+    std::string s = "http://www.guildox.com/go/wr.asp?";
+
+    switch ( p -> type )
+    {
     case DEATH_KNIGHT: s += "Cla=2048"; break;
     case DRUID:        s += "Cla=1024"; break;
     case HUNTER:       s += "Cla=4";    break;
@@ -2086,10 +2090,10 @@ std::string chart::gear_weights_lootrank( player_t* p )
     case WARLOCK:      s += "Cla=256";  break;
     case WARRIOR:      s += "Cla=1";    break;
     default: p -> sim -> errorf( "%s", util::player_type_string( p -> type ) ); assert( 0 ); break;
-  }
+    }
 
-  switch ( p -> type )
-  {
+    switch ( p -> type )
+    {
     case WARRIOR:
     case PALADIN:
     case DEATH_KNIGHT:
@@ -2111,41 +2115,40 @@ std::string chart::gear_weights_lootrank( player_t* p )
       break;
     default:
       break;
-  }
+    }
 
-  /* FIXME: Commenting this out since this won't currently work the way we handle pandaren, and we don't currently care what faction people are anyway
-  switch ( p -> race )
-  {
-  case RACE_PANDAREN_ALLIANCE:
-  case RACE_NIGHT_ELF:
-  case RACE_HUMAN:
-  case RACE_GNOME:
-  case RACE_DWARF:
-  case RACE_WORGEN:
-  case RACE_DRAENEI: s += "&F=A"; break;
-
-  case RACE_PANDAREN_HORDE:
-  case RACE_ORC:
-  case RACE_TROLL:
-  case RACE_UNDEAD:
-  case RACE_BLOOD_ELF:
-  case RACE_GOBLIN:
-  case RACE_TAUREN: s += "&F=H"; break;
-
-  case RACE_PANDAREN:
-  default: break;
-  }
-  */
-  scale_metric_e sm = p -> sim -> scaling -> scaling_metric;
-  bool positive_normalizing_value = p -> scaling[ sm ].get_stat( p -> normalize_by() ) >= 0;
-  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-  {
-    double value = positive_normalizing_value ? p -> scaling[ sm ].get_stat( i ) : -p -> scaling[ sm ].get_stat( i );
-    if ( value == 0 ) continue;
-
-    const char* name;
-    switch ( i )
+    /* FIXME: Commenting this out since this won't currently work the way we handle pandaren, and we don't currently care what faction people are anyway
+    switch ( p -> race )
     {
+    case RACE_PANDAREN_ALLIANCE:
+    case RACE_NIGHT_ELF:
+    case RACE_HUMAN:
+    case RACE_GNOME:
+    case RACE_DWARF:
+    case RACE_WORGEN:
+    case RACE_DRAENEI: s += "&F=A"; break;
+
+    case RACE_PANDAREN_HORDE:
+    case RACE_ORC:
+    case RACE_TROLL:
+    case RACE_UNDEAD:
+    case RACE_BLOOD_ELF:
+    case RACE_GOBLIN:
+    case RACE_TAUREN: s += "&F=H"; break;
+
+    case RACE_PANDAREN:
+    default: break;
+    }
+    */
+    bool positive_normalizing_value = p -> scaling[ sm ].get_stat( p -> normalize_by() ) >= 0;
+    for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
+    {
+      double value = positive_normalizing_value ? p -> scaling[ sm ].get_stat( i ) : -p -> scaling[ sm ].get_stat( i );
+      if ( value == 0 ) continue;
+
+      const char* name;
+      switch ( i )
+      {
       case STAT_STRENGTH:                 name = "Str";  break;
       case STAT_AGILITY:                  name = "Agi";  break;
       case STAT_STAMINA:                  name = "Sta";  break;
@@ -2164,18 +2167,18 @@ std::string chart::gear_weights_lootrank( player_t* p )
         if ( HUNTER == p -> type ) name = "rdps"; else name = "dps";  break;
       case STAT_WEAPON_OFFHAND_DPS:       name = "odps"; break;
       default: name = 0; break;
+      }
+
+      if ( name )
+      {
+        snprintf( buffer, sizeof( buffer ), "&%s=%.*f", name, p -> sim -> report_precision, value );
+        s += buffer;
+      }
     }
 
-    if ( name )
+    // Set the trinket style choice
+    switch ( p -> specialization() )
     {
-      snprintf( buffer, sizeof( buffer ), "&%s=%.*f", name, p -> sim -> report_precision, value );
-      s += buffer;
-    }
-  }
-
-  // Set the trinket style choice
-  switch ( p -> specialization() )
-  {
     case DEATH_KNIGHT_BLOOD:
     case DRUID_GUARDIAN:
     case MONK_BREWMASTER:
@@ -2231,287 +2234,302 @@ std::string chart::gear_weights_lootrank( player_t* p )
       break;
 
     default: break;
+    }
+
+    s += "&Gem=3"; // FIXME: Remove this when epic gems become available
+    s += "&Ver=7";
+    snprintf( buffer, sizeof( buffer ), "&maxlv=%d", p -> level );
+    s += buffer;
+
+    if ( p -> items[ 0 ].parsed.data.id ) s += "&t1=" + util::to_string( p -> items[ 0 ].parsed.data.id );
+    if ( p -> items[ 1 ].parsed.data.id ) s += "&t2=" + util::to_string( p -> items[ 1 ].parsed.data.id );
+    if ( p -> items[ 2 ].parsed.data.id ) s += "&t3=" + util::to_string( p -> items[ 2 ].parsed.data.id );
+    if ( p -> items[ 4 ].parsed.data.id ) s += "&t5=" + util::to_string( p -> items[ 4 ].parsed.data.id );
+    if ( p -> items[ 5 ].parsed.data.id ) s += "&t8=" + util::to_string( p -> items[ 5 ].parsed.data.id );
+    if ( p -> items[ 6 ].parsed.data.id ) s += "&t9=" + util::to_string( p -> items[ 6 ].parsed.data.id );
+    if ( p -> items[ 7 ].parsed.data.id ) s += "&t10=" + util::to_string( p -> items[ 7 ].parsed.data.id );
+    if ( p -> items[ 8 ].parsed.data.id ) s += "&t6=" + util::to_string( p -> items[ 8 ].parsed.data.id );
+    if ( p -> items[ 9 ].parsed.data.id ) s += "&t7=" + util::to_string( p -> items[ 9 ].parsed.data.id );
+    if ( p -> items[ 10 ].parsed.data.id ) s += "&t11=" + util::to_string( p -> items[ 10 ].parsed.data.id );
+    if ( p -> items[ 11 ].parsed.data.id ) s += "&t31=" + util::to_string( p -> items[ 11 ].parsed.data.id );
+    if ( p -> items[ 12 ].parsed.data.id ) s += "&t12=" + util::to_string( p -> items[ 12 ].parsed.data.id );
+    if ( p -> items[ 13 ].parsed.data.id ) s += "&t32=" + util::to_string( p -> items[ 13 ].parsed.data.id );
+    if ( p -> items[ 14 ].parsed.data.id ) s += "&t4=" + util::to_string( p -> items[ 14 ].parsed.data.id );
+    if ( p -> items[ 15 ].parsed.data.id ) s += "&t14=" + util::to_string( p -> items[ 15 ].parsed.data.id );
+    if ( p -> items[ 16 ].parsed.data.id ) s += "&t15=" + util::to_string( p -> items[ 16 ].parsed.data.id );
+
+    util::urlencode( s );
+
+    sa[ sm ] = s;
   }
-
-  s += "&Gem=3"; // FIXME: Remove this when epic gems become available
-  s += "&Ver=7";
-  snprintf( buffer, sizeof( buffer ), "&maxlv=%d", p -> level );
-  s += buffer;
-
-  if ( p -> items[  0 ].parsed.data.id ) s += "&t1="  + util::to_string( p -> items[  0 ].parsed.data.id );
-  if ( p -> items[  1 ].parsed.data.id ) s += "&t2="  + util::to_string( p -> items[  1 ].parsed.data.id );
-  if ( p -> items[  2 ].parsed.data.id ) s += "&t3="  + util::to_string( p -> items[  2 ].parsed.data.id );
-  if ( p -> items[  4 ].parsed.data.id ) s += "&t5="  + util::to_string( p -> items[  4 ].parsed.data.id );
-  if ( p -> items[  5 ].parsed.data.id ) s += "&t8="  + util::to_string( p -> items[  5 ].parsed.data.id );
-  if ( p -> items[  6 ].parsed.data.id ) s += "&t9="  + util::to_string( p -> items[  6 ].parsed.data.id );
-  if ( p -> items[  7 ].parsed.data.id ) s += "&t10=" + util::to_string( p -> items[  7 ].parsed.data.id );
-  if ( p -> items[  8 ].parsed.data.id ) s += "&t6="  + util::to_string( p -> items[  8 ].parsed.data.id );
-  if ( p -> items[  9 ].parsed.data.id ) s += "&t7="  + util::to_string( p -> items[  9 ].parsed.data.id );
-  if ( p -> items[ 10 ].parsed.data.id ) s += "&t11=" + util::to_string( p -> items[ 10 ].parsed.data.id );
-  if ( p -> items[ 11 ].parsed.data.id ) s += "&t31=" + util::to_string( p -> items[ 11 ].parsed.data.id );
-  if ( p -> items[ 12 ].parsed.data.id ) s += "&t12=" + util::to_string( p -> items[ 12 ].parsed.data.id );
-  if ( p -> items[ 13 ].parsed.data.id ) s += "&t32=" + util::to_string( p -> items[ 13 ].parsed.data.id );
-  if ( p -> items[ 14 ].parsed.data.id ) s += "&t4="  + util::to_string( p -> items[ 14 ].parsed.data.id );
-  if ( p -> items[ 15 ].parsed.data.id ) s += "&t14=" + util::to_string( p -> items[ 15 ].parsed.data.id );
-  if ( p -> items[ 16 ].parsed.data.id ) s += "&t15=" + util::to_string( p -> items[ 16 ].parsed.data.id );
-
-  util::urlencode( s );
-
-  return s;
+  return sa;
 }
 #endif
 
 // chart::gear_weights_wowhead ==============================================
 
-std::string chart::gear_weights_wowhead( player_t* p )
+std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_wowhead( player_t* p )
 {
-  char buffer[1024];
-  bool first = true;
+  std::array<std::string, SCALE_METRIC_MAX> sa;
 
-  // FIXME: switch back to www.wowhead.com once WoD goes live
-  std::string s = "http://wod.wowhead.com/?items&amp;filter=";
-
-  switch ( p -> type )
+  for ( scale_metric_e sm = SCALE_METRIC_NONE; sm < SCALE_METRIC_MAX; sm++ )
   {
-  case DEATH_KNIGHT: s += "ub=6;";  break;
-  case DRUID:        s += "ub=11;"; break;
-  case HUNTER:       s += "ub=3;";  break;
-  case MAGE:         s += "ub=8;";  break;
-  case PALADIN:      s += "ub=2;";  break;
-  case PRIEST:       s += "ub=5;";  break;
-  case ROGUE:        s += "ub=4;";  break;
-  case SHAMAN:       s += "ub=7;";  break;
-  case WARLOCK:      s += "ub=9;";  break;
-  case WARRIOR:      s += "ub=1;";  break;
-  case MONK:         s += "ub=10;"; break;
-  default: assert( 0 ); break;
-  }
+    char buffer[ 1024 ];
+    bool first = true;
 
-  // Restrict wowhead to rare gems. When epic gems become available:"gm=4;gb=1;"
-  s += "gm=3;gb=1;";
+    // FIXME: switch back to www.wowhead.com once WoD goes live
+    std::string s = "http://wod.wowhead.com/?items&amp;filter=";
 
-  // Min ilvl of 463 (sensible for current raid tier).
-  s += "minle=463;";
-
-  std::string    id_string = "";
-  std::string value_string = "";
-
-  scale_metric_e sm = p -> sim -> scaling -> scaling_metric;
-  bool positive_normalizing_value = p -> scaling[sm].get_stat( p -> normalize_by() ) >= 0;
-
-  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-  {
-    double value = positive_normalizing_value ? p -> scaling[sm].get_stat( i ) : -p -> scaling[sm].get_stat( i );
-    if ( value == 0 ) continue;
-
-    int id = 0;
-    switch ( i )
+    switch ( p -> type )
     {
-    case STAT_STRENGTH:                 id = 20;  break;
-    case STAT_AGILITY:                  id = 21;  break;
-    case STAT_STAMINA:                  id = 22;  break;
-    case STAT_INTELLECT:                id = 23;  break;
-    case STAT_SPIRIT:                   id = 24;  break;
-    case STAT_SPELL_POWER:              id = 123; break;
-    case STAT_ATTACK_POWER:             id = 77;  break;
-    case STAT_CRIT_RATING:              id = 96;  break;
-    case STAT_HASTE_RATING:             id = 103; break;
-    case STAT_ARMOR:                    id = 41;  break;
-    case STAT_BONUS_ARMOR:              id = 109; break;
-    case STAT_MASTERY_RATING:           id = 170; break;
-    case STAT_VERSATILITY_RATING:       id = 215; break;
-    case STAT_MULTISTRIKE_RATING:       id = 200; break;
-    case STAT_WEAPON_DPS:
-      if ( HUNTER == p -> type ) id = 138; else id = 32;  break;
-    default: break;
+    case DEATH_KNIGHT: s += "ub=6;";  break;
+    case DRUID:        s += "ub=11;"; break;
+    case HUNTER:       s += "ub=3;";  break;
+    case MAGE:         s += "ub=8;";  break;
+    case PALADIN:      s += "ub=2;";  break;
+    case PRIEST:       s += "ub=5;";  break;
+    case ROGUE:        s += "ub=4;";  break;
+    case SHAMAN:       s += "ub=7;";  break;
+    case WARLOCK:      s += "ub=9;";  break;
+    case WARRIOR:      s += "ub=1;";  break;
+    case MONK:         s += "ub=10;"; break;
+    default: assert( 0 ); break;
     }
 
-    if ( id )
+    // Restrict wowhead to rare gems. When epic gems become available:"gm=4;gb=1;"
+    s += "gm=3;gb=1;";
+
+    // Min ilvl of 463 (sensible for current raid tier).
+    s += "minle=463;";
+
+    std::string    id_string = "";
+    std::string value_string = "";
+
+    bool positive_normalizing_value = p -> scaling[ sm ].get_stat( p -> normalize_by() ) >= 0;
+
+    for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
-      if ( !first )
+      double value = positive_normalizing_value ? p -> scaling[ sm ].get_stat( i ) : -p -> scaling[ sm ].get_stat( i );
+      if ( value == 0 ) continue;
+
+      int id = 0;
+      switch ( i )
       {
-        id_string += ":";
-        value_string += ":";
+      case STAT_STRENGTH:                 id = 20;  break;
+      case STAT_AGILITY:                  id = 21;  break;
+      case STAT_STAMINA:                  id = 22;  break;
+      case STAT_INTELLECT:                id = 23;  break;
+      case STAT_SPIRIT:                   id = 24;  break;
+      case STAT_SPELL_POWER:              id = 123; break;
+      case STAT_ATTACK_POWER:             id = 77;  break;
+      case STAT_CRIT_RATING:              id = 96;  break;
+      case STAT_HASTE_RATING:             id = 103; break;
+      case STAT_ARMOR:                    id = 41;  break;
+      case STAT_BONUS_ARMOR:              id = 109; break;
+      case STAT_MASTERY_RATING:           id = 170; break;
+      case STAT_VERSATILITY_RATING:       id = 215; break;
+      case STAT_MULTISTRIKE_RATING:       id = 200; break;
+      case STAT_WEAPON_DPS:
+        if ( HUNTER == p -> type ) id = 138; else id = 32;  break;
+      default: break;
       }
-      first = false;
 
-      snprintf( buffer, sizeof( buffer ), "%d", id );
-      id_string += buffer;
+      if ( id )
+      {
+        if ( !first )
+        {
+          id_string += ":";
+          value_string += ":";
+        }
+        first = false;
 
-      snprintf( buffer, sizeof( buffer ), "%.*f", p -> sim -> report_precision, value );
-      value_string += buffer;
+        snprintf( buffer, sizeof( buffer ), "%d", id );
+        id_string += buffer;
+
+        snprintf( buffer, sizeof( buffer ), "%.*f", p -> sim -> report_precision, value );
+        value_string += buffer;
+      }
     }
+
+    s += "wt=" + id_string + ";";
+    s += "wtv=" + value_string + ";";
+
+    sa[ sm ] = s;
   }
-
-  s += "wt=" + id_string + ";";
-  s += "wtv=" + value_string + ";";
-
-  return s;
+  return sa;
 }
 
 // chart::gear_weights_askmrrobot ===========================================
 
-std::string chart::gear_weights_askmrrobot( player_t* p )
+std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_askmrrobot( player_t* p )
 {
-  std::stringstream ss;
-  // AMR update week of 8/15/2013 guarantees that the origin_str provided from their SimC export is
-  // a valid base for appending stat weights.  If the origin has askmrrobot in it, just use that
-  if ( util::str_in_str_ci( p -> origin_str, "askmrrobot" ) )
-    ss << p -> origin_str;
-  // otherwise, we need to construct it from whatever information we have available
-  else
+  std::array<std::string, SCALE_METRIC_MAX> sa;
+
+  for ( scale_metric_e sm = SCALE_METRIC_NONE; sm < SCALE_METRIC_MAX; sm++ )
   {
-    ss << "http://www.askmrrobot.com/wow/gear/";
-
-    // Use valid names if we are provided those
-    if ( ! p -> region_str.empty() && ! p -> server_str.empty() && ! p -> name_str.empty() )
-    {
-      if ( p -> region_str == "us" )
-        ss << p -> region_str << "a";
-      else
-        ss << p -> region_str;
-
-      ss << '/' << p -> server_str << '/' << p -> name_str;
-    }
-    // otherwise try to reconstruct it from the origin string
+    std::stringstream ss;
+    // AMR update week of 8/15/2013 guarantees that the origin_str provided from their SimC export is
+    // a valid base for appending stat weights.  If the origin has askmrrobot in it, just use that
+    if ( util::str_in_str_ci( p -> origin_str, "askmrrobot" ) )
+      ss << p -> origin_str;
+    // otherwise, we need to construct it from whatever information we have available
     else
     {
-      std::string region_str, server_str, name_str;
-      if ( util::parse_origin( region_str, server_str, name_str, p -> origin_str ) )
-      {
-        if ( region_str == "us" )
-          ss << region_str << "a";
-        else
-          ss << region_str;
+      ss << "http://www.askmrrobot.com/wow/gear/";
 
-        ss << '/' << server_str << '/' << name_str;
+      // Use valid names if we are provided those
+      if ( !p -> region_str.empty() && !p -> server_str.empty() && !p -> name_str.empty() )
+      {
+        if ( p -> region_str == "us" )
+          ss << p -> region_str << "a";
+        else
+          ss << p -> region_str;
+
+        ss << '/' << p -> server_str << '/' << p -> name_str;
       }
+      // otherwise try to reconstruct it from the origin string
       else
       {
-        if ( p -> sim -> debug )
-          p -> sim -> errorf( "Unable to construct AMR link - invalid/unknown region, server, or name string" );
-        return "";        
+        std::string region_str, server_str, name_str;
+        if ( util::parse_origin( region_str, server_str, name_str, p -> origin_str ) )
+        {
+          if ( region_str == "us" )
+            ss << region_str << "a";
+          else
+            ss << region_str;
+
+          ss << '/' << server_str << '/' << name_str;
+        }
+        else
+        {
+          if ( p -> sim -> debug )
+            p -> sim -> errorf( "Unable to construct AMR link - invalid/unknown region, server, or name string" );
+          sa[ sm ] =  "";
+          continue;
+        }
       }
-    }
-    ss << "?spec=";
+      ss << "?spec=";
 
-    // This next section is sort of unwieldly, I may move this to external functions
+      // This next section is sort of unwieldly, I may move this to external functions
 
-    // Player type
-    switch ( p -> type )
-    {
-    case DEATH_KNIGHT: ss << "DeathKnight";  break;
-    case DRUID:        ss << "Druid"; break;
-    case HUNTER:       ss << "Hunter";  break;
-    case MAGE:         ss << "Mage";  break;
-    case PALADIN:      ss << "Paladin";  break;
-    case PRIEST:       ss << "Priest";  break;
-    case ROGUE:        ss << "Rogue";  break;
-    case SHAMAN:       ss << "Shaman";  break;
-    case WARLOCK:      ss << "Warlock";  break;
-    case WARRIOR:      ss << "Warrior";  break;
-    case MONK:         ss << "Monk"; break;
-      // if this isn't a player, the AMR link is useless
-    default: assert( 0 ); break;
-    }
-    // Player spec
-    switch ( p -> specialization() )
-    {
-    case DEATH_KNIGHT_FROST:
+      // Player type
+      switch ( p -> type )
+      {
+      case DEATH_KNIGHT: ss << "DeathKnight";  break;
+      case DRUID:        ss << "Druid"; break;
+      case HUNTER:       ss << "Hunter";  break;
+      case MAGE:         ss << "Mage";  break;
+      case PALADIN:      ss << "Paladin";  break;
+      case PRIEST:       ss << "Priest";  break;
+      case ROGUE:        ss << "Rogue";  break;
+      case SHAMAN:       ss << "Shaman";  break;
+      case WARLOCK:      ss << "Warlock";  break;
+      case WARRIOR:      ss << "Warrior";  break;
+      case MONK:         ss << "Monk"; break;
+        // if this isn't a player, the AMR link is useless
+      default: assert( 0 ); break;
+      }
+      // Player spec
+      switch ( p -> specialization() )
+      {
+      case DEATH_KNIGHT_FROST:
       {
         if ( p -> main_hand_weapon.type == WEAPON_2H ) { ss << "Frost2H"; break; }
-        else {ss << "FrostDW"; break;}
+        else { ss << "FrostDW"; break; }
       }
-    case DEATH_KNIGHT_UNHOLY:   ss << "Unholy2H"; break;
-    case DEATH_KNIGHT_BLOOD:    ss << "Blood2H"; break;
-    case DRUID_BALANCE:         ss << "Moonkin"; break;
-    case DRUID_FERAL:           ss << "FeralCat"; break;
-    case DRUID_GUARDIAN:        ss << "FeralBear"; break;
-    case DRUID_RESTORATION:     ss << "Restoration"; break;
-    case HUNTER_BEAST_MASTERY:  ss << "BeastMastery"; break;
-    case HUNTER_MARKSMANSHIP:   ss << "Marksmanship"; break;
-    case HUNTER_SURVIVAL:       ss << "Survival"; break;
-    case MAGE_ARCANE:           ss << "Arcane"; break;
-    case MAGE_FIRE:             ss << "Fire"; break;
-    case MAGE_FROST:            ss << "Frost"; break;
-    case PALADIN_HOLY:          ss << "Holy"; break;
-    case PALADIN_PROTECTION:    ss << "Protection"; break;
-    case PALADIN_RETRIBUTION:   ss << "Retribution"; break;
-    case PRIEST_DISCIPLINE:     ss << "Discipline"; break;
-    case PRIEST_HOLY:           ss << "Holy"; break;
-    case PRIEST_SHADOW:         ss << "Shadow"; break;
-    case ROGUE_ASSASSINATION:   ss << "Assassination"; break;
-    case ROGUE_COMBAT:          ss << "Combat"; break;
-    case ROGUE_SUBTLETY:        ss << "Subtlety"; break;
-    case SHAMAN_ELEMENTAL:      ss << "Elemental"; break;
-    case SHAMAN_ENHANCEMENT:    ss << "Enhancement"; break;
-    case SHAMAN_RESTORATION:    ss << "Restoration"; break;
-    case WARLOCK_AFFLICTION:    ss << "Affliction"; break;
-    case WARLOCK_DEMONOLOGY:    ss << "Demonology"; break;
-    case WARLOCK_DESTRUCTION:   ss << "Destruction"; break;
-    case WARRIOR_ARMS:          ss << "Arms"; break;
-    case WARRIOR_FURY:
+      case DEATH_KNIGHT_UNHOLY:   ss << "Unholy2H"; break;
+      case DEATH_KNIGHT_BLOOD:    ss << "Blood2H"; break;
+      case DRUID_BALANCE:         ss << "Moonkin"; break;
+      case DRUID_FERAL:           ss << "FeralCat"; break;
+      case DRUID_GUARDIAN:        ss << "FeralBear"; break;
+      case DRUID_RESTORATION:     ss << "Restoration"; break;
+      case HUNTER_BEAST_MASTERY:  ss << "BeastMastery"; break;
+      case HUNTER_MARKSMANSHIP:   ss << "Marksmanship"; break;
+      case HUNTER_SURVIVAL:       ss << "Survival"; break;
+      case MAGE_ARCANE:           ss << "Arcane"; break;
+      case MAGE_FIRE:             ss << "Fire"; break;
+      case MAGE_FROST:            ss << "Frost"; break;
+      case PALADIN_HOLY:          ss << "Holy"; break;
+      case PALADIN_PROTECTION:    ss << "Protection"; break;
+      case PALADIN_RETRIBUTION:   ss << "Retribution"; break;
+      case PRIEST_DISCIPLINE:     ss << "Discipline"; break;
+      case PRIEST_HOLY:           ss << "Holy"; break;
+      case PRIEST_SHADOW:         ss << "Shadow"; break;
+      case ROGUE_ASSASSINATION:   ss << "Assassination"; break;
+      case ROGUE_COMBAT:          ss << "Combat"; break;
+      case ROGUE_SUBTLETY:        ss << "Subtlety"; break;
+      case SHAMAN_ELEMENTAL:      ss << "Elemental"; break;
+      case SHAMAN_ENHANCEMENT:    ss << "Enhancement"; break;
+      case SHAMAN_RESTORATION:    ss << "Restoration"; break;
+      case WARLOCK_AFFLICTION:    ss << "Affliction"; break;
+      case WARLOCK_DEMONOLOGY:    ss << "Demonology"; break;
+      case WARLOCK_DESTRUCTION:   ss << "Destruction"; break;
+      case WARRIOR_ARMS:          ss << "Arms"; break;
+      case WARRIOR_FURY:
       {
         if ( p -> main_hand_weapon.type == WEAPON_SWORD_2H || p -> main_hand_weapon.type == WEAPON_AXE_2H || p -> main_hand_weapon.type == WEAPON_MACE_2H || p -> main_hand_weapon.type == WEAPON_POLEARM )
-        { ss << "Fury2H"; break; }
+        {
+          ss << "Fury2H"; break;
+        }
         else { ss << "Fury"; break; }
       }
-    case WARRIOR_PROTECTION:    ss << "Protection"; break;
-    case MONK_BREWMASTER:
+      case WARRIOR_PROTECTION:    ss << "Protection"; break;
+      case MONK_BREWMASTER:
       {
         if ( p -> main_hand_weapon.type == WEAPON_STAFF || p -> main_hand_weapon.type == WEAPON_POLEARM ) { ss << "Brewmaster2h"; break; }
         else { ss << "BrewmasterDw"; break; }
       }
-    case MONK_MISTWEAVER:       ss << "Mistweaver"; break;
-    case MONK_WINDWALKER:
+      case MONK_MISTWEAVER:       ss << "Mistweaver"; break;
+      case MONK_WINDWALKER:
       {
         if ( p -> main_hand_weapon.type == WEAPON_STAFF || p -> main_hand_weapon.type == WEAPON_POLEARM ) { ss << "Windwalker2h"; break; }
         else { ss << "WindwalkerDw"; break; }
       }
-      // if this is a pet or an unknown spec, the AMR link is pointless anyway
-    default: assert( 0 ); break;
+        // if this is a pet or an unknown spec, the AMR link is pointless anyway
+      default: assert( 0 ); break;
+      }
     }
+    // add weights
+    ss << "&weights=";
+
+    // check for negative normalizer
+    bool positive_normalizing_value = p -> scaling_normalized[ sm ].get_stat( p -> normalize_by() ) >= 0;
+
+    // AMR accepts a max precision of 2 decimal places
+    ss.precision( std::min( p -> sim -> report_precision + 1, 2 ) );
+
+    // flag for skipping the first comma
+    bool skipFirstComma = false;
+
+    // loop through stats and append the relevant ones to the URL
+    for ( stat_e i = STAT_NONE; i < STAT_MAX; ++i )
+    {
+      // get stat weight value
+      double value = positive_normalizing_value ? p -> scaling_normalized[ sm ].get_stat( i ) : -p -> scaling_normalized[ sm ].get_stat( i );
+
+      // if the weight is negative or AMR won't recognize the stat type string, skip this stat
+      if ( value <= 0 || util::str_compare_ci( util::stat_type_askmrrobot( i ), "unknown" ) ) continue;
+
+      // skip the first comma
+      if ( skipFirstComma )
+        ss << ',';
+      skipFirstComma = true;
+
+      // AMR enforces certain bounds on stats, cap at 9.99 for regular and 99.99 for weapon DPS
+      if ( ( i == STAT_WEAPON_DPS || i == STAT_WEAPON_OFFHAND_DPS ) && value > 99.99 )
+        value = 99.99;
+      else if ( value > 9.99 )
+        value = 9.99;
+
+      // append the stat weight to the URL
+      ss << util::stat_type_askmrrobot( i ) << ':' << std::fixed << value;
+    }
+
+    // softweights, softcaps, hardcaps would go here if we supported them
+
+    sa[ sm ] = util::encode_html( ss.str() );
   }
-  // add weights
-  ss << "&weights=";
-
-  // check for negative normalizer
-  scale_metric_e sm = p -> sim -> scaling -> scaling_metric;
-  bool positive_normalizing_value = p -> scaling_normalized[ sm ].get_stat( p -> normalize_by() ) >= 0;
-
-  // AMR accepts a max precision of 2 decimal places
-  ss.precision( std::min( p -> sim -> report_precision + 1, 2 ) );
-
-  // flag for skipping the first comma
-  bool skipFirstComma = false;
-
-  // loop through stats and append the relevant ones to the URL
-  for ( stat_e i = STAT_NONE; i < STAT_MAX; ++i )
-  {
-    // get stat weight value
-    double value = positive_normalizing_value ? p -> scaling_normalized[ sm ].get_stat( i ) : -p -> scaling_normalized[ sm ].get_stat( i );
-
-    // if the weight is negative or AMR won't recognize the stat type string, skip this stat
-    if ( value <= 0 || util::str_compare_ci( util::stat_type_askmrrobot( i ), "unknown" ) ) continue;
-
-    // skip the first comma
-    if ( skipFirstComma )
-      ss << ',';
-    skipFirstComma = true;
-
-    // AMR enforces certain bounds on stats, cap at 9.99 for regular and 99.99 for weapon DPS
-    if ( ( i == STAT_WEAPON_DPS || i == STAT_WEAPON_OFFHAND_DPS ) && value > 99.99 )
-      value = 99.99;
-    else if ( value > 9.99 )
-      value = 9.99;
-
-    // append the stat weight to the URL
-    ss << util::stat_type_askmrrobot( i ) << ':' << std::fixed << value;
-  }
-
-  // softweights, softcaps, hardcaps would go here if we supported them
-
-  return util::encode_html( ss.str() );
+  return sa;
 }
 
 /* Generates a nice looking normal distribution chart,

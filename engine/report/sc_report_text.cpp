@@ -666,13 +666,13 @@ void print_text_scale_factors( FILE* file, player_t* p, player_processed_report_
 
   util::fprintf( file, "\n" );
 
-  std::string lootrank       = ri.gear_weights_lootrank_link;
-  std::string wowhead_std    = ri.gear_weights_wowhead_std_link;
+  std::array<std::string, SCALE_METRIC_MAX> lootrank       = ri.gear_weights_lootrank_link;
+  std::array<std::string, SCALE_METRIC_MAX> wowhead_std    = ri.gear_weights_wowhead_std_link;
 
-  simplify_html( lootrank    );
-  simplify_html( wowhead_std );
+  simplify_html( lootrank[ sm ]  );
+  simplify_html( wowhead_std[ sm ] );
 
-  util::fprintf( file, "    Wowhead : %s\n", wowhead_std.c_str() );
+  util::fprintf( file, "    Wowhead : %s\n", wowhead_std[ sm ].c_str() );
 }
 
 // print_text_dps_plots =====================================================
