@@ -3206,7 +3206,7 @@ struct word_of_glory_t : public paladin_heal_t
     double c = cost();
 
     // scale the am by holy power spent, can't be more than 3 and Divine Purpose counts as 3
-    am *= ( ( p() -> holy_power_stacks() <= 3  && c > 0.0 ) ? p() -> holy_power_stacks() : 3 );
+    am *= ( ( p() -> holy_power_stacks() <= 3  && c > 0.0 ) ? p() -> holy_power_stacks() : 3 ) / 3;
 
     // T14 protection 4-piece bonus
     am *= ( 1.0 + p() -> sets.set( SET_TANK, T14, B4 ) -> effectN( 1 ).percent() );
@@ -3226,7 +3226,7 @@ struct word_of_glory_t : public paladin_heal_t
 
   virtual void execute()
   {
-    double hopo = std::min( 3, p() -> holy_power_stacks() ); //can't consume more than 3 Holy Power
+    double hopo = ( ( p() -> holy_power_stacks() <= 3  && cost() > 0.0 ) ? p() -> holy_power_stacks() : 3 );
 
     paladin_heal_t::execute();
 
@@ -3288,14 +3288,14 @@ struct harsh_word_t : public paladin_spell_t
     double c = cost();
 
     // scale the am by holy power spent, can't be more than 3 and Divine Purpose counts as 3
-    am *= ( ( p() -> holy_power_stacks() <= 3  && c > 0.0 ) ? p() -> holy_power_stacks() : 3 );
+    am *= ( ( p() -> holy_power_stacks() <= 3  && c > 0.0 ) ? p() -> holy_power_stacks() : 3 ) / 3;
     
     return am;
   }
 
   virtual void execute()
   {
-    double hopo = ( p() -> holy_power_stacks() <= 3 ? p() -> holy_power_stacks() : 3 );
+    double hopo = ( ( p() -> holy_power_stacks() <= 3  && cost() > 0.0 ) ? p() -> holy_power_stacks() : 3 );
 
     paladin_spell_t::execute();
 
