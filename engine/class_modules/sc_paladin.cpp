@@ -3259,6 +3259,7 @@ struct harsh_word_t : public paladin_spell_t
     parse_options( options_str );
     resource_consumed = RESOURCE_HOLY_POWER;
     resource_current = RESOURCE_HOLY_POWER;
+    may_crit = true;
 
     //disable if not glyphed
     if ( ! p -> glyphs.harsh_words -> ok() )
