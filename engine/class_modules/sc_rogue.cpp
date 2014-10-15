@@ -1935,6 +1935,9 @@ struct crimson_tempest_t : public rogue_attack_t
   bool trigger_main_gauche() const
   { return false; }
 
+  bool procs_poison() const
+  { return false; }
+
   void impact( action_state_t* s )
   {
     rogue_attack_t::impact( s );
