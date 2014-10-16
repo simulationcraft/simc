@@ -2341,7 +2341,7 @@ struct fireball_t : public mage_spell_t
     }
   }
 
-  virtual double action_multiplier() const
+/*  virtual double action_multiplier() const
   {
     double am = mage_spell_t::action_multiplier();
 
@@ -2351,7 +2351,7 @@ struct fireball_t : public mage_spell_t
     }
 
     return am;
-  }
+  }*/
 
   double composite_target_crit( player_t* target ) const
   {
@@ -3173,7 +3173,7 @@ struct inferno_blast_t : public mage_spell_t
     }
   }
 
-  virtual double action_multiplier() const
+ /* virtual double action_multiplier() const
   {
     double am = mage_spell_t::action_multiplier();
 
@@ -3183,7 +3183,7 @@ struct inferno_blast_t : public mage_spell_t
     }
 
     return am;
-  }
+  }*/
 
   // Inferno Blast always crits
   virtual double composite_crit() const
@@ -3563,10 +3563,10 @@ struct pyroblast_t : public mage_spell_t
       am *= 1.0 + p() -> buffs.pyroblast -> data().effectN( 3 ).percent();
     }
 
-    if ( p() -> wod_19005_hotfix )
-    {
-      am *= 1.05;
-    }
+   // if ( p() -> wod_19005_hotfix )
+    //{
+    //  am *= 1.05;
+   // }
 
     return am;
   }
@@ -3580,10 +3580,10 @@ struct pyroblast_t : public mage_spell_t
       am *= 1.0 + p() -> buffs.pyroblast -> data().effectN( 3 ).percent();
     }
 
-    if ( p() -> wod_19005_hotfix )
-    {
-      am *= 1.05;
-    }
+   // if ( p() -> wod_19005_hotfix )
+    //{
+     // am *= 1.05;
+    //}
 
     return am;
   }
