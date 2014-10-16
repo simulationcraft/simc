@@ -2429,18 +2429,16 @@ struct shadow_bolt_t: public warlock_spell_t
     hand_of_guldan               -> cooldown = p -> get_cooldown( "t16_4pc_demo" );
 
 
-    if ( p -> glyphs.shadow_bolt -> ok() )
+    /*if ( p -> glyphs.shadow_bolt -> ok() )
     {
       base_multiplier *= 0.333;
 
       const spell_data_t* sd = p -> find_spell( p -> glyphs.shadow_bolt -> effectN( 1 ).base_value() );
       glyph_copy_1 = new shadow_bolt_copy_t( p, sd -> effectN( 2 ).trigger(), *this );
       glyph_copy_2 = new shadow_bolt_copy_t( p, sd -> effectN( 3 ).trigger(), *this );
-    }
-    else
-    {
+      else
+    */
       generate_fury = data().effectN( 2 ).base_value();
-    }
   }
 
   virtual void impact( action_state_t* s )
@@ -2455,7 +2453,7 @@ struct shadow_bolt_t: public warlock_spell_t
 
   virtual void execute()
   {
-    if ( p() -> bugs && p() -> glyphs.shadow_bolt -> ok() ) background = true;
+    //if ( p() -> bugs && p() -> glyphs.shadow_bolt -> ok() ) background = true;
     warlock_spell_t::execute();
     background = false;
 
@@ -2487,12 +2485,12 @@ struct shadow_bolt_t: public warlock_spell_t
       if ( target -> health_percentage() < p() -> spec.decimation -> effectN( 1 ).base_value() && ! p() -> buffs.molten_core -> check() )
         p() -> buffs.molten_core -> trigger();
 
-      if ( p() -> glyphs.shadow_bolt -> ok() )
+      /*if ( p() -> glyphs.shadow_bolt -> ok() )
       {
         assert( glyph_copy_1 && glyph_copy_2 );
         glyph_copy_1 -> execute();
         glyph_copy_2 -> execute();
-      }
+      }*/
     }
   }
 
