@@ -2041,6 +2041,9 @@ struct killing_spree_tick_t : public rogue_attack_t
     may_crit    = true;
     direct_tick = true;
   }
+
+  bool procs_main_gauche() const
+  { return true; }
 };
 
 struct killing_spree_t : public rogue_attack_t
