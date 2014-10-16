@@ -28,7 +28,7 @@ trinket2=ragewings_firefang,id=110003,bonus_id=524
 main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant=mark_of_warsong
 save=Mage_Arcane_T17P.simc
 
-mage=Mage_Fire_T17M
+mage=Mage_Fire_T17P
 level=100
 race=troll
 spec=fire
@@ -51,7 +51,7 @@ trinket2=ragewings_firefang,id=110003,bonus_id=524
 main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant=mark_of_the_thunderlord
 save=Mage_Fire_T17P.simc
 
-mage=Mage_Frost_T17M
+mage=Mage_Frost_T17P
 level=100
 race=troll
 spec=frost
