@@ -991,7 +991,7 @@ std::string enemy_t::tmi_boss_action_list()
   std::string als = "";
   const int num_bosses = TMI_MAX;
   assert( tmi_boss_enum < TMI_MAX );
-  int aa_damage[ num_bosses ] = { 0, 40000, 50000, 65000, 90000, 125000, 150000, 180000, 210000 };
+  int aa_damage[ num_bosses ] = { 0, 40000, 50000, 65000, 80000, 100000, 130000, 170000, 210000 };
 
   als += "/auto_attack,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] ) + ",attack_speed=1.5,aoe_tanks=1";
   als += "/spell_dot,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] * 2 / 15 ) + ",tick_time=2,dot_duration=30,aoe_tanks=1,if=!ticking";
