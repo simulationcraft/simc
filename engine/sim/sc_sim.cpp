@@ -1522,6 +1522,8 @@ bool sim_t::init()
 
   if ( challenge_mode && scale_to_itemlevel < 0 ) scale_to_itemlevel = 620; //Check later
 
+  // set scaling metric
+  scaling -> scaling_metric = util::parse_scale_metric( scaling -> scale_over );
 
   // WoD aura initialization
 

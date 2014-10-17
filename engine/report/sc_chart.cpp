@@ -1392,7 +1392,7 @@ std::string chart::scale_factors( player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string formatted_name = util::google_image_chart_encode( p -> scales_over().name );
+  std::string formatted_name = util::google_image_chart_encode( p -> scaling_for_metric( sm ).name );
   util::urlencode( formatted_name );
 
   sc_chart chart( "Scale Factors|" + formatted_name, HORIZONTAL_BAR, p -> sim -> print_styles );
