@@ -1955,6 +1955,10 @@ struct exorcism_t : public paladin_spell_t
       int g = 1;
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_exorcism );
 
+      // activate T16 2-piece bonus
+      if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) )
+        p() -> buffs.warrior_of_the_light -> trigger();
+
       // T17 Ret 4-piece bonus adds two holy power
       if ( p() -> buffs.blazing_contempt -> up() )
       {
@@ -3444,10 +3448,6 @@ struct melee_t : public paladin_melee_attack_t
         // trigger proc, reset Exorcism cooldown
         p() -> procs.exorcism_cd_reset -> occur();
         p() -> cooldowns.exorcism -> reset( true );
-
-        // activate T16 2-piece bonus
-        if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) )
-          p() -> buffs.warrior_of_the_light -> trigger();
       }
     }
   }
@@ -5223,9 +5223,9 @@ void paladin_t::generate_action_prio_list_ret()
 
   //Create different lists, based on Fury Warrior APL
 
-  def -> add_action( "call_action_list,name=single,if=active_enemies<=2" );
-  def -> add_action( "call_action_list,name=cleave,if=active_enemies<=4" );
   def -> add_action( "call_action_list,name=aoe,if=active_enemies>=5" );
+  def -> add_action( "call_action_list,name=cleave,if=active_enemies>=4" );
+  def -> add_action( "call_action_list,name=single,if=active_enemies<=2" );
 
   // Executed if one (or two, based on Theck's <=2, check with him) enemy is present
 
