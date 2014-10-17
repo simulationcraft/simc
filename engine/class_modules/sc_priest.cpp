@@ -2448,6 +2448,8 @@ struct mind_sear_tick_t final : public priest_spell_t
     aoe         = -1;
     callbacks   = false;
     direct_tick = true;
+    if ( p.wod_19005_hotfix )
+      spell_power_mod.direct *= 1.1;
   }
 };
 

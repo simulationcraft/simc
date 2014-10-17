@@ -6384,7 +6384,13 @@ double paladin_t::get_hand_of_light()
 {
   if ( specialization() != PALADIN_RETRIBUTION ) return 0.0;
 
-  return cache.mastery_value(); // HoL is in effect 1
+  double handoflight;
+  handoflight = cache.mastery_value(); // HoL modifier is in effect #1
+
+  if ( wod_19005_hotfix )
+    handoflight *= 1.2;
+
+  return handoflight;
 }
 
 bool paladin_t::get_how_availability()

@@ -952,6 +952,8 @@ struct wound_poison_t : public rogue_poison_t
       rogue_poison_t( "wound_poison", p, p -> find_class_spell( "Wound Poison" ) -> effectN( 1 ).trigger() )
     {
       harmful          = true;
+      if ( p -> wod_19005_hotfix )
+        attack_power_mod.direct *= 0.6;
     }
 
     void impact( action_state_t* state )
@@ -1991,6 +1993,11 @@ struct hemorrhage_t : public rogue_attack_t
     weapon = &( p -> main_hand_weapon );
     tick_may_crit = false;
     may_multistrike = true;
+    if ( p -> wod_19005_hotfix )
+    {
+      weapon_multiplier *= 1.2;
+      attack_power_mod.tick *= 1.2;
+    }
   }
 
   double action_da_multiplier() const
@@ -3318,7 +3325,7 @@ void rogue_t::trigger_anticipation_replenish( const action_state_t* state )
     sim -> out_log.printf( "%s replenishes %d combo_points through anticipation",
         name(), buffs.anticipation -> check() );
 
-  int cp_left = resources.max[ RESOURCE_COMBO_POINT ] - resources.current[ RESOURCE_COMBO_POINT ];
+  int cp_left = static_cast<int>( resources.max[ RESOURCE_COMBO_POINT ] - resources.current[ RESOURCE_COMBO_POINT ] );
   int n_overflow = buffs.anticipation -> check() - cp_left;
   for ( int i = 0; i < n_overflow; i++ )
     procs.anticipation_wasted -> occur();

@@ -258,7 +258,7 @@ protected:
     if ( n != name() )
       return false;
 
-    int tmp = strtod( v.c_str(), nullptr );
+    int tmp = static_cast<int>( strtod( v.c_str(), nullptr ) );
     // Range checking
     if ( tmp < _min || tmp > _max ) {
       std::stringstream s;
@@ -357,7 +357,7 @@ protected:
       throw std::invalid_argument( s.str() );
     }
 
-    _ref = strtol( v.c_str(), nullptr, 10 );
+    _ref = strtol( v.c_str(), nullptr, 10 ) != 0;
     return true;
   }
   std::ostream& print( std::ostream& stream ) const override

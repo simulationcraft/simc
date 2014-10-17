@@ -3508,6 +3508,8 @@ struct death_and_decay_t : public death_knight_spell_t
     dot_duration = data().duration(); // 11 with tick_zero
     tick_may_crit = tick_zero = true;
     hasted_ticks     = false;
+    if ( p -> wod_19005_hotfix )
+      attack_power_mod.tick *= 1.2;
   }
 
   virtual void consume_resource()
@@ -3576,6 +3578,8 @@ struct defile_t : public death_knight_spell_t
     dot_duration = data().duration();
     tick_may_crit = true;
     hasted_ticks = tick_zero = false;
+    if ( p -> wod_19005_hotfix )
+      attack_power_mod.tick *= 1.2;
   }
 
   double composite_ta_multiplier( const action_state_t* state ) const

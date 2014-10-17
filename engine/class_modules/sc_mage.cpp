@@ -2680,7 +2680,7 @@ struct frostfire_bolt_t : public mage_spell_t
   virtual void execute()
   {
     // Brain Freeze treats the target as frozen
-    frozen = p() -> buffs.brain_freeze -> check();
+    frozen = p() -> buffs.brain_freeze -> check() != 0;
     mage_spell_t::execute();
 
 
@@ -2932,7 +2932,7 @@ struct ice_lance_t : public mage_spell_t
   virtual void execute()
   {
     // Ice Lance treats the target as frozen with FoF up
-    frozen = p() -> buffs.fingers_of_frost -> check();
+    frozen = p() -> buffs.fingers_of_frost -> check() != 0;
 
     mage_spell_t::execute();
 
