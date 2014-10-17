@@ -70,6 +70,7 @@ spec=brewmaster
 role=tank
 position=front
 talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.01.111
+glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 
 head=acidic_jaws,id=113880,bonus_id=566
 neck=fiery_links_of_courage,id=113923,bonus_id=566,enchant=gift_of_versatility
@@ -97,6 +98,7 @@ spec=brewmaster
 role=tank
 position=front
 talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.02.112
+glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 
 head=acidic_jaws,id=113880,bonus_id=566
 neck=fiery_links_of_courage,id=113923,bonus_id=566,enchant=gift_of_versatility
@@ -124,6 +126,7 @@ spec=brewmaster
 role=tank
 position=front
 talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.01.111
+glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 
 head=acidic_jaws,id=113880,bonus_id=566
 neck=fiery_links_of_courage,id=113923,bonus_id=566,enchant=gift_of_versatility
@@ -150,6 +153,7 @@ spec=brewmaster
 role=tank
 position=front
 talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.02.112
+glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 
 head=acidic_jaws,id=113880,bonus_id=566
 neck=fiery_links_of_courage,id=113923,bonus_id=566,enchant=gift_of_versatility

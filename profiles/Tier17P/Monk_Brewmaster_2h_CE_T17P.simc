@@ -4,6 +4,7 @@ race=night_elf
 role=tank
 position=front
 talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.01.111
+glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 spec=brewmaster
 
 # This default action priority list is automatically created based on your character.
