@@ -2284,7 +2284,6 @@ struct demonbolt_t: public warlock_spell_t
   }
 };
 
-
 struct havoc_t: public warlock_spell_t
 {
   havoc_t( warlock_t* p ): warlock_spell_t( p, "Havoc" )
@@ -2348,7 +2347,6 @@ struct shadowflame_t: public warlock_spell_t
   }
 };
 
-
 struct hand_of_guldan_t: public warlock_spell_t
 {
   shadowflame_t* shadowflame;
@@ -2393,48 +2391,17 @@ struct hand_of_guldan_t: public warlock_spell_t
   }
 };
 
-struct shadow_bolt_copy_t: public warlock_spell_t
-{
-  shadow_bolt_copy_t( warlock_t* p, spell_data_t* sd, warlock_spell_t& sb ):
-    warlock_spell_t( "shadow_bolt", p, sd )
-  {
-    background = true;
-    callbacks = false;
-    spell_power_mod.direct = sb.spell_power_mod.direct;
-    base_dd_min = sb.base_dd_min;
-    base_dd_max = sb.base_dd_max;
-    base_multiplier = sb.base_multiplier;
-    if ( data()._effects -> size() > 1 ) generate_fury = data().effectN( 2 ).base_value();
-  }
-};
-
 struct shadow_bolt_t: public warlock_spell_t
 {
-  shadow_bolt_copy_t* glyph_copy_1;
-  shadow_bolt_copy_t* glyph_copy_2;
-
   hand_of_guldan_t* hand_of_guldan;
-
   shadow_bolt_t( warlock_t* p ):
-    warlock_spell_t( p, "Shadow Bolt" ), glyph_copy_1( 0 ), glyph_copy_2( 0 ), hand_of_guldan( new hand_of_guldan_t( p ) )
+    warlock_spell_t( p, "Shadow Bolt" ), hand_of_guldan( new hand_of_guldan_t( p ) )
   {
     base_multiplier *= 1.0 + p -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 3 ).percent();
 
     hand_of_guldan               -> background = true;
     hand_of_guldan               -> base_costs[RESOURCE_MANA] = 0;
     hand_of_guldan               -> cooldown = p -> get_cooldown( "t16_4pc_demo" );
-
-
-    /*if ( p -> glyphs.shadow_bolt -> ok() )
-    {
-      base_multiplier *= 0.333;
-
-      const spell_data_t* sd = p -> find_spell( p -> glyphs.shadow_bolt -> effectN( 1 ).base_value() );
-      glyph_copy_1 = new shadow_bolt_copy_t( p, sd -> effectN( 2 ).trigger(), *this );
-      glyph_copy_2 = new shadow_bolt_copy_t( p, sd -> effectN( 3 ).trigger(), *this );
-      else
-    */
-      generate_fury = data().effectN( 2 ).base_value();
   }
 
   virtual void impact( action_state_t* s )
@@ -2449,24 +2416,12 @@ struct shadow_bolt_t: public warlock_spell_t
 
   virtual void execute()
   {
-    //if ( p() -> bugs && p() -> glyphs.shadow_bolt -> ok() ) background = true;
     warlock_spell_t::execute();
-    background = false;
 
     if ( p() -> sets.has_set_bonus( SET_CASTER, T16, B4 ) && rng().roll( 0.08 ) )
     {
       hand_of_guldan -> target = target;
-      /*
-      int current_charge = hand_of_guldan -> cooldown -> current_charge;
-      bool pre_execute_add = true;
-      if ( current_charge == hand_of_guldan -> cooldown -> charges - 1 )
-      {
-        pre_execute_add = false;
-      }
-      if ( pre_execute_add ) hand_of_guldan -> cooldown -> current_charge++;
-      */
       hand_of_guldan -> execute();
-      //if ( !pre_execute_add ) hand_of_guldan -> cooldown -> current_charge++;
     }
 
     if ( p() -> buffs.demonic_calling -> up() )
@@ -2480,13 +2435,6 @@ struct shadow_bolt_t: public warlock_spell_t
       // Only applies molten core if molten core is not already up
       if ( target -> health_percentage() < p() -> spec.decimation -> effectN( 1 ).base_value() && ! p() -> buffs.molten_core -> check() )
         p() -> buffs.molten_core -> trigger();
-
-      /*if ( p() -> glyphs.shadow_bolt -> ok() )
-      {
-        assert( glyph_copy_1 && glyph_copy_2 );
-        glyph_copy_1 -> execute();
-        glyph_copy_2 -> execute();
-      }*/
     }
   }
 
