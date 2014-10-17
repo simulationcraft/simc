@@ -332,8 +332,6 @@ public:
     // Miscellaneous
     incanters_flow_stack_mult = find_spell( 116267 ) -> effectN( 1 ).percent();
 
-    wod_19005_hotfix = false;
-
     // Options
     base.distance = 40;
     regen_type = REGEN_DYNAMIC;
