@@ -4322,9 +4322,9 @@ double rogue_t::composite_player_multiplier( school_e school ) const
 
     if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
     {
-      //if ( wod_19005_hotfix )
-      //  m *= 1.1;
-      //else
+      if ( wod_19005_hotfix )
+        m *= 1.1;
+      else
         m *= 1.0 + spec.assassins_resolve -> effectN( 2 ).percent();
     }
   }
