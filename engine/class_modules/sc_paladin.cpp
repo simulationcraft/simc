@@ -5225,7 +5225,7 @@ void paladin_t::generate_action_prio_list_ret()
 
   def -> add_action( "call_action_list,name=aoe,if=active_enemies>=5" );
   def -> add_action( "call_action_list,name=cleave,if=active_enemies>=4" );
-  def -> add_action( "call_action_list,name=single,if=active_enemies<=2" );
+  def -> add_action( "call_action_list,name=single" );
 
   // Executed if one (or two, based on Theck's <=2, check with him) enemy is present
 

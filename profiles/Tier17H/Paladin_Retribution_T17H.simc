@@ -42,9 +42,9 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
 actions+=/seraphim
-actions+=/call_action_list,name=single,if=active_enemies<=2
-actions+=/call_action_list,name=cleave,if=active_enemies<=4
 actions+=/call_action_list,name=aoe,if=active_enemies>=5
+actions+=/call_action_list,name=cleave,if=active_enemies>=4
+actions+=/call_action_list,name=single
 
 actions.single=divine_storm,if=buff.divine_crusader.react&holy_power>=5&buff.final_verdict.up
 actions.single+=/templars_verdict,if=holy_power>=5|buff.holy_avenger.up&holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)
