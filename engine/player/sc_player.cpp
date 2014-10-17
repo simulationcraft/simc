@@ -893,13 +893,13 @@ void player_t::init_base_stats()
   // Racial agility modifiers and Heroic Presence do affect base dodge, but are affected
   // by diminishing returns, and handled in composite_dodge()  (tested 7/24/2014)
   if ( type == MONK || type == DRUID || type == ROGUE || type == HUNTER || type == SHAMAN )
-    base.dodge_per_agility     = 1 / 176.3760684 / 100.0; // exact value given by Blizzard, L100 only (?)
+    base.dodge_per_agility     = dbc.avoid_per_str_agi_by_level( level ) / 100.0; // exact values given by Blizzard, only have L90-L100 data
 
   // only certain classes get Str->Parry conversions, dodge_per_agility defaults to 0.00
   // Racial strength modifiers and Heroic Presence do affect base parry, but are affected
   // by diminishing returns, and handled in composite_parry()  (tested 7/24/2014)
   if ( type == PALADIN || type == WARRIOR || type == DEATH_KNIGHT )
-    base.parry_per_strength    = 1 / 176.3760684 / 100.0; // exact value given by Blizzard, L100 only (?)
+    base.parry_per_strength    = dbc.avoid_per_str_agi_by_level( level ) / 100.0; // exact values given by Blizzard, only have L90-L100 data
 
   // All classes get 3% dodge and miss; add racials and racial agi mod in here too
   base.dodge = 0.03 + racials.quickness -> effectN( 1 ).percent() + dbc.race_base( race ).agility * base.dodge_per_agility;
