@@ -1853,7 +1853,7 @@ void SimulateThread::run()
   {
     description.options.parse_text( utf8_profile.constData() );
   }
-  catch( const std::exception& e )
+  catch( const std::exception& /*e*/ )
   {
     // FIXME: report error.
     return;
@@ -1863,7 +1863,7 @@ void SimulateThread::run()
   {
     sim -> setup( &description );
   }
-  catch( const std::exception& e )
+  catch( const std::exception& /*e*/ )
   {
     // FIXME: report error.
     return;

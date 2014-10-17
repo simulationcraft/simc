@@ -272,19 +272,20 @@ public:
   {
     buff_t* backdraft;
     buff_t* dark_soul;
+    buff_t* demonbolt;
+    buff_t* demonic_calling;
+    buff_t* demonic_rebirth;
+    buff_t* demonic_synergy;
+    buff_t* fire_and_brimstone;
+    buff_t* immolation_aura;
+    buff_t* grimoire_of_sacrifice;
+    buff_t* haunting_spirits;
+    buff_t* havoc;
+    buff_t* mannoroths_fury;
     buff_t* metamorphosis;
     buff_t* molten_core;
-    buff_t* soulburn;
-    buff_t* havoc;
-    buff_t* grimoire_of_sacrifice;
-    buff_t* demonic_synergy;
-    buff_t* demonic_calling;
-    buff_t* fire_and_brimstone;
     buff_t* soul_swap;
-    buff_t* demonic_rebirth;
-    buff_t* mannoroths_fury;
-    buff_t* haunting_spirits;
-    buff_t* demonbolt;
+    buff_t* soulburn;
 
     buff_t* chaotic_infusion;
 
@@ -330,6 +331,7 @@ public:
     spell_t* soulburn_seed_of_corruption_aoe;
     spell_t* metamorphosis;
     spell_t* melee;
+    spell_t* immolation_aura;
 
     const spell_data_t* tier15_2pc;
   } spells;
@@ -340,8 +342,6 @@ public:
 
     //the 6.0 dot mechanics make it close to irrelevant how the dots were buffed when inhaling, as they are dynamically recalculated every tick.
     //thus we only store the whether the dot is up and its duration( and agony stacks).
-
-
 
     bool agony_was_inhaled;
     timespan_t agony_remains;
@@ -1891,6 +1891,13 @@ public:
   {
     spell_t::consume_resource();
 
+    if ( p() -> spells.immolation_aura &&
+         p() -> resources.current[RESOURCE_DEMONIC_FURY] < p() -> spells.immolation_aura -> tick_action -> base_costs[RESOURCE_DEMONIC_FURY] )
+    {
+      p() -> spells.immolation_aura -> get_dot() -> cancel();
+      p() -> buffs.immolation_aura -> expire();
+    }
+
     if ( use_havoc() )
     {
       p() -> buffs.havoc -> decrement( havoc_consume );
@@ -1941,7 +1948,6 @@ public:
     {
       m *= 1.0 + td -> debuffs_haunt -> data().effectN( 4 ).percent();
     }
-
 
     //sb:haunt buff
     if ( p() -> buffs.haunting_spirits -> check() && ( channeled || spell_power_mod.tick ) ) // Only applies to channeled or dots
@@ -3443,6 +3449,11 @@ struct t: public warlock_spell_t
     warlock_spell_t::cancel();
 
     if ( p() -> spells.melee ) p() -> spells.melee -> cancel();
+    if ( p() -> spells.immolation_aura )
+    {
+      p() -> spells.immolation_aura -> get_dot() -> cancel();
+      p() -> buffs.immolation_aura -> expire();
+    }
     p() -> buffs.metamorphosis -> expire();
     core_event_t::cancel( cost_event );
   }
@@ -4101,14 +4112,20 @@ struct hellfire_t: public warlock_spell_t
   }
 };
 
+// Immolation Aura ===================================================================
+
 struct immolation_aura_tick_t: public warlock_spell_t
 {
-  immolation_aura_tick_t( warlock_t* p ):
-    warlock_spell_t( "immolation_aura_tick", p, p -> find_spell( 5857 ) )
+  action_t* parent;
+  immolation_aura_tick_t( warlock_t* p, action_t* parent ):
+    warlock_spell_t( "immolation_aura_tick", p, p -> find_spell( 129476 ) ),
+    parent( parent )
   {
     aoe = -1;
     background = true;
+    resource_current = RESOURCE_DEMONIC_FURY;
   }
+
   virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
@@ -4124,61 +4141,41 @@ struct immolation_aura_tick_t: public warlock_spell_t
 struct immolation_aura_t: public warlock_spell_t
 {
   immolation_aura_t( warlock_t* p ):
-    warlock_spell_t( p, "Immolation Aura" )
+    warlock_spell_t( "immolation_aura", p, p -> find_spell( 104025 ) )
   {
-    may_miss = false;
+    may_miss = may_crit = callbacks = hasted_ticks = false;
     tick_zero = true;
-    may_crit = false;
 
-    dynamic_tick_action = true;
-    tick_action = new immolation_aura_tick_t( p );
+    tick_action = new immolation_aura_tick_t( p, this );
+    tick_action -> base_costs[RESOURCE_DEMONIC_FURY] = costs_per_second[RESOURCE_DEMONIC_FURY];
   }
 
-  virtual void tick( dot_t* d )
+  void execute()
   {
-    if ( ! p() -> buffs.metamorphosis -> check() || p() -> resources.current[RESOURCE_DEMONIC_FURY] < META_FURY_MINIMUM )
-    {
+    dot_t* d = get_dot( target );
+
+    if ( d -> is_ticking() )
       d -> cancel();
-      return;
-    }
-
-    warlock_spell_t::tick( d );
-  }
-
-  virtual void last_tick( dot_t* d )
-  {
-    warlock_spell_t::last_tick( d );
-
-    core_event_t::cancel( cost_event );
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    // dot_t* d = get_dot();
-    // bool add_ticks = d -> is_ticking();
-
-    warlock_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
+    else
     {
-      // TODO: Fix/reimplement
-      //if ( add_ticks )
-      //  d -> num_ticks = ( int ) std::min( d -> ticks_left() + 0.9 * num_ticks, 2.1 * num_ticks );
-
-      if ( ! cost_event ) cost_event = new ( *sim ) cost_event_t( p(), this );
+      p() -> spells.immolation_aura = this;
+      p() -> buffs.immolation_aura -> trigger();
+      warlock_spell_t::execute();
     }
   }
 
-  // TODO: Bring Back dot duration haste scaling ?
+  void last_tick( dot_t* dot )
+  {
+    warlock_spell_t::last_tick( dot );
+    p() -> spells.immolation_aura = 0;
+    p() -> buffs.immolation_aura -> expire();
+  }
 
   virtual bool ready()
   {
     bool r = warlock_spell_t::ready();
 
     if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
-
-    dot_t* d = get_dot();
-    if ( d -> is_ticking() && d -> remains() > dot_duration * 1.2 )  r = false;
 
     return r;
   }
@@ -5344,6 +5341,8 @@ void warlock_t::create_buffs()
     .cd( timespan_t::zero() );
   buffs.demonic_rebirth = buff_creator_t( this, "demonic_rebirth", find_spell( 88448 ) ).cd( find_spell( 89140 ) -> duration() );
   buffs.mannoroths_fury = buff_creator_t( this, "mannoroths_fury", talents.mannoroths_fury );
+
+  buffs.immolation_aura = buff_creator_t( this, "immolation_aura", find_spell( 104025 ) );
 
   buffs.haunting_spirits = buff_creator_t( this, "haunting_spirits", find_spell( 157698 ) )
     .chance( 1.0 );
