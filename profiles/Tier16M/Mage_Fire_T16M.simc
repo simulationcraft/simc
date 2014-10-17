@@ -120,7 +120,7 @@ finger1=iyyokuks_hereditary_seal,id=105628,upgrade=4
 finger2=signet_of_the_dinomancers,id=105606,upgrade=4,gems=10haste_10crit_4haste
 trinket1=purified_bindings_of_immerseus,id=105422,upgrade=4
 trinket2=kardris_toxic_totem,id=105540,upgrade=4
-main_hand=immaculately_preserved_wand,id=105594,upgrade=4,gems=10haste_10crit_4int,enchant=jade_spirit
+main_hand=immaculately_preserved_wand,id=105594,upgrade=4,gems=10haste_10crit_4int,enchant=windsong
 off_hand=juggernauts_power_core,id=105521,upgrade=4,gems=20crit_4int,enchant=8int
 
 # Gear Summary
