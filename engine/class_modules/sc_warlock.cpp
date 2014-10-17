@@ -3879,7 +3879,7 @@ struct soulburn_seed_of_corruption_aoe_t: public warlock_spell_t
   corruption_t* corruption;
 
   soulburn_seed_of_corruption_aoe_t( warlock_t* p ):
-    warlock_spell_t( "soulburn_seed_of_corruption_aoe", p, p -> find_spell( 87385 ) ), corruption( new corruption_t( p ) )
+    warlock_spell_t( "soulburn_seed_of_corruption_aoe", p, p -> find_spell( 27285 ) ), corruption( new corruption_t( p ) )
   {
     aoe = -1;
     dual = true;
