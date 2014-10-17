@@ -477,7 +477,6 @@ struct warlock_pet_t: public pet_t
   virtual void init_base_stats() override;
   virtual void init_action_list() override;
   virtual void create_buffs() override;
-  virtual timespan_t available() const override;
   virtual void schedule_ready( timespan_t delta_time = timespan_t::zero(),
                                bool   waiting = false ) override;
   virtual double composite_player_multiplier( school_e school ) const override;
@@ -1067,20 +1066,6 @@ void warlock_pet_t::create_buffs()
     .chance( 1 );
 }
 
-timespan_t warlock_pet_t::available() const
-{
-  assert( primary_resource() == RESOURCE_ENERGY );
-  double energy = resources.current[RESOURCE_ENERGY];
-
-  if ( energy >= 130 )
-    return timespan_t::from_seconds( 0.1 );
-
-  return std::max(
-    timespan_t::from_seconds( ( 130 - energy ) / energy_regen_per_second() ),
-    timespan_t::from_seconds( 0.1 )
-    );
-}
-
 void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
 {
   dot_t* d;
@@ -1324,6 +1309,12 @@ struct doomguard_pet_t: public warlock_pet_t
     resources.base[RESOURCE_ENERGY] = 100;
   }
 
+  //Doomguard regen doesn't benefit from haste (even bloodlust/heroism)
+  virtual resource_e primary_resource() const
+  {
+    return RESOURCE_ENERGY;
+  }
+
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
   {
     if ( name == "doom_bolt" ) return new actions::doom_bolt_t( this );
@@ -1359,11 +1350,6 @@ struct wild_imp_pet_t: public warlock_pet_t
 
     resources.base[RESOURCE_ENERGY] = 10;
     base_energy_regen_per_second = 0;
-  }
-
-  virtual timespan_t available() const
-  {
-    return timespan_t::from_seconds( 0.1 );
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -1568,6 +1554,12 @@ struct terrorguard_pet_t: public warlock_pet_t
     warlock_pet_t::init_base_stats();
 
     resources.base[RESOURCE_ENERGY] = 100;
+  }
+
+  //Terrorguard regen doesn't benefit from haste (even bloodlust/heroism)
+  virtual resource_e primary_resource() const
+  {
+    return RESOURCE_ENERGY;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
@@ -4806,30 +4798,30 @@ soulburn_soc_trigger( 0 )
 }
 
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
-player_t( sim, WARLOCK, name, r ),
-havoc_target( 0 ),
-latest_corruption_target( 0 ),
-pets( pets_t() ),
-talents( talents_t() ),
-glyphs( glyphs_t() ),
-mastery_spells( mastery_spells_t() ),
-grimoire_of_synergy( *this ),
-grimoire_of_synergy_pet( *this ),
-rppm_chaotic_infusion( *this ),
-perk(),
-cooldowns( cooldowns_t() ),
-spec( specs_t() ),
-buffs( buffs_t() ),
-gains( gains_t() ),
-procs( procs_t() ),
-spells( spells_t() ),
-soul_swap_buffer( soul_swap_buffer_t() ),
-demonic_calling_event( 0 ),
-initial_burning_embers( 1 ),
-initial_demonic_fury( 200 ),
-default_pet( "" ),
-ember_react( ( initial_burning_embers >= 1.0 ) ? timespan_t::zero() : timespan_t::max() ),
-shard_react( timespan_t::zero() )
+  player_t( sim, WARLOCK, name, r ),
+    havoc_target( 0 ),
+    latest_corruption_target( 0 ),
+    pets( pets_t() ),
+    talents( talents_t() ),
+    glyphs( glyphs_t() ),
+    mastery_spells( mastery_spells_t() ),
+    grimoire_of_synergy( *this ),
+    grimoire_of_synergy_pet( *this ),
+    rppm_chaotic_infusion( *this, std::numeric_limits<double>::min(), RPPM_HASTE ),
+    perk(),
+    cooldowns( cooldowns_t() ),
+    spec( specs_t() ),
+    buffs( buffs_t() ),
+    gains( gains_t() ),
+    procs( procs_t() ),
+    spells( spells_t() ),
+    soul_swap_buffer( soul_swap_buffer_t() ),
+    demonic_calling_event( 0 ),
+    initial_burning_embers( 1 ),
+    initial_demonic_fury( 200 ),
+    default_pet( "" ),
+    ember_react( ( initial_burning_embers >= 1.0 ) ? timespan_t::zero() : timespan_t::max() ),
+    shard_react( timespan_t::zero() )
 {
   base.distance = 40;
 
