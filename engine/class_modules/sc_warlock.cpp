@@ -1309,10 +1309,9 @@ struct doomguard_pet_t: public warlock_pet_t
     resources.base[RESOURCE_ENERGY] = 100;
   }
 
-  //Doomguard regen doesn't benefit from haste (even bloodlust/heroism)
-  virtual resource_e primary_resource() const
+  double energy_regen_per_second() const
   {
-    return RESOURCE_ENERGY;
+    return 10;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
@@ -1556,10 +1555,9 @@ struct terrorguard_pet_t: public warlock_pet_t
     resources.base[RESOURCE_ENERGY] = 100;
   }
 
-  //Terrorguard regen doesn't benefit from haste (even bloodlust/heroism)
-  virtual resource_e primary_resource() const
+  double energy_regen_per_second() const
   {
-    return RESOURCE_ENERGY;
+    return 10;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
