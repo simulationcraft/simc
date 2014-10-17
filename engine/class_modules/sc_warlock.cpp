@@ -5337,7 +5337,7 @@ void warlock_t::create_buffs()
     .chance( 1 );
 
   buffs.demonic_calling = buff_creator_t( this, "demonic_calling", spec.wild_imps -> effectN( 1 ).trigger() ).duration( timespan_t::zero() );
-  buffs.fire_and_brimstone = buff_creator_t( this, "fire_and_brimstone", find_class_spell( "Fire and Brimstone" ) )
+  buffs.fire_and_brimstone = buff_creator_t( this, "fire_and_brimstone", spec.fire_and_brimstone )
     .cd( timespan_t::zero() );
   buffs.soul_swap = buff_creator_t( this, "soul_swap", find_spell( 86211 ) );
   buffs.havoc = buff_creator_t( this, "havoc", find_class_spell( "Havoc" ) )
