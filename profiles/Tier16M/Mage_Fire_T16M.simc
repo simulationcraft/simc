@@ -100,8 +100,9 @@ actions.single_target+=/pyroblast,if=buff.pyroblast.up&buff.potent_flames.up&buf
 actions.single_target+=/pyroblast,if=buff.pyromaniac.react
 # Pyro camp during regular sequence; Do not use Pyro procs without HU and first using fireball
 actions.single_target+=/pyroblast,if=buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight
+actions.single_target+=/inferno_blast,if=buff.pyroblast.down&buff.heating_up.up
 actions.single_target+=/call_action_list,name=active_talents
-actions.single_target+=/inferno_blast,if=(buff.pyroblast.down&buff.heating_up.up)|(buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight)
+actions.single_target+=/inferno_blast,if=buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight
 actions.single_target+=/fireball
 actions.single_target+=/scorch,moving=1
 

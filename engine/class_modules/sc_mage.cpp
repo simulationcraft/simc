@@ -4943,9 +4943,11 @@ void mage_t::apl_fire()
   single_target -> add_action( this, "Pyroblast",
                                "if=buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight",
                                "Pyro camp during regular sequence; Do not use Pyro procs without HU and first using fireball" );
+  single_target -> add_action( this, "Inferno Blast",
+                               "if=buff.pyroblast.down&buff.heating_up.up" );
   single_target -> add_action( "call_action_list,name=active_talents" );
   single_target -> add_action( this, "Inferno Blast",
-                               "if=(buff.pyroblast.down&buff.heating_up.up)|(buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight)" );
+                               "if=buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight" );
   single_target -> add_action( this, "Fireball" );
   single_target -> add_action( this, "Scorch", "moving=1" );
 }
