@@ -75,6 +75,9 @@ talents=0001013
 Warrior_Arms_T17N.simc
 talent_override=taste_for_blood
 Warrior_Fury_1h_T17N.simc
+talent_override=bladestorm
 Warrior_Fury_2h_T17N.simc
+talent_override=bladestorm
 #Warrior_Protection_T17N.simc
 Warrior_Gladiator_T17N.simc
+talent_override=bladestorm

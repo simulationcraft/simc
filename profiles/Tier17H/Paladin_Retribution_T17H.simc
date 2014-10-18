@@ -51,7 +51,6 @@ actions.single+=/templars_verdict,if=holy_power>=5|buff.holy_avenger.up&holy_pow
 actions.single+=/templars_verdict,if=buff.divine_purpose.react&buff.divine_purpose.remains<4
 actions.single+=/final_verdict,if=holy_power>=5|buff.holy_avenger.up&holy_power>=3
 actions.single+=/final_verdict,if=buff.divine_purpose.react&buff.divine_purpose.remains<4
-actions.single+=/divine_storm,if=buff.divine_crusader.react&holy_power=5&(!talent.final_verdict.enabled|buff.final_verdict.up)
 actions.single+=/hammer_of_wrath
 actions.single+=/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2
 actions.single+=/judgment,if=talent.empowered_seals.enabled&((buff.seal_of_truth.up&buff.maraads_truth.down)|(buff.seal_of_righteousness.up&buff.liadrins_righteousness.down|cooldown.avenging_wrath.remains<=3))
