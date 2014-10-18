@@ -2387,6 +2387,8 @@ struct rake_t : public cat_attack_t
     attack_power_mod.tick = bleed_spell -> effectN( 1 ).ap_coeff();
     dot_duration          = bleed_spell -> duration();
     base_tick_time        = bleed_spell -> effectN( 1 ).period();
+    if ( p -> wod_hotfix )
+      attack_power_mod.tick *= 1.12;
   }
 
   virtual double composite_persistent_multiplier( const action_state_t* s ) const
@@ -2487,6 +2489,8 @@ struct rip_t : public cat_attack_t
     dot_behavior = DOT_REFRESH;
 
     dot_duration += player -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
+    if ( p -> wod_hotfix )
+      ap_per_point *= 1.12;
   }
 
   action_state_t* new_state()
@@ -2634,6 +2638,8 @@ struct swipe_t : public cat_attack_t
   {
     aoe = -1;
     combo_point_gain = data().effectN( 1 ).base_value(); // Effect is not labelled correctly as CP gain
+    if ( player -> wod_hotfix )
+      attack_power_mod.direct *= 1.25;
   }
 
   virtual void impact( action_state_t* s )
