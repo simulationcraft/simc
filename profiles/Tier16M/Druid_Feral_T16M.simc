@@ -3,8 +3,8 @@ level=90
 race=night_elf
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!...2...
-glyphs=savage_roar/master_shapeshifter
+talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!...0...
+glyphs=savage_roar
 spec=feral
 
 # This default action priority list is automatically created based on your character.
@@ -59,28 +59,28 @@ actions+=/shred,if=combo_points<5&active_enemies<3
 
 head=headpiece_of_the_shattered_vale,id=99328,upgrade=4,gems=capacitive_primal_10haste_10crit_11agi
 neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=4
-shoulders=spaulders_of_the_shattered_vale,id=99322,upgrade=4,gems=10haste_10crit_10haste_10crit_8agi,enchant=20agi_5crit
-back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=10crit_10haste_4agi,enchant=12agi
+shoulders=spaulders_of_the_shattered_vale,id=99322,upgrade=4,gems=10haste_10crit_10haste_10crit_8agi,enchant=15agi_5crit
+back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=10crit_10haste_4agi,enchant=12crit
 chest=raiment_of_the_shattered_vale,id=99326,upgrade=4,gems=10haste_10crit_10haste_10crit_10haste_10crit_11agi,enchant=5all
 wrists=mantid_carapace_augments,id=105583,upgrade=4,enchant=14ap
-hands=gloves_of_the_golden_protector,id=105453,upgrade=4,gems=10haste_10crit_20crit_8agi,enchant=15agi
+hands=gloves_of_the_golden_protector,id=105453,upgrade=4,gems=10haste_10crit_20crit_8agi,enchant=15crit
 waist=cord_of_black_dreams,id=105635,upgrade=4,gems=10haste_10crit_20crit_20crit_8agi
-legs=legguards_of_the_shattered_vale,id=99329,upgrade=4,gems=20crit_20crit_8agi,enchant=23ap_28crit
-feet=unrepentant_heels,id=105484,upgrade=4,gems=20crit_4mastery,enchant=10crit_10haste
+legs=legguards_of_the_shattered_vale,id=99329,upgrade=4,gems=20crit_20crit_8agi,enchant=19agi_11crit
+feet=unrepentant_heels,id=105484,upgrade=4,gems=20crit_4mastery,enchant=9agi
 finger1=reality_ripper_ring,id=105451,upgrade=4,gems=20crit_4crit
 finger2=swift_serpent_signet,id=105483,upgrade=4,gems=20crit_4crit
 trinket1=assurance_of_consequence,id=105472,upgrade=4
 trinket2=haromms_talisman,id=105527,upgrade=4
-main_hand=trident_of_corrupted_waters,id=105408,upgrade=4,gems=20crit_4agi,enchant=mongoose
+main_hand=trident_of_corrupted_waters,id=105408,upgrade=4,gems=20crit_4agi,enchant=dancing_steel
 
 # Gear Summary
 # gear_strength=5
-# gear_agility=1146
+# gear_agility=1142
 # gear_stamina=1660
 # gear_intellect=5
-# gear_attack_power=37
+# gear_attack_power=14
 # gear_crit_rating=1019
-# gear_haste_rating=594
+# gear_haste_rating=584
 # gear_mastery_rating=211
 # gear_armor=589
 # gear_multistrike_rating=107
