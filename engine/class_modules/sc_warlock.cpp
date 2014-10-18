@@ -5583,10 +5583,7 @@ void warlock_t::apl_demonology()
 
 void warlock_t::apl_destruction()
 {
-  if ( level == 100 )
-    add_action( "Shadowburn", "if=talent.charred_remains.enabled&(burning_ember>=2.5|target.time_to_die<20|trinket.proc.intellect.react|(trinket.stacking_proc.intellect.remains<cast_time*4&trinket.stacking_proc.intellect.remains>cast_time))" );
-  else
-    add_action( "Shadowburn", "if=(burning_ember>=3.5|target.time_to_die<20|trinket.proc.intellect.react|(trinket.stacking_proc.intellect.remains<cast_time*4&trinket.stacking_proc.intellect.remains>cast_time)|(burning_ember>=3&buff.ember_master.react))" );
+  add_action( "Shadowburn", "if=talent.charred_remains.enabled&(burning_ember>=2.5|target.time_to_die<20|trinket.proc.intellect.react|(trinket.stacking_proc.intellect.remains<cast_time*4&trinket.stacking_proc.intellect.remains>cast_time))" );
   add_action( "Immolate", "if=remains<=cast_time" );
   add_action( "Conflagrate", "if=charges=2" );
   action_list_str += "/cataclysm";

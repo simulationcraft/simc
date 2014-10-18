@@ -37,7 +37,7 @@ actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_
 actions+=/service_pet,if=talent.grimoire_of_service.enabled&!talent.demonbolt.enabled
 actions+=/summon_doomguard,if=!talent.demonic_servitude.enabled&active_enemies<5
 actions+=/summon_infernal,,if=!talent.demonic_servitude.enabled&active_enemies>=5
-actions+=/shadowburn,if=(burning_ember>=3.5|target.time_to_die<20|trinket.proc.intellect.react|(trinket.stacking_proc.intellect.remains<cast_time*4&trinket.stacking_proc.intellect.remains>cast_time)|(burning_ember>=3&buff.ember_master.react))
+actions+=/shadowburn,if=talent.charred_remains.enabled&(burning_ember>=2.5|target.time_to_die<20|trinket.proc.intellect.react|(trinket.stacking_proc.intellect.remains<cast_time*4&trinket.stacking_proc.intellect.remains>cast_time))
 actions+=/immolate,if=remains<=cast_time
 actions+=/conflagrate,if=charges=2
 actions+=/cataclysm
