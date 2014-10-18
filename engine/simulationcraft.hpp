@@ -1950,6 +1950,7 @@ protected:
   timespan_t last_trigger;
   timespan_t iteration_uptime_sum;
   unsigned int up_count, down_count, start_count, refresh_count;
+  unsigned int overflow_count, overflow_total;
   int trigger_attempts, trigger_successes;
   int simulation_max_stack;
 
@@ -1957,6 +1958,7 @@ protected:
 public:
   simple_sample_data_t benefit_pct, trigger_pct;
   simple_sample_data_t avg_start, avg_refresh;
+  simple_sample_data_t avg_overflow_count, avg_overflow_total;
   simple_sample_data_t uptime_pct, start_intervals, trigger_intervals;
   auto_dispose< std::vector<buff_uptime_t*> > stack_uptime;
 

@@ -162,6 +162,8 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   down_count(),
   start_count(),
   refresh_count(),
+  overflow_count(),
+  overflow_total(),
   trigger_attempts(),
   trigger_successes(),
   simulation_max_stack( 0 ),
@@ -169,6 +171,8 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   trigger_pct(),
   avg_start(),
   avg_refresh(),
+  avg_overflow_count(),
+  avg_overflow_total(),
   uptime_pct(),
   start_intervals(),
   trigger_intervals(),
@@ -377,6 +381,8 @@ void buff_t::datacollection_begin()
   trigger_successes = trigger_attempts = 0;
   start_count = 0;
   refresh_count = 0;
+  overflow_count = 0;
+  overflow_total = 0;
 
   for ( int i = 0; i <= simulation_max_stack; i++ )
     stack_uptime[ i ] -> datacollection_begin();
@@ -402,6 +408,8 @@ void buff_t::datacollection_end()
 
   avg_start.add( start_count );
   avg_refresh.add( refresh_count );
+  avg_overflow_count.add( overflow_count );
+  avg_overflow_total.add( overflow_total );
 }
 
 // buff_t:: refresh_duration ================================================
@@ -872,7 +880,11 @@ void buff_t::bump( int stacks, double value )
 
     current_stack += stacks;
     if ( current_stack > max_stack() )
+    {
+      overflow_count++;
+      overflow_total += current_stack - max_stack();
       current_stack = max_stack();
+    }
 
     if ( before_stack != current_stack )
     {
@@ -899,6 +911,11 @@ void buff_t::bump( int stacks, double value )
 
     if ( current_stack > simulation_max_stack )
       simulation_max_stack = current_stack;
+  }
+  else 
+  {
+    overflow_count++;
+    overflow_total += stacks;
   }
 
   if ( player ) player -> trigger_ready();
@@ -1088,6 +1105,8 @@ void buff_t::merge( const buff_t& other )
   trigger_pct.merge( other.trigger_pct );
   avg_start.merge( other.avg_start );
   avg_refresh.merge( other.avg_refresh );
+  avg_overflow_count.merge( other.avg_overflow_count );
+  avg_overflow_total.merge( other.avg_overflow_total );
   if ( sim -> buff_uptime_timeline )
     uptime_array.merge( other.uptime_array );
 
