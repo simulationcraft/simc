@@ -2388,7 +2388,10 @@ struct rake_t : public cat_attack_t
     dot_duration          = bleed_spell -> duration();
     base_tick_time        = bleed_spell -> effectN( 1 ).period();
     if ( p -> wod_hotfix )
+    {
       attack_power_mod.tick *= 1.12;
+      attack_power_mod.direct *= 1.12;
+    }
   }
 
   virtual double composite_persistent_multiplier( const action_state_t* s ) const
