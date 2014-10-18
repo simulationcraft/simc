@@ -2847,6 +2847,23 @@ bool dbc_t::is_specialization_ability( uint32_t spell_id ) const
   return false;
 }
 
+bool dbc_t::is_glyph_spell( uint32_t spell_id ) const
+{
+  for ( unsigned cls = 0; cls < dbc_t::class_max_size(); cls++ )
+  {
+    for ( unsigned glyph_type = 0; glyph_type < GLYPH_MAX; glyph_type++ )
+    {
+      for ( unsigned n = 0; n < glyph_spell_size(); n++ )
+      {
+        if ( glyph_spell( cls, glyph_type, n ) == spell_id )
+          return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 specialization_e dbc_t::spec_by_spell( uint32_t spell_id ) const
 {
   for ( unsigned cls = 0; cls < dbc_t::class_max_size(); cls++ )
@@ -3011,3 +3028,4 @@ bool spell_data_t::affected_by( const spelleffect_data_t* effect ) const
 
 bool spell_data_t::affected_by( const spelleffect_data_t& effect ) const
 { return affected_by( &effect ); }
+
