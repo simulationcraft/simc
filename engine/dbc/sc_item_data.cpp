@@ -205,16 +205,19 @@ int item_database::scaled_stat( const item_data_t& item, const dbc_t& dbc, size_
     const random_prop_data_t& ilevel_data = dbc.random_property( new_ilevel );
     //const random_prop_data_t& orig_data = dbc.random_property( item.level );
 
-    if ( item.quality == 4 )
+    // Epic/Legendary
+    if ( item.quality == 4 || item.quality == 5 )
     {
       item_budget = ilevel_data.p_epic[ slot_type ];
       //orig_budget = orig_data.p_epic[ slot_type ];
     }
-    else if ( item.quality == 3 )
+    // Rare/Heirloom
+    else if ( item.quality == 3 || item.quality == 7 )
     {
       item_budget = ilevel_data.p_rare[ slot_type ];
       //orig_budget = orig_data.p_rare[ slot_type ];
     }
+    // Rest
     else
     {
       item_budget = ilevel_data.p_uncommon[ slot_type ];
