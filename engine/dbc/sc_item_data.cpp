@@ -108,6 +108,8 @@ stat_pair_t item_database::item_enchantment_effect_stats( const item_enchantment
 
   if ( enchantment.ench_type[ index ] == ITEM_ENCHANTMENT_STAT )
     return stat_pair_t( util::translate_item_mod( enchantment.ench_prop[ index ] ), enchantment.ench_amount[ index ] );
+  else if ( enchantment.ench_type[ index ] == ITEM_ENCHANTMENT_RESISTANCE )
+    return stat_pair_t( STAT_BONUS_ARMOR, enchantment.ench_amount[ index ] );
 
   return stat_pair_t();
 }
@@ -119,9 +121,16 @@ stat_pair_t item_database::item_enchantment_effect_stats( player_t* player,
   assert( enchantment.id );
   assert( index >= 0 && index < 3 );
 
-  if ( enchantment.ench_type[ index ] != ITEM_ENCHANTMENT_STAT )
+  if ( enchantment.ench_type[ index ] != ITEM_ENCHANTMENT_STAT &&
+       enchantment.ench_type[ index ] != ITEM_ENCHANTMENT_RESISTANCE )
     return stat_pair_t();
-  stat_e stat = util::translate_item_mod( enchantment.ench_prop[ index ] );
+
+  stat_e stat;
+  if ( enchantment.ench_type[ index ] == ITEM_ENCHANTMENT_RESISTANCE )
+    stat = STAT_BONUS_ARMOR;
+  else
+    stat = util::translate_item_mod( enchantment.ench_prop[ index ] );
+
   double value = 0;
 
   if ( enchantment.id_scaling == 0 )

@@ -213,10 +213,6 @@ bool enchant::initialize_item_enchant( item_t& item,
 
   for ( size_t i = 0; i < sizeof_array( enchant.ench_prop ); i++ )
   {
-    // No stat ID, or spell ID given, continue
-    if ( enchant.ench_prop[ i ] == 0 )
-      continue;
-
     special_effect_t effect( &item );
     effect.source = source;
     switch ( enchant.ench_type[ i ] )
@@ -247,8 +243,12 @@ bool enchant::initialize_item_enchant( item_t& item,
           effect.type = SPECIAL_EFFECT_EQUIP;
         break;
       case ITEM_ENCHANTMENT_USE_SPELL:
+        // Use spell is also 0, which is the "default value" it seems .. sigh
+        if ( enchant.ench_prop[ i ] == 0 )
+          continue;
         effect.type = SPECIAL_EFFECT_USE;
         break;
+      case ITEM_ENCHANTMENT_RESISTANCE:
       case ITEM_ENCHANTMENT_STAT:
       {
         stat_pair_t stat = item_database::item_enchantment_effect_stats( item.player, enchant, as<int>(i) );
