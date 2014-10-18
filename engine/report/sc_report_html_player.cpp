@@ -2655,9 +2655,9 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
       b -> start_intervals.pretty_mean(),
       b -> trigger_intervals.pretty_mean(),
       b -> uptime_pct.pretty_mean(),
-      ( b -> benefit_pct.sum() > 0 ? b -> benefit_pct.pretty_mean() : b -> uptime_pct.pretty_mean() ) ),
+      ( b -> benefit_pct.sum() > 0 ? b -> benefit_pct.pretty_mean() : b -> uptime_pct.pretty_mean() ) ,
       b -> avg_overflow_count.mean(),
-      b -> avg_overflow_total.mean();
+      b -> avg_overflow_total.mean() );
 
 
   os << "</tr>\n";
