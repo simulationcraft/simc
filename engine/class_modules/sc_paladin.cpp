@@ -1931,6 +1931,8 @@ struct exorcism_t : public paladin_spell_t
 
     cooldown = p -> cooldowns.exorcism;
     cooldown -> duration = data().cooldown();
+    if ( p -> wod_hotfix )
+      attack_power_mod.direct *= 1.2;
   }
 
   virtual double action_multiplier() const
@@ -3504,6 +3506,8 @@ struct crusader_strike_t : public paladin_melee_attack_t
     base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
                                        +  p -> passives.sword_of_light -> effectN( 4 ).percent();
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
+    if ( p -> wod_hotfix )
+      weapon_multiplier *= 1.2;
   }
 
   virtual double action_multiplier() const
@@ -3580,6 +3584,8 @@ struct divine_storm_t : public paladin_melee_attack_t
     {
       glyph_heal = new glyph_of_divine_storm_t( p );
     }
+    if ( p -> wod_hotfix )
+      weapon_multiplier *= 1.2;
   }
 
   virtual double cost() const
@@ -3800,6 +3806,8 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     {
       cooldown_mult = 1.0 + p -> spells.sanctified_wrath -> effectN( 3 ).percent();
     }
+    if ( p -> wod_hotfix )
+      spell_power_mod.direct *= 1.2;
   }
 
   virtual void execute()
@@ -3963,6 +3971,11 @@ struct judgment_t : public paladin_melee_attack_t
 
     if ( p -> talents.empowered_seals -> ok() )
       uthers_insight = new uthers_insight_t( p );
+    if ( p -> wod_hotfix )
+    {
+      attack_power_mod.direct *= 1.2;
+      spell_power_mod.direct *= 1.2;
+    }
   }
 
   virtual void execute()
@@ -4332,10 +4345,8 @@ struct final_verdict_t : public paladin_melee_attack_t
     // Tier 14 Retribution 2-piece boosts damage (TODO: test?)
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
-    // Create a child cleave object 
-    //cleave = new final_verdict_cleave_t( p );
-    //add_child( cleave );
-
+    if ( p -> wod_hotfix )
+      weapon_multiplier *= 1.2;
   }
 
   virtual void execute ()
@@ -4367,10 +4378,6 @@ struct final_verdict_t : public paladin_melee_attack_t
 
       // apply Final Verdict buff (increases DS)
       p() -> buffs.final_verdict -> trigger();
-
-      //// Apply cleave if we're using SoR
-      //if ( p() -> active_seal == SEAL_OF_RIGHTEOUSNESS )
-      //  cleave -> schedule_execute();
     }
   }
 };
@@ -4391,6 +4398,8 @@ struct templars_verdict_t : public paladin_melee_attack_t
 
     // disable if Final Verdict is taken
     background = p -> talents.final_verdict -> ok();
+    if ( p -> wod_hotfix )
+      weapon_multiplier *= 1.2;
   }
 
   virtual school_e get_school() const
