@@ -5238,7 +5238,7 @@ void paladin_t::generate_action_prio_list_ret()
 
   // Executed if one (or two, based on Theck's <=2, check with him) enemy is present
 
-  single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&holy_power>=5&buff.final_verdict.up" );
+  single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&holy_power=5&(!talent.final_verdict.enabled|buff.final_verdict.up)" );
   single -> add_action( this, "Templar's Verdict", "if=holy_power>=5|buff.holy_avenger.up&holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)" );
   single -> add_action( this, "Templar's Verdict", "if=buff.divine_purpose.react&buff.divine_purpose.remains<4" );
   single -> add_talent( this, "Final Verdict", "if=holy_power>=5|buff.holy_avenger.up&holy_power>=3" );
