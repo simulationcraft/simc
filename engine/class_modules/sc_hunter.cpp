@@ -783,6 +783,11 @@ public:
 
     owner_coeff.ap_from_ap = 0.3333;
     owner_coeff.sp_from_ap = 0.3333;
+    if ( wod_hotfix )
+    {
+      owner_coeff.ap_from_ap = 0.6;
+      owner_coeff.sp_from_ap = 0.6;
+    }
   }
 
   virtual void create_buffs()
@@ -1553,6 +1558,8 @@ struct dire_critter_t: public hunter_pet_t
       may_crit = true;
       special = false;
       focus_gain = player -> find_spell( 120694 ) -> effectN( 1 ).base_value();
+      if ( player -> wod_hotfix )
+        base_multiplier *= 1.15;
     }
 
     virtual void impact( action_state_t* s )
@@ -1807,11 +1814,14 @@ struct ranged_t: public hunter_ranged_attack_t
         if ( p() -> active.ammo == POISONED_AMMO )
         {
           const spell_data_t* poisoned_tick = p() -> find_spell( 170661 );
+          double damage = p() -> cache.attack_power() * ( poisoned_tick -> effectN( 1 ).ap_coeff() *
+                                                          ( poisoned_tick -> duration() / poisoned_tick -> effectN( 1 ).period() ) );
+          if ( p() -> wod_hotfix )
+            damage *= 1.15;
           residual_action::trigger(
             p() -> active.poisoned_ammo, // ignite spell
             s -> target, // target
-            p() -> cache.attack_power() * ( poisoned_tick -> effectN( 1 ).ap_coeff() *
-            ( poisoned_tick -> duration() / poisoned_tick -> effectN( 1 ).period() ) ) );
+            damage );
         }
         else if ( p() -> active.ammo == FROZEN_AMMO )
           p() -> active.frozen_ammo -> execute();
@@ -1885,6 +1895,8 @@ struct exotic_munitions_incendiary_ammo_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( name, p, s )
   {
     aoe = -1;
+    if ( p -> wod_hotfix )
+      base_multiplier *= 1.15;
   }
 };
 
@@ -1893,6 +1905,8 @@ struct exotic_munitions_frozen_ammo_t: public hunter_ranged_attack_t
   exotic_munitions_frozen_ammo_t( hunter_t* p, const char* name, const spell_data_t* s ):
     hunter_ranged_attack_t( name, p, s )
   {
+    if ( p -> wod_hotfix )
+      base_multiplier *= 1.15;
   }
 };
 
@@ -1949,6 +1963,8 @@ struct aimed_shot_t: public hunter_ranged_attack_t
 
     crit_gain = p -> perks.enhanced_aimed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS );
     crit_gain += p -> sets.set( HUNTER_MARKSMANSHIP, T17, B2 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
+    if ( player -> wod_hotfix )
+      weapon_multiplier *= 1.15;
   }
 
   virtual double cost() const
@@ -2068,6 +2084,8 @@ struct glaive_t: public ranged_attack_t
     glaive_rebound -> stats = stats;
     dot_duration = timespan_t::zero();
     travel_speed = player -> talents.glaive_toss -> effectN( 3 ).trigger() -> missile_speed();
+    if ( player -> wod_hotfix )
+      base_multiplier *= 1.15;
   }
 
   virtual void impact( action_state_t* s )
@@ -2137,6 +2155,8 @@ struct powershot_t: public hunter_ranged_attack_t
     aoe = -1;
     // based on tooltip
     base_aoe_multiplier *= 0.5;
+    if ( player -> wod_hotfix )
+      base_multiplier *= 1.15;
   }
 
   virtual double action_multiplier() const
@@ -2275,6 +2295,9 @@ struct explosive_trap_t: public hunter_ranged_attack_t
     base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
     attack_power_mod.direct = p() -> find_spell( 13812 ) -> effectN( 1 ).ap_coeff();
 
+    if ( player -> wod_hotfix )
+      attack_power_mod.direct *= 1.15;
+
     // BUG in game it uses the direct damage AP mltiplier for ticks as well.
     attack_power_mod.tick = attack_power_mod.direct;
 
@@ -2291,6 +2314,8 @@ struct chimaera_shot_impact_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( name, p, s )
   {
     dual = true;
+    if ( player -> wod_hotfix )
+      weapon_multiplier *= 1.15;
   }
 
   virtual double action_multiplier() const
@@ -2358,6 +2383,9 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
     if ( p() -> sets.has_set_bonus( SET_MELEE, T13, B2 ) )
       focus_gain *= 2.0;
+
+    if ( player -> wod_hotfix )
+      weapon_multiplier *= 1.15;
   }
 
   virtual void try_steady_focus()
@@ -2520,6 +2548,8 @@ struct kill_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "kill_shot", player, player -> find_specialization_spell( "Kill Shot" ) )
   {
     parse_options( options_str );
+    if ( player -> wod_hotfix )
+      weapon_multiplier *= 1.15;
   }
 
   virtual void execute()
@@ -2572,6 +2602,8 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "arcane_shot", player, player -> find_spell( "Arcane Shot" ) )
   {
     parse_options( options_str );
+    if ( player -> wod_hotfix )
+      weapon_multiplier *= 1.15;
   }
 
   virtual double cost() const
@@ -2615,6 +2647,8 @@ struct multi_shot_t: public hunter_ranged_attack_t
     parse_options( options_str );
 
     aoe = -1;
+    if ( player -> wod_hotfix )
+      weapon_multiplier *= 1.3;
   }
 
   virtual double cost() const
@@ -2676,6 +2710,8 @@ struct focusing_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
     focus_gain = data().effectN( 2 ).base_value();
+    if ( player -> wod_hotfix )
+      base_multiplier *= 1.15;
   }
 
   bool usable_moving() const
@@ -2720,6 +2756,9 @@ struct steady_shot_t: public hunter_ranged_attack_t
     // Needs testing
     if ( p() -> sets.has_set_bonus( SET_MELEE, T13, B2 ) )
       focus_gain *= 2.0;
+
+    if ( player -> wod_hotfix )
+      weapon_multiplier *= 1.15;
   }
 
   virtual void try_steady_focus()
@@ -2869,6 +2908,8 @@ struct barrage_t: public hunter_spell_t
       // FIXME AoE is just approximate from tooltips
       aoe = -1;
       base_aoe_multiplier = 0.5;
+      if ( player -> wod_hotfix )
+        attack_power_mod.direct *= 1.15;
     }
   };
 
@@ -2883,7 +2924,6 @@ struct barrage_t: public hunter_spell_t
     tick_zero = true;
     dynamic_tick_action = true;
     travel_speed = 0.0;
-    // FIXME still needs to AoE component
     tick_action = new barrage_damage_t( player );
   }
 
@@ -2928,6 +2968,8 @@ struct peck_t: public ranged_attack_t
     travel_speed = 0.0;
 
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+    if ( player -> wod_hotfix )
+      attack_power_mod.direct *= 1.8;
   }
 
   hunter_t* p() const { return static_cast<hunter_t*>( player ); }
