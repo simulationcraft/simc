@@ -8,7 +8,6 @@ level=90
 race=night_elf
 role=attack
 position=back
-professions=inscription=600
 talents=000300
 glyphs=savage_roar/master_shapeshifter
 spec=feral
@@ -34,7 +33,6 @@ druid="Druid_Balance_T16M"
 level=90
 race=troll
 spec=balance
-professions=engineering=600/blacksmithing=600
 talents=010201
 shoulders=shoulderwraps_of_the_shattered_vale,id=99428,gems=5int_10crit_5int_10crit_8int,enchant=15int_5crit,upgrade=4
 wrists=bracers_of_purified_spirit,id=105425,enchant=12int,upgrade=4
@@ -53,3 +51,29 @@ neck=untainted_guardians_chain,id=105465,upgrade=4
 trinket1=purified_bindings_of_immerseus,id=105422,upgrade=4
 trinket2=kardris_toxic_totem,id=105540,upgrade=4
 save=Druid_Balance_T16M.simc
+
+# Guardian Druid T16M
+druid="Druid_Guardian_T16M"
+level=90
+race=troll
+talents=0101020
+position=front
+spec=guardian
+wrists=bombers_blackened_wristwatch,id=112896,enchant=12agi,upgrade=4
+head=headguard_of_the_shattered_vale,id=99421,gems=indomitable_primal_10haste_10crit_11agi,upgrade=4
+chest=tunic_of_the_shattered_vale,id=99419,gems=10haste_10crit_10haste_10crit_10haste_10crit_11agi,enchant=80all,upgrade=4
+shoulders=shoulderguards_of_the_shattered_vale,id=99423,gems=10haste_10crit_10haste_10crit_8agi,enchant=15agi_5crit,upgrade=4
+hands=handguards_of_the_shattered_vale,id=99420,gems=10haste_10crit_10haste_10crit_8agi,enchant=13mastery,upgrade=4
+trinket1=haromms_talisman,id=112754,upgrade=4
+trinket2=ticking_ebon_detonator,id=112879,upgrade=4
+finger1=kilruks_band_of_ascendancy,id=112917,gems=10haste_10crit_4crit,upgrade=4
+finger2=swift_serpent_signet,id=112709,gems=20crit_4crit,upgrade=4
+main_hand=halberd_of_inner_shadows,id=112805,gems=20crit_4agi,upgrade=4,enchant=dancing_steel,
+legs=rious_vigilant_leggings,id=112761,gems=20crit_20crit_8agi,enchant=19agi_11crit,upgrade=4
+waist=cord_of_black_dreams,id=112929,gems=10haste_10crit_20crit_20crit_8agi,upgrade=4
+feet=pandaren_roofsprinters,id=112827,gems=20crit_4mastery,enchant=9agi,upgrade=4
+back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=10haste_10crit_4agi,enchant=13crit
+neck=immerseus_crystalline_eye,id=110761,upgrade=4
+save=Druid_Guardian_T16M.simc
+
+

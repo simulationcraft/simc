@@ -4925,7 +4925,8 @@ double warlock_t::mana_regen_per_second() const
 {
   double mp5 = player_t::mana_regen_per_second();
 
-  mp5 /= cache.spell_speed();
+  if ( spec.chaotic_energy -> ok() )
+    mp5 /= cache.spell_haste();
 
   return mp5;
 }
@@ -5260,8 +5261,7 @@ void warlock_t::init_base_stats()
 
   base.attribute_multiplier[ATTR_STAMINA] *= 1.0 + spec.fel_armor -> effectN( 1 ).percent();
 
-  // If we don't have base mp5 defined for this level in extra_data.inc, approximate:
-  if ( base.mana_regen_per_second == 0 ) base.mana_regen_per_second = resources.base[RESOURCE_MANA] * 0.01;
+  base.mana_regen_per_second = resources.base[RESOURCE_MANA] * 0.018;
 
   base.mana_regen_per_second *= 1.0 + spec.chaotic_energy -> effectN( 1 ).percent();
 

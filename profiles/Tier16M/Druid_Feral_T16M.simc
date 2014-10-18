@@ -3,7 +3,6 @@ level=90
 race=night_elf
 role=attack
 position=back
-professions=inscription=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!...2...
 glyphs=savage_roar/master_shapeshifter
 spec=feral
