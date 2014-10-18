@@ -55,7 +55,7 @@ level=90
 race=orc
 spec=frost
 professions=tailoring=600/engineering=600
-talents=100321
+talents=100322
 glyphs=icy_veins/splitting_ice/cone_of_cold
 head=hood_of_swirling_senses,id=105420,upgrade=4,gems=sinister_primal_10haste_10crit_11int
 neck=untainted_guardians_chain,id=105465,upgrade=4
