@@ -138,7 +138,6 @@ ofstream& ofstream::printf( const char* format, ... )
     va_start( fmtargs, format );
     rval = ::vsnprintf( dynamic_buffer, rval + 1, format, fmtargs );
     va_end( fmtargs );
-    assert( static_cast<size_t>( rval ) < sizeof( buffer ) );
     *this << dynamic_buffer;
 
     delete[] dynamic_buffer;
