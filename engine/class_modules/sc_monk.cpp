@@ -894,7 +894,7 @@ namespace { // UNNAMED NAMESPACE
           }
           p() -> buff.tigereye_brew -> trigger( stacks );
         }
-        else if ( p() -> spec.brewing_elusive_brew- > ok() )
+        else if ( p() -> spec.brewing_elusive_brew -> ok() )
           p() -> buff.elusive_brew_stacks -> trigger( static_cast<int>( base_stacks ) );
 
         else if ( p()->spec.brewing_mana_tea -> ok() )
