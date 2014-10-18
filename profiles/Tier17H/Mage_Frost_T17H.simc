@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#eb!0..2001
+talents=http://us.battle.net/wow/en/tool/talent-calculator#eb!0..2011
 glyphs=icy_veins/splitting_ice/cone_of_cold
 spec=frost
 
