@@ -128,10 +128,24 @@ ofstream& ofstream::printf( const char* format, ... )
   int rval = ::vsnprintf( buffer, sizeof( buffer ), format, fmtargs );
   va_end( fmtargs );
 
-  if ( rval >= 0 )
-    assert( static_cast<size_t>( rval ) < sizeof( buffer ) );
+  if ( rval < 0 )
+    return *this;
 
-  *this << buffer;
+  // Not enough room on standard buffer, use a dynamic buffer (from heap)
+  if ( static_cast<size_t>( rval ) >= sizeof( buffer ) )
+  {
+    char* dynamic_buffer = new char[ rval + 1 ];
+    va_start( fmtargs, format );
+    rval = ::vsnprintf( dynamic_buffer, rval + 1, format, fmtargs );
+    va_end( fmtargs );
+    assert( static_cast<size_t>( rval ) < sizeof( buffer ) );
+    *this << dynamic_buffer;
+
+    delete[] dynamic_buffer;
+  }
+  else
+    *this << buffer;
+
   return *this;
 }
 
