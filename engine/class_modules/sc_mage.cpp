@@ -572,6 +572,7 @@ struct water_elemental_pet_t : public pet_t
     if ( o() -> wod_hotfix )
     {
       m *= 1.05;
+      m *= 1.2;
     }
 
     m *= o() -> pet_multiplier;
@@ -2348,6 +2349,7 @@ struct fireball_t : public mage_spell_t
     if ( p() -> wod_hotfix )
     {
       am *= 1.05;
+      am *= 0.8;
     }
 
     return am;
@@ -2434,6 +2436,18 @@ struct frost_bomb_explosion_t : public mage_spell_t
 
   virtual timespan_t travel_time() const
   { return timespan_t::zero(); }
+
+  virtual double action_multiplier() const
+  {
+    double am = mage_spell_t::action_multiplier();
+
+    if ( p() -> wod_hotfix )
+    {
+      am *= 1.25;
+    }
+
+    return am;
+  }
 };
 
 struct frost_bomb_t : public mage_spell_t
@@ -2605,6 +2619,7 @@ struct frostbolt_t : public mage_spell_t
     if ( p() -> wod_hotfix )
     {
       am *= 1.05;
+      am *= 1.2;
     }
 
     return am;
@@ -2653,6 +2668,12 @@ struct frostfire_bolt_t : public mage_spell_t
     {
       add_child( frigid_blast );
     }
+
+    if ( p -> wod_hotfix )
+    {
+      brain_freeze_bonus = 0.85;
+    }
+
     if ( p -> specialization() == MAGE_FROST )
     {
       icicle = p -> get_stats( "icicle_ffb" );
@@ -2803,6 +2824,7 @@ struct frostfire_bolt_t : public mage_spell_t
     if ( p() -> wod_hotfix )
     {
       am *= 1.05;
+      am *= 0.8;
     }
 
     return am;
@@ -2840,6 +2862,7 @@ struct frozen_orb_bolt_t : public mage_spell_t
     if ( p() -> wod_hotfix )
     {
       am *= 1.05;
+      am *= 1.2;
     }
 
     return am;
@@ -2996,6 +3019,7 @@ struct ice_lance_t : public mage_spell_t
     if ( p() -> wod_hotfix )
     {
       am *= 1.05;
+      am *= 1.2;
     }
 
     return am;
@@ -3006,23 +3030,35 @@ struct ice_lance_t : public mage_spell_t
 
 struct ice_nova_t : public mage_spell_t
 {
-    ice_nova_t( mage_t* p, const std::string& options_str ) :
-       mage_spell_t( "ice_nova", p, p -> talents.ice_nova )
+  ice_nova_t( mage_t* p, const std::string& options_str ) :
+     mage_spell_t( "ice_nova", p, p -> talents.ice_nova )
+  {
+    parse_options( options_str );
+    base_multiplier *= 1.0 + p -> talents.ice_nova -> effectN( 1 ).percent();
+    base_aoe_multiplier *= 0.5;
+    aoe = -1;
+  }
+
+  virtual void init()
+  {
+    mage_spell_t::init();
+
+    // NOTE: Cooldown missing from tooltip since WoD beta build 18379
+    cooldown -> duration = timespan_t::from_seconds( 25.0 );
+    cooldown -> charges = 2;
+  }
+
+  virtual double action_multiplier() const
+  {
+    double am = mage_spell_t::action_multiplier();
+
+    if ( p() -> wod_hotfix )
     {
-        parse_options( options_str );
-        base_multiplier *= 1.0 + p -> talents.ice_nova -> effectN( 1 ).percent();
-        base_aoe_multiplier *= 0.5;
-        aoe = -1;
+      am *= 1.25;
     }
 
-    virtual void init()
-    {
-        mage_spell_t::init();
-
-        // NOTE: Cooldown missing from tooltip since WoD beta build 18379
-        cooldown -> duration = timespan_t::from_seconds( 25.0 );
-        cooldown -> charges = 2;
-    }
+    return am;
+  }
 };
 
 
@@ -3180,6 +3216,7 @@ struct inferno_blast_t : public mage_spell_t
     if ( p() -> wod_hotfix )
     {
       am *= 1.05;
+      am *= 0.8;
     }
 
     return am;
@@ -3566,6 +3603,7 @@ struct pyroblast_t : public mage_spell_t
     if ( p() -> wod_hotfix )
     {
       am *= 1.05;
+      am *= 0.8;
     }
 
     return am;
