@@ -560,6 +560,7 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "tmi_window_global", choice.tmi_window, "6" );
   load_setting( settings, "show_etmi", choice.show_etmi );
   load_setting( settings, "world_lag", choice.world_lag, "Medium - 100 ms" );
+  load_setting( settings, "debug", choice.debug, "None" );
   load_setting( settings, "target_level", choice.target_level );
   load_setting( settings, "report_pets", choice.report_pets, "No" );
   load_setting( settings, "print_style", choice.print_style );
@@ -655,6 +656,7 @@ void SC_OptionsTab::encodeOptions()
   settings.setValue( "tmi_window_global", choice.tmi_window -> currentText() );
   settings.setValue( "show_etmi", choice.show_etmi -> currentText() );
   settings.setValue( "world_lag", choice.world_lag -> currentText() );
+  settings.setValue( "debug", choice.debug -> currentText() );
   settings.setValue( "target_level", choice.target_level -> currentText() );
   settings.setValue( "report_pets", choice.report_pets -> currentText() );
   settings.setValue( "print_style", choice.print_style -> currentText() );
