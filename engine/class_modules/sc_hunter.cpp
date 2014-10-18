@@ -783,7 +783,7 @@ public:
 
     owner_coeff.ap_from_ap = 0.3333;
     owner_coeff.sp_from_ap = 0.3333;
-    if ( wod_hotfix )
+    if ( o() -> wod_hotfix )
     {
       owner_coeff.ap_from_ap = 0.6;
       owner_coeff.sp_from_ap = 0.6;
@@ -2468,7 +2468,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     {
       attack_power_mod.tick *= 1.12 * 1.15;
       attack_power_mod.direct *= 1.12 * 1.15;
-    }
+  }
   }
 
   void init()
@@ -2592,7 +2592,7 @@ struct serpent_sting_t: public hunter_ranged_attack_t
     {
       attack_power_mod.tick *= 1.12 * 1.15;
       attack_power_mod.direct *= 1.12 * 1.15;
-    }
+  }
   }
 };
 
