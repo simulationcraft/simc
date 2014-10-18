@@ -2642,7 +2642,7 @@ struct swipe_t : public cat_attack_t
     aoe = -1;
     combo_point_gain = data().effectN( 1 ).base_value(); // Effect is not labelled correctly as CP gain
     if ( player -> wod_hotfix )
-      attack_power_mod.direct *= 1.25;
+      weapon_multiplier *= 1.25;
   }
 
   virtual void impact( action_state_t* s )
