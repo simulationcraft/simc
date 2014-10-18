@@ -504,6 +504,8 @@ void print_xml_player_buffs( xml_writer_t & writer, player_t * p )
     {
       writer.print_attribute( "start", util::to_string( b -> avg_start.mean(), 1 ) );
       writer.print_attribute( "refresh", util::to_string( b -> avg_refresh.mean(), 1 ) );
+      writer.print_attribute( "overflowCount", util::to_string( b -> avg_overflow_count.mean(), 1 ) );
+      writer.print_attribute( "overflowTotal", util::to_string( b -> avg_overflow_total.mean(), 1 ) );
       writer.print_attribute( "interval", util::to_string( b -> start_intervals.mean(), 1 ) );
       writer.print_attribute( "trigger", util::to_string( b -> trigger_intervals.mean(), 1 ) );
       writer.print_attribute( "uptime", util::to_string( b -> uptime_pct.mean(), 0 ) );
@@ -814,6 +816,8 @@ void print_xml_buffs( sim_t* sim, xml_writer_t & writer )
     {
       writer.print_attribute( "start", util::to_string( b -> avg_start.mean(), 1 ) );
       writer.print_attribute( "refresh", util::to_string( b -> avg_refresh.mean(), 1 ) );
+      writer.print_attribute( "overflowCount", util::to_string( b -> avg_overflow_count.mean(), 1 ) );
+      writer.print_attribute( "overflowTotal", util::to_string( b -> avg_overflow_total.mean(), 1 ) );
       writer.print_attribute( "interval", util::to_string( b -> start_intervals.mean(), 1 ) );
       writer.print_attribute( "trigger", util::to_string( b -> trigger_intervals.mean(), 1 ) );
       writer.print_attribute( "uptime", util::to_string( b -> uptime_pct.mean(), 0 ) );
