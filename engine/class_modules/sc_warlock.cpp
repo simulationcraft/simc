@@ -5262,7 +5262,7 @@ void warlock_t::init_base_stats()
 
   base.attribute_multiplier[ATTR_STAMINA] *= 1.0 + spec.fel_armor -> effectN( 1 ).percent();
 
-  base.mana_regen_per_second = resources.base[RESOURCE_MANA] * 0.018;
+  base.mana_regen_per_second = resources.base[RESOURCE_MANA] * 0.001;
 
   base.mana_regen_per_second *= 1.0 + spec.chaotic_energy -> effectN( 1 ).percent();
 
