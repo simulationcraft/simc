@@ -2204,6 +2204,8 @@ struct doom_t: public warlock_spell_t
   doom_t( warlock_t* p ):
     warlock_spell_t( "doom", p, p -> spec.doom )
   {
+    if ( p -> wod_hotfix )
+      spell_power_mod.tick *= 0.8;
     may_crit = false;
     base_crit += p -> perk.empowered_doom -> effectN( 1 ).percent();
   }
@@ -2242,7 +2244,8 @@ struct demonbolt_t: public warlock_spell_t
   demonbolt_t( warlock_t* p ):
     warlock_spell_t( "demonbolt", p, p -> talents.demonbolt )
   {
-
+    if ( p -> wod_hotfix )
+      base_multiplier *= 0.7;
   }
 
   virtual double cost() const
@@ -2309,6 +2312,8 @@ struct shadowflame_t: public warlock_spell_t
     background = true;
     may_miss = false;
     generate_fury = 2;
+    if ( p -> wod_hotfix )
+      spell_power_mod.tick *= 0.8;
   }
 
   virtual timespan_t travel_time() const
@@ -2355,6 +2360,8 @@ struct hand_of_guldan_t: public warlock_spell_t
     warlock_spell_t( p, "Hand of Gul'dan" )
   {
     aoe = -1;
+    if ( p -> wod_hotfix )
+      base_multiplier *= 0.8;
 
     cooldown -> duration = timespan_t::from_seconds( 15 );
     cooldown -> charges = 2 + p -> sets.set( WARLOCK_DEMONOLOGY, T17, B2 ) -> effectN( 1 ).base_value();
@@ -2398,6 +2405,8 @@ struct shadow_bolt_t: public warlock_spell_t
     warlock_spell_t( p, "Shadow Bolt" ), hand_of_guldan( new hand_of_guldan_t( p ) )
   {
     base_multiplier *= 1.0 + p -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 3 ).percent();
+    if ( p -> wod_hotfix )
+      base_multiplier *= 0.8;
 
     hand_of_guldan               -> background = true;
     hand_of_guldan               -> base_costs[RESOURCE_MANA] = 0;
@@ -2550,6 +2559,8 @@ struct corruption_t: public warlock_spell_t
     dot_duration = p -> find_spell( 146739 )-> duration();
     spell_power_mod.tick = p -> find_spell( 146739 ) -> effectN( 1 ).sp_coeff(); //returning .180 for mod - supposed to be .165
     base_tick_time = timespan_t::from_seconds( 2.0 );
+    if ( p -> wod_hotfix )
+      spell_power_mod.tick *= 0.9;
   }
 
   virtual timespan_t travel_time() const
@@ -3150,6 +3161,8 @@ struct soul_fire_t: public warlock_spell_t
   soul_fire_t( warlock_t* p, bool meta = false ):
     warlock_spell_t( meta ? "soul_fire_meta" : "soul_fire", p, meta ? p -> find_spell( 104027 ) : p -> find_spell( 6353 ) ), meta_spell( 0 )
   {
+    if ( p -> wod_hotfix )
+      base_multiplier *= 0.8;
     if ( ! meta )
     {
       generate_fury = data().effectN( 2 ).base_value();
@@ -3469,6 +3482,8 @@ struct chaos_wave_dmg_t: public warlock_spell_t
     aoe = -1;
     background = true;
     dual = true;
+    if ( p -> wod_hotfix )
+      base_multiplier *= 0.8;
   }
 };
 
@@ -3517,6 +3532,8 @@ struct touch_of_chaos_t: public warlock_spell_t
     warlock_spell_t( "touch_of_chaos", p, p -> find_spell( 103964 ) ), chaos_wave( new chaos_wave_t( p ) )
   {
     base_multiplier *= 1.0 + p -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 3 ).percent();
+    if ( p -> wod_hotfix )
+      base_multiplier *= 0.8;
 
     chaos_wave               -> background = true;
     chaos_wave               -> base_costs[RESOURCE_DEMONIC_FURY] = 0;
