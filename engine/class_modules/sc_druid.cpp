@@ -2259,6 +2259,8 @@ struct ferocious_bite_t : public cat_attack_t
     max_excess_energy      = data().effectN( 2 ).base_value();
     special                = true;
     spell_power_mod.direct = 0;
+    if ( p -> wod_hotfix )
+      attack_power_mod.direct *= 1.12;
   }
 
   virtual void execute()
@@ -2556,6 +2558,8 @@ struct shred_t : public cat_attack_t
   {
     base_multiplier *= 1.0 + player -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     special = true;
+    if ( p -> wod_hotfix )
+      weapon_multiplier *= 1.12;
   }
 
   virtual void execute()
@@ -2691,6 +2695,8 @@ struct thrash_cat_t : public cat_attack_t
     aoe                    = -1;
     dot_behavior           = DOT_REFRESH;
     spell_power_mod.direct = 0;
+    if ( p -> wod_hotfix )
+      attack_power_mod.direct *= 1.12;
   }
 
   // Treat direct damage as "bleed"
@@ -4777,6 +4783,8 @@ struct moonfire_li_t : public druid_spell_t
     druid_spell_t( "moonfire", player, player -> find_spell( 155625 ) )
   {
     parse_options( options_str );
+    if ( player -> wod_hotfix )
+      attack_power_mod.direct *= 1.12;
   }
 
   void impact( action_state_t* s )
