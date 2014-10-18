@@ -1372,6 +1372,8 @@ struct bloodthirst_t: public warrior_attack_t
     bloodthirst_heal = new bloodthirst_heal_t( p );
     weapon_multiplier *= 1.0 +  p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 2 ).percent();
     weapon_multiplier *= 1.0 +  p -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
+    if ( p -> wod_hotfix )
+      weapon_multiplier *= 0.83;
   }
 
   double composite_crit() const
@@ -2094,7 +2096,7 @@ struct raging_blow_attack_t: public warrior_attack_t
     may_miss = may_dodge = may_parry = may_block = false;
     dual = true;
     if ( p -> wod_hotfix )
-      weapon_multiplier *= 0.9;
+      weapon_multiplier *= 0.83;
   }
 
   void impact( action_state_t* s )
@@ -2900,7 +2902,7 @@ struct wild_strike_t: public warrior_attack_t
     weapon = &( player -> off_hand_weapon );
     min_gcd = data().gcd();
     if ( p -> wod_hotfix )
-      weapon_multiplier *= 0.92;
+      weapon_multiplier *= 0.83;
   }
 
   double cost() const
