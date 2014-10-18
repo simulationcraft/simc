@@ -29,7 +29,7 @@ actions.precombat+=/potion,name=mogu_power
 actions=charge
 actions+=/auto_attack
 # This is mostly to prevent cooldowns from being accidentally used during movement.
-actions+=/call_action_list,name=movement,if=movement.distance>8
+actions+=/call_action_list,name=movement,if=movement.distance>5
 actions+=/potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25
 # This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown, unless the boss will die before the ability is usable again, and then use it with execute.'
 actions+=/recklessness,if=((target.time_to_die>190|target.health.pct<20)&(buff.bloodbath.up|!talent.bloodbath.enabled))|target.time_to_die<=10|talent.anger_management.enabled
@@ -57,12 +57,13 @@ actions.single_target+=/ravager,if=buff.bloodbath.up|!talent.bloodbath.enabled
 actions.single_target+=/execute,if=buff.sudden_death.react
 actions.single_target+=/siegebreaker
 actions.single_target+=/storm_bolt
-actions.single_target+=/execute,if=buff.enrage.up|target.time_to_die<12|rage>60
+actions.single_target+=/wild_strike,if=buff.bloodsurge.up
+actions.single_target+=/execute,if=buff.enrage.up|target.time_to_die<12
 actions.single_target+=/dragon_roar,if=buff.bloodbath.up|!talent.bloodbath.enabled
 actions.single_target+=/raging_blow
-actions.single_target+=/wild_strike,if=buff.bloodsurge.up|(buff.enrage.up&target.health.pct>20)
+actions.single_target+=/wild_strike,if=buff.enrage.up&target.health.pct>20
 actions.single_target+=/shockwave,if=!talent.unquenchable_thirst.enabled
-actions.single_target+=/impending_victory,if=!talent.unquenchable_thirst.enabled
+actions.single_target+=/impending_victory,if=!talent.unquenchable_thirst.enabled&target.health.pct>20
 actions.single_target+=/bloodthirst
 
 actions.two_targets=bloodbath

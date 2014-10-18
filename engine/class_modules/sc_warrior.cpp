@@ -3962,13 +3962,13 @@ void warrior_t::apl_fury()
 
   default_list -> add_action( this, "Charge" );
   default_list -> add_action( "auto_attack" );
-  default_list -> add_action( "call_action_list,name=movement,if=movement.distance>8", "This is mostly to prevent cooldowns from being accidentally used during movement." );
+  default_list -> add_action( "call_action_list,name=movement,if=movement.distance>5", "This is mostly to prevent cooldowns from being accidentally used during movement." );
 
   int num_items = (int)items.size();
   for ( int i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=active_enemies=1&(buff.bloodbath.up|!talent.bloodbath.enabled)|active_enemies>=2" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.bloodbath.up|talent.avatar.enabled" );
   }
 
   if ( sim -> allow_potions )
@@ -4005,12 +4005,13 @@ void warrior_t::apl_fury()
   single_target -> add_action( this, "Execute", "if=buff.sudden_death.react" );
   single_target -> add_talent( this, "Siegebreaker" );
   single_target -> add_talent( this, "Storm Bolt" );
-  single_target -> add_action( this, "Execute", "if=buff.enrage.up|target.time_to_die<12|rage>60" );
+  single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up" );
+  single_target -> add_action( this, "Execute", "if=buff.enrage.up|target.time_to_die<12" );
   single_target -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   single_target -> add_action( this, "Raging Blow" );
-  single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up|(buff.enrage.up&target.health.pct>20)" );
+  single_target -> add_action( this, "Wild Strike", "if=buff.enrage.up&target.health.pct>20" );
   single_target -> add_talent( this, "Shockwave", "if=!talent.unquenchable_thirst.enabled" );
-  single_target -> add_talent( this, "Impending Victory", "if=!talent.unquenchable_thirst.enabled" );
+  single_target -> add_talent( this, "Impending Victory", "if=!talent.unquenchable_thirst.enabled&target.health.pct>20" );
   single_target -> add_action( this, "Bloodthirst" );
 
   two_targets -> add_talent( this, "Bloodbath" );
