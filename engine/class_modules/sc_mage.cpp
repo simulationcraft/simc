@@ -569,7 +569,7 @@ struct water_elemental_pet_t : public pet_t
                  o() -> incanters_flow_stack_mult;
     }
 
-    if ( o() -> wod_19005_hotfix )
+    if ( o() -> wod_hotfix )
     {
       m *= 1.05;
     }
@@ -1428,7 +1428,7 @@ struct arcane_barrage_t : public mage_spell_t
                 ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 )
                             -> effectN( 1 ).percent() );
 
-    if ( p() -> wod_19005_hotfix )
+    if ( p() -> wod_hotfix )
     {
       am *= 0.95;
     }
@@ -1499,7 +1499,7 @@ struct arcane_blast_t : public mage_spell_t
                 ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 )
                             -> effectN( 1 ).percent() );
 
-    if ( p() -> wod_19005_hotfix )
+    if ( p() -> wod_hotfix )
     {
       am *= 0.95;
     }
@@ -1642,7 +1642,7 @@ struct arcane_missiles_t : public mage_spell_t
       am *= 1.07;
     }
 
-    if ( p() -> wod_19005_hotfix )
+    if ( p() -> wod_hotfix )
     {
       am *= 0.95;
     }
@@ -2345,7 +2345,7 @@ struct fireball_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    if ( p() -> wod_19005_hotfix )
+    if ( p() -> wod_hotfix )
     {
       am *= 1.05;
     }
@@ -2602,7 +2602,7 @@ struct frostbolt_t : public mage_spell_t
       am *= 1.0 + ( p() -> buffs.ice_shard -> stack() * p() -> buffs.ice_shard -> data().effectN( 2 ).percent() );
     }
 
-    if ( p() -> wod_19005_hotfix )
+    if ( p() -> wod_hotfix )
     {
       am *= 1.05;
     }
@@ -2800,7 +2800,7 @@ struct frostfire_bolt_t : public mage_spell_t
       am *= 1.0 + brain_freeze_bonus;
     }
 
-    if ( p() -> wod_19005_hotfix )
+    if ( p() -> wod_hotfix )
     {
       am *= 1.05;
     }
@@ -2837,7 +2837,7 @@ struct frozen_orb_bolt_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    if ( p() -> wod_19005_hotfix )
+    if ( p() -> wod_hotfix )
     {
       am *= 1.05;
     }
@@ -2993,7 +2993,7 @@ struct ice_lance_t : public mage_spell_t
       am *= ( 1.0 + p() -> buffs.frozen_thoughts -> data().effectN( 1 ).percent() );
     }
 
-    if ( p() -> wod_19005_hotfix )
+    if ( p() -> wod_hotfix )
     {
       am *= 1.05;
     }
@@ -3177,7 +3177,7 @@ struct inferno_blast_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    if ( p() -> wod_19005_hotfix )
+    if ( p() -> wod_hotfix )
     {
       am *= 1.05;
     }
@@ -3563,7 +3563,7 @@ struct pyroblast_t : public mage_spell_t
       am *= 1.0 + p() -> buffs.pyroblast -> data().effectN( 3 ).percent();
     }
 
-    if ( p() -> wod_19005_hotfix )
+    if ( p() -> wod_hotfix )
     {
       am *= 1.05;
     }
@@ -3580,7 +3580,7 @@ struct pyroblast_t : public mage_spell_t
       am *= 1.0 + p() -> buffs.pyroblast -> data().effectN( 3 ).percent();
     }
 
-    if ( p() -> wod_19005_hotfix )
+    if ( p() -> wod_hotfix )
     {
       am *= 1.05;
     }
@@ -3712,7 +3712,7 @@ struct supernova_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    if ( p() -> wod_19005_hotfix )
+    if ( p() -> wod_hotfix )
     {
       am *= 0.85;
     }

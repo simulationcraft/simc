@@ -991,7 +991,7 @@ struct avengers_shield_t : public paladin_spell_t
     if ( p -> glyphs.focused_shield -> ok() )
       base_multiplier *= 1.0 + p -> glyphs.focused_shield -> effectN( 2 ).percent();
 
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
       attack_power_mod.direct *= 1.05;
   }
 
@@ -1336,7 +1336,7 @@ struct consecration_tick_t : public paladin_spell_t
     direct_tick = true;
     background  = true;
     may_crit    = true;
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
       attack_power_mod.direct *= 1.05;
   }
 };
@@ -2663,7 +2663,7 @@ struct holy_wrath_t : public paladin_spell_t
 
     base_multiplier += p -> talents.sanctified_wrath -> effectN( 1 ).percent();
     hp_granted += (int) p -> talents.sanctified_wrath -> effectN( 2 ).base_value();
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
       attack_power_mod.direct *= 1.05;
 
   }
@@ -4275,7 +4275,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 
     // no weapon multiplier
     weapon_multiplier = 0.0;
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
       attack_power_mod.direct *= 1.05;
   }
 
@@ -6387,7 +6387,7 @@ double paladin_t::get_hand_of_light()
   double handoflight;
   handoflight = cache.mastery_value(); // HoL modifier is in effect #1
 
-  if ( wod_19005_hotfix )
+  if ( wod_hotfix )
     handoflight *= 1.2;
 
   return handoflight;

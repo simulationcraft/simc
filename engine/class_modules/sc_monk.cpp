@@ -1405,7 +1405,7 @@ struct chi_explosion_t: public monk_melee_attack_t
     monk_melee_attack_t( "chi_explosion", p, p -> talent.chi_explosion )
   {
     parse_options( options_str );
-    if ( p -> wod_19005_hotfix && p -> specialization() == MONK_BREWMASTER )
+    if ( p -> wod_hotfix && p -> specialization() == MONK_BREWMASTER )
       attack_power_mod.direct *= 0.7;
   }
 
@@ -1535,7 +1535,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     base_multiplier *= 8; // hardcoded into tooltip
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
       base_multiplier *= 1.10;
   }
 
@@ -1735,7 +1735,7 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
     base_costs[RESOURCE_CHI] = 0;
     dot_duration = timespan_t::zero();
     trigger_gcd = timespan_t::zero();
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
       base_multiplier *= 1.10;
   }
 };

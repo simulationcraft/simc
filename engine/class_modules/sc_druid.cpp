@@ -2850,7 +2850,7 @@ struct lacerate_t : public bear_attack_t
     dot_behavior = DOT_REFRESH;
 
     rage_amount = data().effectN( 3 ).resource( RESOURCE_RAGE );
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
       attack_power_mod.tick *= 1.05;
   }
 
@@ -2907,7 +2907,7 @@ struct mangle_t : public bear_attack_t
       base_crit += p() -> talent.dream_of_cenarius -> effectN( 3 ).percent();
 
     base_multiplier *= 1.0 + player -> talent.soul_of_the_forest -> effectN( 2 ).percent();
-    if ( player -> wod_19005_hotfix )
+    if ( player -> wod_hotfix )
       base_multiplier *= 1.05;
   }
 
@@ -2961,7 +2961,7 @@ struct maul_t : public bear_attack_t
 
       // Coeff is in tooltip but not spell data, so hardcode the value here.
       attack_power_mod.direct = 2.40;
-      if ( p -> wod_19005_hotfix )
+      if ( p -> wod_hotfix )
         attack_power_mod.direct *= 1.05;
     }
 
@@ -3051,7 +3051,7 @@ struct pulverize_t : public bear_attack_t
     bear_attack_t( "pulverize", player, player -> talent.pulverize )
   {
     parse_options( options_str );
-    if ( player -> wod_19005_hotfix )
+    if ( player -> wod_hotfix )
       attack_power_mod.direct *= 1.05;
   }
 

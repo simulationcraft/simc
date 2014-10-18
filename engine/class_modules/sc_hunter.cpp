@@ -2169,7 +2169,7 @@ struct black_arrow_t: public hunter_ranged_attack_t
     base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
     
     // Last minute Celestalon fixes before WoD release
-    if ( p() -> wod_19005_hotfix ) 
+    if ( p() -> wod_hotfix ) 
     {
       attack_power_mod.tick *= 1.12;
       attack_power_mod.direct *= 1.12;
@@ -2434,7 +2434,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     tick_count = player -> active.explosive_ticks -> dot_duration.total_seconds();
 
     // Last minute Celestalon fixes before WoD release
-    if ( p() -> wod_19005_hotfix ) 
+    if ( p() -> wod_hotfix ) 
     {
       attack_power_mod.tick *= 1.12;
       attack_power_mod.direct *= 1.12;
@@ -2556,7 +2556,7 @@ struct serpent_sting_t: public hunter_ranged_attack_t
     hasted_ticks = false;
 
     // Last minute Celestalon fixes before WoD release
-    if ( p() -> wod_19005_hotfix ) 
+    if ( p() -> wod_hotfix ) 
     {
       attack_power_mod.tick *= 1.12;
       attack_power_mod.direct *= 1.12;

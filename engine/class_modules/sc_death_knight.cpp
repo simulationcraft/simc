@@ -3508,7 +3508,7 @@ struct death_and_decay_t : public death_knight_spell_t
     dot_duration = data().duration(); // 11 with tick_zero
     tick_may_crit = tick_zero = true;
     hasted_ticks     = false;
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
       attack_power_mod.tick *= 1.2;
   }
 
@@ -3578,7 +3578,7 @@ struct defile_t : public death_knight_spell_t
     dot_duration = data().duration();
     tick_may_crit = true;
     hasted_ticks = tick_zero = false;
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
       attack_power_mod.tick *= 1.2;
   }
 
@@ -3652,7 +3652,7 @@ struct death_coil_t : public death_knight_spell_t
 
     attack_power_mod.direct = 0.85;
 
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
       attack_power_mod.direct *= 0.95;
   }
 
@@ -3831,7 +3831,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     may_parry = false;
     base_multiplier = 1.0 + p -> spec.veteran_of_the_third_war -> effectN( 7 ).percent();
 
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
       attack_power_mod.direct *= 1.20;
 
     always_consume = true; // Death Strike always consumes runes, even if doesn't hit
@@ -3940,7 +3940,7 @@ struct festering_strike_t : public death_knight_melee_attack_t
   {
     parse_options( options_str );
 
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
       attack_power_mod.direct *= 0.95;
 
     if ( p -> spec.reaping -> ok() )
@@ -4281,7 +4281,7 @@ struct obliterate_t : public death_knight_melee_attack_t
     special = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
       attack_power_mod.direct *= 1.08;
 
     weapon = &( p -> main_hand_weapon );
@@ -4540,7 +4540,7 @@ struct blood_boil_t : public death_knight_spell_t
 
     base_multiplier *= 1.0 + p -> spec.crimson_scourge -> effectN( 1 ).percent();
 
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
       attack_power_mod.direct *= 1.20;
 
     aoe = -1;
@@ -4878,7 +4878,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       dual = true;
       school = SCHOOL_SHADOW;
 
-      if ( p -> wod_19005_hotfix )
+      if ( p -> wod_hotfix )
         attack_power_mod.direct *= 0.95;
     }
 
@@ -4901,7 +4901,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     special = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
       attack_power_mod.direct *= 0.95;
 
     // TODO-WOD: Do we need to inherit damage or is it a separate roll in WoD?

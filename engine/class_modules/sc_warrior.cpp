@@ -1116,7 +1116,7 @@ struct melee_t: public warrior_attack_t
       if ( p -> main_hand_weapon.group() == WEAPON_1H &&
            p -> off_hand_weapon.group() == WEAPON_1H )
            sudden_death_chance += p -> spec.singleminded_fury -> effectN( 4 ).percent();
-      if ( p -> wod_19005_hotfix )
+      if ( p -> wod_hotfix )
         sudden_death_chance = 0.1;
     }
     if ( p -> dual_wield() )
@@ -1573,7 +1573,7 @@ struct devastate_t: public warrior_attack_t
     parse_options( options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
     weapon = &( p -> main_hand_weapon );
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
       weapon_multiplier *= 1.05;
   }
 
@@ -2093,7 +2093,7 @@ struct raging_blow_attack_t: public warrior_attack_t
   {
     may_miss = may_dodge = may_parry = may_block = false;
     dual = true;
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
       weapon_multiplier *= 0.9;
   }
 
@@ -2189,7 +2189,7 @@ struct revenge_t: public warrior_attack_t
     base_add_multiplier = data().effectN( 3 ).percent();
     aoe = 3;
     rage_gain = data().effectN( 2 ).resource( RESOURCE_RAGE );
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
       attack_power_mod.direct *= 1.05;
   }
 
@@ -2480,7 +2480,7 @@ struct shield_slam_t: public warrior_attack_t
     cooldown = p -> cooldown.shield_slam;
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
     attack_power_mod.direct = 3.18; //Hard-coded in tooltip. (beta build 18764)
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
       attack_power_mod.direct *= 1.05;
   }
 
@@ -2899,7 +2899,7 @@ struct wild_strike_t: public warrior_attack_t
     base_costs[RESOURCE_RAGE] += p -> talents.furious_strikes -> effectN( 1 ).resource( RESOURCE_RAGE );
     weapon = &( player -> off_hand_weapon );
     min_gcd = data().gcd();
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
       weapon_multiplier *= 0.92;
   }
 

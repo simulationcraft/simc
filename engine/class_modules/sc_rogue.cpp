@@ -952,7 +952,7 @@ struct wound_poison_t : public rogue_poison_t
       rogue_poison_t( "wound_poison", p, p -> find_class_spell( "Wound Poison" ) -> effectN( 1 ).trigger() )
     {
       harmful          = true;
-      if ( p -> wod_19005_hotfix )
+      if ( p -> wod_hotfix )
         attack_power_mod.direct *= 0.6;
     }
 
@@ -1470,7 +1470,7 @@ struct ambush_t : public rogue_attack_t
     ability_type      = AMBUSH;
     requires_position = POSITION_BACK;
     requires_stealth  = true;
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
       weapon_multiplier *= 1.13;
   }
 
@@ -1562,7 +1562,7 @@ struct backstab_t : public rogue_attack_t
     ability_type      = BACKSTAB;
     requires_weapon   = WEAPON_DAGGER;
     requires_position = POSITION_BACK;
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
       weapon_multiplier *= 1.13;
   }
 
@@ -1993,7 +1993,7 @@ struct hemorrhage_t : public rogue_attack_t
     weapon = &( p -> main_hand_weapon );
     tick_may_crit = false;
     may_multistrike = true;
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
     {
       weapon_multiplier *= 1.2;
       attack_power_mod.tick *= 1.2;
@@ -3885,7 +3885,7 @@ struct shadow_reflection_pet_t : public pet_t
       shadow_reflection_attack_t( "ambush", p, p -> find_spell( 8676 ) )
     {
       requires_position = POSITION_BACK;
-      if ( p -> wod_19005_hotfix )
+      if ( p -> wod_hotfix )
         weapon_multiplier *= 1.13;
     }
   };
@@ -3903,7 +3903,7 @@ struct shadow_reflection_pet_t : public pet_t
       shadow_reflection_attack_t( "backstab", p, p -> find_spell( 53 ) )
     {
       requires_position = POSITION_BACK;
-      if ( p -> wod_19005_hotfix )
+      if ( p -> wod_hotfix )
         weapon_multiplier *= 1.13;
     }
   };
@@ -4322,7 +4322,7 @@ double rogue_t::composite_player_multiplier( school_e school ) const
 
     if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
     {
-      if ( wod_19005_hotfix )
+      if ( wod_hotfix )
         m *= 1.1;
       else
         m *= 1.0 + spec.assassins_resolve -> effectN( 2 ).percent();

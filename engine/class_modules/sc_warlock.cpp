@@ -2163,7 +2163,7 @@ struct agony_t: public warlock_spell_t
     warlock_spell_t( p, "Agony" )
   {
     may_crit = false;
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
       spell_power_mod.tick *= 0.9;
   }
 
@@ -2705,7 +2705,7 @@ struct unstable_affliction_t: public warlock_spell_t
     warlock_spell_t( p, "Unstable Affliction" )
   {
     may_crit = false;
-    if ( p -> wod_19005_hotfix )
+    if ( p -> wod_hotfix )
       spell_power_mod.tick *= 0.9;
     if ( p -> glyphs.unstable_affliction -> ok() )
       base_execute_time *= 1.0 + p -> glyphs.unstable_affliction -> effectN( 1 ).percent();
