@@ -3004,7 +3004,7 @@ double player_t::composite_rating( rating_e rating ) const
     default: break;
   }
 
-  return v * composite_rating_multiplier( rating );
+  return util::round( v * composite_rating_multiplier( rating ), 0 );
 }
 
 // player_t::composite_player_vulnerability =================================
