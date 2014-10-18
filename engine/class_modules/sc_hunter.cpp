@@ -2022,6 +2022,8 @@ struct glaive_toss_strike_t: public ranged_attack_t
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
     aoe = -1;    
+    if ( player -> wod_hotfix )
+      base_multiplier *= 1.15;
   }
 
   virtual double composite_target_multiplier( player_t* target ) const
@@ -2046,7 +2048,9 @@ struct glaive_rebound_t: public ranged_attack_t
     special = true;
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
-    aoe = -1;    
+    aoe = -1;   
+    if ( player -> wod_hotfix )
+      base_multiplier *= 1.15;
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const
@@ -2084,8 +2088,6 @@ struct glaive_t: public ranged_attack_t
     glaive_rebound -> stats = stats;
     dot_duration = timespan_t::zero();
     travel_speed = player -> talents.glaive_toss -> effectN( 3 ).trigger() -> missile_speed();
-    if ( player -> wod_hotfix )
-      base_multiplier *= 1.15;
   }
 
   virtual void impact( action_state_t* s )
@@ -2191,8 +2193,8 @@ struct black_arrow_t: public hunter_ranged_attack_t
     // Last minute Celestalon fixes before WoD release
     if ( p() -> wod_hotfix ) 
     {
-      attack_power_mod.tick *= 1.12;
-      attack_power_mod.direct *= 1.12;
+      attack_power_mod.tick *= 1.12 * 1.15;
+      attack_power_mod.direct *= 1.12 * 1.15;
     }
 
     may_multistrike = 1;
@@ -2464,8 +2466,8 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     // Last minute Celestalon fixes before WoD release
     if ( p() -> wod_hotfix ) 
     {
-      attack_power_mod.tick *= 1.12;
-      attack_power_mod.direct *= 1.12;
+      attack_power_mod.tick *= 1.12 * 1.15;
+      attack_power_mod.direct *= 1.12 * 1.15;
     }
   }
 
@@ -2588,8 +2590,8 @@ struct serpent_sting_t: public hunter_ranged_attack_t
     // Last minute Celestalon fixes before WoD release
     if ( p() -> wod_hotfix ) 
     {
-      attack_power_mod.tick *= 1.12;
-      attack_power_mod.direct *= 1.12;
+      attack_power_mod.tick *= 1.12 * 1.15;
+      attack_power_mod.direct *= 1.12 * 1.15;
     }
   }
 };
