@@ -2411,6 +2411,7 @@ struct shadow_bolt_t: public warlock_spell_t
     hand_of_guldan               -> background = true;
     hand_of_guldan               -> base_costs[RESOURCE_MANA] = 0;
     hand_of_guldan               -> cooldown = p -> get_cooldown( "t16_4pc_demo" );
+    generate_fury = data().effectN( 2 ).base_value();
   }
 
   virtual void impact( action_state_t* s )
