@@ -2096,7 +2096,10 @@ struct raging_blow_attack_t: public warrior_attack_t
     may_miss = may_dodge = may_parry = may_block = false;
     dual = true;
     if ( p -> wod_hotfix )
+    {
+      weapon_multiplier *= 0.9;
       weapon_multiplier *= 0.83;
+    }
   }
 
   void impact( action_state_t* s )
@@ -2902,7 +2905,10 @@ struct wild_strike_t: public warrior_attack_t
     weapon = &( player -> off_hand_weapon );
     min_gcd = data().gcd();
     if ( p -> wod_hotfix )
+    {
+      weapon_multiplier *= 0.92;
       weapon_multiplier *= 0.83;
+    }
   }
 
   double cost() const
