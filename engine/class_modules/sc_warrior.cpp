@@ -4017,21 +4017,21 @@ void warrior_t::apl_fury()
   two_targets -> add_talent( this, "Bloodbath" );
   two_targets -> add_talent( this, "Ravager", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   two_targets -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
+  two_targets -> add_talent( this, "Bladestorm", "if=buff.enrage.up" );
   two_targets -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<50|buff.raging_blow.down" );
   two_targets -> add_action( this, "Execute", "if=target.health.pct<20|buff.sudden_death.react" );
   two_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.up" );
   two_targets -> add_action( this, "Whirlwind", "if=!buff.meat_cleaver.up" );
-  two_targets -> add_talent( this, "Bladestorm", "if=buff.enrage.up" );
   two_targets -> add_action( this, "Bloodthirst" );
 
   three_targets -> add_talent( this, "Bloodbath" );
   three_targets -> add_talent( this, "Ravager", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
+  three_targets -> add_talent( this, "Bladestorm", "if=buff.enrage.up" );
   three_targets -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<50|buff.raging_blow.down" );
   three_targets -> add_action( this, "Execute", "if=buff.sudden_death.react" );
   three_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack>=2" );
   three_targets -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   three_targets -> add_action( this, "Whirlwind" );
-  three_targets -> add_talent( this, "Bladestorm", "if=buff.enrage.up" );
   three_targets -> add_action( this, "Bloodthirst" );
 
   aoe -> add_talent( this, "Bloodbath" );

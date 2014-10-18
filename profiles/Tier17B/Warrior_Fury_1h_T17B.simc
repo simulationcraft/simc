@@ -69,21 +69,21 @@ actions.single_target+=/bloodthirst
 actions.two_targets=bloodbath
 actions.two_targets+=/ravager,if=buff.bloodbath.up|!talent.bloodbath.enabled
 actions.two_targets+=/dragon_roar,if=buff.bloodbath.up|!talent.bloodbath.enabled
+actions.two_targets+=/bladestorm,if=buff.enrage.up
 actions.two_targets+=/bloodthirst,if=buff.enrage.down|rage<50|buff.raging_blow.down
 actions.two_targets+=/execute,if=target.health.pct<20|buff.sudden_death.react
 actions.two_targets+=/raging_blow,if=buff.meat_cleaver.up
 actions.two_targets+=/whirlwind,if=!buff.meat_cleaver.up
-actions.two_targets+=/bladestorm,if=buff.enrage.up
 actions.two_targets+=/bloodthirst
 
 actions.three_targets=bloodbath
 actions.three_targets+=/ravager,if=buff.bloodbath.up|!talent.bloodbath.enabled
+actions.three_targets+=/bladestorm,if=buff.enrage.up
 actions.three_targets+=/bloodthirst,if=buff.enrage.down|rage<50|buff.raging_blow.down
 actions.three_targets+=/execute,if=buff.sudden_death.react
 actions.three_targets+=/raging_blow,if=buff.meat_cleaver.stack>=2
 actions.three_targets+=/dragon_roar,if=buff.bloodbath.up|!talent.bloodbath.enabled
 actions.three_targets+=/whirlwind
-actions.three_targets+=/bladestorm,if=buff.enrage.up
 actions.three_targets+=/bloodthirst
 
 actions.aoe=bloodbath
