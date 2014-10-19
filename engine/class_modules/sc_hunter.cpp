@@ -86,6 +86,8 @@ public:
     buff_t* rapid_fire;
     buff_t* sniper_training;
     buff_t* tier13_4pc;
+    buff_t* tier16_2pc;
+    buff_t* tier16_4pc;
     buff_t* tier16_4pc_mm_keen_eye;
     buff_t* tier16_4pc_bm_brutal_kinship;
     buff_t* heavy_shot; // t17 SV 4pc
@@ -1307,13 +1309,6 @@ struct kill_command_t: public hunter_main_pet_attack_t
     attack_power_mod.direct  = 1.36; // Hard-coded in tooltip.
   }
 
-  double action_multiplier() const
-  {
-    double am = hunter_main_pet_attack_t::action_multiplier();
-    am *= 1.0 + o() -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
-    return am;
-  }
-
   // Override behavior so that Kill Command uses hunter's attack power rather than the pet's
   double composite_attack_power() const
   {
@@ -1961,21 +1956,14 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     crit_gain += p -> sets.set( HUNTER_MARKSMANSHIP, T17, B2 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
     if ( player -> wod_hotfix )
       weapon_multiplier *= 1.15;
+
+    base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
   }
 
   virtual double cost() const
   {
     return thrill_discount( hunter_ranged_attack_t::cost() );
-  }
-
-  virtual timespan_t execute_time() const
-  {
-    timespan_t cast_time = hunter_ranged_attack_t::execute_time();
-    if ( p() -> buffs.tier16_4pc_mm_keen_eye -> check() )
-      cast_time *= 1.0 + p() -> buffs.tier16_4pc_mm_keen_eye -> data().effectN( 1 ).percent();
-
-    return cast_time;
-  }
+  } 
 
   virtual double composite_target_crit( player_t* t ) const
   {
@@ -1997,8 +1985,6 @@ struct aimed_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
     consume_thrill_of_the_hunt();
-    if ( p() -> buffs.tier16_4pc_mm_keen_eye -> up() )
-      p() -> buffs.tier16_4pc_mm_keen_eye -> expire();
   }
 };
 
@@ -2431,6 +2417,7 @@ struct explosive_shot_tick_t: public residual_action::residual_periodic_action_t
 struct explosive_shot_t: public hunter_ranged_attack_t
 {
   double tick_count;
+  proc_t* tier16_4pc;
 
   explosive_shot_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "explosive_shot", player, player -> specs.explosive_shot )
@@ -2445,6 +2432,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     tick_count = player -> active.explosive_ticks -> dot_duration.total_seconds();
 
     starved_proc = player -> get_proc( "starved: explosive_shot" );
+    tier16_4pc = player -> get_proc( "tier16_4pc: skip lnl reset" );
 
     // Last minute Celestalon fixes before WoD release
     if ( p() -> wod_hotfix ) 
@@ -2487,8 +2475,14 @@ struct explosive_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    p() -> buffs.lock_and_load -> up();
-    p() -> buffs.lock_and_load -> decrement();
+    if ( p() -> buffs.lock_and_load -> up() ) 
+    {
+      bool free_lnl = p() -> rng().roll( p() -> sets.set( SET_MELEE, T16, B4 ) -> effectN( 1 ).percent() );
+      if ( free_lnl )
+        tier16_4pc -> occur();
+      else
+        p() -> buffs.lock_and_load -> decrement();
+    }
   }
 
   void impact( action_state_t* s )
@@ -2578,6 +2572,8 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     parse_options( options_str );
     if ( player -> wod_hotfix )
       weapon_multiplier *= 1.15;
+
+    base_multiplier *= 1.0 + player -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
   }
 
   virtual double cost() const
@@ -2623,6 +2619,8 @@ struct multi_shot_t: public hunter_ranged_attack_t
     aoe = -1;
     if ( player -> wod_hotfix )
       weapon_multiplier *= 1.3;
+
+    base_multiplier *= 1.0 + player -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
   }
 
   virtual double cost() const
@@ -3569,12 +3567,16 @@ void hunter_t::create_buffs()
   // Added 0.027 seconds to properly reflect haste threshholds seen in game.
   /*.quiet( true )*/;
 
-  buffs.tier13_4pc                  = buff_creator_t( this, 105919, "tier13_4pc" )
+  buffs.tier13_4pc        = buff_creator_t( this, 105919, "tier13_4pc" )
     .chance( sets.set( SET_MELEE, T13, B4 ) -> proc_chance() )
     .cd( timespan_t::from_seconds( 105.0 ) )
     .add_invalidate( CACHE_ATTACK_HASTE );
 
-  buffs.tier16_4pc_mm_keen_eye      = buff_creator_t( this, 144659, "tier16_4pc_keen_eye" );
+  buffs.tier16_2pc       = buff_creator_t( this, "tier16_2pc", sets.set( SET_MELEE, T16, B2 ) )
+    .activated( sets.has_set_bonus( SET_MELEE, T16, B2 ) );
+
+  buffs.tier16_4pc       = buff_creator_t( this, "tier16_4pc", sets.set( SET_MELEE, T16, B4 ) )
+    .activated( sets.has_set_bonus( SET_MELEE, T16, B4 ) );
 
   buffs.tier16_4pc_bm_brutal_kinship = buff_creator_t( this, 144670, "tier16_4pc_brutal_kinship" )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
