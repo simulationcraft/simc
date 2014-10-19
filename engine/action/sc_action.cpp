@@ -334,10 +334,12 @@ action_t::action_t( action_e       ty,
   sync_action                    = NULL;
   marker                         = 0;
   last_reaction_time             = timespan_t::zero();
-  tick_action                    = 0;
-  execute_action                 = 0;
-  impact_action                  = 0;
+  tick_action                    = NULL;
+  execute_action                 = NULL;
+  impact_action                  = NULL;
   dynamic_tick_action            = false;
+  starved_proc                   = NULL;
+
   // New Stuff
   snapshot_flags = 0;
   update_flags = STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_CRIT;
@@ -1573,9 +1575,6 @@ bool action_t::ready()
   if ( cooldown -> down() )
     return false;
 
-  if ( ! player -> resource_available( current_resource(), cost() ) )
-    return false;
-
   // Player Skill must not affect precombat actions
   if ( player -> in_combat && player -> current.skill < 1.0 && ! rng().roll( player -> current.skill ) )
     return false;
@@ -1591,6 +1590,12 @@ bool action_t::ready()
 
   if ( moving != -1 && moving != ( player -> is_moving() ? 1 : 0 ) )
     return false;
+
+  if ( ! player -> resource_available( current_resource(), cost() ) )
+  {
+    if ( starved_proc ) starved_proc ->  occur();
+    return false;
+  }
 
   if ( cycle_targets )
   {

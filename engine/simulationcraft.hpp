@@ -5703,6 +5703,7 @@ struct action_t : public noncopyable
   action_t* execute_action;
   action_t* impact_action;
   bool dynamic_tick_action; // Used with tick_action, tells tick_action to update state on every tick.
+  proc_t* starved_proc;
   int64_t total_executions;
   cooldown_t line_cooldown;
   const action_priority_t* signature;
