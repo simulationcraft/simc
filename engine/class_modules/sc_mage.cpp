@@ -2510,9 +2510,12 @@ struct frostbolt_t : public mage_spell_t
 
   virtual void schedule_execute( action_state_t* execute_state )
   {
-    if ( sim -> current_time > last_enhanced_frostbolt +
+    if ( p() -> perks.enhanced_frostbolt -> ok() &&
+         sim -> current_time > last_enhanced_frostbolt +
                                enhanced_frostbolt_duration )
+    {
       p() -> buffs.enhanced_frostbolt -> trigger();
+    }
 
     mage_spell_t::schedule_execute( execute_state );
   }
