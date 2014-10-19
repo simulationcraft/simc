@@ -5950,10 +5950,7 @@ void druid_t::apl_precombat()
       if ( level > 90 )
         flask += "greater_draenic_agility_flask";
       else if ( level > 85 )
-      {
-        elixir1 += "mad_hozen";
-        elixir2 += "mantid";
-      }
+        flask += "winds";
       else
         flask += "steelskin";
     }
@@ -5961,8 +5958,6 @@ void druid_t::apl_precombat()
     {
       if ( level > 90 )
         flask += "greater_draenic_agility_flask";
-      else if ( level > 85 )
-        flask += "winds";
       else
         flask += "winds";
     }
@@ -6063,8 +6058,12 @@ void druid_t::apl_precombat()
   // Spec Specific Optimizations
   if ( specialization() == DRUID_BALANCE )
     precombat -> add_talent( this, "Stellar Flare" );
+
   if ( specialization() == DRUID_GUARDIAN )
+  {
+    precombat -> add_action( this, "Rejuvenation" );
     precombat -> add_talent( this, "Cenarion Ward" );
+  }
 }
 
 // NO Spec Combat Action Priority List ======================================
@@ -6240,30 +6239,42 @@ void druid_t::apl_guardian()
 
   std::vector<std::string> item_actions       = get_item_actions();
   std::vector<std::string> racial_actions     = get_racial_actions();
+  std::string              potion_action = "potion,name=";
+  if ( level > 90 )
+    potion_action += "draenic_armor";
+  else if ( level > 85 )
+    potion_action += "tolvir";
 
   default_list -> add_action( "auto_attack" );
-  default_list -> add_action( this, "Skull Bash" );
-  default_list -> add_action( this, "Savage Defense" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] );
   for ( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] );
+  if ( sim -> allow_potions && level >= 80 )
+    default_list -> add_action( potion_action + ",if=buff.berserking.up|buff.berserk.up" );
 
+  default_list -> add_action( this, "Skull Bash" );
   default_list -> add_action( this, "Barkskin" );
-  default_list -> add_action( this, "Maul", "if=buff.tooth_and_claw.react&incoming_damage_1s&rage>=80" );
-  default_list -> add_talent( this, "Cenarion Ward" );
+  default_list -> add_action( this, "Survival Instincts", "if=health.pct<50" );
+  default_list -> add_action( this, "Savage Defense", "if=buff.savage_defense.down" );
+  default_list -> add_action( this, "Frenzied Regeneration", "if=health.pct<40" );
+  default_list -> add_action( this, "Maul" );
+  default_list -> add_talent( this, "Force of Nature", "if=charges=3|trinket.proc.all.react|target.time_to_die<20" );
+  default_list -> add_talent( this, "Incarnation" );
+  default_list -> add_action( this, "Berserk", "if=dot.thrash_bear.remains>10&dot.lacerate.stack=3&dot.lacerate.remains>10&buff.son_of_ursoc.down" );
   default_list -> add_talent( this, "Renewal", "if=health.pct<30" );
-  default_list -> add_talent( this, "Heart of the Wild" );
-  default_list -> add_action( this, "Rejuvenation", "if=!ticking&buff.heart_of_the_wild.up" );
   default_list -> add_talent( this, "Nature's Vigil" );
-  default_list -> add_action( this, "Healing Touch", "if=buff.dream_of_cenarius.react&health.pct<30" );
-  default_list -> add_talent( this, "Pulverize", "if=buff.pulverize.remains<0.5" );
-  default_list -> add_action( this, "Lacerate", "if=talent.pulverize.enabled&buff.pulverize.remains<=(3-dot.lacerate.stack)*gcd" );
-  default_list -> add_action( "incarnation" );
-  default_list -> add_action( this, "Mangle", "if=buff.son_of_ursoc.down" );
-  default_list -> add_action( "thrash_bear,if=!ticking" );
-  default_list -> add_action( this, "Mangle" );
+  default_list -> add_talent( this, "Heart of the Wild" );
+  default_list -> add_talent( this, "Cenarion Ward" );
+  default_list -> add_action( this, "Lacerate", "cycle_targets=1,if=dot.lacerate.ticking&dot.lacerate.remains<2" );
+  default_list -> add_action( this, "Mangle", "if=active_enemies<4" );
+  default_list -> add_action( "thrash_bear,if=dot.thrash_bear.remains<1" );
+  default_list -> add_action( this, "Healing Touch", "if=buff.dream_of_cenarius.react&health.pct<10" );
+  default_list -> add_action( "thrash_bear,if=active_enemies>4" );
+  default_list -> add_action( this, "Lacerate", "cycle_targets=1,if=!dot.lacerate.ticking" );
+  default_list -> add_action( this, "Lacerate", "cycle_targets=1,if=dot.lacerate.stack<3" );
+  default_list -> add_action( "thrash_bear,if=active_enemies>1" );
   default_list -> add_action( this, "Lacerate" );
 }
 

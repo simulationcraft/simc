@@ -56,9 +56,10 @@ save=Druid_Balance_T16M.simc
 druid="Druid_Guardian_T16M"
 level=90
 race=troll
-talents=0101020
+talents=0201020
 position=front
 spec=guardian
+glyphs=maul
 wrists=bombers_blackened_wristwatch,id=112896,enchant=12agi,upgrade=4
 head=headguard_of_the_shattered_vale,id=99421,gems=indomitable_primal_10haste_10crit_11agi,upgrade=4
 chest=tunic_of_the_shattered_vale,id=99419,gems=10haste_10crit_10haste_10crit_10haste_10crit_11agi,enchant=80all,upgrade=4
@@ -75,5 +76,6 @@ feet=pandaren_roofsprinters,id=112827,gems=20crit_4mastery,enchant=9agi,upgrade=
 back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=10haste_10crit_4agi,enchant=13crit
 neck=immerseus_crystalline_eye,id=110761,upgrade=4
 save=Druid_Guardian_T16M.simc
+
 
 

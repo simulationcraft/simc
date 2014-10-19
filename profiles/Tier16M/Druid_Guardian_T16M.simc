@@ -3,7 +3,8 @@ level=90
 race=troll
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Ub!.0.0.1.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Ub!.1.0.1.
+glyphs=maul
 spec=guardian
 
 # This default action priority list is automatically created based on your character.
@@ -14,37 +15,42 @@ spec=guardian
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=elixir,type=mad_hozen
-actions.precombat+=/elixir,type=mantid
+actions.precombat=flask,type=winds
 actions.precombat+=/food,type=seafood_magnifique_feast
 actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions.precombat+=/bear_form
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/rejuvenation
 actions.precombat+=/cenarion_ward
 
 # Executed every time the actor is available.
 
 actions=auto_attack
-actions+=/skull_bash
-actions+=/savage_defense
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
+actions+=/potion,name=tolvir,if=buff.berserking.up|buff.berserk.up
+actions+=/skull_bash
 actions+=/barkskin
-actions+=/maul,if=buff.tooth_and_claw.react&incoming_damage_1s&rage>=80
-actions+=/cenarion_ward
+actions+=/survival_instincts,if=health.pct<50
+actions+=/savage_defense,if=buff.savage_defense.down
+actions+=/frenzied_regeneration,if=health.pct<40
+actions+=/maul
+actions+=/force_of_nature,if=charges=3|trinket.proc.all.react|target.time_to_die<20
+actions+=/berserk,if=dot.thrash_bear.remains>10&dot.lacerate.stack=3&dot.lacerate.remains>10&buff.son_of_ursoc.down
 actions+=/renewal,if=health.pct<30
-actions+=/heart_of_the_wild
-actions+=/rejuvenation,if=!ticking&buff.heart_of_the_wild.up
 actions+=/natures_vigil
-actions+=/healing_touch,if=buff.dream_of_cenarius.react&health.pct<30
-actions+=/pulverize,if=buff.pulverize.remains<0.5
-actions+=/lacerate,if=talent.pulverize.enabled&buff.pulverize.remains<=(3-dot.lacerate.stack)*gcd
-actions+=/incarnation
-actions+=/mangle,if=buff.son_of_ursoc.down
-actions+=/thrash_bear,if=!ticking
-actions+=/mangle
+actions+=/heart_of_the_wild
+actions+=/cenarion_ward
+actions+=/lacerate,cycle_targets=1,if=dot.lacerate.ticking&dot.lacerate.remains<2
+actions+=/mangle,if=active_enemies<4
+actions+=/thrash_bear,if=dot.thrash_bear.remains<1
+actions+=/healing_touch,if=buff.dream_of_cenarius.react&health.pct<10
+actions+=/thrash_bear,if=active_enemies>4
+actions+=/lacerate,cycle_targets=1,if=!dot.lacerate.ticking
+actions+=/lacerate,cycle_targets=1,if=dot.lacerate.stack<3
+actions+=/thrash_bear,if=active_enemies>1
 actions+=/lacerate
 
 head=headguard_of_the_shattered_vale,id=99421,upgrade=4,gems=indomitable_primal_10haste_10crit_11agi
