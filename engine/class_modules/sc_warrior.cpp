@@ -2911,6 +2911,18 @@ struct wild_strike_t: public warrior_attack_t
     }
   }
 
+  timespan_t gcd() const
+  { // Wild strike has an unwieldy gcd of 0.75, which results in some lost gcd time due to an average humans ability to
+    // Spam the key quickly enough for ability queue to catch it. If the lag tolerance is set high enough so that it functions normally, it 
+    // leads to accidentally double-triggering the ability when the player does not want to.
+    // After looking at a bunch of logs and testing it, the mean "GCD" tends to be around 0.78, with a range of 0.75-0.85.
+    timespan_t t = timespan_t::from_seconds( rng().gauss( 0.78, 0.05 ) );
+    if ( t < min_gcd )
+      return min_gcd;
+    else
+      return t;
+  }
+
   double cost() const
   {
     double c = warrior_attack_t::cost();
