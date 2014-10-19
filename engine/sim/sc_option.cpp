@@ -258,7 +258,7 @@ protected:
     if ( n != name() )
       return false;
 
-    int tmp = static_cast<int>( strtod( v.c_str(), nullptr ) );
+    double tmp = strtod( v.c_str(), nullptr );
     // Range checking
     if ( tmp < _min || tmp > _max ) {
       std::stringstream s;
