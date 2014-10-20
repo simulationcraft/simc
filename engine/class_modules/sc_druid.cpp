@@ -583,6 +583,7 @@ public:
 
   // Character Definition
   virtual void      arise();
+  virtual void      init();
   virtual void      init_spells();
   virtual void      init_base_stats();
   virtual void      create_buffs();
@@ -3552,9 +3553,6 @@ struct lifebloom_bloom_t : public druid_heal_t
     dot_duration        = timespan_t::zero();
     base_td          = 0;
     attack_power_mod.tick   = 0;
-    base_dd_min      = data().effectN( 2 ).min( p );
-    base_dd_max      = data().effectN( 2 ).max( p );
-    attack_power_mod.direct = data().effectN( 2 ).sp_coeff();
   }
 
   virtual double composite_target_multiplier( player_t* target ) const
@@ -6339,6 +6337,16 @@ void druid_t::arise()
   if ( glyph.savagery -> ok() )
     buff.savage_roar -> trigger();
 
+}
+
+// druid_t::init ============================================================
+
+void druid_t::init()
+{
+  player_t::init();
+
+  if ( specialization() == DRUID_RESTORATION )
+    sim -> errorf( "%s is using an unsupported spec.", name() );
 }
 // druid_t::init_gains ======================================================
 
