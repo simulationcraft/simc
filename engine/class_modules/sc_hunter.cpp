@@ -2881,7 +2881,7 @@ struct barrage_t: public hunter_spell_t
       aoe = -1;
       base_aoe_multiplier = 0.5;
       if ( player -> wod_hotfix )
-        attack_power_mod.direct *= 1.15;
+        weapon_multiplier *= 1.15;
     }
   };
 
