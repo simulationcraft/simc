@@ -2343,15 +2343,20 @@ struct ferocious_bite_t : public cat_attack_t
   {
     double c = cat_attack_t::composite_crit();
 
-    // TODO: Determine which bonus is applied first.
-
     if ( p() -> buff.tier15_4pc_melee -> check() )
       c += p() -> buff.tier15_4pc_melee -> data().effectN( 1 ).percent();
 
-    if ( target -> debuffs.bleeding -> check() )
-      c *= 2.0;
-
     return c;
+  }
+
+  double composite_crit_multiplier() const
+  {
+    double cm = cat_attack_t::composite_crit_multiplier();
+
+    if ( target -> debuffs.bleeding -> check() )
+      cm *= 2.0;
+
+    return cm;
   }
 };
 
@@ -2606,14 +2611,20 @@ struct shred_t : public cat_attack_t
   {
     double c = cat_attack_t::composite_crit();
 
-    // TODO: Determine which bonus is applied first.
-
     if ( p() -> buff.tier15_4pc_melee -> up() )
       c += p() -> buff.tier15_4pc_melee -> data().effectN( 1 ).percent();
-    if ( stealthed() )
-      c *= 2.0;
 
     return c;
+  }
+
+  double composite_crit_multiplier() const
+  {
+    double cm = cat_attack_t::composite_crit_multiplier();
+
+    if ( stealthed() )
+      cm *= 2.0;
+
+    return cm;
   }
 
   double action_multiplier() const
@@ -2680,14 +2691,14 @@ struct swipe_t : public cat_attack_t
     return tm;
   }
 
-  double composite_target_crit( player_t* t ) const
+  double composite_crit() const
   {
-    double tc = cat_attack_t::composite_target_crit( t );
+    double c = cat_attack_t::composite_crit();
 
     if ( p() -> buff.tier15_4pc_melee -> check() )
-      tc += p() -> buff.tier15_4pc_melee -> data().effectN( 1 ).percent();
+      c += p() -> buff.tier15_4pc_melee -> data().effectN( 1 ).percent();
 
-    return tc;
+    return c;
   }
 };
 
