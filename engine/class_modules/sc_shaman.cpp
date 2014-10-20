@@ -4813,15 +4813,18 @@ void shaman_t::trigger_maelstrom_weapon( const action_state_t* state )
   buff.maelstrom_weapon -> trigger( attack, 1, chance );
 }
 
-void shaman_t::trigger_tier16_2pc_melee( const action_state_t* )
+void shaman_t::trigger_tier16_2pc_melee( const action_state_t* state )
 {
+  if ( ! state -> action -> callbacks )
+    return;
+
   if ( ! buff.tier16_2pc_melee -> up() )
     return;
 
   if ( cooldown.t16_2pc_melee -> down() )
     return;
 
-  if ( ! rng().roll( buff.tier16_2pc_melee -> data().proc_chance() ) )
+  if ( ! rng().roll( buff.tier16_2pc_melee -> data().proc_chance() / 2.0 ) )
     return;
 
   proc.t16_2pc_melee -> occur();
