@@ -2488,7 +2488,7 @@ struct frost_bomb_t : public mage_spell_t
 
 struct frostbolt_t : public mage_spell_t
 {
-  double bf_proc_chance;
+  double bf_multistrike_bonus;
   timespan_t enhanced_frostbolt_duration,
              last_enhanced_frostbolt;
   // Icicle stats variable to parent icicle damage to Frostbolt, instead of
@@ -2497,7 +2497,7 @@ struct frostbolt_t : public mage_spell_t
 
   frostbolt_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "frostbolt", p, p -> find_specialization_spell( "Frostbolt" ) ),
-    bf_proc_chance( p -> spec.brain_freeze -> effectN( 1 ).percent() ),
+    bf_multistrike_bonus( 0.0 ),
     enhanced_frostbolt_duration( p -> find_spell( 157648 ) -> duration() ),
     icicle( p -> get_stats( "icicle_fb" ) )
   {
@@ -2524,7 +2524,8 @@ struct frostbolt_t : public mage_spell_t
   {
     int sm = mage_spell_t::schedule_multistrike( s, dmg_type, tick_multiplier );
 
-    bf_proc_chance += p() -> spec.brain_freeze -> effectN( 2 ).percent() * sm;
+    bf_multistrike_bonus = sm * p() -> spec.brain_freeze
+                                    -> effectN( 2 ).percent();
 
     return sm;
   }
@@ -2568,11 +2569,12 @@ struct frostbolt_t : public mage_spell_t
       p() -> buffs.fingers_of_frost
           -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
       p() -> buffs.brain_freeze
-          -> trigger( 1, buff_t::DEFAULT_VALUE(), bf_proc_chance );
+          -> trigger( 1, buff_t::DEFAULT_VALUE(),
+                      p() -> spec.brain_freeze -> effectN( 1 ).percent() +
+                      bf_multistrike_bonus );
     }
 
     p() -> buffs.frozen_thoughts -> expire();
-    bf_proc_chance = p() -> spec.brain_freeze -> effectN( 1 ).percent();
   }
 
   virtual void impact( action_state_t* s )
@@ -2654,27 +2656,19 @@ struct frostfire_bolt_t : public mage_spell_t
   // Icicle stats variable to parent icicle damage to Frostfire Bolt, instead of
   // clumping FB/FFB icicle damage together in reports.
   stats_t* icicle;
-  double brain_freeze_bonus;
 
   frostfire_bolt_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "frostfire_bolt", p, p -> find_spell( 44614 ) ),
     frigid_blast( new frigid_blast_t( p ) ),
-    icicle( 0 ),
-    brain_freeze_bonus( p -> find_spell( 44549 ) -> effectN( 3 ).percent() )
+    icicle( 0 )
   {
     parse_options( options_str );
     may_hot_streak = true;
     base_execute_time += p -> glyphs.frostfire -> effectN( 1 ).time_value();
 
-
     if ( p -> sets.has_set_bonus( SET_CASTER, T16, B2 ) )
     {
       add_child( frigid_blast );
-    }
-
-    if ( p -> wod_hotfix )
-    {
-      brain_freeze_bonus = 0.85;
     }
 
     if ( p -> specialization() == MAGE_FROST )
@@ -2723,7 +2717,8 @@ struct frostfire_bolt_t : public mage_spell_t
     }
 
     p() -> buffs.frozen_thoughts -> expire();
-    if ( p() -> buffs.brain_freeze -> check() && p() -> sets.has_set_bonus( SET_CASTER, T16, B2 ) )
+    if ( p() -> buffs.brain_freeze -> check() &&
+         p() -> sets.has_set_bonus( SET_CASTER, T16, B2 ) )
     {
       p() -> buffs.frozen_thoughts -> trigger();
     }
@@ -2821,7 +2816,14 @@ struct frostfire_bolt_t : public mage_spell_t
 
     if ( p() -> buffs.brain_freeze -> up() )
     {
-      am *= 1.0 + brain_freeze_bonus;
+      if ( p() -> wod_hotfix )
+      {
+        am *= 1.85;
+      }
+      else
+      {
+        am *= 1.0 + p() -> spec.brain_freeze -> effectN( 3 ).percent();
+      }
     }
 
     if ( p() -> wod_hotfix )
@@ -4505,11 +4507,7 @@ void mage_t::create_buffs()
                                   .chance( sets.has_set_bonus( MAGE_FIRE, T17, B4 ) );
 
   // Frost
-  buffs.brain_freeze          = buff_creator_t( this, "brain_freeze", spec.brain_freeze )
-                                  .duration( find_spell( 57761 ) -> duration() )
-                                  .default_value( spec.brain_freeze -> effectN( 1 ).percent() )
-                                  .max_stack( find_spell( 57761 ) -> max_stacks() )
-                                  .chance( find_spell( 44549 ) -> effectN( 1 ).percent() );
+  buffs.brain_freeze          = buff_creator_t( this, "brain_freeze", find_spell( 57761 ) );
   buffs.fingers_of_frost      = buff_creator_t( this, "fingers_of_frost", find_spell( 44544 ) );
   buffs.frost_armor           = buff_creator_t( this, "frost_armor", find_spell( 7302 ) )
                                   .add_invalidate( CACHE_MULTISTRIKE );
