@@ -33,7 +33,7 @@ druid="Druid_Balance_T16M"
 level=90
 race=troll
 spec=balance
-talents=010201
+talents=010101
 shoulders=shoulderwraps_of_the_shattered_vale,id=99428,gems=5int_10crit_5int_10crit_8int,enchant=15int_5crit,upgrade=4
 wrists=bracers_of_purified_spirit,id=105425,enchant=12int,upgrade=4
 back=xingho_breath_of_yulon,id=102246,gems=5int_10crit_4int,enchant=12int,upgrade=4
