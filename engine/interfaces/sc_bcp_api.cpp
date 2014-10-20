@@ -235,6 +235,15 @@ bool parse_items( player_t*  p,
       continue;
     else
       item.parsed.data.id = data[ "id" ].GetUint();
+
+    if ( data.HasMember( "bonusLists" ) )
+    {
+      for ( rapidjson::SizeType i = 0, n = data[ "bonusLists" ].Size(); i < n; ++i )
+      {
+        item.parsed.bonus_id.push_back( data[ "bonusLists" ][ i ].GetInt() );
+      }
+    }
+
     
     if ( ! data.HasMember( "tooltipParams" ) )
       continue;
