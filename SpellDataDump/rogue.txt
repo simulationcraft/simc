@@ -1,12 +1,12 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 19033)
+SimulationCraft 602-5 for World of Warcraft 6.0.2 Live (build level 19034)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
 Resource         : 35 Energy
 Spell Level      : 40
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Item - Rogue T9 4P Bonus (Hemorrhage, Sinister Strike, Backstab, and Mutilate) (67211), Vendetta (79140), Item - Rogue T11 2P Bonus (90460), Item - Rogue T11 4P Bonus (90473), Item - Rogue T14 2P Bonus (123116), Sanguinary Vein (124271), Silent Blades (145193), Sleight of Hand (145211)
+Affecting spells : Item - Rogue T9 4P Bonus (Hemorrhage, Sinister Strike, Backstab, and Mutilate) (67211), Vendetta (79140), Item - Rogue T11 2P Bonus (90460), Item - Rogue T11 4P Bonus (90473), Item - Rogue T14 2P Bonus (123116), Sanguinary Vein (124271), Hotfix Passive (137034), Silent Blades (145193), Sleight of Hand (145211)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -785,7 +785,7 @@ Resource         : 60 Energy
 Spell Level      : 6
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Stealth (1784), Shadow Dance (51713), Glyph of Ambush (56813), Vendetta (79140), Sanguinary Vein (124271), Cloak and Dagger (138106), Silent Blades (145193), Sleight of Hand (145211), Enhanced Vendetta (158108), Cold Blood (170882)
+Affecting spells : Stealth (1784), Shadow Dance (51713), Glyph of Ambush (56813), Vendetta (79140), Sanguinary Vein (124271), Hotfix Passive (137034), Cloak and Dagger (138106), Silent Blades (145193), Sleight of Hand (145211), Enhanced Vendetta (158108), Cold Blood (170882)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -809,7 +809,7 @@ Duration         : 3600 seconds
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Improved Poisons (14117), Envenom (32645), Glyph of Poisons (58038), Mastery: Potent Poisons (76803), Vendetta (79140), Sanguinary Vein (124271), Crimson Poison (157562), 
+Affecting spells : Improved Poisons (14117), Envenom (32645), Glyph of Poisons (58038), Mastery: Potent Poisons (76803), Vendetta (79140), Sanguinary Vein (124271), Hotfix Passive (137034), Crimson Poison (157562), 
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -836,7 +836,7 @@ Attributes       : ........ ........ .....x.. ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3617)     : School Damage: nature (2)
-                   Base Value: 12 | Scaled Value: 0 (avg=0.417, dl=0.28) | Value Range: 5 | AP Coefficient: 0.21800
+                   Base Value: 12 | Scaled Value: 0 (avg=0.417, dl=0.28) | Value Range: 5 | AP Coefficient: 0.13000
 #2 (id=133966)   : Apply Aura (6) | Unknown effect sub type (118)
                    Base Value: -25 | Scaled Value: -25 | AP Coefficient: 0.24000 | Misc Value: 127
 Description      : Coats a weapon with poison that lasts for 1 hour.
@@ -1100,7 +1100,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 24 seconds
-Affecting spells : Glyph of Hemorrhage (56807), Item - Rogue T8 2P Bonus (64914), Item - Rogue T9 4P Bonus (Hemorrhage, Sinister Strike, Backstab, and Mutilate) (67211), Vendetta (79140), Sanguinary Vein (124271), Silent Blades (145193)
+Affecting spells : Glyph of Hemorrhage (56807), Item - Rogue T8 2P Bonus (64914), Item - Rogue T9 4P Bonus (Hemorrhage, Sinister Strike, Backstab, and Mutilate) (67211), Vendetta (79140), Sanguinary Vein (124271), Hotfix Passive (137034), Silent Blades (145193)
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   .x...... ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2957,6 +2957,7 @@ Description      : Gives a chance to parry enemy melee attacks.
 Name             : Assassin's Resolve (id=84601) [Spell Family (8), Passive] 
 Class            : Assassination Rogue
 Spell Level      : 10
+Affecting spells : Hotfix Passive (137037)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ x....... ........ 
@@ -3874,16 +3875,21 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179718)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#2 (id=191064)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#3 (id=191065)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#4 (id=191066)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+#1 (id=179718)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+                   Base Value: 35 | Scaled Value: 35 | Misc Value: 12
+                   Affected Spells: Ambush (8676)
+#2 (id=191064)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 12
+                   Affected Spells: Backstab (53)
+#3 (id=191065)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 20 | Scaled Value: 20
+                   Affected Spells: Hemorrhage (16511)
+#4 (id=191066)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22
+                   Affected Spells: Hemorrhage (16511)
 #5 (id=191067)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
+                   Affected Spells: Wound Poison (8679)
 
 Name             : Hotfix Passive (id=137035) [Spell Family (8), Passive, Hidden] 
 Class            : Subtlety Rogue
@@ -3937,8 +3943,9 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179721)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+#1 (id=179721)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 12
+                   Affected Spells: Assassin's Resolve (84601)
 #2 (id=191052)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=191053)   : Apply Aura (6) | Dummy (4)

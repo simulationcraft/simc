@@ -187,11 +187,11 @@ off_hand=juggernauts_power_core,id=105521,upgrade=4,gems=20crit_4int,enchant=11i
 # Gear Summary
 # gear_strength=6
 # gear_agility=6
-# gear_stamina=1661
+# gear_stamina=1662
 # gear_intellect=1153
-# gear_spell_power=640
+# gear_spell_power=647
 # gear_crit_rating=919
-# gear_haste_rating=753
+# gear_haste_rating=754
 # gear_mastery_rating=150
 # gear_armor=384
 # gear_multistrike_rating=107

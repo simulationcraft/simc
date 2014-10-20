@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 19033)
+SimulationCraft 602-5 for World of Warcraft 6.0.2 Live (build level 19034)
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
 Resource         : 4% Base Mana (6400 @Level 100)
@@ -302,7 +302,7 @@ GCD              : 1.5 seconds
 Duration         : 24 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Affecting spells : Haunt (48181), Glyph of Verdant Spheres (56241), Mastery: Potent Afflictions (77215), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
+Affecting spells : Haunt (48181), Glyph of Verdant Spheres (56241), Mastery: Potent Afflictions (77215), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Hotfix Passive (137042), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -1358,7 +1358,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 14 seconds
-Affecting spells : Haunt (48181), Glyph of Unstable Affliction (56233), Glyph of Falling Meteor (56247), Item - Warlock T8 2P Bonus (64931), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 4P Bonus (70841), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Metamorphosis (103958), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
+Affecting spells : Haunt (48181), Glyph of Unstable Affliction (56233), Glyph of Falling Meteor (56247), Item - Warlock T8 2P Bonus (64931), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 4P Bonus (70841), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Metamorphosis (103958), Grimoire of Sacrifice (108503), Hotfix Passive (137042), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -1496,7 +1496,7 @@ Class            : Warlock
 Range            : 50000 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
-Affecting spells : Mastery: Potent Afflictions (77215), Metamorphosis (103958), Kil'jaeden's Cunning (137587)
+Affecting spells : Mastery: Potent Afflictions (77215), Metamorphosis (103958), Hotfix Passive (137042), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ x....... ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1968,7 +1968,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=49275)    : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Summon Infernal (1122), Rain of Fire (5740), Hellfire (5857), Infernal Awakening (22703), Seed of Corruption (27285), Rain of Fire (42223), Hand of Gul'dan (86040), Seed of Corruption (87385), Rain of Fire (104232), Rain of Fire (104233), Hand of Gul'dan (105174), Conflagrate (108685), Immolate (108686), Incinerate (114654), Chaos Wave (124915), Chaos Wave (124916), Meteor Strike (171017), Meteor Strike (171018)
+                   Affected Spells: Summon Infernal (1122), Rain of Fire (5740), Hellfire (5857), Infernal Awakening (22703), Seed of Corruption (27285), Rain of Fire (42223), Hand of Gul'dan (86040), Seed of Corruption (87385), Rain of Fire (104232), Rain of Fire (104233), Hand of Gul'dan (105174), Conflagrate (108685), Immolate (108686), Incinerate (114654), Chaos Wave (124915), Chaos Wave (124916), Immolation Aura (129476), Meteor Strike (171017), Meteor Strike (171018)
 Description      : Your Hand of Gul'dan can now be targeted at a location.
 
 Name             : Glyph of Demon Training (id=56249) [Spell Family (5), Passive, Hidden] 
@@ -2706,10 +2706,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75000
 #3 (id=92147)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000
-                   Affected Spells: Doom (603), Touch of Chaos (103964), Soul Fire (104027), Chaos Wave (124915), Demonbolt (157695)
+                   Affected Spells: Doom (603), Touch of Chaos (103964), Soul Fire (104027), Chaos Wave (124915), Immolation Aura (129476), Demonbolt (157695)
 #4 (id=251445)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Misc Value: 22
-                   Affected Spells: Doom (603), Touch of Chaos (103964), Soul Fire (104027), Chaos Wave (124915), Demonbolt (157695)
+                   Affected Spells: Doom (603), Touch of Chaos (103964), Soul Fire (104027), Chaos Wave (124915), Immolation Aura (129476), Demonbolt (157695)
 Description      : Increases all damage done by you and your demon servants by $s1%.
 
 Further increases the damage of your Touch of Chaos, Chaos Wave, Doom, Immolation Aura$?s157695[, Demonbolt][], and Soul Fire while in Metamorphosis by $s3%.
@@ -3234,7 +3234,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 8
 #7 (id=251496)   : Apply Aura (6) | Unknown effect sub type (275)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Eye of Kilrogg (126), Corruption (172), Immolate (348), Doom (603), Shadow Bolt (686), Summon Imp (688), Drain Life (689), Summon Felhunter (691), Summon Voidwalker (697), Banish (710), Summon Succubus (712), Health Funnel (755), Agony (980), Enslave Demon (1098), Summon Infernal (1122), Life Tap (1454), Hellfire (1949), Use Soulstone (3026), Howl of Terror (5484), Rain of Fire (5740), Fear (5782), Hellfire (5857), Create Healthstone (6201), Healthstone (6262), Soul Fire (6353), Mortal Coil (6789), Shadowburn (17877), Conflagrate (17962), Summon Doomguard (18540), Immolation (20153), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Unstable Affliction (30108), Shadowfury (30283), Unstable Affliction (31117), Soulshatter (32835), Rain of Fire (42223), Hand of Gul'dan (47960), Soulburn (74434), Havoc (80240), Doom Bolt (85692), Seed of Corruption (87385), Drain Soul (103103), Immolation Aura (104025), Soul Fire (104027), Rain of Fire (104232), Imp Swarm (104316), Unending Resolve (104773), Hand of Gul'dan (105174), Harvest Life (108371), Fire and Brimstone (108683), Conflagrate (108685), Immolate (108686), Dark Intent (109773), Dark Soul: Instability (113858), Dark Soul: Misery (113860), Dark Soul: Knowledge (113861), Health Funnel (114189), Ember Tap (114635), Incinerate (114654), Seed of Corruption (114790), Shadow Shield (115234), Chaos Bolt (116858), Fear (118699), Soul Swap (119678), Chaos Wave (124915), Chaos Wave (124916), Unstable Affliction (131736), Agony (131737), Corruption (131740), Seed of Corruption (132566), Corruption (146739), Unending Resolve (148688), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Convert Demon (175984)
+                   Affected Spells: Eye of Kilrogg (126), Corruption (172), Immolate (348), Doom (603), Shadow Bolt (686), Summon Imp (688), Drain Life (689), Summon Felhunter (691), Summon Voidwalker (697), Banish (710), Summon Succubus (712), Health Funnel (755), Agony (980), Enslave Demon (1098), Summon Infernal (1122), Life Tap (1454), Hellfire (1949), Use Soulstone (3026), Howl of Terror (5484), Rain of Fire (5740), Fear (5782), Hellfire (5857), Create Healthstone (6201), Healthstone (6262), Soul Fire (6353), Mortal Coil (6789), Shadowburn (17877), Conflagrate (17962), Summon Doomguard (18540), Immolation (20153), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Unstable Affliction (30108), Shadowfury (30283), Unstable Affliction (31117), Soulshatter (32835), Rain of Fire (42223), Hand of Gul'dan (47960), Soulburn (74434), Havoc (80240), Doom Bolt (85692), Seed of Corruption (87385), Drain Soul (103103), Immolation Aura (104025), Soul Fire (104027), Rain of Fire (104232), Imp Swarm (104316), Unending Resolve (104773), Hand of Gul'dan (105174), Harvest Life (108371), Fire and Brimstone (108683), Conflagrate (108685), Immolate (108686), Dark Intent (109773), Dark Soul: Instability (113858), Dark Soul: Misery (113860), Dark Soul: Knowledge (113861), Health Funnel (114189), Ember Tap (114635), Incinerate (114654), Seed of Corruption (114790), Shadow Shield (115234), Chaos Bolt (116858), Fear (118699), Soul Swap (119678), Chaos Wave (124915), Chaos Wave (124916), Immolation Aura (129476), Unstable Affliction (131736), Agony (131737), Corruption (131740), Seed of Corruption (132566), Corruption (146739), Unending Resolve (148688), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Convert Demon (175984)
 #8 (id=251497)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
                    Base Value: -500 | Scaled Value: -500 | SP Coefficient: 1.00000 | Misc Value: 21
                    Affected Spells: Summon Imp (688), Summon Felhunter (691), Summon Voidwalker (697), Summon Succubus (712), Health Funnel (755), Summon Infernal (1122), Life Tap (1454), Summon Doomguard (18540), Summon Voidwalker (25112), Summon Felguard (30146), Summon Fel Imp (112866), Summon Voidlord (112867), Summon Shivarra (112868), Summon Observer (112869), Summon Wrathguard (112870), Summon Abyssal (112921), Summon Terrorguard (112927), Health Funnel (114189)
@@ -3828,12 +3828,12 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=119647)   : Apply Aura (6) | Add Percent Modifier: Spell Radius (108)
                    Base Value: 125 | Scaled Value: 125 | Misc Value: 6
-                   Affected Spells: Hellfire (1949), Rain of Fire (5740), Hellfire (5857), Seed of Corruption (27285), Rain of Fire (42223), Seed of Corruption (87385), Immolation Aura (104025), Rain of Fire (104232), Rain of Fire (104233)
+                   Affected Spells: Hellfire (1949), Rain of Fire (5740), Hellfire (5857), Seed of Corruption (27285), Rain of Fire (42223), Seed of Corruption (87385), Immolation Aura (104025), Rain of Fire (104232), Rain of Fire (104233), Immolation Aura (129476)
 #2 (id=166299)   : Dummy (3)
                    Base Value: 500 | Scaled Value: 500
 #3 (id=196802)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 100 | Scaled Value: 100
-                   Affected Spells: Hellfire (1949), Rain of Fire (5740), Hellfire (5857), Seed of Corruption (27285), Rain of Fire (42223), Seed of Corruption (87385), Immolation Aura (104025), Rain of Fire (104232), Rain of Fire (104233)
+                   Affected Spells: Hellfire (1949), Rain of Fire (5740), Hellfire (5857), Seed of Corruption (27285), Rain of Fire (42223), Seed of Corruption (87385), Immolation Aura (104025), Rain of Fire (104232), Rain of Fire (104233), Immolation Aura (129476)
 Description      : Increases the area of effect by $s2% and damage by $s3% of Seed of Corruption, Hellfire, Immolation Aura, and Rain of Fire for $d.
 Tooltip          : Increases area of some area effect spells.
 Increases damage of some area effect spells.
@@ -4167,7 +4167,7 @@ Effects          :
                    Affected Spells: Immolate (348), Soul Fire (6353), Conflagrate (17962), Incinerate (29722), Soul Fire (104027), Conflagrate (108685), Immolate (108686), Incinerate (114654)
 #3 (id=126137)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21
-                   Affected Spells: Corruption (172), Immolate (348), Drain Life (689), Life Tap (1454), Hellfire (1949), Howl of Terror (5484), Rain of Fire (5740), Fear (5782), Hellfire (5857), Soul Fire (6353), Mortal Coil (6789), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Shadowfury (30283), Rain of Fire (42223), Soulburn (74434), Havoc (80240), Immolation Aura (104025), Soul Fire (104027), Rain of Fire (104232), Unending Resolve (104773), Fire and Brimstone (108683), Conflagrate (108685), Immolate (108686), Dark Intent (109773), Dark Soul: Instability (113858), Dark Soul: Misery (113860), Dark Soul: Knowledge (113861), Incinerate (114654), Chaos Bolt (116858), Fear (118699), Corruption (131740), Corruption (146739), Unending Resolve (148688)
+                   Affected Spells: Corruption (172), Immolate (348), Drain Life (689), Life Tap (1454), Hellfire (1949), Howl of Terror (5484), Rain of Fire (5740), Fear (5782), Hellfire (5857), Soul Fire (6353), Mortal Coil (6789), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Shadowfury (30283), Rain of Fire (42223), Soulburn (74434), Havoc (80240), Immolation Aura (104025), Soul Fire (104027), Rain of Fire (104232), Unending Resolve (104773), Fire and Brimstone (108683), Conflagrate (108685), Immolate (108686), Dark Intent (109773), Dark Soul: Instability (113858), Dark Soul: Misery (113860), Dark Soul: Knowledge (113861), Incinerate (114654), Chaos Bolt (116858), Fear (118699), Immolation Aura (129476), Corruption (131740), Corruption (146739), Unending Resolve (148688)
 #4 (id=162539)   : Apply Aura (6) | Unknown effect sub type (412)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value 2: 0x1
 Description      : You drain energy directly from the twisting nether. Your mana regenerates $s1% faster and your spell haste also increases your mana regeneration.$?s111546[][
@@ -4856,7 +4856,7 @@ Name             : Shadow Shield (id=115234) [Spell Family (5)]
 Class            : Warlock
 Spell Level      : 8
 Range            : 100 yards
-Affecting spells : Haunt (48181), Glyph of Verdant Spheres (56241), Mastery: Potent Afflictions (77215), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
+Affecting spells : Haunt (48181), Glyph of Verdant Spheres (56241), Mastery: Potent Afflictions (77215), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Hotfix Passive (137042), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
 Attributes       : ........ ........ ........ x..x....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   ........ .x...... ........ ........ 
                  : .......x ......xx ........ ........   ...x.... ........ .xx..... ........ 
@@ -5553,12 +5553,27 @@ Effects          :
 #1 (id=161557)   : Create Item (24)
                    Base Value: 1 | Scaled Value: 1
 
+Name             : Immolation Aura (id=129476) [Scaling Spell (10), Spell Family (5)] 
+Class            : Warlock
+Spell Level      : 20
+Affecting spells : Glyph of Hand of Gul'dan (56248), Mastery: Master Demonologist (77219), Metamorphosis (103958), Mannoroth's Fury (108508), Chaotic Energy (111546), Kil'jaeden's Cunning (137587)
+Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
+                 : ........ ........ ........ ......x.   ........ ........ ........ .x...... 
+                 : ........ .......x ........ ........   ........ ........ ........ ..x...x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=166012)   : School Damage: fire (2)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.175) | SP Coefficient: 0.10500 | Radius: 0 - 10 yards
+Description      : $@spelldesc104025
+
 Name             : Unstable Affliction (id=131736) [Scaling Spell (10), Spell Family (5)] 
 Class            : Warlock
 Spell Level      : 10
 Range            : 100 yards
 Cast Time        : 1.5 seconds
-Affecting spells : Haunt (48181), Glyph of Unstable Affliction (56233), Glyph of Falling Meteor (56247), Item - Warlock T8 2P Bonus (64931), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 4P Bonus (70841), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Metamorphosis (103958), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
+Affecting spells : Haunt (48181), Glyph of Unstable Affliction (56233), Glyph of Falling Meteor (56247), Item - Warlock T8 2P Bonus (64931), Item - Warlock T9 4P Bonus (Immolate, Corruption, and Unstable Affliction) (67231), Item - Warlock T10 4P Bonus (70841), Mastery: Potent Afflictions (77215), Item - Warlock T11 4P Bonus (89935), Metamorphosis (103958), Grimoire of Sacrifice (108503), Hotfix Passive (137042), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
 Attributes       : ........ ........ x......x x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ..x..... .x....x. 
                  : .......x ........ ....x... ........   ...x.... .....x.. .xx..... ........ 
@@ -5576,7 +5591,7 @@ Name             : Agony (id=131737) [Scaling Spell (10), Spell Family (5)]
 Class            : Warlock
 Spell Level      : 36
 Range            : 100 yards
-Affecting spells : Haunt (48181), Glyph of Verdant Spheres (56241), Mastery: Potent Afflictions (77215), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
+Affecting spells : Haunt (48181), Glyph of Verdant Spheres (56241), Mastery: Potent Afflictions (77215), Metamorphosis (103958), Item - Warlock T13 4P Bonus (Soulburn) (105787), Grimoire of Sacrifice (108503), Hotfix Passive (137042), Kil'jaeden's Cunning (137587), Haunting Spirits (157698), 
 Attributes       : ........ ........ x......x x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   .......x ........ ..x..... .x....x. 
                  : .......x ........ ....x... ........   ...x.... .....x.. .xx..... ........ 
@@ -5681,10 +5696,12 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179726)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#2 (id=188983)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+#1 (id=179726)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: -10 | Scaled Value: -10
+                   Affected Spells: Agony (980), Unstable Affliction (30108), Unstable Affliction (31117), Shadow Shield (115234), Unstable Affliction (131736), Agony (131737)
+#2 (id=188983)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 22
+                   Affected Spells: Agony (980), Unstable Affliction (30108), Unstable Affliction (31117), Shadow Shield (115234), Unstable Affliction (131736), Agony (131737)
 #3 (id=191035)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14
 #4 (id=191036)   : Apply Aura (6) | Dummy (4)
@@ -5866,7 +5883,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=180662)   : Apply Aura (6) | Unknown effect sub type (330)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7
-                   Affected Spells: Eye of Kilrogg (126), Corruption (172), Immolate (348), Doom (603), Shadow Bolt (686), Summon Imp (688), Drain Life (689), Summon Felhunter (691), Summon Voidwalker (697), Banish (710), Summon Succubus (712), Health Funnel (755), Agony (980), Enslave Demon (1098), Summon Infernal (1122), Life Tap (1454), Hellfire (1949), Use Soulstone (3026), Firebolt (3110), Howl of Terror (5484), Rain of Fire (5740), Fear (5782), Hellfire (5857), Create Healthstone (6201), Healthstone (6262), Soul Fire (6353), Mortal Coil (6789), Shadowburn (17877), Conflagrate (17962), Summon Doomguard (18540), Immolation (20153), Soulstone (20707), Infernal Awakening (22703), Summon Voidwalker (25112), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Soulshatter (29858), Unstable Affliction (30108), Summon Felguard (30146), Shadowfury (30283), Unstable Affliction (31117), Soulshatter (32835), Rain of Fire (42223), Hand of Gul'dan (47960), Haunt (48181), Soulburn (74434), Havoc (80240), Doom Bolt (85692), Hand of Gul'dan (86040), Soul Swap (86121), Soul Swap (86211), Seed of Corruption (87385), Drain Life (89653), Soul Harvest (101976), Drain Soul (103103), Metamorphosis (103958), Touch of Chaos (103964), Immolation Aura (104025), Soul Fire (104027), Rain of Fire (104232), Rain of Fire (104233), Imp Swarm (104316), Fel Firebolt (104318), Unending Resolve (104773), Hand of Gul'dan (105174), Harvest Life (108371), Nightfall (108558), Fire and Brimstone (108683), Conflagrate (108685), Immolate (108686), Demonic Leap (109151), Dark Intent (109773), Demonic Gateway (111771), Summon Fel Imp (112866), Summon Voidlord (112867), Summon Shivarra (112868), Summon Observer (112869), Summon Wrathguard (112870), Summon Abyssal (112921), Summon Terrorguard (112927), Dark Soul: Instability (113858), Dark Soul: Misery (113860), Dark Soul: Knowledge (113861), Demonic Gateway (113886), Demonic Gateway (113890), Health Funnel (114189), Wild Imps (114592), Ember Tap (114635), Incinerate (114654), Seed of Corruption (114790), Shadow Shield (115234), Chaos Bolt (116858), Backdraft (117828), Fear (118699), Soul Swap (119678), Command Demon (119898), Flames of Xoroth (120451), Molten Core (122355), Chaos Wave (124915), Chaos Wave (124916), Unstable Affliction (131736), Agony (131737), Corruption (131740), Seed of Corruption (132566), Corruption (146739), Unending Resolve (148688), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Item - Warlock T17 Destruction 4P Dummy Proc Roller (170001), Meteor Strike (171017), Meteor Strike (171018), Convert Demon (175984)
+                   Affected Spells: Eye of Kilrogg (126), Corruption (172), Immolate (348), Doom (603), Shadow Bolt (686), Summon Imp (688), Drain Life (689), Summon Felhunter (691), Summon Voidwalker (697), Banish (710), Summon Succubus (712), Health Funnel (755), Agony (980), Enslave Demon (1098), Summon Infernal (1122), Life Tap (1454), Hellfire (1949), Use Soulstone (3026), Firebolt (3110), Howl of Terror (5484), Rain of Fire (5740), Fear (5782), Hellfire (5857), Create Healthstone (6201), Healthstone (6262), Soul Fire (6353), Mortal Coil (6789), Shadowburn (17877), Conflagrate (17962), Summon Doomguard (18540), Immolation (20153), Soulstone (20707), Infernal Awakening (22703), Summon Voidwalker (25112), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Soulshatter (29858), Unstable Affliction (30108), Summon Felguard (30146), Shadowfury (30283), Unstable Affliction (31117), Soulshatter (32835), Rain of Fire (42223), Hand of Gul'dan (47960), Haunt (48181), Soulburn (74434), Havoc (80240), Doom Bolt (85692), Hand of Gul'dan (86040), Soul Swap (86121), Soul Swap (86211), Seed of Corruption (87385), Drain Life (89653), Soul Harvest (101976), Drain Soul (103103), Metamorphosis (103958), Touch of Chaos (103964), Immolation Aura (104025), Soul Fire (104027), Rain of Fire (104232), Rain of Fire (104233), Imp Swarm (104316), Fel Firebolt (104318), Unending Resolve (104773), Hand of Gul'dan (105174), Harvest Life (108371), Nightfall (108558), Fire and Brimstone (108683), Conflagrate (108685), Immolate (108686), Demonic Leap (109151), Dark Intent (109773), Demonic Gateway (111771), Summon Fel Imp (112866), Summon Voidlord (112867), Summon Shivarra (112868), Summon Observer (112869), Summon Wrathguard (112870), Summon Abyssal (112921), Summon Terrorguard (112927), Dark Soul: Instability (113858), Dark Soul: Misery (113860), Dark Soul: Knowledge (113861), Demonic Gateway (113886), Demonic Gateway (113890), Health Funnel (114189), Wild Imps (114592), Ember Tap (114635), Incinerate (114654), Seed of Corruption (114790), Shadow Shield (115234), Chaos Bolt (116858), Backdraft (117828), Fear (118699), Soul Swap (119678), Command Demon (119898), Flames of Xoroth (120451), Molten Core (122355), Chaos Wave (124915), Chaos Wave (124916), Immolation Aura (129476), Unstable Affliction (131736), Agony (131737), Corruption (131740), Seed of Corruption (132566), Corruption (146739), Unending Resolve (148688), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Item - Warlock T17 Destruction 4P Dummy Proc Roller (170001), Meteor Strike (171017), Meteor Strike (171018), Convert Demon (175984)
 Description      : The cunning of Kil'jaeden allows you to move while casting Warlock spells for $d. Castable while casting other spells.
 Tooltip          : Able to move while casting Warlock spells that have a cast or channel time.
 
@@ -5954,7 +5971,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=190659)   : Apply Aura (6) | Unknown effect sub type (309)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2
+                   Base Value: -2500 | Scaled Value: -2500 | Misc Value: 2
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
 
 Name             : Hand of Gul'dan (id=143381) [Scaling Spell (10), Spell Family (5)] 

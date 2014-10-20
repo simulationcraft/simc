@@ -52,8 +52,7 @@ actions.generator+=/sinister_strike
 
 # Combo point finishers
 
-actions.finisher=death_from_above
-actions.finisher+=/crimson_tempest,if=active_enemies>7&dot.crimson_tempest_dot.ticks_remain<=1
+actions.finisher=crimson_tempest,if=active_enemies>7&dot.crimson_tempest_dot.ticks_remain<=1
 actions.finisher+=/eviscerate
 
 head=sorkas_nightshade_cowl,id=113978
@@ -74,13 +73,13 @@ main_hand=hansgars_forgehammer,id=113897,enchant=mark_of_bleeding_hollow
 off_hand=hansgars_forgehammer,id=113897,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_agility=2695
-# gear_stamina=3384
+# gear_agility=2697
+# gear_stamina=3388
 # gear_crit_rating=465
-# gear_haste_rating=1204
+# gear_haste_rating=1206
 # gear_mastery_rating=651
 # gear_armor=976
-# gear_multistrike_rating=824
+# gear_multistrike_rating=826
 # gear_versatility_rating=93
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

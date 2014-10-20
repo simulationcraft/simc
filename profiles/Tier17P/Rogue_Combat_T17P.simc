@@ -52,8 +52,7 @@ actions.generator+=/sinister_strike
 
 # Combo point finishers
 
-actions.finisher=death_from_above
-actions.finisher+=/crimson_tempest,if=active_enemies>7&dot.crimson_tempest_dot.ticks_remain<=1
+actions.finisher=crimson_tempest,if=active_enemies>7&dot.crimson_tempest_dot.ticks_remain<=1
 actions.finisher+=/eviscerate
 
 head=crystalbinder_helm,id=109977,bonus_id=524

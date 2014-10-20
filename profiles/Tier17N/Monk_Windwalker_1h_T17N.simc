@@ -90,13 +90,13 @@ main_hand=hansgars_forgehammer,id=113897,enchant=mark_of_the_frostwolf
 off_hand=hansgars_forgehammer,id=113897,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_agility=2676
-# gear_stamina=3384
+# gear_agility=2678
+# gear_stamina=3388
 # gear_crit_rating=1004
-# gear_haste_rating=296
+# gear_haste_rating=298
 # gear_mastery_rating=232
 # gear_armor=976
-# gear_multistrike_rating=1458
+# gear_multistrike_rating=1460
 # gear_versatility_rating=256
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

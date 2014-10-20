@@ -158,11 +158,11 @@ main_hand=kromogs_brutal_fist,id=113927,bonus_id=567,enchant=mark_of_warsong
 off_hand=kromogs_protecting_palm,id=113926,bonus_id=567
 
 # Gear Summary
-# gear_strength=3607
-# gear_stamina=4538
+# gear_strength=3609
+# gear_stamina=4540
 # gear_crit_rating=746
-# gear_haste_rating=1427
-# gear_mastery_rating=849
+# gear_haste_rating=1428
+# gear_mastery_rating=850
 # gear_armor=3041
 # gear_bonus_armor=260
 # gear_multistrike_rating=596

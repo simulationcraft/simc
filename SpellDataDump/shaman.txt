@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 19033)
+SimulationCraft 602-5 for World of Warcraft 6.0.2 Live (build level 19034)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -2386,7 +2386,7 @@ Resource         : 40% Base Mana (12800 @Level 100)
 Spell Level      : 20
 Range            : 20 yards
 Cooldown         : 6 seconds
-Attributes       : ........ ........ x..x.... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2394,7 +2394,7 @@ Attributes       : ........ ........ x..x.... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=51290)    : School Damage: fire (2)
-                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.45903
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.45903
 Description      : Inflicts Fire damage to an enemy.
 
 Name             : Wind Shear (id=57994) [Spell Family (11)] 
@@ -2742,6 +2742,8 @@ Effects          :
                    Base Value: 674 | Scaled Value: 679 - 829 (avg=0) | Points Per Level: 0.1 | Value Range: 151 | SP Coefficient: 0.09100 | Radius: 8 yards
 #2 (id=55820)    : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 100 | Scaled Value: 100
+#3 (id=257246)   : Unknown effect type (179)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3691
 Description      : You cause the earth at the target location to tremble and break, dealing ${$SPN*0.1*10} Physical damage over $d to enemies in an $a1 yard radius$?s55437[ and reducing their movement speed by $55437s1% for $77478d][], with a $77478s2% chance of knocking down affected targets.
 Tooltip          : Suffering Physical damage every $t2 sec with a chance to be knocked down.
 
@@ -3137,7 +3139,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
 Affecting spells : Flurry (16282), Mental Quickness (30814), Lucidity (137326), Elemental Discharge (144999)
-Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
+Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4278,7 +4280,7 @@ Description      : When the Shaman deals direct damage or healing, $108281s1% of
 Name             : Healing Tide (id=114942) [Spell Family (11)] 
 Class            : Shaman
 Affecting spells : Restorative Waves (16213), Mastery: Deep Healing (77226)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ........ ........ ...x.... ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5037,7 +5039,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=190659)   : Apply Aura (6) | Unknown effect sub type (309)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2
+                   Base Value: -2500 | Scaled Value: -2500 | Misc Value: 2
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
 
 Name             : Glyph of Lightning Shield (id=142912) [Spell Family (11)] 

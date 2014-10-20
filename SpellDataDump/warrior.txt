@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 19033)
+SimulationCraft 602-5 for World of Warcraft 6.0.2 Live (build level 19034)
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 9
@@ -149,7 +149,7 @@ Spell Level      : 7
 Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 18 seconds
-Affecting spells : Recklessness (1719)
+Affecting spells : Recklessness (1719), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... .x...... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -587,7 +587,7 @@ Spell Level      : 30
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
-Affecting spells : Recklessness (1719), Headlong Rush (158836), Shield Charge (169667)
+Affecting spells : Recklessness (1719), Hotfix Passive (137047), Headlong Rush (158836), Shield Charge (169667)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -768,7 +768,7 @@ Resource         : 10 Rage
 Spell Level      : 19
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Affecting spells : Glyph of Rude Interruption (58372)
+Affecting spells : Glyph of Rude Interruption (58372), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -827,7 +827,7 @@ Name             : Sweeping Strikes (id=12723) [Spell Family (4)]
 Class            : Warrior
 Range            : 100 yards
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
-                 : .......x ........ ......x. .....x..   ........ .x...... ........ .....xx. 
+                 : .......x ........ ......x. .....x..   ........ .x...... ........ ......x. 
                  : ........ .......x ........ ........   ........ .......x ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1010,7 +1010,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Recklessness (1719), Item - Warrior T8 Protection 2P Bonus (64933), Item - Warrior T9 Tank 2P Bonus (Taunt) (67269), Item - Warrior T14 DPS 2P Bonus (123142), Headlong Rush (158836)
+Affecting spells : Recklessness (1719), Item - Warrior T8 Protection 2P Bonus (64933), Item - Warrior T9 Tank 2P Bonus (Taunt) (67269), Item - Warrior T14 DPS 2P Bonus (123142), Hotfix Passive (137047), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1173,7 +1173,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Recklessness (1719), Sword and Board (50227), Glyph of Shield Slam (58375), Item - Warrior T10 Protection 2P Bonus (70843), Item - Warrior T11 Protection 2P Bonus (90296), Shield Block (132404), Headlong Rush (158836), Vicious Strike (165642), Shield Charge (169667), 
+Affecting spells : Recklessness (1719), Sword and Board (50227), Glyph of Shield Slam (58375), Item - Warrior T10 Protection 2P Bonus (70843), Item - Warrior T11 Protection 2P Bonus (90296), Shield Block (132404), Hotfix Passive (137047), Headlong Rush (158836), Vicious Strike (165642), Shield Charge (169667), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1264,7 +1264,7 @@ Reduces the Rage cost of Thunder Clap by $s2%.
 
 Name             : Sudden Death (id=29725) [Spell Family (4), Passive] 
 Class            : Warrior
-Proc Chance      : 20%
+Proc Chance      : 10%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -1503,7 +1503,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 60 seconds
-Affecting spells : Recklessness (1719), Seasoned Soldier (12712), Protection (131086)
+Affecting spells : Recklessness (1719), Seasoned Soldier (12712), Protection (131086), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ....x... .xx....x ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -1617,7 +1617,7 @@ Description      : Secondary component for allowing sheilds to be carried while 
 Name             : Bladestorm (id=50622) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 1
-Affecting spells : Recklessness (1719), Seasoned Soldier (12712), Protection (131086)
+Affecting spells : Recklessness (1719), Seasoned Soldier (12712), Protection (131086), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : .......x .......x ........ ........   ........ .......x ........ ........ 
@@ -1657,7 +1657,6 @@ Duration         : 10 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
-Affecting spells : Single-Minded Fury (81099)
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2768,9 +2767,6 @@ Effects          :
 #3 (id=229541)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 15 | Scaled Value: 15
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (168874)
-#4 (id=256424)   : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
-                   Base Value: -5 | Scaled Value: -5 | Misc Value: 18
-                   Affected Spells: Sudden Death (52437)
 Description      : When you dual-wield one-handed weapons, all damage is increased by $s1%, and your off-hand weapon will deal an additional $s2% damage.
 
 Increases the damage of Execute by $s3%.
@@ -2818,7 +2814,7 @@ Resource         : 10 Rage
 Spell Level      : 30 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Recklessness (1719), Glyph of Enraged Speed (58355), Meat Cleaver (85739), Headlong Rush (158836)
+Affecting spells : Recklessness (1719), Glyph of Enraged Speed (58355), Meat Cleaver (85739), Hotfix Passive (137047), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2842,7 +2838,7 @@ Name             : Raging Blow Off-Hand (id=85384) [Spell Family (4)]
 Class            : Warrior
 Spell Level      : 30 (max 80)
 Range            : 100 yards
-Affecting spells : Recklessness (1719), Glyph of Enraged Speed (58355), Meat Cleaver (85739), Headlong Rush (158836)
+Affecting spells : Recklessness (1719), Glyph of Enraged Speed (58355), Meat Cleaver (85739), Hotfix Passive (137047), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ .x...... ........ x.....x. 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 
@@ -2980,7 +2976,7 @@ Name             : Rend (id=94009) [Spell Family (4)]
 Class            : Warrior
 Spell Level      : 7
 Range            : 100 yards
-Affecting spells : Recklessness (1719)
+Affecting spells : Recklessness (1719), Headlong Rush (158836)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3071,7 +3067,7 @@ Description      : Recklessness no longer increases damage taken.
 Name             : Bladestorm Off-Hand (id=95738) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 1
-Affecting spells : Recklessness (1719), Seasoned Soldier (12712), Protection (131086)
+Affecting spells : Recklessness (1719), Seasoned Soldier (12712), Protection (131086), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
                  : .......x .......x ........ ........   ........ .......x ........ ........ 
@@ -3089,7 +3085,7 @@ Name             : Raging Blow (id=96103) [Spell Family (4)]
 Class            : Warrior
 Spell Level      : 30 (max 80)
 Range            : 100 yards
-Affecting spells : Recklessness (1719), Glyph of Enraged Speed (58355), Meat Cleaver (85739), Headlong Rush (158836)
+Affecting spells : Recklessness (1719), Glyph of Enraged Speed (58355), Meat Cleaver (85739), Hotfix Passive (137047), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ......x. 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 
@@ -3141,7 +3137,7 @@ Resource         : 45 Rage
 Spell Level      : 18
 Range            : 5 yards
 GCD              : 0.75 seconds
-Affecting spells : Recklessness (1719), Bloodsurge (46916), Headlong Rush (158836), Furious Strikes (169679)
+Affecting spells : Recklessness (1719), Bloodsurge (46916), Hotfix Passive (137047), Headlong Rush (158836), Furious Strikes (169679)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3326,7 +3322,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 25 yards/sec
 Cooldown         : 30 seconds
-Affecting spells : Recklessness (1719), 
+Affecting spells : Recklessness (1719), Headlong Rush (158836)
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3586,7 +3582,7 @@ Duration         : 15 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ .......x ........ .......x 
                  : Heal Taken
-Affecting spells : Recklessness (1719)
+Affecting spells : Recklessness (1719), Headlong Rush (158836)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ..x..... ..x..... ..x...x. 
                  : ........ .......x ....x... ........   ........ ........ ........ ........ 
@@ -3747,7 +3743,7 @@ Class            : Warrior
 Spell Level      : 1
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Affecting spells : Recklessness (1719), 
+Affecting spells : Recklessness (1719), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3827,7 +3823,7 @@ Class            : Warrior
 Spell Level      : 1
 Range            : 30 yards
 Duration         : 0.5 seconds
-Affecting spells : Recklessness (1719), 
+Affecting spells : Recklessness (1719), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ...x.... ........ ........   ........ ........ ........ ........ 
@@ -4178,7 +4174,7 @@ Spell Level      : 1
 Range            : 30 yards
 Velocity         : 25 yards/sec
 Duration         : 4 seconds
-Affecting spells : Recklessness (1719), 
+Affecting spells : Recklessness (1719), Headlong Rush (158836)
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ..x..... ..x..... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4236,12 +4232,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179731)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#2 (id=188987)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#3 (id=191020)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+#1 (id=179731)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: -10 | Scaled Value: -10
+                   Affected Spells: Raging Blow (85288), Raging Blow Off-Hand (85384), Raging Blow (96103)
+#2 (id=188987)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: -8 | Scaled Value: -8
+                   Affected Spells: Wild Strike (100130)
+#3 (id=191020)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 5 | Scaled Value: 5
+                   Affected Spells: Revenge (6572), Devastate (20243), Shield Slam (23922)
 #4 (id=191021)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #5 (id=191022)   : Apply Aura (6) | Dummy (4)
@@ -4289,7 +4288,7 @@ Effects          :
 #5 (id=191016)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 
-Name             : Hotfix Passive (id=137050) [Passive, Hidden] 
+Name             : Hotfix Passive (id=137050) [Spell Family (4), Passive, Hidden] 
 Class            : Fury Warrior
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4491,7 +4490,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 25 yards/sec
 Cooldown         : 30 seconds
-Affecting spells : Recklessness (1719), 
+Affecting spells : Recklessness (1719), Headlong Rush (158836)
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4779,7 +4778,7 @@ GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Duration         : 11 seconds
 Cooldown         : 60 seconds
-Affecting spells : Recklessness (1719)
+Affecting spells : Recklessness (1719), Headlong Rush (158836)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4845,7 +4844,7 @@ Description      : Maximum rage increased by $s1%.
 Name             : Ravager (id=156287) [Spell Family (4)] 
 Class            : Warrior
 Range            : 100 yards
-Affecting spells : Recklessness (1719)
+Affecting spells : Recklessness (1719), Headlong Rush (158836)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -5119,7 +5118,7 @@ Effects          :
                    Affected Spells: Heroic Strike (78), Thunder Clap (6343), Mortal Strike (12294), Bloodthirst (23881), Shield Slam (23922), Shield Barrier (112048), Ignite Weapon (156288), Shield Barrier (174926)
 #2 (id=222415)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11
-                   Affected Spells: Defensive Stance (71), Heroic Strike (78), Commanding Shout (469), Slam (1464), Whirlwind (1680), Hamstring (1715), Battle Stance (2457), Intimidating Shout (5246), Execute (5308), Thunder Clap (6343), Revenge (6572), Battle Shout (6673), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Heroic Throw (57755), Raging Blow (85288), Raging Blow Off-Hand (85384), Colossus Smash (86346), Raging Blow (96103), Wild Strike (100130), Impending Victory (103840), Colossus Smash (108126), Shield Barrier (112048), Ignite Weapon (156288), Gladiator Stance (156291), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Whirlwind (168695), Execute (168874), Shield Barrier (174926)
+                   Affected Spells: Defensive Stance (71), Heroic Strike (78), Commanding Shout (469), Rend (772), Slam (1464), Whirlwind (1680), Hamstring (1715), Battle Stance (2457), Intimidating Shout (5246), Execute (5308), Thunder Clap (6343), Revenge (6572), Battle Shout (6673), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Bladestorm (50622), Heroic Throw (57755), Raging Blow (85288), Raging Blow Off-Hand (85384), Colossus Smash (86346), Rend (94009), Bladestorm Off-Hand (95738), Raging Blow (96103), Wild Strike (100130), Impending Victory (103840), Storm Bolt (107570), Colossus Smash (108126), Shield Barrier (112048), Deep Wounds (115767), Dragon Roar (118000), Dragon Roar (118895), Storm Bolt (132169), Storm Bolt Off-Hand (145585), Ravager (152277), Ravager (156287), Ignite Weapon (156288), Gladiator Stance (156291), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Whirlwind (168695), Execute (168874), Bladestorm (168969), Enhanced Rend (174736), Shield Barrier (174926), Siegebreaker (176289), Siegebreaker Off-Hand (176318)
 Description      : Haste reduces your global cooldown, and the cooldown of $?s12294[Mortal Strike and Thunder Clap]?s23881[Bloodthirst][Shield Slam and Thunder Clap].
 
 Name             : Blood Craze (id=159362) [Spell Family (4), Passive] 
@@ -5136,8 +5135,8 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=223203)   : Apply Aura (6) | Proc Trigger Spell: Blood Craze (42)
-                   Base Value: 3 | Scaled Value: 3 | Trigger Spell: 159363
+#1 (id=223203)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3
 Description      : Your multistrikes from auto attacks trigger a Blood Craze.
 
 Blood Craze regenerates $s1% of your health over $159363d. When this effect is refreshed, the remaining portion is added to the new effect.
@@ -5815,7 +5814,7 @@ Effects          :
 Name             : Bladestorm (id=168969) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 1
-Affecting spells : Recklessness (1719), Seasoned Soldier (12712), Protection (131086)
+Affecting spells : Recklessness (1719), Seasoned Soldier (12712), Protection (131086), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : .......x .......x ........ ........   ........ .......x ........ ........ 
@@ -5985,7 +5984,7 @@ Name             : Enhanced Rend (id=174736) [Spell Family (4)]
 Class            : Warrior
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Recklessness (1719)
+Affecting spells : Recklessness (1719), Headlong Rush (158836)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6088,7 +6087,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 45 seconds
-Affecting spells : Recklessness (1719)
+Affecting spells : Recklessness (1719), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6115,7 +6114,7 @@ Name             : Siegebreaker Off-Hand (id=176318) [Spell Family (4)]
 Class            : Warrior
 Spell Level      : 1
 Range            : 30 yards
-Affecting spells : Recklessness (1719)
+Affecting spells : Recklessness (1719), Headlong Rush (158836)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

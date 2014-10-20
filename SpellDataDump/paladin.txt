@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 19033)
+SimulationCraft 602-5 for World of Warcraft 6.0.2 Live (build level 19034)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -598,7 +598,7 @@ Effects          :
 #1 (id=11241)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16000 | AP Coefficient: 0.16000
 #2 (id=199737)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16000 | AP Coefficient: 0.16000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16000 | AP Coefficient: 0.16000 | Radius: 40 yards
 Description      : $@spelldesc20165
 
 Name             : Seal of Justice (id=20170) [Spell Family (10)] 
@@ -880,7 +880,7 @@ Spell Level      : 34
 GCD              : 1.5 seconds
 Duration         : 9 seconds
 Cooldown         : 9 seconds
-Affecting spells : Sanctity of Battle (25956), Glyph of Consecration (54928), Lucidity (137288), Improved Consecration (157486)
+Affecting spells : Sanctity of Battle (25956), Glyph of Consecration (54928), Hotfix Passive (137026), Lucidity (137288), Improved Consecration (157486)
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -1096,7 +1096,7 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Duration         : 3 seconds
 Cooldown         : 15 seconds
-Affecting spells : Sanctity of Battle (25956), Glyph of Focused Shield (54930), Grand Crusader (85416), Empowered Avenger's Shield (157485)
+Affecting spells : Sanctity of Battle (25956), Glyph of Focused Shield (54930), Grand Crusader (85416), Hotfix Passive (137026), Empowered Avenger's Shield (157485)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -1485,7 +1485,7 @@ Resource         : 3 Holy Power
 Spell Level      : 40
 Range            : 5 yards
 Cooldown         : 1.5 seconds
-Affecting spells : Sanctity of Battle (25956), Glyph of the Alabaster Shield (63222), Divine Purpose (90174), Alabaster Shield (121467)
+Affecting spells : Sanctity of Battle (25956), Glyph of the Alabaster Shield (63222), Divine Purpose (90174), Alabaster Shield (121467), Hotfix Passive (137026)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2721,16 +2721,16 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68009)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.85000 | Misc Value: 2
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Misc Value: 2
 #2 (id=92088)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 210 | Scaled Value: 210
+                   Base Value: 225 | Scaled Value: 225
 Description      : Your Crusader Strike, Hammer of the Righteous, Hammer of Wrath, Templar's Verdict, Divine Storm, and their multistrikes deal ${$76672m1}.1% additional damage as Holy damage.
 
 Name             : Consecration (id=81297) [Spell Family (10)] 
 Class            : Paladin
 Spell Level      : 6
 Range            : 50000 yards
-Affecting spells : Sanctity of Battle (25956), Lucidity (137288), Improved Consecration (157486)
+Affecting spells : Sanctity of Battle (25956), Hotfix Passive (137026), Lucidity (137288), Improved Consecration (157486)
 Attributes       : ........ ........ ........ x..x....   ...x...x ........ ........ ........ 
                  : ........ ......x. ...x.... ....x.x.   x....... ........ ........ .x....x. 
                  : ........ ........ ........ ........   ...x.... ..x..... .xx..... ..x..... 
@@ -2827,7 +2827,7 @@ Name             : Consecration (id=82366) [Spell Family (10), Hidden]
 Class            : Paladin
 Spell Level      : 1
 Duration         : 10 seconds
-Affecting spells : Sanctity of Battle (25956), Lucidity (137288), Improved Consecration (157486)
+Affecting spells : Sanctity of Battle (25956), Hotfix Passive (137026), Lucidity (137288), Improved Consecration (157486)
 Attributes       : .......x x....... x....... ........   ...x...x ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4431,7 +4431,7 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Duration         : 3 seconds
 Cooldown         : 15 seconds
-Affecting spells : Sanctity of Battle (25956), Glyph of Final Wrath (54935), Sanctified Wrath (171648), 
+Affecting spells : Sanctity of Battle (25956), Glyph of Final Wrath (54935), Hotfix Passive (137026), Sanctified Wrath (171648), 
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4841,7 +4841,7 @@ If used to heal another target, you will be healed for $93466s1% of the amount h
 
 Your damage is increased by $115522s1% per Holy Power spent for $115522d after you cast Word of Glory.][]
 
-Name             : Hotfix Passive (id=137026) [Passive, Hidden] 
+Name             : Hotfix Passive (id=137026) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4851,8 +4851,9 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179710)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+#1 (id=179710)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 5 | Scaled Value: 5
+                   Affected Spells: Consecration (26573), Avenger's Shield (31935), Shield of the Righteous (53600), Consecration (81297), Consecration (82366), Holy Wrath (119072)
 #2 (id=191096)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=191097)   : Apply Aura (6) | Dummy (4)
@@ -5485,6 +5486,8 @@ Effects          :
                    Base Value: 1000 | Scaled Value: 999.802 (avg=3.83066) | Misc Value: 1913523968
 #2 (id=218844)   : Apply Aura (6) | Unknown effect sub type (465)
                    Base Value: 1500 | Scaled Value: 999.802 (avg=3.83066)
+#3 (id=257238)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 1000 | Scaled Value: 999.802 (avg=3.83066) | Misc Value: 8
 Description      : The Light temporarily magnifies your power, increasing your Haste, Critical Strike, Mastery, Multistrike, Versatility, and Bonus Armor by $s1 for $d.
 Tooltip          : Haste, Critical Strike, Mastery, Multistrike, Versatility, and Bonus Armor increased by $s1.
 
@@ -6265,6 +6268,7 @@ Description      : Reduces the cooldown and effect of Avenging Wrath by $s1%.
 
 Name             : Merciful Wrath (Holy) (id=162605) 
 Class            : Paladin
+Spell Level      : 75
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

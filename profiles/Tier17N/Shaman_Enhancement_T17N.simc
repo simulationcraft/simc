@@ -101,13 +101,13 @@ main_hand=hansgars_forgehammer,id=113897,enchant=mark_of_warsong
 off_hand=hansgars_forgehammer,id=113897,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_agility=2695
-# gear_stamina=3384
+# gear_agility=2697
+# gear_stamina=3388
 # gear_crit_rating=565
-# gear_haste_rating=1236
+# gear_haste_rating=1238
 # gear_mastery_rating=514
 # gear_armor=1286
-# gear_multistrike_rating=691
+# gear_multistrike_rating=693
 # gear_versatility_rating=214
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

@@ -116,11 +116,11 @@ main_hand=kromogs_brutal_fist,id=113927,bonus_id=566,enchant=rune_of_the_fallen_
 off_hand=kromogs_brutal_fist,id=113927,bonus_id=566,enchant=rune_of_razorice
 
 # Gear Summary
-# gear_strength=3092
-# gear_stamina=3879
+# gear_strength=3096
+# gear_stamina=3885
 # gear_crit_rating=516
-# gear_haste_rating=795
-# gear_mastery_rating=1335
+# gear_haste_rating=799
+# gear_mastery_rating=1339
 # gear_armor=2148
 # gear_multistrike_rating=1011
 # set_bonus=tier17_2pc=1

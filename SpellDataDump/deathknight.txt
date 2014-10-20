@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 19033)
+SimulationCraft 602-5 for World of Warcraft 6.0.2 Live (build level 19034)
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -930,7 +930,7 @@ Spell Level      : 58
 Range            : 5 yards
 GCD              : 1 seconds
 Power Gain       : 20 Runic Power
-Affecting spells : Killing Machine (51124), Item - Death Knight T10 Melee 2P Bonus (70655), Might of the Frozen Wastes (81333), Item - Death Knight T14 DPS 2P Bonus (123077)
+Affecting spells : Killing Machine (51124), Item - Death Knight T10 Melee 2P Bonus (70655), Might of the Frozen Wastes (81333), Item - Death Knight T14 DPS 2P Bonus (123077), Hotfix Passive (137005)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1185,7 +1185,7 @@ Spell Level      : 56
 Range            : 5 yards
 GCD              : 1 seconds
 Power Gain       : 20 Runic Power
-Affecting spells : Veteran of the Third War (50029), Item - Death Knight T10 Melee 4P Bonus (70656), Might of the Frozen Wastes (81333), Item - Death Knight T11 Blood 2P Bonus (90454), Dark Succor (101568), Item - Death Knight T13 Blood 2P Bonus (105552), Item - Death Knight T13 Blood 4P Bonus (105587), Item - Death Knight T13 DPS 2P Bonus (105609), Item - Death Knight T13 DPS 4P Bonus (105646), Deathbringer (144953)
+Affecting spells : Veteran of the Third War (50029), Item - Death Knight T10 Melee 4P Bonus (70656), Might of the Frozen Wastes (81333), Item - Death Knight T11 Blood 2P Bonus (90454), Dark Succor (101568), Item - Death Knight T13 Blood 2P Bonus (105552), Item - Death Knight T13 Blood 4P Bonus (105587), Item - Death Knight T13 DPS 2P Bonus (105609), Item - Death Knight T13 DPS 4P Bonus (105646), Hotfix Passive (137005), Deathbringer (144953)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1413,8 +1413,7 @@ Class            : Death Knight
 Rune Cost        : 1 Blood Rune
 Spell Level      : 55
 GCD              : 1 seconds
-Power Gain       : 10 Runic Power
-Affecting spells : Glyph of Blood Boil (58657), Glyph of Resilient Grip (59309), Item - Death Knight T9 Tank 2P Bonus (67119), Crimson Scourge (81136), Crimson Scourge (81141)
+Affecting spells : Glyph of Blood Boil (58657), Glyph of Resilient Grip (59309), Item - Death Knight T9 Tank 2P Bonus (67119), Crimson Scourge (81136), Crimson Scourge (81141), Hotfix Passive (137005)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1424,6 +1423,8 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=43101)    : School Damage: shadow (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.60000 | Radius: 0 - 10 yards
+#2 (id=257363)   : Energize Power (30)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: runic_power
 Description      : Deals $s1 Shadow damage to all enemies within $A1 yards, and spreads your existing diseases from your target to all other enemies hit$?s49509[, refreshing them to full duration. Also increases the healing from your next Death Strike by $50421s1%][].$?s56835[  
 
 The Rune spent on this ability will become a Death Rune when it activates. Death Runes count as any type of Rune.][]
@@ -1643,7 +1644,7 @@ Description      : You become as hard to stop as death itself.  The duration of 
 Name             : Death and Decay (id=52212) [Scaling Spell (1), Spell Family (15)] 
 Class            : Death Knight
 Range            : 100 yards
-Affecting spells : Item - Death Knight T10 Tank 2P Bonus (70650)
+Affecting spells : Item - Death Knight T10 Tank 2P Bonus (70650), Hotfix Passive (137005)
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   ........ ........ ........ .x....x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -1833,7 +1834,7 @@ Spell Level      : 58
 Range            : 5 yards
 GCD              : 1 seconds
 Power Gain       : 10 Runic Power
-Affecting spells : Item - Death Knight T10 Melee 2P Bonus (70655), Item - Death Knight T14 DPS 2P Bonus (123077)
+Affecting spells : Item - Death Knight T10 Melee 2P Bonus (70655), Item - Death Knight T14 DPS 2P Bonus (123077), Hotfix Passive (137005)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3066,7 +3067,7 @@ Name             : Death Strike Off-Hand (id=66188) [Scaling Spell (1), Spell Fa
 Class            : Death Knight
 Range            : 100 yards
 GCD              : 1.5 seconds
-Affecting spells : Veteran of the Third War (50029), Item - Death Knight T10 Melee 4P Bonus (70656), Might of the Frozen Wastes (81333), Item - Death Knight T11 Blood 2P Bonus (90454), Dark Succor (101568), Item - Death Knight T13 Blood 2P Bonus (105552), Item - Death Knight T13 Blood 4P Bonus (105587), Item - Death Knight T13 DPS 2P Bonus (105609), Item - Death Knight T13 DPS 4P Bonus (105646), Deathbringer (144953)
+Affecting spells : Veteran of the Third War (50029), Item - Death Knight T10 Melee 4P Bonus (70656), Might of the Frozen Wastes (81333), Item - Death Knight T11 Blood 2P Bonus (90454), Dark Succor (101568), Item - Death Knight T13 Blood 2P Bonus (105552), Item - Death Knight T13 Blood 4P Bonus (105587), Item - Death Knight T13 DPS 2P Bonus (105609), Item - Death Knight T13 DPS 4P Bonus (105646), Hotfix Passive (137005), Deathbringer (144953)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x.....x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3122,7 +3123,7 @@ Name             : Obliterate Off-Hand (id=66198) [Scaling Spell (1), Spell Fami
 Class            : Death Knight
 Range            : 100 yards
 GCD              : 1.5 seconds
-Affecting spells : Killing Machine (51124), Item - Death Knight T10 Melee 2P Bonus (70655), Might of the Frozen Wastes (81333), Item - Death Knight T14 DPS 2P Bonus (123077)
+Affecting spells : Killing Machine (51124), Item - Death Knight T10 Melee 2P Bonus (70655), Might of the Frozen Wastes (81333), Item - Death Knight T14 DPS 2P Bonus (123077), Hotfix Passive (137005)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x.....x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3210,6 +3211,7 @@ Name             : Scourge Strike (id=70890) [Spell Family (15)]
 Class            : Death Knight
 Spell Level      : 80
 Range            : 100 yards
+Affecting spells : Hotfix Passive (137005)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -3535,7 +3537,7 @@ Spell Level      : 62
 Range            : 5 yards
 GCD              : 1 seconds
 Power Gain       : 20 Runic Power
-Affecting spells : Might of the Frozen Wastes (81333)
+Affecting spells : Might of the Frozen Wastes (81333), Hotfix Passive (137005)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4637,16 +4639,23 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179688)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#2 (id=188986)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#3 (id=191178)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#4 (id=191179)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#5 (id=191180)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+#1 (id=179688)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 12
+                   Affected Spells: Obliterate (49020), Obliterate Off-Hand (66198)
+#2 (id=188986)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+                   Base Value: -2 | Scaled Value: -2 | Misc Value: 12
+                   Affected Spells: Scourge Strike (55090)
+#3 (id=191178)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+                   Base Value: -4 | Scaled Value: -4 | Misc Value: 12
+                   Affected Spells: Scourge Strike (70890)
+#4 (id=191179)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: -5 | Scaled Value: -5
+#5 (id=191180)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 12
+                   Affected Spells: Festering Strike (85948)
+#6 (id=257279)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 20 | Scaled Value: 20
+                   Affected Spells: Death Strike (49998), Blood Boil (50842), Death and Decay (52212), Death Strike Off-Hand (66188), Defile (156000)
 
 Name             : Hotfix Passive (id=137006) [Passive, Hidden] 
 Class            : Frost Death Knight
@@ -4818,7 +4827,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=190659)   : Apply Aura (6) | Unknown effect sub type (309)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2
+                   Base Value: -2500 | Scaled Value: -2500 | Misc Value: 2
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
 
 Name             : Item - Death Knight T16 DPS 2P Bonus (id=144899) [Spell Family (15), Passive] 
@@ -5261,7 +5270,7 @@ Tooltip          : Mastery increased by $s1.
 Name             : Defile (id=156000) [Spell Family (15)] 
 Class            : Death Knight
 Range            : 100 yards
-Affecting spells : Item - Death Knight T10 Tank 2P Bonus (70650)
+Affecting spells : Item - Death Knight T10 Tank 2P Bonus (70650), Hotfix Passive (137005)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ .x...... 

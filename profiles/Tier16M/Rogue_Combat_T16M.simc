@@ -52,8 +52,7 @@ actions.generator+=/sinister_strike
 
 # Combo point finishers
 
-actions.finisher=death_from_above
-actions.finisher+=/crimson_tempest,if=active_enemies>7&dot.crimson_tempest_dot.ticks_remain<=1
+actions.finisher=crimson_tempest,if=active_enemies>7&dot.crimson_tempest_dot.ticks_remain<=1
 actions.finisher+=/eviscerate
 
 head=helmet_of_the_barbed_assassin,id=99348,upgrade=4,gems=capacitive_primal_10agi_11agi
@@ -76,9 +75,9 @@ off_hand=enchanted_shaotien_saber,id=105581,upgrade=4,gems=10agi_4agi,enchant=da
 # Gear Summary
 # gear_strength=5
 # gear_agility=1299
-# gear_stamina=1634
+# gear_stamina=1636
 # gear_intellect=5
-# gear_crit_rating=326
+# gear_crit_rating=328
 # gear_haste_rating=674
 # gear_mastery_rating=494
 # gear_armor=591

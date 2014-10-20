@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 19033)
+SimulationCraft 602-5 for World of Warcraft 6.0.2 Live (build level 19034)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 1
@@ -665,7 +665,7 @@ Resource         : 20 Rage
 Spell Level      : 10
 Range            : 5 yards
 Cooldown         : 3 seconds
-Affecting spells : Bear Form (5487), Glyph of Maul (54811), Incarnation: Son of Ursoc (102558), Bloodtalons (145152), Tooth and Claw (165411)
+Affecting spells : Bear Form (5487), Glyph of Maul (54811), Incarnation: Son of Ursoc (102558), Hotfix Passive (137009), Bloodtalons (145152), Tooth and Claw (165411)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1416,7 +1416,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Bear Form (5487), Item - Druid T9 Feral 2P Bonus (67121), Item - Druid T10 Feral 2P Bonus (70724), Item - Druid T11 Feral 2P Bonus (90162), Incarnation: Son of Ursoc (102558), Bloodtalons (145152)
+Affecting spells : Bear Form (5487), Item - Druid T9 Feral 2P Bonus (67121), Item - Druid T10 Feral 2P Bonus (70724), Item - Druid T11 Feral 2P Bonus (90162), Incarnation: Son of Ursoc (102558), Hotfix Passive (137009), Bloodtalons (145152)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1577,7 +1577,7 @@ Spell Level      : 8
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Bear Form (5487), Berserk (50334), Incarnation: Son of Ursoc (102558), Bloodtalons (145152), Soul of the Forest (158477), Dream of Cenarius (158501)
+Affecting spells : Bear Form (5487), Berserk (50334), Incarnation: Son of Ursoc (102558), Hotfix Passive (137009), Bloodtalons (145152), Soul of the Forest (158477), Dream of Cenarius (158501)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1896,7 +1896,7 @@ Description      : $@spelldesc48505
 Name             : Survival Instincts (id=50322) [Spell Family (7), Hidden] 
 Class            : Druid
 Duration         : 6 seconds
-Affecting spells : Item - Druid T8 Feral 4P Bonus (64754), Item - Druid T11 Feral 4P Bonus (90165), Glyph of Survival Instincts (114223), 
+Affecting spells : Item - Druid T8 Feral 4P Bonus (64754), Item - Druid T11 Feral 4P Bonus (90165), Glyph of Survival Instincts (114223), Hotfix Passive (137009)
 Attributes       : .......x ........ ........ ........   ........ ..x....x ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ...x.... ........ .x...... ........ 
@@ -2454,7 +2454,7 @@ Spell Level      : 56
 Duration         : 6 seconds
 Cooldown         : 12 seconds
 Charges          : 2 (180 seconds cooldown)
-Affecting spells : Item - Druid T8 Feral 4P Bonus (64754), Item - Druid T11 Feral 4P Bonus (90165), Glyph of Survival Instincts (114223), 
+Affecting spells : Item - Druid T8 Feral 4P Bonus (64754), Item - Druid T11 Feral 4P Bonus (90165), Glyph of Survival Instincts (114223), Hotfix Passive (137009)
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2924,6 +2924,7 @@ Class            : Druid
 Spell Level      : 50
 Range            : 5 yards
 GCD              : 1.5 seconds
+Affecting spells : Hotfix Passive (137009), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5289,12 +5290,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179692)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#2 (id=191162)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#3 (id=191163)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+#1 (id=179692)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 11
+                   Affected Spells: Survival Instincts (50322), Survival Instincts (61336)
+#2 (id=191162)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 5 | Scaled Value: 5
+                   Affected Spells: Maul (6807), Lacerate (33745), Mangle (33917), Pulverize (80313), Pulverize (158792), Maul (168883)
+#3 (id=191163)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 22
+                   Affected Spells: Maul (6807), Lacerate (33745), Mangle (33917), Pulverize (80313), Pulverize (158792), Maul (168883)
 #4 (id=191164)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #5 (id=191165)   : Apply Aura (6) | Dummy (4)
@@ -6290,8 +6294,8 @@ Spell Level      : 6
 Range            : 100 yards
 Duration         : 15 seconds
 Affecting spells : Item - Druid T9 Feral 2P Bonus (67121), Item - Druid T10 Feral 4P Bonus (70726), Mastery: Razor Claws (77493), Item - Druid T11 Feral 2P Bonus (90162), Prowl (102547), Berserk (106951), Clearcasting (135700), Bloodtalons (145152), Glyph of Rake (164020), Bloodletting (165699)
-Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ .x......   ........ ........ ........ ........ 
@@ -6812,6 +6816,7 @@ Name             : Pulverize (id=158792) [Spell Family (7)]
 Class            : Druid
 Spell Level      : 50
 Duration         : 12 seconds
+Affecting spells : Hotfix Passive (137009), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7809,7 +7814,7 @@ Resource         : 30 Rage
 Spell Level      : 10
 Range            : 5 yards
 Cooldown         : 3 seconds
-Affecting spells : Bear Form (5487), Glyph of Maul (54811), Incarnation: Son of Ursoc (102558), Bloodtalons (145152), Tooth and Claw (165411)
+Affecting spells : Bear Form (5487), Glyph of Maul (54811), Incarnation: Son of Ursoc (102558), Hotfix Passive (137009), Bloodtalons (145152), Tooth and Claw (165411)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

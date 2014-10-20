@@ -35,7 +35,6 @@ actions+=/arcane_torrent
 actions+=/avenging_wrath
 actions+=/lay_on_hands,if=incoming_damage_5s>health.max*0.7
 actions+=/judgment,if=talent.selfless_healer.enabled&buff.selfless_healer.stack<3
-actions+=/sacred_shield,if=buff.sacred_shield.down
 actions+=/word_of_glory,if=holy_power>=3
 actions+=/wait,if=target.health.pct>=75&mana.pct<=10
 actions+=/holy_shock,if=holy_power<=3
@@ -62,12 +61,12 @@ main_hand=fang_of_the_earth,id=113934,bonus_id=566,enchant=mark_of_shadowmoon
 off_hand=heart_of_the_clefthoof,id=113946,bonus_id=566
 
 # Gear Summary
-# gear_stamina=3880
-# gear_intellect=2839
+# gear_stamina=3883
+# gear_intellect=2841
 # gear_spirit=658
-# gear_spell_power=1497
-# gear_crit_rating=1058
-# gear_haste_rating=1280
+# gear_spell_power=1525
+# gear_crit_rating=1059
+# gear_haste_rating=1281
 # gear_mastery_rating=779
 # gear_armor=2913
 # gear_multistrike_rating=133

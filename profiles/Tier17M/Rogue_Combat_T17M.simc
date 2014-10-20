@@ -52,8 +52,7 @@ actions.generator+=/sinister_strike
 
 # Combo point finishers
 
-actions.finisher=death_from_above
-actions.finisher+=/crimson_tempest,if=active_enemies>7&dot.crimson_tempest_dot.ticks_remain<=1
+actions.finisher=crimson_tempest,if=active_enemies>7&dot.crimson_tempest_dot.ticks_remain<=1
 actions.finisher+=/eviscerate
 
 head=poisoners_helmet,id=115572,bonus_id=567
@@ -74,11 +73,11 @@ main_hand=sorkas_chainfist,id=113965,bonus_id=567,enchant=mark_of_warsong
 off_hand=sorkas_chainfist,id=113965,bonus_id=567,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_agility=3549
-# gear_stamina=4451
+# gear_agility=3553
+# gear_stamina=4455
 # gear_crit_rating=317
 # gear_haste_rating=1225
-# gear_mastery_rating=1463
+# gear_mastery_rating=1465
 # gear_armor=1147
 # gear_multistrike_rating=1010
 # gear_versatility_rating=122

@@ -1,5 +1,5 @@
 
-SimulationCraft 602-1 for World of Warcraft 6.0.2 Live (build level 19033)
+SimulationCraft 602-5 for World of Warcraft 6.0.2 Live (build level 19034)
 Name             : Blizzard (id=10) [Spell Family (3)] 
 Class            : Frost Mage
 Resource         : 5% Base Mana (8000 @Level 100)
@@ -60,7 +60,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Duration         : 15 seconds
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Frosty Zap (24392), Item - Mage T8 4P Bonus (64869), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T10 4P Bonus (70748), Item - Mage T11 4P Bonus (90291), Item - Mage T15 2P Bonus (138316), Enhanced Frostbolt (157646), Enhanced Frostbolt (157648), Ice Shard (166869), Frostbite (171345)
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Frosty Zap (24392), Item - Mage T8 4P Bonus (64869), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T10 4P Bonus (70748), Item - Mage T11 4P Bonus (90291), Hotfix Passive (137018), Item - Mage T15 2P Bonus (138316), Enhanced Frostbolt (157646), Enhanced Frostbolt (157648), Ice Shard (166869), Frostbite (171345)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -150,7 +150,7 @@ Range            : 40 yards
 Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Item - Mage T8 4P Bonus (64869), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T10 4P Bonus (70748), Item - Mage T11 4P Bonus (90291), Critical Mass (117216), Item - Mage T15 2P Bonus (138316), Enhanced Pyrotechnics (157644), Ignition (165979), Firestarter (171170)
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Item - Mage T8 4P Bonus (64869), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T10 4P Bonus (70748), Item - Mage T11 4P Bonus (90291), Critical Mass (117216), Hotfix Passive (137018), Item - Mage T15 2P Bonus (138316), Enhanced Pyrotechnics (157644), Ignition (165979), Firestarter (171170)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -485,7 +485,7 @@ Class            : Mage
 Spell Level      : 24
 Range            : 60 yards
 Velocity         : 20 yards/sec
-Affecting spells : Shatter (12982), Arcane Charge (36032), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T11 2P Bonus (90290), Item - Mage T14 2P Bonus (123097), Arcane Focus (171375)
+Affecting spells : Shatter (12982), Arcane Charge (36032), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T11 2P Bonus (90290), Item - Mage T14 2P Bonus (123097), Hotfix Passive (137018), Arcane Focus (171375)
 Attributes       : ........ ........ x....... ........   ..x..... ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -635,7 +635,7 @@ Cast Time        : 3.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Duration         : 18 seconds
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Pyroblast! (48108), Item - Mage T11 2P Bonus (90290), Critical Mass (117216), Item - Mage T14 2P Bonus (123097), Item - Mage T15 4P Bonus (138376), Pyromaniac (166868), 
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Pyroblast! (48108), Item - Mage T11 2P Bonus (90290), Critical Mass (117216), Item - Mage T14 2P Bonus (123097), Hotfix Passive (137018), Item - Mage T15 4P Bonus (138376), Pyromaniac (166868), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -958,7 +958,7 @@ Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Arcane Charge (36032), Item - Mage T8 4P Bonus (64869), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T10 4P Bonus (70748), Item - Mage T11 4P Bonus (90291), Item - Mage T15 2P Bonus (138316), Profound Magic (145252), Arcane Affinity (166871), Arcane Focus (171375)
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Arcane Charge (36032), Item - Mage T8 4P Bonus (64869), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T10 4P Bonus (70748), Item - Mage T11 4P Bonus (90291), Hotfix Passive (137018), Item - Mage T15 2P Bonus (138316), Profound Magic (145252), Arcane Affinity (166871), Arcane Focus (171375)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -986,7 +986,7 @@ Spell Level      : 22
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 38 yards/sec
-Affecting spells : Arcane Power (12042), Shatter (12982), Glyph of Splitting Ice (56377), Item - Mage T11 2P Bonus (90290), Item - Mage T14 2P Bonus (123097)
+Affecting spells : Arcane Power (12042), Shatter (12982), Glyph of Splitting Ice (56377), Item - Mage T11 2P Bonus (90290), Item - Mage T14 2P Bonus (123097), Hotfix Passive (137018), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1112,7 +1112,7 @@ Range            : 45 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 16 yards/sec
-Affecting spells : Glyph of Water Elemental (63090), Mastery: Icicles (76613), Rune of Power (116014), Incanter's Flow (116267)
+Affecting spells : Glyph of Water Elemental (63090), Mastery: Icicles (76613), Rune of Power (116014), Incanter's Flow (116267), Hotfix Passive (137018), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1315,7 +1315,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Cooldown         : 3 seconds
-Affecting spells : Arcane Power (12042), Shatter (12982), Arcane Charge (36032), 
+Affecting spells : Arcane Power (12042), Shatter (12982), Arcane Charge (36032), Hotfix Passive (137018)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1477,7 +1477,7 @@ Cast Time        : 2.75 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Duration         : 8 seconds
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Brain Freeze (57761), Glyph of Frostfire Bolt (61205), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T11 4P Bonus (90291), Critical Mass (117216), Enhanced Pyrotechnics (157644), Ignition (165979), Firestarter (171170)
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Brain Freeze (57761), Glyph of Frostfire Bolt (61205), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T11 4P Bonus (90291), Critical Mass (117216), Hotfix Passive (137018), Enhanced Pyrotechnics (157644), Ignition (165979), Firestarter (171170)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2527,7 +2527,7 @@ Spell Level      : 81
 Range            : 100 yards
 Duration         : 2 seconds
 Cooldown         : 6 seconds
-Affecting spells : Shatter (12982)
+Affecting spells : Shatter (12982), Hotfix Passive (137018), 
 Attributes       : ........ ........ x......x x..x....   .....x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ .x...... ........ ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -2909,7 +2909,7 @@ Spell Level      : 24
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (8 seconds cooldown)
-Affecting spells : Glyph of Inferno Blast (89926), Improved Inferno Blast (157629), Item - Mage T17 Fire 2P Bonus (165458)
+Affecting spells : Glyph of Inferno Blast (89926), Hotfix Passive (137018), Improved Inferno Blast (157629), Item - Mage T17 Fire 2P Bonus (165458)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3555,7 +3555,7 @@ Name             : Inferno Blast (id=118280) [Spell Family (3)]
 Class            : Mage
 Spell Level      : 54
 Range            : 100 yards
-Affecting spells : Glyph of Inferno Blast (89926), Improved Inferno Blast (157629), Item - Mage T17 Fire 2P Bonus (165458)
+Affecting spells : Glyph of Inferno Blast (89926), Hotfix Passive (137018), Improved Inferno Blast (157629), Item - Mage T17 Fire 2P Bonus (165458)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -3717,7 +3717,7 @@ Range            : 45 yards
 Cast Time        : 1 seconds
 Duration         : 4 seconds
 Cooldown         : 25 seconds
-Affecting spells : Glyph of Water Elemental (63090)
+Affecting spells : Glyph of Water Elemental (63090), Hotfix Passive (137018), 
 Attributes       : ........ ........ x....... ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -3761,14 +3761,18 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179701)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#2 (id=172453)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-#3 (id=188984)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22
-#4 (id=188985)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+#1 (id=179701)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: -5 | Scaled Value: -5
+                   Affected Spells: Arcane Missiles (7268), Arcane Blast (30451), Arcane Barrage (44425)
+#2 (id=172453)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: -15 | Scaled Value: -15
+                   Affected Spells: Supernova (157980)
+#3 (id=188984)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 5 | Scaled Value: 5
+                   Affected Spells: Frostbolt (116), Fireball (133), Pyroblast (11366), Ice Lance (30455), Waterbolt (31707), Frostfire Bolt (44614), Frozen Orb (84721), Inferno Blast (108853), Inferno Blast (118280), Water Jet (135029)
+#4 (id=188985)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 22
+                   Affected Spells: Frostbolt (116), Fireball (133), Pyroblast (11366), Ice Lance (30455), Waterbolt (31707), Frostfire Bolt (44614), Frozen Orb (84721), Inferno Blast (108853), Inferno Blast (118280), Water Jet (135029)
 #5 (id=191129)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 
@@ -3902,7 +3906,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=190659)   : Apply Aura (6) | Unknown effect sub type (309)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2
+                   Base Value: -2500 | Scaled Value: -2500 | Misc Value: 2
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
 
 Name             : Item - Mage T16 2P Bonus (id=145251) [Spell Family (3), Passive] 
@@ -4727,6 +4731,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 2 (25 seconds cooldown)
+Affecting spells : Hotfix Passive (137018)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 

@@ -1113,9 +1113,6 @@ struct melee_t: public warrior_attack_t
     sudden_death_chance += p -> talents.sudden_death -> proc_chance();
     if ( sudden_death_chance > 0 )
     {
-      if ( p -> main_hand_weapon.group() == WEAPON_1H &&
-           p -> off_hand_weapon.group() == WEAPON_1H )
-           sudden_death_chance += p -> spec.singleminded_fury -> effectN( 4 ).percent();
       if ( p -> wod_hotfix )
         sudden_death_chance = 0.1;
     }

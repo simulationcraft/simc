@@ -115,13 +115,13 @@ main_hand=taners_terrible_spine,id=113862,bonus_id=566,enchant=mark_of_the_thund
 off_hand=taners_terrible_spine,id=113862,bonus_id=566,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_strength=3070
-# gear_stamina=3879
-# gear_crit_rating=1597
+# gear_strength=3074
+# gear_stamina=3885
+# gear_crit_rating=1599
 # gear_haste_rating=424
 # gear_mastery_rating=776
 # gear_armor=2148
-# gear_multistrike_rating=899
+# gear_multistrike_rating=901
 # gear_versatility_rating=281
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
