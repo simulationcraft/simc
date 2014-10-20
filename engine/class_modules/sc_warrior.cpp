@@ -2263,8 +2263,8 @@ struct blood_craze_t: public residual_action::residual_periodic_action_t < warri
   {
     hasted_ticks = harmful = false;
     background = true;
-    base_tick_time = p -> spec.blood_craze -> effectN( 1 ).trigger() -> effectN( 1 ).period();
-    dot_duration = p -> spec.blood_craze -> effectN( 1 ).trigger() -> duration() + timespan_t::from_seconds( 2 ); // Blood craze actually ticks for 5 seconds, because... reasons?
+    base_tick_time = p -> find_spell( 159363 ) -> effectN( 1 ).period();
+    dot_duration = p -> find_spell( 159363 ) -> duration();
     dot_behavior = DOT_REFRESH;
   }
 };
@@ -4531,7 +4531,7 @@ void warrior_t::create_buffs()
   buff.bloodbath = buff_creator_t( this, "bloodbath", talents.bloodbath )
     .cd( timespan_t::zero() );
 
-  buff.blood_craze = buff_creator_t( this, "blood_craze", spec.blood_craze -> effectN( 1 ).trigger() );
+  buff.blood_craze = buff_creator_t( this, "blood_craze", find_spell( 159363 ) );
 
   buff.bloodsurge = new buffs::bloodsurge_t( *this, "bloodsurge", spec.bloodsurge -> effectN( 1 ).trigger() );
 
