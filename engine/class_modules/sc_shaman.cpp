@@ -369,10 +369,6 @@ public:
   shaman_attack_t* windfury;
   shaman_spell_t*  flametongue;
 
-  // Tier16 random imbues
-  action_t* t16_wind;
-  action_t* t16_flame;
-
   shaman_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
     player_t( sim, SHAMAN, name, r ),
     ls_reset( timespan_t::zero() ), lava_surge_during_lvb( false ),
@@ -427,9 +423,6 @@ public:
     // Weapon Enchants
     windfury    = 0;
     flametongue = 0;
-
-    t16_wind = 0;
-    t16_flame = 0;
 
     regen_type = REGEN_DYNAMIC;
   }
@@ -1804,20 +1797,6 @@ struct windfury_weapon_melee_attack_t : public shaman_attack_t
 
     // Windfury can not proc itself
     may_proc_windfury = false;
-  }
-};
-
-struct unleash_wind_t : public shaman_attack_t
-{
-  unleash_wind_t( const std::string& name, shaman_t* player ) :
-    shaman_attack_t( name, player, player -> dbc.spell( 73681 ) )
-  {
-    background = true;
-    may_proc_maelstrom = may_dodge = may_parry = false;
-    callbacks = false;
-
-    // Don't cooldown here, unleash elements will handle it
-    cooldown -> duration = timespan_t::zero();
   }
 };
 
@@ -4660,14 +4639,6 @@ void shaman_t::init_spells()
   if ( sets.has_set_bonus( SET_CASTER, T15, B2 ) )
     action_lightning_strike = new t15_2pc_caster_t( this );
 
-  // Tier16 2PC Enhancement bonus actions, these need to bypass imbue checks
-  // presumably, so we cannot just re-use our actual imbued ones
-  if ( sets.has_set_bonus( SET_MELEE, T16, B2 ) )
-  {
-    t16_wind = new unleash_wind_t( "t16_unleash_wind", this );
-    t16_flame = new unleash_flame_spell_t( "t16_unleash_flame", this );
-  }
-
   if ( mastery.molten_earth -> ok() )
     molten_earth = new molten_earth_driver_t( this );
 
@@ -4860,13 +4831,13 @@ void shaman_t::trigger_tier16_2pc_melee( const action_state_t* )
   {
     // Windfury
     case 0:
-      t16_wind -> execute();
+      buff.unleash_wind -> trigger( buff.unleash_wind -> data().initial_stacks() );
       break;
     // Flametongue
     case 1:
     case 2:
     case 3:
-      t16_flame -> execute();
+      buff.unleash_flame -> trigger();
       break;
     default:
       assert( false );
