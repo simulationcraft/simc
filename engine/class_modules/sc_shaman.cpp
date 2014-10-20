@@ -199,6 +199,7 @@ public:
     cooldown_t* lava_lash;
     cooldown_t* shock;
     cooldown_t* strike;
+    cooldown_t* t16_2pc_melee;
     cooldown_t* t16_4pc_caster;
     cooldown_t* t16_4pc_melee;
     cooldown_t* windfury_weapon;
@@ -413,6 +414,7 @@ public:
     cooldown.shock                = get_cooldown( "shock"                 );
     cooldown.strike               = get_cooldown( "strike"                );
     cooldown.storm_elemental_totem= get_cooldown( "storm_elemental_totem" );
+    cooldown.t16_2pc_melee        = get_cooldown( "t16_2pc_melee"         );
     cooldown.t16_4pc_caster       = get_cooldown( "t16_4pc_caster"        );
     cooldown.t16_4pc_melee        = get_cooldown( "t16_4pc_melee"         );
     cooldown.windfury_weapon      = get_cooldown( "windfury_weapon"       );
@@ -474,6 +476,7 @@ public:
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
+  virtual action_t* create_proc_action( const std::string& /* name */ );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual expr_t* create_expression( action_t*, const std::string& name );
@@ -1898,6 +1901,28 @@ struct windlash_t : public shaman_attack_t
     }
   }
 };
+
+struct shaman_flurry_of_xuen_t : public shaman_attack_t
+{
+  shaman_flurry_of_xuen_t( shaman_t* p ) :
+    shaman_attack_t( "flurry_of_xuen", p, p -> find_spell( 147891 ) )
+  {
+    special = may_miss = may_parry = may_block = may_dodge = may_crit = background = true;
+
+    may_proc_windfury = false;
+    may_proc_maelstrom = false;
+    may_proc_flametongue = false;
+    aoe = 5;
+  }
+
+  // We need to override shaman_action_state_t returning here, as tick_action
+  // and custom state objects do not mesh at all really. They technically
+  // work, but in reality we are doing naughty things in the code that are
+  // not safe.
+  action_state_t* new_state()
+  { return new action_state_t( this, target ); }
+};
+
 
 // ==========================================================================
 // Shaman Action / Spell Base
@@ -4413,6 +4438,13 @@ action_t* shaman_t::create_action( const std::string& name,
   return player_t::create_action( name, options_str );
 }
 
+action_t* shaman_t::create_proc_action( const std::string& name )
+{
+  if ( util::str_compare_ci( name, "flurry_of_xuen" ) ) return new shaman_flurry_of_xuen_t( this );
+
+  return 0;
+};
+
 // shaman_t::create_pet =====================================================
 
 pet_t* shaman_t::create_pet( const std::string& pet_name,
@@ -4815,12 +4847,16 @@ void shaman_t::trigger_tier16_2pc_melee( const action_state_t* )
   if ( ! buff.tier16_2pc_melee -> up() )
     return;
 
+  if ( cooldown.t16_2pc_melee -> down() )
+    return;
+
   if ( ! rng().roll( buff.tier16_2pc_melee -> data().proc_chance() ) )
     return;
 
   proc.t16_2pc_melee -> occur();
+  cooldown.t16_2pc_melee -> start( buff.tier16_2pc_melee -> data().internal_cooldown() );
 
-  switch ( static_cast< int >( rng().range( 0, 2 ) ) )
+  switch ( static_cast< int >( rng().range( 0, bugs ? 4 : 2 ) ) )
   {
     // Windfury
     case 0:
@@ -4828,6 +4864,8 @@ void shaman_t::trigger_tier16_2pc_melee( const action_state_t* )
       break;
     // Flametongue
     case 1:
+    case 2:
+    case 3:
       t16_flame -> execute();
       break;
     default:
