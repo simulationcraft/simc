@@ -4655,6 +4655,12 @@ struct player_t : public actor_t
     const spell_data_t* viciousness;
   } racials;
 
+  struct passives_t
+  {
+    double amplification_1;
+    double amplification_2;
+  } passive_values;
+
   bool active_during_iteration;
   const spelleffect_data_t* _mastery; // = find_mastery_spell( specialization() ) -> effectN( 1 );
 

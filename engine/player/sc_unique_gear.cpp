@@ -1730,13 +1730,20 @@ void item::amplification( special_effect_t& effect,
   buff_t* first_amp = buff_t::find( p, "amplification" );
   buff_t* second_amp = buff_t::find( p, "amplification_2" );
   buff_t* amp_buff = 0;
+  double* amp_value = 0;
   if ( first_amp -> default_chance == 0 )
+  {
     amp_buff = first_amp;
+    amp_value = &( item.player -> passive_values.amplification_1 );
+  }
   else
+  {
     amp_buff = second_amp;
+    amp_value = &( item.player -> passive_values.amplification_2 );
+  }
 
   const random_prop_data_t& budget = p -> dbc.random_property( item.item_level() );
-  amp_buff -> default_value = budget.p_epic[ 0 ] * amplify_spell -> effectN( 2 ).m_average() / 100.0;
+  *amp_value = amp_buff -> default_value = budget.p_epic[ 0 ] * amplify_spell -> effectN( 2 ).m_average() / 100.0;
   amp_buff -> default_chance = 1.0;
 }
 

@@ -709,9 +709,9 @@ double action_t::total_crit_bonus() const
   double crit_multiplier_buffed = crit_multiplier * composite_player_critical_multiplier();
   double base_crit_bonus = crit_bonus;
   if ( player -> buffs.amplification )
-    base_crit_bonus += player -> buffs.amplification -> value();
+    base_crit_bonus += player -> passive_values.amplification_1;
   if ( player -> buffs.amplification_2 )
-    base_crit_bonus += player -> buffs.amplification_2 -> value();
+    base_crit_bonus += player -> passive_values.amplification_2;
 
   double bonus = ( ( 1.0 + base_crit_bonus ) * crit_multiplier_buffed - 1.0 ) * crit_bonus_multiplier;
 

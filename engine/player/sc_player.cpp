@@ -592,6 +592,7 @@ player_t::player_t( sim_t*             s,
   procs( procs_t() ),
   uptimes( uptimes_t() ),
   racials( racials_t() ),
+  passive_values( passives_t() ),
   active_during_iteration( false ),
   _mastery( spelleffect_data_t::nil() ),
   cache( this ),
@@ -2914,9 +2915,9 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
       break;
     case ATTR_SPIRIT:
       if ( buffs.amplification )
-        m *= 1.0 + buffs.amplification -> value();
+        m *= 1.0 + passive_values.amplification_1;
       if ( buffs.amplification_2 )
-        m *= 1.0 + buffs.amplification_2 -> value();
+        m *= 1.0 + passive_values.amplification_2;
       break;
     case ATTR_STAMINA:
       if ( sim -> auras.stamina -> check() )
@@ -2941,15 +2942,15 @@ double player_t::composite_rating_multiplier( rating_e rating ) const
     case RATING_MELEE_HASTE:
     case RATING_RANGED_HASTE:
       if ( buffs.amplification )
-        v *= 1.0 + buffs.amplification -> value();
+        v *= 1.0 + passive_values.amplification_1;
       if ( buffs.amplification_2 )
-        v *= 1.0 + buffs.amplification_2 -> value();
+        v *= 1.0 + passive_values.amplification_2;
       break;
     case RATING_MASTERY:
       if ( buffs.amplification )
-        v *= 1.0 + buffs.amplification -> value();
+        v *= 1.0 + passive_values.amplification_1;
       if ( buffs.amplification_2 )
-        v *= 1.0 + buffs.amplification_2 -> value();
+        v *= 1.0 + passive_values.amplification_2;
       break;
     default:
       break;
@@ -9602,7 +9603,7 @@ void player_collected_data_t::print_tmi_debug_csv( const sc_timeline_t* nma, con
 
     for ( size_t i = 0; i < health_changes.timeline.data().size(); i++ )
     {
-      f.printf( "%f,%f,%f,%f,%f,%f,%f\n", timeline_dmg_taken.data()[ i ],
+      f.printf( "%f,%f,%f,%f,%f,%f\n", timeline_dmg_taken.data()[ i ],
           timeline_healing_taken.data()[ i ],
           health_changes.timeline.data()[ i ],
           health_changes.timeline_normalized.data()[ i ],
