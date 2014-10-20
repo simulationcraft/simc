@@ -1439,9 +1439,7 @@ struct fire_elemental_t : public primal_elemental_t
   {
     fire_blast_t( fire_elemental_t* player, const std::string& options ) :
       primal_elemental_spell_t( "fire_blast", player, player -> find_spell( 57984 ), options )
-    { 
-      base_dd_min = 0; // Hard-coded to match in-game values
-      base_dd_max = 0; // Hard-coded to match in-game values
+    {
     }
 
     bool usable_moving() const

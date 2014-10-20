@@ -1111,11 +1111,6 @@ struct melee_t: public warrior_attack_t
     background = repeating = auto_attack = may_glance = true;
     trigger_gcd = timespan_t::zero();
     sudden_death_chance += p -> talents.sudden_death -> proc_chance();
-    if ( sudden_death_chance > 0 )
-    {
-      if ( p -> wod_hotfix )
-        sudden_death_chance = 0.1;
-    }
     if ( p -> dual_wield() )
       base_hit -= 0.19;
   }
@@ -1864,7 +1859,6 @@ struct heroic_leap_t: public warrior_attack_t
     cooldown -> duration = data().cooldown();
     cooldown -> duration += p -> glyphs.death_from_above -> effectN( 1 ).time_value();
     cooldown -> duration *= p -> buffs.cooldown_reduction -> default_value;
-    use_off_gcd = true;
   }
 
   timespan_t travel_time() const

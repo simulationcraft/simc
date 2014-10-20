@@ -6399,9 +6399,6 @@ double paladin_t::get_hand_of_light()
   double handoflight;
   handoflight = cache.mastery_value(); // HoL modifier is in effect #1
 
-  if ( wod_hotfix )
-    handoflight *= 1.2;
-
   return handoflight;
 }
 

@@ -952,8 +952,6 @@ struct wound_poison_t : public rogue_poison_t
       rogue_poison_t( "wound_poison", p, p -> find_class_spell( "Wound Poison" ) -> effectN( 1 ).trigger() )
     {
       harmful          = true;
-      if ( p -> wod_hotfix )
-        attack_power_mod.direct *= 0.6;
     }
 
     void impact( action_state_t* state )
