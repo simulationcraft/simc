@@ -4044,9 +4044,8 @@ struct water_jet_t : public action_t
     parse_options( options_str );
 
     may_miss = may_crit = callbacks = false;
-    quiet = dual = true;
+    dual = true;
     trigger_gcd = timespan_t::zero();
-    use_off_gcd = true;
   }
 
   void reset()
