@@ -4794,6 +4794,8 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   cooldowns.t17_4pc_demonology = get_cooldown( "t17_4pc_demonology" );
 
   regen_type = REGEN_DYNAMIC;
+  regen_caches[CACHE_HASTE] = true;
+  regen_caches[CACHE_SPELL_HASTE] = true;
 }
 
 
