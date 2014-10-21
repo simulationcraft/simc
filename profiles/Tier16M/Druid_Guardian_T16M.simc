@@ -54,31 +54,31 @@ actions+=/thrash_bear,if=active_enemies>1
 actions+=/lacerate
 
 head=headguard_of_the_shattered_vale,id=99421,upgrade=4,gems=indomitable_primal_10haste_10crit_11agi
-neck=immerseus_crystalline_eye,id=110761,upgrade=4
+neck=immerseus_crystalline_eye,id=110761,bonus_id=448/450,upgrade=4
 shoulders=shoulderguards_of_the_shattered_vale,id=99423,upgrade=4,gems=10haste_10crit_10haste_10crit_8agi,enchant=15agi_5crit
 back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=10haste_10crit_4agi,enchant=13crit
 chest=tunic_of_the_shattered_vale,id=99419,upgrade=4,gems=10haste_10crit_10haste_10crit_10haste_10crit_11agi,enchant=80all
-wrists=bombers_blackened_wristwatch,id=112896,upgrade=4,enchant=12agi
+wrists=bombers_blackened_wristwatch,id=112896,bonus_id=448/450,upgrade=4,enchant=12agi
 hands=handguards_of_the_shattered_vale,id=99420,upgrade=4,gems=10haste_10crit_10haste_10crit_8agi,enchant=13mastery
-waist=cord_of_black_dreams,id=112929,upgrade=4,gems=10haste_10crit_20crit_20crit_8agi
-legs=rious_vigilant_leggings,id=112761,upgrade=4,gems=20crit_20crit_8agi,enchant=19agi_11crit
-feet=pandaren_roofsprinters,id=112827,upgrade=4,gems=20crit_4mastery,enchant=9agi
-finger1=kilruks_band_of_ascendancy,id=112917,upgrade=4,gems=10haste_10crit_4crit
-finger2=swift_serpent_signet,id=112709,upgrade=4,gems=20crit_4crit
-trinket1=haromms_talisman,id=112754,upgrade=4
-trinket2=ticking_ebon_detonator,id=112879,upgrade=4
-main_hand=halberd_of_inner_shadows,id=112805,upgrade=4,gems=20crit_4agi,enchant=dancing_steel
+waist=cord_of_black_dreams,id=112929,bonus_id=448/450,upgrade=4,gems=10haste_10crit_20crit_20crit_8agi
+legs=rious_vigilant_leggings,id=112761,bonus_id=448/450,upgrade=4,gems=20crit_20crit_8agi,enchant=19agi_11crit
+feet=pandaren_roofsprinters,id=112827,bonus_id=448/450,upgrade=4,gems=20crit_4mastery,enchant=9agi
+finger1=kilruks_band_of_ascendancy,id=112917,bonus_id=448/450,upgrade=4,gems=10haste_10crit_4crit
+finger2=swift_serpent_signet,id=112709,bonus_id=448/450,upgrade=4,gems=20crit_4crit
+trinket1=haromms_talisman,id=112754,bonus_id=448/450,upgrade=4
+trinket2=ticking_ebon_detonator,id=112879,bonus_id=448/450,upgrade=4
+main_hand=halberd_of_inner_shadows,id=112805,bonus_id=448/450,upgrade=4,gems=20crit_4agi,enchant=dancing_steel
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=1060
-# gear_stamina=1502
+# gear_agility=1230
+# gear_stamina=1758
 # gear_intellect=80
-# gear_crit_rating=637
-# gear_haste_rating=548
-# gear_mastery_rating=486
-# gear_armor=507
-# gear_multistrike_rating=79
+# gear_crit_rating=683
+# gear_haste_rating=626
+# gear_mastery_rating=611
+# gear_armor=591
+# gear_multistrike_rating=107
 # meta_gem=indomitable_primal
 # set_bonus=tier16_2pc_tank=1
 # set_bonus=tier16_4pc_tank=1
