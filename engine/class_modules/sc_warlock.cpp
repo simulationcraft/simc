@@ -1380,7 +1380,9 @@ struct wild_imp_pet_t: public warlock_pet_t
 
     *firebolt_stats = regular_stats;
 
-    if ( this == o() -> pets.wild_imps[0] )
+    // TODO: Fix this properly, Glyph of Imp Swarm needs it's own stats object,
+    // merging like this will not work
+    if ( this == o() -> pets.wild_imps[0] && o() -> glyphs.imp_swarm -> ok() )
     {
       ( *firebolt_stats ) -> merge( *swarm_stats );
       swarm_stats -> quiet = 1;
