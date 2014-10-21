@@ -685,7 +685,7 @@ public:
       // chance to proc the buff needs to be scaled by holy power spent
       bool success = p() -> buffs.divine_purpose -> trigger( 1,
         p() -> buffs.divine_purpose -> default_value,
-        p() -> buffs.divine_purpose -> default_chance * c_effective / 3 );
+        p() -> buffs.divine_purpose -> default_chance * c_effective / 3.0 );
 
       // record success for output
       if ( success )
@@ -701,7 +701,7 @@ public:
       // chance to proc the buff needs to be scaled by holy power spent
       t164pc_success = p() -> buffs.divine_crusader -> trigger( 1,
         p() -> buffs.divine_crusader -> default_value,
-        p() -> buffs.divine_crusader -> default_chance * c_effective / 3 );
+        p() -> buffs.divine_crusader -> default_chance * c_effective / 3.0 );
 
     }
 
@@ -710,7 +710,7 @@ public:
     {
       perk_success = p() -> buffs.divine_crusader -> trigger( 1, 
         p() -> buffs.divine_crusader -> default_value,
-        p() -> perk.empowered_divine_storm -> effectN( 1 ).percent() * c_effective / 3 );
+        p() -> perk.empowered_divine_storm -> effectN( 1 ).percent() * c_effective / 3.0 );
     }
     // record success for output
     if ( perk_success || t164pc_success )
@@ -1733,7 +1733,7 @@ struct eternal_flame_t : public paladin_heal_t
     double c = cost();
 
     // scale the am by holy power spent, can't be more than 3 and Divine Purpose counts as 3
-    am *= ( ( p() -> holy_power_stacks() <= 3  && c > 0.0 ) ? p() -> holy_power_stacks() : 3 ) / 3;
+    am *= ( ( p() -> holy_power_stacks() <= 3  && c > 0.0 ) ? p() -> holy_power_stacks() : 3 ) / 3.0;
 
     if ( target == player )
     {      
@@ -3212,7 +3212,7 @@ struct word_of_glory_t : public paladin_heal_t
     double c = cost();
 
     // scale the am by holy power spent, can't be more than 3 and Divine Purpose counts as 3
-    am *= ( ( p() -> holy_power_stacks() <= 3  && c > 0.0 ) ? p() -> holy_power_stacks() : 3 ) / 3;
+    am *= ( ( p() -> holy_power_stacks() <= 3  && c > 0.0 ) ? p() -> holy_power_stacks() : 3 ) / 3.0;
 
     // T14 protection 4-piece bonus
     am *= ( 1.0 + p() -> sets.set( SET_TANK, T14, B4 ) -> effectN( 1 ).percent() );
@@ -3295,7 +3295,7 @@ struct harsh_word_t : public paladin_spell_t
     double c = cost();
 
     // scale the am by holy power spent, can't be more than 3 and Divine Purpose counts as 3
-    am *= ( ( p() -> holy_power_stacks() <= 3  && c > 0.0 ) ? p() -> holy_power_stacks() : 3 ) / 3;
+    am *= ( ( p() -> holy_power_stacks() <= 3  && c > 0.0 ) ? p() -> holy_power_stacks() : 3 ) / 3.0;
     
     return am;
   }
