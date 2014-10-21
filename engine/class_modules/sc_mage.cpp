@@ -2167,8 +2167,8 @@ struct counterspell_t : public mage_spell_t
   {
     parse_options( options_str );
     may_miss = may_crit = false;
+    may_proc_missiles = false;
   }
-
 
   virtual bool ready()
   {
