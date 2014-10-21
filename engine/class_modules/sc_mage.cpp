@@ -1762,10 +1762,8 @@ struct arcane_orb_t : public mage_spell_t
 
   virtual timespan_t travel_time() const
   {
-    timespan_t t = mage_spell_t::travel_time();
-    double distance = mage_spell_t::player -> current.distance;
-    t  = timespan_t::from_seconds( ( distance - 10 ) / 16 );
-    return t;
+    return timespan_t::from_seconds( ( player -> current.distance - 10.0 ) /
+                                     16.0 );
   }
 
   virtual void impact( action_state_t* s )
@@ -1891,9 +1889,9 @@ struct blizzard_shard_t : public mage_spell_t
 
       if ( p() -> perks.improved_blizzard -> ok() )
       {
-        p() -> cooldowns.frozen_orb -> adjust(
-          - p() -> perks.improved_blizzard -> effectN( 1 ).time_value() * 10.0
-        );
+        p() -> cooldowns.frozen_orb
+            -> adjust( -10.0 * p() -> perks.improved_blizzard
+                                   -> effectN( 1 ).time_value() );
       }
 
       double fof_proc_chance = p() -> spec.fingers_of_frost
@@ -2060,7 +2058,6 @@ struct combustion_t : public mage_spell_t
 
     mage_spell_t::execute();
   }
-
 };
 
 // Comet Storm Spell =======================================================
@@ -2082,7 +2079,6 @@ struct comet_storm_projectile_t : public mage_spell_t
     t = timespan_t::from_seconds( 1.0 );
     return t;
   }
-
 };
 
 struct comet_storm_t : public mage_spell_t
@@ -2116,12 +2112,7 @@ struct comet_storm_t : public mage_spell_t
     mage_spell_t::tick( d );
     projectile -> execute();
   }
-
-
 };
-
-
-
 
 // Cone of Cold Spell =======================================================
 
@@ -2269,7 +2260,6 @@ public:
     p.buffs.arcane_charge -> expire();
     mage_spell_t::execute();
   }
-
 };
 
 // Fire Blast Spell =========================================================
@@ -2281,7 +2271,6 @@ struct fire_blast_t : public mage_spell_t
   {
     parse_options( options_str );
     may_hot_streak = true;
-
   }
 };
 
@@ -2414,8 +2403,6 @@ struct flamestrike_t : public mage_spell_t
 
     trigger_ignite( s );
   }
-
-
 };
 
 // Frost Bomb Spell ===============================================================
@@ -2509,6 +2496,7 @@ struct frostbolt_t : public mage_spell_t
   virtual void schedule_execute( action_state_t* execute_state )
   {
     if ( p() -> perks.enhanced_frostbolt -> ok() &&
+         !p() -> buffs.enhanced_frostbolt -> check() &&
          sim -> current_time > last_enhanced_frostbolt +
                                enhanced_frostbolt_duration )
     {
@@ -2540,10 +2528,8 @@ struct frostbolt_t : public mage_spell_t
     return cast;
   }
 
-
   virtual void execute()
   {
-
     mage_spell_t::execute();
 
     if ( p() -> buffs.enhanced_frostbolt -> up() )
