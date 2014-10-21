@@ -2209,6 +2209,7 @@ class evocation_t : public mage_spell_t
 {
   int arcane_charges;
 
+public:
   evocation_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "evocation", p,  p -> find_class_spell( "Evocation" ) ),
     arcane_charges( 0 )
