@@ -965,7 +965,7 @@ struct meteor_strike_t: public warlock_pet_spell_t
 struct wild_firebolt_t: public warlock_pet_spell_t
 {
   wild_firebolt_t( warlock_pet_t* p ):
-    warlock_pet_spell_t( "firebolt", p, p -> find_spell( 104318 ) )
+    warlock_pet_spell_t( "fel_firebolt", p, p -> find_spell( 104318 ) )
   {
     // FIXME: Exact casting mechanics need testing - this is copied from the old doomguard lag
     if ( p -> owner -> bugs )
@@ -1332,13 +1332,6 @@ struct wild_imp_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP, true ), firebolt_stats( 0 )
   {
     owner_coeff.sp_from_sp = 0.75;
-
-    if ( owner -> pets.wild_imps[0] )
-      regular_stats = owner -> pets.wild_imps[0] -> get_stats( "firebolt" );
-    else
-      regular_stats = get_stats( "firebolt" );
-
-    swarm_stats = owner -> get_stats( "firebolt" );
   }
 
   virtual void init_base_stats()
@@ -1358,6 +1351,17 @@ struct wild_imp_pet_t: public warlock_pet_t
     {
       action_t* a = new actions::wild_firebolt_t( this );
       firebolt_stats = &( a -> stats );
+      if ( this == o() -> pets.wild_imps[ 0 ] || sim -> report_pets_separately )
+      {
+        regular_stats = a -> stats;
+        swarm_stats = get_stats( "fel_firebolt_swarm", a );
+        swarm_stats -> school = a -> school;
+      }
+      else
+      {
+        regular_stats = o() -> pets.wild_imps[ 0 ] -> get_stats( "fel_firebolt" );
+        swarm_stats = o() -> pets.wild_imps[ 0 ] -> get_stats( "fel_firebolt_swarm" );
+      }
       return a;
     }
 
@@ -1372,21 +1376,6 @@ struct wild_imp_pet_t: public warlock_pet_t
       *firebolt_stats = regular_stats;
 
     summon();
-  }
-
-  virtual void pre_analyze_hook()
-  {
-    warlock_pet_t::pre_analyze_hook();
-
-    *firebolt_stats = regular_stats;
-
-    // TODO: Fix this properly, Glyph of Imp Swarm needs it's own stats object,
-    // merging like this will not work
-    if ( this == o() -> pets.wild_imps[0] && o() -> glyphs.imp_swarm -> ok() )
-    {
-      ( *firebolt_stats ) -> merge( *swarm_stats );
-      swarm_stats -> quiet = 1;
-    }
   }
 };
 
