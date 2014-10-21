@@ -56,7 +56,9 @@ actions+=/seal_of_truth,if=talent.empowered_seals.enabled&!seal.truth&buff.uther
 actions+=/avengers_shield,if=buff.grand_crusader.react&active_enemies>1&!glyph.focused_shield.enabled
 actions+=/hammer_of_the_righteous,if=active_enemies>=3
 actions+=/crusader_strike
+actions+=/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.35
 actions+=/judgment
+actions+=/wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.35
 actions+=/avengers_shield,if=active_enemies>1&!glyph.focused_shield.enabled
 actions+=/holy_wrath,if=talent.sanctified_wrath.enabled
 actions+=/avengers_shield,if=buff.grand_crusader.react
@@ -89,7 +91,9 @@ actions.max_dps+=/avengers_shield,if=buff.grand_crusader.react&active_enemies>1&
 actions.max_dps+=/hammer_of_the_righteous,if=active_enemies>=3
 actions.max_dps+=/holy_wrath,if=talent.sanctified_wrath.enabled&buff.seraphim.react
 actions.max_dps+=/crusader_strike
+actions.max_dps+=/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.35
 actions.max_dps+=/judgment
+actions.max_dps+=/wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.35
 actions.max_dps+=/avengers_shield,if=active_enemies>1&!glyph.focused_shield.enabled
 actions.max_dps+=/holy_wrath,if=talent.sanctified_wrath.enabled
 actions.max_dps+=/avengers_shield,if=buff.grand_crusader.react
@@ -123,7 +127,9 @@ actions.max_survival+=/shield_of_the_righteous,if=(holy_power>=5|buff.divine_pur
 actions.max_survival+=/shield_of_the_righteous,if=buff.holy_avenger.remains>time_to_hpg&(!talent.seraphim.enabled|cooldown.seraphim.remains>time_to_hpg)
 actions.max_survival+=/hammer_of_the_righteous,if=active_enemies>=3
 actions.max_survival+=/crusader_strike
+actions.max_survival+=/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.35
 actions.max_survival+=/judgment
+actions.max_survival+=/wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.35
 actions.max_survival+=/avengers_shield,if=buff.grand_crusader.react&active_enemies>1
 actions.max_survival+=/holy_wrath,if=talent.sanctified_wrath.enabled
 actions.max_survival+=/avengers_shield,if=buff.grand_crusader.react
