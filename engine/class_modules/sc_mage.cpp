@@ -2209,7 +2209,6 @@ class evocation_t : public mage_spell_t
 {
   int arcane_charges;
 
-public:
   evocation_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "evocation", p,  p -> find_class_spell( "Evocation" ) ),
     arcane_charges( 0 )
@@ -2460,18 +2459,16 @@ struct frost_bomb_t : public mage_spell_t
 
   virtual void execute()
   {
-    mage_t& p = *this -> p();
-
     mage_spell_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if (p.last_bomb_target != execute_state -> target && p.last_bomb_target != 0)
+      if ( p() -> last_bomb_target != 0 &&
+           p() -> last_bomb_target != execute_state -> target )
       {
-        td(p.last_bomb_target) -> dots.frost_bomb -> cancel();
-        td(p.last_bomb_target) -> debuffs.frost_bomb -> expire();
+        td( p() -> last_bomb_target ) -> dots.frost_bomb -> cancel();
       }
-      p.last_bomb_target = execute_state -> target;
+      p() -> last_bomb_target = execute_state -> target;
     }
   }
 
@@ -3420,9 +3417,7 @@ struct nether_tempest_aoe_t: public mage_spell_t
 
   virtual timespan_t travel_time() const
   {
-    timespan_t t = mage_spell_t::travel_time();
-    t = timespan_t::from_seconds( 1.3 );
-    return t;
+    return timespan_t::from_seconds( 1.3 );
   }
 
 };
@@ -3430,7 +3425,7 @@ struct nether_tempest_aoe_t: public mage_spell_t
 // Nether Tempest Spell ===========================================================
 struct nether_tempest_t : public mage_spell_t
 {
-  nether_tempest_aoe_t *add_aoe;
+  nether_tempest_aoe_t* add_aoe;
 
   nether_tempest_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "nether_tempest", p, p -> talents.nether_tempest ),
@@ -3442,18 +3437,16 @@ struct nether_tempest_t : public mage_spell_t
 
   virtual void execute()
   {
-    mage_t& p = *this -> p();
-
-
     mage_spell_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if (p.last_bomb_target != execute_state -> target && p.last_bomb_target != 0)
+      if ( p() -> last_bomb_target != 0 &&
+           p() -> last_bomb_target != execute_state -> target )
       {
-        td(p.last_bomb_target) -> dots.nether_tempest -> cancel();
+        td( p() -> last_bomb_target ) -> dots.nether_tempest -> cancel();
       }
-      p.last_bomb_target = execute_state -> target;
+      p() -> last_bomb_target = execute_state -> target;
     }
   }
 
