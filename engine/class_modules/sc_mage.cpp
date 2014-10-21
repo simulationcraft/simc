@@ -891,7 +891,7 @@ namespace actions {
 
 struct mage_spell_t : public spell_t
 {
-  bool frozen, may_hot_streak, may_proc_missiles, is_copy, consumes_ice_floes, fof_active;
+  bool frozen, may_hot_streak, may_proc_missiles, consumes_ice_floes;
   bool hasted_by_pom; // True if the spells time_to_execute was set to zero exactly because of Presence of Mind
 private:
   bool pom_enabled;
@@ -904,9 +904,7 @@ public:
     frozen( false ),
     may_hot_streak( false ),
     may_proc_missiles( true ),
-    is_copy( false ),
     consumes_ice_floes( true ),
-    fof_active( false ),
     hasted_by_pom( false ),
     pom_enabled( true )
   {
@@ -1141,13 +1139,13 @@ public:
     if ( background )
       return;
 
-    if ( ! channeled && !is_copy && hasted_by_pom )
+    if ( ! channeled && hasted_by_pom )
     {
       p() -> buffs.presence_of_mind -> expire();
       hasted_by_pom = false;
     }
 
-    if ( !is_copy && execute_time() > timespan_t::zero() && consumes_ice_floes )
+    if ( execute_time() > timespan_t::zero() && consumes_ice_floes )
     {
       p() -> buffs.ice_floes -> decrement();
     }
