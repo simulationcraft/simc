@@ -303,7 +303,10 @@ struct movement_event_t : public raid_event_t
       if ( move_distance > 0 )
         p -> trigger_movement( move_distance, m );
       else if ( duration > timespan_t::zero() )
-        p -> trigger_movement( duration );
+      {
+        move_distance = duration.total_seconds() * 7; // Player movement speed is 7 yards per second.
+        p -> trigger_movement( move_distance, m );
+      }
 
       if ( p -> buffs.stunned -> check() ) continue;
       p -> in_combat = true; // FIXME? this is done to ensure we don't end up in infinite loops of non-harmful actions with gcd=0
