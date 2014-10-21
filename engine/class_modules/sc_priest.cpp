@@ -86,7 +86,7 @@ public:
     buff_t* shadowy_insight;
     buff_t* shadow_word_death_reset_cooldown;
     buff_t* glyph_of_mind_flay;
-    buff_t* glyph_mind_spike;
+    buff_t* glyph_of_mind_spike;
     buff_t* shadowform;
     buff_t* vampiric_embrace;
     buff_t* surge_of_darkness;
@@ -2098,7 +2098,7 @@ struct mind_blast_t final : public priest_spell_t
               sim -> out_debug.printf( "%s consumed Glyph of Mind Harvest on target %s.", priest.name(), s -> target -> name() );
           }
         }
-        priest.buffs.glyph_mind_spike -> expire();
+        priest.buffs.glyph_of_mind_spike -> expire();
       }
     }
   }
@@ -2163,7 +2163,8 @@ struct mind_blast_t final : public priest_spell_t
     }
 
     timespan_t et = priest_spell_t::execute_time();
-    et *= 1 + priest.buffs.glyph_mind_spike -> stack() * priest.glyphs.mind_spike -> effectN( 1 ).percent();
+    et -= et * priest.buffs.glyph_of_mind_spike -> stack() * 0.5; // Reduction amount not contained in glyph data.
+
     return et;
   }
 
@@ -2346,7 +2347,7 @@ struct mind_spike_t final : public priest_spell_t
         if ( removed_dot )
           priest.procs.mind_spike_dot_removal -> occur();
 
-        priest.buffs.glyph_mind_spike -> trigger();
+        priest.buffs.glyph_of_mind_spike -> trigger();
       }
 
       if ( trigger_shadowy_insight() )
@@ -5825,7 +5826,7 @@ void priest_t::create_buffs()
   buffs.vampiric_embrace = buff_creator_t( this, "vampiric_embrace", find_class_spell( "Vampiric Embrace" ) )
                            .duration( find_class_spell( "Vampiric Embrace" ) -> duration() + glyphs.vampiric_embrace -> effectN( 1 ).time_value() );
 
-  buffs.glyph_mind_spike = buff_creator_t( this, "glyph_mind_spike" )
+  buffs.glyph_of_mind_spike = buff_creator_t( this, "glyph_mind_spike" )
                            .spell( glyphs.mind_spike -> effectN( 1 ).trigger() )
                            .chance( glyphs.mind_spike -> proc_chance() );
 
