@@ -5035,9 +5035,9 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react&active_enemies>1&!glyph.focused_shield.enabled" );
   def -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=3" );
   def -> add_action( this, "Crusader Strike" );
-  def -> add_action( "/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.35");
+  def -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.35");
   def -> add_action( this, "Judgment" );
-  def -> add_action( "/wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.35");
+  def -> add_action( "wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.35");
   def -> add_action( this, "Avenger's Shield", "if=active_enemies>1&!glyph.focused_shield.enabled" );
   def -> add_action( this, "Holy Wrath", "if=talent.sanctified_wrath.enabled" );
   def -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react" );
@@ -5072,9 +5072,9 @@ void paladin_t::generate_action_prio_list_prot()
   dps -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=3" );
   dps -> add_action( this, "Holy Wrath", "if=talent.sanctified_wrath.enabled&buff.seraphim.react" );
   dps -> add_action( this, "Crusader Strike" );
-  dps -> add_action( "/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.35");
+  dps -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.35");
   dps -> add_action( this, "Judgment" );
-  dps -> add_action( "/wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.35");
+  dps -> add_action( "wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.35");
   dps -> add_action( this, "Avenger's Shield", "if=active_enemies>1&!glyph.focused_shield.enabled" );
   dps -> add_action( this, "Holy Wrath", "if=talent.sanctified_wrath.enabled" );
   dps -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react" );
@@ -5109,9 +5109,9 @@ void paladin_t::generate_action_prio_list_prot()
   
   surv -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=3" );
   surv -> add_action( this, "Crusader Strike" );
-  surv -> add_action( "/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.35");
+  surv -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.35");
   surv -> add_action( this, "Judgment" );
-  surv -> add_action( "/wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.35");
+  surv -> add_action( "wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.35");
   surv -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react&active_enemies>1" );
   surv -> add_action( this, "Holy Wrath", "if=talent.sanctified_wrath.enabled" );
   surv -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react" );
