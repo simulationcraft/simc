@@ -42,6 +42,7 @@ std::string source_desc_str( wowhead::wowhead_e source )
 // will correct this issue, but we won't know for another month or 2. - 9/14/14
 static bool dual_tooltip_disable( unsigned spell_id )
 {
+/*
   static const unsigned naughtylist[] = { 1719, 53817, 20608, 26573, 51690, 57755,
     157738, 50401, 118038, 115939, 116849, 88766, 115151, 84608, 115295, 115151,
     53563, 1178, 50334, 106951, 108558, 603, 32645, 145416, 32645, 53301, 145661,
@@ -53,11 +54,10 @@ static bool dual_tooltip_disable( unsigned spell_id )
     5487, 30451, 12051, 12042, 133, 108853, 44614, 12472, 31687, 20473, 53385,
     1856, 79140, 11327, 157584, 2818, 19434, 51713, 17, 45242, 15407, 5308, 163558,
     163201, 121411, 79136, 129197, 106952 };
-
   for ( size_t i = 0; i < sizeof_array( naughtylist ); i++ )
     if ( spell_id == naughtylist[ i ] )
       return true;
-
+*/
   return false;
 }
 
