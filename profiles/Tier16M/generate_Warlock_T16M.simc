@@ -62,13 +62,13 @@ back=xingho_breath_of_yulon,id=102246,upgrade=4,gems=10haste_10crit_4int,enchant
 chest=robes_of_the_horned_nightmare,id=99416,upgrade=4,gems=10haste_10crit_10haste_10crit_10haste_10crit_11int,enchant=5all
 wrists=bracers_of_broken_causation,id=105461,upgrade=4,enchant=12int
 hands=gloves_of_the_horned_nightmare,id=99424,upgrade=4,gems=10haste_10crit_10haste_10crit_8int,enchant=11mastery
-waist=belt_of_ominous_trembles,id=105515,upgrade=4,gems=10haste_10crit_10crit_10mastery_8int
+waist=belt_of_ominous_trembles,id=105515,upgrade=4,gems=10haste_10crit_10crit_10mastery_20crit_8int
 legs=leggings_of_the_horned_nightmare,id=99426,upgrade=4,gems=20crit_20crit_8int,enchant=19int_11crit
 feet=toxic_tornado_treads,id=105537,upgrade=4,gems=10crit_10mastery_4crit,enchant=9mastery
 finger1=iyyokuks_hereditary_seal,id=105628,upgrade=4
 finger2=signet_of_the_dinomancers,id=105606,upgrade=4,gems=10haste_10crit_4haste
 trinket1=purified_bindings_of_immerseus,id=105422,upgrade=4
 trinket2=kardris_toxic_totem,id=105540,upgrade=4
-main_hand=immaculately_preserved_wand,id=105594,upgrade=4,gems=10crit_10mastery_4int,enchant=jade_spirit
+main_hand=immaculately_preserved_wand,id=105594,upgrade=4,gems=10haste_10crit_4int,enchant=jade_spirit
 off_hand=purehearted_cricket_cage,id=105444,upgrade=4,gems=10crit_10mastery_4int,enchant=11int
 save=Warlock_Destruction_T16M.simc
