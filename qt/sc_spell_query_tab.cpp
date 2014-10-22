@@ -242,6 +242,9 @@ SC_SpellQueryTab::SC_SpellQueryTab( SC_MainWindow* parent ) :
   textbox.result = new SC_TextEdit;
   textbox.result -> setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   textbox.result -> setLineWrapMode( SC_TextEdit::WidgetWidth );
+  QFont f( "monospace" );
+  f.setStyleHint( QFont::Monospace );
+  textbox.result -> setFont( f );
   gridLayout -> addWidget( label.output, 2, 0, 0 );
   gridLayout -> addWidget( textbox.result, 3, 0, 0 );
   
@@ -254,7 +257,7 @@ SC_SpellQueryTab::SC_SpellQueryTab( SC_MainWindow* parent ) :
   // connect source drop-down to method that swaps filter options
   connect( choice.source, SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( sourceTypeChanged( const int ) ) );
   connect( choice.filter, SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( filterTypeChanged( const int ) ) );
-
+  connect( textbox.arg, SIGNAL( returnPressed() ), this, SLOT( runSpellQuerySlot() ) );
   // create tooltips
   createToolTips();
 }
@@ -294,6 +297,11 @@ void SC_SpellQueryTab::run_spell_query()
   
   // call the sim - results will be stuffed back into textbox in SC_MainWindow::deleteSim()
   mainWindow -> simulationQueue.enqueue( "Spell Query", "", command );
+}
+
+void SC_SpellQueryTab::runSpellQuerySlot()
+{
+  run_spell_query();
 }
 
 void SC_SpellQueryTab::checkForSave()

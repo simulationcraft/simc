@@ -58,6 +58,7 @@ public:
 public slots:
   void sourceTypeChanged( const int source_index );
   void filterTypeChanged( const int filter_index );
+  void runSpellQuerySlot();
   void browseForFile();
 protected:
   SC_MainWindow* mainWindow;
