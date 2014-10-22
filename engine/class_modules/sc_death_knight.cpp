@@ -5293,6 +5293,7 @@ struct death_pact_t : public death_knight_heal_t
     death_knight_heal_t( "death_pact", p, p -> find_talent_spell( "Death Pact" ) )
   {
     may_crit = false;
+    may_multistrike = 0;
     pct_heal = data().effectN( 1 ).percent();
 
     parse_options( options_str );
