@@ -3177,6 +3177,8 @@ struct inferno_blast_t : public mage_spell_t
         {
           pyroblast_dot -> copy( t, DOT_COPY_CLONE );
         }
+
+        spread_remaining--;
       }
 
       if ( s -> result == RESULT_CRIT && p() -> talents.kindling -> ok() )
@@ -3185,8 +3187,6 @@ struct inferno_blast_t : public mage_spell_t
             -> adjust( -1000 * p() -> talents.kindling
                                    -> effectN( 1 ).time_value() );
       }
-
-      spread_remaining--;
     }
 
     if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
