@@ -5151,28 +5151,36 @@ double mage_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( buffs.arcane_power -> check() )
+  if ( specialization() == MAGE_ARCANE )
   {
-    double v = buffs.arcane_power -> value();
-    if ( sets.has_set_bonus( SET_CASTER, T14, B4 ) )
+    if ( buffs.arcane_power -> check() )
     {
-      v += 0.1;
+      double v = buffs.arcane_power -> value();
+      if ( sets.has_set_bonus( SET_CASTER, T14, B4 ) )
+      {
+        v += 0.1;
+      }
+      m *= 1.0 + v;
     }
-    m *= 1.0 + v;
+
+    cache.player_mult_valid[ school ] = false;
   }
 
-
-  if ( buffs.rune_of_power -> check() )
+  if ( talents.rune_of_power -> ok() )
   {
-    m *= 1.0 + buffs.rune_of_power -> data().effectN( 1 ).percent();
+    if ( buffs.rune_of_power -> check() )
+    {
+      m *= 1.0 + buffs.rune_of_power -> data().effectN( 1 ).percent();
+    }
+
+    cache.player_mult_valid[ school ] = false;
   }
-
-
-  if ( talents.incanters_flow -> ok() )
+  else if ( talents.incanters_flow -> ok() )
   {
     m *= 1.0 + buffs.incanters_flow -> stack() * incanters_flow_stack_mult;
+
+    cache.player_mult_valid[ school ] = false;
   }
-  cache.player_mult_valid[ school ] = false;
 
   return m;
 }
