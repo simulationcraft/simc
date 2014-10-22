@@ -1317,16 +1317,14 @@ static void trigger_unstable_magic( action_state_t* s )
 {
   struct unstable_magic_explosion_t : public mage_spell_t
   {
-    double pct_damage;
     unstable_magic_explosion_t( mage_t* p ) :
-      mage_spell_t( "unstable_magic_explosion", p, p -> talents.unstable_magic )
+      mage_spell_t( "unstable_magic_explosion", p,
+                    p -> talents.unstable_magic )
     {
-      may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
-      may_multistrike = 0;
+      may_miss = may_dodge = may_parry = may_crit = may_block = false;
+      may_multistrike = callbacks = false;
       aoe = -1;
       base_costs[ RESOURCE_MANA ] = 0;
-      cooldown -> duration  = timespan_t::zero();
-      pct_damage = p -> find_spell( 157976 ) -> effectN( 4 ).percent();
       trigger_gcd = timespan_t::zero();
     }
 
@@ -1334,7 +1332,8 @@ static void trigger_unstable_magic( action_state_t* s )
     {
       // For now, PC doubledips on UM
       if ( target == p() -> pets.prismatic_crystal )
-        return p() -> pets.prismatic_crystal -> composite_player_vulnerability( school );
+        return p() -> pets.prismatic_crystal
+                   -> composite_player_vulnerability( school );
 
       return 1.0;
     }
@@ -1349,8 +1348,8 @@ static void trigger_unstable_magic( action_state_t* s )
 
     virtual void execute()
     {
-      base_dd_max *= pct_damage; // Deals 50% of original triggering spell damage
-      base_dd_min *= pct_damage;
+      base_dd_max *= data().effectN( 4 ).percent();
+      base_dd_min *= data().effectN( 4 ).percent();
 
       mage_spell_t::execute();
     }
@@ -1364,10 +1363,34 @@ static void trigger_unstable_magic( action_state_t* s )
     p -> unstable_magic_explosion -> init();
   }
 
-  p -> unstable_magic_explosion -> target = s -> target;
-  p -> unstable_magic_explosion -> base_dd_max = s -> result_amount;
-  p -> unstable_magic_explosion -> base_dd_min = s -> result_amount;
-  p -> unstable_magic_explosion -> execute();
+  double um_proc_rate;
+  switch ( p -> specialization() )
+  {
+    case MAGE_ARCANE:
+      um_proc_rate = p -> unstable_magic_explosion
+                       -> data().effectN( 1 ).percent();
+      break;
+    case MAGE_FROST:
+      um_proc_rate = p -> unstable_magic_explosion
+                       -> data().effectN( 2 ).percent();
+      break;
+    case MAGE_FIRE:
+      um_proc_rate = p -> unstable_magic_explosion
+                       -> data().effectN( 3 ).percent();
+      break;
+    default:
+      um_proc_rate = p -> unstable_magic_explosion
+                       -> data().effectN( 3 ).percent();
+      break;
+  }
+
+  if ( p -> rng().roll( um_proc_rate ) )
+  {
+    p -> unstable_magic_explosion -> target = s -> target;
+    p -> unstable_magic_explosion -> base_dd_max = s -> result_amount;
+    p -> unstable_magic_explosion -> base_dd_min = s -> result_amount;
+    p -> unstable_magic_explosion -> execute();
+  }
 
   return;
 }
@@ -1511,8 +1534,10 @@ struct arcane_blast_t : public mage_spell_t
 
     if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
     {
-        if ( p() -> talents.unstable_magic -> ok() && rng().roll( p() -> talents.unstable_magic -> effectN( 2 ).percent() ) )
-          trigger_unstable_magic( s );
+      if ( p() -> talents.unstable_magic -> ok() )
+      {
+        trigger_unstable_magic( s );
+      }
     }
   }
 
@@ -2299,9 +2324,7 @@ struct fireball_t : public mage_spell_t
 
     if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
     {
-      if ( p() -> talents.unstable_magic -> ok() &&
-           rng().roll( p() -> talents.unstable_magic
-                           -> effectN( 3 ).percent() ) )
+      if ( p() -> talents.unstable_magic -> ok() )
       {
         trigger_unstable_magic( s );
       }
@@ -2545,8 +2568,10 @@ struct frostbolt_t : public mage_spell_t
     mage_spell_t::impact( s );
     if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result) )
     {
-      if ( p() -> talents.unstable_magic -> ok() && rng().roll( p() -> talents.unstable_magic -> effectN( 3 ).percent() ) )
+      if ( p() -> talents.unstable_magic -> ok() )
+      {
         trigger_unstable_magic( s );
+      }
 
       trigger_icicle_gain( s, icicle );
     }
@@ -2727,30 +2752,20 @@ struct frostfire_bolt_t : public mage_spell_t
       }
     }
 
-    //Unstable Magic Trigger
     if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
     {
       if ( p() -> specialization() == MAGE_FIRE )
       {
         trigger_ignite( s );
-
-        if ( p() -> talents.unstable_magic -> ok() &&
-             rng().roll( p() -> talents.unstable_magic
-                             -> effectN( 3 ).percent() ) )
-        {
-          trigger_unstable_magic( s );
-        }
       }
       else if ( p() -> specialization() == MAGE_FROST )
       {
         trigger_icicle_gain( s, icicle );
+      }
 
-        if ( p() -> talents.unstable_magic -> ok() &&
-             rng().roll( p() -> talents.unstable_magic
-                             -> effectN( 2 ).percent() ) )
-        {
-          trigger_unstable_magic( s );
-        }
+      if ( p() -> talents.unstable_magic -> ok() )
+      {
+        trigger_unstable_magic( s );
       }
     }
   }
