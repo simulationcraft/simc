@@ -992,14 +992,12 @@ public:
 
   virtual bool usable_moving() const
   {
-    bool um = spell_t::usable_moving();
-    timespan_t t = base_execute_time;
+    // TODO: Ice Floes now affects all spells, not just mage spells
     if ( p() -> talents.ice_floes -> ok() &&
-         t < timespan_t::from_seconds( 4.0 ) &&
          ( p() -> buffs.ice_floes -> up() || p() -> buffs.ice_floes -> cooldown -> up() ) )
-      um = true;
+      return true;
 
-    return um;
+    return spell_t::usable_moving();
   }
   virtual double composite_crit_multiplier() const
   {
