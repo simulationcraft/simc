@@ -891,7 +891,7 @@ namespace actions {
 
 struct mage_spell_t : public spell_t
 {
-  bool frozen, may_hot_streak, may_proc_missiles, consumes_ice_floes;
+  bool frozen, may_proc_missiles, consumes_ice_floes;
   bool hasted_by_pom; // True if the spells time_to_execute was set to zero exactly because of Presence of Mind
 private:
   bool pom_enabled;
@@ -902,7 +902,6 @@ public:
                 const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
     frozen( false ),
-    may_hot_streak( false ),
     may_proc_missiles( true ),
     consumes_ice_floes( true ),
     hasted_by_pom( false ),
@@ -1035,18 +1034,11 @@ public:
   {
     mage_t* p = this -> p();
 
-    if ( ! may_hot_streak )
-      return;
-
-    if ( p -> specialization() != MAGE_FIRE )
-      return;
-
     p -> procs.test_for_crit_hotstreak -> occur();
 
     if ( s -> result == RESULT_CRIT )
     {
       p -> procs.crit_for_hotstreak -> occur();
-      // Reference: http://elitistjerks.com/f75/t110326-cataclysm_fire_mage_compendium/p6/#post1831143
 
       if ( ! p -> buffs.heating_up -> up() )
       {
@@ -1156,16 +1148,6 @@ public:
     if ( p() -> specialization() == MAGE_ARCANE && may_proc_missiles )
     {
       p() -> buffs.arcane_missiles -> trigger();
-    }
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      trigger_hot_streak( s );
     }
   }
 
@@ -1973,8 +1955,6 @@ struct combustion_t : public mage_spell_t
   {
     parse_options( options_str );
 
-    may_hot_streak = true;
-
     base_tick_time = tick_spell -> effectN( 1 ).period();
     dot_duration   = tick_spell -> duration();
     tick_may_crit  = true;
@@ -2267,7 +2247,6 @@ struct fire_blast_t : public mage_spell_t
     mage_spell_t( "fire_blast", p, p -> find_class_spell( "Fire Blast" ) )
   {
     parse_options( options_str );
-    may_hot_streak = true;
   }
 };
 
@@ -2279,7 +2258,6 @@ struct fireball_t : public mage_spell_t
     mage_spell_t( "fireball", p, p -> find_class_spell( "Fireball" ) )
   {
     parse_options( options_str );
-    may_hot_streak = true;
   }
 
   virtual timespan_t travel_time() const
@@ -2295,24 +2273,28 @@ struct fireball_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    if ( p() -> perks.enhanced_pyrotechnics -> ok() &&
-         result_is_hit( s -> result ) )
+    if ( result_is_hit( s -> result ) )
     {
-      if ( s -> result == RESULT_CRIT )
+      if ( p() -> perks.enhanced_pyrotechnics -> ok() )
       {
-        p() -> buffs.enhanced_pyrotechnics -> expire();
+        if ( s -> result == RESULT_CRIT )
+        {
+          p() -> buffs.enhanced_pyrotechnics -> expire();
+        }
+        else
+        {
+          p() -> buffs.enhanced_pyrotechnics -> trigger();
+        }
       }
-      else
-      {
-        p() -> buffs.enhanced_pyrotechnics -> trigger();
-      }
-    }
 
-    if ( p() -> talents.kindling -> ok() &&  s -> result == RESULT_CRIT )
-    {
-      p() -> cooldowns.combustion -> adjust(
-        -1000 * p() -> talents.kindling -> effectN( 1 ).time_value()
-      );
+      trigger_hot_streak( s );
+
+      if ( p() -> talents.kindling -> ok() && s -> result == RESULT_CRIT )
+      {
+        p() -> cooldowns.combustion
+            -> adjust( -1000 * p() -> talents.kindling
+                                   -> effectN( 1 ).time_value() );
+      }
     }
 
     if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
@@ -2644,7 +2626,6 @@ struct frostfire_bolt_t : public mage_spell_t
     icicle( 0 )
   {
     parse_options( options_str );
-    may_hot_streak = true;
     base_execute_time += p -> glyphs.frostfire -> effectN( 1 ).time_value();
 
     if ( p -> sets.has_set_bonus( SET_CASTER, T16, B2 ) )
@@ -2721,16 +2702,33 @@ struct frostfire_bolt_t : public mage_spell_t
   virtual void impact( action_state_t* s )
   {
     mage_spell_t::impact( s );
-    // If there are five Icicles, launch the oldest at this spell's target
-    // Create an Icicle, stashing damage equal to mastery * value
-    // Damage should be based on damage spell would have done without any
-    // target-based damage increases or decreases, except Frostbolt debuff
-    // Should also apply to mini version
 
-    if ( s -> result == RESULT_CRIT && p() -> specialization() == MAGE_FIRE )
-        p() -> buffs.enhanced_pyrotechnics -> expire();
-    else if ( s -> result == RESULT_HIT && p() -> specialization() == MAGE_FIRE )
-        p() -> buffs.enhanced_pyrotechnics -> trigger();
+    if ( result_is_hit( s -> result ) )
+    {
+      if ( p() -> perks.enhanced_pyrotechnics -> ok() )
+      {
+        if ( s -> result == RESULT_CRIT )
+        {
+          p() -> buffs.enhanced_pyrotechnics -> expire();
+        }
+        else
+        {
+          p() -> buffs.enhanced_pyrotechnics -> trigger();
+        }
+      }
+
+      if ( p() -> specialization() == MAGE_FIRE )
+      {
+        trigger_hot_streak( s );
+      }
+
+      if ( p() -> talents.kindling -> ok() && s -> result == RESULT_CRIT )
+      {
+        p() -> cooldowns.combustion
+            -> adjust( -1000 * p() -> talents.kindling
+                                   -> effectN( 1 ).time_value() );
+      }
+    }
 
     //Unstable Magic Trigger
     if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
@@ -2746,8 +2744,6 @@ struct frostfire_bolt_t : public mage_spell_t
     if ( ( result_is_hit( s-> result) || result_is_multistrike( s -> result ) ) && p() -> specialization() == MAGE_FROST )
         trigger_icicle_gain( s, icicle );
 
-    if ( p() -> talents.kindling -> ok() && s -> result == RESULT_CRIT )
-      p() -> cooldowns.combustion -> adjust( timespan_t::from_seconds( - p() -> talents.kindling -> effectN( 1 ).base_value() ) );
   }
 
   virtual double composite_crit() const
@@ -3084,7 +3080,6 @@ struct inferno_blast_t : public mage_spell_t
                   p -> find_class_spell( "Inferno Blast" ) )
   {
     parse_options( options_str );
-    may_hot_streak = true;
     cooldown -> duration = timespan_t::from_seconds( 8.0 );
 
     if ( p -> sets.has_set_bonus( MAGE_FIRE, T17, B2 ) )
@@ -3180,6 +3175,8 @@ struct inferno_blast_t : public mage_spell_t
 
         spread_remaining--;
       }
+
+      trigger_hot_streak( s );
 
       if ( s -> result == RESULT_CRIT && p() -> talents.kindling -> ok() )
       {
@@ -3491,7 +3488,6 @@ struct pyroblast_t : public mage_spell_t
     is_hot_streak( false ), dot_is_hot_streak( false )
   {
     parse_options( options_str );
-    may_hot_streak = true;
     dot_behavior = DOT_REFRESH;
   }
 
@@ -3547,14 +3543,27 @@ struct pyroblast_t : public mage_spell_t
 
     mage_spell_t::impact( s );
 
+    if ( result_is_hit( s -> result ) )
+    {
+      if ( s -> result == RESULT_CRIT && p() -> talents.kindling -> ok() )
+      {
+        p() -> cooldowns.combustion
+            -> adjust( -1000 * p() -> talents.kindling
+                                   -> effectN( 1 ).time_value()  );
+      }
+
+      trigger_hot_streak( s );
+
+      if ( p() -> sets.has_set_bonus( SET_CASTER, PVP, B4 ) && is_hot_streak )
+      {
+        td( s -> target ) -> debuffs.firestarter -> trigger();
+      }
+    }
+
     if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
+    {
       trigger_ignite( s );
-
-    if ( s -> result == RESULT_CRIT && p() -> talents.kindling -> ok() )
-      p() -> cooldowns.combustion -> adjust( timespan_t::from_seconds( - p() -> talents.kindling -> effectN( 1 ).base_value() ) );
-
-    if ( p() -> sets.has_set_bonus( SET_CASTER, PVP, B4 ) && is_hot_streak )
-      td( s -> target ) -> debuffs.firestarter -> trigger();
+    }
   }
 
   virtual double composite_crit_multiplier() const
@@ -3651,7 +3660,6 @@ struct scorch_t : public mage_spell_t
   {
     parse_options( options_str );
 
-    may_hot_streak = true;
     consumes_ice_floes = false;
   }
 
@@ -3669,8 +3677,15 @@ struct scorch_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
+    if ( result_is_hit( s -> result) )
+    {
+      trigger_hot_streak( s );
+    }
+
     if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
+    {
       trigger_ignite( s );
+    }
   }
 
   double composite_crit_multiplier() const
