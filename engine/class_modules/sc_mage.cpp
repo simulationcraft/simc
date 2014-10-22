@@ -2703,7 +2703,7 @@ struct frostfire_bolt_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( s -> result ) && p() -> specialization() == MAGE_FIRE )
     {
       if ( p() -> perks.enhanced_pyrotechnics -> ok() )
       {
@@ -2717,10 +2717,7 @@ struct frostfire_bolt_t : public mage_spell_t
         }
       }
 
-      if ( p() -> specialization() == MAGE_FIRE )
-      {
-        trigger_hot_streak( s );
-      }
+      trigger_hot_streak( s );
 
       if ( p() -> talents.kindling -> ok() && s -> result == RESULT_CRIT )
       {
@@ -2733,17 +2730,29 @@ struct frostfire_bolt_t : public mage_spell_t
     //Unstable Magic Trigger
     if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
     {
-      if ( p() -> talents.unstable_magic -> ok() && rng().roll( p() -> talents.unstable_magic -> effectN( 2 ).percent() ) )
-        trigger_unstable_magic( s );
-    }
+      if ( p() -> specialization() == MAGE_FIRE )
+      {
+        trigger_ignite( s );
 
-    if ( ( result_is_hit( s-> result) || result_is_multistrike( s -> result ) ) && p() -> specialization() == MAGE_FIRE )
-      trigger_ignite( s );
-
-
-    if ( ( result_is_hit( s-> result) || result_is_multistrike( s -> result ) ) && p() -> specialization() == MAGE_FROST )
+        if ( p() -> talents.unstable_magic -> ok() &&
+             rng().roll( p() -> talents.unstable_magic
+                             -> effectN( 3 ).percent() ) )
+        {
+          trigger_unstable_magic( s );
+        }
+      }
+      else if ( p() -> specialization() == MAGE_FROST )
+      {
         trigger_icicle_gain( s, icicle );
 
+        if ( p() -> talents.unstable_magic -> ok() &&
+             rng().roll( p() -> talents.unstable_magic
+                             -> effectN( 2 ).percent() ) )
+        {
+          trigger_unstable_magic( s );
+        }
+      }
+    }
   }
 
   virtual double composite_crit() const
