@@ -2532,6 +2532,7 @@ struct shadow_word_death_t final : public priest_spell_t
   {
     parse_options( options_str );
 
+    spell_power_mod.direct = 2.7; // Is really 270% SP, tooltip value is incorrect. -- Twintop 2014/10/22
     base_multiplier *= 1.0 + p.sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
   }
 
