@@ -155,7 +155,7 @@ public:
     const spell_data_t* mysticism;
     const spell_data_t* spirit_shell;
     const spell_data_t* strength_of_soul;
-    const spell_data_t* crit_attunement;
+    const spell_data_t* enlightenment;
 
     // Holy
     const spell_data_t* meditation_holy;
@@ -169,7 +169,7 @@ public:
     const spell_data_t* shadowform;
     const spell_data_t* shadowy_apparitions;
     const spell_data_t* shadow_orbs;
-    const spell_data_t* haste_attunement;
+    const spell_data_t* mastermind;
     const spell_data_t* mana_attunement;
   } specs;
 
@@ -5381,12 +5381,12 @@ double priest_t::composite_rating_multiplier( rating_e rating ) const
   switch ( rating )
   {
     case RATING_SPELL_HASTE: //Shadow
-      if ( specs.haste_attunement -> ok() )
-        m *= 1.0 + specs.haste_attunement -> effectN( 1 ).percent();
+      if ( specs.mastermind -> ok() )
+        m *= 1.0 + specs.mastermind -> effectN( 1 ).percent();
       break;
     case RATING_SPELL_CRIT: //Discipline
-      if ( specs.crit_attunement -> ok() )
-        m *= 1.0 + specs.crit_attunement -> effectN( 1 ).percent();
+      if ( specs.enlightenment -> ok() )
+        m *= 1.0 + specs.enlightenment -> effectN( 2 ).percent();
       break;
     case RATING_MULTISTRIKE: //Holy
       if ( specs.divine_providence -> ok() )
@@ -5536,9 +5536,6 @@ void priest_t::init_base_stats()
   base.mana_regen_from_spirit_multiplier = specs.meditation_disc -> ok() ?
       specs.meditation_disc -> effectN( 1 ).percent() :
       specs.meditation_holy -> effectN( 1 ).percent();
-
-  base.mana_regen_per_second *= 1.0 + specs.mana_attunement -> effectN( 1 ).percent();
-
 }
 
 // priest_t::init_scaling ===================================================
@@ -5608,31 +5605,30 @@ void priest_t::init_spells()
   // General Spells
 
   // Discipline
-  specs.atonement                      = find_specialization_spell( "Atonement" );
-  specs.archangel                      = find_specialization_spell( "Archangel" );
-  specs.borrowed_time                  = find_specialization_spell( "Borrowed Time" );
-  specs.divine_aegis                   = find_specialization_spell( "Divine Aegis" );
-  specs.evangelism                     = find_specialization_spell( "Evangelism" );
-  specs.grace                          = find_specialization_spell( "Grace" );
-  specs.meditation_disc                = find_specialization_spell( "Meditation", "meditation_disc", PRIEST_DISCIPLINE );
-  specs.mysticism                      = find_specialization_spell( "Mysticism" );
-  specs.spirit_shell                   = find_specialization_spell( "Spirit Shell" );
-  specs.strength_of_soul               = find_specialization_spell( "Strength of Soul" );
-  specs.crit_attunement                = find_specialization_spell( "Critical Strike Addunement ");
+  specs.atonement                     = find_specialization_spell( "Atonement" );
+  specs.archangel                     = find_specialization_spell( "Archangel" );
+  specs.borrowed_time                 = find_specialization_spell( "Borrowed Time" );
+  specs.divine_aegis                  = find_specialization_spell( "Divine Aegis" );
+  specs.evangelism                    = find_specialization_spell( "Evangelism" );
+  specs.grace                         = find_specialization_spell( "Grace" );
+  specs.meditation_disc               = find_specialization_spell( "Meditation", "meditation_disc", PRIEST_DISCIPLINE );
+  specs.mysticism                     = find_specialization_spell( "Mysticism" );
+  specs.spirit_shell                  = find_specialization_spell( "Spirit Shell" );
+  specs.strength_of_soul              = find_specialization_spell( "Strength of Soul" );
+  specs.enlightenment                 = find_specialization_spell( "Enlightenment" );
 
   // Holy
-  specs.meditation_holy                = find_specialization_spell( "Meditation", "meditation_holy", PRIEST_HOLY );
-  specs.serendipity                    = find_specialization_spell( "Serendipity" );
-  specs.rapid_renewal                  = find_specialization_spell( "Rapid Renewal" );
-  specs.divine_providence              = find_specialization_spell( "Divine Providence");
-  specs.focused_will                   = find_specialization_spell( "Focused Will" );
+  specs.meditation_holy               = find_specialization_spell( "Meditation", "meditation_holy", PRIEST_HOLY );
+  specs.serendipity                   = find_specialization_spell( "Serendipity" );
+  specs.rapid_renewal                 = find_specialization_spell( "Rapid Renewal" );
+  specs.divine_providence             = find_specialization_spell( "Divine Providence");
+  specs.focused_will                  = find_specialization_spell( "Focused Will" );
 
   // Shadow
-  specs.shadowform                     = find_class_spell( "Shadowform" );
-  specs.shadowy_apparitions            = find_specialization_spell( "Shadowy Apparitions" );
-  specs.shadow_orbs                    = find_specialization_spell( "Shadow Orbs" );
-  specs.haste_attunement               = find_specialization_spell( "Haste Attunement");
-  specs.mana_attunement                = find_specialization_spell( "Mana Attunement");
+  specs.shadowform                    = find_class_spell( "Shadowform" );
+  specs.shadowy_apparitions           = find_specialization_spell( "Shadowy Apparitions" );
+  specs.shadow_orbs                   = find_specialization_spell( "Shadow Orbs" );
+  specs.mastermind                    = find_specialization_spell( "Mastermind" );
 
 
   // Mastery Spells
