@@ -345,7 +345,7 @@ void SC_OptionsTab::createScalingTab()
   // Box containing enable button
   QGroupBox* enableButtonGroupBox = new QGroupBox();
   enableButtonGroupBox -> setTitle( tr( "Enable Scaling" ) );
-  enableButtonGroupBox -> setSizePolicy( QSizePolicy::QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) );
+  enableButtonGroupBox -> setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) );
   scalingLayout -> addWidget( enableButtonGroupBox );
 
   QFormLayout* enableButtonGroupBoxLayout = new QFormLayout();
@@ -364,7 +364,7 @@ void SC_OptionsTab::createScalingTab()
   
   // Box containing additional options
   QGroupBox* scalingOptionsGroupBox = new QGroupBox();
-  scalingOptionsGroupBox -> setSizePolicy( QSizePolicy::QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) );
+  scalingOptionsGroupBox -> setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) );
   scalingOptionsGroupBox -> setTitle( tr( "Scaling Options" ) );
   scalingLayout -> addWidget( scalingOptionsGroupBox );
 
@@ -379,7 +379,7 @@ void SC_OptionsTab::createScalingTab()
 
   // Box containing buttons for each stat to scale
   QGroupBox* scalingButtonsGroupBox = new QGroupBox();
-  scalingButtonsGroupBox -> setSizePolicy( QSizePolicy::QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Expanding ) );
+  scalingButtonsGroupBox -> setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Expanding ) );
   scalingButtonsGroupBox -> setTitle( tr( "Stats to scale" ) );
   scalingLayout -> addWidget( scalingButtonsGroupBox );
 
