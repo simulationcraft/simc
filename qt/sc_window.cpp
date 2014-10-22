@@ -1287,7 +1287,7 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
   simPhase = "%p%";
   simProgress = 100;
   cmdLine -> setSimulatingProgress( simProgress, simPhase.c_str(), tr( "Finished!" ) );
-  bool sim_was_debug = sim -> debug;
+  bool sim_was_debug = sim -> debug || sim -> log;
   if ( !simulateThread -> success )
   {
     logText -> setformat_error();
