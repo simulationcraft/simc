@@ -1513,6 +1513,7 @@ class SimulateThread : public QThread
 
 public:
   QString options;
+  QString error_str;
   bool success;
 
   void toggle_pause()

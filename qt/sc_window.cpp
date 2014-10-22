@@ -916,18 +916,29 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
     QString contents;
     bool logFileOpenedSuccessfully = false;
     QFile logFile( QString::fromStdString( output_file_str ) );
-    if ( sim_control_was_not_zero && // sim -> setup() was not called, output file was not opened
-         logFile.open( QIODevice::ReadWrite | QIODevice::Text ) ) // ReadWrite failure indicates permission issues
+
+    if ( sim_control_was_not_zero ) // sim -> setup() was not called, output file was not opened
     {
-      contents = QString::fromUtf8( logFile.readAll() );
-      logFile.close();
-      logFileOpenedSuccessfully = true;
+      // ReadWrite failure indicates permission issues
+      if ( logFile.open( QIODevice::ReadWrite | QIODevice::Text ) )
+      {
+        contents = QString::fromUtf8( logFile.readAll() );
+        logFile.close();
+        logFileOpenedSuccessfully = true;
+      }
     }
+    // Nothing in the log file, no point wondeirng about "permission issues"
+    else
+      logFileOpenedSuccessfully = true;
 
     logText -> clear();
 
     if ( !simulateThread -> success )
+    {
       logText -> setformat_error();
+      logText -> append( simulateThread -> error_str );
+      logText -> append( "Simulation failed!" );
+    }
 
     if ( !logFileOpenedSuccessfully )
     {
@@ -1288,10 +1299,9 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
   simProgress = 100;
   cmdLine -> setSimulatingProgress( simProgress, simPhase.c_str(), tr( "Finished!" ) );
   bool sim_was_debug = sim -> debug || sim -> log;
-  if ( !simulateThread -> success )
+  if ( ! simulateThread -> success )
   {
     logText -> setformat_error();
-    logText -> append( "Simulation failed!" );
     logText -> moveCursor( QTextCursor::End );
     logText -> resetformat();
     if ( mainTab -> currentTab() != TAB_SPELLQUERY )
@@ -1853,9 +1863,10 @@ void SimulateThread::run()
   {
     description.options.parse_text( utf8_profile.constData() );
   }
-  catch( const std::exception& /*e*/ )
+  catch( const std::exception& e )
   {
-    // FIXME: report error.
+    success = false;
+    error_str = QString( "Option parsing error: " ) + e.what();
     return;
   }
 
@@ -1863,9 +1874,10 @@ void SimulateThread::run()
   {
     sim -> setup( &description );
   }
-  catch( const std::exception& /*e*/ )
+  catch( const std::exception& e )
   {
-    // FIXME: report error.
+    success = false;
+    error_str = QString( "Simulation setup error: " ) + e.what();
     return;
   }
 
