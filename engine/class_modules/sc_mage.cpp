@@ -1127,7 +1127,8 @@ public:
 
     // Regenerate just before executing the spell, so Arcane mages have a 100%
     // correct mana level to snapshot their multiplier with
-    if ( p() -> regen_type == REGEN_DYNAMIC )
+    if ( p() -> specialization() == MAGE_ARCANE &&
+         p() -> regen_type == REGEN_DYNAMIC )
       p() -> do_dynamic_regen();
 
     spell_t::execute();
@@ -3437,6 +3438,11 @@ struct nether_tempest_t : public mage_spell_t
 
   virtual void tick( dot_t* d )
   {
+    if ( p() -> regen_type == REGEN_DYNAMIC )
+    {
+      p() -> do_dynamic_regen();
+    }
+
     mage_spell_t::tick( d );
 
     action_state_t* aoe_state = add_aoe -> get_state( d -> state );
