@@ -2231,7 +2231,7 @@ public:
 
     if ( p() -> passives.nether_attunement -> ok() )
     {
-      mana_gain /= p() -> cache.spell_speed();
+      mana_gain /= p() -> cache.spell_haste();
     }
 
     mana_gain *= 1.0 + arcane_charges *
@@ -5116,12 +5116,12 @@ void mage_t::apl_default()
 
 double mage_t::mana_regen_per_second() const
 {
-  double mp5 = player_t::mana_regen_per_second();
+  double mps = player_t::mana_regen_per_second();
 
   if ( passives.nether_attunement -> ok() )
-    mp5 /= cache.spell_speed();
+    mps /= cache.spell_haste();
 
-  return mp5;
+  return mps;
 }
 
 double mage_t::composite_rating_multiplier( rating_e rating) const
