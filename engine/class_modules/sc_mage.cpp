@@ -5348,12 +5348,11 @@ void mage_t::stun()
 
 void mage_t::update_movement( timespan_t duration )
 {
-  double distance = current.distance_to_move;
-
   player_t::update_movement( duration );
 
-  distance -= current.distance_to_move;
-  distance_from_rune += distance;
+  double yards = duration.total_seconds() * composite_movement_speed();
+  double seconds = duration.total_seconds();
+  distance_from_rune += yards;
 
   if ( buffs.rune_of_power -> check() )
   {
