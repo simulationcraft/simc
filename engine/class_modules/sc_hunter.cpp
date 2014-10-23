@@ -3902,7 +3902,7 @@ void hunter_t::apl_surv()
     default_list -> add_action( this, "Steady Shot" );
 
   aoe -> add_talent( this, "Stampede", "if=buff.potion.up|(cooldown.potion.remains&(buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up|buff.archmages_incandescence_agi.up))" );
-  aoe -> add_action( this, "Explosive Shot", "if=buff.lock_and_load.react&cooldown.barrage.remains>0" );
+  aoe -> add_action( this, "Explosive Shot", "if=buff.lock_and_load.react&(!talent.barrage.enabled|cooldown.barrage.remains>0)" );
   aoe -> add_talent( this, "Barrage" );
   aoe -> add_action( this, "Explosive Shot", "if=active_enemies<5" );
   aoe -> add_action( this, "Black Arrow", "if=!ticking" );
