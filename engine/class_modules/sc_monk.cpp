@@ -1797,7 +1797,7 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
 
   void impact( action_state_t* s )
   {
-    if ( s -> target == p() -> sim -> target )
+    if ( s -> target == p() -> target )
       monk_melee_attack_t::impact( s );
     else
     {

@@ -5076,7 +5076,7 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
 
   void impact( action_state_t* s )
   {
-    if ( s -> target == p() -> sim -> target )
+    if ( s -> target == p() -> target )
       death_knight_spell_t::impact( s );
     else
     {
