@@ -5577,7 +5577,7 @@ stat_e mage_t::convert_hybrid_stat( stat_e s ) const
 icicle_data_t mage_t::get_icicle_object()
 {
   if ( icicles.size() == 0 )
-    return icicle_data_t( 0, 0 );
+    return icicle_data_t( (double) 0, (stats_t*) 0 );
 
   timespan_t threshold = spec.icicles_driver -> duration();
 
@@ -5600,7 +5600,7 @@ icicle_data_t mage_t::get_icicle_object()
     return d;
   }
 
-  return icicle_data_t( 0, 0 );
+  return icicle_data_t( (double) 0, (stats_t*) 0 );
 }
 
 void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain )

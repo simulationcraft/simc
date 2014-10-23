@@ -36,7 +36,7 @@
 #  endif
 #endif
 
-#if ( __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || ( defined(_MSC_VER) && _MSC_VER >= 1700 ) ) && \
+#if ( __cplusplus >= 201103L || ( defined(_MSC_VER) && _MSC_VER >= 1700 ) ) && \
   ! ( ( defined(__APPLE__) || defined(__MACH__) ) && defined( __clang__ ) )
 #define RNG_CXX11
 // Order-of-inclusion bug under MSVC: Include <random> early.
