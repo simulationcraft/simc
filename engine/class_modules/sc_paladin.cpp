@@ -5081,7 +5081,7 @@ void paladin_t::generate_action_prio_list_prot()
   dps -> add_action( this, "Avenger's Shield", "if=active_enemies>1&!glyph.focused_shield.enabled" );
   dps -> add_action( this, "Holy Wrath", "if=talent.sanctified_wrath.enabled" );
   dps -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react" );
-  dps -> add_talent( this, "Execution Sentence" );
+  dps -> add_talent( this, "Execution Sentence", "if=active_enemies<3" );
   dps -> add_action( this, "Holy Wrath", "if=glyph.final_wrath.enabled&target.health.pct<=20" );
   dps -> add_action( this, "Avenger's Shield" );
   dps -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&!seal.truth&buff.maraads_truth.remains<cooldown.judgment.remains" );
@@ -5089,6 +5089,7 @@ void paladin_t::generate_action_prio_list_prot()
   dps -> add_talent( this, "Light's Hammer" );
   dps -> add_talent( this, "Holy Prism" );
   dps -> add_action( this, "Consecration", "if=target.debuff.flying.down&active_enemies>=3" );
+  dps -> add_talent( this, "Execution Sentence" );
   dps -> add_action( this, "Hammer of Wrath" );
   dps -> add_action( this, "Consecration", "if=target.debuff.flying.down" );
   dps -> add_action( this, "Holy Wrath" );
