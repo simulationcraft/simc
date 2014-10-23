@@ -1890,7 +1890,6 @@ struct blizzard_shard_t : public mage_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-
       if ( p() -> perks.improved_blizzard -> ok() )
       {
         p() -> cooldowns.frozen_orb
@@ -2400,10 +2399,12 @@ struct flamestrike_t : public mage_spell_t
 
   virtual void impact( action_state_t* s )
   {
-
     mage_spell_t::impact( s );
 
-    trigger_ignite( s );
+    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    {
+      trigger_ignite( s );
+    }
   }
 };
 
@@ -2466,7 +2467,10 @@ struct frost_bomb_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    td( s -> target ) -> debuffs.frost_bomb -> trigger();
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> debuffs.frost_bomb -> trigger();
+    }
   }
 };
 
@@ -2566,6 +2570,7 @@ struct frostbolt_t : public mage_spell_t
   virtual void impact( action_state_t* s )
   {
     mage_spell_t::impact( s );
+
     if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result) )
     {
       if ( p() -> talents.unstable_magic -> ok() )
@@ -2855,10 +2860,13 @@ struct frozen_orb_bolt_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    double fof_proc_chance = p() -> spec.fingers_of_frost
-                                 -> effectN( 1 ).percent();
-    p() -> buffs.fingers_of_frost
-        -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
+    if ( result_is_hit( s -> result ) )
+    {
+      double fof_proc_chance = p() -> spec.fingers_of_frost
+                                   -> effectN( 1 ).percent();
+      p() -> buffs.fingers_of_frost
+          -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
+    }
   }
 
   virtual double action_multiplier() const
@@ -2988,13 +2996,11 @@ struct ice_lance_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    if ( p() -> talents.frost_bomb -> ok() )
+    if ( td( s -> target ) -> debuffs.frost_bomb -> up() &&
+         frozen && result_is_hit( s -> result ) )
     {
-      if ( td( s -> target ) -> debuffs.frost_bomb -> up() && frozen && !result_is_multistrike( s -> result ) )
-      {
-        frost_bomb_explosion -> target = s -> target;
-        frost_bomb_explosion -> execute();
-      }
+      frost_bomb_explosion -> target = s -> target;
+      frost_bomb_explosion -> execute();
     }
   }
 
@@ -3747,7 +3753,10 @@ struct slow_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    td( s -> target ) -> debuffs.slow -> trigger();
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> debuffs.slow -> trigger();
+    }
   }
 };
 
