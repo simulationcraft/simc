@@ -398,7 +398,7 @@ void SC_OptionsTab::createScalingTab()
   QSpacerItem* spacer0 = new QSpacerItem( 20, 20 );
   scalingButtonsGroupBoxLayout -> addSpacerItem( spacer0 );
 
-  for ( int i = 2; scalingOptions[ i ].label; i++ )
+  for ( int i = 1; scalingOptions[ i ].label; i++ )
   {
     checkBox = new QCheckBox( scalingOptions[ i ].label );
     checkBox -> setToolTip( scalingOptions[ i ].tooltip );
