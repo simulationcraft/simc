@@ -6174,7 +6174,7 @@ void druid_t::apl_feral()
   def -> add_action( this, "Rip", "cycle_targets=1,if=combo_points=5&remains<=3" );
   def -> add_action( this, "Rip", "cycle_targets=1,if=combo_points=5&remains<=duration*0.3&persistent_multiplier>dot.rip.pmultiplier" );
   def -> add_action( this, "Savage Roar", "if=combo_points=5&(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<42*0.3" );
-  def -> add_action( this, "Ferocious Bite", "if=combo_points=5&(energy.time_to_max<=1|buff.berserk.up|(cooldown.tigers_fury.remains<3)&energy>=50)" );
+  def -> add_action( this, "Ferocious Bite", "if=combo_points=5&(energy.time_to_max<=1|buff.berserk.up|(cooldown.tigers_fury.remains<3&energy>=50))" );
 
   def -> add_action( this, "Rake", "cycle_targets=1,if=remains<=3&combo_points<5" );
   def -> add_action( this, "Rake", "cycle_targets=1,if=remains<=duration*0.3&combo_points<5&persistent_multiplier>dot.rake.pmultiplier" );
