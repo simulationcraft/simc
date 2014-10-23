@@ -999,7 +999,7 @@ QString SC_OptionsTab::mergeOptions()
     options += "scale_only=none";
     for ( int i = 1; scalingOptions[ i ].label; i++ )
     {
-      if ( buttons.at( i ) -> isChecked() )
+      if ( buttons.at( i + 1 ) -> isChecked() )
       {
         options += ",";
         options += scalingOptions[ i ].option;
