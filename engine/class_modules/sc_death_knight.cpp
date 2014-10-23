@@ -5048,15 +5048,15 @@ struct plague_leech_t : public death_knight_spell_t
 
 // Breath of Sindragosa =====================================================
 
-struct breath_of_sindragosa_tick_t : public death_knight_spell_t
+struct breath_of_sindragosa_tick_t: public death_knight_spell_t
 {
   action_t* parent;
 
-  breath_of_sindragosa_tick_t( death_knight_t* p, action_t* parent ) :
+  breath_of_sindragosa_tick_t( death_knight_t* p, action_t* parent ):
     death_knight_spell_t( "breath_of_sindragosa_tick", p, p -> find_spell( 155166 ) ),
     parent( parent )
   {
-    aoe        = -1;
+    aoe = -1;
     background = true;
     resource_current = RESOURCE_RUNIC_POWER;
   }
@@ -5074,10 +5074,17 @@ struct breath_of_sindragosa_tick_t : public death_knight_spell_t
     }
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
-    death_knight_spell_t::impact( s );
-
+    if ( s -> target == p() -> sim -> target )
+      death_knight_spell_t::impact( s );
+    else
+    {
+      double damage = s -> result_amount;
+      damage /= execute_state -> n_targets;
+      s -> result_amount = damage;
+      death_knight_spell_t::impact( s );
+    }
     if ( result_is_hit( s -> result ) )
       td( target ) -> debuffs_mark_of_sindragosa -> trigger();
   }
