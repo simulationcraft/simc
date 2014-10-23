@@ -997,7 +997,7 @@ QString SC_OptionsTab::mergeOptions()
     if ( buttons.at( buttons.size() - 1 )->isChecked() ) options += "scale_lag=1\n";
 
     options += "scale_only=none";
-    for ( int i = 2; scalingOptions[ i ].label; i++ )
+    for ( int i = 1; scalingOptions[ i ].label; i++ )
     {
       if ( buttons.at( i ) -> isChecked() )
       {
