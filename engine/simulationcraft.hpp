@@ -2634,6 +2634,7 @@ struct sim_t : public core_sim_t, private sc_thread_t
   bool challenge_mode; // if active, players will get scaled down to 620 and set bonuses are deactivated
   int scale_to_itemlevel; //itemlevel to scale to. if -1, we don't scale down
   bool disable_set_bonuses; // Disables set bonuses.
+  bool pvp_crit; // Sets critical strike damage to 150% instead of 200%.
 
   // Actor tracking
   int active_enemies;

@@ -708,6 +708,8 @@ double action_t::total_crit_bonus() const
 {
   double crit_multiplier_buffed = crit_multiplier * composite_player_critical_multiplier();
   double base_crit_bonus = crit_bonus;
+  if ( sim -> pvp_crit )
+    base_crit_bonus -= 0.5; // Players in pvp take 150% critical hits baseline.
   if ( player -> buffs.amplification )
     base_crit_bonus += player -> passive_values.amplification_1;
   if ( player -> buffs.amplification_2 )

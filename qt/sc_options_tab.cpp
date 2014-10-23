@@ -180,6 +180,7 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
   connect( choice.plots_points,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.plots_step,         SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.print_style,        SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.pvp_crit,           SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.reforgeplot_amount, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.reforgeplot_step,   SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.report_pets,        SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
@@ -236,6 +237,7 @@ void SC_OptionsTab::createGlobalsTab()
 
   globalsLayout_middle -> addRow( tr( "Num Enemies" ), choice.num_target = createChoice( 20, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20" ) );
   globalsLayout_middle -> addRow( tr( "Target Level" ), choice.target_level = createChoice( 4, "Raid Boss", "5-Man Heroic", "5-Man Normal", "Max Player Level" ) );
+  globalsLayout_middle -> addRow( tr( "PVP Crit Damage Reduction" ), choice.pvp_crit = createChoice( 2, "Disable", "Enable" ) );
   globalsLayout_middle -> addRow( tr( "Target Race" ),   choice.target_race = createChoice( 7, "Humanoid", "Beast", "Demon", "Dragonkin", "Elemental", "Giant", "Undead" ) );
 
   globalsLayout_middle -> addRow( tr( "Target Type" ),       choice.boss_type = createChoice( 4, "Custom", "Fluffy Pillow", "Tank Dummy", "TMI Standard Boss" ) );
@@ -603,6 +605,7 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "armory_spec", choice.armory_spec );
   load_setting( settings, "default_role", choice.default_role );
   load_setting( settings, "boss_type", choice.boss_type, "Custom" );
+  load_setting( settings, "pvp_crit", choice.pvp_crit, "Disable" );
   load_setting( settings, "tank_dummy", choice.tank_dummy, "None" );
   load_setting( settings, "tmi_boss", choice.tmi_boss, "None" );
   load_setting( settings, "tmi_window_global", choice.tmi_window, "6" );
@@ -706,6 +709,7 @@ void SC_OptionsTab::encodeOptions()
   settings.setValue( "world_lag", choice.world_lag -> currentText() );
   settings.setValue( "debug", choice.debug -> currentText() );
   settings.setValue( "target_level", choice.target_level -> currentText() );
+  settings.setValue( "pvp_crit", choice.pvp_crit -> currentText() );
   settings.setValue( "report_pets", choice.report_pets -> currentText() );
   settings.setValue( "print_style", choice.print_style -> currentText() );
   settings.setValue( "statistics_level", choice.statistics_level -> currentText() );
@@ -775,6 +779,9 @@ void SC_OptionsTab::createToolTips()
   choice.num_target -> setToolTip( tr( "Number of enemies." ) );
 
   choice.target_level -> setToolTip( tr( "Level of the target and any adds." ) );
+
+  choice.pvp_crit -> setToolTip( tr( "In PVP, critical strikes deal 150% damage instead of 200%.\n"
+                                     "Enabling this option will set target level to max player level." ) );
 
   choice.player_skill -> setToolTip( tr( "Elite:       No mistakes.  No cheating either." ) + "\n" +
                                      tr( "Fire-is-Hot: Frequent DoT-clipping and skipping high-priority abilities." ) );
@@ -911,10 +918,18 @@ QString SC_OptionsTab::get_globalSettings()
   else
   {
     static const char* const targetlevel[] = { "3", "2", "1", "0" };
-    options += "target_level+=";
-    options += targetlevel[ choice.target_level -> currentIndex() ];
-    options += "\n";
-    options += "target_race=" + choice.target_race->currentText() + "\n";
+    if ( choice.pvp_crit -> currentIndex() == 1 )
+    {
+      options += "target_level+=0\n";
+      options += "pvp_crit=1\n";
+    }
+    else
+    {
+      options += "target_level+=";
+      options += targetlevel[choice.target_level -> currentIndex()];
+      options += "\n";
+      options += "target_race=" + choice.target_race->currentText() + "\n";
+    }
   }
   options += "default_skill=";
   const char *skill[] = { "1.0", "0.9", "0.75", "0.50" };
