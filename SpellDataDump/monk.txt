@@ -1,5 +1,5 @@
 
-SimulationCraft 602-5 for World of Warcraft 6.0.2 Live (build level 19034)
+SimulationCraft 602-6 for World of Warcraft 6.0.3 Live (build level 19057)
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -645,7 +645,7 @@ Resource         : 3.5% Base Mana (5600 @Level 100) w/ Stance of the Spirited Cr
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), 2H Staff Override (108561), Stance of the Sturdy Ox (115069), Rising Sun Kick (130320), Lucidity (137331), Focus and Harmony (154555), Heightened Senses (165692), 
+Affecting spells : Stance of the Fierce Tiger (103985), 2H Staff Override (108561), Stance of the Sturdy Ox (115069), Rising Sun Kick (130320), Hotfix Passive (137022), Lucidity (137331), Focus and Harmony (154555), Heightened Senses (165692), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -679,7 +679,7 @@ Resource         : 2 Chi
 Spell Level      : 7
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Teachings of the Monastery (116645), Combo Breaker: Blackout Kick (116768), Rising Sun Kick (130320), Focus and Harmony (154555)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Teachings of the Monastery (116645), Combo Breaker: Blackout Kick (116768), Rising Sun Kick (130320), Hotfix Passive (137022), Focus and Harmony (154555)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -719,7 +719,7 @@ Resource         : 1 Chi
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Teachings of the Monastery (116645), Brewmaster Training (117967), Combo Breaker: Tiger Palm (118864), Rising Sun Kick (130320), Focus and Harmony (154555)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Teachings of the Monastery (116645), Brewmaster Training (117967), Combo Breaker: Tiger Palm (118864), Rising Sun Kick (130320), Hotfix Passive (137022), Focus and Harmony (154555)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -876,7 +876,7 @@ Grants you and your allies within $161568m1 yards $166646s1% increased movement 
 
 Name             : Spinning Crane Kick (id=107270) [Spell Family (53)] 
 Class            : Monk
-Affecting spells : Rising Sun Kick (130320)
+Affecting spells : Rising Sun Kick (130320), Hotfix Passive (137022)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : x....... .......x ........ ........   ........ .......x ........ ........ 
@@ -946,7 +946,7 @@ Resource         : 3.5% Base Mana (5600 @Level 100) w/ Stance of the Spirited Cr
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), 2H Staff Override (108561), Stance of the Sturdy Ox (115069), Rising Sun Kick (130320), Lucidity (137331), Focus and Harmony (154555), Heightened Senses (165692), 
+Affecting spells : Stance of the Fierce Tiger (103985), 2H Staff Override (108561), Stance of the Sturdy Ox (115069), Rising Sun Kick (130320), Hotfix Passive (137022), Lucidity (137331), Focus and Harmony (154555), Heightened Senses (165692), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2335,7 +2335,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 6 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Fighting Style (115074), Rising Sun Kick (130320), Lucidity (137331), Focus and Harmony (154555)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Fighting Style (115074), Rising Sun Kick (130320), Hotfix Passive (137022), Lucidity (137331), Focus and Harmony (154555)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -4831,7 +4831,7 @@ Class            : Monk
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 4 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Teachings of the Monastery (116645), Combo Breaker: Blackout Kick (116768), Rising Sun Kick (130320), Focus and Harmony (154555)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Teachings of the Monastery (116645), Combo Breaker: Blackout Kick (116768), Rising Sun Kick (130320), Hotfix Passive (137022), Focus and Harmony (154555)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ..x..... ......x. 
                  : ........ x......x ........ ........   ........ ........ ........ ........ 
@@ -5166,13 +5166,14 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179705)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 10 | Scaled Value: 10
+                   Base Value: 32 | Scaled Value: 32
                    Affected Spells: Rising Sun Kick (107428), Fists of Fury (117418), Rising Sun Kick (130320)
 #2 (id=191112)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: -25 | Scaled Value: -25
                    Affected Spells: Revival (115310)
-#3 (id=191113)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+#3 (id=191113)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 20 | Scaled Value: 20
+                   Affected Spells: Jab (100780), Blackout Kick (100784), Tiger Palm (100787), Spinning Crane Kick (107270), Jab (108557), Rushing Jade Wind (116847), Blackout Kick (128531), Chi Explosion (157680)
 #4 (id=191114)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #5 (id=191115)   : Apply Aura (6) | Dummy (4)
@@ -5888,9 +5889,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=210679)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.42000
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.50000
 #2 (id=219865)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.42000 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.50000 | Radius: 0 - 8 yards
 Description      : Consumes up to 4 Chi to cause the target to explode with Chi energy, causing additional effects based on Chi consumed:
 
 1+ Chi: Deals Nature damage to an enemy equal to $s1 plus $s1 per Chi consumed.
@@ -6247,9 +6248,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219859)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.62500
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.75000
 #2 (id=219862)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.62500 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.75000 | Radius: 0 - 8 yards
 Description      : Consumes up to 4 Chi to cause the target to explode with Chi energy, causing additional effects based on Chi consumed:
 
 1+ Chi: Deals Nature damage to an enemy equal to $s1 plus $s1 per Chi consumed.
@@ -6264,7 +6265,7 @@ Class            : Monk
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 6 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Teachings of the Monastery (116645), Combo Breaker: Blackout Kick (116768), Rising Sun Kick (130320), Focus and Harmony (154555)
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Teachings of the Monastery (116645), Combo Breaker: Blackout Kick (116768), Rising Sun Kick (130320), Hotfix Passive (137022), Focus and Harmony (154555)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ..x..... ......x. 
                  : ........ x......x ........ ........   ........ ........ ........ ........ 
@@ -6984,7 +6985,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ...x.... ........ ........ ........ 
 Effects          :
 #1 (id=251167)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
@@ -6999,7 +7000,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ...x.... ........ ........ ........ 
 Effects          :
 #1 (id=251171)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0

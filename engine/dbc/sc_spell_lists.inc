@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 19041
+// Class based active abilities, wow build 19057
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -905,14 +905,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Druid
   {
-    // General tree, 29 abilities
+    // General tree, 28 abilities
     {
         5487, // Bear Form (Shapeshift)
          768, // Cat Form (Shapeshift)
        33786, // Cyclone
         1850, // Dash
          339, // Entangling Roots
-      102355, // Faerie Swarm (Talent)
        22568, // Ferocious Bite
        22842, // Frenzied Regeneration
         6795, // Growl
@@ -1009,7 +1008,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (28)
 
-// Talent tree specialization abilities, wow build 19041
+// Talent tree specialization abilities, wow build 19057
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1949,7 +1948,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 19041
+// Class mastery abilities, wow build 19057
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2172,7 +2171,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 19041
+// Racial abilities, wow build 19057
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2895,7 +2894,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (41)
 
-// Glyph spells for classes, wow build 19041
+// Glyph spells for classes, wow build 19057
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3535,7 +3534,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 19041
+// Tier item set bonuses for class, wow build 19057
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
     {
@@ -4546,7 +4545,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 
 #define PERK_SIZE (4)
 
-// Perk specialization abilities, wow build 19041
+// Perk specialization abilities, wow build 19057
 static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     {
@@ -4854,8 +4853,8 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   },
 };
 
-// Glyph properties, wow build 19041
-static glyph_property_data_t __glyph_property_data[487] = {
+// Glyph properties, wow build 19057
+static glyph_property_data_t __glyph_property_data[485] = {
   {   162,  54811 },
   {   163,  54812 },
   {   164, 114338 },
@@ -5158,7 +5157,6 @@ static glyph_property_data_t __glyph_property_data[487] = {
   {   935, 114280 },
   {   936,  47180 },
   {   937, 125047 },
-  {   948,  98397 },
   {   950, 101052 },
   {   961, 107906 },
   {   967, 111546 },
@@ -5218,7 +5216,6 @@ static glyph_property_data_t __glyph_property_data[487] = {
   {  1058, 135557 },
   {  1060, 145722 },
   {  1061, 147707 },
-  {  1062, 145529 },
   {  1063, 146645 },
   {  1065, 146648 },
   {  1067, 146956 },

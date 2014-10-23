@@ -1,5 +1,5 @@
 
-SimulationCraft 602-5 for World of Warcraft 6.0.2 Live (build level 19034)
+SimulationCraft 602-6 for World of Warcraft 6.0.3 Live (build level 19057)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -81,7 +81,7 @@ Description      : $@spelldesc974
 
 Name             : Lightning Bolt (id=403) [Scaling Spell (9), Spell Family (11)] 
 Class            : Shaman
-Resource         : 3.5% Base Mana (1120 @Level 100)
+Resource         : 1.75% Base Mana (560 @Level 100)
 Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 2.5 seconds
@@ -101,7 +101,7 @@ Description      : Fires a bolt of lightning at the target, dealing $s1 Nature d
 
 Name             : Chain Lightning (id=421) [Spell Family (11)] 
 Class            : Shaman
-Resource         : 2% Base Mana (640 @Level 100)
+Resource         : 1% Base Mana (320 @Level 100)
 Spell Level      : 28
 Range            : 30 yards
 Cast Time        : 2 seconds
@@ -518,7 +518,7 @@ Description      : Heals a friendly target for $s1.
 
 Name             : Earth Shock (id=8042) [Spell Family (11)] 
 Class            : Elemental Shaman
-Resource         : 2.5% Base Mana (800 @Level 100)
+Resource         : 1.25% Base Mana (400 @Level 100)
 Spell Level      : 6
 Range            : 25 yards
 GCD              : 1.5 seconds
@@ -537,7 +537,7 @@ Description      : Instantly shocks the target with concussive force, causing $s
 
 Name             : Flame Shock (id=8050) [Spell Family (11)] 
 Class            : Shaman
-Resource         : 2.5% Base Mana (800 @Level 100)
+Resource         : 1.25% Base Mana (400 @Level 100)
 Spell Level      : 12
 Range            : 25 yards
 GCD              : 1.5 seconds
@@ -562,7 +562,7 @@ Tooltip          : Suffering $w2 Fire damage every $t2 sec.
 
 Name             : Frost Shock (id=8056) [Spell Family (11)] 
 Class            : Shaman
-Resource         : 2.5% Base Mana (800 @Level 100)
+Resource         : 1.25% Base Mana (400 @Level 100)
 Spell Level      : 22
 Range            : 25 yards
 GCD              : 1.5 seconds
@@ -1425,7 +1425,7 @@ Tooltip          : Movement speed reduced by $s3%.
 Name             : Lava Burst (id=51505) [Spell Family (11)] 
 Replaces         : Primal Strike (id=73899)
 Class            : Elemental Restoration Shaman
-Resource         : 1% Base Mana (320 @Level 100)
+Resource         : 0.5% Base Mana (160 @Level 100)
 Spell Level      : 34
 Range            : 30 yards
 Cast Time        : 2 seconds
@@ -2722,7 +2722,7 @@ Effects          :
 
 Name             : Earthquake (id=61882) [Spell Family (11)] 
 Class            : Elemental Shaman
-Resource         : 1.5% Base Mana (480 @Level 100)
+Resource         : 0.75% Base Mana (240 @Level 100)
 Spell Level      : 60
 Range            : 35 yards
 Cast Time        : 2.5 seconds

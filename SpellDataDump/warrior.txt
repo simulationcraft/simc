@@ -1,5 +1,5 @@
 
-SimulationCraft 602-5 for World of Warcraft 6.0.2 Live (build level 19034)
+SimulationCraft 602-6 for World of Warcraft 6.0.3 Live (build level 19057)
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior
 Spell Level      : 9
@@ -1123,7 +1123,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 4.5 seconds
-Affecting spells : Recklessness (1719), Mortal Strike and Bloodthirst Damage Up (60174), Item - Warrior T8 Melee 4P Bonus (64939), Item - Warrior T11 DPS 2P Bonus (90293), Item - Warrior T13 Arms and Fury 2P Bonus (Inner Rage) (105797), Item - Warrior T14 DPS 2P Bonus (123142), Headlong Rush (158836), Vicious Strike (165640), Unquenchable Thirst (169683)
+Affecting spells : Recklessness (1719), Mortal Strike and Bloodthirst Damage Up (60174), Item - Warrior T8 Melee 4P Bonus (64939), Item - Warrior T11 DPS 2P Bonus (90293), Item - Warrior T13 Arms and Fury 2P Bonus (Inner Rage) (105797), Item - Warrior T14 DPS 2P Bonus (123142), Hotfix Passive (137047), Headlong Rush (158836), Vicious Strike (165640), Unquenchable Thirst (169683)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4233,16 +4233,17 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179731)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: -10 | Scaled Value: -10
+                   Base Value: -25 | Scaled Value: -25
                    Affected Spells: Raging Blow (85288), Raging Blow Off-Hand (85384), Raging Blow (96103)
 #2 (id=188987)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: -8 | Scaled Value: -8
+                   Base Value: -24 | Scaled Value: -24
                    Affected Spells: Wild Strike (100130)
 #3 (id=191020)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 5 | Scaled Value: 5
                    Affected Spells: Revenge (6572), Devastate (20243), Shield Slam (23922)
-#4 (id=191021)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+#4 (id=191021)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: -17 | Scaled Value: -17
+                   Affected Spells: Bloodthirst (23881)
 #5 (id=191022)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 
@@ -6043,7 +6044,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ...x.... ........ ........ ........ 
 Effects          :
 #1 (id=251185)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
@@ -6058,7 +6059,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ...x.... ........ ........ ........ 
 Effects          :
 #1 (id=251188)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0

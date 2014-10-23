@@ -1,5 +1,5 @@
 
-SimulationCraft 602-5 for World of Warcraft 6.0.2 Live (build level 19034)
+SimulationCraft 602-6 for World of Warcraft 6.0.3 Live (build level 19057)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
 Resource         : 35 Energy
@@ -226,7 +226,7 @@ Duration         : Aura (infinite)
 Cooldown         : 6 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Nightstalker (14062), Glyph of Stealth (63253), Vendetta (79140), Subterfuge (108208), Sanguinary Vein (124271)
 Attributes       : ....x... ........ x.x.x... .x.xx...   ....x... ..x..... ........ ........ 

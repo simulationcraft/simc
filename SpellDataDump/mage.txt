@@ -1,5 +1,5 @@
 
-SimulationCraft 602-5 for World of Warcraft 6.0.2 Live (build level 19034)
+SimulationCraft 602-6 for World of Warcraft 6.0.3 Live (build level 19057)
 Name             : Blizzard (id=10) [Spell Family (3)] 
 Class            : Frost Mage
 Resource         : 5% Base Mana (8000 @Level 100)
@@ -1430,7 +1430,7 @@ Effects          :
 #2 (id=220454)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25
 #3 (id=245924)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25
+                   Base Value: 85 | Scaled Value: 85
 Description      : Your Frostbolts have a $m1% chance to cause the Brain Freeze effect. Each multistrike increases that cast's chance by an additional $m2%.
 
 The Brain Freeze effect causes your next Frostfire Bolt to cost no mana, be instant cast, deal $s3% additional damage, and act as if your target were frozen.
@@ -2794,8 +2794,9 @@ Effects          :
 Description      : Silences and freezes the target in place for $d.  Damage caused may interrupt the effect.
 Tooltip          : Silenced and Frozen in place.
 
-Name             : Stolen Time (id=105785) 
+Name             : Stolen Time (id=105785) [Scaling Spell (-1)] 
 Class            : Mage
+Max Scaling Level: 90
 Duration         : 30 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
@@ -2807,7 +2808,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=115772)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 917504
+                   Base Value: 50 | Scaled Value: 2.01 (avg=0.03) | Misc Value: 917504
 Description      : Haste increased by $s1 for $d.  Stacks up to $u times.
 Tooltip          : Haste increased by $s1.
 
@@ -3099,7 +3100,7 @@ Name             : Frost Bomb (id=113092) [Scaling Spell (4), Spell Family (3)]
 Class            : Mage
 Spell Level      : 60
 Range            : 50000 yards
-Affecting spells : Shatter (12982)
+Affecting spells : Shatter (12982), Hotfix Passive (137018), 
 Attributes       : ........ ........ x.x....x x..x....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x..... 
@@ -3657,7 +3658,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ...x.... ........ ........ ........ 
 Effects          :
 #1 (id=159107)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
@@ -3768,13 +3769,17 @@ Effects          :
                    Base Value: -15 | Scaled Value: -15
                    Affected Spells: Supernova (157980)
 #3 (id=188984)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 5 | Scaled Value: 5
-                   Affected Spells: Frostbolt (116), Fireball (133), Pyroblast (11366), Ice Lance (30455), Waterbolt (31707), Frostfire Bolt (44614), Frozen Orb (84721), Inferno Blast (108853), Inferno Blast (118280), Water Jet (135029)
+                   Base Value: 25 | Scaled Value: 25
+                   Affected Spells: Frostbolt (116), Ice Lance (30455), Waterbolt (31707), Frozen Orb (84721), Frost Bomb (113092), Water Jet (135029), Ice Nova (157997)
 #4 (id=188985)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 22
-                   Affected Spells: Frostbolt (116), Fireball (133), Pyroblast (11366), Ice Lance (30455), Waterbolt (31707), Frostfire Bolt (44614), Frozen Orb (84721), Inferno Blast (108853), Inferno Blast (118280), Water Jet (135029)
-#5 (id=191129)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 22
+                   Affected Spells: Frostbolt (116), Ice Lance (30455), Waterbolt (31707), Frozen Orb (84721), Frost Bomb (113092), Water Jet (135029), Ice Nova (157997)
+#5 (id=191129)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: -15 | Scaled Value: -15
+                   Affected Spells: Fireball (133), Pyroblast (11366), Frostfire Bolt (44614), Inferno Blast (108853), Inferno Blast (118280)
+#6 (id=257393)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 22
+                   Affected Spells: Fireball (133), Pyroblast (11366), Frostfire Bolt (44614), Inferno Blast (108853), Inferno Blast (118280)
 
 Name             : Hotfix Passive (id=137019) [Passive, Hidden] 
 Class            : Fire Mage
@@ -4784,7 +4789,7 @@ Charges          : 2 (25 seconds cooldown)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Shatter (12982)
+Affecting spells : Shatter (12982), Hotfix Passive (137018), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4980,7 +4985,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ...x.... ........ ........ ........ 
 Effects          :
 #1 (id=251163)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
