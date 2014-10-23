@@ -571,8 +571,7 @@ struct water_elemental_pet_t : public pet_t
 
     if ( o() -> wod_hotfix )
     {
-      m *= 1.05;
-      m *= 1.2;
+      m *= 1.0 + 0.05 + 0.2;
     }
 
     m *= o() -> pet_multiplier;
@@ -1433,7 +1432,7 @@ struct arcane_barrage_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= 0.95;
+      am *= 1.0 - 0.05;
     }
 
     return am;
@@ -1504,7 +1503,7 @@ struct arcane_blast_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= 0.95;
+      am *= 1.0 - 0.05;
     }
 
     return am;
@@ -1649,7 +1648,7 @@ struct arcane_missiles_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= 0.95;
+      am *= 1.0 - 0.05;
     }
 
     return am;
@@ -2338,8 +2337,7 @@ struct fireball_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= 1.05;
-      am *= 0.8;
+      am *= 1.0 + 0.05 - 0.2;
     }
 
     return am;
@@ -2433,7 +2431,7 @@ struct frost_bomb_explosion_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= 1.25;
+      am *= 1.0 + 0.25;
     }
 
     return am;
@@ -2616,8 +2614,7 @@ struct frostbolt_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= 1.05;
-      am *= 1.2;
+      am *= 1.0 + 0.05 + 0.2;
     }
 
     return am;
@@ -2824,7 +2821,7 @@ struct frostfire_bolt_t : public mage_spell_t
     {
       if ( p() -> wod_hotfix )
       {
-        am *= 1.85;
+        am *= 1.0 + 0.85;
       }
       else
       {
@@ -2834,8 +2831,7 @@ struct frostfire_bolt_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= 1.05;
-      am *= 0.8;
+      am *= 1.0 + 0.05 - 0.2;
     }
 
     return am;
@@ -2875,8 +2871,7 @@ struct frozen_orb_bolt_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= 1.05;
-      am *= 1.2;
+      am *= 1.0 + 0.05 + 0.2;
     }
 
     return am;
@@ -3030,8 +3025,7 @@ struct ice_lance_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= 1.05;
-      am *= 1.2;
+      am *= 1.0 + 0.05 + 0.2;
     }
 
     return am;
@@ -3066,7 +3060,7 @@ struct ice_nova_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= 1.25;
+      am *= 1.0 + 0.25;
     }
 
     return am;
@@ -3228,8 +3222,7 @@ struct inferno_blast_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= 1.05;
-      am *= 0.8;
+      am *= 1.0 + 0.05 - 0.2;
     }
 
     return am;
@@ -3628,8 +3621,7 @@ struct pyroblast_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= 1.05;
-      am *= 0.8;
+      am *= 1.0 + 0.05 - 0.2;
     }
 
     return am;
@@ -3646,8 +3638,7 @@ struct pyroblast_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= 1.05;
-      am *= 0.8;
+      am *= 1.0 + 0.05 - 0.2;
     }
 
     return am;
@@ -3788,7 +3779,7 @@ struct supernova_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= 0.85;
+      am *= 1.0 - 0.15;
     }
 
     return am;
