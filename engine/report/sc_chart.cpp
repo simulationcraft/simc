@@ -2368,25 +2368,23 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_askmrrobot( player
   for ( scale_metric_e sm = SCALE_METRIC_NONE; sm < SCALE_METRIC_MAX; sm++ )
   {
     std::stringstream ss;
-    // AMR update week of 8/15/2013 guarantees that the origin_str provided from their SimC export is
-    // a valid base for appending stat weights.  If the origin has askmrrobot in it, just use that
+    // AMR's origin_str provided from their SimC export is a valid base for appending stat weights.
+    // If the origin has askmrrobot in it, just use that, but replace wow/player/ with wow/optimize/
     if ( util::str_in_str_ci( p -> origin_str, "askmrrobot" ) )
-      ss << p -> origin_str;
+    {
+      std::string origin = p -> origin_str;
+      util::replace_all( origin, "wow/player", "wow/optimize" );
+      ss << origin;
+    }
     // otherwise, we need to construct it from whatever information we have available
     else
     {
-      ss << "http://www.askmrrobot.com/wow/gear/";
+      ss << "http://www.askmrrobot.com/wow/optimize/";
 
       // Use valid names if we are provided those
       if ( !p -> region_str.empty() && !p -> server_str.empty() && !p -> name_str.empty() )
-      {
-        if ( p -> region_str == "us" )
-          ss << p -> region_str << "a";
-        else
-          ss << p -> region_str;
+        ss << p -> region_str << '/' << p -> server_str << '/' << p -> name_str;
 
-        ss << '/' << p -> server_str << '/' << p -> name_str;
-      }
       // otherwise try to reconstruct it from the origin string
       else
       {
@@ -2408,7 +2406,7 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_askmrrobot( player
           continue;
         }
       }
-      ss << "?spec=";
+      ss << "#spec=";
 
       // This next section is sort of unwieldly, I may move this to external functions
 
@@ -2432,16 +2430,16 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_askmrrobot( player
       // Player spec
       switch ( p -> specialization() )
       {
+      case DEATH_KNIGHT_BLOOD:    ss << "Blood"; break;
       case DEATH_KNIGHT_FROST:
       {
         if ( p -> main_hand_weapon.type == WEAPON_2H ) { ss << "Frost2H"; break; }
-        else { ss << "FrostDW"; break; }
+        else { ss << "FrostDw"; break; }
       }
-      case DEATH_KNIGHT_UNHOLY:   ss << "Unholy2H"; break;
-      case DEATH_KNIGHT_BLOOD:    ss << "Blood2H"; break;
-      case DRUID_BALANCE:         ss << "Moonkin"; break;
-      case DRUID_FERAL:           ss << "FeralCat"; break;
-      case DRUID_GUARDIAN:        ss << "FeralBear"; break;
+      case DEATH_KNIGHT_UNHOLY:   ss << "Unholy"; break;
+      case DRUID_BALANCE:         ss << "Balance"; break;
+      case DRUID_FERAL:           ss << "Feral"; break;
+      case DRUID_GUARDIAN:        ss << "Guardian"; break;
       case DRUID_RESTORATION:     ss << "Restoration"; break;
       case HUNTER_BEAST_MASTERY:  ss << "BeastMastery"; break;
       case HUNTER_MARKSMANSHIP:   ss << "Marksmanship"; break;
@@ -2449,6 +2447,17 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_askmrrobot( player
       case MAGE_ARCANE:           ss << "Arcane"; break;
       case MAGE_FIRE:             ss << "Fire"; break;
       case MAGE_FROST:            ss << "Frost"; break;
+      case MONK_BREWMASTER:
+      {
+        if ( p -> main_hand_weapon.type == WEAPON_STAFF || p -> main_hand_weapon.type == WEAPON_POLEARM ) { ss << "Brewmaster2h"; break; }
+        else { ss << "BrewmasterDw"; break; }
+      }
+      case MONK_MISTWEAVER:       ss << "Mistweaver"; break;
+      case MONK_WINDWALKER:
+      {
+        if ( p -> main_hand_weapon.type == WEAPON_STAFF || p -> main_hand_weapon.type == WEAPON_POLEARM ) { ss << "Windwalker2h"; break; }
+        else { ss << "WindwalkerDw"; break; }
+      }
       case PALADIN_HOLY:          ss << "Holy"; break;
       case PALADIN_PROTECTION:    ss << "Protection"; break;
       case PALADIN_RETRIBUTION:   ss << "Retribution"; break;
@@ -2474,23 +2483,13 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_askmrrobot( player
         else { ss << "Fury"; break; }
       }
       case WARRIOR_PROTECTION:    ss << "Protection"; break;
-      case MONK_BREWMASTER:
-      {
-        if ( p -> main_hand_weapon.type == WEAPON_STAFF || p -> main_hand_weapon.type == WEAPON_POLEARM ) { ss << "Brewmaster2h"; break; }
-        else { ss << "BrewmasterDw"; break; }
-      }
-      case MONK_MISTWEAVER:       ss << "Mistweaver"; break;
-      case MONK_WINDWALKER:
-      {
-        if ( p -> main_hand_weapon.type == WEAPON_STAFF || p -> main_hand_weapon.type == WEAPON_POLEARM ) { ss << "Windwalker2h"; break; }
-        else { ss << "WindwalkerDw"; break; }
-      }
+
         // if this is a pet or an unknown spec, the AMR link is pointless anyway
       default: assert( 0 ); break;
       }
     }
     // add weights
-    ss << "&weights=";
+    ss << ";weights=";
 
     // check for negative normalizer
     bool positive_normalizing_value = p -> scaling_normalized[ sm ].get_stat( p -> normalize_by() ) >= 0;

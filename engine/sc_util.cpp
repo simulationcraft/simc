@@ -1621,21 +1621,20 @@ const char* util::stat_type_askmrrobot( stat_e stat )
 
     case STAT_ATTACK_POWER: return "AttackPower";
     case STAT_SPELL_POWER: return "SpellPower";
-    case STAT_HIT_RATING: return "HitRating";
-    case STAT_EXPERTISE_RATING: return "ExpertiseRating";
-    case STAT_CRIT_RATING: return "CritRating";
-    case STAT_HASTE_RATING: return "HasteRating";
+    case STAT_CRIT_RATING: return "CriticalStrike";
+    case STAT_HASTE_RATING: return "Haste";
     case STAT_ARMOR: return "Armor";
-    case STAT_DODGE_RATING: return "DodgeRating";
-    case STAT_PARRY_RATING: return "ParryRating";
-    case STAT_RESILIENCE_RATING: return "ResilienceRating";
-    case STAT_MASTERY_RATING: return "MasteryRating";
-    case STAT_MULTISTRIKE_RATING: return "MultistrikeRating";
-    case STAT_VERSATILITY_RATING: return "VersatilityRating";
+    case STAT_RESILIENCE_RATING: return "PvpResilience";
+    case STAT_MASTERY_RATING: return "Mastery";
+    case STAT_MULTISTRIKE_RATING: return "Multistrike";
+    case STAT_VERSATILITY_RATING: return "Versatility";
     case STAT_BONUS_ARMOR: return "BonusArmor";
     case STAT_PVP_POWER: return "PvpPower";
     case STAT_WEAPON_DPS: return "MainHandDps";
-    case STAT_WEAPON_OFFHAND_DPS: return "OffHandDPS";
+    case STAT_WEAPON_OFFHAND_DPS: return "OffHandDps";
+    case STAT_AVOIDANCE_RATING: return "Avoidance";
+    case STAT_LEECH_RATING: return "Leech";
+    case STAT_SPEED_RATING: return "MovementSpeed";
       
     default: return "unknown";
 
