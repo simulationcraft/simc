@@ -2088,8 +2088,7 @@ struct raging_blow_attack_t: public warrior_attack_t
     dual = true;
     if ( p -> wod_hotfix )
     {
-      weapon_multiplier *= 0.9;
-      weapon_multiplier *= 0.83;
+      weapon_multiplier *= 0.75;
     }
   }
 
@@ -2897,8 +2896,7 @@ struct wild_strike_t: public warrior_attack_t
     min_gcd = data().gcd();
     if ( p -> wod_hotfix )
     {
-      weapon_multiplier *= 0.92;
-      weapon_multiplier *= 0.83;
+      weapon_multiplier *= 0.76;
     }
   }
 
