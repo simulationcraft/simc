@@ -41,6 +41,7 @@ actions.aoe+=/plague_strike,if=!talent.necrotic_plague.enabled&(!dot.blood_plagu
 actions.aoe+=/plague_strike,if=talent.necrotic_plague.enabled&(!dot.necrotic_plague.ticking)
 actions.aoe+=/defile,if=talent.defile.enabled&runic_power<89
 actions.aoe+=/breath_of_sindragosa,if=runic_power>75
+actions.aoe+=/run_action_list,name=bos_aoe,if=dot.breath_of_sindragosa.ticking
 actions.aoe+=/blood_boil,if=blood=2|(frost=2&death=2)
 actions.aoe+=/summon_gargoyle
 actions.aoe+=/dark_transformation
