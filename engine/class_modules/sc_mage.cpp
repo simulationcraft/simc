@@ -891,7 +891,7 @@ namespace actions {
 
 struct mage_spell_t : public spell_t
 {
-  bool frozen, may_hot_streak, may_proc_missiles, consumes_ice_floes;
+  bool frozen, may_proc_missiles, consumes_ice_floes;
   bool hasted_by_pom; // True if the spells time_to_execute was set to zero exactly because of Presence of Mind
 private:
   bool pom_enabled;
@@ -902,7 +902,6 @@ public:
                 const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
     frozen( false ),
-    may_hot_streak( false ),
     may_proc_missiles( true ),
     consumes_ice_floes( true ),
     hasted_by_pom( false ),
@@ -992,14 +991,12 @@ public:
 
   virtual bool usable_moving() const
   {
-    bool um = spell_t::usable_moving();
-    timespan_t t = base_execute_time;
+    // TODO: Ice Floes now affects all spells, not just mage spells
     if ( p() -> talents.ice_floes -> ok() &&
-         t < timespan_t::from_seconds( 4.0 ) &&
          ( p() -> buffs.ice_floes -> up() || p() -> buffs.ice_floes -> cooldown -> up() ) )
-      um = true;
+      return true;
 
-    return um;
+    return spell_t::usable_moving();
   }
   virtual double composite_crit_multiplier() const
   {
@@ -1037,18 +1034,11 @@ public:
   {
     mage_t* p = this -> p();
 
-    if ( ! may_hot_streak )
-      return;
-
-    if ( p -> specialization() != MAGE_FIRE )
-      return;
-
     p -> procs.test_for_crit_hotstreak -> occur();
 
     if ( s -> result == RESULT_CRIT )
     {
       p -> procs.crit_for_hotstreak -> occur();
-      // Reference: http://elitistjerks.com/f75/t110326-cataclysm_fire_mage_compendium/p6/#post1831143
 
       if ( ! p -> buffs.heating_up -> up() )
       {
@@ -1127,7 +1117,8 @@ public:
 
     // Regenerate just before executing the spell, so Arcane mages have a 100%
     // correct mana level to snapshot their multiplier with
-    if ( p() -> regen_type == REGEN_DYNAMIC )
+    if ( p() -> specialization() == MAGE_ARCANE &&
+         p() -> regen_type == REGEN_DYNAMIC )
       p() -> do_dynamic_regen();
 
     spell_t::execute();
@@ -1157,16 +1148,6 @@ public:
     if ( p() -> specialization() == MAGE_ARCANE && may_proc_missiles )
     {
       p() -> buffs.arcane_missiles -> trigger();
-    }
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      trigger_hot_streak( s );
     }
   }
 
@@ -1336,16 +1317,14 @@ static void trigger_unstable_magic( action_state_t* s )
 {
   struct unstable_magic_explosion_t : public mage_spell_t
   {
-    double pct_damage;
     unstable_magic_explosion_t( mage_t* p ) :
-      mage_spell_t( "unstable_magic_explosion", p, p -> talents.unstable_magic )
+      mage_spell_t( "unstable_magic_explosion", p,
+                    p -> talents.unstable_magic )
     {
-      may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
-      may_multistrike = 0;
+      may_miss = may_dodge = may_parry = may_crit = may_block = false;
+      may_multistrike = callbacks = false;
       aoe = -1;
       base_costs[ RESOURCE_MANA ] = 0;
-      cooldown -> duration  = timespan_t::zero();
-      pct_damage = p -> find_spell( 157976 ) -> effectN( 4 ).percent();
       trigger_gcd = timespan_t::zero();
     }
 
@@ -1353,7 +1332,8 @@ static void trigger_unstable_magic( action_state_t* s )
     {
       // For now, PC doubledips on UM
       if ( target == p() -> pets.prismatic_crystal )
-        return p() -> pets.prismatic_crystal -> composite_player_vulnerability( school );
+        return p() -> pets.prismatic_crystal
+                   -> composite_player_vulnerability( school );
 
       return 1.0;
     }
@@ -1368,8 +1348,8 @@ static void trigger_unstable_magic( action_state_t* s )
 
     virtual void execute()
     {
-      base_dd_max *= pct_damage; // Deals 50% of original triggering spell damage
-      base_dd_min *= pct_damage;
+      base_dd_max *= data().effectN( 4 ).percent();
+      base_dd_min *= data().effectN( 4 ).percent();
 
       mage_spell_t::execute();
     }
@@ -1383,10 +1363,34 @@ static void trigger_unstable_magic( action_state_t* s )
     p -> unstable_magic_explosion -> init();
   }
 
-  p -> unstable_magic_explosion -> target = s -> target;
-  p -> unstable_magic_explosion -> base_dd_max = s -> result_amount;
-  p -> unstable_magic_explosion -> base_dd_min = s -> result_amount;
-  p -> unstable_magic_explosion -> execute();
+  double um_proc_rate;
+  switch ( p -> specialization() )
+  {
+    case MAGE_ARCANE:
+      um_proc_rate = p -> unstable_magic_explosion
+                       -> data().effectN( 1 ).percent();
+      break;
+    case MAGE_FROST:
+      um_proc_rate = p -> unstable_magic_explosion
+                       -> data().effectN( 2 ).percent();
+      break;
+    case MAGE_FIRE:
+      um_proc_rate = p -> unstable_magic_explosion
+                       -> data().effectN( 3 ).percent();
+      break;
+    default:
+      um_proc_rate = p -> unstable_magic_explosion
+                       -> data().effectN( 3 ).percent();
+      break;
+  }
+
+  if ( p -> rng().roll( um_proc_rate ) )
+  {
+    p -> unstable_magic_explosion -> target = s -> target;
+    p -> unstable_magic_explosion -> base_dd_max = s -> result_amount;
+    p -> unstable_magic_explosion -> base_dd_min = s -> result_amount;
+    p -> unstable_magic_explosion -> execute();
+  }
 
   return;
 }
@@ -1530,8 +1534,10 @@ struct arcane_blast_t : public mage_spell_t
 
     if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
     {
-        if ( p() -> talents.unstable_magic -> ok() && rng().roll( p() -> talents.unstable_magic -> effectN( 2 ).percent() ) )
-          trigger_unstable_magic( s );
+      if ( p() -> talents.unstable_magic -> ok() )
+      {
+        trigger_unstable_magic( s );
+      }
     }
   }
 
@@ -1884,7 +1890,6 @@ struct blizzard_shard_t : public mage_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-
       if ( p() -> perks.improved_blizzard -> ok() )
       {
         p() -> cooldowns.frozen_orb
@@ -1973,8 +1978,6 @@ struct combustion_t : public mage_spell_t
     tick_spell( p -> find_spell( 83853, "combustion_dot" ) )
   {
     parse_options( options_str );
-
-    may_hot_streak = true;
 
     base_tick_time = tick_spell -> effectN( 1 ).period();
     dot_duration   = tick_spell -> duration();
@@ -2230,7 +2233,7 @@ public:
 
     if ( p() -> passives.nether_attunement -> ok() )
     {
-      mana_gain /= p() -> cache.spell_speed();
+      mana_gain /= p() -> cache.spell_haste();
     }
 
     mana_gain *= 1.0 + arcane_charges *
@@ -2268,7 +2271,6 @@ struct fire_blast_t : public mage_spell_t
     mage_spell_t( "fire_blast", p, p -> find_class_spell( "Fire Blast" ) )
   {
     parse_options( options_str );
-    may_hot_streak = true;
   }
 };
 
@@ -2280,7 +2282,6 @@ struct fireball_t : public mage_spell_t
     mage_spell_t( "fireball", p, p -> find_class_spell( "Fireball" ) )
   {
     parse_options( options_str );
-    may_hot_streak = true;
   }
 
   virtual timespan_t travel_time() const
@@ -2296,31 +2297,33 @@ struct fireball_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    if ( p() -> perks.enhanced_pyrotechnics -> ok() &&
-         result_is_hit( s -> result ) )
+    if ( result_is_hit( s -> result ) )
     {
-      if ( s -> result == RESULT_CRIT )
+      if ( p() -> perks.enhanced_pyrotechnics -> ok() )
       {
-        p() -> buffs.enhanced_pyrotechnics -> expire();
+        if ( s -> result == RESULT_CRIT )
+        {
+          p() -> buffs.enhanced_pyrotechnics -> expire();
+        }
+        else
+        {
+          p() -> buffs.enhanced_pyrotechnics -> trigger();
+        }
       }
-      else
-      {
-        p() -> buffs.enhanced_pyrotechnics -> trigger();
-      }
-    }
 
-    if ( p() -> talents.kindling -> ok() &&  s -> result == RESULT_CRIT )
-    {
-      p() -> cooldowns.combustion -> adjust(
-        -1000 * p() -> talents.kindling -> effectN( 1 ).time_value()
-      );
+      trigger_hot_streak( s );
+
+      if ( p() -> talents.kindling -> ok() && s -> result == RESULT_CRIT )
+      {
+        p() -> cooldowns.combustion
+            -> adjust( -1000 * p() -> talents.kindling
+                                   -> effectN( 1 ).time_value() );
+      }
     }
 
     if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
     {
-      if ( p() -> talents.unstable_magic -> ok() &&
-           rng().roll( p() -> talents.unstable_magic
-                           -> effectN( 3 ).percent() ) )
+      if ( p() -> talents.unstable_magic -> ok() )
       {
         trigger_unstable_magic( s );
       }
@@ -2396,10 +2399,12 @@ struct flamestrike_t : public mage_spell_t
 
   virtual void impact( action_state_t* s )
   {
-
     mage_spell_t::impact( s );
 
-    trigger_ignite( s );
+    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    {
+      trigger_ignite( s );
+    }
   }
 };
 
@@ -2462,7 +2467,10 @@ struct frost_bomb_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    td( s -> target ) -> debuffs.frost_bomb -> trigger();
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> debuffs.frost_bomb -> trigger();
+    }
   }
 };
 
@@ -2562,10 +2570,13 @@ struct frostbolt_t : public mage_spell_t
   virtual void impact( action_state_t* s )
   {
     mage_spell_t::impact( s );
+
     if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result) )
     {
-      if ( p() -> talents.unstable_magic -> ok() && rng().roll( p() -> talents.unstable_magic -> effectN( 3 ).percent() ) )
+      if ( p() -> talents.unstable_magic -> ok() )
+      {
         trigger_unstable_magic( s );
+      }
 
       trigger_icicle_gain( s, icicle );
     }
@@ -2645,7 +2656,6 @@ struct frostfire_bolt_t : public mage_spell_t
     icicle( 0 )
   {
     parse_options( options_str );
-    may_hot_streak = true;
     base_execute_time += p -> glyphs.frostfire -> effectN( 1 ).time_value();
 
     if ( p -> sets.has_set_bonus( SET_CASTER, T16, B2 ) )
@@ -2722,33 +2732,47 @@ struct frostfire_bolt_t : public mage_spell_t
   virtual void impact( action_state_t* s )
   {
     mage_spell_t::impact( s );
-    // If there are five Icicles, launch the oldest at this spell's target
-    // Create an Icicle, stashing damage equal to mastery * value
-    // Damage should be based on damage spell would have done without any
-    // target-based damage increases or decreases, except Frostbolt debuff
-    // Should also apply to mini version
 
-    if ( s -> result == RESULT_CRIT && p() -> specialization() == MAGE_FIRE )
-        p() -> buffs.enhanced_pyrotechnics -> expire();
-    else if ( s -> result == RESULT_HIT && p() -> specialization() == MAGE_FIRE )
-        p() -> buffs.enhanced_pyrotechnics -> trigger();
-
-    //Unstable Magic Trigger
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    if ( result_is_hit( s -> result ) && p() -> specialization() == MAGE_FIRE )
     {
-      if ( p() -> talents.unstable_magic -> ok() && rng().roll( p() -> talents.unstable_magic -> effectN( 2 ).percent() ) )
-        trigger_unstable_magic( s );
+      if ( p() -> perks.enhanced_pyrotechnics -> ok() )
+      {
+        if ( s -> result == RESULT_CRIT )
+        {
+          p() -> buffs.enhanced_pyrotechnics -> expire();
+        }
+        else
+        {
+          p() -> buffs.enhanced_pyrotechnics -> trigger();
+        }
+      }
+
+      trigger_hot_streak( s );
+
+      if ( p() -> talents.kindling -> ok() && s -> result == RESULT_CRIT )
+      {
+        p() -> cooldowns.combustion
+            -> adjust( -1000 * p() -> talents.kindling
+                                   -> effectN( 1 ).time_value() );
+      }
     }
 
-    if ( ( result_is_hit( s-> result) || result_is_multistrike( s -> result ) ) && p() -> specialization() == MAGE_FIRE )
-      trigger_ignite( s );
-
-
-    if ( ( result_is_hit( s-> result) || result_is_multistrike( s -> result ) ) && p() -> specialization() == MAGE_FROST )
+    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    {
+      if ( p() -> specialization() == MAGE_FIRE )
+      {
+        trigger_ignite( s );
+      }
+      else if ( p() -> specialization() == MAGE_FROST )
+      {
         trigger_icicle_gain( s, icicle );
+      }
 
-    if ( p() -> talents.kindling -> ok() && s -> result == RESULT_CRIT )
-      p() -> cooldowns.combustion -> adjust( timespan_t::from_seconds( - p() -> talents.kindling -> effectN( 1 ).base_value() ) );
+      if ( p() -> talents.unstable_magic -> ok() )
+      {
+        trigger_unstable_magic( s );
+      }
+    }
   }
 
   virtual double composite_crit() const
@@ -2836,10 +2860,13 @@ struct frozen_orb_bolt_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    double fof_proc_chance = p() -> spec.fingers_of_frost
-                                 -> effectN( 1 ).percent();
-    p() -> buffs.fingers_of_frost
-        -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
+    if ( result_is_hit( s -> result ) )
+    {
+      double fof_proc_chance = p() -> spec.fingers_of_frost
+                                   -> effectN( 1 ).percent();
+      p() -> buffs.fingers_of_frost
+          -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
+    }
   }
 
   virtual double action_multiplier() const
@@ -2969,13 +2996,11 @@ struct ice_lance_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    if ( p() -> talents.frost_bomb -> ok() )
+    if ( td( s -> target ) -> debuffs.frost_bomb -> up() &&
+         frozen && result_is_hit( s -> result ) )
     {
-      if ( td( s -> target ) -> debuffs.frost_bomb -> up() && frozen && !result_is_multistrike( s -> result ) )
-      {
-        frost_bomb_explosion -> target = s -> target;
-        frost_bomb_explosion -> execute();
-      }
+      frost_bomb_explosion -> target = s -> target;
+      frost_bomb_explosion -> execute();
     }
   }
 
@@ -3085,7 +3110,6 @@ struct inferno_blast_t : public mage_spell_t
                   p -> find_class_spell( "Inferno Blast" ) )
   {
     parse_options( options_str );
-    may_hot_streak = true;
     cooldown -> duration = timespan_t::from_seconds( 8.0 );
 
     if ( p -> sets.has_set_bonus( MAGE_FIRE, T17, B2 ) )
@@ -3178,7 +3202,11 @@ struct inferno_blast_t : public mage_spell_t
         {
           pyroblast_dot -> copy( t, DOT_COPY_CLONE );
         }
+
+        spread_remaining--;
       }
+
+      trigger_hot_streak( s );
 
       if ( s -> result == RESULT_CRIT && p() -> talents.kindling -> ok() )
       {
@@ -3186,8 +3214,6 @@ struct inferno_blast_t : public mage_spell_t
             -> adjust( -1000 * p() -> talents.kindling
                                    -> effectN( 1 ).time_value() );
       }
-
-      spread_remaining--;
     }
 
     if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
@@ -3437,6 +3463,11 @@ struct nether_tempest_t : public mage_spell_t
 
   virtual void tick( dot_t* d )
   {
+    if ( p() -> regen_type == REGEN_DYNAMIC )
+    {
+      p() -> do_dynamic_regen();
+    }
+
     mage_spell_t::tick( d );
 
     action_state_t* aoe_state = add_aoe -> get_state( d -> state );
@@ -3487,7 +3518,6 @@ struct pyroblast_t : public mage_spell_t
     is_hot_streak( false ), dot_is_hot_streak( false )
   {
     parse_options( options_str );
-    may_hot_streak = true;
     dot_behavior = DOT_REFRESH;
   }
 
@@ -3543,14 +3573,27 @@ struct pyroblast_t : public mage_spell_t
 
     mage_spell_t::impact( s );
 
+    if ( result_is_hit( s -> result ) )
+    {
+      if ( s -> result == RESULT_CRIT && p() -> talents.kindling -> ok() )
+      {
+        p() -> cooldowns.combustion
+            -> adjust( -1000 * p() -> talents.kindling
+                                   -> effectN( 1 ).time_value()  );
+      }
+
+      trigger_hot_streak( s );
+
+      if ( p() -> sets.has_set_bonus( SET_CASTER, PVP, B4 ) && is_hot_streak )
+      {
+        td( s -> target ) -> debuffs.firestarter -> trigger();
+      }
+    }
+
     if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
+    {
       trigger_ignite( s );
-
-    if ( s -> result == RESULT_CRIT && p() -> talents.kindling -> ok() )
-      p() -> cooldowns.combustion -> adjust( timespan_t::from_seconds( - p() -> talents.kindling -> effectN( 1 ).base_value() ) );
-
-    if ( p() -> sets.has_set_bonus( SET_CASTER, PVP, B4 ) && is_hot_streak )
-      td( s -> target ) -> debuffs.firestarter -> trigger();
+    }
   }
 
   virtual double composite_crit_multiplier() const
@@ -3647,7 +3690,6 @@ struct scorch_t : public mage_spell_t
   {
     parse_options( options_str );
 
-    may_hot_streak = true;
     consumes_ice_floes = false;
   }
 
@@ -3665,8 +3707,15 @@ struct scorch_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
+    if ( result_is_hit( s -> result) )
+    {
+      trigger_hot_streak( s );
+    }
+
     if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
+    {
       trigger_ignite( s );
+    }
   }
 
   double composite_crit_multiplier() const
@@ -3704,7 +3753,10 @@ struct slow_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    td( s -> target ) -> debuffs.slow -> trigger();
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> debuffs.slow -> trigger();
+    }
   }
 };
 
@@ -5110,12 +5162,12 @@ void mage_t::apl_default()
 
 double mage_t::mana_regen_per_second() const
 {
-  double mp5 = player_t::mana_regen_per_second();
+  double mps = player_t::mana_regen_per_second();
 
   if ( passives.nether_attunement -> ok() )
-    mp5 /= cache.spell_speed();
+    mps /= cache.spell_haste();
 
-  return mp5;
+  return mps;
 }
 
 double mage_t::composite_rating_multiplier( rating_e rating) const
@@ -5145,28 +5197,36 @@ double mage_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( buffs.arcane_power -> check() )
+  if ( specialization() == MAGE_ARCANE )
   {
-    double v = buffs.arcane_power -> value();
-    if ( sets.has_set_bonus( SET_CASTER, T14, B4 ) )
+    if ( buffs.arcane_power -> check() )
     {
-      v += 0.1;
+      double v = buffs.arcane_power -> value();
+      if ( sets.has_set_bonus( SET_CASTER, T14, B4 ) )
+      {
+        v += 0.1;
+      }
+      m *= 1.0 + v;
     }
-    m *= 1.0 + v;
+
+    cache.player_mult_valid[ school ] = false;
   }
 
-
-  if ( buffs.rune_of_power -> check() )
+  if ( talents.rune_of_power -> ok() )
   {
-    m *= 1.0 + buffs.rune_of_power -> data().effectN( 1 ).percent();
+    if ( buffs.rune_of_power -> check() )
+    {
+      m *= 1.0 + buffs.rune_of_power -> data().effectN( 1 ).percent();
+    }
+
+    cache.player_mult_valid[ school ] = false;
   }
-
-
-  if ( talents.incanters_flow -> ok() )
+  else if ( talents.incanters_flow -> ok() )
   {
     m *= 1.0 + buffs.incanters_flow -> stack() * incanters_flow_stack_mult;
+
+    cache.player_mult_valid[ school ] = false;
   }
-  cache.player_mult_valid[ school ] = false;
 
   return m;
 }

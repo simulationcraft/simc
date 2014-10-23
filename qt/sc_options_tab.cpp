@@ -57,8 +57,7 @@ const OptionEntry debuffOptions[] =
 
 const OptionEntry scalingOptions[] =
 {
-  { "Analyze All Stats",                "",         "Scale factors are necessary for gear ranking.\nThey only require an additional simulation for each RELEVANT stat." },
-  { "Use Positive Deltas Only",         "",         "This option forces a positive scale delta, which is useful for classes with soft caps."  },
+  { "Toggle All Character Stats",       "",         "Toggles all stats except Latency."                    },
   { "Analyze Strength",                 "str",      "Calculate scale factors for Strength"                 },
   { "Analyze Agility",                  "agi",      "Calculate scale factors for Agility"                  },
   { "Analyze Stamina",                  "sta",      "Calculate scale factors for Stamina"                  },
@@ -152,7 +151,7 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
 
   QAbstractButton* allBuffs   =   buffsButtonGroup -> buttons().at( 0 );
   QAbstractButton* allDebuffs = debuffsButtonGroup -> buttons().at( 0 );
-  QAbstractButton* allScaling = scalingButtonGroup -> buttons().at( 0 );
+  QAbstractButton* allScaling = scalingButtonGroup -> buttons().at( 1 );
 
   connect( allBuffs,   SIGNAL( toggled( bool ) ), this, SLOT( allBuffsChanged( bool ) )   );
   connect( allDebuffs, SIGNAL( toggled( bool ) ), this, SLOT( allDebuffsChanged( bool ) ) );
@@ -340,30 +339,79 @@ void SC_OptionsTab::createBuffsDebuffsTab()
 
 void SC_OptionsTab::createScalingTab()
 {
+  // layout for entire tab
   QVBoxLayout* scalingLayout = new QVBoxLayout();
+
+  // Box containing enable button
+  QGroupBox* enableButtonGroupBox = new QGroupBox();
+  enableButtonGroupBox -> setTitle( tr( "Enable Scaling" ) );
+  enableButtonGroupBox -> setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) );
+  scalingLayout -> addWidget( enableButtonGroupBox );
+
+  QFormLayout* enableButtonGroupBoxLayout = new QFormLayout();
+  
+  QLabel* enableButtonLabel = new QLabel( tr( "This button enables/disables scale factor calculations, allowing you to toggle scaling while keeping a particular set of stats selected." ) );
+  enableButtonGroupBoxLayout -> addWidget( enableButtonLabel );
+  
   scalingButtonGroup = new QButtonGroup();
   scalingButtonGroup -> setExclusive( false );
-  for ( int i = 0; scalingOptions[ i ].label; i++ )
-  {
-    QCheckBox* checkBox = new QCheckBox( scalingOptions[ i ].label );
 
+  QCheckBox* enableBox = new QCheckBox( tr("Enable Scaling" ) );
+  enableBox -> setToolTip( tr( "Enable Scaling. This box MUST be checked to enable scaling calculations." ) );
+  scalingButtonGroup -> addButton( enableBox );
+  enableButtonGroupBoxLayout -> addWidget( enableBox );
+  enableButtonGroupBox -> setLayout( enableButtonGroupBoxLayout );
+  
+  // Box containing additional options
+  QGroupBox* scalingOptionsGroupBox = new QGroupBox();
+  scalingOptionsGroupBox -> setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) );
+  scalingOptionsGroupBox -> setTitle( tr( "Scaling Options" ) );
+  scalingLayout -> addWidget( scalingOptionsGroupBox );
+
+  QFormLayout* scalingOptionsGroupBoxLayout = new QFormLayout();
+  scalingOptionsGroupBoxLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
+  scalingOptionsGroupBoxLayout -> addRow( tr( "Center Scale Delta" ),  choice.center_scale_delta = createChoice( 2, "Yes", "No" ) );
+  choice.center_scale_delta -> setToolTip( tr( "Controls the simulations that the tool compares to determine stat weights.\nIf set to No, it will sim once at profile stats and again with +2X of each selected stat.\nIf set to Yes, it will sim once at profile-X and once at profile+X." ) );
+  scalingOptionsGroupBoxLayout -> addRow( tr( "Scale Over" ),  choice.scale_over = createChoice( 9, "Default", "DPS", "HPS", "DTPS", "HTPS", "Raid_DPS", "Raid_HPS", "TMI", "ETMI" ) );
+  choice.scale_over -> setToolTip( tr( "Choose the stat over which you're primarily interested in scaling.\nThis is the metric that will be displayed on the Scale Factors plot.\nNote that the sim will still generate and display scale factors for all other metrics in tabular form." ) );
+
+  scalingOptionsGroupBox -> setLayout( scalingOptionsGroupBoxLayout );
+
+  // Box containing buttons for each stat to scale
+  QGroupBox* scalingButtonsGroupBox = new QGroupBox();
+  scalingButtonsGroupBox -> setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Expanding ) );
+  scalingButtonsGroupBox -> setTitle( tr( "Stats to scale" ) );
+  scalingLayout -> addWidget( scalingButtonsGroupBox );
+
+  QVBoxLayout* scalingButtonsGroupBoxLayout = new QVBoxLayout();
+
+  QLabel* scalingButtonToggleAllLabel = new QLabel( tr( "This button toggles scaling for all stats except Latency.\nNote that additional simulations will only be run for RELEVANT stats.\nIn other words, Agility and Intellect would be skipped for a Warrior even if they are checked." ) );
+  scalingButtonsGroupBoxLayout -> addWidget( scalingButtonToggleAllLabel );
+
+  QCheckBox* checkBox = new QCheckBox( scalingOptions[ 0 ].label );
+  checkBox -> setToolTip( scalingOptions[ 0 ].tooltip );
+  scalingButtonGroup -> addButton( checkBox );
+  scalingButtonsGroupBoxLayout -> addWidget( checkBox );
+
+  QSpacerItem* spacer0 = new QSpacerItem( 20, 20 );
+  scalingButtonsGroupBoxLayout -> addSpacerItem( spacer0 );
+
+  for ( int i = 2; scalingOptions[ i ].label; i++ )
+  {
+    checkBox = new QCheckBox( scalingOptions[ i ].label );
     checkBox -> setToolTip( scalingOptions[ i ].tooltip );
     scalingButtonGroup -> addButton( checkBox );
-    scalingLayout -> addWidget( checkBox );
+    scalingButtonsGroupBoxLayout -> addWidget( checkBox );
   }
-  //scalingLayout->addStretch( 1 );
-  QGroupBox* scalingGroupBox = new QGroupBox();
-  scalingGroupBox -> setLayout( scalingLayout );
 
-  QFormLayout* scalingLayout2 = new QFormLayout();
-  scalingLayout2 -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-  scalingLayout2 -> addRow( tr( "Center Scale Delta" ),  choice.center_scale_delta = createChoice( 2, "Yes", "No" ) );
-  scalingLayout2 -> addRow( tr( "Scale Over" ),  choice.scale_over = createChoice( 9, "Default", "DPS", "HPS", "DTPS", "HTPS", "Raid_DPS", "Raid_HPS", "TMI", "ETMI" ) );
+  QSpacerItem* spacer1 = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Expanding );
+  scalingButtonsGroupBoxLayout -> addSpacerItem( spacer1 );
+  scalingButtonsGroupBox -> setLayout( scalingButtonsGroupBoxLayout );
 
-  scalingLayout -> addLayout( scalingLayout2 );
-
+  // Now put the tab together
   QScrollArea* scalingGroupBoxScrollArea = new QScrollArea;
-  scalingGroupBoxScrollArea -> setWidget( scalingGroupBox );
+  scalingGroupBoxScrollArea -> setLayout( scalingLayout );
+  //scalingGroupBoxScrollArea -> setWidget( scalingGroupBox );
   scalingGroupBoxScrollArea -> setWidgetResizable( true );
   addTab( scalingGroupBoxScrollArea, tr ( "Scaling" ) );
 }
@@ -914,40 +962,50 @@ QString SC_OptionsTab::mergeOptions()
   options += "thread_priority=" + choice.thread_priority -> currentText() + "\n";
 
   QList<QAbstractButton*> buttons = scalingButtonGroup -> buttons();
-  for ( int i = 2; i < buttons.size(); i++ )
+
+  /////// Scaling Options ///////
+
+  // skip if scaling checkbox isn't enabled
+  if ( buttons.at( 0 ) -> isChecked() )
   {
-    if ( buttons.at( i ) -> isChecked() )
+
+    for ( int i = 2; i < buttons.size(); i++ )
     {
-      options += "calculate_scale_factors=1\n";
-      break;
+      if ( buttons.at( i ) -> isChecked() )
+      {
+        options += "calculate_scale_factors=1\n";
+        break;
+      }
     }
-  }
 
-  if ( buttons.at( 1 )->isChecked() ) options += "positive_scale_delta=1\n";
-  if ( buttons.at( buttons.size() - 1 )->isChecked() ) options += "scale_lag=1\n";
+    // latency is always the last button
+    if ( buttons.at( buttons.size() - 1 )->isChecked() ) options += "scale_lag=1\n";
 
-  options += "scale_only=none";
-  for ( int i = 2; scalingOptions[ i ].label; i++ )
-  {
-    if ( buttons.at( i ) -> isChecked() )
+    options += "scale_only=none";
+    for ( int i = 2; scalingOptions[ i ].label; i++ )
     {
-      options += ",";
-      options += scalingOptions[ i ].option;
+      if ( buttons.at( i ) -> isChecked() )
+      {
+        options += ",";
+        options += scalingOptions[ i ].option;
+      }
     }
-  }
-  options += "\n";
-
-  if ( choice.center_scale_delta->currentIndex() == 0 )
-  {
-    options += "center_scale_delta=1\n";
-  }
-
-  if ( choice.scale_over -> currentIndex() != 0 )
-  {
-    options += "scale_over=";
-    options +=  choice.scale_over -> currentText();
     options += "\n";
+
+    if ( choice.center_scale_delta->currentIndex() == 0 )
+    {
+      options += "center_scale_delta=1\n";
+    }
+
+    if ( choice.scale_over -> currentIndex() != 0 )
+    {
+      options += "scale_over=";
+      options += choice.scale_over -> currentText();
+      options += "\n";
+    }
   }
+
+  /////// Plotting Options ///////
 
   options += "dps_plot_stat=none";
   buttons = plotsButtonGroup->buttons();

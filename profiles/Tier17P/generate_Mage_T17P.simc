@@ -9,7 +9,7 @@ mage=Mage_Arcane_T17P
 level=100
 race=troll
 spec=arcane
-talents=1003221
+talents=1003322
 glyphs=arcane_power/cone_of_cold
 head=hood_of_swirling_light,id=109972,bonus_id=524
 neck=alcs_pendant_of_fiery_dreams,id=109957,bonus_id=524,enchant=gift_of_mastery
