@@ -6217,8 +6217,8 @@ void druid_t::apl_balance()
     default_list -> add_action( item_actions[i] );
 
   default_list -> add_talent( this, "Force of Nature", "if=trinket.stat.intellect.up|charges=3|target.time_to_die<21" );
-  default_list -> add_action( "run_action_list,name=single_target,if=active_enemies=1" );
-  default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>1" );
+  default_list -> add_action( "call_action_list,name=single_target,if=active_enemies=1" );
+  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>1" );
 
   single_target -> add_action( this, "Starsurge", "if=buff.lunar_empowerment.down&eclipse_energy>20" );
   single_target -> add_action( this, "Starsurge", "if=buff.solar_empowerment.down&eclipse_energy<-20" );

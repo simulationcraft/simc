@@ -5477,26 +5477,6 @@ void warlock_t::apl_precombat()
   }
 
   action_list_str += "/service_pet,if=talent.grimoire_of_service.enabled&!talent.demonbolt.enabled";
-  /*
-  int multidot_max = 3;
-
-  switch ( specialization() )
-  {
-  case WARLOCK_AFFLICTION:
-    multidot_max = 6;
-    break;
-  case WARLOCK_DESTRUCTION:
-    multidot_max = 3;
-    break;
-  case WARLOCK_DEMONOLOGY:
-    multidot_max = 4;
-    break;
-  default:
-    break;
-  }*/
-
-  //  action_list_str += "/run_action_list,name=aoe,if=active_enemies>"
-  //      + util::to_string( multidot_max );
 
   add_action( "Summon Doomguard", "if=!talent.demonic_servitude.enabled&active_enemies<5" );
   add_action( "Summon Infernal", ",if=!talent.demonic_servitude.enabled&active_enemies>=5" );

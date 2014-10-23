@@ -3839,7 +3839,7 @@ void hunter_t::apl_mm()
 
   default_list -> add_action( this, "Rapid Fire");
   default_list -> add_talent( this, "Stampede", "if=buff.rapid_fire.up|buff.bloodlust.up|target.time_to_die<=20" );
-  default_list -> add_action( "run_action_list,name=careful_aim,if=buff.careful_aim.up" );
+  default_list -> add_action( "call_action_list,name=careful_aim,if=buff.careful_aim.up" );
   {
     careful_aim -> add_talent( this, "Glaive Toss", "if=active_enemies>4" );
     careful_aim -> add_talent( this, "Powershot", "if=active_enemies>1&cast_regen<focus.deficit" );

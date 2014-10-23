@@ -30,8 +30,8 @@ actions+=/blood_fury,if=buff.celestial_alignment.up
 actions+=/berserking,if=buff.celestial_alignment.up
 actions+=/arcane_torrent,if=buff.celestial_alignment.up
 actions+=/force_of_nature,if=trinket.stat.intellect.up|charges=3|target.time_to_die<21
-actions+=/run_action_list,name=single_target,if=active_enemies=1
-actions+=/run_action_list,name=aoe,if=active_enemies>1
+actions+=/call_action_list,name=single_target,if=active_enemies=1
+actions+=/call_action_list,name=aoe,if=active_enemies>1
 
 actions.single_target=starsurge,if=buff.lunar_empowerment.down&eclipse_energy>20
 actions.single_target+=/starsurge,if=buff.solar_empowerment.down&eclipse_energy<-20
