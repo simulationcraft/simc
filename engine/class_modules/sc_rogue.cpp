@@ -4318,7 +4318,7 @@ double rogue_t::composite_player_multiplier( school_e school ) const
 
     m *= 1.0 + buffs.deep_insight -> value();
 
-    if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
+    if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER && spec.assassins_resolve -> ok() )
     {
       if ( wod_hotfix )
         m *= 1.1;
