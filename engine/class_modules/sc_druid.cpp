@@ -910,6 +910,7 @@ struct cenarion_ward_hot_t : public heal_t
     harmful = false;
     background = proc = true;
     target = p;
+    hasted_ticks = false;
   }
 
   virtual void execute()
@@ -1969,6 +1970,8 @@ struct druid_melee_t : public caster_attack_t
     may_glance  = background = repeating = true;
     trigger_gcd = timespan_t::zero();
     special     = false;
+
+    triggers_natures_vigil = false;
   }
 
   virtual timespan_t execute_time() const
@@ -2225,6 +2228,8 @@ struct cat_melee_t : public cat_attack_t
     may_glance = background = repeating = true;
     trigger_gcd = timespan_t::zero();
     special = false;
+
+    triggers_natures_vigil = false;
   }
 
   virtual timespan_t execute_time() const
@@ -2873,6 +2878,7 @@ struct bear_melee_t : public bear_attack_t
     special     = false;
 
     rage_amount = 5.0;
+    triggers_natures_vigil = false;
   }
 
   virtual timespan_t execute_time() const
