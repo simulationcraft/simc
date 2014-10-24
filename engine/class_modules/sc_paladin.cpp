@@ -6467,8 +6467,20 @@ expr_t* paladin_t::create_expression( action_t* a,
 
   struct time_to_hpg_expr_t : public paladin_expr_t
   {
+    cooldown_t* cs_cd;
+    cooldown_t* j_cd;
+    cooldown_t* hw_cd;
+    cooldown_t* e_cd;
+    cooldown_t* how_cd;
+    cooldown_t* hs_cd;
+
     time_to_hpg_expr_t( const std::string& n, paladin_t& p ) :
-      paladin_expr_t( n, p ) {}
+      paladin_expr_t( n, p ), cs_cd( p.get_cooldown( "crusader_strike" ) ),
+      j_cd( p.get_cooldown( "judgment" ) ), hw_cd( p.get_cooldown( "holy_wrath") ),
+      e_cd( p.get_cooldown( "exorcism" ) ),
+      how_cd( p.get_cooldown( "hammer_of_wrath" ) ), hs_cd( p.get_cooldown( "holy_shock" ) )
+    { }
+
     virtual double evaluate()
     {
       timespan_t gcd_ready = paladin.gcd_ready - paladin.sim -> current_time;
@@ -6477,31 +6489,31 @@ expr_t* paladin_t::create_expression( action_t* a,
       if ( paladin.buffs.grand_crusader -> check() )
         return gcd_ready.total_seconds();
       
-      timespan_t shortest_hpg_time = paladin.get_cooldown( "crusader_strike" ) -> remains();
+      timespan_t shortest_hpg_time = cs_cd -> remains();
 
-      if ( paladin.get_cooldown( "judgment" ) -> remains() < shortest_hpg_time )
-        shortest_hpg_time = paladin.get_cooldown( "judgment" ) -> remains();
+      if ( j_cd -> remains() < shortest_hpg_time )
+        shortest_hpg_time = j_cd -> remains();
 
       if ( paladin.specialization() == PALADIN_PROTECTION )
       {
         // Prot-specific HPG go here
-        if ( paladin.talents.sanctified_wrath -> ok() && paladin.get_cooldown( "holy_wrath" ) -> remains() < shortest_hpg_time )
-          shortest_hpg_time = paladin.get_cooldown( "holy_wrath" ) -> remains();
+        if ( paladin.talents.sanctified_wrath -> ok() && hw_cd -> remains() < shortest_hpg_time )
+          shortest_hpg_time = hw_cd -> remains();
       }
       else if ( paladin.specialization() == PALADIN_RETRIBUTION )
       {
         // ret-specific HPG go here
-        if ( paladin.get_cooldown( "exorcism" ) -> remains() < shortest_hpg_time )
-          shortest_hpg_time = paladin.get_cooldown( "exorcism" ) -> remains();
+        if ( e_cd -> remains() < shortest_hpg_time )
+          shortest_hpg_time = e_cd -> remains();
 
-        if ( paladin.get_how_availability() && paladin.get_cooldown( "hammer_of_wrath" ) -> remains() < shortest_hpg_time )
-          shortest_hpg_time = paladin.get_cooldown( "hammer_of_wrath" ) -> remains();
+        if ( paladin.get_how_availability() && how_cd -> remains() < shortest_hpg_time )
+          shortest_hpg_time = how_cd -> remains();
       }
       else if ( paladin.specialization() == PALADIN_HOLY )
       {
         // holy-specific HPG go here
-        if ( paladin.get_cooldown( "holy_shock" ) -> remains() < shortest_hpg_time )
-          shortest_hpg_time = paladin.get_cooldown( "holy_shock" ) -> remains();
+        if ( hs_cd -> remains() < shortest_hpg_time )
+          shortest_hpg_time = hs_cd -> remains();
       }
 
       if ( gcd_ready > shortest_hpg_time )
