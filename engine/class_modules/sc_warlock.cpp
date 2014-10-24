@@ -3892,7 +3892,13 @@ struct soulburn_seed_of_corruption_t: public warlock_spell_t
     warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
+    {
       td( s -> target ) -> soulburn_soc_trigger = data().effectN( 3 ).average( p() ) + s -> composite_spell_power() * coefficient;
+      if (td( s -> target ) -> dots_seed_of_corruption -> is_ticking()) //cancel SoC
+      {
+          td( s -> target ) -> dots_seed_of_corruption -> cancel();
+      }
+    }
   }
 };
 
@@ -3917,7 +3923,13 @@ struct seed_of_corruption_t: public warlock_spell_t
     warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
+    {
       td( s -> target ) -> soc_trigger = data().effectN( 3 ).average( p() ) + s -> composite_spell_power() * data().effectN( 3 ).sp_coeff();
+        if (td( s -> target ) -> dots_soulburn_seed_of_corruption -> is_ticking()) //cancel SB:SoC
+        {
+            td( s -> target ) -> dots_soulburn_seed_of_corruption -> cancel();
+        }
+    }
   }
 
   virtual void execute()
