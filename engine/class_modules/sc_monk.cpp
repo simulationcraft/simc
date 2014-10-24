@@ -3049,8 +3049,9 @@ struct dampen_harm_t: public monk_spell_t
 
   virtual void execute()
   {
-    p() -> buff.dampen_harm -> trigger( 3 );
     monk_spell_t::execute();
+
+    p() -> buff.dampen_harm -> trigger( data().initial_stacks() );
   }
 };
 
@@ -4502,7 +4503,8 @@ void monk_t::target_mitigation( school_e school,
 
   // Dampen Harm // Currently reduces hits below 15% hp as well
   double dampen_health = max_health() * buff.dampen_harm -> data().effectN( 1 ).percent();
-  if ( buff.dampen_harm -> up() && s -> result >= dampen_health )
+  double dampen_result_amount = s -> result_amount;
+  if ( buff.dampen_harm -> up() && dampen_result_amount >= dampen_health )
   {
     s -> result_amount *= 1.0 - buff.dampen_harm -> data().effectN( 2 ).percent(); // Dampen Harm reduction is stored as +50
     buff.dampen_harm -> decrement(); // A stack will only be removed if the reduction was applied.
