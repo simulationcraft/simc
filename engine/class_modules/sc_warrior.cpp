@@ -4023,7 +4023,10 @@ void warrior_t::apl_fury()
   two_targets -> add_action( this, "Execute", "if=target.health.pct<20|buff.sudden_death.react" );
   two_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.up" );
   two_targets -> add_action( this, "Whirlwind", "if=!buff.meat_cleaver.up" );
+  two_targets -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up&rage>75" );
   two_targets -> add_action( this, "Bloodthirst" );
+  two_targets -> add_action( this, "Whirlwind", "if=rage>rage.max-20" );
+  two_targets -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up" );
 
   three_targets -> add_talent( this, "Bloodbath" );
   three_targets -> add_talent( this, "Ravager", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
@@ -4034,6 +4037,7 @@ void warrior_t::apl_fury()
   three_targets -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   three_targets -> add_action( this, "Whirlwind" );
   three_targets -> add_action( this, "Bloodthirst" );
+  three_targets -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up" );
 
   aoe -> add_talent( this, "Bloodbath" );
   aoe -> add_talent( this, "Ravager", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
@@ -4045,6 +4049,7 @@ void warrior_t::apl_fury()
   aoe -> add_action( this, "Execute", "if=buff.sudden_death.react" );
   aoe -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   aoe -> add_action( this, "Bloodthirst" );
+  aoe -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up" );
 }
 
 // Arms Warrior Action Priority List ========================================

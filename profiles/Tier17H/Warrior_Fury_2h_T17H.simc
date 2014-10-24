@@ -74,7 +74,10 @@ actions.two_targets+=/bloodthirst,if=buff.enrage.down|rage<50|buff.raging_blow.d
 actions.two_targets+=/execute,if=target.health.pct<20|buff.sudden_death.react
 actions.two_targets+=/raging_blow,if=buff.meat_cleaver.up
 actions.two_targets+=/whirlwind,if=!buff.meat_cleaver.up
+actions.two_targets+=/wild_strike,if=buff.bloodsurge.up&rage>75
 actions.two_targets+=/bloodthirst
+actions.two_targets+=/whirlwind,if=rage>rage.max-20
+actions.two_targets+=/wild_strike,if=buff.bloodsurge.up
 
 actions.three_targets=bloodbath
 actions.three_targets+=/ravager,if=buff.bloodbath.up|!talent.bloodbath.enabled
@@ -85,6 +88,7 @@ actions.three_targets+=/raging_blow,if=buff.meat_cleaver.stack>=2
 actions.three_targets+=/dragon_roar,if=buff.bloodbath.up|!talent.bloodbath.enabled
 actions.three_targets+=/whirlwind
 actions.three_targets+=/bloodthirst
+actions.three_targets+=/wild_strike,if=buff.bloodsurge.up
 
 actions.aoe=bloodbath
 actions.aoe+=/ravager,if=buff.bloodbath.up|!talent.bloodbath.enabled
@@ -96,6 +100,7 @@ actions.aoe+=/whirlwind
 actions.aoe+=/execute,if=buff.sudden_death.react
 actions.aoe+=/dragon_roar,if=buff.bloodbath.up|!talent.bloodbath.enabled
 actions.aoe+=/bloodthirst
+actions.aoe+=/wild_strike,if=buff.bloodsurge.up
 
 head=blackhands_faceguard,id=115584,bonus_id=566
 neck=vertebrae_protector,id=113900,bonus_id=566,enchant=gift_of_critical_strike

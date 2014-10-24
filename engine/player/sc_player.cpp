@@ -4251,6 +4251,13 @@ double player_t::health_percentage() const
   return resources.pct( RESOURCE_HEALTH ) * 100;
 }
 
+// player_t::max_health() ============================================
+
+double player_t::max_health() const
+{
+  return resources.max[RESOURCE_HEALTH];
+}
+
 // target_t::time_to_die ====================================================
 
 timespan_t player_t::time_to_die() const
