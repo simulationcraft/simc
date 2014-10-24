@@ -100,7 +100,7 @@ actions.max_dps+=/wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remain
 actions.max_dps+=/avengers_shield,if=active_enemies>1&!glyph.focused_shield.enabled
 actions.max_dps+=/holy_wrath,if=talent.sanctified_wrath.enabled
 actions.max_dps+=/avengers_shield,if=buff.grand_crusader.react
-actions.max_dps+=/execution_sentence
+actions.max_dps+=/execution_sentence,if=active_enemies<3
 actions.max_dps+=/holy_wrath,if=glyph.final_wrath.enabled&target.health.pct<=20
 actions.max_dps+=/avengers_shield
 actions.max_dps+=/seal_of_truth,if=talent.empowered_seals.enabled&!seal.truth&buff.maraads_truth.remains<cooldown.judgment.remains
@@ -108,6 +108,7 @@ actions.max_dps+=/seal_of_righteousness,if=talent.empowered_seals.enabled&!seal.
 actions.max_dps+=/lights_hammer
 actions.max_dps+=/holy_prism
 actions.max_dps+=/consecration,if=target.debuff.flying.down&active_enemies>=3
+actions.max_dps+=/execution_sentence
 actions.max_dps+=/hammer_of_wrath
 actions.max_dps+=/consecration,if=target.debuff.flying.down
 actions.max_dps+=/holy_wrath
