@@ -114,7 +114,7 @@ finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant=gift_of_multistri
 finger2=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_multistrike
 trinket1=shards_of_nothing,id=113835,bonus_id=566
 trinket2=quiescent_runestone,id=113859,bonus_id=566
-main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_frostwolf
+main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_the_frostwolf
 
 # Gear Summary
 # gear_stamina=3942
