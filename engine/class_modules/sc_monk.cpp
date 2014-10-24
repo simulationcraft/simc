@@ -2739,19 +2739,19 @@ struct fortifying_brew_t: public monk_spell_t
 
     harmful = may_crit = false;
     trigger_gcd = timespan_t::zero();
-    cooldown->duration += p.sets.set( SET_TANK, T16, B2 )->effectN( 1 ).time_value();
+    cooldown -> duration += p.sets.set( SET_TANK, T16, B2 ) -> effectN( 1 ).time_value();
   }
 
   virtual void execute()
   {
     monk_spell_t::execute();
 
-    p()->buff.fortifying_brew->trigger();
+    p() -> buff.fortifying_brew -> trigger();
 
     // Extra Health is set by current max_health, doesn't change when max_health changes.
     double health_gain = player->resources.max[RESOURCE_HEALTH];
-    health_gain *= ( p()->glyph.fortifying_brew->ok() ? p()->find_spell( 124997 )->effectN( 2 ).percent() : p()->find_class_spell( "Fortifying Brew" )->effectN( 1 ).percent() );
-    player->stat_gain( STAT_MAX_HEALTH, health_gain, nullptr, this );
+    health_gain *= ( p( )-> glyph.fortifying_brew -> ok() ? p() -> find_spell( 124997 )->effectN( 2 ).percent() : p()->find_class_spell( "Fortifying Brew" )->effectN( 1 ).percent() );
+    player -> stat_gain( STAT_MAX_HEALTH, health_gain, nullptr, this );
   }
 };
 
@@ -3486,12 +3486,12 @@ struct fortuitous_spheres_t: public monk_heal_t
     parse_options( options_str );
     harmful = false;
     trigger_gcd = timespan_t::zero();
-    cooldown->duration = p.glyph.fortuitous_spheres->effectN( 2 ).time_value();
+    cooldown -> duration = p.glyph.fortuitous_spheres -> effectN( 2 ).time_value();
   }
 
   virtual bool ready()
   {
-    if ( p()->buff.fortuitous_spheres->stack() > 0 )
+    if ( p() -> buff.fortuitous_spheres -> stack() > 0 )
       return true;
 
     return false;
@@ -3499,11 +3499,11 @@ struct fortuitous_spheres_t: public monk_heal_t
 
   virtual void execute()
   {
-    if ( p()->buff.fortuitous_spheres->up() )
+    if ( p() -> buff.fortuitous_spheres -> up() )
     {
       monk_heal_t::execute();
 
-      p()->buff.fortuitous_spheres->decrement();
+      p() -> buff.fortuitous_spheres -> decrement();
     }
   }
 };
@@ -3534,18 +3534,18 @@ struct guard_t: public monk_absorb_t
     harmful = false;
     trigger_gcd = timespan_t::zero();
     target = &p;
-    cooldown->duration = data().charge_cooldown();
-    cooldown->charges = p.perk.improved_guard->effectN( 1 ).base_value();
+    cooldown -> duration = data().charge_cooldown();
+    cooldown -> charges = p.perk.improved_guard -> effectN( 1 ).base_value();
     attack_power_mod.direct = 9; // hardcoded into tooltip 2014/09/09
-    base_multiplier += p.sets.set( SET_TANK, T14, B4 )->effectN( 1 ).percent();
-    if ( p.glyph.guard->ok() )
-      base_multiplier += p.glyph.guard->effectN( 1 ).percent();
+    base_multiplier += p.sets.set( SET_TANK, T14, B4 ) -> effectN( 1 ).percent();
+    if ( p.glyph.guard -> ok() )
+      base_multiplier += p.glyph.guard -> effectN( 1 ).percent();
   }
 
   virtual void impact( action_state_t* s )
   {
-    p()->buff.guard->trigger( 1, s->result_amount );
-    stats->add_result( 0.0, s->result_amount, ABSORB, s->result, s->block_result, s->target );
+    p() -> buff.guard -> trigger( 1, s -> result_amount );
+    stats -> add_result( 0.0, s -> result_amount, ABSORB, s -> result, s -> block_result, s -> target );
   }
 };
 } // end namespace asborbs
@@ -3570,7 +3570,7 @@ struct power_strikes_event_t: public event_t
   {
     monk_t* p = debug_cast<monk_t*>( actor );
 
-    p->buff.power_strikes->trigger();
+    p->buff.power_strikes -> trigger();
 
     new ( sim() ) power_strikes_event_t( *p, timespan_t::from_seconds( 15.0 ) );
   }
@@ -4501,7 +4501,8 @@ void monk_t::target_mitigation( school_e school,
   // Damage Reduction Cooldowns
 
   // Dampen Harm // Currently reduces hits below 15% hp as well
-  if ( buff.dampen_harm -> up() )
+  double dampen_health = max_health() * buff.dampen_harm -> data().effectN( 1 ).percent();
+  if ( buff.dampen_harm -> up() && s -> result >= dampen_health )
   {
     s -> result_amount *= 1.0 - buff.dampen_harm -> data().effectN( 2 ).percent(); // Dampen Harm reduction is stored as +50
     buff.dampen_harm -> decrement(); // A stack will only be removed if the reduction was applied.
@@ -4509,11 +4510,14 @@ void monk_t::target_mitigation( school_e school,
 
   // Diffuse Magic
   if ( buff.diffuse_magic -> up() && school != SCHOOL_PHYSICAL )
-    s -> result_amount *= 1.0 + buff.diffuse_magic -> data().effectN( 1 ).percent();
+    s -> result_amount *= 1.0 + buff.diffuse_magic -> data().effectN( 1 ).percent(); // Stored as -90%
 
-  //Fortifying Brew
-  if ( buff.fortifying_brew -> check() )
-    s -> result_amount *= 1.0 + buff.fortifying_brew -> data().effectN( 2 ).percent();
+  // Fortifying Brew
+  if ( buff.fortifying_brew -> up() )
+  {
+    double fort_reduction = buff.fortifying_brew -> data().effectN( 2 ).percent() - ( glyph.fortifying_brew -> ok() ? find_spell( 124997 ) -> effectN( 1 ).percent() : 0 );
+    s -> result_amount *= 1.0 + fort_reduction; // Stored as +20
+  }
 }
 
 // monk_t::assess_damage ====================================================
@@ -4522,16 +4526,16 @@ void monk_t::assess_damage( school_e school,
                             dmg_e    dtype,
                             action_state_t* s )
 {
-  buff.shuffle->up();
-  buff.fortifying_brew->up();
+  buff.shuffle -> up();
+  buff.fortifying_brew -> up();
   buff.elusive_brew_activated->up();
-  if ( s->result_total > 0 && school == SCHOOL_PHYSICAL && !glyph.guard->ok() )
-    buff.guard->up();
-  else if ( s->result_total > 0 && school != SCHOOL_PHYSICAL && glyph.guard->ok() )
+  if ( s -> result_total > 0 && school == SCHOOL_PHYSICAL && !glyph.guard -> ok() )
+    buff.guard -> up();
+  else if ( s -> result_total > 0 && school != SCHOOL_PHYSICAL && glyph.guard -> ok() )
     buff.guard->up();
 
-  if ( s->result == RESULT_DODGE && sets.set( MONK_BREWMASTER, T17, B2 ) )
-    resource_gain( RESOURCE_ENERGY, sets.set( MONK_BREWMASTER, T17, B2 )->effectN( 1 ).base_value(), gain.energy_refund );
+  if ( s -> result == RESULT_DODGE && sets.set( MONK_BREWMASTER, T17, B2 ) )
+    resource_gain( RESOURCE_ENERGY, sets.set( MONK_BREWMASTER, T17, B2 ) -> effectN( 1 ).base_value(), gain.energy_refund );
 
   base_t::assess_damage( school, dtype, s );
 }
@@ -4548,16 +4552,16 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
     return;
 
   // Stagger damage can't be staggered!
-  if ( s->action->id == 124255 )
+  if ( s -> action -> id == 124255 )
     return;
 
   double stagger_dmg = 0;
 
   if ( school == SCHOOL_PHYSICAL )
-    stagger_dmg += s->result_amount > 0 ? s->result_amount * stagger_pct() : 0.0;
+    stagger_dmg += s->result_amount > 0 ? s -> result_amount * stagger_pct() : 0.0;
 
   if ( school != SCHOOL_PHYSICAL && talent.soul_dance )
-    stagger_dmg += s->result_amount > 0 ? s->result_amount * ( stagger_pct() * talent.soul_dance->effectN( 1 ).percent() ) : 0.0;
+    stagger_dmg += s -> result_amount > 0 ? s -> result_amount * ( stagger_pct() * talent.soul_dance -> effectN( 1 ).percent() ) : 0.0;
 
   s->result_amount -= stagger_dmg;
   // Hook up Stagger Mechanism
@@ -4572,7 +4576,7 @@ void monk_t::apl_pre_brewmaster()
   action_priority_list_t* pre = get_action_priority_list( "precombat" );
 
   // Flask
-  if ( sim->allow_flasks && level >= 80 )
+  if ( sim -> allow_flasks && level >= 80 )
   {
     if ( level > 90 )
       pre->add_action( "flask,type=greater_draenic_stamina_flask" );
@@ -4585,27 +4589,27 @@ void monk_t::apl_pre_brewmaster()
   if ( sim->allow_food && level >= 80 )
   {
     if ( level > 90 )
-      pre->add_action( "/food,type=sleeper_surprise" );
+      pre -> add_action( "/food,type=sleeper_surprise" );
     else if ( level >= 85 )
-      pre->add_action( "/food,type=mogu_fish_stew" );
+      pre -> add_action( "/food,type=mogu_fish_stew" );
     else
-      pre->add_action( "/food,type=seafood_magnifique_feast" );
+      pre -> add_action( "/food,type=seafood_magnifique_feast" );
   }
 
-  pre->add_action( "stance,choose=sturdy_ox" );
-  pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  pre -> add_action( "stance,choose=sturdy_ox" );
+  pre -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   if ( sim->allow_potions && level >= 80 )
   {
     if ( level > 90 )
-      pre->add_action( "potion,name=draenic_agility" );
+      pre -> add_action( "potion,name=draenic_agility" );
     else if ( level >= 85 )
-      pre->add_action( "potion,name=virmens_bite" );
+      pre -> add_action( "potion,name=virmens_bite" );
     else
-      pre->add_action( "potion,name=tolvir" );
+      pre -> add_action( "potion,name=tolvir" );
   }
 
-  pre->add_action( "dampen_harm" );
+  pre -> add_action( "dampen_harm" );
 }
 
 // Windwalker Pre-Combat Action Priority List ==========================
@@ -4614,7 +4618,7 @@ void monk_t::apl_pre_windwalker()
 {
   std::string& precombat = get_action_priority_list( "precombat" )->action_list_str;
 
-  if ( sim->allow_flasks )
+  if ( sim -> allow_flasks )
   {
     // Flask
     if ( level > 90 )
@@ -4623,7 +4627,7 @@ void monk_t::apl_pre_windwalker()
       precombat += "flask,type=spring_blossoms";
   }
 
-  if ( sim->allow_food )
+  if ( sim -> allow_food )
   {
     // Food
     if ( level > 90 )
@@ -4635,7 +4639,7 @@ void monk_t::apl_pre_windwalker()
   precombat += "/stance,choose=fierce_tiger";
   precombat += "/snapshot_stats";
 
-  if ( sim->allow_potions )
+  if ( sim -> allow_potions )
   {
     // Prepotion
     if ( level > 90 )
@@ -4653,7 +4657,7 @@ void monk_t::apl_pre_mistweaver()
 {
   std::string& precombat = get_action_priority_list( "precombat" )->action_list_str;
 
-  if ( sim->allow_flasks )
+  if ( sim -> allow_flasks )
   {
     if ( level > 90 )
       precombat += "flask,type=greater_draenic_intellect_flask";
@@ -4664,7 +4668,7 @@ void monk_t::apl_pre_mistweaver()
       precombat += "flask,type=draconic_mind";
   }
 
-  if ( sim->allow_food )
+  if ( sim -> allow_food )
   {
     // Food
     if ( level > 90 )
@@ -4678,7 +4682,7 @@ void monk_t::apl_pre_mistweaver()
   precombat += "/stance,choose=wise_serpent";
   precombat += "/snapshot_stats";
 
-  if ( sim->allow_potions )
+  if ( sim -> allow_potions )
   {
     // Prepotion
     if ( level > 90 )
@@ -4704,57 +4708,57 @@ void monk_t::apl_combat_brewmaster()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def->add_action( racial_actions[i] + ",if=energy<=40" );
 
-  def->add_action( this, "chi_sphere", "if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4" );
-  def->add_talent( this, "Chi Brew", "if=talent.chi_brew.enabled&chi.max-chi>=2&buff.elusive_brew_stacks.stack<=10" );
-  def->add_action( this, "Gift of the Ox", "if=buff.gift_of_the_ox.react&incoming_damage_1500ms" );
-  def->add_talent( this, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down&buff.elusive_brew_activated.down" );
-  def->add_action( this, "Fortifying Brew", "if=incoming_damage_1500ms&buff.dampen_harm.down&buff.elusive_brew_activated.down" );
-  def->add_action( this, "Elusive Brew", "if=buff.elusive_brew_stacks.react>=9&buff.dampen_harm.down&buff.elusive_brew_activated.down" );
-  def->add_action( "invoke_xuen,if=talent.invoke_xuen.enabled&time>5" );
-  def->add_talent( this, "Serenity", "if=talent.serenity.enabled&energy<=40" );
-  def->add_action( "call_action_list,name=st,if=active_enemies<3" );
-  def->add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
+  def -> add_action( this, "chi_sphere", "if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4" );
+  def -> add_talent( this, "Chi Brew", "if=talent.chi_brew.enabled&chi.max-chi>=2&buff.elusive_brew_stacks.stack<=10" );
+  def -> add_action( this, "Gift of the Ox", "if=buff.gift_of_the_ox.react&incoming_damage_1500ms" );
+  def -> add_talent( this, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down&buff.elusive_brew_activated.down" );
+  def -> add_action( this, "Fortifying Brew", "if=incoming_damage_1500ms&buff.dampen_harm.down&buff.elusive_brew_activated.down" );
+  def -> add_action( this, "Elusive Brew", "if=buff.elusive_brew_stacks.react>=9&buff.dampen_harm.down&buff.elusive_brew_activated.down" );
+  def -> add_action( "invoke_xuen,if=talent.invoke_xuen.enabled&time>5" );
+  def -> add_talent( this, "Serenity", "if=talent.serenity.enabled&energy<=40" );
+  def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
+  def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
 
-  st->add_action( this, "Blackout Kick", "if=buff.shuffle.down" );
-  st->add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.heavy" );
-  st->add_action( this, "Purifying Brew", "if=!buff.serenity.up" );
-  st->add_action( this, "Guard" );
-  st->add_action( this, "Keg Smash", "if=chi.max-chi>=2&!buff.serenity.remains" );
-  st->add_talent( this, "Chi Burst", "if=talent.chi_burst.enabled&energy.time_to_max>3" );
-  st->add_talent( this, "Chi Wave", "if=talent.chi_wave.enabled&energy.time_to_max>3" );
-  st->add_talent( this, "Zen Sphere", "cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking" );
-  st->add_talent( this, "Chi Explosion", "if=chi>=3" );
-  st->add_action( this, "Blackout Kick", "if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=gcd" );
-  st->add_action( this, "Blackout Kick", "if=buff.serenity.up" );
-  st->add_action( this, "Blackout Kick", "if=chi>=4" );
-  st->add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd" );
-  st->add_action( this, "Jab", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd" );
-  st->add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.moderate&buff.shuffle.remains>=6" );
-  st->add_action( this, "Tiger Palm", "if=(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
-  st->add_action( this, "Tiger Palm", "if=cooldown.keg_smash.remains>=gcd" );
+  st -> add_action( this, "Blackout Kick", "if=buff.shuffle.down" );
+  st -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.heavy" );
+  st -> add_action( this, "Purifying Brew", "if=!buff.serenity.up" );
+  st -> add_action( this, "Guard" );
+  st -> add_action( this, "Keg Smash", "if=chi.max-chi>=2&!buff.serenity.remains" );
+  st -> add_talent( this, "Chi Burst", "if=talent.chi_burst.enabled&energy.time_to_max>3" );
+  st -> add_talent( this, "Chi Wave", "if=talent.chi_wave.enabled&energy.time_to_max>3" );
+  st -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking" );
+  st -> add_talent( this, "Chi Explosion", "if=chi>=3" );
+  st -> add_action( this, "Blackout Kick", "if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=gcd" );
+  st -> add_action( this, "Blackout Kick", "if=buff.serenity.up" );
+  st -> add_action( this, "Blackout Kick", "if=chi>=4" );
+  st -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd" );
+  st -> add_action( this, "Jab", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd" );
+  st -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.moderate&buff.shuffle.remains>=6" );
+  st -> add_action( this, "Tiger Palm", "if=(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
+  st -> add_action( this, "Tiger Palm", "if=cooldown.keg_smash.remains>=gcd" );
 
-  aoe->add_action( this, "Guard" );
+  aoe -> add_action( this, "Guard" );
   if ( level >= 100 )
-    aoe->add_action( this, "Breath of Fire", "if=chi>=3&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=gcd" );
+    aoe ->add_action( this, "Breath of Fire", "if=chi>=3&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=gcd" );
   else
-    aoe->add_action( this, "Breath of Fire", "if=chi>=3&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=1&target.debuff.dizzying_haze.up" );
-  aoe->add_talent( this, "Chi Explosion", "if=chi>=4" );
-  aoe->add_talent( this, "Rushing Jade Wind", "if=chi.max-chi>=1&talent.rushing_jade_wind.enabled" );
-  aoe->add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.heavy" );
-  aoe->add_action( this, "Guard" );
-  aoe->add_action( this, "Keg Smash", "if=chi.max-chi>=2&!buff.serenity.remains" );
-  aoe->add_talent( this, "Chi Burst", "if=talent.chi_burst.enabled&energy.time_to_max>3" );
-  aoe->add_talent( this, "Chi Wave", "if=talent.chi_wave.enabled&energy.time_to_max>3" );
-  aoe->add_talent( this, "Zen Sphere", "cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking" );
-  aoe->add_action( this, "Blackout Kick", "if=talent.rushing_jade_wind.enabled&buff.shuffle.remains<=3&cooldown.keg_smash.remains>=gcd" );
-  aoe->add_action( this, "Blackout Kick", "if=talent.rushing_jade_wind.enabled&buff.serenity.up" );
-  aoe->add_action( this, "Blackout Kick", "if=talent.rushing_jade_wind.enabled&chi>=4" );
-  aoe->add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
-  aoe->add_action( this, "Spinning Crane Kick", "if=chi.max-chi>=1&!talent.rushing_jade_wind.enabled" );
-  aoe->add_action( this, "Jab", "if=talent.rushing_jade_wind.enabled&chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd" );
-  aoe->add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&talent.rushing_jade_wind.enabled&stagger.moderate&buff.shuffle.remains>=6" );
-  aoe->add_action( this, "Tiger Palm", "if=talent.rushing_jade_wind.enabled&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
-  aoe->add_action( this, "Tiger Palm", "if=talent.rushing_jade_wind.enabled&cooldown.keg_smash.remains>=gcd" );
+    aoe -> add_action( this, "Breath of Fire", "if=chi>=3&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=1&target.debuff.dizzying_haze.up" );
+  aoe -> add_talent( this, "Chi Explosion", "if=chi>=4" );
+  aoe -> add_talent( this, "Rushing Jade Wind", "if=chi.max-chi>=1&talent.rushing_jade_wind.enabled" );
+  aoe -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.heavy" );
+  aoe -> add_action( this, "Guard" );
+  aoe -> add_action( this, "Keg Smash", "if=chi.max-chi>=2&!buff.serenity.remains" );
+  aoe -> add_talent( this, "Chi Burst", "if=talent.chi_burst.enabled&energy.time_to_max>3" );
+  aoe -> add_talent( this, "Chi Wave", "if=talent.chi_wave.enabled&energy.time_to_max>3" );
+  aoe -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking" );
+  aoe -> add_action( this, "Blackout Kick", "if=talent.rushing_jade_wind.enabled&buff.shuffle.remains<=3&cooldown.keg_smash.remains>=gcd" );
+  aoe -> add_action( this, "Blackout Kick", "if=talent.rushing_jade_wind.enabled&buff.serenity.up" );
+  aoe -> add_action( this, "Blackout Kick", "if=talent.rushing_jade_wind.enabled&chi>=4" );
+  aoe -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
+  aoe -> add_action( this, "Spinning Crane Kick", "if=chi.max-chi>=1&!talent.rushing_jade_wind.enabled" );
+  aoe -> add_action( this, "Jab", "if=talent.rushing_jade_wind.enabled&chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd" );
+  aoe -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&talent.rushing_jade_wind.enabled&stagger.moderate&buff.shuffle.remains>=6" );
+  aoe -> add_action( this, "Tiger Palm", "if=talent.rushing_jade_wind.enabled&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
+  aoe -> add_action( this, "Tiger Palm", "if=talent.rushing_jade_wind.enabled&cooldown.keg_smash.remains>=gcd" );
 }
 
 // Windwalker Combat Action Priority List ===============================

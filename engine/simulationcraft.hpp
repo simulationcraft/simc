@@ -4900,6 +4900,7 @@ struct player_t : public actor_t
   virtual stat_e normalize_by() const;
 
   virtual double health_percentage() const;
+  virtual double max_health() const;
   virtual timespan_t time_to_die() const;
   timespan_t total_reaction_time();
 
