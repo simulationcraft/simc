@@ -70,13 +70,9 @@ dmg_e attack_t::report_amount_type( const action_state_t* state ) const
     // someone. If so, then the damage should be recorded as periodic.
     else
     {
-      for ( size_t i = 0, end = stats -> action_list.size(); i < end; i++ )
+      if ( stats -> action_list.front() -> tick_action == this )
       {
-        if ( stats -> action_list.front() -> tick_action == this )
-        {
-          result_type = DMG_OVER_TIME;
-          break;
-        }
+        result_type = DMG_OVER_TIME;
       }
     }
   }

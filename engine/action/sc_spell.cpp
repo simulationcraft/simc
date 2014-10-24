@@ -201,13 +201,9 @@ dmg_e spell_t::report_amount_type( const action_state_t* state ) const
     // someone. If so, then the damage should be recorded as periodic.
     else
     {
-      for ( size_t i = 0, end = stats -> action_list.size(); i < end; i++ )
+      if ( stats -> action_list.front() -> tick_action == this )
       {
-        if ( stats -> action_list.front() -> tick_action == this )
-        {
-          result_type = DMG_OVER_TIME;
-          break;
-        }
+        result_type = DMG_OVER_TIME;
       }
     }
   }
@@ -262,7 +258,8 @@ heal_t::heal_t( const std::string&  token,
 
 void heal_t::init_target_cache()
 {
-  sim -> player_non_sleeping_list.register_callback( aoe_player_list_callback_t( this ) );
+  if ( aoe )
+    sim -> player_non_sleeping_list.register_callback( aoe_player_list_callback_t( this ) );
 }
 
 // heal_t::parse_effect_data ================================================
@@ -303,13 +300,9 @@ dmg_e heal_t::report_amount_type( const action_state_t* state ) const
       result_type = HEAL_OVER_TIME;
     else
     {
-      for ( size_t i = 0, end = stats -> action_list.size(); i < end; i++ )
+      if ( stats -> action_list.front() -> tick_action == this )
       {
-        if ( stats -> action_list.front() -> tick_action == this )
-        {
-          result_type = HEAL_OVER_TIME;
-          break;
-        }
+        result_type = HEAL_OVER_TIME;
       }
     }
   }
@@ -670,7 +663,8 @@ absorb_t::absorb_t( const std::string&  token,
 
 void absorb_t::init_target_cache()
 {
-  sim -> player_non_sleeping_list.register_callback( aoe_player_list_callback_t( this ) );
+  if ( aoe )
+    sim -> player_non_sleeping_list.register_callback( aoe_player_list_callback_t( this ) );
 }
 
 // absorb_t::execute ========================================================
