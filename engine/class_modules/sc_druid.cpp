@@ -18,7 +18,6 @@ namespace { // UNNAMED NAMESPACE
 
     = Feral =
     Update LI implementation to work like in-game
-    Update Glyph of Ferocious Bite to be a heal
 
     = Balance =
     PvP/Tier Bonuses
