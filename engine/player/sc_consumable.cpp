@@ -467,30 +467,28 @@ struct food_t : public action_t
     }
   }
 
-  bool is_best_secondary_stat( stat_e checkStat )
+  stat_e get_highest_secondary()
   {
-      player_t* p = player;
+    player_t* p = player;
 
-      switch ( checkStat )
+    stat_e secondaries[ 6 ] = { STAT_SPIRIT,
+                                STAT_CRIT_RATING,
+                                STAT_HASTE_RATING,
+                                STAT_MASTERY_RATING,
+                                STAT_MULTISTRIKE_RATING,
+                                STAT_VERSATILITY_RATING };
+
+    stat_e highest_secondary = secondaries[0];
+    for ( int i = 1; i < 6; i++ )
+    {
+      if ( p -> current.stats.get_stat( highest_secondary ) <
+           p -> current.stats.get_stat( secondaries[ i ] ) )
       {
-      case STAT_HASTE_RATING:
-      case STAT_CRIT_RATING:
-      case STAT_MASTERY_RATING:
-      case STAT_VERSATILITY_RATING:
-      case STAT_MULTISTRIKE_RATING:
-      case STAT_SPIRIT:
-          if ( checkStat != STAT_HASTE_RATING && p -> current.stats.attribute[ checkStat ] < p -> current.stats.attribute[ STAT_HASTE_RATING ]) { return false; }
-          else if ( checkStat != STAT_CRIT_RATING && p -> current.stats.attribute[ checkStat ] < p -> current.stats.attribute[ STAT_CRIT_RATING ]) { return false; }
-          else if ( checkStat != STAT_MASTERY_RATING && p -> current.stats.attribute[ checkStat ] < p -> current.stats.attribute[ STAT_MASTERY_RATING ]) { return false; }
-          else if ( checkStat != STAT_VERSATILITY_RATING && p -> current.stats.attribute[ checkStat ] < p -> current.stats.attribute[ STAT_VERSATILITY_RATING ]) { return false; }
-          else if ( checkStat != STAT_MULTISTRIKE_RATING && p -> current.stats.attribute[ checkStat ] < p -> current.stats.attribute[ STAT_MULTISTRIKE_RATING ]) { return false; }
-          else if ( checkStat != STAT_SPIRIT && p -> current.stats.attribute[ checkStat ] < p -> current.stats.attribute[ STAT_SPIRIT ]) { return false; }
-          else { return true; }
-          break;
-      default:
-        return false;
-        break;
+        highest_secondary = secondaries[ i ];
       }
+    }
+
+    return highest_secondary;
   }
 
   virtual void execute()
@@ -634,29 +632,9 @@ struct food_t : public action_t
         {
           p -> stat_gain( STAT_DODGE_RATING, gain_amount * food_stat_multiplier );
         }
-        else if ( is_best_secondary_stat( STAT_HASTE_RATING ) )
+        else
         {
-          p -> stat_gain( STAT_HASTE_RATING, gain_amount * food_stat_multiplier );
-        }
-        else if ( is_best_secondary_stat( STAT_CRIT_RATING ) )
-        {
-          p -> stat_gain( STAT_CRIT_RATING, gain_amount * food_stat_multiplier );
-        }
-        else if ( is_best_secondary_stat( STAT_MASTERY_RATING ) )
-        {
-          p -> stat_gain( STAT_MASTERY_RATING, gain_amount * food_stat_multiplier );
-        }
-        else if ( is_best_secondary_stat( STAT_VERSATILITY_RATING ) )
-        {
-          p -> stat_gain( STAT_VERSATILITY_RATING, gain_amount * food_stat_multiplier );
-        }
-        else if ( is_best_secondary_stat( STAT_MULTISTRIKE_RATING ) )
-        {
-          p -> stat_gain( STAT_MULTISTRIKE_RATING, gain_amount * food_stat_multiplier );
-        }
-        else if ( is_best_secondary_stat( STAT_SPIRIT ) )
-        {
-          p -> stat_gain( STAT_SPIRIT, gain_amount * food_stat_multiplier );
+          p -> stat_gain( get_highest_secondary(), gain_amount * food_stat_multiplier );
         }
         break;
 
