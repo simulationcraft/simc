@@ -33,9 +33,9 @@ actions+=/blazing_speed,if=movement.remains>0
 actions+=/time_warp,if=target.health.pct<25|time>5
 actions+=/mirror_image
 actions+=/rune_of_power,if=buff.rune_of_power.remains<cast_time
-actions+=/rune_of_power,if=(cooldown.icy_veins.remains<spell_gcd&buff.rune_of_power.remains<20)|(cooldown.prismatic_crystal.remains<spell_gcd&buff.rune_of_power.remains<10)
+actions+=/rune_of_power,if=(cooldown.icy_veins.remains<gcd.max&buff.rune_of_power.remains<20)|(cooldown.prismatic_crystal.remains<gcd.max&buff.rune_of_power.remains<10)
 actions+=/call_action_list,name=cooldowns,if=time_to_die<24
-actions+=/call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&(cooldown.prismatic_crystal.remains<=spell_gcd|pet.prismatic_crystal.active)
+actions+=/call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&(cooldown.prismatic_crystal.remains<=gcd.max|pet.prismatic_crystal.active)
 actions+=/call_action_list,name=aoe,if=active_enemies>=5
 actions+=/call_action_list,name=single_target
 
@@ -64,7 +64,7 @@ actions.cooldowns+=/use_item,slot=trinket2
 
 # AoE sequence
 actions.aoe=call_action_list,name=cooldowns
-actions.aoe+=/frost_bomb,if=remains<action.ice_lance.travel_time&(cooldown.frozen_orb.remains<spell_gcd|buff.fingers_of_frost.react=2)
+actions.aoe+=/frost_bomb,if=remains<action.ice_lance.travel_time&(cooldown.frozen_orb.remains<gcd.max|buff.fingers_of_frost.react=2)
 actions.aoe+=/frozen_orb
 actions.aoe+=/ice_lance,if=buff.fingers_of_frost.react&debuff.frost_bomb.up
 actions.aoe+=/comet_storm
@@ -80,10 +80,10 @@ actions.single_target=call_action_list,name=cooldowns,if=!talent.prismatic_cryst
 actions.single_target+=/ice_lance,if=buff.fingers_of_frost.react&buff.fingers_of_frost.remains<action.frostbolt.execute_time
 actions.single_target+=/frostfire_bolt,if=buff.brain_freeze.react&buff.brain_freeze.remains<action.frostbolt.execute_time
 # Frozen Orb usage without Prismatic Crystal
-actions.single_target+=/frost_bomb,if=!talent.prismatic_crystal.enabled&cooldown.frozen_orb.remains<spell_gcd&debuff.frost_bomb.remains<10
+actions.single_target+=/frost_bomb,if=!talent.prismatic_crystal.enabled&cooldown.frozen_orb.remains<gcd.max&debuff.frost_bomb.remains<10
 actions.single_target+=/frozen_orb,if=!talent.prismatic_crystal.enabled&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains>45
 # Single target routine; Rough summary: IN2 > FoF2 > CmS > IN > BF > FoF
-actions.single_target+=/frost_bomb,if=remains<action.ice_lance.travel_time&(buff.fingers_of_frost.react=2|(buff.fingers_of_frost.react&(talent.thermal_void.enabled|buff.fingers_of_frost.remains<spell_gcd*2)))
+actions.single_target+=/frost_bomb,if=remains<action.ice_lance.travel_time&(buff.fingers_of_frost.react=2|(buff.fingers_of_frost.react&(talent.thermal_void.enabled|buff.fingers_of_frost.remains<gcd.max*2)))
 actions.single_target+=/ice_nova,if=time_to_die<10|(charges=2&(!talent.prismatic_crystal.enabled|!cooldown.prismatic_crystal.up))
 actions.single_target+=/ice_lance,if=buff.fingers_of_frost.react=2|(buff.fingers_of_frost.react&dot.frozen_orb.ticking)
 actions.single_target+=/comet_storm
