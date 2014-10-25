@@ -7,7 +7,7 @@ talent_format=armory
 
 mage=Mage_Arcane_T17P
 level=100
-race=troll
+race=gnome
 spec=arcane
 talents=1003322
 glyphs=arcane_power/cone_of_cold
@@ -53,7 +53,7 @@ save=Mage_Fire_T17P.simc
 
 mage=Mage_Frost_T17P
 level=100
-race=troll
+race=dwarf
 spec=frost
 talents=1003122
 glyphs=icy_veins/splitting_ice/cone_of_cold

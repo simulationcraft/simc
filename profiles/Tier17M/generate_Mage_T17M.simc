@@ -12,7 +12,7 @@ talent_format=armory
 
 mage=Mage_Arcane_T17M
 level=100
-race=troll
+race=gnome
 spec=arcane
 talents=1003322
 glyphs=arcane_power/cone_of_cold
@@ -22,7 +22,7 @@ shoulders=arcanoshatter_mantle,id=115551,bonus_id=567
 back=runefrenzy_greatcloak,id=113937,bonus_id=567,enchant=gift_of_mastery
 chest=arcanoshatter_robes,id=115550,bonus_id=567
 wrists=bracers_of_spattered_steel,id=113887,bonus_id=567
-hands=stonewarper_wraps,id=113933,bonus_id=567
+hands=toothbreaker_grips,id=113876,bonus_id=567
 waist=seeking_ember_girdle,id=113941,bonus_id=567
 legs=arcanoshatter_leggings,id=115554,bonus_id=567
 feet=cavedwellers_climbers,id=113864,bonus_id=567
@@ -58,7 +58,7 @@ save=Mage_Fire_T17M.simc
 
 mage=Mage_Frost_T17M
 level=100
-race=troll
+race=dwarf
 spec=frost
 talents=1003122
 glyphs=icy_veins/splitting_ice/cone_of_cold

@@ -1,6 +1,6 @@
 mage="Mage_Arcane_T17M"
 level=100
-race=troll
+race=gnome
 role=spell
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!0..2211
@@ -108,7 +108,7 @@ shoulders=arcanoshatter_mantle,id=115551,bonus_id=567
 back=runefrenzy_greatcloak,id=113937,bonus_id=567,enchant=gift_of_mastery
 chest=arcanoshatter_robes,id=115550,bonus_id=567
 wrists=bracers_of_spattered_steel,id=113887,bonus_id=567
-hands=stonewarper_wraps,id=113933,bonus_id=567
+hands=toothbreaker_grips,id=113876,bonus_id=567
 waist=seeking_ember_girdle,id=113941,bonus_id=567
 legs=arcanoshatter_leggings,id=115554,bonus_id=567
 feet=cavedwellers_climbers,id=113864,bonus_id=567
@@ -123,10 +123,10 @@ main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant=mark_of_warsong
 # gear_intellect=3612
 # gear_spell_power=1753
 # gear_crit_rating=667
-# gear_haste_rating=828
-# gear_mastery_rating=1979
+# gear_haste_rating=966
+# gear_mastery_rating=1983
 # gear_armor=870
 # gear_multistrike_rating=530
-# gear_versatility_rating=249
+# gear_versatility_rating=103
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
