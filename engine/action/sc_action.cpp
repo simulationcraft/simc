@@ -2312,8 +2312,12 @@ expr_t* action_t::create_expression( const std::string& name_str )
           }
           double evaluate()
           {
-            gcd_time = ( action.player -> base_gcd ).total_seconds();
-            gcd_time *= action.player -> cache.attack_haste();
+            gcd_time = action.player -> base_gcd.total_seconds();
+            if ( action.player -> cache.attack_haste() < action.player -> cache.spell_haste() )
+              gcd_time *= action.player -> cache.attack_haste();
+            else
+              gcd_time *= action.player -> cache.spell_haste();
+
             if ( gcd_time < 1.0 )
               gcd_time = 1.0;
             return gcd_time;
