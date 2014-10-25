@@ -2381,22 +2381,25 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_askmrrobot( player
     else
     {
       // format is base (below) /region/server/name#spec=[spec];[weightsHash]
-      ss << "http://www.askmrrobot.com/wow/optimize/";
+      ss << "http://www.askmrrobot.com/wow";
 
       // Use valid names if we are provided those
       if ( ! p -> region_str.empty() && ! p -> server_str.empty() && ! p -> name_str.empty() )
-        ss << p -> region_str << '/' << p -> server_str << '/' << p -> name_str << "#spec=";
+        ss << "/optimize/" << p -> region_str << '/' << p -> server_str << '/' << p -> name_str << "#spec=";
 
       // otherwise try to reconstruct it from the origin string
       else
       {
         std::string region_str, server_str, name_str;
         if ( util::parse_origin( region_str, server_str, name_str, p -> origin_str ) )
-          ss << region_str << '/' << server_str << '/' << name_str << "#spec=";
+          ss << "/optimize/" << region_str << '/' << server_str << '/' << name_str << "#spec=";
         // if we can't reconstruct, default to a generic character
         // this uses the base followed by /[spec]#[weightsHash]
         else
+        {
           use_generic = true;
+          ss << "/best-in-slot/";
+        }
       }
     }
 
