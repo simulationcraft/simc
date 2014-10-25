@@ -35,7 +35,7 @@ actions+=/call_action_list,name=combust_sequence,if=pyro_chain
 actions+=/call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active
 actions+=/call_action_list,name=init_combust,if=!pyro_chain
 # Utilize level 90 active talents while avoiding pyro munching
-actions+=/rune_of_power,if=buff.rune_of_power.remains<action.fireball.execute_time+gcd&!(buff.heating_up.up&action.fireball.in_flight)
+actions+=/rune_of_power,if=buff.rune_of_power.remains<action.fireball.execute_time+spell_gcd&!(buff.heating_up.up&action.fireball.in_flight)
 actions+=/mirror_image,if=!(buff.heating_up.up&action.fireball.in_flight)
 actions+=/call_action_list,name=aoe,if=active_enemies>=5
 actions+=/call_action_list,name=single_target
@@ -44,18 +44,18 @@ actions+=/call_action_list,name=single_target
 # Spread Combustion from PC; "active_enemies+1" because PC is not counted
 actions.crystal_sequence=inferno_blast,cycle_targets=1,if=dot.combustion.ticking&active_dot.combustion<active_enemies+1
 # Use pyros before PC's expiration
-actions.crystal_sequence+=/pyroblast,if=execute_time=gcd&pet.prismatic_crystal.remains<gcd+travel_time&pet.prismatic_crystal.remains>travel_time
+actions.crystal_sequence+=/pyroblast,if=execute_time=spell_gcd&pet.prismatic_crystal.remains<spell_gcd+travel_time&pet.prismatic_crystal.remains>travel_time
 actions.crystal_sequence+=/call_action_list,name=single_target
 
 # Combustion sequence initialization
 # This sequence lists the requirements for preparing a Combustion combo with each talent choice
 # Meteor Combustion
-actions.init_combust=start_pyro_chain,if=talent.meteor.enabled&cooldown.meteor.up&((cooldown.combustion.remains<action.pyroblast.gcd*3&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%action.pyroblast.gcd)*action.pyroblast.gcd)))
+actions.init_combust=start_pyro_chain,if=talent.meteor.enabled&cooldown.meteor.up&((cooldown.combustion.remains<spell_gcd*3&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%spell_gcd)*spell_gcd)))
 # Prismatic Crystal Combustion
-actions.init_combust+=/start_pyro_chain,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.up&((cooldown.combustion.remains<action.pyroblast.gcd*2&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%action.pyroblast.gcd)*action.pyroblast.gcd)))
-actions.init_combust+=/start_pyro_chain,if=talent.prismatic_crystal.enabled&!glyph.combustion.enabled&cooldown.prismatic_crystal.remains>20&((cooldown.combustion.remains<action.pyroblast.gcd*2&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight)|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%action.pyroblast.gcd)*action.pyroblast.gcd)))
+actions.init_combust+=/start_pyro_chain,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.up&((cooldown.combustion.remains<spell_gcd*2&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%spell_gcd)*spell_gcd)))
+actions.init_combust+=/start_pyro_chain,if=talent.prismatic_crystal.enabled&!glyph.combustion.enabled&cooldown.prismatic_crystal.remains>20&((cooldown.combustion.remains<spell_gcd*2&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight)|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%spell_gcd)*spell_gcd)))
 # Kindling or Level 90 Combustion
-actions.init_combust+=/start_pyro_chain,if=!talent.prismatic_crystal.enabled&!talent.meteor.enabled&((cooldown.combustion.remains<action.pyroblast.gcd*4&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight)|(buff.pyromaniac.up&cooldown.combustion.remains<ceil(buff.pyromaniac.remains%action.pyroblast.gcd)*(action.pyroblast.gcd+talent.kindling.enabled)))
+actions.init_combust+=/start_pyro_chain,if=!talent.prismatic_crystal.enabled&!talent.meteor.enabled&((cooldown.combustion.remains<spell_gcd*4&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight)|(buff.pyromaniac.up&cooldown.combustion.remains<ceil(buff.pyromaniac.remains%spell_gcd)*(spell_gcd+talent.kindling.enabled)))
 
 # Combustion Sequence
 actions.combust_sequence=stop_pyro_chain,if=cooldown.combustion.duration-cooldown.combustion.remains<15
@@ -70,7 +70,7 @@ actions.combust_sequence+=/inferno_blast,if=set_bonus.tier16_4pc_caster&(buff.py
 actions.combust_sequence+=/fireball,if=!dot.ignite.ticking&!in_flight
 actions.combust_sequence+=/pyroblast,if=buff.pyroblast.up
 # Meteor Combustions can run out of Pyro procs before impact. Use IB to delay Combustion
-actions.combust_sequence+=/inferno_blast,if=talent.meteor.enabled&cooldown.meteor.duration-cooldown.meteor.remains<gcd*3
+actions.combust_sequence+=/inferno_blast,if=talent.meteor.enabled&cooldown.meteor.duration-cooldown.meteor.remains<spell_gcd*3
 actions.combust_sequence+=/combustion
 
 # Active talents usage
@@ -80,7 +80,7 @@ actions.active_talents+=/blast_wave,if=(!talent.incanters_flow.enabled|buff.inca
 
 # Living Bomb application
 actions.living_bomb=inferno_blast,cycle_targets=1,if=dot.living_bomb.ticking&active_dot.living_bomb<active_enemies
-actions.living_bomb+=/living_bomb,cycle_targets=1,if=target!=prismatic_crystal&(active_dot.living_bomb=0|(ticking&active_dot.living_bomb=1))&(((!talent.incanters_flow.enabled|incanters_flow_dir<0|buff.incanters_flow.stack=5)&remains<3.6)|((incanters_flow_dir>0|buff.incanters_flow.stack=1)&remains<gcd))&target.time_to_die>remains+12
+actions.living_bomb+=/living_bomb,cycle_targets=1,if=target!=prismatic_crystal&(active_dot.living_bomb=0|(ticking&active_dot.living_bomb=1))&(((!talent.incanters_flow.enabled|incanters_flow_dir<0|buff.incanters_flow.stack=5)&remains<3.6)|((incanters_flow_dir>0|buff.incanters_flow.stack=1)&remains<spell_gcd))&target.time_to_die>remains+12
 
 # AoE sequence
 actions.aoe=inferno_blast,cycle_targets=1,if=(dot.combustion.ticking&active_dot.combustion<active_enemies)|(dot.pyroblast.ticking&active_dot.pyroblast<active_enemies)
@@ -95,7 +95,7 @@ actions.aoe+=/flamestrike,if=mana.pct>10&remains<2.4
 actions.single_target=inferno_blast,if=(dot.combustion.ticking&active_dot.combustion<active_enemies)|(dot.living_bomb.ticking&active_dot.living_bomb<active_enemies)
 # Use Pyro procs before they run out
 actions.single_target+=/pyroblast,if=buff.pyroblast.up&buff.pyroblast.remains<action.fireball.execute_time
-actions.single_target+=/pyroblast,if=buff.pyroblast.up&buff.potent_flames.up&buff.potent_flames.remains<gcd
+actions.single_target+=/pyroblast,if=buff.pyroblast.up&buff.potent_flames.up&buff.potent_flames.remains<spell_gcd
 actions.single_target+=/pyroblast,if=buff.pyromaniac.react
 # Pyro camp during regular sequence; Do not use Pyro procs without HU and first using fireball
 actions.single_target+=/pyroblast,if=buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight
