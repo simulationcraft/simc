@@ -923,7 +923,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   save_talent_str( 0 ),
   talent_format( TALENT_FORMAT_UNCHANGED ),
   auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ), show_etmi( 0 ), tmi_window_global( 0 ), tmi_bin_size( 0.5 ),
-  target_death_pct( 0 ), rel_target_level( 0 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ), enable_taunts( false ),
+  target_death_pct( 0 ), rel_target_level( 0 ), target_level( -1 ), target_adds( 0 ), add_duration( timespan_t::zero() ), desired_targets( 0 ), enable_taunts( false ),
   challenge_mode( false ), scale_to_itemlevel( -1 ), disable_set_bonuses( false ), pvp_crit( false ),
   active_enemies( 0 ), active_allies( 0 ),
   deterministic_rng( false ),
@@ -1132,8 +1132,8 @@ void sim_t::combat_begin()
         sim_t& sim = this -> sim();
         player_t* t = sim.target;
         if ( ( sim.bloodlust_percent  > 0                  && t -> health_percentage() <  sim.bloodlust_percent ) ||
-             ( sim.bloodlust_time     < timespan_t::zero() && t -> time_to_die()       < -sim.bloodlust_time ) ||
-             ( sim.bloodlust_time     > timespan_t::zero() && sim.current_time      >  sim.bloodlust_time ) )
+             ( sim.bloodlust_time     < timespan_t::zero() && t -> time_to_percent( 0.0 ) < -sim.bloodlust_time ) ||
+             ( sim.bloodlust_time     > timespan_t::zero() && sim.current_time >  sim.bloodlust_time ) )
         {
           for ( size_t i = 0; i < sim.player_non_sleeping_list.size(); ++i )
           {

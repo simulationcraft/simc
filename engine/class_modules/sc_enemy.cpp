@@ -647,18 +647,17 @@ struct add_t : public pet_t
     return remainder / divisor * 100.0;
   }
 
-  virtual timespan_t time_to_die() const
+  virtual timespan_t time_to_percent( double percent ) const
   {
     if ( duration > timespan_t::zero() )
-      return expiration -> remains();
-    else
     {
-      timespan_t remains = sim -> expected_iteration_time - sim -> current_time;
-      if ( remains > timespan_t::zero() )
-        return remains;
-      else
-        return timespan_t::zero();
+      double ttp;
+      ttp = ( 1 - health_percentage() ) / ( duration - expiration -> remains() ).total_seconds();
+      ttp = ( health_percentage() - percent ) / ttp;
+      return timespan_t::from_seconds( ttp );
     }
+    else
+      return pet_t::time_to_percent( percent );
   }
 
   virtual resource_e primary_resource() const

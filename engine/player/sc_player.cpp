@@ -4258,22 +4258,24 @@ double player_t::max_health() const
   return resources.max[RESOURCE_HEALTH];
 }
 
-// target_t::time_to_die ====================================================
+// target_t::time_to_percent ====================================================
 
-timespan_t player_t::time_to_die() const
+timespan_t player_t::time_to_percent( double percent ) const
 {
-  // FIXME: Someone can figure out a better way to do this, for now, we NEED to
-  // wait a minimum gcd before starting to estimate fight duration based on health,
-  // otherwise very odd things happen with multi-actor simulations and time_to_die
-  // expressions
-  if ( iteration_dmg_taken > 0.0 && resources.base[ RESOURCE_HEALTH ] > 0 && sim -> current_time >= timespan_t::from_seconds( 1.0 ) )
-  {
-    return sim -> current_time * ( resources.current[ RESOURCE_HEALTH ] / iteration_dmg_taken );
-  }
+  timespan_t time_to_percent;
+  double ttp;
+
+  if ( iteration_dmg_taken > 0.0 && resources.base[RESOURCE_HEALTH] > 0 && sim -> current_time >= timespan_t::from_seconds( 1.0 ) )
+    ttp = ( resources.current[RESOURCE_HEALTH] - ( percent * resources.base[RESOURCE_HEALTH] ) ) / ( iteration_dmg_taken / sim -> current_time.total_seconds() );
   else
-  {
-    return ( sim -> expected_iteration_time - sim -> current_time );
-  }
+    ttp = ( sim -> expected_iteration_time - sim -> current_time ).total_seconds() * ( 1 - percent );
+
+  time_to_percent = timespan_t::from_seconds( ttp );
+
+  if ( time_to_percent < timespan_t::zero() )
+    return timespan_t::zero();
+  else
+    return time_to_percent;
 }
 
 // player_t::total_reaction_time ============================================
@@ -7236,8 +7238,39 @@ expr_t* player_t::create_expression( action_t* a,
     return make_mem_fn_expr( expression_str, this-> cache, &player_stat_cache_t::spell_speed );
   if ( expression_str == "multistrike" )
     return make_mem_fn_expr( expression_str, this-> cache, &player_stat_cache_t::multistrike );
-  if ( expression_str == "time_to_die" )
-    return make_mem_fn_expr( expression_str, *this, &player_t::time_to_die );
+
+  // time_to_pct expressions
+  if ( util::str_in_str_ci( expression_str, "time_to_" ) )
+  {
+    std::vector<std::string> parts = util::string_split( expression_str, "_" );
+    double percent;
+
+    if ( util::str_in_str_ci( parts[2], "die" ) )
+      percent = 0.0;
+    else
+      percent = static_cast<double>( util::str_to_num<int>( parts[2] ) ) / 100;
+    // skip construction if the percent is nonsensical
+    if ( percent >= 0.0 )
+    {
+      struct time_to_percent_t: public expr_t
+      {
+        double percent;
+        player_t* player;
+        time_to_percent_t( const std::string& n, player_t* p, double percent ):
+          expr_t( n ), player( p ), percent( percent )
+        { }
+
+        double evaluate()
+        {
+          double time;
+          time = player -> time_to_percent( percent ).total_seconds();
+          return time;
+        }
+      };
+
+      return new time_to_percent_t( parts[2], this, percent );
+    }
+  }
 
   if ( expression_str == "health_pct" )
     return deprecate_expression( this, a, expression_str, "health.pct" );
@@ -7976,11 +8009,11 @@ double player_t::calculate_time_to_bloodlust()
     if ( sim -> bloodlust_time > timespan_t::zero() )
       time_to_bl = sim -> bloodlust_time - sim -> current_time;
     else if ( sim -> bloodlust_time < timespan_t::zero() )
-      time_to_bl = target -> time_to_die() + sim -> bloodlust_time;
+      time_to_bl = target -> time_to_percent( 0.0 ) + sim -> bloodlust_time;
 
     // check bloodlust_percent, if >0 then we need to estimate time based on time_to_die and health_percentage
     if ( sim -> bloodlust_percent > 0 && target -> health_percentage() > 0 )
-      bl_pct_time = ( target -> health_percentage() - sim -> bloodlust_percent ) * target -> time_to_die() / target -> health_percentage();
+      bl_pct_time = ( target -> health_percentage() - sim -> bloodlust_percent ) * target -> time_to_percent( 0.0 ) / target -> health_percentage();
 
     // now that we have both times, we want to check for the Exhaustion buff.  If either time is shorter than
     // the remaining duration on Exhaustion, we won't get that bloodlust and should ignore it
