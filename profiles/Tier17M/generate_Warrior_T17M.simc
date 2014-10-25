@@ -8,7 +8,6 @@
 # * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
 # * EXCEPTION: 710 Legendary Ring can be used. (accessibility)
 
-
 talent_format=armory
 
 # Warrior Fury 1h T17M
@@ -19,7 +18,8 @@ spec=fury
 role=attack
 position=back
 talents=1221322
-glyphs=unending_rage/death_from_above/raging_wind
+talent_override=bladestorm,if=active_enemies>3
+glyphs=unending_rage/raging_wind/heroic_leap
 head=blackhands_faceguard,id=115584,bonus_id=567
 neck=vertebrae_protector,id=113900,bonus_id=567,enchant=gift_of_critical_strike
 shoulders=overdriven_spaulders,id=113990,bonus_id=567
@@ -46,7 +46,8 @@ spec=fury
 role=attack
 position=back
 talents=1221322
-glyphs=unending_rage/death_from_above/raging_wind
+talent_override=bladestorm,if=active_enemies>3
+glyphs=unending_rage/raging_wind/heroic_leap
 head=blackhands_faceguard,id=115584,bonus_id=567
 neck=vertebrae_protector,id=113900,bonus_id=567,enchant=gift_of_critical_strike
 shoulders=overdriven_spaulders,id=113990,bonus_id=567
@@ -73,7 +74,8 @@ spec=Arms
 role=attack
 position=back
 talents=1323322
-glyphs=unending_rage/death_from_above/bull_rush
+talent_override=bladestorm,if=active_enemies>3
+glyphs=unending_rage/heroic_leap/sweeping_strikes
 head=blackhands_faceguard,id=115584,bonus_id=567
 neck=vertebrae_protector,id=113900,bonus_id=567,enchant=gift_of_critical_strike
 shoulders=overdriven_spaulders,id=113990,bonus_id=567
@@ -98,7 +100,7 @@ race=tauren
 role=tank
 position=front
 talents=1113323
-glyphs=unending_rage/death_from_above/cleave
+glyphs=unending_rage/heroic_leap/cleave
 spec=prot
 head=blackhands_faceguard,id=115584,bonus_id=567
 neck=gluttons_kerchief,id=113882,bonus_id=567,enchant=gift_of_critical_strike
@@ -125,7 +127,8 @@ race=tauren
 role=attack
 position=back
 talents=1213323
-glyphs=unending_rage/death_from_above/cleave/bull_rush
+talent_override=bladestorm,if=active_enemies>3
+glyphs=unending_rage/heroic_leap/cleave
 spec=prot
 head=blackhands_faceguard,id=115584,bonus_id=567
 neck=gluttons_kerchief,id=113882,bonus_id=567,enchant=gift_of_critical_strike

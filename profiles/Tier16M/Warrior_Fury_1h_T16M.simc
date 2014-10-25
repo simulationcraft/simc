@@ -1,10 +1,11 @@
 warrior="Warrior_Fury_1h_T16M"
 level=90
-race=orc
+race=tauren
 role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!011021.
-glyphs=unending_rage/death_from_above/raging_wind
+talent_override=bladestorm,if=active_enemies>3
+glyphs=unending_rage/raging_wind/heroic_leap
 spec=fury
 
 # This default action priority list is automatically created based on your character.

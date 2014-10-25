@@ -1,10 +1,10 @@
 warrior="Warrior_Protection_T17N"
 level=100
-race=Tauren
+race=tauren
 role=tank
 position=front
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!0002212
-glyphs=unending_rage/death_from_above/cleave
+glyphs=unending_rage/cleave/heroic_leap
 spec=protection
 
 # This default action priority list is automatically created based on your character.

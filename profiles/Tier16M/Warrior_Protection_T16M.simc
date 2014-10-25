@@ -3,9 +3,8 @@ level=90
 race=night_elf
 role=tank
 position=front
-professions=enchanting=600/inscription=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!000221.
-glyphs=unending_rage/death_from_above/wind_and_thunder
+glyphs=unending_rage/heroic_leap/cleave
 spec=protection
 
 # This default action priority list is automatically created based on your character.

@@ -1,10 +1,11 @@
 warrior="Warrior_Arms_T17N"
 level=100
-race=Tauren
+race=tauren
 role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Za!0212211
-glyphs=unending_rage/death_from_above/bull_rush
+talent_override=bladestorm,if=active_enemies>3
+glyphs=unending_rage/heroic_leap/sweeping_strikes
 spec=arms
 
 # This default action priority list is automatically created based on your character.
