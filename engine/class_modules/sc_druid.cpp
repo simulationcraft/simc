@@ -6188,6 +6188,8 @@ void druid_t::apl_feral()
   def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" );
   def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
   def -> add_action( "thrash_cat,if=buff.omen_of_clarity.react&remains<=duration*0.3&active_enemies>1" );
+  if ( ! talent.bloodtalons -> ok() )
+    def -> add_action( "thrash_cat,if=combo_points=5&remains<=duration*0.3&buff.omen_of_clarity.react");
 
   // Finishers
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=combo_points=5&target.health.pct<25&dot.rip.ticking&energy>=max_fb_energy" );
@@ -6198,11 +6200,12 @@ void druid_t::apl_feral()
 
   def -> add_action( this, "Rake", "cycle_targets=1,if=remains<=3&combo_points<5" );
   def -> add_action( this, "Rake", "cycle_targets=1,if=remains<=duration*0.3&combo_points<5&persistent_multiplier>dot.rake.pmultiplier" );
-  def -> add_action( "thrash_cat,if=combo_points=5&buff.omen_of_clarity.react");
+  if ( talent.bloodtalons -> ok() )
+    def -> add_action( "thrash_cat,if=combo_points=5&remains<=duration*0.3&buff.omen_of_clarity.react");
   def -> add_action( "pool_resource,for_next=1" );
   def -> add_action( "thrash_cat,if=remains<=duration*0.3&active_enemies>1" );
-  if ( level >= 100 )
-    def -> add_action( "moonfire,cycle_targets=1,if=remains<=duration*0.3&active_enemies<=10" );
+  if ( talent.lunar_inspiration -> ok() )
+    def -> add_action( "moonfire,cycle_targets=1,if=combo_points<5&remains<=duration*0.3&active_enemies<=10" );
   def -> add_action( this, "Rake", "cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&combo_points<5" );
 
   // Fillers
