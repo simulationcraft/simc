@@ -694,7 +694,7 @@ struct gushing_wound_t : public residual_action::residual_periodic_action_t< att
   gushing_wound_t( druid_t* p ) :
     base_t( "gushing_wound", p, p -> find_spell( 166638 ) )
   {
-    background = dual = true;
+    background = dual = proc = true;
   }
 
   virtual void init()
@@ -2287,8 +2287,65 @@ struct feral_charge_cat_t : public cat_attack_t
 
 struct ferocious_bite_t : public cat_attack_t
 {
+  struct glyph_of_ferocious_bite_t : public heal_t
+  {
+    double energy_spent, energy_divisor;
+
+    glyph_of_ferocious_bite_t( druid_t* p ) :
+      heal_t( "glyph_of_ferocious_bite", p, spell_data_t::nil() ),
+      energy_spent( 0.0 )
+    {
+      background = dual = proc = true;
+      target = p;
+      may_crit = false;
+      may_multistrike = 0;
+      harmful = false;
+
+      const spell_data_t* glyph = p -> find_glyph_spell( "Glyph of Ferocious Bite" );
+      pct_heal = glyph -> effectN( 1 ).percent() / 10.0;
+      energy_divisor = glyph -> effectN( 2 ).resource( RESOURCE_ENERGY );
+    }
+
+    druid_t* p() const
+    { return static_cast<druid_t*>( player ); }
+
+    void init()
+    {
+      heal_t::init();
+
+      snapshot_flags |= STATE_MUL_DA;
+    }
+
+    double action_multiplier() const
+    {
+      double am = heal_t::action_multiplier();
+
+      am *= energy_spent / energy_divisor;
+
+      return am;
+    }
+
+    void execute()
+    {
+      if ( energy_spent <= 0 )
+        return;
+
+      heal_t::execute();
+    }
+
+    void impact( action_state_t* s )
+    {
+      heal_t::impact( s );
+
+      // Explicitly trigger Nature's Vigil since this isn't in druid_heal_t
+      if ( p() -> buff.natures_vigil -> check() )
+        p() -> active.natures_vigil -> trigger( s -> result_amount, false );
+    }
+  };
+
   double excess_energy;
   double max_excess_energy;
+  glyph_of_ferocious_bite_t* glyph_effect;
 
   ferocious_bite_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "ferocious_bite", p, p -> find_class_spell( "Ferocious Bite" ), options_str ),
@@ -2300,6 +2357,9 @@ struct ferocious_bite_t : public cat_attack_t
     max_excess_energy      = data().effectN( 2 ).base_value();
     special                = true;
     spell_power_mod.direct = 0;
+
+    if ( p -> glyph.ferocious_bite -> ok() )
+      glyph_effect = new glyph_of_ferocious_bite_t( p );
 
     p -> max_fb_energy = max_excess_energy + cost();
 
@@ -2332,13 +2392,9 @@ struct ferocious_bite_t : public cat_attack_t
     {
       if ( p() -> glyph.ferocious_bite -> ok() )
       {
-        double heal_pct = p() -> glyph.ferocious_bite -> effectN( 1 ).percent() / 10.0 * //off by factor of 10 in spell data
-                          ( excess_energy + cost() ) /
-                          p() -> glyph.ferocious_bite -> effectN( 2 ).base_value();
-        double amount = p() -> resources.max[ RESOURCE_HEALTH ] * heal_pct;
-        p() -> resource_gain( RESOURCE_HEALTH, amount, p() -> gain.glyph_ferocious_bite );
-        if( p() -> buff.natures_vigil -> up() )
-          p() -> active.natures_vigil -> trigger( amount , 0 ); // Natures Vigil procs from glyph
+        // Heal based on the energy spent before Berserk's reduction
+        glyph_effect -> energy_spent = ( cost() + excess_energy ) * ( 1.0 + p() -> buff.berserk -> check() );
+        glyph_effect -> execute();
       }
 
       double health_percentage = 25.0;
