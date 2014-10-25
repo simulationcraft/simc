@@ -7257,7 +7257,7 @@ expr_t* player_t::create_expression( action_t* a,
         double percent;
         player_t* player;
         time_to_percent_t( const std::string& n, player_t* p, double percent ):
-          expr_t( n ), player( p ), percent( percent )
+          expr_t( n ), percent( percent ), player( p )
         { }
 
         double evaluate()
