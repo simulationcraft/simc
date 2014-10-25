@@ -730,8 +730,7 @@ struct natures_vigil_proc_t : public spell_t
     {
       heal_t::init();
       // Disable the snapshot_flags for all multipliers, but specifically allow factors in
-      // action_state_t::composite_da_multiplier() to be called. This works and I stole it 
-      // from the paladin module but I don't understand why.
+      // action_state_t::composite_da_multiplier() to be called.
       snapshot_flags &= STATE_NO_MULTIPLIER;
       snapshot_flags |= STATE_MUL_DA;
     }
@@ -754,90 +753,18 @@ struct natures_vigil_proc_t : public spell_t
 
       heal_t::execute();
     }
-
-  private:
-    player_t* find_lowest_target()
-    {
-      // Ignoring range for the time being
-      double lowest_health_pct_found = 100.1;
-      player_t* lowest_player_found = nullptr;
-
-      for ( size_t i = 0, size = sim -> player_no_pet_list.size(); i < size; i++ )
-      {
-        player_t* p = sim -> player_no_pet_list[ i ];
-
-        // check their health against the current lowest
-        if ( p -> health_percentage() < lowest_health_pct_found )
-        {
-          // if this player is lower, make them the current lowest
-          lowest_health_pct_found = p -> health_percentage();
-          lowest_player_found = p;
-        }
-      }
-      return lowest_player_found;
-    }
   };
-/*
-  struct damage_proc_t : public spell_t
-  {
-    damage_proc_t( druid_t* p ) :
-      spell_t( "natures_vigil_damage", p, p -> find_spell( 124991 ) )
-    {
-      background = proc = dual = true;
-      may_crit = may_miss = false;
-      may_multistrike = 0;
-      trigger_gcd     = timespan_t::zero();
-      base_multiplier = p -> talent.natures_vigil -> effectN( 3 ).percent();
-    }
 
-    virtual void init()
-    {
-      spell_t::init();
-      // Disable the snapshot_flags for all multipliers, but specifically allow factors in
-      // action_state_t::composite_da_multiplier() to be called. This works and I stole it 
-      // from the paladin module.
-      snapshot_flags &= STATE_NO_MULTIPLIER;
-      snapshot_flags |= STATE_MUL_DA;
-    }
-
-    virtual void execute()
-    {
-      target = pick_random_target();
-
-      spell_t::execute();
-    }
-
-  private:
-    player_t* pick_random_target()
-    {
-      // Targeting is probably done by range, but since the sim doesn't really have
-      // have a concept of that we'll just pick a target at random.
-
-      unsigned t = static_cast<unsigned>( rng().range( 0, as<double>( sim -> target_list.size() ) ) );
-      if ( t >= sim-> target_list.size() ) --t; // dsfmt range should not give a value actually equal to max, but be paranoid
-      return sim-> target_list[ t ];
-    }
-  };
-*/
-//  damage_proc_t* damage;
   heal_proc_t*   heal;
 
   natures_vigil_proc_t( druid_t* p ) :
     spell_t( "natures_vigil", p, spell_data_t::nil() )
   {
-//    damage  = new damage_proc_t( p );
     heal    = new heal_proc_t( p );
   }
 
   void trigger( double amount, bool harmful = true )
   {
-    /*
-    if ( ! harmful )
-    {
-      damage -> base_dd_min = damage -> base_dd_max = amount;
-      damage -> execute();
-    }  
-    */
     heal -> base_dd_min = heal -> base_dd_max = amount;
     heal -> fromDmg = harmful;
     heal -> execute();
