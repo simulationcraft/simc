@@ -2621,7 +2621,6 @@ struct sim_t : public core_sim_t, private sc_thread_t
   int         rel_target_level, target_level;
   std::string target_race;
   int         target_adds;
-  timespan_t  add_duration;
   std::string sim_phase_str;
   int         desired_targets; // desired number of targets
   bool        enable_taunts;
@@ -4293,7 +4292,6 @@ struct player_t : public actor_t
   bool scale_player;
   double death_pct; // Player will die if he has equal or less than this value as health-pct
   double size; // Actor size, only used for enemies. Affects the travel distance calculation for spells.
-  timespan_t  add_duration; // Length of time that an add with a set duration will live. 
 
   // dynamic attributes - things which change during combat
   player_t*   target;
