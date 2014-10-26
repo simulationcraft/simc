@@ -336,6 +336,7 @@ struct rogue_t : public player_t
   struct procs_t
   {
     proc_t* honor_among_thieves;
+    proc_t* honor_among_thieves_proxy;
     proc_t* seal_fate;
     proc_t* no_revealing_strike;
     proc_t* t16_2pc_melee;
@@ -2847,6 +2848,101 @@ struct stealth_t : public spell_t
 };
 
 // ==========================================================================
+// Proxy Honor Among Thieves
+// ==========================================================================
+
+struct honor_among_thieves_t : public action_t
+{
+  struct hat_event_t : public event_t
+  {
+    honor_among_thieves_t* action;
+    rogue_t* rogue;
+
+    hat_event_t( honor_among_thieves_t* a ) :
+      event_t( *a -> player, "honor_among_thieves_event" ),
+      action( a ), rogue( debug_cast< rogue_t* >( a -> player ) )
+    {
+      double next_event = sim().rng().gauss( action -> cooldown.total_seconds(), action -> cooldown_stddev.total_seconds() );
+      double hat_icd = rogue -> spec.honor_among_thieves -> internal_cooldown().total_seconds();
+      double clamped_value = clamp( next_event, hat_icd, action -> cooldown.total_seconds() + 3 * action -> cooldown_stddev.total_seconds() );
+
+      if ( sim().debug )
+        sim().out_debug.printf( "%s hat_event raw=%.3f icd=%.3f val=%.3f",
+            action -> player -> name(), next_event, hat_icd, clamped_value );
+
+      add_event( timespan_t::from_seconds( clamped_value ) );
+    }
+
+    void execute()
+    {
+      rogue -> trigger_combo_point_gain( 0, 1, rogue -> gains.honor_among_thieves );
+
+      rogue -> procs.honor_among_thieves_proxy -> occur();
+
+      // Note that the proxy HaT ignores the "icd", since it's included in the
+      // events. Keep the cooldown going in case someone wants to make an
+      // action list based on the ICD of HaT (unlikely).
+      rogue -> cooldowns.honor_among_thieves -> start( rogue -> spec.honor_among_thieves -> internal_cooldown() );
+
+      if ( rogue -> buffs.t16_2pc_melee -> trigger() )
+        rogue -> procs.t16_2pc_melee -> occur();
+
+      action -> hat_event = new ( sim() ) hat_event_t( action );
+    }
+  };
+
+  hat_event_t* hat_event;
+  timespan_t cooldown, cooldown_stddev;
+
+  honor_among_thieves_t( rogue_t* p, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "honor_among_thieves", p, p -> spec.honor_among_thieves ),
+    hat_event( 0 ), cooldown( timespan_t::from_seconds( 2.3 ) ),
+    cooldown_stddev( timespan_t::from_millis( 100 ) )
+  {
+    dual = quiet = true;
+    callbacks = harmful = false;
+
+    add_option( opt_timespan( "cooldown", cooldown ) );
+    add_option( opt_timespan( "cooldown_stddev", cooldown_stddev ) );
+
+    parse_options( options_str );
+  }
+
+  result_e calculate_result( action_state_t* )
+  { return RESULT_HIT; }
+
+  block_result_e calculate_block_result( action_state_t* )
+  { return BLOCK_RESULT_UNBLOCKED; }
+
+  void execute()
+  {
+    action_t::execute();
+
+    assert( ! hat_event );
+
+    hat_event = new ( *sim ) hat_event_t( this );
+  }
+
+  void reset()
+  {
+    action_t::reset();
+
+    hat_event = 0;
+  }
+
+  bool ready()
+  {
+    if ( sim -> player_no_pet_list.size() > 1 )
+      return false;
+
+    if ( hat_event )
+      return false;
+
+    return action_t::ready();
+  }
+};
+
+// ==========================================================================
 // Rogue Secondary Abilities
 // ==========================================================================
 
@@ -4503,6 +4599,8 @@ void rogue_t::init_action_list()
   {
     precombat -> add_action( this, "Premeditation" );
     precombat -> add_action( this, "Slice and Dice" );
+    precombat -> add_action( "honor_among_thieves,cooldown=2.3,cooldown_stddev=0.1",
+                             "Proxy Honor Among Thieves action. Generates Combo Points at a mean rate of 2.3 seconds. Enabled only on solo sims." );
 
     for ( size_t i = 0; i < item_actions.size(); i++ )
       def -> add_action( item_actions[i] + ",if=buff.shadow_dance.up" );
@@ -4582,6 +4680,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "fan_of_knives"       ) return new fan_of_knives_t      ( this, options_str );
   if ( name == "garrote"             ) return new garrote_t            ( this, options_str );
   if ( name == "hemorrhage"          ) return new hemorrhage_t         ( this, options_str );
+  if ( name == "honor_among_thieves" ) return new honor_among_thieves_t( this, options_str );
   if ( name == "kick"                ) return new kick_t               ( this, options_str );
   if ( name == "killing_spree"       ) return new killing_spree_t      ( this, options_str );
   if ( name == "marked_for_death"    ) return new marked_for_death_t   ( this, options_str );
@@ -4785,12 +4884,13 @@ void rogue_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.anticipation_wasted      = get_proc( "anticipation_wasted" );
-  procs.combo_points_wasted      = get_proc( "combo_points_wasted" );
-  procs.honor_among_thieves      = get_proc( "honor_among_thieves" );
-  procs.no_revealing_strike      = get_proc( "no_revealing_strike" );
-  procs.seal_fate                = get_proc( "seal_fate"           );
-  procs.t16_2pc_melee            = get_proc( "t16_2pc_melee"       );
+  procs.anticipation_wasted      = get_proc( "Anticipation Charges (wasted)" );
+  procs.combo_points_wasted      = get_proc( "Combo Points (wasted)" );
+  procs.honor_among_thieves      = get_proc( "Honor Among Thieves" );
+  procs.honor_among_thieves_proxy= get_proc( "Honor Among Thieves (Proxy action)" );
+  procs.no_revealing_strike      = get_proc( "Finisher with no Revealing Strike" );
+  procs.seal_fate                = get_proc( "Seal Fate"           );
+  procs.t16_2pc_melee            = get_proc( "Silent Blades (T16 2PC)" );
 }
 
 // rogue_t::init_scaling ====================================================
@@ -4940,8 +5040,6 @@ void rogue_t::create_buffs()
   buffs.crimson_poison    = buff_creator_t( this, "crimson_poison", find_spell( 157562 ) );
 }
 
-// trigger_honor_among_thieves ==============================================
-
 struct honor_among_thieves_callback_t : public dbc_proc_callback_t
 {
   rogue_t* rogue;
@@ -4985,11 +5083,32 @@ struct honor_among_thieves_callback_t : public dbc_proc_callback_t
   }
 };
 
-// rogue_t::register_callbacks ==============================================
-
 void rogue_t::register_callbacks()
 {
-  if ( spec.honor_among_thieves -> ok() )
+  player_t::register_callbacks();
+
+  // APLs are not initialized at this point, so we will have to jump through
+  // hoops to figure out if the user has put in a honor_among_thieves action
+  // into any APL. Thus, scan through raw APL data (strings) for
+  // "honor_among_thieves", which should be sufficient to figure out its
+  // presence.
+  bool has_hat_action = false;
+  for ( std::map<std::string, std::string>::iterator it = alist_map.begin(), end = alist_map.end();
+        it != end; ++it )
+  {
+    action_priority_list_t* apl = get_action_priority_list( it -> first );
+    if ( util::str_in_str_ci( apl -> action_list_str, "honor_among_thieves" ) )
+    {
+      has_hat_action = true;
+      break;
+    }
+  }
+
+  // Register callbacks, if there's no proxy HAT action, or if there are more
+  // than one actor (player profile) in the sim. Proxy HAT action will not
+  // execute if player_no_pet_list.size() > 1.
+  if ( spec.honor_among_thieves -> ok() &&
+       ( ! has_hat_action || sim -> player_no_pet_list.size() > 1 ) )
   {
     for ( size_t i = 0; i < sim -> player_no_pet_list.size(); i++ )
     {
@@ -5004,8 +5123,6 @@ void rogue_t::register_callbacks()
       new honor_among_thieves_callback_t( p, this, p -> special_effects.back() );
     }
   }
-
-  player_t::register_callbacks();
 }
 
 // rogue_t::reset ===========================================================
@@ -5029,7 +5146,6 @@ void rogue_t::arise()
 
   if ( perk.improved_slice_and_dice -> ok() )
     buffs.slice_and_dice -> trigger( 1, buffs.slice_and_dice -> data().effectN( 1 ).percent(), -1.0, timespan_t::zero() );
-
 
   if ( ! sim -> overrides.haste && dbc.spell( 113742 ) -> is_level( level ) ) sim -> auras.haste -> trigger();
   if ( ! sim -> overrides.multistrike && dbc.spell( 113742 ) -> is_level( level ) ) sim -> auras.multistrike -> trigger();
