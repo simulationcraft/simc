@@ -881,6 +881,10 @@ struct yseras_gift_t : public heal_t
     target = p;
 
     tick_pct_heal = data().effectN( 1 ).percent();
+    
+    // 10/26/14: Heals for half for Guardians.
+    if ( p -> specialization() == DRUID_GUARDIAN )
+      tick_pct_heal *= 0.5;
   }
 
   virtual void init()
