@@ -3013,9 +3013,6 @@ struct maul_t : public bear_attack_t
 
       // Coeff is in tooltip but not spell data, so hardcode the value here.
       attack_power_mod.direct = 2.40;
-
-      if ( p -> wod_hotfix )
-        base_multiplier *= 1.05;
     }
 
     virtual void impact( action_state_t* s )
@@ -3047,6 +3044,11 @@ struct maul_t : public bear_attack_t
       if ( p() -> sets.has_set_bonus( DRUID_GUARDIAN, T17, B2 ) )
         cost_reduction = p() -> find_spell( 165410 ) -> effectN( 1 ).resource( RESOURCE_RAGE ) * -1.0;
     }
+
+    if ( player -> wod_hotfix )
+      base_multiplier *= 1.05;
+
+    normalize_weapon_speed = false;
   }
 
   virtual double cost() const
@@ -3116,6 +3118,8 @@ struct pulverize_t : public bear_attack_t
 
     if ( player -> wod_hotfix )
       base_multiplier *= 1.05;
+
+    normalize_weapon_speed = false;
   }
 
   virtual void impact( action_state_t* s )
