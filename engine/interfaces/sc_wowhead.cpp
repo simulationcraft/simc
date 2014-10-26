@@ -40,7 +40,7 @@ std::string source_desc_str( wowhead::wowhead_e source )
 // If you find any others, just add them to the array. Generally it will be a spell that has a perk linked in it.
 // The underlying issue is with the QT Webkit, and we most likely cannot fix it. There's a possibility that QT 5.4 
 // will correct this issue, but we won't know for another month or 2. - 9/14/14
-static bool dual_tooltip_disable( unsigned spell_id )
+static bool dual_tooltip_disable( unsigned /*spell_id*/)
 {
 /*
   static const unsigned naughtylist[] = { 1719, 53817, 20608, 26573, 51690, 57755,

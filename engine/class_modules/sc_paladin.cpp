@@ -2779,7 +2779,6 @@ struct lights_hammer_heal_tick_t : public paladin_heal_t
     background = true;
     aoe = 6;
     may_crit = true;
-    ignore_false_positive;
   }
   
   std::vector< player_t* >& target_list() const
@@ -2814,6 +2813,7 @@ struct lights_hammer_t : public paladin_spell_t
     cooldown -> duration = p -> find_spell( 114158 ) -> cooldown();
     hasted_ticks   = false;
     tick_zero = true;
+    ignore_false_positive = true;
 
     dynamic_tick_action = true;
     //tick_action = new lights_hammer_tick_t( p, p -> find_spell( 114919 ) );
