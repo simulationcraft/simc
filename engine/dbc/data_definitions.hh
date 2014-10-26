@@ -187,6 +187,8 @@ struct item_data_t {
   { return ( type_flags & RAID_TYPE_HEROIC ) == RAID_TYPE_HEROIC; }
   bool mythic() const
   { return ( type_flags & RAID_TYPE_MYTHIC ) == RAID_TYPE_MYTHIC; }
+
+  static item_data_t* find( unsigned id, bool ptr = false );
 };
 
 struct item_scale_data_t {

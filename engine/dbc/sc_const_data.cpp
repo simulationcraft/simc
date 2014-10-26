@@ -82,6 +82,7 @@ item_enchantment_data_t nil_ied;
 gem_property_data_t nil_gpd;
 item_upgrade_t nil_iu;
 item_upgrade_rule_t nil_iur;
+item_data_t nil_item_data;
 
 // ==========================================================================
 // Indices to provide log time, constant space access to spells, effects, and talents by id.
@@ -370,8 +371,16 @@ void dbc::apply_hotfixes()
 
   // Death Knight
 
-  // Misc
+  // Item hotfixes
+  item_data_t* item = item_data_t::find( 113663, false );
+  assert( item -> trigger_spell[ 0 ] == 0 && "Petrified Flesh-Eating Spore OnUse has been fixed" );
+  item -> trigger_spell[ 0 ] = ITEM_SPELLTRIGGER_ON_EQUIP;
 
+#if SC_USE_PTR
+  item = item_data_t::find( 113663, true );
+  assert( item -> trigger_spell[ 0 ] == 0 && "Petrified Flesh-Eating Spore OnUse has been fixed" );
+  item -> trigger_spell[ 0 ] = ITEM_SPELLTRIGGER_ON_EQUIP;
+#endif
 }
 
 static void generate_class_flags_index( bool ptr = false )
@@ -2015,6 +2024,14 @@ talent_data_t* talent_data_t::list( bool ptr )
 #else
   return __talent_data;
 #endif
+}
+
+item_data_t* item_data_t::find( unsigned id, bool ptr )
+{
+  item_data_t* i = item_data_index.get( ptr, id );
+  if ( ! i )
+    return &nil_item_data;
+  return i;
 }
 
 spell_data_t* spell_data_t::find( unsigned spell_id, bool ptr )
