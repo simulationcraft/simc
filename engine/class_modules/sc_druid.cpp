@@ -3421,10 +3421,10 @@ struct frenzied_regeneration_t : public druid_heal_t
     // Benefit tracking
     p() -> buff.tier17_4pc_tank -> up();
 
+    druid_heal_t::execute();
+
     p() -> buff.tier15_2pc_tank -> expire();
     p() -> buff.tier17_4pc_tank -> expire();
-
-    druid_heal_t::execute();
 
     if ( p() -> sets.has_set_bonus( SET_TANK, T16, B4 ) )
       p() -> active.ursocs_vigor -> trigger_hot( resource_consumed );
