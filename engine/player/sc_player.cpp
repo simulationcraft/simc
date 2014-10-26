@@ -10093,6 +10093,7 @@ void manager_t::stop()
 
   _diminishing_return_list -> reset();
   _damage_list -> reset();
+  update_event_t::cancel( _update_event );
 
   _started = false;
 }
