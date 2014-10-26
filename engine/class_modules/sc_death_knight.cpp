@@ -2779,6 +2779,7 @@ struct auto_attack_t : public death_knight_melee_attack_t
   {
     add_option( opt_bool( "sync_weapons", sync_weapons ) );
     parse_options( options_str );
+    ignore_false_positive = true;
 
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
 
@@ -3110,6 +3111,14 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     tick_action = new soul_reaper_dot_t( p );
   }
 
+  double false_positive_pct() const
+  {
+    if ( target -> health_percentage() > 40 )
+      return 0;
+    else
+      return death_knight_melee_attack_t::false_negative_pct();
+  }
+
   virtual double composite_crit() const
   {
     double cc = death_knight_melee_attack_t::composite_crit();
@@ -3248,6 +3257,7 @@ struct conversion_t : public death_knight_heal_t
 
     may_miss = may_crit = hasted_ticks = callbacks = false;
     dot_duration = sim -> max_time * 2;
+    ignore_false_positive = true;
 
     tick_action = new conversion_heal_t( p );
     for ( size_t idx = 1; idx <= p -> talent.conversion -> power_count(); idx++ )
@@ -3445,6 +3455,7 @@ struct dark_command_t: public death_knight_spell_t
     death_knight_spell_t( "dark_command", p, p -> find_class_spell( "Dark Command" ) )
   {
     parse_options( options_str );
+    ignore_false_positive = true;
     use_off_gcd = true;
   }
 
@@ -3510,6 +3521,7 @@ struct death_and_decay_t : public death_knight_spell_t
     hasted_ticks     = false;
     if ( p -> wod_hotfix )
       attack_power_mod.tick *= 1.2;
+    ignore_false_positive = true;
   }
 
   virtual void consume_resource()
@@ -3580,6 +3592,7 @@ struct defile_t : public death_knight_spell_t
     hasted_ticks = tick_zero = false;
     if ( p -> wod_hotfix )
       attack_power_mod.tick *= 1.2;
+    ignore_false_positive = true;
   }
 
   double composite_ta_multiplier( const action_state_t* state ) const
@@ -4065,6 +4078,7 @@ struct horn_of_winter_t : public death_knight_spell_t
     death_knight_spell_t( "horn_of_winter", p, p -> find_spell( 57330 ) )
   {
     parse_options( options_str );
+    ignore_false_positive = true;
 
     harmful = false;
   }
@@ -4233,6 +4247,7 @@ struct mind_freeze_t : public death_knight_spell_t
     death_knight_spell_t( "mind_freeze", p, p -> find_class_spell( "Mind Freeze" ) )
   {
     parse_options( options_str );
+    ignore_false_positive = true;
 
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
   }
@@ -4660,17 +4675,14 @@ struct plague_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t( "plague_strike", p, p -> find_class_spell( "Plague Strike" ) ), oh_attack( 0 )
   {
     parse_options( options_str );
-
     special = true;
 
     weapon = &( p -> main_hand_weapon );
-
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
       if ( p -> spec.might_of_the_frozen_wastes -> ok() )
         oh_attack = new plague_strike_offhand_t( p );
     }
-
     assert( p -> active_spells.blood_plague );
   }
 
@@ -4713,6 +4725,7 @@ struct presence_t : public death_knight_spell_t
     parse_options( options_str );
     trigger_gcd = timespan_t::zero();
     cooldown -> duration = timespan_t::from_seconds( 1.0 );
+    ignore_false_positive = true;
     harmful     = false;
   }
 
@@ -4772,6 +4785,7 @@ struct blood_presence_t : public presence_t
   {
     parse_options( options_str );
     id = p -> find_class_spell( "Blood Presence" ) -> id();
+    ignore_false_positive = true;
   }
 };
 
@@ -4784,6 +4798,7 @@ struct frost_presence_t : public presence_t
   {
     parse_options( options_str );
     id = p -> find_class_spell( "Frost Presence" ) -> id();
+    ignore_false_positive = true;
   }
 };
 
@@ -4796,6 +4811,7 @@ struct unholy_presence_t : public presence_t
   {
     parse_options( options_str );
     id = p -> find_class_spell( "Unholy Presence" ) -> id();
+    ignore_false_positive = true;
   }
 };
 
@@ -4807,6 +4823,7 @@ struct deaths_advance_t: public death_knight_spell_t
     death_knight_spell_t( "raise_dead", p, p -> talent.deaths_advance )
   {
     parse_options( options_str );
+    ignore_false_positive = true;
   }
 
   virtual void execute()
@@ -5535,19 +5552,19 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   // General Actions
   if ( name == "antimagic_shell"          ) return new antimagic_shell_t          ( this, options_str );
   if ( name == "auto_attack"              ) return new auto_attack_t              ( this, options_str );
+  if ( name == "blood_boil"               ) return new blood_boil_t               ( this, options_str );
   if ( name == "blood_presence"           ) return new blood_presence_t           ( this, options_str );
   if ( name == "deaths_advance"           ) return new deaths_advance_t           ( this, options_str );
-  if ( name == "unholy_presence"          ) return new unholy_presence_t          ( this, options_str );
   if ( name == "frost_presence"           ) return new frost_presence_t           ( this, options_str );
-  if ( name == "soul_reaper"              ) return new soul_reaper_t              ( this, options_str );
-  if ( name == "plague_leech"             ) return new plague_leech_t             ( this, options_str );
   if ( name == "icebound_fortitude"       ) return new icebound_fortitude_t       ( this, options_str );
-  if ( name == "blood_boil"               ) return new blood_boil_t               ( this, options_str );
+  if ( name == "plague_leech"             ) return new plague_leech_t             ( this, options_str );
+  if ( name == "soul_reaper"              ) return new soul_reaper_t              ( this, options_str );
+  if ( name == "unholy_presence"          ) return new unholy_presence_t          ( this, options_str );
 
   // Blood Actions
   if ( name == "blood_tap"                ) return new blood_tap_t                ( this, options_str );
-  if ( name == "dark_command"             ) return new dark_command_t             ( this, options_str );
   if ( name == "dancing_rune_weapon"      ) return new dancing_rune_weapon_t      ( this, options_str );
+  if ( name == "dark_command"             ) return new dark_command_t             ( this, options_str );
   if ( name == "rune_tap"                 ) return new rune_tap_t                 ( this, options_str );
   if ( name == "vampiric_blood"           ) return new vampiric_blood_t           ( this, options_str );
 
@@ -5576,13 +5593,13 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "summon_gargoyle"          ) return new summon_gargoyle_t          ( this, options_str );
 
   // Talents
-  if ( name == "unholy_blight"            ) return new unholy_blight_t            ( this, options_str );
-  if ( name == "death_siphon"             ) return new death_siphon_t             ( this, options_str );
-  if ( name == "death_pact"               ) return new death_pact_t               ( this, options_str );
   if ( name == "breath_of_sindragosa"     ) return new breath_of_sindragosa_t     ( this, options_str );
-  if ( name == "defile"                   ) return new defile_t                   ( this, options_str );
   if ( name == "conversion"               ) return new conversion_t               ( this, options_str );
+  if ( name == "death_pact"               ) return new death_pact_t               ( this, options_str );
+  if ( name == "death_siphon"             ) return new death_siphon_t             ( this, options_str );
+  if ( name == "defile"                   ) return new defile_t                   ( this, options_str );
   if ( name == "lichborne"                ) return new lichborne_t                ( this, options_str );
+  if ( name == "unholy_blight"            ) return new unholy_blight_t            ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }

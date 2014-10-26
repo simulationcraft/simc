@@ -1692,6 +1692,7 @@ struct chakra_base_t : public priest_spell_t
     parse_options( options_str );
 
     harmful = false;
+    ignore_false_positive = true;
 
     p.cooldowns.chakra -> duration = cooldown -> duration;
 
@@ -1767,6 +1768,7 @@ struct dispersion_t final : public priest_spell_t
     base_tick_time = timespan_t::from_seconds( 1.0 );
     dot_duration = timespan_t::from_seconds( 6.0 ) + priest.glyphs.delayed_coalescence -> effectN( 1 ).time_value();
 
+    ignore_false_positive = true;
     channeled         = true;
     harmful           = false;
     tick_may_crit     = false;
@@ -1802,6 +1804,7 @@ struct fortitude_t final : public priest_spell_t
     priest_spell_t( "fortitude", player, player.find_class_spell( "Power Word: Fortitude" ) )
   {
     parse_options( options_str );
+    ignore_false_positive = true;
 
     harmful = false;
 
@@ -1825,6 +1828,7 @@ struct levitate_t final: public priest_spell_t
     priest_spell_t( "levitate", p, p.find_class_spell( "Levitate" ) )
   {
     parse_options( options_str );
+    ignore_false_positive = true;
   }
 
   virtual void execute()
@@ -1887,6 +1891,7 @@ struct shadowform_t final : public priest_spell_t
     priest_spell_t( "shadowform", p, p.find_class_spell( "Shadowform" ) )
   {
     parse_options( options_str );
+    ignore_false_positive = true;
 
     harmful = false;
   }

@@ -1107,6 +1107,7 @@ struct beacon_of_light_t : public paladin_heal_t
     paladin_heal_t( "beacon_of_light", p, p -> find_class_spell( "Beacon of Light" ) )
   {
     parse_options( options_str );
+    ignore_false_positive = true;
 
     // Target is required for Beacon
     if ( target_str.empty() )
@@ -1152,6 +1153,7 @@ struct blessing_of_kings_t : public paladin_spell_t
     parse_options( options_str );
 
     harmful = false;
+    ignore_false_positive = true;
 
     background = ( sim -> overrides.str_agi_int != 0 );
   }
@@ -1184,6 +1186,7 @@ struct blessing_of_might_t : public paladin_spell_t
     parse_options( options_str );
 
     harmful = false;
+    ignore_false_positive = true;
 
     background = ( sim -> overrides.mastery != 0 );
   }
@@ -2776,6 +2779,7 @@ struct lights_hammer_heal_tick_t : public paladin_heal_t
     background = true;
     aoe = 6;
     may_crit = true;
+    ignore_false_positive;
   }
   
   std::vector< player_t* >& target_list() const
@@ -3052,6 +3056,7 @@ struct speed_of_light_t: public paladin_spell_t
     : paladin_spell_t( "speed_of_light", p, p -> talents.speed_of_light )
   {
     parse_options( options_str );
+    ignore_false_positive = true;
   }
 
   virtual void execute()
@@ -3650,6 +3655,7 @@ struct hammer_of_justice_t : public paladin_melee_attack_t
     : paladin_melee_attack_t( "hammer_of_justice", p, p -> find_class_spell( "Hammer of Justice" ) )
   {
     parse_options( options_str );
+    ignore_false_positive = true;
   }
 };
 
@@ -4090,6 +4096,7 @@ struct rebuke_t : public paladin_melee_attack_t
     parse_options( options_str );
 
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    ignore_false_positive = true;
 
     // no weapon multiplier
     weapon_multiplier = 0.0;
@@ -4137,6 +4144,8 @@ struct paladin_seal_t : public paladin_melee_attack_t
 
     harmful    = false;
     resource_current = RESOURCE_MANA;
+    ignore_false_positive = true;
+    school = SCHOOL_HOLY;
     // all seals cost 16.4% of base mana
     base_costs[ current_resource() ]  = p -> resources.base[ current_resource() ] * 0.164;
   }
@@ -4184,7 +4193,6 @@ struct paladin_seal_t : public paladin_melee_attack_t
     }
 
     // if we've swapped to or from Seal of Insight, we'll need to refresh spell haste cache
-
   }
 
   virtual bool ready()

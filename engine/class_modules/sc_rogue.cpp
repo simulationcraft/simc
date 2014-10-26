@@ -1091,6 +1091,7 @@ struct apply_poison_t : public action_t
     add_option( opt_string( "lethal", lethal_str ) );
     add_option( opt_string( "nonlethal", nonlethal_str ) );
     parse_options( options_str );
+    ignore_false_positive = true;
 
     trigger_gcd = timespan_t::zero();
     harmful = false;
@@ -1610,6 +1611,7 @@ struct blade_flurry_t : public rogue_attack_t
     rogue_attack_t( "blade_flurry", p, p -> find_specialization_spell( "Blade Flurry" ), options_str )
   {
     harmful = may_miss = may_crit = false;
+    ignore_false_positive = true;
   }
 
   void execute()
@@ -2018,6 +2020,7 @@ struct kick_t : public rogue_attack_t
     rogue_attack_t( "kick", p, p -> find_class_spell( "Kick" ), options_str )
   {
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    ignore_false_positive = true;
 
     if ( p -> glyph.kick -> ok() )
     {
@@ -2432,6 +2435,7 @@ struct shiv_t : public rogue_attack_t
     weapon = &( p -> off_hand_weapon );
     if ( weapon -> type == WEAPON_NONE )
       background = true; // Do not allow execution.
+    ignore_false_positive = true;
 
     may_crit          = false;
   }
@@ -2633,6 +2637,7 @@ struct burst_of_speed_t: public rogue_attack_t
     rogue_attack_t( "burst_of_speed", p, p -> talent.burst_of_speed, options_str )
   {
     harmful = callbacks = false;
+    ignore_false_positive = true;
     dot_duration = timespan_t::zero();
     cooldown -> duration = p -> buffs.burst_of_speed -> data().duration();
   }
@@ -2654,6 +2659,7 @@ struct sprint_t: public rogue_attack_t
   {
     harmful = callbacks = false;
     cooldown = p -> cooldowns.sprint;
+    ignore_false_positive = true;
   }
 
   void execute()
@@ -2672,6 +2678,7 @@ struct vanish_t : public rogue_attack_t
     rogue_attack_t( "vanish", p, p -> find_class_spell( "Vanish" ), options_str )
   {
     may_miss = may_crit = harmful = false;
+    ignore_false_positive = true;
 
     cooldown -> duration += p -> perk.enhanced_vanish -> effectN( 1 ).time_value();
     cooldown -> duration += p -> glyph.disappearance -> effectN( 1 ).time_value();
@@ -2820,6 +2827,7 @@ struct stealth_t : public spell_t
     spell_t( "stealth", p, p -> find_class_spell( "Stealth" ) ), used( false )
   {
     harmful = false;
+    ignore_false_positive = true;
 
     parse_options( options_str );
   }

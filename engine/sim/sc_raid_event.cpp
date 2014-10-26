@@ -137,7 +137,7 @@ struct distraction_event_t : public raid_event_t
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
-      p -> current.skill -= skill;
+      p -> current.skill_debuff += skill;
     }
   }
 
@@ -146,7 +146,7 @@ struct distraction_event_t : public raid_event_t
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
-      p -> current.skill += skill;
+      p -> current.skill_debuff -= skill;
     }
   }
 };

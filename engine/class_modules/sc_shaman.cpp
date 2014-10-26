@@ -2133,6 +2133,7 @@ struct auto_attack_t : public shaman_attack_t
     add_option( opt_bool( "sync_weapons", sync_weapons ) );
     add_option( opt_float( "swing_timer_variance", swing_timer_variance ) );
     parse_options( options_str );
+    ignore_false_positive = true;
 
     assert( p() -> main_hand_weapon.type != WEAPON_NONE );
 
@@ -3201,6 +3202,7 @@ struct earthquake_t : public shaman_spell_t
 
     base_td = base_dd_min = base_dd_max = 0;
     spell_power_mod.direct = 0;
+    ignore_false_positive = true;
 
     tick_action = new earthquake_rumble_t( player );
   }
@@ -3443,6 +3445,7 @@ struct wind_shear_t : public shaman_spell_t
     shaman_spell_t( "wind_shear", player, player -> find_class_spell( "Wind Shear" ), options_str )
   {
     may_miss = may_crit = false;
+    ignore_false_positive = true;
   }
 
   virtual bool ready()
@@ -3714,6 +3717,7 @@ struct shaman_totem_t : public shaman_spell_t
     harmful = callbacks = may_miss = may_crit = uses_unleash_flame = false;
     totem_pet      = dynamic_cast< shaman_totem_pet_t* >( player -> find_pet( name() ) );
     assert( totem_pet != 0 );
+    ignore_false_positive = true;
   }
 
   virtual void execute()

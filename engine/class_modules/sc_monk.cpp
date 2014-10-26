@@ -1989,6 +1989,7 @@ struct auto_attack_t: public monk_melee_attack_t
   {
     add_option( opt_bool( "sync_weapons", sync_weapons ) );
     parse_options( options_str );
+    ignore_false_positive = true;
 
     p() -> main_hand_attack = new melee_t( "melee_main_hand", player, sync_weapons );
     p() -> main_hand_attack -> weapon = &( player -> main_hand_weapon );
@@ -2221,6 +2222,7 @@ struct provoke_t: public monk_melee_attack_t
   {
     parse_options( options_str );
     use_off_gcd = true;
+    ignore_false_positive = true;
   }
 
   void impact( action_state_t* s )
@@ -2249,6 +2251,7 @@ struct stance_t: public monk_spell_t
   {
     add_option( opt_string( "choose", stance_str ) );
     parse_options( options_str );
+    ignore_false_positive = true;
 
     try
     {
@@ -2649,6 +2652,7 @@ struct chi_sphere_t: public monk_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    ignore_false_positive = true;
     trigger_gcd = timespan_t::zero();
   }
 

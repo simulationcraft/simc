@@ -392,7 +392,6 @@ public:
   virtual void      init_scaling();
   virtual void      create_buffs();
   virtual void      init_gains();
-  virtual void      init_benefits();
   virtual void      init_procs();
   virtual void      init_rng();
   virtual void      init_action_list();
@@ -3357,6 +3356,7 @@ struct life_tap_t: public warlock_spell_t
     warlock_spell_t( p, "Life Tap" )
   {
     harmful = false;
+    ignore_false_positive = true;
   }
 
   virtual void execute()
@@ -3380,6 +3380,7 @@ struct t: public warlock_spell_t
     trigger_gcd = timespan_t::zero();
     harmful = false;
     background = true;
+    ignore_false_positive = true;
   }
 
   virtual void execute()
@@ -3413,6 +3414,7 @@ struct activate_t: public warlock_spell_t
   {
     trigger_gcd = timespan_t::zero();
     harmful = false;
+    ignore_false_positive = true;
 
     if ( ! p -> spells.metamorphosis ) p -> spells.metamorphosis = new t( p );
   }
@@ -3441,6 +3443,7 @@ struct cancel_t: public warlock_spell_t
   {
     trigger_gcd = timespan_t::zero();
     harmful = false;
+    ignore_false_positive = true;
   }
 
   virtual void execute()
@@ -3967,7 +3970,6 @@ struct rain_of_fire_tick_t: public warlock_spell_t
   }
 };
 
-
 struct rain_of_fire_t: public warlock_spell_t
 {
   rain_of_fire_t( warlock_t* p ):
@@ -3978,6 +3980,7 @@ struct rain_of_fire_t: public warlock_spell_t
     may_crit = false;
     channeled = ( p -> spec.aftermath -> ok() ) ? false : true;
     tick_zero = ( p -> spec.aftermath -> ok() ) ? false : true;
+    ignore_false_positive = true;
 
     tick_action = new rain_of_fire_tick_t( p, data() );
   }
@@ -4108,6 +4111,7 @@ struct immolation_aura_t: public warlock_spell_t
   {
     may_miss = may_crit = callbacks = hasted_ticks = false;
     tick_zero = true;
+    ignore_false_positive = true;
 
     tick_action = new immolation_aura_tick_t( p, this );
     tick_action -> base_costs[RESOURCE_DEMONIC_FURY] = costs_per_second[RESOURCE_DEMONIC_FURY];
@@ -4170,6 +4174,7 @@ struct cataclysm_t: public warlock_spell_t
     doom          -> dual = true;
     doom          -> base_costs[RESOURCE_MANA] = 0;
     doom -> base_costs[RESOURCE_DEMONIC_FURY] = 0; //Celestalons tweet from 30/31.07.2014 says it should be 0
+    ignore_false_positive = true;
 
     immolate -> background = true;
     immolate -> dual = true;
@@ -4254,7 +4259,6 @@ struct soul_swap_t: public warlock_spell_t
     seed_of_corruption  -> background = true;
     seed_of_corruption  -> dual = true;
     seed_of_corruption  -> base_costs[RESOURCE_MANA] = 0;
-
   }
 
   virtual void execute()
@@ -4434,6 +4438,7 @@ struct summon_main_pet_t: public summon_pet_t
     summon_pet_t( n, p ), instant_cooldown( p -> get_cooldown( "instant_summon_pet" ) )
   {
     instant_cooldown -> duration = timespan_t::from_seconds( 60 );
+    ignore_false_positive = true;
   }
 
   virtual void schedule_execute( action_state_t* state = 0 )
@@ -4672,6 +4677,7 @@ struct grimoire_of_sacrifice_t: public warlock_spell_t
     warlock_spell_t( "grimoire_of_sacrifice", p, p -> talents.grimoire_of_sacrifice )
   {
     harmful = false;
+    ignore_false_positive = true;
   }
 
   virtual bool ready()
@@ -5366,12 +5372,7 @@ void warlock_t::init_gains()
   gains.haunt_tier16_4pc = get_gain( "haunt_tier16_4pc" );
 }
 
-
-void warlock_t::init_benefits()
-{
-  player_t::init_benefits();
-}
-
+// warlock_t::init_procs ===============================================
 
 void warlock_t::init_procs()
 {
@@ -5614,6 +5615,9 @@ void warlock_t::init_action_list()
 void warlock_t::init_resources( bool force )
 {
   player_t::init_resources( force );
+
+  resources.current[RESOURCE_BURNING_EMBER] = initial_burning_embers;
+  resources.current[RESOURCE_DEMONIC_FURY] = initial_demonic_fury;
 
   if ( pets.active )
     pets.active -> init_resources( force );

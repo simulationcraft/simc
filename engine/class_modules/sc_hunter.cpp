@@ -1845,6 +1845,7 @@ struct start_attack_t: public hunter_ranged_attack_t
 
     p -> main_hand_attack = new auto_shot_t( p );
     stats = p -> main_hand_attack -> stats;
+    ignore_false_positive = true;
 
     trigger_gcd = timespan_t::zero();
   }
@@ -1913,6 +1914,7 @@ struct exotic_munitions_t: public hunter_ranged_attack_t
 
     callbacks = false;
     harmful = false;
+    ignore_false_positive = true;
 
     if ( !ammo_type.empty() )
     {
@@ -2278,6 +2280,7 @@ struct explosive_trap_t: public hunter_ranged_attack_t
 
     // BUG in game it uses the direct damage AP mltiplier for ticks as well.
     attack_power_mod.tick = attack_power_mod.direct;
+    ignore_false_positive = true;
 
     // BUG simulate slow velocity of launch
     travel_speed = 18.0;
@@ -3200,6 +3203,7 @@ struct summon_pet_t: public hunter_spell_t
   {
     harmful = false;
     callbacks = false;
+    ignore_false_positive = true;
     std::string pet_name = options_str.empty() ? p() -> summon_pet_str : options_str;
     pet = p() -> find_pet( pet_name );
     if ( !pet )

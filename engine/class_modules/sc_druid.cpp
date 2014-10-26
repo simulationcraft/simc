@@ -592,7 +592,7 @@ public:
   virtual void      init_scaling();
   virtual void      init_gains();
   virtual void      init_procs();
-  virtual void      init_benefits();
+  virtual void      init_resources( bool );
   virtual void      invalidate_cache( cache_e );
   virtual void      combat_begin();
   virtual void      reset();
@@ -2546,7 +2546,6 @@ struct savage_roar_t : public cat_attack_t
     cat_attack_t( "savage_roar", p, p -> find_specialization_spell( "Savage Roar" ), options_str )
   {
     base_costs[ RESOURCE_COMBO_POINT ] = 1;
-
     may_miss = harmful = false;
     dot_duration  = timespan_t::zero();
     base_tick_time = timespan_t::zero();
@@ -3448,6 +3447,7 @@ struct healing_touch_t : public druid_heal_t
     druid_heal_t( "healing_touch", p, p -> find_class_spell( "Healing Touch" ), options_str )
   {
     init_living_seed();
+    ignore_false_positive = true; // Prevents cat/bear from failing a skill check and going into caster form.
   }
 
   double spell_direct_power_coefficient( const action_state_t* /* state */ ) const
@@ -3612,6 +3612,7 @@ struct lifebloom_t : public druid_heal_t
     bloom( new lifebloom_bloom_t( p ) )
   {
     may_crit   = false;
+    ignore_false_positive = true;
 
     // TODO: this can be only cast on one target, unless Tree of Life is up
   }
@@ -3675,7 +3676,7 @@ struct regrowth_t : public druid_heal_t
       base_td    = 0;
       dot_duration  = timespan_t::zero();
     }
-
+    ignore_false_positive = true;
     init_living_seed();
   }
 
@@ -3743,6 +3744,7 @@ struct rejuvenation_t : public druid_heal_t
     druid_heal_t( "rejuvenation", p, p -> find_class_spell( "Rejuvenation" ), options_str )
   {
     tick_zero = true;
+    ignore_false_positive = true; // Prevents cat/bear from failing a skill check and going into caster form.
   }
 
   virtual void execute()
@@ -3891,6 +3893,7 @@ struct wild_growth_t : public druid_heal_t
   {
     aoe = data().effectN( 3 ).base_value() + p -> glyph.wild_growth -> effectN( 1 ).base_value();
     cooldown -> duration = data().cooldown() + p -> glyph.wild_growth -> effectN( 2 ).time_value();
+    ignore_false_positive = true;
   }
 
   virtual void execute()
@@ -4001,6 +4004,7 @@ struct auto_attack_t : public melee_attack_t
     parse_options( options_str );
 
     trigger_gcd = timespan_t::zero();
+    ignore_false_positive = true;
   }
 
   virtual void execute()
@@ -4099,6 +4103,7 @@ struct bear_form_t : public druid_spell_t
   {
     harmful = false;
     min_gcd = timespan_t::from_seconds( 1.5 );
+    ignore_false_positive = true;
 
     if ( ! player -> bear_melee_attack )
     {
@@ -4181,6 +4186,7 @@ struct cat_form_t : public druid_spell_t
   {
     harmful = false;
     min_gcd = timespan_t::from_seconds( 1.5 );
+    ignore_false_positive = true;
 
     if ( ! player -> cat_melee_attack )
     {
@@ -4257,6 +4263,7 @@ struct dash_t : public druid_spell_t
 
     harmful = false;
     use_off_gcd = true;
+    ignore_false_positive = true;
   }
 
   void execute()
@@ -4380,6 +4387,7 @@ struct growl_t: public druid_spell_t
     druid_spell_t( "growl", player, player -> find_class_spell( "Growl" ) )
   {
     parse_options( options_str );
+    ignore_false_positive = true;
     use_off_gcd = true;
   }
 
@@ -4449,6 +4457,7 @@ struct hurricane_t : public druid_spell_t
 
     tick_action = new hurricane_tick_t( player, data().effectN( 3 ).trigger() );
     dynamic_tick_action = true;
+    ignore_false_positive = true;
   }
 
   double action_multiplier() const
@@ -4570,6 +4579,7 @@ struct mark_of_the_wild_t : public druid_spell_t
 
     trigger_gcd = timespan_t::zero();
     harmful     = false;
+    ignore_false_positive = true;
     background  = ( sim -> overrides.str_agi_int != 0 );
   }
 
@@ -4783,7 +4793,6 @@ struct moonfire_t : public druid_spell_t
     p() -> buff.lunar_peak -> expire();
   }
 
-
   void schedule_execute( action_state_t* state = 0 )
   {
     druid_spell_t::schedule_execute( state );
@@ -4866,6 +4875,7 @@ struct moonkin_form_t : public druid_spell_t
     parse_options( options_str );
 
     harmful           = false;
+    ignore_false_positive = true;
 
     base_costs[ RESOURCE_MANA ] *= 1.0 + p() -> glyph.master_shapeshifter -> effectN( 1 ).percent();
   }
@@ -4946,6 +4956,7 @@ struct prowl_t : public druid_spell_t
 
     trigger_gcd = timespan_t::zero();
     harmful     = false;
+    ignore_false_positive = true;
   }
 
   void execute()
@@ -5038,6 +5049,7 @@ struct skull_bash_t : public druid_spell_t
     parse_options( options_str );
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
     use_off_gcd = true;
+    ignore_false_positive = true;
 
     cooldown -> duration += player -> glyph.skull_bash -> effectN( 1 ).time_value();
   }
@@ -5330,6 +5342,7 @@ struct typhoon_t : public druid_spell_t
     druid_spell_t( "typhoon", player, player -> talent.typhoon )
   {
     parse_options( options_str );
+    ignore_false_positive = true;
   }
 };
 
@@ -5343,6 +5356,7 @@ struct wild_mushroom_t : public druid_spell_t
     parse_options( options_str );
 
     harmful = false;
+    ignore_false_positive = true;
   }
 
   void execute()
@@ -6407,11 +6421,13 @@ void druid_t::init_procs()
   proc.wrong_eclipse_starfire   = get_proc( "wrong_eclipse_starfire" );
 }
 
-// druid_t::init_benefits ===================================================
+// druid_t::init_resources ===========================================
 
-void druid_t::init_benefits()
+void druid_t::init_resources( bool force )
 {
-  player_t::init_benefits();
+  player_t::init_resources( force );
+
+  resources.current[RESOURCE_ECLIPSE] = 0;
 }
 
 // druid_t::init_actions ====================================================

@@ -248,6 +248,8 @@ action_t::action_t( action_e       ty,
   background(),
   use_off_gcd(),
   interrupt_auto_attack( true ),
+  ignore_false_positive( false ),
+  action_skill( player -> base.skill ),
   direct_tick(),
   periodic_hit(),
   repeating(),
@@ -417,7 +419,6 @@ action_t::action_t( action_e       ty,
   add_option( opt_deprecated( "time>", "if=time>=" ) );
   add_option( opt_deprecated( "travel_speed", "if=travel_speed" ) );
   add_option( opt_deprecated( "vulnerable", "if=target.debuff.vulnerable.react" ) );
-  add_option( opt_deprecated( "use_off_gcd", "" ) );
 
   add_option( opt_string( "if", if_expr_str ) );
   add_option( opt_string( "interrupt_if", interrupt_if_expr_str ) );
@@ -434,6 +435,7 @@ action_t::action_t( action_e       ty,
   add_option( opt_string( "label", label_str ) );
   add_option( opt_bool( "precombat", pre_combat ) );
   add_option( opt_timespan( "line_cd", line_cooldown.duration ) );
+  add_option( opt_float( "skill", action_skill ) );
 }
 
 action_t::~action_t()
@@ -676,6 +678,49 @@ timespan_t action_t::gcd() const
     return timespan_t::zero();
 
   return trigger_gcd;
+}
+
+// False Positive skill chance, executes command regardless of expression.
+double action_t::false_positive_pct() const
+{
+  double failure_rate = 0.0;
+
+  if ( action_skill == 1 && player -> current.skill_debuff == 0 )
+    return failure_rate;
+
+  if ( !player -> in_combat || background || player -> strict_sequence || ignore_false_positive )
+    return failure_rate;
+
+  failure_rate = ( 1 - action_skill ) / 2;
+  failure_rate += player -> current.skill_debuff / 2;
+
+  if ( dot_duration > timespan_t::zero() )
+  {
+    if ( dot_t* d = find_dot( target ) )
+    {
+      if ( d -> remains() < dot_duration / 2 )
+        failure_rate *= 1 - d -> remains() / ( dot_duration / 2 );
+    }
+  }
+
+  return failure_rate;
+}
+
+double action_t::false_negative_pct() const
+{
+  double failure_rate = 0.0;
+
+  if ( action_skill == 1 && player -> current.skill_debuff == 0 )
+    return failure_rate;
+
+  if ( !player -> in_combat || background || player -> strict_sequence )
+    return failure_rate;
+
+  failure_rate = ( 1 - action_skill ) / 2;
+
+  failure_rate += player -> current.skill_debuff / 2;
+
+  return failure_rate;
 }
 
 // action_t::travel_time ====================================================
@@ -1578,7 +1623,7 @@ bool action_t::ready()
     return false;
 
   // Player Skill must not affect precombat actions
-  if ( player -> in_combat && player -> current.skill < 1.0 && ! rng().roll( player -> current.skill ) )
+  if ( rng().roll( false_negative_pct() ) )
     return false;
 
   if ( line_cooldown.down() )
@@ -1683,11 +1728,6 @@ bool action_t::ready()
     return false;
   }
 
-  // Check actions that DO or MAY pertain to the target after cycle_targets.
-
-  if ( if_expr && ! if_expr -> success() )
-    return false;
-
   if ( target -> debuffs.invulnerable -> check() && harmful )
     return false;
 
@@ -1695,6 +1735,12 @@ bool action_t::ready()
     return false;
 
   if ( ! has_movement_directionality() )
+    return false;
+
+  if ( rng().roll( false_positive_pct() ) )
+    return true;
+
+  if ( if_expr && !if_expr -> success() )
     return false;
 
   return true;
@@ -1801,7 +1847,6 @@ void action_t::init()
   {
     update_flags &= ~STATE_HASTE;
   }
-
 
   if ( ! ( background || sequence ) && ( pre_combat || ( action_list && action_list -> name_str == "precombat" ) ) )
   {
@@ -2765,6 +2810,8 @@ call_action_list_t::call_action_list_t( player_t* player, const std::string& opt
   add_option( opt_string( "name", alist_name ) );
   add_option( opt_int( "random", randomtoggle ) );
   parse_options( options_str );
+
+  ignore_false_positive = true; // Truly terrible things could happen if a false positive comes back on this.
 
   if ( alist_name.empty() )
   {

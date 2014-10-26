@@ -418,6 +418,7 @@ public:
   virtual void      init_position();
   virtual void      init_procs();
   virtual void      init_rng();
+  virtual void      init_resources( bool );
   virtual void      arise();
   virtual void      combat_begin();
   virtual double    composite_attribute( attribute_e attr ) const;
@@ -1209,6 +1210,7 @@ struct auto_attack_t: public warrior_attack_t
     parse_options( options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE | STANCE_BATTLE;
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
+    ignore_false_positive = true;
 
     p -> main_hand_attack = new melee_t( "auto_attack_mh", p );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
@@ -1437,8 +1439,7 @@ struct charge_t: public warrior_attack_t
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
-    use_off_gcd = true;
-
+    ignore_false_positive = true;
     melee_range = data().max_range();
     melee_range += p -> glyphs.long_charge -> effectN( 1 ).base_value();
     movement_directionality = MOVEMENT_OMNI;
@@ -1848,6 +1849,7 @@ struct heroic_leap_t: public warrior_attack_t
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
+    ignore_false_positive = true;
     aoe = -1;
     may_dodge = may_parry = may_miss = may_block = false;
     movement_directionality = MOVEMENT_OMNI;
@@ -1970,6 +1972,7 @@ struct intervene_t: public warrior_attack_t
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     melee_range = data().max_range();
+    ignore_false_positive = true;
     movement_directionality = MOVEMENT_OMNI;
   }
 
@@ -2066,8 +2069,9 @@ struct pummel_t: public warrior_attack_t
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
+    ignore_false_positive = true;
 
-    may_miss = may_block = may_dodge = may_parry = false;
+    may_miss = may_block = may_dodge = may_parry = callbacks = false;
   }
 
   void execute()
@@ -2981,6 +2985,7 @@ struct battle_shout_t: public warrior_spell_t
     melee_range = -1;
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     callbacks = false;
+    ignore_false_positive = true;
   }
 
   void execute()
@@ -3044,6 +3049,7 @@ struct commanding_shout_t: public warrior_spell_t
     melee_range = -1;
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     callbacks = false;
+    ignore_false_positive = true;
   }
 
   void execute()
@@ -3188,6 +3194,7 @@ struct ravager_t: public warrior_spell_t
     ravager( new ravager_tick_t( p, "ravager_tick" ) )
   {
     parse_options( options_str );
+    ignore_false_positive = true;
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     hasted_ticks = callbacks = false;
     melee_range = data().max_range();
@@ -3226,6 +3233,7 @@ struct recklessness_t: public warrior_spell_t
     bonus_crit *= 1 + p -> glyphs.recklessness -> effectN( 1 ).percent();
     cooldown -> duration = data().cooldown();
     cooldown -> duration += p -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
+    may_crit = callbacks = false;
   }
 
   void execute()
@@ -3499,7 +3507,7 @@ struct stance_t: public warrior_spell_t
       p -> swapping = true;
       cooldown -> duration = ( timespan_t::from_seconds( swap ) );
     }
-
+    ignore_false_positive = true;
     callbacks = harmful = false;
     use_off_gcd = true;
   }
@@ -3572,6 +3580,7 @@ struct sweeping_strikes_t: public warrior_spell_t
     stancemask = STANCE_BATTLE;
     cooldown -> duration = data().cooldown();
     cooldown -> duration += p -> perk.enhanced_sweeping_strikes -> effectN( 2 ).time_value();
+    ignore_false_positive = true;
   }
 
   void execute()
@@ -3590,6 +3599,7 @@ struct taunt_t: public warrior_spell_t
   {
     parse_options( options_str );
     use_off_gcd = true;
+    ignore_false_positive = true;
     melee_range = data().max_range();
     stancemask = STANCE_DEFENSE | STANCE_GLADIATOR;
   }
@@ -3630,6 +3640,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "bloodthirst"          ) return new bloodthirst_t          ( this, options_str );
   if ( name == "charge"               ) return new charge_t               ( this, options_str );
   if ( name == "colossus_smash"       ) return new colossus_smash_t       ( this, options_str );
+  if ( name == "commanding_shout"     ) return new commanding_shout_t     ( this, options_str );
   if ( name == "demoralizing_shout"   ) return new demoralizing_shout     ( this, options_str );
   if ( name == "devastate"            ) return new devastate_t            ( this, options_str );
   if ( name == "die_by_the_sword"     ) return new die_by_the_sword_t     ( this, options_str );
@@ -4753,6 +4764,15 @@ void warrior_t::init_rng()
     break;
   }
   t15_2pc_melee.set_frequency( rppm * 1.11 );
+}
+
+// warrior_t::init_resources ===========================================
+
+void warrior_t::init_resources( bool force )
+{
+  player_t::init_resources( force );
+
+  resources.current[RESOURCE_RAGE] = 0;
 }
 
 // warrior_t::init_actions ==================================================
