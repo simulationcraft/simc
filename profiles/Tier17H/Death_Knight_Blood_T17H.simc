@@ -32,8 +32,6 @@ actions+=/blood_fury
 actions+=/berserking
 # if=time>10
 actions+=/arcane_torrent
-# if=time>10
-actions+=/use_item,slot=trinket2
 actions+=/potion,name=draenic_armor,if=buff.potion.down&buff.blood_shield.down&!unholy&!frost
 actions+=/antimagic_shell
 actions+=/conversion,if=!buff.conversion.up&runic_power>50&health.pct<90
