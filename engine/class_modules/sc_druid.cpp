@@ -3055,7 +3055,7 @@ struct maul_t : public bear_attack_t
     if ( p() -> buff.tooth_and_claw -> check() && p() -> sets.has_set_bonus( DRUID_GUARDIAN, T17, B2 ) )
       c -= cost_reduction;
 
-    return bear_attack_t::cost();
+    return c;
   }
 
   virtual double composite_target_multiplier( player_t* t ) const
@@ -3082,7 +3082,7 @@ struct maul_t : public bear_attack_t
   {
     bear_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) && p() -> buff.tooth_and_claw -> up() )
+    if ( result_is_hit( s -> result ) && p() -> buff.tooth_and_claw -> check() )
     {
       if ( p() -> sets.has_set_bonus( DRUID_GUARDIAN, T17, B2 ) )
       {
@@ -3090,8 +3090,17 @@ struct maul_t : public bear_attack_t
         p() -> gain.tier17_2pc_tank -> add( RESOURCE_RAGE, cost_reduction );
       }
       absorb -> execute();
-      p() -> buff.tooth_and_claw -> decrement(); // Only decrements on hit, tested 6/27/2014 by Zerrahki
     }
+  }
+
+  virtual void execute()
+  {
+    // Benefit tracking
+    p() -> buff.tooth_and_claw -> up();
+
+    bear_attack_t::execute();
+
+    p() -> buff.tooth_and_claw -> decrement();
   }
 };
 
@@ -3380,9 +3389,7 @@ struct frenzied_regeneration_t : public druid_heal_t
     may_crit = false;
     may_multistrike = 0;
     target = p;
-    /* As of build 18837 & 18850 the spell data is no longer
-       accurate so we have to hardcode the coefficient */
-    attack_power_mod.direct = 6.00;
+
     maximum_rage_cost = data().effectN( 2 ).base_value();
 
     triggers_natures_vigil = false;
