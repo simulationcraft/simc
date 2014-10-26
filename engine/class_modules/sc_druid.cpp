@@ -2903,7 +2903,7 @@ struct lacerate_t : public bear_attack_t
 
     rage_amount = data().effectN( 3 ).resource( RESOURCE_RAGE );
     if ( p -> wod_hotfix )
-      attack_power_mod.tick *= 1.05;
+      base_multiplier *= 1.05;
   }
 
   virtual void impact( action_state_t* state )
@@ -3013,8 +3013,9 @@ struct maul_t : public bear_attack_t
 
       // Coeff is in tooltip but not spell data, so hardcode the value here.
       attack_power_mod.direct = 2.40;
+
       if ( p -> wod_hotfix )
-        attack_power_mod.direct *= 1.05;
+        base_multiplier *= 1.05;
     }
 
     virtual void impact( action_state_t* s )
@@ -3112,8 +3113,9 @@ struct pulverize_t : public bear_attack_t
     bear_attack_t( "pulverize", player, player -> talent.pulverize )
   {
     parse_options( options_str );
+
     if ( player -> wod_hotfix )
-      attack_power_mod.direct *= 1.05;
+      base_multiplier *= 1.05;
   }
 
   virtual void impact( action_state_t* s )
