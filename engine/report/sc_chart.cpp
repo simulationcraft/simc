@@ -2375,7 +2375,7 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_askmrrobot( player
     {
       std::string origin = p -> origin_str;
       util::replace_all( origin, "wow/player", "wow/optimize" );
-      ss << origin << "#spec=";
+      ss << origin;
     }
     // otherwise, we need to construct it from whatever information we have available
     else
@@ -2385,109 +2385,110 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_askmrrobot( player
 
       // Use valid names if we are provided those
       if ( ! p -> region_str.empty() && ! p -> server_str.empty() && ! p -> name_str.empty() )
-        ss << "/optimize/" << p -> region_str << '/' << p -> server_str << '/' << p -> name_str << "#spec=";
+        ss << "/optimize/" << p -> region_str << '/' << p -> server_str << '/' << p -> name_str;
 
       // otherwise try to reconstruct it from the origin string
       else
       {
         std::string region_str, server_str, name_str;
         if ( util::parse_origin( region_str, server_str, name_str, p -> origin_str ) )
-          ss << "/optimize/" << region_str << '/' << server_str << '/' << name_str << "#spec=";
+          ss << "/optimize/" << region_str << '/' << server_str << '/' << name_str;
         // if we can't reconstruct, default to a generic character
         // this uses the base followed by /[spec]#[weightsHash]
         else
         {
           use_generic = true;
-          ss << "/best-in-slot/";
+          ss << "/best-in-slot/generic/";
         }
       }
     }
 
     // This next section is sort of unwieldly, I may move this to external functions
+    std::string spec;
 
     // Player type
     switch ( p -> type )
     {
-    case DEATH_KNIGHT: ss << "DeathKnight";  break;
-    case DRUID:        ss << "Druid"; break;
-    case HUNTER:       ss << "Hunter";  break;
-    case MAGE:         ss << "Mage";  break;
-    case PALADIN:      ss << "Paladin";  break;
-    case PRIEST:       ss << "Priest";  break;
-    case ROGUE:        ss << "Rogue";  break;
-    case SHAMAN:       ss << "Shaman";  break;
-    case WARLOCK:      ss << "Warlock";  break;
-    case WARRIOR:      ss << "Warrior";  break;
-    case MONK:         ss << "Monk"; break;
+    case DEATH_KNIGHT: spec += "DeathKnight";  break;
+    case DRUID:        spec += "Druid"; break;
+    case HUNTER:       spec += "Hunter";  break;
+    case MAGE:         spec += "Mage";  break;
+    case PALADIN:      spec += "Paladin";  break;
+    case PRIEST:       spec += "Priest";  break;
+    case ROGUE:        spec += "Rogue";  break;
+    case SHAMAN:       spec += "Shaman";  break;
+    case WARLOCK:      spec += "Warlock";  break;
+    case WARRIOR:      spec += "Warrior";  break;
+    case MONK:         spec += "Monk"; break;
       // if this isn't a player, the AMR link is useless
     default: assert( 0 ); break;
     }
     // Player spec
     switch ( p -> specialization() )
     {
-    case DEATH_KNIGHT_BLOOD:    ss << "Blood"; break;
+    case DEATH_KNIGHT_BLOOD:    spec += "Blood"; break;
     case DEATH_KNIGHT_FROST:
     {
-      if ( p -> main_hand_weapon.type == WEAPON_2H ) { ss << "Frost2H"; break; }
-      else { ss << "FrostDw"; break; }
+      if ( p -> main_hand_weapon.type == WEAPON_2H ) { spec += "Frost2H"; break; }
+      else { spec += "FrostDw"; break; }
     }
-    case DEATH_KNIGHT_UNHOLY:   ss << "Unholy"; break;
-    case DRUID_BALANCE:         ss << "Balance"; break;
-    case DRUID_FERAL:           ss << "Feral"; break;
-    case DRUID_GUARDIAN:        ss << "Guardian"; break;
-    case DRUID_RESTORATION:     ss << "Restoration"; break;
-    case HUNTER_BEAST_MASTERY:  ss << "BeastMastery"; break;
-    case HUNTER_MARKSMANSHIP:   ss << "Marksmanship"; break;
-    case HUNTER_SURVIVAL:       ss << "Survival"; break;
-    case MAGE_ARCANE:           ss << "Arcane"; break;
-    case MAGE_FIRE:             ss << "Fire"; break;
-    case MAGE_FROST:            ss << "Frost"; break;
+    case DEATH_KNIGHT_UNHOLY:   spec += "Unholy"; break;
+    case DRUID_BALANCE:         spec += "Balance"; break;
+    case DRUID_FERAL:           spec += "Feral"; break;
+    case DRUID_GUARDIAN:        spec += "Guardian"; break;
+    case DRUID_RESTORATION:     spec += "Restoration"; break;
+    case HUNTER_BEAST_MASTERY:  spec += "BeastMastery"; break;
+    case HUNTER_MARKSMANSHIP:   spec += "Marksmanship"; break;
+    case HUNTER_SURVIVAL:       spec += "Survival"; break;
+    case MAGE_ARCANE:           spec += "Arcane"; break;
+    case MAGE_FIRE:             spec += "Fire"; break;
+    case MAGE_FROST:            spec += "Frost"; break;
     case MONK_BREWMASTER:
     {
-      if ( p -> main_hand_weapon.type == WEAPON_STAFF || p -> main_hand_weapon.type == WEAPON_POLEARM ) { ss << "Brewmaster2h"; break; }
-      else { ss << "BrewmasterDw"; break; }
+      if ( p -> main_hand_weapon.type == WEAPON_STAFF || p -> main_hand_weapon.type == WEAPON_POLEARM ) { spec += "Brewmaster2h"; break; }
+      else { spec += "BrewmasterDw"; break; }
     }
-    case MONK_MISTWEAVER:       ss << "Mistweaver"; break;
+    case MONK_MISTWEAVER:       spec += "Mistweaver"; break;
     case MONK_WINDWALKER:
     {
-      if ( p -> main_hand_weapon.type == WEAPON_STAFF || p -> main_hand_weapon.type == WEAPON_POLEARM ) { ss << "Windwalker2h"; break; }
-      else { ss << "WindwalkerDw"; break; }
+      if ( p -> main_hand_weapon.type == WEAPON_STAFF || p -> main_hand_weapon.type == WEAPON_POLEARM ) { spec += "Windwalker2h"; break; }
+      else { spec += "WindwalkerDw"; break; }
     }
-    case PALADIN_HOLY:          ss << "Holy"; break;
-    case PALADIN_PROTECTION:    ss << "Protection"; break;
-    case PALADIN_RETRIBUTION:   ss << "Retribution"; break;
-    case PRIEST_DISCIPLINE:     ss << "Discipline"; break;
-    case PRIEST_HOLY:           ss << "Holy"; break;
-    case PRIEST_SHADOW:         ss << "Shadow"; break;
-    case ROGUE_ASSASSINATION:   ss << "Assassination"; break;
-    case ROGUE_COMBAT:          ss << "Combat"; break;
-    case ROGUE_SUBTLETY:        ss << "Subtlety"; break;
-    case SHAMAN_ELEMENTAL:      ss << "Elemental"; break;
-    case SHAMAN_ENHANCEMENT:    ss << "Enhancement"; break;
-    case SHAMAN_RESTORATION:    ss << "Restoration"; break;
-    case WARLOCK_AFFLICTION:    ss << "Affliction"; break;
-    case WARLOCK_DEMONOLOGY:    ss << "Demonology"; break;
-    case WARLOCK_DESTRUCTION:   ss << "Destruction"; break;
-    case WARRIOR_ARMS:          ss << "Arms"; break;
+    case PALADIN_HOLY:          spec += "Holy"; break;
+    case PALADIN_PROTECTION:    spec += "Protection"; break;
+    case PALADIN_RETRIBUTION:   spec += "Retribution"; break;
+    case PRIEST_DISCIPLINE:     spec += "Discipline"; break;
+    case PRIEST_HOLY:           spec += "Holy"; break;
+    case PRIEST_SHADOW:         spec += "Shadow"; break;
+    case ROGUE_ASSASSINATION:   spec += "Assassination"; break;
+    case ROGUE_COMBAT:          spec += "Combat"; break;
+    case ROGUE_SUBTLETY:        spec += "Subtlety"; break;
+    case SHAMAN_ELEMENTAL:      spec += "Elemental"; break;
+    case SHAMAN_ENHANCEMENT:    spec += "Enhancement"; break;
+    case SHAMAN_RESTORATION:    spec += "Restoration"; break;
+    case WARLOCK_AFFLICTION:    spec += "Affliction"; break;
+    case WARLOCK_DEMONOLOGY:    spec += "Demonology"; break;
+    case WARLOCK_DESTRUCTION:   spec += "Destruction"; break;
+    case WARRIOR_ARMS:          spec += "Arms"; break;
     case WARRIOR_FURY:
     {
       if ( p -> main_hand_weapon.type == WEAPON_SWORD_2H || p -> main_hand_weapon.type == WEAPON_AXE_2H || p -> main_hand_weapon.type == WEAPON_MACE_2H || p -> main_hand_weapon.type == WEAPON_POLEARM )
       {
-        ss << "Fury2H"; break;
+        spec += "Fury2H"; break;
       }
-      else { ss << "Fury"; break; }
+      else { spec += "Fury"; break; }
     }
-    case WARRIOR_PROTECTION:    ss << "Protection"; break;
+    case WARRIOR_PROTECTION:    spec += "Protection"; break;
 
       // if this is a pet or an unknown spec, the AMR link is pointless anyway
     default: assert( 0 ); break;
     }
 
-    // if we're using a generic character, need a # here
+    // if we're using a generic character, need spec
     if ( use_generic )
-      ss << "#";
-    else
-      ss << ";";
+      ss << util::tolower( spec );
+
+    ss << "#spec=" << spec << ";";
 
     // add weights
     ss << "weights=";
