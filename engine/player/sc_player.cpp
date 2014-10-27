@@ -6096,7 +6096,7 @@ struct use_item_t : public action_t
 
     update_ready();
 
-    if ( triggered || ! buff )
+    if ( triggered && buff )
       lockout( buff -> buff_duration );
   }
 
