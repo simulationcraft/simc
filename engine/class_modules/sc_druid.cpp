@@ -95,23 +95,35 @@ struct druid_td_t : public actor_pair_t
   }
 };
 
-struct buff_counter_t
+struct snapshot_counter_t
 {
   const sim_t* sim;
   druid_t* p;
   buff_t* b;
-  double n_up;
-  double n_down;
+  double exe_up;
+  double exe_down;
+  double tick_up;
+  double tick_down;
+  bool is_snapped;
 
-  buff_counter_t( druid_t* player , buff_t* buff );
+  snapshot_counter_t( druid_t* player , buff_t* buff );
 
-  void increment()
+  void count_execute()
   {
     // Skip iteration 0 for non-debug, non-log sims
     if ( sim -> current_iteration == 0 && sim -> iterations > sim -> threads && ! sim -> debug && ! sim -> log )
       return;
 
-    b -> check() ? n_up++ : n_down++;
+    b -> check() ? ( exe_up++ , is_snapped = true ) : ( exe_down++ , is_snapped = false );
+  }
+
+  void count_tick()
+  {
+    // Skip iteration 0 for non-debug, non-log sims
+    if ( sim -> current_iteration == 0 && sim -> iterations > sim -> threads && ! sim -> debug && ! sim -> log )
+      return;
+
+    is_snapped ? tick_up++ : tick_down++;
   }
 
   double divisor() const
@@ -122,19 +134,30 @@ struct buff_counter_t
       return std::min( sim -> iterations, sim -> threads );
   }
 
-  double mean_up() const
-  { return n_up / divisor(); }
+  double mean_exe_up() const
+  { return exe_up / divisor(); }
 
-  double mean_down() const
-  { return n_down / divisor(); }
+  double mean_exe_down() const
+  { return exe_down / divisor(); }
 
-  double mean_total() const
-  { return ( n_up + n_down ) / divisor(); }
+  double mean_tick_up() const
+  { return tick_up / divisor(); }
 
-  void merge( const buff_counter_t& other )
+  double mean_tick_down() const
+  { return tick_down / divisor(); }
+
+  double mean_exe_total() const
+  { return ( exe_up + exe_down ) / divisor(); }
+
+  double mean_tick_total() const
+  { return ( tick_up + tick_down ) / divisor(); }
+
+  void merge( const snapshot_counter_t& other )
   {
-    n_up += other.n_up;
-    n_down += other.n_down;
+    exe_up += other.exe_up;
+    exe_down += other.exe_down;
+    tick_up += other.tick_up;
+    tick_down += other.tick_down;
   }
 };
 
@@ -156,7 +179,7 @@ public:
   double max_fb_energy;
 
   // counters for snapshot tracking
-  std::vector<buff_counter_t*> counters;
+  std::vector<snapshot_counter_t*> counters;
 
   // Active
   action_t* t16_2pc_starfall_bolt;
@@ -679,8 +702,9 @@ druid_t::~druid_t()
   range::dispose( counters );
 }
 
-buff_counter_t::buff_counter_t( druid_t* player , buff_t* buff ) :
-  sim( player -> sim ), p( player ), b( buff ), n_up( 0 ), n_down( 0 )
+snapshot_counter_t::snapshot_counter_t( druid_t* player , buff_t* buff ) :
+  sim( player -> sim ), p( player ), b( buff ), 
+  exe_up( 0 ), exe_down( 0 ), tick_up( 0 ), tick_down( 0 )
 {
   p -> counters.push_back( this );
 }
@@ -1744,8 +1768,8 @@ public:
   typedef druid_attack_t base_t;
   
   bool consume_bloodtalons;
-  buff_counter_t* bt_counter;
-  buff_counter_t* tf_counter;
+  snapshot_counter_t* bt_counter;
+  snapshot_counter_t* tf_counter;
 
   druid_attack_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
@@ -1761,9 +1785,9 @@ public:
     
     consume_bloodtalons = ab::harmful && ab::special;
     if ( consume_bloodtalons )
-      bt_counter = new buff_counter_t( ab::p() , ab::p() -> buff.bloodtalons );
+      bt_counter = new snapshot_counter_t( ab::p() , ab::p() -> buff.bloodtalons );
     if ( consume_bloodtalons )
-      tf_counter = new buff_counter_t( ab::p() , ab::p() -> buff.tigers_fury );
+      tf_counter = new snapshot_counter_t( ab::p() , ab::p() -> buff.tigers_fury );
   }
 
   virtual void execute()
@@ -1772,8 +1796,8 @@ public:
 
     if( consume_bloodtalons )
     {
-      bt_counter -> increment();
-      tf_counter -> increment();
+      bt_counter -> count_execute();
+      tf_counter -> count_execute();
     }
 
     if ( ab::p() -> talent.bloodtalons -> ok() && consume_bloodtalons & ab::p() -> buff.bloodtalons -> up() )
@@ -1799,6 +1823,12 @@ public:
   virtual void tick( dot_t* d )
   {
     ab::tick( d );
+
+    if( consume_bloodtalons )
+    {
+      bt_counter -> count_tick();
+      tf_counter -> count_tick();
+    }
 
     if ( ab::p() -> sets.has_set_bonus( DRUID_FERAL, T17, B2 ) && dbc::is_school( ab::school, SCHOOL_PHYSICAL ) )
       ab::p() -> resource_gain( RESOURCE_ENERGY,
@@ -7402,6 +7432,17 @@ void druid_t::balance_expressions()
   eclipse_max = std::min( time_to_next_lunar, time_to_next_solar );
 }
 
+// Copypasta for reporting
+bool has_amount_results( const std::vector<stats_t::stats_results_t>& res )
+{
+  return (
+      res[ RESULT_HIT ].actual_amount.mean() > 0 ||
+      res[ RESULT_CRIT ].actual_amount.mean() > 0 ||
+      res[ RESULT_MULTISTRIKE ].actual_amount.mean() > 0 ||
+      res[ RESULT_MULTISTRIKE_CRIT ].actual_amount.mean() > 0
+  );
+}
+
 /* Report Extension Class
  * Here you can define class specific report extensions/overrides
  */
@@ -7417,64 +7458,33 @@ public:
     // Write header
     os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n"
          << "<tr>\n"
-           << "<th colspan=2>Ability</th>\n"
-           << "<th colspan=3>Tiger's Fury</th>\n";
+           << "<th >Ability</th>\n"
+           << "<th colspan=2>Tiger's Fury</th>\n";
     if ( p.talent.bloodtalons -> ok() )
     {
-      os << "<th colspan=3>Bloodtalons</th>\n";
+      os << "<th colspan=2>Bloodtalons</th>\n";
     }
     os << "</tr>\n";
 
     os << "<tr>\n"
          << "<th>Name</th>\n"
-         << "<th>Executes</th>\n"
-         << "<th>Buffed</th>\n"
-         << "<th>% Buffed</th>\n"
-         << "<th>% of Buff Usage</th>\n";
+         << "<th>Execute %</th>\n"
+         << "<th>Benefit %</th>\n";
     if ( p.talent.bloodtalons -> ok() )
     {
-      os << "<th>Buffed</th>\n"
-         << "<th>% Buffed</th>\n"
-         << "<th>% of Buff Usage</th>\n";
+      os << "<th>Execute %</th>\n"
+         << "<th>Benefit %</th>\n";
     }
     os << "</tr>\n";
 
-    // Write contents
-    double tf_total_executes = 0, tf_total_up = 0, tf_total_down = 0;
-    double bt_total_executes = 0, bt_total_up = 0, bt_total_down = 0;
-
-    // Get Totals
-    for( size_t i = 0, end = p.stats_list.size(); i < end; i++ )
-    {
-      stats_t* stats = p.stats_list[ i ];
-
-      for ( size_t j = 0, end2 = stats -> action_list.size(); j < end2; j++ )
-      {
-        cat_attacks::cat_attack_t* a = dynamic_cast<cat_attacks::cat_attack_t*>( stats -> action_list[ j ] );
-        if ( ! a )
-          continue;
-
-        if ( ! a -> consume_bloodtalons )
-          continue;
-
-        tf_total_executes += a -> tf_counter -> mean_total();
-        tf_total_up += a -> tf_counter -> mean_up();
-        tf_total_down += a -> tf_counter -> mean_down();
-
-        if ( p.talent.bloodtalons -> ok() )
-        {
-          bt_total_executes += a -> bt_counter -> mean_total();
-          bt_total_up += a -> bt_counter -> mean_up();
-          bt_total_down += a -> bt_counter -> mean_down();
-        }
-      }
-    }
-
+// Compile and Write Contents 
     for ( size_t i = 0, end = p.stats_list.size(); i < end; i++ )
     {
       stats_t* stats = p.stats_list[ i ];
-      double tf_total = 0, tf_up = 0;
-      double bt_total = 0, bt_up = 0;
+      double tf_exe_up = 0, tf_exe_total = 0;
+      double tf_benefit_up = 0, tf_benefit_total = 0;
+      double bt_exe_up = 0, bt_exe_total = 0;
+      double bt_benefit_up = 0, bt_benefit_total = 0;
       int n = 0;
 
       for ( size_t j = 0, end2 = stats -> action_list.size(); j < end2; j++ )
@@ -7486,16 +7496,30 @@ public:
         if ( ! a -> consume_bloodtalons )
           continue;
 
-        tf_total += a -> tf_counter -> mean_total();
-        tf_up += a -> tf_counter -> mean_up();
+        tf_exe_up += a -> tf_counter -> mean_exe_up();
+        tf_exe_total += a -> tf_counter -> mean_exe_total();
+        tf_benefit_up += a -> tf_counter -> mean_tick_up();
+        tf_benefit_total += a -> tf_counter -> mean_tick_total();
+        if ( has_amount_results( stats -> direct_results ) )
+        {
+          tf_benefit_up += a -> tf_counter -> mean_exe_up();
+          tf_benefit_total += a -> tf_counter -> mean_exe_total();
+        }
         if ( p.talent.bloodtalons -> ok() )
         {
-          bt_total += a -> bt_counter -> mean_total();
-          bt_up += a -> bt_counter -> mean_up();
+          bt_exe_up += a -> bt_counter -> mean_exe_up();
+          bt_exe_total += a -> bt_counter -> mean_exe_total();
+          bt_benefit_up += a -> bt_counter -> mean_tick_up();
+          bt_benefit_total += a -> bt_counter -> mean_tick_total();
+          if ( has_amount_results( stats -> direct_results ) )
+          {
+            bt_benefit_up += a -> bt_counter -> mean_exe_up();
+            bt_benefit_total += a -> bt_counter -> mean_exe_total();
+          }
         }
       }
 
-      if ( tf_total > 0 || bt_total > 0 )
+      if ( tf_exe_total > 0 || bt_exe_total > 0 )
       {
         wowhead::wowhead_e domain = SC_BETA ? wowhead::BETA : p.dbc.ptr ? wowhead::PTR : wowhead::LIVE;
 
@@ -7507,40 +7531,23 @@ public:
           row_class_str = " class=\"odd\"";
 
         // Table Row : Name, TF up, TF total, TF up/total, TF up/sum(TF up)
-        os.printf("<tr%s><td class=\"left\">%s</td><td class=\"right\">%.2f</td><td class=\"right\">%.2f</td><td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
+        os.printf("<tr%s><td class=\"left\">%s</td><td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
             row_class_str.c_str(),
             name_str.c_str(),
-            util::round( tf_total, 2 ),
-            util::round( tf_up, 2 ),
-            util::round( tf_up / tf_total * 100, 2 ),
-            util::round( tf_up / tf_total_up * 100, 2 ) );
+            util::round( tf_exe_up / tf_exe_total * 100, 2 ),
+            util::round( tf_benefit_up / tf_benefit_total * 100, 2 ) );
 
         if ( p.talent.bloodtalons -> ok() )
         {
           // Table Row : Name, TF up, TF total, TF up/total, TF up/sum(TF up)
-          os.printf("<td class=\"right\">%.2f</td><td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
-              util::round( bt_up, 2 ),
-              util::round( bt_up / bt_total * 100, 2 ),
-              util::round( bt_up / bt_total_up * 100, 2 ) );
+          os.printf("<td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
+              util::round( bt_exe_up / bt_exe_total * 100, 2 ),
+              util::round( bt_benefit_up / bt_benefit_total * 100, 2 ) );
         }
 
         os << "</tr>";
       }
       
-    }
-
-    os.printf("<tr><td class=\"left\">Total</td><td class=\"right\">%.2f</td><td class=\"right\">%.2f</td><td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
-        util::round( tf_total_executes, 2 ),
-        util::round( tf_total_up, 2 ),
-        util::round( tf_total_up / tf_total_executes * 100, 2 ),
-        util::round( tf_total_up / tf_total_up * 100, 2 ) );
-
-    if ( p.talent.bloodtalons -> ok() )
-    {
-      os.printf("<td class=\"right\">%.2f</td><td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
-          util::round( bt_total_up, 2 ),
-          util::round( bt_total_up / bt_total_executes * 100, 2 ),
-          util::round( bt_total_up / bt_total_up * 100, 2 ) );
     }
 
     os << "</tr>";
