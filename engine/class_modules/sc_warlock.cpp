@@ -1778,6 +1778,9 @@ public:
     if ( p() -> buffs.havoc -> check() < havoc_consume )
       return false;
 
+    if ( p() -> buffs.fire_and_brimstone -> check() )
+      return false;
+
     return true;
   }
 
@@ -2091,7 +2094,6 @@ public:
   {
     if ( ! p -> rng().roll( chance ) ) return;
 
-
     if ( ( p -> sets.has_set_bonus( SET_CASTER, T16, B4 ) || p -> sets.has_set_bonus( WARLOCK_DESTRUCTION, T17, B4 )) && //check whether we fill one up.
          ( ( p -> resources.current[RESOURCE_BURNING_EMBER] < 1.0 && p -> resources.current[RESOURCE_BURNING_EMBER] + amount >= 1.0 ) ||
          ( p -> resources.current[RESOURCE_BURNING_EMBER] < 2.0 && p -> resources.current[RESOURCE_BURNING_EMBER] + amount >= 2.0 ) ||
@@ -2283,6 +2285,7 @@ struct havoc_t: public warlock_spell_t
   {
     may_crit = false;
     cooldown -> duration = data().cooldown() + p -> glyphs.havoc -> effectN( 2 ).time_value();
+    cooldown -> charges = data().charges() + p -> glyphs.havoc -> effectN( 1 ).base_value();
   }
 
   virtual void execute()
@@ -2825,6 +2828,20 @@ struct immolate_t: public warlock_spell_t
     stats = p -> get_stats( "immolate_fnb", this );
   }
 
+  void execute()
+  {
+    warlock_spell_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      if ( execute_state -> result == RESULT_CRIT ) trigger_ember_gain( p(), 0.1, gain );
+      if ( p() -> sets.has_set_bonus( WARLOCK_DESTRUCTION, T17, B2 ) )
+      {
+        trigger_ember_gain( p(), 1, p() -> gains.immolate_t17_2pc, p() -> sets.set( WARLOCK_DESTRUCTION, T17, B2 ) -> effectN( 1 ).percent() );
+      }
+    }
+  }
+
   void init()
   {
     warlock_spell_t::init();
@@ -2866,7 +2883,7 @@ struct immolate_t: public warlock_spell_t
       if ( p() -> mastery_spells.emberstorm -> ok() )
         m *= 1.0 + p() -> cache.mastery_value();
 
-      m *= p() -> buffs.fire_and_brimstone -> data().effectN( 6 ).percent();
+      m *= p() -> buffs.fire_and_brimstone -> data().effectN( 5 ).percent();
     }
 
     if ( p() -> mastery_spells.emberstorm -> ok() )
@@ -2884,15 +2901,6 @@ struct immolate_t: public warlock_spell_t
       gain = p() -> gains.immolate_fnb;
     else
       gain = p() -> gains.immolate;
-
-    if ( result_is_hit( s -> result ) )
-    {
-      if ( s -> result == RESULT_CRIT ) trigger_ember_gain( p(), 0.1, gain );
-      if ( p() -> sets.has_set_bonus( WARLOCK_DESTRUCTION, T17, B2 ) )
-      {
-        trigger_ember_gain( p(), 1, p() -> gains.immolate_t17_2pc, p() -> sets.set( WARLOCK_DESTRUCTION, T17, B2 ) -> effectN( 1 ).percent() );
-      }
-    }
   }
 
   virtual void tick( dot_t* d )
@@ -2974,6 +2982,13 @@ struct conflagrate_t: public warlock_spell_t
 
     if ( result_is_hit( execute_state -> result ) && p() -> spec.backdraft -> ok() )
       p() -> buffs.backdraft -> trigger( 3 );
+
+    if ( p() -> talents.charred_remains -> ok() )
+    {
+      trigger_ember_gain( p(), execute_state -> result == RESULT_CRIT ? 0.2 * ( 1.0 + p() -> talents.charred_remains -> effectN( 2 ).percent() ) : 0.1 * ( 1.0 + p() -> talents.charred_remains -> effectN( 2 ).percent() ), gain );
+    }
+    else
+      trigger_ember_gain( p(), execute_state -> result == RESULT_CRIT ? 0.2 : 0.1, gain );
   }
 
   virtual double action_multiplier() const
@@ -2984,7 +2999,7 @@ struct conflagrate_t: public warlock_spell_t
     {
       if ( p() -> mastery_spells.emberstorm -> ok() )
         m *= 1.0 + p() -> cache.mastery_value();
-      m *= p() -> buffs.fire_and_brimstone -> data().effectN( 6 ).percent();
+      m *= p() -> buffs.fire_and_brimstone -> data().effectN( 5 ).percent();
     }
 
     if ( p() -> mastery_spells.emberstorm -> ok() )
@@ -3004,13 +3019,6 @@ struct conflagrate_t: public warlock_spell_t
         gain = p() -> gains.conflagrate_fnb;
       else
         gain = p() -> gains.conflagrate;
-
-      if ( p() -> talents.charred_remains -> ok() )
-      {
-        trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 * ( 1.0 + p() -> talents.charred_remains -> effectN( 2 ).percent() ) : 0.1 * ( 1.0 + p() -> talents.charred_remains -> effectN( 2 ).percent() ), gain );
-      }
-      else
-        trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, gain );
 
       if ( s -> result == RESULT_CRIT &&  p() -> sets.has_set_bonus( SET_CASTER, T16, B2 ) )
         p() -> buffs.tier16_2pc_destructive_influence -> trigger();
@@ -3092,7 +3100,7 @@ struct incinerate_t: public warlock_spell_t
     {
       if ( p() -> mastery_spells.emberstorm -> ok() )
         m *= 1.0 + p() -> cache.mastery_value();
-      m *= p() -> buffs.fire_and_brimstone -> data().effectN( 6 ).percent();
+      m *= p() -> buffs.fire_and_brimstone -> data().effectN( 5 ).percent();
     }
 
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
@@ -3102,7 +3110,24 @@ struct incinerate_t: public warlock_spell_t
     return m;
   }
 
-  virtual void impact( action_state_t* s )
+  void execute()
+  {
+    warlock_spell_t::execute();
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      if ( p() -> talents.charred_remains -> ok() )
+      {
+        trigger_ember_gain( p(), execute_state -> result == RESULT_CRIT ? 0.2 * ( 1.0 + p() -> talents.charred_remains -> effectN( 2 ).percent() ) : 0.1 * ( 1.0 + p() -> talents.charred_remains -> effectN( 2 ).percent() ), gain );
+      }
+      else
+        trigger_ember_gain( p(), execute_state -> result == RESULT_CRIT ? 0.2 : 0.1, gain );
+
+      if ( rng().roll( p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 2 ).percent() ) )
+        trigger_ember_gain( p(), execute_state -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.incinerate_t15_4pc );
+    }
+  }
+
+  void impact( action_state_t* s )
   {
     warlock_spell_t::impact( s );
     gain_t* gain;
@@ -3112,19 +3137,7 @@ struct incinerate_t: public warlock_spell_t
       gain = p() -> gains.incinerate;
 
     if ( result_is_hit( s -> result ) )
-    {
-      if ( p() -> talents.charred_remains -> ok() )
-      {
-        trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 * ( 1.0 + p() -> talents.charred_remains -> effectN( 2 ).percent() ) : 0.1 * ( 1.0 + p() -> talents.charred_remains -> effectN( 2 ).percent() ), gain );
-      }
-      else
-        trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, gain );
-
-      if ( rng().roll( p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 2 ).percent() ) )
-        trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.incinerate_t15_4pc );
-
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
-    }
   }
 
   virtual bool usable_moving() const
@@ -3956,11 +3969,11 @@ struct rain_of_fire_tick_t: public warlock_spell_t
     background = true;
   }
 
-  virtual void impact( action_state_t* s )
+  void execute()
   {
-    warlock_spell_t::impact( s );
+    warlock_spell_t::execute();
 
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( execute_state -> result ) )
       trigger_ember_gain( p(), 0.2, p() -> gains.rain_of_fire, 0.125 );
   }
 
