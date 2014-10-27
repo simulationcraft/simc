@@ -2828,8 +2828,6 @@ struct immolate_t: public warlock_spell_t
 
   void schedule_travel( action_state_t* s )
   {
-    warlock_spell_t::schedule_travel( s );
-
     if ( result_is_hit( s -> result ) )
     { // Embers are granted on execute, but are granted depending on the amount of targets hit. 
       if ( s -> result == RESULT_CRIT ) trigger_ember_gain( p(), 0.1, gain );
@@ -2838,6 +2836,7 @@ struct immolate_t: public warlock_spell_t
         trigger_ember_gain( p(), 1, p() -> gains.immolate_t17_2pc, p() -> sets.set( WARLOCK_DESTRUCTION, T17, B2 ) -> effectN( 1 ).percent() );
       }
     }
+    warlock_spell_t::schedule_travel( s );
   }
 
   void init()
@@ -2976,14 +2975,13 @@ struct conflagrate_t: public warlock_spell_t
 
   void schedule_travel( action_state_t* s )
   {
-    warlock_spell_t::schedule_travel( s );
-
     if ( p() -> talents.charred_remains -> ok() )
     {
       trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 * ( 1.0 + p() -> talents.charred_remains -> effectN( 2 ).percent() ) : 0.1 * ( 1.0 + p() -> talents.charred_remains -> effectN( 2 ).percent() ), gain );
     }
     else
       trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, gain );
+    warlock_spell_t::schedule_travel( s );
   }
 
   void execute()
@@ -3114,7 +3112,6 @@ struct incinerate_t: public warlock_spell_t
 
   void schedule_travel( action_state_t * s )
   {
-    warlock_spell_t::schedule_travel( s );
     if ( result_is_hit( s -> result ) )
     {
       if ( p() -> talents.charred_remains -> ok() )
@@ -3127,6 +3124,7 @@ struct incinerate_t: public warlock_spell_t
       if ( rng().roll( p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 2 ).percent() ) )
         trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.incinerate_t15_4pc );
     }
+    warlock_spell_t::schedule_travel( s );
   }
 
   void impact( action_state_t* s )
@@ -4000,10 +3998,9 @@ struct rain_of_fire_tick_t: public warlock_spell_t
 
   void schedule_travel( action_state_t* s )
   {
-    warlock_spell_t::schedule_travel( s );
-
     if ( result_is_hit( s -> result ) )
       trigger_ember_gain( p(), 0.2, p() -> gains.rain_of_fire, 0.125 );
+    warlock_spell_t::schedule_travel( s );
   }
 
   virtual proc_types proc_type() const override

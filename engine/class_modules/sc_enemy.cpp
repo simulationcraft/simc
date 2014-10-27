@@ -1177,7 +1177,6 @@ void enemy_t::create_options()
   add_option( opt_string( "tank_dummy", tank_dummy_str ) );
   add_option( opt_string( "tmi_boss", tmi_boss_str ) );
   add_option( opt_int( "level", level, 0, MAX_LEVEL + 3 ) );
-
 }
 
 // enemy_t::create_add ======================================================
