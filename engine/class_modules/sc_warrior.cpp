@@ -4093,48 +4093,50 @@ void warrior_t::apl_arms()
       default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
   }
 
-  default_list -> add_action( this, "Recklessness", "if=(target.time_to_die>190|target.health.pct<20)&(!talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)|buff.bloodbath.up)|target.time_to_die<=10",
+  default_list -> add_action( this, "Recklessness", "if=(target.time_to_die>190|target.health.pct<20)&(!talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)|buff.bloodbath.up)|target.time_to_die<10",
                               "This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'" );
-  default_list -> add_talent( this, "Bloodbath", "if=(active_enemies=1&cooldown.colossus_smash.remains<5)|target.time_to_die<=20" );
-  default_list -> add_talent( this, "Avatar", "if=buff.recklessness.up|target.time_to_die<=25" );
+  default_list -> add_talent( this, "Bloodbath", "if=cooldown.colossus_smash.remains<5|target.time_to_die<20" );
+  default_list -> add_talent( this, "Avatar", "if=buff.recklessness.up|target.time_to_die<25" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up" );
 
   default_list -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up&rage>70" );
-  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=2" );
   default_list -> add_action( "call_action_list,name=single,if=active_enemies=1" );
+  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>1" );
+
 
   movement -> add_action( this, "Heroic Leap" );
   movement -> add_talent( this, "Storm Bolt", "", "May as well throw storm bolt if we can." );
   movement -> add_action( this, "Heroic Throw" );
 
+  single_target -> add_action( this, "Mortal Strike", "if=target.health.pct>20&dot.rend.ticking" );
   single_target -> add_action( this, "Rend", "if=ticks_remain<2&target.time_to_die>4" );
-  single_target -> add_action( this, "Mortal Strike", "if=target.health.pct>20" );
-  single_target -> add_talent( this, "Ravager", "if=cooldown.colossus_smash.remains<3" );
+  single_target -> add_talent( this, "Ravager", "if=cooldown.colossus_smash.remains<4" );
   single_target -> add_action( this, "Colossus Smash" );
   single_target -> add_talent( this, "Storm Bolt", "if=(cooldown.colossus_smash.remains>4|debuff.colossus_smash.up)&rage<90" );
   single_target -> add_talent( this, "Siegebreaker" );
   single_target -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up" );
-  single_target -> add_action( this, "Execute", "if=(rage>60&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|buff.sudden_death.react|target.time_to_die<5" );
-  single_target -> add_talent( this, "Impending Victory", "if=rage<30&!debuff.colossus_smash.up&target.health.pct>20" );
+  single_target -> add_action( this, "Execute", "if=(rage>=60&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|buff.sudden_death.react|target.time_to_die<5" );
+  single_target -> add_talent( this, "Impending Victory", "if=rage<40&!debuff.colossus_smash.up&target.health.pct>20" );
   single_target -> add_talent( this, "Slam", "if=(rage>20|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20", "Please don't use Slam at the moment. It's a dps decrease vs no talent in nearly every situation, only use when breaking crowd control is an issue." );
-  single_target -> add_action( this, "Whirlwind", "if=target.health.pct>20&!talent.slam.enabled&(rage>40|set_bonus.tier17_4pc)" );
+  single_target -> add_action( this, "Whirlwind", "if=!talent.slam.enabled&target.health.pct>20&(rage>=40|set_bonus.tier17_4pc|debuff.colossus_smash.up)" );
   single_target -> add_talent( this, "Shockwave" );
 
   aoe -> add_action( this, "Sweeping Strikes" );
-  aoe -> add_talent( this, "Bladestorm" );
-  aoe -> add_action( this, "Rend", "if=active_enemies<=4&ticks_remain<2" );
+  aoe -> add_action( this, "Rend", "if=ticks_remain<2&target.time_to_die>4" );
   aoe -> add_talent( this, "Ravager", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
-  aoe -> add_action( this, "Colossus Smash" );
-  aoe -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up" );
-  aoe -> add_action( this, "Execute", "if=active_enemies<=3&((rage>60&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|target.time_to_die<5)" );
-  aoe -> add_action( this, "Whirlwind", "if=active_enemies>=4|(active_enemies<=3&(rage>60|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20)" );
-  aoe -> add_action( "bladestorm,interrupt_if=!cooldown.colossus_smash.remains|!cooldown.ravager.remains" );
+  aoe -> add_action( this, "Colossus Smash", "if=dot.rend.ticking" );
+  aoe -> add_action( this, "Mortal Strike", "if=cooldown.colossus_smash.remains>1.5&target.health.pct>20&active_enemies=2" );
+  aoe -> add_action( this, "Execute", "if=((rage>60|active_enemies=2)&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|target.time_to_die<5" );
+  aoe -> add_talent( this, "Dragon Roar", "if=cooldown.colossus_smash.remains>1.5&!debuff.colossus_smash.up" );
+  aoe -> add_action( this, "Whirlwind", "if=cooldown.colossus_smash.remains>1.5&(target.health.pct>20|active_enemies>3)" );
   aoe -> add_action( this, "Rend", "cycle_targets=1,if=!ticking" );
-  aoe -> add_talent( this, "Siegebreaker", "if=active_enemies=2" );
+  aoe -> add_talent( this, "Bladestorm", "if=cooldown.colossus_smash.remains>6&cooldown.ravager.remains>6" );
+  aoe -> add_talent( this, "Siegebreaker" );
   aoe -> add_talent( this, "Storm Bolt", "if=cooldown.colossus_smash.remains>4|debuff.colossus_smash.up" );
   aoe -> add_talent( this, "Shockwave" );
+  aoe -> add_action( this, "Execute", "if=buff.sudden_death.react" );
 }
 
 // Protection Warrior Action Priority List ========================================

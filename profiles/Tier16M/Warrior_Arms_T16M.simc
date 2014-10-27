@@ -33,48 +33,49 @@ actions+=/auto_attack
 actions+=/call_action_list,name=movement,if=movement.distance>8
 actions+=/potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25
 # This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'
-actions+=/recklessness,if=(target.time_to_die>190|target.health.pct<20)&(!talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)|buff.bloodbath.up)|target.time_to_die<=10
-actions+=/bloodbath,if=(active_enemies=1&cooldown.colossus_smash.remains<5)|target.time_to_die<=20
-actions+=/avatar,if=buff.recklessness.up|target.time_to_die<=25
+actions+=/recklessness,if=(target.time_to_die>190|target.health.pct<20)&(!talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)|buff.bloodbath.up)|target.time_to_die<10
+actions+=/bloodbath,if=cooldown.colossus_smash.remains<5|target.time_to_die<20
+actions+=/avatar,if=buff.recklessness.up|target.time_to_die<25
 actions+=/blood_fury,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
 actions+=/berserking,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
 actions+=/arcane_torrent,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
 actions+=/heroic_leap,if=debuff.colossus_smash.up&rage>70
-actions+=/call_action_list,name=aoe,if=active_enemies>=2
 actions+=/call_action_list,name=single,if=active_enemies=1
+actions+=/call_action_list,name=aoe,if=active_enemies>1
 
 actions.movement=heroic_leap
 # May as well throw storm bolt if we can.
 actions.movement+=/storm_bolt
 actions.movement+=/heroic_throw
 
-actions.single=rend,if=ticks_remain<2&target.time_to_die>4
-actions.single+=/mortal_strike,if=target.health.pct>20
-actions.single+=/ravager,if=cooldown.colossus_smash.remains<3
+actions.single=mortal_strike,if=target.health.pct>20&dot.rend.ticking
+actions.single+=/rend,if=ticks_remain<2&target.time_to_die>4
+actions.single+=/ravager,if=cooldown.colossus_smash.remains<4
 actions.single+=/colossus_smash
 actions.single+=/storm_bolt,if=(cooldown.colossus_smash.remains>4|debuff.colossus_smash.up)&rage<90
 actions.single+=/siegebreaker
 actions.single+=/dragon_roar,if=!debuff.colossus_smash.up
-actions.single+=/execute,if=(rage>60&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|buff.sudden_death.react|target.time_to_die<5
-actions.single+=/impending_victory,if=rage<30&!debuff.colossus_smash.up&target.health.pct>20
+actions.single+=/execute,if=(rage>=60&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|buff.sudden_death.react|target.time_to_die<5
+actions.single+=/impending_victory,if=rage<40&!debuff.colossus_smash.up&target.health.pct>20
 # Please don't use Slam at the moment. It's a dps decrease vs no talent in nearly every situation, only use when breaking crowd control is an issue.
 actions.single+=/slam,if=(rage>20|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20
-actions.single+=/whirlwind,if=target.health.pct>20&!talent.slam.enabled&(rage>40|set_bonus.tier17_4pc)
+actions.single+=/whirlwind,if=!talent.slam.enabled&target.health.pct>20&(rage>=40|set_bonus.tier17_4pc|debuff.colossus_smash.up)
 actions.single+=/shockwave
 
 actions.aoe=sweeping_strikes
-actions.aoe+=/bladestorm
-actions.aoe+=/rend,if=active_enemies<=4&ticks_remain<2
+actions.aoe+=/rend,if=ticks_remain<2&target.time_to_die>4
 actions.aoe+=/ravager,if=buff.bloodbath.up|!talent.bloodbath.enabled
-actions.aoe+=/colossus_smash
-actions.aoe+=/dragon_roar,if=!debuff.colossus_smash.up
-actions.aoe+=/execute,if=active_enemies<=3&((rage>60&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|target.time_to_die<5)
-actions.aoe+=/whirlwind,if=active_enemies>=4|(active_enemies<=3&(rage>60|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20)
-actions.aoe+=/bladestorm,interrupt_if=!cooldown.colossus_smash.remains|!cooldown.ravager.remains
+actions.aoe+=/colossus_smash,if=dot.rend.ticking
+actions.aoe+=/mortal_strike,if=cooldown.colossus_smash.remains>1.5&target.health.pct>20&active_enemies=2
+actions.aoe+=/execute,if=((rage>60|active_enemies=2)&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|target.time_to_die<5
+actions.aoe+=/dragon_roar,if=cooldown.colossus_smash.remains>1.5&!debuff.colossus_smash.up
+actions.aoe+=/whirlwind,if=cooldown.colossus_smash.remains>1.5&(target.health.pct>20|active_enemies>3)
 actions.aoe+=/rend,cycle_targets=1,if=!ticking
-actions.aoe+=/siegebreaker,if=active_enemies=2
+actions.aoe+=/bladestorm,if=cooldown.colossus_smash.remains>6&cooldown.ravager.remains>6
+actions.aoe+=/siegebreaker
 actions.aoe+=/storm_bolt,if=cooldown.colossus_smash.remains>4|debuff.colossus_smash.up
 actions.aoe+=/shockwave
+actions.aoe+=/execute,if=buff.sudden_death.react
 
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=4,gems=capacitive_primal_20crit_10haste_10crit_11str
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=4
