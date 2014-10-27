@@ -978,7 +978,7 @@ void buff_t::expire( timespan_t delay )
       if ( actor -> regen_type != REGEN_DYNAMIC || actor -> is_pet() )
         continue;
 
-      for ( size_t j = 0, endregen = invalidate_list.size(); j < end; j++ )
+      for ( size_t j = 0, endregen = invalidate_list.size(); j < endregen; j++ )
       {
         if ( actor -> regen_caches[ invalidate_list[ j ] ] )
         {
