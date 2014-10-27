@@ -5238,6 +5238,7 @@ void warlock_t::init_spells()
   perk.enhanced_chaos_bolt          = find_perk_spell( "Enhanced Chaos Bolt" );
   perk.enhanced_corruption          = find_perk_spell( "Enhanced Corruption" );
   perk.enhanced_haunt               = find_perk_spell( "Enhanced Haunt" );
+  perk.enhanced_havoc               = find_perk_spell( "Enhanced Havoc" );
   perk.empowered_corruption         = find_perk_spell( "Empowered Corruption" );
   perk.improved_drain_soul          = find_perk_spell( "Improved Drain Soul" );
   perk.improved_ember_tap           = find_perk_spell( "Improved Ember Tap" );
