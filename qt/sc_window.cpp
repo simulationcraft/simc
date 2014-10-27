@@ -641,7 +641,7 @@ void SC_MainWindow::createBestInSlotTab()
     {
       QString profile = dir.absolutePath() + "/";
       profile = QDir::toNativeSeparators( profile );
-      profile += profileList[i];
+      profile += profileList[k];
 
       player_e player = PLAYER_MAX;
 
