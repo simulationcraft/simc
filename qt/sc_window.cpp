@@ -637,7 +637,7 @@ void SC_MainWindow::createBestInSlotTab()
 
     QStringList profileList = dir.entryList();
     int numProfiles = profileList.count();
-    for ( int i = 0; i < numProfiles; i++ )
+    for ( int k = 0; k < numProfiles; k++ )
     {
       QString profile = dir.absolutePath() + "/";
       profile = QDir::toNativeSeparators( profile );
