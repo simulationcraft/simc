@@ -6095,6 +6095,9 @@ struct use_item_t : public action_t
     //if ( ! dual ) stats -> add_execute( time_to_execute );
 
     update_ready();
+
+    if ( triggered || ! buff )
+      lockout( buff -> buff_duration );
   }
 
   virtual void reset()
