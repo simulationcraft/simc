@@ -4132,7 +4132,7 @@ void warrior_t::apl_arms()
   aoe -> add_talent( this, "Dragon Roar", "if=cooldown.colossus_smash.remains>1.5&!debuff.colossus_smash.up" );
   aoe -> add_action( this, "Whirlwind", "if=cooldown.colossus_smash.remains>1.5&(target.health.pct>20|active_enemies>3)" );
   aoe -> add_action( this, "Rend", "cycle_targets=1,if=!ticking" );
-  aoe -> add_talent( this, "Bladestorm", "if=cooldown.colossus_smash.remains>6&cooldown.ravager.remains>6" );
+  aoe -> add_talent( this, "Bladestorm", "if=cooldown.colossus_smash.remains>6&(!talent.ravager.enabled|cooldown.ravager.remains>6)" );
   aoe -> add_talent( this, "Siegebreaker" );
   aoe -> add_talent( this, "Storm Bolt", "if=cooldown.colossus_smash.remains>4|debuff.colossus_smash.up" );
   aoe -> add_talent( this, "Shockwave" );
