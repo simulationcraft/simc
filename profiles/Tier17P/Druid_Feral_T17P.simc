@@ -53,9 +53,10 @@ actions+=/savage_roar,if=combo_points=5&(energy.time_to_max<=1|buff.berserk.up|c
 actions+=/ferocious_bite,if=combo_points=5&(energy.time_to_max<=1|buff.berserk.up|(cooldown.tigers_fury.remains<3&energy>=max_fb_energy))
 actions+=/rake,cycle_targets=1,if=remains<=3&combo_points<5
 actions+=/rake,cycle_targets=1,if=remains<=duration*0.3&combo_points<5&persistent_multiplier>dot.rake.pmultiplier
-actions+=/thrash_cat,if=combo_points=5&remains<=duration*0.3&buff.omen_of_clarity.react
+actions+=/thrash_cat,if=talent.bloodtalons.enabled&combo_points=5&remains<=duration*0.3&buff.omen_of_clarity.react
 actions+=/pool_resource,for_next=1
 actions+=/thrash_cat,if=remains<=duration*0.3&active_enemies>1
+actions+=/moonfire,cycle_targets=1,if=combo_points<5&remains<=duration*0.3&active_enemies<=10
 actions+=/rake,cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&combo_points<5
 actions+=/swipe,if=combo_points<5&active_enemies>=3
 actions+=/shred,if=combo_points<5&active_enemies<3
