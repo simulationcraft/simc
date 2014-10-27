@@ -2940,9 +2940,6 @@ struct honor_among_thieves_t : public action_t
 
   bool ready()
   {
-    if ( sim -> player_no_pet_list.size() > 1 )
-      return false;
-
     if ( hat_event )
       return false;
 
@@ -4608,7 +4605,7 @@ void rogue_t::init_action_list()
     precombat -> add_action( this, "Premeditation" );
     precombat -> add_action( this, "Slice and Dice" );
     precombat -> add_action( "honor_among_thieves,cooldown=2.3,cooldown_stddev=0.1",
-                             "Proxy Honor Among Thieves action. Generates Combo Points at a mean rate of 2.3 seconds. Enabled only on solo sims." );
+                             "Proxy Honor Among Thieves action. Generates Combo Points at a mean rate of 2.3 seconds. Comment out to disable (and use the real Honor Among Thieves)." );
 
     for ( size_t i = 0; i < item_actions.size(); i++ )
       def -> add_action( item_actions[i] + ",if=buff.shadow_dance.up" );
@@ -5093,8 +5090,6 @@ struct honor_among_thieves_callback_t : public dbc_proc_callback_t
 
 void rogue_t::register_callbacks()
 {
-  player_t::register_callbacks();
-
   // APLs are not initialized at this point, so we will have to jump through
   // hoops to figure out if the user has put in a honor_among_thieves action
   // into any APL. Thus, scan through raw APL data (strings) for
@@ -5112,11 +5107,8 @@ void rogue_t::register_callbacks()
     }
   }
 
-  // Register callbacks, if there's no proxy HAT action, or if there are more
-  // than one actor (player profile) in the sim. Proxy HAT action will not
-  // execute if player_no_pet_list.size() > 1.
-  if ( spec.honor_among_thieves -> ok() &&
-       ( ! has_hat_action || sim -> player_no_pet_list.size() > 1 ) )
+  // Register callbacks (real HAT), if there's no proxy HAT action.
+  if ( spec.honor_among_thieves -> ok() && ! has_hat_action )
   {
     for ( size_t i = 0; i < sim -> player_no_pet_list.size(); i++ )
     {
@@ -5131,6 +5123,8 @@ void rogue_t::register_callbacks()
       new honor_among_thieves_callback_t( p, this, p -> special_effects.back() );
     }
   }
+
+  player_t::register_callbacks();
 }
 
 // rogue_t::reset ===========================================================
