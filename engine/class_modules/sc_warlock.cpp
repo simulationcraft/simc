@@ -4606,14 +4606,13 @@ struct summon_infernal_t: public summon_pet_t
     cooldown -> duration = data().cooldown();
 
     if ( p -> talents.demonic_servitude -> ok() )
-    {
       summoning_duration = timespan_t::from_seconds( -1 );
+    else
+    {
+      summoning_duration = data().duration();
+      infernal_awakening = new infernal_awakening_t( p, data().effectN( 1 ).trigger() );
+      infernal_awakening -> stats = stats;
     }
-    else summoning_duration = data().duration();
-
-
-    infernal_awakening = new infernal_awakening_t( p, data().effectN( 1 ).trigger() );
-    infernal_awakening -> stats = stats;
     pet -> summon_stats = stats;
   }
 
@@ -4622,7 +4621,8 @@ struct summon_infernal_t: public summon_pet_t
     summon_pet_t::execute();
 
     p() -> cooldowns.doomguard -> start();
-    infernal_awakening -> execute();
+    if ( infernal_awakening )
+      infernal_awakening -> execute();
   }
 };
 
@@ -4742,7 +4742,6 @@ struct grimoire_of_sacrifice_t: public warlock_spell_t
     }
   }
 };
-
 
 struct grimoire_of_service_t: public summon_pet_t
 {
