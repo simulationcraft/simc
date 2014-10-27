@@ -1138,7 +1138,6 @@ void action_t::execute()
 
       s -> result_amount = calculate_direct_amount( s );
 
-
       if ( sim -> debug )
         s -> debug();
 
@@ -1622,7 +1621,6 @@ bool action_t::ready()
   if ( cooldown -> down() )
     return false;
 
-  // Player Skill must not affect precombat actions
   if ( rng().roll( false_negative_pct() ) )
     return false;
 
@@ -2822,9 +2820,7 @@ call_action_list_t::call_action_list_t( player_t* player, const std::string& opt
   alist = player -> find_action_priority_list( alist_name );
 
   if ( randomtoggle == 1 )
-  {
     alist -> random = randomtoggle;
-  }
 
   if ( ! alist )
   {

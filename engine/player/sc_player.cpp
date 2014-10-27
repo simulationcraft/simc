@@ -6176,7 +6176,9 @@ struct swap_action_list_t : public action_t
     action_t( ACTION_OTHER, name, player ), alist( 0 )
   {
     std::string alist_name;
+    int randomtoggle = 0;
     add_option( opt_string( "name", alist_name ) );
+    add_option( opt_int( "random", randomtoggle ) );
     parse_options( options_str );
     ignore_false_positive = true;
     if ( alist_name.empty() )
@@ -6192,6 +6194,9 @@ struct swap_action_list_t : public action_t
       sim -> errorf( "Player %s uses %s with unknown action list %s\n", player -> name(), name.c_str(), alist_name.c_str() );
       sim -> cancel();
     }
+
+    if ( randomtoggle == 1 )
+      alist -> random = randomtoggle;
 
     trigger_gcd = timespan_t::zero();
     use_off_gcd = true;
@@ -10180,19 +10185,26 @@ action_t* player_t::select_action( const action_priority_list_t& list )
   // Cached copy for recursion, we'll need it if we come back from a
   // call_action_list tree, with nothing to show for it.
   uint64_t _visited = visited_apls_;
+  size_t attempted_random = 0;
 
   for ( size_t i = 0, num_actions = list.foreground_action_list.size(); i < num_actions; ++i )
   {
     visited_apls_ = _visited;
-    size_t random;
+    size_t random = i;
 
     action_t* a = list.foreground_action_list[i];
 
     if ( list.random == 1 )
-    {
       random = static_cast<size_t>(std::floor( rng().range( 0, static_cast<int>( num_actions ) ) ) );
-      a = list.foreground_action_list[random];
+    else if ( rng().roll( ( 1 - a -> player -> current.skill ) / 4 ) )
+    {
+      random = static_cast<size_t>( std::floor( rng().range( 0, static_cast<int>( num_actions ) ) ) );
+      attempted_random++;
+      if ( attempted_random > num_actions )
+        break;
     }
+
+    a = list.foreground_action_list[random];
 
     if ( a -> background ) continue;
 
