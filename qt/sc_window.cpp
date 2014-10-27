@@ -686,7 +686,7 @@ void SC_MainWindow::createBestInSlotTab()
           }
         }
 
-        QTreeWidgetItem* item = new QTreeWidgetItem( QStringList() << profileList[i] << profile );
+        QTreeWidgetItem* item = new QTreeWidgetItem( QStringList() << profileList[k] << profile );
         rootItems[player][tier] -> addChild( item );
       }
     }
