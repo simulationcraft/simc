@@ -5848,9 +5848,7 @@ public:
 
       if ( n_generated > 0 || n_wasted > 0 )
       {
-        wowhead::wowhead_e domain = SC_BETA ? wowhead::BETA : wowhead::LIVE;
-        if ( ! SC_BETA && p.dbc.ptr )
-          domain = wowhead::PTR;
+        wowhead::wowhead_e domain = SC_BETA ? wowhead::BETA : p.dbc.ptr ? wowhead::PTR : wowhead::LIVE;
 
         std::string name_str = wowhead::decorated_action_name( stats -> name_str, 
                                                                stats -> action_list[ 0 ],
@@ -5929,9 +5927,7 @@ public:
         if ( ++n & 1 )
           row_class_str = " class=\"odd\"";
 
-        wowhead::wowhead_e domain = SC_BETA ? wowhead::BETA : wowhead::LIVE;
-        if ( ! SC_BETA && p.dbc.ptr )
-          domain = wowhead::PTR;
+        wowhead::wowhead_e domain = SC_BETA ? wowhead::BETA : p.dbc.ptr ? wowhead::PTR : wowhead::LIVE;
 
         std::string name_str = wowhead::decorated_action_name( stats -> name_str.c_str(), 
                                                                stats -> action_list[ 0 ],

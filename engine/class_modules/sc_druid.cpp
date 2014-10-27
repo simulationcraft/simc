@@ -7497,9 +7497,7 @@ public:
 
       if ( tf_total > 0 || bt_total > 0 )
       {
-        wowhead::wowhead_e domain = SC_BETA ? wowhead::BETA : wowhead::LIVE;
-        if ( ! SC_BETA && p.dbc.ptr )
-          domain = wowhead::PTR;
+        wowhead::wowhead_e domain = SC_BETA ? wowhead::BETA : p.dbc.ptr ? wowhead::PTR : wowhead::LIVE;
 
         std::string name_str = wowhead::decorated_action_name( stats -> name_str, 
                                                                stats -> action_list[ 0 ],
