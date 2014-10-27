@@ -44,7 +44,7 @@ actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&t
 actions+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)
 actions+=/savage_roar,if=buff.savage_roar.remains<3
 actions+=/thrash_cat,if=buff.omen_of_clarity.react&remains<=duration*0.3&active_enemies>1
-actions+=/thrash_cat,if=combo_points=5&remains<=duration*0.3&buff.omen_of_clarity.react
+actions+=/thrash_cat,if=!talent.bloodtalons.enabled&combo_points=5&remains<=duration*0.3&buff.omen_of_clarity.react
 actions+=/ferocious_bite,cycle_targets=1,if=combo_points=5&target.health.pct<25&dot.rip.ticking&energy>=max_fb_energy
 actions+=/rip,cycle_targets=1,if=combo_points=5&remains<=3
 actions+=/rip,cycle_targets=1,if=combo_points=5&remains<=duration*0.3&persistent_multiplier>dot.rip.pmultiplier
@@ -55,7 +55,7 @@ actions+=/rake,cycle_targets=1,if=remains<=duration*0.3&combo_points<5&persisten
 actions+=/thrash_cat,if=talent.bloodtalons.enabled&combo_points=5&remains<=duration*0.3&buff.omen_of_clarity.react
 actions+=/pool_resource,for_next=1
 actions+=/thrash_cat,if=remains<=duration*0.3&active_enemies>1
-actions+=/moonfire,cycle_targets=1,if=combo_points<5&remains<=duration*0.3&active_enemies<=10
+actions+=/moonfire_cat,cycle_targets=1,if=combo_points<5&remains<=duration*0.3&active_enemies<=10
 actions+=/rake,cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&combo_points<5
 actions+=/swipe,if=combo_points<5&active_enemies>=3
 actions+=/shred,if=combo_points<5&active_enemies<3

@@ -17,7 +17,6 @@ namespace { // UNNAMED NAMESPACE
       cast interval is not low enough for this to make sense.
 
     = Feral =
-    Update LI implementation to work like in-game
 
     = Balance =
     PvP/Tier Bonuses
@@ -4873,17 +4872,18 @@ struct moonfire_t : public druid_spell_t
 
 // Moonfire (Lunar Inspiration) Spell =======================================
 
-struct moonfire_li_t : public druid_spell_t
+struct moonfire_cat_t : public druid_spell_t
 {
-  moonfire_li_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "moonfire", player, player -> find_spell( 155625 ) )
+  moonfire_cat_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "moonfire_cat", player, player -> find_spell( 155625 ) )
   {
     parse_options( options_str );
+
     if ( player -> wod_hotfix )
       base_multiplier *= 1.12;
   }
 
-  void impact( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
     druid_spell_t::impact( s );
 
@@ -4899,7 +4899,7 @@ struct moonfire_li_t : public druid_spell_t
     }
   }
 
-  bool ready()
+  virtual bool ready()
   {
     if ( ! p() -> talent.lunar_inspiration -> ok() )
       return false;
@@ -5553,11 +5553,8 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "mangle"                 ) return new                 mangle_t( this, options_str );
   if ( name == "mark_of_the_wild"       ) return new       mark_of_the_wild_t( this, options_str );
   if ( name == "maul"                   ) return new                   maul_t( this, options_str );
-  if ( name == "moonfire"               )
-  {
-    if ( specialization() == DRUID_FERAL )  return new            moonfire_li_t( this, options_str );
-    else                                    return new               moonfire_t( this, options_str );
-  }
+  if ( name == "moonfire"               ) return new               moonfire_t( this, options_str );
+  if ( name == "moonfire_cat"           ) return new           moonfire_cat_t( this, options_str );
   if ( name == "sunfire"                ) return new                sunfire_t( this, options_str ); // Moonfire and Sunfire are selected based on how much balance energy the player has.
   if ( name == "moonkin_form"           ) return new           moonkin_form_t( this, options_str );
   if ( name == "natures_swiftness"      ) return new       druids_swiftness_t( this, options_str );
@@ -6249,8 +6246,7 @@ void druid_t::apl_feral()
   def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" );
   def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
   def -> add_action( "thrash_cat,if=buff.omen_of_clarity.react&remains<=duration*0.3&active_enemies>1" );
-  if ( ! talent.bloodtalons -> ok() )
-    def -> add_action( "thrash_cat,if=combo_points=5&remains<=duration*0.3&buff.omen_of_clarity.react");
+  def -> add_action( "thrash_cat,if=!talent.bloodtalons.enabled&combo_points=5&remains<=duration*0.3&buff.omen_of_clarity.react");
 
   // Finishers
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=combo_points=5&target.health.pct<25&dot.rip.ticking&energy>=max_fb_energy" );
@@ -6264,7 +6260,7 @@ void druid_t::apl_feral()
   def -> add_action( "thrash_cat,if=talent.bloodtalons.enabled&combo_points=5&remains<=duration*0.3&buff.omen_of_clarity.react");
   def -> add_action( "pool_resource,for_next=1" );
   def -> add_action( "thrash_cat,if=remains<=duration*0.3&active_enemies>1" );
-  def -> add_action( "moonfire,cycle_targets=1,if=combo_points<5&remains<=duration*0.3&active_enemies<=10" );
+  def -> add_action( "moonfire_cat,cycle_targets=1,if=combo_points<5&remains<=duration*0.3&active_enemies<=10" );
   def -> add_action( this, "Rake", "cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&combo_points<5" );
 
   // Fillers
