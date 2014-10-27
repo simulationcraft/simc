@@ -10186,6 +10186,8 @@ action_t* player_t::select_action( const action_priority_list_t& list )
   // call_action_list tree, with nothing to show for it.
   uint64_t _visited = visited_apls_;
   size_t attempted_random = 0;
+  size_t max_random_attempts = static_cast<size_t>( static_cast<double>( list.foreground_action_list.size() ) *
+                                             ( ( list.player -> current.skill - list.player -> current.skill_debuff ) / 2.0 ) );
 
   for ( size_t i = 0, num_actions = list.foreground_action_list.size(); i < num_actions; ++i )
   {
@@ -10195,12 +10197,13 @@ action_t* player_t::select_action( const action_priority_list_t& list )
     action_t* a = list.foreground_action_list[i];
 
     if ( list.random == 1 )
-      random = static_cast<size_t>(std::floor( rng().range( 0, static_cast<int>( num_actions ) ) ) );
-    else if ( rng().roll( ( 1 - a -> player -> current.skill ) / 4 ) )
+      random = static_cast<size_t>( rng().range( 0, static_cast<double>( num_actions ) ) );
+    else if ( rng().roll( ( 1 - ( a -> player -> current.skill - a -> player -> current.skill_debuff ) ) / 2 ) )
     {
-      random = static_cast<size_t>( std::floor( rng().range( 0, static_cast<int>( num_actions ) ) ) );
+      random = static_cast<size_t>( rng().range( 0, static_cast<double>( num_actions ) ) );
       attempted_random++;
-      if ( attempted_random > num_actions )
+      // Limit the amount of attempts to select a random action based on skill, then bail out and try again in 100 ms.
+      if ( attempted_random > max_random_attempts )
         break;
     }
 
