@@ -631,10 +631,7 @@ void print_text_scale_factors( FILE* file, sim_t* sim )
     }
 
     if ( sim -> scaling -> normalize_scale_factors )
-    {
-      scale_metric_e sm = p -> sim -> scaling -> scaling_metric;
       util::fprintf( file, "  DPS/%s=%.*f", util::stat_type_abbrev( p -> normalize_by() ), sim -> report_precision, p -> scaling[ sm ].get_stat( p -> normalize_by() ) );
-    }
 
     if ( p -> sim -> scaling -> scale_lag ) util::fprintf( file, "  ms Lag=%.*f(%.*f)", p -> sim -> report_precision, p -> scaling_lag[ sm ], p -> sim -> report_precision, p -> scaling_lag_error[ sm ] );
 

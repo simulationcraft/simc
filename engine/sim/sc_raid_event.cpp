@@ -1000,6 +1000,8 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, std::string& type
     e = matching_type[ i ];
     time_to_event = e -> next_time() - s -> current_time;
     }
+  if ( e == 0 )
+    return 0.0;
 
   // now that we have the event in question, use the filter to figure out return
   if ( util::str_compare_ci( filter, "in" ) )

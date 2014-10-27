@@ -761,7 +761,7 @@ void buff_t::start( int        stacks,
       if ( actor -> regen_type != REGEN_DYNAMIC || actor -> is_pet() )
         continue;
 
-      for ( size_t j = 0, end = invalidate_list.size(); j < end; j++ )
+      for ( size_t j = 0, endinval = invalidate_list.size(); j < endinval; j++ )
       {
         if ( actor -> regen_caches[ invalidate_list[ j ] ] )
         {
@@ -978,7 +978,7 @@ void buff_t::expire( timespan_t delay )
       if ( actor -> regen_type != REGEN_DYNAMIC || actor -> is_pet() )
         continue;
 
-      for ( size_t j = 0, end = invalidate_list.size(); j < end; j++ )
+      for ( size_t j = 0, endregen = invalidate_list.size(); j < end; j++ )
       {
         if ( actor -> regen_caches[ invalidate_list[ j ] ] )
         {
@@ -1417,9 +1417,9 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
         s = static_cast< stat_e >( effect.misc_value1() + 1 );
       else if ( effect.subtype() == A_MOD_RATING )
       {
-        std::vector<stat_e> s = util::translate_all_rating_mod( effect.misc_value1() );
-        for ( size_t j = 0; j < s.size(); j++ )
-          stats.push_back( buff_stat_t( s[ j ], amount ) );
+        std::vector<stat_e> k = util::translate_all_rating_mod( effect.misc_value1() );
+        for ( size_t j = 0; j < k.size(); j++ )
+          stats.push_back( buff_stat_t( k[ j ], amount ) );
       }
       else if ( effect.subtype() == A_MOD_DAMAGE_DONE && ( effect.misc_value1() & 0x7E ) )
         s = STAT_SPELL_POWER;

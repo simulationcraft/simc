@@ -1042,9 +1042,9 @@ void print_html_gear ( report::sc_html_stream& os, player_t* p )
       if ( item.parsed.bonus_id.size() )
       {
         rel_str += " rel=\"bonus=";
-        for ( size_t i = 0; i < item.parsed.bonus_id.size(); i++ )
+        for ( size_t k = 0; k < item.parsed.bonus_id.size(); k++ )
         {
-          rel_str += util::to_string( item.parsed.bonus_id[i] );
+          rel_str += util::to_string( item.parsed.bonus_id[k] );
           rel_str += ":";
         }
         rel_str += "\"";

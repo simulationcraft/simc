@@ -4868,18 +4868,21 @@ void player_t::assess_damage( school_e school,
 
   // New callback system; proc abilities on incoming events.
   // TODO: How to express action causing/not causing incoming callbacks?
-  if ( s -> action -> callbacks )
+  if ( s -> action )
   {
-    proc_types pt = s -> proc_type();
-    proc_types2 pt2 = s -> execute_proc_type2();
-    // For incoming landed abilities, get the impact type for the proc.
-    //if ( pt2 == PROC2_LANDED )
-    //  pt2 = s -> impact_proc_type2();
+    if ( s -> action -> callbacks )
+    {
+      proc_types pt = s -> proc_type();
+      proc_types2 pt2 = s -> execute_proc_type2();
+      // For incoming landed abilities, get the impact type for the proc.
+      //if ( pt2 == PROC2_LANDED )
+      //  pt2 = s -> impact_proc_type2();
 
-    // On damage/heal in. Proc flags are arranged as such that the "incoming"
-    // version of the primary proc flag is always follows the outgoing version.
-    if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
-      action_callback_t::trigger( callbacks.procs[ pt + 1 ][ pt2 ], s -> action, s );
+      // On damage/heal in. Proc flags are arranged as such that the "incoming"
+      // version of the primary proc flag is always follows the outgoing version.
+      if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
+        action_callback_t::trigger( callbacks.procs[pt + 1][pt2], s -> action, s );
+    }
   }
 
   if ( s -> result_amount <= 0.0 )
@@ -6197,8 +6200,7 @@ struct swap_action_list_t : public action_t
       sim -> errorf( "Player %s uses %s with unknown action list %s\n", player -> name(), name.c_str(), alist_name.c_str() );
       sim -> cancel();
     }
-
-    if ( randomtoggle == 1 )
+    else if ( randomtoggle == 1 )
       alist -> random = randomtoggle;
 
     trigger_gcd = timespan_t::zero();

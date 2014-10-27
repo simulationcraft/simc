@@ -587,7 +587,7 @@ bool item_database::load_item_from_data( item_t& item )
   {
     std::vector<const item_bonus_entry_t*> item_bonuses = item.player -> dbc.item_bonus( item.parsed.bonus_id[ i ] );
     // Apply bonuses
-    for ( size_t bonus_idx = 0, end = item_bonuses.size(); bonus_idx < end; bonus_idx++ )
+    for ( size_t bonus_idx = 0, endbonus = item_bonuses.size(); bonus_idx < endbonus; bonus_idx++ )
     {
       if ( ! apply_item_bonus( item, *item_bonuses[ bonus_idx ] ) )
         return false;

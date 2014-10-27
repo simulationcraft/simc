@@ -238,9 +238,9 @@ bool parse_items( player_t*  p,
 
     if ( data.HasMember( "bonusLists" ) )
     {
-      for ( rapidjson::SizeType i = 0, n = data[ "bonusLists" ].Size(); i < n; ++i )
+      for ( rapidjson::SizeType k = 0, n = data[ "bonusLists" ].Size(); k < n; ++k )
       {
-        item.parsed.bonus_id.push_back( data[ "bonusLists" ][ i ].GetInt() );
+        item.parsed.bonus_id.push_back( data[ "bonusLists" ][ k ].GetInt() );
       }
     }
 

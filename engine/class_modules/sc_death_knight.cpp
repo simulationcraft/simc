@@ -836,22 +836,22 @@ static std::pair<int, double> rune_ready_in( const death_knight_t* p, rune_type 
   size_t order[] = { 0, 1, 4, 5, 2, 3 };
   for ( size_t i = 0; i < sizeof_array( order ); i++ )
   {
-    const rune_t* r = &( p -> _runes.slot[ i ] );
-    if ( ! r -> is_death() )
+    const rune_t* k = &( p -> _runes.slot[ i ] );
+    if ( ! k -> is_death() )
       continue;
 
-    if ( use[ r -> slot_number ] )
+    if ( use[ k -> slot_number ] )
       continue;
 
-    if ( r -> is_ready() )
-      return rri_t( r -> slot_number, 0 );
-    else if ( r -> state == STATE_REGENERATING )
+    if ( k -> is_ready() )
+      return rri_t( k -> slot_number, 0 );
+    else if ( k -> state == STATE_REGENERATING )
     {
-      double ttr = ( 1.0 - r -> value ) / rps;
+      double ttr = ( 1.0 - k -> value ) / rps;
       if ( ttr < t )
       {
         t = ttr;
-        fastest_remaining = r -> slot_number;
+        fastest_remaining = k -> slot_number;
       }
     }
   }
@@ -5659,9 +5659,9 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
       }
     };
 
-    action_t* a = find_action( splits[ 0 ] );
-    if ( a )
-      return new ability_ready_expr_t( a );
+    action_t* b = find_action( splits[ 0 ] );
+    if ( b )
+      return new ability_ready_expr_t( b );
   }
 
   if ( util::str_compare_ci( splits[ 0 ], "rune" ) )
