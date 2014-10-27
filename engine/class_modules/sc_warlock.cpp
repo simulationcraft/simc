@@ -1778,9 +1778,6 @@ public:
     if ( p() -> buffs.havoc -> check() < havoc_consume )
       return false;
 
-    if ( p() -> buffs.fire_and_brimstone -> check() )
-      return false;
-
     return true;
   }
 
@@ -2285,6 +2282,7 @@ struct havoc_t: public warlock_spell_t
   {
     may_crit = false;
     cooldown -> duration = data().cooldown() + p -> glyphs.havoc -> effectN( 2 ).time_value();
+    cooldown -> duration += p -> perk.enhanced_havoc -> effectN( 1 ).time_value();
     cooldown -> charges = data().charges() + p -> glyphs.havoc -> effectN( 1 ).base_value();
   }
 
@@ -3042,9 +3040,8 @@ struct incinerate_t: public warlock_spell_t
     warlock_spell_t( p, "Incinerate" ),
     fnb( new incinerate_t( "incinerate", p, p -> find_spell( 114654 ) ) )
   {
-    if ( p -> talents.charred_remains -> ok() ){
+    if ( p -> talents.charred_remains -> ok() )
       base_multiplier *= 1.0 + p -> talents.charred_remains -> effectN( 1 ).percent();
-    }
     havoc_consume = 1;
     base_costs[RESOURCE_MANA] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
   }
@@ -3269,12 +3266,35 @@ struct soul_fire_t: public warlock_spell_t
 
 struct chaos_bolt_t: public warlock_spell_t
 {
+  chaos_bolt_t* fnb;
   chaos_bolt_t( warlock_t* p ):
-    warlock_spell_t( p, "Chaos Bolt" )
+    warlock_spell_t( p, "Chaos Bolt" ),
+    fnb( new chaos_bolt_t( "chaos_bolt", p, p -> find_spell( 116858 ) ) )
   {
+    if ( !p -> talents.charred_remains -> ok() )
+      fnb = 0;
+
     havoc_consume = 3;
     backdraft_consume = 3;
     base_execute_time += p -> perk.enhanced_chaos_bolt -> effectN( 1 ).time_value();
+  }
+
+  chaos_bolt_t( const std::string& n, warlock_t* p, const spell_data_t* spell ):
+    warlock_spell_t( n, p, spell ),
+    fnb( 0 )
+  {
+    aoe = -1;
+    backdraft_consume = 3;
+    base_execute_time += p -> perk.enhanced_chaos_bolt -> effectN( 1 ).time_value();
+    stats = p -> get_stats( "chaos_bolt_fnb", this );
+  }
+
+  void schedule_execute( action_state_t* state )
+  {
+    if ( fnb && p() -> buffs.fire_and_brimstone -> up() )
+      fnb -> schedule_execute( state );
+    else
+      warlock_spell_t::schedule_execute( state );
   }
 
   virtual double composite_crit() const
@@ -3291,6 +3311,9 @@ struct chaos_bolt_t: public warlock_spell_t
   {
     double c = warlock_spell_t::cost();
 
+    if ( fnb && p() -> buffs.fire_and_brimstone -> check() )
+      return fnb -> cost();
+
     if ( p() -> buffs.dark_soul -> check() )
       c *= 1.0 + p() -> sets.set( SET_CASTER, T15, B2 ) -> effectN( 2 ).percent();
 
@@ -3300,6 +3323,9 @@ struct chaos_bolt_t: public warlock_spell_t
   virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
+
+    if ( p() -> buffs.fire_and_brimstone -> check() && fnb )
+      m *= p() -> buffs.fire_and_brimstone -> data().effectN( 5 ).percent();
 
     if ( p() -> mastery_spells.emberstorm -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
@@ -3313,54 +3339,52 @@ struct chaos_bolt_t: public warlock_spell_t
 
   virtual void execute()
   {
-    if ( p() -> talents.charred_remains -> ok() && p() -> buffs.fire_and_brimstone -> up() )
-      aoe = -1;
     warlock_spell_t::execute();
 
-    if ( ! result_is_hit( execute_state -> result ) ) refund_embers( p() );
-    aoe = 0;
+    if ( !result_is_hit( execute_state -> result ) ) refund_embers( p() );
   }
-    //overwrite MS behavior for the T17 4pc buff
-    int schedule_multistrike( action_state_t* state, dmg_e type, double tick_multiplier )
+
+  //overwrite MS behavior for the T17 4pc buff
+  int schedule_multistrike( action_state_t* state, dmg_e type, double tick_multiplier )
+  {
+    if ( !may_multistrike )
+      return 0;
+
+    if ( state -> result_amount <= 0 )
+      return 0;
+
+    if ( !result_is_hit( state -> result ) )
+      return 0;
+
+    int n_strikes = 0;
+
+    if ( p() -> buffs.chaotic_infusion -> up() )
     {
-        if ( ! may_multistrike )
-            return 0;
-        
-        if ( state -> result_amount <= 0 )
-            return 0;
-        
-        if ( ! result_is_hit( state -> result ) )
-            return 0;
-        
-        int n_strikes = 0;
-        
-        if ( p() -> buffs.chaotic_infusion -> up())
-        {
-            int extra_ms = static_cast<int>( p() -> buffs.chaotic_infusion -> value() );
-            for  (int i = 0; i < extra_ms ; i++)
-            {
-                result_e r = RESULT_MULTISTRIKE_CRIT;
-                action_state_t* ms_state = get_state( state );
-                ms_state -> target = state -> target;
-                ms_state -> n_targets = 1;
-                ms_state -> chain_target = 0;
-                ms_state -> result = r;
-                // Multistrikes can be blocked
-                ms_state -> block_result = calculate_block_result( state );
-                
-                multistrike_direct( state, ms_state );
-                
-                // Schedule multistrike "execute"; in reality it calls either impact, or
-                // assess_damage (for ticks).
-                new ( *sim ) multistrike_execute_event_t( ms_state );
-                
-                n_strikes++;
-            }
-            p() -> buffs.chaotic_infusion -> expire();
-        }
-        
-        return n_strikes + action_t::schedule_multistrike(state, type, tick_multiplier);
+      int extra_ms = static_cast<int>( p() -> buffs.chaotic_infusion -> value() );
+      for ( int i = 0; i < extra_ms; i++ )
+      {
+        result_e r = RESULT_MULTISTRIKE_CRIT;
+        action_state_t* ms_state = get_state( state );
+        ms_state -> target = state -> target;
+        ms_state -> n_targets = 1;
+        ms_state -> chain_target = 0;
+        ms_state -> result = r;
+        // Multistrikes can be blocked
+        ms_state -> block_result = calculate_block_result( state );
+
+        multistrike_direct( state, ms_state );
+
+        // Schedule multistrike "execute"; in reality it calls either impact, or
+        // assess_damage (for ticks).
+        new ( *sim ) multistrike_execute_event_t( ms_state );
+
+        n_strikes++;
+      }
+      p() -> buffs.chaotic_infusion -> expire();
     }
+
+    return n_strikes + action_t::schedule_multistrike( state, type, tick_multiplier );
+  }
 };
 
 struct life_tap_t: public warlock_spell_t
