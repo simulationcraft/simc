@@ -1773,17 +1773,17 @@ void action_t::init()
 
   if ( ! if_expr_str.empty() )
   {
-    if_expr = expr_t::parse( this, if_expr_str );
+    if_expr = expr_t::parse( this, if_expr_str, sim -> optimize_expressions );
   }
 
   if ( ! interrupt_if_expr_str.empty() )
   {
-    interrupt_if_expr = expr_t::parse( this, interrupt_if_expr_str );
+    interrupt_if_expr = expr_t::parse( this, interrupt_if_expr_str, sim -> optimize_expressions );
   }
 
   if ( ! early_chain_if_expr_str.empty() )
   {
-    early_chain_if_expr = expr_t::parse( this, early_chain_if_expr_str );
+    early_chain_if_expr = expr_t::parse( this, early_chain_if_expr_str, sim -> optimize_expressions );
   }
 
   if ( tick_action )
@@ -1895,6 +1895,13 @@ void action_t::reset()
   execute_event = 0;
   travel_events.clear();
   target = default_target;
+
+  if( sim -> current_iteration == 1 )
+  {
+    if( if_expr ) if_expr = if_expr -> optimize();
+    if( interrupt_if_expr ) interrupt_if_expr = interrupt_if_expr -> optimize();
+    if( early_chain_if_expr ) early_chain_if_expr = early_chain_if_expr -> optimize();
+  }
 }
 
 // action_t::cancel =========================================================

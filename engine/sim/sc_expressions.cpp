@@ -5,6 +5,8 @@
 
 #include "simulationcraft.hpp"
 
+int expr_t::unique_id=0;
+
 namespace { // ANONYMOUS ====================================================
 
 class const_expr_t : public expr_t
@@ -13,10 +15,13 @@ class const_expr_t : public expr_t
 
 public:
   const_expr_t( const std::string& name, double value_ ) :
-    expr_t( name ), value( value_ ) {}
+    expr_t( name, TOK_NUM ), value( value_ ) {}
 
   double evaluate() // override
   { return value; }
+
+  bool is_constant( double* v ) // override
+  { *v = value; return true; }
 };
 
 // Unary Operators ==========================================================
@@ -27,8 +32,8 @@ class expr_unary_t : public expr_t
   expr_t* input;
 
 public:
-  expr_unary_t( const std::string& n, expr_t* i ) :
-    expr_t( n ), input( i )
+  expr_unary_t( const std::string& n, token_e o, expr_t* i ) :
+    expr_t( n, o ), input( i )
   { assert( input ); }
 
   ~expr_unary_t() { delete input; }
@@ -50,12 +55,12 @@ expr_t* select_unary( const std::string& name, token_e op, expr_t* input )
 {
   switch ( op )
   {
-    case TOK_PLUS:  return new expr_unary_t<unary::plus> ( name, input );
-    case TOK_MINUS: return new expr_unary_t<unary::minus>( name, input );
-    case TOK_NOT:   return new expr_unary_t<unary::lnot> ( name, input );
-    case TOK_ABS:   return new expr_unary_t<unary::abs>  ( name, input );
-    case TOK_FLOOR: return new expr_unary_t<unary::floor>( name, input );
-    case TOK_CEIL:  return new expr_unary_t<unary::ceil> ( name, input );
+    case TOK_PLUS:  return input;
+    case TOK_MINUS: return new expr_unary_t<unary::minus>( name, op, input );
+    case TOK_NOT:   return new expr_unary_t<unary::lnot> ( name, op, input );
+    case TOK_ABS:   return new expr_unary_t<unary::abs>  ( name, op, input );
+    case TOK_FLOOR: return new expr_unary_t<unary::floor>( name, op, input );
+    case TOK_CEIL:  return new expr_unary_t<unary::ceil> ( name, op, input );
 
     default: assert( false ); return 0; // throw?
   }
@@ -65,13 +70,12 @@ expr_t* select_unary( const std::string& name, token_e op, expr_t* input )
 
 class binary_base_t : public expr_t
 {
-protected:
+public:
   expr_t* left;
   expr_t* right;
 
-public:
-  binary_base_t( const std::string& n, expr_t* l, expr_t* r ) :
-    expr_t( n ), left( l ), right( r )
+  binary_base_t( const std::string& n, token_e o, expr_t* l, expr_t* r ) :
+    expr_t( n, o ), left( l ), right( r )
   {
     assert( left );
     assert( right );
@@ -84,7 +88,7 @@ class logical_and_t : public binary_base_t
 {
 public:
   logical_and_t( const std::string& n, expr_t* l, expr_t* r ) :
-    binary_base_t( n, l, r )
+    binary_base_t( n, TOK_AND, l, r )
   {}
 
   double evaluate() // override
@@ -95,7 +99,7 @@ class logical_or_t : public binary_base_t
 {
 public:
   logical_or_t( const std::string& n, expr_t* l, expr_t* r ) :
-    binary_base_t( n, l, r )
+    binary_base_t( n, TOK_OR, l, r )
   {}
 
   double evaluate() // override
@@ -106,7 +110,7 @@ class logical_xor_t : public binary_base_t
 {
 public:
   logical_xor_t( const std::string& n, expr_t* l, expr_t* r ) :
-    binary_base_t( n, l, r )
+    binary_base_t( n, TOK_XOR, l, r )
   {}
 
   double evaluate() // override
@@ -117,8 +121,8 @@ template <template<typename> class F>
 class expr_binary_t : public binary_base_t
 {
 public:
-  expr_binary_t( const std::string& n, expr_t* l, expr_t* r ) :
-    binary_base_t( n, l, r )
+  expr_binary_t( const std::string& n, token_e o, expr_t* l, expr_t* r ) :
+    binary_base_t( n, o, l, r )
   {}
 
   double evaluate() // override
@@ -133,17 +137,385 @@ expr_t* select_binary( const std::string& name, token_e op, expr_t* left, expr_t
     case TOK_OR:    return new logical_or_t                      ( name, left, right );
     case TOK_XOR:   return new logical_xor_t                     ( name, left, right );
 
-    case TOK_ADD:   return new expr_binary_t<std::plus>          ( name, left, right );
-    case TOK_SUB:   return new expr_binary_t<std::minus>         ( name, left, right );
-    case TOK_MULT:  return new expr_binary_t<std::multiplies>    ( name, left, right );
-    case TOK_DIV:   return new expr_binary_t<std::divides>       ( name, left, right );
+    case TOK_ADD:   return new expr_binary_t<std::plus>          ( name, op, left, right );
+    case TOK_SUB:   return new expr_binary_t<std::minus>         ( name, op, left, right );
+    case TOK_MULT:  return new expr_binary_t<std::multiplies>    ( name, op, left, right );
+    case TOK_DIV:   return new expr_binary_t<std::divides>       ( name, op, left, right );
 
-    case TOK_EQ:    return new expr_binary_t<std::equal_to>      ( name, left, right );
-    case TOK_NOTEQ: return new expr_binary_t<std::not_equal_to>  ( name, left, right );
-    case TOK_LT:    return new expr_binary_t<std::less>          ( name, left, right );
-    case TOK_LTEQ:  return new expr_binary_t<std::less_equal>    ( name, left, right );
-    case TOK_GT:    return new expr_binary_t<std::greater>       ( name, left, right );
-    case TOK_GTEQ:  return new expr_binary_t<std::greater_equal> ( name, left, right );
+    case TOK_EQ:    return new expr_binary_t<std::equal_to>      ( name, op, left, right );
+    case TOK_NOTEQ: return new expr_binary_t<std::not_equal_to>  ( name, op, left, right );
+    case TOK_LT:    return new expr_binary_t<std::less>          ( name, op, left, right );
+    case TOK_LTEQ:  return new expr_binary_t<std::less_equal>    ( name, op, left, right );
+    case TOK_GT:    return new expr_binary_t<std::greater>       ( name, op, left, right );
+    case TOK_GTEQ:  return new expr_binary_t<std::greater_equal> ( name, op, left, right );
+
+    default: assert( false ); return 0; // throw?
+  }
+}
+
+// Analyzing Unary Operators ================================================
+
+template <double ( *F )( double )>
+class expr_analyze_unary_t : public expr_t
+{
+  expr_t* input;
+
+public:
+  expr_analyze_unary_t( const std::string& n, token_e o, expr_t* i ) :
+    expr_t( n, o ), input( i )
+  { assert( input ); }
+
+  ~expr_analyze_unary_t() {  }
+
+  double evaluate() // override
+  { 
+    return F( input -> eval() ); 
+  }
+
+  expr_t* optimize( int spacing ) // override
+  {
+    printf( "%*d %s ( %s )\n", spacing, id_, name().c_str(), input -> name().c_str() );
+    input = input -> optimize( spacing+2 );
+    double input_value;
+    if( input -> is_constant( &input_value ) )
+    {
+      delete this;
+      delete input;
+      return new const_expr_t( "const_unary", F( input_value ) );
+    }
+    expr_t* expr = select_unary( name(), op_, input );
+    delete this;
+    return expr;
+  }
+};
+
+expr_t* select_analyze_unary( const std::string& name, token_e op, expr_t* input )
+{
+  switch ( op )
+  {
+    case TOK_PLUS:  return input;
+    case TOK_MINUS: return new expr_analyze_unary_t<unary::minus>( name, op, input );
+    case TOK_NOT:   return new expr_analyze_unary_t<unary::lnot> ( name, op, input );
+    case TOK_ABS:   return new expr_analyze_unary_t<unary::abs>  ( name, op, input );
+    case TOK_FLOOR: return new expr_analyze_unary_t<unary::floor>( name, op, input );
+    case TOK_CEIL:  return new expr_analyze_unary_t<unary::ceil> ( name, op, input );
+
+    default: assert( false ); return 0; // throw?
+  }
+}
+
+// Analyzing Binary Operators ===============================================
+
+class analyze_binary_base_t : public expr_t
+{
+protected:
+  token_e op;
+  expr_t* left;
+  expr_t* right;
+  double result;
+  double left_result, right_result;
+  uint64_t left_true, right_true;
+  uint64_t left_false, right_false;
+
+public:
+  analyze_binary_base_t( const std::string& n, token_e o, expr_t* l, expr_t* r ) :
+    expr_t( n, o ), left( l ), right( r ), 
+    left_true( 0 ), right_true( 0 ), left_false( 0 ), right_false( 0 )
+  {
+    assert( left );
+    assert( right );
+  }
+
+  void analyze_boolean()
+  {
+    if(  left_result != 0 )  left_true++; else  left_false++;
+    if( right_result != 0 ) right_true++; else right_false++;
+  }
+
+  ~analyze_binary_base_t() {}
+};
+
+class analyze_logical_and_t : public analyze_binary_base_t
+{
+public:
+  analyze_logical_and_t( const std::string& n, expr_t* l, expr_t* r ) :
+    analyze_binary_base_t( n, TOK_AND, l, r )
+  {}
+
+  double evaluate() // override
+  { 
+    left_result  = left  -> eval();
+    right_result = right -> eval(); 
+    result = ( left_result && right_result ) ? 1.0 : 0.0;
+    analyze_boolean();
+    return result;
+  }
+
+  expr_t* optimize( int spacing ) // override
+  {
+    printf( "%*d and %ld %ld %ld %ld ( %s %s )\n", spacing, id_, left_true, left_false, right_true, right_false, left -> name().c_str(), right -> name().c_str() );
+    left  = left  -> optimize( spacing+2 );
+    right = right -> optimize( spacing+2 );
+    bool left_always_true  = left -> always_true();
+    bool left_always_false = left -> always_false();
+    bool right_always_true  = right -> always_true();
+    bool right_always_false = right -> always_false();
+    if( false )
+    {
+      if( left -> op_ == TOK_UNKNOWN )
+	if( ( ! left_always_true  && left_false == 0 ) ||
+	    ( ! left_always_false && left_true  == 0 ) )
+	  printf( "consider marking expression %d %s as constant\n", left -> id_, left -> name().c_str() );
+      if( right -> op_ == TOK_UNKNOWN )
+	if( ( ! right_always_true  && right_false == 0 ) ||
+	    ( ! right_always_false && right_true  == 0 ) )
+	  printf( "consider marking expression %d %s as constant\n", right -> id_, right -> name().c_str() );
+    }
+    if( left_always_false || right_always_false )
+    {
+      delete this;
+      delete left;
+      delete right;
+      return new const_expr_t( "const_and", 0.0 );
+    }
+    if( left_always_true && right_always_true )
+    {
+      delete this;
+      delete left;
+      delete right;
+      return new const_expr_t( "const_and", 1.0 );
+    }
+    if( left_always_true )
+    {
+      delete this;
+      delete left;
+      return right;
+    }
+    if( right_always_true )
+    {
+      delete this;
+      delete right;
+      return left;
+    }
+    if( left_false < right_false ) 
+    {
+      std::swap( left, right -> op_ == TOK_AND ? ( (logical_and_t*) right ) -> left : right );
+    }
+    else if( left -> op_ == TOK_AND )
+    {
+      std::swap( left, right );
+      std::swap( left, ( (logical_and_t*) right ) -> left );
+    }
+    expr_t* and_expr = new logical_and_t( name(), left, right );
+    delete this;
+    return and_expr;
+  }
+};
+
+class analyze_logical_or_t : public analyze_binary_base_t
+{
+public:
+  analyze_logical_or_t( const std::string& n, expr_t* l, expr_t* r ) :
+    analyze_binary_base_t( n, TOK_OR, l, r )
+  {}
+
+  double evaluate() // override
+  { 
+    left_result  = left  -> eval();
+    right_result = right -> eval(); 
+    result = ( left_result || right_result ) ? 1.0 : 0.0;
+    analyze_boolean();
+    return result;
+  }
+
+  expr_t* optimize( int spacing ) // override
+  {
+    printf( "%*d or %ld %ld %ld %ld ( %s %s )\n", spacing, id_, left_true, left_false, right_true, right_false, left -> name().c_str(), right -> name().c_str() );
+    left  = left  -> optimize( spacing+2 );
+    right = right -> optimize( spacing+2 );
+    bool left_always_true  = left -> always_true();
+    bool left_always_false = left -> always_false();
+    bool right_always_true  = right -> always_true();
+    bool right_always_false = right -> always_false();
+    if( false )
+    {
+      if( left -> op_ == TOK_UNKNOWN )
+	if( ( ! left_always_true  && left_false == 0 ) ||
+	    ( ! left_always_false && left_true  == 0 ) )
+	  printf( "consider marking expression %d %s as constant\n", left -> id_, left -> name().c_str() );
+      if( right -> op_ == TOK_UNKNOWN )
+	if( ( ! right_always_true  && right_false == 0 ) ||
+	    ( ! right_always_false && right_true  == 0 ) )
+	  printf( "consider marking expression %d %s as constant\n", right -> id_, right -> name().c_str() );
+    }
+    if( left_always_true || right_always_true )
+    {
+      delete this;
+      delete left;
+      delete right;
+      return new const_expr_t( "const_or", 1.0 );
+    }
+    if( left_always_false && right_always_false )
+    {
+      delete this;
+      delete left;
+      delete right;
+      return new const_expr_t( "const_or", 0.0 );
+    }
+    if( left_always_false )
+    {
+      delete this;
+      delete left;
+      return right;
+    }
+    if( right_always_false )
+    {
+      delete this;
+      delete right;
+      return left;
+    }
+    if( left_true < right_true )
+    {
+      std::swap( left, right -> op_ == TOK_OR ? ( (logical_or_t*) right ) -> left : right );
+    }
+    else if( left -> op_ == TOK_OR )
+    {
+      std::swap( left, right );
+      std::swap( left, ( (logical_or_t*) right ) -> left );
+    }
+    expr_t* or_expr = new logical_or_t( name(), left, right );
+    delete this;
+    return or_expr;
+  }
+};
+
+class analyze_logical_xor_t : public analyze_binary_base_t
+{
+public:
+  analyze_logical_xor_t( const std::string& n, expr_t* l, expr_t* r ) :
+    analyze_binary_base_t( n, TOK_XOR, l, r )
+  {}
+
+  double evaluate() // override
+  { 
+    left_result  = left  -> eval();
+    right_result = right -> eval(); 
+    result = ( bool( left_result ) != bool( right_result ) ) ? 1.0 : 0.0;
+    analyze_boolean();
+    return result;
+  }
+
+  expr_t* optimize( int spacing ) // override
+  {
+    printf( "%*d xor ( %s %s )\n", spacing, id_, left -> name().c_str(), right -> name().c_str() );
+    left  = left  -> optimize( spacing+2 );
+    right = right -> optimize( spacing+2 );
+    bool left_always_true  = left -> always_true();
+    bool left_always_false = left -> always_false();
+    bool right_always_true  = right -> always_true();
+    bool right_always_false = right -> always_false();
+    if( ( left_always_true  && right_always_false ) ||
+	( left_always_false && right_always_true  ) )
+    {
+      delete this;
+      delete left;
+      delete right;
+      return new const_expr_t( "const_xor", 1.0 );
+    }
+    if( ( left_always_true  && right_always_true  ) ||
+	( left_always_false && right_always_false ) )
+    {
+      delete this;
+      delete left;
+      delete right;
+      return new const_expr_t( "const_xor", 0.0 );
+    }
+    if( left_always_false )
+    {
+      delete this;
+      delete left;
+      return right;
+    }
+    if( right_always_false )
+    {
+      delete this;
+      delete right;
+      return left;
+    }
+    if( left_always_true )
+    {
+      expr_t* not_expr = select_unary( "not_xor", TOK_NOT, right );
+      delete this;
+      delete left;
+      return not_expr;
+    }
+    if( right_always_true )
+    {
+      expr_t* not_expr = select_unary( "not_xor", TOK_NOT, left );
+      delete this;
+      delete right;
+      return not_expr;
+    }
+    expr_t* xor_expr = new logical_xor_t( name(), left, right );
+    delete this;
+    return xor_expr;
+  }
+};
+
+template <template<typename> class F>
+class expr_analyze_binary_t : public analyze_binary_base_t
+{
+public:
+  expr_analyze_binary_t( const std::string& n, token_e o, expr_t* l, expr_t* r ) :
+    analyze_binary_base_t( n, o, l, r )
+  {}
+
+  double evaluate() // override
+  { 
+    result = F<double>()( left -> eval(), right -> eval() );
+    return result;
+  }
+  
+  expr_t* optimize( int spacing ) // override
+  {
+    printf( "%*d %s ( %s %s )\n", spacing, id_, name().c_str(), left -> name().c_str(), right -> name().c_str() );
+    left  = left  -> optimize( spacing+2 );
+    right = right -> optimize( spacing+2 );
+    double left_value, right_value;
+    if( left  -> is_constant( &left_value  ) &&
+	right -> is_constant( &right_value ) )
+    {
+      delete left;
+      delete right;
+      delete this;
+      result = F<double>()( left_value, right_value );
+      return new const_expr_t( "const_binary", result );
+    }
+    expr_t* expr = select_binary( name(), op_, left, right );
+    delete this;
+    return expr;
+  }
+};
+
+expr_t* select_analyze_binary( const std::string& name, token_e op, expr_t* left, expr_t* right )
+{
+  switch ( op )
+  {
+    case TOK_AND:   return new analyze_logical_and_t                     ( name, left, right );
+    case TOK_OR:    return new analyze_logical_or_t                      ( name, left, right );
+    case TOK_XOR:   return new analyze_logical_xor_t                     ( name, left, right );
+
+    case TOK_ADD:   return new expr_analyze_binary_t<std::plus>          ( name, op, left, right );
+    case TOK_SUB:   return new expr_analyze_binary_t<std::minus>         ( name, op, left, right );
+    case TOK_MULT:  return new expr_analyze_binary_t<std::multiplies>    ( name, op, left, right );
+    case TOK_DIV:   return new expr_analyze_binary_t<std::divides>       ( name, op, left, right );
+
+    case TOK_EQ:    return new expr_analyze_binary_t<std::equal_to>      ( name, op, left, right );
+    case TOK_NOTEQ: return new expr_analyze_binary_t<std::not_equal_to>  ( name, op, left, right );
+    case TOK_LT:    return new expr_analyze_binary_t<std::less>          ( name, op, left, right );
+    case TOK_LTEQ:  return new expr_analyze_binary_t<std::less_equal>    ( name, op, left, right );
+    case TOK_GT:    return new expr_analyze_binary_t<std::greater>       ( name, op, left, right );
+    case TOK_GTEQ:  return new expr_analyze_binary_t<std::greater_equal> ( name, op, left, right );
 
     default: assert( false ); return 0; // throw?
   }
@@ -482,7 +854,8 @@ bool expression_t::convert_to_rpn( std::vector<expr_token_t>& tokens )
 // build_expression_tree ====================================================
 
 static expr_t* build_expression_tree( action_t* action,
-                                      std::vector<expr_token_t>& tokens )
+                                      std::vector<expr_token_t>& tokens,
+				      bool optimize )
 {
   auto_dispose< std::vector<expr_t*> > stack;
 
@@ -512,7 +885,10 @@ static expr_t* build_expression_tree( action_t* action,
         return 0;
       expr_t* input = stack.back(); stack.pop_back();
       assert( input );
-      stack.push_back( select_unary( t.label, t.type, input ) );
+      expr_t* expr = ( optimize ? 
+		       select_analyze_unary( t.label, t.type, input ) : 
+		       select_unary        ( t.label, t.type, input ) );
+      stack.push_back( expr );
     }
     else if ( expression_t::is_binary( t.type ) )
     {
@@ -522,7 +898,10 @@ static expr_t* build_expression_tree( action_t* action,
       assert( right );
       expr_t* left  = stack.back(); stack.pop_back();
       assert( left );
-      stack.push_back( select_binary( t.label, t.type, left, right ) );
+      expr_t* expr = ( optimize ? 
+		       select_analyze_binary( t.label, t.type, left, right ) : 
+		       select_binary        ( t.label, t.type, left, right ) );
+      stack.push_back( expr );
     }
   }
 
@@ -534,10 +913,19 @@ static expr_t* build_expression_tree( action_t* action,
   return res;
 }
 
+// action_expr_t::create_constant ===========================================
+
+expr_t* expr_t::create_constant( const std::string& name,
+				 double value )
+{
+  return new const_expr_t( name, value );
+}
+
 // action_expr_t::parse =====================================================
 
 expr_t* expr_t::parse( action_t* action,
-                       const std::string& expr_str )
+                       const std::string& expr_str,
+		       bool optimize )
 {
   if ( expr_str.empty() ) return 0;
 
@@ -558,7 +946,7 @@ expr_t* expr_t::parse( action_t* action,
 
   if ( action -> sim -> debug ) expression_t::print_tokens( tokens, action -> sim );
 
-  if ( expr_t* e = build_expression_tree( action, tokens ) )
+  if ( expr_t* e = build_expression_tree( action, tokens, optimize ) )
     return e;
 
   action -> sim -> errorf( "%s-%s: Unable to build expression tree from %s\n", action -> player -> name(), action -> name(), expr_str.c_str() );
@@ -582,7 +970,7 @@ expr_t* parse_expression( const char* arg )
     puts( "rpn:" );
     expression_t::print_tokens( tokens, 0 );
 
-    return build_expression_tree( 0, tokens );
+    return build_expression_tree( 0, tokens, false );
   }
 
   return 0;

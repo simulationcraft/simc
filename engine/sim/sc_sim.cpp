@@ -914,7 +914,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   travel_variance( 0 ), default_skill( 1.0 ), reaction_time( timespan_t::from_seconds( 0.5 ) ),
   regen_periodicity( timespan_t::from_seconds( 0.25 ) ),
   ignite_sampling_delta( timespan_t::from_seconds( 0.2 ) ),
-  fixed_time( false ),
+  fixed_time( false ), optimize_expressions( false ),
   seed( 0 ), current_slot( -1 ),
   optimal_raid( 0 ), log( 0 ), debug_each( 0 ), save_profiles( 0 ), default_actions( 0 ),
   normalized_stat( STAT_NONE ),
@@ -2268,9 +2268,9 @@ void sim_t::add_option( const option_t& opt )
 
 void sim_t::create_options()
 {
+  // General
   add_option( opt_int( "iterations", iterations ) );
   add_option( opt_func( "thread_priority", parse_thread_priority ) );
-  // General
   add_option( opt_timespan( "max_time", max_time, timespan_t::zero(), timespan_t::max() ) );
   add_option( opt_bool( "fixed_time", fixed_time ) );
   add_option( opt_float( "vary_combat_length", vary_combat_length, 0.0, 1.0 ) );
@@ -2284,6 +2284,7 @@ void sim_t::create_options()
   add_option( opt_int( "auto_ready_trigger", auto_ready_trigger ) );
   add_option( opt_int( "stat_cache", stat_cache ) );
   add_option( opt_int( "max_aoe_enemies", max_aoe_enemies ) );
+  add_option( opt_bool( "optimize_expressions", optimize_expressions ) );
   // Raid buff overrides
   add_option( opt_func( "optimal_raid", parse_optimal_raid ) );
   add_option( opt_int( "override.attack_power_multiplier", overrides.attack_power_multiplier ) );

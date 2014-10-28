@@ -3205,8 +3205,12 @@ void player_t::combat_end()
   if ( ready_type == READY_POLL && sim -> auto_ready_trigger )
     if ( ! is_pet() && ! is_enemy() )
       if ( f_length > 0 && ( w_time / f_length ) > 0.25 )
-        if ( sim -> debug )
-          sim -> out_debug.printf( "Combat ends for player %s at time %.4f fight_length=%.4f", name(), sim -> current_time.total_seconds(), iteration_fight_length.total_seconds() );
+      {
+	; // ready_type = READY_TRIGGER
+      }
+
+  if ( sim -> debug )
+    sim -> out_debug.printf( "Combat ends for player %s at time %.4f fight_length=%.4f", name(), sim -> current_time.total_seconds(), iteration_fight_length.total_seconds() );
 }
 
 // startpoint for statistical data collection
@@ -7764,7 +7768,10 @@ expr_t* player_t::create_expression( action_t* a,
       s = const_cast< spell_data_t* >( find_talent_spell( splits[ 1 ], std::string(), specialization(), true ) );
     }
 
-    return new s_expr_t( expression_str, *this, s );
+    if( sim -> optimize_expressions )
+      return expr_t::create_constant( expression_str, ( s && s -> ok() ) ? 1.0 : 0.0 );
+    else
+      return new s_expr_t( expression_str, *this, s );
   }
   else if ( ( splits.size() == 3 && splits[ 0 ] == "action" ) || splits[ 0 ] == "in_flight" || splits[ 0 ] == "in_flight_to_target" )
   {
