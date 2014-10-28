@@ -1952,17 +1952,18 @@ namespace cat_attacks {
 
 struct cat_attack_t : public druid_attack_t < melee_attack_t >
 {
-  bool             requires_stealth;
-  int              combo_point_gain;
-  double           base_dd_bonus;
-  double           base_td_bonus;
+  bool   requires_stealth;
+  int    combo_point_gain;
+  double base_dd_bonus;
+  double base_td_bonus;
+  bool   consume_ooc;
 
   cat_attack_t( const std::string& token, druid_t* p,
                 const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options = std::string() ) :
     base_t( token, p, s ),
     requires_stealth( false ), combo_point_gain( 0 ),
-    base_dd_bonus( 0.0 ), base_td_bonus( 0.0 )
+    base_dd_bonus( 0.0 ), base_td_bonus( 0.0 ), consume_ooc( true )
   {
     parse_options( options );
 
@@ -1999,7 +2000,7 @@ public:
     if ( c == 0 )
       return 0;
 
-    if ( p() -> buff.omen_of_clarity -> check() )
+    if ( consume_ooc && p() -> buff.omen_of_clarity -> check() )
       return 0;
 
     if ( p() -> buff.berserk -> check() )
@@ -2123,7 +2124,7 @@ public:
     }
     
     // Treat Omen of Clarity energy savings like an energy gain for tracking purposes.
-    if ( base_t::cost() > 0 && p() -> buff.omen_of_clarity -> up() )
+    if ( base_t::cost() > 0 && consume_ooc && p() -> buff.omen_of_clarity -> up() )
     {
       // Base cost doesn't factor in Berserk, but Omen of Clarity does net us less energy during it, so account for that here.
       double eff_cost = base_t::cost() * ( 1.0 + p() -> buff.berserk -> check() * p() -> spell.berserk_cat -> effectN( 1 ).percent() );
@@ -2581,6 +2582,9 @@ struct savage_roar_t : public cat_attack_t
     may_miss = harmful = false;
     dot_duration  = timespan_t::zero();
     base_tick_time = timespan_t::zero();
+
+    // Does not consume Omen of Clarity. http://us.battle.net/wow/en/blog/16549669/603-patch-notes-10-27-2014
+    consume_ooc = false;
   }
 
   timespan_t duration( int combo_points = -1 )
