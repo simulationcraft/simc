@@ -2121,11 +2121,14 @@ public:
                               consumed * p() -> talent.soul_of_the_forest -> effectN( 1 ).base_value(),
                               p() -> gain.soul_of_the_forest );
     }
-
+    
+    // Treat Omen of Clarity energy savings like an energy gain for tracking purposes.
     if ( base_t::cost() > 0 && p() -> buff.omen_of_clarity -> up() )
     {
-      // Treat the savings like a energy gain for tracking purposes.
-      p() -> gain.omen_of_clarity -> add( RESOURCE_ENERGY, base_t::cost() );
+      // Base cost doesn't factor in Berserk, but Omen of Clarity does net us less energy during it, so account for that here.
+      double eff_cost = base_t::cost() * ( 1.0 + p() -> buff.berserk -> check() * p() -> spell.berserk_cat -> effectN( 1 ).percent() );
+      p() -> gain.omen_of_clarity -> add( RESOURCE_ENERGY, eff_cost );
+
       p() -> buff.omen_of_clarity -> expire();
     }
   }
@@ -2352,7 +2355,7 @@ struct ferocious_bite_t : public cat_attack_t
       if ( p() -> glyph.ferocious_bite -> ok() )
       {
         // Heal based on the energy spent before Berserk's reduction
-        glyph_effect -> energy_spent = ( cost() + excess_energy ) * ( 1.0 + p() -> buff.berserk -> check() );
+        glyph_effect -> energy_spent = ( cost() + excess_energy ) / ( 1.0 + p() -> buff.berserk -> check() * p() -> spell.berserk_cat -> effectN( 1 ).percent() );
         glyph_effect -> execute();
       }
 
