@@ -32,19 +32,22 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
 actions+=/barkskin
-actions+=/maul,if=buff.tooth_and_claw.react&incoming_damage_1s&rage>=80
+actions+=/maul,if=buff.tooth_and_claw.react&incoming_damage_1s
+actions+=/berserk,if=buff.pulverize.remains>10
+actions+=/frenzied_regeneration,if=rage>=80
 actions+=/cenarion_ward
 actions+=/renewal,if=health.pct<30
 actions+=/heart_of_the_wild
-actions+=/rejuvenation,if=!ticking&buff.heart_of_the_wild.up
+actions+=/rejuvenation,if=buff.heart_of_the_wild.up&remains<=0.3*duration
 actions+=/natures_vigil
 actions+=/healing_touch,if=buff.dream_of_cenarius.react&health.pct<30
 actions+=/pulverize,if=buff.pulverize.remains<0.5
-actions+=/lacerate,if=talent.pulverize.enabled&buff.pulverize.remains<=(3-dot.lacerate.stack)*gcd
+actions+=/lacerate,if=talent.pulverize.enabled&buff.pulverize.remains<=(3-dot.lacerate.stack)*gcd&buff.berserk.down
 actions+=/incarnation
-actions+=/mangle,if=buff.son_of_ursoc.down
+actions+=/lacerate,if=!ticking
 actions+=/thrash_bear,if=!ticking
 actions+=/mangle
+actions+=/thrash_bear,if=remains<=0.3*duration
 actions+=/lacerate
 
 head=headguard_of_the_shattered_vale,id=99421,upgrade=4,gems=indomitable_primal_10haste_10crit_11agi
