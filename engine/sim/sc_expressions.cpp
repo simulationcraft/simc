@@ -504,8 +504,8 @@ public:
     double left_value, right_value;
     if( left  -> is_constant( &left_value  ) &&
 	right -> is_constant( &right_value ) )
-      result = F<double>()( left_value, right_value );
     {
+      result = F<double>()( left_value, right_value );
       if( EXPRESSION_DEBUG ) printf( "%*d %s binary expression reduced to %f\n", spacing, id_, name().c_str(), result );
       delete left;
       delete right;
