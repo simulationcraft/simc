@@ -6247,7 +6247,7 @@ void druid_t::apl_feral()
     def -> add_action( potion_action + ",sync=berserk,if=target.health.pct<25" );
   def -> add_action( this, "Berserk", "if=buff.tigers_fury.up" );
   if ( race == RACE_NIGHT_ELF )
-    def -> add_action( "shadowmeld,if=(buff.bloodtalons.up|!talent.bloodtalons.enabled)&dot.rake.remains<0.3*dot.rake.duration" );
+    def -> add_action( "shadowmeld,if=dot.rake.remains<=0.3*dot.rake.duration&energy>=35&dot.rake.pmultiplier<2&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>15)" );
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<25",
                      "Keep Rip from falling off during execute range." );
   def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" );
