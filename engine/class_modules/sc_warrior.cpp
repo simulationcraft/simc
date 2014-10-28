@@ -573,7 +573,7 @@ public:
     double cdm = ab::total_crit_bonus();
 
     if ( p() -> buff.recklessness -> up() && recklessness )
-      cdm *= 1.0 + p() -> buff.recklessness -> data().effectN( 2 ).percent() * p() -> glyphs.recklessness -> effectN( 1 ).percent();
+      cdm *= 1.0 + p() -> buff.recklessness -> data().effectN( 2 ).percent() * ( 1.0 + p() -> glyphs.recklessness -> effectN( 1 ).percent() );
 
     return cdm;
   }
