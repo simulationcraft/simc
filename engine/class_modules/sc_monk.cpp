@@ -3422,12 +3422,11 @@ struct zen_sphere_t: public monk_heal_t
 struct gift_of_the_ox_t: public monk_heal_t
 {
   gift_of_the_ox_t( monk_t& p, const std::string& options_str ):
-    monk_heal_t( "gift_of_the_ox", p, p.spec.gift_of_the_ox )
+    monk_heal_t( "gift_of_the_ox", p, p.find_spell( 124507 ) )
   {
     parse_options( options_str );
     harmful = false;
     trigger_gcd = timespan_t::zero();
-    attack_power_mod.direct = 0.40; // Hardcoded Sep-15-2014
   }
 
   virtual void execute()
