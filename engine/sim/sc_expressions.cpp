@@ -5,6 +5,8 @@
 
 #include "simulationcraft.hpp"
 
+#define EXPRESSION_DEBUG false
+
 int expr_t::unique_id=0;
 
 namespace { // ANONYMOUS ====================================================
@@ -174,7 +176,7 @@ public:
 
   expr_t* optimize( int spacing ) // override
   {
-    printf( "%*d %s ( %s )\n", spacing, id_, name().c_str(), input -> name().c_str() );
+    if( EXPRESSION_DEBUG ) printf( "%*d %s ( %s )\n", spacing, id_, name().c_str(), input -> name().c_str() );
     input = input -> optimize( spacing+2 );
     double input_value;
     if( input -> is_constant( &input_value ) )
@@ -253,14 +255,14 @@ public:
 
   expr_t* optimize( int spacing ) // override
   {
-    printf( "%*d and %ld %ld %ld %ld ( %s %s )\n", spacing, id_, left_true, left_false, right_true, right_false, left -> name().c_str(), right -> name().c_str() );
+    if( EXPRESSION_DEBUG ) printf( "%*d and %ld %ld %ld %ld ( %s %s )\n", spacing, id_, left_true, left_false, right_true, right_false, left -> name().c_str(), right -> name().c_str() );
     left  = left  -> optimize( spacing+2 );
     right = right -> optimize( spacing+2 );
     bool left_always_true  = left -> always_true();
     bool left_always_false = left -> always_false();
     bool right_always_true  = right -> always_true();
     bool right_always_false = right -> always_false();
-    if( false )
+    if( EXPRESSION_DEBUG )
     {
       if( left -> op_ == TOK_UNKNOWN )
 	if( ( ! left_always_true  && left_false == 0 ) ||
@@ -297,6 +299,7 @@ public:
       delete right;
       return left;
     }
+    // We need to separate constant propagation and flattening for proper term sorting.
     if( left_false < right_false ) 
     {
       std::swap( left, right -> op_ == TOK_AND ? ( (logical_and_t*) right ) -> left : right );
@@ -330,14 +333,14 @@ public:
 
   expr_t* optimize( int spacing ) // override
   {
-    printf( "%*d or %ld %ld %ld %ld ( %s %s )\n", spacing, id_, left_true, left_false, right_true, right_false, left -> name().c_str(), right -> name().c_str() );
+    if( EXPRESSION_DEBUG ) printf( "%*d or %ld %ld %ld %ld ( %s %s )\n", spacing, id_, left_true, left_false, right_true, right_false, left -> name().c_str(), right -> name().c_str() );
     left  = left  -> optimize( spacing+2 );
     right = right -> optimize( spacing+2 );
     bool left_always_true  = left -> always_true();
     bool left_always_false = left -> always_false();
     bool right_always_true  = right -> always_true();
     bool right_always_false = right -> always_false();
-    if( false )
+    if( EXPRESSION_DEBUG )
     {
       if( left -> op_ == TOK_UNKNOWN )
 	if( ( ! left_always_true  && left_false == 0 ) ||
@@ -374,6 +377,7 @@ public:
       delete right;
       return left;
     }
+    // We need to separate constant propagation and flattening for proper term sorting.
     if( left_true < right_true )
     {
       std::swap( left, right -> op_ == TOK_OR ? ( (logical_or_t*) right ) -> left : right );
@@ -407,7 +411,7 @@ public:
 
   expr_t* optimize( int spacing ) // override
   {
-    printf( "%*d xor ( %s %s )\n", spacing, id_, left -> name().c_str(), right -> name().c_str() );
+    if( EXPRESSION_DEBUG ) printf( "%*d xor ( %s %s )\n", spacing, id_, left -> name().c_str(), right -> name().c_str() );
     left  = left  -> optimize( spacing+2 );
     right = right -> optimize( spacing+2 );
     bool left_always_true  = left -> always_true();
@@ -478,7 +482,7 @@ public:
   
   expr_t* optimize( int spacing ) // override
   {
-    printf( "%*d %s ( %s %s )\n", spacing, id_, name().c_str(), left -> name().c_str(), right -> name().c_str() );
+    if( EXPRESSION_DEBUG ) printf( "%*d %s ( %s %s )\n", spacing, id_, name().c_str(), left -> name().c_str(), right -> name().c_str() );
     left  = left  -> optimize( spacing+2 );
     right = right -> optimize( spacing+2 );
     double left_value, right_value;
