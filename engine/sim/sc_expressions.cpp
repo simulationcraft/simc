@@ -502,8 +502,9 @@ public:
     left  = left  -> optimize( spacing+2 );
     right = right -> optimize( spacing+2 );
     double left_value, right_value;
-    if( left  -> is_constant( &left_value  ) &&
-	right -> is_constant( &right_value ) )
+    bool left_constant  = left  -> is_constant( &left_value  );
+    bool right_constant = right -> is_constant( &right_value );
+    if( left_constant && right_constant )
     {
       result = F<double>()( left_value, right_value );
       if( EXPRESSION_DEBUG ) printf( "%*d %s binary expression reduced to %f\n", spacing, id_, name().c_str(), result );
@@ -511,6 +512,36 @@ public:
       delete right;
       delete this;
       return new const_expr_t( "const_binary", result );
+    }
+    if( left_constant )
+    {
+      if( EXPRESSION_DEBUG ) printf( "%*d %s binary expression reduced left\n", spacing, id_, name().c_str() );
+      struct left_reduced_t : public expr_t
+      {
+	double left;
+	expr_t* right;
+	left_reduced_t( const std::string& n, token_e o, double l, expr_t* r ) : expr_t( n, o ), left(l), right(r) {}
+	double evaluate() { return F<double>()( left, right -> eval() ); }
+      };
+      expr_t* reduced = new left_reduced_t( name(), op_, left_value, right );
+      delete this;
+      delete left;
+      return reduced;
+    }
+    if( right_constant )
+    {
+      if( EXPRESSION_DEBUG ) printf( "%*d %s binary expression reduced right\n", spacing, id_, name().c_str() );
+      struct right_reduced_t : public expr_t
+      {
+	expr_t* left;
+	double right;
+	right_reduced_t( const std::string& n, token_e o, expr_t* l, double r ) : expr_t( n, o ), left(l), right(r) {}
+	double evaluate() { return F<double>()( left -> eval(), right ); }
+      };
+      expr_t* reduced = new right_reduced_t( name(), op_, left, right_value );
+      delete this;
+      delete right;
+      return reduced;
     }
     expr_t* expr = select_binary( name(), op_, left, right );
     delete this;
