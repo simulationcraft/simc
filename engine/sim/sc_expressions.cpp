@@ -181,9 +181,11 @@ public:
     double input_value;
     if( input -> is_constant( &input_value ) )
     {
+      double result = F( input_value );
+      if( EXPRESSION_DEBUG ) printf( "%*d %s unary expression reduced to %f\n", spacing, id_, name().c_str(), result );
       delete this;
       delete input;
-      return new const_expr_t( "const_unary", F( input_value ) );
+      return new const_expr_t( "const_unary", result );
     }
     expr_t* expr = select_unary( name(), op_, input );
     delete this;
@@ -275,6 +277,7 @@ public:
     }
     if( left_always_false || right_always_false )
     {
+      if( EXPRESSION_DEBUG ) printf( "%*d %s and expression reduced to false\n", spacing, id_, name().c_str() );
       delete this;
       delete left;
       delete right;
@@ -282,6 +285,7 @@ public:
     }
     if( left_always_true && right_always_true )
     {
+      if( EXPRESSION_DEBUG ) printf( "%*d %s and expression reduced to true\n", spacing, id_, name().c_str() );
       delete this;
       delete left;
       delete right;
@@ -289,12 +293,14 @@ public:
     }
     if( left_always_true )
     {
+      if( EXPRESSION_DEBUG ) printf( "%*d %s and expression reduced to right\n", spacing, id_, name().c_str() );
       delete this;
       delete left;
       return right;
     }
     if( right_always_true )
     {
+      if( EXPRESSION_DEBUG ) printf( "%*d %s and expression reduced to left\n", spacing, id_, name().c_str() );
       delete this;
       delete right;
       return left;
@@ -353,6 +359,7 @@ public:
     }
     if( left_always_true || right_always_true )
     {
+      if( EXPRESSION_DEBUG ) printf( "%*d %s or expression reduced to true\n", spacing, id_, name().c_str() );
       delete this;
       delete left;
       delete right;
@@ -360,6 +367,7 @@ public:
     }
     if( left_always_false && right_always_false )
     {
+      if( EXPRESSION_DEBUG ) printf( "%*d %s or expression reduced to false\n", spacing, id_, name().c_str() );
       delete this;
       delete left;
       delete right;
@@ -367,12 +375,14 @@ public:
     }
     if( left_always_false )
     {
+      if( EXPRESSION_DEBUG ) printf( "%*d %s or expression reduced to right\n", spacing, id_, name().c_str() );
       delete this;
       delete left;
       return right;
     }
     if( right_always_false )
     {
+      if( EXPRESSION_DEBUG ) printf( "%*d %s or expression reduced to left\n", spacing, id_, name().c_str() );
       delete this;
       delete right;
       return left;
@@ -421,6 +431,7 @@ public:
     if( ( left_always_true  && right_always_false ) ||
 	( left_always_false && right_always_true  ) )
     {
+      if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to true\n", spacing, id_, name().c_str() );
       delete this;
       delete left;
       delete right;
@@ -429,6 +440,7 @@ public:
     if( ( left_always_true  && right_always_true  ) ||
 	( left_always_false && right_always_false ) )
     {
+      if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to false\n", spacing, id_, name().c_str() );
       delete this;
       delete left;
       delete right;
@@ -436,18 +448,21 @@ public:
     }
     if( left_always_false )
     {
+      if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to right\n", spacing, id_, name().c_str() );
       delete this;
       delete left;
       return right;
     }
     if( right_always_false )
     {
+      if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to left\n", spacing, id_, name().c_str() );
       delete this;
       delete right;
       return left;
     }
     if( left_always_true )
     {
+      if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to !right\n", spacing, id_, name().c_str() );
       expr_t* not_expr = select_unary( "not_xor", TOK_NOT, right );
       delete this;
       delete left;
@@ -455,6 +470,7 @@ public:
     }
     if( right_always_true )
     {
+      if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to !left\n", spacing, id_, name().c_str() );
       expr_t* not_expr = select_unary( "not_xor", TOK_NOT, left );
       delete this;
       delete right;
@@ -488,11 +504,12 @@ public:
     double left_value, right_value;
     if( left  -> is_constant( &left_value  ) &&
 	right -> is_constant( &right_value ) )
+      result = F<double>()( left_value, right_value );
     {
+      if( EXPRESSION_DEBUG ) printf( "%*d %s binary expression reduced to %f\n", spacing, id_, name().c_str(), result );
       delete left;
       delete right;
       delete this;
-      result = F<double>()( left_value, right_value );
       return new const_expr_t( "const_binary", result );
     }
     expr_t* expr = select_binary( name(), op_, left, right );
