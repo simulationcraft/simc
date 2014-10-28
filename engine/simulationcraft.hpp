@@ -2818,6 +2818,7 @@ public:
   bool      iterate();
   void      partition();
   bool      execute();
+  int       calc_num_iterations();
   void      print_options();
   void      add_option( const option_t& opt );
   void      create_options();
