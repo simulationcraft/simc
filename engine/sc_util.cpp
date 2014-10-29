@@ -1094,10 +1094,7 @@ const char* util::food_type_string( food_e food )
     case FOOD_BLACKROCK_HAM:                    return "blackrock_ham";
     case FOOD_BRAISED_BASILISK:                 return "braised_basilisk";
     case FOOD_CALAMARI_CREPES:                  return "calamari_crepes";
-    case FOOD_CLEFTHOOF_POT_ROAST:              return "clefthoof_pot_roast";
     case FOOD_CLEFTHOOF_SAUSAGES:               return "clefthoof_sausages";
-    case FOOD_CRISPY_FRIED_SCORPION:            return "crispy_fried_scorpion";
-    case FOOD_DEEP_FRIED_BASILISK:              return "deep_fried_basilisk";
     case FOOD_FAT_SLEEPER_CAKES:                return "fat_sleeper_cakes";
     case FOOD_FEAST_OF_BLOOD:                   return "feast_of_blood";
     case FOOD_FEAST_OF_THE_WATERS:              return "feast_of_the_waters";
@@ -1108,10 +1105,8 @@ const char* util::food_type_string( food_e food )
     case FOOD_HEARTY_ELEKK_STEAK:               return "hearty_elekk_steak";
     case FOOD_PAN_SEARED_TALBUK:                return "pan_seared_talbuk";
     case FOOD_RYLAK_CREPES:                     return "rylak_crepes";
-    case FOOD_SALTED_SKULKER:                   return "salted_skulker";
     case FOOD_SAVAGE_FEAST:                     return "savage_feast";
     case FOOD_SLEEPER_SURPRISE:                 return "sleeper_surprise";
-    case FOOD_STARFLOWER_SANDWICH:              return "starflower_sandwich";
     case FOOD_STEAMED_SCORPION:                 return "steamed_scorpion";
     case FOOD_STURGEON_STEW:                    return "sturgeon_stew";
     case FOOD_TALADOR_SURF_AND_TURF:            return "talador_surf_and_turf";
@@ -1250,7 +1245,6 @@ movement_direction_e util::parse_movement_direction( const std::string& name )
 {
   return parse_enum<movement_direction_e, MOVEMENT_UNKNOWN, MOVEMENT_DIRECTION_MAX, movement_direction_string>( name );
 }
-
 
 // cache_type_string ========================================================
 
