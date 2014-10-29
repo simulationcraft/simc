@@ -4778,7 +4778,7 @@ void mage_t::apl_arcane()
   default_list -> add_talent( this, "Cold Snap",
                               "if=buff.presence_of_mind.down&cooldown.presence_of_mind.remains>75" );
   default_list -> add_action( "call_action_list,name=init_crystal,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.up" );
-  default_list -> add_action( "call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active" );
+  default_list -> add_action( "call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&pet.prismatic_crystal.active" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=5" );
   default_list -> add_action( "call_action_list,name=burn,if=time_to_die<mana.pct*0.35*spell_haste|cooldown.evocation.remains<=(mana.pct-30)*0.3*spell_haste|(buff.arcane_power.up&cooldown.evocation.remains<=(mana.pct-30)*0.4*spell_haste)" );
   default_list -> add_action( "call_action_list,name=conserve" );
@@ -4818,7 +4818,7 @@ void mage_t::apl_arcane()
   burn -> add_action( this, "Arcane Missiles",
                       "if=buff.arcane_missiles.react=3" );
   burn -> add_action( this, "Arcane Missiles",
-                      "if=buff.arcane_instability.react&buff.arcane_instability.remains<action.arcane_blast.execute_time" );
+                      "if=set_bonus.tier17_4pc&buff.arcane_instability.react&buff.arcane_instability.remains<action.arcane_blast.execute_time" );
   burn -> add_talent( this, "Supernova",
                       "if=time_to_die<8|charges=2" );
   burn -> add_talent( this, "Nether Tempest",
@@ -4848,7 +4848,7 @@ void mage_t::apl_arcane()
   conserve -> add_action( this, "Arcane Missiles",
                           "if=buff.arcane_missiles.react=3|(talent.overpowered.enabled&buff.arcane_power.up&buff.arcane_power.remains<action.arcane_blast.execute_time)" );
   conserve -> add_action( this, "Arcane Missiles",
-                          "if=buff.arcane_instability.react&buff.arcane_instability.remains<action.arcane_blast.execute_time" );
+                          "if=set_bonus.tier17_4pc&buff.arcane_instability.react&buff.arcane_instability.remains<action.arcane_blast.execute_time" );
   conserve -> add_talent( this, "Nether Tempest",
                           "cycle_targets=1,if=target!=prismatic_crystal&buff.arcane_charge.stack=4&(active_dot.nether_tempest=0|(ticking&remains<3.6))" );
   conserve -> add_talent( this, "Supernova",
@@ -4917,7 +4917,7 @@ void mage_t::apl_fire()
   default_list -> add_talent( this, "Rune of Power",
                               "if=buff.rune_of_power.remains<cast_time" );
   default_list -> add_action( "call_action_list,name=combust_sequence,if=pyro_chain" );
-  default_list -> add_action( "call_action_list,name=crystal_sequence,if=pet.prismatic_crystal.active" );
+  default_list -> add_action( "call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&pet.prismatic_crystal.active" );
   default_list -> add_action( "call_action_list,name=init_combust,if=!pyro_chain" );
   default_list -> add_talent( this, "Rune of Power",
                               "if=buff.rune_of_power.remains<action.fireball.execute_time+gcd.max&!(buff.heating_up.up&action.fireball.in_flight)",
@@ -4962,7 +4962,7 @@ void mage_t::apl_fire()
 
   combust_sequence -> add_talent( this, "Meteor" );
   combust_sequence -> add_action( this, "Pyroblast",
-                                  "if=buff.pyromaniac.up" );
+                                  "if=set_bonus.tier17_4pc&buff.pyromaniac.up" );
   combust_sequence -> add_action( this, "Inferno Blast",
                                   "if=set_bonus.tier16_4pc_caster&(buff.pyroblast.up^buff.heating_up.up)" );
   combust_sequence -> add_action( this, "Fireball",
@@ -5013,9 +5013,9 @@ void mage_t::apl_fire()
                                "if=buff.pyroblast.up&buff.pyroblast.remains<action.fireball.execute_time",
                                "Use Pyro procs before they run out" );
   single_target -> add_action( this, "Pyroblast",
-                               "if=buff.pyroblast.up&buff.potent_flames.up&buff.potent_flames.remains<gcd.max" );
+                               "if=set_bonus.tier16_2pc_caster&buff.pyroblast.up&buff.potent_flames.up&buff.potent_flames.remains<gcd.max" );
   single_target -> add_action( this, "Pyroblast",
-                               "if=buff.pyromaniac.react" );
+                               "if=set_bonus.tier17_4pc&buff.pyromaniac.react" );
   single_target -> add_action( this, "Pyroblast",
                                "if=buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight",
                                "Pyro camp during regular sequence; Do not use Pyro procs without HU and first using fireball" );
@@ -5067,7 +5067,7 @@ void mage_t::apl_frost()
   crystal_sequence -> add_action( "call_action_list,name=cooldowns" );
   crystal_sequence -> add_talent( this, "Prismatic Crystal" );
   crystal_sequence -> add_talent( this, "Frost Bomb",
-                                  "if=active_enemies>1&current_target=prismatic_crystal&!ticking" );
+                                  "if=talent.prismatic_crystal.enabled&current_target=prismatic_crystal&active_enemies>1&!ticking" );
   crystal_sequence -> add_action( this, "Ice Lance",
                                   "if=buff.fingers_of_frost.react=2|(buff.fingers_of_frost.react&active_dot.frozen_orb>=1)" );
   crystal_sequence -> add_talent( this, "Ice Nova",
@@ -5101,7 +5101,7 @@ void mage_t::apl_frost()
                      "if=remains<action.ice_lance.travel_time&(cooldown.frozen_orb.remains<gcd.max|buff.fingers_of_frost.react=2)" );
   aoe -> add_action( this, "Frozen Orb" );
   aoe -> add_action( this, "Ice Lance",
-                     "if=buff.fingers_of_frost.react&debuff.frost_bomb.up" );
+                     "if=talent.frost_bomb.enabled&buff.fingers_of_frost.react&debuff.frost_bomb.up" );
   aoe -> add_talent( this, "Comet Storm" );
   aoe -> add_talent( this, "Ice Nova" );
   aoe -> add_talent( this, "Cold Snap",
@@ -5140,12 +5140,12 @@ void mage_t::apl_frost()
   single_target -> add_action( this, "Frostfire Bolt",
                                "if=buff.brain_freeze.react" );
   single_target -> add_action( this, "Ice Lance",
-                               "if=buff.fingers_of_frost.react&debuff.frost_bomb.remains>travel_time&(!talent.thermal_void.enabled|cooldown.icy_veins.remains>8)" );
+                               "if=talent.frost_bomb.enabled&buff.fingers_of_frost.react&debuff.frost_bomb.remains>travel_time&(!talent.thermal_void.enabled|cooldown.icy_veins.remains>8)" );
   single_target -> add_action( this, "Frostbolt",
-                               "if=buff.ice_shard.up&!(talent.thermal_void.enabled&buff.icy_veins.up&buff.icy_veins.remains<10)",
+                               "if=set_bonus.tier17_2pc&buff.ice_shard.up&!(talent.thermal_void.enabled&buff.icy_veins.up&buff.icy_veins.remains<10)",
                                "Camp procs and spam Frostbolt while 4T17 buff is up" );
   single_target -> add_action( this, "Ice Lance",
-                               "if=buff.fingers_of_frost.react&!talent.frost_bomb.enabled&(!talent.thermal_void.enabled|cooldown.icy_veins.remains>8)" );
+                               "if=!talent.frost_bomb.enabled&buff.fingers_of_frost.react&(!talent.thermal_void.enabled|cooldown.icy_veins.remains>8)" );
   single_target -> add_action( this, "Ice Lance",
                                "if=talent.thermal_void.enabled&buff.icy_veins.up&buff.icy_veins.remains<6&buff.icy_veins.remains<cooldown.icy_veins.remains",
                                "Thermal Void IV extension" );
