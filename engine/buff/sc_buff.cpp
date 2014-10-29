@@ -63,7 +63,7 @@ struct tick_t : public buff_event_t
 
     // For tick number calculations, always include the +1ms so we get correct
     // tick number labeling on the last tick, just before the buff expires.
-    timespan_t elapsed = buff -> elapsed( buff -> sim -> current_time ) + timespan_t::from_millis( 1 );
+    timespan_t elapsed = buff -> elapsed( buff -> sim -> current_time() ) + timespan_t::from_millis( 1 );
     timespan_t total_duration = buff -> expiration ? (elapsed + buff -> remains() ): timespan_t::max();
     int current_tick = static_cast<int>( elapsed / buff -> buff_period );
     int total_ticks = buff -> expiration ? static_cast<int>( total_duration / buff -> buff_period ) : -1;
@@ -392,7 +392,7 @@ void buff_t::datacollection_begin()
 
 void buff_t::datacollection_end()
 {
-  timespan_t& time = player ? player -> iteration_fight_length : sim -> current_time;
+  timespan_t time = player ? player -> iteration_fight_length : sim -> current_time();
 
   uptime_pct.add( time != timespan_t::zero() ? 100.0 * iteration_uptime_sum / time : 0 );
 
@@ -479,7 +479,7 @@ bool buff_t::may_react( int stack )
 
   if ( occur <= timespan_t::zero() ) return true;
 
-  return sim -> current_time > stack_react_time[ stack ];
+  return sim -> current_time() > stack_react_time[ stack ];
 }
 
 // buff_t::stack_react ======================================================
@@ -490,7 +490,7 @@ int buff_t::stack_react()
 
   for ( int i = 1; i <= current_stack; i++ )
   {
-    if ( stack_react_time[ i ] > sim -> current_time ) break;
+    if ( stack_react_time[ i ] > sim -> current_time() ) break;
     stack++;
   }
 
@@ -507,7 +507,7 @@ timespan_t buff_t::remains() const
   }
   if ( expiration )
   {
-    return expiration -> occurs() - sim -> current_time;
+    return expiration -> occurs() - sim -> current_time();
   }
   return timespan_t::min();
 }
@@ -600,9 +600,9 @@ void buff_t::execute( int stacks, double value, timespan_t duration )
 {
   if ( last_trigger > timespan_t::zero() )
   {
-    trigger_intervals.add( ( sim -> current_time - last_trigger ).total_seconds() );
+    trigger_intervals.add( ( sim -> current_time() - last_trigger ).total_seconds() );
   }
-  last_trigger = sim -> current_time;
+  last_trigger = sim -> current_time();
 
   // If the buff has a tick event ongoing, the rules change a bit for ongoing
   // ticking buffs, we treat executes as another "normal trigger", which
@@ -668,7 +668,7 @@ void buff_t::decrement( int    stacks,
     if ( requires_invalidation ) invalidate_cache();
 
     if ( as<std::size_t>( current_stack ) < stack_uptime.size() )
-      stack_uptime[ current_stack ] -> update( false, sim -> current_time );
+      stack_uptime[ current_stack ] -> update( false, sim -> current_time() );
 
     current_stack -= stacks;
 
@@ -678,7 +678,7 @@ void buff_t::decrement( int    stacks,
     if ( value >= 0 ) current_value = value;
 
     if ( as<std::size_t>( current_stack ) < stack_uptime.size() )
-      stack_uptime[ current_stack ] -> update( true, sim -> current_time );
+      stack_uptime[ current_stack ] -> update( true, sim -> current_time() );
 
     if ( sim -> debug )
       sim -> out_debug.printf( "buff %s decremented by %d to %d stacks",
@@ -743,7 +743,7 @@ void buff_t::start( int        stacks,
   }
 #endif
 
-  if ( sim -> current_time <= timespan_t::from_seconds( 0.01 ) )
+  if ( sim -> current_time() <= timespan_t::from_seconds( 0.01 ) )
   {
     if ( buff_duration == timespan_t::zero() || ( buff_duration > timespan_t::from_seconds( sim -> expected_max_time() ) ) )
       constant = true;
@@ -776,9 +776,9 @@ void buff_t::start( int        stacks,
 
   if ( last_start >= timespan_t::zero() )
   {
-    start_intervals.add( ( sim -> current_time - last_start ).total_seconds() );
+    start_intervals.add( ( sim -> current_time() - last_start ).total_seconds() );
   }
-  last_start = sim -> current_time;
+  last_start = sim -> current_time();
 
   timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration;
   if ( d > timespan_t::zero() )
@@ -888,8 +888,8 @@ void buff_t::bump( int stacks, double value )
 
     if ( before_stack != current_stack )
     {
-      stack_uptime[ before_stack ] -> update( false, sim -> current_time );
-      stack_uptime[ current_stack ] -> update( true, sim -> current_time );
+      stack_uptime[ before_stack ] -> update( false, sim -> current_time() );
+      stack_uptime[ current_stack ] -> update( true, sim -> current_time() );
     }
 
     aura_gain();
@@ -897,10 +897,10 @@ void buff_t::bump( int stacks, double value )
     if ( reactable )
     {
       timespan_t total_reaction_time = ( player ? ( player -> total_reaction_time() ) : sim -> reaction_time );
-      timespan_t react = sim -> current_time + total_reaction_time;
+      timespan_t react = sim -> current_time() + total_reaction_time;
       for ( int i = before_stack + 1; i <= current_stack; i++ )
       {
-        stack_occurrence[ i ] = sim -> current_time;
+        stack_occurrence[ i ] = sim -> current_time();
         stack_react_time[ i ] = react;
         if ( player && player -> ready_type == READY_TRIGGER )
         {
@@ -966,7 +966,7 @@ void buff_t::expire( timespan_t delay )
   core_event_t::cancel( tick_event );
 
   assert( as<std::size_t>( current_stack ) < stack_uptime.size() );
-  stack_uptime[ current_stack ] -> update( false, sim -> current_time );
+  stack_uptime[ current_stack ] -> update( false, sim -> current_time() );
 
   if ( player && change_regen_rate )
     player -> do_dynamic_regen();
@@ -995,13 +995,13 @@ void buff_t::expire( timespan_t delay )
   if ( requires_invalidation ) invalidate_cache();
   if ( last_start >= timespan_t::zero() )
   {
-    iteration_uptime_sum += sim -> current_time - last_start;
+    iteration_uptime_sum += sim -> current_time() - last_start;
     if ( ! constant && ! overridden && sim -> buff_uptime_timeline )
     {
       timespan_t start_time = timespan_t::from_seconds( last_start.total_millis() / 1000 ) ;
-      timespan_t end_time = timespan_t::from_seconds( sim -> current_time.total_millis() / 1000 );
+      timespan_t end_time = timespan_t::from_seconds( sim -> current_time().total_millis() / 1000 );
       timespan_t begin_uptime = (( timespan_t::from_seconds( 1 ) - last_start ) % timespan_t::from_seconds( 1 ) );
-      timespan_t end_uptime = (sim -> current_time % timespan_t::from_seconds( 1 ));
+      timespan_t end_uptime = (sim -> current_time() % timespan_t::from_seconds( 1 ));
 
       if ( last_start % timespan_t::from_seconds( 1 ) == timespan_t::zero() )
         begin_uptime = timespan_t::from_seconds( 1 );
@@ -1479,7 +1479,7 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
   else
   {
     if ( as<std::size_t>( current_stack ) < stack_uptime.size() )
-      stack_uptime[ current_stack ] -> update( false, sim -> current_time );
+      stack_uptime[ current_stack ] -> update( false, sim -> current_time() );
 
     for ( size_t i = 0; i < stats.size(); ++i )
     {
@@ -1495,7 +1495,7 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
     invalidate_cache();
 
     if ( as<std::size_t>( current_stack ) < stack_uptime.size() )
-      stack_uptime[ current_stack ] -> update( true, sim -> current_time );
+      stack_uptime[ current_stack ] -> update( true, sim -> current_time() );
 
     if ( sim -> debug )
       sim -> out_debug.printf( "buff %s decremented by %d to %d stacks",

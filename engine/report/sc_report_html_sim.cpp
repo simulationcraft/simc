@@ -450,14 +450,14 @@ void print_html_sim_summary( report::sc_html_stream& os, const sim_t* sim, const
     "<td>%I64u</td>\n"
 #endif
     "</tr>\n",
-    sim -> total_events_processed );
+    sim -> event_mgr.total_events_processed );
 
   os.printf(
     "<tr class=\"left\">\n"
     "<th>Max Event Queue:</th>\n"
     "<td>%ld</td>\n"
     "</tr>\n",
-    ( long ) sim -> max_events_remaining );
+    ( long ) sim -> event_mgr.max_events_remaining );
 
   os.printf(
     "<tr class=\"left\">\n"

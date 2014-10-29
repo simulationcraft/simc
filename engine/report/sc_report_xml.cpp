@@ -900,8 +900,8 @@ void print_xml_performance( sim_t* sim, xml_writer_t & writer )
 {
   writer.begin_tag( "performance" );
 
-  writer.print_tag( "total_events", util::to_string( sim -> total_events_processed ) );
-  writer.print_tag( "max_event_queue", util::to_string( sim -> max_events_remaining ) );
+  writer.print_tag( "total_events", util::to_string( sim -> event_mgr.total_events_processed ) );
+  writer.print_tag( "max_event_queue", util::to_string( sim -> event_mgr.max_events_remaining ) );
   writer.print_tag( "target_health", util::to_string( sim -> target -> resources.base[ RESOURCE_HEALTH ], 0 ) );
   writer.print_tag( "sim_seconds", util::to_string( sim -> iterations * sim -> simulation_length.mean(), 0 ) );
   writer.print_tag( "cpu_seconds", util::to_string( sim -> elapsed_cpu ) );
@@ -950,8 +950,8 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_report_informatio
   writer.end_tag( "simulation_length" );
 
   writer.begin_tag( "events" );
-  writer.print_attribute( "processed", util::to_string( sim -> total_events_processed ) );
-  writer.print_attribute( "max_remaining", util::to_string( sim -> max_events_remaining ) );
+  writer.print_attribute( "processed", util::to_string( sim -> event_mgr.total_events_processed ) );
+  writer.print_attribute( "max_remaining", util::to_string( sim -> event_mgr.max_events_remaining ) );
   writer.end_tag( "events" );
 
   writer.print_tag( "fight_style", sim -> fight_style );

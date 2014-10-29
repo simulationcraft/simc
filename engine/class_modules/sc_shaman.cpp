@@ -76,8 +76,8 @@ struct counter_t
 
     value += val;
     if ( last > timespan_t::min() )
-      interval += ( sim -> current_time - last ).total_seconds();
-    last = sim -> current_time;
+      interval += ( sim -> current_time() - last ).total_seconds();
+    last = sim -> current_time();
   }
 
   void reset()
@@ -1922,7 +1922,7 @@ void shaman_spell_base_t<Base>::schedule_execute( action_state_t* state )
   if ( ! ab::background )
   {
     p -> executing = this;
-    p -> gcd_ready = p -> sim -> current_time + ab::gcd();
+    p -> gcd_ready = p -> sim -> current_time() + ab::gcd();
     if ( p -> action_queued && p -> sim -> strict_gcd_queue )
       p -> gcd_ready -= p -> sim -> queue_gcd_reduction;
   }
@@ -4740,14 +4740,14 @@ void shaman_t::trigger_fulmination_stack( const action_state_t* state )
   if ( rng().roll( spec.fulmination -> proc_chance() ) )
   {
     if ( buff.lightning_shield -> check() == 1 )
-      ls_reset = sim -> current_time;
+      ls_reset = sim -> current_time();
 
     int stacks = ( sets.has_set_bonus( SET_CASTER, T14, B4 ) ) ? 2 : 1;
     int wasted_stacks = ( buff.lightning_shield -> check() + stacks ) - buff.lightning_shield -> max_stack();
 
     for ( int i = 0; i < wasted_stacks; i++ )
     {
-      if ( sim -> current_time - ls_reset >= cooldown.shock -> duration )
+      if ( sim -> current_time() - ls_reset >= cooldown.shock -> duration )
         proc.wasted_ls -> occur();
       else
         proc.wasted_ls_shock_cd -> occur();
@@ -4755,7 +4755,7 @@ void shaman_t::trigger_fulmination_stack( const action_state_t* state )
 
     if ( wasted_stacks > 0 )
     {
-      if ( sim -> current_time - ls_reset < cooldown.shock -> duration )
+      if ( sim -> current_time() - ls_reset < cooldown.shock -> duration )
         proc.ls_fast -> occur();
       ls_reset = timespan_t::zero();
     }

@@ -241,7 +241,7 @@ std::string set_bonus_t::to_profile_string( const std::string& newline ) const
   return s;
 }
 
-expr_t* set_bonus_t::create_expression( const player_t*, const std::string& type )
+expr_t* set_bonus_t::create_expression( const player_t* p, const std::string& type )
 {
   std::vector<std::string> split = util::string_split( type, "_" );
   int tier = -1, bonus = -1;
@@ -294,7 +294,10 @@ expr_t* set_bonus_t::create_expression( const player_t*, const std::string& type
     double evaluate() { return state_; }
   };
 
-  return new set_bonus_expr_t( state );
+  if( p -> sim -> optimize_expressions )
+    return expr_t::create_constant( type, state );
+  else
+    return new set_bonus_expr_t( state );
 }
 
 std::string set_bonus_t::tier_type_str( tier_e tier )

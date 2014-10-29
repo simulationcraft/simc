@@ -271,7 +271,7 @@ void dot_t::copy( player_t* other_target, dot_copy_e copy_type )
     // TODO?: A more proper way might be to also copy the source dot's last
     // start time and current tick, in practice it is probably meaningless,
     // though.
-    other_dot -> last_start = sim.current_time;
+    other_dot -> last_start = sim.current_time();
     other_dot -> current_duration = new_duration;
     other_dot -> current_tick = 0;
     other_dot -> extended_time = timespan_t::zero();
@@ -538,7 +538,7 @@ timespan_t dot_t::remains() const
 {
   if ( ! current_action ) return timespan_t::zero();
   if ( ! ticking ) return timespan_t::zero();
-  //return last_start + current_duration - sim.current_time;
+  //return last_start + current_duration - sim.current_time();
   if ( ! end_event ) return timespan_t::zero();
   return end_event -> remains();
 }
@@ -626,14 +626,14 @@ void dot_t::schedule_tick()
            || ( current_tick > 0
                 && expr
                 && expr -> success()
-                && current_action -> player -> gcd_ready <= sim.current_time ) )
+                && current_action -> player -> gcd_ready <= sim.current_time() ) )
          && current_action -> ready()
          && !is_higher_priority_action_available() )
     {
       // FIXME: We can probably use "source" instead of "action->player"
 
       current_action -> player -> channeling = 0;
-      current_action -> player -> gcd_ready = sim.current_time + current_action -> gcd();
+      current_action -> player -> gcd_ready = sim.current_time() + current_action -> gcd();
       current_action -> execute();
       if ( current_action -> result_is_hit( current_action -> execute_state -> result ) )
       {
@@ -652,7 +652,7 @@ void dot_t::schedule_tick()
 void dot_t::start( timespan_t duration )
 {
   current_duration = duration;
-  last_start = sim.current_time;
+  last_start = sim.current_time();
 
   ticking = true;
 
@@ -679,7 +679,7 @@ void dot_t::refresh( timespan_t duration )
 {
   current_duration = current_action -> calculate_dot_refresh_duration( this, duration );
 
-  last_start = sim.current_time;
+  last_start = sim.current_time();
 
   assert( end_event && "Dot is ticking but has no end event." );
   end_event -> reschedule( current_duration );

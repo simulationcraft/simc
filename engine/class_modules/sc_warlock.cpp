@@ -2108,9 +2108,9 @@ public:
 
     // If getting to 1 full ember was a surprise, the player would have to react to it
     if ( p -> resources.current[RESOURCE_BURNING_EMBER] == 1.0 && ( amount > 0.1 || chance < 1.0 ) )
-      p -> ember_react = p -> sim -> current_time + p -> total_reaction_time();
+      p -> ember_react = p -> sim -> current_time() + p -> total_reaction_time();
     else if ( p -> resources.current[RESOURCE_BURNING_EMBER] >= 1.0 )
-      p -> ember_react = p -> sim -> current_time;
+      p -> ember_react = p -> sim -> current_time();
     else
       p -> ember_react = timespan_t::max();
   }
@@ -2588,9 +2588,9 @@ struct corruption_t: public warlock_spell_t
         p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
         // If going from 0 to 1 shard was a surprise, the player would have to react to it
         if ( p() -> resources.current[RESOURCE_SOUL_SHARD] == 1 )
-          p() -> shard_react = p() -> sim -> current_time + p() -> total_reaction_time();
+          p() -> shard_react = p() -> sim -> current_time() + p() -> total_reaction_time();
         else if ( p() -> resources.current[RESOURCE_SOUL_SHARD] >= 1 )
-          p() -> shard_react = p() -> sim -> current_time;
+          p() -> shard_react = p() -> sim -> current_time();
         else
           p() -> shard_react = timespan_t::max();
 
@@ -3900,7 +3900,7 @@ struct soulburn_seed_of_corruption_aoe_t: public warlock_spell_t
     warlock_spell_t::execute();
 
     p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.seed_of_corruption );
-    p() -> shard_react = p() -> sim -> current_time;
+    p() -> shard_react = p() -> sim -> current_time();
   }
 
   virtual void impact( action_state_t* s )
@@ -5829,7 +5829,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
       warlock_t& player;
       ember_react_expr_t( warlock_t& p ):
         expr_t( "ember_react" ), player( p ) { }
-      virtual double evaluate() { return player.resources.current[RESOURCE_BURNING_EMBER] >= 1 && player.sim -> current_time >= player.ember_react; }
+      virtual double evaluate() { return player.resources.current[RESOURCE_BURNING_EMBER] >= 1 && player.sim -> current_time() >= player.ember_react; }
     };
     return new ember_react_expr_t( *this );
   }
@@ -5840,7 +5840,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
       warlock_t& player;
       shard_react_expr_t( warlock_t& p ):
         expr_t( "shard_react" ), player( p ) { }
-      virtual double evaluate() { return player.resources.current[RESOURCE_SOUL_SHARD] >= 1 && player.sim -> current_time >= player.shard_react; }
+      virtual double evaluate() { return player.resources.current[RESOURCE_SOUL_SHARD] >= 1 && player.sim -> current_time() >= player.shard_react; }
     };
     return new shard_react_expr_t( *this );
   }

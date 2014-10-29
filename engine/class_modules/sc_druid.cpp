@@ -1304,10 +1304,10 @@ struct astral_communion_t : public druid_buff_t < buff_t >
   {
     base_t::expire_override();
 
-    druid.last_check = sim -> current_time - druid.last_check;
+    druid.last_check = sim -> current_time() - druid.last_check;
     druid.last_check *= 1 + druid.buff.astral_communion -> data().effectN( 1 ).percent();
     druid.balance_time += druid.last_check;
-    druid.last_check = sim -> current_time;
+    druid.last_check = sim -> current_time();
   }
 };
 
@@ -1461,7 +1461,7 @@ struct celestial_alignment_t : public druid_buff_t < buff_t >
   {
     base_t::expire_override();
 
-    druid.last_check = sim -> current_time;
+    druid.last_check = sim -> current_time();
   }
 };
 
@@ -7296,7 +7296,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
 
 void druid_t::balance_tracker()
 {
-  if ( last_check == sim -> current_time ) // No need to re-check balance if the time hasn't changed.
+  if ( last_check == sim -> current_time() ) // No need to re-check balance if the time hasn't changed.
     return;
 
   if ( buff.celestial_alignment -> up() ) // Balance power is locked while celestial alignment is active.
@@ -7313,7 +7313,7 @@ void druid_t::balance_tracker()
     return;
   }
 
-  last_check = sim -> current_time - last_check;
+  last_check = sim -> current_time() - last_check;
   // Subtract current time by the last time we checked to get the amount of time elapsed
 
   if ( talent.euphoria -> ok() ) // Euphoria speeds up the cycle to 20 seconds.
@@ -7325,7 +7325,7 @@ void druid_t::balance_tracker()
   // Similarly, when astral communion is running, we will just multiply elapsed time by 3.
 
   balance_time += last_check; // Add the amount of elapsed time to balance_time
-  last_check = sim -> current_time; // Set current time for last check.
+  last_check = sim -> current_time(); // Set current time for last check.
 
   eclipse_amount = 105 * sin( 2 * M_PI * balance_time / timespan_t::from_millis( 40000 ) ); // Re-calculate eclipse
 

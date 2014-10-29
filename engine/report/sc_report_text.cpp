@@ -582,8 +582,8 @@ void print_text_performance( FILE* file, sim_t* sim )
                  "  WallSeconds   = %.3f\n"
                  "  SpeedUp       = %.0f\n"
                  "  EndTime       = %s (%ld)\n\n",
-                 sim -> total_events_processed,
-                 ( long ) sim -> max_events_remaining,
+                 sim -> event_mgr.total_events_processed,
+                 (long) sim -> event_mgr.max_events_remaining,
                  sim -> target -> resources.base[ RESOURCE_HEALTH ],
                  sim -> iterations * sim -> simulation_length.mean(),
                  sim -> elapsed_cpu,
@@ -828,11 +828,11 @@ struct sort_by_event_stopwatch {
 };
 void print_text_monitor_cpu( FILE* file, sim_t* sim )
 {
-  if ( ! sim -> monitor_cpu ) return;
+  if ( ! sim -> event_mgr.monitor_cpu ) return;
 
   util::fprintf( file, "\nEvent Monitor CPU Report:\n" );
 
-  util::fprintf( file, "%10.2fsec : Global Events\n", sim -> event_stopwatch.current() );
+  util::fprintf( file, "%10.2fsec : Global Events\n", sim -> event_mgr.event_stopwatch.current() );
 
   std::vector<player_t*> sorted_p = sim -> player_list.data();
 

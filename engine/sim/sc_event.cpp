@@ -5,84 +5,36 @@
 
 #include "simulationcraft.hpp"
 
-// ==========================================================================
-// Event Memory Management
-// ==========================================================================
-
-void* core_event_t::allocate( std::size_t size, core_sim_t::event_management_t& em )
-{
-  static const std::size_t SIZE = 2 * sizeof( core_event_t );
-  assert( SIZE > size ); ( void ) size;
-
-  core_event_t*& list = em.recycled_event_list;
-
-  core_event_t* e = list;
-
-  if ( e )
-  {
-    list = e -> next;
-  }
-  else
-  {
-    e = static_cast<core_event_t*>( malloc( SIZE ) );
-
-    if ( ! e )
-    {
-      throw std::bad_alloc();
-    }
-    else
-    {
-      em.all_events_ever_created.push_back( e );
-    }
-  }
-
-  return e;
-}
-
-void core_event_t::recycle( core_event_t* e )
-{
-  e -> ~core_event_t();
-
-  core_event_t*& list = e -> _sim.em.recycled_event_list;
-
-  e -> next = list;
-  list = e;
-}
-
-void core_event_t::release( core_event_t*& list )
-{
-  while ( list )
-  {
-    core_event_t* e = list;
-    list = e -> next;
-    free( e );
-  }
-}
+#ifndef NDEBUG
+static const bool ACTOR_EVENT_BOOKKEEPING = true;
+#else
+static const bool ACTOR_EVENT_BOOKKEEPING = false;
+#endif
 
 // ==========================================================================
 // Event
 // ==========================================================================
 
-core_event_t::core_event_t( core_sim_t& s, const char* n ) :
+core_event_t::core_event_t( sim_t& s, const char* n ) :
   _sim( s ), next( nullptr ),  time( timespan_t::zero() ),
-  reschedule_time( timespan_t::zero() ),actor( nullptr ), id( 0 ), canceled( false ), name( n )
+  reschedule_time( timespan_t::zero() ),actor( nullptr ), id( 0 ), canceled( false ), recycled( false ), name( n )
 {}
 
-core_event_t::core_event_t( core_sim_t& s, actor_t* a, const char* n ) :
+core_event_t::core_event_t( sim_t& s, actor_t* a, const char* n ) :
   _sim( s ), next( nullptr ), time( timespan_t::zero() ),
-  reschedule_time( timespan_t::zero() ), actor( a ), id( 0 ), canceled( false ), name( n )
+  reschedule_time( timespan_t::zero() ), actor( a ), id( 0 ), canceled( false ), recycled( false ), name( n )
 {}
 
 core_event_t::core_event_t( actor_t& a, const char* n ) :
   _sim( *a.sim ), next( nullptr ), time( timespan_t::zero() ),
-  reschedule_time( timespan_t::zero() ), actor( &a ), id( 0 ), canceled( false ), name( n )
+  reschedule_time( timespan_t::zero() ), actor( &a ), id( 0 ), canceled( false ), recycled( false ), name( n )
 {}
 
 // event_t::reschedule ======================================================
 
-void core_event_t::reschedule( timespan_t new_time )
+void core_event_t::reschedule( timespan_t new_delta_time )
 {
-  reschedule_time = _sim.current_time + new_time;
+  reschedule_time = _sim.event_mgr.current_time + new_delta_time;
 
   if ( _sim.debug )
     _sim.out_debug.printf( "Rescheduling event %s (%d) from %.2f to %.2f",
@@ -93,7 +45,7 @@ void core_event_t::reschedule( timespan_t new_time )
 
 void core_event_t::add_event( timespan_t delta_time )
 {
-  _sim.add_event( this, delta_time );
+  _sim.event_mgr.add_event( this, delta_time );
 }
 
 // event_t::cancel ==========================================================
@@ -102,7 +54,7 @@ void core_event_t::cancel( core_event_t*& e )
 {
   if ( ! e ) return;
 
-  if ( actor_t::ACTOR_EVENT_BOOKKEEPING && e -> actor && ! e -> canceled )
+  if ( ACTOR_EVENT_BOOKKEEPING && e -> _sim.debug  && e -> actor && ! e -> canceled )
   {
     e -> actor -> event_counter--;
     if ( e -> actor -> event_counter < 0 )
@@ -115,4 +67,305 @@ void core_event_t::cancel( core_event_t*& e )
 
   e -> canceled = true;
   e = 0;
+}
+
+// ==========================================================================
+// Event Manager
+// ==========================================================================
+
+// event_manager_t::event_manager_t =========================================
+
+event_manager_t::event_manager_t( sim_t* s ) :
+  sim( s ),
+  events_remaining( 0 ),
+  events_processed( 0 ),
+  total_events_processed( 0 ),
+  max_events_remaining( 0 ),
+  timing_slice( 0 ),
+  global_event_id( 0 ),
+  timing_wheel(),
+  recycled_event_list( nullptr ),
+  wheel_seconds( 0 ),
+  wheel_size( 0 ),
+  wheel_mask( 0 ),
+  wheel_shift( 5 ),
+  wheel_granularity( 0.0 ),
+  wheel_time( timespan_t::zero() ),
+  event_stopwatch( STOPWATCH_THREAD ),
+  monitor_cpu( false )
+{
+  allocated_events.reserve( 100 );
+}
+
+// event_manager_t::~event_manager_t ========================================
+
+event_manager_t::~event_manager_t()
+{
+  while ( recycled_event_list )
+  {
+    core_event_t* e = recycled_event_list;
+    recycled_event_list = e -> next;
+    free( e );
+  }
+}
+
+// event_manager_t::allocate_event ==========================================
+
+void* event_manager_t::allocate_event( std::size_t size )
+{
+  static const std::size_t SIZE = 2 * sizeof( core_event_t );
+  assert( SIZE > size ); ( void ) size;
+
+  core_event_t* e = recycled_event_list;
+
+  if ( e )
+  {
+    recycled_event_list = e -> next;
+  }
+  else
+  {
+    e = (core_event_t*) malloc( SIZE );
+
+    if ( ! e )
+    {
+      throw std::bad_alloc();
+    }
+    else
+    {
+      allocated_events.push_back( e );
+    }
+  }
+
+  return e;
+}
+
+// event_manager_t::recycle_event ===========================================
+
+void event_manager_t::recycle_event( core_event_t* e )
+{
+  e -> ~core_event_t();
+  e -> recycled = true;
+  e -> next = recycled_event_list;
+  recycled_event_list = e;
+}
+
+// event_manager_t::add_event ===============================================
+
+void event_manager_t::add_event( core_event_t* e,
+				 timespan_t delta_time )
+{
+  e -> id = ++global_event_id;
+
+  if ( delta_time < timespan_t::zero() )
+    delta_time = timespan_t::zero();
+
+  if ( delta_time > wheel_time )
+  {
+    e -> time = current_time + wheel_time - timespan_t::from_seconds( 1 );
+    e -> reschedule_time = current_time + delta_time;
+  }
+  else
+  {
+    e -> time = current_time + delta_time;
+    e -> reschedule_time = timespan_t::zero();
+  }
+
+  // Determine the timing wheel position to which the event will belong
+#ifdef SC_USE_INTEGER_TIME
+  uint32_t slice = ( uint32_t ) ( e -> time.total_millis() >> wheel_shift ) & wheel_mask;
+#else
+  uint32_t slice = ( uint32_t ) ( e -> time.total_seconds() * wheel_granularity ) & wheel_mask;
+#endif
+
+  // Insert event into the event list at the appropriate time
+  core_event_t** prev = &( timing_wheel[ slice ] );
+  while ( ( *prev ) && ( *prev ) -> time <= e -> time ) // Find position in the list
+  { prev = &( ( *prev ) -> next ); }
+  // insert event
+  e -> next = *prev;
+  *prev = e;
+
+  if ( ++events_remaining > max_events_remaining ) max_events_remaining = events_remaining;
+
+  if ( sim -> debug )
+    sim -> out_debug.printf( "Add Event: %s time=%.4f rs-time=%.4f id=%d actor=%s",
+			     e -> name, e -> time.total_seconds(),
+			     e -> reschedule_time.total_seconds(),
+			     e -> id, e -> actor ? e -> actor -> name() : "" );
+
+  if ( ACTOR_EVENT_BOOKKEEPING && sim -> debug && e -> actor )
+  {
+    e -> actor -> event_counter++;
+    sim -> out_debug.printf( "Actor %s has %d scheduled events",
+			     e -> actor -> name(), e -> actor -> event_counter );
+  }
+}
+
+// event_manager_t::reschedule_event ========================================
+
+void event_manager_t::reschedule_event( core_event_t* e )
+{
+  if ( sim -> debug ) sim -> out_debug.printf( "Reschedule Event: %s %d", e -> name, e -> id );
+
+  add_event( e, ( e -> reschedule_time - current_time ) );
+}
+
+// event_manager_t::execute =================================================
+
+bool event_manager_t::execute()
+{
+  while ( core_event_t* e = next_event() )
+  {
+    current_time = e -> time;
+
+    if ( ACTOR_EVENT_BOOKKEEPING && sim -> debug && e -> actor && ! e -> canceled )
+    {
+      // Perform actor event bookkeeping first
+      e -> actor -> event_counter--;
+      if ( e -> actor -> event_counter < 0 )
+      {
+        util::fprintf( stderr, "sim_t::combat assertion error! canceling event %s leaves negative event count for user %s.\n", e -> name, e -> actor -> name() );
+        assert( false );
+      }
+    }
+
+    if ( e -> canceled )
+    {
+      if ( sim -> debug )
+        sim -> out_debug.printf( "Canceled event: %s", e -> name );
+    }
+    else if ( e -> reschedule_time > e -> time )
+    {
+      reschedule_event( e );
+      continue;
+    }
+    else
+    {
+      if ( sim -> debug )
+        sim -> out_debug.printf( "Executing event: %s %s", e -> name, e -> actor ? e -> actor -> name() : "" );
+
+      if ( monitor_cpu )
+      {
+        stopwatch_t& sw = e -> actor ? e -> actor -> event_stopwatch : event_stopwatch;
+        sw.mark();
+        e -> execute();
+        sw.accumulate();
+      }
+      else
+      {
+        e -> execute();
+      }
+    }
+
+    recycle_event( e );
+
+    if ( canceled )
+      break;
+  }
+
+  total_events_processed += events_processed;
+
+  return true;
+}
+
+// event_manager_t::cancel ==================================================
+
+void event_manager_t::cancel()
+{
+  canceled = true;
+}
+
+// event_manager_t::flush ===================================================
+
+void event_manager_t::flush()
+{
+  for( size_t i = 0, size = allocated_events.size(); i < size; ++i )
+  {
+    core_event_t* e = allocated_events[ i ];
+    if( e -> recycled ) continue;
+    core_event_t* null_e = e; // necessary evil
+    core_event_t::cancel( null_e );
+    recycle_event( e );
+  }
+
+  // Clear Timing Wheel
+  timing_wheel.assign( timing_wheel.size(), nullptr );
+}
+
+// event_manager_t::init ====================================================
+
+void event_manager_t::init()
+{
+  // Timing wheel depth defaults to about 17 minutes with a granularity of 32 buckets per second.
+  // This makes wheel_size = 32K and it's fully used.
+  if ( wheel_seconds     < 1024 ) wheel_seconds     = 1024; // 2^10 Min to ensure limited wrap-around
+  if ( wheel_granularity <=   0 ) wheel_granularity = 32;   // 2^5 Time slices per second
+
+  wheel_time = timespan_t::from_seconds( wheel_seconds );
+
+#ifdef SC_USE_INTEGER_TIME
+  wheel_size = ( uint32_t ) ( wheel_time.total_millis() >> wheel_shift );
+#else
+  wheel_size = ( uint32_t ) ( wheel_seconds * wheel_granularity );
+#endif
+
+  // Round up the wheel depth to the nearest power of 2 to enable a fast "mod" operation.
+  for ( wheel_mask = 2; wheel_mask < wheel_size; wheel_mask *= 2 ) { continue; }
+  wheel_size = wheel_mask;
+  wheel_mask--;
+
+  // The timing wheel represents an array of event lists: Each time slice has an event list.
+  timing_wheel.resize( wheel_size );
+}
+
+// event_manager_t::next_event ==============================================
+
+core_event_t* event_manager_t::next_event()
+{
+  if ( events_remaining == 0 )
+    return nullptr;
+
+  while ( true )
+  {
+    core_event_t*& event_list = timing_wheel[ timing_slice ];
+    if ( event_list )
+    {
+      core_event_t* e = event_list;
+      event_list = e -> next;
+      events_remaining--;
+      events_processed++;
+      return e;
+    }
+
+    timing_slice++;
+    if ( timing_slice == timing_wheel.size() )
+    {
+      timing_slice = 0;
+      // Time Wheel turns around.
+    }
+  }
+
+  return nullptr;
+}
+
+// event_manager_t::reset ===================================================
+
+void event_manager_t::reset()
+{
+  events_remaining = 0;
+  events_processed = 0;
+  timing_slice = 0;
+  global_event_id = 0;
+  canceled = false;
+  current_time = timespan_t::zero();
+}
+
+// event_manager_t::merge ===================================================
+
+void event_manager_t::merge( event_manager_t& other )
+{
+  if ( max_events_remaining < other.max_events_remaining ) 
+    max_events_remaining = other.max_events_remaining;
+
+  total_events_processed += other.total_events_processed;
 }

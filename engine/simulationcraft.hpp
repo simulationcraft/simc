@@ -110,7 +110,6 @@ class  dbc_t;
 struct debuff_t;
 struct dot_t;
 struct core_event_t;
-struct core_sim_t;
 struct expr_t;
 struct gain_t;
 struct haste_buff_t;
@@ -2457,12 +2456,12 @@ struct sim_ostream_t
 {
   struct no_close {};
 
-  explicit sim_ostream_t( core_sim_t& s, std::shared_ptr<std::ostream> os ) :
+  explicit sim_ostream_t( sim_t& s, std::shared_ptr<std::ostream> os ) :
       sim(s),
     _raw( os )
   {
   }
-  sim_ostream_t( core_sim_t& s, std::ostream* os, no_close ) :
+  sim_ostream_t( sim_t& s, std::ostream* os, no_close ) :
       sim(s),
     _raw( std::shared_ptr<std::ostream>( os, dont_close ) )
   {}
@@ -2479,86 +2478,8 @@ struct sim_ostream_t
   sim_ostream_t& printf( const char* format, ... );
 private:
   static void dont_close( std::ostream* ) {}
-  core_sim_t& sim;
+  sim_t& sim;
   sc_raw_ostream_t _raw;
-};
-
-/* Core Simulation Class.
- * Should not have anything to do with World of Warcraft
- */
-struct core_sim_t
-{
-public:
-  // Collection of most event-related functionality
-  struct event_management_t
-  {
-    int events_remaining;
-    uint64_t events_processed;
-    unsigned timing_slice, global_event_id;
-    std::vector<core_event_t*> timing_wheel;
-    core_event_t* recycled_event_list;
-    int    wheel_seconds, wheel_size, wheel_mask, wheel_shift;
-    double wheel_granularity;
-    timespan_t wheel_time;
-    std::vector<core_event_t*> all_events_ever_created;
-
-  private:
-    friend struct core_sim_t;
-    event_management_t();
-    ~event_management_t();
-    void add_event( core_event_t*, timespan_t delta_time, timespan_t current_time );
-    void flush_events();
-    void preallocate_events( unsigned num );
-    void init();
-    core_event_t* next_event();
-    void reset();
-    std::vector<core_event_t*> get_events_to_flush() const;
-  };
-
-  core_sim_t();
-  virtual ~core_sim_t();
-
-  event_management_t em; // Timing Wheel Event Management
-  timespan_t current_time;
-
-  // Output
-  sim_ostream_t out_std;
-  sim_ostream_t out_log;
-  sim_ostream_t out_debug;
-  bool debug;
-
-  timespan_t  max_time, expected_iteration_time;
-  int current_iteration, iterations;
-
-
-  // Timing Wheel statistics
-  int64_t     max_events_remaining;
-  uint64_t total_events_processed;
-  stopwatch_t event_stopwatch;
-  bool monitor_cpu;
-
-  bool canceled;
-  double      vary_combat_length;
-
-// Public functions
-  void add_event( core_event_t*, timespan_t delta_time );
-  double iteration_time_adjust() const;
-  double expected_max_time() const;
-  bool is_canceled() const;
-  void cancel_iteration( bool cancel = true );
-
-protected:
-  virtual void combat( int iteration );
-  virtual void combat_begin();
-  virtual void combat_end();
-  virtual bool init();
-  virtual void reset();
-
-private:
-  bool iteration_canceled;
-  void begin_combat();
-  void end_combat();
-  void reschedule_event( core_event_t* );
 };
 
 struct sim_report_information_t
@@ -2569,10 +2490,60 @@ struct sim_report_information_t
   sim_report_information_t() { charts_generated = false; }
 };
 
+// Event Manager ============================================================
+
+struct event_manager_t
+{
+  sim_t* sim;
+  timespan_t current_time;
+  uint64_t events_remaining;
+  uint64_t events_processed;
+  uint64_t total_events_processed;
+  uint64_t max_events_remaining;
+  unsigned timing_slice, global_event_id;
+  std::vector<core_event_t*> timing_wheel;
+  core_event_t* recycled_event_list;
+  int    wheel_seconds, wheel_size, wheel_mask, wheel_shift;
+  double wheel_granularity;
+  timespan_t wheel_time;
+  std::vector<core_event_t*> allocated_events;
+  stopwatch_t event_stopwatch;
+  bool monitor_cpu;
+  bool canceled;
+
+  event_manager_t( sim_t* );
+ ~event_manager_t();
+  void* allocate_event( std::size_t size );
+  void recycle_event( core_event_t* );
+  void add_event( core_event_t*, timespan_t delta_time );
+  void reschedule_event( core_event_t* );
+  core_event_t* next_event();
+  bool execute();
+  void cancel();
+  void flush();
+  void init();
+  void reset();
+  void merge( event_manager_t& other );
+};
+
 // Simulation Engine ========================================================
 
-struct sim_t : public core_sim_t, private sc_thread_t
+struct sim_t : private sc_thread_t
 {
+  event_manager_t event_mgr;
+
+  // Output
+  sim_ostream_t out_std;
+  sim_ostream_t out_log;
+  sim_ostream_t out_debug;
+  bool debug;
+
+  // Iteration Controls
+  timespan_t max_time, expected_iteration_time;
+  double vary_combat_length;
+  int current_iteration, iterations;
+  bool canceled;
+
   sim_control_t* control;
   sim_t*      parent;
   bool initialized, paused;
@@ -2618,6 +2589,7 @@ struct sim_t : public core_sim_t, private sc_thread_t
   bool        show_etmi;
   double      tmi_window_global;
   double      tmi_bin_size;
+  bool        requires_regen_event;
 
   // Target options
   double      target_death_pct;
@@ -2766,7 +2738,7 @@ public:
   sim_report_information_t report_information;
 
   // Multi-Threading
-  mutex_t mutex;
+  mutex_t merge_mutex;
   int threads;
   std::vector<sim_t*> children; // Manual delete!
   int thread_index;
@@ -2784,10 +2756,15 @@ public:
   unsigned           spell_query_level;
   std::string        spell_query_xml_output_file_str;
 
-  sim_t( sim_t* parent = 0, int thrdID = 0 );
+  sim_t( sim_t* parent = 0, int thread_index = 0 );
   virtual ~sim_t();
 
   int       main( const std::vector<std::string>& args );
+  void      add_event( core_event_t*, timespan_t delta_time );
+  double    iteration_time_adjust() const;
+  double    expected_max_time() const;
+  bool      is_canceled() const;
+  void      cancel_iteration();
   void      cancel();
   double    progress( int* current = 0, int* final = 0, std::string* phase = 0 );
   double    progress( std::string& phase, std::string* detailed = 0 );
@@ -2825,8 +2802,10 @@ public:
   player_t* find_player( int index ) ;
   cooldown_t* get_cooldown( const std::string& name );
   void      use_optimal_buffs_and_debuffs( int value );
-  expr_t* create_expression( action_t*, const std::string& name );
-  void       errorf( const char* format, ... ) PRINTF_ATTRIBUTE(2, 3);
+  expr_t*   create_expression( action_t*, const std::string& name );
+  void      errorf( const char* format, ... ) PRINTF_ATTRIBUTE(2, 3);
+
+  timespan_t current_time() const { return event_mgr.current_time; } 
 
   bool is_paused()
   {
@@ -2865,9 +2844,6 @@ private:
     }
   }
   void print_spell_query();
-
-public:
-  bool requires_regen_event;
 };
 
 // Module ===================================================================
@@ -3042,20 +3018,21 @@ struct plot_data_t
 
 struct core_event_t
 {
-  core_sim_t& _sim;
+  sim_t& _sim;
   core_event_t*    next;
   timespan_t  time;
   timespan_t  reschedule_time;
   actor_t*    actor;
   uint32_t    id;
   bool        canceled;
+  bool        recycled;
   const char* name;
-  core_event_t( core_sim_t& s, const char* n = "unknown" );
-  core_event_t( core_sim_t& s, actor_t* p, const char* n = "unknown" );
+  core_event_t( sim_t& s, const char* n = "unknown" );
+  core_event_t( sim_t& s, actor_t* p, const char* n = "unknown" );
   core_event_t( actor_t& p, const char* n = "unknown" );
 
   timespan_t occurs()  { return ( reschedule_time != timespan_t::zero() ) ? reschedule_time : time; }
-  timespan_t remains() { return occurs() - _sim.current_time; }
+  timespan_t remains() { return occurs() - _sim.event_mgr.current_time; }
 
   void reschedule( timespan_t new_time );
   void add_event( timespan_t delta_time );
@@ -3065,19 +3042,12 @@ struct core_event_t
 
   static void cancel( core_event_t*& e );
 
-  static void* allocate( std::size_t size, core_sim_t::event_management_t& );
-  static void  recycle( core_event_t* );
-  static void  release( core_event_t*& );
+  static void* operator new( std::size_t size, sim_t& sim ) { return sim.event_mgr.allocate_event( size ); }
 
-  static void* operator new( std::size_t size, core_sim_t& sim ) { return allocate( size, sim.em ); }
-
-#if defined(__GXX_EXPERIMENTAL_CXX0X__) && ( defined(SC_GCC) && SC_GCC >= 40400 || defined(SC_CLANG) && SC_CLANG >= 30000 ) // Improved compile-time diagnostics.
-  static void* operator new( std::size_t ) throw() = delete; // DO NOT USE
-#else
-  static void* operator new( std::size_t ) throw() { std::terminate(); return nullptr; } // DO NOT USE
-#endif
-  static void  operator delete( void*, core_sim_t& ) { std::terminate(); } // DO NOT USE
-  static void  operator delete( void* ) { std::terminate(); } // DO NOT USE
+  // DO NOT USE ANY OF THE FOLLOWING!
+  static void* operator new( std::size_t ) throw() { std::terminate(); return nullptr; } // DO NOT USE!
+  static void  operator delete( void*, sim_t& ) { std::terminate(); }                    // DO NOT USE!
+  static void  operator delete( void* ) { std::terminate(); }                            // DO NOT USE!
 };
 
 // Gear Rating Conversions ==================================================
@@ -3596,9 +3566,9 @@ public:
   void occur()
   {
     iteration_count++;
-    if ( last_proc >= timespan_t::zero() && last_proc < sim.current_time )
+    if ( last_proc >= timespan_t::zero() && last_proc < sim.current_time() )
     {
-      interval_sum.add( ( sim.current_time - last_proc ).total_seconds() );
+      interval_sum.add( ( sim.current_time() - last_proc ).total_seconds() );
       reset();
     }
     if ( sim.debug )
@@ -3608,7 +3578,7 @@ public:
                   static_cast<unsigned>( count.sum() ),
                   last_proc.total_seconds() );
 
-    last_proc = sim.current_time;
+    last_proc = sim.current_time();
   }
 
   void reset()
@@ -3760,15 +3730,15 @@ struct cooldown_t
   void reset_init();
 
   timespan_t remains() const
-  { return std::max( timespan_t::zero(), ready - sim.current_time ); }
+  { return std::max( timespan_t::zero(), ready - sim.current_time() ); }
 
   // return true if the cooldown is done (i.e., the associated ability is ready)
   bool up() const
-  { return ready <= sim.current_time; }
+  { return ready <= sim.current_time(); }
 
   // Return true if the cooldown is currently ticking down
   bool down() const
-  { return ready > sim.current_time; }
+  { return ready > sim.current_time(); }
 
   const char* name() const
   { return name_str.c_str(); }
@@ -4173,12 +4143,6 @@ private:
 
 struct actor_t : public noncopyable
 {
-#ifndef NDEBUG
-  static const bool ACTOR_EVENT_BOOKKEEPING = true;
-#else
-  static const bool ACTOR_EVENT_BOOKKEEPING = false;
-#endif
-
   sim_t* sim; // owner
   std::string name_str;
   int event_counter; // safety counter. Shall never be less than zero
@@ -4989,7 +4953,7 @@ struct player_t : public actor_t
   pet_t* cast_pet() { return debug_cast<pet_t*>( this ); }
   bool is_my_pet( player_t* t ) const;
 
-  bool      in_gcd() const { return gcd_ready > sim -> current_time; }
+  bool      in_gcd() const { return gcd_ready > sim -> current_time(); }
   bool      recent_cast();
   bool      dual_wield() const { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
   bool      has_shield_equipped() const
@@ -6309,9 +6273,9 @@ struct sequence_t : public action_t
   virtual void schedule_execute( action_state_t* execute_state = 0 );
   virtual void reset();
   virtual bool ready();
-  void restart() { current_action = 0; restarted = true; last_restart = sim -> current_time; }
+  void restart() { current_action = 0; restarted = true; last_restart = sim -> current_time(); }
   bool can_restart()
-  { return ! restarted && last_restart < sim -> current_time; }
+  { return ! restarted && last_restart < sim -> current_time(); }
 };
 
 struct strict_sequence_t : public action_t
@@ -6484,9 +6448,9 @@ inline void dot_tick_event_t::execute()
   assert ( dot -> ticking );
   expr_t* expr = dot -> current_action -> interrupt_if_expr;
   if ( ( dot -> current_action -> channeled
-          && dot -> current_action -> player -> gcd_ready <= sim().current_time
-          && ( dot -> current_action -> interrupt || ( expr && expr -> success() ) )
-          && dot -> is_higher_priority_action_available() ) )
+	 && dot -> current_action -> player -> gcd_ready <= sim().current_time()
+	 && ( dot -> current_action -> interrupt || ( expr && expr -> success() ) )
+	 && dot -> is_higher_priority_action_available() ) )
   {
     // cancel dot
     dot -> last_tick();
@@ -6541,7 +6505,7 @@ public:
                              rppm_scale_e      scales_with )
   {
     double coeff = 1.0;
-    double seconds = std::min( ( player -> sim -> current_time - last_trigger ).total_seconds(), max_interval() );
+    double seconds = std::min( ( player -> sim -> current_time() - last_trigger ).total_seconds(), max_interval() );
 
     if ( scales_with == RPPM_HASTE )
       coeff *= 1.0 / std::min( player -> cache.spell_haste(), player -> cache.attack_haste() );
@@ -6555,7 +6519,7 @@ public:
 
     // RPPM Extension added on 12. March 2013: http://us.battle.net/wow/en/blog/8953693?page=44
     // Formula see http://us.battle.net/wow/en/forum/topic/8197741003#1
-    double last_success = std::min( ( player -> sim -> current_time - last_successful_proc ).total_seconds(), max_bad_luck_prot() );
+    double last_success = std::min( ( player -> sim -> current_time() - last_successful_proc ).total_seconds(), max_bad_luck_prot() );
     double expected_average_proc_interval = 60.0 / real_ppm;
 
     double rppm_chance = std::max( 1.0, 1 + ( ( last_success / expected_average_proc_interval - 1.5 ) * 3.0 ) )  * old_rppm_chance;
@@ -6610,15 +6574,15 @@ public:
   {
     assert( freq != 0 && "Real PPM Frequency not set!" );
 
-    if ( last_trigger_attempt == player -> sim -> current_time )
+    if ( last_trigger_attempt == player -> sim -> current_time() )
       return false;
 
     bool success = player -> rng().roll( proc_chance( player, rppm, last_trigger_attempt, last_successful_trigger, scales_with ) );
 
-    last_trigger_attempt = player -> sim -> current_time;
+    last_trigger_attempt = player -> sim -> current_time();
 
     if ( success )
-      last_successful_trigger = player -> sim -> current_time;
+      last_successful_trigger = player -> sim -> current_time();
     return success;
   }
 };
@@ -7383,11 +7347,11 @@ inline bool player_t::is_my_pet( player_t* t ) const
 
 inline void player_t::do_dynamic_regen()
 {
-  if ( sim -> current_time == last_regen )
+  if ( sim -> current_time() == last_regen )
     return;
 
-  regen( sim -> current_time - last_regen );
-  last_regen = sim -> current_time;
+  regen( sim -> current_time() - last_regen );
+  last_regen = sim -> current_time();
 
   if ( dynamic_regen_pets )
   {
@@ -7434,7 +7398,7 @@ T util::ability_rank( int player_level,
 template <class T>
 sim_ostream_t& sim_ostream_t::operator<< (T const& rhs)
 {
-  _raw << util::to_string( sim.current_time.total_seconds(), 3 ) << " " << rhs << "\n";
+  _raw << util::to_string( sim.current_time().total_seconds(), 3 ) << " " << rhs << "\n";
 
   return *this;
 }

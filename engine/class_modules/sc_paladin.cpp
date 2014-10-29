@@ -6482,7 +6482,7 @@ expr_t* paladin_t::create_expression( action_t* a,
 
     virtual double evaluate()
     {
-      timespan_t gcd_ready = paladin.gcd_ready - paladin.sim -> current_time;
+      timespan_t gcd_ready = paladin.gcd_ready - paladin.sim -> current_time();
       gcd_ready = std::max( gcd_ready, timespan_t::zero() );
 
       if ( paladin.buffs.grand_crusader -> check() )
