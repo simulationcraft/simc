@@ -2210,8 +2210,8 @@ private:
 
 // Template to return a reference expression
 template <typename T>
-inline expr_t* make_ref_expr( const std::string& name, const T& t )
-{ return new ref_expr_t<T>( name, t ); }
+inline expr_t* make_ref_expr( const std::string& name, T& t )
+{ return new ref_expr_t<T>( name, const_cast<const T&>( t ) ); }
 
 // Function Expression - fn_expr_t
 // Class Template to create a function ( fn ) expression with arbitrary functor f, which gets evaluated
@@ -2805,7 +2805,7 @@ public:
   expr_t*   create_expression( action_t*, const std::string& name );
   void      errorf( const char* format, ... ) PRINTF_ATTRIBUTE(2, 3);
 
-  timespan_t current_time() const { return event_mgr.current_time; } 
+  timespan_t current_time() const { return event_mgr.current_time; }
 
   bool is_paused()
   {
@@ -6447,10 +6447,10 @@ inline void dot_tick_event_t::execute()
 
   assert ( dot -> ticking );
   expr_t* expr = dot -> current_action -> interrupt_if_expr;
-  if ( ( dot -> current_action -> channeled
-	 && dot -> current_action -> player -> gcd_ready <= sim().current_time()
-	 && ( dot -> current_action -> interrupt || ( expr && expr -> success() ) )
-	 && dot -> is_higher_priority_action_available() ) )
+  if ( ( dot -> current_action -> channeled &&
+         dot -> current_action -> player -> gcd_ready <= sim().current_time() &&
+         ( dot -> current_action -> interrupt || ( expr && expr -> success() ) ) &&
+         dot -> is_higher_priority_action_available() ) )
   {
     // cancel dot
     dot -> last_tick();

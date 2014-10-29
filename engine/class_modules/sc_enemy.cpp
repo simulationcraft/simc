@@ -26,7 +26,7 @@ enum tank_dummy_e
 enum tmi_boss_e
 {
   TMI_NONE = 0,
-  TMI_T16L, TMI_T16N, TMI_T16H, TMI_T16M, TMI_17L, TMI_T17N, TMI_T17H, TMI_T17M, 
+  TMI_T16L, TMI_T16N, TMI_T16H, TMI_T16M, TMI_17L, TMI_T17N, TMI_T17H, TMI_T17M,
   TMI_MAX
 };
 
@@ -356,7 +356,7 @@ struct auto_attack_off_hand_t : public enemy_action_t<attack_t>
     base_t( "auto_attack_off_hand", p ), oh( 0 )
   {
     parse_options( options_str );
-    
+
     use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
 
@@ -814,13 +814,13 @@ void enemy_t::init_base_stats()
     if ( tank_dummy_enum != TANK_DUMMY_NONE )
       boss_type_enum = BOSS_TANK_DUMMY;
   }
-  
+
 
   if ( level == 0 )
     level = sim -> max_player_level + 3;
 
   // skip overrides for TMI standard bosses and raid dummies
-  if ( boss_type_enum == BOSS_TMI_STANDARD || boss_type_enum == BOSS_TANK_DUMMY ) 
+  if ( boss_type_enum == BOSS_TMI_STANDARD || boss_type_enum == BOSS_TANK_DUMMY )
   {
     // target_level override
     if ( sim -> target_level >= 0 )
@@ -891,8 +891,8 @@ void enemy_t::init_defense()
     else
       a = 134*level-11864;
   }
-    
-  // for future reference, the equations above fit the given values 
+
+  // for future reference, the equations above fit the given values
   // in the first colum table below. These numbers are magically accurate.
   // Level  P/W/R   Mage
   //   90     445    403
@@ -980,7 +980,7 @@ std::string enemy_t::fluffy_pillow_action_list()
   als += "/spell_dot,damage=" + util::to_string( 50e3 * level_mult ) + ",tick_time=2,dot_duration=20,cooldown=40,aoe_tanks=1,if=!ticking";
   als += "/spell_nuke,damage=" + util::to_string( 110e3 * level_mult ) + ",cooldown=35,attack_speed=2,aoe_tanks=1";
   als += "/melee_nuke,damage=" + util::to_string( 260e3 * level_mult ) + ",cooldown=27,attack_speed=2,aoe_tanks=1";
-  
+
   return als;
 }
 
@@ -1026,14 +1026,14 @@ std::string enemy_t::retrieve_action_list()
     return tank_dummy_action_list();
   default:
     return fluffy_pillow_action_list();
-  }  
+  }
 }
 
 void enemy_t::init_action_list()
 {
   if ( ! is_add() && is_enemy() )
   {
-    // If the action list string is empty, automatically populate it 
+    // If the action list string is empty, automatically populate it
     if ( action_list_str.empty() )
     {
       std::string& precombat_list = get_action_priority_list( "precombat" ) -> action_list_str;
@@ -1042,7 +1042,7 @@ void enemy_t::init_action_list()
       // If targeting an player, use Fluffy Pillow or TMI boss as appropriate
       if ( ! target -> is_enemy() )
         action_list_str += retrieve_action_list();
-      
+
       // Otherwise just auto-attack the heal target
       else if ( sim -> heal_target && this != sim -> heal_target )
       {
@@ -1057,7 +1057,7 @@ void enemy_t::init_action_list()
   }
 
   /* If we have more than one tank in the simulation, we do some fancy stuff.
-     We take the default APL and clone it into a new APL for each tank, appending 
+     We take the default APL and clone it into a new APL for each tank, appending
      a "target=Tank_Name" to each ability. Then the default APL is replaced with
      a series of /run_action_list entries at the end. This is how we support tank swaps.
   */
@@ -1244,14 +1244,14 @@ void enemy_t::recalculate_health()
 }
 
 bool enemy_t::taunt( player_t* source )
-{ 
+{
   current_target = (int) source -> actor_index;
-  if ( main_hand_attack && main_hand_attack -> execute_event ) 
-    core_event_t::cancel( main_hand_attack -> execute_event );  
+  if ( main_hand_attack && main_hand_attack -> execute_event )
+    core_event_t::cancel( main_hand_attack -> execute_event );
   if ( off_hand_attack && off_hand_attack -> execute_event )
     core_event_t::cancel( off_hand_attack -> execute_event );
 
-  return true; 
+  return true;
 }
 
 // enemy_t::create_expression ===============================================
@@ -1260,7 +1260,7 @@ expr_t* enemy_t::create_expression( action_t* action,
                                     const std::string& name_str )
 {
   if ( name_str == "adds" )
-    return make_ref_expr( name_str, active_pets.size() );
+    return make_mem_fn_expr( name_str, active_pets, &std::vector<pet_t*>::size );
 
   // override enemy health.pct expression
   if ( name_str == "health.pct" )
