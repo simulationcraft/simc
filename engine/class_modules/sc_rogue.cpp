@@ -5009,6 +5009,7 @@ void rogue_t::create_buffs()
                              .tick_behavior( specialization() == ROGUE_SUBTLETY ? BUFF_TICK_REFRESH : BUFF_TICK_NONE )
                              .tick_callback( specialization() == ROGUE_SUBTLETY ? energetic_recovery : 0 )
                              .period( specialization() == ROGUE_SUBTLETY ? find_class_spell( "Slice and Dice" ) -> effectN( 2 ).period() : timespan_t::zero() )
+                             .refresh_behavior( BUFF_REFRESH_PANDEMIC )
                              .add_invalidate( CACHE_ATTACK_SPEED );
 
   // Legendary buffs
