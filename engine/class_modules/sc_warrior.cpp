@@ -3914,21 +3914,24 @@ void warrior_t::apl_precombat( bool probablynotgladiator )
 
   if ( specialization() == WARRIOR_ARMS )
   {
-    precombat -> add_action( "stance,choose=battle" );
+    precombat -> add_action( "stance,choose=battle\n"
+                             "talent_override=bladestorm,if=raid_event.adds.count>3" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
                              "# Generic on-use trinket line if needed when swapping trinkets out. \n"
                              "#actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&buff.ravager.up)" );
   }
   else if ( specialization() == WARRIOR_FURY )
   {
-    precombat -> add_action( "stance,choose=battle" );
+    precombat -> add_action( "stance,choose=battle\n"
+                             "talent_override=bladestorm,if=raid_event.adds.count>3" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
                              "# Generic on-use trinket line if needed when swapping trinkets out. \n"
                              "#actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&(buff.avatar.up|!talent.avatar.enabled)))|(active_enemies>=2&buff.ravager.up)" );
   }
   else if ( !probablynotgladiator )
   {
-    precombat -> add_action( "stance,choose=gladiator" );
+    precombat -> add_action( "stance,choose=gladiator\n"
+                             "talent_override=bladestorm,if=raid_event.adds.count>3" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
                              "# Generic on-use trinket line if needed when swapping trinkets out. \n"
                              "#actions+=/use_item,slot=trinket1,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10" );

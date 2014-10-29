@@ -8,7 +8,6 @@ spec=arms
 role=attack
 position=back
 talents=131122
-talent_override=bladestorm,if=active_enemies>3
 glyphs=unending_rage/heroic_leap/sweeping_strikes
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=4,gems=capacitive_primal_20crit_10haste_10crit_11str
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=4
@@ -36,7 +35,6 @@ spec=fury
 role=attack
 position=back
 talents=122132
-talent_override=bladestorm,if=active_enemies>3
 glyphs=unending_rage/raging_wind/heroic_leap
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=4,gems=capacitive_primal_20crit_10haste_10crit_11str
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=4
@@ -65,7 +63,6 @@ spec=fury
 role=attack
 position=back
 talents=132122
-talent_override=bladestorm,if=active_enemies>3
 glyphs=unending_rage/raging_wind/heroic_leap
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=4,gems=capacitive_primal_20crit_10haste_10crit_11str
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=4

@@ -4,7 +4,6 @@ race=tauren
 role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!011021.
-talent_override=bladestorm,if=active_enemies>3
 glyphs=unending_rage/raging_wind/heroic_leap
 spec=fury
 
@@ -19,6 +18,7 @@ spec=fury
 actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
 actions.precombat+=/stance,choose=battle
+talent_override=bladestorm,if=raid_event.adds.count>3
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 # Generic on-use trinket line if needed when swapping trinkets out. 
 #actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&(buff.avatar.up|!talent.avatar.enabled)))|(active_enemies>=2&buff.ravager.up)

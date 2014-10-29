@@ -1015,6 +1015,8 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, std::string& type
     return dynamic_cast<damage_event_t*>( e ) -> amount;
   else if ( util::str_compare_ci( filter, "to_pct" ) )
     return dynamic_cast<heal_event_t*>( e ) -> to_pct;
+  else if ( util::str_compare_ci( filter, "count" ) )
+    return dynamic_cast<adds_event_t*>( e ) -> count;
 
   // if we have no idea what filter they've specified, return 0
   // todo: should this generate an error or something instead?

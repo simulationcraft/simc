@@ -18,7 +18,6 @@ spec=fury
 role=attack
 position=back
 talents=1221322
-talent_override=bladestorm,if=active_enemies>3
 glyphs=unending_rage/raging_wind/heroic_leap
 head=blackhands_faceguard,id=115584,bonus_id=567
 neck=vertebrae_protector,id=113900,bonus_id=567,enchant=gift_of_critical_strike
@@ -46,7 +45,6 @@ spec=fury
 role=attack
 position=back
 talents=1221322
-talent_override=bladestorm,if=active_enemies>3
 glyphs=unending_rage/raging_wind/heroic_leap
 head=blackhands_faceguard,id=115584,bonus_id=567
 neck=vertebrae_protector,id=113900,bonus_id=567,enchant=gift_of_critical_strike
@@ -74,7 +72,6 @@ spec=Arms
 role=attack
 position=back
 talents=1323322
-talent_override=bladestorm,if=active_enemies>3
 glyphs=unending_rage/heroic_leap/sweeping_strikes
 head=blackhands_faceguard,id=115584,bonus_id=567
 neck=vertebrae_protector,id=113900,bonus_id=567,enchant=gift_of_critical_strike
@@ -127,7 +124,6 @@ race=tauren
 role=attack
 position=back
 talents=1133323
-talent_override=bladestorm,if=active_enemies>3
 glyphs=unending_rage/heroic_leap/cleave
 spec=prot
 head=blackhands_faceguard,id=115584,bonus_id=567
