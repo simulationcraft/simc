@@ -6086,7 +6086,7 @@ void death_knight_t::default_apl_blood()
     def -> add_action( this, "Rune Tap", "if=health.pct<50&buff.army_of_the_dead.down&buff.dancing_rune_weapon.down&buff.bone_shield.down&buff.vampiric_blood.down&buff.icebound_fortitude.down" );
     def -> add_action( this, "Dancing Rune Weapon", "if=health.pct<80&buff.army_of_the_dead.down&buff.icebound_fortitude.down&buff.bone_shield.down&buff.vampiric_blood.down" );
     def -> add_talent( this, "Death Pact", "if=health.pct<50" );
-    def -> add_action( this, "Outbreak", "if=(!talent.necrotic_plague.enabled&!disease.min_remains<8)|!disease.ticking" );
+    def -> add_action( this, "Outbreak", "if=(!talent.necrotic_plague.enabled&disease.min_remains<8)|!disease.ticking" );
     def -> add_action( this, "Death Coil", "if=runic_power>90" );
     def -> add_action( this, "Plague Strike", "if=(!talent.necrotic_plague.enabled&!dot.blood_plague.ticking)|(talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking)" );
     def -> add_action( this, "Icy Touch", "if=(!talent.necrotic_plague.enabled&!dot.frost_fever.ticking)|(talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking)" );

@@ -2057,15 +2057,31 @@ expr_t* action_t::create_expression( const std::string& name_str )
     return make_mem_fn_expr( name_str, *this, &action_t::gcd );
   else if ( name_str == "execute_time" )
   {
-    struct execute_time_expr_t : public action_expr_t
+    struct execute_time_expr_t: public action_expr_t
     {
-      execute_time_expr_t( action_t& a ) : action_expr_t( "execute_time", a )
+      action_t& action;
+      action_state_t* state;
+      execute_time_expr_t( action_t& a ):
+        action_expr_t( "execute_time", a ), state( a.get_state() ), action( a )
       { }
 
       double evaluate()
-      { return std::max( action.execute_time().total_seconds(), action.gcd().total_seconds() ); }
-    };
+      {
+        if ( action.channeled )
+        {
+          action.snapshot_state( state, RESULT_TYPE_NONE );
+          state -> target = action.target;
+          return action.composite_dot_duration( state ).total_seconds() + action.execute_time().total_seconds();
+        }
+        else
+          return std::max( action.execute_time().total_seconds(), action.gcd().total_seconds() );
+      }
 
+      virtual ~execute_time_expr_t()
+      {
+        delete state;
+      }
+    };
     return new execute_time_expr_t( *this );
   }
   else if ( name_str == "cooldown" )
