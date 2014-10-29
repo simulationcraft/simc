@@ -143,7 +143,7 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
   writer.print_tag( "position", p -> position_str );
   writer.begin_tag( "dps" );
   writer.print_attribute( "value", util::to_string( cd.dps.mean() ) );
-  writer.print_attribute( "effective", util::to_string( cd.dps.mean() ) );
+  writer.print_attribute( "effective", util::to_string( cd.dpse.mean() ) );
   writer.print_attribute( "error", util::to_string( dps_error ) );
   writer.print_attribute( "range", util::to_string( ( cd.dps.max() - cd.dps.min() ) / 2.0 ) );
   writer.print_attribute( "convergence", util::to_string( p -> dps_convergence ) );
@@ -158,16 +158,73 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
     writer.print_attribute( "resource", util::resource_type_string( p -> primary_resource() ) );
     writer.end_tag( "dpr" );
   }
+
   if ( p -> primary_role() == ROLE_TANK && p -> type != ENEMY )
   {
+    double dtps_error = sim_t::distribution_mean_error( *sim, p -> collected_data.dtps );
+    double dtps_range = ( cd.dtps.percentile( 0.5 + sim -> confidence / 2 ) - cd.dtps.percentile( 0.5 - sim -> confidence / 2 ) );
+
+    writer.begin_tag( "dtps" );
+    writer.print_attribute( "value", util::to_string( cd.dtps.mean() ) );
+    writer.print_attribute( "error", util::to_string( dtps_error ) );
+    writer.print_attribute( "range", util::to_string( dtps_range ) );
+    writer.print_attribute( "min", util::to_string( cd.dtps.min() ) );
+    writer.print_attribute( "max", util::to_string( cd.dtps.max() ) );
+    writer.end_tag( "dtps" );
+
     double tmi_error = sim_t::distribution_mean_error( *sim, cd.theck_meloree_index );
+    double tmi_range = ( cd.theck_meloree_index.percentile( 0.5 + sim -> confidence / 2 ) - cd.theck_meloree_index.percentile( 0.5 - sim -> confidence / 2 ) );
+
     writer.begin_tag( "tmi" );
     writer.print_attribute( "value", util::to_string( cd.theck_meloree_index.mean() ) );
     writer.print_attribute( "error", util::to_string( tmi_error ) );
+    writer.print_attribute( "range", util::to_string( tmi_range ) );
     writer.print_attribute( "min", util::to_string( cd.theck_meloree_index.min() ) );
     writer.print_attribute( "max", util::to_string( cd.theck_meloree_index.max() ) );
-    writer.print_attribute( "range", util::to_string( cd.theck_meloree_index.max() - cd.theck_meloree_index.min() ) );
     writer.end_tag( "tmi" );
+
+    if ( cd.hps.mean() > 0 )
+    {
+      double hps_error = sim_t::distribution_mean_error( *sim, p -> collected_data.hps );
+      double hps_range = ( cd.hps.percentile( 0.5 + sim -> confidence / 2 ) - cd.hps.percentile( 0.5 - sim -> confidence / 2 ) );
+
+      writer.begin_tag( "hps" );
+      writer.print_attribute( "value", util::to_string( cd.hps.mean() ) );
+      writer.print_attribute( "effective", util::to_string( cd.hpse.mean() ) );
+      writer.print_attribute( "error", util::to_string( hps_error ) );
+      writer.print_attribute( "range", util::to_string( hps_range ) );
+      writer.print_attribute( "min", util::to_string( cd.hps.min() ) );
+      writer.print_attribute( "max", util::to_string( cd.hps.max() ) );
+      writer.end_tag( "hps" );
+
+      writer.begin_tag( "hpr" );
+      writer.print_attribute( "value", util::to_string( p -> hpr ) );
+      writer.end_tag( "hpr" );
+    }
+
+    if ( cd.aps.mean() > 0 )
+    {
+      double aps_error = sim_t::distribution_mean_error( *sim, p -> collected_data.aps );
+      double aps_range = ( cd.aps.percentile( 0.5 + sim -> confidence / 2 ) - cd.aps.percentile( 0.5 - sim -> confidence / 2 ) );
+
+      writer.begin_tag( "aps" );
+      writer.print_attribute( "value", util::to_string( cd.aps.mean() ) );
+      writer.print_attribute( "error", util::to_string( aps_error ) );
+      writer.print_attribute( "range", util::to_string( aps_range ) );
+      writer.print_attribute( "min", util::to_string( cd.aps.min() ) );
+      writer.print_attribute( "max", util::to_string( cd.aps.max() ) );
+      writer.end_tag( "aps" );
+    }
+
+    writer.begin_tag( "msd" );
+    writer.print_attribute( "value", util::to_string( cd.max_spike_amount.mean() ) );
+    writer.print_attribute( "min", util::to_string( cd.max_spike_amount.min() ) );
+    writer.print_attribute( "max", util::to_string( cd.max_spike_amount.max() ) );
+    writer.print_attribute( "frequency", util::to_string( cd.theck_meloree_index.mean() ? std::exp( cd.theck_meloree_index.mean() / 1e3 / cd.max_spike_amount.mean() ) : 0.0 ) );
+    writer.print_attribute( "window", util::to_string( p -> tmi_window ) );
+    writer.print_attribute( "bin_size", util::to_string( sim -> tmi_bin_size ) );
+    writer.end_tag( "msd" );
+
   }
 
   writer.begin_tag( "waiting_time" );
