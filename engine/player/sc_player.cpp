@@ -141,7 +141,7 @@ bool parse_talent_override( sim_t* sim,
   return true;
 }
 
-// parse_talent_override ====================================================
+// parse_timeofday ====================================================
 
 bool parse_timeofday( sim_t* sim,
                             const std::string& name,
@@ -1616,8 +1616,8 @@ void player_t::override_talent( std::string override_str )
   {
     for ( int i = 0; i < MAX_TALENT_COLS; i++ )
     {
-      talent_data_t* td = talent_data_t::find( type, j, i, SPEC_NONE, dbc.ptr );
-      if ( td && ( td -> spell_id() == spell_id ) )
+      talent_data_t* t = talent_data_t::find( type, j, i, specialization(), dbc.ptr );
+      if ( t && ( t -> spell_id() == spell_id ) )
       {
         if ( level < std::min( ( j + 1 ) * 15, 100 ) )
         {
@@ -6849,7 +6849,7 @@ void player_t::replace_spells()
     {
       if ( talent_points.has_row_col( j, i ) && level < std::min( ( j + 1 ) * 15, 100 ) )
       {
-        talent_data_t* td = talent_data_t::find( type, j, i, SPEC_NONE, dbc.ptr );
+        talent_data_t* td = talent_data_t::find( type, j, i, specialization(), dbc.ptr );
         if ( td && td -> replace_id() )
         {
           dbc.replace_id( td -> replace_id(), td -> spell_id() );
