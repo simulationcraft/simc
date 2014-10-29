@@ -2382,7 +2382,7 @@ double player_t::composite_melee_expertise( weapon_t* ) const
 {
   double e = current.expertise;
 
-  e += composite_expertise_rating() / current.rating.expertise;
+  //e += composite_expertise_rating() / current.rating.expertise;
 
   return e;
 }
@@ -2393,7 +2393,7 @@ double player_t::composite_melee_hit() const
 {
   double ah = current.hit;
 
-  ah += composite_melee_hit_rating() / current.rating.attack_hit;
+  //ah += composite_melee_hit_rating() / current.rating.attack_hit;
 
   return ah;
 }
@@ -2651,7 +2651,7 @@ double player_t::composite_spell_hit() const
 {
   double sh = current.hit;
 
-  sh += composite_spell_hit_rating() / current.rating.spell_hit;
+  //sh += composite_spell_hit_rating() / current.rating.spell_hit;
 
   sh += composite_melee_expertise();
 
