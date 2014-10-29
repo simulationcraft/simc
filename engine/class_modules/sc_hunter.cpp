@@ -2842,7 +2842,7 @@ struct aspect_of_the_pack_t: public hunter_spell_t
       player_t* p = sim -> player_non_sleeping_list[i];
       if ( p -> is_enemy() || p -> type == PLAYER_GUARDIAN )
         break;
-      p -> buffs.stampeding_roar -> trigger();
+      p -> buffs.aspect_of_the_pack -> trigger();
       }
 
     if ( tog == false )
@@ -2851,7 +2851,7 @@ struct aspect_of_the_pack_t: public hunter_spell_t
       player_t* p = sim -> player_non_sleeping_list[i];
       if ( p -> is_enemy() || p -> type == PLAYER_GUARDIAN )
         break;
-      p -> buffs.stampeding_roar -> expire();
+      p -> buffs.aspect_of_the_pack -> expire();
       }
   }
 
