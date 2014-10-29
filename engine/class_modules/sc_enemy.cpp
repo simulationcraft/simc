@@ -616,7 +616,7 @@ struct add_t : public pet_t
   add_t( sim_t* s, enemy_t* o, const std::string& n, pet_e pt = PET_ENEMY ) :
     pet_t( s, o, n, pt )
   {
-    level = default_level + 3;
+    level = s -> max_player_level + 3;
   }
 
   virtual void init_action_list()
@@ -652,7 +652,7 @@ struct add_t : public pet_t
     if ( duration > timespan_t::zero() )
     {
       double ttp;
-      ttp = ( 1 - health_percentage() ) / ( duration - expiration -> remains() ).total_seconds();
+      ttp = ( 100 - health_percentage() ) / ( duration - expiration -> remains() ).total_seconds();
       ttp = ( health_percentage() - percent ) / ttp;
       return timespan_t::from_seconds( ttp );
     }
@@ -681,7 +681,7 @@ struct heal_enemy_t : public enemy_t
     enemy_t( s, n, r, HEALING_ENEMY )
   {
     target = this;
-    level = default_level; // set to default player level, not default+3
+    level = s -> max_player_level; // set to default player level, not default+3
   }
 
   virtual void init_resources( bool /* force */ )

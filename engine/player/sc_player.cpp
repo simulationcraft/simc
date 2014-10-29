@@ -7261,7 +7261,7 @@ expr_t* player_t::create_expression( action_t* a,
     if ( util::str_in_str_ci( parts[2], "die" ) )
       percent = 0.0;
     else if ( util::str_in_str_ci( parts[2], "pct" ) )
-      percent = static_cast<double>( util::str_to_num<int>( parts[2] ) ) / 100;
+      percent = static_cast<double>( util::str_to_num<int>( parts[2] ) );
     else
       percent = -1;
     // skip construction if the percent is nonsensical
