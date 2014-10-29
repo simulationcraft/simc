@@ -249,7 +249,6 @@ action_t::action_t( action_e       ty,
   use_off_gcd(),
   interrupt_auto_attack( true ),
   ignore_false_positive( false ),
-  action_skill( player -> base.skill ),
   direct_tick(),
   periodic_hit(),
   repeating(),
@@ -341,6 +340,7 @@ action_t::action_t( action_e       ty,
   impact_action                  = NULL;
   dynamic_tick_action            = false;
   starved_proc                   = NULL;
+  action_skill                   = player -> base.skill;
 
   // New Stuff
   snapshot_flags = 0;
@@ -435,7 +435,7 @@ action_t::action_t( action_e       ty,
   add_option( opt_string( "label", label_str ) );
   add_option( opt_bool( "precombat", pre_combat ) );
   add_option( opt_timespan( "line_cd", line_cooldown.duration ) );
-  add_option( opt_float( "skill", action_skill ) );
+  add_option( opt_float( "action_skill", action_skill ) );
 }
 
 action_t::~action_t()
