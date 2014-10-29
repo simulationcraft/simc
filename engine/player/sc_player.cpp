@@ -4677,7 +4677,7 @@ void account_parry_haste( player_t& p, action_state_t* s )
 
 void account_hand_of_sacrifice( player_t& p, action_state_t* s )
 {
-  if ( p.buffs.hand_of_sacrifice -> check() && s -> result_amount > 0 )
+  if ( p.buffs.hand_of_sacrifice -> check() )
   {
     // figure out how much damage gets redirected
     double redirected_damage = s -> result_amount * ( p.buffs.hand_of_sacrifice -> data().effectN( 1 ).percent() );
@@ -4844,9 +4844,12 @@ void player_t::assess_damage( school_e school,
 
   account_parry_haste( *this, s );
 
+  if ( s -> result_amount <= 0.0 )
+    return;
+
   target_mitigation( school, type, s );
 
-  if ( s -> result_total > 0 && buffs.aspect_of_the_pack -> check() ) // Aspect of the daze.
+  if ( buffs.aspect_of_the_pack -> check() ) // Aspect of the daze.
     debuffs.dazed -> trigger();
 
   // store post-mitigation, pre-absorb value
@@ -4888,9 +4891,6 @@ void player_t::assess_damage( school_e school,
         action_callback_t::trigger( callbacks.procs[pt + 1][pt2], s -> action, s );
     }
   }
-
-  if ( s -> result_amount <= 0.0 )
-    return;
 
   // Check if target is dying
   if ( health_percentage() <= death_pct && ! resources.is_infinite( RESOURCE_HEALTH ) )
@@ -5181,7 +5181,7 @@ proc_t* player_t::get_proc( const std::string& name )
   return p;
 }
 
-// player_t::get_proc =======================================================
+// player_t::get_sample_data =======================================================
 
 luxurious_sample_data_t* player_t::get_sample_data( const std::string& name )
 {

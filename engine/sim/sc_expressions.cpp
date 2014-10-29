@@ -414,7 +414,7 @@ public:
   { 
     left_result  = left  -> eval();
     right_result = right -> eval(); 
-    result = ( bool( left_result ) != bool( right_result ) ) ? 1.0 : 0.0;
+    result = ( bool( left_result != 0 ) != bool( right_result != 0 ) ) ? 1.0 : 0.0;
     analyze_boolean();
     return result;
   }
