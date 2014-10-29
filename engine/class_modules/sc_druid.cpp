@@ -1021,9 +1021,9 @@ struct force_of_nature_feral_t : public pet_t
   struct melee_t : public melee_attack_t
   {
     druid_t* owner;
-
+    bool first_swing;
     melee_t( force_of_nature_feral_t* p )
-      : melee_attack_t( "melee", p, spell_data_t::nil() ), owner( 0 )
+      : melee_attack_t( "melee", p, spell_data_t::nil() ), owner( 0 ), first_swing( true )
     {
       school = SCHOOL_PHYSICAL;
       weapon = &( p -> main_hand_weapon );
@@ -1039,6 +1039,27 @@ struct force_of_nature_feral_t : public pet_t
 
     force_of_nature_feral_t* p()
     { return static_cast<force_of_nature_feral_t*>( player ); }
+
+    timespan_t execute_time() const
+    {
+      timespan_t t = melee_attack_t::execute_time();
+      if ( first_swing )
+        t = timespan_t::from_seconds( rng().range( 1.0, 1.5 ) );
+      return t;
+    }
+
+    void execute()
+    {
+      melee_attack_t::execute();
+      if ( first_swing )
+        first_swing = false;
+    }
+
+    void reset()
+    {
+      melee_attack_t::reset();
+      first_swing = true;
+    }
 
     void init()
     {
@@ -1105,7 +1126,6 @@ struct force_of_nature_feral_t : public pet_t
   };
   
   melee_t* melee;
-
   force_of_nature_feral_t( sim_t* sim, druid_t* p ) :
     pet_t( sim, p, "treant", true, true ), melee( 0 )
   {
@@ -1158,10 +1178,12 @@ struct force_of_nature_feral_t : public pet_t
 
   void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false )
   {
-    // FIXME: Currently first swing happens after swingtime # seconds, it should happen after 1-1.5 seconds (random).
-    if ( melee && ! melee -> execute_event )
+    if ( melee && !melee -> execute_event )
+    {
+      melee -> first_swing = true;
       melee -> schedule_execute();
-
+    }
+    
     pet_t::schedule_ready( delta_time, waiting );
   }
 };
@@ -3928,8 +3950,6 @@ struct tranquility_t : public druid_heal_t
 
     // Healing is in spell effect 1
     parse_spell_data( ( *player -> dbc.spell( data().effectN( 1 ).trigger_spell_id() ) ) );
-
-    // FIXME: The hot should stack
   }
 };
 

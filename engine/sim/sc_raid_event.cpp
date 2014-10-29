@@ -178,11 +178,6 @@ struct invulnerable_event_t : public raid_event_t
   virtual void _finish()
   {
     sim -> target -> debuffs.invulnerable -> decrement();
-
-    if ( ! sim -> target -> debuffs.invulnerable -> check() )
-    {
-      // FIXME! restoring optimal_raid target debuffs?
-    }
   }
 };
 

@@ -2929,7 +2929,6 @@ struct lava_burst_t : public shaman_spell_t
 
     shaman_spell_t::execute();
 
-    // FIXME: DBC Value modified in dbc_t::apply_hotfixes()
     p() -> cooldown.ascendance -> ready -= p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).time_value();
 
     // Lava Surge buff does not get eaten, if the Lava Surge proc happened

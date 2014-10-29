@@ -2277,8 +2277,7 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_wowhead( player_t*
     char buffer[ 1024 ];
     bool first = true;
 
-    // FIXME: switch back to www.wowhead.com once WoD goes live
-    std::string s = "http://wod.wowhead.com/?items&amp;filter=";
+    std::string s = "http://www.wowhead.com/?items&amp;filter=";
 
     switch ( p -> type )
     {

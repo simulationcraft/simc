@@ -3556,7 +3556,6 @@ struct chaos_wave_t: public warlock_spell_t
 struct touch_of_chaos_t: public warlock_spell_t
 {
   chaos_wave_t* chaos_wave;
-
   touch_of_chaos_t( warlock_t* p ):
     warlock_spell_t( "touch_of_chaos", p, p -> find_spell( 103964 ) ), chaos_wave( new chaos_wave_t( p ) )
   {

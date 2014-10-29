@@ -1938,8 +1938,9 @@ struct melee_t: public monk_melee_attack_t
   {
     // Prevent the monk from melee'ing while channeling soothing_mist.
     // FIXME: This is super hacky and spams up the APL sample sequence a bit.
-    if ( p() -> buff.channeling_soothing_mist -> check() )
-      return;
+    // Disabled since mistweaver doesn't work atm.
+    // if ( p() -> buff.channeling_soothing_mist -> check() )
+    // return;
 
     if ( first )
       first = false;

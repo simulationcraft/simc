@@ -458,7 +458,7 @@ action_t::~action_t()
 
 void action_t::parse_spell_data( const spell_data_t& spell_data )
 {
-  if ( ! spell_data.id() ) // FIXME: Replace/augment with ok() check once it is in there
+  if ( ! spell_data.ok() )
   {
     sim -> errorf( "%s %s: parse_spell_data: no spell to parse.\n", player -> name(), name() );
     return;
