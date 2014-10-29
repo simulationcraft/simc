@@ -6096,7 +6096,6 @@ void death_knight_t::default_apl_blood()
     def -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + srpct + "&blood>=1" );
     def -> add_action( this, "Blood Boil", "if=blood=2" );
     def -> add_talent( this, "Blood Tap" );
-    def -> add_action( this, "Blood Boil" );
     def -> add_action( this, "Death Coil" );
     def -> add_action( this, "Empower Rune Weapon", "if=!blood&!unholy&!frost" );
   }
