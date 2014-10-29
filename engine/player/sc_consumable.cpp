@@ -459,15 +459,14 @@ struct food_t : public action_t
   {
     player_t* p = player;
 
-    stat_e secondaries[ 6 ] = { STAT_SPIRIT,
-                                STAT_CRIT_RATING,
-                                STAT_HASTE_RATING,
-                                STAT_MASTERY_RATING,
-                                STAT_MULTISTRIKE_RATING,
-                                STAT_VERSATILITY_RATING };
+    stat_e secondaries[] = { STAT_CRIT_RATING,
+                             STAT_HASTE_RATING,
+                             STAT_MASTERY_RATING,
+                             STAT_MULTISTRIKE_RATING,
+                             STAT_VERSATILITY_RATING };
 
     stat_e highest_secondary = secondaries[0];
-    for ( int i = 1; i < 6; i++ )
+    for ( size_t i = 1; i < sizeof_array( secondaries ); i++ )
     {
       if ( p -> current.stats.get_stat( highest_secondary ) <
            p -> current.stats.get_stat( secondaries[ i ] ) )
