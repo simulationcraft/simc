@@ -6612,7 +6612,7 @@ void runeforge::razorice_debuff( special_effect_t& effect,
     void execute( action_t* a, action_state_t* state )
     {
       debug_cast< death_knight_t* >( a -> player ) -> get_target_data( state -> target ) -> debuffs_razorice -> trigger();
-      if ( a -> sim -> current_time < timespan_t::from_seconds( 0.01 ) )
+      if ( a -> sim -> current_time() < timespan_t::from_seconds( 0.01 ) )
         debug_cast< death_knight_t* >( a -> player ) -> get_target_data( state -> target ) -> debuffs_razorice -> constant = false;
     }
   };

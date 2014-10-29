@@ -606,7 +606,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, const sim_t* si
     "\t\t\t\t\t\t\t\t\t<td class=\"left\">Count</td>\n"
     "\t\t\t\t\t\t\t\t\t<td class=\"right\">%d</td>\n"
     "\t\t\t\t\t\t\t\t</tr>\n",
-    data.size() );
+    (int) data.size() );
 
   ++i;
   os << "\t\t\t\t\t\t\t\t<tr";

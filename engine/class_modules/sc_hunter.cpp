@@ -3966,7 +3966,7 @@ struct sniper_training_event_t : public event_t
   {
     if ( ! hunter -> is_moving() )
     {
-      if ( sim().current_time - hunter -> movement_ended >= hunter -> sniper_training_cd -> duration() )
+      if ( sim().current_time() - hunter -> movement_ended >= hunter -> sniper_training_cd -> duration() )
         hunter -> buffs.sniper_training -> trigger();
     }
 
@@ -4078,7 +4078,7 @@ double hunter_t::composite_player_critical_damage_multiplier() const
   if ( sets.has_set_bonus( HUNTER_MARKSMANSHIP, T17, B4 ) && buffs.rapid_fire -> check() )
   {
     // deadly_aim_driver
-    double seconds_buffed = floor( buffs.rapid_fire -> elapsed( sim -> current_time ).total_seconds() );
+    double seconds_buffed = floor( buffs.rapid_fire -> elapsed( sim -> current_time() ).total_seconds() );
     // from Nimox
     cdm += bugs ? std::min(15.0, seconds_buffed) * 0.03
                 : seconds_buffed * sets.set( HUNTER_MARKSMANSHIP, T17, B4 ) -> effectN( 1 ).percent();
@@ -4378,7 +4378,7 @@ void hunter_t::finish_moving()
 {
   player_t::finish_moving();
 
-  movement_ended = sim -> current_time;
+  movement_ended = sim -> current_time();
 }
 
 /* Report Extension Class

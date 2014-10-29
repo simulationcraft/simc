@@ -597,7 +597,7 @@ struct base_fiend_pet_t : public priest_pet_t
       /* Ensure that it gets used after the first melee strike.
        * In the combat logs that happen at the same time, but the melee comes first.
        */
-      shadowcrawl_action -> cooldown -> ready = sim -> current_time + timespan_t::from_seconds( 0.001 );
+      shadowcrawl_action -> cooldown -> ready = sim -> current_time() + timespan_t::from_seconds( 0.001 );
     }
   }
 

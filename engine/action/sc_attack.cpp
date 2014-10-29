@@ -286,7 +286,7 @@ void attack_t::reschedule_auto_attack( double old_swing_haste )
   // we just cancel the event and make a new one.
   if ( execute_event && execute_event -> remains() > timespan_t::zero() )
   {
-    timespan_t time_to_hit = execute_event -> occurs() - sim -> current_time;
+    timespan_t time_to_hit = execute_event -> occurs() - sim -> current_time();
     timespan_t new_time_to_hit = time_to_hit * player -> cache.attack_speed() / old_swing_haste;
 
     if ( sim -> debug )
@@ -436,7 +436,7 @@ void ranged_attack_t::schedule_execute( action_state_t* execute_state )
   if ( ! background )
   {
     player -> executing = this;
-    player -> gcd_ready = sim -> current_time + gcd();
+    player -> gcd_ready = sim -> current_time() + gcd();
     if ( player -> action_queued && sim -> strict_gcd_queue )
     {
       player -> gcd_ready -= sim -> queue_gcd_reduction;

@@ -759,12 +759,12 @@ struct proxy_cast_check_t : public event_t
     timespan_t interval = timespan_t::from_seconds( 0.25 );
 
     if ( uses == _override && start_time > timespan_t::zero() )
-      interval = cooldown - ( sim().current_time - start_time );
+      interval = cooldown - ( sim().current_time() - start_time );
 
     if ( proxy_check() )
     {
       // Cooldown over, reset uses
-      if ( uses == _override && start_time > timespan_t::zero() && ( sim().current_time - start_time ) >= cooldown )
+      if ( uses == _override && start_time > timespan_t::zero() && ( sim().current_time() - start_time ) >= cooldown )
       {
         start_time = timespan_t::zero();
         uses = 0;
@@ -777,14 +777,14 @@ struct proxy_cast_check_t : public event_t
         uses++;
 
         if ( start_time == timespan_t::zero() )
-          start_time = sim().current_time;
+          start_time = sim().current_time();
 
         interval = duration + timespan_t::from_seconds( 1 );
 
         if ( sim().debug )
           sim().out_debug.printf( "Proxy-Execute uses=%d total=%d start_time=%.3f next_check=%.3f",
                       uses, _override, start_time.total_seconds(),
-                      ( sim().current_time + interval ).total_seconds() );
+                      ( sim().current_time() + interval ).total_seconds() );
       }
     }
 
@@ -816,7 +816,7 @@ struct sim_safeguard_end_event_t : public sim_end_event_t
 
   virtual void execute()
   {
-    sim().errorf( "Simulation has been forcefully cancelled at %.2f because twice the expected combat length has been exceeded.", sim().current_time.total_seconds() );
+    sim().errorf( "Simulation has been forcefully cancelled at %.2f because twice the expected combat length has been exceeded.", sim().current_time().total_seconds() );
 
     sim_end_event_t::execute();
   }
@@ -889,6 +889,17 @@ struct regen_event_t : public event_t
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t( sim_t* p, int index ) :
+  event_mgr( this ),
+  out_std( *this, &std::cout, sim_ostream_t::no_close() ),
+  out_log( *this, &std::cout, sim_ostream_t::no_close() ),
+  out_debug(*this, &std::cout, sim_ostream_t::no_close() ),
+  debug( false ),
+  max_time( timespan_t::zero() ),
+  expected_iteration_time( timespan_t::zero() ),
+  vary_combat_length( 0.0 ),
+  current_iteration( -1 ),
+  iterations( 1000 ),
+  canceled( 0 ),
   control( 0 ),
   parent( p ),
   initialized( false ),
@@ -923,7 +934,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   save_talent_str( 0 ),
   talent_format( TALENT_FORMAT_UNCHANGED ),
   auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ), show_etmi( 0 ), tmi_window_global( 0 ), tmi_bin_size( 0.5 ),
-  target_death_pct( 0 ), rel_target_level( 0 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ), enable_taunts( false ),
+  requires_regen_event( false ), target_death_pct( 0 ), rel_target_level( 0 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ), enable_taunts( false ),
   challenge_mode( false ), scale_to_itemlevel( -1 ), disable_set_bonuses( false ), pvp_crit( false ),
   active_enemies( 0 ), active_allies( 0 ),
   deterministic_rng( false ),
@@ -958,8 +969,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   // Multi-Threading
   threads( 0 ), thread_index( index ), thread_priority( sc_thread_t::NORMAL ), work_queue(),
   spell_query( 0 ), spell_query_level( MAX_LEVEL ),
-  pause_cvar( &pause_mutex ),
-  requires_regen_event( false )
+  pause_cvar( &pause_mutex )
 {
   item_db_sources.assign( range::begin( default_item_db_sources ),
                           range::end( default_item_db_sources ) );
@@ -1002,6 +1012,50 @@ sim_t::~sim_t()
   delete spell_query;
 }
 
+// sim_t::add_event (Please use core_event_t::add_event instead) ============
+
+void sim_t::add_event( core_event_t* e,
+                       timespan_t delta_time )
+{
+  event_mgr.add_event( e, delta_time );
+}
+
+// sim_t::iteration_time_adjust =============================================
+
+double sim_t::iteration_time_adjust() const
+{
+  if ( iterations <= 1 )
+    return 1.0;
+
+  if ( current_iteration == 0 )
+    return 1.0;
+
+  return 1.0 + vary_combat_length * ( ( current_iteration % 2 ) ? 1 : -1 ) * current_iteration / ( double ) iterations;
+}
+
+// sim_t::expected_max_time =================================================
+
+double sim_t::expected_max_time() const
+{
+  return max_time.total_seconds() * ( 1.0 + vary_combat_length );
+}
+
+// sim_t::is_canceled =======================================================
+
+bool sim_t::is_canceled() const
+{
+  return canceled;
+}
+
+// sim_t::cancel_iteration ==================================================
+
+void sim_t::cancel_iteration()
+{
+  if ( debug ) out_debug << "Iteration canceled.";
+
+  event_mgr.cancel();
+}
+
 // sim_t::combat ============================================================
 
 void sim_t::combat( int iteration )
@@ -1027,8 +1081,22 @@ void sim_t::combat( int iteration )
     }
   }
 
-  if ( ! canceled )
-    core_sim_t::combat( iteration );
+  if ( canceled )
+    return;
+
+  if ( debug ) out_debug << "Starting Simulator";
+
+  current_iteration = iteration;
+
+  // The sequencing of event manager seed and flush is very tricky.
+  // DO NOT MESS WITH THIS UNLESS YOU ARE EXTREMELY CONFIDENT.
+  // combat_begin will seed the event manager with "player_ready" events
+  // combat_end   will flush any events remaining due to early termination
+  // In the future, flushing may occur in event manager execute().
+
+  combat_begin();
+  event_mgr.execute();
+  combat_end();
 
   if ( debug_each && ! canceled )
     static_cast<io::ofstream*>(out_std.get_stream()) -> close();
@@ -1038,7 +1106,11 @@ void sim_t::combat( int iteration )
 
 void sim_t::reset()
 {
-  core_sim_t::reset();
+  if ( debug ) out_debug << "Resetting Simulator";
+
+  event_mgr.reset();
+
+  expected_iteration_time = max_time * iteration_time_adjust();
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> reset();
@@ -1066,7 +1138,10 @@ void sim_t::reset()
 
 void sim_t::combat_begin()
 {
-  core_sim_t::combat_begin();
+  reset();
+
+  if ( debug )
+    out_debug << "Combat Begin";
 
   iteration_dmg = iteration_heal = 0;
 
@@ -1133,7 +1208,7 @@ void sim_t::combat_begin()
         player_t* t = sim.target;
         if ( ( sim.bloodlust_percent  > 0                  && t -> health_percentage() <  sim.bloodlust_percent ) ||
              ( sim.bloodlust_time     < timespan_t::zero() && t -> time_to_percent( 0.0 ) < -sim.bloodlust_time ) ||
-             ( sim.bloodlust_time     > timespan_t::zero() && sim.current_time >  sim.bloodlust_time ) )
+             ( sim.bloodlust_time     > timespan_t::zero() && sim.current_time() >  sim.bloodlust_time ) )
         {
           for ( size_t i = 0; i < sim.player_non_sleeping_list.size(); ++i )
           {
@@ -1155,8 +1230,6 @@ void sim_t::combat_begin()
     new ( *this ) bloodlust_check_t( *this );
   }
 
-  cancel_iteration( false );
-
   if ( fixed_time || ( target -> resources.base[ RESOURCE_HEALTH ] == 0 ) )
   {
     new ( *this ) sim_end_event_t( *this, "sim_end_expected_time", expected_iteration_time );
@@ -1173,7 +1246,7 @@ void sim_t::combat_begin()
 
 void sim_t::combat_end()
 {
-  core_sim_t::combat_end();
+  if ( debug ) out_debug << "Combat End";
 
   for ( size_t i = 0; i < target_list.size(); ++i )
   {
@@ -1207,6 +1280,10 @@ void sim_t::combat_end()
 
   assert( active_enemies == 0 );
   assert( active_allies == 0 );
+
+  if ( debug ) out_debug << "Flush Events";
+
+  event_mgr.flush();
 }
 
 // sim_t::datacollection_begin ==============================================
@@ -1242,7 +1319,7 @@ void sim_t::datacollection_end()
 {
   if ( debug ) out_debug << "Sim Data Collection End";
 
-  simulation_length.add( current_time.total_seconds() );
+  simulation_length.add( current_time().total_seconds() );
 
   for ( size_t i = 0; i < target_list.size(); ++i )
   {
@@ -1265,11 +1342,11 @@ void sim_t::datacollection_end()
   }
 
   total_dmg.add( iteration_dmg );
-  raid_dps.add( current_time != timespan_t::zero() ? iteration_dmg / current_time.total_seconds() : 0 );
+  raid_dps.add( current_time() != timespan_t::zero() ? iteration_dmg / current_time().total_seconds() : 0 );
   total_heal.add( iteration_heal );
-  raid_hps.add( current_time != timespan_t::zero() ? iteration_heal / current_time.total_seconds() : 0 );
+  raid_hps.add( current_time() != timespan_t::zero() ? iteration_heal / current_time().total_seconds() : 0 );
   total_absorb.add( iteration_absorb );
-  raid_aps.add( current_time != timespan_t::zero() ? iteration_absorb / current_time.total_seconds() : 0 );
+  raid_aps.add( current_time() != timespan_t::zero() ? iteration_absorb / current_time().total_seconds() : 0 );
 }
 
 // sim_t::check_actors() ========================================================
@@ -1500,6 +1577,8 @@ bool sim_t::init()
   if ( initialized )
     return true;
 
+  event_mgr.init();
+
   // Seed RNG
   if ( seed == 0 )
   {
@@ -1511,9 +1590,6 @@ bool sim_t::init()
     seed = deterministic_rng ? 31459 : seed_;
   }
   _rng.seed( seed + thread_index );
-
-  if ( ! core_sim_t::init() )
-    return false;
 
   if (   queue_lag_stddev == timespan_t::zero() )   queue_lag_stddev =   queue_lag * 0.25;
   if (     gcd_lag_stddev == timespan_t::zero() )     gcd_lag_stddev =     gcd_lag * 0.25;
@@ -1892,10 +1968,9 @@ bool sim_t::iterate()
 
 void sim_t::merge( sim_t& other_sim )
 {
-  auto_lock_t auto_lock( mutex );
+  auto_lock_t auto_lock( merge_mutex );
 
-  iterations             += other_sim.iterations;
-  total_events_processed += other_sim.total_events_processed;
+  iterations += other_sim.iterations;
 
   simulation_length.merge( other_sim.simulation_length );
   total_dmg.merge( other_sim.total_dmg );
@@ -1904,8 +1979,7 @@ void sim_t::merge( sim_t& other_sim )
   raid_hps.merge( other_sim.raid_hps );
   total_absorb.merge( other_sim.total_absorb );
   raid_aps.merge( other_sim.raid_aps );
-
-  if ( max_events_remaining < other_sim.max_events_remaining ) max_events_remaining = other_sim.max_events_remaining;
+  event_mgr.merge( other_sim.event_mgr );
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
   {
@@ -1928,7 +2002,7 @@ void sim_t::merge()
 {
   if ( children.empty() ) return;
 
-  mutex.unlock();
+  merge_mutex.unlock();
 
   for ( size_t i = 0; i < children.size(); i++ )
   {
@@ -1949,7 +2023,7 @@ void sim_t::merge()
 void sim_t::run()
 {
   iterate();
-  if ( total_events_processed > 0 )
+  if ( event_mgr.total_events_processed > 0 )
     parent -> merge( *this );
 }
 
@@ -1965,7 +2039,7 @@ void sim_t::partition()
   exit( 0 );
 #endif
 
-  mutex.lock(); // parent sim is locked until parent merge() is called
+  merge_mutex.lock(); // parent sim is locked until parent merge() is called
 
   int remainder = iterations % threads;
   iterations /= threads;
@@ -2162,7 +2236,7 @@ bool sim_t::time_to_think( timespan_t proc_time )
 {
   if ( proc_time == timespan_t::zero() ) return false;
   if ( proc_time < timespan_t::zero() ) return true;
-  return current_time - proc_time > reaction_time;
+  return current_time() - proc_time > reaction_time;
 }
 
 // sim_t::create_expression =================================================
@@ -2171,7 +2245,7 @@ expr_t* sim_t::create_expression( action_t* a,
                                   const std::string& name_str )
 {
   if ( name_str == "time" )
-    return make_ref_expr( name_str, current_time );
+    return make_ref_expr( name_str, current_time() );
 
   if ( util::str_compare_ci( name_str, "enemies" ) )
     return make_ref_expr( name_str, num_enemies );
@@ -2360,9 +2434,9 @@ void sim_t::create_options()
   add_option( opt_list( "party", party_encoding ) );
   add_option( opt_func( "active", parse_active ) );
   add_option( opt_int( "seed", seed ) );
-  add_option( opt_float( "wheel_granularity", em.wheel_granularity ) );
-  add_option( opt_int( "wheel_seconds", em.wheel_seconds ) );
-  add_option( opt_int( "wheel_shift", em.wheel_shift ) );
+  add_option( opt_float( "wheel_granularity", event_mgr.wheel_granularity ) );
+  add_option( opt_int( "wheel_seconds", event_mgr.wheel_seconds ) );
+  add_option( opt_int( "wheel_shift", event_mgr.wheel_shift ) );
   add_option( opt_string( "reference_player", reference_player_str ) );
   add_option( opt_string( "raid_events", raid_events_str ) );
   add_option( opt_append( "raid_events+", raid_events_str ) );
@@ -2445,7 +2519,7 @@ void sim_t::create_options()
   add_option( opt_bool( "report_raid_summary", report_raid_summary ) ); // Force reporting of raid summary
   add_option( opt_string( "reforge_plot_output_file", reforge_plot_output_file_str ) );
   add_option( opt_string( "csv_output_file_str", csv_output_file_str ) );
-  add_option( opt_bool( "monitor_cpu", monitor_cpu ) );
+  add_option( opt_bool( "monitor_cpu", event_mgr.monitor_cpu ) );
   add_option( opt_func( "maximize_reporting", parse_maximize_reporting ) );
   add_option( opt_int( "global_item_upgrade_level", global_item_upgrade_level ) );
   add_option( opt_int( "wowhead_tooltips", wowhead_tooltips ) );
@@ -2790,4 +2864,38 @@ void sc_timeline_t::adjust( sim_t& sim )
 
   // Do the timeline adjustement
   base_t::adjust( sim.divisor_timeline_cache[ bin_size ] );
+}
+
+// FIXME!  Move this to util at some point.
+
+sc_raw_ostream_t& sc_raw_ostream_t::printf( const char* format, ... )
+{
+  char buffer[ 4048 ];
+
+  va_list fmtargs;
+  va_start( fmtargs, format );
+  int rval = ::vsnprintf( buffer, sizeof( buffer ), format, fmtargs );
+  va_end( fmtargs );
+
+  assert( rval < 0 || ( static_cast<size_t>( rval ) < sizeof( buffer ) ) );
+  (void) rval;
+
+  (*_stream) << buffer;
+  return *this;
+}
+
+sim_ostream_t& sim_ostream_t::printf( const char* format, ... )
+{
+  char buffer[ 4048 ];
+
+  va_list fmtargs;
+  va_start( fmtargs, format );
+  int rval = ::vsnprintf( buffer, sizeof( buffer ), format, fmtargs );
+  va_end( fmtargs );
+
+  assert( rval < 0 || ( static_cast<size_t>( rval ) < sizeof( buffer ) ) );
+  (void) rval;
+
+  _raw << util::to_string( sim.current_time().total_seconds(), 3 ) << " " << buffer << "\n";
+  return *this;
 }

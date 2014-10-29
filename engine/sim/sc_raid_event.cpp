@@ -767,7 +767,7 @@ void raid_event_t::schedule()
       else raid_event -> finish();
 
       if ( raid_event -> last <= timespan_t::zero() ||
-           raid_event -> last > ( sim().current_time + ct ) )
+           raid_event -> last > ( sim().current_time() + ct ) )
       {
         new ( sim() ) cooldown_event_t( sim(), raid_event, ct );
       }
@@ -990,10 +990,10 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, std::string& type
   timespan_t time_to_event = timespan_t::from_seconds( -1 );
 
   for ( size_t i = 0; i < matching_type.size(); i++ )
-    if ( time_to_event < timespan_t::zero() || matching_type[ i ] -> next_time() - s -> current_time < time_to_event )
+    if ( time_to_event < timespan_t::zero() || matching_type[ i ] -> next_time() - s -> current_time() < time_to_event )
     {
     e = matching_type[ i ];
-    time_to_event = e -> next_time() - s -> current_time;
+    time_to_event = e -> next_time() - s -> current_time();
     }
   if ( e == 0 )
     return 0.0;
