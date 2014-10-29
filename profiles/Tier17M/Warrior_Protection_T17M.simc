@@ -16,7 +16,7 @@ spec=protection
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_stamina_flask
-actions.precombat+=/food,type=nagrand_tempura
+actions.precombat+=/food,type=blackrock_barbecue
 actions.precombat+=/stance,choose=defensive
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 # Generic on-use trinket line if needed when swapping trinkets out. 

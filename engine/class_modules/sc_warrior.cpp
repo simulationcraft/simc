@@ -3909,7 +3909,7 @@ void warrior_t::apl_precombat( bool probablynotgladiator )
     else
     {
       if ( level > 90 )
-        food_action += "nagrand_tempura";
+        food_action += "blackrock_barbecue";
       else
         food_action += "chun_tian_spring_rolls";
     }
