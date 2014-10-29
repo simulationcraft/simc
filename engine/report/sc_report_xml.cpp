@@ -29,7 +29,7 @@ void print_xml_player_buffs( xml_writer_t & writer, player_t * p );
 void print_xml_player_uptime( xml_writer_t & writer, player_t * p );
 void print_xml_player_procs( xml_writer_t & writer, player_t * p );
 void print_xml_player_gains( xml_writer_t & writer, player_t * p );
-void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, player_processed_report_information_t& );
+void print_xml_player_scale_factor( xml_writer_t & writer, sim_t* sim, player_t * p, player_processed_report_information_t & ri, scale_metric_e sm );
 void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p );
 void print_xml_player_charts( xml_writer_t & writer, player_processed_report_information_t& );
 void print_xml_player_gear( xml_writer_t & writer, player_t* p );
@@ -192,7 +192,23 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
   print_xml_player_uptime( writer, p );
   print_xml_player_procs( writer, p );
   print_xml_player_gains( writer, p );
-  print_xml_player_scale_factors( writer, p, p->report_information );
+
+  writer.begin_tag( "scale_factors" );
+
+  if ( !p -> is_pet() )
+  {
+    if ( p -> sim -> scaling -> has_scale_factors() )
+    {
+      for ( scale_metric_e sm = SCALE_METRIC_DPS; sm < SCALE_METRIC_MAX; sm++ )
+      {
+        if ( sm != SCALE_METRIC_DEATHS )
+          print_xml_player_scale_factor( writer, sim, p, p -> report_information, sm );
+      }
+    }
+  }
+
+  writer.end_tag( "scale_factors" );
+
   print_xml_player_dps_plots( writer, p );
   print_xml_player_charts( writer, p->report_information );
 
@@ -602,53 +618,47 @@ void print_xml_player_gains( xml_writer_t & writer, player_t * p )
   writer.end_tag( "gains" );
 }
 
-void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, player_processed_report_information_t& ri )
+void print_xml_player_scale_factor( xml_writer_t & writer, sim_t*, player_t * p, player_processed_report_information_t& ri, scale_metric_e sm )
 {
-  if ( ! p -> sim -> scaling -> has_scale_factors() ) return;
 
-  if ( p -> is_add() || p -> is_enemy() ) return;
-
-  if ( p -> sim -> report_precision < 0 )
-    p -> sim -> report_precision = 2;
-
-  scale_metric_e sm = p -> sim -> scaling -> scaling_metric;
-
-  writer.begin_tag( "scale_factors" );
-
-  gear_stats_t& sf = p -> scaling[ sm ];
-  gear_stats_t& sf_norm = p -> scaling_normalized[ sm ];
+  writer.begin_tag( "metric" );
+  writer.print_attribute( "name", p -> scaling_for_metric( sm ).name );
 
   writer.begin_tag( "weights" );
 
-  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-  {
-    if ( p -> scales_with[ i ] )
-    {
-      writer.begin_tag( "stat" );
-      writer.print_attribute( "name", util::stat_type_abbrev( i ) );
-      writer.print_attribute( "value", util::to_string( sf.get_stat( i ), p -> sim -> report_precision ) );
-      writer.print_attribute( "normalized", util::to_string( sf_norm.get_stat( i ), p -> sim -> report_precision ) );
-      writer.print_attribute( "scaling_error", util::to_string( p -> scaling_error[ sm ].get_stat( i ), p -> sim -> report_precision ) );
-      writer.print_attribute( "delta", util::to_string( p -> sim -> scaling -> stats.get_stat( i ) ) );
+  std::vector<stat_e> scaling_stats = p -> scaling_stats[ sm ];
 
-      writer.end_tag( "stat" );
-    }
+  if ( p -> sim -> report_precision < 0 )
+  {
+    p -> sim -> report_precision = 2;
   }
 
-  size_t num_scaling_stats = p -> scaling_stats[ sm ].size();
-  for ( size_t i = 0; i < num_scaling_stats; i++ )
+  for ( size_t i = 0; i < scaling_stats.size(); i++ )
+  {
+    writer.begin_tag( "stat" );
+    writer.print_attribute( "name", util::stat_type_abbrev( scaling_stats[ i ] ) );
+    writer.print_attribute( "value", util::to_string( p -> scaling[ sm ].get_stat( scaling_stats[ i ] ), p -> sim -> report_precision ) );
+    writer.print_attribute( "normalized", util::to_string( p -> scaling_normalized[ sm ].get_stat( scaling_stats[ i ] ), p -> sim -> report_precision ) );
+    writer.print_attribute( "scaling_error", util::to_string( p -> scaling_error[ sm ].get_stat( scaling_stats[ i ] ), p -> sim -> report_precision ) );
+    writer.print_attribute( "delta", util::to_string( p -> sim -> scaling -> stats.get_stat( ( stat_e ) i ) ) );
+    writer.end_tag( "stat" );
+  }
+
+  for ( size_t i = 0; i < scaling_stats.size(); i++ )
   {
     writer.begin_tag( "scaling_stat" );
-    writer.print_attribute( "name", util::stat_type_abbrev( p -> scaling_stats[ sm ][ i ] ) );
-    writer.print_attribute( "index", util::to_string( ( int64_t )i ) );
+    writer.print_attribute( "name", util::stat_type_abbrev( scaling_stats[ i ] ) );
+    writer.print_attribute( "index", util::to_string( ( int64_t ) i ) );
 
     if ( i > 0 )
     {
-      if ( ( ( p -> scaling[ sm ].get_stat( p -> scaling_stats[ sm ][ i - 1 ] ) - p -> scaling[ sm ].get_stat( p -> scaling_stats[ sm ][ i ] ) )
-             > sqrt ( p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ sm ][ i - 1 ] ) * p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ sm ][ i - 1 ] ) / 4 + p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ sm ][ i ] ) * p -> scaling_compare_error[ sm ].get_stat( p -> scaling_stats[ sm ][ i ] ) / 4 ) * 2 ) )
+      double separation = fabs( p -> scaling[ sm ].get_stat( scaling_stats[ i - 1 ] ) - p -> scaling[ sm ].get_stat( scaling_stats[ i ] ) );
+      double error_est = sqrt( p -> scaling_compare_error[ sm ].get_stat( scaling_stats[ i - 1 ] ) * p -> scaling_compare_error[ sm ].get_stat( scaling_stats[ i - 1 ] ) / 4
+                       + p -> scaling_compare_error[ sm ].get_stat( scaling_stats[ i ] ) * p -> scaling_compare_error[ sm ].get_stat( scaling_stats[ i ] ) / 4 );
+      if ( separation > ( error_est * 2 ) )
         writer.print_attribute( "relative_to_previous", ">" );
       else
-        writer.print_attribute( "relative_to_previous", "=" );
+        writer.print_attribute( "relative_to_previous", "~=" );
     }
 
     writer.end_tag( "scaling_stat" );
@@ -663,7 +673,7 @@ void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, player
     writer.print_attribute( "value", util::to_string( p -> scaling[ sm ].get_stat( p -> normalize_by() ), p -> sim -> report_precision ) );
     writer.end_tag( "dps_per_point" );
   }
-  if ( p -> sim -> scaling -> scale_lag )
+  if ( p-> sim -> scaling -> scale_lag )
   {
     writer.begin_tag( "scale_lag_ms" );
     writer.print_attribute( "value", util::to_string( p -> scaling_lag[ sm ], p -> sim -> report_precision ) );
@@ -671,22 +681,34 @@ void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, player
     writer.end_tag( "scale_lag_ms" );
   }
 
-  std::array<std::string, SCALE_METRIC_MAX> lootrank    = ri.gear_weights_lootrank_link;
-  std::array<std::string, SCALE_METRIC_MAX> wowhead_std = ri.gear_weights_wowhead_std_link;
+  if ( !ri.gear_weights_wowhead_std_link[ sm ].empty() )
+  {
+    writer.begin_tag( "link" );
+    writer.print_attribute( "name", "wowhead" );
+    writer.print_attribute( "type", "ranking" );
+    writer.print_attribute_unescaped( "href", ri.gear_weights_wowhead_std_link[ sm ].c_str() );
+    writer.end_tag( "link" );
+  }
 
-  writer.begin_tag( "link" );
-  writer.print_attribute( "name", "wowhead" );
-  writer.print_attribute( "type", "ranking" );
-  writer.print_attribute_unescaped( "href", wowhead_std[ sm ] );
-  writer.end_tag( "link" );
+  if ( !ri.gear_weights_lootrank_link[ sm ].empty() )
+  {
+    writer.begin_tag( "link" );
+    writer.print_attribute( "name", "lootrank" );
+    writer.print_attribute( "type", "ranking" );
+    writer.print_attribute( "href", ri.gear_weights_lootrank_link[ sm ].c_str() );
+    writer.end_tag( "link" );
+  }
 
-  writer.begin_tag( "link" );
-  writer.print_attribute( "name", "lootrank" );
-  writer.print_attribute( "type", "ranking" );
-  writer.print_attribute( "href", lootrank[ sm ] );
-  writer.end_tag( "link" );
+  if ( !ri.gear_weights_askmrrobot_link[ sm ].empty() )
+  {
+    writer.begin_tag( "link" );
+    writer.print_attribute( "name", "askmrrobot" );
+    writer.print_attribute( "type", "ranking" );
+    writer.print_attribute( "href", ri.gear_weights_askmrrobot_link[ sm ].c_str() );
+    writer.end_tag( "link" );
+  }
 
-  writer.end_tag( "scale_factors" );
+  writer.end_tag( "metric" );
 }
 
 void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p )
