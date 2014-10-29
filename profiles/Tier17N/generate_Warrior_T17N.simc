@@ -125,7 +125,7 @@ level=100
 race=tauren
 role=attack
 position=back
-talents=1213323
+talents=1133323
 talent_override=bladestorm,if=active_enemies>3
 glyphs=unending_rage/cleave/heroic_leap
 spec=prot
