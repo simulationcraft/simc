@@ -1366,7 +1366,7 @@ bool sim_t::check_actors()
     if ( ! p -> quiet ) too_quiet = false;
     if ( p -> primary_role() != ROLE_HEAL && ! p -> is_pet() ) zero_dds = false;
   }
-  
+
   if ( too_quiet && ! debug )
   {
     errorf( "No active players in sim!" );
@@ -1438,10 +1438,10 @@ bool sim_t::init_parties()
 
 // init_items ===============================================================
 // This is a helper function that loops through each actor and calls its respective
-// player_t::init_items() method. 
+// player_t::init_items() method.
 
 bool sim_t::init_items()
-{  
+{
   bool success = true;
 
   for ( size_t i = 0; i < actor_list.size(); i++ )
@@ -1466,16 +1466,16 @@ bool sim_t::init_actions()
       success = false;
   }
   return success;
-  
+
 }
 
 // sim_t::init_actors =======================================================
-// This method handles the bulk of player initialization. Order is pretty 
+// This method handles the bulk of player initialization. Order is pretty
 // critical here. Called in sim_t::init()
 
 bool sim_t::init_actors()
 {
-  
+
   // create actor entries for pets
   if ( debug )
     out_debug.printf( "Creating Pets." );
@@ -1483,7 +1483,7 @@ bool sim_t::init_actors()
   for ( size_t i = 0; i < actor_list.size(); i++ )
   {
     player_t* p = actor_list[i];
-    p -> create_pets();    
+    p -> create_pets();
   }
 
   // initialize class/enemy modules
@@ -2080,25 +2080,25 @@ int sim_t::calc_num_iterations()
     iterate();
     merge();
     analyze();
-    
+
     //TODO set the following two as standard commandline option parameters
     double opt_target_error = 0.005; //for 0.5% Error
     double opt_target_scale_error = 0.5; //for an 0.5 scaling error
-    
-    
+
+
     //take maximum of each player's necessary iterations for target_error
     for ( size_t i = 0; i < player_list.size(); ++i )
     {
         //TODO get collected data for the correct scale_over stat
         const extended_sample_data_t& data = player_list[ i ] -> collected_data.dps; //get dps data
         double mean_error = data.mean_std_dev * confidence_estimator;
-        
+
         int new_iterations = ( int ) ( data.mean() ? ( ( mean_error * mean_error * ( ( float ) data.size() ) / ( opt_target_error  * data.mean() * opt_target_error * data.mean() ) ) ) : 0 ) ; //get estimated sample size for opt_target_error
-        
+
         if (new_iterations > max_new_iterations) max_new_iterations = new_iterations; //get maximum
     }
-    
-    
+
+
     scaling -> init_deltas();
     //take maximum of each player's necessary iterations for target_scaling_error
     for ( size_t i = 0; i < player_list.size(); ++i )
@@ -2111,15 +2111,15 @@ int sim_t::calc_num_iterations()
             if ( ! player_list[i] -> scales_with[ k ] )
                 continue;
             double delta = scaling -> stats.get_stat( k );
-            
+
             int new_iterations = ( int ) ( data.mean() ? (( 2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( opt_target_scale_error * delta * opt_target_scale_error * delta) ) ) : 0 ) ; //get estimated sample size for opt_target_scale error
             if (new_iterations > max_new_iterations) max_new_iterations = new_iterations; //get maximum
         }
     }
-    
+
     //TODO clean up old sim data so it doesnt end in the final result
-    
-    
+
+
     return max_new_iterations;
 }
 
@@ -2136,14 +2136,14 @@ bool sim_t::execute()
         auto_lock_t( work_queue.mutex );
         work_queue.iterations_to_process = iterations;
     }
-    
+
     if (calc_num_iterations)
     {
-        
+
         iterations = this -> calc_num_iterations();
         work_queue.iterations_to_process = iterations;
     }
-    
+
     double start_cpu_time = util::cpu_time();
     double start_time = util::wall_time();
 
@@ -2245,7 +2245,7 @@ expr_t* sim_t::create_expression( action_t* a,
                                   const std::string& name_str )
 {
   if ( name_str == "time" )
-    return make_ref_expr( name_str, current_time() );
+    return make_ref_expr( name_str, event_mgr.current_time );
 
   if ( util::str_compare_ci( name_str, "enemies" ) )
     return make_ref_expr( name_str, num_enemies );
@@ -2314,7 +2314,7 @@ expr_t* sim_t::create_expression( action_t* a,
   if ( splits.size() == 1 )
     for ( size_t i = 0; i < actor_list.size(); i++ )
       if ( name_str == actor_list[ i ] -> name_str )
-        return make_ref_expr( name_str, actor_list[ i ] -> actor_index );    
+        return make_ref_expr( name_str, actor_list[ i ] -> actor_index );
 
   return 0;
 }
