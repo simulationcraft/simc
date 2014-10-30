@@ -5,7 +5,7 @@
 
 #include <ctime>
 #include <stdint.h>
-#include <string.h>
+#include <string>
 #include "rng.hpp"
 
 // Pseudo-Random Number Generation ==========================================
