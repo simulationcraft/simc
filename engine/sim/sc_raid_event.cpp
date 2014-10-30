@@ -13,22 +13,25 @@ namespace { // UNNAMED NAMESPACE
 
 struct adds_event_t : public raid_event_t
 {
-  unsigned count;
+  double count;
   double health;
   std::string master_str;
   std::string name_str;
   player_t* master;
   std::vector< pet_t* > adds;
+  double random;
+  int adds_to_remove;
 
   adds_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "adds" ),
     count( 1 ), health( 100000 ), master_str( "Fluffy_Pillow" ), name_str( "Add" ),
-    master( 0 )
+    master( 0 ), random( false ), adds_to_remove( 0 )
   {
     add_option( opt_string( "name", name_str ) );
     add_option( opt_string( "master", master_str ) );
-    add_option( opt_uint( "count", count ) );
+    add_option( opt_float( "count", count ) );
     add_option( opt_float( "health", health ) );
+    add_option( opt_float( "count_range", random ) );
     parse_options( options_str );
 
     master = sim -> find_player( master_str );
@@ -63,7 +66,7 @@ struct adds_event_t : public raid_event_t
 
     for ( int i = 0; i < std::ceil( overlap ); i++ )
     {
-      for ( unsigned add = 0; add < count; add++ )
+      for ( unsigned add = 0; add < std::ceil( count + random ); add++ )
       {
         std::string add_name_str = name_str;
         add_name_str += util::to_string( add + 1 );
@@ -71,7 +74,6 @@ struct adds_event_t : public raid_event_t
         pet_t* p = master -> create_pet( add_name_str );
         assert( p );
         p -> resources.base[ RESOURCE_HEALTH ] = health;
-
         adds.push_back( p );
       }
     }
@@ -79,14 +81,19 @@ struct adds_event_t : public raid_event_t
 
   virtual void _start()
   {
-    for ( size_t i = 0; i < adds.size(); i++ )
-      adds[ i ] -> summon( saved_duration );
+    adds_to_remove = static_cast<int>( std::round( sim -> rng().range( count - random, count + random ) ) );
+    for ( size_t i = 0; i < adds_to_remove; i++ )
+    {
+      adds[i] -> summon( saved_duration );
+    }
   }
 
   virtual void _finish()
   {
-    for ( size_t i = 0; i < adds.size(); i++ )
-      adds[ i ] -> dismiss();
+    for ( size_t i = 0; i < adds_to_remove; i++ )
+    {
+      adds[i] -> dismiss();
+    }
   }
 };
 
