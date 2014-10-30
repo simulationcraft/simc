@@ -5110,7 +5110,7 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
       death_knight_spell_t::impact( s );
     }
     if ( result_is_hit( s -> result ) )
-      td( target ) -> debuffs_mark_of_sindragosa -> trigger();
+      td( s -> target ) -> debuffs_mark_of_sindragosa -> trigger();
   }
 };
 
