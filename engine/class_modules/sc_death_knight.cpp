@@ -5863,7 +5863,7 @@ void death_knight_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  if ( wod_hotfix )
+  if ( wod_hotfix && spec.unholy_might -> ok() )
   {
     base.attribute_multiplier[ATTR_STRENGTH] *= 1.05;
   }

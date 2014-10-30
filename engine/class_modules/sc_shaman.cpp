@@ -2966,7 +2966,7 @@ struct lightning_bolt_t : public shaman_spell_t
     shaman_spell_t( "lightning_bolt", player, player -> find_class_spell( "Lightning Bolt" ), options_str )
   {
     may_fulmination    = player -> spec.fulmination -> ok();
-    if ( player -> wod_hotfix )
+    if ( player -> wod_hotfix && player -> spec.shamanism -> ok() )
     {
       base_multiplier *= 1.7;
     }

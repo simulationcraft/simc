@@ -2191,11 +2191,7 @@ struct mind_blast_t final : public priest_spell_t
 
     if ( priest.mastery_spells.mental_anguish -> ok() )
     {
-      d *= 1.0 + priest.cache.mastery_value();
-      if ( priest.wod_hotfix )
-      {
-        d *= 1.25;
-      } // Increases damage by 3.125% per point, rather than 2.5%.
+      d *= 1.0 + priest.cache.mastery_value() * ( priest.wod_hotfix ? 1.25 : 1 ); // Increases damage by 3.125% per point, rather than 2.5%.
     }
 
     d *= 1.0 + priest.sets.set( SET_CASTER, T16, B2 ) -> effectN( 1 ).percent();
@@ -2409,11 +2405,7 @@ struct mind_spike_t final : public priest_spell_t
 
     if ( priest.mastery_spells.mental_anguish -> ok() )
     {
-      d *= 1.0 + priest.cache.mastery_value();
-      if ( priest.wod_hotfix )
-      {
-        d *= 1.25;
-      } // Increases damage by 3.125% per point, rather than 2.5%.
+      d *= 1.0 + priest.cache.mastery_value() * ( priest.wod_hotfix ? 1.25 : 1 ); // Increases damage by 3.125% per point, rather than 2.5%.
     }
 
     if ( priest.buffs.empowered_shadows -> check() )
@@ -2992,11 +2984,7 @@ struct mind_flay_base_t : public priest_spell_t
 
     if ( priest.mastery_spells.mental_anguish -> ok() )
     {
-      am *= 1.0 + priest.cache.mastery_value();
-      if ( priest.wod_hotfix )
-      {
-        am *= 1.25;
-      } // Increases damage by 3.125% per point, rather than 2.5%.
+      d *= 1.0 + priest.cache.mastery_value() * ( priest.wod_hotfix ? 1.25 : 1 ); // Increases damage by 3.125% per point, rather than 2.5%.
     }
 
     // Hotfix, via -- http://blue.mmo-champion.com/topic/318876-warlords-of-draenor-theorycraft-discussion/#post636 -- 2014/10/13
