@@ -31,9 +31,10 @@ actions+=/berserking,if=energy<=40
 actions+=/arcane_torrent,if=energy<=40
 actions+=/chi_brew,if=talent.chi_brew.enabled&chi.max-chi>=2&buff.elusive_brew_stacks.stack<=10
 actions+=/gift_of_the_ox,if=buff.gift_of_the_ox.react&incoming_damage_1500ms
+actions+=/diffuse_magic,if=incoming_damage_1500ms&buff.fortifying_brew.down
 actions+=/dampen_harm,if=incoming_damage_1500ms&buff.fortifying_brew.down&buff.elusive_brew_activated.down
-actions+=/fortifying_brew,if=incoming_damage_1500ms&buff.dampen_harm.down&buff.elusive_brew_activated.down
-actions+=/elusive_brew,if=buff.elusive_brew_stacks.react>=9&buff.dampen_harm.down&buff.elusive_brew_activated.down
+actions+=/fortifying_brew,if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.elusive_brew_activated.down
+actions+=/elusive_brew,if=buff.elusive_brew_stacks.react>=9&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.elusive_brew_activated.down
 actions+=/invoke_xuen,if=talent.invoke_xuen.enabled&time>5
 actions+=/serenity,if=talent.serenity.enabled&energy<=40
 actions+=/call_action_list,name=st,if=active_enemies<3

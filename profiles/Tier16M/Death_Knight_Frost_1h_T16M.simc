@@ -40,19 +40,18 @@ actions+=/run_action_list,name=aoe,if=active_enemies>=3
 actions+=/run_action_list,name=single_target,if=active_enemies<3
 
 actions.aoe=unholy_blight
-actions.aoe+=/blood_boil,if=!talent.necrotic_plague.enabled&dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28
-actions.aoe+=/blood_boil,if=!talent.necrotic_plague.enabled&dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28
+actions.aoe+=/blood_boil,if=dot.blood_plague.ticking&(!talent.unholy_blight.enabled|cooldown.unholy_blight.remains<49),line_cd=28
 actions.aoe+=/defile
 actions.aoe+=/breath_of_sindragosa,if=runic_power>75
 actions.aoe+=/run_action_list,name=bos_aoe,if=dot.breath_of_sindragosa.ticking
 actions.aoe+=/howling_blast
 actions.aoe+=/blood_tap,if=buff.blood_charge.stack>10
-actions.aoe+=/frost_strike,if=runic_power>76
+actions.aoe+=/frost_strike,if=runic_power>88
 actions.aoe+=/death_and_decay,if=unholy=1
 actions.aoe+=/plague_strike,if=unholy=2
 actions.aoe+=/blood_tap
-actions.aoe+=/frost_strike
-actions.aoe+=/plague_leech,if=unholy=1
+actions.aoe+=/frost_strike,if=!talent.breath_of_sindragosa.enabled|cooldown.breath_of_sindragosa.remains>=10
+actions.aoe+=/plague_leech
 actions.aoe+=/plague_strike,if=unholy=1
 actions.aoe+=/empower_rune_weapon
 
@@ -61,10 +60,10 @@ actions.single_target+=/soul_reaper,if=target.health.pct-3*(target.health.pct%ta
 actions.single_target+=/blood_tap,if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains=0)
 actions.single_target+=/breath_of_sindragosa,if=runic_power>75
 actions.single_target+=/run_action_list,name=bos_st,if=dot.breath_of_sindragosa.ticking
-actions.single_target+=/howling_blast,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains<7&runic_power<88
-actions.single_target+=/obliterate,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains<3&runic_power<76
 actions.single_target+=/defile
 actions.single_target+=/blood_tap,if=talent.defile.enabled&cooldown.defile.remains=0
+actions.single_target+=/howling_blast,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains<7&runic_power<88
+actions.single_target+=/obliterate,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains<3&runic_power<76
 actions.single_target+=/frost_strike,if=buff.killing_machine.react|runic_power>88
 actions.single_target+=/frost_strike,if=cooldown.antimagic_shell.remains<1&runic_power>=50&!buff.antimagic_shell.up
 actions.single_target+=/howling_blast,if=death>1|frost>1
@@ -74,10 +73,9 @@ actions.single_target+=/howling_blast,if=talent.necrotic_plague.enabled&!dot.nec
 actions.single_target+=/plague_strike,if=!talent.necrotic_plague.enabled&!dot.blood_plague.ticking&unholy>0
 actions.single_target+=/howling_blast,if=buff.rime.react
 actions.single_target+=/frost_strike,if=set_bonus.tier17_2pc=1&(runic_power>=50|(cooldown.pillar_of_frost.remains<5))
-actions.single_target+=/frost_strike,if=runic_power>=50
+actions.single_target+=/frost_strike,if=runic_power>76
 actions.single_target+=/obliterate,if=unholy>0&!buff.killing_machine.react
-actions.single_target+=/howling_blast,if=!(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains<2)|death+frost>=2
-actions.single_target+=/blood_tap,if=target.health.pct-3*(target.health.pct%target.time_to_die)>35|buff.blood_charge.stack>=8
+actions.single_target+=/howling_blast,if=!(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains<3)|death+frost>=2
 actions.single_target+=/blood_tap
 actions.single_target+=/plague_leech
 actions.single_target+=/empower_rune_weapon
@@ -87,7 +85,7 @@ actions.bos_aoe+=/blood_tap,if=buff.blood_charge.stack>10
 actions.bos_aoe+=/death_and_decay,if=unholy=1
 actions.bos_aoe+=/plague_strike,if=unholy=2
 actions.bos_aoe+=/blood_tap
-actions.bos_aoe+=/plague_leech,if=unholy=1
+actions.bos_aoe+=/plague_leech
 actions.bos_aoe+=/plague_strike,if=unholy=1
 actions.bos_aoe+=/empower_rune_weapon
 
