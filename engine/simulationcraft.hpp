@@ -2179,7 +2179,7 @@ struct expr_t
   template <typename T> static double coerce( T t ) { return static_cast<double>( t ); }
   static double coerce( timespan_t t ) { return t.total_seconds(); }
 
-  virtual expr_t* optimize( int spacing=0 ) { spacing=0; return this; }
+  virtual expr_t* optimize( int /* spacing */ = 0 ) { /* spacing = 0; */ return this; }
   virtual double evaluate() = 0;
 
   virtual bool is_constant( double* /*return_value*/ ) { return false; }
@@ -3610,11 +3610,6 @@ struct set_bonus_t
   static const unsigned N_BONUSES = 2;       // Number of set bonuses in tier gear
   static const unsigned TIER_THRESHOLD = 17; // Tier when everything changes
   static const unsigned PVP_TIER = 0;        // PVP tier in internal data
-
-  // Constants used with translation from set_e to new set bonus system
-  static const unsigned tier_divisor = 12;
-  static const unsigned role_divisor = 3;
-  static const unsigned bonus_modulo = 3;
 
   struct set_bonus_data_t
   {

@@ -257,7 +257,7 @@ public:
 
   expr_t* optimize( int spacing ) // override
   {
-    if( EXPRESSION_DEBUG ) printf( "%*d and %ld %ld %ld %ld ( %s %s )\n", spacing, id_, left_true, left_false, right_true, right_false, left -> name().c_str(), right -> name().c_str() );
+    if( EXPRESSION_DEBUG ) printf( "%*d and %llu %llu %llu %llu ( %s %s )\n", spacing, id_, left_true, left_false, right_true, right_false, left -> name().c_str(), right -> name().c_str() );
     left  = left  -> optimize( spacing+2 );
     right = right -> optimize( spacing+2 );
     bool left_always_true  = left -> always_true();
@@ -339,7 +339,7 @@ public:
 
   expr_t* optimize( int spacing ) // override
   {
-    if( EXPRESSION_DEBUG ) printf( "%*d or %ld %ld %ld %ld ( %s %s )\n", spacing, id_, left_true, left_false, right_true, right_false, left -> name().c_str(), right -> name().c_str() );
+    if( EXPRESSION_DEBUG ) printf( "%*d or %llu %llu %llu %llu ( %s %s )\n", spacing, id_, left_true, left_false, right_true, right_false, left -> name().c_str(), right -> name().c_str() );
     left  = left  -> optimize( spacing+2 );
     right = right -> optimize( spacing+2 );
     bool left_always_true  = left -> always_true();
