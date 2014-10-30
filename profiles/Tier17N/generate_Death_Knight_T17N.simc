@@ -16,7 +16,8 @@ race=orc
 spec=unholy
 role=attack
 position=back
-talents=2003002
+talents=2001002
+glyphs=
 head=hardened_greathelm,id=113910
 neck=thogars_serrated_chain,id=113959,enchant=gift_of_mastery
 shoulders=ogreskull_boneplate_pauldrons,id=115536
@@ -41,7 +42,7 @@ race=orc
 spec=frost
 role=attack
 position=back
-talents=2003002
+talents=2001002
 glyphs=
 head=ogreskull_boneplate_greathelm,id=115539
 neck=thogars_serrated_chain,id=113959,enchant=gift_of_mastery
@@ -66,7 +67,7 @@ race=orc
 spec=frost
 role=attack
 position=back
-talents=2003002
+talents=2001002
 glyphs=
 head=ogreskull_boneplate_greathelm,id=115539
 neck=thogars_serrated_chain,id=113959,enchant=gift_of_mastery
