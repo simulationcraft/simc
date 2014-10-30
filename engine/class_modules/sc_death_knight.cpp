@@ -535,7 +535,7 @@ public:
   void      trigger_t17_4pc_frost( const action_state_t* );
   void      trigger_t17_4pc_unholy( const action_state_t* );
   void      apply_diseases( action_state_t* state, unsigned diseases );
-  int       runes_count( rune_type rt, bool include_death, int position );
+  double    runes_count( rune_type rt, bool include_death, int position );
   double    runes_cooldown_any( rune_type rt, bool include_death, int position );
   double    runes_cooldown_all( rune_type rt, bool include_death, int position );
   double    runes_cooldown_time( rune_t* r );
@@ -7641,7 +7641,7 @@ void death_knight_t::apply_diseases( action_state_t* state, unsigned diseases )
 
 // death_knight_t::runes_count ==============================================
 // how many runes of type rt are available
-int death_knight_t::runes_count( rune_type rt, bool include_death, int position )
+double death_knight_t::runes_count( rune_type rt, bool include_death, int position )
 {
   double result = 0;
   // positional checks first
@@ -7672,7 +7672,7 @@ int death_knight_t::runes_count( rune_type rt, bool include_death, int position 
       }
     }
   }
-  return static_cast<int>( result );
+  return result;
 }
 
 // death_knight_t::runes_cooldown_any =======================================
