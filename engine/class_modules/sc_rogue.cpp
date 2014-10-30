@@ -4885,6 +4885,49 @@ void rogue_t::init_gains()
 
 // rogue_t::init_procs ======================================================
 
+struct honor_among_thieves_callback_t : public dbc_proc_callback_t
+{
+  rogue_t* rogue;
+
+  honor_among_thieves_callback_t( player_t* player, rogue_t* r, const special_effect_t& effect ) :
+    dbc_proc_callback_t( player, effect ), rogue( r )
+  { }
+
+  void trigger( action_t* a, void* call_data )
+  {
+    if ( ! rogue -> in_combat )
+      return;
+
+    // Only procs from specials; repeating is here for hunter autoshot, which
+    // doesn't proc it either .. except in WoD, the rogue's own autoattacks
+    // can also proc HaT
+    if ( a -> player != rogue && ( ! a -> special || a -> repeating ) )
+      return;
+
+    if ( rogue -> cooldowns.honor_among_thieves -> down() )
+      return;
+
+    if ( ! rogue -> rng().roll( rogue -> spec.honor_among_thieves -> proc_chance() ) )
+      return;
+
+    listener -> procs.hat_donor -> occur();
+
+    execute( a, static_cast<action_state_t*>( call_data ) );
+  }
+
+  void execute( action_t*, action_state_t* )
+  {
+    rogue -> trigger_combo_point_gain( 0, 1, rogue -> gains.honor_among_thieves );
+
+    rogue -> procs.honor_among_thieves -> occur();
+
+    rogue -> cooldowns.honor_among_thieves -> start( rogue -> spec.honor_among_thieves -> internal_cooldown() );
+
+    if ( rogue -> buffs.t16_2pc_melee -> trigger() )
+      rogue -> procs.t16_2pc_melee -> occur();
+  }
+};
+
 void rogue_t::init_procs()
 {
   player_t::init_procs();
@@ -4896,6 +4939,27 @@ void rogue_t::init_procs()
   procs.no_revealing_strike      = get_proc( "Finisher with no Revealing Strike" );
   procs.seal_fate                = get_proc( "Seal Fate"           );
   procs.t16_2pc_melee            = get_proc( "Silent Blades (T16 2PC)" );
+
+  bool has_hat_action = find_action( "honor_among_thieves" ) != 0;
+
+  // Register callbacks (real HAT), if there's no proxy HAT action.
+  if ( spec.honor_among_thieves -> ok() && ! has_hat_action )
+  {
+    for ( size_t i = 0; i < sim -> player_no_pet_list.size(); i++ )
+    {
+      player_t* p = sim -> player_no_pet_list[ i ];
+      special_effect_t effect( p );
+      effect.spell_id = spec.honor_among_thieves -> id();
+      effect.proc_flags2_ = PF2_CRIT;
+      effect.cooldown_ = timespan_t::zero();
+
+      p -> special_effects.push_back( effect );
+
+      honor_among_thieves_callback_t* cb = new honor_among_thieves_callback_t( p, this, p -> special_effects.back() );
+      cb -> initialize();
+    }
+  }
+
 }
 
 // rogue_t::init_scaling ====================================================
@@ -5046,85 +5110,8 @@ void rogue_t::create_buffs()
   buffs.crimson_poison    = buff_creator_t( this, "crimson_poison", find_spell( 157562 ) );
 }
 
-struct honor_among_thieves_callback_t : public dbc_proc_callback_t
-{
-  rogue_t* rogue;
-
-  honor_among_thieves_callback_t( player_t* player, rogue_t* r, const special_effect_t& effect ) :
-    dbc_proc_callback_t( player, effect ), rogue( r )
-  { }
-
-  void trigger( action_t* a, void* call_data )
-  {
-    if ( ! rogue -> in_combat )
-      return;
-
-    // Only procs from specials; repeating is here for hunter autoshot, which
-    // doesn't proc it either .. except in WoD, the rogue's own autoattacks
-    // can also proc HaT
-    if ( a -> player != rogue && ( ! a -> special || a -> repeating ) )
-      return;
-
-    if ( rogue -> cooldowns.honor_among_thieves -> down() )
-      return;
-
-    if ( ! rogue -> rng().roll( rogue -> spec.honor_among_thieves -> proc_chance() ) )
-      return;
-
-    listener -> procs.hat_donor -> occur();
-
-    execute( a, static_cast<action_state_t*>( call_data ) );
-  }
-
-  void execute( action_t*, action_state_t* )
-  {
-    rogue -> trigger_combo_point_gain( 0, 1, rogue -> gains.honor_among_thieves );
-
-    rogue -> procs.honor_among_thieves -> occur();
-
-    rogue -> cooldowns.honor_among_thieves -> start( rogue -> spec.honor_among_thieves -> internal_cooldown() );
-
-    if ( rogue -> buffs.t16_2pc_melee -> trigger() )
-      rogue -> procs.t16_2pc_melee -> occur();
-  }
-};
-
 void rogue_t::register_callbacks()
 {
-  // APLs are not initialized at this point, so we will have to jump through
-  // hoops to figure out if the user has put in a honor_among_thieves action
-  // into any APL. Thus, scan through raw APL data (strings) for
-  // "honor_among_thieves", which should be sufficient to figure out its
-  // presence.
-  bool has_hat_action = false;
-  for ( std::map<std::string, std::string>::iterator it = alist_map.begin(), end = alist_map.end();
-        it != end; ++it )
-  {
-    action_priority_list_t* apl = get_action_priority_list( it -> first );
-    if ( util::str_in_str_ci( apl -> action_list_str, "honor_among_thieves" ) )
-    {
-      has_hat_action = true;
-      break;
-    }
-  }
-
-  // Register callbacks (real HAT), if there's no proxy HAT action.
-  if ( spec.honor_among_thieves -> ok() && ! has_hat_action )
-  {
-    for ( size_t i = 0; i < sim -> player_no_pet_list.size(); i++ )
-    {
-      player_t* p = sim -> player_no_pet_list[ i ];
-      special_effect_t effect( p );
-      effect.spell_id = spec.honor_among_thieves -> id();
-      effect.proc_flags2_ = PF2_CRIT;
-      effect.cooldown_ = timespan_t::zero();
-
-      p -> special_effects.push_back( effect );
-
-      new honor_among_thieves_callback_t( p, this, p -> special_effects.back() );
-    }
-  }
-
   player_t::register_callbacks();
 }
 
