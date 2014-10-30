@@ -1998,6 +1998,7 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
     proc              = false;
     callbacks         = true;
     may_miss          = false;
+    instant_multistrike = false;
 
     trigger_gcd       = timespan_t::zero();
     travel_speed      = 6.0;
@@ -2064,6 +2065,7 @@ struct mind_blast_t final : public priest_spell_t
     casted_with_shadowy_insight( false )
   {
     parse_options( options_str );
+    instant_multistrike = false;
 
     // Glyph of Mind Harvest
     if ( priest.glyphs.mind_harvest -> ok() )
@@ -2233,6 +2235,7 @@ struct mind_spike_t final : public priest_spell_t
     casted_with_surge_of_darkness( false )
   {
     parse_options( options_str );
+    instant_multistrike = false;
   }
 
   virtual action_state_t* new_state() override
@@ -2454,6 +2457,7 @@ struct mind_sear_tick_t final : public priest_spell_t
     aoe         = -1;
     callbacks   = false;
     direct_tick = true;
+    instant_multistrike = false;
     if ( p.wod_hotfix )
       spell_power_mod.direct *= 1.1;
   }
@@ -2470,6 +2474,7 @@ struct mind_sear_t final : public priest_spell_t
     hasted_ticks = false;
     dynamic_tick_action = true;
     tick_zero    = true;
+    instant_multistrike = false;
 
     tick_action = new mind_sear_tick_t( p, p.find_class_spell( "Mind Sear" ) );
   }
@@ -2536,6 +2541,7 @@ struct shadow_word_death_t final : public priest_spell_t
     backlash( new shadow_word_death_backlash_t( p ) )
   {
     parse_options( options_str );
+    instant_multistrike = false;
 
     spell_power_mod.direct = 2.7; // Is really 270% SP, tooltip value is incorrect. -- Twintop 2014/10/22
     base_multiplier *= 1.0 + p.sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
@@ -2780,6 +2786,7 @@ struct devouring_plague_t final : public priest_spell_t
     base_td = 0;
     base_tick_time = timespan_t::zero();
     dot_duration = timespan_t::zero();
+    instant_multistrike = false;
 
     add_child( dot_spell );
   }
@@ -3608,7 +3615,9 @@ struct cascade_t final : public cascade_base_t<priest_spell_t>
   cascade_t( priest_t& p, const std::string& options_str ) :
     base_t( "cascade", p, options_str, get_spell_data( p ) ),
     _target_list_source( get_target_list_source( p ) )
-  {}
+  {
+    instant_multistrike = false;
+  }
 
   virtual void populate_target_list() override
   {
@@ -3688,6 +3697,7 @@ struct halo_t final : public priest_spell_t
     _base_spell( get_base_spell( p ) )
   {
     parse_options( options_str );
+    instant_multistrike = false;
 
     add_child( _base_spell );
   }
@@ -3765,6 +3775,7 @@ struct divine_star_t final : public priest_spell_t
     parse_options( options_str );
 
     dot_duration = base_tick_time = timespan_t::zero();
+    instant_multistrike = false;
 
     add_child( _base_spell );
   }
@@ -3805,6 +3816,7 @@ struct void_entropy_t : public priest_spell_t
     parse_options( options_str );
     may_crit = false;
     tick_zero = false;
+    instant_multistrike = false;
   }
 
   virtual void consume_resource() override

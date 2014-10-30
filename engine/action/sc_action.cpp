@@ -239,6 +239,7 @@ action_t::action_t( action_e       ty,
   aoe(),
   pre_combat( 0 ),
   may_multistrike( -1 ),
+  instant_multistrike( true ),
   dual(),
   callbacks( true ),
   special(),
@@ -1271,7 +1272,7 @@ int action_t::schedule_multistrike( action_state_t* state, dmg_e type, double ti
 
     // Schedule multistrike "execute"; in reality it calls either impact, or
     // assess_damage (for ticks).
-    new ( *sim ) multistrike_execute_event_t( ms_state );
+    new ( *sim ) multistrike_execute_event_t( ms_state, n_strikes );
 
     n_strikes++;
   }

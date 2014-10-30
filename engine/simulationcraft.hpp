@@ -5611,6 +5611,7 @@ struct action_t : public noncopyable
   resource_e resource_current;
   int aoe; // Number of targets the action will impact. -1 = no target limit.
   int pre_combat, may_multistrike;
+  bool instant_multistrike; // true if multistrikes occur immediately
   bool dual; // true if this action should not be counted for executes.
   bool callbacks; // When set to false, action will not trigger trinkets, enchants, rppm.
   bool special, channeled, sequence;
@@ -6830,7 +6831,7 @@ struct multistrike_execute_event_t : public event_t
 {
   action_state_t* state;
 
-  multistrike_execute_event_t( action_state_t* s ) :
+  multistrike_execute_event_t( action_state_t* s, int ms_count = 0 ) :
       event_t( *s -> action -> player, "Multistrike-Execute-Event" ), state( s )
   {
     if ( sim().debug )
@@ -6840,10 +6841,23 @@ struct multistrike_execute_event_t : public event_t
                   s -> target -> name() );
     }
 
+    timespan_t multistrike_offset = timespan_t::zero();
+
+    if ( !state -> action -> instant_multistrike )
+    {
+      // Values taken from Celestalon's second post about this -- Twintop 2014/10/30
+      // http://us.battle.net/wow/en/forum/topic/13087818929?page=22#429
+      if ( ms_count == 0 )
+        multistrike_offset = timespan_t::from_millis( 333 );
+      else
+        multistrike_offset = timespan_t::from_millis( 666 );
+    }
+
     // Hots/Dots will be scheduled immediately, direct damage multistrikes will
     // jump through hoops .. below
     if ( state -> result_type == DMG_OVER_TIME || state -> result_type == HEAL_OVER_TIME )
-      sim().add_event( this, timespan_t::zero() );
+      sim().add_event( this, timespan_t::zero() + multistrike_offset );
+
     // Direct damage/heal multistrikes need to take into account the travel
     // time of the "real" spell, and impact at the same time(?), so ..
     // TODO-WOD: Multistrike impacts in combatlog have delay of .. ?
@@ -6854,7 +6868,7 @@ struct multistrike_execute_event_t : public event_t
       // timestamp
       if ( state -> action -> travel_time() == timespan_t::zero() )
       {
-        sim().add_event( this, timespan_t::zero() );
+        sim().add_event( this, timespan_t::zero() + multistrike_offset );
       }
       // Travel time spell, schedule_travel() has inserted a new entry into the
       // action's travel events (at the end of the vector), so use it's
@@ -6864,7 +6878,7 @@ struct multistrike_execute_event_t : public event_t
       {
         assert( state -> action -> current_travel_events().size() > 0 );
         timespan_t time_to_travel = state -> action -> current_travel_events().back() -> remains();
-        sim().add_event( this, time_to_travel );
+        sim().add_event( this, time_to_travel + multistrike_offset );
       }
     }
     else
