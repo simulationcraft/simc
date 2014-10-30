@@ -629,15 +629,15 @@ struct rng_tinymt_t : public rng_t
 // RNG Engine Broker
 // ==========================================================================
 
-rng_t::type_e rng_t::parse_type( const std::string& name )
+rng_t::type_e rng_t::parse_type( const std::string& n )
 {
-  if( name == "murmurhash"   ) return rng_t::MURMURHASH;
-  if( name == "sfmt"         ) return rng_t::SFMT;
-  if( name == "std"          ) return rng_t::STD;
-  if( name == "tinymt"       ) return rng_t::TINYMT;
-  if( name == "xorshift64"   ) return rng_t::XORSHIFT64;
-  if( name == "xorshift128"  ) return rng_t::XORSHIFT128;
-  if( name == "xorshift1024" ) return rng_t::XORSHIFT1024;
+  if( n == "murmurhash"   ) return rng_t::MURMURHASH;
+  if( n == "sfmt"         ) return rng_t::SFMT;
+  if( n == "std"          ) return rng_t::STD;
+  if( n == "tinymt"       ) return rng_t::TINYMT;
+  if( n == "xorshift64"   ) return rng_t::XORSHIFT64;
+  if( n == "xorshift128"  ) return rng_t::XORSHIFT128;
+  if( n == "xorshift1024" ) return rng_t::XORSHIFT1024;
 
   return rng_t::DEFAULT;
 }
