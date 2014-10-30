@@ -544,7 +544,6 @@ struct rng_tinymt_t : public rng_t
   static const uint64_t TINYMT64_SH1  = 11;
   static const uint64_t TINYMT64_SH8  = 8;
   static const uint64_t TINYMT64_MASK = uint64_t(0x7fffffffffffffff);
-  static const double   TINYMT64_MUL  = (1.0 / 18446744073709551616.0);
 
   uint64_t status[2];
   uint32_t mat1;
@@ -970,8 +969,6 @@ static void test_one( rng_t* rng, uint64_t n )
 {
   int64_t start_time = milliseconds();
 
-  rng -> seed( start_time );
-
   double average = 0;
   for ( uint64_t i = 0; i < n; ++i )
   {
@@ -983,8 +980,24 @@ static void test_one( rng_t* rng, uint64_t n )
   average /= n;
   int64_t elapsed_cpu = milliseconds() - start_time;
 
-  std::cout << n << " calls to distribution_t<" << rng -> name()
-            << ">::real(): average = " << std::setprecision( 8 ) << average
+  std::cout << n << " calls to rng::" << rng -> name() << "::real()"
+            << ", average = " << std::setprecision( 8 ) << average
+            << ", time = " << elapsed_cpu << " ms"
+               ", numbers/sec = " << static_cast<uint64_t>( n * 1000.0 / elapsed_cpu ) << "\n\n";
+}
+
+static void test_seed( rng_t* rng, uint64_t n )
+{
+  int64_t start_time = milliseconds();
+
+  for ( uint64_t i = 0; i < n; ++i )
+  {
+    rng -> seed( uint64_t( M_PI ) * n );
+  }
+
+  int64_t elapsed_cpu = milliseconds() - start_time;
+
+  std::cout << n << " calls to rng::" << rng -> name() << "::seed()"
             << ", time = " << elapsed_cpu << " ms"
                ", numbers/sec = " << static_cast<uint64_t>( n * 1000.0 / elapsed_cpu ) << "\n\n";
 }
@@ -993,8 +1006,6 @@ static void test_one( rng_t* rng, uint64_t n )
 static void monte_carlo( rng_t* rng, uint64_t n )
 {
   int64_t start_time = milliseconds();
-
-  rng -> seed( start_time );
 
   uint64_t count_in_sphere = 0;
   for ( uint64_t i = 0; i < n; ++i )
@@ -1042,11 +1053,18 @@ int main( int /*argc*/, char** /*argv*/ )
   monte_carlo( rng_xs128,  n );
   monte_carlo( rng_xs1024, n );
 
+  test_seed( rng_rand,   100000 );
+  test_seed( rng_sfmt,   100000 );
+  test_seed( rng_tinymt, 100000 );
+  test_seed( rng_xs128,  100000 );
+  test_seed( rng_xs1024, 100000 );
+
 #ifdef RNG_CXX11
   rng_t* rng_mt_cxx11 = new rng_mt_cxx11_t();
   rng_mt_cxx11 -> seed( seed );
   test_one( rng_mt_cxx11, n );
   monte_carlo( rng_mt_cxx11, n );
+  test_seed( rng_mt_cxx11, 100000 );
 #endif // END RNG_CXX11
 
   rng_t* rng = rng_tinymt;
