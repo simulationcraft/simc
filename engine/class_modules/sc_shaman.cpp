@@ -5279,7 +5279,7 @@ void shaman_t::init_action_list()
 
     single -> add_action( this, "Searing Totem", "if=!totem.fire.active" );
     single -> add_action( this, "Unleash Elements", "if=(talent.unleashed_fury.enabled|set_bonus.tier16_2pc_melee=1)" );
-    single -> add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.react>=1" );
+    single -> add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.react>=4|buff.ancestral_swiftness.up" );
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react=5|(buff.maelstrom_weapon.react>=4&!buff.ascendance.up)|(buff.ancestral_swiftness.up&buff.maelstrom_weapon.react>=3)" );
     single -> add_action( this, find_class_spell( "Ascendance" ), "windstrike" );
     single -> add_action( this, "Stormstrike" );
@@ -5288,6 +5288,7 @@ void shaman_t::init_action_list()
     single -> add_action( this, "Flame Shock", "if=(talent.elemental_fusion.enabled&buff.elemental_fusion.stack=2&buff.unleash_flame.up&dot.flame_shock.remains<16)|(!talent.elemental_fusion.enabled&buff.unleash_flame.up&dot.flame_shock.remains<=9)|!ticking" );
     single -> add_action( this, "Unleash Elements" );
     single -> add_action( this, "Frost Shock", "if=(talent.elemental_fusion.enabled&dot.flame_shock.remains>=16)|!talent.elemental_fusion.enabled" );
+    single -> add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.react>=1" );
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react>=1&!buff.ascendance.up" );
     single -> add_action( this, "Searing Totem", "if=pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up" );
 
@@ -5297,7 +5298,7 @@ void shaman_t::init_action_list()
     aoe -> add_action( "wait,sec=cooldown.fire_nova.remains,if=active_dot.flame_shock>=4&cooldown.fire_nova.remains<=action.fire_nova.gcd" );
     aoe -> add_action( this, "Magma Totem", "if=!totem.fire.active" );
     aoe -> add_action( this, "Lava Lash", "if=dot.flame_shock.ticking" );
-    aoe -> add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.react>=1" );
+    aoe -> add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.react>=4|buff.ancestral_swiftness.up" );
     aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=glyph.chain_lightning.enabled&active_enemies>=4&(buff.maelstrom_weapon.react=5|(buff.ancestral_swiftness.up&buff.maelstrom_weapon.react>=3))" );
     aoe -> add_action( this, "Unleash Elements", "if=active_enemies<4" );
     aoe -> add_action( this, "Flame Shock", "cycle_targets=1,if=!ticking" );
@@ -5308,6 +5309,7 @@ void shaman_t::init_action_list()
     aoe -> add_action( this, "Stormstrike" );
     aoe -> add_action( this, "Primal Strike" );
     aoe -> add_action( this, "Frost Shock", "if=active_enemies<4" );
+    aoe -> add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.react>=1" );
     aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=glyph.chain_lightning.enabled&active_enemies>=4&buff.maelstrom_weapon.react>=1" );
     aoe -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=(!glyph.chain_lightning.enabled|active_enemies<=3)&buff.maelstrom_weapon.react>=1" );
     aoe -> add_action( this, "Fire Nova", "if=active_dot.flame_shock>=1" );
