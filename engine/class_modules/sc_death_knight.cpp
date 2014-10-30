@@ -1131,6 +1131,8 @@ void rune_t::regen_rune( death_knight_t* p, timespan_t periodicity, bool rc )
       overflow = paired_rune -> value - 1.0;
       paired_rune -> value = 1.0;
     }
+    else
+      overflow = 0;
     if ( paired_rune -> value >= 1.0 )
     {
       if ( paired_rune -> state == STATE_REGENERATING )
@@ -4561,6 +4563,8 @@ struct blood_boil_t : public death_knight_spell_t
 
     if ( p -> wod_hotfix )
       attack_power_mod.direct *= 1.20;
+
+    rp_gain = data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
 
     aoe = -1;
   }
