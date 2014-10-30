@@ -937,7 +937,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   requires_regen_event( false ), target_death_pct( 0 ), rel_target_level( 0 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ), enable_taunts( false ),
   challenge_mode( false ), scale_to_itemlevel( -1 ), disable_set_bonuses( false ), pvp_crit( false ),
   active_enemies( 0 ), active_allies( 0 ),
-  deterministic_rng( false ),
+  _rng( 0 ), deterministic_rng( false ),
   average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
   fight_style( "Patchwerk" ), overrides( overrides_t() ), auras( auras_t() ),
@@ -1010,6 +1010,7 @@ sim_t::~sim_t()
   delete plot;
   delete reforge_plot;
   delete spell_query;
+  if( _rng ) delete _rng;
 }
 
 // sim_t::add_event (Please use core_event_t::add_event instead) ============
