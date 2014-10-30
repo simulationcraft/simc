@@ -6273,7 +6273,7 @@ void death_knight_t::init_action_list()
     bos_aoe -> add_action( this, "Death and Decay", "if=unholy=1" );
     bos_aoe -> add_action( this, "Plague Strike", "if=unholy=2" );
     bos_aoe -> add_talent( this, "Blood Tap" );
-    bos_aoe -> add_talent( this, "Plague Leech", "if=unholy=1" );
+    bos_aoe -> add_talent( this, "Plague Leech" );
     bos_aoe -> add_action( this, "Plague Strike", "if=unholy=1" );
     bos_aoe -> add_action( this, "Empower Rune Weapon" );
 
@@ -6371,14 +6371,15 @@ void death_knight_t::init_action_list()
       // Breath of Sindragosa in use, cast it and then keep it up
       st -> add_talent( this, "Breath of Sindragosa", "if=runic_power>75");
       st -> add_action( "run_action_list,name=bos_st,if=dot.breath_of_sindragosa.ticking" );
+      
+      // Defile
+      st -> add_talent( this, "Defile" );
+      st -> add_talent( this, "Blood Tap", "if=talent.defile.enabled&cooldown.defile.remains=0" );
 
       // Breath of Sindragosa coming off cooldown, get ready to use
       st -> add_action( this, "Howling Blast", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains<7&runic_power<88");
       st -> add_action( this, "Obliterate", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains<3&runic_power<76");
 
-      // Defile
-      st -> add_talent( this, "Defile" );
-      st -> add_talent( this, "Blood Tap", "if=talent.defile.enabled&cooldown.defile.remains=0" );
 
       // Killing Machine / Very High RP
       st -> add_action( this, "Frost Strike", "if=buff.killing_machine.react|runic_power>88" );
@@ -6400,14 +6401,12 @@ void death_knight_t::init_action_list()
 
       // Don't waste Runic Power
       st -> add_action( this, "Frost Strike", "if=set_bonus.tier17_2pc=1&(runic_power>=50|(cooldown.pillar_of_frost.remains<5))" );
-      st -> add_action( this, "Frost Strike", "if=runic_power>=50" );
+      st -> add_action( this, "Frost Strike", "if=runic_power>76" );
 
       // Keep Runes on Cooldown
       st -> add_action( this, "Obliterate", "if=unholy>0&!buff.killing_machine.react" );
-      st -> add_action( this, "Howling Blast", "if=!(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains<2)|death+frost>=2" );
+      st -> add_action( this, "Howling Blast", "if=!(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains<3)|death+frost>=2" );
 
-      // Generate Runic Power or Runes
-      st -> add_talent( this, "Blood Tap", "if=target.health.pct-3*(target.health.pct%target.time_to_die)>35|buff.blood_charge.stack>=8" );
 
       // Better than waiting
       st -> add_talent( this, "Blood Tap" );
@@ -6417,19 +6416,18 @@ void death_knight_t::init_action_list()
 
     //AoE
     aoe -> add_talent( this, "Unholy Blight" );
-    aoe -> add_action( this, "Blood Boil", "if=!talent.necrotic_plague.enabled&dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28" );
-    aoe -> add_action( this, "Blood Boil", "if=!talent.necrotic_plague.enabled&dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28" );
+    aoe -> add_action( this, "Blood Boil", "if=dot.blood_plague.ticking&(!talent.unholy_blight.enabled|cooldown.unholy_blight.remains<49),line_cd=28" );
     aoe -> add_talent( this, "Defile" );
     aoe -> add_talent( this, "Breath of Sindragosa", "if=runic_power>75");
     aoe -> add_action( "run_action_list,name=bos_aoe,if=dot.breath_of_sindragosa.ticking" );
     aoe -> add_action( this, "Howling Blast" );
     aoe -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10" );
-    aoe -> add_action( this, "Frost Strike", "if=runic_power>76" );
+    aoe -> add_action( this, "Frost Strike", "if=runic_power>88" );
     aoe -> add_action( this, "Death and Decay", "if=unholy=1" );
     aoe -> add_action( this, "Plague Strike", "if=unholy=2" );
     aoe -> add_talent( this, "Blood Tap" );
-    aoe -> add_action( this, "Frost Strike" );
-    aoe -> add_talent( this, "Plague Leech", "if=unholy=1" );
+    aoe -> add_action( this, "Frost Strike", "if=!talent.breath_of_sindragosa.enabled|cooldown.breath_of_sindragosa.remains>=10" );
+    aoe -> add_talent( this, "Plague Leech" );
     aoe -> add_action( this, "Plague Strike", "if=unholy=1" );
     aoe -> add_action( this, "Empower Rune Weapon" );
 
