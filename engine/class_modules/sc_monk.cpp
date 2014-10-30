@@ -4717,9 +4717,10 @@ void monk_t::apl_combat_brewmaster()
   def -> add_action( this, "chi_sphere", "if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4" );
   def -> add_talent( this, "Chi Brew", "if=talent.chi_brew.enabled&chi.max-chi>=2&buff.elusive_brew_stacks.stack<=10" );
   def -> add_action( this, "Gift of the Ox", "if=buff.gift_of_the_ox.react&incoming_damage_1500ms" );
+  def -> add_talent( this, "Diffuse Magic", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
   def -> add_talent( this, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down&buff.elusive_brew_activated.down" );
-  def -> add_action( this, "Fortifying Brew", "if=incoming_damage_1500ms&buff.dampen_harm.down&buff.elusive_brew_activated.down" );
-  def -> add_action( this, "Elusive Brew", "if=buff.elusive_brew_stacks.react>=9&buff.dampen_harm.down&buff.elusive_brew_activated.down" );
+  def -> add_action( this, "Fortifying Brew", "if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.elusive_brew_activated.down" );
+  def -> add_action( this, "Elusive Brew", "if=buff.elusive_brew_stacks.react>=9&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.elusive_brew_activated.down" );
   def -> add_action( "invoke_xuen,if=talent.invoke_xuen.enabled&time>5" );
   def -> add_talent( this, "Serenity", "if=talent.serenity.enabled&energy<=40" );
   def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
