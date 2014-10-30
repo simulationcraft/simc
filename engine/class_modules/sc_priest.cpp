@@ -6205,7 +6205,7 @@ void priest_t::apl_shadow()
   cop_advanced_mfi -> add_action( "shadow_word_pain,if=primary_target=0,moving=1,cycle_targets=1" );
 
   // Advanced "DoT Weaving" CoP Action List, for when you have T14 2P -- Part 2, the weaving
-  cop_advanced_mfi_dots -> add_action( "mind_spike,if=(target.dot.shadow_word_pain.ticking&target.dot.shadow_word_pain.remains<gcd*0.5)|(target.dot.vampiric_touch.ticking&target.dot.vampiric_touch.remains<gcd*0.5)" );
+  cop_advanced_mfi_dots -> add_action( "mind_spike,if=((target.dot.shadow_word_pain.ticking&target.dot.shadow_word_pain.remains<gcd)|(target.dot.vampiric_touch.ticking&target.dot.vampiric_touch.remains<gcd))&!target.dot.devouring_plague.ticking" );
   cop_advanced_mfi_dots -> add_action( "shadow_word_pain,if=!ticking&miss_react&!target.dot.vampiric_touch.ticking" );
   cop_advanced_mfi_dots -> add_action( "vampiric_touch,if=!ticking&miss_react" );
   cop_advanced_mfi_dots -> add_action( "mind_blast" );
