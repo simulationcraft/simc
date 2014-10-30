@@ -20,7 +20,7 @@ struct adds_event_t : public raid_event_t
   player_t* master;
   std::vector< pet_t* > adds;
   double random;
-  int adds_to_remove;
+  size_t adds_to_remove;
 
   adds_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "adds" ),
@@ -81,7 +81,7 @@ struct adds_event_t : public raid_event_t
 
   virtual void _start()
   {
-    adds_to_remove = static_cast<int>( util::round( sim -> rng().range( count - random, count + random ) ) );
+    adds_to_remove = static_cast<size_t>( util::round( sim -> rng().range( count - random, count + random ) ) );
     for ( size_t i = 0; i < adds_to_remove; i++ )
     {
       adds[i] -> summon( saved_duration );
