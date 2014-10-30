@@ -2502,8 +2502,6 @@ struct frostbolt_t : public mage_spell_t
     stats -> add_child( icicle );
     icicle -> school = school;
     icicle -> action_list.push_back( p -> icicle );
-    if ( p -> wod_hotfix )
-    { base_multiplier *= 0.8; }
   }
 
   virtual void schedule_execute( action_state_t* execute_state )
@@ -2619,11 +2617,6 @@ struct frostbolt_t : public mage_spell_t
     if ( p() -> buffs.ice_shard -> up() )
     {
       am *= 1.0 + ( p() -> buffs.ice_shard -> stack() * p() -> buffs.ice_shard -> data().effectN( 2 ).percent() );
-    }
-
-    if ( p() -> wod_hotfix )
-    {
-      am *= 1.0 + 0.05 + 0.2;
     }
 
     return am;
