@@ -7,6 +7,9 @@
 
 #if ! defined( SC_WINDOWS )
 #include <inttypes.h>
+#ifndef PRIu64
+#define PRIu64 "zu"
+#endif
 #else
 #ifndef PRIu64
 #define PRIu64 "I64"
