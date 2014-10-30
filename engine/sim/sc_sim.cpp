@@ -1688,6 +1688,16 @@ bool sim_t::init()
     }
   }
 
+  if ( max_player_level < 0 )
+  {
+    for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
+    {
+      player_t* p = player_no_pet_list[ i ];
+      if ( max_player_level < p -> level )
+        max_player_level = p -> level;
+    }
+  }
+
   {
     // Determine whether we have healers or tanks.
     unsigned int healers = 0, tanks = 0;
@@ -1710,16 +1720,6 @@ bool sim_t::init()
         targets_create--;
       }
       while ( targets_create > 1 );
-    }
-  }
-
-  if ( max_player_level < 0 )
-  {
-    for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
-    {
-      player_t* p = player_no_pet_list[ i ];
-      if ( max_player_level < p -> level )
-        max_player_level = p -> level;
     }
   }
 
