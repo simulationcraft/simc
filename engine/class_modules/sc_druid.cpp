@@ -5178,6 +5178,10 @@ struct starfire_t : public druid_spell_t
   {
     parse_options( options_str );
     base_execute_time *= 1 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
+    if ( player -> wod_hotfix )
+    {
+      spell_power_mod.direct *= 1.25;
+    }
   }
 
   double action_multiplier() const
@@ -5232,6 +5236,10 @@ struct starfall_pulse_t : public druid_spell_t
   {
     direct_tick = true;
     aoe = -1;
+    if ( player -> wod_hotfix )
+    {
+      spell_power_mod.direct *= 1.75;
+    }
   }
 };
 
@@ -5288,6 +5296,11 @@ struct starsurge_t : public druid_spell_t
     base_crit += p() -> sets.set( SET_CASTER, T15, B2 ) -> effectN( 1 ).percent();
     cooldown = player -> cooldown.starfallsurge;
     base_execute_time *= 1.0 + player -> perk.enhanced_starsurge -> effectN( 1 ).percent();
+
+    if ( player -> wod_hotfix )
+    {
+      spell_power_mod.direct *= 1.25;
+    }
   }
 
   void execute()
@@ -5446,6 +5459,10 @@ struct wrath_t : public druid_spell_t
   {
     parse_options( options_str );
     base_execute_time *= 1 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
+    if ( player -> wod_hotfix )
+    {
+      spell_power_mod.direct *= 1.25;
+    }
   }
 
   double action_multiplier() const

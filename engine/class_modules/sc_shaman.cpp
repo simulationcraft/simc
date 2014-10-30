@@ -2966,7 +2966,14 @@ struct lightning_bolt_t : public shaman_spell_t
     shaman_spell_t( "lightning_bolt", player, player -> find_class_spell( "Lightning Bolt" ), options_str )
   {
     may_fulmination    = player -> spec.fulmination -> ok();
-    base_multiplier   *= 1.0 + player -> spec.shamanism -> effectN( 1 ).percent();
+    if ( player -> wod_hotfix )
+    {
+      base_multiplier *= 1.7;
+    }
+    else
+    {
+      base_multiplier *= 1.0 + player -> spec.shamanism -> effectN( 1 ).percent();
+    }
     base_multiplier   *= 1.0 + player -> perk.improved_lightning_bolt -> effectN( 1 ).percent();
     base_execute_time += player -> spec.shamanism -> effectN( 3 ).time_value();
   }
@@ -3023,6 +3030,10 @@ struct elemental_blast_t : public shaman_spell_t
   {
     may_fulmination    = player -> spec.fulmination -> ok();
     base_multiplier *= 1.0 + player -> spec.mental_quickness -> effectN( 5 ).percent();
+    if ( player -> wod_hotfix )
+    {
+      base_multiplier *= 1.2;
+    }
   }
 
   virtual void execute()

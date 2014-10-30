@@ -3010,6 +3010,10 @@ struct necrosis_t : public death_knight_spell_t
     death_knight_spell_t( "necrosis", player, player -> spec.necrosis -> effectN( 2 ).trigger() )
   {
     background = true;
+    if ( player -> wod_hotfix )
+    {
+      base_multiplier *= 1.67;
+    }
   }
 };
 
@@ -4896,7 +4900,10 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       school = SCHOOL_SHADOW;
 
       if ( p -> wod_hotfix )
+      {
         attack_power_mod.direct *= 0.95;
+        attack_power_mod.direct *= 1.5;
+      }
     }
 
     void impact( action_state_t* state )
@@ -5856,7 +5863,14 @@ void death_knight_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  base.attribute_multiplier[ ATTR_STRENGTH ] *= 1.0 + spec.unholy_might -> effectN( 1 ).percent();
+  if ( wod_hotfix )
+  {
+    base.attribute_multiplier[ATTR_STRENGTH] *= 1.05;
+  }
+  else
+  {
+    base.attribute_multiplier[ATTR_STRENGTH] *= 1.0 + spec.unholy_might -> effectN( 1 ).percent();
+  }
 
   base.attack_power_per_strength = 1.0;
   base.attack_power_per_agility = 0.0;

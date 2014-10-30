@@ -2482,7 +2482,6 @@ struct frost_bomb_t : public mage_spell_t
 
 // Frostbolt Spell ==========================================================
 
-
 struct frostbolt_t : public mage_spell_t
 {
   double bf_multistrike_bonus;
@@ -2503,6 +2502,8 @@ struct frostbolt_t : public mage_spell_t
     stats -> add_child( icicle );
     icicle -> school = school;
     icicle -> action_list.push_back( p -> icicle );
+    if ( p -> wod_hotfix )
+    { base_multiplier *= 0.8; }
   }
 
   virtual void schedule_execute( action_state_t* execute_state )
@@ -2510,7 +2511,7 @@ struct frostbolt_t : public mage_spell_t
     if ( p() -> perks.enhanced_frostbolt -> ok() &&
          !p() -> buffs.enhanced_frostbolt -> check() &&
          sim -> current_time() > ( last_enhanced_frostbolt +
-				   enhanced_frostbolt_duration ) )
+         enhanced_frostbolt_duration ) )
     {
       p() -> buffs.enhanced_frostbolt -> trigger();
     }

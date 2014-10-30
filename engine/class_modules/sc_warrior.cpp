@@ -2602,6 +2602,10 @@ struct slam_t: public warrior_attack_t
     stancemask = STANCE_BATTLE;
     weapon = &( p -> main_hand_weapon );
     base_costs[RESOURCE_RAGE] = 10;
+    if ( p -> wod_hotfix )
+    {
+      weapon_multiplier *= 0.7;
+    }
   }
 
   void consume_resource()
@@ -2821,6 +2825,10 @@ struct whirlwind_off_hand_t: public warrior_attack_t
     melee_range += p -> glyphs.wind_and_thunder -> effectN( 1 ).base_value(); // Increased by the glyph.
     weapon_multiplier *= 1.0 + p -> spec.crazed_berserker -> effectN( 4 ).percent();
     weapon = &( p -> off_hand_weapon );
+    if ( p -> wod_hotfix )
+    {
+      weapon_multiplier *= 0.7;
+    }
   }
 
   double action_multiplier() const
@@ -2847,15 +2855,22 @@ struct whirlwind_t: public warrior_attack_t
 
     melee_range = p -> spec.whirlwind -> effectN( 2 ).radius_max(); // 8 yard range.
     melee_range += p -> glyphs.wind_and_thunder -> effectN( 1 ).base_value(); // Increased by the glyph.
-    if ( p -> specialization() == WARRIOR_FURY )
+    if ( p -> specialization() == WARRIOR_FURY && p -> off_hand_weapon.type != WEAPON_NONE )
     {
       oh_attack = new whirlwind_off_hand_t( p );
       add_child( oh_attack );
       weapon_multiplier *= 1.0 + p -> spec.crazed_berserker -> effectN( 4 ).percent();
       base_costs[RESOURCE_RAGE] += p -> spec.crazed_berserker -> effectN( 3 ).resource( RESOURCE_RAGE );
     }
-    else
+    else if ( p -> specialization() == WARRIOR_ARMS )
+    {
       weapon_multiplier *= 2;
+    }
+
+    if ( p -> wod_hotfix )
+    {
+      weapon_multiplier *= 0.7;
+    }
 
     weapon = &( p -> main_hand_weapon );
   }
@@ -3188,6 +3203,10 @@ struct ravager_tick_t: public warrior_spell_t
   {
     aoe = -1;
     dual = true;
+    if ( p -> wod_hotfix )
+    {
+      attack_power_mod.direct *= 0.75;
+    }
   }
 };
 
