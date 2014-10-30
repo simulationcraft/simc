@@ -6259,8 +6259,8 @@ void death_knight_t::init_action_list()
       def -> add_action( get_item_actions()[i] );
 
     //decide between single_target and aoe rotation
-    def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
-    def -> add_action( "call_action_list,name=single_target,if=active_enemies<3" );
+    def -> add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
+    def -> add_action( "run_action_list,name=single_target,if=active_enemies<3" );
 
     // Breath of Sindragosa specific APLs
     action_priority_list_t* bos_aoe = get_action_priority_list( "bos_aoe" );
@@ -6303,7 +6303,7 @@ void death_knight_t::init_action_list()
 
       // Breath of Sindragosa in use, cast it and then keep it up
       st -> add_talent( this, "Breath of Sindragosa", "if=runic_power>75");
-      st -> add_action( "call_action_list,name=bos_st,if=dot.breath_of_sindragosa.ticking" );
+      st -> add_action( "run_action_list,name=bos_st,if=dot.breath_of_sindragosa.ticking" );
 
       // Breath of Sindragosa coming off cooldown, get ready to use
       st -> add_action( this, "Obliterate", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains<7&runic_power<76");
@@ -6366,7 +6366,7 @@ void death_knight_t::init_action_list()
 
       // Breath of Sindragosa in use, cast it and then keep it up
       st -> add_talent( this, "Breath of Sindragosa", "if=runic_power>75");
-      st -> add_action( "call_action_list,name=bos_st,if=dot.breath_of_sindragosa.ticking" );
+      st -> add_action( "run_action_list,name=bos_st,if=dot.breath_of_sindragosa.ticking" );
 
       // Breath of Sindragosa coming off cooldown, get ready to use
       st -> add_action( this, "Howling Blast", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains<7&runic_power<88");
@@ -6417,7 +6417,7 @@ void death_knight_t::init_action_list()
     aoe -> add_action( this, "Blood Boil", "if=!talent.necrotic_plague.enabled&dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28" );
     aoe -> add_talent( this, "Defile" );
     aoe -> add_talent( this, "Breath of Sindragosa", "if=runic_power>75");
-    aoe -> add_action( "call_action_list,name=bos_aoe,if=dot.breath_of_sindragosa.ticking" );
+    aoe -> add_action( "run_action_list,name=bos_aoe,if=dot.breath_of_sindragosa.ticking" );
     aoe -> add_action( this, "Howling Blast" );
     aoe -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10" );
     aoe -> add_action( this, "Frost Strike", "if=runic_power>76" );
@@ -6469,8 +6469,8 @@ void death_knight_t::init_action_list()
     bos_aoe -> add_action( this, "Death Coil", "if=buff.sudden_doom.react" );
 
     //decide between single_target and aoe rotation
-    def -> add_action( "call_action_list,name=aoe,if=active_enemies>=2" );
-    def -> add_action( "call_action_list,name=single_target,if=active_enemies<2" );
+    def -> add_action( "run_action_list,name=aoe,if=active_enemies>=2" );
+    def -> add_action( "run_action_list,name=single_target,if=active_enemies<2" );
 
     // Stop BT charges from capping
     st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10&runic_power>=32" );
@@ -6500,7 +6500,7 @@ void death_knight_t::init_action_list()
 
     // Breath of Sindragosa in use, cast it and then keep it up
     st -> add_talent( this, "Breath of Sindragosa", "if=runic_power>75");
-    st -> add_action( "call_action_list,name=bos_st,if=dot.breath_of_sindragosa.ticking" );
+    st -> add_action( "run_action_list,name=bos_st,if=dot.breath_of_sindragosa.ticking" );
 
     // Breath of Sindragosa coming off cooldown, get ready to use
     st -> add_action( this, "Death and Decay", "if=cooldown.breath_of_sindragosa.remains<7&runic_power<88&talent.breath_of_sindragosa.enabled");
@@ -6542,7 +6542,7 @@ void death_knight_t::init_action_list()
 
     // AoE Breath of Sindragosa in use, cast and then keep up
     aoe -> add_talent( this, "Breath of Sindragosa", "if=runic_power>75");
-    aoe -> add_action( "call_action_list,name=bos_aoe,if=dot.breath_of_sindragosa.ticking" );
+    aoe -> add_action( "run_action_list,name=bos_aoe,if=dot.breath_of_sindragosa.ticking" );
 
     //AoE continued
     aoe -> add_action( this, "Blood Boil", "if=blood=2|(frost=2&death=2)" );
