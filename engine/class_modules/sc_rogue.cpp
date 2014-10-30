@@ -5007,7 +5007,7 @@ void rogue_t::create_buffs()
   buffs.slice_and_dice     = buff_creator_t( this, "slice_and_dice", find_class_spell( "Slice and Dice" ) )
                              .duration( perk.improved_slice_and_dice -> ok() ? timespan_t::zero() : timespan_t::min() )
                              .tick_behavior( specialization() == ROGUE_SUBTLETY ? BUFF_TICK_REFRESH : BUFF_TICK_NONE )
-                             .tick_callback( specialization() == ROGUE_SUBTLETY ? energetic_recovery : 0 )
+                             .tick_callback( specialization() == ROGUE_SUBTLETY ? &energetic_recovery : 0 )
                              .period( specialization() == ROGUE_SUBTLETY ? find_class_spell( "Slice and Dice" ) -> effectN( 2 ).period() : timespan_t::zero() )
                              .refresh_behavior( BUFF_REFRESH_PANDEMIC )
                              .add_invalidate( CACHE_ATTACK_SPEED );
