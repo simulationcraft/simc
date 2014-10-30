@@ -87,9 +87,6 @@ inline std::ostream& operator<<(std::ostream &os, const timespan_t& x )
 // Random Number Generators
 #include "util/rng.hpp"
 
-// Hookup rng containers for easy use in SimulationCraft
-typedef rng::sc_distribution_t rng_t;
-
 // Forward Declarations =====================================================
 
 struct absorb_buff_t;
@@ -2621,16 +2618,14 @@ struct sim_t : private sc_thread_t
   std::vector<std::string> item_db_sources;
 
   // Random Number Generation
-private:
+  rng_t* _rng;
+  std::string rng_str;
   int deterministic_rng;
-  mutable rng_t _rng;
-public:
   int average_range, average_gauss;
   int convergence_scale;
 
-  rng_t& rng() { return _rng; }
-  rng_t& rng() const { return _rng; }
-  double    averaged_range( double min, double max );
+  rng_t& rng() const { return *_rng; }
+  double averaged_range( double min, double max );
 
   // Raid Events
   auto_dispose< std::vector<raid_event_t*> > raid_events;

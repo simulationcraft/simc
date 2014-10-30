@@ -1582,14 +1582,21 @@ bool sim_t::init()
   // Seed RNG
   if ( seed == 0 )
   {
-    int64_t sec, usec;
-    stopwatch_t sw( STOPWATCH_WALL );
-    sw.now( &sec, &usec );
-    int seed_ = static_cast< int >( sec * 1000 );
-    seed_ += static_cast< int >( usec / 1000.0 );
-    seed = deterministic_rng ? 31459 : seed_;
+    if( deterministic_rng )
+    {
+      seed = 31459;
+    }
+    else
+    {
+      int64_t sec, usec;
+      stopwatch_t sw( STOPWATCH_WALL );
+      sw.now( &sec, &usec );
+      seed  = static_cast< int >(  sec * 1000 );
+      seed += static_cast< int >( usec / 1000 );
+    }
   }
-  _rng.seed( seed + thread_index );
+  _rng = rng_t::create( rng_t::parse_type( rng_str ) );
+  _rng -> seed( seed + thread_index );
 
   if (   queue_lag_stddev == timespan_t::zero() )   queue_lag_stddev =   queue_lag * 0.25;
   if (     gcd_lag_stddev == timespan_t::zero() )     gcd_lag_stddev =     gcd_lag * 0.25;
@@ -1825,7 +1832,7 @@ void sim_t::analyze()
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> analyze();
 
-  confidence_estimator = rng::stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
+  confidence_estimator = rng_t::stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
 
   for ( size_t i = 0; i < actor_list.size(); i++ )
     actor_list[ i ] -> analyze( *this );
@@ -2426,6 +2433,7 @@ void sim_t::create_options()
   // Regen
   add_option( opt_timespan( "regen_periodicity", regen_periodicity ) );
   // RNG
+  add_option( opt_string( "rng", rng_str ) );
   add_option( opt_bool( "deterministic_rng", deterministic_rng ) );
   add_option( opt_bool( "average_range", average_range ) );
   add_option( opt_bool( "average_gauss", average_gauss ) );

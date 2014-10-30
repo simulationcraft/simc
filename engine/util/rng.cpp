@@ -3,9 +3,9 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "rng.hpp"
 #include <ctime>
 #include <stdint.h>
+#include "rng.hpp"
 
 // Pseudo-Random Number Generation ==========================================
 
@@ -51,7 +51,225 @@
 #define M_PI ( 3.14159265358979323846 )
 #endif
 
-namespace rng {
+// ==========================================================================
+// MAGIC! http://en.wikipedia.org/wiki/Double-precision_floating-point_format
+// ==========================================================================
+
+static double convert_to_double_0_1( uint64_t ui64 )
+{
+  ui64 &= 0x000fffffffffffff;
+  ui64 |= 0x3ff0000000000000;
+  union { uint64_t ui64; double d; } u;
+  u.ui64 = ui64;
+  return u.d - 1.0;
+}
+
+// ==========================================================================
+// C Standard Library Random Number Generator
+// ==========================================================================
+
+struct rng_rand_t : public rng_t
+{
+  // Whether this RNG works correctly or explodes in your face when
+  // multithreading depends on your particular C library implementation,
+  // since the standard doesn't describe the behavior of seed()/rand() in the
+  // presence of multiple threads. (If it does work, it will likely be very
+  // _slow_).
+
+  virtual const char* name() { return "rand"; }
+
+  void seed( uint64_t start )
+  { 
+    srand( (unsigned) start ); 
+  }
+
+  double real()
+  { 
+    return rand() * ( 1.0 / ( 1.0 + RAND_MAX ) ); 
+  }
+};
+
+#ifdef RNG_CXX11
+// ==========================================================================
+// C++ 11 Mersenne Twister Random Number Generator
+// ==========================================================================
+
+/*
+ * This integrates a C++11 random number generator into our native rng_t concept
+ * The advantage of this container is the extremely small code, with nearly no
+ * maintenance cost.
+ * Unfortunately, it is slower than the dsfmt implementation.
+ */
+struct rng_mt_cxx11_t : public rng_t
+{
+  std::mt19937 engine; // Mersenne twister MT19937
+  std::uniform_real_distribution<double> dist;
+
+  rng_mt_cxx11_t() : dist(0,1) {}
+
+  virtual const char* name() { return "mt_cxx11"; }
+
+  virtual void seed( uint64_t start ) 
+  { 
+    engine.seed( (unsigned) start ); 
+  }
+
+  virtual double real()
+  { 
+    return dist( engine );
+  }
+};
+
+#endif // END RNG_CXX11
+
+// ==========================================================================
+// MURMURHASH3 Avalanche Seed Munger
+// ==========================================================================
+
+/*
+ * All credit goes to https://code.google.com/p/smhasher
+ */
+
+struct rng_murmurhash_t : public rng_t
+{
+  uint64_t x; /* The state must be seeded with a nonzero value. */
+
+  uint64_t next() 
+  {
+    x ^= x >> 33;
+    x *= 0xff51afd7ed558ccdULL;
+    x ^= x >> 33;
+    x *= 0xc4ceb9fe1a85ec53ULL;
+    return x ^= x >> 33;
+  }
+
+  virtual const char* name() { return "murmurhash3"; }
+
+  virtual void seed( uint64_t start ) 
+  { 
+    assert( start != 0 );
+    x = start;
+  }
+
+  virtual double real()
+  { 
+    return convert_to_double_0_1( next() );
+  }
+};
+
+// ==========================================================================
+// XORSHIFT-64 Random Number Generator
+// ==========================================================================
+
+/*
+ * All credit goes to Sebastiano Vigna (vigna@acm.org) @2014
+ * http://xorshift.di.unimi.it/
+ */
+
+struct rng_xorshift64_t : public rng_t
+{
+  uint64_t x; /* The state must be seeded with a nonzero value. */
+
+  uint64_t next() 
+  {
+    x ^= x >> 12; // a
+    x ^= x << 25; // b
+    x ^= x >> 27; // c
+    return x * 2685821657736338717LL;
+  }
+
+  virtual const char* name() { return "xorshift64"; }
+
+  virtual void seed( uint64_t start ) 
+  { 
+    assert( start != 0 );
+    x = start;
+  }
+
+  virtual double real()
+  { 
+    return convert_to_double_0_1( next() );
+  }
+};
+
+// ==========================================================================
+// XORSHIFT-128 Random Number Generator
+// ==========================================================================
+
+/*
+ * All credit goes to Sebastiano Vigna (vigna@acm.org) @2014
+ * http://xorshift.di.unimi.it/
+ */
+
+struct rng_xorshift128_t : public rng_t
+{
+  uint64_t s[ 2 ];
+
+  uint64_t next() 
+  { 
+    uint64_t s1 = s[ 0 ];
+    const uint64_t s0 = s[ 1 ];
+    s[ 0 ] = s0;
+    s1 ^= s1 << 23; // a
+    return ( s[ 1 ] = ( s1 ^ s0 ^ ( s1 >> 17 ) ^ ( s0 >> 26 ) ) ) + s0; // b, c
+  }
+
+  virtual const char* name() { return "xorshift128"; }
+
+  virtual void seed( uint64_t start ) 
+  { 
+    rng_murmurhash_t mmh;
+    mmh.seed( start );
+    for( int i=0; i<16; i++ ) mmh.next();
+    s[ 0 ] = mmh.next();
+    s[ 1 ] = mmh.next();
+  }
+
+  virtual double real()
+  { 
+    return convert_to_double_0_1( next() );
+  }
+};
+
+// ==========================================================================
+// XORSHIFT-1024 Random Number Generator
+// ==========================================================================
+
+/*
+ * All credit goes to Sebastiano Vigna (vigna@acm.org) @2014
+ * http://xorshift.di.unimi.it/
+ */
+
+struct rng_xorshift1024_t : public rng_t
+{
+  uint64_t s[ 16 ]; 
+  int p;
+
+  uint64_t next()
+  { 
+    uint64_t s0 = s[ p ];
+    uint64_t s1 = s[ p = ( p + 1 ) & 15 ];
+    s1 ^= s1 << 31; // a
+    s1 ^= s1 >> 11; // b
+    s0 ^= s0 >> 30; // c
+    return ( s[ p ] = s0 ^ s1 ) * 1181783497276652981LL; 
+  }
+
+  virtual const char* name() { return "xorshift1024"; }
+
+  virtual void seed( uint64_t start ) 
+  { 
+    rng_xorshift64_t xs64;
+    xs64.seed( start );
+    for( int i=0; i<16; i++ ) s[i]=xs64.next();
+    p = 0;
+  }
+
+  virtual double real()
+  { 
+    return convert_to_double_0_1( next() );
+  }
+};
 
 // ==========================================================================
 // SFMT Random Number Generator
@@ -72,16 +290,8 @@ namespace rng {
 // http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/SFMT/
 
 // ALWAYS ALLOCATE THROUGH NEW
-template <typename Derived>
-class rng_engine_mt_base_t : public engine_t
+struct rng_sfmt_t : public rng_t
 {
-  // "Cleverness" alert: this template uses CRTP (see
-  // http://en.wikipedia.org/wiki/Curiously_recurring_template_pattern)
-  // to invoke the do_recursion() implementation in the _Derived_ class.
-  // This lets us have two different flavors of the algorithm - one that
-  // uses SSE2, and one without - without virtual functions or code
-  // duplication.
-public:
   /** 128-bit data structure */
   union w128_t
   {
@@ -94,11 +304,8 @@ public:
     double d[2];
   };
 
-protected:
   static const int DSFMT_MEXP = 19937; // Mersenne Exponent. The period of the sequence is a multiple of 2^MEXP-1.
-
   static const int DSFMT_N = ( ( DSFMT_MEXP - 128 ) / 104 + 1 );
-
   static const int DSFMT_N64 = ( DSFMT_N * 2 );
 
   static const uint64_t DSFMT_LOW_MASK = 0x000FFFFFFFFFFFFFULL;
@@ -131,8 +338,44 @@ protected:
    * @param b a 128-bit part of the internal state array
    * @param d a 128-bit part of the internal state array (I/O)
    */
+#ifdef RNG_USE_SSE2
   static void do_recursion( w128_t *r, const w128_t *a, const w128_t *b, w128_t *d )
-  { Derived::do_recursion( r, a, b, d ); }
+  {
+    const int SSE2_SHUFF = 0x1b;
+
+    /** mask data for sse2 */
+    static const union { uint64_t u[2]; __m128i m; } sse2_param_mask = {{ DSFMT_MSK1, DSFMT_MSK2 }};
+
+    __m128i v, w, x, y, z;
+
+    x = a->si;
+    z = _mm_slli_epi64( x, DSFMT_SL1 );
+    y = _mm_shuffle_epi32( d -> si, SSE2_SHUFF );
+    z = _mm_xor_si128( z, b -> si );
+    y = _mm_xor_si128( y, z );
+
+    v = _mm_srli_epi64( y, DSFMT_SR );
+    w = _mm_and_si128( y, sse2_param_mask.m );
+    v = _mm_xor_si128( v, x );
+    v = _mm_xor_si128( v, w );
+    r->si = v;
+    d->si = y;
+  }
+#else
+  static void do_recursion( w128_t *r, const w128_t *a, const w128_t *b, w128_t *d )
+  {
+    uint64_t t0, t1, L0, L1;
+
+    t0 = a->u[0];
+    t1 = a->u[1];
+    L0 = d->u[0];
+    L1 = d->u[1];
+    d->u[0] = ( t0 << DSFMT_SL1 ) ^ ( L1 >> 32 ) ^ ( L1 << 32 ) ^ b->u[0];
+    d->u[1] = ( t1 << DSFMT_SL1 ) ^ ( L0 >> 32 ) ^ ( L0 << 32 ) ^ b->u[1];
+    r->u[0] = ( d->u[0] >> DSFMT_SR ) ^ ( d->u[0] & DSFMT_MSK1 ) ^ t0;
+    r->u[1] = ( d->u[1] >> DSFMT_SR ) ^ ( d->u[1] & DSFMT_MSK2 ) ^ t1;
+  }
+#endif
 
   /**
    * This function fills the internal state array with double precision
@@ -252,252 +495,284 @@ protected:
     return psfmt64[dsfmt->idx++];
   }
 
-public:
-  void _seed( unsigned start )
-  { dsfmt_chk_init_gen_rand( &dsfmt_global_data, start ); }
-
-  // This is the main interface of the RNG_ENGINE. Returns a uniformly distributed number in the range [0 1]
-  double real()
-  { return dsfmt_genrand_close_open( &dsfmt_global_data ) - 1.0; }
-};
-
-// ==========================================================================
-// SFMT Random Number Generator - Standard C, NO SSE2
-// ==========================================================================
-
-class rng_engine_mt_t : public rng_engine_mt_base_t<rng_engine_mt_t>
-{
-public:
-  static void do_recursion( w128_t *r, const w128_t *a, const w128_t *b, w128_t *d )
-  {
-    uint64_t t0, t1, L0, L1;
-
-    t0 = a->u[0];
-    t1 = a->u[1];
-    L0 = d->u[0];
-    L1 = d->u[1];
-    d->u[0] = ( t0 << DSFMT_SL1 ) ^ ( L1 >> 32 ) ^ ( L1 << 32 ) ^ b->u[0];
-    d->u[1] = ( t1 << DSFMT_SL1 ) ^ ( L0 >> 32 ) ^ ( L0 << 32 ) ^ b->u[1];
-    r->u[0] = ( d->u[0] >> DSFMT_SR ) ^ ( d->u[0] & DSFMT_MSK1 ) ^ t0;
-    r->u[1] = ( d->u[1] >> DSFMT_SR ) ^ ( d->u[1] & DSFMT_MSK2 ) ^ t1;
-  }
-};
-
-// ==========================================================================
-// SFMT Random Number Generator - SSE2 optimizations
-// ==========================================================================
-
 #if defined(RNG_USE_SSE2)
-class rng_engine_mt_sse2_t : public rng_engine_mt_base_t<rng_engine_mt_sse2_t>
-{
-public:
-  static void do_recursion( w128_t *r, const w128_t *a, const w128_t *b, w128_t *d )
-  {
-    const int SSE2_SHUFF = 0x1b;
-
-    /** mask data for sse2 */
-    static const union { uint64_t u[2]; __m128i m; } sse2_param_mask = {{ DSFMT_MSK1, DSFMT_MSK2 }};
-
-    __m128i v, w, x, y, z;
-
-    x = a->si;
-    z = _mm_slli_epi64( x, DSFMT_SL1 );
-    y = _mm_shuffle_epi32( d -> si, SSE2_SHUFF );
-    z = _mm_xor_si128( z, b -> si );
-    y = _mm_xor_si128( y, z );
-
-    v = _mm_srli_epi64( y, DSFMT_SR );
-    w = _mm_and_si128( y, sse2_param_mask.m );
-    v = _mm_xor_si128( v, x );
-    v = _mm_xor_si128( v, w );
-    r->si = v;
-    d->si = y;
-  }
-
-  rng_engine_mt_sse2_t()
+  rng_sfmt_t()
   {
     // Validate proper alignment for SSE2 types.
-    assert( ( uintptr_t )dsfmt_global_data.status % 16 == 0 );
+    assert( ( uintptr_t ) dsfmt_global_data.status % 16 == 0 );
   }
-
   // 32-bit libraries typically align malloc chunks to sizeof(double) == 8.
   // This object needs to be aligned to sizeof(__m128d) == 16.
   static void* operator new( size_t size )
   { return _mm_malloc( size, sizeof( __m128d ) ); }
   static void operator delete( void* p )
   { return _mm_free( p ); }
-};
 #endif
 
-// ==========================================================================
-// C Standard Library Random Number Generator
-// ==========================================================================
+  virtual const char* name() { return "sfmt"; }
+  
+  virtual void seed( uint64_t start )
+  { 
+    dsfmt_chk_init_gen_rand( &dsfmt_global_data, (uint32_t) start ); 
+  }
 
-class rng_engine_std_t : public rng::engine_t
-{
-  // Whether this RNG works correctly or explodes in your face when
-  // multithreading depends on your particular C library implementation,
-  // since the standard doesn't describe the behavior of seed()/rand() in the
-  // presence of multiple threads. (If it does work, it will likely be very
-  // _slow_).
-public:
-  void _seed( unsigned start )
-  { srand( start ); }
-
-  double real()
-  { return rand() * ( 1.0 / ( 1.0 + RAND_MAX ) ); }
+  virtual double real()
+  { 
+    return dsfmt_genrand_close_open( &dsfmt_global_data ) - 1.0; 
+  }
 };
 
-#ifdef RNG_CXX11
 // ==========================================================================
-// C++ 11 Mersenne Twister Random Number Generator
+// TinyMT Mersenne Twister Random Number Generator
 // ==========================================================================
 
-/*
- * This integrates a C++11 random number generator into our native rng_t concept
- * The advantage of this container is the extremely small code, with nearly no
- * maintenance cost.
- * Unfortunately, it is slower than the dsfmt implementation.
+/**
+ *
+ * @brief Tiny Mersenne Twister only 127 bit internal state
+ *
+ * @author Mutsuo Saito (Hiroshima University)
+ * @author Makoto Matsumoto (The University of Tokyo)
+ *
+ * Copyright (C) 2011 Mutsuo Saito, Makoto Matsumoto,
+ * Hiroshima University and The University of Tokyo.
+ * All rights reserved.
  */
-class rng_engine_mt_cxx11_t : public rng::engine_t
-{
-  std::mt19937 engine; // Mersenne twister MT19937
-  std::uniform_real_distribution<double> dist;
-public:
-  rng_engine_mt_cxx11_t() : rng::engine_t(), engine(), dist(0,1) {}
-  void _seed( unsigned start ) { engine.seed( start ); }
 
-  double real()
-  { return dist(engine); }
+struct rng_tinymt_t : public rng_t
+{
+  static const uint64_t TINYMT64_SH0  = 12;
+  static const uint64_t TINYMT64_SH1  = 11;
+  static const uint64_t TINYMT64_SH8  = 8;
+  static const uint64_t TINYMT64_MASK = uint64_t(0x7fffffffffffffff);
+  static const double   TINYMT64_MUL  = (1.0 / 18446744073709551616.0);
+
+  uint64_t status[2];
+  uint32_t mat1;
+  uint32_t mat2;
+  uint64_t tmat;
+
+  void next_state() 
+  {
+    uint64_t x;
+    status[0] &= TINYMT64_MASK;
+    x = status[0] ^ status[1];
+    x ^= x << TINYMT64_SH0;
+    x ^= x >> 32;
+    x ^= x << 32;
+    x ^= x << TINYMT64_SH1;
+    status[0] = status[1];
+    status[1] = x;
+    status[0] ^= -((int64_t)(x & 1)) & mat1;
+    status[1] ^= -((int64_t)(x & 1)) & (((uint64_t)mat2) << 32);
+  }
+
+  double temper_conv_open()
+  {
+    uint64_t x;
+    union {
+	uint64_t u;
+	double d;
+    } conv;
+    x = status[0] + status[1];
+    x ^= status[0] >> TINYMT64_SH8;
+    conv.u = ((x ^ (-((int64_t)(x & 1)) & tmat)) >> 12) | uint64_t(0x3ff0000000000001);
+    return conv.d;
+  }
+
+  uint64_t ini_func2(uint64_t x) 
+  {
+    return (x ^ (x >> 59)) * uint64_t(58885565329898161);
+  }
+
+  void period_certification()
+  {
+    if ((status[0] & TINYMT64_MASK) == 0 && status[1] == 0) 
+    {
+      status[0] = 'T';
+      status[1] = 'M';
+    }
+  }
+
+  void init(uint64_t start) 
+  {
+    status[0] = start ^ ((uint64_t)mat1 << 32);
+    status[1] = mat2 ^ tmat;
+    for (int i = 1; i < 8; i++) 
+    {
+      status[i & 1] ^= i + uint64_t(6364136223846793005) * (status[(i - 1) & 1] ^ (status[(i - 1) & 1] >> 62));
+    }
+    period_certification();
+  }
+
+  virtual const char* name() { return "tinymt"; }
+
+  virtual void seed( uint64_t start )
+  {
+    // mat1, mat2, and tmat are inputs to the engine
+    // I am uncertain how to set them so we'll just grind the seed through MurmurHash.
+    rng_murmurhash_t mmh;
+    mmh.seed( start );
+    for( int i=0; i<16; i++ ) mmh.next();
+    do { mat1 = (uint32_t) mmh.next(); } while( mat1 == 0 );
+    do { mat2 = (uint32_t) mmh.next(); } while( mat2 == 0 );
+    tmat = mmh.next();
+    init( start );
+  }
+
+  virtual double real()
+  {
+    next_state();
+    return temper_conv_open() - 1.0;
+  }
 };
 
-#endif // END RNG_CXX11
+// ==========================================================================
+// RNG Engine Broker
+// ==========================================================================
 
-std::shared_ptr<engine_t> engine_t::create( engine_t::type t )
+rng_t::type_e rng_t::parse_type( const std::string& name )
+{
+  if( name == "murmurhash"   ) return rng_t::MURMURHASH;
+  if( name == "sfmt"         ) return rng_t::SFMT;
+  if( name == "std"          ) return rng_t::STD;
+  if( name == "tinymt"       ) return rng_t::TINYMT;
+  if( name == "xorshift64"   ) return rng_t::XORSHIFT64;
+  if( name == "xorshift128"  ) return rng_t::XORSHIFT128;
+  if( name == "xorshift1024" ) return rng_t::XORSHIFT1024;
+
+  return rng_t::DEFAULT;
+}
+
+rng_t* rng_t::create( rng_t::type_e t )
 {
   switch( t )
   {
+  case MURMURHASH:
+    return new rng_murmurhash_t();
+
   case STD:
 #ifdef RNG_CXX11
-    return std::shared_ptr<engine_t>( new rng_engine_mt_cxx11_t() );
+    return new rng_mt_cxx11_t();
 #else
-    return std::shared_ptr<engine_t>( new rng_engine_std_t() );
+    return new rng_rand_t();
 #endif
     break;
 
-  case MERSENNE_TWISTER:
-  case BEST:
+  case SFMT: 
+    return new rng_sfmt_t();
+
+  case TINYMT:
+    return new rng_tinymt_t();
+
+  case XORSHIFT64: 
+    return new rng_xorshift64_t();
+
+  case XORSHIFT128: 
+    return new rng_xorshift128_t();
+
+  case XORSHIFT1024: 
+    return new rng_xorshift1024_t();
+
+  case DEFAULT:
   default:
     break;
   }
-#ifdef RNG_USE_SSE2
-    return std::shared_ptr<engine_t>( new rng_engine_mt_sse2_t() );
-#else
-    return std::shared_ptr<engine_t>( new rng_engine_mt_t() );
-#endif
+
+  return create( rng_t::SFMT );
 }
 
 // ==========================================================================
 // Probability Distributions
 // ==========================================================================
 
-distribution_t::distribution_t( std::shared_ptr<engine_t> engine ) :
-        _engine( engine ),
-        gauss_pair_value( 0.0 ),
-        gauss_pair_use( false )
-      { }
+// Bernoulli Distribution ===================================================
 
-  // Seed rng generator
-  void distribution_t::seed( uint32_t value = static_cast<uint32_t>( std::time( NULL ) ) )
-  { _engine -> seed( value ); }
+bool rng_t::roll( double chance )
+{
+  if ( chance <= 0 ) return false;
+  if ( chance >= 1 ) return true;
+  return real() < chance;
+}
 
-  // obtain a random value from the rng generator
-  double distribution_t::real() { return ( *_engine )(); }
+// Uniform distribution in the range [min max] ==============================
 
-  // bernoulli distribution
-  bool distribution_t::roll( double chance )
+double rng_t::range( double min, double max )
+{
+  assert( min <= max );
+  return min + real() * ( max - min );
+}
+
+// Gaussian Distribution ====================================================
+
+double rng_t::gauss( double mean, double stddev, bool truncate_low_end )
+{
+  /* This code adapted from ftp://ftp.taygeta.com/pub/c/boxmuller.c
+   * Implements the Polar form of the Box-Muller Transformation
+   *
+   * (c) Copyright 1994, Everett F. Carter Jr.
+   *     Permission is granted by the author to use
+   *     this software for any application provided this
+   *     copyright notice is preserved.
+   */
+  
+  double z;
+
+  if ( stddev != 0 )
   {
-    if ( chance <= 0 ) return false;
-    if ( chance >= 1 ) return true;
-    return real() < chance;
-  }
-
-  // uniform distribution in the range [min max]
-  double distribution_t::range( double min, double max )
-  {
-    assert( min <= max );
-    return min + real() * ( max - min );
-  }
-
-  // gaussian distribution
-  double distribution_t::gauss( double mean, double stddev, bool truncate_low_end )
-  {
-    /* This code adapted from ftp://ftp.taygeta.com/pub/c/boxmuller.c
-     * Implements the Polar form of the Box-Muller Transformation
-     *
-     * (c) Copyright 1994, Everett F. Carter Jr.
-     *     Permission is granted by the author to use
-     *     this software for any application provided this
-     *     copyright notice is preserved.
-     */
-
-    double z;
-
-    if ( stddev != 0 )
+    if ( gauss_pair_use )
     {
-      if ( gauss_pair_use )
-      {
-        z = gauss_pair_value;
-        gauss_pair_use = false;
-      }
-      else
-      {
-        double x1, x2, w, y1, y2;
-        do
-        {
-          x1 = 2.0 * real() - 1.0;
-          x2 = 2.0 * real() - 1.0;
-          w = x1 * x1 + x2 * x2;
-        }
-        while ( w >= 1.0 || w == 0.0 );
-
-        w = sqrt( ( -2.0 * log( w ) ) / w );
-        y1 = x1 * w;
-        y2 = x2 * w;
-
-        z = y1;
-        gauss_pair_value = y2;
-        gauss_pair_use = true;
-      }
+      z = gauss_pair_value;
+      gauss_pair_use = false;
     }
     else
-      z = 0.0;
-
-    double result = mean + z * stddev;
-
-    // True gaussian distribution can of course yield any number at some probability.  So truncate on the low end.
-    if ( truncate_low_end && result < 0 )
-      result = 0;
-
-    return result;
-  }
-
-  // exponential distribution
-  double distribution_t::exponential( double nu )
-  {
-    double x;
-    do
     {
-      x = real();
+      double x1, x2, w, y1, y2;
+      do
+      {
+	x1 = 2.0 * real() - 1.0;
+	x2 = 2.0 * real() - 1.0;
+	w = x1 * x1 + x2 * x2;
+      }
+      while ( w >= 1.0 || w == 0.0 );
+
+      w = sqrt( ( -2.0 * log( w ) ) / w );
+      y1 = x1 * w;
+      y2 = x2 * w;
+      
+      z = y1;
+      gauss_pair_value = y2;
+      gauss_pair_use = true;
     }
-    while ( x >= 1.0 ); // avoid ln(0)
-
-    return - std::log( 1 - x ) * nu;
   }
+  else
+    z = 0.0;
 
-  // Exponentially modified Gaussian distribution
-  double distribution_t::exgauss( double gauss_mean, double gauss_stddev, double exp_nu )
-  { return std::max( 0.0, gauss( gauss_mean, gauss_stddev ) + exponential( exp_nu ) ); }
+  double result = mean + z * stddev;
+
+  // True gaussian distribution can of course yield any number at some probability.  So truncate on the low end.
+  if ( truncate_low_end && result < 0 )
+    result = 0;
+
+  return result;
+}
+
+// Exponential Distribution =================================================
+
+double rng_t::exponential( double nu )
+{
+  double x;
+  do { x = real(); } while ( x >= 1.0 ); // avoid ln(0)
+  return - std::log( 1 - x ) * nu;
+}
+
+// Exponentially Modified Gaussian Distribution =============================
+
+double rng_t::exgauss( double gauss_mean, 
+		       double gauss_stddev, 
+		       double exp_nu )
+{ 
+  return std::max( 0.0, gauss( gauss_mean, gauss_stddev ) + exponential( exp_nu ) ); 
+}
 
 // stdnormal_cdf ============================================================
 
@@ -513,7 +788,7 @@ distribution_t::distribution_t( std::shared_ptr<engine_t> engine ) :
  * transform stdnormal_cdf(u)=(erfc(-u/sqrt(2))/2;
  */
 
-double stdnormal_cdf( double u )
+double rng_t::stdnormal_cdf( double u )
 {
   if ( u == std::numeric_limits<double>::infinity() )
     return ( u < 0 ? 0.0 : 1.0 );
@@ -611,7 +886,7 @@ double stdnormal_cdf( double u )
  * translated to C, and adapted for our purposes.
  */
 
-double stdnormal_inv( double p )
+double rng_t::stdnormal_inv( double p )
 {
   if ( p > 1.0 || p < 0.0 )
   {
@@ -680,106 +955,105 @@ double stdnormal_inv( double p )
   return ( p > 0.5 ? -u : u );
 }
 
-} // end rng namespace
-
 #ifdef UNIT_TEST
 // Code to test functionality and performance of our RNG implementations
 
 #include <iostream>
 #include <iomanip>
 
-namespace { // anonymous namespace ==========================================
-
-
-int64_t milliseconds()
+static int64_t milliseconds()
 {
   return 1000 * clock() / CLOCKS_PER_SEC;
 }
 
-template <typename Engine>
-void test_one( uint64_t n, const char* name )
+static void test_one( rng_t* rng, uint64_t n )
 {
-  using namespace rng;
-  distribution_t rng( std::shared_ptr<engine_t>( new Engine() ) );
-
   int64_t start_time = milliseconds();
+
+  rng -> seed( start_time );
 
   double average = 0;
   for ( uint64_t i = 0; i < n; ++i )
-    average += rng.real();
+  {
+    double d = rng -> real();
+    //std::cout << d << "\n";
+    average += d;
+  }
 
   average /= n;
   int64_t elapsed_cpu = milliseconds() - start_time;
 
-  std::cout << n << " calls to distribution_t<" << name
+  std::cout << n << " calls to distribution_t<" << rng -> name()
             << ">::real(): average = " << std::setprecision( 8 ) << average
             << ", time = " << elapsed_cpu << " ms"
                ", numbers/sec = " << static_cast<uint64_t>( n * 1000.0 / elapsed_cpu ) << "\n\n";
 }
 
 // Monte-Carlo PI calculation.
-template <typename Engine>
-void monte_carlo( uint64_t n, const char* name )
+static void monte_carlo( rng_t* rng, uint64_t n )
 {
-  using namespace rng;
-  distribution_t rng( std::shared_ptr<engine_t>( new Engine() ) );
   int64_t start_time = milliseconds();
+
+  rng -> seed( start_time );
 
   uint64_t count_in_sphere = 0;
   for ( uint64_t i = 0; i < n; ++i )
   {
-    double x1 = rng.real();
-    double x2 = rng.real();
+    double x1 = rng -> real();
+    double x2 = rng -> real();
     if ( x1 * x1 + x2 * x2 < 1.0 )
       ++count_in_sphere;
   }
   int64_t elapsed_cpu = milliseconds() - start_time;
 
-  std::cout << n << " runs for pi-calculation with " << name
+  std::cout << n << " runs for pi-calculation with " << rng -> name()
             << ". count in sphere = " << count_in_sphere
             << ", pi = " << std::setprecision( 21 ) << static_cast<double>( count_in_sphere ) * 4 / n
             << ", time = " << elapsed_cpu << " ms"
                ", numbers/sec = " << static_cast<uint64_t>( n * 1000.0 / elapsed_cpu ) << "\n\n";
 }
 
-} // anonymous namespace ====================================================
-
 int main( int /*argc*/, char** /*argv*/ )
 {
-  using namespace rng;
+  rng_t* rng_rand   = new rng_rand_t();
+  rng_t* rng_sfmt   = new rng_sfmt_t();
+  rng_t* rng_tinymt = new rng_tinymt_t();
+  rng_t* rng_xs128  = new rng_xorshift128_t();
+  rng_t* rng_xs1024 = new rng_xorshift1024_t();
+
+  uint64_t seed = M_PI * 1000000;
+  rng_rand   -> seed( seed );
+  rng_sfmt   -> seed( seed );
+  rng_tinymt -> seed( seed );
+  rng_xs128  -> seed( seed );
+  rng_xs1024 -> seed( seed );
 
   uint64_t n = 100000000;
 
-#define TEST_ONE( e ) test_one<e>( n, #e )
+  test_one( rng_rand,   n );
+  test_one( rng_sfmt,   n );
+  test_one( rng_tinymt, n );
+  test_one( rng_xs128,  n );
+  test_one( rng_xs1024, n );
 
-  TEST_ONE( rng_engine_std_t );
-  TEST_ONE( rng_engine_mt_t );
-
-#ifdef RNG_USE_SSE2
-  TEST_ONE( rng_engine_mt_sse2_t );
-#endif
+  monte_carlo( rng_rand,   n );
+  monte_carlo( rng_sfmt,   n );
+  monte_carlo( rng_tinymt, n );
+  monte_carlo( rng_xs128,  n );
+  monte_carlo( rng_xs1024, n );
 
 #ifdef RNG_CXX11
-  TEST_ONE( rng_engine_mt_cxx11_t );
+  rng_t* rng_mt_cxx11 = new rng_mt_cxx11_t();
+  rng_mt_cxx11 -> seed( seed );
+  test_one( rng_mt_cxx11, n );
+  monte_carlo( rng_mt_cxx11, n );
 #endif // END RNG_CXX11
 
+  rng_t* rng = rng_tinymt;
 
-#define MONTE_CARLO( t ) monte_carlo<t>( n, #t )
-
-#if defined( RNG_USE_SSE2 )
-  MONTE_CARLO( rng_engine_mt_sse2_t );
-#else
-  MONTE_CARLO( rng_engine_mt_t );
-#endif
+  std::cout << "Testing " << rng -> name() << "\n\n";
 
   n /= 10;
-
-#ifdef RNG_USE_SSE2
-  distribution_t rng( std::shared_ptr<engine_t>( new rng_engine_mt_sse2_t() ) );
-#else
-  distribution_t rng( std::shared_ptr<engine_t>( new rng_engine_mt_t() ) );
-#endif
-
 
   // double gauss
   {
@@ -787,7 +1061,7 @@ int main( int /*argc*/, char** /*argv*/ )
 
     double average = 0;
     for ( uint64_t i = 0; i < n; i++ )
-      average += rng.gauss( 0, 1 );
+      average += rng -> gauss( 0, 1 );
     average /= n;
     int64_t elapsed_cpu = milliseconds() - start_time;
 
@@ -801,7 +1075,7 @@ int main( int /*argc*/, char** /*argv*/ )
 
     double average = 0;
     for ( uint64_t i = 0; i < n; i++ )
-      average += 0.1 + rng.exgauss( 0.3, 0.06, 0.25 );
+      average += 0.1 + rng -> exgauss( 0.3, 0.06, 0.25 );
     average /= n;
     int64_t elapsed_cpu = milliseconds() - start_time;
 
@@ -817,7 +1091,7 @@ int main( int /*argc*/, char** /*argv*/ )
     double average = 0;
     for ( uint64_t i = 0; i < n; i++ )
     {
-      double result = rng.exponential( nu );
+      double result = rng -> exponential( nu );
       average += result;
     }
     average /= n;
@@ -831,7 +1105,7 @@ int main( int /*argc*/, char** /*argv*/ )
   std::cout << "\nreal:\n";
   for ( unsigned i = 1; i <= 100; i++ )
   {
-    std::cout << "  " << rng.real();
+    std::cout << "  " << rng -> real();
     if ( i % 10 == 0 )
       std::cout << '\n';
   }
@@ -839,7 +1113,7 @@ int main( int /*argc*/, char** /*argv*/ )
   std::cout << "\ngauss mean=0, std_dev=1.0:\n";
   for ( unsigned i = 1; i <= 100; i++ )
   {
-    std::cout << "  " << rng.gauss( 0.0, 1.0 );
+    std::cout << "  " << rng -> gauss( 0.0, 1.0 );
     if ( i % 10 == 0 )
       std::cout << '\n';
   }
@@ -847,7 +1121,7 @@ int main( int /*argc*/, char** /*argv*/ )
   std::cout << "\nroll 30%:\n";
   for ( unsigned i = 1; i <= 100; i++ )
   {
-    std::cout << "  " << rng.roll( 0.30 );
+    std::cout << "  " << rng -> roll( 0.30 );
     if ( i % 10 == 0 )
       std::cout << '\n';
   }
@@ -855,8 +1129,8 @@ int main( int /*argc*/, char** /*argv*/ )
   std::cout << "\n";
   std::cout << "M_PI=" << M_PI << "\n";
   std::cout << "calls to rng::stdnormal_inv( double x )\n";
-  std::cout << "x=0.975: " << rng::stdnormal_inv( 0.975 ) << " should be equal to 1.959964\n";
-  std::cout << "x=0.995: " << rng::stdnormal_inv( 0.995 ) << " should be equal to 2.5758293\n";
+  std::cout << "x=0.975: " << rng_t::stdnormal_inv( 0.975 ) << " should be equal to 1.959964\n";
+  std::cout << "x=0.995: " << rng_t::stdnormal_inv( 0.995 ) << " should be equal to 2.5758293\n";
 }
 
 #endif // UNIT_TEST

@@ -581,7 +581,8 @@ void print_text_performance( FILE* file, sim_t* sim )
                  "  CpuSeconds    = %.3f\n"
                  "  WallSeconds   = %.3f\n"
                  "  SpeedUp       = %.0f\n"
-                 "  EndTime       = %s (%ld)\n\n",
+                 "  EndTime       = %s (%ld)"
+		 "  RNG Engine    = %s\n\n",
                  sim -> event_mgr.total_events_processed,
                  (long) sim -> event_mgr.max_events_remaining,
                  sim -> target -> resources.base[ RESOURCE_HEALTH ],
@@ -589,8 +590,7 @@ void print_text_performance( FILE* file, sim_t* sim )
                  sim -> elapsed_cpu,
                  sim -> elapsed_time,
                  sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu,
-                 date_str.c_str(),
-                 as<long int>(cur_time) );
+                 date_str.c_str(), as<long int>(cur_time), sim -> rng().name() );
 }
 
 // print_text_scale_factors =================================================
