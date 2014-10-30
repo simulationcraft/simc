@@ -5,7 +5,13 @@
 
 #include "simulationcraft.hpp"
 
+#if ! defined( SC_WINDOWS )
 #include <inttypes.h>
+#else
+#ifndef PRIu64
+#define PRIu64 "I64"
+#endif
+#endif
 
 #define EXPRESSION_DEBUG false
 
