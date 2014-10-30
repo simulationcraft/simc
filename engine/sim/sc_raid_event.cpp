@@ -64,9 +64,9 @@ struct adds_event_t : public raid_event_t
       duration = min_cd - timespan_t::from_seconds( 0.001 );
     }
 
-    for ( int i = 0; i < std::ceil( overlap ); i++ )
+    for ( int i = 0; i < util::ceil( overlap ); i++ )
     {
-      for ( unsigned add = 0; add < std::ceil( count + random ); add++ )
+      for ( unsigned add = 0; add < util::ceil( count + random ); add++ )
       {
         std::string add_name_str = name_str;
         add_name_str += util::to_string( add + 1 );
@@ -81,7 +81,7 @@ struct adds_event_t : public raid_event_t
 
   virtual void _start()
   {
-    adds_to_remove = static_cast<int>( std::round( sim -> rng().range( count - random, count + random ) ) );
+    adds_to_remove = static_cast<int>( util::round( sim -> rng().range( count - random, count + random ) ) );
     for ( size_t i = 0; i < adds_to_remove; i++ )
     {
       adds[i] -> summon( saved_duration );
