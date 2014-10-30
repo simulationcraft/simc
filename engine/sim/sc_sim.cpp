@@ -967,7 +967,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   maximize_reporting( false ),
   report_information(),
   // Multi-Threading
-  threads( 0 ), thread_index( index ), thread_priority( sc_thread_t::NORMAL ), work_queue(),
+  threads( 0 ), thread_index( index ), thread_priority( sc_thread_t::NORMAL ),
   spell_query( 0 ), spell_query_level( MAX_LEVEL ),
   pause_cvar( &pause_mutex )
 {
@@ -1919,38 +1919,12 @@ bool sim_t::iterate()
 
   progress_bar.init();
 
-  bool use_lb = use_load_balancing();
-
-  for( int i = 0; use_lb ? (true) : (i < iterations); ++i )
+  for( int i = 0; work_queue.pop(); ++i )
   {
     do_pause();
 
     if ( canceled )
-    {
-      iterations = current_iteration + 1;
       break;
-    }
-
-    if ( use_lb ) // Load Balancing
-    {
-      // Select the work queue on the main thread
-      work_queue_t& work_queue = (thread_index != 0) ? parent -> work_queue : this -> work_queue;
-
-      auto_lock_t( work_queue.mutex );
-
-
-      // Check whether we have work left to continue or not
-      if ( work_queue.iterations_to_process > 0 )
-      {
-        // We're good to go for another iteration
-        --work_queue.iterations_to_process;
-      }
-      else
-      {
-        // No more work left to do, break
-        break;
-      }
-    }
 
     if ( progress_bar.update() )
     {
@@ -1969,7 +1943,9 @@ bool sim_t::iterate()
   if ( ! canceled )
     reset();
 
-  return ! canceled;
+  iterations = current_iteration + 1;
+
+  return iteration > 0;
 }
 
 // sim_t::merge =============================================================
@@ -2030,9 +2006,10 @@ void sim_t::merge()
 
 void sim_t::run()
 {
-  iterate();
-  if ( event_mgr.total_events_processed > 0 )
+  if( iterate() )
+  {
     parent -> merge( *this );
+  }
 }
 
 // sim_t::partition =========================================================
@@ -2052,6 +2029,15 @@ void sim_t::partition()
   int remainder = iterations % threads;
   iterations /= threads;
 
+  // Normally we use a shared work-queue to ensure proper load balancing among threads.
+  // However, when we desire deterministic runs (for debugging) we need to force the
+  // sims to use s specific number of iterations as opposed to using shared pool of work.
+
+  if( deterministic_rng ) 
+  {
+    _work_queue.init( iterations );
+  }
+
   int num_children = threads - 1;
 
   for ( int i = 0; i < num_children; i++ )
@@ -2066,6 +2052,11 @@ void sim_t::partition()
       {
         child -> iterations += 1;
         remainder--;
+      }
+
+      if( deterministic_rng ) 
+      {
+	child -> _work_queue.init( child -> iterations );
       }
 
       child -> report_progress = 0;
@@ -2084,9 +2075,7 @@ int sim_t::calc_num_iterations()
 {
     int max_new_iterations=0;
     //Do a short test run to get estimates
-    partition();
     iterate();
-    merge();
     analyze();
 
     //TODO set the following two as standard commandline option parameters
@@ -2135,37 +2124,17 @@ int sim_t::calc_num_iterations()
 
 bool sim_t::execute()
 {
-    bool calc_num_iterations = false;//flag that triggers the calculation of automatic iterations
-    if (calc_num_iterations)
-    {
-        iterations = 50; //gives enough information about variance and error for a given class
-    }
-    {
-        auto_lock_t( work_queue.mutex );
-        work_queue.iterations_to_process = iterations;
-    }
+  double start_cpu_time  = util::cpu_time();
+  double start_wall_time = util::wall_time();
 
-    if (calc_num_iterations)
-    {
-
-        iterations = this -> calc_num_iterations();
-        work_queue.iterations_to_process = iterations;
-    }
-
-    double start_cpu_time = util::cpu_time();
-    double start_time = util::wall_time();
-
+  predict();
   partition();
-
-  bool iterate_successfull = iterate();
+  bool succes = iterate();
   merge(); // Always merge, even in cases of unsuccessful simulation!
-  if ( !iterate_successfull )
-    return false;
+  if( success ) analyze();
 
-  analyze();
-
-  elapsed_cpu =  util::cpu_time() - start_cpu_time;
-  elapsed_time =  util::wall_time() - start_time;
+  elapsed_cpu  = util::cpu_time()  - start_cpu_time;
+  elapsed_time = util::wall_time() - start_wall_time;
 
   return true;
 }
@@ -2647,6 +2616,8 @@ void sim_t::setup( sim_control_t* c )
 
     threads = 1;
   }
+
+  _work_queue.init( iterations );
 }
 
 // sim_t::cancel ============================================================

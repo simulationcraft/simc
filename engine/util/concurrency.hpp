@@ -84,3 +84,5 @@ public:
   auto_lock_t( mutex_t& mutex_ ) : mutex( mutex_ ) { mutex.lock(); }
   ~auto_lock_t() { mutex.unlock(); }
 };
+
+#define AUTO_LOCK( m ) auto_lock_t auto_lock( m );
