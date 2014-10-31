@@ -2619,11 +2619,6 @@ struct frostbolt_t : public mage_spell_t
       am *= 1.0 + ( p() -> buffs.ice_shard -> stack() * p() -> buffs.ice_shard -> data().effectN( 2 ).percent() );
     }
 
-    if ( p() -> wod_hotfix )
-    {
-      am *= 1.0 + 0.05;
-    }
-
     return am;
   }
 
