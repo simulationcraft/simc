@@ -3479,7 +3479,7 @@ struct dark_command_t: public death_knight_spell_t
 struct dark_transformation_t : public death_knight_spell_t
 {
   dark_transformation_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "dark_transformation", p, p -> find_class_spell( "Dark Transformation" ) )
+    death_knight_spell_t( "dark_transformation", p, p -> find_specialization_spell( "Dark Transformation" ) )
   {
     parse_options( options_str );
 
