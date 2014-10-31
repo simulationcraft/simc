@@ -2691,6 +2691,8 @@ struct sim_t : private sc_thread_t
   double     iteration_dmg, iteration_heal, iteration_absorb;
   simple_sample_data_t raid_dps, total_dmg, raid_hps, total_heal, total_absorb, raid_aps;
   extended_sample_data_t simulation_length;
+  std::vector<uint64_t> iteration_seed;
+  std::vector<uint64_t> iteration_initial_health;
   int        report_progress;
   int        bloodlust_percent;
   timespan_t bloodlust_time;

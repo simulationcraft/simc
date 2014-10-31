@@ -1375,6 +1375,9 @@ void sim_t::datacollection_end()
   raid_hps.add( current_time() != timespan_t::zero() ? iteration_heal / current_time().total_seconds() : 0 );
   total_absorb.add( iteration_absorb );
   raid_aps.add( current_time() != timespan_t::zero() ? iteration_absorb / current_time().total_seconds() : 0 );
+
+  iteration_seed.push_back( seed );
+  iteration_initial_health.push_back( (uint64_t) target -> resources.initial[ RESOURCE_HEALTH ] );
 }
 
 // sim_t::check_actors() ========================================================
@@ -2002,6 +2005,9 @@ void sim_t::merge( sim_t& other_sim )
     assert( other_p );
     p -> merge( *other_p );
   }
+
+  range::append( iteration_seed,           other_sim.iteration_seed           );
+  range::append( iteration_initial_health, other_sim.iteration_initial_health );
 }
 
 // sim_t::merge =============================================================

@@ -354,6 +354,10 @@ template <typename Range>
 inline typename range::traits<Range>::iterator min_element( Range& r )
 { return std::min_element( range::begin( r ), range::end( r ) ); }
 
+template <typename Range1, typename Range2>
+inline void append( Range1& destination, Range2& source )
+{ destination.insert( destination.end(), source.begin(), source.end() ); }
+
 } // namespace range ========================================================
 
 // Adapter for container of owned pointers; automatically deletes the
