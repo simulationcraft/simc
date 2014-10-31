@@ -2055,7 +2055,7 @@ void sim_t::partition()
 
   // Normally we use a shared work-queue to ensure proper load balancing among threads.
   // However, when we desire deterministic runs (for debugging) we need to force the
-  // sims to use s specific number of iterations as opposed to using shared pool of work.
+  // sims to each use a specific number of iterations as opposed to using shared pool of work.
 
   if( deterministic ) 
   {
