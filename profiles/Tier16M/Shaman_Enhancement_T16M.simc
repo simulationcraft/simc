@@ -68,7 +68,7 @@ actions.aoe=unleash_elements,if=active_enemies>=4&dot.flame_shock.ticking&(coold
 actions.aoe+=/fire_nova,if=active_dot.flame_shock>=3
 actions.aoe+=/wait,sec=cooldown.fire_nova.remains,if=active_dot.flame_shock>=4&cooldown.fire_nova.remains<=action.fire_nova.gcd
 actions.aoe+=/magma_totem,if=!totem.fire.active
-actions.aoe+=/lava_lash,if=dot.flame_shock.ticking
+actions.aoe+=/lava_lash,if=dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies|!talent.echo_of_the_elements.enabled|!buff.echo_of_the_elements.up)
 actions.aoe+=/elemental_blast,if=!buff.unleash_flame.up&(buff.maelstrom_weapon.react>=4|buff.ancestral_swiftness.up)
 actions.aoe+=/chain_lightning,if=glyph.chain_lightning.enabled&active_enemies>=4&(buff.maelstrom_weapon.react=5|(buff.ancestral_swiftness.up&buff.maelstrom_weapon.react>=3))
 actions.aoe+=/unleash_elements,if=active_enemies<4

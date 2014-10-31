@@ -5304,7 +5304,7 @@ void shaman_t::init_action_list()
     aoe -> add_action( this, "Fire Nova", "if=active_dot.flame_shock>=3" );
     aoe -> add_action( "wait,sec=cooldown.fire_nova.remains,if=active_dot.flame_shock>=4&cooldown.fire_nova.remains<=action.fire_nova.gcd" );
     aoe -> add_action( this, "Magma Totem", "if=!totem.fire.active" );
-    aoe -> add_action( this, "Lava Lash", "if=dot.flame_shock.ticking" );
+    aoe -> add_action( this, "Lava Lash", "if=dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies|!talent.echo_of_the_elements.enabled|!buff.echo_of_the_elements.up)" );
     aoe -> add_talent( this, "Elemental Blast", "if=!buff.unleash_flame.up&(buff.maelstrom_weapon.react>=4|buff.ancestral_swiftness.up)" );
     aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=glyph.chain_lightning.enabled&active_enemies>=4&(buff.maelstrom_weapon.react=5|(buff.ancestral_swiftness.up&buff.maelstrom_weapon.react>=3))" );
     aoe -> add_action( this, "Unleash Elements", "if=active_enemies<4" );
@@ -5396,7 +5396,7 @@ void shaman_t::init_action_list()
     single -> add_action( this, "Lightning Bolt" );
 
     // AoE
-    aoe -> add_action( this, "Earthquake", "if=(buff.enhanced_chain_lightning.up|level<=90)&active_enemies>=2" );
+    aoe -> add_action( this, "Earthquake", "cycle_targets=1,if=!ticking&(buff.enhanced_chain_lightning.up|level<=90)&active_enemies>=2" );
     aoe -> add_action( this, find_class_spell( "Ascendance" ), "lava_beam" );
     aoe -> add_action( this, spec.fulmination, "earth_shock", "if=buff.lightning_shield.react=buff.lightning_shield.max_stack" );
     aoe -> add_action( this, "Thunderstorm", "if=active_enemies>=10" );
