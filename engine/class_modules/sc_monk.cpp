@@ -1537,6 +1537,19 @@ struct chi_explosion_t: public monk_melee_attack_t
 
     return false;
   }
+
+  void impact( action_state_t* s )
+  {
+    if ( s -> target == p() -> target )
+      monk_melee_attack_t::impact( s );
+    else
+    {
+      double damage = s -> result_amount;
+      damage /= execute_state -> n_targets;
+      s -> result_amount = damage;
+      monk_melee_attack_t::impact( s );
+    }
+  }
 };
 
 // ==========================================================================
