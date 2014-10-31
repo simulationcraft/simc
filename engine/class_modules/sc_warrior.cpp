@@ -2855,10 +2855,13 @@ struct whirlwind_t: public warrior_attack_t
 
     melee_range = p -> spec.whirlwind -> effectN( 2 ).radius_max(); // 8 yard range.
     melee_range += p -> glyphs.wind_and_thunder -> effectN( 1 ).base_value(); // Increased by the glyph.
-    if ( p -> specialization() == WARRIOR_FURY && p -> off_hand_weapon.type != WEAPON_NONE )
+    if ( p -> specialization() == WARRIOR_FURY )
     {
-      oh_attack = new whirlwind_off_hand_t( p );
-      add_child( oh_attack );
+      if ( p -> off_hand_weapon.type != WEAPON_NONE )
+      {
+        oh_attack = new whirlwind_off_hand_t( p );
+        add_child( oh_attack );
+      }
       weapon_multiplier *= 1.0 + p -> spec.crazed_berserker -> effectN( 4 ).percent();
       base_costs[RESOURCE_RAGE] += p -> spec.crazed_berserker -> effectN( 3 ).resource( RESOURCE_RAGE );
     }
