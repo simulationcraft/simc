@@ -3937,7 +3937,7 @@ void warrior_t::apl_precombat( bool probablynotgladiator )
   if ( specialization() == WARRIOR_ARMS )
   {
     precombat -> add_action( "stance,choose=battle\n"
-                             "talent_override=bladestorm,if=raid_event.adds.count>6|active_enemies>6|raid_event.adds.duration<10\n"
+                             "talent_override=bladestorm,if=raid_event.adds.count>6|active_enemies>6|(raid_event.adds.duration<10&raid_event.adds.exists)\n"
                              "talent_override=dragon_roar,if=raid_event.adds.count>1|active_enemies>1");
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
                              "# Generic on-use trinket line if needed when swapping trinkets out. \n"
@@ -3946,7 +3946,7 @@ void warrior_t::apl_precombat( bool probablynotgladiator )
   else if ( specialization() == WARRIOR_FURY )
   {
     precombat -> add_action( "stance,choose=battle\n"
-                             "talent_override=bladestorm,if=raid_event.adds.count>4|active_enemies>4|raid_event.adds.duration<10\n"
+                             "talent_override=bladestorm,if=raid_event.adds.count>4|active_enemies>4|(raid_event.adds.duration<10&raid_event.adds.exists)\n"
                              "talent_override=dragon_roar,if=raid_event.adds.count>1|active_enemies>1" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
                              "# Generic on-use trinket line if needed when swapping trinkets out. \n"
@@ -3955,7 +3955,7 @@ void warrior_t::apl_precombat( bool probablynotgladiator )
   else if ( !probablynotgladiator )
   {
     precombat -> add_action( "stance,choose=gladiator\n"
-                             "talent_override=bladestorm,if=raid_event.adds.count>3|active_enemies>3|raid_event.adds.duration<10\n"
+                             "talent_override=bladestorm,if=raid_event.adds.count>3|active_enemies>3|(raid_event.adds.duration<10&raid_event.adds.exists)\n"
                              "talent_override=dragon_roar,if=raid_event.adds.count>1|active_enemies>1" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
                              "# Generic on-use trinket line if needed when swapping trinkets out. \n"
