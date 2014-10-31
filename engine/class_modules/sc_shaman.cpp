@@ -2859,15 +2859,22 @@ struct fire_nova_t : public shaman_spell_t
   std::vector< player_t* >& target_list() const
   {
     target_cache.list.clear();
-
+    int fire_nova_targets = 0;
+    // WoD Hotfix - 10-30-14
+    // Fire Nova now has a maximum of 7 novas that can be triggered if more than 7 targets are affected by Flame Shock.
     for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); ++i )
     {
+      if ( fire_nova_targets = 7 && p() -> wod_hotfix )
+        break;
       player_t* e = sim -> target_non_sleeping_list[ i ];
       if ( ! e -> is_enemy() )
         continue;
 
       if ( td( e ) -> dot.flame_shock -> is_ticking() )
+      {
         target_cache.list.push_back( e );
+        fire_nova_targets++;
+      }
     }
 
     return target_cache.list;
