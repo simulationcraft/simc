@@ -37,7 +37,7 @@ actions+=/arcane_torrent
 actions+=/berserking
 actions+=/elemental_mastery
 actions+=/storm_elemental_totem
-actions+=/fire_elemental_totem
+actions+=/fire_elemental_totem,if=(talent.primal_elementalist.enabled&active_enemies<=10)|active_enemies<=6
 actions+=/ascendance
 actions+=/feral_spirit
 actions+=/liquid_magma,if=pet.searing_totem.remains>=15|pet.magma_totem.remains>=15|pet.fire_elemental_totem.remains>=15
@@ -70,19 +70,21 @@ actions.aoe+=/fire_nova,if=active_dot.flame_shock>=3
 actions.aoe+=/wait,sec=cooldown.fire_nova.remains,if=active_dot.flame_shock>=4&cooldown.fire_nova.remains<=action.fire_nova.gcd
 actions.aoe+=/magma_totem,if=!totem.fire.active
 actions.aoe+=/lava_lash,if=dot.flame_shock.ticking
-actions.aoe+=/elemental_blast,if=buff.maelstrom_weapon.react>=4|buff.ancestral_swiftness.up
+actions.aoe+=/elemental_blast,if=!buff.unleash_flame.up&(buff.maelstrom_weapon.react>=4|buff.ancestral_swiftness.up)
 actions.aoe+=/chain_lightning,if=glyph.chain_lightning.enabled&active_enemies>=4&(buff.maelstrom_weapon.react=5|(buff.ancestral_swiftness.up&buff.maelstrom_weapon.react>=3))
 actions.aoe+=/unleash_elements,if=active_enemies<4
 actions.aoe+=/flame_shock,cycle_targets=1,if=!ticking
 actions.aoe+=/lightning_bolt,if=(!glyph.chain_lightning.enabled|active_enemies<=3)&(buff.maelstrom_weapon.react=5|(buff.ancestral_swiftness.up&buff.maelstrom_weapon.react>=3))
 actions.aoe+=/windstrike
+actions.aoe+=/elemental_blast,if=!buff.unleash_flame.up&buff.maelstrom_weapon.react>=1
+actions.aoe+=/chain_lightning,if=glyph.chain_lightning.enabled&active_enemies>=4&buff.maelstrom_weapon.react>=1
 actions.aoe+=/fire_nova,if=active_dot.flame_shock>=2
-actions.aoe+=/chain_lightning,if=active_enemies>=2&buff.maelstrom_weapon.react>=1
+actions.aoe+=/magma_totem,if=pet.magma_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up
 actions.aoe+=/stormstrike
 actions.aoe+=/frost_shock,if=active_enemies<4
 actions.aoe+=/elemental_blast,if=buff.maelstrom_weapon.react>=1
-actions.aoe+=/chain_lightning,if=glyph.chain_lightning.enabled&active_enemies>=4&buff.maelstrom_weapon.react>=1
-actions.aoe+=/lightning_bolt,if=(!glyph.chain_lightning.enabled|active_enemies<=3)&buff.maelstrom_weapon.react>=1
+actions.aoe+=/chain_lightning,if=active_enemies>=3&buff.maelstrom_weapon.react>=1
+actions.aoe+=/lightning_bolt,if=active_enemies<3&buff.maelstrom_weapon.react>=1
 actions.aoe+=/fire_nova,if=active_dot.flame_shock>=1
 
 head=blastproof_cowl,id=113891,bonus_id=567
