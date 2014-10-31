@@ -7,7 +7,7 @@ race=tauren
 spec=arms
 role=attack
 position=back
-talents=131122
+talents=131132
 glyphs=unending_rage/heroic_leap/sweeping_strikes
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=4,gems=capacitive_primal_20crit_10haste_10crit_11str
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=4
