@@ -10,6 +10,8 @@ namespace
 
 // ==========================================================================
 // Hunter
+// After testing, it appears that the 0.3333 -> 0.6 attack power coefficient hotfix only applies to autoattacks, not basic attacks.
+// Tested 10-31-14. May want to double check this when WoD is released.
 // ==========================================================================
 
 struct hunter_t;
@@ -781,11 +783,6 @@ public:
 
     owner_coeff.ap_from_ap = 0.3333;
     owner_coeff.sp_from_ap = 0.3333;
-    if ( o() -> wod_hotfix )
-    {
-      owner_coeff.ap_from_ap = 0.6;
-      owner_coeff.sp_from_ap = 0.6;
-    }
   }
 
   virtual void create_buffs()
@@ -1145,6 +1142,7 @@ struct pet_melee_t: public hunter_main_pet_attack_t
     repeating = true;
     auto_attack = true;
     school = SCHOOL_PHYSICAL;
+
   }
 
   virtual void impact( action_state_t* s )
@@ -1152,6 +1150,18 @@ struct pet_melee_t: public hunter_main_pet_attack_t
     hunter_main_pet_attack_t::impact( s );
 
     trigger_beast_cleave( s );
+  }
+
+  double composite_attack_power() const
+  {
+    // After testing, it appears that the 0.3333 -> 0.6 attack power coefficient hotfix only applies to autoattacks, not basic attacks.
+    // Tested 10-31-14. May want to double check this when WoD is released.
+    double ap = hunter_main_pet_attack_t::composite_attack_power();
+
+    if ( o() -> wod_hotfix )
+      ap *= 1.8;
+
+    return ap;
   }
 };
 
