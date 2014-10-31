@@ -117,7 +117,7 @@ protected:
     _ref = _strtoui64( v.c_str(), nullptr, 10 );
 #else
     _ref = strtoull( v.c_str(), nullptr, 10 );
-#else
+#endif
     return true;
   }
   std::ostream& print( std::ostream& stream ) const override
