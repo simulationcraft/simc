@@ -113,8 +113,11 @@ protected:
   {
     if ( n != name() )
       return false;
-
+#if defined( SC_WINDOWS )
+    _ref = _strtoui64( v.c_str(), nullptr, 10 );
+#else
     _ref = strtoull( v.c_str(), nullptr, 10 );
+#else
     return true;
   }
   std::ostream& print( std::ostream& stream ) const override
