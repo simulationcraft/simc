@@ -2620,7 +2620,7 @@ struct sim_t : private sc_thread_t
   // Random Number Generation
   rng_t* _rng;
   std::string rng_str;
-  int deterministic_rng;
+  int deterministic;
   int average_range, average_gauss;
   int convergence_scale;
 
@@ -2745,7 +2745,8 @@ struct sim_t : private sc_thread_t
     work_queue_t() : work( 0 ) {}
     void init( int w ) { AUTO_LOCK(m); work = w; }
     void flush() { init(0); }
-    int  pop() { AUTO_LOCK(m); int w = work--; return w; }
+    int  pop() { AUTO_LOCK(m); int w = work; if( work > 0 ) --work; return w; }
+    int  size() { AUTO_LOCK(m); return work; }
   };
   std::shared_ptr<work_queue_t> work_queue;
   virtual void run();
@@ -2827,8 +2828,6 @@ struct sim_t : private sc_thread_t
 private:
   mutex_t pause_mutex;
   condition_variable_t pause_cvar;
-
-  bool use_load_balancing() const;
 
   void do_pause()
   {

@@ -937,7 +937,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   requires_regen_event( false ), target_death_pct( 0 ), rel_target_level( 0 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ), enable_taunts( false ),
   challenge_mode( false ), scale_to_itemlevel( -1 ), disable_set_bonuses( false ), pvp_crit( false ),
   active_enemies( 0 ), active_allies( 0 ),
-  _rng( 0 ), deterministic_rng( false ),
+  _rng( 0 ), deterministic( false ),
   average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
   fight_style( "Patchwerk" ), overrides( overrides_t() ), auras( auras_t() ),
@@ -982,6 +982,8 @@ sim_t::sim_t( sim_t* p, int index ) :
 
   create_options();
 
+  work_queue = std::shared_ptr<work_queue_t>( new work_queue_t() );
+
   if ( parent )
   {
     // Inherit setup
@@ -1010,7 +1012,7 @@ sim_t::~sim_t()
   delete plot;
   delete reforge_plot;
   delete spell_query;
-  if( _rng ) delete _rng;
+  delete _rng;
 }
 
 // sim_t::add_event (Please use core_event_t::add_event instead) ============
@@ -1041,6 +1043,31 @@ double sim_t::expected_max_time() const
   return max_time.total_seconds() * ( 1.0 + vary_combat_length );
 }
 
+// sim_t::cancel ============================================================
+
+void sim_t::cancel()
+{
+  if ( canceled ) return;
+
+  if ( current_iteration >= 0 )
+  {
+    errorf( "Simulation has been canceled after %d iterations! (thread=%d)\n", current_iteration + 1, thread_index );
+  }
+  else
+  {
+    errorf( "Simulation has been canceled during player setup! (thread=%d)\n", thread_index );
+  }
+
+  work_queue -> flush();
+
+  canceled = 1;
+  
+  for ( size_t i = 0; i < children.size(); i++ )
+  {
+    children[ i ] -> cancel();
+  }
+}
+
 // sim_t::is_canceled =======================================================
 
 bool sim_t::is_canceled() const
@@ -1061,30 +1088,6 @@ void sim_t::cancel_iteration()
 
 void sim_t::combat( int iteration )
 {
-  if ( debug_each )
-  {
-    // On Debug Each, we collect debug information for each iteration, but clear it before each one
-    std::shared_ptr<io::ofstream> o(new io::ofstream());
-    o -> open( output_file_str );
-    if ( o -> is_open() )
-    {
-      out_std = o;
-      out_debug = o;
-      out_log = o;
-
-      out_std.printf( "------ Iteration #%i ------", iteration + 1 );
-      std::flush( *out_std.get_stream() );
-    }
-    else
-    {
-      errorf( "Unable to open output file '%s'\n", output_file_str.c_str() );
-      cancel();
-    }
-  }
-
-  if ( canceled )
-    return;
-
   if ( debug ) out_debug << "Starting Simulator";
 
   current_iteration = iteration;
@@ -1098,9 +1101,6 @@ void sim_t::combat( int iteration )
   combat_begin();
   event_mgr.execute();
   combat_end();
-
-  if ( debug_each && ! canceled )
-    static_cast<io::ofstream*>(out_std.get_stream()) -> close();
 }
 
 // sim_t::reset =============================================================
@@ -1139,10 +1139,32 @@ void sim_t::reset()
 
 void sim_t::combat_begin()
 {
-  reset();
+  if ( debug_each )
+  {
+    // On Debug Each, we collect debug information for each iteration, but clear it before each one
+    std::shared_ptr<io::ofstream> o(new io::ofstream());
+    o -> open( output_file_str );
+    if ( o -> is_open() )
+    {
+      out_std = o;
+      out_debug = o;
+      out_log = o;
+
+      out_std.printf( "------ Iteration #%i ------", current_iteration + 1 );
+      std::flush( *out_std.get_stream() );
+    }
+    else
+    {
+      errorf( "Unable to open output file '%s'\n", output_file_str.c_str() );
+      cancel();
+      return;
+    }
+  }
 
   if ( debug )
     out_debug << "Combat Begin";
+
+  reset();
 
   iteration_dmg = iteration_heal = 0;
 
@@ -1285,6 +1307,9 @@ void sim_t::combat_end()
   if ( debug ) out_debug << "Flush Events";
 
   event_mgr.flush();
+
+  if ( debug_each && ! canceled )
+    static_cast<io::ofstream*>(out_std.get_stream()) -> close();
 }
 
 // sim_t::datacollection_begin ==============================================
@@ -1583,7 +1608,7 @@ bool sim_t::init()
   // Seed RNG
   if ( seed == 0 )
   {
-    if( deterministic_rng )
+    if( deterministic )
     {
       seed = 31459;
     }
@@ -1921,17 +1946,15 @@ bool sim_t::iterate()
 
   for( int i = 0; work_queue -> pop(); ++i )
   {
-    do_pause();
-
-    if ( canceled )
-      break;
-
     if ( progress_bar.update() )
     {
       util::fprintf( stdout, "%s %s\r", sim_phase_str.c_str(), progress_bar.status.c_str() );
       fflush( stdout );
     }
+
     combat( i );
+
+    do_pause();
   }
 
   if ( progress_bar.update( true ) )
@@ -1940,8 +1963,7 @@ bool sim_t::iterate()
     fflush( stdout );
   }
 
-  if ( ! canceled )
-    reset();
+  reset();
 
   iterations = current_iteration + 1;
 
@@ -2016,6 +2038,8 @@ void sim_t::run()
 
 void sim_t::partition()
 {
+  iterations = work_queue -> size();
+
   if ( threads <= 1 ) return;
   if ( iterations < threads ) return;
 
@@ -2033,7 +2057,7 @@ void sim_t::partition()
   // However, when we desire deterministic runs (for debugging) we need to force the
   // sims to use s specific number of iterations as opposed to using shared pool of work.
 
-  if( deterministic_rng ) 
+  if( deterministic ) 
   {
     work_queue -> init( iterations );
   }
@@ -2043,27 +2067,24 @@ void sim_t::partition()
   for ( int i = 0; i < num_children; i++ )
   {
     sim_t* child = new sim_t( this, i + 1 );
-    if( child )
-    {
-      children.push_back( child );
+    assert( child );
+    children.push_back( child );
 
+    if( deterministic ) 
+    {
       child -> iterations = iterations;
       if ( remainder )
       {
-        child -> iterations += 1;
-        remainder--;
+	child -> iterations += 1;
+	remainder--;
       }
-
-      if( deterministic_rng ) 
-      {
-	child -> work_queue -> init( child -> iterations );
-      }
-      else
-      {
-	child -> work_queue = work_queue;
-      }
-      child -> report_progress = 0;
+      child -> work_queue -> init( child -> iterations );
     }
+    else // share the work queue
+    {
+      child -> work_queue = work_queue;
+    }
+    child -> report_progress = 0;
   }
 
   sc_thread_t::set_calling_thread_priority( thread_priority ); // Set main thread priority
@@ -2078,49 +2099,53 @@ void sim_t::predict()
 {
   return;
 
-    int max_new_iterations=0;
-    //Do a short test run to get estimates
-    iterate();
-    analyze();
+  // Do a short test run to get estimates
+  sim_t* s = new sim_t( this );
+  s -> work_queue -> init( 100 );
+  if( s -> iterate() )
+  {
+    s -> analyze();
 
     //TODO set the following two as standard commandline option parameters
     double opt_target_error = 0.005; //for 0.5% Error
     double opt_target_scale_error = 0.5; //for an 0.5 scaling error
-
+    int max_new_iterations=0;
 
     //take maximum of each player's necessary iterations for target_error
-    for ( size_t i = 0; i < player_list.size(); ++i )
+    for ( size_t i = 0; i < s -> player_list.size(); ++i )
     {
-        //TODO get collected data for the correct scale_over stat
-        const extended_sample_data_t& data = player_list[ i ] -> collected_data.dps; //get dps data
-        double mean_error = data.mean_std_dev * confidence_estimator;
-
-        int new_iterations = ( int ) ( data.mean() ? ( ( mean_error * mean_error * ( ( float ) data.size() ) / ( opt_target_error  * data.mean() * opt_target_error * data.mean() ) ) ) : 0 ) ; //get estimated sample size for opt_target_error
-
-        if (new_iterations > max_new_iterations) max_new_iterations = new_iterations; //get maximum
+      //TODO get collected data for the correct scale_over stat
+      const extended_sample_data_t& data = s -> player_list[ i ] -> collected_data.dps;
+      double mean_error = data.mean_std_dev * s -> confidence_estimator;
+      //get estimated sample size for opt_target_error
+      int new_iterations = ( int ) ( data.mean() ? ( ( mean_error * mean_error * ( ( float ) data.size() ) / ( opt_target_error  * data.mean() * opt_target_error * data.mean() ) ) ) : 0 ) ; 
+      if (new_iterations > max_new_iterations) 
+	max_new_iterations = new_iterations;
     }
 
-
-    scaling -> init_deltas();
+    s -> scaling -> init_deltas();
     //take maximum of each player's necessary iterations for target_scaling_error
-    for ( size_t i = 0; i < player_list.size(); ++i )
+    for ( size_t i = 0; i < s -> player_list.size(); ++i )
     {
-        //TODO get collected data for the correct scale_over stat
-        const extended_sample_data_t& data = player_list[ i ] -> collected_data.dps; //get dps data
-        double mean_error = data.mean_std_dev * confidence_estimator;
-        for ( stat_e k = STAT_NONE; k < STAT_MAX; k++ )
-        {
-            if ( ! player_list[i] -> scales_with[ k ] )
-                continue;
-            double delta = scaling -> stats.get_stat( k );
-
-            int new_iterations = ( int ) ( data.mean() ? (( 2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( opt_target_scale_error * delta * opt_target_scale_error * delta) ) ) : 0 ) ; //get estimated sample size for opt_target_scale error
-            if (new_iterations > max_new_iterations) max_new_iterations = new_iterations; //get maximum
-        }
+      //TODO get collected data for the correct scale_over stat
+      const extended_sample_data_t& data = s -> player_list[ i ] -> collected_data.dps; //get dps data
+      double mean_error = data.mean_std_dev * s -> confidence_estimator;
+      for ( stat_e k = STAT_NONE; k < STAT_MAX; k++ )
+      {
+	if ( ! s -> player_list[i] -> scales_with[ k ] )
+	  continue;
+	double delta = s -> scaling -> stats.get_stat( k );
+	//get estimated sample size for opt_target_scale error
+	int new_iterations = ( int ) ( data.mean() ? (( 2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( opt_target_scale_error * delta * opt_target_scale_error * delta) ) ) : 0 ) ;
+	if (new_iterations > max_new_iterations) 
+	  max_new_iterations = new_iterations;
+      }
     }
 
-    //TODO clean up old sim data so it doesnt end in the final result
-
+    //TODO make sure this result is reasonably bounded
+    work_queue -> init( max_new_iterations );
+  }
+  delete s;
 }
 
 // sim_t::execute ===========================================================
@@ -2407,7 +2432,8 @@ void sim_t::create_options()
   add_option( opt_timespan( "regen_periodicity", regen_periodicity ) );
   // RNG
   add_option( opt_string( "rng", rng_str ) );
-  add_option( opt_bool( "deterministic_rng", deterministic_rng ) );
+  add_option( opt_bool( "deterministic", deterministic ) );
+  add_option( opt_bool( "deterministic_rng", deterministic ) ); // OBSOLETE!  FIX GUI FIRST!
   add_option( opt_bool( "average_range", average_range ) );
   add_option( opt_bool( "average_gauss", average_gauss ) );
   add_option( opt_int( "convergence_scale", convergence_scale ) );
@@ -2623,29 +2649,6 @@ void sim_t::setup( sim_control_t* c )
   work_queue -> init( iterations );
 }
 
-// sim_t::cancel ============================================================
-
-void sim_t::cancel()
-{
-  if ( canceled ) return;
-
-  if ( current_iteration >= 0 )
-  {
-    errorf( "Simulation has been canceled after %d iterations! (thread=%d)\n", current_iteration + 1, thread_index );
-  }
-  else
-  {
-    errorf( "Simulation has been canceled during player setup! (thread=%d)\n", thread_index );
-  }
-
-  canceled = 1;
-
-  for ( size_t i = 0; i < children.size(); i++ )
-  {
-    children[ i ] -> cancel();
-  }
-}
-
 // sim_t::progress ==========================================================
 
 double sim_t::progress( int* current,
@@ -2741,14 +2744,6 @@ void sim_t::errorf( const char* format, ... )
 
   std::cerr << s << "\n";
   error_list.push_back( s );
-}
-
-bool sim_t::use_load_balancing() const
-{
-  if ( deterministic_rng )
-    return false;
-
-  return true;
 }
 
 void sim_t::print_spell_query()
