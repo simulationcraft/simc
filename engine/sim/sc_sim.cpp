@@ -2078,14 +2078,15 @@ void sim_t::partition()
     assert( child );
     children.push_back( child );
 
+    child -> iterations = iterations;
+    if ( remainder )
+    {
+      child -> iterations += 1;
+      remainder--;
+    }
+
     if( deterministic ) 
     {
-      child -> iterations = iterations;
-      if ( remainder )
-      {
-	child -> iterations += 1;
-	remainder--;
-      }
       child -> work_queue -> init( child -> iterations );
     }
     else // share the work queue
