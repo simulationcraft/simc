@@ -1011,13 +1011,14 @@ QString SC_OptionsTab::mergeOptions()
     {
       options += "center_scale_delta=1\n";
     }
+  }
 
-    if ( choice.scale_over -> currentIndex() != 0 )
-    {
-      options += "scale_over=";
-      options += choice.scale_over -> currentText();
-      options += "\n";
-    }
+  // always print scale_over in case we want to use plots
+  if ( choice.scale_over -> currentIndex() != 0 )
+  {
+    options += "scale_over=";
+    options += choice.scale_over -> currentText();
+    options += "\n";
   }
 
   /////// Plotting Options ///////
