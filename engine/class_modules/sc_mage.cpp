@@ -1272,6 +1272,13 @@ struct icicle_t : public mage_spell_t
   // the impact.
   void impact( action_state_t* state )
   {
+    // Splitting Ice does not cleave onto Prismatic Crystal
+    if ( state -> target == p() -> pets.prismatic_crystal &&
+         state -> chain_target > 0 )
+    {
+      return;
+    }
+
     const icicle_state_t* is = debug_cast<const icicle_state_t*>( state );
     assert( is -> source );
     stats = is -> source;
@@ -2989,8 +2996,27 @@ struct ice_lance_t : public mage_spell_t
     p() -> trigger_icicle( execute_state, true );
   }
 
+  virtual int schedule_multistrike( action_state_t* s, dmg_e dmg_type, double tick_multiplier )
+  {
+    // Prevent splitting ice cleaves onto PC from multistriking
+    if ( s -> target == p() -> pets.prismatic_crystal &&
+         s -> chain_target > 0 )
+    {
+      return 0;
+    }
+
+    return mage_spell_t::schedule_multistrike( s, dmg_type, tick_multiplier );
+  }
+
   virtual void impact( action_state_t* s )
   {
+    // Splitting Ice does not cleave onto Prismatic Crystal
+    if ( s -> target == p() -> pets.prismatic_crystal &&
+         s -> chain_target > 0 )
+    {
+      return;
+    }
+
     mage_spell_t::impact( s );
 
     if ( td( s -> target ) -> debuffs.frost_bomb -> up() &&
