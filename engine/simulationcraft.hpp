@@ -6439,6 +6439,12 @@ inline void dot_tick_event_t::execute()
     dot -> tick();
   }
 
+  // Some dots actually cancel themselves mid-tick. If this happens, we presume
+  // that the cancel has been "proper", and just stop event execution here, as
+  // the dot no longer exists.
+  if ( ! dot -> is_ticking() )
+    return;
+
   assert ( dot -> ticking );
   expr_t* expr = dot -> current_action -> interrupt_if_expr;
   if ( ( dot -> current_action -> channeled &&
