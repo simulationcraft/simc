@@ -1919,7 +1919,7 @@ bool sim_t::iterate()
 
   progress_bar.init();
 
-  for( int i = 0; work_queue.pop(); ++i )
+  for( int i = 0; work_queue -> pop(); ++i )
   {
     do_pause();
 
@@ -1945,7 +1945,7 @@ bool sim_t::iterate()
 
   iterations = current_iteration + 1;
 
-  return iteration > 0;
+  return iterations > 0;
 }
 
 // sim_t::merge =============================================================
@@ -2035,7 +2035,7 @@ void sim_t::partition()
 
   if( deterministic_rng ) 
   {
-    _work_queue.init( iterations );
+    work_queue -> init( iterations );
   }
 
   int num_children = threads - 1;
@@ -2056,9 +2056,12 @@ void sim_t::partition()
 
       if( deterministic_rng ) 
       {
-	child -> _work_queue.init( child -> iterations );
+	child -> work_queue -> init( child -> iterations );
       }
-
+      else
+      {
+	child -> work_queue = work_queue;
+      }
       child -> report_progress = 0;
     }
   }
@@ -2069,10 +2072,12 @@ void sim_t::partition()
     children[ i ] -> launch( thread_priority );
 }
 
-// sim_t::calc_num_iterations ===========================================================
+// sim_t::predict =======================================================================
 
-int sim_t::calc_num_iterations()
+void sim_t::predict()
 {
+  return;
+
     int max_new_iterations=0;
     //Do a short test run to get estimates
     iterate();
@@ -2116,8 +2121,6 @@ int sim_t::calc_num_iterations()
 
     //TODO clean up old sim data so it doesnt end in the final result
 
-
-    return max_new_iterations;
 }
 
 // sim_t::execute ===========================================================
@@ -2129,7 +2132,7 @@ bool sim_t::execute()
 
   predict();
   partition();
-  bool succes = iterate();
+  bool success = iterate();
   merge(); // Always merge, even in cases of unsuccessful simulation!
   if( success ) analyze();
 
@@ -2617,7 +2620,7 @@ void sim_t::setup( sim_control_t* c )
     threads = 1;
   }
 
-  _work_queue.init( iterations );
+  work_queue -> init( iterations );
 }
 
 // sim_t::cancel ============================================================

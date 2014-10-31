@@ -2745,7 +2745,7 @@ struct sim_t : private sc_thread_t
     work_queue_t() : work( 0 ) {}
     void init( int w ) { AUTO_LOCK(m); work = w; }
     void flush() { init(0); }
-    int  pop() { AUTO_LOCK(m); w = work--; return w; }
+    int  pop() { AUTO_LOCK(m); int w = work--; return w; }
   };
   std::shared_ptr<work_queue_t> work_queue;
   virtual void run();
@@ -2788,7 +2788,7 @@ struct sim_t : private sc_thread_t
   bool      iterate();
   void      partition();
   bool      execute();
-  int       calc_num_iterations();
+  void      predict();
   void      print_options();
   void      add_option( const option_t& opt );
   void      create_options();
