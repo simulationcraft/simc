@@ -535,7 +535,7 @@ public:
   void      trigger_t17_4pc_frost( const action_state_t* );
   void      trigger_t17_4pc_unholy( const action_state_t* );
   void      apply_diseases( action_state_t* state, unsigned diseases );
-  int       runes_count( rune_type rt, bool include_death, int position );
+  double    runes_count( rune_type rt, bool include_death, int position );
   double    runes_cooldown_any( rune_type rt, bool include_death, int position );
   double    runes_cooldown_all( rune_type rt, bool include_death, int position );
   double    runes_cooldown_time( rune_t* r );
@@ -5713,7 +5713,7 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
       {
         switch ( myaction )
         {
-          case 0: return dk -> runes_count( r, include_death, position );
+          case 0: return util::floor( dk -> runes_count( r, include_death, position ) );
           case 1: return dk -> runes_cooldown_any( r, include_death, position );
           case 2: return dk -> runes_cooldown_all( r, include_death, position );
           case 3: return dk -> runes_depleted( r, position );
@@ -5723,7 +5723,7 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
     };
     return new rune_inspection_expr_t( this, rt, include_death, position, act );
   }
-  else if ( splits.size() == 2 )
+  else if ( splits.size() == 2 && ! util::str_compare_ci( splits[ 1 ], "frac" ) )
   {
     rune_type rt = RUNE_TYPE_NONE;
     bool include_death = false;
@@ -5768,18 +5768,19 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
     rune_type rt = RUNE_TYPE_NONE;
     bool include_death = false;
     parse_rune_type( splits[ 0 ], include_death, rt );
+    bool frac = splits.size() == 2 && util::str_compare_ci( splits[ 1 ], "frac" );
 
     struct rune_expr_t : public expr_t
     {
       death_knight_t* dk;
       rune_type r;
-      bool death;
-      rune_expr_t( death_knight_t* p, rune_type r, bool include_death ) :
-        expr_t( "rune" ), dk( p ), r( r ), death( include_death ) { }
+      bool death, fractional;
+      rune_expr_t( death_knight_t* p, rune_type r, bool include_death, bool frac ) :
+        expr_t( "rune" ), dk( p ), r( r ), death( include_death ), fractional( frac ) { }
       virtual double evaluate()
-      { return dk -> runes_count( r, death, 0 ); }
+      { return fractional ? dk -> runes_count( r, death, 0 ) : util::floor( dk -> runes_count( r, death, 0 ) ); }
     };
-    if ( rt ) return new rune_expr_t( this, rt, include_death );
+    if ( rt ) return new rune_expr_t( this, rt, include_death, frac );
 
   }
 
@@ -7657,7 +7658,7 @@ void death_knight_t::apply_diseases( action_state_t* state, unsigned diseases )
 
 // death_knight_t::runes_count ==============================================
 // how many runes of type rt are available
-int death_knight_t::runes_count( rune_type rt, bool include_death, int position )
+double death_knight_t::runes_count( rune_type rt, bool include_death, int position )
 {
   double result = 0;
   // positional checks first
@@ -7688,7 +7689,7 @@ int death_knight_t::runes_count( rune_type rt, bool include_death, int position 
       }
     }
   }
-  return static_cast<int>( result );
+  return result;
 }
 
 // death_knight_t::runes_cooldown_any =======================================
