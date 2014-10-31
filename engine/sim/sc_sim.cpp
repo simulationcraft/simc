@@ -925,7 +925,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   regen_periodicity( timespan_t::from_seconds( 0.25 ) ),
   ignite_sampling_delta( timespan_t::from_seconds( 0.2 ) ),
   fixed_time( false ), optimize_expressions( false ),
-  seed( 0 ), current_slot( -1 ),
+  current_slot( -1 ),
   optimal_raid( 0 ), log( 0 ), debug_each( 0 ), save_profiles( 0 ), default_actions( 0 ),
   normalized_stat( STAT_NONE ),
   default_region_str( "us" ),
@@ -936,7 +936,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   requires_regen_event( false ), target_death_pct( 0 ), rel_target_level( 0 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ), enable_taunts( false ),
   challenge_mode( false ), scale_to_itemlevel( -1 ), disable_set_bonuses( false ), pvp_crit( false ),
   active_enemies( 0 ), active_allies( 0 ),
-  _rng( 0 ), deterministic( false ),
+  _rng( 0 ), seed( 0 ), deterministic( false ),
   average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
   fight_style( "Patchwerk" ), overrides( overrides_t() ), auras( auras_t() ),
@@ -1108,6 +1108,8 @@ void sim_t::combat( int iteration )
 void sim_t::reset()
 {
   if ( debug ) out_debug << "Resetting Simulator";
+
+  if( deterministic ) seed = rng().reseed();
 
   event_mgr.reset();
 
@@ -2440,7 +2442,7 @@ void sim_t::create_options()
   // Misc
   add_option( opt_list( "party", party_encoding ) );
   add_option( opt_func( "active", parse_active ) );
-  add_option( opt_int( "seed", seed ) );
+  add_option( opt_uint64( "seed", seed ) );
   add_option( opt_float( "wheel_granularity", event_mgr.wheel_granularity ) );
   add_option( opt_int( "wheel_seconds", event_mgr.wheel_seconds ) );
   add_option( opt_int( "wheel_shift", event_mgr.wheel_shift ) );

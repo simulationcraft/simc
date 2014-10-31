@@ -19,23 +19,31 @@ struct sim_signal_handler_t
 {
   static sim_t* global_sim;
 
-  static void sigint( int )
+  static void report( int signal )
+  {
+    const char* name = strsignal( signal );
+    fprintf( stderr, "sim_signal_handler: %s! Iteration=%d Seed=%llu TargetHealth=%llu\n",
+	     name, global_sim -> current_iteration, 
+	     (long long unsigned) global_sim -> seed,
+	     (long long unsigned) global_sim -> target -> resources.initial[ RESOURCE_HEALTH ] );
+    fflush( stderr );
+  }
+
+  static void sigint( int signal )
   {
     if ( global_sim )
     {
+      report( signal );
       if ( global_sim -> canceled ) exit( 1 );
       global_sim -> cancel();
     }
   }
 
-  static void callback( int signal )
+  static void sigsegv( int signal )
   {
     if ( global_sim )
     {
-      const char* name = strsignal( signal );
-      fprintf( stderr, "sim_signal_handler: %s! Seed=%d Iteration=%d\n",
-               name, global_sim -> seed, global_sim -> current_iteration );
-      fflush( stderr );
+      report( signal );
     }
     exit( 1 );
   }
@@ -48,7 +56,7 @@ struct sim_signal_handler_t
     sigemptyset( &sa.sa_mask );
     sa.sa_flags = 0;
 
-    sa.sa_handler = callback;
+    sa.sa_handler = sigsegv;
     sigaction( SIGSEGV, &sa, 0 );
 
     sa.sa_handler = sigint;

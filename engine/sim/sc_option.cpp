@@ -102,6 +102,30 @@ private:
   std::string& _ref;
 };
 
+struct opt_uint64_t : public option_base_t
+{
+  opt_uint64_t( const std::string& name, uint64_t& addr ) :
+    option_base_t( name ),
+    _ref( addr )
+  { }
+protected:
+  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
+  {
+    if ( n != name() )
+      return false;
+
+    _ref = strtoull( v.c_str(), nullptr, 10 );
+    return true;
+  }
+  std::ostream& print( std::ostream& stream ) const override
+  {
+     stream << name() << "="  <<  _ref << "\n";
+     return stream;
+  }
+private:
+  uint64_t& _ref;
+};
+
 struct opt_int_t : public option_base_t
 {
   opt_int_t( const std::string& name, int& addr ) :
@@ -789,6 +813,9 @@ option_t opt_bool( const std::string& n, int& v )
 
 option_t opt_bool( const std::string& n, bool& v )
 { return new opts::opt_bool_t( n, v ); }
+
+option_t opt_uint64( const std::string& n, uint64_t& v )
+{ return new opts::opt_uint64_t( n, v ); }
 
 option_t opt_int( const std::string& n, int& v )
 { return new opts::opt_int_t( n, v ); }

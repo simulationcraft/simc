@@ -1378,6 +1378,7 @@ option_t opt_string( const std::string& n, std::string& v );
 option_t opt_append( const std::string& n, std::string& v );
 option_t opt_bool( const std::string& n, int& v );
 option_t opt_bool( const std::string& n, bool& v );
+option_t opt_uint64( const std::string& n, uint64_t& v );
 option_t opt_int( const std::string& n, int& v );
 option_t opt_int( const std::string& n, int& v, int , int );
 option_t opt_uint( const std::string& n, unsigned& v );
@@ -2571,7 +2572,7 @@ struct sim_t : private sc_thread_t
   timespan_t  reaction_time, regen_periodicity;
   timespan_t  ignite_sampling_delta;
   bool        fixed_time, optimize_expressions;
-  int         seed, current_slot;
+  int         current_slot;
   int         optimal_raid, log, debug_each;
   int         save_profiles, default_actions;
   stat_e      normalized_stat;
@@ -2620,6 +2621,7 @@ struct sim_t : private sc_thread_t
   // Random Number Generation
   rng_t* _rng;
   std::string rng_str;
+  uint64_t seed;
   int deterministic;
   int average_range, average_gauss;
   int convergence_scale;

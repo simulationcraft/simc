@@ -774,6 +774,16 @@ double rng_t::exgauss( double gauss_mean,
   return std::max( 0.0, gauss( gauss_mean, gauss_stddev ) + exponential( exp_nu ) ); 
 }
 
+// Reseed using current state.  =============================================
+
+uint64_t rng_t::reseed()
+{
+  union { uint64_t s; double d; } w;
+  w.d = real();
+  seed( w.s );
+  return w.s;
+}
+
 // stdnormal_cdf ============================================================
 
 // Source of the next 2 functions: http://home.online.no/~pjacklam/notes/invnorm/

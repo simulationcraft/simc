@@ -934,6 +934,8 @@ void enemy_t::init_resources( bool /* force */ )
   {
     resources.max[ RESOURCE_HEALTH ] *= 100.0 / initial_health_percentage;
   }
+
+  resources.initial[ RESOURCE_HEALTH ] = std::ceil( resources.initial[ RESOURCE_HEALTH ] );
 }
 
 // enemy_t::init_target =====================================================
