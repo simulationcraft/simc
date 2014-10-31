@@ -1103,6 +1103,23 @@ public:
 #endif
   void updateWebView( SC_WebView* );
 
+  void toggle_pause()
+  {
+    if ( ! sim )
+      return;
+
+    if ( ! sim -> paused )
+    {
+      sim -> pause_mutex -> lock();
+    }
+    else
+    {
+      sim -> pause_mutex -> unlock();
+    }
+
+    sim -> paused = ! sim -> paused;
+  }
+
 private:
   QRect getSmallestScreenGeometry();
   QRect adjustGeometryToIncludeFrame( QRect );
@@ -1515,9 +1532,6 @@ public:
   QString options;
   QString error_str;
   bool success;
-
-  void toggle_pause()
-  { sim -> toggle_pause(); }
 
   void start( sim_t* s, const QString& o ) { sim = s; options = o; success = false; QThread::start(); }
   virtual void run();

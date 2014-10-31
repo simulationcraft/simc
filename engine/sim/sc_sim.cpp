@@ -903,7 +903,6 @@ sim_t::sim_t( sim_t* p, int index ) :
   control( 0 ),
   parent( p ),
   initialized( false ),
-  paused( false ),
   target( NULL ),
   heal_target( NULL ),
   target_list(),
@@ -969,7 +968,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   // Multi-Threading
   threads( 0 ), thread_index( index ), thread_priority( sc_thread_t::NORMAL ),
   spell_query( 0 ), spell_query_level( MAX_LEVEL ),
-  pause_cvar( &pause_mutex )
+  pause_mutex( 0 ),
+  paused( false )
 {
   item_db_sources.assign( range::begin( default_item_db_sources ),
                           range::end( default_item_db_sources ) );
@@ -2765,21 +2765,6 @@ void sim_t::print_spell_query()
 
     report::print_spell_query( std::cout, dbc, *spell_query, spell_query_level );
   }
-}
-void sim_t::toggle_pause()
-{
-  if ( parent )
-    return;
-
-  pause_mutex.lock();
-  if ( ! paused )
-    paused = true;
-  else
-  {
-    paused = false;
-    pause_cvar.broadcast();
-  }
-  pause_mutex.unlock();
 }
 
 /* Build a divisor timeline vector appropriate to a given timeline

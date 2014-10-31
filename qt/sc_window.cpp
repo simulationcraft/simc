@@ -887,6 +887,7 @@ void SC_MainWindow::updateWebView( SC_WebView* wv )
 sim_t* SC_MainWindow::initSim()
 {
   sim_t* sim = new sim_t();
+  sim -> pause_mutex = new mutex_t();
   sim -> report_progress = 0;
 #if SC_USE_PTR
   sim -> parse_option( "ptr", ( ( optionsTab -> choice.version -> currentIndex() == 1 ) ? "1" : "0" ) );
@@ -910,6 +911,7 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
     std::string output_file_str = sim -> output_file_str;
     bool sim_control_was_not_zero = sim -> control != 0;
 
+    delete sim -> pause_mutex;
     delete sim;
     sim = nullptr;
 
@@ -1177,8 +1179,10 @@ void SC_MainWindow::stopSim()
     sim -> cancel();
     stopImport();
 
-    if ( sim -> is_paused() )
-      sim -> toggle_pause();
+    if ( sim -> paused )
+    {
+      toggle_pause();
+    }
   }
 }
 void SC_MainWindow::stopAllSim()
@@ -1589,7 +1593,7 @@ void SC_MainWindow::queryButtonClicked()
 void SC_MainWindow::pauseButtonClicked( bool )
 {
   cmdLine -> togglePaused();
-  simulateThread -> toggle_pause();
+  toggle_pause();
 }
 
 void SC_MainWindow::backButtonClicked( bool /* checked */ )

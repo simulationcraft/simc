@@ -2543,7 +2543,7 @@ struct sim_t : private sc_thread_t
 
   sim_control_t* control;
   sim_t*      parent;
-  bool initialized, paused;
+  bool initialized;
   player_t*   target;
   player_t*   heal_target;
   vector_with_callback<player_t*> target_list;
@@ -2807,40 +2807,34 @@ struct sim_t : private sc_thread_t
 
   timespan_t current_time() const { return event_mgr.current_time; }
 
-  bool is_paused()
-  {
-    if ( parent )
-      return parent -> is_paused();
-    else
-    {
-      pause_mutex.lock();
-      bool p = paused;
-      pause_mutex.unlock();
-      return p;
-    }
-  }
-
-  void toggle_pause();
-
   static double distribution_mean_error( const sim_t& s, const extended_sample_data_t& sd )
   { return s.confidence_estimator * sd.mean_std_dev; }
 
+  // External pause mutex, instantiated an external entity (in our case the
+  // GUI).
+  mutex_t* pause_mutex;
+  bool paused;
 private:
-  mutex_t pause_mutex;
-  condition_variable_t pause_cvar;
 
+  // Sit in an external pause mutex (lock) of the first simulator thread until
+  // it's our turn to lock/unlock it. In theory can have racing issues, but in
+  // practice all iterations do enough work for it not to matter.
+  //
+  // Lock/unlock is done per iteration, so processing cost should be minimal.
   void do_pause()
   {
     if ( parent )
       parent -> do_pause();
     else
     {
-      pause_mutex.lock();
-      while ( paused )
-        pause_cvar.wait();
-      pause_mutex.unlock();
+      if ( pause_mutex && paused )
+      {
+        pause_mutex -> lock();
+        pause_mutex -> unlock();
+      }
     }
   }
+
   void print_spell_query();
 };
 

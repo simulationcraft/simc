@@ -18,18 +18,6 @@ public:
   void unlock() {}
 };
 
-// condition_variable_t::native_t ===========================================
-
-class condition_variable_t::native_t
-{
-public:
-  native_t( mutex_t* )
-  { }
-  void wait() { }
-  void signal() { }
-  void broadcast() { }
-};
-
 // sc_thread_t::native_t ====================================================
 
 class sc_thread_t::native_t
@@ -57,23 +45,7 @@ public:
 #include <process.h>
 
 // mutex_t::native_t ========================================================
-/*
-#if ! defined( __MINGW32__ )
-class mutex_t::native_t : public nonmoveable
-{
-  CRITICAL_SECTION cs;
 
-public:
-  native_t()    { InitializeCriticalSection( &cs ); }
-  ~native_t()   { DeleteCriticalSection( &cs ); }
-
-  void lock()   { EnterCriticalSection( &cs ); }
-  void unlock() { LeaveCriticalSection( &cs ); }
-
-  PCRITICAL_SECTION primitive() { return &cs; }
-};
-#else
-*/
 class mutex_t::native_t : public nonmoveable
 {
   HANDLE mutex_;
@@ -87,128 +59,6 @@ public:
 
   HANDLE primitive() { return mutex_; }
 };
-//#endif /* __MINGW32 __ */
-
-// condition_variable_t::native_t ===========================================
-/*
-#if ! defined( __MINGW32__ )
-class condition_variable_t::native_t : public nonmoveable
-{
-  CONDITION_VARIABLE cv;
-  PCRITICAL_SECTION  cs;
-
-public:
-  native_t( mutex_t* m ) : cs( m -> native_mutex() -> primitive() )
-  { InitializeConditionVariable( &cv ); }
-
-  ~native_t()
-  { }
-
-  void wait()
-  { SleepConditionVariableCS( &cv, cs, INFINITE ); }
-
-  void signal()
-  { WakeConditionVariable( &cv ); }
-
-  void broadcast()
-  { WakeAllConditionVariable( &cv ); }
-};
-#else
-*/
-// Emulated condition variable for mingw using win32 thread model. Adapted from
-// http://www.cs.wustl.edu/~schmidt/win32-cv-1.html
-class condition_variable_t::native_t : public nonmoveable
-{
-  HANDLE  external_mutex_;
-  int waiters_count_;
-  CRITICAL_SECTION waiters_count_lock_;
-  HANDLE sema_;
-  HANDLE waiters_done_;
-  size_t was_broadcast_;
-
-public:
-  native_t( mutex_t* m ) : 
-    external_mutex_( m -> native_mutex() -> primitive() ),
-    waiters_count_( 0 ),
-    sema_( CreateSemaphore( NULL, 0, 0x7fffffff, NULL ) ),
-    waiters_done_( CreateEvent( NULL, FALSE, FALSE, NULL ) ),
-    was_broadcast_( 0 )
-  {
-    InitializeCriticalSection( &waiters_count_lock_ );
-  }
-
-  void wait()
-  {
-    // Increase waiters
-    EnterCriticalSection( &waiters_count_lock_ );
-    waiters_count_++;
-    LeaveCriticalSection( &waiters_count_lock_ );
-
-    // Block on semaphore
-    SignalObjectAndWait( external_mutex_, sema_, INFINITE, FALSE );
-
-    // Reduce waiters by one, since we are unblocked
-    EnterCriticalSection( &waiters_count_lock_ );
-    waiters_count_--;
-
-    int last_waiter = was_broadcast_ && waiters_count_ == 0;
-
-    LeaveCriticalSection( &waiters_count_lock_ );
-
-    // If we are the last object to wait on a broadcast() call, 
-    // lets all others proceed, before we do
-    if ( last_waiter )
-      // Wait on waiters_done_ and acquire external mutex
-      SignalObjectAndWait( waiters_done_, external_mutex_, INFINITE, FALSE );
-    else
-      // Ensure we re-acquire the external mutex
-      WaitForSingleObject( external_mutex_, INFINITE );
-  }
-
-  // External mutex for this conditional variable MUST BE acquired by the 
-  // thread that calls signal().
-  void signal()
-  {
-    EnterCriticalSection( &waiters_count_lock_ );
-    int have_waiters = waiters_count_ > 0;
-    LeaveCriticalSection( &waiters_count_lock_ );
-
-    // Release single thread if we have anyone blocking on the 
-    // semaphore
-    if ( have_waiters )
-      ReleaseSemaphore( sema_, 1, 0 );
-  }
-
-  // External mutex for this conditional variable MUST BE acquired by the 
-  // thread that calls broadcast().
-  void broadcast()
-  {
-    EnterCriticalSection( &waiters_count_lock_ );
-    int have_waiters = 0;
-
-    if ( waiters_count_ > 0 )
-    {
-      was_broadcast_ = 1;
-      have_waiters = 1;
-    }
-
-    if ( have_waiters )
-    {
-      // Release everyone waiting on sema_
-      ReleaseSemaphore( sema_, waiters_count_, 0 );
-
-      LeaveCriticalSection( &waiters_count_lock_ );
-
-      // Wait until the last thread has been unblocked 
-      // to ensure fairness.
-      WaitForSingleObject( waiters_done_, INFINITE );
-      was_broadcast_ = 0;
-    }
-    else
-      LeaveCriticalSection( &waiters_count_lock_ );
-  }
-};
-//#endif /* __MINGW32__ */
 
 namespace { // unnamed namespace
 /* Convert our priority enumerations to WinAPI Thread Priority values
@@ -300,31 +150,6 @@ public:
   void unlock() { pthread_mutex_unlock( &m ); }
   pthread_mutex_t* primitive() { return &m; }
 };
-
-// condition_variable_t::native_t ===========================================
-
-class condition_variable_t::native_t : public nonmoveable
-{
-  pthread_cond_t   cv;
-  pthread_mutex_t* m;
-
-public:
-  native_t( mutex_t* mutex ) : m( mutex -> native_mutex() -> primitive() )
-  { pthread_cond_init( &cv, 0 ); }
-
-  ~native_t()
-  { pthread_cond_destroy( &cv ); }
-
-  void wait()
-  { pthread_cond_wait( &cv, m ); }
-
-  void signal()
-  { pthread_cond_signal( &cv ); }
-
-  void broadcast()
-  { pthread_cond_broadcast( &cv ); }
-};
-
 
 // sc_thread_t::native_t ====================================================
 
@@ -420,33 +245,7 @@ void mutex_t::lock()
 void mutex_t::unlock()
 { native_handle -> unlock(); }
 
-// condition_variable_t::condition_variable_t() =============================
-
-condition_variable_t::condition_variable_t( mutex_t* m ) : 
-  native_handle( new native_t( m ) )
-{ }
-
-// condition_variable_t::~condition_variable_t() ============================
-
-condition_variable_t::~condition_variable_t()
-{ delete native_handle; }
-
-// condition_variable_t::wait() =============================================
-
-void condition_variable_t::wait()
-{ native_handle -> wait(); }
-
-// condition_variable_t::signal() ===========================================
-
-void condition_variable_t::signal()
-{ native_handle -> signal(); }
-
-// condition_variable_t::broadcast() ========================================
-
-void condition_variable_t::broadcast()
-{ native_handle -> broadcast(); }
-
-// sc_thread_t::sc_thread_t() ===============================================
+// // sc_thread_t::sc_thread_t() ===============================================
 
 sc_thread_t::sc_thread_t() : native_handle( new native_t() )
 {}
