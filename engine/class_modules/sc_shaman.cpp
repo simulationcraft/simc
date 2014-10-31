@@ -3039,7 +3039,7 @@ struct elemental_blast_t : public shaman_spell_t
     base_multiplier *= 1.0 + player -> spec.mental_quickness -> effectN( 5 ).percent();
     if ( player -> wod_hotfix )
     {
-      base_multiplier *= 1.2;
+      base_multiplier *= 1.2069;
     }
   }
 
