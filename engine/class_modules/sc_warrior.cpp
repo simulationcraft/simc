@@ -596,13 +596,11 @@ public:
   {
     timespan_t t = ab::action_t::gcd();
 
-    if ( t == timespan_t::zero() )
-      return t;
+    if ( t <= ab::min_gcd )
+      return ab::min_gcd;
 
     if ( headlongrushgcd )
       t *= ab::player -> cache.attack_haste();
-    if ( t < ab::min_gcd )
-      t = ab::min_gcd;
 
     return t;
   }
@@ -621,9 +619,6 @@ public:
 
   virtual bool ready()
   {
-    if ( !ab::ready() )
-      return false;
-
     if ( p() -> current.distance_to_move > ab::range && ab::range != -1 )
       // -1 melee range implies that the ability can be used at any distance from the target. Battle shout, stance swaps, etc.
       return false;
@@ -643,7 +638,7 @@ public:
     else if ( ( ( stancemask & p() -> active_stance ) == 0 ) && p() -> cooldown.stance_swap -> down() )
       return false;
 
-    return true;
+    return ab::ready();
   }
 
   bool usable_moving() const
@@ -719,7 +714,9 @@ public:
     double rage = ab::resource_consumed;
 
     if ( p() -> talents.anger_management -> ok() )
+    {
       anger_management( rage );
+    }
 
     if ( ab::result_is_miss( ab::execute_state -> result ) && rage > 0 && !ab::aoe )
       p() -> resource_gain( RESOURCE_RAGE, rage*0.8, p() -> gain.avoided_attacks );
@@ -1440,9 +1437,11 @@ struct charge_t: public warrior_attack_t
   bool first_charge;
   double movement_speed_increase;
   cooldown_t* rage_from_charge;
+  action_state_t* last_target;
   charge_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "charge", p, p -> spell.charge ),
-    first_charge( true ), movement_speed_increase( 5.0 ), rage_from_charge( NULL )
+    first_charge( true ), movement_speed_increase( 5.0 ), rage_from_charge( NULL ),
+    last_target( 0 )
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
@@ -1476,7 +1475,9 @@ struct charge_t: public warrior_attack_t
     if ( first_charge )
       first_charge = !first_charge;
 
-    if ( rage_from_charge )
+    last_target = execute_state;
+
+    if ( rage_from_charge -> up() )
     {
       rage_from_charge -> start();
       p() -> resource_gain( RESOURCE_RAGE,
@@ -1496,6 +1497,11 @@ struct charge_t: public warrior_attack_t
   {
     if ( first_charge == true ) // Assumes that we charge into combat, instead of setting initial distance to 20 yards.
       return warrior_attack_t::ready();
+    else if ( last_target )
+    {
+      if ( last_target -> target != target )// If we're charging to a different target, allow it. 
+        return warrior_attack_t::ready();
+    }
 
     if ( p() -> current.distance_to_move < data().min_range() ) // Cannot charge unless target is in range.
       return false;
@@ -1673,7 +1679,7 @@ struct execute_t: public warrior_attack_t
 
     if ( p() -> mastery.weapons_master -> ok() )
     {
-      if ( !p() -> buff.sudden_death -> check() )
+      if ( !p() -> buff.sudden_death -> check() || p() -> buff.tier16_4pc_death_sentence -> check() )
         am *= 4.0 * std::min( 40.0, p() -> resources.current[ RESOURCE_RAGE ] ) / 40;
     }
     else if ( p() -> has_shield_equipped() )
@@ -1692,8 +1698,8 @@ struct execute_t: public warrior_attack_t
     if ( p() -> buff.tier16_4pc_death_sentence -> up() && target -> health_percentage() < 20 )
       c *= 1.0 + p() -> buff.tier16_4pc_death_sentence -> data().effectN( 2 ).percent();
 
-    if ( p() -> buff.sudden_death -> up() )
-      c *= 1.0 + p() -> buff.sudden_death -> data().effectN( 2 ).percent();
+    if ( p() -> buff.sudden_death -> up() && !p() -> buff.tier16_4pc_death_sentence -> check() )
+      c *= 1.0 + p() -> buff.sudden_death -> data().effectN( 2 ).percent(); // Tier 16 4 piece overrides sudden death.
 
     return c;
   }
@@ -1706,7 +1712,7 @@ struct execute_t: public warrior_attack_t
          p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
          oh_attack -> execute();
 
-    p() -> buff.sudden_death -> expire();
+    p() -> buff.sudden_death -> expire(); // Consumes both buffs
     p() -> buff.tier16_4pc_death_sentence -> expire();
   }
 
@@ -1735,7 +1741,6 @@ struct hamstring_t: public warrior_attack_t
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     weapon = &( p -> main_hand_weapon );
-    use_off_gcd = true;
   }
 };
 
@@ -1955,8 +1960,7 @@ struct impending_victory_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) )
-      impending_victory_heal -> execute();
+    impending_victory_heal -> execute();
 
     p() -> buff.tier15_2pc_tank -> decrement();
   }
@@ -2082,7 +2086,7 @@ struct pummel_t: public warrior_attack_t
   void execute()
   {
     warrior_attack_t::execute();
-    p() -> buff.rude_interruption -> trigger();
+    //p() -> buff.rude_interruption -> trigger();
   }
 };
 
@@ -2396,7 +2400,7 @@ struct siegebreaker_t: public warrior_attack_t
     oh_attack( 0 )
   {
     parse_options( options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
+    stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     may_dodge = may_parry = may_block = false;
 
     if ( p -> specialization() == WARRIOR_FURY )
@@ -2859,7 +2863,7 @@ struct whirlwind_t: public warrior_attack_t
       weapon_multiplier *= 1.0 + p -> spec.crazed_berserker -> effectN( 4 ).percent();
       base_costs[RESOURCE_RAGE] += p -> spec.crazed_berserker -> effectN( 3 ).resource( RESOURCE_RAGE );
     }
-    else if ( p -> specialization() == WARRIOR_ARMS )
+    else
     {
       weapon_multiplier *= 2;
     }
@@ -2925,8 +2929,8 @@ struct wild_strike_t: public warrior_attack_t
   { // Wild strike has an unwieldy gcd of 0.75, which results in some lost gcd time due to an average humans ability to
     // Spam the key quickly enough for ability queue to catch it. If the lag tolerance is set high enough so that it functions normally, it 
     // leads to accidentally double-triggering the ability when the player does not want to.
-    // After looking at a bunch of logs and testing it, the mean "GCD" tends to be around 0.77, with a range of 0.75-0.80.
-    timespan_t t = timespan_t::from_seconds( rng().gauss( 0.77, 0.03 ) );
+    // After looking at a bunch of logs and testing it, the mean "GCD" tends to be around 0.76, with a range of 0.75-0.79.
+    timespan_t t = timespan_t::from_seconds( rng().gauss( 0.76, 0.03 ) );
     if ( t < min_gcd )
       return min_gcd;
     else
@@ -2968,7 +2972,7 @@ struct warrior_spell_t: public warrior_action_t < spell_t >
   warrior_spell_t( const std::string& n, warrior_t* p, const spell_data_t* s = spell_data_t::nil() ):
     base_t( n, p, s )
   {
-    may_miss = may_glance = may_block = may_dodge = may_parry = false;
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
   }
 };
 
@@ -3124,7 +3128,7 @@ struct enhanced_rend_t: public warrior_spell_t
   enhanced_rend_t( warrior_t* p ):
     warrior_spell_t( "enhanced_rend", p, p -> find_spell( 174736 ) )
   {
-    background = true;
+    may_crit = background = true;
   }
 
   double target_armor( player_t* ) const
@@ -3199,7 +3203,7 @@ struct ravager_tick_t: public warrior_spell_t
     warrior_spell_t( name, p, p -> find_spell( 156287 ) )
   {
     aoe = -1;
-    dual = true;
+    dual = may_crit = true;
     if ( p -> wod_hotfix )
     {
       attack_power_mod.direct *= 0.75;
@@ -3251,7 +3255,7 @@ struct recklessness_t: public warrior_spell_t
     bonus_crit *= 1 + p -> glyphs.recklessness -> effectN( 1 ).percent();
     cooldown -> duration = data().cooldown();
     cooldown -> duration += p -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
-    may_crit = callbacks = false;
+    callbacks = false;
   }
 
   void execute()
@@ -3276,7 +3280,6 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
     use_off_gcd = true;
     range = -1;
-    may_crit = 0;
     target = player;
     attack_power_mod.direct = 1.125; // No spell data.
   }
@@ -3640,6 +3643,7 @@ struct vigilance_t: public warrior_spell_t
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 };
+
 } // UNNAMED NAMESPACE
 
 // warrior_t::create_action  ================================================
@@ -4863,7 +4867,8 @@ void warrior_t::arise()
   else if ( active_stance == STANCE_DEFENSE )
     buff.defensive_stance -> trigger();
 
-  if ( specialization() != WARRIOR_PROTECTION  && !sim -> overrides.versatility ) sim -> auras.versatility -> trigger();
+  if ( specialization() != WARRIOR_PROTECTION  && !sim -> overrides.versatility )
+    sim -> auras.versatility -> trigger();
 }
 
 // warrior_t::combat_begin ==================================================
@@ -5060,8 +5065,8 @@ double warrior_t::composite_block_reduction() const
   // Prot T17 4-pc increases block value by 5% while shield block is active (additive)
   if ( buff.shield_block -> up() )
   {
-      if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )
-        br += find_spell( 169688 ) -> effectN( 1 ).percent();
+    if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )
+      br += find_spell( 169688 ) -> effectN( 1 ).percent();
   }
 
   return br;
@@ -5142,7 +5147,7 @@ double warrior_t::composite_crit_avoidance() const
   return c;
 }
 
-// warrior_t::composite_attack_speed ========================================
+// warrior_t::composite_melee_speed ========================================
 
 double warrior_t::composite_melee_speed() const
 {
