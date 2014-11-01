@@ -1069,6 +1069,18 @@ void sim_t::cancel()
   {
     children[ i ] -> cancel();
   }
+
+  if ( scaling -> delta_sim )
+    scaling -> delta_sim -> cancel();
+
+  if ( scaling -> delta_sim2 )
+    scaling -> delta_sim2 -> cancel();
+
+  if ( scaling -> ref_sim )
+    scaling -> ref_sim -> cancel();
+
+  if ( scaling -> ref_sim2 )
+    scaling -> ref_sim2 -> cancel();
 }
 
 // sim_t::is_canceled =======================================================
@@ -2015,7 +2027,7 @@ bool sim_t::iterate()
     do_pause();
   }
 
-  if ( progress_bar.update( true ) )
+  if ( ! canceled && progress_bar.update( true ) )
   {
     util::fprintf( stdout, "%s %s\n", sim_phase_str.c_str(), progress_bar.status.c_str() );
     fflush( stdout );
