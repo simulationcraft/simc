@@ -504,7 +504,6 @@ struct warrior_action_t: public Base
   bool headlongrushgcd;
   bool recklessness;
   bool weapons_master;
-  double melee_range;
 private:
   typedef Base ab; // action base, eg. spell_t
 public:
@@ -517,8 +516,7 @@ public:
                     headlongrush( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 1 ) ) ),
                     headlongrushgcd( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 2 ) ) ),
                     recklessness( ab::data().affected_by( player -> spec.recklessness -> effectN( 1 ) ) ),
-                    weapons_master( ab::data().affected_by( player -> mastery.weapons_master -> effectN( 1 ) ) ),
-                    melee_range( 5 )
+                    weapons_master( ab::data().affected_by( player -> mastery.weapons_master -> effectN( 1 ) ) )
   {
     ab::may_crit = true;
   }
@@ -626,7 +624,7 @@ public:
     if ( !ab::ready() )
       return false;
 
-    if ( p() -> current.distance_to_move > melee_range && melee_range != -1 )
+    if ( p() -> current.distance_to_move > ab::range && ab::range != -1 )
       // -1 melee range implies that the ability can be used at any distance from the target. Battle shout, stance swaps, etc.
       return false;
 
@@ -1220,7 +1218,7 @@ struct auto_attack_t: public warrior_attack_t
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE | STANCE_BATTLE;
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
     ignore_false_positive = true;
-
+    range = 5;
     p -> main_hand_attack = new melee_t( "auto_attack_mh", p );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
     p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
@@ -1449,8 +1447,8 @@ struct charge_t: public warrior_attack_t
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     ignore_false_positive = true;
-    melee_range = data().max_range();
-    melee_range += p -> glyphs.long_charge -> effectN( 1 ).base_value();
+    range = data().max_range();
+    range += p -> glyphs.long_charge -> effectN( 1 ).base_value();
     movement_directionality = MOVEMENT_OMNI;
     rage_from_charge = p -> get_cooldown( "rage_from_charge" );
     rage_from_charge -> duration = timespan_t::from_seconds( 12.0 );
@@ -1618,7 +1616,7 @@ struct dragon_roar_t: public warrior_attack_t
     parse_options( options_str );
     aoe = -1;
     may_dodge = may_parry = may_block = false;
-    melee_range = p -> find_spell( 118000 ) -> effectN( 1 ).radius_max();
+    range = p -> find_spell( 118000 ) -> effectN( 1 ).radius_max();
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 
@@ -1831,7 +1829,6 @@ struct heroic_throw_t: public warrior_attack_t
     weapon = &( player -> main_hand_weapon );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     may_dodge = may_parry = may_block = false;
-    melee_range = data().max_range();
     if ( p -> perk.improved_heroic_throw -> ok() )
       cooldown -> duration = timespan_t::zero();
   }
@@ -1864,7 +1861,7 @@ struct heroic_leap_t: public warrior_attack_t
     movement_directionality = MOVEMENT_OMNI;
     base_teleport_distance = data().max_range();
     base_teleport_distance += p -> glyphs.death_from_above -> effectN( 2 ).base_value();
-    melee_range = -1;
+    range = -1;
     attack_power_mod.direct = p -> find_spell( 52174 ) -> effectN( 1 ).ap_coeff();
 
     cooldown -> duration = data().cooldown();
@@ -1980,7 +1977,6 @@ struct intervene_t: public warrior_attack_t
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
-    melee_range = data().max_range();
     ignore_false_positive = true;
     movement_directionality = MOVEMENT_OMNI;
   }
@@ -2303,7 +2299,7 @@ struct enraged_regeneration_t: public warrior_heal_t
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     dot_duration = data().duration();
-    melee_range = -1;
+    range = -1;
     base_tick_time = data().effectN( 2 ).period();
 
     pct_heal = data().effectN( 1 ).percent();
@@ -2653,7 +2649,7 @@ struct shockwave_t: public warrior_attack_t
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     may_dodge = may_parry = may_block = false;
-    melee_range = data().effectN( 2 ).radius_max();
+    range = data().effectN( 2 ).radius_max();
     aoe = -1;
   }
 
@@ -2681,7 +2677,6 @@ struct storm_bolt_off_hand_t: public warrior_attack_t
   {
     may_dodge = may_parry = may_block = may_miss = false;
     dual = true;
-    melee_range = data().max_range();
     weapon = &( p -> off_hand_weapon );
     // assume the target is stun-immune
     weapon_multiplier *= 4.00;
@@ -2698,7 +2693,6 @@ struct storm_bolt_t: public warrior_attack_t
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     may_dodge = may_parry = may_block = false;
-    melee_range = data().max_range();
     // Assuming that our target is stun immune
     weapon_multiplier *= 4.00;
 
@@ -2738,7 +2732,7 @@ struct thunder_clap_t: public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     aoe = -1;
     may_dodge = may_parry = may_block = false;
-    melee_range = data().effectN( 2 ).radius_max();
+    range = data().effectN( 2 ).radius_max();
     cooldown -> duration = data().cooldown();
     cooldown -> duration *= 1 + p -> glyphs.resonating_power -> effectN( 2 ).percent();
     attack_power_mod.direct *= 1.0 + p -> glyphs.resonating_power -> effectN( 1 ).percent();
@@ -2821,8 +2815,8 @@ struct whirlwind_off_hand_t: public warrior_attack_t
   {
     dual = true;
     aoe = -1;
-    melee_range = p -> spec.whirlwind -> effectN( 2 ).radius_max(); // 8 yard range.
-    melee_range += p -> glyphs.wind_and_thunder -> effectN( 1 ).base_value(); // Increased by the glyph.
+    range = p -> spec.whirlwind -> effectN( 2 ).radius_max(); // 8 yard range.
+    range += p -> glyphs.wind_and_thunder -> effectN( 1 ).base_value(); // Increased by the glyph.
     weapon_multiplier *= 1.0 + p -> spec.crazed_berserker -> effectN( 4 ).percent();
     weapon = &( p -> off_hand_weapon );
     if ( p -> wod_hotfix )
@@ -2853,8 +2847,8 @@ struct whirlwind_t: public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     aoe = -1;
 
-    melee_range = p -> spec.whirlwind -> effectN( 2 ).radius_max(); // 8 yard range.
-    melee_range += p -> glyphs.wind_and_thunder -> effectN( 1 ).base_value(); // Increased by the glyph.
+    range = p -> spec.whirlwind -> effectN( 2 ).radius_max(); // 8 yard range.
+    range += p -> glyphs.wind_and_thunder -> effectN( 1 ).base_value(); // Increased by the glyph.
     if ( p -> specialization() == WARRIOR_FURY )
     {
       if ( p -> off_hand_weapon.type != WEAPON_NONE )
@@ -3005,7 +2999,7 @@ struct battle_shout_t: public warrior_spell_t
     warrior_spell_t( "battle_shout", p, p -> find_class_spell( "Battle Shout" ) )
   {
     parse_options( options_str );
-    melee_range = -1;
+    range = -1;
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     callbacks = false;
     ignore_false_positive = true;
@@ -3028,7 +3022,7 @@ struct berserker_rage_t: public warrior_spell_t
     warrior_spell_t( "berserker_rage", p, p -> find_class_spell( "Berserker Rage" ) )
   {
     parse_options( options_str );
-    melee_range = -1; // Just in case anyone wants to use berserker rage + enraged speed glyph to get somewhere a little faster... I guess.
+    range = -1; // Just in case anyone wants to use berserker rage + enraged speed glyph to get somewhere a little faster... I guess.
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 
@@ -3069,7 +3063,7 @@ struct commanding_shout_t: public warrior_spell_t
     warrior_spell_t( "commanding_shout", p, p -> find_class_spell( "Commanding Shout" ) )
   {
     parse_options( options_str );
-    melee_range = -1;
+    range = -1;
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     callbacks = false;
     ignore_false_positive = true;
@@ -3104,7 +3098,7 @@ struct die_by_the_sword_t: public warrior_spell_t
     warrior_spell_t( "die_by_the_sword", p, p -> spec.die_by_the_sword )
   {
     parse_options( options_str );
-    melee_range = -1;
+    range = -1;
     stancemask = STANCE_DEFENSE | STANCE_BATTLE;
   }
 
@@ -3186,7 +3180,7 @@ struct rallying_cry_t: public warrior_spell_t
     warrior_spell_t( "rallying_cry", p, p -> spec.rallying_cry )
   {
     parse_options( options_str );
-    melee_range = -1;
+    range = -1;
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 
@@ -3224,7 +3218,6 @@ struct ravager_t: public warrior_spell_t
     ignore_false_positive = true;
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     hasted_ticks = callbacks = false;
-    melee_range = data().max_range();
     dot_duration = timespan_t::from_seconds( data().effectN( 4 ).base_value() );
     add_child( ravager );
   }
@@ -3282,7 +3275,7 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     parse_options( options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
     use_off_gcd = true;
-    melee_range = -1;
+    range = -1;
     may_crit = 0;
     target = player;
     attack_power_mod.direct = 1.125; // No spell data.
@@ -3383,7 +3376,6 @@ struct shield_charge_t: public warrior_spell_t
     stancemask = STANCE_GLADIATOR;
     cooldown -> charges = 2;
     cooldown -> duration = timespan_t::from_seconds( 15 );
-    melee_range = data().max_range();
     movement_directionality = MOVEMENT_OMNI;
     use_off_gcd = true;
 
@@ -3435,7 +3427,7 @@ struct shield_wall_t: public warrior_spell_t
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     harmful = false;
-    melee_range = -1;
+    range = -1;
     cooldown -> duration = data().cooldown();
     cooldown -> duration += p -> spec.bastion_of_defense -> effectN( 2 ).time_value();
     cooldown -> duration += p -> glyphs.shield_wall -> effectN( 1 ).time_value();
@@ -3497,7 +3489,7 @@ struct stance_t: public warrior_spell_t
     add_option( opt_string( "choose", stance_str ) );
     add_option( opt_float( "swap", swap ) );
     parse_options( options_str );
-    melee_range = -1;
+    range = -1;
 
     if ( p -> specialization() != WARRIOR_PROTECTION )
       starting_stance = STANCE_BATTLE;
@@ -3625,7 +3617,6 @@ struct taunt_t: public warrior_spell_t
     parse_options( options_str );
     use_off_gcd = true;
     ignore_false_positive = true;
-    melee_range = data().max_range();
     stancemask = STANCE_DEFENSE | STANCE_GLADIATOR;
   }
 
