@@ -1158,7 +1158,7 @@ struct pet_melee_t: public hunter_main_pet_attack_t
     // Tested 10-31-14. May want to double check this when WoD is released.
     double ap = hunter_main_pet_attack_t::composite_attack_power();
 
-    if ( o() -> wod_hotfix && type != PLAYER_GUARDIAN ) // Only the main pet gets this.
+    if ( o() -> wod_hotfix && !PLAYER_GUARDIAN ) // Only the main pet gets this.
       ap *= 1.8;
 
     return ap;

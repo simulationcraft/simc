@@ -804,6 +804,7 @@ struct mortal_cleave_t: public warlock_pet_melee_attack_t
     warlock_pet_melee_attack_t( "mortal_cleave", p, p -> find_spell( 115625 ))
   {
     aoe = -1;
+    split_aoe_damage = true;
     weapon = &( p -> main_hand_weapon );
   }
 
@@ -2368,13 +2369,18 @@ struct hand_of_guldan_t: public warlock_spell_t
     return timespan_t::from_seconds( 1.5 );
   }
 
+  void schedule_travel( action_state_t* s )
+  {
+    /* Executed at the same time as HoG and given a travel time,
+    so that it can snapshot meta at the appropriate time. */
+    shadowflame -> target = s -> target;
+    shadowflame -> execute();
+    warlock_spell_t::schedule_travel( s );
+  }
+
   virtual void execute()
   {
     warlock_spell_t::execute();
-
-    /* Executed at the same time as HoG and given a travel time,
-       so that it can snapshot meta at the appropriate time. */
-    shadowflame -> execute();
 
     p() -> trigger_demonology_t17_4pc( execute_state );
   }
@@ -2539,7 +2545,6 @@ struct shadowburn_t: public warlock_spell_t
 
 struct corruption_t: public warlock_spell_t
 {
-  //  bool soc_triggered;
   corruption_t( warlock_t* p ):
     warlock_spell_t( "Corruption", p, p -> find_spell( 172 ) ) //Use original corruption until DBC acts more friendly.
   {
@@ -2547,19 +2552,16 @@ struct corruption_t: public warlock_spell_t
     generate_fury = 4;
     generate_fury += p -> perk.enhanced_corruption -> effectN( 1 ).base_value();
     base_multiplier *= 1.0 + p -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
-    //pulling duration from sub-curruption, since default id has no duration...
-    dot_duration = p -> find_spell( 146739 )-> duration();
-    spell_power_mod.tick = p -> find_spell( 146739 ) -> effectN( 1 ).sp_coeff(); //returning .180 for mod - supposed to be .165
-    base_tick_time = timespan_t::from_seconds( 2.0 );
+    dot_duration = data().effectN( 1 ).trigger() -> duration();
+    spell_power_mod.tick = data().effectN( 1 ).trigger() -> effectN( 1 ).sp_coeff();
+    base_tick_time = data().effectN( 1 ).trigger() -> effectN( 1 ).period();
     if ( p -> wod_hotfix )
       spell_power_mod.tick *= 0.9;
   }
 
-  virtual timespan_t travel_time() const
+  timespan_t travel_time() const
   {
-    //if ( soc_triggered ) return timespan_t::from_seconds( std::max( rng().gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ).total_seconds() , 0.01 ) );
-
-    return warlock_spell_t::travel_time();
+    return timespan_t::from_millis( 100 );
   }
 
   virtual void execute()
@@ -3929,7 +3931,7 @@ struct soulburn_seed_of_corruption_t: public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      td( s -> target ) -> soulburn_soc_trigger = data().effectN( 3 ).average( p() ) + s -> composite_spell_power() * coefficient;
+      td( s -> target ) -> soulburn_soc_trigger = s -> composite_spell_power() * data().effectN( 1 ).sp_coeff() * 3;
       if (td( s -> target ) -> dots_seed_of_corruption -> is_ticking()) //cancel SoC
       {
           td( s -> target ) -> dots_seed_of_corruption -> cancel();
@@ -3960,7 +3962,7 @@ struct seed_of_corruption_t: public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      td( s -> target ) -> soc_trigger = data().effectN( 3 ).average( p() ) + s -> composite_spell_power() * data().effectN( 3 ).sp_coeff();
+      td( s -> target ) -> soc_trigger = s -> composite_spell_power() * data().effectN( 1 ).sp_coeff() * 3;
         if (td( s -> target ) -> dots_soulburn_seed_of_corruption -> is_ticking()) //cancel SB:SoC
         {
             td( s -> target ) -> dots_soulburn_seed_of_corruption -> cancel();
@@ -4610,7 +4612,7 @@ struct summon_infernal_t: public summon_pet_t
       summoning_duration = timespan_t::from_seconds( -1 );
     else
     {
-      summoning_duration = data().duration();
+      summoning_duration = p -> find_spell( 111685 ) -> duration();
       infernal_awakening = new infernal_awakening_t( p, data().effectN( 1 ).trigger() );
       infernal_awakening -> stats = stats;
     }
@@ -4639,7 +4641,8 @@ struct summon_doomguard2_t: public summon_pet_t
     if ( p -> talents.demonic_servitude -> ok() ){
       summoning_duration = timespan_t::from_seconds( -1 );
     }
-    else summoning_duration = data().duration();
+    else 
+      summoning_duration = p -> find_spell( 60478 ) -> duration();
   }
 };
 
@@ -5524,7 +5527,7 @@ void warlock_t::apl_precombat()
   action_list_str += "/service_pet,if=talent.grimoire_of_service.enabled&!talent.demonbolt.enabled";
 
   add_action( "Summon Doomguard", "if=!talent.demonic_servitude.enabled&active_enemies<5" );
-  add_action( "Summon Infernal", ",if=!talent.demonic_servitude.enabled&active_enemies>=5" );
+  add_action( "Summon Infernal", "if=!talent.demonic_servitude.enabled&active_enemies>=5" );
 }
 
 void warlock_t::apl_global_filler()
