@@ -2543,6 +2543,7 @@ struct sim_t : private sc_thread_t
   bool canceled;
   double target_error;
   double current_error;
+  int analyze_error_interval;
 
   sim_control_t* control;
   sim_t*      parent;

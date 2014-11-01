@@ -902,6 +902,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   canceled( 0 ),
   target_error( 0 ),
   current_error( 0 ),
+  analyze_error_interval( 100 ),
   control( 0 ),
   parent( p ),
   initialized( false ),
@@ -1390,7 +1391,7 @@ void sim_t::analyze_error()
   if( thread_index != 0 ) return;
   if( target_error <= 0 ) return;
   if( current_iteration < 1 ) return;
-  if( current_iteration % 100 != 0 ) return;
+  if( current_iteration % analyze_error_interval != 0 ) return;
 
   current_error = 0;
 
@@ -2414,6 +2415,7 @@ void sim_t::create_options()
   // General
   add_option( opt_int( "iterations", iterations ) );
   add_option( opt_float( "target_error", target_error ) );
+  add_option( opt_int( "analyze_error_interval", analyze_error_interval ) );
   add_option( opt_func( "thread_priority", parse_thread_priority ) );
   add_option( opt_timespan( "max_time", max_time, timespan_t::zero(), timespan_t::max() ) );
   add_option( opt_bool( "fixed_time", fixed_time ) );
