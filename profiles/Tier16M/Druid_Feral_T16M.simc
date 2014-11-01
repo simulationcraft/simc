@@ -55,8 +55,9 @@ actions.finisher+=/rip,cycle_targets=1,if=remains<=duration*0.3&persistent_multi
 actions.finisher+=/savage_roar,if=(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<42*0.3
 actions.finisher+=/ferocious_bite,if=(energy.time_to_max<=1|buff.berserk.up|(cooldown.tigers_fury.remains<3&energy>=max_fb_energy))
 
-actions.maintain=rake,cycle_targets=1,if=remains<=3&combo_points<5
-actions.maintain+=/rake,cycle_targets=1,if=remains<=duration*0.3&combo_points<5&persistent_multiplier>dot.rake.pmultiplier
+actions.maintain=rake,cycle_targets=1,if=!talent.bloodtalons.enabled&remains<=3&combo_points<5
+actions.maintain+=/rake,cycle_targets=1,if=!talent.bloodtalons.enabled&remains<=duration*0.3&combo_points<5&persistent_multiplier>dot.rake.pmultiplier
+actions.maintain+=/rake,cycle_targets=1,if=talent.bloodtalons.enabled&remains<=duration*0.3&combo_points<5&(!buff.predatory_swiftness.up|buff.bloodtalons.up|persistent_multiplier>dot.rake.pmultiplier)
 actions.maintain+=/thrash_cat,if=talent.bloodtalons.enabled&combo_points=5&remains<=duration*0.3&buff.omen_of_clarity.react
 actions.maintain+=/pool_resource,for_next=1
 actions.maintain+=/thrash_cat,if=remains<=duration*0.3&active_enemies>1

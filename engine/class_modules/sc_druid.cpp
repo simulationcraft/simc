@@ -6304,8 +6304,9 @@ void druid_t::apl_feral()
   def -> add_action( "call_action_list,name=finisher,if=combo_points=5" );
 
   // DoT Maintenance
-  maintain -> add_action( this, "Rake", "cycle_targets=1,if=remains<=3&combo_points<5" );
-  maintain -> add_action( this, "Rake", "cycle_targets=1,if=remains<=duration*0.3&combo_points<5&persistent_multiplier>dot.rake.pmultiplier" );
+  maintain -> add_action( this, "Rake", "cycle_targets=1,if=!talent.bloodtalons.enabled&remains<=3&combo_points<5" );
+  maintain -> add_action( this, "Rake", "cycle_targets=1,if=!talent.bloodtalons.enabled&remains<=duration*0.3&combo_points<5&persistent_multiplier>dot.rake.pmultiplier" );
+  maintain -> add_action( this, "Rake", "cycle_targets=1,if=talent.bloodtalons.enabled&remains<=duration*0.3&combo_points<5&(!buff.predatory_swiftness.up|buff.bloodtalons.up|persistent_multiplier>dot.rake.pmultiplier)" );
   maintain -> add_action( "thrash_cat,if=talent.bloodtalons.enabled&combo_points=5&remains<=duration*0.3&buff.omen_of_clarity.react");
   maintain -> add_action( "pool_resource,for_next=1" );
   maintain -> add_action( "thrash_cat,if=remains<=duration*0.3&active_enemies>1" );
