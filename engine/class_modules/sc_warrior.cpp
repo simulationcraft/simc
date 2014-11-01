@@ -596,11 +596,13 @@ public:
   {
     timespan_t t = ab::action_t::gcd();
 
-    if ( t <= ab::min_gcd )
-      return ab::min_gcd;
+    if ( t == timespan_t::zero() )
+      return t;
 
     if ( headlongrushgcd )
       t *= ab::player -> cache.attack_haste();
+    if ( t < ab::min_gcd )
+      t = ab::min_gcd;
 
     return t;
   }
@@ -619,6 +621,9 @@ public:
 
   virtual bool ready()
   {
+    if ( !ab::ready() )
+      return false;
+
     if ( p() -> current.distance_to_move > ab::range && ab::range != -1 )
       // -1 melee range implies that the ability can be used at any distance from the target. Battle shout, stance swaps, etc.
       return false;
@@ -638,7 +643,7 @@ public:
     else if ( ( ( stancemask & p() -> active_stance ) == 0 ) && p() -> cooldown.stance_swap -> down() )
       return false;
 
-    return ab::ready();
+    return true;
   }
 
   bool usable_moving() const
@@ -4263,7 +4268,7 @@ void warrior_t::apl_glad()
 
   default_list -> add_action( this, "Charge" );
   default_list -> add_action( "auto_attack" );
-  default_list -> add_action( "call_action_list,name=movement,if=movement.distance>8", "This is mostly to prevent cooldowns from being accidentally used during movement." );
+  default_list -> add_action( "call_action_list,name=movement,if=movement.distance>5", "This is mostly to prevent cooldowns from being accidentally used during movement." );
   default_list -> add_talent( this, "Avatar" );
   default_list -> add_talent( this, "Bloodbath" );
   int num_items = (int)items.size();
