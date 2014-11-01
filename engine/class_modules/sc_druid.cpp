@@ -6246,7 +6246,10 @@ void druid_t::apl_default()
 
 void druid_t::apl_feral()
 {
-  action_priority_list_t* def      = get_action_priority_list( "default"  );
+  action_priority_list_t* def      = get_action_priority_list( "default"   );
+  action_priority_list_t* finish   = get_action_priority_list( "finisher"  );
+  action_priority_list_t* maintain = get_action_priority_list( "maintain"  );
+  action_priority_list_t* generate = get_action_priority_list( "generator" );
 
   std::vector<std::string> item_actions   = get_item_actions();
   std::vector<std::string> racial_actions = get_racial_actions();
@@ -6293,23 +6296,30 @@ void druid_t::apl_feral()
   def -> add_action( "thrash_cat,if=!talent.bloodtalons.enabled&combo_points=5&remains<=duration*0.3&buff.omen_of_clarity.react");
 
   // Finishers
-  def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=combo_points=5&target.health.pct<25&dot.rip.ticking&energy>=max_fb_energy" );
-  def -> add_action( this, "Rip", "cycle_targets=1,if=combo_points=5&remains<=3" );
-  def -> add_action( this, "Rip", "cycle_targets=1,if=combo_points=5&remains<=duration*0.3&persistent_multiplier>dot.rip.pmultiplier" );
-  def -> add_action( this, "Savage Roar", "if=combo_points=5&(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<42*0.3" );
-  def -> add_action( this, "Ferocious Bite", "if=combo_points=5&(energy.time_to_max<=1|buff.berserk.up|(cooldown.tigers_fury.remains<3&energy>=max_fb_energy))" );
+  finish -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=target.health.pct<25&dot.rip.ticking&energy>=max_fb_energy" );
+  finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<=3" );
+  finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<=duration*0.3&persistent_multiplier>dot.rip.pmultiplier" );
+  finish -> add_action( this, "Savage Roar", "if=(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<42*0.3" );
+  finish -> add_action( this, "Ferocious Bite", "if=(energy.time_to_max<=1|buff.berserk.up|(cooldown.tigers_fury.remains<3&energy>=max_fb_energy))" );
 
-  def -> add_action( this, "Rake", "cycle_targets=1,if=remains<=3&combo_points<5" );
-  def -> add_action( this, "Rake", "cycle_targets=1,if=remains<=duration*0.3&combo_points<5&persistent_multiplier>dot.rake.pmultiplier" );
-  def -> add_action( "thrash_cat,if=talent.bloodtalons.enabled&combo_points=5&remains<=duration*0.3&buff.omen_of_clarity.react");
-  def -> add_action( "pool_resource,for_next=1" );
-  def -> add_action( "thrash_cat,if=remains<=duration*0.3&active_enemies>1" );
-  def -> add_action( "moonfire_cat,cycle_targets=1,if=combo_points<5&remains<=duration*0.3&active_enemies<=10" );
-  def -> add_action( this, "Rake", "cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&combo_points<5" );
+  def -> add_action( "call_action_list,name=finisher,if=combo_points=5" );
 
-  // Fillers
-  def -> add_action( this, "Swipe", "if=combo_points<5&active_enemies>=3" );
-  def -> add_action( this, "Shred", "if=combo_points<5&active_enemies<3" );
+  // DoT Maintenance
+  maintain -> add_action( this, "Rake", "cycle_targets=1,if=remains<=3&combo_points<5" );
+  maintain -> add_action( this, "Rake", "cycle_targets=1,if=remains<=duration*0.3&combo_points<5&persistent_multiplier>dot.rake.pmultiplier" );
+  maintain -> add_action( "thrash_cat,if=talent.bloodtalons.enabled&combo_points=5&remains<=duration*0.3&buff.omen_of_clarity.react");
+  maintain -> add_action( "pool_resource,for_next=1" );
+  maintain -> add_action( "thrash_cat,if=remains<=duration*0.3&active_enemies>1" );
+  maintain -> add_action( "moonfire_cat,cycle_targets=1,if=combo_points<5&remains<=duration*0.3&active_enemies<=10" );
+  maintain -> add_action( this, "Rake", "cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&combo_points<5" );
+
+  def -> add_action( "call_action_list,name=maintain" );
+
+  // Generators
+  generate -> add_action( this, "Swipe", "if=active_enemies>=3" );
+  generate -> add_action( this, "Shred", "if=active_enemies<3" );
+
+  def -> add_action( "call_action_list,name=generator,if=combo_points<5" );
 }
 
 // Balance Combat Action Priority List ==============================
