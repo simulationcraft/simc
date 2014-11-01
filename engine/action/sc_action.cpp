@@ -2060,8 +2060,8 @@ expr_t* action_t::create_expression( const std::string& name_str )
   {
     struct execute_time_expr_t: public action_expr_t
     {
-      action_t& action;
       action_state_t* state;
+      action_t& action;
       execute_time_expr_t( action_t& a ):
         action_expr_t( "execute_time", a ), state( a.get_state() ), action( a )
       { }
