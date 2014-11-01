@@ -41,7 +41,7 @@ actions+=/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+actio
 actions+=/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+3&buff.demonbolt.remains<gcd*2&charges>=2&action.dark_soul.charges>=1
 actions+=/service_pet,if=talent.grimoire_of_service.enabled&!talent.demonbolt.enabled
 actions+=/summon_doomguard,if=!talent.demonic_servitude.enabled&active_enemies<5
-actions+=/summon_infernal,,if=!talent.demonic_servitude.enabled&active_enemies>=5
+actions+=/summon_infernal,if=!talent.demonic_servitude.enabled&active_enemies>=5
 actions+=/call_action_list,name=db,if=talent.demonbolt.enabled
 actions+=/cataclysm,if=buff.metamorphosis.up
 actions+=/doom,if=buff.metamorphosis.up&target.time_to_die>=30*spell_haste&remains<=(duration*0.3)&(remains<cooldown.cataclysm.remains|!talent.cataclysm.enabled)&(buff.dark_soul.down|!glyph.dark_soul.enabled)
