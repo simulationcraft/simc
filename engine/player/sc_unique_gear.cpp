@@ -1889,9 +1889,6 @@ void item::cleave( special_effect_t& effect,
   effect.proc_flags2_ = PF2_ALL_HIT;
   effect.proc_chance_ = budget.p_epic[ 0 ] * cleave_driver_spell -> effectN( 1 ).m_average() / 10000.0;
 
-  if ( p -> bugs ) // Currently the trinket has a proc rate closer to 0 than 0.001.
-    effect.proc_chance_ = 0.0;
-  
   new cleave_callback_t( item, effect );
 }
 
