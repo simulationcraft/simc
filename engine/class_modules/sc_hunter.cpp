@@ -900,6 +900,8 @@ public:
     base_t::summon( duration );
     // pet appears at the target
     current.distance = 0;
+    owner_coeff.ap_from_ap = 1.0 / 3.0;
+    owner_coeff.sp_from_ap = 1.0 / 3.0;
 
     buffs.tier17_4pc_bm -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
 
@@ -1283,8 +1285,7 @@ struct basic_attack_t: public hunter_main_pet_attack_t
 
   void update_ready( timespan_t cd_duration )
   {
-    hunter_main_pet_attack_t::update_ready( cd_duration ); // Currently on beta enhanced basic attacks seems to proc 50% of the time, rather than 15%.
-    // Added in an option to tweak it for now, default set at 50%
+    hunter_main_pet_attack_t::update_ready( cd_duration );
     if ( o() -> rng().roll( o() -> perks.enhanced_basic_attacks -> effectN( 1 ).percent() ) )
     {
       cooldown -> reset( true );
