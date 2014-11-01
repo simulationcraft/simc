@@ -3028,8 +3028,8 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
     os.printf(
       "<td>%.1f</td>\n"
       "<td>%.1f</td>\n"
-      "<td>%.2f / %.2f%%</td>\n"
-      "<td>%.0f / %.1f%%</td>\n"
+      "<td>%.1f / %.3f%%</td>\n"
+      "<td>%.1f / %.1f%%</td>\n"
       "<td>%.1f</td>\n",
       cd.dps.mean(),
       cd.dpse.mean(),

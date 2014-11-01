@@ -1053,11 +1053,11 @@ void sim_t::cancel()
 
   if ( current_iteration >= 0 )
   {
-    errorf( "\nSimulation has been canceled after %d iterations! (thread=%d)\n", current_iteration + 1, thread_index );
+    errorf( "\nSimulation has been canceled after %d iterations! (thread=%d) %20s\n", current_iteration + 1, thread_index, "" );
   }
   else
   {
-    errorf( "\nSimulation has been canceled during player setup! (thread=%d)\n", thread_index );
+    errorf( "\nSimulation has been canceled during player setup! (thread=%d) %20s\n", thread_index, "" );
   }
 
   work_queue -> flush();
@@ -1412,6 +1412,8 @@ void sim_t::analyze_error()
     }
     cd.target_metric_mutex.unlock();
   }  
+
+  current_error *= 100;
 
   if( current_error > 0 &&
       current_error < target_error ) 
@@ -1964,7 +1966,7 @@ bool progress_bar_t::update( bool finished )
 
   if( sim.target_error > 0 )
   {
-    snprintf( buffer, sizeof( buffer ), " Error=%f", sim.current_error );
+    snprintf( buffer, sizeof( buffer ), " Error=%.3f%%", sim.current_error );
     status += buffer;
   }
 
