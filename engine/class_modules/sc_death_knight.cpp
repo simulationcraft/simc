@@ -6292,21 +6292,27 @@ void death_knight_t::init_action_list()
       bos_st -> add_action( this, "Obliterate", "if=runic_power<76");
       bos_st -> add_action( this, "Howling Blast", "if=((death=1&frost=0&unholy=0)|death=0&frost=1&unholy=0)&runic_power<88");
 
-      // Diseases for free
+      // Not wasting diseases
       st -> add_talent( this, "Plague Leech", "if=disease.min_remains<1" );
-
-      // Defile
-      st -> add_talent( this, "Defile" );
-      st -> add_talent( this, "Blood Tap", "if=talent.defile.enabled&cooldown.defile.remains=0" );
-
-      // Diseases for free
-      st -> add_action( this, "Outbreak", "if=!disease.min_ticking" );
-      st -> add_talent( this, "Unholy Blight", "if=!disease.min_ticking" );
-
+      
       // Soul Reaper
       st -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
       st -> add_talent( this, "Blood Tap", "if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)" );
 
+      // Defile
+      st -> add_talent( this, "Defile" );
+      st -> add_talent( this, "Blood Tap", "if=talent.defile.enabled&cooldown.defile.remains=0" );
+      
+      // Killing Machine
+      st -> add_action( this, "Howling Blast", "if=buff.rime.react&disease.min_remains>5&buff.killing_machine.react" );
+      st -> add_action( this, "Obliterate", "if=buff.killing_machine.react" );
+      st -> add_talent( this, "Blood Tap", "if=buff.killing_machine.react" );
+
+      // Diseases for free
+      st -> add_action( this, "Howling Blast", "if=!talent.necrotic_plague.enabled&!dot.frost_fever.ticking&buff.rime.react" );
+      st -> add_action( this, "Outbreak", "if=!disease.max_ticking" );
+      st -> add_talent( this, "Unholy Blight", "if=!disease.max_ticking" );
+      
       // Breath of Sindragosa in use, cast it and then keep it up
       st -> add_talent( this, "Breath of Sindragosa", "if=runic_power>75");
       st -> add_action( "run_action_list,name=bos_st,if=dot.breath_of_sindragosa.ticking" );
@@ -6320,36 +6326,29 @@ void death_knight_t::init_action_list()
       st -> add_action( this, "Howling Blast", "if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking" );
       st -> add_action( this, "Plague Strike", "if=!talent.necrotic_plague.enabled&!dot.blood_plague.ticking" );
 
-      // Rime
-      st -> add_action( this, "Howling Blast", "if=buff.rime.react" );
-
-      // Killing Machine
-      st -> add_action( this, "Obliterate", "if=buff.killing_machine.react" );
-      st -> add_talent( this, "Blood Tap", "if=buff.killing_machine.react" );
-
       // Don't waste Runic Power
       st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10&runic_power>76" );
       st -> add_action( this, "Frost Strike", "if=runic_power>76" );
 
       // Keep runes on cooldown
-      st -> add_action( this, "Obliterate", "if=blood=2|frost=2|unholy=2" );
+      st -> add_action( this, "Howling Blast", "if=buff.rime.react&disease.min_remains>5&(blood.frac>=1.8|unholy.frac>=1.8|frost.frac>=1.8)" );
+      st -> add_action( this, "Obliterate", "if=blood.frac>=1.8|unholy.frac>=1.8|frost.frac>=1.8" );
 
       // Refresh diseases
-      st -> add_talent( this, "Plague Leech", "if=disease.min_remains<3" );
-      st -> add_action( this, "Outbreak", "if=disease.min_remains<3" );
-      st -> add_talent( this, "Unholy Blight", "if=disease.min_remains<3" );
+      st -> add_talent( this, "Plague Leech", "if=disease.min_remains<3&((blood.frac<=0.95&unholy.frac<=0.95)|(frost.frac<=0.95&unholy.frac<=0.95)|(frost.frac<=0.95&blood.frac<=0.95))" );
 
       // Regenerate resources
-      st -> add_action( this, "Frost Strike", "if=talent.runic_empowerment.enabled&(frost=0|unholy=0|blood=0)" );
-      st -> add_action( this, "Frost Strike", "if=talent.blood_tap.enabled&buff.blood_charge.stack<=10" );
+      st -> add_action( this, "Frost Strike", "if=talent.runic_empowerment.enabled&(frost=0|unholy=0|blood=0)&(!buff.killing_machine.react|!obliterate.ready_in<=1)" );
+      st -> add_action( this, "Frost Strike", "if=talent.blood_tap.enabled&buff.blood_charge.stack<=10&(!buff.killing_machine.react|!obliterate.ready_in<=1)" );
 
       // Normal stuff
-      st -> add_action( this, "Obliterate" );
-      st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10&runic_power>=20" );
-      st -> add_action( this, "Frost Strike" );
+      st -> add_action( this, "Howling Blast", "if=buff.rime.react&disease.min_remains>5" );
+      st -> add_action( this, "Obliterate", "if=blood.frac>=1.5|unholy.frac>=1.6|frost.frac>=1.6|buff.bloodlust.up|cooldown.plague_leech.remains<=4 " );
+      st -> add_talent( this, "Blood Tap", "if=(buff.blood_charge.stack>10&runic_power>=20)|(blood.frac>=1.4|unholy.frac>=1.6|frost.frac>=1.6)" );
+      st -> add_action( this, "Frost Strike", "if=!buff.killing_machine.react" );
 
       // Better than waiting
-      st -> add_talent( this, "Plague Leech" );
+      st -> add_talent( this, "Plague Leech", "if=(blood.frac<=0.95&unholy.frac<=0.95)|(frost.frac<=0.95&unholy.frac<=0.95)|(frost.frac<=0.95&blood.frac<=0.95)" );
       st -> add_action( this, "Empower Rune Weapon" );
     }
     else
