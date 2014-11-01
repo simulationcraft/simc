@@ -498,6 +498,7 @@ player_t::player_t( sim_t*             s,
                     race_e             r ) :
   actor_t( s, n ),
   type( t ),
+  parent( 0 ),
 
   index( -1 ),
   actor_spawn_index( -1 ),
@@ -567,7 +568,7 @@ player_t::player_t( sim_t*             s,
   rps_gain( 0 ), rps_loss( 0 ),
 
   tmi_window( 6.0 ),
-  collected_data( player_collected_data_t( name_str, *sim ) ),
+  collected_data( name_str, *sim ),
   // Damage
   iteration_dmg( 0 ), iteration_dmg_taken( 0 ),
   dpr( 0 ),
@@ -682,6 +683,12 @@ player_t::player_t( sim_t*             s,
     "# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.\n"
     "# Feel free to edit, adapt and improve it to your own needs.\n"
     "# SimulationCraft is always looking for updates and improvements to the default action lists.\n";
+
+  if( ! is_pet() &&
+      ! is_enemy() && 
+      sim -> parent &&
+      sim -> thread_index > 0 )
+    parent = sim -> parent -> find_player( name() );
 }
 
 player_t::base_initial_current_t::base_initial_current_t() :
@@ -9511,6 +9518,7 @@ player_collected_data_t::player_collected_data_t( const std::string& player_name
   theck_meloree_index( player_name + " Theck-Meloree Index", s.statistics_level < 1 ),
   effective_theck_meloree_index( player_name + "Theck-Meloree Index (Effective)", s.statistics_level < 1 ),
   max_spike_amount( player_name + " Max Spike Value", s.statistics_level < 1 ),
+  target_metric( player_name + " Target Metric", false ),
   resource_timelines(),
   combat_end_resource( RESOURCE_MAX ),
   stat_timelines(),
@@ -9759,7 +9767,6 @@ void player_collected_data_t::collect_data( const player_t& p )
 
   executed_foreground_actions.add( p.iteration_executed_foreground_actions );
 
-
   // Player only dmg/heal
   dmg.add( p.iteration_dmg );
   heal.add( p.iteration_heal );
@@ -9784,10 +9791,12 @@ void player_collected_data_t::collect_data( const player_t& p )
   compound_dmg.add( total_iteration_dmg );
   dps.add( f_length ? total_iteration_dmg / f_length : 0 );
   dpse.add( sim_length ? total_iteration_dmg / sim_length : 0 );
+  double dps_metric = total_iteration_dmg / f_length;
 
   compound_heal.add( total_iteration_heal );
   hps.add( f_length ? total_iteration_heal / f_length : 0 );
   hpse.add( sim_length ? total_iteration_heal / sim_length : 0 );
+  double heal_metric = total_iteration_heal / f_length;
 
   heal_taken.add( p.iteration_heal_taken );
   htps.add( f_length ? p.iteration_heal_taken / f_length : 0 );
@@ -9814,6 +9823,10 @@ void player_collected_data_t::collect_data( const player_t& p )
     resolve_timeline.merged_timeline.merge( resolve_timeline.iteration_timeline );
 
   // Health Change Calculations - only needed for tanks
+  double tmi = 0; // TMI result
+  double etmi = 0; // ETMI result
+  double max_spike = 0; // Maximum spike size
+  double tank_metric = 0;
   if ( ! p.is_pet() && p.primary_role() == ROLE_TANK )
   {
     health_changes.merged_timeline.merge( health_changes.timeline );
@@ -9822,9 +9835,6 @@ void player_collected_data_t::collect_data( const player_t& p )
     // Calculate Theck-Meloree Index (TMI), ETMI, and maximum spike damage
     if ( ! p.is_enemy() ) // Boss TMI is irrelevant, causes problems in iteration #1
     {
-      double tmi = 0; // TMI result
-      double etmi = 0; // ETMI result
-      double max_spike = 0; // Maximum spike size
       if ( f_length )
       {
         // define constants and variables
@@ -9838,18 +9848,44 @@ void player_collected_data_t::collect_data( const player_t& p )
 
         // Max spike uses health_changes_tmi as well, ignores external heals - use health_changes_tmi
         max_spike = calculate_max_spike_damage( health_changes_tmi, window );
+
+	tank_metric = tmi;
       }
-      // add to data arrays
-      theck_meloree_index.add( tmi );
-      effective_theck_meloree_index.add( etmi );
-      max_spike_amount.add( max_spike * 100.0 );
     }
-    else
+    theck_meloree_index.add( tmi );
+    effective_theck_meloree_index.add( etmi );
+    max_spike_amount.add( max_spike * 100.0 );
+  }
+
+  if ( p.sim -> target_error > 0 && ! p.is_pet() && ! p.is_enemy() )
+  {
+    double metric=0;
+
+    switch( p.primary_role() )
     {
-      theck_meloree_index.add( 0.0 );
-      effective_theck_meloree_index.add( 0.0 );
-      max_spike_amount.add( 0 );
+    case ROLE_ATTACK:
+    case ROLE_SPELL:
+    case ROLE_HYBRID:
+    case ROLE_DPS:
+      metric = dps_metric;
+      break;
+
+    case ROLE_TANK:
+      metric = tank_metric;
+      break;
+
+    case ROLE_HEAL:
+      metric = heal_metric;
+      break;
+
+    default:;
     }
+
+    player_collected_data_t& cd = p.parent ? p.parent -> collected_data : *this;
+
+    cd.target_metric_mutex.lock();
+    cd.target_metric.add( metric );
+    cd.target_metric_mutex.unlock();
   }
 }
 

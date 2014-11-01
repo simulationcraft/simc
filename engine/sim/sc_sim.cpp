@@ -900,6 +900,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   current_iteration( -1 ),
   iterations( 1000 ),
   canceled( 0 ),
+  target_error( 0 ),
+  current_error( 0 ),
   control( 0 ),
   parent( p ),
   initialized( false ),
@@ -1051,11 +1053,11 @@ void sim_t::cancel()
 
   if ( current_iteration >= 0 )
   {
-    errorf( "Simulation has been canceled after %d iterations! (thread=%d)\n", current_iteration + 1, thread_index );
+    errorf( "\nSimulation has been canceled after %d iterations! (thread=%d)\n", current_iteration + 1, thread_index );
   }
   else
   {
-    errorf( "Simulation has been canceled during player setup! (thread=%d)\n", thread_index );
+    errorf( "\nSimulation has been canceled during player setup! (thread=%d)\n", thread_index );
   }
 
   work_queue -> flush();
@@ -1310,6 +1312,8 @@ void sim_t::combat_end()
 
   event_mgr.flush();
 
+  analyze_error();
+
   if ( debug_each && ! canceled )
     static_cast<io::ofstream*>(out_std.get_stream()) -> close();
 }
@@ -1355,7 +1359,6 @@ void sim_t::datacollection_end()
     if ( t -> is_add() ) continue;
     t -> datacollection_end();
   }
-  raid_event_t::combat_end( this );
 
   for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
   {
@@ -1378,6 +1381,41 @@ void sim_t::datacollection_end()
 
   iteration_seed.push_back( seed );
   iteration_initial_health.push_back( (uint64_t) target -> resources.initial[ RESOURCE_HEALTH ] );
+}
+
+// sim_t::analyze_error =====================================================
+
+void sim_t::analyze_error()
+{
+  if( thread_index != 0 ) return;
+  if( target_error <= 0 ) return;
+  if( current_iteration < 1 ) return;
+  if( current_iteration % 100 != 0 ) return;
+
+  current_error = 0;
+
+  for ( size_t i = 0; i < actor_list.size(); i++ )
+  {
+    player_t* p = actor_list[ i ];
+    player_collected_data_t& cd = p -> collected_data;
+    cd.target_metric_mutex.lock();
+    if( cd.target_metric.size() != 0 )
+    {
+      cd.target_metric.analyze_basics();
+      cd.target_metric.analyze_variance();
+      double mean = cd.target_metric.mean();
+      if( mean != 0 )
+      {
+	double error = sim_t::distribution_mean_error( *this, cd.target_metric ) / mean;
+	if( error > current_error ) current_error = error;
+      }
+    }
+    cd.target_metric_mutex.unlock();
+  }  
+
+  if( current_error > 0 &&
+      current_error < target_error ) 
+    cancel();
 }
 
 // sim_t::check_actors() ========================================================
@@ -1634,6 +1672,8 @@ bool sim_t::init()
   if ( channel_lag_stddev == timespan_t::zero() ) channel_lag_stddev = channel_lag * 0.25;
   if ( world_lag_stddev    < timespan_t::zero() ) world_lag_stddev   =   world_lag * 0.1;
 
+  confidence_estimator = rng_t::stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
+
   if ( challenge_mode && scale_to_itemlevel < 0 ) scale_to_itemlevel = 620; //Check later
 
   // set scaling metric
@@ -1863,8 +1903,6 @@ void sim_t::analyze()
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> analyze();
 
-  confidence_estimator = rng_t::stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
-
   for ( size_t i = 0; i < actor_list.size(); i++ )
     actor_list[ i ] -> analyze( *this );
 
@@ -1923,6 +1961,12 @@ bool progress_bar_t::update( bool finished )
   char buffer[80];
   snprintf( buffer, sizeof( buffer ), " %d/%d", finished ? _final : current, _final );
   status += buffer;
+
+  if( sim.target_error > 0 )
+  {
+    snprintf( buffer, sizeof( buffer ), " Error=%f", sim.current_error );
+    status += buffer;
+  }
 
   if ( remaining_min > 0 )
   {
@@ -2367,6 +2411,7 @@ void sim_t::create_options()
 {
   // General
   add_option( opt_int( "iterations", iterations ) );
+  add_option( opt_float( "target_error", target_error ) );
   add_option( opt_func( "thread_priority", parse_thread_priority ) );
   add_option( opt_timespan( "max_time", max_time, timespan_t::zero(), timespan_t::max() ) );
   add_option( opt_bool( "fixed_time", fixed_time ) );

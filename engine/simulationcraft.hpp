@@ -2541,6 +2541,8 @@ struct sim_t : private sc_thread_t
   double vary_combat_length;
   int current_iteration, iterations;
   bool canceled;
+  double target_error;
+  double current_error;
 
   sim_control_t* control;
   sim_t*      parent;
@@ -2794,6 +2796,7 @@ struct sim_t : private sc_thread_t
   void      partition();
   bool      execute();
   void      predict();
+  void      analyze_error();
   void      print_options();
   void      add_option( const option_t& opt );
   void      create_options();
@@ -3963,6 +3966,10 @@ struct player_collected_data_t
   extended_sample_data_t effective_theck_meloree_index;
   extended_sample_data_t max_spike_amount;
 
+  // Metric used to end simulations early
+  extended_sample_data_t target_metric;
+  mutex_t target_metric_mutex;
+
   std::array<simple_sample_data_t,RESOURCE_MAX> resource_lost, resource_gained;
   struct resource_timeline_t
   {
@@ -4236,6 +4243,7 @@ struct player_t : public actor_t
 
   // static values
   player_e type;
+  player_t* parent; // corresponding player in main thread
   int index;
   size_t actor_index;
   int actor_spawn_index; // a unique identifier for each arise() of the actor
