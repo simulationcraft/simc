@@ -4032,6 +4032,9 @@ struct rain_of_fire_t: public warlock_spell_t
     if ( channeled && d -> current_tick != 0 ) consume_tick_resource( d );
   }
 
+  timespan_t composite_dot_duration( const action_state_t* state ) const
+  { return tick_time( state -> haste ) * ( data().duration() / base_tick_time ); }
+
   // TODO: Bring Back dot duration haste scaling ?
 
   virtual double composite_target_ta_multiplier( player_t* t ) const
