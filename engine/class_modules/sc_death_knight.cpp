@@ -3095,7 +3095,8 @@ struct soul_reaper_dot_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    if ( p() -> sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T17, B2 ) )
+    if ( ! p() -> buffs.dark_transformation -> check() &&
+         p() -> sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T17, B2 )  )
       p() -> buffs.shadow_infusion -> trigger( p() -> sets.set( DEATH_KNIGHT_UNHOLY, T17, B2 ) -> effectN( 1 ).base_value() );
   }
 };
