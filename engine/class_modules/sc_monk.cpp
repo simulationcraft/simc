@@ -109,6 +109,7 @@ public:
     action_t* blackout_kick_dot;
     action_t* blackout_kick_heal;
     action_t* chi_explosion_dot;
+    action_t* healing_elixir;
     actions::spells::stagger_self_damage_t* stagger_self_damage;
   } active_actions;
 
@@ -2348,6 +2349,12 @@ struct tigereye_brew_t: public monk_spell_t
   {
     monk_spell_t::execute();
 
+    if ( p() -> talent.healing_elixirs -> ok() )
+    {
+      if ( p() -> active_actions.healing_elixir -> cooldown -> up() )
+        p() -> active_actions.healing_elixir -> execute();
+    }
+
     int max_stacks_consumable = p() -> spec.brewing_tigereye_brew -> effectN( 2 ).base_value();
     double teb_stacks_used = std::min( p() -> buff.tigereye_brew -> stack(), max_stacks_consumable );
     // EEIN: Seperated teb_stacks_used from use_value so it can be used to track focus of xuen.
@@ -2792,6 +2799,12 @@ struct elusive_brew_t: public monk_spell_t
   {
     monk_spell_t::execute();
 
+    if ( p() -> talent.healing_elixirs -> ok() )
+    {
+      if ( p() -> active_actions.healing_elixir -> cooldown -> up() )
+        p() -> active_actions.healing_elixir -> execute();
+    }
+
     p() -> buff.elusive_brew_activated -> trigger( 1,
                                                buff_t::DEFAULT_VALUE(),
                                                1.0, timespan_t::from_seconds( p() -> buff.elusive_brew_stacks -> stack() ) );
@@ -2839,6 +2852,12 @@ struct mana_tea_t: public monk_spell_t
   virtual void execute()
   {
     monk_spell_t::execute();
+
+    if ( p() -> talent.healing_elixirs -> ok() )
+    {
+      if ( p() -> active_actions.healing_elixir -> cooldown -> up() )
+        p() -> active_actions.healing_elixir -> execute();
+    }
 
     int max_stacks_consumable = 2;
 
@@ -3460,35 +3479,16 @@ struct gift_of_the_ox_t: public monk_heal_t
 
 struct healing_elixirs_t: public monk_heal_t
 {
-  healing_elixirs_t( monk_t& p, const std::string& options_str ):
-    monk_heal_t( "healing_elixirs", p, p.talent.healing_elixirs )
+  cooldown_t* healing_elixir;
+  healing_elixirs_t( monk_t& p ):
+    monk_heal_t( "healing_elixirs", p, p.talent.healing_elixirs ),
+    healing_elixir( 0 )
   {
-    parse_options( options_str );
     harmful = false;
     trigger_gcd = timespan_t::zero();
-    cooldown -> duration = p.talent.healing_elixirs -> effectN( 1 ).period();
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> buff.tigereye_brew_use -> check() )
-      return true;
-
-    if ( p() -> buff.elusive_brew_activated -> check() )
-      return true;
-
-    if ( p() -> buff.mana_tea -> check() )
-      return true;
-
-    return false;
-  }
-
-  virtual void execute()
-  {
-    monk_heal_t::execute();
-
-    double amount_healed = player -> resources.max[RESOURCE_HEALTH] * p() -> passives.healing_elixirs -> effectN( 1 ).percent();
-    player -> resource_gain( RESOURCE_HEALTH, amount_healed, p() -> gain.healing_elixirs, this );
+    healing_elixir = p.get_cooldown( "healing_elixir" );
+    healing_elixir -> duration = timespan_t::from_seconds( 18 );
+    pct_heal = data().effectN( 1 ).percent();
   }
 };
 
@@ -3655,7 +3655,6 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "chi_burst" ) return new              chi_burst_t( this, options_str );
   if ( name == "chi_sphere" ) return new             chi_sphere_t( this, options_str ); // For Power Strikes
   if ( name == "chi_brew" ) return new               chi_brew_t( this, options_str );
-  if ( name == "healing_elixirs" ) return new        healing_elixirs_t( *this, options_str );
   if ( name == "dampen_harm" ) return new            dampen_harm_t( *this, options_str );
   if ( name == "diffuse_magic" ) return new          diffuse_magic_t( *this, options_str );
   if ( name == "rushing_jade_wind" ) return new      spinning_crane_kick_t( this, options_str );
@@ -3819,6 +3818,7 @@ void monk_t::init_spells()
   active_actions.blackout_kick_dot   = new actions::dot_blackout_kick_t( this );
   //active_actions.blackout_kick_heal = new actions::heal_blackout_kick_t( this );
   active_actions.chi_explosion_dot   = new actions::dot_chi_explosion_t( this );
+  active_actions.healing_elixir      = new actions::healing_elixirs_t( *this );
 
   if ( specialization() == MONK_BREWMASTER )
     active_actions.stagger_self_damage = new actions::stagger_self_damage_t( this );
