@@ -1755,7 +1755,7 @@ void item::amplification( special_effect_t& effect,
     double level_nerf = ( static_cast<double>( p -> level ) - 90 ) / 10.0;
     *amp_value *= 1 - level_nerf;
   }
-  amp_buff -> default_value;
+  amp_buff -> default_value = *amp_value;
   amp_buff -> default_chance = 1.0;
 }
 
