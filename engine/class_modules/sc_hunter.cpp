@@ -1189,7 +1189,7 @@ struct basic_attack_t: public hunter_main_pet_attack_t
     parse_options( options_str );
     school = SCHOOL_PHYSICAL;
 
-    attack_power_mod.direct = 1;
+    attack_power_mod.direct = 1.0 / 3.0;
     base_multiplier *= 1.0 + p -> specs.spiked_collar -> effectN( 1 ).percent();
     chance_invigoration = p -> find_spell( 53397 ) -> proc_chance();
     gain_invigoration = p -> find_spell( 53398 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
