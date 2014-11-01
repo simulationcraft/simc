@@ -1937,7 +1937,10 @@ bool progress_bar_t::update( bool finished )
   if ( ! sim.current_iteration ) return false;
 
   if ( sim.current_iteration < ( sim.iterations - 1 ) )
-    if ( sim.current_iteration % interval ) return false;
+  {
+    if ( sim.target_error == 0 && sim.current_iteration % interval ) return false;
+    if ( sim.target_error > 0 && sim.current_iteration % sim.analyze_error_interval != 0 ) return false;
+  }
 
   int current, _final;
   double pct = sim.progress( &current, &_final );
