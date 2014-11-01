@@ -1641,7 +1641,7 @@ void player_t::override_talent( std::string override_str )
           }
         }
         sim -> errorf( "talent_override: talent %s for player %s replaced talent %s in tier %d\n",
-                               override_str.c_str(), name(), util::to_string( talent_points.choice( j ) + 1), j + 1 );
+                               override_str.c_str(), name(), util::to_string( talent_points.choice( j ) + 1).c_str(), j + 1 );
         talent_points.select_row_col( j, i );
       }
     }
