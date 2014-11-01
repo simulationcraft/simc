@@ -1082,7 +1082,7 @@ void warrior_attack_t::impact( action_state_t* s )
     }
     if ( ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) ) )
     {
-      if ( p() -> buff.bloodbath -> up() )
+      if ( p() -> buff.bloodbath -> up() && special )
         trigger_bloodbath_dot( s -> target, s -> result_amount );
 
       if ( p() -> talents.second_wind -> ok() )
