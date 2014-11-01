@@ -18,8 +18,8 @@ spec=protection
 actions.precombat=flask,type=greater_draenic_strength_flask
 actions.precombat+=/food,type=blackrock_barbecue
 actions.precombat+=/stance,choose=gladiator
-talent_override=bladestorm,if=raid_event.adds.count>3|active_enemies>3|(raid_event.adds.duration<10&raid_event.adds.exists)
-talent_override=dragon_roar,if=raid_event.adds.count>1|active_enemies>1
+talent_override=bladestorm,if=raid_event.adds.count>3|desired_targets>3|(raid_event.adds.duration<10&raid_event.adds.exists)
+talent_override=dragon_roar,if=raid_event.adds.count>1|desired_targets>1
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 # Generic on-use trinket line if needed when swapping trinkets out. 
 #actions+=/use_item,slot=trinket1,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10

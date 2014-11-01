@@ -1632,18 +1632,14 @@ void player_t::override_talent( std::string override_str )
             sim -> out_debug.printf( "talent_override: talent %s for player %s is already enabled\n",
                            override_str.c_str(), name() );
           }
-          else
-          {
-            sim -> out_debug.printf( "talent_override: talent %s for player %s replaced talent %d in tier %d\n",
-                           override_str.c_str(), name(), talent_points.choice( j ) + 1, j + 1 );
-          }
         }
+        sim -> errorf( "talent_override: talent %s for player %s replaced talent %d in tier %d\n",
+                               override_str.c_str(), name(), talent_points.choice( j ) + 1, j + 1 );
         talent_points.select_row_col( j, i );
       }
     }
   }
 }
-
 // player_t::init_talents ===================================================
 
 void player_t::init_talents()
@@ -7251,6 +7247,9 @@ expr_t* player_t::create_expression( action_t* a,
     return make_mem_fn_expr( expression_str, this-> cache, &player_stat_cache_t::spell_speed );
   if ( expression_str == "multistrike" )
     return make_mem_fn_expr( expression_str, this-> cache, &player_stat_cache_t::multistrike );
+
+  if ( expression_str == "desired_targets" )
+    return make_ref_expr( expression_str, sim -> desired_targets );
 
   // time_to_pct expressions
   if ( util::str_in_str_ci( expression_str, "time_to_" ) )
