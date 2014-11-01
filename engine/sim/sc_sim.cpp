@@ -1936,10 +1936,13 @@ bool progress_bar_t::update( bool finished )
   if ( ! sim.report_progress ) return false;
   if ( ! sim.current_iteration ) return false;
 
-  if ( sim.current_iteration < ( sim.iterations - 1 ) )
+  if ( ! finished )
   {
-    if ( sim.target_error == 0 && sim.current_iteration % interval ) return false;
-    if ( sim.target_error > 0 && sim.current_iteration % sim.analyze_error_interval != 0 ) return false;
+    if ( sim.current_iteration < ( sim.iterations - 1 ) )
+    {
+      if ( sim.target_error == 0 && sim.current_iteration % interval ) return false;
+      if ( sim.target_error > 0 && sim.current_iteration % sim.analyze_error_interval != 0 ) return false;
+    }
   }
 
   int current, _final;
@@ -2716,22 +2719,30 @@ double sim_t::progress( int* current,
                         int* _final,
                         std::string* detailed )
 {
-  int total_iterations = iterations;
   int total_current_iterations = current_iteration + 1;
+  int total_work = 0;
+  if ( deterministic )
+    total_work = iterations;
+  else
+    total_work = work_queue -> total_work;
+
   for ( size_t i = 0; i < children.size(); i++ )
   {
     if ( ! children[ i ] )
       continue;
 
-    total_iterations += children[ i ] -> iterations;
     total_current_iterations += children[ i ] -> current_iteration + 1;
+    if ( deterministic )
+    {
+      total_work += children[ i ] -> iterations;
+    }
   }
 
   if ( current ) *current = total_current_iterations;
-  if ( _final   ) *_final   = total_iterations;
-  detailed_progress( detailed, total_current_iterations, total_iterations );
+  if ( _final   ) *_final   = total_work;
+  detailed_progress( detailed, total_current_iterations, total_work );
 
-  return total_current_iterations / ( double ) total_iterations;
+  return total_current_iterations / ( double ) total_work;
 }
 
 double sim_t::progress( std::string& phase, std::string* detailed )

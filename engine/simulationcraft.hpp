@@ -2745,12 +2745,12 @@ struct sim_t : private sc_thread_t
   std::vector<sim_t*> children; // Manual delete!
   int thread_index;
   sc_thread_t::priority_e thread_priority;
-  struct work_queue_t 
+  struct work_queue_t
   {
     mutex_t m;
-    int work;
-    work_queue_t() : work( 0 ) {}
-    void init( int w ) { AUTO_LOCK(m); work = w; }
+    int total_work, work;
+    work_queue_t() : total_work( 0 ), work( 0 ) {}
+    void init( int w ) { AUTO_LOCK(m); total_work = work = w; }
     void flush() { init(0); }
     int  pop() { AUTO_LOCK(m); int w = work; if( work > 0 ) --work; return w; }
     int  size() { AUTO_LOCK(m); return work; }
