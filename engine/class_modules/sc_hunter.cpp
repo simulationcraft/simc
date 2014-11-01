@@ -10,8 +10,6 @@ namespace
 
 // ==========================================================================
 // Hunter
-// After testing, it appears that the 0.3333 -> 0.6 attack power coefficient hotfix only applies to autoattacks, not basic attacks.
-// Tested 10-31-14. May want to double check this when WoD is released.
 // ==========================================================================
 
 struct hunter_t;
@@ -781,8 +779,8 @@ public:
 
     resources.infinite_resource[RESOURCE_FOCUS] = o() -> resources.infinite_resource[RESOURCE_FOCUS];
 
-    owner_coeff.ap_from_ap = 0.3333;
-    owner_coeff.sp_from_ap = 0.3333;
+    owner_coeff.ap_from_ap = 0.6;
+    owner_coeff.sp_from_ap = 0.6;
   }
 
   virtual void create_buffs()
@@ -1151,18 +1149,6 @@ struct pet_melee_t: public hunter_main_pet_attack_t
 
     trigger_beast_cleave( s );
   }
-
-  double composite_attack_power() const
-  {
-    // After testing, it appears that the 0.3333 -> 0.6 attack power coefficient hotfix only applies to autoattacks, not basic attacks.
-    // Tested 10-31-14. May want to double check this when WoD is released.
-    double ap = hunter_main_pet_attack_t::composite_attack_power();
-
-    if ( o() -> wod_hotfix && !PLAYER_GUARDIAN ) // Only the main pet gets this.
-      ap *= 1.8;
-
-    return ap;
-  }
 };
 
 // Pet Auto Attack ==========================================================
@@ -1218,6 +1204,12 @@ struct basic_attack_t: public hunter_main_pet_attack_t
 
     if ( o() -> specs.frenzy -> ok() )
       p() -> buffs.frenzy -> trigger( 1 );
+  }
+
+  // Override behavior so that Basic Attacks use hunter's attack power rather than the pet's
+  double composite_attack_power() const
+  {
+    return o() -> cache.attack_power() * o()->composite_attack_power_multiplier();
   }
 
   void impact( action_state_t* s )
