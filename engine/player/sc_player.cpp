@@ -3539,8 +3539,24 @@ void player_t::merge( player_t& other )
   }
 
   // Action Map
-  for ( size_t i = 0; i < other.action_list.size(); ++i )
-    action_list[ i ] -> total_executions += other.action_list[ i ] -> total_executions;
+  size_t n_entries = std::min( action_list.size(), other.action_list.size() );
+  if ( action_list.size() != other.action_list.size() )
+  {
+    sim -> errorf( "%s player_t::merge action lists for actor differ!", name() );
+  }
+
+  for ( size_t i = 0; i < n_entries; ++i )
+  {
+    if ( action_list[ i ] -> internal_id == other.action_list[ i ] -> internal_id )
+    {
+      action_list[ i ] -> total_executions += other.action_list[ i ] -> total_executions;
+    }
+    else
+    {
+      sim -> errorf( "%s player_t::merge can't merge action %s with %s",
+          name(), action_list[ i ] -> name(), other.action_list[ i ] -> name() );
+    }
+  }
 }
 
 // player_t::reset ==========================================================
