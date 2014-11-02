@@ -6406,7 +6406,7 @@ void death_knight_t::init_action_list()
       st -> add_action( this, "Howling Blast", "if=buff.rime.react" );
 
       // Don't waste Runic Power
-      st -> add_action( this, "Frost Strike", "if=set_bonus.tier17_2pc=1&(runic_power>=50|(cooldown.pillar_of_frost.remains<5))" );
+      st -> add_action( this, "Frost Strike", "if=set_bonus.tier17_2pc=1&(runic_power>=50&(cooldown.pillar_of_frost.remains<5))" );
       st -> add_action( this, "Frost Strike", "if=runic_power>76" );
 
       // Keep Runes on Cooldown
