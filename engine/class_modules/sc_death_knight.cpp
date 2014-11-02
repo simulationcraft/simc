@@ -6473,7 +6473,7 @@ void death_knight_t::init_action_list()
     bos_aoe -> add_action( this, "Icy Touch", "if=runic_power<88" );
     bos_aoe -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=5");
     bos_aoe -> add_talent( this, "Plague Leech" );
-    bos_aoe -> add_talent( this, "Empower Rune Weapon" );
+    bos_aoe -> add_action( this, "Empower Rune Weapon" );
     bos_aoe -> add_action( this, "Death Coil", "if=buff.sudden_doom.react" );
 
     //decide between single_target and aoe rotation
