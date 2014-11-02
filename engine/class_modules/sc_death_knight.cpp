@@ -6348,7 +6348,7 @@ void death_knight_t::init_action_list()
 
       // Normal stuff
       st -> add_action( this, "Howling Blast", "if=buff.rime.react&disease.min_remains>5" );
-      st -> add_action( this, "Obliterate", "if=blood.frac>=1.5|unholy.frac>=1.6|frost.frac>=1.6|buff.bloodlust.up|cooldown.plague_leech.remains<=4 " );
+      st -> add_action( this, "Obliterate", "if=blood.frac>=1.5|unholy.frac>=1.6|frost.frac>=1.6|buff.bloodlust.up|cooldown.plague_leech.remains<=4" );
       st -> add_talent( this, "Blood Tap", "if=(buff.blood_charge.stack>10&runic_power>=20)|(blood.frac>=1.4|unholy.frac>=1.6|frost.frac>=1.6)" );
       st -> add_action( this, "Frost Strike", "if=!buff.killing_machine.react" );
 
@@ -6536,7 +6536,6 @@ void death_knight_t::init_action_list()
     st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10&(buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1))" );
     st -> add_action( this, "Death Coil", "if=buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)" );
     st -> add_action( this, "Scourge Strike", "if=!(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + ")|(unholy>=1&death>=1)|(death>=2)" );
-    st -> add_action( this, "Blood Boil", "if=death>=1" );
     st -> add_action( this, "Festering Strike" );
     st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=10&runic_power>=30" );
     st -> add_action( this, "Death Coil" );
