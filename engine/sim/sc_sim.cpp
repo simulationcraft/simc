@@ -898,7 +898,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   expected_iteration_time( timespan_t::zero() ),
   vary_combat_length( 0.0 ),
   current_iteration( -1 ),
-  iterations( 1000 ),
+  iterations( 0 ),
   canceled( 0 ),
   target_error( 0 ),
   current_error( 0 ),
@@ -1952,8 +1952,10 @@ bool progress_bar_t::update( bool finished )
   {
     if ( sim.current_iteration < ( sim.iterations - 1 ) )
     {
-      if ( sim.target_error == 0 && sim.current_iteration % interval ) return false;
-      if ( sim.target_error > 0 && sim.current_iteration % sim.analyze_error_interval != 0 ) return false;
+      int update_interval = ( sim.target_error > 0 ) ? sim.analyze_error_interval : interval;
+
+      if ( sim.current_iteration % update_interval ) 
+	return false;
     }
   }
 
@@ -2721,6 +2723,8 @@ void sim_t::setup( sim_control_t* c )
 
     threads = 1;
   }
+
+  if( iterations <= 0 ) iterations = ( target_error > 0 ) ? 100000 : 1000;
 
   work_queue -> init( iterations );
 }
