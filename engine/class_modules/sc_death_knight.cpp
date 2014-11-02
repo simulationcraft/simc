@@ -6533,6 +6533,7 @@ void death_knight_t::init_action_list()
     st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10&(buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1))" );
     st -> add_action( this, "Death Coil", "if=buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)" );
     st -> add_action( this, "Scourge Strike", "if=!(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + ")|(unholy>=1&death>=1)|(death>=2)" );
+    st -> add_action( this, "Blood Boil", "if=death>=1" );
     st -> add_action( this, "Festering Strike" );
     st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=10&runic_power>=30" );
     st -> add_action( this, "Death Coil" );
