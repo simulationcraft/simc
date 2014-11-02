@@ -1,4 +1,4 @@
-deathknight="Death_Knight_Unholy_T17N"
+deathknight="Death_Knight_Unholy_T17P"
 level=100
 race=orc
 role=attack
@@ -32,7 +32,6 @@ actions+=/antimagic_shell,damage=100000
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
-actions+=/use_item,slot=trinket2
 actions+=/potion,name=draenic_strength,if=buff.dark_transformation.up&target.time_to_die<=60
 actions+=/run_action_list,name=aoe,if=active_enemies>=2
 actions+=/run_action_list,name=single_target,if=active_enemies<2
@@ -112,30 +111,28 @@ actions.bos_aoe+=/blood_tap,if=buff.blood_charge.stack>=5
 actions.bos_aoe+=/plague_leech
 actions.bos_aoe+=/death_coil,if=buff.sudden_doom.react
 
-head=hardened_greathelm,id=113910
-neck=thogars_serrated_chain,id=113959,enchant=gift_of_mastery
-shoulders=ogreskull_boneplate_pauldrons,id=115536
-back=cloak_of_sanguine_terror,id=113972,enchant=gift_of_mastery
-chest=ogreskull_boneplate_breastplate,id=115537
-wrists=fleshmelter_bracers,id=113896
-hands=ogreskull_boneplate_gauntlets,id=115538
-waist=uktars_belt_of_chiming_rings,id=113976
-legs=ogreskull_boneplate_greaves,id=115535
-feet=sabatons_of_fractal_earth,id=113936
-finger1=phosphorescent_seal,id=113866,enchant=gift_of_mastery
-finger2=timeless_solium_band_of_brutality,id=118295,enchant=gift_of_mastery
-trinket1=forgemasters_insignia,id=113983
-trinket2=vial_of_convulsive_shadows,id=113969
-main_hand=kagrazs_burning_blade,id=113913,enchant=rune_of_the_fallen_crusader
+head=rivetsealed_casque,id=109989,bonus_id=524
+neck=bloodmist_pendant,id=109962,bonus_id=524,enchant=gift_of_mastery
+shoulders=gutcrusher_shoulderplates,id=109946,bonus_id=524
+back=bloodyblade_drape,id=109912,bonus_id=524,enchant=gift_of_mastery
+chest=rivetsealed_breastplate,id=109896,bonus_id=524
+wrists=rivetsealed_bracers,id=109880,bonus_id=524
+hands=goldsteel_gloves,id=109858,bonus_id=524
+waist=goldsteel_belt,id=109839,bonus_id=524
+legs=goldsteel_legplates,id=109820,bonus_id=524
+feet=goldsteel_sabatons,id=109795,bonus_id=524
+finger1=bloodied_ring_of_mytosis,id=109771,bonus_id=524,enchant=gift_of_mastery
+finger2=band_of_iron_scale,id=109773,bonus_id=524,enchant=gift_of_mastery
+trinket1=mote_of_corruption,id=110010,bonus_id=524
+trinket2=fires_of_the_sun,id=110011,bonus_id=524
+main_hand=hammer_of_the_soulbinder,id=110046,bonus_id=524,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_strength=2730
-# gear_stamina=3437
-# gear_crit_rating=454
-# gear_haste_rating=438
-# gear_mastery_rating=1323
-# gear_armor=2052
-# gear_multistrike_rating=893
-# gear_versatility_rating=159
-# set_bonus=tier17_2pc=1
-# set_bonus=tier17_4pc=1
+# gear_strength=1960
+# gear_stamina=2465
+# gear_crit_rating=320
+# gear_haste_rating=762
+# gear_mastery_rating=646
+# gear_armor=1849
+# gear_multistrike_rating=933
+# gear_versatility_rating=64
