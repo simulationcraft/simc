@@ -847,15 +847,6 @@ public:
     base_t::init_action_list();
   }
 
-  virtual double composite_attack_power_multiplier() const
-  {
-    double mult = base_t::composite_attack_power_multiplier();
-
-    // TODO pet charge should show up here.
-
-    return mult;
-  }
-
   virtual double composite_melee_crit() const
   {
     double ac = base_t::composite_melee_crit();
