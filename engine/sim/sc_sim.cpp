@@ -1430,7 +1430,11 @@ void sim_t::analyze_error()
 
   if( current_error > 0 &&
       current_error < target_error ) 
-    cancel();
+  {
+    work_queue -> flush();
+    for ( size_t i = 0; i < children.size(); i++ )
+      children[ i ] -> work_queue -> flush();
+  }
 }
 
 // sim_t::check_actors() ========================================================

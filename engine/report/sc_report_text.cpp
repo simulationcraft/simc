@@ -571,6 +571,7 @@ void print_text_performance( FILE* file, sim_t* sim )
   util::fprintf( file,
                  "\nBaseline Performance:\n"
 		 "  RNG Engine    = %s\n"
+		 "  Iterations    = %d\n"
 #if !defined( SC_WINDOWS )
                  "  TotalEvents   = %llu\n"
 #else
@@ -583,7 +584,7 @@ void print_text_performance( FILE* file, sim_t* sim )
                  "  WallSeconds   = %.3f\n"
                  "  SpeedUp       = %.0f\n"
                  "  EndTime       = %s (%ld)\n\n",
-		 sim -> rng().name(),
+		 sim -> rng().name(), sim -> iterations,
                  sim -> event_mgr.total_events_processed,
                  (long) sim -> event_mgr.max_events_remaining,
                  sim -> target -> resources.base[ RESOURCE_HEALTH ],

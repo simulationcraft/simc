@@ -203,8 +203,8 @@ int sim_t::main( const std::vector<std::string>& args )
   }
   else
   {
-    util::printf( "\nSimulating... ( iterations=%d, max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, fight_style=%s )\n",
-                   iterations, max_time.total_seconds(), vary_combat_length, optimal_raid, fight_style.c_str() );
+    util::printf( "\nSimulating... ( iterations=%d, target_error=%.3f,  max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, fight_style=%s )\n",
+		  iterations, target_error, max_time.total_seconds(), vary_combat_length, optimal_raid, fight_style.c_str() );
 
     std::cout << "\nGenerating baseline... " << std::endl;
 
