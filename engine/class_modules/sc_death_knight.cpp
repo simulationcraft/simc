@@ -148,6 +148,7 @@ struct runes_t
 struct death_knight_td_t : public actor_pair_t
 {
   dot_t* dots_blood_plague;
+  dot_t* dots_breath_of_sindragosa;
   dot_t* dots_death_and_decay;
   dot_t* dots_frost_fever;
   dot_t* dots_soul_reaper;
@@ -561,6 +562,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
   actor_pair_t( target, death_knight )
 {
   dots_blood_plague    = target -> get_dot( "blood_plague",    death_knight );
+  dots_breath_of_sindragosa = target -> get_dot( "breath_of_sindragosa", death_knight );
   dots_death_and_decay = target -> get_dot( "death_and_decay", death_knight );
   dots_frost_fever     = target -> get_dot( "frost_fever",     death_knight );
   dots_soul_reaper     = target -> get_dot( "soul_reaper_dot", death_knight );
