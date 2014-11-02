@@ -85,6 +85,7 @@ public:
     buff_t* shadow_word_insanity;
     buff_t* shadowy_insight;
     buff_t* shadow_word_death_reset_cooldown;
+    buff_t* mind_sear_on_hit_reset;
     buff_t* glyph_of_mind_flay;
     buff_t* glyph_of_mind_spike;
     buff_t* shadowform;
@@ -1529,6 +1530,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
   {
     double save_health_percentage = s -> target -> health_percentage();
 
+    if ( priest.buffs.mind_sear_on_hit_reset -> check() == 2 )
+    {
+      priest.buffs.mind_sear_on_hit_reset -> decrement();
+    }
+
     base_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
@@ -2475,7 +2481,7 @@ struct mind_sear_t final : public priest_spell_t
     may_crit     = false;
     hasted_ticks = false;
     dynamic_tick_action = true;
-    tick_zero    = true;
+    tick_zero    = false;
     instant_multistrike = false;
 
     tick_action = new mind_sear_tick_t( p, p.find_class_spell( "Mind Sear" ) );
@@ -2490,6 +2496,32 @@ struct mind_sear_t final : public priest_spell_t
       am *= 1.0 + priest.talents.clarity_of_power -> effectN( 1 ).percent();
 
     return am;
+  }
+
+  virtual void last_tick( dot_t* d ) override
+  {
+    if ( d -> current_tick == d -> num_ticks )
+    {
+        priest.buffs.mind_sear_on_hit_reset -> expire();
+    }
+
+    priest_spell_t::last_tick( d );
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    if ( priest.buffs.mind_sear_on_hit_reset -> check() == 0 )
+    {
+      priest.buffs.mind_sear_on_hit_reset -> trigger( 2, 1, 1, tick_time( s -> haste ) * 6 );
+      tick_zero = true;
+    }
+    else
+    {
+      priest.buffs.mind_sear_on_hit_reset -> trigger( 1 );
+      tick_zero = false;
+    }
+
+    priest_spell_t::impact( s );
   }
 };
 
@@ -5843,12 +5875,16 @@ void priest_t::create_buffs()
                            .duration( find_class_spell( "Vampiric Embrace" ) -> duration() + glyphs.vampiric_embrace -> effectN( 1 ).time_value() );
 
   buffs.glyph_of_mind_spike = buff_creator_t( this, "glyph_mind_spike" )
-                           .spell( glyphs.mind_spike -> effectN( 1 ).trigger() )
-                           .chance( glyphs.mind_spike -> proc_chance() );
+                             .spell( glyphs.mind_spike -> effectN( 1 ).trigger() )
+                             .chance( glyphs.mind_spike -> proc_chance() );
 
   buffs.shadow_word_death_reset_cooldown = buff_creator_t( this, "shadow_word_death_reset_cooldown" )
-                                              .max_stack( 1 )
-                                              .duration( timespan_t::from_seconds( 9.0 ) ); // data in the old deprecated glyph. Leave hardcoded for now, 3/12/2012; 9.0sec ICD in 5.4 (2013/08/18)
+                                           .max_stack( 1 )
+                                           .duration( timespan_t::from_seconds( 9.0 ) ); // data in the old deprecated glyph. Leave hardcoded for now, 3/12/2012; 9.0sec ICD in 5.4 (2013/08/18)
+
+  buffs.mind_sear_on_hit_reset = buff_creator_t( this, "mind_sear_on_hit_reset" )
+                                 .max_stack( 2 )
+                                 .duration( timespan_t::from_seconds( 5.0 ));
 
   buffs.dispersion = new buffs::dispersion_t( *this );
 
@@ -6125,8 +6161,8 @@ void priest_t::apl_shadow()
   main -> add_action( "cascade,if=talent.cascade.enabled&active_enemies>2&target.distance<=40" );
   main -> add_action( "divine_star,if=talent.divine_star.enabled&active_enemies>4&target.distance<=24" );
   main -> add_action( "shadow_word_pain,if=talent.auspicious_spirits.enabled&remains<(18*0.3)&miss_react,cycle_targets=1" );
-  main -> add_action( "shadow_word_pain,if=!talent.auspicious_spirits.enabled&remains<(18*0.3)&miss_react,cycle_targets=1,max_cycle_targets=5" );
-  main -> add_action( "vampiric_touch,if=remains<(15*0.3+cast_time)&miss_react,cycle_targets=1,max_cycle_targets=5" );
+  main -> add_action( "shadow_word_pain,if=!talent.auspicious_spirits.enabled&remains<(18*0.3)&miss_react&active_enemies<=5,cycle_targets=1,max_cycle_targets=5" );
+  main -> add_action( "vampiric_touch,if=remains<(15*0.3+cast_time)&miss_react&active_enemies<=5,cycle_targets=1,max_cycle_targets=5" );
   main -> add_action( "devouring_plague,if=!talent.void_entropy.enabled&shadow_orb>=3&ticks_remain<=1" );
   main -> add_action( "mind_spike,if=active_enemies<=5&buff.surge_of_darkness.react=3" );
   main -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&target.distance>=17" );
@@ -6158,8 +6194,8 @@ void priest_t::apl_shadow()
   cop -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&target.distance>=17" );
   cop -> add_action( "cascade,if=talent.cascade.enabled&((active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11)" );
   cop -> add_action( "divine_star,if=talent.divine_star.enabled&(active_enemies>1|target.distance<=24)" );
-  cop -> add_action( "shadow_word_pain,if=miss_react&!ticking&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
-  cop -> add_action( "vampiric_touch,if=remains<cast_time&miss_react&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
+  cop -> add_action( "shadow_word_pain,if=miss_react&!ticking&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
+  cop -> add_action( "vampiric_touch,if=remains<cast_time&miss_react&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
   cop -> add_action( "mind_sear,if=active_enemies>=3,chain=1,interrupt=1" );
   cop -> add_action( "mind_spike,if=active_enemies<=8&buff.surge_of_darkness.react" );
   cop -> add_action( "mind_sear,if=active_enemies>=3,chain=1,interrupt=1" );
@@ -6186,8 +6222,8 @@ void priest_t::apl_shadow()
   cop_mfi -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&target.distance>=17" );
   cop_mfi -> add_action( "cascade,if=talent.cascade.enabled&((active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11)" );
   cop_mfi -> add_action( "divine_star,if=talent.divine_star.enabled&(active_enemies>1|target.distance<=24)" );
-  cop_mfi -> add_action( "shadow_word_pain,if=remains<(18*0.3)&miss_react&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
-  cop_mfi -> add_action( "vampiric_touch,if=remains<(15*0.3+cast_time)&miss_react&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
+  cop_mfi -> add_action( "shadow_word_pain,if=remains<(18*0.3)&miss_react&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
+  cop_mfi -> add_action( "vampiric_touch,if=remains<(15*0.3+cast_time)&miss_react&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
   cop_mfi -> add_action( "mind_sear,if=active_enemies>=6,chain=1,interrupt=1" );
   cop_mfi -> add_action( "mind_spike" );
   cop_mfi -> add_action( "shadow_word_death,moving=1" );
@@ -6207,8 +6243,8 @@ void priest_t::apl_shadow()
   cop_advanced_mfi -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&target.distance>=17" );
   cop_advanced_mfi -> add_action( "cascade,if=talent.cascade.enabled&((active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11)" );
   cop_advanced_mfi -> add_action( "divine_star,if=talent.divine_star.enabled&(active_enemies>1|target.distance<=24)" );
-  cop_advanced_mfi -> add_action( "shadow_word_pain,if=remains<(18*0.3)&miss_react&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
-  cop_advanced_mfi -> add_action( "vampiric_touch,if=remains<(15*0.3+cast_time)&miss_react&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
+  cop_advanced_mfi -> add_action( "shadow_word_pain,if=remains<(18*0.3)&miss_react&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
+  cop_advanced_mfi -> add_action( "vampiric_touch,if=remains<(15*0.3+cast_time)&miss_react&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
   cop_advanced_mfi -> add_action( "mind_sear,if=active_enemies>=6,chain=1,interrupt=1" );
   cop_advanced_mfi -> add_action( "mind_spike" );
   cop_advanced_mfi -> add_action( "shadow_word_death,moving=1" );
@@ -6218,7 +6254,7 @@ void priest_t::apl_shadow()
   cop_advanced_mfi -> add_action( "cascade,if=talent.cascade.enabled&target.distance<=40,moving=1" );
   cop_advanced_mfi -> add_action( "shadow_word_pain,if=primary_target=0,moving=1,cycle_targets=1" );
 
-  // Advanced "DoT Weaving" CoP Action List, for when you have T14 2P -- Part 2, the weaving
+  // Advanced "DoT Weaving" CoP Action List -- Part 2, the weaving
   cop_advanced_mfi_dots -> add_action( "mind_spike,if=((target.dot.shadow_word_pain.ticking&target.dot.shadow_word_pain.remains<gcd)|(target.dot.vampiric_touch.ticking&target.dot.vampiric_touch.remains<gcd))&!target.dot.devouring_plague.ticking" );
   cop_advanced_mfi_dots -> add_action( "shadow_word_pain,if=!ticking&miss_react&!target.dot.vampiric_touch.ticking" );
   cop_advanced_mfi_dots -> add_action( "vampiric_touch,if=!ticking&miss_react" );
