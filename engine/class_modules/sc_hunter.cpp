@@ -1312,6 +1312,11 @@ struct kill_command_t: public hunter_main_pet_attack_t
     // The hardcoded parameter is taken from the $damage value in teh tooltip. e.g., 1.36 below
     // $damage = ${ 1.5*($83381m1 + ($RAP*  1.36   ))*$<bmMastery> }
     attack_power_mod.direct  = 1.36; // Hard-coded in tooltip.
+
+    if ( p -> wod_hotfix )
+    {
+      attack_power_mod.direct *= 1.2;
+    }
   }
 
   // Override behavior so that Kill Command uses hunter's attack power rather than the pet's
@@ -3132,10 +3137,6 @@ struct kill_command_t: public hunter_spell_t
     parse_options( options_str );
 
     harmful = false;
-    if ( player -> wod_hotfix )
-    {
-      base_multiplier *= 1.2;
-    }
     for ( size_t i = 0, pets = p() -> pet_list.size(); i < pets; ++i )
     {
       pet_t* pet = p() -> pet_list[i];
