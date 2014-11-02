@@ -4933,7 +4933,10 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
     if ( p -> wod_hotfix )
+    {
       attack_power_mod.direct *= 0.95;
+      attack_power_mod.direct *= 1.5;
+    }
 
     // TODO-WOD: Do we need to inherit damage or is it a separate roll in WoD?
     add_child( scourge_strike_shadow );
