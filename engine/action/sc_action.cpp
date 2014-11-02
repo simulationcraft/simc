@@ -360,6 +360,12 @@ action_t::action_t( action_e       ty,
 
   util::tokenize( name_str );
 
+  if ( sim -> current_iteration > 0 )
+  {
+    sim -> errorf( "Player %s creating action %s ouside of the first iteration", player -> name(), name() );
+    assert( 0 );
+  }
+
   if ( sim -> debug )
     sim -> out_debug.printf( "Player %s creates action %s (%d)", player -> name(), name(), ( s_data -> ok() ? s_data -> id() : -1 ) );
 
