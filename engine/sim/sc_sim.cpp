@@ -1959,8 +1959,8 @@ bool progress_bar_t::update( bool finished )
     }
   }
 
-  int current, _final;
-  double pct = sim.progress( &current, &_final );
+  int current, last;
+  double pct = sim.progress( &current, &last );
   if ( pct <= 0 ) return false;
   if ( finished ) pct = 1.0;
 
@@ -1982,7 +1982,7 @@ bool progress_bar_t::update( bool finished )
   remaining_sec -= remaining_min * 60;
 
   char buffer[80];
-  snprintf( buffer, sizeof( buffer ), " %d/%d", finished ? _final : current, _final );
+  snprintf( buffer, sizeof( buffer ), " %d/%d", finished ? last : current, last );
   status += buffer;
 
   if( sim.target_error > 0 )
@@ -2732,7 +2732,7 @@ void sim_t::setup( sim_control_t* c )
 // sim_t::progress ==========================================================
 
 double sim_t::progress( int* current,
-                        int* _final,
+                        int* last,
                         std::string* detailed )
 {
   int total_current_iterations = current_iteration + 1;
@@ -2754,8 +2754,16 @@ double sim_t::progress( int* current,
     }
   }
 
+  if( target_error > 0 && current_error > 0 )
+  {
+    int projected_work = total_current_iterations * ( current_error * current_error ) / ( target_error * target_error );
+    if( projected_work < total_work )
+      total_work = projected_work;
+  }
+
   if ( current ) *current = total_current_iterations;
-  if ( _final   ) *_final   = total_work;
+  if ( last    ) *last    = total_work;
+
   detailed_progress( detailed, total_current_iterations, total_work );
 
   return total_current_iterations / ( double ) total_work;
