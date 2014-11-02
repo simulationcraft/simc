@@ -2598,8 +2598,6 @@ struct chain_lightning_t : public shaman_spell_t
     base_multiplier      *= 1.0 + player -> glyph.chain_lightning -> effectN( 2 ).percent();
     aoe                   = player -> glyph.chain_lightning -> effectN( 1 ).base_value() + 3;
     base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
-    if ( player -> wod_hotfix )
-      base_costs[RESOURCE_MANA] *= 0.57;
   }
 
   action_state_t* new_state()
