@@ -109,6 +109,7 @@ actions.bos_aoe+=/scourge_strike,if=runic_power<88&unholy=1
 actions.bos_aoe+=/icy_touch,if=runic_power<88
 actions.bos_aoe+=/blood_tap,if=buff.blood_charge.stack>=5
 actions.bos_aoe+=/plague_leech
+actions.bos_aoe+=/empower_rune_weapon
 actions.bos_aoe+=/death_coil,if=buff.sudden_doom.react
 
 head=helmet_of_cyclopean_dread,id=99337,upgrade=4,gems=capacitive_primal_5str_10crit_11str

@@ -65,7 +65,7 @@ actions.single_target+=/obliterate,if=buff.killing_machine.react
 actions.single_target+=/blood_tap,if=buff.killing_machine.react
 actions.single_target+=/howling_blast,if=!talent.necrotic_plague.enabled&!dot.frost_fever.ticking&buff.rime.react
 actions.single_target+=/outbreak,if=!disease.max_ticking
-actions.single_target+=/unholy_blight,if=!disease.max_ticking
+actions.single_target+=/unholy_blight,if=!disease.min_ticking
 actions.single_target+=/breath_of_sindragosa,if=runic_power>75
 actions.single_target+=/run_action_list,name=bos_st,if=dot.breath_of_sindragosa.ticking
 actions.single_target+=/obliterate,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains<7&runic_power<76
