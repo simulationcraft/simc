@@ -16,7 +16,7 @@ race=orc
 spec=unholy
 role=attack
 position=back
-talents=2001002
+talents=2003002
 glyphs=
 head=hardened_greathelm,id=113910
 neck=thogars_serrated_chain,id=113959,enchant=gift_of_mastery

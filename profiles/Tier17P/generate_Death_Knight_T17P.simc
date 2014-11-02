@@ -11,7 +11,7 @@ race=orc
 spec=unholy
 role=attack
 position=back
-talents=2001002
+talents=2003002
 glyphs=
 head=rivet-sealed_casque,id=109989,bonus_id=524
 neck=bloodmist_pendant,id=109962,bonus_id=524,enchant=gift_of_mastery

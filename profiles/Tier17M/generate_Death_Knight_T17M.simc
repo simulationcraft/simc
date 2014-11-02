@@ -16,7 +16,7 @@ race=orc
 spec=unholy
 role=attack
 position=back
-talents=2001002
+talents=2003002
 glyphs=
 head=ogreskull_boneplate_greathelm,id=115539,bonus_id=567
 neck=thogars_serrated_chain,id=113959,bonus_id=567,enchant=gift_of_mastery
