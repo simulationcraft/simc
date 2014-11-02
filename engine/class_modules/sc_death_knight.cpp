@@ -6477,31 +6477,38 @@ void death_knight_t::init_action_list()
     def -> add_action( "run_action_list,name=aoe,if=active_enemies>=2" );
     def -> add_action( "run_action_list,name=single_target,if=active_enemies<2" );
 
-    // Stop BT charges from capping
-    st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10&runic_power>=32" );
 
-    // Diseases for free
-    st -> add_talent( this, "Unholy Blight", "if=!talent.necrotic_plague.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)" );
-    st -> add_talent( this, "Unholy Blight", "if=talent.necrotic_plague.enabled&dot.necrotic_plague.remains<1" );
-    st -> add_action( this, "Outbreak", "if=!talent.necrotic_plague.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)" );
-    st -> add_action( this, "Outbreak", "if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking" );
-
+    // Plague Leech
+    st -> add_talent( this, "Plague Leech", "if=cooldown.outbreak.remains<1" );
+    st -> add_talent( this, "Plague Leech", "if=!talent.necrotic_plague.enabled&(dot.blood_plague.remains<1&dot.frost_fever.remains<1)" );
+    st -> add_talent( this, "Plague Leech", "if=talent.necrotic_plague.enabled&(dot.necrotic_plague.remains<1)" );
+    
     // Soul Reaper
     st -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
     st -> add_talent( this, "Blood Tap", "if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)" );
-
-    // Diseases for Runes
-    st -> add_action( this, "Plague Strike", "if=!talent.necrotic_plague.enabled&(!dot.blood_plague.ticking|!dot.frost_fever.ticking)" );
-    st -> add_action( this, "Plague Strike", "if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking" );
-
+    
     // GCD Cooldowns
     st -> add_action( this, "Summon Gargoyle" );
-
-    // Optimized placement of Defile
-    st -> add_talent( this, "Defile", "if=runic_power<89");
-
+    
+    // Don't waste runic power
+    st -> add_talent( this, "Blood Tap" "if=buff.blood_charge.stack>=11&runic_power>90" );
+    st -> add_action( this, "Death Coil", "if=runic_power>90" );
+    
+    // Defile
+    st -> add_talent( this, "Defile");
+    st -> add_talent( this, "Blood Tap" "if=cooldown.defile.remains=0" );
+    
+    // Dark Transformation
     st -> add_action( this, "Dark Transformation" );
     st -> add_talent( this, "Blood Tap" "if=level<=90&buff.shadow_infusion.stack=5" );
+    
+    // Diseases
+    st -> add_talent( this, "Unholy Blight", "if=!talent.necrotic_plague.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)" );
+    st -> add_talent( this, "Unholy Blight", "if=talent.necrotic_plague.enabled&dot.necrotic_plague.remains<1" );
+    st -> add_action( this, "Outbreak", "if=!talent.necrotic_plague.enabled&(!dot.frost_fever.ticking|!dot.blood_plague.ticking)" );
+    st -> add_action( this, "Outbreak", "if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking" );
+    st -> add_action( this, "Plague Strike", "if=!talent.necrotic_plague.enabled&(!dot.blood_plague.ticking|!dot.frost_fever.ticking)" );
+    st -> add_action( this, "Plague Strike", "if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking" );
 
     // Breath of Sindragosa in use, cast it and then keep it up
     st -> add_talent( this, "Breath of Sindragosa", "if=runic_power>75");
@@ -6512,38 +6519,33 @@ void death_knight_t::init_action_list()
     st -> add_action( this, "Scourge Strike", "if=cooldown.breath_of_sindragosa.remains<7&runic_power<88&talent.breath_of_sindragosa.enabled");
     st -> add_action( this, "Festering Strike", "if=cooldown.breath_of_sindragosa.remains<7&runic_power<76&talent.breath_of_sindragosa.enabled");
 
-    // Don't waste runic power
-    st -> add_action( this, "Death Coil", "if=runic_power>90" );
-
     // Get runes on cooldown
     st -> add_action( this, "Death and Decay", "if=unholy=2" );
     st -> add_talent( this, "Blood Tap", "if=unholy=2&cooldown.death_and_decay.remains=0" );
     st -> add_action( this, "Scourge Strike", "if=unholy=2" );
+    st -> add_talent( this, "Blood Tap" "if=buff.blood_charge.stack>=11&runic_power>80" );
     st -> add_action( this, "Death Coil", "if=runic_power>80" );
     st -> add_action( this, "Festering Strike", "if=blood=2&frost=2" );
 
     // Normal stuff
     st -> add_action( this, "Death and Decay" );
     st -> add_talent( this, "Blood Tap", "if=cooldown.death_and_decay.remains=0" );
+    st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10&(buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1))" );
     st -> add_action( this, "Death Coil", "if=buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)" );
-    st -> add_action( this, "Scourge Strike" );
-    st -> add_talent( this, "Plague Leech", "if=cooldown.outbreak.remains<1" );
-    st -> add_talent( this, "Plague Leech", "if=!talent.necrotic_plague.enabled&(dot.blood_plague.remains<1&dot.frost_fever.remains<1)" );
-    st -> add_talent( this, "Plague Leech", "if=talent.necrotic_plague.enabled&(dot.necrotic_plague.remains<1)" );
+    st -> add_action( this, "Scourge Strike", "if=!(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + ")|(unholy>=1&death>=1)|(death>=2)" );
     st -> add_action( this, "Festering Strike" );
+    st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=10&runic_power>=30" );
     st -> add_action( this, "Death Coil" );
 
     // Less waiting
-    st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=8" );
     st -> add_action( this, "Empower Rune Weapon" );
 
     //AoE
     aoe -> add_talent( this, "Unholy Blight" );
-    aoe -> add_action( this, "Plague Strike", "if=!talent.necrotic_plague.enabled&(!dot.blood_plague.ticking|!dot.frost_fever.ticking)" );
-    aoe -> add_action( this, "Plague Strike", "if=talent.necrotic_plague.enabled&(!dot.necrotic_plague.ticking)" );
+    aoe -> add_action( this, "Plague Strike", "if=!disease.ticking" );
 
     // AoE defile
-    aoe -> add_talent( this, "Defile", "if=talent.defile.enabled&runic_power<89");
+    aoe -> add_talent( this, "Defile");
 
     // AoE Breath of Sindragosa in use, cast and then keep up
     aoe -> add_talent( this, "Breath of Sindragosa", "if=runic_power>75");
