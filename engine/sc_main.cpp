@@ -34,8 +34,14 @@ struct sim_signal_handler_t
     if ( global_sim )
     {
       report( signal );
-      if ( global_sim -> canceled ) exit( 1 );
-      global_sim -> cancel();
+      if( global_sim -> work_queue -> size() == 0 )
+      {
+	exit(1);
+      }
+      else
+      {
+	global_sim -> interrupt();
+      }
     }
   }
 
@@ -203,12 +209,10 @@ int sim_t::main( const std::vector<std::string>& args )
   }
   else
   {
-    util::printf( "\nSimulating... ( iterations=%d, target_error=%.3f,  max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, fight_style=%s )\n",
+    util::printf( "\nSimulating... ( iterations=%d, target_error=%.3f,  max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, fight_style=%s )\n\n",
 		  iterations, target_error, max_time.total_seconds(), vary_combat_length, optimal_raid, fight_style.c_str() );
 
-    std::cout << "\nGenerating baseline... " << std::endl;
-
-    sim_phase_str = "Generating baseline:   ";
+    sim_phase_str = "Generating Baseline:   ";
     if ( execute() )
     {
       scaling      -> analyze();

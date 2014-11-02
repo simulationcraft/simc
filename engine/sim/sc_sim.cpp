@@ -1005,7 +1005,10 @@ sim_t::sim_t( sim_t* p, int index ) :
     // Inherit 'plot' settings from parent because are set outside of the config file
     enchant = parent -> enchant;
 
+    // While we inherit the parent seed, it may get overwritten in sim_t::init
     seed = parent -> seed;
+
+    parent -> add_relative( this );
   }
 }
 
@@ -1013,6 +1016,8 @@ sim_t::sim_t( sim_t* p, int index ) :
 
 sim_t::~sim_t()
 {
+  assert( relatives.size() == 0 );
+  if( parent ) parent -> remove_relative( this );
   delete scaling;
   delete plot;
   delete reforge_plot;
@@ -1048,6 +1053,43 @@ double sim_t::expected_max_time() const
   return max_time.total_seconds() * ( 1.0 + vary_combat_length );
 }
 
+// sim_t::add_relative ======================================================
+
+void sim_t::add_relative( sim_t* cousin )
+{
+  if( parent )
+  {
+    parent -> add_relative( cousin );
+  }
+  else
+  {
+    AUTO_LOCK( relatives_mutex );
+    relatives.push_back( cousin );
+  }
+}
+
+// sim_t::remove_relative ===================================================
+
+void sim_t::remove_relative( sim_t* cousin )
+{
+  if( parent )
+  {
+    parent -> remove_relative( cousin );
+  }
+  else
+  {
+    AUTO_LOCK( relatives_mutex );
+    for( size_t i=0, size=relatives.size(); i < size; i++ )
+      if( relatives[ i ] == cousin )
+      {
+	relatives[ i ] = relatives[ size-1 ];
+	relatives.pop_back();
+	return;
+      }
+    assert(0);
+  }
+}
+
 // sim_t::cancel ============================================================
 
 void sim_t::cancel()
@@ -1067,22 +1109,22 @@ void sim_t::cancel()
 
   canceled = 1;
   
-  for ( size_t i = 0; i < children.size(); i++ )
+  for ( size_t i = 0, size = relatives.size(); i < size; i++ )
   {
-    children[ i ] -> cancel();
+    relatives[ i ] -> cancel();
   }
+}
 
-  if ( scaling -> delta_sim )
-    scaling -> delta_sim -> cancel();
+// sim_t::interrupt =========================================================
 
-  if ( scaling -> delta_sim2 )
-    scaling -> delta_sim2 -> cancel();
+void sim_t::interrupt()
+{
+  work_queue -> flush();
 
-  if ( scaling -> ref_sim )
-    scaling -> ref_sim -> cancel();
-
-  if ( scaling -> ref_sim2 )
-    scaling -> ref_sim2 -> cancel();
+  for ( size_t i = 0, size = children.size(); i < size; i++ )
+  {
+    children[ i ] -> interrupt();
+  }
 }
 
 // sim_t::is_canceled =======================================================
@@ -1433,9 +1475,7 @@ void sim_t::analyze_error()
   if( current_error > 0 &&
       current_error < target_error ) 
   {
-    work_queue -> flush();
-    for ( size_t i = 0; i < children.size(); i++ )
-      children[ i ] -> work_queue -> flush();
+    interrupt();
   }
 }
 

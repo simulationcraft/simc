@@ -2751,12 +2751,16 @@ struct sim_t : private sc_thread_t
     int total_work, work;
     work_queue_t() : total_work( 0 ), work( 0 ) {}
     void init( int w ) { AUTO_LOCK(m); total_work = work = w; }
-    void flush() { init(0); }
-    int  pop() { AUTO_LOCK(m); int w = work; if( work > 0 ) --work; return w; }
-    int  size() { AUTO_LOCK(m); return work; }
+    void flush()       { AUTO_LOCK(m); work=0; }
+    int  pop()         { AUTO_LOCK(m); int w = work; if( work > 0 ) --work; return w; }
+    int  size()        { AUTO_LOCK(m); return work; }
   };
   std::shared_ptr<work_queue_t> work_queue;
   virtual void run();
+
+  // Related Simulations
+  mutex_t relatives_mutex;
+  std::vector<sim_t*> relatives;
 
   // Spell database access
   spell_data_expr_t* spell_query;
@@ -2773,6 +2777,9 @@ struct sim_t : private sc_thread_t
   bool      is_canceled() const;
   void      cancel_iteration();
   void      cancel();
+  void      interrupt();
+  void      add_relative( sim_t* cousin );
+  void      remove_relative( sim_t* cousin );
   double    progress( int* current = 0, int* final = 0, std::string* phase = 0 );
   double    progress( std::string& phase, std::string* detailed = 0 );
   void      detailed_progress( std::string*, int current_iterations, int total_iterations );
