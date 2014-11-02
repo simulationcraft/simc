@@ -1819,10 +1819,8 @@ struct ranged_t: public hunter_ranged_attack_t
         if ( p() -> active.ammo == POISONED_AMMO )
         {
           const spell_data_t* poisoned_tick = p() -> find_spell( 170661 );
-          double damage = p() -> cache.attack_power() * ( poisoned_tick -> effectN( 1 ).ap_coeff() *
-                                                          ( poisoned_tick -> duration() / poisoned_tick -> effectN( 1 ).period() ) );
-          if ( p() -> wod_hotfix )
-            damage *= 1.15;
+          double damage = s -> attack_power * ( poisoned_tick -> effectN( 1 ).ap_coeff() *
+                                                ( poisoned_tick -> duration() / poisoned_tick -> effectN( 1 ).period() ) );
           residual_action::trigger(
             p() -> active.poisoned_ammo, // ignite spell
             s -> target, // target
@@ -1882,7 +1880,6 @@ struct exotic_munitions_poisoned_ammo_t: public residual_action::residual_period
   exotic_munitions_poisoned_ammo_t( hunter_t* p, const char* name, const spell_data_t* s ):
     base_t( name, p, s )
   {
-    may_multistrike = 1;
     may_crit = true;
     tick_may_crit = true;
   }
@@ -1891,7 +1888,7 @@ struct exotic_munitions_poisoned_ammo_t: public residual_action::residual_period
   {
     base_t::init();
 
-    snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT | STATE_AP | STATE_MUL_TA;
+    snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
   }
 };
 
@@ -1901,8 +1898,6 @@ struct exotic_munitions_incendiary_ammo_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( name, p, s )
   {
     aoe = -1;
-    if ( p -> wod_hotfix )
-      base_multiplier *= 1.15;
   }
 };
 
@@ -1911,8 +1906,6 @@ struct exotic_munitions_frozen_ammo_t: public hunter_ranged_attack_t
   exotic_munitions_frozen_ammo_t( hunter_t* p, const char* name, const spell_data_t* s ):
     hunter_ranged_attack_t( name, p, s )
   {
-    if ( p -> wod_hotfix )
-      base_multiplier *= 1.15;
   }
 };
 
@@ -2309,8 +2302,6 @@ struct chimaera_shot_impact_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( name, p, s )
   {
     dual = true;
-    //if ( player -> wod_hotfix ) Hotfix from 10/29 negates this.
-      //weapon_multiplier *= 1.15;
   }
 
   virtual double action_multiplier() const
