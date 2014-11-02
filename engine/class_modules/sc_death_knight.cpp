@@ -6316,7 +6316,7 @@ void death_knight_t::init_action_list()
       // Diseases for free
       st -> add_action( this, "Howling Blast", "if=!talent.necrotic_plague.enabled&!dot.frost_fever.ticking&buff.rime.react" );
       st -> add_action( this, "Outbreak", "if=!disease.max_ticking" );
-      st -> add_talent( this, "Unholy Blight", "if=!disease.max_ticking" );
+      st -> add_talent( this, "Unholy Blight", "if=!disease.min_ticking" );
       
       // Breath of Sindragosa in use, cast it and then keep it up
       st -> add_talent( this, "Breath of Sindragosa", "if=runic_power>75");
