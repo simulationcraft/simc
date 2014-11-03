@@ -2136,19 +2136,44 @@ struct touch_of_karma_dot_t: public residual_action::residual_periodic_action_t 
     base_t( "touch_of_karma", p, p -> find_spell( 124280 ) )
   {
     may_miss = may_crit = false;
+    dual = true;
   }
 };
 
 struct touch_of_karma_t: public monk_melee_attack_t
 {
+  double interval;
+  double interval_stddev;
+  double interval_stddev_opt;
+  double pct_health;
   touch_of_karma_dot_t* touch_of_karma_dot;
   touch_of_karma_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "touch_of_karma", p, p -> spec.touch_of_karma ),
+    interval( 100 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), pct_health( 0.4 ),
     touch_of_karma_dot( new touch_of_karma_dot_t( p ) )
   {
+    add_option( opt_float( "interval", interval ) );
+    add_option( opt_float( "interval_stddev", interval_stddev_opt ) );
+    add_option( opt_float( "pct_health", pct_health ) );
     parse_options( options_str );
     stancemask = FIERCE_TIGER;
     cooldown -> duration = data().cooldown();
+    base_dd_min = base_dd_max = 0;
+
+    if ( pct_health > 0.5 ) // Does a maximum of 50% of the monk's HP.
+      pct_health = 0.5;
+
+    if ( interval < cooldown -> duration.total_seconds() )
+    {
+      sim -> errorf( "%s minimum interval for Touch of Karma is 90 seconds.", player -> name() );
+      interval = cooldown -> duration.total_seconds();
+    }
+
+    if ( interval_stddev_opt < 1 )
+      interval_stddev = interval * interval_stddev_opt;
+    // >= 1 seconds is used as a standard deviation normally
+    else
+      interval_stddev = interval_stddev_opt;
 
     may_crit = may_miss = may_dodge = may_parry = false;
   }
@@ -2157,9 +2182,18 @@ struct touch_of_karma_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    residual_action::trigger( // For now, just assume it does maximum damage.
-                              touch_of_karma_dot, execute_state -> target,
-                              data().effectN( 3 ).percent() * player -> resources.max[RESOURCE_HEALTH] );
+    if ( pct_health > 0 )
+    {
+      residual_action::trigger(
+        touch_of_karma_dot, execute_state -> target,
+        pct_health * player -> resources.max[RESOURCE_HEALTH] );
+
+      timespan_t new_cd = timespan_t::from_seconds( rng().gauss( interval, interval_stddev ) );
+      if ( new_cd < timespan_t::from_seconds( 90.0 ) )
+        new_cd = timespan_t::from_seconds( 90.0 );
+
+      cooldown -> duration = new_cd;
+    }
   }
 };
 
