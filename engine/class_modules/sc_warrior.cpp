@@ -2632,7 +2632,7 @@ struct slam_t: public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( td( execute_state -> target ) -> debuffs_slam-> up() )
+    if ( td( target ) -> debuffs_slam -> up() )
       am *= 1.0 + ( ( (double)td( execute_state -> target ) -> debuffs_slam -> current_stack ) / 2 );
 
     return am;
