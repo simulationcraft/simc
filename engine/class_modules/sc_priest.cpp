@@ -171,7 +171,6 @@ public:
     const spell_data_t* shadowy_apparitions;
     const spell_data_t* shadow_orbs;
     const spell_data_t* mastermind;
-    const spell_data_t* mana_attunement;
   } specs;
 
   // Mastery Spells
@@ -5432,10 +5431,12 @@ double priest_t::composite_rating_multiplier( rating_e rating ) const
   switch ( rating )
   {
     case RATING_SPELL_HASTE: //Shadow
+    case RATING_MELEE_HASTE: //Shadow, for Shadowfiend/Mindbender
       if ( specs.mastermind -> ok() )
         m *= 1.0 + specs.mastermind -> effectN( 1 ).percent();
       break;
     case RATING_SPELL_CRIT: //Discipline
+    case RATING_MELEE_CRIT: //Discipline, for Shadowfiend/Mindbender
       if ( specs.enlightenment -> ok() )
         m *= 1.0 + specs.enlightenment -> effectN( 2 ).percent();
       break;
