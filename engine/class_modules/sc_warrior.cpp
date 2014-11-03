@@ -24,6 +24,7 @@ struct warrior_td_t: public actor_pair_t
 
   buff_t* debuffs_colossus_smash;
   buff_t* debuffs_demoralizing_shout;
+  buff_t* debuffs_slam;
   buff_t* debuffs_taunt;
 
   warrior_t& warrior;
@@ -94,7 +95,6 @@ public:
     buff_t* raging_blow;
     // Arms only
     buff_t* colossus_smash;
-    buff_t* slam;
     buff_t* sweeping_strikes;
     // Prot only
     absorb_buff_t* shield_barrier;
@@ -2488,7 +2488,6 @@ struct shield_slam_t: public warrior_attack_t
   {
     parse_options( options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
-    cooldown = p -> cooldown.shield_slam;
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
     attack_power_mod.direct = 3.18; //Hard-coded in tooltip. (beta build 18764)
     if ( p -> wod_hotfix )
@@ -2613,18 +2612,18 @@ struct slam_t: public warrior_attack_t
     }
   }
 
-  void consume_resource()
+  void execute()
   {
-    warrior_attack_t::consume_resource();
+    warrior_attack_t::execute();
 
-    p() -> buff.slam -> trigger( 1 );
+    td( execute_state -> target ) -> debuffs_slam -> trigger( 1 );
   }
 
   double cost() const
   {
     double c = warrior_attack_t::cost();
 
-    c *= 1.0 + p() -> buff.slam -> current_stack;
+    c *= 1.0 + td( execute_state -> target ) -> debuffs_slam -> current_stack;
 
     return c;
   }
@@ -2633,8 +2632,8 @@ struct slam_t: public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p() -> buff.slam -> up() )
-      am *= 1.0 + ( ( (double)p() -> buff.slam -> current_stack ) / 2 );
+    if ( td( execute_state -> target ) -> debuffs_slam-> up() )
+      am *= 1.0 + ( ( (double)td( execute_state -> target ) -> debuffs_slam -> current_stack ) / 2 );
 
     return am;
   }
@@ -4165,7 +4164,7 @@ void warrior_t::apl_arms()
   aoe -> add_action( this, "Execute", "if=((rage>60|active_enemies=2)&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|target.time_to_die<5" );
   aoe -> add_talent( this, "Dragon Roar", "if=cooldown.colossus_smash.remains>1.5&!debuff.colossus_smash.up" );
   aoe -> add_action( this, "Whirlwind", "if=cooldown.colossus_smash.remains>1.5&(target.health.pct>20|active_enemies>3)" );
-  aoe -> add_action( this, "Rend", "cycle_targets=1,if=!ticking" );
+  aoe -> add_action( this, "Rend", "cycle_targets=1,if=!ticking&target.time_to_die>8" );
   aoe -> add_talent( this, "Bladestorm", "if=cooldown.colossus_smash.remains>6&(!talent.ravager.enabled|cooldown.ravager.remains>6)" );
   aoe -> add_talent( this, "Siegebreaker" );
   aoe -> add_talent( this, "Storm Bolt", "if=cooldown.colossus_smash.remains>4|debuff.colossus_smash.up" );
@@ -4554,6 +4553,8 @@ actor_pair_t( target, &p ), warrior( p )
 
   debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this );
   debuffs_taunt = buff_creator_t( *this, "taunt", p.find_class_spell( "Taunt" ) );
+  debuffs_slam = buff_creator_t( *this, "slam", p.talents.slam )
+    .can_cancel( false );
 }
 
 // warrior_t::init_buffs ====================================================
@@ -4655,9 +4656,6 @@ void warrior_t::create_buffs()
   buff.shield_wall = buff_creator_t( this, "shield_wall", spec.shield_wall )
     .default_value( spec.shield_wall -> effectN( 1 ).percent() )
     .cd( timespan_t::zero() );
-
-  buff.slam = buff_creator_t( this, "slam", talents.slam )
-    .can_cancel( false );
 
   buff.sudden_death = buff_creator_t( this, "sudden_death", talents.sudden_death -> effectN( 1 ).trigger() );
 
