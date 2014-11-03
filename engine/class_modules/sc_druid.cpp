@@ -6286,31 +6286,31 @@ void druid_t::apl_feral()
     def -> add_action( potion_action + ",sync=berserk,if=target.health.pct<25" );
   def -> add_action( this, "Berserk", "if=buff.tigers_fury.up" );
   if ( race == RACE_NIGHT_ELF )
-    def -> add_action( "shadowmeld,if=dot.rake.remains<0.3*dot.rake.duration&energy>=35&dot.rake.pmultiplier<2&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>15)" );
+    def -> add_action( "shadowmeld,if=dot.rake.remains<4.5&energy>=35&dot.rake.pmultiplier<2&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>15)" );
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.health.pct<25",
                      "Keep Rip from falling off during execute range." );
   def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" );
   def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
-  def -> add_action( "thrash_cat,if=buff.omen_of_clarity.react&remains<duration*0.3&active_enemies>1" );
-  def -> add_action( "thrash_cat,if=!talent.bloodtalons.enabled&combo_points=5&remains<duration*0.3&buff.omen_of_clarity.react");
+  def -> add_action( "thrash_cat,if=buff.omen_of_clarity.react&remains<4.5&active_enemies>1" );
+  def -> add_action( "thrash_cat,if=!talent.bloodtalons.enabled&combo_points=5&remains<4.5&buff.omen_of_clarity.react");
 
   // Finishers
   finish -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=target.health.pct<25&dot.rip.ticking&energy>=max_fb_energy" );
   finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<3" );
-  finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<duration*0.3&persistent_multiplier>dot.rip.pmultiplier" );
-  finish -> add_action( this, "Savage Roar", "if=(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<42*0.3" );
+  finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<7.2&persistent_multiplier>dot.rip.pmultiplier" );
+  finish -> add_action( this, "Savage Roar", "if=(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<12.6" );
   finish -> add_action( this, "Ferocious Bite", "if=(energy.time_to_max<=1|buff.berserk.up|(cooldown.tigers_fury.remains<3&energy>=max_fb_energy))" );
 
   def -> add_action( "call_action_list,name=finisher,if=combo_points=5" );
 
   // DoT Maintenance
   maintain -> add_action( this, "Rake", "cycle_targets=1,if=!talent.bloodtalons.enabled&remains<3&combo_points<5" );
-  maintain -> add_action( this, "Rake", "cycle_targets=1,if=!talent.bloodtalons.enabled&remains<duration*0.3&combo_points<5&persistent_multiplier>dot.rake.pmultiplier" );
-  maintain -> add_action( this, "Rake", "cycle_targets=1,if=talent.bloodtalons.enabled&remains<duration*0.3&combo_points<5&(!buff.predatory_swiftness.up|buff.bloodtalons.up|persistent_multiplier>dot.rake.pmultiplier)" );
-  maintain -> add_action( "thrash_cat,if=talent.bloodtalons.enabled&combo_points=5&remains<=duration*0.3&buff.omen_of_clarity.react");
+  maintain -> add_action( this, "Rake", "cycle_targets=1,if=!talent.bloodtalons.enabled&remains<4.5&combo_points<5&persistent_multiplier>dot.rake.pmultiplier" );
+  maintain -> add_action( this, "Rake", "cycle_targets=1,if=talent.bloodtalons.enabled&remains<4.5&combo_points<5&(!buff.predatory_swiftness.up|buff.bloodtalons.up|persistent_multiplier>dot.rake.pmultiplier)" );
+  maintain -> add_action( "thrash_cat,if=talent.bloodtalons.enabled&combo_points=5&remains<4.5&buff.omen_of_clarity.react");
   maintain -> add_action( "pool_resource,for_next=1" );
-  maintain -> add_action( "thrash_cat,if=remains<duration*0.3&active_enemies>1" );
-  maintain -> add_action( "moonfire_cat,cycle_targets=1,if=combo_points<5&remains<duration*0.3&active_enemies<=10" );
+  maintain -> add_action( "thrash_cat,if=remains<4.5&active_enemies>1" );
+  maintain -> add_action( "moonfire_cat,cycle_targets=1,if=combo_points<5&remains<4.2&active_enemies<=10" );
   maintain -> add_action( this, "Rake", "cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&combo_points<5" );
 
   def -> add_action( "call_action_list,name=maintain" );
