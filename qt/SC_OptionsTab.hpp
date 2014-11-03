@@ -62,6 +62,8 @@ public:
     QComboBox* scale_over;
     QComboBox* plots_points;
     QComboBox* plots_step;
+    QComboBox* plots_target_error;
+    QComboBox* plots_iterations;
     QComboBox* reforgeplot_amount;
     QComboBox* reforgeplot_step;
   } choice;

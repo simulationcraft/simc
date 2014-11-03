@@ -179,6 +179,8 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
   connect( choice.player_skill,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.plots_points,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.plots_step,         SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.plots_target_error, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.plots_iterations,   SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.print_style,        SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.pvp_crit,           SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.reforgeplot_amount, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
@@ -221,7 +223,7 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left -> addRow(        tr( "Version" ),        choice.version = createChoice( 1, "Live" ) );
 #endif
 #endif
-  globalsLayout_left -> addRow( tr(  "Target Error" ),    choice.target_error = createChoice( 8, "N/A", "Auto", "1%", "0.5%", "0.1%", "0.05%", "0.01%", "0.001%" ) );
+  globalsLayout_left -> addRow( tr(  "Target Error" ),    choice.target_error = createChoice( 8, "N/A", "Auto", "1%", "0.5%", "0.1%", "0.05%", "0.03%", "0.01%" ) );
   globalsLayout_left -> addRow( tr(    "Iterations" ),      choice.iterations = addValidatorToComboBox( 1, INT_MAX, createChoice( 8, "1", "100", "1000", "10000", "25000", "50000", "100000", "250000" ) ) );
   globalsLayout_left -> addRow( tr(  "Length (sec)" ),    choice.fight_length = addValidatorToComboBox( 1, 1000, createChoice( 10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) ) );
   globalsLayout_left -> addRow( tr(   "Vary Length" ),  choice.fight_variance = createChoice( 3, "0%", "10%", "20%" ) );
@@ -431,6 +433,12 @@ void SC_OptionsTab::createPlotsTab()
 
   choice.plots_step = addValidatorToComboBox( 1, INT_MAX, createChoice( 6, "25", "50", "100", "150", "200", "250" ) );
   plotsLayout -> addRow( tr( "Plot Step Amount" ), choice.plots_step );
+
+  choice.plots_target_error = createChoice( 5, "N/A", "Auto", "1%", "0.5%", "0.1%" );
+  plotsLayout -> addRow( tr( "Plot Target Error" ), choice.plots_target_error );
+
+  choice.plots_iterations = createChoice( 4, "100", "1000", "Iter/10", "Iter/100" );
+  plotsLayout -> addRow( tr( "Plot Iterations" ), choice.plots_iterations );
 
   plotsButtonGroup = new QButtonGroup();
   plotsButtonGroup -> setExclusive( false );
@@ -857,6 +865,14 @@ void SC_OptionsTab::createToolTips()
   choice.plots_step -> setToolTip( tr( "The delta between two points of the graph.\n"
                                        "The deltas on the horizontal axis will be within the [-points * steps / 2 ; +points * steps / 2] interval" ) );
 
+  choice.plots_target_error -> setToolTip( tr( "Target error for plots.\n" ) +
+                                           tr( "N/A:  Do not use this feature." ) +
+                                           tr( "Auto: Use simulation defaults.\n" ) +
+                                           tr( "X%:   Each plot point will sim until less than X% DPS error is reached." ) );
+  choice.plots_iterations -> setToolTip( tr( "Number of iterations for each plot point.\n" ) +
+                                         tr( "Iter/10 and Iter/100 scale with the number of\n" ) +
+                                         tr( "iterations selected on the general options tab." ) );
+
   choice.reforgeplot_amount -> setToolTip( tr( "The maximum amount to reforge per stat." ) );
   choice.reforgeplot_step -> setToolTip( tr( "The stat difference between two points.\n"
                                              "It's NOT the number of steps: a lower value will generate more points!" ) );
@@ -1060,6 +1076,34 @@ QString SC_OptionsTab::mergeOptions()
   options += "dps_plot_points=" + choice.plots_points -> currentText() + "\n";
   options += "dps_plot_step=" + choice.plots_step -> currentText() + "\n";
 
+  if ( choice.plots_target_error -> currentIndex() < 2 )
+  {
+    options += "dps_plot_target_error=0\n";
+    if ( choice.plots_target_error -> currentIndex() == 0 )
+    {
+      options += "dps_plot_iterations=";
+
+      std::vector<std::string> splits = util::string_split( choice.plots_iterations -> currentText().toStdString(), "/" );
+      if ( splits.size() > 1 )
+      {
+        int base_iter = util::str_to_num<int>( choice.iterations -> currentText().toStdString() );
+        int divisor = util::str_to_num<int>( splits[ 1 ].c_str() );
+        options += base_iter / divisor + "\n";
+      }
+      else
+        options += choice.plots_iterations -> currentText() + "\n";
+    }
+    else
+      options += "dps_plot_iterations=0\n";
+  }
+  else
+  {
+    std::vector<std::string> splits = util::string_split( choice.plots_target_error -> currentText().toStdString(), "%" );
+    assert( splits.size() > 0 );
+    options += "dps_plot_target_error=" + QString( splits[ 0 ].c_str() ) + "\n";
+    options += "dps_plot_iterations=0\n";
+  }
+
   options += "reforge_plot_stat=none";
   buttons = reforgeplotsButtonGroup->buttons();
   for ( int i = 0; reforgePlotOptions[ i ].label; i++ )
@@ -1195,6 +1239,12 @@ void SC_OptionsTab::toggleInterdependentOptions()
     choice.iterations -> setDisabled( true );
   else
     choice.iterations -> setEnabled( true );
+
+  // same thing for plot tab
+  if ( choice.plots_target_error -> currentIndex() > 0 )
+    choice.plots_iterations -> setDisabled( true );
+  else
+    choice.plots_iterations -> setEnabled( true );
 
   // others go here
 
