@@ -3,7 +3,7 @@ level=100
 race=troll
 role=dps
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!.02..12
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!.02..11
 spec=windwalker
 
 # This default action priority list is automatically created based on your character.
@@ -89,14 +89,6 @@ trinket2=scales_of_doom,id=113612,bonus_id=567
 main_hand=hansgars_forgehammer,id=113897,bonus_id=567,enchant=mark_of_the_frostwolf
 off_hand=hansgars_forgehammer,id=113897,bonus_id=567,enchant=mark_of_the_frostwolf
 
-# Gear Summary
-# gear_agility=3542
-# gear_stamina=4478
-# gear_crit_rating=1443
-# gear_haste_rating=394
-# gear_mastery_rating=306
-# gear_armor=1147
-# gear_multistrike_rating=1822
-# gear_versatility_rating=250
-# set_bonus=tier17_2pc=1
-# set_bonus=tier17_4pc=1
+gear_crit_rating=394
+gear_haste_rating=1822
+gear_multistrike_rating=1443

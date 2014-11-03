@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!....200
+talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!....201
 glyphs=dark_soul
 spec=demonology
 
@@ -102,13 +102,10 @@ trinket1=fleshrenders_meathook,id=110002,bonus_id=524
 trinket2=tovras_lightning_repository,id=110001,bonus_id=524
 main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant=mark_of_bleeding_hollow
 
-# Gear Summary
-# gear_stamina=2465
-# gear_intellect=1960
-# gear_spell_power=958
-# gear_crit_rating=661
-# gear_haste_rating=203
-# gear_mastery_rating=1290
-# gear_armor=552
-# gear_multistrike_rating=444
+gear_crit_rating=519.6
+gear_haste_rating=519.6
+gear_mastery_rating=519.6
+gear_multistrike_rating=519.6
+gear_versatility_rating=519.6
+
 default_pet=felguard
