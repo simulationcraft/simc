@@ -10,7 +10,6 @@ Add all buffs
 Change expel harm to heal later on.
 
 GENERAL:
-- Healing Elixers - fix cooldown not working
 - Fortuitous Sphers - Finish implementing
 - Break up Healing Elixers and Fortuitous into two spells; one for proc and one for heal
 
@@ -346,6 +345,7 @@ public:
   struct cooldowns_t
   {
     cooldown_t* healing_elixirs;
+    cooldown_t* healing_sphere;
   } cooldown;
 
   struct passives_t
@@ -390,6 +390,7 @@ public:
     // actives
     _active_stance = FIERCE_TIGER;
     cooldown.healing_elixirs = get_cooldown( "healing_elixirs" );
+    cooldown.healing_sphere = get_cooldown( "healing_sphere" );
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
     regen_caches[CACHE_ATTACK_HASTE] = true;
@@ -3531,16 +3532,12 @@ struct healing_elixirs_t: public monk_heal_t
 
 struct healing_sphere_t: public monk_heal_t
 {
-  cooldown_t* healing_sphere;
   healing_sphere_t( monk_t& p ):
-    monk_heal_t( "healing_sphere", p, p.spec.healing_sphere ),
-    healing_sphere( 0 )
+    monk_heal_t( "healing_sphere", p, p.spec.healing_sphere )
   {
     harmful = false;
     trigger_gcd = timespan_t::zero();
-    healing_sphere = p.get_cooldown( "healing_sphere" );
-    healing_sphere -> duration = p.glyph.fortuitous_spheres -> effectN( 2 ).time_value();
-    cooldown = healing_sphere;
+    cooldown -> duration = p.glyph.fortuitous_spheres -> effectN( 2 ).time_value();
   }
 };
 
@@ -4570,8 +4567,10 @@ void monk_t::assess_damage( school_e school,
     buff.guard -> up();
 
   if ( health_percentage() < glyph.fortuitous_spheres -> effectN( 1 ).percent() && glyph.fortuitous_spheres -> ok() )
-    if ( active_actions.healing_sphere -> cooldown -> up() )
+  {
+    if ( cooldown.healing_sphere -> up() )
       active_actions.healing_sphere -> execute();
+  }
 
   if ( s -> result == RESULT_DODGE && sets.set( MONK_BREWMASTER, T17, B2 ) )
     resource_gain( RESOURCE_ENERGY, sets.set( MONK_BREWMASTER, T17, B2 ) -> effectN( 1 ).base_value(), gain.energy_refund );
