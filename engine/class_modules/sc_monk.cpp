@@ -10,7 +10,7 @@ Add all buffs
 Change expel harm to heal later on.
 
 GENERAL:
-- Healing Elixers - something is wrong with it's implementation
+- Healing Elixers - fix cooldown not working
 - Fortuitous Sphers - Finish implementing
 - Break up Healing Elixers and Fortuitous into two spells; one for proc and one for heal
 
@@ -56,7 +56,6 @@ Gift of the Serpent Proc Coefficients:
 115072 Expel Harm 1.00
 
 BREWMASTER:
-- Level 75 talents - dampen harm added - currently stacks are consumed on all attacks, not just above 15% max hp
 
 - Zen Meditation
 */
@@ -110,6 +109,7 @@ public:
     action_t* blackout_kick_heal;
     action_t* chi_explosion_dot;
     action_t* healing_elixir;
+    action_t* healing_sphere;
     actions::spells::stagger_self_damage_t* stagger_self_damage;
   } active_actions;
 
@@ -131,7 +131,6 @@ public:
     buff_t* energizing_brew;
     buff_t* forceful_winds;
     buff_t* fortifying_brew;
-    buff_t* fortuitous_spheres;
     buff_t* mana_tea;
     buff_t* power_strikes;
     buff_t* rushing_jade_wind;
@@ -237,7 +236,7 @@ public:
   {
     // GENERAL
     const spell_data_t* critical_strikes;
-    const spell_data_t* fortuitous_spheres;
+    const spell_data_t* healing_sphere;
     const spell_data_t* leather_specialization;
     const spell_data_t* legacy_of_the_white_tiger;
     const spell_data_t* rising_sun_kick;
@@ -3524,44 +3523,29 @@ struct healing_elixirs_t: public monk_heal_t
     trigger_gcd = timespan_t::zero();
     healing_elixir = p.get_cooldown( "healing_elixir" );
     healing_elixir -> duration = data().effectN( 1 ).period();
+    cooldown = healing_elixir;
     pct_heal = p.passives.healing_elixirs -> effectN( 1 ).percent();
   }
 };
 
 // ==========================================================================
-// Fortuitous Spheres
+// Healing Sphere
 // ==========================================================================
 
-struct fortuitous_spheres_t: public monk_heal_t
+struct healing_sphere_t: public monk_heal_t
 {
-  fortuitous_spheres_t( monk_t& p, const std::string& options_str ):
-    monk_heal_t( "fortuitous_spheres", p, p.spec.fortuitous_spheres )
+  cooldown_t* healing_sphere;
+  healing_sphere_t( monk_t& p ):
+    monk_heal_t( "healing_sphere", p, p.spec.healing_sphere ),
+    healing_sphere( 0 )
   {
-    parse_options( options_str );
     harmful = false;
     trigger_gcd = timespan_t::zero();
-    cooldown -> duration = p.glyph.fortuitous_spheres -> effectN( 2 ).time_value();
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> buff.fortuitous_spheres -> stack() > 0 )
-      return true;
-
-    return false;
-  }
-
-  virtual void execute()
-  {
-    if ( p() -> buff.fortuitous_spheres -> up() )
-    {
-      monk_heal_t::execute();
-
-      p() -> buff.fortuitous_spheres -> decrement();
-    }
+    healing_sphere = p.get_cooldown( "healing_sphere" );
+    healing_sphere -> duration = p.glyph.fortuitous_spheres -> effectN( 2 ).time_value();
+    cooldown = healing_sphere;
   }
 };
-
 
 } // end namespace heals
 
@@ -3781,7 +3765,7 @@ void monk_t::init_spells()
 
   // General Passives
   spec.critical_strikes              = find_specialization_spell( "Critical Strikes" );
-  spec.fortuitous_spheres            = find_spell( 125355 );
+  spec.healing_sphere                = find_spell( 125355 );
   spec.leather_specialization        = find_specialization_spell( "Leather Specialization" );
   spec.legacy_of_the_white_tiger     = find_specialization_spell( "Legacy of the White Tiger" );
   spec.rising_sun_kick               = find_specialization_spell( "Rising Sun Kick" );
@@ -3873,13 +3857,14 @@ void monk_t::init_spells()
   mastery.gift_of_the_serpent        = find_mastery_spell( MONK_MISTWEAVER );
 
   //SPELLS
-  active_actions.blackout_kick_dot = new actions::dot_blackout_kick_t(this);
-  //active_actions.blackout_kick_heal = new actions::heal_blackout_kick_t( this );
-  active_actions.chi_explosion_dot = new actions::dot_chi_explosion_t(this);
-  active_actions.healing_elixir = new actions::healing_elixirs_t(*this);
+  active_actions.blackout_kick_dot    = new actions::dot_blackout_kick_t( this );
+  //active_actions.blackout_kick_heal   = new actions::heal_blackout_kick_t( this );
+  active_actions.chi_explosion_dot    = new actions::dot_chi_explosion_t( this );
+  active_actions.healing_elixir       = new actions::healing_elixirs_t( *this );
+  active_actions.healing_sphere       = new actions::healing_sphere_t( *this );
 
   if (specialization() == MONK_BREWMASTER)
-    active_actions.stagger_self_damage = new actions::stagger_self_damage_t(this);
+    active_actions.stagger_self_damage = new actions::stagger_self_damage_t( this );
 }
 
 // monk_t::init_base ========================================================
@@ -3951,8 +3936,6 @@ void monk_t::create_buffs()
 
   // General
   buff.fortifying_brew = buff_creator_t( this, "fortifying_brew", find_spell( 120954 ) );
-
-  buff.fortuitous_spheres = buff_creator_t( this, "fortuitous_spheres", find_spell( 147494 ) );
 
   buff.power_strikes = buff_creator_t( this, "power_strikes", talent.power_strikes -> effectN( 1 ).trigger() );
 
@@ -4589,6 +4572,10 @@ void monk_t::assess_damage( school_e school,
   else if ( s -> result_total > 0 && school != SCHOOL_PHYSICAL && glyph.guard -> ok() )
     buff.guard -> up();
 
+  if ( health_percentage() < glyph.fortuitous_spheres -> effectN( 1 ).percent() && glyph.fortuitous_spheres -> ok() )
+    if ( active_actions.healing_sphere -> cooldown -> up() )
+      active_actions.healing_sphere -> execute();
+
   if ( s -> result == RESULT_DODGE && sets.set( MONK_BREWMASTER, T17, B2 ) )
     resource_gain( RESOURCE_ENERGY, sets.set( MONK_BREWMASTER, T17, B2 ) -> effectN( 1 ).base_value(), gain.energy_refund );
 
@@ -4795,7 +4782,7 @@ void monk_t::apl_combat_brewmaster()
 
   aoe -> add_action( this, "Guard" );
   if ( level >= 100 )
-    aoe ->add_action( this, "Breath of Fire", "if=chi>=3&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=gcd" );
+    aoe -> add_action( this, "Breath of Fire", "if=chi>=3&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=gcd" );
   else
     aoe -> add_action( this, "Breath of Fire", "if=chi>=3&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=1&target.debuff.dizzying_haze.up" );
   aoe -> add_talent( this, "Chi Explosion", "if=chi>=4" );
