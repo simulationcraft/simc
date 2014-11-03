@@ -3814,15 +3814,6 @@ void monk_t::init_spells()
   stance_data.wise_serpent           = find_specialization_spell( "Stance of the Wise Serpent" );
   stance_data.spirited_crane         = find_specialization_spell( "Stance of the Spirited Crane" );
 
-  //SPELLS
-  active_actions.blackout_kick_dot   = new actions::dot_blackout_kick_t( this );
-  //active_actions.blackout_kick_heal = new actions::heal_blackout_kick_t( this );
-  active_actions.chi_explosion_dot   = new actions::dot_chi_explosion_t( this );
-  active_actions.healing_elixir      = new actions::healing_elixirs_t( *this );
-
-  if ( specialization() == MONK_BREWMASTER )
-    active_actions.stagger_self_damage = new actions::stagger_self_damage_t( this );
-
   passives.tier15_2pc_melee          = find_spell( 138311 );
   passives.enveloping_mist           = find_class_spell( "Enveloping Mist" );
   passives.surging_mist              = find_class_spell( "Surging Mist" );
@@ -3844,6 +3835,15 @@ void monk_t::init_spells()
   mastery.bottled_fury               = find_mastery_spell( MONK_WINDWALKER );
   mastery.elusive_brawler            = find_mastery_spell( MONK_BREWMASTER );
   mastery.gift_of_the_serpent        = find_mastery_spell( MONK_MISTWEAVER );
+
+  //SPELLS
+  active_actions.blackout_kick_dot = new actions::dot_blackout_kick_t(this);
+  //active_actions.blackout_kick_heal = new actions::heal_blackout_kick_t( this );
+  active_actions.chi_explosion_dot = new actions::dot_chi_explosion_t(this);
+  active_actions.healing_elixir = new actions::healing_elixirs_t(*this);
+
+  if (specialization() == MONK_BREWMASTER)
+    active_actions.stagger_self_damage = new actions::stagger_self_damage_t(this);
 }
 
 // monk_t::init_base ========================================================
