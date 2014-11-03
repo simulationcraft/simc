@@ -4067,7 +4067,7 @@ void monk_t::interrupt()
   // This function triggers stuns, movement, and other types of halts.
 
   // End any active soothing_mist channels
-  if ( buff.channeling_soothing_mist -> check() )
+  /*if ( buff.channeling_soothing_mist -> check() )
   {
     for ( size_t i = 0, actors = sim -> player_non_sleeping_list.size(); i < actors; ++i )
     {
@@ -4079,7 +4079,7 @@ void monk_t::interrupt()
         break;
       }
     }
-  }
+  }*/
   player_t::interrupt();
 }
 
@@ -4481,8 +4481,8 @@ void monk_t::combat_begin()
     for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
     {
       player_t* p = sim -> player_non_sleeping_list[i];
-      if ( p -> is_enemy() || p -> type == PLAYER_GUARDIAN )
-        break;
+      if ( p -> type == PLAYER_GUARDIAN )
+        continue;
 
       p -> buffs.fierce_tiger_movement_aura -> trigger();
     }
@@ -5076,8 +5076,8 @@ bool monk_t::switch_to_stance( stance_e to )
     for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
     {
       player_t* p = sim -> player_non_sleeping_list[i];
-      if ( p -> is_enemy() || p -> type == PLAYER_GUARDIAN )
-        break;
+      if ( p -> type == PLAYER_GUARDIAN )
+        continue;
 
       p -> buffs.fierce_tiger_movement_aura -> trigger();
     }
@@ -5087,8 +5087,8 @@ bool monk_t::switch_to_stance( stance_e to )
     for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
     {
       player_t* p = sim -> player_non_sleeping_list[i];
-      if ( p -> is_enemy() || p -> type == PLAYER_GUARDIAN )
-        break;
+      if ( p -> type == PLAYER_GUARDIAN )
+        continue;
 
       p -> buffs.fierce_tiger_movement_aura -> expire();
     }

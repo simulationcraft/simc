@@ -1608,6 +1608,9 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
 
 bool action_t::usable_moving() const
 {
+  if ( player -> buffs.aspect_of_the_fox -> up() )
+    return true;
+
   if ( execute_time() > timespan_t::zero() )
     return false;
 

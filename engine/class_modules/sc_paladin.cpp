@@ -1455,7 +1455,7 @@ struct devotion_aura_t : public paladin_spell_t
       for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
       {
         player_t* p = sim -> player_non_sleeping_list[ i ];
-        if ( p -> is_pet() || p -> is_enemy() )
+        if ( p -> is_pet() )
           continue;
 
         p -> buffs.devotion_aura -> trigger(); // Technically these stack; we're abstracting somewhat by assuming they don't

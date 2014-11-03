@@ -3836,7 +3836,7 @@ struct time_warp_t : public mage_spell_t
     for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
     {
       player_t* p = sim -> player_non_sleeping_list[ i ];
-      if ( p -> buffs.exhaustion -> check() || p -> is_pet() || p -> is_enemy() )
+      if ( p -> buffs.exhaustion -> check() || p -> is_pet() )
         continue;
 
       p -> buffs.bloodlust -> trigger(); // Bloodlust and Timewarp are the same

@@ -5160,8 +5160,8 @@ struct stampeding_roar_t : public druid_spell_t
     for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
     {
       player_t* p = sim -> player_non_sleeping_list[ i ];
-      if( p -> is_enemy() || p -> type == PLAYER_GUARDIAN )
-        break;
+      if( p -> type == PLAYER_GUARDIAN )
+        continue;
 
       p -> buffs.stampeding_roar -> trigger();
     }
