@@ -31,6 +31,7 @@ public:
     // options
     QComboBox* version;
     QComboBox* world_lag;
+    QComboBox* target_error;
     QComboBox* iterations;
     QComboBox* fight_length;
     QComboBox* fight_variance;
@@ -81,6 +82,7 @@ protected:
   void createReforgePlotsTab();
   void createItemDataSourceSelector( QFormLayout* );
   QComboBox* addValidatorToComboBox( int lowerBound, int upperBound, QComboBox* );
+  void toggleInterdependentOptions();
 
 private slots:
   void allBuffsChanged( bool checked );
