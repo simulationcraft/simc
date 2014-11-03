@@ -2967,6 +2967,7 @@ struct plot_t
   double dps_plot_step;
   int    dps_plot_points;
   int    dps_plot_iterations;
+  double dps_plot_target_error;
   int    dps_plot_debug;
   stat_e current_plot_stat;
   int    num_plot_stats, remaining_plot_stats, remaining_plot_points;

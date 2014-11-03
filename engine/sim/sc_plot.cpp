@@ -46,7 +46,8 @@ plot_t::plot_t( sim_t* s ) :
   sim( s ),
   dps_plot_step( 160.0 ),
   dps_plot_points( 20 ),
-  dps_plot_iterations ( -1 ),
+  dps_plot_iterations( -1 ),
+  dps_plot_target_error( 0 ),
   dps_plot_debug( 0 ),
   current_plot_stat( STAT_NONE ),
   num_plot_stats( 0 ),
@@ -145,7 +146,8 @@ void plot_t::analyze_stats()
       if ( j != 0 )
       {
         delta_sim = new sim_t( sim );
-        if ( dps_plot_iterations > 0 ) delta_sim -> iterations = dps_plot_iterations;
+        if ( dps_plot_iterations   > 0 ) delta_sim -> iterations   = dps_plot_iterations;
+        if ( dps_plot_target_error > 0 ) delta_sim -> target_error = dps_plot_target_error;
         delta_sim -> enchant.add_stat( i, j * dps_plot_step );
         if ( sim -> report_progress )
         {
@@ -257,6 +259,7 @@ void plot_t::analyze()
 void plot_t::create_options()
 {
   sim->add_option(opt_int("dps_plot_iterations", dps_plot_iterations));
+  sim->add_option(opt_float("dps_plot_target_error", dps_plot_target_error));
   sim->add_option(opt_int("dps_plot_points", dps_plot_points));
   sim->add_option(opt_string("dps_plot_stat", dps_plot_stat_str));
   sim->add_option(opt_float("dps_plot_step", dps_plot_step));
