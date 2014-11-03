@@ -2196,8 +2196,6 @@ void player_t::create_buffs()
 
       buffs.nitro_boosts       = buff_creator_t( this, "nitro_boosts", find_spell( 54861 ) );
 
-      debuffs.dazed            = buff_creator_t( this, "dazed", find_spell( 15571 ) );
-
       buffs.cooldown_reduction = buff_creator_t( this, "readiness" ).chance( 0 )
         .default_value( 1 );
       buffs.amplification = buff_creator_t( this, "amplification", find_spell( 146051 ) )
@@ -2211,6 +2209,7 @@ void player_t::create_buffs()
                               .add_invalidate( CACHE_SPIRIT )
                               .chance( 0 );
     }
+    debuffs.dazed = buff_creator_t( this, "dazed", find_spell( 15571 ) );
 
   }
 
