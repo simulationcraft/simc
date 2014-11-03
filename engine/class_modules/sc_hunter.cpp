@@ -4458,7 +4458,7 @@ struct hunter_module_t: public module_t
   virtual bool valid() const { return true; }
   virtual void init( sim_t* sim ) const
   {
-    for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); i++ )
+    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
     {
       player_t* p = sim -> actor_list[i];
 
