@@ -353,7 +353,7 @@ public:
   struct passives_t
   {
     const spell_data_t* enveloping_mist;
-    const spell_data_t* healing_elixers;
+    const spell_data_t* healing_elixirs;
     const spell_data_t* storm_earth_and_fire;
     const spell_data_t* surging_mist;
     const spell_data_t* tier15_2pc_melee;
@@ -3488,7 +3488,7 @@ struct healing_elixirs_t: public monk_heal_t
     trigger_gcd = timespan_t::zero();
     healing_elixir = p.get_cooldown( "healing_elixir" );
     healing_elixir -> duration = data().effectN( 1 ).period();
-    pct_heal = p.passives.healing_elixers -> effectN( 1 ).percent();
+    pct_heal = p.passives.healing_elixirs -> effectN( 1 ).percent();
   }
 };
 
@@ -3826,7 +3826,7 @@ void monk_t::init_spells()
   passives.tier15_2pc_melee          = find_spell( 138311 );
   passives.enveloping_mist           = find_class_spell( "Enveloping Mist" );
   passives.surging_mist              = find_class_spell( "Surging Mist" );
-  passives.healing_elixers           = find_spell ( 12281 );
+  passives.healing_elixirs           = find_spell ( 12281 );
   passives.storm_earth_and_fire      = find_spell( 138228 );
   passives.hotfix_passive            = find_spell( 137022 );
 
