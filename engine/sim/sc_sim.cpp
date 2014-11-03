@@ -2066,13 +2066,13 @@ bool sim_t::iterate()
 
   for( int i = 0; work_queue -> pop(); ++i )
   {
+    combat( i );
+
     if ( progress_bar.update() )
     {
       util::fprintf( stdout, "%s %s\r", sim_phase_str.c_str(), progress_bar.status.c_str() );
       fflush( stdout );
     }
-
-    combat( i );
 
     do_pause();
   }
