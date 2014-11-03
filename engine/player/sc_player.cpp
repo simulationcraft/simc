@@ -9808,18 +9808,17 @@ void player_collected_data_t::collect_data( const player_t& p )
   compound_dmg.add( total_iteration_dmg );
   dps.add( f_length ? total_iteration_dmg / f_length : 0 );
   dpse.add( sim_length ? total_iteration_dmg / sim_length : 0 );
-  double dps_metric = total_iteration_dmg / f_length;
+  double dps_metric = f_length ? ( total_iteration_dmg / f_length ) : 0;
 
   compound_heal.add( total_iteration_heal );
   hps.add( f_length ? total_iteration_heal / f_length : 0 );
   hpse.add( sim_length ? total_iteration_heal / sim_length : 0 );
-  double heal_metric = total_iteration_heal / f_length;
+  compound_absorb.add( total_iteration_absorb );
+  aps.add( f_length ? total_iteration_absorb / f_length : 0.0 );
+  double heal_metric = f_length ? ( ( total_iteration_heal + total_iteration_absorb ) / f_length ) : 0;
 
   heal_taken.add( p.iteration_heal_taken );
   htps.add( f_length ? p.iteration_heal_taken / f_length : 0 );
-
-  compound_absorb.add( total_iteration_absorb );
-  aps.add( f_length ? total_iteration_absorb / f_length : 0.0 );
   absorb_taken.add( p.iteration_absorb_taken );
   atps.add( f_length ? p.iteration_absorb_taken / f_length : 0.0 );
 
