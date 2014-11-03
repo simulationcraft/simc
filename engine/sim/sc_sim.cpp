@@ -2802,9 +2802,16 @@ double sim_t::progress( int* current,
 
   if( target_error > 0 && current_error > 0 )
   {
-    int projected_work = total_current_iterations * ( current_error * current_error ) / ( target_error * target_error );
-    if( projected_work < total_work )
-      total_work = projected_work;
+    if( current_error < target_error )
+    {
+      total_work = total_current_iterations;  // We are done.
+    }
+    else
+    {
+      int projected_work = total_current_iterations * ( current_error * current_error ) / ( target_error * target_error );
+      if( projected_work < total_work )
+	total_work = projected_work;
+    }
   }
 
   if ( current ) *current = total_current_iterations;
