@@ -3950,8 +3950,10 @@ void player_t::stun()
 
 void player_t::moving()
 {
-  // FIXME! In the future, some movement events may not cause auto-attack to stop.
-  halt();
+  if ( buffs.aspect_of_the_fox -> up() )
+    return;
+  else
+    halt();
 }
 
 // player_t::clear_debuffs===================================================
