@@ -2182,17 +2182,17 @@ struct touch_of_karma_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
+    timespan_t new_cd = timespan_t::from_seconds( rng().gauss( interval, interval_stddev ) );
+    if ( new_cd < timespan_t::from_seconds( 90.0 ) )
+      new_cd = timespan_t::from_seconds( 90.0 );
+
+    cooldown -> duration = new_cd;
+
     if ( pct_health > 0 )
     {
       residual_action::trigger(
         touch_of_karma_dot, execute_state -> target,
         pct_health * player -> resources.max[RESOURCE_HEALTH] );
-
-      timespan_t new_cd = timespan_t::from_seconds( rng().gauss( interval, interval_stddev ) );
-      if ( new_cd < timespan_t::from_seconds( 90.0 ) )
-        new_cd = timespan_t::from_seconds( 90.0 );
-
-      cooldown -> duration = new_cd;
     }
   }
 };
