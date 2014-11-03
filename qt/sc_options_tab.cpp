@@ -635,6 +635,8 @@ void SC_OptionsTab::decodeOptions()
 
   load_setting( settings, "plot_points", choice.plots_points, "40" );
   load_setting( settings, "plot_step", choice.plots_step, "50" );
+  load_setting( settings, "plot_target_error", choice.plots_target_error, "1" );
+  load_setting( settings, "plot_iterations", choice.plots_iterations, "100" );
 
   load_setting( settings, "reforgeplot_amount", choice.reforgeplot_amount, "500" );
   load_setting( settings, "reforgeplot_step", choice.reforgeplot_step, "50" );
@@ -728,6 +730,11 @@ void SC_OptionsTab::encodeOptions()
   settings.setValue( "center_scale_delta", choice.center_scale_delta -> currentText() );
   settings.setValue( "scale_over", choice.scale_over -> currentText() );
   settings.setValue( "challenge_mode", choice.challenge_mode -> currentText() );
+
+  settings.setValue( "plot_points", choice.plots_points -> currentText() );
+  settings.setValue( "plot_step", choice.plots_step -> currentText() );
+  settings.setValue( "plot_target_error", choice.plots_target_error -> currentText() );
+  settings.setValue( "plot_iterations", choice.plots_iterations -> currentText() );
 
   QString encoded;
 
