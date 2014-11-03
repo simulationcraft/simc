@@ -345,8 +345,7 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
-    cooldowns_t* fists_of_fury;
-    cooldowns_t* rising_sun_kick;
+    cooldown_t* healing_elixirs;
   } cooldown;
 
   struct passives_t
@@ -384,12 +383,13 @@ public:
     spec( specs_t() ),
     mastery( mastery_spells_t() ),
     glyph( glyphs_t() ),
+    cooldown( cooldowns_t() ),
     passives( passives_t() ),
     user_options( options_t() )
   {
     // actives
     _active_stance = FIERCE_TIGER;
-
+    cooldown.healing_elixirs = get_cooldown( "healing_elixirs" );
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
     regen_caches[CACHE_ATTACK_HASTE] = true;
@@ -2386,7 +2386,7 @@ struct tigereye_brew_t: public monk_spell_t
 
     if ( p() -> talent.healing_elixirs -> ok() )
     {
-      if ( p() -> active_actions.healing_elixir -> cooldown -> up() )
+      if ( p() -> cooldown.healing_elixirs -> up() )
         p() -> active_actions.healing_elixir -> execute();
     }
 
@@ -2836,7 +2836,7 @@ struct elusive_brew_t: public monk_spell_t
 
     if ( p() -> talent.healing_elixirs -> ok() )
     {
-      if ( p() -> active_actions.healing_elixir -> cooldown -> up() )
+      if ( p() -> cooldown.healing_elixirs -> up() )
         p() -> active_actions.healing_elixir -> execute();
     }
 
@@ -2890,7 +2890,7 @@ struct mana_tea_t: public monk_spell_t
 
     if ( p() -> talent.healing_elixirs -> ok() )
     {
-      if ( p() -> active_actions.healing_elixir -> cooldown -> up() )
+      if ( p() -> cooldown.healing_elixirs -> up() )
         p() -> active_actions.healing_elixir -> execute();
     }
 
@@ -3514,19 +3514,16 @@ struct gift_of_the_ox_t: public monk_heal_t
 
 struct healing_elixirs_t: public monk_heal_t
 {
-  cooldown_t* healing_elixir;
   healing_elixirs_t( monk_t& p ):
-    monk_heal_t( "healing_elixirs", p, p.talent.healing_elixirs ),
-    healing_elixir( 0 )
+    monk_heal_t( "healing_elixirs", p, p.talent.healing_elixirs )
   {
     harmful = may_crit = false;
     trigger_gcd = timespan_t::zero();
-    healing_elixir = p.get_cooldown( "healing_elixir" );
-    healing_elixir -> duration = data().effectN( 1 ).period();
-    cooldown = healing_elixir;
     pct_heal = p.passives.healing_elixirs -> effectN( 1 ).percent();
+    cooldown -> duration = data().effectN( 1 ).period();
   }
 };
+
 
 // ==========================================================================
 // Healing Sphere
