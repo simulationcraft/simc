@@ -916,6 +916,8 @@ public:
     base_t::summon( duration );
     // pet appears at the target
     current.distance = 0;
+    owner_coeff.ap_from_ap = 1.0 / 3.0;
+    owner_coeff.sp_from_ap = 1.0 / 3.0;
 
     buffs.stampede -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
 
