@@ -5514,6 +5514,8 @@ public:
       << "\t\t\t\t\t<div class=\"toggle-content\">\n";
 
     os << p.name() << "\n<br>";
+    os << "\t\t\t\t\t<p>Overall DPS</p>\n";
+    os << p.collected_data.dps.mean() << "</p>\n";
     os << "\t\t\t\t\t<p>Percentage of damage dealt to primary target</p>\n";
     os << "%" << ( ( priority_damage / all_damage ) * 100 ) << "</p>\n";
     if ( cs_damage > 0 )
