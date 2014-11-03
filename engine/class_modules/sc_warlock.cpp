@@ -5667,9 +5667,9 @@ void warlock_t::apl_destruction()
   aoe -> action_list_str += "/chaos_bolt,if=buff.havoc.remains>cast_time&buff.havoc.stack>=3";
   aoe -> action_list_str += "/cataclysm";
   aoe -> action_list_str += "/fire_and_brimstone,if=buff.fire_and_brimstone.down";
-  aoe -> action_list_str += "/immolate,if=buff.fire_and_brimstone.up&!dot.immolate_fnb.ticking";
+  aoe -> action_list_str += "/immolate,if=buff.fire_and_brimstone.up&!dot.immolate.ticking";
   aoe -> action_list_str += "/conflagrate,if=buff.fire_and_brimstone.up&charges=2";
-  aoe -> action_list_str += "/immolate,if=buff.fire_and_brimstone.up&dot.immolate_fnb.remains<=(dot.immolate_fnb.duration*0.3)";
+  aoe -> action_list_str += "/immolate,if=buff.fire_and_brimstone.up&dot.immolate.remains<=(dot.immolate.duration*0.3)";
   aoe -> action_list_str += "/chaos_bolt,if=!talent.charred_remains.enabled&active_enemies=4";
   aoe -> action_list_str += "/chaos_bolt,if=talent.charred_remains.enabled&buff.fire_and_brimstone.up&burning_ember>=2.5";
   aoe -> action_list_str += "/incinerate";

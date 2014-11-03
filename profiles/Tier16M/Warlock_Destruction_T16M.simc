@@ -70,9 +70,9 @@ actions.aoe+=/shadowburn,if=buff.havoc.remains
 actions.aoe+=/chaos_bolt,if=buff.havoc.remains>cast_time&buff.havoc.stack>=3
 actions.aoe+=/cataclysm
 actions.aoe+=/fire_and_brimstone,if=buff.fire_and_brimstone.down
-actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&!dot.immolate_fnb.ticking
+actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&!dot.immolate.ticking
 actions.aoe+=/conflagrate,if=buff.fire_and_brimstone.up&charges=2
-actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&dot.immolate_fnb.remains<=(dot.immolate_fnb.duration*0.3)
+actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&dot.immolate.remains<=(dot.immolate.duration*0.3)
 actions.aoe+=/chaos_bolt,if=!talent.charred_remains.enabled&active_enemies=4
 actions.aoe+=/chaos_bolt,if=talent.charred_remains.enabled&buff.fire_and_brimstone.up&burning_ember>=2.5
 actions.aoe+=/incinerate
