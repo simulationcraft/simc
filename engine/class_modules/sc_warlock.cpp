@@ -286,6 +286,7 @@ public:
     buff_t* molten_core;
     buff_t* soul_swap;
     buff_t* soulburn;
+    buff_t* kiljaedens_cunning;
 
     buff_t* chaotic_infusion;
 
@@ -1793,6 +1794,16 @@ public:
     return true;
   }
 
+  virtual bool usable_moving() const
+  {
+    bool um = spell_t::usable_moving();
+
+    if ( p() -> buffs.kiljaedens_cunning -> up() )
+      return true;
+
+    return um;
+  }
+
   virtual void init()
   {
     spell_t::init();
@@ -2229,6 +2240,20 @@ struct doom_t: public warlock_spell_t
   }
 };
 
+struct kiljaedens_cunning_t: public warlock_spell_t
+{
+  kiljaedens_cunning_t( warlock_t* p ):
+    warlock_spell_t( "kiljaedens_cunning", p, p -> talents.kiljaedens_cunning )
+  {
+  }
+
+  void execute()
+  {
+    warlock_spell_t::execute();
+    p() -> buffs.kiljaedens_cunning -> trigger();
+  }
+};
+
 struct demonbolt_t: public warlock_spell_t
 {
   demonbolt_t( warlock_t* p ):
@@ -2452,16 +2477,6 @@ struct shadow_bolt_t: public warlock_spell_t
     if ( p() -> buffs.metamorphosis -> check() ) r = false;
 
     return r;
-  }
-
-  virtual bool usable_moving() const
-  {
-    bool um = warlock_spell_t::usable_moving();
-
-    if ( p() -> talents.kiljaedens_cunning -> ok() )
-      um = true;
-
-    return um;
   }
 };
 
@@ -3143,16 +3158,6 @@ struct incinerate_t: public warlock_spell_t
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
   }
 
-  virtual bool usable_moving() const
-  {
-    bool um = warlock_spell_t::usable_moving();
-
-    if ( p() -> talents.kiljaedens_cunning -> ok() )
-      um = true;
-
-    return um;
-  }
-
   virtual bool ready()
   {
     if ( fnb && p() -> buffs.fire_and_brimstone -> check() )
@@ -3674,16 +3679,6 @@ struct drain_soul_t: public warlock_spell_t
     trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, multiplier );
 
     consume_tick_resource( d );
-  }
-
-  virtual bool usable_moving() const
-  {
-    bool um = warlock_spell_t::usable_moving();
-
-    if ( p() -> talents.kiljaedens_cunning -> ok() )
-      um = true;
-
-    return um;
   }
 };
 
@@ -5051,6 +5046,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "dark_soul"             ) a = new             dark_soul_t( this );
   else if ( action_name == "soulburn"              ) a = new              soulburn_t( this );
   else if ( action_name == "havoc"                 ) a = new                 havoc_t( this );
+  else if ( action_name == "kiljaedens_cunning"    ) a = new    kiljaedens_cunning_t( this );
   else if ( action_name == "seed_of_corruption"    ) a = new    seed_of_corruption_t( this );
   else if ( action_name == "cataclysm"             ) a = new             cataclysm_t( this );
   else if ( action_name == "rain_of_fire"          ) a = new          rain_of_fire_t( this );
@@ -5361,6 +5357,9 @@ void warlock_t::create_buffs()
 
   buffs.haunting_spirits = buff_creator_t( this, "haunting_spirits", find_spell( 157698 ) )
     .chance( 1.0 );
+
+  buffs.kiljaedens_cunning = buff_creator_t( this, "kiljaedens_cunning", talents.kiljaedens_cunning )
+    .cd( timespan_t::zero() );
 
   buffs.demonbolt = buff_creator_t( this, "demonbolt", talents.demonbolt );
 
