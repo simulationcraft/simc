@@ -2160,8 +2160,9 @@ struct touch_of_karma_t: public monk_melee_attack_t
     cooldown -> duration = data().cooldown();
     base_dd_min = base_dd_max = 0;
 
-    if ( pct_health > 0.5 ) // Does a maximum of 50% of the monk's HP.
-      pct_health = 0.5;
+    double max_pct = data().effectN( 3 ).percent();
+    if ( pct_health > max_pct ) // Does a maximum of 50% of the monk's HP.
+      pct_health = max_pct;
 
     if ( interval < cooldown -> duration.total_seconds() )
     {
@@ -2181,8 +2182,9 @@ struct touch_of_karma_t: public monk_melee_attack_t
   void execute()
   {
     timespan_t new_cd = timespan_t::from_seconds( rng().gauss( interval, interval_stddev ) );
-    if ( new_cd < timespan_t::from_seconds( 90.0 ) )
-      new_cd = timespan_t::from_seconds( 90.0 );
+    timespan_t data_cooldown = data().cooldown();
+    if ( new_cd < data_cooldown )
+      new_cd = data_cooldown;
 
     cooldown -> duration = new_cd;
 
