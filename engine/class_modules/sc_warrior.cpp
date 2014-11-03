@@ -2623,7 +2623,7 @@ struct slam_t: public warrior_attack_t
   {
     double c = warrior_attack_t::cost();
 
-    c *= 1.0 + td( execute_state -> target ) -> debuffs_slam -> current_stack;
+    c *= 1.0 + td( target ) -> debuffs_slam -> current_stack;
 
     return c;
   }
