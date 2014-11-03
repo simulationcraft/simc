@@ -49,6 +49,7 @@ reforge_plot_t::reforge_plot_t( sim_t* s ) :
   reforge_plot_step( 20 ),
   reforge_plot_amount( 200 ),
   reforge_plot_iterations( -1 ),
+  reforge_plot_target_error( 0 ),
   reforge_plot_debug( 0 ),
   current_stat_combo( 0 ),
   num_stat_combos( 0 )
@@ -333,6 +334,7 @@ double reforge_plot_t::progress( std::string& phase, std::string* detailed )
 void reforge_plot_t::create_options()
 {
   sim->add_option(opt_int("reforge_plot_iterations", reforge_plot_iterations));
+  sim->add_option(opt_float("reforge_plot_target_error", reforge_plot_target_error));
   sim->add_option(opt_int("reforge_plot_step", reforge_plot_step));
   sim->add_option(opt_int("reforge_plot_amount", reforge_plot_amount));
   sim->add_option(opt_string("reforge_plot_stat", reforge_plot_stat_str));

@@ -2748,12 +2748,26 @@ struct sim_t : private sc_thread_t
   struct work_queue_t
   {
     mutex_t m;
-    int total_work, work;
+    int total_work, projected_work, work;
     work_queue_t() : total_work( 0 ), work( 0 ) {}
-    void init( int w ) { AUTO_LOCK(m); total_work = work = w; }
-    void flush()       { AUTO_LOCK(m); work=0; }
-    int  pop()         { AUTO_LOCK(m); int w = work; if( work > 0 ) --work; return w; }
-    int  size()        { AUTO_LOCK(m); return work; }
+    void init( int w )    { AUTO_LOCK(m); total_work = projected_work = w; }
+    void flush()          { AUTO_LOCK(m); total_work = projected_work = work; }
+    void project( int w ) { AUTO_LOCK(m); projected_work = w; assert(w>=work); }
+    int  size()           { AUTO_LOCK(m); return total_work; }
+    int  pop()         
+    { 
+      AUTO_LOCK(m); 
+      if( work >= total_work ) return 0; 
+      if( ++work == total_work ) projected_work = work;
+      return work;
+    }
+    double progress( int* current=0, int* last=0 )
+    {
+      AUTO_LOCK(m);
+      if( current ) *current = work;
+      if( last ) *last = projected_work;
+      return work / (double) projected_work;
+    }
   };
   std::shared_ptr<work_queue_t> work_queue;
   virtual void run();
@@ -2803,7 +2817,6 @@ struct sim_t : private sc_thread_t
   bool      iterate();
   void      partition();
   bool      execute();
-  void      predict();
   void      analyze_error();
   void      print_options();
   void      add_option( const option_t& opt );
@@ -2992,6 +3005,7 @@ struct reforge_plot_t
   int    reforge_plot_step;
   int    reforge_plot_amount;
   int    reforge_plot_iterations;
+  double reforge_plot_target_error;
   int    reforge_plot_debug;
   int    current_stat_combo;
   int    num_stat_combos;

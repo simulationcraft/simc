@@ -1043,7 +1043,7 @@ double sim_t::iteration_time_adjust() const
   if ( current_iteration == 0 )
     return 1.0;
 
-  return 1.0 + vary_combat_length * ( ( current_iteration % 2 ) ? 1 : -1 ) * current_iteration / ( double ) iterations;
+  return 1.0 + vary_combat_length * ( ( current_iteration % 2 ) ? 1 : -1 ) * work_queue -> progress();
 }
 
 // sim_t::expected_max_time =================================================
@@ -1472,10 +1472,19 @@ void sim_t::analyze_error()
 
   current_error *= 100;
 
-  if( current_error > 0 &&
-      current_error < target_error ) 
+  if( current_error > 0 )
   {
-    interrupt();
+    if( current_error < target_error ) 
+    {
+      interrupt();
+    }
+    else
+    {
+      int current=0, total=0;
+      work_queue -> progress( &current, &total );
+      work_queue -> project( current * ( ( current_error * current_error ) / 
+					 (  target_error *  target_error ) ) );
+    }
   }
 }
 
@@ -1984,7 +1993,7 @@ progress_bar_t::progress_bar_t( sim_t& s ) :
 void progress_bar_t::init()
 {
   start_time = util::wall_time();
-  interval = sim.iterations / updates;
+  interval = ( sim.target_error > 0 ) ? sim.analyze_error_interval : ( sim.work_queue -> size() / updates );
   if ( interval == 0 ) interval = 1;
 }
 
@@ -1995,15 +2004,8 @@ bool progress_bar_t::update( bool finished )
   if ( ! sim.current_iteration ) return false;
 
   if ( ! finished )
-  {
-    if ( sim.current_iteration < ( sim.iterations - 1 ) )
-    {
-      int update_interval = ( sim.target_error > 0 ) ? sim.analyze_error_interval : interval;
-
-      if ( sim.current_iteration % update_interval ) 
-	return false;
-    }
-  }
+    if ( sim.current_iteration % interval ) 
+      return false;
 
   int current, last;
   double pct = sim.progress( &current, &last );
@@ -2215,61 +2217,6 @@ void sim_t::partition()
     children[ i ] -> launch( thread_priority );
 }
 
-// sim_t::predict =======================================================================
-
-void sim_t::predict()
-{
-  return;
-
-  // Do a short test run to get estimates
-  sim_t* s = new sim_t( this );
-  s -> work_queue -> init( 100 );
-  if( s -> iterate() )
-  {
-    s -> analyze();
-
-    //TODO set the following two as standard commandline option parameters
-    double opt_target_error = 0.005; //for 0.5% Error
-    double opt_target_scale_error = 0.5; //for an 0.5 scaling error
-    int max_new_iterations=0;
-
-    //take maximum of each player's necessary iterations for target_error
-    for ( size_t i = 0; i < s -> player_list.size(); ++i )
-    {
-      //TODO get collected data for the correct scale_over stat
-      const extended_sample_data_t& data = s -> player_list[ i ] -> collected_data.dps;
-      double mean_error = data.mean_std_dev * s -> confidence_estimator;
-      //get estimated sample size for opt_target_error
-      int new_iterations = ( int ) ( data.mean() ? ( ( mean_error * mean_error * ( ( float ) data.size() ) / ( opt_target_error  * data.mean() * opt_target_error * data.mean() ) ) ) : 0 ) ; 
-      if (new_iterations > max_new_iterations) 
-	max_new_iterations = new_iterations;
-    }
-
-    s -> scaling -> init_deltas();
-    //take maximum of each player's necessary iterations for target_scaling_error
-    for ( size_t i = 0; i < s -> player_list.size(); ++i )
-    {
-      //TODO get collected data for the correct scale_over stat
-      const extended_sample_data_t& data = s -> player_list[ i ] -> collected_data.dps; //get dps data
-      double mean_error = data.mean_std_dev * s -> confidence_estimator;
-      for ( stat_e k = STAT_NONE; k < STAT_MAX; k++ )
-      {
-	if ( ! s -> player_list[i] -> scales_with[ k ] )
-	  continue;
-	double delta = s -> scaling -> stats.get_stat( k );
-	//get estimated sample size for opt_target_scale error
-	int new_iterations = ( int ) ( data.mean() ? (( 2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( opt_target_scale_error * delta * opt_target_scale_error * delta) ) ) : 0 ) ;
-	if (new_iterations > max_new_iterations) 
-	  max_new_iterations = new_iterations;
-      }
-    }
-
-    //TODO make sure this result is reasonably bounded
-    work_queue -> init( max_new_iterations );
-  }
-  delete s;
-}
-
 // sim_t::execute ===========================================================
 
 bool sim_t::execute()
@@ -2277,7 +2224,6 @@ bool sim_t::execute()
   double start_cpu_time  = util::cpu_time();
   double start_wall_time = util::wall_time();
 
-  predict();
   partition();
   bool success = iterate();
   merge(); // Always merge, even in cases of unsuccessful simulation!
@@ -2770,9 +2716,43 @@ void sim_t::setup( sim_control_t* c )
     threads = 1;
   }
 
-  if( iterations <= 0 ) iterations = ( target_error > 0 ) ? 100000 : 1000;
+  if( iterations <= 0 ) 
+  {
+    iterations = 1000000; // limited by relative standard error
+
+    if( target_error <= 0 )
+    {
+      if( scaling -> calculate_scale_factors )
+      {
+	target_error = 0.05;
+      }
+      else
+      {
+	target_error = 0.2;
+      }
+    }
+    if( plot -> dps_plot_iterations <= 0 )
+    {
+      if( plot -> dps_plot_target_error <= 0 )
+      {
+	plot -> dps_plot_target_error = 0.5;
+      }
+    }
+    if( reforge_plot -> reforge_plot_iterations <= 0 )
+    {
+      if( reforge_plot -> reforge_plot_target_error <= 0 )
+      {
+	reforge_plot -> reforge_plot_target_error = 0.5;
+      }
+    }
+  }
 
   work_queue -> init( iterations );
+
+  if( deterministic && ( target_error != 0 ) )
+  {
+    errorf( "deterministic=1 cannot be used with non-zero target_error values!\n" );
+  }
 }
 
 // sim_t::progress ==========================================================
@@ -2781,45 +2761,28 @@ double sim_t::progress( int* current,
                         int* last,
                         std::string* detailed )
 {
-  int total_current_iterations = current_iteration + 1;
-  int total_work = 0;
-  if ( deterministic )
-    total_work = iterations;
-  else
-    total_work = work_queue -> total_work;
+  int total_current_iterations=0;
+  int total_iterations=0;
 
-  for ( size_t i = 0; i < children.size(); i++ )
+  work_queue -> progress( &total_current_iterations, &total_iterations );
+
+  if( deterministic )
   {
-    if ( ! children[ i ] )
-      continue;
-
-    total_current_iterations += children[ i ] -> current_iteration + 1;
-    if ( deterministic )
+    for ( size_t i = 0; i < children.size(); i++ )
     {
-      total_work += children[ i ] -> iterations;
-    }
-  }
-
-  if( target_error > 0 && current_error > 0 )
-  {
-    if( current_error < target_error )
-    {
-      total_work = total_current_iterations;  // We are done.
-    }
-    else
-    {
-      int projected_work = total_current_iterations * ( current_error * current_error ) / ( target_error * target_error );
-      if( projected_work < total_work )
-	total_work = projected_work;
+      int tci=0, ti=0;
+      children[ i ] -> work_queue -> progress( &tci, &ti );
+      total_current_iterations += tci;
+      total_iterations += ti;
     }
   }
 
   if ( current ) *current = total_current_iterations;
-  if ( last    ) *last    = total_work;
+  if ( last    ) *last    = total_iterations;
 
-  detailed_progress( detailed, total_current_iterations, total_work );
+  detailed_progress( detailed, total_current_iterations, total_iterations );
 
-  return total_current_iterations / ( double ) total_work;
+  return total_current_iterations / ( double ) total_iterations;
 }
 
 double sim_t::progress( std::string& phase, std::string* detailed )

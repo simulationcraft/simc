@@ -22,10 +22,9 @@ struct sim_signal_handler_t
   static void report( int signal )
   {
     const char* name = strsignal( signal );
-    fprintf( stderr, "sim_signal_handler: %s! Iteration=%d Seed=%llu TargetHealth=%llu\n",
-	     name, global_sim -> current_iteration, 
-	     (long long unsigned) global_sim -> seed,
-	     (long long unsigned) global_sim -> target -> resources.initial[ RESOURCE_HEALTH ] );
+    fprintf( stderr, "sim_signal_handler: %s! Iteration=%d Seed=%lu TargetHealth=%lu\n",
+	     name, global_sim -> current_iteration, global_sim -> seed,
+	     (uint64_t) global_sim -> target -> resources.initial[ RESOURCE_HEALTH ] );
     fflush( stderr );
   }
 
