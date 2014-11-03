@@ -685,7 +685,6 @@ void store_button_group( QSettings& s, const QString& name, QButtonGroup* bg )
 }
 
 // Encode all options/setting into a string ( to be able to save it to the history )
-// Decode / Encode order needs to be equal!
 
 void SC_OptionsTab::encodeOptions()
 {
