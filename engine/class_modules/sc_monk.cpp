@@ -3817,7 +3817,7 @@ void monk_t::init_spells()
   passives.tier15_2pc_melee          = find_spell( 138311 );
   passives.enveloping_mist           = find_class_spell( "Enveloping Mist" );
   passives.surging_mist              = find_class_spell( "Surging Mist" );
-  passives.healing_elixirs           = find_spell ( 12281 );
+  passives.healing_elixirs           = find_spell( 122281 );
   passives.storm_earth_and_fire      = find_spell( 138228 );
   passives.hotfix_passive            = find_spell( 137022 );
 
