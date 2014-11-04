@@ -3185,7 +3185,7 @@ private:
 
 template< typename T >
 static void format_signed( std::string& buffer, T i, int min_width, int /*max_width*/,
-			   bool left_justify, char pad, char plus, bool comma )
+         bool left_justify, char pad, char plus, bool comma )
 {
   backward_string str( comma );
   T num = i < 0 ? -i : i;
@@ -3209,7 +3209,7 @@ static void format_signed( std::string& buffer, T i, int min_width, int /*max_wi
 }
 
 static void format_unsigned( std::string& buffer, unsigned long long i, int base, int min_width, int /*max_width*/,
-			     bool left_justify, bool alt_form, char pad, bool upper_case, bool comma )
+           bool left_justify, bool alt_form, char pad, bool upper_case, bool comma )
 {
   backward_string str( comma );
   unsigned long long num = i;
@@ -3239,7 +3239,7 @@ static void format_unsigned( std::string& buffer, unsigned long long i, int base
 }
 
 static void format_double( std::string& buffer, double d, int min_width, int precision,
-			   bool left_justify, bool alt_form, char plus, char format_type )
+         bool left_justify, bool alt_form, char plus, char format_type )
 {
   std::string str;
   double integer=0, fraction=0, digit=0;
@@ -3282,36 +3282,36 @@ static void format_double( std::string& buffer, double d, int min_width, int pre
       exponent = 0;
       if( d > 10.0 )
       {
-	while( d > 10.0 )
-	{
-	  d /= 10;
-	  exponent++;
-	}
+  while( d > 10.0 )
+  {
+    d /= 10;
+    exponent++;
+  }
       }
       else if( d < 1.0 && d != 0.0 )
       {
-	// 0.5 for round off...
-	while( d + 0.5 < 1.0  )
-	{
-	  d *= 10;
-	  exponent--;
-	}
+  // 0.5 for round off...
+  while( d + 0.5 < 1.0  )
+  {
+    d *= 10;
+    exponent--;
+  }
       }
 
       if( format_type == 'g' || format_type == 'G' )
       {
-	if( exponent < -4 || exponent >= precision )
-	{
-	  format_type = format_type == 'g' ? 'e' : 'E';
-	  precision--; // digit on left of .
-	}
-	else
-	{
-	  format_type = 'f';
-	  d = d_bak;
-	  if( exponent > 0  ) precision -= (exponent + 1);
-	  if( precision < 0 ) precision = 0;
-	}
+  if( exponent < -4 || exponent >= precision )
+  {
+    format_type = format_type == 'g' ? 'e' : 'E';
+    precision--; // digit on left of .
+  }
+  else
+  {
+    format_type = 'f';
+    d = d_bak;
+    if( exponent > 0  ) precision -= (exponent + 1);
+    if( precision < 0 ) precision = 0;
+  }
       }
     }
 
@@ -3457,60 +3457,60 @@ std::string& format( std::string& buffer, const char *fmt, va_list args )
       bool reading_flags = true;
       while( reading_flags )
       {
-	switch( *c )
-	{
-	  case '#':
-	    flags_alt_form = true;
-	    c++;
-	    break;
-	  case '0':
-	    if( !flags_left_justify ) flags_zero_pad = '0';
-	    c++;
-	    break;
-	  case '-':
-	    flags_left_justify = true;
-	    flags_zero_pad     = ' '; // overrides
-	    c++;
-	    break;
-	  case ' ':
-	    if( !flags_plus_pad ) flags_plus_pad = ' ';
-	    c++;
-	    break;
-	  case '+':
-	    flags_plus_pad = '+'; // overrides
-	    c++;
-	    break;
-	  case ',':
-	    flags_comma = true;
-	    c++;
-	    break;
-	  default:
-	    reading_flags = false;
-	    break;
-	}
+  switch( *c )
+  {
+    case '#':
+      flags_alt_form = true;
+      c++;
+      break;
+    case '0':
+      if( !flags_left_justify ) flags_zero_pad = '0';
+      c++;
+      break;
+    case '-':
+      flags_left_justify = true;
+      flags_zero_pad     = ' '; // overrides
+      c++;
+      break;
+    case ' ':
+      if( !flags_plus_pad ) flags_plus_pad = ' ';
+      c++;
+      break;
+    case '+':
+      flags_plus_pad = '+'; // overrides
+      c++;
+      break;
+    case ',':
+      flags_comma = true;
+      c++;
+      break;
+    default:
+      reading_flags = false;
+      break;
+  }
       }
 
       // width [#*]
       if( *c == '*' || isdigit( *c ) )
       {
-	if( *c == '*' )
-	{
-	  width = va_arg( args, int );
-	  c++;
-	}
-	else
-	{
-	  char* end;
-	  width = (int)strtol( c, &end, 10 );
-	  c = end;
-	}
+  if( *c == '*' )
+  {
+    width = va_arg( args, int );
+    c++;
+  }
+  else
+  {
+    char* end;
+    width = (int)strtol( c, &end, 10 );
+    c = end;
+  }
 
-	if( width < 0 )
-	{
-	  flags_left_justify = true;
-	  flags_zero_pad     = ' '; // overrides
-	  width 	     = -width;
-	}
+  if( width < 0 )
+  {
+    flags_left_justify = true;
+    flags_zero_pad     = ' '; // overrides
+    width 	     = -width;
+  }
       }
 
       // dot [.]
@@ -3519,175 +3519,175 @@ std::string& format( std::string& buffer, const char *fmt, va_list args )
       // right width [#*]
       if( *c == '*' || isdigit( *c ) )
       {
-	if( *c == '*' )
-	{
-	  precision = va_arg( args, int );
-	  c++;
-	}
-	else
-	{
-	  char* end;
-	  precision = (int)strtol( c, &end, 10 );
-	  c = end;
-	}
+  if( *c == '*' )
+  {
+    precision = va_arg( args, int );
+    c++;
+  }
+  else
+  {
+    char* end;
+    precision = (int)strtol( c, &end, 10 );
+    c = end;
+  }
 
-	if( precision < 0 )
-	{
-	  precision = -precision;
-	}
+  if( precision < 0 )
+  {
+    precision = -precision;
+  }
       }
 
       // modifiers [hlLz]
       switch( *c )
       {
-	case 'h':
-	  c++;
-	  if( *c == 'h' )
-	  {
-	    c++;
-	    mod_char = true;
-	  }
-	  else
-	  {
-	    mod_short = true;
-	  }
-	  break;
-	case 'l':
-	  c++;
-	  if( *c == 'l' )
-	  {
-	    c++;
-	  }
-	  mod_64 = true;
-	  break;
-	case 'L':
-	  c++;
-	  mod_64 = true;
-	  break;
-	case 'z':
-	  c++;
-	  mod_size = true;
-	  break;
+  case 'h':
+    c++;
+    if( *c == 'h' )
+    {
+      c++;
+      mod_char = true;
+    }
+    else
+    {
+      mod_short = true;
+    }
+    break;
+  case 'l':
+    c++;
+    if( *c == 'l' )
+    {
+      c++;
+    }
+    mod_64 = true;
+    break;
+  case 'L':
+    c++;
+    mod_64 = true;
+    break;
+  case 'z':
+    c++;
+    mod_size = true;
+    break;
       }
 
       // type [dioxXucsfeEgGpn%]
       switch( *c )
       {
-	case '%':
-	  buffer += '%';
-	  c++;
-	  break;
-	case 'd':
-	case 'i':
-	  if( mod_64 )
-	  {
-	    format_signed<int64_t>( buffer, va_arg( args, int64_t ), width, precision,
-				    flags_left_justify, flags_zero_pad, flags_plus_pad,
-				    flags_comma );
-	  }
-	  else
-	  {
-	    format_signed<int>( buffer, va_arg( args, int ), width, precision,
-				flags_left_justify, flags_zero_pad, flags_plus_pad,
-				flags_comma );
-	  }
-	  c++;
-	  break;
-	case 's':
-	  str = va_arg( args, char* );
-	  if( ! str ) str = (char*) "";
-	  format_string( buffer, str, strlen(str), width, precision,
-			 flags_left_justify, flags_zero_pad );
-	  c++;
-	  break;
-	case 'f':
-	  format_double( buffer, va_arg( args, double ), width, precision,
-			 flags_left_justify, flags_alt_form, flags_plus_pad, 'f' );
-	  c++;
-	  break;
-	case 'c':
-	  format_char( buffer, va_arg( args, int ), width, precision, flags_left_justify );
-	  c++;
-	  break;
-	case 'o':
-	  if( mod_64 )
-	  {
-	    format_unsigned( buffer, va_arg( args, uint64_t ), 8, width, precision,
-			     flags_left_justify, flags_alt_form, flags_zero_pad, false, false );
-	  }
-	  else if( mod_size )
-	  {
-	    format_unsigned( buffer, va_arg( args, size_t ), 8, width, precision,
-			     flags_left_justify, flags_alt_form, flags_zero_pad, false, false );
-	  }
-	  else
-	  {
-	    format_unsigned( buffer, va_arg( args, int ), 8, width, precision,
-			     flags_left_justify, flags_alt_form, flags_zero_pad, false, false );
-	  }
-	  c++;
-	  break;
-	case 'p':
-	  flags_alt_form = true;
-	  mod_long 	 = true;
-	  // fall thru because size(void*) == sizeof(unsigned int)
-	case 'x':
-	case 'X':
-	  if( mod_64 )
-	  {
-	    format_unsigned( buffer, va_arg( args, uint64_t ), 16, width, precision,
-			     flags_left_justify, flags_alt_form, flags_zero_pad, *c == 'X', false );
-	  }
-	  else if( mod_size )
-	  {
-	    format_unsigned( buffer, va_arg( args, size_t ), 16, width, precision,
-			     flags_left_justify, flags_alt_form, flags_zero_pad, *c == 'X', false );
-	  }
-	  else if( mod_long )
-	  {
-	    format_unsigned( buffer, va_arg( args, long ), 16, width, precision,
-			     flags_left_justify, flags_alt_form, flags_zero_pad, *c == 'X', false );
-	  }
-	  else
-	  {
-	    format_unsigned( buffer, va_arg( args, int ), 16, width, precision,
-			     flags_left_justify, flags_alt_form, flags_zero_pad, *c == 'X', false );
-	  }
-	  c++;
-	  break;
-	case 'u':
-	  if( mod_64 )
-	  {
-	    format_unsigned( buffer, va_arg( args, uint64_t ), 10, width, precision,
-			     flags_left_justify, false, flags_zero_pad, false, flags_comma );
-	  }
-	  else if( mod_size )
-	  {
-	    format_unsigned( buffer, va_arg( args, size_t ), 10, width, precision,
-			     flags_left_justify, false, flags_zero_pad, false, flags_comma );
-	  }
-	  else
-	  {
-	    format_unsigned( buffer, va_arg( args, int ), 10, width, precision,
-			     flags_left_justify, false, flags_zero_pad, false, flags_comma );
-	  }
-	  c++;
-	  break;
-	case 'e':
-	case 'E':
-	case 'g':
-	case 'G':
-	  format_double( buffer, va_arg( args, double ), width, precision,
-			 flags_left_justify, flags_alt_form, flags_plus_pad, *c );
-	  c++;
-	  break;
-	case 'n':
-	  *(va_arg( args, int* )) = buffer.size();
-	  c++;
-	  break;
-	default: // % followed by an unknown char, printf() seems to add a % in this case
-	  buffer += '%';
-	  break;
+  case '%':
+    buffer += '%';
+    c++;
+    break;
+  case 'd':
+  case 'i':
+    if( mod_64 )
+    {
+      format_signed<int64_t>( buffer, va_arg( args, int64_t ), width, precision,
+            flags_left_justify, flags_zero_pad, flags_plus_pad,
+            flags_comma );
+    }
+    else
+    {
+      format_signed<int>( buffer, va_arg( args, int ), width, precision,
+        flags_left_justify, flags_zero_pad, flags_plus_pad,
+        flags_comma );
+    }
+    c++;
+    break;
+  case 's':
+    str = va_arg( args, char* );
+    if( ! str ) str = (char*) "";
+    format_string( buffer, str, strlen(str), width, precision,
+       flags_left_justify, flags_zero_pad );
+    c++;
+    break;
+  case 'f':
+    format_double( buffer, va_arg( args, double ), width, precision,
+       flags_left_justify, flags_alt_form, flags_plus_pad, 'f' );
+    c++;
+    break;
+  case 'c':
+    format_char( buffer, va_arg( args, int ), width, precision, flags_left_justify );
+    c++;
+    break;
+  case 'o':
+    if( mod_64 )
+    {
+      format_unsigned( buffer, va_arg( args, uint64_t ), 8, width, precision,
+           flags_left_justify, flags_alt_form, flags_zero_pad, false, false );
+    }
+    else if( mod_size )
+    {
+      format_unsigned( buffer, va_arg( args, size_t ), 8, width, precision,
+           flags_left_justify, flags_alt_form, flags_zero_pad, false, false );
+    }
+    else
+    {
+      format_unsigned( buffer, va_arg( args, int ), 8, width, precision,
+           flags_left_justify, flags_alt_form, flags_zero_pad, false, false );
+    }
+    c++;
+    break;
+  case 'p':
+    flags_alt_form = true;
+    mod_long 	 = true;
+    // fall thru because size(void*) == sizeof(unsigned int)
+  case 'x':
+  case 'X':
+    if( mod_64 )
+    {
+      format_unsigned( buffer, va_arg( args, uint64_t ), 16, width, precision,
+           flags_left_justify, flags_alt_form, flags_zero_pad, *c == 'X', false );
+    }
+    else if( mod_size )
+    {
+      format_unsigned( buffer, va_arg( args, size_t ), 16, width, precision,
+           flags_left_justify, flags_alt_form, flags_zero_pad, *c == 'X', false );
+    }
+    else if( mod_long )
+    {
+      format_unsigned( buffer, va_arg( args, long ), 16, width, precision,
+           flags_left_justify, flags_alt_form, flags_zero_pad, *c == 'X', false );
+    }
+    else
+    {
+      format_unsigned( buffer, va_arg( args, int ), 16, width, precision,
+           flags_left_justify, flags_alt_form, flags_zero_pad, *c == 'X', false );
+    }
+    c++;
+    break;
+  case 'u':
+    if( mod_64 )
+    {
+      format_unsigned( buffer, va_arg( args, uint64_t ), 10, width, precision,
+           flags_left_justify, false, flags_zero_pad, false, flags_comma );
+    }
+    else if( mod_size )
+    {
+      format_unsigned( buffer, va_arg( args, size_t ), 10, width, precision,
+           flags_left_justify, false, flags_zero_pad, false, flags_comma );
+    }
+    else
+    {
+      format_unsigned( buffer, va_arg( args, int ), 10, width, precision,
+           flags_left_justify, false, flags_zero_pad, false, flags_comma );
+    }
+    c++;
+    break;
+  case 'e':
+  case 'E':
+  case 'g':
+  case 'G':
+    format_double( buffer, va_arg( args, double ), width, precision,
+       flags_left_justify, flags_alt_form, flags_plus_pad, *c );
+    c++;
+    break;
+  case 'n':
+    *(va_arg( args, int* )) = buffer.size();
+    c++;
+    break;
+  default: // % followed by an unknown char, printf() seems to add a % in this case
+    buffer += '%';
+    break;
       }
     }
   }
