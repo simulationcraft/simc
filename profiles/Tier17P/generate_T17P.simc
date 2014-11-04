@@ -12,7 +12,7 @@ generate_Death_Knight_T17P.simc
 generate_Druid_T17P.simc
 
 # Hunter
-#generate_Hunter_T17P.simc UPDATE
+generate_Hunter_T17P.simc
 
 # Mage
 generate_Mage_T17P.simc
@@ -21,7 +21,7 @@ generate_Mage_T17P.simc
 generate_Monk_T17P.simc
 
 # Paladin
-#generate_Paladin_T17P.simc UPDATE
+generate_Paladin_T17P.simc
 
 # Priest
 #generate_Priest_T17P.simc UPDATE
@@ -33,7 +33,7 @@ generate_Rogue_T17P.simc
 generate_Shaman_T17P.simc
 
 # Warlock
-#generate_Warlock_T17P.simc UPDATE
+generate_Warlock_T17P.simc
 
 # Warrior
-#generate_Warrior_T17P.simc UPDATE
+generate_Warrior_T17P.simc

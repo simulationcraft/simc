@@ -19,35 +19,49 @@ actions.precombat+=/food,type=blackrock_barbecue
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/exotic_munitions,ammo_type=poisoned
+actions.precombat+=/exotic_munitions,ammo_type=poisoned,if=active_enemies<3
+actions.precombat+=/exotic_munitions,ammo_type=incendiary,if=active_enemies>=3
 actions.precombat+=/potion,name=draenic_agility
 
 # Executed every time the actor is available.
 
 actions=auto_shot
 actions+=/use_item,name=gorashans_lodestone_spike
+actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
-actions+=/arcane_torrent
-actions+=/potion,name=draenic_agility
-actions+=/explosive_trap,if=active_enemies>1
-actions+=/black_arrow,if=!ticking
-actions+=/arcane_shot,if=buff.lock_and_load.react&focus.time_to_max<=gcd
+actions+=/potion,name=draenic_agility,if=(((cooldown.stampede.remains<1|!talent.stampede.enabled)&(!talent.a_murder_of_crows.enabled|cooldown.a_murder_of_crows.remains<1))&(trinket.stat.any.up|buff.archmages_greater_incandescence_agi.up))|target.time_to_die<=20
+actions+=/call_action_list,name=aoe,if=active_enemies>1
+actions+=/stampede,if=buff.potion.up|(cooldown.potion.remains&(buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up))
 actions+=/explosive_shot
+actions+=/black_arrow,if=!ticking
 actions+=/a_murder_of_crows
 actions+=/dire_beast
+actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react&focus>35&cast_regen<=focus.deficit|dot.serpent_sting.remains<=5|target.time_to_die<4.5
 actions+=/glaive_toss
 actions+=/powershot
 actions+=/barrage
-actions+=/multishot,if=active_enemies>3
-actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react
-actions+=/stampede,if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))
-actions+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&focus+14+8*(1+buff.steady_focus.value)<80
-actions+=/arcane_shot,if=focus>=67&active_enemies<2
-actions+=/arcane_shot,if=talent.focusing_shot.enabled&active_enemies<2
-actions+=/multishot,if=focus>67&active_enemies>1
+# Cast a second shot for steady focus if that won't cap us.
+actions+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&(14+cast_regen)<=focus.deficit<80
+actions+=/arcane_shot,if=focus>=70|talent.focusing_shot.enabled
 actions+=/focusing_shot
 actions+=/cobra_shot
+
+actions.aoe=stampede,if=buff.potion.up|(cooldown.potion.remains&(buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up|buff.archmages_incandescence_agi.up))
+actions.aoe+=/explosive_shot,if=buff.lock_and_load.react&(!talent.barrage.enabled|cooldown.barrage.remains>0)
+actions.aoe+=/barrage
+actions.aoe+=/explosive_shot,if=active_enemies<5
+actions.aoe+=/black_arrow,if=!ticking
+actions.aoe+=/explosive_trap,if=dot.explosive_trap.remains<=5
+actions.aoe+=/a_murder_of_crows
+actions.aoe+=/dire_beast
+actions.aoe+=/multishot,if=buff.thrill_of_the_hunt.react&focus>50&cast_regen<=focus.deficit|dot.serpent_sting.remains<=5|target.time_to_die<4.5
+actions.aoe+=/glaive_toss
+actions.aoe+=/powershot
+actions.aoe+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&focus+14+cast_regen<80
+actions.aoe+=/multishot,if=focus>=70|talent.focusing_shot.enabled
+actions.aoe+=/focusing_shot
+actions.aoe+=/cobra_shot
 
 head=lavalink_helm,id=109983
 neck=windseal_necklace,id=109953,enchant=gift_of_multistrike
