@@ -1332,6 +1332,12 @@ inline std::string from_string( const std::string& v )
   return v;
 }
 
+std::string& format( std::string& buffer, const char *fmt, va_list args );
+std::string& format( std::string& buffer, const char *fmt, ... );
+std::string& format( const char *fmt, va_list args );
+std::string& format( const char *fmt, ... );
+
+
 } // namespace util
 
 // Options ==================================================================
