@@ -391,6 +391,7 @@ public:
     _active_stance = FIERCE_TIGER;
     cooldown.healing_elixirs = get_cooldown( "healing_elixirs" );
     cooldown.healing_sphere = get_cooldown( "healing_sphere" );
+
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
     regen_caches[CACHE_ATTACK_HASTE] = true;
@@ -3537,7 +3538,7 @@ struct healing_sphere_t: public monk_heal_t
   {
     harmful = false;
     trigger_gcd = timespan_t::zero();
-    cooldown -> duration = p.glyph.fortuitous_spheres -> effectN( 2 ).time_value();
+    cooldown -> duration = timespan_t::from_seconds( p.glyph.fortuitous_spheres -> effectN( 2 ).base_value() );
   }
 };
 
