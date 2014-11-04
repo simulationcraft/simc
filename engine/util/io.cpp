@@ -40,6 +40,17 @@ std::string narrow( const wchar_t* first, const wchar_t* last )
   return result;
 }
 
+bool contains_non_ascii( const std::string& s )
+{
+  for ( std::string::const_iterator it = s.begin(), itEnd = s.end(); it != itEnd; ++it )
+  {
+    if ( *it < 0 || ! isprint( *it ) )
+      return true;
+  }
+
+  return false;
+}
+
 } // anonymous namespace ====================================================
 
 std::string narrow( const wchar_t* wstr )
@@ -161,7 +172,7 @@ void ofstream::open( const char* name, openmode mode )
   // std::fstream in MinGW.
   std::ofstream::open( io::widen( name ).c_str(), mode );
 #elif defined( SC_MINGW )
-  if ( util::contains_non_ascii( name ) )
+  if ( contains_non_ascii( name ) )
   {
     assert( false && "File Names with non-ascii characters cannot be opened when built with MinGW." );
     return;
@@ -199,7 +210,7 @@ void ifstream::open( const char* name, openmode mode )
   // std::fstream in MinGW.
   std::ifstream::open( io::widen( name ).c_str(), mode );
 #elif defined( SC_MINGW )
-  if ( util::contains_non_ascii( name ) )
+  if ( contains_non_ascii( name ) )
   {
     assert( false && "File Names with non-ascii characters cannot be opened when built with MinGW." );
     return;
