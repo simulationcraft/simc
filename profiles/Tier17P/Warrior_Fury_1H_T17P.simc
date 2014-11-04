@@ -34,6 +34,8 @@ actions+=/auto_attack
 actions+=/call_action_list,name=movement,if=movement.distance>5
 actions+=/berserker_rage,if=buff.enrage.down|(talent.unquenchable_thirst.enabled&buff.raging_blow.down)
 actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists
+actions+=/use_item,name=bonemaws_big_toe,if=(talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.bloodbath.up|talent.avatar.enabled
+actions+=/use_item,name=turbulent_emblem,if=(talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.bloodbath.up|talent.avatar.enabled
 actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25
 # Skip cooldown usage if we can line them up with bladestorm on a large set of adds, or if movement is coming soon.
 actions+=/call_action_list,name=single_target,if=(raid_event.adds.cooldown<60&raid_event.adds.count>3&active_enemies=1)|raid_event.movement.cooldown<5
@@ -119,8 +121,8 @@ legs=verdant_plate_legguards,id=109819,bonus_id=524
 feet=rivetsealed_treads,id=109803,bonus_id=524
 finger1=band_of_iron_scale,id=109773,bonus_id=524,enchant_id=5324
 finger2=signet_of_bloody_crystal,id=115385,enchant_id=5324
-trinket1=mote_of_corruption,id=110010,bonus_id=524
-trinket2=fires_of_the_sun,id=110011,bonus_id=524
+trinket1=bonemaws_big_toe,id=110012,bonus_id=524
+trinket2=turbulent_emblem,id=114491
 main_hand=steelforged_saber,id=116454,bonus_id=57/525,enchant_id=5330
 off_hand=steelforged_saber,id=116454,bonus_id=57/525,enchant_id=5330
 
@@ -129,6 +131,6 @@ off_hand=steelforged_saber,id=116454,bonus_id=57/525,enchant_id=5330
 # gear_stamina=2402
 # gear_crit_rating=1249
 # gear_haste_rating=39
-# gear_mastery_rating=1124
+# gear_mastery_rating=965
 # gear_armor=1843
-# gear_multistrike_rating=333
+# gear_multistrike_rating=174
