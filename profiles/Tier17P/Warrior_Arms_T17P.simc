@@ -1,0 +1,104 @@
+warrior="Warrior_Arms_T17P"
+level=100
+race=tauren
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Za!1000211
+glyphs=58098/58355/123779/146969
+spec=arms
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_strength_flask
+actions.precombat+=/food,type=blackrock_barbecue
+actions.precombat+=/stance,choose=battle
+talent_override=bladestorm,if=raid_event.adds.count>6|desired_targets>6|(raid_event.adds.duration<10&raid_event.adds.exists)
+talent_override=dragon_roar,if=raid_event.adds.count>1|desired_targets>1
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+# Generic on-use trinket line if needed when swapping trinkets out. 
+#actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&buff.ravager.up)
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_strength
+
+# Executed every time the actor is available.
+
+actions=charge
+actions+=/auto_attack
+# This is mostly to prevent cooldowns from being accidentally used during movement.
+actions+=/call_action_list,name=movement,if=movement.distance>5
+actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<25
+# This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'
+actions+=/recklessness,if=(dot.rend.ticking&(target.time_to_die>190|target.health.pct<20)&(!talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)|buff.bloodbath.up))|target.time_to_die<10
+actions+=/bloodbath,if=(dot.rend.ticking&cooldown.colossus_smash.remains<5)|target.time_to_die<20
+actions+=/avatar,if=buff.recklessness.up|target.time_to_die<25
+actions+=/blood_fury,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
+actions+=/berserking,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
+actions+=/arcane_torrent,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
+actions+=/heroic_leap,if=debuff.colossus_smash.up&rage>70
+actions+=/call_action_list,name=single,if=active_enemies=1
+actions+=/call_action_list,name=aoe,if=active_enemies>1
+
+actions.movement=heroic_leap
+# May as well throw storm bolt if we can.
+actions.movement+=/storm_bolt
+actions.movement+=/heroic_throw
+
+actions.single=rend,if=!ticking&target.time_to_die>4
+actions.single+=/ravager,if=cooldown.colossus_smash.remains<4
+actions.single+=/colossus_smash
+actions.single+=/mortal_strike,if=target.health.pct>20&cooldown.colossus_smash.remains>1
+actions.single+=/storm_bolt,if=(cooldown.colossus_smash.remains>4|debuff.colossus_smash.up)&rage<90
+actions.single+=/siegebreaker
+actions.single+=/dragon_roar,if=!debuff.colossus_smash.up
+actions.single+=/rend,if=!debuff.colossus_smash.up&target.time_to_die>4&remains<5.4
+actions.single+=/execute,if=(rage>=60&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|buff.sudden_death.react|target.time_to_die<5
+actions.single+=/impending_victory,if=rage<40&target.health.pct>20&cooldown.colossus_smash.remains>1&cooldown.mortal_strike.remains>1
+actions.single+=/slam,if=(rage>20|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20&cooldown.colossus_smash.remains>1&cooldown.mortal_strike.remains>1
+actions.single+=/whirlwind,if=!talent.slam.enabled&target.health.pct>20&(rage>=40|set_bonus.tier17_4pc|debuff.colossus_smash.up)&cooldown.colossus_smash.remains>1&cooldown.mortal_strike.remains>1
+actions.single+=/shockwave
+
+actions.aoe=sweeping_strikes
+actions.aoe+=/rend,if=ticks_remain<2&target.time_to_die>4
+actions.aoe+=/ravager,if=buff.bloodbath.up|!talent.bloodbath.enabled
+actions.aoe+=/bladestorm,if=active_enemies>5
+actions.aoe+=/colossus_smash,if=dot.rend.ticking
+actions.aoe+=/mortal_strike,if=cooldown.colossus_smash.remains>1.5&target.health.pct>20&active_enemies=2
+actions.aoe+=/execute,if=((rage>60|active_enemies=2)&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|target.time_to_die<5
+actions.aoe+=/dragon_roar,if=cooldown.colossus_smash.remains>1.5&!debuff.colossus_smash.up
+actions.aoe+=/whirlwind,if=cooldown.colossus_smash.remains>1.5&(target.health.pct>20|active_enemies>3)
+actions.aoe+=/rend,cycle_targets=1,if=!ticking&target.time_to_die>8
+actions.aoe+=/bladestorm,if=cooldown.colossus_smash.remains>6&(!talent.ravager.enabled|cooldown.ravager.remains>6)
+actions.aoe+=/siegebreaker
+actions.aoe+=/storm_bolt,if=cooldown.colossus_smash.remains>4|debuff.colossus_smash.up
+actions.aoe+=/shockwave
+actions.aoe+=/execute,if=buff.sudden_death.react
+
+head=rivetsealed_casque,id=109989,bonus_id=524
+neck=goreclasp_choker,id=109963,bonus_id=524,enchant_id=5320
+shoulders=verdant_plate_spaulders,id=109944,bonus_id=524
+back=skullcracker_cloak,id=109928,bonus_id=524,enchant_id=5313
+chest=gutcrusher_chestplate,id=109895,bonus_id=524
+wrists=verdant_plate_wristguards,id=109877,bonus_id=524
+hands=incarnadine_gauntlets,id=109856,bonus_id=524
+waist=rivetsealed_waistplate,id=109841,bonus_id=524
+legs=verdant_plate_legguards,id=109819,bonus_id=524
+feet=verdant_plate_treads,id=109794,bonus_id=524
+finger1=band_of_iron_scale,id=109773,bonus_id=524,enchant_id=5327
+finger2=signet_of_bloody_crystal,id=115385,enchant_id=5327
+trinket1=mote_of_corruption,id=110010,bonus_id=524
+trinket2=fires_of_the_sun,id=110011,bonus_id=524
+main_hand=steelforged_greataxe,id=116453,bonus_id=76/525,enchant_id=5330
+
+# Gear Summary
+# gear_strength=1960
+# gear_stamina=2465
+# gear_crit_rating=779
+# gear_mastery_rating=901
+# gear_armor=1849
+# gear_multistrike_rating=1059
