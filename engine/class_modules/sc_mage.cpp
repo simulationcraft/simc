@@ -2940,13 +2940,16 @@ struct ice_floes_t : public mage_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    trigger_gcd = timespan_t::zero();
+    cooldown -> duration = timespan_t::from_seconds( 20.0 );
+    cooldown -> charges = 3;
   }
 
   virtual void execute()
   {
     mage_spell_t::execute();
 
-    p() -> buffs.ice_floes -> trigger( 2 );
+    p() -> buffs.ice_floes -> trigger( 1 );
   }
 };
 
@@ -4589,7 +4592,8 @@ void mage_t::create_buffs()
   // Talents
   buffs.blazing_speed         = buff_creator_t( this, "blazing_speed", talents.blazing_speed )
                                   .default_value( talents.blazing_speed -> effectN( 1 ).percent() );
-  buffs.ice_floes             = buff_creator_t( this, "ice_floes", talents.ice_floes );
+  buffs.ice_floes             = buff_creator_t( this, "ice_floes" ).max_stack( 3 )
+                                  .duration( timespan_t::from_seconds( 15.0 ) );
   buffs.incanters_flow        = new incanters_flow_t( this );
   buffs.rune_of_power         = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) )
                                   .duration( find_spell( 116011 ) -> duration() )
