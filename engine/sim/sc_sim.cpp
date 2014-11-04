@@ -1444,46 +1444,46 @@ void sim_t::datacollection_end()
 
 void sim_t::analyze_error()
 {
-  if( thread_index != 0 ) return;
-  if( target_error <= 0 ) return;
-  if( current_iteration < 1 ) return;
-  if( current_iteration % analyze_error_interval != 0 ) return;
+  if ( thread_index != 0 ) return;
+  if ( target_error <= 0 ) return;
+  if ( current_iteration < 1 ) return;
+  if ( current_iteration % analyze_error_interval != 0 ) return;
 
   current_error = 0;
 
   for ( size_t i = 0; i < actor_list.size(); i++ )
   {
-    player_t* p = actor_list[ i ];
+    player_t* p = actor_list[i];
     player_collected_data_t& cd = p -> collected_data;
     cd.target_metric_mutex.lock();
-    if( cd.target_metric.size() != 0 )
+    if ( cd.target_metric.size() != 0 )
     {
       cd.target_metric.analyze_basics();
       cd.target_metric.analyze_variance();
       double mean = cd.target_metric.mean();
-      if( mean != 0 )
+      if ( mean != 0 )
       {
-	double error = sim_t::distribution_mean_error( *this, cd.target_metric ) / mean;
-	if( error > current_error ) current_error = error;
+        double error = sim_t::distribution_mean_error( *this, cd.target_metric ) / mean;
+        if ( error > current_error ) current_error = error;
       }
     }
     cd.target_metric_mutex.unlock();
-  }  
+  }
 
   current_error *= 100;
 
-  if( current_error > 0 )
+  if ( current_error > 0 )
   {
-    if( current_error < target_error ) 
+    if ( current_error < target_error )
     {
       interrupt();
     }
     else
     {
-      int current=0, total=0;
+      int current = 0, total = 0;
       work_queue -> progress( &current, &total );
-      work_queue -> project( current * ( ( current_error * current_error ) / 
-					 (  target_error *  target_error ) ) );
+      work_queue -> project( static_cast<int>( current * ( ( current_error * current_error ) /
+        ( target_error *  target_error ) ) ) );
     }
   }
 }
