@@ -4817,6 +4817,8 @@ void mage_t::apl_arcane()
                               "if=health.pct<30" );
   default_list -> add_action( this, "Time Warp",
                               "if=target.health.pct<25|time>5" );
+  default_list -> add_talent( this, "Ice Floes",
+                              "if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<action.arcane_missiles.cast_time)" );
   default_list -> add_talent( this, "Rune of Power",
                               "if=buff.rune_of_power.remains<cast_time" );
   default_list -> add_talent( this, "Mirror Image" );
@@ -4915,8 +4917,6 @@ void mage_t::apl_arcane()
   conserve -> add_action( this, "Presence of Mind",
                           "if=buff.arcane_charge.stack<2" );
   conserve -> add_action( this, "Arcane Blast" );
-  conserve -> add_talent( this, "Ice Floes",
-                          "if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<action.arcane_blast.cast_time)" );
   conserve -> add_action( this, "Arcane Barrage", "moving=1" );
 
 
@@ -4960,6 +4960,8 @@ void mage_t::apl_fire()
                               "if=movement.remains>0" );
   default_list -> add_action( this, "Time Warp",
                               "if=target.health.pct<25|time>5" );
+  default_list -> add_talent( this, "Ice Floes",
+                              "if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<action.fireball.cast_time)" );
   default_list -> add_talent( this, "Rune of Power",
                               "if=buff.rune_of_power.remains<cast_time" );
   default_list -> add_action( "call_action_list,name=combust_sequence,if=pyro_chain" );
@@ -5050,8 +5052,6 @@ void mage_t::apl_fire()
                      "if=glyph.dragons_breath.enabled" );
   aoe -> add_action( this, "Flamestrike",
                      "if=mana.pct>10&remains<2.4"  );
-  aoe -> add_talent( this, "Ice Floes",
-                     "if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<action.flamestrike.cast_time)" );
 
 
   single_target -> add_action( this, "Inferno Blast",
@@ -5073,8 +5073,6 @@ void mage_t::apl_fire()
   single_target -> add_action( this, "Inferno Blast",
                                "if=buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight" );
   single_target -> add_action( this, "Fireball" );
-  single_target -> add_talent( this, "Ice Floes",
-                               "if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<action.fireball.cast_time)" );
   single_target -> add_action( this, "Scorch", "moving=1" );
 }
 
@@ -5102,6 +5100,8 @@ void mage_t::apl_frost()
   default_list -> add_action( this, "Time Warp",
                               "if=target.health.pct<25|time>5" );
   default_list -> add_talent( this, "Mirror Image" );
+  default_list -> add_talent( this, "Ice Floes",
+                              "if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<action.frostbolt.cast_time)" );
   default_list -> add_talent( this, "Rune of Power", "if=buff.rune_of_power.remains<cast_time" );
   default_list -> add_talent( this, "Rune of Power", "if=(cooldown.icy_veins.remains<gcd.max&buff.rune_of_power.remains<20)|(cooldown.prismatic_crystal.remains<gcd.max&buff.rune_of_power.remains<10)" );
   default_list -> add_action( "call_action_list,name=cooldowns,if=time_to_die<24" );
@@ -5160,8 +5160,6 @@ void mage_t::apl_frost()
                      "if=glyph.cone_of_cold.enabled" );
   aoe -> add_action( this, "Blizzard",
                      "interrupt_if=cooldown.frozen_orb.up|(talent.frost_bomb.enabled&buff.fingers_of_frost.react=2)" );
-  aoe -> add_talent( this, "Ice Floes",
-                     "if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<action.blizzard.cast_time)" );
 
 
   single_target -> add_action( "call_action_list,name=cooldowns,if=!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>45",
@@ -5202,8 +5200,6 @@ void mage_t::apl_frost()
                                "Thermal Void IV extension" );
   single_target -> add_action( "water_jet,if=buff.fingers_of_frost.react=0&!dot.frozen_orb.ticking" );
   single_target -> add_action( this, "Frostbolt" );
-  single_target -> add_talent( this, "Ice Floes",
-                               "if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<action.frostbolt.cast_time)" );
   single_target -> add_action( this, "Ice Lance", "moving=1" );
 
 }
