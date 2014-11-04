@@ -2941,7 +2941,8 @@ struct ice_floes_t : public mage_spell_t
     next_ready( timespan_t::min() )
   {
     parse_options( options_str );
-    may_miss = may_crit = may_multistrike = harmful = false;
+    may_miss = may_crit = harmful = false;
+    may_multistrike = 0;
     trigger_gcd = timespan_t::zero();
 
     cooldown -> charges = data().charges();

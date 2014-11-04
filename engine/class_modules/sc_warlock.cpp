@@ -2911,6 +2911,8 @@ struct immolate_t: public warlock_spell_t
     return m;
   }
 
+  // TODO: FIXME
+  /*
   virtual void impact( action_state_t* s )
   {
     warlock_spell_t::impact( s );
@@ -2921,6 +2923,7 @@ struct immolate_t: public warlock_spell_t
     else
       gain = p() -> gains.immolate;
   }
+  */
 
   virtual void tick( dot_t* d )
   {
@@ -3035,14 +3038,17 @@ struct conflagrate_t: public warlock_spell_t
   virtual void impact( action_state_t* s )
   {
     warlock_spell_t::impact( s );
-    gain_t* gain;
+    // TODO: FIXME
+    //gain_t* gain;
 
     if ( result_is_hit( s -> result ) )
     {
+      /*
       if ( ! fnb && p() -> spec.fire_and_brimstone -> ok() )
         gain = p() -> gains.conflagrate_fnb;
       else
         gain = p() -> gains.conflagrate;
+        */
 
       if ( s -> result == RESULT_CRIT &&  p() -> sets.has_set_bonus( SET_CASTER, T16, B2 ) )
         p() -> buffs.tier16_2pc_destructive_influence -> trigger();
@@ -3154,11 +3160,15 @@ struct incinerate_t: public warlock_spell_t
   void impact( action_state_t* s )
   {
     warlock_spell_t::impact( s );
+
+    // TODO: FIXME
+    /*
     gain_t* gain;
     if ( ! fnb && p() -> spec.fire_and_brimstone -> ok() )
       gain = p() -> gains.incinerate_fnb;
     else
       gain = p() -> gains.incinerate;
+      */
 
     if ( result_is_hit( s -> result ) )
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );

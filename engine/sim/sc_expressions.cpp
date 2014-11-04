@@ -5,17 +5,6 @@
 
 #include "simulationcraft.hpp"
 
-#if ! defined( SC_WINDOWS )
-#include <inttypes.h>
-#ifndef PRIu64
-#define PRIu64 "zu"
-#endif
-#else
-#ifndef PRIu64
-#define PRIu64 "I64"
-#endif
-#endif
-
 #define EXPRESSION_DEBUG false
 
 int expr_t::unique_id=0;
@@ -268,7 +257,11 @@ public:
 
   expr_t* optimize( int spacing ) // override
   {
-    if( EXPRESSION_DEBUG ) printf( "%*d and %" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64 " ( %s %s )\n", spacing, id_, left_true, left_false, right_true, right_false, left -> name().c_str(), right -> name().c_str() );
+    if ( EXPRESSION_DEBUG )
+    {
+      printf( "%*d and %" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64 " ( %s %s )\n", spacing, id_, left_true,
+              left_false, right_true, right_false, left->name().c_str(), right->name().c_str() );
+    }
     left  = left  -> optimize( spacing+2 );
     right = right -> optimize( spacing+2 );
     bool left_always_true  = left -> always_true();
@@ -350,7 +343,11 @@ public:
 
   expr_t* optimize( int spacing ) // override
   {
-    if( EXPRESSION_DEBUG ) printf( "%*d or %" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64 " ( %s %s )\n", spacing, id_, left_true, left_false, right_true, right_false, left -> name().c_str(), right -> name().c_str() );
+    if ( EXPRESSION_DEBUG )
+    {
+      printf( "%*d or %" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64 " ( %s %s )\n", spacing, id_, left_true, left_false,
+              right_true, right_false, left->name().c_str(), right->name().c_str() );
+    }
     left  = left  -> optimize( spacing+2 );
     right = right -> optimize( spacing+2 );
     bool left_always_true  = left -> always_true();
