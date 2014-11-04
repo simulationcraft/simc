@@ -119,19 +119,19 @@ legs=blackhands_legguards,id=115580,bonus_id=567
 feet=iron_bellow_sabatons,id=113961,bonus_id=567
 finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_critical_strike
 finger2=seal_of_the_savage_howl,id=113940,bonus_id=567,enchant=gift_of_critical_strike
-trinket1=forgemasters_insignia,id=113983,bonus_id=567
-trinket2=bottle_of_infesting_spores,id=113658,bonus_id=567
+trinket1=horn_of_screaming_spirits,id=119193,bonus_id=567
+trinket2=forgemasters_insignia,id=113983,bonus_id=567
 main_hand=crescent_of_living_magma,id=113886,bonus_id=567,enchant=mark_of_the_thunderlord
 off_hand=crescent_of_living_magma,id=113886,bonus_id=567,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_strength=3892
+# gear_strength=3918
 # gear_stamina=5004
-# gear_crit_rating=2085
+# gear_crit_rating=1908
 # gear_haste_rating=704
 # gear_mastery_rating=640
 # gear_armor=2250
 # gear_multistrike_rating=1255
-# gear_versatility_rating=323
+# gear_versatility_rating=146
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

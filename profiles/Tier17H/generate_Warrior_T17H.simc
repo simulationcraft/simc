@@ -31,8 +31,8 @@ legs=blackhands_legguards,id=115580,bonus_id=566
 feet=iron_bellow_sabatons,id=113961,bonus_id=566
 finger1=spellbound_solium_band_of_sorcerous_strength,id=118300,enchant=gift_of_critical_strike
 finger2=seal_of_the_savage_howl,id=113940,bonus_id=566,enchant=gift_of_critical_strike
-trinket1=forgemasters_insignia,id=113983,bonus_id=566
-trinket2=bottle_of_infesting_spores,id=113658,bonus_id=566
+trinket1=horn_of_screaming_spirits,id=119193,bonus_id=566
+trinket2=forgemasters_insignia,id=113983,bonus_id=566
 main_hand=taners_terrible_spine,id=113862,bonus_id=566,enchant=mark_of_the_thunderlord
 off_hand=taners_terrible_spine,id=113862,bonus_id=566,enchant=mark_of_the_thunderlord
 save=Warrior_Fury_1h_T17H.simc
@@ -58,8 +58,8 @@ legs=blackhands_legguards,id=115580,bonus_id=566
 feet=iron_bellow_sabatons,id=113961,bonus_id=566
 finger1=spellbound_solium_band_of_sorcerous_strength,id=118300,enchant=gift_of_critical_strike
 finger2=seal_of_the_savage_howl,id=113940,bonus_id=566,enchant=gift_of_critical_strike
-trinket1=forgemasters_insignia,id=113983,bonus_id=566
-trinket2=bottle_of_infesting_spores,id=113658,bonus_id=566
+trinket1=horn_of_screaming_spirits,id=119193,bonus_id=566
+trinket2=forgemasters_insignia,id=113983,bonus_id=566
 main_hand=crescent_of_living_magma,id=113886,bonus_id=566,enchant=mark_of_the_thunderlord
 off_hand=crescent_of_living_magma,id=113886,bonus_id=566,enchant=mark_of_the_thunderlord
 save=Warrior_Fury_2h_T17H.simc
@@ -85,8 +85,8 @@ legs=blackhands_legguards,id=115580,bonus_id=566
 feet=iron_bellow_sabatons,id=113961,bonus_id=566
 finger1=spellbound_solium_band_of_sorcerous_strength,id=118300,enchant=gift_of_critical_strike
 finger2=seal_of_the_savage_howl,id=113940,bonus_id=566,enchant=gift_of_critical_strike
-trinket1=forgemasters_insignia,id=113983,bonus_id=566
-trinket2=bottle_of_infesting_spores,id=113658,bonus_id=566
+trinket1=horn_of_screaming_spirits,id=119193,bonus_id=566
+trinket2=forgemasters_insignia,id=113983,bonus_id=566
 main_hand=crescent_of_living_magma,id=113886,bonus_id=566,enchant=mark_of_the_thunderlord
 save=Warrior_Arms_T17H.simc
 

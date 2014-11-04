@@ -30,8 +30,8 @@ legs=blackhands_legguards,id=115580
 feet=iron_bellow_sabatons,id=113961
 finger1=timeless_solium_band_of_brutality,id=118295,enchant=gift_of_critical_strike
 finger2=seal_of_the_savage_howl,id=113940,enchant=gift_of_critical_strike
-trinket1=forgemasters_insignia,id=113983
-trinket2=bottle_of_infesting_spores,id=113658
+trinket1=horn_of_screaming_spirits,id=119193
+trinket2=forgemasters_insignia,id=113983
 main_hand=taners_terrible_spine,id=113862,enchant=mark_of_the_thunderlord
 off_hand=taners_terrible_spine,id=113862,enchant=mark_of_the_thunderlord
 save=Warrior_Fury_1h_T17N.simc
@@ -57,8 +57,8 @@ legs=blackhands_legguards,id=115580
 feet=iron_bellow_sabatons,id=113961
 finger1=timeless_solium_band_of_brutality,id=118295,enchant=gift_of_critical_strike
 finger2=seal_of_the_savage_howl,id=113940,enchant=gift_of_critical_strike
-trinket1=forgemasters_insignia,id=113983
-trinket2=bottle_of_infesting_spores,id=113658
+trinket1=horn_of_screaming_spirits,id=119193
+trinket2=forgemasters_insignia,id=113983
 main_hand=crescent_of_living_magma,id=113886,enchant=mark_of_the_thunderlord
 off_hand=crescent_of_living_magma,id=113886,enchant=mark_of_the_thunderlord
 save=Warrior_Fury_2h_T17N.simc
@@ -84,8 +84,8 @@ legs=blackhands_legguards,id=115580
 feet=iron_bellow_sabatons,id=113961
 finger1=timeless_solium_band_of_brutality,id=118295,enchant=gift_of_critical_strike
 finger2=seal_of_the_savage_howl,id=113940,enchant=gift_of_critical_strike
-trinket1=forgemasters_insignia,id=113983
-trinket2=bottle_of_infesting_spores,id=113658
+trinket1=horn_of_screaming_spirits,id=119193
+trinket2=forgemasters_insignia,id=113983
 main_hand=crescent_of_living_magma,id=113886,enchant=mark_of_the_thunderlord
 save=Warrior_Arms_T17N.simc
 
