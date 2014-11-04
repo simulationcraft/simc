@@ -4,7 +4,7 @@ race=gnome
 role=spell
 position=back
 professions=tailoring=600/engineering=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!0..201.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!2..201.
 glyphs=arcane_power/cone_of_cold
 spec=arcane
 

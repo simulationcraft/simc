@@ -4,7 +4,7 @@ level=90
 race=gnome
 spec=arcane
 professions=tailoring=600/engineering=600
-talents=100312
+talents=300312
 glyphs=arcane_power/cone_of_cold
 head=ebon_ritual_hood,id=105647,upgrade=4,gems=sinister_primal_10haste_10mastery_11int
 neck=untainted_guardians_chain,id=105465,upgrade=4
@@ -29,7 +29,7 @@ level=90
 race=dwarf
 spec=fire
 professions=tailoring=600/engineering=600
-talents=100322
+talents=300322
 glyphs=inferno_blast/combustion/dragons_breath
 
 head=hood_of_swirling_senses,id=105420,upgrade=4,gems=sinister_primal_20crit_11int
@@ -55,7 +55,7 @@ level=90
 race=orc
 spec=frost
 professions=tailoring=600/engineering=600
-talents=100322
+talents=300322
 glyphs=icy_veins/splitting_ice/cone_of_cold
 head=hood_of_swirling_senses,id=105420,upgrade=4,gems=sinister_primal_10haste_10crit_11int
 neck=untainted_guardians_chain,id=105465,upgrade=4
