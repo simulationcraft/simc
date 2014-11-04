@@ -131,11 +131,14 @@ public:
 #if ! defined( SC_VS )
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
-#endif
-
-
 #ifndef PRIu64
-#error "C99 format specifier missing."
+#define PRIu64 "zu"
 #endif
+#else
+#ifndef PRIu64
+#define PRIu64 "I64"
+#endif
+#endif
+
 
 #endif // CONFIG_H
