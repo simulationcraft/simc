@@ -2843,25 +2843,7 @@ struct sim_t : private sc_thread_t
   mutex_t* pause_mutex;
   bool paused;
 private:
-
-  // Sit in an external pause mutex (lock) of the first simulator thread until
-  // it's our turn to lock/unlock it. In theory can have racing issues, but in
-  // practice all iterations do enough work for it not to matter.
-  //
-  // Lock/unlock is done per iteration, so processing cost should be minimal.
-  void do_pause()
-  {
-    if ( parent )
-      parent -> do_pause();
-    else
-    {
-      if ( pause_mutex && paused )
-      {
-        pause_mutex -> lock();
-        pause_mutex -> unlock();
-      }
-    }
-  }
+  void do_pause();
 
   void print_spell_query();
 };

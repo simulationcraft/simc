@@ -2090,6 +2090,28 @@ bool sim_t::iterate()
   return iterations > 0;
 }
 
+/* Sit in an external pause mutex (lock) of the first simulator thread until
+ * it's our turn to lock/unlock it. In theory can have racing issues, but in
+ * practice all iterations do enough work for it not to matter.
+ *
+ * Lock/unlock is done per iteration, so processing cost should be minimal.
+ */
+void sim_t::do_pause()
+{
+  if ( parent )
+  {
+    parent -> do_pause();
+  }
+  else
+  {
+    if ( pause_mutex && paused )
+    {
+      pause_mutex -> lock();
+      pause_mutex -> unlock();
+    }
+  }
+}
+
 // sim_t::merge =============================================================
 
 void sim_t::merge( sim_t& other_sim )
