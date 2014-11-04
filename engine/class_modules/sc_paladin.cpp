@@ -5240,6 +5240,7 @@ void paladin_t::generate_action_prio_list_ret()
       std::string item_str;
       item_str += "use_item,name=";
       item_str += items[ i ].name();
+      item_str += ",if=buff.avenging_wrath.up";
       def -> add_action( item_str );
     }
   }
@@ -5263,20 +5264,23 @@ void paladin_t::generate_action_prio_list_ret()
   single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&holy_power=5&(talent.seraphim.enabled&cooldown.seraphim.remains<=4)" );
   single -> add_action( this, "Templar's Verdict", "if=holy_power=5|buff.holy_avenger.up&holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>4)" );
   single -> add_action( this, "Templar's Verdict", "if=buff.divine_purpose.react&buff.divine_purpose.remains<4" );
+  single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&buff.divine_crusader.remains<4&!talent.final_verdict.enabled" );
   single -> add_talent( this, "Final Verdict", "if=holy_power=5|buff.holy_avenger.up&holy_power>=3" );
   single -> add_talent( this, "Final Verdict", "if=buff.divine_purpose.react&buff.divine_purpose.remains<4" );
   single -> add_action( this, "Hammer of Wrath" );
   single -> add_action( this, "Judgment", "if=talent.empowered_seals.enabled&((seal.truth&buff.maraads_truth.remains<cooldown.judgment.duration*2)|(seal.righteousness&buff.liadrins_righteousness.remains<cooldown.judgment.duration*2))" );
   single -> add_action( this, "Exorcism","if=buff.blazing_contempt.up&holy_power<=2&buff.holy_avenger.down" );
   single -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&buff.maraads_truth.remains<(cooldown.judgment.duration)&buff.maraads_truth.remains<=3" );
-  single -> add_action( this, "Divine Storm","if=buff.divine_crusader.react&buff.final_verdict.up" );
-  single -> add_talent( this, "Final Verdict", "if=buff.divine_purpose.react" );
-  single -> add_action( this, "Templar's Verdict","if=(buff.avenging_wrath.up|talent.divine_purpose.enabled)&(!talent.seraphim.enabled|cooldown.seraphim.remains>4)" );
-  single -> add_action( this, "Divine Storm","if=talent.divine_purpose.enabled&buff.divine_crusader.react&!talent.final_verdict.enabled" );
+  single -> add_action( this, "Divine Storm","if=buff.divine_crusader.react&buff.final_verdict.up&(buff.avenging_wrath.up|target.health.pct<35)" );
+  single -> add_talent( this, "Final Verdict", "if=buff.divine_purpose.react|target.health.pct<35" );
+  single -> add_action( this, "Templar's Verdict","if=buff.avenging_wrath.up|target.health.pct<35&(!talent.seraphim.enabled|cooldown.seraphim.remains>4)" );
   single -> add_action( this, "Crusader Strike");
+  single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&(buff.avenging_wrath.up|target.health.pct<35)&!talent.final_verdict.enabled" );
+  single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&buff.final_verdict.up" );
   single -> add_talent( this, "Final Verdict" );
   single -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&buff.liadrins_righteousness.remains<(cooldown.judgment.duration)&buff.liadrins_righteousness.remains<=3" );
   single -> add_action( this, "Judgment" );
+  single -> add_action( this, "Templar's Verdict", "if=buff.divine_purpose.react" );
   single -> add_action( this, "Divine Storm","if=buff.divine_crusader.react&!talent.final_verdict.enabled" );
   single -> add_action( this, "Templar's Verdict", "if=holy_power>=4&(!talent.seraphim.enabled|cooldown.seraphim.remains>4)" );
   single -> add_action( this, "Exorcism" );
@@ -5293,7 +5297,7 @@ void paladin_t::generate_action_prio_list_ret()
   cleave -> add_action( this, "Judgment", "if=talent.empowered_seals.enabled&seal.righteousness&buff.liadrins_righteousness.remains<=5" );
   cleave -> add_action( this, "Divine Storm", "if=(!talent.seraphim.enabled|cooldown.seraphim.remains>4)&!talent.final_verdict.enabled" );
   cleave -> add_action( this, "Crusader Strike" );
-  cleave -> add_action( this, "Final Verdict", "if=buff.final_verdict.down" );
+  cleave -> add_talent( this, "Final Verdict", "if=buff.final_verdict.down" );
   cleave -> add_action( this, "Divine Storm", "if=buff.final_verdict.up" );
   cleave -> add_action( this, "Judgment" );
   cleave -> add_action( this, "Exorcism" );
