@@ -91,6 +91,7 @@ actions.aoe+=/pyroblast,if=active_dot.pyroblast=0&!in_flight
 actions.aoe+=/cold_snap,if=glyph.dragons_breath.enabled&!cooldown.dragons_breath.up
 actions.aoe+=/dragons_breath,if=glyph.dragons_breath.enabled
 actions.aoe+=/flamestrike,if=mana.pct>10&remains<2.4
+actions.aoe+=/ice_floes,if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<action.flamestrike.cast_time)
 
 # Single target sequence
 actions.single_target=inferno_blast,if=(dot.combustion.ticking&active_dot.combustion<active_enemies)|(dot.living_bomb.ticking&active_dot.living_bomb<active_enemies)
@@ -104,6 +105,7 @@ actions.single_target+=/inferno_blast,if=buff.pyroblast.down&buff.heating_up.up
 actions.single_target+=/call_action_list,name=active_talents
 actions.single_target+=/inferno_blast,if=buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight
 actions.single_target+=/fireball
+actions.single_target+=/ice_floes,if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<action.fireball.cast_time)
 actions.single_target+=/scorch,moving=1
 
 head=hood_of_swirling_senses,id=105420,upgrade=4,gems=sinister_primal_20crit_11int

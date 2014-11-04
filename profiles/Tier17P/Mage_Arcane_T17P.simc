@@ -101,7 +101,7 @@ actions.conserve+=/nether_tempest,cycle_targets=1,if=target!=prismatic_crystal&b
 actions.conserve+=/arcane_barrage,if=buff.arcane_charge.stack=4
 actions.conserve+=/presence_of_mind,if=buff.arcane_charge.stack<2
 actions.conserve+=/arcane_blast
-actions.conserve+=/ice_floes,moving=1
+actions.conserve+=/ice_floes,if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<action.arcane_blast.cast_time)
 actions.conserve+=/arcane_barrage,moving=1
 
 head=hood_of_swirling_light,id=109972,bonus_id=524
