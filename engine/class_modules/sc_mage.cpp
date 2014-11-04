@@ -2943,7 +2943,6 @@ struct ice_floes_t : public mage_spell_t
     parse_options( options_str );
     may_miss = may_crit = may_multistrike = harmful = false;
     trigger_gcd = timespan_t::zero();
-    use_off_gcd = true;
 
     cooldown -> charges = data().charges();
     cooldown -> duration = data().charge_cooldown();
