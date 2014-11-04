@@ -1878,7 +1878,7 @@ bool sim_t::init()
 
   if ( report_precision < 0 ) report_precision = 2;
 
-  simulation_length.reserve( iterations );
+  simulation_length.reserve( std::min( iterations, 10000 ) );
 
   initialized = true;
 

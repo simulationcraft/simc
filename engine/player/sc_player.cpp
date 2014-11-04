@@ -9546,26 +9546,28 @@ player_collected_data_t::player_collected_data_t( const std::string& player_name
 
 void player_collected_data_t::reserve_memory( const player_t& p )
 {
-  fight_length.reserve( p.sim -> iterations );
+  int size = std::min( p.sim -> iterations, 10000 );
+
+  fight_length.reserve( size );
   // DMG
-  dmg.reserve( p.sim -> iterations );
-  compound_dmg.reserve( p.sim -> iterations );
-  dps.reserve( p.sim -> iterations );
-  dpse.reserve( p.sim -> iterations );
-  dtps.reserve( p.sim -> iterations );
+  dmg.reserve( size );
+  compound_dmg.reserve( size );
+  dps.reserve( size );
+  dpse.reserve( size );
+  dtps.reserve( size );
   // HEAL
-  heal.reserve( p.sim -> iterations );
-  compound_heal.reserve( p.sim -> iterations );
-  hps.reserve( p.sim -> iterations );
-  hpse.reserve( p.sim -> iterations );
-  htps.reserve( p.sim -> iterations );
-  heal_taken.reserve( p.sim -> iterations );
-  deaths.reserve( p.sim -> iterations );
+  heal.reserve( size );
+  compound_heal.reserve( size );
+  hps.reserve( size );
+  hpse.reserve( size );
+  htps.reserve( size );
+  heal_taken.reserve( size );
+  deaths.reserve( size );
 
   if ( ! p.is_pet() && p.primary_role() == ROLE_TANK )
   {
-    theck_meloree_index.reserve( p.sim -> iterations );
-    effective_theck_meloree_index.reserve( p.sim -> iterations );
+    theck_meloree_index.reserve( size );
+    effective_theck_meloree_index.reserve( size );
   }
 }
 

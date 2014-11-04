@@ -42,10 +42,11 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   aps( 0 ), ape( 0 ), apet( 0 ), etpe( 0 ), ttpt( 0 ),
   total_time( timespan_t::zero() )
 {
-  actual_amount.reserve( sim.iterations );
-  total_amount.reserve( sim.iterations );
-  portion_aps.reserve( sim.iterations );
-  portion_apse.reserve( sim.iterations );
+  int size = std::min( sim.iterations, 10000 );
+  actual_amount.reserve( size );
+  total_amount.reserve( size );
+  portion_aps.reserve( size );
+  portion_apse.reserve( size );
 }
 
 // stats_t::add_child =======================================================
