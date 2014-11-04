@@ -992,8 +992,7 @@ public:
   virtual bool usable_moving() const
   {
     // TODO: Ice Floes now affects all spells, not just mage spells
-    if ( p() -> talents.ice_floes -> ok() &&
-         ( p() -> buffs.ice_floes -> up() || p() -> buffs.ice_floes -> cooldown -> up() ) )
+    if ( p() -> buffs.ice_floes -> check() )
       return true;
 
     return spell_t::usable_moving();
@@ -1136,7 +1135,7 @@ public:
       hasted_by_pom = false;
     }
 
-    if ( execute_time() > timespan_t::zero() && consumes_ice_floes )
+    if ( execute_time() > timespan_t::zero() && consumes_ice_floes && p() -> buffs.ice_floes -> up() )
     {
       p() -> buffs.ice_floes -> decrement();
     }
