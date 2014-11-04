@@ -3254,6 +3254,7 @@ static void format_double( std::string& buffer, double d, int min_width, int pre
     precision   = 0;
     format_type = 'f';
   }
+#ifndef SC_WINDOWS
   else if( !finite( d ) )
   {
     str         = "FNI";  // reverse
@@ -3261,6 +3262,7 @@ static void format_double( std::string& buffer, double d, int min_width, int pre
     format_type = 'f';
     if( d < 0 ) negative = true;
   }
+#endif
   else
   {
     if( min_width == -1 ) min_width = 0;  // defaults
@@ -3701,18 +3703,18 @@ std::string& format( std::string& buffer, const char *fmt, ... )
   return buffer;
 }
 
-std::string& format( const char *fmt, va_list args )
+// Oh lords of reference counting and rvo, please don't f*ck this up!
+
+std::string format( const char *fmt, va_list args )
 {
-  static std::string buffer;
-  buffer.clear();
+  std::string buffer;
   format( buffer, fmt, args );
   return buffer;
 }
 
-std::string& format( const char *fmt, ... )
+std::string format( const char *fmt, ... )
 {
-  static std::string buffer;
-  buffer.clear();
+  std::string buffer;
   va_list args;
   va_start( args, fmt );
   format( buffer, fmt, args );

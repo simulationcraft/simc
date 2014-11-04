@@ -1332,10 +1332,13 @@ inline std::string from_string( const std::string& v )
   return v;
 }
 
+// These functions will concatenate to buffer.
 std::string& format( std::string& buffer, const char *fmt, va_list args );
 std::string& format( std::string& buffer, const char *fmt, ... );
-std::string& format( const char *fmt, va_list args );
-std::string& format( const char *fmt, ... );
+
+// Please use the above two if at all convenient.
+std::string format( const char *fmt, va_list args );
+std::string format( const char *fmt, ... );
 
 
 } // namespace util
