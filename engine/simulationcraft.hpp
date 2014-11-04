@@ -2749,7 +2749,7 @@ struct sim_t : private sc_thread_t
   {
     mutex_t m;
     int total_work, projected_work, work;
-    work_queue_t() : total_work( 0 ), work( 0 ) {}
+    work_queue_t() : total_work( 0 ), projected_work( 0 ), work( 0 ) {}
     void init( int w )    { AUTO_LOCK(m); total_work = projected_work = w; }
     void flush()          { AUTO_LOCK(m); total_work = projected_work = work; }
     void project( int w ) { AUTO_LOCK(m); projected_work = w; assert(w>=work); }
@@ -2822,7 +2822,6 @@ struct sim_t : private sc_thread_t
   void      add_option( const option_t& opt );
   void      create_options();
   bool      parse_option( const std::string& name, const std::string& value );
-  bool      parse_options( int argc, char** argv );
   void      setup( sim_control_t* );
   bool      time_to_think( timespan_t proc_time );
   timespan_t total_reaction_time ();
