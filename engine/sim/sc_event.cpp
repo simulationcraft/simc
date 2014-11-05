@@ -5,11 +5,13 @@
 
 #include "simulationcraft.hpp"
 
+namespace {
 #ifndef NDEBUG
-static const bool ACTOR_EVENT_BOOKKEEPING = true;
+const bool ACTOR_EVENT_BOOKKEEPING = true;
 #else
-static const bool ACTOR_EVENT_BOOKKEEPING = false;
+const bool ACTOR_EVENT_BOOKKEEPING = false;
 #endif
+}
 
 // ==========================================================================
 // Event
@@ -364,8 +366,6 @@ void event_manager_t::reset()
 
 void event_manager_t::merge( event_manager_t& other )
 {
-  if ( max_events_remaining < other.max_events_remaining ) 
-    max_events_remaining = other.max_events_remaining;
-
+  max_events_remaining = std::max( max_events_remaining, other.max_events_remaining );
   total_events_processed += other.total_events_processed;
 }

@@ -1079,14 +1079,10 @@ void sim_t::remove_relative( sim_t* cousin )
   else
   {
     AUTO_LOCK( relatives_mutex );
-    for( size_t i=0, size=relatives.size(); i < size; i++ )
-      if( relatives[ i ] == cousin )
-      {
-	relatives[ i ] = relatives[ size-1 ];
-	relatives.pop_back();
-	return;
-      }
-    assert(0);
+    std::vector<sim_t*>::iterator it = range::find( relatives, cousin );
+    assert( it != relatives.end() && "Could not find relative to remove" );
+    *it = relatives.back();
+    relatives.pop_back();
   }
 }
 
@@ -1455,7 +1451,7 @@ void sim_t::analyze_error()
   {
     player_t* p = actor_list[i];
     player_collected_data_t& cd = p -> collected_data;
-    cd.target_metric_mutex.lock();
+    AUTO_LOCK( cd.target_metric_mutex );
     if ( cd.target_metric.size() != 0 )
     {
       cd.target_metric.analyze_basics();
@@ -1467,7 +1463,6 @@ void sim_t::analyze_error()
         if ( error > current_error ) current_error = error;
       }
     }
-    cd.target_metric_mutex.unlock();
   }
 
   current_error *= 100;
