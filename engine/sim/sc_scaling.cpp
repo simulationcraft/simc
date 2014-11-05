@@ -121,6 +121,8 @@ scaling_t::scaling_t( sim_t* s ) :
 
 double scaling_t::progress( std::string& phase, std::string* detailed )
 {
+  AUTO_LOCK( mutex );
+
   if ( ! calculate_scale_factors ) return 1.0;
 
   if ( num_scaling_stats <= 0 ) return 0.0;
@@ -201,11 +203,15 @@ void scaling_t::analyze_stats()
     if ( is_scaling_stat( sim, i ) && ( stats.get_stat( i ) != 0 ) )
       stats_to_scale.push_back( i );
 
+  mutex.lock();
   num_scaling_stats = remaining_scaling_stats = as<int>( stats_to_scale.size() );
+  mutex.unlock();
 
   if ( ! num_scaling_stats ) return; // No Stats to scale
 
+  mutex.lock();
   baseline_sim = sim; // Take the current sim as baseline
+  mutex.unlock();
 
   for ( size_t k = 0; k < stats_to_scale.size(); ++k )
   {
@@ -217,14 +223,13 @@ void scaling_t::analyze_stats()
     double scale_delta = stats.get_stat( stat );
     assert ( scale_delta );
 
-
     bool center = center_scale_delta && ! stat_may_cap( stat );
 
+    mutex.lock();
     ref_sim = baseline_sim;
-
     delta_sim = new sim_t( sim );
-    delta_sim -> scaling -> scale_stat = stat;
-    delta_sim -> scaling -> scale_value = +scale_delta / ( center ? 2 : 1 );
+    mutex.unlock();
+
     if ( sim -> report_progress )
     {
       std::stringstream  stat_name; stat_name.width( 12 );
@@ -233,17 +238,24 @@ void scaling_t::analyze_stats()
       //util::fprintf( stdout, "\nGenerating scale factors for %s...\n", util::stat_type_string( stat ) );
       //fflush( stdout );
     }
+
+    delta_sim -> scaling -> scale_stat = stat;
+    delta_sim -> scaling -> scale_value = +scale_delta / ( center ? 2 : 1 );
     delta_sim -> execute();
 
     if ( center )
     {
+      mutex.lock();
       ref_sim = new sim_t( sim );
+      mutex.unlock();
+
       if ( sim -> report_progress )
       {
         std::stringstream  stat_name; stat_name.width( 8 );
         stat_name << std::left << std::string( util::stat_type_abbrev( stat ) ) + ":";
         ref_sim -> sim_phase_str = "Generating ref " + stat_name.str();
       }
+
       ref_sim -> scaling -> scale_stat = stat;
       ref_sim -> scaling -> scale_value = center ? -( scale_delta / 2 ) : 0;
       ref_sim -> execute();
@@ -315,14 +327,16 @@ void scaling_t::analyze_stats()
       report::print_text( delta_sim, true );
     }
 
+    mutex.lock();
     if ( ref_sim != baseline_sim && ref_sim != sim )
     {
       delete ref_sim;
       ref_sim = 0;
     }
-    delete delta_sim;  delta_sim  = 0;
-
+    delete delta_sim;  
+    delta_sim  = 0;
     remaining_scaling_stats--;
+    mutex.unlock();
   }
 
   if ( baseline_sim != sim ) delete baseline_sim;

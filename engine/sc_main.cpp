@@ -33,9 +33,9 @@ struct sim_signal_handler_t
     if ( global_sim )
     {
       report( signal );
-      if( global_sim -> work_queue -> size() == 0 )
+      if( global_sim -> scaling -> calculate_scale_factors )
       {
-	exit(1);
+	global_sim -> cancel();
       }
       else
       {

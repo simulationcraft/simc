@@ -2913,6 +2913,7 @@ struct module_t
 
 struct scaling_t
 {
+  mutex_t mutex;
   sim_t* sim;
   sim_t* baseline_sim;
   sim_t* ref_sim;
