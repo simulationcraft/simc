@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "io.hpp"
+#include "str.hpp"
 #include "utf8.h"
 #include <cassert>
 #include <cstring>
@@ -130,31 +131,14 @@ FILE* fopen( const std::string& filename, const char* mode )
 { return _wfopen( widen( filename ).c_str(), widen( mode ).c_str() ); }
 #endif
 
-ofstream& ofstream::printf( const char* format, ... )
+ofstream& ofstream::printf( const char* fmt, ... )
 {
-  char buffer[ 4048 /*16384*/ ];
-
   va_list fmtargs;
-  va_start( fmtargs, format );
-  int rval = ::vsnprintf( buffer, sizeof( buffer ), format, fmtargs );
+  va_start( fmtargs, fmt );
+  std::string buffer = str::format( fmt, fmtargs );
   va_end( fmtargs );
 
-  if ( rval < 0 )
-    return *this;
-
-  // Not enough room on standard buffer, use a dynamic buffer (from heap)
-  if ( static_cast<size_t>( rval ) >= sizeof( buffer ) )
-  {
-    char* dynamic_buffer = new char[ rval + 1 ];
-    va_start( fmtargs, format );
-    rval = ::vsnprintf( dynamic_buffer, rval + 1, format, fmtargs );
-    va_end( fmtargs );
-    *this << dynamic_buffer;
-
-    delete[] dynamic_buffer;
-  }
-  else
-    *this << buffer;
+  *this << buffer;
 
   return *this;
 }

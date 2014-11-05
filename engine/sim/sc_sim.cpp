@@ -2851,27 +2851,19 @@ void sim_t::detailed_progress( std::string* detail, int current_iterations, int 
 
 // sim_t::errorf ============================================================
 
-void sim_t::errorf( const char* format, ... )
+void sim_t::errorf( const char* fmt, ... )
 {
   if ( thread_index != 0 )
     return;
 
-  char buffer[ 1024 ];
-
   va_list fmtargs;
-  va_start( fmtargs, format );
-  int rval = ::vsnprintf( buffer, sizeof( buffer ), format, fmtargs );
+  va_start( fmtargs, fmt );
+  std::string s = str::format( fmt, fmtargs );
   va_end( fmtargs );
 
-  assert( rval < 0 || ( static_cast<size_t>( rval ) < sizeof( buffer ) ) );
-  (void) rval;
-
-  std::string s( buffer );
-  (void) buffer;
-
   util::replace_all( s, "\n", "" );
-
   std::cerr << s << "\n";
+
   error_list.push_back( s );
 }
 
@@ -2960,34 +2952,26 @@ void sc_timeline_t::adjust( sim_t& sim )
 
 // FIXME!  Move this to util at some point.
 
-sc_raw_ostream_t& sc_raw_ostream_t::printf( const char* format, ... )
+sc_raw_ostream_t& sc_raw_ostream_t::printf( const char* fmt, ... )
 {
-  char buffer[ 4048 ];
-
   va_list fmtargs;
-  va_start( fmtargs, format );
-  int rval = ::vsnprintf( buffer, sizeof( buffer ), format, fmtargs );
+  va_start( fmtargs, fmt );
+  std::string buffer = str::format( fmt, fmtargs );
   va_end( fmtargs );
 
-  assert( rval < 0 || ( static_cast<size_t>( rval ) < sizeof( buffer ) ) );
-  (void) rval;
-
   (*_stream) << buffer;
+
   return *this;
 }
 
-sim_ostream_t& sim_ostream_t::printf( const char* format, ... )
+sim_ostream_t& sim_ostream_t::printf( const char* fmt, ... )
 {
-  char buffer[ 4048 ];
-
   va_list fmtargs;
-  va_start( fmtargs, format );
-  int rval = ::vsnprintf( buffer, sizeof( buffer ), format, fmtargs );
+  va_start( fmtargs, fmt );
+  std::string buffer = str::format( fmt, fmtargs );
   va_end( fmtargs );
 
-  assert( rval < 0 || ( static_cast<size_t>( rval ) < sizeof( buffer ) ) );
-  (void) rval;
-
   _raw << util::to_string( sim.current_time().total_seconds(), 3 ) << " " << buffer << "\n";
+
   return *this;
 }

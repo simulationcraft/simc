@@ -157,6 +157,8 @@ public:
 #ifdef SC_VS
 #undef finite
 #define finite _finite
+#undef isnan
+#define isnan _isnan
 #endif
 #endif
 
