@@ -41,7 +41,7 @@
 #pragma once
 #endif
 
-#if _MSC_VER >= 1600 // [
+#if 0 // [
 #include <stdint.h>
 #else // ] _MSC_VER >= 1600 [
 
