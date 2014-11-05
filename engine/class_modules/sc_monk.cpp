@@ -4999,8 +4999,6 @@ double monk_t::current_stagger_dmg()
     if ( dot && dot -> state )
     {
       dmg = dot -> state -> result_amount;
-      if ( dot -> state -> result == RESULT_HIT )
-        dmg *= 1.0 + active_actions.stagger_self_damage -> total_crit_bonus();
     }
   }
   return dmg;
@@ -5024,7 +5022,7 @@ expr_t* monk_t::create_expression( action_t* a, const std::string& name_str )
 
       virtual double evaluate()
       {
-        return player.current_stagger_dmg() / player.resources.max[RESOURCE_HEALTH] > stagger_health_pct;
+        return ( player.current_stagger_dmg() / player.resources.max[RESOURCE_HEALTH] ) > stagger_health_pct;
       }
     };
     struct stagger_amount_expr_t: public expr_t

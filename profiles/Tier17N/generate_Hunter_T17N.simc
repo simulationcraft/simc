@@ -41,7 +41,7 @@ race=orc
 spec=marksmanship
 position=ranged_back
 role=attack
-talents=0003313
+talents=0003113
 head=rylakstalkers_headguard,id=115545
 neck=darklight_necklace,id=113865,enchant=gift_of_critical_strike
 shoulders=neckbreaker_shoulderguards,id=113899
@@ -55,7 +55,7 @@ feet=slagstomper_treads,id=113888
 finger1=unexploded_explosive_shard,id=113877,enchant=gift_of_critical_strike
 finger2=timeless_solium_band_of_the_assassin,id=118297,enchant=gift_of_critical_strike
 trinket1=humming_blackiron_trigger,id=113985
-trinket2=scales_of_doom,id=113612
+trinket2=beating_heart_of_the_mountain,id=113931
 main_hand=mouth_of_the_fury,id=113885,enchant=megawatt_filament
 save=Hunter_MM_T17N.simc
 

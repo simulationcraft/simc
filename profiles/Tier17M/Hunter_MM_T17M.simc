@@ -3,7 +3,7 @@ level=100
 race=orc
 role=attack
 position=ranged_back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#YZ!...2202
+talents=http://us.battle.net/wow/en/tool/talent-calculator#YZ!...2002
 spec=marksmanship
 
 # This default action priority list is automatically created based on your character.
@@ -27,6 +27,7 @@ actions.precombat+=/aimed_shot
 # Executed every time the actor is available.
 
 actions=auto_shot
+actions+=/use_item,name=beating_heart_of_the_mountain
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
@@ -74,11 +75,11 @@ feet=slagstomper_treads,id=113888,bonus_id=567
 finger1=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_critical_strike
 finger2=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_critical_strike
 trinket1=humming_blackiron_trigger,id=113985,bonus_id=567
-trinket2=scales_of_doom,id=113612,bonus_id=567
+trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=567
 main_hand=mouth_of_the_fury,id=113885,bonus_id=567,enchant=megawatt_filament
 
 # Gear Summary
-# gear_agility=3586
+# gear_agility=3612
 # gear_stamina=4545
 # gear_crit_rating=1875
 # gear_haste_rating=779
