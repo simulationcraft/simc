@@ -3254,7 +3254,6 @@ static void format_double( std::string& buffer, double d, int min_width, int pre
     precision   = 0;
     format_type = 'f';
   }
-#ifndef SC_WINDOWS
   else if( !finite( d ) )
   {
     str         = "FNI";  // reverse
@@ -3262,7 +3261,6 @@ static void format_double( std::string& buffer, double d, int min_width, int pre
     format_type = 'f';
     if( d < 0 ) negative = true;
   }
-#endif
   else
   {
     if( min_width == -1 ) min_width = 0;  // defaults

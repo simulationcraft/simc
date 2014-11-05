@@ -140,5 +140,14 @@ public:
 #endif
 #endif
 
+#ifdef isfinite
+#undef finite
+#define finite isfinite
+#else
+#ifdef SC_VS
+#undef finite
+#define finite _finite
+#endif
+#endif
 
 #endif // CONFIG_H
