@@ -444,7 +444,7 @@ void print_html_sim_summary( report::sc_html_stream& os, const sim_t* sim, const
   os.printf(
     "<tr class=\"left\">\n"
     "<th>Total Events Processed:</th>\n"
-    "<td>%" PRIu64 "</td>\n"
+    "<td>%lu</td>\n"
     "</tr>\n",
     sim -> event_mgr.total_events_processed );
 

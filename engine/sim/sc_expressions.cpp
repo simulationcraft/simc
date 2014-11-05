@@ -259,8 +259,8 @@ public:
   {
     if ( EXPRESSION_DEBUG )
     {
-      printf( "%*d and %" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64 " ( %s %s )\n", spacing, id_, left_true,
-              left_false, right_true, right_false, left->name().c_str(), right->name().c_str() );
+      util::printf( "%*d and %lu %lu %lu %lu ( %s %s )\n", spacing, id_, left_true,
+		    left_false, right_true, right_false, left->name().c_str(), right->name().c_str() );
     }
     left  = left  -> optimize( spacing+2 );
     right = right -> optimize( spacing+2 );
@@ -345,8 +345,8 @@ public:
   {
     if ( EXPRESSION_DEBUG )
     {
-      printf( "%*d or %" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64 " ( %s %s )\n", spacing, id_, left_true, left_false,
-              right_true, right_false, left->name().c_str(), right->name().c_str() );
+      util::printf( "%*d or %lu %lu %lu %lu ( %s %s )\n", spacing, id_, left_true, left_false,
+		    right_true, right_false, left->name().c_str(), right->name().c_str() );
     }
     left  = left  -> optimize( spacing+2 );
     right = right -> optimize( spacing+2 );

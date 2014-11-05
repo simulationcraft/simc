@@ -628,7 +628,7 @@ bool download_roster( rapidjson::Document& d,
   d.Parse< 0 >( result.c_str() );
   if ( d.HasParseError() )
   {
-    sim -> errorf( "BCP API: Unable to parse guild from '%s': Parse error '%s' @ %" PRIu64 "\n",
+    sim -> errorf( "BCP API: Unable to parse guild from '%s': Parse error '%s' @ %lu\n",
       url.c_str(), d.GetParseError(), d.GetErrorOffset() );
 
     return false;
