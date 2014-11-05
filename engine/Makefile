@@ -55,7 +55,7 @@ OPENSSL_PATH =
 
 MKDIR      = mkdir
 CXX        = g++
-CPP_FLAGS  = -Wall -Woverloaded-virtual -W -I. -DSC_SHARED_DATA=\"$(SHARED_DATA)\"
+CPP_FLAGS  = -Wextra -Woverloaded-virtual -W -I. -DSC_SHARED_DATA=\"$(SHARED_DATA)\"
 OPTS       = -O3
 
 # Include build setting from user configuration file
@@ -150,7 +150,7 @@ debug: $(MODULE)
 
 release:CPP_FLAGS += -DNDEBUG
 release: $(MODULE)
-	
+
 optimized:CPP_FLAGS += -DNDEBUG -std=c++0x
 optimized:OPTS += -march=native -ffast-math -fomit-frame-pointer
 optimized: $(MODULE)
@@ -171,7 +171,7 @@ $(MODULE): $(SRC_OBJ)
 
 $(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT): %.cpp $(SRC_H)
 	-@echo [$(MODULE)] Compiling $(notdir $<)
-	@$(CXX) $(CPP_FLAGS) $(OPTS) -c $< -o $@
+	$(CXX) $(CPP_FLAGS) $(OPTS) -c $< -o $@
 
 %.s: %.cpp $(SRC_H)
 	-@echo [$(MODULE)] Compiling $(notdir $<)
@@ -194,7 +194,7 @@ sc_http$(MODULE_EXT): interfaces$(PATHSEP)sc_http.cpp util$(PATHSEP)sc_io.cpp sc
 rng$(MODULE_EXT): util$(PATHSEP)rng.cpp
 	-@echo [$@] Linking
 	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
-	
+
 timeline$(MODULE_EXT): util$(PATHSEP)timeline.hpp util$(PATHSEP)timeline.cpp
 	-@echo [$@] Linking
 	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@

@@ -99,7 +99,7 @@ static void format_signed( std::string& buffer, T i, int min_width, int /*max_wi
     str -= plus;
   }
 
-  format_string( buffer, str.c_str(), str.size(), min_width, -1, left_justify, pad );
+  format_string( buffer, str.c_str(), (int) str.size(), min_width, -1, left_justify, pad );
 }
 
 static void format_unsigned( std::string& buffer, unsigned long long i, int base, int min_width, int /*max_width*/,
@@ -129,11 +129,11 @@ static void format_unsigned( std::string& buffer, unsigned long long i, int base
 
   if( upper_case ) str.toupper();
 
-  format_string( buffer, str.c_str(), str.size(), min_width, -1, left_justify, pad );
+  format_string( buffer, str.c_str(), (int) str.size(), min_width, -1, left_justify, pad );
 }
 
 static void format_double( std::string& buffer, double d, int min_width, int precision,
-         bool left_justify, bool alt_form, char plus, char format_type )
+			   bool left_justify, bool alt_form, char plus, char format_type )
 {
   std::string str;
   double integer=0, fraction=0, digit=0;
@@ -142,7 +142,7 @@ static void format_double( std::string& buffer, double d, int min_width, int pre
 
   str.reserve( 32 );
 
-  if( std::isnan( d ) )
+  if( isnan( d ) )
   {
     str         = "NaN";  // reverse
     precision   = 0;
@@ -229,7 +229,7 @@ static void format_double( std::string& buffer, double d, int min_width, int pre
     str += plus;
   }
 
-  int start = 0, end = str.size() - 1;
+  int start = 0, end = (int) str.size() - 1;
 
   while( start < end )
   {
@@ -292,7 +292,7 @@ static void format_double( std::string& buffer, double d, int min_width, int pre
     }
   }
 
-  format_string( buffer, str.c_str(), str.size(), min_width, -1, left_justify, ' ' );
+  format_string( buffer, str.c_str(), (int) str.size(), min_width, -1, left_justify, ' ' );
 }
 
 static int guess_reserve( const char* fmt )
@@ -574,7 +574,7 @@ std::string& str::format( std::string& buffer, const char *fmt, va_list args )
     c++;
     break;
   case 'n':
-    *(va_arg( args, int* )) = buffer.size();
+    *(va_arg( args, int* )) = (int) buffer.size();
     c++;
     break;
   default: // % followed by an unknown char, printf() seems to add a % in this case
