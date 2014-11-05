@@ -58,44 +58,44 @@ const OptionEntry debuffOptions[] =
 const OptionEntry scalingOptions[] =
 {
   { "Toggle All Character Stats",       "",         "Toggles all stats except Latency."                    },
-  { "Analyze Strength",                 "str",      "Calculate scale factors for Strength"                 },
-  { "Analyze Agility",                  "agi",      "Calculate scale factors for Agility"                  },
-  { "Analyze Stamina",                  "sta",      "Calculate scale factors for Stamina"                  },
-  { "Analyze Intellect",                "int",      "Calculate scale factors for Intellect"                },
-  { "Analyze Spirit",                   "spi",      "Calculate scale factors for Spirit"                   },
-  { "Analyze Spell Power",              "sp",       "Calculate scale factors for Spell Power"              },
-  { "Analyze Attack Power",             "ap",       "Calculate scale factors for Attack Power"             },
-  { "Analyze Crit Rating",              "crit",     "Calculate scale factors for Crit Rating"              },
-  { "Analyze Haste Rating",             "haste",    "Calculate scale factors for Haste Rating"             },
-  { "Analyze Mastery Rating",           "mastery",  "Calculate scale factors for Mastery Rating"           },
-  { "Analyze Multistrike Rating",       "mult",     "Calculate scale factors for Multistrike Rating"       },
-  { "Analyze Versatility Rating",       "vers",     "Calculate scale factors for Versatility Rating"       },
-  { "Analyze Weapon DPS",               "wdps",     "Calculate scale factors for Weapon DPS"               },
-  { "Analyze Off-hand Weapon DPS",      "wohdps",   "Calculate scale factors for Off-hand Weapon DPS"      },
-  { "Analyze Armor",                    "armor",    "Calculate scale factors for Armor"                    },
-  { "Analyze Bonus Armor",              "bonusarmor",   "Calculate scale factors for Bonus Armor"          },
-  { "Analyze Latency",                  "",         "Calculate scale factors for Latency"                  },
+  { "Strength",                 "str",      "Calculate scale factors for Strength"                 },
+  { "Agility",                  "agi",      "Calculate scale factors for Agility"                  },
+  { "Stamina",                  "sta",      "Calculate scale factors for Stamina"                  },
+  { "Intellect",                "int",      "Calculate scale factors for Intellect"                },
+  { "Spirit",                   "spi",      "Calculate scale factors for Spirit"                   },
+  { "Spell Power",              "sp",       "Calculate scale factors for Spell Power"              },
+  { "Attack Power",             "ap",       "Calculate scale factors for Attack Power"             },
+  { "Crit Rating",              "crit",     "Calculate scale factors for Crit Rating"              },
+  { "Haste Rating",             "haste",    "Calculate scale factors for Haste Rating"             },
+  { "Mastery Rating",           "mastery",  "Calculate scale factors for Mastery Rating"           },
+  { "Multistrike Rating",       "mult",     "Calculate scale factors for Multistrike Rating"       },
+  { "Versatility Rating",       "vers",     "Calculate scale factors for Versatility Rating"       },
+  { "Weapon DPS",               "wdps",     "Calculate scale factors for Weapon DPS"               },
+  { "Off-hand Weapon DPS",      "wohdps",   "Calculate scale factors for Off-hand Weapon DPS"      },
+  { "Armor",                    "armor",    "Calculate scale factors for Armor"                    },
+  { "Bonus Armor",              "bonusarmor",   "Calculate scale factors for Bonus Armor"          },
+  { "Latency",                  "",         "Calculate scale factors for Latency"                  },
   { NULL, NULL, NULL }
 };
 
 const OptionEntry plotOptions[] =
 {
-  { "Plot Scaling per Strength",         "str",     "Generate Scaling curve for Strength"         },
-  { "Plot Scaling per Agility",          "agi",     "Generate Scaling curve for Agility"          },
-  { "Plot Scaling per Stamina",          "sta",     "Generate Scaling curve for Stamina"          },
-  { "Plot Scaling per Intellect",        "int",     "Generate Scaling curve for Intellect"        },
-  { "Plot Scaling per Spirit",           "spi",     "Generate Scaling curve for Spirit"           },
-  { "Plot Scaling per Spell Power",      "sp",      "Generate Scaling curve for Spell Power"      },
-  { "Plot Scaling per Attack Power",     "ap",      "Generate Scaling curve for Attack Power"     },
-  { "Plot Scaling per Crit Rating",      "crit",    "Generate Scaling curve for Crit Rating"      },
-  { "Plot Scaling per Haste Rating",     "haste",   "Generate Scaling curve for Haste Rating"     },
-  { "Plot Scaling per Mastery Rating",   "mastery", "Generate Scaling curve for Mastery Rating"   },
-  { "Plot Scaling per Multistrike Rating", "mult",  "Generate Scaling curve for Multistrike Rating" },
-  { "Plot Scaling per Versatility Rating", "vers",  "Generate Scaling curve for Versatility Rating" },
-  { "Plot Scaling per Weapon DPS",       "wdps",    "Generate Scaling curve for Weapon DPS"       },
-  { "Plot Scaling per Weapon OH DPS", "wohdps", "Generate Scaling curve for Weapon OH DPS" },
-  { "Plot Scaling per Armor",            "armor",   "Generate Scaling curve for Armor"            },
-  { "Plot Scaling per Bonus Armor",      "bonusarmor",  "Generate Scaling curve for Bonus Armor"      },
+  { "Strength",           "str",        "Generate Scaling curve for Strength"         },
+  { "Agility",            "agi",        "Generate Scaling curve for Agility"          },
+  { "Stamina",            "sta",        "Generate Scaling curve for Stamina"          },
+  { "Intellect",          "int",        "Generate Scaling curve for Intellect"        },
+  { "Spirit",             "spi",        "Generate Scaling curve for Spirit"           },
+  { "Spell Power",        "sp",         "Generate Scaling curve for Spell Power"      },
+  { "Attack Power",       "ap",         "Generate Scaling curve for Attack Power"     },
+  { "Crit Rating",        "crit",       "Generate Scaling curve for Crit Rating"      },
+  { "Haste Rating",       "haste",      "Generate Scaling curve for Haste Rating"     },
+  { "Mastery Rating",     "mastery",    "Generate Scaling curve for Mastery Rating"   },
+  { "Multistrike Rating", "mult",       "Generate Scaling curve for Multistrike Rating" },
+  { "Versatility Rating", "vers",       "Generate Scaling curve for Versatility Rating" },
+  { "Weapon DPS",         "wdps",       "Generate Scaling curve for Weapon DPS"       },
+  { "Weapon OH DPS",      "wohdps",     "Generate Scaling curve for Weapon OH DPS"    },
+  { "Armor",              "armor",      "Generate Scaling curve for Armor"            },
+  { "Bonus Armor",        "bonusarmor", "Generate Scaling curve for Bonus Armor"      },
   { NULL, NULL, NULL }
 };
 
@@ -349,24 +349,24 @@ void SC_OptionsTab::createScalingTab()
   QVBoxLayout* scalingLayout = new QVBoxLayout();
 
   // Box containing enable button
-  QGroupBox* enableButtonGroupBox = new QGroupBox();
-  enableButtonGroupBox -> setTitle( tr( "Enable Scaling" ) );
-  enableButtonGroupBox -> setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) );
-  scalingLayout -> addWidget( enableButtonGroupBox );
+  QGroupBox* enableScalingButtonGroupBox = new QGroupBox();
+  enableScalingButtonGroupBox -> setTitle( tr( "Enable Scaling" ) );
+  enableScalingButtonGroupBox -> setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) );
+  scalingLayout -> addWidget( enableScalingButtonGroupBox );
 
-  QFormLayout* enableButtonGroupBoxLayout = new QFormLayout();
+  QFormLayout* enableScalingButtonGroupBoxLayout = new QFormLayout();
   
-  QLabel* enableButtonLabel = new QLabel( tr( "This button enables/disables scale factor calculations, allowing you to toggle scaling while keeping a particular set of stats selected." ) );
-  enableButtonGroupBoxLayout -> addWidget( enableButtonLabel );
+  QLabel* enableScalingButtonLabel = new QLabel( tr( "This button enables/disables scale factor calculations, allowing you to toggle scaling while keeping a particular set of stats selected." ) );
+  enableScalingButtonGroupBoxLayout -> addWidget( enableScalingButtonLabel );
   
   scalingButtonGroup = new QButtonGroup();
   scalingButtonGroup -> setExclusive( false );
 
-  QCheckBox* enableBox = new QCheckBox( tr("Enable Scaling" ) );
-  enableBox -> setToolTip( tr( "Enable Scaling. This box MUST be checked to enable scaling calculations." ) );
-  scalingButtonGroup -> addButton( enableBox );
-  enableButtonGroupBoxLayout -> addWidget( enableBox );
-  enableButtonGroupBox -> setLayout( enableButtonGroupBoxLayout );
+  QCheckBox* enableScalingBox = new QCheckBox( tr("Enable Scaling" ) );
+  enableScalingBox -> setToolTip( tr( "Enable Scaling. This box MUST be checked to enable scaling calculations." ) );
+  scalingButtonGroup -> addButton( enableScalingBox );
+  enableScalingButtonGroupBoxLayout -> addWidget( enableScalingBox );
+  enableScalingButtonGroupBox -> setLayout( enableScalingButtonGroupBoxLayout );
   
   // Box containing additional options
   QGroupBox* scalingOptionsGroupBox = new QGroupBox();
@@ -376,10 +376,13 @@ void SC_OptionsTab::createScalingTab()
 
   QFormLayout* scalingOptionsGroupBoxLayout = new QFormLayout();
   scalingOptionsGroupBoxLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-  scalingOptionsGroupBoxLayout -> addRow( tr( "Center Scale Delta" ),  choice.center_scale_delta = createChoice( 2, "Yes", "No" ) );
-  choice.center_scale_delta -> setToolTip( tr( "Controls the simulations that the tool compares to determine stat weights.\nIf set to No, it will sim once at profile stats and again with +2X of each selected stat.\nIf set to Yes, it will sim once at profile-X and once at profile+X." ) );
-  scalingOptionsGroupBoxLayout -> addRow( tr( "Scale Over" ),  choice.scale_over = createChoice( 9, "Default", "DPS", "HPS", "DTPS", "HTPS", "Raid_DPS", "Raid_HPS", "TMI", "ETMI" ) );
-  choice.scale_over -> setToolTip( tr( "Choose the stat over which you're primarily interested in scaling.\nThis is the metric that will be displayed on the Scale Factors plot.\nNote that the sim will still generate and display scale factors for all other metrics in tabular form." ) );
+
+  // Create Combo Boxes
+  choice.center_scale_delta = createChoice( 2, "Yes", "No" );
+  scalingOptionsGroupBoxLayout -> addRow( tr( "Center Scale Delta" ), choice.center_scale_delta );
+
+  choice.scale_over = createChoice( 9, "Default", "DPS", "HPS", "DTPS", "HTPS", "Raid_DPS", "Raid_HPS", "TMI", "ETMI" );
+  scalingOptionsGroupBoxLayout -> addRow( tr( "Scale Over" ), choice.scale_over );
 
   scalingOptionsGroupBox -> setLayout( scalingOptionsGroupBoxLayout );
 
@@ -399,8 +402,12 @@ void SC_OptionsTab::createScalingTab()
   scalingButtonGroup -> addButton( checkBox );
   scalingButtonsGroupBoxLayout -> addWidget( checkBox );
 
+  // spacer to separate toggle all button from rest of options
   QSpacerItem* spacer0 = new QSpacerItem( 20, 20 );
   scalingButtonsGroupBoxLayout -> addSpacerItem( spacer0 );
+
+  QLabel* plotHelpertext = new QLabel( tr( "Calculate scale factors for:" ) );
+  scalingButtonsGroupBoxLayout -> addWidget( plotHelpertext );
 
   for ( int i = 1; scalingOptions[ i ].label; i++ )
   {
@@ -410,6 +417,7 @@ void SC_OptionsTab::createScalingTab()
     scalingButtonsGroupBoxLayout -> addWidget( checkBox );
   }
 
+  // spacer to eat up rest of space (makes scalingButtonsGroupBoxLayout look less silly)
   QSpacerItem* spacer1 = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Expanding );
   scalingButtonsGroupBoxLayout -> addSpacerItem( spacer1 );
   scalingButtonsGroupBox -> setLayout( scalingButtonsGroupBoxLayout );
@@ -417,43 +425,86 @@ void SC_OptionsTab::createScalingTab()
   // Now put the tab together
   QScrollArea* scalingGroupBoxScrollArea = new QScrollArea;
   scalingGroupBoxScrollArea -> setLayout( scalingLayout );
-  //scalingGroupBoxScrollArea -> setWidget( scalingGroupBox );
   scalingGroupBoxScrollArea -> setWidgetResizable( true );
   addTab( scalingGroupBoxScrollArea, tr ( "Scaling" ) );
 }
 
 void SC_OptionsTab::createPlotsTab()
 {
-  QFormLayout* plotsLayout = new QFormLayout();
-  plotsLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
+  // layout for entire tab
+  QVBoxLayout* plotLayout = new QVBoxLayout();
+
+  // Box containing enable button
+  QGroupBox* enablePlotsButtonGroupBox = new QGroupBox();
+  enablePlotsButtonGroupBox -> setTitle( tr( "Enable Scaling Plots" ) );
+  enablePlotsButtonGroupBox -> setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) );
+  plotLayout -> addWidget( enablePlotsButtonGroupBox );
+  
+  QFormLayout* enablePlotsButtonGroupBoxLayout = new QFormLayout();
+  
+  QLabel* enablePlotsButtonLabel = new QLabel( tr( "This button enables/disables scaling plots, allowing you to toggle calculation of scaling plots while keeping a particular set of stats selected." ) );
+  enablePlotsButtonGroupBoxLayout -> addWidget( enablePlotsButtonLabel );
+  
+  plotsButtonGroup = new QButtonGroup();
+  plotsButtonGroup -> setExclusive( false );
+
+  QCheckBox* enablePlotsBox = new QCheckBox( tr("Enable Plots" ) );
+  enablePlotsBox -> setToolTip( tr( "Enable scaling plots. This box MUST be checked to generate scaling plots." ) );
+  plotsButtonGroup -> addButton( enablePlotsBox );
+  enablePlotsButtonGroupBoxLayout -> addWidget( enablePlotsBox );
+  enablePlotsButtonGroupBox -> setLayout( enablePlotsButtonGroupBoxLayout );
+  
+  // Box containing additional options
+  QGroupBox* plotOptionsGroupBox = new QGroupBox();
+  plotOptionsGroupBox -> setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) );
+  plotOptionsGroupBox -> setTitle( tr( "Scaling Plot Options" ) );
+  plotLayout -> addWidget( plotOptionsGroupBox );
+
+  QFormLayout* plotOptionsGroupBoxLayout = new QFormLayout();
+  plotOptionsGroupBoxLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 
   // Create Combo Boxes
   choice.plots_points = addValidatorToComboBox( 1, INT_MAX, createChoice( 4, "10", "20", "30", "40" ) );
-  plotsLayout -> addRow( tr( "Number of Plot Points" ), choice.plots_points );
+  plotOptionsGroupBoxLayout -> addRow( tr( "Number of Plot Points" ), choice.plots_points );
 
   choice.plots_step = addValidatorToComboBox( 1, INT_MAX, createChoice( 6, "25", "50", "100", "150", "200", "250" ) );
-  plotsLayout -> addRow( tr( "Plot Step Amount" ), choice.plots_step );
+  plotOptionsGroupBoxLayout -> addRow( tr( "Plot Step Amount" ), choice.plots_step );
 
   choice.plots_target_error = createChoice( 5, "N/A", "Auto", "1%", "0.5%", "0.1%" );
-  plotsLayout -> addRow( tr( "Plot Target Error" ), choice.plots_target_error );
+  plotOptionsGroupBoxLayout -> addRow( tr( "Plot Target Error" ), choice.plots_target_error );
 
   choice.plots_iterations = createChoice( 4, "100", "1000", "Iter/10", "Iter/100" );
-  plotsLayout -> addRow( tr( "Plot Iterations" ), choice.plots_iterations );
+  plotOptionsGroupBoxLayout -> addRow( tr( "Plot Iterations" ), choice.plots_iterations );
 
-  plotsButtonGroup = new QButtonGroup();
-  plotsButtonGroup -> setExclusive( false );
+  plotOptionsGroupBox -> setLayout( plotOptionsGroupBoxLayout );
+
+  // Box containing buttons for each stat to scale
+  QGroupBox* plotButtonsGroupBox = new QGroupBox();
+  plotButtonsGroupBox -> setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Expanding ) );
+  plotButtonsGroupBox -> setTitle( tr( "Stats to plot" ) );
+  plotLayout -> addWidget( plotButtonsGroupBox );
+
+  QVBoxLayout* plotButtonsGroupBoxLayout = new QVBoxLayout();
+
+  QLabel* plotHelpertext = new QLabel( tr( "Check the box for each stat you would like to show on the scaling plots.\n\nPlot scaling for:" ) );
+  plotButtonsGroupBoxLayout -> addWidget( plotHelpertext );
+
   for ( int i = 0; plotOptions[ i ].label; i++ )
   {
     QCheckBox* checkBox = new QCheckBox( plotOptions[ i ].label );
     checkBox -> setToolTip( plotOptions[ i ].tooltip );
     plotsButtonGroup -> addButton( checkBox );
-    plotsLayout -> addWidget( checkBox );
+    plotButtonsGroupBoxLayout -> addWidget( checkBox );
   }
-  QGroupBox* plotsGroupBox = new QGroupBox();
-  plotsGroupBox -> setLayout( plotsLayout );
 
+  // spacer to eat up rest of space (makes plotsButtonGroupBox look less silly)
+  QSpacerItem* spacer1 = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Expanding );
+  plotButtonsGroupBoxLayout -> addSpacerItem( spacer1 );
+  plotButtonsGroupBox -> setLayout( plotButtonsGroupBoxLayout );
+  
+  // Now put the tab together
   QScrollArea* plotsGroupBoxScrollArea = new QScrollArea;
-  plotsGroupBoxScrollArea -> setWidget( plotsGroupBox );
+  plotsGroupBoxScrollArea -> setLayout( plotLayout );
   plotsGroupBoxScrollArea -> setWidgetResizable( true );
   addTab( plotsGroupBoxScrollArea, "Plots" );
 }
@@ -867,6 +918,9 @@ void SC_OptionsTab::createToolTips()
                                   tr( "    'Medium': %1ms" ).arg( 100 ) + "\n" +
                                   tr( "    'High'  : %1ms" ).arg( 150 ) + "\n" + 
                                   tr( "    'Australia' : %1ms" ).arg( 200 ) );
+  
+  choice.center_scale_delta -> setToolTip( tr( "Controls the simulations that the tool compares to determine stat weights.\nIf set to No, it will sim once at profile stats and again with +2X of each selected stat.\nIf set to Yes, it will sim once at profile-X and once at profile+X." ) );
+  choice.scale_over -> setToolTip( tr( "Choose the stat over which you're primarily interested in scaling.\nThis is the metric that will be displayed on the Scale Factors plot.\nNote that the sim will still generate and display scale factors for all other metrics in tabular form." ) );
 
   choice.plots_points -> setToolTip( tr( "The number of points that will appear on the graph" ) );
   choice.plots_step -> setToolTip( tr( "The delta between two points of the graph.\n"
@@ -1025,7 +1079,7 @@ QString SC_OptionsTab::mergeOptions()
 
   /////// Scaling Options ///////
 
-  // skip if scaling checkbox isn't enabled
+  // skip if enable checkbox isn't checked
   if ( buttons.at( 0 ) -> isChecked() )
   {
 
@@ -1066,50 +1120,57 @@ QString SC_OptionsTab::mergeOptions()
     options += "\n";
   }
 
-  /////// Plotting Options ///////
+  /////// DPS Plot Options ///////
 
-  options += "dps_plot_stat=none";
-  buttons = plotsButtonGroup->buttons();
-  for ( int i = 0; plotOptions[ i ].label; i++ )
+  buttons = plotsButtonGroup -> buttons();
+
+  // skip if enable checkbox isn't checked
+  if ( buttons.at( 0 ) -> isChecked() )
   {
-    if ( buttons.at( i )->isChecked() )
+    options += "dps_plot_stat=none";
+    for ( int i = 0; plotOptions[ i ].label; i++ )
     {
-      options += ",";
-      options += plotOptions[ i ].option;
-    }
-  }
-  options += "\n";
-
-  options += "dps_plot_points=" + choice.plots_points -> currentText() + "\n";
-  options += "dps_plot_step=" + choice.plots_step -> currentText() + "\n";
-
-  if ( choice.plots_target_error -> currentIndex() < 2 )
-  {
-    options += "dps_plot_target_error=0\n";
-    if ( choice.plots_target_error -> currentIndex() == 0 )
-    {
-      options += "dps_plot_iterations=";
-
-      std::vector<std::string> splits = util::string_split( choice.plots_iterations -> currentText().toStdString(), "/" );
-      if ( splits.size() > 1 )
+      if ( buttons.at( i )->isChecked() )
       {
-        int base_iter = util::str_to_num<int>( choice.iterations -> currentText().toStdString() );
-        int divisor = util::str_to_num<int>( splits[ 1 ].c_str() );
-        options += base_iter / divisor + "\n";
+        options += ",";
+        options += plotOptions[ i ].option;
+      }
+    }
+    options += "\n";
+
+    options += "dps_plot_points=" + choice.plots_points -> currentText() + "\n";
+    options += "dps_plot_step=" + choice.plots_step -> currentText() + "\n";
+
+    if ( choice.plots_target_error -> currentIndex() < 2 )
+    {
+      options += "dps_plot_target_error=0\n";
+      if ( choice.plots_target_error -> currentIndex() == 0 )
+      {
+        options += "dps_plot_iterations=";
+
+        std::vector<std::string> splits = util::string_split( choice.plots_iterations -> currentText().toStdString(), "/" );
+        if ( splits.size() > 1 )
+        {
+          int base_iter = util::str_to_num<int>( choice.iterations -> currentText().toStdString() );
+          int divisor = util::str_to_num<int>( splits[ 1 ].c_str() );
+          options += base_iter / divisor + "\n";
+        }
+        else
+          options += choice.plots_iterations -> currentText() + "\n";
       }
       else
-        options += choice.plots_iterations -> currentText() + "\n";
+        options += "dps_plot_iterations=0\n";
     }
     else
+    {
+      std::vector<std::string> splits = util::string_split( choice.plots_target_error -> currentText().toStdString(), "%" );
+      assert( splits.size() > 0 );
+      options += "dps_plot_target_error=" + QString( splits[ 0 ].c_str() ) + "\n";
       options += "dps_plot_iterations=0\n";
+    }
+
   }
-  else
-  {
-    std::vector<std::string> splits = util::string_split( choice.plots_target_error -> currentText().toStdString(), "%" );
-    assert( splits.size() > 0 );
-    options += "dps_plot_target_error=" + QString( splits[ 0 ].c_str() ) + "\n";
-    options += "dps_plot_iterations=0\n";
-  }
+  /////// Reforge Plot Options ///////
 
   options += "reforge_plot_stat=none";
   buttons = reforgeplotsButtonGroup->buttons();
