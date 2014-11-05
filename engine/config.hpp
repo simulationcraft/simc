@@ -9,6 +9,10 @@
  * as well as pre-C++11 macros
  */
 
+/* This header defines eleven macro constants with alternative spellings for those C++ operators
+ * not supported by the ISO646 standard character set.
+ * eg. and == &&, or == ||, etc.
+ */
 #include <ciso646>
 
 // ==========================================================================
@@ -128,16 +132,22 @@ public:
 #define M_PI ( 3.14159265358979323846 )
 #endif
 
-#if ! defined( SC_VS )
+// ==========================================================================
+// C99 fixed-width integral types & format specifiers
+// ==========================================================================
+
 #define __STDC_FORMAT_MACROS
+#include <stdint.h>
 #include <inttypes.h>
+
 #ifndef PRIu64
-#define PRIu64 "zu"
-#endif
-#else
-#ifndef PRIu64
-#define PRIu64 "I64"
-#endif
+#  if defined( SC_VS )
+#    define PRIu64 "I64"
+#    pragma message("C99 format specifiers not available")
+#  else
+#    define PRIu64 "zu"
+#    warning "C99 format specifiers not available"
+#  endif
 #endif
 
 #ifdef isfinite

@@ -15,8 +15,6 @@
 
 // Platform, compiler and general configuration
 #include "config.hpp"
-
-#include <stdint.h>
 #include <algorithm>
 #include <cassert>
 #include <cctype>
