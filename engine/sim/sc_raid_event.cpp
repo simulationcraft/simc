@@ -661,8 +661,7 @@ timespan_t raid_event_t::cooldown_time()
   {
     time = sim -> rng().gauss( cooldown, cooldown_stddev );
 
-    if ( time < cooldown_min ) time = cooldown_min;
-    if ( time > cooldown_max ) time = cooldown_max;
+    time = clamp( time, cooldown_min, cooldown_max );
   }
 
   return time;
@@ -674,8 +673,7 @@ timespan_t raid_event_t::duration_time()
 {
   timespan_t time = sim -> rng().gauss( duration, duration_stddev );
 
-  if ( time < duration_min ) time = duration_min;
-  if ( time > duration_max ) time = duration_max;
+  time = clamp( time, cooldown_min, cooldown_max );
 
   return time;
 }
