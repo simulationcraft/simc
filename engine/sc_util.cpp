@@ -3155,7 +3155,7 @@ int vsnprintf_simc( char* buf, size_t size, const char* fmt, va_list ap )
     strncpy( buf, buffer.c_str(), size-1 );
     return static_cast<int>( buffer.size() );
   }
-  vfprintf_helper( stdout, fmt, ap );
+  return vfprintf_helper( stdout, fmt, ap );
 }
 
 #endif
