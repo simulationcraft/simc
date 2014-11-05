@@ -66,7 +66,7 @@ public:
   }
 
   const char* c_str() const          { return _c; }
-  int         size() const           { return (&_buf[0] + MAX_SIZE) - _c - 1; }
+  int         size() const           { return static_cast<int>( (&_buf[0] + MAX_SIZE) - _c - 1 ); }
 
   void toupper()                     { char* p = _c; while( *p ) { *p = ::toupper( *p ); ++p; } }
 
@@ -308,7 +308,7 @@ static int guess_reserve( const char* fmt )
     }
     c++;
   }
-  len += c - fmt;
+  len += static_cast<int>( c - fmt );
 
   return len;
 }
@@ -488,7 +488,7 @@ std::string& str::format( std::string& buffer, const char *fmt, va_list args )
   case 's':
     str = va_arg( args, char* );
     if( ! str ) str = (char*) "";
-    format_string( buffer, str, strlen(str), width, precision,
+    format_string( buffer, str, static_cast<int>(strlen(str)), width, precision,
        flags_left_justify, flags_zero_pad );
     c++;
     break;

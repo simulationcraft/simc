@@ -2532,7 +2532,7 @@ int util::snprintf( char* buf, size_t size, const char* fmt, ... )
   str::format( buffer, fmt, ap );
   assert( size > buffer.size() );
   strncpy( buf, buffer.c_str(), size-1 );
-  return buffer.size();
+  return static_cast<int>( buffer.size() );
 }
 
 // vfprintf =================================================================
@@ -3153,7 +3153,7 @@ int vsnprintf_simc( char* buf, size_t size, const char* fmt, va_list ap )
   {
     std::string buffer = str::format( fmt, ap );
     strncpy( buf, buffer.c_str(), size-1 );
-    return buffer.size();
+    return static_cast<int>( buffer.size() );
   }
   vfprintf_helper( stdout, fmt, ap );
 }
