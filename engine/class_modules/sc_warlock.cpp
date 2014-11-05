@@ -5581,6 +5581,8 @@ void warlock_t::apl_demonology()
 
     action_list_str += "/call_action_list,name=db,if=talent.demonbolt.enabled";
 
+    add_action ("immolation_aura", "if=demonic_fury>450&active_enemies>=5&buff.immolation_aura.down", "db");
+  
     add_action( spec.doom, "if=buff.metamorphosis.up&target.time_to_die>=30*spell_haste&remains<=(duration*0.3)&(remains<cooldown.cataclysm.remains|!talent.cataclysm.enabled)&(buff.dark_soul.down|!glyph.dark_soul.enabled)&buff.demonbolt.remains&(buff.demonbolt.remains<(40*spell_haste-action.demonbolt.execute_time)|demonic_fury<80+80*buff.demonbolt.stack)", "db" );
     add_action( "corruption", "cycle_targets=1,if=target.time_to_die>=6&remains<=(0.3*duration)&buff.metamorphosis.down", "db" );
     get_action_priority_list( "db" ) -> action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&buff.demonbolt.stack>3&demonic_fury<=600&target.time_to_die>buff.demonbolt.remains&buff.dark_soul.down";
@@ -5601,6 +5603,7 @@ void warlock_t::apl_demonology()
     add_action( "Shadow Bolt", "", "db" );
     add_action( "life tap", "", "db" );
 
+    action_list_str += "/immolation_aura,if=demonic_fury>450&active_enemies>=5&buff.immolation_aura.down";
     action_list_str += "/cataclysm,if=buff.metamorphosis.up";
     add_action( spec.doom, "if=buff.metamorphosis.up&target.time_to_die>=30*spell_haste&remains<=(duration*0.3)&(remains<cooldown.cataclysm.remains|!talent.cataclysm.enabled)&(buff.dark_soul.down|!glyph.dark_soul.enabled)" );
     add_action( "corruption", "cycle_targets=1,if=target.time_to_die>=6&remains<=(0.3*duration)&buff.metamorphosis.down" );
