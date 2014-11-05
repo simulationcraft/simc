@@ -27,6 +27,7 @@ actions.precombat+=/aimed_shot
 # Executed every time the actor is available.
 
 actions=auto_shot
+actions+=/use_item,name=beating_heart_of_the_mountain
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
@@ -74,11 +75,11 @@ feet=slagstomper_treads,id=113888
 finger1=unexploded_explosive_shard,id=113877,enchant=gift_of_critical_strike
 finger2=timeless_solium_band_of_the_assassin,id=118297,enchant=gift_of_critical_strike
 trinket1=humming_blackiron_trigger,id=113985
-trinket2=scales_of_doom,id=113612
+trinket2=beating_heart_of_the_mountain,id=113931
 main_hand=mouth_of_the_fury,id=113885,enchant=megawatt_filament
 
 # Gear Summary
-# gear_agility=2711
+# gear_agility=2730
 # gear_stamina=3437
 # gear_crit_rating=1484
 # gear_haste_rating=589
