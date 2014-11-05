@@ -570,25 +570,26 @@ void print_text_performance( FILE* file, sim_t* sim )
     date_str = date_str.substr( 0, date_str.size() - 1 );
   util::fprintf( file,
                  "\nBaseline Performance:\n"
-		 "  RNG Engine    = %s\n"
-		 "  Iterations    = %d\n"
-                 "  TotalEvents   = %lu\n"
-                 "  MaxEventQueue = %lu\n"
+                 "  RNG Engine    = %s\n"
+                 "  Iterations    = %d\n"
+                 "  TotalEvents   = %" PRIu64 "\n"
+                 "  MaxEventQueue = %" PRIu64 "\n"
                  "  TargetHealth  = %.0f\n"
                  "  SimSeconds    = %.0f\n"
                  "  CpuSeconds    = %.3f\n"
                  "  WallSeconds   = %.3f\n"
                  "  SpeedUp       = %.0f\n"
-                 "  EndTime       = %s\n\n",
+                 "  EndTime       = %s (%.0f)\n\n",
 		 sim -> rng().name(), sim -> iterations,
-                 (unsigned long) sim -> event_mgr.total_events_processed,
-                 (unsigned long) sim -> event_mgr.max_events_remaining,
+                 sim -> event_mgr.total_events_processed,
+                 sim -> event_mgr.max_events_remaining,
                  sim -> target -> resources.base[ RESOURCE_HEALTH ],
                  sim -> iterations * sim -> simulation_length.mean(),
                  sim -> elapsed_cpu,
                  sim -> elapsed_time,
                  sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu,
-                 date_str.c_str() );
+                 date_str.c_str(),
+                 static_cast<double>( cur_time ) );
 }
 
 // print_text_scale_factors =================================================
