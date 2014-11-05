@@ -55,7 +55,7 @@ OPENSSL_PATH =
 
 MKDIR      = mkdir
 CXX        = g++
-CPP_FLAGS  = -Wextra -Woverloaded-virtual -W -I. -DSC_SHARED_DATA=\"$(SHARED_DATA)\"
+CPP_FLAGS  = -Wall -Wextra -Woverloaded-virtual -W -I. -DSC_SHARED_DATA=\"$(SHARED_DATA)\"
 OPTS       = -O3
 
 # Include build setting from user configuration file
@@ -171,7 +171,7 @@ $(MODULE): $(SRC_OBJ)
 
 $(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT): %.cpp $(SRC_H)
 	-@echo [$(MODULE)] Compiling $(notdir $<)
-	$(CXX) $(CPP_FLAGS) $(OPTS) -c $< -o $@
+	@$(CXX) $(CPP_FLAGS) $(OPTS) -c $< -o $@
 
 %.s: %.cpp $(SRC_H)
 	-@echo [$(MODULE)] Compiling $(notdir $<)
