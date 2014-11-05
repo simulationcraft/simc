@@ -3,7 +3,7 @@ level=100
 race=blood_elf
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#bZ!2021110
+talents=http://us.battle.net/wow/en/tool/talent-calculator#bZ!2.21112
 glyphs=focused_shield/alabaster_shield/divine_protection
 spec=protection
 
@@ -152,29 +152,29 @@ actions.max_survival+=/holy_wrath
 actions.max_survival+=/sacred_shield
 
 head=verdant_plate_crown,id=109986,bonus_id=524
-neck=necklace_of_holy_deflection,id=109967,bonus_id=524,enchant=gift_of_mastery
+neck=reinforced_bloodsteel_gorget,id=109966,bonus_id=524,enchant_id=5319
 shoulders=verdant_plate_spaulders,id=109944,bonus_id=524
-back=rigid_scale_cloak,id=109915,bonus_id=524,enchant=gift_of_mastery
+back=rigid_scale_cloak,id=109915,bonus_id=524,enchant_id=5312
 chest=gutcrusher_chestplate,id=109895,bonus_id=524
 wrists=gutcrusher_bracers,id=109879,bonus_id=524
 hands=rivetsealed_crushers,id=109860,bonus_id=524
-waist=incarnadine_girdle,id=109837,bonus_id=524
+waist=crystalplated_greatbelt,id=115381
 legs=verdant_plate_legguards,id=109819,bonus_id=524
 feet=gutcrusher_stompers,id=109802,bonus_id=524
-finger1=unsullied_signet,id=109777,bonus_id=524,enchant=gift_of_mastery
-finger2=band_of_the_stalwart_stanchion,id=109783,bonus_id=524,enchant=gift_of_mastery
+finger1=unsullied_signet,id=109777,bonus_id=524,enchant_id=5326
+finger2=band_of_the_stalwart_stanchion,id=109783,bonus_id=524,enchant_id=5326
 trinket1=solar_containment_unit,id=110016,bonus_id=524
 trinket2=torias_unseeing_eye,id=110015,bonus_id=524
-main_hand=scepter_of_brutality,id=110052,bonus_id=524,enchant=mark_of_bleeding_hollow
-off_hand=draconian_doomshield,id=118739,bonus_id=524
+main_hand=steelforged_saber,id=116454,bonus_id=208/525,enchant_id=5331
+off_hand=steelforged_shield,id=116647,bonus_id=207/525
 
 # Gear Summary
 # gear_strength=1641
 # gear_stamina=2462
-# gear_crit_rating=518
-# gear_haste_rating=267
-# gear_mastery_rating=1324
+# gear_crit_rating=368
+# gear_haste_rating=227
+# gear_mastery_rating=1261
 # gear_armor=2588
-# gear_bonus_armor=564
+# gear_bonus_armor=580
 # gear_multistrike_rating=159
-# gear_versatility_rating=214
+# gear_versatility_rating=457
