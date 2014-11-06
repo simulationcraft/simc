@@ -3316,6 +3316,8 @@ struct chaos_bolt_t: public warlock_spell_t
 
     stats = p -> get_stats( "chaos_bolt_fnb", this );
     gain = p -> get_gain( "chaos_bolt_fnb" );
+    // TODO: Fix with spell data generation and whitelisting the correct spell
+    base_costs[ RESOURCE_BURNING_EMBER ] = 2;
   }
 
   void schedule_execute( action_state_t* state )
