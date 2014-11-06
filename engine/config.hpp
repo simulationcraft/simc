@@ -122,10 +122,15 @@ public:
 #endif
 
 #define SC_PACKED_STRUCT      __attribute__((packed))
-#if defined( SC_MINGW ) // printf wrongly points to vs_printf instead of gnu_printf on MinGW
-#  define PRINTF_ATTRIBUTE(a,b) __attribute__((format(gnu_printf,a,b)))
+
+#ifdef NDEBUG
+#  define PRINTF_ATTRIBUTE(a,b) // false negatives are irritating
 #else
-#  define PRINTF_ATTRIBUTE(a,b) __attribute__((format(printf,a,b)))
+#  if defined( SC_MINGW ) // printf wrongly points to vs_printf instead of gnu_printf on MinGW
+#    define PRINTF_ATTRIBUTE(a,b) __attribute__((format(gnu_printf,a,b)))
+#  else
+#    define PRINTF_ATTRIBUTE(a,b) __attribute__((format(printf,a,b)))
+#  endif
 #endif
 
 #ifndef M_PI
