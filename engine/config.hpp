@@ -164,9 +164,9 @@ template<class T>
 inline bool sc_isfinite( T x )
 {
 #if defined( SC_VS )
-  return _finite( x );
+  return _finite( x ) != 0;
 #else
-  return std::isfinite( x );
+  return std::isfinite( x ) != 0;
 #endif
 }
 
@@ -174,9 +174,9 @@ template<class T>
 inline bool sc_isnan( T x )
 {
 #if defined( SC_VS )
-  return _isnan( x );
+  return isnan( x ) != 0;
 #else
-  return std::isnan( x );
+  return std::isnan( x ) != 0;
 #endif
 }
 
