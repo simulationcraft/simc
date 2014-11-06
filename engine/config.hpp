@@ -155,23 +155,29 @@ public:
 #  endif
 #endif
 
-#ifdef isfinite
-#  undef finite
-#  define finite isfinite
-#endif
+// ==========================================================================
+// Floating Point finite and NaN checks
+// ==========================================================================
 
-#ifdef SC_VS
-#  undef finite
-#  define finite _finite
-#  undef isnan
-#  define isnan _isnan
+#include <cmath>
+template<class T>
+inline bool sc_isfinite( T x )
+{
+#if defined( SC_VS )
+  return _finite( x );
+#else
+  return std::isfinite( x );
 #endif
+}
 
-#ifdef SC_CLANG
-#  undef finite
-#  define finite std::isfinite
-#  undef isnan
-#  define isnan std::isnan
+template<class T>
+inline bool sc_isnan( T x )
+{
+#if defined( SC_VS )
+  return _isnan( x );
+#else
+  return std::isnan( x );
 #endif
+}
 
 #endif // CONFIG_H
