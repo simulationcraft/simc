@@ -750,7 +750,6 @@ size_t chart::raid_aps( std::vector<std::string>& images,
   }
 
   std::string s = std::string();
-  char buffer[ 1024 ];
   bool first = true;
 
   std::vector<player_t*> player_list ;
@@ -799,11 +798,10 @@ size_t chart::raid_aps( std::vector<std::string>& images,
       else if ( type == "hps" )  { player_mean = p -> collected_data.hps.mean() + p -> collected_data.aps.mean(); }
       else if ( type == "dtps" ) { player_mean = p -> collected_data.dtps.mean(); }
       else if ( type == "tmi" )  { player_mean = p -> collected_data.theck_meloree_index.mean() / 1000.0; }
-      snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i ? "|" : "" ), player_mean ); 
-      s += buffer;
+      str::format( s, "%s%.0f", ( i ? "|" : "" ), player_mean ); 
     }
     s += amp;
-    snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_aps * 2.5 ); s += buffer;
+    str::format( s, "chds=0,%.0f", max_aps * 2.5 );
     s += amp;
     s += "chco=";
     for ( size_t i = 0; i < num_players; i++ )
@@ -824,7 +822,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
       else if ( type == "dtps" ) { player_mean = p -> collected_data.dtps.mean(); }
       else if ( type == "tmi" )  { player_mean = p -> collected_data.theck_meloree_index.mean() / 1000.0; }
       std::string tmi_letter = ( type == "tmi" ) ? "k" : "";
-      snprintf( buffer, sizeof( buffer ), "%st++%.0f%s++%s,%s,%d,0,15", ( i ? "|" : "" ), player_mean, tmi_letter.c_str(), formatted_name.c_str(), get_color( p ).c_str(), ( int )i ); s += buffer;
+      str::format( s, "%st++%.0f%s++%s,%s,%d,0,15", ( i ? "|" : "" ), player_mean, tmi_letter.c_str(), formatted_name.c_str(), get_color( p ).c_str(), ( int )i ); 
     }
     s += amp;
 
@@ -881,7 +879,6 @@ size_t chart::raid_gear( std::vector<std::string>& images,
   }
 
   std::string s;
-  char buffer[ 1024 ];
 
   std::vector<player_t*> player_list = sim -> players_by_dps;
   static const size_t max_players = MAX_PLAYERS_PER_CHART;
@@ -912,11 +909,11 @@ size_t chart::raid_gear( std::vector<std::string>& images,
       first = false;
       for ( size_t j = 0; j < num_players; j++ )
       {
-        snprintf( buffer, sizeof( buffer ), "%s%.0f", ( j ? "," : "" ), data_points[ i ][ j ] ); s += buffer;
+	str::format( s, "%s%.0f", ( j ? "," : "" ), data_points[ i ][ j ] );
       }
     }
     s += amp;
-    snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_total ); s += buffer;
+    str::format( s, "chds=0,%.0f", max_total );
     s += amp;
     s += "chco=";
     first = true;
@@ -1015,7 +1012,6 @@ size_t chart::raid_dpet( std::vector<std::string>& images,
   size_t max_charts = 4;
 
   std::string s;
-  char buffer[ 1024 ];
 
   for ( size_t chart = 0; chart < max_charts; chart++ )
   {
@@ -1035,10 +1031,10 @@ size_t chart::raid_dpet( std::vector<std::string>& images,
     for ( size_t i = 0; i < num_stats; i++ )
     {
       stats_t* st = stats_list[ i ];
-      snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i ? "|" : "" ), st -> apet ); s += buffer;
+      str::format( s, "%s%.0f", ( i ? "|" : "" ), st -> apet );
     }
     s += amp;
-    snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_dpet * 2.5 ); s += buffer;
+    str::format( s, "chds=0,%.0f", max_dpet * 2.5 );
     s += amp;
     s += "chco=";
     for ( size_t i = 0; i < num_stats; i++ )
@@ -1054,8 +1050,9 @@ size_t chart::raid_dpet( std::vector<std::string>& images,
       std::string formatted_name = st -> player -> name_str;
       util::urlencode( formatted_name );
 
-      snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s+(%s),%s,%d,0,10", ( i ? "|" : "" ),
-                st -> apet, st -> name_str.c_str(), formatted_name.c_str(), get_color( st -> player ).c_str(), ( int )i ); s += buffer;
+      str::format( s, "%st++%.0f++%s+(%s),%s,%d,0,10", ( i ? "|" : "" ),
+		   st -> apet, st -> name_str.c_str(), formatted_name.c_str(), 
+		   get_color( st -> player ).c_str(), ( int )i );
     }
     s += amp;
     if ( chart == 0 )
@@ -1090,8 +1087,6 @@ std::string chart::action_dpet(  player_t* p )
 
   range::sort( stats_list, compare_dpet() );
 
-  char buffer[ 1024 ];
-
   std::string formatted_name = util::google_image_chart_encode( p -> name_str );
   util::urlencode( formatted_name );
   sc_chart chart( formatted_name + " Damage Per Execute Time", HORIZONTAL_BAR, p -> sim -> print_styles );
@@ -1103,11 +1098,11 @@ std::string chart::action_dpet(  player_t* p )
   for ( int i = 0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
-    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i ? "|" : "" ), st -> apet ); s += buffer;
+    str::format( s, "%s%.0f", ( i ? "|" : "" ), st -> apet );
     if ( st -> apet > max_apet ) max_apet = st -> apet;
   }
   s += amp;
-  snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_apet * 2 ); s += buffer;
+  str::format( s, "chds=0,%.0f", max_apet * 2 );
   s += amp;
   s += "chco=";
   for ( int i = 0; i < num_stats; i++ )
@@ -1128,7 +1123,7 @@ std::string chart::action_dpet(  player_t* p )
   for ( int i = 0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
-    snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i ? "|" : "" ), st -> apet, st -> name_str.c_str(), school_color( st -> school ).c_str(), i ); s += buffer;
+    str::format( s, "%st++%.0f++%s,%s,%d,0,15", ( i ? "|" : "" ), st -> apet, st -> name_str.c_str(), school_color( st -> school ).c_str(), i );
   }
   s += amp;
 
@@ -1169,8 +1164,6 @@ std::string chart::aps_portion(  player_t* p )
 
   range::sort( stats_list, compare_amount() );
 
-  char buffer[ 1024 ];
-
   std::string formatted_name = util::google_image_chart_encode(  p -> name() );
   util::urlencode( formatted_name );
   sc_chart chart( formatted_name + ( p -> primary_role() == ROLE_HEAL ? " Healing" : " Damage" ) + " Sources", PIE, p -> sim -> print_styles );
@@ -1181,7 +1174,7 @@ std::string chart::aps_portion(  player_t* p )
   for ( int i = 0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
-    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i ? "," : "" ), 100.0 * st -> actual_amount.mean() / ( ( p -> primary_role() == ROLE_HEAL ) ? p -> collected_data.heal.mean() : p -> collected_data.dmg.mean() ) ); s += buffer;
+    str::format( s, "%s%.0f", ( i ? "," : "" ), 100.0 * st -> actual_amount.mean() / ( ( p -> primary_role() == ROLE_HEAL ) ? p -> collected_data.heal.mean() : p -> collected_data.dmg.mean() ) );
   }
   s += amp;
   s += "chds=0,100";
@@ -1234,8 +1227,6 @@ std::string chart::time_spent( player_t* p )
 
   range::sort( filtered_waiting_stats, compare_stats_time() );
 
-  char buffer[ 1024 ];
-
   std::string formatted_name = util::google_image_chart_encode(  p -> name() );
   util::urlencode( formatted_name );
   sc_chart chart( formatted_name + " Spent Time", PIE, p -> sim -> print_styles );
@@ -1246,12 +1237,12 @@ std::string chart::time_spent( player_t* p )
   s += "chd=t:";
   for ( size_t i = 0; i < num_stats; i++ )
   {
-    snprintf( buffer, sizeof( buffer ), "%s%.1f", ( i ? "," : "" ), 100.0 * filtered_waiting_stats[ i ] -> total_time.total_seconds() / p -> collected_data.fight_length.mean() ); s += buffer;
+    str::format( s, "%s%.1f", ( i ? "," : "" ), 100.0 * filtered_waiting_stats[ i ] -> total_time.total_seconds() / p -> collected_data.fight_length.mean() );
 
   }
   if ( p -> collected_data.waiting_time.mean() > 0 )
   {
-    snprintf( buffer, sizeof( buffer ), "%s%.1f", ( num_stats > 0 ? "," : "" ), 100.0 * p -> collected_data.waiting_time.mean() / p -> collected_data.fight_length.mean() ); s += buffer;
+    str::format( s, "%s%.1f", ( num_stats > 0 ? "," : "" ), 100.0 * p -> collected_data.waiting_time.mean() / p -> collected_data.fight_length.mean() );
 
   }
   s += amp;
@@ -1284,13 +1275,13 @@ std::string chart::time_spent( player_t* p )
     stats_t* st = filtered_waiting_stats[ i ];
     if ( i ) s += "|";
     s += st -> name_str.c_str();
-    snprintf( buffer, sizeof( buffer ), " %.1fs", st -> total_time.total_seconds() ); s += buffer;
+    str::format( s, " %.1fs", st -> total_time.total_seconds() );
   }
   if ( p -> collected_data.waiting_time.mean() > 0 )
   {
     if ( num_stats > 0 )s += "|";
     s += "waiting";
-    snprintf( buffer, sizeof( buffer ), " %.1fs", p -> collected_data.waiting_time.mean() ); s += buffer;
+    str::format( s, " %.1fs", p -> collected_data.waiting_time.mean() );
   }
   s += amp;
 
@@ -1382,8 +1373,6 @@ std::string chart::scale_factors( player_t* p )
   if ( num_scaling_stats == 0 )
     return std::string();
 
-  char buffer[ 1024 ];
-
   std::string formatted_name = util::google_image_chart_encode( p -> scaling_for_metric( sm ).name );
   util::urlencode( formatted_name );
 
@@ -1392,11 +1381,11 @@ std::string chart::scale_factors( player_t* p )
 
   std::string s = chart.create();
 
-  snprintf( buffer, sizeof( buffer ), "chd=t%i:" , 1 ); s += buffer;
+  str::format( s, "chd=t%i:" , 1 );
   for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
     double factor = p -> scaling[ sm ].get_stat( scaling_stats[ i ] );
-    snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i ? "," : "" ), p -> sim -> report_precision, factor ); s += buffer;
+    str::format( s, "%s%.*f", ( i ? "," : "" ), p -> sim -> report_precision, factor );
   }
   s += "|";
 
@@ -1404,29 +1393,29 @@ std::string chart::scale_factors( player_t* p )
   {
     double factor = p -> scaling[ sm ].get_stat( scaling_stats[ i ] ) - fabs( p -> scaling_error[ sm ].get_stat( scaling_stats[ i ] ) );
 
-    snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i ? "," : "" ), p -> sim -> report_precision, factor ); s += buffer;
+    str::format( s, "%s%.*f", ( i ? "," : "" ), p -> sim -> report_precision, factor );
   }
   s += "|";
   for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
     double factor = p -> scaling[ sm ].get_stat( scaling_stats[ i ] ) + fabs( p -> scaling_error[ sm ].get_stat( scaling_stats[ i ] ) );
 
-    snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i ? "," : "" ), p -> sim -> report_precision, factor ); s += buffer;
+    str::format( s, "%s%.*f", ( i ? "," : "" ), p -> sim -> report_precision, factor );
   }
   s += amp;
   s += "chco=";
   s += get_color( p );
   s += amp;
   s += "chm=";
-  snprintf( buffer, sizeof( buffer ), "E,FF0000,1:0,,1:20|" ); s += buffer;
+  s += "E,FF0000,1:0,,1:20|";
   for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
     double factor = p -> scaling[ sm ].get_stat( scaling_stats[ i ] );
     const char* name = util::stat_type_abbrev( scaling_stats[ i ] );
-    snprintf( buffer, sizeof( buffer ), "%st++++%.*f++%s,%s,0,%d,15,0.1,%s", ( i ? "|" : "" ),
-              p -> sim -> report_precision, factor, name, get_color( p ).c_str(),
-              ( int )i, factor > 0 ? "e" : "s" /* If scale factor is positive, position the text right of the bar, otherwise at the base */
-            ); s += buffer;
+    str::format( s, "%st++++%.*f++%s,%s,0,%d,15,0.1,%s", ( i ? "|" : "" ),
+		 p -> sim -> report_precision, factor, name, get_color( p ).c_str(),
+		 ( int )i, factor > 0 ? "e" : "s" /* If scale factor is positive, position the text right of the bar, otherwise at the base */
+		 );
   }
   s += amp;
 
@@ -1474,8 +1463,6 @@ std::string chart::scaling_dps( player_t* p )
   const int end = 2 * range;
   size_t num_points = 1 + 2 * range;
 
-  char buffer[ 1024 ];
-
   std::string formatted_name = util::google_image_chart_encode( p -> scales_over().name );
   util::urlencode( formatted_name );
 
@@ -1495,30 +1482,30 @@ std::string chart::scaling_dps( player_t* p )
     if ( ! first ) s += "|";
     for ( size_t j = 0; j < size; j++ )
     {
-      snprintf( buffer, sizeof( buffer ), "%s%.0f", ( j ? "," : "" ), pd[ j ].value ); s += buffer;
+      str::format( s, "%s%.0f", ( j ? "," : "" ), pd[ j ].value );
     }
     first = false;
   }
   s += amp;
-  snprintf( buffer, sizeof( buffer ), "chds=%.0f,%.0f", min_dps, max_dps ); s += buffer;
+  str::format( s, "chds=%.0f,%.0f", min_dps, max_dps );
   s += amp;
   s += "chxt=x,y";
   s += amp;
   if ( p -> sim -> plot -> dps_plot_positive )
   {
     const int start = 0;  // start and end only used for dps_plot_positive
-    snprintf( buffer, sizeof( buffer ), "chxl=0:|0|%%2b%.0f|%%2b%.0f|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f", ( start + ( 1.0 / 4 )*end )*step, ( start + ( 2.0 / 4 )*end )*step, ( start + ( 3.0 / 4 )*end )*step, ( start + end )*step, min_dps, max_dps ); s += buffer;
+    str::format( s, "chxl=0:|0|%%2b%.0f|%%2b%.0f|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f", ( start + ( 1.0 / 4 )*end )*step, ( start + ( 2.0 / 4 )*end )*step, ( start + ( 3.0 / 4 )*end )*step, ( start + end )*step, min_dps, max_dps );
   }
   else if ( p -> sim -> plot -> dps_plot_negative )
   {
     const int start = (int) - ( p -> sim -> plot -> dps_plot_points * p -> sim -> plot -> dps_plot_step );
-    snprintf( buffer, sizeof( buffer ), "chxl=0:|%d|%.0f|%.0f|%.0f|0|1:|%.0f|%.0f", start, start * 0.75, start * 0.5, start * 0.25, min_dps, max_dps ); s += buffer;
+    str::format( s, "chxl=0:|%d|%.0f|%.0f|%.0f|0|1:|%.0f|%.0f", start, start * 0.75, start * 0.5, start * 0.25, min_dps, max_dps );
   }
   else
   {
-    snprintf( buffer, sizeof( buffer ), "chxl=0:|%.0f|%.0f|0|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f|%.0f", ( -range * step ), ( -range * step ) / 2, ( +range * step ) / 2, ( +range * step ), min_dps, p -> collected_data.dps.mean(), max_dps ); s += buffer;
+    str::format( s, "chxl=0:|%.0f|%.0f|0|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f|%.0f", ( -range * step ), ( -range * step ) / 2, ( +range * step ) / 2, ( +range * step ), min_dps, p -> collected_data.dps.mean(), max_dps );
     s += amp;
-    snprintf( buffer, sizeof( buffer ), "chxp=1,1,%.0f,100", 100.0 * ( p -> collected_data.dps.mean() - min_dps ) / ( max_dps - min_dps ) ); s += buffer;
+    str::format( s, "chxp=1,1,%.0f,100", 100.0 * ( p -> collected_data.dps.mean() - min_dps ) / ( max_dps - min_dps ) );
   }
   s += amp;
   s += "chdl=";
@@ -1550,7 +1537,7 @@ std::string chart::scaling_dps( player_t* p )
     s += stat_color( i );
   }
   s += amp;
-  snprintf( buffer, sizeof( buffer ), "chg=%.4f,10,1,3", floor( 10000.0 * 100.0 / ( num_points - 1 ) ) / 10000.0 ); s += buffer;
+  str::format( s, "chg=%.4f,10,1,3", floor( 10000.0 * 100.0 / ( num_points - 1 ) ) / 10000.0 );
   s += amp;
 
   return s;
@@ -1974,8 +1961,6 @@ std::string chart::timeline_dps_error( player_t* p )
   double dps_range  = 60.0;
   double dps_adjust = dps_range / dps_max_error;
 
-  char buffer[ 1024 ];
-
   sc_chart chart( "Standard Error Confidence ( n >= 50 )", LINE, p -> sim -> print_styles );
   chart.set_height( 185 );
 
@@ -2001,11 +1986,11 @@ std::string chart::timeline_dps_error( player_t* p )
     if ( !j ) continue;
     if ( j >= max_buckets ) j = as<unsigned>( max_buckets - 1 );
     if ( i > 1 ) s += "|";
-    snprintf( buffer, sizeof( buffer ), "t%.1f,FFFFFF,0,%d,10", p -> dps_convergence_error[ j ], int( j / increment ) ); s += buffer;
+    str::format( s, "t%.1f,FFFFFF,0,%d,10", p -> dps_convergence_error[ j ], int( j / increment ) );
 
   }
   s += amp;
-  snprintf( buffer, sizeof( buffer ), "chxl=0:|0|iterations=%d|1:|0|max dps error=%.0f", int( max_buckets + 1 ), dps_max_error ); s += buffer;
+  str::format( s, "chxl=0:|0|iterations=%d|1:|0|max dps error=%.0f", int( max_buckets + 1 ), dps_max_error );
   s += amp;
   s += "chdl=DPS Error";
   s += amp;
@@ -2028,8 +2013,6 @@ std::string chart::distribution( int print_style,
 
   size_t count_max = *range::max_element( dist_data );
 
-  char buffer[ 1024 ];
-
   sc_chart chart( distribution_name + " Distribution", VERTICAL_BAR, print_style );
   chart.set_height( 185 );
 
@@ -2038,18 +2021,18 @@ std::string chart::distribution( int print_style,
   s += "chd=t:";
   for ( int i = 0; i < max_buckets; i++ )
   {
-    snprintf( buffer, sizeof( buffer ), "%s%u", ( i ? "," : "" ), as<unsigned>( dist_data[ i ] ) ); s += buffer;
+    str::format( s, "%s%u", ( i ? "," : "" ), as<unsigned>( dist_data[ i ] ) );
   }
   s += amp;
-  snprintf( buffer, sizeof( buffer ), "chds=0,%u", as<unsigned>( count_max ) ); s += buffer;
+  str::format( s, "chds=0,%u", as<unsigned>( count_max ) );
   s += amp;
   s += "chbh=5";
   s += amp;
   s += "chxt=x";
   s += amp;
-  snprintf( buffer, sizeof( buffer ), "chxl=0:|min=%.0f|avg=%.0f|max=%.0f", min, avg, max ); s += buffer;
+  str::format( s, "chxl=0:|min=%.0f|avg=%.0f|max=%.0f", min, avg, max );
   s += amp;
-  snprintf( buffer, sizeof( buffer ), "chxp=0,1,%.0f,100", 100.0 * ( avg - min ) / ( max - min ) ); s += buffer;
+  str::format( s, "chxp=0,1,%.0f,100", 100.0 * ( avg - min ) / ( max - min ) );
   s += amp;
 
   return s;
@@ -2064,8 +2047,6 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_lootrank( player_t
 
   for ( scale_metric_e sm = SCALE_METRIC_NONE; sm < SCALE_METRIC_MAX; sm++ )
   {
-    char buffer[ 1024 ];
-
     std::string s = "http://www.guildox.com/go/wr.asp?";
 
     switch ( p -> type )
@@ -2163,8 +2144,7 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_lootrank( player_t
 
       if ( name )
       {
-        snprintf( buffer, sizeof( buffer ), "&%s=%.*f", name, p -> sim -> report_precision, value );
-        s += buffer;
+	str::format( s, "&%s=%.*f", name, p -> sim -> report_precision, value );
       }
     }
 
@@ -2230,8 +2210,7 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_lootrank( player_t
 
     s += "&Gem=3"; // FIXME: Remove this when epic gems become available
     s += "&Ver=7";
-    snprintf( buffer, sizeof( buffer ), "&maxlv=%d", p -> level );
-    s += buffer;
+    str::format( s, "&maxlv=%d", p -> level );
 
     if ( p -> items[ 0 ].parsed.data.id ) s += "&t1=" + util::to_string( p -> items[ 0 ].parsed.data.id );
     if ( p -> items[ 1 ].parsed.data.id ) s += "&t2=" + util::to_string( p -> items[ 1 ].parsed.data.id );
@@ -2266,7 +2245,6 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_wowhead( player_t*
 
   for ( scale_metric_e sm = SCALE_METRIC_NONE; sm < SCALE_METRIC_MAX; sm++ )
   {
-    char buffer[ 1024 ];
     bool first = true;
 
     std::string s = "http://www.wowhead.com/?items&amp;filter=";
@@ -2334,11 +2312,8 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_wowhead( player_t*
         }
         first = false;
 
-        snprintf( buffer, sizeof( buffer ), "%d", id );
-        id_string += buffer;
-
-        snprintf( buffer, sizeof( buffer ), "%.*f", p -> sim -> report_precision, value );
-        value_string += buffer;
+	str::format( id_string, "%d", id );
+	str::format( value_string, "%.*f", p -> sim -> report_precision, value );
       }
     }
 
