@@ -51,8 +51,8 @@
 #endif
 #if defined( _MSC_VER )
 #  define SC_VS ( _MSC_VER / 100 - 6 )
-#  if SC_VS < 10
-#    error "Visual Studio 9 ( 2008 ) or lower not supported"
+#  if SC_VS < 11
+#    error "Visual Studio 10 ( 2010 ) or lower not supported"
 #  endif
 #endif
 
