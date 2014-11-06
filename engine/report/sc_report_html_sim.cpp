@@ -724,10 +724,8 @@ void print_html_raid_imagemap( report::sc_html_stream& os, sim_t* sim, size_t nu
   }
   os << "];\n";
 
-  char imgid[32];
-  util::snprintf( imgid, sizeof( imgid ), "%sIMG%u", ( dps ) ? "DPS" : "HPS", as<unsigned>( num ) );
-  char mapid[32];
-  util::snprintf( mapid, sizeof( mapid ), "%sMAP%u", ( dps ) ? "DPS" : "HPS", as<unsigned>( num ) );
+  std::string imgid = str::format( "%sIMG%u", ( dps ) ? "DPS" : "HPS", as<unsigned>( num ) );
+  std::string mapid = str::format( "%sMAP%u", ( dps ) ? "DPS" : "HPS", as<unsigned>( num ) );
 
   os.printf(
     "u = document.getElementById('%s').src;\n"
@@ -740,7 +738,7 @@ void print_html_raid_imagemap( report::sc_html_stream& os, sim_t* sim, size_t nu
     "open_anchor(target);\n"
     "});\n"
     "});\n\n",
-    imgid, mapid, imgid, mapid, mapid );
+    imgid.c_str(), mapid.c_str(), imgid.c_str(), mapid.c_str(), mapid.c_str() );
 }
 
 void print_html_raid_imagemaps( report::sc_html_stream& os, sim_t* sim, sim_report_information_t& ri )

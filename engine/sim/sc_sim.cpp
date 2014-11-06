@@ -2024,26 +2024,21 @@ bool progress_bar_t::update( bool finished )
   int remaining_min = remaining_sec / 60;
   remaining_sec -= remaining_min * 60;
 
-  char buffer[80];
-  snprintf( buffer, sizeof( buffer ), " %d/%d", finished ? last : current, last );
-  status += buffer;
+  str::format( status, " %d/%d", finished ? last : current, last );
 
   if( sim.target_error > 0 )
   {
-    snprintf( buffer, sizeof( buffer ), " Error=%.3f%%", sim.current_error );
-    status += buffer;
+    str::format( status, " Error=%.3f%%", sim.current_error );
   }
 
   if ( remaining_min > 0 )
   {
-    snprintf( buffer, sizeof( buffer ), " %dmin", remaining_min );
-    status += buffer;
+    str::format( status, " %dmin", remaining_min );
   }
 
   if ( remaining_sec > 0 )
   {
-    snprintf( buffer, sizeof( buffer ), " %dsec", remaining_sec );
-    status += buffer;
+    str::format( status, " %dsec", remaining_sec );
   }
 
   if ( prev_size > status.size()  ) status.insert( status.end(), ( prev_size - status.size() ), ' ' );
@@ -2843,9 +2838,8 @@ void sim_t::detailed_progress( std::string* detail, int current_iterations, int 
 {
   if ( detail )
   {
-    char buf[512];
-    util::snprintf( buf, 512, "%d/%d", current_iterations, total_iterations );
-    (*detail) = buf;
+    detail -> clear();
+    str::format( *detail, "%d/%d", current_iterations, total_iterations );
   }
 }
 

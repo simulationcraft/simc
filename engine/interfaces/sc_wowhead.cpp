@@ -268,12 +268,11 @@ bool wowhead::download_item_data( item_t&            item,
       n_sockets = jsonequip[ "nsockets" ].GetUint();
     
     assert( n_sockets <= static_cast< int >( sizeof_array( item.parsed.data.socket_color ) ) );
-    char socket_str[32];
     for ( int i = 0; i < n_sockets; i++ )
     {
-      snprintf( socket_str, sizeof( socket_str ), "socket%d", i + 1 );
-      if ( jsonequip.HasMember( socket_str ) )
-        item.parsed.data.socket_color[ i ] = jsonequip[ socket_str ].GetUint();
+      std::string socket_str = str::format( "socket%d", i + 1 );
+      if ( jsonequip.HasMember( socket_str.c_str() ) )
+        item.parsed.data.socket_color[ i ] = jsonequip[ socket_str.c_str() ].GetUint();
     }
 
     if ( jsonequip.HasMember( "socketbonus" ) )

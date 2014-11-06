@@ -806,14 +806,10 @@ void expression_t::print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim )
   if ( tokens.size() > 0 )
     str += "tokens: ";
 
-  char token_str_buf[512];
   for ( size_t i = 0; i < tokens.size(); i++ )
   {
     expr_token_t& t = tokens[ i ];
-
-    snprintf( token_str_buf, sizeof( token_str_buf ), "%2d '%s'", t.type, t.label.c_str() );
-    str += token_str_buf;
-
+    str::format( str, "%2d '%s'", t.type, t.label.c_str() );
     if ( i < tokens.size() - 1 )
       str += " | ";
   }

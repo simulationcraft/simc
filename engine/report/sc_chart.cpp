@@ -371,17 +371,9 @@ std::vector<double> ternary_coords( std::vector<plot_data_t> xyz )
 
 std::string color_temperature_gradient( double n, double min, double range )
 {
-  std::string result = "";
-  char buffer[ 10 ] = "";
   int red = ( int ) floor( 255.0 * ( n - min ) / range );
   int blue = 255 - red;
-  snprintf( buffer, 10, "%.2X", red );
-  result += buffer;
-  result += "00";
-  snprintf( buffer, 10, "%.2X", blue );
-  result += buffer;
-
-  return result;
+  return str::format( "%.2X00%.2X", red, blue );
 }
 
 struct compare_downtime
