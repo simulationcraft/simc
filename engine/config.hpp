@@ -156,15 +156,22 @@ public:
 #endif
 
 #ifdef isfinite
-#undef finite
-#define finite isfinite
-#else
-#ifdef SC_VS
-#undef finite
-#define finite _finite
-#undef isnan
-#define isnan _isnan
+#  undef finite
+#  define finite isfinite
 #endif
+
+#ifdef SC_VS
+#  undef finite
+#  define finite _finite
+#  undef isnan
+#  define isnan _isnan
+#endif
+
+#ifdef SC_CLANG
+#  undef finite
+#  define finite std::isfinite
+#  undef isnan
+#  define isnan std::isnan
 #endif
 
 #endif // CONFIG_H
