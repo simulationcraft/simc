@@ -307,7 +307,7 @@ bool set_bonus_t::parse_set_bonus_option( const std::string& opt_str,
   }
 
   size_t bonus_offset = 1;
-  size_t role_offset = -1;
+  int role_offset = -1;
   if ( split.size() == 3 )
   {
     role_offset = 2;
