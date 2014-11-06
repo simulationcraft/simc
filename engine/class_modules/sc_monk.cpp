@@ -932,7 +932,13 @@ public:
       p() -> buff.tigereye_brew -> trigger( stacks );
     }
     else if ( p() -> spec.brewing_elusive_brew -> ok() )
-      p() -> buff.elusive_brew_stacks -> trigger( static_cast<int>( base_stacks ) );
+    {
+      int stacks = static_cast<int>( base_stacks );
+      double partial = base_stacks - stacks;
+      if ( partial > 0 )
+        stacks +=( ab::rng().roll( partial ) ) ? 1 : 0;
+      p() -> buff.elusive_brew_stacks -> trigger( stacks );
+    }
 
     else if ( p() -> spec.brewing_mana_tea -> ok() )
     {

@@ -148,7 +148,7 @@ static void format_double( std::string& buffer, double d, int min_width, int pre
     precision   = 0;
     format_type = 'f';
   }
-  else if( !finite( d ) )
+  else if ( !sc_isfinite( d ) )
   {
     str         = "FNI";  // reverse
     precision   = 0;
