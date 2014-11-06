@@ -1128,12 +1128,12 @@ QString SC_OptionsTab::mergeOptions()
   if ( buttons.at( 0 ) -> isChecked() )
   {
     options += "dps_plot_stat=none";
-    for ( int i = 0; plotOptions[ i ].label; i++ )
+    for ( int i = 1; plotOptions[i - 1].label; i++ )
     {
       if ( buttons.at( i )->isChecked() )
       {
         options += ",";
-        options += plotOptions[ i ].option;
+        options += plotOptions[ i - 1 ].option;
       }
     }
     options += "\n";

@@ -3855,7 +3855,8 @@ void monk_t::init_spells()
   active_actions.blackout_kick_dot    = new actions::dot_blackout_kick_t( this );
   //active_actions.blackout_kick_heal   = new actions::heal_blackout_kick_t( this );
   active_actions.chi_explosion_dot    = new actions::dot_chi_explosion_t( this );
-  active_actions.healing_elixir       = new actions::healing_elixirs_t( *this );
+  if ( talent.healing_elixirs -> ok() )
+    active_actions.healing_elixir       = new actions::healing_elixirs_t( *this );
   active_actions.healing_sphere       = new actions::healing_sphere_t( *this );
 
   if (specialization() == MONK_BREWMASTER)

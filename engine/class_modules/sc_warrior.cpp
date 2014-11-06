@@ -242,6 +242,7 @@ public:
   } proc;
 
   real_ppm_t t15_2pc_melee;
+  real_ppm_t sudden_death;
 
   // Spec Passives
   struct spec_t
@@ -365,6 +366,7 @@ public:
     mastery( mastery_t() ),
     proc( procs_t() ),
     t15_2pc_melee( *this ),
+    sudden_death( *this, std::numeric_limits<double>::min(), RPPM_HASTE ),
     spec( spec_t() ),
     talents( talents_t() )
   {
@@ -1180,13 +1182,7 @@ struct melee_t: public warrior_attack_t
     if ( result_is_hit( s -> result ) || result_is_block( s -> block_result ) )
     {
       trigger_t15_2pc_melee( this );
-      if ( rng().roll( sudden_death_chance ) )
-      {
-        if ( p() -> buff.sudden_death -> check() )
-          p() -> proc.sudden_death_wasted -> occur();
-        p() -> buff.sudden_death -> trigger();
-        p() -> proc.sudden_death -> occur();
-      }
+      sudden_death( p() -> proc.sudden_death );
       trigger_rage_gain( s );
       if ( p() -> perk.enhanced_rend -> ok() && td( s -> target ) -> dots_rend -> is_ticking() )
       {
@@ -1205,6 +1201,22 @@ struct melee_t: public warrior_attack_t
           p(), // target
           p() -> spec.blood_craze -> effectN( 1 ).percent() * p() -> resources.max[RESOURCE_HEALTH] );
       }
+    }
+  }
+
+  void sudden_death( proc_t* proc )
+  {
+    if ( !p() -> talents.sudden_death -> ok() )
+      return;
+
+    if ( p() -> sudden_death.trigger() )
+    {
+      if ( p() -> buff.sudden_death -> check() )
+      {
+        p() -> proc.sudden_death_wasted -> occur();
+      }
+      proc -> occur();
+      p() -> buff.sudden_death -> trigger();
     }
   }
 };
@@ -4781,23 +4793,9 @@ void warrior_t::init_rng()
 {
   player_t::init_rng();
 
-  double rppm;
-  //Lookup rppm value according to spec
-  switch ( specialization() )
-  {
-  case WARRIOR_ARMS:
-    rppm = 1.6;
-    break;
-  case WARRIOR_FURY:
-    rppm = 0.6;
-    break;
-  case WARRIOR_PROTECTION:
-    rppm = 1;
-    break;
-  default: rppm = 0.0;
-    break;
-  }
-  t15_2pc_melee.set_frequency( rppm * 1.11 );
+  sudden_death.set_frequency( 2.5 );
+
+  t15_2pc_melee.set_frequency( 1.11 );
 }
 
 // warrior_t::init_resources ===========================================
