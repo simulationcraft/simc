@@ -166,7 +166,7 @@ inline bool sc_isfinite( T x )
 #if defined ( SC_VS ) && SC_VS < 12 // std::isfinite was added in vs2013
   return _finite( x ) != 0;
 #else
-  return std::isfinite( x ) != 0;
+  return std::isfinite( x );
 #endif
 }
 
@@ -176,7 +176,7 @@ inline bool sc_isnan( T x )
 #if defined ( SC_VS ) && SC_VS < 12 // std::isnan was added in vs2013
   return _isnan( x ) != 0;
 #else
-  return std::isnan( x ) != 0;
+  return std::isnan( x );
 #endif
 }
 
