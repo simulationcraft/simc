@@ -564,6 +564,7 @@ enum slot_e   // these enum values match armory settings
 // switch for 2 piece or 4 piece bonus
 enum set_bonus_e
 {
+  B_NONE = -1,
   B2 = 0,
   B4 = 1
 };
@@ -571,15 +572,19 @@ enum set_bonus_e
 enum set_role_e
 { SET_ROLE_NONE = -1, SET_TANK = 0, SET_HEALER, SET_MELEE, SET_CASTER };
 
-// "type safe" direct access to arrays
-enum tier_e
+
+// Type safe tier enum
+//
+// MUST correspond to the ordering in
+// dbc_extract/dbc/generator.py SetBonusGenerator::set_bonus_map
+enum set_bonus_type_e
 {
-  // Not implemented yet
-  PVP = 0,
-  // No spell data yet
-  T1,  T2,  T3,  T4,  T5,  T6,  T7,  T8,  T9,  T10, T11, T12,
+  SET_BONUS_NONE = -1,
+
   // Actual tier support in SIMC
-  T13, T14, T15, T16, T17
+  PVP, T17LFR, GLAIVES, T13, T14, T15, T16, T17,
+
+  SET_BONUS_MAX
 };
 
 enum meta_gem_e
@@ -2748,7 +2753,9 @@ struct sim_t : private sc_thread_t
   sc_thread_t::priority_e thread_priority;
   struct work_queue_t
   {
+    private:
     mutex_t m;
+    public:
     int total_work, projected_work, work;
     work_queue_t() : total_work( 0 ), projected_work( 0 ), work( 0 ) {}
     void init( int w )    { AUTO_LOCK(m); total_work = projected_work = w; }
@@ -3606,15 +3613,10 @@ public:
 
 // Set Bonus ================================================================
 
-set_role_e translate_set_bonus_role_str( const std::string& name );
-const char* translate_set_bonus_role( set_role_e );
-
 struct set_bonus_t
 {
   // Some magic constants
   static const unsigned N_BONUSES = 2;       // Number of set bonuses in tier gear
-  static const unsigned TIER_THRESHOLD = 17; // Tier when everything changes
-  static const unsigned PVP_TIER = 0;        // PVP tier in internal data
 
   struct set_bonus_data_t
   {
@@ -3653,37 +3655,72 @@ struct set_bonus_t
   expr_t* create_expression( const player_t*, const std::string& type );
 
   // Fast accessor to a set bonus spell, returns the spell, or spell_data_t::not_found()
-  const spell_data_t* set( specialization_e spec, tier_e tier, set_bonus_e bonus ) const
+  const spell_data_t* set( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus ) const
   {
-    assert( static_cast<unsigned>( tier ) == PVP ||
-           ( static_cast<unsigned>( tier ) >= TIER_THRESHOLD && static_cast<unsigned>( tier ) <= max_tier() ) );
-    return set_bonus_spec_data[ tier ][ specdata::spec_idx( spec ) ][ bonus ].spell;
+#ifdef NDEBUG
+    switch ( set_bonus )
+    {
+      case PVP:
+      case T17LFR:
+      case T17:
+        break;
+      default:
+        assert( 0 && "Attempt to access role-based set bonus through specialization." );
+    }
+#endif
+    return set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( spec ) ][ bonus ].spell;
   }
 
-  const spell_data_t* set( set_role_e role, tier_e tier, set_bonus_e bonus ) const
+  const spell_data_t* set( set_role_e role, set_bonus_type_e set_bonus, set_bonus_e bonus ) const
   {
-    assert( static_cast<unsigned>( tier ) == PVP || (
-            tier >= 8 && static_cast<unsigned>( tier ) <= TIER_THRESHOLD ) );
-    return set_bonus_spec_data[ tier ][ role ][ bonus ].spell;
+#ifndef NDEBUG
+    switch ( set_bonus )
+    {
+      case T13:
+      case T14:
+      case T15:
+      case T16:
+        break;
+      default:
+        assert( 0 && "Attempt to access spec-based set bonus through role." );
+    }
+#endif
+    return set_bonus_spec_data[ set_bonus ][ role ][ bonus ].spell;
   }
 
   // Fast accessor for checking whether a set bonus is enabled
-  bool has_set_bonus( specialization_e spec, tier_e tier, set_bonus_e bonus ) const
-  { return set( spec, tier, bonus ) != spell_data_t::not_found(); }
+  bool has_set_bonus( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus ) const
+  { return set( spec, set_bonus, bonus ) != spell_data_t::not_found(); }
 
   // Fast accessor for checking whether a set bonus is enabled
-  bool has_set_bonus( set_role_e role, tier_e tier, set_bonus_e bonus ) const
-  { return set( role, tier, bonus ) != spell_data_t::not_found(); }
+  bool has_set_bonus( set_role_e role, set_bonus_type_e set_bonus, set_bonus_e bonus ) const
+  { return set( role, set_bonus, bonus ) != spell_data_t::not_found(); }
 
-  unsigned max_tier() const;
+  bool parse_set_bonus_option( const std::string& opt_str, set_bonus_type_e& set_bonus, set_role_e& role, set_bonus_e& bonus );
   std::string to_string() const;
   std::string to_profile_string( const std::string& = "\n" ) const;
+  std::string generate_set_bonus_options() const;
 
-  static std::string tier_type_str( tier_e );
-  static bool old_tier( tier_e tier )
-  { return static_cast<unsigned>( tier ) != PVP_TIER && static_cast<unsigned>( tier ) < TIER_THRESHOLD; }
-  static bool old_tier( size_t tier )
-  { return old_tier( static_cast<tier_e>( tier ) ); }
+  static set_role_e translate_set_bonus_role_str( const std::string& name );
+  static const char* translate_set_bonus_role( set_role_e );
+  static std::string set_bonus_type_str( set_bonus_e );
+
+  static bool role_set_bonus( set_bonus_type_e set_bonus )
+  {
+    switch ( set_bonus )
+    {
+      case T13:
+      case T14:
+      case T15:
+      case T16:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  static bool role_set_bonus( size_t set_bonus )
+  { return role_set_bonus( static_cast<set_bonus_type_e>( set_bonus ) ); }
 };
 
 struct action_sequence_data_t

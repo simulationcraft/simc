@@ -3,6 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include <cerrno>
+
 #include "simulationcraft.hpp"
 
 namespace {
@@ -314,101 +316,40 @@ bool parse_origin( sim_t* sim, const std::string&, const std::string& origin )
 
 bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
 {
-  static const char* error_str = "%s invalid 'set_bonus' option value '%s' given, format: set_bonus=tierTIER_BONUSpc[_ROLE]=0|1";
+  static const char* error_str = "%s invalid 'set_bonus' option value '%s' given, available options: %s";
   assert( sim -> active_player );
 
   player_t* p = sim -> active_player;
 
-  if ( value.size() < 6 )
+  std::vector<std::string> set_bonus_split = util::string_split( value, "=" );
+
+  if ( set_bonus_split.size() != 2 )
   {
-    sim -> errorf( error_str, p -> name(), value.c_str() );
+    sim -> errorf( error_str, p -> name(), value.c_str(), p -> sets.generate_set_bonus_options().c_str() );
     return false;
   }
 
-  if ( value.substr( value.size() - 2 ).find( "=0" ) == std::string::npos && value.substr( value.size() - 2 ).find( "=1" ) == std::string::npos )
+  int opt_val = util::to_int( set_bonus_split[ 1 ] );
+  if ( errno != 0 || ( opt_val != 0 && opt_val != 1 ) )
   {
-    sim -> errorf( error_str, p -> name(), value.c_str() );
+    sim -> errorf( error_str, p -> name(), value.c_str(), p -> sets.generate_set_bonus_options().c_str() );
     return false;
   }
 
-  std::vector<std::string> splits = util::string_split( value, "_" );
-  if ( splits.size() < 2 )
-  {
-    sim -> errorf( error_str, p -> name(), value.c_str() );
-    return false;
-  }
-
-  if ( splits[ 0 ].empty() || ( ! util::str_in_str_ci( splits[ 0 ], "tier" ) && ! util::str_compare_ci( splits[ 0 ], "pvp" ) ) )
-  {
-    sim -> errorf( error_str, p -> name(), value.c_str() );
-    return false;
-  }
-
-  int tier = -1 ;
-  if ( util::str_compare_ci( splits[ 0 ], "pvp" ) )
-    tier = 0;
-  else
-    tier = util::to_unsigned( splits[ 0 ].substr( 4 ) );
-
-  if ( tier == -1 || static_cast<unsigned>( tier ) > p -> sets.max_tier() )
-  {
-    sim -> errorf( error_str, p -> name(), value.c_str() );
-    return false;
-  }
-
-  size_t bonus_idx = 1;
-  size_t role_idx = 0;
-
-  unsigned bonus_type = util::to_unsigned( splits[ bonus_idx ].substr( 0, splits[ bonus_idx ].size() - 2 ) );
-  if ( bonus_type != 2 && bonus_type != 4 )
-  {
-    sim -> errorf( "%s invalid set bonus type, '%s' given, valid values are 2, 4",
-        p -> name(), splits[ bonus_idx ].substr( 0, splits[ bonus_idx ].size() - 2 ).c_str() );
-    return false;
-  }
-
-  bonus_type = bonus_type / 2 - 1;
-
-  if ( splits.size() > 2 )
-    role_idx = 2;
-
+  set_bonus_type_e set_bonus = SET_BONUS_NONE;
   set_role_e role = SET_ROLE_NONE;
-  if ( role_idx > 0 )
-  {
-    role = translate_set_bonus_role_str( splits[ role_idx ].substr( 0, splits[ role_idx ].size() - 2 ) );
+  set_bonus_e bonus = B_NONE;
 
-    if ( role == SET_ROLE_NONE )
-    {
-      sim -> errorf( "%s invalid set_bonus role string, '%s' given, valid values are tank, healer, melee, caster",
-          p -> name(), splits[ role_idx ].substr( splits[ role_idx ].size() - 2 ).c_str() );
-      return false;
-    }
+  if ( ! p -> sets.parse_set_bonus_option( set_bonus_split[ 0 ], set_bonus, role, bonus ) )
+  {
+    sim -> errorf( error_str, p -> name(), value.c_str(), p -> sets.generate_set_bonus_options().c_str() );
+    return false;
   }
 
-  int state;
-  if ( role_idx == 0 )
-    state = util::to_int( splits[ bonus_idx ].substr( splits[ bonus_idx ].size() - 1 ) );
+  if ( set_bonus_t::role_set_bonus( set_bonus ) )
+    p -> sets.set_bonus_spec_data[ set_bonus ][ role ][ bonus ].overridden = opt_val;
   else
-    state = util::to_int( splits[ role_idx ].substr( splits[ role_idx ].size() - 1 ) );
-
-  if ( tier == 0 || static_cast<unsigned>( tier ) >= set_bonus_t::TIER_THRESHOLD )
-  {
-    if ( role != SET_ROLE_NONE )
-      sim -> errorf( "%s tier %u set bonus given with role '%s', ignoring role",
-          p -> name(), tier, splits[ role_idx ].c_str() );
-
-    p -> sets.set_bonus_spec_data[ tier ][ specdata::spec_idx( p -> specialization() ) ][ bonus_type ].overridden = state;
-  }
-  else
-  {
-    if ( role == SET_ROLE_NONE )
-    {
-      sim -> errorf( "%s tier %u set bonus given without role", p -> name(), tier );
-      return false;
-    }
-
-    p -> sets.set_bonus_spec_data[ tier ][ role ][ bonus_type ].overridden = state;
-  }
+    p -> sets.set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( p -> specialization() ) ][ bonus ].overridden = opt_val;
 
   return true;
 }

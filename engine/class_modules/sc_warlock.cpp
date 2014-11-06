@@ -440,8 +440,8 @@ public:
     return td;
   }
 
-  void trigger_demonology_t17_4pc( const action_state_t* state ) const;
-  void trigger_demonology_t17_4pc_cast() const;
+  void trigger_demonology_t17_2pc( const action_state_t* state ) const;
+  void trigger_demonology_t17_2pc_cast() const;
 private:
   void apl_precombat();
   void apl_default();
@@ -1876,7 +1876,7 @@ public:
       }
     }
 
-    p() -> trigger_demonology_t17_4pc_cast();
+    p() -> trigger_demonology_t17_2pc_cast();
   }
 
   virtual timespan_t execute_time() const
@@ -2381,7 +2381,7 @@ struct hand_of_guldan_t: public warlock_spell_t
       base_multiplier *= 0.8;
 
     cooldown -> duration = timespan_t::from_seconds( 15 );
-    cooldown -> charges = 2 + p -> sets.set( WARLOCK_DEMONOLOGY, T17, B2 ) -> effectN( 1 ).base_value();
+    cooldown -> charges = 2 + p -> sets.set( WARLOCK_DEMONOLOGY, T17, B4 ) -> effectN( 1 ).base_value();
 
     shadowflame = new shadowflame_t( p );
     add_child( shadowflame );
@@ -2407,7 +2407,7 @@ struct hand_of_guldan_t: public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    p() -> trigger_demonology_t17_4pc( execute_state );
+    p() -> trigger_demonology_t17_2pc( execute_state );
   }
 
   virtual bool ready()
@@ -2621,8 +2621,8 @@ struct corruption_t: public warlock_spell_t
       }
     }
 
-    if ( p() -> sets.has_set_bonus( WARLOCK_DEMONOLOGY, T17, B2 )
-        && rng().roll( p() -> sets.set( WARLOCK_DEMONOLOGY, T17, B2 ) -> effectN( 2 ).percent() )
+    if ( p() -> sets.has_set_bonus( WARLOCK_DEMONOLOGY, T17, B4 )
+        && rng().roll( p() -> sets.set( WARLOCK_DEMONOLOGY, T17, B4 ) -> effectN( 2 ).percent() )
         && ( p() -> cooldowns.hand_of_guldan -> current_charge < p() -> cooldowns.hand_of_guldan -> charges ))
     {
         p() -> cooldowns.hand_of_guldan -> adjust( -p() -> cooldowns.hand_of_guldan -> duration); //decrease remaining time by the duration of one charge, i.e., add one charge
@@ -3563,7 +3563,7 @@ struct chaos_wave_t: public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    p() -> trigger_demonology_t17_4pc( execute_state );
+    p() -> trigger_demonology_t17_2pc( execute_state );
   }
 
   virtual timespan_t travel_time() const
@@ -5831,9 +5831,9 @@ stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
   }
 }
 
-void warlock_t::trigger_demonology_t17_4pc( const action_state_t* state ) const
+void warlock_t::trigger_demonology_t17_2pc( const action_state_t* state ) const
 {
-  if ( ! sets.has_set_bonus( WARLOCK_DEMONOLOGY, T17, B4 ) )
+  if ( ! sets.has_set_bonus( WARLOCK_DEMONOLOGY, T17, B2 ) )
     return;
 
   // Hand of Gul'Dan / Chaos Wave can be cast as a "free (and background) cast"
@@ -5852,16 +5852,16 @@ void warlock_t::trigger_demonology_t17_4pc( const action_state_t* state ) const
   if ( level < 100 )
     return;
 
-  if ( ! rng().roll( sets.set( WARLOCK_DEMONOLOGY, T17, B4 ) -> proc_chance() ) )
+  if ( ! rng().roll( sets.set( WARLOCK_DEMONOLOGY, T17, B2 ) -> proc_chance() ) )
       return;
 
-  pets.inner_demon -> summon( sets.set( WARLOCK_DEMONOLOGY, T17, B4 ) -> effectN( 1 ).trigger() -> duration() );
+  pets.inner_demon -> summon( sets.set( WARLOCK_DEMONOLOGY, T17, B2 ) -> effectN( 1 ).trigger() -> duration() );
 
   procs.t17_4pc_demo -> occur();
-  cooldowns.t17_4pc_demonology -> start( sets.set( WARLOCK_DEMONOLOGY, T17, B4 ) -> internal_cooldown() );
+  cooldowns.t17_4pc_demonology -> start( sets.set( WARLOCK_DEMONOLOGY, T17, B2 ) -> internal_cooldown() );
 }
 
-void warlock_t::trigger_demonology_t17_4pc_cast() const
+void warlock_t::trigger_demonology_t17_2pc_cast() const
 {
   if ( ! pets.inner_demon || pets.inner_demon -> is_sleeping() )
     return;

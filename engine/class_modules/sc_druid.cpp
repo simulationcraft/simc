@@ -5127,7 +5127,7 @@ struct skull_bash_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( p() -> sets.has_set_bonus( SET_MELEE, PVP, B2 ) )
+    if ( p() -> sets.has_set_bonus( DRUID_FERAL, PVP, B2 ) )
       p() -> cooldown.tigers_fury -> reset( false );
   }
 

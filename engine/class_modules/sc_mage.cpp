@@ -3631,7 +3631,7 @@ struct pyroblast_t : public mage_spell_t
 
       trigger_hot_streak( s );
 
-      if ( p() -> sets.has_set_bonus( SET_CASTER, PVP, B4 ) && is_hot_streak )
+      if ( p() -> sets.has_set_bonus( MAGE_FIRE, PVP, B4 ) && is_hot_streak )
       {
         td( s -> target ) -> debuffs.firestarter -> trigger();
       }

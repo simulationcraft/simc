@@ -46,29 +46,54 @@ struct item_set_bonus_t {
 #define SPEC_GUESS_MAX ( 4 )
 #define SET_BONUS_ITEM_ID_MAX ( 10 )
   const char* set_name;
+  const char* set_opt_name;
+  unsigned    enum_id; // tier_e enum value.
   unsigned    set_id;
   unsigned    tier;
   unsigned    bonus;
-  unsigned    class_id;
-  unsigned    spec_guess[SPEC_GUESS_MAX];
-  unsigned    role; // 0 tank, 1 healer, 2 meleedps/hunter, 3 caster
-  unsigned    spec;
+  int         class_id;
+  int         spec_guess[SPEC_GUESS_MAX];
+  int         role; // 0 tank, 1 healer, 2 meleedps/hunter, 3 caster, -1 "all"
+  int         spec; // -1 "all"
   unsigned    spell_id;
   unsigned    item_ids[SET_BONUS_ITEM_ID_MAX];
 
-  bool has_spec( unsigned spec_id ) const
+  bool has_spec( int spec_id ) const
   {
-    if ( spec > 0 && spec_id == spec )
-      return true;
-    else if ( spec == 0 )
+    // Check dbc-driven specs
+    if ( spec > 0 )
+    {
+      if ( spec_id == spec )
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+    // Check guessed specs
+    else if ( spec_guess[ 0 ] > 0 )
     {
       for ( size_t i = 0, end = SPEC_GUESS_MAX; i < end; i++ )
       {
         if ( spec_guess[ i ] == spec_id )
+        {
           return true;
+        }
       }
+      return false;
     }
-    return false;
+    // Check all specs
+    else if ( spec == -1 )
+    {
+      return true;
+    }
+    // Give up
+    else
+    {
+      return false;
+    }
   }
 
   bool has_item( unsigned item_id ) const
