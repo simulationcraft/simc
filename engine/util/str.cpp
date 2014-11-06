@@ -142,7 +142,6 @@ static void format_double( std::string& buffer, double d, int min_width, int pre
 
   str.reserve( 32 );
 
-  using std::isnan;
   if( isnan( d ) )
   {
     str         = "NaN";  // reverse
