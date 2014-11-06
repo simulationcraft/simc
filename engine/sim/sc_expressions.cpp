@@ -183,8 +183,8 @@ public:
     {
       double result = F( input_value );
       if( EXPRESSION_DEBUG ) printf( "%*d %s unary expression reduced to %f\n", spacing, id_, name().c_str(), result );
-      delete this;
       delete input;
+      delete this;
       return new const_expr_t( "const_unary", result );
     }
     expr_t* expr = select_unary( name(), op_, input );
@@ -547,8 +547,8 @@ public:
   double evaluate() { return F<double>()( left -> eval(), right ); }
       };
       expr_t* reduced = new right_reduced_t( name(), op_, left, right_value );
-      delete this;
       delete right;
+      delete this;
       return reduced;
     }
     expr_t* expr = select_binary( name(), op_, left, right );
