@@ -56,7 +56,6 @@ public:
   } active;
 
   // Secondary pets
-  // need an extra beast for readiness
   std::array<pet_t*, 2>  pet_dire_beasts;
   // Tier 15 2-piece bonus: need 10 slots (just to be safe) because each
   // Steady Shot or Cobra Shot can trigger a Thunderhawk, which stays
@@ -1954,9 +1953,11 @@ struct aimed_shot_t: public hunter_ranged_attack_t
 {
   // focus gained on every Aimed Shot crit
   double crit_gain;
+  benefit_t* aimed_in_ca;
 
   aimed_shot_t( hunter_t* p, const std::string& options_str ):
-    hunter_ranged_attack_t( "aimed_shot", p, p -> find_specialization_spell( "Aimed Shot" ) )
+    hunter_ranged_attack_t( "aimed_shot", p, p -> find_specialization_spell( "Aimed Shot" ) ),
+    aimed_in_ca( p -> get_benefit( "aimed_in_careful_aim" ) )
   {
     parse_options( options_str );
 
@@ -1992,6 +1993,7 @@ struct aimed_shot_t: public hunter_ranged_attack_t
   virtual void execute()
   {
     hunter_ranged_attack_t::execute();
+    aimed_in_ca -> update( p() -> buffs.careful_aim -> check() );
     consume_thrill_of_the_hunt();
   }
 };
@@ -2000,7 +2002,7 @@ struct aimed_shot_t: public hunter_ranged_attack_t
 
 struct glaive_toss_strike_t: public ranged_attack_t
 {
-  // use ranged_attack_to to avoid triggering other hunter behaviors (like thrill of the hunt
+  // use ranged_attack_to to avoid triggering other hunter behaviors (like thrill of the hunt)
   // TotH should be triggered by the glaive toss itself.
   glaive_toss_strike_t( hunter_t* player, const std::string& name, int id ):
     ranged_attack_t( name, player, player -> find_spell( id ) )
@@ -2966,6 +2968,7 @@ struct peck_t: public ranged_attack_t
     may_crit = true;
     may_parry = false;
     may_block = false;
+    may_dodge = false;
     travel_speed = 0.0;
 
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
@@ -2997,6 +3000,9 @@ struct moc_t: public ranged_attack_t
     callbacks = false;
     may_crit = false;
     may_miss = false;
+    may_parry = false;
+    may_block = false;
+    may_dodge = false;
 
     starved_proc = player -> get_proc( "starved: a_murder_of_crows" );
   }
@@ -3486,9 +3492,9 @@ void hunter_t::init_spells()
   glyphs.the_cheetah         = find_glyph_spell( "Glyph of the Cheetah" );
 
   // Attunments
-  specs.lethal_shots       = find_specialization_spell( "Lethal Shots" );
-  specs.animal_handler    = find_specialization_spell( "Animal Handler" );
-  specs.lightning_reflexes = find_specialization_spell( "Lightning Reflexes" );
+  specs.lethal_shots         = find_specialization_spell( "Lethal Shots" );
+  specs.animal_handler       = find_specialization_spell( "Animal Handler" );
+  specs.lightning_reflexes   = find_specialization_spell( "Lightning Reflexes" );
 
   // Spec spells
   specs.critical_strikes     = find_spell( 157443 );
