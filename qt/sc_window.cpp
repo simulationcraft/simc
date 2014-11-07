@@ -762,11 +762,11 @@ void SC_MainWindow::createCustomTab()
   customGlyphsTab -> setObjectName( QString::fromUtf8( "customGlyphsTab" ) );
   createCustomProfileDock -> addTab( customGlyphsTab, QString() );
   createCustomProfileDock -> setTabText( createCustomProfileDock -> indexOf( customGearTab ), tr( "Gear", "createCustomTab" ) );
-  createCustomProfileDock -> setTabToolTip( createCustomProfileDock -> indexOf( customGearTab ), tr( "Customise Gear Setup", "createCustomTab" ) );
+  createCustomProfileDock -> setTabToolTip( createCustomProfileDock -> indexOf( customGearTab ), tr( "Customize Gear Setup", "createCustomTab" ) );
   createCustomProfileDock -> setTabText( createCustomProfileDock -> indexOf( customTalentsTab ), tr( "Talents", "createCustomTab" ) );
-  createCustomProfileDock -> setTabToolTip( createCustomProfileDock -> indexOf( customTalentsTab ), tr( "Customise Talents", "createCustomTab" ) );
+  createCustomProfileDock -> setTabToolTip( createCustomProfileDock -> indexOf( customTalentsTab ), tr( "Customize Talents", "createCustomTab" ) );
   createCustomProfileDock -> setTabText( createCustomProfileDock -> indexOf( customGlyphsTab ), tr( "Glyphs", "createCustomTab" ) );
-  createCustomProfileDock -> setTabToolTip( createCustomProfileDock -> indexOf( customGlyphsTab ), tr( "Customise Glyphs", "createCustomTab" ) );
+  createCustomProfileDock -> setTabToolTip( createCustomProfileDock -> indexOf( customGlyphsTab ), tr( "Customize Glyphs", "createCustomTab" ) );
 }
 
 void SC_MainWindow::createSimulateTab()
@@ -778,7 +778,7 @@ void SC_MainWindow::createSimulateTab()
 void SC_MainWindow::createOverridesTab()
 {
   overridesText = new SC_TextEdit( this );
-  overridesText -> setPlainText( "# User-specified persistent global and player parms will set here.\n" );
+  overridesText -> setPlainText( "# User-specified persistent global and player parameters will be set here.\n" );
 
   // Set a bigger font size, it's not like people put much into the override tab
   QFont override_font = QFont();
@@ -929,7 +929,7 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
         logFileOpenedSuccessfully = true;
       }
     }
-    // Nothing in the log file, no point wondeirng about "permission issues"
+    // Nothing in the log file, no point wondering about "permission issues"
     else
       logFileOpenedSuccessfully = true;
 
