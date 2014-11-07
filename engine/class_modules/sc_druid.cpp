@@ -4593,6 +4593,10 @@ struct incarnation_cat_t : public druid_spell_t
     druid_spell_t::execute();
 
     p() -> buff.king_of_the_jungle -> trigger(); 
+
+    // Waste 1 second of the buff if its used prior to combat.
+    if ( ! p() -> in_combat )
+      p() -> buff.king_of_the_jungle -> extend_duration( p(), timespan_t::from_seconds( -1.0 ) );
   }
 };
 
