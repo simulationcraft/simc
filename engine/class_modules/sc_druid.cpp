@@ -6366,9 +6366,10 @@ void druid_t::apl_balance()
   aoe -> add_action( this, "Celestial Alignment", "if=lunar_max<8|target.time_to_die<20" );
   aoe -> add_action( "incarnation,if=buff.celestial_alignment.up" );
   aoe -> add_action( this, "Sunfire", "if=remains<8" );
-  aoe -> add_action( this, "Starfall" );
+  aoe -> add_action( this, "Starfall", "if=!buff.starfall.up" );
   aoe -> add_action( this, "Moonfire", "cycle_targets=1,if=remains<12" );
   aoe -> add_talent( this, "Stellar Flare", "cycle_targets=1,if=remains<7" );
+  aoe -> add_action( this, "Starsurge", "if=(charges=2&recharge_time<6)|charges=3" );
   aoe -> add_action( this, "Wrath", "if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)" );
   aoe -> add_action( this, "Starfire", "if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)" );
 }
