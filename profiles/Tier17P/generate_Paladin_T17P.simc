@@ -3,7 +3,7 @@
 # * Ilvl Cap: 630
 # * Standard Heroic 5 Man Loot Only.
 
-talent_format=armory
+# talent_format=numbers
 paladin="Paladin_Protection_T17P"
 talents=3032223
 level=100

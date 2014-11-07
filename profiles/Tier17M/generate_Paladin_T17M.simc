@@ -8,7 +8,7 @@
 # * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
 # * EXCEPTION: 710 Legendary Ring can be used. (accessibility)
 
-talent_format=armory
+# talent_format=numbers
 paladin="Paladin_Retribution_T17M"
 level=100
 race=draenei
@@ -62,7 +62,7 @@ main_hand=kromogs_brutal_fist,id=113927,bonus_id=567,enchant=mark_of_bleeding_ho
 off_hand=kromogs_protecting_palm,id=113926,bonus_id=567
 save=Paladin_Protection_T17M.simc
 
-talent_format=armory
+# talent_format=numbers
 paladin="Paladin_Holy_T17M"
 level=100
 race=blood_elf

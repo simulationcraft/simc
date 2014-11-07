@@ -8,7 +8,7 @@
 # * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
 # * EXCEPTION: 710 Legendary Ring can be used. (accessibility)
 
-talent_format=armory
+# talent_format=numbers
 # Guardian Druid T17M
 druid="Druid_Guardian_T17M"
 level=100

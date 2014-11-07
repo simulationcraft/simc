@@ -3,7 +3,7 @@
 # * Ilvl Cap: 630
 # * Standard Heroic 5 Man Loot Only.
 
-talent_format=armory
+# talent_format=numbers
 # BM
 hunter=Hunter_BM_T17P
 level=100

@@ -1,4 +1,4 @@
-talent_format=armory
+# talent_format=numbers
 mage="Mage_Arcane_T16M"
 level=90
 race=gnome

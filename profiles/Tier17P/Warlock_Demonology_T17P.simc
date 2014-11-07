@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!....200
+talents=0000311
 glyphs=dark_soul
 spec=demonology
 
@@ -45,10 +45,9 @@ actions+=/service_pet,if=talent.grimoire_of_service.enabled&!talent.demonbolt.en
 actions+=/summon_doomguard,if=!talent.demonic_servitude.enabled&active_enemies<5
 actions+=/summon_infernal,if=!talent.demonic_servitude.enabled&active_enemies>=5
 actions+=/call_action_list,name=db,if=talent.demonbolt.enabled
-actions+=/immolation_aura,if=demonic_fury>450&active_enemies>=5&buff.immolation_aura.down
 actions+=/cataclysm,if=buff.metamorphosis.up
 actions+=/doom,if=buff.metamorphosis.up&target.time_to_die>=30*spell_haste&remains<=(duration*0.3)&(remains<cooldown.cataclysm.remains|!talent.cataclysm.enabled)&(buff.dark_soul.down|!glyph.dark_soul.enabled)
-actions+=/corruption,cycle_targets=1,if=target.time_to_die>=6&remains<=(0.3*duration)&buff.metamorphosis.down
+actions+=/corruption,if=target.time_to_die>=6&remains<=(0.3*duration)&buff.metamorphosis.down
 actions+=/cancel_metamorphosis,if=buff.metamorphosis.up&((demonic_fury<650&!glyph.dark_soul.enabled)|demonic_fury<450)&buff.dark_soul.down&trinket.proc.any.down&target.time_to_die>cooldown.dark_soul.remains
 actions+=/cancel_metamorphosis,if=buff.metamorphosis.up&action.hand_of_guldan.charges>0&dot.shadowflame.ticking<action.hand_of_guldan.travel_time+action.shadow_bolt.cast_time&demonic_fury<100&buff.dark_soul.remains>10
 actions+=/cancel_metamorphosis,if=buff.metamorphosis.up&action.hand_of_guldan.charges=3&(!buff.dark_soul.remains>gcd|action.metamorphosis.cooldown<gcd)
@@ -68,7 +67,7 @@ actions+=/shadow_bolt
 actions+=/life_tap
 
 actions.db=doom,if=buff.metamorphosis.up&target.time_to_die>=30*spell_haste&remains<=(duration*0.3)&(remains<cooldown.cataclysm.remains|!talent.cataclysm.enabled)&(buff.dark_soul.down|!glyph.dark_soul.enabled)&buff.demonbolt.remains&(buff.demonbolt.remains<(40*spell_haste-action.demonbolt.execute_time)|demonic_fury<80+80*buff.demonbolt.stack)
-actions.db+=/corruption,cycle_targets=1,if=target.time_to_die>=6&remains<=(0.3*duration)&buff.metamorphosis.down
+actions.db+=/corruption,if=target.time_to_die>=6&remains<=(0.3*duration)&buff.metamorphosis.down
 actions.db+=/cancel_metamorphosis,if=buff.metamorphosis.up&buff.demonbolt.stack>3&demonic_fury<=600&target.time_to_die>buff.demonbolt.remains&buff.dark_soul.down
 actions.db+=/demonbolt,if=buff.demonbolt.stack=0|(buff.demonbolt.stack<4&buff.demonbolt.remains>=(40*spell_haste-execute_time))
 actions.db+=/soul_fire,if=buff.metamorphosis.up&buff.molten_core.react&((buff.dark_soul.remains>execute_time&demonic_fury>=175)|(target.time_to_die<buff.demonbolt.remains))

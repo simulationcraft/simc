@@ -1,6 +1,6 @@
 
 #
-talent_format=armory
+# talent_format=numbers
 
 # Death Knight
 generate_Death_Knight_T16M.simc

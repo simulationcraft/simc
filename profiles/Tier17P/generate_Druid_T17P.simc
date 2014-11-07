@@ -3,7 +3,7 @@
 # * Ilvl Cap: 630
 # * Standard Heroic 5 Man Loot Only.
 
-talent_format=armory
+# talent_format=numbers
 # Guardian Druid T17P
 druid="Druid_Guardian_T17P"
 level=100

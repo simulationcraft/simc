@@ -8,7 +8,7 @@
 # * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
 # * EXCEPTION: 680 Legendary Ring can be used. (accessibility)
 
-talent_format=armory
+# talent_format=numbers
 
 # Death Knight
 generate_Death_Knight_T17N.simc

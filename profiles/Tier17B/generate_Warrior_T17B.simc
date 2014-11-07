@@ -7,7 +7,7 @@
 # * Use Legendaries
 # * Use Bonus Boss Loot
 
-talent_format=armory
+# talent_format=numbers
 
 # Warrior Fury 1h T17B
 warrior="Warrior_Fury_1h_T17B"

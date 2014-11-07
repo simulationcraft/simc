@@ -1,6 +1,6 @@
 
 
-talent_format=armory
+# talent_format=numbers
 
 # Windwalker 1h
 monk="Monk_Windwalker_1h_T16M"

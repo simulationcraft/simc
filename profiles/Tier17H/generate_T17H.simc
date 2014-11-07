@@ -9,7 +9,7 @@
 # * EXCEPTION: 690 Legendary Ring can be used. (accessibility)
 
 #
-talent_format=armory
+# talent_format=numbers
 
 # Death Knight
 generate_Death_Knight_T17H.simc

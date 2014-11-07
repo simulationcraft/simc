@@ -3,7 +3,7 @@
 # * Ilvl Cap: 630
 # * Standard Heroic 5 Man Loot Only.
 
-talent_format=armory
+# talent_format=numbers
 
 # Assassination
 rogue="Rogue_Assassination_T17P"

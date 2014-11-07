@@ -1,5 +1,5 @@
 
-talent_format=armory
+# talent_format=numbers
 
 # Assassination
 rogue="Rogue_Assassination_T16M"
