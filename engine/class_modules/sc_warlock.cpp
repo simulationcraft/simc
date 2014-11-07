@@ -5625,6 +5625,7 @@ void warlock_t::apl_demonology()
     add_action( "Soul Fire", "if=buff.molten_core.react&target.health.pct<=35&buff.dark_soul.remains>30" );
     add_action( "Life Tap", "if=mana.pct<40" );
     add_action( "Shadow Bolt" );
+	action_list_str += "/hellfire,moving=1,interrupt=1";
   }
 }
 
