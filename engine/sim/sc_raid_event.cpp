@@ -82,9 +82,12 @@ struct adds_event_t : public raid_event_t
   virtual void _start()
   {
     adds_to_remove = static_cast<size_t>( util::round( sim -> rng().range( count - random, count + random ) ) );
-    for ( size_t i = 0; i < adds_to_remove; i++ )
+    for ( size_t i = 0; i < adds.size(); i++ )
     {
-      adds[i] -> summon( saved_duration );
+      if ( i < adds_to_remove )
+        adds[i] -> summon( saved_duration );
+      else
+        adds[i] -> current.sleeping = true;
     }
   }
 
