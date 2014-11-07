@@ -1993,7 +1993,7 @@ struct aimed_shot_t: public hunter_ranged_attack_t
   virtual void execute()
   {
     hunter_ranged_attack_t::execute();
-    aimed_in_ca -> update( p() -> buffs.careful_aim -> check() );
+    aimed_in_ca -> update( p() -> buffs.careful_aim -> check() != 0 );
     consume_thrill_of_the_hunt();
   }
 };
