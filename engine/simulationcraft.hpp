@@ -4367,9 +4367,9 @@ struct player_t : public actor_t
     double distance_to_move;
     movement_direction_e movement_direction;
     double armor_coeff;
-    bool sleeping;
   private:
     friend struct player_t;
+    bool sleeping;
     rating_t    rating;
   public:
 

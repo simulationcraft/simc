@@ -81,8 +81,14 @@ struct adds_event_t : public raid_event_t
     adds_to_remove = static_cast<size_t>( util::round( std::max( 0.0, sim -> rng().range( count - count_range, count + count_range ) ) ) );
     for ( size_t i = 0; i < adds.size(); i++ )
     {
-      if ( i < adds_to_remove ) adds[i] -> summon( saved_duration );
-      else adds[i] -> current.sleeping = true;
+      if ( i < adds.size() )
+      {
+        adds[i] -> summon( saved_duration );
+      }
+      if ( i >= adds_to_remove )
+      {
+        adds[i] -> dismiss();
+      }
     }
   }
 
