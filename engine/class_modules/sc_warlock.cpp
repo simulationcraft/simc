@@ -968,12 +968,6 @@ struct wild_firebolt_t: public warlock_pet_spell_t
   wild_firebolt_t( warlock_pet_t* p ):
     warlock_pet_spell_t( "fel_firebolt", p, p -> find_spell( 104318 ) )
   {
-    // FIXME: Exact casting mechanics need testing - this is copied from the old doomguard lag
-    if ( p -> owner -> bugs )
-    {
-      ability_lag = timespan_t::from_seconds( 0.22 );
-      ability_lag_stddev = timespan_t::from_seconds( 0.01 );
-    }
   }
 
   virtual void impact( action_state_t* s )
@@ -5625,6 +5619,7 @@ void warlock_t::apl_demonology()
     add_action( "Soul Fire", "if=buff.molten_core.react&target.health.pct<=35&buff.dark_soul.remains>30" );
     add_action( "Life Tap", "if=mana.pct<40" );
     add_action( "Shadow Bolt" );
+    action_list_str += "/hellfire,moving=1,interrupt=1";
   }
 }
 

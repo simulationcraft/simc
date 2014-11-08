@@ -123,8 +123,8 @@ public:
 
 #define SC_PACKED_STRUCT      __attribute__((packed))
 
-#ifdef NDEBUG
-#  define PRINTF_ATTRIBUTE(a,b) // false negatives are irritating
+#ifndef SC_LINT // false negatives are irritating
+#  define PRINTF_ATTRIBUTE(a,b) 
 #else
 #  if defined( SC_MINGW ) // printf wrongly points to vs_printf instead of gnu_printf on MinGW
 #    define PRINTF_ATTRIBUTE(a,b) __attribute__((format(gnu_printf,a,b)))

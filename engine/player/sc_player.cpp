@@ -3785,8 +3785,7 @@ void player_t::demise()
   /* Do not reset spawn index, because the player can still have damaging events ( dots ) which
    * need to be associated with eg. resolve Diminishing Return list.
    */
-
-
+  
   assert( arise_time >= timespan_t::zero() );
   iteration_fight_length += sim -> current_time() - arise_time;
   arise_time = timespan_t::min();
