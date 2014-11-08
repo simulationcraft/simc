@@ -526,7 +526,7 @@ public:
     if ( p() -> buffs.thrill_of_the_hunt -> up() )
     {
       double benefit = -( p() -> buffs.thrill_of_the_hunt -> data().effectN( 1 ).base_value() );
-      p() -> gains.thrill_of_the_hunt -> add( RESOURCE_FOCUS, benefit );
+      p() -> resource_gain( RESOURCE_FOCUS, benefit, p() -> gains.thrill_of_the_hunt );
       p() -> buffs.thrill_of_the_hunt -> decrement();
     }
   }
@@ -3846,6 +3846,7 @@ void hunter_t::apl_bm()
   default_list -> add_action( this, "Bestial Wrath", "if=focus>60&!buff.bestial_wrath.up");
   default_list -> add_talent( this, "Barrage", "if=active_enemies>2" );
   default_list -> add_action( this, "Multi-Shot", "if=active_enemies>5|(active_enemies>1&pet.cat.buff.beast_cleave.down)");
+  default_list -> add_action( this, "Focus Fire", "five_stacks=1");
   default_list -> add_talent( this, "Barrage", "if=active_enemies>1");
   default_list -> add_talent( this, "A Murder of Crows");
   default_list -> add_action( this, "Kill Shot","if=focus.time_to_max>gcd");
@@ -3857,7 +3858,6 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "Powershot", "if=focus.time_to_max>cast_time");
   default_list -> add_action( this, "Cobra Shot", "if=active_enemies>5");
   default_list -> add_action( this, "Arcane Shot", "if=(buff.thrill_of_the_hunt.react&focus>35)|buff.bestial_wrath.up");
-  default_list -> add_action( "focus_fire,five_stacks=1");
   default_list -> add_action( this, "Arcane Shot", "if=focus>=64");
   if ( level >= 81 )
     default_list -> add_action( this, "Cobra Shot");
