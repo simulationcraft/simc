@@ -4779,7 +4779,7 @@ struct mannoroths_fury_t: public warlock_spell_t
     warlock_spell_t( "mannoroths_fury", p, p -> talents.mannoroths_fury )
   {
     harmful = false;
-	use_off_gcd = true;
+    use_off_gcd = true;
   }
 
   virtual void execute()
@@ -5619,7 +5619,7 @@ void warlock_t::apl_demonology()
     add_action( "Soul Fire", "if=buff.molten_core.react&target.health.pct<=35&buff.dark_soul.remains>30" );
     add_action( "Life Tap", "if=mana.pct<40" );
     add_action( "Shadow Bolt" );
-	action_list_str += "/hellfire,moving=1,interrupt=1";
+    action_list_str += "/hellfire,moving=1,interrupt=1";
   }
 }
 
