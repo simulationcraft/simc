@@ -1465,7 +1465,7 @@ struct charge_t: public warrior_attack_t
     ignore_false_positive = true;
     range = data().max_range();
     range += p -> glyphs.long_charge -> effectN( 1 ).base_value();
-    movement_directionality = MOVEMENT_OMNI;
+    movement_directionality = MOVEMENT_TOWARDS;
     rage_from_charge = p -> get_cooldown( "rage_from_charge" );
     rage_from_charge -> duration = timespan_t::from_seconds( 12.0 );
     cooldown -> duration = data().cooldown();
@@ -3395,7 +3395,7 @@ struct shield_charge_t: public warrior_spell_t
     stancemask = STANCE_GLADIATOR;
     cooldown -> charges = 2;
     cooldown -> duration = timespan_t::from_seconds( 15 );
-    movement_directionality = MOVEMENT_OMNI;
+    movement_directionality = MOVEMENT_TOWARDS;
     use_off_gcd = true;
 
     shield_charge_cd = p -> get_cooldown( "shield_charge_cd" );
