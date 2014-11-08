@@ -1947,7 +1947,7 @@ struct druid_melee_t : public caster_attack_t
     caster_attack_t( "melee", p )
   {
     school      = SCHOOL_PHYSICAL;
-    may_glance  = background = repeating = use_off_gcd = true;
+    may_glance  = background = repeating = true;
     trigger_gcd = timespan_t::zero();
     special     = false;
 
@@ -2209,7 +2209,7 @@ struct cat_melee_t : public cat_attack_t
     cat_attack_t( "cat_melee", player, spell_data_t::nil(), "" )
   {
     school = SCHOOL_PHYSICAL;
-    may_glance = background = repeating = use_off_gcd = true;
+    may_glance = background = repeating = true;
     trigger_gcd = timespan_t::zero();
     special = false;
 
@@ -2915,7 +2915,7 @@ struct bear_melee_t : public bear_attack_t
     bear_attack_t( "bear_melee", player )
   {
     school      = SCHOOL_PHYSICAL;
-    may_glance  = background = repeating = use_off_gcd = true;
+    may_glance  = background = repeating = true;
     trigger_gcd = timespan_t::zero();
     special     = false;
 
@@ -4073,6 +4073,7 @@ struct auto_attack_t : public melee_attack_t
 
     trigger_gcd = timespan_t::zero();
     ignore_false_positive = true;
+    use_off_gcd = true;
   }
 
   virtual void execute()
@@ -4330,7 +4331,6 @@ struct dash_t : public druid_spell_t
     parse_options( options_str );
 
     harmful = false;
-    use_off_gcd = true;
     ignore_false_positive = true;
   }
 
@@ -4424,7 +4424,6 @@ struct force_of_nature_spell_t : public druid_spell_t
     harmful = false;
     cooldown -> charges = 3;
     cooldown -> duration = timespan_t::from_seconds( 20.0 );
-    use_off_gcd = true;
   }
 
   void execute()
@@ -5121,7 +5120,7 @@ struct skull_bash_t : public druid_spell_t
   {
     parse_options( options_str );
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
-    use_off_gcd = true;
+
     ignore_false_positive = true;
 
     cooldown -> duration += player -> glyph.skull_bash -> effectN( 1 ).time_value();
