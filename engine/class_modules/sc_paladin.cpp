@@ -1062,7 +1062,6 @@ struct avenging_wrath_t : public paladin_heal_t
       background = true;
 
     harmful = false;
-    use_off_gcd = true;    
     trigger_gcd = timespan_t::zero();
 
     // hack in Glyph of Avenging Wrath behavior
@@ -4292,7 +4291,6 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     // not on GCD, usable off-GCD
     trigger_gcd = timespan_t::zero();
     use_off_gcd = true;
-    
 
     // no weapon multiplier
     weapon_multiplier = 0.0;
