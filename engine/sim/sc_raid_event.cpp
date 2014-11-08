@@ -290,7 +290,7 @@ struct movement_event_t : public raid_event_t
   movement_event_t( sim_t* s, const std::string& options_str ):
     raid_event_t( s, "movement" ),
     move_distance( 0 ),
-    direction( MOVEMENT_OMNI ),
+    direction( MOVEMENT_TOWARDS ),
     distance_range( 0 ),
     distance_min( 0 ),
     distance_max( 0 ),
