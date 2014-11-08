@@ -1947,7 +1947,7 @@ struct druid_melee_t : public caster_attack_t
     caster_attack_t( "melee", p )
   {
     school      = SCHOOL_PHYSICAL;
-    may_glance  = background = repeating = true;
+    may_glance  = background = repeating = use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
     special     = false;
 
@@ -2209,7 +2209,7 @@ struct cat_melee_t : public cat_attack_t
     cat_attack_t( "cat_melee", player, spell_data_t::nil(), "" )
   {
     school = SCHOOL_PHYSICAL;
-    may_glance = background = repeating = true;
+    may_glance = background = repeating = use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
     special = false;
 
@@ -2915,7 +2915,7 @@ struct bear_melee_t : public bear_attack_t
     bear_attack_t( "bear_melee", player )
   {
     school      = SCHOOL_PHYSICAL;
-    may_glance  = background = repeating = true;
+    may_glance  = background = repeating = use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
     special     = false;
 
