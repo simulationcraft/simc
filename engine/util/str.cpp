@@ -79,7 +79,7 @@ private:
 
 template< typename T >
 static void format_signed( std::string& buffer, T i, int min_width, int /*max_width*/,
-			   bool left_justify, char pad, char plus, bool comma )
+         bool left_justify, char pad, char plus, bool comma )
 {
   backward_string str( comma );
   T num = i < 0 ? -i : i;
@@ -103,7 +103,7 @@ static void format_signed( std::string& buffer, T i, int min_width, int /*max_wi
 }
 
 static void format_unsigned( std::string& buffer, unsigned long long i, int base, int min_width, int /*max_width*/,
-			     bool left_justify, bool alt_form, char pad, bool upper_case, bool comma )
+           bool left_justify, bool alt_form, char pad, bool upper_case, bool comma )
 {
   backward_string str( comma );
   unsigned long long num = i;
@@ -480,7 +480,7 @@ std::string& str::format( std::string& buffer, const char *fmt, va_list args )
         else if( mod_short ) // elipsis auto-promote
         {
           format_signed<short>( buffer, (short) va_arg( args, int ), width, precision,
-				flags_left_justify, flags_zero_pad, flags_plus_pad, flags_comma );
+        flags_left_justify, flags_zero_pad, flags_plus_pad, flags_comma );
         }
         else if( mod_char ) // elipsis auto-promote
         {
@@ -511,13 +511,13 @@ std::string& str::format( std::string& buffer, const char *fmt, va_list args )
         c++;
         break;
       case 'o':
-	unum = ( mod_64    ? va_arg( args, uint64_t       ) :
-		 mod_size  ? va_arg( args, size_t         ) :
-		 mod_short ? va_arg( args, unsigned int   ) : // elipsis auto-promote
-		 mod_char  ? va_arg( args, unsigned int   ) : // elipsis auto-promote
-		             va_arg( args, unsigned int   ) );
-	format_unsigned( buffer, unum, 8, width, precision,
-			 flags_left_justify, flags_alt_form, flags_zero_pad, false, false );
+  unum = ( mod_64    ? va_arg( args, uint64_t       ) :
+     mod_size  ? va_arg( args, size_t         ) :
+     mod_short ? va_arg( args, unsigned int   ) : // elipsis auto-promote
+     mod_char  ? va_arg( args, unsigned int   ) : // elipsis auto-promote
+                 va_arg( args, unsigned int   ) );
+  format_unsigned( buffer, unum, 8, width, precision,
+       flags_left_justify, flags_alt_form, flags_zero_pad, false, false );
         c++;
         break;
       case 'p':
@@ -526,24 +526,24 @@ std::string& str::format( std::string& buffer, const char *fmt, va_list args )
         // fall thru because size(void*) == sizeof(unsigned long)
       case 'x':
       case 'X':
-	unum = ( mod_64    ? va_arg( args, uint64_t       ) :
-		 mod_size  ? va_arg( args, size_t         ) :
-		 mod_long  ? va_arg( args, unsigned long  ) :
-		 mod_short ? va_arg( args, unsigned int   ) : // elipsis auto-promote
-		 mod_char  ? va_arg( args, unsigned int   ) : // elipsis auto-promote
-		             va_arg( args, unsigned int   ) );
-	format_unsigned( buffer, unum, 16, width, precision,
-			 flags_left_justify, flags_alt_form, flags_zero_pad, *c == 'X', false );
+  unum = ( mod_64    ? va_arg( args, uint64_t       ) :
+     mod_size  ? va_arg( args, size_t         ) :
+     mod_long  ? va_arg( args, unsigned long  ) :
+     mod_short ? va_arg( args, unsigned int   ) : // elipsis auto-promote
+     mod_char  ? va_arg( args, unsigned int   ) : // elipsis auto-promote
+                 va_arg( args, unsigned int   ) );
+  format_unsigned( buffer, unum, 16, width, precision,
+       flags_left_justify, flags_alt_form, flags_zero_pad, *c == 'X', false );
         c++;
         break;
       case 'u':
-	unum = ( mod_64    ? va_arg( args, uint64_t       ) :
-		 mod_size  ? va_arg( args, size_t         ) :
-		 mod_short ? va_arg( args, unsigned int   ) : // elipsis auto-promote
-		 mod_char  ? va_arg( args, unsigned int   ) : // elipsis auto-promote
-		             va_arg( args, unsigned int   ) );
-	format_unsigned( buffer, unum, 10, width, precision,
-			 flags_left_justify, false, flags_zero_pad, false, flags_comma );
+  unum = ( mod_64    ? va_arg( args, uint64_t       ) :
+     mod_size  ? va_arg( args, size_t         ) :
+     mod_short ? va_arg( args, unsigned int   ) : // elipsis auto-promote
+     mod_char  ? va_arg( args, unsigned int   ) : // elipsis auto-promote
+                 va_arg( args, unsigned int   ) );
+  format_unsigned( buffer, unum, 10, width, precision,
+       flags_left_justify, false, flags_zero_pad, false, flags_comma );
         c++;
         break;
       case 'e':

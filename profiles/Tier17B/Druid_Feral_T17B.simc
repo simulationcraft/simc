@@ -3,7 +3,7 @@ level=100
 race=night_elf
 role=attack
 position=back
-talents=0002002
+talents=3002002
 glyphs=savage_roar
 spec=feral
 
@@ -27,7 +27,11 @@ actions.precombat+=/potion,name=draenic_agility
 
 # Executed every time the actor is available.
 
-actions=rake,if=buff.prowl.up|buff.shadowmeld.up
+actions=cat_form
+actions+=/wild_charge
+actions+=/displacer_beast,if=movement.distance>10
+actions+=/dash,if=movement.distance&buff.displacer_beast.down&buff.wild_charge_movement.down
+actions+=/rake,if=buff.prowl.up|buff.shadowmeld.up
 actions+=/auto_attack
 actions+=/skull_bash
 actions+=/force_of_nature,if=charges=3|trinket.proc.all.react|target.time_to_die<20

@@ -968,12 +968,6 @@ struct wild_firebolt_t: public warlock_pet_spell_t
   wild_firebolt_t( warlock_pet_t* p ):
     warlock_pet_spell_t( "fel_firebolt", p, p -> find_spell( 104318 ) )
   {
-    // FIXME: Exact casting mechanics need testing - this is copied from the old doomguard lag
-    if ( p -> owner -> bugs )
-    {
-      ability_lag = timespan_t::from_seconds( 0.22 );
-      ability_lag_stddev = timespan_t::from_seconds( 0.01 );
-    }
   }
 
   virtual void impact( action_state_t* s )
@@ -4785,7 +4779,6 @@ struct mannoroths_fury_t: public warlock_spell_t
     warlock_spell_t( "mannoroths_fury", p, p -> talents.mannoroths_fury )
   {
     harmful = false;
-    use_off_gcd = true;
   }
 
   virtual void execute()

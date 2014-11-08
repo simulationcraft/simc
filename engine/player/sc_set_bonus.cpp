@@ -288,7 +288,7 @@ expr_t* set_bonus_t::create_expression( const player_t* p, const std::string& ty
   if ( p -> sim -> optimize_expressions )
     return expr_t::create_constant( type, state );
   else
-    return new set_bonus_expr_t( state );
+    return new set_bonus_expr_t( state != 0 );
 }
 
 bool set_bonus_t::parse_set_bonus_option( const std::string& opt_str,
