@@ -18,7 +18,7 @@ spec=protection
 actions.precombat=flask,type=greater_draenic_strength_flask
 actions.precombat+=/food,type=blackrock_barbecue
 actions.precombat+=/stance,choose=gladiator
-talent_override=bladestorm,if=raid_event.adds.count>3|desired_targets>3|(raid_event.adds.duration<10&raid_event.adds.exists)
+talent_override=bladestorm,if=raid_event.adds.count>5|desired_targets>5|(raid_event.adds.duration<10&raid_event.adds.exists)
 talent_override=dragon_roar,if=raid_event.adds.count>1|desired_targets>1
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 # Generic on-use trinket line if needed when swapping trinkets out. 
@@ -38,7 +38,10 @@ actions+=/blood_fury,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|t
 actions+=/berserking,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10
 actions+=/arcane_torrent,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10
 actions+=/potion,name=draenic_armor,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up
+actions+=/shield_charge,if=(!buff.shield_charge.up&!cooldown.shield_slam.remains)|charges=2
 actions+=/berserker_rage,if=buff.enrage.down
+actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists
+actions+=/heroic_strike,if=((buff.shield_charge.up|buff.unyielding_strikes.up)&target.health.pct>20)|buff.ultimatum.up|rage>=100|buff.unyielding_strikes.stack>4|target.time_to_die<10
 actions+=/call_action_list,name=single,if=active_enemies=1
 actions+=/call_action_list,name=aoe,if=active_enemies>=2
 
@@ -48,26 +51,23 @@ actions.movement+=/shield_charge
 actions.movement+=/storm_bolt
 actions.movement+=/heroic_throw
 
-actions.single=shield_charge,if=(!buff.shield_charge.up&!cooldown.shield_slam.remains)|charges=2
-actions.single+=/heroic_strike,if=buff.shield_charge.up|buff.ultimatum.up|rage>=90|target.time_to_die<=3|talent.unyielding_strikes.enabled
-actions.single+=/heroic_leap,if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled
-actions.single+=/shield_slam
-actions.single+=/execute,if=buff.sudden_death.react
+actions.single=shield_slam
 actions.single+=/revenge
+actions.single+=/execute,if=buff.sudden_death.react
 actions.single+=/storm_bolt
 actions.single+=/dragon_roar
+actions.single+=/execute,if=rage>60&target.health.pct<20
 actions.single+=/devastate
 
-actions.aoe=shield_charge,if=(!buff.shield_charge.up&!cooldown.shield_slam.remains)|charges=2
-actions.aoe+=/thunder_clap,if=!dot.deep_wounds.ticking
-actions.aoe+=/bladestorm
-actions.aoe+=/heroic_strike,if=buff.shield_charge.up|buff.ultimatum.up|rage>=100|target.time_to_die<=3|talent.unyielding_strikes.enabled
-actions.aoe+=/heroic_leap,if=(buff.bloodbath.up|cooldown.bloodbath.remains>5|!talent.bloodbath.enabled)
-actions.aoe+=/revenge
+actions.aoe=revenge
 actions.aoe+=/shield_slam
-actions.aoe+=/thunder_clap
 actions.aoe+=/dragon_roar,if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled
 actions.aoe+=/storm_bolt,if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled
+actions.aoe+=/thunder_clap,cycle_targets=1,if=dot.deep_wounds.remains<3&active_enemies>4
+actions.aoe+=/bladestorm,if=buff.shield_charge.down
+actions.aoe+=/execute,if=buff.sudden_death.react
+actions.aoe+=/thunder_clap,if=active_enemies>6
+actions.aoe+=/devastate,cycle_targets=1,if=dot.deep_wounds.remains<5&cooldown.shield_slam.remains>execute_time*0.4
 actions.aoe+=/devastate,if=cooldown.shield_slam.remains>execute_time*0.4
 
 head=blackhands_faceguard,id=115584,bonus_id=566

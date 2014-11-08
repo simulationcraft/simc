@@ -1484,8 +1484,11 @@ struct charge_t: public warrior_attack_t
 
   void execute()
   {
-    p() -> buff.charge_movement -> trigger( 1, movement_speed_increase, 1, timespan_t::from_seconds( 
-      p() -> current.distance_to_move / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() + movement_speed_increase ) ) ) );
+    if ( p() -> current.distance_to_move > 5 )
+    {
+      p() -> buff.charge_movement -> trigger( 1, movement_speed_increase, 1, timespan_t::from_seconds(
+        p() -> current.distance_to_move / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() + movement_speed_increase ) ) ) );
+    }
 
     warrior_attack_t::execute();
 
@@ -3409,12 +3412,12 @@ struct shield_charge_t: public warrior_spell_t
                                                      ( 1 + p() -> passive_movement_modifier() + movement_speed_increase ) ) ) );
     }
 
-    shield_charge_cd -> start();
-
     if ( p() -> buff.shield_charge -> check() )
       p() -> buff.shield_charge -> extend_duration( p(), p() -> buff.shield_charge -> data().duration() );
     else
       p() -> buff.shield_charge -> trigger();
+
+    shield_charge_cd -> start();
   }
 
   bool ready()
@@ -3962,7 +3965,7 @@ void warrior_t::apl_precombat( bool probablynotgladiator )
   else if ( !probablynotgladiator )
   {
     precombat -> add_action( "stance,choose=gladiator\n"
-                             "talent_override=bladestorm,if=raid_event.adds.count>3|desired_targets>3|(raid_event.adds.duration<10&raid_event.adds.exists)\n"
+                             "talent_override=bladestorm,if=raid_event.adds.count>5|desired_targets>5|(raid_event.adds.duration<10&raid_event.adds.exists)\n"
                              "talent_override=dragon_roar,if=raid_event.adds.count>1|desired_targets>1" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
                              "# Generic on-use trinket line if needed when swapping trinkets out. \n"
@@ -4016,8 +4019,8 @@ void warrior_t::apl_fury()
   default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down|(talent.unquenchable_thirst.enabled&buff.raging_blow.down)" );
   default_list -> add_action( this, "Heroic Leap", "if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists" );
 
-  int num_items = (int)items.size();
-  for ( int i = 0; i < num_items; i++ )
+  size_t num_items = items.size();
+  for ( size_t i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.bloodbath.up|talent.avatar.enabled" );
@@ -4118,8 +4121,8 @@ void warrior_t::apl_arms()
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( "call_action_list,name=movement,if=movement.distance>5", "This is mostly to prevent cooldowns from being accidentally used during movement." );
 
-  int num_items = (int)items.size();
-  for ( int i = 0; i < num_items; i++ )
+  size_t num_items = items.size();
+  for ( size_t i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))" );
@@ -4141,7 +4144,7 @@ void warrior_t::apl_arms()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up" );
 
-  default_list -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up&rage>70" );
+  default_list -> add_action( this, "Heroic Leap", "if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists" );
   default_list -> add_action( "call_action_list,name=single,if=active_enemies=1" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>1" );
 
@@ -4196,8 +4199,8 @@ void warrior_t::apl_prot()
   default_list -> add_action( this, "charge" );
   default_list -> add_action( "auto_attack" );
 
-  int num_items = (int)items.size();
-  for ( int i = 0; i < num_items; i++ )
+  size_t num_items = items.size();
+  for ( size_t i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=active_enemies=1&(buff.bloodbath.up|!talent.bloodbath.enabled)|(active_enemies>=2&buff.ravager.up)" );
@@ -4247,7 +4250,7 @@ void warrior_t::apl_prot()
   prot_aoe -> add_talent( this, "Avatar" );
   prot_aoe -> add_action( this, "Thunder Clap", "if=!dot.deep_wounds.ticking" );
   prot_aoe -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up|rage>110|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.stack>=6)" );
-  prot_aoe -> add_action( this, "Heroic Leap", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>5|!talent.bloodbath.enabled)" );
+  prot_aoe -> add_action( this, "Heroic Leap", "if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists" );
   prot_aoe -> add_action( this, "Shield Slam", "if=buff.shield_block.up" );
   prot_aoe -> add_talent( this, "Ravager", "if=(buff.avatar.up|cooldown.avatar.remains>10)|!talent.avatar.enabled" );
   prot_aoe -> add_talent( this, "Dragon Roar", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
@@ -4278,8 +4281,9 @@ void warrior_t::apl_glad()
   default_list -> add_action( "call_action_list,name=movement,if=movement.distance>5", "This is mostly to prevent cooldowns from being accidentally used during movement." );
   default_list -> add_talent( this, "Avatar" );
   default_list -> add_talent( this, "Bloodbath" );
-  int num_items = (int)items.size();
-  for ( int i = 0; i < num_items; i++ )
+
+  size_t num_items = items.size();
+  for ( size_t i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<15" );
@@ -4289,7 +4293,10 @@ void warrior_t::apl_glad()
   if ( sim -> allow_potions )
     default_list -> add_action( "potion,name=draenic_armor,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up" );
 
+  default_list -> add_action( "shield_charge,if=(!buff.shield_charge.up&!cooldown.shield_slam.remains)|charges=2" );
   default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
+  default_list -> add_action( this, "Heroic Leap", "if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists" );
+  default_list -> add_action( this, "Heroic Strike", "if=((buff.shield_charge.up|buff.unyielding_strikes.up)&target.health.pct>20)|buff.ultimatum.up|rage>=100|buff.unyielding_strikes.stack>4|target.time_to_die<10" );
   default_list -> add_action( "call_action_list,name=single,if=active_enemies=1" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=2" );
 
@@ -4298,26 +4305,23 @@ void warrior_t::apl_glad()
   movement -> add_talent( this, "Storm Bolt", "", "May as well throw storm bolt if we can." );
   movement -> add_action( this, "Heroic Throw" );
 
-  gladiator -> add_action( "shield_charge,if=(!buff.shield_charge.up&!cooldown.shield_slam.remains)|charges=2" );
-  gladiator -> add_action( this, "Heroic Strike", "if=buff.shield_charge.up|buff.ultimatum.up|rage>=90|target.time_to_die<=3|talent.unyielding_strikes.enabled" );
-  gladiator -> add_action( this, "Heroic Leap", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
   gladiator -> add_action( this, "Shield Slam" );
-  gladiator -> add_action( this, "Execute", "if=buff.sudden_death.react" );
   gladiator -> add_action( this, "Revenge" );
+  gladiator -> add_action( this, "Execute", "if=buff.sudden_death.react" );
   gladiator -> add_talent( this, "Storm Bolt" );
   gladiator -> add_talent( this, "Dragon Roar" );
+  gladiator -> add_action( this, "Execute", "if=rage>60&target.health.pct<20" );
   gladiator -> add_action( this, "Devastate" );
 
-  gladiator_aoe -> add_action( "shield_charge,if=(!buff.shield_charge.up&!cooldown.shield_slam.remains)|charges=2" );
-  gladiator_aoe -> add_action( this, "Thunder Clap", "if=!dot.deep_wounds.ticking" );
-  gladiator_aoe -> add_talent( this, "Bladestorm" );
-  gladiator_aoe -> add_action( this, "Heroic Strike", "if=buff.shield_charge.up|buff.ultimatum.up|rage>=100|target.time_to_die<=3|talent.unyielding_strikes.enabled" );
-  gladiator_aoe -> add_action( this, "Heroic Leap", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>5|!talent.bloodbath.enabled)" );
   gladiator_aoe -> add_action( this, "Revenge" );
   gladiator_aoe -> add_action( this, "Shield Slam" );
-  gladiator_aoe -> add_action( this, "Thunder Clap" );
   gladiator_aoe -> add_talent( this, "Dragon Roar", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
   gladiator_aoe -> add_talent( this, "Storm Bolt", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled" );
+  gladiator_aoe -> add_action( "thunder_clap,cycle_targets=1,if=dot.deep_wounds.remains<3&active_enemies>4" );
+  gladiator_aoe -> add_talent( this, "Bladestorm", "if=buff.shield_charge.down" );
+  gladiator_aoe -> add_action( this, "Execute", "if=buff.sudden_death.react" );
+  gladiator_aoe -> add_action( this, "Thunder Clap", "if=active_enemies>6" );
+  gladiator_aoe -> add_action( "devastate,cycle_targets=1,if=dot.deep_wounds.remains<5&cooldown.shield_slam.remains>execute_time*0.4" );
   gladiator_aoe -> add_action( this, "Devastate", "if=cooldown.shield_slam.remains>execute_time*0.4" );
 }
 
@@ -4490,7 +4494,7 @@ struct rallying_cry_t: public warrior_buff_t < buff_t >
 
   bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
-    health_gain = (int)floor( warrior.resources.max[RESOURCE_HEALTH] * data().effectN( 1 ).percent() );
+    health_gain = static_cast<int>( util::floor( warrior.resources.max[RESOURCE_HEALTH] * data().effectN( 1 ).percent() ) );
     warrior.stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
     return base_t::trigger( stacks, value, chance, duration );
   }
@@ -4511,7 +4515,7 @@ struct last_stand_t: public warrior_buff_t < buff_t >
 
   bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
-    health_gain = (int)floor( warrior.resources.max[RESOURCE_HEALTH] * warrior.spec.last_stand -> effectN( 1 ).percent() );
+    health_gain = static_cast<int>( util::floor( warrior.resources.max[RESOURCE_HEALTH] * warrior.spec.last_stand -> effectN( 1 ).percent() ) );
     warrior.stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
     return base_t::trigger( stacks, value, chance, duration );
   }

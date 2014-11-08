@@ -2411,7 +2411,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
           }
           double evaluate()
           {
-            gcd_remains = ( action.player -> gcd_ready ).total_seconds();
+            gcd_remains = ( action.player -> gcd_ready - action.sim -> current_time() ).total_seconds();
             return gcd_remains;
           }
         };
@@ -2830,7 +2830,6 @@ timespan_t action_t::calculate_dot_refresh_duration( const dot_t* dot, timespan_
     return std::min( triggered_duration * 0.3, dot -> remains() ) + triggered_duration; // New WoD Formula: Get no malus during the last 30% of the dot.
   else
     return dot -> time_to_next_tick() + triggered_duration;
-
 }
 
 call_action_list_t::call_action_list_t( player_t* player, const std::string& options_str ) :
