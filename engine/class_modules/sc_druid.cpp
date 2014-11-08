@@ -215,6 +215,7 @@ public:
     buff_t* bear_form;
     buff_t* cat_form;
     buff_t* dash;
+    buff_t* displacer_beast;
     buff_t* cenarion_ward;
     buff_t* dream_of_cenarius;
     buff_t* frenzied_regeneration;
@@ -222,6 +223,7 @@ public:
     buff_t* omen_of_clarity;
     buff_t* prowl;
     buff_t* stampeding_roar;
+    buff_t* wild_charge_movement;
 
     // Balance
     buff_t* astral_communion;
@@ -2232,38 +2234,6 @@ struct cat_melee_t : public cat_attack_t
       cm *= 1.0 + p() -> buff.cat_form -> data().effectN( 3 ).percent();
 
     return cm;
-  }
-};
-
-// Feral Charge (Cat) =======================================================
-
-struct feral_charge_cat_t : public cat_attack_t
-{
-  // TODO: Figure out Wild Charge
-  feral_charge_cat_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "feral_charge_cat", p, p -> talent.wild_charge, options_str )
-  {
-    may_miss = may_dodge = may_parry = may_block = may_glance = false;
-  }
-
-  virtual void init()
-  {
-    cat_attack_t::init();
-
-    consume_bloodtalons = false;
-  }
-
-  virtual bool ready()
-  {
-    bool ranged = ( player -> position() == POSITION_RANGED_FRONT ||
-                    player -> position() == POSITION_RANGED_BACK );
-
-    if ( player -> in_combat && ! ranged )
-    {
-      return false;
-    }
-
-    return cat_attack_t::ready();
   }
 };
 
@@ -4342,6 +4312,29 @@ struct dash_t : public druid_spell_t
   }
 };
 
+// Displacer Beast ==============================================================
+
+struct displacer_beast_t : public druid_spell_t
+{
+  displacer_beast_t( druid_t* p, const std::string& options_str ) :
+    druid_spell_t( "displacer_beast", p, p -> talent.displacer_beast )
+  {
+    parse_options( options_str );
+    harmful = may_crit = may_miss = false;
+    ignore_false_positive = true;
+    base_teleport_distance = p -> talent.displacer_beast -> effectN( 1 ).radius();
+    movement_directionality = MOVEMENT_OMNI;
+  }
+
+  void execute()
+  {
+    druid_spell_t::execute();
+
+    p() -> buff.cat_form -> trigger();
+    p() -> buff.displacer_beast -> trigger();
+  }
+};
+
 // Faerie Fire Spell ========================================================
 
 struct faerie_fire_t : public druid_spell_t
@@ -4383,32 +4376,6 @@ struct faerie_fire_t : public druid_spell_t
       return RESOURCE_ENERGY;
 
     return RESOURCE_MANA;
-  }
-};
-
-// Feral Charge (Bear) ======================================================
-
-struct feral_charge_bear_t : public druid_spell_t
-{
-  feral_charge_bear_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( "feral_charge", p, p -> talent.wild_charge )
-  {
-    parse_options( options_str );
-    may_miss = may_dodge = may_parry = may_block = may_glance = false;
-    base_teleport_distance = data().max_range();
-    movement_directionality = MOVEMENT_OMNI;
-  }
-
-  bool ready()
-  {
-    if ( ! p() -> buff.bear_form -> check() )
-      return false;
-
-    if ( p() -> current.distance_to_move > base_teleport_distance ||
-         p() -> current.distance_to_move < data().min_range() ) // Cannot charge unless target is in range.
-      return false;
-
-    return druid_spell_t::ready();
   }
 };
 
@@ -5431,6 +5398,58 @@ struct typhoon_t : public druid_spell_t
   }
 };
 
+// Wild Charge ==============================================================
+
+struct wild_charge_t : public druid_spell_t
+{
+  double movement_speed_increase;
+
+  wild_charge_t( druid_t* p, const std::string& options_str ) :
+    druid_spell_t( "wild_charge", p, p -> talent.wild_charge ),
+    movement_speed_increase( 5.0 )
+  {
+    parse_options( options_str );
+    harmful = may_crit = may_miss = false;
+    ignore_false_positive = true;
+    range = data().max_range();
+    movement_directionality = MOVEMENT_OMNI; 
+    trigger_gcd = timespan_t::zero();
+  }
+
+  void schedule_execute( action_state_t* execute_state )
+  {
+    druid_spell_t::schedule_execute( execute_state );
+
+    /* Since Cat/Bear charge is limited to moving towards a target,
+       cancel form if the druid wants to move away.
+       Other forms can already move in any direction they want so they're fine. */
+    if ( p() -> current.movement_direction == MOVEMENT_AWAY )
+    {
+      p() -> buff.cat_form -> expire();
+      p() -> buff.bear_form -> expire();
+    }
+  }
+
+  void execute()
+  {
+    if ( p() -> current.distance_to_move > data().min_range() )
+    {
+      p() -> buff.wild_charge_movement -> trigger( 1, movement_speed_increase, 1,
+        timespan_t::from_seconds( p() -> current.distance_to_move / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() + movement_speed_increase ) ) ) );
+    }
+
+    druid_spell_t::execute();
+  }
+
+  bool ready()
+  {
+    if ( p() -> current.distance_to_move < data().min_range() ) // Cannot charge unless target is in range.
+      return false;
+
+    return druid_spell_t::ready();
+  }
+};
+
 // Wild Mushroom ============================================================
 
 struct wild_mushroom_t : public druid_spell_t
@@ -5585,6 +5604,7 @@ action_t* druid_t::create_action( const std::string& name,
        name == "ca"                     ) return new    celestial_alignment_t( this, options_str );
   if ( name == "cenarion_ward"          ) return new          cenarion_ward_t( this, options_str );
   if ( name == "dash"                   ) return new                   dash_t( this, options_str );
+  if ( name == "displacer_beast"        ) return new        displacer_beast_t( this, options_str );
   if ( name == "faerie_fire"            ) return new            faerie_fire_t( this, options_str );
   if ( name == "ferocious_bite"         ) return new         ferocious_bite_t( this, options_str );
   if ( name == "frenzied_regeneration"  ) return new  frenzied_regeneration_t( this, options_str );
@@ -5630,6 +5650,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "force_of_nature"        ) return new  force_of_nature_spell_t( this, options_str );
   if ( name == "tranquility"            ) return new            tranquility_t( this, options_str );
   if ( name == "typhoon"                ) return new                typhoon_t( this, options_str );
+  if ( name == "wild_charge"            ) return new            wild_charge_t( this, options_str );
   if ( name == "wild_growth"            ) return new            wild_growth_t( this, options_str );
   if ( name == "wild_mushroom"          ) return new          wild_mushroom_t( this, options_str );
   if ( name == "wrath"                  ) return new                  wrath_t( this, options_str );
@@ -5957,6 +5978,11 @@ void druid_t::create_buffs()
                                .quiet( true );
 
   // Talent buffs
+
+  buff.displacer_beast    = buff_creator_t( this, "displacer_beast", find_spell( 137542 ) )
+                            .default_value( find_spell( 137542 ) -> effectN( 1 ).percent() );
+
+  buff.wild_charge_movement = buff_creator_t( this, "wild_charge_movement" );
 
   buff.cenarion_ward = buff_creator_t( this, "cenarion_ward", find_talent_spell( "Cenarion Ward" ) );
 
@@ -6808,8 +6834,14 @@ double druid_t::temporary_movement_modifier() const
 {
   double active = player_t::temporary_movement_modifier();
 
-   if( buff.dash -> up() )
-     active = std::max( active, buff.dash -> data().effectN( 1 ).percent() );
+  if ( buff.dash -> up() )
+    active = std::max( active, buff.dash -> data().effectN( 1 ).percent() );
+
+  if ( buff.wild_charge_movement -> up() )
+    active = std::max( active, buff.wild_charge_movement -> value() );
+
+  if ( buff.displacer_beast -> up() )
+    active = std::max( active, buff.displacer_beast -> value() );
 
   return active;
 }
