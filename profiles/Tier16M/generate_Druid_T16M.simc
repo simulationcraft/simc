@@ -8,7 +8,7 @@ level=90
 race=night_elf
 role=attack
 position=back
-talents=000100
+talents=300100
 glyphs=savage_roar
 spec=feral
 head=headpiece_of_the_shattered_vale,id=99328,upgrade=4,gems=capacitive_primal_10haste_10crit_11agi

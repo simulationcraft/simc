@@ -5964,7 +5964,8 @@ void druid_t::create_buffs()
                                .default_value( find_spell( talent.claws_of_shirvallah -> effectN( 1 ).base_value() ) -> effectN( 5 ).percent() )
                                .add_invalidate( CACHE_VERSATILITY );
   buff.dash                  = buff_creator_t( this, "dash", find_class_spell( "Dash" ) )
-                               .cd( timespan_t::zero() );
+                               .cd( timespan_t::zero() )
+                               .default_value( find_class_spell( "Dash" ) -> effectN( 1 ).percent() );
   buff.frenzied_regeneration = buff_creator_t( this, "frenzied_regeneration", find_class_spell( "Frenzied Regeneration" ) );
   buff.moonkin_form          = new moonkin_form_t( *this );
   buff.omen_of_clarity       = new omen_of_clarity_buff_t( *this );
@@ -6291,6 +6292,10 @@ void druid_t::apl_feral()
 
   // Main List =============================================================
 
+  def -> add_action( this, "Cat Form" );
+  def -> add_talent( this, "Wild Charge" );
+  def -> add_talent( this, "Displacer Beast", "if=movement.distance>10" );
+  def -> add_action( this, "Dash", "if=movement.distance&buff.displacer_beast.down&buff.wild_charge_movement.down" );
   if ( race == RACE_NIGHT_ELF )
     def -> add_action( this, "Rake", "if=buff.prowl.up|buff.shadowmeld.up" );
   else
@@ -6835,7 +6840,7 @@ double druid_t::temporary_movement_modifier() const
   double active = player_t::temporary_movement_modifier();
 
   if ( buff.dash -> up() )
-    active = std::max( active, buff.dash -> data().effectN( 1 ).percent() );
+    active = std::max( active, buff.dash -> value() );
 
   if ( buff.wild_charge_movement -> up() )
     active = std::max( active, buff.wild_charge_movement -> value() );
