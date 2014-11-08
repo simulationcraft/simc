@@ -38,48 +38,50 @@ actions+=/blade_flurry,if=(active_enemies>=2&!buff.blade_flurry.up)|(active_enem
 actions+=/shadow_reflection,if=(cooldown.killing_spree.remains<10&combo_points>3)|buff.adrenaline_rush.up
 actions+=/ambush
 actions+=/vanish,if=time>10&(combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)|(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4)))&((talent.shadow_focus.enabled&buff.adrenaline_rush.down&energy<20)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))
-actions+=/killing_spree,if=energy<50&(!talent.shadow_reflection.enabled|cooldown.shadow_reflection.remains>30|buff.shadow_reflection.remains>3)
-actions+=/adrenaline_rush,if=energy<35
-actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2|(buff.slice_and_dice.remains<15&buff.bandits_guile.stack=11&combo_points>=4)
+actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2|(target.time_to_die>45&combo_points=5&buff.slice_and_dice.remains<10.8)
+actions+=/killing_spree,if=(energy<40|(buff.bloodlust.up&time<10)|buff.bloodlust.remains>20)&buff.adrenaline_rush.down&(!talent.shadow_reflection.enabled|cooldown.shadow_reflection.remains>30|buff.shadow_reflection.remains>3)
+actions+=/adrenaline_rush,if=(energy<35|buff.bloodlust.up)&cooldown.killing_spree.remains>10
 actions+=/marked_for_death,if=combo_points<=1&dot.revealing_strike.ticking&(!talent.shadow_reflection.enabled|buff.shadow_reflection.up|cooldown.shadow_reflection.remains>30)
-actions+=/call_action_list,name=generator,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<=4&buff.deep_insight.down)
-actions+=/call_action_list,name=finisher,if=combo_points=5&(buff.deep_insight.up|!talent.anticipation.enabled|(talent.anticipation.enabled&anticipation_charges>=4))
+actions+=/call_action_list,name=generator,if=combo_points<5|!dot.revealing_strike.ticking|(talent.anticipation.enabled&anticipation_charges<=4&buff.deep_insight.down)
+actions+=/call_action_list,name=finisher,if=combo_points=5&dot.revealing_strike.ticking&(buff.deep_insight.up|!talent.anticipation.enabled|(talent.anticipation.enabled&anticipation_charges>=4))
 
 # Combo point generators
 
-actions.generator=revealing_strike,if=ticks_remain<2
-actions.generator+=/sinister_strike
+actions.generator=revealing_strike,if=(combo_points=4&dot.revealing_strike.remains<7.2&(target.time_to_die>dot.revealing_strike.remains+7.2)|(target.time_to_die<dot.revealing_strike.remains+7.2&ticks_remain<2))|!ticking
+actions.generator+=/sinister_strike,if=dot.revealing_strike.ticking
 
 # Combo point finishers
 
-actions.finisher=crimson_tempest,if=active_enemies>7&dot.crimson_tempest_dot.ticks_remain<=1
+actions.finisher=death_from_above
+actions.finisher+=/crimson_tempest,if=active_enemies>1&remains<4
+actions.finisher+=/crimson_tempest,if=active_enemies>2
 actions.finisher+=/eviscerate
 
-head=poisoners_helmet,id=115572,bonus_id=567
-neck=engineers_grounded_gorget,id=113892,bonus_id=567,enchant=gift_of_haste
+head=sorkas_nightshade_cowl,id=113978,bonus_id=567
+neck=darklight_necklace,id=113865,bonus_id=567,enchant=gift_of_haste
 shoulders=poisoners_spaulders,id=115574,bonus_id=567
-back=cloak_of_delving_secrets,id=113929,bonus_id=567,enchant=gift_of_haste
+back=drape_of_the_dark_hunt,id=113971,bonus_id=567,enchant=gift_of_haste
 chest=poisoners_tunic,id=115570,bonus_id=567
-wrists=squires_electroplated_bracers,id=113962,bonus_id=567
+wrists=bracers_of_shattered_stalactites,id=113935,bonus_id=567
 hands=poisoners_gloves,id=115571,bonus_id=567
 waist=girdle_of_unconquered_glory,id=113907,bonus_id=567
-legs=shattering_smash_leggings,id=113989,bonus_id=567
-feet=treads_of_the_dark_hunt,id=113974,bonus_id=567
+legs=poisoners_legguards,id=115573,bonus_id=567
+feet=furnace_tenders_treads,id=113895,bonus_id=567
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_haste
-finger2=flensers_hookring,id=113611,bonus_id=567,enchant=gift_of_haste
+finger2=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_haste
 trinket1=meaty_dragonspine_trophy,id=118114,bonus_id=567
 trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=567
-main_hand=sorkas_chainfist,id=113965,bonus_id=567,enchant=mark_of_warsong
-off_hand=sorkas_chainfist,id=113965,bonus_id=567,enchant=mark_of_warsong
+main_hand=hansgars_forgehammer,id=113897,bonus_id=567,enchant=mark_of_warsong
+off_hand=hansgars_forgehammer,id=113897,bonus_id=567,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_agility=3553
-# gear_stamina=4455
-# gear_crit_rating=317
-# gear_haste_rating=1225
-# gear_mastery_rating=1465
+# gear_agility=3568
+# gear_stamina=4478
+# gear_crit_rating=831
+# gear_haste_rating=1145
+# gear_mastery_rating=643
 # gear_armor=1147
-# gear_multistrike_rating=1010
+# gear_multistrike_rating=1466
 # gear_versatility_rating=122
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
