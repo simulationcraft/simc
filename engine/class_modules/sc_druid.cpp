@@ -2136,7 +2136,7 @@ public:
                                consumed,
                                util::resource_type_string( RESOURCE_COMBO_POINT ),
                                name(),
-                               player -> resources.current[ RESOURCE_COMBO_POINT ] );
+                               (int) player -> resources.current[ RESOURCE_COMBO_POINT ] );
 
       if ( p() -> talent.soul_of_the_forest -> ok() )
         p() -> resource_gain( RESOURCE_ENERGY,
