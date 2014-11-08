@@ -136,7 +136,9 @@
       </div>
     
     </div>
-    
+
+    <div id="announcements"></div>
+
     <div id="how-this-interface-works" class="section grouped-first">
 
       <h2 class="toggle">How This Interface Works</h2>
@@ -413,6 +415,10 @@
           e.preventDefault();
           $('#active-help').toggle(250);
         });
+      });
+
+      jQuery(document).ready(function($) {
+          console.log($('#announcements').load("http://www.simulationcraft.org/announcement.html"));
       });
     </script>
 
