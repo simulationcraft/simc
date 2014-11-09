@@ -42,7 +42,7 @@ actions+=/avatar,if=buff.recklessness.up|target.time_to_die<25
 actions+=/blood_fury,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
 actions+=/berserking,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
 actions+=/arcane_torrent,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
-actions+=/heroic_leap,if=debuff.colossus_smash.up&rage>70
+actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists
 actions+=/call_action_list,name=single,if=active_enemies=1
 actions+=/call_action_list,name=aoe,if=active_enemies>1
 

@@ -4779,7 +4779,6 @@ struct mannoroths_fury_t: public warlock_spell_t
     warlock_spell_t( "mannoroths_fury", p, p -> talents.mannoroths_fury )
   {
     harmful = false;
-    use_off_gcd = true;
   }
 
   virtual void execute()
