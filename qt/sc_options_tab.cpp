@@ -873,12 +873,12 @@ void SC_OptionsTab::createToolTips()
 
   choice.boss_type -> setToolTip( tr( "Choose the type of target. Some choices can be refined further by the next two drop-down boxes" ) );
 
-  choice.tank_dummy -> setToolTip( tr( "If \"Tank Dummy\" is chosen above, this drop-down selects the type of tank dummy used."
-                                       "Leaving at *None* will default back to a Fluffy Pillow.\n" ) );
+  choice.tank_dummy -> setToolTip( tr( "If \"Tank Dummy\" is chosen above, this drop-down selects the type of tank dummy used.\n"
+                                       "Leaving at *None* will default back to a Fluffy Pillow." ) );
   
-  choice.tmi_boss -> setToolTip( tr( "If \"TMI Standard Boss\" is chosen in \"Target Type\", this box selects the TMI standard."
+  choice.tmi_boss -> setToolTip( tr( "If \"TMI Standard Boss\" is chosen in \"Target Type\", this box selects the TMI standard.\n"
                                      "TMI Standard Bosses provide damage output similar to bosses in the appropriate tier.\n"
-                                     "Leaving at *None* will default back to a Fluffy Pillow.\n" ) );
+                                     "Leaving at *None* will default back to a Fluffy Pillow." ) );
 
   choice.tmi_window -> setToolTip( tr( "Specify window duration for calculating TMI. Default is 6 sec.\n"
                                        "Reducing this increases the metric's sensitivity to shorter damage spikes.\n"
@@ -1313,6 +1313,14 @@ void SC_OptionsTab::toggleInterdependentOptions()
     choice.plots_iterations -> setDisabled( true );
   else
     choice.plots_iterations -> setEnabled( true );
+
+  //on Globals tab, toggle Tank Dummy and TMI Standard Boss settings
+  choice.tank_dummy -> setDisabled( true );
+  choice.tmi_boss -> setDisabled( true );
+  if ( choice.boss_type -> currentIndex() == 2 )
+    choice.tank_dummy -> setEnabled( true );
+  if ( choice.boss_type -> currentIndex() == 3 )
+    choice.tmi_boss -> setEnabled( true );
 
   // others go here
 
