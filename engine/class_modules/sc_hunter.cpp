@@ -3836,7 +3836,7 @@ void hunter_t::apl_bm()
   add_item_actions( default_list );
   add_racial_actions( default_list );
   add_potion_action( default_list, "draenic_agility", "virmens_bite",
-   "if=!talent.stampede.enabled&buff.bestial_wrath.up|target.time_to_die<=20" );
+   "if=!talent.stampede.enabled&buff.bestial_wrath.up&target.health.pct<=20|target.time_to_die<=20" );
   add_potion_action( default_list, "draenic_agility", "virmens_bite",
    "if=talent.stampede.enabled&cooldown.stampede.remains<1&(buff.bloodlust.up|buff.focus_fire.up)|target.time_to_die<=20" );
   default_list -> add_talent( this, "Stampede", "if=buff.bloodlust.up|buff.focus_fire.up|target.time_to_die<=20");
@@ -3878,7 +3878,7 @@ void hunter_t::apl_mm()
   add_racial_actions( default_list );
 
   add_potion_action( default_list, "draenic_agility", "virmens_bite",
-    "if=((buff.rapid_fire.up|buff.bloodlust.up)&(!talent.stampede.enabled|cooldown.stampede.remains<1))|target.time_to_die<=20" );
+    "if=((buff.rapid_fire.up|buff.bloodlust.up)&(cooldown.stampede.remains<1))|target.time_to_die<=20" );
 
   default_list -> add_action( this, "Kill Shot", "if=cast_regen+action.aimed_shot.cast_regen<focus.deficit" );
   default_list -> add_action( this, "Chimaera Shot" );
@@ -3926,7 +3926,7 @@ void hunter_t::apl_surv()
   add_racial_actions( default_list ); 
 
   add_potion_action( default_list, "draenic_agility", "virmens_bite",
-    "if=(((cooldown.stampede.remains<1|!talent.stampede.enabled)&(!talent.a_murder_of_crows.enabled|cooldown.a_murder_of_crows.remains<1))&(trinket.stat.any.up|buff.archmages_greater_incandescence_agi.up))|target.time_to_die<=20" );
+    "if=(((cooldown.stampede.remains<1)&(cooldown.a_murder_of_crows.remains<1))&(trinket.stat.any.up|buff.archmages_greater_incandescence_agi.up))|target.time_to_die<=20" );
 
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>1" );
 
