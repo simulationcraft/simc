@@ -64,6 +64,7 @@ actions+=/soul_fire,if=buff.molten_core.react&(buff.molten_core.stack>=4|target.
 actions+=/soul_fire,if=buff.molten_core.react&target.health.pct<=35&buff.dark_soul.remains>30
 actions+=/life_tap,if=mana.pct<40
 actions+=/shadow_bolt
+actions+=/hellfire,moving=1,interrupt=1
 actions+=/life_tap
 
 actions.db=doom,if=buff.metamorphosis.up&target.time_to_die>=30*spell_haste&remains<=(duration*0.3)&(remains<cooldown.cataclysm.remains|!talent.cataclysm.enabled)&(buff.dark_soul.down|!glyph.dark_soul.enabled)&buff.demonbolt.remains&(buff.demonbolt.remains<(40*spell_haste-action.demonbolt.execute_time)|demonic_fury<80+80*buff.demonbolt.stack)

@@ -6,7 +6,7 @@
 #define SIMULATIONCRAFT_H
 
 #define SC_MAJOR_VERSION "603"
-#define SC_MINOR_VERSION "6"
+#define SC_MINOR_VERSION "7"
 #define SC_USE_PTR ( 0 )
 #define SC_BETA ( 0 )
 #define SC_BETA_STR "wod"
@@ -6584,7 +6584,7 @@ public:
     player( 0 ), freq( 0 ), modifier( 0 ), rppm( 0 ),
     last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
     last_successful_trigger( timespan_t::from_seconds( -120.0 ) ),
-    initial_precombat_time( timespan_t::from_seconds( -120.0 ) ), // Assume 5min out of combat before pull
+    initial_precombat_time( timespan_t::from_seconds( -120.0 ) ), // Assume 2 min out of combat before pull, as that's what blizzard caps it at.
     scales_with( RPPM_NONE )
   { }
 
@@ -6595,7 +6595,7 @@ public:
     rppm( freq * modifier ),
     last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
     last_successful_trigger( timespan_t::from_seconds( -120.0 ) ),
-    initial_precombat_time( timespan_t::from_seconds( -120.0 ) ), // Assume 5min out of combat before pull
+    initial_precombat_time( timespan_t::from_seconds( -120.0 ) ), // Assume 2 min out of combat before pull, as that's what blizzard caps it at.
     scales_with( s )
   { }
 

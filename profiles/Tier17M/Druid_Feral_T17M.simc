@@ -3,7 +3,7 @@ level=100
 race=night_elf
 role=attack
 position=back
-talents=0002002
+talents=3002002
 glyphs=savage_roar
 spec=feral
 
@@ -27,7 +27,11 @@ actions.precombat+=/potion,name=draenic_agility
 
 # Executed every time the actor is available.
 
-actions=rake,if=buff.prowl.up|buff.shadowmeld.up
+actions=cat_form
+actions+=/wild_charge
+actions+=/displacer_beast,if=movement.distance>10
+actions+=/dash,if=movement.distance&buff.displacer_beast.down&buff.wild_charge_movement.down
+actions+=/rake,if=buff.prowl.up|buff.shadowmeld.up
 actions+=/auto_attack
 actions+=/skull_bash
 actions+=/force_of_nature,if=charges=3|trinket.proc.all.react|target.time_to_die<20
@@ -40,7 +44,7 @@ actions+=/tigers_fury,if=(!buff.omen_of_clarity.react&energy.max-energy>=60)|ene
 actions+=/incarnation,if=cooldown.berserk.remains<10&energy.time_to_max>1
 actions+=/potion,name=draenic_agility,sync=berserk,if=target.health.pct<25
 actions+=/berserk,if=buff.tigers_fury.up
-actions+=/shadowmeld,if=dot.rake.remains<4.5&energy>=35&dot.rake.pmultiplier<2&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>15)
+actions+=/shadowmeld,if=dot.rake.remains<4.5&energy>=35&dot.rake.pmultiplier<2&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>15)&!buff.king_of_the_jungle.up
 # Keep Rip from falling off during execute range.
 actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.health.pct<25
 actions+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)
@@ -82,11 +86,11 @@ feet=furnace_tenders_treads,id=113895,bonus_id=567
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_critical_strike
 finger2=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_critical_strike
 trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=567
-trinket2=humming_blackiron_trigger,id=113985,bonus_id=567
+trinket2=scales_of_doom,id=113612,bonus_id=567
 main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=567,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_agility=3612
+# gear_agility=3586
 # gear_stamina=4545
 # gear_crit_rating=1792
 # gear_haste_rating=338

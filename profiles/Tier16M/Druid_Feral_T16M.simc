@@ -3,7 +3,7 @@ level=90
 race=night_elf
 role=attack
 position=back
-talents=0001000
+talents=3001000
 glyphs=savage_roar
 spec=feral
 
@@ -26,7 +26,11 @@ actions.precombat+=/potion,name=tolvir
 
 # Executed every time the actor is available.
 
-actions=rake,if=buff.prowl.up|buff.shadowmeld.up
+actions=cat_form
+actions+=/wild_charge
+actions+=/displacer_beast,if=movement.distance>10
+actions+=/dash,if=movement.distance&buff.displacer_beast.down&buff.wild_charge_movement.down
+actions+=/rake,if=buff.prowl.up|buff.shadowmeld.up
 actions+=/auto_attack
 actions+=/skull_bash
 actions+=/force_of_nature,if=charges=3|trinket.proc.all.react|target.time_to_die<20
@@ -38,7 +42,7 @@ actions+=/incarnation,sync=tigers_fury
 actions+=/tigers_fury,if=(!buff.omen_of_clarity.react&energy.max-energy>=60)|energy.max-energy>=80
 actions+=/potion,name=tolvir,sync=berserk,if=target.health.pct<25
 actions+=/berserk,if=buff.tigers_fury.up
-actions+=/shadowmeld,if=dot.rake.remains<4.5&energy>=35&dot.rake.pmultiplier<2&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>15)
+actions+=/shadowmeld,if=dot.rake.remains<4.5&energy>=35&dot.rake.pmultiplier<2&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>15)&!buff.king_of_the_jungle.up
 # Keep Rip from falling off during execute range.
 actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.health.pct<25
 actions+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)

@@ -19,25 +19,24 @@ struct adds_event_t : public raid_event_t
   std::string name_str;
   player_t* master;
   std::vector< pet_t* > adds;
-  double random;
+  double count_range;
   size_t adds_to_remove;
 
   adds_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "adds" ),
     count( 1 ), health( 100000 ), master_str( "Fluffy_Pillow" ), name_str( "Add" ),
-    master( 0 ), random( false ), adds_to_remove( 0 )
+    master( 0 ), count_range( false ), adds_to_remove( 0 )
   {
     add_option( opt_string( "name", name_str ) );
     add_option( opt_string( "master", master_str ) );
     add_option( opt_float( "count", count ) );
     add_option( opt_float( "health", health ) );
-    add_option( opt_float( "count_range", random ) );
+    add_option( opt_float( "count_range", count_range ) );
     parse_options( options_str );
 
     master = sim -> find_player( master_str );
     // If the master is not found, default the master to the first created enemy
-    if ( ! master )
-        master = sim -> target_list.data().front();
+    if ( ! master ) master = sim -> target_list.data().front();
     assert( master );
 
     double overlap = 1;
@@ -46,7 +45,6 @@ struct adds_event_t : public raid_event_t
     if ( cooldown_stddev != timespan_t::zero() )
     {
       min_cd -= cooldown_stddev * 6;
-
       if ( min_cd <= timespan_t::zero() )
       {
         sim -> errorf( "The standard deviation of %.3f seconds is too large, creating a too short minimum cooldown (%.3f seconds)", cooldown_stddev.total_seconds(), min_cd.total_seconds() );
@@ -54,8 +52,7 @@ struct adds_event_t : public raid_event_t
       }
     }
 
-    if ( min_cd > timespan_t::zero() )
-      overlap = duration / min_cd;
+    if ( min_cd > timespan_t::zero() ) overlap = duration / min_cd;
 
     if ( overlap > 1 )
     {
@@ -66,7 +63,7 @@ struct adds_event_t : public raid_event_t
 
     for ( int i = 0; i < util::ceil( overlap ); i++ )
     {
-      for ( unsigned add = 0; add < util::ceil( count + random ); add++ )
+      for ( unsigned add = 0; add < util::ceil( count + count_range ); add++ )
       {
         std::string add_name_str = name_str;
         add_name_str += util::to_string( add + 1 );
@@ -79,16 +76,23 @@ struct adds_event_t : public raid_event_t
     }
   }
 
-  virtual void _start()
+  void _start()
   {
-    adds_to_remove = static_cast<size_t>( util::round( sim -> rng().range( count - random, count + random ) ) );
-    for ( size_t i = 0; i < adds_to_remove; i++ )
+    adds_to_remove = static_cast<size_t>( util::round( std::max( 0.0, sim -> rng().range( count - count_range, count + count_range ) ) ) );
+    for ( size_t i = 0; i < adds.size(); i++ )
     {
-      adds[i] -> summon( saved_duration );
+      if ( i < adds.size() )
+      {
+        adds[i] -> summon( saved_duration );
+      }
+      if ( i >= adds_to_remove )
+      {
+        adds[i] -> dismiss();
+      }
     }
   }
 
-  virtual void _finish()
+  void _finish()
   {
     for ( size_t i = 0; i < adds_to_remove; i++ )
     {
@@ -220,10 +224,9 @@ struct movement_ticker_t : public event_t
   movement_ticker_t( sim_t& s, const std::vector<player_t*>& p, timespan_t d = timespan_t::zero() ) :
     event_t( s, "Player Movement Event" ), players( p )
   {
-    if ( d > timespan_t::zero() )
-      duration = d;
-    else
-      duration = next_execute();
+    if ( d > timespan_t::zero() ) duration = d;
+    else duration = next_execute();
+
     add_event( duration );
     if ( sim().debug ) sim().out_debug.printf( "New movement event" );
   }
@@ -278,45 +281,76 @@ struct movement_event_t : public raid_event_t
   double move_distance;
   movement_direction_e direction;
   std::string move_direction;
+  double distance_range;
+  double move;
+  double distance_min;
+  double distance_max;
+  double avg_player_movement_speed;
 
-  movement_event_t( sim_t* s, const std::string& options_str ) :
+  movement_event_t( sim_t* s, const std::string& options_str ):
     raid_event_t( s, "movement" ),
     move_distance( 0 ),
-    direction( MOVEMENT_OMNI )
+    direction( MOVEMENT_TOWARDS ),
+    distance_range( 0 ),
+    distance_min( 0 ),
+    distance_max( 0 ),
+    avg_player_movement_speed( 7.0 )
   {
     add_option( opt_float( "distance", move_distance ) );
     add_option( opt_string( "direction", move_direction ) );
+    add_option( opt_float( "distance_range", distance_range ) );
+    add_option( opt_float( "distance_min", distance_min ) );
+    add_option( opt_float( "distance_max", distance_max ) );
     parse_options( options_str );
 
+    if ( duration > timespan_t::zero() ) move_distance = duration.total_seconds() * avg_player_movement_speed;
+
+    double cooldown_move = cooldown.total_seconds();
+    if ( ( move_distance / avg_player_movement_speed ) > cooldown_move ) move_distance = cooldown_move * avg_player_movement_speed;
+
+    double max = ( move_distance + distance_range ) / avg_player_movement_speed;
+    if ( max > cooldown_move ) distance_range = ( max - cooldown_move ) * avg_player_movement_speed;
+
+    if ( distance_max < distance_min ) distance_max = distance_min;
+    else if ( distance_min > distance_max ) distance_min = distance_max;
+
+    if ( distance_max / avg_player_movement_speed > cooldown_move ) distance_max = cooldown_move * avg_player_movement_speed;
+    if ( distance_min / avg_player_movement_speed > cooldown_move ) distance_min = cooldown_move * avg_player_movement_speed;
+
     if ( move_distance > 0 ) name_str = "movement_distance";
-    if ( ! move_direction.empty() )
-      direction = util::parse_movement_direction( move_direction );
+    if ( !move_direction.empty() ) direction = util::parse_movement_direction( move_direction );
   }
 
   virtual void _start()
   {
     movement_direction_e m = direction;
     if ( direction == MOVEMENT_RANDOM )
-      m = static_cast<movement_direction_e>(int( sim -> rng().range( MOVEMENT_RANDOM_MIN, MOVEMENT_RANDOM_MAX ) ));
+    {
+      m = static_cast<movement_direction_e>( int( sim -> rng().range( MOVEMENT_RANDOM_MIN, MOVEMENT_RANDOM_MAX ) ) );
+    }
+
+    if ( distance_range > 0 )
+    {
+      move = sim -> rng().range( move_distance - distance_range, move_distance + distance_range );
+      if ( move < distance_min ) move = distance_min;
+      else if ( move > distance_max ) move = distance_max;
+    }
+    else if ( distance_min > 0 || distance_max > 0 ) move = sim -> rng().range( distance_min, distance_max );
+    else move = move_distance;
+
+    if ( move <= 0.0 ) return;
 
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
-      player_t* p = affected_players[ i ];
-      if ( move_distance > 0 )
-        p -> trigger_movement( move_distance, m );
-      else if ( duration > timespan_t::zero() )
-      {
-        move_distance = duration.total_seconds() * 7; // Player movement speed is 7 yards per second.
-        p -> trigger_movement( move_distance, m );
-      }
+      player_t* p = affected_players[i];
+      p -> trigger_movement( move, m );
 
       if ( p -> buffs.stunned -> check() ) continue;
       p -> in_combat = true; // FIXME? this is done to ensure we don't end up in infinite loops of non-harmful actions with gcd=0
       p -> moving();
     }
 
-    if ( move_distance > 0 && affected_players.size() > 0 )
-      new ( *sim ) movement_ticker_t( *sim, affected_players );
+    if ( affected_players.size() > 0 ) new ( *sim ) movement_ticker_t( *sim, affected_players );
   }
 
   virtual void _finish()

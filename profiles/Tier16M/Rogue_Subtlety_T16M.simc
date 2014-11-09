@@ -24,8 +24,8 @@ actions.precombat+=/potion,name=virmens_bite
 actions.precombat+=/stealth
 actions.precombat+=/premeditation
 actions.precombat+=/slice_and_dice
-# Proxy Honor Among Thieves action. Generates Combo Points at a mean rate of 2.3 seconds. Comment out to disable (and use the real Honor Among Thieves).
-actions.precombat+=/honor_among_thieves,cooldown=2.3,cooldown_stddev=0.1
+# Proxy Honor Among Thieves action. Generates Combo Points at a mean rate of 2.2 seconds. Comment out to disable (and use the real Honor Among Thieves).
+actions.precombat+=/honor_among_thieves,cooldown=2.2,cooldown_stddev=0.1
 
 # Executed every time the actor is available.
 

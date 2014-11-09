@@ -1511,6 +1511,7 @@ class SpellDataGenerator(DataGenerator):
 	  ( 166638, 0 ),       # tier17_4pc_melee debuff
 	  ( 166639, 0 ),       # tier17_4pc_melee proc driver
 	  ( 177969, 0 ),       # tier17_4pc_tank buff
+	  ( 137542, 0 ),       # Displacer Beast buff
         ),
     ]
 

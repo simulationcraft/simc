@@ -526,7 +526,7 @@ public:
     if ( p() -> buffs.thrill_of_the_hunt -> up() )
     {
       double benefit = -( p() -> buffs.thrill_of_the_hunt -> data().effectN( 1 ).base_value() );
-      p() -> gains.thrill_of_the_hunt -> add( RESOURCE_FOCUS, benefit );
+      p() -> resource_gain( RESOURCE_FOCUS, benefit, p() -> gains.thrill_of_the_hunt );
       p() -> buffs.thrill_of_the_hunt -> decrement();
     }
   }
@@ -1993,7 +1993,7 @@ struct aimed_shot_t: public hunter_ranged_attack_t
   virtual void execute()
   {
     hunter_ranged_attack_t::execute();
-    aimed_in_ca -> update( p() -> buffs.careful_aim -> check() );
+    aimed_in_ca -> update( p() -> buffs.careful_aim -> check() != 0 );
     consume_thrill_of_the_hunt();
   }
 };
@@ -3836,7 +3836,7 @@ void hunter_t::apl_bm()
   add_item_actions( default_list );
   add_racial_actions( default_list );
   add_potion_action( default_list, "draenic_agility", "virmens_bite",
-   "if=!talent.stampede.enabled&buff.bestial_wrath.up|target.time_to_die<=20" );
+   "if=!talent.stampede.enabled&buff.bestial_wrath.up&target.health.pct<=20|target.time_to_die<=20" );
   add_potion_action( default_list, "draenic_agility", "virmens_bite",
    "if=talent.stampede.enabled&cooldown.stampede.remains<1&(buff.bloodlust.up|buff.focus_fire.up)|target.time_to_die<=20" );
   default_list -> add_talent( this, "Stampede", "if=buff.bloodlust.up|buff.focus_fire.up|target.time_to_die<=20");
@@ -3846,6 +3846,7 @@ void hunter_t::apl_bm()
   default_list -> add_action( this, "Bestial Wrath", "if=focus>60&!buff.bestial_wrath.up");
   default_list -> add_talent( this, "Barrage", "if=active_enemies>2" );
   default_list -> add_action( this, "Multi-Shot", "if=active_enemies>5|(active_enemies>1&pet.cat.buff.beast_cleave.down)");
+  default_list -> add_action( this, "Focus Fire", "five_stacks=1");
   default_list -> add_talent( this, "Barrage", "if=active_enemies>1");
   default_list -> add_talent( this, "A Murder of Crows");
   default_list -> add_action( this, "Kill Shot","if=focus.time_to_max>gcd");
@@ -3857,7 +3858,6 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "Powershot", "if=focus.time_to_max>cast_time");
   default_list -> add_action( this, "Cobra Shot", "if=active_enemies>5");
   default_list -> add_action( this, "Arcane Shot", "if=(buff.thrill_of_the_hunt.react&focus>35)|buff.bestial_wrath.up");
-  default_list -> add_action( "focus_fire,five_stacks=1");
   default_list -> add_action( this, "Arcane Shot", "if=focus>=64");
   if ( level >= 81 )
     default_list -> add_action( this, "Cobra Shot");
@@ -3878,7 +3878,7 @@ void hunter_t::apl_mm()
   add_racial_actions( default_list );
 
   add_potion_action( default_list, "draenic_agility", "virmens_bite",
-    "if=((buff.rapid_fire.up|buff.bloodlust.up)&(!talent.stampede.enabled|cooldown.stampede.remains<1))|target.time_to_die<=20" );
+    "if=((buff.rapid_fire.up|buff.bloodlust.up)&(cooldown.stampede.remains<1))|target.time_to_die<=20" );
 
   default_list -> add_action( this, "Kill Shot", "if=cast_regen+action.aimed_shot.cast_regen<focus.deficit" );
   default_list -> add_action( this, "Chimaera Shot" );
@@ -3926,7 +3926,7 @@ void hunter_t::apl_surv()
   add_racial_actions( default_list ); 
 
   add_potion_action( default_list, "draenic_agility", "virmens_bite",
-    "if=(((cooldown.stampede.remains<1|!talent.stampede.enabled)&(!talent.a_murder_of_crows.enabled|cooldown.a_murder_of_crows.remains<1))&(trinket.stat.any.up|buff.archmages_greater_incandescence_agi.up))|target.time_to_die<=20" );
+    "if=(((cooldown.stampede.remains<1)&(cooldown.a_murder_of_crows.remains<1))&(trinket.stat.any.up|buff.archmages_greater_incandescence_agi.up))|target.time_to_die<=20" );
 
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>1" );
 

@@ -2904,7 +2904,7 @@ struct honor_among_thieves_t : public action_t
 
   honor_among_thieves_t( rogue_t* p, const std::string& options_str ) :
     action_t( ACTION_OTHER, "honor_among_thieves", p, p -> spec.honor_among_thieves ),
-    hat_event( 0 ), cooldown( timespan_t::from_seconds( 2.3 ) ),
+    hat_event( 0 ), cooldown( timespan_t::from_seconds( 2.2 ) ),
     cooldown_stddev( timespan_t::from_millis( 100 ) )
   {
     dual = quiet = true;
@@ -4521,7 +4521,7 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Preparation", "if=!buff.vanish.up&cooldown.vanish.remains>60" );
 
     for ( size_t i = 0; i < item_actions.size(); i++ )
-      def -> add_action( item_actions[i] );
+      def -> add_action( item_actions[i] + ",if=active_enemies>1|(debuff.vendetta.up&active_enemies=1)" );
 
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
@@ -4577,35 +4577,38 @@ void rogue_t::init_action_list()
     def -> add_talent( this, "Shadow Reflection", "if=(cooldown.killing_spree.remains<10&combo_points>3)|buff.adrenaline_rush.up" );
     def -> add_action( this, "Ambush" );
     def -> add_action( this, "Vanish", "if=time>10&(combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)|(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4)))&((talent.shadow_focus.enabled&buff.adrenaline_rush.down&energy<20)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))" );
-    def -> add_action( this, "Killing Spree", "if=energy<50&(!talent.shadow_reflection.enabled|cooldown.shadow_reflection.remains>30|buff.shadow_reflection.remains>3)" );
-    def -> add_action( this, "Adrenaline Rush", "if=energy<35" );
 
     // Rotation
-    def -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<2|(buff.slice_and_dice.remains<15&buff.bandits_guile.stack=11&combo_points>=4)" );
+    def -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<2|(target.time_to_die>45&combo_points=5&buff.slice_and_dice.remains<10.8)" );
+    def -> add_action( this, "Killing Spree", "if=(energy<40|(buff.bloodlust.up&time<10)|buff.bloodlust.remains>20)&buff.adrenaline_rush.down&(!talent.shadow_reflection.enabled|cooldown.shadow_reflection.remains>30|buff.shadow_reflection.remains>3)" );
+    def -> add_action( this, "Adrenaline Rush", "if=(energy<35|buff.bloodlust.up)&cooldown.killing_spree.remains>10" );
+
+
     def -> add_talent( this, "Marked for Death", "if=combo_points<=1&dot.revealing_strike.ticking&(!talent.shadow_reflection.enabled|buff.shadow_reflection.up|cooldown.shadow_reflection.remains>30)" );
 
     // Generate combo points, or use combo points
-    def -> add_action( "call_action_list,name=generator,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<=4&buff.deep_insight.down)" );
+    def -> add_action( "call_action_list,name=generator,if=combo_points<5|!dot.revealing_strike.ticking|(talent.anticipation.enabled&anticipation_charges<=4&buff.deep_insight.down)" );
     if ( level >= 3 )
-      def -> add_action( "call_action_list,name=finisher,if=combo_points=5&(buff.deep_insight.up|!talent.anticipation.enabled|(talent.anticipation.enabled&anticipation_charges>=4))" );
+      def -> add_action( "call_action_list,name=finisher,if=combo_points=5&dot.revealing_strike.ticking&(buff.deep_insight.up|!talent.anticipation.enabled|(talent.anticipation.enabled&anticipation_charges>=4))" );
 
     // Combo point generators
     action_priority_list_t* gen = get_action_priority_list( "generator", "Combo point generators" );
-    gen -> add_action( this, "Revealing Strike", "if=ticks_remain<2" );
-    gen -> add_action( this, "Sinister Strike" );
+    gen -> add_action( this, "Revealing Strike", "if=(combo_points=4&dot.revealing_strike.remains<7.2&(target.time_to_die>dot.revealing_strike.remains+7.2)|(target.time_to_die<dot.revealing_strike.remains+7.2&ticks_remain<2))|!ticking" );
+    gen -> add_action( this, "Sinister Strike", "if=dot.revealing_strike.ticking" );
 
     // Combo point finishers
     action_priority_list_t* finisher = get_action_priority_list( "finisher", "Combo point finishers" );
-    finisher -> add_action( this, "Death from Above" );
-    finisher -> add_action( this, "Crimson Tempest", "if=active_enemies>7&dot.crimson_tempest_dot.ticks_remain<=1" );
+    finisher -> add_talent( this, "Death from Above" );
+    finisher -> add_action( this, "Crimson Tempest", "if=active_enemies>1&remains<4" );
+    finisher -> add_action( this, "Crimson Tempest", "if=active_enemies>2" );
     finisher -> add_action( this, "Eviscerate" );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
   {
     precombat -> add_action( this, "Premeditation" );
     precombat -> add_action( this, "Slice and Dice" );
-    precombat -> add_action( "honor_among_thieves,cooldown=2.3,cooldown_stddev=0.1",
-                             "Proxy Honor Among Thieves action. Generates Combo Points at a mean rate of 2.3 seconds. Comment out to disable (and use the real Honor Among Thieves)." );
+    precombat -> add_action( "honor_among_thieves,cooldown=2.2,cooldown_stddev=0.1",
+                             "Proxy Honor Among Thieves action. Generates Combo Points at a mean rate of 2.2 seconds. Comment out to disable (and use the real Honor Among Thieves)." );
 
     for ( size_t i = 0; i < item_actions.size(); i++ )
       def -> add_action( item_actions[i] + ",if=buff.shadow_dance.up" );

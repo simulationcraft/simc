@@ -5,6 +5,59 @@
 
 # talent_format=numbers
 
+# Windwalker 1h Serenity
+monk="Monk_Windwalker_1h_T17P"
+level=100
+race=troll
+spec=windwalker
+role=hybrid
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!.02..12
+
+head=hood_of_burning_focus,id=109975,bonus_id=524
+neck=beastminder_cabochon,id=114476,bonus_id=140,enchant_id=5320
+shoulder=bloodfeather_spaulders,id=109935,bonus_id=524
+chest=chestguard_of_burning_focus,id=109884,bonus_id=524
+waist=belt_of_burning_focus,id=109829,bonus_id=524
+legs=bloodfeather_leggings,id=109810,bonus_id=524
+feet=bloodfeather_treads,id=109788,bonus_id=524
+wrist=leafmender_wraps,id=109871,bonus_id=524
+hands=leafmender_grips,id=109851,bonus_id=524
+finger1=signet_of_radiant_leaves,id=109762,bonus_id=524,enchant_id=5327
+finger2=ceds_chiming_circle,id=109760,bonus_id=524,enchant_id=5327
+trinket1=witherbarks_branch,id=109999,bonus_id=524
+trinket2=gorashans_lodestone_spike,id=109998,bonus_id=524
+back=cloak_of_cascading_blades,id=109904,bonus_id=524,enchant_id=5313
+main_hand=gugrokks_smasher,id=110042,bonus_id=524,enchant_id=5331
+off_hand=gugrokks_smasher,id=110042,bonus_id=524,enchant_id=5331
+save=Monk_Windwalker_1h_T17P.simc
+
+# Windwalker 2h Serenity
+monk="Monk_Windwalker_2h_T17P"
+level=100
+race=troll
+spec=windwalker
+role=hybrid
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!.02..12
+
+head=hood_of_burning_focus,id=109975,bonus_id=524
+neck=beastminder_cabochon,id=114476,bonus_id=140,enchant_id=5320
+shoulder=bloodfeather_spaulders,id=109935,bonus_id=524
+chest=chestguard_of_burning_focus,id=109884,bonus_id=524
+waist=belt_of_burning_focus,id=109829,bonus_id=524
+legs=bloodfeather_leggings,id=109810,bonus_id=524
+feet=bloodfeather_treads,id=109788,bonus_id=524
+wrist=leafmender_wraps,id=109871,bonus_id=524
+hands=leafmender_grips,id=109851,bonus_id=524
+finger1=signet_of_radiant_leaves,id=109762,bonus_id=524,enchant_id=5327
+finger2=ceds_chiming_circle,id=109760,bonus_id=524,enchant_id=5327
+trinket1=witherbarks_branch,id=109999,bonus_id=524
+trinket2=gorashans_lodestone_spike,id=109998,bonus_id=524
+back=cloak_of_cascading_blades,id=109904,bonus_id=524,enchant_id=5313
+main_hand=chasmwrench_docking_hook,id=110059,bonus_id=524,enchant_id=5331
+save=Monk_Windwalker_2h_T17P.simc
+
 # Brewmaster 1H Chi Explosion
 monk="Monk_Brewmaster_1h_CE_T17P"
 level=100
