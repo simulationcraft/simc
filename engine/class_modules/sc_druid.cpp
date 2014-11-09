@@ -97,14 +97,35 @@ struct snapshot_counter_t
 {
   const sim_t* sim;
   druid_t* p;
-  buff_t* b;
+  std::vector<buff_t*> b;
   double exe_up;
   double exe_down;
   double tick_up;
   double tick_down;
   bool is_snapped;
+  double wasted_buffs;
 
   snapshot_counter_t( druid_t* player , buff_t* buff );
+
+  bool check_all()
+  {
+    double n_up = 0;
+    for ( size_t i = 0, end = b.size(); i< end; i++)
+    {
+      if ( b[ i ] -> check() )
+        n_up++;
+    }
+    if ( n_up == 0 )
+      return false;
+
+    wasted_buffs += n_up - 1;
+    return true;
+  }
+
+  void add_buff( buff_t* buff )
+  {
+    b.push_back( buff );
+  }
 
   void count_execute()
   {
@@ -112,7 +133,7 @@ struct snapshot_counter_t
     if ( sim -> current_iteration == 0 && sim -> iterations > sim -> threads && ! sim -> debug && ! sim -> log )
       return;
 
-    b -> check() ? ( exe_up++ , is_snapped = true ) : ( exe_down++ , is_snapped = false );
+    check_all() ? ( exe_up++ , is_snapped = true ) : ( exe_down++ , is_snapped = false );
   }
 
   void count_tick()
@@ -150,12 +171,16 @@ struct snapshot_counter_t
   double mean_tick_total() const
   { return ( tick_up + tick_down ) / divisor(); }
 
+  double mean_waste() const
+  { return wasted_buffs / divisor(); }
+
   void merge( const snapshot_counter_t& other )
   {
     exe_up += other.exe_up;
     exe_down += other.exe_down;
     tick_up += other.tick_up;
     tick_down += other.tick_down;
+    wasted_buffs += other.wasted_buffs;
   }
 };
 
@@ -703,9 +728,10 @@ druid_t::~druid_t()
 }
 
 snapshot_counter_t::snapshot_counter_t( druid_t* player , buff_t* buff ) :
-  sim( player -> sim ), p( player ), b( buff ), 
-  exe_up( 0 ), exe_down( 0 ), tick_up( 0 ), tick_down( 0 )
+  sim( player -> sim ), p( player ), b( 0 ), 
+  exe_up( 0 ), exe_down( 0 ), tick_up( 0 ), tick_down( 0 ), wasted_buffs( 0 )
 {
+  b.push_back( buff );
   p -> counters.push_back( this );
 }
 
@@ -2432,9 +2458,11 @@ struct maim_t : public cat_attack_t
 struct rake_t : public cat_attack_t
 {
   const spell_data_t* bleed_spell;
+  snapshot_counter_t* ir_counter; //Imp Rake counter
 
   rake_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "rake", p, p -> find_specialization_spell( "Rake" ), options_str )
+    cat_attack_t( "rake", p, p -> find_specialization_spell( "Rake" ), options_str ),
+    ir_counter( 0 )
   {
     special = true;
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
@@ -2447,6 +2475,10 @@ struct rake_t : public cat_attack_t
     base_tick_time        = bleed_spell -> effectN( 1 ).period();
     if ( p -> wod_hotfix )
       base_multiplier *= 1.12;
+
+    ir_counter = new snapshot_counter_t( p, p -> buff.prowl );
+    ir_counter -> add_buff( p -> buff.king_of_the_jungle );
+    ir_counter -> add_buff( p -> buffs.shadowmeld );
   }
 
   virtual double composite_persistent_multiplier( const action_state_t* s ) const
@@ -2489,10 +2521,20 @@ struct rake_t : public cat_attack_t
     if ( p() -> glyph.savage_roar -> ok() && prowling() )
       trigger_glyph_of_savage_roar();
 
+    // Track Imp Rake
+    ir_counter -> count_execute();
+
     cat_attack_t::execute();
 
     // Track buff benefits
     p() -> buff.king_of_the_jungle -> up();
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    cat_attack_t::tick( d );
+
+    ir_counter -> count_tick();
   }
 };
 
@@ -6320,7 +6362,7 @@ void druid_t::apl_feral()
     def -> add_action( potion_action + ",sync=berserk,if=target.health.pct<25" );
   def -> add_action( this, "Berserk", "if=buff.tigers_fury.up" );
   if ( race == RACE_NIGHT_ELF )
-    def -> add_action( "shadowmeld,if=dot.rake.remains<4.5&energy>=35&dot.rake.pmultiplier<2&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>15)" );
+    def -> add_action( "shadowmeld,if=dot.rake.remains<4.5&energy>=35&dot.rake.pmultiplier<2&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>15)&!buff.king_of_the_jungle.up" );
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.health.pct<25",
                      "Keep Rip from falling off during execute range." );
   def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" );
@@ -7550,7 +7592,7 @@ public:
   void feral_snapshot_table( report::sc_html_stream& os )
   {
     // Write header
-    os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n"
+    os << "<table class=\"sc\">\n"
          << "<tr>\n"
            << "<th >Ability</th>\n"
            << "<th colspan=2>Tiger's Fury</th>\n";
@@ -7650,6 +7692,73 @@ public:
     os << "</table>\n";
   }
 
+  void feral_imp_rake_table( report::sc_html_stream& os )
+  {
+    // Write header
+    os << "<table class=\"sc\">\n"
+         << "<tr>\n"
+           << "<th colspan=2>Improved Rake</th>\n";
+    os << "</tr>\n";
+
+// Compile and Write Contents 
+    for ( size_t i = 0, end = p.stats_list.size(); i < end; i++ )
+    {
+      stats_t* stats = p.stats_list[ i ];
+      double ir_exe_up = 0, ir_exe_total = 0;
+      double ir_benefit_up = 0, ir_benefit_total = 0;
+      double ir_wasted_buffs = 0;
+      int n = 0;
+
+      for ( size_t j = 0, end2 = stats -> action_list.size(); j < end2; j++ )
+      {
+        cat_attacks::rake_t* a = dynamic_cast<cat_attacks::rake_t*>( stats -> action_list[ j ] );
+        if ( ! a )
+          continue;
+
+        ir_exe_up += a -> ir_counter -> mean_exe_up();
+        ir_exe_total += a -> ir_counter -> mean_exe_total();
+        ir_benefit_up += a -> ir_counter -> mean_tick_up();
+        ir_benefit_total += a -> ir_counter -> mean_tick_total();
+        if ( has_amount_results( stats -> direct_results ) )
+        {
+          ir_benefit_up += a -> ir_counter -> mean_exe_up();
+          ir_benefit_total += a -> ir_counter -> mean_exe_total();
+        }
+        ir_wasted_buffs += a -> ir_counter -> mean_waste();
+      }
+
+      if ( ir_exe_total > 0 )
+      {
+        std::string row_class_str = "";
+        if ( ++n & 1 )
+          row_class_str = " class=\"odd\"";
+
+        // Table Row : Execute %
+        os.printf("<tr%s><td class=\"left\">Execute %%</td><td class=\"right\">%.2f %%</td>\n",
+            row_class_str.c_str(),
+            util::round( ir_exe_up / ir_exe_total * 100, 2 ) );
+
+        // Table Row : Benefit %
+        os.printf("<tr%s><td class=\"left\">Benefit %%</td><td class=\"right\">%.2f %%</td>\n",
+            row_class_str.c_str(),
+            util::round( ir_benefit_up / ir_benefit_total * 100, 2 ) );
+
+        // Table Row : Wasted Buffs
+        os.printf("<tr%s><td class=\"left\">Wasted Buffs</td><td class=\"right\">%.2f</td>\n",
+            row_class_str.c_str(),
+            util::round( ir_wasted_buffs , 2 ) );
+
+        os << "</tr>";
+      }
+      
+    }
+
+    os << "</tr>";
+
+    // Write footer
+    os << "</table>\n";
+  }
+
   virtual void html_customsection( report::sc_html_stream& os ) override
   {
     if ( p.specialization() == DRUID_FERAL )
@@ -7660,6 +7769,10 @@ public:
 
           feral_snapshot_table( os );
 
+          if( p.perk.improved_rake -> ok() )
+          {
+            feral_imp_rake_table( os );
+          }
 
       os << "<div class=\"clear\"></div>\n";
       os << "</div>\n" << "</div>\n";

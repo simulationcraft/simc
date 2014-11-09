@@ -44,7 +44,7 @@ actions+=/tigers_fury,if=(!buff.omen_of_clarity.react&energy.max-energy>=60)|ene
 actions+=/incarnation,if=cooldown.berserk.remains<10&energy.time_to_max>1
 actions+=/potion,name=draenic_agility,sync=berserk,if=target.health.pct<25
 actions+=/berserk,if=buff.tigers_fury.up
-actions+=/shadowmeld,if=dot.rake.remains<4.5&energy>=35&dot.rake.pmultiplier<2&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>15)
+actions+=/shadowmeld,if=dot.rake.remains<4.5&energy>=35&dot.rake.pmultiplier<2&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>15)&!buff.king_of_the_jungle.up
 # Keep Rip from falling off during execute range.
 actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.health.pct<25
 actions+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)
