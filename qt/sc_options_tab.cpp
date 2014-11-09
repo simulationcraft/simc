@@ -1153,7 +1153,7 @@ QString SC_OptionsTab::mergeOptions()
         {
           int base_iter = util::str_to_num<int>( choice.iterations -> currentText().toStdString() );
           int divisor = util::str_to_num<int>( splits[ 1 ].c_str() );
-          options += base_iter / divisor + "\n";
+          options += QString::number( base_iter / divisor ) + "\n";
         }
         else
           options += choice.plots_iterations -> currentText() + "\n";
