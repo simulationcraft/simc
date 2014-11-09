@@ -113,6 +113,8 @@
     </div>
     <img src="Welcome.png" width="547" height="291" alt="SimulationCraft 4.0">
 
+    <div id="announcements"></div>
+
     <div id="masthead" class="section section-open">
 
       <p>SimulationCraft is a tool to explore combat mechanics in the popular MMO RPG World of Warcraft. It is a multi-player event-driven simulator written in C++ that models raid damage. Increasing class synergy and the prevalence of proc-based combat modifiers have eroded the accuracy of traditional calculators that rely upon closed-form approximations to model very complex mechanics. The goal of this simulator is to close the accuracy gap while maintaining a performance level high enough to calculate relative stat weights to aid gear selection.</p>
@@ -418,7 +420,7 @@
       });
 
       jQuery(document).ready(function($) {
-          $('#announcements').load("http://www.simulationcraft.org/announcement.html");
+          console.log($('#announcements').load("http://www.simulationcraft.org/announcement.html"));
       });
     </script>
 
