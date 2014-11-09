@@ -31,13 +31,13 @@ actions+=/use_item,name=beating_heart_of_the_mountain
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
-actions+=/potion,name=draenic_agility,if=((buff.rapid_fire.up|buff.bloodlust.up)&(cooldown.stampede.remains<1))|target.time_to_die<=20
-actions+=/kill_shot,if=cast_regen+action.aimed_shot.cast_regen<focus.deficit
+actions+=/potion,name=draenic_agility,if=((buff.rapid_fire.up|buff.bloodlust.up)&(cooldown.stampede.remains<1))|target.time_to_die<=25
 actions+=/chimaera_shot
+actions+=/kill_shot
 actions+=/rapid_fire
-actions+=/stampede,if=buff.rapid_fire.up|buff.bloodlust.up|target.time_to_die<=20
+actions+=/stampede,if=buff.rapid_fire.up|buff.bloodlust.up|target.time_to_die<=25
 actions+=/call_action_list,name=careful_aim,if=buff.careful_aim.up
-actions+=/explosive_trap,if=active_enemies>2
+actions+=/explosive_trap,if=active_enemies>1
 actions+=/a_murder_of_crows
 actions+=/dire_beast,if=cast_regen+action.aimed_shot.cast_regen<focus.deficit
 actions+=/glaive_toss
@@ -48,6 +48,7 @@ actions+=/steady_shot,if=focus.deficit*cast_time%(14+cast_regen)>cooldown.rapid_
 actions+=/focusing_shot,if=focus.deficit*cast_time%(50+cast_regen)>cooldown.rapid_fire.remains&focus<100
 # Cast a second shot for steady focus if that won't cap us.
 actions+=/steady_shot,if=buff.pre_steady_focus.up&(14+cast_regen+action.aimed_shot.cast_regen)<=focus.deficit
+actions+=/multishot,if=active_enemies>6
 actions+=/aimed_shot,if=talent.focusing_shot.enabled
 actions+=/aimed_shot,if=focus+cast_regen>=85
 actions+=/aimed_shot,if=buff.thrill_of_the_hunt.react&focus+cast_regen>=65
@@ -55,7 +56,7 @@ actions+=/aimed_shot,if=buff.thrill_of_the_hunt.react&focus+cast_regen>=65
 actions+=/focusing_shot,if=50+cast_regen-10<focus.deficit
 actions+=/steady_shot
 
-actions.careful_aim=glaive_toss,if=active_enemies>4
+actions.careful_aim=glaive_toss,if=active_enemies>2
 actions.careful_aim+=/powershot,if=active_enemies>1&cast_regen<focus.deficit
 actions.careful_aim+=/barrage,if=active_enemies>1
 actions.careful_aim+=/aimed_shot
@@ -64,7 +65,7 @@ actions.careful_aim+=/steady_shot
 
 head=rylakstalkers_headguard,id=115545,bonus_id=567
 neck=darklight_necklace,id=113865,bonus_id=567,enchant=gift_of_critical_strike
-shoulders=neckbreaker_shoulderguards,id=113899,bonus_id=567
+shoulders=rylakstalkers_spaulders,id=115547,bonus_id=567
 back=drape_of_the_dark_hunt,id=113971,bonus_id=567,enchant=gift_of_critical_strike
 chest=rylakstalkers_tunic,id=115548,bonus_id=567
 wrists=bracers_of_the_wolfs_cunning,id=113943,bonus_id=567
@@ -72,21 +73,21 @@ hands=rylakstalkers_gloves,id=115549,bonus_id=567
 waist=grenadiers_belt,id=113955,bonus_id=567
 legs=rylakstalkers_legguards,id=115546,bonus_id=567
 feet=slagstomper_treads,id=113888,bonus_id=567
-finger1=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_critical_strike
+finger1=cinderwolf_signet,id=113917,bonus_id=567,enchant=gift_of_critical_strike
 finger2=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_critical_strike
-trinket1=humming_blackiron_trigger,id=113985,bonus_id=567
-trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=567
+trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=567
+trinket2=meaty_dragonspine_trophy,id=118114,bonus_id=567
 main_hand=mouth_of_the_fury,id=113885,bonus_id=567,enchant=megawatt_filament
 
 # Gear Summary
 # gear_agility=3612
 # gear_stamina=4545
-# gear_crit_rating=1875
+# gear_crit_rating=1643
 # gear_haste_rating=779
-# gear_mastery_rating=543
+# gear_mastery_rating=532
 # gear_armor=1463
-# gear_multistrike_rating=833
-# gear_versatility_rating=237
+# gear_multistrike_rating=986
+# gear_versatility_rating=324
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 summon_pet=cat
