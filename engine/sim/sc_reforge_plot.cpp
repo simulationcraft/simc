@@ -141,13 +141,16 @@ void reforge_plot_t::analyze_stats()
 
   // Figure out if we have different multipliers for stats
   bool same_multiplier = true;
-  for ( size_t i = 1; i < reforge_plot_stat_indices.size(); i++ )
+  if ( !sim -> equalize_plot_weights )
   {
-    if ( util::stat_itemization_weight( reforge_plot_stat_indices[ 0 ] ) !=
-         util::stat_itemization_weight( reforge_plot_stat_indices[ i ] ) )
+    for ( size_t i = 1; i < reforge_plot_stat_indices.size(); i++ )
     {
-      same_multiplier = false;
-      break;
+      if ( util::stat_itemization_weight( reforge_plot_stat_indices[0] ) !=
+           util::stat_itemization_weight( reforge_plot_stat_indices[i] ) )
+      {
+        same_multiplier = false;
+        break;
+      }
     }
   }
 
