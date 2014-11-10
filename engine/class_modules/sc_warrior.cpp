@@ -1087,7 +1087,7 @@ void warrior_attack_t::impact( action_state_t* s )
       if ( p() -> buff.bloodbath -> up() && special )
         trigger_bloodbath_dot( s -> target, s -> result_amount );
 
-      if ( p() -> talents.second_wind -> ok() )
+      if ( p() -> active_second_wind )
       {
         if ( p() -> resources.current[RESOURCE_HEALTH] < p() -> resources.max[RESOURCE_HEALTH] * 0.35 )
         {
@@ -1096,11 +1096,14 @@ void warrior_attack_t::impact( action_state_t* s )
           p() -> active_second_wind -> execute();
         }
       }
-      if ( p() -> buff.rallying_cry -> up() && p() -> glyphs.rallying_cry -> ok() )
+      if ( p() -> active_rallying_cry_heal )
       {
-        p() -> active_rallying_cry_heal -> base_dd_min = s -> result_amount;
-        p() -> active_rallying_cry_heal -> base_dd_max = s -> result_amount;
-        p() -> active_rallying_cry_heal -> execute();
+        if ( p() -> buff.rallying_cry -> up() )
+        {
+          p() -> active_rallying_cry_heal -> base_dd_min = s -> result_amount;
+          p() -> active_rallying_cry_heal -> base_dd_max = s -> result_amount;
+          p() -> active_rallying_cry_heal -> execute();
+        }
       }
     }
   }
@@ -1145,6 +1148,15 @@ struct melee_t: public warrior_attack_t
       return t;
   }
 
+  void schedule_execute( action_state_t* s )
+  {
+    warrior_attack_t::schedule_execute( s );
+    if ( s -> action -> weapon -> slot == SLOT_MAIN_HAND )
+      mh_lost_melee_contact = false;
+    else if ( s -> action -> weapon -> slot == SLOT_OFF_HAND )
+      oh_lost_melee_contact = false;
+  }
+
   void execute()
   {
     if ( p() -> current.distance_to_move > 5 )
@@ -1165,13 +1177,6 @@ struct melee_t: public warrior_attack_t
     else
     {
       warrior_attack_t::execute();
-      if ( weapon -> slot == SLOT_MAIN_HAND )
-      {
-        if ( mh_lost_melee_contact )
-          mh_lost_melee_contact = false;
-      }
-      else if ( oh_lost_melee_contact )
-        oh_lost_melee_contact = false;
     }
   }
 
@@ -1184,14 +1189,17 @@ struct melee_t: public warrior_attack_t
       trigger_t15_2pc_melee( this );
       sudden_death( p() -> proc.sudden_death );
       trigger_rage_gain( s );
-      if ( p() -> perk.enhanced_rend -> ok() && td( s -> target ) -> dots_rend -> is_ticking() )
+      if ( p() -> active_enhanced_rend )
       {
-        p() -> active_enhanced_rend -> target = s -> target;
-        p() -> active_enhanced_rend -> execute();
+        if ( td( s -> target ) -> dots_rend -> is_ticking() )
+        {
+          p() -> active_enhanced_rend -> target = s -> target;
+          p() -> active_enhanced_rend -> execute();
+        }
       }
     }
 
-    if ( p() -> specialization() == WARRIOR_PROTECTION )
+    if ( p() -> active_blood_craze )
     {
       if ( result_is_multistrike( s -> result ) )
       {
@@ -1609,8 +1617,11 @@ struct devastate_t: public warrior_attack_t
     {
       if ( p() -> buff.sword_and_board -> trigger() )
         p() -> cooldown.shield_slam -> reset( true );
-      p() -> active_deep_wounds -> target = execute_state -> target;
-      p() -> active_deep_wounds -> execute();
+      if ( p() -> active_deep_wounds )
+      {
+        p() -> active_deep_wounds -> target = execute_state -> target;
+        p() -> active_deep_wounds -> execute();
+      }
       if ( p() -> talents.unyielding_strikes -> ok() )
       {
         if ( p() -> buff.unyielding_strikes -> current_stack != p() -> buff.unyielding_strikes -> max_stack() )
@@ -2761,10 +2772,13 @@ struct thunder_clap_t: public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) && p() -> specialization() == WARRIOR_PROTECTION )
+    if ( p() -> active_deep_wounds )
     {
-      p() -> active_deep_wounds -> target = s -> target;
-      p() -> active_deep_wounds -> execute();
+      if ( result_is_hit( s -> result ) )
+      {
+        p() -> active_deep_wounds -> target = s -> target;
+        p() -> active_deep_wounds -> execute();
+      }
     }
   }
 
@@ -3860,13 +3874,13 @@ void warrior_t::init_spells()
   spell.heroic_leap             = find_class_spell( "Heroic Leap" );
 
   // Active spells
-  active_blood_craze        = new blood_craze_t( this );
-  active_bloodbath_dot      = new bloodbath_dot_t( this );
-  active_deep_wounds        = new deep_wounds_t( this );
-  active_enhanced_rend      = new enhanced_rend_t( this );
-  active_rallying_cry_heal  = new rallying_cry_heal_t( this );
-  active_second_wind        = new second_wind_t( this );
-  active_t16_2pc            = new tier16_2pc_tank_heal_t( this );
+  if ( spec.blood_craze -> ok() ) active_blood_craze = new blood_craze_t( this );
+  if ( talents.bloodbath -> ok() ) active_bloodbath_dot = new bloodbath_dot_t( this );
+  if ( spec.deep_wounds -> ok() ) active_deep_wounds = new deep_wounds_t( this );
+  if ( perk.enhanced_rend -> ok() ) active_enhanced_rend = new enhanced_rend_t( this );
+  if ( glyphs.rallying_cry -> ok() ) active_rallying_cry_heal = new rallying_cry_heal_t( this );
+  if ( talents.second_wind -> ok() ) active_second_wind = new second_wind_t( this );
+  if ( sets.has_set_bonus( SET_TANK, T16, B2 ) ) active_t16_2pc = new tier16_2pc_tank_heal_t( this );
 }
 
 // warrior_t::init_base =====================================================
@@ -5331,7 +5345,7 @@ void warrior_t::assess_damage( school_e school,
                              gain.tier16_4pc_tank );
   }
 
-  if ( sets.has_set_bonus( SET_TANK, T16, B2 ) )
+  if ( active_t16_2pc )
   {
     if ( s -> block_result != BLOCK_RESULT_UNBLOCKED ) //heal if blocked
     {

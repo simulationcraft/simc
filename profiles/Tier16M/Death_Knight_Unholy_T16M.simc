@@ -57,7 +57,7 @@ actions.aoe+=/icy_touch
 actions.aoe+=/scourge_strike,if=unholy=1
 actions.aoe+=/death_coil
 actions.aoe+=/blood_tap
-actions.aoe+=/plague_leech,if=unholy=1
+actions.aoe+=/plague_leech
 actions.aoe+=/empower_rune_weapon
 
 actions.single_target=plague_leech,if=cooldown.outbreak.remains<1
