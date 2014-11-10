@@ -12,13 +12,10 @@ goto exit
 @echo on
 forfiles -s -m generate_T1?*.simc -c "cmd /c echo Running @path && %~dp0simc64.exe @file"
 pause
-exit
 :32
 @echo on
 forfiles -s -m generate_T1?*.simc -c "cmd /c echo Running @path && %~dp0simc.exe @file"
 pause
-exit
 :exit
 echo "This file requires the CLI to be located in the same folder"
 pause
-exit
