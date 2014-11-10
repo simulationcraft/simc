@@ -1,5 +1,5 @@
 
-SimulationCraft 602-6 for World of Warcraft 6.0.3 Live (build level 19057)
+SimulationCraft 603-7 for World of Warcraft 6.0.3 Live (build level 19116)
 Name             : Blizzard (id=10) [Spell Family (3)] 
 Class            : Frost Mage
 Resource         : 5% Base Mana (8000 @Level 100)
@@ -60,7 +60,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Duration         : 15 seconds
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Frosty Zap (24392), Item - Mage T8 4P Bonus (64869), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T10 4P Bonus (70748), Item - Mage T11 4P Bonus (90291), Hotfix Passive (137018), Item - Mage T15 2P Bonus (138316), Enhanced Frostbolt (157646), Enhanced Frostbolt (157648), Ice Shard (166869), Frostbite (171345)
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Frosty Zap (24392), Hotfix Passive (137018), Item - Mage T15 2P Bonus (138316), Enhanced Frostbolt (157646), Enhanced Frostbolt (157648), Ice Shard (166869), Frostbite (171345)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -150,7 +150,7 @@ Range            : 40 yards
 Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Item - Mage T8 4P Bonus (64869), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T10 4P Bonus (70748), Item - Mage T11 4P Bonus (90291), Critical Mass (117216), Hotfix Passive (137018), Item - Mage T15 2P Bonus (138316), Enhanced Pyrotechnics (157644), Ignition (165979), Firestarter (171170)
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Critical Mass (117216), Hotfix Passive (137018), Item - Mage T15 2P Bonus (138316), Enhanced Pyrotechnics (157644), Ignition (165979), Firestarter (171170)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -442,7 +442,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Item - Druid T9 Balance 4P Bonus (Starfire) (67126), Item - Druid T12 Balance 4P Bonus (99049), Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Dream of Cenarius (158504), Solar Empowerment (164545), Item - Druid T17 Balance 2P Bonus (165433)
+Affecting spells : Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Dream of Cenarius (158504), Solar Empowerment (164545), Item - Druid T17 Balance 2P Bonus (165433)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -485,7 +485,7 @@ Class            : Mage
 Spell Level      : 24
 Range            : 60 yards
 Velocity         : 20 yards/sec
-Affecting spells : Shatter (12982), Arcane Charge (36032), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T11 2P Bonus (90290), Item - Mage T14 2P Bonus (123097), Hotfix Passive (137018), Arcane Focus (171375)
+Affecting spells : Shatter (12982), Arcane Charge (36032), Item - Mage T14 2P Bonus (123097), Hotfix Passive (137018), Arcane Focus (171375)
 Attributes       : ........ ........ x....... ........   ..x..... ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -504,7 +504,7 @@ Spell Level      : 54
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
-Affecting spells : Presence of Mind (12043), Shatter (12982), Item - Mage T9 2P Bonus (67164), Glyph of Rapid Teleportation (89749)
+Affecting spells : Presence of Mind (12043), Shatter (12982), Glyph of Rapid Teleportation (89749)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -635,7 +635,7 @@ Cast Time        : 3.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Duration         : 18 seconds
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Pyroblast! (48108), Item - Mage T11 2P Bonus (90290), Critical Mass (117216), Item - Mage T14 2P Bonus (123097), Hotfix Passive (137018), Item - Mage T15 4P Bonus (138376), Pyromaniac (166868), 
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Pyroblast! (48108), Critical Mass (117216), Item - Mage T14 2P Bonus (123097), Hotfix Passive (137018), Item - Mage T15 4P Bonus (138376), Pyromaniac (166868), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -958,7 +958,7 @@ Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Arcane Charge (36032), Item - Mage T8 4P Bonus (64869), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T10 4P Bonus (70748), Item - Mage T11 4P Bonus (90291), Hotfix Passive (137018), Item - Mage T15 2P Bonus (138316), Profound Magic (145252), Arcane Affinity (166871), Arcane Focus (171375)
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Arcane Charge (36032), Hotfix Passive (137018), Item - Mage T15 2P Bonus (138316), Profound Magic (145252), Arcane Affinity (166871), Arcane Focus (171375)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -986,7 +986,7 @@ Spell Level      : 22
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 38 yards/sec
-Affecting spells : Arcane Power (12042), Shatter (12982), Glyph of Splitting Ice (56377), Item - Mage T11 2P Bonus (90290), Item - Mage T14 2P Bonus (123097), Hotfix Passive (137018), 
+Affecting spells : Arcane Power (12042), Shatter (12982), Glyph of Splitting Ice (56377), Item - Mage T14 2P Bonus (123097), Hotfix Passive (137018), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1477,7 +1477,7 @@ Cast Time        : 2.75 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Duration         : 8 seconds
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Brain Freeze (57761), Glyph of Frostfire Bolt (61205), Item - Mage T9 4P Bonus (Fireball, Frostbolt, Frostfire Bolt, and Arcane Blast) (67185), Item - Mage T11 4P Bonus (90291), Critical Mass (117216), Hotfix Passive (137018), Enhanced Pyrotechnics (157644), Ignition (165979), Firestarter (171170)
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Brain Freeze (57761), Glyph of Frostfire Bolt (61205), Critical Mass (117216), Hotfix Passive (137018), Enhanced Pyrotechnics (157644), Ignition (165979), Firestarter (171170)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1975,7 +1975,6 @@ Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Affecting spells : Item - Mage T8 2P Bonus (64867)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -2794,73 +2793,6 @@ Effects          :
 Description      : Silences and freezes the target in place for $d.  Damage caused may interrupt the effect.
 Tooltip          : Silenced and Frozen in place.
 
-Name             : Stolen Time (id=105785) [Scaling Spell (-1)] 
-Class            : Mage
-Max Scaling Level: 90
-Duration         : 30 seconds
-Stacks           : 10 maximum
-Proc Chance      : 101%
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=115772)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 50 | Scaled Value: 2.01 (avg=0.03) | Misc Value: 917504
-Description      : Haste increased by $s1 for $d.  Stacks up to $u times.
-Tooltip          : Haste increased by $s1.
-
-Name             : Item - Mage T13 2P Bonus (Haste) (id=105788) [Spell Family (3), Passive, Hidden] 
-Class            : Mage
-Proc Chance      : 100%
-Proc Flags       : ........ ........ x....... ........ 
-                 : Hostile Spell
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=115775)   : Apply Aura (6) | Proc Trigger Spell: Stolen Time (42)
-                   Base Value: 50 | Scaled Value: 50 | Trigger Spell: 105785
-Description      : Your Arcane Blast has a $h% chance and your Fireball, Pyroblast, Frostfire Bolt, and Frostbolt spells have a $s1% chance to grant Stolen Time, increasing your haste by $105785s1 for $105785d and stacking up to $105785u times.  When Arcane Power, Combustion, or Icy Veins expires, all stacks of Stolen Time are lost.
-
-Name             : Item - Mage T13 4P Bonus (Arcane Power, Combustion, and Icy Veins) (id=105790) [Spell Family (7), Passive, Hidden] 
-Class            : Mage
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=115778)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 35 | Scaled Value: 35
-                   Affected Spells: Rejuvenation (774)
-Description      : Each stack of Stolen Time also reduces the base cooldown of Arcane Power, Combustion, and Icy Veins by $105791s1%.
-
-Name             : Stolen Time (id=105791) [Spell Family (3), Hidden] 
-Class            : Mage
-Duration         : 30 seconds
-Stacks           : 10 maximum
-Proc Chance      : 101%
-Attributes       : .......x x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7)
-Effects          :
-#1 (id=115779)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: -5 | Scaled Value: -5 | Misc Value: 11
-                   Affected Spells: Combustion (11129), Arcane Power (12042), Icy Veins (12472)
-
 Name             : Ice Floes (id=108839) [Spell Family (3)] 
 Class            : Mage
 Spell Level      : 1
@@ -3601,54 +3533,6 @@ Effects          :
 Description      : Your mana regeneration is increased by $s1%.
 Tooltip          : Increases your mana regeneration by $s1%.
 
-Name             : Item - Mage T14 2P Bonus (id=123097) [Spell Family (3), Passive, Hidden] 
-Class            : Mage
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=155172)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 7 | Scaled Value: 7
-                   Affected Spells: Arcane Missiles (7268)
-#2 (id=155173)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 8 | Scaled Value: 8
-                   Affected Spells: Pyroblast (11366)
-#3 (id=155174)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 12 | Scaled Value: 12
-                   Affected Spells: Ice Lance (30455)
-#4 (id=155175)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 8 | Scaled Value: 8 | Misc Value: 22
-                   Affected Spells: Pyroblast (11366)
-Description      : Increases the damage done by your Arcane Missiles spell by $s1%, increases the damage done by your Pyroblast spell by $s2%, and increases the damage done by your Ice Lance spell by $s3%.
-
-Name             : Item - Mage T14 4P Bonus (id=123101) [Spell Family (3), Passive, Hidden] 
-Class            : Mage
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=155181)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3
-                   Affected Spells: Arcane Power (12042)
-#2 (id=155182)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 11
-                   Affected Spells: Icy Veins (12472)
-#3 (id=155183)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 11
-                   Affected Spells: Combustion (11129)
-#4 (id=187076)   : Apply Aura (6) | Periodic Dummy: every 3000 seconds (226)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3
-                   Affected Spells: Arcane Power (12042)
-Description      : Increases the damage bonus of Arcane Power by an additional $s1%, reduces the cooldown of Icy Veins by $s2%, and reduces the cooldown of Combustion by $s3%.
-
 Name             : Mage Bomb (id=125430) 
 Class            : Mage
 Spell Level      : 75
@@ -3844,42 +3728,6 @@ Effects          :
 #5 (id=191119)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 
-Name             : Item - Mage T15 2P Bonus (id=138316) [Spell Family (3), Passive, Hidden] 
-Class            : Mage
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=181748)   : Apply Aura (6) | Add Percent Modifier: Spell Critical Chance (108)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 7
-                   Affected Spells: Frostbolt (116), Fireball (133), Arcane Blast (30451)
-Description      : Increases critical strike chance of Fireball, Frostbolt, and Arcane Blast by $s1%.
-
-Name             : Item - Mage T15 4P Bonus (id=138376) [Spell Family (3), Passive, Hidden] 
-Class            : Mage
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=181841)   : Apply Aura (6) | Add Percent Modifier: Spell Tick Time (108)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 8
-                   Affected Spells: Arcane Charge (36032)
-#2 (id=181842)   : Apply Aura (6) | Add Flat Modifier: Spell Critical Chance (107)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 7
-                   Affected Spells: Pyroblast (11366)
-#3 (id=181843)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 6 | Scaled Value: 6 | Misc Value: 8
-                   Affected Spells: Arcane Charge (36032)
-Description      : Increases the effects of Arcane Charges by $s1%, increases the critical strike chance of Pyroblast by $s2%, and increases the chance for your Frostbolt to trigger Fingers of Frost by an additional $s3%.
-
 Name             : Flameglow (id=140468) [Scaling Spell (4), Spell Family (3), Passive] 
 Class            : Mage
 Spell Level      : 1
@@ -3913,61 +3761,6 @@ Effects          :
 #1 (id=190659)   : Apply Aura (6) | Unknown effect sub type (309)
                    Base Value: -2500 | Scaled Value: -2500 | Misc Value: 2
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
-
-Name             : Item - Mage T16 2P Bonus (id=145251) [Spell Family (3), Passive] 
-Class            : Mage
-Proc Chance      : 101%
-Proc Flags       : ........ ........ x....... ........ 
-                 : Hostile Spell
-Attributes       : ......x. ........ ..x..... x..x....   .....x.. ........ ........ ........ 
-                 : ........ ......x. ...x.... ........   ........ ........ ........ ..x..... 
-                 : .......x ........ x....... ........   ...x.... ........ .xx..... ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ..x..... 
-                 : Passive (6)
-Effects          :
-#1 (id=195538)   : Apply Aura (6) | Proc Trigger Spell: Profound Magic (42)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 15 | Trigger Spell: 145252
-Description      : Arcane Missiles causes your next Arcane Blast within $145252d to cost $145252s1% less mana, stacking up to $145252u times. Consuming Brain Freeze increases the damage of your next Ice Lance, Frostbolt, Frostfire Bolt, or Cone of Cold by $146557s1%. Consuming Pyroblast! increases your haste by $145254s1 for $145254d, stacking up to $145254u times.
-
-Name             : Profound Magic (id=145252) [Spell Family (3)] 
-Class            : Mage
-Duration         : 10 seconds
-Stacks           : 1 initial, 4 maximum
-Proc Chance      : 101%
-Proc Flags       : ........ ....x... x....... ........ 
-                 : AOE Hostile Spell, Hostile Spell
-Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
-                 : ........ ......x. ...x.... ........   ........ ........ ........ ..x..... 
-                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ..x..... 
-Effects          :
-#1 (id=195539)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: -25 | Scaled Value: -25 | Misc Value: 14
-                   Affected Spells: Arcane Blast (30451)
-Description      : Arcane Missiles causes your next Arcane Blast within $145252d to cost $145252s1% less mana, stacking up to $145252u times.
-Tooltip          : Your next Arcane Blast will cost $s1% less mana.
-
-Name             : Potent Flames (id=145254) [Scaling Spell (-1), Spell Family (3)] 
-Class            : Mage
-Cast Time        : 3 seconds
-Duration         : 5 seconds
-Stacks           : 5 maximum
-Proc Chance      : 101%
-Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
-                 : ........ ......x. ...x.... ........   ........ ........ ........ ..x..... 
-                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ..x..... 
-Effects          :
-#1 (id=195545)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 5 | Scaled Value: 114.448 (avg=0.4385) | Misc Value: 917504
-Description      : Consuming Pyroblast! increases your haste by $145254s1 for $145254d, stacking up to $145254u times.
-Tooltip          : Haste increased by $s1.
 
 Name             : Item - Mage T16 4P Bonus (id=145257) [Spell Family (3), Passive] 
 Class            : Mage
@@ -4004,26 +3797,6 @@ Effects          :
 #1 (id=195563)   : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 0 (avg=1.5, dl=0.15) | SP Coefficient: 1.50000
 Description      : Consuming Brain Freeze has a $145257s2% chance to drop an icy boulder on your target.
-
-Name             : Frozen Thoughts (id=146557) [Spell Family (3)] 
-Class            : Mage
-Duration         : 15 seconds
-Stacks           : 1 initial, 1 maximum
-Proc Chance      : 101%
-Proc Flags       : ........ ....x.x. x....... ........ 
-                 : AOE Hostile Spell, Heal, Hostile Spell
-Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
-                 : ........ ......x. ...x.... ........   ........ ........ ........ ..x..... 
-                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ..x..... 
-Effects          :
-#1 (id=198026)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Cone of Cold (120), Cleansing Flames (107835), Cleansing Flames (109847), Cleansing Flames (109849)
-Description      : Consuming Brain Freeze increases the damage of your next Ice Lance, Frostbolt, Frostfire Bolt, or Cone of Cold by $146557s1%.
-Tooltip          : Your next Ice Lance, Frostbolt, Frostfire Bolt, or Cone of Cold will deal $s1% more damage.
 
 Name             : Glyph of Rapid Displacement (id=146659) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
