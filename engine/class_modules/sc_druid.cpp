@@ -3530,6 +3530,10 @@ struct healing_touch_t : public druid_heal_t
   {
     init_living_seed();
     ignore_false_positive = true; // Prevents cat/bear from failing a skill check and going into caster form.
+
+    // redirect to self if not specified
+    if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == DRUID_GUARDIAN ) )
+      target = p;
   }
 
   double spell_direct_power_coefficient( const action_state_t* /* state */ ) const
@@ -4322,7 +4326,7 @@ struct cenarion_ward_t : public druid_spell_t
   cenarion_ward_t( druid_t* p, const std::string& options_str ) :
     druid_spell_t( "cenarion_ward", p, p -> talent.cenarion_ward,  options_str )
   {
-    harmful    = false;
+    harmful = false;
   }
 
   void execute()
