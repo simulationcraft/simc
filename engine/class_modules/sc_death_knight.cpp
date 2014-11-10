@@ -6577,7 +6577,7 @@ void death_knight_t::init_action_list()
     aoe -> add_action( this, "Scourge Strike", "if=unholy=1" );
     aoe -> add_action( this, "Death Coil" );
     aoe -> add_talent( this, "Blood Tap" );
-    aoe -> add_talent( this, "Plague Leech", "if=unholy=1" );
+    aoe -> add_talent( this, "Plague Leech");
     aoe -> add_action( this, "Empower Rune Weapon" );
 
     break;
