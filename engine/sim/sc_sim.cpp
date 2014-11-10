@@ -904,6 +904,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   canceled( 0 ),
   target_error( 0 ),
   current_error( 0 ),
+  current_mean( 0 ),
   analyze_error_interval( 100 ),
   control( 0 ),
   parent( p ),
@@ -1445,6 +1446,9 @@ void sim_t::analyze_error()
   if ( current_iteration < 1 ) return;
   if ( current_iteration % analyze_error_interval != 0 ) return;
 
+  double mean_total=0;
+  int mean_count=0;
+
   current_error = 0;
 
   for ( size_t i = 0; i < actor_list.size(); i++ )
@@ -1461,8 +1465,15 @@ void sim_t::analyze_error()
       {
         double error = sim_t::distribution_mean_error( *this, cd.target_metric ) / mean;
         if ( error > current_error ) current_error = error;
+	mean_total += mean;
+	mean_count++;
       }
     }
+  }
+
+  if( mean_count > 0 )
+  {
+    current_mean = mean_total / mean_count;
   }
 
   current_error *= 100;
@@ -2028,7 +2039,7 @@ bool progress_bar_t::update( bool finished )
 
   if( sim.target_error > 0 )
   {
-    str::format( status, " Error=%.3f%%", sim.current_error );
+    str::format( status, " Mean=%.0f Error=%.3f%%", sim.current_mean, sim.current_error );
   }
 
   if ( remaining_min > 0 )
