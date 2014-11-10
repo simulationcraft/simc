@@ -707,7 +707,7 @@ timespan_t raid_event_t::duration_time()
 {
   timespan_t time = sim -> rng().gauss( duration, duration_stddev );
 
-  time = clamp( time, cooldown_min, cooldown_max );
+  time = clamp( time, duration_min, duration_max );
 
   return time;
 }
