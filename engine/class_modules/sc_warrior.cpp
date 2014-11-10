@@ -2511,7 +2511,14 @@ struct shield_slam_t: public warrior_attack_t
     parse_options( options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
-    attack_power_mod.direct = 3.18; //Hard-coded in tooltip. (beta build 18764)
+
+    attack_power_mod.direct = 0.36; // Low level value for shield slam.
+    if ( p -> level >= 80 )
+      attack_power_mod.direct += 0.42; // Adds 42% ap once the character is level 80
+    if ( p -> level >= 85 )
+      attack_power_mod.direct += 2.40; // Adds another 240% ap at level 85
+    //Shield slam is just the best.
+
     if ( p -> wod_hotfix )
       attack_power_mod.direct *= 1.05;
   }
