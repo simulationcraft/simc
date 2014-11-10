@@ -523,10 +523,12 @@ public:
   {
     // "up" is required to correctly track the buff benefit in reporting.
     // focus cost savings is reported as a "gain" so that comparison with steady focus is easy
-    if ( p() -> buffs.thrill_of_the_hunt -> up() )
+    if ( p() -> buffs.thrill_of_the_hunt -> up() ) 
     {
       double benefit = -( p() -> buffs.thrill_of_the_hunt -> data().effectN( 1 ).base_value() );
-      p() -> resource_gain( RESOURCE_FOCUS, benefit, p() -> gains.thrill_of_the_hunt );
+      // NOTE the focus discount has already been applied. This just records it. Don't use resource_gain
+      // here or it will double-dip.
+      p() -> gains.thrill_of_the_hunt -> add( RESOURCE_FOCUS, benefit );
       p() -> buffs.thrill_of_the_hunt -> decrement();
     }
   }
