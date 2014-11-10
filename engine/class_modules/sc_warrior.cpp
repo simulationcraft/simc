@@ -1151,9 +1151,9 @@ struct melee_t: public warrior_attack_t
   void schedule_execute( action_state_t* s )
   {
     warrior_attack_t::schedule_execute( s );
-    if ( s -> action -> weapon -> slot == SLOT_MAIN_HAND )
+    if ( weapon -> slot == SLOT_MAIN_HAND )
       mh_lost_melee_contact = false;
-    else if ( s -> action -> weapon -> slot == SLOT_OFF_HAND )
+    else if ( weapon -> slot == SLOT_OFF_HAND )
       oh_lost_melee_contact = false;
   }
 
