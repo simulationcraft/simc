@@ -8,7 +8,6 @@
 // ==========================================================================
 //
 // TODO:
-// Destruction t17 4pc RPPM doesn't scale off haste.
 //
 // check pet coefficients
 // Update action lists, especially AoE
@@ -16,8 +15,6 @@
 //   Main dots: UA: 30108, Corruption: 146739, Agony 980
 //   Child dots: UA: 131736, Corruption: 131740, Agony 131737
 // Proper Stats calc for childs of cataclysm
-
-
 // ==========================================================================
 namespace { // unnamed namespace
 
@@ -4813,7 +4810,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     mastery_spells( mastery_spells_t() ),
     grimoire_of_synergy( *this ),
     grimoire_of_synergy_pet( *this ),
-    rppm_chaotic_infusion( *this, std::numeric_limits<double>::min(), RPPM_HASTE ),
+    rppm_chaotic_infusion( *this ),
     perk(),
     cooldowns( cooldowns_t() ),
     spec( specs_t() ),
