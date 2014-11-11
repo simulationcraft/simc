@@ -1867,7 +1867,7 @@ struct heroic_throw_t: public warrior_attack_t
 
   bool ready()
   {
-    if ( p() -> current.distance_to_move > data().max_range() ||
+    if ( p() -> current.distance_to_move > range ||
          p() -> current.distance_to_move < data().min_range() ) // Cannot heroic throw unless target is in range.
          return false;
 

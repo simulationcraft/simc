@@ -6,7 +6,7 @@
 #define SIMULATIONCRAFT_H
 
 #define SC_MAJOR_VERSION "603"
-#define SC_MINOR_VERSION "7"
+#define SC_MINOR_VERSION "8"
 #define SC_USE_PTR ( 0 )
 #define SC_BETA ( 0 )
 #define SC_BETA_STR "wod"
@@ -1178,7 +1178,6 @@ const char* weapon_type_string        ( weapon_e type );
 const char* weapon_class_string       ( int class_ );
 const char* weapon_subclass_string    ( int subclass );
 
-const char* set_item_type_string      ( int item_set );
 const char* item_quality_string       ( int item_quality );
 const char* specialization_string     ( specialization_e spec );
 
@@ -2549,6 +2548,7 @@ struct sim_t : private sc_thread_t
   bool canceled;
   double target_error;
   double current_error;
+  double current_mean;
   int analyze_error_interval;
 
   sim_control_t* control;
@@ -2617,6 +2617,7 @@ struct sim_t : private sc_thread_t
   int scale_to_itemlevel; //itemlevel to scale to. if -1, we don't scale down
   bool disable_set_bonuses; // Disables set bonuses.
   bool pvp_crit; // Sets critical strike damage to 150% instead of 200%.
+  bool equalize_plot_weights; // Plot option.
 
   // Actor tracking
   int active_enemies;

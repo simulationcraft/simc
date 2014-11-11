@@ -541,6 +541,7 @@ const char* util::attribute_type_string( attribute_e type )
     case ATTR_AGI_INT:   return "agility/intellect";
     case ATTR_STR_AGI:   return "strength/agility";
     case ATTR_STR_INT:   return "strength/intellect";
+    case ATTR_STR_AGI_INT: return "strength/agility/intellect";
     default:             return "unknown";
   }
 }
@@ -670,7 +671,7 @@ const char* util::block_result_type_string( block_result_e type )
   switch ( type )
   {
     case BLOCK_RESULT_UNBLOCKED:     return "unblocked or avoided";
-    case BLOCK_RESULT_BLOCKED:      return "blocked";
+    case BLOCK_RESULT_BLOCKED:       return "blocked";
     case BLOCK_RESULT_CRIT_BLOCKED:  return "crit-blocked";
     default:                         return "unknown";
   }
@@ -913,51 +914,9 @@ const char* util::weapon_class_string( int it )
       return "Off Hand";
     case INVTYPE_RANGEDRIGHT:
       return "Ranged";
-      //case INVTYPE_RANGED:
-      //case INVTYPE_THROWN:
     default:
       return 0;
   }
-}
-
-// set_item_type_string =====================================================
-
-const char* util::set_item_type_string( int item_set )
-{
-  switch ( item_set )
-  {
-      // Melee sets
-    case 1057:   // DK T13
-    case 1058:   // Druid T13
-    case 1061:   // Hunter T13
-    case 1064:   // Paladin T13
-    case 1068:   // Rogue T13
-    case 1071:   // Shaman T13
-    case 1073:   // Warrior T13
-      return "Melee";
-
-      // Tank sets
-    case 1056:   // DK T13
-    case 1065:   // Paladin T13
-    case 1074:   // Warrior T13
-      return "Tank";
-
-      // Healer sets
-    case 1060:   // Druid T13
-    case 1063:   // Paladin T13
-    case 1066:   // Priest T13
-    case 1069:   // Shaman T13
-      return "Healer";
-
-      // DPS Caster sets
-    case 1059:   // Druid T13
-    case 1062:   // Mage T13
-    case 1067:   // Priest T13
-    case 1070:   // Shaman T13
-    case 1072:   // Warlock T13
-      return "Caster";
-  }
-  return 0;
 }
 
 // parse_weapon_type ========================================================
@@ -988,7 +947,6 @@ const char* util::flask_type_string( flask_e flask )
     case FLASK_SPRING_BLOSSOMS:                         return "spring_blossoms";
     case FLASK_CRYSTAL_OF_INSANITY:                     return "crystal_of_insanity";
       // wod
-    case FLASK_DRAENOR_ARMOR_FLASK:                     return "draenor_armor_flask"; //Might be removed, not 100% sure. 8-28-14
     case FLASK_DRAENIC_STRENGTH_FLASK:                  return "draenic_strength_flask";
     case FLASK_DRAENIC_INTELLECT_FLASK:                 return "draenic_intellect_flask";
     case FLASK_DRAENIC_AGILITY_FLASK:                   return "draenic_agility_flask";
@@ -1700,7 +1658,6 @@ scale_metric_e util::parse_scale_metric( const std::string& name )
   return SCALE_METRIC_NONE;
 }
 
-
 // parse_origin =============================================================
 
 bool util::parse_origin( std::string& region_str,
@@ -1965,7 +1922,6 @@ stat_e util::translate_item_mod( int item_mod )
     default:                           return STAT_NONE;
   }
 }
-
 
 int util::translate_stat( stat_e stat )
 {
@@ -2999,10 +2955,10 @@ void util::fuzzy_stats( std::string&       encoding_str,
 
   stat_search( encoding_str, splits, STAT_DODGE_RATING,     "dodge rating" );
   stat_search( encoding_str, splits, STAT_PARRY_RATING,     "parry rating" );
-  stat_search( encoding_str, splits, STAT_BLOCK_RATING,     "block_rating" );
-  // WOD-TODO: bonus armor
+  stat_search( encoding_str, splits, STAT_BLOCK_RATING,     "block rating" );
+  stat_search( encoding_str, splits, STAT_BONUS_ARMOR,      "bonus armor rating" );
+  stat_search( encoding_str, splits, STAT_MULTISTRIKE_RATING, "multistrike rating" );
   // WOD-TODO: hybrid primary stats?
-  // TODO: WOW-MULTISTRIKE
 }
 
 /* Determine number of digits for a given Number
