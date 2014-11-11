@@ -290,7 +290,7 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
         "<td class=\"right small\">%.1f%%</td>\n",   // Uptime%
         100 * s -> total_tick_time.mean() / p -> collected_data.fight_length.mean() );
     else
-      os.printf("<td class=\"right small\">&nbsp;</td>\n");
+      os.printf("<td class=\"right small\">&#160;</td>\n");
   }
 
 }
@@ -313,7 +313,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
   // Ability name
   os << "<td class=\"left small\" rowspan=\"" << result_rows << "\">";
   if ( s -> parent && s -> parent -> player == actor )
-    os << "&nbsp;&nbsp;&nbsp;\n";
+    os << "&#160;&#160;&#160;\n";
 
   os << output_action_name( s, actor );
   os << "</td>\n";
@@ -333,8 +333,8 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
       cAPSpct += s -> children[ i ] -> portion_amount;
     }
 
-    if ( cAPS > s -> portion_aps.mean()  ) compound_aps     = "&nbsp;(" + util::to_string( cAPS, 0 ) + ")";
-    if ( cAPSpct > s -> portion_amount ) compound_aps_pct = "&nbsp;(" + util::to_string( cAPSpct * 100, 1 ) + "%)";
+    if ( cAPS > s -> portion_aps.mean()  ) compound_aps     = "&#160;(" + util::to_string( cAPS, 0 ) + ")";
+    if ( cAPSpct > s -> portion_amount ) compound_aps_pct = "&#160;(" + util::to_string( cAPSpct * 100, 1 ) + "%)";
 
     os.printf( "<td class=\"right small\" rowspan=\"%d\">%.0f%s</td>\n",
       result_rows,
@@ -550,10 +550,10 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
     if ( s -> num_direct_results.mean() > 0 )
     {
       os << "<tr>\n"
-         << "<th class=\"small\" colspan=\"3\">&nbsp;</th>\n"
+         << "<th class=\"small\" colspan=\"3\">&#160;</th>\n"
          << "<th class=\"small\" colspan=\"3\">Simulation</th>\n"
          << "<th class=\"small\" colspan=\"3\">Iteration Average</th>\n"
-         << "<th class=\"small\" colspan=\"3\">&nbsp;</th>\n"
+         << "<th class=\"small\" colspan=\"3\">&#160;</th>\n"
          << "<tr>\n";
 
       // Direct Damage
@@ -667,10 +667,10 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
     {
       // Tick Damage
       os << "<tr>\n"
-         << "<th class=\"small\" colspan=\"3\">&nbsp;</th>\n"
+         << "<th class=\"small\" colspan=\"3\">&#160;</th>\n"
          << "<th class=\"small\" colspan=\"3\">Simulation</th>\n"
          << "<th class=\"small\" colspan=\"3\">Iteration Average</th>\n"
-         << "<th class=\"small\" colspan=\"3\">&nbsp;</th>\n"
+         << "<th class=\"small\" colspan=\"3\">&#160;</th>\n"
          << "<tr>\n";
 
       os << "<tr>\n"
@@ -776,7 +776,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
 
     os << "</table>\n";
 
-    os << "<div class=\"clear\">&nbsp;</div>\n";
+    os << "<div class=\"clear\">&#160;</div>\n";
 
     os.printf(
       "%s\n",
@@ -785,7 +785,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
       "%s\n",
       aps_distribution_str.c_str() );
 
-    os << "<div class=\"clear\">&nbsp;</div>\n";
+    os << "<div class=\"clear\">&#160;</div>\n";
     // Action Details
     std::vector<std::string> processed_actions;
 
@@ -939,7 +939,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
           a -> weapon_power_mod,
           a -> weapon_multiplier );
       }
-      os << "<div class=\"clear\">&nbsp;</div>\n";
+      os << "<div class=\"clear\">&#160;</div>\n";
     }
 
     os << "</td>\n"
@@ -1939,7 +1939,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
 
       std::string als = util::encode_html( ( alist -> name_str == "default" ) ? "Default action list" : ( "actions." + alist -> name_str ).c_str() );
       if ( ! alist -> action_list_comment_str.empty() )
-        als += "&nbsp;<small><em>" + util::encode_html( alist -> action_list_comment_str.c_str() ) + "</em></small>";
+        als += "&#160;<small><em>" + util::encode_html( alist -> action_list_comment_str.c_str() ) + "</em></small>";
       os.printf(
         "<table class=\"sc\">\n"
         "<tr>\n"
@@ -2873,11 +2873,11 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
 
   const std::string n = util::encode_html( p -> name() );
   if ( p -> collected_data.dps.mean() >= p -> collected_data.hps.mean() || p -> primary_role() == ROLE_TANK )
-    os.printf( "\">%s&nbsp;:&nbsp;%.0f dps",
+    os.printf( "\">%s&#160;:&#160;%.0f dps",
                n.c_str(),
                p -> collected_data.dps.mean() );
   else
-    os.printf( "\">%s&nbsp;:&nbsp;%.0f hps (%.0f aps)",
+    os.printf( "\">%s&#160;:&#160;%.0f hps (%.0f aps)",
                n.c_str(),
                p -> collected_data.hps.mean() + p -> collected_data.aps.mean(),
                p -> collected_data.aps.mean() );
@@ -2995,7 +2995,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
   }
   // spacer
   if ( cd.hps.mean() > 0 && cd.dps.mean() > 0 )
-    os << "<th>&nbsp;</th>\n";
+    os << "<th>&#160;</th>\n";
   // Heal
   if ( cd.hps.mean() > 0 )
   {
@@ -3007,7 +3007,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
   }
   // spacer
   if ( cd.hps.mean() > 0 && cd.aps.mean() > 0 )
-    os << "<th>&nbsp;</th>\n";
+    os << "<th>&#160;</th>\n";
   // Absorb
   if ( cd.aps.mean() > 0 )
   {
@@ -3041,7 +3041,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
   }
   // Spacer
   if ( cd.dps.mean() > 0 && cd.hps.mean() > 0 )
-    os << "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
+    os << "<td>&#160;&#160;&#160;&#160;&#160;</td>\n";
   // Heal
   if ( cd.hps.mean() > 0 )
   {
@@ -3064,7 +3064,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
   }
   // Spacer
   if ( cd.aps.mean() > 0 && cd.hps.mean() > 0 )
-    os << "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
+    os << "<td>&#160;&#160;&#160;&#160;&#160;</td>\n";
   // Absorb
   if ( cd.aps.mean() > 0 )
   {
@@ -3103,7 +3103,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
        << "<th><a href=\"#help-dtps\" class=\"help\">DTPS</a></th>\n"
        << "<th><a href=\"#help-error\" class=\"help\">DTPS Error</a></th>\n"
        << "<th><a href=\"#help-range\" class=\"help\">DTPS Range</a></th>\n"
-       << "<th>&nbsp;</th>\n"
+       << "<th>&#160;</th>\n"
        << "<th><a href=\"#help-theck-meloree-index\" class=\"help\">TMI</a></th>\n"
        << "<th><a href=\"#help-error\" class=\"help\">TMI Error</a></th>\n"
        << "<th><a href=\"#help-tmi\" class=\"help\">TMI Min</a></th>\n"
@@ -3274,7 +3274,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
             }
           }
           if ( p -> talent_points.has_row_col( row, col ) )
-            os.printf( "<li><strong>%d</strong>:&nbsp;%s</li>\n", row == 6 ? 100 : ( row + 1 ) * 15, name.c_str() );
+            os.printf( "<li><strong>%d</strong>:&#160;%s</li>\n", row == 6 ? 100 : ( row + 1 ) * 15, name.c_str() );
         }
       }
 
