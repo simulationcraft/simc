@@ -3936,16 +3936,16 @@ void hunter_t::apl_surv()
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>1" );
 
   default_list -> add_talent( this, "Stampede", "if=buff.potion.up|(cooldown.potion.remains&(buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up))|target.time_to_die<=25" );
-  default_list -> add_action( this, "Explosive Shot" );
   default_list -> add_action( this, "Black Arrow", "if=!ticking" );
+  default_list -> add_action( this, "Explosive Shot" );
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Dire Beast" );
-  default_list -> add_action( this, "Arcane Shot", "if=buff.thrill_of_the_hunt.react&focus>35&cast_regen<=focus.deficit|dot.serpent_sting.remains<=5|target.time_to_die<4.5" );
+  default_list -> add_action( this, "Arcane Shot", "if=buff.thrill_of_the_hunt.react&focus>35&cast_regen<=focus.deficit|dot.serpent_sting.remains<=3|target.time_to_die<4.5" );
   default_list -> add_talent( this, "Glaive Toss" );
   default_list -> add_talent( this, "Powershot" );
   default_list -> add_talent( this, "Barrage" );
   default_list -> add_action( this, "Cobra Shot", "if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&(14+cast_regen)<=focus.deficit<80", "Cast a second shot for steady focus if that won't cap us." );
-  default_list -> add_action( this, "Arcane Shot", "if=focus>=70|talent.focusing_shot.enabled" );
+  default_list -> add_action( this, "Arcane Shot", "if=focus>=80|talent.focusing_shot.enabled" );
   default_list -> add_talent( this, "Focusing Shot" );
   if ( level >= 81 )
     default_list -> add_action( this, "Cobra Shot" );
@@ -3955,8 +3955,8 @@ void hunter_t::apl_surv()
   aoe -> add_talent( this, "Stampede", "if=buff.potion.up|(cooldown.potion.remains&(buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up|buff.archmages_incandescence_agi.up))" );
   aoe -> add_action( this, "Explosive Shot", "if=buff.lock_and_load.react&(!talent.barrage.enabled|cooldown.barrage.remains>0)" );
   aoe -> add_talent( this, "Barrage" );
-  aoe -> add_action( this, "Explosive Shot", "if=active_enemies<5" );
   aoe -> add_action( this, "Black Arrow", "if=!ticking" );
+  aoe -> add_action( this, "Explosive Shot", "if=active_enemies<5" );
   aoe -> add_action( this, "Explosive Trap", "if=dot.explosive_trap.remains<=5" );
   aoe -> add_talent( this, "A Murder of Crows" );
   aoe -> add_talent( this, "Dire Beast" );
