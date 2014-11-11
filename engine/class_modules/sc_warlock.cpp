@@ -1304,11 +1304,6 @@ struct doomguard_pet_t: public warlock_pet_t
     resources.base[RESOURCE_ENERGY] = 100;
   }
 
-  double energy_regen_per_second() const
-  {
-    return 10;
-  }
-
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
   {
     if ( name == "doom_bolt" ) return new actions::doom_bolt_t( this );
@@ -1539,11 +1534,6 @@ struct terrorguard_pet_t: public warlock_pet_t
     warlock_pet_t::init_base_stats();
 
     resources.base[RESOURCE_ENERGY] = 100;
-  }
-
-  double energy_regen_per_second() const
-  {
-    return 10;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
