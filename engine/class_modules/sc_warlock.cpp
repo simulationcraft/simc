@@ -4810,7 +4810,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     mastery_spells( mastery_spells_t() ),
     grimoire_of_synergy( *this ),
     grimoire_of_synergy_pet( *this ),
-    rppm_chaotic_infusion( *this ),
+    rppm_chaotic_infusion( *this, std::numeric_limits<double>::min(), RPPM_HASTE ),
     perk(),
     cooldowns( cooldowns_t() ),
     spec( specs_t() ),
