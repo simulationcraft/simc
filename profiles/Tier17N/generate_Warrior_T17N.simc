@@ -15,7 +15,7 @@ level=100
 race=tauren
 role=attack
 spec=fury
-talents=2121323
+talents=1321323
 glyphs=unending_rage/raging_wind/heroic_leap
 head=blackhands_faceguard,id=115584
 neck=vertebrae_protector,id=113900,enchant=gift_of_critical_strike
@@ -41,7 +41,7 @@ level=100
 race=tauren
 role=attack
 spec=fury
-talents=2121323
+talents=1321323
 glyphs=unending_rage/raging_wind/heroic_leap
 head=blackhands_faceguard,id=115584
 neck=vertebrae_protector,id=113900,enchant=gift_of_critical_strike

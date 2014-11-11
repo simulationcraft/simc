@@ -10,7 +10,7 @@ level=100
 race=tauren
 role=attack
 spec=fury
-talents=2121322
+talents=1121322
 glyphs=58098/58355/58370/123779/146969
 
 head=verdant_plate_crown,id=109986,bonus_id=524
@@ -36,7 +36,7 @@ level=100
 race=tauren
 role=attack
 spec=fury
-talents=2121322
+talents=1121322
 glyphs=58098/58355/58370/123779/146969
 
 head=verdant_plate_crown,id=109986,bonus_id=524
