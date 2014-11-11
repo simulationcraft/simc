@@ -1641,7 +1641,7 @@ const char* util::scale_metric_type_string( scale_metric_e sm )
     case SCALE_METRIC_TMI:       return "tmi";
     case SCALE_METRIC_ETMI:      return "etmi";
     case SCALE_METRIC_DEATHS:    return "deaths";
-    default:                     return "unknown";
+    default:                     return "dps"; //When set to "Default", assume dps until we have a better solution.
   }
 }
 

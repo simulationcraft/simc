@@ -459,13 +459,13 @@ public:
   void              apl_glad();
   virtual void      init_action_list();
 
-  virtual action_t* create_action( const std::string& name, const std::string& options );
+  virtual action_t*  create_action( const std::string& name, const std::string& options );
   virtual resource_e primary_resource() const { return RESOURCE_RAGE; }
-  virtual role_e    primary_role() const;
-  virtual stat_e    convert_hybrid_stat( stat_e s ) const;
-  virtual void      assess_damage( school_e, dmg_e, action_state_t* s );
-  virtual void      copy_from( player_t* source );
-  virtual void      merge( player_t& other ) override
+  virtual role_e     primary_role() const;
+  virtual stat_e     convert_hybrid_stat( stat_e s ) const;
+  virtual void       assess_damage( school_e, dmg_e, action_state_t* s );
+  virtual void       copy_from( player_t* source );
+  virtual void       merge( player_t& other ) override
   {
     warrior_t& other_p = dynamic_cast<warrior_t&>( other );
 
@@ -863,19 +863,20 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     else if ( w -> slot == SLOT_OFF_HAND )
       rage_gain /= 2.0;
 
-    rage_gain = floor( rage_gain * 10 ) / 10.0;
+    rage_gain = util::floor( rage_gain, 1 );
 
     if ( p() -> specialization() == WARRIOR_ARMS && s -> result == RESULT_CRIT )
     {
       p() -> resource_gain( RESOURCE_RAGE,
                             rage_gain,
                             p() -> gain.melee_crit );
-      return;
     }
-
-    p() -> resource_gain( RESOURCE_RAGE,
-                          rage_gain,
-                          w -> slot == SLOT_OFF_HAND ? p() -> gain.melee_off_hand : p() -> gain.melee_main_hand );
+    else
+    {
+      p() -> resource_gain( RESOURCE_RAGE,
+                            rage_gain,
+                            w -> slot == SLOT_OFF_HAND ? p() -> gain.melee_off_hand : p() -> gain.melee_main_hand );
+    }
   }
 };
 
