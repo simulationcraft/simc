@@ -62,7 +62,7 @@ level=100
 race=tauren
 role=attack
 spec=arms
-talents=2111322
+talents=2321322
 glyphs=58098/58355/123779/146969
 
 head=rivetsealed_casque,id=109989,bonus_id=524

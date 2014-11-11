@@ -68,7 +68,7 @@ race=tauren
 spec=Arms
 role=attack
 position=back
-talents=1311322
+talents=1321322
 glyphs=unending_rage/heroic_leap/sweeping_strikes
 head=blackhands_faceguard,id=115584,bonus_id=567/523/448,gem_id=115809
 neck=vertebrae_protector,id=113900,bonus_id=567/523/448,gem_id=115809,enchant=gift_of_critical_strike
