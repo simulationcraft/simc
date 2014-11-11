@@ -1,9 +1,9 @@
 warrior="Warrior_Fury_1h_T17B"
 level=100
-race=troll
+race=tauren
 role=attack
 position=back
-talents=1321322
+talents=2121323
 glyphs=unending_rage/raging_wind/heroic_leap
 spec=fury
 
