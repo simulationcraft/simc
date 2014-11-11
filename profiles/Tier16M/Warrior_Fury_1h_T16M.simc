@@ -20,6 +20,7 @@ actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
 actions.precombat+=/stance,choose=battle
 talent_override=bladestorm,if=raid_event.adds.count>4|desired_targets>4|(raid_event.adds.duration<10&raid_event.adds.exists)
 talent_override=dragon_roar,if=raid_event.adds.count>1|desired_targets>1
+talent_override=ravager,if=raid_event.adds.count>1|desired_targets>1
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 # Generic on-use trinket line if needed when swapping trinkets out. 
 #actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&(buff.avatar.up|!talent.avatar.enabled)))|(active_enemies>=2&buff.ravager.up)

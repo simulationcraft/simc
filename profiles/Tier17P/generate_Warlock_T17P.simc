@@ -33,7 +33,7 @@ warlock=Warlock_Demonology_T17P
 level=100
 race=troll
 spec=demonology
-talents=0000311
+talents=0000111
 glyphs=dark_soul
 
 head=hood_of_arcane_mystery,id=109970,bonus_id=524
