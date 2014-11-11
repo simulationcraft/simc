@@ -3,7 +3,7 @@ level=90
 race=troll
 role=spell
 position=back
-talents=0000310
+talents=0000110
 spec=demonology
 
 # This default action priority list is automatically created based on your character.

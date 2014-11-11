@@ -30,7 +30,7 @@ warlock="Warlock_Demonology_T16M"
 level=90
 race=troll
 spec=demonology
-talents=000031
+talents=000011
 head=hood_of_the_horned_nightmare,id=99425,upgrade=4,gems=sinister_primal_10haste_10mastery_11int
 neck=untainted_guardians_chain,id=105465,upgrade=4
 shoulders=shoulderpads_of_pulsing_protection,id=105497,upgrade=4,gems=10crit_10mastery_10crit_10mastery_8int,enchant=15int_5crit
