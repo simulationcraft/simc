@@ -2325,12 +2325,14 @@ struct ferocious_bite_t : public cat_attack_t
 
   double excess_energy;
   double max_excess_energy;
+  bool max_energy;
   glyph_of_ferocious_bite_t* glyph_effect;
 
   ferocious_bite_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "ferocious_bite", p, p -> find_class_spell( "Ferocious Bite" ), options_str ),
-    excess_energy( 0 ), max_excess_energy( 0 )
+    cat_attack_t( "ferocious_bite", p, p -> find_class_spell( "Ferocious Bite" ), "" ),
+    excess_energy( 0 ), max_excess_energy( 0 ), max_energy( false )
   {
+    add_option( opt_bool( "max_energy" , max_energy ) );
     parse_options( options_str );
     base_costs[ RESOURCE_COMBO_POINT ] = 1;
 
@@ -2345,6 +2347,13 @@ struct ferocious_bite_t : public cat_attack_t
 
     if ( p -> wod_hotfix )
       base_multiplier *= 1.12;
+  }
+
+  virtual bool ready()
+  {
+    if ( max_energy && p() -> resources.current[ RESOURCE_ENERGY ] < p() -> max_fb_energy )
+      return false;
+    return cat_attack_t::ready();
   }
 
   virtual void execute()
@@ -6377,11 +6386,11 @@ void druid_t::apl_feral()
   def -> add_action( "thrash_cat,cycle_targets=1,if=remains<4.5&active_enemies>1" );
 
   // Finishers
-  finish -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=target.health.pct<25&dot.rip.ticking&energy>=max_fb_energy" );
+  finish -> add_action( this, "Ferocious Bite", "cycle_targets=1,max_energy=1,if=target.health.pct<25&dot.rip.ticking" );
   finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<3&target.time_to_die-remains>18" );
   finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<7.2&persistent_multiplier>dot.rip.pmultiplier&target.time_to_die-remains>18" );
   finish -> add_action( this, "Savage Roar", "if=(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<12.6" );
-  finish -> add_action( this, "Ferocious Bite", "if=(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&energy>=max_fb_energy" );
+  finish -> add_action( this, "Ferocious Bite", "max_energy=1,if=(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)" );
 
   def -> add_action( "call_action_list,name=finisher,if=combo_points=5" );
 
