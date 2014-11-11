@@ -5509,7 +5509,7 @@ void warlock_t::apl_precombat()
   action_list_str += "/arcane_torrent";
   action_list_str += "/mannoroths_fury";
 
- if ( specialization() == WARLOCK_DEMONOLOGY )
+  if ( specialization() == WARLOCK_DEMONOLOGY )
   {
     action_list_str += "/dark_soul,if=talent.demonbolt.enabled&(charges=2|target.time_to_die<buff.demonbolt.remains|(!buff.demonbolt.remains&demonic_fury>=790))";
     action_list_str += "/dark_soul,if=!talent.demonbolt.enabled&(charges=2|!talent.archimondes_darkness.enabled|(target.time_to_die<=20&!glyph.dark_soul.enabled|target.time_to_die<=10)|(target.time_to_die<=60&demonic_fury>400)|((trinket.proc.crit.remains>7.5|trinket.stacking_proc.multistrike.remains>7.5|trinket.proc.mastery.remains>7.5|trinket.proc.intellect.react|trinket.proc.multistrike.remains>7.5|trinket.proc.versatility.remains>7.5|trinket.proc.spellpower.remains>7.5)&demonic_fury>=400))";
@@ -5596,8 +5596,8 @@ void warlock_t::apl_demonology()
     action_list_str += "/chaos_wave,if=buff.metamorphosis.up&(set_bonus.tier17_2pc=0&charges=2)|charges=3";
     action_list_str += "/soul_fire,if=buff.metamorphosis.up&buff.molten_core.react&(buff.dark_soul.remains>execute_time|target.health.pct<=25)&(((buff.molten_core.stack*execute_time>=trinket.stacking_proc.multistrike.remains-1|demonic_fury<=ceil((trinket.stacking_proc.multistrike.remains-buff.molten_core.stack*execute_time)*40)+80*buff.molten_core.stack)|target.health.pct<=25)&trinket.stacking_proc.multistrike.remains>=execute_time|trinket.stacking_proc.multistrike.down)";
     add_action( "touch of chaos", "if=buff.metamorphosis.up" );
-    add_action( "metamorphosis", "if=buff.dark_soul.remains>gcd&(demonic_fury>300|!glyph.dark_soul.enabled)" );
-    add_action( "metamorphosis", "if=(trinket.proc.any.react|trinket.stacking_proc.any.react>6|buff.demonic_synergy.up)&demonic_fury>400&action.dark_soul.recharge_time>=10" );
+    action_list_str += "/metamorphosis,if=buff.dark_soul.remains>gcd&(demonic_fury>300|!glyph.dark_soul.enabled)&(demonic_fury>=80&buff.molten_core.stack>=1|demonic_fury>=40)";
+    action_list_str += "/metamorphosis,if=(trinket.proc.crit.react|trinket.stacking_proc.multistrike.react|trinket.proc.intellect.react|trinket.proc.multistrike.react|trinket.proc.versatility.react|trinket.proc.spellpower.react)&((demonic_fury>450&action.dark_soul.recharge_time>=10&glyph.dark_soul.enabled)|(demonic_fury>650&cooldown.dark_soul.remains>=10))";
     add_action( "metamorphosis", "if=!cooldown.cataclysm.remains&talent.cataclysm.enabled" );
     add_action( "metamorphosis", "if=!dot.doom.ticking&target.time_to_die>=30%(1%spell_haste)&demonic_fury>300" );
     action_list_str += "/metamorphosis,if=(demonic_fury>750&(action.hand_of_guldan.charges=0|(!dot.shadowflame.ticking&!action.hand_of_guldan.in_flight_to_target)))|floor(demonic_fury%80)*action.soul_fire.execute_time>=target.time_to_die";
