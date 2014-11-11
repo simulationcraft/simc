@@ -37,7 +37,7 @@ save=Hunter_BM_T17M.simc
 # MM
 hunter=Hunter_MM_T17M
 level=100
-race=orc
+race=blood_elf
 spec=marksmanship
 position=ranged_back
 role=attack
@@ -52,7 +52,7 @@ hands=rylakstalkers_gloves,id=115549,bonus_id=567
 waist=grenadiers_belt,id=113955,bonus_id=567
 legs=rylakstalkers_legguards,id=115546,bonus_id=567
 feet=slagstomper_treads,id=113888,bonus_id=567
-finger1=cinderwolf_signet,id=113917,bonus_id=567,enchant=gift_of_critical_strike
+finger1=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_critical_strike
 finger2=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_critical_strike
 trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=567
 trinket2=meaty_dragonspine_trophy,id=118114,bonus_id=567
