@@ -1935,7 +1935,7 @@ struct crimson_tempest_t : public rogue_attack_t
   }
 
   // Apparently Crimson Tempest does not trigger Main Gauche?
-  bool trigger_main_gauche() const
+  bool procs_main_gauche() const
   { return false; }
 
   bool procs_poison() const
