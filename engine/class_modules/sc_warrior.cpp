@@ -5335,16 +5335,15 @@ void warrior_t::assess_damage( school_e school,
     cooldown.revenge -> reset( true );
 
   if ( s -> result == RESULT_PARRY && buff.die_by_the_sword -> up() && glyphs.drawn_sword )
+  {
     player_t::resource_gain( RESOURCE_RAGE,
-    glyphs.drawn_sword -> effectN( 1 ).resource( RESOURCE_RAGE ),
-    gain.drawn_sword_glyph );
+                             glyphs.drawn_sword -> effectN( 1 ).resource( RESOURCE_RAGE ),
+                             gain.drawn_sword_glyph );
+  }
 
   player_t::assess_damage( school, dtype, s );
 
-  if ( ( s -> result == RESULT_HIT ||
-    s -> result == RESULT_CRIT ||
-    s -> result == RESULT_GLANCE ) &&
-    buff.tier16_reckless_defense -> up() )
+  if ( ( s -> result == RESULT_HIT || s -> result == RESULT_CRIT || s -> result == RESULT_GLANCE ) && buff.tier16_reckless_defense -> up() )
   {
     player_t::resource_gain( RESOURCE_RAGE,
                              floor( s -> result_amount / resources.max[RESOURCE_HEALTH] * 100 ),
@@ -5465,9 +5464,7 @@ void warrior_t::stance_swap()
     swap = STANCE_GLADIATOR;
     break;
   }
-  default:
-    swap = active_stance;
-    break;
+  default: swap = active_stance; break;
   }
 
   switch ( swap )
@@ -5479,11 +5476,7 @@ void warrior_t::stance_swap()
     recalculate_resource_max( RESOURCE_HEALTH );
     break;
   }
-  case STANCE_GLADIATOR:
-  {
-    buff.gladiator_stance -> trigger();
-    break;
-  }
+  case STANCE_GLADIATOR: buff.gladiator_stance -> trigger(); break;
   }
   cooldown.stance_swap -> start();
 }
