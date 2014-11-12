@@ -5210,23 +5210,20 @@ double warrior_t::temporary_movement_modifier() const
 {
   double temporary = player_t::temporary_movement_modifier();
 
-  if ( buff.heroic_leap_glyph -> up() )
-    temporary = std::max( buff.heroic_leap_glyph -> data().effectN( 1 ).percent(), temporary );
-
-  if ( buff.enraged_speed -> up() )
-    temporary = std::max( buff.enraged_speed -> data().effectN( 1 ).percent(), temporary );
-
-  if ( buff.charge_movement -> up() )
-    temporary = std::max( buff.charge_movement -> value(), temporary );
-
+  // These are ordered in the highest speed movement increase to the lowest, there's no reason to check the rest as they will just be overridden.
+  // Also gives correct benefit numbers.
   if ( buff.heroic_leap_movement -> up() )
     temporary = std::max( buff.heroic_leap_movement -> value(), temporary );
-
-  if ( buff.shield_charge_movement -> up() )
-    temporary = std::max( buff.shield_charge_movement -> value(), temporary );
-
-  if ( buff.intervene_movement -> up() )
+  else if ( buff.charge_movement -> up() )
+    temporary = std::max( buff.charge_movement -> value(), temporary );
+  else if ( buff.intervene_movement -> up() )
     temporary = std::max( buff.intervene_movement -> value(), temporary );
+  else if ( buff.shield_charge_movement -> up() )
+    temporary = std::max( buff.shield_charge_movement -> value(), temporary );
+  else if ( buff.heroic_leap_glyph -> up() )
+    temporary = std::max( buff.heroic_leap_glyph -> data().effectN( 1 ).percent(), temporary );
+  else if ( buff.enraged_speed -> up() )
+    temporary = std::max( buff.enraged_speed -> data().effectN( 1 ).percent(), temporary );
 
   return temporary;
 }

@@ -5498,7 +5498,7 @@ struct wild_charge_t : public druid_spell_t
 
   bool ready()
   {
-    if ( p() -> current.distance_to_move < data().min_range() ) // Cannot charge unless target is in range.
+    if ( p() -> current.distance_to_move < data().min_range() ) // Cannot charge if the target is too close.
       return false;
 
     return druid_spell_t::ready();
@@ -6035,8 +6035,8 @@ void druid_t::create_buffs()
 
   // Talent buffs
 
-  buff.displacer_beast    = buff_creator_t( this, "displacer_beast", find_spell( 137542 ) )
-                            .default_value( find_spell( 137542 ) -> effectN( 1 ).percent() );
+  buff.displacer_beast    = buff_creator_t( this, "displacer_beast", talent.displacer_beast -> effectN( 2 ).trigger() )
+                            .default_value( talent.displacer_beast -> effectN( 2 ).trigger() -> effectN( 1 ).percent() );
 
   buff.wild_charge_movement = buff_creator_t( this, "wild_charge_movement" );
 
