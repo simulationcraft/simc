@@ -31,12 +31,12 @@ actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
 actions+=/potion,name=draenic_agility,if=!talent.stampede.enabled&buff.bestial_wrath.up&target.health.pct<=20|target.time_to_die<=20
-actions+=/potion,name=draenic_agility,if=talent.stampede.enabled&cooldown.stampede.remains<1&(buff.bloodlust.up|buff.focus_fire.up)|target.time_to_die<=20
-actions+=/stampede,if=buff.bloodlust.up|buff.focus_fire.up|target.time_to_die<=20
+actions+=/potion,name=draenic_agility,if=talent.stampede.enabled&cooldown.stampede.remains<1&(buff.bloodlust.up|buff.focus_fire.up)|target.time_to_die<=25
+actions+=/stampede,if=buff.bloodlust.up|buff.focus_fire.up|target.time_to_die<=25
 actions+=/dire_beast
-actions+=/explosive_trap,if=active_enemies>2
+actions+=/explosive_trap,if=active_enemies>1
 actions+=/bestial_wrath,if=focus>60&!buff.bestial_wrath.up
-actions+=/barrage,if=active_enemies>2
+actions+=/barrage,if=active_enemies>1
 actions+=/multishot,if=active_enemies>5|(active_enemies>1&pet.cat.buff.beast_cleave.down)
 actions+=/focus_fire,five_stacks=1
 actions+=/barrage,if=active_enemies>1

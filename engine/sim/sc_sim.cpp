@@ -904,6 +904,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   canceled( 0 ),
   target_error( 0 ),
   current_error( 0 ),
+  current_mean( 0 ),
   analyze_error_interval( 100 ),
   control( 0 ),
   parent( p ),
@@ -939,7 +940,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   talent_format( TALENT_FORMAT_UNCHANGED ),
   auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ), show_etmi( 0 ), tmi_window_global( 0 ), tmi_bin_size( 0.5 ),
   requires_regen_event( false ), target_death_pct( 0 ), rel_target_level( 0 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ), enable_taunts( false ),
-  challenge_mode( false ), scale_to_itemlevel( -1 ), disable_set_bonuses( false ), pvp_crit( false ),
+  challenge_mode( false ), scale_to_itemlevel( -1 ), disable_set_bonuses( false ), pvp_crit( false ), equalize_plot_weights( false ),
   active_enemies( 0 ), active_allies( 0 ),
   _rng( 0 ), seed( 0 ), deterministic( false ),
   average_range( true ), average_gauss( false ),
@@ -1445,6 +1446,9 @@ void sim_t::analyze_error()
   if ( current_iteration < 1 ) return;
   if ( current_iteration % analyze_error_interval != 0 ) return;
 
+  double mean_total=0;
+  int mean_count=0;
+
   current_error = 0;
 
   for ( size_t i = 0; i < actor_list.size(); i++ )
@@ -1461,8 +1465,15 @@ void sim_t::analyze_error()
       {
         double error = sim_t::distribution_mean_error( *this, cd.target_metric ) / mean;
         if ( error > current_error ) current_error = error;
+	mean_total += mean;
+	mean_count++;
       }
     }
+  }
+
+  if( mean_count > 0 )
+  {
+    current_mean = mean_total / mean_count;
   }
 
   current_error *= 100;
@@ -2028,7 +2039,7 @@ bool progress_bar_t::update( bool finished )
 
   if( sim.target_error > 0 )
   {
-    str::format( status, " Error=%.3f%%", sim.current_error );
+    str::format( status, " Mean=%.0f Error=%.3f%%", sim.current_mean, sim.current_error );
   }
 
   if ( remaining_min > 0 )
@@ -2539,6 +2550,7 @@ void sim_t::create_options()
   add_option( opt_int( "scale_to_itemlevel", scale_to_itemlevel ) );
   add_option( opt_bool( "disable_set_bonuses", disable_set_bonuses ) );
   add_option( opt_bool( "pvp_crit", pvp_crit ) );
+  add_option( opt_bool( "equalize_plot_weights", equalize_plot_weights ) );
   add_option( opt_int( "desired_targets", desired_targets ) );
   add_option( opt_bool( "show_etmi", show_etmi ) );
   add_option( opt_float( "tmi_window_global", tmi_window_global ) );

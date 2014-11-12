@@ -459,13 +459,13 @@ public:
   void              apl_glad();
   virtual void      init_action_list();
 
-  virtual action_t* create_action( const std::string& name, const std::string& options );
+  virtual action_t*  create_action( const std::string& name, const std::string& options );
   virtual resource_e primary_resource() const { return RESOURCE_RAGE; }
-  virtual role_e    primary_role() const;
-  virtual stat_e    convert_hybrid_stat( stat_e s ) const;
-  virtual void      assess_damage( school_e, dmg_e, action_state_t* s );
-  virtual void      copy_from( player_t* source );
-  virtual void      merge( player_t& other ) override
+  virtual role_e     primary_role() const;
+  virtual stat_e     convert_hybrid_stat( stat_e s ) const;
+  virtual void       assess_damage( school_e, dmg_e, action_state_t* s );
+  virtual void       copy_from( player_t* source );
+  virtual void       merge( player_t& other ) override
   {
     warrior_t& other_p = dynamic_cast<warrior_t&>( other );
 
@@ -863,19 +863,20 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     else if ( w -> slot == SLOT_OFF_HAND )
       rage_gain /= 2.0;
 
-    rage_gain = floor( rage_gain * 10 ) / 10.0;
+    rage_gain = util::floor( rage_gain, 1 );
 
     if ( p() -> specialization() == WARRIOR_ARMS && s -> result == RESULT_CRIT )
     {
       p() -> resource_gain( RESOURCE_RAGE,
                             rage_gain,
                             p() -> gain.melee_crit );
-      return;
     }
-
-    p() -> resource_gain( RESOURCE_RAGE,
-                          rage_gain,
-                          w -> slot == SLOT_OFF_HAND ? p() -> gain.melee_off_hand : p() -> gain.melee_main_hand );
+    else
+    {
+      p() -> resource_gain( RESOURCE_RAGE,
+                            rage_gain,
+                            w -> slot == SLOT_OFF_HAND ? p() -> gain.melee_off_hand : p() -> gain.melee_main_hand );
+    }
   }
 };
 
@@ -1087,7 +1088,7 @@ void warrior_attack_t::impact( action_state_t* s )
       if ( p() -> buff.bloodbath -> up() && special )
         trigger_bloodbath_dot( s -> target, s -> result_amount );
 
-      if ( p() -> talents.second_wind -> ok() )
+      if ( p() -> active_second_wind )
       {
         if ( p() -> resources.current[RESOURCE_HEALTH] < p() -> resources.max[RESOURCE_HEALTH] * 0.35 )
         {
@@ -1096,11 +1097,14 @@ void warrior_attack_t::impact( action_state_t* s )
           p() -> active_second_wind -> execute();
         }
       }
-      if ( p() -> buff.rallying_cry -> up() && p() -> glyphs.rallying_cry -> ok() )
+      if ( p() -> active_rallying_cry_heal )
       {
-        p() -> active_rallying_cry_heal -> base_dd_min = s -> result_amount;
-        p() -> active_rallying_cry_heal -> base_dd_max = s -> result_amount;
-        p() -> active_rallying_cry_heal -> execute();
+        if ( p() -> buff.rallying_cry -> up() )
+        {
+          p() -> active_rallying_cry_heal -> base_dd_min = s -> result_amount;
+          p() -> active_rallying_cry_heal -> base_dd_max = s -> result_amount;
+          p() -> active_rallying_cry_heal -> execute();
+        }
       }
     }
   }
@@ -1145,6 +1149,15 @@ struct melee_t: public warrior_attack_t
       return t;
   }
 
+  void schedule_execute( action_state_t* s )
+  {
+    warrior_attack_t::schedule_execute( s );
+    if ( weapon -> slot == SLOT_MAIN_HAND )
+      mh_lost_melee_contact = false;
+    else if ( weapon -> slot == SLOT_OFF_HAND )
+      oh_lost_melee_contact = false;
+  }
+
   void execute()
   {
     if ( p() -> current.distance_to_move > 5 )
@@ -1165,13 +1178,6 @@ struct melee_t: public warrior_attack_t
     else
     {
       warrior_attack_t::execute();
-      if ( weapon -> slot == SLOT_MAIN_HAND )
-      {
-        if ( mh_lost_melee_contact )
-          mh_lost_melee_contact = false;
-      }
-      else if ( oh_lost_melee_contact )
-        oh_lost_melee_contact = false;
     }
   }
 
@@ -1184,14 +1190,17 @@ struct melee_t: public warrior_attack_t
       trigger_t15_2pc_melee( this );
       sudden_death( p() -> proc.sudden_death );
       trigger_rage_gain( s );
-      if ( p() -> perk.enhanced_rend -> ok() && td( s -> target ) -> dots_rend -> is_ticking() )
+      if ( p() -> active_enhanced_rend )
       {
-        p() -> active_enhanced_rend -> target = s -> target;
-        p() -> active_enhanced_rend -> execute();
+        if ( td( s -> target ) -> dots_rend -> is_ticking() )
+        {
+          p() -> active_enhanced_rend -> target = s -> target;
+          p() -> active_enhanced_rend -> execute();
+        }
       }
     }
 
-    if ( p() -> specialization() == WARRIOR_PROTECTION )
+    if ( p() -> active_blood_craze )
     {
       if ( result_is_multistrike( s -> result ) )
       {
@@ -1609,8 +1618,11 @@ struct devastate_t: public warrior_attack_t
     {
       if ( p() -> buff.sword_and_board -> trigger() )
         p() -> cooldown.shield_slam -> reset( true );
-      p() -> active_deep_wounds -> target = execute_state -> target;
-      p() -> active_deep_wounds -> execute();
+      if ( p() -> active_deep_wounds )
+      {
+        p() -> active_deep_wounds -> target = execute_state -> target;
+        p() -> active_deep_wounds -> execute();
+      }
       if ( p() -> talents.unyielding_strikes -> ok() )
       {
         if ( p() -> buff.unyielding_strikes -> current_stack != p() -> buff.unyielding_strikes -> max_stack() )
@@ -1856,7 +1868,7 @@ struct heroic_throw_t: public warrior_attack_t
 
   bool ready()
   {
-    if ( p() -> current.distance_to_move > data().max_range() ||
+    if ( p() -> current.distance_to_move > range ||
          p() -> current.distance_to_move < data().min_range() ) // Cannot heroic throw unless target is in range.
          return false;
 
@@ -2500,7 +2512,14 @@ struct shield_slam_t: public warrior_attack_t
     parse_options( options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
-    attack_power_mod.direct = 3.18; //Hard-coded in tooltip. (beta build 18764)
+
+    attack_power_mod.direct = 0.36; // Low level value for shield slam.
+    if ( p -> level >= 80 )
+      attack_power_mod.direct += 0.42; // Adds 42% ap once the character is level 80
+    if ( p -> level >= 85 )
+      attack_power_mod.direct += 2.40; // Adds another 240% ap at level 85
+    //Shield slam is just the best.
+
     if ( p -> wod_hotfix )
       attack_power_mod.direct *= 1.05;
   }
@@ -2761,10 +2780,13 @@ struct thunder_clap_t: public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) && p() -> specialization() == WARRIOR_PROTECTION )
+    if ( p() -> active_deep_wounds )
     {
-      p() -> active_deep_wounds -> target = s -> target;
-      p() -> active_deep_wounds -> execute();
+      if ( result_is_hit( s -> result ) )
+      {
+        p() -> active_deep_wounds -> target = s -> target;
+        p() -> active_deep_wounds -> execute();
+      }
     }
   }
 
@@ -3860,13 +3882,13 @@ void warrior_t::init_spells()
   spell.heroic_leap             = find_class_spell( "Heroic Leap" );
 
   // Active spells
-  active_blood_craze        = new blood_craze_t( this );
-  active_bloodbath_dot      = new bloodbath_dot_t( this );
-  active_deep_wounds        = new deep_wounds_t( this );
-  active_enhanced_rend      = new enhanced_rend_t( this );
-  active_rallying_cry_heal  = new rallying_cry_heal_t( this );
-  active_second_wind        = new second_wind_t( this );
-  active_t16_2pc            = new tier16_2pc_tank_heal_t( this );
+  if ( spec.blood_craze -> ok() ) active_blood_craze = new blood_craze_t( this );
+  if ( talents.bloodbath -> ok() ) active_bloodbath_dot = new bloodbath_dot_t( this );
+  if ( spec.deep_wounds -> ok() ) active_deep_wounds = new deep_wounds_t( this );
+  if ( perk.enhanced_rend -> ok() ) active_enhanced_rend = new enhanced_rend_t( this );
+  if ( glyphs.rallying_cry -> ok() ) active_rallying_cry_heal = new rallying_cry_heal_t( this );
+  if ( talents.second_wind -> ok() ) active_second_wind = new second_wind_t( this );
+  if ( sets.has_set_bonus( SET_TANK, T16, B2 ) ) active_t16_2pc = new tier16_2pc_tank_heal_t( this );
 }
 
 // warrior_t::init_base =====================================================
@@ -3957,7 +3979,8 @@ void warrior_t::apl_precombat( bool probablynotgladiator )
   {
     precombat -> add_action( "stance,choose=battle\n"
                              "talent_override=bladestorm,if=raid_event.adds.count>4|desired_targets>4|(raid_event.adds.duration<10&raid_event.adds.exists)\n"
-                             "talent_override=dragon_roar,if=raid_event.adds.count>1|desired_targets>1" );
+                             "talent_override=dragon_roar,if=raid_event.adds.count>1|desired_targets>1\n"
+                             "talent_override=ravager,if=raid_event.adds.count>1|desired_targets>1" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
                              "# Generic on-use trinket line if needed when swapping trinkets out. \n"
                              "#actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&(buff.avatar.up|!talent.avatar.enabled)))|(active_enemies>=2&buff.ravager.up)" );
@@ -5187,23 +5210,20 @@ double warrior_t::temporary_movement_modifier() const
 {
   double temporary = player_t::temporary_movement_modifier();
 
-  if ( buff.heroic_leap_glyph -> up() )
-    temporary = std::max( buff.heroic_leap_glyph -> data().effectN( 1 ).percent(), temporary );
-
-  if ( buff.enraged_speed -> up() )
-    temporary = std::max( buff.enraged_speed -> data().effectN( 1 ).percent(), temporary );
-
-  if ( buff.charge_movement -> up() )
-    temporary = std::max( buff.charge_movement -> value(), temporary );
-
+  // These are ordered in the highest speed movement increase to the lowest, there's no reason to check the rest as they will just be overridden.
+  // Also gives correct benefit numbers.
   if ( buff.heroic_leap_movement -> up() )
     temporary = std::max( buff.heroic_leap_movement -> value(), temporary );
-
-  if ( buff.shield_charge_movement -> up() )
-    temporary = std::max( buff.shield_charge_movement -> value(), temporary );
-
-  if ( buff.intervene_movement -> up() )
+  else if ( buff.charge_movement -> up() )
+    temporary = std::max( buff.charge_movement -> value(), temporary );
+  else if ( buff.intervene_movement -> up() )
     temporary = std::max( buff.intervene_movement -> value(), temporary );
+  else if ( buff.shield_charge_movement -> up() )
+    temporary = std::max( buff.shield_charge_movement -> value(), temporary );
+  else if ( buff.heroic_leap_glyph -> up() )
+    temporary = std::max( buff.heroic_leap_glyph -> data().effectN( 1 ).percent(), temporary );
+  else if ( buff.enraged_speed -> up() )
+    temporary = std::max( buff.enraged_speed -> data().effectN( 1 ).percent(), temporary );
 
   return temporary;
 }
@@ -5331,7 +5351,7 @@ void warrior_t::assess_damage( school_e school,
                              gain.tier16_4pc_tank );
   }
 
-  if ( sets.has_set_bonus( SET_TANK, T16, B2 ) )
+  if ( active_t16_2pc )
   {
     if ( s -> block_result != BLOCK_RESULT_UNBLOCKED ) //heal if blocked
     {

@@ -73,7 +73,7 @@ legs=bloodfeather_leggings,id=109810
 feet=boots_of_burning_focus,id=109787
 finger1=darkflame_loop,id=109766,enchant=gift_of_critical_strike
 finger2=mark_of_ice,id=109764,enchant=gift_of_critical_strike
-main_hand=spire_of_the_furious_construct,id=110031,enchant=gift_of_the_thunderlord
+main_hand=spire_of_the_furious_construct,id=110031,enchant=mark_of_the_thunderlord
 trinket1=fleshrenders_meathook,id=110002
 trinket2=ragewings_firefang,id=110003
 save=Druid_Balance_T17P.simc

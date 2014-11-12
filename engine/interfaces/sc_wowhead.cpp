@@ -392,7 +392,7 @@ std::string wowhead::decorated_spell_name( const std::string& name,
   if ( ! base_href.empty() )
   {
     if ( ! prefix.empty() )
-      decorated_name += prefix + "&nbsp;";
+      decorated_name += prefix + "&#160;";
 
     decorated_name += "<a href=\"" + base_href + "\" " + href_parm.c_str() + ">" + name + "</a>";
 

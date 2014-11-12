@@ -2325,12 +2325,14 @@ struct ferocious_bite_t : public cat_attack_t
 
   double excess_energy;
   double max_excess_energy;
+  bool max_energy;
   glyph_of_ferocious_bite_t* glyph_effect;
 
   ferocious_bite_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "ferocious_bite", p, p -> find_class_spell( "Ferocious Bite" ), options_str ),
-    excess_energy( 0 ), max_excess_energy( 0 )
+    cat_attack_t( "ferocious_bite", p, p -> find_class_spell( "Ferocious Bite" ), "" ),
+    excess_energy( 0 ), max_excess_energy( 0 ), max_energy( false )
   {
+    add_option( opt_bool( "max_energy" , max_energy ) );
     parse_options( options_str );
     base_costs[ RESOURCE_COMBO_POINT ] = 1;
 
@@ -2345,6 +2347,13 @@ struct ferocious_bite_t : public cat_attack_t
 
     if ( p -> wod_hotfix )
       base_multiplier *= 1.12;
+  }
+
+  virtual bool ready()
+  {
+    if ( max_energy && p() -> resources.current[ RESOURCE_ENERGY ] < p() -> max_fb_energy )
+      return false;
+    return cat_attack_t::ready();
   }
 
   virtual void execute()
@@ -3530,6 +3539,10 @@ struct healing_touch_t : public druid_heal_t
   {
     init_living_seed();
     ignore_false_positive = true; // Prevents cat/bear from failing a skill check and going into caster form.
+
+    // redirect to self if not specified
+    if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == DRUID_GUARDIAN ) )
+      target = p;
   }
 
   double spell_direct_power_coefficient( const action_state_t* /* state */ ) const
@@ -4322,7 +4335,7 @@ struct cenarion_ward_t : public druid_spell_t
   cenarion_ward_t( druid_t* p, const std::string& options_str ) :
     druid_spell_t( "cenarion_ward", p, p -> talent.cenarion_ward,  options_str )
   {
-    harmful    = false;
+    harmful = false;
   }
 
   void execute()
@@ -5485,7 +5498,7 @@ struct wild_charge_t : public druid_spell_t
 
   bool ready()
   {
-    if ( p() -> current.distance_to_move < data().min_range() ) // Cannot charge unless target is in range.
+    if ( p() -> current.distance_to_move < data().min_range() ) // Cannot charge if the target is too close.
       return false;
 
     return druid_spell_t::ready();
@@ -6022,8 +6035,8 @@ void druid_t::create_buffs()
 
   // Talent buffs
 
-  buff.displacer_beast    = buff_creator_t( this, "displacer_beast", find_spell( 137542 ) )
-                            .default_value( find_spell( 137542 ) -> effectN( 1 ).percent() );
+  buff.displacer_beast    = buff_creator_t( this, "displacer_beast", talent.displacer_beast -> effectN( 2 ).trigger() )
+                            .default_value( talent.displacer_beast -> effectN( 2 ).trigger() -> effectN( 1 ).percent() );
 
   buff.wild_charge_movement = buff_creator_t( this, "wild_charge_movement" );
 
@@ -6367,27 +6380,27 @@ void druid_t::apl_feral()
                      "Keep Rip from falling off during execute range." );
   def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" );
   def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
-  def -> add_action( "thrash_cat,if=buff.omen_of_clarity.react&remains<4.5&active_enemies>1" );
-  def -> add_action( "thrash_cat,if=!talent.bloodtalons.enabled&combo_points=5&remains<4.5&buff.omen_of_clarity.react");
+  def -> add_action( "thrash_cat,cycle_targets=1,if=buff.omen_of_clarity.react&remains<4.5&active_enemies>1" );
+  def -> add_action( "thrash_cat,cycle_targets=1,if=!talent.bloodtalons.enabled&combo_points=5&remains<4.5&buff.omen_of_clarity.react");
+  def -> add_action( "pool_resource,for_next=1" );
+  def -> add_action( "thrash_cat,cycle_targets=1,if=remains<4.5&active_enemies>1" );
 
   // Finishers
-  finish -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=target.health.pct<25&dot.rip.ticking&energy>=max_fb_energy" );
-  finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<3" );
-  finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<7.2&persistent_multiplier>dot.rip.pmultiplier" );
+  finish -> add_action( this, "Ferocious Bite", "cycle_targets=1,max_energy=1,if=target.health.pct<25&dot.rip.ticking" );
+  finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<3&target.time_to_die-remains>18" );
+  finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<7.2&persistent_multiplier>dot.rip.pmultiplier&target.time_to_die-remains>18" );
   finish -> add_action( this, "Savage Roar", "if=(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<12.6" );
-  finish -> add_action( this, "Ferocious Bite", "if=(energy.time_to_max<=1|buff.berserk.up|(cooldown.tigers_fury.remains<3&energy>=max_fb_energy))" );
+  finish -> add_action( this, "Ferocious Bite", "max_energy=1,if=(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)" );
 
   def -> add_action( "call_action_list,name=finisher,if=combo_points=5" );
 
   // DoT Maintenance
-  maintain -> add_action( this, "Rake", "cycle_targets=1,if=!talent.bloodtalons.enabled&remains<3&combo_points<5" );
-  maintain -> add_action( this, "Rake", "cycle_targets=1,if=!talent.bloodtalons.enabled&remains<4.5&combo_points<5&persistent_multiplier>dot.rake.pmultiplier" );
-  maintain -> add_action( this, "Rake", "cycle_targets=1,if=talent.bloodtalons.enabled&remains<4.5&combo_points<5&(!buff.predatory_swiftness.up|buff.bloodtalons.up|persistent_multiplier>dot.rake.pmultiplier)" );
-  maintain -> add_action( "thrash_cat,if=talent.bloodtalons.enabled&combo_points=5&remains<4.5&buff.omen_of_clarity.react");
-  maintain -> add_action( "pool_resource,for_next=1" );
-  maintain -> add_action( "thrash_cat,if=remains<4.5&active_enemies>1" );
-  maintain -> add_action( "moonfire_cat,cycle_targets=1,if=combo_points<5&remains<4.2&active_enemies<=10" );
-  maintain -> add_action( this, "Rake", "cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&combo_points<5" );
+  maintain -> add_action( this, "Rake", "cycle_targets=1,if=!talent.bloodtalons.enabled&remains<3&combo_points<5&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)" );
+  maintain -> add_action( this, "Rake", "cycle_targets=1,if=!talent.bloodtalons.enabled&remains<4.5&combo_points<5&persistent_multiplier>dot.rake.pmultiplier&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)" );
+  maintain -> add_action( this, "Rake", "cycle_targets=1,if=talent.bloodtalons.enabled&remains<4.5&combo_points<5&(!buff.predatory_swiftness.up|buff.bloodtalons.up|persistent_multiplier>dot.rake.pmultiplier)&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)" );
+  maintain -> add_action( "thrash_cat,cycle_targets=1,if=talent.bloodtalons.enabled&combo_points=5&remains<4.5&buff.omen_of_clarity.react");
+  maintain -> add_action( "moonfire_cat,cycle_targets=1,if=combo_points<5&remains<4.2&active_enemies<6&target.time_to_die-remains>tick_time*5" );
+  maintain -> add_action( this, "Rake", "cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&combo_points<5&active_enemies=1" );
 
   def -> add_action( "call_action_list,name=maintain" );
 

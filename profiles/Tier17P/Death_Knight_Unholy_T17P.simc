@@ -37,7 +37,7 @@ actions+=/run_action_list,name=aoe,if=active_enemies>=2
 actions+=/run_action_list,name=single_target,if=active_enemies<2
 
 actions.aoe=unholy_blight
-actions.aoe+=/plague_strike,if=!disease.ticking
+actions.aoe+=/run_action_list,name=spread,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking
 actions.aoe+=/defile
 actions.aoe+=/breath_of_sindragosa,if=runic_power>75
 actions.aoe+=/run_action_list,name=bos_aoe,if=dot.breath_of_sindragosa.ticking
@@ -56,7 +56,7 @@ actions.aoe+=/icy_touch
 actions.aoe+=/scourge_strike,if=unholy=1
 actions.aoe+=/death_coil
 actions.aoe+=/blood_tap
-actions.aoe+=/plague_leech,if=unholy=1
+actions.aoe+=/plague_leech
 actions.aoe+=/empower_rune_weapon
 
 actions.single_target=plague_leech,if=cooldown.outbreak.remains<1
@@ -110,6 +110,12 @@ actions.bos_aoe+=/blood_tap,if=buff.blood_charge.stack>=5
 actions.bos_aoe+=/plague_leech
 actions.bos_aoe+=/empower_rune_weapon
 actions.bos_aoe+=/death_coil,if=buff.sudden_doom.react
+
+actions.spread=blood_boil,cycle_targets=1,if=dot.blood_plague.ticking|dot.frost_fever.ticking
+actions.spread+=/outbreak,if=!talent.necrotic_plague.enabled&(!dot.blood_plague.ticking|!dot.frost_fever.ticking)
+actions.spread+=/outbreak,if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking
+actions.spread+=/plague_strike,if=!talent.necrotic_plague.enabled&(!dot.blood_plague.ticking|!dot.frost_fever.ticking)
+actions.spread+=/plague_strike,if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking
 
 head=rivetsealed_casque,id=109989,bonus_id=524
 neck=bloodmist_pendant,id=109962,bonus_id=524,enchant=gift_of_mastery

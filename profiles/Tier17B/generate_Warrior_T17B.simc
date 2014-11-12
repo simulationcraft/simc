@@ -12,11 +12,10 @@
 # Warrior Fury 1h T17B
 warrior="Warrior_Fury_1h_T17B"
 level=100
-race=troll
-spec=fury
+race=tauren
 role=attack
-position=back
-talents=1321322
+spec=fury
+talents=1321321
 glyphs=unending_rage/raging_wind/heroic_leap
 head=blackhands_faceguard,id=115584,bonus_id=567/523/448,gem_id=115809
 neck=vertebrae_protector,id=113900,bonus_id=567/523/448,gem_id=115809,enchant=gift_of_critical_strike
@@ -39,11 +38,10 @@ save=Warrior_Fury_1h_T17B.simc
 # Warrior Fury 2h T17B
 warrior="Warrior_Fury_2h_T17B"
 level=100
-race=troll
-spec=fury
+race=tauren
 role=attack
-position=back
-talents=1321322
+spec=fury
+talents=1321321
 glyphs=unending_rage/raging_wind/heroic_leap
 head=blackhands_faceguard,id=115584,bonus_id=567/523/448,gem_id=115809
 neck=vertebrae_protector,id=113900,bonus_id=567/523/448,gem_id=115809,enchant=gift_of_critical_strike
@@ -70,7 +68,7 @@ race=tauren
 spec=Arms
 role=attack
 position=back
-talents=1311322
+talents=1321322
 glyphs=unending_rage/heroic_leap/sweeping_strikes
 head=blackhands_faceguard,id=115584,bonus_id=567/523/448,gem_id=115809
 neck=vertebrae_protector,id=113900,bonus_id=567/523/448,gem_id=115809,enchant=gift_of_critical_strike

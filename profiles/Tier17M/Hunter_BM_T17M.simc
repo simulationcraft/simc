@@ -3,7 +3,7 @@ level=100
 race=orc
 role=attack
 position=ranged_back
-talents=0002213
+talents=0002133
 spec=beast_mastery
 
 # This default action priority list is automatically created based on your character.
@@ -31,12 +31,12 @@ actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
 actions+=/potion,name=draenic_agility,if=!talent.stampede.enabled&buff.bestial_wrath.up&target.health.pct<=20|target.time_to_die<=20
-actions+=/potion,name=draenic_agility,if=talent.stampede.enabled&cooldown.stampede.remains<1&(buff.bloodlust.up|buff.focus_fire.up)|target.time_to_die<=20
-actions+=/stampede,if=buff.bloodlust.up|buff.focus_fire.up|target.time_to_die<=20
+actions+=/potion,name=draenic_agility,if=talent.stampede.enabled&cooldown.stampede.remains<1&(buff.bloodlust.up|buff.focus_fire.up)|target.time_to_die<=25
+actions+=/stampede,if=buff.bloodlust.up|buff.focus_fire.up|target.time_to_die<=25
 actions+=/dire_beast
-actions+=/explosive_trap,if=active_enemies>2
+actions+=/explosive_trap,if=active_enemies>1
 actions+=/bestial_wrath,if=focus>60&!buff.bestial_wrath.up
-actions+=/barrage,if=active_enemies>2
+actions+=/barrage,if=active_enemies>1
 actions+=/multishot,if=active_enemies>5|(active_enemies>1&pet.cat.buff.beast_cleave.down)
 actions+=/focus_fire,five_stacks=1
 actions+=/barrage,if=active_enemies>1
@@ -55,30 +55,30 @@ actions+=/arcane_shot,if=focus>=64
 actions+=/cobra_shot
 
 head=rylakstalkers_headguard,id=115545,bonus_id=567
-neck=darklight_necklace,id=113865,bonus_id=567,enchant=gift_of_critical_strike
+neck=engineers_grounded_gorget,id=113892,bonus_id=567,enchant=gift_of_multistrike
 shoulders=rylakstalkers_spaulders,id=115547,bonus_id=567
-back=drape_of_the_dark_hunt,id=113971,bonus_id=567,enchant=gift_of_critical_strike
-chest=chestguard_of_the_siegemaker,id=113982,bonus_id=567
-wrists=bracers_of_the_wolfs_cunning,id=113943,bonus_id=567
+back=drape_of_the_dark_hunt,id=113971,bonus_id=567,enchant=gift_of_multistrike
+chest=rylakstalkers_tunic,id=115548,bonus_id=567
+wrists=bloodwhirl_bracers,id=113968,bonus_id=567
 hands=rylakstalkers_gloves,id=115549,bonus_id=567
 waist=grenadiers_belt,id=113955,bonus_id=567
 legs=rylakstalkers_legguards,id=115546,bonus_id=567
-feet=slagstomper_treads,id=113888,bonus_id=567
-finger1=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_critical_strike
-finger2=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_critical_strike
-trinket1=humming_blackiron_trigger,id=113985,bonus_id=567
+feet=railwalkers_ratcheted_boots,id=113954,bonus_id=567
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_multistrike
+finger2=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_multistrike
+trinket1=meaty_dragonspine_trophy,id=118114,bonus_id=567
 trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=567
-main_hand=mouth_of_the_fury,id=113885,bonus_id=567,enchant=megawatt_filament
+main_hand=garans_brutal_spearlauncher,id=113966,bonus_id=567,enchant=oglethorpes_missile_splitter
 
 # Gear Summary
 # gear_agility=3612
 # gear_stamina=4545
-# gear_crit_rating=1759
-# gear_haste_rating=560
-# gear_mastery_rating=706
+# gear_crit_rating=899
+# gear_haste_rating=423
+# gear_mastery_rating=1117
 # gear_armor=1463
-# gear_multistrike_rating=1010
-# gear_versatility_rating=237
+# gear_multistrike_rating=1692
+# gear_versatility_rating=122
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 summon_pet=cat
