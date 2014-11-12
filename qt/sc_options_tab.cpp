@@ -1317,10 +1317,20 @@ void SC_OptionsTab::toggleInterdependentOptions()
   //on Globals tab, toggle Tank Dummy and TMI Standard Boss settings
   choice.tank_dummy -> setDisabled( true );
   choice.tmi_boss -> setDisabled( true );
+  choice.target_level -> setEnabled( true );
+  choice.target_race -> setEnabled( true );
   if ( choice.boss_type -> currentIndex() == 2 )
+  {
     choice.tank_dummy -> setEnabled( true );
+    choice.target_level -> setDisabled( true );
+    choice.target_race -> setDisabled( true );
+  }
   if ( choice.boss_type -> currentIndex() == 3 )
+  {
     choice.tmi_boss -> setEnabled( true );
+    choice.target_level -> setDisabled( true );
+    choice.target_race -> setDisabled( true );
+  }
 
   // others go here
 

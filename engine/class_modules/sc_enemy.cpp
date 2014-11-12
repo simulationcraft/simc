@@ -66,7 +66,7 @@ struct enemy_t : public player_t
   {
     s -> target_list.push_back( this );
     position_str = "front";
-    level = 0;
+    //level = 0;
   }
 
   virtual role_e primary_role() const
@@ -819,8 +819,27 @@ void enemy_t::init_base_stats()
   if ( level == 0 )
     level = sim -> max_player_level + 3;
 
-  // skip overrides for TMI standard bosses and raid dummies
-  if ( boss_type_enum == BOSS_TMI_STANDARD || boss_type_enum == BOSS_TANK_DUMMY )
+  // Skip certain overrides for TMI standard bosses and raid dummies. The "else" covers those overrides for Fluffy_Pillow/Custom
+  if ( boss_type_enum == BOSS_TANK_DUMMY )
+  {
+    race = RACE_HUMANOID;
+    switch ( tank_dummy_enum )
+    {
+      case TANK_DUMMY_DUNGEON:
+        level = 102; break;
+      case TANK_DUMMY_WEAK:
+        level = 100; break;
+      default:
+        level = 103;
+    }
+  }
+  else if ( boss_type_enum == BOSS_TMI_STANDARD )
+  {
+    // special stuff for TMI bosses
+    level = sim -> max_player_level + 3;
+    race = RACE_HUMANOID;
+  }
+  else
   {
     // target_level override
     if ( sim -> target_level >= 0 )
@@ -838,18 +857,6 @@ void enemy_t::init_base_stats()
     {
       race = util::parse_race_type( sim -> target_race );
       race_str = util::race_type_string( race );
-    }
-  }
-  else if ( boss_type_enum == BOSS_TANK_DUMMY )
-  {
-    switch ( tank_dummy_enum )
-    {
-      case TANK_DUMMY_DUNGEON:
-        level = 102; break;
-      case TANK_DUMMY_WEAK:
-        level = 100; break;
-      default:
-        level = 103;
     }
   }
 
