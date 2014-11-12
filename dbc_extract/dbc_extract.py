@@ -23,7 +23,7 @@ parser.add_option("-o", "--out", dest = "output_type",
 parser.add_option("-t", "--type", dest = "type", 
                   help    = "Processing type [spell]", metavar = "TYPE", 
                   default = "spell", action = "store", type = "choice",
-                  choices = [ 'spell', 'class_list', 'talent', 'scale', 'view', 
+                  choices = [ 'spell', 'class_list', 'talent', 'scale', 'view', 'csv',
                               'header', 'patch', 'spec_spell_list', 'mastery_list', 'racial_list', 'perk_list',
                               'glyph_list', 'glyph_property_list', 'class_flags', 'set_list', 'random_property_points', 'random_suffix',
                               'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties', 'random_suffix_groups', 'spec_enum', 'spec_list', 'item_upgrade', 'rppm_coeff', 'set_list2', 'item_bonus' ]), 
@@ -309,6 +309,35 @@ elif options.type == 'view':
         record = dbc_file.find(id)
         record.parse()
         print record
+elif options.type == 'csv':
+    path = os.path.abspath(os.path.join(options.path, args[0]))
+    id = None
+    if len(args) > 1:
+        id = int(args[1])
+
+    dbc_file = dbc.parser.DBCParser(options, path)
+    if not dbc_file.open_dbc():
+        sys.exit(1)
+
+    first = True
+    if id == None:
+        record = dbc_file.next_record()
+        while record != None:
+            #mo = re.findall(r'(\$(?:{.+}|[0-9]*(?:<.+>|[^l][A-z:;]*)[0-9]?))', str(record))
+            #if mo:
+            #    print record, set(mo)
+            #if (record.flags_1 & 0x00000040) == 0:
+            if first:
+                sys.stdout.write('%s\n' % record.field_names())
+
+            sys.stdout.write('%s\n' % record.csv(first))
+            record = dbc_file.next_record()
+            first = False
+    else:
+        record = dbc_file.find(id)
+        record.parse()
+        print record.csv(first)
+
 elif options.type == 'scale':
     g = dbc.generator.LevelScalingDataGenerator(options, [ 'gtOCTHpPerStamina' ] )
     if not g.initialize():
