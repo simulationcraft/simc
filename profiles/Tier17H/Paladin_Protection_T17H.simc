@@ -46,6 +46,7 @@ actions+=/guardian_of_ancient_kings,if=time<5|(buff.holy_avenger.down&buff.shiel
 actions+=/ardent_defender,if=time<5|(buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down)
 actions+=/eternal_flame,if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react|buff.bastion_of_power.react)
 actions+=/eternal_flame,if=buff.bastion_of_power.react&buff.bastion_of_glory.react>=5
+actions+=/harsh_word,if=glyph.harsh_words.enabled&holy_power>=3
 actions+=/shield_of_the_righteous,if=buff.divine_purpose.react
 actions+=/shield_of_the_righteous,if=(holy_power>=5|incoming_damage_1500ms>=health.max*0.3)&(!talent.seraphim.enabled|cooldown.seraphim.remains>5)
 actions+=/shield_of_the_righteous,if=buff.holy_avenger.remains>time_to_hpg&(!talent.seraphim.enabled|cooldown.seraphim.remains>time_to_hpg)
@@ -57,6 +58,7 @@ actions+=/avengers_shield,if=buff.grand_crusader.react&active_enemies>1&!glyph.f
 actions+=/hammer_of_the_righteous,if=active_enemies>=3
 actions+=/crusader_strike
 actions+=/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.35
+actions+=/judgment,cycle_targets=1,if=glyph.double_jeopardy.enabled&last_judgment_target!=target
 actions+=/judgment
 actions+=/wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.35
 actions+=/avengers_shield,if=active_enemies>1&!glyph.focused_shield.enabled
@@ -94,6 +96,7 @@ actions.max_dps+=/hammer_of_the_righteous,if=active_enemies>=3
 actions.max_dps+=/judgment,if=talent.empowered_seals.enabled&(buff.maraads_truth.down|buff.liadrins_righteousness.down)
 actions.max_dps+=/crusader_strike
 actions.max_dps+=/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.35
+actions.max_dps+=/judgment,cycle_targets=1,if=glyph.double_jeopardy.enabled&last_judgment_target!=target
 actions.max_dps+=/judgment
 actions.max_dps+=/wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.35
 actions.max_dps+=/avengers_shield,if=active_enemies>1&!glyph.focused_shield.enabled
@@ -132,6 +135,7 @@ actions.max_survival+=/shield_of_the_righteous,if=buff.holy_avenger.remains>time
 actions.max_survival+=/hammer_of_the_righteous,if=active_enemies>=3
 actions.max_survival+=/crusader_strike
 actions.max_survival+=/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.35
+actions.max_survival+=/judgment,cycle_targets=1,if=glyph.double_jeopardy.enabled&last_judgment_target!=target
 actions.max_survival+=/judgment
 actions.max_survival+=/wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.35
 actions.max_survival+=/avengers_shield,if=buff.grand_crusader.react&active_enemies>1
