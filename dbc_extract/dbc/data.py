@@ -626,26 +626,26 @@ class DBCRecord(object):
             s += ']'
         return s
 
-    def field_names(self):
+    def field_names(self, delim = ','):
         s = ''
         for i in self._fields:
             if 'ofs_' not in i:
-                s += i + ","
+                s += i + delim
             else:
-                s += i[4:] + ","
+                s += i[4:] + delim
 
         if len(s) > 0:
             s = s[0:-1]
 
         return s
 
-    def csv(self, header = False):
+    def csv(self, delim = ',', header = False):
         s = ''
         for i in self._fields:
             if 'ofs_' not in i:
-                s += '%s,' % (self._field_fmt[self._fields.index(i)] % getattr(self, i))
+                s += '%s%c' % (self._field_fmt[self._fields.index(i)] % getattr(self, i), delim)
             else:
-                s += '%s,' % (getattr(self, i[4:]))
+                s += '%s%c' % (getattr(self, i[4:]), delim)
 
         if len(s) > 0:
             s = s[0:-1]
