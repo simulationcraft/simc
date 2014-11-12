@@ -4929,6 +4929,20 @@ void monk_t::apl_combat_mistweaver()
 
 void monk_t::init_action_list()
 {
+  if ( main_hand_weapon.type == WEAPON_NONE )
+  {
+    if ( !quiet )
+      sim -> errorf( "Player %s has no weapon equipped at the Main-Hand slot.", name() );
+    quiet = true;
+    return;
+  }
+  if (  main_hand_weapon.group() == WEAPON_2H && off_hand_weapon.group() == WEAPON_1H )
+  {
+    if ( !quiet )
+      sim -> errorf( "Player %s has a 1-Hand weapon equipped in the Off-Hand while a 2-Hand weapon is equipped in the Main-Hand.", name() );
+    quiet = true;
+    return;
+  }
   if ( !action_list_str.empty() )
   {
     player_t::init_action_list();
