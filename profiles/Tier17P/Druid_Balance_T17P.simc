@@ -70,7 +70,7 @@ finger1=darkflame_loop,id=109766,enchant=gift_of_critical_strike
 finger2=mark_of_ice,id=109764,enchant=gift_of_critical_strike
 trinket1=fleshrenders_meathook,id=110002
 trinket2=ragewings_firefang,id=110003
-main_hand=spire_of_the_furious_construct,id=110031,enchant=gift_of_the_thunderlord
+main_hand=spire_of_the_furious_construct,id=110031,enchant=mark_of_the_thunderlord
 
 # Gear Summary
 # gear_stamina=2465
