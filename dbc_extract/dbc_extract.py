@@ -27,6 +27,9 @@ parser.add_option("-t", "--type", dest = "type",
                               'header', 'patch', 'spec_spell_list', 'mastery_list', 'racial_list', 'perk_list',
                               'glyph_list', 'glyph_property_list', 'class_flags', 'set_list', 'random_property_points', 'random_suffix',
                               'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties', 'random_suffix_groups', 'spec_enum', 'spec_list', 'item_upgrade', 'rppm_coeff', 'set_list2', 'item_bonus' ]), 
+parser.add_option("--delim", dest = "delim",
+                  help = "Delimiter for -t csv",
+                  default = ",", action = "store", type = "str")
 parser.add_option("-l", "--level", dest = "level", 
                   help    = "Scaling values up to level [105]", 
                   default = 105, action = "store", type = "int")
@@ -328,15 +331,15 @@ elif options.type == 'csv':
             #    print record, set(mo)
             #if (record.flags_1 & 0x00000040) == 0:
             if first:
-                sys.stdout.write('%s\n' % record.field_names())
+                sys.stdout.write('%s\n' % record.field_names(options.delim))
 
-            sys.stdout.write('%s\n' % record.csv(first))
+            sys.stdout.write('%s\n' % record.csv(options.delim, first))
             record = dbc_file.next_record()
             first = False
     else:
         record = dbc_file.find(id)
         record.parse()
-        print record.csv(first)
+        print record.csv(options.delim, first)
 
 elif options.type == 'scale':
     g = dbc.generator.LevelScalingDataGenerator(options, [ 'gtOCTHpPerStamina' ] )
