@@ -1756,6 +1756,7 @@ void item::amplification( special_effect_t& effect,
   { // We have no clue how the trinket actually scales down with level. This will linearly decrease amplification until it hits 0 at level 100.
     double level_nerf = ( static_cast<double>( p -> level ) - 90 ) / 10.0;
     *amp_value *= 1 - level_nerf;
+    *amp_value = std::max( 0.01, *amp_value ); // Cap it at 1%
   }
   amp_buff -> default_value = *amp_value;
   amp_buff -> default_chance = 1.0;
@@ -1890,6 +1891,13 @@ void item::cleave( special_effect_t& effect,
   // Needs a damaging result
   effect.proc_flags2_ = PF2_ALL_HIT;
   effect.proc_chance_ = budget.p_epic[ 0 ] * cleave_driver_spell -> effectN( 1 ).m_average() / 10000.0;
+
+  if ( p -> level > 90 )
+  { // We have no clue how the trinket actually scales down with level. This will linearly decrease amplification until it hits 0 at level 100.
+    double level_nerf = ( static_cast<double>( p -> level ) - 90 ) / 10.0;
+     effect.proc_chance_ *= 1 - level_nerf;
+     effect.proc_chance_ = std::max( 0.01, effect.proc_chance_ ); // Cap it at 1%
+  }
 
   new cleave_callback_t( item, effect );
 }
