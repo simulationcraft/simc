@@ -12,14 +12,9 @@ namespace { // UNNAMED NAMESPACE
 
  /* WoD -- TODO:
 
-    Check error caused by AoC and Treants ::
-      Increasing number of treants in pet_force_of_nature seems to fix it, but 
-      cast interval is not low enough for this to make sense.
-
     = Feral =
 
     = Balance =
-    PvP/Tier Bonuses
 
     = Guardian =
     Damage check
@@ -216,6 +211,7 @@ public:
     natures_vigil_proc_t* natures_vigil;
     ursocs_vigor_t*       ursocs_vigor;
     yseras_gift_t*        yseras_gift;
+    spell_t*              starfall_ticking;
   } active;
 
   // Pets
@@ -514,8 +510,8 @@ public:
   struct talents_t
   {
     const spell_data_t* feline_swiftness;
-    const spell_data_t* displacer_beast; //todo
-    const spell_data_t* wild_charge; //todo
+    const spell_data_t* displacer_beast;
+    const spell_data_t* wild_charge;
 
     const spell_data_t* yseras_gift;
     const spell_data_t* renewal;
@@ -525,7 +521,7 @@ public:
     const spell_data_t* mass_entanglement; //pvp
     const spell_data_t* typhoon; //pvp
 
-    const spell_data_t* soul_of_the_forest; //Re-do for balance when they announce changes for it.
+    const spell_data_t* soul_of_the_forest;
     const spell_data_t* incarnation_tree;
     const spell_data_t* incarnation_son;
     const spell_data_t* incarnation_chosen;
@@ -4387,6 +4383,11 @@ struct displacer_beast_t : public druid_spell_t
 
     p() -> buff.cat_form -> trigger();
     p() -> buff.displacer_beast -> trigger();
+    if ( p() -> active.starfall_ticking )
+    {
+      p() -> active.starfall_ticking -> get_dot() -> cancel();
+      p() -> buff.starfall -> expire();
+    }
   }
 };
 
@@ -5270,9 +5271,11 @@ struct starfall_pulse_t : public druid_spell_t
 struct starfall_t : public druid_spell_t
 {
   spell_t* starfall;
+  cooldown_t* starfall_cd;
   starfall_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "starfall", player, player -> find_specialization_spell( "Starfall" ) ),
-    starfall( new starfall_pulse_t( player, "starfall_pulse" ) )
+    starfall( new starfall_pulse_t( player, "starfall_pulse" ) ),
+    starfall_cd( 0 )
   {
     parse_options( options_str );
 
@@ -5281,6 +5284,8 @@ struct starfall_t : public druid_spell_t
     cooldown = player -> cooldown.starfallsurge;
     base_multiplier *= 1.0 + player -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
     add_child( starfall );
+    starfall_cd = player -> get_cooldown( "starfall_cd" );
+    starfall_cd -> duration = timespan_t::from_seconds( 10 );
   }
 
   void tick( dot_t* )
@@ -5288,16 +5293,22 @@ struct starfall_t : public druid_spell_t
     starfall -> execute();
   }
 
+  void last_tick( dot_t* d )
+  {
+    druid_spell_t::last_tick( d );
+    p() -> active.starfall_ticking = 0;
+  }
   void execute()
   {
     p() -> buff.starfall -> trigger();
-
+    p() -> active.starfall_ticking = this;
     druid_spell_t::execute();
+    starfall_cd -> start();
   }
 
   bool ready()
   {
-    if ( p() -> buff.starfall -> up() )
+    if ( !starfall_cd -> up() )
       return false;
 
     return druid_spell_t::ready();
