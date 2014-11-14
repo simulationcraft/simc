@@ -60,7 +60,6 @@ actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.stacking_pr
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.multistrike.react&trinket.proc.multistrike.remains>cast_time
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.versatility.react&trinket.proc.versatility.remains>cast_time
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.mastery.react&trinket.proc.mastery.remains>cast_time
-actions.single_target+=/rain_of_fire,if=!ticking
 actions.single_target+=/immolate,cycle_targets=1,if=remains<=(duration*0.3)
 actions.single_target+=/conflagrate
 actions.single_target+=/incinerate,if=talent.charred_remains.enabled
