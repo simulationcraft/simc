@@ -2837,6 +2837,7 @@ struct elusive_brew_t: public monk_spell_t
     stancemask = STURDY_OX;
     harmful = false;
     trigger_gcd = timespan_t::zero();
+    use_off_gcd = true;
   }
 
   virtual void execute()
