@@ -3332,6 +3332,8 @@ struct penance_t final : public priest_spell_t
       can_trigger_atonement = priest.specs.atonement -> ok();
 
       this -> stats = stats;
+      if ( p.wod_hotfix )
+        base_multiplier *= 1.2;
     }
 
     void init() override
@@ -4554,6 +4556,8 @@ struct power_word_shield_t final : public priest_absorb_t
     // Tooltip is wrong.
     // direct_power_mod = 0.87; // hardcoded into tooltip
     // spell_power_mod.direct = 1.8709; // matches in-game actual value
+    if ( p.wod_hotfix )
+      base_multiplier *= 1.2;
 
     if ( p.glyphs.power_word_shield -> ok() )
     {

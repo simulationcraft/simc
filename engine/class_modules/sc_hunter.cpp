@@ -2286,7 +2286,11 @@ struct explosive_trap_t: public hunter_ranged_attack_t
     attack_power_mod.direct = p() -> find_spell( 13812 ) -> effectN( 1 ).ap_coeff();
 
     if ( player -> wod_hotfix )
+    {
       attack_power_mod.direct *= 1.15;
+      attack_power_mod.direct *= 2.0;
+      dot_duration *= 0.5;
+    }
 
     // BUG in game it uses the direct damage AP mltiplier for ticks as well.
     attack_power_mod.tick = attack_power_mod.direct;

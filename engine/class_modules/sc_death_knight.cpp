@@ -2946,6 +2946,8 @@ struct necrotic_plague_t : public death_knight_spell_t
     background = tick_may_crit = true;
     base_multiplier *= 1.0 + p -> spec.ebon_plaguebringer -> effectN( 2 ).percent();
     dot_behavior = DOT_REFRESH;
+    if ( p -> wod_hotfix )
+      base_multiplier *= 1.2;
   }
 
   double composite_target_multiplier( player_t* target ) const
