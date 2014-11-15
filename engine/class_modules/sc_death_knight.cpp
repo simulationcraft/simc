@@ -537,6 +537,7 @@ public:
   void      trigger_t17_4pc_unholy( const action_state_t* );
   void      apply_diseases( action_state_t* state, unsigned diseases );
   double    runes_count( rune_type rt, bool include_death, int position );
+  double    runes_basetype_ready( rune_type rt, bool require_death );
   double    runes_cooldown_any( rune_type rt, bool include_death, int position );
   double    runes_cooldown_all( rune_type rt, bool include_death, int position );
   double    runes_cooldown_time( rune_t* r );
@@ -5776,20 +5777,37 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
     rune_type rt = RUNE_TYPE_NONE;
     bool include_death = false;
     parse_rune_type( splits[ 0 ], include_death, rt );
-    bool frac = splits.size() == 2 && util::str_compare_ci( splits[ 1 ], "frac" );
+    bool frac = splits.size() == 2 && util::str_in_str_ci( splits[ 1 ], "frac" );
+    bool death = splits.size() == 2 && util::str_in_str_ci( splits[ 1 ], "death" );
 
-    struct rune_expr_t : public expr_t
+    if ( death )
     {
-      death_knight_t* dk;
-      rune_type r;
-      bool death, fractional;
-      rune_expr_t( death_knight_t* p, rune_type r, bool include_death, bool frac ) :
-        expr_t( "rune" ), dk( p ), r( r ), death( include_death ), fractional( frac ) { }
-      virtual double evaluate()
-      { return fractional ? dk -> runes_count( r, death, 0 ) : util::floor( dk -> runes_count( r, death, 0 ) ); }
-    };
-    if ( rt ) return new rune_expr_t( this, rt, include_death, frac );
-
+      struct rune_expr_t : public expr_t
+      {
+        death_knight_t* dk;
+        rune_type r;
+        bool fractional;
+        rune_expr_t( death_knight_t* p, rune_type r, bool frac ) :
+          expr_t( "rune" ), dk( p ), r( r ), fractional( frac ) { }
+        virtual double evaluate()
+        { return fractional ? dk -> runes_basetype_ready( r, true ) : util::floor( dk -> runes_basetype_ready( r, true ) ); }
+      };
+      if ( rt ) return new rune_expr_t( this, rt, frac );
+    }
+    else
+    {
+      struct rune_expr_t : public expr_t
+      {
+        death_knight_t* dk;
+        rune_type r;
+        bool death, fractional;
+        rune_expr_t( death_knight_t* p, rune_type r, bool include_death, bool frac ) :
+          expr_t( "rune" ), dk( p ), r( r ), death( include_death ), fractional( frac ) { }
+        virtual double evaluate()
+        { return fractional ? dk -> runes_count( r, death, 0 ) : util::floor( dk -> runes_count( r, death, 0 ) ); }
+      };
+      if ( rt ) return new rune_expr_t( this, rt, include_death, frac );
+    }
   }
 
   return player_t::create_expression( a, name_str );
@@ -7705,6 +7723,26 @@ double death_knight_t::runes_count( rune_type rt, bool include_death, int positi
       }
     }
   }
+  return result;
+}
+
+double death_knight_t::runes_basetype_ready( rune_type rt, bool require_death )
+{
+  double result = 0;
+  int start = 0;
+  if ( rt == RUNE_TYPE_FROST )
+    start = 2;
+  else if ( rt == RUNE_TYPE_UNHOLY )
+    start = 4;
+
+  for ( int i = start; i < start + 2; i++ )
+  {
+    const rune_t* r = &_runes.slot[ i ];
+
+    if ( ! require_death || ( require_death && r -> is_death() ) )
+      result += r -> value;
+  }
+
   return result;
 }
 
