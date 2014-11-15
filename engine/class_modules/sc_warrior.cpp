@@ -39,6 +39,7 @@ public:
   double crit_rage_mult;
   bool swapping; // Disables automated swapping when it's not required to use the ability.
   // Set to true whenever a player uses the swap option inside of stance_t, as we should assume they are intentionally sitting in defensive stance.
+  // Also set to true whenever gladiator's resolve is talented.
 
   simple_sample_data_t cs_damage;
   simple_sample_data_t priority_damage;
