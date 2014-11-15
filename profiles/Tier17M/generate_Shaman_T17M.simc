@@ -34,7 +34,8 @@ finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_mul
 finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant=gift_of_multistrike
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=567
-main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant=mark_of_the_frostwolf
+main_hand=franzoks_headsmasher,id=113904,bonus_id=567,enchant=mark_of_the_frostwolf
+off_hand=heart_of_the_clefthoof,id=113946,bonus_id=567
 save=Shaman_Elemental_T17M.simc
 
 

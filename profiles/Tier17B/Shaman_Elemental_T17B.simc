@@ -90,17 +90,18 @@ finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_mul
 finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567/523/448,gem_id=115813,enchant=gift_of_multistrike
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567/523/448,gem_id=115813
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=567/523/448,gem_id=115813
-main_hand=infernoflame_staff,id=113869,bonus_id=567/523/448,gem_id=115813,enchant=mark_of_the_frostwolf
+main_hand=franzoks_headsmasher,id=113904,bonus_id=567/523/448,gem_id=115813,enchant=mark_of_the_frostwolf
+off_hand=heart_of_the_clefthoof,id=113946,bonus_id=567/523/448,gem_id=115813
 
 # Gear Summary
-# gear_stamina=4785
-# gear_intellect=3800
-# gear_spell_power=1852
+# gear_stamina=4781
+# gear_intellect=3798
+# gear_spell_power=1855
 # gear_crit_rating=142
-# gear_haste_rating=948
-# gear_mastery_rating=1648
-# gear_armor=1503
-# gear_multistrike_rating=2313
+# gear_haste_rating=957
+# gear_mastery_rating=1544
+# gear_armor=2298
+# gear_multistrike_rating=2458
 # gear_versatility_rating=103
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
