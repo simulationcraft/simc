@@ -549,7 +549,7 @@ public:
   {
     if ( data._effects -> size() >= 3 && data.effectN( 3 ).trigger_spell_id() == 104330 )
     {
-      if ( p() -> o() -> talents.grimoire_of_supremacy -> ok() )
+      if ( p() -> o() -> talents.grimoire_of_supremacy -> ok() && p() -> pet_type != PET_WILD_IMP )
       {
         return  std::floor( data.effectN( 3 ).base_value() * ( 1 + p() -> o() -> talents.grimoire_of_supremacy -> effectN( 1 ).percent()) );
       }

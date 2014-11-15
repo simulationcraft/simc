@@ -302,6 +302,7 @@ void dbc::apply_hotfixes()
    */
 
   spell_data_t* s;
+  spelleffect_data_t* e;
 
   s = spell_data_t::find( 137595, false );
   
@@ -340,6 +341,16 @@ void dbc::apply_hotfixes()
 
   // Warlock
 
+  e = spelleffect_data_t::find( 129530, false );
+  assert( e -> base_value == 14 && "Check warlock fury generation of Mortal Cleave" );
+  e -> _base_value = 12;
+  if ( SC_USE_PTR )
+  {
+    e = spelleffect_data_t::find( 129530, true );
+    assert( e -> base_value == 14 && "Check warlock fury generation of Mortal Cleave" );
+    e -> _base_value = 12;
+  }
+  
   // Warrior
   s = spell_data_t::find( 96103, false );
   assert( s -> _spell_level == 39 && "Check level on Raging Blow" );
