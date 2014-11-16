@@ -40,6 +40,7 @@ public:
   bool swapping; // Disables automated swapping when it's not required to use the ability.
   // Set to true whenever a player uses the swap option inside of stance_t, as we should assume they are intentionally sitting in defensive stance.
   // Also set to true whenever gladiator's resolve is talented.
+  bool gladiator; //Check a bunch of crap to see if this guy wants to be gladiator dps or not.
 
   simple_sample_data_t cs_damage;
   simple_sample_data_t priority_damage;
@@ -407,6 +408,7 @@ public:
     arms_rage_mult = 1.695;
     crit_rage_mult = 2.325;
     swapping = false;
+    gladiator = true; //Gladiator until proven otherwise.
     base.distance = 5.0;
 
     regen_type = REGEN_DISABLED;
@@ -452,7 +454,7 @@ public:
   virtual void      invalidate_cache( cache_e );
   virtual double    temporary_movement_modifier() const;
 
-  void              apl_precombat(bool);
+  void              apl_precombat();
   void              apl_default();
   void              apl_fury();
   void              apl_arms();
@@ -1243,11 +1245,19 @@ struct auto_attack_t: public warrior_attack_t
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
     ignore_false_positive = true;
     range = 5;
-    p -> main_hand_attack = new melee_t( "auto_attack_mh", p );
-    p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
-    p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
 
-    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+    if ( p -> main_hand_weapon.type == WEAPON_2H && p -> has_shield_equipped() && p -> specialization() != WARRIOR_FURY )
+    {
+      sim -> errorf( "Player %s is using a 2 hander + shield while specced as Protection or Arms. Disabling autoattacks.", name() );
+    }
+    else
+    {
+      p -> main_hand_attack = new melee_t( "auto_attack_mh", p );
+      p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
+      p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
+    }
+
+    if ( p -> off_hand_weapon.type != WEAPON_NONE && p -> specialization() == WARRIOR_FURY )
     {
       p -> off_hand_attack = new melee_t( "auto_attack_oh", p );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
@@ -1638,6 +1648,14 @@ struct devastate_t: public warrior_attack_t
 
     if ( s -> result == RESULT_CRIT )
       p() -> enrage();
+  }
+
+  bool ready()
+  {
+    if ( !p() -> has_shield_equipped() )
+      return false;
+
+    return warrior_attack_t::ready();
   }
 };
 
@@ -3921,7 +3939,7 @@ void warrior_t::init_base_stats()
 
 //Pre-combat Action Priority List============================================
 
-void warrior_t::apl_precombat( bool probablynotgladiator )
+void warrior_t::apl_precombat()
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
@@ -3931,7 +3949,7 @@ void warrior_t::apl_precombat( bool probablynotgladiator )
     std::string flask_action = "flask,type=";
     if ( level > 90 )
     {
-      if ( primary_role() == ROLE_ATTACK || !probablynotgladiator )
+      if ( primary_role() == ROLE_ATTACK || gladiator )
         flask_action += "greater_draenic_strength_flask";
       else if ( primary_role() == ROLE_TANK )
         flask_action += "greater_draenic_stamina_flask";
@@ -3986,7 +4004,7 @@ void warrior_t::apl_precombat( bool probablynotgladiator )
                              "# Generic on-use trinket line if needed when swapping trinkets out. \n"
                              "#actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&(buff.avatar.up|!talent.avatar.enabled)))|(active_enemies>=2&buff.ravager.up)" );
   }
-  else if ( !probablynotgladiator )
+  else if ( gladiator )
   {
     precombat -> add_action( "stance,choose=gladiator\n"
                              "talent_override=bladestorm,if=raid_event.adds.count>5|desired_targets>5|(raid_event.adds.duration<10&raid_event.adds.exists)\n"
@@ -4840,6 +4858,7 @@ void warrior_t::init_action_list()
     player_t::init_action_list();
     return;
   }
+
   if ( main_hand_weapon.type == WEAPON_NONE )
   {
     if ( !quiet )
@@ -4848,12 +4867,45 @@ void warrior_t::init_action_list()
     quiet = true;
     return;
   }
-  clear_action_priority_lists();
-  bool probablynotgladiator = find_proc( "Mark of Blackrock" ) != 0; // Let's hope that non-gladiator protection warriors use the bonus armor weapon enchant.
-  if ( !talents.gladiators_resolve -> ok() || primary_role() == ROLE_TANK )
-    probablynotgladiator = true;
 
-  apl_precombat( probablynotgladiator );
+  clear_action_priority_lists();
+
+  // This section is dedicated to "how in the hell do we find out if the person is a gladiator dps, or just a 
+  // tank who likes the 5% reduced damage taken."
+  // First up, why not check to see if the player has the talent?
+  gladiator = talents.gladiators_resolve -> ok();
+
+  if ( gladiator )
+  {
+    // Second, if the person specifically selects tank, then I guess we're rolling with a tank.
+    if ( primary_role() == ROLE_TANK )
+      gladiator = false;
+
+    // Next, "Mark of Blackrock" is a enchant that procs bonus armor, but will only proc if the character goes below 50% hp.
+    // Thus, it seems like it will be the best enchant for tanks, but fairly awful for gladiator since dps-specs don't spend a lot of time under 50% hp.
+    else if ( find_proc( "Mark of Blackrock" ) != nullptr )
+      gladiator = false;
+
+    // Next, check both trinkets for stamina. In the future I will add more items to check, for now this will work.
+    // If the trinkets have stamina, then it's likely a tank.
+    else
+    {
+      size_t num_items = items.size();
+      for ( size_t i = 0; i < num_items; i++ )
+      {
+        if ( items[i].slot == SLOT_TRINKET_1 || items[i].slot == SLOT_TRINKET_2 )
+        {
+          if ( items[i].has_item_stat( STAT_STAMINA ) )
+          {
+            gladiator = false;
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  apl_precombat();
 
   switch ( specialization() )
   {
@@ -4864,7 +4916,7 @@ void warrior_t::init_action_list()
     apl_arms();
     break;
   case WARRIOR_PROTECTION:
-    if ( probablynotgladiator )
+    if ( !gladiator )
       apl_prot();
     else
       apl_glad();
@@ -4916,9 +4968,13 @@ void warrior_t::reset()
   player_t::reset();
 
   active_stance = STANCE_BATTLE;
+  if ( gladiator )
+    active_stance = STANCE_GLADIATOR;
+
   swapping = false;
 
   t15_2pc_melee.reset();
+  sudden_death.reset();
 }
 
 // Movement related overrides. =============================================
@@ -5255,14 +5311,10 @@ void warrior_t::invalidate_cache( cache_e c )
 
 role_e warrior_t::primary_role() const
 {
-  // Gladiator Stance is selected pre-combat, which means that anyone who imports their character will need to select ROLE_DPS/ATTACK before
-  // importing in order for the simulation to catch that they want to dps, not tank.
-  if ( specialization() == WARRIOR_PROTECTION || player_t::primary_role() == ROLE_TANK )
+  // For now, assume "Default role"/ROLE_NONE wants to be a gladiator dps.
+  if ( specialization() == WARRIOR_PROTECTION && player_t::primary_role() == ROLE_TANK )
   {
-    if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_ATTACK )
-      return ROLE_ATTACK;
-    else
-      return ROLE_TANK;
+    return ROLE_TANK;
   }
   return ROLE_ATTACK;
 }

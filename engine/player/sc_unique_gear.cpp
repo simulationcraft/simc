@@ -917,6 +917,8 @@ void gem::sinister_primal( special_effect_t& effect,
 {
   if ( item.sim -> challenge_mode )
     return;
+  if ( item.player -> level == 100 )
+    return;
 
   effect.custom_buff = item.player->buffs.tempus_repit;
 
@@ -928,6 +930,8 @@ void gem::indomitable_primal( special_effect_t& effect,
 {
   if ( item.sim -> challenge_mode )
     return;
+  if ( item.player -> level == 100 )
+    return;
 
   effect.custom_buff = item.player -> buffs.fortitude;
 
@@ -938,6 +942,8 @@ void gem::capacitive_primal( special_effect_t& effect,
                              const item_t& item )
 {
   if ( item.sim -> challenge_mode )
+    return;
+  if ( item.player -> level == 100 )
     return;
 
   struct lightning_strike_t : public attack_t
@@ -1003,6 +1009,9 @@ void gem::courageous_primal( special_effect_t& effect,
                              const item_t& item )
 {
   if ( item.sim -> challenge_mode )
+    return;
+
+  if ( item.player -> level == 100 )
     return;
 
   struct courageous_primal_proc_t : public dbc_proc_callback_t
@@ -1564,6 +1573,9 @@ void item::flurry_of_xuen( special_effect_t& effect,
   if ( item.sim -> challenge_mode )
     return;
 
+  if ( item.player -> level == 100 )
+    return;
+
   player_t* p = item.player;
   const spell_data_t* driver = p -> find_spell( effect.spell_id );
 
@@ -1625,6 +1637,9 @@ void item::essence_of_yulon( special_effect_t& effect,
   if ( item.sim -> challenge_mode )
     return;
 
+  if ( item.player -> level == 100 )
+    return;
+
   player_t* p = item.player;
   const spell_data_t* driver = p -> find_spell( effect.spell_id );
 
@@ -1642,6 +1657,8 @@ void item::endurance_of_niuzao( special_effect_t& /* effect */,
   maintenance_check( 600 );
 
   if ( item.sim -> challenge_mode )
+    return;
+  if ( item.player -> level == 100 )
     return;
 
   const spell_data_t* cd = item.player -> find_spell( 148010 );

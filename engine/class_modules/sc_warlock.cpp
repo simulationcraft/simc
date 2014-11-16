@@ -5751,6 +5751,7 @@ void warlock_t::reset()
 
   grimoire_of_synergy.reset();
   grimoire_of_synergy_pet.reset();
+  rppm_chaotic_infusion.reset();
 }
 
 

@@ -3998,6 +3998,8 @@ void hunter_t::reset()
 
   sniper_training = 0;
   movement_ended = - sniper_training_cd -> duration();
+  ppm_tier15_4pc_melee.reset();
+  ppm_tier15_2pc_melee.reset();
 }
 
 // hunter_t::arise ==========================================================
