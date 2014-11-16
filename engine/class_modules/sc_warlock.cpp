@@ -8,12 +8,8 @@
 // ==========================================================================
 //
 // TODO:
-//
 // check pet coefficients
 // Update action lists, especially AoE
-// Proper spell ids for drain_soul triggered Corruption/UA/Agony ticks.
-//   Main dots: UA: 30108, Corruption: 146739, Agony 980
-//   Child dots: UA: 131736, Corruption: 131740, Agony 131737
 // Proper Stats calc for childs of cataclysm
 // ==========================================================================
 namespace { // unnamed namespace
