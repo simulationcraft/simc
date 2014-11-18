@@ -4014,6 +4014,7 @@ struct rain_of_fire_t: public warlock_spell_t
     channeled = ( p -> spec.aftermath -> ok() ) ? false : true;
     tick_zero = ( p -> spec.aftermath -> ok() ) ? false : true;
     ignore_false_positive = true;
+    trigger_gcd += p -> spec.chaotic_energy -> effectN( 3 ).time_value();
 
     tick_action = new rain_of_fire_tick_t( p, data() );
   }
@@ -4035,7 +4036,7 @@ struct rain_of_fire_t: public warlock_spell_t
     double m = warlock_spell_t::composite_target_ta_multiplier( t );
 
     if ( td( t ) -> dots_immolate -> is_ticking() )
-      m *= 1.5;
+      m *= 1.0 + data().effectN( 1 ).percent();
 
     if ( p() -> buffs.mannoroths_fury -> up() )
     {
