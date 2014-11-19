@@ -392,6 +392,54 @@ void dbc::apply_hotfixes()
   assert( item -> trigger_spell[ 0 ] == 0 && "Petrified Flesh-Eating Spore OnUse has been fixed" );
   item -> trigger_spell[ 0 ] = ITEM_SPELLTRIGGER_ON_EQUIP;
 #endif
+
+  item = item_data_t::find( 111223, false );
+  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_AGILITY && "Primal Gladiator's Insignia of Conquest static stat has been fixed" );
+  item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
+
+  item = item_data_t::find( 115750, false );
+  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_AGILITY && "Primal Gladiator's Insignia of Conquest static stat has been fixed" );
+  item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
+
+  item = item_data_t::find( 111228, false );
+  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_INTELLECT && "Primal Gladiator's Insignia of Dominance static stat has been fixed" );
+  item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
+
+  item = item_data_t::find( 115755, false );
+  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_INTELLECT && "Primal Gladiator's Insignia of Dominance static stat has been fixed" );
+  item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
+
+  item = item_data_t::find( 111233, false );
+  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_STRENGTH && "Primal Gladiator's Insignia of Victory static stat has been fixed" );
+  item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
+
+  item = item_data_t::find( 115760, false );
+  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_STRENGTH && "Primal Gladiator's Insignia of Victory static stat has been fixed" );
+  item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
+
+  item = item_data_t::find( 115150, false );
+  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_AGILITY && "Primal Combatant's Insignia of Conquest static stat has been fixed" );
+  item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
+
+  item = item_data_t::find( 119927, false );
+  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_AGILITY && "Primal Combatant's Insignia of Conquest static stat has been fixed" );
+  item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
+
+  item = item_data_t::find( 115155, false );
+  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_INTELLECT && "Primal Combatants's Insignia of Dominance static stat has been fixed" );
+  item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
+
+  item = item_data_t::find( 119932, false );
+  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_INTELLECT && "Primal Combatants's Insignia of Dominance static stat has been fixed" );
+  item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
+
+  item = item_data_t::find( 115160, false );
+  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_STRENGTH && "Primal Combatant's Insignia of Victory static stat has been fixed" );
+  item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
+
+  item = item_data_t::find( 119937, false );
+  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_STRENGTH && "Primal Combatant's Insignia of Victory static stat has been fixed" );
+  item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
 }
 
 static void generate_class_flags_index( bool ptr = false )
