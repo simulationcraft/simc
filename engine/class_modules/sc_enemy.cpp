@@ -844,7 +844,7 @@ void enemy_t::init_base_stats()
     // target_level override
     if ( sim -> target_level >= 0 )
       level = sim -> target_level;
-    else if ( sim -> rel_target_level > 0 && ( sim -> max_player_level + sim -> rel_target_level ) >= 0 )
+    else if ( sim -> rel_target_level >= 0 && ( sim -> max_player_level + sim -> rel_target_level ) >= 0 )
       level = sim -> max_player_level + sim -> rel_target_level;
     else
       level = sim -> max_player_level + 3;
