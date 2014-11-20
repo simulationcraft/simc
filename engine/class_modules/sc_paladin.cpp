@@ -975,7 +975,7 @@ struct avengers_shield_t : public paladin_spell_t
 
     if ( ! p -> has_shield_equipped() )
     {
-      sim -> errorf( "%s: %s only usable with shield equiped in offhand\n", p -> name(), name() );
+      sim -> errorf( "%s: %s only usable with shield equipped in offhand\n", p -> name(), name() );
       background = true;
     }
 
@@ -4281,7 +4281,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 
     if ( ! p -> has_shield_equipped() )
     {
-      sim -> errorf( "%s: %s only usable with shield equiped in offhand\n", p -> name(), name() );
+      sim -> errorf( "%s: %s only usable with shield equipped in offhand\n", p -> name(), name() );
       background = true;
     }
 
