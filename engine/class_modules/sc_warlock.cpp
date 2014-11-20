@@ -5827,9 +5827,6 @@ void warlock_t::trigger_demonology_t17_2pc( const action_state_t* state ) const
   if ( ! state -> action -> result_is_hit( state -> result ) )
     return;
 
-  if ( cooldowns.t17_4pc_demonology -> down() )
-    return;
-
   if ( level < 100 )
     return;
 
@@ -5838,7 +5835,7 @@ void warlock_t::trigger_demonology_t17_2pc( const action_state_t* state ) const
 
   pets.inner_demon -> summon( sets.set( WARLOCK_DEMONOLOGY, T17, B2 ) -> effectN( 1 ).trigger() -> duration() );
 
-  procs.t17_4pc_demo -> occur();
+
   cooldowns.t17_4pc_demonology -> start( sets.set( WARLOCK_DEMONOLOGY, T17, B2 ) -> internal_cooldown() );
 }
 
