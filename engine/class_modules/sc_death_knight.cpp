@@ -7921,4 +7921,4 @@ const module_t* module_t::death_knight()
   static death_knight_module_t m;
   return &m;
 }
-
+//carrigan's test commit IGNOREME
