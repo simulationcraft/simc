@@ -214,7 +214,7 @@ public:
     cooldown_t* imp_swarm;
     cooldown_t* hand_of_guldan;
     cooldown_t* dark_soul;
-    cooldown_t* t17_4pc_demonology;
+    cooldown_t* t17_2pc_demonology;
   } cooldowns;
 
   // Passives
@@ -316,7 +316,7 @@ public:
   struct procs_t
   {
     proc_t* wild_imp;
-    proc_t* t17_4pc_demo;
+    proc_t* t17_2pc_demo;
   } procs;
 
   struct spells_t
@@ -4830,7 +4830,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   cooldowns.imp_swarm = get_cooldown( "imp_swarm" );
   cooldowns.hand_of_guldan = get_cooldown( "hand_of_guldan" );
   cooldowns.dark_soul = get_cooldown( "dark_soul" );
-  cooldowns.t17_4pc_demonology = get_cooldown( "t17_4pc_demonology" );
+  cooldowns.t17_2pc_demonology = get_cooldown( "t17_2pc_demonology" );
 
   regen_type = REGEN_DYNAMIC;
   regen_caches[CACHE_HASTE] = true;
@@ -5420,7 +5420,7 @@ void warlock_t::init_procs()
   player_t::init_procs();
 
   procs.wild_imp = get_proc( "wild_imp" );
-  procs.t17_4pc_demo = get_proc( "t17_4pc_demo" );
+  procs.t17_2pc_demo = get_proc( "t17_2pc_demo" );
 }
 
 void warlock_t::apl_precombat()
@@ -5827,6 +5827,9 @@ void warlock_t::trigger_demonology_t17_2pc( const action_state_t* state ) const
   if ( ! state -> action -> result_is_hit( state -> result ) )
     return;
 
+  if ( cooldowns.t17_2pc_demonology -> down() )
+    return;
+
   if ( level < 100 )
     return;
 
@@ -5835,8 +5838,8 @@ void warlock_t::trigger_demonology_t17_2pc( const action_state_t* state ) const
 
   pets.inner_demon -> summon( sets.set( WARLOCK_DEMONOLOGY, T17, B2 ) -> effectN( 1 ).trigger() -> duration() );
 
-
-  cooldowns.t17_4pc_demonology -> start( sets.set( WARLOCK_DEMONOLOGY, T17, B2 ) -> internal_cooldown() );
+  procs.t17_2pc_demo -> occur();
+  cooldowns.t17_2pc_demonology -> start( sets.set( WARLOCK_DEMONOLOGY, T17, B2 ) -> internal_cooldown() );
 }
 
 void warlock_t::trigger_demonology_t17_2pc_cast() const
