@@ -17,21 +17,21 @@ spec=guardian
 role=tank
 position=front
 talents=0301022
-head=primal_gladiators_headcover,id=111285
-neck=primal_gladiators_necklace_of_prowess,id=111080,enchant=gift_of_mastery
-shoulders=primal_gladiators_dragonhide_spaulders,id=111111
-back=primal_gladiators_cape_of_cruelty,id=111077,enchant=gift_of_mastery
-chest=primal_gladiators_tunic,id=111273
-wrists=primal_gladiators_bindings_of_prowess,id=111148
-hands=primal_gladiators_dragonhide_gloves,id=111107
-waist=primal_gladiators_belt_of_cruelty,id=111142
-legs=primal_gladiators_legguards,id=111276
-feet=primal_gladiators_boots_of_victory,id=111146
-finger1=primal_gladiators_ring_of_cruelty,id=111081,enchant=gift_of_mastery
-finger2=primal_gladiators_ring_of_prowess,id=111271,enchant=gift_of_mastery
-trinket1=primal_gladiators_badge_of_conquest,id=111222
-trinket2=primal_gladiators_insignia_of_conquest,id=111223
-main_hand=primal_gladiators_pike,id=111075,enchant=mark_of_the_frostwolf
+head=sorkas_nightshade_cowl,id=113978
+neck=choker_of_bestial_force,id=113952,enchant=gift_of_mastery
+shoulders=living_wood_spaulders,id=115544
+back=gronnstitched_greatcloak,id=113873,enchant=gift_of_mastery
+chest=unrendable_wolfhide_robes,id=113951
+wrists=squires_electroplated_bracers,id=113962
+hands=cannonball_loaders_grips,id=113949
+waist=girdle_of_unconquered_glory,id=113907
+legs=living_wood_legguards,id=115543
+feet=treads_of_the_dark_hunt,id=113974
+finger1=timeless_solium_band_of_brutality,id=118295,enchant=gift_of_mastery
+finger2=stonefist_band,id=113938,enchant=gift_of_mastery
+trinket1=blast_furnace_door,id=113893
+trinket2=tablet_of_turnbuckle_teamwork,id=113905
+main_hand=earthwarped_bladestaff,id=113640,enchant=mark_of_the_frostwolf
 save=Druid_Guardian_T17N.simc
 
 # Feral Druid T17N

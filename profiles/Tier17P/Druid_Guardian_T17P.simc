@@ -30,7 +30,7 @@ actions+=/savage_defense
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
-actions+=/use_item,slot=trinket1
+actions+=/use_item,slot=trinket2
 actions+=/barkskin
 actions+=/maul,if=buff.tooth_and_claw.react&incoming_damage_1s
 actions+=/berserk,if=buff.pulverize.remains>10
@@ -50,29 +50,29 @@ actions+=/mangle
 actions+=/thrash_bear,if=remains<=0.3*duration
 actions+=/lacerate
 
-head=primal_gladiators_headcover,id=111285
-neck=primal_gladiators_necklace_of_prowess,id=111080,enchant=gift_of_mastery
-shoulders=primal_gladiators_dragonhide_spaulders,id=111111
-back=primal_gladiators_cape_of_cruelty,id=111077,enchant=gift_of_mastery
-chest=primal_gladiators_tunic,id=111273
-wrists=primal_gladiators_bindings_of_prowess,id=111148
-hands=primal_gladiators_dragonhide_gloves,id=111107
-waist=primal_gladiators_belt_of_cruelty,id=111142
-legs=primal_gladiators_legguards,id=111276
-feet=primal_gladiators_boots_of_victory,id=111146
-finger1=primal_gladiators_ring_of_cruelty,id=111081,enchant=gift_of_mastery
-finger2=primal_gladiators_ring_of_prowess,id=111271,enchant=gift_of_mastery
-trinket1=primal_gladiators_badge_of_conquest,id=111222
-trinket2=primal_gladiators_insignia_of_conquest,id=111223
-main_hand=primal_gladiators_pike,id=111075,enchant=mark_of_the_frostwolf
+head=bloodfeather_cowl,id=109976,bonus_id=524
+neck=choker_of_weeping_viscera,id=109969,bonus_id=524,enchant_id=5319
+shoulders=leafmender_mantle,id=109937,bonus_id=524
+back=drape_of_swirling_deflection,id=109916,bonus_id=524,enchant_id=5312
+chest=bloodfeather_chestwrap,id=109885,bonus_id=524
+wrists=crystalbinder_wristguards,id=109870,bonus_id=522
+hands=bloodfeather_grips,id=109849,bonus_id=524
+waist=crystalbinder_belt,id=109831,bonus_id=524
+legs=blackwater_leggings,id=109823,bonus_id=524
+feet=crystalbinder_sandals,id=109789,bonus_id=524
+finger1=bladebinder_ring,id=109775,bonus_id=524,enchant_id=5326
+finger2=band_of_the_stalwart_stanchion,id=109783,bonus_id=524,enchant_id=5326
+trinket1=solar_containment_unit,id=110016,bonus_id=524
+trinket2=enforcers_stun_grenade,id=110017,bonus_id=524
+main_hand=crushtos_neck_separator,id=110040,bonus_id=524,enchant_id=5336
 
 # Gear Summary
-# gear_agility=2588
-# gear_stamina=3250
-# gear_crit_rating=858
-# gear_haste_rating=89
-# gear_mastery_rating=1440
-# gear_armor=950
-# gear_multistrike_rating=525
-# gear_versatility_rating=249
-# set_bonus=pvp_2pc=1
+# gear_agility=1630
+# gear_stamina=2446
+# gear_crit_rating=598
+# gear_haste_rating=277
+# gear_mastery_rating=1099
+# gear_armor=809
+# gear_bonus_armor=591
+# gear_multistrike_rating=58
+# gear_versatility_rating=223
