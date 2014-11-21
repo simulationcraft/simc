@@ -5197,7 +5197,7 @@ void mage_t::apl_frost()
   single_target -> add_action( this, "Ice Lance",
                                "if=!talent.frost_bomb.enabled&buff.fingers_of_frost.react&(!talent.thermal_void.enabled|cooldown.icy_veins.remains>8)" );
   single_target -> add_action( this, "Ice Lance",
-                               "if=talent.thermal_void.enabled&talent.mirror_image.enabled&buff.icy_veins.up&buff.icy_veins.remains<6&buff.icy_veins.remains<cooldown.icy_veins.remains",
+                               "if=talent.thermal_void.enabled&!glyph.icy_veins.enabled&talent.mirror_image.enabled&buff.icy_veins.up&buff.icy_veins.remains<6&buff.icy_veins.remains<cooldown.icy_veins.remains",
                                "Thermal Void IV extension" );
   single_target -> add_action( "water_jet,if=buff.fingers_of_frost.react=0&!dot.frozen_orb.ticking" );
   single_target -> add_action( this, "Frostbolt" );
