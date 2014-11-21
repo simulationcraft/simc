@@ -542,12 +542,14 @@ void enchant::mark_of_the_shattered_hand( special_effect_t& effect,
   // link driver to the procced spell, so we do it here.
   effect.rppm_scale = RPPM_HASTE;
   effect.trigger_spell_id = 159238;
+  effect.name_str = item.player -> find_spell( 159238 ) -> name_cstr();
 
   struct bleed_attack_t : public attack_t
   {
     bleed_attack_t( player_t* p, const special_effect_t& effect ) :
       attack_t( effect.name(), p, p -> find_spell( effect.trigger_spell_id ) )
     {
+      dot_behavior = DOT_REFRESH;
       hasted_ticks = false; background = true; callbacks = false; special = true;
       may_miss = may_block = may_dodge = may_parry = false; may_crit = true;
       tick_may_crit = true;
@@ -555,9 +557,22 @@ void enchant::mark_of_the_shattered_hand( special_effect_t& effect,
 
     double target_armor( player_t* ) const
     { return 0.0; }
+
+    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const
+    {
+      timespan_t new_duration = std::min( triggered_duration * 0.3, dot -> remains() ) + triggered_duration;
+      timespan_t period_mod = new_duration % base_tick_time;
+      new_duration += ( base_tick_time - period_mod );
+
+      return new_duration;
+    }
   };
 
-  effect.execute_action = new bleed_attack_t( item.player, effect );
+  action_t* bleed = item.player -> find_action( effect.name() );
+  if ( ! bleed )
+    bleed = new bleed_attack_t( item.player, effect );
+
+  effect.execute_action = bleed;
 
   new dbc_proc_callback_t( item, effect );
 }
