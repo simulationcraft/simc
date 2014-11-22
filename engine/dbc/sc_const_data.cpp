@@ -440,6 +440,26 @@ void dbc::apply_hotfixes()
   item = item_data_t::find( 119937, false );
   assert( item -> stat_type_e[ 0 ] == ITEM_MOD_STRENGTH && "Primal Combatant's Insignia of Victory static stat has been fixed" );
   item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
+
+  item = item_data_t::find( 118878, false );
+  assert( item -> stat_alloc[ 0 ] == 6666 && "Copeland's Clarity static stat has been fixed" );
+  item -> stat_alloc[ 0 ] = 5940;
+
+  item = item_data_t::find( 118876, false );
+  assert( item -> stat_alloc[ 0 ] == 6666 && "Lucky Double-Sided Coin static stat has been fixed" );
+  item -> stat_alloc[ 0 ] = 4455;
+
+  item = item_data_t::find( 118882, false );
+  assert( item -> stat_alloc[ 0 ] == 6666 && "Scabbard of Kyanos static stat has been fixed" );
+  item -> stat_alloc[ 0 ] = 0;
+
+  s = spell_data_t::find( 177189, false );
+  assert( s -> _duration == 10000 && "Scabbard of Kyanos On-Use effect has been fixed" );
+  s -> _duration = 15000;
+
+  item = item_data_t::find( 118880, false );
+  assert( item -> stat_alloc[ 0 ] == 6666 && "Everburning Candle static stat has been fixed" );
+  item -> stat_alloc[ 0 ] = 10000;
 }
 
 static void generate_class_flags_index( bool ptr = false )
