@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=0000113
+talents=0000133
 spec=destruction
 
 # This default action priority list is automatically created based on your character.
