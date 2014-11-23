@@ -629,6 +629,21 @@ void dbc::apply_hotfixes()
   assert(item -> stat_alloc[0] == 6666 && "Auto-Repairing Autoclave static stat has been fixed");
   item -> stat_alloc[0] = 8939;
 
+  item = item_data_t::find(112319, false);
+  assert(item -> stat_alloc[0] == 6666 && "Knight's Badge static stat has been fixed");
+  item -> stat_alloc[0] = 4457;
+
+  item = item_data_t::find(112320, false);
+  assert(item -> stat_alloc[0] == 6666 && "Sandman's Pouch static stat has been fixed");
+  item -> stat_alloc[0] = 4457;
+
+  item = item_data_t::find(112317, false);
+  assert(item -> stat_alloc[0] == 6666 && "Winged Hourglass static stat has been fixed");
+  item -> stat_alloc[0] = 4457;
+
+  item = item_data_t::find(112318, false);
+  assert(item -> stat_alloc[0] == 6666 && "Skull of War static stat has been fixed");
+  item -> stat_alloc[0] = 4457;
 }
 
 static void generate_class_flags_index( bool ptr = false )
