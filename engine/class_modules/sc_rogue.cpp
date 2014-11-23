@@ -264,7 +264,8 @@ struct rogue_t : public player_t
     const spell_data_t* fleet_footed;
     const spell_data_t* sprint;
     const spell_data_t* relentless_strikes;
-    const spell_data_t* ruthlessness;
+    const spell_data_t* ruthlessness_cp_driver;
+    const spell_data_t* ruthlessness_driver;
     const spell_data_t* ruthlessness_cp;
     const spell_data_t* shadow_focus;
     const spell_data_t* tier13_2pc;
@@ -431,7 +432,8 @@ struct rogue_t : public player_t
   void trigger_main_gauche( const action_state_t* );
   void trigger_combat_potency( const action_state_t* );
   void trigger_energy_refund( const action_state_t* );
-  void trigger_ruthlessness( const action_state_t* );
+  void trigger_ruthlessness_cp( const action_state_t* );
+  void trigger_ruthlessness_energy_cdr( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
   void trigger_venomous_wounds( const action_state_t* );
   void trigger_blade_flurry( const action_state_t* );
@@ -514,6 +516,10 @@ struct rogue_attack_t : public melee_attack_t
   // Combo point gains
   gain_t* cp_gain;
 
+  // Ruthlessness things
+  bool proc_ruthlessness_cp_;
+  bool proc_ruthlessness_energy_;
+
   rogue_attack_t( const std::string& token, rogue_t* p,
                   const spell_data_t* s = spell_data_t::nil(),
                   const std::string& options = std::string() ) :
@@ -522,7 +528,9 @@ struct rogue_attack_t : public melee_attack_t
     adds_combo_points( 0 ),
     requires_weapon( WEAPON_NONE ),
     combo_points_spent( 0 ),
-    ability_type( ABILITY_NONE )
+    ability_type( ABILITY_NONE ),
+    proc_ruthlessness_cp_( data().affected_by( p -> spell.ruthlessness_cp_driver -> effectN( 1 ) ) ),
+    proc_ruthlessness_energy_( data().affected_by( p -> spell.ruthlessness_driver -> effectN( 2 ) ) )
   {
     parse_options( options );
 
@@ -579,6 +587,12 @@ struct rogue_attack_t : public melee_attack_t
   // Generic rules for proccing Main Gauche, used by rogue_t::trigger_main_gauche()
   virtual bool procs_main_gauche() const
   { return callbacks && ! proc && weapon != 0 && weapon -> slot == SLOT_MAIN_HAND; }
+
+  virtual bool procs_ruthlessness_cp() const
+  { return proc_ruthlessness_cp_; }
+
+  virtual bool procs_ruthlessness_energy() const
+  { return proc_ruthlessness_energy_; }
 
   // Adjust poison proc chance
   virtual double composite_poison_flat_modifier( const action_state_t* ) const
@@ -686,7 +700,7 @@ struct rogue_attack_t : public melee_attack_t
     {
       if ( tdata -> dots.revealing_strike -> is_ticking() )
         m *= 1.0 + tdata -> dots.revealing_strike -> current_action -> data().effectN( 3 ).percent();
-      else if ( p() -> specialization() == ROGUE_COMBAT )
+      else if ( p() -> specialization() == ROGUE_COMBAT && harmful )
         p() -> procs.no_revealing_strike -> occur();
     }
 
@@ -1267,7 +1281,20 @@ void rogue_attack_t::execute()
 
   p() -> trigger_auto_attack( execute_state );
   p() -> trigger_shadow_reflection( execute_state );
-  p() -> trigger_ruthlessness( execute_state );
+
+  // Ruthlessness energy gain and CDR are not done per target, but rather per
+  // cast.
+  p() -> trigger_ruthlessness_energy_cdr( execute_state );
+
+  // Ruthlessness CP gain has to be done in a special way. We need to do it
+  // after combo points have been consumed (in consume_resource()), but it also
+  // has to be per target. Thus, we look at the execute_state->n_targets, and
+  // loop that many times, generating combo point for each.
+  for ( size_t i = 0, end = execute_state -> n_targets; i < end; i++ )
+  {
+    p() -> trigger_ruthlessness_cp( execute_state );
+  }
+
   p() -> trigger_combo_point_gain( execute_state );
 
   // Anticipation only refreshes Combo Points, if the Combat and Subtlety T17
@@ -2752,27 +2779,11 @@ struct death_from_above_t : public rogue_attack_t
   {
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
-    tick_may_crit = false;
+    callbacks = tick_may_crit = false;
+    attack_power_mod.direct /= 5;
+    base_costs[ RESOURCE_COMBO_POINT ] = 1;
 
     aoe = -1;
-  }
-
-  double action_multiplier() const
-  {
-    double m = rogue_attack_t::action_multiplier();
-
-    // DFA benefits from Subtlety Mastery, we do not model it as a conventional
-    // finisher, so it needs to be explicitly put here
-    if ( p() -> mastery.executioner -> ok() )
-      m *= 1.0 + p() -> cache.mastery_value();
-
-    return m;
-  }
-
-  double attack_direct_power_coefficient( const action_state_t* ) const
-  {
-    return attack_power_mod.direct / player -> resources.max[ RESOURCE_COMBO_POINT ] *
-           player -> resources.current[ RESOURCE_COMBO_POINT ];
   }
 
   void execute()
@@ -2795,19 +2806,42 @@ struct death_from_above_t : public rogue_attack_t
       if ( player -> off_hand_attack -> execute_event -> remains() < timespan_t::from_seconds( 0.8 ) )
         player -> off_hand_attack -> execute_event -> reschedule( timespan_t::from_seconds( 0.8 ) );
     }
+
+    // DFA also procs another combo point from one of its various
+    // behind-the-scenes driver spells, so perform an extra ruthlessness CP
+    // grant here, separate from everything else. Note that this is not a
+    // per-target one (or rather, the combo point is generated by some
+    // single-targeted ability).
+    p() -> trigger_ruthlessness_cp( execute_state );
   }
 
   void last_tick( dot_t* d )
   {
     rogue_attack_t::last_tick( d );
 
-    if ( player -> resources.current[ RESOURCE_COMBO_POINT ] == 0 )
-      return;
-
     if ( envenom )
+    {
+      // DFA is a finisher, so copy CP state (number of CPs used on DFA) from
+      // the DFA dot
+      action_state_t* env_state = envenom -> get_state();
+      envenom -> target = d -> target;
+      envenom -> snapshot_state( env_state, DMG_DIRECT );
+      cast_state( env_state ) -> cp = cast_state( d -> state ) -> cp;
+
+      envenom -> pre_execute_state = env_state;
       envenom -> execute();
+    }
     else if ( eviscerate )
+    {
+      // DFA is a finisher, so copy CP state (number of CPs used on DFA) from
+      // the DFA dot
+      action_state_t* evis_state = eviscerate -> get_state();
+      eviscerate -> target = d -> target;
+      eviscerate -> snapshot_state( evis_state, DMG_DIRECT );
+
+      eviscerate -> pre_execute_state = evis_state;
       eviscerate -> execute();
+    }
     else
       assert( 0 );
 
@@ -3192,7 +3226,7 @@ void rogue_t::trigger_energy_refund( const action_state_t* state )
   resource_gain( RESOURCE_ENERGY, energy_restored, gains.energy_refund );
 }
 
-void rogue_t::trigger_ruthlessness( const action_state_t* state )
+void rogue_t::trigger_ruthlessness_energy_cdr( const action_state_t* state )
 {
   if ( cooldowns.ruthlessness -> down() )
     return;
@@ -3206,30 +3240,57 @@ void rogue_t::trigger_ruthlessness( const action_state_t* state )
   if ( ! state -> action -> base_costs[ RESOURCE_COMBO_POINT ] )
     return;
 
-  const actions::rogue_attack_state_t* s = actions::rogue_attack_t::cast_state( state );
+  actions::rogue_attack_t* attack = debug_cast<actions::rogue_attack_t*>( state -> action );
+  if ( ! attack -> procs_ruthlessness_energy() )
+    return;
+
+  const actions::rogue_attack_state_t* s = attack -> cast_state( state );
   if ( s -> cp == 0 )
     return;
 
   if ( state -> action -> harmful )
   {
-    timespan_t reduction = spell.ruthlessness -> effectN( 3 ).time_value() * s -> cp;
+    timespan_t reduction = spell.ruthlessness_driver -> effectN( 3 ).time_value() * s -> cp;
 
     cooldowns.adrenaline_rush -> ready -= reduction;
     cooldowns.killing_spree   -> ready -= reduction;
     cooldowns.sprint          -> ready -= reduction;
   }
 
-  double cp_chance = spell.ruthlessness -> effectN( 1 ).pp_combo_points() * s -> cp / 100.0;
-  if ( rng().roll( cp_chance ) )
-    trigger_combo_point_gain( state, spell.ruthlessness -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(), gains.ruthlessness );
-
-  double energy_chance = spell.ruthlessness -> effectN( 2 ).pp_combo_points() * s -> cp / 100.0;
+  double energy_chance = spell.ruthlessness_driver -> effectN( 2 ).pp_combo_points() * s -> cp / 100.0;
   if ( rng().roll( energy_chance ) )
     resource_gain( RESOURCE_ENERGY,
-                   spell.ruthlessness -> effectN( 2 ).trigger() -> effectN( 1 ).resource( RESOURCE_ENERGY ),
+                   spell.ruthlessness_driver -> effectN( 2 ).trigger() -> effectN( 1 ).resource( RESOURCE_ENERGY ),
                    gains.ruthlessness );
 
-  cooldowns.ruthlessness -> start( spell.ruthlessness -> internal_cooldown() );
+  cooldowns.ruthlessness -> start( spell.ruthlessness_driver -> internal_cooldown() );
+}
+
+// Note, no ICD
+void rogue_t::trigger_ruthlessness_cp( const action_state_t* state )
+{
+  if ( ! spec.ruthlessness -> ok() )
+    return;
+
+  if ( ! state -> action -> result_is_hit( state -> result ) )
+    return;
+
+  if ( ! state -> action -> base_costs[ RESOURCE_COMBO_POINT ] )
+    return;
+
+  actions::rogue_attack_t* attack = debug_cast<actions::rogue_attack_t*>( state -> action );
+  if ( ! attack -> procs_ruthlessness_cp() )
+    return;
+
+  const actions::rogue_attack_state_t* s = attack -> cast_state( state );
+  if ( s -> cp == 0 )
+    return;
+
+  double cp_chance = spell.ruthlessness_cp_driver -> effectN( 1 ).pp_combo_points() * s -> cp / 100.0;
+  if ( rng().roll( cp_chance ) )
+    trigger_combo_point_gain( state,
+                              spell.ruthlessness_cp_driver -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(),
+                              gains.ruthlessness );
 }
 
 void rogue_t::trigger_relentless_strikes( const action_state_t* state )
@@ -4801,7 +4862,8 @@ void rogue_t::init_spells()
   spell.fleet_footed        = find_class_spell( "Fleet Footed" );
   spell.sprint              = find_class_spell( "Sprint" );
   spell.relentless_strikes  = find_spell( 58423 );
-  spell.ruthlessness        = find_spell( 14161 );
+  spell.ruthlessness_cp_driver = find_spell( 174597 );
+  spell.ruthlessness_driver = find_spell( 14161 );
   spell.ruthlessness_cp     = spec.ruthlessness -> effectN( 1 ).trigger();
   spell.shadow_focus        = find_spell( 112942 );
   spell.tier13_2pc          = find_spell( 105864 );
