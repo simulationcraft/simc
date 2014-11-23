@@ -1257,7 +1257,14 @@ int action_t::schedule_multistrike( action_state_t* state, dmg_e type, double ti
 
   // multistrike can proc twice
   int n_strikes = 0;
-  for ( int i = 0; i < 2; i++ )
+  int num_rolls = 2;
+
+  if ( sim -> pvp_crit )
+  {
+    num_rolls = 1; // In PVP, there is only 1 multistrike roll.
+  }
+
+  for ( int i = 0; i < num_rolls; i++ )
   {
     result_e r = calculate_multistrike_result( state, type );
     if ( ! result_is_multistrike( r ) )

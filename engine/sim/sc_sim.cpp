@@ -2549,7 +2549,7 @@ void sim_t::create_options()
   add_option( opt_bool( "challenge_mode", challenge_mode ) );
   add_option( opt_int( "scale_to_itemlevel", scale_to_itemlevel ) );
   add_option( opt_bool( "disable_set_bonuses", disable_set_bonuses ) );
-  add_option( opt_bool( "pvp_crit", pvp_crit ) );
+  add_option( opt_bool( "pvp", pvp_crit ) );
   add_option( opt_bool( "equalize_plot_weights", equalize_plot_weights ) );
   add_option( opt_int( "desired_targets", desired_targets ) );
   add_option( opt_bool( "show_etmi", show_etmi ) );
