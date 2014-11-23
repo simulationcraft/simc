@@ -445,6 +445,10 @@ void dbc::apply_hotfixes()
   assert( item -> stat_alloc[ 0 ] == 6666 && "Copeland's Clarity static stat has been fixed" );
   item -> stat_alloc[ 0 ] = 5940;
 
+  item = item_data_t::find( 118878, false );
+  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_INTELLECT && "Copeland's Clarity static stat has been fixed" );
+  item -> stat_type_e[ 0 ] = ITEM_MOD_CRIT_RATING;
+
   item = item_data_t::find( 118876, false );
   assert( item -> stat_alloc[ 0 ] == 6666 && "Lucky Double-Sided Coin static stat has been fixed" );
   item -> stat_alloc[ 0 ] = 4455;
