@@ -1259,6 +1259,8 @@ double rogue_attack_t::cost() const
 
 // rogue_attack_t::consume_resource =========================================
 
+// NOTE NOTE NOTE: Eviscerate / Envenom both override this fully due to Death
+// from Above
 void rogue_attack_t::consume_resource()
 {
   melee_attack_t::consume_resource();
@@ -1749,10 +1751,16 @@ struct envenom_t : public rogue_attack_t
 
   void consume_resource()
   {
-    rogue_attack_t::consume_resource();
+    melee_attack_t::consume_resource();
+
+    if ( ! p() -> buffs.death_from_above -> check() )
+      p() -> spend_combo_points( execute_state );
 
     if ( p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T17, B4 ) )
       p() -> trigger_combo_point_gain( execute_state, 1, p() -> gains.t17_4pc_assassination );
+
+    if ( result_is_miss( execute_state -> result ) && resource_consumed > 0 )
+      p() -> trigger_energy_refund( execute_state );
   }
 
   double action_multiplier() const
@@ -1885,7 +1893,13 @@ struct eviscerate_t : public rogue_attack_t
 
   void consume_resource()
   {
-    rogue_attack_t::consume_resource();
+    melee_attack_t::consume_resource();
+
+    if ( ! p() -> buffs.death_from_above -> check() )
+      p() -> spend_combo_points( execute_state );
+
+    if ( result_is_miss( execute_state -> result ) && resource_consumed > 0 )
+      p() -> trigger_energy_refund( execute_state );
 
     p() -> buffs.deceit -> expire();
   }
