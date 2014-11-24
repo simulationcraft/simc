@@ -2830,9 +2830,9 @@ struct death_from_above_t : public rogue_attack_t
     p() -> trigger_ruthlessness_cp( execute_state );
   }
 
-  void last_tick( dot_t* d )
+  void tick( dot_t* d )
   {
-    rogue_attack_t::last_tick( d );
+    rogue_attack_t::tick( d );
 
     if ( envenom )
     {
@@ -2853,6 +2853,7 @@ struct death_from_above_t : public rogue_attack_t
       action_state_t* evis_state = eviscerate -> get_state();
       eviscerate -> target = d -> target;
       eviscerate -> snapshot_state( evis_state, DMG_DIRECT );
+      cast_state( evis_state ) -> cp = cast_state( d -> state ) -> cp;
 
       eviscerate -> pre_execute_state = evis_state;
       eviscerate -> execute();
