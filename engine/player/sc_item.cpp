@@ -1185,6 +1185,10 @@ bool item_t::decode_random_suffix()
 
 bool item_t::decode_gems()
 {
+  // Disable gems in challenge modes.
+  if ( sim -> challenge_mode )
+    return true;
+
   // Parse user given gems= string. Stats are parsed as is, meta gem through
   // DBC data
   if ( ! option_gems_str.empty() && option_gems_str != "none" )
