@@ -6485,14 +6485,15 @@ void druid_t::apl_guardian()
 
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( this, "Skull Bash" );
-  default_list -> add_action( this, "Savage Defense" );
+  default_list -> add_action( this, "Savage Defense", "if=buff.barkskin.down" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] );
   for ( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] );
 
-  default_list -> add_action( this, "Barkskin" );
+  default_list -> add_action( this, "Barkskin", "if=buff.bristling_fur.down" );
+  default_list -> add_talent( this, "Bristling Fur", "if=buff.barkskin.down&buff.savage_defense.down" );
   default_list -> add_action( this, "Maul", "if=buff.tooth_and_claw.react&incoming_damage_1s" );
   default_list -> add_action( this, "Berserk", "if=buff.pulverize.remains>10" );
   default_list -> add_action( this, "Frenzied Regeneration", "if=rage>=80" );
