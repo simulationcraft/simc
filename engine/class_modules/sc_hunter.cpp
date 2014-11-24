@@ -2289,7 +2289,6 @@ struct explosive_trap_t: public hunter_ranged_attack_t
     {
       attack_power_mod.direct *= 1.15;
       attack_power_mod.direct *= 2.0;
-      dot_duration *= 0.5;
     }
 
     // BUG in game it uses the direct damage AP mltiplier for ticks as well.
