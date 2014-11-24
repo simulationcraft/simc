@@ -1896,12 +1896,13 @@ struct eviscerate_t : public rogue_attack_t
     melee_attack_t::consume_resource();
 
     if ( ! p() -> buffs.death_from_above -> check() )
+    {
       p() -> spend_combo_points( execute_state );
+      p() -> buffs.deceit -> expire();
+    }
 
     if ( result_is_miss( execute_state -> result ) && resource_consumed > 0 )
       p() -> trigger_energy_refund( execute_state );
-
-    p() -> buffs.deceit -> expire();
   }
 
   virtual void impact( action_state_t* state )
