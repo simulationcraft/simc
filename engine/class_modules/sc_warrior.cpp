@@ -4875,7 +4875,7 @@ void warrior_t::init_action_list()
   // First up, why not check to see if the player has the talent?
   gladiator = talents.gladiators_resolve -> ok();
 
-  if ( gladiator )
+  if ( gladiator && ( primary_role() != ROLE_DPS || primary_role() == ROLE_ATTACK ) ) // Don't worry about checking the rest if the player selects dps.
   {
     // Second, if the person specifically selects tank, then I guess we're rolling with a tank.
     if ( primary_role() == ROLE_TANK )
