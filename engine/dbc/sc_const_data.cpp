@@ -447,10 +447,10 @@ void dbc::apply_hotfixes()
   assert( item -> stat_type_e[ 0 ] == ITEM_MOD_INTELLECT && "Copeland's Clarity static stat has been fixed" );
   item -> stat_type_e[ 0 ] = ITEM_MOD_CRIT_RATING;
   e = spelleffect_data_t::find(254387, false);
-  assert(e -> _m_avg == 3.33333 && "Copeland's Clarity proc has been fixed");
+  assert(e -> _m_avg == 3.3333330154 && "Copeland's Clarity proc has been fixed");
   e -> _m_avg = 2.5;
   e = spelleffect_data_t::find(254388, false);
-  assert( e -> _m_avg == 3.33333 && "Copeland's Clarity proc has been fixed");
+  assert(e -> _m_avg == 3.3333330154 && "Copeland's Clarity proc has been fixed");
   e -> _m_avg = 2.5;
 
   item = item_data_t::find( 118876, false );
