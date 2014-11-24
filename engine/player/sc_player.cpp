@@ -1769,8 +1769,8 @@ void player_t::init_scaling()
 
     role_e role = primary_role();
 
-    bool attack = ( role == ROLE_ATTACK || role == ROLE_HYBRID || role == ROLE_TANK );
-    bool spell  = ( role == ROLE_SPELL  || role == ROLE_HYBRID || role == ROLE_HEAL );
+    bool attack = ( role == ROLE_ATTACK || role == ROLE_HYBRID || role == ROLE_TANK || role == ROLE_DPS );
+    bool spell  = ( role == ROLE_SPELL  || role == ROLE_HYBRID || role == ROLE_HEAL || role == ROLE_DPS );
     bool tank   = ( role == ROLE_TANK );
     bool heal   = ( role == ROLE_HEAL );
 

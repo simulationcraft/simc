@@ -453,6 +453,52 @@ void dbc::apply_hotfixes()
   assert(e -> _m_avg == 3.3333330154 && "Copeland's Clarity proc has been fixed");
   e -> _m_avg = 2.5;
 
+  item = item_data_t::find(111227, false);
+  assert(item -> stat_alloc[0] == 6667 && "Primal Gladiator's Badge of Dominance static stat amount");
+  item -> stat_alloc[0] = 2095;
+  e = spelleffect_data_t::find(161002, false);
+  assert(e -> _misc_value + 1 == ATTR_INTELLECT && "Primal Gladiator's Badge of Dominance proc stat");
+  e -> _misc_value = RATING_MOD_VERS_DAMAGE | RATING_MOD_VERS_HEAL | RATING_MOD_VERS_MITIG;
+  e -> _subtype = A_MOD_RATING;
+  assert(e -> _m_avg == 1.2384999990 && "Primal Gladiator's Badge of Dominance proc amount");
+  e -> _m_avg = 1.3190476190476;
+
+  item = item_data_t::find(111232, false);
+  assert(item -> stat_alloc[0] == 6667 && "Primal Gladiator's Badge of Victory static stat amount");
+  item -> stat_alloc[0] = 2095;
+  e = spelleffect_data_t::find(160998, false);
+  assert(e -> _misc_value + 1 == ATTR_STRENGTH && "Primal Gladiator's Badge of Victory proc stat");
+  e -> _misc_value = RATING_MOD_VERS_DAMAGE | RATING_MOD_VERS_HEAL | RATING_MOD_VERS_MITIG;
+  e -> _subtype = A_MOD_RATING;
+  assert(e -> _m_avg == 1.2384999990 && "Primal Gladiator's Badge of Victory proc amount");
+  e -> _m_avg = 1.3190476190476;
+
+  item = item_data_t::find(115749, false);
+  assert(item -> stat_alloc[0] == 6667 && "Primal Gladiator's Badge of Conquest static stat amount");
+  item -> stat_alloc[0] = 2095;
+  e = spelleffect_data_t::find(161010, false);
+  assert(e -> _misc_value + 1 == ATTR_AGILITY && "Primal Gladiator's Badge of Conquest proc stat");
+  e -> _misc_value = RATING_MOD_VERS_DAMAGE | RATING_MOD_VERS_HEAL | RATING_MOD_VERS_MITIG;
+  e -> _subtype = A_MOD_RATING;
+  assert(e -> _m_avg == 1.2384999990 && "Primal Gladiator's Badge of Conquest proc amount");
+  e -> _m_avg = 1.3190476190476;
+
+  item = item_data_t::find(109262, false);
+  assert(item -> stat_alloc[0] == 6666 && "Draenic Philosopher's Stone static stat amount");
+  item -> stat_alloc[0] = 4470;
+
+  item = item_data_t::find(115754, false);
+  assert(item -> stat_alloc[0] == 6667 && "Primal Gladiator's Badge of Dominance static stat amount");
+  item -> stat_alloc[0] = 2095;
+
+  item = item_data_t::find(115759, false);
+  assert(item -> stat_alloc[0] == 6667 && "Primal Gladiator's Badge of Victory static stat amount");
+  item -> stat_alloc[0] = 2095;
+
+  item = item_data_t::find(117729, false);
+  assert(item -> stat_alloc[0] == 6667 && "Primal Gladiator's Badge of Conquest static stat amount");
+  item -> stat_alloc[0] = 2095;
+
   item = item_data_t::find( 118876, false );
   assert( item -> stat_alloc[ 0 ] == 6666 && "Lucky Double-Sided Coin static stat has been fixed" );
   item -> stat_alloc[ 0 ] = 4455;
