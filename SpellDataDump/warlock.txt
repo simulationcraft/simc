@@ -1,5 +1,5 @@
 
-SimulationCraft 603-7 for World of Warcraft 6.0.3 Live (build level 19116)
+SimulationCraft 603-12 for World of Warcraft 6.0.3 Live (build level 19116)
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
 Resource         : 4% Base Mana (6400 @Level 100)
@@ -3651,8 +3651,8 @@ Duration         : Aura (infinite)
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x...x... x.x..x.. ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell, Periodic, Trap Triggered
-Attributes       : ........ ........ x.x..... .....x..   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x...x... ........ 
+Attributes       : ........ ........ x.x..... .....x..   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ x...x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ......x. ........   ..x..... ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -4888,7 +4888,7 @@ Effects          :
 #2 (id=129529)   : Weapon Damage% (31)
                    Base Value: 195 | Scaled Value: 1.95 (avg=0) | Radius: 0 - 6 yards
 #3 (id=129530)   : Trigger Spell w/ Value: Demonic Synergy (142)
-                   Base Value: 14 | Scaled Value: 14 | Trigger Spell: 104330
+                   Base Value: 12 | Scaled Value: 12 | Trigger Spell: 104330
 #4 (id=218348)   : Apply Aura (6) | Unknown effect sub type (118)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 127
 Description      : A sweeping attack that does $s2% of the Wrathguard's weapon damage divided among all targets within $A2 yards.  
