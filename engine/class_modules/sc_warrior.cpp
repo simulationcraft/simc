@@ -4875,7 +4875,7 @@ void warrior_t::init_action_list()
   // First up, why not check to see if the player has the talent?
   gladiator = talents.gladiators_resolve -> ok();
 
-  if ( gladiator && ( primary_role() != ROLE_DPS || primary_role() == ROLE_ATTACK ) ) // Don't worry about checking the rest if the player selects dps.
+  if ( gladiator )
   {
     // Second, if the person specifically selects tank, then I guess we're rolling with a tank.
     if ( primary_role() == ROLE_TANK )
@@ -4883,7 +4883,7 @@ void warrior_t::init_action_list()
 
     // Next, "Mark of Blackrock" is a enchant that procs bonus armor, but will only proc if the character goes below 50% hp.
     // Thus, it seems like it will be the best enchant for tanks, but fairly awful for gladiator since dps-specs don't spend a lot of time under 50% hp.
-    else if ( find_proc( "Mark of Blackrock" ) != nullptr )
+    else if ( find_proc("Mark of Blackrock") != nullptr )
       gladiator = false;
 
     // Next, check both trinkets for stamina. In the future I will add more items to check, for now this will work.
@@ -4895,7 +4895,7 @@ void warrior_t::init_action_list()
       {
         if ( items[i].slot == SLOT_TRINKET_1 || items[i].slot == SLOT_TRINKET_2 )
         {
-          if ( items[i].has_item_stat( STAT_STAMINA ) )
+          if ( items[i].has_item_stat(STAT_STAMINA) )
           {
             gladiator = false;
             break;
@@ -4903,6 +4903,8 @@ void warrior_t::init_action_list()
         }
       }
     }
+    if ( primary_role() == ROLE_DPS || primary_role() == ROLE_ATTACK ) // Allow players with tanking trinkets to simulate gladiator.
+      gladiator = true;
   }
 
   apl_precombat();
