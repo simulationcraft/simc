@@ -2484,6 +2484,8 @@ struct shadowburn_t: public warlock_spell_t
     havoc_consume = 1;
     mana_delay = data().effectN( 1 ).trigger() -> duration();
     mana_amount = p -> find_spell( data().effectN( 1 ).trigger() -> effectN( 1 ).base_value() ) -> effectN( 1 ).percent();
+	if ( p -> wod_hotfix )
+		base_multiplier *= 1.08;
   }
 
   virtual void impact( action_state_t* s )
@@ -2936,6 +2938,8 @@ struct conflagrate_t: public warlock_spell_t
     if ( p -> talents.charred_remains -> ok() ){
       base_multiplier *= 1.0 + p -> talents.charred_remains -> effectN( 1 ).percent();
     }
+	if ( p -> wod_hotfix )
+		base_multiplier *= 1.08;
     havoc_consume = 1;
     base_costs[RESOURCE_MANA] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
   }
@@ -3048,6 +3052,8 @@ struct incinerate_t: public warlock_spell_t
   {
     if ( p -> talents.charred_remains -> ok() )
       base_multiplier *= 1.0 + p -> talents.charred_remains -> effectN( 1 ).percent();
+	if ( p -> wod_hotfix )
+		base_multiplier *= 1.08;
     havoc_consume = 1;
     base_costs[RESOURCE_MANA] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
   }
@@ -3272,6 +3278,8 @@ struct chaos_bolt_t: public warlock_spell_t
   {
     if ( !p -> talents.charred_remains -> ok() )
       fnb = 0;
+	if ( p -> wod_hotfix )
+		base_multiplier *= 1.08;
 
     havoc_consume = 3;
     backdraft_consume = 3;
