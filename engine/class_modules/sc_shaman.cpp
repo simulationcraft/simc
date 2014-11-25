@@ -1810,6 +1810,10 @@ struct stormstrike_attack_t : public shaman_attack_t
     may_miss = may_dodge = may_parry = false;
     weapon = w;
     base_multiplier *= 1.0 + p() -> perk.improved_stormstrike -> effectN( 1 ).percent();
+    if ( player -> wod_hotfix )
+    {
+      base_multiplier *= 1.20;
+    }
   }
 };
 
@@ -2189,6 +2193,10 @@ struct lava_lash_t : public shaman_attack_t
 
     base_multiplier *= 1.0 + player -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + player -> perk.improved_lava_lash_2 -> effectN( 1 ).percent();
+    if ( player -> wod_hotfix )
+    {
+      base_multiplier *= 1.20;
+    }
 
     parse_options( options_str );
 
@@ -2596,6 +2604,10 @@ struct chain_lightning_t : public shaman_spell_t
     cooldown -> duration += player -> spec.shamanism -> effectN( 4 ).time_value();
     base_multiplier      *= 1.0 + player -> spec.shamanism -> effectN( 2 ).percent();
     base_multiplier      *= 1.0 + player -> glyph.chain_lightning -> effectN( 2 ).percent();
+    if ( player -> wod_hotfix )
+    {
+      base_multiplier *= 1.20;
+    }
     aoe                   = player -> glyph.chain_lightning -> effectN( 1 ).base_value() + 3;
     base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
   }
@@ -2702,6 +2714,10 @@ struct lava_beam_t : public shaman_spell_t
     may_fulmination       = player -> spec.fulmination -> ok() &&
                             player -> perk.improved_lightning_shield -> ok();
     base_multiplier      *= 1.0 + p() -> spec.shamanism -> effectN( 2 ).percent();
+    if ( player -> wod_hotfix )
+    {
+      base_multiplier *= 1.20;
+    }
     aoe                   = 5;
     base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
   }
@@ -2889,6 +2905,10 @@ struct lava_burst_t : public shaman_spell_t
     may_fulmination = player -> spec.fulmination -> ok() && player -> perk.improved_lightning_shield -> ok();
 
     base_multiplier     *= 1.0 + player -> perk.improved_lava_burst -> effectN( 1 ).percent();
+    if ( player -> wod_hotfix )
+    {
+      base_multiplier *= 1.35;
+    }
     uses_eoe = player -> specialization() == SHAMAN_ELEMENTAL;
   }
 
