@@ -39,16 +39,16 @@ actions+=/frenzied_regeneration,if=rage>=80
 actions+=/cenarion_ward
 actions+=/renewal,if=health.pct<30
 actions+=/heart_of_the_wild
-actions+=/rejuvenation,if=buff.heart_of_the_wild.up&remains<=0.3*duration
+actions+=/rejuvenation,if=buff.heart_of_the_wild.up&remains<=3.6
 actions+=/natures_vigil
 actions+=/healing_touch,if=buff.dream_of_cenarius.react&health.pct<30
-actions+=/pulverize,if=buff.pulverize.remains<0.5
+actions+=/pulverize,if=buff.pulverize.remains<=3.6
 actions+=/lacerate,if=talent.pulverize.enabled&buff.pulverize.remains<=(3-dot.lacerate.stack)*gcd&buff.berserk.down
 actions+=/incarnation
 actions+=/lacerate,if=!ticking
 actions+=/thrash_bear,if=!ticking
 actions+=/mangle
-actions+=/thrash_bear,if=remains<=0.3*duration
+actions+=/thrash_bear,if=remains<=4.8
 actions+=/lacerate
 
 head=sorkas_nightshade_cowl,id=113978
