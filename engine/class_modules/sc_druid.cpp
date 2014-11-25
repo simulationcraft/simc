@@ -3264,8 +3264,12 @@ struct pulverize_t : public bear_attack_t
     {
       // consumes 3 stacks of Lacerate on the target
       target -> get_dot( "lacerate", p() ) -> cancel();
-      // and reduce damage taken by 20% for 10 sec
-      p() -> buff.pulverize -> trigger();
+
+      // and reduce damage taken by x% for y sec (pandemics)
+      timespan_t duration = p() -> buff.pulverize -> buff_duration;
+      if ( p() -> buff.pulverize -> check() )
+        duration += std::min( p() -> buff.pulverize -> remains(), duration * 0.3 );
+      p() -> buff.pulverize -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
     }
   }
 
@@ -3648,9 +3652,6 @@ struct healing_touch_t : public druid_heal_t
       else if ( p() -> specialization() == DRUID_GUARDIAN )
         adm *= 1.0 + p() -> talent.dream_of_cenarius -> effectN( 2 ).percent();
     }
-
-    if ( p() -> buff.predatory_swiftness -> check() )
-      adm *= 1.0 + p() -> buff.predatory_swiftness -> data().effectN( 4 ).percent();
 
     if ( p() -> spell.moonkin_form -> ok() && target == p() )
       adm *= 1.0 + 0.50; // Not in spell data
@@ -6560,16 +6561,16 @@ void druid_t::apl_guardian()
   default_list -> add_talent( this, "Cenarion Ward" );
   default_list -> add_talent( this, "Renewal", "if=health.pct<30" );
   default_list -> add_talent( this, "Heart of the Wild" );
-  default_list -> add_action( this, "Rejuvenation", "if=buff.heart_of_the_wild.up&remains<=0.3*duration" );
+  default_list -> add_action( this, "Rejuvenation", "if=buff.heart_of_the_wild.up&remains<=3.6" );
   default_list -> add_talent( this, "Nature's Vigil" );
   default_list -> add_action( this, "Healing Touch", "if=buff.dream_of_cenarius.react&health.pct<30" );
-  default_list -> add_talent( this, "Pulverize", "if=buff.pulverize.remains<0.5" );
+  default_list -> add_talent( this, "Pulverize", "if=buff.pulverize.remains<=3.6" );
   default_list -> add_action( this, "Lacerate", "if=talent.pulverize.enabled&buff.pulverize.remains<=(3-dot.lacerate.stack)*gcd&buff.berserk.down" );
   default_list -> add_action( "incarnation" );
   default_list -> add_action( this, "Lacerate", "if=!ticking" );
   default_list -> add_action( "thrash_bear,if=!ticking" );
   default_list -> add_action( this, "Mangle" );
-  default_list -> add_action( "thrash_bear,if=remains<=0.3*duration" );
+  default_list -> add_action( "thrash_bear,if=remains<=4.8" );
   default_list -> add_action( this, "Lacerate" );
 }
 

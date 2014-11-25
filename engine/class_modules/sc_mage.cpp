@@ -1510,7 +1510,7 @@ struct arcane_blast_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= 1.0 - 0.05;
+      am *= (1.0 - 0.05) * (1.0 + 0.1);
     }
 
     return am;
@@ -3675,7 +3675,7 @@ struct pyroblast_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= 1.0 + 0.05 - 0.2;
+      am *= 1.0 + 0.184;
     }
 
     return am;
@@ -3692,7 +3692,7 @@ struct pyroblast_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= 1.0 + 0.05 - 0.2;
+      am *= 1.0 + 0.184;
     }
 
     return am;
