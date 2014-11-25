@@ -3578,6 +3578,7 @@ struct guard_t: public monk_absorb_t
     cooldown -> duration = data().charge_cooldown();
     cooldown -> charges = p.perk.improved_guard -> effectN( 1 ).base_value();
     attack_power_mod.direct = 9; // hardcoded into tooltip 2014/09/09
+    attack_power_mod.direct *= 2; // hardcoded hotfix from 2014/11/24
     base_multiplier += p.sets.set( SET_TANK, T14, B4 ) -> effectN( 1 ).percent();
     if ( p.glyph.guard -> ok() )
       base_multiplier += p.glyph.guard -> effectN( 1 ).percent();
@@ -4998,6 +4999,7 @@ double monk_t::stagger_pct()
   if ( current_stance() == STURDY_OX ) // no stagger without active stance
   {
     stagger += static_stance_data( STURDY_OX ).effectN( 8 ).percent();
+    stagger *= 1.5; // Hotfix to 30% baseline on 2014/11/24
 
     if ( buff.shuffle -> check() )
       stagger += buff.shuffle -> data().effectN( 2 ).percent();
