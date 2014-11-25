@@ -1813,14 +1813,13 @@ public:
   typedef druid_attack_t base_t;
   
   bool consume_bloodtalons;
-  bool trigger_t17_2p_melee;
   snapshot_counter_t* bt_counter;
   snapshot_counter_t* tf_counter;
 
   druid_attack_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, player, s ), consume_bloodtalons( false ), trigger_t17_2p_melee( false ),
-    bt_counter( 0 ), tf_counter( 0 )
+    ab( n, player, s ), consume_bloodtalons( false ), bt_counter( 0 ),
+    tf_counter( 0 )
   {
     ab::may_glance    = false;
     ab::special       = true;
@@ -1835,9 +1834,6 @@ public:
       bt_counter = new snapshot_counter_t( ab::p() , ab::p() -> buff.bloodtalons );
     if ( consume_bloodtalons )
       tf_counter = new snapshot_counter_t( ab::p() , ab::p() -> buff.tigers_fury );
-
-    if ( ab::p() -> sets.has_set_bonus( DRUID_FERAL, T17, B2 ) )
-      trigger_t17_2p_melee = dbc::is_school( ab::school, SCHOOL_PHYSICAL );
   }
 
   virtual void execute()
@@ -1879,11 +1875,6 @@ public:
       bt_counter -> count_tick();
       tf_counter -> count_tick();
     }
-
-    if ( trigger_t17_2p_melee )
-      ab::p() -> resource_gain( RESOURCE_ENERGY,
-                                ab::p() -> sets.set( DRUID_FERAL, T17, B2 ) -> effectN( 1 ).base_value(),
-                                ab::p() -> gain.tier17_2pc_melee );
   }
 
   virtual double composite_persistent_multiplier( const action_state_t* s ) const
@@ -2008,13 +1999,15 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
   double base_dd_bonus;
   double base_td_bonus;
   bool   consume_ooc;
+  bool   trigger_t17_2p;
 
   cat_attack_t( const std::string& token, druid_t* p,
                 const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options = std::string() ) :
     base_t( token, p, s ),
     requires_stealth( false ), combo_point_gain( 0 ),
-    base_dd_bonus( 0.0 ), base_td_bonus( 0.0 ), consume_ooc( true )
+    base_dd_bonus( 0.0 ), base_td_bonus( 0.0 ), consume_ooc( true ),
+    trigger_t17_2p( false )
   {
     parse_options( options );
 
@@ -2227,6 +2220,16 @@ public:
     double energy_restored = resource_consumed * 0.80;
 
     player -> resource_gain( RESOURCE_ENERGY, energy_restored, p() -> gain.energy_refund );
+  }
+
+  void tick( dot_t* d )
+  {
+    base_t::tick( d );
+
+    if ( trigger_t17_2p )
+      p() -> resource_gain( RESOURCE_ENERGY,
+                            p() -> sets.set( DRUID_FERAL, T17, B2 ) -> effectN( 1 ).base_value(),
+                            p() -> gain.tier17_2pc_melee );
   }
 }; // end druid_cat_attack_t
 
@@ -2490,6 +2493,8 @@ struct rake_t : public cat_attack_t
     ir_counter = new snapshot_counter_t( p, p -> buff.prowl );
     ir_counter -> add_buff( p -> buff.king_of_the_jungle );
     ir_counter -> add_buff( p -> buffs.shadowmeld );
+
+    trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
   }
 
   virtual double composite_persistent_multiplier( const action_state_t* s ) const
@@ -2602,6 +2607,8 @@ struct rip_t : public cat_attack_t
     dot_duration += player -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
     if ( p -> wod_hotfix )
       base_multiplier *= 1.12;
+
+    trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
   }
 
   action_state_t* new_state()
@@ -2822,6 +2829,8 @@ struct thrash_cat_t : public cat_attack_t
     spell_power_mod.direct = 0;
     if ( p -> wod_hotfix )
       base_multiplier *= 1.12;
+
+    trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
   }
 
   // Treat direct damage as "bleed"
@@ -2867,7 +2876,6 @@ struct shattered_bleed_t : public cat_attack_t
 
       snapshot_flags |= STATE_MUL_TA;
       consume_bloodtalons = false;
-      trigger_t17_2p_melee = false;
     }
 
     double target_armor( player_t* ) const
