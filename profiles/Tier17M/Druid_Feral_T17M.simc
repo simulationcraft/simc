@@ -85,14 +85,14 @@ legs=living_wood_legguards,id=115543,bonus_id=567
 feet=furnace_tenders_treads,id=113895,bonus_id=567
 finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_critical_strike
 finger2=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_critical_strike
-trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=567
-trinket2=scales_of_doom,id=113612,bonus_id=567
-main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=567,enchant=mark_of_the_thunderlord
+trinket1=lucky_doublesided_coin,id=118876
+trinket2=humming_blackiron_trigger,id=113985,bonus_id=567
+main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=567,enchant=mark_of_the_shattered_hand
 
 # Gear Summary
-# gear_agility=3370
+# gear_agility=3324
 # gear_stamina=4545
-# gear_crit_rating=1792
+# gear_crit_rating=1939
 # gear_haste_rating=338
 # gear_mastery_rating=536
 # gear_armor=1147
