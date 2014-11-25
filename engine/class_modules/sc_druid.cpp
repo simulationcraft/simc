@@ -1813,12 +1813,14 @@ public:
   typedef druid_attack_t base_t;
   
   bool consume_bloodtalons;
+  bool trigger_t17_2p_melee;
   snapshot_counter_t* bt_counter;
   snapshot_counter_t* tf_counter;
 
   druid_attack_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, player, s ), consume_bloodtalons( false ), bt_counter( 0 ), tf_counter( 0 )
+    ab( n, player, s ), consume_bloodtalons( false ), trigger_t17_2p_melee( false ),
+    bt_counter( 0 ), tf_counter( 0 )
   {
     ab::may_glance    = false;
     ab::special       = true;
@@ -1833,6 +1835,9 @@ public:
       bt_counter = new snapshot_counter_t( ab::p() , ab::p() -> buff.bloodtalons );
     if ( consume_bloodtalons )
       tf_counter = new snapshot_counter_t( ab::p() , ab::p() -> buff.tigers_fury );
+
+    if ( ab::p() -> sets.has_set_bonus( DRUID_FERAL, T17, B2 ) )
+      trigger_t17_2p_melee = dbc::is_school( ab::school, SCHOOL_PHYSICAL );
   }
 
   virtual void execute()
@@ -1875,7 +1880,7 @@ public:
       tf_counter -> count_tick();
     }
 
-    if ( ab::p() -> sets.has_set_bonus( DRUID_FERAL, T17, B2 ) && dbc::is_school( ab::school, SCHOOL_PHYSICAL ) )
+    if ( trigger_t17_2p_melee )
       ab::p() -> resource_gain( RESOURCE_ENERGY,
                                 ab::p() -> sets.set( DRUID_FERAL, T17, B2 ) -> effectN( 1 ).base_value(),
                                 ab::p() -> gain.tier17_2pc_melee );
@@ -2862,6 +2867,7 @@ struct shattered_bleed_t : public cat_attack_t
 
       snapshot_flags |= STATE_MUL_TA;
       consume_bloodtalons = false;
+      trigger_t17_2p_melee = false;
     }
 
     double target_armor( player_t* ) const
