@@ -1829,11 +1829,13 @@ public:
   {
     ab::init();
     
-    consume_bloodtalons = ab::harmful && ab::special && trigger_gcd > timespan_t::zero();
+    consume_bloodtalons = ab::harmful && ab::special && ab::trigger_gcd > timespan_t::zero();
+
     if ( consume_bloodtalons )
+    {
       bt_counter = new snapshot_counter_t( ab::p() , ab::p() -> buff.bloodtalons );
-    if ( consume_bloodtalons )
       tf_counter = new snapshot_counter_t( ab::p() , ab::p() -> buff.tigers_fury );
+    }
   }
 
   virtual void execute()
