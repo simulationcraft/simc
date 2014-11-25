@@ -2806,6 +2806,11 @@ struct immolate_t: public warlock_spell_t
     base_tick_time = p -> find_spell( 157736 ) -> effectN( 1 ).period();
     dot_duration = p -> find_spell( 157736 ) -> duration();
     spell_power_mod.tick = p -> spec.immolate -> effectN( 1 ).sp_coeff();
+    if ( p -> wod_hotfix )
+    {
+      spell_power_mod.tick *= 1.08;
+      spell_power_mod.direct *= 1.08;
+    }
     hasted_ticks = true;
     tick_may_crit = true;
   }
@@ -2819,6 +2824,11 @@ struct immolate_t: public warlock_spell_t
     hasted_ticks = true;
     tick_may_crit = true;
     spell_power_mod.tick = data().effectN( 1 ).sp_coeff();
+    if ( p -> wod_hotfix )
+    {
+      spell_power_mod.tick *= 1.08;
+      spell_power_mod.direct *= 1.08;
+    }
     aoe = -1;
     stats = p -> get_stats( "immolate_fnb", this );
     gain = p -> get_gain( "immolate_fnb" );
@@ -3989,17 +3999,19 @@ struct rain_of_fire_tick_t: public warlock_spell_t
   {
     aoe = -1;
     background = true;
-    spell_power_mod.direct *= 0.4;
+    if ( p -> wod_hotfix )
+      spell_power_mod.direct *= 0.4;
   }
 
-  /*
   void schedule_travel( action_state_t* s )
   {
-    if ( result_is_hit( s -> result ) )
-      trigger_ember_gain( p(), 0.2, p() -> gains.rain_of_fire, 0.125 );
+    if ( ! p() -> wod_hotfix )
+    {
+      if ( result_is_hit( s -> result ) )
+        trigger_ember_gain( p(), 0.2, p() -> gains.rain_of_fire, 0.125 );
+    }
     warlock_spell_t::schedule_travel( s );
   }
-  */
 
   virtual proc_types proc_type() const override
   {
@@ -5631,14 +5643,18 @@ void warlock_t::apl_destruction()
 {
   action_priority_list_t* single_target       = get_action_priority_list( "single_target" );    
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
-    
+
   action_list_str +="/run_action_list,name=single_target,if=active_enemies<4";
   action_list_str +="/run_action_list,name=aoe,if=active_enemies>=4";
-   
+
   single_target -> action_list_str += "/havoc,target=2";
   single_target -> action_list_str += "/shadowburn,if=talent.charred_remains.enabled&(burning_ember>=2.5|buff.dark_soul.up|target.time_to_die<10)";
   single_target -> action_list_str += "/immolate,cycle_targets=1,if=remains<=cast_time&(cooldown.cataclysm.remains>cast_time|!talent.cataclysm.enabled)";
 
+  if ( level == 100 && ! wod_hotfix )
+  {
+    single_target -> action_list_str += "/rain_of_fire,if=!ticking";
+  }
   single_target -> action_list_str += "/shadowburn,if=buff.havoc.remains";
   single_target -> action_list_str += "/chaos_bolt,if=buff.havoc.remains>cast_time&buff.havoc.stack>=3";
   single_target -> action_list_str += "/conflagrate,if=charges=2";
@@ -5658,6 +5674,10 @@ void warlock_t::apl_destruction()
   if ( find_item( "draenic_philosophers_stone" ) )
   {
     single_target -> action_list_str += "/chaos_bolt,if=buff.backdraft.stack<3&buff.draenor_philosophers_stone_int.react&buff.draenor_philosophers_stone_int.remains>cast_time";
+  }
+  if ( level != 100 && ! wod_hotfix )
+  {
+    single_target -> action_list_str += "/rain_of_fire,if=!ticking";
   }
   single_target -> action_list_str += "/immolate,cycle_targets=1,if=remains<=(duration*0.3)";
   single_target -> action_list_str += "/conflagrate";
