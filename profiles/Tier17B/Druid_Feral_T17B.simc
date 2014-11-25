@@ -87,7 +87,7 @@ finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,bonus_id=524,en
 finger2=unexploded_explosive_shard,id=113877,bonus_id=567/523/448,gem_id=115809,enchant=gift_of_critical_strike
 trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=567/523/448,gem_id=115809
 trinket2=humming_blackiron_trigger,id=113985,bonus_id=567/523/448,gem_id=115809
-main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=567/523/448,gem_id=115809,enchant=mark_of_the_shattered_hand
+main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=567/523/448,gem_id=115809,enchant=mark_of_the_thunderlord
 
 # Gear Summary
 # gear_agility=3701

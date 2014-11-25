@@ -57,7 +57,7 @@ finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of
 finger2=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_critical_strike
 trinket1=lucky_doublesided_coin,id=118876
 trinket2=humming_blackiron_trigger,id=113985,bonus_id=567
-main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=567,enchant=mark_of_the_shattered_hand
+main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=567,enchant=mark_of_the_thunderlord
 save=Druid_Feral_T17M.simc
 
 # Balance Druid T17M
