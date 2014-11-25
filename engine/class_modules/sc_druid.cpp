@@ -676,6 +676,7 @@ public:
   virtual void      assess_damage( school_e school, dmg_e, action_state_t* );
   virtual void      assess_heal( school_e, dmg_e, action_state_t* );
   virtual void      create_options();
+  virtual action_t* create_proc_action( const std::string& name );
   virtual bool      create_profile( std::string& profile_str, save_e type = SAVE_ALL, bool save_html = false );
   virtual void      recalculate_resource_max( resource_e r );
 
@@ -2840,6 +2841,60 @@ struct thrash_cat_t : public cat_attack_t
   // Treat direct damage as "bleed"
   virtual double target_armor( player_t* ) const
   { return 0.0; }
+};
+
+// Mark of the Shattered Hand ===============================================
+
+struct shattered_bleed_t : public cat_attack_t
+{
+  shattered_bleed_t( druid_t* p ):
+    cat_attack_t( "shattered_bleed", p, p -> find_spell( 159238 ) )
+    {
+      dot_behavior = DOT_REFRESH;
+      hasted_ticks = false; background = true; callbacks = false; special = true;
+      may_miss = may_block = may_dodge = may_parry = false; may_crit = true;
+      tick_may_crit = false;
+
+      consume_bloodtalons = false;
+    }
+
+    void init()
+    {
+      cat_attack_t::init();
+
+      snapshot_flags |= STATE_MUL_TA;
+    }
+
+    double target_armor( player_t* ) const
+    { return 0.0; }
+
+    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const
+    {
+      timespan_t new_duration = std::min( triggered_duration * 0.3, dot -> remains() ) + triggered_duration;
+      timespan_t period_mod = new_duration % base_tick_time;
+      new_duration += ( base_tick_time - period_mod );
+
+      return new_duration;
+    }
+
+    double action_multiplier() const
+    {
+      double am = cat_attack_t::action_multiplier();
+
+      // Benefits dynamically from Savage Roar and Tiger's Fury.
+      am *= 1.0 + p() -> buff.savage_roar -> value();
+      am *= 1.0 + p() -> buff.tigers_fury -> value();
+
+      return am;
+    }
+    
+    // Override to prevent benefitting from mastery.
+    double composite_ta_multiplier( const action_state_t* s ) const
+    { return action_multiplier(); }
+    
+    // Benefit from Savage Roar and Tiger's Fury is not persistent.
+    double composite_persistent_multiplier( const action_state_t* s ) const
+    { return 1.0; }
 };
 
 } // end namespace cat_attacks
@@ -6843,7 +6898,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
   if ( specialization() == DRUID_BALANCE )
   {
     if ( buff.celestial_alignment -> check() )
-      m *= 1.0 + buff.celestial_alignment -> data().effectN(2).percent();
+      m *= 1.0 + buff.celestial_alignment -> data().effectN( 2 ).percent();
     if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) )
     {
       if ( buff.moonkin_form -> check() )
@@ -7203,6 +7258,16 @@ void druid_t::create_options()
 {
   player_t::create_options();
 
+}
+
+// druid_t::create_proc_action =============================================
+
+action_t* druid_t::create_proc_action( const std::string& name )
+{
+  if ( name == "shattered_bleed" && specialization() == DRUID_FERAL )
+    return new cat_attacks::shattered_bleed_t( this );
+
+  return 0;
 }
 
 // druid_t::create_profile ==================================================

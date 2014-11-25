@@ -568,7 +568,7 @@ void enchant::mark_of_the_shattered_hand( special_effect_t& effect,
     }
   };
 
-  action_t* bleed = item.player -> find_action( effect.name() );
+  action_t* bleed = item.player -> create_proc_action( "shattered_bleed" );
   if ( ! bleed )
     bleed = new bleed_attack_t( item.player, effect );
 
