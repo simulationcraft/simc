@@ -5459,12 +5459,41 @@ struct warrior_lightning_strike_t: public warrior_attack_t
   }
 };
 
+// Mark of the Shattered Hand ===============================================
+
+struct warrior_shattered_bleed_t: public warrior_attack_t
+{
+  warrior_shattered_bleed_t( warrior_t* p ):
+    warrior_attack_t( "shattered_bleed", p, p -> find_spell( 159238 ) )
+  {
+    dot_behavior = DOT_REFRESH;
+    may_miss = may_block = may_dodge = may_parry = callbacks = hasted_ticks = false;
+    may_crit = background = special = true;
+    tick_may_crit = false;
+  }
+
+  double target_armor( player_t* ) const
+  {
+    return 0.0;
+  }
+
+  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const
+  {
+    timespan_t new_duration = std::min( triggered_duration * 0.3, dot -> remains() ) + triggered_duration;
+    timespan_t period_mod = new_duration % base_tick_time;
+    new_duration += (base_tick_time - period_mod);
+
+    return new_duration;
+  }
+};
+
 // warrior_t::create_proc_action =============================================
 
 action_t* warrior_t::create_proc_action( const std::string& name )
 {
   if ( name == "flurry_of_xuen" ) return new warrior_flurry_of_xuen_t( this );
   if ( name == "lightning_strike" ) return new warrior_lightning_strike_t( this );
+  if ( name == "shattered_bleed" ) return new warrior_shattered_bleed_t(this);
 
   return 0;
 }
