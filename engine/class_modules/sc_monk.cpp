@@ -3949,7 +3949,8 @@ void monk_t::create_buffs()
     .chance( ts_proc_chance )
     .add_invalidate( CACHE_MULTISTRIKE );
 
-  buff.tiger_power = buff_creator_t( this, "tiger_power", find_class_spell( "Tiger Palm" ) -> effectN( 2 ).trigger() );
+  buff.tiger_power = buff_creator_t( this, "tiger_power", find_class_spell( "Tiger Palm" ) -> effectN( 2 ).trigger() )
+    .refresh_behavior( BUFF_REFRESH_PANDEMIC );
 
   buff.rushing_jade_wind = buff_creator_t( this, "rushing_jade_wind", talent.rushing_jade_wind )
     .cd( timespan_t::zero() );
