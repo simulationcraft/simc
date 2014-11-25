@@ -3548,6 +3548,9 @@ struct crusader_strike_t : public paladin_melee_attack_t
       if ( p() -> sets.has_set_bonus( SET_MELEE, T15, B4 ) )
         p() -> buffs.tier15_4pc_melee -> trigger();
 
+      // Grand Crusader
+      p() -> trigger_grand_crusader();
+
     }
     if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
       // Trigger Hand of Light procs
@@ -3778,6 +3781,9 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       // trigger the AoE if there are any other targets to hit
       if ( available_targets( target_list() ) > 1 )
         hotr_aoe -> schedule_execute();
+
+      // Grand Crusader
+      p() -> trigger_grand_crusader();
     }
     if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
       // Trigger Hand of Light procs
@@ -6124,7 +6130,11 @@ void paladin_t::target_mitigation( school_e school,
   if ( buffs.shield_of_the_righteous -> check() && school == SCHOOL_PHYSICAL )
   {
     // split his out to make it more readable / easier to debug
-    double sotr_mitigation = buffs.shield_of_the_righteous -> data().effectN( 1 ).percent() + cache.mastery() * passives.divine_bulwark -> effectN( 4 ).mastery_value();
+    double sotr_mitigation;
+    if ( wod_hotfix )
+      sotr_mitigation = - 0.25 - cache.mastery() * 0.005;
+    else
+      sotr_mitigation = buffs.shield_of_the_righteous -> data().effectN( 1 ).percent() + cache.mastery() * passives.divine_bulwark -> effectN( 4 ).mastery_value();
     sotr_mitigation *= 1.0 + sets.set( SET_TANK, T14, B4 ) -> effectN( 2 ).percent();
 
     // clamp is hardcoded in tooltip, not shown in effects
