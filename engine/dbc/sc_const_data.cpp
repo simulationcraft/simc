@@ -383,69 +383,7 @@ void dbc::apply_hotfixes()
   // Death Knight
 
   // Item hotfixes
-  item_data_t* item = item_data_t::find( 113663, false );
-  assert( item -> trigger_spell[ 0 ] == 0 && "Petrified Flesh-Eating Spore OnUse has been fixed" );
-  item -> trigger_spell[ 0 ] = ITEM_SPELLTRIGGER_ON_EQUIP;
 
-#if SC_USE_PTR
-  item = item_data_t::find( 113663, true );
-  assert( item -> trigger_spell[ 0 ] == 0 && "Petrified Flesh-Eating Spore OnUse has been fixed" );
-  item -> trigger_spell[ 0 ] = ITEM_SPELLTRIGGER_ON_EQUIP;
-#endif
-
-  item = item_data_t::find( 111223, false );
-  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_AGILITY && "Primal Gladiator's Insignia of Conquest static stat has been fixed" );
-  item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
-
-  item = item_data_t::find( 115750, false );
-  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_AGILITY && "Primal Gladiator's Insignia of Conquest static stat has been fixed" );
-  item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
-
-  item = item_data_t::find( 111228, false );
-  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_INTELLECT && "Primal Gladiator's Insignia of Dominance static stat has been fixed" );
-  item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
-
-  item = item_data_t::find( 115755, false );
-  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_INTELLECT && "Primal Gladiator's Insignia of Dominance static stat has been fixed" );
-  item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
-
-  item = item_data_t::find( 111233, false );
-  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_STRENGTH && "Primal Gladiator's Insignia of Victory static stat has been fixed" );
-  item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
-
-  item = item_data_t::find( 115760, false );
-  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_STRENGTH && "Primal Gladiator's Insignia of Victory static stat has been fixed" );
-  item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
-
-  item = item_data_t::find( 115150, false );
-  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_AGILITY && "Primal Combatant's Insignia of Conquest static stat has been fixed" );
-  item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
-
-  item = item_data_t::find( 119927, false );
-  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_AGILITY && "Primal Combatant's Insignia of Conquest static stat has been fixed" );
-  item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
-
-  item = item_data_t::find( 115155, false );
-  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_INTELLECT && "Primal Combatants's Insignia of Dominance static stat has been fixed" );
-  item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
-
-  item = item_data_t::find( 119932, false );
-  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_INTELLECT && "Primal Combatants's Insignia of Dominance static stat has been fixed" );
-  item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
-
-  item = item_data_t::find( 115160, false );
-  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_STRENGTH && "Primal Combatant's Insignia of Victory static stat has been fixed" );
-  item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
-
-  item = item_data_t::find( 119937, false );
-  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_STRENGTH && "Primal Combatant's Insignia of Victory static stat has been fixed" );
-  item -> stat_type_e[ 0 ] = ITEM_MOD_VERSATILITY_RATING;
-
-  item = item_data_t::find( 118878, false );
-  assert( item -> stat_alloc[ 0 ] == 6666 && "Copeland's Clarity static stat has been fixed" );
-  item -> stat_alloc[ 0 ] = 5940;
-  assert( item -> stat_type_e[ 0 ] == ITEM_MOD_INTELLECT && "Copeland's Clarity static stat has been fixed" );
-  item -> stat_type_e[ 0 ] = ITEM_MOD_CRIT_RATING;
   e = spelleffect_data_t::find(254387, false);
   assert(e -> _m_avg == 3.3333330154 && "Copeland's Clarity proc has been fixed");
   e -> _m_avg = 2.5;
@@ -453,9 +391,6 @@ void dbc::apply_hotfixes()
   assert(e -> _m_avg == 3.3333330154 && "Copeland's Clarity proc has been fixed");
   e -> _m_avg = 2.5;
 
-  item = item_data_t::find(111227, false);
-  assert(item -> stat_alloc[0] == 6667 && "Primal Gladiator's Badge of Dominance static stat amount");
-  item -> stat_alloc[0] = 2095;
   e = spelleffect_data_t::find(161002, false);
   assert(e -> _misc_value + 1 == ATTR_INTELLECT && "Primal Gladiator's Badge of Dominance proc stat");
   e -> _misc_value = RATING_MOD_VERS_DAMAGE | RATING_MOD_VERS_HEAL | RATING_MOD_VERS_MITIG;
@@ -463,9 +398,6 @@ void dbc::apply_hotfixes()
   assert(e -> _m_avg == 1.2384999990 && "Primal Gladiator's Badge of Dominance proc amount");
   e -> _m_avg = 1.3190476190476;
 
-  item = item_data_t::find(111232, false);
-  assert(item -> stat_alloc[0] == 6667 && "Primal Gladiator's Badge of Victory static stat amount");
-  item -> stat_alloc[0] = 2095;
   e = spelleffect_data_t::find(160998, false);
   assert(e -> _misc_value + 1 == ATTR_STRENGTH && "Primal Gladiator's Badge of Victory proc stat");
   e -> _misc_value = RATING_MOD_VERS_DAMAGE | RATING_MOD_VERS_HEAL | RATING_MOD_VERS_MITIG;
@@ -473,227 +405,12 @@ void dbc::apply_hotfixes()
   assert(e -> _m_avg == 1.2384999990 && "Primal Gladiator's Badge of Victory proc amount");
   e -> _m_avg = 1.3190476190476;
 
-  item = item_data_t::find(115749, false);
-  assert(item -> stat_alloc[0] == 6667 && "Primal Gladiator's Badge of Conquest static stat amount");
-  item -> stat_alloc[0] = 2095;
   e = spelleffect_data_t::find(161010, false);
   assert(e -> _misc_value + 1 == ATTR_AGILITY && "Primal Gladiator's Badge of Conquest proc stat");
   e -> _misc_value = RATING_MOD_VERS_DAMAGE | RATING_MOD_VERS_HEAL | RATING_MOD_VERS_MITIG;
   e -> _subtype = A_MOD_RATING;
   assert(e -> _m_avg == 1.2384999990 && "Primal Gladiator's Badge of Conquest proc amount");
   e -> _m_avg = 1.3190476190476;
-
-  item = item_data_t::find(109262, false);
-  assert(item -> stat_alloc[0] == 6666 && "Draenic Philosopher's Stone static stat amount");
-  item -> stat_alloc[0] = 4470;
-
-  item = item_data_t::find(115754, false);
-  assert(item -> stat_alloc[0] == 6667 && "Primal Gladiator's Badge of Dominance static stat amount");
-  item -> stat_alloc[0] = 2095;
-
-  item = item_data_t::find(115759, false);
-  assert(item -> stat_alloc[0] == 6667 && "Primal Gladiator's Badge of Victory static stat amount");
-  item -> stat_alloc[0] = 2095;
-
-  item = item_data_t::find(117729, false);
-  assert(item -> stat_alloc[0] == 6667 && "Primal Gladiator's Badge of Conquest static stat amount");
-  item -> stat_alloc[0] = 2095;
-
-  item = item_data_t::find( 118876, false );
-  assert( item -> stat_alloc[ 0 ] == 6666 && "Lucky Double-Sided Coin static stat has been fixed" );
-  item -> stat_alloc[ 0 ] = 4455;
-
-  item = item_data_t::find( 118882, false );
-  assert( item -> stat_alloc[ 0 ] == 6666 && "Scabbard of Kyanos static stat has been fixed" );
-  item -> stat_alloc[ 0 ] = 0;
-
-  s = spell_data_t::find( 177189, false );
-  assert( s -> _duration == 10000 && "Scabbard of Kyanos On-Use effect has been fixed" );
-  s -> _duration = 15000;
-
-  item = item_data_t::find( 118880, false );
-  assert( item -> stat_alloc[ 0 ] == 6666 && "Everburning Candle static stat has been fixed" );
-  item -> stat_alloc[ 0 ] = 10121;
-
-  item = item_data_t::find(109999, false);
-  assert(item -> stat_alloc[0] == 6666 && "Witherbark's Branch static stat has been fixed");
-  item -> stat_alloc[0] = 3682;
-
-  item = item_data_t::find(110002, false);
-  assert(item -> stat_alloc[0] == 6666 && "Fleshrender's Meathook static stat has been fixed");
-  item -> stat_alloc[0] = 4435;
-
-  item = item_data_t::find(110003, false);
-  assert(item -> stat_alloc[0] == 6666 && "Ragewing's Firefang has been fixed");
-  item -> stat_alloc[0] = 4435;
-
-  item = item_data_t::find(110004, false);
-  assert(item -> stat_alloc[0] == 6666 && "Coagulated Genesaur Blood static stat has been fixed");
-  item -> stat_alloc[0] = 3682;
-
-  item = item_data_t::find(110008, false);
-  assert(item -> stat_alloc[0] == 6666 && "Tharbek's Lucky Pebble static stat has been fixed");
-  item -> stat_alloc[0] = 4435;
-
-  item = item_data_t::find(110009, false);
-  assert(item -> stat_alloc[0] == 6666 && "Leaf of the Ancient Protectors static stat has been fixed");
-  item -> stat_alloc[0] = 3682;
-
-  item = item_data_t::find(110012, false);
-  assert(item -> stat_alloc[0] == 6666 && "Bonemaw's Big Toe static stat has been fixed");
-  item -> stat_alloc[0] = 4435;
-
-  item = item_data_t::find(110013, false);
-  assert(item -> stat_alloc[0] == 6666 && "Emberscale Talisman static stat has been fixed");
-  item -> stat_alloc[0] = 4435;
-
-  item = item_data_t::find(110014, false);
-  assert(item -> stat_alloc[0] == 6666 && "Spores of Alacrity static stat has been fixed");
-  item -> stat_alloc[0] = 3682;
-
-  item = item_data_t::find(110017, false);
-  assert(item -> stat_alloc[0] == 6666 && "Enforcer's Stun Grenade static stat has been fixed");
-  item -> stat_alloc[0] = 4435;
-
-  item = item_data_t::find(110018, false);
-  assert(item -> stat_alloc[0] == 9999 && "Kyrak's Vileblood Serum static stat has been fixed");
-  item -> stat_alloc[0] = 6653;
-
-  item = item_data_t::find(110019, false);
-  assert(item -> stat_alloc[0] == 9999 && "Xeri'tac's Unhatched Egg Sac static stat has been fixed");
-  item -> stat_alloc[0] = 5481;
-
-  item = item_data_t::find(114488, false);
-  assert(item -> stat_alloc[0] == 6666 && "Turbulent Vial of Toxin" );
-  item -> stat_alloc[0] = 4435;
-
-  item = item_data_t::find(114489, false);
-  assert(item -> stat_alloc[0] == 6666 && "Turbulent Focusing Crystal static stat has been fixed");
-  item -> stat_alloc[0] = 4435;
-
-  item = item_data_t::find(114490, false);
-  assert(item -> stat_alloc[0] == 6666 && "Turbulent Relic of Mendacity static stat has been fixed");
-  item -> stat_alloc[0] = 4435;
-
-  item = item_data_t::find(114491, false);
-  assert(item -> stat_alloc[0] == 6666 && "Turbulent Emblem static stat has been fixed");
-  item -> stat_alloc[0] = 4435;
-
-  item = item_data_t::find(114492, false);
-  assert(item -> stat_alloc[0] == 6666 && "Turbulent Seal of Defiance static stat has been fixed");
-  item -> stat_alloc[0] = 4435;
-
-  item = item_data_t::find(109997, false);
-  assert(item -> stat_alloc[0] == 6666 && "Kihra's Adrenaline Injector static stat has been fixed");
-  item -> stat_alloc[0] = 4435;
-
-  item = item_data_t::find(109998, false);
-  assert(item -> stat_alloc[0] == 6666 && "Gor'ashan's Lodestone Spike static stat has been fixed");
-  item -> stat_alloc[0] = 4435;
-
-  item = item_data_t::find(110007, false);
-  assert(item -> stat_alloc[0] == 6666 && "Voidmender's Shadowgem static stat has been fixed");
-  item -> stat_alloc[0] = 4435;
-
-  item = item_data_t::find(113645, false);
-  assert(item -> stat_alloc[0] == 6666 && "Tectus' Beating Heart static stat has been fixed");
-  item -> stat_alloc[0] = 3688;
-
-  item = item_data_t::find(113612, false);
-  assert(item -> stat_alloc[0] == 6666 && "Scales of Doom static stat has been fixed");
-  item -> stat_alloc[0] = 3688;
-
-  item = item_data_t::find(113663, false);
-  assert(item -> stat_alloc[0] == 9999 && "Petrified Flesh-Eating Spore static stat has been fixed");
-  item -> stat_alloc[0] = 5515;
-
-  item = item_data_t::find(113834, false);
-  assert( item -> stat_alloc[0] == 6666 && "Pol's Blinded Eye static stat has been fixed" );
-  item -> stat_alloc[0] = 4452;
-
-  item = item_data_t::find(113835, false);
-  assert(item -> stat_alloc[0] == 6666 && "Shards of Nothing static stat has been fixed");
-  item -> stat_alloc[0] = 4452;
-
-  item = item_data_t::find(113842, false);
-  assert(item -> stat_alloc[0] == 6666 && "Emblem of Caustic Healing static stat has been fixed");
-  item -> stat_alloc[0] = 4452;
-
-  item = item_data_t::find(113861, false);
-  assert(item -> stat_alloc[0] == 6666 && "Evergaze Arcane Eidolon static stat has been fixed");
-  item -> stat_alloc[0] = 3688;
-
-  item = item_data_t::find(119194, false);
-  assert(item -> stat_alloc[0] == 6666 && "Goren Soul Repository static stat has been fixed");
-  item -> stat_alloc[0] = 3667;
-
-  item = item_data_t::find(113889, false);
-  assert(item -> stat_alloc[0] == 6666 && "Elementalist's Shielding Talisman static stat has been fixed");
-  item -> stat_alloc[0] = 6909;
-
-  item = item_data_t::find(118114, false);
-  assert(item -> stat_alloc[0] == 6666 && "Meaty Dragonspine Trophy static stat has been fixed");
-  item -> stat_alloc[0] = 3667;
-
-  item = item_data_t::find(113985, false);
-  assert(item -> stat_alloc[0] == 6666 && "Humming Blackiron Trigger static stat has been fixed");
-  item -> stat_alloc[0] = 6667;
-
-  item = item_data_t::find(119192, false);
-  assert(item -> stat_alloc[0] == 6666 && "Ironspike Chew Toy static stat has been fixed");
-  item -> stat_alloc[0] = 3667;
-
-  item = item_data_t::find(113905, false);
-  assert(item -> stat_alloc[0] == 6666 && "Tablet of Turnbuckle Teamwork static stat has been fixed");
-  item -> stat_alloc[0] = 4455;
-
-  item = item_data_t::find(113984, false);
-  assert(item -> stat_alloc[0] == 6666 && "Blackiron Micro Crucible static stat has been fixed");
-  item -> stat_alloc[0] = 6727;
-
-  item = item_data_t::find(113987, false);
-  assert(item -> stat_alloc[0] == 9999 && "Battering Talisman static stat has been fixed");
-  item -> stat_alloc[0] = 10091;
-
-  item = item_data_t::find(113983, false);
-  assert(item -> stat_alloc[0] == 6666 && "Forgemaster's Insignia static stat has been fixed");
-  item -> stat_alloc[0] = 6727;
-
-  item = item_data_t::find(113969, false);
-  assert(item -> stat_alloc[0] == 6666 && "Vial of Convulsive Shadows static stat has been fixed");
-  item -> stat_alloc[0] = 4455;
-
-  item = item_data_t::find(113948, false);
-  assert(item -> stat_alloc[0] == 6666 && "Darmac's Unstable Talisman static stat has been fixed");
-  item -> stat_alloc[0] = 3667;
-
-  item = item_data_t::find(113893, false);
-  assert(item -> stat_alloc[0] == 6666 && "Blast Furnace Door static stat has been fixed");
-  item -> stat_alloc[0] = 3667;
-
-  item = item_data_t::find(113931, false);
-  assert(item -> stat_alloc[0] == 6666 && "Beating Heart of the Mountain static stat has been fixed");
-  item -> stat_alloc[0] = 4455;
-
-  item = item_data_t::find(113986, false);
-  assert(item -> stat_alloc[0] == 6666 && "Auto-Repairing Autoclave static stat has been fixed");
-  item -> stat_alloc[0] = 8939;
-
-  item = item_data_t::find(112319, false);
-  assert(item -> stat_alloc[0] == 6666 && "Knight's Badge static stat has been fixed");
-  item -> stat_alloc[0] = 4466;
-
-  item = item_data_t::find(112320, false);
-  assert(item -> stat_alloc[0] == 6666 && "Sandman's Pouch static stat has been fixed");
-  item -> stat_alloc[0] = 4466;
-
-  item = item_data_t::find(112317, false);
-  assert(item -> stat_alloc[0] == 6666 && "Winged Hourglass static stat has been fixed");
-  item -> stat_alloc[0] = 4466;
-
-  item = item_data_t::find(112318, false);
-  assert(item -> stat_alloc[0] == 6666 && "Skull of War static stat has been fixed");
-  item -> stat_alloc[0] = 4466;
 }
 
 static void generate_class_flags_index( bool ptr = false )

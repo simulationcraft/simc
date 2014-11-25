@@ -552,7 +552,7 @@ void enchant::mark_of_the_shattered_hand( special_effect_t& effect,
       dot_behavior = DOT_REFRESH;
       hasted_ticks = false; background = true; callbacks = false; special = true;
       may_miss = may_block = may_dodge = may_parry = false; may_crit = true;
-      tick_may_crit = true;
+      tick_may_crit = false;
     }
 
     double target_armor( player_t* ) const
@@ -568,7 +568,7 @@ void enchant::mark_of_the_shattered_hand( special_effect_t& effect,
     }
   };
 
-  action_t* bleed = item.player -> find_action( effect.name() );
+  action_t* bleed = item.player -> create_proc_action( "shattered_bleed" );
   if ( ! bleed )
     bleed = new bleed_attack_t( item.player, effect );
 

@@ -27,11 +27,12 @@ actions.precombat+=/cenarion_ward
 
 actions=auto_attack
 actions+=/skull_bash
-actions+=/savage_defense
+actions+=/savage_defense,if=buff.barkskin.down
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
-actions+=/barkskin
+actions+=/barkskin,if=buff.bristling_fur.down
+actions+=/bristling_fur,if=buff.barkskin.down&buff.savage_defense.down
 actions+=/maul,if=buff.tooth_and_claw.react&incoming_damage_1s
 actions+=/berserk,if=buff.pulverize.remains>10
 actions+=/frenzied_regeneration,if=rage>=80

@@ -52,7 +52,7 @@ finger1=ancient_draenic_loop,id=109779,bonus_id=524,enchant=gift_of_critical_str
 finger2=rogers_brown_diamond_seal,id=109759,bonus_id=524,enchant=gift_of_critical_strike
 trinket1=blood_seal_of_azzakel,id=109995,bonus_id=524
 trinket2=gorashans_lodestone_spike,id=109998,bonus_id=524
-main_hand=crushtos_neck_separator,id=110040,bonus_id=524,enchant=mark_of_the_thunderlord
+main_hand=crushtos_neck_separator,id=110040,bonus_id=524,enchant=mark_of_the_shattered_hand
 save=Druid_Feral_T17P.simc
 
 # Balance Druid T17P

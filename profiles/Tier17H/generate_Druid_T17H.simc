@@ -57,7 +57,7 @@ finger1=spellbound_solium_band_of_fatal_strikes,id=118302,enchant=gift_of_critic
 finger2=unexploded_explosive_shard,id=113877,bonus_id=566,enchant=gift_of_critical_strike
 trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=566
 trinket2=humming_blackiron_trigger,id=113985,bonus_id=566
-main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=566,enchant=mark_of_the_thunderlord
+main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=566,enchant=mark_of_the_shattered_hand
 save=Druid_Feral_T17H.simc
 
 # Balance Druid T17H

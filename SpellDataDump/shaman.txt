@@ -1,5 +1,5 @@
 
-SimulationCraft 603-7 for World of Warcraft 6.0.3 Live (build level 19116)
+SimulationCraft 603-12 for World of Warcraft 6.0.3 Live (build level 19116)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1

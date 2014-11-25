@@ -26,12 +26,13 @@ actions.precombat+=/cenarion_ward
 
 actions=auto_attack
 actions+=/skull_bash
-actions+=/savage_defense
+actions+=/savage_defense,if=buff.barkskin.down
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
 actions+=/use_item,slot=trinket2
-actions+=/barkskin
+actions+=/barkskin,if=buff.bristling_fur.down
+actions+=/bristling_fur,if=buff.barkskin.down&buff.savage_defense.down
 actions+=/maul,if=buff.tooth_and_claw.react&incoming_damage_1s
 actions+=/berserk,if=buff.pulverize.remains>10
 actions+=/frenzied_regeneration,if=rage>=80
@@ -70,7 +71,7 @@ main_hand=earthwarped_bladestaff,id=113640,bonus_id=567,enchant=mark_of_the_fros
 # gear_agility=3003
 # gear_stamina=4504
 # gear_haste_rating=647
-# gear_mastery_rating=1672
+# gear_mastery_rating=1671
 # gear_armor=1147
 # gear_bonus_armor=658
 # gear_multistrike_rating=1076
