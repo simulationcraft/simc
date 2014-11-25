@@ -2631,6 +2631,8 @@ struct savage_roar_t : public cat_attack_t
     consume_ooc = false;
   }
 
+  /* We need a custom implementation of Pandemic refresh mechanics since our ready()
+     method relies on having the correct final value. */
   timespan_t duration( int combo_points = -1 )
   {
     if ( combo_points == -1 )
@@ -2638,10 +2640,7 @@ struct savage_roar_t : public cat_attack_t
   
     timespan_t d = data().duration() + timespan_t::from_seconds( 6.0 ) * combo_points;
 
-     /* Savage Roar behaves like a DoT with DOT_REFRESH and has a maximum duration equal
-        to 130% of the base duration.
-      * Per Alpha testing (6/16/2014), the maximum duration is 130% of the raw duration
-        of the NEW Savage Roar. */
+    // Maximum duration is 130% of the raw duration of the new Savage Roar.
     if ( p() -> buff.savage_roar -> check() )
       d += std::min( p() -> buff.savage_roar -> remains(), d * 0.3 );
 
@@ -2659,6 +2658,7 @@ struct savage_roar_t : public cat_attack_t
   {
     if ( p() -> glyph.savagery -> ok() )
       return false;
+    // Savage Roar may not be cast if the new duration is less than that of the current
     else if ( duration() < p() -> buff.savage_roar -> remains() )
       return false;
     
@@ -3266,10 +3266,7 @@ struct pulverize_t : public bear_attack_t
       target -> get_dot( "lacerate", p() ) -> cancel();
 
       // and reduce damage taken by x% for y sec (pandemics)
-      timespan_t duration = p() -> buff.pulverize -> buff_duration;
-      if ( p() -> buff.pulverize -> check() )
-        duration += std::min( p() -> buff.pulverize -> remains(), duration * 0.3 );
-      p() -> buff.pulverize -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+      p() -> buff.pulverize -> trigger();
     }
   }
 
@@ -6198,7 +6195,7 @@ void druid_t::create_buffs()
                                .gain( get_gain( "primal_tenacity" ) );
   buff.pulverize             = buff_creator_t( this, "pulverize", find_spell( 158792 ) )
                                .default_value( find_spell( 158792 ) -> effectN( 1 ).percent() )
-                               .duration( timespan_t::from_seconds( 12.0 ) );
+                               .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   buff.savage_defense        = buff_creator_t( this, "savage_defense", find_class_spell( "Savage Defense" ) -> ok() ? find_spell( 132402 ) : spell_data_t::not_found() )
                                .add_invalidate( CACHE_DODGE )
                                .duration( find_spell( 132402 ) -> duration() + talent.guardian_of_elune -> effectN( 2 ).time_value() )
