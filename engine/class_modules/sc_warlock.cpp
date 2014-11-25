@@ -2142,7 +2142,7 @@ struct agony_t: public warlock_spell_t
   {
     may_crit = false;
     if ( p -> wod_hotfix )
-      spell_power_mod.tick *= 0.9;
+		spell_power_mod.tick *= 1.08;
   }
 
   virtual void last_tick( dot_t* d )
@@ -2237,7 +2237,7 @@ struct demonbolt_t: public warlock_spell_t
     warlock_spell_t( "demonbolt", p, p -> talents.demonbolt )
   {
     if ( p -> wod_hotfix )
-      base_multiplier *= 0.7;
+		base_multiplier *= 0.77;
   }
 
   virtual double cost() const
@@ -2404,9 +2404,6 @@ struct shadow_bolt_t: public warlock_spell_t
     warlock_spell_t( p, "Shadow Bolt" ), hand_of_guldan( new hand_of_guldan_t( p ) )
   {
     base_multiplier *= 1.0 + p -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 3 ).percent();
-    if ( p -> wod_hotfix )
-      base_multiplier *= 0.8;
-
     hand_of_guldan               -> background = true;
     hand_of_guldan               -> base_costs[RESOURCE_MANA] = 0;
     hand_of_guldan               -> cooldown = p -> get_cooldown( "t16_4pc_demo" );
@@ -2703,7 +2700,7 @@ struct unstable_affliction_t: public warlock_spell_t
   {
     may_crit = false;
     if ( p -> wod_hotfix )
-      spell_power_mod.tick *= 0.9;
+      spell_power_mod.tick *= 1.08;
     if ( p -> glyphs.unstable_affliction -> ok() )
       base_execute_time *= 1.0 + p -> glyphs.unstable_affliction -> effectN( 1 ).percent();
   }
@@ -3166,8 +3163,6 @@ struct soul_fire_t: public warlock_spell_t
   soul_fire_t( warlock_t* p, bool meta = false ):
     warlock_spell_t( meta ? "soul_fire_meta" : "soul_fire", p, meta ? p -> find_spell( 104027 ) : p -> find_spell( 6353 ) ), meta_spell( 0 )
   {
-    if ( p -> wod_hotfix )
-      base_multiplier *= 0.8;
     if ( ! meta )
     {
       generate_fury = data().effectN( 2 ).base_value();
@@ -3565,8 +3560,6 @@ struct touch_of_chaos_t: public warlock_spell_t
     warlock_spell_t( "touch_of_chaos", p, p -> find_spell( 103964 ) ), chaos_wave( new chaos_wave_t( p ) )
   {
     base_multiplier *= 1.0 + p -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 3 ).percent();
-    if ( p -> wod_hotfix )
-      base_multiplier *= 0.8;
 
     chaos_wave               -> background = true;
     chaos_wave               -> base_costs[RESOURCE_DEMONIC_FURY] = 0;
