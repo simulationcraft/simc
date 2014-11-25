@@ -2854,8 +2854,6 @@ struct shattered_bleed_t : public cat_attack_t
       hasted_ticks = false; background = true; callbacks = false; special = true;
       may_miss = may_block = may_dodge = may_parry = false; may_crit = true;
       tick_may_crit = false;
-
-      consume_bloodtalons = false;
     }
 
     void init()
@@ -2863,6 +2861,7 @@ struct shattered_bleed_t : public cat_attack_t
       cat_attack_t::init();
 
       snapshot_flags |= STATE_MUL_TA;
+      consume_bloodtalons = false;
     }
 
     double target_armor( player_t* ) const
