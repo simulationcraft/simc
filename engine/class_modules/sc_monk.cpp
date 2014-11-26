@@ -56,6 +56,7 @@ Gift of the Serpent Proc Coefficients:
 
 BREWMASTER:
 
+  - Add some form of cooldown for Expel harm below 35% to better model what is in-game
 - Zen Meditation
 */
 #include "simulationcraft.hpp"
@@ -346,6 +347,7 @@ public:
   {
     cooldown_t* healing_elixirs;
     cooldown_t* healing_sphere;
+    cooldown_t* expel_harm;
   } cooldown;
 
   struct passives_t
@@ -391,6 +393,7 @@ public:
     _active_stance = FIERCE_TIGER;
     cooldown.healing_elixirs = get_cooldown( "healing_elixirs" );
     cooldown.healing_sphere = get_cooldown( "healing_sphere" );
+    cooldown.expel_harm = get_cooldown( "expel_harm" );
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
@@ -4582,7 +4585,11 @@ void monk_t::assess_damage( school_e school,
   else if ( s -> result_total > 0 && school != SCHOOL_PHYSICAL && glyph.guard -> ok() )
     buff.guard -> up();
 
-  if ( health_percentage() < glyph.fortuitous_spheres -> effectN( 1 ).percent() && glyph.fortuitous_spheres -> ok() )
+  // TODO: Add some form of cooldown to better model what is in-game
+  //if ( health_percentage() < 35 )
+  //  cooldown.expel_harm -> reset( true );
+
+  if ( health_percentage() < glyph.fortuitous_spheres -> effectN( 1 ).base_value() && glyph.fortuitous_spheres -> ok() )
   {
     if ( cooldown.healing_sphere -> up() )
       active_actions.healing_sphere -> execute();
