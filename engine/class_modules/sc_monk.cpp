@@ -3186,6 +3186,7 @@ struct enveloping_mist_t: public monk_heal_t
     may_crit = may_miss = false;
     resource_current = RESOURCE_CHI;
     base_costs[RESOURCE_CHI] = 3.0;
+    spell_power_mod.tick *= 1.5; // Hotfix from 2014/11/26
   }
 
   virtual timespan_t execute_time() const
