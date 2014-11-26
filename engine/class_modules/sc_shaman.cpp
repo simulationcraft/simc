@@ -2974,6 +2974,44 @@ struct lava_burst_t : public shaman_spell_t
       p() -> buff.elemental_fusion -> trigger();
   }
 
+  //overwrite MS behavior for blizzards new idea of helping crit's value
+  int schedule_multistrike( action_state_t* state, dmg_e type, double tick_multiplier )
+  {
+    if ( state -> result_amount <= 0 )
+      return 0;
+
+    if ( !result_is_hit( state -> result ) )
+      return 0;
+
+    int n_strikes = 0;
+    int extra_ms = 1;
+
+    if ( p() -> rng().roll( p() -> cache.spell_crit() ) )
+    {
+      for ( int i = 0; i < extra_ms; i++ )
+      {
+        result_e r = RESULT_MULTISTRIKE_CRIT; // Lava burst always crits
+        action_state_t* ms_state = get_state( state );
+        ms_state -> target = state -> target;
+        ms_state -> n_targets = 1;
+        ms_state -> chain_target = 0;
+        ms_state -> result = r;
+        // Multistrikes can be blocked
+        ms_state -> block_result = calculate_block_result( state );
+
+        multistrike_direct( state, ms_state );
+
+        // Schedule multistrike "execute"; in reality it calls either impact, or
+        // assess_damage (for ticks).
+        new (*sim) multistrike_execute_event_t( ms_state );
+
+        n_strikes++;
+      }
+    }
+
+    return n_strikes + shaman_spell_t::schedule_multistrike( state, type, tick_multiplier );
+  }
+
   virtual timespan_t execute_time() const
   {
     if ( p() -> buff.lava_surge -> up() )
