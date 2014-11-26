@@ -6060,7 +6060,7 @@ void priest_t::apl_precombat()
       if ( talents.clarity_of_power -> ok() )
         precombat -> add_action( "mind_spike" );
       else
-        precombat -> add_action( "mind_blast" );
+        precombat -> add_action( "vampiric_touch" );
       break;
   }
 }
@@ -6094,10 +6094,10 @@ void priest_t::apl_shadow()
   action_priority_list_t* decision = get_action_priority_list( "decision" );
   action_priority_list_t* pvp_dispersion = get_action_priority_list( "pvp_dispersion" );
   action_priority_list_t* main = get_action_priority_list( "main" );
-  action_priority_list_t* cop = get_action_priority_list( "cop" );
+  action_priority_list_t* vent = get_action_priority_list( "vent" );
+  action_priority_list_t* cop_dotweave = get_action_priority_list( "cop_dotweave" );
   action_priority_list_t* cop_mfi = get_action_priority_list( "cop_mfi" );
-  action_priority_list_t* cop_advanced_mfi = get_action_priority_list( "cop_advanced_mfi" );
-  action_priority_list_t* cop_advanced_mfi_dots = get_action_priority_list( "cop_advanced_mfi_dots" );
+  action_priority_list_t* cop = get_action_priority_list( "cop" );
 
   default_list -> add_action( this, "Shadowform", "if=!buff.shadowform.up" );
 
@@ -6137,28 +6137,145 @@ void priest_t::apl_shadow()
   pvp_dispersion -> add_action( "dispersion,interrupt=1" );
   pvp_dispersion -> add_action( "call_action_list,name=decision" );
 
-  // Choose which APL to follow based on talents, number of targets, and HP of the target.
-  decision -> add_action( "call_action_list,name=cop_advanced_mfi_dots,if=target.health.pct>=20&(shadow_orb>=4|target.dot.shadow_word_pain.ticking|target.dot.vampiric_touch.ticking|target.dot.devouring_plague.ticking)&talent.clarity_of_power.enabled&talent.insanity.enabled&active_enemies<=2" );
-  decision -> add_action( "call_action_list,name=cop_advanced_mfi,if=target.health.pct>=20&talent.clarity_of_power.enabled&talent.insanity.enabled&active_enemies<=2" );
-  decision -> add_action( "call_action_list,name=cop_mfi,if=talent.clarity_of_power.enabled&talent.insanity.enabled&active_enemies<=2" );
-  decision -> add_action( "call_action_list,name=cop,if=talent.clarity_of_power.enabled&(active_enemies<=2|target.health.pct<20)" );
+  // Choose which APL to use based on talents and fight conditions.
+  decision -> add_action( "call_action_list,name=cop_dotweave,if=talent.clarity_of_power.enabled&talent.insanity.enabled&target.health.pct>20&active_enemies<=5" );
+  decision -> add_action( "call_action_list,name=cop_mfi,if=talent.clarity_of_power.enabled&talent.insanity.enabled&target.health.pct<=20" );
+  decision -> add_action( "call_action_list,name=cop,if=talent.clarity_of_power.enabled" );
+  decision -> add_action( "call_action_list,name=vent,if=talent.void_entropy.enabled" );
   decision -> add_action( "call_action_list,name=main" );
 
-  // Main action list, if you don't have CoP selected
+  // Clarity of Power DoT Weaving, for when you have Insanity and the target is above 20%
+  cop_dotweave -> add_action( "devouring_plague,if=target.dot.vampiric_touch.ticking&target.dot.shadow_word_pain.ticking&shadow_orb=5&cooldown_react" );
+  // This line is for T17-4pc, triggers an early use of devouring if it can and the stacks are about to fall
+  cop_dotweave -> add_action( "devouring_plague,if=(buff.mental_instinct.remains<gcd&buff.mental_instinct.remains)" );
+  cop_dotweave -> add_action( "devouring_plague,if=(target.dot.vampiric_touch.ticking&target.dot.shadow_word_pain.ticking&!buff.shadow_word_insanity.remains&cooldown.mind_blast.remains>0.4*gcd)" );
+  cop_dotweave -> add_action( "shadow_word_death,if=target.health.pct<20,cycle_targets=1" );
+  //cop_dotweave -> add_action( "shadow_word_death,if=target.health.pct<20,buff.shadow_word_death_reset_cooldown.stack=1,cycle_targets=1" );
+  //cop_dotweave -> add_action( "shadow_word_death,if=target.health.pct<20,buff.shadow_word_death_reset_cooldown.stack=0,cycle_targets=1" );
+  cop_dotweave -> add_action( "mind_blast,if=glyph.mind_harvest.enabled&mind_harvest=0&shadow_orb<=2,cycle_targets=1" );
+  cop_dotweave -> add_action( "mind_blast,if=shadow_orb<=4&cooldown_react" );
+  cop_dotweave -> add_action( "shadowfiend,if=!talent.mindbender.enabled&!buff.shadow_word_insanity.remains" );
+  cop_dotweave -> add_action( "mindbender,if=talent.mindbender.enabled&!buff.shadow_word_insanity.remains" );
+  // This line prevents losing the 2pc bonus when capping orbs at 5. Prepares for capping by pre-casting SWP within the last gcd prior to the 5th orb is gained so it can VT > DP > Blast directly after (if SWP is cast after blast then the cooldown of the next mindblast is already under 1.5 seconds and the gain is wasted)
+  cop_dotweave -> add_action( "shadow_word_pain,if=shadow_orb=4&set_bonus.tier17_2pc&!target.dot.shadow_word_pain.ticking&!target.dot.devouring_plague.ticking&cooldown.mind_blast.remains<1.2*gcd&cooldown.mind_blast.remains>0.2*gcd" );
+  cop_dotweave -> add_action( "shadow_word_pain,if=shadow_orb=5&!target.dot.devouring_plague.ticking&!target.dot.shadow_word_pain.ticking" );
+  cop_dotweave -> add_action( "vampiric_touch,if=shadow_orb=5&!target.dot.devouring_plague.ticking&!target.dot.vampiric_touch.ticking" );
+  cop_dotweave -> add_action( "insanity,if=buff.shadow_word_insanity.remains,chain=1,interrupt=1" );
+  // Some experimental extending of dotweave phases, gain was minimal 0-50dps. Likely something that would only be worth doing inside bloodlust. Not compatible with t17 4pc. Having this active reduces the number of dot ticks lost to spiking at the end of the phase.
+  cop_dotweave -> add_action( "shadow_word_pain,if=shadow_orb>=2&target.dot.shadow_word_pain.remains>=6&cooldown.mind_blast.remains>0.5*gcd&target.dot.vampiric_touch.remains&buff.bloodlust.up&!set_bonus.tier17_2pc" );
+  cop_dotweave -> add_action( "vampiric_touch,if=shadow_orb>=2&target.dot.vampiric_touch.remains>=5&cooldown.mind_blast.remains>0.5*gcd&buff.bloodlust.up&!set_bonus.tier17_2pc" );
+  cop_dotweave -> add_action( "halo,if=cooldown.mind_blast.remains>0.5*gcd&talent.halo.enabled&target.distance<=30&target.distance>=17" );
+  cop_dotweave -> add_action( "divine_star,if=cooldown.mind_blast.remains>0.5&gcd&talent.divine_star.enabled&(active_enemies>1|target.distance<=24)" );
+  cop_dotweave -> add_action( "cascade,if=cooldown.mind_blast.remains>0.5*gcd&talent.cascade.enabled&((active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11)" );
+  cop_dotweave -> add_action( "shadow_word_pain,if=primary_target=0&(!ticking|remains<=18*0.3),cycle_targets=1,max_cycle_targets=5" );
+  cop_dotweave -> add_action( "vampiric_touch,if=primary_target=0&(!ticking|remains<=15*0.3),cycle_targets=1,max_cycle_targets=5" );
+  cop_dotweave -> add_action( "mind_spike,if=buff.shadow_word_insanity.remains<=gcd&buff.bloodlust.up&!target.dot.shadow_word_pain.remains&!target.dot.vampiric_touch.remains" );
+  cop_dotweave -> add_action( "mind_spike,if=((target.dot.shadow_word_pain.remains&!target.dot.vampiric_touch.remains)|(!target.dot.shadow_word_pain.remains&target.dot.vampiric_touch.remains))&shadow_orb<=2&cooldown.mind_blast.remains>0.5*gcd" );
+  cop_dotweave -> add_action( "mind_flay,if=target.dot.shadow_word_pain.remains&target.dot.vampiric_touch.remains&cooldown.mind_blast.remains>0.9*gcd,interrupt=1" );
+  cop_dotweave -> add_action( "mind_spike,if=cooldown.mind_blast.remains>0.4*gcd" );
+  cop_dotweave -> add_action( "shadow_word_death,moving=1" );
+  cop_dotweave -> add_action( "halo,if=talent.halo.enabled&target.distance<=30,moving=1" );
+  cop_dotweave -> add_action( "divine_star,if=talent.divine_star.enabled&target.distance<=28,moving=1" );
+  cop_dotweave -> add_action( "cascade,if=talent.cascade.enabled&target.distance<=40,moving=1" );
+  cop_dotweave -> add_action( "shadow_word_pain,moving=1" );
+
+  // Clarity of Power with Insanity
+  cop_mfi -> add_action( "devouring_plague,if=shadow_orb=5" );
+  cop_mfi -> add_action( "mind_blast,if=glyph.mind_harvest.enabled&mind_harvest=0,cycle_targets=1" );
+  cop_mfi -> add_action( "mind_blast,if=active_enemies<=5&cooldown_react" );
+  cop_mfi -> add_action( "shadow_word_death,if=target.health.pct<20,cycle_targets=1" );
+  //cop_mfi -> add_action( "shadow_word_death,if=target.health.pct<20,buff.shadow_word_death_reset_cooldown.stack=1,cycle_targets=1" );
+  //cop_mfi -> add_action( "shadow_word_death,if=target.health.pct<20,buff.shadow_word_death_reset_cooldown.stack=0,cycle_targets=1" );
+  cop_mfi -> add_action( "devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<gcd*1.0|target.health.pct<20&cooldown.shadow_word_death.remains<gcd*1.0)" );
+  cop_mfi -> add_action( "mindbender,if=talent.mindbender.enabled" );
+  cop_mfi -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
+  cop_mfi -> add_action( "insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies<=2,chain=1" );
+  cop_mfi -> add_action( "insanity,if=active_enemies<=2,interrupt=1,chain=1" );
+  cop_mfi -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&target.distance>=17" );
+  cop_mfi -> add_action( "cascade,if=talent.cascade.enabled&((active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11)" );
+  cop_mfi -> add_action( "divine_star,if=talent.divine_star.enabled&(active_enemies>1|target.distance<=24)" );
+  cop_mfi -> add_action( "shadow_word_pain,if=remains<(15*0.3)&miss_react&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
+  cop_mfi -> add_action( "vampiric_touch,if=remains<(18*0.3+cast_time)&miss_react&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
+  cop_mfi -> add_action( "mind_sear,if=active_enemies>=6,chain=1,interrupt=1" );
+  cop_mfi -> add_action( "mind_spike" );
+  cop_mfi -> add_action( "shadow_word_death,moving=1" );
+  cop_mfi -> add_action( "mind_blast,if=buff.shadowy_insight.react&cooldown_react,moving=1" );
+  cop_mfi -> add_action( "halo,if=talent.halo.enabled&target.distance<=30,moving=1" );
+  cop_mfi -> add_action( "divine_star,if=talent.divine_star.enabled&target.distance<=28,moving=1" );
+  cop_mfi -> add_action( "cascade,if=talent.cascade.enabled&target.distance<=40,moving=1" );
+  cop_mfi -> add_action( "shadow_word_pain,if=primary_target=0,moving=1,cycle_targets=1" );
+
+  // Clarity of Power
+  cop -> add_action( "devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<=gcd*1.0|(cooldown.shadow_word_death.remains<=gcd*1.0&target.health.pct<20))&primary_target=0,cycle_targets=1" );
+  cop -> add_action( "devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<=gcd*1.0|(cooldown.shadow_word_death.remains<=gcd*1.0&target.health.pct<20))" );
+  cop -> add_action( "mind_blast,if=mind_harvest=0,cycle_targets=1" );
+  cop -> add_action( "mind_blast,if=active_enemies<=5&cooldown_react" );
+  cop -> add_action( "shadow_word_death,if=target.health.pct<20,cycle_targets=1" );
+  //cop -> add_action( "shadow_word_death,if=target.health.pct<20,buff.shadow_word_death_reset_cooldown.stack=1,cycle_targets=1" );
+  //cop -> add_action( "shadow_word_death,if=target.health.pct<20,buff.shadow_word_death_reset_cooldown.stack=0,cycle_targets=1" );
+  cop -> add_action( "mindbender,if=talent.mindbender.enabled" );
+  cop -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
+  cop -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&target.distance>=17" );
+  cop -> add_action( "cascade,if=talent.cascade.enabled&((active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11)" );
+  cop -> add_action( "divine_star,if=talent.divine_star.enabled&(active_enemies>1|target.distance<=24)" );
+  cop -> add_action( "shadow_word_pain,if=miss_react&!ticking&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
+  cop -> add_action( "vampiric_touch,if=remains<cast_time&miss_react&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
+  cop -> add_action( "mind_sear,if=active_enemies>=5,chain=1,interrupt=1" );
+  cop -> add_action( "mind_spike,if=active_enemies<=4&buff.surge_of_darkness.react" );
+  cop -> add_action( "mind_sear,if=active_enemies>=3,chain=1,interrupt=1" );
+  cop -> add_action( "mind_flay,if=target.dot.devouring_plague_tick.ticks_remain>1&active_enemies=1,chain=1,interrupt=1" );
+  cop -> add_action( "mind_spike" );
+  cop -> add_action( "shadow_word_death,moving=1" );
+  cop -> add_action( "mind_blast,if=buff.shadowy_insight.react&cooldown_react,moving=1" );
+  cop -> add_action( "halo,moving=1,if=talent.halo.enabled&target.distance<=30" );
+  cop -> add_action( "divine_star,if=talent.divine_star.enabled&target.distance<=28,moving=1" );
+  cop -> add_action( "cascade,if=talent.cascade.enabled&target.distance<=40,moving=1" );
+  cop -> add_action( "shadow_word_pain,if=primary_target=0,moving=1,cycle_targets=1" );
+
+  vent -> add_action( "mindbender,if=talent.mindbender.enabled&cooldown.mind_blast.remains>=gcd" );
+  vent -> add_action( "shadowfiend,if=!talent.mindbender.enabled&cooldown.mind_blast.remains>=gcd" );
+  vent -> add_action( "void_entropy,if=shadow_orb=3&!ticking&target.time_to_die>60&active_enemies=1" );
+  vent -> add_action( "void_entropy,if=!dot.void_entropy.ticking&shadow_orb=5&active_enemies>=1&target.time_to_die>60,cycle_targets=1,max_cycle_targets=(60\(cooldown.mind_blast.duration*3*spell_haste))" );
+  vent -> add_action( "devouring_plague,if=dot.void_entropy.ticking&dot.void_entropy.remains<=gcd*2&cooldown_react,cycle_targets=1" );
+  vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<10,cycle_targets=1" );
+  vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<20,cycle_targets=1" );
+  vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains,cycle_targets=1" );
+  vent -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&active_enemies>=4" );
+  vent -> add_action( "mind_blast,if=glyph.mind_harvest.enabled&mind_harvest=0&shadow_orb<=2,cycle_targets=1" );
+  vent -> add_action( "devouring_plague,if=glyph.mind_harvest.enabled&mind_harvest=0&shadow_orb>=3,cycle_targets=1" );
+  vent -> add_action( "mind_blast,if=active_enemies<=10&cooldown_react&shadow_orb<=4" );
+  vent -> add_action( "shadow_word_death,if=target.health.pct<20&cooldown_react&shadow_orb<=4,cycle_targets=1" );
+  //vent -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=1,cycle_targets=1" );
+  //vent -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=0,cycle_targets=1" );
+  vent -> add_action( "shadow_word_pain,if=shadow_orb=4&remains<(18*0.50)&set_bonus.tier17_2pc&cooldown.mind_blast.remains<1.2*gcd&cooldown.mind_blast.remains>0.2*gcd" );
+  vent -> add_action( "insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies<=3&cooldown.mind_blast.remains>0.5*gcd,chain=1" );
+  vent -> add_action( "insanity,interrupt=1,chain=1,if=active_enemies<=3&cooldown.mind_blast.remains>0.5*gcd" );
+  vent -> add_action( "mind_spike,if=active_enemies<=5&buff.surge_of_darkness.react=3" );
+  vent -> add_action( "shadow_word_pain,if=remains<(18*0.35)&miss_react,cycle_targets=1,max_cycle_targets=5" );
+  vent -> add_action( "vampiric_touch,if=remains<(15*0.35)&miss_react,cycle_targets=1,max_cycle_targets=5" );
+  vent -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&cooldown.mind_blast.remains>0.5*gcd" );
+  vent -> add_action( "cascade,if=talent.cascade.enabled&target.distance<=40&cooldown.mind_blast.remains>0.5*gcd" );
+  vent -> add_action( "divine_star,if=talent.divine_star.enabled&active_enemies>4&target.distance<=24&cooldown.mind_blast.remains>0.5*gcd" );
+  vent -> add_action( "mind_spike,if=active_enemies<=5&buff.surge_of_darkness.up&cooldown_react&cooldown.mind_blast.remains>0.5*gcd" );
+  vent -> add_action( "mind_sear,chain=1,interrupt=1,if=active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd" );
+  vent -> add_action( "mind_flay,if=cooldown.mind_blast.remains>0.5*gcd,interrupt=1,chain=1" );
+  vent -> add_action( "shadow_word_death,moving=1" );
+  vent -> add_action( "mind_blast,moving=1,if=buff.shadowy_insight.react&cooldown_react" );
+  vent -> add_action( "divine_star,moving=1,if=talent.divine_star.enabled&target.distance<=28" );
+  vent -> add_action( "cascade,moving=1,if=talent.cascade.enabled&target.distance<=40" );
+  vent -> add_action( "shadow_word_death,moving=1" );
+  vent -> add_action( "shadow_word_pain,moving=1,cycle_targets=1" );
+
   main -> add_action( "mindbender,if=talent.mindbender.enabled" );
   main -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
-  main -> add_action( "void_entropy,if=talent.void_entropy.enabled&shadow_orb>=3&miss_react&!ticking&target.time_to_die>60&cooldown.mind_blast.remains<=gcd*2,cycle_targets=1,max_cycle_targets=3" );
-  main -> add_action( "devouring_plague,if=talent.void_entropy.enabled&shadow_orb>=3&dot.void_entropy.ticking&dot.void_entropy.remains<10,cycle_targets=1,max_cycle_targets=3" );
-  main -> add_action( "devouring_plague,if=talent.void_entropy.enabled&shadow_orb>=3&dot.void_entropy.ticking&dot.void_entropy.remains<20,cycle_targets=1,max_cycle_targets=3" );
-  main -> add_action( "devouring_plague,if=talent.void_entropy.enabled&shadow_orb=5" );
-  main -> add_action( "devouring_plague,if=!talent.void_entropy.enabled&shadow_orb>=4&!target.dot.devouring_plague_tick.ticking&talent.surge_of_darkness.enabled,cycle_targets=1" );
-  main -> add_action( "devouring_plague,if=!talent.void_entropy.enabled&((shadow_orb>=4)|(shadow_orb>=3&set_bonus.tier17_2pc))" );
+  main -> add_action( "shadow_word_death,if=target.health.pct<20&shadow_orb<=4,cycle_targets=1" );
   //main -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=1,cycle_targets=1" );
   //main -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=0,cycle_targets=1" );
-  main -> add_action( "shadow_word_death,cycle_targets=1" );
-  main -> add_action( "mind_blast,if=!glyph.mind_harvest.enabled&active_enemies<=5&cooldown_react" );
-  main -> add_action( "devouring_plague,if=!talent.void_entropy.enabled&shadow_orb>=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)&!target.dot.devouring_plague_tick.ticking&talent.surge_of_darkness.enabled,cycle_targets=1" );
-  main -> add_action( "devouring_plague,if=!talent.void_entropy.enabled&shadow_orb>=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)" );
+  main -> add_action( "mind_blast,if=glyph.mind_harvest.enabled&shadow_orb<=2&active_enemies<=5&cooldown_react" );
+  main -> add_action( "devouring_plague,if=shadow_orb=5&talent.surge_of_darkness.enabled,cycle_targets=1" );
+  main -> add_action( "devouring_plague,if=shadow_orb=5" );
+  main -> add_action( "devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)&!target.dot.devouring_plague_tick.ticking&talent.surge_of_darkness.enabled,cycle_targets=1" );
+  main -> add_action( "devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)" );
   main -> add_action( "mind_blast,if=glyph.mind_harvest.enabled&mind_harvest=0,cycle_targets=1" );
   main -> add_action( "mind_blast,if=active_enemies<=5&cooldown_react" );
   main -> add_action( "insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies<=2,chain=1" );
@@ -6182,96 +6299,11 @@ void priest_t::apl_shadow()
   main -> add_action( "shadow_word_pain,if=shadow_orb>=2&ticks_remain<=3&talent.insanity.enabled" );
   main -> add_action( "vampiric_touch,if=shadow_orb>=2&ticks_remain<=3.5&talent.insanity.enabled" );
   main -> add_action( "mind_flay,chain=1,interrupt=1" );
-  main -> add_action( "shadow_word_death,moving=1" );
   main -> add_action( "mind_blast,moving=1,if=buff.shadowy_insight.react&cooldown_react" );
   main -> add_action( "divine_star,moving=1,if=talent.divine_star.enabled&target.distance<=28" );
   main -> add_action( "cascade,moving=1,if=talent.cascade.enabled&target.distance<=40" );
+  main -> add_action( "shadow_word_death,moving=1" );
   main -> add_action( "shadow_word_pain,moving=1,cycle_targets=1" );
-
-  // Main CoP action list, if you don't have Insanity selected
-  cop -> add_action( "devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<=gcd*1.0|cooldown.shadow_word_death.remains<=gcd*1.0)&primary_target=0,cycle_targets=1" );
-  cop -> add_action( "devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<=gcd*1.0|cooldown.shadow_word_death.remains<=gcd*1.0)" );
-  cop -> add_action( "mind_blast,if=mind_harvest=0,cycle_targets=1" );
-  cop -> add_action( "mind_blast,if=active_enemies<=5&cooldown_react" );
-  //cop -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=1,cycle_targets=1" );
-  //cop -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=0,cycle_targets=1" );
-  cop -> add_action( "shadow_word_death,cycle_targets=1" );
-  cop -> add_action( "mindbender,if=talent.mindbender.enabled" );
-  cop -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
-  cop -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&target.distance>=17" );
-  cop -> add_action( "cascade,if=talent.cascade.enabled&((active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11)" );
-  cop -> add_action( "divine_star,if=talent.divine_star.enabled&(active_enemies>1|target.distance<=24)" );
-  cop -> add_action( "shadow_word_pain,if=miss_react&!ticking&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
-  cop -> add_action( "vampiric_touch,if=remains<cast_time&miss_react&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
-  cop -> add_action( "mind_sear,if=active_enemies>=5,chain=1,interrupt=1" );
-  cop -> add_action( "mind_spike,if=active_enemies<=4&buff.surge_of_darkness.react" );
-  cop -> add_action( "mind_sear,if=active_enemies>=3,chain=1,interrupt=1" );
-  cop -> add_action( "mind_flay,if=target.dot.devouring_plague_tick.ticks_remain>1&active_enemies=1,chain=1,interrupt=1" );
-  cop -> add_action( "mind_spike" );
-  cop -> add_action( "shadow_word_death,moving=1" );
-  cop -> add_action( "mind_blast,if=buff.shadowy_insight.react&cooldown_react,moving=1" );
-  cop -> add_action( "halo,moving=1,if=talent.halo.enabled&target.distance<=30" );
-  cop -> add_action( "divine_star,if=talent.divine_star.enabled&target.distance<=28,moving=1" );
-  cop -> add_action( "cascade,if=talent.cascade.enabled&target.distance<=40,moving=1" );
-  cop -> add_action( "shadow_word_pain,if=primary_target=0,moving=1,cycle_targets=1" );
-
-  // CoP action list, if you have Insanity selected
-  cop_mfi -> add_action( "devouring_plague,if=shadow_orb=5" );
-  cop_mfi -> add_action( "mind_blast,if=mind_harvest=0,cycle_targets=1" );
-  cop_mfi -> add_action( "mind_blast,if=active_enemies<=5&cooldown_react" );
-  //cop_mfi -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=1,cycle_targets=1" );
-  //cop_mfi -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=0,cycle_targets=1" );
-  cop_mfi -> add_action( "shadow_word_death,cycle_targets=1" );
-  cop_mfi -> add_action( "devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)" );
-  cop_mfi -> add_action( "mindbender,if=talent.mindbender.enabled" );
-  cop_mfi -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
-  cop_mfi -> add_action( "insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies<=2,chain=1" );
-  cop_mfi -> add_action( "insanity,if=active_enemies<=2,interrupt=1,chain=1" );
-  cop_mfi -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&target.distance>=17" );
-  cop_mfi -> add_action( "cascade,if=talent.cascade.enabled&((active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11)" );
-  cop_mfi -> add_action( "divine_star,if=talent.divine_star.enabled&(active_enemies>1|target.distance<=24)" );
-  cop_mfi -> add_action( "shadow_word_pain,if=remains<(18*0.3)&miss_react&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
-  cop_mfi -> add_action( "vampiric_touch,if=remains<(15*0.3+cast_time)&miss_react&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
-  cop_mfi -> add_action( "mind_sear,if=active_enemies>=6,chain=1,interrupt=1" );
-  cop_mfi -> add_action( "mind_spike" );
-  cop_mfi -> add_action( "shadow_word_death,moving=1" );
-  cop_mfi -> add_action( "mind_blast,if=buff.shadowy_insight.react&cooldown_react,moving=1" );
-  cop_mfi -> add_action( "halo,if=talent.halo.enabled&target.distance<=30,moving=1" );
-  cop_mfi -> add_action( "divine_star,if=talent.divine_star.enabled&target.distance<=28,moving=1" );
-  cop_mfi -> add_action( "cascade,if=talent.cascade.enabled&target.distance<=40,moving=1" );
-  cop_mfi -> add_action( "shadow_word_pain,if=primary_target=0,moving=1,cycle_targets=1" );
-
-  // Advanced "DoT Weaving" CoP Action List
-  cop_advanced_mfi -> add_action( "mind_blast,if=mind_harvest=0,cycle_targets=1" );
-  cop_advanced_mfi -> add_action( "mind_blast,if=active_enemies<=5&cooldown_react" );
-  //cop_advanced_mfi -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=1,cycle_targets=1" );
-  //cop_advanced_mfi -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=0,cycle_targets=1" );
-  cop_advanced_mfi -> add_action( "mindbender,if=talent.mindbender.enabled" );
-  cop_advanced_mfi -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
-  cop_advanced_mfi -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&target.distance>=17" );
-  cop_advanced_mfi -> add_action( "cascade,if=talent.cascade.enabled&((active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11)" );
-  cop_advanced_mfi -> add_action( "divine_star,if=talent.divine_star.enabled&(active_enemies>1|target.distance<=24)" );
-  cop_advanced_mfi -> add_action( "shadow_word_pain,if=remains<(18*0.3)&miss_react&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
-  cop_advanced_mfi -> add_action( "vampiric_touch,if=remains<(15*0.3+cast_time)&miss_react&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
-  cop_advanced_mfi -> add_action( "mind_sear,if=active_enemies>=6,chain=1,interrupt=1" );
-  cop_advanced_mfi -> add_action( "mind_spike" );
-  cop_advanced_mfi -> add_action( "shadow_word_death,moving=1" );
-  cop_advanced_mfi -> add_action( "mind_blast,if=buff.shadowy_insight.react&cooldown_react,moving=1" );
-  cop_advanced_mfi -> add_action( "halo,if=talent.halo.enabled&target.distance<=30,moving=1" );
-  cop_advanced_mfi -> add_action( "divine_star,if=talent.divine_star.enabled&target.distance<=28,moving=1" );
-  cop_advanced_mfi -> add_action( "cascade,if=talent.cascade.enabled&target.distance<=40,moving=1" );
-  cop_advanced_mfi -> add_action( "shadow_word_pain,if=primary_target=0,moving=1,cycle_targets=1" );
-
-  // Advanced "DoT Weaving" CoP Action List -- Part 2, the weaving
-  cop_advanced_mfi_dots -> add_action( "mind_spike,if=((target.dot.shadow_word_pain.ticking&target.dot.shadow_word_pain.remains<gcd)|(target.dot.vampiric_touch.ticking&target.dot.vampiric_touch.remains<gcd))&!target.dot.devouring_plague.ticking" );
-  cop_advanced_mfi_dots -> add_action( "shadow_word_pain,if=!ticking&miss_react&!target.dot.vampiric_touch.ticking" );
-  cop_advanced_mfi_dots -> add_action( "vampiric_touch,if=!ticking&miss_react" );
-  cop_advanced_mfi_dots -> add_action( "mind_blast" );
-  cop_advanced_mfi_dots -> add_action( "devouring_plague,if=shadow_orb>=3&target.dot.shadow_word_pain.ticking&target.dot.vampiric_touch.ticking" );
-  cop_advanced_mfi_dots -> add_action( "insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies<=2,chain=1" );
-  cop_advanced_mfi_dots -> add_action( "insanity,if=active_enemies<=2,interrupt=1,chain=1" );
-  cop_advanced_mfi_dots -> add_action( "mind_spike,if=(target.dot.shadow_word_pain.ticking&target.dot.shadow_word_pain.remains<gcd*2)|(target.dot.vampiric_touch.ticking&target.dot.vampiric_touch.remains<gcd*2)" );
-  cop_advanced_mfi_dots -> add_action( "mind_flay,chain=1,interrupt=1" );
 }
 
 // Discipline Heal Combat Action Priority List
