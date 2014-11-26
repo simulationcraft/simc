@@ -6,13 +6,13 @@ set /p revision=<bla.txt
 del bla.txt
 
 call win32_release_msvc12.bat
-set install=simc-603-12-win32
+set install=simc-603-13-win32
 set filename=%install%-%mydate%-%revision%.zip
 7z a -r -mx9 %filename% %install%
 call start winscp /command "open downloads" "put E:\Simulationcraft\%filename% -nopreservetime -nopermissions -transfer=binary" "exit"
 
 call win64_release_msvc12.bat
-set install=simc-603-12-win64
+set install=simc-603-13-win64
 set filename=%install%-%mydate%-%revision%.zip
 7z a -r -mx9 %filename% %install%
 winscp /command "open downloads" "put E:\Simulationcraft\%filename% -nopreservetime -nopermissions -transfer=binary" "exit"
