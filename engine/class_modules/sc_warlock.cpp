@@ -2142,7 +2142,7 @@ struct agony_t: public warlock_spell_t
   {
     may_crit = false;
     if ( p -> wod_hotfix )
-		spell_power_mod.tick *= 1.08;
+      spell_power_mod.tick *= 1.08;
   }
 
   virtual void last_tick( dot_t* d )
@@ -2237,7 +2237,7 @@ struct demonbolt_t: public warlock_spell_t
     warlock_spell_t( "demonbolt", p, p -> talents.demonbolt )
   {
     if ( p -> wod_hotfix )
-		base_multiplier *= 0.77;
+      base_multiplier *= 0.77;
   }
 
   virtual double cost() const
@@ -2484,8 +2484,8 @@ struct shadowburn_t: public warlock_spell_t
     havoc_consume = 1;
     mana_delay = data().effectN( 1 ).trigger() -> duration();
     mana_amount = p -> find_spell( data().effectN( 1 ).trigger() -> effectN( 1 ).base_value() ) -> effectN( 1 ).percent();
-	if ( p -> wod_hotfix )
-		base_multiplier *= 1.08;
+    if ( p -> wod_hotfix )
+      base_multiplier *= 1.08;
   }
 
   virtual void impact( action_state_t* s )
@@ -2948,8 +2948,8 @@ struct conflagrate_t: public warlock_spell_t
     if ( p -> talents.charred_remains -> ok() ){
       base_multiplier *= 1.0 + p -> talents.charred_remains -> effectN( 1 ).percent();
     }
-	if ( p -> wod_hotfix )
-		base_multiplier *= 1.08;
+    if ( p -> wod_hotfix )
+      base_multiplier *= 1.08;
     havoc_consume = 1;
     base_costs[RESOURCE_MANA] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
   }
@@ -3062,8 +3062,8 @@ struct incinerate_t: public warlock_spell_t
   {
     if ( p -> talents.charred_remains -> ok() )
       base_multiplier *= 1.0 + p -> talents.charred_remains -> effectN( 1 ).percent();
-	if ( p -> wod_hotfix )
-		base_multiplier *= 1.08;
+    if ( p -> wod_hotfix )
+      base_multiplier *= 1.08;
     havoc_consume = 1;
     base_costs[RESOURCE_MANA] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
   }
@@ -3288,8 +3288,8 @@ struct chaos_bolt_t: public warlock_spell_t
   {
     if ( !p -> talents.charred_remains -> ok() )
       fnb = 0;
-	if ( p -> wod_hotfix )
-		base_multiplier *= 1.08;
+    if ( p -> wod_hotfix )
+      base_multiplier *= 1.08;
 
     havoc_consume = 3;
     backdraft_consume = 3;
@@ -5543,7 +5543,7 @@ void warlock_t::apl_precombat()
     action_list_str += "/wrathguard:wrathstorm";
     action_list_str += "/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&(((set_bonus.tier17_2pc=0&((charges=1&recharge_time<4)|charges=2))|(charges=3|(charges=2&recharge_time<13.8-travel_time*2))&(cooldown.cataclysm.remains>dot.shadowflame.duration|!talent.cataclysm.enabled)&cooldown.dark_soul.remains>dot.shadowflame.duration)|dot.shadowflame.remains>travel_time)";
     action_list_str += "/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&talent.demonbolt.enabled&((set_bonus.tier17_2pc=0&((charges=1&recharge_time<4)|charges=2))|(charges=3|(charges=2&recharge_time<13.8-travel_time*2))|dot.shadowflame.remains>travel_time)";
-	action_list_str += "/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+3&buff.demonbolt.remains<gcd*2&charges>=2&action.dark_soul.charges>=1";
+    action_list_str += "/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+3&buff.demonbolt.remains<gcd*2&charges>=2&action.dark_soul.charges>=1";
   }
 
   action_list_str += "/service_pet,if=talent.grimoire_of_service.enabled";
