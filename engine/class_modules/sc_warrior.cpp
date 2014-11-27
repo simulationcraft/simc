@@ -4911,11 +4911,8 @@ void warrior_t::init_action_list()
           if ( items[i].has_item_stat( STAT_STAMINA ) )
           {
             gladiator = false;
-            if ( !gladiator )
-            {
-              sim -> out_debug.printf( "%s: Has been imported as a Tank, due to wearing a trinket with stamina.", name() );
-              break;
-            }
+            sim -> out_debug.printf( "%s: Has been imported as a Tank, due to wearing a trinket with stamina.", name() );
+            break;
           }
         }
       }
