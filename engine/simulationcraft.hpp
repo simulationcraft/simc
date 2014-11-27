@@ -3724,21 +3724,6 @@ struct set_bonus_t
   { return role_set_bonus( static_cast<set_bonus_type_e>( set_bonus ) ); }
 };
 
-struct action_sequence_data_t
-{
-  action_t* action;
-  player_t* target;
-  timespan_t time;
-  std::vector<buff_t*> buff_list;
-
-  action_sequence_data_t( action_t* a, player_t* t, timespan_t ts, std::vector<buff_t*> bl ) : action( a ), target( t ), time( ts )
-  {
-    for ( size_t i = 0; i < bl.size(); ++i )
-      if ( bl[ i ] -> check() && ! bl[ i ] -> quiet )
-        buff_list.push_back( bl[ i ] );
-  }
-};
-
 // Cooldown =================================================================
 
 struct cooldown_t
@@ -4099,9 +4084,11 @@ struct player_collected_data_t
     const action_t* action;
     const player_t* target;
     const timespan_t time;
+    timespan_t wait_time;
     std::vector<std::pair<buff_t*, int> > buff_list;
     std::array<double, RESOURCE_MAX> resource_snapshot;
 
+    action_sequence_data_t( const timespan_t& ts, const timespan_t& wait, const player_t* p );
     action_sequence_data_t( const action_t* a, const player_t* t, const timespan_t& ts, const player_t* p );
   };
   auto_dispose< std::vector<action_sequence_data_t*> > action_sequence;
@@ -4532,6 +4519,7 @@ struct player_t : public actor_t
   player_processed_report_information_t report_information;
 
   void sequence_add( const action_t* a, const player_t* target, const timespan_t& ts );
+  void sequence_add_wait( const timespan_t& amount, const timespan_t& ts );
 
   // Gear
   std::string items_str, meta_gem_str;

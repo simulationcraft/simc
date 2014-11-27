@@ -1856,14 +1856,26 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
                ( int ) data -> time.total_millis() % 1000
                );
 
-  os.printf( "<td></td>\n"
-             "<td class=\"left\">%s</td>\n"
-             "<td></td>\n"
-             "<td class=\"left\">%s</td>\n"
-             "<td></td>\n",
-             data -> action -> name(),
-             data -> target -> name()
-             );
+  if ( data -> action )
+  {
+    os.printf( "<td></td>\n"
+               "<td class=\"left\">%s</td>\n"
+               "<td></td>\n"
+               "<td class=\"left\">%s</td>\n"
+               "<td></td>\n",
+               data -> action -> name(),
+               data -> target -> name()
+               );
+  }
+  else
+  {
+    os.printf( "<td></td>\n"
+               "<td class=\"left\">Waiting</td>\n"
+               "<td></td>\n"
+               "<td class=\"left\">%.3f sec</td>\n"
+               "<td></td>\n",
+               data -> wait_time.total_seconds() );
+  }
 
   os.printf( "<td class=\"left\" style=\"white-space: nowrap\">" );
 
@@ -1995,7 +2007,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
     for ( size_t i = 0; i < p -> collected_data.action_sequence.size(); ++i )
     {
       player_collected_data_t::action_sequence_data_t* data = p -> collected_data.action_sequence[ i ];
-      if ( ! data -> action -> harmful ) continue;
+      if ( ! data -> action || ! data -> action -> harmful ) continue;
       bool found = false;
       for ( size_t j = 0; j < targets.size(); ++j )
       {
@@ -2031,13 +2043,17 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
       j++;
     }
 
+
     os << "</style>\n";
 
     for ( size_t i = 0; i < p -> collected_data.action_sequence.size(); ++i )
     {
       player_collected_data_t::action_sequence_data_t* data = p -> collected_data.action_sequence[ i ];
+      // Skip waiting on the condensed list
+      if ( ! data -> action )
+        continue;
 
-      std::string targetname = ( data -> action -> harmful ) ? data -> target -> name() : "none";
+      std::string targetname = data -> action -> harmful ? data -> target -> name() : "none";
       os.printf(
         "<span class=\"%s_seq_target_%s\" title=\"[%d:%02d] %s%s\n|",
         p -> name(),
@@ -2071,7 +2087,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
         }
       }
 
-      os.printf( "\">%c</span>", data -> action -> marker );
+      os.printf( "\">%c</span>", data -> action ? data -> action -> marker : 'W' );
     }
 
     os << "\n</div>\n"

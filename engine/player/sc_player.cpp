@@ -3059,6 +3059,30 @@ void player_t::invalidate_cache( cache_e c )
 
 #endif
 
+void player_t::sequence_add_wait( const timespan_t& amount, const timespan_t& ts )
+{
+  // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
+  if ( ( sim -> iterations <= 1 && sim -> current_iteration == 0 ) ||
+       ( sim -> iterations > 1 && sim -> current_iteration == 1 ) )
+  {
+    if ( collected_data.action_sequence.size() <= sim -> expected_max_time() * 2.0 + 3.0 )
+    {
+      if ( in_combat )
+      {
+        if ( collected_data.action_sequence.size() && collected_data.action_sequence.back() -> wait_time > timespan_t::zero() )
+          collected_data.action_sequence.back() -> wait_time += amount;
+        else
+          collected_data.action_sequence.push_back( new player_collected_data_t::action_sequence_data_t( ts, amount, this ) );
+      }
+    }
+    else
+    {
+      assert( false && "Collected too much action sequence data."
+      "This means there is a serious overflow of executed actions in the first iteration, which should be fixed." );
+    }
+  }
+}
+
 void player_t::sequence_add( const action_t* a, const player_t* target, const timespan_t& ts )
 {
   if ( a -> marker )
@@ -3646,6 +3670,7 @@ void player_t::schedule_ready( timespan_t delta_time,
 
   if ( waiting )
   {
+    sequence_add_wait( delta_time, sim -> current_time() );
     iteration_waiting_time += delta_time;
   }
   else
@@ -9437,7 +9462,24 @@ double player_stat_cache_t::player_heal_multiplier( const action_state_t* s ) co
 #endif
 
 player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const action_t* a, const player_t* t, const timespan_t& ts, const player_t* p ) :
-  action( a ), target( t ), time( ts )
+  action( a ), target( t ), time( ts ), wait_time( timespan_t::zero() )
+{
+  for ( size_t i = 0; i < p -> buff_list.size(); ++i )
+  {
+    buff_t* b = p -> buff_list[ i ];
+    if ( b -> check() && ! b -> quiet && ! b -> constant )
+      buff_list.push_back( std::make_pair( b, b -> stack() ) );
+  }
+
+  range::fill( resource_snapshot, -1 );
+
+  for ( resource_e i = RESOURCE_HEALTH; i < RESOURCE_MAX; ++i )
+    if ( p -> resources.max[ i ] > 0.0 )
+      resource_snapshot[ i ] = p -> resources.current[ i ];
+}
+
+player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const timespan_t& ts, const timespan_t& wait, const player_t* p ) :
+  action( 0 ), target( 0 ), time( ts ), wait_time( wait )
 {
   for ( size_t i = 0; i < p -> buff_list.size(); ++i )
   {
