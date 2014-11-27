@@ -2792,12 +2792,12 @@ double sim_t::progress( int* current,
 
   if ( deterministic )
   {
+    AUTO_LOCK( relatives_mutex );
     for ( size_t i = 0; i < children.size(); i++ )
     {
-      int tci=0, ti=0;
-      AUTO_LOCK( relatives_mutex );
       if ( children[ i ] )
       {
+        int tci=0, ti=0;
         children[ i ] -> work_queue -> progress( &tci, &ti );
         total_current_iterations += tci;
         total_iterations += ti;
