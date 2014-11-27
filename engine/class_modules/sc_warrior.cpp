@@ -4885,15 +4885,20 @@ void warrior_t::init_action_list()
 
   if ( gladiator )
   {
+    if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_ATTACK ) // Allow players with tanking trinkets to simulate gladiator.
+    {
+      gladiator = true;
+    }
     // Second, if the person specifically selects tank, then I guess we're rolling with a tank.
-    if ( primary_role() == ROLE_TANK )
+    else if ( primary_role() == ROLE_TANK )
       gladiator = false;
-
     // Next, "Mark of Blackrock" is a enchant that procs bonus armor, but will only proc if the character goes below 50% hp.
     // Thus, it seems like it will be the best enchant for tanks, but fairly awful for gladiator since dps-specs don't spend a lot of time under 50% hp.
-    else if ( find_proc("Mark of Blackrock") != nullptr )
+    else if ( find_proc( "Mark of Blackrock" ) != nullptr )
+    {
       gladiator = false;
-
+      sim -> out_debug.printf( "%s: Has been imported as a Tank, as it has Mark of Blackrock enchanted.", name() );
+    }
     // Next, check both trinkets for stamina. In the future I will add more items to check, for now this will work.
     // If the trinkets have stamina, then it's likely a tank.
     else
@@ -4903,16 +4908,22 @@ void warrior_t::init_action_list()
       {
         if ( items[i].slot == SLOT_TRINKET_1 || items[i].slot == SLOT_TRINKET_2 )
         {
-          if ( items[i].has_item_stat(STAT_STAMINA) )
+          if ( items[i].has_item_stat( STAT_STAMINA ) )
           {
             gladiator = false;
-            break;
+            if ( !gladiator )
+            {
+              sim -> out_debug.printf( "%s: Has been imported as a Tank, due to wearing a trinket with stamina.", name() );
+              break;
+            }
           }
         }
       }
     }
-    if ( primary_role() == ROLE_DPS || primary_role() == ROLE_ATTACK ) // Allow players with tanking trinkets to simulate gladiator.
-      gladiator = true;
+    if ( gladiator && !(player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_ATTACK) )
+    {
+      sim -> out_debug.printf( "%s: Has been imported as a Gladiator DPS, due to not wearing a stamina trinket and not having Mark of Blackrock enchanted. If you wish to override this, set role to tank, and re-import.", name() );
+    }
   }
 
   apl_precombat();

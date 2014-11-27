@@ -6235,7 +6235,7 @@ void priest_t::apl_shadow()
   vent -> add_action( "mindbender,if=talent.mindbender.enabled&cooldown.mind_blast.remains>=gcd" );
   vent -> add_action( "shadowfiend,if=!talent.mindbender.enabled&cooldown.mind_blast.remains>=gcd" );
   vent -> add_action( "void_entropy,if=shadow_orb=3&!ticking&target.time_to_die>60&active_enemies=1" );
-  vent -> add_action( "void_entropy,if=!dot.void_entropy.ticking&shadow_orb=5&active_enemies>=1&target.time_to_die>60,cycle_targets=1,max_cycle_targets=(60\(cooldown.mind_blast.duration*3*spell_haste))" );
+  vent -> add_action( "void_entropy,if=!dot.void_entropy.ticking&shadow_orb=5&active_enemies>=1&target.time_to_die>60,cycle_targets=1,max_cycle_targets=(60%(cooldown.mind_blast.duration*3*spell_haste))" );
   vent -> add_action( "devouring_plague,if=dot.void_entropy.ticking&dot.void_entropy.remains<=gcd*2&cooldown_react,cycle_targets=1" );
   vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<10,cycle_targets=1" );
   vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<20,cycle_targets=1" );
