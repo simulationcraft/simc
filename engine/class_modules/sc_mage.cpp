@@ -2470,6 +2470,7 @@ struct frost_bomb_t : public mage_spell_t
            p() -> last_bomb_target != execute_state -> target )
       {
         td( p() -> last_bomb_target ) -> dots.frost_bomb -> cancel();
+        td( p() -> last_bomb_target ) -> debuffs.frost_bomb -> expire();
       }
       p() -> last_bomb_target = execute_state -> target;
     }
