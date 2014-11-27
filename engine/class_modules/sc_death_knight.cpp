@@ -384,6 +384,8 @@ public:
   struct glyphs_t
   {
     const spell_data_t* chains_of_ice;
+    const spell_data_t* icy_runes;
+    const spell_data_t* ice_reaper;
     const spell_data_t* dancing_rune_weapon;
     const spell_data_t* enduring_infection;
     const spell_data_t* festering_blood;
@@ -4175,6 +4177,56 @@ struct howling_blast_t : public death_knight_spell_t
   }
 };
 
+// Chains of Ice ============================================================
+
+struct chains_of_ice_t : public death_knight_spell_t
+{
+  const spell_data_t* pvp_bonus;
+
+  chains_of_ice_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "chains_of_ice", p, p -> find_class_spell( "Chains of Ice" ) ),
+    pvp_bonus( p -> find_spell( 62459 ) )
+  {
+    parse_options( options_str );
+
+    int exclusivity_check = 0;
+
+    if ( p -> glyph.ice_reaper -> ok() && p -> specialization() == DEATH_KNIGHT_UNHOLY )
+    {
+      exclusivity_check++;
+      convert_runes = 1.0;
+    }
+
+    if ( p -> glyph.icy_runes -> ok() )
+    {
+      exclusivity_check++;
+      rp_gain += p -> glyph.icy_runes -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
+    }
+
+    if ( p -> glyph.chains_of_ice -> ok() )
+    {
+      exclusivity_check++;
+      base_dd_min = p -> glyph.chains_of_ice -> effectN( 1 ).min( p );
+      base_dd_max = p -> glyph.chains_of_ice -> effectN( 1 ).max( p );
+    }
+
+    for ( size_t i = 0, end = sizeof_array( p -> items[ SLOT_HANDS ].parsed.data.id_spell ); i < end; i++ )
+    {
+      if ( p -> items[ SLOT_HANDS ].parsed.data.id_spell[ i ] == static_cast<int>( pvp_bonus -> id() ) )
+      {
+        rp_gain += pvp_bonus -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
+        break;
+      }
+    }
+
+    if ( exclusivity_check > 1 )
+    {
+      sim -> errorf( "Disabling Chains of Ice because multiple exclusive glyphs are affecting it." );
+      background = true;
+    }
+  }
+};
+
 // Icy Touch ================================================================
 
 struct icy_touch_t : public death_knight_spell_t
@@ -4198,7 +4250,7 @@ struct icy_touch_t : public death_knight_spell_t
 
     if ( p() -> buffs.rime -> check() && p() -> perk.empowered_obliterate -> ok() )
       m += p() -> perk.empowered_obliterate -> effectN( 1 ).percent();
-    
+
     return m;
   }
 
@@ -5578,6 +5630,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "auto_attack"              ) return new auto_attack_t              ( this, options_str );
   if ( name == "blood_boil"               ) return new blood_boil_t               ( this, options_str );
   if ( name == "blood_presence"           ) return new blood_presence_t           ( this, options_str );
+  if ( name == "chains_of_ice"            ) return new chains_of_ice_t            ( this, options_str );
   if ( name == "deaths_advance"           ) return new deaths_advance_t           ( this, options_str );
   if ( name == "frost_presence"           ) return new frost_presence_t           ( this, options_str );
   if ( name == "icebound_fortitude"       ) return new icebound_fortitude_t       ( this, options_str );
@@ -5997,6 +6050,8 @@ void death_knight_t::init_spells()
 
   // Glyphs
   glyph.chains_of_ice             = find_glyph_spell( "Glyph of Chains of Ice" );
+  glyph.icy_runes                 = find_glyph_spell( "Glyph of Icy Runes" );
+  glyph.ice_reaper                = find_glyph_spell( "Glyph of the Ice Reaper" );
   glyph.dancing_rune_weapon       = find_glyph_spell( "Glyph of Dancing Rune Weapon" );
   glyph.enduring_infection        = find_glyph_spell( "Glyph of Enduring Infection" );
   glyph.festering_blood           = find_glyph_spell( "Glyph of Festering Blood" );
