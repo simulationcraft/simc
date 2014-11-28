@@ -4594,11 +4594,11 @@ void rogue_t::init_action_list()
   }
   else if ( specialization() == ROGUE_COMBAT )
   {
-    potion_action_str += "|(buff.adrenaline_rush.up&buff.archmages_greater_incandescence_agi.up)";
+    potion_action_str += "|(buff.adrenaline_rush.up&(trinket.proc.any.react|trinket.stacking_proc.any.react|buff.archmages_greater_incandescence_agi.react))";
   }
   else if ( specialization() == ROGUE_SUBTLETY )
   {
-    potion_action_str += "|buff.shadow_dance.up&(trinket.proc.agi.react|trinket.proc.multistrike.react|trinket.stacking_proc.agi.react|trinket.stacking_proc.multistrike.react)";
+    potion_action_str += "|buff.shadow_dance.up&(trinket.proc.agi.react|trinket.proc.multistrike.react|trinket.stacking_proc.agi.react|trinket.stacking_proc.multistrike.react|buff.archmages_greater_incandescence_agi.react)";
   }
 
   // In-combat potion
@@ -4673,10 +4673,10 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Blade Flurry", "if=(active_enemies>=2&!buff.blade_flurry.up)|(active_enemies<2&buff.blade_flurry.up)" );
     def -> add_talent( this, "Shadow Reflection", "if=(cooldown.killing_spree.remains<10&combo_points>3)|buff.adrenaline_rush.up" );
     def -> add_action( this, "Ambush" );
-    def -> add_action( this, "Vanish", "if=time>10&(combo_points<=3|(talent.anticipation.enabled&anticipation_charges<3)|(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4)))&((talent.shadow_focus.enabled&buff.adrenaline_rush.down&energy<60)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))" );
+    def -> add_action( this, "Vanish", "if=time>10&(combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)|(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4)))&((talent.shadow_focus.enabled&buff.adrenaline_rush.down&energy<90&energy>=15)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))" );
 
     // Rotation
-    def -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<2|(target.time_to_die>45&combo_points=5&buff.slice_and_dice.remains<10.8)" );
+    def -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<2|((target.time_to_die>45&combo_points=5&buff.slice_and_dice.remains<12)&buff.deep_insight.down)" );
     def -> add_action( "call_action_list,name=adrenaline_rush,if=(energy<35|buff.bloodlust.up)&cooldown.killing_spree.remains>10" );
     def -> add_action( "call_action_list,name=killing_spree,if=(energy<40|(buff.bloodlust.up&time<10)|buff.bloodlust.remains>20)&buff.adrenaline_rush.down&(!talent.shadow_reflection.enabled|cooldown.shadow_reflection.remains>30|buff.shadow_reflection.remains>3)" );
 
