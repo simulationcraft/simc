@@ -4,7 +4,9 @@
 # * Standard Heroic 5 Man Loot Only.
 
 optimal_raid=1
-
+enemy=TMI_Standard_Boss_T17L
+boss_type=tmi_standard_boss
+tmi_boss=T17L
 # Raid Tier17PR
 
 Death_Knight_Frost_1h_T17P.simc
