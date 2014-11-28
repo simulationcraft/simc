@@ -5644,21 +5644,20 @@ void warlock_t::apl_destruction()
   action_priority_list_t* single_target       = get_action_priority_list( "single_target" );    
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
 
-  action_list_str +="/run_action_list,name=single_target,if=active_enemies<4";
-  action_list_str +="/run_action_list,name=aoe,if=active_enemies>=4";
+  action_list_str +="/run_action_list,name=single_target,if=active_enemies<6";
+  action_list_str +="/run_action_list,name=aoe,if=active_enemies>=6";
 
   single_target -> action_list_str += "/havoc,target=2";
   single_target -> action_list_str += "/shadowburn,if=talent.charred_remains.enabled&(burning_ember>=2.5|buff.dark_soul.up|target.time_to_die<10)";
+  single_target -> action_list_str += "/cataclysm,if=active_enemies>1";
+  single_target -> action_list_str += "/fire_and_brimstone,if=buff.fire_and_brimstone.down&dot.immolate.remains<=action.immolate.cast_time&(cooldown.cataclysm.remains>action.immolate.cast_time|!talent.cataclysm.enabled)&active_enemies>4";
   single_target -> action_list_str += "/immolate,cycle_targets=1,if=remains<=cast_time&(cooldown.cataclysm.remains>cast_time|!talent.cataclysm.enabled)";
-
-  if ( level == 100 && ! wod_hotfix )
-  {
-    single_target -> action_list_str += "/rain_of_fire,if=!ticking";
-  }
+  single_target -> action_list_str += "/cancel_buff,name=fire_and_brimstone,if=buff.fire_and_brimstone.up&dot.immolate.remains>(dot.immolate.duration*0.3)";
   single_target -> action_list_str += "/shadowburn,if=buff.havoc.remains";
   single_target -> action_list_str += "/chaos_bolt,if=buff.havoc.remains>cast_time&buff.havoc.stack>=3";
   single_target -> action_list_str += "/conflagrate,if=charges=2";
   single_target -> action_list_str += "/cataclysm";
+  single_target -> action_list_str += "/rain_of_fire,if=remains<=tick_time&(active_enemies>4|(buff.mannoroths_fury.up&active_enemies>2))";
   single_target -> action_list_str += "/chaos_bolt,if=talent.charred_remains.enabled&active_enemies>1&target.health.pct>20";
   single_target -> action_list_str += "/chaos_bolt,if=talent.charred_remains.enabled&buff.backdraft.stack<3&burning_ember>=2.5";
   single_target -> action_list_str += "/chaos_bolt,if=buff.backdraft.stack<3&(burning_ember>=3.5|buff.dark_soul.up|(burning_ember>=3&buff.ember_master.react)|target.time_to_die<20)";
@@ -5675,15 +5674,12 @@ void warlock_t::apl_destruction()
   {
     single_target -> action_list_str += "/chaos_bolt,if=buff.backdraft.stack<3&buff.draenor_philosophers_stone_int.react&buff.draenor_philosophers_stone_int.remains>cast_time";
   }
-  if ( level != 100 && ! wod_hotfix )
-  {
-    single_target -> action_list_str += "/rain_of_fire,if=!ticking";
-  }
+  single_target -> action_list_str += "/fire_and_brimstone,if=buff.fire_and_brimstone.down&dot.immolate.remains<=(dot.immolate.duration*0.3)&active_enemies>4";
   single_target -> action_list_str += "/immolate,cycle_targets=1,if=remains<=(duration*0.3)";
   single_target -> action_list_str += "/conflagrate";
   single_target -> action_list_str += "/incinerate";
 
-  aoe -> action_list_str += "/rain_of_fire,if=remains<=tick_time&active_enemies>5";
+  aoe -> action_list_str += "/rain_of_fire,if=remains<=tick_time";
   aoe -> action_list_str += "/havoc,target=2";
   aoe -> action_list_str += "/shadowburn,if=buff.havoc.remains";
   aoe -> action_list_str += "/chaos_bolt,if=buff.havoc.remains>cast_time&buff.havoc.stack>=3";
@@ -5692,7 +5688,6 @@ void warlock_t::apl_destruction()
   aoe -> action_list_str += "/immolate,if=buff.fire_and_brimstone.up&!dot.immolate.ticking";
   aoe -> action_list_str += "/conflagrate,if=buff.fire_and_brimstone.up&charges=2";
   aoe -> action_list_str += "/immolate,if=buff.fire_and_brimstone.up&dot.immolate.remains<=(dot.immolate.duration*0.3)";
-  aoe -> action_list_str += "/chaos_bolt,if=!talent.charred_remains.enabled&active_enemies=4";
   aoe -> action_list_str += "/chaos_bolt,if=talent.charred_remains.enabled&buff.fire_and_brimstone.up&burning_ember>=2.5";
   aoe -> action_list_str += "/incinerate";
 
