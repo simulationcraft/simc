@@ -932,6 +932,9 @@ struct doom_bolt_t: public warlock_pet_spell_t
   doom_bolt_t( warlock_pet_t* p ):
     warlock_pet_spell_t( "Doom Bolt", p, p -> find_spell( 85692 ) )
   {
+    // The resource bar resets to 35 every time it dips too low, which means that the doomguard/terrorguard can both chain cast doom bolt forever.
+    // We're just going to set the cost to 0.
+    base_costs[RESOURCE_ENERGY] = 0;
   }
 
   virtual double composite_target_multiplier( player_t* target ) const
