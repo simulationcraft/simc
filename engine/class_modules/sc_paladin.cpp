@@ -114,6 +114,7 @@ public:
     buff_t* double_jeopardy;
     buff_t* glyph_templars_verdict;
     buff_t* glyph_of_word_of_glory;
+    buff_t* glyph_of_denounce;
 
     // talents
     buff_t* divine_purpose;
@@ -298,6 +299,7 @@ public:
     const spell_data_t* avenging_wrath;
     const spell_data_t* battle_healer;
     const spell_data_t* blessed_life;
+    const spell_data_t* denounce;
     const spell_data_t* devotion_aura;
     const spell_data_t* divine_protection;
     const spell_data_t* divine_shield;
@@ -1600,6 +1602,33 @@ struct divine_shield_t : public paladin_spell_t
   }
 };
 
+// Denounce =================================================================
+
+struct denounce_t : public paladin_spell_t
+{
+  denounce_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "denounce", p, p -> find_specialization_spell( "Denounce" ) )
+  {
+    parse_options( options_str );
+  }
+
+  timespan_t execute_time() const
+  {
+    timespan_t cast_time = paladin_spell_t::execute_time();
+
+    cast_time -= p() -> buffs.glyph_of_denounce -> stack() * p() -> buffs.glyph_of_denounce -> data().effectN( 1 ).time_value();
+
+    return cast_time;
+  }
+
+  void execute()
+  {
+    paladin_spell_t::execute();
+    p() -> buffs.glyph_of_denounce -> expire();
+  }
+};
+
+
 // Eternal Flame  ===========================================================
 
 // HoT portion
@@ -2489,7 +2518,7 @@ struct holy_shock_damage_t : public paladin_spell_t
       //phillipuh
       if ( p() -> glyphs.illumination -> ok())
          p() -> resource_gain(RESOURCE_MANA, .01 * p() -> resources.max[RESOURCE_MANA], p() -> gains.glyph_of_illumination);
-
+      p() -> buffs.glyph_of_denounce -> trigger( 1 );
     }
   }
   
@@ -4601,6 +4630,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "blessing_of_might"         ) return new blessing_of_might_t        ( this, options_str );
   if ( name == "consecration"              ) return new consecration_t             ( this, options_str );
   if ( name == "crusader_strike"           ) return new crusader_strike_t          ( this, options_str );
+  if ( name == "denounce"                  ) return new denounce_t                 ( this, options_str );
   if ( name == "devotion_aura"             ) return new devotion_aura_t            ( this, options_str );
   if ( name == "divine_plea"               ) return new divine_plea_t              ( this, options_str );
   if ( name == "divine_protection"         ) return new divine_protection_t        ( this, options_str );
@@ -4832,6 +4862,8 @@ void paladin_t::create_buffs()
 
   buffs.glyph_of_word_of_glory = buff_creator_t( this, "glyph_word_of_glory", spells.glyph_of_word_of_glory ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
+  buffs.glyph_of_denounce = buff_creator_t( this, "glyph_of_denounce", glyphs.denounce -> effectN( 1 ).trigger() );
+
   // Talents
   buffs.divine_purpose         = buff_creator_t( this, "divine_purpose", talents.divine_purpose )
                                  .duration( find_spell( talents.divine_purpose -> effectN( 1 ).trigger_spell_id() ) -> duration() );
@@ -4883,7 +4915,6 @@ void paladin_t::create_buffs()
 
   // Ret
 
-
   // Tier Bonuses
   // MoP
   buffs.tier15_2pc_melee       = buff_creator_t( this, "tier15_2pc_melee", find_spell( 138162 ) )
@@ -4909,7 +4940,6 @@ void paladin_t::create_buffs()
                                  .add_invalidate( CACHE_BLOCK );
   buffs.defender_of_the_light  = buff_creator_t( this, "defender_of_the_light", sets.set( PALADIN_PROTECTION, T17, B4 ) -> effectN( 1 ).trigger() )
                                  .default_value( sets.set( PALADIN_PROTECTION, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
-                                 
 }
 
 // ==========================================================================
@@ -5562,6 +5592,7 @@ void paladin_t::init_spells()
   glyphs.avenging_wrath           = find_glyph_spell( "Glyph of Avenging Wrath" );
   glyphs.battle_healer            = find_glyph_spell( "Glyph of the Battle Healer" );
   glyphs.blessed_life             = find_glyph_spell( "Glyph of Blessed Life" );
+  glyphs.denounce                 = find_glyph_spell( "Glyph of Denounce" );
   glyphs.devotion_aura            = find_glyph_spell( "Glyph of Devotion Aura" );
   glyphs.divine_shield            = find_glyph_spell( "Glyph of Divine Shield" );
   glyphs.divine_protection        = find_glyph_spell( "Glyph of Divine Protection" );
