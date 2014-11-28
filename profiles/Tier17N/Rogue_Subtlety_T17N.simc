@@ -29,41 +29,47 @@ actions.precombat+=/honor_among_thieves,cooldown=2.2,cooldown_stddev=0.1
 
 # Executed every time the actor is available.
 
-actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<40
+actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<40|buff.shadow_dance.up&(trinket.proc.agi.react|trinket.proc.multistrike.react|trinket.stacking_proc.agi.react|trinket.stacking_proc.multistrike.react)
 actions+=/kick
 actions+=/use_item,slot=trinket2,if=buff.shadow_dance.up
+actions+=/shadow_reflection,if=buff.shadow_dance.up
 actions+=/blood_fury,if=buff.shadow_dance.up
 actions+=/berserking,if=buff.shadow_dance.up
-actions+=/arcane_torrent,if=energy<60
-actions+=/premeditation,if=combo_points<=4
+actions+=/arcane_torrent,if=energy<60&buff.shadow_dance.up
+actions+=/slice_and_dice,if=buff.slice_and_dice.remains<10.8&buff.slice_and_dice.remains<target.time_to_die&combo_points=((target.time_to_die-buff.slice_and_dice.remains)%6)+1
+actions+=/premeditation,if=combo_points<=4&!(buff.shadow_dance.up&energy>100&combo_points>1)&!buff.subterfuge.up|(buff.subterfuge.up&debuff.find_weakness.up)
 actions+=/pool_resource,for_next=1
-actions+=/ambush,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<3)|(buff.sleight_of_hand.up&buff.sleight_of_hand.remains<=gcd)
-actions+=/pool_resource,for_next=1,extra_amount=75
-actions+=/shadow_dance,if=energy>=75&buff.stealth.down&buff.vanish.down&debuff.find_weakness.down
-actions+=/pool_resource,for_next=1,extra_amount=45
-actions+=/vanish,if=energy>=45&energy<=75&combo_points<=3&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
+actions+=/garrote,if=!ticking&time<1
+actions+=/wait,sec=1,if=buff.subterfuge.remains>1.1&buff.subterfuge.remains<1.3&time>6
+actions+=/pool_resource,for_next=1
+actions+=/ambush,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<3)&(time<1.2|buff.shadow_dance.up|time>5)
+actions+=/pool_resource,for_next=1,extra_amount=50
+actions+=/shadow_dance,if=energy>=50&buff.stealth.down&buff.vanish.down&debuff.find_weakness.down|(buff.bloodlust.up&(dot.hemorrhage.ticking|dot.garrote.ticking|dot.rupture.ticking))
+actions+=/pool_resource,for_next=1,extra_amount=50
+actions+=/vanish,if=talent.shadow_focus.enabled&energy>=45&energy<=75&combo_points<=3&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
+actions+=/pool_resource,for_next=1,extra_amount=90
+actions+=/vanish,if=talent.subterfuge.enabled&energy>=90&combo_points<=3&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
 actions+=/marked_for_death,if=combo_points=0
-actions+=/shadow_reflection,if=buff.shadow_dance.up
 actions+=/run_action_list,name=generator,if=talent.anticipation.enabled&anticipation_charges<4&buff.slice_and_dice.up&dot.rupture.remains>2&(buff.slice_and_dice.remains<6|dot.rupture.remains<4)
 actions+=/run_action_list,name=finisher,if=combo_points=5
-actions+=/run_action_list,name=generator,if=combo_points<4|energy>80|talent.anticipation.enabled
+actions+=/run_action_list,name=generator,if=combo_points<4|(combo_points=4&cooldown.honor_among_thieves.remains>1&energy>70-energy.regen)|talent.anticipation.enabled
 actions+=/run_action_list,name=pool
 
 # Combo point generators
 
 actions.generator=run_action_list,name=pool,if=buff.master_of_subtlety.down&buff.shadow_dance.down&debuff.find_weakness.down&(energy+cooldown.shadow_dance.remains*energy.regen<80|energy+cooldown.vanish.remains*energy.regen<60)
 actions.generator+=/fan_of_knives,if=active_enemies>1
-actions.generator+=/hemorrhage,if=(remains<8&target.time_to_die>10)|position_front
 actions.generator+=/shuriken_toss,if=energy<65&energy.regen<16
 actions.generator+=/backstab
+actions.generator+=/hemorrhage,if=position_front
 actions.generator+=/run_action_list,name=pool
 
 # Combo point finishers
 
-actions.finisher=slice_and_dice,if=buff.slice_and_dice.remains<4
+actions.finisher=rupture,cycle_targets=1,if=(!ticking|remains<duration*0.3)&active_enemies<=3&(cooldown.death_from_above.remains>0|!talent.death_from_above.enabled)
+actions.finisher+=/slice_and_dice,if=buff.slice_and_dice.remains<10.8&buff.slice_and_dice.remains<target.time_to_die
 actions.finisher+=/death_from_above
-actions.finisher+=/rupture,cycle_targets=1,if=(!ticking|remains<duration*0.3)&active_enemies<=3&(cooldown.death_from_above.remains>0|!talent.death_from_above.enabled)
-actions.finisher+=/crimson_tempest,if=(active_enemies>3&dot.crimson_tempest_dot.ticks_remain<=2&combo_points=5)|active_enemies>=5&(cooldown.death_from_above.remains>0|!talent.death_from_above.enabled)
+actions.finisher+=/crimson_tempest,if=(active_enemies>=3&dot.crimson_tempest_dot.ticks_remain<=2&combo_points=5)|active_enemies>=5&(cooldown.death_from_above.remains>0|!talent.death_from_above.enabled)
 actions.finisher+=/eviscerate,if=active_enemies<4|(active_enemies>3&dot.crimson_tempest_dot.ticks_remain>=2)&(cooldown.death_from_above.remains>0|!talent.death_from_above.enabled)
 actions.finisher+=/run_action_list,name=pool
 

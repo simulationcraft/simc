@@ -4587,9 +4587,23 @@ void rogue_t::init_action_list()
 
   precombat -> add_action( this, "Stealth" );
 
+  std::string potion_action_str = "potion,name=" + potion_name + ",if=buff.bloodlust.react|target.time_to_die<40";
+  if ( specialization() == ROGUE_ASSASSINATION )
+  {
+    potion_action_str += "|debuff.vendetta.up";
+  }
+  else if ( specialization() == ROGUE_COMBAT )
+  {
+    potion_action_str += "|(buff.adrenaline_rush.up&buff.archmages_greater_incandescence_agi.up)";
+  }
+  else if ( specialization() == ROGUE_SUBTLETY )
+  {
+    potion_action_str += "|buff.shadow_dance.up&(trinket.proc.agi.react|trinket.proc.multistrike.react|trinket.stacking_proc.agi.react|trinket.stacking_proc.multistrike.react)";
+  }
+
   // In-combat potion
   if ( sim -> allow_potions )
-    def -> add_action( "potion,name=" + potion_name + ",if=buff.bloodlust.react|target.time_to_die<40" );
+    def -> add_action( potion_action_str );
 
   def -> add_action( this, "Kick" );
 
@@ -4598,7 +4612,7 @@ void rogue_t::init_action_list()
     precombat -> add_talent( this, "Marked for Death" );
     precombat -> add_action( this, "Slice and Dice", "if=talent.marked_for_death.enabled" );
 
-    def -> add_action( this, "Preparation", "if=!buff.vanish.up&cooldown.vanish.remains>60" );
+    def -> add_action( this, "Preparation", "if=!buff.vanish.up&cooldown.vanish.remains>30" );
 
     for ( size_t i = 0; i < item_actions.size(); i++ )
       def -> add_action( item_actions[i] + ",if=active_enemies>1|(debuff.vendetta.up&active_enemies=1)" );
@@ -4640,7 +4654,7 @@ void rogue_t::init_action_list()
     precombat -> add_talent( this, "Marked for Death" );
     precombat -> add_action( this, "Slice and Dice", "if=talent.marked_for_death.enabled" );
 
-    def -> add_action( this, "Preparation", "if=!buff.vanish.up&cooldown.vanish.remains>60" );
+    def -> add_action( this, "Preparation", "if=!buff.vanish.up&cooldown.vanish.remains>30" );
 
     for ( size_t i = 0; i < item_actions.size(); i++ )
       def -> add_action( item_actions[i] );
@@ -4653,16 +4667,30 @@ void rogue_t::init_action_list()
         def -> add_action( racial_actions[i] );
     }
 
+    action_priority_list_t* ar = get_action_priority_list( "adrenaline_rush" );
+    action_priority_list_t* ks = get_action_priority_list( "killing_spree" );
+
     def -> add_action( this, "Blade Flurry", "if=(active_enemies>=2&!buff.blade_flurry.up)|(active_enemies<2&buff.blade_flurry.up)" );
     def -> add_talent( this, "Shadow Reflection", "if=(cooldown.killing_spree.remains<10&combo_points>3)|buff.adrenaline_rush.up" );
     def -> add_action( this, "Ambush" );
-    def -> add_action( this, "Vanish", "if=time>10&(combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)|(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4)))&((talent.shadow_focus.enabled&buff.adrenaline_rush.down&energy<20)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))" );
+    def -> add_action( this, "Vanish", "if=time>10&(combo_points<=3|(talent.anticipation.enabled&anticipation_charges<3)|(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4)))&((talent.shadow_focus.enabled&buff.adrenaline_rush.down&energy<60)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))" );
 
     // Rotation
     def -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<2|(target.time_to_die>45&combo_points=5&buff.slice_and_dice.remains<10.8)" );
-    def -> add_action( this, "Killing Spree", "if=(energy<40|(buff.bloodlust.up&time<10)|buff.bloodlust.remains>20)&buff.adrenaline_rush.down&(!talent.shadow_reflection.enabled|cooldown.shadow_reflection.remains>30|buff.shadow_reflection.remains>3)" );
-    def -> add_action( this, "Adrenaline Rush", "if=(energy<35|buff.bloodlust.up)&cooldown.killing_spree.remains>10" );
+    def -> add_action( "call_action_list,name=adrenaline_rush,if=(energy<35|buff.bloodlust.up)&cooldown.killing_spree.remains>10" );
+    def -> add_action( "call_action_list,name=killing_spree,if=(energy<40|(buff.bloodlust.up&time<10)|buff.bloodlust.remains>20)&buff.adrenaline_rush.down&(!talent.shadow_reflection.enabled|cooldown.shadow_reflection.remains>30|buff.shadow_reflection.remains>3)" );
 
+    ks -> add_action( this, "Killing Spree", "if=time_to_die>=44" );
+    ks -> add_action( this, "Killing Spree", "if=time_to_die<44&buff.archmages_greater_incandescence_agi.react&buff.archmages_greater_incandescence_agi.remains>=buff.killing_spree.duration" );
+    ks -> add_action( this, "Killing Spree", "if=time_to_die<44&trinket.proc.any.react&trinket.proc.any.remains>=buff.killing_spree.duration" );
+    ks -> add_action( this, "Killing Spree", "if=time_to_die<44&trinket.stacking_proc.any.react&trinket.stacking_proc.any.remains>=buff.killing_spree.duration" );
+    ks -> add_action( this, "Killing Spree", "if=time_to_die<=buff.killing_spree.duration*1.5" );
+
+    ar -> add_action( this, "Adrenaline Rush", "if=time_to_die>=44" );
+    ar -> add_action( this, "Adrenaline Rush", "if=time_to_die<44&buff.archmages_greater_incandescence_agi.react&buff.archmages_greater_incandescence_agi.remains>=buff.adrenaline_rush.duration" );
+    ar -> add_action( this, "Adrenaline Rush", "if=time_to_die<44&trinket.proc.any.react&trinket.proc.any.remains>=buff.adrenaline_rush.duration" );
+    ar -> add_action( this, "Adrenaline Rush", "if=time_to_die<44&trinket.stacking_proc.any.react&trinket.stacking_proc.any.remains>buff.adrenaline_rush.duration" );
+    ar -> add_action( this, "Adrenaline Rush", "if=time_to_die<=buff.adrenaline_rush.duration*1.5" );
 
     def -> add_talent( this, "Marked for Death", "if=combo_points<=1&dot.revealing_strike.ticking&(!talent.shadow_reflection.enabled|buff.shadow_reflection.up|cooldown.shadow_reflection.remains>30)" );
 
@@ -4679,8 +4707,8 @@ void rogue_t::init_action_list()
     // Combo point finishers
     action_priority_list_t* finisher = get_action_priority_list( "finisher", "Combo point finishers" );
     finisher -> add_talent( this, "Death from Above" );
-    finisher -> add_action( this, "Crimson Tempest", "if=active_enemies>1&remains<4" );
-    finisher -> add_action( this, "Crimson Tempest", "if=active_enemies>2" );
+    finisher -> add_action( this, "Crimson Tempest", "if=active_enemies>6&remains<2" );
+    finisher -> add_action( this, "Crimson Tempest", "if=active_enemies>8" );
     finisher -> add_action( this, "Eviscerate" );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
@@ -4693,46 +4721,54 @@ void rogue_t::init_action_list()
     for ( size_t i = 0; i < item_actions.size(); i++ )
       def -> add_action( item_actions[i] + ",if=buff.shadow_dance.up" );
 
+    def -> add_talent( this, "Shadow Reflection", "if=buff.shadow_dance.up" );
+
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
       if ( racial_actions[i] == "arcane_torrent" )
-        def -> add_action( racial_actions[i] + ",if=energy<60" );
+        def -> add_action( racial_actions[i] + ",if=energy<60&buff.shadow_dance.up" );
       else
         def -> add_action( racial_actions[i] + ",if=buff.shadow_dance.up" );
     }
 
+    def -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<10.8&buff.slice_and_dice.remains<target.time_to_die&combo_points=((target.time_to_die-buff.slice_and_dice.remains)%6)+1" );
+
     // Shadow Dancing and Vanishing and Marking for the Deathing
-    def -> add_action( this, "Premeditation", "if=combo_points<=4" );
+    def -> add_action( this, "Premeditation", "if=combo_points<=4&!(buff.shadow_dance.up&energy>100&combo_points>1)&!buff.subterfuge.up|(buff.subterfuge.up&debuff.find_weakness.up)" );
+    def -> add_action( this, find_class_spell( "Garrote" ), "pool_resource", "for_next=1" );
+    def -> add_action( this, "Garrote", "if=!ticking&time<1" );
+    def -> add_action( "wait,sec=1,if=buff.subterfuge.remains>1.1&buff.subterfuge.remains<1.3&time>6" );
     def -> add_action( this, find_class_spell( "Ambush" ), "pool_resource", "for_next=1" );
-    def -> add_action( this, "Ambush", "if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<3)|(buff.sleight_of_hand.up&buff.sleight_of_hand.remains<=gcd)" );
-    def -> add_action( this, find_class_spell( "Shadow Dance" ), "pool_resource", "for_next=1,extra_amount=75" );
-    def -> add_action( this, "Shadow Dance", "if=energy>=75&buff.stealth.down&buff.vanish.down&debuff.find_weakness.down" );
-    def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=45" );
-    def -> add_action( this, "Vanish", "if=energy>=45&energy<=75&combo_points<=3&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down" );
+    def -> add_action( this, "Ambush", "if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<3)&(time<1.2|buff.shadow_dance.up|time>5)" );
+    def -> add_action( this, find_class_spell( "Shadow Dance" ), "pool_resource", "for_next=1,extra_amount=50" );
+    def -> add_action( this, "Shadow Dance", "if=energy>=50&buff.stealth.down&buff.vanish.down&debuff.find_weakness.down|(buff.bloodlust.up&(dot.hemorrhage.ticking|dot.garrote.ticking|dot.rupture.ticking))" );
+    def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=50" );
+    def -> add_action( this, "Vanish", "if=talent.shadow_focus.enabled&energy>=45&energy<=75&combo_points<=3&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down" );
+    def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=90" );
+    def -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&energy>=90&combo_points<=3&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down" );
     def -> add_talent( this, "Marked for Death", "if=combo_points=0" );
-    def -> add_talent( this, "Shadow Reflection", "if=buff.shadow_dance.up" );
 
     // Rotation
     def -> add_action( "run_action_list,name=generator,if=talent.anticipation.enabled&anticipation_charges<4&buff.slice_and_dice.up&dot.rupture.remains>2&(buff.slice_and_dice.remains<6|dot.rupture.remains<4)" );
     def -> add_action( "run_action_list,name=finisher,if=combo_points=5" );
-    def -> add_action( "run_action_list,name=generator,if=combo_points<4|energy>80|talent.anticipation.enabled" );
+    def -> add_action( "run_action_list,name=generator,if=combo_points<4|(combo_points=4&cooldown.honor_among_thieves.remains>1&energy>70-energy.regen)|talent.anticipation.enabled" );
     def -> add_action( "run_action_list,name=pool" );
 
     // Combo point generators
     action_priority_list_t* gen = get_action_priority_list( "generator", "Combo point generators" );
     gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool,if=buff.master_of_subtlety.down&buff.shadow_dance.down&debuff.find_weakness.down&(energy+cooldown.shadow_dance.remains*energy.regen<80|energy+cooldown.vanish.remains*energy.regen<60)" );
     gen -> add_action( this, "Fan of Knives", "if=active_enemies>1" );
-    gen -> add_action( this, "Hemorrhage", "if=(remains<8&target.time_to_die>10)|position_front" );
     gen -> add_talent( this, "Shuriken Toss", "if=energy<65&energy.regen<16" );
     gen -> add_action( this, "Backstab" );
+    gen -> add_action( this, "Hemorrhage", "if=position_front" );
     gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool" );
 
     // Combo point finishers
     action_priority_list_t* finisher = get_action_priority_list( "finisher", "Combo point finishers" );
-    finisher -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<4" );
-    finisher -> add_talent( this, "Death from Above" );
     finisher -> add_action( this, "Rupture", "cycle_targets=1,if=(!ticking|remains<duration*0.3)&active_enemies<=3&(cooldown.death_from_above.remains>0|!talent.death_from_above.enabled)" );
-    finisher -> add_action( this, "Crimson Tempest", "if=(active_enemies>3&dot.crimson_tempest_dot.ticks_remain<=2&combo_points=5)|active_enemies>=5&(cooldown.death_from_above.remains>0|!talent.death_from_above.enabled)" );
+    finisher -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<10.8&buff.slice_and_dice.remains<target.time_to_die" );
+    finisher -> add_talent( this, "Death from Above" );
+    finisher -> add_action( this, "Crimson Tempest", "if=(active_enemies>=3&dot.crimson_tempest_dot.ticks_remain<=2&combo_points=5)|active_enemies>=5&(cooldown.death_from_above.remains>0|!talent.death_from_above.enabled)" );
     finisher -> add_action( this, "Eviscerate", "if=active_enemies<4|(active_enemies>3&dot.crimson_tempest_dot.ticks_remain>=2)&(cooldown.death_from_above.remains>0|!talent.death_from_above.enabled)" );
     finisher -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool" );
 
