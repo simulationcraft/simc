@@ -9,7 +9,9 @@
 # * EXCEPTION: 680 Legendary Ring can be used. (accessibility)
 
 optimal_raid=1
-
+enemy=TMI_Standard_Boss_T17N
+boss_type=tmi_standard_boss
+tmi_boss=T17N
 # Raid Tier17N
 
 Death_Knight_Frost_1h_T17N.simc

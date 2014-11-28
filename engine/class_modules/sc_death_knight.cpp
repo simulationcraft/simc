@@ -3130,7 +3130,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     if ( target -> health_percentage() > 40 )
       return 0;
     else
-      return death_knight_melee_attack_t::false_negative_pct();
+      return death_knight_melee_attack_t::false_positive_pct();
   }
 
   virtual double composite_crit() const

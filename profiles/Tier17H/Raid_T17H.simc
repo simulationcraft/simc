@@ -9,6 +9,9 @@
 # * EXCEPTION: 690 Legendary Ring can be used. (accessibility)
 
 optimal_raid=1
+enemy=TMI_Standard_Boss_T17H
+boss_type=tmi_standard_boss
+tmi_boss=T17H
 
 # Raid Tier17N
 
