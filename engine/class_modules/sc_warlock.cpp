@@ -5681,17 +5681,9 @@ void warlock_t::apl_destruction()
   }
   single_target -> action_list_str += "/immolate,cycle_targets=1,if=remains<=(duration*0.3)";
   single_target -> action_list_str += "/conflagrate";
-  if ( level == 100 )
-  {
-    single_target -> action_list_str += "/incinerate,if=talent.charred_remains.enabled";
-    single_target -> action_list_str += "/incinerate,if=buff.backdraft.up|mana>=48800";
-  }
-  else if ( level != 100 )
-  {
-    single_target -> action_list_str += "/incinerate";
-  }
+  single_target -> action_list_str += "/incinerate";
 
-  aoe -> action_list_str += "/rain_of_fire,if=remains<=tick_time";
+  aoe -> action_list_str += "/rain_of_fire,if=remains<=tick_time&active_enemies>5";
   aoe -> action_list_str += "/havoc,target=2";
   aoe -> action_list_str += "/shadowburn,if=buff.havoc.remains";
   aoe -> action_list_str += "/chaos_bolt,if=buff.havoc.remains>cast_time&buff.havoc.stack>=3";

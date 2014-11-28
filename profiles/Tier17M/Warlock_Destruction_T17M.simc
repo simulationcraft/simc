@@ -61,10 +61,9 @@ actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.versat
 actions.single_target+=/chaos_bolt,if=buff.backdraft.stack<3&trinket.proc.mastery.react&trinket.proc.mastery.remains>cast_time
 actions.single_target+=/immolate,cycle_targets=1,if=remains<=(duration*0.3)
 actions.single_target+=/conflagrate
-actions.single_target+=/incinerate,if=talent.charred_remains.enabled
-actions.single_target+=/incinerate,if=buff.backdraft.up|mana>=48800
+actions.single_target+=/incinerate
 
-actions.aoe=rain_of_fire,if=remains<=tick_time
+actions.aoe=rain_of_fire,if=remains<=tick_time&active_enemies>5
 actions.aoe+=/havoc,target=2
 actions.aoe+=/shadowburn,if=buff.havoc.remains
 actions.aoe+=/chaos_bolt,if=buff.havoc.remains>cast_time&buff.havoc.stack>=3
