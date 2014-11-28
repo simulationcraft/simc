@@ -5063,7 +5063,7 @@ void paladin_t::generate_action_prio_list_prot()
   
   def -> add_talent( this, "Holy Avenger", "", "Standard survival priority list starts here\n# This section covers off-GCD spells." );
   def -> add_talent( this, "Seraphim" );
-  def -> add_action( this, "Divine Protection", "if=time<5|!talent.seraphim.enabled|(buff.seraphim.down&cooldown.seraphim.remains>5)" );
+  def -> add_action( this, "Divine Protection", "if=time<5|!talent.seraphim.enabled|(buff.seraphim.down&cooldown.seraphim.remains>5&cooldown.seraphim.remains<9)" );
   def -> add_action( this, "Guardian of Ancient Kings", "if=time<5|(buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down)" ); 
   def -> add_action( this, "Ardent Defender", "if=time<5|(buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down)");
   def -> add_talent( this, "Eternal Flame", "if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react|buff.bastion_of_power.react)" );
@@ -5108,7 +5108,7 @@ void paladin_t::generate_action_prio_list_prot()
   dps -> add_action( "potion,name=" + potion_type + ",if=buff.holy_avenger.react|buff.bloodlust.react|target.time_to_die<=60" );
   dps -> add_talent( this, "Holy Avenger", "", "Max-DPS priority list starts here.\n# This section covers off-GCD spells." );
   dps -> add_talent( this, "Seraphim" );
-  dps -> add_talent( this, "Divine Protection", "if=time<5|!talent.seraphim.enabled|(buff.seraphim.down&cooldown.seraphim.remains>5)" );
+  dps -> add_talent( this, "Divine Protection", "if=time<5|!talent.seraphim.enabled|(buff.seraphim.down&cooldown.seraphim.remains>5&cooldown.seraphim.remains<9)" );
   dps -> add_talent( this, "Guardian of Ancient Kings", "if=time<5|(buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down)" );
   dps -> add_action( this, "Shield of the Righteous", "if=buff.divine_purpose.react" );
   dps -> add_action( this, "Shield of the Righteous", "if=(holy_power>=5|talent.holy_avenger.enabled)&(!talent.seraphim.enabled|cooldown.seraphim.remains>5)" );
@@ -5147,7 +5147,7 @@ void paladin_t::generate_action_prio_list_prot()
   // Max Survival priority queue
   surv -> add_action( "potion,name=" + potion_type + ",if=buff.shield_of_the_righteous.down&buff.seraphim.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down&buff.ardent_defender.down" );
   surv -> add_talent( this, "Holy Avenger", "", "Max survival priority list starts here\n# This section covers off-GCD spells." );
-  surv -> add_action( this, "Divine Protection", "if=buff.seraphim.down" );
+  surv -> add_action( this, "Divine Protection", "if=time<5|!talent.seraphim.enabled|(buff.seraphim.down&cooldown.seraphim.remains>5&cooldown.seraphim.remains<9)" );
   surv -> add_talent( this, "Seraphim", "if=buff.divine_protection.down&cooldown.divine_protection.remains>0" );
   surv -> add_action( this, "Guardian of Ancient Kings", "if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down" ); 
   surv -> add_action( this, "Ardent Defender", "if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down");
