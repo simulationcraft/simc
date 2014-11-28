@@ -861,7 +861,7 @@ void SC_OptionsTab::createToolTips()
 
   choice.threads -> setToolTip( tr( "Match the number of CPUs for optimal performance.\n"
                                     "Most modern desktops have at least two CPU cores." ) );
-
+   
   choice.thread_priority -> setToolTip( tr( "This can allow for a more responsive computer while simulations are running.\n"
                                             "When set to 'Lowest', it will be possible to use your computer as normal while SimC runs in the background." ) );
 

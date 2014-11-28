@@ -1450,10 +1450,10 @@ private slots:
   {
     QString clickedurl = url.toString();
 
-    if ( url.isLocalFile() || clickedurl.contains( "battle.net" ) || clickedurl.contains( "google.com" ) )
-      load( url );
-    else // Wowhead links tend to crash the gui, so we'll send them to an external browser.
+    if ( clickedurl.contains( "wowhead" ) ) // Wowhead links tend to crash the gui, so we'll send them to an external browser.
       QDesktopServices::openUrl( url );
+    else
+      load( url );
   }
 
 public slots:
