@@ -2136,8 +2136,9 @@ public:
       if ( p() -> spec.predatory_swiftness -> ok() && base_costs[ RESOURCE_COMBO_POINT ] )
         p() -> buff.predatory_swiftness -> trigger( 1, 1, p() -> resources.current[ RESOURCE_COMBO_POINT ] * 0.20 );
 
-      if ( combo_point_gain && p() -> spell.primal_fury -> ok() && 
-           s -> target == target && s -> result == RESULT_CRIT ) // Only trigger from primary target
+      // Only manage for single target generators because AoE generators need special logic.
+      if ( combo_point_gain && p() -> spell.primal_fury -> ok() &&
+           s -> result == RESULT_CRIT && aoe == 0 )
       {
         p() -> proc.primal_fury -> occur();
         p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> spell.primal_fury -> effectN( 1 ).base_value(), p() -> gain.primal_fury );
@@ -2761,8 +2762,13 @@ struct shred_t : public cat_attack_t
 
 struct swipe_t : public cat_attack_t
 {
+private:
+  bool hit;
+  bool critical;
+public:
   swipe_t( druid_t* player, const std::string& options_str ) :
-    cat_attack_t( "swipe", player, player -> find_specialization_spell( "Swipe" ), options_str )
+    cat_attack_t( "swipe", player, player -> find_specialization_spell( "Swipe" ), options_str ),
+    hit( false ), critical( false )
   {
     aoe = -1;
     combo_point_gain = data().effectN( 1 ).base_value(); // Effect is not labelled correctly as CP gain
@@ -2774,13 +2780,30 @@ struct swipe_t : public cat_attack_t
   {
     cat_attack_t::impact( s );
 
-    if ( s -> target == target && result_is_hit( s -> result ) )
-      p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.swipe );
+    if ( result_is_hit( s -> result ) )
+    {
+      hit = true;
+      if ( s -> result == RESULT_CRIT )
+        critical = true;
+    }
   }
 
   virtual void execute()
   {
+    // Reset our combo point helper variables.
+    hit = critical = false;
+
     cat_attack_t::execute();
+    
+    if ( hit )
+    {
+      p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.swipe );
+      if ( critical && p() -> spell.primal_fury -> ok() )
+      {
+        p() -> proc.primal_fury -> occur();
+        p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> spell.primal_fury -> effectN( 1 ).base_value(), p() -> gain.primal_fury );
+      }
+    }
 
     p() -> buff.feral_fury -> up();
 
