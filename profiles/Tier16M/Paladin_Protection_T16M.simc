@@ -42,7 +42,7 @@ actions+=/potion,name=mogu_power,if=buff.shield_of_the_righteous.down&buff.serap
 # This section covers off-GCD spells.
 actions+=/holy_avenger
 actions+=/seraphim
-actions+=/divine_protection,if=time<5|!talent.seraphim.enabled|(buff.seraphim.down&cooldown.seraphim.remains>5)
+actions+=/divine_protection,if=time<5|!talent.seraphim.enabled|(buff.seraphim.down&cooldown.seraphim.remains>5&cooldown.seraphim.remains<9)
 actions+=/guardian_of_ancient_kings,if=time<5|(buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down)
 actions+=/ardent_defender,if=time<5|(buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down)
 actions+=/eternal_flame,if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react|buff.bastion_of_power.react)
@@ -124,7 +124,7 @@ actions.max_survival=potion,name=mogu_power,if=buff.shield_of_the_righteous.down
 # Max survival priority list starts here
 # This section covers off-GCD spells.
 actions.max_survival+=/holy_avenger
-actions.max_survival+=/divine_protection,if=buff.seraphim.down
+actions.max_survival+=/divine_protection,if=time<5|!talent.seraphim.enabled|(buff.seraphim.down&cooldown.seraphim.remains>5&cooldown.seraphim.remains<9)
 actions.max_survival+=/seraphim,if=buff.divine_protection.down&cooldown.divine_protection.remains>0
 actions.max_survival+=/guardian_of_ancient_kings,if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down
 actions.max_survival+=/ardent_defender,if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down

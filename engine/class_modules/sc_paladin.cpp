@@ -313,6 +313,7 @@ public:
     const spell_data_t* focused_wrath;
     const spell_data_t* hand_of_sacrifice;
     const spell_data_t* harsh_words;
+    const spell_data_t* holy_shock;
     const spell_data_t* immediate_truth;
     const spell_data_t* illumination;
     const spell_data_t* judgment;
@@ -2484,6 +2485,7 @@ struct holy_shock_damage_t : public paladin_spell_t
 
     // this grabs the 100% base crit bonus from 20473
     crit_chance_multiplier = p -> find_class_spell( "Holy Shock" ) -> effectN( 1 ).base_value() / 10.0;
+    spell_power_mod.direct *= 1.0 + p -> glyphs.holy_shock -> effectN( 2 ).percent();
   }
 
   virtual double composite_crit() const
@@ -2545,6 +2547,7 @@ struct holy_shock_heal_t : public paladin_heal_t
     // Daybreak gives this a 75% splash heal
     daybreak = new daybreak_t( p );
     //add_child( daybreak );
+    spell_power_mod.direct *= 1.0 + p -> glyphs.holy_shock -> effectN( 1 ).percent();
   }
 
   virtual double composite_crit() const
@@ -2599,7 +2602,6 @@ struct holy_shock_heal_t : public paladin_heal_t
       p() -> buffs.daybreak -> decrement();
     }
   }
-
 };
 
 struct holy_shock_t : public paladin_heal_t
@@ -2635,7 +2637,6 @@ struct holy_shock_t : public paladin_heal_t
     heal = new holy_shock_heal_t( p );
     heal ->crit_increase = crit_increase;
     add_child( heal );
-
   }
 
   virtual void execute()
@@ -5606,8 +5607,9 @@ void paladin_t::init_spells()
   glyphs.focused_shield           = find_glyph_spell( "Glyph of Focused Shield" );
   glyphs.hand_of_sacrifice        = find_glyph_spell( "Glyph of Hand of Sacrifice" );
   glyphs.harsh_words              = find_glyph_spell( "Glyph of Harsh Words" );
+  glyphs.holy_shock               = find_glyph_spell( "Glyph of Holy Shock" );
   glyphs.immediate_truth          = find_glyph_spell( "Glyph of Immediate Truth" );
-  glyphs.illumination                 = find_glyph_spell( "Glyph of Illumination" );
+  glyphs.illumination             = find_glyph_spell( "Glyph of Illumination" );
   glyphs.judgment                 = find_glyph_spell( "Glyph of Judgment" );
   glyphs.mass_exorcism            = find_glyph_spell( "Glyph of Mass Exorcism" );
   glyphs.merciful_wrath           = find_glyph_spell( "Glyph of Merciful Wrath" );
