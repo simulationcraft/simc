@@ -1797,6 +1797,7 @@ void player_t::init_scaling()
     scales_with[ STAT_VERSATILITY_RATING        ] = true;
     scales_with[ STAT_SPEED_RATING              ] = true;
     scales_with[ STAT_AVOIDANCE_RATING          ] = true;
+    scales_with[ STAT_LEECH_RATING              ] = true;
     scales_with[ STAT_DODGE_RATING              ] = tank;
     scales_with[ STAT_PARRY_RATING              ] = tank;
 
@@ -1864,6 +1865,10 @@ void player_t::init_scaling()
 
         case STAT_AVOIDANCE_RATING:
           initial.stats.avoidance_rating += v;
+          break;
+
+        case STAT_LEECH_RATING:
+          initial.stats.leech_rating += v;
           break;
 
         case STAT_WEAPON_DPS:

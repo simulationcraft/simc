@@ -188,6 +188,10 @@ void scaling_t::init_deltas()
 
   if ( stats.weapon_dps            == 0 ) stats.weapon_dps            = default_delta * 0.3;
   if ( stats.weapon_offhand_dps    == 0 ) stats.weapon_offhand_dps    = default_delta * 0.3;
+
+  if ( stats.leech_rating          == 0 ) stats.leech_rating          = default_delta;
+  if ( stats.avoidance_rating      == 0 ) stats.avoidance_rating      = default_delta;
+  if ( stats.speed_rating          == 0 ) stats.speed_rating          = default_delta;
 }
 
 // scaling_t::analyze_stats =================================================
