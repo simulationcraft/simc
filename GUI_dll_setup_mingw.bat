@@ -7,7 +7,7 @@
 :: Qt-Framework: C:\Qt\Qt5.1.0
 
 :: Update the qt_dir as necessary
-set qt_dir=C:\Qt\Qt5.1.0\5.1.0\mingw48_32
+set qt_dir=C:\Qt\Qt5.3\mingw482_32
 
 :: IMPORTANT NOTE FOR DEBUGGING
 :: This script will ONLY copy the optimized Qt dlls

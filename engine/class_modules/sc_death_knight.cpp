@@ -6627,6 +6627,7 @@ void death_knight_t::init_action_list()
     st -> add_action( this, "Death Coil" );
 
     // Less waiting
+    st -> add_action( this , "Plague Leech" );
     st -> add_action( this, "Empower Rune Weapon" );
 
     //AoE
