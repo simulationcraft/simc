@@ -1338,7 +1338,7 @@ struct bladestorm_t: public warrior_attack_t
     bladestorm_mh -> weapon = &( player -> main_hand_weapon );
     add_child( bladestorm_mh );
 
-    if ( player -> off_hand_weapon.type != WEAPON_NONE )
+    if ( player -> off_hand_weapon.type != WEAPON_NONE && player -> specialization() == WARRIOR_FURY )
     {
       bladestorm_oh = new bladestorm_tick_t( p, "bladestorm_oh" );
       bladestorm_oh -> weapon = &( player -> off_hand_weapon );
