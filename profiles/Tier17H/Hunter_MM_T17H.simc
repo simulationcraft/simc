@@ -27,7 +27,7 @@ actions.precombat+=/aimed_shot
 # Executed every time the actor is available.
 
 actions=auto_shot
-actions+=/use_item,name=beating_heart_of_the_mountain
+actions+=/use_item,name=lucky_doublesided_coin
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
@@ -63,9 +63,9 @@ actions.careful_aim+=/aimed_shot
 actions.careful_aim+=/focusing_shot,if=50+cast_regen<focus.deficit
 actions.careful_aim+=/steady_shot
 
-head=rylakstalkers_headguard,id=115545,bonus_id=566
+head=gronnskin_crown,id=113863,bonus_id=566
 neck=darklight_necklace,id=113865,bonus_id=566,enchant=gift_of_critical_strike
-shoulders=neckbreaker_shoulderguards,id=113899,bonus_id=566
+shoulders=rylakstalkers_spaulders,id=115547,bonus_id=566
 back=drape_of_the_dark_hunt,id=113971,bonus_id=566,enchant=gift_of_critical_strike
 chest=rylakstalkers_tunic,id=115548,bonus_id=566
 wrists=bracers_of_the_wolfs_cunning,id=113943,bonus_id=566
@@ -76,18 +76,18 @@ feet=slagstomper_treads,id=113888,bonus_id=566
 finger1=unexploded_explosive_shard,id=113877,bonus_id=566,enchant=gift_of_critical_strike
 finger2=spellbound_solium_band_of_fatal_strikes,id=118302,enchant=gift_of_critical_strike
 trinket1=humming_blackiron_trigger,id=113985,bonus_id=566
-trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=566
+trinket2=lucky_doublesided_coin,id=118876
 main_hand=mouth_of_the_fury,id=113885,bonus_id=566,enchant=megawatt_filament
 
 # Gear Summary
-# gear_agility=3053
+# gear_agility=2884
 # gear_stamina=3942
-# gear_crit_rating=1660
+# gear_crit_rating=1730
 # gear_haste_rating=677
-# gear_mastery_rating=472
+# gear_mastery_rating=273
 # gear_armor=1370
-# gear_multistrike_rating=724
-# gear_versatility_rating=201
+# gear_multistrike_rating=841
+# gear_versatility_rating=374
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 summon_pet=cat

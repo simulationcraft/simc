@@ -1013,7 +1013,8 @@ int action_t::num_targets()
 size_t action_t::available_targets( std::vector< player_t* >& tl ) const
 {
   tl.clear();
-  tl.push_back( target );
+  if ( ! target -> is_sleeping() )
+    tl.push_back( target );
 
   for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
   {
@@ -1327,6 +1328,8 @@ void action_t::tick( dot_t* d )
   }
   else
   {
+    assert( ! d -> target -> is_sleeping() );
+
     d -> state -> result = RESULT_HIT;
     update_state( d -> state, amount_type( d -> state, true ) );
 

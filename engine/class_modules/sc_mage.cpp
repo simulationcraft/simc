@@ -1162,7 +1162,8 @@ public:
   size_t available_targets( std::vector< player_t* >& tl ) const
   {
     tl.clear();
-    tl.push_back( target );
+    if ( ! target -> is_sleeping() )
+      tl.push_back( target );
 
     for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
     {
