@@ -27,8 +27,7 @@ actions.precombat+=/potion,name=draenic_intellect
 
 # Executed every time the actor is available.
 
-actions=use_item,name=fleshrenders_meathook
-actions+=/potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20
+actions=potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/berserking
 actions+=/blood_fury
 actions+=/arcane_torrent
@@ -50,28 +49,29 @@ actions+=/agony,cycle_targets=1,moving=1,if=mana.pct>50
 actions+=/life_tap
 
 head=hood_of_swirling_light,id=109972,bonus_id=524
-neck=alcs_pendant_of_fiery_dreams,id=109957,bonus_id=524,enchant=gift_of_haste
+neck=torq_of_soothing_waters,id=114478,bonus_id=487,enchant_id=5318
 shoulders=frosttouched_shoulderpads,id=109931,bonus_id=524
-back=cloak_of_arcane_mysteries,id=109908,bonus_id=524,enchant=gift_of_haste
+back=purifiers_silken_cape,id=114484,bonus_id=487,enchant_id=5311
 chest=lightbinder_robes,id=109902,bonus_id=524
 wrists=bracers_of_arcane_mystery,id=109864,bonus_id=524
 hands=gloves_of_arcane_mystery,id=109844,bonus_id=524
 waist=lightbinder_girdle,id=109827,bonus_id=524
-legs=windcrystal_leggings,id=115374,bonus_id=524
+legs=trousers_of_arcane_mystery,id=109804,bonus_id=524
 feet=lightbinder_treads,id=109796,bonus_id=524
-finger1=darkflame_loop,id=109766,bonus_id=524,enchant=gift_of_haste
-finger2=diamondglow_circle,id=109763,bonus_id=524,enchant=gift_of_haste
-trinket1=fleshrenders_meathook,id=110002,bonus_id=524
-trinket2=coagulated_genesaur_blood,id=110004,bonus_id=524
-main_hand=portalrippers_staff,id=110039,bonus_id=524,enchant=mark_of_warsong
+finger1=mindstalker_seal,id=114471,bonus_id=119,enchant_id=5325
+finger2=darkflame_loop,id=109766,bonus_id=524,enchant_id=5325
+trinket1=tovras_lightning_repository,id=110001,bonus_id=524
+trinket2=crushtos_runic_alarm,id=110000,bonus_id=524
+main_hand=dagger_of_the_sanguine_emeralds,id=110050,bonus_id=524,enchant_id=5337
+off_hand=interlopers_mossy_skull,id=119176,bonus_id=524
 
 # Gear Summary
-# gear_stamina=2465
-# gear_intellect=1836
-# gear_spell_power=958
-# gear_crit_rating=129
-# gear_haste_rating=1297
-# gear_mastery_rating=767
+# gear_stamina=2462
+# gear_intellect=1959
+# gear_spell_power=956
+# gear_crit_rating=333
+# gear_haste_rating=1474
+# gear_mastery_rating=863
 # gear_armor=552
-# gear_multistrike_rating=232
+# gear_multistrike_rating=76
 default_pet=felhunter

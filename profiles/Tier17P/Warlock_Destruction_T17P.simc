@@ -81,28 +81,28 @@ actions.aoe+=/chaos_bolt,if=talent.charred_remains.enabled&buff.fire_and_brimsto
 actions.aoe+=/incinerate
 
 head=hood_of_arcane_mystery,id=109970,bonus_id=524
-neck=magisters_chain,id=109954,bonus_id=524,enchant=gift_of_critical_strike
+neck=magisters_chain,id=109954,bonus_id=524,enchant_id=5317
 shoulders=felflame_spaulders,id=109948,bonus_id=524
-back=drape_of_frozen_dreams,id=109926,bonus_id=524,enchant=gift_of_critical_strike
+back=purifiers_silken_cape,id=114484,bonus_id=486,enchant_id=5310
 chest=robes_of_swirling_light,id=109901,bonus_id=524
-wrists=frosttouched_wristwraps,id=109865,bonus_id=524
+wrists=bracers_of_arcane_mystery,id=109864,bonus_id=524
 hands=gloves_of_swirling_light,id=109846,bonus_id=524
 waist=frosttouched_cord,id=109825,bonus_id=524
 legs=lightbinder_leggings,id=109807,bonus_id=524
 feet=sandals_of_arcane_mystery,id=109784,bonus_id=524
-finger1=golems_gleaming_eye,id=109765,bonus_id=524,enchant=gift_of_critical_strike
-finger2=mark_of_ice,id=109764,bonus_id=524,enchant=gift_of_critical_strike
-trinket1=coagulated_genesaur_blood,id=110004,bonus_id=524
+finger1=mindstalker_seal,id=114471,bonus_id=56,enchant_id=5324
+finger2=mark_of_ice,id=109764,bonus_id=524,enchant_id=5324
+trinket1=tovras_lightning_repository,id=110001,bonus_id=524
 trinket2=crushtos_runic_alarm,id=110000,bonus_id=524
-main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant=mark_of_the_thunderlord
+main_hand=spire_of_the_furious_construct,id=110031,bonus_id=524,enchant_id=5330
 
 # Gear Summary
 # gear_stamina=2465
-# gear_intellect=1889
+# gear_intellect=1960
 # gear_spell_power=958
-# gear_crit_rating=1475
-# gear_mastery_rating=789
+# gear_crit_rating=1545
+# gear_haste_rating=63
+# gear_mastery_rating=880
 # gear_armor=552
 # gear_multistrike_rating=268
-# gear_versatility_rating=52
 default_pet=felhunter
