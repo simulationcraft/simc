@@ -63,7 +63,7 @@ actions.careful_aim+=/aimed_shot
 actions.careful_aim+=/focusing_shot,if=50+cast_regen<focus.deficit
 actions.careful_aim+=/steady_shot
 
-head=rylakstalkers_headguard,id=115545,bonus_id=567
+head=gronnskin_crown,id=113863,bonus_id=567
 neck=darklight_necklace,id=113865,bonus_id=567,enchant=gift_of_critical_strike
 shoulders=rylakstalkers_spaulders,id=115547,bonus_id=567
 back=drape_of_the_dark_hunt,id=113971,bonus_id=567,enchant=gift_of_critical_strike
@@ -76,18 +76,18 @@ feet=slagstomper_treads,id=113888,bonus_id=567
 finger1=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_critical_strike
 finger2=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_critical_strike
 trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=567
-trinket2=meaty_dragonspine_trophy,id=118114,bonus_id=567
+trinket2=humming_blackiron_trigger,id=113985,bonus_id=567
 main_hand=mouth_of_the_fury,id=113885,bonus_id=567,enchant=megawatt_filament
 
 # Gear Summary
-# gear_agility=3384
+# gear_agility=3518
 # gear_stamina=4545
-# gear_crit_rating=1759
+# gear_crit_rating=1787
 # gear_haste_rating=779
-# gear_mastery_rating=532
+# gear_mastery_rating=313
 # gear_armor=1463
 # gear_multistrike_rating=967
-# gear_versatility_rating=237
+# gear_versatility_rating=436
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 summon_pet=cat
