@@ -1,4 +1,4 @@
-warlock="Warlock_Demonology_T17M"
+warlock="Warlock_Demonology_T17B"
 level=100
 race=troll
 role=spell
@@ -89,32 +89,34 @@ actions.db+=/life_tap,if=mana.pct<40
 actions.db+=/shadow_bolt
 actions.db+=/life_tap
 
-head=shadow_councils_hood,id=115586,bonus_id=567
-neck=gruuls_lip_ring,id=113872,bonus_id=567,enchant_id=5319
-shoulders=shadow_councils_mantle,id=115589,bonus_id=567
-back=runefrenzy_greatcloak,id=113937,bonus_id=567,enchant_id=5312
-chest=shadow_councils_robes,id=115588,bonus_id=567
-wrists=bracers_of_darkened_skies,id=119332,bonus_id=567
-hands=toothbreaker_grips,id=113876,bonus_id=567
-waist=seeking_ember_girdle,id=113941,bonus_id=567
-legs=shadow_councils_leggings,id=115587,bonus_id=567
-feet=cavedwellers_climbers,id=113864,bonus_id=567
-finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant_id=5326
-finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant_id=5326
-trinket1=quiescent_runestone,id=113859,bonus_id=567
-trinket2=blackiron_micro_crucible,id=113984,bonus_id=567
-main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant_id=5384
+head=shadow_councils_hood,id=115586,bonus_id=41/561/565/567,gem_id=115812
+neck=gruuls_lip_ring,id=113872,bonus_id=41/562/565/567,gem_id=115812,enchant_id=5319
+shoulders=shadow_councils_mantle,id=115589,bonus_id=41/561/565/567,gem_id=115812
+back=runefrenzy_greatcloak,id=113937,bonus_id=41/562/565/567,gem_id=115812,enchant_id=5312
+chest=shadow_councils_robes,id=115588,bonus_id=41/561/564/567,gem_id=115812
+wrists=bracers_of_darkened_skies,id=119332,bonus_id=41/562/565/567,gem_id=115812
+hands=toothbreaker_grips,id=113876,bonus_id=41/562/565/567,gem_id=115812
+waist=seeking_ember_girdle,id=113941,bonus_id=41/562/565/567,gem_id=115812
+legs=shadow_councils_leggings,id=115587,bonus_id=41/562/565/567,gem_id=115812
+feet=cavedwellers_climbers,id=113864,bonus_id=41/562/565/567,gem_id=115812
+finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=41/562/565/567,gem_id=115812,enchant_id=5326
+finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,bonus_id=524,enchant_id=5326
+trinket1=quiescent_runestone,id=113859,bonus_id=41/562/565/567,gem_id=115812
+trinket2=blackiron_micro_crucible,id=113984,bonus_id=41/562/565/567,gem_id=115812
+main_hand=dagger_of_blazing_radiance,id=113920,bonus_id=41/562/565/567,gem_id=115812,enchant_id=5384
+off_hand=caged_living_ooze,id=113879,bonus_id=41/562/565/567,gem_id=115812
 
 # Gear Summary
-# gear_stamina=4545
-# gear_intellect=3589
-# gear_spell_power=1753
-# gear_crit_rating=499
-# gear_haste_rating=1373
-# gear_mastery_rating=1994
-# gear_armor=870
-# gear_multistrike_rating=633
-# gear_versatility_rating=103
+# gear_stamina=4781
+# gear_intellect=3775
+# gear_spell_power=1855
+# gear_crit_rating=526
+# gear_haste_rating=1322
+# gear_mastery_rating=2824
+# gear_armor=909
+# gear_multistrike_rating=670
+# gear_versatility_rating=230
+# gear_leech_rating=1970
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 default_pet=felguard

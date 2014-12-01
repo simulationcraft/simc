@@ -90,30 +90,30 @@ actions.db+=/shadow_bolt
 actions.db+=/life_tap
 
 head=shadow_councils_hood,id=115586
-neck=gruuls_lip_ring,id=113872,enchant=gift_of_mastery
+neck=gruuls_lip_ring,id=113872,enchant_id=5319
 shoulders=shadow_councils_mantle,id=115589
-back=runefrenzy_greatcloak,id=113937,enchant=gift_of_mastery
+back=runefrenzy_greatcloak,id=113937,enchant_id=5312
 chest=shadow_councils_robes,id=115588
-wrists=bracers_of_darkened_skies,id=119332
+wrists=hexweave_bracers,id=114814,bonus_id=117/559
 hands=toothbreaker_grips,id=113876
-waist=seeking_ember_girdle,id=113941
+waist=hexweave_belt,id=114816,bonus_id=118/559
 legs=shadow_councils_leggings,id=115587
-feet=cavedwellers_climbers,id=113864
-finger1=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_mastery
-finger2=ukuroggs_corrupted_seal,id=113975,enchant=gift_of_mastery
+feet=hexweave_slippers,id=114815,bonus_id=118/559
+finger1=ukuroggs_corrupted_seal,id=113975,enchant_id=5326
+finger2=timeless_solium_band_of_the_archmage,id=118296,enchant_id=5326
 trinket1=blackiron_micro_crucible,id=113984
-trinket2=goren_soul_repository,id=119194
-main_hand=infernoflame_staff,id=113869,enchant=mark_of_bleeding_hollow
+trinket2=quiescent_runestone,id=113859
+main_hand=infernoflame_staff,id=113869,enchant_id=5384
 
 # Gear Summary
 # gear_stamina=3437
-# gear_intellect=2633
+# gear_intellect=2713
 # gear_spell_power=1325
-# gear_crit_rating=376
-# gear_haste_rating=905
-# gear_mastery_rating=1575
+# gear_crit_rating=259
+# gear_haste_rating=1246
+# gear_mastery_rating=1580
 # gear_armor=700
-# gear_multistrike_rating=346
+# gear_multistrike_rating=390
 # gear_versatility_rating=78
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

@@ -90,30 +90,30 @@ actions.db+=/shadow_bolt
 actions.db+=/life_tap
 
 head=shadow_councils_hood,id=115586,bonus_id=566
-neck=gruuls_lip_ring,id=113872,bonus_id=566,enchant=gift_of_mastery
+neck=gruuls_lip_ring,id=113872,bonus_id=566,enchant_id=5319
 shoulders=shadow_councils_mantle,id=115589,bonus_id=566
-back=runefrenzy_greatcloak,id=113937,bonus_id=566,enchant=gift_of_mastery
+back=runefrenzy_greatcloak,id=113937,bonus_id=566,enchant_id=5312
 chest=shadow_councils_robes,id=115588,bonus_id=566
 wrists=bracers_of_darkened_skies,id=119332,bonus_id=566
 hands=toothbreaker_grips,id=113876,bonus_id=566
 waist=seeking_ember_girdle,id=113941,bonus_id=566
 legs=shadow_councils_leggings,id=115587,bonus_id=566
 feet=cavedwellers_climbers,id=113864,bonus_id=566
-finger1=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_mastery
-finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant=gift_of_mastery
-trinket1=blackiron_micro_crucible,id=113984,bonus_id=566
-trinket2=goren_soul_repository,id=119194,bonus_id=566
-main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_bleeding_hollow
+finger1=spellbound_solium_band_of_the_kirintor,id=118301,enchant_id=5326
+finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant_id=5326
+trinket1=quiescent_runestone,id=113859,bonus_id=566
+trinket2=blackiron_micro_crucible,id=113984,bonus_id=566
+main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant_id=5384
 
 # Gear Summary
 # gear_stamina=3942
-# gear_intellect=3023
+# gear_intellect=3115
 # gear_spell_power=1524
 # gear_crit_rating=434
-# gear_haste_rating=1041
+# gear_haste_rating=1195
 # gear_mastery_rating=1762
 # gear_armor=780
-# gear_multistrike_rating=397
+# gear_multistrike_rating=551
 # gear_versatility_rating=86
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

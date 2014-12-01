@@ -1,6 +1,6 @@
 warlock="Warlock_Destruction_T17N"
 level=100
-race=troll
+race=dwarf
 role=spell
 position=back
 talents=0000113
@@ -28,7 +28,8 @@ actions.precombat+=/incinerate
 
 # Executed every time the actor is available.
 
-actions=potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20
+actions=use_item,name=copelands_clarity
+actions+=/potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/berserking
 actions+=/blood_fury
 actions+=/arcane_torrent
@@ -81,31 +82,31 @@ actions.aoe+=/chaos_bolt,if=talent.charred_remains.enabled&buff.fire_and_brimsto
 actions.aoe+=/incinerate
 
 head=shadow_councils_hood,id=115586
-neck=gruuls_lip_ring,id=113872,enchant=gift_of_critical_strike
+neck=whispering_taladite_pendant,id=115801,bonus_id=56/559,enchant_id=5317
 shoulders=shadow_councils_mantle,id=115589
-back=runefrenzy_greatcloak,id=113937,enchant=gift_of_critical_strike
+back=rinnilas_regal_cloak,id=118810,enchant_id=5310
 chest=shadow_councils_robes,id=115588
-wrists=bracers_of_darkened_skies,id=119332
+wrists=bracers_of_spattered_steel,id=113887
 hands=shadow_councils_gloves,id=115585
-waist=deckhands_rope_belt,id=113967
-legs=turret_mechanics_legwraps,id=113970
+waist=hexweave_belt,id=114816,bonus_id=55/559
+legs=hexweave_leggings,id=114811,bonus_id=55/559
 feet=cavedwellers_climbers,id=113864
-finger1=epicenter_loop,id=113947,enchant=gift_of_critical_strike
-finger2=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_critical_strike
-trinket1=goren_soul_repository,id=119194
-trinket2=blackiron_micro_crucible,id=113984
-main_hand=blackhand_doomstaff,id=113988,enchant=mark_of_the_thunderlord
+finger1=ukuroggs_corrupted_seal,id=113975,enchant_id=5324
+finger2=timeless_solium_band_of_the_archmage,id=118296,enchant_id=5324
+trinket1=blackiron_micro_crucible,id=113984
+trinket2=copelands_clarity,id=118878
+main_hand=blackhand_doomstaff,id=113988,enchant_id=5384
 
 # Gear Summary
 # gear_stamina=3437
-# gear_intellect=2633
+# gear_intellect=2512
 # gear_spell_power=1325
-# gear_crit_rating=1281
-# gear_haste_rating=422
-# gear_mastery_rating=1073
+# gear_crit_rating=1681
+# gear_haste_rating=339
+# gear_mastery_rating=1200
 # gear_armor=700
-# gear_multistrike_rating=318
-# gear_versatility_rating=170
+# gear_multistrike_rating=172
+# gear_versatility_rating=78
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 default_pet=felhunter
