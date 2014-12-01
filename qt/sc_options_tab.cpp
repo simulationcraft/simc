@@ -74,6 +74,9 @@ const OptionEntry scalingOptions[] =
   { "Off-hand Weapon DPS",      "wohdps",   "Calculate scale factors for Off-hand Weapon DPS"      },
   { "Armor",                    "armor",    "Calculate scale factors for Armor"                    },
   { "Bonus Armor",              "bonusarmor",   "Calculate scale factors for Bonus Armor"          },
+  { "Avoidance (tertiary)",     "avoidance", "Calculate scale factors for Avoidance (tertiary stat)" },
+  { "Leech (tertiary)",         "leech",    "Calculate scale factors for Leech (tertiary stat)" },
+  { "Movement Speed (tertiary)", "speed",   "Calculate scale factors for Movement Speed (tertiary stat)" },
   { "Latency",                  "",         "Calculate scale factors for Latency"                  },
   { NULL, NULL, NULL }
 };
