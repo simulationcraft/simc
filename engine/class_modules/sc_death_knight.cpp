@@ -4225,6 +4225,14 @@ struct chains_of_ice_t : public death_knight_spell_t
       background = true;
     }
   }
+
+  void impact( action_state_t* state )
+  {
+    death_knight_spell_t::impact( state );
+
+    if ( result_is_hit( state -> result ) )
+      p() -> apply_diseases( state, DISEASE_FROST_FEVER );
+  }
 };
 
 // Icy Touch ================================================================
