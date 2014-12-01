@@ -369,6 +369,9 @@ bool parse_armory( sim_t*             sim,
       }
       else if ( name == "local_json" )
         p = bcp_api::from_local_json( sim, player_name, stuff.server, description );
+      else if ( name == "armory_html" )
+        p = bcp_api::download_player_html( sim, stuff.region, stuff.server,
+                                           player_name, description, stuff.cache );
       else
         p = bcp_api::download_player( sim, stuff.region, stuff.server,
                                       player_name, description, stuff.cache );
@@ -2574,6 +2577,7 @@ void sim_t::create_options()
   add_option( opt_func( "guardian", parse_player ) );
   add_option( opt_func( "copy", parse_player ) );
   add_option( opt_func( "armory", parse_armory ) );
+  add_option( opt_func( "armory_html", parse_armory ) );
   add_option( opt_func( "guild", parse_guild ) );
   add_option( opt_func( "wowhead", parse_armory ) );
   add_option( opt_func( "mopdev", parse_armory ) );

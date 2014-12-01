@@ -269,6 +269,26 @@ bool parse_items( player_t*  p,
 
 // parse_player =============================================================
 
+player_t* parse_player_html( sim_t*             sim,
+                             player_spec_t&     player,
+                             cache::behavior_e  caching )
+{
+  sim -> current_slot = 0;
+
+  std::shared_ptr<xml_node_t> profile = xml_node_t::get( sim, player.url, caching );
+  if ( sim -> debug && profile ) profile -> print();
+
+  if ( ! profile )
+  {
+    sim -> errorf( "BCP API: Unable to download player from '%s'\n", player.url.c_str() );
+    return 0;
+  }
+
+  return 0;
+}
+
+// parse_player =============================================================
+
 player_t* parse_player( sim_t*             sim,
                         player_spec_t&     player,
                         cache::behavior_e  caching )
@@ -647,6 +667,33 @@ bool download_roster( rapidjson::Document& d,
 }
 
 } // close anonymous namespace ==============================================
+
+// bcp_api::download_player_html =============================================
+
+player_t* bcp_api::download_player_html( sim_t*             sim,
+                                         const std::string& region,
+                                         const std::string& server,
+                                         const std::string& name,
+                                         const std::string& talents,
+                                         cache::behavior_e  caching )
+{
+  sim -> current_name = name;
+
+  player_spec_t player;
+
+  std::string battlenet = "http://" + region + ".battle.net/";
+
+  player.url = battlenet + "wow/en/character/" + server + '/' + name + "/advanced";
+  player.origin = battlenet + "wow/en/character/" + server + '/' + name + "/advanced";
+
+  player.region = region;
+  player.server = server;
+  player.name = name;
+
+  player.talent_spec = talents;
+
+  return parse_player_html( sim, player, caching );
+}
 
 // bcp_api::download_player =================================================
 
