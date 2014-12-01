@@ -1796,8 +1796,8 @@ void player_t::init_scaling()
     scales_with[ STAT_READINESS_RATING          ] = false; // No longer a stat in game.
     scales_with[ STAT_VERSATILITY_RATING        ] = true;
     scales_with[ STAT_SPEED_RATING              ] = true;
-    scales_with[ STAT_AVOIDANCE_RATING          ] = true;
-    scales_with[ STAT_LEECH_RATING              ] = true;
+    scales_with[ STAT_AVOIDANCE_RATING          ] = tank;
+    scales_with[ STAT_LEECH_RATING              ] = tank;
     scales_with[ STAT_DODGE_RATING              ] = tank;
     scales_with[ STAT_PARRY_RATING              ] = tank;
 
