@@ -5202,11 +5202,15 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
 
     may_miss = may_crit = hasted_ticks = callbacks = false;
     tick_zero = true;
-    dot_duration = timespan_t::from_seconds( 100 );
 
     tick_action = new breath_of_sindragosa_tick_t( p, this );
     tick_action -> base_costs[ RESOURCE_RUNIC_POWER ] = base_costs[ RESOURCE_RUNIC_POWER ];
     school = tick_action -> school;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* ) const
+  {
+    return player -> sim -> expected_iteration_time * 2;
   }
 
   void execute()
