@@ -3020,7 +3020,7 @@ struct necrosis_t : public death_knight_spell_t
   {
     background = true;
     if ( player -> wod_hotfix )
-    {
+    { 
       base_multiplier *= 1.67;
     }
   }
@@ -3614,9 +3614,9 @@ struct defile_t : public death_knight_spell_t
     double m = death_knight_spell_t::composite_ta_multiplier( state );
 
     dot_t* dot = find_dot( state -> target );
-    // TODO-WOD: Tooltip is wrong, defile increases by 5% per tick
+
     if ( dot )
-      m *= std::pow( 1.0 + /* data().effectN( 2 ).percent()*/ 0.05, dot -> current_tick );
+      m *= std::pow( 1.0 + data().effectN( 2 ).percent() / 100, dot -> current_tick );
 
     return m;
   }
@@ -3963,12 +3963,12 @@ struct empower_rune_weapon_t : public death_knight_spell_t
 struct festering_strike_t : public death_knight_melee_attack_t
 {
   festering_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "festering_strike", p, p -> find_class_spell( "Festering Strike" ) )
+    death_knight_melee_attack_t( "festering_strike", p, p -> find_specialization_spell( "Festering Strike" ) )
   {
     parse_options( options_str );
 
     if ( p -> wod_hotfix )
-      weapon_multiplier *= 0.95;
+      weapon_multiplier *= 0.90;
 
     if ( p -> spec.reaping -> ok() )
       convert_runes = 1.0;
@@ -4965,6 +4965,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       {
         weapon_multiplier *= 0.95;
         weapon_multiplier *= 1.5;
+        weapon_multiplier *= 0.96;
       }
     }
 
@@ -4991,6 +4992,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     {
       weapon_multiplier *= 0.95;
       weapon_multiplier *= 1.5;
+      weapon_multiplier *= 0.98;
     }
 
     // TODO-WOD: Do we need to inherit damage or is it a separate roll in WoD?
