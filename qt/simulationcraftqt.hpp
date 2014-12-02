@@ -441,6 +441,9 @@ class SC_WelcomeTabWidget : public QWebView
   Q_OBJECT
 public:
   SC_WelcomeTabWidget( SC_MainWindow* parent = nullptr );
+private slots:
+ void linkClickedSlot( const QUrl& url ) { QDesktopServices::openUrl( url ); }
+
 };
 
 // ============================================================================
@@ -1450,10 +1453,14 @@ private slots:
   {
     QString clickedurl = url.toString();
 
-    if ( clickedurl.contains( "wowhead" ) ) // Wowhead links tend to crash the gui, so we'll send them to an external browser.
-      QDesktopServices::openUrl( url );
-    else
+    // Wowhead links tend to crash the gui, so we'll send them to an external browser.
+    // AMR and Lootrank links are nice to load externally too so we don't lose sim results
+    // In general, we err towards opening things externally because we are not Mozilla
+    // google.com is needed for our help tab; battle.net (us/eu) and battlenet (china) cover armory
+    if ( url.isLocalFile() || clickedurl.contains( "battle.net" ) || clickedurl.contains( " battlenet" ) || clickedurl.contains( "google.com" ) )
       load( url );
+    else
+      QDesktopServices::openUrl( url );
   }
 
 public slots:

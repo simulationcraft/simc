@@ -525,6 +525,9 @@ QWebView( parent )
   welcomeFile = SC_LINUX_PACKAGING "/Welcome.html";
 #endif
   setUrl( "file:///" + welcomeFile );
+
+  page() -> setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
+  connect( this, SIGNAL( linkClicked( const QUrl& ) ), this, SLOT( linkClickedSlot( const QUrl& ) ) );
 }
 
 void SC_MainWindow::createImportTab()
