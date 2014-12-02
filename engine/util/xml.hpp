@@ -70,6 +70,9 @@ struct sc_xml_t
   bool valid() const
   { return root != 0; }
 
+  std::string name() const
+  { return root ? std::string( root -> name() ) : std::string(); }
+
   sc_xml_t get_child( const std::string& name ) const;
   sc_xml_t get_node ( const std::string& path ) const;
   sc_xml_t get_node ( const std::string& path, const std::string& parm_name, const std::string& parm_value ) const;

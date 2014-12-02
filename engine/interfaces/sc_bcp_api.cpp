@@ -276,6 +276,10 @@ player_t* parse_player_html( sim_t*             sim,
   sim -> current_slot = 0;
 
   sc_xml_t profile = sc_xml_t::get( sim, player.url, caching );
+  if ( sim -> debug && profile.valid() )
+  {
+    profile.print();
+  }
 
   if ( ! profile.valid() )
   {

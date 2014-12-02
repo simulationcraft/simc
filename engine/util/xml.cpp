@@ -766,8 +766,230 @@ std::string xml_writer_t::sanitize( std::string v )
   return v;
 }
 
+void sc_xml_t::print( FILE* file, int spacing )
+{
+  assert( file );
+  assert( root );
+
+  util::fprintf( file, "%*s%s", spacing, "", name().c_str() );
+
+  for ( xml_attribute<>* attr = root -> first_attribute(); attr; attr = attr -> next_attribute() )
+  {
+    util::fprintf( file, " %s=\"%s\"", attr -> name(), attr -> value() );
+  }
+
+  if ( root -> type() == node_element && root -> value_size() > 0 )
+  {
+    util::fprintf( file, " .=\"%s\"", root -> value() );
+  }
+  util::fprintf( file, "\n" );
+
+  for ( xml_node<>* n = root -> first_node(); n; n = n -> next_sibling() )
+  {
+    sc_xml_t node( n );
+    node.print( file, spacing + 2 );
+  }
+}
+
+bool sc_xml_t::get_value( double& value, const std::string& path )
+{
+  std::string key;
+
+  sc_xml_t node = split_path( key, path );
+  if ( ! node.valid() )
+  {
+    return false;
+  }
+
+  // "." in the path denotes the data inside an XML element. Old XML parser
+  // used to make a "." attribute for each tag, RapidXML will contain the DATA
+  // of the XML tag in the value() of the object, however the object must be an
+  // element.
+  if ( key == "." )
+  {
+    assert( node.root -> type() == node_element );
+    value = atof( node.root -> value() );
+  }
+  else
+  {
+    xml_attribute<>* attr = node.root -> first_attribute( key.c_str() );
+    if ( ! attr )
+    {
+      return false;
+    }
+    value = atof( attr -> value() );
+  }
+
+  return true;
+}
+
+bool sc_xml_t::get_value( int& value, const std::string& path )
+{
+  std::string key;
+
+  sc_xml_t node = split_path( key, path );
+  if ( ! node.valid() )
+  {
+    return false;
+  }
+
+  // "." in the path denotes the data inside an XML element. Old XML parser
+  // used to make a "." attribute for each tag, RapidXML will contain the DATA
+  // of the XML tag in the value() of the object, however the object must be an
+  // element.
+  if ( key == "." )
+  {
+    assert( node.root -> type() == node_element );
+    value = util::to_int( node.root -> value() );
+  }
+  else
+  {
+    xml_attribute<>* attr = node.root -> first_attribute( key.c_str() );
+    if ( ! attr )
+    {
+      return false;
+    }
+    value = util::to_int( attr -> value() );
+  }
+
+  return true;
+}
+
+bool sc_xml_t::get_value( std::string& value,
+                          const std::string& path )
+{
+  std::string key;
+
+  sc_xml_t node = split_path( key, path );
+  if ( ! node.valid() )
+  {
+    return false;
+  }
+
+  // "." in the path denotes the data inside an XML element. Old XML parser
+  // used to make a "." attribute for each tag, RapidXML will contain the DATA
+  // of the XML tag in the value() of the object, however the object must be an
+  // element.
+  if ( key == "." )
+  {
+    assert( node.root -> type() == node_element );
+    value = node.root -> value();
+  }
+  else
+  {
+    xml_attribute<>* attr = node.root -> first_attribute( key.c_str() );
+    if ( ! attr )
+    {
+      return false;
+    }
+    value = attr -> value();
+  }
+
+  return true;
+}
+
+std::vector<sc_xml_t> sc_xml_t::get_nodes( const std::string& path,
+                                           const std::string& parm_name,
+                                           const std::string& parm_value )
+{
+  std::vector<sc_xml_t> nodes;
+
+  if ( ! root )
+  {
+    return nodes;
+  }
+
+  if ( path.empty() || util::str_compare_ci( path, name() ) )
+  {
+    for ( xml_attribute<>* attr = root -> first_attribute(); attr; attr = attr -> next_attribute() )
+    {
+      if ( util::str_compare_ci( parm_name, attr -> name() ) &&
+           util::str_compare_ci( parm_value, attr -> value() ) )
+      {
+        nodes.push_back( *this );
+      }
+    }
+  }
+  else
+  {
+    std::string name_str;
+    sc_xml_t node = split_path( name_str, path );
+    if ( ! node.valid() )
+    {
+      return nodes;
+    }
+
+    for ( xml_node<>* n = root -> first_node(); n; n = n -> next_sibling() )
+    {
+      sc_xml_t node( n );
+      std::vector<sc_xml_t> new_nodes = node.get_nodes( name_str, parm_name, parm_value );
+      nodes.insert( nodes.end(), new_nodes.begin(), new_nodes.end() );
+    }
+  }
+
+  return nodes;
+}
+
+std::vector<sc_xml_t> sc_xml_t::get_nodes( const std::string& path )
+{
+  std::vector<sc_xml_t> nodes;
+
+  if ( ! root )
+  {
+    return nodes;
+  }
+
+  if ( path.empty() || util::str_compare_ci( path, name() ) )
+  {
+    nodes.push_back( *this );
+  }
+  else
+  {
+    std::string name_str;
+    sc_xml_t node = split_path( name_str, path );
+    if ( ! node.valid() )
+    {
+      return nodes;
+    }
+
+    for ( xml_node<>* n = root -> first_node(); n; n = n -> next_sibling() )
+    {
+      sc_xml_t node( n );
+      std::vector<sc_xml_t> new_nodes = node.get_nodes( name_str );
+      nodes.insert( nodes.end(), new_nodes.begin(), new_nodes.end() );
+    }
+  }
+
+  return nodes;
+}
+
+std::vector<sc_xml_t> sc_xml_t::get_children( const std::string& name )
+{
+  std::vector<sc_xml_t> nodes;
+
+  if ( ! root )
+  {
+    return nodes;
+  }
+
+  for ( xml_node<>* n = root -> first_node(); n; n = n -> next_sibling() )
+  {
+    if ( ! name.empty() || util::str_compare_ci( name, n -> name() ) )
+    {
+      nodes.push_back( sc_xml_t( n ) );
+    }
+  }
+
+  return nodes;
+}
+
 sc_xml_t sc_xml_t::get_child( const std::string& name ) const
 {
+  if ( ! root )
+  {
+    return sc_xml_t();
+  }
+
   for ( xml_node<>* n = root -> first_node(); n; n = n -> next_sibling() )
   {
     if ( util::str_compare_ci( name, n -> name() ) )
@@ -796,8 +1018,10 @@ sc_xml_t sc_xml_t::get_node( const std::string& path,
 
 sc_xml_t sc_xml_t::get_node( const std::string& path ) const
 {
-  if ( path.empty() || util::str_compare_ci( path, root -> name() ) )
+  if ( path.empty() || util::str_compare_ci( path, name() ) )
+  {
     return *this;
+  }
 
   std::string name_str;
 
@@ -815,7 +1039,12 @@ sc_xml_t sc_xml_t::search_tree( const std::string& node_name,
                                 const std::string& parm_name,
                                 const std::string& parm_value ) const
 {
-  if ( node_name.empty() || util::str_compare_ci( node_name, root -> name() ) )
+  if ( ! root )
+  {
+    return sc_xml_t();
+  }
+
+  if ( node_name.empty() || util::str_compare_ci( node_name, name() ) )
   {
     for ( xml_attribute<>* attr = root -> first_attribute(); attr; attr = attr -> next_attribute() )
     {
@@ -843,8 +1072,15 @@ sc_xml_t sc_xml_t::search_tree( const std::string& node_name,
 
 sc_xml_t sc_xml_t::search_tree( const std::string& node_name ) const
 {
-  if ( node_name.empty() || util::str_compare_ci( node_name, root -> name() ) )
+  if ( node_name.empty() || util::str_compare_ci( node_name, name() ) )
+  {
     return *this;
+  }
+
+  if ( ! root )
+  {
+    return sc_xml_t();
+  }
 
   for ( xml_node<>* n = root -> first_node(); n; n = n -> next_sibling() )
   {
@@ -905,13 +1141,13 @@ sc_xml_t sc_xml_t::create( sim_t* sim,
 
   try
   {
-    document -> parse< 0 >( tmp_buf );
+    document -> parse< parse_trim_whitespace >( tmp_buf );
   }
   catch( parse_error& e )
   {
     sim -> errorf( "Unable to parse XML input: %s", e.what() );
     delete document;
-    delete tmp_buf;
+    delete[] tmp_buf;
     return sc_xml_t();
   }
 
