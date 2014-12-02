@@ -275,10 +275,9 @@ player_t* parse_player_html( sim_t*             sim,
 {
   sim -> current_slot = 0;
 
-  std::shared_ptr<xml_node_t> profile = xml_node_t::get( sim, player.url, caching );
-  if ( sim -> debug && profile ) profile -> print();
+  sc_xml_t profile = sc_xml_t::get( sim, player.url, caching );
 
-  if ( ! profile )
+  if ( ! profile.valid() )
   {
     sim -> errorf( "BCP API: Unable to download player from '%s'\n", player.url.c_str() );
     return 0;
