@@ -1753,7 +1753,7 @@ bool sim_t::init()
 
   confidence_estimator = rng_t::stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
 
-  if ( challenge_mode && scale_to_itemlevel < 0 ) scale_to_itemlevel = 620; //Check later
+  if ( challenge_mode && scale_to_itemlevel < 0 ) scale_to_itemlevel = 630;
 
   // set scaling metric
   scaling -> scaling_metric = util::parse_scale_metric( scaling -> scale_over );
