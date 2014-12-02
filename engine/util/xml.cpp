@@ -766,6 +766,18 @@ std::string xml_writer_t::sanitize( std::string v )
   return v;
 }
 
+void sc_xml_t::print_xml( FILE* f, int )
+{
+  assert( f );
+  assert( root );
+
+  std::stringstream s;
+
+  s << *root;
+
+  util::fprintf( f, "%s", s.str().c_str() );
+}
+
 void sc_xml_t::print( FILE* file, int spacing )
 {
   assert( file );
