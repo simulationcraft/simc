@@ -805,12 +805,14 @@ void sc_xml_t::print( FILE* file, int spacing )
 
 bool sc_xml_t::get_value( double& value, const std::string& path )
 {
+  bool ret = true;
+
   std::string key;
 
   sc_xml_t node = split_path( key, path );
   if ( ! node.valid() )
   {
-    return false;
+    return ret;
   }
 
   // "." in the path denotes the data inside an XML element. Old XML parser
@@ -822,27 +824,40 @@ bool sc_xml_t::get_value( double& value, const std::string& path )
     assert( node.root -> type() == node_element );
     value = atof( node.root -> value() );
   }
+  else if ( util::str_compare_ci( key, "cdata" ) )
+  {
+    for ( xml_node<>* n = root -> first_node(); n; n = n -> next_sibling() )
+    {
+      if ( n -> type() == node_cdata )
+      {
+        value = atof( n -> value() );
+        ret = true;
+      }
+    }
+  }
   else
   {
     xml_attribute<>* attr = node.root -> first_attribute( key.c_str() );
     if ( ! attr )
     {
-      return false;
+      return ret;
     }
     value = atof( attr -> value() );
+    ret = true;
   }
 
-  return true;
+  return ret;
 }
 
 bool sc_xml_t::get_value( int& value, const std::string& path )
 {
+  bool ret = false;
   std::string key;
 
   sc_xml_t node = split_path( key, path );
   if ( ! node.valid() )
   {
-    return false;
+    return ret;
   }
 
   // "." in the path denotes the data inside an XML element. Old XML parser
@@ -854,28 +869,41 @@ bool sc_xml_t::get_value( int& value, const std::string& path )
     assert( node.root -> type() == node_element );
     value = util::to_int( node.root -> value() );
   }
+  else if ( util::str_compare_ci( key, "cdata" ) )
+  {
+    for ( xml_node<>* n = root -> first_node(); n; n = n -> next_sibling() )
+    {
+      if ( n -> type() == node_cdata )
+      {
+        value = util::to_int( n -> value() );
+        ret = true;
+      }
+    }
+  }
   else
   {
     xml_attribute<>* attr = node.root -> first_attribute( key.c_str() );
     if ( ! attr )
     {
-      return false;
+      return ret;
     }
     value = util::to_int( attr -> value() );
+    ret = true;
   }
 
-  return true;
+  return ret;
 }
 
 bool sc_xml_t::get_value( std::string& value,
                           const std::string& path )
 {
+  bool ret = false;
   std::string key;
 
   sc_xml_t node = split_path( key, path );
   if ( ! node.valid() )
   {
-    return false;
+    return ret;
   }
 
   // "." in the path denotes the data inside an XML element. Old XML parser
@@ -887,17 +915,29 @@ bool sc_xml_t::get_value( std::string& value,
     assert( node.root -> type() == node_element );
     value = node.root -> value();
   }
+  else if ( util::str_compare_ci( key, "cdata" ) )
+  {
+    for ( xml_node<>* n = root -> first_node(); n; n = n -> next_sibling() )
+    {
+      if ( n -> type() == node_cdata )
+      {
+        value = n -> value();
+        ret = true;
+      }
+    }
+  }
   else
   {
     xml_attribute<>* attr = node.root -> first_attribute( key.c_str() );
     if ( ! attr )
     {
-      return false;
+      return ret;
     }
     value = attr -> value();
+    ret = true;
   }
 
-  return true;
+  return ret;
 }
 
 std::vector<sc_xml_t> sc_xml_t::get_nodes( const std::string& path,
