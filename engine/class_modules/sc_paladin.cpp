@@ -1611,6 +1611,7 @@ struct denounce_t : public paladin_spell_t
     : paladin_spell_t( "denounce", p, p -> find_specialization_spell( "Denounce" ) )
   {
     parse_options( options_str );
+    may_crit = true;
   }
 
   timespan_t execute_time() const
