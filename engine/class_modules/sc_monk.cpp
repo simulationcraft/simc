@@ -1481,13 +1481,16 @@ struct chi_explosion_t: public monk_melee_attack_t
           p() -> buff.shuffle -> extend_duration( p(), timespan_t::from_seconds( 2 + ( 2 * resource_consumed ) ) );
         }
       }
-      if ( ( resource_consumed >= 3 ) && ( p() -> has_stagger() ) )
+      if ( resource_consumed >= 3 )
       {
-        p() -> clear_stagger();
+        if ( p() -> has_stagger() )
+          p() -> clear_stagger();
 
         if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) )
-          trigger_brew( p()->sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
+          trigger_brew( p() -> sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
       }
+      if ( resource_consumed == 4 )
+        aoe = -1;
     }
     else if ( p() -> specialization() == MONK_WINDWALKER )
     {
