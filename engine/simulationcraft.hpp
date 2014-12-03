@@ -1271,6 +1271,7 @@ std::string& urlencode( std::string& str );
 std::string& urldecode( std::string& str );
 std::string uchar_to_hex( unsigned char );
 std::string google_image_chart_encode( const std::string& str );
+std::string create_blizzard_talent_url( const player_t* p );
 
 bool str_compare_ci( const std::string& l, const std::string& r );
 std::string& glyph_name( std::string& n );

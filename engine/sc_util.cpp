@@ -2562,6 +2562,59 @@ std::string util::google_image_chart_encode( const std::string& str )
   return temp;
 }
 
+// create_blizzard_talent_url ===============================================
+
+std::string util::create_blizzard_talent_url( const player_t* p )
+{
+  std::string url = "http://us.battle.net/wow/en/tool/talent-calculator#";
+  switch ( p -> specialization() )
+  {
+   case DEATH_KNIGHT_BLOOD:   url += "daa"; break;
+   case DEATH_KNIGHT_FROST:   url += "dZa"; break;
+   case DEATH_KNIGHT_UNHOLY:  url += "dba"; break;
+   case DRUID_BALANCE:        url += "Uaa"; break;
+   case DRUID_FERAL:          url += "UZa"; break;
+   case DRUID_GUARDIAN:       url += "Uba"; break;
+   case DRUID_RESTORATION:    url += "UYa"; break;
+   case HUNTER_BEAST_MASTERY: url += "Yaa"; break;
+   case HUNTER_MARKSMANSHIP:  url += "YZa"; break;
+   case HUNTER_SURVIVAL:      url += "Yba"; break;
+   case MAGE_ARCANE:          url += "eaa"; break;
+   case MAGE_FIRE:            url += "eZa"; break;
+   case MAGE_FROST:           url += "eba"; break;
+   case MONK_BREWMASTER:      url += "faa"; break;
+   case MONK_MISTWEAVER:      url += "fZa"; break;
+   case MONK_WINDWALKER:      url += "fba"; break;
+   case PALADIN_HOLY:         url += "baa"; break;
+   case PALADIN_PROTECTION:   url += "bZa"; break;
+   case PALADIN_RETRIBUTION:  url += "bba"; break;
+   case PRIEST_DISCIPLINE:    url += "Xaa"; break;
+   case PRIEST_HOLY:          url += "XZa"; break;
+   case PRIEST_SHADOW:        url += "Xba"; break;
+   case ROGUE_ASSASSINATION:  url += "caa"; break;
+   case ROGUE_COMBAT:         url += "cZa"; break;
+   case ROGUE_SUBTLETY:       url += "cba"; break;
+   case SHAMAN_ELEMENTAL:     url += "Waa"; break;
+   case SHAMAN_ENHANCEMENT:   url += "WZa"; break;
+   case SHAMAN_RESTORATION:   url += "Wba"; break;
+   case WARLOCK_AFFLICTION:   url += "Vaa"; break;
+   case WARLOCK_DEMONOLOGY:   url += "VZa"; break;
+   case WARLOCK_DESTRUCTION:  url += "Vba"; break;
+   case WARRIOR_ARMS:         url += "Zaa"; break;
+   case WARRIOR_FURY:         url += "ZZa"; break;
+   case WARRIOR_PROTECTION:   url += "Zba"; break;
+  }
+  url += "!";
+  for ( size_t i = 0; i < MAX_TALENT_ROWS; i++ )
+  {
+    if ( p -> talent_points.choice( i ) >= 0 )
+      url += std::to_string( p -> talent_points.choice( i ) );
+    else
+      url += ".";  
+  }
+  return url;
+}
+
 // urldecode ================================================================
 
 std::string& util::urldecode( std::string& str )

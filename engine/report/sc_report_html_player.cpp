@@ -3293,8 +3293,11 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
             os.printf( "<li><strong>%d</strong>:&#160;%s</li>\n", row == 6 ? 100 : ( row + 1 ) * 15, name.c_str() );
         }
       }
+      std::string url_string = p -> talents_str;
+      if ( ! util::str_in_str_ci( url_string, "http" ) )
+        url_string = util::create_blizzard_talent_url( p );
 
-      std::string enc_url = util::encode_html( p -> talents_str );
+      std::string enc_url = util::encode_html( url_string );
       os.printf(
         "<li><a href=\"%s\" class=\"ext\">Talent Calculator</a></li>\n",
         enc_url.c_str() );
