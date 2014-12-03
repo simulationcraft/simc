@@ -6238,6 +6238,11 @@ struct absorb_t : public spell_base_t
     if ( s -> target != player )
       stats_obj_name += "_" + player -> name_str;
     stats_t* stats_obj = player -> get_stats( stats_obj_name, this );
+    if ( stats != stats_obj )
+    {
+      // Add absorb target stats as a child to the main stats object for reporting
+      stats -> add_child( stats_obj );
+    }
     creator_.source( stats_obj );
     creator_.actors( s -> target );
 

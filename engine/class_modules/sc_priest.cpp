@@ -4530,6 +4530,8 @@ struct power_word_shield_t final : public priest_absorb_t
 
       snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
 
+      spell_power_mod.direct = 5.0; // hardcoded into tooltip 14/12/03
+
       castable_in_shadowform = true;
     }
 
@@ -4798,13 +4800,15 @@ struct renew_t final : public priest_heal_t
   }
 };
 
-struct clarity_of_will_t final : public priest_heal_t
+struct clarity_of_will_t final : public priest_absorb_t
 {
   clarity_of_will_t( priest_t& p, const std::string& options_str ) :
-    priest_heal_t( "clarity_of_will", p, p.find_spell( 0 /*p.talents.divine_clarity*/  ) )
+    priest_absorb_t( "clarity_of_will", p, p.talents.clarity_of_will )
   {
     parse_options( options_str );
+
     // TODO: implement mechanic
+    spell_power_mod.direct = 6.0; // hardcoded into tooltip 14/12/03
   }
 };
 
