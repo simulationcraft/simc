@@ -1297,9 +1297,9 @@ struct priest_heal_t : public priest_action_t<heal_t>
         trigger_divine_aegis( s );
         trigger_echo_of_light( this, s );
 
-        if ( priest.buffs.chakra_serenity -> up() && get_td( target ).dots.renew -> is_ticking() )
+        if ( priest.buffs.chakra_serenity -> up() && get_td( s -> target ).dots.renew -> is_ticking() )
         {
-          get_td( target ).dots.renew -> refresh_duration();
+          get_td( s -> target ).dots.renew -> refresh_duration();
         }
 
         if ( priest.specialization() != PRIEST_SHADOW && priest.talents.twist_of_fate -> ok() && ( save_health_percentage < priest.talents.twist_of_fate -> effectN( 1 ).base_value() ) )
