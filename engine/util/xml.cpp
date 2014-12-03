@@ -823,6 +823,7 @@ bool sc_xml_t::get_value( double& value, const std::string& path )
   {
     assert( node.root -> type() == node_element );
     value = atof( node.root -> value() );
+    ret = true;
   }
   else if ( util::str_compare_ci( key, "cdata" ) )
   {
@@ -832,6 +833,7 @@ bool sc_xml_t::get_value( double& value, const std::string& path )
       {
         value = atof( n -> value() );
         ret = true;
+        break;
       }
     }
   }
@@ -868,6 +870,7 @@ bool sc_xml_t::get_value( int& value, const std::string& path )
   {
     assert( node.root -> type() == node_element );
     value = util::to_int( node.root -> value() );
+    ret = true;
   }
   else if ( util::str_compare_ci( key, "cdata" ) )
   {
@@ -877,6 +880,7 @@ bool sc_xml_t::get_value( int& value, const std::string& path )
       {
         value = util::to_int( n -> value() );
         ret = true;
+        break;
       }
     }
   }
@@ -914,6 +918,7 @@ bool sc_xml_t::get_value( std::string& value,
   {
     assert( node.root -> type() == node_element );
     value = node.root -> value();
+    ret = true;
   }
   else if ( util::str_compare_ci( key, "cdata" ) )
   {
@@ -923,6 +928,7 @@ bool sc_xml_t::get_value( std::string& value,
       {
         value = n -> value();
         ret = true;
+        break;
       }
     }
   }

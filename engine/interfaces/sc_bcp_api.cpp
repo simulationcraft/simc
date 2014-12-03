@@ -276,14 +276,41 @@ player_t* parse_player_html( sim_t*             sim,
   sim -> current_slot = 0;
 
   sc_xml_t profile = sc_xml_t::get( sim, player.url, caching );
+  if ( ! profile.valid() )
+  {
+    sim -> errorf( "BCP API: Unable to download player from '%s'\n", player.url.c_str() );
+    return 0;
+  }
+
   if ( sim -> debug && profile.valid() )
   {
     profile.print();
   }
 
-  if ( ! profile.valid() )
+  sc_xml_t name_obj = profile.get_node( "div", "class", "name" );
+  if ( ! name_obj.valid() || ! name_obj.get_value( player.name, "a/." ) )
   {
-    sim -> errorf( "BCP API: Unable to download player from '%s'\n", player.url.c_str() );
+    sim -> errorf( "BCP API: Unable to extract player name from '%s'.\n", player.url.c_str() );
+    return 0;
+  }
+
+  sc_xml_t class_obj = profile.get_node( "a", "class", "class" );
+  std::string class_name_data, class_name;
+  if ( ! class_obj.valid() || ! class_obj.get_value( class_name_data, "href" ) )
+  {
+    sim -> errorf( "BCP API: Unable to extract player class from '%s'.\n", player.url.c_str() );
+    return 0;
+  }
+  else
+  {
+    std::vector<std::string> class_split = util::string_split( class_name_data, "/" );
+    class_name = class_split[ class_split.size() - 1 ];
+  }
+
+  const module_t* module = module_t::get( class_name );
+  if ( ! module || ! module -> valid() )
+  {
+    sim -> errorf( "\nModule for class %s is currently not available.\n", class_name.c_str() );
     return 0;
   }
 
