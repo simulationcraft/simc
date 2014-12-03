@@ -2603,12 +2603,13 @@ std::string util::create_blizzard_talent_url( const player_t* p )
    case WARRIOR_ARMS:         url += "Zaa"; break;
    case WARRIOR_FURY:         url += "ZZa"; break;
    case WARRIOR_PROTECTION:   url += "Zba"; break;
+   default: assert( 0 ); break;
   }
   url += "!";
   for ( size_t i = 0; i < MAX_TALENT_ROWS; i++ )
   {
     if ( p -> talent_points.choice( i ) >= 0 )
-      url += std::to_string( p -> talent_points.choice( i ) );
+      url += util::to_string( p -> talent_points.choice( i ) );
     else
       url += ".";  
   }
