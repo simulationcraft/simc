@@ -1635,6 +1635,8 @@ const char* util::scale_metric_type_string( scale_metric_e sm )
     case SCALE_METRIC_DPSE:      return "dpse";
     case SCALE_METRIC_HPS:       return "hps";
     case SCALE_METRIC_HPSE:      return "hpse";
+    case SCALE_METRIC_APS:       return "aps";
+    case SCALE_METRIC_HAPS:      return "haps";
     case SCALE_METRIC_DTPS:      return "dtps";
     case SCALE_METRIC_DMG_TAKEN: return "dmg_taken";
     case SCALE_METRIC_HTPS:      return "htps";

@@ -8763,6 +8763,12 @@ player_t::scales_over_t player_t::scales_over()
   if ( util::str_compare_ci( so, "dpse" ) )
     return q -> collected_data.dpse;
 
+  if ( util::str_compare_ci( so, "hps" ) )
+    return q -> collected_data.hps;
+
+  if ( util::str_compare_ci( so, "aps" ) )
+    return q -> collected_data.aps;
+
   if ( util::str_compare_ci( so, "hpse" ) )
     return q -> collected_data.hpse;
 
@@ -8778,8 +8784,8 @@ player_t::scales_over_t player_t::scales_over()
   if ( util::str_compare_ci( so, "etmi" ) )
     return q -> collected_data.effective_theck_meloree_index;
 
-  if ( q -> primary_role() == ROLE_HEAL || util::str_compare_ci( so, "hps" ) )
-    return q -> collected_data.hps;
+  if ( q -> primary_role() == ROLE_HEAL || util::str_compare_ci( so, "haps" ) )
+    return scaling_for_metric( SCALE_METRIC_HAPS );
 
   if ( q -> primary_role() == ROLE_TANK || util::str_compare_ci( so, "dtps" ) )
     return q -> collected_data.dtps;
@@ -8801,6 +8807,13 @@ player_t::scales_over_t player_t::scaling_for_metric( scale_metric_e metric )
     case SCALE_METRIC_DPSE:       return q -> collected_data.dpse;
     case SCALE_METRIC_HPS:        return q -> collected_data.hps;
     case SCALE_METRIC_HPSE:       return q -> collected_data.hpse;
+    case SCALE_METRIC_APS:        return q -> collected_data.aps;
+    case SCALE_METRIC_HAPS:
+      {
+        double mean = q -> collected_data.hps.mean() + q -> collected_data.aps.mean();
+        double stddev = sqrt( q -> collected_data.hps.mean_variance + q -> collected_data.aps.mean_variance );
+        return scales_over_t( "Healing + Absorb per second", mean, stddev );
+      }
     case SCALE_METRIC_DTPS:       return q -> collected_data.dtps;
     case SCALE_METRIC_DMG_TAKEN:  return q -> collected_data.dmg_taken;
     case SCALE_METRIC_HTPS:       return q -> collected_data.htps;
@@ -8811,7 +8824,7 @@ player_t::scales_over_t player_t::scaling_for_metric( scale_metric_e metric )
       if ( q -> primary_role() == ROLE_TANK )
         return q -> collected_data.dtps;
       else if ( q -> primary_role() == ROLE_HEAL )
-        return q -> collected_data.hps;
+        return scaling_for_metric( SCALE_METRIC_HAPS );
       else
        return q -> collected_data.dps;
   }

@@ -367,7 +367,7 @@ class extended_sample_data_t : public simple_sample_data_with_min_max_t
 public:
   std::string name_str;
 
-  value_t _mean, variance, std_dev, mean_std_dev;
+  value_t _mean, variance, std_dev, mean_variance, mean_std_dev;
   std::vector<size_t> distribution;
   bool simple;
 private:
@@ -381,6 +381,7 @@ public:
     _mean(),
     variance(),
     std_dev(),
+    mean_variance(),
     mean_std_dev(),
     simple( s ),
     is_sorted( false )
@@ -494,7 +495,8 @@ public:
     // Calculate Standard Deviation of the Mean ( Central Limit Theorem )
     if ( sample_size > 1 )
     {
-      mean_std_dev = std::sqrt( variance / sample_size );
+      mean_variance = variance / sample_size;
+      mean_std_dev = std::sqrt( mean_variance );
     }
   }
 
@@ -576,7 +578,7 @@ public:
   std::ostream& data_str( std::ostream& s ) const
   {
     s << "Sample_Data \"" << name_str << "\": count: " << count();
-    s << " mean: " << mean() << " variance: " << variance << " mean_std_dev: " << mean_std_dev << "\n";
+    s << " mean: " << mean() << " variance: " << variance << " mean variance: " << mean_variance << " mean_std_dev: " << mean_std_dev << "\n";
 
     if ( ! data().empty() )
       s << "data: ";

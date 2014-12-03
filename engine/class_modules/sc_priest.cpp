@@ -1106,7 +1106,7 @@ public:
     double am = base_t::action_multiplier();
 
     if ( priest.mastery_spells.shield_discipline -> ok() )
-      am += 1.0 + priest.cache.mastery_value();
+      am *= 1.0 + priest.cache.mastery_value();
 
     return am;
   }
@@ -5392,6 +5392,10 @@ double priest_t::composite_player_heal_multiplier( const action_state_t* s ) con
     m *= 1.0 + buffs.twist_of_fate -> current_value;
   }
 
+  if ( mastery_spells.shield_discipline -> ok() )
+  {
+    m *= 1.0 + cache.mastery() * mastery_spells.shield_discipline-> effectN( 3 ).mastery_value();
+  }
   if ( specs.grace -> ok () )
     m *= 1.0 + specs.grace -> effectN( 1 ).percent();
 
