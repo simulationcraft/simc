@@ -31,7 +31,6 @@ public:
   struct buffs_t
   {
     absorb_buff_t* divine_aegis;
-    absorb_buff_t* power_word_shield;
     absorb_buff_t* spirit_shell;
     buff_t* holy_word_serenity;
   } buffs;
@@ -4530,7 +4529,6 @@ struct power_word_shield_t final : public priest_absorb_t
 
       snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
 
-      spell_power_mod.direct = 5.0; // hardcoded into tooltip 14/12/03
 
       castable_in_shadowform = true;
     }
@@ -4558,6 +4556,9 @@ struct power_word_shield_t final : public priest_absorb_t
     // Tooltip is wrong.
     // direct_power_mod = 0.87; // hardcoded into tooltip
     // spell_power_mod.direct = 1.8709; // matches in-game actual value
+
+    spell_power_mod.direct = 5.0; // hardcoded into tooltip 14/12/03
+
     if ( p.wod_hotfix )
       base_multiplier *= 1.2;
 
@@ -4572,6 +4573,8 @@ struct power_word_shield_t final : public priest_absorb_t
 
   virtual void impact( action_state_t* s ) override
   {
+    priest_absorb_t::impact( s );
+
     buffs::weakened_soul_t* weakened_soul = debug_cast<buffs::weakened_soul_t*>( s -> target -> buffs.weakened_soul );
     weakened_soul -> trigger_weakened_souls( priest );
     priest.buffs.borrowed_time -> trigger();
@@ -4579,9 +4582,6 @@ struct power_word_shield_t final : public priest_absorb_t
     // Glyph
     if ( glyph_pws )
       glyph_pws -> trigger( s );
-
-    get_td( s -> target ).buffs.power_word_shield -> trigger( 1, s -> result_amount );
-    stats -> add_result( 0, s -> result_amount, ABSORB, s -> result, s -> block_result, s -> target );
   }
 
   virtual bool ready() override
@@ -4809,6 +4809,11 @@ struct clarity_of_will_t final : public priest_absorb_t
 
     // TODO: implement mechanic
     spell_power_mod.direct = 6.0; // hardcoded into tooltip 14/12/03
+
+    if ( p.wod_hotfix )
+      base_multiplier *= 1.1; // Seems to match relative to PW:S. 14/12/03
+
+    // TODO: implement buff value overflow at 50% of either target or priest health. 14/12/03
   }
 };
 
@@ -5011,10 +5016,6 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
 
   buffs.divine_aegis = absorb_buff_creator_t( *this, "divine_aegis", p.find_spell( 47753 ) )
                        .source( p.get_stats( "divine_aegis" ) );
-
-  buffs.power_word_shield = absorb_buff_creator_t( *this, "power_word_shield", p.find_spell( 17 ) )
-                            .source( p.get_stats( "power_word_shield" ) )
-                            .cd( timespan_t::zero() );
 
   buffs.spirit_shell = absorb_buff_creator_t( *this, "spirit_shell_absorb" )
                        .spell( p.find_spell( 114908 ) )
