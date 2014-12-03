@@ -15,6 +15,35 @@
 
 namespace { // UNNAMED NAMESPACE
 
+player_e parse_armory_class( const std::string& class_str )
+{
+  player_e pt = util::translate_class_str( class_str );
+  if ( pt == PLAYER_NONE )
+  {
+    if ( util::str_compare_ci( class_str, "death-knight" ) )
+      pt = DEATH_KNIGHT;
+  }
+
+  return pt;
+}
+
+race_e parse_armory_race( const std::string& race_str )
+{
+  race_e rt = util::parse_race_type( race_str );
+  if ( rt == RACE_NONE )
+  {
+    if ( util::str_compare_ci( race_str, "blood-elf" ) )
+      rt = RACE_BLOOD_ELF;
+    // Armory HTML does not give an url to the racial section of Pandarens ..
+    // instead it contains an empty javascript entry. The rest of the races
+    // contain proper urls.
+    else if ( util::str_compare_ci( race_str, "javascript:;" ) )
+      rt = RACE_PANDAREN;
+  }
+
+  return rt;
+}
+
 struct player_spec_t
 {
   std::string region, server, name, url, local_json, origin, talent_spec;
@@ -296,6 +325,7 @@ player_t* parse_player_html( sim_t*             sim,
 
   sc_xml_t class_obj = profile.get_node( "a", "class", "class" );
   std::string class_name_data, class_name;
+  player_e class_type = PLAYER_NONE;
   if ( ! class_obj.valid() || ! class_obj.get_value( class_name_data, "href" ) )
   {
     sim -> errorf( "BCP API: Unable to extract player class from '%s'.\n", player.url.c_str() );
@@ -305,16 +335,69 @@ player_t* parse_player_html( sim_t*             sim,
   {
     std::vector<std::string> class_split = util::string_split( class_name_data, "/" );
     class_name = class_split[ class_split.size() - 1 ];
+    class_type = parse_armory_class( class_name );
   }
 
-  const module_t* module = module_t::get( class_name );
+  const module_t* module = module_t::get( class_type );
   if ( ! module || ! module -> valid() )
   {
     sim -> errorf( "\nModule for class %s is currently not available.\n", class_name.c_str() );
     return 0;
   }
 
-  return 0;
+  sc_xml_t level_obj = profile.get_node( "span", "class", "level" );
+  int level = 0;
+  if ( ! level_obj.valid() || ! level_obj.get_value( level, "strong/." ) )
+  {
+    sim -> errorf( "BCP API: Unable to extract player level from '%s'.\n", player.url.c_str() );
+    return 0;
+  }
+
+  sc_xml_t race_obj = profile.get_node( "a", "class", "race" );
+  std::string race_name_data, race_name;
+  race_e race_type = RACE_NONE;
+  if ( ! race_obj.valid() || ! race_obj.get_value( race_name_data, "href" ) )
+  {
+    sim -> errorf( "BCP API: Unable to extract player race from '%s'.\n", player.url.c_str() );
+    return 0;
+  }
+  else
+  {
+    std::vector<std::string> race_split = util::string_split( race_name_data, "/" );
+    race_name = race_split[ race_split.size() - 1 ];
+    race_type = parse_armory_race( race_name );
+  }
+
+  if ( race_type == RACE_NONE )
+  {
+    sim -> errorf( "BCP API: Unable to extract player race from '%s'.\n", player.url.c_str() );
+    return 0;
+  }
+
+  std::string name = player.name;
+
+  if ( player.talent_spec != "active" && ! player.talent_spec.empty() )
+  {
+    name += '_';
+    name += player.talent_spec;
+  }
+
+  if ( ! name.empty() )
+    sim -> current_name = name;
+
+  player_t* p = sim -> active_player = module -> create_player( sim, name, race_type );
+
+  if ( ! p )
+  {
+    sim -> errorf( "BCP API: Unable to build player with class '%s' and name '%s' from '%s'.\n",
+                   class_name.c_str(), name.c_str(), player.url.c_str() );
+    return 0;
+  }
+
+  p -> level = level;
+  p -> region_str = player.region.empty() ? sim -> default_region_str : player.region;
+
+  return p;
 }
 
 // parse_player =============================================================
