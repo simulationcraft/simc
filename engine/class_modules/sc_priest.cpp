@@ -4671,7 +4671,7 @@ struct prayer_of_mending_t final : public priest_heal_t
     add_option( opt_bool( "single", single ) );
     parse_options( options_str );
 
-    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
+    spell_power_mod.direct = 0.442787; // hardcoded into tooltip 14/12/03
     base_dd_min = base_dd_max = data().effectN( 1 ).min( &p );
 
     divine_aegis_trigger_mask = 0;
