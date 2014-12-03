@@ -2611,11 +2611,13 @@ struct holy_shock_t : public paladin_heal_t
   holy_shock_heal_t* heal;
   timespan_t cd_duration;
   double cooldown_mult;
+  bool dmg;
 
   holy_shock_t( paladin_t* p, const std::string& options_str )
     : paladin_heal_t( "holy_shock", p, p -> find_specialization_spell( "Holy Shock" ) ),
-    cooldown_mult( 1.0 )
+    cooldown_mult( 1.0 ), dmg( false )
   {
+    add_option( opt_bool( "damage", dmg ) );
     check_spec( PALADIN_HOLY );
     parse_options( options_str );
 
@@ -2642,7 +2644,7 @@ struct holy_shock_t : public paladin_heal_t
 
   virtual void execute()
   {
-    if ( target -> is_enemy() )
+    if ( dmg )
     {
       // damage enemy
       damage -> target = target;
