@@ -611,11 +611,8 @@ struct base_fiend_pet_t : public priest_pet_t
 
 struct shadowfiend_pet_t final : public base_fiend_pet_t
 {
-  const spell_data_t* mana_leech;
-
   shadowfiend_pet_t( sim_t* sim, priest_t& owner, const std::string& name = "shadowfiend" ) :
-    base_fiend_pet_t( sim, owner, PET_SHADOWFIEND, name ),
-    mana_leech( find_spell( 34650, "mana_leech" ) )
+    base_fiend_pet_t( sim, owner, PET_SHADOWFIEND, name )
   {
     direct_power_mod = 0.75;
 
@@ -626,7 +623,7 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
   }
 
   virtual double mana_return_percent() const override
-  { return mana_leech -> effectN( 1 ).percent(); }
+  { return 0.0; }
 };
 
 // ==========================================================================
@@ -650,8 +647,7 @@ struct mindbender_pet_t final : public base_fiend_pet_t
 
   virtual double mana_return_percent() const override
   {
-    double m  = mindbender_spell -> effectN( 2 ).base_value();
-           m /= mindbender_spell -> effectN( 3 ).base_value();
+    double m  = mindbender_spell -> effectN( 2 ).percent();
     return m / 100;
   }
 };
@@ -818,9 +814,13 @@ struct fiend_melee_t final : public priest_pet_melee_t
 
     if ( result_is_hit( s -> result ) )
     {
-      p().o().resource_gain( RESOURCE_MANA,
-                             p().o().resources.max[ RESOURCE_MANA ] * p().mana_return_percent(),
-                             p().gains.fiend );
+      double mana_reg_pct = p().mana_return_percent();
+      if ( mana_reg_pct > 0.0 )
+      {
+        p().o().resource_gain( RESOURCE_MANA,
+                               p().o().resources.max[ RESOURCE_MANA ] * p().mana_return_percent(),
+                               p().gains.fiend );
+      }
     }
   }
 };
