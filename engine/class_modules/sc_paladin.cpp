@@ -2480,8 +2480,7 @@ struct holy_shock_damage_t : public paladin_spell_t
     : paladin_spell_t( "holy_shock_damage", p, p -> find_spell( 25912 ) ),
       crit_increase( 0.0 )
   {
-
-    background = true;
+    background = may_crit = true;
     trigger_gcd = timespan_t::zero();
 
     // this grabs the 100% base crit bonus from 20473
