@@ -390,27 +390,6 @@ void dbc::apply_hotfixes()
   e = spelleffect_data_t::find(254388, false);
   assert(e -> _m_avg == 3.3333330154 && "Copeland's Clarity proc has been fixed");
   e -> _m_avg = 2.5;
-
-  e = spelleffect_data_t::find(161002, false);
-  assert(e -> _misc_value + 1 == ATTR_INTELLECT && "Primal Gladiator's Badge of Dominance proc stat");
-  e -> _misc_value = RATING_MOD_VERS_DAMAGE | RATING_MOD_VERS_HEAL | RATING_MOD_VERS_MITIG;
-  e -> _subtype = A_MOD_RATING;
-  assert(e -> _m_avg == 1.2384999990 && "Primal Gladiator's Badge of Dominance proc amount");
-  e -> _m_avg = 1.3190476190476;
-
-  e = spelleffect_data_t::find(160998, false);
-  assert(e -> _misc_value + 1 == ATTR_STRENGTH && "Primal Gladiator's Badge of Victory proc stat");
-  e -> _misc_value = RATING_MOD_VERS_DAMAGE | RATING_MOD_VERS_HEAL | RATING_MOD_VERS_MITIG;
-  e -> _subtype = A_MOD_RATING;
-  assert(e -> _m_avg == 1.2384999990 && "Primal Gladiator's Badge of Victory proc amount");
-  e -> _m_avg = 1.3190476190476;
-
-  e = spelleffect_data_t::find(161010, false);
-  assert(e -> _misc_value + 1 == ATTR_AGILITY && "Primal Gladiator's Badge of Conquest proc stat");
-  e -> _misc_value = RATING_MOD_VERS_DAMAGE | RATING_MOD_VERS_HEAL | RATING_MOD_VERS_MITIG;
-  e -> _subtype = A_MOD_RATING;
-  assert(e -> _m_avg == 1.2384999990 && "Primal Gladiator's Badge of Conquest proc amount");
-  e -> _m_avg = 1.3190476190476;
 }
 
 static void generate_class_flags_index( bool ptr = false )
