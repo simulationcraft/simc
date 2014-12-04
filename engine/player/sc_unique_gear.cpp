@@ -1993,6 +1993,10 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
   // otherwise there's no point in trying to proc anything
   if ( effect.type == SPECIAL_EFFECT_EQUIP && ! proc::usable_proc( effect ) )
     effect.type = SPECIAL_EFFECT_NONE;
+  else if ( effect.type == SPECIAL_EFFECT_USE &&
+            effect.buff_type() == SPECIAL_EFFECT_BUFF_NONE &&
+            effect.action_type() == SPECIAL_EFFECT_ACTION_NONE )
+    effect.type = SPECIAL_EFFECT_NONE;
 
   return ret;
 }
