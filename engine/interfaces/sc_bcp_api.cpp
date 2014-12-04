@@ -298,6 +298,47 @@ bool parse_items( player_t*  p,
 
 // parse_player =============================================================
 
+bool parse_player_html_profession( sim_t*,
+                                   player_t*       player,
+                                   const sc_xml_t& data )
+{
+
+  sc_xml_t prof_obj = data.get_node( "div", "class", "summary-professions" );
+  if ( ! prof_obj.valid() )
+  {
+    return false;
+  }
+
+  std::vector<sc_xml_t> profession_nodes = prof_obj.get_nodes( "a", "class", "profession-details" );
+  for ( size_t i = 0; i < profession_nodes.size(); i++ )
+  {
+    std::string profession_href, profession_value;
+
+    if ( ! profession_nodes[ i ].get_value( profession_href, "href" ) )
+    {
+      continue;
+    }
+
+    sc_xml_t value_obj = profession_nodes[ i ].get_node( "span", "class", "value" );
+    if ( ! value_obj.valid() || ! value_obj.get_value( profession_value, "." ) )
+    {
+      continue;
+    }
+
+    if ( ! player -> professions_str.empty() )
+    {
+      player -> professions_str += "/";
+    }
+
+    std::vector<std::string> profession_href_split = util::string_split( profession_href, "/" );
+    player -> professions_str += profession_href_split.back();
+    player -> professions_str += "=";
+    player -> professions_str += profession_value;
+  }
+
+  return true;
+}
+
 player_t* parse_player_html( sim_t*             sim,
                              player_spec_t&     player,
                              cache::behavior_e  caching )
@@ -396,6 +437,22 @@ player_t* parse_player_html( sim_t*             sim,
 
   p -> level = level;
   p -> region_str = player.region.empty() ? sim -> default_region_str : player.region;
+  sc_xml_t realm_obj = profile.get_node( "span", "id", "profile-info-realm" );
+  if ( ! realm_obj.valid() )
+  {
+    if ( ! player.server.empty() )
+      p -> server_str = player.server;
+  }
+  else
+  {
+    realm_obj.get_value( p -> server_str, "." );
+  }
+
+  if ( ! player.origin.empty() )
+    p -> origin_str = player.origin;
+
+  // TODO: Do we need to error check this nowadays?
+  parse_player_html_profession( sim, p, profile );
 
   return p;
 }
