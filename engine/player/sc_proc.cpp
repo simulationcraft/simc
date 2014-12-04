@@ -445,6 +445,58 @@ struct proc_attack_t : public attack_t
   }
 };
 
+struct proc_resource_t : public spell_t
+{
+  gain_t* gain;
+  double gain_da, gain_ta;
+  resource_e gain_resource;
+
+  proc_resource_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* item ) :
+    spell_t( token, p, s ), gain_da( 0 ), gain_ta( 0 ), gain_resource( RESOURCE_NONE )
+  {
+    callbacks = may_crit = may_miss = may_dodge = may_parry = may_block = false;
+    background = true;
+    target = player;
+
+    for ( size_t i = 1; i <= s -> effect_count(); i++ )
+    {
+      const spelleffect_data_t& effect = s -> effectN( i );
+      if ( effect.type() == E_ENERGIZE )
+      {
+        gain_da = effect.average( item );
+        gain_resource = effect.resource_gain_type();
+      }
+      else if ( effect.type() == E_APPLY_AURA && effect.subtype() == A_PERIODIC_ENERGIZE )
+      {
+        gain_ta = effect.average( item );
+      }
+    }
+
+    gain = player -> get_gain( token );
+  }
+
+  void init()
+  {
+    spell_t::init();
+
+    snapshot_flags = update_flags = 0;
+  }
+
+  void execute()
+  {
+    spell_t::execute();
+
+    player -> resource_gain( gain_resource, gain_da, gain );
+  }
+
+  void tick( dot_t* d )
+  {
+    spell_t::tick( d );
+
+    player -> resource_gain( gain_resource, gain_ta, gain );
+  }
+};
+
 }
 action_t* special_effect_t::create_action() const
 {
@@ -458,6 +510,8 @@ action_t* special_effect_t::create_action() const
     return initialize_heal_action();
   case SPECIAL_EFFECT_ACTION_ATTACK:
     return initialize_attack_action();
+  case SPECIAL_EFFECT_ACTION_RESOURCE:
+    return initialize_resource_action();
   default:
     return nullptr;
   }
@@ -475,8 +529,46 @@ special_effect_action_e special_effect_t::action_type() const
     return SPECIAL_EFFECT_ACTION_HEAL;
   else if ( is_attack_action() )
     return SPECIAL_EFFECT_ACTION_ATTACK;
+  else if ( is_resource_action() )
+    return SPECIAL_EFFECT_ACTION_RESOURCE;
 
   return SPECIAL_EFFECT_ACTION_NONE;
+}
+
+bool special_effect_t::is_resource_action() const
+{
+  for ( size_t i = 1, end = trigger() -> effect_count(); i <= end; i++ )
+  {
+    const spelleffect_data_t& effect = trigger() -> effectN( i );
+    if ( effect.id() == 0 )
+      continue;
+
+    if ( effect.type() == E_ENERGIZE )
+      return true;
+
+    if ( effect.type() == E_APPLY_AURA )
+    {
+      if ( effect.subtype() == A_PERIODIC_ENERGIZE )
+        return true;
+    }
+  }
+
+  return false;
+}
+
+spell_t* special_effect_t::initialize_resource_action() const
+{
+  const spell_data_t* s = spell_data_t::nil();
+
+  // Setup the spell data
+  if ( trigger() -> id() > 0 )
+    s = trigger();
+  else if ( driver() -> id() > 0 )
+    s = driver();
+
+  proc_resource_t* spell = new proc_resource_t( name(), player, s, item );
+  spell -> init();
+  return spell;
 }
 
 bool special_effect_t::is_offensive_spell_action() const

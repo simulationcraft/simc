@@ -442,6 +442,7 @@ enum special_effect_action_e
   SPECIAL_EFFECT_ACTION_SPELL,
   SPECIAL_EFFECT_ACTION_HEAL,
   SPECIAL_EFFECT_ACTION_ATTACK,
+  SPECIAL_EFFECT_ACTION_RESOURCE,
 };
 
 enum action_e {
@@ -3356,6 +3357,8 @@ struct special_effect_t
   heal_t* initialize_heal_action() const;
   bool is_attack_action() const;
   attack_t* initialize_attack_action() const;
+  bool is_resource_action() const;
+  spell_t* initialize_resource_action() const;
 
   /* Accessors for driver specific features of the proc; some are also used for on-use effects */
   unsigned proc_flags() const;
