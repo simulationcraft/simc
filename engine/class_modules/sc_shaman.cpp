@@ -337,7 +337,6 @@ public:
     const spell_data_t* fire_elemental_totem;
     const spell_data_t* flame_shock;
     const spell_data_t* frost_shock;
-    const spell_data_t* healing_storm;
     const spell_data_t* lava_lash;
     const spell_data_t* spiritwalkers_grace;
     const spell_data_t* thunder;
@@ -890,8 +889,12 @@ public:
     double m = ab::action_multiplier();
 
     const shaman_t* p = ab::p();
-    if ( p -> buff.maelstrom_weapon -> up() && ab::instant_eligibility() )
+    if ( p -> buff.maelstrom_weapon -> up() &&
+         ab::instant_eligibility() &&
+         ! p -> buff.ancestral_swiftness -> check() )
+    {
       m *= 1.0 + p -> buff.maelstrom_weapon -> check() * p -> perk.improved_maelstrom_weapon -> effectN( 1 ).percent();
+    }
 
     return m;
   }
@@ -1047,7 +1050,6 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
   {
     double m = base_t::composite_da_multiplier( state );
     m *= 1.0 + p() -> spec.purification -> effectN( 1 ).percent();
-    m *= 1.0 + p() -> buff.maelstrom_weapon -> stack() * p() -> glyph.healing_storm -> effectN( 1 ).percent();
     return m;
   }
 
@@ -1055,7 +1057,6 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
   {
     double m = base_t::composite_ta_multiplier( state );
     m *= 1.0 + p() -> spec.purification -> effectN( 1 ).percent();
-    m *= 1.0 + p() -> buff.maelstrom_weapon -> stack() * p() -> glyph.healing_storm -> effectN( 1 ).percent();
     return m;
   }
 
@@ -4733,7 +4734,6 @@ void shaman_t::init_spells()
   glyph.fire_elemental_totem         = find_glyph_spell( "Glyph of Fire Elemental Totem" );
   glyph.flame_shock                  = find_glyph_spell( "Glyph of Flame Shock" );
   glyph.frost_shock                  = find_glyph_spell( "Glyph of Frost Shock" );
-  glyph.healing_storm                = find_glyph_spell( "Glyph of Healing Storm" );
   glyph.lava_lash                    = find_glyph_spell( "Glyph of Lava Lash" );
   glyph.spiritwalkers_grace          = find_glyph_spell( "Glyph of Spiritwalker's Grace" );
   glyph.thunder                      = find_glyph_spell( "Glyph of Thunder" );
