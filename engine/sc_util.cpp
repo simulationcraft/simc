@@ -20,6 +20,53 @@
 
 namespace { // anonymous namespace ==========================================
 
+struct spec_map_t
+{
+  specialization_e spec;
+  const char* name;
+};
+
+static spec_map_t spec_map[] =
+{
+  { WARRIOR_ARMS,         "Arms Warrior"         },
+  { WARRIOR_FURY,         "Fury Warrior"         },
+  { WARRIOR_PROTECTION,   "Protection Warrior"   },
+  { PALADIN_HOLY,         "Holy Paladin"         },
+  { PALADIN_PROTECTION,   "Protection Paladin"   },
+  { PALADIN_RETRIBUTION,  "Retribution Paladin"  },
+  { HUNTER_BEAST_MASTERY, "Beast Mastery Hunter" },
+  { HUNTER_MARKSMANSHIP,  "Marksmanship Hunter"  },
+  { HUNTER_SURVIVAL,      "Survival Hunter"      },
+  { ROGUE_ASSASSINATION,  "Assassination Rogue"  },
+  { ROGUE_COMBAT,         "Combat Rogue"         },
+  { ROGUE_SUBTLETY,       "Subtlety Rogue"       },
+  { PRIEST_DISCIPLINE,    "Discipline Priest"    },
+  { PRIEST_HOLY,          "Holy Priest"          },
+  { PRIEST_SHADOW,        "Shadow Priest"        },
+  { DEATH_KNIGHT_BLOOD,   "Blood Death Knight"   }, // Default
+  { DEATH_KNIGHT_BLOOD,   "Blood DeathKnight"    }, // Alternate (battle.net match)
+  { DEATH_KNIGHT_FROST,   "Frost Death Knight"   }, // Default
+  { DEATH_KNIGHT_FROST,   "Frost DeathKnight"    }, // Alternate (battle.net match)
+  { DEATH_KNIGHT_UNHOLY,  "Unholy Death Knight"  }, // Default
+  { DEATH_KNIGHT_UNHOLY,  "Unholy DeathKnight"   }, // Alternate (battle.net match)
+  { SHAMAN_ELEMENTAL,     "Elemental Shaman"     },
+  { SHAMAN_ENHANCEMENT,   "Enhancement Shaman"   },
+  { SHAMAN_RESTORATION,   "Restoration Shaman"   },
+  { MAGE_ARCANE,          "Arcane Mage"          },
+  { MAGE_FIRE,            "Fire Mage"            },
+  { MAGE_FROST,           "Frost Mage"           },
+  { WARLOCK_AFFLICTION,   "Affliction Warlock"   },
+  { WARLOCK_DEMONOLOGY,   "Demonology Warlock"   },
+  { WARLOCK_DESTRUCTION,  "Destruction Warlock"  },
+  { MONK_BREWMASTER,      "Brewmaster Monk"      },
+  { MONK_MISTWEAVER,      "Mistweaver Monk"      },
+  { MONK_WINDWALKER,      "Windwalker Monk"      },
+  { DRUID_BALANCE,        "Balance Druid"        },
+  { DRUID_FERAL,          "Feral Druid"          },
+  { DRUID_GUARDIAN,       "Guardian Druid"       },
+  { DRUID_RESTORATION,    "Restoration Druid"    },
+};
+
 struct html_named_character_t
 {
   const char* encoded;
@@ -2246,51 +2293,26 @@ const char* util::item_quality_string( int quality )
 
 const char* util::specialization_string( specialization_e spec )
 {
-  switch ( spec )
+  for ( size_t i = 0; i < sizeof_array( spec_map ); i++ )
   {
-    case WARRIOR_ARMS:        return "Arms Warrior";
-    case WARRIOR_FURY:        return "Fury Warrior";
-    case WARRIOR_PROTECTION:  return "Protection Warrior";
-    case PALADIN_HOLY:        return "Holy Paladin";
-    case PALADIN_PROTECTION:  return "Protection Paladin";
-    case PALADIN_RETRIBUTION: return "Retribution Paldin";
-    case HUNTER_BEAST_MASTERY:return "Beast Mastery Hunter";
-    case HUNTER_MARKSMANSHIP: return "Marksmanship Hunter";
-    case HUNTER_SURVIVAL:     return "Survival Hunter";
-    case ROGUE_ASSASSINATION: return "Assassination Rogue";
-    case ROGUE_COMBAT:        return "Combat Rogue";
-    case ROGUE_SUBTLETY:      return "Subtlety Rogue";
-    case PRIEST_DISCIPLINE:   return "Discipline Priest";
-    case PRIEST_HOLY:         return "Holy Priest";
-    case PRIEST_SHADOW:       return "Shadow Priest";
-    case DEATH_KNIGHT_BLOOD:  return "Blood Death Knight";
-    case DEATH_KNIGHT_FROST:  return "Frost Death Knight";
-    case DEATH_KNIGHT_UNHOLY: return "Unholy Death Knight";
-    case SHAMAN_ELEMENTAL:    return "Elemental Shaman";
-    case SHAMAN_ENHANCEMENT:  return "Enhancement Shaman";
-    case SHAMAN_RESTORATION:  return "Restoration Shaman";
-    case MAGE_ARCANE:         return "Arcane Mage";
-    case MAGE_FIRE:           return "Fire Mage";
-    case MAGE_FROST:          return "Frost Mage";
-    case WARLOCK_AFFLICTION:  return "Affliction Warlock";
-    case WARLOCK_DEMONOLOGY:  return "Demonology Warlock";
-    case WARLOCK_DESTRUCTION: return "Destruction Warlock";
-    case MONK_BREWMASTER:     return "Brewmaster Monk";
-    case MONK_MISTWEAVER:     return "Mistweaver Monk";
-    case MONK_WINDWALKER:     return "Windwalker Monk";
-    case DRUID_BALANCE:       return "Balance Druid";
-    case DRUID_FERAL:         return "Feral Druid";
-    case DRUID_GUARDIAN:      return "Guardian Druid";
-    case DRUID_RESTORATION:   return "Restoration Druid";
-    default:                  return "Unknown";
+    if ( spec == spec_map[ i ].spec )
+      return spec_map[ i ].name;
   }
+
+  return "Unknown";
 }
 
 // parse_position_type ======================================================
 
 specialization_e util::parse_specialization_type( const std::string &name )
 {
-  return parse_enum<specialization_e, SPEC_NONE, static_cast<specialization_e>(DRUID_RESTORATION+1), specialization_string>( name );
+  for ( size_t i = 0; i < sizeof_array( spec_map ); i++ )
+  {
+    if ( util::str_compare_ci( name, spec_map[ i ].name ) )
+      return spec_map[ i ].spec;
+  }
+
+  return SPEC_NONE;
 }
 
 // parse_item_quality =======================================================
@@ -2605,7 +2627,7 @@ std::string util::create_blizzard_talent_url( const player_t* p )
    case WARRIOR_ARMS:         url += "Zaa"; break;
    case WARRIOR_FURY:         url += "ZZa"; break;
    case WARRIOR_PROTECTION:   url += "Zba"; break;
-   default: assert( 0 ); break;
+   default: return "";
   }
   url += "!";
   for ( int i = 0; i < MAX_TALENT_ROWS; i++ )
