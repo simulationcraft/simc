@@ -6910,7 +6910,7 @@ struct multistrike_execute_event_t : public event_t
     // Direct damage/heal multistrikes need to take into account the travel
     // time of the "real" spell, and impact at the same time(?), so ..
     // TODO-WOD: Multistrike impacts in combatlog have delay of .. ?
-    else if ( state -> result_type == DMG_DIRECT || state -> result_type == HEAL_DIRECT )
+    else if ( state -> result_type == DMG_DIRECT || state -> result_type == HEAL_DIRECT || state -> result_type == ABSORB )
     {
       // No travel time -> impact immediately. Event ordering is guaranteed, as
       // schedule_travel() in action_t::execute() has already impacted on this
@@ -6931,7 +6931,9 @@ struct multistrike_execute_event_t : public event_t
       }
     }
     else
+    {
       assert( 0 && "Multistrike Execute event, where state has no result_type" );
+    }
   }
 
   // Ensure we properly release the carried execute_state even if this event

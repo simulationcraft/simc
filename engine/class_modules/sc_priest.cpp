@@ -1095,8 +1095,9 @@ public:
                    const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, player, s )
   {
-    may_crit          = false;
-    tick_may_crit     = false;
+    may_crit = true;
+    tick_may_crit = false;
+    may_multistrike = 1;
     may_miss          = false;
   }
 
@@ -1125,7 +1126,15 @@ struct priest_heal_t : public priest_action_t<heal_t>
       check_spell( p.specs.divine_aegis );
       proc             = true;
       background       = true;
+      may_multistrike = 0;
+      may_crit = false;
       spell_power_mod.direct = 0.0;
+    }
+
+    void init() override
+    {
+      action_t::init();
+      snapshot_flags |= STATE_MUL_DA;
     }
 
     virtual void impact( action_state_t* s ) override
@@ -1137,9 +1146,10 @@ struct priest_heal_t : public priest_action_t<heal_t>
       // when healing a tank that's below 0 life in the sim, Divine Aegis causes an exception because it tries to
       // clamp s -. result_amount between 0 and a negative number. This is a workaround that treats a tank with
       // negative life as being at maximum health for the purposes of Divine Aegis.
-      double upper_limit = s -> target -> resources.current[ RESOURCE_HEALTH ] * 0.4 - old_amount;
+      double limiting_factor = 0.6; // WoD 14/12/05
+      double upper_limit = s -> target -> resources.current[ RESOURCE_HEALTH ] * limiting_factor - old_amount;
       if ( upper_limit <= 0 )
-        upper_limit = s -> target -> resources.max[ RESOURCE_HEALTH ] * 0.4 - old_amount;
+        upper_limit = s -> target -> resources.max[ RESOURCE_HEALTH ] * limiting_factor - old_amount;
 
       double new_amount = clamp( s -> result_amount, 0.0, upper_limit );
       buff.trigger( 1, old_amount + new_amount );
@@ -1147,9 +1157,9 @@ struct priest_heal_t : public priest_action_t<heal_t>
       buff.absorb_source -> add_result( 0.0, new_amount, ABSORB, s -> result, s -> block_result, s -> target );
     }
 
-    void trigger( const action_state_t* s )
+    void trigger( const action_state_t* s, double crit_amount )
     {
-      base_dd_min = base_dd_max = s -> result_amount * priest.specs.divine_aegis -> effectN( 1 ).percent();
+      base_dd_min = base_dd_max = crit_amount * priest.specs.divine_aegis -> effectN( 1 ).percent();
       target = s -> target;
       execute();
     }
@@ -1293,7 +1303,6 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
       if ( s -> result_amount > 0 )
       {
-        trigger_divine_aegis( s );
         trigger_echo_of_light( this, s );
 
         if ( priest.buffs.chakra_serenity -> up() && get_td( s -> target ).dots.renew -> is_ticking() )
@@ -1308,17 +1317,38 @@ struct priest_heal_t : public priest_action_t<heal_t>
       }
     }
   }
-
-  virtual void tick( dot_t* d ) override
+  void assess_damage( dmg_e    type,
+                                action_state_t* s ) override
   {
-    base_t::tick( d );
-    trigger_divine_aegis( d -> state );
+    remove_crit_amount_divine_aegis( s );
+    base_t::assess_damage( type, s );
+    trigger_divine_aegis( s );
   }
 
+
+  void remove_crit_amount_divine_aegis( action_state_t* s )
+  {
+    if ( s -> result == RESULT_CRIT && s -> result_total > 0 )
+    {
+      if ( da && ( ( 1 << s -> result ) & divine_aegis_trigger_mask ) != 0 )
+      {
+        double crit_bonus = total_crit_bonus();
+        double non_crit_portion = s -> result_total / ( 1.0 + crit_bonus );
+        s -> result_total = non_crit_portion; // remove crit portion from source spell
+      }
+    }
+  }
   void trigger_divine_aegis( action_state_t* s )
   {
-    if ( da && ( ( 1 << s -> result ) & divine_aegis_trigger_mask ) != 0 )
-      da -> trigger( s );
+    if ( s -> result == RESULT_CRIT && s -> result_total > 0 )
+    {
+      if ( da && ( ( 1 << s -> result ) & divine_aegis_trigger_mask ) != 0 )
+      {
+        double crit_bonus = total_crit_bonus();
+        double crit_amount = s -> result_total * crit_bonus;
+        da -> trigger( s, crit_amount );
+      }
+    }
   }
 
   // Priest Echo of Light, Ignite-Mechanic specialization
@@ -4806,8 +4836,6 @@ struct clarity_of_will_t final : public priest_absorb_t
     priest_absorb_t( "clarity_of_will", p, p.talents.clarity_of_will )
   {
     parse_options( options_str );
-
-    may_crit = true;
 
     // TODO: implement mechanic
     spell_power_mod.direct = 6.0; // hardcoded into tooltip 14/12/03
