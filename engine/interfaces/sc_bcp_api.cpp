@@ -34,6 +34,8 @@ race_e parse_armory_race( const std::string& race_str )
   {
     if ( util::str_compare_ci( race_str, "blood-elf" ) )
       rt = RACE_BLOOD_ELF;
+    else if ( util::str_compare_ci( race_str, "night-elf" ) )
+      rt = RACE_NIGHT_ELF;
     // Armory HTML does not give an url to the racial section of Pandarens ..
     // instead it contains an empty javascript entry. The rest of the races
     // contain proper urls.
@@ -273,7 +275,6 @@ bool parse_items( player_t*  p,
       }
     }
 
-    
     if ( ! data.HasMember( "tooltipParams" ) )
       continue;
 
@@ -297,6 +298,118 @@ bool parse_items( player_t*  p,
 }
 
 // parse_player =============================================================
+
+bool parse_player_html_talent( sim_t*,
+                               const std::string& specifier,
+                               player_t*          player,
+                               const sc_xml_t&    data )
+{
+
+  sc_xml_t specs_obj = data.get_node( "div", "class", "talent-specs" );
+  if ( ! specs_obj.valid() )
+  {
+    return false;
+  }
+
+  sc_xml_t spec_0_obj = specs_obj.get_node( "a", "data-spec-id", "0" );
+  sc_xml_t spec_1_obj = specs_obj.get_node( "a", "data-spec-id", "1" );
+  std::string spec_0_str, spec_1_str;
+  if ( ! spec_0_obj.valid() || ! spec_0_obj.get_value( spec_0_str, "class" ) )
+  {
+    return false;
+  }
+
+  if ( ! spec_1_obj.valid() || ! spec_1_obj.get_value( spec_1_str, "class" ) )
+  {
+    return false;
+  }
+
+  bool spec0_active = util::str_in_str_ci( spec_0_str, "active" );
+  std::string spec_id;
+
+  if ( util::str_compare_ci( specifier, "active" ) )
+  {
+    spec_id = spec0_active ? "0" : "1";
+  }
+  else if ( util::str_compare_ci( specifier, "inactive" ) )
+  {
+    spec_id = spec0_active ? "1" : "0";
+  }
+  else if ( util::str_compare_ci( specifier, "primary" ) )
+  {
+    spec_id = "0";
+  }
+  else if ( util::str_compare_ci( specifier, "secondary" ) )
+  {
+    spec_id = "1";
+  }
+  else
+    return false;
+
+  // Figure out the canonical specialization name from the active talent spec
+  std::string spec_name;
+  sc_xml_t spec_obj = specs_obj.get_node( "a", "data-spec-id", spec_id );
+  if ( ! spec_obj.valid() || ! spec_obj.get_value( spec_name, "data-spec-name" ) )
+  {
+    return false;
+  }
+
+  // ..aand construct a hacky string that we can match to a specialization_e
+  // enum ...
+  std::string profile_spec = spec_name + " ";
+  profile_spec += util::player_type_string( player -> type );
+  player -> _spec = util::parse_specialization_type( profile_spec );
+  if ( player -> _spec == SPEC_NONE )
+  {
+    player -> sim -> errorf( "BCP API: Can't parse specialization '%s' for player %s.\n",
+        profile_spec.c_str(),
+        player -> name() );
+  }
+
+  // Parse through talent tiers
+  sc_xml_t talents_obj = data.get_node( "div", "id", "talent-build-" + spec_id );
+  if ( ! talents_obj.valid() )
+  {
+    return false;
+  }
+
+  std::vector<sc_xml_t> talent_tiers_obj = talents_obj.get_nodes( "li", "class", "talent" );
+  std::vector<std::string> talent_arr;
+  std::string talents_str;
+  for ( size_t i = 0; i < talent_tiers_obj.size(); i++ )
+  {
+    int tier, column;
+    if ( ! talent_tiers_obj[ i ].get_value( tier, "data-tier" ) ||
+         ! talent_tiers_obj[ i ].get_value( column, "data-column" ) )
+    {
+      return false;
+    }
+
+    if ( talent_arr.size() < static_cast<size_t>( tier + 1 ) )
+      talent_arr.resize( tier + 1, "0" );
+    talent_arr[ tier ] = util::to_string( column + 1 );
+  }
+
+  // Aand construct a talent string, that will be parsed by magic.
+  for ( size_t i = 0; i < talent_arr.size(); i++ )
+  {
+    talents_str += talent_arr[ i ];
+  }
+
+  if ( ! player -> parse_talents_numbers( talents_str ) )
+  {
+    player -> sim -> errorf( "BCP API: Can't parse talent encoding '%s' for player %s.\n",
+        talents_str.c_str(),
+        player -> name() );
+    return false;
+  }
+
+  // And re-format talents into an armory-based talent url, since this is
+  // armory import
+  player -> create_talents_armory();
+
+  return true;
+}
 
 bool parse_player_html_profession( sim_t*,
                                    player_t*       player,
@@ -453,6 +566,12 @@ player_t* parse_player_html( sim_t*             sim,
 
   // TODO: Do we need to error check this nowadays?
   parse_player_html_profession( sim, p, profile );
+  if ( ! parse_player_html_talent( sim, player.talent_spec, p, profile ) )
+  {
+    sim -> errorf( "BCP API: Unable to extract player talent specialization from '%s'.\n",
+        player.url.c_str() );
+    return 0;
+  }
 
   return p;
 }
