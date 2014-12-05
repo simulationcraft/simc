@@ -4464,7 +4464,7 @@ struct penance_heal_t final : public priest_heal_t
   struct penance_heal_tick_t final : public priest_heal_t
   {
     penance_heal_tick_t( priest_t& player ) :
-      priest_heal_t( "penance_heal_tick", player, player.find_spell( 47666 ) )
+      priest_heal_t( "penance_heal_tick", player, player.find_spell( 47750 ) )
     {
       background  = true;
       may_crit    = true;
@@ -4806,6 +4806,8 @@ struct clarity_of_will_t final : public priest_absorb_t
     priest_absorb_t( "clarity_of_will", p, p.talents.clarity_of_will )
   {
     parse_options( options_str );
+
+    may_crit = true;
 
     // TODO: implement mechanic
     spell_power_mod.direct = 6.0; // hardcoded into tooltip 14/12/03
