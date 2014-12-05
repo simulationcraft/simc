@@ -101,19 +101,19 @@ legs=shadow_councils_leggings,id=115587,bonus_id=567
 feet=cavedwellers_climbers,id=113864,bonus_id=567
 finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant_id=5326
 finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant_id=5326
-trinket1=quiescent_runestone,id=113859,bonus_id=567
+trinket1=goren_soul_repository,id=119194,bonus_id=567
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=567
 main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant_id=5384
 
 # Gear Summary
 # gear_stamina=4545
-# gear_intellect=3755
+# gear_intellect=3811
 # gear_spell_power=1753
 # gear_crit_rating=499
-# gear_haste_rating=1373
+# gear_haste_rating=1196
 # gear_mastery_rating=1994
 # gear_armor=870
-# gear_multistrike_rating=633
+# gear_multistrike_rating=456
 # gear_versatility_rating=103
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

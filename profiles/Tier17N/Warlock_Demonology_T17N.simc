@@ -102,18 +102,18 @@ feet=hexweave_slippers,id=114815,bonus_id=118/559
 finger1=ukuroggs_corrupted_seal,id=113975,enchant_id=5326
 finger2=timeless_solium_band_of_the_archmage,id=118296,enchant_id=5326
 trinket1=blackiron_micro_crucible,id=113984
-trinket2=quiescent_runestone,id=113859
+trinket2=goren_soul_repository,id=119194
 main_hand=infernoflame_staff,id=113869,enchant_id=5384
 
 # Gear Summary
 # gear_stamina=3437
-# gear_intellect=2838
+# gear_intellect=2880
 # gear_spell_power=1325
 # gear_crit_rating=259
-# gear_haste_rating=1246
+# gear_haste_rating=1112
 # gear_mastery_rating=1580
 # gear_armor=700
-# gear_multistrike_rating=390
+# gear_multistrike_rating=256
 # gear_versatility_rating=78
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

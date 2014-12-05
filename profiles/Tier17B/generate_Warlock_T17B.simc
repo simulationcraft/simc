@@ -25,7 +25,7 @@ wrist=bracers_of_darkened_skies,id=119332,bonus_id=41/562/565/567,gem_id=115811
 hands=shadow_councils_gloves,id=115585,bonus_id=41/561/565/567,gem_id=115811
 finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=41/562/565/567,gem_id=115811,enchant_id=5325
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,bonus_id=524,enchant_id=5325
-trinket1=quiescent_runestone,id=113859,bonus_id=41/562/565/567,gem_id=115811
+trinket1=darmacs_unstable_talisman,id=113948,bonus_id=41/562/565/567,gem_id=115811
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=41/562/565/567,gem_id=115811
 back=runefrenzy_greatcloak,id=113937,bonus_id=41/562/565/567,gem_id=115811,enchant_id=5311
 main_hand=dagger_of_blazing_radiance,id=113920,bonus_id=41/562/565/567,gem_id=115811,enchant_id=5337
@@ -49,7 +49,7 @@ wrist=bracers_of_darkened_skies,id=119332,bonus_id=41/562/565/567,gem_id=115812
 hands=toothbreaker_grips,id=113876,bonus_id=41/562/565/567,gem_id=115812
 finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=41/562/565/567,gem_id=115812,enchant_id=5326
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,bonus_id=524,enchant_id=5326
-trinket1=quiescent_runestone,id=113859,bonus_id=41/562/565/567,gem_id=115812
+trinket1=goren_soul_repository,id=119194,bonus_id=41/562/565/567,gem_id=115812
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=41/562/565/567,gem_id=115812
 back=runefrenzy_greatcloak,id=113937,bonus_id=41/562/565/567,gem_id=115812,enchant_id=5312
 main_hand=dagger_of_blazing_radiance,id=113920,bonus_id=41/562/565/567,gem_id=115812,enchant_id=5384
@@ -73,7 +73,7 @@ wrist=bracers_of_spattered_steel,id=113887,bonus_id=41/562/565/567,gem_id=115809
 hands=shadow_councils_gloves,id=115585,bonus_id=41/561/565/567,gem_id=115809
 finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,bonus_id=524,enchant_id=5324
 finger2=epicenter_loop,id=113947,bonus_id=41/562/565/567,gem_id=115809,enchant_id=5324
-trinket1=quiescent_runestone,id=113859,bonus_id=41/562/565/567,gem_id=115809
+trinket1=goren_soul_repository,id=119194,bonus_id=41/562/565/567,gem_id=115809
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=41/562/565/567,gem_id=115809
 back=runefrenzy_greatcloak,id=113937,bonus_id=41/562/565/567,gem_id=115809,enchant_id=5310
 main_hand=fang_of_the_earth,id=113934,bonus_id=41/562/565/567,gem_id=115809,enchant_id=5384

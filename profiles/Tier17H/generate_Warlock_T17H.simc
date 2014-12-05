@@ -27,7 +27,7 @@ legs=shadow_councils_leggings,id=115587,bonus_id=566
 feet=cavedwellers_climbers,id=113864,bonus_id=566
 finger1=spellbound_solium_band_of_the_kirintor,id=118301,enchant_id=5325
 finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant_id=5325
-trinket1=quiescent_runestone,id=113859,bonus_id=566
+trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=566
 main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant_id=5337
 save=Warlock_Affliction_T17H.simc
@@ -49,7 +49,7 @@ wrist=bracers_of_darkened_skies,id=119332,bonus_id=566
 hands=toothbreaker_grips,id=113876,bonus_id=566
 finger1=spellbound_solium_band_of_the_kirintor,id=118301,enchant_id=5326
 finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant_id=5326
-trinket1=quiescent_runestone,id=113859,bonus_id=566
+trinket1=goren_soul_repository,id=119194,bonus_id=566
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=566
 back=runefrenzy_greatcloak,id=113937,bonus_id=566,enchant_id=5312
 main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant_id=5384
@@ -72,7 +72,7 @@ wrist=bracers_of_spattered_steel,id=113887,bonus_id=566
 hands=shadow_councils_gloves,id=115585,bonus_id=566
 finger1=epicenter_loop,id=113947,bonus_id=566,enchant_id=5324
 finger2=spellbound_solium_band_of_the_kirintor,id=118301,enchant_id=5324
-trinket1=copelands_clarity,id=118878
+trinket1=goren_soul_repository,id=119194,bonus_id=566
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=566
 back=runefrenzy_greatcloak,id=113937,bonus_id=566,enchant_id=5310
 main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant_id=5330

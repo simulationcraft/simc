@@ -92,22 +92,22 @@ legs=turret_mechanics_legwraps,id=113970,bonus_id=41/562/565/567,gem_id=115809
 feet=cavedwellers_climbers,id=113864,bonus_id=41/562/565/567,gem_id=115809
 finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,bonus_id=524,enchant_id=5324
 finger2=epicenter_loop,id=113947,bonus_id=41/562/565/567,gem_id=115809,enchant_id=5324
-trinket1=quiescent_runestone,id=113859,bonus_id=41/562/565/567,gem_id=115809
+trinket1=goren_soul_repository,id=119194,bonus_id=41/562/565/567,gem_id=115809
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=41/562/565/567,gem_id=115809
 main_hand=fang_of_the_earth,id=113934,bonus_id=41/562/565/567,gem_id=115809,enchant_id=5384
 off_hand=caged_living_ooze,id=113879,bonus_id=41/562/565/567,gem_id=115809
 
 # Gear Summary
 # gear_stamina=4781
-# gear_intellect=3775
+# gear_intellect=4008
 # gear_spell_power=1855
 # gear_crit_rating=2415
-# gear_haste_rating=863
+# gear_haste_rating=676
 # gear_mastery_rating=1323
 # gear_armor=909
-# gear_multistrike_rating=603
+# gear_multistrike_rating=416
 # gear_versatility_rating=358
-# gear_leech_rating=1970
+# gear_leech_rating=1982
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 default_pet=felhunter

@@ -101,22 +101,22 @@ legs=shadow_councils_leggings,id=115587,bonus_id=41/562/565/567,gem_id=115812
 feet=cavedwellers_climbers,id=113864,bonus_id=41/562/565/567,gem_id=115812
 finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=41/562/565/567,gem_id=115812,enchant_id=5326
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,bonus_id=524,enchant_id=5326
-trinket1=quiescent_runestone,id=113859,bonus_id=41/562/565/567,gem_id=115812
+trinket1=goren_soul_repository,id=119194,bonus_id=41/562/565/567,gem_id=115812
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=41/562/565/567,gem_id=115812
 main_hand=dagger_of_blazing_radiance,id=113920,bonus_id=41/562/565/567,gem_id=115812,enchant_id=5384
 off_hand=caged_living_ooze,id=113879,bonus_id=41/562/565/567,gem_id=115812
 
 # Gear Summary
 # gear_stamina=4781
-# gear_intellect=3775
+# gear_intellect=4008
 # gear_spell_power=1855
 # gear_crit_rating=526
-# gear_haste_rating=1322
+# gear_haste_rating=1135
 # gear_mastery_rating=2824
 # gear_armor=909
-# gear_multistrike_rating=670
+# gear_multistrike_rating=483
 # gear_versatility_rating=230
-# gear_leech_rating=1970
+# gear_leech_rating=1982
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 default_pet=felguard

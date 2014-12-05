@@ -28,8 +28,7 @@ actions.precombat+=/incinerate
 
 # Executed every time the actor is available.
 
-actions=use_item,name=copelands_clarity
-actions+=/potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20
+actions=potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/berserking
 actions+=/blood_fury
 actions+=/arcane_torrent
@@ -93,15 +92,15 @@ legs=turret_mechanics_legwraps,id=113970,bonus_id=566
 feet=cavedwellers_climbers,id=113864,bonus_id=566
 finger1=epicenter_loop,id=113947,bonus_id=566,enchant_id=5324
 finger2=spellbound_solium_band_of_the_kirintor,id=118301,enchant_id=5324
-trinket1=copelands_clarity,id=118878
+trinket1=goren_soul_repository,id=119194,bonus_id=566
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=566
 main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant_id=5330
 
 # Gear Summary
 # gear_stamina=3942
-# gear_intellect=2996
+# gear_intellect=3306
 # gear_spell_power=1524
-# gear_crit_rating=1720
+# gear_crit_rating=1430
 # gear_haste_rating=612
 # gear_mastery_rating=1268
 # gear_armor=780

@@ -26,7 +26,7 @@ wrist=hexweave_bracers,id=114814,bonus_id=119/559
 hands=shadow_councils_gloves,id=115585
 finger1=ukuroggs_corrupted_seal,id=113975,enchant_id=5325
 finger2=timeless_solium_band_of_the_archmage,id=118296,enchant_id=5325
-trinket1=quiescent_runestone,id=113859
+trinket1=darmacs_unstable_talisman,id=113948
 trinket2=blackiron_micro_crucible,id=113984
 back=runefrenzy_greatcloak,id=113937,enchant_id=5311
 main_hand=infernoflame_staff,id=113869,enchant_id=5337
@@ -50,7 +50,7 @@ hands=toothbreaker_grips,id=113876
 finger1=ukuroggs_corrupted_seal,id=113975,enchant_id=5326
 finger2=timeless_solium_band_of_the_archmage,id=118296,enchant_id=5326
 trinket1=blackiron_micro_crucible,id=113984
-trinket2=quiescent_runestone,id=113859
+trinket2=goren_soul_repository,id=119194
 back=runefrenzy_greatcloak,id=113937,enchant_id=5312
 main_hand=infernoflame_staff,id=113869,enchant_id=5384
 save=Warlock_Demonology_T17N.simc
@@ -73,7 +73,7 @@ hands=shadow_councils_gloves,id=115585
 finger1=ukuroggs_corrupted_seal,id=113975,enchant_id=5324
 finger2=timeless_solium_band_of_the_archmage,id=118296,enchant_id=5324
 trinket1=blackiron_micro_crucible,id=113984
-trinket2=copelands_clarity,id=118878
+trinket2=goren_soul_repository,id=119194
 back=rinnilas_regal_cloak,id=118810,enchant_id=5310
 main_hand=blackhand_doomstaff,id=113988,enchant_id=5384
 save=Warlock_Destruction_T17N.simc

@@ -60,19 +60,19 @@ legs=shadow_councils_leggings,id=115587,bonus_id=566
 feet=cavedwellers_climbers,id=113864,bonus_id=566
 finger1=spellbound_solium_band_of_the_kirintor,id=118301,enchant_id=5325
 finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant_id=5325
-trinket1=quiescent_runestone,id=113859,bonus_id=566
+trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=566
 main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant_id=5337
 
 # Gear Summary
 # gear_stamina=3942
-# gear_intellect=3258
+# gear_intellect=3306
 # gear_spell_power=1524
 # gear_crit_rating=563
-# gear_haste_rating=1606
+# gear_haste_rating=1452
 # gear_mastery_rating=1346
 # gear_armor=780
-# gear_multistrike_rating=434
+# gear_multistrike_rating=280
 # gear_versatility_rating=86
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

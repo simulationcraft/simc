@@ -92,19 +92,19 @@ legs=turret_mechanics_legwraps,id=113970,bonus_id=567
 feet=cavedwellers_climbers,id=113864,bonus_id=567
 finger1=epicenter_loop,id=113947,bonus_id=567,enchant_id=5324
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant_id=5324
-trinket1=quiescent_runestone,id=113859,bonus_id=567
+trinket1=goren_soul_repository,id=119194,bonus_id=567
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=567
 main_hand=blackhand_doomstaff,id=113988,bonus_id=567,enchant_id=5384
 
 # Gear Summary
 # gear_stamina=4545
-# gear_intellect=3755
+# gear_intellect=3811
 # gear_spell_power=1753
 # gear_crit_rating=1735
-# gear_haste_rating=733
+# gear_haste_rating=556
 # gear_mastery_rating=1309
 # gear_armor=870
-# gear_multistrike_rating=569
+# gear_multistrike_rating=392
 # gear_versatility_rating=224
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

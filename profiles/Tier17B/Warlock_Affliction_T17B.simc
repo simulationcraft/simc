@@ -60,22 +60,22 @@ legs=shadow_councils_leggings,id=115587,bonus_id=41/562/565/567,gem_id=115811
 feet=cavedwellers_climbers,id=113864,bonus_id=41/562/565/567,gem_id=115811
 finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=41/562/565/567,gem_id=115811,enchant_id=5325
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,bonus_id=524,enchant_id=5325
-trinket1=quiescent_runestone,id=113859,bonus_id=41/562/565/567,gem_id=115811
+trinket1=darmacs_unstable_talisman,id=113948,bonus_id=41/562/565/567,gem_id=115811
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=41/562/565/567,gem_id=115811
 main_hand=dagger_of_blazing_radiance,id=113920,bonus_id=41/562/565/567,gem_id=115811,enchant_id=5337
 off_hand=enginestokers_lantern,id=113960,bonus_id=41/562/565/567,gem_id=115811
 
 # Gear Summary
 # gear_stamina=4781
-# gear_intellect=3775
+# gear_intellect=4008
 # gear_spell_power=1855
 # gear_crit_rating=684
-# gear_haste_rating=2614
+# gear_haste_rating=2427
 # gear_mastery_rating=1516
 # gear_armor=909
-# gear_multistrike_rating=661
+# gear_multistrike_rating=474
 # gear_versatility_rating=103
-# gear_leech_rating=1970
+# gear_leech_rating=1982
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 default_pet=felhunter
