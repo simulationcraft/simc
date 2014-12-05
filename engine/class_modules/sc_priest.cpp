@@ -1120,6 +1120,11 @@ struct priest_heal_t : public priest_action_t<heal_t>
 {
   struct divine_aegis_t : public priest_absorb_t
   {
+    // Multistrike test results 14/12/05 by philoptik:
+    // triggers from hit -> critting multistrike
+    // does NOT trigger from crit -> normal multistrike
+    // contrary to general tooltip interpretation.
+
     divine_aegis_t( const std::string& n, priest_t& p ) :
       priest_absorb_t( n + "_divine_aegis", p, p.find_spell( 47753 ) )
     {
@@ -1161,6 +1166,10 @@ struct priest_heal_t : public priest_action_t<heal_t>
     {
       base_dd_min = base_dd_max = crit_amount * priest.specs.divine_aegis -> effectN( 1 ).percent();
       target = s -> target;
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "%s %s triggers Divine Aegis with base_amount=%.2f.", player -> name(), name(), base_dd_min );
+      }
       execute();
     }
   };
@@ -1239,7 +1248,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
                  const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, player, s ),
     da( nullptr ), ss( nullptr ),
-    divine_aegis_trigger_mask( RESULT_CRIT_MASK ),
+    divine_aegis_trigger_mask( RESULT_CRIT_MASK | (1<<RESULT_MULTISTRIKE_CRIT)),
     can_trigger_EoL( true ), can_trigger_spirit_shell( false )
   {}
 
@@ -1317,7 +1326,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
       }
     }
   }
-  void assess_damage( dmg_e    type,
+  virtual void assess_damage( dmg_e    type,
                                 action_state_t* s ) override
   {
     remove_crit_amount_divine_aegis( s );
@@ -1325,29 +1334,37 @@ struct priest_heal_t : public priest_action_t<heal_t>
     trigger_divine_aegis( s );
   }
 
+  /* Helper function to check if divine aegis trigger can be applied.
+   */
+  bool can_trigger_divine_aegis( const action_state_t* s ) const
+  {
+    if ( s -> result_total > 0 )
+    {
+      if ( da && ( ( 1 << s -> result ) & divine_aegis_trigger_mask ) != 0 )
+      {
+        return true;
+      }
+    }
+    return false;
+  }
 
   void remove_crit_amount_divine_aegis( action_state_t* s )
   {
-    if ( s -> result == RESULT_CRIT && s -> result_total > 0 )
+    if ( can_trigger_divine_aegis( s ) )
     {
-      if ( da && ( ( 1 << s -> result ) & divine_aegis_trigger_mask ) != 0 )
-      {
-        double crit_bonus = total_crit_bonus();
-        double non_crit_portion = s -> result_total / ( 1.0 + crit_bonus );
-        s -> result_total = non_crit_portion; // remove crit portion from source spell
-      }
+      double crit_bonus = total_crit_bonus();
+      double non_crit_portion = s -> result_total / ( 1.0 + crit_bonus );
+      s -> result_total = non_crit_portion; // remove crit portion from source spell
     }
   }
+
   void trigger_divine_aegis( action_state_t* s )
   {
-    if ( s -> result == RESULT_CRIT && s -> result_total > 0 )
+    if ( can_trigger_divine_aegis( s ) )
     {
-      if ( da && ( ( 1 << s -> result ) & divine_aegis_trigger_mask ) != 0 )
-      {
-        double crit_bonus = total_crit_bonus();
-        double crit_amount = s -> result_total * crit_bonus;
-        da -> trigger( s, crit_amount );
-      }
+      double crit_bonus = total_crit_bonus();
+      double crit_amount = s -> result_total * crit_bonus;
+      da -> trigger( s, crit_amount );
     }
   }
 
@@ -4633,7 +4650,6 @@ struct prayer_of_healing_t final : public priest_heal_t
     parse_options( options_str );
     aoe = 5;
     group_only = true;
-    divine_aegis_trigger_mask = RESULT_HIT_MASK;
     can_trigger_spirit_shell = true;
   }
 
@@ -4705,8 +4721,6 @@ struct prayer_of_mending_t final : public priest_heal_t
 
     spell_power_mod.direct = 0.442787; // hardcoded into tooltip 14/12/03
     base_dd_min = base_dd_max = data().effectN( 1 ).min( &p );
-
-    divine_aegis_trigger_mask = 0;
 
     aoe = 5;
 
