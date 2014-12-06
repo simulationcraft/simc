@@ -425,7 +425,9 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   createSpellQueryTab();
   createCmdLine();
   createToolTips();
+#if defined( Q_OS_MAC )
   createTabShortcuts();
+#endif
 #ifdef SC_PAPERDOLL
   createPaperdoll();
 #endif
@@ -538,7 +540,7 @@ void SC_MainWindow::createImportTab()
   battleNetView = new SC_WebView( this );
   battleNetView -> setUrl( QUrl( "http://us.battle.net/wow/en" ) );
   battleNetView -> enableMouseNavigation();
-  battleNetView -> enableKeyboardNavigation();
+  battleNetView -> disableKeyboardNavigation();
   importTab -> addTab( battleNetView, tr( "Battle.Net" ) );
 
   createBestInSlotTab();
