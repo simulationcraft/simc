@@ -2961,6 +2961,10 @@ struct conflagrate_t: public warlock_spell_t
     aoe = -1;
     stats = p -> get_stats( "conflagrate_fnb", this );
     gain = p -> get_gain( "conflagrate_fnb" );
+    if ( p -> talents.charred_remains -> ok() )
+      base_multiplier *= 1.0 + p -> talents.charred_remains -> effectN( 1 ).percent();
+    if ( p -> wod_hotfix )
+      base_multiplier *= 1.08;
   }
 
   void schedule_execute( action_state_t* state )
@@ -3076,6 +3080,10 @@ struct incinerate_t: public warlock_spell_t
     aoe = -1;
     stats = p -> get_stats( "incinerate_fnb", this );
     gain = p -> get_gain( "incinerate_fnb" );
+    if ( p -> talents.charred_remains -> ok() )
+      base_multiplier *= 1.0 + p -> talents.charred_remains -> effectN( 1 ).percent();
+    if ( p -> wod_hotfix )
+      base_multiplier *= 1.08;
   }
 
   void init()
@@ -3304,6 +3312,9 @@ struct chaos_bolt_t: public warlock_spell_t
     backdraft_consume = 3;
     base_execute_time += p -> perk.enhanced_chaos_bolt -> effectN( 1 ).time_value();
 
+    if ( p -> wod_hotfix )
+      base_multiplier *= 1.08;
+
     stats = p -> get_stats( "chaos_bolt_fnb", this );
     gain = p -> get_gain( "chaos_bolt_fnb" );
     // TODO: Fix with spell data generation and whitelisting the correct spell
@@ -3345,8 +3356,11 @@ struct chaos_bolt_t: public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    if ( p() -> buffs.fire_and_brimstone -> check() )
+    if (p()->buffs.fire_and_brimstone->check())
+    {
       m *= p() -> buffs.fire_and_brimstone -> data().effectN( 5 ).percent();
+      m *= 1.0 + p() -> cache.mastery_value();
+    }
 
     if ( p() -> mastery_spells.emberstorm -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
