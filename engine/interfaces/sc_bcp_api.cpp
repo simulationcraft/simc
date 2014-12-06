@@ -299,10 +299,10 @@ bool parse_items( player_t*  p,
 
 // parse_player =============================================================
 
-bool parse_player_html_talent( sim_t*,
-                               const std::string& specifier,
-                               player_t*          player,
-                               const sc_xml_t&    data )
+bool parse_player_html_talent_glyph( sim_t*,
+                                     const std::string& specifier,
+                                     player_t*          player,
+                                     const sc_xml_t&    data )
 {
 
   sc_xml_t specs_obj = data.get_node( "div", "class", "talent-specs" );
@@ -407,6 +407,46 @@ bool parse_player_html_talent( sim_t*,
   // And re-format talents into an armory-based talent url, since this is
   // armory import
   player -> create_talents_armory();
+
+  // And then parse glyphs
+  sc_xml_t glyphs_obj = talents_obj.get_node( "div", "class", "glyphs" );
+  if ( ! glyphs_obj.valid() )
+  {
+    return false;
+  }
+
+  // Get all "<div id="tooltip-X">" elements ...
+  std::vector<sc_xml_t> glyph_objs = glyphs_obj.get_nodes( "ul/li/div" );
+  std::string seek_str = "tooltip-";
+  for ( size_t i = 0; i < glyph_objs.size(); i++ )
+  {
+    std::string glyph_data_str;
+    if ( ! glyph_objs[ i ].get_value( glyph_data_str, "id" ) )
+    {
+      continue;
+    }
+
+    // Yank the glyph spell id from the data, data is in format "tooltip-<id>"
+    std::string::size_type pos = glyph_data_str.find( seek_str );
+    if ( pos == std::string::npos )
+    {
+      continue;
+    }
+
+    if ( ! player -> glyphs_str.empty() )
+    {
+      player -> glyphs_str += "/";
+    }
+
+    unsigned glyph_id = util::to_unsigned( glyph_data_str.substr( seek_str.size() ) );
+    std::string glyph_name = player -> find_spell( glyph_id ) -> name_cstr();
+    if ( ! glyph_name.empty() )
+    {
+      util::glyph_name( glyph_name );
+    }
+
+    player -> glyphs_str += glyph_name;
+  }
 
   return true;
 }
@@ -566,7 +606,7 @@ player_t* parse_player_html( sim_t*             sim,
 
   // TODO: Do we need to error check this nowadays?
   parse_player_html_profession( sim, p, profile );
-  if ( ! parse_player_html_talent( sim, player.talent_spec, p, profile ) )
+  if ( ! parse_player_html_talent_glyph( sim, player.talent_spec, p, profile ) )
   {
     sim -> errorf( "BCP API: Unable to extract player talent specialization from '%s'.\n",
         player.url.c_str() );
