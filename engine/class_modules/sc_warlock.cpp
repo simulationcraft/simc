@@ -3345,7 +3345,7 @@ struct chaos_bolt_t: public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    if ( p() -> buffs.fire_and_brimstone -> check() && fnb )
+    if ( p() -> buffs.fire_and_brimstone -> check() )
       m *= p() -> buffs.fire_and_brimstone -> data().effectN( 5 ).percent();
 
     if ( p() -> mastery_spells.emberstorm -> ok() )
