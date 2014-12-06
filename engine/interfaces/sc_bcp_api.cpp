@@ -492,6 +492,103 @@ bool parse_player_html_profession( sim_t*,
   return true;
 }
 
+void parse_item_data_str( item_t& item, const std::string& data_str )
+{
+  std::vector<std::string> data_split = util::string_split( data_str, "&" );
+  for ( size_t i = 0; i < data_split.size(); i++ )
+  {
+    std::string opt, val;
+    std::string::size_type pos = data_split[ i ].find( '=' );
+    if ( pos == std::string::npos )
+    {
+      continue;
+    }
+
+    opt = data_split[ i ].substr( 0, pos );
+    val = data_split[ i ].substr( pos + 1 );
+
+    if ( util::str_compare_ci( opt, "g0" ) )
+    {
+      item.parsed.gem_id[ 0 ] = util::to_int( val );
+    }
+    else if ( util::str_compare_ci( opt, "g1" ) )
+    {
+      item.parsed.gem_id[ 1 ] = util::to_int( val );
+    }
+    else if ( util::str_compare_ci( opt, "g2" ) )
+    {
+      item.parsed.gem_id[ 2 ] = util::to_int( val );
+    }
+    else if ( util::str_compare_ci( opt, "e" ) )
+    {
+      item.parsed.enchant_id = util::to_unsigned( val );
+    }
+    else if ( util::str_compare_ci( opt, "ee" ) )
+    {
+      item.parsed.addon_id = util::to_unsigned( val );
+    }
+    else if ( util::str_compare_ci( opt, "bl" ) )
+    {
+      std::vector<std::string> bonus_split = util::string_split( val, "," );
+      for ( size_t j = 0; j < bonus_split.size(); j++ )
+      {
+        item.parsed.bonus_id.push_back( util::to_int( bonus_split[ j ] ) );
+      }
+    }
+  }
+}
+
+bool parse_player_html_items( sim_t*,
+                                   player_t*       player,
+                                   const sc_xml_t& data )
+{
+  sc_xml_t items_obj = data.get_node( "div", "id", "summary-inventory" );
+  if ( ! items_obj.valid() )
+  {
+    return false;
+  }
+
+  for ( unsigned i = 0; i < SLOT_MAX; ++i )
+  {
+    item_t& item = player -> items[ i ];
+
+    sc_xml_t slot_data = items_obj.get_node( "div", "data-id", util::to_string( i ) );
+    if ( ! slot_data.valid() )
+    {
+      continue;
+    }
+
+    sc_xml_t item_data = slot_data.get_node( "a", "class", "item" );
+    std::string data_str;
+    if ( ! item_data.valid() || ! item_data.get_value( data_str, "data-item" ) )
+    {
+      continue;
+    }
+
+    std::string item_id_str;
+    if ( ! item_data.get_value( item_id_str, "href" ) )
+    {
+      continue;
+    }
+    else
+    {
+      std::vector<std::string> item_id_split = util::string_split( item_id_str, "/" );
+      for ( size_t j = 0; j < item_id_split.size(); j++ )
+      {
+        item.parsed.data.id = util::to_unsigned ( item_id_split[ j ] );
+        if ( item.parsed.data.id > 0 )
+        {
+          break;
+        }
+      }
+    }
+
+    parse_item_data_str( item, data_str );
+  }
+
+  return true;
+}
+
 player_t* parse_player_html( sim_t*             sim,
                              player_spec_t&     player,
                              cache::behavior_e  caching )
@@ -609,6 +706,13 @@ player_t* parse_player_html( sim_t*             sim,
   if ( ! parse_player_html_talent_glyph( sim, player.talent_spec, p, profile ) )
   {
     sim -> errorf( "BCP API: Unable to extract player talent specialization from '%s'.\n",
+        player.url.c_str() );
+    return 0;
+  }
+
+  if ( ! parse_player_html_items( sim, p, profile ) )
+  {
+    sim -> errorf( "BCP API: Unable to extract player items from '%s'.\n",
         player.url.c_str() );
     return 0;
   }
