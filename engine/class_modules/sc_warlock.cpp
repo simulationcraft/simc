@@ -4629,7 +4629,6 @@ struct summon_infernal_t: public summon_pet_t
       infernal_awakening = new infernal_awakening_t( p, data().effectN( 1 ).trigger() );
       infernal_awakening -> stats = stats;
     }
-    pet -> summon_stats = stats;
   }
 
   virtual void execute()

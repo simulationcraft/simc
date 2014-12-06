@@ -234,6 +234,19 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left -> addRow( tr( "Challenge Mode" ), choice.challenge_mode = createChoice( 2, "Disabled", "Enabled" ) );
   globalsLayout_left -> addRow( tr(  "Player Skill" ),    choice.player_skill = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
   globalsLayout_left -> addRow( tr( "Default Role" ),     choice.default_role = createChoice( 4, "Auto", "DPS", "Heal", "Tank" ) );
+
+  QPushButton* resetb = new QPushButton( tr("Reset all Settings" ), this );
+  QFont override_font = QFont();
+  override_font.setPixelSize( 20 );
+  resetb -> setFont( override_font );
+  connect( resetb, SIGNAL(clicked()), this, SLOT(_resetallSettings()) );
+  globalsLayout_left -> addWidget( resetb );
+  
+  QLabel* resetallsettings = new QLabel( tr( "This is also useful if you run into problems importing or simulating your\n"
+    "character, as the file used for configuration settings may be corrupt." ) );
+  override_font.setPixelSize( 12 );
+  resetallsettings -> setFont( override_font );
+  globalsLayout_left -> addWidget( resetallsettings );
  
   QGroupBox* globalsGroupBox_left = new QGroupBox( tr( "Basic Options" ) );
   globalsGroupBox_left -> setLayout( globalsLayout_left );
@@ -270,10 +283,6 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_right -> addRow( tr( "Report Print Style" ),      choice.print_style = createChoice( 3, "MoP", "White", "Classic" ) );
   globalsLayout_right -> addRow( tr( "Statistics Level" ),   choice.statistics_level = createChoice( 4, "0", "1", "2", "3" ) );
   globalsLayout_right -> addRow( tr( "Deterministic RNG" ), choice.deterministic_rng = createChoice( 2, "Yes", "No" ) );
-  QPushButton* resetb = new QPushButton( tr("Reset all Settings"), this );
-  connect( resetb, SIGNAL(clicked()), this, SLOT(_resetallSettings()) );
-  globalsLayout_right -> addWidget( resetb );
-
 
   createItemDataSourceSelector( globalsLayout_right );
 

@@ -1335,8 +1335,7 @@ struct bladestorm_t: public warrior_attack_t
 
     channeled = tick_zero = true;
     callbacks = interrupt_auto_attack = false;
-    base_execute_time = data().duration();
-
+    
     bladestorm_mh -> weapon = &( player -> main_hand_weapon );
     add_child( bladestorm_mh );
 
@@ -1354,16 +1353,18 @@ struct bladestorm_t: public warrior_attack_t
     p() -> buff.bladestorm -> trigger();
   }
 
-  void tick( dot_t* )
+  void tick( dot_t* d )
   {
+    warrior_attack_t::tick( d );
     bladestorm_mh -> execute();
 
     if ( bladestorm_mh -> result_is_hit( execute_state -> result ) && bladestorm_oh )
       bladestorm_oh -> execute();
   }
 
-  void last_tick( dot_t* )
+  void last_tick( dot_t*d )
   {
+    warrior_attack_t::last_tick( d );
     p() -> buff.bladestorm -> expire();
   }
   // Bladestorm is not modified by haste effects
