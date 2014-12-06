@@ -3,7 +3,7 @@ level=100
 race=orc
 role=attack
 position=back
-talents=2003002
+talents=2001002
 spec=unholy
 
 # This default action priority list is automatically created based on your character.
@@ -93,6 +93,7 @@ actions.single_target+=/scourge_strike,if=!(target.health.pct-3*(target.health.p
 actions.single_target+=/festering_strike
 actions.single_target+=/blood_tap,if=buff.blood_charge.stack>=10&runic_power>=30
 actions.single_target+=/death_coil
+actions.single_target+=/plague_leech
 actions.single_target+=/empower_rune_weapon
 
 actions.bos_st=death_and_decay,if=runic_power<88
