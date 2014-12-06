@@ -3297,7 +3297,8 @@ struct chaos_bolt_t: public warlock_spell_t
   }
 
   chaos_bolt_t( const std::string& n, warlock_t* p, const spell_data_t* spell ):
-    warlock_spell_t( n, p, spell )
+    warlock_spell_t( n, p, spell ),
+    fnb( 0 )
   {
     aoe = -1;
     backdraft_consume = 3;
