@@ -2926,11 +2926,11 @@ struct shattered_bleed_t : public cat_attack_t
     }
     
     // Override to prevent benefitting from mastery.
-    double composite_ta_multiplier( const action_state_t* s ) const
+    double composite_ta_multiplier( const action_state_t* /*s*/ ) const
     { return action_multiplier(); }
     
     // Benefit from Savage Roar and Tiger's Fury is not persistent.
-    double composite_persistent_multiplier( const action_state_t* s ) const
+    double composite_persistent_multiplier( const action_state_t* /*s*/ ) const
     { return 1.0; }
 };
 
