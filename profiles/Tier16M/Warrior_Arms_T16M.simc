@@ -19,7 +19,7 @@ actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
 # 
 talent_override=bladestorm,if=raid_event.adds.count>1|desired_targets>1|(raid_event.adds.duration<10&raid_event.adds.exists)
-talent_override=dragon_roar,if=raid_event.adds.count>1|desired_targets>1)
+talent_override=dragon_roar,if=raid_event.adds.count>1|desired_targets>1
 actions.precombat+=/stance,choose=battle
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 # Generic on-use trinket line if needed when swapping trinkets out. 
