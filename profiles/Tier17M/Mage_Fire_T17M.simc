@@ -38,7 +38,7 @@ actions+=/call_action_list,name=init_combust,if=!pyro_chain
 # Utilize level 90 active talents while avoiding pyro munching
 actions+=/rune_of_power,if=buff.rune_of_power.remains<action.fireball.execute_time+gcd.max&!(buff.heating_up.up&action.fireball.in_flight)
 actions+=/mirror_image,if=!(buff.heating_up.up&action.fireball.in_flight)
-actions+=/call_action_list,name=aoe,if=active_enemies>=5
+actions+=/call_action_list,name=aoe,if=active_enemies>=4
 actions+=/call_action_list,name=single_target
 
 # Action list while Prismatic Crystal is up

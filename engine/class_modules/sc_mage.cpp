@@ -4829,7 +4829,7 @@ void mage_t::apl_arcane()
                               "if=buff.presence_of_mind.down&cooldown.presence_of_mind.remains>75" );
   default_list -> add_action( "call_action_list,name=init_crystal,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.up" );
   default_list -> add_action( "call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&pet.prismatic_crystal.active" );
-  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=5" );
+  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_list -> add_action( "call_action_list,name=burn,if=time_to_die<mana.pct*0.35*spell_haste|cooldown.evocation.remains<=(mana.pct-30)*0.3*spell_haste|(buff.arcane_power.up&cooldown.evocation.remains<=(mana.pct-30)*0.4*spell_haste)" );
   default_list -> add_action( "call_action_list,name=conserve" );
 
@@ -4975,7 +4975,7 @@ void mage_t::apl_fire()
                               "Utilize level 90 active talents while avoiding pyro munching" );
   default_list -> add_talent( this, "Mirror Image",
                               "if=!(buff.heating_up.up&action.fireball.in_flight)" );
-  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=5" );
+  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_list -> add_action( "call_action_list,name=single_target");
 
 
@@ -5109,7 +5109,7 @@ void mage_t::apl_frost()
   default_list -> add_talent( this, "Rune of Power", "if=(cooldown.icy_veins.remains<gcd.max&buff.rune_of_power.remains<20)|(cooldown.prismatic_crystal.remains<gcd.max&buff.rune_of_power.remains<10)" );
   default_list -> add_action( "call_action_list,name=cooldowns,if=time_to_die<24" );
   default_list -> add_action( "call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&(cooldown.prismatic_crystal.remains<=gcd.max|pet.prismatic_crystal.active)" );
-  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=5" );
+  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_list -> add_action( "call_action_list,name=single_target" );
 
 

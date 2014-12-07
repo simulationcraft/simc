@@ -38,7 +38,7 @@ actions+=/rune_of_power,if=buff.rune_of_power.remains<cast_time
 actions+=/rune_of_power,if=(cooldown.icy_veins.remains<gcd.max&buff.rune_of_power.remains<20)|(cooldown.prismatic_crystal.remains<gcd.max&buff.rune_of_power.remains<10)
 actions+=/call_action_list,name=cooldowns,if=time_to_die<24
 actions+=/call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&(cooldown.prismatic_crystal.remains<=gcd.max|pet.prismatic_crystal.active)
-actions+=/call_action_list,name=aoe,if=active_enemies>=5
+actions+=/call_action_list,name=aoe,if=active_enemies>=4
 actions+=/call_action_list,name=single_target
 
 # Actions while Prismatic Crystal is active
