@@ -4012,7 +4012,7 @@ void warrior_t::apl_precombat()
     precombat -> add_action( "stance,choose=battle", "\n"
                              "talent_override=bladestorm,if=raid_event.adds.count>1|desired_targets>1|(raid_event.adds.duration<10&raid_event.adds.exists)\n"
                              "talent_override=dragon_roar,if=raid_event.adds.count>1|desired_targets>1\n"
-                             "talent_override=taste_for_blood,if=raid_event.adds.count>1|desired_target>1\n"
+                             "talent_override=taste_for_blood,if=raid_event.adds.count>1|desired_targets>1\n"
                              "talent_override=ravager,if=raid_event.adds.count>1|desired_targets>1" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
                              "# Generic on-use trinket line if needed when swapping trinkets out. \n"
