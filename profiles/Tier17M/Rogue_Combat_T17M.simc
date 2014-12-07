@@ -46,9 +46,7 @@ actions+=/call_action_list,name=generator,if=combo_points<5|!dot.revealing_strik
 actions+=/call_action_list,name=finisher,if=combo_points=5&dot.revealing_strike.ticking&(buff.deep_insight.up|!talent.anticipation.enabled|(talent.anticipation.enabled&anticipation_charges>=4))
 
 actions.adrenaline_rush=adrenaline_rush,if=time_to_die>=44
-actions.adrenaline_rush+=/adrenaline_rush,if=time_to_die<44&buff.archmages_greater_incandescence_agi.react&buff.archmages_greater_incandescence_agi.remains>=buff.adrenaline_rush.duration
-actions.adrenaline_rush+=/adrenaline_rush,if=time_to_die<44&trinket.proc.any.react&trinket.proc.any.remains>=buff.adrenaline_rush.duration
-actions.adrenaline_rush+=/adrenaline_rush,if=time_to_die<44&trinket.stacking_proc.any.react&trinket.stacking_proc.any.remains>buff.adrenaline_rush.duration
+actions.adrenaline_rush+=/adrenaline_rush,if=time_to_die<44&(buff.archmages_greater_incandescence_agi.react|trinket.proc.any.react|trinket.stacking_proc.any.react)
 actions.adrenaline_rush+=/adrenaline_rush,if=time_to_die<=buff.adrenaline_rush.duration*1.5
 
 actions.killing_spree=killing_spree,if=time_to_die>=44
