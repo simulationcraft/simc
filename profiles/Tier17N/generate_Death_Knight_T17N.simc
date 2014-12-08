@@ -91,7 +91,7 @@ deathknight="Death_Knight_Blood_T17N"
 level=100
 race=tauren
 role=tank
-talents=2013302
+talents=2013102
 spec=blood
 head=ogreskull_boneplate_greathelm,id=115539
 neck=gluttons_kerchief,id=113882,enchant=gift_of_multistrike

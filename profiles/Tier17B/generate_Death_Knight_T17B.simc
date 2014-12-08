@@ -93,7 +93,7 @@ deathknight="Death_Knight_Blood_T17B”
 level=100
 race=tauren
 role=tank
-talents=2013302
+talents=2013102
 spec=blood
 head=primal_gladiators_plate_helm,id=111211
 neck=primal_gladiators_choker_of_cruelty,id=111207,enchant=gift_of_multistrike
