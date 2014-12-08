@@ -63,8 +63,6 @@ actions.generator+=/sinister_strike,if=dot.revealing_strike.ticking
 # Combo point finishers
 
 actions.finisher=death_from_above
-actions.finisher+=/crimson_tempest,if=active_enemies>6&remains<2
-actions.finisher+=/crimson_tempest,if=active_enemies>8
 actions.finisher+=/eviscerate
 
 head=sorkas_nightshade_cowl,id=113978,bonus_id=566

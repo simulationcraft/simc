@@ -4728,8 +4728,8 @@ void rogue_t::init_action_list()
     // Combo point finishers
     action_priority_list_t* finisher = get_action_priority_list( "finisher", "Combo point finishers" );
     finisher -> add_talent( this, "Death from Above" );
-    finisher -> add_action( this, "Crimson Tempest", "if=active_enemies>6&remains<2" );
-    finisher -> add_action( this, "Crimson Tempest", "if=active_enemies>8" );
+    //finisher -> add_action( this, "Crimson Tempest", "if=active_enemies>6&remains<2" );
+    //finisher -> add_action( this, "Crimson Tempest", "if=active_enemies>8" );
     finisher -> add_action( this, "Eviscerate" );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
