@@ -233,6 +233,7 @@ public:
     proc_t* windfury;
 
     proc_t* fulmination[20];
+    proc_t* fulmination_generate;
 
     proc_t* uf_flame_shock;
     proc_t* uf_fire_nova;
@@ -4860,6 +4861,8 @@ void shaman_t::trigger_fulmination_stack( const action_state_t* state )
     int stacks = ( sets.has_set_bonus( SET_CASTER, T14, B4 ) ) ? 2 : 1;
     int wasted_stacks = ( buff.lightning_shield -> check() + stacks ) - buff.lightning_shield -> max_stack();
 
+    proc.fulmination_generate -> occur();
+
     for ( int i = 0; i < wasted_stacks; i++ )
     {
       if ( sim -> current_time() - ls_reset >= cooldown.shock -> duration )
@@ -5220,6 +5223,8 @@ void shaman_t::init_procs()
 
   for ( size_t i = 0, end = sizeof_array( proc.fulmination ); i < end; i++ )
     proc.fulmination[ i ] = get_proc( "Fulmination: " + util::to_string( i ) + " stacks" );
+
+  proc.fulmination_generate = get_proc( "Fulmination: Generate" );
 }
 
 // shaman_t::init_actions ===================================================
