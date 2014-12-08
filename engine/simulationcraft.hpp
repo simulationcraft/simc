@@ -41,6 +41,9 @@
 #include <string>
 #include <typeinfo>
 #include <vector>
+#if defined( SC_OSX )
+#include <Availability.h>
+#endif
 
 #if USE_TR1_NAMESPACE
 // Use TR1

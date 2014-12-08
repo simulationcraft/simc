@@ -45,7 +45,7 @@ macx {
     CONFIG += to_install
     QMAKE_INFO_PLIST = qt/Simulationcraft.plist
     ICON = qt/icon/Simcraft2.icns
-    LIBS += -framework CoreFoundation -framework AppKit
+    LIBS += -framework CoreFoundation -framework AppKit -framework Security
     DEFINES += SIMC_NO_AUTOUPDATE
 
     Resources.files = Welcome.html Welcome.png Error.html

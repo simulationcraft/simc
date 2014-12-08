@@ -228,7 +228,7 @@ int SocketWrapper::connect( const std::string& host, unsigned short port )
   return ::connect( fd, reinterpret_cast<const sockaddr*>( &a ), sizeof( a ) );
 }
 
-#ifdef SC_USE_OPENSSL
+#if defined( SC_USE_OPENSSL )
 #include <openssl/ssl.h>
 
 struct SSLWrapper
@@ -264,6 +264,137 @@ struct SSLWrapper
 };
 
 SSL_CTX* SSLWrapper::ctx = 0;
+#elif defined( SC_OSX )
+#include <Security/Security.h>
+
+struct SSLWrapper
+{
+  static SSLContextRef ctx;
+
+  static void init()
+  {
+    if ( ! ctx )
+    {
+#if __MAC_OS_X_VERSION_MIN_REQUIRED < 1080
+      if ( SSLNewContext( false, &ctx ) < 0 )
+      {
+        return;
+      }
+#else
+      ctx = SSLCreateContext( NULL, kSSLClientSide, kSSLStreamType );
+#endif
+      assert( ctx );
+      SSLSetIOFuncs( ctx, &SSLWrapper::do_read, &SSLWrapper::do_write );
+    }
+  }
+
+  static OSStatus do_read( SSLConnectionRef connection, void* data, size_t* data_len )
+  {
+    assert( reinterpret_cast<int64_t>( connection ) <= std::numeric_limits<int>::max() );
+    int socket = ( int64_t ) connection;
+
+    ssize_t ret = recv( socket, data, *data_len, 0 );
+    if ( ret == -1 )
+    {
+      return errSSLProtocol;
+    }
+
+    *data_len = static_cast<size_t>( ret );
+
+    return 0;
+  }
+
+  static OSStatus do_write( SSLConnectionRef connection, const void* data, size_t* data_len )
+  {
+    assert( reinterpret_cast<int64_t>( connection ) <= std::numeric_limits<int>::max() );
+    int socket = ( int64_t ) connection;
+
+    ssize_t ret = send( socket, data, *data_len, 0 );
+    if ( ret == -1 )
+    {
+      return errSSLProtocol;
+    }
+
+    *data_len = static_cast<size_t>( ret );
+
+    return 0;
+  }
+
+  int socket;
+
+  SSLWrapper() : socket( -1 )
+  { }
+
+  ~SSLWrapper()
+  {
+    close();
+  }
+
+  int open( int fd, const char* peer_name, size_t peer_name_len )
+  {
+    OSStatus ret = SSLSetConnection( ctx, reinterpret_cast<SSLConnectionRef>( fd ) );
+    if ( ret < 0 )
+    {
+      return ret;
+    }
+
+    ret = SSLSetPeerDomainName( ctx, peer_name, peer_name_len );
+    if ( ret < 0 )
+    {
+      return ret;
+    }
+
+    ret = SSLHandshake( ctx );
+    if ( ret < 0 )
+    {
+      return ret;
+    }
+
+    socket = fd;
+
+    return 0;
+  }
+
+
+  int read( char* buffer, std::size_t size )
+  {
+    size_t read_bytes = 0;
+
+    OSStatus ret = SSLRead( ctx, buffer, size, &read_bytes );
+    if ( ret < 0 )
+    {
+      return ret;
+    }
+
+    return static_cast<int>( read_bytes );
+  }
+
+  int write( const char* buffer, std::size_t size )
+  {
+    size_t written_bytes = 0;
+
+    OSStatus ret = SSLWrite( ctx, buffer, size, &written_bytes );
+    if ( ret < 0 )
+    {
+      return ret;
+    }
+
+    return static_cast<int>( written_bytes );
+  }
+
+  void close()
+  {
+    SSLClose( ctx );
+#if __MAC_OS_X_VERSION_MIN_REQUIRED < 1080
+    SSLDisposeContext( ctx );
+#else
+    CFRelease( ctx );
+#endif
+    ::close( socket );
+  }
+};
+
+SSLContextRef SSLWrapper::ctx = 0;
 #endif
 
 // parse_url ================================================================
@@ -372,7 +503,7 @@ bool download( url_cache_entry_t& entry,
 
 #endif
 
-#ifdef SC_USE_OPENSSL
+#if defined( SC_USE_OPENSSL ) || defined( SC_OSX )
   SSLWrapper::init();
 #endif
 
