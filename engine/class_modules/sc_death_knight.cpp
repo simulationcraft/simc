@@ -3141,16 +3141,6 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     return cc;
   }
 
-  double composite_ta_multiplier( const action_state_t* state ) const
-  {
-    double m = death_knight_melee_attack_t::composite_ta_multiplier( state );
-
-    if ( p() -> mastery.dreadblade -> ok() )
-      m *= 1.0 + p() -> cache.mastery_value();
-
-    return m;
-  }
-
   void init()
   {
     death_knight_melee_attack_t::init();
@@ -4005,6 +3995,10 @@ struct frost_strike_offhand_t : public death_knight_melee_attack_t
     special          = true;
     base_multiplier *= 1.0 + p -> spec.threat_of_thassarian -> effectN( 3 ).percent();
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
+    if ( p -> wod_hotfix )
+    {
+      weapon_multiplier *= 1.07;
+    }
 
     rp_gain = 0; // Incorrectly set to 10 in the DBC
   }
@@ -4029,6 +4023,10 @@ struct frost_strike_t : public death_knight_melee_attack_t
   {
     special = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
+    if ( p -> wod_hotfix )
+    {
+      weapon_multiplier *= 1.07;
+    }
 
     parse_options( options_str );
 
@@ -4120,6 +4118,11 @@ struct howling_blast_t : public death_knight_spell_t
     //attack_power_mod.direct    = 1.207;
 
     assert( p -> active_spells.frost_fever );
+
+    if ( p -> wod_hotfix )
+    {
+      base_multiplier *= 1.07;
+    }
   }
 
   virtual double action_multiplier() const
@@ -4344,6 +4347,12 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
     weapon           = &( p -> off_hand_weapon );
     special          = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
+
+    if ( p -> wod_hotfix )
+    {
+      weapon_multiplier *= 1.08;
+      weapon_multiplier *= 1.07;
+    }
   }
 
   virtual double composite_crit() const
@@ -4369,7 +4378,10 @@ struct obliterate_t : public death_knight_melee_attack_t
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
     if ( p -> wod_hotfix )
+    {
       weapon_multiplier *= 1.08;
+      weapon_multiplier *= 1.07;
+    }
 
     weapon = &( p -> main_hand_weapon );
 
