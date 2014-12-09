@@ -1421,8 +1421,6 @@ struct bloodthirst_t: public warrior_attack_t
     bloodthirst_heal = new bloodthirst_heal_t( p );
     weapon_multiplier *= 1.0 +  p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 2 ).percent();
     weapon_multiplier *= 1.0 +  p -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
-    if ( p -> wod_hotfix )
-      weapon_multiplier *= 0.83;
   }
 
   double composite_crit() const
@@ -1430,6 +1428,9 @@ struct bloodthirst_t: public warrior_attack_t
     double c = warrior_attack_t::composite_crit();
 
     c += data().effectN( 4 ).percent();
+
+    if ( p() -> wod_hotfix )
+      c += 0.1;
 
     if ( p() -> buff.pvp_2pc_fury -> up() )
     {
@@ -1709,6 +1710,9 @@ struct execute_off_hand_t: public warrior_attack_t
          p -> off_hand_weapon.group() == WEAPON_1H )
          weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
 
+    if ( p -> wod_hotfix )
+      weapon_multiplier *= 1.1;
+
     weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
   }
 };
@@ -1725,6 +1729,8 @@ struct execute_t: public warrior_attack_t
 
     if ( p -> spec.crazed_berserker -> ok() )
     {
+      if ( p -> wod_hotfix ) 
+        weapon_multiplier *= 1.1;
       oh_attack = new execute_off_hand_t( p, "execute_oh", p -> find_spell( 163558 ) );
       add_child( oh_attack );
       if ( p -> main_hand_weapon.group() == WEAPON_1H &&
@@ -2162,8 +2168,6 @@ struct raging_blow_attack_t: public warrior_attack_t
   {
     may_miss = may_dodge = may_parry = may_block = false;
     dual = true;
-    if ( p -> wod_hotfix )
-      weapon_multiplier *= 0.75;
   }
 
   void impact( action_state_t* s )
@@ -2999,8 +3003,6 @@ struct wild_strike_t: public warrior_attack_t
     base_costs[RESOURCE_RAGE] += p -> talents.furious_strikes -> effectN( 1 ).resource( RESOURCE_RAGE );
     weapon = &( player -> off_hand_weapon );
     min_gcd = data().gcd();
-    if ( p -> wod_hotfix )
-      weapon_multiplier *= 0.76;
   }
 
   timespan_t gcd() const
