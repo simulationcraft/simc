@@ -2117,7 +2117,7 @@ struct comet_storm_projectile_t : public mage_spell_t
     return t;
   }
 
-  virtual double action_multipler() const
+  virtual double action_multiplier() const
   {
     double am = mage_spell_t::action_multiplier();
 
@@ -5321,7 +5321,7 @@ double mage_t::composite_rating_multiplier( rating_e rating) const
 }
 
 
-// mage_t::composite_player_multipler =======================================
+// mage_t::composite_player_multiplier =======================================
 
 double mage_t::composite_player_multiplier( school_e school ) const
 {
