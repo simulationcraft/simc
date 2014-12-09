@@ -1756,7 +1756,7 @@ struct arcane_orb_bolt_t : public mage_spell_t
     p() -> buffs.arcane_charge -> trigger();
   }
 
-  virtual double action_multipler() const
+  virtual double action_multiplier() const
   {
     double am = mage_spell_t::action_multiplier();
 
