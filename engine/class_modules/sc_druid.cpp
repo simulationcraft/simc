@@ -5674,6 +5674,17 @@ struct wrath_t : public druid_spell_t
   {
     druid_spell_t::schedule_execute( state );
 
+    if ( sim -> log || sim -> debug )
+    {
+      sim -> out_debug.printf( "Eclipse Position: %f Eclipse Direction: %f Time till next Eclipse Change: %f Time to next lunar %f Time to next Solar %f Time Till Maximum Eclipse: %f",
+        p() -> eclipse_amount,
+        p() -> eclipse_direction,
+        p() -> eclipse_change,
+        p() -> time_to_next_lunar,
+        p() -> time_to_next_solar,
+        p() -> eclipse_max );
+    }
+
     p() -> buff.cat_form  -> expire();
     p() -> buff.bear_form -> expire();
   }
@@ -7634,6 +7645,8 @@ void druid_t::balance_expressions()
   // since sin is periodic modulo 2*pi (in other words, sin(x+2*pi)=sin(x) ), we can remove any multiple of 2*pi from phi.
   // This puts phi between 0 and 2*pi, which is convenient
   phi = fmod( phi, 2 * M_PI );
+  if ( sim -> debug || sim -> log )
+    sim -> out_debug.printf( "Phi: %f", phi );
 
   // if we're already in the lunar max, just return zero
   if ( eclipse_amount > 100 )
