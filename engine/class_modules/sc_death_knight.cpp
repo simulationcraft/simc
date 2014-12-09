@@ -6788,6 +6788,7 @@ void runeforge::fallen_crusader( special_effect_t& effect,
   const death_knight_t* dk = debug_cast<const death_knight_t*>( item.player );
 
   effect.ppm_ = -1.0 * dk -> fallen_crusader_rppm;
+  effect.rppm_scale = RPPM_HASTE;
   effect.custom_buff = b;
   effect.execute_action = heal;
 
