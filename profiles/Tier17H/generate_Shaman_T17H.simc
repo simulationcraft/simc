@@ -47,7 +47,7 @@ spec=enhancement
 role=attack
 position=back
 professions=engineering=600/enchanting=600
-talents=0002012
+talents=0001023
 glyphs=chain_lightning/frost_shock
 head=blastproof_cowl,id=113891,bonus_id=566
 neck=engineers_grounded_gorget,id=113892,bonus_id=566,enchant=gift_of_haste
