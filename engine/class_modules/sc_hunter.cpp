@@ -1966,7 +1966,10 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     crit_gain = p -> perks.enhanced_aimed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS );
     crit_gain += p -> sets.set( HUNTER_MARKSMANSHIP, T17, B2 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
     if ( player -> wod_hotfix )
+    {
       weapon_multiplier *= 1.15;
+      weapon_multiplier *= 0.9;
+    }
 
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
   }
@@ -2531,7 +2534,10 @@ struct kill_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
     if ( player -> wod_hotfix )
+    {
       weapon_multiplier *= 1.15;
+      weapon_multiplier *= 0.9;
+    }
   }
 
   virtual void execute()
