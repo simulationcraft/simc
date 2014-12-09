@@ -13,6 +13,7 @@ boss_type=tmi_standard_boss
 tmi_boss=T17M
 max_time=300
 vary_combat_length=0.2
+disable_set_bonuses=1
 # Raid Tier17B
 
 #Death_Knight_Frost_1h_T17B.simc
