@@ -860,7 +860,7 @@ class ItemDataGenerator(DataGenerator):
                 else:
                     # On-use item, with a valid spell (and cooldown)
                     for item_effect in data.spells:
-                        if item_effect.trigger_type == 0 and item_effect.id_spell > 0 and item_effect.cooldown_group_duration > 0:
+                        if item_effect.trigger_type == 0 and item_effect.id_spell > 0 and (item_effect.cooldown_group_duration > 0 or item_effect.cooldown_category_duration > 0):
                             filter_ilevel = False
                             break
             # Gems
