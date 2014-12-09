@@ -1734,6 +1734,10 @@ struct eternal_flame_t : public paladin_heal_t
     
     // Sword of light
     base_multiplier *= 1.0 + p -> passives.sword_of_light -> effectN( 3 ).percent();
+
+    // WoD hotfixes
+    if ( p -> wod_hotfix & ( p -> specialization() == PALADIN_PROTECTION || p -> specialization() == PALADIN_RETRIBUTION ) )
+      base_multiplier *= 1.25;
   }
 
   virtual double cost() const
@@ -2030,6 +2034,10 @@ struct flash_of_light_t : public paladin_heal_t
     
     // Sword of light
     base_multiplier *= 1.0 + p -> passives.sword_of_light -> effectN( 6 ).percent();
+
+    // WoD hotfixes
+    if ( p -> wod_hotfix & ( p -> specialization() == PALADIN_PROTECTION || p -> specialization() == PALADIN_RETRIBUTION ) )
+      base_multiplier *= 0.8;
   }
 
   virtual double cost() const
@@ -3217,6 +3225,11 @@ struct word_of_glory_t : public paladin_heal_t
 
     // Sword of light
     base_multiplier *= 1.0 + p -> passives.sword_of_light -> effectN( 3 ).percent();
+
+    // WoD hotfixes
+    if ( p -> wod_hotfix & ( p -> specialization() == PALADIN_PROTECTION || p -> specialization() == PALADIN_RETRIBUTION ) )
+      base_multiplier *= 1.25;
+
   }
 
   virtual double cost() const
