@@ -4096,6 +4096,7 @@ struct player_collected_data_t
     timespan_t wait_time;
     std::vector<std::pair<buff_t*, int> > buff_list;
     std::array<double, RESOURCE_MAX> resource_snapshot;
+    std::array<double, RESOURCE_MAX> resource_max_snapshot;
 
     action_sequence_data_t( const timespan_t& ts, const timespan_t& wait, const player_t* p );
     action_sequence_data_t( const action_t* a, const player_t* t, const timespan_t& ts, const player_t* p );

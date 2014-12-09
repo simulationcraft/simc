@@ -9499,10 +9499,17 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const a
   }
 
   range::fill( resource_snapshot, -1 );
+  range::fill( resource_max_snapshot, -1 );
 
   for ( resource_e i = RESOURCE_HEALTH; i < RESOURCE_MAX; ++i )
+  {
     if ( p -> resources.max[ i ] > 0.0 )
+    {
       resource_snapshot[ i ] = p -> resources.current[ i ];
+      resource_max_snapshot[ i ] = p -> resources.max[ i ];
+
+    }
+  }
 }
 
 player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const timespan_t& ts, const timespan_t& wait, const player_t* p ) :
@@ -9516,10 +9523,17 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const t
   }
 
   range::fill( resource_snapshot, -1 );
+  range::fill( resource_max_snapshot, -1 );
 
   for ( resource_e i = RESOURCE_HEALTH; i < RESOURCE_MAX; ++i )
+  {
     if ( p -> resources.max[ i ] > 0.0 )
+    {
       resource_snapshot[ i ] = p -> resources.current[ i ];
+      resource_max_snapshot[ i ] = p -> resources.max[ i ];
+
+    }
+  }
 }
 
 player_collected_data_t::player_collected_data_t( const std::string& player_name, sim_t& s ) :

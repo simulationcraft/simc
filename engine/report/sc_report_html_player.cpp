@@ -1838,6 +1838,75 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
      << "</div>\n";
 }
 
+bool print_html_sample_sequence_resource( const player_t* p, const player_collected_data_t::action_sequence_data_t* data, resource_e r )
+{
+  if ( data -> resource_snapshot[ r ] < 0 )
+    return false;
+
+  if ( p -> role == ROLE_TANK && r == RESOURCE_HEALTH )
+      return true;
+
+  if ( r == RESOURCE_ECLIPSE && p -> specialization() == DRUID_BALANCE ) // Eclipse currently dips into the negatives.
+    return true;
+
+  if ( p -> resources.is_infinite( r ) )
+    return false;
+
+  return true;
+}
+
+void print_html_sample_sequence_string_entry( report::sc_html_stream& os,
+                                             player_collected_data_t::action_sequence_data_t* data,
+                                             player_t* p,
+                                             bool precombat = false )
+{
+  // Skip waiting on the condensed list
+  if ( ! data -> action )
+    return;
+
+  std::string targetname = data -> action -> harmful ? data -> target -> name() : "none";
+  std::array<char,100> time;
+  if ( precombat )
+    util::snprintf( time.data(), time.size(), "Pre" );
+  else
+    util::snprintf( time.data(), time.size(), "%d:%02d.%03d",
+                    (int) data->time.total_minutes(),
+                    (int) data->time.total_seconds() % 60,
+                    (int) data->time.total_millis() % 1000 );
+  os.printf(
+    "<span class=\"%s_seq_target_%s\" title=\"[%s] %s%s\n|",
+    p -> name(),
+    targetname.c_str(),
+    time.data(),
+    data -> action -> name(),
+    ( targetname == "none" ? "" : " @ " + targetname ).c_str() );
+
+  for ( resource_e r = RESOURCE_HEALTH; r < RESOURCE_MAX; ++r )
+  {
+    if ( print_html_sample_sequence_resource( p, data, r ) ) // Eclipse currently dips into the negatives.
+    {
+      if ( r == RESOURCE_HEALTH || r == RESOURCE_MANA )
+        os.printf( " %d%%", ( int ) ( ( data -> resource_snapshot[ r ] / data -> resource_max_snapshot[ r ] ) * 100 ) );
+      else
+        os.printf( " %.1f", data -> resource_snapshot[ r ] );
+      os.printf( " %s |", util::resource_type_string( r ) );
+    }
+  }
+
+  for ( size_t b = 0; b < data -> buff_list.size(); ++b )
+  {
+    buff_t* buff = data -> buff_list[ b ].first;
+    int stacks = data -> buff_list[ b ].second;
+    if ( ! buff -> constant )
+    {
+      os.printf( "\n%s", buff -> name() );
+      if ( stacks > 1 )
+        os.printf( "(%d)", stacks );
+    }
+  }
+
+  os.printf( "\">%c</span>", data -> action ? data -> action -> marker : 'W' );
+}
 // print_html_sample_sequence_table_entry =====================================
 
 void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
@@ -1877,24 +1946,23 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
                data -> wait_time.total_seconds() );
   }
 
-  os.printf( "<td class=\"left\" style=\"white-space: nowrap\">" );
+  os.printf( "<td class=\"left\">" );
 
   bool first = true;
   for ( resource_e r = RESOURCE_HEALTH; r < RESOURCE_MAX; ++r )
   {
-    if ( !p -> resources.is_infinite( r ) && ( data -> resource_snapshot[ r ] >= 0 || 
-      ( r == RESOURCE_ECLIPSE && p -> specialization() == DRUID_BALANCE ) ) ) // Eclipse currently dips into the negatives.
+    if ( print_html_sample_sequence_resource( p, data, r ) ) // Eclipse currently dips into the negatives.
     {
       if ( first )
         first = false;
       else
-        os.printf( " |" );
+        os.printf( " | " );
 
-      if ( r == RESOURCE_HEALTH || r == RESOURCE_MANA )
-        os.printf( " %d%%", ( int ) ( ( data -> resource_snapshot[ r ] / p -> resources.max[ r ] ) * 100 ) );
-      else
-        os.printf( " %.1f", data -> resource_snapshot[ r ] );
-      os.printf( " %s", util::resource_type_string( r ) );
+      os.printf( " %.1f/%.0f: <b>%.0f%%",
+                 data -> resource_snapshot[ r ],
+                 data -> resource_max_snapshot[ r ],
+                 data -> resource_snapshot[ r ] / data -> resource_max_snapshot[ r ] * 100.0 );
+      os.printf( " %s</b>", util::resource_type_string( r ) );
     }
   }
 
@@ -2046,48 +2114,18 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
 
     os << "</style>\n";
 
+    for ( size_t i = 0; i < p -> collected_data.action_sequence_precombat.size(); ++i )
+    {
+      player_collected_data_t::action_sequence_data_t* data = p -> collected_data.action_sequence_precombat[ i ];
+
+      print_html_sample_sequence_string_entry( os, data, p, true );
+    }
+
     for ( size_t i = 0; i < p -> collected_data.action_sequence.size(); ++i )
     {
       player_collected_data_t::action_sequence_data_t* data = p -> collected_data.action_sequence[ i ];
-      // Skip waiting on the condensed list
-      if ( ! data -> action )
-        continue;
 
-      std::string targetname = data -> action -> harmful ? data -> target -> name() : "none";
-      os.printf(
-        "<span class=\"%s_seq_target_%s\" title=\"[%d:%02d] %s%s\n|",
-        p -> name(),
-        targetname.c_str(),
-        ( int ) data -> time.total_minutes(),
-        ( int ) data -> time.total_seconds() % 60,
-        data -> action -> name(),
-        ( targetname == "none" ? "" : " @ " + targetname ).c_str() );
-
-      for ( resource_e r = RESOURCE_HEALTH; r < RESOURCE_MAX; ++r )
-      {
-        if ( ! p -> resources.is_infinite( r ) && data -> resource_snapshot[ r ] >= 0 )
-        {
-          if ( r == RESOURCE_HEALTH || r == RESOURCE_MANA )
-            os.printf( " %d%%", ( int ) ( ( data -> resource_snapshot[ r ] / p -> resources.max[ r ] ) * 100 ) );
-          else
-            os.printf( " %.1f", data -> resource_snapshot[ r ] );
-          os.printf( " %s |", util::resource_type_string( r ) );
-        }
-      }
-
-      for ( size_t b = 0; b < data -> buff_list.size(); ++b )
-      {
-        buff_t* buff = data -> buff_list[ b ].first;
-        int stacks = data -> buff_list[ b ].second;
-        if ( ! buff -> constant ) 
-        {
-          os.printf( "\n%s", buff -> name() );
-          if ( stacks > 1 )
-            os.printf( "(%d)", stacks );
-        }
-      }
-
-      os.printf( "\">%c</span>", data -> action ? data -> action -> marker : 'W' );
+      print_html_sample_sequence_string_entry( os, data, p );
     }
 
     os << "\n</div>\n"
