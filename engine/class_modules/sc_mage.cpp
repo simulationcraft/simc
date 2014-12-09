@@ -1441,6 +1441,7 @@ struct arcane_barrage_t : public mage_spell_t
     if ( p() -> wod_hotfix )
     {
       am *= 1.0 - 0.05;
+      am *= 1.16;
     }
 
     return am;
@@ -1512,6 +1513,7 @@ struct arcane_blast_t : public mage_spell_t
     if ( p() -> wod_hotfix )
     {
       am *= (1.0 - 0.05) * (1.0 + 0.1);
+      am *= 1.16;
     }
 
     return am;
@@ -1607,6 +1609,17 @@ struct arcane_explosion_t : public mage_spell_t
       }
     }
   }
+
+  virtual double action_multiplier() const
+  {
+    double am = mage_spell_t::action_multiplier();
+
+    if ( p() -> wod_hotfix )
+    { am *= 1.10; }
+
+    return am;
+
+  }
 };
 
 // Arcane Missiles Spell ====================================================
@@ -1658,6 +1671,7 @@ struct arcane_missiles_t : public mage_spell_t
     if ( p() -> wod_hotfix )
     {
       am *= 1.0 - 0.05;
+      am *= 1.16;
     }
 
     return am;
@@ -1741,6 +1755,17 @@ struct arcane_orb_bolt_t : public mage_spell_t
 
     mage_spell_t::impact( s );
     p() -> buffs.arcane_charge -> trigger();
+  }
+
+  virtual double action_multipler() const
+  {
+
+    double am = mage_spell_t::action_multiplier();
+
+    if ( p() -> wod_hotfix )
+    { am*= 1.10; }
+  
+  
   }
 };
 
@@ -2375,9 +2400,12 @@ struct fireball_t : public mage_spell_t
   {
     double c = mage_spell_t::composite_crit();
 
-    c += p() -> buffs.enhanced_pyrotechnics -> stack() *
+    /*c += p() -> buffs.enhanced_pyrotechnics -> stack() *
          p() -> perks.enhanced_pyrotechnics -> effectN( 1 ).trigger()
                                             -> effectN( 1 ).percent();
+                                            Re-enable once hotfix is applied to client files*/
+
+    c += p() -> buffs.enhanced_pyrotechnics -> stack() * 0.10; // 12_8_2014 hotfix to increase enhanced pyrotechnics scaling from 5% per stack to 10% per stack
 
     return c;
   }
@@ -2626,7 +2654,10 @@ struct frostbolt_t : public mage_spell_t
     {
       am *= 1.0 + ( p() -> buffs.ice_shard -> stack() * p() -> buffs.ice_shard -> data().effectN( 2 ).percent() );
     }
-
+    if ( p() -> wod_hotfix )
+    {
+      am *= 1.25;
+    }
     return am;
   }
 
@@ -3365,6 +3396,8 @@ struct meteor_impact_t : public mage_spell_t
     // Sp_Coeff is stored in 153564 for the impact
     parse_spell_data( *p -> dbc.spell( 155158 ) );
     spell_power_mod.direct = p -> find_spell( 153564 ) -> effectN( 1 ).sp_coeff();
+    if ( p -> wod_hotfix )
+      spell_power_mod.tick *= 1.25;
     dot_duration = timespan_t::from_seconds( 7.0 );
     hasted_ticks = may_miss = false;
     targets_hit = targets;
@@ -3480,6 +3513,14 @@ struct nether_tempest_aoe_t: public mage_spell_t
     return timespan_t::from_seconds( 1.3 );
   }
 
+  virtual double action_multiplier() const
+  {
+    double am = mage_spell_t::action_multiplier();
+    
+    if ( p() -> wod_hotfix )
+    { am*= 1.10; }
+
+  }
 };
 
 // Nether Tempest Spell ===========================================================
@@ -3838,6 +3879,7 @@ struct supernova_t : public mage_spell_t
     if ( p() -> wod_hotfix )
     {
       am *= 1.0 - 0.15;
+      am *= 1.12;
     }
 
     return am;
@@ -5309,7 +5351,8 @@ double mage_t::composite_spell_crit() const
 
   if ( buffs.molten_armor -> up() )
   {
-    c += buffs.molten_armor -> data().effectN( 1 ).percent();
+    //c +=  buffs.molten_armor -> data().effectN( 1 ).percent(); // Re-enable this once the hotfix has been updated in client data.
+    c += 0.15; // 12_8_2014 HOTFIX to increase molten armor from 5% to 15%. hardcoded for now due to it being a hotfix.
   }
 
   return c;
