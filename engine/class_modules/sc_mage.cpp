@@ -1764,6 +1764,7 @@ struct arcane_orb_bolt_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     { am*= 1.10; }
+    return am;
   
   
   }
@@ -3519,7 +3520,7 @@ struct nether_tempest_aoe_t: public mage_spell_t
     
     if ( p() -> wod_hotfix )
     { am*= 1.10; }
-
+    return am;
   }
 };
 
