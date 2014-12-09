@@ -1814,7 +1814,7 @@ struct stormstrike_attack_t : public shaman_attack_t
     base_multiplier *= 1.0 + p() -> perk.improved_stormstrike -> effectN( 1 ).percent();
     if ( player -> wod_hotfix )
     {
-      base_multiplier *= 1.20;
+      base_multiplier *= 1.44;
     }
   }
 };
@@ -2197,7 +2197,7 @@ struct lava_lash_t : public shaman_attack_t
     base_multiplier *= 1.0 + player -> perk.improved_lava_lash_2 -> effectN( 1 ).percent();
     if ( player -> wod_hotfix )
     {
-      base_multiplier *= 1.20;
+      base_multiplier *= 1.44;
     }
 
     parse_options( options_str );
@@ -2608,7 +2608,7 @@ struct chain_lightning_t : public shaman_spell_t
     base_multiplier      *= 1.0 + player -> glyph.chain_lightning -> effectN( 2 ).percent();
     if ( player -> wod_hotfix )
     {
-      base_multiplier *= 1.20;
+      base_multiplier *= 1.32;
     }
     aoe                   = player -> glyph.chain_lightning -> effectN( 1 ).base_value() + 3;
     base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
@@ -2718,7 +2718,7 @@ struct lava_beam_t : public shaman_spell_t
     base_multiplier      *= 1.0 + p() -> spec.shamanism -> effectN( 2 ).percent();
     if ( player -> wod_hotfix )
     {
-      base_multiplier *= 1.20;
+      base_multiplier *= 1.32;
     }
     aoe                   = 5;
     base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
@@ -2909,7 +2909,7 @@ struct lava_burst_t : public shaman_spell_t
     base_multiplier     *= 1.0 + player -> perk.improved_lava_burst -> effectN( 1 ).percent();
     if ( player -> wod_hotfix )
     {
-      base_multiplier *= 1.35;
+      base_multiplier *= 1.485;
     }
     uses_eoe = player -> specialization() == SHAMAN_ELEMENTAL;
   }
@@ -3033,7 +3033,11 @@ struct lightning_bolt_t : public shaman_spell_t
     may_fulmination    = player -> spec.fulmination -> ok();
     if ( player -> wod_hotfix && player -> spec.shamanism -> ok() )
     {
-      base_multiplier *= 1.7;
+      base_multiplier *= 1.87;
+    }
+    else if ( player -> wod_hotfix )
+    {
+      base_multiplier *= 1.1;
     }
     else
     {
@@ -3097,7 +3101,7 @@ struct elemental_blast_t : public shaman_spell_t
     base_multiplier *= 1.0 + player -> spec.mental_quickness -> effectN( 5 ).percent();
     if ( player -> wod_hotfix )
     {
-      base_multiplier *= 1.2069;
+      base_multiplier *= 1.32759;
     }
   }
 
