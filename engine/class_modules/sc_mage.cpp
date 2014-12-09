@@ -1440,7 +1440,7 @@ struct arcane_barrage_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= (1.0 - 0.05) * (1.0 - 0.16);
+      am *= (1.0 - 0.05) * (1.0 + 0.16);
     }
 
     return am;
