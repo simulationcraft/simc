@@ -1407,12 +1407,17 @@ struct bloodthirst_heal_t: public warrior_heal_t
 struct bloodthirst_t: public warrior_attack_t
 {
   bloodthirst_heal_t* bloodthirst_heal;
+  double crit_chance;
   bloodthirst_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "bloodthirst", p, p -> spec.bloodthirst ),
     bloodthirst_heal( NULL )
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
+
+    crit_chance = data().effectN( 4 ).percent();
+    if ( p -> wod_hotfix )
+      crit_chance += 0.1;
 
     if ( p -> talents.unquenchable_thirst -> ok() )
       cooldown -> duration = timespan_t::zero();
@@ -1427,10 +1432,7 @@ struct bloodthirst_t: public warrior_attack_t
   {
     double c = warrior_attack_t::composite_crit();
 
-    c += data().effectN( 4 ).percent();
-
-    if ( p() -> wod_hotfix )
-      c += 0.1;
+    c += crit_chance;
 
     if ( p() -> buff.pvp_2pc_fury -> up() )
     {
