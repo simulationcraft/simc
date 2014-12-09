@@ -52,15 +52,15 @@ actions+=/call_action_list,name=aoe,if=active_enemies>1
 actions.single=searing_totem,if=!totem.fire.active
 actions.single+=/unleash_elements,if=(talent.unleashed_fury.enabled|set_bonus.tier16_2pc_melee=1)
 actions.single+=/elemental_blast,if=buff.maelstrom_weapon.react>=4|buff.ancestral_swiftness.up
-actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react=5|(buff.maelstrom_weapon.react>=4&!buff.ascendance.up)|(buff.ancestral_swiftness.up&buff.maelstrom_weapon.react>=3)
 actions.single+=/windstrike
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react=5
 actions.single+=/stormstrike
 actions.single+=/lava_lash
 actions.single+=/flame_shock,if=(talent.elemental_fusion.enabled&buff.elemental_fusion.stack=2&buff.unleash_flame.up&dot.flame_shock.remains<16)|(!talent.elemental_fusion.enabled&buff.unleash_flame.up&dot.flame_shock.remains<=9)|!ticking
 actions.single+=/unleash_elements
 actions.single+=/frost_shock,if=(talent.elemental_fusion.enabled&dot.flame_shock.remains>=16)|!talent.elemental_fusion.enabled
 actions.single+=/elemental_blast,if=buff.maelstrom_weapon.react>=1
-actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=1&!buff.ascendance.up
+actions.single+=/lightning_bolt,if=(buff.maelstrom_weapon.react>=1&!buff.ascendance.up)|buff.ancestral_swiftness.up
 actions.single+=/searing_totem,if=pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up
 
 # Multi target action priority list
