@@ -68,10 +68,10 @@ actions+=/avengers_shield,if=buff.grand_crusader.react
 actions+=/sacred_shield,if=target.dot.sacred_shield.remains<2
 actions+=/holy_wrath,if=glyph.final_wrath.enabled&target.health.pct<=20
 actions+=/avengers_shield
-actions+=/lights_hammer
-actions+=/holy_prism
+actions+=/lights_hammer,if=!talent.seraphim.enabled|buff.seraphim.remains>10|cooldown.seraphim.remains<6
+actions+=/holy_prism,if=!talent.seraphim.enabled|buff.seraphim.up|cooldown.seraphim.remains>5|time<5
 actions+=/consecration,if=target.debuff.flying.down&active_enemies>=3
-actions+=/execution_sentence
+actions+=/execution_sentence,if=!talent.seraphim.enabled|buff.seraphim.up|time<12
 actions+=/hammer_of_wrath
 actions+=/sacred_shield,if=target.dot.sacred_shield.remains<8
 actions+=/consecration,if=target.debuff.flying.down
