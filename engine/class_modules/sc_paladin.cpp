@@ -1268,7 +1268,7 @@ struct blessing_of_the_guardians_t : public paladin_heal_t
 
 // Censure is the debuff applied by Seal of Truth, and it's an oddball.  The dot ticks are really melee attacks, believe it or not.
 // They cannot miss/dodge/parry (though the application of the debuff can do all of those things, and often shows up in WoL reports
-// as such) and use melee crit.  However, the tick interval also scales with spell haste like a normal DoT.  What a mess.
+// as such) and use melee crit.  Up until WoD, the tick interval also scales with spell haste like a normal DoT.
 //
 // The easiest solution here is to treat it like a spell, since that way it gets all of the spell-like properties it ought to.  However,
 // we need to tweak it to use melee crit, which we do in impact() by setting the action_state_t -> crit variable accordingly.
@@ -1278,6 +1278,10 @@ struct blessing_of_the_guardians_t : public paladin_heal_t
 // tick damage, but since we don't support stackable dots, we have to handle the stacking in the player -> debuff_censure variable and use
 // that value as an action multiplier to scale the damage.  Got all that?
 
+// 12/9/2014 update: now that this doesn't have hasted ticks anymore, it can probably be converted back to a melee. Rather than fuss with that
+// right now, though, I'm leaving it as-is (and just disabling hasted_ticks) since it's easier than dealing with the problems of converting
+// a paladin_spell_t to a paladin_melee_attack_t.
+
 struct censure_t : public paladin_spell_t
 {
   censure_t( paladin_t* p ) :
@@ -1286,7 +1290,7 @@ struct censure_t : public paladin_spell_t
     background       = true;
     proc             = true;
     tick_may_crit    = true;
-    hasted_ticks     = true; // unnecessary, as spell_base_t does this automatically; here in case we ever transition it back to a melee attack
+    hasted_ticks     = false; // necessary since spells have hasted ticks by default
 
     // Glyph of Immediate Truth reduces DoT damage
     if ( p -> glyphs.immediate_truth -> ok() )
