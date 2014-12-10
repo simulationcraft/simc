@@ -4144,6 +4144,7 @@ void warrior_t::apl_fury()
   two_targets -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   two_targets -> add_talent( this, "Bladestorm", "if=buff.enrage.up" );
   two_targets -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<50|buff.raging_blow.down" );
+  two_targets -> add_action( this, "Execute", "target=2" );
   two_targets -> add_action( this, "Execute", "if=target.health.pct<20|buff.sudden_death.react" );
   two_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.up" );
   two_targets -> add_action( this, "Whirlwind", "if=!buff.meat_cleaver.up" );
@@ -4156,8 +4157,10 @@ void warrior_t::apl_fury()
   three_targets -> add_talent( this, "Ravager", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   three_targets -> add_talent( this, "Bladestorm", "if=buff.enrage.up" );
   three_targets -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<50|buff.raging_blow.down" );
-  three_targets -> add_action( this, "Execute", "if=buff.sudden_death.react" );
   three_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack>=2" );
+  three_targets -> add_action( this, "Execute", "if=buff.sudden_death.react" );
+  three_targets -> add_action( this, "Execute", "target=2" );
+  three_targets -> add_action( this, "Execute", "target=3" );
   three_targets -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   three_targets -> add_action( this, "Whirlwind" );
   three_targets -> add_action( this, "Bloodthirst" );
@@ -4244,6 +4247,7 @@ void warrior_t::apl_arms()
   aoe -> add_talent( this, "Bladestorm" );
   aoe -> add_action( this, "Colossus Smash", "if=dot.rend.ticking" );
   aoe -> add_action( this, "Mortal Strike", "if=cooldown.colossus_smash.remains>1.5&target.health.pct>20&active_enemies=2" );
+  aoe -> add_action( this, "Execute", "target=2,if=active_enemies=2" );
   aoe -> add_action( this, "Execute", "if=((rage>60|active_enemies=2)&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|target.time_to_die<5" );
   aoe -> add_talent( this, "Dragon Roar", "if=cooldown.colossus_smash.remains>1.5&!debuff.colossus_smash.up" );
   aoe -> add_action( this, "Whirlwind", "if=cooldown.colossus_smash.remains>1.5&(target.health.pct>20|active_enemies>3)" );

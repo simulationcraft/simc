@@ -74,6 +74,7 @@ actions.aoe+=/ravager,if=buff.bloodbath.up|!talent.bloodbath.enabled
 actions.aoe+=/bladestorm
 actions.aoe+=/colossus_smash,if=dot.rend.ticking
 actions.aoe+=/mortal_strike,if=cooldown.colossus_smash.remains>1.5&target.health.pct>20&active_enemies=2
+actions.aoe+=/execute,target=2,if=active_enemies=2
 actions.aoe+=/execute,if=((rage>60|active_enemies=2)&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|target.time_to_die<5
 actions.aoe+=/dragon_roar,if=cooldown.colossus_smash.remains>1.5&!debuff.colossus_smash.up
 actions.aoe+=/whirlwind,if=cooldown.colossus_smash.remains>1.5&(target.health.pct>20|active_enemies>3)
