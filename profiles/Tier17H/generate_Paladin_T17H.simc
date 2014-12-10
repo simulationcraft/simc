@@ -36,7 +36,7 @@ main_hand=thogars_control_rod,id=113953,bonus_id=566,enchant=mark_of_warsong
 save=Paladin_Retribution_T17H.simc
 
 paladin="Paladin_Protection_T17H"
-talents=3032223
+talents=3032322
 level=100
 race=blood_elf
 spec=protection
