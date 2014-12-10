@@ -5054,7 +5054,7 @@ void paladin_t::generate_action_prio_list_prot()
   int num_items = ( int ) items.size();
   for ( int i = 0; i < num_items; i++ )
     if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      def -> add_action ( "/use_item,name=" + items[ i ].name_str );
+      def -> add_action ( "/use_item,name=" + items[ i ].name_str + ",if=!talent.seraphim.enabled|buff.seraphim.up" );
 
   // profession actions
   std::vector<std::string> profession_actions = get_profession_actions();
@@ -5109,10 +5109,10 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<2" );
   def -> add_action( this, "Holy Wrath", "if=glyph.final_wrath.enabled&target.health.pct<=20" );
   def -> add_action( this, "Avenger's Shield" );
-  def -> add_talent( this, "Light's Hammer" );
-  def -> add_talent( this, "Holy Prism" );
+  def -> add_talent( this, "Light's Hammer", "if=!talent.seraphim.enabled|buff.seraphim.remains>10|cooldown.seraphim.remains<6" );
+  def -> add_talent( this, "Holy Prism", "if=!talent.seraphim.enabled|buff.seraphim.up|cooldown.seraphim.remains>5|time<5" );
   def -> add_action( this, "Consecration", "if=target.debuff.flying.down&active_enemies>=3" );
-  def -> add_talent( this, "Execution Sentence" );
+  def -> add_talent( this, "Execution Sentence", "if=!talent.seraphim.enabled|buff.seraphim.up|time<12" );
   def -> add_action( this, "Hammer of Wrath" );
   def -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<8" );
   def -> add_action( this, "Consecration", "if=target.debuff.flying.down" );
