@@ -3345,7 +3345,8 @@ struct inferno_blast_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    if ( p() -> sets.has_set_bonus( SET_CASTER, T16, B4 ) )
+    if ( p() -> sets.has_set_bonus( SET_CASTER, T16, B4 ) &&
+         p() -> level <= 90 )
     {
       p() -> buffs.fiery_adept -> trigger();
     }
