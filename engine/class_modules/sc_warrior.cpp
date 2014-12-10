@@ -4014,10 +4014,10 @@ void warrior_t::apl_precombat()
   if ( specialization() == WARRIOR_ARMS )
   {
     precombat -> add_action( "stance,choose=battle", "\n"
-                             "talent_override=bladestorm,if=raid_event.adds.count>1|desired_targets>1|(raid_event.adds.duration<10&raid_event.adds.exists)\n"
-                             "talent_override=dragon_roar,if=raid_event.adds.count>1|desired_targets>1\n"
-                             "talent_override=taste_for_blood,if=raid_event.adds.count>1|desired_targets>1\n"
-                             "talent_override=ravager,if=raid_event.adds.count>1|desired_targets>1" );
+                             "talent_override=bladestorm,if=raid_event.adds.count>=1|desired_targets>1|(raid_event.adds.duration<10&raid_event.adds.exists)\n"
+                             "talent_override=dragon_roar,if=raid_event.adds.count>=1|desired_targets>1\n"
+                             "talent_override=taste_for_blood,if=raid_event.adds.count>=1|desired_targets>1\n"
+                             "talent_override=ravager,if=raid_event.adds.count>=1|desired_targets>1" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
                              "# Generic on-use trinket line if needed when swapping trinkets out. \n"
                              "#actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&buff.ravager.up)" );
@@ -4025,9 +4025,9 @@ void warrior_t::apl_precombat()
   else if ( specialization() == WARRIOR_FURY )
   {
     precombat -> add_action( "stance,choose=battle", "\n"
-                             "talent_override=bladestorm,if=raid_event.adds.count>1|desired_targets>1|(raid_event.adds.duration<10&raid_event.adds.exists)\n"
-                             "talent_override=dragon_roar,if=raid_event.adds.count>1|desired_targets>1\n"
-                             "talent_override=ravager,if=raid_event.adds.count>1|desired_targets>1" );
+                             "talent_override=bladestorm,if=raid_event.adds.count>=1|desired_targets>1|(raid_event.adds.duration<10&raid_event.adds.exists)\n"
+                             "talent_override=dragon_roar,if=raid_event.adds.count>=1|desired_targets>1\n"
+                             "talent_override=ravager,if=raid_event.adds.count>=1|desired_targets>1" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
                              "# Generic on-use trinket line if needed when swapping trinkets out. \n"
                              "#actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&(buff.avatar.up|!talent.avatar.enabled)))|(active_enemies>=2&buff.ravager.up)" );
@@ -4035,8 +4035,8 @@ void warrior_t::apl_precombat()
   else if ( gladiator )
   {
     precombat -> add_action( "stance,choose=gladiator", "\n"
-                             "talent_override=bladestorm,if=raid_event.adds.count>2|desired_targets>2|(raid_event.adds.duration<10&raid_event.adds.exists)\n"
-                             "talent_override=dragon_roar,if=raid_event.adds.count>1|desired_targets>1" );
+                             "talent_override=bladestorm,if=raid_event.adds.count>1|desired_targets>2|(raid_event.adds.duration<10&raid_event.adds.exists)\n"
+                             "talent_override=dragon_roar,if=raid_event.adds.count>=1|desired_targets>1" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
                              "# Generic on-use trinket line if needed when swapping trinkets out. \n"
                              "#actions+=/use_item,slot=trinket1,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10" );
@@ -4104,7 +4104,7 @@ void warrior_t::apl_fury()
       default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
   }
 
-  default_list -> add_action( "call_action_list,name=single_target,if=(raid_event.adds.cooldown<60&raid_event.adds.count>3&active_enemies=1)|raid_event.movement.cooldown<5", "Skip cooldown usage if we can line them up with bladestorm on a large set of adds, or if movement is coming soon." );
+  default_list -> add_action( "call_action_list,name=single_target,if=(raid_event.adds.cooldown<60&raid_event.adds.count>2&active_enemies=1)|raid_event.movement.cooldown<5", "Skip cooldown usage if we can line them up with bladestorm on a large set of adds, or if movement is coming soon." );
   default_list -> add_action( this, "Recklessness", "if=((target.time_to_die>190|target.health.pct<20)&(buff.bloodbath.up|!talent.bloodbath.enabled))|target.time_to_die<=12|talent.anger_management.enabled",
                               "This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown, unless the boss will die before the ability is usable again, and then use it with execute.'" );
   default_list -> add_talent( this, "Avatar", "if=(buff.recklessness.up|target.time_to_die<=30)" );
@@ -4241,14 +4241,13 @@ void warrior_t::apl_arms()
   aoe -> add_action( this, "Sweeping Strikes" );
   aoe -> add_action( this, "Rend", "if=ticks_remain<2&target.time_to_die>4" );
   aoe -> add_talent( this, "Ravager", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
-  aoe -> add_talent( this, "Bladestorm", "if=active_enemies>5" );
+  aoe -> add_talent( this, "Bladestorm" );
   aoe -> add_action( this, "Colossus Smash", "if=dot.rend.ticking" );
   aoe -> add_action( this, "Mortal Strike", "if=cooldown.colossus_smash.remains>1.5&target.health.pct>20&active_enemies=2" );
   aoe -> add_action( this, "Execute", "if=((rage>60|active_enemies=2)&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|target.time_to_die<5" );
   aoe -> add_talent( this, "Dragon Roar", "if=cooldown.colossus_smash.remains>1.5&!debuff.colossus_smash.up" );
   aoe -> add_action( this, "Whirlwind", "if=cooldown.colossus_smash.remains>1.5&(target.health.pct>20|active_enemies>3)" );
   aoe -> add_action( this, "Rend", "cycle_targets=1,if=!ticking&target.time_to_die>8" );
-  aoe -> add_talent( this, "Bladestorm", "if=cooldown.colossus_smash.remains>6&(!talent.ravager.enabled|cooldown.ravager.remains>6)" );
   aoe -> add_talent( this, "Siegebreaker" );
   aoe -> add_talent( this, "Storm Bolt", "if=cooldown.colossus_smash.remains>4|debuff.colossus_smash.up" );
   aoe -> add_talent( this, "Shockwave" );

@@ -18,10 +18,10 @@ spec=arms
 actions.precombat=flask,type=greater_draenic_strength_flask
 actions.precombat+=/food,type=blackrock_barbecue
 # 
-talent_override=bladestorm,if=raid_event.adds.count>1|desired_targets>1|(raid_event.adds.duration<10&raid_event.adds.exists)
-talent_override=dragon_roar,if=raid_event.adds.count>1|desired_targets>1
-talent_override=taste_for_blood,if=raid_event.adds.count>1|desired_targets>1
-talent_override=ravager,if=raid_event.adds.count>1|desired_targets>1
+talent_override=bladestorm,if=raid_event.adds.count>=1|desired_targets>1|(raid_event.adds.duration<10&raid_event.adds.exists)
+talent_override=dragon_roar,if=raid_event.adds.count>=1|desired_targets>1
+talent_override=taste_for_blood,if=raid_event.adds.count>=1|desired_targets>1
+talent_override=ravager,if=raid_event.adds.count>=1|desired_targets>1
 actions.precombat+=/stance,choose=battle
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 # Generic on-use trinket line if needed when swapping trinkets out. 
@@ -71,14 +71,13 @@ actions.single+=/shockwave
 actions.aoe=sweeping_strikes
 actions.aoe+=/rend,if=ticks_remain<2&target.time_to_die>4
 actions.aoe+=/ravager,if=buff.bloodbath.up|!talent.bloodbath.enabled
-actions.aoe+=/bladestorm,if=active_enemies>5
+actions.aoe+=/bladestorm
 actions.aoe+=/colossus_smash,if=dot.rend.ticking
 actions.aoe+=/mortal_strike,if=cooldown.colossus_smash.remains>1.5&target.health.pct>20&active_enemies=2
 actions.aoe+=/execute,if=((rage>60|active_enemies=2)&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|target.time_to_die<5
 actions.aoe+=/dragon_roar,if=cooldown.colossus_smash.remains>1.5&!debuff.colossus_smash.up
 actions.aoe+=/whirlwind,if=cooldown.colossus_smash.remains>1.5&(target.health.pct>20|active_enemies>3)
 actions.aoe+=/rend,cycle_targets=1,if=!ticking&target.time_to_die>8
-actions.aoe+=/bladestorm,if=cooldown.colossus_smash.remains>6&(!talent.ravager.enabled|cooldown.ravager.remains>6)
 actions.aoe+=/siegebreaker
 actions.aoe+=/storm_bolt,if=cooldown.colossus_smash.remains>4|debuff.colossus_smash.up
 actions.aoe+=/shockwave
