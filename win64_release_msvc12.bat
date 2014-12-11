@@ -10,7 +10,7 @@
 For /f "tokens=2-4 delims=/ " %%a in ('date /t') do (set mydate=%%a-%%b)
 
 :: Update the qt_dir as necessary
-set qt_dir=C:\Qt\Qt5.3.2\5.3\msvc2013_64
+set qt_dir=C:\Qt\Qt5.4.0\5.4\msvc2013_64
 set install=simc-603-17-win64
 set redist="C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\x64\Microsoft.VC120.CRT"
 
@@ -26,7 +26,6 @@ rd %install% /s /q
 
 for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\12.0" /v MSBuildToolsPath') do SET MSBUILDDIR=%%B
 
-"%MSBUILDDIR%msbuild.exe" E:\simulationcraft\simc_vs2013.sln /p:configuration=pgo /p:platform=x64 /nr:true
 
 del /s simc_cache.dat
 forfiles -s -m generate_????.simc -c "cmd /c echo Running @path && %~dp0simc64.exe @file"
