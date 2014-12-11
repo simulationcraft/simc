@@ -14,7 +14,7 @@ boss_type=tmi_standard_boss
 tmi_boss=T17N
 max_time=300
 vary_combat_length=0.2
-raid_events+=/adds,first=30,count=1,duration=30,cooldown=50
+raid_events+=/adds,first=30,count=1,duration=35,cooldown=50
 disable_set_bonuses=1
 # Raid Tier17N
 Death_Knight_Frost_1h_T17N.simc
