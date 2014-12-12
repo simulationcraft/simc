@@ -54,9 +54,9 @@ xcopy %qt_dir%\bin\Qt5MultimediaWidgets.dll %install%\
 xcopy %qt_dir%\bin\Qt5Sensors.dll %install%\
 
 xcopy %qt_dir%\bin\libGLESv2.dll %install%\
-xcopy %qt_dir%\bin\icudt52.dll %install%\
-xcopy %qt_dir%\bin\icuin52.dll %install%\
-xcopy %qt_dir%\bin\icuuc52.dll %install%\
+xcopy %qt_dir%\bin\icudt53.dll %install%\
+xcopy %qt_dir%\bin\icuin53.dll %install%\
+xcopy %qt_dir%\bin\icuuc53.dll %install%\
 xcopy %qt_dir%\bin\libEGL.dll %install%\
 xcopy %qt_dir%\bin\D3DCompiler_47.dll %install%\
 
