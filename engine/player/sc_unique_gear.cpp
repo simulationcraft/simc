@@ -430,7 +430,7 @@ void enchant::mark_of_blackrock( special_effect_t& effect,
 
     void trigger( action_t* a, void* call_data )
     {
-      if ( listener -> resources.pct( RESOURCE_HEALTH ) > 0.5 )
+      if ( listener -> resources.pct( RESOURCE_HEALTH ) >= 0.6 )
         return;
 
       dbc_proc_callback_t::trigger( a, call_data );
