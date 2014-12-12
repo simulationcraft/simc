@@ -57,7 +57,7 @@ finger1=razoredge_blade_ring,id=113908,bonus_id=567/523/448,gem_id=115812,enchan
 finger2=spellbound_runic_band_of_elemental_invincibility,id=118308,enchant=gift_of_mastery
 trinket1=blast_furnace_door,id=113893,bonus_id=567/523/448,gem_id=115812
 trinket2=pols_blinded_eye,id=113834,bonus_id=567/523/448,gem_id=115812
-main_hand=kromogs_brutal_fist,id=113927,bonus_id=567/523/448,gem_id=115812,enchant=mark_of_bleeding_hollow
+main_hand=kromogs_brutal_fist,id=113927,bonus_id=567/523/448,gem_id=115812,enchant_id=5336
 off_hand=absaloms_bloody_bulwark,id=113666,bonus_id=567/523/448,gem_id=115812
 save=Paladin_Protection_T17B.simc
 paladin="Paladin_Holy_T17M”

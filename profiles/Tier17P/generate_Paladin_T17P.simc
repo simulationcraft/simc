@@ -27,7 +27,7 @@ finger2=band_of_the_stalwart_stanchion,id=109783,bonus_id=524,enchant_id=5326
 trinket1=solar_containment_unit,id=110016,bonus_id=524
 trinket2=torias_unseeing_eye,id=110015,bonus_id=524
 back=rigid_scale_cloak,id=109915,bonus_id=524,enchant_id=5312
-main_hand=steelforged_saber,id=116454,bonus_id=208/525,enchant_id=5331
+main_hand=steelforged_saber,id=116454,bonus_id=208/525,enchant_id=5336
 off_hand=steelforged_shield,id=116647,bonus_id=207/525
 save=Paladin_Protection_T17P.simc
 
