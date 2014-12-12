@@ -52,6 +52,7 @@ xcopy %qt_dir%\bin\Qt5WebKitWidgets.dll %install%\
 xcopy %qt_dir%\bin\Qt5Multimedia.dll %install%\
 xcopy %qt_dir%\bin\Qt5MultimediaWidgets.dll %install%\
 xcopy %qt_dir%\bin\Qt5Sensors.dll %install%\
+xcopy %qt_dir%\bin\Qt5WebChannel.dll %install%\
 
 xcopy %qt_dir%\bin\libGLESv2.dll %install%\
 xcopy %qt_dir%\bin\icudt53.dll %install%\
