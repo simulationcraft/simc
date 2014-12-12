@@ -15,7 +15,7 @@
 #if defined( Q_OS_MAC )
 #include <CoreFoundation/CoreFoundation.h>
 #endif
-#include <QtCore/QtCore>
+#include <QStandardPaths>
 
 static int SC_GUI_HISTORY_VERSION = 6;
 

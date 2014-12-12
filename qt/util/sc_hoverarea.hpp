@@ -7,7 +7,8 @@
 
 #include "config.hpp"
 #include <QtWidgets/QWidget>
-#include <QtCore/Qtcore>
+#include <QTimer>
+#include <QEvent>
 
 // ============================================================================
 // SC_HoverAreaWidget
