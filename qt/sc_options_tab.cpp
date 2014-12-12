@@ -831,7 +831,7 @@ void SC_OptionsTab::createToolTips()
   choice.target_error -> setToolTip( tr( "This options sets a target error threshold and\n" ) +
                                      tr( "runs iterations until that threshold is reached.\n" ) +
                                      tr( "N/A:  Do not use this feature.\n" ) +
-                                     tr( "Auto: use sim defaults based on other options.\n" ) +
+                                     tr( "Auto: use sim defaults based on other options\n     (0.2%, 0.05% for scale factors).\n" ) +
                                      tr( "X%:   Run until DPS error is less than X%." ) );
   choice.iterations -> setToolTip( tr( "%1:    Fast and Rough" ).arg( 100 ) + "\n" +
                                    tr( "%1:   Sufficient for DPS Analysis" ).arg( 1000 ) + "\n" +
@@ -939,8 +939,8 @@ void SC_OptionsTab::createToolTips()
                                        "The deltas on the horizontal axis will be within the [-points * steps / 2 ; +points * steps / 2] interval" ) );
 
   choice.plots_target_error -> setToolTip( tr( "Target error for plots.\n" ) +
-                                           tr( "N/A:  Do not use this feature." ) +
-                                           tr( "Auto: Use simulation defaults.\n" ) +
+                                           tr( "N/A:  Do not use this feature.\n" ) +
+                                           tr( "Auto: Use simulation defaults (0.5%).\n" ) +
                                            tr( "X%:   Each plot point will sim until less than X% DPS error is reached." ) );
   choice.plots_iterations -> setToolTip( tr( "Number of iterations for each plot point.\n" ) +
                                          tr( "Iter/10 and Iter/100 scale with the number of\n" ) +
