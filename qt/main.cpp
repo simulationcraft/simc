@@ -1,6 +1,6 @@
 #include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
-#include <QLocale>
+#include <QtCore/QtCore>
 #include <QtWidgets/QApplication>
 #include <locale>
 

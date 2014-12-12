@@ -8,7 +8,7 @@
 #ifdef SC_PAPERDOLL
 #include "simcpaperdoll.hpp"
 #endif
-#include <QtWebKit>
+#include <QtWebKit/QtWebKit>
 #ifdef Q_OS_MAC
 #include <CoreFoundation/CoreFoundation.h>
 #endif
