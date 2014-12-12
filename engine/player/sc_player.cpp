@@ -3190,7 +3190,7 @@ void player_t::combat_end()
     if ( ! is_pet() && ! is_enemy() )
       if ( f_length > 0 && ( w_time / f_length ) > 0.25 )
       {
-	; // ready_type = READY_TRIGGER
+  ; // ready_type = READY_TRIGGER
       }
 
   if ( sim -> debug )
@@ -9893,7 +9893,7 @@ void player_collected_data_t::collect_data( const player_t& p )
         // Max spike uses health_changes_tmi as well, ignores external heals - use health_changes_tmi
         max_spike = calculate_max_spike_damage( health_changes_tmi, window );
 
-	tank_metric = tmi;
+  tank_metric = tmi;
       }
     }
     theck_meloree_index.add( tmi );
