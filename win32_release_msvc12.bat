@@ -20,7 +20,7 @@ set redist="C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\x86\Mi
 
 :: Delete old folder/files
 rd %install% /s /q
-rd QTLib /s /q 
+rd Plugins /s /q 
 
 for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\12.0" /v MSBuildToolsPath') do SET MSBUILDDIR=%%B
 
@@ -31,6 +31,32 @@ windeployqt --release --no-translations --no-compiler-runtime --dir Plugins simu
 xcopy %redist%\msvcp120.dll %install%\
 xcopy %redist%\msvcr120.dll %install%\
 xcopy %redist%\vccorlib120.dll %install%\
+
+move Plugins\Qt5Core.dll %install%\
+move Plugins\Qt5OpenGL.dll %install%\
+move Plugins\Qt5PrintSupport.dll %install%\
+move Plugins\Qt5Quick.dll %install%\
+move Plugins\Qt5Qml.dll %install%\
+move Plugins\Qt5Positioning.dll %install%\
+move Plugins\Qt5Sql.dll %install%\
+move Plugins\Qt5Gui.dll %install%\
+move Plugins\Qt5Widgets.dll %install%\
+move Plugins\Qt5Network.dll %install%\
+move Plugins\Qt5WebKit.dll %install%\
+move Plugins\Qt5WebKitWidgets.dll %install%\
+move Plugins\Qt5Multimedia.dll %install%\
+move Plugins\Qt5MultimediaWidgets.dll %install%\
+move Plugins\Qt5Sensors.dll %install%\
+move Plugins\Qt5WebChannel.dll %install%\
+move Plugins\Qt5Svg.dll %install%\
+
+move Plugins\libGLESv2.dll %install%\
+move Plugins\icudt53.dll %install%\
+move Plugins\icuin53.dll %install%\
+move Plugins\icuuc53.dll %install%\
+move Plugins\libEGL.dll %install%\
+move Plugins\D3DCompiler_47.dll %install%\
+
 xcopy Welcome.html %install%\
 xcopy Welcome.png %install%\
 xcopy Simulationcraft.exe %install%\
