@@ -439,6 +439,9 @@ public:
     proc_t* ready_blood;
     proc_t* ready_frost;
     proc_t* ready_unholy;
+
+    proc_t* reaping_bug_blood;
+    proc_t* reaping_bug_frost;
   } procs;
 
   real_ppm_t t15_2pc_melee;
@@ -2392,26 +2395,77 @@ struct death_knight_action_t : public Base
 
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     {
-      if ( use[ i ] )
+      if ( ! use[ i ] )
       {
-        const rune_t& rune = p() -> _runes.slot[ i ];
-        if ( rune.is_death() )
-          rune_consumed[ RUNE_TYPE_DEATH - 1 ] -> occur();
-        else if ( rune.is_blood() )
-          rune_consumed[ RUNE_TYPE_BLOOD - 1 ] -> occur();
-        else if ( rune.is_unholy() )
-          rune_consumed[ RUNE_TYPE_UNHOLY - 1 ] -> occur();
-        else if ( rune.is_frost() )
-          rune_consumed[ RUNE_TYPE_FROST - 1 ] -> occur();
-
-        // Show the consumed type of the rune
-        // Not the type it is after consumption
-        int consumed_type = p() -> _runes.slot[ i ].type;
-        p() -> _runes.slot[ i ].consume( convert_runes );
-
-        if ( p() -> sim -> log )
-          p() -> sim -> out_log.printf( "%s consumes rune #%d, type %d", p() -> name(), i, consumed_type );
+        continue;
       }
+
+      const rune_t& rune = p() -> _runes.slot[ i ];
+      if ( rune.is_death() )
+        rune_consumed[ RUNE_TYPE_DEATH - 1 ] -> occur();
+      else if ( rune.is_blood() )
+        rune_consumed[ RUNE_TYPE_BLOOD - 1 ] -> occur();
+      else if ( rune.is_unholy() )
+        rune_consumed[ RUNE_TYPE_UNHOLY - 1 ] -> occur();
+      else if ( rune.is_frost() )
+        rune_consumed[ RUNE_TYPE_FROST - 1 ] -> occur();
+
+      // Show the consumed type of the rune
+      // Not the type it is after consumption
+      int consumed_type = p() -> _runes.slot[ i ].type;
+
+      // Reaping bug.
+      if ( p() -> bugs )
+      {
+        // If you use a Reaping ability, consuming an Unholy (Death) rune.
+        // The reaping bug will convert a Blood or a Frost rune to Death.
+        if ( p() -> spec.reaping -> ok() && rune.is_unholy() && rune.is_death() )
+        {
+          p() -> _runes.slot[ i ].consume( 0 );
+
+          // Loop through Blood and Frost runes, converting the first
+          // regenerating non-death rune to death.
+          for ( size_t reap_rune_idx = 0; reap_rune_idx < 4; reap_rune_idx++ )
+          {
+            rune_t& convert_rune = p() -> _runes.slot[ reap_rune_idx ];
+            // You'll only end up in this situation if you dont have a ready F
+            // or B rune, meaning you will be regenerating one of the rune
+            // types.
+            if ( convert_rune.is_death() || convert_rune.is_ready() || convert_rune.is_depleted() )
+            {
+              continue;
+            }
+
+            convert_rune.type |= RUNE_TYPE_DEATH;
+            if ( convert_rune.is_blood() )
+            {
+              p() -> procs.reaping_bug_blood -> occur();
+            }
+            else if ( convert_rune.is_frost() )
+            {
+              p() -> procs.reaping_bug_frost -> occur();
+            }
+
+            if ( p() -> sim -> debug )
+            {
+              p() -> sim -> out_debug.printf( "%s reaping bug, used rune %d (death), changed rune %d to death",
+                  p() -> name(), i, reap_rune_idx );
+            }
+            break;
+          }
+        }
+        else
+        {
+          p() -> _runes.slot[ i ].consume( convert_runes );
+        }
+      }
+      else
+      {
+        p() -> _runes.slot[ i ].consume( convert_runes );
+      }
+
+      if ( p() -> sim -> log )
+        p() -> sim -> out_log.printf( "%s consumes rune #%d, type %d", p() -> name(), i, consumed_type );
     }
 
     if ( p() -> sim -> log )
@@ -5822,7 +5876,7 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
     };
     return new rune_inspection_expr_t( this, rt, include_death, position, act );
   }
-  else if ( splits.size() == 2 && ! util::str_compare_ci( splits[ 1 ], "frac" ) )
+  else if ( splits.size() == 2 && ! util::str_compare_ci( splits[ 1 ], "frac" ) && ! util::str_compare_ci( splits[ 1 ], "death" ) )
   {
     rune_type rt = RUNE_TYPE_NONE;
     bool include_death = false;
@@ -7082,6 +7136,9 @@ void death_knight_t::init_procs()
   procs.ready_blood              = get_proc( "Blood runes ready" );
   procs.ready_frost              = get_proc( "Frost runes ready" );
   procs.ready_unholy             = get_proc( "Unholy runes ready" );
+
+  procs.reaping_bug_blood        = get_proc( "Reaping bug: Blood" );
+  procs.reaping_bug_frost        = get_proc( "Reaping bug: Frost" );
 }
 
 // death_knight_t::init_resources ===========================================
