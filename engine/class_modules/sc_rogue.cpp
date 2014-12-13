@@ -475,6 +475,24 @@ inline bool rogue_td_t::sanguinary_veins()
 namespace actions { // namespace actions
 
 // ==========================================================================
+// Static Functions
+// ==========================================================================
+
+// break_stealth ============================================================
+
+static void break_stealth( rogue_t* p )
+{
+  if ( p -> buffs.stealth -> check() )
+    p -> buffs.stealth -> expire();
+
+  if ( p -> buffs.vanish -> check() )
+    p -> buffs.vanish -> expire();
+
+  if ( p -> player_t::buffs.shadowmeld -> check() )
+    p -> player_t::buffs.shadowmeld -> expire();
+}
+
+// ==========================================================================
 // Rogue Attack
 // ==========================================================================
 
@@ -1149,24 +1167,6 @@ struct apply_poison_t : public action_t
 };
 
 // ==========================================================================
-// Static Functions
-// ==========================================================================
-
-// break_stealth ============================================================
-
-static void break_stealth( rogue_t* p )
-{
-  if ( p -> buffs.stealth -> check() )
-    p -> buffs.stealth -> expire();
-
-  if ( p -> buffs.vanish -> check() )
-    p -> buffs.vanish -> expire();
-
-  if ( p -> player_t::buffs.shadowmeld -> check() )
-    p -> player_t::buffs.shadowmeld -> expire();
-}
-
-// ==========================================================================
 // Attacks
 // ==========================================================================
 
@@ -1313,7 +1313,7 @@ void rogue_attack_t::execute()
       player -> resource_gain( RESOURCE_COMBO_POINT, cp, p() -> gains.t17_4pc_subtlety );
   }
 
-  if ( ! background && harmful && stealthed() )
+  if ( harmful && stealthed() )
   {
     if ( ! p() -> talent.subterfuge -> ok() )
       break_stealth( p() );
@@ -3713,7 +3713,16 @@ struct subterfuge_t : public buff_t
   void expire_override()
   {
     buff_t::expire_override();
-    actions::break_stealth( rogue );
+    // The Glyph of Vanish bug is back, so if Vanish is still up when
+    // Subterfuge fades, don't cancel stealth. Instead, the next offensive
+    // action in the sim will trigger a new (3 seconds) of Suberfuge.
+    if ( ( rogue -> bugs && (
+            rogue -> buffs.vanish -> remains() == timespan_t::zero() ||
+            rogue -> buffs.vanish -> check() == 0 ) ) ||
+        ! rogue -> bugs )
+    {
+      actions::break_stealth( rogue );
+    }
   }
 };
 
@@ -3732,16 +3741,7 @@ struct vanish_t : public buff_t
   {
     buff_t::execute( stacks, value, duration );
 
-    rogue -> buffs.master_of_subtlety -> expire();
-    rogue -> buffs.master_of_subtlety_passive -> trigger();
-  }
-
-  void expire_override()
-  {
-    buff_t::expire_override();
-
-    rogue -> buffs.master_of_subtlety_passive -> expire();
-    rogue -> buffs.master_of_subtlety -> trigger();
+    rogue -> buffs.stealth -> trigger();
   }
 };
 
