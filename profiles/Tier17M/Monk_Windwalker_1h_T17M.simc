@@ -28,7 +28,7 @@ actions+=/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4
 actions+=/potion,name=draenic_agility,if=buff.serenity.up|(!talent.serenity.enabled&trinket.proc.agility.react)
 actions+=/blood_fury,if=buff.tigereye_brew_use.up|target.time_to_die<18
 actions+=/berserking,if=buff.tigereye_brew_use.up|target.time_to_die<18
-actions+=/arcane_torrent,if=buff.tigereye_brew_use.up|target.time_to_die<18
+actions+=/arcane_torrent,if=chi.max-chi>=1&(buff.tigereye_brew_use.up|target.time_to_die<18)
 actions+=/chi_brew,if=chi.max-chi>=2&((charges=1&recharge_time<=10)|charges=2|target.time_to_die<charges*10)&buff.tigereye_brew.stack<=16
 actions+=/tiger_palm,if=buff.tiger_power.remains<=3
 actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack=20

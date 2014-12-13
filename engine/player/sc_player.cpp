@@ -5593,6 +5593,7 @@ struct arcane_torrent_t : public racial_spell_t
       case RESOURCE_RAGE:
       case RESOURCE_RUNIC_POWER:
       case RESOURCE_HOLY_POWER:
+      case RESOURCE_CHI:
         gain = data().effectN( 2 ).resource( resource );
         break;
       default:

@@ -4855,7 +4855,12 @@ void monk_t::apl_combat_windwalker()
       def -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.tigereye_brew_use.up|target.time_to_die<18" );
   }
   for ( size_t i = 0; i < racial_actions.size(); i++ )
-    def -> add_action( racial_actions[i] + ",if=buff.tigereye_brew_use.up|target.time_to_die<18" );
+  {
+    if ( racial_actions[i] == "arcane_torrent" )
+      def -> add_action( racial_actions[i] + ",if=chi.max-chi>=1&(buff.tigereye_brew_use.up|target.time_to_die<18)" );
+    else
+      def -> add_action( racial_actions[i] + ",if=buff.tigereye_brew_use.up|target.time_to_die<18" );
+  }
 
   def -> add_talent( this, "Chi Brew", "if=chi.max-chi>=2&((charges=1&recharge_time<=10)|charges=2|target.time_to_die<charges*10)&buff.tigereye_brew.stack<=16" );
   def -> add_action( this, "Tiger Palm", "if=buff.tiger_power.remains<=3" );

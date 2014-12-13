@@ -44,7 +44,7 @@ actions+=/recklessness,if=((target.time_to_die>190|target.health.pct<20)&(buff.b
 actions+=/avatar,if=(buff.recklessness.up|target.time_to_die<=30)
 actions+=/blood_fury,if=buff.bloodbath.up|!talent.bloodbath.enabled|buff.recklessness.up
 actions+=/berserking,if=buff.bloodbath.up|!talent.bloodbath.enabled|buff.recklessness.up
-actions+=/arcane_torrent,if=buff.bloodbath.up|!talent.bloodbath.enabled|buff.recklessness.up
+actions+=/arcane_torrent,if=rage<rage.max-40
 actions+=/call_action_list,name=single_target,if=active_enemies=1
 actions+=/call_action_list,name=two_targets,if=active_enemies=2
 actions+=/call_action_list,name=three_targets,if=active_enemies=3

@@ -4110,7 +4110,12 @@ void warrior_t::apl_fury()
   default_list -> add_talent( this, "Avatar", "if=(buff.recklessness.up|target.time_to_die<=30)" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
-    default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|!talent.bloodbath.enabled|buff.recklessness.up" );
+  {
+    if ( racial_actions[i] == "arcane_torrent" )
+      default_list -> add_action( racial_actions[i] + ",if=rage<rage.max-40" );
+    else
+      default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|!talent.bloodbath.enabled|buff.recklessness.up" );
+  }
 
   default_list -> add_action( "call_action_list,name=single_target,if=active_enemies=1" );
   default_list -> add_action( "call_action_list,name=two_targets,if=active_enemies=2" );
@@ -4216,7 +4221,12 @@ void warrior_t::apl_arms()
   default_list -> add_talent( this, "Avatar", "if=buff.recklessness.up|target.time_to_die<25" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
-    default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up" );
+  {
+    if ( racial_actions[i] == "arcane_torrent" )
+      default_list -> add_action( racial_actions[i] + ",if=rage<rage.max-40" );
+    else
+      default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up" );
+  }
 
   default_list -> add_action( this, "Heroic Leap", "if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists" );
   default_list -> add_action( "call_action_list,name=single,if=active_enemies=1" );
@@ -4364,7 +4374,12 @@ void warrior_t::apl_glad()
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<15" );
   }
   for ( size_t i = 0; i < racial_actions.size(); i++ )
-    default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10" );
+  {
+    if ( racial_actions[i] == "arcane_torrent" )
+      default_list -> add_action( racial_actions[i] + ",if=rage<rage.max-40" );
+    else
+      default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10" );
+  }
   if ( sim -> allow_potions )
     default_list -> add_action( "potion,name=draenic_armor,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up" );
 
