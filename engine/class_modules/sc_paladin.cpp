@@ -2771,10 +2771,9 @@ struct lay_on_hands_t : public paladin_heal_t
       if ( p -> glyphs.divinity -> ok() )
           cooldown -> duration += p -> glyphs.divinity -> effectN( 1 ).time_value();
 
+      may_crit = false;
       use_off_gcd = true;
       trigger_gcd = timespan_t::zero();
-
-    pct_heal = 1.0;
 
     if ( p -> glyphs.divinity -> ok() )
       mana_return_pct = p -> find_spell( 54986 ) -> effectN( 1 ).percent();
@@ -2782,6 +2781,8 @@ struct lay_on_hands_t : public paladin_heal_t
 
   virtual void execute()
   {
+    base_dd_min = base_dd_max = p() -> resources.max[RESOURCE_HEALTH];
+
     paladin_heal_t::execute();
 
     target -> debuffs.forbearance -> trigger();
