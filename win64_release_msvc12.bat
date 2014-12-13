@@ -25,7 +25,7 @@ rd Plugins /s /q
 for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\12.0" /v MSBuildToolsPath') do SET MSBUILDDIR=%%B
 "%MSBUILDDIR%msbuild.exe" E:\simulationcraft\simc_vs2013.sln /p:configuration=pgo /p:platform=x64 /nr:true
 forfiles -s -m generate_????.simc -c "cmd /c echo Running @path && %~dp0simc64.exe @file"
-windeployqt --release --no-translations --no-compiler-runtime --dir Plugins simulationcraft64.exe
+windeployqt64 --release --no-translations --no-compiler-runtime --dir Plugins simulationcraft64.exe
 
 xcopy %redist%\msvcp120.dll %install%\
 xcopy %redist%\msvcr120.dll %install%\
