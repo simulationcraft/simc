@@ -6121,7 +6121,7 @@ struct use_item_t : public action_t
 
     if ( player -> item_cooldown.remains() > timespan_t::zero() ) return false;
 
-    if ( ! action -> ready() )
+    if ( action && ! action -> ready() )
     {
       return false;
     }
