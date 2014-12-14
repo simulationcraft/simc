@@ -3670,7 +3670,9 @@ struct defile_t : public death_knight_spell_t
     dot_t* dot = find_dot( state -> target );
 
     if ( dot )
-      m *= std::pow( 1.0 + data().effectN( 2 ).percent() / 100, dot -> current_tick );
+    {
+      m *= std::pow( 1.0 + data().effectN( 2 ).percent() / 100, std::max( dot -> current_tick - 1, 0 ) );
+    }
 
     return m;
   }
