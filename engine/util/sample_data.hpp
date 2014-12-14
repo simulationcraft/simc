@@ -320,7 +320,11 @@ protected:
 public:
   simple_sample_data_with_min_max_t() :
     base_t(), _found( false ),
-    _min( std::numeric_limits<value_t>::infinity() ), _max( -std::numeric_limits<value_t>::infinity() ) {}
+    _min( std::numeric_limits<value_t>::max() ),
+    _max( -std::numeric_limits<value_t>::min() )
+  {
+
+  }
 
   void add( value_t x )
   {
