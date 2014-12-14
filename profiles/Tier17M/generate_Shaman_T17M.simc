@@ -21,21 +21,23 @@ professions=blacksmithing=600/engineering=600
 talents=0001011
 glyphs=chain_lightning
 head=windspeakers_faceguard,id=115579,bonus_id=567
-neck=gruuls_lip_ring,id=113872,bonus_id=567,enchant=gift_of_multistrike
+neck=odyssian_choker,id=113833,bonus_id=567,enchant=gift_of_multistrike
 shoulders=windspeakers_mantle,id=115576,bonus_id=567
 back=runescribed_gronncloak,id=120078,bonus_id=567,enchant=gift_of_multistrike
-chest=chestguard_of_the_siegemaker,id=113982,bonus_id=567
+chest=windspeakers_tunic,id=115577,bonus_id=567
 wrists=bloodwhirl_bracers,id=113968,bonus_id=567
 hands=windspeakers_handwraps,id=115578,bonus_id=567
 waist=grenadiers_belt,id=113955,bonus_id=567
-legs=windspeakers_legwraps,id=115575,bonus_id=567
+legs=legguards_of_the_stampede,id=113944,bonus_id=567
 feet=railwalkers_ratcheted_boots,id=113954,bonus_id=567
 finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
-finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant=gift_of_multistrike
+finger2=epicenter_loop,id=113947,bonus_id=567,enchant=gift_of_multistrike
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567
 trinket2=blackiron_micro_crucible,id=113984,bonus_id=567
-main_hand=franzoks_headsmasher,id=113904,bonus_id=567,enchant=mark_of_the_frostwolf
-off_hand=heart_of_the_clefthoof,id=113946,bonus_id=567
+main_hand=koloch_na_the_blood_feast,id=113973,bonus_id=567,enchant=mark_of_the_frostwolf
+off_hand=enginestokers_lantern,id=113960,bonus_id=567
+
+
 save=Shaman_Elemental_T17M.simc
 
 
