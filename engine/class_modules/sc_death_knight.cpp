@@ -2419,7 +2419,7 @@ struct death_knight_action_t : public Base
       {
         // If you use a Reaping ability, consuming an Unholy (Death) rune.
         // The reaping bug will convert a Blood or a Frost rune to Death.
-        if ( p() -> spec.reaping -> ok() && rune.is_unholy() && rune.is_death() && convert_runes > 0 )
+        if ( p() -> spec.reaping -> ok() && rune.is_unholy() && rune.is_death() && convert_runes != 0 )
         {
           p() -> _runes.slot[ i ].consume( 0 );
 

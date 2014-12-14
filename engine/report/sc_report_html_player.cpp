@@ -1034,22 +1034,22 @@ void print_html_gear ( report::sc_html_stream& os, player_t* p )
   {
     item_t& item = p -> items[ i ];
 
-    std::string domain = p -> dbc.ptr ? "ptr" : "wod";
+    std::string domain = p -> dbc.ptr ? "ptr" : "www";
     std::string item_string;
     if ( item.active() )
     {
       std::string rel_str = "";
+      rel_str += "bonus=";
       if ( item.parsed.bonus_id.size() )
       {
-        rel_str += " rel=\"bonus=";
         for ( size_t k = 0; k < item.parsed.bonus_id.size(); k++ )
         {
           rel_str += util::to_string( item.parsed.bonus_id[k] );
           rel_str += ":";
         }
-        rel_str += "\"";
       }
-      item_string = ! item.parsed.data.id ? item.options_str : "<a href=\"http://" + domain + ".wowhead.com/item=" + util::to_string( item.parsed.data.id ) + "\"" + rel_str + ">" + item.encoded_item() + "</a>";
+      item_string = ! item.parsed.data.id ? item.options_str : "<a href=\"http://" + domain + ".wowhead.com/item=" + util::to_string( item.parsed.data.id ) + "&" 
+        + rel_str + "\"" + " rel=" + rel_str + "\"" + ">" + "</a>";
     }
     else
     {
