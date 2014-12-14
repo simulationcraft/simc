@@ -68,6 +68,7 @@ actions.prot_aoe+=/dragon_roar,if=(buff.bloodbath.up|cooldown.bloodbath.remains>
 actions.prot_aoe+=/shockwave
 actions.prot_aoe+=/revenge
 actions.prot_aoe+=/thunder_clap
+actions.prot_aoe+=/bladestorm
 actions.prot_aoe+=/shield_slam
 actions.prot_aoe+=/storm_bolt
 actions.prot_aoe+=/shield_slam

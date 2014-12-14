@@ -4101,7 +4101,9 @@ void warrior_t::apl_fury()
   size_t num_items = items.size();
   for ( size_t i = 0; i < num_items; i++ )
   {
-    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    if ( items[i].name_str == "scabbard_of_kyanos" )
+      default_list -> add_action( "use_item,name=" + items[i].name_str );
+    else if ( items[i].parsed.encoded_addon != "nitro_boosts" && items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.bloodbath.up|talent.avatar.enabled" );
   }
 
@@ -4132,6 +4134,11 @@ void warrior_t::apl_fury()
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>3" );
 
   movement -> add_action( this, "Heroic Leap" );
+  for ( size_t i = 0; i < num_items; i++ )
+  {
+    if ( items[i].parsed.encoded_addon == "nitro_boosts" )
+      movement -> add_action( "use_item,name=" + items[i].name_str + ",if=movement.distance>90" );
+  }
   movement -> add_talent( this, "Storm Bolt", "", "May as well throw storm bolt if we can." );
   movement -> add_action( this, "Heroic Throw" );
 
@@ -4148,7 +4155,7 @@ void warrior_t::apl_fury()
   single_target -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   single_target -> add_action( this, "Raging Blow" );
   single_target -> add_action( this, "Wild Strike", "if=buff.enrage.up&target.health.pct>20" );
-  single_target -> add_action( this, "Bladestorm", "if=!raid_events.adds.exists" );
+  single_target -> add_talent( this, "Bladestorm", "if=!raid_event.adds.exists" );
   single_target -> add_talent( this, "Shockwave", "if=!talent.unquenchable_thirst.enabled" );
   single_target -> add_talent( this, "Impending Victory", "if=!talent.unquenchable_thirst.enabled&target.health.pct>20" );
   single_target -> add_action( this, "Bloodthirst" );
@@ -4212,7 +4219,9 @@ void warrior_t::apl_arms()
   size_t num_items = items.size();
   for ( size_t i = 0; i < num_items; i++ )
   {
-    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    if ( items[i].name_str == "scabbard_of_kyanos" )
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=debuff.colossus_smash.up" );
+    else if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) && items[i].parsed.encoded_addon != "nitro_boosts" )
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))" );
   }
 
@@ -4242,13 +4251,18 @@ void warrior_t::apl_arms()
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>1" );
 
   movement -> add_action( this, "Heroic Leap" );
+  for ( size_t i = 0; i < num_items; i++ )
+  {
+    if ( items[i].parsed.encoded_addon == "nitro_boosts" )
+      movement -> add_action( "use_item,name=" + items[i].name_str + ",if=movement.distance>90" );
+  }
   movement -> add_talent( this, "Storm Bolt", "", "May as well throw storm bolt if we can." );
   movement -> add_action( this, "Heroic Throw" );
 
   single_target -> add_action( this, "Rend", "if=!ticking&target.time_to_die>4" );
   single_target -> add_talent( this, "Ravager", "if=cooldown.colossus_smash.remains<4" );
   single_target -> add_action( this, "Colossus Smash" );
-  single_target -> add_action( this, "Bladestorm", "if=!raid_events.adds.exists&debuff.colossus_smash.up&rage<70" );
+  single_target -> add_talent( this, "Bladestorm", "if=!raid_event.adds.exists&debuff.colossus_smash.up&rage<70" );
   single_target -> add_action( this, "Mortal Strike", "if=target.health.pct>20&cooldown.colossus_smash.remains>1" );
   single_target -> add_talent( this, "Storm Bolt", "if=(cooldown.colossus_smash.remains>4|debuff.colossus_smash.up)&rage<90" );
   single_target -> add_talent( this, "Siegebreaker" );
@@ -4351,7 +4365,7 @@ void warrior_t::apl_prot()
   prot_aoe -> add_talent( this, "Shockwave" );
   prot_aoe -> add_action( this, "Revenge" );
   prot_aoe -> add_action( this, "Thunder Clap" );
-  prot_aoe -> add_action( this, "Bladestorm" );
+  prot_aoe -> add_talent( this, "Bladestorm" );
   prot_aoe -> add_action( this, "Shield Slam" );
   prot_aoe -> add_talent( this, "Storm Bolt" );
   prot_aoe -> add_action( this, "Shield Slam" );
@@ -4379,7 +4393,7 @@ void warrior_t::apl_glad()
   size_t num_items = items.size();
   for ( size_t i = 0; i < num_items; i++ )
   {
-    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) && items[i].parsed.encoded_addon != "nitro_boosts")
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<15" );
   }
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -4402,6 +4416,11 @@ void warrior_t::apl_glad()
 
   movement -> add_action( this, "Heroic Leap" );
   movement -> add_action( "shield_charge" );
+  for ( size_t i = 0; i < num_items; i++ )
+  {
+    if ( items[i].parsed.encoded_addon == "nitro_boosts" )
+      movement -> add_action( "use_item,name=" + items[i].name_str + ",if=movement.distance>90" );
+  }
   movement -> add_talent( this, "Storm Bolt", "", "May as well throw storm bolt if we can." );
   movement -> add_action( this, "Heroic Throw" );
 

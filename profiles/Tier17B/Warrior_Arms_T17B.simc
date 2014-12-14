@@ -55,6 +55,7 @@ actions.movement+=/heroic_throw
 actions.single=rend,if=!ticking&target.time_to_die>4
 actions.single+=/ravager,if=cooldown.colossus_smash.remains<4
 actions.single+=/colossus_smash
+actions.single+=/bladestorm,if=!raid_event.adds.exists&debuff.colossus_smash.up&rage<70
 actions.single+=/mortal_strike,if=target.health.pct>20&cooldown.colossus_smash.remains>1
 actions.single+=/storm_bolt,if=(cooldown.colossus_smash.remains>4|debuff.colossus_smash.up)&rage<90
 actions.single+=/siegebreaker

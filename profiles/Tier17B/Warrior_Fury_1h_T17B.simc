@@ -68,6 +68,7 @@ actions.single_target+=/execute,if=buff.enrage.up|target.time_to_die<12
 actions.single_target+=/dragon_roar,if=buff.bloodbath.up|!talent.bloodbath.enabled
 actions.single_target+=/raging_blow
 actions.single_target+=/wild_strike,if=buff.enrage.up&target.health.pct>20
+actions.single_target+=/bladestorm,if=!raid_event.adds.exists
 actions.single_target+=/shockwave,if=!talent.unquenchable_thirst.enabled
 actions.single_target+=/impending_victory,if=!talent.unquenchable_thirst.enabled&target.health.pct>20
 actions.single_target+=/bloodthirst
