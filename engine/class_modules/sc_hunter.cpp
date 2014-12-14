@@ -3258,7 +3258,7 @@ struct summon_pet_t: public hunter_spell_t
     ignore_false_positive = true;
     std::string pet_name = options_str.empty() ? p() -> summon_pet_str : options_str;
     pet = p() -> find_pet( pet_name );
-    if ( !pet )
+    if ( !pet && !player -> talents.lone_wolf -> ok() )
     {
       sim -> errorf( "Player %s unable to find pet %s for summons.\n", p() -> name(), pet_name.c_str() );
       sim -> cancel();
