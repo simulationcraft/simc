@@ -2542,7 +2542,10 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
     double m = base_t::composite_da_multiplier( state );
 
     if ( player -> main_hand_weapon.group() == WEAPON_2H )
-      m *= 1.0 + p() -> spec.might_of_the_frozen_wastes -> effectN( 2 ).percent();
+    {
+      // Autoattacks use a separate effect for the +damage%
+      m *= 1.0 + p() -> spec.might_of_the_frozen_wastes -> effectN( special ? 2 : 3 ).percent();
+    }
 
     return m;
   }
