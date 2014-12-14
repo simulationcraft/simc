@@ -781,7 +781,7 @@ void enchant::executioner( special_effect_t& effect,
 struct nitro_boosts_action_t : public action_t
 {
   buff_t* buff;
-  
+
   nitro_boosts_action_t( player_t* p ) : action_t( ACTION_USE, "nitro_boosts", p )
   { background = true; }
 
@@ -792,9 +792,16 @@ struct nitro_boosts_action_t : public action_t
     player -> buffs.nitro_boosts-> trigger();
   }
 
+  bool ready()
+  {
+    if ( ! player -> buffs.raid_movement -> check() )
+      return false;
+
+    return action_t::ready();
+  }
 };
 
-void profession::nitro_boosts( special_effect_t& effect, 
+void profession::nitro_boosts( special_effect_t& effect,
                                const item_t& item )
 {
   // TODO-WOD: This is stupid, need to find a better way to implement custom on-use items

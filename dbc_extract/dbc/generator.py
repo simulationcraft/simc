@@ -1289,6 +1289,7 @@ class SpellDataGenerator(DataGenerator):
          177172, 177175, 177176,    # WoD Legendary ring, phase 1(?)
          177161, 177159, 177160,    # WoD Legendary ring, phase 1(?)
          143924,                    # Leech
+         54861, 133022,             # Nitro boosts
         ),
 
         # Warrior:
