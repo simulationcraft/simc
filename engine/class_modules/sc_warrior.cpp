@@ -1789,7 +1789,7 @@ struct execute_t: public warrior_attack_t
          p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
          oh_attack -> execute();
 
-    if ( p() -> buff.sudden_death -> check() )
+    if ( p() -> buff.sudden_death -> check() && p() -> talents.anger_management -> ok() )
       base_t::anger_management( sudden_death_rage ); // Even though it doesn't consume rage, anger management still grants cooldown reduction from the original cost.
 
     p() -> buff.sudden_death -> expire(); // Consumes both buffs
