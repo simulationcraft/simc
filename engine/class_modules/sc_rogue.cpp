@@ -4722,7 +4722,6 @@ void rogue_t::init_action_list()
   }
   else if ( specialization() == ROGUE_SUBTLETY )
   {
-    precombat -> add_action( this, "Premeditation" );
     precombat -> add_action( this, "Slice and Dice" );
     precombat -> add_action( "honor_among_thieves,cooldown=2.2,cooldown_stddev=0.1",
                              "Proxy Honor Among Thieves action. Generates Combo Points at a mean rate of 2.2 seconds. Comment out to disable (and use the real Honor Among Thieves)." );
@@ -5108,6 +5107,8 @@ void rogue_t::init_resources( bool force )
   player_t::init_resources( force );
 
   resources.current[ RESOURCE_COMBO_POINT ] = 0;
+  if ( specialization() == ROGUE_SUBTLETY ) // Sub rogues can start with 5 combo points, they just need a healer to cast a few heals before combat.
+    resources.current[ RESOURCE_COMBO_POINT ] = 5;
 }
 
 // rogue_t::init_buffs ======================================================
