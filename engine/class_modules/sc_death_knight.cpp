@@ -4416,8 +4416,7 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
 
     if ( p -> wod_hotfix )
     {
-      weapon_multiplier *= 1.08;
-      weapon_multiplier *= 1.07;
+      weapon_multiplier += 0.3;
     }
   }
 
@@ -4445,8 +4444,7 @@ struct obliterate_t : public death_knight_melee_attack_t
 
     if ( p -> wod_hotfix )
     {
-      weapon_multiplier *= 1.08;
-      weapon_multiplier *= 1.07;
+      weapon_multiplier += 0.3;
     }
 
     weapon = &( p -> main_hand_weapon );
