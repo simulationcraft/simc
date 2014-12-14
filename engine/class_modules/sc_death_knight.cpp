@@ -4063,7 +4063,7 @@ struct frost_strike_offhand_t : public death_knight_melee_attack_t
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     if ( p -> wod_hotfix )
     {
-      weapon_multiplier *= 1.07;
+      weapon_multiplier += 0.05;
     }
 
     rp_gain = 0; // Incorrectly set to 10 in the DBC
@@ -4091,7 +4091,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     if ( p -> wod_hotfix )
     {
-      weapon_multiplier *= 1.07;
+      weapon_multiplier += 0.05;
     }
 
     parse_options( options_str );
