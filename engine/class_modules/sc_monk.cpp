@@ -619,6 +619,31 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
     return pet_t::create_action( name, options_str );
   }
+
+  void summon( timespan_t duration = timespan_t::zero() )
+  {
+    pet_t::summon( duration );
+
+    o() -> buff.storm_earth_and_fire -> trigger();
+    // Note, storm_earth_fire_t has already set the correct target
+    monk_td_t* owner_td = o() -> get_target_data( target );
+    assert( owner_td -> debuff.storm_earth_and_fire -> check() == 0 );
+    owner_td -> debuff.storm_earth_and_fire -> trigger();
+  }
+
+  void dismiss()
+  {
+    pet_t::dismiss();
+
+    if ( ! target -> is_sleeping() )
+    {
+      monk_td_t* owner_td = o() -> get_target_data( target );
+      assert( owner_td -> debuff.storm_earth_and_fire -> check() == 1 );
+      owner_td -> debuff.storm_earth_and_fire -> expire();
+    }
+
+    o() -> buff.storm_earth_and_fire -> decrement();
+  }
 };
 
 
@@ -1922,6 +1947,7 @@ struct melee_t: public monk_melee_attack_t
     trigger_gcd = timespan_t::zero();
     special = false;
     school = SCHOOL_PHYSICAL;
+    auto_attack = true;
 
     if ( player -> dual_wield() )
     {
@@ -2696,7 +2722,6 @@ struct storm_earth_and_fire_t: public monk_spell_t
           if ( sef -> target -> is_sleeping() )
           {
             sef -> dismiss();
-            action -> p() -> buff.storm_earth_and_fire -> decrement();
           }
         }
       }
@@ -2725,7 +2750,6 @@ struct storm_earth_and_fire_t: public monk_spell_t
           }
 
           p() -> pet.sef[ i ] -> dismiss();
-          p() -> buff.storm_earth_and_fire -> decrement();
         }
 
         assert( p() -> buff.storm_earth_and_fire -> check() == 0 );
@@ -2742,7 +2766,7 @@ struct storm_earth_and_fire_t: public monk_spell_t
 
           p() -> pet.sef[ i ] -> target = execute_state -> target;
           p() -> pet.sef[ i ] -> summon();
-          p() -> buff.storm_earth_and_fire -> trigger();
+          break;
         }
       }
     }
@@ -2762,7 +2786,6 @@ struct storm_earth_and_fire_t: public monk_spell_t
         }
 
         p() -> pet.sef[ i ] -> dismiss();
-        p() -> buff.storm_earth_and_fire -> decrement();
       }
     }
   }
@@ -3744,7 +3767,7 @@ monk( *p )
 {
   debuff.rising_sun_kick = buff_creator_t( *this, "rising_sun_kick" ).spell( p -> find_spell( 130320 ) );
   debuff.dizzying_haze = buff_creator_t( *this, "dizzying_haze" ).spell( p -> find_spell( 123727 ) );
-  debuff.storm_earth_and_fire = buff_creator_t( *this, "storm_earth_and_fire" );
+  debuff.storm_earth_and_fire = buff_creator_t( *this, "storm_earth_and_fire" ).cd( timespan_t::zero() );
 
   dots.enveloping_mist = target -> get_dot( "enveloping_mist", p );
   dots.renewing_mist = target -> get_dot( "renewing_mist", p );
@@ -3773,6 +3796,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "energizing_brew" ) return new        energizing_brew_t( this, options_str );
   if ( name == "provoke" ) return new                provoke_t( this, options_str );
   if ( name == "touch_of_death" ) return new         touch_of_death_t( this, options_str );
+  if ( name == "storm_earth_and_fire" ) return new   storm_earth_and_fire_t( this, options_str );
   // Brewmaster
   if ( name == "breath_of_fire" ) return new         breath_of_fire_t( *this, options_str );
   if ( name == "keg_smash" ) return new              keg_smash_t( *this, options_str );
@@ -3906,7 +3930,7 @@ void monk_t::init_spells()
   spec.tigereye_brew                 = find_specialization_spell( "Tigereye Brew" );
   spec.touch_of_karma                = find_specialization_spell( "Touch of Karma" );
   spec.combat_conditioning           = find_specialization_spell( "Combat Conditioning" );
-  spec.storm_earth_and_fire          = find_specialization_spell( "Storm Earth and Fire" );
+  spec.storm_earth_and_fire          = find_specialization_spell( "Storm, Earth, and Fire" );
   spec.battle_trance                 = find_specialization_spell( "Battle Trance" );
   spec.windflurry                    = find_specialization_spell( "Windflurry" );
 
@@ -4127,7 +4151,9 @@ void monk_t::create_buffs()
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use", spec.tigereye_brew ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.tigereye_brew_use -> buff_duration += sets.set( MONK_WINDWALKER, PVP, B4 ) -> effectN( 1 ).time_value();
 
-  buff.storm_earth_and_fire = buff_creator_t( this, "storm_earth_and_fire", spec.storm_earth_and_fire );
+  buff.storm_earth_and_fire = buff_creator_t( this, "storm_earth_and_fire", spec.storm_earth_and_fire )
+                              .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                              .cd( timespan_t::zero() );
 
   buff.forceful_winds = buff_creator_t( this, "forceful_winds", find_spell( 166603 ) );
 }
@@ -4299,7 +4325,7 @@ double monk_t::composite_player_multiplier( school_e school ) const
   if ( buff.storm_earth_and_fire -> up() )
   {
     if ( buff.storm_earth_and_fire -> stack() == 1 )
-      m *= buff.storm_earth_and_fire -> data().effectN( 1 ).percent();
+      m *= passives.storm_earth_and_fire -> effectN( 1 ).percent();
     else if ( buff.storm_earth_and_fire -> stack() == 2 )
       m *= passives.storm_earth_and_fire -> effectN( 2 ).percent();
   }
