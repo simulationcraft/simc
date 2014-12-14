@@ -555,6 +555,14 @@ struct storm_earth_and_fire_pet_t : public pet_t
       else
         melee_attack_t::execute();
     }
+
+    void schedule_execute( action_state_t* state = 0 )
+    {
+      // Target always follows the SEF clone's target, which is assigned during summon time
+      target = player -> target;
+
+      melee_attack_t::schedule_execute( state );
+    }
   };
 
   struct auto_attack_t: public attack_t
