@@ -7,7 +7,7 @@ git log --no-merges -1 --pretty="%%h">bla.txt
 set /p revision=<bla.txt
 del bla.txt
 
-set install=simc-603-18-
+set install=simc-603-19-
 
 robocopy . %install%source /s *.* /xd .git %install%source /xf *.pgd /xn
 set filename=%install%source.zip
