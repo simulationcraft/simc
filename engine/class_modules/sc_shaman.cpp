@@ -2197,7 +2197,7 @@ struct lava_lash_t : public shaman_attack_t
     base_multiplier *= 1.0 + player -> perk.improved_lava_lash_2 -> effectN( 1 ).percent();
     if ( player -> wod_hotfix )
     {
-      base_multiplier *= 1.44;
+      base_multiplier *= 1.4375;
     }
 
     parse_options( options_str );
