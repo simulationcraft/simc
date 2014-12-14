@@ -8681,7 +8681,11 @@ void player_t::analyze( sim_t& s )
       else if ( stats -> type == STATS_HEAL || stats -> type == STATS_ABSORB )
       {
         stats -> portion_amount =  collected_data.compound_heal.mean() ? stats -> actual_amount.mean() : collected_data.compound_absorb.mean() ? stats -> actual_amount.mean() : 0.0;
-        stats -> portion_amount /= collected_data.compound_heal.mean() + collected_data.compound_absorb.mean();
+        double total_heal_and_absorb = collected_data.compound_heal.mean() + collected_data.compound_absorb.mean();
+        if ( total_heal_and_absorb )
+        {
+          stats -> portion_amount /= total_heal_and_absorb;
+        }
       }
     }
   }
