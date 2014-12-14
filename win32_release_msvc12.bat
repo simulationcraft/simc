@@ -46,6 +46,6 @@ robocopy %qt_dir%\plugins\printsupport %install%\plugins\printsupport windowspri
 robocopy %qt_dir%\plugins\sensorgestures %install%\plugins\sensorgestures qtsensorgestures_plugin.dll qtsensorgestures_shakeplugin.dll
 robocopy %qt_dir%\plugins\sensors %install%\plugins\sensors qtsensors_dummy.dll qtsensors_generic.dll
 robocopy %qt_dir%\plugins\sqldrivers %isntall%\plugins\sqldrivers qsqlite.dll qsqlmysql.dll qsqlodbc.dll qsqlpsql.dll
-robocopy . %install%\ Welcome.html Welcome.png Simulationcraft64.exe simc64.exe readme.txt Error.html COPYING
+robocopy . %install%\ Welcome.html Welcome.png Simulationcraft.exe simc.exe readme.txt Error.html COPYING
 robocopy C:\OpenSSL-Win64\bin %install%\ libeay32.dll ssleay32.dll 
 robocopy Profiles\ %install%\profiles\ *.* /S
