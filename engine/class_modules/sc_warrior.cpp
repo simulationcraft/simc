@@ -1722,12 +1722,15 @@ struct execute_off_hand_t: public warrior_attack_t
 struct execute_t: public warrior_attack_t
 {
   execute_off_hand_t* oh_attack;
+  double sudden_death_rage;
   execute_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "execute", p, p -> spec.execute )
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     weapon = &( p -> main_hand_weapon );
+
+    sudden_death_rage = 30;
 
     if ( p -> spec.crazed_berserker -> ok() )
     {
@@ -1740,7 +1743,10 @@ struct execute_t: public warrior_attack_t
            weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
     }
     else if ( p -> specialization() == WARRIOR_ARMS ) // There is no hotfix or blue post about this, but execute is definitely hitting for 150% weapon damage instead of 160% for arms.
+    {
       weapon_multiplier = 1.5;
+      sudden_death_rage = 10;
+    }
     weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
   }
 
@@ -1782,6 +1788,9 @@ struct execute_t: public warrior_attack_t
     if ( p() -> spec.crazed_berserker -> ok() && result_is_hit( execute_state -> result ) &&
          p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
          oh_attack -> execute();
+
+    if ( p() -> buff.sudden_death -> check() )
+      base_t::anger_management( sudden_death_rage ); // Even though it doesn't consume rage, anger management still grants cooldown reduction from the original cost.
 
     p() -> buff.sudden_death -> expire(); // Consumes both buffs
     p() -> buff.tier16_4pc_death_sentence -> expire();
