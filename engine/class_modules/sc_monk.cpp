@@ -594,8 +594,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
-  storm_earth_and_fire_pet_t( sim_t* sim, monk_t* owner ):
-    pet_t( sim, owner, "storm_earth_and_fire", true )
+  storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner ):
+    pet_t( sim, owner, name, true )
   {
     // SEF pets have both main and offhand weapons.
     main_hand_weapon.type = WEAPON_BEAST;
@@ -3860,10 +3860,8 @@ void monk_t::create_pets()
   base_t::create_pets();
 
   create_pet( "xuen_the_white_tiger" );
-  for ( size_t i = 0; i < sizeof_array( pet.sef ); i++ )
-  {
-    pet.sef[ i ] = new pets::storm_earth_and_fire_pet_t( sim, this );
-  }
+  pet.sef[ 0 ] = new pets::storm_earth_and_fire_pet_t( "fire_spirit", sim, this );
+  pet.sef[ 1 ] = new pets::storm_earth_and_fire_pet_t( "earth_spirit", sim, this );
 }
 
 // monk_t::init_spells ======================================================
