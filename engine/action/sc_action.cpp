@@ -1024,6 +1024,21 @@ size_t action_t::available_targets( std::vector< player_t* >& tl ) const
       tl.push_back( t );
   }
 
+  if ( sim -> debug )
+  {
+    sim -> out_debug.printf( "%s regenerated target cache for %s (%s)",
+        player -> name(),
+        signature_str.c_str(),
+        name() );
+    for ( size_t i = 0; i < tl.size(); i++ )
+    {
+      sim -> out_debug.printf( "[%u, %s (id=%u)]",
+          static_cast<unsigned>( i ),
+          tl[ i ] -> name(),
+          tl[ i ] -> actor_index );
+    }
+  }
+
   return tl.size();
 }
 
@@ -1211,6 +1226,15 @@ void action_t::execute()
       if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
         action_callback_t::trigger( player -> callbacks.procs[ pt ][ pt2 ], this, execute_state );
     }
+  }
+
+  // Restore the default target after execution. This is required so that
+  // target caches do not get into an inconsistent state, if the target of this
+  // action (defined by a number) spawns/despawns dynamically during an
+  // iteration.
+  if ( target_number > 0 && target != default_target )
+  {
+    target = default_target;
   }
 
   if ( repeating && ! proc ) schedule_execute();
