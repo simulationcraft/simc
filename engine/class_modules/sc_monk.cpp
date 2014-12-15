@@ -2121,6 +2121,8 @@ struct touch_of_death_t: public monk_melee_attack_t
     may_crit = may_miss = may_dodge = may_parry = false;
   }
 
+  virtual double target_armor( player_t* ) const { return 0; }
+
   virtual void impact( action_state_t* s )
   {
     s -> result_amount = player -> resources.max[RESOURCE_HEALTH];
