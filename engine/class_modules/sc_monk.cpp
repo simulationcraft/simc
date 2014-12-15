@@ -79,7 +79,64 @@ struct monk_t;
 
 enum stance_e { STURDY_OX = 0x1, FIERCE_TIGER = 0x2, SPIRITED_CRANE = 0x4, WISE_SERPENT = 0x8 };
 
-enum sef_ability_e { SEF_NONE = -1 };
+enum sef_ability_e { SEF_NONE = -1, SEF_JAB, SEF_MAX };
+
+namespace monk_util
+{
+// Special Monk Attack Weapon damage collection, if the pointers mh or oh are set, instead of the classical action_t::weapon
+// Damage is divided instead of multiplied by the weapon speed, AP portion is not multiplied by weapon speed.
+// Both MH and OH are directly weaved into one damage number
+double monk_weapon_damage( action_t* action,
+                           weapon_t* mh,
+                           weapon_t* oh,
+                           double weapon_power_mod,
+                           double ap )
+{
+  player_t* player = action -> player;
+  sim_t* sim = player -> sim;
+
+  double total_dmg = 0;
+  // Main Hand
+  if ( mh && mh -> type != WEAPON_NONE && weapon_power_mod > 0 )
+  {
+    assert( mh -> slot != SLOT_OFF_HAND );
+    double dmg = sim -> averaged_range( mh -> min_dmg, mh -> max_dmg ) + mh -> bonus_dmg;
+    dmg /= mh -> swing_time.total_seconds();
+    total_dmg += dmg;
+
+    if ( sim->debug )
+    {
+      sim -> out_debug.printf( "%s main hand weapon damage portion for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
+                               player -> name(), action -> name(), total_dmg, dmg, mh -> bonus_dmg, mh -> swing_time.total_seconds(), ap );
+    }
+  }
+
+  // Off Hand
+  if ( oh && oh -> type != WEAPON_NONE && weapon_power_mod > 0 )
+  {
+    assert( oh -> slot == SLOT_OFF_HAND );
+    double dmg = sim -> averaged_range( oh -> min_dmg, oh -> max_dmg ) + oh -> bonus_dmg;
+    dmg /= oh -> swing_time.total_seconds();
+    // OH penalty
+    dmg *= 0.5;
+
+    total_dmg += dmg;
+
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "%s off-hand weapon damage portion for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
+                               player -> name(), action -> name(), total_dmg, dmg, oh -> bonus_dmg, oh -> swing_time.total_seconds(), ap );
+    }
+  }
+
+  if ( player -> dual_wield() )
+    total_dmg *= 0.857143;
+
+  total_dmg += weapon_power_mod * ap;
+
+  return total_dmg;
+}
+} // Namespace 'monk_util' ends
 
 struct monk_td_t: public actor_pair_t
 {
@@ -522,16 +579,64 @@ struct jade_serpent_statue_t: public statue_t
 
 struct storm_earth_and_fire_pet_t : public pet_t
 {
-  struct melee_t: public melee_attack_t
+  // Storm, Earth, and Fire abilities begin =================================
+
+  struct sef_melee_attack_t : public melee_attack_t
   {
-    melee_t( const std::string& n, storm_earth_and_fire_pet_t* player, weapon_t* w ):
-      melee_attack_t( n, player, spell_data_t::nil() )
+    weapon_t* main_hand;
+    weapon_t* off_hand;
+
+    sef_melee_attack_t( const std::string& n,
+                        storm_earth_and_fire_pet_t* p,
+                        const spell_data_t* data = spell_data_t::nil(),
+                        weapon_t* w = 0 ) :
+      melee_attack_t( n, p, data ),
+      main_hand( ! w ? &( p -> main_hand_weapon ) : 0 ),
+      off_hand( ! w ? &( p -> off_hand_weapon ) : 0 )
     {
-      background = repeating = may_crit = may_glance = true;
+      background = true;
       school = SCHOOL_PHYSICAL;
 
+      if ( w )
+      {
+        weapon = w;
+      }
+    }
+
+    const monk_t* o() const
+    { return debug_cast<monk_t*>( player -> cast_pet() -> owner ); }
+
+    const storm_earth_and_fire_pet_t* p() const
+    { return debug_cast<storm_earth_and_fire_pet_t*>( player ); }
+
+    storm_earth_and_fire_pet_t* p()
+    { return debug_cast<storm_earth_and_fire_pet_t*>( player ); }
+
+    double calculate_weapon_damage( double attack_power )
+    {
+      if ( main_hand && off_hand )
+        return monk_util::monk_weapon_damage( this, main_hand, off_hand, weapon_power_mod, attack_power );
+      else
+        return melee_attack_t::calculate_weapon_damage( attack_power );
+    }
+
+    void schedule_execute( action_state_t* state = 0 )
+    {
+      // Target always follows the SEF clone's target, which is assigned during summon time
+      target = player -> target;
+
+      melee_attack_t::schedule_execute( state );
+    }
+  };
+
+  struct melee_t: public sef_melee_attack_t
+  {
+    melee_t( const std::string& n, storm_earth_and_fire_pet_t* player, weapon_t* w ):
+      sef_melee_attack_t( n, player, spell_data_t::nil(), w )
+    {
+      background = repeating = may_crit = may_glance = true;
+
       // Use damage numbers from the level-scaled weapon
-      weapon = w;
       base_execute_time = w -> swing_time;
       trigger_gcd = timespan_t::zero();
       special = false;
@@ -553,15 +658,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
         schedule_execute();
       }
       else
-        melee_attack_t::execute();
-    }
-
-    void schedule_execute( action_state_t* state = 0 )
-    {
-      // Target always follows the SEF clone's target, which is assigned during summon time
-      target = player -> target;
-
-      melee_attack_t::schedule_execute( state );
+        sef_melee_attack_t::execute();
     }
   };
 
@@ -594,8 +691,20 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
+  struct sef_jab_t : public sef_melee_attack_t
+  {
+    sef_jab_t( storm_earth_and_fire_pet_t* player ) :
+      sef_melee_attack_t( "jab", player, o() -> find_class_spell( "Jab" ) )
+    { }
+  };
+
+  // Storm, Earth, and Fire abilities end ===================================
+
+  std::vector<sef_melee_attack_t*> attacks;
+
   storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner ):
-    pet_t( sim, owner, name, true )
+    pet_t( sim, owner, name, true ),
+    attacks( SEF_MAX )
   {
     // SEF pets have both main and offhand weapons.
     main_hand_weapon.type = WEAPON_BEAST;
@@ -612,7 +721,14 @@ struct storm_earth_and_fire_pet_t : public pet_t
     return static_cast<monk_t*>( owner );
   }
 
-  virtual void init_action_list()
+  void init_spells()
+  {
+    pet_t::init_spells();
+
+    attacks[ SEF_JAB ] = new sef_jab_t( this );
+  }
+
+  void init_action_list()
   {
     action_list_str = "auto_attack";
 
@@ -651,6 +767,10 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
 
     o() -> buff.storm_earth_and_fire -> decrement();
+  }
+
+  void trigger_attack( sef_ability_e /* ability */, const action_t* /* action */ )
+  {
   }
 };
 
@@ -1008,6 +1128,26 @@ public:
     }
     }*/
     ab::execute();
+
+    trigger_storm_earth_and_fire();
+  }
+
+  void trigger_storm_earth_and_fire() const
+  {
+    if ( sef_ability == SEF_NONE )
+    {
+      return;
+    }
+
+    if ( ! p() -> pet.sef[ 0 ] -> is_sleeping() )
+    {
+      p() -> pet.sef[ 0 ] -> trigger_attack( sef_ability, this );
+    }
+
+    if ( ! p() -> pet.sef[ 1 ] -> is_sleeping() )
+    {
+      p() -> pet.sef[ 1 ] -> trigger_attack( sef_ability, this );
+    }
   }
 };
 
@@ -1140,6 +1280,8 @@ struct jab_t: public monk_melee_attack_t
   jab_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "jab", p, jab_data( p ) )
   {
+    sef_ability = SEF_JAB;
+
     parse_options( options_str );
     stancemask = STURDY_OX | FIERCE_TIGER | SPIRITED_CRANE;
 
