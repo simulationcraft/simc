@@ -43,6 +43,7 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
 actions+=/seraphim
+actions+=/wait,sec=cooldown.seraphim.remains,if=talent.seraphim.enabled&cooldown.seraphim.remains>0&cooldown.seraphim.remains<gcd.remains&holy_power>=5
 actions+=/call_action_list,name=aoe,if=active_enemies>=5
 actions+=/call_action_list,name=cleave,if=active_enemies>=3
 actions+=/call_action_list,name=single
@@ -50,17 +51,17 @@ actions+=/call_action_list,name=single
 actions.single=divine_storm,if=buff.divine_crusader.react&holy_power=5&buff.final_verdict.up
 actions.single+=/divine_storm,if=buff.divine_crusader.react&holy_power=5&active_enemies=2&!talent.final_verdict.enabled
 actions.single+=/divine_storm,if=holy_power=5&active_enemies=2&buff.final_verdict.up
-actions.single+=/divine_storm,if=buff.divine_crusader.react&holy_power=5&(talent.seraphim.enabled&cooldown.seraphim.remains<=5)
+actions.single+=/divine_storm,if=buff.divine_crusader.react&holy_power=5&(talent.seraphim.enabled&cooldown.seraphim.remains<=4)
 actions.single+=/templars_verdict,if=holy_power=5|buff.holy_avenger.up&holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>5)
-actions.single+=/templars_verdict,if=buff.divine_purpose.react&buff.divine_purpose.remains<4
-actions.single+=/divine_storm,if=buff.divine_crusader.react&buff.divine_crusader.remains<4&!talent.final_verdict.enabled
+actions.single+=/templars_verdict,if=buff.divine_purpose.react&buff.divine_purpose.remains<3
+actions.single+=/divine_storm,if=buff.divine_crusader.react&buff.divine_crusader.remains<3&!talent.final_verdict.enabled
 actions.single+=/final_verdict,if=holy_power=5|buff.holy_avenger.up&holy_power>=3
 actions.single+=/final_verdict,if=buff.divine_purpose.react&buff.divine_purpose.remains<4
 actions.single+=/hammer_of_wrath
 actions.single+=/judgment,if=talent.empowered_seals.enabled&seal.truth&buff.maraads_truth.remains<cooldown.judgment.duration
 actions.single+=/judgment,if=talent.empowered_seals.enabled&seal.righteousness&buff.liadrins_righteousness.remains<cooldown.judgment.duration
 actions.single+=/exorcism,if=buff.blazing_contempt.up&holy_power<=2&buff.holy_avenger.down
-actions.single+=/seal_of_truth,if=talent.empowered_seals.enabled&buff.maraads_truth.down&buff.maraads_truth.remains<=3
+actions.single+=/seal_of_truth,if=talent.empowered_seals.enabled&buff.maraads_truth.down
 actions.single+=/seal_of_righteousness,if=talent.empowered_seals.enabled&buff.liadrins_righteousness.down&!buff.avenging_wrath.up&!buff.bloodlust.up
 actions.single+=/divine_storm,if=buff.divine_crusader.react&buff.final_verdict.up&(buff.avenging_wrath.up|target.health.pct<35)
 actions.single+=/final_verdict,if=buff.avenging_wrath.up|target.health.pct<35
@@ -71,8 +72,10 @@ actions.single+=/divine_storm,if=buff.divine_crusader.react&buff.final_verdict.u
 actions.single+=/final_verdict,if=buff.divine_purpose.react
 actions.single+=/final_verdict,if=holy_power>=4
 actions.single+=/judgment,cycle_targets=1,if=last_judgment_target!=target&glyph.double_jeopardy.enabled&holy_power<5&cooldown.seraphim.remains<=3
-actions.single+=/exorcism,if=glyph.mass_exorcism.enabled&active_enemies>=2&holy_power<5&!cooldown.seraphim.remains<=5
-actions.single+=/judgment,,if=holy_power<5&!cooldown.seraphim.remains<=3
+actions.single+=/exorcism,if=glyph.mass_exorcism.enabled&active_enemies>=2&holy_power<5
+actions.single+=/judgment,,if=holy_power<5
+actions.single+=/final_verdict,if=holy_power>=3
+actions.single+=/exorcism,if=talent.seraphim.enabled&cooldown.seraphim.remains<=15
 actions.single+=/templars_verdict,if=buff.divine_purpose.react
 actions.single+=/divine_storm,if=buff.divine_crusader.react&!talent.final_verdict.enabled
 actions.single+=/templars_verdict,if=holy_power>=4&(!talent.seraphim.enabled|cooldown.seraphim.remains>7)
@@ -111,30 +114,30 @@ actions.aoe+=/judgment,cycle_targets=1,if=glyph.double_jeopardy.enabled
 actions.aoe+=/judgment
 actions.aoe+=/exorcism
 
-head=helmet_of_guiding_light,id=115568,bonus_id=566
-neck=vertebrae_protector,id=113900,bonus_id=566,enchant=gift_of_mastery
-shoulders=pauldrons_of_guiding_light,id=115565,bonus_id=566
-back=charbreath_firecloak,id=113916,bonus_id=566,enchant=gift_of_mastery
-chest=battleplate_of_guiding_light,id=115566,bonus_id=566
-wrists=bracers_of_martial_perfection,id=113871,bonus_id=566
-hands=gauntlets_of_guiding_light,id=115567,bonus_id=566
-waist=uktars_belt_of_chiming_rings,id=113976,bonus_id=566
-legs=firestorm_legplates,id=113921,bonus_id=566
-feet=iron_bellow_sabatons,id=113961,bonus_id=566
-finger1=phosphorescent_seal,id=113866,bonus_id=566,enchant=gift_of_mastery
+head=helmet_of_guiding_light,id=115568,bonus_id=567/523/448,gem_id=115812
+neck=vertebrae_protector,id=113900,bonus_id=567/523/448,gem_id=115812,enchant=gift_of_mastery
+shoulders=pauldrons_of_guiding_light,id=115565,bonus_id=567/523/448,gem_id=115812
+back=charbreath_firecloak,id=113916,bonus_id=567/523/448,gem_id=115812,enchant=gift_of_mastery
+chest=battleplate_of_guiding_light,id=115566,bonus_id=567/523/448,gem_id=115812
+wrists=bracers_of_martial_perfection,id=113871,bonus_id=567/523/448,gem_id=115812
+hands=gauntlets_of_guiding_light,id=115567,bonus_id=567/523/448,gem_id=115812
+waist=uktars_belt_of_chiming_rings,id=113976,bonus_id=567/523/448,gem_id=115812
+legs=firestorm_legplates,id=113921,bonus_id=567/523/448,gem_id=115812
+feet=iron_bellow_sabatons,id=113961,bonus_id=567/523/448,gem_id=115812
+finger1=phosphorescent_seal,id=113866,bonus_id=567/523/448,gem_id=115812,enchant=gift_of_mastery
 finger2=spellbound_solium_band_of_sorcerous_strength,id=118300,enchant=gift_of_mastery
-trinket1=forgemasters_insignia,id=113983,bonus_id=566
-trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=566
-main_hand=thogars_control_rod,id=113953,bonus_id=566,enchant=mark_of_warsong
+trinket1=forgemasters_insignia,id=113983,bonus_id=567/523/448,gem_id=115812
+trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=567/523/448,gem_id=115812
+main_hand=thogars_control_rod,id=113953,bonus_id=567/523/448,gem_id=115812,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_strength=3363
-# gear_stamina=3942
-# gear_crit_rating=714
-# gear_haste_rating=1334
-# gear_mastery_rating=1038
-# gear_armor=2148
-# gear_multistrike_rating=317
-# gear_versatility_rating=293
+# gear_strength=4045
+# gear_stamina=4734
+# gear_crit_rating=844
+# gear_haste_rating=1620
+# gear_mastery_rating=1902
+# gear_armor=2294
+# gear_multistrike_rating=365
+# gear_versatility_rating=355
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
