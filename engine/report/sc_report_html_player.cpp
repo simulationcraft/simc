@@ -1083,7 +1083,7 @@ void print_html_gear ( report::sc_html_stream& os, player_t* p )
         }
       }
       item_string = ! item.parsed.data.id ? item.options_str : "<a href=\"http://" + domain + ".wowhead.com/item=" + util::to_string( item.parsed.data.id ) +
-        rel_str + "\"" + " rel=" + rel_str + "\"" + ">" + "</a>";
+        rel_str + "\"" + " rel=" + rel_str + "\"" + ">" + item.encoded_item() + "</a>";
     }
     else
     {
