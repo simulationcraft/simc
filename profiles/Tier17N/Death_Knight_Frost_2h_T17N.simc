@@ -35,6 +35,7 @@ actions+=/empower_rune_weapon,if=target.time_to_die<=60&buff.potion.up
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
+actions+=/use_item,slot=trinket2
 actions+=/run_action_list,name=aoe,if=active_enemies>=3
 actions+=/run_action_list,name=single_target,if=active_enemies<3
 
@@ -115,18 +116,18 @@ legs=ogreskull_boneplate_greaves,id=115535
 feet=sabatons_of_fractal_earth,id=113936
 finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_multistrike
 finger2=phosphorescent_seal,id=113866,enchant=gift_of_multistrike
-trinket1=primal_gladiators_insignia_of_victory,id=111233
-trinket2=horn_of_screaming_spirits,id=119193
+trinket1=horn_of_screaming_spirits,id=119193
+trinket2=vial_of_convulsive_shadows,id=113969
 main_hand=crescent_of_living_magma,id=113886,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_strength=2608
+# gear_strength=2927
 # gear_stamina=3509
 # gear_crit_rating=666
 # gear_haste_rating=426
 # gear_mastery_rating=576
 # gear_armor=2052
 # gear_multistrike_rating=1487
-# gear_versatility_rating=246
+# gear_versatility_rating=193
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
