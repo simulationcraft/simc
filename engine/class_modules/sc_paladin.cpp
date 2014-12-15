@@ -5312,7 +5312,7 @@ void paladin_t::generate_action_prio_list_ret()
     def -> add_action( racial_actions[ i ] );
 
   def -> add_talent( this, "Seraphim" );
-  def -> add_action( "wait,sec=cooldown.seraphim.remains,if=talent.seraphim.enabled&cooldown.seraphim.remains>0&cooldown.seraphim.remains<gcd.remains&holy_power>=5" );
+  def -> add_action( "wait,sec=cooldown.seraphim.remains,if=talent.seraphim.enabled&cooldown.seraphim.remains>0&cooldown.seraphim.remains<gcd.max&holy_power>=5" );
 
   //Create different lists, based on Fury Warrior APL
 
