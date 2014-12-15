@@ -586,15 +586,18 @@ struct storm_earth_and_fire_pet_t : public pet_t
     weapon_t* main_hand;
     weapon_t* off_hand;
 
+    action_t* source_action;
+
     sef_melee_attack_t( const std::string& n,
                         storm_earth_and_fire_pet_t* p,
                         const spell_data_t* data = spell_data_t::nil(),
                         weapon_t* w = 0 ) :
       melee_attack_t( n, p, data ),
       main_hand( ! w ? &( p -> main_hand_weapon ) : 0 ),
-      off_hand( ! w ? &( p -> off_hand_weapon ) : 0 )
+      off_hand( ! w ? &( p -> off_hand_weapon ) : 0 ),
+      source_action( 0 )
     {
-      background = true;
+      background = may_crit = true;
       school = SCHOOL_PHYSICAL;
 
       if ( w )
@@ -604,7 +607,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
 
     const monk_t* o() const
-    { return debug_cast<monk_t*>( player -> cast_pet() -> owner ); }
+    { return debug_cast<const monk_t*>( player -> cast_pet() -> owner ); }
 
     const storm_earth_and_fire_pet_t* p() const
     { return debug_cast<storm_earth_and_fire_pet_t*>( player ); }
@@ -626,6 +629,30 @@ struct storm_earth_and_fire_pet_t : public pet_t
       target = player -> target;
 
       melee_attack_t::schedule_execute( state );
+    }
+
+    void snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt )
+    {
+      if ( source_action )
+      {
+        // Get an owner state object, and populate it with owner current stats
+        action_state_t* owner_state = source_action -> get_state();
+        owner_state -> target = state -> target;
+        owner_state -> n_targets = state -> n_targets;
+        owner_state -> chain_target = state -> chain_target;
+        source_action -> snapshot_internal( owner_state, flags, rt );
+
+        // Copy owner stats to our state object. Note that we may need to do some
+        // tweaks here if the AP coefficient turns out to be <100%
+        state -> copy_state( owner_state );
+
+        // Release the used owner state object
+        action_state_t::release( owner_state );
+      }
+      else
+      {
+        melee_attack_t::snapshot_internal( state, flags, rt );
+      }
     }
   };
 
@@ -694,7 +721,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
   struct sef_jab_t : public sef_melee_attack_t
   {
     sef_jab_t( storm_earth_and_fire_pet_t* player ) :
-      sef_melee_attack_t( "jab", player, o() -> find_class_spell( "Jab" ) )
+      sef_melee_attack_t( "jab", player, player -> owner -> find_class_spell( "Jab" ) )
     { }
   };
 
@@ -769,8 +796,12 @@ struct storm_earth_and_fire_pet_t : public pet_t
     o() -> buff.storm_earth_and_fire -> decrement();
   }
 
-  void trigger_attack( sef_ability_e /* ability */, const action_t* /* action */ )
+  void trigger_attack( sef_ability_e ability, action_t* action )
   {
+    assert( attacks[ ability ] );
+
+    attacks[ ability ] -> source_action = action;
+    attacks[ ability ] -> schedule_execute();
   }
 };
 
@@ -1132,7 +1163,7 @@ public:
     trigger_storm_earth_and_fire();
   }
 
-  void trigger_storm_earth_and_fire() const
+  void trigger_storm_earth_and_fire()
   {
     if ( sef_ability == SEF_NONE )
     {
