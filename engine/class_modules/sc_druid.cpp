@@ -737,11 +737,18 @@ snapshot_counter_t::snapshot_counter_t( druid_t* player , buff_t* buff ) :
 struct gushing_wound_t : public residual_action::residual_periodic_action_t< attack_t >
 {
   typedef  residual_action::residual_periodic_action_t<attack_t> base_t;
+  bool trigger_t17_2p;
+
   gushing_wound_t( druid_t* p ) :
-    base_t( "gushing_wound", p, p -> find_spell( 166638 ) )
+    base_t( "gushing_wound", p, p -> find_spell( 166638 ) ),
+    trigger_t17_2p( false )
   {
     background = dual = proc = true;
+    trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
   }
+
+  druid_t* p() const
+  { return static_cast<druid_t*>( player ); }
 
   virtual void init()
   {
@@ -749,6 +756,14 @@ struct gushing_wound_t : public residual_action::residual_periodic_action_t< att
 
     // Don't double dip!
     snapshot_flags &= STATE_NO_MULTIPLIER;
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    if ( trigger_t17_2p )
+      p() -> resource_gain( RESOURCE_ENERGY,
+                            p() -> sets.set( DRUID_FERAL, T17, B2 ) -> effectN( 1 ).base_value(),
+                            p() -> gain.tier17_2pc_melee );
   }
 };
 
