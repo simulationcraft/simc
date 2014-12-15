@@ -859,7 +859,7 @@ void SC_OptionsTab::createToolTips()
 
   choice.target_race -> setToolTip( tr( "Race of the target and any adds." ) );
 
-  choice.challenge_mode -> setToolTip( tr( "Enables/Disables the challenge mode setting, downscaling items to level 660." ) );
+  choice.challenge_mode -> setToolTip( tr( "Enables/Disables the challenge mode setting, downscaling items to level 630." ) );
 
   choice.num_target -> setToolTip( tr( "Number of enemies." ) );
 
