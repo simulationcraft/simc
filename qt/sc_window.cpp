@@ -1890,7 +1890,7 @@ void SimulateThread::run()
     return;
   }
 
-  if ( sim -> challenge_mode ) sim -> scale_to_itemlevel = 620; //Check
+  if ( sim -> challenge_mode ) sim -> scale_to_itemlevel = 630; //Check
 
   if ( sim -> spell_query != 0 )
   {
