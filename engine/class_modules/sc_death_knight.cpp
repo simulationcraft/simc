@@ -3646,8 +3646,11 @@ struct death_and_decay_t : public death_knight_spell_t
 
 struct defile_t : public death_knight_spell_t
 {
+  cooldown_t* dnd_cd;
+
   defile_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "defile", p, p -> find_talent_spell( "Defile" ) )
+    death_knight_spell_t( "defile", p, p -> find_talent_spell( "Defile" ) ),
+    dnd_cd( p -> get_cooldown( "death_and_decay" ) )
   {
     parse_options( options_str );
 
@@ -3698,6 +3701,13 @@ struct defile_t : public death_knight_spell_t
 
     if ( p() -> buffs.crimson_scourge -> up() )
       p() -> buffs.crimson_scourge -> expire();
+  }
+
+  virtual void update_ready( timespan_t cd_duration = timespan_t::min() )
+  {
+    death_knight_spell_t::update_ready();
+
+    dnd_cd -> start( data().cooldown() );
   }
 
   virtual void impact( action_state_t* s )
