@@ -3170,15 +3170,19 @@ struct soul_reaper_dot_t : public death_knight_melee_attack_t
          p() -> sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T17, B2 )  )
       p() -> buffs.shadow_infusion -> trigger( p() -> sets.set( DEATH_KNIGHT_UNHOLY, T17, B2 ) -> effectN( 1 ).base_value() );
   }
+
+  void multistrike_direct( const action_state_t* source_state, action_state_t* ms_state )
+  {
+    death_knight_melee_attack_t::multistrike_direct( source_state, ms_state );
+
+    p() -> trigger_necrosis( ms_state );
+  }
 };
 
 struct soul_reaper_t : public death_knight_melee_attack_t
 {
-  soul_reaper_dot_t* soul_reaper_dot;
-
   soul_reaper_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "soul_reaper", p, p -> specialization() != DEATH_KNIGHT_UNHOLY ? p -> find_specialization_spell( "Soul Reaper" ) : p -> find_spell( 130736 ) ),
-    soul_reaper_dot( 0 )
+    death_knight_melee_attack_t( "soul_reaper", p, p -> specialization() != DEATH_KNIGHT_UNHOLY ? p -> find_specialization_spell( "Soul Reaper" ) : p -> find_spell( 130736 ) )
   {
     parse_options( options_str );
     special   = true;
@@ -3703,9 +3707,9 @@ struct defile_t : public death_knight_spell_t
       p() -> buffs.crimson_scourge -> expire();
   }
 
-  virtual void update_ready( timespan_t cd_duration = timespan_t::min() )
+  virtual void update_ready( timespan_t cd_duration )
   {
-    death_knight_spell_t::update_ready();
+    death_knight_spell_t::update_ready( cd_duration );
 
     dnd_cd -> start( data().cooldown() );
   }
