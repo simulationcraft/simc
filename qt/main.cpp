@@ -33,7 +33,9 @@ void parse_additional_args( SC_MainWindow& w, QStringList args )
 
 int main( int argc, char *argv[] )
 {
+#ifdef SC_WINDOWS
   QCoreApplication::addLibraryPath("plugins");
+#endif
   QLocale::setDefault( QLocale( "C" ) );
   std::locale::global( std::locale( "C" ) );
   setlocale( LC_ALL, "C" );
