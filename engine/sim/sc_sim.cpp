@@ -500,7 +500,7 @@ bool parse_fight_style( sim_t*             sim,
       sim -> overrides.target_health = 20000000;
     else
       sim -> overrides.target_health = 300000000;
-    sim -> target_death_pct = 0;
+    sim -> enemy_death_pct = 0;
     sim -> allow_potions = false;
     sim -> vary_combat_length = 0;
     sim -> max_time = timespan_t::from_seconds( 1800 );
@@ -942,7 +942,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   save_talent_str( 0 ),
   talent_format( TALENT_FORMAT_UNCHANGED ),
   auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ), show_etmi( 0 ), tmi_window_global( 0 ), tmi_bin_size( 0.5 ),
-  requires_regen_event( false ), target_death_pct( 0 ), rel_target_level( -1 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ), enable_taunts( false ),
+  requires_regen_event( false ), enemy_death_pct( 0 ), rel_target_level( -1 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ), enable_taunts( false ),
   challenge_mode( false ), scale_to_itemlevel( -1 ), disable_set_bonuses( false ), pvp_crit( false ), equalize_plot_weights( false ),
   active_enemies( 0 ), active_allies( 0 ),
   _rng( 0 ), seed( 0 ), deterministic( false ),
@@ -1317,11 +1317,11 @@ void sim_t::combat_begin()
   if ( fixed_time || ( target -> resources.base[ RESOURCE_HEALTH ] == 0 ) )
   {
     new ( *this ) sim_end_event_t( *this, "sim_end_expected_time", expected_iteration_time );
-    target -> death_pct = target_death_pct;
+    target -> death_pct = enemy_death_pct;
   }
   else
   {
-    target -> death_pct = target_death_pct;
+    target -> death_pct = enemy_death_pct;
   }
   new ( *this ) sim_safeguard_end_event_t( *this, "sim_end_twice_expected_time", expected_iteration_time + expected_iteration_time );
 }
@@ -2545,7 +2545,7 @@ void sim_t::create_options()
   add_option( opt_append( "raid_events+", raid_events_str ) );
   add_option( opt_func( "fight_style", parse_fight_style ) );
   add_option( opt_string( "main_target", main_target_str ) );
-  add_option( opt_float( "target_death_pct", target_death_pct ) );
+  add_option( opt_float( "enemy_death_pct", enemy_death_pct ) );
   add_option( opt_int( "target_level", target_level ) );
   add_option( opt_int( "target_level+", rel_target_level ) );
   add_option( opt_string( "target_race", target_race ) );

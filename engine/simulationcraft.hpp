@@ -2606,7 +2606,7 @@ struct sim_t : private sc_thread_t
   bool        requires_regen_event;
 
   // Target options
-  double      target_death_pct;
+  double      enemy_death_pct;
   int         rel_target_level, target_level;
   std::string target_race;
   int         target_adds;
