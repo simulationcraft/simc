@@ -27,6 +27,7 @@ struct melee_t;
 namespace buffs
 {
 struct insight_buff_t;
+struct marked_for_death_debuff_t;
 }
 
 enum ability_type_e {
@@ -88,6 +89,7 @@ struct rogue_td_t : public actor_pair_t
     buff_t* crippling_poison;
     buff_t* leeching_poison;
     buff_t* instant_poison; // Proxy instant poison buff for proper Venom Rush modeling
+    buffs::marked_for_death_debuff_t* marked_for_death;
   } debuffs;
 
   rogue_td_t( player_t* target, rogue_t* source );
@@ -2166,9 +2168,12 @@ struct marked_for_death_t : public rogue_attack_t
   marked_for_death_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "marked_for_death", p, p -> find_talent_spell( "Marked for Death" ), options_str )
   {
-    may_miss = may_crit = harmful = false;
+    may_miss = may_crit = harmful = callbacks = false;
     adds_combo_points = data().effectN( 1 ).base_value();
   }
+
+  // Defined after marked_for_death_debuff_t. Sigh.
+  void impact( action_state_t* state );
 };
 
 
@@ -3590,9 +3595,9 @@ struct shadow_dance_t : public buff_t
                        p -> perk.enhanced_shadow_dance -> effectN( 1 ).time_value() ) )
   { }
 
-  void expire_override()
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
-    buff_t::expire_override();
+    buff_t::expire_override( expiration_stacks, remaining_duration );
 
     rogue_t* rogue = debug_cast<rogue_t*>( player );
     rogue -> buffs.shadow_strikes -> trigger();
@@ -3621,9 +3626,9 @@ struct fof_fod_t : public buff_t
     buff_t( buff_creator_t( p, "legendary_daggers" ).duration( timespan_t::from_seconds( 6.0 ) ).cd( timespan_t::zero() ) )
   { }
 
-  virtual void expire_override()
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
-    buff_t::expire_override();
+    buff_t::expire_override( expiration_stacks, remaining_duration );
 
     rogue_t* p = debug_cast< rogue_t* >( player );
     p -> buffs.fof_p3 -> expire();
@@ -3642,9 +3647,9 @@ struct insight_buff_t : public buff_t
     buff_t( creator ), p( player ), insight_elevate( false )
   { }
 
-  void expire_override()
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
-    buff_t::expire_override();
+    buff_t::expire_override( expiration_stacks, remaining_duration );
 
     if ( ! insight_elevate )
       p -> buffs.bandits_guile -> expire();
@@ -3701,11 +3706,11 @@ struct bandits_guile_t : public buff_t
     }
   }
 
-  void expire_override()
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
     rogue_t* p = debug_cast< rogue_t* >( player );
 
-    buff_t::expire_override();
+    buff_t::expire_override( expiration_stacks, remaining_duration );
 
     p -> buffs.shallow_insight -> expire();
     p -> buffs.moderate_insight -> expire();
@@ -3722,9 +3727,9 @@ struct subterfuge_t : public buff_t
     rogue( r )
   { }
 
-  void expire_override()
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
-    buff_t::expire_override();
+    buff_t::expire_override( expiration_stacks, remaining_duration );
     // The Glyph of Vanish bug is back, so if Vanish is still up when
     // Subterfuge fades, don't cancel stealth. Instead, the next offensive
     // action in the sim will trigger a new (3 seconds) of Suberfuge.
@@ -3774,9 +3779,9 @@ struct stealth_t : public buff_t
     rogue -> buffs.master_of_subtlety_passive -> trigger();
   }
 
-  void expire_override()
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
-    buff_t::expire_override();
+    buff_t::expire_override( expiration_stacks, remaining_duration );
 
     rogue -> buffs.master_of_subtlety_passive -> expire();
     rogue -> buffs.master_of_subtlety -> trigger();
@@ -3798,9 +3803,9 @@ struct rogue_poison_buff_t : public buff_t
     buff_t::execute( stacks, value, duration );
   }
 
-  void expire_override()
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
-    buff_t::expire_override();
+    buff_t::expire_override( expiration_stacks, remaining_duration );
 
     rogue_t* rogue = debug_cast< rogue_t* >( source );
     if ( ! rogue -> poisoned_enemy( player ) )
@@ -3841,7 +3846,39 @@ struct instant_poison_t : public rogue_poison_buff_t
   }
 };
 
+struct marked_for_death_debuff_t : public debuff_t
+{
+  cooldown_t* mod_cd;
+
+  marked_for_death_debuff_t( rogue_td_t& r ) :
+    debuff_t( buff_creator_t( r, "marked_for_death", r.source -> find_talent_spell( "Marked for Death" ) ).cd( timespan_t::zero() ) ),
+    mod_cd( r.source -> get_cooldown( "marked_for_death" ) )
+  { }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  {
+    if ( remaining_duration > timespan_t::zero() )
+    {
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf("%s marked_for_death cooldown reset", player -> name() );
+      }
+
+      mod_cd -> reset( false );
+    }
+
+    debuff_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
 } // end namespace buffs
+
+inline void actions::marked_for_death_t::impact( action_state_t* state )
+{
+  rogue_attack_t::impact( state );
+
+  td( state -> target ) -> debuffs.marked_for_death -> trigger();
+}
 
 // ==========================================================================
 // Rogue Targetdata Definitions
@@ -3879,6 +3916,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.crippling_poison = new buffs::crippling_poison_t( *this );
   debuffs.leeching_poison = new buffs::leeching_poison_t( *this );
   debuffs.instant_poison = new buffs::instant_poison_t( *this );
+  debuffs.marked_for_death = new buffs::marked_for_death_debuff_t( *this );
 }
 
 // ==========================================================================

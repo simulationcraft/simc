@@ -2184,9 +2184,9 @@ void player_t::create_buffs()
       buff_t( buff_creator_t( p, "raid_movement" ).max_stack( 1 ) )
     { }
 
-    void expire_override()
+    void expire_override( int expiration_stacks, timespan_t remaining_duration )
     {
-      buff_t::expire_override();
+      buff_t::expire_override( expiration_stacks, remaining_duration );
       player -> finish_moving();
     }
   };

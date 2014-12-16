@@ -1999,7 +1999,7 @@ public:
   void expire( timespan_t delay = timespan_t::zero() );
 
   // Called only if previously active buff expires
-  virtual void expire_override() {}
+  virtual void expire_override( int /* expiration_stacks */, timespan_t /* remaining_duration */ ) {}
   virtual void predict();
   virtual void reset();
   virtual void aura_gain();
@@ -2057,7 +2057,7 @@ struct stat_buff_t : public buff_t
 
   virtual void bump     ( int stacks = 1, double value = -1.0 );
   virtual void decrement( int stacks = 1, double value = -1.0 );
-  virtual void expire_override();
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration );
   virtual double value() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return stats[ 0 ].current_value; }
 
 protected:
@@ -2081,7 +2081,7 @@ protected:
 
 public:
   virtual void start( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
-  virtual void expire_override();
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration );
 
   void consume( double amount );
 };
@@ -2097,7 +2097,7 @@ protected:
 public:
   virtual void bump     ( int stacks = 1, double value = -1.0 );
   virtual void decrement( int stacks = 1, double value = -1.0 );
-  virtual void expire_override();
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration );
 };
 
 struct haste_buff_t : public buff_t
@@ -2107,7 +2107,7 @@ protected:
   friend struct buff_creation::haste_buff_creator_t;
 public:
   virtual void execute( int stacks = 1, double value = -1.0, timespan_t duration = timespan_t::min() );
-  virtual void expire_override();
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration );
 };
 
 struct debuff_t : public buff_t
@@ -7335,7 +7335,7 @@ public:
     if ( ab::sim -> debug )
       ab::sim -> out_debug.printf( "%s %s residual_action impact amount=%f old_total=%f old_ticks=%d old_tick=%f current_total=%f current_ticks=%d current_tick=%f",
                   ab::player -> name(), ab::name(), s -> result_amount,
-                  old_amount, ticks_left, ticks_left > 0 ? old_amount / ticks_left : 0,
+                  old_amount * ticks_left, ticks_left, ticks_left > 0 ? old_amount : 0,
                   current_amount, dot -> ticks_left(), dot_state -> tick_amount );
   }
 

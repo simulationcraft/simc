@@ -483,9 +483,9 @@ struct ardent_defender_buff_t : public buff_t
     oneup_triggered = true;
   }
 
-  virtual void expire_override()
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
-    buff_t::expire_override();
+    buff_t::expire_override( expiration_stacks, remaining_duration );
 
     paladin_t* p = static_cast<paladin_t*>( player );
     if ( ! oneup_triggered && p -> glyphs.ardent_defender -> ok() )
@@ -583,9 +583,9 @@ struct eternal_flame_t : public buff_t
     cooldown -> duration = timespan_t::zero();
   }
 
-  virtual void expire_override()
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
-    buff_t::expire_override();
+    buff_t::expire_override( expiration_stacks, remaining_duration );
 
     // cancel existing Eternal Flame HoT
     pair -> dots.eternal_flame -> cancel();    
@@ -4558,9 +4558,9 @@ struct hand_of_sacrifice_t : public buff_t
     return true;
   }
 
-  virtual void expire_override()
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
-    buff_t::expire_override();
+    buff_t::expire_override( expiration_stacks, remaining_duration );
 
     source = nullptr;
     source_health_pool = 0.0;
@@ -4585,9 +4585,9 @@ struct divine_protection_t : public buff_t
     cooldown -> duration = timespan_t::zero();
   }
 
-  virtual void expire_override()
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
-    buff_t::expire_override();
+    buff_t::expire_override( expiration_stacks, remaining_duration );
 
     paladin_t* p = static_cast<paladin_t*>( player );
     if ( p -> sets.has_set_bonus( SET_TANK, T16, B2 ) )

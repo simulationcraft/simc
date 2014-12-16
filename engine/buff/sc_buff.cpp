@@ -962,6 +962,11 @@ void buff_t::expire( timespan_t delay )
     core_event_t::cancel( expiration_delay );
   }
 
+  timespan_t remaining_duration = timespan_t::zero();
+  int expiration_stacks = current_stack;
+  if ( expiration )
+    remaining_duration = expiration -> remains();
+
   core_event_t::cancel( expiration );
   core_event_t::cancel( tick_event );
 
@@ -1028,7 +1033,7 @@ void buff_t::expire( timespan_t delay )
       core_event_t::cancel( stack_react_ready_triggers[ i ] );
   }
 
-  expire_override(); // virtual expire call
+  expire_override( expiration_stacks, remaining_duration ); // virtual expire call
 
   if ( player ) player -> trigger_ready();
 }
@@ -1507,7 +1512,7 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
 
 // stat_buff_t::expire ======================================================
 
-void stat_buff_t::expire_override()
+void stat_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
 {
   for ( size_t i = 0; i < stats.size(); ++i )
   {
@@ -1518,7 +1523,7 @@ void stat_buff_t::expire_override()
     stats[ i ].current_value = 0;
   }
 
-  buff_t::expire_override();
+  buff_t::expire_override( expiration_stacks, remaining_duration );
 }
 
 // ==========================================================================
@@ -1589,11 +1594,11 @@ void cost_reduction_buff_t::decrement( int stacks, double /* value */ )
 
 // cost_reduction_buff_t::expire ============================================
 
-void cost_reduction_buff_t::expire_override()
+void cost_reduction_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
 {
   player -> cost_reduction_loss( school, current_value );
 
-  buff_t::expire_override();
+  buff_t::expire_override( expiration_stacks, remaining_duration );
 }
 
 // ==========================================================================
@@ -1631,14 +1636,14 @@ void haste_buff_t::execute( int stacks, double value, timespan_t duration )
 
 // haste_buff_t::expire =====================================================
 
-void haste_buff_t::expire_override()
+void haste_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
 {
   double old_attack_speed = 0;
 
   if ( player -> main_hand_attack || player -> off_hand_attack )
     old_attack_speed = player -> cache.attack_speed();
 
-  buff_t::expire_override();
+  buff_t::expire_override( expiration_stacks, remaining_duration );
 
   // Up -> Down, slow down remaining swing speeds
   if ( player -> main_hand_attack )
@@ -1727,9 +1732,9 @@ void absorb_buff_t::start( int stacks, double value, timespan_t duration )
   player -> absorb_buff_list.push_back( this );
 }
 
-void absorb_buff_t::expire_override()
+void absorb_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
 {
-  buff_t::expire_override();
+  buff_t::expire_override( expiration_stacks, remaining_duration );
 
   std::vector<absorb_buff_t*>::iterator it = range::find( player -> absorb_buff_list, this );
   if ( it != player -> absorb_buff_list.end() )

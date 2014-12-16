@@ -1339,9 +1339,9 @@ struct astral_communion_t : public druid_buff_t < buff_t >
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
   }
 
-  virtual void expire_override()
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
-    base_t::expire_override();
+    base_t::expire_override( expiration_stacks, remaining_duration );
 
     druid.last_check = sim -> current_time() - druid.last_check;
     druid.last_check *= 1 + druid.buff.astral_communion -> data().effectN( 1 ).percent();
@@ -1365,9 +1365,9 @@ public:
     add_invalidate( CACHE_ARMOR );
   }
 
-  virtual void expire_override()
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
-    base_t::expire_override();
+    base_t::expire_override( expiration_stacks, remaining_duration );
 
     swap_melee( druid.caster_melee_attack, druid.caster_form_weapon );
 
@@ -1427,7 +1427,7 @@ struct berserk_buff_t : public druid_buff_t<buff_t>
     return druid_buff_t<buff_t>::trigger( stacks, value, chance, duration );
   }
 
-  virtual void expire_override()
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
     druid.max_fb_energy /= 1.0 + druid.spell.berserk_cat -> effectN( 1 ).percent();
 
@@ -1438,7 +1438,7 @@ struct berserk_buff_t : public druid_buff_t<buff_t>
       player -> resources.current[ RESOURCE_ENERGY ] = std::min( player -> resources.current[ RESOURCE_ENERGY ], player -> resources.max[ RESOURCE_ENERGY ]);
     }
 
-    druid_buff_t<buff_t>::expire_override();
+    druid_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
   }
 };
 
@@ -1457,9 +1457,9 @@ struct cat_form_t : public druid_buff_t< buff_t >
       quiet = true;
   }
 
-  virtual void expire_override()
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
-    base_t::expire_override();
+    base_t::expire_override( expiration_stacks, remaining_duration );
     
     swap_melee( druid.caster_melee_attack, druid.caster_form_weapon );
 
@@ -1496,9 +1496,9 @@ struct celestial_alignment_t : public druid_buff_t < buff_t >
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
-  virtual void expire_override()
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
-    base_t::expire_override();
+    base_t::expire_override( expiration_stacks, remaining_duration );
 
     druid.last_check = sim -> current_time();
   }
@@ -1513,9 +1513,9 @@ struct moonkin_form_t : public druid_buff_t< buff_t >
                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
   { }
 
-  virtual void expire_override()
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
-    base_t::expire_override();
+    base_t::expire_override( expiration_stacks, remaining_duration );
 
     sim -> auras.mastery -> decrement();
   }
@@ -1552,11 +1552,11 @@ struct omen_of_clarity_buff_t : public druid_buff_t<buff_t>
     return druid_buff_t<buff_t>::trigger( stacks, value, chance, duration );
   }
 
-  virtual void expire_override()
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
     druid.max_fb_energy += druid.spell.ferocious_bite -> powerN( 1 ).cost() * ( 1.0 + ( druid.buff.berserk -> check() ? druid.spell.berserk_cat -> effectN( 1 ).percent() : 0.0 ) );
 
-    druid_buff_t<buff_t>::expire_override();
+    druid_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
   }
 };
 
@@ -1617,9 +1617,9 @@ struct ursa_major_t : public druid_buff_t < buff_t >
     recalculate_temporary_health( value );
   }
 
-  virtual void expire_override()
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
-    base_t::expire_override();
+    base_t::expire_override( expiration_stacks, remaining_duration );
 
     recalculate_temporary_health( 0.0 );
   }

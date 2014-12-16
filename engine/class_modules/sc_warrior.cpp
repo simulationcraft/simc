@@ -4532,7 +4532,7 @@ struct bloodsurge_t: public warrior_buff_t < buff_t >
     wasted = 0;
   }
 
-  void expire_override()
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
     if ( wasted > 0 )
     {
@@ -4543,7 +4543,7 @@ struct bloodsurge_t: public warrior_buff_t < buff_t >
       }
       while ( wasted > 0 );
     }
-    base_t::expire_override();
+    base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 
@@ -4619,10 +4619,10 @@ struct rallying_cry_t: public warrior_buff_t < buff_t >
     return base_t::trigger( stacks, value, chance, duration );
   }
 
-  void expire_override()
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
     warrior.stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
-    base_t::expire_override();
+    base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 
@@ -4640,10 +4640,10 @@ struct last_stand_t: public warrior_buff_t < buff_t >
     return base_t::trigger( stacks, value, chance, duration );
   }
 
-  void expire_override()
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
     warrior.stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
-    base_t::expire_override();
+    base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 
@@ -4655,12 +4655,12 @@ struct debuff_demo_shout_t: public warrior_buff_t < buff_t >
     default_value = data().effectN( 1 ).percent();
   }
 
-  void expire_override()
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
     if ( warrior.sets.has_set_bonus( SET_TANK, T16, B4 ) )
       warrior.buff.tier16_reckless_defense -> trigger();
 
-    buff_t::expire_override();
+    buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 } // end namespace buffs

@@ -544,7 +544,7 @@ struct ascendance_buff_t : public buff_t
 
   void ascendance( attack_t* mh, attack_t* oh, timespan_t lvb_cooldown );
   bool trigger( int stacks, double value, double chance, timespan_t duration );
-  void expire_override();
+  void expire_override( int expiration_stacks, timespan_t remaining_duration );
 };
 
 struct unleash_flame_buff_t : public buff_t
@@ -556,7 +556,7 @@ struct unleash_flame_buff_t : public buff_t
     expiration_delay( 0 )
   { }
 
-  void expire_override();
+  void expire_override( int expiration_stacks, timespan_t remaining_duration );
   void reset();
 };
 
@@ -4329,7 +4329,7 @@ struct unleash_flame_expiration_delay_t : public event_t
   }
 };
 
-inline void unleash_flame_buff_t::expire_override()
+inline void unleash_flame_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
 {
   if ( current_stack == 1 && ! expiration && ! expiration_delay && ! player -> is_sleeping() )
   {
@@ -4347,14 +4347,14 @@ inline void unleash_flame_buff_t::expire_override()
     if ( expiration )
       expiration_delay = new ( *sim ) unleash_flame_expiration_delay_t( *debug_cast< shaman_t* >( player ), this );
     else
-      buff_t::expire_override();
+      buff_t::expire_override( expiration_stacks, remaining_duration );
   }
   // If the p() is sleeping, make sure the existing buff behavior works (i.e., a call to
   // expire) and additionally, make _absolutely sure_ that any pending expiration delay
   // is canceled
   else
   {
-    buff_t::expire_override();
+    buff_t::expire_override( expiration_stacks, remaining_duration );
     core_event_t::cancel( expiration_delay );
   }
 }
@@ -4464,12 +4464,12 @@ inline bool ascendance_buff_t::trigger( int stacks, double value, double chance,
   return buff_t::trigger( stacks, value, chance, duration );
 }
 
-inline void ascendance_buff_t::expire_override()
+inline void ascendance_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
 {
   shaman_t* p = debug_cast< shaman_t* >( player );
 
   ascendance( p -> melee_mh, p -> melee_oh, lava_burst ? lava_burst -> data().cooldown() : timespan_t::zero() );
-  buff_t::expire_override();
+  buff_t::expire_override( expiration_stacks, remaining_duration );
 }
 
 // ==========================================================================

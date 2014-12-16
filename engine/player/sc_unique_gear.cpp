@@ -482,8 +482,8 @@ void enchant::mark_of_the_thunderlord( special_effect_t& effect,
     void reset()
     { stat_buff_t::reset(); extensions = 0; }
 
-    void expire_override()
-    { stat_buff_t::expire_override(); extensions = 0; }
+    void expire_override( int expiration_stacks, timespan_t remaining_duration )
+    { stat_buff_t::expire_override( expiration_stacks, remaining_duration ); extensions = 0; }
   };
 
   // Max extensions is hardcoded, no spell data to fetch it
@@ -1220,9 +1220,9 @@ void item::unerring_vision_of_leishen( special_effect_t& effect,
       buff_t::execute( stacks, value, duration );
     }
 
-    void expire_override()
+    void expire_override( int expiration_stacks, timespan_t remaining_duration )
     {
-      buff_t::expire_override();
+      buff_t::expire_override( expiration_stacks, remaining_duration );
 
       player -> current.spell_crit  -= data().effectN( 1 ).percent();
       player -> current.attack_crit -= data().effectN( 1 ).percent();

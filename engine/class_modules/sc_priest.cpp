@@ -4964,9 +4964,9 @@ struct shadowform_t final : public priest_buff_t<buff_t>
     return r;
   }
 
-  virtual void expire_override() override
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    base_t::expire_override();
+    base_t::expire_override( expiration_stacks, remaining_duration );
 
     if ( ! sim -> overrides.haste )
       sim -> auras.haste -> decrement();
@@ -5012,10 +5012,10 @@ struct dispersion_t final : public priest_buff_t<buff_t>
 
   }
 
-  void expire_override()
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
     priest.buffs.shadow_power -> trigger();
-    buff_t::expire_override();
+    buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 

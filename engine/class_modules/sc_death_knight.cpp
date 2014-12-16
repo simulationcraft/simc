@@ -2230,9 +2230,9 @@ struct shadow_of_death_t : public buff_t
     current_value = new_multiplier;
   }
 
-  virtual void expire_override()
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
-    buff_t::expire_override();
+    buff_t::expire_override( expiration_stacks, remaining_duration );
 
     player -> stat_loss( STAT_MAX_HEALTH, current_health_gain, 0, 0, true );
     current_health_gain = 0;
@@ -5639,9 +5639,9 @@ struct runic_corruption_buff_t : public buff_t
     buff_t::execute( stacks, value, duration );
   }
 
-  void expire_override()
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
-    buff_t::expire_override();
+    buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 
@@ -5667,9 +5667,9 @@ struct vampiric_blood_buff_t : public buff_t
     }
   }
 
-  void expire_override()
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
-    buff_t::expire_override();
+    buff_t::expire_override( expiration_stacks, remaining_duration );
 
     if ( health_gain > 0 )
     {
@@ -5696,7 +5696,7 @@ struct frozen_runeblade_buff_t : public buff_t
     stack_count = current_stack;
   }
 
-  void expire_override()
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
     // Stack_count - 1 is used, because Simulationcraft uses the initial stack
     // to "enable" the bonus when Pillar of Frost is used.
@@ -5707,7 +5707,7 @@ struct frozen_runeblade_buff_t : public buff_t
       p -> active_spells.frozen_runeblade -> schedule_execute();
     }
 
-    buff_t::expire_override();
+    buff_t::expire_override( expiration_stacks, remaining_duration );
 
     stack_count = 0;
   }
