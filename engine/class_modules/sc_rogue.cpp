@@ -837,6 +837,8 @@ struct venomous_wound_t : public rogue_poison_t
   {
     background       = true;
     proc             = true;
+    if ( p -> wod_hotfix )
+      base_multiplier *= 1.2;
   }
 
   double composite_da_multiplier( const action_state_t* state ) const
@@ -1585,7 +1587,10 @@ struct backstab_t : public rogue_attack_t
     requires_weapon   = WEAPON_DAGGER;
     requires_position = POSITION_BACK;
     if ( p -> wod_hotfix )
+    {
       weapon_multiplier *= 1.13;
+      weapon_multiplier *= 1.2;
+    }
   }
 
   virtual double cost() const
@@ -2031,8 +2036,8 @@ struct hemorrhage_t : public rogue_attack_t
     may_multistrike = true;
     if ( p -> wod_hotfix )
     {
-      weapon_multiplier *= 1.2;
-      attack_power_mod.tick *= 1.2;
+      weapon_multiplier *= 1.2 * 1.3;
+      attack_power_mod.tick *= 1.2 * 1.3;
     }
   }
 
@@ -3049,7 +3054,14 @@ struct blade_flurry_attack_t : public rogue_attack_t
   { return false; }
 
   double composite_da_multiplier( const action_state_t* ) const
-  { return p() -> spec.blade_flurry -> effectN( 3 ).percent(); }
+  {
+    double cleave_damage = p() -> spec.blade_flurry -> effectN( 3 ).percent();
+
+    if ( p() -> wod_hotfix )
+      cleave_damage += 0.05;
+
+    return cleave_damage;
+  }
 
   size_t available_targets( std::vector< player_t* >& tl ) const
   {
@@ -4082,9 +4094,17 @@ struct shadow_reflection_pet_t : public pet_t
 
   struct sr_hemorrhage_t : public shadow_reflection_attack_t
   {
-    sr_hemorrhage_t( shadow_reflection_pet_t* p ) :
+    sr_hemorrhage_t( shadow_reflection_pet_t* p ):
       shadow_reflection_attack_t( "hemorrhage", p, p -> find_spell( 16511 ) )
-    { tick_may_crit = false; may_multistrike = true; }
+    {
+      tick_may_crit = false; 
+      may_multistrike = true;
+      if ( p -> wod_hotfix )
+      {
+        weapon_multiplier *= 1.2 * 1.3;
+        attack_power_mod.tick *= 1.2 * 1.3;
+      }
+    }
   };
 
   struct sr_backstab_t : public shadow_reflection_attack_t
@@ -4094,7 +4114,10 @@ struct shadow_reflection_pet_t : public pet_t
     {
       requires_position = POSITION_BACK;
       if ( p -> wod_hotfix )
+      {
         weapon_multiplier *= 1.13;
+        weapon_multiplier *= 1.2;
+      }
     }
   };
 
