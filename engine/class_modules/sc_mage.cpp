@@ -476,15 +476,16 @@ struct water_elemental_pet_t : public pet_t
       td( s -> target ) -> water_jet -> trigger();
       // Trigger hidden proxy water jet for the mage, so
       // debuff.water_jet.<expression> works
-      p() -> o() -> get_target_data( s -> target ) -> debuffs.water_jet -> trigger();
+
+      p() -> o() -> get_target_data( s -> target ) -> debuffs.water_jet
+          -> trigger(1, buff_t::DEFAULT_VALUE(), 1.0,
+                     data().duration() * p() -> composite_spell_haste());
     }
 
     virtual void last_tick( dot_t* d )
     {
       spell_t::last_tick( d );
       td( d -> target ) -> water_jet -> expire();
-      // Aand expire proxy water jet debuff
-      p() -> o() -> get_target_data( d -> target ) -> debuffs.water_jet -> expire();
     }
 
     bool ready()
@@ -4227,8 +4228,6 @@ struct water_jet_t : public action_t
     }
   }
 
-  // Execute simply enables water jet, on next available cast on the Water
-  // Elemental
   void execute()
   {
     mage_t* m = debug_cast<mage_t*>( player );
@@ -4337,8 +4336,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.firestarter = buff_creator_t( *this, "firestarter" ).chance( 1.0 ).duration( timespan_t::from_seconds( 10.0 ) );
   debuffs.water_jet = buff_creator_t( *this, "water_jet", source -> find_spell( 135029 ) )
                       .quiet( true )
-                      .cd( timespan_t::zero() )
-                      .duration( timespan_t::zero() );
+                      .cd( timespan_t::zero() );
 }
 
 // mage_t::create_action ====================================================
