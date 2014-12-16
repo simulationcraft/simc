@@ -4089,7 +4089,7 @@ double hunter_t::composite_attack_power_multiplier() const
   if ( perks.improved_focus_fire -> ok() && buffs.focus_fire -> check() )
   {
     double stacks = buffs.focus_fire -> current_value / specs.focus_fire -> effectN( 1 ).percent();
-    mult += stacks * ( perks.improved_focus_fire -> effectN( 1 ).percent() + wod_hotfix ? 0.03 : 0 );
+    mult += stacks * ( perks.improved_focus_fire -> effectN( 1 ).percent() + ( wod_hotfix ? 0.03 : 0 ) );
   }
   return mult;
 }
