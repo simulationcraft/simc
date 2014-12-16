@@ -1038,9 +1038,7 @@ struct monk_spell_t: public monk_action_t < spell_t >
     double m = base_t::composite_target_multiplier( t );
 
     if ( td( t ) -> debuff.rising_sun_kick -> check() )
-    {
-      m *= 1.0 + ( td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent() * 0.50 ); // Hotfix nerf to 10% (down from 20%) on 2014/12/08;
-    }
+      m *= 1.0 + ( td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent() * 0.25 ); // Hotfix nerf to 5% (down from 20%) on 2014/12/15;
 
     return m;
   }
@@ -1136,7 +1134,7 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
     double m = base_t::composite_target_multiplier( t );
 
     if ( td( t ) -> debuff.rising_sun_kick -> check() && special )
-      m *= 1.0 + ( td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent() * 0.50 ); // Hotfix nerf to 10% (down from 20%) on 2014/12/12
+      m *= 1.0 + ( td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent() * 0.25 ); // Hotfix nerf to 5% (down from 20%) on 2014/12/15
 
     return m;
   }
