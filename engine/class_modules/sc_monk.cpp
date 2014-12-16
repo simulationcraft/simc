@@ -1038,7 +1038,7 @@ struct monk_spell_t: public monk_action_t < spell_t >
     double m = base_t::composite_target_multiplier( t );
 
     if ( td( t ) -> debuff.rising_sun_kick -> check() )
-      m *= 1.0 + ( td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent() * 0.25 ); // Hotfix nerf to 5% (down from 20%) on 2014/12/15;
+      m *= 1.0 + ( td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent() * 0.50 ); // Hotfix nerf to 10% (down from 20%) on 2014/12/08;
 
     return m;
   }
@@ -1134,7 +1134,7 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
     double m = base_t::composite_target_multiplier( t );
 
     if ( td( t ) -> debuff.rising_sun_kick -> check() && special )
-      m *= 1.0 + ( td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent() * 0.25 ); // Hotfix nerf to 5% (down from 20%) on 2014/12/15
+      m *= 1.0 + ( td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent() * 0.50 ); // Hotfix nerf to 10% (down from 20%) on 2014/12/08
 
     return m;
   }
@@ -4193,7 +4193,7 @@ double monk_t::composite_player_multiplier( school_e school ) const
 {
   double m = base_t::composite_player_multiplier( school );
 
-  m *= 1.0 + active_stance_data( FIERCE_TIGER ).effectN( 3 ).percent();
+  m *= 1.0 + ( active_stance_data( FIERCE_TIGER ).effectN( 3 ).percent() * 0.50 ); // Hotfix nerf to 5% (down from 10%) on 2014/12/15;
 
   m *= 1.0 + buff.tigereye_brew_use -> value();
 
