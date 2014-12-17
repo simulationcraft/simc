@@ -2177,7 +2177,7 @@ void sim_t::merge()
 
 void sim_t::run()
 {
-  if( iterate() )
+  if( iterate() && iterations > 1 )
   {
     parent -> merge( *this );
   }
