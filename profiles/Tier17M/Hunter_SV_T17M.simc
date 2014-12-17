@@ -3,7 +3,7 @@ level=100
 race=blood_elf
 role=attack
 position=ranged_back
-talents=0003113
+talents=0003123
 spec=survival
 
 # This default action priority list is automatically created based on your character.
