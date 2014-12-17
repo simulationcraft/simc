@@ -1156,6 +1156,13 @@ struct apply_poison_t : public action_t
     }
   }
 
+  void reset()
+  {
+    action_t::reset();
+
+    executed = false;
+  }
+
   virtual void execute()
   {
     executed = true;
