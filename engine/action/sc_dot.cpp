@@ -682,6 +682,7 @@ void dot_t::refresh( timespan_t duration )
   last_start = sim.current_time();
 
   assert( end_event && "Dot is ticking but has no end event." );
+  timespan_t remaining_duration = end_event -> remains();
   end_event -> reschedule( current_duration );
 
   check_tick_zero();
@@ -693,6 +694,16 @@ void dot_t::refresh( timespan_t duration )
     sim.out_debug.printf( "%s refreshes dot for %s on %s. duration=%.3f",
                           source -> name(), name(), target -> name(),
                           current_duration.total_seconds() );
+
+  // Ensure that the ticker is running when dots are refreshed. It is possible
+  // that a specialized dot handling cancels the ticker when there's no time to
+  // tick another one (before the periodic effect ends). This is for example
+  // used in the Rogue module to implement Sinister Calling.
+  if ( ! tick_event )
+  {
+    assert( ! current_action -> channeled );
+    tick_event = new ( sim ) dot_tick_event_t( this, remaining_duration );
+  }
 }
 
 void dot_t::check_tick_zero()
