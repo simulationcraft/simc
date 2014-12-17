@@ -2068,7 +2068,8 @@ bool sim_t::iterate()
 
   progress_bar.init();
 
-  for( int i = 0; work_queue -> pop(); ++i )
+  int i = 0;
+  do
   {
     combat( i );
 
@@ -2079,7 +2080,8 @@ bool sim_t::iterate()
     }
 
     do_pause();
-  }
+    ++i;
+  } while( work_queue -> pop() );
 
   if ( ! canceled && progress_bar.update( true ) )
   {
@@ -2177,7 +2179,7 @@ void sim_t::merge()
 
 void sim_t::run()
 {
-  if( iterate() && iterations > 1 )
+  if( iterate() )
   {
     parent -> merge( *this );
   }
