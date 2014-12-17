@@ -781,6 +781,8 @@ uint64_t rng_t::reseed()
   union { uint64_t s; double d; } w;
   w.d = real();
   seed( w.s );
+  gauss_pair_value = 0;
+  gauss_pair_use = false;
   return w.s;
 }
 
