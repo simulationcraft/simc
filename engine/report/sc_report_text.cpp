@@ -560,6 +560,50 @@ void print_text_waiting_all( FILE* file, sim_t* sim )
   if ( nobody_waits ) util::fprintf( file, "    All players active 100%% of the time.\n" );
 }
 
+// print_text_iteration_data ================================================
+
+void print_text_iteration_data( FILE* file, sim_t* sim )
+{
+  util::fprintf( file, "\nIteration data:\n" );
+  if ( sim -> low_iteration_data.size() && sim -> high_iteration_data.size() )
+  {
+    util::fprintf( file, ".-----------------------------------------------. .-----------------------------------------------.\n" );
+    util::fprintf( file, "|               Low Iteration Data              | |              High Iteration Data              |\n" );
+    util::fprintf( file, "+-----------+----------------------+------------+ +-----------+----------------------+------------+\n" );
+    util::fprintf( file, "|    Metric |                 Seed |     Health | |    Metric |                 Seed |     Health |\n" );
+    util::fprintf( file, "+-----------+----------------------+------------+ +-----------+----------------------+------------+\n" );
+
+    for ( size_t i = 0; i < sim -> low_iteration_data.size(); i++ )
+    {
+      fprintf( file, "| %9.1f | %20llu | %10llu | | %9.1f | %20llu | %10llu |\n",
+          sim -> low_iteration_data[ i ].metric,
+          sim -> low_iteration_data[ i ].seed,
+          sim -> low_iteration_data[ i ].target_health,
+          sim -> high_iteration_data[ i ].metric,
+          sim -> high_iteration_data[ i ].seed,
+          sim -> high_iteration_data[ i ].target_health );
+    }
+    util::fprintf( file, "'-----------+----------------------+------------' '-----------+----------------------+------------'\n" );
+  }
+  else
+  {
+    util::fprintf( file, ".-----------------------------------------------.\n" );
+    util::fprintf( file, "|                 Iteration Data                |\n" );
+    util::fprintf( file, "+-----------+----------------------+------------+\n" );
+    util::fprintf( file, "|    Metric |                 Seed |     Health |\n" );
+    util::fprintf( file, "+-----------+----------------------+------------+\n" );
+
+    for ( size_t i = 0; i < sim -> iteration_data.size(); i++ )
+    {
+      fprintf( file, "| %9.1f | %20llu | %10llu |\n",
+          sim -> iteration_data[ i ].metric,
+          sim -> iteration_data[ i ].seed,
+          sim -> iteration_data[ i ].target_health );
+    }
+    util::fprintf( file, "'-----------+----------------------+------------'\n" );
+  }
+}
+
 // print_text_performance ===================================================
 
 void print_text_performance( FILE* file, sim_t* sim )
@@ -570,7 +614,7 @@ void print_text_performance( FILE* file, sim_t* sim )
     date_str = date_str.substr( 0, date_str.size() - 1 );
   util::fprintf( file,
                  "\nBaseline Performance:\n"
-                 "  RNG Engine    = %s\n"
+                 "  RNG Engine    = %s%s\n"
                  "  Iterations    = %d\n"
                  "  TotalEvents   = %lu\n"
                  "  MaxEventQueue = %lu\n"
@@ -580,7 +624,8 @@ void print_text_performance( FILE* file, sim_t* sim )
                  "  WallSeconds   = %.3f\n"
                  "  SpeedUp       = %.0f\n"
                  "  EndTime       = %s (%.0f)\n\n",
-		 sim -> rng().name(), sim -> iterations,
+                 sim -> rng().name(), sim -> deterministic ? " (deterministic)" : "",
+                 sim -> iterations,
                  sim -> event_mgr.total_events_processed,
                  sim -> event_mgr.max_events_remaining,
                  sim -> target -> resources.base[ RESOURCE_HEALTH ],
@@ -1023,6 +1068,7 @@ void print_text( sim_t* sim, bool detail )
   {
     print_text_hat_donors   ( file, sim );
     print_text_waiting_all  ( file, sim );
+    print_text_iteration_data( file, sim );
     print_text_performance  ( file, sim );
     print_text_scale_factors( file, sim );
     print_text_reference_dps( file, sim );

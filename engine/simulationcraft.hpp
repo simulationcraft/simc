@@ -2312,6 +2312,18 @@ struct spell_data_expr_t
 // mutex, thread
 #include "util/concurrency.hpp"
 
+// Iteration data entry for replayability
+struct iteration_data_entry_t
+{
+  double   metric;
+  uint64_t seed;
+  uint64_t target_health;
+
+  iteration_data_entry_t( double m, uint64_t s, uint64_t h ) :
+    metric( m ), seed( s ), target_health( h )
+  { }
+};
+
 // Simulation Setup =========================================================
 
 struct option_tuple_t
@@ -2708,8 +2720,13 @@ struct sim_t : private sc_thread_t
   double     iteration_dmg, iteration_heal, iteration_absorb;
   simple_sample_data_t raid_dps, total_dmg, raid_hps, total_heal, total_absorb, raid_aps;
   extended_sample_data_t simulation_length;
-  std::vector<uint64_t> iteration_seed;
-  std::vector<uint64_t> iteration_initial_health;
+  // Deterministic simulation iteration data collectors for specific iteration
+  // replayability
+  std::vector<iteration_data_entry_t> iteration_data, low_iteration_data, high_iteration_data;
+  // Report percent (how many% of lowest/highest iterations reported, default 2.5%)
+  double     report_iteration_data;
+  // Minimum number of low/high iterations reported (default 5 of each)
+  int        min_report_iteration_data;
   int        report_progress;
   int        bloodlust_percent;
   timespan_t bloodlust_time;
@@ -2834,6 +2851,7 @@ struct sim_t : private sc_thread_t
   void      partition();
   bool      execute();
   void      analyze_error();
+  void      analyze_iteration_data();
   void      print_options();
   void      add_option( const option_t& opt );
   void      create_options();

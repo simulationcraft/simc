@@ -7,6 +7,29 @@
 
 namespace { // UNNAMED NAMESPACE ============================================
 
+// Comparator for iteration data entry sorting (see analyze_iteration_data)
+bool iteration_data_cmp( const iteration_data_entry_t& a,
+                         const iteration_data_entry_t& b )
+{
+  if ( a.metric > b.metric )
+  {
+    return true;
+  }
+
+  return false;
+}
+
+bool iteration_data_cmp_r( const iteration_data_entry_t& a,
+                          const iteration_data_entry_t& b )
+{
+  if ( a.metric > b.metric )
+  {
+    return false;
+  }
+
+  return true;
+}
+
 // parse_ptr ================================================================
 
 bool parse_ptr( sim_t*             sim,
@@ -960,6 +983,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   iteration_dmg( 0 ), iteration_heal( 0 ), iteration_absorb( 0 ),
   raid_dps(), total_dmg(), raid_hps(), total_heal(), total_absorb(), raid_aps(),
   simulation_length( "Simulation Length", false ),
+  report_iteration_data( 0.025 ), min_report_iteration_data( -1 ),
   report_progress( 1 ),
   bloodlust_percent( 25 ), bloodlust_time( timespan_t::from_seconds( 0.5 ) ),
   // Report
@@ -1436,8 +1460,13 @@ void sim_t::datacollection_end()
   total_absorb.add( iteration_absorb );
   raid_aps.add( current_time() != timespan_t::zero() ? iteration_absorb / current_time().total_seconds() : 0 );
 
-  iteration_seed.push_back( seed );
-  iteration_initial_health.push_back( (uint64_t) target -> resources.initial[ RESOURCE_HEALTH ] );
+  if ( deterministic && report_iteration_data > 0 && current_iteration > 0 && current_time() > timespan_t::zero() )
+  {
+    // TODO: Metric should be selectable
+    iteration_data.push_back( iteration_data_entry_t( iteration_dmg / current_time().total_seconds(),
+                                                      seed,
+                                                      static_cast< uint64_t >( target -> resources.initial[ RESOURCE_HEALTH ] ) ) );
+  }
 }
 
 // sim_t::analyze_error =====================================================
@@ -1992,6 +2021,39 @@ void sim_t::analyze()
   range::sort( players_by_tmi,  compare_tmi() );
   range::sort( players_by_name, compare_name() );
   range::sort( targets_by_name, compare_name() );
+
+  analyze_iteration_data();
+}
+
+// sim_t::analyze_iteration_data ============================================
+
+// Build a N-highest/lowest iteration table for deterministic so they can be
+// replayed
+void sim_t::analyze_iteration_data()
+{
+  // Only enabled for deterministic simulations for now
+  if ( ! deterministic || report_iteration_data == 0 )
+  {
+    return;
+  }
+
+  std::sort( iteration_data.begin(), iteration_data.end(), iteration_data_cmp_r );
+
+  size_t min_entries = ( min_report_iteration_data == -1 ) ? 5 : static_cast<size_t>( min_report_iteration_data );
+  double n_pct = report_iteration_data / ( report_iteration_data > 1 ? 100.0 : 1.0 );
+  size_t n_entries = std::max( min_entries, static_cast<size_t>( std::ceil( iteration_data.size() * n_pct ) ) );
+
+  // If low + high entries is more than we have data for, we will just print
+  // all data out
+  if ( n_entries * 2 > iteration_data.size() )
+  {
+    return;
+  }
+
+  std::copy( iteration_data.begin(), iteration_data.begin() + n_entries, std::back_inserter( low_iteration_data ) );
+  std::sort( low_iteration_data.begin(), low_iteration_data.end(), iteration_data_cmp_r );
+  std::copy( iteration_data.end() - n_entries, iteration_data.end(), std::back_inserter( high_iteration_data ) );
+  std::sort( high_iteration_data.begin(), high_iteration_data.end(), iteration_data_cmp );
 }
 
 // progress_bar_t ===========================================================
@@ -2149,8 +2211,7 @@ void sim_t::merge( sim_t& other_sim )
     p -> merge( *other_p );
   }
 
-  range::append( iteration_seed,           other_sim.iteration_seed           );
-  range::append( iteration_initial_health, other_sim.iteration_initial_health );
+  range::append( iteration_data, other_sim.iteration_data );
 }
 
 // sim_t::merge =============================================================
@@ -2532,6 +2593,8 @@ void sim_t::create_options()
   add_option( opt_string( "rng", rng_str ) );
   add_option( opt_bool( "deterministic", deterministic ) );
   add_option( opt_bool( "deterministic_rng", deterministic ) ); // OBSOLETE!  FIX GUI FIRST!
+  add_option( opt_float( "report_iteration_data", report_iteration_data ) );
+  add_option( opt_int( "min_report_iteration_data", min_report_iteration_data ) );
   add_option( opt_bool( "average_range", average_range ) );
   add_option( opt_bool( "average_gauss", average_gauss ) );
   add_option( opt_int( "convergence_scale", convergence_scale ) );
