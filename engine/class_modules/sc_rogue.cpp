@@ -4023,7 +4023,7 @@ struct shadow_reflection_pet_t : public pet_t
       if ( flags & STATE_AP )
         state -> attack_power = composite_attack_power() * player -> composite_attack_power_multiplier();
 
-      // Finally, the Shadow Relfection mimic abilities _do not_ get the
+      // Finally, the Shadow Reflection mimic abilities _do not_ get the
       // source's target specific abilities (find weakness, sanguinary vein),
       // so we need to re-snapshot target specific multipliers using the Shadow
       // Reflection's own action.
