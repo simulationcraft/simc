@@ -134,28 +134,31 @@ begin
     RegQueryStringValue(HKEY_LOCAL_MACHINE,
       'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\' + vCurID + '_is1',
       'DisplayVersion', oldVersion);
-    if (CompareVersion(oldVersion, '{#SetupSetting("AppVersion")}') < 0) then      
+    if (CompareVersion(oldVersion, '{#SetupSetting("AppVersion")}') > 0) then      
     begin
-      if MsgBox('Version ' + oldVersion + ' of ' + vCurAppName + ' is already installed. Continue to use this old version?',
-        mbConfirmation, MB_YESNO) = IDYES then
+      if MsgBox('Version ' + oldVersion + ' of ' + vCurAppName + ' is already installed. Would you like to downgrade to this older version?',
+        mbConfirmation, MB_YESNO) = IDNO then
       begin
         Result := False;
       end
       else
       begin
-          RegQueryStringValue(HKEY_LOCAL_MACHINE,
-            'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\' + vCurID + '_is1',
-            'UninstallString', uninstaller);
-          ShellExec('runas', uninstaller, '/SILENT', '', SW_HIDE, ewWaitUntilTerminated, ErrorCode);
+      RegQueryStringValue(HKEY_LOCAL_MACHINE,
+       'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\' + vCurID + '_is1',
+       'UninstallString', uninstaller);
+       ShellExec('runas', uninstaller, '/SILENT', '', SW_HIDE, ewWaitUntilTerminated, ErrorCode);
           Result := True;
       end;
     end
-    else  
+    else
     begin
-      MsgBox('Version ' + oldVersion + ' of ' + vCurAppName + ' is already installed. This installer will simply reinstall it.',
-        mbInformation, MB_OK);
-      Result := True;
+    if (CompareVersion(oldVersion, '{#SetupSetting("AppVersion")}') < 0 ) then  
+      RegQueryStringValue(HKEY_LOCAL_MACHINE,
+       'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\' + vCurID + '_is1',
+       'UninstallString', uninstaller);
+       ShellExec('runas', uninstaller, '/SILENT', '', SW_HIDE, ewWaitUntilTerminated, ErrorCode);
     end;
+    Result := True;
   end
   else
   begin
