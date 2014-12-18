@@ -44,6 +44,7 @@ actions+=/service_pet,if=talent.grimoire_of_service.enabled
 actions+=/summon_doomguard,if=!talent.demonic_servitude.enabled&active_enemies<5
 actions+=/summon_infernal,if=!talent.demonic_servitude.enabled&active_enemies>=5
 actions+=/call_action_list,name=db,if=talent.demonbolt.enabled
+actions+=/kiljaedens_cunning,if=!cooldown.cataclysm.remains&buff.metamorphosis.up
 actions+=/cataclysm,if=buff.metamorphosis.up
 actions+=/immolation_aura,if=demonic_fury>450&active_enemies>=3&buff.immolation_aura.down
 actions+=/doom,if=buff.metamorphosis.up&target.time_to_die>=30*spell_haste&remains<=(duration*0.3)&(remains<cooldown.cataclysm.remains|!talent.cataclysm.enabled)&(buff.dark_soul.down|!glyph.dark_soul.enabled)&trinket.stacking_proc.multistrike.react<10
@@ -73,6 +74,7 @@ actions+=/life_tap
 
 actions.db=immolation_aura,if=demonic_fury>450&active_enemies>=5&buff.immolation_aura.down
 actions.db+=/doom,cycle_targets=1,if=buff.metamorphosis.up&active_enemies>=6&target.time_to_die>=30*spell_haste&remains<=(duration*0.3)&(buff.dark_soul.down|!glyph.dark_soul.enabled)
+actions.db+=/kiljaedens_cunning,moving=1,if=buff.demonbolt.stack=0|(buff.demonbolt.stack<4&buff.demonbolt.remains>=(40*spell_haste-execute_time))
 actions.db+=/demonbolt,if=buff.demonbolt.stack=0|(buff.demonbolt.stack<4&buff.demonbolt.remains>=(40*spell_haste-execute_time))
 actions.db+=/doom,cycle_targets=1,if=buff.metamorphosis.up&target.time_to_die>=30*spell_haste&remains<=(duration*0.3)&(buff.dark_soul.down|!glyph.dark_soul.enabled)
 actions.db+=/corruption,cycle_targets=1,if=target.time_to_die>=6&remains<=(0.3*duration)&buff.metamorphosis.down
