@@ -1169,11 +1169,9 @@ void sim_t::cancel_iteration()
 
 // sim_t::combat ============================================================
 
-void sim_t::combat( int iteration )
+void sim_t::combat()
 {
   if ( debug ) out_debug << "Starting Simulator";
-
-  current_iteration = iteration;
 
   // The sequencing of event manager seed and flush is very tricky.
   // DO NOT MESS WITH THIS UNLESS YOU ARE EXTREMELY CONFIDENT.
@@ -2130,10 +2128,11 @@ bool sim_t::iterate()
 
   progress_bar.init();
 
-  int i = 0;
   do
   {
-    combat( i );
+    ++current_iteration;
+
+    combat();
 
     if ( progress_bar.update() )
     {
@@ -2142,7 +2141,7 @@ bool sim_t::iterate()
     }
 
     do_pause();
-    ++i;
+
   } while( work_queue -> pop() );
 
   if ( ! canceled && progress_bar.update( true ) )

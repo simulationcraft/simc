@@ -2830,7 +2830,7 @@ struct sim_t : private sc_thread_t
   double    progress( int* current = 0, int* final = 0, std::string* phase = 0 );
   double    progress( std::string& phase, std::string* detailed = 0 );
   void      detailed_progress( std::string*, int current_iterations, int total_iterations );
-  virtual void combat( int iteration );
+  virtual void combat();
   virtual void combat_begin();
   virtual void combat_end();
   void      datacollection_begin();
