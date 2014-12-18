@@ -686,6 +686,7 @@ public:
   {
     gain_t* focus_fire;
     gain_t* go_for_the_throat;
+    gain_t* steady_focus;
   } gains;
 
   // Benefits
@@ -819,6 +820,7 @@ public:
 
     gains.focus_fire        = get_gain( "focus_fire" );
     gains.go_for_the_throat = get_gain( "go_for_the_throat" );
+    gains.steady_focus      = get_gain( "steady_focus" );
   }
 
   virtual void init_benefits()
@@ -854,6 +856,16 @@ public:
     double ac = base_t::composite_melee_crit();
     ac += specs.spiked_collar -> effectN( 3 ).percent();
     return ac;
+  }
+
+  void regen( timespan_t periodicity )
+  {
+    player_t::regen( periodicity );
+    if ( o() -> buffs.steady_focus -> up() )
+    {
+      double base = focus_regen_per_second() * o() -> buffs.steady_focus -> current_value;
+      resource_gain( RESOURCE_FOCUS, base * periodicity.total_seconds(), gains.steady_focus );
+    }
   }
 
   double focus_regen_per_second() const
