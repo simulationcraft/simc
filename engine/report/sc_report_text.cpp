@@ -564,6 +564,11 @@ void print_text_waiting_all( FILE* file, sim_t* sim )
 
 void print_text_iteration_data( FILE* file, sim_t* sim )
 {
+  if ( ! sim -> deterministic || sim -> report_iteration_data == 0 )
+  {
+    return;
+  }
+
   util::fprintf( file, "\nIteration data:\n" );
   if ( sim -> low_iteration_data.size() && sim -> high_iteration_data.size() )
   {
