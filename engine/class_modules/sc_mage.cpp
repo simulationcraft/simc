@@ -1141,10 +1141,11 @@ public:
       p() -> buffs.ice_floes -> decrement();
     }
 
-    if ( !harmful )
+    if ( !harmful || background )
     {
       may_proc_missiles = false;
     }
+
     if ( p() -> specialization() == MAGE_ARCANE && may_proc_missiles )
     {
       p() -> buffs.arcane_missiles -> trigger();
@@ -1755,6 +1756,7 @@ struct arcane_orb_bolt_t : public mage_spell_t
 
     mage_spell_t::impact( s );
     p() -> buffs.arcane_charge -> trigger();
+    p() -> buffs.arcane_missiles -> trigger();
   }
 
   virtual double action_multiplier() const
