@@ -2787,12 +2787,12 @@ struct sim_t : private sc_thread_t
     void flush()          { AUTO_LOCK(m); total_work = projected_work = work; }
     void project( int w ) { AUTO_LOCK(m); projected_work = w; assert(w>=work); }
     int  size()           { AUTO_LOCK(m); return total_work; }
-    int  pop()         
+    bool pop()         
     { 
       AUTO_LOCK(m); 
-      if( work >= total_work ) return 0; 
+      if( work >= total_work ) return false; 
       if( ++work == total_work ) projected_work = work;
-      return work;
+      return work < total_work;
     }
     double progress( int* current=0, int* last=0 )
     {
