@@ -316,6 +316,7 @@ public:
     const spell_data_t* will_of_the_necropolis;
     const spell_data_t* resolve;
     const spell_data_t* riposte;
+    const spell_data_t* runic_strikes;
 
     // Frost
     const spell_data_t* blood_of_the_north;
@@ -2782,13 +2783,13 @@ struct melee_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::impact( s );
 
-    if ( result_is_multistrike( s -> result ) && p() -> spec.blood_rites -> ok() )
+    if ( result_is_multistrike( s -> result ) &&
+         p() -> spec.blood_rites -> ok() &&
+         weapon -> group() == WEAPON_2H )
     {
-      double chance = 1.0; // TODO: Blood Rites proc chance?
-      if ( rng().roll( chance ) )
-        p() -> resource_gain( RESOURCE_RUNIC_POWER,
-                              p() -> spell.blood_rites -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
-                              p() -> gains.blood_rites );
+      p() -> resource_gain( RESOURCE_RUNIC_POWER,
+                            p() -> spell.blood_rites -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+                            p() -> gains.blood_rites );
     }
 
     if ( result_is_hit( s -> result ) )
@@ -2817,13 +2818,6 @@ struct melee_t : public death_knight_melee_attack_t
           p() -> buffs.death_shroud -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( 15 ) );
         }
 
-        if ( p() -> spec.scent_of_blood -> ok() && 
-             p() -> buffs.scent_of_blood -> trigger( 1, buff_t::DEFAULT_VALUE(), weapon -> swing_time.total_seconds() / 3.6 ) )
-        {
-          p() -> resource_gain( RESOURCE_RUNIC_POWER,
-                                p() -> buffs.scent_of_blood -> data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
-                                p() -> gains.scent_of_blood );
-        }
       }
 
       // Killing Machine is 6 PPM
@@ -3236,7 +3230,10 @@ struct soul_reaper_t : public death_knight_melee_attack_t
       p() -> pets.dancing_rune_weapon -> drw_soul_reaper -> execute();
 
     if ( result_is_hit( execute_state -> result ) )
+    {
       trigger_t16_2pc_tank();
+      p() -> buffs.scent_of_blood -> trigger();
+    }
   }
 
   void tick( dot_t* dot )
@@ -4758,6 +4755,8 @@ struct blood_boil_t : public death_knight_spell_t
       // implemented in blood_boil_spread_t
       spread -> target = target;
       spread -> schedule_execute();
+
+      p() -> buffs.scent_of_blood -> trigger();
     }
   }
 
@@ -6106,6 +6105,7 @@ void death_knight_t::init_spells()
   spec.will_of_the_necropolis     = find_specialization_spell( "Will of the Necropolis" );
   spec.resolve                    = find_specialization_spell( "Resolve" );
   spec.riposte                    = find_specialization_spell( "Riposte" );
+  spec.runic_strikes              = find_specialization_spell( "Runic Strikes" );
 
   // Frost
   spec.blood_of_the_north         = find_specialization_spell( "Blood of the North" );
@@ -7421,6 +7421,11 @@ double death_knight_t::composite_multistrike() const
   double multistrike = player_t::composite_multistrike();
 
   multistrike += spec.veteran_of_the_third_war -> effectN( 5 ).percent();
+
+  if ( spec.runic_strikes -> ok() )
+  {
+    multistrike *= 1.0 + spec.runic_strikes -> effectN( 1 ).percent();
+  }
 
   return multistrike;
 }
