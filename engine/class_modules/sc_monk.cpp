@@ -3665,14 +3665,12 @@ namespace buffs
     double health_gain = player->resources.max[RESOURCE_HEALTH];
     health_gain *= ( monk.glyph.fortifying_brew -> ok() ? monk.find_spell( 124997 ) -> effectN( 2 ).percent() : monk.find_class_spell( "Fortifying Brew" ) -> effectN( 1 ).percent() );
     monk.stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
-    monk.recalculate_resource_max( RESOURCE_HEALTH );
     return base_t::trigger( stacks, value, chance, duration );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
     monk.stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
-    monk.recalculate_resource_max( RESOURCE_HEALTH );
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
