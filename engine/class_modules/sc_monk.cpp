@@ -3907,14 +3907,14 @@ void monk_t::init_spells()
   passives.hotfix_passive            = find_spell( 137022 );
 
   // GLYPHS
-  glyph.blackout_kick                = find_glyph( "Glyph of Blackout Kick" );
-  glyph.expel_harm                   = find_glyph( "Glyph of Expel Harm" );
-  glyph.fortifying_brew              = find_glyph( "Glyph of Fortifying Brew" );
-  glyph.fortuitous_spheres           = find_glyph( "Glyph of Fortuitous Spheres" );
-  glyph.guard                        = find_glyph( "Glyph of Guard" );
-  glyph.mana_tea                     = find_glyph( "Glyph of Mana Tea" );
-  glyph.targeted_expulsion           = find_glyph( "Glyph of Targeted Expulsion" );
-  glyph.touch_of_death               = find_glyph( "Glyph of Touch of Death" );
+  glyph.blackout_kick                = find_glyph_spell( "Glyph of Blackout Kick" );
+  glyph.expel_harm                   = find_glyph_spell( "Glyph of Expel Harm" );
+  glyph.fortifying_brew              = find_glyph_spell( "Glyph of Fortifying Brew" );
+  glyph.fortuitous_spheres           = find_glyph_spell( "Glyph of Fortuitous Spheres" );
+  glyph.guard                        = find_glyph_spell( "Glyph of Guard" );
+  glyph.mana_tea                     = find_glyph_spell( "Glyph of Mana Tea" );
+  glyph.targeted_expulsion           = find_glyph_spell( "Glyph of Targeted Expulsion" );
+  glyph.touch_of_death               = find_glyph_spell( "Glyph of Touch of Death" );
 
   //MASTERY
   mastery.bottled_fury               = find_mastery_spell( MONK_WINDWALKER );
