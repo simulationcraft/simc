@@ -247,7 +247,7 @@ public:
     const spell_data_t* way_of_the_monk_aa_damage;
     const spell_data_t* way_of_the_monk_aa_speed;
     const spell_data_t* zen_meditaiton;
-
+    const spell_data_t* fortifying_brew;
     // Brewmaster
     const spell_data_t* bladed_armor;
     const spell_data_t* breath_of_fire;
@@ -2810,7 +2810,7 @@ struct dizzying_haze_t: public monk_spell_t
 struct fortifying_brew_t: public monk_spell_t
 {
   fortifying_brew_t( monk_t& p, const std::string& options_str ):
-    monk_spell_t( "fortifying_brew", &p, p.find_class_spell( "Fortifying Brew" ) )
+    monk_spell_t( "fortifying_brew", &p, p.spec.fortifying_brew )
   {
     parse_options( options_str );
 
@@ -3663,7 +3663,7 @@ namespace buffs
   {
     // Extra Health is set by current max_health, doesn't change when max_health changes.
     health_gain = static_cast<int>( monk.resources.max[RESOURCE_HEALTH] * ( monk.glyph.fortifying_brew -> ok() ? monk.find_spell( 124997 ) -> effectN( 2 ).percent() :
-      monk.find_class_spell( "Fortifying Brew" ) -> effectN( 1 ).percent() ) );
+      monk.spec.fortifying_brew -> effectN( 1 ).percent() ) );
     monk.stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
     monk.stat_gain( STAT_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
     return base_t::trigger( stacks, value, chance, duration );
@@ -3839,6 +3839,7 @@ void monk_t::init_spells()
   spec.touch_of_death                = find_specialization_spell( "Touch of Death" );
   spec.way_of_the_monk_aa_damage     = find_spell( 108977 );
   spec.way_of_the_monk_aa_speed      = find_spell( 140737 );
+  spec.fortifying_brew               = find_class_spell( "Fortifying Brew" );
 
   // Windwalker Passives
   spec.brewing_tigereye_brew         = find_specialization_spell( "Brewing: Tigereye Brew" );
