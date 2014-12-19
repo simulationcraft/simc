@@ -2124,7 +2124,7 @@ struct touch_of_death_t: public monk_melee_attack_t
 
   virtual void impact( action_state_t* s )
   {
-    s -> result_amount = player -> resources.max[RESOURCE_HEALTH];
+    s -> result_amount = p() -> resources.max[RESOURCE_HEALTH];
     monk_melee_attack_t::impact( s );
   }
 
@@ -3662,16 +3662,18 @@ namespace buffs
   bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
     // Extra Health is set by current max_health, doesn't change when max_health changes.
-    double health_gain = player->resources.max[RESOURCE_HEALTH];
-    health_gain *= ( monk.glyph.fortifying_brew -> ok() ? monk.find_spell( 124997 ) -> effectN( 2 ).percent() : monk.find_class_spell( "Fortifying Brew" ) -> effectN( 1 ).percent() );
+    health_gain = static_cast<int>( monk.resources.max[RESOURCE_HEALTH] * ( monk.glyph.fortifying_brew -> ok() ? monk.find_spell( 124997 ) -> effectN( 2 ).percent() :
+      monk.find_class_spell( "Fortifying Brew" ) -> effectN( 1 ).percent() ) );
     monk.stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
+    monk.stat_gain( STAT_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
     return base_t::trigger( stacks, value, chance, duration );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
-    monk.stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
     base_t::expire_override( expiration_stacks, remaining_duration );
+    monk.stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
+    monk.stat_loss( STAT_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
   }
 };
 }
