@@ -2823,11 +2823,6 @@ struct fortifying_brew_t: public monk_spell_t
     monk_spell_t::execute();
 
     p() -> buff.fortifying_brew -> trigger();
-
-    // Extra Health is set by current max_health, doesn't change when max_health changes.
-    double health_gain = player->resources.max[RESOURCE_HEALTH];
-    health_gain *= ( p( )-> glyph.fortifying_brew -> ok() ? p() -> find_spell( 124997 ) -> effectN( 2 ).percent() : p() -> find_class_spell( "Fortifying Brew" ) -> effectN( 1 ).percent() );
-    player -> stat_gain( STAT_MAX_HEALTH, health_gain, nullptr, this );
   }
 };
 
@@ -3628,6 +3623,61 @@ struct power_strikes_event_t: public event_t
 };
 
 // ==========================================================================
+// Monk Buffs
+// ==========================================================================
+
+namespace buffs
+{
+  template <typename Base>
+  struct monk_buff_t: public Base
+  {
+    public:
+    typedef monk_buff_t base_t;
+
+    monk_buff_t( monk_td_t& p, const buff_creator_basics_t& params ):
+      Base( params ), monk( p.monk )
+    {}
+
+    monk_buff_t( monk_t& p, const buff_creator_basics_t& params ):
+      Base( params ), monk( p )
+    {}
+
+    monk_td_t& get_td( player_t* t ) const
+    {
+      return *(monk.get_target_data( t ));
+    }
+
+    protected:
+    monk_t& monk;
+  };
+
+  struct fortifying_brew_t: public monk_buff_t < buff_t >
+{
+  int health_gain;
+  fortifying_brew_t( monk_t& p, const std::string&n, const spell_data_t*s ):
+    base_t( p, buff_creator_t( &p, n, s ).cd( timespan_t::zero() ) ), health_gain( 0 )
+  {}
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration )
+  {
+    // Extra Health is set by current max_health, doesn't change when max_health changes.
+    double health_gain = player->resources.max[RESOURCE_HEALTH];
+    health_gain *= ( monk.glyph.fortifying_brew -> ok() ? monk.find_spell( 124997 ) -> effectN( 2 ).percent() : monk.find_class_spell( "Fortifying Brew" ) -> effectN( 1 ).percent() );
+    monk.stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
+    monk.recalculate_resource_max( RESOURCE_HEALTH );
+    return base_t::trigger( stacks, value, chance, duration );
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  {
+    monk.stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
+    monk.recalculate_resource_max( RESOURCE_HEALTH );
+    base_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+}
+
+// ==========================================================================
 // Monk Character Definition
 // ==========================================================================
 
@@ -3949,7 +3999,7 @@ void monk_t::create_buffs()
   base_t::create_buffs();
 
   // General
-  buff.fortifying_brew = buff_creator_t( this, "fortifying_brew", find_spell( 120954 ) );
+  buff.fortifying_brew = new buffs::fortifying_brew_t( *this, "fortifying_brew", find_spell( 120954 ) );
 
   buff.power_strikes = buff_creator_t( this, "power_strikes", talent.power_strikes -> effectN( 1 ).trigger() );
 
