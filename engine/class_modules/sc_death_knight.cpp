@@ -222,6 +222,7 @@ public:
     buff_t* conversion;
     buff_t* frozen_runeblade;
     buff_t* lichborne;
+    buff_t* death_dealer; // WoD PVP Unholy 4 piece set bonus
   } buffs;
 
   struct runeforge_t
@@ -3562,6 +3563,7 @@ struct dark_transformation_t : public death_knight_spell_t
     p() -> buffs.dark_transformation -> trigger();
     p() -> buffs.shadow_infusion -> expire();
     p() -> trigger_t17_4pc_unholy( execute_state );
+    p() -> buffs.death_dealer -> trigger();
   }
 
   virtual bool ready()
@@ -7088,6 +7090,10 @@ void death_knight_t::create_buffs()
   buffs.lichborne = buff_creator_t( this, "lichborne", talent.lichborne )
                     .cd( timespan_t::zero() )
                     .add_invalidate( CACHE_LEECH );
+
+  buffs.death_dealer = buff_creator_t( this, "death_dealer", find_spell( 166062 ) )
+                       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                       .chance( sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, PVP, B4 ) );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -7495,8 +7501,18 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( mastery.dreadblade -> ok() && dbc::is_school( school, SCHOOL_SHADOW )  )
-    m *= 1.0 + cache.mastery_value();
+  if ( dbc::is_school( school, SCHOOL_SHADOW )  )
+  {
+    if ( mastery.dreadblade -> ok() )
+    {
+      m *= 1.0 + cache.mastery_value();
+    }
+
+    if ( buffs.death_dealer -> up() )
+    {
+      m *= 1.0 + buffs.death_dealer -> data().effectN( 1 ).percent();
+    }
+  }
 
   if ( mastery.frozen_heart -> ok() && dbc::is_school( school, SCHOOL_FROST )  )
     m *= 1.0 + cache.mastery_value();
