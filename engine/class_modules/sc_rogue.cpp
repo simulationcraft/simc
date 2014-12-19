@@ -2041,7 +2041,7 @@ struct hemorrhage_t : public rogue_attack_t
   {
     ability_type = HEMORRHAGE;
     weapon = &( p -> main_hand_weapon );
-    tick_may_crit = false;
+    tick_may_crit = true;
     may_multistrike = true;
     if ( p -> wod_hotfix )
     {
@@ -4142,7 +4142,7 @@ struct shadow_reflection_pet_t : public pet_t
     sr_hemorrhage_t( shadow_reflection_pet_t* p ):
       shadow_reflection_attack_t( "hemorrhage", p, p -> find_spell( 16511 ) )
     {
-      tick_may_crit = false; 
+      tick_may_crit = true;
       may_multistrike = true;
       if ( p -> wod_hotfix )
       {
