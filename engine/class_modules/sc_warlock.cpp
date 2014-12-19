@@ -2287,6 +2287,9 @@ struct havoc_t: public warlock_spell_t
     cooldown -> duration = data().cooldown() + p -> glyphs.havoc -> effectN( 2 ).time_value();
     cooldown -> duration += p -> perk.enhanced_havoc -> effectN( 1 ).time_value();
     cooldown -> charges = data().charges() + p -> glyphs.havoc -> effectN( 1 ).base_value();
+    if  ( p -> wod_hotfix )
+      cooldown -> duration -= timespan_t::from_seconds( 5 );
+
   }
 
   virtual void execute()
