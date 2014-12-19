@@ -14,7 +14,8 @@ namespace { // UNNAMED NAMESPACE
 enum tank_dummy_e
 {
   TANK_DUMMY_NONE = 0,
-  TANK_DUMMY_WEAK, TANK_DUMMY_DUNGEON, TANK_DUMMY_RAID, TANK_DUMMY_MYTHIC
+  TANK_DUMMY_WEAK, TANK_DUMMY_DUNGEON, TANK_DUMMY_RAID, TANK_DUMMY_MYTHIC,
+  TANK_DUMMY_MAX
 };
 
 enum tmi_boss_e
@@ -713,24 +714,24 @@ struct tmi_enemy_t : public enemy_t
   {
     // this function translates between the "tmi_boss" option string and the tmi_boss_e enum
     // eventually plan on using regular expressions here
-    if ( util::str_compare_ci( tmi_string, "none" ) )
+    if ( util::str_in_str_ci( tmi_string, "none" ) )
       return TMI_NONE;
-    if ( util::str_compare_ci( tmi_string, "T16L" ) )
+    if ( util::str_in_str_ci( tmi_string, "T16L" ) )
       return TMI_T16L;
-    if ( util::str_compare_ci( tmi_string, "T16N" ) || util::str_compare_ci( tmi_string, "T16N25" ) || util::str_compare_ci( tmi_string, "T16N10" ) )
+    if ( util::str_in_str_ci( tmi_string, "T16N" ) )
       return TMI_T16N;
-    if ( util::str_compare_ci( tmi_string, "T16H" ) || util::str_compare_ci( tmi_string, "T16H10" ) || util::str_compare_ci( tmi_string, "T16H25" ) )
+    if ( util::str_in_str_ci( tmi_string, "T16H" ) )
       return TMI_T16H;
-    if ( util::str_compare_ci( tmi_string, "T16M" ) )
+    if ( util::str_in_str_ci( tmi_string, "T16M" ) )
       return TMI_T16M;
-    if ( util::str_compare_ci( tmi_string, "T17N" ) )
+    if ( util::str_in_str_ci( tmi_string, "T17N" ) )
       return TMI_T17N;
-    if ( util::str_compare_ci( tmi_string, "T17H" ) )
+    if ( util::str_in_str_ci( tmi_string, "T17H" ) )
       return TMI_T17H;
-    if ( util::str_compare_ci( tmi_string, "T17M" ) )
+    if ( util::str_in_str_ci( tmi_string, "T17M" ) )
       return TMI_T17M;
 
-    if ( !tmi_string.empty() && sim -> debug )
+    if ( ! tmi_string.empty() && sim -> debug )
       sim -> out_debug.printf( "Unknown TMI string input provided: %s", tmi_string.c_str() );
 
     return TMI_NONE;
@@ -739,6 +740,12 @@ struct tmi_enemy_t : public enemy_t
   void init()
   {
     tmi_boss_enum = convert_tmi_string( tmi_boss_str );
+     // if no tmi_boss_type input is given, try parsing the name
+    if ( tmi_boss_enum == TMI_NONE )
+      tmi_boss_enum = convert_tmi_string( name_str );
+    // if we still have no clue, pit them against the worst case
+    if ( tmi_boss_enum == TMI_NONE )
+      tmi_boss_enum = static_cast<tmi_boss_e>( TMI_MAX - 1 );
   }
 
   void init_base_stats()
@@ -791,15 +798,15 @@ struct tank_dummy_enemy_t : public enemy_t
 
   tank_dummy_e convert_tank_dummy_string( const std::string& tank_dummy_string )
   {
-    if ( util::str_compare_ci( tank_dummy_string, "none" ) )
+    if ( util::str_in_str_ci( tank_dummy_string, "none" ) )
       return TANK_DUMMY_NONE;
-    if ( util::str_compare_ci( tank_dummy_string, "weak" ) )
+    if ( util::str_in_str_ci( tank_dummy_string, "weak" ) )
       return TANK_DUMMY_WEAK;
-    if ( util::str_compare_ci( tank_dummy_string, "dungeon" ) )
+    if ( util::str_in_str_ci( tank_dummy_string, "dungeon" ) )
       return TANK_DUMMY_DUNGEON;
-    if ( util::str_compare_ci( tank_dummy_string, "raid" ) )
+    if ( util::str_in_str_ci( tank_dummy_string, "raid" ) )
       return TANK_DUMMY_RAID;
-    if ( util::str_compare_ci( tank_dummy_string, "mythic" ) )
+    if ( util::str_in_str_ci( tank_dummy_string, "mythic" ) )
       return TANK_DUMMY_MYTHIC;
 
     if ( !tank_dummy_string.empty() && sim -> debug )
@@ -811,6 +818,12 @@ struct tank_dummy_enemy_t : public enemy_t
   void init()
   {
     tank_dummy_enum = convert_tank_dummy_string( tank_dummy_str );
+     // if no tmi_boss_type input is given, try parsing the name
+    if ( tank_dummy_enum == TMI_NONE )
+      tank_dummy_enum = convert_tank_dummy_string( name_str );
+    // if we still have no clue, pit them against the worst case
+    if ( tank_dummy_enum == TANK_DUMMY_NONE )
+      tank_dummy_enum = static_cast<tank_dummy_e>( TANK_DUMMY_MAX - 1 );
   }
 
   void init_base_stats()
