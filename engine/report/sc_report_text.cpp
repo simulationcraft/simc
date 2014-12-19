@@ -931,7 +931,7 @@ void print_text_player( FILE* file, player_t* p )
 
   util::fprintf( file, "\n" );
 
-  if ( p -> primary_role() == ROLE_TANK && p -> type != ENEMY )
+  if ( p -> primary_role() == ROLE_TANK && ! p -> is_enemy() )
   {
     double dtps_error = sim_t::distribution_mean_error( *p -> sim, p -> collected_data.dtps );
     util::fprintf( file, "  DTPS: %.1f  DTPS-error=%.1f/%.1f%% \n",

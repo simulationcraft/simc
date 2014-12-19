@@ -483,6 +483,8 @@ const char* util::player_type_string( player_e type )
     case PLAYER_GUARDIAN: return "guardian";
     case ENEMY:           return "enemy";
     case ENEMY_ADD:       return "add";
+    case TMI_BOSS:        return "tmi_boss";
+    case TANK_DUMMY:      return "tank_dummy";
     default:              return "unknown";
   }
 }

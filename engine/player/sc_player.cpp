@@ -856,7 +856,7 @@ void player_t::init_base_stats()
   base.miss  = 0.03;
 
   // Only Warriors and Paladins (and enemies) can block, defaults is 0
-  if ( type == WARRIOR || type == PALADIN || type == ENEMY )
+  if ( type == WARRIOR || type == PALADIN || type == ENEMY || type == TMI_BOSS || type == TANK_DUMMY )
   {
     base.block = 0.03;
     base.block_reduction = 0.30;
@@ -866,7 +866,7 @@ void player_t::init_base_stats()
   // racial strength mod and "phantom" strength bonus added here,
   // see http://www.sacredduty.net/2014/08/06/tc401-avoidance-diminishing-returns-in-wod/
   if ( type == WARRIOR || type == PALADIN || type == ROGUE || type == DEATH_KNIGHT ||
-       type == MONK || specialization() == SHAMAN_ENHANCEMENT || type == ENEMY )
+       type == MONK || specialization() == SHAMAN_ENHANCEMENT || type == ENEMY || type == TMI_BOSS || type == TANK_DUMMY )
     base.parry = 0.03 + ( dbc.race_base( race ).strength + 0.0739 ) * base.parry_per_strength;
 
   // Extract avoidance DR values from table in sc_extra_data.inc

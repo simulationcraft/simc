@@ -159,7 +159,7 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
     writer.end_tag( "dpr" );
   }
 
-  if ( p -> primary_role() == ROLE_TANK && p -> type != ENEMY )
+  if ( p -> primary_role() == ROLE_TANK && ! p -> is_enemy() )
   {
     double dtps_error = sim_t::distribution_mean_error( *sim, p -> collected_data.dtps );
     double dtps_range = ( cd.dtps.percentile( 0.5 + sim -> confidence / 2 ) - cd.dtps.percentile( 0.5 - sim -> confidence / 2 ) );

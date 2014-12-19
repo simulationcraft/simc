@@ -1005,25 +1005,22 @@ QString SC_OptionsTab::get_globalSettings()
   if ( choice.tmi_window -> currentIndex() != 0 )
     options += "tmi_window_global=" + choice.tmi_window-> currentText() + "\n";
 
+  // choice.boss_type controls what type of enemy is spawned
+  // TMI Bosses and Tank Dummies have special module commands, and skip some settings (target_level & _race)
   if ( choice.boss_type -> currentIndex() > 1 )
   {
     if ( choice.boss_type -> currentText() == "Tank Dummy" && choice.tank_dummy -> currentIndex() != 0 )
     {
       // boss setup
-      options += "enemy=Tank_Dummy_" + choice.tank_dummy -> currentText() + "\n";
-      options += "boss_type=tank_dummy\n";
-      options += "tank_dummy=" + choice.tank_dummy -> currentText() + "\n";
+      options += "tank_dummy=Tank_Dummy_" + choice.tank_dummy -> currentText() + "\n";
+      options += "tank_dummy_type=" + choice.tank_dummy -> currentText() + "\n";
     }
 
     if ( choice.boss_type -> currentText() == "TMI Standard Boss" && choice.tmi_boss -> currentIndex() != 0 )
     {
       // boss setup
-      options += "enemy=TMI_Standard_Boss_" + choice.tmi_boss -> currentText() + "\n";
-      options += "boss_type=tmi_standard_boss\n";
-      options += "tmi_boss=" + choice.tmi_boss -> currentText();
-      options += "\n";
-      options += "role=tank\n";
-      options += "position=front\n";
+      options += "tmi_boss=TMI_Standard_Boss_" + choice.tmi_boss -> currentText() + "\n";
+      options += "tmi_boss_type=" + choice.tmi_boss -> currentText() + "\n";
     }
   }
   else
@@ -1042,6 +1039,8 @@ QString SC_OptionsTab::get_globalSettings()
       options += "target_race=" + choice.target_race->currentText() + "\n";
     }
   }
+  // end target spawning
+
   options += "default_skill=";
   const char *skill[] = { "1.0", "0.9", "0.75", "0.50" };
   options += skill[ choice.player_skill->currentIndex() ];

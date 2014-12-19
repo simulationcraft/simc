@@ -2931,11 +2931,11 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
 
   // Player Description
   os << "<div id=\"player" << p -> index << "\" class=\"player section";
-  if ( num_players > 1 && j == 0 && ! sim -> scaling -> has_scale_factors() && p -> type != ENEMY && p -> type != ENEMY_ADD )
+  if ( num_players > 1 && j == 0 && ! sim -> scaling -> has_scale_factors() && ! p -> is_enemy() )
   {
     os << " grouped-first";
   }
-  else if ( ( p -> type == ENEMY || p -> type == ENEMY_ADD ) && j == ( int ) sim -> targets_by_name.size() - 1 )
+  else if ( p -> is_enemy() && j == ( int ) sim -> targets_by_name.size() - 1 )
   {
     os << " final grouped-last";
   }
@@ -2971,7 +2971,7 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
                p -> collected_data.aps.mean() );
 
   // if player tank, print extra metrics
-  if ( p -> primary_role() == ROLE_TANK && p -> type != ENEMY )
+  if ( p -> primary_role() == ROLE_TANK && ! p -> is_enemy() )
   {
     // print DTPS & HPS
     os.printf( ", %.0f dtps", p -> collected_data.dtps.mean() );
@@ -3176,7 +3176,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
      << "</table>\n";
     
   // Tank table
-  if ( p -> primary_role() == ROLE_TANK && p -> type != ENEMY )
+  if ( p -> primary_role() == ROLE_TANK && ! p -> is_enemy() )
   {
     os << "<table class=\"sc mt\">\n"
        // experimental first row for stacking the tables - wasn't happy with how it looked, may return to it later
