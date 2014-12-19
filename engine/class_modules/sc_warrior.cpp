@@ -232,12 +232,8 @@ public:
   // Procs
   struct procs_t
   {
-    proc_t* bloodsurge;
     proc_t* bloodsurge_wasted;
     proc_t* delayed_auto_attack;
-    proc_t* raging_blow_wasted;
-    proc_t* sudden_death;
-    proc_t* sudden_death_wasted;
 
     //Tier bonuses
     proc_t* t15_2pc_melee;
@@ -1193,7 +1189,7 @@ struct melee_t: public warrior_attack_t
     if ( result_is_hit( s -> result ) || result_is_block( s -> block_result ) )
     {
       trigger_t15_2pc_melee( this );
-      sudden_death( p() -> proc.sudden_death );
+      sudden_death();
       trigger_rage_gain( s );
       if ( p() -> active_enhanced_rend )
       {
@@ -1218,20 +1214,13 @@ struct melee_t: public warrior_attack_t
     }
   }
 
-  void sudden_death( proc_t* proc )
+  void sudden_death()
   {
     if ( !p() -> talents.sudden_death -> ok() )
       return;
 
     if ( p() -> sudden_death.trigger() )
-    {
-      if ( p() -> buff.sudden_death -> check() )
-      {
-        p() -> proc.sudden_death_wasted -> occur();
-      }
-      proc -> occur();
       p() -> buff.sudden_death -> trigger();
-    }
   }
 };
 
@@ -1462,7 +1451,6 @@ struct bloodthirst_t: public warrior_attack_t
         bloodsurge = p() -> buff.bloodsurge -> current_stack;
       if ( p() -> buff.bloodsurge -> trigger( p() -> spec.bloodsurge -> effectN( 2 ).base_value() ) )
       {
-        p() -> proc.bloodsurge -> occur();
         if ( bloodsurge > 0 )
         {
           do
@@ -3763,7 +3751,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "heroic_strike"        ) return new heroic_strike_t        ( this, options_str );
   if ( name == "heroic_throw"         ) return new heroic_throw_t         ( this, options_str );
   if ( name == "impending_victory"    ) return new impending_victory_t    ( this, options_str );
-  if ( name == "intervene" || name == "safeguard" ) return new intervene_t            ( this, options_str );
+  if ( name == "intervene" || name == "safeguard" ) return new intervene_t ( this, options_str );
   if ( name == "last_stand"           ) return new last_stand_t           ( this, options_str );
   if ( name == "mortal_strike"        ) return new mortal_strike_t        ( this, options_str );
   if ( name == "pummel"               ) return new pummel_t               ( this, options_str );
@@ -3783,7 +3771,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "slam"                 ) return new slam_t                 ( this, options_str );
   if ( name == "spell_reflection" || name == "mass_spell_reflection" )
   {
-    if ( talents.mass_spell_reflection->ok() )
+    if ( talents.mass_spell_reflection-> ok() )
       return new mass_spell_reflection_t( this, options_str );
     else
       return new spell_reflection_t( this, options_str );
@@ -4899,12 +4887,8 @@ void warrior_t::init_position()
 void warrior_t::init_procs()
 {
   player_t::init_procs();
-  proc.bloodsurge              = get_proc( "bloodsurge" );
   proc.bloodsurge_wasted       = get_proc( "bloodsurge_wasted" );
   proc.delayed_auto_attack     = get_proc( "delayed_auto_attack" );
-  proc.raging_blow_wasted      = get_proc( "raging_blow_wasted" );
-  proc.sudden_death            = get_proc( "sudden_death" );
-  proc.sudden_death_wasted     = get_proc( "sudden_death_wasted" );
 
   proc.t15_2pc_melee           = get_proc( "t15_2pc_melee" );
   proc.t17_2pc_fury            = get_proc( "t17_2pc_fury" );
@@ -5659,16 +5643,12 @@ void warrior_t::stance_swap()
 
 void warrior_t::enrage()
 {
-  // Crit CS/Block give rage, and refresh enrage
+  // Crit BT/Devastate/Block give rage, and refresh enrage
   // Additionally, BT crits grant 1 charge of Raging Blow
 
   if ( specialization() == WARRIOR_FURY )
-  {
-    if ( buff.raging_blow -> stack() == 2 )
-      proc.raging_blow_wasted -> occur();
-
     buff.raging_blow -> trigger();
-  }
+
   resource_gain( RESOURCE_RAGE,
                  buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ),
                  gain.enrage );

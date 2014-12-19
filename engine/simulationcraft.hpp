@@ -4965,7 +4965,6 @@ struct player_t : public actor_t
   void create_talents_armory();
   void create_talents_wowhead();
 
-
   const spell_data_t* find_glyph( const std::string& name ) const;
   const spell_data_t* find_racial_spell( const std::string& name, const std::string& token = std::string(), race_e s = RACE_NONE ) const;
   const spell_data_t* find_class_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
