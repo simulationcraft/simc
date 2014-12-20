@@ -1022,7 +1022,8 @@ enum rppm_scale_e
   RPPM_NONE = 0,
   RPPM_HASTE,
   RPPM_SPELL_CRIT,
-  RPPM_ATTACK_CRIT
+  RPPM_ATTACK_CRIT,
+  RPPM_HASTE_SPEED
 };
 
 /* SimulationCraft timeline:
@@ -6586,6 +6587,14 @@ public:
       coeff *= 1.0 + player -> cache.attack_crit();
     else if ( scales_with == RPPM_SPELL_CRIT )
       coeff *= 1.0 + player -> cache.spell_crit();
+    // TODO: Recheck 6.1, most likely remove
+    else if ( scales_with == RPPM_HASTE_SPEED )
+    {
+      double min_haste = std::min( player -> cache.spell_haste(), player -> cache.attack_haste() );
+      double min_speed = std::min( player -> cache.spell_speed(), player -> cache.attack_speed() );
+
+      coeff *= 1.0 / std::min( min_haste, min_speed );
+    }
 
     double real_ppm = PPM * coeff;
     double old_rppm_chance = real_ppm * ( seconds / 60.0 );

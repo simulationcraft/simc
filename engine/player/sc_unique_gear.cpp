@@ -537,10 +537,8 @@ void enchant::mark_of_the_frostwolf( special_effect_t& effect,
 void enchant::mark_of_the_shattered_hand( special_effect_t& effect, 
                                           const item_t& item )
 {
-  // Custom callback to help the special effect initialization, we can use
-  // generic initialization for the enchant, but the game client data does not
-  // link driver to the procced spell, so we do it here.
-  effect.rppm_scale = RPPM_HASTE;
+  // TODO: Check in 6.1
+  effect.rppm_scale = item.player -> bugs ? RPPM_HASTE_SPEED : RPPM_HASTE;
   effect.trigger_spell_id = 159238;
   effect.name_str = item.player -> find_spell( 159238 ) -> name_cstr();
 

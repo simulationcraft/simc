@@ -391,7 +391,8 @@ public:
     talent(),
     glyph(),
     spell(),
-    rppm_echo_of_the_elements( *this, 0, RPPM_HASTE )
+    // TODO: Check in 6.1
+    rppm_echo_of_the_elements( *this, 0, bugs ? RPPM_HASTE_SPEED : RPPM_HASTE )
   {
     for ( size_t i = 0; i < sizeof_array( pet_feral_spirit ); i++ )
       pet_feral_spirit[ i ] = 0;
