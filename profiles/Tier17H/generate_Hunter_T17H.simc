@@ -16,7 +16,7 @@ race=orc
 spec=beast_mastery
 position=ranged_back
 role=attack
-talents=0002213
+talents=0001133
 head=rylakstalkers_headguard,id=115545,bonus_id=566
 neck=darklight_necklace,id=113865,bonus_id=566,enchant=gift_of_critical_strike
 shoulders=rylakstalkers_spaulders,id=115547,bonus_id=566
@@ -41,7 +41,7 @@ race=orc
 spec=marksmanship
 position=ranged_back
 role=attack
-talents=0003113
+talents=0003313
 head=gronnskin_crown,id=113863,bonus_id=566
 neck=darklight_necklace,id=113865,bonus_id=566,enchant=gift_of_critical_strike
 shoulders=rylakstalkers_spaulders,id=115547,bonus_id=566
@@ -66,7 +66,7 @@ race=orc
 spec=survival
 position=ranged_back
 role=attack
-talents=0003123
+talents=0001132
 head=blastproof_cowl,id=113891,bonus_id=566
 neck=darklight_necklace,id=113865,enchant=gift_of_multistrike,bonus_id=566
 shoulders=rylakstalkers_spaulders,id=115547,bonus_id=566

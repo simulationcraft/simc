@@ -3,7 +3,7 @@ level=100
 race=orc
 role=attack
 position=ranged_back
-talents=0003123
+talents=0001132
 spec=survival
 
 # This default action priority list is automatically created based on your character.

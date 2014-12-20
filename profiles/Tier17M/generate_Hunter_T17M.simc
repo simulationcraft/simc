@@ -41,7 +41,7 @@ race=blood_elf
 spec=marksmanship
 position=ranged_back
 role=attack
-talents=0003113
+talents=0003313
 head=gronnskin_crown,id=113863,bonus_id=567
 neck=darklight_necklace,id=113865,bonus_id=567,enchant=gift_of_critical_strike
 shoulder=rylakstalkers_spaulders,id=115547,bonus_id=567
