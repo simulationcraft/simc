@@ -144,6 +144,7 @@ public:
     buff_t* blazing_contempt;     // t17_4pc_melee
     buff_t* faith_barricade;      // t17_2pc_tank
     buff_t* defender_of_the_light; // t17_4pc_tank
+    buff_t* vindicators_fury;     // WoD Ret PVP 4-piece
   } buffs;
   
   // Gains
@@ -742,6 +743,9 @@ public:
       // trigger T17 Ret set bonus
       if ( p() -> buffs.crusaders_fury -> trigger() )
         p() -> procs.crusaders_fury -> occur();
+
+      // trigger WoD Ret PvP 4-P
+      p() -> buffs.vindicators_fury -> trigger( 1, c > 0 ? c : 3 );
     }
   }
 
@@ -4961,6 +4965,10 @@ void paladin_t::create_buffs()
                                  .add_invalidate( CACHE_BLOCK );
   buffs.defender_of_the_light  = buff_creator_t( this, "defender_of_the_light", sets.set( PALADIN_PROTECTION, T17, B4 ) -> effectN( 1 ).trigger() )
                                  .default_value( sets.set( PALADIN_PROTECTION, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+  buffs.vindicators_fury       = buff_creator_t( this, "vindicators_fury", find_spell( 165903 ) )
+                                 .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                                 .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
+                                 .chance( sets.has_set_bonus( PALADIN_RETRIBUTION, PVP, B4 ) );
 }
 
 // ==========================================================================
@@ -5978,6 +5986,10 @@ double paladin_t::composite_player_multiplier( school_e school ) const
   if ( buffs.warrior_of_the_light -> check() )
     m *= 1.0 + buffs.warrior_of_the_light -> data().effectN( 1 ).percent();
 
+  // WoD Ret PvP 4-piece buffs everything
+  if ( buffs.vindicators_fury -> check() )
+    m *= 1.0 + buffs.vindicators_fury -> value() * buffs.vindicators_fury -> data().effectN( 1 ).percent();
+
   return m;
 }
 
@@ -5989,6 +6001,10 @@ double paladin_t::composite_player_heal_multiplier( const action_state_t* s ) co
 
   if ( buffs.avenging_wrath -> check() )
     m *= 1.0 + buffs.avenging_wrath -> get_healing_mod();
+
+  // WoD Ret PvP 4-piece buffs everything
+  if ( buffs.vindicators_fury -> check() )
+    m *= 1.0 + buffs.vindicators_fury -> value() * buffs.vindicators_fury -> data().effectN( 2 ).percent();
 
   return m;
 
