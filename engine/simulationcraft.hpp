@@ -4464,7 +4464,6 @@ struct player_t : public actor_t
   } resources;
 
   // Consumables
-  std::string flask_str, elixirs_str, food_str;
   struct {
     bool guardian, battle;
   } active_elixir;

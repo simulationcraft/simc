@@ -8539,9 +8539,6 @@ void player_t::create_options()
     // Misc
     add_option( opt_string( "skip_actions", action_list_skip ) );
     add_option( opt_string( "modify_action", modify_action ) );
-    add_option( opt_string( "elixirs", elixirs_str ) );
-    add_option( opt_string( "flask", flask_str ) );
-    add_option( opt_string( "food", food_str ) );
     add_option( opt_timespan( "reaction_time_mean", reaction_mean ) );
     add_option( opt_timespan( "reaction_time_stddev", reaction_stddev ) );
     add_option( opt_timespan( "reaction_time_nu", reaction_nu ) );
