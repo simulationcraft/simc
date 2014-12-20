@@ -4467,8 +4467,8 @@ struct player_t : public actor_t
     stat_buff_t* flask;
     stat_buff_t* guardian_elixir;
     stat_buff_t* battle_elixir;
+    stat_buff_t* food;
   } consumables;
-  int food;
 
   // Events
   action_t* executing;

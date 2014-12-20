@@ -490,7 +490,6 @@ player_t::player_t( sim_t*             s,
   resources( resources_t() ),
   // Consumables
   consumables(),
-  food( FOOD_NONE ),
   // Events
   executing( 0 ), channeling( 0 ), strict_sequence( 0 ), readying( 0 ), off_gcd( 0 ), in_combat( false ), action_queued( false ), first_cast( true ),
   last_foreground_action( 0 ), last_gcd_action( 0 ),
@@ -3588,8 +3587,6 @@ void player_t::reset()
   off_hand_weapon.buff_type  = 0;
   off_hand_weapon.buff_value = 0;
   off_hand_weapon.bonus_dmg  = 0;
-
-  food  = FOOD_NONE;
 
   callbacks.reset();
 
