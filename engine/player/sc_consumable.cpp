@@ -445,13 +445,11 @@ struct elixir_t : public action_t
 
 struct food_t : public action_t
 {
-  gain_t* gain;
   food_e type;
   std::string type_str;
 
   food_t( player_t* p, const std::string& options_str ) :
     action_t( ACTION_USE, "food", p ),
-    gain( p -> get_gain( "food" ) ),
     type( FOOD_NONE )
   {
 
@@ -467,7 +465,10 @@ struct food_t : public action_t
       sim -> errorf( "Player %s: invalid food type '%s'\n", p -> name(), type_str.c_str() );
       background = true;
     }
-    player -> consumables.food = stat_buff_creator_t( player, std::string(util::food_type_string( type )) + "_food" )
+    std::string food_name = util::food_type_string( type );
+    food_name += "_food";
+
+    player -> consumables.food = stat_buff_creator_t( player, food_name )
       .duration( timespan_t::from_seconds( 60 * 60 ) ); // 1hr
   }
 

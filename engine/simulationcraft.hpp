@@ -2054,6 +2054,7 @@ struct stat_buff_t : public buff_t
       stat( s ), amount( a ), current_value( 0 ), check_func( c ) {}
   };
   std::vector<buff_stat_t> stats;
+  gain_t* stat_gain;
 
   virtual void bump     ( int stacks = 1, double value = -1.0 );
   virtual void decrement( int stacks = 1, double value = -1.0 );

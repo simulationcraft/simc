@@ -1401,7 +1401,8 @@ void buff_t::invalidate_cache()
 // stat_buff_t::stat_buff_t =================================================
 
 stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
-  buff_t( params )
+  buff_t( params ),
+  stat_gain( player -> get_gain( std::string( name() ) + "_buff" ) ) // append _buff for now to check usage
 {
   if ( params.stats.empty() )
   {
@@ -1464,9 +1465,9 @@ void stat_buff_t::bump( int stacks, double /* value */ )
     if ( stats[ i ].check_func && ! stats[ i ].check_func( *this ) ) continue;
     double delta = stats[ i ].amount * current_stack - stats[ i ].current_value;
     if ( delta > 0 )
-      player -> stat_gain( stats[ i ].stat, delta, 0, 0, buff_duration > timespan_t::zero() );
+      player -> stat_gain( stats[ i ].stat, delta, stat_gain, 0, buff_duration > timespan_t::zero() );
     else if ( delta < 0 )
-      player -> stat_loss( stats[ i ].stat, std::fabs( delta ), 0, 0, buff_duration > timespan_t::zero() );
+      player -> stat_loss( stats[ i ].stat, std::fabs( delta ), stat_gain, 0, buff_duration > timespan_t::zero() );
     else
       assert( delta == 0 );
     stats[ i ].current_value += delta;
@@ -1490,9 +1491,9 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
     {
       double delta = stats[ i ].amount * stacks;
       if ( delta > 0 )
-        player -> stat_loss( stats[ i ].stat, ( delta <= stats[ i ].current_value ) ? delta : 0.0, 0, 0, buff_duration > timespan_t::zero() );
+        player -> stat_loss( stats[ i ].stat, ( delta <= stats[ i ].current_value ) ? delta : 0.0, stat_gain, 0, buff_duration > timespan_t::zero() );
       else if ( delta < 0 )
-        player -> stat_gain( stats[ i ].stat, ( delta >= stats[ i ].current_value ) ? std::fabs( delta ) : 0.0, 0, 0, buff_duration > timespan_t::zero() );
+        player -> stat_gain( stats[ i ].stat, ( delta >= stats[ i ].current_value ) ? std::fabs( delta ) : 0.0, stat_gain, 0, buff_duration > timespan_t::zero() );
       stats[ i ].current_value -= delta;
     }
     current_stack -= stacks;
@@ -1517,9 +1518,9 @@ void stat_buff_t::expire_override( int expiration_stacks, timespan_t remaining_d
   for ( size_t i = 0; i < stats.size(); ++i )
   {
     if ( stats[ i ].current_value > 0 )
-      player -> stat_loss( stats[ i ].stat, stats[ i ].current_value, 0, 0, buff_duration > timespan_t::zero() );
+      player -> stat_loss( stats[ i ].stat, stats[ i ].current_value, stat_gain, 0, buff_duration > timespan_t::zero() );
     else if ( stats[ i ].current_value < 0 )
-      player -> stat_gain( stats[ i ].stat, std::fabs( stats[ i ].current_value ), 0, 0, buff_duration > timespan_t::zero() );
+      player -> stat_gain( stats[ i ].stat, std::fabs( stats[ i ].current_value ), stat_gain, 0, buff_duration > timespan_t::zero() );
     stats[ i ].current_value = 0;
   }
 
