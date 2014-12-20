@@ -4463,11 +4463,11 @@ struct player_t : public actor_t
     { return infinite_resource[ rt ] != 0; }
   } resources;
 
-  // Consumables
-  struct {
-    bool guardian, battle;
-  } active_elixir;
-  int flask;
+  struct consumables_t {
+    stat_buff_t* flask;
+    stat_buff_t* guardian_elixir;
+    stat_buff_t* battle_elixir;
+  } consumables;
   int food;
 
   // Events
@@ -4624,8 +4624,6 @@ struct player_t : public actor_t
     buff_t* archmages_incandescence_str;
     buff_t* archmages_incandescence_agi;
     buff_t* archmages_incandescence_int;
-
-    stat_buff_t* flask;
   } buffs;
 
   struct debuffs_t

@@ -489,8 +489,7 @@ player_t::player_t( sim_t*             s,
   // Resources
   resources( resources_t() ),
   // Consumables
-  active_elixir(),
-  flask( FLASK_NONE ),
+  consumables(),
   food( FOOD_NONE ),
   // Events
   executing( 0 ), channeling( 0 ), strict_sequence( 0 ), readying( 0 ), off_gcd( 0 ), in_combat( false ), action_queued( false ), first_cast( true ),
@@ -3590,8 +3589,6 @@ void player_t::reset()
   off_hand_weapon.buff_value = 0;
   off_hand_weapon.bonus_dmg  = 0;
 
-  active_elixir.battle = active_elixir.guardian = false;
-  flask = FLASK_NONE;
   food  = FOOD_NONE;
 
   callbacks.reset();

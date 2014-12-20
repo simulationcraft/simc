@@ -268,7 +268,7 @@ struct flask_t : public action_t
       {
         std::string buff_name = spell -> name_cstr();
         util::tokenize( buff_name );
-        p -> buffs.flask = stat_buff_creator_t( p, buff_name, spell );
+        p -> consumables.flask = stat_buff_creator_t( p, buff_name, spell );
       }
     }
     // Alch flask, special handle
@@ -282,7 +282,7 @@ struct flask_t : public action_t
       else
       {
         alchemist = true;
-        p -> buffs.flask = stat_buff_creator_t( p, "alchemists_flask", p -> find_spell( 105617 ) )
+        p -> consumables.flask = stat_buff_creator_t( p, "alchemists_flask", p -> find_spell( 105617 ) )
                           .add_stat( STAT_AGILITY, 0 )
                           .add_stat( STAT_STRENGTH, 0 )
                           .add_stat( STAT_INTELLECT, 0 );
@@ -293,11 +293,11 @@ struct flask_t : public action_t
   virtual void execute()
   {
     if ( sim -> log )
-      sim -> out_log.printf( "%s performs %s", player -> name(), player -> buffs.flask -> name() );
+      sim -> out_log.printf( "%s performs %s", player -> name(), player -> consumables.flask -> name() );
 
     if ( alchemist )
     {
-      double v = player -> buffs.flask -> data().effectN( 1 ).average( player );
+      double v = player -> consumables.flask -> data().effectN( 1 ).average( player );
       stat_e stat = STAT_NONE;
       if ( player -> cache.agility() >= player -> cache.strength() )
       {
@@ -315,24 +315,34 @@ struct flask_t : public action_t
       }
 
       if ( stat == STAT_AGILITY )
-        player -> buffs.flask -> stats[ 0 ].amount = v;
+        player -> consumables.flask -> stats[ 0 ].amount = v;
       else if ( stat == STAT_STRENGTH )
-        player -> buffs.flask -> stats[ 1 ].amount = v;
+        player -> consumables.flask -> stats[ 1 ].amount = v;
       else if ( stat == STAT_INTELLECT )
-        player -> buffs.flask -> stats[ 2 ].amount = v;
+        player -> consumables.flask -> stats[ 2 ].amount = v;
     }
 
-    player -> buffs.flask -> trigger();
+    player -> consumables.flask -> trigger();
   }
 
   virtual bool ready()
   {
-    if ( ! player -> buffs.flask )
+    if ( ! player -> sim -> allow_flasks )
       return false;
 
-    return ( player -> sim -> allow_flasks      &&
-             ! player -> active_elixir.guardian &&
-             ! player -> active_elixir.battle );
+    if ( ! player -> consumables.flask )
+      return false;
+
+    if ( player -> consumables.flask &&  player -> consumables.flask -> check() )
+      return false;
+
+    if ( player -> consumables.battle_elixir && player -> consumables.battle_elixir -> check() )
+      return false;
+
+    if( player -> consumables.guardian_elixir && player -> consumables.guardian_elixir -> check() )
+      return false;
+
+    return action_t::ready();
   }
 };
 
@@ -377,6 +387,14 @@ struct elixir_t : public action_t
       buff = stat_buff_creator_t( player, data -> name + "_elixir" )
              .duration( timespan_t::from_seconds( 60 * 60 ) ) // 1hr
              .add_stat( data -> st, amount );
+      if ( data -> type == ELIXIR_BATTLE )
+      {
+        player -> consumables.battle_elixir = buff;
+      }
+      else if ( data -> type == ELIXIR_GUARDIAN )
+      {
+        player -> consumables.guardian_elixir = buff;
+      }
     }
   }
 
@@ -398,11 +416,6 @@ struct elixir_t : public action_t
       }
     }
 
-    if ( data -> type == ELIXIR_BATTLE )
-      p.active_elixir.battle = true;
-    else
-      p.active_elixir.guardian = true;
-
     if ( sim -> log ) sim -> out_log.printf( "%s uses elixir %s", p.name(), data -> name.c_str() );
 
   }
@@ -410,18 +423,19 @@ struct elixir_t : public action_t
   {
     if ( ! player -> sim -> allow_flasks )
       return false;
-    if ( player -> flask !=  FLASK_NONE )
+
+    if ( player -> consumables.flask &&  player -> consumables.flask -> check() )
       return false;
 
     assert( data );
 
-    if ( data -> type == ELIXIR_BATTLE && player -> active_elixir.battle )
+    if ( data -> type == ELIXIR_BATTLE && player -> consumables.battle_elixir && player -> consumables.battle_elixir -> check() )
       return false;
 
-    if ( data -> type == ELIXIR_GUARDIAN && player -> active_elixir.guardian )
+    if ( data -> type == ELIXIR_GUARDIAN && player -> consumables.guardian_elixir && player -> consumables.guardian_elixir -> check() )
       return false;
 
-    return true;
+    return action_t::ready();
   }
 };
 
