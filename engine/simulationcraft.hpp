@@ -6590,10 +6590,7 @@ public:
     // TODO: Recheck 6.1, most likely remove
     else if ( scales_with == RPPM_HASTE_SPEED )
     {
-      double min_haste = std::min( player -> cache.spell_haste(), player -> cache.attack_haste() );
-      double min_speed = std::min( player -> cache.spell_speed(), player -> cache.attack_speed() );
-
-      coeff *= 1.0 / std::min( min_haste, min_speed );
+      coeff *= 1.0 / std::min( player -> cache.spell_speed(), player -> cache.attack_speed() );
     }
 
     double real_ppm = PPM * coeff;
