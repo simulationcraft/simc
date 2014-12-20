@@ -1442,7 +1442,7 @@ struct arcane_barrage_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= (1.0 - 0.05) * (1.0 + 0.16);
+      am *= 1.0 - 0.05 + 0.15;
     }
 
     return am;
@@ -1513,7 +1513,7 @@ struct arcane_blast_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= (1.0 - 0.05) * (1.0 + 0.1) * (1.0 + 0.16);
+      am *= (1.0 - 0.05 + 0.15) * (1.0 + 0.1);
     }
 
     return am;
@@ -1672,7 +1672,7 @@ struct arcane_missiles_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= (1.0 - 0.05) * (1.0 + 0.16);
+      am *= 1.0 - 0.05 + 0.15;
     }
 
     return am;
@@ -3546,7 +3546,7 @@ struct nether_tempest_aoe_t: public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= 1.0 + 0.1;
+      am *= (1.0 + 0.1) * (1.0 + 0.1);
     }
 
     return am;
@@ -3920,7 +3920,7 @@ struct supernova_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= (1.0 - 0.15) * (1.0 + 0.12);
+      am *= 1.0 - 0.15 + 0.1;
     }
 
     return am;
