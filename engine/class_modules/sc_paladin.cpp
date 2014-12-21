@@ -3694,8 +3694,9 @@ struct divine_storm_t : public paladin_melee_attack_t
     {
       if ( p() -> glyphs.divine_storm -> ok() )
         glyph_heal -> schedule_execute();
-
-      p() -> buffs.final_verdict -> expire();
+      
+      // expire Final Verdict buff, but delay by 50ms so that other targets hit by the AoE get the benefit in action_multiplier
+      p() -> buffs.final_verdict -> expire( timespan_t::from_millis( 50 ) );
     }
     if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
       // Trigger Hand of Light procs
