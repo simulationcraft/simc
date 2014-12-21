@@ -3,7 +3,6 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-
 // TODO:
 // DRW blood boil
 // DRW necrotic plague
@@ -54,6 +53,9 @@ const double RUNIC_POWER_REFUND = 0.9;
 static const double RUNIC_POWER_DIVISOR = 30.0;
 
 enum rune_state { STATE_DEPLETED, STATE_REGENERATING, STATE_FULL };
+
+typedef std::pair<bool, rune_type> rune_consume_data_t;
+typedef std::array<rune_consume_data_t, RUNE_SLOT_MAX> rune_consume_t;
 
 struct rune_t
 {
@@ -703,7 +705,7 @@ static int count_death_runes( const death_knight_t* p, bool inactive )
 
 // Group Runes ==============================================================
 
-static int use_rune( const death_knight_t* p, rune_type rt, const std::array<bool,RUNE_SLOT_MAX>& use )
+static int use_rune( const death_knight_t* p, rune_type rt, const rune_consume_t& use )
 {
   const rune_t* r = 0;
   if ( rt == RUNE_TYPE_BLOOD )
@@ -714,48 +716,48 @@ static int use_rune( const death_knight_t* p, rune_type rt, const std::array<boo
     r = &( p -> _runes.slot[ 4 ] );
 
   // 1) Choose first non-death rune of rune_type
-  if ( r && ! use[ r -> slot_number ] && r -> is_ready() && ! r -> is_death() )
+  if ( r && ! use[ r -> slot_number ].first && r -> is_ready() && ! r -> is_death() )
     return r -> slot_number;
   // 2) Choose paired non-death rune of rune_type
-  else if ( r && ! use[ r -> paired_rune -> slot_number ] && r -> paired_rune -> is_ready() && ! r -> paired_rune -> is_death() )
+  else if ( r && ! use[ r -> paired_rune -> slot_number ].first && r -> paired_rune -> is_ready() && ! r -> paired_rune -> is_death() )
     return r -> paired_rune -> slot_number;
   // 3) Choose first death rune of rune_type
-  else if ( r && ! use[ r -> slot_number ] && r -> is_ready() && r -> is_death() )
+  else if ( r && ! use[ r -> slot_number ].first && r -> is_ready() && r -> is_death() )
     return r -> slot_number;
   // 4) Choose paired death rune of rune_type
-  else if ( r && ! use[ r -> paired_rune -> slot_number ] && r -> paired_rune -> is_ready() && r -> paired_rune -> is_death() )
+  else if ( r && ! use[ r -> paired_rune -> slot_number ].first && r -> paired_rune -> is_ready() && r -> paired_rune -> is_death() )
     return r -> paired_rune -> slot_number;
   // 5) If the ability uses a death rune, use custom order of f > b > u to pick
   // the death rune
   else if ( rt == RUNE_TYPE_DEATH )
   {
-    if ( ! use[ 2 ] && p -> _runes.slot[ 2 ].is_ready() && p -> _runes.slot[ 2 ].is_death() )
+    if ( ! use[ 2 ].first && p -> _runes.slot[ 2 ].is_ready() && p -> _runes.slot[ 2 ].is_death() )
       return 2;
-    else if ( ! use[ 3 ] && p -> _runes.slot[ 3 ].is_ready() && p -> _runes.slot[ 3 ].is_death() )
+    else if ( ! use[ 3 ].first && p -> _runes.slot[ 3 ].is_ready() && p -> _runes.slot[ 3 ].is_death() )
       return 3;
-    else if ( ! use[ 0 ] && p -> _runes.slot[ 0 ].is_ready() && p -> _runes.slot[ 0 ].is_death() )
+    else if ( ! use[ 0 ].first && p -> _runes.slot[ 0 ].is_ready() && p -> _runes.slot[ 0 ].is_death() )
       return 0;
-    else if ( ! use[ 1 ] && p -> _runes.slot[ 1 ].is_ready() && p -> _runes.slot[ 1 ].is_death() )
+    else if ( ! use[ 1 ].first && p -> _runes.slot[ 1 ].is_ready() && p -> _runes.slot[ 1 ].is_death() )
       return 1;
-    else if ( ! use[ 4 ] && p -> _runes.slot[ 4 ].is_ready() && p -> _runes.slot[ 4 ].is_death() )
+    else if ( ! use[ 4 ].first && p -> _runes.slot[ 4 ].is_ready() && p -> _runes.slot[ 4 ].is_death() )
       return 4;
-    else if ( ! use[ 5 ] && p -> _runes.slot[ 5 ].is_ready() && p -> _runes.slot[ 5 ].is_death() )
+    else if ( ! use[ 5 ].first && p -> _runes.slot[ 5 ].is_ready() && p -> _runes.slot[ 5 ].is_death() )
       return 5;
   }
   // 6) Choose the first death rune of any type, in the order b > u > f
   else
   {
-    if ( ! use[ 0 ] && p -> _runes.slot[ 0 ].is_ready() && p -> _runes.slot[ 0 ].is_death() )
+    if ( ! use[ 0 ].first && p -> _runes.slot[ 0 ].is_ready() && p -> _runes.slot[ 0 ].is_death() )
       return 0;
-    else if ( ! use[ 1 ] && p -> _runes.slot[ 1 ].is_ready() && p -> _runes.slot[ 1 ].is_death() )
+    else if ( ! use[ 1 ].first && p -> _runes.slot[ 1 ].is_ready() && p -> _runes.slot[ 1 ].is_death() )
       return 1;
-    else if ( ! use[ 4 ] && p -> _runes.slot[ 4 ].is_ready() && p -> _runes.slot[ 4 ].is_death() )
+    else if ( ! use[ 4 ].first && p -> _runes.slot[ 4 ].is_ready() && p -> _runes.slot[ 4 ].is_death() )
       return 4;
-    else if ( ! use[ 5 ] && p -> _runes.slot[ 5 ].is_ready() && p -> _runes.slot[ 5 ].is_death() )
+    else if ( ! use[ 5 ].first && p -> _runes.slot[ 5 ].is_ready() && p -> _runes.slot[ 5 ].is_death() )
       return 5;
-    else if ( ! use[ 2 ] && p -> _runes.slot[ 2 ].is_ready() && p -> _runes.slot[ 2 ].is_death() )
+    else if ( ! use[ 2 ].first && p -> _runes.slot[ 2 ].is_ready() && p -> _runes.slot[ 2 ].is_death() )
       return 2;
-    else if ( ! use[ 3 ] && p -> _runes.slot[ 3 ].is_ready() && p -> _runes.slot[ 3 ].is_death() )
+    else if ( ! use[ 3 ].first && p -> _runes.slot[ 3 ].is_ready() && p -> _runes.slot[ 3 ].is_death() )
       return 3;
   }
 
@@ -763,7 +765,7 @@ static int use_rune( const death_knight_t* p, rune_type rt, const std::array<boo
   return -1;
 }
 
-static std::pair<int, double> rune_ready_in( const death_knight_t* p, rune_type rt, const std::array<bool,RUNE_SLOT_MAX>& use )
+static std::pair<int, double> rune_ready_in( const death_knight_t* p, rune_type rt, const rune_consume_t& use )
 {
   typedef std::pair<int, double> rri_t;
 
@@ -782,7 +784,7 @@ static std::pair<int, double> rune_ready_in( const death_knight_t* p, rune_type 
     r = &( p -> _runes.slot[ 4 ] );
 
   // 1) Choose first non-death rune of rune_type
-  if ( r && ! use[ r -> slot_number ] && ! r -> is_death() )
+  if ( r && ! use[ r -> slot_number ].first && ! r -> is_death() )
   {
     if ( r -> is_ready() )
       return rri_t( r -> slot_number, 0 );
@@ -798,7 +800,7 @@ static std::pair<int, double> rune_ready_in( const death_knight_t* p, rune_type 
   }
 
   // 2) Choose paired non-death rune of rune_type
-  if ( r && ! use[ r -> paired_rune -> slot_number ] && ! r -> paired_rune -> is_death() )
+  if ( r && ! use[ r -> paired_rune -> slot_number ].first && ! r -> paired_rune -> is_death() )
   {
     if ( r -> paired_rune -> is_ready() )
       return rri_t( r -> paired_rune -> slot_number, 0 );
@@ -814,7 +816,7 @@ static std::pair<int, double> rune_ready_in( const death_knight_t* p, rune_type 
   }
 
   // 3) Choose first death rune of rune_type
-  if ( r && ! use[ r -> slot_number ] && r -> is_death() )
+  if ( r && ! use[ r -> slot_number ].first && r -> is_death() )
   {
     if ( r -> is_ready() )
       return rri_t( r -> slot_number, 0 );
@@ -830,7 +832,7 @@ static std::pair<int, double> rune_ready_in( const death_knight_t* p, rune_type 
   }
 
   // 4) Choose paired death rune of rune_type
-  if ( r && ! use[ r -> paired_rune -> slot_number ] && r -> paired_rune -> is_death() )
+  if ( r && ! use[ r -> paired_rune -> slot_number ].first && r -> paired_rune -> is_death() )
   {
     if ( r -> paired_rune -> is_ready() )
       return rri_t( r -> paired_rune -> slot_number, 0 );
@@ -853,7 +855,7 @@ static std::pair<int, double> rune_ready_in( const death_knight_t* p, rune_type 
     if ( ! k -> is_death() )
       continue;
 
-    if ( use[ k -> slot_number ] )
+    if ( use[ k -> slot_number ].first )
       continue;
 
     if ( k -> is_ready() )
@@ -878,8 +880,8 @@ static double ready_in( const death_knight_t* player, int blood, int frost, int 
   typedef std::pair<int, double> rri_t;
   assert( blood < 2 && frost < 2 && unholy < 2  );
 
-  std::array<bool,RUNE_SLOT_MAX> use;
-  range::fill( use, false );
+  rune_consume_t use;
+  range::fill( use, rune_consume_data_t( false, RUNE_TYPE_NONE ) );
 
   if ( player -> sim -> debug )
     log_rune_status( player, true );
@@ -895,7 +897,7 @@ static double ready_in( const death_knight_t* player, int blood, int frost, int 
       min_ready_blood = info_blood.second;
 
     if ( info_blood.first > -1 )
-      use[ info_blood.first ] = true;
+      use[ info_blood.first ].first = true;
   }
 
   if ( frost )
@@ -905,7 +907,7 @@ static double ready_in( const death_knight_t* player, int blood, int frost, int 
       min_ready_frost = info_frost.second;
 
     if ( info_frost.first > -1 )
-      use[ info_frost.first ] = true;
+      use[ info_frost.first ].first = true;
   }
 
   if ( unholy )
@@ -915,7 +917,7 @@ static double ready_in( const death_knight_t* player, int blood, int frost, int 
       min_ready_unholy = info_unholy.second;
 
     if ( info_unholy.first > -1 )
-      use[ info_unholy.first ] = true;
+      use[ info_unholy.first ].first = true;
   }
 
   double min_ready = std::max( blood * min_ready_blood, frost * min_ready_frost );
@@ -928,12 +930,12 @@ static double ready_in( const death_knight_t* player, int blood, int frost, int 
   return min_ready;
 }
 
-static bool group_runes ( const death_knight_t* player, int blood, int frost, int unholy, int death, std::array<bool,RUNE_SLOT_MAX>& group )
+static bool group_runes ( const death_knight_t* player, int blood, int frost, int unholy, int death, rune_consume_t& group )
 {
   assert( blood < 2 && frost < 2 && unholy < 2 && death < 2 );
 
-  std::array<bool,RUNE_SLOT_MAX> use;
-  range::fill( use, false );
+  rune_consume_t use;
+  range::fill( use, rune_consume_data_t( false, RUNE_TYPE_NONE ) );
 
   int use_slot = -1;
 
@@ -943,8 +945,9 @@ static bool group_runes ( const death_knight_t* player, int blood, int frost, in
       return false;
     else
     {
-      assert( ! use[ use_slot ] );
-      use[ use_slot ] = true;
+      assert( ! use[ use_slot ].first );
+      use[ use_slot ].first = true;
+      use[ use_slot ].second = RUNE_TYPE_BLOOD;
     }
   }
 
@@ -954,8 +957,9 @@ static bool group_runes ( const death_knight_t* player, int blood, int frost, in
       return false;
     else
     {
-      assert( ! use[ use_slot ] );
-      use[ use_slot ] = true;
+      assert( ! use[ use_slot ].first );
+      use[ use_slot ].first = true;
+      use[ use_slot ].second = RUNE_TYPE_FROST;
     }
   }
 
@@ -965,8 +969,9 @@ static bool group_runes ( const death_knight_t* player, int blood, int frost, in
       return false;
     else
     {
-      assert( ! use[ use_slot ] );
-      use[ use_slot ] = true;
+      assert( ! use[ use_slot ].first );
+      use[ use_slot ].first = true;
+      use[ use_slot ].second = RUNE_TYPE_UNHOLY;
     }
   }
 
@@ -976,13 +981,17 @@ static bool group_runes ( const death_knight_t* player, int blood, int frost, in
       return false;
     else
     {
-      assert( ! use[ use_slot ] );
-      use[ use_slot ] = true;
+      assert( ! use[ use_slot ].first );
+      use[ use_slot ].first = true;
+      use[ use_slot ].second = RUNE_TYPE_DEATH;
     }
   }
 
   // Storing rune slots selected
-  for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) group[ i ] = use[ i ];
+  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+  {
+    group[ i ] = use[ i ];
+  }
 
   return true;
 }
@@ -2259,8 +2268,8 @@ struct death_knight_action_t : public Base
   int    cost_frost;
   int    cost_unholy;
   int    cost_death;
-  double convert_runes;
-  std::array<bool,RUNE_SLOT_MAX> use;
+  convert_runes;
+  rune_consume_t use;
   gain_t* rp_gains;
 
   typedef Base action_base_t;
@@ -2274,7 +2283,7 @@ struct death_knight_action_t : public Base
     cost_blood( 0 ), cost_frost( 0 ), cost_unholy( 0 ), cost_death( 0 ),
     convert_runes( 0 )
   {
-    range::fill( use, false );
+    range::fill( use, rune_consume_data_t( false, RUNE_TYPE_NONE ) );
     range::fill( rune_consumed, 0 );
 
     action_base_t::may_crit   = true;
@@ -2348,8 +2357,7 @@ struct death_knight_action_t : public Base
 
   virtual void reset()
   {
-    for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-      use[i] = false;
+    range::fill( use, rune_consume_data_t( false, RUNE_TYPE_NONE ) );
 
     action_base_t::reset();
   }
@@ -2395,9 +2403,154 @@ struct death_knight_action_t : public Base
 
   virtual expr_t* create_expression( const std::string& name_str );
 
+  ///////////////////////////////////////////////////////////////////////////
+  // Reaping rules (for Unholy?)
+  //
+  // Base cost type reaping:
+  // =======================
+  // Blood = Blood > Frost
+  // Frost = Frost > Blood
+  //
+  // Rune state reaping:
+  // ===================
+  // Depleted > Recharging > Full
+  //
+  // Unholy (death) runes never reap back to Unholy (death) runes.
+  //
+  // Returns the slot number reaped, or -1 if nothing could be reaped
+  int reap_priorization( rune_type rt )
+  {
+    unsigned base_rune_idx = 0;
+    if ( rt == RUNE_TYPE_FROST )
+    {
+      base_rune_idx = 2;
+    }
+
+    // First, check if we have 0, 1, or 2 death runes in priority order based
+    // on base cost type
+    unsigned n_death = 0;
+
+    n_death += p() -> _runes.slot[ base_rune_idx ].is_death();
+    n_death += p() -> _runes.slot[ base_rune_idx + 1 ].is_death();
+
+    // Two death runes already for the selected base rune type, reap nothing
+    if ( n_death == 2 )
+    {
+      return -1;
+    }
+    // One death rune, reap the other regardless of what state it is in
+    else if ( n_death == 1 )
+    {
+      if ( ! p() -> _runes.slot[ base_rune_idx ].is_death() )
+      {
+        p() -> _runes.slot[ base_rune_idx ].type |= RUNE_TYPE_DEATH;
+        return base_rune_idx;
+      }
+      else
+      {
+        p() -> _runes.slot[ base_rune_idx + 1 ].type |= RUNE_TYPE_DEATH;
+        return base_rune_idx + 1;
+      }
+    }
+    // No death runes, reap in priority depleted > recharging > ready.
+    else
+    {
+      // First rune is in "lower state" than the second rune. Reap it.
+      if ( p() -> _runes.slot[ base_rune_idx ].state <
+           p() -> _runes.slot[ base_rune_idx + 1 ].state )
+      {
+        p() -> _runes.slot[ base_rune_idx ].type |= RUNE_TYPE_DEATH;
+        return base_rune_idx;
+      }
+      // Second rune is in "lower state" than the second rune. Reap it.
+      else if ( p() -> _runes.slot[ base_rune_idx + 1 ].state <
+                p() -> _runes.slot[ base_rune_idx ].state )
+      {
+        p() -> _runes.slot[ base_rune_idx + 1 ].type |= RUNE_TYPE_DEATH;
+        return base_rune_idx + 1;
+      }
+      // Both depleted, can be possible in suitable rune condition with 2 rune
+      // abilities. Reap the first rune.
+      else if ( p() -> _runes.slot[ base_rune_idx ].is_depleted() &&
+                p() -> _runes.slot[ base_rune_idx + 1 ].is_depleted() )
+      {
+        p() -> _runes.slot[ base_rune_idx ].type |= RUNE_TYPE_DEATH;
+        return base_rune_idx;
+      }
+      // Otherwise, the rune state is somehow broken.
+      else
+      {
+        assert( 0 );
+      }
+    }
+
+    return -1;
+  }
+
+  // Reap runes. Unholy only method to model the reaping bug.
+  bool reap_runes( const rune_t& consumed_rune,
+                   const rune_consume_data_t& use_data )
+  {
+    if ( ! p() -> bugs )
+    {
+      return false;
+    }
+
+    if ( ! p() -> spec.reaping -> ok() )
+    {
+      return false;
+    }
+
+    int reaped = -1;
+
+    // Blood base costs will be reaped in the order of Blood > Frost, no matter
+    // if the spent rune is a Blood, Frost(death), or Unholy(death) rune.
+    if ( use_data.second == RUNE_TYPE_BLOOD )
+    {
+      reaped = reap_priorization( RUNE_TYPE_BLOOD );
+      if ( reaped == -1 )
+        reaped = reap_priorization( RUNE_TYPE_FROST );
+    }
+    // Frost base costs will be reaped in the order of Frost > Blood, no matter
+    // if the spent rune is a Frost, Blood(death), or Unholy(Death) rune.
+    else if ( use_data.second == RUNE_TYPE_FROST )
+    {
+      reaped = reap_priorization( RUNE_TYPE_FROST );
+      if ( reaped == -1 )
+        reaped = reap_priorization( RUNE_TYPE_BLOOD );
+    }
+
+    // Keep track of reaping bugs
+    if ( ( consumed_rune.is_blood() || consumed_rune.is_unholy() ) &&
+         ( reaped == 2 || reaped == 3 ) )
+    {
+      p() -> procs.reaping_bug_frost -> occur();
+      if ( p() -> sim -> debug )
+      {
+        p() -> sim -> out_debug.printf( "%s reaping bug, used rune %d (death), changed rune %d (frost) to death",
+            p() -> name(), consumed_rune.slot_number, reaped );
+      }
+    }
+    else if ( ( consumed_rune.is_frost() || consumed_rune.is_unholy() ) &&
+         ( reaped == 0 || reaped == 1 ) )
+    {
+      p() -> procs.reaping_bug_blood -> occur();
+      if ( p() -> sim -> debug )
+      {
+        p() -> sim -> out_debug.printf( "%s reaping bug, used rune %d (death), changed rune %d (blood) to death",
+            p() -> name(), consumed_rune.slot_number, reaped );
+      }
+    }
+
+    // We can also fall back here, if no runes can be converted (everything is
+    // a death rune already).
+
+    return true;
+  }
+
   // Consume Runes ============================================================
 
-  void consume_runes( const std::array<bool,RUNE_SLOT_MAX>& use, bool convert_runes = false )
+  void consume_runes( const rune_consume_t& use, bool convert_runes = false )
   {
     if ( p() -> sim -> log )
     {
@@ -2406,7 +2559,7 @@ struct death_knight_action_t : public Base
 
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     {
-      if ( ! use[ i ] )
+      if ( ! use[ i ].first )
       {
         continue;
       }
@@ -2425,54 +2578,12 @@ struct death_knight_action_t : public Base
       // Not the type it is after consumption
       int consumed_type = p() -> _runes.slot[ i ].type;
 
-      // Reaping bug.
-      if ( p() -> bugs )
+      // Consume the rune, and potentially reap it. Reaping requires some
+      // trickery
+      p() -> _runes.slot[ i ].consume( 0 );
+      if ( convert_runes && ! reap_runes( rune, use[ i ] ) )
       {
-        // If you use a Reaping ability, consuming an Unholy (Death) rune.
-        // The reaping bug will convert a Blood or a Frost rune to Death.
-        if ( p() -> spec.reaping -> ok() && rune.is_unholy() && rune.is_death() && convert_runes != 0 )
-        {
-          p() -> _runes.slot[ i ].consume( 0 );
-
-          // Loop through Blood and Frost runes, converting the first
-          // regenerating non-death rune to death.
-          for ( size_t reap_rune_idx = 0; reap_rune_idx < 4; reap_rune_idx++ )
-          {
-            rune_t& convert_rune = p() -> _runes.slot[ reap_rune_idx ];
-            // You'll only end up in this situation if you dont have a ready F
-            // or B rune, meaning you will be regenerating one of the rune
-            // types.
-            if ( convert_rune.is_death() || convert_rune.is_ready() || convert_rune.is_depleted() )
-            {
-              continue;
-            }
-
-            convert_rune.type |= RUNE_TYPE_DEATH;
-            if ( convert_rune.is_blood() )
-            {
-              p() -> procs.reaping_bug_blood -> occur();
-            }
-            else if ( convert_rune.is_frost() )
-            {
-              p() -> procs.reaping_bug_frost -> occur();
-            }
-
-            if ( p() -> sim -> debug )
-            {
-              p() -> sim -> out_debug.printf( "%s reaping bug, used rune %d (death), changed rune %d to death",
-                  p() -> name(), i, reap_rune_idx );
-            }
-            break;
-          }
-        }
-        else
-        {
-          p() -> _runes.slot[ i ].consume( convert_runes );
-        }
-      }
-      else
-      {
-        p() -> _runes.slot[ i ].consume( convert_runes );
+        p() -> _runes.slot[ i ].type |= RUNE_TYPE_DEATH;
       }
 
       if ( p() -> sim -> log )
