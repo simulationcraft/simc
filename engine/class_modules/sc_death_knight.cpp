@@ -2268,7 +2268,7 @@ struct death_knight_action_t : public Base
   int    cost_frost;
   int    cost_unholy;
   int    cost_death;
-  convert_runes;
+  double convert_runes;
   rune_consume_t use;
   gain_t* rp_gains;
 
