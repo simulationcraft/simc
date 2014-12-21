@@ -3,7 +3,6 @@
 :: They need to be copied into the dev area from the Qt install.
 :: Qt-Framework is simply the Qt runtime dlls built against the MSVC 2013 compiler
 :: It can be found at: http://qt-project.org/downloads
-:: If you build SimC with MSVC 2013, then you need to use dlls from Qt-Framework
 :: As of this writing, the default locations from which to gather the dlls are:
 :: Qt-Framework: C:\Qt\Qt5.4.0\
 
@@ -13,20 +12,16 @@ set redist="C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\x86\Mi
 
 :: IMPORTANT NOTE FOR DEBUGGING
 :: This script will ONLY copy the optimized Qt dlls
-:: The MSVC 2013 simcqt.vcproj file is setup to use optimized dlls for both Debug/Release builds
+:: The simcqt_vs2013.vcproj file is setup to use optimized dlls for both Debug/Release builds
 :: This script needs to be smarter if you wish to use the interactive debugger in the Qt SDK
 :: The debug Qt dlls are named: Qt___d5.dll
 
-:: Delete old folder/files
-
 rd %install% /s /q
-:: Copying new dlls
 
 for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\12.0" /v MSBuildToolsPath') do SET MSBUILDDIR=%%B
 
 "%MSBUILDDIR%msbuild.exe" E:\simulationcraft\simc_vs2013.sln /p:configuration=release /p:platform=win32 /nr:true /m:8
 
-del /s simc_cache.dat
 forfiles -s -m generate_????.simc -c "cmd /c echo Running @path && %~dp0simc.exe @file"
 
 robocopy %redist%\ %install%\ msvcp120.dll msvcr120.dll vccorlib120.dll
