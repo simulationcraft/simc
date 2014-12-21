@@ -3530,6 +3530,11 @@ struct nether_tempest_aoe_t: public mage_spell_t
   {
     aoe = -1;
     background = true;
+    if ( p -> wod_hotfix )
+    {
+      // NOTE: Nether Tempest is double dipping on Dec 8 hotfix 10% buff (bug?)
+      spell_power_mod.direct *= 1.0 + 0.1;
+    }
   }
 
   virtual resource_e current_resource() const
@@ -3539,32 +3544,19 @@ struct nether_tempest_aoe_t: public mage_spell_t
   {
     return timespan_t::from_seconds( 1.3 );
   }
-
-  virtual double action_multiplier() const
-  {
-    double am = mage_spell_t::action_multiplier();
-
-    if ( p() -> wod_hotfix )
-    {
-      // NOTE: Nether Tempest is double dipping on Dec 8 hotfix 10% buff (bug?)
-      am *= (1.0 + 0.1) * (1.0 + 0.1);
-    }
-
-    return am;
-  }
 };
 
 // Nether Tempest Spell ===========================================================
 struct nether_tempest_t : public mage_spell_t
 {
-  nether_tempest_aoe_t* add_aoe;
+  nether_tempest_aoe_t* nether_tempest_aoe;
 
   nether_tempest_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "nether_tempest", p, p -> talents.nether_tempest ),
-    add_aoe( new nether_tempest_aoe_t( p ) )
+    nether_tempest_aoe( new nether_tempest_aoe_t( p ) )
   {
     parse_options( options_str );
-    add_child( add_aoe );
+    add_child( nether_tempest_aoe );
   }
 
   virtual void execute()
@@ -3591,10 +3583,10 @@ struct nether_tempest_t : public mage_spell_t
 
     mage_spell_t::tick( d );
 
-    action_state_t* aoe_state = add_aoe -> get_state( d -> state );
+    action_state_t* aoe_state = nether_tempest_aoe -> get_state( d -> state );
     aoe_state -> target = d -> target;
 
-    add_aoe -> schedule_execute( aoe_state );
+    nether_tempest_aoe -> schedule_execute( aoe_state );
   }
 
   double composite_persistent_multiplier( const action_state_t* state ) const
