@@ -883,6 +883,64 @@ struct dbc_potion_t : public action_t
   }
 };
 
+
+struct augmentation_t : public action_t
+{
+  augmentation_t( player_t* p, const std::string& options_str ) :
+    action_t( ACTION_USE, "augmentation", p )
+  {
+    std::string type_str;
+
+    add_option( opt_string( "type", type_str ) );
+    parse_options( options_str );
+    if ( util::str_compare_ci( type_str, "focus" ) )
+    {
+      player -> consumables.augmentation = stat_buff_creator_t( player, "focus_augmentation" )
+          .spell( player -> find_spell( 17547 ) );
+    }
+    else if  ( util::str_compare_ci( type_str, "hyper" ) )
+    {
+      player -> consumables.augmentation = stat_buff_creator_t( player, "hyper_augmentation" )
+          .spell( player -> find_spell( 175456 ) );
+    }
+    else if  ( util::str_compare_ci( type_str, "stout" ) )
+    {
+      player -> consumables.augmentation = stat_buff_creator_t( player, "stout_augmentation" )
+          .spell( player -> find_spell( 175439 ) );
+    }
+    else
+    {
+      sim -> errorf( "%s unknown augmentation type: '%s'", player -> name(), type_str.c_str() );
+      background = true;
+    }
+
+    trigger_gcd = timespan_t::zero();
+    harmful = false;
+
+  }
+
+  virtual void execute()
+  {
+    assert( player -> consumables.augmentation );
+
+    player -> consumables.augmentation -> trigger();
+
+    if ( sim -> log )
+      sim -> out_log.printf( "%s uses augmentation.", player -> name() );
+
+  }
+  virtual bool ready()
+  {
+    if ( ! player -> consumables.augmentation )
+      return false;
+
+    if ( player -> consumables.augmentation && player -> consumables.augmentation -> check() )
+      return false;
+
+    return action_t::ready();
+  }
+};
+
 } // END UNNAMED NAMESPACE
 
 // ==========================================================================
@@ -899,6 +957,7 @@ action_t* consumable::create_action( player_t*          p,
   if ( name == "food"                 ) return new         food_t( p, options_str );
   if ( name == "health_stone"         ) return new health_stone_t( p, options_str );
   if ( name == "mana_potion"          ) return new  mana_potion_t( p, options_str );
+  if ( name == "augmentation"         ) return new augmentation_t( p, options_str );
 
   return 0;
 }
