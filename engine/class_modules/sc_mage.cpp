@@ -3546,6 +3546,7 @@ struct nether_tempest_aoe_t: public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
+      // NOTE: Nether Tempest is double dipping on Dec 8 hotfix 10% buff (bug?)
       am *= (1.0 + 0.1) * (1.0 + 0.1);
     }
 
