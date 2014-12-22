@@ -1153,7 +1153,10 @@ player_t* bcp_api::download_player( sim_t*             sim,
 
   player.talent_spec = talents;
 
-  return parse_player( sim, player, caching );
+  if ( parse_player( sim, player, caching ) == 0 )
+    return download_player_html( sim, region, server, name, talents, caching );
+  else
+    return parse_player( sim, player, caching );
 }
 
 // bcp_api::from_local_json =================================================
