@@ -902,11 +902,15 @@ struct immolation_t: public warlock_pet_spell_t
   {
     parse_options( options_str );
 
-    dot_duration = 1 * base_tick_time;
     hasted_ticks = false;
 
     dynamic_tick_action = true;
     tick_action = new immolation_tick_t( p, data() );
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* ) const
+  {
+    return player -> sim -> expected_iteration_time * 2;
   }
 
   virtual void tick( dot_t* d )
