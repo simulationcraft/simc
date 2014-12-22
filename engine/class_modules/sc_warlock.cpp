@@ -2003,7 +2003,13 @@ public:
       if ( r == RESOURCE_DEMONIC_FURY && p() -> buffs.metamorphosis -> check() )
         p() -> spells.metamorphosis -> cancel();
       else
+      {
+        if ( sim -> debug )
+        {
+          sim -> out_debug.printf( "%s out of resource", player -> name() );
+        }
         d -> current_action -> cancel();
+      }
     }
   }
 
@@ -2685,7 +2691,10 @@ struct drain_life_t: public warlock_spell_t
 
     heal -> execute();
 
-    consume_tick_resource( d );
+    if ( d -> current_tick != d -> num_ticks )
+    {
+      consume_tick_resource( d );
+    }
   }
   virtual double action_multiplier() const
   {
@@ -3704,7 +3713,10 @@ struct drain_soul_t: public warlock_spell_t
     trigger_extra_tick( td( d -> state -> target ) -> dots_corruption, multiplier );
     trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, multiplier );
 
-    consume_tick_resource( d );
+    if ( d -> current_tick != d -> num_ticks )
+    {
+      consume_tick_resource( d );
+    }
   }
 };
 
@@ -4056,7 +4068,10 @@ struct rain_of_fire_t: public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( channeled && d -> current_tick != 0 ) consume_tick_resource( d );
+    if ( channeled && d -> current_tick != 0 && d -> current_tick != d -> num_ticks )
+    {
+      consume_tick_resource( d );
+    }
   }
 
   timespan_t composite_dot_duration( const action_state_t* state ) const
@@ -4136,7 +4151,10 @@ struct hellfire_t: public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( d -> current_tick != 0 ) consume_tick_resource( d );
+    if ( d -> current_tick != 0 && d -> current_tick != d -> num_ticks )
+    {
+      consume_tick_resource( d );
+    }
   }
 
   virtual bool ready()
