@@ -6551,8 +6551,10 @@ inline dot_end_event_t::dot_end_event_t( dot_t* d, timespan_t time_to_end ) :
 inline void dot_end_event_t::execute()
 {
   dot -> end_event = nullptr;
+  assert( dot -> current_tick == dot -> num_ticks - 1 );
   dot -> current_tick++;
   dot -> tick();
+  assert( dot -> current_tick == dot -> num_ticks );
   dot -> last_tick();
 }
 

@@ -683,7 +683,14 @@ void dot_t::refresh( timespan_t duration )
 
   assert( end_event && "Dot is ticking but has no end event." );
   timespan_t remaining_duration = end_event -> remains();
-  end_event -> reschedule( current_duration );
+
+  // DoT Refresh events have to be canceled instead of refreshed. Otherwise, it
+  // is possible to get the dot into a state, where the last reschedule event
+  // occurs between the second to last, and the last tick. This will cause the
+  // event ordering in the sim to flip (last tick happens before end event),
+  // causing the dot to tick twice at the end of the duration.
+  core_event_t::cancel( end_event );
+  end_event = new ( sim ) dot_end_event_t( this, current_duration );
 
   check_tick_zero();
 
