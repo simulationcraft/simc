@@ -2477,6 +2477,14 @@ struct death_knight_action_t : public Base
         p() -> _runes.slot[ base_rune_idx ].type |= RUNE_TYPE_DEATH;
         return base_rune_idx;
       }
+      // Both full, can be possible in suitable rune condition, for example
+      // AOEing. Reap first rune.
+      else if ( p() -> _runes.slot[ base_rune_idx ].is_ready() &&
+                p() -> _runes.slot[ base_rune_idx + 1 ].is_ready() )
+      {
+        p() -> _runes.slot[ base_rune_idx ].type |= RUNE_TYPE_DEATH;
+        return base_rune_idx;
+      }
       // Otherwise, the rune state is somehow broken.
       else
       {
