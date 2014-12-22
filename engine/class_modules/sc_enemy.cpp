@@ -819,7 +819,7 @@ struct tank_dummy_enemy_t : public enemy_t
   {
     tank_dummy_enum = convert_tank_dummy_string( tank_dummy_str );
      // if no tmi_boss_type input is given, try parsing the name
-    if ( tank_dummy_enum == TMI_NONE )
+    if ( tank_dummy_enum == TANK_DUMMY_NONE )
       tank_dummy_enum = convert_tank_dummy_string( name_str );
     // if we still have no clue, pit them against the worst case
     if ( tank_dummy_enum == TANK_DUMMY_NONE )
