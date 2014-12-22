@@ -18,11 +18,13 @@ public:
 
   void    decodeOptions();
   void    encodeOptions();
+
   QString get_db_order() const;
   QString get_globalSettings();
   QString mergeOptions();
   QString get_active_spec();
   QString get_player_role();
+  QString get_api_key();
 
   void createToolTips();
   QListWidget* itemDbOrder;
@@ -73,6 +75,7 @@ public:
   QButtonGroup* scalingButtonGroup;
   QButtonGroup* plotsButtonGroup;
   SC_ReforgeButtonGroup* reforgeplotsButtonGroup;
+  QLineEdit* apikey;
 public slots:
   void _resetallSettings();
 protected:

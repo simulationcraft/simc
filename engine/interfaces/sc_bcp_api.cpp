@@ -56,12 +56,22 @@ struct player_spec_t
 bool download_id( rapidjson::Document& d, 
                   const std::string& region,
                   unsigned item_id,
+                  std::string apikey,
                   cache::behavior_e caching )
 {
   if ( item_id == 0 )
     return false;
 
-  std::string url = "http://" + region + ".battle.net/api/wow/item/" + util::to_string( item_id ) + "?locale=en_US";
+  std::string url;
+
+  if ( apikey != "" )
+  {
+    url = "https://" + region + ".api.battle.net/wow/item/" + util::to_string( item_id ) + "?locale=en_us&apikey=" + apikey;
+  }
+  else
+  {
+    url = "http://" + region + ".battle.net/api/wow/item/" + util::to_string( item_id ) + "?locale=en_US";
+  }
 
   std::string result;
   if ( ! http::get( result, url, caching ) )
@@ -866,7 +876,7 @@ player_t* parse_player( sim_t*             sim,
 bool download_item_data( item_t& item, cache::behavior_e caching )
 {
   rapidjson::Document js;
-  if ( ! download_id( js, item.sim -> default_region_str, item.parsed.data.id, caching ) || 
+  if ( ! download_id( js, item.sim -> default_region_str, item.parsed.data.id, item.sim -> apikey, caching ) || 
        js.HasParseError() )
   {
     if ( caching != cache::ONLY )
@@ -1071,8 +1081,16 @@ bool download_roster( rapidjson::Document& d,
                       const std::string& name,
                       cache::behavior_e  caching )
 {
-  std::string url = "http://" + region + ".battle.net/api/wow/guild/" + server + '/' +
-                    name + "?fields=members";
+  std::string url;
+  if ( sim -> apikey != "" )
+  {
+    url = "https://" + region + ".api.battle.net/wow/guild/" + server + '/' + name + "?fields=members&apikey=" + sim -> apikey;
+  }
+  else
+  {
+    url = "http://" + region + ".battle.net/api/wow/guild/" + server + '/' +
+      name + "?fields=members";
+  }
 
   std::string result;
   if ( ! http::get( result, url, caching ) )
@@ -1141,11 +1159,22 @@ player_t* bcp_api::download_player( sim_t*             sim,
 
   player_spec_t player;
 
-  std::string battlenet = "http://" + region + ".battle.net/";
+  if ( sim -> apikey != "" )
+  {
+    std::string battlenet = "https://" + region + ".api.battle.net/";
 
-  player.url = battlenet + "api/wow/character/" +
-               server + '/' + name + "?fields=talents,items,professions&locale=en_US";
-  player.origin = battlenet + "wow/en/character/" + server + '/' + name + "/advanced";
+    player.url = battlenet + "wow/character/" +
+      server + '/' + name + "?fields=talents,items,professions&locale=en_US&apikey=" + sim -> apikey;
+    player.origin = battlenet + "wow/character/" + server + '/' + name + "/advanced";
+  }
+  else
+  {
+    std::string battlenet = "http://" + region + ".battle.net/";
+
+    player.url = battlenet + "api/wow/character/" +
+      server + '/' + name + "?fields=talents,items,professions&locale=en_US";
+    player.origin = battlenet + "wow/en/character/" + server + '/' + name + "/advanced";
+  }
 
   player.region = region;
   player.server = server;
@@ -1153,10 +1182,11 @@ player_t* bcp_api::download_player( sim_t*             sim,
 
   player.talent_spec = talents;
 
-  if ( parse_player( sim, player, caching ) == 0 )
+  player_t* p = parse_player( sim, player, caching );
+  if ( !p )
     return download_player_html( sim, region, server, name, talents, caching );
   else
-    return parse_player( sim, player, caching );
+    return p;
 }
 
 // bcp_api::from_local_json =================================================
@@ -1272,7 +1302,7 @@ bool bcp_api::download_glyph( player_t*          player,
 
   unsigned glyphid = strtoul( glyph_id.c_str(), 0, 10 );
   rapidjson::Document js;
-  if ( ! download_id( js, region, glyphid, caching ) || js.HasParseError() || ! js.HasMember( "name" ) )
+  if ( ! download_id( js, region, glyphid, player -> sim -> apikey, caching ) || js.HasParseError() || ! js.HasMember( "name" ) )
   {
     if ( caching != cache::ONLY )
       player -> sim -> errorf( "BCP API: Unable to download glyph id '%s'\n", glyph_id.c_str() );

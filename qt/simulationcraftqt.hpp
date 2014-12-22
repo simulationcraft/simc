@@ -1037,6 +1037,7 @@ public:
   QPushButton* backButton;
   QPushButton* forwardButton;
   SC_MainWindowCommandLine* cmdLine;
+  QLineEdit* apikey;
   QGroupBox* cmdLineGroupBox;
   QGroupBox* createCustomCharData;
   SC_RecentlyClosedTabItemModel* recentlyClosedTabModel;
@@ -1566,12 +1567,13 @@ public:
   QString item_db_sources;
   QString active_spec;
   QString m_role;
+  QString api;
   player_t* player;
 
   void importBattleNet();
 
-  void start( sim_t* s, int t, const QString& u, const QString& sources, const QString& spec, const QString& role )
-  { sim = s; tab = t; url = u; profile = ""; item_db_sources = sources; player = 0; active_spec = spec; m_role = role; QThread::start(); }
+  void start( sim_t* s, int t, const QString& u, const QString& sources, const QString& spec, const QString& role, const QString& apikey )
+  { sim = s; tab = t; url = u; profile = ""; item_db_sources = sources; player = 0; active_spec = spec; m_role = role, api = apikey; QThread::start(); }
   virtual void run();
   ImportThread( SC_MainWindow* mw ) : mainWindow( mw ), sim( 0 ), player( 0 ) {}
 };

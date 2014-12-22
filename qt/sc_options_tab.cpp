@@ -198,6 +198,7 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
   connect( choice.thread_priority,    SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.version,            SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.world_lag,          SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( apikey,                    SIGNAL( currentTextChanged( const QString& ) ), this, SLOT( _optionsChanged() ) );
 
   connect( buffsButtonGroup,          SIGNAL( buttonClicked( int ) ), this, SLOT( _optionsChanged() ) );
   connect( debuffsButtonGroup,        SIGNAL( buttonClicked( int ) ), this, SLOT( _optionsChanged() ) );
@@ -285,6 +286,8 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_right -> addRow( tr( "Deterministic RNG" ), choice.deterministic_rng = createChoice( 2, "Yes", "No" ) );
 
   createItemDataSourceSelector( globalsLayout_right );
+
+  globalsLayout_right -> addRow( tr( "Armory API Key" ), apikey = new QLineEdit() );
 
   QGroupBox* globalsGroupBox_right = new QGroupBox( tr( "Advanced Options" ) );
   globalsGroupBox_right -> setLayout( globalsLayout_right );
@@ -598,6 +601,16 @@ void load_setting( QSettings& s, const QString& name, QComboBox* choice, const Q
   }
 }
 
+void load_setting( QSettings& s, const QString& name, QLineEdit* textbox, const QString& default_value = QString() )
+{
+  const QString& v = s.value( name ).toString();
+
+  if ( !v.isEmpty() )
+    textbox -> setText( v );
+  else if ( !default_value.isEmpty() )
+    textbox -> setText( default_value );
+}
+
 void load_button_group( QSettings& s, const QString& groupname, QButtonGroup* bg )
 {
   s.beginGroup( groupname );
@@ -685,6 +698,7 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "tmi_window_global", choice.tmi_window, "6" );
   load_setting( settings, "show_etmi", choice.show_etmi );
   load_setting( settings, "world_lag", choice.world_lag, "Medium - 100 ms" );
+  load_setting( settings, "apikey", apikey );
   load_setting( settings, "debug", choice.debug, "None" );
   load_setting( settings, "target_level", choice.target_level );
   load_setting( settings, "report_pets", choice.report_pets, "No" );
@@ -783,6 +797,7 @@ void SC_OptionsTab::encodeOptions()
   settings.setValue( "tmi_window_global", choice.tmi_window -> currentText() );
   settings.setValue( "show_etmi", choice.show_etmi -> currentText() );
   settings.setValue( "world_lag", choice.world_lag -> currentText() );
+  settings.setValue( "apikey", apikey -> text() );
   settings.setValue( "debug", choice.debug -> currentText() );
   settings.setValue( "target_level", choice.target_level -> currentText() );
   settings.setValue( "pvp_crit", choice.pvp_crit -> currentText() );
@@ -978,9 +993,7 @@ QString SC_OptionsTab::get_globalSettings()
     assert( splits.size() > 0 );
     options += "target_error=" + QString( splits[ 0 ].c_str() ) + "\n";
     options += "iterations=0\n";
-  }
-
-  
+  }  
 
   const char *world_lag[] = { "0.025", "0.05", "0.1", "0.15", "0.20" };
   options += "default_world_lag=";
@@ -1265,6 +1278,11 @@ QString SC_OptionsTab::get_active_spec()
 QString SC_OptionsTab::get_player_role()
 {
   return choice.default_role -> currentText();
+}
+
+QString SC_OptionsTab::get_api_key()
+{
+  return apikey -> text();
 }
 
 void SC_OptionsTab::createItemDataSourceSelector( QFormLayout* layout )

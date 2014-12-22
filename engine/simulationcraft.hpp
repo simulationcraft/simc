@@ -1349,8 +1349,6 @@ inline std::string from_string( const std::string& v )
 
 // Options ==================================================================
 
-
-
 namespace opts {
 
 struct option_base_t
@@ -2769,6 +2767,7 @@ struct sim_t : private sc_thread_t
   int solo_raid;
   int global_item_upgrade_level;
   bool maximize_reporting;
+  std::string apikey;
 
   sim_report_information_t report_information;
 
@@ -2857,6 +2856,7 @@ struct sim_t : private sc_thread_t
   void      print_options();
   void      add_option( const option_t& opt );
   void      create_options();
+  int       find_api_key();
   bool      parse_option( const std::string& name, const std::string& value );
   void      setup( sim_control_t* );
   bool      time_to_think( timespan_t proc_time );

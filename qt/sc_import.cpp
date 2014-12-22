@@ -77,7 +77,8 @@ void ImportThread::run()
 {
   cache::advance_era();
   sim -> parse_option( "item_db_source", item_db_sources.toUtf8().constData() );
-
+  if ( api.size() == 32 ) // api keys are 32 characters long.
+    sim -> parse_option( "apikey", api.toUtf8().constData() );
   switch ( tab )
   {
     case TAB_BATTLE_NET: importBattleNet(); break;

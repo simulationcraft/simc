@@ -1046,6 +1046,7 @@ void SC_MainWindow::enqueueSim()
   QString title = simulateTab -> tabText( simulateTab -> currentIndex() );
   QString options = simulateTab -> current_Text() -> toPlainText();
   QString fullOptions = optionsTab -> mergeOptions();
+
   simulationQueue.enqueue( title, options, fullOptions );
 }
 
@@ -1058,7 +1059,7 @@ void SC_MainWindow::startImport( int tab, const QString& url )
   }
   simProgress = 0;
   import_sim = initSim();
-  importThread -> start( import_sim, tab, url, optionsTab -> get_db_order(), optionsTab -> get_active_spec(), optionsTab -> get_player_role() );
+  importThread -> start( import_sim, tab, url, optionsTab -> get_db_order(), optionsTab -> get_active_spec(), optionsTab -> get_player_role(), optionsTab -> get_api_key() );
   simulateTab -> add_Text( defaultSimulateText, tr( "Importing" ) );
   timer -> start( 500 );
 }
@@ -1166,6 +1167,8 @@ void SC_MainWindow::startSim()
   }
   simProgress = 0;
   sim = initSim();
+  if ( optionsTab -> get_api_key().size() == 32 ) // api keys are 32 characters long.
+    sim -> parse_option( "apikey",  optionsTab -> get_api_key().toUtf8().constData() );
   if ( cmdLine -> currentState() != SC_MainWindowCommandLine::SIMULATING_MULTIPLE )
   {
     cmdLine -> setState( SC_MainWindowCommandLine::SIMULATING );
