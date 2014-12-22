@@ -896,7 +896,7 @@ struct augmentation_t : public action_t
     if ( util::str_compare_ci( type_str, "focus" ) )
     {
       player -> consumables.augmentation = stat_buff_creator_t( player, "focus_augmentation" )
-          .spell( player -> find_spell( 17547 ) );
+          .spell( player -> find_spell( 175457 ) );
     }
     else if  ( util::str_compare_ci( type_str, "hyper" ) )
     {
