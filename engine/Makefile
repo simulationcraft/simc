@@ -71,7 +71,9 @@ ifeq (${FLAVOR},Darwin)
 ifneq ($(findstring clang,$(shell ${CXX} -v 2>&1)),)
 OPTS += -stdlib=libstdc++
 endif
-LINK_LIBS += -framework Security -framework CoreFoundation
+ifeq (${OPENSSL},)
+  LINK_LIBS += -framework Security -framework CoreFoundation
+endif
 endif
 
 ifneq (${NO_DEBUG},)
