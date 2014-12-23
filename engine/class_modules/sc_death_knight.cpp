@@ -1956,12 +1956,7 @@ struct ghoul_pet_t : public death_knight_pet_t
       if ( p -> o() -> buffs.dark_transformation -> up() )
         am *= 1.0 + p -> o() -> buffs.dark_transformation -> data().effectN( 1 ).percent();
 
-      // Apparently at some point in time, the ghoul damage was reduced by
-      // roughly 20%.
-      if ( p -> o() -> wod_hotfix )
-      {
-        am *= 0.8;
-      }
+      am *= 0.8;
 
       return am;
     }
