@@ -250,7 +250,7 @@ struct SSLWrapper
 
   ~SSLWrapper() { if ( s ) close(); }
 
-  int open( int fd )
+  int open( int fd, const char* /* peer_name */, size_t /* peer_name_len */ )
   { return ( ! SSL_set_fd( s, fd ) || SSL_connect( s ) <= 0 ) ? -1 : 0; }
 
   int read( char* buffer, std::size_t size )
@@ -284,40 +284,147 @@ struct SSLWrapper
       ctx = SSLCreateContext( NULL, kSSLClientSide, kSSLStreamType );
 #endif
       assert( ctx );
-      SSLSetIOFuncs( ctx, &SSLWrapper::do_read, &SSLWrapper::do_write );
+
+      OSStatus ret = SSLSetIOFuncs( ctx, &SSLWrapper::do_read, &SSLWrapper::do_write );
+      if ( ret != noErr )
+      {
+        std::cerr << "SSLSetIOFuncs error: " << ret << std::endl;
+      }
     }
   }
 
   static OSStatus do_read( SSLConnectionRef connection, void* data, size_t* data_len )
   {
+    OSStatus rval = noErr;
+
     assert( reinterpret_cast<int64_t>( connection ) <= std::numeric_limits<int>::max() );
     int socket = ( int64_t ) connection;
-
-    ssize_t ret = recv( socket, data, *data_len, 0 );
-    if ( ret == -1 )
+    if ( socket == -1 )
     {
       return errSSLProtocol;
     }
 
-    *data_len = static_cast<size_t>( ret );
+    fd_set read_set;
+    struct timeval tv;
+    size_t bytes_read = 0;
+    int n_timeout = 0;
 
-    return 0;
+    do
+    {
+      // Timeout after 5 seconds
+      if ( n_timeout == 50 )
+      {
+        rval = errSSLProtocol;
+        break;
+      }
+
+      FD_ZERO( &( read_set ) );
+      FD_SET( socket, &read_set );
+
+      memset( &tv, 0, sizeof( tv ) );
+      tv.tv_usec = 100000;
+
+      int select_rval = select( socket + 1, &( read_set ), NULL, NULL, &( tv ) );
+      // Timeout
+      if ( select_rval == 0 )
+      {
+        ++n_timeout;
+        continue;
+      }
+      // Error, except EAGAIN
+      else if ( select_rval == -1 )
+      {
+        if ( errno == EAGAIN )
+        {
+          ++n_timeout;
+          continue;
+        }
+        else
+        {
+          rval = errSSLProtocol;
+          break;
+        }
+      }
+
+      int n_recv_eagain = 0;
+      do
+      {
+        // Pathological problem, give up
+        if ( n_recv_eagain == 50 )
+        {
+          rval = errSSLProtocol;
+          break;
+        }
+
+        ssize_t recv_rval = recv( socket, static_cast<char*>( data ) + bytes_read, *data_len - bytes_read, 0 );
+        // EOF
+        if ( recv_rval == 0 )
+        {
+          rval = errSSLClosedGraceful;
+        }
+        else if ( recv_rval == -1 )
+        {
+          if ( errno == EAGAIN )
+          {
+            n_recv_eagain++;
+            continue;
+          }
+          else
+          {
+            rval = errSSLProtocol;
+            break;
+          }
+        }
+
+        bytes_read += recv_rval;
+        break;
+      } while ( true );
+
+    } while ( rval == noErr && bytes_read < *data_len );
+
+    *data_len = bytes_read;
+
+    return rval;
   }
 
   static OSStatus do_write( SSLConnectionRef connection, const void* data, size_t* data_len )
   {
     assert( reinterpret_cast<int64_t>( connection ) <= std::numeric_limits<int>::max() );
     int socket = ( int64_t ) connection;
-
-    ssize_t ret = send( socket, data, *data_len, 0 );
-    if ( ret == -1 )
+    if ( socket == -1 )
     {
       return errSSLProtocol;
     }
 
-    *data_len = static_cast<size_t>( ret );
+    size_t bytes_sent = 0;
+    int n_eagain = 0;
+    do
+    {
+      if ( n_eagain == 50 )
+      {
+        return errSSLProtocol;
+      }
 
-    return 0;
+      ssize_t ret = send( socket, data, *data_len, 0 );
+      if ( ret == -1 )
+      {
+        if ( errno == EAGAIN )
+        {
+          ++n_eagain;
+          continue;
+        }
+        else
+        {
+          return errSSLProtocol;
+        }
+      }
+
+      bytes_sent = ret;
+    } while ( bytes_sent < *data_len );
+
+    *data_len = static_cast<size_t>( bytes_sent );
+
+    return noErr;
   }
 
   int socket;
@@ -333,20 +440,23 @@ struct SSLWrapper
   int open( int fd, const char* peer_name, size_t peer_name_len )
   {
     OSStatus ret = SSLSetConnection( ctx, reinterpret_cast<SSLConnectionRef>( fd ) );
-    if ( ret < 0 )
+    if ( ret != noErr )
     {
+      std::cerr << "SSLSetConnection error: " << ret << std::endl;
       return ret;
     }
 
     ret = SSLSetPeerDomainName( ctx, peer_name, peer_name_len );
-    if ( ret < 0 )
+    if ( ret != noErr )
     {
+      std::cerr << "SSLSetPeerDomainName error: " << ret << std::endl;
       return ret;
     }
 
     ret = SSLHandshake( ctx );
-    if ( ret < 0 )
+    if ( ret != noErr )
     {
+      std::cerr << "SSLHandshake error: " << ret << std::endl;
       return ret;
     }
 
@@ -361,8 +471,9 @@ struct SSLWrapper
     size_t read_bytes = 0;
 
     OSStatus ret = SSLRead( ctx, buffer, size, &read_bytes );
-    if ( ret < 0 )
+    if ( ret != noErr && ret != errSSLClosedGraceful )
     {
+      std::cerr << "SSLRead error: " << ret << std::endl;
       return ret;
     }
 
@@ -374,8 +485,9 @@ struct SSLWrapper
     size_t written_bytes = 0;
 
     OSStatus ret = SSLWrite( ctx, buffer, size, &written_bytes );
-    if ( ret < 0 )
+    if ( ret != noErr && ret != errSSLClosedGraceful )
     {
+      std::cerr << "SSLWrite error: " << ret << std::endl;
       return ret;
     }
 
@@ -521,7 +633,7 @@ bool download( url_cache_entry_t& entry,
   while ( true )
   {
     bool use_ssl = ssl_proxy || ( ! use_proxy && ( split_url.protocol == "https" ) );
-#ifndef SC_USE_OPENSSL
+#if ! defined( SC_USE_OPENSSL ) && ! defined( SC_OSX )
     if ( use_ssl )
     {
       // FIXME: report unable to use SSL
@@ -538,13 +650,15 @@ bool download( url_cache_entry_t& entry,
     std::string result;
     char buffer[ NETBUFSIZE ];
 
-#ifdef SC_USE_OPENSSL
+#if defined( SC_USE_OPENSSL ) || defined( SC_OSX )
     if ( use_ssl )
     {
       SSLWrapper ssl;
 
-      if ( ssl.open( s ) < 0 )
+      if ( ssl.open( s, split_url.host.c_str(), split_url.host.size() ) < 0 )
+      {
         return false;
+      }
 
       if ( ssl.write( request.data(), request.size() ) != static_cast<int>( request.size() ) )
         return false;
