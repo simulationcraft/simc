@@ -2707,13 +2707,24 @@ void sim_t::create_options()
 // sim_t::find_api_key ======================================================
 
 int sim_t::find_api_key()
-{  
+{
   std::string line;
+  std::vector<std::string> key_locations;
 #ifdef SC_WINDOWS
-  std::ifstream myfile (".\\apikey.txt");
+  key_locations.push_back( ".\\apikey.txt" );
 #else
-  std::ifstream myfile ("./apikey.txt");
+  key_locations.push_back( "./apikey.txt" );
+  char* home_path = getenv( "HOME" );
+  std::string home_apikey = home_path;
+  home_apikey += "/.simc_apikey";
+  key_locations.push_back( home_apikey );
 #endif
+
+  std::ifstream myfile;
+  for ( size_t i = 0; i < key_locations.size() && ! myfile.is_open(); i++ )
+  {
+    myfile.open( key_locations[ i ].c_str() );
+  }
 
   if ( myfile.is_open() )
   {
@@ -2723,13 +2734,8 @@ int sim_t::find_api_key()
       apikey = line;
     else
     {
-      std::cout << line;
-      errorf( "Blizzard API Key was not properly entered." );
+      std::cerr << "Blizzard API Key '" << line << "' was not properly entered." << std::endl;
     }
-  }
-  else if ( debug )
-  {
-    errorf( "Unable to open apikey.txt, please make sure the file is located in the same directory as the simc executable." );
   }
 
   return 0;
