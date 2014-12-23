@@ -51,12 +51,12 @@ ifeq (${OS},)
 endif
 
 
-OPENSSL_PATH =
-
 MKDIR      = mkdir
 CXX        = g++
 CPP_FLAGS  = -Wall -Wextra -Woverloaded-virtual -W -I. -DSC_SHARED_DATA=\"$(SHARED_DATA)\"
 OPTS       = -O3
+
+LINK_LIBS  =
 
 # Include build setting from user configuration file
 -include ../build.conf
@@ -103,6 +103,19 @@ ifeq (64,${BITS})
   OPTS += -m64
 endif
 
+ifneq (${OPENSSL},)
+  ifneq (${OPENSSL_PATH},)
+    CPP_FLAGS += -I${OPENSSL_PATH}/include
+    LINK_LIBS += -L${OPENSSL_PATH}/lib
+  endif
+  OPTS += -DSC_USE_OPENSSL
+ifeq (WINDOWS,${OS})
+  LINK_LIBS += -lssleay32
+else
+  LINK_LIBS += -lssl
+endif
+endif
+
 # Any UNIX platform
 ifeq (UNIX,${OS})
   LINK_LIBS += -lpthread
@@ -116,7 +129,7 @@ endif
 ifeq (WINDOWS,${OS})
   MODULE_EXT = .exe
   CPP_FLAGS += -DUNICODE
-  LINK_LIBS  = -lws2_32 -lwininet
+  LINK_LIBS  += -lws2_32 -lwininet
   ifeq (${NO_STATIC},)
     LINK_FLAGS += -static
   endif
@@ -127,11 +140,6 @@ ifeq (WINDOWS,${OS})
 endif
 
 MODULE     = simc$(MODULE_EXT)
-
-ifneq ($(OPENSSL_PATH),)
-CPP_FLAGS += -DUSE_OPENSSL -I$(OPENSSL_PATH)/include
-LINK_LIBS += -L$(OPENSSL_PATH)/lib -lssleay32
-endif
 
 include ../source_files/engine_make
 include ../source_files/engine_main_make
