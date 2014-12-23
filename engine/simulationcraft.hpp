@@ -6397,7 +6397,7 @@ inline proc_types2 action_state_t::execute_proc_type2() const
 
 // DoT Tick Event ===========================================================
 
-struct dot_tick_event_t final : public event_t
+struct dot_tick_event_t : public event_t
 {
 public:
   dot_tick_event_t( dot_t* d, timespan_t time_to_tick );
@@ -6409,7 +6409,7 @@ private:
 
 // DoT End Event ===========================================================
 
-struct dot_end_event_t final : public event_t
+struct dot_end_event_t : public event_t
 {
 public:
   dot_end_event_t( dot_t* d, timespan_t time_to_end );

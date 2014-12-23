@@ -1412,7 +1412,7 @@ struct blackout_kick_t: public monk_melee_attack_t
 // Chi Explosion State
 // ==========================================================================
 
-struct chi_state_t final: public action_state_t
+struct chi_state_t : public action_state_t
 {
   int chi_used;
 

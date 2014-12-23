@@ -93,10 +93,6 @@ public:
 #define override
 #endif
 
-#if __cplusplus < 201103L && ( ! defined( SC_GCC ) || ! __GXX_EXPERIMENTAL_CXX0X__ || SC_GCC < 40700 ) && ( ! defined( SC_VS ) || SC_VS < 11 )
-#define final
-#endif
-
 #if ( ! defined(_MSC_VER) || _MSC_VER < 1600 ) && __cplusplus < 201103L && ! defined(__GXX_EXPERIMENTAL_CXX0X__)
 #define static_assert( condition, message )
 #endif
