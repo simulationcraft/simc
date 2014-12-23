@@ -4,7 +4,9 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#ifdef SC_WINDOWS
 #include <direct.h>
+#endif
 
 namespace { // UNNAMED NAMESPACE ============================================
 
