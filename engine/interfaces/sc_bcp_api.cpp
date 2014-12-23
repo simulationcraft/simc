@@ -64,7 +64,7 @@ bool download_id( rapidjson::Document& d,
 
   std::string url;
 
-  if ( apikey != "" && region != "cn" ) //China does not have new api endpoints yet.
+  if ( apikey.size() == 32 && region != "cn" ) //China does not have new api endpoints yet.
   {
     url = "https://" + region + ".api.battle.net/wow/item/" + util::to_string( item_id ) + "?locale=en_us&apikey=" + apikey;
   }
@@ -1082,7 +1082,7 @@ bool download_roster( rapidjson::Document& d,
                       cache::behavior_e  caching )
 {
   std::string url;
-  if ( sim -> apikey != "" && region != "cn" ) //China does not have new api endpoints yet.
+  if ( sim -> apikey.size() == 32 && region != "cn" ) //China does not have new api endpoints yet.
   {
     url = "https://" + region + ".api.battle.net/wow/guild/" + server + '/' + name + "?fields=members&apikey=" + sim -> apikey;
   }
@@ -1159,7 +1159,7 @@ player_t* bcp_api::download_player( sim_t*             sim,
 
   player_spec_t player;
 
-  if ( sim -> apikey != "" && region != "cn" ) // China does not have new api endpoints yet.
+  if ( sim -> apikey.size() == 32 && region != "cn" ) // China does not have new api endpoints yet.
   {
     std::string battlenet = "https://" + region + ".api.battle.net/";
 

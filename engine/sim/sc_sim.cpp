@@ -1016,7 +1016,7 @@ sim_t::sim_t( sim_t* p, int index ) :
 
   create_options();
 
-  if ( apikey == "" )
+  if ( apikey.size() < 32 )
     find_api_key();
 
   work_queue = std::shared_ptr<work_queue_t>( new work_queue_t() );
