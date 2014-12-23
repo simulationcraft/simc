@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include <direct.h>
 
 namespace { // UNNAMED NAMESPACE ============================================
 
@@ -2706,7 +2707,18 @@ void sim_t::create_options()
 int sim_t::find_api_key()
 {  
   std::string line;
-  std::ifstream myfile ("apikey.txt");
+#ifdef SC_WINDOWS
+  std::ifstream myfile (".\\apikey.txt");
+#else
+  std::ifstream myfile ("./apikey.txt");
+#endif
+
+  if ( debug )
+  {
+    char* buf = new char[1024];
+    _getcwd( buf, 1024 );
+    std::cerr << buf << std::endl;
+  }
   if ( myfile.is_open() )
   {
     getline( myfile,line );
@@ -2714,10 +2726,14 @@ int sim_t::find_api_key()
     if ( line.size() == 32 ) // api keys are 32 characters long.
       apikey = line;
     else
+    {
+      std::cout << line;
       errorf( "Blizzard API Key was not properly entered." );
+    }
   }
   else if ( debug )
   {
+    std::cerr << strerror(errno) << std::endl;
     errorf( "Unable to open apikey.txt, please make sure the file is located in the same directory as the simc executable." );
   }
 
