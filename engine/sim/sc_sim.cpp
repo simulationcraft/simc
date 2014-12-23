@@ -2716,7 +2716,10 @@ int sim_t::find_api_key()
     else
       errorf( "Blizzard API Key was not properly entered." );
   }
-  else errorf( "Unable to open apikey.txt, please make sure the file is located in the same directory as the simc executable." ); 
+  else if ( debug )
+  {
+    errorf( "Unable to open apikey.txt, please make sure the file is located in the same directory as the simc executable." );
+  }
 
   return 0;
 }
