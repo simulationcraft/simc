@@ -3141,8 +3141,15 @@ void rogue_t::trigger_auto_attack( const action_state_t* state )
 
 inline void actions::rogue_attack_t::trigger_sinister_calling( dot_t* dot )
 {
+  int may_multistrike_ = may_multistrike;
+  may_multistrike = 0;
+  bool tick_may_crit_ = tick_may_crit;
+  tick_may_crit = false;
   dot -> current_tick++;
   dot -> tick();
+  tick_may_crit = tick_may_crit_;
+  may_multistrike = may_multistrike_;
+
   // Advances the time, so calculate new time to tick, num ticks, last tick factor
   if ( dot -> remains() > dot -> time_to_tick )
   {
