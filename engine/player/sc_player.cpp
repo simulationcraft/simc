@@ -10126,7 +10126,7 @@ struct manager_t::damage_event_list_t
 };
 
 // periodic update event for resolve
-struct manager_t::update_event_t final : public event_t
+struct manager_t::update_event_t : public event_t
 {
   update_event_t( player_t& p ) :
     event_t( p, "resolve_update_event_t" )
