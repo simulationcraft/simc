@@ -2715,12 +2715,6 @@ int sim_t::find_api_key()
   std::ifstream myfile ("./apikey.txt");
 #endif
 
-  if ( debug )
-  {
-    char* buf = new char[1024];
-    _getcwd( buf, 1024 );
-    std::cerr << buf << std::endl;
-  }
   if ( myfile.is_open() )
   {
     getline( myfile,line );
@@ -2735,7 +2729,6 @@ int sim_t::find_api_key()
   }
   else if ( debug )
   {
-    std::cerr << strerror(errno) << std::endl;
     errorf( "Unable to open apikey.txt, please make sure the file is located in the same directory as the simc executable." );
   }
 
