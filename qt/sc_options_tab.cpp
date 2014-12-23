@@ -288,6 +288,8 @@ void SC_OptionsTab::createGlobalsTab()
   createItemDataSourceSelector( globalsLayout_right );
 
   globalsLayout_right -> addRow( tr( "Armory API Key" ), apikey = new QLineEdit() );
+  apikey -> setMaxLength( 32 ); // Api key is 32 long.
+  apikey -> setMinimumWidth( 200 );
 
   QGroupBox* globalsGroupBox_right = new QGroupBox( tr( "Advanced Options" ) );
   globalsGroupBox_right -> setLayout( globalsLayout_right );
