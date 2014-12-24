@@ -4707,11 +4707,11 @@ void monk_t::apl_pre_brewmaster()
   if ( sim -> allow_food && level >= 80 )
   {
     if ( level > 90 )
-      pre -> add_action( "/food,type=sleeper_surprise" );
+      pre -> add_action( "food,type=talador_surf_and_turf" );
     else if ( level >= 85 )
-      pre -> add_action( "/food,type=mogu_fish_stew" );
+      pre -> add_action( "food,type=mogu_fish_stew" );
     else
-      pre -> add_action( "/food,type=seafood_magnifique_feast" );
+      pre -> add_action( "food,type=seafood_magnifique_feast" );
   }
 
   pre -> add_action( "stance,choose=sturdy_ox" );
@@ -4719,8 +4719,8 @@ void monk_t::apl_pre_brewmaster()
 
   if ( sim -> allow_potions && level >= 80 )
   {
-    if ( level > 90 )
-      pre -> add_action( "potion,name=draenic_agility" );
+    if ( level >= 90 )
+      pre -> add_action( "potion,name=draenic_armor" );
     else if ( level >= 85 )
       pre -> add_action( "potion,name=virmens_bite" );
     else
@@ -4826,35 +4826,46 @@ void monk_t::apl_combat_brewmaster()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[i] + ",if=energy<=40" );
 
-  def -> add_action( this, "chi_sphere", "if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4" );
-  def -> add_talent( this, "Chi Brew", "if=talent.chi_brew.enabled&chi.max-chi>=2&buff.elusive_brew_stacks.stack<=10" );
+  def -> add_action( "chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4" );
+  def -> add_talent( this, "Chi Brew", "if=talent.chi_brew.enabled&chi.max-chi>=2&buff.elusive_brew_stacks.stack<=10&((charges=1&recharge_time<5)|charges=2|target.time_to_die<15)" );
+  def -> add_talent( this, "Chi Brew", "if=(chi<1&stagger.heavy)|(chi<2&buff.shuffle.down)" );
   def -> add_action( this, "Gift of the Ox", "if=buff.gift_of_the_ox.react&incoming_damage_1500ms" );
   def -> add_talent( this, "Diffuse Magic", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
   def -> add_talent( this, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down&buff.elusive_brew_activated.down" );
   def -> add_action( this, "Fortifying Brew", "if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.elusive_brew_activated.down" );
   def -> add_action( this, "Elusive Brew", "if=buff.elusive_brew_stacks.react>=9&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.elusive_brew_activated.down" );
-  def -> add_action( "invoke_xuen,if=talent.invoke_xuen.enabled&time>5" );
-  def -> add_talent( this, "Serenity", "if=talent.serenity.enabled&energy<=40" );
+  def -> add_action( "invoke_xuen,if=talent.invoke_xuen.enabled&target.time_to_die>15&buff.shuffle.remains>=3&buff.serenity.down" );
+  def -> add_talent( this, "Serenity", "if=talent.serenity.enabled&cooldown.keg_smash.remains>6" );
+  
+  if ( sim -> allow_potions )
+  {
+    if ( level >= 90 )
+      def -> add_action( "potion,name=draenic_armor,if=(buff.fortifying_brew.down&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.elusive_brew_activated.down)" );
+    else if ( level >= 85 )
+      def -> add_action( "potion,name=virmens_bite,if=(buff.fortifying_brew.down&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.elusive_brew_activated.down)" );
+  }
+  
   def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
   def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
 
-  st -> add_action( this, "Blackout Kick", "if=buff.shuffle.down" );
   st -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.heavy" );
+  st -> add_action( this, "Blackout Kick", "if=buff.shuffle.down" );
   st -> add_action( this, "Purifying Brew", "if=buff.serenity.up" );
-  st -> add_action( this, "Guard" );
-  st -> add_action( this, "Keg Smash", "if=chi.max-chi>=2&!buff.serenity.remains" );
-  st -> add_talent( this, "Chi Burst", "if=talent.chi_burst.enabled&energy.time_to_max>3" );
-  st -> add_talent( this, "Chi Wave", "if=talent.chi_wave.enabled&energy.time_to_max>3" );
+  st -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.moderate&buff.shuffle.remains>=6" );
+  st -> add_action( this, "Guard", "if=(charges=1&recharge_time<5)|charges=2|target.time_to_die<15" );
+  st -> add_action( this, "Guard", "if=incoming_damage_10s>=health.max*0.5" );
+  st -> add_action( this, "Keg Smash", "if=chi.max-chi>=1&!buff.serenity.remains" );
+  st -> add_talent( this, "Chi Burst", "if=(energy+(energy.regen*gcd))<100" );
+  st -> add_talent( this, "Chi Wave", "if=(energy+(energy.regen*gcd))<100" );
   st -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking" );
   st -> add_talent( this, "Chi Explosion", "if=chi>=3" );
-  st -> add_action( this, "Blackout Kick", "if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=gcd" );
-  st -> add_action( this, "Blackout Kick", "if=buff.serenity.up" );
   st -> add_action( this, "Blackout Kick", "if=chi>=4" );
-  st -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd" );
-  st -> add_action( this, "Jab", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd" );
-  st -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.moderate&buff.shuffle.remains>=6" );
-  st -> add_action( this, "Tiger Palm", "if=(energy+(energy.regen*(cooldown.keg_smash.remains)))>=40" );
-  st -> add_action( this, "Tiger Palm", "if=cooldown.keg_smash.remains>=gcd" );
+  st -> add_action( this, "Blackout Kick", "if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=gcd" );
+  st -> add_action( this, "Blackout Kick", "if=buff.serenity.up" );  
+  st -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
+  st -> add_action( this, "Jab", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
+  st -> add_action( this, "Tiger Palm" );
+
 
   aoe -> add_action( this, "Guard" );
   if ( level >= 100 )
