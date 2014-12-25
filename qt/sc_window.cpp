@@ -99,7 +99,6 @@ void SC_MainWindow::loadHistory()
   else
     showMaximized();
 
-
   QString cache_file = TmpDir + "/simc_cache.dat";
   std::string cache_file_str = cache_file.toStdString();
   http::cache_load( cache_file_str.c_str() );
@@ -161,7 +160,6 @@ void SC_MainWindow::saveHistory()
   QString cache_file = TmpDir + "/simc_cache.dat";
   std::string cache_file_str = cache_file.toStdString();
   http::cache_save( cache_file_str.c_str() );
-
 
   settings.beginGroup( "user_data" );
 
@@ -1019,6 +1017,7 @@ void SC_MainWindow::importFinished()
 
 void SC_MainWindow::startSim()
 {
+  saveHistory(); // This is to save whatever work the person has done, just in case there's a crash.
   if ( simRunning() )
   {
     stopSim();
