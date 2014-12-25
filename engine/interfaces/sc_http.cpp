@@ -859,11 +859,11 @@ void http::cache_save( const std::string& file_name )
   {}
 }
 
-
 // http::get ================================================================
 
 bool http::get( std::string&       result,
                 const std::string& url,
+                const std::string& cleanurl,
                 cache::behavior_e  caching,
                 const std::string& confirmation )
 {
@@ -883,7 +883,7 @@ bool http::get( std::string&       result,
     std::ostream::sentry s( http_log );
     if ( s )
     {
-      http_log << cache::era() << ": get(\"" << url << "\") [";
+      http_log << cache::era() << ": get(\"" << cleanurl << "\") [";
 
       if ( entry.validated != cache::INVALID_ERA )
       {

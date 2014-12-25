@@ -1011,7 +1011,6 @@ sim_t::sim_t( sim_t* p, int index ) :
   item_db_sources.assign( range::begin( default_item_db_sources ),
                           range::end( default_item_db_sources ) );
 
-
   max_time = timespan_t::from_seconds( 450 );
   vary_combat_length = 0.2;
 
@@ -2493,7 +2492,6 @@ void sim_t::print_options()
 {
   out_log.raw() << "\nWorld of Warcraft Raid Simulator Options:\n";
 
-
   out_log.raw() << "\nSimulation Engine:\n";
   for ( size_t i = 0; i < options.size(); ++i )
   {
@@ -2740,7 +2738,6 @@ int sim_t::find_api_key()
       std::cerr << "Blizzard API Key '" << line << "' was not properly entered." << std::endl;
     }
   }
-
   return 0;
 }
 

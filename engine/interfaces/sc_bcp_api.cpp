@@ -23,7 +23,6 @@ player_e parse_armory_class( const std::string& class_str )
     if ( util::str_compare_ci( class_str, "death-knight" ) )
       pt = DEATH_KNIGHT;
   }
-
   return pt;
 }
 
@@ -48,7 +47,7 @@ race_e parse_armory_race( const std::string& race_str )
 
 struct player_spec_t
 {
-  std::string region, server, name, url, local_json, origin, talent_spec;
+  std::string region, server, name, url, cleanurl, local_json, origin, talent_spec;
 };
 
 // download_id ==============================================================
@@ -63,18 +62,21 @@ bool download_id( rapidjson::Document& d,
     return false;
 
   std::string url;
+  std::string cleanurl;
 
   if ( apikey.size() == 32 && region != "cn" ) //China does not have new api endpoints yet.
   {
-    url = "https://" + region + ".api.battle.net/wow/item/" + util::to_string( item_id ) + "?locale=en_us&apikey=" + apikey;
+    cleanurl = "https://" + region + ".api.battle.net/wow/item/" + util::to_string( item_id ) + "?locale=en_us&apikey=";
+    url = cleanurl + apikey;
   }
   else
   {
     url = "http://" + region + ".battle.net/api/wow/item/" + util::to_string( item_id ) + "?locale=en_US";
+    cleanurl = url;
   }
 
   std::string result;
-  if ( ! http::get( result, url, caching ) )
+  if ( ! http::get( result, url, cleanurl, caching ) )
     return false;
 
   d.Parse< 0 >( result.c_str() );
@@ -605,10 +607,10 @@ player_t* parse_player_html( sim_t*             sim,
 {
   sim -> current_slot = 0;
 
-  sc_xml_t profile = sc_xml_t::get( sim, player.url, caching );
+  sc_xml_t profile = sc_xml_t::get( sim, player.url, player.cleanurl, caching );
   if ( ! profile.valid() )
   {
-    sim -> errorf( "BCP API: Unable to download player from '%s'\n", player.url.c_str() );
+    sim -> errorf( "BCP API: Unable to download player from '%s'\n", player.cleanurl.c_str() );
     return 0;
   }
 
@@ -620,7 +622,7 @@ player_t* parse_player_html( sim_t*             sim,
   sc_xml_t name_obj = profile.get_node( "div", "class", "name" );
   if ( ! name_obj.valid() || ! name_obj.get_value( player.name, "a/." ) )
   {
-    sim -> errorf( "BCP API: Unable to extract player name from '%s'.\n", player.url.c_str() );
+    sim -> errorf( "BCP API: Unable to extract player name from '%s'.\n", player.cleanurl.c_str() );
     return 0;
   }
 
@@ -629,7 +631,7 @@ player_t* parse_player_html( sim_t*             sim,
   player_e class_type = PLAYER_NONE;
   if ( ! class_obj.valid() || ! class_obj.get_value( class_name_data, "href" ) )
   {
-    sim -> errorf( "BCP API: Unable to extract player class from '%s'.\n", player.url.c_str() );
+    sim -> errorf( "BCP API: Unable to extract player class from '%s'.\n", player.cleanurl.c_str() );
     return 0;
   }
   else
@@ -650,7 +652,7 @@ player_t* parse_player_html( sim_t*             sim,
   int level = 0;
   if ( ! level_obj.valid() || ! level_obj.get_value( level, "strong/." ) )
   {
-    sim -> errorf( "BCP API: Unable to extract player level from '%s'.\n", player.url.c_str() );
+    sim -> errorf( "BCP API: Unable to extract player level from '%s'.\n", player.cleanurl.c_str() );
     return 0;
   }
 
@@ -659,7 +661,7 @@ player_t* parse_player_html( sim_t*             sim,
   race_e race_type = RACE_NONE;
   if ( ! race_obj.valid() || ! race_obj.get_value( race_name_data, "href" ) )
   {
-    sim -> errorf( "BCP API: Unable to extract player race from '%s'.\n", player.url.c_str() );
+    sim -> errorf( "BCP API: Unable to extract player race from '%s'.\n", player.cleanurl.c_str() );
     return 0;
   }
   else
@@ -671,7 +673,7 @@ player_t* parse_player_html( sim_t*             sim,
 
   if ( race_type == RACE_NONE )
   {
-    sim -> errorf( "BCP API: Unable to extract player race from '%s'.\n", player.url.c_str() );
+    sim -> errorf( "BCP API: Unable to extract player race from '%s'.\n", player.cleanurl.c_str() );
     return 0;
   }
 
@@ -691,7 +693,7 @@ player_t* parse_player_html( sim_t*             sim,
   if ( ! p )
   {
     sim -> errorf( "BCP API: Unable to build player with class '%s' and name '%s' from '%s'.\n",
-                   class_name.c_str(), name.c_str(), player.url.c_str() );
+                   class_name.c_str(), name.c_str(), player.cleanurl.c_str() );
     return 0;
   }
 
@@ -716,14 +718,14 @@ player_t* parse_player_html( sim_t*             sim,
   if ( ! parse_player_html_talent_glyph( sim, player.talent_spec, p, profile ) )
   {
     sim -> errorf( "BCP API: Unable to extract player talent specialization from '%s'.\n",
-        player.url.c_str() );
+        player.cleanurl.c_str() );
     return 0;
   }
 
   if ( ! parse_player_html_items( sim, p, profile ) )
   {
     sim -> errorf( "BCP API: Unable to extract player items from '%s'.\n",
-        player.url.c_str() );
+        player.cleanurl.c_str() );
     return 0;
   }
 
@@ -742,7 +744,7 @@ player_t* parse_player( sim_t*             sim,
 
   if ( player.local_json.empty() )
   {
-    if ( ! http::get( result, player.url, caching ) )
+    if ( ! http::get( result, player.url, player.cleanurl, caching ) )
       return 0;
   }
   else
@@ -758,7 +760,7 @@ player_t* parse_player( sim_t*             sim,
 
   if ( profile.HasParseError() )
   {
-    sim -> errorf( "BCP API: Unable to download player from '%s'\n", player.url.c_str() );
+    sim -> errorf( "BCP API: Unable to download player from '%s'\n", player.cleanurl.c_str() );
     return 0;
   }
 
@@ -774,7 +776,7 @@ player_t* parse_player( sim_t*             sim,
   if ( profile.HasMember( "status" ) && util::str_compare_ci( profile[ "status" ].GetString(), "nok" ) )
   {
     sim -> errorf( "BCP API: Unable to download player from '%s', reason: %s\n",
-                   player.url.c_str(),
+                   player.cleanurl.c_str(),
                    profile[ "reason" ].GetString() );
     return 0;
   }
@@ -784,25 +786,25 @@ player_t* parse_player( sim_t*             sim,
 
   if ( ! profile.HasMember( "level" ) )
   {
-    sim -> errorf( "BCP API: Unable to extract player level from '%s'.\n", player.url.c_str() );
+    sim -> errorf( "BCP API: Unable to extract player level from '%s'.\n", player.cleanurl.c_str() );
     return 0;
   }
 
   if ( ! profile.HasMember( "class" ) )
   {
-    sim -> errorf( "BCP API: Unable to extract player class from '%s'.\n", player.url.c_str() );
+    sim -> errorf( "BCP API: Unable to extract player class from '%s'.\n", player.cleanurl.c_str() );
     return 0;
   }
 
   if ( ! profile.HasMember( "race" ) )
   {
-    sim -> errorf( "BCP API: Unable to extract player race from '%s'.\n", player.url.c_str() );
+    sim -> errorf( "BCP API: Unable to extract player race from '%s'.\n", player.cleanurl.c_str() );
     return 0;
   }
 
   if ( ! profile.HasMember( "talents" ) )
   {
-    sim -> errorf( "BCP API: Unable to extract player talents from '%s'.\n", player.url.c_str() );
+    sim -> errorf( "BCP API: Unable to extract player talents from '%s'.\n", player.cleanurl.c_str() );
     return 0;
   }
 
@@ -832,7 +834,7 @@ player_t* parse_player( sim_t*             sim,
   if ( ! p )
   {
     sim -> errorf( "BCP API: Unable to build player with class '%s' and name '%s' from '%s'.\n",
-                   class_name.c_str(), name.c_str(), player.url.c_str() );
+                   class_name.c_str(), name.c_str(), player.cleanurl.c_str() );
     return 0;
   }
 
@@ -1082,25 +1084,28 @@ bool download_roster( rapidjson::Document& d,
                       cache::behavior_e  caching )
 {
   std::string url;
+  std::string cleanurl;
   if ( sim -> apikey.size() == 32 && region != "cn" ) //China does not have new api endpoints yet.
   {
-    url = "https://" + region + ".api.battle.net/wow/guild/" + server + '/' + name + "?fields=members&apikey=" + sim -> apikey;
+    cleanurl = "https://" + region + ".api.battle.net/wow/guild/" + server + '/' + name + "?fields=members&apikey=";
+    url = cleanurl + sim -> apikey;
   }
   else
   {
     url = "http://" + region + ".battle.net/api/wow/guild/" + server + '/' +
       name + "?fields=members";
+    cleanurl = url;
   }
 
   std::string result;
-  if ( ! http::get( result, url, caching ) )
+  if ( ! http::get( result, url, cleanurl, caching ) )
     return false;
 
   d.Parse< 0 >( result.c_str() );
   if ( d.HasParseError() )
   {
     sim -> errorf( "BCP API: Unable to parse guild from '%s': Parse error '%s' @ %lu\n",
-      url.c_str(), d.GetParseError(), d.GetErrorOffset() );
+      cleanurl.c_str(), d.GetParseError(), d.GetErrorOffset() );
 
     return false;
   }
@@ -1163,8 +1168,9 @@ player_t* bcp_api::download_player( sim_t*             sim,
   {
     std::string battlenet = "https://" + region + ".api.battle.net/";
 
-    player.url = battlenet + "wow/character/" +
-      server + '/' + name + "?fields=talents,items,professions&locale=en_US&apikey=" + sim -> apikey;
+    player.cleanurl = battlenet + "wow/character/" +
+      server + '/' + name + "?fields=talents,items,professions&locale=en_US&apikey=";
+    player.url = player.cleanurl + sim -> apikey;
     player.origin = battlenet + "wow/character/" + server + '/' + name + "/advanced";
   }
   else
@@ -1173,6 +1179,7 @@ player_t* bcp_api::download_player( sim_t*             sim,
 
     player.url = battlenet + "api/wow/character/" +
       server + '/' + name + "?fields=talents,items,professions&locale=en_US";
+    player.cleanurl = player.url;
     player.origin = battlenet + "wow/en/character/" + server + '/' + name + "/advanced";
   }
 
