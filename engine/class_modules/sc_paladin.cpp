@@ -442,6 +442,7 @@ public:
   void    generate_action_prio_list_prot();
   void    generate_action_prio_list_ret();
   void    generate_action_prio_list_holy();
+  void    generate_action_prio_list_holy_dps();
 
   target_specific_t<paladin_td_t*> target_data;
 
@@ -4778,7 +4779,7 @@ void paladin_t::init_base_stats()
   resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + passives.holy_insight -> effectN( 1 ).percent();
   
   // move holy paladins to range
-  if ( specialization() == PALADIN_HOLY)
+  if ( specialization() == PALADIN_HOLY && primary_role() == ROLE_HEAL )
     base.distance = 30;
 
   // initialize resolve for prot
@@ -5057,7 +5058,7 @@ void paladin_t::generate_action_prio_list_prot()
   action_priority_list_t* dps = get_action_priority_list( "max_dps" );
   action_priority_list_t* surv = get_action_priority_list( "max_survival" );
 
-  def -> add_action( "/auto_attack" );
+  def -> add_action( "auto_attack" );
   def -> add_talent( this, "Speed of Light", "if=movement.remains>1" );
 
   // usable items
@@ -5172,7 +5173,6 @@ void paladin_t::generate_action_prio_list_prot()
   dps -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.liadrins_righteousness.remains<buff.maraads_truth.remains" );
   dps -> add_talent( this, "Sacred Shield" );
   dps -> add_action( this, "Flash of Light", "if=talent.selfless_healer.enabled&buff.selfless_healer.stack>=3" );
-
 
   // Max Survival priority queue
   surv -> add_action( "potion,name=" + potion_type + ",if=buff.shield_of_the_righteous.down&buff.seraphim.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down&buff.ardent_defender.down" );
@@ -5409,6 +5409,68 @@ void paladin_t::generate_action_prio_list_ret()
 // Action Priority List Generation - Holy
 // ==========================================================================
 
+void paladin_t::generate_action_prio_list_holy_dps()
+{
+  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
+
+  if ( sim -> allow_flasks && level >= 80 )
+  {
+    std::string flask_action = "flask,type=";
+    if ( level > 90 )
+      flask_action += "greater_draenic_intellect_flask";
+    else
+      flask_action += ( level > 85 ) ? "warm_sun" : "draconic_mind";
+
+    precombat -> add_action( flask_action );
+  }
+
+  if ( sim -> allow_food && level >= 80 )
+  {
+    std::string food_action = "food,type=";
+    if ( level > 90 )
+      food_action += "blackrock_barbecue";
+    else
+      food_action += ( level > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
+    precombat -> add_action( food_action );
+  }
+
+  precombat -> add_action( this, "Blessing of Kings", "if=(!aura.str_agi_int.up)&(aura.mastery.up)" );
+  precombat -> add_action( this, "Blessing of Might", "if=!aura.mastery.up" );
+  precombat -> add_action( this, "Seal of Insight" );
+  precombat -> add_action( this, "Beacon of Light" , "target=healing_target");
+
+  // Snapshot stats
+  precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  precombat -> add_action( "potion,name=draenic_intellect" );
+
+  // action priority list
+  action_priority_list_t* def = get_action_priority_list( "default" );
+
+  def -> add_action( "potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_to_die<=40" );
+  def -> add_action( "auto_attack" );
+  def -> add_talent( this, "Speed of Light", "if=movement.remains>1" );
+  int num_items = ( int ) items.size();
+  for ( int i = 0; i < num_items; i++ )
+  {
+    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    {
+      def -> add_action ( "/use_item,name=" + items[ i ].name_str );
+    }
+  }
+
+  std::vector<std::string> racial_actions = get_racial_actions();
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
+    def -> add_action( racial_actions[ i ] );
+
+  def -> add_action( this, "Avenging Wrath" );
+  def -> add_talent( this, "Holy Avenger", "if=holy_power<=2" );
+  def -> add_talent( this, "Execution Sentence" );
+  def -> add_action( "harsh_word,if=buff.divine_purpose.react" );
+  def -> add_action( "harsh_word,if=holy_power>=3" );
+  def -> add_action( "holy_shock,damage=1" );
+  def -> add_action( this, "Denounce" );
+}
+
 void paladin_t::generate_action_prio_list_holy()
 {
   // currently unsupported
@@ -5454,7 +5516,7 @@ void paladin_t::generate_action_prio_list_holy()
 
   def -> add_action( "mana_potion,if=mana.pct<=75" );
 
-  def -> add_action( "/auto_attack" );
+  def -> add_action( "auto_attack" );
   def -> add_talent( this, "Speed of Light", "if=movement.remains>1" );
 
   int num_items = ( int ) items.size();
@@ -5523,7 +5585,10 @@ void paladin_t::init_action_list()
         generate_action_prio_list_prot(); // PROT
         break;
       case PALADIN_HOLY:
-        generate_action_prio_list_holy(); // HOLY
+        if ( primary_role() == ROLE_HEAL )
+          generate_action_prio_list_holy(); // HOLY
+        else
+          generate_action_prio_list_holy_dps();
         break;
       default:
         if ( level > 80 )

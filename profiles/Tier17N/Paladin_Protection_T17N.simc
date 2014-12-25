@@ -27,7 +27,7 @@ actions.precombat+=/potion,name=draenic_armor
 
 # Executed every time the actor is available.
 
-actions=/auto_attack
+actions=auto_attack
 actions+=/speed_of_light,if=movement.remains>1
 actions+=/blood_fury
 actions+=/berserking
