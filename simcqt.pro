@@ -33,6 +33,10 @@ RESOURCES += \
 QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
 QMAKE_CXXFLAGS += $$OPTS
 
+! isEmpty( SC_DEFAULT_APIKEY ) {
+  DEFINES += SC_DEFAULT_APIKEY=\"$${SC_DEFAULT_APIKEY}\"
+}
+
 win32 {
   LIBS += -lwininet -lshell32
   RC_FILE += simcqt.rc
@@ -56,8 +60,13 @@ macx {
     QMAKE_DISTCLEAN += simc *.dmg
   }
 
+  SIMC_RELEASE_OPTS = OPTS=\"-fPIE -mmacosx-version-min=10.6 -std=c++0x -fomit-frame-pointer -arch i386 -arch x86_64 -O3 -msse2 -march=native -ffast-math -flto -Os -DNDEBUG\"
+  ! isEmpty( SC_DEFAULT_APIKEY ) {
+    SIMC_RELEASE_OPTS += SC_DEFAULT_APIKEY=\"$${SC_DEFAULT_APIKEY}\"
+  }
+
   release_simc.target = release_simc
-  release_simc.commands = make -C engine clean && make CXX=clang++ OPTS=\"-fPIE -mmacosx-version-min=10.6 -std=c++0x -fomit-frame-pointer -arch i386 -arch x86_64 -O3 -msse2 -march=native -ffast-math -flto -Os -DNDEBUG\" -C engine install
+  release_simc.commands = make -C engine clean && make CXX=clang++ $${SIMC_RELEASE_OPTS} -C engine install
 
   create_release.target   = create_release
   create_release.depends  = all release_simc

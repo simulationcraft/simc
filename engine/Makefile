@@ -105,6 +105,10 @@ ifeq (64,${BITS})
   OPTS += -m64
 endif
 
+ifneq (${SC_DEFAULT_APIKEY},)
+  CPP_FLAGS += -DSC_DEFAULT_APIKEY=\"${SC_DEFAULT_APIKEY}\"
+endif
+
 ifneq (${OPENSSL},)
   ifneq (${OPENSSL_PATH},)
     CPP_FLAGS += -I${OPENSSL_PATH}/include
