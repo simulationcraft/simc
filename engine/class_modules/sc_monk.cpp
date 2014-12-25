@@ -5149,12 +5149,14 @@ expr_t* monk_t::create_expression( action_t* a, const std::string& name_str )
       }
     };
 
+    // Blizzard rounds it's stagger damage; anything higher than half a percent beyond 
+    // the threshold will switch to the next threshold
     if ( splits[1] == "light" )
       return new stagger_threshold_expr_t( *this, 0.0 );
     else if ( splits[1] == "moderate" )
-      return new stagger_threshold_expr_t( *this, 0.03 );
+      return new stagger_threshold_expr_t( *this, 0.035 );
     else if ( splits[1] == "heavy" )
-      return new stagger_threshold_expr_t( *this, 0.06 );
+      return new stagger_threshold_expr_t( *this, 0.065 );
     else if ( splits[1] == "amount" )
       return new stagger_amount_expr_t( *this );
   }
