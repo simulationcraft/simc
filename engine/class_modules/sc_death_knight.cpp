@@ -51,6 +51,8 @@ const int RUNE_TYPE_MASK = 3;
 const int RUNE_SLOT_MAX = 6;
 const double RUNIC_POWER_REFUND = 0.9;
 static const double RUNIC_POWER_DIVISOR = 30.0;
+const double RUNE_REGEN_BASE = 10;
+const double RUNE_REGEN_BASE_SEC = ( 1 / RUNE_REGEN_BASE );
 
 enum rune_state { STATE_DEPLETED, STATE_REGENERATING, STATE_FULL };
 
@@ -537,6 +539,7 @@ public:
   virtual stat_e    convert_hybrid_stat( stat_e s ) const;
   virtual void      invalidate_cache( cache_e );
 
+  double    runes_per_second() const;
   void      trigger_runic_empowerment( double rpcost );
   void      trigger_runic_corruption( double rpcost );
   void      trigger_plaguebearer( action_state_t* state );
@@ -546,12 +549,11 @@ public:
   void      trigger_t17_4pc_frost( const action_state_t* );
   void      trigger_t17_4pc_unholy( const action_state_t* );
   void      apply_diseases( action_state_t* state, unsigned diseases );
-  double    runes_count( rune_type rt, bool include_death, int position );
-  double    runes_basetype_ready( rune_type rt, bool require_death );
-  double    runes_cooldown_any( rune_type rt, bool include_death, int position );
-  double    runes_cooldown_all( rune_type rt, bool include_death, int position );
-  double    runes_cooldown_time( rune_t* r );
-  bool      runes_depleted( rune_type rt, int position );
+  double    ready_runes_count( rune_type rt, bool include_death, bool require_death, bool fractional ) const;
+  double    runes_count( rune_type rt, bool include_death, bool require_death ) const;
+  double    runes_cooldown_min( rune_type rt, bool include_death, bool require_death ) const;
+  double    runes_cooldown_max( rune_type rt, bool include_death, bool require_death ) const;
+  double    runes_cooldown_time( const rune_t& r ) const;
   void      default_apl_blood();
 
 
@@ -685,22 +687,6 @@ static void log_rune_status( const death_knight_t* p, bool debug = false )
     p -> sim -> out_log.printf( "%s runes: %s %s", p -> name(), rune_str.c_str(), runeval_str.c_str() );
   else
     p -> sim -> out_debug .printf( "%s runes: %s %s", p -> name(), rune_str.c_str(), runeval_str.c_str() );
-}
-
-// Count Death Runes ========================================================
-
-static int count_death_runes( const death_knight_t* p, bool inactive )
-{
-  // Getting death rune count is a bit more complicated as it depends
-  // on talents which runetype can be converted to death runes
-  int count = 0;
-  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-  {
-    const rune_t& r = p -> _runes.slot[ i ];
-    if ( ( inactive || r.is_ready() ) && r.is_death() )
-      ++count;
-  }
-  return count;
 }
 
 // Group Runes ==============================================================
@@ -1078,15 +1064,7 @@ void rune_t::regen_rune( death_knight_t* p, timespan_t periodicity, bool rc )
   if ( state == STATE_DEPLETED &&   paired_rune -> state == STATE_REGENERATING ) return;
   if ( state == STATE_FULL     && ! ( paired_rune -> state == STATE_FULL )     ) return;
 
-  // Base rune regen rate is 10 seconds; we want the per-second regen
-  // rate, so divide by 10.0.  Haste is a multiplier (so 30% haste
-  // means composite_attack_haste is 1/1.3), so we invert it.  Haste
-  // linearly scales regen rate -- 100% haste means a rune regens in 5
-  // seconds, etc.
-  double runes_per_second = 1.0 / 10.0 / p -> cache.attack_haste();
-  if ( p -> buffs.runic_corruption -> check() )
-    runes_per_second *= 2.0;
-  double regen_amount = periodicity.total_seconds() * runes_per_second;
+  double regen_amount = periodicity.total_seconds() * p -> runes_per_second();
 
   // record rune gains and overflow
   gain_t* gains_rune      = ( rc ) ? p -> gains.rc : p -> gains.rune;
@@ -1176,7 +1154,7 @@ void rune_t::regen_rune( death_knight_t* p, timespan_t periodicity, bool rc )
 
   if ( p -> sim -> debug )
     p -> sim -> out_debug.printf( "rune %d has %.2f regen time (%.3f per second) with %.2f%% haste",
-                        slot_number, 1 / runes_per_second, runes_per_second, 100 * ( 1 / p -> cache.attack_haste() - 1 ) );
+                        slot_number, 1 / p -> runes_per_second(), p -> runes_per_second(), 100 * ( 1 / p -> cache.attack_haste() - 1 ) );
 
   if ( state == STATE_FULL )
   {
@@ -5755,23 +5733,10 @@ expr_t* death_knight_action_t<Base>::create_expression( const std::string& name_
 
 struct runic_corruption_buff_t : public buff_t
 {
-  core_event_t* regen_event;
-
   runic_corruption_buff_t( death_knight_t* p ) :
     buff_t( buff_creator_t( p, "runic_corruption", p -> find_spell( 51460 ) )
-            .chance( p -> talent.runic_corruption -> ok() ).affects_regen( true ) ),
-    regen_event( 0 )
+            .chance( p -> talent.runic_corruption -> ok() ).affects_regen( true ) )
   {  }
-
-  void execute( int stacks = 1, double value = buff_t::DEFAULT_VALUE(), timespan_t duration = timespan_t::min() )
-  {
-    buff_t::execute( stacks, value, duration );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-  }
 };
 
 struct vampiric_blood_buff_t : public buff_t
@@ -5849,6 +5814,20 @@ struct frozen_runeblade_buff_t : public buff_t
 };
 
 } // UNNAMED NAMESPACE
+
+void death_knight_t::trigger_runic_corruption( double rpcost )
+{
+  if ( ! rng().roll( talent.runic_corruption -> effectN( 2 ).percent() * rpcost / 100.0 ) )
+    return;
+
+  timespan_t duration = timespan_t::from_seconds( 3.0 * cache.attack_haste() );
+  if ( buffs.runic_corruption -> check() == 0 )
+    buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+  else
+    buffs.runic_corruption -> extend_duration( this, duration );
+
+  buffs.tier13_4pc_melee -> trigger( 1, buff_t::DEFAULT_VALUE(), sets.set( SET_MELEE, T13, B4 ) -> effectN( 2 ).percent() );
+}
 
 // ==========================================================================
 // Death Knight Character Definition
@@ -5931,172 +5910,163 @@ void parse_rune_type( const std::string& rune_str, bool& include_death, rune_typ
     include_death = true;
 }
 
-void death_knight_t::trigger_runic_corruption( double rpcost )
+static expr_t* create_ready_in_expression( death_knight_t* player,
+                                           const std::string& action_name )
 {
-  if ( ! rng().roll( talent.runic_corruption -> effectN( 2 ).percent() * rpcost / 100.0 ) )
-    return;
+  struct ability_ready_expr_t : public expr_t
+  {
+    death_knight_melee_attack_t* action;
 
-  timespan_t duration = timespan_t::from_seconds( 3.0 * cache.attack_haste() );
-  if ( buffs.runic_corruption -> check() == 0 )
-    buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
-  else
-    buffs.runic_corruption -> extend_duration( this, duration );
+    ability_ready_expr_t( action_t* a ) :
+      expr_t( "ability_ready_expr" ),
+      action( debug_cast<death_knight_melee_attack_t*>( a ) )
+    { }
 
-  buffs.tier13_4pc_melee -> trigger( 1, buff_t::DEFAULT_VALUE(), sets.set( SET_MELEE, T13, B4 ) -> effectN( 2 ).percent() );
+    double evaluate()
+    {
+      return ready_in( action -> p(),
+                       action -> cost_blood,
+                       action -> cost_frost,
+                       action -> cost_unholy );
+    }
+  };
+
+  action_t* action = player -> find_action( action_name );
+  if ( ! action )
+  {
+    return 0;
+  }
+
+  return new ability_ready_expr_t( action );
+}
+
+static expr_t* create_rune_expression( death_knight_t* player,
+                                       const std::string& rune_type_str,
+                                       const std::string& rune_type_specifier = std::string(),
+                                       const std::string& rune_type_operation = std::string() )
+{
+  struct rune_inspection_expr_t : public expr_t
+  {
+    death_knight_t* dk;
+    rune_type r;
+    bool include_death, require_death;
+    int myaction; // 0 == ready runes, 1 == min cooldown, 2 = max_cooldown
+
+    rune_inspection_expr_t( death_knight_t* p,
+                            rune_type r,
+                            bool include_death_,
+                            bool require_death_,
+                            int myaction_ ) :
+      expr_t( "rune_evaluation" ), dk( p ), r( r ),
+      include_death( include_death_ ), require_death( require_death_ ),
+      myaction( myaction_ )
+    { }
+
+    virtual double evaluate()
+    {
+      switch ( myaction )
+      {
+        case 0: return dk -> ready_runes_count( r, include_death, require_death, false );
+        case 1: return dk -> runes_cooldown_min( r, include_death, require_death );
+        case 2: return dk -> runes_cooldown_max( r, include_death, require_death );
+        case 3: return dk -> runes_count( r, include_death, require_death );
+        case 4: return dk -> ready_runes_count( r, include_death, require_death, true );
+      }
+      return 0.0;
+    }
+  };
+
+  rune_type rt = RUNE_TYPE_NONE;
+  bool include_death = false; // Include all death runes
+  bool death_type = false; // Only death runes of a base type
+  parse_rune_type( rune_type_str, include_death, rt );
+
+  if ( rt == RUNE_TYPE_NONE )
+  {
+    return 0;
+  }
+
+  if ( util::str_compare_ci( rune_type_specifier, "death" ) )
+  {
+    death_type = true;
+  }
+
+  int op = 0;
+  if ( util::str_compare_ci( rune_type_operation, "cooldown_min" ) )
+  {
+    op = 1;
+  }
+  else if ( util::str_compare_ci( rune_type_operation, "cooldown_max" ) )
+  {
+    op = 2;
+  }
+  else if ( util::str_compare_ci( rune_type_operation, "count" ) )
+  {
+    op = 3;
+  }
+  else if ( util::str_compare_ci( rune_type_operation, "frac" ) ||
+            util::str_compare_ci( rune_type_operation, "fractional" ) )
+  {
+    op = 4;
+  }
+
+  return new rune_inspection_expr_t( player, rt, include_death, death_type, op );
 }
 
 expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_str )
 {
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
-  if ( splits.size() == 2 && util::str_compare_ci( splits[ 1 ], "ready_in" ) )
+  // Single word expressions are always rune expressions
+  if ( splits.size() == 1 )
   {
-    struct ability_ready_expr_t : public expr_t
+    expr_t* e = create_rune_expression( this, splits[ 0 ] );
+    if ( e )
     {
-      death_knight_melee_attack_t* action;
-
-      ability_ready_expr_t( action_t* a ) :
-        expr_t( "ability_ready_expr" ),
-        action( debug_cast<death_knight_melee_attack_t*>( a ) )
-      { }
-
-      double evaluate()
-      {
-        return ready_in( debug_cast<death_knight_t*>( action -> player ),
-                         action -> cost_blood,
-                         action -> cost_frost,
-                         action -> cost_unholy );
-      }
-    };
-
-    action_t* b = find_action( splits[ 0 ] );
-    if ( b )
-      return new ability_ready_expr_t( b );
-  }
-
-  if ( util::str_compare_ci( splits[ 0 ], "rune" ) )
-  {
-    rune_type rt = RUNE_TYPE_NONE;
-    bool include_death = false; // whether to include death runes
-    parse_rune_type( splits[ 1 ], include_death, rt );
-
-    int position = 0; // any
-    switch ( splits[1][splits[1].size() - 1] )
-    {
-      case '1': position = 1; break;
-      case '2': position = 2; break;
-    }
-
-    int act = 0;
-    if ( splits.size() == 3 && util::str_compare_ci( splits[ 2 ], "cooldown_remains" ) )
-      act = 1;
-    else if ( splits.size() == 3 && util::str_compare_ci( splits[ 2 ], "cooldown_remains_all" ) )
-      act = 2;
-    else if ( splits.size() == 3 && util::str_compare_ci( splits[ 2 ], "depleted" ) )
-      act = 3;
-
-    struct rune_inspection_expr_t : public expr_t
-    {
-      death_knight_t* dk;
-      rune_type r;
-      bool include_death;
-      int position;
-      int myaction; // -1 count, 0 cooldown remains, 1 cooldown_remains_all
-
-      rune_inspection_expr_t( death_knight_t* p, rune_type r, bool include_death, int position, int myaction )
-        : expr_t( "rune_evaluation" ), dk( p ), r( r ),
-          include_death( include_death ), position( position ), myaction( myaction )
-      { }
-
-      virtual double evaluate()
-      {
-        switch ( myaction )
-        {
-          case 0: return util::floor( dk -> runes_count( r, include_death, position ) );
-          case 1: return dk -> runes_cooldown_any( r, include_death, position );
-          case 2: return dk -> runes_cooldown_all( r, include_death, position );
-          case 3: return dk -> runes_depleted( r, position );
-        }
-        return 0.0;
-      }
-    };
-    return new rune_inspection_expr_t( this, rt, include_death, position, act );
-  }
-  else if ( splits.size() == 2 && ! util::str_compare_ci( splits[ 1 ], "frac" ) && ! util::str_compare_ci( splits[ 1 ], "death" ) )
-  {
-    rune_type rt = RUNE_TYPE_NONE;
-    bool include_death = false;
-    parse_rune_type( splits[ 0 ], include_death, rt );
-
-    if ( rt != RUNE_TYPE_NONE && util::str_compare_ci( splits[ 1 ], "cooldown_remains" ) )
-    {
-      struct rune_cooldown_expr_t : public expr_t
-      {
-        death_knight_t* dk;
-        rune_type r;
-        bool death;
-
-        rune_cooldown_expr_t( death_knight_t* p, rune_type r, bool include_death ) :
-          expr_t( "rune_cooldown_remains" ),
-          dk( p ), r( r ), death( include_death ) {}
-        virtual double evaluate()
-        {
-          return dk -> runes_cooldown_any( r, death, 0 );
-        }
-      };
-
-      return new rune_cooldown_expr_t( this, rt, include_death );
+      return e;
     }
   }
-  else if ( name_str == "inactive_death" )
+  else if ( splits.size() == 2 )
   {
-    struct death_expr_t : public expr_t
+    // For example, obliterate.ready_in
+    if ( util::str_compare_ci( splits[ 1 ], "ready_in" ) )
     {
-      death_knight_t* dk;
-      death_expr_t( death_knight_t* p ) :
-        expr_t( "inactive_death" ), dk( p ) { }
-      virtual double evaluate()
+      expr_t* e = create_ready_in_expression( this, splits[ 0 ] );
+      if ( e )
       {
-        return count_death_runes( dk, true );
+        return e;
       }
-    };
-    return new death_expr_t( this );
-  }
-  else
-  {
-    rune_type rt = RUNE_TYPE_NONE;
-    bool include_death = false;
-    parse_rune_type( splits[ 0 ], include_death, rt );
-    bool frac = splits.size() == 2 && util::str_in_str_ci( splits[ 1 ], "frac" );
-    bool death = splits.size() == 2 && util::str_in_str_ci( splits[ 1 ], "death" );
-
-    if ( death )
-    {
-      struct rune_expr_t : public expr_t
-      {
-        death_knight_t* dk;
-        rune_type r;
-        bool fractional;
-        rune_expr_t( death_knight_t* p, rune_type r, bool frac ) :
-          expr_t( "rune" ), dk( p ), r( r ), fractional( frac ) { }
-        virtual double evaluate()
-        { return fractional ? dk -> runes_basetype_ready( r, true ) : util::floor( dk -> runes_basetype_ready( r, true ) ); }
-      };
-      if ( rt ) return new rune_expr_t( this, rt, frac );
     }
+    // Otherwise, presume a rune expression (e.g., blood.death, blood.frac,
+    // ...) Note that the second word is checked if it contains "death", if so,
+    // the second word is presumed to be a specifier. Otherwise, it is presumed
+    // to be an operation (cooldown_min, cooldown_max).
     else
     {
-      struct rune_expr_t : public expr_t
+      bool has_specifier = false;
+      if ( util::str_compare_ci( splits[ 1 ], "death" ) )
       {
-        death_knight_t* dk;
-        rune_type r;
-        bool death, fractional;
-        rune_expr_t( death_knight_t* p, rune_type r, bool include_death, bool frac ) :
-          expr_t( "rune" ), dk( p ), r( r ), death( include_death ), fractional( frac ) { }
-        virtual double evaluate()
-        { return fractional ? dk -> runes_count( r, death, 0 ) : util::floor( dk -> runes_count( r, death, 0 ) ); }
-      };
-      if ( rt ) return new rune_expr_t( this, rt, include_death, frac );
+        has_specifier = true;
+      }
+
+      expr_t* e = create_rune_expression( this, splits[ 0 ],
+          has_specifier ? splits[ 1 ] : std::string(),
+          ! has_specifier ? splits[ 1 ] : std::string() );
+
+      if ( e )
+      {
+        return e;
+      }
+    }
+  }
+  // 3 part expressions are presumed to be in the form
+  // <runetype>.<specifier>.<operation>, e.g., blood.death.cooldown_min
+  else if ( splits.size() == 3 )
+  {
+    expr_t* e = create_rune_expression( this, splits[ 0 ], splits[ 1 ], splits[ 2 ] );
+    if ( e )
+    {
+      return e;
     }
   }
 
@@ -6853,8 +6823,8 @@ void death_knight_t::init_action_list()
     // Normal stuff
     st -> add_action( this, "Death and Decay" );
     st -> add_talent( this, "Blood Tap", "if=cooldown.death_and_decay.remains=0" );
-    st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10&(buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1))" );
-    st -> add_action( this, "Death Coil", "if=buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)" );
+    st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10&(buff.sudden_doom.react|(buff.dark_transformation.down&unholy<=1))" );
+    st -> add_action( this, "Death Coil", "if=buff.sudden_doom.react|(buff.dark_transformation.down&unholy<=1)" );
     st -> add_action( this, "Scourge Strike", "if=!(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + ")|(unholy>=1&death>=1)|(death>=2)" );
     st -> add_action( this, "Festering Strike" );
     st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=10&runic_power>=30" );
@@ -6885,7 +6855,7 @@ void death_knight_t::init_action_list()
     aoe -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
     aoe -> add_action( this, "Scourge Strike", "if=unholy=2" );
     aoe -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10" );
-    aoe -> add_action( this, "Death Coil", "if=runic_power>90|buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)" );
+    aoe -> add_action( this, "Death Coil", "if=runic_power>90|buff.sudden_doom.react|(buff.dark_transformation.down&unholy<=1)" );
     aoe -> add_action( this, "Blood Boil" );
     aoe -> add_action( this, "Icy Touch" );
     aoe -> add_action( this, "Scourge Strike", "if=unholy=1" );
@@ -7793,8 +7763,8 @@ stat_e death_knight_t::convert_hybrid_stat( stat_e s ) const
     if ( specialization() == DEATH_KNIGHT_BLOOD )
       return s;
     else
-      return STAT_NONE;     
-  default: return s; 
+      return STAT_NONE;
+  default: return s;
   }
 }
 
@@ -7805,7 +7775,28 @@ void death_knight_t::regen( timespan_t periodicity )
   player_t::regen( periodicity );
 
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+  {
     _runes.slot[ i ].regen_rune( this, periodicity );
+  }
+}
+
+// death_knight_t::runes_per_second =========================================
+
+// Base rune regen rate is 10 seconds; we want the per-second regen
+// rate, so divide by 10.0.  Haste is a multiplier (so 30% haste
+// means composite_attack_haste is 1/1.3), so we invert it.  Haste
+// linearly scales regen rate -- 100% haste means a rune regens in 5
+// seconds, etc.
+inline double death_knight_t::runes_per_second() const
+{
+  double rps = RUNE_REGEN_BASE_SEC / cache.attack_haste();
+  // Runic corruption doubles rune regeneration speed
+  if ( buffs.runic_corruption -> check() )
+  {
+    rps *= 2.0;
+  }
+
+  return rps;
 }
 
 // death_knight_t::trigger_runic_empowerment ================================
@@ -7820,8 +7811,12 @@ void death_knight_t::trigger_runic_empowerment( double rpcost )
 
   // Find fully depleted runes, i.e., both runes are on CD
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+  {
     if ( _runes.slot[i].is_depleted() )
+    {
       depleted_runes[ num_depleted++ ] = i;
+    }
+  }
 
   if ( num_depleted > 0 )
   {
@@ -8008,158 +8003,188 @@ void death_knight_t::apply_diseases( action_state_t* state, unsigned diseases )
 
 // death_knight_t rune inspections ==========================================
 
-// death_knight_t::runes_count ==============================================
+double death_knight_t::runes_count( rune_type rt,
+                                    bool include_all_death,
+                                    bool require_death ) const
+{
+  double result = 0;
+  size_t min_offset = 0, max_offset = RUNE_SLOT_MAX;
+
+  if ( ! include_all_death )
+  {
+    switch ( rt )
+    {
+      case RUNE_TYPE_BLOOD: max_offset = 2; break;
+      case RUNE_TYPE_FROST: min_offset = 2; max_offset = 4; break;
+      case RUNE_TYPE_UNHOLY: min_offset = 4; max_offset = 6; break;
+      default: break;
+    }
+  }
+
+  for ( size_t rune_idx = min_offset; rune_idx < max_offset; ++rune_idx )
+  {
+    const rune_t& r = _runes.slot[ rune_idx ];
+
+    // Skip non-death runes if requested rune type was death, we are counting
+    // ready basetype-death runes, or we are including any and all non-basetype
+    // death runes.
+    if ( ! r.is_death() &&
+        ( ( include_all_death && r.get_type() != rt ) || require_death || rt == RUNE_TYPE_DEATH ) )
+    {
+      continue;
+    }
+
+    result++;
+  }
+
+  return result;
+}
+
+// death_knight_t::ready_runes_count ========================================
+
 // how many runes of type rt are available
-double death_knight_t::runes_count( rune_type rt, bool include_death, int position )
+double death_knight_t::ready_runes_count( rune_type rt,
+                                          bool include_all_death,
+                                          bool require_death,
+                                          bool fractional ) const
 {
   double result = 0;
-  // positional checks first
-  if ( position > 0 && ( rt == RUNE_TYPE_BLOOD || rt == RUNE_TYPE_FROST || rt == RUNE_TYPE_UNHOLY ) )
+  size_t min_offset = 0, max_offset = RUNE_SLOT_MAX;
+
+  if ( ! include_all_death )
   {
-    rune_t* r = &_runes.slot[( ( rt - 1 ) * 2 ) + ( position - 1 ) ];
-    result += r -> value;
-  }
-  else
-  {
-    int rpc = 0;
-    for ( int i = 0; i < RUNE_SLOT_MAX; i++ )
+    switch ( rt )
     {
-      rune_t* r = &_runes.slot[ i ];
-      // query a specific position death rune.
-      if ( position != 0 && rt == RUNE_TYPE_DEATH && r -> is_death() )
-      {
-        if ( ++rpc == position )
-        {
-          result += r -> value;
-          break;
-        }
-      }
-      // just count the runes
-      else if ( ( ( ( include_death || rt == RUNE_TYPE_DEATH ) && r -> is_death() ) || r -> get_type() == rt ) )
-      {
-        result += r -> value;
-      }
+      case RUNE_TYPE_BLOOD: max_offset = 2; break;
+      case RUNE_TYPE_FROST: min_offset = 2; max_offset = 4; break;
+      case RUNE_TYPE_UNHOLY: min_offset = 4; break;
+      default: break;
     }
   }
-  return result;
-}
 
-double death_knight_t::runes_basetype_ready( rune_type rt, bool require_death )
-{
-  double result = 0;
-  int start = 0;
-  if ( rt == RUNE_TYPE_FROST )
-    start = 2;
-  else if ( rt == RUNE_TYPE_UNHOLY )
-    start = 4;
-
-  for ( int i = start; i < start + 2; i++ )
+  for ( size_t rune_idx = min_offset; rune_idx < max_offset; ++rune_idx )
   {
-    const rune_t* r = &_runes.slot[ i ];
+    const rune_t& r = _runes.slot[ rune_idx ];
 
-    if ( ! require_death || ( require_death && r -> is_death() ) )
-      result += r -> value;
+    // Skip non-death runes if requested rune type was death, we are counting
+    // ready basetype-death runes, or we are including any and all non-basetype
+    // death runes.
+    if ( ! r.is_death() &&
+        ( ( include_all_death && r.get_type() != rt ) || require_death || rt == RUNE_TYPE_DEATH ) )
+    {
+      continue;
+    }
+
+    if ( fractional || r.is_ready() )
+    {
+      result += r.value;
+    }
   }
 
   return result;
 }
 
-// death_knight_t::runes_cooldown_any =======================================
+// death_knight_t::runes_cooldown_min =======================================
 
-double death_knight_t::runes_cooldown_any( rune_type rt, bool include_death, int position )
+double death_knight_t::runes_cooldown_min( rune_type rt,
+                                           bool include_all_death,
+                                           bool require_death ) const
 {
-  rune_t* rune = 0;
-  int rpc = 0;
-  for ( int i = 0; i < RUNE_SLOT_MAX; i++ )
+  double min_time = std::numeric_limits<double>::max();
+  size_t min_offset = 0, max_offset = RUNE_SLOT_MAX;
+
+  if ( ! include_all_death )
   {
-    rune_t* r = &_runes.slot[i];
-    if ( position == 0 && include_death && r -> is_death() && r -> is_ready() )
-      return 0;
-    if ( position == 0 && r -> get_type() == rt && r -> is_ready() )
-      return 0;
-    if ( ( ( include_death && r -> is_death() ) || ( r -> get_type() == rt ) ) )
+    switch ( rt )
     {
-      if ( position != 0 && ++rpc == position )
-      {
-        rune = r;
-        break;
-      }
-      if ( !rune || ( r -> value > rune -> value ) )
-        rune = r;
+      case RUNE_TYPE_BLOOD: max_offset = 2; break;
+      case RUNE_TYPE_FROST: min_offset = 2; max_offset = 4; break;
+      case RUNE_TYPE_UNHOLY: min_offset = 4; max_offset = 6; break;
+      default: break;
     }
   }
 
-  assert( rune );
+  for ( size_t rune_idx = min_offset; rune_idx < max_offset; ++rune_idx )
+  {
+    const rune_t& r = _runes.slot[ rune_idx ];
 
-  double time = this -> runes_cooldown_time( rune );
-  // if it was a  specified rune and is depleted, we have to add its paired rune to the time
-  if ( rune -> is_depleted() )
-    time += this -> runes_cooldown_time( rune -> paired_rune );
+    // Skip non-death runes if requested rune type was death, we are counting
+    // ready basetype-death runes, or we are including any and all non-basetype
+    // death runes.
+    if ( ! r.is_death() &&
+        ( ( include_all_death && r.get_type() != rt ) || require_death || rt == RUNE_TYPE_DEATH ) )
+    {
+      continue;
+    }
 
-  return time;
+    if ( r.is_ready() )
+    {
+      return 0;
+    }
+
+    double time = runes_cooldown_time( r );
+    if ( time < min_time )
+    {
+      min_time = time;
+    }
+  }
+
+  return min_time;
 }
 
-// death_knight_t::runes_cooldown_all =======================================
+// death_knight_t::runes_cooldown_max =======================================
 
-double death_knight_t::runes_cooldown_all( rune_type rt, bool include_death, int position )
+double death_knight_t::runes_cooldown_max( rune_type rt,
+                                           bool include_all_death,
+                                           bool require_death ) const
 {
-  // if they specified position then they only get 1 answer. duh. handled in the other function
-  if ( position > 0 )
-    return this -> runes_cooldown_any( rt, include_death, position );
+  double max_time = 0;
+  size_t min_offset = 0, max_offset = RUNE_SLOT_MAX;
 
-  // find all matching runes. total the pairs. Return the highest number.
-
-  double max = 0;
-  for ( int i = 0; i < RUNE_SLOT_MAX; i += 2 )
+  if ( ! include_all_death )
   {
-    double total = 0;
-    rune_t* r = &_runes.slot[i];
-    if ( ( ( rt == RUNE_TYPE_DEATH && r -> is_death() ) || r -> get_type() == rt ) && !r -> is_ready() )
+    switch ( rt )
     {
-      total += this->runes_cooldown_time( r );
+      case RUNE_TYPE_BLOOD: max_offset = 2; break;
+      case RUNE_TYPE_FROST: min_offset = 2; max_offset = 4; break;
+      case RUNE_TYPE_UNHOLY: min_offset = 4; max_offset = 6; break;
+      default: break;
     }
-    r = r -> paired_rune;
-    if ( ( ( rt == RUNE_TYPE_DEATH && r -> is_death() ) || r -> get_type() == rt ) && !r -> is_ready() )
-    {
-      total += this->runes_cooldown_time( r );
-    }
-    if ( max < total )
-      max = total;
   }
-  return max;
+
+  for ( size_t rune_idx = min_offset; rune_idx < max_offset; ++rune_idx )
+  {
+    const rune_t& r = _runes.slot[ rune_idx ];
+
+    // Skip non-death runes if requested rune type was death, we are counting
+    // ready basetype-death runes, or we are including any and all non-basetype
+    // death runes.
+    if ( ! r.is_death() &&
+        ( ( include_all_death && r.get_type() != rt ) || require_death || rt == RUNE_TYPE_DEATH ) )
+    {
+      continue;
+    }
+
+    double time = runes_cooldown_time( r );
+    if ( time > max_time )
+    {
+      max_time = time;
+    }
+  }
+
+  return max_time;
 }
 
 // death_knight_t::runes_cooldown_time ======================================
 
-double death_knight_t::runes_cooldown_time( rune_t* rune )
+double death_knight_t::runes_cooldown_time( const rune_t& rune ) const
 {
-  double result_num;
-
-  double runes_per_second = 1.0 / 10.0 / composite_melee_haste();
-  // Unholy Presence's 10% (or, talented, 15%) increase is factored in elsewhere as melee haste.
-  result_num = ( 1.0 - rune -> value ) / runes_per_second;
-
-  return result_num;
-}
-
-// death_knight_t::runes_depleted ===========================================
-
-bool death_knight_t::runes_depleted( rune_type rt, int position )
-{
-  rune_t* rune = 0;
-  int rpc = 0;
-  // iterate, to allow finding death rune slots as well
-  for ( int i = 0; i < RUNE_SLOT_MAX; i++ )
+  if ( rune.is_ready() )
   {
-    rune_t* r = &_runes.slot[i];
-    if ( r -> get_type() == rt && ++rpc == position )
-    {
-      rune = r;
-      break;
-    }
+    return 0;
   }
-  if ( ! rune ) return false;
-  return rune -> is_depleted();
+
+  return ( 1.0 - rune.value ) / runes_per_second();
 }
 
 void death_knight_t::arise()
