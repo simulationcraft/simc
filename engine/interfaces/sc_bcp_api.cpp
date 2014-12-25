@@ -878,7 +878,7 @@ player_t* parse_player( sim_t*             sim,
 bool download_item_data( item_t& item, cache::behavior_e caching )
 {
   rapidjson::Document js;
-  if ( ! download_id( js, item.sim -> default_region_str, item.parsed.data.id, item.sim -> apikey, caching ) || 
+  if ( ! download_id( js, item.player -> region_str, item.parsed.data.id, item.sim -> apikey, caching ) || 
        js.HasParseError() )
   {
     if ( caching != cache::ONLY )
