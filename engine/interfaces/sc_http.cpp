@@ -870,11 +870,13 @@ bool http::get( std::string&       result,
   result.clear();
 
   std::string encoded_url = url;
+  std::string encoded_clean_url = cleanurl;
   util::urlencode( encoded_url );
+  util::urlencode( encoded_clean_url );
 
   auto_lock_t lock( cache_mutex );
 
-  url_cache_entry_t& entry = url_db[ encoded_url ];
+  url_cache_entry_t& entry = url_db[ encoded_clean_url ];
 
   if ( HTTP_CACHE_DEBUG )
   {
