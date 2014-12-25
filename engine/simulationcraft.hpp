@@ -5836,6 +5836,11 @@ struct action_t : public noncopyable
     return ( r == RESULT_MULTISTRIKE || r == RESULT_MULTISTRIKE_CRIT );
   }
 
+  static bool result_is_hit_or_multistrike( result_e r )
+  {
+    return result_is_hit( r ) || result_is_multistrike( r );
+  }
+
   static bool result_is_block( block_result_e r )
   {
     return( r == BLOCK_RESULT_BLOCKED || r == BLOCK_RESULT_CRIT_BLOCKED );

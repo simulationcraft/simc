@@ -2626,14 +2626,17 @@ struct arcane_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit_or_multistrike( s -> result ) )
     {
-      p() -> buffs.cobra_strikes -> trigger();
       if ( p() -> specs.serpent_sting -> ok() )
       {
         p() -> active.serpent_sting -> target = s -> target;
         p() -> active.serpent_sting -> execute();
       }
+    }
+    if ( result_is_hit( s -> result ) )
+    {
+      p() -> buffs.cobra_strikes -> trigger();
       p() -> buffs.tier13_4pc -> trigger();
     }
   }
@@ -2691,16 +2694,17 @@ struct multi_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit_or_multistrike( s -> result ) )
     {
       if ( p() -> specs.serpent_sting -> ok() )
       {
         p() -> active.serpent_sting -> target = s -> target;
         p() -> active.serpent_sting -> execute();
       }
+    }
+    if ( result_is_hit( s -> result ) )
       if ( s -> result == RESULT_CRIT && p() -> specs.bombardment -> ok() )
         p() -> buffs.bombardment -> trigger();
-    }
   }
 };
 
