@@ -36,26 +36,32 @@ public:
   {
     closeAllTabsTitleText = text;
   }
+
   void setCloseAllTabsBodyText( QString text )
   {
     closeAllTabsBodyText = text;
   }
+
   void addCloseAllExclude( QWidget* widget )
   {
     specialTabsListToNotDelete.insert( widget );
   }
+
   bool removeCloseAllExclude( QWidget* widget )
   {
     return specialTabsListToNotDelete.remove( widget );
   }
+
   void removeAllCloseAllExcludes()
   {
     specialTabsListToNotDelete.clear();
   }
+
   bool isACloseAllExclude( QWidget* widget )
   {
     return specialTabsListToNotDelete.contains( widget );
   }
+
   void closeAllTabs();
   void closeOtherTabs();
   void removeTab( int index );
@@ -101,10 +107,10 @@ private slots:
 // SC_RecentlyClosedTabWidget
 // ============================================================================
 
-class SC_RecentlyClosedTabWidget : public QWidget
+class SC_RecentlyClosedTabWidget: public QWidget
 {
   Q_OBJECT
-  QWidget* previewPaneCurrentWidget;
+    QWidget* previewPaneCurrentWidget;
   SC_RecentlyClosedTabItemModel* model;
   QBoxLayout::Direction grow;
   QListView* listView;
@@ -119,10 +125,10 @@ class SC_RecentlyClosedTabWidget : public QWidget
   bool enableClearHistoryButton;
   bool enableClearHistoryContextMenu;
   bool enableRestoreAllContextMenu;
-public:
+  public:
   SC_RecentlyClosedTabWidget( QWidget* parent = nullptr,
-                              QBoxLayout::Direction grow = QBoxLayout::LeftToRight,
-                              SC_RecentlyClosedTabItemModel* modelToUse = nullptr );
+    QBoxLayout::Direction grow = QBoxLayout::LeftToRight,
+    SC_RecentlyClosedTabItemModel* modelToUse = nullptr );
   SC_RecentlyClosedTabItemModel* getModel()
   {
     return model;
@@ -131,43 +137,49 @@ signals:
   void hideRequest();
   void showRequest();
   void restoreTab( QWidget* widget, const QString& title, const QString& tooltip, const QIcon& icon );
-protected:
+  protected:
   void init();
   QWidget* initListView();
   QModelIndex getSelectionAndMakeSureIsValidIfElementsAvailable();
-protected:
+  protected:
   void showEvent( QShowEvent* e )
   {
     Q_UNUSED( e );
     if ( previewAnItemOnShow )
       previewNext();
   }
-public slots:
+  public slots:
   void removePreview( QWidget* widget = nullptr );
   bool addIndexToPreview( const QModelIndex& index );
   bool previewNext( QWidget* exclude = nullptr );
+
   void removePreviewAndAddNextOrHide( QWidget* widget )
   {
     removePreview( widget );
     previewNextOrHide( widget );
   }
+
   void removePreviousTabFromPreview()
   {
     removePreview( currentlyPreviewedWidget );
   }
+
   void restoreCurrentlySelected()
   {
     model -> restoreTab( getSelectionAndMakeSureIsValidIfElementsAvailable() );
   }
-  void addTab( QWidget* widget, const QString& title, const QString& tooltip, const QIcon& icon)
+
+  void addTab( QWidget* widget, const QString& title, const QString& tooltip, const QIcon& icon )
   {
     model -> addTab( widget, title, tooltip, icon );
   }
+
   void previewNextOrHide( QWidget* exclude = nullptr )
   {
-    if ( ! previewNext( exclude ) )
+    if ( !previewNext( exclude ) )
       emit( hideRequest() );
   }
+
   void showContextMenu( const QPoint& p )
   {
     if ( enableContextMenu )
@@ -176,15 +188,18 @@ public slots:
         contextMenu -> exec( listView -> mapToGlobal( p ) );
     }
   }
+
   void restoreTabSlot( QWidget* widget, const QString& title, const QString& tooltip, const QIcon& icon )
   {
     emit( restoreTab( widget, title, tooltip, icon ) );
   }
+
   void clearHistory()
   {
     model -> clear();
     emit( hideRequest() );
   }
+
   void removeCurrentItem()
   {
     QModelIndex index = getSelectionAndMakeSureIsValidIfElementsAvailable();
@@ -194,6 +209,7 @@ public slots:
     index = model -> index( selectedRow, 0 );
     previewNextOrHide();
   }
+
   void clearHistoryPrompt()
   {
     if ( model -> rowCount() > 0 )
@@ -207,6 +223,7 @@ public slots:
       emit( hideRequest() );
     }
   }
+
   void restoreAllTabs()
   {
     if ( model -> rowCount() > 0 )
@@ -215,6 +232,7 @@ public slots:
     }
     emit( hideRequest() );
   }
+
   void currentChanged( const QModelIndex& current, const QModelIndex& previous )
   {
     Q_UNUSED( previous );

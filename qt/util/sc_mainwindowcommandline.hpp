@@ -10,7 +10,6 @@
 #include <QtWidgets/QtWidgets>
 #include <QtGui/QtGui>
 
-
 class SC_MainWindowCommandLine : public QWidget
 {
   Q_OBJECT

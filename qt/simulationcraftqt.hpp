@@ -490,7 +490,6 @@ public:
     SC_enumeratedTab<result_tabs_e>( parent ),
     mainWindow( mw )
   {
-
     connect( this, SIGNAL( currentChanged( int ) ), this, SLOT( TabChanged( int ) ) );
   }
 
@@ -504,11 +503,11 @@ public slots:
 // SC_ImportTabWidget
 // ============================================================================
 
-class SC_ImportTab : public SC_enumeratedTab<import_tabs_e>
+class SC_ImportTab: public SC_enumeratedTab < import_tabs_e >
 {
   Q_OBJECT
-public:
-  SC_ImportTab( QWidget* parent = 0 ) :
+  public:
+  SC_ImportTab( QWidget* parent = 0 ):
     SC_enumeratedTab<import_tabs_e>( parent )
   {
   }
@@ -555,14 +554,14 @@ public:
 
   void encodeSettings();
   void load_setting( QSettings& s, const QString& name, QComboBox* choice, const QString& default_value );
-  void load_setting( QSettings& s, const QString& name, QString* text, const QString& default_value);
-  void load_setting( QSettings& s, const QString& name, QLineEdit* textbox, const QString& default_value);
-  void load_setting( QSettings& s, const QString& name, SC_TextEdit* textbox, const QString& default_value);
+  void load_setting( QSettings& s, const QString& name, QString* text, const QString& default_value );
+  void load_setting( QSettings& s, const QString& name, QLineEdit* textbox, const QString& default_value );
+  void load_setting( QSettings& s, const QString& name, SC_TextEdit* textbox, const QString& default_value );
   void decodeSettings();
   void createAutomationTab();
   void createTooltips();
 
-public slots:
+  public slots:
   void setSpecDropDown( const int player_class );
   void setSidebarClassText();
   void compTypeChanged( const int comp );
@@ -583,13 +582,13 @@ const QString defaultSimulateTabTitle( "Simulate" );
 // SC_SimulateTabWidget
 // ============================================================================
 
-class SC_SimulateTab : public SC_RecentlyClosedTab
+class SC_SimulateTab: public SC_RecentlyClosedTab
 {
   Q_OBJECT
-  QWidget* addTabWidget;
+    QWidget* addTabWidget;
   int lastSimulateTabIndexOffset;
-public:
-  SC_SimulateTab( QWidget* parent = nullptr, SC_RecentlyClosedTabItemModel* modelToUse = nullptr ) :
+  public:
+  SC_SimulateTab( QWidget* parent = nullptr, SC_RecentlyClosedTabItemModel* modelToUse = nullptr ):
     SC_RecentlyClosedTab( parent, modelToUse ),
     addTabWidget( new QWidget( this ) ),
     lastSimulateTabIndexOffset( -2 )
@@ -598,8 +597,8 @@ public:
 
     setCloseAllTabsTitleText( tr( "Close ALL Simulate Tabs?" ) );
     setCloseAllTabsBodyText( tr( "Do you really want to close ALL simulation profiles?" ) );
-    QIcon addTabIcon(":/icon/addtab.png");
-    int i = addTab( addTabWidget, addTabIcon, addTabIcon.pixmap(QSize(64, 64)).isNull() ? "+":"" );
+    QIcon addTabIcon( ":/icon/addtab.png" );
+    int i = addTab( addTabWidget, addTabIcon, addTabIcon.pixmap( QSize( 64, 64 ) ).isNull() ? "+" : "" );
     tabBar() -> setTabButton( i, QTabBar::LeftSide, nullptr );
     tabBar() -> setTabButton( i, QTabBar::RightSide, nullptr );
     addCloseAllExclude( addTabWidget );
@@ -615,33 +614,13 @@ public:
     connect( this, SIGNAL( tabBarLayoutRequestEvent() ), this, SLOT( enforceAddTabWidgetLocationInvariant() ) );
   }
 
-  static void format_document( SC_TextEdit* /*s*/ )
-  {
-    // Causes visual disappearance of text. Deactivated for now.
-    /*QTextDocument* d = s -> document();
-    QTextBlock b = d -> begin();
-    QRegExp comment_rx( "^\\s*\\#" );
-    QTextCharFormat* comment_format = new QTextCharFormat();
-    comment_format -> setForeground( QColor( "forestgreen" ) );
-    while ( b.isValid() )
-    {
-      if ( comment_rx.indexIn( b.text() ) != -1 )
-      {
-        QTextCursor c(b);
-        c.select( QTextCursor::BlockUnderCursor );
-        c.setCharFormat( *comment_format );
-      }
-      b = b.next();
-    }*/
-  }
-
   bool is_Default_New_Tab( int index )
   {
     bool retval = false;
     if ( index >= 0 && index < count() &&
-         ! isACloseAllExclude( widget( index ) ) )
-      retval = ( tabText( index ) == defaultSimulateTabTitle &&
-                 static_cast<SC_TextEdit*>( widget( index ) ) -> toPlainText() == defaultSimulateText );
+      !isACloseAllExclude( widget( index ) ) )
+      retval = (tabText( index ) == defaultSimulateTabTitle &&
+      static_cast<SC_TextEdit*>(widget( index )) -> toPlainText() == defaultSimulateText);
     return retval;
   }
 
@@ -650,9 +629,9 @@ public:
     for ( int i = 0; i < count(); ++i )
     {
       QWidget* widget_ = widget( i );
-      if ( ! isACloseAllExclude( widget_ ) )
+      if ( !isACloseAllExclude( widget_ ) )
       {
-        if ( ! is_Default_New_Tab( i ) )
+        if ( !is_Default_New_Tab( i ) )
           return false;
       }
     }
@@ -663,7 +642,6 @@ public:
   {
     SC_TextEdit* s = new SC_TextEdit();
     s -> setText( text );
-    format_document( s );
     int indextoInsert = indexOf( addTabWidget );
     int i = insertTab( indextoInsert, s, tab_name );
     setCurrentIndex( i );
@@ -672,22 +650,21 @@ public:
 
   SC_TextEdit* current_Text()
   {
-    return static_cast<SC_TextEdit*>( currentWidget() );
+    return static_cast<SC_TextEdit*>(currentWidget());
   }
 
   void set_Text( const QString& text )
   {
-    SC_TextEdit* current_s = static_cast<SC_TextEdit*>( currentWidget() );
+    SC_TextEdit* current_s = static_cast<SC_TextEdit*>(currentWidget());
     current_s -> setText( text );
-    format_document( current_s );
   }
 
   void append_Text( const QString& text )
   {
-    SC_TextEdit* current_s = static_cast<SC_TextEdit*>( currentWidget() );
+    SC_TextEdit* current_s = static_cast<SC_TextEdit*>(currentWidget());
     current_s -> append( text );
-    format_document( current_s );
   }
+
   void close_All_Tabs()
   {
     QList < QWidget* > specialTabsList;
@@ -699,7 +676,7 @@ public:
       bool deleteIndexOk = false;
       int indexToDelete = 0;
       // look for a tab not in the specialTabsList to delete
-      while ( ! deleteIndexOk && indexToDelete < count() )
+      while ( !deleteIndexOk && indexToDelete < count() )
       {
         if ( specialTabsList.contains( widget( indexToDelete ) ) )
         {
@@ -718,10 +695,12 @@ public:
       }
     }
   }
+
   virtual int insertAt()
   {
     return indexOf( addTabWidget );
   }
+
   bool wrapToEnd()
   {
     if ( currentIndex() == 0 )
@@ -731,6 +710,7 @@ public:
     }
     return false;
   }
+
   bool wrapToBeginning()
   {
     if ( currentIndex() == count() + lastSimulateTabIndexOffset )
@@ -740,24 +720,25 @@ public:
     }
     return false;
   }
-  void insertNewTabAt( int index = -1, const QString text=defaultSimulateText, const QString title=defaultSimulateTabTitle )
+
+  void insertNewTabAt( int index = -1, const QString text = defaultSimulateText, const QString title = defaultSimulateTabTitle )
   {
     if ( index < 0 || index > count() )
       index = currentIndex();
     SC_TextEdit* s = new SC_TextEdit();
     s -> setText( text );
-    format_document( s );
-    insertTab( index , s, title );
-    setCurrentIndex( index);
+    insertTab( index, s, title );
+    setCurrentIndex( index );
   }
-protected:
+
+  protected:
   virtual void keyPressEvent( QKeyEvent* e )
   {
     int k = e -> key();
     Qt::KeyboardModifiers m = e -> modifiers();
 
     if ( k == Qt::Key_Backtab ||
-         ( k == Qt::Key_Tab && m.testFlag( Qt::ControlModifier ) && m.testFlag( Qt::ShiftModifier ) ) )
+      (k == Qt::Key_Tab && m.testFlag( Qt::ControlModifier ) && m.testFlag( Qt::ShiftModifier )) )
     {
       if ( wrapToEnd() )
         return;
@@ -778,6 +759,7 @@ protected:
     }
     QTabWidget::keyPressEvent( e );
   }
+
   virtual void keyReleaseEvent( QKeyEvent* e )
   {
     int k = e -> key();
@@ -792,7 +774,7 @@ protected:
         return;
       }
     }
-      break;
+    break;
     case Qt::Key_T:
     {
       if ( m.testFlag( Qt::ControlModifier ) == true )
@@ -801,17 +783,18 @@ protected:
         return;
       }
     }
-      break;
+    break;
     default: break;
     }
     SC_RecentlyClosedTab::keyReleaseEvent( e );
   }
+
   virtual void showEvent( QShowEvent* e )
   {
     QWidget* currentWidget = widget( currentIndex() );
     if ( currentWidget != nullptr )
     {
-      if ( ! currentWidget -> hasFocus() )
+      if ( !currentWidget -> hasFocus() )
       {
         currentWidget -> setFocus();
       }
@@ -819,7 +802,8 @@ protected:
 
     SC_RecentlyClosedTab::showEvent( e );
   }
-public slots:
+
+  public slots:
   void TabCloseRequest( int index )
   {
     if ( count() > 2 && index != (count() - 1) )
@@ -837,7 +821,7 @@ public slots:
       if ( confirm == QMessageBox::Yes )
       {
         if ( index == currentIndex() &&
-             widget( currentIndex() + 1 ) == addTabWidget )
+          widget( currentIndex() + 1 ) == addTabWidget )
         {
           // Change index only if removing causes a new tab to be created
           setCurrentIndex( qMax<int>( 0, currentIndex() - 1 ) );
@@ -847,6 +831,7 @@ public slots:
       }
     }
   }
+
   void addNewTab( int index )
   {
     if ( index == indexOf( addTabWidget ) )
@@ -854,6 +839,7 @@ public slots:
       insertNewTabAt( index );
     }
   }
+
   void mouseDragSwitchTab( int tab )
   {
     if ( tab != indexOf( addTabWidget ) )
@@ -861,6 +847,7 @@ public slots:
       setCurrentIndex( tab );
     }
   }
+
   void enforceAddTabWidgetLocationInvariant()
   {
     int addTabWidgetIndex = indexOf( addTabWidget );
@@ -881,19 +868,19 @@ class SC_SpellQueryTab;
 // SC_ComboBoxIntegerValidator
 // ============================================================================
 
-class SC_ComboBoxIntegerValidator : public QValidator
+class SC_ComboBoxIntegerValidator: public QValidator
 {
   Q_OBJECT
-  int lowerBoundInclusive;
+    int lowerBoundInclusive;
   int upperBoundInclusive;
   int lowerBoundDigitCount;
   int upperBoundDigitCount;
   QRegExp nonIntegerRegExp;
   QComboBox* comboBox;
-public:
+  public:
   SC_ComboBoxIntegerValidator( int lowerBoundIntegerInclusive,
-      int upperBoundIntegerInclusive,
-      QComboBox* parent ) :
+    int upperBoundIntegerInclusive,
+    QComboBox* parent ):
     QValidator( parent ),
     lowerBoundInclusive( lowerBoundIntegerInclusive ),
     upperBoundInclusive( upperBoundIntegerInclusive ),
@@ -907,18 +894,22 @@ public:
     lowerBoundDigitCount = util::numDigits( lowerBoundInclusive );
     upperBoundDigitCount = util::numDigits( upperBoundInclusive );
   }
+
   static SC_ComboBoxIntegerValidator* CreateBoundlessValidator( QComboBox* parent = nullptr )
   {
     return new SC_ComboBoxIntegerValidator( std::numeric_limits<int>::min(), std::numeric_limits<int>::max(), parent );
   }
+
   static SC_ComboBoxIntegerValidator* CreateUpperBoundValidator( int upperBound, QComboBox* parent = nullptr )
   {
     return new SC_ComboBoxIntegerValidator( std::numeric_limits<int>::min(), upperBound, parent );
   }
+
   static SC_ComboBoxIntegerValidator* CreateLowerBoundValidator( int lowerBound, QComboBox* parent = nullptr )
   {
     return new SC_ComboBoxIntegerValidator( lowerBound, std::numeric_limits<int>::max(), parent );
   }
+
   static QComboBox* ApplyValidatorToComboBox( QValidator* validator, QComboBox* comboBox )
   {
     if ( comboBox != nullptr )
@@ -931,6 +922,7 @@ public:
     }
     return comboBox;
   }
+
   State isNumberValid( int number ) const
   {
     if ( isNumberInRange( number ) )
@@ -949,11 +941,13 @@ public:
 
     return QValidator::Invalid;
   }
+
   bool isNumberInRange( int number ) const
   {
-    return ( number >= lowerBoundInclusive &&
-             number <= upperBoundInclusive );
+    return (number >= lowerBoundInclusive &&
+      number <= upperBoundInclusive);
   }
+
   void stripNonNumbersAndAdjustCursorPos( QString& input, int& cursorPos ) const
   {
     // remove erroneous characters
@@ -973,11 +967,13 @@ public:
     }
     input = modifiedInput;
   }
+
   virtual void fixup( QString& input ) const
   {
     int cursorPos = 0;
     stripNonNumbersAndAdjustCursorPos( input, cursorPos );
   }
+
   virtual State validate( QString& input, int& cursorPos ) const
   {
     State retval = QValidator::Invalid;
@@ -1062,7 +1058,6 @@ public:
   int simProgress;
   int importSimProgress;
   int simResults;
-//  QStringList resultsHtml;
 
   QString AppDataDir;
   QString ResultsDestDir;
@@ -1166,7 +1161,6 @@ public slots:
   void enqueueSim();
   void saveLog();
   void saveResults();
-
   void stopImport();
   void stopSim();
   void stopAllSim();
@@ -1324,31 +1318,39 @@ public:
     }
 
   }
+
   void store_html( const QString& s )
   {
     html_str = s;
   }
+
   virtual ~SC_WebView() {}
+
   void loadHtml()
   {
     setHtml( html_str );
   }
+
   QString toHtml()
   {
     return page() -> currentFrame() -> toHtml();
   }
+
   void enableMouseNavigation()
   {
     allow_mouse_navigation = true;
   }
+
   void disableMouseNavigation()
   {
     allow_mouse_navigation = false;
   }
+
   void enableKeyboardNavigation()
   {
     allow_keyboard_navigation = true;
   }
+
   void disableKeyboardNavigation()
   {
     allow_keyboard_navigation = false;
@@ -1380,6 +1382,7 @@ protected:
     }
     QWebView::mouseReleaseEvent( e );
   }
+
   virtual void keyReleaseEvent( QKeyEvent* e )
   {
     if ( allow_keyboard_navigation )
@@ -1393,44 +1396,49 @@ protected:
         if ( m.testFlag( Qt::ControlModifier ) == true )
           reload();
       }
-        break;
+      break;
       case Qt::Key_F5:
       {
         reload();
       }
-        break;
+      break;
       case Qt::Key_Left:
       {
         if ( m.testFlag( Qt::AltModifier ) == true )
           back();
       }
-        break;
+      break;
       case Qt::Key_Right:
       {
         if ( m.testFlag( Qt::AltModifier ) == true )
           forward();
       }
-        break;
-        default: break;
+      break;
+      default: break;
       }
     }
     QWebView::keyReleaseEvent( e );
   }
+
   virtual void resizeEvent( QResizeEvent* e )
   {
     searchBox -> updateGeometry();
     QWebView::resizeEvent( e );
   }
+
   virtual void focusInEvent( QFocusEvent* e )
   {
     hideSearchBox();
     QWebView::focusInEvent( e );
   }
+
 private slots:
   void loadProgressSlot( int p )
   { update_progress( p ); }
+
   void loadFinishedSlot( bool /* ok */ )
   { update_progress( 100 ); }
+
   void urlChangedSlot( const QUrl& url )
   {
     url_to_show = url.toString();
@@ -1440,6 +1448,7 @@ private slots:
     }
     mainWindow -> updateWebView( this );
   }
+
   void linkClickedSlot( const QUrl& url )
   {
     QString clickedurl = url.toString();
@@ -1460,6 +1469,7 @@ public slots:
     previousSearch = ""; // disable clearing of highlighted text on next search
     searchBox -> hide();
   }
+
   void findSomeText( const QString& text, QWebPage::FindFlags options )
   {
     if ( ! previousSearch.isEmpty() && previousSearch != text )
@@ -1496,6 +1506,7 @@ public slots:
     }
     repaint( searchBoxRect );
   }
+
   void findSomeText( const QString& text )
   {
     QWebPage::FindFlags flags = 0;
@@ -1505,10 +1516,12 @@ public slots:
     }
     findSomeText( text, flags );
   }
+
   void findPrev()
   {
     findSomeText( searchBox -> text(), QWebPage::FindBackward );
   }
+
   void findNext()
   {
     findSomeText( searchBox -> text(), 0 );

@@ -22,14 +22,13 @@ const OptionEntry buffOptions[] =
   { "Toggle All Buffs",             "",                                 "Toggle all buffs on/off"                         },
   { "Attack Power Multiplier",      "override.attack_power_multiplier", "+10% Attack Power Multiplier"                    },
   { "Spell Power Multiplier",       "override.spell_power_multiplier",  "+10% Spell Power Multiplier"                     },
-  { "Critical Strike",              "override.critical_strike",         "+5% Melee/Ranged/Spell Critical Strike Chance"   },
+  { "Critical Strike",              "override.critical_strike",         "+5% Critical Strike Chance"   },
   { "Haste",                        "override.haste",                   "+5% Haste"                                       },
   { "Multistrike",                  "override.multistrike",             "+5% Multistrike"                                 },
-  { "Mastery",                      "override.mastery",                 "+5 Mastery"                                      },
+  { "Mastery",                      "override.mastery",                 "+Mastery Rating"                                      },
   { "Stamina",                      "override.stamina",                 "+10% Stamina"                                    },
   { "Strength, Agility, Intellect", "override.str_agi_int",             "+5% Strength, Agility, Intellect"                },
   { "Versatility",                  "override.versatility",             "+3% Versatility"                                 },
-
   { "Bloodlust",                    "override.bloodlust",               "Ancient Hysteria\nBloodlust\nHeroism\nTime Warp" },
   { NULL, NULL, NULL }
 };
@@ -48,16 +47,14 @@ const OptionEntry itemSourceOptions[] =
 const OptionEntry debuffOptions[] =
 {
   { "Toggle All Debuffs",     "",                                "Toggle all debuffs on/off"      },
-
   { "Bleeding",               "override.bleeding",               "Rip\nRupture"   },
   { "Mortal Wounds",          "override.mortal_wounds",          "Healing Debuff"                 },
-
   { NULL, NULL, NULL }
 };
 
 const OptionEntry scalingOptions[] =
 {
-  { "Toggle All Character Stats",       "",         "Toggles all stats except Latency."                    },
+  { "Toggle All Character Stats", "",       "Toggles all stats except Latency."                    },
   { "Strength",                 "str",      "Calculate scale factors for Strength"                 },
   { "Agility",                  "agi",      "Calculate scale factors for Agility"                  },
   { "Stamina",                  "sta",      "Calculate scale factors for Stamina"                  },
@@ -73,9 +70,9 @@ const OptionEntry scalingOptions[] =
   { "Weapon DPS",               "wdps",     "Calculate scale factors for Weapon DPS"               },
   { "Off-hand Weapon DPS",      "wohdps",   "Calculate scale factors for Off-hand Weapon DPS"      },
   { "Armor",                    "armor",    "Calculate scale factors for Armor"                    },
-  { "Bonus Armor",              "bonusarmor",   "Calculate scale factors for Bonus Armor"          },
+  { "Bonus Armor",              "bonusarmor","Calculate scale factors for Bonus Armor"             },
   { "Avoidance (tertiary)",     "avoidance", "Calculate scale factors for Avoidance (tertiary stat)" },
-  { "Leech (tertiary)",         "leech",    "Calculate scale factors for Leech (tertiary stat)" },
+  { "Leech (tertiary)",         "leech",    "Calculate scale factors for Leech (tertiary stat)"    },
   { "Movement Speed (tertiary)", "speed",   "Calculate scale factors for Movement Speed (tertiary stat)" },
   { "Latency",                  "",         "Calculate scale factors for Latency"                  },
   { NULL, NULL, NULL }
@@ -139,7 +136,6 @@ QComboBox* createChoice( int count, ... )
   va_end( vap );
   return choice;
 }
-
 } // end unnamed namespace
 
 SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
@@ -151,8 +147,7 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
   createPlotsTab();
   createReforgePlotsTab();
 
-
-  QAbstractButton* allBuffs   =   buffsButtonGroup -> buttons().at( 0 );
+  QAbstractButton* allBuffs   = buffsButtonGroup -> buttons().at( 0 );
   QAbstractButton* allDebuffs = debuffsButtonGroup -> buttons().at( 0 );
   QAbstractButton* allScaling = scalingButtonGroup -> buttons().at( 1 );
 
@@ -216,7 +211,7 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
   globalsLayout_left -> addRow( tr( "Armory Region" ),  choice.armory_region = createChoice( 5, "US", "EU", "TW", "CN", "KR" ) );
   globalsLayout_left -> addRow( tr(   "Armory Spec" ),    choice.armory_spec = createChoice( 2, "Active", "Inactive" ) );
-   
+
 #if SC_BETA
   globalsLayout_left -> addRow(       tr(  "Version" ),        choice.version = createChoice( 3, "Live", "Beta", "Both" ) );
 #else
@@ -253,13 +248,11 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_middle -> addRow( tr( "Target Level" ), choice.target_level = createChoice( 4, "Raid Boss", "5-Man Heroic", "5-Man Normal", "Max Player Level" ) );
   globalsLayout_middle -> addRow( tr( "PVP Crit Damage Reduction" ), choice.pvp_crit = createChoice( 2, "Disable", "Enable" ) );
   globalsLayout_middle -> addRow( tr( "Target Race" ),   choice.target_race = createChoice( 7, "Humanoid", "Beast", "Demon", "Dragonkin", "Elemental", "Giant", "Undead" ) );
-
   globalsLayout_middle -> addRow( tr( "Target Type" ),       choice.boss_type = createChoice( 4, "Custom", "Fluffy Pillow", "Tank Dummy", "TMI Standard Boss" ) );
   globalsLayout_middle -> addRow( tr( "Tank Dummy" ),       choice.tank_dummy = createChoice( 5, "None", "Weak", "Dungeon", "Raid", "Mythic" ) );
   globalsLayout_middle -> addRow( tr( "TMI Standard Boss" ),  choice.tmi_boss = createChoice( 5, "None", "T17M", "T17H", "T17N", "T17L" ) );
   globalsLayout_middle -> addRow( tr( "TMI Window (sec)" ), choice.tmi_window = createChoice( 10, "0", "2", "3", "4", "5", "6", "7", "8", "9", "10" ) );
   globalsLayout_middle -> addRow( tr( "Show ETMI" ),         choice.show_etmi = createChoice( 2, "Only when in group", "Always" ) );
-
 
   QGroupBox* globalsGroupBox_middle = new QGroupBox( tr( "Target and Tanking Options" ) );
   globalsGroupBox_middle -> setLayout( globalsLayout_middle );
@@ -269,9 +262,7 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_right -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
   globalsLayout_right -> addRow( tr( "Threads" ), choice.threads = addValidatorToComboBox( 1, QThread::idealThreadCount(), createChoiceFromRange( 1, QThread::idealThreadCount() ) ) );
   globalsLayout_right -> addRow( tr( "Thread Priority" ), choice.thread_priority = createChoice( 5, "Highest", "High", "Normal", "Lower", "Lowest" ) );
-
   globalsLayout_right -> addRow( tr( "World Lag" ), choice.world_lag = createChoice( 5, "Super Low - 25 ms", "Low - 50 ms", "Medium - 100 ms", "High - 150 ms", "Australia - 200 ms" ) );
-
   globalsLayout_right -> addRow( tr( "Generate Debug" ), choice.debug = createChoice( 3, "None", "Log Only", "Gory Details" ) );
   globalsLayout_right -> addRow( tr( "Report Pets Separately" ),  choice.report_pets = createChoice( 2, "Yes", "No" ) );
   globalsLayout_right -> addRow( tr( "Report Print Style" ),      choice.print_style = createChoice( 3, "MoP", "White", "Classic" ) );
@@ -299,7 +290,6 @@ void SC_OptionsTab::createGlobalsTab()
   globalsGroupBoxScrollArea -> setWidget( globalsGroupBox );
   globalsGroupBoxScrollArea -> setWidgetResizable( true );
   addTab( globalsGroupBoxScrollArea, tr( "Globals" ) );
-
 }
 
 void SC_OptionsTab::createBuffsDebuffsTab()
@@ -328,7 +318,6 @@ void SC_OptionsTab::createBuffsDebuffsTab()
   for ( int i = 0; debuffOptions[ i ].label; ++i )
   {
     QCheckBox* checkBox = new QCheckBox( debuffOptions[ i ].label );
-
     checkBox -> setToolTip( debuffOptions[ i ].tooltip );
     debuffsButtonGroup -> addButton( checkBox );
     debuffsLayout -> addWidget( checkBox );
@@ -627,7 +616,6 @@ void load_button_group( QSettings& s, const QString& groupname, QButtonGroup* bg
 
 void load_buff_debuff_group( QSettings& s, const QString& groupname, QButtonGroup* bg )
 {
-
   s.beginGroup( groupname );
   QStringList keys = s.childKeys();
   s.endGroup();
@@ -648,7 +636,6 @@ void load_buff_debuff_group( QSettings& s, const QString& groupname, QButtonGrou
 
 void load_scaling_groups( QSettings& s, const QString& groupname, QButtonGroup* bg )
 {
-
   s.beginGroup( groupname );
   QStringList keys = s.childKeys();
   s.endGroup();
@@ -747,10 +734,8 @@ void SC_OptionsTab::decodeOptions()
           itemDbOrder -> addItem( itemDbOrder -> takeItem( k ) );
         }
       }
-
     }
   }
-
   settings.endGroup();
 }
 
@@ -913,7 +898,6 @@ void SC_OptionsTab::createToolTips()
 
   choice.print_style -> setToolTip( tr( "Specify HTML report print style." ) );
 
-
   choice.statistics_level -> setToolTip( tr( "Determines how much detailed statistical information besides count & mean will be collected during simulation.\n"
                                              " Higher Statistics Level require more memory." ) + "\n" +
                                          tr( " Level %1: Only Simulation Length data is collected." ).arg( 0 ) +"\n" +
@@ -924,7 +908,6 @@ void SC_OptionsTab::createToolTips()
   choice.debug -> setToolTip( tr( "When a log is generated, only one iteration is used.\n"
                                   "Gory details are very gory.  No documentation will be forthcoming.\n"
                                   "Due to the forced single iteration, no scale factor calculation." ) );
-
 
   choice.deterministic_rng -> setToolTip( tr( "Deterministic Random Number Generator creates all random numbers with a given, constant seed.\n"
                                               "This allows to better observe marginal changes which aren't influenced by rng, \n"
@@ -1096,11 +1079,9 @@ QString SC_OptionsTab::mergeOptions()
   QList<QAbstractButton*> buttons = scalingButtonGroup -> buttons();
 
   /////// Scaling Options ///////
-
   // skip if enable checkbox isn't checked
   if ( buttons.at( 0 ) -> isChecked() )
   {
-
     for ( int i = 2; i < buttons.size(); i++ )
     {
       if ( buttons.at( i ) -> isChecked() )
@@ -1139,9 +1120,7 @@ QString SC_OptionsTab::mergeOptions()
   }
 
   /////// DPS Plot Options ///////
-
   buttons = plotsButtonGroup -> buttons();
-
   // skip if enable checkbox isn't checked
   if ( buttons.at( 0 ) -> isChecked() )
   {
@@ -1151,11 +1130,10 @@ QString SC_OptionsTab::mergeOptions()
       if ( buttons.at( i )->isChecked() )
       {
         options += ",";
-        options += plotOptions[ i - 1 ].option;
+        options += plotOptions[i - 1].option;
       }
     }
     options += "\n";
-
     options += "dps_plot_points=" + choice.plots_points -> currentText() + "\n";
     options += "dps_plot_step=" + choice.plots_step -> currentText() + "\n";
 
@@ -1170,7 +1148,7 @@ QString SC_OptionsTab::mergeOptions()
         if ( splits.size() > 1 )
         {
           int base_iter = util::str_to_num<int>( choice.iterations -> currentText().toStdString() );
-          int divisor = util::str_to_num<int>( splits[ 1 ].c_str() );
+          int divisor = util::str_to_num<int>( splits[1].c_str() );
           options += QString::number( base_iter / divisor ) + "\n";
         }
         else
@@ -1183,10 +1161,9 @@ QString SC_OptionsTab::mergeOptions()
     {
       std::vector<std::string> splits = util::string_split( choice.plots_target_error -> currentText().toStdString(), "%" );
       assert( splits.size() > 0 );
-      options += "dps_plot_target_error=" + QString( splits[ 0 ].c_str() ) + "\n";
+      options += "dps_plot_target_error=" + QString( splits[0].c_str() ) + "\n";
       options += "dps_plot_iterations=0\n";
     }
-
   }
   /////// Reforge Plot Options ///////
 
@@ -1201,7 +1178,6 @@ QString SC_OptionsTab::mergeOptions()
     }
   }
   options += "\n";
-
   options += "reforge_plot_amount=" + choice.reforgeplot_amount -> currentText() + "\n";
   options += "reforge_plot_step=" + choice.reforgeplot_step -> currentText() + "\n";
 
@@ -1298,7 +1274,6 @@ void SC_OptionsTab::createItemDataSourceSelector( QFormLayout* layout )
   }
 
   itemDbOrder -> setFixedHeight( ( itemDbOrder -> model() -> rowCount() + 1 ) * itemDbOrder -> sizeHintForRow( 0 ) );
-
   layout->addRow( "Item Source Order", itemDbOrder );
 }
 
@@ -1320,7 +1295,6 @@ QString SC_OptionsTab::get_db_order() const
     if ( i < itemDbOrder -> count() - 1 )
       options += '/';
   }
-
   return options;
 }
 
@@ -1355,10 +1329,9 @@ void SC_OptionsTab::toggleInterdependentOptions()
     choice.target_level -> setDisabled( true );
     choice.target_race -> setDisabled( true );
   }
-
   // others go here
-
 }
+
 // ============================================================================
 // Private Slots
 // ============================================================================
@@ -1396,7 +1369,6 @@ void SC_OptionsTab::allScalingChanged( bool checked )
 void SC_OptionsTab::_optionsChanged()
 {
   // Maybe hook up history save, depending on IO cost.
-
   emit optionsChanged();
   toggleInterdependentOptions();
 }

@@ -97,7 +97,6 @@ private slots:
 signals:
   void armory_region_changed( const QString& );
   void optionsChanged(); // FIXME: hookup to everything
-
 };
 
 #endif // SC_OPTIONSTAB_HPP
