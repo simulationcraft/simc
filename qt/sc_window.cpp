@@ -88,7 +88,6 @@ void SC_MainWindow::loadHistory()
   {
     savedApplicationGeometry.moveTopLeft( pos.toPoint() );
   }
-  applyAdequateApplicationGeometry( savedApplicationGeometry );
   QVariant maximized = settings.value( "gui/maximized" );
   if ( maximized.isValid() )
   {
@@ -147,123 +146,6 @@ void SC_MainWindow::loadHistory()
   { // If we haven't retrieved any simulate tabs from history, add a default one.
     simulateTab -> add_Text( defaultSimulateText, "Simulate!" );
   }
-}
-
-QPoint SC_MainWindow::getMiddleOfScreen( int screen )
-{
-  QRect currentScreenGeometry = desktopWidget.availableGeometry( screen );
-  int currentScreenGeometryMiddleX = currentScreenGeometry.x() + ( currentScreenGeometry.width() / 2 );
-  int currentScreenGeometryMiddleY = currentScreenGeometry.y() + ( currentScreenGeometry.height() / 2 );
-
-  return QPoint( currentScreenGeometryMiddleX, currentScreenGeometryMiddleY );
-}
-
-QRect SC_MainWindow::adjustGeometryToIncludeFrame( QRect geo )
-{
-  QRect frameGeo = frameGeometry();
-  QRect normalGeo = normalGeometry();
-  int widthOffset = qAbs<int>( frameGeo.width() - normalGeo.width() );
-  int heightOffset = qAbs<int>( frameGeo.height() - normalGeo.height() );
-  int xOffset = normalGeo.x() - frameGeo.x();
-  int yOffset = normalGeo.y() - frameGeo.y();
-  geo.translate( xOffset, yOffset );
-  geo.setSize( QSize( geo.width() + widthOffset, geo.height() + heightOffset ) );
-
-  return geo;
-}
-
-int SC_MainWindow::getScreenThatGeometryBelongsTo( QRect geo )
-{
-  for ( int i = 0; i < desktopWidget.screenCount(); i++ )
-  {
-    if ( desktopWidget.screenGeometry( i ).contains( geo ) )
-    {
-      return i;
-    }
-  }
-  return desktopWidget.primaryScreen();
-}
-
-void SC_MainWindow::applyAdequateApplicationGeometry()
-{
-  applyAdequateApplicationGeometry( geometry() );
-}
-
-void SC_MainWindow::applyAdequateApplicationGeometry( QRect preferredGeometry )
-{
-  // Resize window if needed
-  int screen = getScreenThatGeometryBelongsTo( preferredGeometry );
-  QRect currentScreenGeometry = desktopWidget.availableGeometry( screen );
-  QPoint currentScreenGlobalTopLeftPoint = currentScreenGeometry.topLeft();
-  // get the smallest available geometry that would fit on any screen
-  QRect smallestScreenGeometry = getSmallestScreenGeometry();
-  // Does the preferred geometry fit on screen?
-  if ( smallestScreenGeometry.width() < preferredGeometry.width() ||
-       smallestScreenGeometry.height() < preferredGeometry.height() )
-  {
-    // preferred geometry is too big to fit on screen
-    // start by making the minimum size of the application smaller to something that will work for sure
-    int absoluteMinimumApplicationWidth = 100;
-    int absoluteMinimumApplicationHeight = 100;
-    int widthOffset = 100;
-    int heightOffset = 100;
-    int newMinimumWidth = qMax< int >( smallestScreenGeometry.width() - widthOffset,
-                                       absoluteMinimumApplicationWidth );
-    int newMinimumHeight = qMax< int >( smallestScreenGeometry.height() - heightOffset,
-                                        absoluteMinimumApplicationHeight );
-    setMinimumSize( newMinimumWidth, newMinimumHeight );
-    // make a rectangle at the top left of the screen with the new minimum size
-    QRect geometryThatWorks( currentScreenGlobalTopLeftPoint.x(), currentScreenGlobalTopLeftPoint.y(),
-                             minimumSize().width(), minimumSize().height() );
-    // make sure that the new geometry fits on the current screen, if not, move it
-    if ( !currentScreenGeometry.contains( geometryThatWorks ) )
-    {
-      QPoint middleOfCurrentScreen = getMiddleOfScreen( screen );
-      // adjust the point so it points to new top left of the minimum size
-      middleOfCurrentScreen.rx() -= ( geometryThatWorks.width() / 2 );
-      middleOfCurrentScreen.ry() -= ( geometryThatWorks.height() / 2 );
-      geometryThatWorks.moveTopLeft( middleOfCurrentScreen );
-    }
-    setGeometry( adjustGeometryToIncludeFrame( geometryThatWorks ) );
-  }
-  else
-  {
-    // Screen size is big enough for the current dimensions
-    // make the minimumSize smaller anyway, the default is too large
-    int absoluteMinimumApplicationWidth = qMin< int >( minimumWidth(), 600 );
-    int absoluteMinimumApplicationHeight = qMin< int >( minimumHeight(), 550 );
-    int widthOffset = 100;
-    int heightOffset = 100;
-    int newMinimumWidth = qMin< int >( smallestScreenGeometry.width() - widthOffset,
-                                       absoluteMinimumApplicationWidth );
-    int newMinimumHeight = qMin< int >( smallestScreenGeometry.height() - heightOffset,
-                                        absoluteMinimumApplicationHeight );
-    setMinimumSize( newMinimumWidth, newMinimumHeight );
-    if ( !currentScreenGeometry.contains( preferredGeometry ) )
-    {
-      // the preferred geometry is not on the screen, fix that
-      QPoint middleOfCurrentScreen = getMiddleOfScreen( screen );
-      // adjust the point so it points to new top left of the minimum size
-      middleOfCurrentScreen.rx() -= ( preferredGeometry.width() / 2 );
-      middleOfCurrentScreen.ry() -= ( preferredGeometry.height() / 2 );
-      preferredGeometry.moveTopLeft( middleOfCurrentScreen );
-    }
-    setGeometry( adjustGeometryToIncludeFrame( preferredGeometry ) );
-  }
-}
-
-QRect SC_MainWindow::getSmallestScreenGeometry()
-{
-  QDesktopWidget desktopWidget;
-  QRect smallestScreenGeometry = desktopWidget.availableGeometry();
-  for ( int i = 0; i < desktopWidget.screenCount(); ++i )
-  {
-    QRect screenGeometry = desktopWidget.availableGeometry( i );
-    smallestScreenGeometry.setWidth( qMin< int >( screenGeometry.width(), smallestScreenGeometry.width() ) );
-    smallestScreenGeometry.setHeight( qMin< int >( screenGeometry.height(), smallestScreenGeometry.height() ) );
-  }
-
-  return smallestScreenGeometry;
 }
 
 void SC_MainWindow::saveHistory()
@@ -448,10 +330,6 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
 
   simulateThread = new SimulateThread( this );
   connect( simulateThread, SIGNAL( simulationFinished( sim_t* ) ), this, SLOT( simulateFinished( sim_t* ) ) );
-
-  connect( &desktopWidget, SIGNAL( resized( int ) ), this, SLOT( screenResized( int ) ) );
-  connect( &desktopWidget, SIGNAL( workAreaResized( int ) ), this, SLOT( screenResized( int ) ) );
-  connect( &desktopWidget, SIGNAL( screenCountChanged( int ) ), this, SLOT( screenResized( int ) ) );
 
 #ifdef SC_PAPERDOLL
   paperdollThread = new PaperdollThread( this );
@@ -1491,11 +1369,6 @@ void SC_MainWindow::closeEvent( QCloseEvent* e )
   e -> accept();
 }
 
-void SC_MainWindow::showEvent( QShowEvent* e )
-{
-  QWidget::showEvent( e );
-}
-
 void SC_MainWindow::cmdLineTextEdited( const QString& s )
 {
   switch ( mainTab -> currentTab() )
@@ -1840,12 +1713,6 @@ void SC_MainWindow::currentlyViewedTabCloseRequest()
     break;
   default: break;
   }
-}
-
-void SC_MainWindow::screenResized( int screen )
-{
-  Q_UNUSED( screen );
-  applyAdequateApplicationGeometry();
 }
 
 // ==========================================================================

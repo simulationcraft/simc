@@ -237,17 +237,11 @@ void SC_OptionsTab::createGlobalsTab()
 
   QPushButton* resetb = new QPushButton( tr("Reset all Settings" ), this );
   QFont override_font = QFont();
-  override_font.setPixelSize( 20 );
+  override_font.setPixelSize( 16 );
   resetb -> setFont( override_font );
   connect( resetb, SIGNAL(clicked()), this, SLOT(_resetallSettings()) );
   globalsLayout_left -> addWidget( resetb );
-  
-  QLabel* resetallsettings = new QLabel( tr( "This is also useful if you run into problems importing or simulating your\n"
-    "character, as the file used for configuration settings may be corrupt." ) );
-  override_font.setPixelSize( 12 );
-  resetallsettings -> setFont( override_font );
-  globalsLayout_left -> addWidget( resetallsettings );
- 
+   
   QGroupBox* globalsGroupBox_left = new QGroupBox( tr( "Basic Options" ) );
   globalsGroupBox_left -> setLayout( globalsLayout_left );
 
@@ -441,7 +435,6 @@ void SC_OptionsTab::createScalingTab()
   // Now put the tab together
   QScrollArea* scalingGroupBoxScrollArea = new QScrollArea;
   scalingGroupBoxScrollArea -> setLayout( scalingLayout );
-  scalingGroupBoxScrollArea -> setWidgetResizable( true );
   addTab( scalingGroupBoxScrollArea, tr ( "Scaling" ) );
 }
 
@@ -1294,6 +1287,7 @@ void SC_OptionsTab::createItemDataSourceSelector( QFormLayout* layout )
   itemDbOrder -> setSelectionRectVisible( false );
   itemDbOrder -> setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   itemDbOrder -> setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  itemDbOrder -> setMaximumWidth( 200 );
 
   for ( unsigned i = 0; i < sizeof_array( itemSourceOptions ); ++i )
   {
