@@ -15,8 +15,8 @@ spec=brewmaster
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_stamina_flask
-actions.precombat+=/food,type=talador_surf_and_turf
+actions.precombat=flask,type=earth
+actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/stance,choose=sturdy_ox
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -43,7 +43,7 @@ actions+=/potion,name=draenic_armor,if=(buff.fortifying_brew.down&(buff.dampen_h
 actions+=/call_action_list,name=st,if=active_enemies<3
 actions+=/call_action_list,name=aoe,if=active_enemies>=3
 
-actions.st+=/purifying_brew,if=!talent.chi_explosion.enabled&stagger.heavy
+actions.st=purifying_brew,if=!talent.chi_explosion.enabled&stagger.heavy
 actions.st+=/blackout_kick,if=buff.shuffle.down
 actions.st+=/purifying_brew,if=buff.serenity.up
 actions.st+=/purifying_brew,if=!talent.chi_explosion.enabled&stagger.moderate&buff.shuffle.remains>=6
@@ -62,7 +62,7 @@ actions.st+=/jab,if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expe
 actions.st+=/tiger_palm
 
 actions.aoe=guard
-actions.aoe+=/breath_of_fire,if=chi>=3&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=gcd
+actions.aoe+=/breath_of_fire,if=chi>=3&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=1&target.debuff.dizzying_haze.up
 actions.aoe+=/chi_explosion,if=chi>=4
 actions.aoe+=/rushing_jade_wind,if=chi.max-chi>=1&talent.rushing_jade_wind.enabled
 actions.aoe+=/purifying_brew,if=!talent.chi_explosion.enabled&stagger.heavy

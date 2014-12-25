@@ -43,7 +43,7 @@ actions+=/potion,name=draenic_armor,if=(buff.fortifying_brew.down&(buff.dampen_h
 actions+=/call_action_list,name=st,if=active_enemies<3
 actions+=/call_action_list,name=aoe,if=active_enemies>=3
 
-actions.st+=/purifying_brew,if=!talent.chi_explosion.enabled&stagger.heavy
+actions.st=purifying_brew,if=!talent.chi_explosion.enabled&stagger.heavy
 actions.st+=/blackout_kick,if=buff.shuffle.down
 actions.st+=/purifying_brew,if=buff.serenity.up
 actions.st+=/purifying_brew,if=!talent.chi_explosion.enabled&stagger.moderate&buff.shuffle.remains>=6

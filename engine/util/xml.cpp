@@ -4,7 +4,6 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
-
 #include "rapidxml/rapidxml_print.hpp"
 
 // XML Reader ==================================================================
@@ -13,7 +12,7 @@ namespace { // UNNAMED NAMESPACE =========================================
 
 struct xml_cache_entry_t
 {
-  std::shared_ptr<xml_node_t>  root;
+  std::shared_ptr<xml_node_t> root;
   cache::era_t era;
   xml_cache_entry_t() : root(), era( cache::IN_THE_BEGINNING ) { }
 };
@@ -320,6 +319,7 @@ xml_node_t* xml_node_t::split_path( std::string&       key,
 
 std::shared_ptr<xml_node_t> xml_node_t::get( sim_t*             sim,
                                              const std::string& url,
+                                             const std::string& cleanurl,
                                              cache::behavior_e  caching,
                                              const std::string& confirmation )
 {
@@ -330,7 +330,7 @@ std::shared_ptr<xml_node_t> xml_node_t::get( sim_t*             sim,
     return p -> second.root;
 
   std::string result;
-  if ( ! http::get( result, url, caching, confirmation ) )
+  if ( ! http::get( result, url, cleanurl, caching, confirmation ) )
     return std::shared_ptr<xml_node_t>();
 
   if ( std::shared_ptr<xml_node_t> node = xml_node_t::create( sim, result ) )
@@ -1218,6 +1218,7 @@ sc_xml_t sc_xml_t::create( sim_t* sim,
 
 sc_xml_t sc_xml_t::get( sim_t* sim,
                         const std::string& url,
+                        const std::string& cleanurl,
                         cache::behavior_e caching,
                         const std::string& confirmation )
 {
@@ -1232,7 +1233,7 @@ sc_xml_t sc_xml_t::get( sim_t* sim,
   }
 
   std::string result;
-  if ( ! http::get( result, url, caching, confirmation ) )
+  if ( ! http::get( result, url, cleanurl, caching, confirmation ) )
     return sc_xml_t();
 
   return sc_xml_t::create( sim, result, url );

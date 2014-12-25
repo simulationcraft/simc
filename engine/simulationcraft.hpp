@@ -7218,7 +7218,7 @@ void cache_load( const std::string& file_name );
 void cache_save( const std::string& file_name );
 bool clear_cache( sim_t*, const std::string& name, const std::string& value );
 
-bool get( std::string& result, const std::string& url, cache::behavior_e b,
+bool get( std::string& result, const std::string& url, const std::string& cleanurl, cache::behavior_e b,
           const std::string& confirmation = std::string() );
 }
 
