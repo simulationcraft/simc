@@ -801,8 +801,6 @@ option_db_t::option_db_t()
       auto_path.push_back( prefix + "Tier" + util::to_string( MIN_TIER + i ) + "P" );
     }
   }
-
-
 }
 
 option_t opt_string( const std::string& n, std::string& v )

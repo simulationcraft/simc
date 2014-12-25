@@ -2496,7 +2496,10 @@ void sim_t::print_options()
 
   out_log.raw() << "\nSimulation Engine:\n";
   for ( size_t i = 0; i < options.size(); ++i )
-    out_log.raw() << options[ i ];
+  {
+    if ( options[i] -> name() != "apikey" ) // Don't print out sensitive information.
+      out_log.raw() << options[i];
+  }
 
   for ( size_t i = 0; i < player_list.size(); ++i )
   {

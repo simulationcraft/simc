@@ -211,7 +211,6 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
 
 void SC_OptionsTab::createGlobalsTab()
 {
-
   // Create left side global options
   QFormLayout* globalsLayout_left = new QFormLayout();
   globalsLayout_left -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
