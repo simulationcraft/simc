@@ -1493,7 +1493,6 @@ void SC_MainWindow::closeEvent( QCloseEvent* e )
 
 void SC_MainWindow::showEvent( QShowEvent* e )
 {
-  applyAdequateApplicationGeometry();
   QWidget::showEvent( e );
 }
 
