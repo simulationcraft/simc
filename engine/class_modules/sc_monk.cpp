@@ -1463,6 +1463,21 @@ struct chi_explosion_t: public monk_melee_attack_t
     parse_options( options_str );
   }
 
+
+  int n_targets() const
+  {
+    if ( p() -> specialization() == MONK_BREWMASTER ||
+         p() -> specialization() == MONK_WINDWALKER )
+    {
+      if ( p() -> resources.current[ RESOURCE_CHI ] == 4 )
+      {
+        return -1;
+      }
+    }
+
+    return 0;
+  }
+
   void execute()
   {
     monk_melee_attack_t::execute();
@@ -1488,15 +1503,11 @@ struct chi_explosion_t: public monk_melee_attack_t
         if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) )
           trigger_brew( p() -> sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
       }
-      if ( resource_consumed == 4 )
-        aoe = -1;
     }
     else if ( p() -> specialization() == MONK_WINDWALKER )
     {
       if ( resource_consumed >= 3 )
         trigger_brew( 1 );
-      if ( resource_consumed == 4 )
-        aoe = -1;
     }
   }
 
