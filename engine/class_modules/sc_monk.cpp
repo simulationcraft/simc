@@ -86,6 +86,7 @@ enum sef_ability_e {
   SEF_TIGER_PALM,
   SEF_BLACKOUT_KICK,
   SEF_RISING_SUN_KICK,
+  SEF_FISTS_OF_FURY,
   SEF_MAX
 };
 
@@ -911,6 +912,28 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
+  struct sef_fists_of_fury_t : public sef_melee_attack_t
+  {
+    sef_fists_of_fury_t( storm_earth_and_fire_pet_t* player ) :
+      sef_melee_attack_t( "fists_of_fury", player, player -> owner -> find_specialization_spell( "Fists of Fury" ) )
+    {
+      dot_duration = timespan_t::zero();
+      trigger_gcd = timespan_t::zero();
+      aoe = -1;
+    }
+
+    double composite_da_multiplier( const action_state_t* state ) const
+    {
+      double m = sef_melee_attack_t::composite_da_multiplier( state );
+      if ( state -> target != player -> target )
+      {
+        m *= 1.0 / state -> n_targets;
+      }
+
+      return m;
+    }
+  };
+
   // Storm, Earth, and Fire abilities end ===================================
 
   // SEF has its own Tiger Power armor penetration buff
@@ -975,6 +998,7 @@ public:
     attacks[ SEF_TIGER_PALM      ] = new sef_tiger_palm_t( this );
     attacks[ SEF_BLACKOUT_KICK   ] = new sef_blackout_kick_t( this );
     attacks[ SEF_RISING_SUN_KICK ] = new sef_rising_sun_kick_t( this );
+    attacks[ SEF_FISTS_OF_FURY   ] = new sef_fists_of_fury_t( this );
   }
 
   void init_action_list()
