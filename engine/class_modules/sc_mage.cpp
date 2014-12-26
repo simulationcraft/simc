@@ -1755,8 +1755,12 @@ struct arcane_orb_bolt_t : public mage_spell_t
     }
 
     mage_spell_t::impact( s );
-    p() -> buffs.arcane_charge -> trigger();
-    p() -> buffs.arcane_missiles -> trigger();
+
+    if ( result_is_hit( s -> result ) )
+    {
+      p() -> buffs.arcane_charge -> trigger();
+      p() -> buffs.arcane_missiles -> trigger();
+    }
   }
 
   virtual double action_multiplier() const
