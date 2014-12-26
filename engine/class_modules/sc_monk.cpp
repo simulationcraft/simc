@@ -1412,14 +1412,13 @@ public:
       return;
     }
 
-    if ( ! p() -> pet.sef[ 0 ] -> is_sleeping() )
+    for ( sef_pet_e i = SEF_FIRE; i < SEF_PET_MAX; i++ )
     {
-      p() -> pet.sef[ 0 ] -> trigger_attack( sef_ability, this );
-    }
-
-    if ( ! p() -> pet.sef[ 1 ] -> is_sleeping() )
-    {
-      p() -> pet.sef[ 1 ] -> trigger_attack( sef_ability, this );
+      if ( p() -> pet.sef[ i ] -> is_sleeping() )
+      {
+        continue;
+      }
+      p() -> pet.sef[ i ] -> trigger_attack( sef_ability, this );
     }
   }
 };
