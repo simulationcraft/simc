@@ -80,7 +80,14 @@ struct monk_t;
 enum stance_e { STURDY_OX = 0x1, FIERCE_TIGER = 0x2, SPIRITED_CRANE = 0x4, WISE_SERPENT = 0x8 };
 
 enum sef_pet_e { SEF_FIRE = 0, SEF_STORM, SEF_EARTH, SEF_PET_MAX };
-enum sef_ability_e { SEF_NONE = -1, SEF_JAB, SEF_TIGER_PALM, SEF_BLACKOUT_KICK, SEF_MAX };
+enum sef_ability_e {
+  SEF_NONE = -1,
+  SEF_JAB,
+  SEF_TIGER_PALM,
+  SEF_BLACKOUT_KICK,
+  SEF_RISING_SUN_KICK,
+  SEF_MAX
+};
 
 namespace monk_util
 {
@@ -581,6 +588,16 @@ struct jade_serpent_statue_t: public statue_t
 
 struct storm_earth_and_fire_pet_t : public pet_t
 {
+  struct sef_td_t: public actor_pair_t
+  {
+    debuff_t* rising_sun_kick;
+
+    sef_td_t( player_t* target, storm_earth_and_fire_pet_t* source ) :
+      actor_pair_t( target, source ),
+      rising_sun_kick( buff_creator_t( *this, "rising_sun_kick" ).spell( source -> find_spell( 130320 ) ) )
+    { }
+  };
+
   // Storm, Earth, and Fire abilities begin =================================
 
   struct sef_melee_attack_t : public melee_attack_t
@@ -621,6 +638,30 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       return a;
     }
+
+    double composite_target_multiplier( player_t* t ) const
+    {
+      double m = sef_melee_attack_t::composite_target_multiplier( t );
+
+      const sef_td_t* tdata = td( t );
+      if ( tdata -> rising_sun_kick -> check() )
+      {
+        double mul = tdata -> rising_sun_kick -> data().effectN( 1 ).percent();
+
+        // Hotfix nerf to 10% (down from 20%) on 2014/12/08
+        if ( player -> wod_hotfix )
+        {
+          mul *= 0.5;
+        }
+
+        m *= 1.0 + mul;
+      }
+
+      return m;
+    }
+
+    sef_td_t* td( player_t* t ) const
+    { return p() -> get_target_data( t ); }
 
     monk_t* o()
     { return debug_cast<monk_t*>( player -> cast_pet() -> owner ); }
@@ -667,16 +708,25 @@ struct storm_earth_and_fire_pet_t : public pet_t
         owner_state -> target = state -> target;
         owner_state -> n_targets = state -> n_targets;
         owner_state -> chain_target = state -> chain_target;
-        source_action -> snapshot_internal( owner_state, flags, rt );
+        // We don't need to snapshot owner AP or target based multipliers, we
+        // will get those on our own
+        source_action -> snapshot_internal( owner_state, flags & ~( STATE_AP | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA ), rt );
 
         // Copy owner stats to our state object, including any/all multipliers
         // for the given ability.
         state -> copy_state( owner_state );
 
         // Storm, Earth, and Fire pets need to re-snapshot attack power due to
-        // AP inheritance coefficient.
+        // AP inheritance coefficient, and target multipliers because it has
+        // its own debuffs.
         if ( flags & STATE_AP )
           state -> attack_power = composite_attack_power() * player -> composite_attack_power_multiplier();
+
+        if ( flags & STATE_TGT_MUL_DA )
+          state -> target_da_multiplier = composite_target_da_multiplier( state -> target );
+
+        if ( flags & STATE_TGT_MUL_TA )
+          state -> target_ta_multiplier = composite_target_ta_multiplier( state -> target );
 
         // Release the used owner state object
         action_state_t::release( owner_state );
@@ -817,12 +867,60 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
+  struct sef_rising_sun_kick_t : public sef_melee_attack_t
+  {
+    struct sef_rsk_debuff_t : public sef_melee_attack_t
+    {
+      sef_rsk_debuff_t( storm_earth_and_fire_pet_t* player ) :
+        sef_melee_attack_t( "rsk_debuff", player, player -> owner -> find_spell( 130320 ) )
+      {
+        may_crit = may_miss = may_block = callbacks = false;
+        quiet = dual = true;
+
+        weapon_power_mod = 0;
+        aoe = -1;
+      }
+
+      void init()
+      {
+        sef_melee_attack_t::init();
+
+        snapshot_flags = update_flags = 0;
+      }
+
+      void impact( action_state_t* state )
+      {
+        sef_melee_attack_t::impact( state );
+
+        td( state -> target ) -> rising_sun_kick -> trigger();
+      }
+    };
+
+    sef_rsk_debuff_t* debuff;
+
+    sef_rising_sun_kick_t( storm_earth_and_fire_pet_t* player ) :
+      sef_melee_attack_t( "rising_sun_kick", player, player -> o() -> spec.rising_sun_kick ),
+      debuff( new sef_rsk_debuff_t( player ) )
+    { }
+
+    void execute()
+    {
+      sef_melee_attack_t::execute();
+
+      debuff -> schedule_execute();
+    }
+  };
+
   // Storm, Earth, and Fire abilities end ===================================
 
   // SEF has its own Tiger Power armor penetration buff
   buff_t* tiger_power;
 
   std::vector<sef_melee_attack_t*> attacks;
+
+private:
+  target_specific_t<sef_td_t*> target_data;
+public:
 
   storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield ):
     pet_t( sim, owner, name, true ),
@@ -851,6 +949,16 @@ struct storm_earth_and_fire_pet_t : public pet_t
     return debug_cast<const monk_t*>( owner );
   }
 
+  sef_td_t* get_target_data( player_t* target ) const
+  {
+    sef_td_t*& td = target_data[ target ];
+    if ( ! td )
+    {
+      td = new sef_td_t( target, const_cast< storm_earth_and_fire_pet_t*>( this ) );
+    }
+    return td;
+  }
+
   void create_buffs()
   {
     pet_t::create_buffs();
@@ -863,9 +971,10 @@ struct storm_earth_and_fire_pet_t : public pet_t
   {
     pet_t::init_spells();
 
-    attacks[ SEF_JAB           ] = new sef_jab_t( this );
-    attacks[ SEF_TIGER_PALM    ] = new sef_tiger_palm_t( this );
-    attacis[ SEF_BLACKOUT_KICK ] = new sef_blackout_kick_t( this );
+    attacks[ SEF_JAB             ] = new sef_jab_t( this );
+    attacks[ SEF_TIGER_PALM      ] = new sef_tiger_palm_t( this );
+    attacks[ SEF_BLACKOUT_KICK   ] = new sef_blackout_kick_t( this );
+    attacks[ SEF_RISING_SUN_KICK ] = new sef_rising_sun_kick_t( this );
   }
 
   void init_action_list()
