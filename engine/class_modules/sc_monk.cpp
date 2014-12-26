@@ -922,15 +922,16 @@ struct storm_earth_and_fire_pet_t : public pet_t
       aoe = -1;
     }
 
-    double composite_da_multiplier( const action_state_t* state ) const
+    // Fists of Fury has to snapshot direct amount multiplier itself, so we can
+    // apply a proper damage division to the targets.
+    void snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt )
     {
-      double m = sef_melee_attack_t::composite_da_multiplier( state );
+      sef_melee_attack_t::snapshot_internal( state, flags, rt );
+
       if ( state -> target != player -> target )
       {
-        m *= 1.0 / state -> n_targets;
+        state -> da_multiplier /= state -> n_targets;
       }
-
-      return m;
     }
   };
 
