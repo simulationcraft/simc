@@ -69,7 +69,7 @@ race=night_elf
 spec=brewmaster
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.01.111
+talents=http://us.battle.net/wow/en/tool/talent-calculator#faa!1022001
 glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 
 head=acidic_jaws,id=113880,bonus_id=566
@@ -97,7 +97,7 @@ race=night_elf
 spec=brewmaster
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.02.112
+talents=http://us.battle.net/wow/en/tool/talent-calculator#faa!1022012
 glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 
 head=acidic_jaws,id=113880,bonus_id=566
@@ -125,7 +125,7 @@ race=night_elf
 spec=brewmaster
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.01.111
+talents=http://us.battle.net/wow/en/tool/talent-calculator#faa!1022001
 glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 
 head=acidic_jaws,id=113880,bonus_id=566
@@ -152,7 +152,7 @@ race=night_elf
 spec=brewmaster
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.02.112
+talents=http://us.battle.net/wow/en/tool/talent-calculator#faa!1022012
 glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 
 head=acidic_jaws,id=113880,bonus_id=566

@@ -65,7 +65,7 @@ race=night_elf
 spec=brewmaster
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.01.111
+talents=http://us.battle.net/wow/en/tool/talent-calculator#faa!1022001
 glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 
 head=blackwater_helm,id=109979,bonus_id=524
@@ -94,7 +94,7 @@ race=night_elf
 spec=brewmaster
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.02.112
+talents=http://us.battle.net/wow/en/tool/talent-calculator#faa!1022012
 glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 
 head=blackwater_helm,id=109979,bonus_id=524
@@ -123,7 +123,7 @@ race=night_elf
 spec=brewmaster
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.01.111
+talents=http://us.battle.net/wow/en/tool/talent-calculator#faa!1022001
 glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 
 head=blackwater_helm,id=109979,bonus_id=524
@@ -151,7 +151,7 @@ race=night_elf
 spec=brewmaster
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!.02.112
+talents=http://us.battle.net/wow/en/tool/talent-calculator#faa!1022012
 glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 
 head=blackwater_helm,id=109979,bonus_id=524
