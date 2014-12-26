@@ -15,14 +15,15 @@ spec=marksmanship
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_agility_flask
-actions.precombat+=/food,type=blackrock_barbecue
+actions.precombat+=/food,type=calamari_crepes
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/exotic_munitions,ammo_type=poisoned,if=active_enemies<3
 actions.precombat+=/exotic_munitions,ammo_type=incendiary,if=active_enemies>=3
 actions.precombat+=/potion,name=draenic_agility
-actions.precombat+=/aimed_shot
+actions.precombat+=/glaive_toss
+actions.precombat+=/focusing_shot,if=!talent.glaive_toss.enabled
 
 # Executed every time the actor is available.
 

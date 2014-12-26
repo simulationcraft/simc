@@ -3776,7 +3776,7 @@ void hunter_t::init_action_list()
     {
       std::string food_action = "food,type=";
       if ( level > 90 )
-        food_action += "blackrock_barbecue";
+        food_action += "calamari_crepes";
       else
         food_action += ( level > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
       precombat -> add_action( food_action );
@@ -3790,8 +3790,8 @@ void hunter_t::init_action_list()
     //Pre-pot
     add_potion_action( precombat, "draenic_agility", "virmens_bite" );
 
-    if ( specialization() == HUNTER_MARKSMANSHIP )
-      precombat -> add_action( "aimed_shot" );
+    precombat -> add_action( "glaive_toss" );
+    precombat -> add_action( "focusing_shot,if=!talent.glaive_toss.enabled" );
 
     switch ( specialization() )
     {
@@ -3961,14 +3961,15 @@ void hunter_t::apl_surv()
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>1" );
 
   default_list -> add_talent( this, "Stampede", "if=buff.potion.up|(cooldown.potion.remains&(buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up))|target.time_to_die<=25" );
+  default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_action( this, "Black Arrow", "if=!ticking" );
   default_list -> add_action( this, "Explosive Shot" );
-  default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Dire Beast" );
   default_list -> add_action( this, "Arcane Shot", "if=buff.thrill_of_the_hunt.react&focus>35&cast_regen<=focus.deficit|dot.serpent_sting.remains<=3|target.time_to_die<4.5" );
-  default_list -> add_talent( this, "Glaive Toss" );
-  default_list -> add_talent( this, "Powershot" );
-  default_list -> add_talent( this, "Barrage" );
+  default_list -> add_talent( this, "Explosive Trap" );
+  // default_list -> add_talent( this, "Glaive Toss" );
+  // default_list -> add_talent( this, "Powershot" );
+  // default_list -> add_talent( this, "Barrage" );
   default_list -> add_action( this, "Cobra Shot", "if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&(14+cast_regen)<=focus.deficit<80", "Cast a second shot for steady focus if that won't cap us." );
   default_list -> add_action( this, "Arcane Shot", "if=focus>=80|talent.focusing_shot.enabled" );
   default_list -> add_talent( this, "Focusing Shot" );

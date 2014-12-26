@@ -15,13 +15,15 @@ spec=survival
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_agility_flask
-actions.precombat+=/food,type=blackrock_barbecue
+actions.precombat+=/food,type=calamari_crepes
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/exotic_munitions,ammo_type=poisoned,if=active_enemies<3
 actions.precombat+=/exotic_munitions,ammo_type=incendiary,if=active_enemies>=3
 actions.precombat+=/potion,name=draenic_agility
+actions.precombat+=/glaive_toss
+actions.precombat+=/focusing_shot,if=!talent.glaive_toss.enabled
 
 # Executed every time the actor is available.
 
@@ -33,14 +35,11 @@ actions+=/berserking
 actions+=/potion,name=draenic_agility,if=(((cooldown.stampede.remains<1)&(cooldown.a_murder_of_crows.remains<1))&(trinket.stat.any.up|buff.archmages_greater_incandescence_agi.up))|target.time_to_die<=25
 actions+=/call_action_list,name=aoe,if=active_enemies>1
 actions+=/stampede,if=buff.potion.up|(cooldown.potion.remains&(buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up))|target.time_to_die<=25
+actions+=/a_murder_of_crows
 actions+=/black_arrow,if=!ticking
 actions+=/explosive_shot
-actions+=/a_murder_of_crows
 actions+=/dire_beast
 actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react&focus>35&cast_regen<=focus.deficit|dot.serpent_sting.remains<=3|target.time_to_die<4.5
-actions+=/glaive_toss
-actions+=/powershot
-actions+=/barrage
 # Cast a second shot for steady focus if that won't cap us.
 actions+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&(14+cast_regen)<=focus.deficit<80
 actions+=/arcane_shot,if=focus>=80|talent.focusing_shot.enabled

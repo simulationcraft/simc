@@ -22,6 +22,8 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/exotic_munitions,ammo_type=poisoned,if=active_enemies<3
 actions.precombat+=/exotic_munitions,ammo_type=incendiary,if=active_enemies>=3
 actions.precombat+=/potion,name=virmens_bite
+actions.precombat+=/glaive_toss
+actions.precombat+=/focusing_shot,if=!talent.glaive_toss.enabled
 
 # Executed every time the actor is available.
 
