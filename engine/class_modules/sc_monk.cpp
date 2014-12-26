@@ -79,13 +79,14 @@ struct monk_t;
 
 enum stance_e { STURDY_OX = 0x1, FIERCE_TIGER = 0x2, SPIRITED_CRANE = 0x4, WISE_SERPENT = 0x8 };
 
-enum sef_ability_e { SEF_NONE = -1, SEF_JAB, SEF_MAX };
+enum sef_ability_e { SEF_NONE = -1, SEF_JAB, SEF_TIGER_PALM, SEF_MAX };
 
 namespace monk_util
 {
-// Special Monk Attack Weapon damage collection, if the pointers mh or oh are set, instead of the classical action_t::weapon
-// Damage is divided instead of multiplied by the weapon speed, AP portion is not multiplied by weapon speed.
-// Both MH and OH are directly weaved into one damage number
+// Special Monk Attack Weapon damage collection, if the pointers mh or oh are
+// set, instead of the classical action_t::weapon Damage is divided instead of
+// multiplied by the weapon speed, AP portion is not multiplied by weapon
+// speed.  Both MH and OH are directly weaved into one damage number
 double monk_weapon_damage( action_t* action,
                            weapon_t* mh,
                            weapon_t* oh,
@@ -430,7 +431,7 @@ public:
 
   struct pets_t
   {
-    pets::storm_earth_and_fire_pet_t* sef[ 2 ];
+    pets::storm_earth_and_fire_pet_t* sef[ 3 ];
   } pet;
 
   // Options
@@ -606,6 +607,19 @@ struct storm_earth_and_fire_pet_t : public pet_t
       }
     }
 
+    double target_armor( player_t* t ) const
+    {
+      double a = melee_attack_t::target_armor( t );
+
+      if ( p() -> tiger_power -> up() )
+        a *= 1.0 - p() -> tiger_power -> check() * p() -> tiger_power -> data().effectN( 1 ).percent();
+
+      return a;
+    }
+
+    monk_t* o()
+    { return debug_cast<monk_t*>( player -> cast_pet() -> owner ); }
+
     const monk_t* o() const
     { return debug_cast<const monk_t*>( player -> cast_pet() -> owner ); }
 
@@ -615,9 +629,11 @@ struct storm_earth_and_fire_pet_t : public pet_t
     storm_earth_and_fire_pet_t* p()
     { return debug_cast<storm_earth_and_fire_pet_t*>( player ); }
 
+    // SEF uses the "normal" monk weapon damage calculation, except for auto
+    // attacks.
     double calculate_weapon_damage( double attack_power )
     {
-      if ( main_hand && off_hand )
+      if ( main_hand || ( main_hand && off_hand ) )
         return monk_util::monk_weapon_damage( this, main_hand, off_hand, weapon_power_mod, attack_power );
       else
         return melee_attack_t::calculate_weapon_damage( attack_power );
@@ -631,10 +647,16 @@ struct storm_earth_and_fire_pet_t : public pet_t
       melee_attack_t::schedule_execute( state );
     }
 
+    // TODO: This may need a flag (similar to Shadow Reflection) to indincate
+    // that we're snapshotting for the SEF. This is necessary if we need to
+    // filter out specific multipliers because they do not affect the pets. For
+    // now, it's left out.
     void snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt )
     {
       if ( source_action )
       {
+        o() -> cache.invalidate_all();
+
         // Get an owner state object, and populate it with owner current stats
         action_state_t* owner_state = source_action -> get_state();
         owner_state -> target = state -> target;
@@ -646,9 +668,15 @@ struct storm_earth_and_fire_pet_t : public pet_t
         // tweaks here if the AP coefficient turns out to be <100%
         state -> copy_state( owner_state );
 
+        // Storm, Earth, and Fire pets need to re-snapshot attack power due to
+        // AP inheritance coefficient.
+        if ( flags & STATE_AP )
+          state -> attack_power = composite_attack_power() * player -> composite_attack_power_multiplier();
+
         // Release the used owner state object
         action_state_t::release( owner_state );
       }
+      // Autoattack snapshots are not inherited from the player
       else
       {
         melee_attack_t::snapshot_internal( state, flags, rt );
@@ -668,6 +696,12 @@ struct storm_earth_and_fire_pet_t : public pet_t
       trigger_gcd = timespan_t::zero();
       special = false;
       auto_attack = true;
+
+      if ( player -> dual_wield() )
+      {
+        base_hit -= 0.19;
+        base_multiplier *= 1.0 + o() -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent();
+      }
     }
 
     void execute()
@@ -697,7 +731,10 @@ struct storm_earth_and_fire_pet_t : public pet_t
       parse_options( options_str );
 
       player -> main_hand_attack = new melee_t( "auto_attack_mh", player, &( player -> main_hand_weapon ) );
-      player -> off_hand_attack = new melee_t( "auto_attack_oh", player, &( player -> off_hand_weapon ) );
+      if ( player -> dual_wield() )
+      {
+        player -> off_hand_attack = new melee_t( "auto_attack_oh", player, &( player -> off_hand_weapon ) );
+      }
 
       trigger_gcd = timespan_t::zero();
     }
@@ -714,9 +751,14 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       if ( player -> is_moving() ) return false;
 
-      return ( player->main_hand_attack -> execute_event == 0 ); // not swinging
+      return ( player -> main_hand_attack -> execute_event == 0 ); // not swinging
     }
   };
+
+  // Special attacks ========================================================
+  //
+  // Note, these automatically use the owner's multipliers, so there's no need
+  // to adjust anything here.
 
   struct sef_jab_t : public sef_melee_attack_t
   {
@@ -725,34 +767,68 @@ struct storm_earth_and_fire_pet_t : public pet_t
     { }
   };
 
+  struct sef_tiger_palm_t : public sef_melee_attack_t
+  {
+    sef_tiger_palm_t( storm_earth_and_fire_pet_t* player ) :
+      sef_melee_attack_t( "tiger_palm", player, player -> owner -> find_class_spell( "Tiger Palm" ) )
+    { }
+
+    void execute()
+    {
+      sef_melee_attack_t::execute();
+
+      p() -> tiger_power -> trigger();
+    }
+  };
+
   // Storm, Earth, and Fire abilities end ===================================
+
+  // SEF has its own Tiger Power armor penetration buff
+  buff_t* tiger_power;
 
   std::vector<sef_melee_attack_t*> attacks;
 
-  storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner ):
+  storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield ):
     pet_t( sim, owner, name, true ),
-    attacks( SEF_MAX )
+    tiger_power( 0 ), attacks( SEF_MAX )
   {
-    // SEF pets have both main and offhand weapons.
     main_hand_weapon.type = WEAPON_BEAST;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+    main_hand_weapon.swing_time = timespan_t::from_seconds( dual_wield ? 2.6 : 3.6 );
 
-    main_hand_weapon.type = WEAPON_BEAST;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+    if ( dual_wield )
+    {
+      off_hand_weapon.type = WEAPON_BEAST;
+      off_hand_weapon.swing_time = timespan_t::from_seconds( 2.6 );
+    }
 
-    owner_coeff.ap_from_ap = 1.0;
+    // TODO: Check if the 0.74164 is global, or AA only?
+    owner_coeff.ap_from_ap = dual_wield ? 0.74164 : 1.0;
   }
 
   monk_t* o()
   {
-    return static_cast<monk_t*>( owner );
+    return debug_cast<monk_t*>( owner );
+  }
+
+  const monk_t* o() const
+  {
+    return debug_cast<const monk_t*>( owner );
+  }
+
+  void create_buffs()
+  {
+    pet_t::create_buffs();
+
+    tiger_power = buff_creator_t( this, "tiger_power", o() -> find_class_spell( "Tiger Palm" ) -> effectN( 2 ).trigger() )
+      .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   }
 
   void init_spells()
   {
     pet_t::init_spells();
 
-    attacks[ SEF_JAB ] = new sef_jab_t( this );
+    attacks[ SEF_JAB        ] = new sef_jab_t( this );
+    attacks[ SEF_TIGER_PALM ] = new sef_tiger_palm_t( this );
   }
 
   void init_action_list()
@@ -776,7 +852,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
     pet_t::summon( duration );
 
     o() -> buff.storm_earth_and_fire -> trigger();
-    // Note, storm_earth_fire_t has already set the correct target
+    // Note, storm_earth_fire_t (the summoning spell) has already set the
+    // correct target
     monk_td_t* owner_td = o() -> get_target_data( target );
     assert( owner_td -> debuff.storm_earth_and_fire -> check() == 0 );
     owner_td -> debuff.storm_earth_and_fire -> trigger();
@@ -794,6 +871,25 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
 
     o() -> buff.storm_earth_and_fire -> decrement();
+  }
+
+  double composite_melee_speed() const
+  {
+    double cas = pet_t::composite_melee_speed();
+
+    // 2H version inherits the owner's way of the monk attack speed buff
+    if ( ! dual_wield() )
+    {
+      cas *= 1.0 / ( 1.0 + o() -> spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() );
+      // TODO: .. and then there's a bug that slows down the attack speed by 2%
+      // apparently. Recheck in 6.1.
+      if ( p() -> bugs )
+      {
+        cas *= 1.02;
+      }
+    }
+
+    return cas;
   }
 
   void trigger_attack( sef_ability_e ability, action_t* action )
@@ -1385,6 +1481,7 @@ struct tiger_palm_t: public monk_melee_attack_t
     monk_melee_attack_t( "tiger_palm", p, p -> find_class_spell( "Tiger Palm" ) )
   {
     parse_options( options_str );
+    sef_ability = SEF_TIGER_PALM;
     stancemask = STURDY_OX | FIERCE_TIGER | SPIRITED_CRANE;
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
@@ -2935,9 +3032,11 @@ struct storm_earth_and_fire_t: public monk_spell_t
 
         assert( p() -> buff.storm_earth_and_fire -> check() == 0 );
       }
-      // Can fit a clone on the target
+      // Can fit a clone on the target, randomize which clone is spawned
+      // TODO: Is this really random?
       else
       {
+        std::vector<size_t> sef_idx;
         for ( size_t i = 0; i < sizeof_array( p() -> pet.sef ); i++ )
         {
           if ( ! p() -> pet.sef[ i ] -> is_sleeping() )
@@ -2945,10 +3044,14 @@ struct storm_earth_and_fire_t: public monk_spell_t
             continue;
           }
 
-          p() -> pet.sef[ i ] -> target = execute_state -> target;
-          p() -> pet.sef[ i ] -> summon();
-          break;
+          sef_idx.push_back( i );
         }
+
+        size_t idx = sef_idx[ rng().range( 0, sef_idx.size() ) ];
+        assert( idx < sef_idx.size() );
+
+        p() -> pet.sef[ idx ] -> target = execute_state -> target;
+        p() -> pet.sef[ idx ] -> summon();
       }
     }
     // Clone on target, despawn that specific clone
@@ -4033,8 +4136,9 @@ void monk_t::create_pets()
   base_t::create_pets();
 
   create_pet( "xuen_the_white_tiger" );
-  pet.sef[ 0 ] = new pets::storm_earth_and_fire_pet_t( "fire_spirit", sim, this );
-  pet.sef[ 1 ] = new pets::storm_earth_and_fire_pet_t( "earth_spirit", sim, this );
+  pet.sef[ SEF_FIRE ] = new pets::storm_earth_and_fire_pet_t( "fire_spirit", sim, this, true );
+  pet.sef[ SEF_FIRE ] = new pets::storm_earth_and_fire_pet_t( "storm_spirit", sim, this, true );
+  pet.sef[ SEF_EARTH ] = new pets::storm_earth_and_fire_pet_t( "earth_spirit", sim, this, false );
 }
 
 // monk_t::init_spells ======================================================
