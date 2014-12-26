@@ -79,7 +79,8 @@ struct monk_t;
 
 enum stance_e { STURDY_OX = 0x1, FIERCE_TIGER = 0x2, SPIRITED_CRANE = 0x4, WISE_SERPENT = 0x8 };
 
-enum sef_ability_e { SEF_NONE = -1, SEF_JAB, SEF_TIGER_PALM, SEF_MAX };
+enum sef_pet_e { SEF_FIRE = 0, SEF_STORM, SEF_EARTH, SEF_PET_MAX };
+enum sef_ability_e { SEF_NONE = -1, SEF_JAB, SEF_TIGER_PALM, SEF_BLACKOUT_KICK, SEF_MAX };
 
 namespace monk_util
 {
@@ -431,7 +432,7 @@ public:
 
   struct pets_t
   {
-    pets::storm_earth_and_fire_pet_t* sef[ 3 ];
+    pets::storm_earth_and_fire_pet_t* sef[ SEF_PET_MAX ];
   } pet;
 
   // Options
@@ -594,10 +595,14 @@ struct storm_earth_and_fire_pet_t : public pet_t
                         const spell_data_t* data = spell_data_t::nil(),
                         weapon_t* w = 0 ) :
       melee_attack_t( n, p, data ),
+      // Automatically presume main- and off-hand weapons if there's no
+      // specific weapon given
       main_hand( ! w ? &( p -> main_hand_weapon ) : 0 ),
       off_hand( ! w ? &( p -> off_hand_weapon ) : 0 ),
       source_action( 0 )
     {
+      // Make SEF attacks always background, so they do not consume resources
+      // or do anything associated with "foreground actions".
       background = may_crit = true;
       school = SCHOOL_PHYSICAL;
 
@@ -641,7 +646,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
     void schedule_execute( action_state_t* state = 0 )
     {
-      // Target always follows the SEF clone's target, which is assigned during summon time
+      // Target always follows the SEF clone's target, which is assigned during
+      // summon time
       target = player -> target;
 
       melee_attack_t::schedule_execute( state );
@@ -650,13 +656,12 @@ struct storm_earth_and_fire_pet_t : public pet_t
     // TODO: This may need a flag (similar to Shadow Reflection) to indincate
     // that we're snapshotting for the SEF. This is necessary if we need to
     // filter out specific multipliers because they do not affect the pets. For
-    // now, it's left out.
+    // now, it's left out. If it is put in, owner caches have to be invalidated
+    // before and after the snapshotting.
     void snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt )
     {
       if ( source_action )
       {
-        o() -> cache.invalidate_all();
-
         // Get an owner state object, and populate it with owner current stats
         action_state_t* owner_state = source_action -> get_state();
         owner_state -> target = state -> target;
@@ -664,8 +669,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
         owner_state -> chain_target = state -> chain_target;
         source_action -> snapshot_internal( owner_state, flags, rt );
 
-        // Copy owner stats to our state object. Note that we may need to do some
-        // tweaks here if the AP coefficient turns out to be <100%
+        // Copy owner stats to our state object, including any/all multipliers
+        // for the given ability.
         state -> copy_state( owner_state );
 
         // Storm, Earth, and Fire pets need to re-snapshot attack power due to
@@ -691,7 +696,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       background = repeating = may_crit = may_glance = true;
 
-      // Use damage numbers from the level-scaled weapon
       base_execute_time = w -> swing_time;
       trigger_gcd = timespan_t::zero();
       special = false;
@@ -781,6 +785,38 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
+  struct sef_blackout_kick_t : public sef_melee_attack_t
+  {
+    struct sef_blackout_kick_dot_t : public residual_action::residual_periodic_action_t < sef_melee_attack_t >
+    {
+      sef_blackout_kick_dot_t( storm_earth_and_fire_pet_t* p ):
+        base_t( "blackout_kick_dot", p, p -> find_spell( 128531 ) )
+      {
+        may_miss = may_crit = false;
+      }
+    };
+
+    sef_blackout_kick_dot_t* dot;
+
+    sef_blackout_kick_t( storm_earth_and_fire_pet_t* player ) :
+      sef_melee_attack_t( "blackout_kick", player, player -> owner -> find_class_spell( "Blackout Kick" ) ),
+      dot( new sef_blackout_kick_dot_t( player ) )
+    { }
+
+    void impact( action_state_t* state )
+    {
+      sef_melee_attack_t::impact( state );
+
+      if ( ( p() -> current.position == POSITION_BACK || p() -> o() -> glyph.blackout_kick ) &&
+           ( result_is_hit( state -> result ) || result_is_multistrike( state -> result ) ) )
+      {
+        residual_action::trigger( dot,
+                                  state -> target,
+                                  state -> result_amount * data().effectN( 2 ).percent() );
+      }
+    }
+  };
+
   // Storm, Earth, and Fire abilities end ===================================
 
   // SEF has its own Tiger Power armor penetration buff
@@ -827,8 +863,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
   {
     pet_t::init_spells();
 
-    attacks[ SEF_JAB        ] = new sef_jab_t( this );
-    attacks[ SEF_TIGER_PALM ] = new sef_tiger_palm_t( this );
+    attacks[ SEF_JAB           ] = new sef_jab_t( this );
+    attacks[ SEF_TIGER_PALM    ] = new sef_tiger_palm_t( this );
+    attacis[ SEF_BLACKOUT_KICK ] = new sef_blackout_kick_t( this );
   }
 
   void init_action_list()
@@ -883,7 +920,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       cas *= 1.0 / ( 1.0 + o() -> spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() );
       // TODO: .. and then there's a bug that slows down the attack speed by 2%
       // apparently. Recheck in 6.1.
-      if ( p() -> bugs )
+      if ( bugs )
       {
         cas *= 1.02;
       }
@@ -1596,6 +1633,8 @@ struct blackout_kick_t: public monk_melee_attack_t
 
     if ( p -> spec.teachings_of_the_monastery -> ok() )
       aoe = 1 + p -> spec.teachings_of_the_monastery -> effectN( 4 ).base_value();
+
+    sef_ability = SEF_BLACKOUT_KICK;
   }
 
   virtual void impact( action_state_t* s )
