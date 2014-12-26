@@ -39,6 +39,7 @@ actions+=/black_arrow,if=!ticking
 actions+=/explosive_shot
 actions+=/dire_beast
 actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react&focus>35&cast_regen<=focus.deficit|dot.serpent_sting.remains<=3|target.time_to_die<4.5
+actions+=/explosive_trap
 # Cast a second shot for steady focus if that won't cap us.
 actions+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&(14+cast_regen)<=focus.deficit<80
 actions+=/arcane_shot,if=focus>=80|talent.focusing_shot.enabled

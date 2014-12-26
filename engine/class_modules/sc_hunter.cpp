@@ -3966,7 +3966,7 @@ void hunter_t::apl_surv()
   default_list -> add_action( this, "Explosive Shot" );
   default_list -> add_talent( this, "Dire Beast" );
   default_list -> add_action( this, "Arcane Shot", "if=buff.thrill_of_the_hunt.react&focus>35&cast_regen<=focus.deficit|dot.serpent_sting.remains<=3|target.time_to_die<4.5" );
-  default_list -> add_talent( this, "Explosive Trap" );
+  default_list -> add_action( this, "Explosive Trap" );
   // default_list -> add_talent( this, "Glaive Toss" );
   // default_list -> add_talent( this, "Powershot" );
   // default_list -> add_talent( this, "Barrage" );
