@@ -642,7 +642,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
     double composite_target_multiplier( player_t* t ) const
     {
-      double m = sef_melee_attack_t::composite_target_multiplier( t );
+      double m = melee_attack_t::composite_target_multiplier( t );
 
       const sef_td_t* tdata = td( t );
       if ( tdata -> rising_sun_kick -> check() )
@@ -4308,7 +4308,7 @@ void monk_t::create_pets()
 
   create_pet( "xuen_the_white_tiger" );
   pet.sef[ SEF_FIRE ] = new pets::storm_earth_and_fire_pet_t( "fire_spirit", sim, this, true );
-  pet.sef[ SEF_FIRE ] = new pets::storm_earth_and_fire_pet_t( "storm_spirit", sim, this, true );
+  pet.sef[ SEF_STORM ] = new pets::storm_earth_and_fire_pet_t( "storm_spirit", sim, this, true );
   pet.sef[ SEF_EARTH ] = new pets::storm_earth_and_fire_pet_t( "earth_spirit", sim, this, false );
 }
 
