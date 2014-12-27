@@ -289,6 +289,12 @@ public:
       pyro_switch_t() { reset(); }
   } pyro_switch;
 
+  struct burn_switch_t
+  {
+    bool burn_state;
+    void reset() { burn_state = 0; }
+    burn_switch_t() { reset(); }
+  } burn_switch;
 
 public:
   int current_arcane_charges;
@@ -316,6 +322,7 @@ public:
     spec( specializations_t() ),
     talents( talents_list_t() ),
     pyro_switch( pyro_switch_t() ),
+    burn_switch( burn_switch_t() ),
     current_arcane_charges()
   {
     //Active
@@ -4203,6 +4210,66 @@ struct stop_pyro_chain_t : public action_t
   }
 };
 
+// Arcane Mage "Burn" State Switch Action =====================================
+
+struct start_burn_sequence_t : public action_t
+{
+  // Infinite loop protection
+  timespan_t last_execute;
+
+  start_burn_sequence_t( mage_t* p, const std::string& options_str ):
+    action_t( ACTION_USE, "start_burn_sequence", p ),
+    last_execute( timespan_t::min() )
+  {
+    parse_options( options_str );
+    trigger_gcd = timespan_t::zero();
+    harmful = false;
+    ignore_false_positive = true;
+  }
+
+  virtual void execute()
+  {
+    mage_t* p = debug_cast<mage_t*>( player );
+
+    if ( sim -> current_time() == last_execute )
+    {
+      sim -> errorf( "%s enter_burn_state infinite loop detected (no time passing between executes) at '%s'",
+        p -> name(), signature_str.c_str() );
+      sim -> cancel();
+      return;
+    }
+
+    last_execute = sim -> current_time();
+
+    p -> burn_switch.burn_state = true;
+
+  }
+
+  void reset()
+  {
+    action_t::reset();
+    last_execute = timespan_t::min();
+  }
+};
+
+struct stop_burn_sequence_t : public action_t
+{
+  stop_burn_sequence_t( mage_t* p, const std::string& options_str ):
+    action_t( ACTION_USE, "stop_burn_sequence", p )
+  {
+    parse_options( options_str );
+    trigger_gcd = timespan_t::zero();
+    harmful = false;
+    ignore_false_positive = true;
+  }
+
+  virtual void execute()
+  {
+      mage_t* p = debug_cast<mage_t*>( player );
+      p -> burn_switch.burn_state = false;
+  }
+};
+
 // Proxy cast Water Jet Action ================================================
 
 struct water_jet_t : public action_t
@@ -4364,6 +4431,9 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "presence_of_mind"  ) return new        presence_of_mind_t( this, options_str );
   if ( name == "slow"              ) return new                    slow_t( this, options_str );
   if ( name == "supernova"         ) return new               supernova_t( this, options_str );
+
+  if ( name == "start_burn_sequence"  ) return new        start_burn_sequence_t( this, options_str );
+  if ( name == "stop_burn_sequence"   ) return new        stop_burn_sequence_t(  this, options_str );
 
   // Fire
   if ( name == "blast_wave"        ) return new              blast_wave_t( this, options_str );
@@ -5693,6 +5763,20 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
     return new pyro_chain_expr_t( *this );
   }
 
+  // Arcane Burn Flag Expression ===============================================
+  if ( name_str == "burn_state" )
+  {
+    struct burn_switch_expr_t : public mage_expr_t
+    {
+      mage_t* mage;
+      burn_switch_expr_t( mage_t& m ) : mage_expr_t( "burn_state", m ), mage( &m )
+      {}
+      virtual double evaluate()
+      { return mage -> burn_switch.burn_state; }
+    };
+
+    return new burn_switch_expr_t( *this );
+  }
 
   if ( util::str_compare_ci( name_str, "shooting_icicles" ) )
   {
