@@ -5334,7 +5334,9 @@ void mage_t::apl_frost()
                            "if=prev.water_jet",
                            "Water Jet sequence" );
   water_jet -> add_action( this, "Ice Lance",
-                           "if=buff.fingers_of_frost.react&action.frostbolt.in_flight" );
+                           "if=buff.fingers_of_frost.react=2&action.frostbolt.in_flight" );
+  water_jet -> add_action( this, "Frostbolt",
+                           "if=debuff.water_jet.remains>cast_time+travel_time" );
   water_jet -> add_action( "call_action_list,name=single_target" );
 
 
