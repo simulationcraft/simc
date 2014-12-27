@@ -5256,6 +5256,8 @@ void mage_t::apl_frost()
 
   action_priority_list_t* crystal_sequence  = get_action_priority_list( "crystal_sequence" );
   action_priority_list_t* cooldowns         = get_action_priority_list( "cooldowns"        );
+  action_priority_list_t* init_water_jet    = get_action_priority_list( "init_water_jet"   );
+  action_priority_list_t* water_jet         = get_action_priority_list( "water_jet"        );
   action_priority_list_t* aoe               = get_action_priority_list( "aoe"              );
   action_priority_list_t* single_target     = get_action_priority_list( "single_target"    );
 
@@ -5268,12 +5270,17 @@ void mage_t::apl_frost()
                               "if=movement.remains>0" );
   default_list -> add_action( this, "Time Warp",
                               "if=target.health.pct<25|time>5" );
+  default_list -> add_action( "call_action_list,name=water_jet,if=prev.water_jet|debuff.water_jet.remains>0" );
   default_list -> add_talent( this, "Mirror Image" );
   default_list -> add_talent( this, "Ice Floes",
                               "if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<action.frostbolt.cast_time)" );
-  default_list -> add_talent( this, "Rune of Power", "if=buff.rune_of_power.remains<cast_time" );
-  default_list -> add_talent( this, "Rune of Power", "if=(cooldown.icy_veins.remains<gcd.max&buff.rune_of_power.remains<20)|(cooldown.prismatic_crystal.remains<gcd.max&buff.rune_of_power.remains<10)" );
+  default_list -> add_talent( this, "Rune of Power",
+                              "if=buff.rune_of_power.remains<cast_time" );
+  default_list -> add_talent( this, "Rune of Power",
+                              "if=(cooldown.icy_veins.remains<gcd.max&buff.rune_of_power.remains<20)|(cooldown.prismatic_crystal.remains<gcd.max&buff.rune_of_power.remains<10)" );
   default_list -> add_action( "call_action_list,name=cooldowns,if=time_to_die<24" );
+  default_list -> add_action( "water_jet,if=time<1&!(talent.ice_nova.enabled&talent.prismatic_crystal.enabled)",
+                              "Water jet on pull for non IN+PC talent combos" );
   default_list -> add_action( "call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&(cooldown.prismatic_crystal.remains<=gcd.max|pet.prismatic_crystal.active)" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_list -> add_action( "call_action_list,name=single_target" );
@@ -5312,6 +5319,23 @@ void mage_t::apl_frost()
 
   for( size_t i = 0; i < item_actions.size(); i++ )
     cooldowns -> add_action( item_actions[i] );
+
+
+  init_water_jet -> add_talent( this, "Frost Bomb",
+                                "if=remains<3.6",
+                                "Water Jet initialization" );
+  init_water_jet -> add_action( this, "Ice Lance",
+                                "if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.water_jet.up" );
+  init_water_jet -> add_action( "water_jet,if=prev_gcd.frostbolt" );
+  init_water_jet -> add_action( this, "Frostbolt" );
+
+
+  water_jet -> add_action( this, "Frostbolt",
+                           "if=prev.water_jet",
+                           "Water Jet sequence" );
+  water_jet -> add_action( this, "Ice Lance",
+                           "if=buff.fingers_of_frost.react&action.frostbolt.in_flight" );
+  water_jet -> add_action( "call_action_list,name=single_target" );
 
 
   aoe -> add_action( "call_action_list,name=cooldowns",
@@ -5360,7 +5384,7 @@ void mage_t::apl_frost()
                                "Camp procs and spam Frostbolt while 4T17 buff is up" );
   single_target -> add_action( this, "Ice Lance",
                                "if=!talent.frost_bomb.enabled&buff.fingers_of_frost.react&(!talent.thermal_void.enabled|cooldown.icy_veins.remains>8)" );
-  single_target -> add_action( "water_jet,if=buff.fingers_of_frost.react=0&!dot.frozen_orb.ticking" );
+  single_target -> add_action( "call_action_list,name=init_water_jet,if=pet.water_elemental.cooldown.water_jet.remains<=gcd.max*(buff.fingers_of_frost.react+talent.frost_bomb.enabled)&!dot.frozen_orb.ticking" );
   single_target -> add_action( this, "Frostbolt" );
   single_target -> add_action( this, "Ice Lance", "moving=1" );
 
