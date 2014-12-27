@@ -5604,6 +5604,9 @@ void mage_t::arise()
   if ( talents.incanters_flow -> ok() )
     buffs.incanters_flow -> trigger();
 
+  if ( talents.prismatic_crystal -> ok() )
+    base.distance = 20;
+
   if ( perks.enhanced_frostbolt -> ok() && specialization() == MAGE_FROST )
     buffs.enhanced_frostbolt -> trigger();
 
