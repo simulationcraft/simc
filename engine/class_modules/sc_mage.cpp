@@ -282,19 +282,17 @@ public:
                       * comet_storm;
   } talents;
 
-  struct pyro_switch_t
+  struct state_switch_t
   {
       bool dump_state;
-      void reset() { dump_state = 0; }
-      pyro_switch_t() { reset(); }
-  } pyro_switch;
-
-  struct burn_switch_t
-  {
-    bool burn_state;
-    void reset() { burn_state = 0; }
-    burn_switch_t() { reset(); }
-  } burn_switch;
+      bool burn_rotation;
+      void reset() 
+      { 
+        dump_state = 0;
+        burn_rotation = 0;
+      }
+      state_switch_t() { reset(); }
+  } state_switch;
 
 public:
   int current_arcane_charges;
@@ -321,8 +319,7 @@ public:
     procs( procs_t() ),
     spec( specializations_t() ),
     talents( talents_list_t() ),
-    pyro_switch( pyro_switch_t() ),
-    burn_switch( burn_switch_t() ),
+    state_switch( state_switch_t() ),
     current_arcane_charges()
   {
     //Active
@@ -4182,7 +4179,7 @@ struct start_pyro_chain_t : public action_t
 
     last_execute = sim -> current_time();
 
-    p -> pyro_switch.dump_state = true;
+    p -> state_switch.dump_state = true;
   }
 
   void reset()
@@ -4206,7 +4203,7 @@ struct stop_pyro_chain_t : public action_t
   virtual void execute()
   {
       mage_t* p = debug_cast<mage_t*>( player );
-      p -> pyro_switch.dump_state = false;
+      p -> state_switch.dump_state = false;
   }
 };
 
@@ -4241,7 +4238,7 @@ struct start_burn_sequence_t : public action_t
 
     last_execute = sim -> current_time();
 
-    p -> burn_switch.burn_state = true;
+    p -> state_switch.burn_rotation = true;
 
   }
 
@@ -4266,7 +4263,7 @@ struct stop_burn_sequence_t : public action_t
   virtual void execute()
   {
       mage_t* p = debug_cast<mage_t*>( player );
-      p -> burn_switch.burn_state = false;
+      p -> state_switch.burn_rotation = false;
   }
 };
 
@@ -5534,7 +5531,7 @@ void mage_t::reset()
   rppm_pyromaniac.reset();
   rppm_arcane_instability.reset();
   last_bomb_target = 0;
-  pyro_switch.reset();
+  state_switch.reset();
 }
 
 // mage_t::regen  ===========================================================
@@ -5757,22 +5754,22 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
       pyro_chain_expr_t( mage_t& m ) : mage_expr_t( "pyro_chain", m ), mage( &m )
       {}
       virtual double evaluate()
-      { return mage -> pyro_switch.dump_state; }
+      { return mage -> state_switch.dump_state; }
     };
 
     return new pyro_chain_expr_t( *this );
   }
 
   // Arcane Burn Flag Expression ===============================================
-  if ( name_str == "burn_state" )
+  if ( name_str == "burn_rotation" )
   {
     struct burn_switch_expr_t : public mage_expr_t
     {
       mage_t* mage;
-      burn_switch_expr_t( mage_t& m ) : mage_expr_t( "burn_state", m ), mage( &m )
+      burn_switch_expr_t( mage_t& m ) : mage_expr_t( "burn_rotation", m ), mage( &m )
       {}
       virtual double evaluate()
-      { return mage -> burn_switch.burn_state; }
+      { return mage -> state_switch.burn_rotation; }
     };
 
     return new burn_switch_expr_t( *this );
