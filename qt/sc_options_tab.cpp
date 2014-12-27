@@ -22,10 +22,10 @@ const OptionEntry buffOptions[] =
   { "Toggle All Buffs",             "",                                 "Toggle all buffs on/off"                         },
   { "Attack Power Multiplier",      "override.attack_power_multiplier", "+10% Attack Power Multiplier"                    },
   { "Spell Power Multiplier",       "override.spell_power_multiplier",  "+10% Spell Power Multiplier"                     },
-  { "Critical Strike",              "override.critical_strike",         "+5% Critical Strike Chance"   },
+  { "Critical Strike",              "override.critical_strike",         "+5% Critical Strike Chance"                      },
   { "Haste",                        "override.haste",                   "+5% Haste"                                       },
   { "Multistrike",                  "override.multistrike",             "+5% Multistrike"                                 },
-  { "Mastery",                      "override.mastery",                 "+Mastery Rating"                                      },
+  { "Mastery",                      "override.mastery",                 "+Mastery Rating"                                 },
   { "Stamina",                      "override.stamina",                 "+10% Stamina"                                    },
   { "Strength, Agility, Intellect", "override.str_agi_int",             "+5% Strength, Agility, Intellect"                },
   { "Versatility",                  "override.versatility",             "+3% Versatility"                                 },
@@ -38,7 +38,9 @@ const OptionEntry itemSourceOptions[] =
   { "Local Item Database", "local",   "Use Simulationcraft item database" },
   { "Blizzard API",        "bcpapi",  "Remote Blizzard Community Platform API source" },
   { "Wowhead.com",         "wowhead", "Remote Wowhead.com item data source" },
+#if SC_USE_PTR
   { "Wowhead.com (PTR)",   "ptrhead", "Remote Wowhead.com PTR item data source" },
+#endif
 #if SC_BETA
   { "Wowhead.com (Beta)",  SC_BETA_STR "head", "Remote Wowhead.com Beta item data source" },
 #endif
@@ -47,7 +49,7 @@ const OptionEntry itemSourceOptions[] =
 const OptionEntry debuffOptions[] =
 {
   { "Toggle All Debuffs",     "",                                "Toggle all debuffs on/off"      },
-  { "Bleeding",               "override.bleeding",               "Rip\nRupture"   },
+  { "Bleeding",               "override.bleeding",               "Rip\nRupture"                   },
   { "Mortal Wounds",          "override.mortal_wounds",          "Healing Debuff"                 },
   { NULL, NULL, NULL }
 };
@@ -234,6 +236,8 @@ void SC_OptionsTab::createGlobalsTab()
   QFont override_font = QFont();
   override_font.setPixelSize( 16 );
   resetb -> setFont( override_font );
+  resetb -> setToolTip( tr( "Can also be used to fix corrupt settings that are crashing the simulator." ) );
+
   connect( resetb, SIGNAL(clicked()), this, SLOT(_resetallSettings()) );
   globalsLayout_left -> addWidget( resetb );
    
@@ -272,8 +276,9 @@ void SC_OptionsTab::createGlobalsTab()
   createItemDataSourceSelector( globalsLayout_right );
 
   globalsLayout_right -> addRow( tr( "Armory API Key" ), apikey = new QLineEdit() );
-  apikey -> setMaxLength( 32 ); // Api key is 32 long.
+  apikey -> setMaxLength( 32 ); // Api key is 32 characters long.
   apikey -> setMinimumWidth( 200 );
+  apikey -> setEchoMode( QLineEdit::PasswordEchoOnEdit ); // Only show the key while typing it in.
 
   QGroupBox* globalsGroupBox_right = new QGroupBox( tr( "Advanced Options" ) );
   globalsGroupBox_right -> setLayout( globalsLayout_right );
