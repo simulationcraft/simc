@@ -1797,9 +1797,6 @@ struct arcane_orb_t : public mage_spell_t
 
   virtual void execute()
   {
-
-    
-
     for ( unsigned i = 0; i < sizeof_array( p() -> benefits.arcane_charge ); i++)
     {
       p() -> benefits.arcane_charge[ i ] -> update( as<int>( i ) == p() -> buffs.arcane_charge -> check() );
@@ -1810,7 +1807,6 @@ struct arcane_orb_t : public mage_spell_t
 
     if( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) && p() -> rppm_arcane_instability.trigger() )
       p() -> buffs.arcane_instability -> trigger();
-
   }
 
 
@@ -3919,6 +3915,16 @@ struct supernova_t : public mage_spell_t
     // NOTE: Cooldown missing from tooltip since WoD beta build 18379
     cooldown -> duration = timespan_t::from_seconds( 25.0 );
     cooldown -> charges = 2;
+  }
+
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+
+    if ( execute_state -> n_targets > 1)
+    {
+      p() -> buffs.arcane_missiles -> trigger();
+    }
   }
 
   virtual double action_multiplier() const
