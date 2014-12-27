@@ -1117,17 +1117,14 @@ struct melee_t: public warrior_attack_t
 {
   bool mh_lost_melee_contact;
   bool oh_lost_melee_contact;
-  double sudden_death_chance;
   melee_t( const std::string& name, warrior_t* p ):
     warrior_attack_t( name, p, spell_data_t::nil() ),
-    mh_lost_melee_contact( true ), oh_lost_melee_contact( true ),
-    sudden_death_chance( 0.0 )
+    mh_lost_melee_contact( true ), oh_lost_melee_contact( true )
   {
     school = SCHOOL_PHYSICAL;
     special = false;
     background = repeating = auto_attack = may_glance = true;
     trigger_gcd = timespan_t::zero();
-    sudden_death_chance += p -> talents.sudden_death -> proc_chance();
     if ( p -> dual_wield() )
       base_hit -= 0.19;
   }
