@@ -3,8 +3,8 @@ level=100
 race=blood_elf
 role=attack
 position=back
-talents=3111122
-glyphs=energy/hemorrhaging_veins
+talents=2111122
+glyphs=energy/hemorrhaging_veins/vanish
 spec=subtlety
 
 # This default action priority list is automatically created based on your character.

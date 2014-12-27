@@ -70,9 +70,9 @@ level=100
 race=blood_elf
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#cb!2000011
 spec=subtlety
-glyphs=energy/hemorrhaging_veins
+talents=2111122
+glyphs=energy/hemorrhaging_veins/vanish
 head=poisoners_helmet,id=115572,bonus_id=567
 neck=engineers_grounded_gorget,id=113892,bonus_id=567,enchant=gift_of_mastery
 shoulders=poisoners_spaulders,id=115574,bonus_id=567
