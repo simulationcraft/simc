@@ -539,7 +539,7 @@ const char* util::pet_type_string( pet_e type )
     case PET_WORM:                return "worm";
     case PET_BAT:                 return "bat";
     case PET_BIRD_OF_PREY:        return "bird_of_prey";
-    case PET_CHIMERA:             return "chimera";
+    case PET_CHIMAERA:            return "chimaera";
     case PET_DRAGONHAWK:          return "dragonhawk";
     case PET_NETHER_RAY:          return "nether_ray";
     case PET_RAVAGER:             return "ravager";

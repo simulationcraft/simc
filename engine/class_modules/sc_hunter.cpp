@@ -756,7 +756,7 @@ public:
     case PET_WORM:         return "";
     case PET_BAT:          return "";
     case PET_BIRD_OF_PREY: return "tenacity";
-    case PET_CHIMERA:      return "froststorm_breath";
+    case PET_CHIMAERA:      return "froststorm_breath";
     case PET_DRAGONHAWK:   return "spry_attacks";
     case PET_NETHER_RAY:   return "";
     case PET_RAVAGER:      return "chitinous_armor";
@@ -1417,6 +1417,28 @@ struct roar_of_courage_t: public hunter_main_pet_spell_t
   }
 };
 
+// Breath of the Winds ===============================================
+
+struct breath_of_the_winds_t: public hunter_main_pet_spell_t
+{
+  breath_of_the_winds_t( hunter_main_pet_t* player, const std::string& options_str ):
+    hunter_main_pet_spell_t( "breath_of_the_winds", player, player -> find_pet_spell( "Breath of the Winds" ) )
+  {
+    parse_options( options_str );
+
+    harmful = false;
+    background = ( sim -> overrides.multistrike != 0 );
+  }
+
+  virtual void execute()
+  {
+    hunter_main_pet_spell_t::execute();
+
+    if ( !sim -> overrides.multistrike )
+      sim -> auras.multistrike -> trigger();
+  }
+};
+
 // Silithid Qiraji Fortitude  ===============================================
 
 struct qiraji_fortitude_t: public hunter_main_pet_spell_t
@@ -1514,7 +1536,7 @@ action_t* hunter_main_pet_t::create_action( const std::string& name,
   if ( name == "qiraji_fortitude" ) return new     qiraji_fortitude_t( this, options_str );
   if ( name == "monstrous_bite" ) return new       monstrous_bite_t( this, options_str );
   if ( name == "cackling_howl" ) return new        cackling_howl_t( this, options_str );
-
+  if ( name == "breath_of_the_winds" ) return new  breath_of_the_winds_t( this, options_str ); 
   return base_t::create_action( name, options_str );
 }
 // hunter_t::init_spells ====================================================
@@ -3414,8 +3436,8 @@ void hunter_t::create_pets()
   create_pet( "wasp", "wasp" );
   create_pet( "t17_pet_2", "wolf" );
   create_pet( "t17_pet_1", "wolf" );
-  //  create_pet( "chimaera",      "chimaera"      );
-  //  create_pet( "wind_serpent", "wind_serpent" );
+  create_pet( "chimaera", "chimaera" );
+  create_pet( "wind_serpent", "wind_serpent" );
 
   for ( size_t i = 0; i < pet_dire_beasts.size(); ++i )
   {
