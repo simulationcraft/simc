@@ -1002,7 +1002,6 @@ bool item_t::decode_quality()
 
   return true;
 }
-
 // item_t::decode_stats =====================================================
 
 bool item_t::decode_stats()

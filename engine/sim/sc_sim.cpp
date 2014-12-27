@@ -1017,9 +1017,13 @@ sim_t::sim_t( sim_t* p, int index ) :
   use_optimal_buffs_and_debuffs( 1 );
 
   create_options();
-
-  if ( apikey.size() < 32 )
-    find_api_key();
+  find_api_key(); // We will include a simc default api key for people who do not wish to register their own.
+  // This will be done at the time of compilation, as we do not want to post our key on git for everyone to see.
+  // However, the default setting will always check to see if the user has put their own 32-character key in.
+  // If this is true, then the apikey that they enter will overwrite the default.
+  // create_options will check to see if they have used apikey= in their simulation options, find_api_key searches
+  // in predetermined locations to see if they have saved the key to a file named 'api_key.txt'. The gui has a entry field setup
+  // That will update the apikey variable whenever the user enters a key there.
 
   work_queue = std::shared_ptr<work_queue_t>( new work_queue_t() );
 
