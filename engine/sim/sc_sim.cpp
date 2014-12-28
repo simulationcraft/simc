@@ -1026,6 +1026,10 @@ sim_t::sim_t( sim_t* p, int index ) :
   // create_options will check to see if they have used apikey= in their simulation options, find_api_key searches
   // in predetermined locations to see if they have saved the key to a file named 'api_key.txt'. The gui has a entry field setup
   // That will update the apikey variable whenever the user enters a key there.
+#ifdef SC_DEFAULT_APIKEY
+  if ( apikey.size() != 32 )
+    apikey = std::string(SC_DEFAULT_APIKEY);
+#endif
 
   work_queue = std::shared_ptr<work_queue_t>( new work_queue_t() );
 
