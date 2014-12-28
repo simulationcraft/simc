@@ -6814,7 +6814,6 @@ void death_knight_t::init_action_list()
 
     // Get runes on cooldown
     st -> add_action( this, "Death and Decay", "if=unholy=2" );
-    st -> add_talent( this, "Blood Tap", "if=unholy=2&cooldown.death_and_decay.remains=0" );
     st -> add_action( this, "Scourge Strike", "if=unholy=2" );
     st -> add_talent( this, "Blood Tap" "if=buff.blood_charge.stack>=11&runic_power>80" );
     st -> add_action( this, "Death Coil", "if=runic_power>80" );
@@ -6849,7 +6848,7 @@ void death_knight_t::init_action_list()
     aoe -> add_action( this, "Blood Boil", "if=blood=2|(frost=2&death=2)" );
     aoe -> add_action( this, "Summon Gargoyle" );
     aoe -> add_action( this, "Dark Transformation" );
-    aoe -> add_talent( this, "Blood Tap", "if=buff.shadow_infusion.stack=5" );
+    aoe -> add_talent( this, "Blood Tap", "if=level<=90&buff.shadow_infusion.stack=5" );
     aoe -> add_talent( this, "Defile" );
     aoe -> add_action( this, "Death and Decay", "if=unholy=1" );
     aoe -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
