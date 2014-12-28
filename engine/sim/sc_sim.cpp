@@ -7,6 +7,9 @@
 #ifdef SC_WINDOWS
 #include <direct.h>
 #endif
+#ifdef SC_STD_THREAD
+#include <thread>
+#endif
 
 namespace { // UNNAMED NAMESPACE ============================================
 
@@ -1013,7 +1016,6 @@ sim_t::sim_t( sim_t* p, int index ) :
 
   max_time = timespan_t::from_seconds( 450 );
   vary_combat_length = 0.2;
-
   use_optimal_buffs_and_debuffs( 1 );
 
   create_options();
@@ -2851,6 +2853,22 @@ void sim_t::setup( sim_control_t* c )
     log = 1;
     print_options();
   }
+
+#ifdef SC_STD_THREAD
+  // This is to resolve https://code.google.com/p/simulationcraft/issues/detail?id=2305
+  int max_threads = std::thread::hardware_concurrency();
+  if ( threads < 0 && max_threads > 0 ) //max_threads will return 0 if it has no clue how many threads it can use.
+  {
+    threads *= -1;
+    if ( threads < max_threads )
+      threads = max_threads - threads;
+    else
+      threads = 1;
+  }
+  if ( threads > max_threads && max_threads > 0 )
+    threads = max_threads; // There is no reason to set this higher than the amount of logical cpus.
+#endif
+
   if ( log )
   {
     if ( ! debug_each )
