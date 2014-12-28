@@ -8,6 +8,11 @@
 #include "util/rapidjson/document.h"
 #include "util/rapidjson/stringbuffer.h"
 #include "util/rapidjson/prettywriter.h"
+#if defined SC_WINDOWS
+#include <Windows.h>
+#else
+#include <unistd.h>
+#endif
 
 // ==========================================================================
 // Blizzard Community Platform API
@@ -977,7 +982,7 @@ bool download_item_data( item_t& item, cache::behavior_e caching )
     {
       const rapidjson::Value& sockets = js[ "socketInfo" ][ "sockets" ];
 
-    for (rapidjson::SizeType i = 0, n = as<rapidjson::SizeType>( std::min(static_cast< size_t >(sockets.Size()), sizeof_array(item.parsed.data.socket_color))); i < n; ++i)
+    for (rapidjson::SizeType i = 0, n = as<rapidjson::SizeType>( min(static_cast< size_t >(sockets.Size()), sizeof_array(item.parsed.data.socket_color))); i < n; ++i)
       {
         if ( ! sockets[ i ].HasMember( "type" ) )
           continue;
@@ -1172,6 +1177,13 @@ player_t* bcp_api::download_player( sim_t*             sim,
       server + '/' + name + "?fields=talents,items,professions&locale=en_US&apikey=";
     player.url = player.cleanurl + sim -> apikey;
     player.origin = battlenet + "wow/character/" + server + '/' + name + "/advanced";
+#ifdef SC_DEFAULT_APIKEY
+  if ( sim -> apikey == std::string( SC_DEFAULT_APIKEY ) )
+    ::Sleep( 250 ); //This is needed to prevent hitting the 'per second' api call limit.
+  // If the character is cached, it still counts as a api use, even though we don't download anything.
+  // With cached characters, it's common for for 30-40 calls to be made per second when downloading a guild.
+  // This is only enabled when the person is using the default apikey.
+#endif
   }
   else
   {
