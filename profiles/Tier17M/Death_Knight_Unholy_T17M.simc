@@ -44,7 +44,7 @@ actions.aoe+=/run_action_list,name=bos_aoe,if=dot.breath_of_sindragosa.ticking
 actions.aoe+=/blood_boil,if=blood=2|(frost=2&death=2)
 actions.aoe+=/summon_gargoyle
 actions.aoe+=/dark_transformation
-actions.aoe+=/blood_tap,if=buff.shadow_infusion.stack=5
+actions.aoe+=/blood_tap,if=level<=90&buff.shadow_infusion.stack=5
 actions.aoe+=/defile
 actions.aoe+=/death_and_decay,if=unholy=1
 actions.aoe+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=45
@@ -80,7 +80,6 @@ actions.single_target+=/death_and_decay,if=cooldown.breath_of_sindragosa.remains
 actions.single_target+=/scourge_strike,if=cooldown.breath_of_sindragosa.remains<7&runic_power<88&talent.breath_of_sindragosa.enabled
 actions.single_target+=/festering_strike,if=cooldown.breath_of_sindragosa.remains<7&runic_power<76&talent.breath_of_sindragosa.enabled
 actions.single_target+=/death_and_decay,if=unholy=2
-actions.single_target+=/blood_tap,if=unholy=2&cooldown.death_and_decay.remains=0
 actions.single_target+=/scourge_strike,if=unholy=2
 actions.single_target+=/death_coil,if=runic_power>80
 actions.single_target+=/festering_strike,if=blood=2&frost=2

@@ -2869,8 +2869,6 @@ void sim_t::setup( sim_control_t* c )
     else
       threads = 1;
   }
-  if ( threads > max_threads && max_threads > 0 )
-    threads = max_threads; // There is no reason to set this higher than the amount of logical cpus.
 #endif
 
   if ( log )
