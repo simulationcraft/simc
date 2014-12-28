@@ -1181,7 +1181,7 @@ player_t* bcp_api::download_player( sim_t*             sim,
   if ( sim -> apikey == std::string( SC_DEFAULT_APIKEY ) )
     ::Sleep( 250 ); //This is needed to prevent hitting the 'per second' api call limit.
   // If the character is cached, it still counts as a api use, even though we don't download anything.
-  // With cached characters, it's common for for 30-40 calls to be made per second when downloading a guild.
+  // With cached characters, it's common for 30-40 calls to be made per second when downloading a guild.
   // This is only enabled when the person is using the default apikey.
 #endif
   }
