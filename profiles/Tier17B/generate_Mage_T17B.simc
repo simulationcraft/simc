@@ -29,7 +29,7 @@ ring1=ukuroggs_corrupted_seal,id=113975,bonus_id=42/562/565/567,gem_id=115812,en
 ring2=spellbound_solium_band_of_the_kirintor,id=118301,gem_id=115812,enchant=gift_of_mastery
 trinket1=shards_of_nothing,id=113835,bonus_id=42/562/565/567,gem_id=115812
 trinket2=darmacs_unstable_talisman,id=113948,bonus_id=42/562/565/567,gem_id=115812
-main_hand=inferno-flame_staff,id=113869,bonus_id=42/562/565/567,gem_id=115812,enchant=mark_of_warsong
+main_hand=inferno-flame_staff,id=113869,bonus_id=42/562/565/567,gem_id=115812,enchant=mark_of_bleeding_hollow
 save=Mage_Arcane_T17B.simc
 
 mage=Mage_Fire_T17B

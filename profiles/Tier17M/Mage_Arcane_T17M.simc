@@ -121,7 +121,7 @@ finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=567,enchant=gift_of_mastery
 finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_mastery
 trinket1=goren_soul_repository,id=119194,bonus_id=567
 trinket2=darmacs_unstable_talisman,id=113948,bonus_id=567
-main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant=mark_of_warsong
+main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
 # gear_stamina=4545

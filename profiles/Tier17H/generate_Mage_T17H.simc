@@ -30,7 +30,7 @@ ring1=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant=gift_of_mastery
 ring2=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_mastery
 trinket1=shards_of_nothing,id=113835,bonus_id=566
 trinket2=darmacs_unstable_talisman,id=113948,bonus_id=566
-main_hand=inferno-flame_staff,id=113869,bonus_id=566,enchant=mark_of_warsong
+main_hand=inferno-flame_staff,id=113869,bonus_id=566,enchant=mark_of_bleeding_hollow
 save=Mage_Arcane_T17H.simc
 
 mage=Mage_Fire_T17H
@@ -53,7 +53,7 @@ finger1=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_critica
 finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant=gift_of_critical_strike
 trinket1=blackiron_micro_crucible,id=113984,bonus_id=566
 trinket2=formidable_orb_of_putrescence,id=114611,bonus_id=566
-main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant=mark_of_warsong
+main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant=mark_of_the_thunderlord
 save=Mage_Fire_T17H.simc
 
 mage=Mage_Frost_T17H
