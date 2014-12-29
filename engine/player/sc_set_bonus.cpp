@@ -158,8 +158,23 @@ void set_bonus_t::initialize()
 
         // Set bonus is overridden, or we have sufficient number of items to enable the bonus
         if ( data.overridden >= 1 ||
-             ( data.overridden == -1 && set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus -> bonus ) )
-          data.spell = actor -> find_spell( data.bonus -> spell_id );
+          (data.overridden == -1 && set_bonus_spec_count[idx][spec_role_idx] >= data.bonus -> bonus) )
+        {
+          if ( data.bonus -> bonus == 2 )
+          {
+            if ( !actor -> sim -> disable_2_set_bonus )
+              data.spell = actor -> find_spell( data.bonus -> spell_id );
+          }
+          else if ( data.bonus -> bonus == 4 )
+          {
+            if ( !actor -> sim -> disable_4_set_bonus )
+              data.spell = actor -> find_spell( data.bonus -> spell_id );
+          }
+          else
+          {
+            data.spell = actor -> find_spell( data.bonus -> spell_id );
+          }
+        }
       }
     }
   }
