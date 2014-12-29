@@ -2635,6 +2635,8 @@ struct sim_t : private sc_thread_t
   bool challenge_mode; // if active, players will get scaled down to 620 and set bonuses are deactivated
   int scale_to_itemlevel; //itemlevel to scale to. if -1, we don't scale down
   bool disable_set_bonuses; // Disables set bonuses.
+  bool disable_2_set_bonus; // Disables all 2 set bonuses (Does not include 4)
+  bool disable_4_set_bonus; // Disables all 4 set bonuses
   bool pvp_crit; // Sets critical strike damage to 150% instead of 200%, and limits multistrike to one roll.
   bool equalize_plot_weights; // Plot option.
 
