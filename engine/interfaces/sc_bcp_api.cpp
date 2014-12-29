@@ -1181,7 +1181,7 @@ player_t* bcp_api::download_player( sim_t*             sim,
 #if defined ( SC_WINDOWS )
     _sleep( 250 );
 #else
-    sleep( 250 );
+    usleep( 250000 );
 #endif
 #endif
   }
