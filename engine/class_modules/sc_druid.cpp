@@ -736,9 +736,7 @@ snapshot_counter_t::snapshot_counter_t( druid_t* player , buff_t* buff ) :
 
 struct gushing_wound_t : public residual_action::residual_periodic_action_t< attack_t >
 {
-  typedef  residual_action::residual_periodic_action_t<attack_t> base_t;
   bool trigger_t17_2p;
-
   gushing_wound_t( druid_t* p ) :
     base_t( "gushing_wound", p, p -> find_spell( 166638 ) ),
     trigger_t17_2p( false )
@@ -760,6 +758,7 @@ struct gushing_wound_t : public residual_action::residual_periodic_action_t< att
 
   virtual void tick( dot_t* d )
   {
+    attack_t::tick( d );
     if ( trigger_t17_2p )
       p() -> resource_gain( RESOURCE_ENERGY,
                             p() -> sets.set( DRUID_FERAL, T17, B2 ) -> effectN( 1 ).base_value(),
