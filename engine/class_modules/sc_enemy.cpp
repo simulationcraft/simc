@@ -1065,6 +1065,9 @@ void enemy_t::init_action_list()
 
         action_list_str += "/auto_attack,damage=" + util::to_string( 20000 * healers * level / 85 ) + ",attack_speed=2.0,target=" + sim -> heal_target -> name_str;
       }
+      // Otherwise... do nothing?
+      else
+        action_list_str += "/";
     }
   }
 
