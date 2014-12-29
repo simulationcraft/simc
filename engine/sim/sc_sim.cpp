@@ -2865,13 +2865,11 @@ void sim_t::setup( sim_control_t* c )
 #ifdef SC_STD_THREAD
   // This is to resolve https://code.google.com/p/simulationcraft/issues/detail?id=2305
   int max_threads = std::thread::hardware_concurrency();
-  if ( threads < 0 && max_threads > 0 ) //max_threads will return 0 if it has no clue how many threads it can use.
+  if ( threads <= 0 && max_threads > 0 ) //max_threads will return 0 if it has no clue how many threads it can use.
   {
     threads *= -1;
-    if ( threads < max_threads )
+    if ( threads <= max_threads )
       threads = max_threads - threads;
-    else
-      threads = 1;
   }
 #endif
 
