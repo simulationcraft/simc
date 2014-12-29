@@ -18,8 +18,8 @@ del bla.txt
 
 robocopy . %install% /s *.* /xd .git %install% /xf *.pgd /xn
 :: Don't zip up the PGO file, that's a large file.
-set filename=%install%.zip
-7z a -r -tzip %install%-%date%-%revision%.zip %install% -mx9 -mm=Deflate
+set filename=%install%-%mydate%-%revision%.zip
+7z a -r -tzip %filename% %install% -mx9 -mm=Deflate
 call start winscp /command "open downloads" "put %download%\%filename% -nopreservetime -nopermissions -transfer=binary" "exit"
 :: Zips source code, calls winscp to upload it. If anyone else is attempting this 'downloads' is the nickname of whatever server you are trying to upload to in winscp.
 
