@@ -4840,7 +4840,7 @@ void rogue_t::init_action_list()
     // Combo point generators
     action_priority_list_t* gen = get_action_priority_list( "generator", "Combo point generators" );
     gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool,if=buff.master_of_subtlety.down&buff.shadow_dance.down&debuff.find_weakness.down&(energy+cooldown.shadow_dance.remains*energy.regen<80|energy+cooldown.vanish.remains*energy.regen<60)" );
-    gen -> add_action( this, "Fan of Knives", "if=active_enemies>2" );
+    gen -> add_action( this, "Fan of Knives", "if=active_enemies>1", "If simulating AoE, it is recommended to use Anticipation as the level 90 talent." );
     gen -> add_action( this, "Hemorrhage", "if=(remains<duration*0.3&target.time_to_die>=remains+duration&debuff.find_weakness.down)|!ticking|position_front" );
     gen -> add_talent( this, "Shuriken Toss", "if=energy<65&energy.regen<16" );
     gen -> add_action( this, "Backstab" );
