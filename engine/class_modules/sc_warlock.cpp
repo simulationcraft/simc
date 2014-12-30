@@ -2307,7 +2307,7 @@ struct havoc_t: public warlock_spell_t
     warlock_spell_t::execute();
 
     p() -> buffs.havoc -> trigger( p() -> buffs.havoc -> max_stack() );
-    p() -> havoc_target = target;
+    p() -> havoc_target = execute_state -> target;
   }
 };
 
@@ -2803,7 +2803,6 @@ struct haunt_t: public warlock_spell_t
       p() -> buffs.soulburn -> expire();
       p() -> buffs.haunting_spirits -> trigger();
     }
-
     warlock_spell_t::execute();
   }
 };
@@ -4750,6 +4749,7 @@ struct mortal_coil_t: public warlock_spell_t
   mortal_coil_t( warlock_t* p ):
     warlock_spell_t( "mortal_coil", p, p -> talents.mortal_coil ), heal( 0 )
   {
+    havoc_consume = 1;
     base_dd_min = base_dd_max = 0;
     heal = new mortal_coil_heal_t( p, data() );
   }
