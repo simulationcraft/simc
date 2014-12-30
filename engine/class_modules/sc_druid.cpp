@@ -6402,8 +6402,11 @@ void druid_t::apl_precombat()
 
   // Spec Specific Optimizations
   if ( specialization() == DRUID_BALANCE )
-    precombat -> add_talent( this, "Stellar Flare" );
-  if ( specialization() == DRUID_GUARDIAN )
+  {
+    precombat -> add_action( "incarnation" );
+    precombat -> add_action( this, "Starfire" );
+  }
+  else if ( specialization() == DRUID_GUARDIAN )
     precombat -> add_talent( this, "Cenarion Ward" );
 }
 

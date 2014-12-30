@@ -21,7 +21,8 @@ actions.precombat+=/moonkin_form
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_intellect
-actions.precombat+=/stellar_flare
+actions.precombat+=/incarnation
+actions.precombat+=/starfire
 
 # Executed every time the actor is available.
 
