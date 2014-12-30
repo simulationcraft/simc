@@ -1975,7 +1975,7 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
           encoded_options[ i ] = std::tolower( encoded_options[ i ] );
         // Note, if the encoding parse fails (this should never ever happen),
         // we don't parse game client data either.
-        if ( ! proc::parse_special_effect_encoding( effect, item, encoded_options ) )
+        if ( ! special_effect::parse_special_effect_encoding( effect, item, encoded_options ) )
           return false;
       }
     }
@@ -1996,7 +1996,7 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
 
   // For generic procs, make sure we have a PPM, RPPM or Proc Chance available,
   // otherwise there's no point in trying to proc anything
-  if ( effect.type == SPECIAL_EFFECT_EQUIP && ! proc::usable_proc( effect ) )
+  if ( effect.type == SPECIAL_EFFECT_EQUIP && ! special_effect::usable_proc( effect ) )
     effect.type = SPECIAL_EFFECT_NONE;
   else if ( effect.type == SPECIAL_EFFECT_USE &&
             effect.buff_type() == SPECIAL_EFFECT_BUFF_NONE &&

@@ -7,9 +7,6 @@
 #ifdef SC_WINDOWS
 #include <direct.h>
 #endif
-#ifdef SC_STD_THREAD
-#include <thread>
-#endif
 
 namespace { // UNNAMED NAMESPACE ============================================
 
@@ -2862,16 +2859,16 @@ void sim_t::setup( sim_control_t* c )
     print_options();
   }
 
-#ifdef SC_STD_THREAD
+#if defined( SC_STD_THREAD ) || defined( SC_OSX )
   // This is to resolve https://code.google.com/p/simulationcraft/issues/detail?id=2305
-  int max_threads = std::thread::hardware_concurrency();
+  int max_threads = util::cpu_thread_count();
   if ( threads <= 0 && max_threads > 0 ) //max_threads will return 0 if it has no clue how many threads it can use.
   {
     threads *= -1;
     if ( threads <= max_threads )
       threads = max_threads - threads;
   }
-#endif
+#endif // SC_STD_THREAD
 
   if ( log )
   {

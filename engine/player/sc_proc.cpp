@@ -911,9 +911,9 @@ std::string special_effect_t::to_string() const
   return s.str();
 }
 
-// proc::parse_special_effect ===============================================
+// special_effect::parse_special_effect =====================================
 
-bool proc::parse_special_effect_encoding( special_effect_t& effect,
+bool special_effect::parse_special_effect_encoding( special_effect_t& effect,
                                           const item_t& item,
                                           const std::string& encoding )
 {
@@ -1087,7 +1087,7 @@ bool proc::parse_special_effect_encoding( special_effect_t& effect,
  *
  * TODO: Action support
  */
-bool proc::usable_proc( const special_effect_t& effect )
+bool special_effect::usable_proc( const special_effect_t& effect )
 {
   // Valid proc flags (either old- or new style), we can proc this effect.
   if ( effect.proc_flags() == 0 )

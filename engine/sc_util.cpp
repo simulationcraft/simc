@@ -16,6 +16,16 @@
 #include <sys/times.h>
 #endif
 
+// OS X 10.6 (our minimum supported target) does not have <thread>. We need to
+// use alternate means to fetch the number of concurrent threads on the system
+// (systemctl).
+#if defined( SC_STD_THREAD ) && ! defined( SC_OSX )
+#include <thread>
+#else
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#endif
+
 #include <cerrno>
 
 namespace { // anonymous namespace ==========================================
@@ -205,6 +215,37 @@ double stopwatch_t::elapsed()
 
 double util::wall_time() { return wall_sw.elapsed(); }
 double util::cpu_time() { return cpu_sw.elapsed(); }
+
+// cpu_thread_count =========================================================
+
+int util::cpu_thread_count()
+{
+// Use std::thread to determine logical thread count
+#if defined( SC_STD_THREAD )
+  return std::thread::hardware_concurrency();
+// OS X uses systemctl() to fetch the thread count for the CPU. This returns 8
+// (i.e., the logical thread count) on Hyperthreading enabled machines.
+#elif defined( SC_OSX )
+  int32_t n_threads = -1;
+  size_t sizeof_n_threads = sizeof( int32_t );
+  int ret = sysctlbyname( "machdep.cpu.thread_count",
+      static_cast<void*>( &n_threads ),
+      &( sizeof_n_threads ),
+      NULL,
+      0 );
+
+  // Error, return 0
+  if ( ret == -1 )
+  {
+    return 0;
+  }
+  else
+  {
+    return n_threads;
+  }
+#endif // SC_STD_THREAD
+  return 0;
+}
 
 // str_compare_ci ===========================================================
 
