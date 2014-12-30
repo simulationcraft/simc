@@ -1257,7 +1257,7 @@ bool item_t::decode_equip_effect()
   // If the user has defined an equip= string, use it
   if ( ! option_equip_str.empty() )
   {
-    if ( ( ret = proc::parse_special_effect_encoding( effect, *this, option_equip_str ) ) )
+    if ( ( ret = special_effect::parse_special_effect_encoding( effect, *this, option_equip_str ) ) )
     {
       effect.name_str = name_str;
       effect.type = SPECIAL_EFFECT_EQUIP;
@@ -1306,7 +1306,7 @@ bool item_t::decode_use_effect()
   // If the user has defined an use= string, use it
   if ( ! option_use_str.empty() )
   {
-    if ( ( ret = proc::parse_special_effect_encoding( effect, *this, option_use_str ) ) )
+    if ( ( ret = special_effect::parse_special_effect_encoding( effect, *this, option_use_str ) ) )
     {
       effect.name_str = name_str;
       effect.type = SPECIAL_EFFECT_USE;

@@ -6,7 +6,7 @@
 #define SIMULATIONCRAFT_H
 
 #define SC_MAJOR_VERSION "603"
-#define SC_MINOR_VERSION "21"
+#define SC_MINOR_VERSION "22"
 #define SC_USE_PTR ( 0 )
 #define SC_BETA ( 0 )
 #define SC_BETA_STR "wod"
@@ -1139,6 +1139,7 @@ namespace util
 {
 double wall_time();
 double cpu_time();
+int cpu_thread_count();
 
 template <typename T>
 T ability_rank( int player_level, T ability_value, int ability_level, ... );
@@ -7072,7 +7073,7 @@ size_t parse_tokens( std::vector<token_t>& tokens, const std::string& encoded_st
 
 // Procs ====================================================================
 
-namespace proc
+namespace special_effect
 {
   bool parse_special_effect_encoding( special_effect_t& effect, const item_t& item, const std::string& str );
   bool usable_proc( const special_effect_t& effect );

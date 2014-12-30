@@ -34,7 +34,7 @@ QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
 QMAKE_CXXFLAGS += $$OPTS
 
 ! isEmpty( SC_DEFAULT_APIKEY ) {
-  DEFINES += SC_DEFAULT_APIKEY=\"$${SC_DEFAULT_APIKEY}\"
+  DEFINES += SC_DEFAULT_APIKEY=\\\"$${SC_DEFAULT_APIKEY}\\\"
 }
 
 win32 {
@@ -54,7 +54,7 @@ macx {
 
     Resources.files = Welcome.html Welcome.png Error.html
     Resources.path = Contents/Resources
-    Profiles.files = profiles/Tier16M profiles/Tier17P profiles/Tier17N profiles/Tier17H profiles/Tier17M profiles/Tier17B
+    Profiles.files = profiles/Tier17P profiles/Tier17N profiles/Tier17H profiles/Tier17M profiles/Tier17B
     Profiles.path = Contents/Resources/profiles
     QMAKE_BUNDLE_DATA += Profiles Resources
     QMAKE_DISTCLEAN += simc *.dmg

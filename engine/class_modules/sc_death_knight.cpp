@@ -5357,6 +5357,14 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
     resource_current = RESOURCE_RUNIC_POWER;
   }
 
+  void consume_resource()
+  {
+    if ( td( execute_state -> target ) -> dots_breath_of_sindragosa -> current_tick > 0 )
+    {
+      death_knight_spell_t::consume_resource();
+    }
+  }
+
   void execute()
   {
     death_knight_spell_t::execute();
