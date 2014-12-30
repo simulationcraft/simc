@@ -2233,7 +2233,7 @@ struct black_arrow_t: public hunter_ranged_attack_t
     }
 
     may_multistrike = 1;
-    lnl_chance = data().effectN( 2 ).percent();
+    lnl_chance = data().effectN( 2 ).percent(); 
   }
   
   virtual void tick( dot_t* d )
@@ -3992,7 +3992,7 @@ void hunter_t::apl_surv()
   // default_list -> add_talent( this, "Glaive Toss" );
   // default_list -> add_talent( this, "Powershot" );
   // default_list -> add_talent( this, "Barrage" );
-  default_list -> add_action( this, "Cobra Shot", "if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&(14+cast_regen)<=focus.deficit<80", "Cast a second shot for steady focus if that won't cap us." );
+  default_list -> add_action( this, "Cobra Shot", "if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&(14+cast_regen)<=focus.deficit", "Cast a second shot for steady focus if that won't cap us." );
   default_list -> add_action( this, "Arcane Shot", "if=focus>=80|talent.focusing_shot.enabled" );
   default_list -> add_talent( this, "Focusing Shot" );
   if ( level >= 81 )
