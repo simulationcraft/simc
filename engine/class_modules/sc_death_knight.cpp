@@ -4774,6 +4774,19 @@ struct blood_boil_spread_t : public death_knight_spell_t
         if ( tdata -> dots_blood_plague -> is_ticking() )
           tdata -> dots_blood_plague -> cancel();
         bp -> copy( s -> target, DOT_COPY_CLONE );
+
+        // Bugged Blood Boil spreads diseases for Frost/Unholy so that the
+        // target dot actually resets the tick timer, but keeps the duration.
+        if ( player -> bugs )
+        {
+          dot_t* d = tdata -> dots_blood_plague;
+
+          core_event_t::cancel( d -> tick_event );
+          d -> tick_event = new ( *sim ) dot_tick_event_t( d, d -> current_action -> base_tick_time );
+          // Recalculate last_tick_factor. This will be relevant, if spreading
+          // occurs on the last ongoing tick.
+          d -> last_tick_factor = std::min( 1.0, d -> end_event -> remains() / d -> current_action -> base_tick_time );
+        }
       }
 
       // Spread Frost Fever
@@ -4785,6 +4798,19 @@ struct blood_boil_spread_t : public death_knight_spell_t
         if ( tdata -> dots_frost_fever -> is_ticking() )
           tdata -> dots_frost_fever -> cancel();
         ff -> copy( s -> target, DOT_COPY_CLONE );
+
+        // Bugged Blood Boil spreads diseases for Frost/Unholy so that the
+        // target dot actually resets the tick timer, but keeps the duration.
+        if ( player -> bugs )
+        {
+          dot_t* d = tdata -> dots_frost_fever;
+
+          core_event_t::cancel( d -> tick_event );
+          d -> tick_event = new ( *sim ) dot_tick_event_t( d, d -> current_action -> base_tick_time );
+          // Recalculate last_tick_factor. This will be relevant, if spreading
+          // occurs on the last ongoing tick.
+          d -> last_tick_factor = std::min( 1.0, d -> end_event -> remains() / d -> current_action -> base_tick_time );
+        }
       }
 
       // Spread Necrotic Plague
@@ -4804,6 +4830,19 @@ struct blood_boil_spread_t : public death_knight_spell_t
 
         int orig_stacks = tdata2 -> debuffs_necrotic_plague -> check();
         tdata -> debuffs_necrotic_plague -> trigger( orig_stacks );
+
+        // Bugged Blood Boil spreads diseases for Frost/Unholy so that the
+        // target dot actually resets the tick timer, but keeps the duration.
+        if ( player -> bugs )
+        {
+          dot_t* d = tdata -> dots_necrotic_plague;
+
+          core_event_t::cancel( d -> tick_event );
+          d -> tick_event = new ( *sim ) dot_tick_event_t( d, d -> current_action -> base_tick_time );
+          // Recalculate last_tick_factor. This will be relevant, if spreading
+          // occurs on the last ongoing tick.
+          d -> last_tick_factor = std::min( 1.0, d -> end_event -> remains() / d -> current_action -> base_tick_time );
+        }
       }
     }
   }
