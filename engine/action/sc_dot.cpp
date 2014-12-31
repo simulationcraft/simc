@@ -261,7 +261,7 @@ void dot_t::copy( player_t* other_target, dot_copy_e copy_type )
     // source's ongoing remaining tick time, since we are copying the ongoing
     // tick too
     timespan_t computed_tick_duration = new_duration;
-    if ( tick_event && tick_event -> remains() > time_to_tick )
+    if ( tick_event && tick_event -> remains() > new_duration )
       computed_tick_duration += time_to_tick - tick_event -> remains();
 
     // Aand then adjust some things for ease-of-use for now. The copied dot has
