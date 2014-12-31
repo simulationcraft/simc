@@ -736,7 +736,7 @@ public:
     {
       if ( p() -> bugs )
       {
-        rage = std::min( rage, 30 ); // Most likely a bug, but it is capped at 1 second/30 rage per ability used. 
+        rage = std::min( rage, 30.0 ); // Most likely a bug, but it is capped at 1 second/30 rage per ability used. 
       }
       //Anger management takes the amount of rage spent and reduces the cooldown of abilities by 1 second per 30 rage.
       rage /= p() -> talents.anger_management -> effectN( 1 ).base_value();
