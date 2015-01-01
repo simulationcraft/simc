@@ -2587,7 +2587,7 @@ struct kill_shot_t: public hunter_ranged_attack_t
 
   virtual bool ready()
   {
-    if ( target -> health_percentage() > ( p() -> perks.enhanced_kill_shot ? 35 : 20 ) )
+    if ( target -> health_percentage() > ( p() -> perks.enhanced_kill_shot -> ok() ? 35 : 20 ) )
       return false;
 
     return hunter_ranged_attack_t::ready();
