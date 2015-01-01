@@ -7505,8 +7505,7 @@ void druid_t::assess_damage( school_e school,
          ! ( s -> result == RESULT_DODGE || s -> result == RESULT_MISS ) &&
          ! buff.primal_tenacity -> check() ) 
     {
-      // TODO: Does this really scale with versatility?
-      double pt_amount = s -> result_mitigated * cache.mastery_value() * ( 1 + cache.heal_versatility() );
+      double pt_amount = s -> result_mitigated * cache.mastery_value();
 
       /* Primal Tenacity may only occur if the amount of damage PT absorbed from the triggering attack
           is less than 20% of the size of the new absorb. */
