@@ -21,6 +21,9 @@ CONFIG(console) {
   OBJECTS_DIR = engine
 }
 
+TRANSLATIONS = locale/sc_de.ts \
+    locale/sc_zh.ts
+
 # OSX qt 5.1 is fubar and has double slashes, messing up things
 QTDIR=$$[QT_INSTALL_PREFIX]
 QTDIR=$$replace(QTDIR, //, /)

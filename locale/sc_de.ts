@@ -1,219 +1,1509 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="de_DE">
+<TS version="2.1" language="de_DE">
 <context>
-    <name>SimulationCraftWindow</name>
+    <name>SC_ImportTab</name>
     <message>
-        <location filename="../qt/sc_window.cpp" line="571"/>
+        <location filename="../qt/sc_automation.cpp" line="1221"/>
+        <source>Comparison Type</source>
+        <translation>Vergleichs-Art</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_automation.cpp" line="1237"/>
+        <source>Defaults</source>
+        <translation>Werkseinstellungen</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_automation.cpp" line="1250"/>
+        <source>Class</source>
+        <translation>Spielerklasse</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_automation.cpp" line="1255"/>
+        <source>Spec</source>
+        <translation>Spezialisierung</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_automation.cpp" line="1258"/>
+        <source>Race</source>
+        <translation>Rasse</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_automation.cpp" line="1261"/>
+        <source>Level</source>
+        <translation>Stufe</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_automation.cpp" line="1264"/>
+        <source>Default Talents</source>
+        <translation>Vorgabewert Talente</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_automation.cpp" line="1268"/>
+        <source>Default Glyphs</source>
+        <translation>Vorgabewert Glyphen</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_automation.cpp" line="1279"/>
+        <source>Default Gear</source>
+        <translation>Vorgabewert Ausrüstung</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_automation.cpp" line="1286"/>
+        <source>Default Rotation</source>
+        <translation>Vorgabewert Rotation</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_automation.cpp" line="1292"/>
+        <source>Unused</source>
+        <translation>Unbenutzt</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_automation.cpp" line="1300"/>
+        <source>Advanced Text Box</source>
+        <translation>Erweiterte Text Box</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_automation.cpp" line="1307"/>
+        <source>Footer</source>
+        <translation>Fußzeile</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_automation.cpp" line="1314"/>
+        <source>Rotation Abbreviations</source>
+        <translation>Rotation Abkürzungen</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_automation.cpp" line="1329"/>
+        <source>Automation</source>
+        <translation>Automatisierung</translation>
+    </message>
+</context>
+<context>
+    <name>SC_MainWindow</name>
+    <message>
+        <location filename="../qt/sc_automation.cpp" line="1160"/>
+        <source>Automation Import</source>
+        <translation>Automatisierung Import</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_window.cpp" line="376"/>
         <source>Welcome</source>
         <translation>Willkommen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="577"/>
+        <location filename="../qt/sc_window.cpp" line="382"/>
         <source>Options</source>
         <translation>Optionen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="603"/>
-        <location filename="../qt/sc_window.cpp" line="605"/>
-        <source>Version</source>
-        <translation>Version</translation>
+        <location filename="../qt/sc_window.cpp" line="414"/>
+        <source>Import</source>
+        <translation>Importieren</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="607"/>
-        <source>Iterations</source>
-        <translation>Iterationen</translation>
+        <location filename="../qt/sc_window.cpp" line="420"/>
+        <source>Battle.Net</source>
+        <translation>Battle.Net</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="608"/>
-        <source>World Lag</source>
-        <translation>Welt Lag</translation>
+        <location filename="../qt/sc_window.cpp" line="426"/>
+        <source>History</source>
+        <translation>Geschichte</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="609"/>
-        <source>Length (sec)</source>
-        <translation>Kampflänge (sekunden)</translation>
+        <location filename="../qt/sc_window.cpp" line="430"/>
+        <source>Recently Closed</source>
+        <translation>Kürzlich geschlossen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="610"/>
-        <source>Vary Length</source>
-        <translation>Variiere Kampflänge</translation>
+        <location filename="../qt/sc_window.cpp" line="446"/>
+        <source>Player Class</source>
+        <translation>Spieler Klasse</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="611"/>
-        <source>Fight Style</source>
-        <translation>Kampfstil</translation>
+        <location filename="../qt/sc_window.cpp" line="446"/>
+        <source>Location</source>
+        <translation>Ort</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="612"/>
-        <source>Target Level</source>
-        <translation>Stufe des Zieles</translation>
+        <location filename="../qt/sc_window.cpp" line="600"/>
+        <source>These sample profiles are attempts at creating the best possible gear, talent, glyph and action priority list setups to achieve the highest possible average damage per second.
+The profiles are created with a lot of help from the theorycrafting community.
+They are only as good as the thorough testing done on them, and the feedback and critic we receive from the community, including yourself.
+If you have ideas for improvements, try to simulate them. If they result in increased dps, please open a ticket on our Issue tracker.
+The more people help improve BiS profiles, the better will they reach their goal of representing the highest possible dps.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="613"/>
-        <source>Target Race</source>
-        <translation>Rasse des Zieles</translation>
+        <location filename="../qt/sc_window.cpp" line="618"/>
+        <source>Sample Profiles</source>
+        <translation>Beispiels-Profile</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="614"/>
-        <source>Num Enemies</source>
-        <translation>Anzahl Feinde</translation>
+        <location filename="../qt/sc_window.cpp" line="630"/>
+        <source>Character Data</source>
+        <translation>Charakter Daten</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="615"/>
-        <source>Player Skill</source>
-        <translation>Spieler Können</translation>
+        <location filename="../qt/sc_window.cpp" line="644"/>
+        <source>Gear</source>
+        <comment>createCustomTab</comment>
+        <translation>Ausrüstung</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="616"/>
-        <source>Threads</source>
-        <translation>Threads</translation>
+        <location filename="../qt/sc_window.cpp" line="645"/>
+        <source>Customize Gear Setup</source>
+        <comment>createCustomTab</comment>
+        <translation>Ausrüstung anpassen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="617"/>
+        <location filename="../qt/sc_window.cpp" line="646"/>
+        <source>Talents</source>
+        <comment>createCustomTab</comment>
+        <translation>Talente</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_window.cpp" line="647"/>
+        <source>Customize Talents</source>
+        <comment>createCustomTab</comment>
+        <translation>Talente anpassen</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_window.cpp" line="648"/>
+        <source>Glyphs</source>
+        <comment>createCustomTab</comment>
+        <translation>Glyphen</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_window.cpp" line="649"/>
+        <source>Customize Glyphs</source>
+        <comment>createCustomTab</comment>
+        <translation>Glyphen anpassen</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_window.cpp" line="655"/>
+        <source>Simulate</source>
+        <translation>Simulieren</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_window.cpp" line="668"/>
+        <source>Overrides</source>
+        <translation>Übersteuerung</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_window.cpp" line="676"/>
+        <source>Log</source>
+        <translation>Aufzeichnungen</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_window.cpp" line="683"/>
+        <source>Help</source>
+        <translation>Hilfe</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_window.cpp" line="692"/>
+        <source>Results</source>
+        <translation>Resultate</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_window.cpp" line="698"/>
+        <source>Spell Query</source>
+        <translation>Spell-Abfrage</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_window.cpp" line="937"/>
+        <source>Importing</source>
+        <translation>Importiere</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_window.cpp" line="998"/>
+        <source>Import Failed</source>
+        <translation>Import fehlgeschlagen</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_window.cpp" line="1181"/>
+        <source>Finished!</source>
+        <translation>Fertig!</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_window.cpp" line="1584"/>
+        <source>Close Result Tab</source>
+        <translation>Resultate-Tab schliessen</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_window.cpp" line="1584"/>
+        <source>Do you really want to close this result?</source>
+        <translation>Wollen Sie dieses Resultat wirklich schliessen?</translation>
+    </message>
+</context>
+<context>
+    <name>SC_MainWindowCommandLine</name>
+    <message>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="219"/>
+        <source>Simulate!</source>
+        <translation>Simuliere!</translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="220"/>
+        <source>Pause!</source>
+        <translation>Pause!</translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="221"/>
+        <source>Resume!</source>
+        <translation>Weiter!</translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="222"/>
+        <source>Queue!</source>
+        <translation>Warteschlange!</translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="223"/>
+        <source>Click to queue a simulation to run after the current one</source>
+        <translation>Simulation an Warteschlange anheften</translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="225"/>
+        <source>Cancel! </source>
+        <translation>Abbrechen!</translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="226"/>
+        <source>Cancel All!</source>
+        <translation>Alle abbrechen!</translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="227"/>
+        <source>Cancel ALL simulations, including what is queued</source>
+        <translation>Alle Simulationen abbrechen, inklusive Warteschlange</translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="229"/>
+        <source>Save!</source>
+        <translation>Speichern!</translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="230"/>
+        <source>Import!</source>
+        <translation>Importiere!</translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="231"/>
+        <source>Query!</source>
+        <translation>Abfrage!</translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="232"/>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="526"/>
+        <source>&lt;</source>
+        <translation>&lt;</translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="233"/>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="527"/>
+        <source>&gt;</source>
+        <translation>&gt;</translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="234"/>
+        <source>Backwards</source>
+        <translation>Rückwärts</translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_mainwindowcommandline.cpp" line="235"/>
+        <source>Forwards</source>
+        <translation>Forwärts</translation>
+    </message>
+</context>
+<context>
+    <name>SC_OptionsTab</name>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="214"/>
         <source>Armory Region</source>
         <translation>Armory Region</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="618"/>
+        <location filename="../qt/sc_options_tab.cpp" line="215"/>
         <source>Armory Spec</source>
         <translation>Armory Spezialisierung</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="619"/>
-        <source>Default Role</source>
-        <translation>Standard Rolle</translation>
+        <location filename="../qt/sc_options_tab.cpp" line="218"/>
+        <location filename="../qt/sc_options_tab.cpp" line="221"/>
+        <location filename="../qt/sc_options_tab.cpp" line="223"/>
+        <source>Version</source>
+        <translation>Version</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="624"/>
+        <location filename="../qt/sc_options_tab.cpp" line="226"/>
+        <source>Target Error</source>
+        <translation>Soll-Fehler</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="227"/>
+        <source>Iterations</source>
+        <translation>Iterationen</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="228"/>
+        <source>Length (sec)</source>
+        <translation>Kampflänge (sekunden)</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="229"/>
+        <source>Vary Length</source>
+        <translation>Variiere Kampflänge</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="230"/>
+        <source>Fight Style</source>
+        <translation>Kampfstil</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="231"/>
+        <source>Challenge Mode</source>
+        <translation>Herausforderungs-Modus</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="232"/>
+        <source>Player Skill</source>
+        <translation>Spieler Können</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="233"/>
+        <source>Default Role</source>
+        <translation>Vorgegebene Rolle</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="235"/>
+        <location filename="../qt/sc_options_tab.cpp" line="1384"/>
+        <source>Reset all Settings</source>
+        <translation>Alle Einstellungen zurücksetzen</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="239"/>
+        <source>Can also be used to fix corrupt settings that are crashing the simulator.</source>
+        <translation>Dient auch zur Behebung korrupter Einstellungen nach einem Absturz</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="244"/>
         <source>Basic Options</source>
         <translation>Grundopotionen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="631"/>
-        <source>Aura Delay</source>
-        <translation>Aura Verzögerung</translation>
+        <location filename="../qt/sc_options_tab.cpp" line="251"/>
+        <source>Num Enemies</source>
+        <translation>Anzahl Feinde</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="632"/>
+        <location filename="../qt/sc_options_tab.cpp" line="252"/>
+        <source>Target Level</source>
+        <translation>Stufe des Zieles</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="253"/>
+        <source>PVP Crit Damage Reduction</source>
+        <translation>PvP Kritischer Schaden Reduzierung</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="254"/>
+        <source>Target Race</source>
+        <translation>Rasse des Zieles</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="255"/>
+        <source>Target Type</source>
+        <translation>Typ des Zieles</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="256"/>
+        <source>Tank Dummy</source>
+        <translation>Tank Ziel</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="257"/>
+        <source>TMI Standard Boss</source>
+        <translation>TMI Standard Boss</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="258"/>
+        <source>TMI Window (sec)</source>
+        <translation>TMI Fenster (sek)</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="259"/>
+        <source>Show ETMI</source>
+        <translation>Zeige ETMI</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="261"/>
+        <source>Target and Tanking Options</source>
+        <translation>Ziel und Tank Optionen</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="267"/>
+        <source>Threads</source>
+        <translation>Threads</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="268"/>
+        <source>Thread Priority</source>
+        <translation>Thread Priorität</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="269"/>
+        <source>World Lag</source>
+        <translation>Welt Lag</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="270"/>
         <source>Generate Debug</source>
         <translation>Genriere Debug Informationen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="633"/>
+        <location filename="../qt/sc_options_tab.cpp" line="271"/>
         <source>Report Pets Separately</source>
         <translation>Berichte Pets separat</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="634"/>
+        <location filename="../qt/sc_options_tab.cpp" line="272"/>
         <source>Report Print Style</source>
         <translation>Berichts-Stil</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="635"/>
+        <location filename="../qt/sc_options_tab.cpp" line="273"/>
         <source>Statistics Level</source>
         <translation>Statistik-Level</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="636"/>
+        <location filename="../qt/sc_options_tab.cpp" line="274"/>
         <source>Deterministic RNG</source>
         <translation>Deterministischer Zufallsgenerator</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="644"/>
+        <location filename="../qt/sc_options_tab.cpp" line="278"/>
+        <source>Armory API Key</source>
+        <translation>Armory API Schlüssel</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="283"/>
         <source>Advanced Options</source>
         <translation>Erweiterte Optionen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="654"/>
+        <location filename="../qt/sc_options_tab.cpp" line="297"/>
         <source>Globals</source>
         <translation>Global</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="676"/>
+        <location filename="../qt/sc_options_tab.cpp" line="316"/>
         <source>Buffs</source>
         <translation>Buffs</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="695"/>
+        <location filename="../qt/sc_options_tab.cpp" line="332"/>
         <source>Debuffs</source>
         <translation>Debuffs</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="707"/>
+        <location filename="../qt/sc_options_tab.cpp" line="347"/>
         <source>Buffs / Debuffs</source>
         <translation>Buffs / Debuffs</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="730"/>
+        <location filename="../qt/sc_options_tab.cpp" line="357"/>
+        <location filename="../qt/sc_options_tab.cpp" line="369"/>
+        <source>Enable Scaling</source>
+        <translation>Erlaube Skalierung</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="363"/>
+        <source>This button enables/disables scale factor calculations, allowing you to toggle scaling while keeping a particular set of stats selected.</source>
+        <translation>Schaltet Skalierungsfaktor-Berechnung ein/aus.</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="370"/>
+        <source>Enable Scaling. This box MUST be checked to enable scaling calculations.</source>
+        <translation>Erlaube Skalierung. Diese Option MUSS ausgewählt sein, um Skalierungsfaktoren zu berechnen.</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="378"/>
+        <source>Scaling Options</source>
+        <translation>Skalierungs-Optionen</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="386"/>
         <source>Center Scale Delta</source>
         <translation>Zentriere Skalierungsdelta</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="731"/>
+        <location filename="../qt/sc_options_tab.cpp" line="389"/>
         <source>Scale Over</source>
         <translation>Skaliere über</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="737"/>
+        <location filename="../qt/sc_options_tab.cpp" line="396"/>
+        <source>Stats to scale</source>
+        <translation>Stats zu skalieren</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="401"/>
+        <source>This button toggles scaling for all stats except Latency.
+Note that additional simulations will only be run for RELEVANT stats.
+In other words, Agility and Intellect would be skipped for a Warrior even if they are checked.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="413"/>
+        <source>Calculate scale factors for:</source>
+        <translation>Kalkuliere Skalierungsfaktoren für:</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="432"/>
         <source>Scaling</source>
         <translation>Skalierungsfaktoren</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="747"/>
+        <location filename="../qt/sc_options_tab.cpp" line="442"/>
+        <source>Enable Scaling Plots</source>
+        <translation>Schalte Skalierungs-Plots ein</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="448"/>
+        <source>This button enables/disables scaling plots, allowing you to toggle calculation of scaling plots while keeping a particular set of stats selected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="454"/>
+        <source>Enable Plots</source>
+        <translation>Plots einschalten</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="455"/>
+        <source>Enable scaling plots. This box MUST be checked to generate scaling plots.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="463"/>
+        <source>Scaling Plot Options</source>
+        <translation>Skalierungs-Plot Optionen</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="471"/>
         <source>Number of Plot Points</source>
         <translation>Nummer von Plot-Punkten</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="751"/>
+        <location filename="../qt/sc_options_tab.cpp" line="474"/>
         <source>Plot Step Amount</source>
         <translation>Plot Schritt-Wert</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="777"/>
+        <location filename="../qt/sc_options_tab.cpp" line="477"/>
+        <source>Plot Target Error</source>
+        <translation>Plot Soll-Fehler</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="480"/>
+        <source>Plot Iterations</source>
+        <translation>Plot Iterationen</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="487"/>
+        <source>Stats to plot</source>
+        <translation>Stats zum plotten</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="492"/>
+        <source>Check the box for each stat you would like to show on the scaling plots.
+
+Plot scaling for:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="522"/>
         <source>Reforge Amount</source>
         <translation>Umschiede-Menge</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="781"/>
+        <location filename="../qt/sc_options_tab.cpp" line="525"/>
         <source>Step Amount</source>
         <translation>Schritt-Menge</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="783"/>
+        <location filename="../qt/sc_options_tab.cpp" line="527"/>
         <source>A maximum of three stats may be ran at once.
 </source>
         <translation>Maximal drei Stats können gleichzeitig berechnet werden.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="802"/>
+        <location filename="../qt/sc_options_tab.cpp" line="545"/>
         <source>Primary Stats</source>
         <translation>Primär-Stat</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="818"/>
+        <location filename="../qt/sc_options_tab.cpp" line="564"/>
         <source>Reforge Plots</source>
         <translation>Umschiede-Plots</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="824"/>
+        <location filename="../qt/sc_options_tab.cpp" line="822"/>
+        <source>Live:  Use mechanics on Live servers. ( WoW Build %1 )</source>
+        <translation>Live: Nutzt Mechaniken von den Live-Servern. ( WoW Build %1 )</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="824"/>
+        <source>Beta:  Use mechanics on Beta servers. ( WoW Build %1 )</source>
+        <translation>Beta: Nutzt Mechaniken von den Beta-Servern. ( WoW Build %1 )</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="825"/>
+        <source>Both: Create Evil Twin with Beta mechanics</source>
+        <translation>Beide: Erstellt einen bösen Zwilling mit Beta-Mechaniken</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="827"/>
+        <source>PTR:  Use mechanics on PTR servers. ( WoW Build %1 )</source>
+        <translation>PTR: Nutzt Mechaniken von den PTR-Servern. ( WoW Build %1 )</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="828"/>
+        <source>Both: Create Evil Twin with PTR mechanics</source>
+        <translation>Beide: Erstellt einen bösen Zwilling mit PTR-Mechaniken</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="830"/>
+        <source>This options sets a target error threshold and
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="831"/>
+        <source>runs iterations until that threshold is reached.
+</source>
+        <translation>Simuliere, bis Soll-Fehler erreicht.</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="832"/>
+        <location filename="../qt/sc_options_tab.cpp" line="939"/>
+        <source>N/A:  Do not use this feature.
+</source>
+        <translation>Nicht verfügbar.</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="833"/>
+        <source>Auto: use sim defaults based on other options
+     (0.2%, 0.05% for scale factors).
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="834"/>
+        <source>X%:   Run until DPS error is less than X%.</source>
+        <translation>X%:  Simuliere bis DPS-Fehler geringer ist als X%.</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="835"/>
+        <source>%1:    Fast and Rough</source>
+        <translation>%1:    Schnell und dreckig</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="836"/>
+        <source>%1:   Sufficient for DPS Analysis</source>
+        <translation>%1:   Ausreichend für DPS-Analyse</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="837"/>
+        <source>%1: Recommended for Scale Factor Generation</source>
+        <translation>%1: Empfohlen für Skalierungsfaktoren</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="838"/>
+        <source>%1: Use if %2 isn&apos;t enough for Scale Factors</source>
+        <translation>%1: Falls %2 für Skalierungsfaktoren nicht ausreichen</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="839"/>
+        <source>%1: If you&apos;re patient</source>
+        <translation>%1: Für Geduldige</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="841"/>
+        <source>Varying the fight length over a given spectrum improves
+the analysis of trinkets and abilities with long cooldowns.</source>
+        <translation>Varrieren der Kampflänge erhöht die Analysekraft when Trinket-Procs oder lange Cooldowns betrachtet werden. </translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="844"/>
+        <source>Patchwerk: Tank-n-Spank</source>
+        <translation>Patchwerk: Blindes Draufhauen</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="845"/>
+        <source>HecticAddCleave:
+    Heavy Movement, Frequent Add Spawns</source>
+        <translation type="unfinished">Schwere Begungen:
+    %1sek Bewegung, %2sek Cooldown,
+    ab %3sek in den Kampf hinein</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="847"/>
+        <source>HelterSkelter:
+    Movement, Stuns, Interrupts,
+    Target-Switching (every 2min)</source>
+        <translation>HelterSkelter:
+    Bewegung, Betäubungen, Unterbrechungen,
+    Ziel-Wechsel (alle 2min)</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="850"/>
+        <source>Ultraxion:
+    Periodic Stuns, Raid Damage</source>
+        <translation>Ultraxion:
+    Periodische Betäubungen; Raid Schaden</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="852"/>
+        <source>LightMovement:
+    %1s Movement, %2s CD,
+    %3% into the fight until %4% before the end</source>
+        <translation>Leichte Bewegungen:
+    %1sek Bewegung, %2sek Cooldown
+    ab %3% in den Kampf hinein bis %4% vor Ende</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="855"/>
+        <source>HeavyMovement:
+    %1s Movement, %2s CD,
+    beginning %3s into the fight</source>
+        <translation>Schwere Begungen:
+    %1sek Bewegung, %2sek Cooldown,
+    ab %3sek in den Kampf hinein</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="859"/>
+        <source>Race of the target and any adds.</source>
+        <translation>Rasse des Zieles und aller Adds.</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="861"/>
+        <source>Enables/Disables the challenge mode setting, downscaling items to level 630.</source>
+        <translation>Schalte Herausforderungsmodus-Skalierung ein/aus. Skalierung auf Stufe 630.</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="863"/>
+        <source>Number of enemies.</source>
+        <translation>Anzahl Feinde.</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="865"/>
+        <source>Level of the target and any adds.</source>
+        <translation>Rasse des Zieles und aller Adds.</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="867"/>
+        <source>In PVP, critical strikes deal 150% damage instead of 200%. Multistrikes are also limited to one roll instead of two.
+Enabling this option will set target level to max player level.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="870"/>
+        <source>Elite:       No mistakes.  No cheating either.</source>
+        <translation>Elite:       Keine Fehler.</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="871"/>
+        <source>Fire-is-Hot: Frequent DoT-clipping and skipping high-priority abilities.</source>
+        <translation>Feuer ist heiss: Häufiges abschneiden von DoT&apos;s und auslassen von prioritären Fähigkeiten.</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="873"/>
+        <source>Match the number of CPUs for optimal performance.
+Most modern desktops have at least two CPU cores.</source>
+        <translation>Passe der Number der Kerne deines Prozessors an für optimale Leistung.
+Die meisten modernen Desktop-Computer haben mindestens zwei Prozessor-Kerne.</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="876"/>
+        <source>This can allow for a more responsive computer while simulations are running.
+When set to &apos;Lowest&apos;, it will be possible to use your computer as normal while SimC runs in the background.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="879"/>
+        <source>United States, Europe, Taiwan, China, Korea</source>
+        <translation>Vereinigte Staaten, Europa, Taiwan, China, Korea</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="881"/>
+        <source>Controls which Talent/Glyph specification is used when importing profiles from the Armory.</source>
+        <translation>Bestimmt welche Talent/Glyphen Spezifikation benutzt wird beim Armory-Import.</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="883"/>
+        <source>Specify the character role during import to ensure correct action priority list.</source>
+        <translation>Bestimmt welche Charakter-Rolle während des Imports verwendet wird, damit die passende Fähigkeitsliste geladen wird.</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="885"/>
+        <source>Choose the type of target. Some choices can be refined further by the next two drop-down boxes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="887"/>
+        <source>If &quot;Tank Dummy&quot; is chosen above, this drop-down selects the type of tank dummy used.
+Leaving at *None* will default back to a Fluffy Pillow.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="890"/>
+        <source>If &quot;TMI Standard Boss&quot; is chosen in &quot;Target Type&quot;, this box selects the TMI standard.
+TMI Standard Bosses provide damage output similar to bosses in the appropriate tier.
+Leaving at *None* will default back to a Fluffy Pillow.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="894"/>
+        <source>Specify window duration for calculating TMI. Default is 6 sec.
+Reducing this increases the metric&apos;s sensitivity to shorter damage spikes.
+Set to 0 if you want to vary on a per-player basis in the Simulate tab using &quot;tmi_window=#&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="898"/>
+        <source>Controls when ETMI is displayed in the HTML report.
+TMI only includes damage taken and self-healing/absorbs, and treats overhealing as effective healing.
+ETMI includes all sources of healing and absorption, and ignores overhealing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="902"/>
+        <source>Specify if pets get reported separately in detail.</source>
+        <translation>Bestimmt ob Begleiter separat im Bericht aufgeführt werden.</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="904"/>
+        <source>Specify HTML report print style.</source>
+        <translation>Bestimmt den html-Bericht Stil.</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="906"/>
+        <source>Determines how much detailed statistical information besides count &amp; mean will be collected during simulation.
+ Higher Statistics Level require more memory.</source>
+        <translation>Legt fest wie viel detailierte Statistik-Informationen währen der Simulation erzeugt werden.
+Höhere Statistikstufen benötigen mehr Arbeitsspeicher.</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="908"/>
+        <source> Level %1: Only Simulation Length data is collected.</source>
+        <translation> Stufe %1: Nur Simulationslänge wird aufgezeichnet.</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="909"/>
+        <source> Level %1: DPS/HPS data is collected. *default*</source>
+        <translation> Stufe %1: DPS/HPS wird aufgezeichnet. *standard*</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="910"/>
+        <source> Level %1: Player Fight Length, Death Time, DPS(e), HPS(e), DTPS, HTPS, DMG, HEAL data is collected.</source>
+        <translation> Stufe %1: Spieler Kampflänge, Todeszeitpunkt, DPS(e), HPS(e), DTPS, HTPS, SCHADEN, HEILUNG wird aufgezeichnet.</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="911"/>
+        <source> Level %1: Ability Amount and  portion APS is collected.</source>
+        <translation> Stufe %1: Fähigkeits-Menge und Menge/s werden aufgezeichnet. </translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="913"/>
+        <source>When a log is generated, only one iteration is used.
+Gory details are very gory.  No documentation will be forthcoming.
+Due to the forced single iteration, no scale factor calculation.</source>
+        <translation>Falls eine Aufzeichnung erstellt wird, wird nur eine einzige Kampf-Iteration ausgeführt.
+Grässliche Details sind sehr detailreich. Keine Dokumentation geplant.
+Durch die erzwungene einzige Iteration ist keine Skalierungsfaktor-Berechnung möglich.</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="917"/>
+        <source>Deterministic Random Number Generator creates all random numbers with a given, constant seed.
+This allows to better observe marginal changes which aren&apos;t influenced by rng, 
+ or check for other influences without having to reduce statistic noise</source>
+        <translation>Deterministischer Zufallszahlen-Generator erzeugt alle Zufallszahlen mit einem gegebenen, konstanten Samen.
+Dies erlaubt eine genauere Betrachtung von marginalen Veränderungen, welche nicht durch den Zufall beeinflusst sind,
+oder um andere Einflüsse zu untersuchen, ohne aufwendig den statistischen Fehler reduzieren zu müssen.</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="921"/>
+        <source>World Lag is the equivalent of the &apos;world lag&apos; shown in the WoW Client.
+It is currently used to extend the cooldown duration of user executable abilities  that have a cooldown.
+Each setting adds an amount of &apos;lag&apos; with a default standard deviation of 10%:</source>
+        <translation>Welt-Lag ist äquivalent zum &apos;Welt-Lag&apos;, welches im WoW Client angezeigt wird.
+Es wird verwendet, um die Dauer der Cooldowns von Spielerfähigkeiten zu verlängern.
+Jeder Wert kommt mit einer Standardabweichung von 10%.</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="925"/>
+        <source>    &apos;Super Low&apos; : %1ms</source>
+        <translation>   &apos;Super Tief&apos; : %1ms</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="926"/>
+        <source>    &apos;Low&apos;   : %1ms</source>
+        <translation>     &apos;Tief&apos;   : %1ms</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="927"/>
+        <source>    &apos;Medium&apos;: %1ms</source>
+        <translation>    &apos;Mittel&apos;: %1ms</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="928"/>
+        <source>    &apos;High&apos;  : %1ms</source>
+        <translation>     &apos;Hoch&apos;  : %1ms</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="929"/>
+        <source>    &apos;Australia&apos; : %1ms</source>
+        <translation>   &apos;Australien&apos; : %1ms</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="931"/>
+        <source>Controls the simulations that the tool compares to determine stat weights.
+If set to No, it will sim once at profile stats and again with +2X of each selected stat.
+If set to Yes, it will sim once at profile-X and once at profile+X.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="932"/>
+        <source>Choose the stat over which you&apos;re primarily interested in scaling.
+This is the metric that will be displayed on the Scale Factors plot.
+Note that the sim will still generate and display scale factors for all other metrics in tabular form.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="934"/>
+        <source>The number of points that will appear on the graph</source>
+        <translation>Anzahl Punkte auf dem Graphen</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="935"/>
+        <source>The delta between two points of the graph.
+The deltas on the horizontal axis will be within the [-points * steps / 2 ; +points * steps / 2] interval</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="938"/>
+        <source>Target error for plots.
+</source>
+        <translation>Soll-Fehler für Plots</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="940"/>
+        <source>Auto: Use simulation defaults (0.5%).
+</source>
+        <translation>Auto: Nutze Simulations-Vorgaben (0.5%).</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="941"/>
+        <source>X%:   Each plot point will sim until less than X% DPS error is reached.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="942"/>
+        <source>Number of iterations for each plot point.
+</source>
+        <translation>Anzahl Iterationen for jeden Plot-Punkt.</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="943"/>
+        <source>Iter/10 and Iter/100 scale with the number of
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="944"/>
+        <source>iterations selected on the general options tab.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="946"/>
+        <source>The maximum amount to reforge per stat.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="947"/>
+        <source>The stat difference between two points.
+It&apos;s NOT the number of steps: a lower value will generate more points!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="1384"/>
+        <source>Do you really want to reset all Settings to default?</source>
+        <translation>Wollen Sie wirklich alle Einstellungen zurücksetzen?</translation>
+    </message>
+</context>
+<context>
+    <name>SC_QueueListView</name>
+    <message>
+        <location filename="../qt/simulationcraftqt.hpp" line="319"/>
+        <source>test</source>
+        <translation>test</translation>
+    </message>
+    <message>
+        <location filename="../qt/simulationcraftqt.hpp" line="349"/>
+        <source>Remove</source>
+        <translation>Entfernen</translation>
+    </message>
+</context>
+<context>
+    <name>SC_RecentlyClosedTabWidget</name>
+    <message>
+        <location filename="../qt/util/sc_recentlyclosed.cpp" line="307"/>
+        <location filename="../qt/util/sc_recentlyclosed.cpp" line="329"/>
+        <source>&amp;Clear History</source>
+        <translation>&amp;Verlauf löschen</translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_recentlyclosed.cpp" line="320"/>
+        <source>&amp;Restore All</source>
+        <translation>&amp;Alles wiederherstellen</translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_recentlyclosed.cpp" line="324"/>
+        <source>&amp;Delete</source>
+        <translation>&amp;Entfernen</translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_recentlyclosed.hpp" line="217"/>
+        <source>Clear history</source>
+        <translation>Verlauf löschen</translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_recentlyclosed.hpp" line="217"/>
+        <source>Clear entire history?</source>
+        <translation>Kompletten Verlauf löschen?</translation>
+    </message>
+</context>
+<context>
+    <name>SC_ResultTab</name>
+    <message>
+        <location filename="../qt/simulationcraftqt.hpp" line="474"/>
+        <source>Close Results Tab</source>
+        <translation>Resultate Tab schliessen</translation>
+    </message>
+    <message>
+        <location filename="../qt/simulationcraftqt.hpp" line="474"/>
+        <source>Do you really want to close these results?</source>
+        <translation>Wollen Sie dieses Resultat wirklich schliessen?</translation>
+    </message>
+</context>
+<context>
+    <name>SC_SearchBox</name>
+    <message>
+        <location filename="../qt/util/sc_searchbox.cpp" line="38"/>
+        <source>Find Previous</source>
+        <translation>Finde Vorherigen</translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_searchbox.cpp" line="40"/>
+        <source>Find Next</source>
+        <translation>Finde Nächsten</translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_searchbox.cpp" line="63"/>
+        <source>Reverse</source>
+        <translation>Umgekehrt</translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_searchbox.cpp" line="70"/>
+        <source>&amp;Wrap search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_searchbox.cpp" line="77"/>
+        <source>Hide Arrows</source>
+        <translation>Verstecke Pfeile</translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_searchbox.cpp" line="102"/>
+        <source>&lt;</source>
+        <translation>&lt;</translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_searchbox.cpp" line="110"/>
+        <source>&gt;</source>
+        <translation>&gt;</translation>
+    </message>
+</context>
+<context>
+    <name>SC_SimulateTab</name>
+    <message>
+        <location filename="../qt/simulationcraftqt.hpp" line="598"/>
+        <source>Close ALL Simulate Tabs?</source>
+        <translation>ALLE Simulations-Tabs schliessen?</translation>
+    </message>
+    <message>
+        <location filename="../qt/simulationcraftqt.hpp" line="599"/>
+        <source>Do you really want to close ALL simulation profiles?</source>
+        <translation>Wollen Sie wirklich ALLE Simulations-Profile schliessen?</translation>
+    </message>
+    <message>
+        <location filename="../qt/simulationcraftqt.hpp" line="819"/>
+        <source>Close Simulate Tab</source>
+        <translation>Simulations-Tab schliessen</translation>
+    </message>
+    <message>
+        <location filename="../qt/simulationcraftqt.hpp" line="819"/>
+        <source>Do you really want to close this simulation profile?</source>
+        <translation>Wollen Sie wirklich dieses Simulations-Profil schliessen?</translation>
+    </message>
+</context>
+<context>
+    <name>SC_SingleResultTab</name>
+    <message>
+        <location filename="../qt/sc_window.cpp" line="1935"/>
+        <source>Save Result</source>
+        <translation>Speichere Resultat</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_window.cpp" line="1935"/>
+        <source>Result saved to %1</source>
+        <translation>Resultate gespeichert unter %1</translation>
+    </message>
+</context>
+<context>
+    <name>SC_SpellQueryTab</name>
+    <message>
+        <location filename="../qt/sc_spell_query_tab.cpp" line="156"/>
+        <source>Choose File</source>
+        <translation>Wähle Datei</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_spell_query_tab.cpp" line="156"/>
+        <source>Text files (*.txt *.simc)</source>
+        <translation>Text-Dateien (*.txt *.simc)</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_spell_query_tab.cpp" line="173"/>
+        <source>Input Options</source>
+        <translation>Eingabe-Optionen</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_spell_query_tab.cpp" line="186"/>
+        <source>data source</source>
+        <translation>Daten-Quelle</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_spell_query_tab.cpp" line="192"/>
+        <source>filter</source>
+        <translation>Filter</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_spell_query_tab.cpp" line="198"/>
+        <source>operator</source>
+        <translation>Operator</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_spell_query_tab.cpp" line="208"/>
+        <source>argument</source>
+        <translation>Argument</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_spell_query_tab.cpp" line="214"/>
+        <source>   </source>
+        <translation>   </translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_spell_query_tab.cpp" line="241"/>
+        <source>Output</source>
+        <translation>Ausgabe</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_spell_query_tab.cpp" line="326"/>
+        <source>Data Source, determines which list of identifiers to search within</source>
+        <translation>Daten-Quelle, bestimmt die Listen von  Identifikatoren, in welchen gesucht wird</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_spell_query_tab.cpp" line="327"/>
+        <source>Filter, for filtering the data in the data source.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_spell_query_tab.cpp" line="328"/>
+        <source>Operand. Different for string and numeric arguments.
+
+ Strings:
+
+ == : case-insensitive equality
+ != : case-insensitive inequality
+ ~  : case-insensitive substring in field
+ !~ : case-insensitive substring not in field
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_spell_query_tab.cpp" line="329"/>
+        <source>Argument, what you&apos;re searching for within the filtered data.
+
+ For more complicated queries, set the Data Source and Filter to blank and write your full query string in here.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_spell_query_tab.cpp" line="331"/>
+        <source>Enabling this will save the results to a file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_spell_query_tab.cpp" line="332"/>
+        <source>Browse for the file name of the results file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_spell_query_tab.cpp" line="333"/>
+        <source>Filename of the results file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_spell_query_tab.cpp" line="335"/>
+        <source>Result of the query.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SC_TabBar</name>
+    <message>
+        <location filename="../qt/util/sc_tabbar.cpp" line="60"/>
+        <source>Rename Tab</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_tabbar.cpp" line="61"/>
+        <source>Close Tab</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_tabbar.cpp" line="62"/>
+        <source>Close Others</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_tabbar.cpp" line="63"/>
+        <source>Close All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_tabbar.cpp" line="217"/>
+        <source>Modify Tab Title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/util/sc_tabbar.cpp" line="218"/>
+        <source>New Tab Title:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SC_TabWidgetCloseAll</name>
+    <message>
+        <location filename="../qt/util/sc_recentlyclosed.cpp" line="50"/>
+        <source>Close All Tabs</source>
+        <translation>Alle Tabs schliessen</translation>
+    </message>
+</context>
+<context>
+    <name>SC_WebPage</name>
+    <message>
+        <location filename="../qt/simulationcraftqt.hpp" line="1204"/>
+        <source>Network Error</source>
+        <translation>Netzwerk-Fehler</translation>
+    </message>
+    <message>
+        <location filename="../qt/simulationcraftqt.hpp" line="1207"/>
+        <source>WebKit Error</source>
+        <translation>Webkit-Fehler</translation>
+    </message>
+    <message>
+        <location filename="../qt/simulationcraftqt.hpp" line="1210"/>
+        <source>HTTP Error</source>
+        <translation>HTTP-Fehler</translation>
+    </message>
+    <message>
+        <location filename="../qt/simulationcraftqt.hpp" line="1213"/>
+        <source>Unknown Error</source>
+        <translation>Unbekannter Fehler</translation>
+    </message>
+</context>
+<context>
+    <name>SimulationCraftWindow</name>
+    <message>
+        <source>Welcome</source>
+        <translation type="vanished">Willkommen</translation>
+    </message>
+    <message>
+        <source>Options</source>
+        <translation type="vanished">Optionen</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation type="vanished">Version</translation>
+    </message>
+    <message>
+        <source>Iterations</source>
+        <translation type="vanished">Iterationen</translation>
+    </message>
+    <message>
+        <source>World Lag</source>
+        <translation type="vanished">Welt Lag</translation>
+    </message>
+    <message>
+        <source>Length (sec)</source>
+        <translation type="vanished">Kampflänge (sekunden)</translation>
+    </message>
+    <message>
+        <source>Vary Length</source>
+        <translation type="vanished">Variiere Kampflänge</translation>
+    </message>
+    <message>
+        <source>Fight Style</source>
+        <translation type="vanished">Kampfstil</translation>
+    </message>
+    <message>
+        <source>Target Level</source>
+        <translation type="vanished">Stufe des Zieles</translation>
+    </message>
+    <message>
+        <source>Target Race</source>
+        <translation type="vanished">Rasse des Zieles</translation>
+    </message>
+    <message>
+        <source>Num Enemies</source>
+        <translation type="vanished">Anzahl Feinde</translation>
+    </message>
+    <message>
+        <source>Player Skill</source>
+        <translation type="vanished">Spieler Können</translation>
+    </message>
+    <message>
+        <source>Threads</source>
+        <translation type="vanished">Threads</translation>
+    </message>
+    <message>
+        <source>Armory Region</source>
+        <translation type="vanished">Armory Region</translation>
+    </message>
+    <message>
+        <source>Armory Spec</source>
+        <translation type="vanished">Armory Spezialisierung</translation>
+    </message>
+    <message>
+        <source>Default Role</source>
+        <translation type="vanished">Standard Rolle</translation>
+    </message>
+    <message>
+        <source>Basic Options</source>
+        <translation type="vanished">Grundopotionen</translation>
+    </message>
+    <message>
+        <source>Aura Delay</source>
+        <translation type="vanished">Aura Verzögerung</translation>
+    </message>
+    <message>
+        <source>Generate Debug</source>
+        <translation type="vanished">Genriere Debug Informationen</translation>
+    </message>
+    <message>
+        <source>Report Pets Separately</source>
+        <translation type="vanished">Berichte Pets separat</translation>
+    </message>
+    <message>
+        <source>Report Print Style</source>
+        <translation type="vanished">Berichts-Stil</translation>
+    </message>
+    <message>
+        <source>Statistics Level</source>
+        <translation type="vanished">Statistik-Level</translation>
+    </message>
+    <message>
+        <source>Deterministic RNG</source>
+        <translation type="vanished">Deterministischer Zufallsgenerator</translation>
+    </message>
+    <message>
+        <source>Advanced Options</source>
+        <translation type="vanished">Erweiterte Optionen</translation>
+    </message>
+    <message>
+        <source>Globals</source>
+        <translation type="vanished">Global</translation>
+    </message>
+    <message>
+        <source>Buffs</source>
+        <translation type="vanished">Buffs</translation>
+    </message>
+    <message>
+        <source>Debuffs</source>
+        <translation type="vanished">Debuffs</translation>
+    </message>
+    <message>
+        <source>Buffs / Debuffs</source>
+        <translation type="vanished">Buffs / Debuffs</translation>
+    </message>
+    <message>
+        <source>Center Scale Delta</source>
+        <translation type="vanished">Zentriere Skalierungsdelta</translation>
+    </message>
+    <message>
+        <source>Scale Over</source>
+        <translation type="vanished">Skaliere über</translation>
+    </message>
+    <message>
+        <source>Scaling</source>
+        <translation type="vanished">Skalierungsfaktoren</translation>
+    </message>
+    <message>
+        <source>Number of Plot Points</source>
+        <translation type="vanished">Nummer von Plot-Punkten</translation>
+    </message>
+    <message>
+        <source>Plot Step Amount</source>
+        <translation type="vanished">Plot Schritt-Wert</translation>
+    </message>
+    <message>
+        <source>Reforge Amount</source>
+        <translation type="vanished">Umschiede-Menge</translation>
+    </message>
+    <message>
+        <source>Step Amount</source>
+        <translation type="vanished">Schritt-Menge</translation>
+    </message>
+    <message>
+        <source>A maximum of three stats may be ran at once.
+</source>
+        <translation type="vanished">Maximal drei Stats können gleichzeitig berechnet werden.</translation>
+    </message>
+    <message>
+        <source>Primary Stats</source>
+        <translation type="vanished">Primär-Stat</translation>
+    </message>
+    <message>
+        <source>Reforge Plots</source>
+        <translation type="vanished">Umschiede-Plots</translation>
+    </message>
+    <message>
         <source>Import</source>
-        <translation>Importieren</translation>
+        <translation type="vanished">Importieren</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="828"/>
         <source>Battle.Net</source>
-        <translation>Battle.Net</translation>
+        <translation type="vanished">Battle.Net</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="835"/>
         <source>CharDev</source>
-        <translation>CharDev</translation>
+        <translation type="vanished">CharDev</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="842"/>
         <source>History</source>
-        <translation>Geschichte</translation>
+        <translation type="vanished">Geschichte</translation>
     </message>
     <message>
         <source>Rawr is an exceptional theorycrafting tool that excels at gear optimization. The key architectural difference between Rawr and SimulationCraft is one of formulation vs simulation.  There are strengths and weaknesses to each approach.  Since they come from different directions, one can be confident in the result when they arrive at the same destination.
@@ -231,19 +1521,16 @@ Um die Vergleichbarkeit zu erhöhen, erlaubt SimulationCraft die importierung vo
 Alternativ kann der XML-Export vom Rawr Im-Spiel Addon hier hineinkopiert werden. </translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="865"/>
         <source>Load Rawr XML</source>
-        <translation>Lade Rawr XML</translation>
+        <translation type="vanished">Lade Rawr XML</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="876"/>
         <source>Player Class</source>
-        <translation>Spieler Klasse</translation>
+        <translation type="vanished">Spieler Klasse</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="876"/>
         <source>Location</source>
-        <translation>Ort</translation>
+        <translation type="vanished">Ort</translation>
     </message>
     <message>
         <source>Best in Slot ( BiS ) profiles are attempts at creating the best possible gear, talent, glyph and action priority list setups to achieve the highest possible average damage per second.
@@ -258,83 +1545,68 @@ Falls du Ideen zur Verbesserung hast, versuche sie einfach zu simulieren. Sollte
 Je mehr Leute versuchen die BiS Profile zu verbessern, je besser werden sie sein bei ihrem Versuch das Ziel des höchstmöglichen Schaden pro Sekunde zu erreichen. </translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1025"/>
         <source>BiS</source>
-        <translation>Bestmögliche Profile</translation>
+        <translation type="vanished">Bestmögliche Profile</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1038"/>
         <source>Character Data</source>
-        <translation>Charakter Daten</translation>
+        <translation type="vanished">Charakter Daten</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1065"/>
         <source>Simulate</source>
-        <translation>Simulieren</translation>
+        <translation type="vanished">Simulieren</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1074"/>
         <source>Overrides</source>
-        <translation>Übersteuerung</translation>
+        <translation type="vanished">Übersteuerung</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1083"/>
         <source>Log</source>
-        <translation>Aufzeichnungen</translation>
+        <translation type="vanished">Aufzeichnungen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1090"/>
         <source>Help</source>
-        <translation>Hilfe</translation>
+        <translation type="vanished">Hilfe</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1122"/>
         <source>Legend</source>
-        <translation>Legende</translation>
+        <translation type="vanished">Legende</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1125"/>
         <source>Results</source>
-        <translation>Resultate</translation>
+        <translation type="vanished">Resultate</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1132"/>
         <source>Site</source>
-        <translation>Webseite</translation>
+        <translation type="vanished">Webseite</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1176"/>
         <source>Elite:       No mistakes.  No cheating either.</source>
-        <translation>Elite:       Keine Fehler.</translation>
+        <translation type="vanished">Elite:       Keine Fehler.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1193"/>
         <source>Determines how much detailed statistical information besides count &amp; mean will be collected during simulation.
  Higher Statistics Level require more memory.</source>
-        <translation>Legt fest wie viel detailierte Statistik-Informationen währen der Simulation erzeugt werden.
+        <translation type="vanished">Legt fest wie viel detailierte Statistik-Informationen währen der Simulation erzeugt werden.
 Höhere Statistikstufen benötigen mehr Arbeitsspeicher.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1195"/>
         <source> Level %1: Only Simulation Length data is collected.</source>
-        <translation> Stufe %1: Nur Simulationslänge wird aufgezeichnet.</translation>
+        <translation type="vanished"> Stufe %1: Nur Simulationslänge wird aufgezeichnet.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1196"/>
         <source> Level %1: DPS/HPS data is collected. *default*</source>
-        <translation> Stufe %1: DPS/HPS wird aufgezeichnet. *standard*</translation>
+        <translation type="vanished"> Stufe %1: DPS/HPS wird aufgezeichnet. *standard*</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1197"/>
         <source> Level %1: Player Fight Length, Death Time, DPS(e), HPS(e), DTPS, HTPS, DMG, HEAL data is collected.</source>
-        <translation> Stufe %1: Spieler Kampflänge, Todeszeitpunkt, DPS(e), HPS(e), DTPS, HTPS, SCHADEN, HEILUNG wird aufgezeichnet.</translation>
+        <translation type="vanished"> Stufe %1: Spieler Kampflänge, Todeszeitpunkt, DPS(e), HPS(e), DTPS, HTPS, SCHADEN, HEILUNG wird aufgezeichnet.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1200"/>
         <source>When a log is generated, only one iteration is used.
 Gory details are very gory.  No documentation will be forthcoming.
 Due to the forced single iteration, no scale factor calculation.</source>
-        <translation>Falls eine Aufzeichnung erstellt wird, wird nur eine einzige Kampf-Iteration ausgeführt.
+        <translation type="vanished">Falls eine Aufzeichnung erstellt wird, wird nur eine einzige Kampf-Iteration ausgeführt.
 Grässliche Details sind sehr detailreich. Keine Dokumentation geplant.
 Durch die erzwungene einzige Iteration ist keine Skalierungsfaktor-Berechnung möglich.</translation>
     </message>
@@ -347,23 +1619,20 @@ Durch die erzwungene einzige Iteration ist keine Skalierungsfaktor-Berechnung m�
         <translation type="obsolete">Grässliche Details. Keine Dokumentation dazu.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1209"/>
         <source>World Lag is the equivalent of the &apos;world lag&apos; shown in the WoW Client.
 It is currently used to extend the cooldown duration of user executable abilities  that have a cooldown.
 Each setting adds an amount of &apos;lag&apos; with a default standard deviation of 10%:</source>
-        <translation>Welt-Lag ist äquivalent zum &apos;Welt-Lag&apos;, welches im WoW Client angezeigt wird.
+        <translation type="vanished">Welt-Lag ist äquivalent zum &apos;Welt-Lag&apos;, welches im WoW Client angezeigt wird.
 Es wird verwendet, um die Dauer der Cooldowns von Spielerfähigkeiten zu verlängern.
 Jeder Wert kommt mit einer Standardabweichung von 10%.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1213"/>
         <source>    &apos;Low&apos;   : %1ms</source>
-        <translation>     &apos;Tief&apos;   : %1ms</translation>
+        <translation type="vanished">     &apos;Tief&apos;   : %1ms</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1214"/>
         <source>    &apos;Medium&apos;: %1ms</source>
-        <translation>    &apos;Mittel&apos;: %1ms</translation>
+        <translation type="vanished">    &apos;Mittel&apos;: %1ms</translation>
     </message>
     <message>
         <source>Live: Use mechanics on Live servers. ( WoW Build %1 )
@@ -376,9 +1645,8 @@ Jeder Wert kommt mit einer Standardabweichung von 10%.</translation>
         <translation type="obsolete">Beta: Nutzt Mechaniken von den Beta-Servern. ( WoW Build %1 )</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1140"/>
         <source>Both: Create Evil Twin with Beta mechanics</source>
-        <translation>Beide: Erstellt einen bösen Zwilling mit Beta-Mechaniken</translation>
+        <translation type="vanished">Beide: Erstellt einen bösen Zwilling mit Beta-Mechaniken</translation>
     </message>
     <message>
         <source>PTR:  Use mechanics on PTR servers. ( WoW Build %1 )
@@ -386,9 +1654,8 @@ Jeder Wert kommt mit einer Standardabweichung von 10%.</translation>
         <translation type="obsolete">PTR: Nutzt Mechaniken von den PTR-Servern. ( WoW Build %1 )</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1143"/>
         <source>Both: Create Evil Twin with PTR mechanics</source>
-        <translation>Beide: Erstellt einen bösen Zwilling mit PTR-Mechaniken</translation>
+        <translation type="vanished">Beide: Erstellt einen bösen Zwilling mit PTR-Mechaniken</translation>
     </message>
     <message>
         <source>%1:   Fast and Rough
@@ -411,14 +1678,12 @@ Jeder Wert kommt mit einer Standardabweichung von 10%.</translation>
         <translation type="obsolete">%1: Falls %2 für Skalierungsfaktoren nicht ausreichen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1150"/>
         <source>%1: If you&apos;re patient</source>
-        <translation>%1: Für Geduldige</translation>
+        <translation type="vanished">%1: Für Geduldige</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1152"/>
         <source>For custom fight lengths use max_time=seconds.</source>
-        <translation>Für spezifische Kampflänge nutze max_time=sekunden.</translation>
+        <translation type="vanished">Für spezifische Kampflänge nutze max_time=sekunden.</translation>
     </message>
     <message>
         <source>Varying the fight length over a given spectrum improves
@@ -465,10 +1730,9 @@ Jeder Wert kommt mit einer Standardabweichung von 10%.</translation>
     ab %3sek in den Kampf hinein</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1179"/>
         <source>Match the number of CPUs for optimal performance.
 Most modern desktops have at least two CPU cores.</source>
-        <translation>Passe der Number der Kerne deines Prozessors an für optimale Leistung.
+        <translation type="vanished">Passe der Number der Kerne deines Prozessors an für optimale Leistung.
 Die meisten modernen Desktop-Computer haben mindestens zwei Prozessor-Kerne.</translation>
     </message>
     <message>
@@ -479,11 +1743,10 @@ Die meisten modernen Desktop-Computer haben mindestens zwei Prozessor-Kerne.</tr
 Höhere Statistikstufen benötigen mehr Arbeitsspeicher.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1205"/>
         <source>Deterministic Random Number Generator creates all random numbers with a given, constant seed.
 This allows to better observe marginal changes which aren&apos;t influenced by rng, 
  or check for other influences without having to reduce statistic noise</source>
-        <translation>Deterministischer Zufallszahlen-Generator erzeugt alle Zufallszahlen mit einem gegebenen, konstanten Samen.
+        <translation type="vanished">Deterministischer Zufallszahlen-Generator erzeugt alle Zufallszahlen mit einem gegebenen, konstanten Samen.
 Dies erlaubt eine genauere Betrachtung von marginalen Veränderungen, welche nicht durch den Zufall beeinflusst sind,
 oder um andere Einflüsse zu untersuchen, ohne aufwendig den statistischen Fehler reduzieren zu müssen.</translation>
     </message>
@@ -497,41 +1760,26 @@ Es wird verwendet, um die Dauer der Cooldowns von Spielerfähigkeiten zu verlän
 Jeder Wert kommt mit einer Standardabweichung von 10%.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1217"/>
         <source>Aura Lag represents the server latency which occurs when buffs are applied.
 This value is given by Blizzard server reaction time and not influenced by your latency.
 Each setting adds an amount of &apos;lag&apos; with a default standard deviation of 10%:
 </source>
-        <translation>Aura Lag repräsentiert die Server-Latenz, welche bei Buff-Applikation auftritt.
+        <translation type="vanished">Aura Lag repräsentiert die Server-Latenz, welche bei Buff-Applikation auftritt.
 Dieser Wert ist gegeben durch die Blizzard Server Reaktionszeit, und nicht beieinflusst durch deine eigene Latenz.
 Jeder Wert kommt mit einer Standardabweichung von 10%.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1225"/>
-        <source>The delta between two points of the graph.
-The deltas on the horizontal axis will be within the [-points * steps / 2 ; +points * steps / 2] interval</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qt/sc_window.cpp" line="1229"/>
-        <source>The stat difference between two points.
-It&apos;s NOT the number of steps: a lower value will generate more points!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qt/sc_window.cpp" line="1170"/>
         <source>Race of the target and any adds.</source>
-        <translation>Rasse des Zieles und aller Adds.</translation>
+        <translation type="vanished">Rasse des Zieles und aller Adds.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="856"/>
         <source>Rawr is an exceptional theorycrafting tool that excels at gear optimization. The key architectural difference between Rawr and SimulationCraft is one of formulation vs simulation.
 There are strengths and weaknesses to each approach.  Since they come from different directions, one can be confident in the result when they arrive at the same destination.
 
  To aid comparison, SimulationCraft can import the character xml file written by Rawr.
 
  Alternatively, paste xml from the Rawr in-game addon into the space below.</source>
-        <translation>Rawr ist ein herausragendes Theorycrafting Werkzeug, welches bei Gegenstandoptimierungen brilliert. 
+        <translation type="vanished">Rawr ist ein herausragendes Theorycrafting Werkzeug, welches bei Gegenstandoptimierungen brilliert. 
 Der Hauptunterschied zwischen Rawr und SimulationCraft ist der zwischen Formulierung ( Analytisch ) und Simulation ( Statistisch ). 
 Beide Ansätze haben ihre Stärken und Schwächen. Da sie das Problem aus unterschiedlichen Blickwinkeln betrachten, 
 kann ein Vergleich zwischen den Tweien die Zuverlässigkeit der Resultate erhöhen, falls sie zu den selben Schlüssel kommen.
@@ -541,13 +1789,12 @@ Um die Vergleichbarkeit zu erhöhen, erlaubt SimulationCraft die importierung vo
 Alternativ kann der XML-Export vom Rawr Im-Spiel Addon hier hineinkopiert werden. </translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1007"/>
         <source>Best in Slot ( BiS ) profiles are attempts at creating the best possible gear, talent, glyph and action priority list setups to achieve the highest possible average damage per second.
 The profiles are created with a lot of help from the theorycrafting community.
 They are only as good as the thorough testing done on them, and the feedback and critic we receive from the community, including yourself.
 If you have ideas for improvements, try to simulate them. If they result in increased dps, please open a ticket on our Issue tracker.
 The more people help improve BiS profiles, the better will they reach their goal of representing the highest possible dps.</source>
-        <translation>Bestmögliche ( auch &quot;Best in Slot&quot; genannt, kurz BiS ) Profile sind Versuche, die bestmögliche Ausrüstung, Talente, Glyphen und Fähigkeitsprioritäten herauszufinden, 
+        <translation type="vanished">Bestmögliche ( auch &quot;Best in Slot&quot; genannt, kurz BiS ) Profile sind Versuche, die bestmögliche Ausrüstung, Talente, Glyphen und Fähigkeitsprioritäten herauszufinden, 
 welche den höchstmöglichen durchschnittlichen Schaden pro Sekunde erzielen.
 Die Profile werden in Zusammenarbeit mit der Theorycrafting Gemeinschaft entwickelt. Sie sind nur so gut wie der Aufwand, welcher in sie investiert wurde, 
 und wie das Feedback und die Kritik, welche sie von der Gemeinschaft erhalten, inklusive Dir.
@@ -555,192 +1802,151 @@ Falls du Ideen zur Verbesserung hast, versuche sie einfach zu simulieren. Sollte
 Je mehr Leute versuchen die BiS Profile zu verbessern, je besser werden sie sein bei ihrem Versuch das Ziel des höchstmöglichen Schaden pro Sekunde zu erreichen. </translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1137"/>
         <source>Live: Use mechanics on Live servers. ( WoW Build %1 )</source>
-        <translation>Live: Nutzt Mechaniken von den Live-Servern. ( WoW Build %1 )</translation>
+        <translation type="vanished">Live: Nutzt Mechaniken von den Live-Servern. ( WoW Build %1 )</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1139"/>
         <source>Beta:  Use mechanics on Beta servers. ( WoW Build %1 )</source>
-        <translation>Beta: Nutzt Mechaniken von den Beta-Servern. ( WoW Build %1 )</translation>
+        <translation type="vanished">Beta: Nutzt Mechaniken von den Beta-Servern. ( WoW Build %1 )</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1142"/>
         <source>PTR:  Use mechanics on PTR servers. ( WoW Build %1 )</source>
-        <translation>PTR: Nutzt Mechaniken von den PTR-Servern. ( WoW Build %1 )</translation>
+        <translation type="vanished">PTR: Nutzt Mechaniken von den PTR-Servern. ( WoW Build %1 )</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1146"/>
         <source>%1:   Fast and Rough</source>
-        <translation>%1:   Schnell und Grob</translation>
+        <translation type="vanished">%1:   Schnell und Grob</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1147"/>
         <source>%1:  Sufficient for DPS Analysis</source>
-        <translation>%1:  Ausreichen für DPS-Analyse</translation>
+        <translation type="vanished">%1:  Ausreichen für DPS-Analyse</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1148"/>
         <source>%1: Recommended for Scale Factor Generation</source>
-        <translation>%1: Empfohlen für Skalierungsfaktoren</translation>
+        <translation type="vanished">%1: Empfohlen für Skalierungsfaktoren</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1149"/>
         <source>%1: Use if %2 isn&apos;t enough for Scale Factors</source>
-        <translation>%1: Falls %2 für Skalierungsfaktoren nicht ausreichen</translation>
+        <translation type="vanished">%1: Falls %2 für Skalierungsfaktoren nicht ausreichen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1154"/>
         <source>Varying the fight length over a given spectrum improves
 the analysis of trinkets and abilities with long cooldowns.</source>
-        <translation>Varrieren der Kampflänge erhöht die Analysekraft when Trinket-Procs oder lange Cooldowns betrachtet werden. </translation>
+        <translation type="vanished">Varrieren der Kampflänge erhöht die Analysekraft when Trinket-Procs oder lange Cooldowns betrachtet werden. </translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1157"/>
         <source>Patchwerk: Tank-n-Spank</source>
-        <translation>Patchwerk: Blindes Draufhauen</translation>
+        <translation type="vanished">Patchwerk: Blindes Draufhauen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1158"/>
         <source>HelterSkelter:
     Movement, Stuns, Interrupts,
     Target-Switching (every 2min)</source>
-        <translation>HelterSkelter:
+        <translation type="vanished">HelterSkelter:
     Bewegung, Betäubungen, Unterbrechungen,
     Ziel-Wechsel</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1161"/>
         <source>Ultraxion:
     Periodic Stuns, Raid Damage</source>
-        <translation>Ultraxion:
+        <translation type="vanished">Ultraxion:
     Periodische Betäubungen; Raid Schaden</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1163"/>
         <source>LightMovement:
     %1s Movement, %2s CD,
     %3% into the fight until %4% before the end</source>
-        <translation>Leichte Bewegungen:
+        <translation type="vanished">Leichte Bewegungen:
     %1sek Bewegung, %2sek Cooldown
     ab %3% in den Kampf hinein bis %4% vor Ende</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1166"/>
         <source>HeavyMovement:
     %1s Movement, %2s CD,
     beginning %3s into the fight</source>
-        <translation>Schwere Begungen:
+        <translation type="vanished">Schwere Begungen:
     %1sek Bewegung, %2sek Cooldown,
     ab %3sek in den Kampf hinein</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1172"/>
         <source>Number of enemies.</source>
-        <translation>Anzahl Feinde.</translation>
+        <translation type="vanished">Anzahl Feinde.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1174"/>
         <source>Level of the target and any adds.</source>
-        <translation>Rasse des Zieles und aller Adds.</translation>
+        <translation type="vanished">Rasse des Zieles und aller Adds.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1177"/>
         <source>Fire-is-Hot: Frequent DoT-clipping and skipping high-priority abilities.</source>
-        <translation>Feuer ist heiss: Häufiges abschneiden von DoT&apos;s und auslassen von prioritären Fähigkeiten.</translation>
+        <translation type="vanished">Feuer ist heiss: Häufiges abschneiden von DoT&apos;s und auslassen von prioritären Fähigkeiten.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1182"/>
         <source>United States, Europe, Taiwan, China, Korea</source>
-        <translation>Vereinigte Staaten, Europa, Taiwan, China, Korea</translation>
+        <translation type="vanished">Vereinigte Staaten, Europa, Taiwan, China, Korea</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1184"/>
         <source>Controls which Talent/Glyph specification is used when importing profiles from the Armory.</source>
-        <translation>Bestimmt welche Talent/Glyphen Spezifikation benutzt wird beim Armory-Import.</translation>
+        <translation type="vanished">Bestimmt welche Talent/Glyphen Spezifikation benutzt wird beim Armory-Import.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1186"/>
         <source>Specify the character role during import to ensure correct action priority list.</source>
-        <translation>Bestimmt welche Charakter-Rolle während des Imports verwendet wird, damit die passende Fähigkeitsliste geladen wird.</translation>
+        <translation type="vanished">Bestimmt welche Charakter-Rolle während des Imports verwendet wird, damit die passende Fähigkeitsliste geladen wird.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1188"/>
         <source>Specify if pets get reported separately in detail.</source>
-        <translation>Bestimmt ob Begleiter separat im Bericht aufgeführt werden.</translation>
+        <translation type="vanished">Bestimmt ob Begleiter separat im Bericht aufgeführt werden.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1190"/>
         <source>Specify html report print style.</source>
-        <translation>Bestimmt den html-Bericht Stil.</translation>
+        <translation type="vanished">Bestimmt den html-Bericht Stil.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1198"/>
         <source> Level %1: Ability Amount and  portion APS is collected.</source>
         <translatorcomment>Mir ist keine bessere Übersetzung eingefallen ohne auf &quot;Schaden&quot; zurückzufallen.</translatorcomment>
-        <translation> Stufe %1: Fähigkeits-Menge und Menge/s werden aufgezeichnet. </translation>
+        <translation type="vanished"> Stufe %1: Fähigkeits-Menge und Menge/s werden aufgezeichnet. </translation>
     </message>
     <message>
         <source>Due to the forced single iteration, no scale factor calculation.</source>
         <translation type="obsolete">Wegen der erzwungenen einmaligen Kampfiteration </translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1215"/>
         <source>    &apos;High&apos;  : %1ms</source>
-        <translation>     &apos;Hoch&apos;  : %1ms</translation>
+        <translation type="vanished">     &apos;Hoch&apos;  : %1ms</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1221"/>
         <source>Backwards</source>
-        <translation>Rückwärts</translation>
+        <translation type="vanished">Rückwärts</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1222"/>
         <source>Forwards</source>
-        <translation>Forwärts</translation>
-    </message>
-    <message>
-        <location filename="../qt/sc_window.cpp" line="1224"/>
-        <source>The number of points that will appear on the graph</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qt/sc_window.cpp" line="1228"/>
-        <source>The maximum amount to reforge per stat.</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">Forwärts</translation>
     </message>
 </context>
 <context>
     <name>createCustomTab</name>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1052"/>
         <source>Gear</source>
-        <translation>Ausrüstung</translation>
+        <translation type="vanished">Ausrüstung</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1053"/>
         <source>Customise Gear Setup</source>
-        <translation>Ausrüstung anpassen</translation>
+        <translation type="vanished">Ausrüstung anpassen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1054"/>
         <source>Talents</source>
-        <translation>Talente</translation>
+        <translation type="vanished">Talente</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1055"/>
         <source>Customise Talents</source>
-        <translation>Talente anpassen</translation>
+        <translation type="vanished">Talente anpassen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1056"/>
         <source>Glyphs</source>
-        <translation>Glyphen</translation>
+        <translation type="vanished">Glyphen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1057"/>
         <source>Customise Glyphs</source>
-        <translation>Glyphen anpassen</translation>
+        <translation type="vanished">Glyphen anpassen</translation>
     </message>
 </context>
 </TS>
