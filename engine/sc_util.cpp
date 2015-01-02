@@ -21,7 +21,7 @@
 // (systemctl).
 #if defined( SC_STD_THREAD ) && ! defined( SC_OSX )
 #include <thread>
-#else
+#elif ! defined( SC_MINGW )
 #include <sys/types.h>
 #include <sys/sysctl.h>
 #endif
