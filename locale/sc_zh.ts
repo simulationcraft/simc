@@ -683,9 +683,20 @@ Plot scaling for:</source>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="830"/>
         <source>This options sets a target error threshold and
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="831"/>
+        <source>runs iterations until that threshold is reached.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This options sets a target error threshold and
 runs iterations until that threshold is reached.
 </source>
-        <translation>这个选项设置一个最低的目标误差，
+        <translation type="vanished">这个选项设置一个最低的目标误差，
 迭代计算直到达到这个误差。
 </translation>
     </message>
