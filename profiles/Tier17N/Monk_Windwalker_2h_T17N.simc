@@ -26,11 +26,12 @@ actions=auto_attack
 actions+=/invoke_xuen,if=talent.invoke_xuen.enabled&time>5
 actions+=/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4
 actions+=/potion,name=draenic_agility,if=buff.serenity.up|(!talent.serenity.enabled&trinket.proc.agility.react)
+actions+=/use_item,name=gorashans_lodestone_spike,if=buff.tigereye_brew_use.up|target.time_to_die<18
 actions+=/blood_fury,if=buff.tigereye_brew_use.up|target.time_to_die<18
 actions+=/berserking,if=buff.tigereye_brew_use.up|target.time_to_die<18
 actions+=/arcane_torrent,if=chi.max-chi>=1&(buff.tigereye_brew_use.up|target.time_to_die<18)
 actions+=/chi_brew,if=chi.max-chi>=2&((charges=1&recharge_time<=10)|charges=2|target.time_to_die<charges*10)&buff.tigereye_brew.stack<=16
-actions+=/tiger_palm,if=buff.tiger_power.remains<=3
+actions+=/tiger_palm,if=buff.tiger_power.remains<6
 actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack=20
 actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=10&buff.serenity.up
 actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=10&cooldown.fists_of_fury.up&chi>=3&debuff.rising_sun_kick.up&buff.tiger_power.up
@@ -43,7 +44,7 @@ actions+=/call_action_list,name=aoe,if=active_enemies>=3
 actions+=/call_action_list,name=st,if=active_enemies<3
 
 actions.st=fists_of_fury,if=buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&!buff.serenity.remains
-actions.st+=/fortifying_brew,if=target.health.percent<10&cooldown.touch_of_death.remains=0
+actions.st+=/fortifying_brew,if=target.health.percent<10&cooldown.touch_of_death.remains=0&chi>=3
 actions.st+=/touch_of_death,if=target.health.percent<10
 actions.st+=/hurricane_strike,if=talent.hurricane_strike.enabled&energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&buff.energizing_brew.down
 actions.st+=/energizing_brew,if=cooldown.fists_of_fury.remains>6&(!talent.serenity.enabled|(!buff.serenity.remains&cooldown.serenity.remains>4))&energy+energy.regen*gcd<50
@@ -53,9 +54,9 @@ actions.st+=/chi_burst,if=talent.chi_burst.enabled&energy.time_to_max>2&buff.ser
 actions.st+=/zen_sphere,cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking&buff.serenity.down
 actions.st+=/blackout_kick,if=!talent.chi_explosion.enabled&(buff.combo_breaker_bok.react|buff.serenity.up)
 actions.st+=/chi_explosion,if=talent.chi_explosion.enabled&chi>=3&buff.combo_breaker_ce.react&cooldown.fists_of_fury.remains>3
-actions.st+=/tiger_palm,if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2
+actions.st+=/tiger_palm,if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<6
 actions.st+=/blackout_kick,if=!talent.chi_explosion.enabled&chi.max-chi<2
-actions.st+=/chi_explosion,if=talent.chi_explosion.enabled&chi>=3
+actions.st+=/chi_explosion,if=talent.chi_explosion.enabled&chi>=3&&cooldown.fists_of_fury.remains>3
 actions.st+=/jab,if=chi.max-chi>=2
 actions.st+=/jab,if=chi.max-chi>=1&talent.chi_explosion.enabled&cooldown.fists_of_fury.remains<=3
 
@@ -71,7 +72,7 @@ actions.aoe+=/zen_sphere,cycle_targets=1,if=!dot.zen_sphere.ticking
 actions.aoe+=/chi_wave,if=energy.time_to_max>2&buff.serenity.down
 actions.aoe+=/chi_burst,if=talent.chi_burst.enabled&energy.time_to_max>2&buff.serenity.down
 actions.aoe+=/blackout_kick,if=talent.rushing_jade_wind.enabled&!talent.chi_explosion.enabled&(buff.combo_breaker_bok.react|buff.serenity.up)
-actions.aoe+=/tiger_palm,if=talent.rushing_jade_wind.enabled&buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2
+actions.aoe+=/tiger_palm,if=talent.rushing_jade_wind.enabled&buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<6
 actions.aoe+=/blackout_kick,if=talent.rushing_jade_wind.enabled&!talent.chi_explosion.enabled&chi.max-chi<2&(cooldown.fists_of_fury.remains>3|!talent.rushing_jade_wind.enabled)
 actions.aoe+=/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled
 actions.aoe+=/jab,if=talent.rushing_jade_wind.enabled&chi.max-chi>=2

@@ -126,6 +126,7 @@ public:
     buff_t* combo_breaker_ce;
     buff_t* combo_breaker_tp;
     buff_t* dampen_harm;
+    buff_t* death_note;
     buff_t* diffuse_magic;
     buff_t* elusive_brew_activated;
     buff_t* elusive_brew_stacks;
@@ -4036,6 +4037,8 @@ void monk_t::create_buffs()
 
   buff.serenity = buff_creator_t( this, "serenity", talent.serenity );
 
+  buff.death_note = buff_creator_t( this, "death_note", find_spell( 121125 ) );
+
   // Brewmaster
   buff.bladed_armor = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
     .add_invalidate( CACHE_ATTACK_POWER );
@@ -4941,7 +4944,7 @@ void monk_t::apl_combat_windwalker()
   }
 
   def -> add_talent( this, "Chi Brew", "if=chi.max-chi>=2&((charges=1&recharge_time<=10)|charges=2|target.time_to_die<charges*10)&buff.tigereye_brew.stack<=16" );
-  def -> add_action( this, "Tiger Palm", "if=buff.tiger_power.remains<=3" );
+  def -> add_action( this, "Tiger Palm", "if=buff.tiger_power.remains<6" );
   def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack=20" );
   def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=10&buff.serenity.up" );
   def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=10&cooldown.fists_of_fury.up&chi>=3&debuff.rising_sun_kick.up&buff.tiger_power.up" );
@@ -4954,7 +4957,7 @@ void monk_t::apl_combat_windwalker()
   def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
 
   st -> add_action( this, "Fists of Fury", "if=buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&!buff.serenity.remains" );
-  st -> add_action( this, "Fortifying Brew", "if=target.health.percent<10&cooldown.touch_of_death.remains=0" );
+  st -> add_action( this, "Fortifying Brew", "if=target.health.percent<10&cooldown.touch_of_death.remains=0&chi>=3" );
   st -> add_action( this, "Touch of Death", "if=target.health.percent<10" );
   st -> add_talent( this, "Hurricane Strike", "if=talent.hurricane_strike.enabled&energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&buff.energizing_brew.down" );
   st -> add_action( this, "Energizing Brew", "if=cooldown.fists_of_fury.remains>6&(!talent.serenity.enabled|(!buff.serenity.remains&cooldown.serenity.remains>4))&energy+energy.regen*gcd<50" );
@@ -4964,9 +4967,9 @@ void monk_t::apl_combat_windwalker()
   st -> add_action( "zen_sphere,cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking&buff.serenity.down" );
   st -> add_action( this, "Blackout Kick", "if=!talent.chi_explosion.enabled&(buff.combo_breaker_bok.react|buff.serenity.up)" );
   st -> add_talent( this, "Chi Explosion", "if=talent.chi_explosion.enabled&chi>=3&buff.combo_breaker_ce.react&cooldown.fists_of_fury.remains>3" );
-  st -> add_action( this, "Tiger Palm", "if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2" );
+  st -> add_action( this, "Tiger Palm", "if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<6" );
   st -> add_action( this, "Blackout Kick", "if=!talent.chi_explosion.enabled&chi.max-chi<2" );
-  st -> add_talent( this, "Chi Explosion", "if=talent.chi_explosion.enabled&chi>=3" );
+  st -> add_talent( this, "Chi Explosion", "if=talent.chi_explosion.enabled&chi>=3&cooldown.fists_of_fury.remains>3" );
   st -> add_action( this, "Jab", "if=chi.max-chi>=2" );
   st -> add_action( this, "Jab", "if=chi.max-chi>=1&talent.chi_explosion.enabled&cooldown.fists_of_fury.remains<=3" );
 
