@@ -56,7 +56,7 @@ actions.st+=/blackout_kick,if=!talent.chi_explosion.enabled&(buff.combo_breaker_
 actions.st+=/chi_explosion,if=talent.chi_explosion.enabled&chi>=3&buff.combo_breaker_ce.react&cooldown.fists_of_fury.remains>3
 actions.st+=/tiger_palm,if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<6
 actions.st+=/blackout_kick,if=!talent.chi_explosion.enabled&chi.max-chi<2
-actions.st+=/chi_explosion,if=talent.chi_explosion.enabled&chi>=3&&cooldown.fists_of_fury.remains>3
+actions.st+=/chi_explosion,if=talent.chi_explosion.enabled&chi>=3&cooldown.fists_of_fury.remains>3
 actions.st+=/jab,if=chi.max-chi>=2
 actions.st+=/jab,if=chi.max-chi>=1&talent.chi_explosion.enabled&cooldown.fists_of_fury.remains<=3
 
@@ -72,7 +72,7 @@ actions.aoe+=/zen_sphere,cycle_targets=1,if=!dot.zen_sphere.ticking
 actions.aoe+=/chi_wave,if=energy.time_to_max>2&buff.serenity.down
 actions.aoe+=/chi_burst,if=talent.chi_burst.enabled&energy.time_to_max>2&buff.serenity.down
 actions.aoe+=/blackout_kick,if=talent.rushing_jade_wind.enabled&!talent.chi_explosion.enabled&(buff.combo_breaker_bok.react|buff.serenity.up)
-actions.aoe+=/tiger_palm,if=talent.rushing_jade_wind.enabled&buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<6
+actions.aoe+=/tiger_palm,if=talent.rushing_jade_wind.enabled&buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2
 actions.aoe+=/blackout_kick,if=talent.rushing_jade_wind.enabled&!talent.chi_explosion.enabled&chi.max-chi<2&(cooldown.fists_of_fury.remains>3|!talent.rushing_jade_wind.enabled)
 actions.aoe+=/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled
 actions.aoe+=/jab,if=talent.rushing_jade_wind.enabled&chi.max-chi>=2
