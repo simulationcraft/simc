@@ -33,7 +33,6 @@ class PaperdollProfile;
 #include "util/sc_searchbox.hpp" // remove once implementations are moved to source files
 #include "util/sc_textedit.hpp" // remove once implementations are moved to source files
 
-
 enum main_tabs_e
 {
   TAB_WELCOME = 0,
