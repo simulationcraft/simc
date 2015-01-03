@@ -48,6 +48,7 @@ public:
     QComboBox* armory_region;
     QComboBox* armory_spec;
     QComboBox* default_role;
+    QComboBox* gui_localization;
     QComboBox* boss_type;
     QComboBox* tank_dummy;
     QComboBox* tmi_boss;

@@ -165,6 +165,7 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
   connect( choice.challenge_mode,     SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.debug,              SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.default_role,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.gui_localization,   SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.boss_type,          SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.tank_dummy,         SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.tmi_boss,           SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
@@ -195,7 +196,7 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
   connect( choice.thread_priority,    SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.version,            SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.world_lag,          SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
-  connect( apikey,                    SIGNAL( currentIndexChanged( const QString& ) ), this, SLOT( _optionsChanged() ) );
+  connect( apikey,                    SIGNAL( textChanged( const QString& ) ), this, SLOT( _optionsChanged() ) );
 
   connect( buffsButtonGroup,          SIGNAL( buttonClicked( int ) ), this, SLOT( _optionsChanged() ) );
   connect( debuffsButtonGroup,        SIGNAL( buttonClicked( int ) ), this, SLOT( _optionsChanged() ) );
@@ -231,6 +232,7 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left -> addRow( tr( "Challenge Mode" ), choice.challenge_mode = createChoice( 2, "Disabled", "Enabled" ) );
   globalsLayout_left -> addRow( tr(  "Player Skill" ),    choice.player_skill = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
   globalsLayout_left -> addRow( tr( "Default Role" ),     choice.default_role = createChoice( 4, "Auto", "DPS", "Heal", "Tank" ) );
+  globalsLayout_left -> addRow( tr( "GUI Localization" ),     choice.gui_localization = createChoice( 3, "en", "de", "zh" ) );
 
   QPushButton* resetb = new QPushButton( tr("Reset all Settings" ), this );
   QFont override_font = QFont();
@@ -676,6 +678,7 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "thread_priority", choice.thread_priority, "Lowest" );
   load_setting( settings, "armory_region", choice.armory_region );
   load_setting( settings, "armory_spec", choice.armory_spec );
+  load_setting( settings, "gui_localization", choice.gui_localization );
   load_setting( settings, "default_role", choice.default_role );
   load_setting( settings, "boss_type", choice.boss_type, "Custom" );
   load_setting( settings, "pvp_crit", choice.pvp_crit, "Disable" );
@@ -773,6 +776,7 @@ void SC_OptionsTab::encodeOptions()
   settings.setValue( "threads", choice.threads -> currentText() );
   settings.setValue( "thread_priority", choice.thread_priority -> currentText() );
   settings.setValue( "armory_region", choice.armory_region -> currentText() );
+  settings.setValue( "gui_localization", choice.gui_localization -> currentText() );
   settings.setValue( "armory_spec", choice.armory_spec -> currentText() );
   settings.setValue( "default_role", choice.default_role -> currentText() );
   settings.setValue( "boss_type", choice.boss_type -> currentText() );
@@ -879,6 +883,8 @@ void SC_OptionsTab::createToolTips()
   choice.armory_region -> setToolTip( tr( "United States, Europe, Taiwan, China, Korea" ) );
 
   choice.armory_spec -> setToolTip( tr( "Controls which Talent/Glyph specification is used when importing profiles from the Armory." ) );
+
+  choice.gui_localization -> setToolTip( tr( "Controls the GUI display language." ) );
 
   choice.default_role -> setToolTip( tr( "Specify the character role during import to ensure correct action priority list." ) );
 

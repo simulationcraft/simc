@@ -58,10 +58,25 @@ int main( int argc, char *argv[] )
                      QLibraryInfo::location( QLibraryInfo::TranslationsPath ) );
   a.installTranslator( &qtTranslator );
 
-  QString path_to_locale = QString( "locale" );
-
+  QString lang("");
+  QSettings settings;
+  settings.beginGroup( "options" );
+  if ( settings.contains( "gui_localization" ) )
+  {
+      lang = settings.value( "gui_localization" ).toString();
+      qDebug() << "simc gui localization: " << lang;
+  }
+  settings.endGroup();
   QTranslator myappTranslator;
-  myappTranslator.load( QString( "sc_" ) + QLocale::system().name(), path_to_locale );
+  if ( !lang.isEmpty() && lang != "en" )
+  {
+      QString path_to_locale("locale");
+
+      QString qm_file = QString( "sc_" ) + lang + ".qm";
+      //qDebug() << "qm file: " << qm_file;
+      myappTranslator.load( qm_file, path_to_locale );
+      //qDebug() << "translator: " << myappTranslator.isEmpty();
+  }
   a.installTranslator( &myappTranslator );
 
   // Setup search paths for resources
