@@ -25,8 +25,8 @@ for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBui
 forfiles -s -m generate_????.simc -c "cmd /c echo Running @path && %~dp0simc.exe @file"
 
 robocopy %redist%\ %install%\ msvcp120.dll msvcr120.dll vccorlib120.dll
-robocoby Locale\ %install%\locale sc_de.qm sc_zh.qm
-robocopy %qt_dir%\bin\ %install%\ Qt5Core.dll Qt5OpenGL.dll Qt5Quick.dll Qt5PrintSupport.dll Qt5Qml.dll Qt5Sql.dll Qt5Svg.dll Qt5Positioning.dll Qt5Gui.dll Qt5Widgets.dll Qt5Network.dll Qt5WebEngineCore.dll Qt5WebEngine.dll Qt5WebEngineWidgets.dll Qt5Multimedia.dll Qt5MultimediaWidgets.dll Qt5Sensors.dll Qt5WebChannel.dll libGLESv2.dll icudt53.dll icuin53.dll icuuc53.dll libEGL.dll D3DCompiler_47.dll opengl32sw.dll 
+robocoby .\locale\ %install%\locale sc_de.qm sc_zh.qm
+robocopy %qt_dir%\bin\ %install%\ Qt5Core.dll Qt5Quick.dll Qt5PrintSupport.dll Qt5Qml.dll Qt5Svg.dll Qt5Gui.dll Qt5Widgets.dll Qt5Network.dll Qt5WebEngineCore.dll Qt5WebEngine.dll Qt5WebEngineWidgets.dll libGLESv2.dll icudt53.dll icuin53.dll icuuc53.dll libEGL.dll D3DCompiler_47.dll opengl32sw.dll 
 robocopy %qt_dir%\plugins\platforms %install%\plugins\platforms\ qwindows.dll
 robocopy %qt_dir%\plugins\audio %install%\plugins\audio qtaudio_windows.dll
 robocopy %qt_dir%\plugins\bearer %install%\plugins\bearer qgenericbearer.dll qnativewifibearer.dll
