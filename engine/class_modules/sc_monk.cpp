@@ -87,6 +87,7 @@ enum sef_ability_e {
   SEF_BLACKOUT_KICK,
   SEF_RISING_SUN_KICK,
   SEF_FISTS_OF_FURY,
+  SEF_SPINNING_CRANE_KICK,
   SEF_MAX
 };
 
@@ -759,6 +760,16 @@ struct storm_earth_and_fire_pet_t : public pet_t
       }
     }
 
+    virtual timespan_t execute_time() const
+    {
+      timespan_t t = sef_melee_attack_t::execute_time();
+
+      if ( ! p() -> dual_wield() )
+        t *= 1.0 / ( 1.0 + o() -> spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() );
+
+      return t;
+    }
+
     void execute()
     {
       if ( time_to_execute > timespan_t::zero() && player -> executing )
@@ -935,6 +946,34 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
+  struct sef_tick_action_t : public sef_melee_attack_t
+  {
+    sef_tick_action_t( const std::string& name, storm_earth_and_fire_pet_t* p, const spell_data_t* data ) :
+      sef_melee_attack_t( name, p, data )
+    {
+      dual = background = true;
+      aoe = -1;
+
+      // Reset some variables to ensure proper execution
+      dot_duration = timespan_t::zero();
+      school = SCHOOL_PHYSICAL;
+      cooldown -> duration = timespan_t::zero();
+      base_costs[ RESOURCE_ENERGY ] = 0;
+    }
+  };
+
+  struct sef_spinning_crane_kick_t : public sef_melee_attack_t
+  {
+    sef_spinning_crane_kick_t( storm_earth_and_fire_pet_t* player ) :
+      sef_melee_attack_t( "spinning_crane_kick", player, player -> owner -> find_class_spell( "Spinning Crane Kick" ) )
+    {
+      base_tick_time *= 1.0 + o() -> perk.empowered_spinning_crane_kick -> effectN( 1 ).percent();
+      dot_duration *= 1.0 + o() -> perk.empowered_spinning_crane_kick -> effectN( 2 ).percent();
+
+      tick_action = new sef_tick_action_t( "spinning_crane_kick_tick", player, &( data() ) );
+    }
+  };
+
   // Storm, Earth, and Fire abilities end ===================================
 
   // SEF has its own Tiger Power armor penetration buff
@@ -995,11 +1034,12 @@ public:
   {
     pet_t::init_spells();
 
-    attacks[ SEF_JAB             ] = new sef_jab_t( this );
-    attacks[ SEF_TIGER_PALM      ] = new sef_tiger_palm_t( this );
-    attacks[ SEF_BLACKOUT_KICK   ] = new sef_blackout_kick_t( this );
-    attacks[ SEF_RISING_SUN_KICK ] = new sef_rising_sun_kick_t( this );
-    attacks[ SEF_FISTS_OF_FURY   ] = new sef_fists_of_fury_t( this );
+    attacks[ SEF_JAB                 ] = new sef_jab_t( this );
+    attacks[ SEF_TIGER_PALM          ] = new sef_tiger_palm_t( this );
+    attacks[ SEF_BLACKOUT_KICK       ] = new sef_blackout_kick_t( this );
+    attacks[ SEF_RISING_SUN_KICK     ] = new sef_rising_sun_kick_t( this );
+    attacks[ SEF_FISTS_OF_FURY       ] = new sef_fists_of_fury_t( this );
+    attacks[ SEF_SPINNING_CRANE_KICK ] = new sef_spinning_crane_kick_t( this );
   }
 
   void init_action_list()
@@ -2208,6 +2248,8 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
   {
     parse_options( options_str );
     stancemask = STURDY_OX | FIERCE_TIGER | WISE_SERPENT | SPIRITED_CRANE;
+
+    sef_ability = SEF_SPINNING_CRANE_KICK;
 
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
     tick_zero = channeled = true;
