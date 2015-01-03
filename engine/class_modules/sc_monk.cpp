@@ -4271,7 +4271,7 @@ double monk_t::composite_player_multiplier( school_e school ) const
   if ( buff.storm_earth_and_fire -> up() )
   {
     if ( buff.storm_earth_and_fire -> stack() == 1 )
-      m *= passives.storm_earth_and_fire -> effectN( 1 ).percent();
+      m *= buff.storm_earth_and_fire -> data().effectN( 1 ).percent();
     else if ( buff.storm_earth_and_fire -> stack() == 2 )
       m *= passives.storm_earth_and_fire -> effectN( 2 ).percent();
   }
