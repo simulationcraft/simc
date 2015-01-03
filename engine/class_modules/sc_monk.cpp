@@ -625,6 +625,13 @@ struct storm_earth_and_fire_pet_t : public pet_t
       background = may_crit = true;
       school = SCHOOL_PHYSICAL;
 
+      // Cooldowns are handled automatically by the mirror abilities, the SEF specific ones need none.
+      cooldown -> duration = timespan_t::zero();
+
+      // No costs are needed either
+      base_costs[ RESOURCE_ENERGY ] = 0;
+      base_costs[ RESOURCE_CHI ] = 0;
+
       if ( w )
       {
         weapon = w;
@@ -923,42 +930,48 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
-  struct sef_fists_of_fury_t : public sef_melee_attack_t
-  {
-    sef_fists_of_fury_t( storm_earth_and_fire_pet_t* player ) :
-      sef_melee_attack_t( "fists_of_fury", player, player -> owner -> find_specialization_spell( "Fists of Fury" ) )
-    {
-      dot_duration = timespan_t::zero();
-      trigger_gcd = timespan_t::zero();
-      aoe = -1;
-    }
-
-    // Fists of Fury has to snapshot direct amount multiplier itself, so we can
-    // apply a proper damage division to the targets.
-    void snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt )
-    {
-      sef_melee_attack_t::snapshot_internal( state, flags, rt );
-
-      if ( state -> target != player -> target )
-      {
-        state -> da_multiplier /= state -> n_targets;
-      }
-    }
-  };
-
   struct sef_tick_action_t : public sef_melee_attack_t
   {
     sef_tick_action_t( const std::string& name, storm_earth_and_fire_pet_t* p, const spell_data_t* data ) :
       sef_melee_attack_t( name, p, data )
     {
-      dual = background = true;
       aoe = -1;
 
       // Reset some variables to ensure proper execution
       dot_duration = timespan_t::zero();
       school = SCHOOL_PHYSICAL;
-      cooldown -> duration = timespan_t::zero();
-      base_costs[ RESOURCE_ENERGY ] = 0;
+    }
+  };
+
+  struct sef_fists_of_fury_tick_t: public sef_tick_action_t
+  {
+    sef_fists_of_fury_tick_t( storm_earth_and_fire_pet_t* p ):
+      sef_tick_action_t( "fists_of_fury_tick", p, p -> o() -> find_specialization_spell( "Fists of Fury" ) )
+    { }
+
+    // Damage must be divided on non-main target by the number of targets
+    double composite_aoe_multiplier( const action_state_t* state ) const
+    {
+      if ( state -> target != target )
+      {
+        return 1.0 / state -> n_targets;
+      }
+
+      return 1.0;
+    }
+  };
+
+  struct sef_fists_of_fury_t : public sef_melee_attack_t
+  {
+    sef_fists_of_fury_t( storm_earth_and_fire_pet_t* player ) :
+      sef_melee_attack_t( "fists_of_fury", player, player -> o() -> find_specialization_spell( "Fists of Fury" ) )
+    {
+      channeled = tick_zero = true;
+      may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+
+      weapon_power_mod = 0;
+
+      tick_action = new sef_fists_of_fury_tick_t( player );
     }
   };
 
@@ -989,6 +1002,12 @@ public:
     pet_t( sim, owner, name, true ),
     tiger_power( 0 ), attacks( SEF_MAX )
   {
+    // Storm, Earth, and Fire pets have to become "Windwalkers", so we can get
+    // around some sanity checks in the action execution code, that prevents
+    // abilities meant for a certain specialization to be executed by actors
+    // that do not have the specialization.
+    _spec = MONK_WINDWALKER;
+
     main_hand_weapon.type = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( dual_wield ? 2.6 : 3.6 );
 
@@ -1001,6 +1020,9 @@ public:
     // TODO: Check if the 0.74164 is global, or AA only?
     owner_coeff.ap_from_ap = dual_wield ? 0.74164 : 1.0;
   }
+
+  timespan_t available() const
+  { return sim -> expected_iteration_time * 2; }
 
   monk_t* o()
   {
@@ -2332,9 +2354,10 @@ struct fists_of_fury_t: public monk_melee_attack_t
   {
     parse_options( options_str );
 
+    sef_ability = SEF_FISTS_OF_FURY;
     stancemask = FIERCE_TIGER;
 
-    channeled = tick_zero = dynamic_tick_action = true;
+    channeled = tick_zero = true;
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
     base_multiplier *= 5.875; // hardcoded into tooltip
