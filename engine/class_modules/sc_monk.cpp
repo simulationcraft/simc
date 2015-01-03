@@ -405,7 +405,6 @@ public:
   // player_t overrides
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual double    composite_armor_multiplier() const;
-  virtual double    composite_melee_speed() const;
   virtual double    composite_melee_crit() const;
   virtual double    composite_spell_crit() const;
   virtual double    energy_regen_per_second() const;
@@ -1639,169 +1638,181 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 };
 
 // ==========================================================================
-// Spinning Crane Kick
+// Spinning Crane Kick / Jade Rushing Wind
 // ==========================================================================
-bool chi_refund = false;
 
-struct spinning_crane_kick_t: public monk_melee_attack_t
+// Shared tick action for both abilities
+struct tick_action_t : public monk_melee_attack_t
 {
-  struct spinning_crane_kick_tick_t: public monk_melee_attack_t
+  const spell_data_t* resource_gain;
+  bool first_tick;
+
+  tick_action_t( const std::string& name, monk_t* p, const spell_data_t* data ) :
+    monk_melee_attack_t( name, p, data ),
+    resource_gain( p -> find_spell( 129881 ) ),
+    first_tick( false )
   {
-    spinning_crane_kick_tick_t( monk_t* p, const spell_data_t* s ):
-      monk_melee_attack_t( "spinning_crane_kick_tick", p, s )
-    {
-      dual = true;
-      aoe = -1;
-      mh = &( player -> main_hand_weapon );
-      oh = &( player -> off_hand_weapon );
-      base_multiplier *= 0.75; // hardcoded into tooltip
-      update_flags = ~STATE_HASTE;
-      if ( p -> wod_hotfix )
-        base_multiplier *= 1 + p -> passives.hotfix_passive -> effectN( 3 ).percent();
-    }
+    dual = background = true;
+    aoe = -1;
+    mh = &( player -> main_hand_weapon );
+    oh = &( player -> off_hand_weapon );
 
-    void execute()
-    {
-      monk_melee_attack_t::execute();
-      if ( execute_state -> n_targets >= 3 && chi_refund )
-      {
-        player -> resource_gain( RESOURCE_CHI, p() -> find_spell( 129881 ) -> effectN( 1 ).base_value(),
-                                 p() -> gain.spinning_crane_kick, this );
-        chi_refund = false; // Only let one tick refund chi.
-      }
-
-      if ( p() -> buff.power_strikes -> up() && execute_state -> n_targets >= 3 )
-      {
-        if ( p() -> resources.current[RESOURCE_CHI] < p() -> resources.max[RESOURCE_CHI] )
-          p() -> resource_gain( RESOURCE_CHI,
-          p() -> buff.power_strikes -> data().effectN( 1 ).base_value(),
-          0, this );
-        else
-          p() -> buff.chi_sphere -> trigger();
-
-        p() -> buff.power_strikes -> expire();
-      }
-    }
-  };
-
-  struct rushing_jade_wind_tick_t: public monk_melee_attack_t
-  {
-    rushing_jade_wind_tick_t( monk_t* p, const spell_data_t* s ):
-      monk_melee_attack_t( "rushing_jade_wind_tick", p, s )
-    {
-      dual = true;
-      aoe = -1;
-      dot_duration = timespan_t::zero();
-      mh = &( player -> main_hand_weapon );
-      oh = &( player -> off_hand_weapon );
-      base_multiplier *= 0.6; // hardcoded into tooltip
-      school = SCHOOL_PHYSICAL;
-      trigger_gcd = timespan_t::zero();
-      base_costs[RESOURCE_ENERGY] = 0;
-      cooldown -> duration = timespan_t::zero();
-      if ( p -> wod_hotfix )
-        base_multiplier *= 1 + p -> passives.hotfix_passive -> effectN( 3 ).percent();
-
-    }
-
-    void execute()
-    {
-      monk_melee_attack_t::execute();
-      if ( execute_state -> n_targets >= 3 && chi_refund )
-      {
-        player -> resource_gain( RESOURCE_CHI, p() -> find_spell( 129881 ) -> effectN( 1 ).base_value(),
-                                 p() -> gain.rushing_jade_wind, this );
-        chi_refund = false; // Only let one tick refund chi.
-      }
-
-      if ( p() -> buff.power_strikes -> up() && execute_state -> n_targets >= 3 )
-      {
-        if ( p() -> resources.current[RESOURCE_CHI] < p() -> resources.max[RESOURCE_CHI] )
-          p() -> resource_gain( RESOURCE_CHI,
-          p() -> buff.power_strikes -> data().effectN( 1 ).base_value(),
-          0, this );
-        else
-          p() -> buff.chi_sphere -> trigger();
-
-        p() -> buff.power_strikes -> expire();
-      }
-    }
-  };
-
-  rushing_jade_wind_tick_t* jade;
-  spinning_crane_kick_tick_t* crane;
-  spinning_crane_kick_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( p -> talent.rushing_jade_wind -> ok() ? "rushing_jade_wind" : "spinning_crane_kick",
-    p,
-    p -> talent.rushing_jade_wind -> ok() ? p -> talent.rushing_jade_wind : p -> spec.spinning_crane_kick ),
-    jade( 0 ), crane( 0 )
-  {
-    parse_options( options_str );
-    stancemask = STURDY_OX | FIERCE_TIGER | WISE_SERPENT | SPIRITED_CRANE;
-    may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
-    tick_zero = hasted_ticks = true;
-
-    if ( p -> talent.rushing_jade_wind -> ok() )
-    {
-      channeled = false;
-      update_flags &= ~STATE_HASTE;
-      school = SCHOOL_NATURE; // Application is Nature but the actual damage ticks is Physical
-      jade = new rushing_jade_wind_tick_t( p, p -> talent.rushing_jade_wind );
-      add_child( jade );
-    }
-    else
-    {
-      school = SCHOOL_PHYSICAL;
-      channeled = true;
-      cooldown -> duration *= 1 + p -> perk.empowered_spinning_crane_kick -> effectN( 1 ).percent();
-      base_tick_time *= 1 + p -> perk.empowered_spinning_crane_kick -> effectN( 1 ).percent();
-      crane = new spinning_crane_kick_tick_t( p, p -> find_spell( 107270 ) );
-      add_child( crane );
-    }
-  }
-
-  timespan_t dot_duration()
-  {
-    timespan_t dot_length = dot_duration();
-
-    if ( !p() -> talent.rushing_jade_wind -> ok() )
-      dot_length *= 1 + p() -> perk.empowered_spinning_crane_kick -> effectN( 2 ).percent();
-    else
-      dot_length = dot_length * p() -> cache.attack_haste();
-
-    return dot_length;
-  }
-
-  void tick( dot_t*d )
-  {
-    monk_melee_attack_t::tick( d );
-    if ( crane != NULL )
-      crane -> execute();
-    else if ( jade != NULL )
-      jade -> execute();
-  }
-
-  void update_ready( timespan_t cd_duration )
-  {
-    if ( p() -> talent.rushing_jade_wind -> ok() )
-      cd_duration = cooldown -> duration * p() -> cache.attack_haste();
-
-    monk_melee_attack_t::update_ready( cd_duration );
+    // Reset some variables to ensure proper execution
+    dot_duration = timespan_t::zero();
+    school = SCHOOL_PHYSICAL;
+    cooldown -> duration = timespan_t::zero();
+    base_costs[ RESOURCE_ENERGY ] = 0;
   }
 
   void execute()
   {
-    chi_refund = true;
     monk_melee_attack_t::execute();
 
-    if ( p() -> talent.rushing_jade_wind -> ok() )
-      p() -> buff.rushing_jade_wind -> trigger( 1, 0, 1.0, cooldown -> duration * p() -> cache.attack_haste() );
+    // 3+ targets does special things
+    if ( execute_state -> n_targets < 3 )
+    {
+      return;
+    }
+
+    if ( first_tick )
+    {
+      player -> resource_gain( RESOURCE_CHI,
+                               resource_gain -> effectN( 1 ).base_value(),
+                               p() -> gain.spinning_crane_kick,
+                               this );
+      first_tick = false;
+    }
+
+    if ( p() -> buff.power_strikes -> up() )
+    {
+      if ( p() -> resources.current[ RESOURCE_CHI ] < p() -> resources.max[ RESOURCE_CHI ] )
+      {
+        p() -> resource_gain( RESOURCE_CHI,
+                              p() -> buff.power_strikes -> data().effectN( 1 ).base_value(),
+                              0,
+                              this );
+      }
+      else
+      {
+        p() -> buff.chi_sphere -> trigger();
+      }
+
+      p() -> buff.power_strikes -> expire();
+    }
+  }
+
+  void reset()
+  {
+    monk_melee_attack_t::reset();
+
+    first_tick = false;
+  }
+};
+
+struct rushing_jade_wind_t : public monk_melee_attack_t
+{
+  rushing_jade_wind_t( monk_t* p, const std::string& options_str ):
+    monk_melee_attack_t( "rushing_jade_wind", p, p -> talent.rushing_jade_wind )
+  {
+    parse_options( options_str );
+    stancemask = STURDY_OX | FIERCE_TIGER | WISE_SERPENT | SPIRITED_CRANE;
+
+    may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+    tick_zero = hasted_ticks = true;
+
+    base_multiplier *= 0.6; // hardcoded into tooltip
+    if ( p -> wod_hotfix )
+    {
+      base_multiplier *= 1 + p -> passives.hotfix_passive -> effectN( 3 ).percent();
+    }
+
+    tick_action = new tick_action_t( "rushing_jade_wind_tick", p, &( data() ) );
+  }
+
+  // N full ticks, but never additional ones.
+  timespan_t composite_dot_duration( const action_state_t* s ) const
+  {
+    return dot_duration * ( tick_time( s -> haste ) / base_tick_time );
+  }
+
+  void execute()
+  {
+    static_cast<tick_action_t*>( tick_action ) -> first_tick = true;
+
+    monk_melee_attack_t::execute();
+
+    p() -> buff.rushing_jade_wind -> trigger( 1,
+        buff_t::DEFAULT_VALUE(),
+        1.0,
+        composite_dot_duration( execute_state ) );
+
+    if ( rng().roll( p() -> sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
+    {
+      p() -> resource_gain( RESOURCE_ENERGY,
+          p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(),
+          p() -> gain.tier15_2pc_melee,
+          this );
+      p() -> proc.tier15_2pc_melee -> occur();
+    }
+  }
+
+  void init()
+  {
+    monk_melee_attack_t::init();
+
+    update_flags &= ~STATE_HASTE;
+  }
+
+  void update_ready( timespan_t )
+  {
+    monk_melee_attack_t::update_ready( cooldown -> duration * p() -> cache.attack_haste() );
+  }
+};
+
+struct spinning_crane_kick_t: public monk_melee_attack_t
+{
+  spinning_crane_kick_t( monk_t* p, const std::string& options_str ):
+    monk_melee_attack_t( "spinning_crane_kick", p, p -> spec.spinning_crane_kick )
+  {
+    parse_options( options_str );
+    stancemask = STURDY_OX | FIERCE_TIGER | WISE_SERPENT | SPIRITED_CRANE;
+
+    may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+    tick_zero = channeled = true;
+
+    base_multiplier *= 0.75; // hardcoded into tooltip
+    if ( p -> wod_hotfix )
+    {
+      base_multiplier *= 1 + p -> passives.hotfix_passive -> effectN( 3 ).percent();
+    }
+
+    base_tick_time *= 1.0 + p -> perk.empowered_spinning_crane_kick -> effectN( 1 ).percent();
+    dot_duration *= 1.0 + p -> perk.empowered_spinning_crane_kick -> effectN( 2 ).percent();
+
+    tick_action = new tick_action_t( "spinning_crane_kick_tick", p, &( data() ) );
+  }
+
+  void execute()
+  {
+    static_cast<tick_action_t*>( tick_action ) -> first_tick = true;
+
+    monk_melee_attack_t::execute();
 
     if ( rng().roll( p() -> sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
     {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc_melee );
       p() -> proc.tier15_2pc_melee -> occur();
     }
+  }
+
+  bool ready()
+  {
+    if ( p() -> talent.rushing_jade_wind -> ok() )
+    {
+      return false;
+    }
+
+    return monk_melee_attack_t::ready();
   }
 };
 
@@ -1967,6 +1978,9 @@ struct melee_t: public monk_melee_attack_t
   virtual timespan_t execute_time() const
   {
     timespan_t t = monk_melee_attack_t::execute_time();
+
+    if ( ! p() -> dual_wield() )
+      t *= 1.0 / ( 1.0 + p() -> spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() );
 
     if ( first )
       return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::zero() ) : t / 2 ) : timespan_t::zero();
@@ -3754,7 +3768,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "chi_brew" ) return new               chi_brew_t( this, options_str );
   if ( name == "dampen_harm" ) return new            dampen_harm_t( *this, options_str );
   if ( name == "diffuse_magic" ) return new          diffuse_magic_t( *this, options_str );
-  if ( name == "rushing_jade_wind" ) return new      spinning_crane_kick_t( this, options_str );
+  if ( name == "rushing_jade_wind" ) return new      rushing_jade_wind_t( this, options_str );
   if ( name == "invoke_xuen" ) return new            xuen_spell_t( this, options_str );
   if ( name == "chi_torpedo" ) return new            chi_torpedo_t( this, options_str );
   if ( name == "hurricane_strike" ) return new       hurricane_strike_t( this, options_str );
@@ -4221,16 +4235,6 @@ void monk_t::clear_stagger()
 }
 
 // monk_t::composite_attack_speed =========================================
-
-double monk_t::composite_melee_speed() const
-{
-  double cas = base_t::composite_melee_speed();
-
-  if ( !dual_wield() )
-    cas *= 1.0 / ( 1.0 + spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() );
-
-  return cas;
-}
 
 // monk_t::composite_melee_crit ============================================
 
@@ -4987,7 +4991,7 @@ void monk_t::apl_combat_windwalker()
   aoe -> add_action( this, "Blackout Kick", "if=talent.rushing_jade_wind.enabled&!talent.chi_explosion.enabled&(buff.combo_breaker_bok.react|buff.serenity.up)" );
   aoe -> add_action( this, "Tiger Palm", "if=talent.rushing_jade_wind.enabled&buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2" );
   aoe -> add_action( this, "Blackout Kick", "if=talent.rushing_jade_wind.enabled&!talent.chi_explosion.enabled&chi.max-chi<2&(cooldown.fists_of_fury.remains>3|!talent.rushing_jade_wind.enabled)" );
-  aoe -> add_action( this, "Spinning Crane Kick", "if=!talent.rushing_jade_wind.enabled" );
+  aoe -> add_action( this, "Spinning Crane Kick" );
   aoe -> add_action( this, "Jab", "if=talent.rushing_jade_wind.enabled&chi.max-chi>=2" );
   aoe -> add_action( this, "Jab", "if=talent.rushing_jade_wind.enabled&chi.max-chi>=1&talent.chi_explosion.enabled&cooldown.fists_of_fury.remains<=3" );
 }

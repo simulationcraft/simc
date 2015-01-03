@@ -73,7 +73,7 @@ actions.aoe+=/chi_burst,if=talent.chi_burst.enabled&energy.time_to_max>2&buff.se
 actions.aoe+=/blackout_kick,if=talent.rushing_jade_wind.enabled&!talent.chi_explosion.enabled&(buff.combo_breaker_bok.react|buff.serenity.up)
 actions.aoe+=/tiger_palm,if=talent.rushing_jade_wind.enabled&buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2
 actions.aoe+=/blackout_kick,if=talent.rushing_jade_wind.enabled&!talent.chi_explosion.enabled&chi.max-chi<2&(cooldown.fists_of_fury.remains>3|!talent.rushing_jade_wind.enabled)
-actions.aoe+=/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled
+actions.aoe+=/spinning_crane_kick
 actions.aoe+=/jab,if=talent.rushing_jade_wind.enabled&chi.max-chi>=2
 actions.aoe+=/jab,if=talent.rushing_jade_wind.enabled&chi.max-chi>=1&talent.chi_explosion.enabled&cooldown.fists_of_fury.remains<=3
 
