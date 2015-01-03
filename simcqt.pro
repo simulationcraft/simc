@@ -12,6 +12,7 @@ CONFIG(qt) {
     }
     lessThan( QT_MINOR_VERSION, 4 ) {
       QT += webkit webkitwidgets
+      DEFINES += SC_USE_WEBKIT
     }
     QT += widgets
     DEFINES += QT_VERSION_5
@@ -30,6 +31,7 @@ win32-mingw
             QT -= webengine webenginewidgets
             QT += webkit webkitwidgets
             DEFINES -= SC_USE_WEBENGINE
+            DEFINES += SC_USE_WEBKIT
         }
     }
 }

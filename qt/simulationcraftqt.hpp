@@ -82,7 +82,6 @@ typedef QWebEnginePage SC_WebEnginePage;
 typedef QWebView SC_WebEngineView;
 
 typedef QWebPage SC_WebEnginePage;
-#define SC_USE_WEBKIT
 #endif
 
 // ============================================================================
