@@ -5981,6 +5981,12 @@ public:
   virtual double composite_persistent_multiplier( const action_state_t* ) const
   { return player -> composite_persistent_multiplier( get_school() ); }
 
+  // Generic aoe multiplier for the action. Used in
+  // action_t::calculate_direct_amount, and applied after other (passive) aoe
+  // multipliers are applied.
+  virtual double composite_aoe_multiplier( const action_state_t* ) const
+  { return 1.0; }
+
   virtual double composite_target_mitigation( player_t* t, school_e s ) const
   { return t -> composite_mitigation_multiplier( s ); }
 
