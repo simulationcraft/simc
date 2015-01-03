@@ -1729,6 +1729,11 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     tick_action = new tick_action_t( "rushing_jade_wind_tick", p, &( data() ) );
   }
 
+  // Physical tick_action abilities need amount_type() override, so the
+  // tick_action multistrikes are properly physically mitigated.
+  dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ ) const
+  { return DMG_DIRECT; }
+
   // N full ticks, but never additional ones.
   timespan_t composite_dot_duration( const action_state_t* s ) const
   {
@@ -1792,6 +1797,11 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     tick_action = new tick_action_t( "spinning_crane_kick_tick", p, &( data() ) );
   }
 
+  // Physical tick_action abilities need amount_type() override, so the
+  // tick_action multistrikes are properly physically mitigated.
+  dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ ) const
+  { return DMG_DIRECT; }
+
   void execute()
   {
     static_cast<tick_action_t*>( tick_action ) -> first_tick = true;
@@ -1825,63 +1835,62 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
   fists_of_fury_tick_t( monk_t* p, const std::string& name ):
     monk_melee_attack_t( name, p, p -> spec.fists_of_fury )
   {
-    dual = true;
+    background = true;
     aoe = -1;
-    base_multiplier *= 5.875; // hardcoded into tooltip
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_costs[RESOURCE_CHI] = 0;
+
+    base_costs[ RESOURCE_CHI ] = 0;
     dot_duration = timespan_t::zero();
     trigger_gcd = timespan_t::zero();
-    if ( p -> wod_hotfix )
-    {
-      base_multiplier *= 1 + p -> passives.hotfix_passive -> effectN( 1 ).percent();
-    }
   }
 
-  void impact( action_state_t* s )
+  double composite_aoe_multiplier( const action_state_t* state ) const
   {
-    if ( s -> target == p() -> target )
-      monk_melee_attack_t::impact( s );
-    else
+    if ( state -> target != target )
     {
-      double damage = s -> result_amount;
-      damage /= execute_state -> n_targets;
-      s -> result_amount = damage;
-      monk_melee_attack_t::impact( s );
+      return 1.0 / state -> n_targets;
     }
+
+    return 1.0;
   }
 };
 
 struct fists_of_fury_t: public monk_melee_attack_t
 {
-  attack_t* fists_of_fury;
   fists_of_fury_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( "fists_of_fury", p, p -> spec.fists_of_fury ),
-    fists_of_fury( new fists_of_fury_tick_t( p, "fists_of_fury_tick" ) )
+    monk_melee_attack_t( "fists_of_fury", p, p -> spec.fists_of_fury )
   {
     parse_options( options_str );
+
     stancemask = FIERCE_TIGER;
-    channeled = tick_zero = true;
+
+    channeled = tick_zero = dynamic_tick_action = true;
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
-    add_child( fists_of_fury );
+
+    base_multiplier *= 5.875; // hardcoded into tooltip
+    if ( p -> wod_hotfix )
+    {
+      base_multiplier *= 1 + p -> passives.hotfix_passive -> effectN( 1 ).percent();
+    }
 
     // T14 WW 2PC
     cooldown -> duration = data().cooldown();
     cooldown -> duration += p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).time_value();
+
+    tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
   }
 
-  void tick( dot_t*d )
-  {
-    monk_melee_attack_t::tick( d );
-    fists_of_fury -> execute();
-  }
+  // Physical tick_action abilities need amount_type() override, so the
+  // tick_action multistrikes are properly physically mitigated.
+  dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ ) const
+  { return DMG_DIRECT; }
 
   void consume_resource()
   {
     monk_melee_attack_t::consume_resource();
 
-    double savings = base_costs[RESOURCE_CHI] - cost();
+    double savings = base_costs[ RESOURCE_CHI ] - cost();
     if ( result_is_hit( execute_state -> result ) )
     {
       p() -> track_chi_consumption += savings;
