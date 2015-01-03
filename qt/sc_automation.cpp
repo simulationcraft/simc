@@ -1093,8 +1093,8 @@ void SC_ImportTab::compTypeChanged( const int comp )
   label.rotationFooter -> setToolTip( defaultRotationFooterToolTip );
 
   // Set rotation header/footer texts
-  label.rotationHeader -> setText( "Default Rotation" );
-  label.rotationFooter -> setText( "Unused" );
+  label.rotationHeader -> setText( tr( "Default Rotation" ) );
+  label.rotationFooter -> setText( tr( "Unused" ) );
 
   switch ( comp )
   {
