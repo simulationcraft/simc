@@ -1049,7 +1049,7 @@ void print_html_gear ( report::sc_html_stream& os, player_t* p )
           break;
         }
       }
-      gems = false; // Remove this line when the GUI can handle mousing over a wowhead tooltip with gems and not lock up.
+
       if ( gems )
       {
         rel_str += "gems=";
