@@ -1314,7 +1314,9 @@ public:
 
     SC_WebPage* page = new SC_WebPage( this );
     setPage( page );
-    //page -> setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
+#if defined( SC_USE_WEBKIT )
+    page -> setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
+#endif
 
     // Add QT Major Version to avoid "mysterious" problems resulting in qBadAlloc.
     QDir dir( mainWindow -> TmpDir + QDir::separator() + "simc_webcache_qt" + std::string( QT_VERSION_STR ).substr( 0, 3 ).c_str() );
@@ -1327,7 +1329,9 @@ public:
       QNetworkDiskCache* diskCache = new QNetworkDiskCache( this );
       diskCache -> setCacheDirectory( dir.absolutePath() );
       QString test = diskCache -> cacheDirectory();
-      //page -> networkAccessManager()->setCache( diskCache );
+#if defined( SC_USE_WEBKIT )
+      page -> networkAccessManager()->setCache( diskCache );
+#endif
     }
     else
     {
@@ -1346,11 +1350,12 @@ public:
   {
     setHtml( html_str );
   }
-
-  //QString toHtml()
-  // {
-  //  return page() -> currentFrame() -> toHtml();
-  // }
+#if defined( SC_USE_WEBKIT )
+  QString toHtml()
+  {
+    return page() -> currentFrame() -> toHtml();
+  }
+#endif
 
   void enableMouseNavigation()
   {

@@ -1474,10 +1474,11 @@ void SC_MainWindow::backButtonClicked( bool /* checked */ )
     if ( mainTab -> currentTab() == TAB_RESULTS && !visibleWebView->history()->canGoBack() )
     {
       visibleWebView -> loadHtml();
-
-      //QWebHistory* h = visibleWebView->history();
-      //h->setMaximumItemCount( 0 );
-      //h->setMaximumItemCount( 100 );
+#if defined( SC_USE_WEBKIT )
+      QWebHistory* h = visibleWebView->history();
+      h->setMaximumItemCount( 0 );
+      h->setMaximumItemCount( 100 );
+#endif
     }
     else
     {
@@ -1921,8 +1922,10 @@ void SC_SingleResultTab::save_result()
       switch ( currentTab() )
       {
       case TAB_HTML:
-        //file.write( static_cast<SC_WebView*>( currentWidget() ) -> toHtml() );
-        //break;
+#if defined( SC_USE_WEBKIT )
+        file.write( static_cast<SC_WebView*>( currentWidget() ) -> toHtml().toUtf8() );
+        break;
+#endif
       case TAB_TEXT:
       case TAB_XML:
       case TAB_PLOTDATA:
