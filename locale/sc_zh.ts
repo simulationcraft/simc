@@ -49,11 +49,13 @@
         <translation>默认装备</translation>
     </message>
     <message>
+        <location filename="../qt/sc_automation.cpp" line="1096"/>
         <location filename="../qt/sc_automation.cpp" line="1286"/>
         <source>Default Rotation</source>
         <translation>默认输出优先级</translation>
     </message>
     <message>
+        <location filename="../qt/sc_automation.cpp" line="1097"/>
         <location filename="../qt/sc_automation.cpp" line="1292"/>
         <source>Unused</source>
         <translation>未使用</translation>
@@ -683,20 +685,9 @@ Plot scaling for:</source>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="830"/>
         <source>This options sets a target error threshold and
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qt/sc_options_tab.cpp" line="831"/>
-        <source>runs iterations until that threshold is reached.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This options sets a target error threshold and
 runs iterations until that threshold is reached.
 </source>
-        <translation type="vanished">这个选项设置一个最低的目标误差，
+        <translation>这个选项设置一个最低的目标误差，
 迭代计算直到达到这个误差。
 </translation>
     </message>
@@ -804,8 +795,9 @@ Note that the sim will still generate and display scale factors for all other me
 注意，模拟时依然会为所有属性显示未标准化的权值。</translation>
     </message>
     <message>
+        <location filename="../qt/sc_options_tab.cpp" line="512"/>
         <source>Plots</source>
-        <translation type="vanished">折线</translation>
+        <translation>折线</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="522"/>
@@ -824,8 +816,9 @@ Note that the sim will still generate and display scale factors for all other me
         <translation>一次最多只能运算三项属性。</translation>
     </message>
     <message>
+        <location filename="../qt/sc_options_tab.cpp" line="530"/>
         <source>Secondary Stats</source>
-        <translation type="vanished">副属性</translation>
+        <translation>副属性</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="545"/>
@@ -1202,12 +1195,12 @@ It&apos;s NOT the number of steps: a lower value will generate more points!</sou
 <context>
     <name>SC_QueueListView</name>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="319"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="318"/>
         <source>test</source>
         <translation>测试</translation>
     </message>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="349"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="348"/>
         <source>Remove</source>
         <translation>移除</translation>
     </message>
@@ -1244,12 +1237,12 @@ It&apos;s NOT the number of steps: a lower value will generate more points!</sou
 <context>
     <name>SC_ResultTab</name>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="474"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="473"/>
         <source>Close Results Tab</source>
         <translation>关闭结果标签</translation>
     </message>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="474"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="473"/>
         <source>Do you really want to close these results?</source>
         <translation>确定要关闭这些结果吗？</translation>
     </message>
@@ -1295,22 +1288,22 @@ It&apos;s NOT the number of steps: a lower value will generate more points!</sou
 <context>
     <name>SC_SimulateTab</name>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="598"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="597"/>
         <source>Close ALL Simulate Tabs?</source>
         <translation>关闭所有的模拟标签？</translation>
     </message>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="599"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="598"/>
         <source>Do you really want to close ALL simulation profiles?</source>
         <translation>确定要关闭所有的模拟档案吗？</translation>
     </message>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="819"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="818"/>
         <source>Close Simulate Tab</source>
         <translation>关闭模拟标签</translation>
     </message>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="819"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="818"/>
         <source>Do you really want to close this simulation profile?</source>
         <translation>确定要关闭这个模拟档案吗？</translation>
     </message>
@@ -1470,22 +1463,22 @@ It&apos;s NOT the number of steps: a lower value will generate more points!</sou
 <context>
     <name>SC_WebPage</name>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="1204"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="1203"/>
         <source>Network Error</source>
         <translation>网络错误</translation>
     </message>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="1207"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="1206"/>
         <source>WebKit Error</source>
         <translation>Web组件错误</translation>
     </message>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="1210"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="1209"/>
         <source>HTTP Error</source>
         <translation>HTTP错误</translation>
     </message>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="1213"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="1212"/>
         <source>Unknown Error</source>
         <translation>未知错误</translation>
     </message>

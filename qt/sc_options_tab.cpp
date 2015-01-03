@@ -429,7 +429,7 @@ void SC_OptionsTab::createScalingTab()
   // Now put the tab together
   QScrollArea* scalingGroupBoxScrollArea = new QScrollArea;
   scalingGroupBoxScrollArea -> setLayout( scalingLayout );
-  addTab( scalingGroupBoxScrollArea, tr ( "Scaling" ) );
+  addTab( scalingGroupBoxScrollArea, tr( "Scaling" ) );
 }
 
 void SC_OptionsTab::createPlotsTab()
@@ -509,7 +509,7 @@ void SC_OptionsTab::createPlotsTab()
   QScrollArea* plotsGroupBoxScrollArea = new QScrollArea;
   plotsGroupBoxScrollArea -> setLayout( plotLayout );
   plotsGroupBoxScrollArea -> setWidgetResizable( true );
-  addTab( plotsGroupBoxScrollArea, "Plots" );
+  addTab( plotsGroupBoxScrollArea, tr( "Plots" ) );
 }
 
 void SC_OptionsTab::createReforgePlotsTab()
@@ -527,7 +527,7 @@ void SC_OptionsTab::createReforgePlotsTab()
   QLabel* messageText = new QLabel( tr( "A maximum of three stats may be ran at once.\n" ) );
   reforgePlotsLayout -> addRow( messageText );
 
-  messageText = new QLabel( "Secondary Stats" );
+  messageText = new QLabel( tr( "Secondary Stats" ) );
   reforgePlotsLayout -> addRow( messageText );
 
   reforgeplotsButtonGroup = new SC_ReforgeButtonGroup( this );
@@ -827,8 +827,8 @@ void SC_OptionsTab::createToolTips()
                                 tr( "PTR:  Use mechanics on PTR servers. ( WoW Build %1 )" ).arg( dbc::build_level( true ) ) + "\n" +
                                 tr( "Both: Create Evil Twin with PTR mechanics" ) );
 #endif
-  choice.target_error -> setToolTip( tr( "This options sets a target error threshold and\n" ) +
-                                     tr( "runs iterations until that threshold is reached.\n" ) +
+  choice.target_error -> setToolTip( tr( "This options sets a target error threshold and\n"
+                                         "runs iterations until that threshold is reached.\n" ) +
                                      tr( "N/A:  Do not use this feature.\n" ) +
                                      tr( "Auto: use sim defaults based on other options\n     (0.2%, 0.05% for scale factors).\n" ) +
                                      tr( "X%:   Run until DPS error is less than X%." ) );

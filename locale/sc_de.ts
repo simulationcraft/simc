@@ -49,11 +49,13 @@
         <translation>Vorgabewert Ausrüstung</translation>
     </message>
     <message>
+        <location filename="../qt/sc_automation.cpp" line="1096"/>
         <location filename="../qt/sc_automation.cpp" line="1286"/>
         <source>Default Rotation</source>
         <translation>Vorgabewert Rotation</translation>
     </message>
     <message>
+        <location filename="../qt/sc_automation.cpp" line="1097"/>
         <location filename="../qt/sc_automation.cpp" line="1292"/>
         <source>Unused</source>
         <translation>Unbenutzt</translation>
@@ -623,6 +625,11 @@ Plot scaling for:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../qt/sc_options_tab.cpp" line="512"/>
+        <source>Plots</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qt/sc_options_tab.cpp" line="522"/>
         <source>Reforge Amount</source>
         <translation>Umschiede-Menge</translation>
@@ -637,6 +644,11 @@ Plot scaling for:</source>
         <source>A maximum of three stats may be ran at once.
 </source>
         <translation>Maximal drei Stats können gleichzeitig berechnet werden.</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="530"/>
+        <source>Secondary Stats</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="545"/>
@@ -676,14 +688,14 @@ Plot scaling for:</source>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="830"/>
         <source>This options sets a target error threshold and
+runs iterations until that threshold is reached.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="831"/>
         <source>runs iterations until that threshold is reached.
 </source>
-        <translation>Simuliere, bis Soll-Fehler erreicht.</translation>
+        <translation type="vanished">Simuliere, bis Soll-Fehler erreicht.</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="832"/>
@@ -1046,12 +1058,12 @@ It&apos;s NOT the number of steps: a lower value will generate more points!</sou
 <context>
     <name>SC_QueueListView</name>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="319"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="318"/>
         <source>test</source>
         <translation>test</translation>
     </message>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="349"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="348"/>
         <source>Remove</source>
         <translation>Entfernen</translation>
     </message>
@@ -1088,12 +1100,12 @@ It&apos;s NOT the number of steps: a lower value will generate more points!</sou
 <context>
     <name>SC_ResultTab</name>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="474"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="473"/>
         <source>Close Results Tab</source>
         <translation>Resultate Tab schliessen</translation>
     </message>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="474"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="473"/>
         <source>Do you really want to close these results?</source>
         <translation>Wollen Sie dieses Resultat wirklich schliessen?</translation>
     </message>
@@ -1139,22 +1151,22 @@ It&apos;s NOT the number of steps: a lower value will generate more points!</sou
 <context>
     <name>SC_SimulateTab</name>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="598"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="597"/>
         <source>Close ALL Simulate Tabs?</source>
         <translation>ALLE Simulations-Tabs schliessen?</translation>
     </message>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="599"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="598"/>
         <source>Do you really want to close ALL simulation profiles?</source>
         <translation>Wollen Sie wirklich ALLE Simulations-Profile schliessen?</translation>
     </message>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="819"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="818"/>
         <source>Close Simulate Tab</source>
         <translation>Simulations-Tab schliessen</translation>
     </message>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="819"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="818"/>
         <source>Do you really want to close this simulation profile?</source>
         <translation>Wollen Sie wirklich dieses Simulations-Profil schliessen?</translation>
     </message>
@@ -1314,22 +1326,22 @@ It&apos;s NOT the number of steps: a lower value will generate more points!</sou
 <context>
     <name>SC_WebPage</name>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="1204"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="1203"/>
         <source>Network Error</source>
         <translation>Netzwerk-Fehler</translation>
     </message>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="1207"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="1206"/>
         <source>WebKit Error</source>
         <translation>Webkit-Fehler</translation>
     </message>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="1210"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="1209"/>
         <source>HTTP Error</source>
         <translation>HTTP-Fehler</translation>
     </message>
     <message>
-        <location filename="../qt/simulationcraftqt.hpp" line="1213"/>
+        <location filename="../qt/simulationcraftqt.hpp" line="1212"/>
         <source>Unknown Error</source>
         <translation>Unbekannter Fehler</translation>
     </message>
