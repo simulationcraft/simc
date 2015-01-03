@@ -36,31 +36,6 @@ std::string source_desc_str( wowhead::wowhead_e source )
   }
 }
 
-// This is a list of all wowhead tooltips that currently freeze the GUI when the mouse hovers over them.
-// If you find any others, just add them to the array. Generally it will be a spell that has a perk linked in it.
-// The underlying issue is with the QT Webkit, and we most likely cannot fix it. There's a possibility that QT 5.4 
-// will correct this issue, but we won't know for another month or 2. - 9/14/14
-static bool dual_tooltip_disable( unsigned /*spell_id*/)
-{
-/*
-  static const unsigned naughtylist[] = { 1719, 53817, 20608, 26573, 51690, 57755,
-    157738, 50401, 118038, 115939, 116849, 88766, 115151, 84608, 115295, 115151,
-    53563, 1178, 50334, 106951, 108558, 603, 32645, 145416, 32645, 53301, 145661,
-    61777, 49206, 158392, 24275, 158392, 348, 102342, 59052, 51271, 774, 101546,
-    22482, 49222, 51753, 9484, 81209, 81206, 81208, 116858, 172, 63560, 49576,
-    770, 53365, 116, 6940, 48181, 80240, 157708, 6544, 1680, 772, 12328, 86346,
-    29144, 71, 123829, 31935, 156910, 84608, 85739, 324, 8050, 73680, 165462, 5171,
-    84654, 47541, 53351, 49020, 130736, 82692, 24858, 78674, 1822, 103103, 135288,
-    5487, 30451, 12051, 12042, 133, 108853, 44614, 12472, 31687, 20473, 53385,
-    1856, 79140, 11327, 157584, 2818, 19434, 51713, 17, 45242, 15407, 5308, 163558,
-    163201, 121411, 79136, 129197, 106952 };
-  for ( size_t i = 0; i < sizeof_array( naughtylist ); i++ )
-    if ( spell_id == naughtylist[ i ] )
-      return true;
-*/
-  return false;
-}
-
 // download_id ==============================================================
 
 std::shared_ptr<xml_node_t> download_id( sim_t*             sim,
@@ -97,7 +72,6 @@ bool wowhead::download_glyph( player_t*          player,
       player -> sim -> errorf( "Unable to download glyph id %s from wowhead\n", glyph_id.c_str() );
     return false;
   }
-
   return true;
 }
 
@@ -363,8 +337,7 @@ std::string wowhead::decorated_spell_name( const std::string& name,
 {
   std::string decorated_name, base_href, prefix, suffix;
 
-  bool notooltip = dual_tooltip_disable( spell_id );
-  if ( spell_id > 1 && !notooltip ) 
+  if ( spell_id > 1 ) 
   {
     base_href = "http://" + domain_str( domain ) + ".wowhead.com/spell=" + util::to_string( spell_id );
 

@@ -3,10 +3,10 @@ TEMPLATE = app
 CONFIG(qt) {
   TARGET = SimulationCraft
 
-  QT += core gui network webkit
+  QT += core gui network webengine
 
   contains ( QT_MAJOR_VERSION , 5 ) {
-    QT += widgets webkitwidgets
+    QT += widgets webenginewidgets
     DEFINES += QT_VERSION_5
   }
   OBJECTS_DIR = qt

@@ -8,7 +8,8 @@
 
 #include "simulationcraft.hpp"
 #include <QtGui/QtGui>
-#include <QtWebKit/QtWebKit>
+#include <QtWebEngineWidgets/QtWebEngineWidgets>
+#include <QtWebEngine/QtWebEngine>
 #include <QtCore/QTranslator>
 #include <QtNetwork/QtNetwork>
 
@@ -16,7 +17,6 @@
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 #include <QtWidgets/QtWidgets>
-#include <QtWebKitWidgets/QtWebKitWidgets>
 
 class SC_MainWindow;
 class SC_SearchBox;
@@ -435,7 +435,7 @@ public:
 // SC_WelcomeTabWidget
 // ============================================================================
 
-class SC_WelcomeTabWidget : public QWebView
+class SC_WelcomeTabWidget : public QWebEngineView
 {
   Q_OBJECT
 public:
@@ -1172,16 +1172,17 @@ public:
 // SC_WebPage
 // ============================================================================
 
-class SC_WebPage : public QWebPage
+class SC_WebPage : public QWebEnginePage
 {
   Q_OBJECT
 public:
   explicit SC_WebPage( QObject* parent = 0 ) :
-    QWebPage( parent )
+    QWebEnginePage( parent )
   {}
 
   QString userAgentForUrl( const QUrl& /* url */ ) const
   { return QString( "simulationcraft_gui" ); }
+/*
 protected:
   virtual bool supportsExtension( Extension extension ) const
   {
@@ -1189,7 +1190,7 @@ protected:
   }
   virtual bool extension( Extension extension, const ExtensionOption* option = nullptr, ExtensionReturn* output = nullptr )
   {
-    if ( extension != QWebPage::ErrorPageExtension )
+    if ( extension != QWebEnginePage::ErrorPageExtension )
     {
       return false;
     }
@@ -1199,13 +1200,13 @@ protected:
     QString domain;
     switch( errorOption -> domain )
     {
-    case QWebPage::QtNetwork:
+    case QWebEnginePage::QtNetwork:
       domain = tr( "Network Error" );
       break;
-    case QWebPage::WebKit:
-      domain = tr( "WebKit Error" );
+    case QWebEnginePage::WebEngine:
+      domain = tr( "WebEngine Error" );
       break;
-    case QWebPage::Http:
+    case QWebEnginePage::Http:
       domain = tr( "HTTP Error" );
       break;
     default:
@@ -1249,17 +1250,18 @@ protected:
     errorReturn -> baseUrl = errorOption -> url;
     return true;
   }
+*/
 };
 
 // ============================================================================
 // SC_WebView
 // ============================================================================
 
-class SC_WebView : public QWebView
+class SC_WebView : public QWebEngineView
 {
   Q_OBJECT
-  SC_SearchBox* searchBox;
-  QString previousSearch;
+  //SC_SearchBox* searchBox;
+  //QString previousSearch;
   bool allow_mouse_navigation;
   bool allow_keyboard_navigation;
   bool allow_searching;
@@ -1270,9 +1272,9 @@ public:
   QString url_to_show;
 
   SC_WebView( SC_MainWindow* mw, QWidget* parent = 0, const QString& h = QString() ) :
-    QWebView( parent ),
-    searchBox( nullptr ),
-    previousSearch( "" ),
+    QWebEngineView( parent ),
+    //searchBox( nullptr ),
+    //previousSearch( "" ),
     allow_mouse_navigation( false ),
     allow_keyboard_navigation( false ),
     allow_searching( false ),
@@ -1280,15 +1282,15 @@ public:
     progress( 0 ),
     html_str( h )
   {
-    searchBox = new SC_SearchBox( this );
-    searchBox -> hide();
-    QShortcut* ctrlF = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
-    QShortcut* escape = new QShortcut( QKeySequence( Qt::Key_Escape ), this );
-    connect( ctrlF,     SIGNAL( activated() ),                   searchBox, SLOT( show() ) );
-    connect( escape,    SIGNAL( activated() ),                   this,      SLOT( hideSearchBox() ) );
-    connect( searchBox, SIGNAL( textChanged( const QString& ) ), this,      SLOT( findSomeText( const QString& ) ) );
-    connect( searchBox, SIGNAL( findPrev() ),                    this,      SLOT( findPrev() ) );
-    connect( searchBox, SIGNAL( findNext() ),                    this,      SLOT( findNext() ) );
+    //searchBox = new SC_SearchBox( this );
+    //searchBox -> hide();
+    //QShortcut* ctrlF = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
+    //QShortcut* escape = new QShortcut( QKeySequence( Qt::Key_Escape ), this );
+    //connect( ctrlF,     SIGNAL( activated() ),                   searchBox, SLOT( show() ) );
+    //connect( escape,    SIGNAL( activated() ),                   this,      SLOT( hideSearchBox() ) );
+    //connect( searchBox, SIGNAL( textChanged( const QString& ) ), this,      SLOT( findSomeText( const QString& ) ) );
+    //connect( searchBox, SIGNAL( findPrev() ),                    this,      SLOT( findPrev() ) );
+    //connect( searchBox, SIGNAL( findNext() ),                    this,      SLOT( findNext() ) );
     connect( this,      SIGNAL( loadProgress( int ) ),           this,      SLOT( loadProgressSlot( int ) ) );
     connect( this,      SIGNAL( loadFinished( bool ) ),          this,      SLOT( loadFinishedSlot( bool ) ) );
     connect( this,      SIGNAL( urlChanged( const QUrl& ) ),     this,      SLOT( urlChangedSlot( const QUrl& ) ) );
@@ -1296,7 +1298,7 @@ public:
 
     SC_WebPage* page = new SC_WebPage( this );
     setPage( page );
-    page -> setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
+    //page -> setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
 
     // Add QT Major Version to avoid "mysterious" problems resulting in qBadAlloc.
     QDir dir( mainWindow -> TmpDir + QDir::separator() + "simc_webcache_qt" + std::string( QT_VERSION_STR ).substr( 0, 3 ).c_str() );
@@ -1309,13 +1311,12 @@ public:
       QNetworkDiskCache* diskCache = new QNetworkDiskCache( this );
       diskCache -> setCacheDirectory( dir.absolutePath() );
       QString test = diskCache -> cacheDirectory();
-      page -> networkAccessManager()->setCache( diskCache );
+      //page -> networkAccessManager()->setCache( diskCache );
     }
     else
     {
       qDebug() << "Can't write webcache! sucks";
     }
-
   }
 
   void store_html( const QString& s )
@@ -1330,10 +1331,10 @@ public:
     setHtml( html_str );
   }
 
-  QString toHtml()
-  {
-    return page() -> currentFrame() -> toHtml();
-  }
+  //QString toHtml()
+  // {
+  //  return page() -> currentFrame() -> toHtml();
+  // }
 
   void enableMouseNavigation()
   {
@@ -1379,7 +1380,7 @@ protected:
         break;
       }
     }
-    QWebView::mouseReleaseEvent( e );
+    QWebEngineView::mouseReleaseEvent( e );
   }
 
   virtual void keyReleaseEvent( QKeyEvent* e )
@@ -1416,19 +1417,19 @@ protected:
       default: break;
       }
     }
-    QWebView::keyReleaseEvent( e );
+    QWebEngineView::keyReleaseEvent( e );
   }
 
   virtual void resizeEvent( QResizeEvent* e )
   {
-    searchBox -> updateGeometry();
-    QWebView::resizeEvent( e );
+    //searchBox -> updateGeometry();
+    QWebEngineView::resizeEvent( e );
   }
 
   virtual void focusInEvent( QFocusEvent* e )
   {
-    hideSearchBox();
-    QWebView::focusInEvent( e );
+    //hideSearchBox();
+    QWebEngineView::focusInEvent( e );
   }
 
 private slots:
@@ -1461,7 +1462,7 @@ private slots:
     else
       QDesktopServices::openUrl( url );
   }
-
+  /*
 public slots:
   void hideSearchBox()
   {
@@ -1525,6 +1526,7 @@ public slots:
   {
     findSomeText( searchBox -> text(), 0 );
   }
+*/
 };
 
 // ============================================================================
@@ -1579,7 +1581,6 @@ public:
   virtual void run();
   ImportThread( SC_MainWindow* mw ) : mainWindow( mw ), sim( 0 ), player( 0 ) {}
 };
-
 
 namespace automation {
 

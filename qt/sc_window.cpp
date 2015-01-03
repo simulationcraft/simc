@@ -11,7 +11,7 @@
 #ifdef SC_PAPERDOLL
 #include "simcpaperdoll.hpp"
 #endif
-#include <QtWebKit/QtWebKit>
+#include <QtWebEngine/QtWebEngine>
 #if defined( Q_OS_MAC )
 #include <CoreFoundation/CoreFoundation.h>
 #endif
@@ -118,7 +118,6 @@ void SC_MainWindow::loadHistory()
         {
           simulateTab -> add_Text( sl.at( 1 ), sl.at( 0 ) );
         }
-
       }
     }
   }
@@ -385,7 +384,7 @@ void SC_MainWindow::createOptionsTab()
 }
 
 SC_WelcomeTabWidget::SC_WelcomeTabWidget( SC_MainWindow* parent ):
-QWebView( parent )
+QWebEngineView( parent )
 {
   QString welcomeFile = QDir::currentPath() + "/Welcome.html";
 
@@ -404,8 +403,8 @@ QWebView( parent )
 #endif
   setUrl( "file:///" + welcomeFile );
 
-  page() -> setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
-  connect( this, SIGNAL( linkClicked( const QUrl& ) ), this, SLOT( linkClickedSlot( const QUrl& ) ) );
+  //page() -> setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
+  //connect( this, SIGNAL( linkClicked( const QUrl& ) ), this, SLOT( linkClickedSlot( const QUrl& ) ) );
 }
 
 void SC_MainWindow::createImportTab()
@@ -1475,9 +1474,9 @@ void SC_MainWindow::backButtonClicked( bool /* checked */ )
     {
       visibleWebView -> loadHtml();
 
-      QWebHistory* h = visibleWebView->history();
-      h->setMaximumItemCount( 0 );
-      h->setMaximumItemCount( 100 );
+      //QWebHistory* h = visibleWebView->history();
+      //h->setMaximumItemCount( 0 );
+      //h->setMaximumItemCount( 100 );
     }
     else
     {
@@ -1921,8 +1920,8 @@ void SC_SingleResultTab::save_result()
       switch ( currentTab() )
       {
       case TAB_HTML:
-        file.write( static_cast<SC_WebView*>( currentWidget() ) -> toHtml().toUtf8() );
-        break;
+        //file.write( static_cast<SC_WebView*>( currentWidget() ) -> toHtml() );
+        //break;
       case TAB_TEXT:
       case TAB_XML:
       case TAB_PLOTDATA:
