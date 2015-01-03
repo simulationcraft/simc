@@ -5279,7 +5279,7 @@ void mage_t::apl_frost()
   default_list -> add_talent( this, "Rune of Power",
                               "if=(cooldown.icy_veins.remains<gcd.max&buff.rune_of_power.remains<20)|(cooldown.prismatic_crystal.remains<gcd.max&buff.rune_of_power.remains<10)" );
   default_list -> add_action( "call_action_list,name=cooldowns,if=time_to_die<24" );
-  default_list -> add_action( "water_jet,if=time<1&!(talent.ice_nova.enabled&talent.prismatic_crystal.enabled)",
+  default_list -> add_action( "water_jet,if=time<1&active_enemies<4&!(talent.ice_nova.enabled&talent.prismatic_crystal.enabled)",
                               "Water jet on pull for non IN+PC talent combos" );
   default_list -> add_action( "call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&(cooldown.prismatic_crystal.remains<=gcd.max|pet.prismatic_crystal.active)" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
