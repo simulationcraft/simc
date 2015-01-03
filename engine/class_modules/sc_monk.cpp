@@ -708,43 +708,38 @@ struct storm_earth_and_fire_pet_t : public pet_t
     // filter out specific multipliers because they do not affect the pets. For
     // now, it's left out. If it is put in, owner caches have to be invalidated
     // before and after the snapshotting.
+    //
+    // NOTE: Autoattacks need special handling, and they have their own
+    // override for snapshotting
     void snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt )
     {
-      if ( source_action )
-      {
-        // Get an owner state object, and populate it with owner current stats
-        action_state_t* owner_state = source_action -> get_state();
-        owner_state -> target = state -> target;
-        owner_state -> n_targets = state -> n_targets;
-        owner_state -> chain_target = state -> chain_target;
-        // We don't need to snapshot owner AP or target based multipliers, we
-        // will get those on our own
-        source_action -> snapshot_internal( owner_state, flags & ~( STATE_AP | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA ), rt );
+      // Get an owner state object, and populate it with owner current stats
+      action_state_t* owner_state = source_action -> get_state();
+      owner_state -> target = state -> target;
+      owner_state -> n_targets = state -> n_targets;
+      owner_state -> chain_target = state -> chain_target;
+      // We don't need to snapshot owner AP or target based multipliers, we
+      // will get those on our own
+      source_action -> snapshot_internal( owner_state, flags & ~( STATE_AP | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA ), rt );
 
-        // Copy owner stats to our state object, including any/all multipliers
-        // for the given ability.
-        state -> copy_state( owner_state );
+      // Copy owner stats to our state object, including any/all multipliers
+      // for the given ability.
+      state -> copy_state( owner_state );
 
-        // Storm, Earth, and Fire pets need to re-snapshot attack power due to
-        // AP inheritance coefficient, and target multipliers because it has
-        // its own debuffs.
-        if ( flags & STATE_AP )
-          state -> attack_power = composite_attack_power() * player -> composite_attack_power_multiplier();
+      // Storm, Earth, and Fire pets need to re-snapshot attack power due to
+      // AP inheritance coefficient, and target multipliers because it has
+      // its own debuffs.
+      if ( flags & STATE_AP )
+        state -> attack_power = composite_attack_power() * player -> composite_attack_power_multiplier();
 
-        if ( flags & STATE_TGT_MUL_DA )
-          state -> target_da_multiplier = composite_target_da_multiplier( state -> target );
+      if ( flags & STATE_TGT_MUL_DA )
+        state -> target_da_multiplier = composite_target_da_multiplier( state -> target );
 
-        if ( flags & STATE_TGT_MUL_TA )
-          state -> target_ta_multiplier = composite_target_ta_multiplier( state -> target );
+      if ( flags & STATE_TGT_MUL_TA )
+        state -> target_ta_multiplier = composite_target_ta_multiplier( state -> target );
 
-        // Release the used owner state object
-        action_state_t::release( owner_state );
-      }
-      // Autoattack snapshots are not inherited from the player
-      else
-      {
-        melee_attack_t::snapshot_internal( state, flags, rt );
-      }
+      // Release the used owner state object
+      action_state_t::release( owner_state );
     }
   };
 
@@ -763,7 +758,30 @@ struct storm_earth_and_fire_pet_t : public pet_t
       if ( player -> dual_wield() )
       {
         base_hit -= 0.19;
-        base_multiplier *= 1.0 + o() -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent();
+      }
+
+      // NOTE: We don't care what hand is used, we just need the multipliers
+      // and from the owner, so we do not need to implement them globally for
+      // SEF pets.
+      source_action = player -> owner -> find_action( "melee_main_hand" );
+      // TODO: Can't really assert here, need to figure out a fallback if the
+      // windwalker does not use autoattacks (how likely is that?)
+      assert( source_action );
+    }
+
+    // Since we use owner multipliers, we need to apply (or remove!) the auto
+    // attack Way of the Monk multiplier from the AA damage.
+    void snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt )
+    {
+      sef_melee_attack_t::snapshot_internal( state, flags, rt );
+
+      if ( ! o() -> dual_wield() && player -> dual_wield() )
+      {
+        state -> da_multiplier *= 1.0 + o() -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent();
+      }
+      else if ( o() -> dual_wield() && ! player -> dual_wield() )
+      {
+        state -> da_multiplier /= 1.0 + o() -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent();
       }
     }
 
@@ -771,7 +789,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       timespan_t t = sef_melee_attack_t::execute_time();
 
-      if ( ! p() -> dual_wield() )
+      if ( ! player -> dual_wield() )
         t *= 1.0 / ( 1.0 + o() -> spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() );
 
       return t;
@@ -836,14 +854,14 @@ struct storm_earth_and_fire_pet_t : public pet_t
   struct sef_jab_t : public sef_melee_attack_t
   {
     sef_jab_t( storm_earth_and_fire_pet_t* player ) :
-      sef_melee_attack_t( "jab", player, player -> owner -> find_class_spell( "Jab" ) )
+      sef_melee_attack_t( "jab", player, player -> o() -> find_class_spell( "Jab" ) )
     { }
   };
 
   struct sef_tiger_palm_t : public sef_melee_attack_t
   {
     sef_tiger_palm_t( storm_earth_and_fire_pet_t* player ) :
-      sef_melee_attack_t( "tiger_palm", player, player -> owner -> find_class_spell( "Tiger Palm" ) )
+      sef_melee_attack_t( "tiger_palm", player, player -> o() -> find_class_spell( "Tiger Palm" ) )
     { }
 
     void execute()
@@ -978,10 +996,12 @@ struct storm_earth_and_fire_pet_t : public pet_t
   struct sef_spinning_crane_kick_t : public sef_melee_attack_t
   {
     sef_spinning_crane_kick_t( storm_earth_and_fire_pet_t* player ) :
-      sef_melee_attack_t( "spinning_crane_kick", player, player -> owner -> find_class_spell( "Spinning Crane Kick" ) )
+      sef_melee_attack_t( "spinning_crane_kick", player, player -> o() -> find_class_spell( "Spinning Crane Kick" ) )
     {
       base_tick_time *= 1.0 + o() -> perk.empowered_spinning_crane_kick -> effectN( 1 ).percent();
       dot_duration *= 1.0 + o() -> perk.empowered_spinning_crane_kick -> effectN( 2 ).percent();
+
+      weapon_power_mod = 0;
 
       tick_action = new sef_tick_action_t( "spinning_crane_kick_tick", player, &( data() ) );
     }
@@ -1018,7 +1038,8 @@ public:
     }
 
     // TODO: Check if the 0.74164 is global, or AA only?
-    owner_coeff.ap_from_ap = dual_wield ? 0.74164 : 1.0;
+    // TODO: 0.74164 is Blizzard value? Seems closer to 0.9555
+    owner_coeff.ap_from_ap = dual_wield ? 0.9555 : 1.0;
   }
 
   timespan_t available() const
