@@ -8,6 +8,7 @@ CONFIG(qt) {
   contains ( QT_MAJOR_VERSION , 5 ) {
     greaterThan( QT_MINOR_VERSION, 3 ) {
       QT += webengine webenginewidgets
+      DEFINES += SC_USE_WEBENGINE
     }
     lessThan( QT_MINOR_VERSION, 4 ) {
       QT += webkit webkitwidgets
@@ -19,6 +20,18 @@ CONFIG(qt) {
     QT += webkit
   }
   OBJECTS_DIR = qt
+}
+
+win32-mingw
+{
+    # QT 5.4 for MinGW does not yet contain the new Web Engine
+    contains ( QT_MAJOR_VERSION , 5 ) {
+        greaterThan( QT_MINOR_VERSION, 3 ) {
+            QT -= webengine webenginewidgets
+            QT += webkit webkitwidgets
+            DEFINES -= SC_USE_WEBENGINE
+        }
+    }
 }
 
 CONFIG(console) {

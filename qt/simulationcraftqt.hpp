@@ -9,7 +9,7 @@
 #include "simulationcraft.hpp"
 #include <QtGui/QtGui>
 
-#if ( QT_VERSION >= QT_VERSION_CHECK( 5, 4, 0 ) ) && ! defined( SC_MINGW )
+#if defined( SC_USE_WEBENGINE )
 #include <QtWebEngineWidgets/QtWebEngineWidgets>
 #include <QtWebEngine/QtWebEngine>
 #else
@@ -75,7 +75,7 @@ class PaperdollThread;
 #endif
 class ImportThread;
 
-#if ( QT_VERSION >= QT_VERSION_CHECK( 5, 4, 0 ) )
+#if defined( SC_USE_WEBENGINE )
 typedef QWebEngineView SC_WebEngineView;
 typedef QWebEnginePage SC_WebEnginePage;
 #else
