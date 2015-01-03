@@ -2102,6 +2102,10 @@ public:
     if ( p() -> buff.savage_roar -> check() )
       duration += std::min( p() -> buff.savage_roar -> remains(), duration * 0.3 );
 
+    // 01/02/2015: Glyph of Savage Roar only pandemics up to 51.0 seconds instead of 54.6
+    if ( p() -> bugs )
+      duration = std::min( timespan_t::from_seconds( 51.0 ), duration );
+
     p() -> buff.savage_roar -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
   }
 
