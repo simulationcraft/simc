@@ -8,8 +8,14 @@
 
 #include "simulationcraft.hpp"
 #include <QtGui/QtGui>
+
+#if ( QT_VERSION >= QT_VERSION_CHECK( 5, 4, 0 ) ) && ! defined( SC_MINGW )
 #include <QtWebEngineWidgets/QtWebEngineWidgets>
 #include <QtWebEngine/QtWebEngine>
+#else
+#include <QtWebKitWidgets/QtWebKitWidgets>
+#include <QtWebKit/QtWebKit>
+#endif
 #include <QtCore/QTranslator>
 #include <QtNetwork/QtNetwork>
 
@@ -68,6 +74,16 @@ class SimulateThread;
 class PaperdollThread;
 #endif
 class ImportThread;
+
+#if ( QT_VERSION >= QT_VERSION_CHECK( 5, 4, 0 ) )
+typedef QWebEngineView SC_WebEngineView;
+typedef QWebEnginePage SC_WebEnginePage;
+#else
+typedef QWebView SC_WebEngineView;
+
+typedef QWebPage SC_WebEnginePage;
+#define SC_USE_WEBKIT
+#endif
 
 // ============================================================================
 // SC_StringHistory
@@ -435,7 +451,7 @@ public:
 // SC_WelcomeTabWidget
 // ============================================================================
 
-class SC_WelcomeTabWidget : public QWebEngineView
+class SC_WelcomeTabWidget : public SC_WebEngineView
 {
   Q_OBJECT
 public:
@@ -1172,17 +1188,17 @@ public:
 // SC_WebPage
 // ============================================================================
 
-class SC_WebPage : public QWebEnginePage
+class SC_WebPage : public SC_WebEnginePage
 {
   Q_OBJECT
 public:
   explicit SC_WebPage( QObject* parent = 0 ) :
-    QWebEnginePage( parent )
+    SC_WebEnginePage( parent )
   {}
 
   QString userAgentForUrl( const QUrl& /* url */ ) const
   { return QString( "simulationcraft_gui" ); }
-/*
+#if defined( SC_USE_WEBKIT )
 protected:
   virtual bool supportsExtension( Extension extension ) const
   {
@@ -1190,7 +1206,7 @@ protected:
   }
   virtual bool extension( Extension extension, const ExtensionOption* option = nullptr, ExtensionReturn* output = nullptr )
   {
-    if ( extension != QWebEnginePage::ErrorPageExtension )
+    if ( extension != SC_WebPage::ErrorPageExtension )
     {
       return false;
     }
@@ -1200,13 +1216,13 @@ protected:
     QString domain;
     switch( errorOption -> domain )
     {
-    case QWebEnginePage::QtNetwork:
+    case SC_WebEnginePage::QtNetwork:
       domain = tr( "Network Error" );
       break;
-    case QWebEnginePage::WebEngine:
-      domain = tr( "WebEngine Error" );
+    case SC_WebEnginePage::WebKit:
+      domain = tr( "WebKit Error" );
       break;
-    case QWebEnginePage::Http:
+    case SC_WebEnginePage::Http:
       domain = tr( "HTTP Error" );
       break;
     default:
@@ -1250,14 +1266,14 @@ protected:
     errorReturn -> baseUrl = errorOption -> url;
     return true;
   }
-*/
+#endif /* SC_USE_WEBKIT */
 };
 
 // ============================================================================
 // SC_WebView
 // ============================================================================
 
-class SC_WebView : public QWebEngineView
+class SC_WebView : public SC_WebEngineView
 {
   Q_OBJECT
   SC_SearchBox* searchBox;
@@ -1272,7 +1288,7 @@ public:
   QString url_to_show;
 
   SC_WebView( SC_MainWindow* mw, QWidget* parent = 0, const QString& h = QString() ) :
-    QWebEngineView( parent ),
+    SC_WebEngineView( parent ),
     searchBox( nullptr ),
     previousSearch( "" ),
     allow_mouse_navigation( false ),
@@ -1380,7 +1396,7 @@ protected:
         break;
       }
     }
-    QWebEngineView::mouseReleaseEvent( e );
+    SC_WebEngineView::mouseReleaseEvent( e );
   }
 
   virtual void keyReleaseEvent( QKeyEvent* e )
@@ -1417,19 +1433,19 @@ protected:
       default: break;
       }
     }
-    QWebEngineView::keyReleaseEvent( e );
+    SC_WebEngineView::keyReleaseEvent( e );
   }
 
   virtual void resizeEvent( QResizeEvent* e )
   {
     searchBox -> updateGeometry();
-    QWebEngineView::resizeEvent( e );
+    SC_WebEngineView::resizeEvent( e );
   }
 
   virtual void focusInEvent( QFocusEvent* e )
   {
     hideSearchBox();
-    QWebEngineView::focusInEvent( e );
+    SC_WebEngineView::focusInEvent( e );
   }
 
 private slots:
@@ -1470,7 +1486,7 @@ public slots:
     searchBox -> hide();
   }
 
-  void findSomeText( const QString& text, QWebEnginePage::FindFlags options )
+  void findSomeText( const QString& text, SC_WebEnginePage::FindFlags options )
   {
     findText( text, options );
 
@@ -1499,17 +1515,17 @@ public slots:
 
   void findSomeText( const QString& text )
   {
-    QWebEnginePage::FindFlags flags = 0;
+    SC_WebEnginePage::FindFlags flags = 0;
     if ( searchBox -> reverseSearch() )
     {
-      flags |= QWebEnginePage::FindBackward;
+      flags |= SC_WebEnginePage::FindBackward;
     }
     findSomeText( text, flags );
   }
 
   void findPrev()
   {
-    findSomeText( searchBox -> text(), QWebEnginePage::FindBackward );
+    findSomeText( searchBox -> text(), SC_WebEnginePage::FindBackward );
   }
 
   void findNext()

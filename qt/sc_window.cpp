@@ -11,7 +11,6 @@
 #ifdef SC_PAPERDOLL
 #include "simcpaperdoll.hpp"
 #endif
-#include <QtWebEngine/QtWebEngine>
 #if defined( Q_OS_MAC )
 #include <CoreFoundation/CoreFoundation.h>
 #endif
@@ -384,7 +383,7 @@ void SC_MainWindow::createOptionsTab()
 }
 
 SC_WelcomeTabWidget::SC_WelcomeTabWidget( SC_MainWindow* parent ):
-QWebEngineView( parent )
+SC_WebEngineView( parent )
 {
   QString welcomeFile = QDir::currentPath() + "/Welcome.html";
 
@@ -403,8 +402,10 @@ QWebEngineView( parent )
 #endif
   setUrl( "file:///" + welcomeFile );
 
-  //page() -> setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
-  //connect( this, SIGNAL( linkClicked( const QUrl& ) ), this, SLOT( linkClickedSlot( const QUrl& ) ) );
+#if defined( SC_USE_WEBKIT )
+  page() -> setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
+  connect( this, SIGNAL( linkClicked( const QUrl& ) ), this, SLOT( linkClickedSlot( const QUrl& ) ) );
+#endif
 }
 
 void SC_MainWindow::createImportTab()
