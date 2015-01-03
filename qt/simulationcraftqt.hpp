@@ -1260,8 +1260,8 @@ protected:
 class SC_WebView : public QWebEngineView
 {
   Q_OBJECT
-  //SC_SearchBox* searchBox;
-  //QString previousSearch;
+  SC_SearchBox* searchBox;
+  QString previousSearch;
   bool allow_mouse_navigation;
   bool allow_keyboard_navigation;
   bool allow_searching;
@@ -1273,8 +1273,8 @@ public:
 
   SC_WebView( SC_MainWindow* mw, QWidget* parent = 0, const QString& h = QString() ) :
     QWebEngineView( parent ),
-    //searchBox( nullptr ),
-    //previousSearch( "" ),
+    searchBox( nullptr ),
+    previousSearch( "" ),
     allow_mouse_navigation( false ),
     allow_keyboard_navigation( false ),
     allow_searching( false ),
@@ -1282,15 +1282,15 @@ public:
     progress( 0 ),
     html_str( h )
   {
-    //searchBox = new SC_SearchBox( this );
-    //searchBox -> hide();
-    //QShortcut* ctrlF = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
-    //QShortcut* escape = new QShortcut( QKeySequence( Qt::Key_Escape ), this );
-    //connect( ctrlF,     SIGNAL( activated() ),                   searchBox, SLOT( show() ) );
-    //connect( escape,    SIGNAL( activated() ),                   this,      SLOT( hideSearchBox() ) );
-    //connect( searchBox, SIGNAL( textChanged( const QString& ) ), this,      SLOT( findSomeText( const QString& ) ) );
-    //connect( searchBox, SIGNAL( findPrev() ),                    this,      SLOT( findPrev() ) );
-    //connect( searchBox, SIGNAL( findNext() ),                    this,      SLOT( findNext() ) );
+    searchBox = new SC_SearchBox( this );
+    searchBox -> hide();
+    QShortcut* ctrlF = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
+    QShortcut* escape = new QShortcut( QKeySequence( Qt::Key_Escape ), this );
+    connect( ctrlF,     SIGNAL( activated() ),                   searchBox, SLOT( show() ) );
+    connect( escape,    SIGNAL( activated() ),                   this,      SLOT( hideSearchBox() ) );
+    connect( searchBox, SIGNAL( textChanged( const QString& ) ), this,      SLOT( findSomeText( const QString& ) ) );
+    connect( searchBox, SIGNAL( findPrev() ),                    this,      SLOT( findPrev() ) );
+    connect( searchBox, SIGNAL( findNext() ),                    this,      SLOT( findNext() ) );
     connect( this,      SIGNAL( loadProgress( int ) ),           this,      SLOT( loadProgressSlot( int ) ) );
     connect( this,      SIGNAL( loadFinished( bool ) ),          this,      SLOT( loadFinishedSlot( bool ) ) );
     connect( this,      SIGNAL( urlChanged( const QUrl& ) ),     this,      SLOT( urlChangedSlot( const QUrl& ) ) );
@@ -1422,13 +1422,13 @@ protected:
 
   virtual void resizeEvent( QResizeEvent* e )
   {
-    //searchBox -> updateGeometry();
+    searchBox -> updateGeometry();
     QWebEngineView::resizeEvent( e );
   }
 
   virtual void focusInEvent( QFocusEvent* e )
   {
-    //hideSearchBox();
+    hideSearchBox();
     QWebEngineView::focusInEvent( e );
   }
 
@@ -1462,7 +1462,7 @@ private slots:
     else
       QDesktopServices::openUrl( url );
   }
-  /*
+
 public slots:
   void hideSearchBox()
   {
@@ -1470,18 +1470,8 @@ public slots:
     searchBox -> hide();
   }
 
-  void findSomeText( const QString& text, QWebPage::FindFlags options )
+  void findSomeText( const QString& text, QWebEnginePage::FindFlags options )
   {
-    if ( ! previousSearch.isEmpty() && previousSearch != text )
-    {
-      findText( "", QWebPage::HighlightAllOccurrences ); // clears previous highlighting
-    }
-    previousSearch = text;
-
-    if ( searchBox -> wrapSearch() )
-    {
-      options |= QWebPage::FindWrapsAroundDocument;
-    }
     findText( text, options );
 
     // If the QWebView scrolls due to searching with the SC_SearchBox visible
@@ -1509,24 +1499,23 @@ public slots:
 
   void findSomeText( const QString& text )
   {
-    QWebPage::FindFlags flags = 0;
+    QWebEnginePage::FindFlags flags = 0;
     if ( searchBox -> reverseSearch() )
     {
-      flags |= QWebPage::FindBackward;
+      flags |= QWebEnginePage::FindBackward;
     }
     findSomeText( text, flags );
   }
 
   void findPrev()
   {
-    findSomeText( searchBox -> text(), QWebPage::FindBackward );
+    findSomeText( searchBox -> text(), QWebEnginePage::FindBackward );
   }
 
   void findNext()
   {
     findSomeText( searchBox -> text(), 0 );
   }
-*/
 };
 
 // ============================================================================
