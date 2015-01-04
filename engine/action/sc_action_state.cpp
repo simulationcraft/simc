@@ -120,8 +120,8 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
 
   s << std::hex;
 
-  s << " snapshot_flags=" << std::bitset<32>(action -> snapshot_flags);
-  s << " update_flags=" << std::bitset<32>(action -> update_flags);
+  s << " snapshot_flags=" << action -> snapshot_flags;
+  s << " update_flags=" << action -> update_flags;
   s << " result=" << util::result_type_string( result );
   s << " type=" << util::amount_type_string( result_type );
 
