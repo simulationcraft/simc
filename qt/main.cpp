@@ -1,4 +1,4 @@
-#include "simulationcraft.hpp"
+﻿#include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
 #include <QLocale>
 #include <QtWidgets/QApplication>
@@ -67,12 +67,17 @@ int main( int argc, char *argv[] )
       qDebug() << "simc gui localization: " << lang;
   }
   settings.endGroup();
+  if ( lang == "auto" )
+  {
+      lang = QLocale::system().name();
+      //qDebug() << "using auto localization: " << lang;
+  }
   QTranslator myappTranslator;
-  if ( !lang.isEmpty() && lang != "en" )
+  if ( !lang.isEmpty() && !lang.startsWith("en") )
   {
       QString path_to_locale("locale");
 
-      QString qm_file = QString( "sc_" ) + lang + ".qm";
+      QString qm_file = QString( "sc_" ) + lang;
       //qDebug() << "qm file: " << qm_file;
       myappTranslator.load( qm_file, path_to_locale );
       //qDebug() << "translator: " << myappTranslator.isEmpty();
