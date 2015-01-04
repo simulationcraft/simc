@@ -16,7 +16,7 @@
 #endif
 #include <QStandardPaths>
 
-static int SC_GUI_HISTORY_VERSION = 6;
+static int SC_GUI_HISTORY_VERSION = 640;
 
 namespace { // UNNAMED NAMESPACE
 

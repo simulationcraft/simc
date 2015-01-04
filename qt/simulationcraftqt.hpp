@@ -457,7 +457,6 @@ public:
   SC_WelcomeTabWidget( SC_MainWindow* parent = nullptr );
 private slots:
  void linkClickedSlot( const QUrl& url ) { QDesktopServices::openUrl( url ); }
-
 };
 
 // ============================================================================
