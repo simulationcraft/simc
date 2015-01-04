@@ -3235,7 +3235,18 @@ struct xuen_spell_t: public summon_pet_t
 
 // ==========================================================================
 // Storm, Earth, and Fire
-// =========================================================S=================
+// ==========================================================================
+
+struct storm_earth_and_fire_t;
+
+struct sef_despawn_cb_t
+{
+  storm_earth_and_fire_t* action;
+
+  sef_despawn_cb_t( storm_earth_and_fire_t* a );
+
+  void operator()();
+};
 
 struct storm_earth_and_fire_t: public monk_spell_t
 {
@@ -3250,33 +3261,6 @@ struct storm_earth_and_fire_t: public monk_spell_t
 
   void init()
   {
-    struct sef_despawn_cb_t
-    {
-      storm_earth_and_fire_t* action;
-
-      sef_despawn_cb_t( storm_earth_and_fire_t* a ) : action( a )
-      { assert( action ); }
-
-      void operator()()
-      {
-        for ( size_t i = 0; i < sizeof_array( action -> p() -> pet.sef ); i++ )
-        {
-          pets::storm_earth_and_fire_pet_t* sef = action -> p() -> pet.sef[ i ];
-          // Dormant clones don't care
-          if ( sef -> is_sleeping() )
-          {
-            continue;
-          }
-
-          // If the active clone's target is sleeping, lets despawn it.
-          if ( sef -> target -> is_sleeping() )
-          {
-            sef -> dismiss();
-          }
-        }
-      }
-    };
-
     monk_spell_t::init();
 
     sim -> target_non_sleeping_list.register_callback( sef_despawn_cb_t( this ) );
@@ -3346,6 +3330,28 @@ struct storm_earth_and_fire_t: public monk_spell_t
     }
   }
 };
+
+sef_despawn_cb_t::sef_despawn_cb_t( storm_earth_and_fire_t* a ) : action( a )
+{ assert( action ); }
+
+void sef_despawn_cb_t::operator()()
+{
+  for ( size_t i = 0; i < sizeof_array( action -> p() -> pet.sef ); i++ )
+  {
+    pets::storm_earth_and_fire_pet_t* sef = action -> p() -> pet.sef[ i ];
+    // Dormant clones don't care
+    if ( sef -> is_sleeping() )
+    {
+      continue;
+    }
+
+    // If the active clone's target is sleeping, lets despawn it.
+    if ( sef -> target -> is_sleeping() )
+    {
+      sef -> dismiss();
+    }
+  }
+}
 
 // ==========================================================================
 // Chi Sphere
