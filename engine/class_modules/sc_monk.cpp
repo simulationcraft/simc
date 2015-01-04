@@ -1088,29 +1088,40 @@ public:
     double normalized_dps = 0;
     bool owner_caster_weapon = ( owner -> items[ SLOT_MAIN_HAND ].parsed.data.flags_2 & ITEM_FLAG2_CASTER_WEAPON ) != 0;
 
-    // Dual wielding pet, use one hand dps
-    if ( main_hand_weapon.swing_time == timespan_t::from_seconds( 2.6 ) )
+    // Use ilevel to figure out base dps
+    if ( owner_ilevel > 0 )
     {
-      if ( owner_caster_weapon )
+      // Dual wielding pet, use one hand dps
+      if ( main_hand_weapon.swing_time == timespan_t::from_seconds( 2.6 ) )
       {
-        normalized_dps = dbc.item_damage_caster_1h( owner_ilevel ).values[ owner_quality ];
+        if ( owner_caster_weapon )
+        {
+          normalized_dps = dbc.item_damage_caster_1h( owner_ilevel ).values[ owner_quality ];
+        }
+        else
+        {
+          normalized_dps = dbc.item_damage_1h( owner_ilevel ).values[ owner_quality ];
+        }
       }
+      // 2h pet
       else
       {
-        normalized_dps = dbc.item_damage_1h( owner_ilevel ).values[ owner_quality ];
+        if ( owner_caster_weapon )
+        {
+          normalized_dps = dbc.item_damage_caster_2h( owner_ilevel ).values[ owner_quality ];
+        }
+        else
+        {
+          normalized_dps = dbc.item_damage_2h( owner_ilevel ).values[ owner_quality ];
+        }
       }
     }
-    // 2h pet
+    // Use min/max dmg of the weapon to approximate base dps
     else
     {
-      if ( owner_caster_weapon )
-      {
-        normalized_dps = dbc.item_damage_caster_2h( owner_ilevel ).values[ owner_quality ];
-      }
-      else
-      {
-        normalized_dps = dbc.item_damage_2h( owner_ilevel ).values[ owner_quality ];
-      }
+      normalized_dps = owner -> main_hand_weapon.min_dmg + owner -> main_hand_weapon.max_dmg;
+      normalized_dps /= 2;
+      normalized_dps /= owner -> main_hand_weapon.swing_time.total_seconds();
     }
 
     // Very simplified version of weapon damage computation (see
