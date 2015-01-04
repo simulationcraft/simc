@@ -1856,6 +1856,13 @@ void action_t::init()
   if ( ( spell_power_mod.direct > 0 || attack_power_mod.direct > 0 ) || weapon_multiplier > 0 )
     snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
 
+  // Tick actions use tick multipliers, so snapshot them too if direct
+  // multipliers are snapshot for "base" ability
+  if ( tick_action && ( snapshot_flags & STATE_MUL_DA ) > 0 )
+  {
+    snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA;
+  }
+
   if ( ( spell_power_mod.direct > 0 || spell_power_mod.tick > 0 ) )
   {
     snapshot_flags |= STATE_SP;
