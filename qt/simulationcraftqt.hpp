@@ -1194,9 +1194,9 @@ explicit SC_WebPage( QObject* parent = 0 ):
 SC_WebEnginePage( parent )
   {}
 
+#if defined( SC_USE_WEBKIT )
   QString userAgentForUrl( const QUrl& /* url */ ) const
   { return QString( "simulationcraft_gui" ); }
-#if defined( SC_USE_WEBKIT )
 protected:
   virtual bool supportsExtension( Extension extension ) const
   {
