@@ -120,8 +120,25 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
 
   s << std::hex;
 
-  s << " snapshot_flags=" << action -> snapshot_flags;
-  s << " update_flags=" << action -> update_flags;
+  s << " snapshot_flags=";
+  if ( action -> snapshot_flags > 0 )
+  {
+    s << "{ " << flags_to_str( action -> snapshot_flags ) << " }";;
+  }
+  else
+  {
+    s << action -> snapshot_flags;
+  }
+  s << " update_flags=";
+  if ( action -> update_flags > 0 )
+  {
+    s << "{ " << flags_to_str( action -> update_flags ) << " }";
+  }
+  else
+  {
+    s << action -> update_flags;
+  }
+
   s << " result=" << util::result_type_string( result );
   s << " type=" << util::amount_type_string( result_type );
 
@@ -193,3 +210,50 @@ void travel_event_t::execute()
 
 void action_state_t::release( action_state_t*& s )
 { s -> action -> release_state( s ); s = 0; }
+
+static std::string& concat_flag_str( std::string& str,
+                                     const std::string& flag_str,
+                                     snapshot_state_e state,
+                                     unsigned flags )
+{
+  if ( flags & state )
+  {
+    if ( ! str.empty() )
+    {
+      str += "|";
+    }
+
+    str += flag_str;
+  }
+
+  return str;
+}
+
+std::string action_state_t::flags_to_str( unsigned flags )
+{
+  std::string str;
+
+  concat_flag_str( str, "AP",         STATE_AP,             flags );
+  concat_flag_str( str, "SP",         STATE_SP,             flags );
+  concat_flag_str( str, "HST",        STATE_HASTE,          flags );
+  concat_flag_str( str, "CRIT",       STATE_CRIT,           flags );
+  concat_flag_str( str, "VERS",       STATE_VERSATILITY,    flags );
+  concat_flag_str( str, "RES",        STATE_RESOLVE,        flags );
+  concat_flag_str( str, "MUL_DA",     STATE_MUL_DA,         flags );
+  concat_flag_str( str, "MUL_TA",     STATE_MUL_TA,         flags );
+  concat_flag_str( str, "MUL_PER",    STATE_MUL_PERSISTENT, flags );
+
+  concat_flag_str( str, "TGT_CRIT",   STATE_TGT_CRIT,       flags );
+  concat_flag_str( str, "TGT_MUL_DA", STATE_TGT_MUL_DA,     flags );
+  concat_flag_str( str, "TGT_MUL_TA", STATE_TGT_MUL_TA,     flags );
+
+  concat_flag_str( str, "USR1",       STATE_USER_1,         flags );
+  concat_flag_str( str, "USR2",       STATE_USER_2,         flags );
+  concat_flag_str( str, "USR3",       STATE_USER_3,         flags );
+  concat_flag_str( str, "USR4",       STATE_USER_4,         flags );
+
+  concat_flag_str( str, "TGT_MIT_DA", STATE_TGT_MITG_DA,    flags );
+  concat_flag_str( str, "TGT_MIT_TA", STATE_TGT_MITG_TA,    flags );
+
+  return str;
+}

@@ -5578,6 +5578,7 @@ struct action_state_t : public noncopyable
   double          target_mitigation_ta_multiplier;
 
   static void release( action_state_t*& s );
+  static std::string flags_to_str( unsigned flags );
 
   action_state_t( action_t*, player_t* );
   virtual ~action_state_t() {}
