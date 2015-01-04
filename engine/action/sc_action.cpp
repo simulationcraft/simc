@@ -290,8 +290,6 @@ action_t::action_t( action_e       ty,
   dot_behavior                   = DOT_CLIP;
   trigger_gcd                    = player -> base_gcd;
   range                          = -1.0;
-  weapon_power_mod               = 1.0 / 3.5;
-
 
   amount_delta                   = 0.0;
   base_dd_min                    = 0.0;
@@ -1879,12 +1877,6 @@ void action_t::init()
 
   if ( dot_duration > timespan_t::zero() && ( hasted_ticks || channeled ) )
     snapshot_flags |= STATE_HASTE;
-
-  // If the action has a tick action, we have to snapshot tick multiplier,
-  // since ::tick() will actually replace da_modifier in the snapshot state
-  // with ta_modifier.
-  if ( tick_action )
-    snapshot_flags |= STATE_MUL_TA;
 
   // WOD: Dot Snapshoting is gone
   update_flags |= snapshot_flags;
