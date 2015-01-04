@@ -13,7 +13,7 @@ mage=Mage_Arcane_T17B
 level=100
 race=gnome
 spec=arcane
-talents=3003123
+talents=3003322
 glyphs=arcane_power/cone_of_cold
 head=arcanoshatter_hood,id=115553,bonus_id=42/562/565/567,gem_id=115812
 neck=gruuls_lip_ring,id=113872,bonus_id=42/562/565/567,gem_id=115812,enchant=gift_of_mastery

@@ -9,7 +9,7 @@ mage=Mage_Arcane_T17P
 level=100
 race=gnome
 spec=arcane
-talents=3003123
+talents=3003322
 glyphs=arcane_power/cone_of_cold
 head=hood_of_swirling_light,id=109972,bonus_id=524
 neck=alcs_pendant_of_fiery_dreams,id=109957,bonus_id=524,enchant=gift_of_mastery
