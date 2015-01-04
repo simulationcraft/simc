@@ -1150,7 +1150,9 @@ public:
       may_proc_missiles = false;
     }
 
-    if ( p() -> specialization() == MAGE_ARCANE && may_proc_missiles )
+    if ( p() -> specialization() == MAGE_ARCANE &&
+         result_is_hit( execute_state -> result ) &&
+         may_proc_missiles )
     {
       p() -> buffs.arcane_missiles -> trigger();
     }
@@ -3921,8 +3923,10 @@ struct supernova_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    if ( execute_state -> n_targets > 1)
+    if ( result_is_hit( execute_state -> result ) &&
+         execute_state -> n_targets > 1 )
     {
+      // NOTE: Supernova AOE effect causes secondary trigger chance for AM
       p() -> buffs.arcane_missiles -> trigger();
     }
   }
