@@ -41,6 +41,7 @@
 #include <string>
 #include <typeinfo>
 #include <vector>
+#include <bitset>
 #if defined( SC_OSX )
 #include <Availability.h>
 #endif
