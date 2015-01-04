@@ -1016,6 +1016,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_spinning_crane_kick_t( storm_earth_and_fire_pet_t* player ) :
       sef_melee_attack_t( "spinning_crane_kick", player, player -> o() -> find_class_spell( "Spinning Crane Kick" ) )
     {
+      channeled = tick_zero = true;
+      may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+
       base_tick_time *= 1.0 + o() -> perk.empowered_spinning_crane_kick -> effectN( 1 ).percent();
       dot_duration *= 1.0 + o() -> perk.empowered_spinning_crane_kick -> effectN( 2 ).percent();
 
