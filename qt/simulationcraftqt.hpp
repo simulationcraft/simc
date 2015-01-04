@@ -1190,8 +1190,8 @@ class SC_WebPage : public SC_WebEnginePage
 {
   Q_OBJECT
 public:
-  explicit SC_WebPage( QObject* parent = 0 ) :
-    SC_WebEnginePage( parent )
+explicit SC_WebPage( QObject* parent = 0 ):
+SC_WebEnginePage( parent )
   {}
 
   QString userAgentForUrl( const QUrl& /* url */ ) const
@@ -1491,6 +1491,18 @@ public slots:
 
   void findSomeText( const QString& text, SC_WebEnginePage::FindFlags options )
   {
+#if defined( SC_USE_WEBKIT )
+    if ( ! previousSearch.isEmpty() && previousSearch != text )
+    {
+      findText( "", SC_WebEnginePage::HighlightAllOccurrences ); // clears previous highlighting
+    }
+    previousSearch = text;
+
+    if ( searchBox -> wrapSearch() )
+    {
+      options |= SC_WebEnginePage::FindWrapsAroundDocument;
+    }
+#endif
     findText( text, options );
 
     // If the QWebView scrolls due to searching with the SC_SearchBox visible
