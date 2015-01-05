@@ -187,6 +187,7 @@ public:
     action_t* chi_explosion_dot;
     action_t* healing_elixir;
     action_t* healing_sphere;
+    action_t* death_note;
     actions::spells::stagger_self_damage_t* stagger_self_damage;
   } active_actions;
 
@@ -426,6 +427,7 @@ public:
     cooldown_t* healing_elixirs;
     cooldown_t* healing_sphere;
     cooldown_t* expel_harm;
+    cooldown_t* touch_of_death;
   } cooldown;
 
   struct passives_t
@@ -475,9 +477,10 @@ public:
   {
     // actives
     _active_stance = FIERCE_TIGER;
-    cooldown.healing_elixirs = get_cooldown( "healing_elixirs" );
-    cooldown.healing_sphere = get_cooldown( "healing_sphere" );
-    cooldown.expel_harm = get_cooldown( "expel_harm" );
+    cooldown.healing_elixirs  = get_cooldown( "healing_elixirs" );
+    cooldown.healing_sphere   = get_cooldown( "healing_sphere" );
+    cooldown.expel_harm       = get_cooldown( "expel_harm" );
+    cooldown.touch_of_death   = get_cooldown( "touch_of_death" );
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
@@ -2763,8 +2766,16 @@ struct touch_of_death_t: public monk_melee_attack_t
   {
     if ( target -> health_percentage() > 10 )
       return false;
+    if ( target -> current_health() <= player -> max_health() )
+      return monk_melee_attack_t::ready();
 
     return monk_melee_attack_t::ready();
+  }
+
+  virtual void execute()
+  {
+    //p() -> buff.death_note -> decrement();
+    monk_melee_attack_t::execute();
   }
 };
 
@@ -3866,6 +3877,42 @@ struct diffuse_magic_t: public monk_spell_t
   }
 };
 
+// ==========================================================================
+// Death Note
+// ==========================================================================
+// This is used to better match what happens in game:
+//    - Game figures if the player can use Touch of Death
+//    - Provides the buff "Death Note"
+//    - Touch of Death is usable
+
+struct death_note_t : public monk_spell_t
+{
+  death_note_t( monk_t& p ) :
+    monk_spell_t( "death_note", &p, p.find_spell( 121125 ) )
+  {
+    stancemask = STURDY_OX | FIERCE_TIGER | SPIRITED_CRANE;
+    harmful = false;
+    trigger_gcd = timespan_t::zero();
+    cooldown = p.cooldown.touch_of_death;
+  }
+
+  bool ready()
+  {
+    if ( target -> health_percentage() > 10 )
+      return false;
+    if ( target -> current_health() <= player -> max_health() )
+      return monk_spell_t::ready();
+
+    return monk_spell_t::ready();
+  }
+
+  virtual void execute()
+  {
+    p() -> buff.death_note -> trigger();
+    monk_spell_t::execute();
+  }
+};
+
 } // END spells NAMESPACE
 
 namespace heals {
@@ -4629,8 +4676,9 @@ void monk_t::init_spells()
   //active_actions.blackout_kick_heal   = new actions::heal_blackout_kick_t( this );
   active_actions.chi_explosion_dot    = new actions::dot_chi_explosion_t( this );
   if ( talent.healing_elixirs -> ok() )
-    active_actions.healing_elixir       = new actions::healing_elixirs_t( *this );
+    active_actions.healing_elixir     = new actions::healing_elixirs_t( *this );
   active_actions.healing_sphere       = new actions::healing_sphere_t( *this );
+  active_actions.death_note           = new actions::death_note_t( *this );
 
   if (specialization() == MONK_BREWMASTER)
     active_actions.stagger_self_damage = new actions::stagger_self_damage_t( this );
@@ -5339,6 +5387,8 @@ void monk_t::assess_damage( school_e school,
     buff.guard -> up();
 
   // TODO: Add some form of cooldown to better model what is in-game
+  //    Need to add in some Option to control how often player falls below 35% or else this will be triggering
+  //    for half the fight.
   //if ( health_percentage() < 35 )
   //  cooldown.expel_harm -> reset( true );
 
@@ -5562,8 +5612,6 @@ void monk_t::apl_combat_brewmaster()
   st -> add_action( this, "Jab", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
   st -> add_action( this, "Tiger Palm" );
 
-
-
   aoe -> add_action( this, "Purifying Brew", "if=stagger.heavy" );
   aoe -> add_action( this, "Blackout Kick", "if=buff.shuffle.down" );
   aoe -> add_action( this, "Purifying Brew", "if=buff.serenity.up" );
@@ -5583,11 +5631,6 @@ void monk_t::apl_combat_brewmaster()
   aoe -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
   aoe -> add_action( this, "Jab", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
   aoe -> add_action( this, "Tiger Palm" );
-	
-	
-	
-	
-	
 }
 
 // Windwalker Combat Action Priority List ===============================

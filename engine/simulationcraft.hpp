@@ -4937,7 +4937,8 @@ struct player_t : public actor_t
 
   virtual double health_percentage() const;
   virtual double max_health() const;
-  virtual timespan_t time_to_percent( double percent ) const;
+  virtual double current_health() const;
+  virtual timespan_t time_to_percent(double percent) const;
   timespan_t total_reaction_time();
 
   void stat_gain( stat_e stat, double amount, gain_t* g = 0, action_t* a = 0, bool temporary = false );

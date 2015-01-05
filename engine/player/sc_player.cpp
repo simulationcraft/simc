@@ -4255,6 +4255,13 @@ double player_t::max_health() const
   return resources.max[RESOURCE_HEALTH];
 }
 
+// player_t::current_health() ============================================
+
+double player_t::current_health() const
+{
+  return resources.current[RESOURCE_HEALTH];
+}
+
 // target_t::time_to_percent ====================================================
 
 timespan_t player_t::time_to_percent( double percent ) const
