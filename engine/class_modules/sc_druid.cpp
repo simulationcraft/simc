@@ -5356,7 +5356,7 @@ struct starfire_t : public druid_spell_t
     druid_spell_t::impact( s );
 
     if ( p() -> talent.balance_of_power && result_is_hit( s -> result ) )
-      td( s -> target ) -> dots.moonfire -> extend_duration( p() -> talent.balance_of_power -> effectN( 1 ).time_value(), 0 );
+      td( s -> target ) -> dots.moonfire -> extend_duration( timespan_t::from_seconds( p() -> talent.balance_of_power -> effectN( 1 ).base_value() ), 0 );
   }
 };
 
