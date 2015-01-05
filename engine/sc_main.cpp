@@ -165,6 +165,9 @@ int sim_t::main( const std::vector<std::string>& args )
 
   sim_control_t control;
 
+  util::printf( "SimulationCraft %s for World of Warcraft %s %s (build level %s)\n",
+                 SC_VERSION, dbc.wow_version(), dbc.wow_ptr_status(), util::to_string( dbc.build_level() ).c_str() );
+
   try
   {
     control.options.parse_args(args);
@@ -185,8 +188,7 @@ int sim_t::main( const std::vector<std::string>& args )
 
   if ( canceled ) return 1;
 
-  util::printf( "\nSimulationCraft %s for World of Warcraft %s %s (build level %s)\n",
-                 SC_VERSION, dbc.wow_version(), dbc.wow_ptr_status(), util::to_string( dbc.build_level() ).c_str() );
+  std::cout << std::endl;
 
   if ( spell_query )
   {
