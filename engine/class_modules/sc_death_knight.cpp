@@ -5398,7 +5398,7 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
 
   void consume_resource()
   {
-    if ( td( execute_state -> target ) -> dots_breath_of_sindragosa -> current_tick > 0 )
+    if ( td( target ) -> dots_breath_of_sindragosa -> current_tick > 0 )
     {
       death_knight_spell_t::consume_resource();
     }
@@ -5419,7 +5419,7 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
 
   void impact( action_state_t* s )
   {
-    if ( s -> target == p() -> target )
+    if ( s -> target == target )
       death_knight_spell_t::impact( s );
     else
     {
@@ -5466,6 +5466,7 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
     else
     {
       p() -> active_spells.breath_of_sindragosa = this;
+      p() -> active_spells.breath_of_sindragosa -> target = target;
       death_knight_spell_t::execute();
     }
   }
