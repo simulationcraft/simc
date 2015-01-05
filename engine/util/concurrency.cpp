@@ -135,6 +135,7 @@ private:
 #include <pthread.h>
 #include <cstdio>
 #include <unistd.h>
+#include <errno.h>
 
 // mutex_t::native_t ========================================================
 
@@ -198,7 +199,10 @@ private:
     }
     if (pthread_attr_getschedpolicy(&attr, &sched_policy) != 0 )
     {
-      perror( "Could not get schedule policy");
+      if ( errno != 0 )
+      {
+        perror( "Could not get schedule policy");
+      }
       pthread_attr_destroy(&attr);
       return;
     }
@@ -214,7 +218,10 @@ private:
 
     if ( pthread_setschedparam( t, sched_policy, &sp) != 0 )
     {
-      perror( "Could not set thread priority" );
+      if ( errno != 0 )
+      {
+        perror( "Could not set thread priority" );
+      }
     }
 
     pthread_attr_destroy(&attr);
