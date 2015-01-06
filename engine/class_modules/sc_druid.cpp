@@ -619,7 +619,6 @@ public:
 
     equipped_weapon_dps = 0;
 
-    base.distance = ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ) ? 3 : 30;
     regen_type = REGEN_DYNAMIC;
     regen_caches[ CACHE_HASTE ] = true;
     regen_caches[ CACHE_ATTACK_HASTE ] = true;
@@ -6100,6 +6099,9 @@ void druid_t::init_spells()
 void druid_t::init_base_stats()
 {
   player_t::init_base_stats();
+
+  // Set base distance based on spec
+  base.distance = ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ) ? 3 : 30;
 
   if ( specialization () == DRUID_FERAL || specialization() == DRUID_GUARDIAN )
     base.attack_power_per_agility  = 1.0;
