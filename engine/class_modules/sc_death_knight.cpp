@@ -3441,6 +3441,11 @@ struct conversion_t : public death_knight_heal_t
       }
     }
 
+    if ( p -> wod_hotfix && p -> specialization() == DEATH_KNIGHT_FROST )
+    {
+      base_costs[ RESOURCE_RUNIC_POWER ] = 15;
+    }
+
     target = p;
   }
 
