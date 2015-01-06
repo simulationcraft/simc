@@ -39,6 +39,14 @@ class PaperdollProfile;
 #include "util/sc_searchbox.hpp" // remove once implementations are moved to source files
 #include "util/sc_textedit.hpp" // remove once implementations are moved to source files
 
+struct SetPlainTextFunctor {
+    QTextEdit *textEdit;
+    SetPlainTextFunctor(QTextEdit *textEdit) : textEdit(textEdit) { }
+    void operator()(const QString &result) {
+        textEdit->setHtml(result);
+    }
+};
+
 enum main_tabs_e
 {
   TAB_WELCOME = 0,
@@ -455,8 +463,10 @@ class SC_WelcomeTabWidget : public SC_WebEngineView
   Q_OBJECT
 public:
   SC_WelcomeTabWidget( SC_MainWindow* parent = nullptr );
+#if defined ( SC_USE_WEBKIT )
 private slots:
  void linkClickedSlot( const QUrl& url ) { QDesktopServices::openUrl( url ); }
+#endif
 };
 
 // ============================================================================
@@ -1308,7 +1318,9 @@ public:
     connect( this,      SIGNAL( loadProgress( int ) ),           this,      SLOT( loadProgressSlot( int ) ) );
     connect( this,      SIGNAL( loadFinished( bool ) ),          this,      SLOT( loadFinishedSlot( bool ) ) );
     connect( this,      SIGNAL( urlChanged( const QUrl& ) ),     this,      SLOT( urlChangedSlot( const QUrl& ) ) );
+#if defined ( SC_USE_WEBKIT )
     connect( this,      SIGNAL( linkClicked( const QUrl& ) ),    this,      SLOT( linkClickedSlot( const QUrl& ) ) );
+#endif
 
     SC_WebPage* page = new SC_WebPage( this );
     setPage( page );
@@ -1354,6 +1366,13 @@ public:
     return page() -> currentFrame() -> toHtml();
   }
 #endif
+
+  QString toHtml()
+  {
+    QTextEdit *textEdit = new QTextEdit;
+    page()->toHtml( SetPlainTextFunctor( textEdit ) );
+    return textEdit -> toHtml();
+  }
 
   void enableMouseNavigation()
   {
@@ -1468,6 +1487,7 @@ private slots:
     mainWindow -> updateWebView( this );
   }
 
+#if defined ( SC_USE_WEBKIT )
   void linkClickedSlot( const QUrl& url )
   {
     QString clickedurl = url.toString();
@@ -1481,6 +1501,7 @@ private slots:
     else
       QDesktopServices::openUrl( url );
   }
+#endif
 
 public slots:
   void hideSearchBox()

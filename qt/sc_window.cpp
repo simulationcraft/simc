@@ -1922,16 +1922,16 @@ void SC_SingleResultTab::save_result()
       switch ( currentTab() )
       {
       case TAB_HTML:
-#if defined( SC_USE_WEBKIT )
         file.write( static_cast<SC_WebView*>( currentWidget() ) -> toHtml().toUtf8() );
         break;
-#endif
       case TAB_TEXT:
       case TAB_XML:
       case TAB_PLOTDATA:
       case TAB_CSV:
+#if defined ( SC_USE_WEBKIT )
         file.write( static_cast<SC_TextEdit*>( currentWidget() ) -> toPlainText().toUtf8() );
         break;
+#endif
       default: break;
       }
       file.close();
