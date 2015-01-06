@@ -2049,6 +2049,7 @@ struct hemorrhage_t : public rogue_attack_t
     rogue_attack_t( "hemorrhage", p, p -> find_class_spell( "Hemorrhage" ), options_str )
   {
     ability_type = HEMORRHAGE;
+    dot_behavior = DOT_REFRESH;
     weapon = &( p -> main_hand_weapon );
     tick_may_crit = true;
     may_multistrike = true;
