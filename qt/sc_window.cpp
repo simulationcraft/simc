@@ -1922,7 +1922,25 @@ void SC_SingleResultTab::save_result()
       switch ( currentTab() )
       {
       case TAB_HTML:
-        file.write( static_cast<SC_WebView*>( currentWidget() ) -> toHtml().toUtf8() );
+#if defined( SC_USE_WEBKIT )
+        file.write(static_cast<SC_WebView*>(currentWidget())->toHtml().toUtf8());
+#else
+        struct HtmlOutputFunctor
+        {
+          QFile* file_;
+
+          HtmlOutputFunctor( QFile* out_file ) : file_( out_file )
+          { }
+
+          void operator()( QString htmlOutput )
+          {
+            QByteArray out_utf8 = htmlOutput.toUtf8();
+            file_ -> write( out_utf8.constData(), out_utf8.size() );
+          }
+        };
+
+        static_cast<SC_WebView*>(currentWidget()) -> page() -> toHtml( HtmlOutputFunctor( &file ) );
+#endif /* SC_USE_WEBKIT */
         break;
       case TAB_TEXT:
       case TAB_XML:
