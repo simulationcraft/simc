@@ -4608,7 +4608,7 @@ double rogue_t::composite_player_multiplier( school_e school ) const
     if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER && spec.assassins_resolve -> ok() )
     {
       if ( wod_hotfix )
-        m *= 1.22;
+        m *= 1.17;
       else
         m *= 1.0 + spec.assassins_resolve -> effectN( 2 ).percent();
     }
