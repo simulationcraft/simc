@@ -727,7 +727,16 @@ struct rogue_attack_t : public melee_attack_t
     m *= 1.0 + tdata -> debuffs.vendetta -> value();
 
     if ( p() -> spec.sanguinary_vein -> ok() && tdata -> sanguinary_veins() )
-      m *= 1.0 + p() -> spec.sanguinary_vein -> effectN( 2 ).percent();
+    {
+      if ( p() -> wod_hotfix )
+      {
+        m *= 1.25;
+      }
+      else
+      {
+        m *= 1.0 + p() -> spec.sanguinary_vein -> effectN( 2 ).percent();
+      }
+    }
 
     return m;
   }
@@ -4562,7 +4571,18 @@ double rogue_t::composite_attack_power_multiplier() const
 {
   double m = player_t::composite_attack_power_multiplier();
 
-  m *= 1.0 + spec.vitality -> effectN( 2 ).percent();
+  if ( spec.vitality -> ok() )
+  {
+    if ( wod_hotfix )
+    {
+      m *= 1.5;
+    }
+    else
+    {
+      m *= 1.0 + spec.vitality -> effectN( 2 ).percent();
+    }
+  }
+
 
   return m;
 }
@@ -4588,7 +4608,7 @@ double rogue_t::composite_player_multiplier( school_e school ) const
     if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER && spec.assassins_resolve -> ok() )
     {
       if ( wod_hotfix )
-        m *= 1.1;
+        m *= 1.22;
       else
         m *= 1.0 + spec.assassins_resolve -> effectN( 2 ).percent();
     }
