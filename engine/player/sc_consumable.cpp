@@ -776,7 +776,7 @@ struct dbc_potion_t : public action_t
 
   dbc_potion_t( player_t* p, const std::string& options_str ) :
     action_t( ACTION_USE, "potion", p ),
-    pre_pot_time( timespan_t::from_seconds( 5.0 ) ),
+    pre_pot_time( timespan_t::from_seconds( 2.0 ) ),
     stat_buff( 0 )
   {
     harmful = callbacks = may_miss = may_crit = may_block = may_glance = may_dodge = may_parry = false;
