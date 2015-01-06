@@ -39,14 +39,6 @@ class PaperdollProfile;
 #include "util/sc_searchbox.hpp" // remove once implementations are moved to source files
 #include "util/sc_textedit.hpp" // remove once implementations are moved to source files
 
-struct SetPlainTextFunctor {
-    QTextEdit *textEdit;
-    SetPlainTextFunctor(QTextEdit *textEdit) : textEdit(textEdit) { }
-    void operator()(const QString &result) {
-        textEdit->setHtml(result);
-    }
-};
-
 enum main_tabs_e
 {
   TAB_WELCOME = 0,
@@ -1366,13 +1358,6 @@ public:
     return page() -> currentFrame() -> toHtml();
   }
 #endif
-
-  QString toHtml()
-  {
-    QTextEdit *textEdit = new QTextEdit;
-    page()->toHtml( SetPlainTextFunctor( textEdit ) );
-    return textEdit -> toHtml();
-  }
 
   void enableMouseNavigation()
   {
