@@ -751,7 +751,7 @@ struct rogue_attack_t : public melee_attack_t
     return m;
   }
 
-  void trigger_sinister_calling( dot_t* dot );
+  void trigger_sinister_calling( dot_t* dot, bool may_crit = false, int may_multistrike = -1 );
 };
 
 // ==========================================================================
@@ -3149,12 +3149,12 @@ void rogue_t::trigger_auto_attack( const action_state_t* state )
   auto_attack -> execute();
 }
 
-inline void actions::rogue_attack_t::trigger_sinister_calling( dot_t* dot )
+inline void actions::rogue_attack_t::trigger_sinister_calling( dot_t* dot, bool may_cr, int may_ms )
 {
   int may_multistrike_ = may_multistrike;
-  may_multistrike = 0;
+  may_multistrike = may_ms;
   bool tick_may_crit_ = tick_may_crit;
-  tick_may_crit = false;
+  tick_may_crit = may_cr;
   dot -> current_tick++;
   dot -> tick();
   tick_may_crit = tick_may_crit_;
@@ -3209,7 +3209,7 @@ void rogue_t::trigger_sinister_calling( const action_state_t* state )
     cast_attack( tdata -> dots.garrote -> current_action ) -> trigger_sinister_calling( tdata -> dots.garrote );
 
   if ( tdata -> dots.hemorrhage -> is_ticking() )
-    cast_attack( tdata -> dots.hemorrhage -> current_action ) -> trigger_sinister_calling( tdata -> dots.hemorrhage );
+    cast_attack( tdata -> dots.hemorrhage -> current_action ) -> trigger_sinister_calling( tdata -> dots.hemorrhage, true );
 
   if ( tdata -> dots.crimson_tempest -> is_ticking() )
     cast_attack( tdata -> dots.crimson_tempest -> current_action ) -> trigger_sinister_calling( tdata -> dots.crimson_tempest );
