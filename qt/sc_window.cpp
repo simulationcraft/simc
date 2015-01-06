@@ -1924,6 +1924,7 @@ void SC_SingleResultTab::save_result()
       case TAB_HTML:
 #if defined( SC_USE_WEBKIT )
         file.write(static_cast<SC_WebView*>(currentWidget())->toHtml().toUtf8());
+        file.close();
 #else
         struct HtmlOutputFunctor
         {
@@ -1936,6 +1937,7 @@ void SC_SingleResultTab::save_result()
           {
             QByteArray out_utf8 = htmlOutput.toUtf8();
             file_ -> write( out_utf8.constData(), out_utf8.size() );
+            file_ -> close();
           }
         };
 
@@ -1948,11 +1950,11 @@ void SC_SingleResultTab::save_result()
       case TAB_CSV:
 #if defined ( SC_USE_WEBKIT )
         file.write( static_cast<SC_TextEdit*>( currentWidget() ) -> toPlainText().toUtf8() );
+        file.close();
         break;
 #endif
       default: break;
       }
-      file.close();
       QMessageBox::information( this, tr( "Save Result" ), tr( "Result saved to %1" ).arg( file.fileName() ), QMessageBox::Ok, QMessageBox::Ok );
       mainWindow -> logText -> append( QString( "Results saved to: %1\n" ).arg( file.fileName() ) );
     }
