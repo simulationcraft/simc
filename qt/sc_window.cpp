@@ -291,6 +291,7 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   resultsFileText = AppDataDir + "/" + "results.html";
 
   mainTab = new SC_MainTab( this );
+
   createWelcomeTab();
   createImportTab();
   createOptionsTab();
@@ -401,8 +402,17 @@ SC_WebEngineView( parent )
   welcomeFile = SC_LINUX_PACKAGING "/Welcome.html";
 #endif
 #if defined( SC_USE_WEBENGINE )
+  QTimer *timer = new QTimer(this);
+  timer->setSingleShot(true);
+  timer -> setInterval( 500 );
+
+  connect( timer, &QTimer::timeout, [=]() {
     load(QUrl(welcomeFile));
     show();
+    timer->deleteLater();
+  } );
+  timer -> start();
+
 #else
   setUrl( "file:///" + welcomeFile );
   page() -> setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
