@@ -4154,13 +4154,14 @@ struct shadow_reflection_pet_t : public pet_t
     }
   };
 
-  struct sr_hemorrhage_t : public shadow_reflection_attack_t
+  struct sr_hemorrhage_t: public shadow_reflection_attack_t
   {
     sr_hemorrhage_t( shadow_reflection_pet_t* p ):
       shadow_reflection_attack_t( "hemorrhage", p, p -> find_spell( 16511 ) )
     {
       tick_may_crit = true;
       may_multistrike = true;
+      dot_behavior = DOT_REFRESH;
       if ( p -> wod_hotfix )
       {
         weapon_multiplier *= 1.2 * 1.3;
