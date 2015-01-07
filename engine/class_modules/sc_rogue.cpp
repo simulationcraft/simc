@@ -3203,7 +3203,7 @@ void rogue_t::trigger_sinister_calling( const action_state_t* state )
 
   rogue_td_t* tdata = get_target_data( state -> target );
   if ( tdata -> dots.rupture -> is_ticking() )
-    cast_attack( tdata -> dots.rupture -> current_action ) -> trigger_sinister_calling( tdata -> dots.rupture );
+    cast_attack( tdata -> dots.rupture -> current_action ) -> trigger_sinister_calling( tdata -> dots.rupture, true );
 
   if ( tdata -> dots.garrote -> is_ticking() )
     cast_attack( tdata -> dots.garrote -> current_action ) -> trigger_sinister_calling( tdata -> dots.garrote, true, 0 );
