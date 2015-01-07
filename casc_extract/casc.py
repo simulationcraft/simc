@@ -787,7 +787,6 @@ class CASCRootFile(CASCObject):
 		'pt_PT' : 0x10000
 	}
 
-	LOCALE = 0x209
 	LOCALE_ALL = 0xFFFFFFFF
 
 	def __init__(self, options, build, encoding, index):
