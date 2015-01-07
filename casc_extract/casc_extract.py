@@ -21,6 +21,7 @@ parser.add_option( '-o', '--output', type = 'string', dest = 'output',
 parser.add_option( '-x', '--cache', type = 'string', dest = 'cache', default = 'cache', help = 'Cache directory [default cache]' )
 parser.add_option( '--ptr', action = 'store_true', dest = 'ptr', default = False, help = 'Download PTR files [default no, only used for --cdn]' )
 parser.add_option( '--beta', action = 'store_true', dest = 'beta', default = False, help = 'Download Beta files [default no, only used for --cdn]' )
+parser.add_option( '--locale', action = 'store', dest = 'locale', default = 'en_US', help = 'Extraction locale [default en_US, only used for --cdn]' )
 
 if __name__ == '__main__':
 	(opts, args) = parser.parse_args()

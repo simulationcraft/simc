@@ -769,7 +769,25 @@ class CASCEncodingFile(CASCObject):
 
 class CASCRootFile(CASCObject):
 	# en_US locale
-	LOCALE = 0x02
+	_locale = {
+		'en_US' : 0x2,
+		'ko_KR' : 0x4,
+		'fr_FR' : 0x10,
+		'de_DE' : 0x20,
+		'zh_CN' : 0x40,
+		'es_ES' : 0x80,
+		'zh_TW' : 0x100,
+		'en_GB' : 0x200,
+		'en_CN' : 0x400,
+		'en_TW' : 0x800,
+		'es_MX' : 0x1000,
+		'ru_RU' : 0x2000,
+		'pt_BR' : 0x4000,
+		'it_IT' : 0x8000,
+		'pt_PT' : 0x10000
+	}
+
+	LOCALE = 0x209
 	LOCALE_ALL = 0xFFFFFFFF
 
 	def __init__(self, options, build, encoding, index):
@@ -779,6 +797,11 @@ class CASCRootFile(CASCObject):
 		self.index = index
 		self.encoding = encoding
 		self.hash_map = {}
+
+		if options.locale not in CASCRootFile._locale:
+			self.options.parser.error('Invalid locale, valid values are %s' % (', '.join(CASCRootFile._locale.keys())))
+
+		self.locale = CASCRootFile._locale[self.options.locale]
 
 	def root_path(self):
 		return os.path.join(self.cache_dir(), 'root')
@@ -836,6 +859,16 @@ class CASCRootFile(CASCObject):
 	def GetFileHashMD5(self, file_hash):
 		return self.hash_map.get(file_hash, [])
 
+	def GetLocale(self):
+		if self.options.locale not in CASCRootFile._locale:
+			return 0
+
+		flags = CASCRootFile._locale[self.options.locale]
+		if self.options.locale in ['en_US', 'en_GB']:
+			flags = CASCRootFile._locale['en_US'] | CASCRootFile._locale['en_GB']
+
+		return flags
+
 	def open(self):
 		if not os.access(self.root_path(), os.R_OK):
 			data = self.__bootstrap()
@@ -868,7 +901,7 @@ class CASCRootFile(CASCObject):
 				val = struct.unpack('Q', file_name_hash)[0]
 
 				# Only grab enUS and "all" locales
-				if flags != CASCRootFile.LOCALE_ALL and not (flags & CASCRootFile.LOCALE):
+				if flags != CASCRootFile.LOCALE_ALL and not (flags & self.GetLocale()):
 					continue
 
 				if not val in self.hash_map:
