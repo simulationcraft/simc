@@ -400,9 +400,11 @@ SC_WebEngineView( parent )
 #elif defined( SC_LINUX_PACKAGING )
   welcomeFile = SC_LINUX_PACKAGING "/Welcome.html";
 #endif
+#if defined( SC_USE_WEBENGINE )
+    load(QUrl(welcomeFile));
+    show();
+#else
   setUrl( "file:///" + welcomeFile );
-
-#if defined( SC_USE_WEBKIT )
   page() -> setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
   connect( this, SIGNAL( linkClicked( const QUrl& ) ), this, SLOT( linkClickedSlot( const QUrl& ) ) );
 #endif
