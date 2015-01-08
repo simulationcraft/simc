@@ -703,6 +703,7 @@ void SC_MainWindow::createOverridesTab()
 {
   overridesText = new SC_TextEdit( this );
   overridesText -> setPlainText( "# User-specified persistent global and player parameters will be set here.\n" );
+  overridesText -> setAcceptRichText( false );
 
   // Set a bigger font size, it's not like people put much into the override tab
   QFont override_font = QFont();
@@ -962,7 +963,7 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
 void SC_MainWindow::enqueueSim()
 {
   QString title = simulateTab -> tabText( simulateTab -> currentIndex() );
-  QString options = simulateTab -> current_Text() -> toPlainText();
+  QString options = simulateTab -> current_Text() -> toPlainText().toUtf8();
   QString fullOptions = optionsTab -> mergeOptions();
 
   simulationQueue.enqueue( title, options, fullOptions );

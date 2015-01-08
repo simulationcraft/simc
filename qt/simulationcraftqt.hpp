@@ -678,6 +678,7 @@ class SC_SimulateTab: public SC_RecentlyClosedTab
   {
     SC_TextEdit* s = new SC_TextEdit();
     s -> setText( text );
+    s -> setAcceptRichText( false );
     int indextoInsert = indexOf( addTabWidget );
     int i = insertTab( indextoInsert, s, tab_name );
     setCurrentIndex( i );
@@ -762,6 +763,7 @@ class SC_SimulateTab: public SC_RecentlyClosedTab
     if ( index < 0 || index > count() )
       index = currentIndex();
     SC_TextEdit* s = new SC_TextEdit();
+    s -> setAcceptRichText( false );
     s -> setText( text );
     insertTab( index, s, title );
     setCurrentIndex( index );
