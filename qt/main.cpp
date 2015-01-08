@@ -3,6 +3,11 @@
 #include <QLocale>
 #include <QtWidgets/QApplication>
 #include <locale>
+#if defined SC_WINDOWS
+#include <windows.h>
+#include <stdio.h>
+#include <VersionHelpers.h>
+#endif
 
 /* Parse additional arguments
  * 1. Argument is parsed as a file name, complete content goes into simulate tab.
@@ -33,6 +38,17 @@ void parse_additional_args( SC_MainWindow& w, QStringList args )
 
 int main( int argc, char *argv[] )
 {
+#if defined SC_WINDOWS
+  if ( !IsWindows7SP1OrGreater() && IsWindows7OrGreater() )
+  {
+    int msgboxID = MessageBox(
+        NULL,
+        (LPCWSTR)L"SimulationCraft is known to have issues with Windows 7 when Service Pack 1 is not installed.\nThe program will continue to load, but if you run into any problems, please install Service Pack 1.",
+        (LPCWSTR)L"SimulationCraft",
+        MB_OK
+    );
+  }
+#endif
 
   QLocale::setDefault( QLocale( "C" ) );
   std::locale::global( std::locale( "C" ) );
