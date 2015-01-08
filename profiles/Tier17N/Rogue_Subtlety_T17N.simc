@@ -22,6 +22,7 @@ actions.precombat+=/apply_poison,lethal=deadly
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_agility
 actions.precombat+=/stealth
+actions.precombat+=/premeditation
 actions.precombat+=/slice_and_dice
 # Proxy Honor Among Thieves action. Generates Combo Points at a mean rate of 2.2 seconds. Comment out to disable (and use the real Honor Among Thieves).
 actions.precombat+=/honor_among_thieves,cooldown=2.2,cooldown_stddev=0.1
@@ -36,7 +37,7 @@ actions+=/blood_fury,if=buff.shadow_dance.up
 actions+=/berserking,if=buff.shadow_dance.up
 actions+=/arcane_torrent,if=energy<60&buff.shadow_dance.up
 actions+=/slice_and_dice,if=(buff.slice_and_dice.remains<10.8)&buff.slice_and_dice.remains<target.time_to_die&combo_points=((target.time_to_die-buff.slice_and_dice.remains)%6)+1
-actions+=/premeditation,if=combo_points<=4&!(buff.shadow_dance.up&energy>100&combo_points>1)&!buff.subterfuge.up|(buff.subterfuge.up&debuff.find_weakness.up)&time>9
+actions+=/premeditation,if=combo_points<=4&!(buff.shadow_dance.up&energy>100&combo_points>1)&!buff.subterfuge.up|(buff.subterfuge.up&debuff.find_weakness.up)
 actions+=/pool_resource,for_next=1
 actions+=/garrote,if=!ticking&time<1
 actions+=/wait,sec=buff.subterfuge.remains-0.1,if=buff.subterfuge.remains>0.5&buff.subterfuge.remains<1.6&time>6
