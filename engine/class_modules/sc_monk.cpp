@@ -793,11 +793,11 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       if ( ! o() -> dual_wield() && player -> dual_wield() )
       {
-        state -> da_multiplier *= 1.0 + o() -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent();
+        state -> da_multiplier *= 1.0 + ( o() -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent() * 0.625 ); // Hotfix to 25% down from 40% on 01/07/2015
       }
       else if ( o() -> dual_wield() && ! player -> dual_wield() )
       {
-        state -> da_multiplier /= 1.0 + o() -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent();
+        state -> da_multiplier /= 1.0 + ( o() -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent() * 0.625 ); // Hotfix to 25% down from 40% on 01/07/2015
       }
     }
 
@@ -806,7 +806,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       timespan_t t = sef_melee_attack_t::execute_time();
 
       if ( ! player -> dual_wield() )
-        t *= 1.0 / ( 1.0 + o() -> spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() );
+        t *= 1.0 / ( 1.0 + ( o() -> spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() * 1.375 ) ); // Hotfix to 55% up from 40% on 01/07/2015
 
       return t;
     }
@@ -2568,7 +2568,7 @@ struct melee_t: public monk_melee_attack_t
     if ( player -> dual_wield() )
     {
       base_hit -= 0.19;
-      base_multiplier *= 1.0 + player -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent();
+      base_multiplier *= 1.0 + ( player -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent() * 0.625 ); // Hotfix to 25% down from 40% on 01/07/2015
     }
   }
 
@@ -2583,7 +2583,7 @@ struct melee_t: public monk_melee_attack_t
     timespan_t t = monk_melee_attack_t::execute_time();
 
     if ( ! p() -> dual_wield() )
-      t *= 1.0 / ( 1.0 + p() -> spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() );
+      t *= 1.0 / ( 1.0 + ( p() -> spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() * 1.375 ) ); // Hotfix to 55% up from 40% on 01/07/2015
 
     if ( first )
       return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::zero() ) : t / 2 ) : timespan_t::zero();
