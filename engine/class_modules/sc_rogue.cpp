@@ -3206,7 +3206,7 @@ void rogue_t::trigger_sinister_calling( const action_state_t* state )
     cast_attack( tdata -> dots.rupture -> current_action ) -> trigger_sinister_calling( tdata -> dots.rupture, true );
 
   if ( tdata -> dots.garrote -> is_ticking() )
-    cast_attack( tdata -> dots.garrote -> current_action ) -> trigger_sinister_calling( tdata -> dots.garrote, true, 0 );
+    cast_attack( tdata -> dots.garrote -> current_action ) -> trigger_sinister_calling( tdata -> dots.garrote, true );
 
   if ( tdata -> dots.hemorrhage -> is_ticking() )
     cast_attack( tdata -> dots.hemorrhage -> current_action ) -> trigger_sinister_calling( tdata -> dots.hemorrhage, true );
@@ -4957,7 +4957,7 @@ void rogue_t::init_base_stats()
   base.attack_power_per_agility  = 1.0;
 
   resources.base[ RESOURCE_ENERGY ] = 100;
-  resources.base[ RESOURCE_COMBO_POINT ] = COMBO_POINT_MAX;
+  resources.base[ RESOURCE_COMBO_POINT ] = 5;
   if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
     resources.base[ RESOURCE_ENERGY ] += spec.assassins_resolve -> effectN( 1 ).base_value();
   //if ( sets.has_set_bonus( SET_MELEE, PVP, B2 ) )
