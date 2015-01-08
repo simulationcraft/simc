@@ -41,13 +41,27 @@ int main( int argc, char *argv[] )
 #if defined SC_WINDOWS
   if ( !IsWindows7SP1OrGreater() && IsWindows7OrGreater() )
   {
-    int msgboxID = MessageBox(
-        NULL,
-        (LPCWSTR)L"SimulationCraft is known to have issues with Windows 7 when Service Pack 1 is not installed.\nThe program will continue to load, but if you run into any problems, please install Service Pack 1.",
-        (LPCWSTR)L"SimulationCraft",
-        MB_OK
-    );
+    int msgboxID = MessageBox( NULL,
+      (LPCWSTR)L"SimulationCraft GUI is known to have issues with Windows 7 when Service Pack 1 is not installed.\nThe program will continue to load, but if you run into any problems, please install Service Pack 1.",
+      (LPCWSTR)L"SimulationCraft", MB_OK );
   }
+#if defined SC_USE_WEBKIT
+  else if ( !IsWindowsXPSP3OrGreater() )
+  {
+    int msgboxID = MessageBox( NULL,
+      (LPCWSTR)L"SimulationCraft GUI does not support any Operating System before Windows XP Service Pack 3.",
+      (LPCWSTR)L"SimulationCraft", MB_OK );
+    return 0;
+  }
+#else
+  else if ( !IsWindowsVistaOrGreater() )
+  {
+    int msgboxID = MessageBox( NULL,
+      (LPCWSTR)L"SimulationCraft GUI is no longer supported on Windows XP as of January 2015. If you wish to continue using Simulationcraft, you may do so by the command line interface -- simc.exe.",
+      (LPCWSTR)L"SimulationCraft", MB_OK );
+    return 0;
+  }
+#endif
 #endif
 
   QLocale::setDefault( QLocale( "C" ) );
@@ -69,32 +83,32 @@ int main( int argc, char *argv[] )
   // Localization
   QTranslator qtTranslator;
   qtTranslator.load( "qt_" + QLocale::system().name(),
-                     QLibraryInfo::location( QLibraryInfo::TranslationsPath ) );
+    QLibraryInfo::location( QLibraryInfo::TranslationsPath ) );
   a.installTranslator( &qtTranslator );
 
-  QString lang("");
+  QString lang( "" );
   QSettings settings;
   settings.beginGroup( "options" );
   if ( settings.contains( "gui_localization" ) )
   {
-      lang = settings.value( "gui_localization" ).toString();
-      qDebug() << "simc gui localization: " << lang;
+    lang = settings.value( "gui_localization" ).toString();
+    qDebug() << "simc gui localization: " << lang;
   }
   settings.endGroup();
   if ( lang == "auto" )
   {
-      lang = QLocale::system().name();
-      //qDebug() << "using auto localization: " << lang;
+    lang = QLocale::system().name();
+    //qDebug() << "using auto localization: " << lang;
   }
   QTranslator myappTranslator;
-  if ( !lang.isEmpty() && !lang.startsWith("en") )
+  if ( !lang.isEmpty() && !lang.startsWith( "en" ) )
   {
-      QString path_to_locale("locale");
+    QString path_to_locale( "locale" );
 
-      QString qm_file = QString( "sc_" ) + lang;
-      //qDebug() << "qm file: " << qm_file;
-      myappTranslator.load( qm_file, path_to_locale );
-      //qDebug() << "translator: " << myappTranslator.isEmpty();
+    QString qm_file = QString( "sc_" ) + lang;
+    //qDebug() << "qm file: " << qm_file;
+    myappTranslator.load( qm_file, path_to_locale );
+    //qDebug() << "translator: " << myappTranslator.isEmpty();
   }
   a.installTranslator( &myappTranslator );
 
