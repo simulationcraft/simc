@@ -406,7 +406,7 @@ void SC_WelcomeTabWidget::welcomeLoadSlot()
 }
 
 SC_WelcomeTabWidget::SC_WelcomeTabWidget( SC_MainWindow* parent ) :
-  SC_WebEngineView( parent ), welcome_uri(), welcome_timer( 0 )
+  SC_WebEngineView( parent )
 {
   QString welcomeFile = QDir::currentPath() + "/Welcome.html";
 
