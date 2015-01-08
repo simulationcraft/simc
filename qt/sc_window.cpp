@@ -65,7 +65,7 @@ void SC_MainWindow::updateSimProgress()
   if ( importRunning() )
   {
     importSimProgress = static_cast<int>( 100.0 * import_sim -> progress( importSimPhase, &progressBarToolTip ) );
-    if ( timer -> isActive() && importSimProgress == 0 )
+    if ( soloChar -> isActive() && importSimProgress == 0 )
     {
       soloimport += 2;
       importSimProgress = static_cast<int>( std::min( soloimport, 100 ) );
@@ -342,8 +342,11 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   setLayout( vLayout );
   vLayout -> activate();
 
+  soloChar = new QTimer( this );
+  connect( soloChar, SIGNAL( timeout() ), this, SLOT( updatetimer() ) );
+
   timer = new QTimer( this );
-  connect( timer, SIGNAL( timeout() ), this, SLOT( updatetimer() ) );
+  connect( timer, SIGNAL( timeout() ), this, SLOT( updateSimProgress() ) );
 
   importThread = new ImportThread( this );
   connect( importThread, SIGNAL( finished() ), this, SLOT( importFinished() ) );
@@ -1008,7 +1011,7 @@ void SC_MainWindow::updatetimer()
   if ( importRunning() )
   {
     updateSimProgress();
-    timer -> start();
+    soloChar -> start();
   }
   else
   {
@@ -1508,7 +1511,7 @@ void SC_MainWindow::importButtonClicked()
   {
   case TAB_BATTLE_NET:
   {
-    timer -> start( 50 );
+    soloChar -> start( 50 );
     startImport( TAB_BATTLE_NET, cmdLine -> commandLineText( TAB_BATTLE_NET ) );
     break;
   }

@@ -1077,6 +1077,7 @@ public:
   QDesktopWidget desktopWidget;
 
   QTimer* timer;
+  QTimer* soloChar;
   ImportThread* importThread;
   SimulateThread* simulateThread;
 
