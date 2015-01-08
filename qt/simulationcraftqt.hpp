@@ -455,7 +455,8 @@ class SC_WelcomeTabWidget: public SC_WebEngineView
   Q_OBJECT
   public:
   SC_WelcomeTabWidget( SC_MainWindow* parent = nullptr );
-  private slots:
+
+private slots:
 #ifndef SC_USE_WEBKIT
   void urlChangedSlot( const QUrl& url )
   {
@@ -470,11 +471,15 @@ class SC_WelcomeTabWidget: public SC_WebEngineView
       page() -> triggerAction( QWebEnginePage::Back );
     }
   }
+public:
+  QString welcome_uri;
+  QTimer* welcome_timer;
+public slots:
+  void welcomeLoadSlot();
 #else
   void linkClickedSlot( const QUrl& url ) { QDesktopServices::openUrl( url ); }
 #endif
 
-  void welcomeLoadSlot( QString, QTimer* );
 };
 
 // ============================================================================

@@ -22,6 +22,22 @@ namespace { // UNNAMED NAMESPACE
 
 const char* SIMC_LOG_FILE = "simc_log.txt";
 
+#if ! defined( SC_USE_WEBKIT )
+struct HtmlOutputFunctor
+{
+  QFile* file_;
+
+  HtmlOutputFunctor( QFile* out_file ) : file_( out_file )
+  { }
+
+  void operator()( QString htmlOutput )
+  {
+    QByteArray out_utf8 = htmlOutput.toUtf8();
+    file_ -> write( out_utf8.constData(), out_utf8.size() );
+    file_ -> close();
+  }
+};
+#endif
 } // UNNAMED NAMESPACE
 
 // ==========================================================================
@@ -383,14 +399,14 @@ void SC_MainWindow::createOptionsTab()
   connect( optionsTab, SIGNAL( armory_region_changed( const QString& ) ), this, SLOT( armoryRegionChanged( const QString& ) ) );
 }
 
-void SC_WelcomeTabWidget::welcomeLoadSlot( QString uri, QTimer* timer )
+void SC_WelcomeTabWidget::welcomeLoadSlot()
 {
-  setUrl( uri );
-  timer -> deleteLater();
+  setUrl( welcome_uri );
+  welcome_timer -> deleteLater();
 }
 
-SC_WelcomeTabWidget::SC_WelcomeTabWidget( SC_MainWindow* parent ):
-SC_WebEngineView( parent )
+SC_WelcomeTabWidget::SC_WelcomeTabWidget( SC_MainWindow* parent ) :
+  SC_WebEngineView( parent ), welcome_uri(), welcome_timer( 0 )
 {
   QString welcomeFile = QDir::currentPath() + "/Welcome.html";
 
@@ -408,12 +424,14 @@ SC_WebEngineView( parent )
   welcomeFile = SC_LINUX_PACKAGING "/Welcome.html";
 #endif
 #ifndef SC_USE_WEBKIT
-  QTimer *timer = new QTimer( this );
-  timer -> setSingleShot( true );
-  timer -> setInterval( 500 );
+  welcome_uri = "file:///" + welcomeFile;
+  welcome_timer = new QTimer( this );
+  welcome_timer -> setSingleShot( true );
+  welcome_timer -> setInterval( 500 );
 
-  connect( timer, SIGNAL( timeout() ), this, SLOT( welcomeLoadSlot( "file:///" + welcomeFile, timer ) ) );
-  timer -> start();
+  connect( welcome_timer, SIGNAL( timeout() ), this, SLOT( welcomeLoadSlot() ) );
+  welcome_timer -> start();
+
   connect( this, SIGNAL( urlChanged(const QUrl& ) ), this, SLOT( urlChangedSlot(const QUrl&) ) );
 #else
   setUrl( "file:///" + welcomeFile );
@@ -1944,21 +1962,6 @@ void SC_SingleResultTab::save_result()
         file.write(static_cast<SC_WebView*>(currentWidget())->toHtml().toUtf8());
         file.close();
 #else
-        struct HtmlOutputFunctor
-        {
-          QFile* file_;
-
-          HtmlOutputFunctor( QFile* out_file ) : file_( out_file )
-          { }
-
-          void operator()( QString htmlOutput )
-          {
-            QByteArray out_utf8 = htmlOutput.toUtf8();
-            file_ -> write( out_utf8.constData(), out_utf8.size() );
-            file_ -> close();
-          }
-        };
-
         static_cast<SC_WebView*>(currentWidget()) -> page() -> toHtml( HtmlOutputFunctor( &file ) );
 #endif /* SC_USE_WEBKIT */
         break;
