@@ -414,6 +414,7 @@ public:
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
+  virtual void      invalidate_cache( cache_e );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
   virtual void      pre_analyze_hook() override;
   virtual void      init_action_list() override;
@@ -5952,7 +5953,8 @@ void priest_t::create_buffs()
   //Set Bonuses
   buffs.empowered_shadows = buff_creator_t( this, "empowered_shadows" )
                             .spell( sets.set( SET_CASTER, T16, B4 ) -> effectN( 1 ).trigger() )
-                            .chance( sets.has_set_bonus( SET_CASTER, T16, B4 ) );
+                            .chance( sets.has_set_bonus( SET_CASTER, T16, B4 ) )
+                            .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.absolution = buff_creator_t( this, "absolution" )
                      .spell( find_spell( 145336 ) )
@@ -6703,6 +6705,18 @@ void priest_t::target_mitigation( school_e school,
   if ( buffs.focused_will -> check() )
   {
     s -> result_amount *= 1.0 + buffs.focused_will -> data().effectN( 1 ).percent() * buffs.focused_will -> check();
+  }
+}
+
+// priest_t::invalidate_cache ===============================================
+
+void priest_t::invalidate_cache( cache_e c )
+{
+  player_t::invalidate_cache( c );
+
+  if ( c == CACHE_MASTERY && mastery_spells.shield_discipline -> ok() )
+  {
+    player_t::invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
   }
 }
 
