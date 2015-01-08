@@ -61,6 +61,7 @@ int main( int argc, char *argv[] )
       (LPCWSTR)L"SimulationCraft", MB_OK );
   }
 #endif
+#if defined SC_WINDOWS
   if ( !isthiswinxp() )
   {
     int msgboxID = MessageBox( NULL,
@@ -68,6 +69,7 @@ int main( int argc, char *argv[] )
       (LPCWSTR)L"SimulationCraft", MB_OK );
     return 0;
   }
+#endif
 
   QLocale::setDefault( QLocale( "C" ) );
   std::locale::global( std::locale( "C" ) );
