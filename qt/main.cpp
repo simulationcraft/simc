@@ -37,7 +37,7 @@ void parse_additional_args( SC_MainWindow& w, QStringList args )
     w.mainTab -> setCurrentTab( TAB_SIMULATE );
   }
 }
-
+#if defined SC_WINDOWS
 bool isthiswinxp()
 {
   OSVERSIONINFO osvi;
@@ -50,6 +50,7 @@ bool isthiswinxp()
 
   return bIsWindowsXPorLater = osvi.dwMajorVersion >= 6;
 }
+#endif
 
 int main( int argc, char *argv[] )
 {
