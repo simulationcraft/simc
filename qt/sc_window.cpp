@@ -399,11 +399,13 @@ void SC_MainWindow::createOptionsTab()
   connect( optionsTab, SIGNAL( armory_region_changed( const QString& ) ), this, SLOT( armoryRegionChanged( const QString& ) ) );
 }
 
+#if ! defined( SC_USE_WEBKIT )
 void SC_WelcomeTabWidget::welcomeLoadSlot()
 {
   setUrl( welcome_uri );
   welcome_timer -> deleteLater();
 }
+#endif
 
 SC_WelcomeTabWidget::SC_WelcomeTabWidget( SC_MainWindow* parent ) :
   SC_WebEngineView( parent )
