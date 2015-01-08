@@ -27,6 +27,9 @@
 #  define SC_WINDOWS
 #  define WIN32_LEAN_AND_MEAN
 #  define VC_EXTRALEAN
+#if !( (NTDDI_VERSION >= NTDDI_VISTA) && !defined(_USING_V110_SDK71_) && !defined(_ATL_XP_TARGETING) )
+#define VS_XP_TARGET //Toolkit targeting.
+#endif
 #  ifndef _CRT_SECURE_NO_WARNINGS
 #    define _CRT_SECURE_NO_WARNINGS
 #  endif

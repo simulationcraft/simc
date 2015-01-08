@@ -6,7 +6,9 @@
 #if defined SC_WINDOWS
 #include <windows.h>
 #include <stdio.h>
+#ifndef VS_XP_TARGET
 #include <VersionHelpers.h>
+#endif
 #endif
 
 /* Parse additional arguments
@@ -36,33 +38,36 @@ void parse_additional_args( SC_MainWindow& w, QStringList args )
   }
 }
 
+bool isthiswinxp()
+{
+  OSVERSIONINFO osvi;
+  BOOL bIsWindowsXPorLater;
+
+  ZeroMemory( &osvi, sizeof( OSVERSIONINFO ) );
+  osvi.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
+
+  GetVersionEx(&osvi);
+
+  return bIsWindowsXPorLater = osvi.dwMajorVersion >= 6;
+}
+
 int main( int argc, char *argv[] )
 {
-#if defined SC_WINDOWS
+#if defined SC_WINDOWS && !defined( VS_XP_TARGET )
   if ( !IsWindows7SP1OrGreater() && IsWindows7OrGreater() )
   {
     int msgboxID = MessageBox( NULL,
       (LPCWSTR)L"SimulationCraft GUI is known to have issues with Windows 7 when Service Pack 1 is not installed.\nThe program will continue to load, but if you run into any problems, please install Service Pack 1.",
       (LPCWSTR)L"SimulationCraft", MB_OK );
   }
-#if defined SC_USE_WEBKIT
-  else if ( !IsWindowsXPSP3OrGreater() )
-  {
-    int msgboxID = MessageBox( NULL,
-      (LPCWSTR)L"SimulationCraft GUI does not support any Operating System before Windows XP Service Pack 3.",
-      (LPCWSTR)L"SimulationCraft", MB_OK );
-    return 0;
-  }
-#else
-  else if ( !IsWindowsVistaOrGreater() )
+#endif
+  if ( !isthiswinxp() )
   {
     int msgboxID = MessageBox( NULL,
       (LPCWSTR)L"SimulationCraft GUI is no longer supported on Windows XP as of January 2015. If you wish to continue using Simulationcraft, you may do so by the command line interface -- simc.exe.",
       (LPCWSTR)L"SimulationCraft", MB_OK );
     return 0;
   }
-#endif
-#endif
 
   QLocale::setDefault( QLocale( "C" ) );
   std::locale::global( std::locale( "C" ) );
