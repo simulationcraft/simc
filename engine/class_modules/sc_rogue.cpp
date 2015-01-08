@@ -4819,6 +4819,7 @@ void rogue_t::init_action_list()
   }
   else if ( specialization() == ROGUE_SUBTLETY )
   {
+    precombat -> add_action( this, "Premeditation" );
     precombat -> add_action( this, "Slice and Dice" );
     precombat -> add_action( "honor_among_thieves,cooldown=2.2,cooldown_stddev=0.1",
                              "Proxy Honor Among Thieves action. Generates Combo Points at a mean rate of 2.2 seconds. Comment out to disable (and use the real Honor Among Thieves)." );
@@ -4839,7 +4840,7 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Slice and Dice", "if=(buff.slice_and_dice.remains<10.8)&buff.slice_and_dice.remains<target.time_to_die&combo_points=((target.time_to_die-buff.slice_and_dice.remains)%6)+1" );
 
     // Shadow Dancing and Vanishing and Marking for the Deathing
-    def -> add_action( this, "Premeditation", "if=combo_points<=4&!(buff.shadow_dance.up&energy>100&combo_points>1)&!buff.subterfuge.up|(buff.subterfuge.up&debuff.find_weakness.up)&time>9" );
+    def -> add_action( this, "Premeditation", "if=combo_points<=4&!(buff.shadow_dance.up&energy>100&combo_points>1)&!buff.subterfuge.up|(buff.subterfuge.up&debuff.find_weakness.up)" );
     def -> add_action( this, find_class_spell( "Garrote" ), "pool_resource", "for_next=1" );
     def -> add_action( this, "Garrote", "if=!ticking&time<1" );
     def -> add_action( "wait,sec=buff.subterfuge.remains-0.1,if=buff.subterfuge.remains>0.5&buff.subterfuge.remains<1.6&time>6" );
@@ -4956,7 +4957,6 @@ void rogue_t::init_base_stats()
   base.attack_power_per_agility  = 1.0;
 
   resources.base[ RESOURCE_ENERGY ] = 100;
-  resources.base[ RESOURCE_COMBO_POINT ] = 5;
   if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
     resources.base[ RESOURCE_ENERGY ] += spec.assassins_resolve -> effectN( 1 ).base_value();
   //if ( sets.has_set_bonus( SET_MELEE, PVP, B2 ) )
