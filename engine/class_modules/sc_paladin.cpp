@@ -4970,7 +4970,8 @@ void paladin_t::create_buffs()
   buffs.vindicators_fury       = buff_creator_t( this, "vindicators_fury", find_spell( 165903 ) )
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                  .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
-                                 .chance( sets.has_set_bonus( PALADIN_RETRIBUTION, PVP, B4 ) );
+                                 .chance( sets.has_set_bonus( PALADIN_RETRIBUTION, PVP, B4 ) )
+                                 .duration( timespan_t::from_seconds( 4 ) );
 }
 
 // ==========================================================================
@@ -6071,7 +6072,10 @@ double paladin_t::composite_player_multiplier( school_e school ) const
 
   // WoD Ret PvP 4-piece buffs everything
   if ( buffs.vindicators_fury -> check() )
-    m *= 1.0 + buffs.vindicators_fury -> value() * buffs.vindicators_fury -> data().effectN( 1 ).percent();
+    if ( wod_hotfix )
+      m *= 1.0 + buffs.vindicators_fury -> value() * 0.02;
+    else
+      m *= 1.0 + buffs.vindicators_fury -> value() * buffs.vindicators_fury -> data().effectN( 1 ).percent();
 
   return m;
 }
@@ -6087,7 +6091,10 @@ double paladin_t::composite_player_heal_multiplier( const action_state_t* s ) co
 
   // WoD Ret PvP 4-piece buffs everything
   if ( buffs.vindicators_fury -> check() )
-    m *= 1.0 + buffs.vindicators_fury -> value() * buffs.vindicators_fury -> data().effectN( 2 ).percent();
+    if ( wod_hotfix )
+      m *= 1.0 + buffs.vindicators_fury -> value() * 0.02;
+    else
+      m *= 1.0 + buffs.vindicators_fury -> value() * buffs.vindicators_fury -> data().effectN( 2 ).percent();
 
   return m;
 
