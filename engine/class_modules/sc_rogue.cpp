@@ -4957,6 +4957,7 @@ void rogue_t::init_base_stats()
   base.attack_power_per_agility  = 1.0;
 
   resources.base[ RESOURCE_ENERGY ] = 100;
+  resources.base[ RESOURCE_COMBO_POINT ] = COMBO_POINT_MAX;
   if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
     resources.base[ RESOURCE_ENERGY ] += spec.assassins_resolve -> effectN( 1 ).base_value();
   //if ( sets.has_set_bonus( SET_MELEE, PVP, B2 ) )
@@ -5204,8 +5205,6 @@ void rogue_t::init_resources( bool force )
   player_t::init_resources( force );
 
   resources.current[ RESOURCE_COMBO_POINT ] = 0;
-  if ( specialization() == ROGUE_SUBTLETY ) // Sub rogues can start with 5 combo points, they just need a healer to cast a few heals before combat.
-    resources.current[ RESOURCE_COMBO_POINT ] = 5;
 }
 
 // rogue_t::init_buffs ======================================================
