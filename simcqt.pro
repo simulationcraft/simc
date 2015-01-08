@@ -25,6 +25,7 @@ CONFIG(qt) {
 
 win32-mingw
 {
+  ! macx {
     # QT 5.4 for MinGW does not yet contain the new Web Engine
     contains ( QT_MAJOR_VERSION , 5 ) {
         greaterThan( QT_MINOR_VERSION, 3 ) {
@@ -34,6 +35,7 @@ win32-mingw
             DEFINES += SC_USE_WEBKIT
         }
     }
+  }
 }
 
 CONFIG(console) {
