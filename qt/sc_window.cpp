@@ -65,6 +65,11 @@ void SC_MainWindow::updateSimProgress()
   if ( importRunning() )
   {
     importSimProgress = static_cast<int>( 100.0 * import_sim -> progress( importSimPhase, &progressBarToolTip ) );
+    if ( timer -> isActive() && importSimProgress == 0 )
+    {
+      soloimport += 2;
+      importSimProgress = static_cast<int>( std::min( soloimport, 100 ) );
+    }
   }
 #if !defined( SC_WINDOWS ) && !defined( SC_OSX )
   // Progress bar text in Linux is displayed inside the progress bar as opposed next to it in Windows
@@ -75,6 +80,7 @@ void SC_MainWindow::updateSimProgress()
     simPhase += progressBarToolTip;
   }
 #endif
+
   cmdLine -> setSimulatingProgress( simProgress, simPhase.c_str(), progressBarToolTip.c_str() );
   cmdLine -> setImportingProgress( importSimProgress, importSimPhase.c_str(), progressBarToolTip.c_str() );
 }
@@ -219,6 +225,7 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   importSimPhase( "%p%" ),
   simProgress( 100 ),
   importSimProgress( 100 ),
+  soloimport( 0 ),
   simResults( 0 ),
   AppDataDir( "." ),
   ResultsDestDir( "." ),
@@ -336,7 +343,7 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   vLayout -> activate();
 
   timer = new QTimer( this );
-  connect( timer, SIGNAL( timeout() ), this, SLOT( updateSimProgress() ) );
+  connect( timer, SIGNAL( timeout() ), this, SLOT( updatetimer() ) );
 
   importThread = new ImportThread( this );
   connect( importThread, SIGNAL( finished() ), this, SLOT( importFinished() ) );
@@ -969,7 +976,6 @@ void SC_MainWindow::startImport( int tab, const QString& url )
   import_sim = initSim();
   importThread -> start( import_sim, tab, url, optionsTab -> get_db_order(), optionsTab -> get_active_spec(), optionsTab -> get_player_role(), optionsTab -> get_api_key() );
   simulateTab -> add_Text( defaultSimulateText, tr( "Importing" ) );
-  timer -> start( 500 );
 }
 
 void SC_MainWindow::stopImport()
@@ -994,6 +1000,19 @@ void SC_MainWindow::itemWasEnqueuedTryToSim()
   else
   {
     cmdLine -> setState( SC_MainWindowCommandLine::SIMULATING_MULTIPLE );
+  }
+}
+
+void SC_MainWindow::updatetimer()
+{
+  if ( importRunning() )
+  {
+    updateSimProgress();
+    timer -> start();
+  }
+  else
+  {
+    soloimport = 0;
   }
 }
 
@@ -1487,7 +1506,12 @@ void SC_MainWindow::importButtonClicked()
 {
   switch ( importTab -> currentTab() )
   {
-  case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine -> commandLineText( TAB_BATTLE_NET ) ); break;
+  case TAB_BATTLE_NET:
+  {
+    timer -> start( 50 );
+    startImport( TAB_BATTLE_NET, cmdLine -> commandLineText( TAB_BATTLE_NET ) );
+    break;
+  }
   case TAB_RECENT:     recentlyClosedTabImport -> restoreCurrentlySelected(); break;
   case TAB_AUTOMATION: startAutomationImport( TAB_AUTOMATION ); break;
   default: break;

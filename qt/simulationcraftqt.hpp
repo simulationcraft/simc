@@ -1093,6 +1093,7 @@ public:
   std::string importSimPhase;
   int simProgress;
   int importSimProgress;
+  int soloimport;
   int simResults;
 
   QString AppDataDir;
@@ -1159,6 +1160,7 @@ protected:
   virtual void closeEvent( QCloseEvent* );
 
 private slots:
+  void updatetimer();
   void itemWasEnqueuedTryToSim();
   void importFinished();
   void simulateFinished( sim_t* );
