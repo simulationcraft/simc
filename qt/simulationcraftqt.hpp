@@ -450,14 +450,28 @@ public:
 // SC_WelcomeTabWidget
 // ============================================================================
 
-class SC_WelcomeTabWidget : public SC_WebEngineView
+class SC_WelcomeTabWidget: public SC_WebEngineView
 {
   Q_OBJECT
-public:
+  public:
   SC_WelcomeTabWidget( SC_MainWindow* parent = nullptr );
-#if defined ( SC_USE_WEBKIT )
-private slots:
- void linkClickedSlot( const QUrl& url ) { QDesktopServices::openUrl( url ); }
+  private slots:
+#ifndef SC_USE_WEBKIT
+  void urlChangedSlot( const QUrl& url )
+  {
+    if ( url.isLocalFile() )
+    {
+      return;
+    }
+    else
+    {
+      page() -> triggerAction( QWebEnginePage::Stop );
+      QDesktopServices::openUrl( url );
+      page() -> triggerAction( QWebEnginePage::Back );
+    }
+  }
+#else
+  void linkClickedSlot( const QUrl& url ) { QDesktopServices::openUrl( url ); }
 #endif
 };
 
@@ -1469,6 +1483,19 @@ private slots:
     {
       url_to_show = "results.html";
     }
+#ifndef SC_USE_WEBKIT 
+    else if ( url.isLocalFile() || url_to_show.contains( "battle.net" ) || url_to_show.contains( " battlenet" ) || url_to_show.contains( "google.com" ) )
+    {
+      return;
+    }
+    else
+    {
+      page() -> triggerAction( QWebEnginePage::Stop );
+      QDesktopServices::openUrl( url_to_show );
+      page() -> triggerAction( QWebEnginePage::Back );
+      return;
+    }
+#endif
     mainWindow -> updateWebView( this );
   }
 

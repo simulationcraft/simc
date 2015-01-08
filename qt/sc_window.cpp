@@ -401,18 +401,17 @@ SC_WebEngineView( parent )
 #elif defined( SC_LINUX_PACKAGING )
   welcomeFile = SC_LINUX_PACKAGING "/Welcome.html";
 #endif
-#if defined( SC_USE_WEBENGINE )
-  QTimer *timer = new QTimer(this);
-  timer->setSingleShot(true);
+#ifndef SC_USE_WEBKIT
+  QTimer *timer = new QTimer( this );
+  timer -> setSingleShot( true );
   timer -> setInterval( 500 );
 
   connect( timer, &QTimer::timeout, [=]() {
-    load(QUrl(welcomeFile));
-    show();
+    setUrl( "file:///" + welcomeFile );
     timer->deleteLater();
   } );
   timer -> start();
-
+  connect( this, SIGNAL( urlChanged(const QUrl& ) ), this, SLOT( urlChangedSlot(const QUrl&) ) );
 #else
   setUrl( "file:///" + welcomeFile );
   page() -> setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
