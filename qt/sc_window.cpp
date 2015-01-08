@@ -383,6 +383,12 @@ void SC_MainWindow::createOptionsTab()
   connect( optionsTab, SIGNAL( armory_region_changed( const QString& ) ), this, SLOT( armoryRegionChanged( const QString& ) ) );
 }
 
+void SC_WelcomeTabWidget::welcomeLoadSlot( QString uri, QTimer* timer )
+{
+  setUrl( uri );
+  timer -> deleteLater();
+}
+
 SC_WelcomeTabWidget::SC_WelcomeTabWidget( SC_MainWindow* parent ):
 SC_WebEngineView( parent )
 {
@@ -406,10 +412,7 @@ SC_WebEngineView( parent )
   timer -> setSingleShot( true );
   timer -> setInterval( 500 );
 
-  connect( timer, &QTimer::timeout, [=]() {
-    setUrl( "file:///" + welcomeFile );
-    timer->deleteLater();
-  } );
+  connect( timer, &QTimer::timeout, SLOT( welcomeLoadSlot( "file:///" + welcomeFile, timer ) ) );
   timer -> start();
   connect( this, SIGNAL( urlChanged(const QUrl& ) ), this, SLOT( urlChangedSlot(const QUrl&) ) );
 #else

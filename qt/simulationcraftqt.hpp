@@ -473,6 +473,8 @@ class SC_WelcomeTabWidget: public SC_WebEngineView
 #else
   void linkClickedSlot( const QUrl& url ) { QDesktopServices::openUrl( url ); }
 #endif
+
+  void welcomeLoadSlot( QString, QTimer* );
 };
 
 // ============================================================================
