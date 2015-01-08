@@ -412,7 +412,7 @@ SC_WebEngineView( parent )
   timer -> setSingleShot( true );
   timer -> setInterval( 500 );
 
-  connect( timer, &QTimer::timeout, SLOT( welcomeLoadSlot( "file:///" + welcomeFile, timer ) ) );
+  connect( timer, SIGNAL( timeout() ), this, SLOT( welcomeLoadSlot( "file:///" + welcomeFile, timer ) ) );
   timer -> start();
   connect( this, SIGNAL( urlChanged(const QUrl& ) ), this, SLOT( urlChangedSlot(const QUrl&) ) );
 #else
