@@ -987,7 +987,11 @@ void SC_MainWindow::importFinished()
     QString label = QString::fromUtf8( importThread -> player -> name_str.c_str() );
     while ( label.size() < 20 ) label += ' ';
     label += QString::fromUtf8( importThread -> player -> origin_str.c_str() );
-
+    if ( label.contains( ".api." ) )
+    { // Strip the s out of https and the api. out of the string so that it is a usable link.
+      label.replace( QString( ".api" ), QString( "" ) );
+      label.replace( QString( "https"), QString( "http" ) );
+    }
     bool found = false;
     for ( int i = 0; i < historyList -> count() && !found; i++ )
     {
