@@ -23,7 +23,8 @@ SC_TextEdit::SC_TextEdit( QWidget* parent, bool accept_drops, bool enable_search
 
   setAcceptDrops( accept_drops );
   setLineWrapMode( QTextEdit::NoWrap );
-
+  setAcceptRichText( false );
+  
   QList< Qt::KeyboardModifier > ctrl;
   ctrl.push_back( Qt::ControlModifier );
   addIgnoreKeyPressEvent( Qt::Key_Tab, ctrl );

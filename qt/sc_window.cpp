@@ -706,7 +706,6 @@ void SC_MainWindow::createOverridesTab()
 {
   overridesText = new SC_TextEdit( this );
   overridesText -> setPlainText( "# User-specified persistent global and player parameters will be set here.\n" );
-  overridesText -> setAcceptRichText( false );
 
   // Set a bigger font size, it's not like people put much into the override tab
   QFont override_font = QFont();
