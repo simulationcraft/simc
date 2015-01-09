@@ -5385,7 +5385,7 @@ void warrior_t::invalidate_cache( cache_e c )
 role_e warrior_t::primary_role() const
 {
   // For now, assume "Default role"/ROLE_NONE wants to be a gladiator dps.
-  if ( specialization() == WARRIOR_PROTECTION && ( player_t::primary_role() == ROLE_TANK || !talents.gladiators_resolve -> ok() ) )
+  if ( specialization() == WARRIOR_PROTECTION && ( player_t::primary_role() == ROLE_TANK || !player_t::find_talent_spell( "Gladiator's Resolve" ) ) )
   {
     return ROLE_TANK;
   }
