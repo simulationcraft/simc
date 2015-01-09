@@ -802,8 +802,6 @@ void SC_OptionsTab::encodeOptions()
   settings.setValue( "plot_target_error", choice.plots_target_error -> currentText() );
   settings.setValue( "plot_iterations", choice.plots_iterations -> currentText() );
 
-  QString encoded;
-
   store_button_group( settings, "buff_buttons", buffsButtonGroup );
   store_button_group( settings, "debuff_buttons", debuffsButtonGroup );
   store_button_group( settings, "scaling_buttons", scalingButtonGroup );

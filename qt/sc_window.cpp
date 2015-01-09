@@ -88,11 +88,14 @@ void SC_MainWindow::updateSimProgress()
 void SC_MainWindow::loadHistory()
 {
   QSettings settings;
-  
+  QString saveApiKey;
+  saveApiKey = settings.value( "options/apikey" ).toString();
+
   QVariant gui_version_number = settings.value( "gui/gui_version_number", 0 );
   if ( gui_version_number.toInt() < SC_GUI_HISTORY_VERSION )
   {
     settings.clear();
+    settings.setValue( "options/apikey", saveApiKey );
     QMessageBox msgBox;
     msgBox.setText( "We have reset your configuration settings due to major changes to the GUI" );
     msgBox.exec();
