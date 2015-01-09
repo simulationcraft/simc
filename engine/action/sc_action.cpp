@@ -1899,8 +1899,11 @@ void action_t::init()
       {
         if ( this -> travel_speed > 0 || this -> base_execute_time > timespan_t::zero() )
         {
-          player -> first_cast = false;
-          player -> precombat_action_list.push_back( this );
+          if ( player -> find_talent_spell( this -> name() ) )
+          {
+            player -> first_cast = false;
+            player -> precombat_action_list.push_back( this );
+          }
         }
         else
           sim -> errorf( "Player %s attempted to add harmful action %s to precombat action list. Only one spell with travel time/cast time may be cast here.", player -> name(), name() );
