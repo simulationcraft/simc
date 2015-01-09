@@ -4932,7 +4932,10 @@ void mage_t::apl_precombat()
   else if ( specialization() == MAGE_FIRE )
     precombat -> add_action( this, "Pyroblast" );
   else
+  {
+    precombat -> add_talent( this, "Frost Bomb" );
     precombat -> add_action( this, "Frostbolt" );
+  }
 }
 
 
