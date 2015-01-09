@@ -4978,9 +4978,6 @@ void warrior_t::init_action_list()
     }
   }
 
-  if ( gladiator == false && specialization() == WARRIOR_PROTECTION )
-    role = ROLE_TANK;
-
   apl_precombat();
 
   switch ( specialization() )
