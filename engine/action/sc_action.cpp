@@ -1891,25 +1891,16 @@ void action_t::init()
     update_flags &= ~STATE_HASTE;
   }
 
-  if ( ! ( background || sequence ) && ( pre_combat || ( action_list && action_list -> name_str == "precombat" ) ) )
+  if ( !(background || sequence) && (pre_combat || (action_list && action_list -> name_str == "precombat")) )
   {
     if ( harmful )
     {
-      if ( player -> first_cast == true )
+      if ( this -> travel_speed > 0 || this -> base_execute_time > timespan_t::zero() )
       {
-        if ( this -> travel_speed > 0 || this -> base_execute_time > timespan_t::zero() )
-        {
-          if ( player -> find_talent_spell( this -> name() ) )
-          {
-            player -> first_cast = false;
-            player -> precombat_action_list.push_back( this );
-          }
-        }
-        else
-          sim -> errorf( "Player %s attempted to add harmful action %s to precombat action list. Only one spell with travel time/cast time may be cast here.", player -> name(), name() );
+        player -> precombat_action_list.push_back( this );
       }
       else
-        sim -> errorf( "Player %s attempted to add harmful action %s to precombat action list. A maximum of one harmful spell may be cast here.", player -> name(), name() );
+        sim -> errorf( "Player %s attempted to add harmful action %s to precombat action list. Only spells with travel time/cast time may be cast here.", player -> name(), name() );
     }
     else
       player -> precombat_action_list.push_back( this );

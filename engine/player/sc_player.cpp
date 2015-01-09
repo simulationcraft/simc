@@ -3139,8 +3139,24 @@ void player_t::combat_begin()
       if ( precombat_action_list[ i ] -> ready() )
       {
         action_t* action = precombat_action_list[ i ];
-        action -> execute();
-        sequence_add( action, action -> target, sim -> current_time() );
+        if ( action -> harmful )
+        {
+          if ( first_cast )
+          {
+            action -> execute();
+            sequence_add( action, action -> target, sim -> current_time() );
+            first_cast = false;
+          }
+          else if ( sim -> debug )
+          {
+            sim -> out_debug.printf( "Player %s attempting to cast multiple harmful spells precombat.", name() );
+          }
+        }
+        else
+        {
+          action -> execute();
+          sequence_add( action, action -> target, sim -> current_time() );
+        }
       }
     }
   }

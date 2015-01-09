@@ -4920,7 +4920,6 @@ void mage_t::apl_precombat()
   precombat -> add_talent( this, "Rune of Power" );
   precombat -> add_talent( this, "Mirror Image" );
 
-
   //Potions
   if ( sim -> allow_potions && level >= 80 )
   {
@@ -4932,10 +4931,7 @@ void mage_t::apl_precombat()
   else if ( specialization() == MAGE_FIRE )
     precombat -> add_action( this, "Pyroblast" );
   else
-  {
-    precombat -> add_talent( this, "Frost Bomb" );
     precombat -> add_action( this, "Frostbolt" );
-  }
 }
 
 
