@@ -4978,6 +4978,9 @@ void warrior_t::init_action_list()
     }
   }
 
+  if ( gladiator == false && specialization() == WARRIOR_PROTECTION )
+    role = ROLE_TANK;
+
   apl_precombat();
 
   switch ( specialization() )
@@ -5385,7 +5388,7 @@ void warrior_t::invalidate_cache( cache_e c )
 role_e warrior_t::primary_role() const
 {
   // For now, assume "Default role"/ROLE_NONE wants to be a gladiator dps.
-  if ( specialization() == WARRIOR_PROTECTION && player_t::primary_role() == ROLE_TANK )
+  if ( specialization() == WARRIOR_PROTECTION && ( player_t::primary_role() == ROLE_TANK || !talents.gladiators_resolve -> ok() ) )
   {
     return ROLE_TANK;
   }
