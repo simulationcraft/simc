@@ -1874,14 +1874,14 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
 
 bool print_html_sample_sequence_resource( const player_t* p, const player_collected_data_t::action_sequence_data_t* data, resource_e r )
 {
+  if ( r == RESOURCE_ECLIPSE && p -> specialization() == DRUID_BALANCE ) // Eclipse dips into the negatives.
+    return true;
+
   if ( data -> resource_snapshot[ r ] < 0 )
     return false;
 
   if ( p -> role == ROLE_TANK && r == RESOURCE_HEALTH )
       return true;
-
-  if ( r == RESOURCE_ECLIPSE && p -> specialization() == DRUID_BALANCE ) // Eclipse currently dips into the negatives.
-    return true;
 
   if ( p -> resources.is_infinite( r ) )
     return false;
