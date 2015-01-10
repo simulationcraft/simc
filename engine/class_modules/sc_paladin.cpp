@@ -4865,6 +4865,7 @@ void paladin_t::init_scaling()
   // Only Holy cares about INT/SPI/SP.
   scales_with[ STAT_INTELLECT   ] = ( tree == PALADIN_HOLY );
   scales_with[ STAT_SPELL_POWER ] = ( tree == PALADIN_HOLY );
+  scales_with[ STAT_BONUS_ARMOR    ] = ( tree == PALADIN_PROTECTION );
 
   scales_with[STAT_AGILITY] = false;
 }

@@ -4830,7 +4830,7 @@ void warrior_t::init_scaling()
   if ( specialization() == WARRIOR_FURY )
     scales_with[STAT_WEAPON_OFFHAND_DPS] = true;
 
-  if ( talents.gladiators_resolve -> ok() && primary_role() == ROLE_ATTACK )
+  if ( specialization() == WARRIOR_PROTECTION )
     scales_with[STAT_BONUS_ARMOR] = true;
 
   scales_with[STAT_AGILITY] = false;
