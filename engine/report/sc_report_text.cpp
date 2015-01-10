@@ -720,10 +720,12 @@ void print_text_scale_factors( FILE* file, player_t* p, player_processed_report_
 
   util::fprintf( file, "\n" );
 
+#if LOOTRANK_ENABLED == 1
   std::array<std::string, SCALE_METRIC_MAX> lootrank       = ri.gear_weights_lootrank_link;
-  std::array<std::string, SCALE_METRIC_MAX> wowhead_std    = ri.gear_weights_wowhead_std_link;
-
   simplify_html( lootrank[ sm ]  );
+#endif
+
+  std::array<std::string, SCALE_METRIC_MAX> wowhead_std    = ri.gear_weights_wowhead_std_link;
   simplify_html( wowhead_std[ sm ] );
 
   util::fprintf( file, "    Wowhead : %s\n", wowhead_std[ sm ].c_str() );
