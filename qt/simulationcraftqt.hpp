@@ -1495,7 +1495,7 @@ private slots:
       url_to_show = "results.html";
     }
 #ifndef SC_USE_WEBKIT 
-    else if ( url.isLocalFile() || url_to_show.contains( "battle.net" ) || url_to_show.contains( " battlenet" ) || url_to_show.contains( "google.com" ) )
+    else if ( url.isLocalFile() || url_to_show.contains( "battle.net" ) || url_to_show.contains( "battlenet" ) || url_to_show.contains( "google.com" ) )
     {
       return;
     }
@@ -1519,7 +1519,7 @@ private slots:
     // AMR and Lootrank links are nice to load externally too so we don't lose sim results
     // In general, we err towards opening things externally because we are not Mozilla
     // google.com is needed for our help tab; battle.net (us/eu) and battlenet (china) cover armory
-    if ( url.isLocalFile() || clickedurl.contains( "battle.net" ) || clickedurl.contains( " battlenet" ) || clickedurl.contains( "google.com" ) )
+    if ( url.isLocalFile() || clickedurl.contains( "battle.net" ) || clickedurl.contains( "battlenet" ) || clickedurl.contains( "google.com" ) )
       load( url );
     else
       QDesktopServices::openUrl( url );
