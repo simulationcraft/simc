@@ -1,5 +1,5 @@
+SimulationCraft 603-23 for World of Warcraft 6.0.3 Live (build level 19342)
 
-SimulationCraft 603-12 for World of Warcraft 6.0.3 Live (build level 19116)
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 Spell Level      : 1
@@ -113,7 +113,7 @@ Spell Level      : 46
 Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Sanctity of Battle (25956), Holy Avenger (105809), Glyph of Mass Exorcism (122028), Hotfix Passive (137026), Lucidity (137288), Exorcism (138162)
+Affecting spells : Sanctity of Battle (25956), Holy Avenger (105809), Glyph of Mass Exorcism (122028), Lucidity (137288), Exorcism (138162)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -122,7 +122,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=365)      : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.40520
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.68600
 Description      : Blasts the target with Holy Light, causing $s1 Holy damage and generating 1 Holy Power.
 
 Your autoattacks have a $87138h% chance of resetting the cooldown of your Exorcism.
@@ -294,7 +294,7 @@ Charges          : 0 (120 seconds cooldown)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Clemency (105622), Lucidity (137288), Absolve (140333), Enhanced Hand of Sacrifice (157493), Item - Paladin WoD PvP Holy 4P Bonus (165881)
+Affecting spells : Clemency (105622), Lucidity (137288), Absolve (140333), Enhanced Hand of Sacrifice (157493), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x.x.... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -468,7 +468,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=10981)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=11.04, dl=0.115) | SP Coefficient: 3.00000
+                   Base Value: 1 | Scaled Value: 0 (avg=11.04, dl=0.115) | SP Coefficient: 2.40000
 Description      : Heals a friendly target for $s1. $?s57955[In addition, the value of your next heal on the target within $54957d will be increased by $57955s1%.][]
 
 Name             : Repentance (id=20066) [Spell Family (10)] 
@@ -653,7 +653,7 @@ Spell Level      : 5
 Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Sanctity of Battle (25956), Proc Mana Regen (38334), Sword of Light (53503), Guarded by the Light (53592), Glyph of Double Jeopardy (54922), Judgment Range Increase (61776), Item - Paladin T10 Retribution 4P Bonus (70762), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Item - Icecrown 25 Heroic Dagger Proc (71892), Item - Proc Mastery Rating (95878), Holy Avenger (105809), Holy Insight (112859), Sanctified Wrath (114232), Glyph of Double Jeopardy (121027), Hotfix Passive (137026), Lucidity (137288), Exorcism (138162), Glyph of Judgment (159592)
+Affecting spells : Sanctity of Battle (25956), Proc Mana Regen (38334), Sword of Light (53503), Guarded by the Light (53592), Glyph of Double Jeopardy (54922), Judgment Range Increase (61776), Item - Paladin T10 Retribution 4P Bonus (70762), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Item - Icecrown 25 Heroic Dagger Proc (71892), Item - Proc Mastery Rating (95878), Holy Avenger (105809), Holy Insight (112859), Sanctified Wrath (114232), Glyph of Double Jeopardy (121027), Lucidity (137288), Exorcism (138162), Glyph of Judgment (159592)
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -662,7 +662,7 @@ Attributes       : ........ ........ x.x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=11347)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.48000 | AP Coefficient: 0.58000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.57600 | AP Coefficient: 0.69600
 Description      : Causes $s1 Holy damage $?s105424[and generates 1 Holy Power]?s85256[and generates 1 Holy Power][].  Requires an active Seal to cast.
 
 Name             : Holy Shock (id=20473) [Spell Family (10)] 
@@ -744,7 +744,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Cooldown         : 6 seconds
-Affecting spells : Sanctity of Battle (25956), Avenging Wrath (31884), Holy Avenger (105809), Sanctified Wrath (114232), Hotfix Passive (137026), Lucidity (137288), Exorcism (138162), Empowered Hammer of Wrath (157496), Crusader's Fury (165442)
+Affecting spells : Sanctity of Battle (25956), Avenging Wrath (31884), Holy Avenger (105809), Sanctified Wrath (114232), Lucidity (137288), Exorcism (138162), Empowered Hammer of Wrath (157496), Crusader's Fury (165442)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
@@ -753,7 +753,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=14488)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.69000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000
 Description      : Hurls a magical hammer that strikes an enemy for $s1 Holy damage$?s53503[ and generates a charge of Holy Power][]. Only usable on enemies that have 20% or less health$?s53503[ or during Avenging Wrath][].
 
 Name             : Forbearance (id=25771) [Spell Family (10)] 
@@ -880,7 +880,7 @@ Spell Level      : 34
 GCD              : 1.5 seconds
 Duration         : 9 seconds
 Cooldown         : 9 seconds
-Affecting spells : Sanctity of Battle (25956), Glyph of Consecration (54928), Hotfix Passive (137026), Lucidity (137288), Improved Consecration (157486)
+Affecting spells : Sanctity of Battle (25956), Glyph of Consecration (54928), Lucidity (137288), Improved Consecration (157486)
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -1096,7 +1096,7 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Duration         : 3 seconds
 Cooldown         : 15 seconds
-Affecting spells : Sanctity of Battle (25956), Glyph of Focused Shield (54930), Grand Crusader (85416), Hotfix Passive (137026), Empowered Avenger's Shield (157485)
+Affecting spells : Sanctity of Battle (25956), Glyph of Focused Shield (54930), Grand Crusader (85416), Empowered Avenger's Shield (157485)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -1105,7 +1105,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=21607)    : School Damage: holy (2)
-                   Base Value: 0 | Scaled Value: 1 - 3 (avg=0) | Value Range: 3 | AP Coefficient: 1.60000
+                   Base Value: 0 | Scaled Value: 1 - 3 (avg=0) | Value Range: 3 | AP Coefficient: 1.68000
 #2 (id=135932)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.63500
 #3 (id=135933)   : Apply Aura (6) | Silence (27)
@@ -1155,7 +1155,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 4.5 seconds
-Affecting spells : Sanctity of Battle (25956), Improved Crusader Strike (44300), Sword of Light (53503), Guarded by the Light (53592), Item - Paladin T13 Retribution 2P Bonus (Judgment) (105765), Holy Avenger (105809), Hotfix Passive (137026)
+Affecting spells : Sanctity of Battle (25956), Improved Crusader Strike (44300), Sword of Light (53503), Guarded by the Light (53592), Item - Paladin T13 Retribution 2P Bonus (Judgment) (105765), Holy Avenger (105809), 
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1166,7 +1166,7 @@ Effects          :
 #1 (id=25579)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=25580)    : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1 (avg=0)
+                   Base Value: 120 | Scaled Value: 1.2 (avg=0)
 #3 (id=91108)    : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: holy_power
 Description      : $?s85673|s85256[An instant strike that causes $sw2 Physical damage and grants 1 Holy Power.][An instant strike that causes $sw2 Physical damage.]
@@ -1296,7 +1296,7 @@ Class            : Retribution Paladin
 Resource         : 3 Holy Power
 Spell Level      : 34
 GCD              : 1.5 seconds
-Affecting spells : Sanctity of Battle (25956), Divine Purpose (90174), Hotfix Passive (137026), Exorcism (138162), Divine Crusader (144595), Final Verdict (157048), 
+Affecting spells : Sanctity of Battle (25956), Divine Purpose (90174), Exorcism (138162), Divine Crusader (144595), Final Verdict (157048), 
 Attributes       : ........ ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -1305,7 +1305,7 @@ Attributes       : ........ ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=157591)   : Weapon Damage% (31)
-                   Base Value: 65 | Scaled Value: 0.65 (avg=0) | Radius: 0 - 8 yards
+                   Base Value: 80 | Scaled Value: 0.8 (avg=0) | Radius: 0 - 8 yards
 #2 (id=171269)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
 Description      : Deals $sw1 Holy damage to all enemies within $A1 yards. $?s63220[Using Divine Storm will also heal you for $115515s1% of your maximum health.][]
@@ -1479,13 +1479,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 88263
 Description      : Hammer the current target for $53595sw1 Physical damage, causing a wave of light that hits all other targets within $88263A1 yards for $88263sw1 Holy damage. Grants 1 Holy Power.
 
-Name             : Shield of the Righteous (id=53600) [Spell Family (10)] 
+Name             : Shield of the Righteous (Active Mitigation) (id=53600) [Spell Family (10)] 
 Class            : Protection Paladin
 Resource         : 3 Holy Power
 Spell Level      : 40
 Range            : 5 yards
 Cooldown         : 1.5 seconds
-Affecting spells : Sanctity of Battle (25956), Glyph of the Alabaster Shield (63222), Divine Purpose (90174), Alabaster Shield (121467), Hotfix Passive (137026)
+Affecting spells : Sanctity of Battle (25956), Glyph of the Alabaster Shield (63222), Divine Purpose (90174), Alabaster Shield (121467)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1494,8 +1494,8 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=46256)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.92000
-Description      : Instantly slam the target with your shield, causing $s1 Holy damage, reducing the physical damage you take by ${$clamp($132403m1*-1,20,80)}% for $132403d, and causing Bastion of Glory.
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.00000
+Description      : Instantly slam the target with your shield, causing $s1 Holy damage, reducing the physical damage you take by ${$clamp($132403m1,25,80)}% for $132403d, and causing Bastion of Glory.
 
 |cFFFFFFFFBastion of Glory|r
 $@spelldesc114637
@@ -2680,7 +2680,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75000 | Misc Value: 8
                    Affected Spells: Bastion of Glory (114637)
 #4 (id=162567)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: -0.75000 | Misc Value: 3
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: -0.50000 | Misc Value: 3
                    Affected Spells: Shield of the Righteous (132403)
 #5 (id=217536)   : Apply Aura (6) | Unknown effect sub type (166)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
@@ -2712,7 +2712,7 @@ Name             : Consecration (id=81297) [Spell Family (10)]
 Class            : Paladin
 Spell Level      : 6
 Range            : 50000 yards
-Affecting spells : Sanctity of Battle (25956), Hotfix Passive (137026), Lucidity (137288), Improved Consecration (157486)
+Affecting spells : Sanctity of Battle (25956), Lucidity (137288), Improved Consecration (157486)
 Attributes       : ........ ........ ........ x..x....   ...x...x ........ ........ ........ 
                  : ........ ......x. ...x.... ....x.x.   x....... ........ ........ .x....x. 
                  : ........ ........ ........ ........   ...x.... ..x..... .xx..... ..x..... 
@@ -2721,7 +2721,7 @@ Attributes       : ........ ........ ........ x..x....   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=81788)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.13200 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.13900 | Radius: 0 - 8 yards
 Description      : Deals $s1 Holy damage to enemies within $A1 yards.
 
 Name             : Reinforced Bio-Optic Killshades (id=81714) 
@@ -2809,7 +2809,7 @@ Name             : Consecration (id=82366) [Spell Family (10), Hidden]
 Class            : Paladin
 Spell Level      : 1
 Duration         : 10 seconds
-Affecting spells : Sanctity of Battle (25956), Hotfix Passive (137026), Lucidity (137288), Improved Consecration (157486)
+Affecting spells : Sanctity of Battle (25956), Lucidity (137288), Improved Consecration (157486)
 Attributes       : .......x x....... x....... ........   ...x...x ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2840,7 +2840,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=86072)    : Apply Aura (6) | Proc Trigger Spell: Grand Crusader (42)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Trigger Spell: 85416
-Description      : When you avoid a melee attack you have a $h% chance of refreshing the cooldown on your next Avenger's Shield and causing it to generate 1 Holy Power.
+Description      : When you avoid a melee attack, or use Crusader Strike or Hammer of the Righteous, you have a $h% chance of refreshing the cooldown on your next Avenger's Shield and causing it to generate 1 Holy Power.
 
 Name             : Light of Dawn (id=85222) [Spell Family (10)] 
 Class            : Holy Paladin
@@ -2866,7 +2866,7 @@ Resource         : 3 Holy Power
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Sanctity of Battle (25956), Glyph of Divine Storm (63220), Divine Purpose (90174), Item - Paladin T13 Retribution 4P Bonus (Zealotry) (105820), Item - Paladin T14 Retribution 2P Bonus (123108), Hotfix Passive (137026)
+Affecting spells : Sanctity of Battle (25956), Glyph of Divine Storm (63220), Divine Purpose (90174), Item - Paladin T13 Retribution 4P Bonus (Zealotry) (105820), Item - Paladin T14 Retribution 2P Bonus (123108)
 Attributes       : ........ ........ x.x..... ........   ....x... .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2875,7 +2875,7 @@ Attributes       : ........ ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=86389)    : Weapon Damage% (31)
-                   Base Value: 200 | Scaled Value: 2 (avg=0)
+                   Base Value: 240 | Scaled Value: 2.4 (avg=0)
 #2 (id=131736)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 Description      : A powerful weapon strike that deals $sw1 Physical damage.
@@ -3654,11 +3654,17 @@ Effects          :
                    Affected Spells: Judgment (20271)
 #9 (id=200187)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50
-                   Affected Spells: Light of Dawn (85222), Word of Glory (85673), Eternal Flame (114163), Word of Glory (130551), Word of Glory (136494), Eternal Flame (156322)
+                   Affected Spells: Light of Dawn (85222)
 #10 (id=200188)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 22
                    Affected Spells: Eternal Flame (114163), Eternal Flame (156322)
-Description      : Increases the effectiveness of your healing by $s6% and your Word of Glory, Eternal Flame and Light of Dawn by $s9%.
+#11 (id=260743)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 25 | Scaled Value: 25
+                   Affected Spells: Flash of Light (19750)
+#12 (id=260744)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 20 | Scaled Value: 20
+                   Affected Spells: Word of Glory (85673), Eternal Flame (114163), Word of Glory (130551), Word of Glory (136494)
+Description      : Increases the effectiveness of all your healing by $s6%, your Word of Glory by $s12%, and Light of Dawn by $s9%.
 
 Increases your mana pool by $s1%.
 
@@ -3709,7 +3715,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 0.5 yards/sec
 Cooldown         : 60 seconds
-Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3759,7 +3765,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=127310)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.64591
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.30000
 #2 (id=167446)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 #3 (id=240995)   : Dummy (3)
@@ -4298,7 +4304,7 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Duration         : 3 seconds
 Cooldown         : 15 seconds
-Affecting spells : Sanctity of Battle (25956), Glyph of Final Wrath (54935), Hotfix Passive (137026), Sanctified Wrath (171648), 
+Affecting spells : Sanctity of Battle (25956), Glyph of Final Wrath (54935), Sanctified Wrath (171648), 
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4309,7 +4315,7 @@ Effects          :
 #1 (id=135938)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards
 #2 (id=136087)   : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.92000 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000 | Radius: 0 - 10 yards
 Description      : Sends bolts of power in all directions, causing $s2 Holy damage $?s115738[to your target][divided among all enemies within $A1 yards], stunning Demons$?s54923[, Aberrations, Dragonkin, Elementals][] and Undead for $d.$?s171648[ Generates $171648s2 Holy Power.][]$?s54935[
 
 Causes $54935s1% additional damage to targets with less than 20% health.][]
@@ -4464,7 +4470,7 @@ Spell Level      : 46
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Sanctity of Battle (25956), Holy Avenger (105809), Glyph of Mass Exorcism (122028), Hotfix Passive (137026), Lucidity (137288), Exorcism (138162)
+Affecting spells : Sanctity of Battle (25956), Holy Avenger (105809), Glyph of Mass Exorcism (122028), Lucidity (137288), Exorcism (138162)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4475,7 +4481,7 @@ Effects          :
 #1 (id=153367)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=153368)   : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.40520 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.68600 | Radius: 0 - 8 yards
 Description      : Forcefully attempt to expel the evil from the target with a blast of Holy Light. Causes $s2 Holy damage to the target and 25% of that to other enemies within $A2 yards and generates a charge of Holy Power.
 
 Name             : Light's Hammer (Talent) (id=122773) [Spell Family (10)] 
@@ -4565,7 +4571,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=167920)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=4.85, dl=0.108) | SP Coefficient: 2.64591
+                   Base Value: 1 | Scaled Value: 0 (avg=4.85, dl=0.108) | SP Coefficient: 3.30000
 Description      : $@spelldesc85673
 
 Name             : Harsh Word (id=130552) [Scaling Spell (6), Spell Family (10)] 
@@ -4582,7 +4588,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=167921)   : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=3.73, dl=0.108) | SP Coefficient: 2.76300
+                   Base Value: 1 | Scaled Value: 0 (avg=3.73, dl=0.108) | SP Coefficient: 3.30000
 Description      : $@spelldesc85673
 
 Name             : Shield of the Righteous (id=132403) [Spell Family (10)] 
@@ -4599,7 +4605,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=171373)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 0x1
+                   Base Value: -25 | Scaled Value: -25 | Misc Value: 0x1
 Description      : $@spelldesc53600
 Tooltip          : Physical damage taken reduced by $w1%.
 
@@ -4637,20 +4643,38 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179710)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 5 | Scaled Value: 5
-                   Affected Spells: Consecration (26573), Avenger's Shield (31935), Shield of the Righteous (53600), Consecration (81297), Consecration (82366), Holy Wrath (119072)
-#2 (id=191096)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Exorcism (879), Judgment (20271), Hammer of Wrath (24275), Crusader Strike (35395), Divine Storm (53385), Templar's Verdict (85256), Exorcism (122032), Final Verdict (157048)
+#1 (id=179710)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#2 (id=191096)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
 #3 (id=191097)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #4 (id=191098)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #5 (id=191099)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
+#6 (id=260670)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#7 (id=260671)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#8 (id=260672)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#9 (id=260673)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#10 (id=260674)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#11 (id=260675)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#12 (id=260676)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#13 (id=260677)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#14 (id=260678)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#15 (id=260679)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
 
-Name             : Hotfix Passive (id=137027) [Passive, Hidden] 
+Name             : Hotfix Passive (id=137027) [Spell Family (10), Passive, Hidden] 
 Class            : Retribution Paladin
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4670,8 +4694,28 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #5 (id=191095)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
+#6 (id=260907)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#7 (id=260908)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#8 (id=260909)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#9 (id=260910)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#10 (id=260911)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#11 (id=260912)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#12 (id=260913)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#13 (id=260914)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#14 (id=260915)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#15 (id=260916)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
 
-Name             : Hotfix Passive (id=137028) [Passive, Hidden] 
+Name             : Hotfix Passive (id=137028) [Spell Family (10), Passive, Hidden] 
 Class            : Protection Paladin
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4690,6 +4734,26 @@ Effects          :
 #4 (id=191090)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #5 (id=191091)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#6 (id=260917)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#7 (id=260918)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#8 (id=260919)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#9 (id=260920)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#10 (id=260921)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#11 (id=260922)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#12 (id=260923)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#13 (id=260924)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#14 (id=260925)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#15 (id=260926)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 
 Name             : Hotfix Passive (id=137029) [Passive, Hidden] 
@@ -4711,6 +4775,26 @@ Effects          :
 #4 (id=191086)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #5 (id=191087)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#6 (id=260927)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#7 (id=260928)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#8 (id=260929)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#9 (id=260930)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#10 (id=260931)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#11 (id=260932)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#12 (id=260933)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#13 (id=260934)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#14 (id=260935)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#15 (id=260936)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 
 Name             : Absolve (id=140333) [Spell Family (10), Passive] 
@@ -5031,8 +5115,6 @@ Effects          :
                    Base Value: 1000 | Scaled Value: 999.802 (avg=3.83066) | Misc Value: 1913523968
 #2 (id=218844)   : Apply Aura (6) | Unknown effect sub type (465)
                    Base Value: 1500 | Scaled Value: 999.802 (avg=3.83066)
-#3 (id=257238)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 1000 | Scaled Value: 999.802 (avg=3.83066) | Misc Value: 8
 Description      : The Light temporarily magnifies your power, increasing your Haste, Critical Strike, Mastery, Multistrike, Versatility, and Bonus Armor by $s1 for $d.
 Tooltip          : Haste, Critical Strike, Mastery, Multistrike, Versatility, and Bonus Armor increased by $s1.
 
@@ -5241,7 +5323,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
-Affecting spells : Sanctity of Battle (25956), Glyph of Divine Storm (63220), Divine Purpose (90174), Item - Paladin T13 Retribution 4P Bonus (Zealotry) (105820), Item - Paladin T14 Retribution 2P Bonus (123108), Hotfix Passive (137026)
+Affecting spells : Sanctity of Battle (25956), Glyph of Divine Storm (63220), Divine Purpose (90174), Item - Paladin T13 Retribution 4P Bonus (Zealotry) (105820), Item - Paladin T14 Retribution 2P Bonus (123108)
 Attributes       : ........ ........ x.x..... ........   ....x... .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5250,23 +5332,23 @@ Attributes       : ........ ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=218849)   : Weapon Damage% (31)
-                   Base Value: 200 | Scaled Value: 2 (avg=0)
+                   Base Value: 240 | Scaled Value: 2.4 (avg=0)
 #2 (id=218850)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=243842)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 100 | Scaled Value: 100
                    Affected Spells: Divine Storm (53385)
 #4 (id=246310)   : Apply Aura (6) | Add Percent Modifier: Spell Radius (108)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 6
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 6
                    Affected Spells: Divine Storm (53385)
 #5 (id=253778)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 1 yards
 Description      : Empowers your weapon with holy energy, and performs a devastating strike, dealing $sw1 Holy damage.
 
-Also increases the damage and radius of your next Divine Storm by $s3%.
+Also increases the damage of your next Divine Storm by $s3%, and increases its radius by $s4%.
 
 Replaces Templar's Verdict.
-Tooltip          : Damage and radius of your next Divine Storm increased by $s3%.
+Tooltip          : Damage of your next Divine Storm increased by $s3%, and increases its radius by $s4%.
 
 Name             : Holy Shield (id=157122) 
 Class            : Paladin
@@ -5961,7 +6043,7 @@ Name             : Item - WoD PvP Set Bonus Tank PBAOE Target Finder (id=171431)
 Class            : Paladin
 Attributes       : .......x ........ ........ ........   ........ ........ ...x.... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ x....... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ........ 

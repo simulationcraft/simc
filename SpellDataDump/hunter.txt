@@ -1,5 +1,5 @@
+SimulationCraft 603-23 for World of Warcraft 6.0.3 Live (build level 19342)
 
-SimulationCraft 603-12 for World of Warcraft 6.0.3 Live (build level 19116)
 Name             : Mend Pet (id=136) [Scaling Spell (3), Spell Family (9)] 
 Class            : Hunter
 Spell Level      : 16
@@ -227,7 +227,7 @@ Spell Level      : 24
 Range            : 40 yards
 GCD              : 1 seconds
 Velocity         : 30 yards/sec
-Affecting spells : Freezing Trap (3355), Refocus (24531), Thrill of the Hunt (34720), Mortal Shots (36413), Shot Power (37508), Camouflage (51755), Bombardment (82921), Camouflage (119450), Hotfix Passive (137014), Item - Hunter T16 2P Bonus (144637), Sniper Training (168811), Guide: Sharpshooting (178549)
+Affecting spells : Freezing Trap (3355), Refocus (24531), Thrill of the Hunt (34720), Mortal Shots (36413), Shot Power (37508), Camouflage (51755), Bombardment (82921), Camouflage (119450), Item - Hunter T16 2P Bonus (144637), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -239,7 +239,7 @@ Effects          :
 #1 (id=800)      : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
 #2 (id=101372)   : Weapon Damage% (31)
-                   Base Value: 40 | Scaled Value: 0.4 (avg=0) | Radius: 0 - 8 yards
+                   Base Value: 55 | Scaled Value: 0.55 (avg=0) | Radius: 0 - 8 yards
 Description      : Fires several missiles, hitting your current target and all enemies within $A2 yards for $sw2 Physical damage.
 
 Name             : Arcane Shot (id=3044) [Scaling Spell (3), Spell Family (9)] 
@@ -250,7 +250,7 @@ Range            : 40 yards
 Cast Time        : Ranged Shot
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
-Affecting spells : Freezing Trap (3355), Thrill of the Hunt (34720), Mortal Shots (36413), Shot Power (37508), Camouflage (51755), Camouflage (119450), Hotfix Passive (137014), Item - Hunter T16 2P Bonus (144637), Lone Wolf (155228), Guide: Sharpshooting (178549)
+Affecting spells : Freezing Trap (3355), Thrill of the Hunt (34720), Mortal Shots (36413), Shot Power (37508), Camouflage (51755), Camouflage (119450), Item - Hunter T16 2P Bonus (144637), Lone Wolf (155228), Guide: Sharpshooting (178549)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -262,7 +262,7 @@ Effects          :
 #1 (id=909)      : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 0 (avg=1.85)
 #2 (id=101528)   : Weapon Damage% (31)
-                   Base Value: 110 | Scaled Value: 1.1 (avg=0)
+                   Base Value: 125 | Scaled Value: 1.25 (avg=0)
 Description      : An instant shot that causes $sw2 Arcane damage.$?p131564[  Grants $142978s1 PvP Power for $142978d.][]
 
 Name             : Rapid Fire (id=3045) [Spell Family (9)] 
@@ -355,7 +355,7 @@ GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Duration         : 20 seconds
 Cooldown         : 30 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Trap Cooldown Reduction (61255), Trap Mastery (63458), Camouflage (119450), Hotfix Passive (137014), Lone Wolf (155228), Guide: Sharpshooting (178549)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Trap Cooldown Reduction (61255), Trap Mastery (63458), Camouflage (119450), Lone Wolf (155228), Guide: Sharpshooting (178549)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ...x.... ........ ...x....   ........ ........ ........ ........ 
@@ -365,7 +365,7 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : Ranged ability (1)
 Effects          :
 #1 (id=1289)     : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.44000
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.56700
 #2 (id=254557)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20
 Description      : Fires a Black Arrow at the target, dealing $3674o1 damage over $3674d.
@@ -430,7 +430,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Dream of Cenarius (158504), Solar Empowerment (164545), Item - Druid T17 Balance 2P Bonus (165433)
+Affecting spells : Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Dream of Cenarius (158504), Solar Empowerment (164545), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -439,7 +439,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.17000
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.46300
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -647,7 +647,7 @@ Class            : Hunter
 Spell Level      : 38
 Range            : 100 yards
 Duration         : 10 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Trap Mastery (63458), Mastery: Essence of the Viper (76658), Glyph of Explosive Trap (119403), Camouflage (119450), Hotfix Passive (137014), Black Fire (171103)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Trap Mastery (63458), Mastery: Essence of the Viper (76658), Glyph of Explosive Trap (119403), Camouflage (119450), Black Fire (171103)
 Attributes       : ........ ........ .....x.. x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ......xx .x...... ..x..... ........ 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -657,9 +657,9 @@ Attributes       : ........ ........ .....x.. x..x....   ...x.x.x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=6178)     : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.1, dl=0.25) | AP Coefficient: 0.08500 | Radius: 0 - 10 yards
-#2 (id=6179)     : Apply Aura (6) | Periodic Damage: fire every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.022) | AP Coefficient: 0.08500 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=0.1, dl=0.25) | AP Coefficient: 0.10000 | Radius: 0 - 10 yards
+#2 (id=6179)     : Apply Aura (6) | Periodic Damage: fire every 1 seconds (3)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.022) | AP Coefficient: 0.10000 | Radius: 0 - 10 yards
 #3 (id=136700)   : Trigger Spell: Explosive Trap (64)
                    Base Value: 60 | Scaled Value: 60 | Trigger Spell: 149575 | Radius: 0 - 10 yards
 Description      : $@spelldesc13813
@@ -856,7 +856,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1 seconds
 Velocity         : 100 yards/sec
-Affecting spells : Freezing Trap (3355), Refocus (24531), Thrill of the Hunt (34720), Mortal Shots (36413), Shot Power (37508), Camouflage (51755), Glyph of Freezing Trap (56845), Camouflage (119450), Item - Hunter T14 4P Bonus (123091), Hotfix Passive (137014), Item - Hunter T16 2P Bonus (144637), Item - Hunter T16 4P Bonus (144641), Lone Wolf (155228), Sniper Training (168811), Guide: Sharpshooting (178549)
+Affecting spells : Freezing Trap (3355), Refocus (24531), Thrill of the Hunt (34720), Mortal Shots (36413), Shot Power (37508), Camouflage (51755), Glyph of Freezing Trap (56845), Camouflage (119450), Item - Hunter T14 4P Bonus (123091), Item - Hunter T16 2P Bonus (144637), Item - Hunter T16 4P Bonus (144641), Lone Wolf (155228), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -868,7 +868,7 @@ Effects          :
 #1 (id=10651)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=101526)   : Weapon Damage% (31)
-                   Base Value: 420 | Scaled Value: 4.2 (avg=0)
+                   Base Value: 435 | Scaled Value: 4.35 (avg=0)
 Description      : A powerful aimed shot that deals $sw2 Physical damage.  Castable while moving.
 
 Name             : Trueshot Aura (id=19506) [Spell Family (9), Passive] 
@@ -1481,7 +1481,7 @@ Effects          :
                    Base Value: 83381 | Scaled Value: 83381
 Description      : Give the command to kill, causing your pet to instantly inflict $<damage> damage to its target.  25 yard range.
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
-$damage=${1.5*($83381m1+($RAP*1.36))*$<bmMastery>}
+$damage=${1.5*($83381m1+($RAP*1.632))*$<bmMastery>}
 
 
 Name             : Misdirection (id=34477) [Spell Family (9)] 
@@ -1889,7 +1889,7 @@ Spell Level      : 60
 Range            : 40 yards
 GCD              : 1 seconds
 Cooldown         : 9 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Item - Hunter T14 2P Bonus (123090), Hotfix Passive (137014), Lone Wolf (155228), Sniper Training (168811), Guide: Sharpshooting (178549)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Item - Hunter T14 2P Bonus (123090), Lone Wolf (155228), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2014,7 +2014,7 @@ GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Duration         : 2 seconds
 Cooldown         : 6 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Item - Hunter T14 2P Bonus (123090), Hotfix Passive (137014), Lone Wolf (155228), Empowered Explosive Shot (157748), Lock and Load (168980), Black Fire (171103), Guide: Sharpshooting (178549)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Item - Hunter T14 2P Bonus (123090), Lone Wolf (155228), Empowered Explosive Shot (157748), Lock and Load (168980), Black Fire (171103), Guide: Sharpshooting (178549)
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2029,7 +2029,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 Description      : You fire an explosive charge into the enemy target, dealing ${$<explosive>} Fire damage initially and every second for $d.
 Tooltip          : Taking Fire damage every second.
-Variables        : $explosive=${$AP*0.429*(1+$76658m1*.01)}
+Variables        : $explosive=${$AP*0.553*(1+$76658m1*.01)}
 
 Name             : Kill Shot (id=53351) [Scaling Spell (3), Spell Family (9)] 
 Class            : Beast Mastery Marksmanship Hunter
@@ -2039,7 +2039,7 @@ Cast Time        : Ranged Shot
 GCD              : 1 seconds
 Velocity         : 80 yards/sec
 Cooldown         : 10 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Hotfix Passive (137014), Lone Wolf (155228), Sniper Training (168811), Guide: Sharpshooting (178549)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Lone Wolf (155228), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
@@ -2051,7 +2051,7 @@ Effects          :
 #1 (id=45989)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=45990)    : Weapon Damage% (31)
-                   Base Value: 759 | Scaled Value: 7.59 (avg=0)
+                   Base Value: 785 | Scaled Value: 7.85 (avg=0)
 Description      : You attempt to finish off a wounded target, dealing $sw2 Physical damage. Only usable on enemies with less than 20% health.  If the target dies, the Hunter will regain $164851s1% of maximum health.
 
 If Kill Shot fails to kill the target, the cooldown is reset.
@@ -2156,11 +2156,11 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=46152)    : Apply Aura (6) | Unknown effect sub type (118)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 127
-#2 (id=140038)   : Apply Aura (6) | Modify Armor% (101)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 1
+#2 (id=140038)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 0x1
 #3 (id=140039)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6
-Description      : Increases all healing effects on your pet by $s1%, increasing your pet's armor by $s2%, and reduces your pet's chance to be critically hit by melee attacks by $s3%.
+Description      : Increases all healing effects on your pet by $s1%, reduces your pet's physical damage taken by $s2%, and reduces your pet's chance to be critically hit by melee attacks by $s3%.
 
 Name             : Bullheaded (Cunning Ability) (id=53490) [Spell Family (9)] 
 Class            : Cunning Cunning Hunter Pet
@@ -2329,7 +2329,7 @@ Velocity         : 40 yards/sec
 Proc Chance      : 100%
 Proc Flags       : ........ x...x... ........ ........ 
                  : Yellow Ranged, AOE Hostile Spell
-Affecting spells : Freezing Trap (3355), Mortal Shots (36413), Shot Power (37508), Camouflage (51755), Camouflage (119450), Hotfix Passive (137014), Lone Wolf (155228), Sniper Training (168811), Guide: Sharpshooting (178549)
+Affecting spells : Freezing Trap (3355), Mortal Shots (36413), Shot Power (37508), Camouflage (51755), Camouflage (119450), Lone Wolf (155228), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -2341,7 +2341,7 @@ Effects          :
 #1 (id=49735)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=101525)   : Weapon Damage% (31)
-                   Base Value: 75 | Scaled Value: 0.75 (avg=0)
+                   Base Value: 85 | Scaled Value: 0.85 (avg=0)
 #3 (id=49737)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : A steady shot that causes $sw2 Physical damage and generates $77443s1 Focus.
@@ -2982,7 +2982,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=55590)    : Apply Aura (6) | Unknown effect sub type (133)
-                   Base Value: 12 | Scaled Value: 12 | Misc Value: 1 | Misc Value 2: 0x4
+                   Base Value: 60 | Scaled Value: 60 | Misc Value: 1 | Misc Value 2: 0x4
 Description      : Increases your pet's total health by $s1%.
 
 Name             : Basic Attack Focus Cost Modifier (id=62762) [Spell Family (17), Passive, Hidden] 
@@ -3316,7 +3316,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Hotfix Passive (137014), Lone Wolf (155228), Guide: Sharpshooting (178549)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Lone Wolf (155228), Guide: Sharpshooting (178549)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -3328,7 +3328,7 @@ Effects          :
 #1 (id=68175)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=68176)    : Weapon Damage% (31)
-                   Base Value: 66 | Scaled Value: 0.66 (avg=0)
+                   Base Value: 75 | Scaled Value: 0.75 (avg=0)
 Description      : Deals $sw2 Nature damage and generates $91954s1 Focus.
 
 Usable while moving.
@@ -3977,7 +3977,7 @@ Cast Time        : 2.25 seconds
 GCD              : 1 seconds
 Velocity         : 100 yards/sec
 Cooldown         : 45 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Hotfix Passive (137014), Sniper Training (168811), Guide: Sharpshooting (178549)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x..x... ........ x.x...x. ........   ........ ......x. ........ ........ 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...xx...   ........ ........ ........ ........ 
@@ -3991,13 +3991,13 @@ Effects          :
 #2 (id=134338)   : Knock Back (98)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 200 | Radius: 0 - 100 yards
 #3 (id=155369)   : Weapon Damage% (31)
-                   Base Value: 225 | Scaled Value: 2.25 (avg=0) | Radius: 0 - 100 yards
+                   Base Value: 260 | Scaled Value: 2.6 (avg=0) | Radius: 0 - 100 yards
 #4 (id=155370)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 100 yards
 #5 (id=186158)   : Knock Back (98)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 200 | Radius: 0 - 5 yards
 #6 (id=186159)   : Weapon Damage% (31)
-                   Base Value: 225 | Scaled Value: 2.25 (avg=0) | Radius: 0 - 5 yards
+                   Base Value: 260 | Scaled Value: 2.6 (avg=0) | Radius: 0 - 5 yards
 #7 (id=186160)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards
 Description      : A powerful shot which deals $177571sw1 Physical damage to the target and $sw3 Physical damage to all enemies between you and the target.  All enemies hit are knocked back. 
@@ -4181,7 +4181,7 @@ Class            : Hunter
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 5 seconds
-Attributes       : ........ ........ ..x..... x.xx...x   ...x...x ........ ..x..... ........ 
+Attributes       : ........ ........ ..x..... x.xx...x   ...x.x.x ........ ..x..... ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
                  : ........ ....x... .......x ....x...   ........ ...x.... ........ ........ 
@@ -4201,7 +4201,7 @@ Spell Level      : 10
 Range            : 100 yards
 Cast Time        : Ranged Shot
 Duration         : 15 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Hotfix Passive (137014), Guide: Sharpshooting (178549)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Guide: Sharpshooting (178549)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ........ 
                  : ..x..... ........ .x...... ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .x...... ........ ........ 
@@ -4211,7 +4211,7 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : Ranged ability (1)
 Effects          :
 #1 (id=134592)   : Apply Aura (6) | Periodic Damage: nature every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.6) | AP Coefficient: 0.35200
+                   Base Value: 1 | Scaled Value: 0 (avg=2.6) | AP Coefficient: 0.72500
 Description      : Causes $o1 Nature damage over $d.
 Tooltip          : Causes $w1 Nature damage every $t1 seconds.
 
@@ -4318,7 +4318,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=136698)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
-                   Base Value: -20000 | Scaled Value: -20000 | SP Coefficient: 1.00000 | Misc Value: 1
+                   Base Value: -10000 | Scaled Value: -10000 | Misc Value: 1
                    Affected Spells: Explosive Trap (13812)
 Description      : Your Explosive Trap no longer deals damage, instead knocking enemies back from the trap when it explodes.
 
@@ -4465,7 +4465,7 @@ Class            : Hunter
 Spell Level      : 24
 Range            : 40 yards
 Velocity         : 30 yards/sec
-Affecting spells : Freezing Trap (3355), Hotfix Passive (137014), Sniper Training (168811), Guide: Sharpshooting (178549), 
+Affecting spells : Freezing Trap (3355), Sniper Training (168811), Guide: Sharpshooting (178549), 
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ .x...... ........ ......x. 
                  : .......x ........ ........ ........   ........ .......x ........ ........ 
@@ -4479,7 +4479,7 @@ Effects          :
 #2 (id=139842)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 40 yards
 #3 (id=139945)   : Weapon Damage% (31)
-                   Base Value: 60 | Scaled Value: 0.6 (avg=0) | Radius: 40 yards
+                   Base Value: 70 | Scaled Value: 0.7 (avg=0) | Radius: 40 yards
 Description      : $@spelldesc120360
 
 Name             : Dire Beast (id=120679) [Spell Family (9)] 
@@ -4550,7 +4550,7 @@ Effects          :
 Name             : Glaive Toss (id=120761) [Spell Family (9)] 
 Class            : Hunter
 Duration         : 3 seconds
-Affecting spells : Freezing Trap (3355), Hotfix Passive (137014), Sniper Training (168811), Guide: Sharpshooting (178549)
+Affecting spells : Freezing Trap (3355), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ .x...... ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4560,7 +4560,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=140699)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.36100 | Radius: 0 - 100 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.41500 | Radius: 0 - 100 yards
 #2 (id=150546)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | Radius: 0 - 50 yards
 Description      : $@spelldesc117050
@@ -4569,7 +4569,7 @@ Tooltip          : Movement speed slowed by $s2%.
 Name             : Glaive Toss (id=121414) [Spell Family (9)] 
 Class            : Hunter
 Duration         : 3 seconds
-Affecting spells : Freezing Trap (3355), Hotfix Passive (137014), Sniper Training (168811), Guide: Sharpshooting (178549)
+Affecting spells : Freezing Trap (3355), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ .x...... ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4579,7 +4579,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=150477)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.36100 | Radius: 0 - 100 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.41500 | Radius: 0 - 100 yards
 #2 (id=150547)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | Radius: 0 - 50 yards
 Description      : $@spelldesc117050
@@ -4887,7 +4887,7 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Affecting spells : Camouflage (51755), Mastery: Master of Beasts (76657), Camouflage (119450), Hotfix Passive (137014), Sniper Training (168811), Guide: Sharpshooting (178549)
+Affecting spells : Camouflage (51755), Mastery: Master of Beasts (76657), Camouflage (119450), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
@@ -4905,7 +4905,7 @@ Class            : Hunter
 Spell Level      : 1
 Range            : 100 yards
 Velocity         : 1.5 yards/sec
-Affecting spells : Camouflage (51755), Mastery: Master of Beasts (76657), Camouflage (119450), Hotfix Passive (137014), Sniper Training (168811), Guide: Sharpshooting (178549)
+Affecting spells : Camouflage (51755), Mastery: Master of Beasts (76657), Camouflage (119450), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : ........ ........ x....x.x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4914,7 +4914,7 @@ Attributes       : ........ ........ x....x.x ........   ........ ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=170318)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.65000
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.17000
 Description      : Deals $s1 physical damage.
 
 Name             : Glyph of Liberation (id=132106) [Spell Family (9), Passive, Hidden] 
@@ -5012,26 +5012,38 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179697)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 29 | Scaled Value: 29
-                   Affected Spells: Black Arrow (3674), Explosive Shot (53301), Serpent Sting (118253)
-#2 (id=191142)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 29 | Scaled Value: 29 | Misc Value: 22
-                   Affected Spells: Black Arrow (3674), Explosive Shot (53301), Serpent Sting (118253)
-#3 (id=191143)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 80 | Scaled Value: 80
-                   Affected Spells: A Murder of Crows (131894), A Murder of Crows (131900)
-#4 (id=191144)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 15 | Scaled Value: 15
-                   Affected Spells: Arcane Shot (3044), Explosive Trap (13812), Aimed Shot (19434), Chimaera Shot (53209), Kill Shot (53351), Steady Shot (56641), Cobra Shot (77767), Powershot (109259), Barrage (120361), Glaive Toss (120761), Glaive Toss (121414), Focusing Shot (152245), Kill Shot (157708), Focusing Shot (163485), Chimaera Shot (171454), Chimaera Shot (171457), Powershot (177571)
-#5 (id=191145)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22
-                   Affected Spells: Arcane Shot (3044), Explosive Trap (13812), Aimed Shot (19434), Chimaera Shot (53209), Kill Shot (53351), Steady Shot (56641), Cobra Shot (77767), Powershot (109259), Barrage (120361), Glaive Toss (120761), Glaive Toss (121414), Focusing Shot (152245), Kill Shot (157708), Focusing Shot (163485), Chimaera Shot (171454), Chimaera Shot (171457), Powershot (177571)
-#6 (id=214883)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 30 | Scaled Value: 30
-                   Affected Spells: Multi-Shot (2643)
+#1 (id=179697)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#2 (id=191142)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#3 (id=191143)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#4 (id=191144)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#5 (id=191145)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#6 (id=214883)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#7 (id=260638)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#8 (id=260639)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#9 (id=260640)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#10 (id=260641)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#11 (id=260642)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#12 (id=260643)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#13 (id=260644)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#14 (id=260645)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#15 (id=260646)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
 
-Name             : Hotfix Passive (id=137015) [Passive, Hidden] 
+Name             : Hotfix Passive (id=137015) [Spell Family (9), Passive, Hidden] 
 Class            : Beast Mastery Hunter
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5051,8 +5063,28 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #5 (id=191141)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
+#6 (id=260897)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#7 (id=260898)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#8 (id=260899)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#9 (id=260900)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#10 (id=260901)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#11 (id=260902)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#12 (id=260903)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#13 (id=260904)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#14 (id=260905)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#15 (id=260906)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
 
-Name             : Hotfix Passive (id=137016) [Passive, Hidden] 
+Name             : Hotfix Passive (id=137016) [Spell Family (9), Passive, Hidden] 
 Class            : Marksmanship Hunter
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5072,8 +5104,28 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #5 (id=191137)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
+#6 (id=260887)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#7 (id=260888)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#8 (id=260889)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#9 (id=260890)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#10 (id=260891)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#11 (id=260892)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#12 (id=260893)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#13 (id=260894)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#14 (id=260895)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#15 (id=260896)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
 
-Name             : Hotfix Passive (id=137017) [Passive, Hidden] 
+Name             : Hotfix Passive (id=137017) [Spell Family (9), Passive, Hidden] 
 Class            : Survival Hunter
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5092,6 +5144,26 @@ Effects          :
 #4 (id=191132)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #5 (id=191133)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#6 (id=260877)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#7 (id=260878)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#8 (id=260879)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#9 (id=260880)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#10 (id=260881)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#11 (id=260882)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#12 (id=260883)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#13 (id=260884)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#14 (id=260885)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#15 (id=260886)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 
 Name             : Lightning Blast (id=138374) [Scaling Spell (-1)] 
@@ -5231,7 +5303,7 @@ Attributes       : ........ x....... .....x.. x..x....   ...x.x.x ........ .....
                  : ........ ........ ......x. ...x....   ........ ........ ........ ..x..... 
                  : Not a proc (105)
 Effects          :
-#1 (id=205398)   : Knock Back (98)
+#1 (id=205398)   : Unknown effect type (144)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 300 | Radius: 0 - 10 yards
 #2 (id=205399)   : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | Radius: 0 - 10 yards
@@ -5263,10 +5335,10 @@ Great Stamina|r
 Name             : Focusing Shot (id=152245) [Spell Family (9)] 
 Class            : Hunter
 Range            : 40 yards
-Cast Time        : 3 seconds
+Cast Time        : 2.5 seconds
 GCD              : 1 seconds
 Velocity         : 180 yards/sec
-Affecting spells : Hotfix Passive (137014), Sniper Training (168811), Guide: Sharpshooting (178549)
+Affecting spells : Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -5276,7 +5348,7 @@ Attributes       : .x..x... ........ x....... ........   ........ ........ .....
                  : Ranged ability (1)
 Effects          :
 #1 (id=210783)   : Weapon Damage% (31)
-                   Base Value: 120 | Scaled Value: 1.2 (avg=0)
+                   Base Value: 175 | Scaled Value: 1.75 (avg=0)
 #2 (id=215644)   : Energize Power (30)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: focus
 #3 (id=215647)   : Normalized Weapon Damage (121)
@@ -5322,7 +5394,7 @@ Effects          :
 #1 (id=218485)   : Apply Aura (6) | Unknown effect sub type (214)
                    Base Value: 2000 | Scaled Value: 2000
 #2 (id=218486)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 85 | Scaled Value: 85 | Misc Value: 0x7f
+                   Base Value: 70 | Scaled Value: 70 | Misc Value: 0x7f
 Description      : Increases all damage done by your pet by $s2%.
 
 Name             : Critical Strikes (Passive) (id=157443) [Passive] 
@@ -5351,7 +5423,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=219905)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2
+                   Base Value: 5 | Scaled Value: 5
 Description      : Focus Fire now also grants $s1% increase to attack power per Frenzy stack consumed.
 
 Name             : Enhanced Kill Shot (id=157707) [Spell Family (9), Passive] 
@@ -5376,7 +5448,7 @@ Cast Time        : Ranged Shot
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Cooldown         : 10 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Hotfix Passive (137014), Lone Wolf (155228), Sniper Training (168811), Guide: Sharpshooting (178549)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Lone Wolf (155228), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
@@ -5388,7 +5460,7 @@ Effects          :
 #1 (id=219908)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=219909)   : Weapon Damage% (31)
-                   Base Value: 759 | Scaled Value: 7.59 (avg=0)
+                   Base Value: 785 | Scaled Value: 7.85 (avg=0)
 Description      : You attempt to finish the wounded target off, firing a long range attack dealing $sw2 Physical damage. Kill Shot can only be used on enemies that have 35% or less health.  If the target dies, the Hunter will regain $164851s1% of maximum health.
 
 If Kill Shot fails to kill the target, the cooldown is instantly reset, but cannot be reset more often than once every $90967d.
@@ -5758,7 +5830,7 @@ Tooltip          : Regenerate $s1% of total health and focus every $t1 seconds.
 Name             : Dust of Life (Exotic Ability) (id=159956) [Spell Family (9)] 
 Class            : Hunter
 Spell Level      : 20
-Range            : 20 yards
+Range            : 40 yards
 Cooldown         : 600 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
@@ -6196,10 +6268,10 @@ Effects          :
 Name             : Focusing Shot (id=163485) [Spell Family (9)] 
 Class            : Hunter
 Range            : 40 yards
-Cast Time        : 3 seconds
+Cast Time        : 2.5 seconds
 GCD              : 1 seconds
 Velocity         : 180 yards/sec
-Affecting spells : Hotfix Passive (137014), Sniper Training (168811), Guide: Sharpshooting (178549)
+Affecting spells : Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -6209,7 +6281,7 @@ Attributes       : .x..x... ........ x....... ........   ........ ........ .....
                  : Ranged ability (1)
 Effects          :
 #1 (id=229963)   : Weapon Damage% (31)
-                   Base Value: 120 | Scaled Value: 1.2 (avg=0)
+                   Base Value: 175 | Scaled Value: 1.75 (avg=0)
 #2 (id=229964)   : Energize Power (30)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: focus
 #3 (id=229965)   : Normalized Weapon Damage (121)
@@ -6411,7 +6483,7 @@ Class            : Hunter
 Spell Level      : 60
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Item - Hunter T14 2P Bonus (123090), Hotfix Passive (137014), Lone Wolf (155228), Sniper Training (168811), Guide: Sharpshooting (178549)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Item - Hunter T14 2P Bonus (123090), Lone Wolf (155228), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6431,7 +6503,7 @@ Class            : Hunter
 Spell Level      : 60
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Item - Hunter T14 2P Bonus (123090), Hotfix Passive (137014), Lone Wolf (155228), Sniper Training (168811), Guide: Sharpshooting (178549)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Item - Hunter T14 2P Bonus (123090), Lone Wolf (155228), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6502,7 +6574,7 @@ Cast Time        : 2.25 seconds
 GCD              : 1 seconds
 Velocity         : 100 yards/sec
 Cooldown         : 45 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Hotfix Passive (137014), Sniper Training (168811), Guide: Sharpshooting (178549)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Sniper Training (168811), Guide: Sharpshooting (178549)
 Attributes       : .x..x... ........ x.x...x. ........   ........ ......x. ........ ........ 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...xx...   ........ ........ ........ ........ 
@@ -6512,7 +6584,7 @@ Attributes       : .x..x... ........ x.x...x. ........   ........ ......x. .....
                  : Ranged ability (1)
 Effects          :
 #1 (id=254290)   : Weapon Damage% (31)
-                   Base Value: 450 | Scaled Value: 4.5 (avg=0) | Radius: 0 - 5 yards
+                   Base Value: 520 | Scaled Value: 5.2 (avg=0) | Radius: 0 - 5 yards
 #2 (id=254291)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards
 
@@ -6532,7 +6604,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=254506)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-Description      : Using $?s163485[Focusing Shot]?s77767[Cobra Shot twice in a row][Steady Shot twice in a row] increases your Focus Regeneration by $177668s1% for $177668d.
+Description      : Using $?s163485[Focusing Shot]?s77767[Cobra Shot twice in a row][Steady Shot twice in a row] increases Focus Regeneration for you and your pet by $177668s1% for $177668d.
 
 Name             : Steady Focus (id=177668) [Spell Family (9)] 
 Class            : Hunter

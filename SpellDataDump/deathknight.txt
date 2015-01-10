@@ -1,5 +1,5 @@
+SimulationCraft 603-23 for World of Warcraft 6.0.3 Live (build level 19342)
 
-SimulationCraft 603-12 for World of Warcraft 6.0.3 Live (build level 19116)
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -82,7 +82,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Dream of Cenarius (158504), Solar Empowerment (164545), Item - Druid T17 Balance 2P Bonus (165433)
+Affecting spells : Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Dream of Cenarius (158504), Solar Empowerment (164545), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -91,7 +91,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.17000
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.46300
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -459,7 +459,7 @@ Spell Level      : 55
 Range            : 30 yards
 GCD              : 1 seconds
 Power Gain       : 10 Runic Power
-Affecting spells : Razorice (51714), Glyph of Icy Touch (58631), Freezing Fog (59052), Biting Cold (166057)
+Affecting spells : Razorice (51714), Reaping (56835), Glyph of Icy Touch (58631), Freezing Fog (59052), Biting Cold (166057)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -488,7 +488,7 @@ Range            : 30 yards
 GCD              : 1 seconds
 Power Gain       : 10 Runic Power
 Duration         : 8 seconds
-Affecting spells : Razorice (51714), Glyph of Chains of Ice (58620)
+Affecting spells : Razorice (51714), Glyph of Chains of Ice (58620), Glyph of the Ice Reaper (159416)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -701,8 +701,8 @@ Effects          :
 Description      : Fires a blast of unholy energy at the target, causing $<damage> Shadow damage to an enemy or healing an Undead ally for $<healing>$?s58677[. Refunds $58677s1 Runic Power when used to heal.][.]
 Variables        : $mastery=$?s55090[${((100+$77515m1)/100)}][${1.00}]
 $blood=$?a48263[${1.2}][${1.0}]
-$damage=${(0.85*$AP)*$<mastery>*$<blood>}
-$healing=${(0.85*$AP)*5}
+$damage=${(0.80*$AP)*$<mastery>*$<blood>}
+$healing=${(0.80*$AP)*5}
 
 Name             : Empower Rune Weapon (id=47568) [Spell Family (15)] 
 Class            : Death Knight
@@ -902,7 +902,7 @@ Description      : The Death Knight freezes $Ghis:her; blood to become immune to
 Tooltip          : Damage taken reduced by $w3%.
 Immune to Stun effects.
 
-Name             : Rune Tap (id=48982) [Spell Family (15)] 
+Name             : Rune Tap (Active Mitigation) (id=48982) [Spell Family (15)] 
 Class            : Blood Death Knight
 Rune Cost        : 1 Blood Rune
 Spell Level      : 64
@@ -928,7 +928,7 @@ Spell Level      : 58
 Range            : 5 yards
 GCD              : 1 seconds
 Power Gain       : 20 Runic Power
-Affecting spells : Killing Machine (51124), Might of the Frozen Wastes (81333), Item - Death Knight T14 DPS 2P Bonus (123077), Hotfix Passive (137005)
+Affecting spells : Killing Machine (51124), Might of the Frozen Wastes (81333), Item - Death Knight T14 DPS 2P Bonus (123077)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -939,7 +939,7 @@ Effects          :
 #1 (id=41120)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=41121)    : Weapon Damage% (31)
-                   Base Value: 185 | Scaled Value: 1.85 (avg=0)
+                   Base Value: 215 | Scaled Value: 2.15 (avg=0)
 Description      : A brutal attack that deals $sw1 Physical damage and has a $59057h% chance to cause your next Howling Blast or Icy Touch to consume no runes.
 
 Name             : Dancing Rune Weapon (id=49028) [Spell Family (15)] 
@@ -987,7 +987,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 10
 #5 (id=227195)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 23
-Description      : Draw upon unholy energy to increase Leech by $s1%, and make you immune to Charm, Fear, and Sleep for $d.
+Description      : Draw upon unholy energy to become Undead for $d, increasing Leech by $s1%, and making you immune to Charm, Fear, and Sleep.
 Tooltip          : Leech increased by $s1% and immune to Charm, Fear and Sleep.  Undead.
 
 Name             : Frost Strike (id=49143) [Scaling Spell (1), Spell Family (15)] 
@@ -1008,7 +1008,7 @@ Effects          :
 #1 (id=41258)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=41259)    : Weapon Damage% (31)
-                   Base Value: 75 | Scaled Value: 0.75 (avg=0)
+                   Base Value: 80 | Scaled Value: 0.8 (avg=0)
 Description      : Instantly strike the enemy, causing $sw1 Frost damage.
 
 Name             : Howling Blast (id=49184) [Spell Family (15)] 
@@ -1029,7 +1029,7 @@ Effects          :
 #1 (id=41295)    : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 #2 (id=41296)    : School Damage: frost (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.90000 | Radius: 0 - 10 yards
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.96300 | Radius: 0 - 10 yards
 Description      : Blast the target with a frigid wind, dealing $s2 Frost damage to that foe, and ${($m1/100)*$m2} Frost damage to all other enemies within $A2 yards, infecting all targets with Frost Fever.
 
 |Tinterface\icons\spell_deathknight_frostfever.blp:24|t |cFFFFFFFFFrost Fever|r
@@ -1096,9 +1096,9 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=41631)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-Description      : Your Pestilence and Soul Reaper increase the healing done by your next Death Strike within $50421d by $50421s1%. This effect stacks up to $50421u times.
+Description      : Your Blood Boil and Soul Reaper increase the healing done by your next Death Strike within $50421d by $50421s1%. This effect stacks up to $50421u times.
 
-Additionally, your Pestilence refreshes your diseases on targets it damages.
+Additionally, your Blood Boil refreshes your diseases on targets it damages.
 
 Name             : Sudden Doom (id=49530) [Spell Family (15), Passive] 
 Class            : Unholy Death Knight
@@ -1175,14 +1175,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Harnesses the energy that surrounds and binds all matter, drawing the target toward the Death Knight$?s63335[][ and forcing the enemy to attack the Death Knight for $49560d].
 
-Name             : Death Strike (id=49998) [Spell Family (15)] 
+Name             : Death Strike (Active Mitigation) (id=49998) [Spell Family (15)] 
 Class            : Death Knight
 Rune Cost        : 1 Unholy, 1 Frost Runes
 Spell Level      : 56
 Range            : 5 yards
 GCD              : 1 seconds
 Power Gain       : 20 Runic Power
-Affecting spells : Veteran of the Third War (50029), Might of the Frozen Wastes (81333), Dark Succor (101568), Item - Death Knight T13 Blood 2P Bonus (105552), Item - Death Knight T13 Blood 4P Bonus (105587), Item - Death Knight T13 DPS 2P Bonus (105609), Item - Death Knight T13 DPS 4P Bonus (105646), Hotfix Passive (137005), Deathbringer (144953)
+Affecting spells : Veteran of the Third War (50029), Blood Rites (50034), Might of the Frozen Wastes (81333), Dark Succor (101568), Item - Death Knight T13 Blood 2P Bonus (105552), Item - Death Knight T13 Blood 4P Bonus (105587), Item - Death Knight T13 DPS 2P Bonus (105609), Item - Death Knight T13 DPS 4P Bonus (105646), Deathbringer (144953)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1193,7 +1193,7 @@ Effects          :
 #1 (id=42113)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=42114)    : Weapon Damage% (31)
-                   Base Value: 114 | Scaled Value: 1.14 (avg=0)
+                   Base Value: 135 | Scaled Value: 1.35 (avg=0)
 Description      : Focuses dark power into a strike that deals $sw2 Physical damage and heals you for $45470s1.$?s50034[  
 
 The Runes spent on this ability will become Death Runes when they activate.  Death Runes count as any type of Rune.][]
@@ -1252,6 +1252,9 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 #2 (id=171741)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
+#3 (id=261562)   : Apply Aura (6) | Unknown effect sub type (481)
+                   Base Value: 0 | Scaled Value: 0
+                   Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
 Description      : Whenever you hit with Death Strike, the Frost and Unholy Runes will become Death Runes when they activate. Death Runes count as a Blood, Frost or Unholy Rune.
 
 Additionally, your auto attack multistrikes have a chance to generate ${$163948m1/10} Runic Power.
@@ -1275,7 +1278,7 @@ Description      : Victims of your Frost Fever are Chilled, reducing movement sp
 
 Name             : Improved Blood Presence (id=50371) [Spell Family (15), Passive, Hidden] 
 Class            : Blood Death Knight
-Spell Level      : 64
+Spell Level      : 55
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x...x... x.x..x.. ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell, Periodic, Trap Triggered
@@ -1410,7 +1413,7 @@ Class            : Death Knight
 Rune Cost        : 1 Blood Rune
 Spell Level      : 55
 GCD              : 1 seconds
-Affecting spells : Glyph of Blood Boil (58657), Glyph of Resilient Grip (59309), Crimson Scourge (81136), Crimson Scourge (81141), Hotfix Passive (137005)
+Affecting spells : Reaping (56835), Glyph of Blood Boil (58657), Glyph of Resilient Grip (59309), Crimson Scourge (81136), Crimson Scourge (81141)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1419,7 +1422,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=43101)    : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.60000 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.72000 | Radius: 0 - 10 yards
 #2 (id=257363)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: runic_power
 Description      : Deals $s1 Shadow damage to all enemies within $A1 yards, and spreads your existing diseases from your target to all other enemies hit$?s49509[, refreshing them to full duration. Also increases the healing from your next Death Strike by $50421s1%][].$?s56835[  
@@ -1429,7 +1432,7 @@ The Rune spent on this ability will become a Death Rune when it activates. Death
 Name             : Icy Talons (id=50887) [Spell Family (15), Passive] 
 Class            : Frost Death Knight
 Spell Level      : 55
-Affecting spells : Razorice (51714), Glyph of Icy Touch (58631), Freezing Fog (59052), Biting Cold (166057)
+Affecting spells : Razorice (51714), Reaping (56835), Glyph of Icy Touch (58631), Freezing Fog (59052), Biting Cold (166057)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1641,7 +1644,6 @@ Description      : You become as hard to stop as death itself.  The duration of 
 Name             : Death and Decay (id=52212) [Scaling Spell (1), Spell Family (15)] 
 Class            : Death Knight
 Range            : 100 yards
-Affecting spells : Hotfix Passive (137005)
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   ........ ........ ........ .x....x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -1650,7 +1652,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=44653)    : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | Radius: 0 - 10 yards
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.12000 | Radius: 0 - 10 yards
 Description      : Corrupts the ground targeted by the Death Knight, causing Shadow damage every sec that targets remain in the area for $43265d.
 
 Name             : Rune of Lichbane (id=53331) [Hidden] 
@@ -1831,7 +1833,7 @@ Spell Level      : 58
 Range            : 5 yards
 GCD              : 1 seconds
 Power Gain       : 10 Runic Power
-Affecting spells : Item - Death Knight T14 DPS 2P Bonus (123077), Hotfix Passive (137005)
+Affecting spells : Item - Death Knight T14 DPS 2P Bonus (123077)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1842,7 +1844,7 @@ Effects          :
 #1 (id=48018)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=48019)    : Weapon Damage% (31)
-                   Base Value: 78 | Scaled Value: 0.78 (avg=0)
+                   Base Value: 110 | Scaled Value: 1.1 (avg=0)
 #3 (id=48020)    : Trigger Spell: Scourge Strike (64)
                    Base Value: 25 | Scaled Value: 25 | Trigger Spell: 70890
 Description      : An unholy strike that deals $sw2 Physical damage and $70890sw2 Shadow damage.
@@ -1970,6 +1972,9 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=49965)    : Apply Aura (6) | Periodic Dummy: every 30 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
+#2 (id=261561)   : Apply Aura (6) | Unknown effect sub type (481)
+                   Base Value: 0 | Scaled Value: 0
+                   Affected Spells: Icy Touch (45477), Blood Boil (50842), Icy Talons (50887), Festering Strike (85948)
 Description      : Whenever you hit with Pestilence, Festering Strike, or Icy Touch, the Runes spent will become Death Runes when they activate. Death Runes count as a Blood, Frost or Unholy Rune.
 
 Name             : Horn of Winter (id=57330) [Spell Family (15)] 
@@ -2957,8 +2962,8 @@ Effects          :
 Description      : Your Death Coil spell is now usable on all allies.  When cast on a non-undead ally, Death Coil shrouds them with a protective barrier that absorbs up to $<damage> damage.
 Variables        : $mastery=$?s55090[${((100+$77515m1)/100)}][${1.00}]
 $blood=$?a48263[${1.2}][${1.0}]
-$damage=${(0.85*$AP)*$<mastery>*$<blood>}
-$healing=${(0.85*$AP)*5}
+$damage=${(0.80*$AP)*$<mastery>*$<blood>}
+$healing=${(0.80*$AP)*5}
 
 Name             : Glyph of Tranquil Grip (id=63335) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
@@ -3043,8 +3048,8 @@ Effects          :
 Description      : Your Death Coil spell is now usable on all allies.  When cast on a non-undead ally, Death Coil shrouds them with a protective barrier that absorbs up to $<damage> damage.
 Variables        : $mastery=$?s55090[${((100+$77515m1)/100)}][${1.00}]
 $blood=$?a48263[${1.2}][${1.0}]
-$damage=${(0.85*$AP)*$<mastery>*$<blood>}
-$healing=${(0.85*$AP)*5}
+$damage=${(0.80*$AP)*$<mastery>*$<blood>}
+$healing=${(0.80*$AP)*5}
 
 Name             : Tranquil Grip (id=63961) 
 Class            : Death Knight
@@ -3063,7 +3068,7 @@ Name             : Death Strike Off-Hand (id=66188) [Scaling Spell (1), Spell Fa
 Class            : Death Knight
 Range            : 100 yards
 GCD              : 1.5 seconds
-Affecting spells : Veteran of the Third War (50029), Might of the Frozen Wastes (81333), Dark Succor (101568), Item - Death Knight T13 Blood 2P Bonus (105552), Item - Death Knight T13 Blood 4P Bonus (105587), Item - Death Knight T13 DPS 2P Bonus (105609), Item - Death Knight T13 DPS 4P Bonus (105646), Hotfix Passive (137005), Deathbringer (144953)
+Affecting spells : Veteran of the Third War (50029), Blood Rites (50034), Might of the Frozen Wastes (81333), Dark Succor (101568), Item - Death Knight T13 Blood 2P Bonus (105552), Item - Death Knight T13 Blood 4P Bonus (105587), Item - Death Knight T13 DPS 2P Bonus (105609), Item - Death Knight T13 DPS 4P Bonus (105646), Deathbringer (144953)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x.....x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3074,7 +3079,7 @@ Effects          :
 #1 (id=60359)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 0 (avg=0.2) | Chain Multiplier: 5
 #2 (id=60360)    : Weapon Damage% (31)
-                   Base Value: 114 | Scaled Value: 1.14 (avg=0)
+                   Base Value: 135 | Scaled Value: 1.35 (avg=0)
 Description      : $@spelldesc49998
 
 Name             : Threat of Thassarian (id=66192) [Spell Family (15), Passive, Hidden] 
@@ -3112,14 +3117,14 @@ Effects          :
 #1 (id=60368)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=60369)    : Weapon Damage% (31)
-                   Base Value: 75 | Scaled Value: 0.75 (avg=0)
+                   Base Value: 80 | Scaled Value: 0.8 (avg=0)
 Description      : Instantly strike the enemy with your off-hand weapon, causing $sw2 Frost damage.
 
 Name             : Obliterate Off-Hand (id=66198) [Scaling Spell (1), Spell Family (15)] 
 Class            : Death Knight
 Range            : 100 yards
 GCD              : 1.5 seconds
-Affecting spells : Killing Machine (51124), Might of the Frozen Wastes (81333), Item - Death Knight T14 DPS 2P Bonus (123077), Hotfix Passive (137005)
+Affecting spells : Killing Machine (51124), Might of the Frozen Wastes (81333), Item - Death Knight T14 DPS 2P Bonus (123077)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x.....x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3130,7 +3135,7 @@ Effects          :
 #1 (id=60372)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=60373)    : Weapon Damage% (31)
-                   Base Value: 185 | Scaled Value: 1.85 (avg=0)
+                   Base Value: 215 | Scaled Value: 2.15 (avg=0)
 Description      : A brutal attack with your off-hand weapon that deals $sw2 Physical damage. 
 
 Name             : Plague Strike Off-Hand (id=66216) [Scaling Spell (1), Spell Family (15)] 
@@ -3207,7 +3212,6 @@ Name             : Scourge Strike (id=70890) [Spell Family (15)]
 Class            : Death Knight
 Spell Level      : 80
 Range            : 100 yards
-Affecting spells : Hotfix Passive (137005)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -3219,7 +3223,7 @@ Effects          :
 #1 (id=64510)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=214692)   : Weapon Damage% (31)
-                   Base Value: 42 | Scaled Value: 0.42 (avg=0)
+                   Base Value: 55 | Scaled Value: 0.55 (avg=0)
 Description      : $@spelldesc55090
 
 Name             : Mastery: Blood Shield (id=77513) [Spell Family (15), Passive] 
@@ -3401,7 +3405,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14
                    Affected Spells: Death and Decay (43265), Blood Boil (50842), Defile (152280)
 Description      : $@spelldesc81136
-Tooltip          : Your next Pestilence or Death and Decay will consume no runes.
+Tooltip          : Your next Blood Boil or Death and Decay will consume no runes.
 
 Name             : Will of the Necropolis (id=81164) [Spell Family (15), Passive] 
 Class            : Blood Death Knight
@@ -3533,7 +3537,7 @@ Spell Level      : 62
 Range            : 5 yards
 GCD              : 1 seconds
 Power Gain       : 20 Runic Power
-Affecting spells : Might of the Frozen Wastes (81333), Hotfix Passive (137005)
+Affecting spells : Reaping (56835), Might of the Frozen Wastes (81333)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3544,7 +3548,7 @@ Effects          :
 #1 (id=87374)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 0 (avg=0.433)
 #2 (id=87375)    : Weapon Damage% (31)
-                   Base Value: 225 | Scaled Value: 2.25 (avg=0)
+                   Base Value: 215 | Scaled Value: 2.15 (avg=0)
 #3 (id=87376)    : Server Side Script (77)
                    Base Value: 6 | Scaled Value: 6
 Description      : Deals $sw2 Physical damage and increases the duration of your Blood Plague, Frost Fever, and Chains of Ice effects on the target by up to $s3 sec.$?s56835[  
@@ -3657,7 +3661,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=94579)    : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value 2: 0x1
+                   Base Value: 5 | Scaled Value: 5 | Misc Value 2: 0x1
 Description      : Dark power courses through your limbs, increasing your Strength by $s1%.
 
 Name             : Shadow Infusion (id=91342) [Spell Family (15)] 
@@ -4305,7 +4309,7 @@ Description      : $@spelldesc108201
 Name             : Conversion (id=119975) [Spell Family (15)] 
 Class            : Death Knight
 Resource         : 30 Runic Power per second w/ Blood Rites (id=50034)
-Resource         : 10 Runic Power per second w/ Rime (id=59057)
+Resource         : 15 Runic Power per second w/ Rime (id=59057)
 Resource         : 20 Runic Power per second w/ Reaping (id=56835)
 GCD              : 1 seconds
 Duration         : Aura (infinite)
@@ -4462,23 +4466,36 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179688)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 12
-                   Affected Spells: Obliterate (49020), Obliterate Off-Hand (66198)
-#2 (id=188986)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: -2 | Scaled Value: -2 | Misc Value: 12
-                   Affected Spells: Scourge Strike (55090)
-#3 (id=191178)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: -4 | Scaled Value: -4 | Misc Value: 12
-                   Affected Spells: Scourge Strike (70890)
-#4 (id=191179)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: -5 | Scaled Value: -5
-#5 (id=191180)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 12
-                   Affected Spells: Festering Strike (85948)
-#6 (id=257279)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
-                   Affected Spells: Death Strike (49998), Blood Boil (50842), Death and Decay (52212), Death Strike Off-Hand (66188), Defile (156000)
+#1 (id=179688)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#2 (id=188986)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#3 (id=191178)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#4 (id=191179)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#5 (id=191180)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#6 (id=257279)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#7 (id=260629)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#8 (id=260630)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#9 (id=260631)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#10 (id=260632)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#11 (id=260633)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#12 (id=260634)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#13 (id=260635)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#14 (id=260636)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#15 (id=260637)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
 
 Name             : Hotfix Passive (id=137006) [Passive, Hidden] 
 Class            : Frost Death Knight
@@ -4500,8 +4517,28 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #5 (id=191177)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
+#6 (id=260797)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#7 (id=260798)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#8 (id=260799)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#9 (id=260800)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#10 (id=260801)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#11 (id=260802)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#12 (id=260803)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#13 (id=260804)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#14 (id=260805)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#15 (id=260806)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
 
-Name             : Hotfix Passive (id=137007) [Passive, Hidden] 
+Name             : Hotfix Passive (id=137007) [Spell Family (15), Passive, Hidden] 
 Class            : Unholy Death Knight
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4520,6 +4557,26 @@ Effects          :
 #4 (id=191172)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #5 (id=191173)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#6 (id=260787)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#7 (id=260788)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#8 (id=260789)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#9 (id=260790)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#10 (id=260791)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#11 (id=260792)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#12 (id=260793)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#13 (id=260794)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#14 (id=260795)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#15 (id=260796)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 
 Name             : Hotfix Passive (id=137008) [Passive, Hidden] 
@@ -4541,6 +4598,26 @@ Effects          :
 #4 (id=191168)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #5 (id=191169)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#6 (id=260807)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#7 (id=260808)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#8 (id=260809)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#9 (id=260810)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#10 (id=260811)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#11 (id=260812)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#12 (id=260813)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#13 (id=260814)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#14 (id=260815)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#15 (id=260816)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 
 Name             : Item - Death Knight T15 DPS 4P Bonus (id=138347) [Spell Family (15), Passive, Hidden] 
@@ -4569,7 +4646,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=190659)   : Apply Aura (6) | Unknown effect sub type (309)
-                   Base Value: -2500 | Scaled Value: -2500 | Misc Value: 2
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
 
 Name             : Item - Death Knight T16 DPS 4P Bonus (id=144907) [Spell Family (15), Passive] 
@@ -4914,7 +4991,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=215528)   : Apply Aura (6) | Periodic Damage: shadowfrost every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.02250
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.02700
 Description      : $@spelldesc152281
 Tooltip          : Suffering $w1 Shadowfrost damage every $t1 sec.
 
@@ -4976,7 +5053,6 @@ Tooltip          : Mastery increased by $s1.
 Name             : Defile (id=156000) [Spell Family (15)] 
 Class            : Death Knight
 Range            : 100 yards
-Affecting spells : Hotfix Passive (137005)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ .x...... 
@@ -4985,7 +5061,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=216887)   : School Damage: shadowfrost (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.27500
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.33300
 Description      : $@spelldesc152280
 
 Name             : Combat Experience (id=156843) [Spell Family (9), Passive] 
@@ -5002,7 +5078,7 @@ Effects          :
 #1 (id=218485)   : Apply Aura (6) | Unknown effect sub type (214)
                    Base Value: 2000 | Scaled Value: 2000
 #2 (id=218486)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 85 | Scaled Value: 85 | Misc Value: 0x7f
+                   Base Value: 70 | Scaled Value: 70 | Misc Value: 0x7f
 Description      : Increases all damage done by your pet by $s2%.
 
 Name             : Will of the Necropolis (id=157335) [Spell Family (15)] 
@@ -5253,6 +5329,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=223293)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 12
+#2 (id=261560)   : Apply Aura (6) | Unknown effect sub type (481)
+                   Base Value: 0 | Scaled Value: 0
+                   Affected Spells: Chains of Ice (45524)
 Description      : The Runes you spend on Chains of Ice will become Death Runes when they activate.  Death Runes count as any type of rune.
 
 Name             : Glyph of Icy Runes (id=159418) [Spell Family (15), Passive, Hidden] 
@@ -5617,7 +5696,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 168828
 Description      : You gain $s1% more of the Multistrike stat from all sources.
 
-Your Scourge Strike, Festering Strike, Plague Strike, Soul Reaper, and Pestilence multistrikes deal an additional $168828s1 Shadow damage.
+Your Scourge Strike, Festering Strike, Plague Strike, Soul Reaper, and Blood Boil multistrikes deal an additional $168828s1 Shadow damage.
 
 Name             : Item - Death Knight T17 Frost 4P Bonus (id=165568) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
@@ -5700,7 +5779,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Disable weapon procs (151)
 Effects          :
 #1 (id=239121)   : School Damage: shadow (2)
-                   Base Value: -1 | Scaled Value: 0 - 2 (avg=0) | Value Range: 3 | AP Coefficient: 0.12000
+                   Base Value: -1 | Scaled Value: 0 - 2 (avg=0) | Value Range: 3 | AP Coefficient: 0.20000
 Description      : $@spelldesc165395
 
 Name             : Frozen Runeblade (id=170202) [Spell Family (15)] 

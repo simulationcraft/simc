@@ -1,5 +1,5 @@
+SimulationCraft 603-23 for World of Warcraft 6.0.3 Live (build level 19342)
 
-SimulationCraft 603-12 for World of Warcraft 6.0.3 Live (build level 19116)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 Resource         : 2.4% Base Mana (3840 @Level 100)
@@ -369,7 +369,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Dream of Cenarius (158504), Solar Empowerment (164545), Item - Druid T17 Balance 2P Bonus (165433)
+Affecting spells : Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Dream of Cenarius (158504), Solar Empowerment (164545), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -378,7 +378,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.17000
+                   Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 1.46300
 #2 (id=169355)   : Server Side Script (77)
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
@@ -474,7 +474,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
-Affecting spells : Mastery: Mental Anguish (77486), Glyph of Mind Spike (81292), Mind Spike (87178), Shadowy Insight (124430), Hotfix Passive (137030), Lucidity (137323), Item - Priest T16 Shadow 2P Bonus (145174), Empowered Shadows (145180), Clarity of Power (155246), Glyph of Mind Harvest (162532), Mind Blast (165201)
+Affecting spells : Mastery: Mental Anguish (77486), Glyph of Mind Spike (81292), Mind Spike (87178), Shadowy Insight (124430), Lucidity (137323), Item - Priest T16 Shadow 2P Bonus (145174), Empowered Shadows (145180), Clarity of Power (155246), Glyph of Mind Harvest (162532), Mind Blast (165201)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -483,7 +483,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3283)     : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.80000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000
 #2 (id=139174)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: shadow_orb
 #3 (id=216147)   : Trigger Spell: Mind Blast Marker (64)
@@ -639,7 +639,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
-Affecting spells : Mastery: Mental Anguish (77486), Shadow Word: Insanity (132573), Hotfix Passive (137030), Lucidity (137323), Enhanced Mind Flay (157223)
+Affecting spells : Mastery: Mental Anguish (77486), Insanity (132573), Lucidity (137323), Enhanced Mind Flay (157223)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -649,7 +649,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : Channeled (34)
 Effects          :
 #1 (id=7301)     : Apply Aura (6) | Periodic Damage: shadow every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.30000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.33000
 #2 (id=7302)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
 Description      : Assault the target's mind with Shadow energy, causing $o1 Shadow damage over $d$?s120585[. Each time Mind Flay deals damage the Priest will be granted $120587s1% increased movement speed for $120587d, stacking up to $120587u times.][ and slowing their movement speed by $s2%.]
@@ -685,7 +685,7 @@ Spell Level      : 52
 Range            : 30 yards
 Duration         : 5 seconds
 Cooldown         : 45 seconds
-Affecting spells : Lucidity (137323), Glyph of Silence (159626), 
+Affecting spells : Meditation (95860), Lucidity (137323), Glyph of Silence (159626), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -836,7 +836,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=13737)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.5, dl=0.15) | SP Coefficient: 1.12500 | Radius: 0 - 12 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=0.5, dl=0.15) | SP Coefficient: 0.56250 | Radius: 0 - 12 yards
 Description      : $@spelldesc132157
 
 Name             : Spirit of Redemption (id=27827) [Spell Family (6)] 
@@ -941,7 +941,7 @@ Effects          :
 #1 (id=22171)    : School Damage: shadow (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.67500
 #2 (id=165318)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.61775
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.70000
 Description      : A word of dark binding that inflicts $s2 Shadow damage to the target$?s15407[ and grants a Shadow Orb][]. Only usable on enemies that have less than 20% health.$?s15407&!s157218[
 
 If the target does not die, the cooldown is reset, but this additional Shadow Word: Death does not grant a Shadow Orb.][]
@@ -1135,7 +1135,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=24949)    : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 51 (avg=0) | Points Per Level: 1 | SP Coefficient: 2.21666 | Radius: 0 - 30 yards
-Description      : Heals up to $?s55675[6][5] injured party or raid members within $A1 yards of the target for $s1.
+Description      : Heals up to $?s55675[6][5] injured allies within $A1 yards of the target for $s1.
 
 Name             : Vampiric Touch (id=34914) [Spell Family (6)] 
 Class            : Shadow Priest
@@ -1194,7 +1194,7 @@ Spell Level      : 68
 Range            : 50000 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
-Stacks           : 5 maximum
+Stacks           : 10 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
@@ -1412,7 +1412,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=39897)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00800
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.20000
 Description      : $@spelldesc47540
 
 Name             : Penance (id=47750) [Scaling Spell (7), Spell Family (6)] 
@@ -1429,7 +1429,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=39995)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=8.309, dl=0.122) | SP Coefficient: 2.20000
+                   Base Value: 1 | Scaled Value: 0 (avg=8.309, dl=0.122) | SP Coefficient: 2.64000
 Description      : $@spelldesc47540
 
 Name             : Divine Aegis (id=47753) [Spell Family (6)] 
@@ -1499,7 +1499,7 @@ Spell Level      : 28
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
-Affecting spells : Lucidity (137323)
+Affecting spells : Insanity (132573), Lucidity (137323)
 Attributes       : ........ ........ x.....x. ........   ..x....x ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1516,7 +1516,6 @@ Tooltip          : Causing shadow damage to all targets within $49821a1 yards.
 Name             : Mind Sear (id=49821) [Spell Family (6)] 
 Class            : Priest
 Spell Level      : 1
-Affecting spells : Hotfix Passive (137030), 
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ......x.   x....... .x...... ........ .x...... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1526,7 +1525,7 @@ Attributes       : ........ ........ ........ ........   ...x...x .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=41944)    : School Damage: shadow (2)
-                   Base Value: -1 | Scaled Value: 0 (avg=0) | Value Range: 1 | SP Coefficient: 0.22500 | Radius: 10 yards
+                   Base Value: -1 | Scaled Value: 0 (avg=0) | Value Range: 1 | SP Coefficient: 0.25000 | Radius: 10 yards
 Description      : Causes an explosion of shadow magic around the target, causing $49821s1 Shadow damage every $48045T1 sec for $48045d to all enemies within $49821a1 yards around the target.
 Tooltip          : Causing shadow damage to all targets within $a1 yards.
 
@@ -2560,7 +2559,7 @@ Spell Level      : 44
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Mastery: Mental Anguish (77486), Surge of Darkness (87160), Hotfix Passive (137030), Lucidity (137323), Empowered Shadows (145180)
+Affecting spells : Mastery: Mental Anguish (77486), Surge of Darkness (87160), Lucidity (137323), Empowered Shadows (145180)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2569,7 +2568,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=66820)    : School Damage: shadowfrost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.82500 | Trigger Spell: 87178
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.90800 | Trigger Spell: 87178
 #2 (id=66821)    : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : Blasts the target for $73510s1 Shadowfrost damage, but extinguishes your damage over time effects on the target.
@@ -2625,10 +2624,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68105)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.12500
                    Affected Spells: Mind Blast (8092), Mind Flay (15407), Mind Spike (73510), Insanity (129197)
 #2 (id=224463)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Misc Value: 22
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.12500 | Misc Value: 22
                    Affected Spells: Mind Flay (15407), Insanity (129197)
 Description      : Increases the damage of Mind Blast, Mind Spike, and Mind Flay by $m1%.
 
@@ -3214,7 +3213,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Generated by Mind Blast and Shadow Word: Death. Used to cast Devouring Plague and empower Psychic Horror.
 
-Name             : Meditation (Passive) (id=95860) [Passive] 
+Name             : Meditation (Passive) (id=95860) [Spell Family (6), Passive] 
 Class            : Discipline Priest
 Spell Level      : 10
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -3227,6 +3226,9 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=101633)   : Apply Aura (6) | Unknown effect sub type (134)
                    Base Value: 50 | Scaled Value: 50
+#2 (id=260741)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
+                   Base Value: -3000 | Scaled Value: -3000 | Misc Value: 1
+                   Affected Spells: Silence (15487)
 Description      : Allows $s1% of your mana regeneration from Spirit to continue while in combat.
 
 Name             : Meditation (Passive) (id=95861) [Passive] 
@@ -3489,7 +3491,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=122873)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.56669
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.65200
 Description      : $@spelldesc110744
 
 Name             : Levitate (id=111758) [Spell Family (6)] 
@@ -4114,7 +4116,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. .....x.. .....
                  : Not a proc (105)
 Effects          :
 #1 (id=153526)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.45536
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.52400
 Description      : $@spelldesc122121
 
 Name             : Mindbender (id=123040) [Spell Family (6)] 
@@ -4489,7 +4491,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
-Affecting spells : Mastery: Mental Anguish (77486), Shadow Word: Insanity (132573), Hotfix Passive (137030), Lucidity (137323), Enhanced Mind Flay (157223)
+Affecting spells : Mastery: Mental Anguish (77486), Insanity (132573), Lucidity (137323), Enhanced Mind Flay (157223)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4499,7 +4501,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : Channeled (34)
 Effects          :
 #1 (id=165362)   : Apply Aura (6) | Periodic Damage: shadow every 1 seconds (3)
-                   Base Value: 0 | Scaled Value: 1 - 3 (avg=0) | Value Range: 3 | SP Coefficient: 0.30000
+                   Base Value: 0 | Scaled Value: 1 - 3 (avg=0) | Value Range: 3 | SP Coefficient: 0.33000
 #2 (id=183258)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50
 Description      : Assault the target's mind with Shadow energy, causing $o1 Shadow damage over $d$?s120585[. Each time Mind Flay deals damage the Priest will be granted $120587s1% increased movement speed for $120587d, stacking up to $120587u times.][ and slowing their movement speed by $s2%.]
@@ -4587,7 +4589,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 Description      : Causes an explosion of holy light around the caster, causing $s1 Holy damage to all nearby enemy targets within $A1 yards and healing up to $s2 nearby targets within $23455A1 yards for $23455s1.
 
-Name             : Shadow Word: Insanity (id=132573) [Spell Family (6)] 
+Name             : Insanity (id=132573) [Spell Family (6)] 
 Class            : Priest
 Range            : 100 yards
 Duration         : 2 seconds
@@ -4603,6 +4605,9 @@ Effects          :
 #1 (id=171847)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 129197 | Scaled Value: 129197
                    Affected Spells: Mind Flay (15407), Insanity (129197)
+#2 (id=257698)   : Apply Aura (6) | Unknown effect sub type (332)
+                   Base Value: 179338 | Scaled Value: 179338
+                   Affected Spells: Mind Sear (48045)
 Description      : $@spelldesc139139
 Tooltip          : Your Mind Flay is transformed into Insanity.
 
@@ -4616,18 +4621,36 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179714)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 10 | Scaled Value: 10
-                   Affected Spells: Mind Blast (8092), Mind Flay (15407), Mind Sear (49821), Mind Spike (73510), Insanity (129197)
-#2 (id=191080)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22
-                   Affected Spells: Mind Blast (8092), Mind Flay (15407), Mind Sear (49821), Mind Spike (73510), Insanity (129197)
+#1 (id=179714)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#2 (id=191080)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
 #3 (id=191081)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22
+                   Base Value: 0 | Scaled Value: 0
 #4 (id=191082)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 19
+                   Base Value: 0 | Scaled Value: 0
 #5 (id=191083)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22
+                   Base Value: 0 | Scaled Value: 0
+#6 (id=260687)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#7 (id=260688)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#8 (id=260689)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#9 (id=260690)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#10 (id=260691)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#11 (id=260692)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#12 (id=260693)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#13 (id=260694)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#14 (id=260695)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#15 (id=260696)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
 
 Name             : Hotfix Passive (id=137031) [Passive, Hidden] 
 Class            : Holy Priest
@@ -4649,8 +4672,28 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #5 (id=191079)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
+#6 (id=260947)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#7 (id=260948)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#8 (id=260949)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#9 (id=260950)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#10 (id=260951)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#11 (id=260952)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#12 (id=260953)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#13 (id=260954)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#14 (id=260955)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#15 (id=260956)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
 
-Name             : Hotfix Passive (id=137032) [Passive, Hidden] 
+Name             : Hotfix Passive (id=137032) [Spell Family (6), Passive, Hidden] 
 Class            : Discipline Priest
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4669,6 +4712,26 @@ Effects          :
 #4 (id=191074)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #5 (id=191075)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#6 (id=260957)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#7 (id=260958)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#8 (id=260959)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#9 (id=260960)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#10 (id=260961)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#11 (id=260962)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#12 (id=260963)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#13 (id=260964)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#14 (id=260965)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#15 (id=260966)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 
 Name             : Hotfix Passive (id=137033) [Passive, Hidden] 
@@ -4691,6 +4754,26 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #5 (id=191071)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
+#6 (id=260937)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#7 (id=260938)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#8 (id=260939)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#9 (id=260940)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#10 (id=260941)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#11 (id=260942)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#12 (id=260943)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#13 (id=260944)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#14 (id=260945)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
+#15 (id=260946)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
 
 Name             : Insanity (id=139139) [Spell Family (6), Passive] 
 Class            : Priest
@@ -4706,9 +4789,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=183262)   : Apply Aura (6) | Proc Trigger Spell: Shadow Word: Insanity (42)
+#1 (id=183262)   : Apply Aura (6) | Proc Trigger Spell: Insanity (42)
                    Base Value: 100 | Scaled Value: 100 | Trigger Spell: 132573
-Description      : Consuming Shadow Orbs transforms your Mind Flay into Insanity for $173319d per Shadow Orb consumed. Insanity deals $s1% additional damage.
+Description      : Consuming Shadow Orbs transforms your Mind Flay into Insanity, and your Mind Sear into Searing Insanity, for $173319d per Shadow Orb consumed. These spells deals $s1% additional damage.
 
 Name             : Glyph of Angels (id=145722) [Spell Family (6), Passive] 
 Class            : Priest
@@ -5702,7 +5785,7 @@ Effects          :
                    Affected Spells: Penance (47758)
 #2 (id=257450)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1
-Description      : Penance channels for 1 additional second and generates $s2 stacks of Evangelism.
+Description      : Penance channels for 1 additional second and generates $s2 $Lstack:stacks; of Evangelism.
 
 Name             : Item - Priest T17 Holy 2P Bonus (id=165621) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -5862,7 +5945,7 @@ Effects          :
 #1 (id=244339)   : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1211
 
-Name             : Shadow Word: Insanity (id=173319) [Spell Family (6)] 
+Name             : Insanity (id=173319) [Spell Family (6)] 
 Class            : Priest
 Range            : 100 yards
 Duration         : 2 seconds
