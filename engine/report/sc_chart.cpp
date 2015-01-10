@@ -2040,7 +2040,6 @@ std::string chart::distribution( int print_style,
   return s;
 }
 
-#if LOOTRANK_ENABLED == 1
 // chart::gear_weights_lootrank =============================================
 
 std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_lootrank( player_t* p )
@@ -2237,7 +2236,6 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_lootrank( player_t
   }
   return sa;
 }
-#endif
 
 // chart::gear_weights_wowhead ==============================================
 

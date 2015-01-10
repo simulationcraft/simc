@@ -1048,9 +1048,7 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
   // Scaling charts
   if ( ! ( ( p -> sim -> scaling -> num_scaling_stats <= 0 ) || p -> quiet || p -> is_pet() || p -> is_enemy() || p -> is_add() || p -> type == HEALING_ENEMY ) )
   {
-#if LOOTRANK_ENABLED == 1
     ri.gear_weights_lootrank_link        = chart::gear_weights_lootrank   ( p );
-#endif
     ri.gear_weights_wowhead_std_link     = chart::gear_weights_wowhead    ( p );
     ri.gear_weights_askmrrobot_link      = chart::gear_weights_askmrrobot ( p );
   }
