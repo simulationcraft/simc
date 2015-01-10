@@ -16,7 +16,7 @@ struct spell_data_expr_t;
 
 #define MAX_PLAYERS_PER_CHART 20
 
-#define LOOTRANK_ENABLED 1
+#define LOOTRANK_ENABLED 0 // The website works, but the link we send out is not usable. If anyone ever fixes it, just set this to 1.
 
 namespace chart
 {

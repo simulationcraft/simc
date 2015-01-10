@@ -1758,10 +1758,12 @@ void print_html_player_scale_factor_table( report::sc_html_stream& os, sim_t*, p
     os.printf(
     "<li><a href=\"%s\" class=\"ext\">wowhead</a></li>\n",
     ri.gear_weights_wowhead_std_link[ sm ].c_str() );
+#if LOOTRANK_ENABLED == 1
   if ( !ri.gear_weights_lootrank_link[ sm ].empty() )
     os.printf(
     "<li><a href=\"%s\" class=\"ext\">lootrank</a></li>\n",
     ri.gear_weights_lootrank_link[ sm ].c_str() );
+#endif
   os << "</ul>\n";
   os << "</td>\n";
   os << "</tr>\n";
