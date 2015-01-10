@@ -2270,8 +2270,8 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_wowhead( player_t*
     // Restrict wowhead to rare gems. When epic gems become available:"gm=4;gb=1;"
     s += "gm=3;gb=1;";
 
-    // Min ilvl of 463 (sensible for current raid tier).
-    s += "minle=463;";
+    // Min ilvl of 600 (sensible for current raid tier).
+    s += "minle=600;";
 
     std::string    id_string = "";
     std::string value_string = "";
@@ -2314,8 +2314,8 @@ std::array<std::string, SCALE_METRIC_MAX> chart::gear_weights_wowhead( player_t*
         }
         first = false;
 
-	str::format( id_string, "%d", id );
-	str::format( value_string, "%.*f", p -> sim -> report_precision, value );
+        str::format( id_string, "%d", id );
+        str::format( value_string, "%.*f", p -> sim -> report_precision, value );
       }
     }
 
