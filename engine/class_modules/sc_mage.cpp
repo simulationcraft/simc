@@ -3765,7 +3765,7 @@ struct pyroblast_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= 1.0 + 0.184;
+      am *= 255.0 / 221.2;
     }
 
     return am;
