@@ -37,7 +37,7 @@ actions+=/run_action_list,name=aoe,if=active_enemies>=2
 actions+=/run_action_list,name=single_target,if=active_enemies<2
 
 actions.aoe=unholy_blight
-actions.aoe+=/run_action_list,name=spread,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking&!dot.necrotic_plague.ticking
+actions.aoe+=/run_action_list,name=spread,if=(!dot.blood_plague.ticking|!dot.frost_fever.ticking)&!dot.necrotic_plague.ticking
 actions.aoe+=/defile
 actions.aoe+=/breath_of_sindragosa,if=runic_power>75
 actions.aoe+=/run_action_list,name=bos_aoe,if=dot.breath_of_sindragosa.ticking
@@ -123,7 +123,7 @@ actions.bos_aoe+=/plague_leech
 actions.bos_aoe+=/empower_rune_weapon
 actions.bos_aoe+=/death_coil,if=buff.sudden_doom.react
 
-actions.spread=blood_boil,cycle_targets=1,if=dot.blood_plague.ticking|dot.frost_fever.ticking&!talent.necrotic_plague.enabled
+actions.spread=blood_boil,cycle_targets=1,if=(dot.blood_plague.ticking|dot.frost_fever.ticking)&!talent.necrotic_plague.enabled
 actions.spread+=/outbreak,if=!talent.necrotic_plague.enabled&(!dot.blood_plague.ticking|!dot.frost_fever.ticking)
 actions.spread+=/outbreak,if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking
 actions.spread+=/plague_strike,if=!talent.necrotic_plague.enabled&(!dot.blood_plague.ticking|!dot.frost_fever.ticking)
