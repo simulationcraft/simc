@@ -6586,9 +6586,17 @@ void death_knight_t::init_action_list()
     for ( size_t i = 0; i < get_item_actions().size(); i++ )
       def -> add_action( get_item_actions()[i] );
 
-    //decide between single_target and aoe rotation
-    def -> add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
-    def -> add_action( "run_action_list,name=single_target,if=active_enemies<3" );
+    if ( main_hand_weapon.group() == WEAPON_2H )
+    {
+      //decide between single_target and aoe rotation
+      def -> add_action( "run_action_list,name=aoe,if=active_enemies>=4" );
+      def -> add_action( "run_action_list,name=single_target,if=active_enemies<4" );
+    }
+    else
+    {
+      def -> add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
+      def -> add_action( "run_action_list,name=single_target,if=active_enemies<3" );
+    }
 
     // Breath of Sindragosa specific APLs
     action_priority_list_t* bos_aoe = get_action_priority_list( "bos_aoe" );
