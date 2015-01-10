@@ -21,6 +21,7 @@ struct adds_event_t : public raid_event_t
   std::vector< pet_t* > adds;
   double count_range;
   size_t adds_to_remove;
+  static int wave;
 
   adds_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "adds" ),
@@ -61,11 +62,22 @@ struct adds_event_t : public raid_event_t
       duration = min_cd - timespan_t::from_seconds( 0.001 );
     }
 
+    wave++;
+
     for ( int i = 0; i < util::ceil( overlap ); i++ )
     {
       for ( unsigned add = 0; add < util::ceil( count + count_range ); add++ )
       {
-        std::string add_name_str = name_str;
+        std::string add_name_str = "";
+
+        if ( wave > 1 && name_str == "Add" ) // Only add wave to secondary wave that aren't given manual names.
+        {
+          add_name_str += "Wave";
+          add_name_str += util::to_string( wave );
+          add_name_str += "_";
+        }
+
+        add_name_str += name_str;
         add_name_str += util::to_string( add + 1 );
 
         pet_t* p = master -> create_pet( add_name_str );
@@ -100,6 +112,9 @@ struct adds_event_t : public raid_event_t
     }
   }
 };
+
+// Initialize static add counter
+int adds_event_t::wave = 0;
 
 // Casting ==================================================================
 
