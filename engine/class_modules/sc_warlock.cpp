@@ -5408,7 +5408,8 @@ void warlock_t::create_buffs()
   buffs.immolation_aura = buff_creator_t( this, "immolation_aura", find_spell( 104025 ) );
 
   buffs.haunting_spirits = buff_creator_t( this, "haunting_spirits", find_spell( 157698 ) )
-    .chance( 1.0 );
+    .chance( 1.0 )
+    .refresh_behavior( BUFF_REFRESH_PANDEMIC );
 
   buffs.kiljaedens_cunning = buff_creator_t( this, "kiljaedens_cunning", talents.kiljaedens_cunning )
     .cd( timespan_t::zero() );
