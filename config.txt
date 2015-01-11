@@ -1,6 +1,10 @@
 ﻿;!@Install@!UTF-8!
 RunProgram=""
 InstallPath="Simulationcraft"
-ExtractTitle="Unzipping Simulationcraft"
+BeginPrompt="Simulationcraft"
+ExtractTitle="Directory"
 GUIMode="1"
+GUIFlags="192"
+ExtractPathText="Extraction Path"
+FinishMessage="Extraction Complete"
 ;!@InstallEnd@!
