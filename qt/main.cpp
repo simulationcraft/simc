@@ -88,6 +88,7 @@ int main( int argc, char *argv[] )
   QCoreApplication::setOrganizationName( "SimulationCraft" );
   QSettings::setDefaultFormat( QSettings::IniFormat ); // Avoid Registry entries on Windows
 #if SC_USE_WEBENGINE
+  a.setAttribute( Qt::AA_UseOpenGLES, true );
   QWebEngineSettings::globalSettings() -> setAttribute( QWebEngineSettings::LocalContentCanAccessRemoteUrls, true );
 #endif
 
