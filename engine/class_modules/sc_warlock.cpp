@@ -1012,9 +1012,6 @@ void warlock_pet_t::init_base_stats()
   resources.base[RESOURCE_ENERGY] = 200;
   base_energy_regen_per_second = 10;
 
-  if ( owner -> race == RACE_ORC )
-    initial.spell_power_multiplier *= 1.0 + owner -> find_spell( 20575 ) -> effectN( 1 ).percent();
-
   base.spell_power_per_intellect = 1;
 
   intellect_per_owner = 0;
@@ -1023,13 +1020,8 @@ void warlock_pet_t::init_base_stats()
   main_hand_weapon.type = WEAPON_BEAST;
 
   double dmg = dbc.spell_scaling( owner -> type, owner -> level );
-  if ( owner -> race == RACE_ORC ) dmg *= 1.0 + owner -> find_spell( 20575 ) -> effectN( 1 ).percent();
-  main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = dmg;
 
   main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-
-  if ( owner -> race == RACE_ORC )
-    base.attack_power_multiplier *= 1.0 + owner -> find_spell( 20575 ) -> effectN( 1 ).percent();
 }
 
 void warlock_pet_t::init_action_list()
@@ -1072,6 +1064,9 @@ void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
 double warlock_pet_t::composite_player_multiplier( school_e school ) const
 {
   double m = pet_t::composite_player_multiplier( school );
+
+  if  (owner -> race == RACE_ORC && pet_type != PET_WILD_IMP )
+    m *= 1.0 + o() -> find_spell( 21563 ) -> effectN( 1 ).percent();
 
   if ( o() -> mastery_spells.master_demonologist -> ok() )
     m *= 1.0 + o() -> cache.mastery() * o() -> mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
