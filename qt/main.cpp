@@ -87,6 +87,9 @@ int main( int argc, char *argv[] )
   QCoreApplication::setOrganizationDomain( "http://code.google.com/p/simulationcraft/" );
   QCoreApplication::setOrganizationName( "SimulationCraft" );
   QSettings::setDefaultFormat( QSettings::IniFormat ); // Avoid Registry entries on Windows
+#if SC_USE_WEBENGINE
+  QWebEngineSettings::globalSettings() -> setAttribute( QWebEngineSettings::LocalContentCanAccessRemoteUrls, true );
+#endif
 
   QNetworkProxyFactory::setUseSystemConfiguration( true );
 

@@ -7,7 +7,7 @@
 :: Qt-Framework: C:\Qt\Qt5.4.0\
 
 :: Update the qt_dir as necessary
-set qt_dir=C:\Qt\Qt5.4.1\5.4\msvc2013
+set qt_dir=C:\Qt\5.4\msvc2013
 set redist="C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\x86\Microsoft.VC120.CRT"
 
 :: IMPORTANT NOTE FOR DEBUGGING
