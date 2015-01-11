@@ -60,10 +60,10 @@ actions.aoe+=/plague_leech
 actions.aoe+=/empower_rune_weapon
 
 actions.single_target=plague_leech,if=(cooldown.outbreak.remains<1)&((blood<1&frost<1)|(blood<1&unholy<1)|(frost<1&unholy<1))
-actions.single_target+=/plague_leech,if=((blood<1&frost<1)|(blood<1&unholy<1)|(frost<1&unholy<1))&(dot.blood_plague.remains<3|dot.frost_fever.remains<3)
-actions.single_target+=/plague_leech,if=(dot.blood_plague.remains<1|dot.frost_fever.remains<1)
-actions.single_target+=/outbreak,if=!talent.necrotic_plague.enabled&(!dot.frost_fever.ticking|!dot.blood_plague.ticking)
-actions.single_target+=/unholy_blight,if=!talent.necrotic_plague.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
+actions.single_target+=/plague_leech,if=((blood<1&frost<1)|(blood<1&unholy<1)|(frost<1&unholy<1))&disease.min_remains<8
+actions.single_target+=/plague_leech,if=disease.min_remains<1
+actions.single_target+=/outbreak,if=!talent.necrotic_plague.enabled&!disease.ticking
+actions.single_target+=/unholy_blight,if=!talent.necrotic_plague.enabled&disease.min_remains<3
 actions.single_target+=/unholy_blight,if=talent.necrotic_plague.enabled&dot.necrotic_plague.remains<1
 actions.single_target+=/death_coil,if=runic_power>90
 actions.single_target+=/soul_reaper,if=(target.health.pct-3*(target.health.pct%target.time_to_die))<=45
@@ -75,13 +75,13 @@ actions.single_target+=/festering_strike,if=cooldown.breath_of_sindragosa.remain
 actions.single_target+=/blood_tap,if=((target.health.pct-3*(target.health.pct%target.time_to_die))<=45)&cooldown.soul_reaper.remains=0
 actions.single_target+=/death_and_decay,if=unholy=2
 actions.single_target+=/defile,if=unholy=2
-actions.single_target+=/plague_strike,if=(!dot.blood_plague.ticking|!dot.frost_fever.ticking)&unholy=2
+actions.single_target+=/plague_strike,if=!disease.ticking&unholy=2
 actions.single_target+=/scourge_strike,if=unholy=2
 actions.single_target+=/death_coil,if=runic_power>80
 actions.single_target+=/festering_strike,if=blood=2&frost=2&(((Frost-death)>0)|((Blood-death)>0))
 actions.single_target+=/festering_strike,if=(blood=2|frost=2)&(((Frost-death)>0)&((Blood-death)>0))
 actions.single_target+=/defile,if=blood=2|frost=2
-actions.single_target+=/plague_strike,if=(!dot.blood_plague.ticking|!dot.frost_fever.ticking)&(blood=2|frost=2)
+actions.single_target+=/plague_strike,if=!disease.ticking&(blood=2|frost=2)
 actions.single_target+=/scourge_strike,if=blood=2|frost=2
 actions.single_target+=/festering_strike,if=((Blood-death)>1)
 actions.single_target+=/blood_boil,if=((Blood-death)>1)
@@ -91,7 +91,7 @@ actions.single_target+=/summon_gargoyle
 actions.single_target+=/death_and_decay
 actions.single_target+=/defile
 actions.single_target+=/blood_tap,if=cooldown.defile.remains=0
-actions.single_target+=/plague_strike,if=(!dot.blood_plague.ticking|!dot.frost_fever.ticking)
+actions.single_target+=/plague_strike,if=!disease.ticking
 actions.single_target+=/dark_transformation
 actions.single_target+=/blood_tap,if=buff.blood_charge.stack>10&(buff.sudden_doom.react|(buff.dark_transformation.down&unholy<=1))
 actions.single_target+=/death_coil,if=buff.sudden_doom.react|(buff.dark_transformation.down&unholy<=1)
@@ -123,10 +123,10 @@ actions.bos_aoe+=/plague_leech
 actions.bos_aoe+=/empower_rune_weapon
 actions.bos_aoe+=/death_coil,if=buff.sudden_doom.react
 
-actions.spread=blood_boil,cycle_targets=1,if=(dot.blood_plague.ticking|dot.frost_fever.ticking)&!talent.necrotic_plague.enabled
-actions.spread+=/outbreak,if=!talent.necrotic_plague.enabled&(!dot.blood_plague.ticking|!dot.frost_fever.ticking)
+actions.spread=blood_boil,cycle_targets=1,if=!disease.ticking&!talent.necrotic_plague.enabled
+actions.spread+=/outbreak,if=!talent.necrotic_plague.enabled&!disease.ticking
 actions.spread+=/outbreak,if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking
-actions.spread+=/plague_strike,if=!talent.necrotic_plague.enabled&(!dot.blood_plague.ticking|!dot.frost_fever.ticking)
+actions.spread+=/plague_strike,if=!talent.necrotic_plague.enabled&!disease.ticking
 actions.spread+=/plague_strike,if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking
 
 head=rivetsealed_casque,id=109989,bonus_id=524

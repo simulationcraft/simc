@@ -4706,7 +4706,7 @@ void rogue_t::init_action_list()
   }
   else if ( specialization() == ROGUE_SUBTLETY )
   {
-    potion_action_str += "|buff.shadow_dance.up&(trinket.stat.agi.react|trinket.stat.multistrike.react|buff.archmages_greater_incandescence_agi.react)";
+    potion_action_str += "|buff.shadow_reflection.up&(trinket.stat.agi.react|trinket.stat.multistrike.react|buff.archmages_greater_incandescence_agi.react)|(buff.shadow_reflection.up&target.time_to_die<136)";
   }
 
   // In-combat potion
@@ -4836,8 +4836,6 @@ void rogue_t::init_action_list()
       else
         def -> add_action( racial_actions[i] + ",if=buff.shadow_dance.up" );
     }
-
-    def -> add_action( this, "Slice and Dice", "if=(buff.slice_and_dice.remains<10.8)&buff.slice_and_dice.remains<target.time_to_die&combo_points=((target.time_to_die-buff.slice_and_dice.remains)%6)+1" );
 
     // Shadow Dancing and Vanishing and Marking for the Deathing
     def -> add_action( this, "Premeditation", "if=combo_points<=4&!(buff.shadow_dance.up&energy>100&combo_points>1)&!buff.subterfuge.up|(buff.subterfuge.up&debuff.find_weakness.up)" );

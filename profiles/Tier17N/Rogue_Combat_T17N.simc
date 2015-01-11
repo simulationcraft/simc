@@ -79,8 +79,8 @@ finger1=timeless_solium_band_of_the_assassin,id=118297,enchant=gift_of_haste
 finger2=unexploded_explosive_shard,id=113877,enchant=gift_of_haste
 trinket1=meaty_dragonspine_trophy,id=118114
 trinket2=beating_heart_of_the_mountain,id=113931
-main_hand=hansgars_forgehammer,id=113897,enchant=mark_of_bleeding_hollow
-off_hand=hansgars_forgehammer,id=113897,enchant=mark_of_bleeding_hollow
+main_hand=hansgars_forgehammer,id=113897,enchant=mark_of_warsong
+off_hand=hansgars_forgehammer,id=113897,enchant=mark_of_warsong
 
 # Gear Summary
 # gear_agility=2809
