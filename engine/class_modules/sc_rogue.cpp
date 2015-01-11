@@ -4706,7 +4706,7 @@ void rogue_t::init_action_list()
   }
   else if ( specialization() == ROGUE_SUBTLETY )
   {
-    potion_action_str += "|buff.shadow_reflection.up&(trinket.stat.agi.react|trinket.stat.multistrike.react|buff.archmages_greater_incandescence_agi.react)|(buff.shadow_reflection.up&target.time_to_die<136)";
+    potion_action_str += "|(buff.shadow_reflection.up|(!talent.shadow_reflection.enabled&buff.shadow_dance.up))&(trinket.stat.agi.react|trinket.stat.multistrike.react|buff.archmages_greater_incandescence_agi.react)|((buff.shadow_reflection.up|(!talent.shadow_reflection.enabled&buff.shadow_dance.up))&target.time_to_die<136)";
   }
 
   // In-combat potion

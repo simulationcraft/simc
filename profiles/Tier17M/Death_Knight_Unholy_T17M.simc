@@ -60,7 +60,7 @@ actions.aoe+=/plague_leech
 actions.aoe+=/empower_rune_weapon
 
 actions.single_target=plague_leech,if=(cooldown.outbreak.remains<1)&((blood<1&frost<1)|(blood<1&unholy<1)|(frost<1&unholy<1))
-actions.single_target+=/plague_leech,if=((blood<1&frost<1)|(blood<1&unholy<1)|(frost<1&unholy<1))&disease.min_remains<8
+actions.single_target+=/plague_leech,if=((blood<1&frost<1)|(blood<1&unholy<1)|(frost<1&unholy<1))&disease.min_remains<3
 actions.single_target+=/plague_leech,if=disease.min_remains<1
 actions.single_target+=/outbreak,if=!talent.necrotic_plague.enabled&!disease.ticking
 actions.single_target+=/unholy_blight,if=!talent.necrotic_plague.enabled&disease.min_remains<3

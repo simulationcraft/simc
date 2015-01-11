@@ -6778,7 +6778,7 @@ void death_knight_t::init_action_list()
     def -> add_action( "run_action_list,name=single_target,if=active_enemies<2" );
     // Plague Leech
     st -> add_talent( this, "Plague Leech", "if=(cooldown.outbreak.remains<1)&((blood<1&frost<1)|(blood<1&unholy<1)|(frost<1&unholy<1))" );
-    st -> add_talent( this, "Plague Leech", "if=((blood<1&frost<1)|(blood<1&unholy<1)|(frost<1&unholy<1))&disease.min_remains<8" );
+    st -> add_talent( this, "Plague Leech", "if=((blood<1&frost<1)|(blood<1&unholy<1)|(frost<1&unholy<1))&disease.min_remains<3" );
     st -> add_talent( this, "Plague Leech", "if=disease.min_remains<1" );
     st -> add_action( this, "Outbreak", "if=!talent.necrotic_plague.enabled&!disease.ticking" );
     st -> add_talent( this, "Unholy Blight", "if=!talent.necrotic_plague.enabled&disease.min_remains<3" );
