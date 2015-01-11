@@ -1065,7 +1065,7 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 {
   double m = pet_t::composite_player_multiplier( school );
 
-  if  (owner -> race == RACE_ORC && pet_type != PET_WILD_IMP )
+  if  ( owner -> race == RACE_ORC )
     m *= 1.0 + o() -> find_spell( 21563 ) -> effectN( 1 ).percent();
 
   if ( o() -> mastery_spells.master_demonologist -> ok() )
