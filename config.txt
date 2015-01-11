@@ -1,0 +1,6 @@
+﻿;!@Install@!UTF-8!
+RunProgram=""
+InstallPath="Simulationcraft"
+ExtractTitle="Unzipping Simulationcraft"
+GUIMode="1"
+;!@InstallEnd@!

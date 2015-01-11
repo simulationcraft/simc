@@ -18,22 +18,34 @@ del bla.txt
 
 robocopy . %install% /s *.* /xd .git %install% /xf *.pgd /xn
 :: Don't zip up the PGO file, that's a large file.
-set filename=%install%-%mydate%-%revision%.zip
-7z a -r -tzip %filename% %install% -mx9 -mm=Deflate
-call start winscp /command "open downloads" "put %download%\%filename% -nopreservetime -nopermissions -transfer=binary" "exit"
+set filename=%install%-%mydate%-%revision%
+7z a -r %filename% %install% -mx9 -md=32m
+RD /s /q %install%
+robocopy E:\ %install% 7zsd.sfx
+robocopy . %install% %filename%.7z config.txt
+copy /b %install%\7ZSD.sfx + %install%\config.txt + %install%\%filename%.7z %filename%.exe
+call start winscp /command "open downloads" "put %download%\%filename%.exe -nopreservetime -nopermissions -transfer=binary" "exit"
 :: Zips source code, calls winscp to upload it. If anyone else is attempting this 'downloads' is the nickname of whatever server you are trying to upload to in winscp.
 
 set install=simc-%simcversion%-win32
 call win32_release_msvc12.bat
 iscc.exe "setup32.iss"
 call start winscp /command "open downloads" "put %download%\SimcSetup-%simcversion%-win32.exe -nopreservetime -nopermissions -transfer=binary" "exit"
-7z a -r -tzip %install%.zip %install% -mx9 -mm=Deflate
-call start winscp /command "open downloads" "put %download%\%install%.zip -nopreservetime -nopermissions -transfer=binary" "exit"
+7z a -r %install% %install% -mx9 -md=32m
+RD /s /q %install%
+robocopy E:\ %install% 7zsd.sfx
+robocopy . %install% %install%.7z config.txt
+copy /b %install%\7ZSD.sfx + %install%\config.txt + %install%\%install%.7z %install%.exe
+call start winscp /command "open downloads" "put %download%\%install%.exe -nopreservetime -nopermissions -transfer=binary" "exit"
 
 set install=simc-%simcversion%-win64
 call win64_release_msvc12.bat
 iscc.exe "setup64.iss"
 call start winscp /command "open downloads" "put %download%\SimcSetup-%simcversion%-win64.exe  -nopreservetime -nopermissions -transfer=binary" "exit"
-7z a -r -tzip %install%.zip %install% -mx9 -mm=Deflate
-winscp /command "open downloads" "put %download%\%install%.zip -nopreservetime -nopermissions -transfer=binary" "exit"
+7z a -r %install% %install% -mx9 -md=32m
+RD /s /q %install%
+robocopy E:\ %install% 7zsd.sfx
+robocopy . %install% %install%.7z config.txt
+copy /b %install%\7ZSD.sfx + %install%\config.txt + %install%\%install%.7z %install%.exe
+winscp /command "open downloads" "put %download%\%install%.exe -nopreservetime -nopermissions -transfer=binary" "exit"
 pause
