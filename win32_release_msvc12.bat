@@ -7,7 +7,7 @@
 :: Qt-Framework: C:\Qt\Qt5.4.0\
 
 :: Update the qt_dir as necessary
-set qt_dir=C:\Qt\5.4\msvc2013
+set qt_dir=C:\Qt\5.4.1\5.4\msvc2013
 set redist="C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\x86\Microsoft.VC120.CRT"
 
 :: IMPORTANT NOTE FOR DEBUGGING
@@ -26,7 +26,7 @@ forfiles -s -m generate_????.simc -c "cmd /c echo Running @path && %~dp0simc.exe
 
 robocopy %redist%\ %install%\ msvcp120.dll msvcr120.dll vccorlib120.dll
 robocopy locale\ %install%\locale sc_de.qm sc_zh.qm
-robocopy %qt_dir%\bin\ %install%\ Qt5Core.dll Qt5Quick.dll Qt5Qml.dll Qt5Svg.dll Qt5Gui.dll Qt5Widgets.dll Qt5Network.dll Qt5WebEngineCore.dll Qt5WebEngine.dll Qt5WebEngineWidgets.dll libGLESv2.dll icudt53.dll icuin53.dll icuuc53.dll libEGL.dll D3DCompiler_47.dll QtWebEngineProcess.exe opengl32sw.dll
+robocopy %qt_dir%\bin\ %install%\ Qt5Core.dll Qt5Quick.dll Qt5Qml.dll Qt5Svg.dll Qt5Gui.dll Qt5Widgets.dll Qt5Network.dll Qt5WebEngineCore.dll Qt5WebEngine.dll Qt5WebEngineWidgets.dll libGLESv2.dll icudt53.dll icuin53.dll icuuc53.dll libEGL.dll D3DCompiler_47.dll QtWebEngineProcess.exe
 robocopy vs\ %install%\ qt.conf
 robocopy %qt_dir%\ %install%\ icudtl.dat qtwebengine_resources.pak
 robocopy %qt_dir%\plugins\platforms %install%\platforms\ qwindows.dll

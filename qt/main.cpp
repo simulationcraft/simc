@@ -81,6 +81,9 @@ int main( int argc, char *argv[] )
   dbc::init();
   module_t::init();
 
+#if SC_USE_WEBENGINE
+  QApplication::setAttribute( Qt::AA_UseOpenGLES, true );
+#endif
   QApplication a( argc, argv );
   QCoreApplication::setApplicationName( "SimulationCraft" );
   QCoreApplication::setApplicationVersion( SC_VERSION );
@@ -88,7 +91,6 @@ int main( int argc, char *argv[] )
   QCoreApplication::setOrganizationName( "SimulationCraft" );
   QSettings::setDefaultFormat( QSettings::IniFormat ); // Avoid Registry entries on Windows
 #if SC_USE_WEBENGINE
-  a.setAttribute( Qt::AA_UseOpenGLES, true );
   QWebEngineSettings::globalSettings() -> setAttribute( QWebEngineSettings::LocalContentCanAccessRemoteUrls, true );
 #endif
 
