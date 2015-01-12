@@ -1044,13 +1044,13 @@ public:
     // that do not have the specialization.
     _spec = MONK_WINDWALKER;
 
-    double mh_dps = 0;
+   /* double mh_dps = 0;
     if ( owner -> items[ SLOT_MAIN_HAND ].parsed.data.id > 0 )
     {
       mh_dps = owner -> dbc.weapon_dps( owner -> items[ SLOT_MAIN_HAND ].parsed.data.id,
                                         owner -> items[ SLOT_MAIN_HAND ].item_level() );
     }
-
+    */
     main_hand_weapon.type = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( dual_wield ? 2.6 : 3.6 );
 

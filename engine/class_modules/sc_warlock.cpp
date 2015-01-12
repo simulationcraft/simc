@@ -1019,7 +1019,7 @@ void warlock_pet_t::init_base_stats()
 
   main_hand_weapon.type = WEAPON_BEAST;
 
-  double dmg = dbc.spell_scaling( owner -> type, owner -> level );
+  //double dmg = dbc.spell_scaling( owner -> type, owner -> level );
 
   main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
 }
