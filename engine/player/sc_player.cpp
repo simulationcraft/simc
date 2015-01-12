@@ -452,7 +452,7 @@ player_t::player_t( sim_t*             s,
   ready_type( READY_POLL ),
   _spec( SPEC_NONE ),
   bugs( true ),
-  wod_hotfix( true ),
+  wod_hotfix( -1 ),
   scale_player( true ),
   death_pct( 0.0 ),
   size( 0 ),
@@ -753,6 +753,12 @@ void player_t::init()
 
       dynamic_regen_pets = true;
     }
+  }
+
+  // Adjust wod_hotfix variable if it's set to autodetection
+  if ( wod_hotfix == -1 )
+  {
+    wod_hotfix = ! maybe_ptr( dbc.ptr ) == true ? 1 : 0;
   }
 }
 
@@ -8412,7 +8418,7 @@ void player_t::create_options()
     add_option( opt_string( "save_actions", report_information.save_actions_str ) );
     add_option( opt_string( "comment", report_information.comment_str ) );
     add_option( opt_bool( "bugs", bugs ) );
-    add_option( opt_bool( "wod_hotfix", wod_hotfix ) );
+    add_option( opt_int( "wod_hotfix", wod_hotfix ) );
     add_option( opt_func( "world_lag", parse_world_lag ) );
     add_option( opt_func( "world_lag_stddev", parse_world_lag_stddev ) );
     add_option( opt_func( "brain_lag", parse_brain_lag ) );

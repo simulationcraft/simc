@@ -4324,7 +4324,7 @@ struct player_t : public actor_t
   int          ready_type;
   specialization_e  _spec;
   bool         bugs; // If true, include known InGame mechanics which are probably the cause of a bug and not inteded
-  bool         wod_hotfix; // True until the WoD release hotfixes are in teh spell data.
+  int          wod_hotfix; // True until the WoD release hotfixes are in teh spell data.
   bool scale_player;
   double death_pct; // Player will die if he has equal or less than this value as health-pct
   double size; // Actor size, only used for enemies. Affects the travel distance calculation for spells.
