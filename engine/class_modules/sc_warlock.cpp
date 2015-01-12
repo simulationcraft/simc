@@ -5202,12 +5202,8 @@ void warlock_t::create_pets()
   create_pet( "service_imp"        );
   create_pet( "service_succubus"   );
   create_pet( "service_voidwalker" );
-    
-  if( talents.grimoire_of_service -> ok())
-  {
-      create_pet( "service_doomguard" );
-      create_pet( "service_infernal" );
-  }
+  create_pet( "service_doomguard"  );
+  create_pet( "service_infernal"   );
 }
 
 void warlock_t::init_spells()
