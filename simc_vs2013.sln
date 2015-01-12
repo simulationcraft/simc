@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimcGUI_qt5.4.0", "vs\simcq
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simc", "vs\simc_vs2013.vcxproj", "{D963926C-4A85-4600-8626-51FA12FDF5C1}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimcGUI_qt5.4.0_webkit", "vs\simcqt_vs2013_webkit.vcxproj", "{DE226FD4-31BC-4641-8DB2-2A6DBA183C4B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -39,6 +41,18 @@ Global
 		{D963926C-4A85-4600-8626-51FA12FDF5C1}.Release|Win32.Build.0 = Release|Win32
 		{D963926C-4A85-4600-8626-51FA12FDF5C1}.Release|x64.ActiveCfg = Release|x64
 		{D963926C-4A85-4600-8626-51FA12FDF5C1}.Release|x64.Build.0 = Release|x64
+		{DE226FD4-31BC-4641-8DB2-2A6DBA183C4B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DE226FD4-31BC-4641-8DB2-2A6DBA183C4B}.Debug|Win32.Build.0 = Debug|Win32
+		{DE226FD4-31BC-4641-8DB2-2A6DBA183C4B}.Debug|x64.ActiveCfg = Debug|x64
+		{DE226FD4-31BC-4641-8DB2-2A6DBA183C4B}.Debug|x64.Build.0 = Debug|x64
+		{DE226FD4-31BC-4641-8DB2-2A6DBA183C4B}.PGO|Win32.ActiveCfg = PGO|Win32
+		{DE226FD4-31BC-4641-8DB2-2A6DBA183C4B}.PGO|Win32.Build.0 = PGO|Win32
+		{DE226FD4-31BC-4641-8DB2-2A6DBA183C4B}.PGO|x64.ActiveCfg = PGO|x64
+		{DE226FD4-31BC-4641-8DB2-2A6DBA183C4B}.PGO|x64.Build.0 = PGO|x64
+		{DE226FD4-31BC-4641-8DB2-2A6DBA183C4B}.Release|Win32.ActiveCfg = Release|Win32
+		{DE226FD4-31BC-4641-8DB2-2A6DBA183C4B}.Release|Win32.Build.0 = Release|Win32
+		{DE226FD4-31BC-4641-8DB2-2A6DBA183C4B}.Release|x64.ActiveCfg = Release|x64
+		{DE226FD4-31BC-4641-8DB2-2A6DBA183C4B}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

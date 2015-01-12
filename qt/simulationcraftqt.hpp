@@ -457,7 +457,7 @@ class SC_WelcomeTabWidget: public SC_WebEngineView
   SC_WelcomeTabWidget( SC_MainWindow* parent = nullptr );
 
 private slots:
-#ifndef SC_USE_WEBKIT
+#if defined ( SC_USE_WEBENGINE )
   void urlChangedSlot( const QUrl& url )
   {
     if ( url.isLocalFile() )
