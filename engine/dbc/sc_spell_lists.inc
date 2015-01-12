@@ -689,7 +689,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warlock
   {
-    // General tree, 31 abilities
+    // General tree, 33 abilities
     {
          710, // Banish
          172, // Corruption
@@ -700,8 +700,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       111771, // Demonic Gateway
         1098, // Enslave Demon
         5782, // Fear
+      157900, // Grimoire: Doomguard (Summon)
       111897, // Grimoire: Felhunter (Summon)
       111859, // Grimoire: Imp (Summon)
+      157901, // Grimoire: Infernal (Summon)
       111896, // Grimoire: Succubus (Summon)
       111895, // Grimoire: Voidwalker (Summon)
       114790, // Seed of Corruption
