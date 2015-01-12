@@ -2881,7 +2881,7 @@ struct fire_nova_t : public shaman_spell_t
     // Fire Nova now has a maximum of 7 novas that can be triggered if more than 7 targets are affected by Flame Shock.
     for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); ++i )
     {
-      if ( fire_nova_targets == 7 && p() -> wod_hotfix )
+      if ( fire_nova_targets == 7 && ( p() -> wod_hotfix || maybe_ptr( p() -> dbc.ptr ) ) )
         break;
       player_t* e = sim -> target_non_sleeping_list[ i ];
       if ( ! e -> is_enemy() )
