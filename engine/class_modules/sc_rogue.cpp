@@ -2954,19 +2954,26 @@ struct honor_among_thieves_t : public action_t
     honor_among_thieves_t* action;
     rogue_t* rogue;
 
-    hat_event_t( honor_among_thieves_t* a ) :
+    hat_event_t( honor_among_thieves_t* a, bool first ) :
       event_t( *a -> player, "honor_among_thieves_event" ),
       action( a ), rogue( debug_cast< rogue_t* >( a -> player ) )
     {
-      double next_event = sim().rng().gauss( action -> cooldown.total_seconds(), action -> cooldown_stddev.total_seconds() );
-      double hat_icd = rogue -> spec.honor_among_thieves -> internal_cooldown().total_seconds();
-      double clamped_value = clamp( next_event, hat_icd, action -> cooldown.total_seconds() + 3 * action -> cooldown_stddev.total_seconds() );
+      if ( ! first )
+      {
+        double next_event = sim().rng().gauss( action -> cooldown.total_seconds(), action -> cooldown_stddev.total_seconds() );
+        double hat_icd = rogue -> spec.honor_among_thieves -> internal_cooldown().total_seconds();
+        double clamped_value = clamp( next_event, hat_icd, action -> cooldown.total_seconds() + 3 * action -> cooldown_stddev.total_seconds() );
 
-      if ( sim().debug )
-        sim().out_debug.printf( "%s hat_event raw=%.3f icd=%.3f val=%.3f",
-            action -> player -> name(), next_event, hat_icd, clamped_value );
+        if ( sim().debug )
+          sim().out_debug.printf( "%s hat_event raw=%.3f icd=%.3f val=%.3f",
+              action -> player -> name(), next_event, hat_icd, clamped_value );
 
-      add_event( timespan_t::from_seconds( clamped_value ) );
+        add_event( timespan_t::from_seconds( clamped_value ) );
+      }
+      else
+      {
+        add_event( timespan_t::from_millis( 100 ) );
+      }
     }
 
     void execute()
@@ -2983,7 +2990,7 @@ struct honor_among_thieves_t : public action_t
       if ( rogue -> buffs.t16_2pc_melee -> trigger() )
         rogue -> procs.t16_2pc_melee -> occur();
 
-      action -> hat_event = new ( sim() ) hat_event_t( action );
+      action -> hat_event = new ( sim() ) hat_event_t( action, false );
     }
   };
 
@@ -3016,7 +3023,7 @@ struct honor_among_thieves_t : public action_t
 
     assert( ! hat_event );
 
-    hat_event = new ( *sim ) hat_event_t( this );
+    hat_event = new ( *sim ) hat_event_t( this, true );
   }
 
   void reset()
