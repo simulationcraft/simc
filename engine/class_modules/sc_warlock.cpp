@@ -5117,6 +5117,8 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "service_imp"           ) a = new grimoire_of_service_t( this, "imp" );
   else if ( action_name == "service_succubus"      ) a = new grimoire_of_service_t( this, "succubus" );
   else if ( action_name == "service_voidwalker"    ) a = new grimoire_of_service_t( this, "voidwalker" );
+  else if ( action_name == "service_infernal"      ) a = new grimoire_of_service_t( this, "infernal" );
+  else if ( action_name == "service_doomguard"     ) a = new grimoire_of_service_t( this, "doomguard" );
   else if ( action_name == "service_pet"           ) a = new grimoire_of_service_t( this, default_pet );
   else return player_t::create_action( action_name, options_str );
 
@@ -5156,6 +5158,8 @@ pet_t* warlock_t::create_pet( const std::string& pet_name,
   if ( pet_name == "service_imp"          ) return new         imp_pet_t( sim, this, pet_name );
   if ( pet_name == "service_succubus"     ) return new    succubus_pet_t( sim, this, pet_name );
   if ( pet_name == "service_voidwalker"   ) return new  voidwalker_pet_t( sim, this, pet_name );
+  if ( pet_name == "service_doomguard"     ) return new    doomguard_pet_t( sim, this );
+  if ( pet_name == "service_infernal"   ) return new  infernal_pet_t( sim, this);
 
   return 0;
 }
@@ -5198,6 +5202,12 @@ void warlock_t::create_pets()
   create_pet( "service_imp"        );
   create_pet( "service_succubus"   );
   create_pet( "service_voidwalker" );
+    
+  if( talents.grimoire_of_service -> ok())
+  {
+      create_pet( "service_doomguard" );
+      create_pet( "service_infernal" );
+  }
 }
 
 void warlock_t::init_spells()

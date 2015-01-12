@@ -1451,6 +1451,8 @@ class SpellDataGenerator(DataGenerator):
             ( 112870, 2, True ), # wrathguard summon
             ( 112921, 0, True ), # abyssal summon
             ( 112927, 0, True ), # terrorguard summon
+            ( 157900, 0, True ), # grimoire: doomguard
+            ( 157901, 0, True ), # grimoire: infernal
             ( 115422, 2, True ), # void ray
             ( 104025, 2, True ), # immolation aura
             ( 104027, 2, True ), # meta soul fire
