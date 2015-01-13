@@ -1049,7 +1049,9 @@ void print_html_gear ( report::sc_html_stream& os, player_t* p )
           break;
         }
       }
-
+#if defined SC_USE_WEBKIT && defined SC_WINDOWS
+      gems = false; // Webkit + Windows + Gems in tooltip = GUI lock up.
+#endif
       if ( gems )
       {
         rel_str += "gems=";
