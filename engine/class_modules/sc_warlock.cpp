@@ -5009,19 +5009,19 @@ double warlock_t::composite_rating_multiplier( rating_e rating ) const
     m *= 1.0 + spec.eradication -> effectN( 1 ).percent();
     break;
   case RATING_SPELL_CRIT:
-    if ( wod_hotfix )
+    if ( wod_hotfix && specialization() == WARLOCK_DESTRUCTION )
       m *= 1.15;
     else
       m *= 1.0 + spec.devastation -> effectN( 1 ).percent();
     break;
   case RATING_MELEE_CRIT:
-    if ( wod_hotfix )
+    if ( wod_hotfix && specialization() == WARLOCK_DESTRUCTION )
       m *= 1.15;
     else
       m *= 1.0 + spec.devastation -> effectN( 1 ).percent();
     break;
   case RATING_RANGED_CRIT:
-    if ( wod_hotfix )
+    if ( wod_hotfix && specialization() == WARLOCK_DESTRUCTION )
       m *= 1.15;
     else
       m *= 1.0 + spec.devastation -> effectN( 1 ).percent();
