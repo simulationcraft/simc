@@ -1069,7 +1069,11 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + o() -> find_spell( 21563 ) -> effectN( 1 ).percent();
 
   if ( o() -> mastery_spells.master_demonologist -> ok() )
+  {
     m *= 1.0 + o() -> cache.mastery() * o() -> mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
+    if ( wod_hotfix )
+      m *= 1.33;
+  }
 
   if ( o() -> talents.grimoire_of_supremacy -> ok() && pet_type != PET_WILD_IMP )
     m *= 1.0 + supremacy -> effectN( 1 ).percent(); // The relevant effect is not attatched to the talent spell, weirdly enough
