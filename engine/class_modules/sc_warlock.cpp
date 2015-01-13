@@ -1606,7 +1606,11 @@ struct inner_demon_t : public pet_t
     double m = pet_t::composite_player_multiplier( school );
 
     if ( o() -> mastery_spells.master_demonologist -> ok() )
+    {
       m *= 1.0 + o() -> cache.mastery() * o() -> mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
+      if ( wod_hotfix )
+        m *= 1.33;
+    }
 
     return m;
   }
@@ -1945,7 +1949,11 @@ public:
     double pm = spell_t::action_multiplier();
 
     if ( p() -> buffs.metamorphosis -> up() && demo_mastery )
+    {
       pm *= 1.0 + p() -> cache.mastery() * p() -> mastery_spells.master_demonologist -> effectN( 3 ).mastery_value();
+      if ( p() -> wod_hotfix )
+        pm *= 1.33;
+    }
 
     return pm;
   }
@@ -2202,6 +2210,10 @@ struct doom_t: public warlock_spell_t
     double am = spell_t::action_multiplier();
 
     am *= 1.0 + p() -> cache.mastery() * p() -> mastery_spells.master_demonologist -> effectN( 3 ).mastery_value();
+    if ( p() -> wod_hotfix )
+    {
+      am *= 1.33;
+    }
 
     return am;
   }
@@ -4902,7 +4914,11 @@ double warlock_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
 
   if ( mastery_spells.master_demonologist -> ok() )
+  {
     m *= 1.0 + cache.mastery() * mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
+    if ( wod_hotfix )
+      m *= 1.33;
+  }
 
   return m;
 }
