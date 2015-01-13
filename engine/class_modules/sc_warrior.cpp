@@ -554,7 +554,9 @@ public:
     double am = ab::action_multiplier();
 
     if ( weapons_master )
-      am *= 1.0 + ab::player -> cache.mastery_value();
+    {
+      am *= 1.0 + ( ab::player -> cache.mastery_value() * ( p() -> wod_hotfix ? 1.571 : 1.0 ) );
+    }
 
     return am;
   }
@@ -1620,7 +1622,10 @@ struct devastate_t: public warrior_attack_t
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
     weapon = &( p -> main_hand_weapon );
     if ( p -> wod_hotfix )
+    {
       weapon_multiplier *= 1.05;
+      weapon_multiplier *= 1.2;
+    }
   }
 
   void execute()
@@ -2262,6 +2267,7 @@ struct revenge_t: public warrior_attack_t
     {
       attack_power_mod.direct *= 1.05;
       attack_power_mod.direct *= 0.8;
+      attack_power_mod.direct *= 1.4;
     }
   }
 
@@ -2562,6 +2568,7 @@ struct shield_slam_t: public warrior_attack_t
     {
       attack_power_mod.direct *= 1.05;
       attack_power_mod.direct *= 0.8;
+      attack_power_mod.direct *= 1.2;
     }
   }
 
@@ -2815,6 +2822,10 @@ struct thunder_clap_t: public warrior_attack_t
     cooldown -> duration = data().cooldown();
     cooldown -> duration *= 1 + p -> glyphs.resonating_power -> effectN( 2 ).percent();
     attack_power_mod.direct *= 1.0 + p -> glyphs.resonating_power -> effectN( 1 ).percent();
+    if ( p -> wod_hotfix )
+    {
+      attack_power_mod.direct *= 1.4;
+    }
   }
 
   void impact( action_state_t* s )
@@ -3167,6 +3178,10 @@ struct deep_wounds_t: public warrior_spell_t
   {
     background = tick_may_crit = true;
     hasted_ticks = false;
+    if ( p -> wod_hotfix )
+    {
+      attack_power_mod.tick *= 1.4;
+    }
   }
 };
 
@@ -5106,7 +5121,9 @@ double warrior_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buff.rude_interruption -> value();
 
   if ( active_stance == STANCE_GLADIATOR && school == SCHOOL_PHYSICAL )
-    m *= 1.0 + buff.gladiator_stance -> data().effectN( 1 ).percent();
+  {
+    m *= 1.0 + ( wod_hotfix ? 0.05 : buff.gladiator_stance -> data().effectN( 1 ).percent() );
+  }
 
   return m;
 }
