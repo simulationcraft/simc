@@ -1403,6 +1403,11 @@ struct dancing_rune_weapon_pet_t : public pet_t
       drw_spell_t( "blood_boil", p, p -> owner -> find_class_spell( "Blood Boil" ) )
     {
       aoe = -1;
+
+      if ( p -> wod_hotfix )
+      {
+        base_multiplier *= 0.667;
+      }
     }
 
     virtual void impact( action_state_t* s )
@@ -4869,7 +4874,10 @@ struct blood_boil_t : public death_knight_spell_t
     base_multiplier *= 1.0 + p -> spec.crimson_scourge -> effectN( 1 ).percent();
 
     if ( p -> wod_hotfix )
+    {
       attack_power_mod.direct *= 1.20;
+      attack_power_mod.direct *= 0.667;
+    }
 
     rp_gain = data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
 
@@ -7485,7 +7493,7 @@ double death_knight_t::composite_rating_multiplier( rating_e rating ) const
     case RATING_SPELL_HASTE:
     case RATING_MELEE_HASTE:
     case RATING_RANGED_HASTE:
-      m *= 1.0 + spec.icy_talons -> effectN( 3 ).percent();
+      m *= 1.0 + ( wod_hotfix ? 0.2 : spec.icy_talons -> effectN( 3 ).percent() );
       break;
     default:
       break;
