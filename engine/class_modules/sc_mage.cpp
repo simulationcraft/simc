@@ -5425,7 +5425,7 @@ double mage_t::composite_rating_multiplier( rating_e rating) const
   case RATING_MULTISTRIKE:
     return m *= 1.0 + spec.ice_shards -> effectN( 1 ).percent();
   case RATING_SPELL_CRIT:
-    if ( wod_hotfix )
+    if ( wod_hotfix && specialization() == MAGE_FIRE)
       return m *= 1.0 + 0.15;
     else
       return m *= 1.0 + spec.incineration -> effectN( 1 ).percent();
