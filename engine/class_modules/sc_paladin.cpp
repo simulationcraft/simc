@@ -4389,7 +4389,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     double am = paladin_melee_attack_t::action_multiplier();
 
     // Alabaster Shield bonus
-    am *= 1.0 + p() -> buffs.alabaster_shield -> stack() * p() -> spells.alabaster_shield -> effectN( 1 ).percent();
+    am *= 1.0 + p() -> buffs.alabaster_shield -> stack() * ( p() -> wod_hotfix ? 0.03 : p() -> spells.alabaster_shield -> effectN( 1 ).percent() );
 
     return am;
   }
@@ -5902,7 +5902,7 @@ double paladin_t::composite_rating_multiplier( rating_e r ) const
     case RATING_MELEE_HASTE:
     case RATING_RANGED_HASTE:
     case RATING_SPELL_HASTE:
-      m *= 1.0 + passives.sacred_duty -> effectN( 1 ).percent(); 
+      m *= 1.0 + ( wod_hotfix ? 0.3 : passives.sacred_duty -> effectN( 1 ).percent() ); 
       break;
     case RATING_MASTERY:
       m *= 1.0 + passives.righteous_vengeance -> effectN( 1 ).percent();
