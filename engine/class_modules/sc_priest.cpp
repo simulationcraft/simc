@@ -4574,19 +4574,21 @@ struct power_word_shield_t : public priest_absorb_t
       priest_heal_t( "power_word_shield_glyph", player, player.find_spell( 55672 ) )
     {
       school          = SCHOOL_HOLY;
-
       background = true;
       proc       = true;
 
       snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
-
-
       castable_in_shadowform = true;
     }
 
     void trigger( action_state_t* s )
     {
       base_dd_min = base_dd_max = priest.glyphs.power_word_shield -> effectN( 1 ).percent() * s -> result_amount;
+      if ( priest.wod_hotfix )
+      {
+        base_dd_min *= 0.85;
+        base_dd_max = base_dd_min;
+      }
       target = s -> target;
       execute();
     }
