@@ -1070,9 +1070,10 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   if ( o() -> mastery_spells.master_demonologist -> ok() )
   {
-    m *= 1.0 + o() -> cache.mastery() * o() -> mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
+    double mastery = o() -> cache.mastery();
     if ( wod_hotfix )
-      m *= 1.33;
+      mastery *= 1.33;
+    m *= 1.0 + mastery * o() -> mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
   }
 
   if ( o() -> talents.grimoire_of_supremacy -> ok() && pet_type != PET_WILD_IMP )
@@ -1607,9 +1608,10 @@ struct inner_demon_t : public pet_t
 
     if ( o() -> mastery_spells.master_demonologist -> ok() )
     {
-      m *= 1.0 + o() -> cache.mastery() * o() -> mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
+      double mastery = o() -> cache.mastery();
       if ( wod_hotfix )
-        m *= 1.33;
+        mastery *= 1.33;
+      m *= 1.0 + mastery * o() -> mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
     }
 
     return m;
@@ -1950,9 +1952,10 @@ public:
 
     if ( p() -> buffs.metamorphosis -> up() && demo_mastery )
     {
-      pm *= 1.0 + p() -> cache.mastery() * p() -> mastery_spells.master_demonologist -> effectN( 3 ).mastery_value();
+      double mastery = p() -> cache.mastery();
       if ( p() -> wod_hotfix )
-        pm *= 1.33;
+        mastery *= 1.33;
+      pm *= 1.0 + mastery * p() -> mastery_spells.master_demonologist -> effectN( 3 ).mastery_value();
     }
 
     return pm;
@@ -2209,11 +2212,11 @@ struct doom_t: public warlock_spell_t
   {
     double am = spell_t::action_multiplier();
 
-    am *= 1.0 + p() -> cache.mastery() * p() -> mastery_spells.master_demonologist -> effectN( 3 ).mastery_value();
+    double mastery = p() -> cache.mastery();
     if ( p() -> wod_hotfix )
-    {
-      am *= 1.33;
-    }
+      mastery *= 1.33;
+
+    am *= 1.0 + mastery * p() -> mastery_spells.master_demonologist -> effectN( 3 ).mastery_value();
 
     return am;
   }
@@ -4915,9 +4918,10 @@ double warlock_t::composite_player_multiplier( school_e school ) const
 
   if ( mastery_spells.master_demonologist -> ok() )
   {
-    m *= 1.0 + cache.mastery() * mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
+    double mastery = cache.mastery();
     if ( wod_hotfix )
-      m *= 1.33;
+      mastery *= 1.33;
+    m *= 1.0 + mastery * mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
   }
 
   return m;
@@ -4985,9 +4989,7 @@ double warlock_t::composite_mastery() const
     {
       m += spec.dark_soul -> effectN( 1 ).average( this );
     }
-
   }
-
   return m;
 }
 
