@@ -127,7 +127,7 @@
     <EnableManagedIncrementalBuild>false</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WebKit|x64'">
-    <TargetName>SimulationCraft64-Webkit</TargetName>
+    <TargetName>SimulationCraft64</TargetName>
     <IntDir>int_gui\$(Platform)\$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)\</OutDir>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -161,7 +161,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WebKit|Win32'">
     <OutDir>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>int_gui\$(Platform)\$(Configuration)\</IntDir>
-    <TargetName>SimulationCraft-Webkit</TargetName>
+    <TargetName>SimulationCraft</TargetName>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <!-- Set Correct QT PATH -->
