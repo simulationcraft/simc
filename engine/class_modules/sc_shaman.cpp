@@ -1815,7 +1815,7 @@ struct stormstrike_attack_t : public shaman_attack_t
     base_multiplier *= 1.0 + p() -> perk.improved_stormstrike -> effectN( 1 ).percent();
     if ( player -> wod_hotfix )
     {
-      base_multiplier *= 1.44;
+      base_multiplier *= 1.60;
     }
   }
 };
