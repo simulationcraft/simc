@@ -47,56 +47,5 @@ RD /s /q %install%
 robocopy E:\ %install% 7zsd.sfx
 robocopy . %install% %install%.7z config.txt
 copy /b %install%\7ZSD.sfx + %install%\config.txt + %install%\%install%.7z %install%.exe
-call start winscp /command "open downloads" "put %download%\%install%.exe -nopreservetime -nopermissions -transfer=binary" "exit"
-
-::Webkit compilation.
-set install=simc-%simcversion%-win64-webkit
-set qt_dir=C:\Qt\5.4.1\5.4\msvc2013_64
-set redist="C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\x64\Microsoft.VC120.CRT"
-
-rd %install% /s /q
-
-for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\12.0" /v MSBuildToolsPath') do SET MSBUILDDIR=%%B
-
-"%MSBUILDDIR%msbuild.exe" E:\simulationcraft\simc_vs2013.sln /p:configuration=webkit /p:platform=x64 /nr:true /m:8
-
-robocopy %redist%\ %install%\ msvcp120.dll msvcr120.dll vccorlib120.dll
-robocopy locale\ %install%\locale sc_de.qm sc_zh.qm
-robocopy %qt_dir%\bin\ %install%\ Qt5Core.dll Qt5Quick.dll Qt5Qml.dll Qt5Svg.dll Qt5Gui.dll Qt5Widgets.dll Qt5Network.dll Qt5WebKit.dll Qt5WebKitWidgets.dll libGLESv2.dll icudt53.dll icuin53.dll icuuc53.dll libEGL.dll D3DCompiler_47.dll Qt5WebChannel.dll Qt5Multimedia.dll Qt5MultimediaWidgets.dll Qt5Sensors.dll Qt5PrintSupport.dll Qt5Qml.dll Qt5Sql.dll Qt5Svg.dll Qt5Positioning.dll Qt5OpenGl.dll
-robocopy vs\ %install%\ qt.conf
-robocopy %qt_dir%\ %install%\ icudtl.dat
-robocopy %qt_dir%\plugins\platforms %install%\platforms\ qwindows.dll
-robocopy %qt_dir%\plugins\imageformats %install%\imageformats qdds.dll qgif.dll qicns.dll qico.dll qjp2.dll qjpeg.dll qmng.dll qsvg.dll qtga.dll qtiff.dll qwbmp.dll qwebp.dll
-robocopy . %install%\ Welcome.html Welcome.png Simulationcraft64-Webkit.exe simc64.exe readme.txt Error.html COPYING
-robocopy C:\OpenSSL-Win64\bin %install%\ libeay32.dll ssleay32.dll 
-robocopy Profiles\ %install%\profiles\ *.* /S
-
-7z a -r %install% %install% -mx9 -md=32m
-RD /s /q %install%
-robocopy E:\ %install% 7zsd.sfx
-robocopy . %install% %install%.7z config.txt
-copy /b %install%\7ZSD.sfx + %install%\config.txt + %install%\%install%.7z %install%.exe
-call start winscp /command "open downloads" "put %download%\%install%.exe -nopreservetime -nopermissions -transfer=binary" "exit"
-
-set install=simc-%simcversion%-win32-webkit
-set qt_dir=C:\Qt\5.4.1\5.4\msvc2013
-"%MSBUILDDIR%msbuild.exe" E:\simulationcraft\simc_vs2013.sln /p:configuration=webkit /p:platform=win32 /nr:true /m:8
-
-robocopy %redist%\ %install%\ msvcp120.dll msvcr120.dll vccorlib120.dll
-robocopy locale\ %install%\locale sc_de.qm sc_zh.qm
-robocopy %qt_dir%\bin\ %install%\ Qt5Core.dll Qt5Quick.dll Qt5Qml.dll Qt5Svg.dll Qt5Gui.dll Qt5Widgets.dll Qt5Network.dll Qt5WebKit.dll Qt5WebKitWidgets.dll libGLESv2.dll icudt53.dll icuin53.dll icuuc53.dll libEGL.dll D3DCompiler_47.dll Qt5WebChannel.dll Qt5Multimedia.dll Qt5MultimediaWidgets.dll Qt5Sensors.dll Qt5PrintSupport.dll Qt5Qml.dll Qt5Sql.dll Qt5Svg.dll Qt5Positioning.dll Qt5OpenGl.dll
-robocopy vs\ %install%\ qt.conf
-robocopy %qt_dir%\ %install%\ icudtl.dat
-robocopy %qt_dir%\plugins\platforms %install%\platforms\ qwindows.dll
-robocopy %qt_dir%\plugins\imageformats %install%\imageformats qdds.dll qgif.dll qicns.dll qico.dll qjp2.dll qjpeg.dll qmng.dll qsvg.dll qtga.dll qtiff.dll qwbmp.dll qwebp.dll
-robocopy . %install%\ Welcome.html Welcome.png Simulationcraft-Webkit.exe simc.exe readme.txt Error.html COPYING
-robocopy C:\OpenSSL-Win32\bin %install%\ libeay32.dll ssleay32.dll 
-robocopy Profiles\ %install%\profiles\ *.* /S
-
-7z a -r %install% %install% -mx9 -md=32m
-RD /s /q %install%
-robocopy E:\ %install% 7zsd.sfx
-robocopy . %install% %install%.7z config.txt
-copy /b %install%\7ZSD.sfx + %install%\config.txt + %install%\%install%.7z %install%.exe
 winscp /command "open downloads" "put %download%\%install%.exe -nopreservetime -nopermissions -transfer=binary" "exit"
 pause
