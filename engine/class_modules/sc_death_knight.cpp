@@ -7493,7 +7493,7 @@ double death_knight_t::composite_rating_multiplier( rating_e rating ) const
     case RATING_SPELL_HASTE:
     case RATING_MELEE_HASTE:
     case RATING_RANGED_HASTE:
-      m *= 1.0 + ( wod_hotfix ? 0.2 : spec.icy_talons -> effectN( 3 ).percent() );
+      m *= 1.0 + ( wod_hotfix && specialization() == DEATH_KNIGHT_FROST ? 0.2 : spec.icy_talons -> effectN( 3 ).percent() );
       break;
     default:
       break;
