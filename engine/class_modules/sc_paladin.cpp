@@ -6073,6 +6073,7 @@ double paladin_t::composite_player_multiplier( school_e school ) const
 
   // WoD Ret PvP 4-piece buffs everything
   if ( buffs.vindicators_fury -> check() )
+  {
     if ( wod_hotfix )
     {
       m *= 1.0 + buffs.vindicators_fury -> value() * 0.02;
@@ -6081,6 +6082,7 @@ double paladin_t::composite_player_multiplier( school_e school ) const
     {
       m *= 1.0 + buffs.vindicators_fury -> value() * buffs.vindicators_fury -> data().effectN( 1 ).percent();
     }
+  }
   return m;
 }
 
@@ -6095,6 +6097,7 @@ double paladin_t::composite_player_heal_multiplier( const action_state_t* s ) co
 
   // WoD Ret PvP 4-piece buffs everything
   if ( buffs.vindicators_fury -> check() )
+  {
     if ( wod_hotfix )
     {
       m *= 1.0 + buffs.vindicators_fury -> value() * 0.02;
@@ -6103,6 +6106,7 @@ double paladin_t::composite_player_heal_multiplier( const action_state_t* s ) co
     {
       m *= 1.0 + buffs.vindicators_fury -> value() * buffs.vindicators_fury -> data().effectN( 2 ).percent();
     }
+  }
   return m;
 
 }

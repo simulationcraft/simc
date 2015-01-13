@@ -438,7 +438,7 @@ SC_WelcomeTabWidget::SC_WelcomeTabWidget( SC_MainWindow* parent ) :
 #elif defined( SC_LINUX_PACKAGING )
   welcomeFile = SC_LINUX_PACKAGING "/Welcome.html";
 #endif
-#if defined ( SC_USE_WEBENGINE )
+#ifndef SC_USE_WEBKIT
   welcome_uri = "file:///" + welcomeFile;
   welcome_timer = new QTimer( this );
   welcome_timer -> setSingleShot( true );

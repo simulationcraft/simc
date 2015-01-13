@@ -59,6 +59,7 @@ namespace item
   void purified_bindings_of_immerseus( special_effect_t&, const item_t& );
   void thoks_tail_tip( special_effect_t&, const item_t& );
   void cleave( special_effect_t&, const item_t& );
+  void heartpierce( special_effect_t&, const item_t& );
   /* Warlards of Draenor 6.0 */
   void blackiron_micro_crucible( special_effect_t&, const item_t& );
   void humming_blackiron_trigger( special_effect_t&, const item_t& );
@@ -273,6 +274,10 @@ static const special_effect_db_item_t __special_effect_db[] = {
   /* Mists of Pandaria: Darkmoon Faire */
   { 128990, "ProcOn/Hit",                                       0 }, /* Relic of Yu'lon */
   { 128445, "ProcOn/Crit",                                      0 }, /* Relic of Xuen (agi) */
+
+  // Misc
+  { 71892,  0,                                  item::heartpierce },
+  { 71880,  0,                                  item::heartpierce },
 
   /**
    * Enchants
@@ -1928,6 +1933,61 @@ void item::cleave( special_effect_t& effect,
   }
 
   new cleave_callback_t( item, effect );
+}
+
+void item::heartpierce( special_effect_t& effect, const item_t& item )
+{
+  struct invigorate_proc_t : public spell_t
+  {
+    gain_t* g;
+
+    invigorate_proc_t( player_t* player, const spell_data_t* d ) :
+      spell_t( "invigoration", player, d ),
+      g( player -> get_gain( "invigoration" ) )
+    {
+      may_miss = may_crit = harmful = may_dodge = may_parry = callbacks = false;
+      tick_may_crit = hasted_ticks = false;
+      dual = quiet = background = true;
+      target = player;
+    }
+
+    void tick( dot_t* d )
+    {
+      spell_t::tick( d );
+
+      player -> resource_gain( player -> primary_resource(),
+                               data().effectN( 1 ).resource( player -> primary_resource() ),
+                               g,
+                               this );
+    }
+  };
+
+  unsigned spell_id = 0;
+  switch ( item.player -> primary_resource() )
+  {
+    case RESOURCE_MANA:
+      spell_id = 71881;
+      break;
+    case RESOURCE_ENERGY:
+      spell_id = 71882;
+      break;
+    case RESOURCE_RAGE:
+      spell_id = 71883;
+      break;
+    default:
+      break;
+  }
+
+  if ( spell_id == 0 )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
+  effect.ppm_ = 1.0;
+  effect.execute_action = new invigorate_proc_t( item.player, item.player -> find_spell( spell_id ) );
+
+  new dbc_proc_callback_t( item, effect );
 }
 
 } // UNNAMED NAMESPACE
