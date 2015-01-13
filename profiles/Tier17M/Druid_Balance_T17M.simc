@@ -39,9 +39,10 @@ actions.single_target+=/starsurge,if=buff.solar_empowerment.down&eclipse_energy<
 actions.single_target+=/starsurge,if=(charges=2&recharge_time<6)|charges=3
 actions.single_target+=/celestial_alignment,if=eclipse_energy>40
 actions.single_target+=/incarnation,if=eclipse_energy>0
-actions.single_target+=/sunfire,if=remains<7|buff.solar_peak.up
+actions.single_target+=/sunfire,if=remains<7|(buff.solar_peak.up&!talent.balance_of_power.enabled)
 actions.single_target+=/stellar_flare,if=remains<7
-actions.single_target+=/moonfire,if=buff.lunar_peak.up&remains<eclipse_change+20|remains<4|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2&remains<eclipse_change+20)
+actions.single_target+=/moonfire,if=!talent.balance_of_power.enabled&(buff.lunar_peak.up&remains<eclipse_change+20|remains<4|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2&remains<eclipse_change+20))
+actions.single_target+=/moonfire,if=talent.balance_of_power.enabled&(remains<4|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2&remains<eclipse_change+20))
 actions.single_target+=/wrath,if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)
 actions.single_target+=/starfire,if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)
 
