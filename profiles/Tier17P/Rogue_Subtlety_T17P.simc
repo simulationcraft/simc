@@ -54,7 +54,7 @@ actions+=/run_action_list,name=pool
 
 # Combo point generators
 
-actions.generator=run_action_list,name=pool,if=buff.master_of_subtlety.down&buff.shadow_dance.down&debuff.find_weakness.down&(energy+cooldown.shadow_dance.remains*energy.regen<80|energy+cooldown.vanish.remains*energy.regen<60)
+actions.generator=run_action_list,name=pool,if=buff.master_of_subtlety.down&buff.shadow_dance.down&debuff.find_weakness.down&(energy+cooldown.shadow_dance.remains*energy.regen<=energy.max|energy+cooldown.vanish.remains*energy.regen<=energy.max)
 actions.generator+=/pool_resource,for_next=1
 actions.generator+=/ambush
 # If simulating AoE, it is recommended to use Anticipation as the level 90 talent.
