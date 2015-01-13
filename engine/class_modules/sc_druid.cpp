@@ -3343,6 +3343,9 @@ struct thrash_bear_t : public bear_attack_t
     // 9/28/2014: Damage multiplier to fix damage inconsistency vs in-game.
     base_multiplier *= 4.0;
 
+    if ( player -> wod_hotfix )
+      attack_power_mod.direct *= 0.5;
+
     rage_amount = rage_tick_amount = p() -> find_spell( 158723 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
   }
 
@@ -3943,6 +3946,8 @@ struct rejuvenation_t : public druid_heal_t
   {
     tick_zero = true;
     ignore_false_positive = true; // Prevents cat/bear from failing a skill check and going into caster form.
+    if ( p -> wod_hotfix )
+      base_multiplier *= 0.95;
   }
 
   virtual void execute()
@@ -4155,6 +4160,8 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 
       double mastery;
       mastery = p -> cache.mastery_value();
+      if ( p -> wod_hotfix )
+        mastery *= 1.067;
       mastery += p -> spec.eclipse -> effectN( 1 ).percent();
 
       if ( ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) ) &&
@@ -5473,6 +5480,8 @@ struct stellar_flare_t : public druid_spell_t
     balance = p() -> clamped_eclipse_amount;
     double mastery;
     mastery = p() -> cache.mastery_value();
+    if ( p() -> wod_hotfix )
+      mastery *= 1.067;
     mastery += p() -> spec.eclipse -> effectN(1).percent();
 
     if ( p() -> buff.celestial_alignment -> up() )
