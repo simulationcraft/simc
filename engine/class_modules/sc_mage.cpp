@@ -3765,7 +3765,7 @@ struct pyroblast_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= 255.0 / 221.2;
+      am *= 255.0 / 221.2 * (1.0 - 0.05);
     }
 
     return am;
@@ -3782,7 +3782,7 @@ struct pyroblast_t : public mage_spell_t
 
     if ( p() -> wod_hotfix )
     {
-      am *= 1.0 + 0.184;
+      am *= (1.0 + 0.184) * (1.0 - 0.05);
     }
 
     return am;
@@ -5425,7 +5425,10 @@ double mage_t::composite_rating_multiplier( rating_e rating) const
   case RATING_MULTISTRIKE:
     return m *= 1.0 + spec.ice_shards -> effectN( 1 ).percent();
   case RATING_SPELL_CRIT:
-    return m *= 1.0 + spec.incineration -> effectN( 1 ).percent();
+    if ( wod_hotfix )
+      return m *= 1.0 + 0.15;
+    else
+      return m *= 1.0 + spec.incineration -> effectN( 1 ).percent();
   case RATING_MASTERY:
     return m *= 1.0 + spec.arcane_mind -> effectN( 1 ).percent();
   default:
