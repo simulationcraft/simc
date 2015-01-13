@@ -4987,13 +4987,22 @@ double warlock_t::composite_rating_multiplier( rating_e rating ) const
     m *= 1.0 + spec.eradication -> effectN( 1 ).percent();
     break;
   case RATING_SPELL_CRIT:
-    m *= 1.0 + spec.devastation -> effectN( 1 ).percent();
+    if ( wod_hotfix )
+      m *= 1.15;
+    else
+      m *= 1.0 + spec.devastation -> effectN( 1 ).percent();
     break;
   case RATING_MELEE_CRIT:
-    m *= 1.0 + spec.devastation -> effectN( 1 ).percent();
+    if ( wod_hotfix )
+      m *= 1.15;
+    else
+      m *= 1.0 + spec.devastation -> effectN( 1 ).percent();
     break;
   case RATING_RANGED_CRIT:
-    m *= 1.0 + spec.devastation -> effectN( 1 ).percent();
+    if ( wod_hotfix )
+      m *= 1.15;
+    else
+      m *= 1.0 + spec.devastation -> effectN( 1 ).percent();
     break;
   case RATING_MASTERY:
     return m *= 1.0 + spec.demonic_tactics -> effectN( 1 ).percent();
@@ -5158,8 +5167,8 @@ pet_t* warlock_t::create_pet( const std::string& pet_name,
   if ( pet_name == "service_imp"          ) return new         imp_pet_t( sim, this, pet_name );
   if ( pet_name == "service_succubus"     ) return new    succubus_pet_t( sim, this, pet_name );
   if ( pet_name == "service_voidwalker"   ) return new  voidwalker_pet_t( sim, this, pet_name );
-  if ( pet_name == "service_doomguard"     ) return new    doomguard_pet_t( sim, this );
-  if ( pet_name == "service_infernal"   ) return new  infernal_pet_t( sim, this);
+  if ( pet_name == "service_doomguard"    ) return new   doomguard_pet_t( sim, this           );
+  if ( pet_name == "service_infernal"     ) return new    infernal_pet_t( sim, this           );
 
   return 0;
 }
