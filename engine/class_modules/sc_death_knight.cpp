@@ -4150,6 +4150,7 @@ struct festering_strike_t : public death_knight_melee_attack_t
     if ( p -> wod_hotfix )
     {
       weapon_multiplier -= 0.1;
+      weapon_multiplier *= 1.28;
     }
 
     if ( p -> spec.reaping -> ok() )
@@ -5224,6 +5225,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       {
         weapon_multiplier -= 0.04;
         weapon_multiplier *= 1.5;
+        weapon_multiplier *= 1.28;
       }
     }
 
@@ -5250,6 +5252,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     {
       weapon_multiplier -= 0.02;
       weapon_multiplier *= 1.5;
+      weapon_multiplier *= 1.28;
     }
 
     // TODO-WOD: Do we need to inherit damage or is it a separate roll in WoD?
