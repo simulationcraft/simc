@@ -3369,7 +3369,7 @@ struct storm_earth_and_fire_t: public monk_spell_t
           sef_idx.push_back( i );
         }
 
-        size_t idx = sef_idx[ rng().range( 0, sef_idx.size() ) ];
+        size_t idx = sef_idx[ static_cast<unsigned int>( rng().range(0, sef_idx.size()) ) ];
         assert( idx < sef_idx.size() );
 
         p() -> pet.sef[ idx ] -> target = execute_state -> target;
