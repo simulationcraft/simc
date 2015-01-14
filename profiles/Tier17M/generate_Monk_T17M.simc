@@ -85,8 +85,8 @@ finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,enchant=gift_
 finger2=stonefist_band,id=113938,bonus_id=567,enchant=gift_of_versatility
 trinket1=blast_furnace_door,id=113893,bonus_id=567
 trinket2=pillar_of_the_earth,id=113650,bonus_id=567
-main_hand=the_bladefist,id=113591,bonus_id=567,enchant_id=5352
-off_hand=the_bladefist,id=113591,bonus_id=567,enchant_id=5352
+main_hand=iron_soldiers_saber,id=113980,bonus_id=567,enchant_id=5352
+off_hand=iron_soldiers_saber,id=113980,bonus_id=567,enchant_id=5352
 save=Monk_Brewmaster_1h_CE_T17M.simc
 
 # Brewmaster 1h Serenity
@@ -113,8 +113,8 @@ finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,enchant=gift_
 finger2=stonefist_band,id=113938,bonus_id=567,enchant=gift_of_versatility
 trinket1=blast_furnace_door,id=113893,bonus_id=567
 trinket2=pillar_of_the_earth,id=113650,bonus_id=567
-main_hand=the_bladefist,id=113591,bonus_id=567,enchant_id=5352
-off_hand=the_bladefist,id=113591,bonus_id=567,enchant_id=5352
+main_hand=iron_soldiers_saber,id=113980,bonus_id=567,enchant_id=5352
+off_hand=iron_soldiers_saber,id=113980,bonus_id=567,enchant_id=5352
 save=Monk_Brewmaster_1h_Serenity_T17M.simc
 
 # Brewmaster 2h Chi Explosion
