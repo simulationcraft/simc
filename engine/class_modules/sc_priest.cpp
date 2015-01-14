@@ -6265,7 +6265,7 @@ void priest_t::apl_shadow()
   main -> add_action( "mind_spike,if=active_enemies<=5&buff.surge_of_darkness.react=3" );
   main -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&target.distance>=17" );
   main -> add_action( "cascade,if=talent.cascade.enabled&(active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11" );
-  main -> add_action( "divine_star,if=talent.divine_star.enabled&(active_enemies>1|target.distance<=24)" );
+  main -> add_action( "divine_star,if=talent.divine_star.enabled&(active_enemies>1&target.distance<=24)" );
   main -> add_action( "wait,sec=cooldown.shadow_word_death.remains,if=target.health.pct<20&cooldown.shadow_word_death.remains&cooldown.shadow_word_death.remains<0.5&active_enemies<=1" );
   main -> add_action( "wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remains<0.5&cooldown.mind_blast.remains&active_enemies<=1" );
   main -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5" );
@@ -6359,7 +6359,7 @@ void priest_t::apl_shadow()
   cop_mfi -> add_action( "shadow_word_pain,if=remains<(18*0.3)&miss_react&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
   cop_mfi -> add_action( "vampiric_touch,if=remains<(15*0.3+cast_time)&miss_react&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
   cop_mfi -> add_action( "insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies<=2,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|(cooldown.shadow_word_death.remains<=0.1&target.health.pct<20))" );
-  cop_mfi -> add_action( "insanity,if=active_enemies<=2,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|(cooldown.shadow_word_death.remains<=0.1*target.health.pct<20))" );
+  cop_mfi -> add_action( "insanity,if=active_enemies<=2,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|(cooldown.shadow_word_death.remains<=0.1&target.health.pct<20))" );
   cop_mfi -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&target.distance>=17" );
   cop_mfi -> add_action( "cascade,if=talent.cascade.enabled&((active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11)" );
   cop_mfi -> add_action( "divine_star,if=talent.divine_star.enabled&active_enemies>2&target.distance<=24" );
@@ -6382,7 +6382,7 @@ void priest_t::apl_shadow()
   cop -> add_action( "mindbender,if=talent.mindbender.enabled" );
   cop -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
   cop -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&target.distance>=17" );
-  cop -> add_action( "cascade,if=talent.cascade.enabled&((active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11)" );
+  cop -> add_action( "cascade,if=talent.cascade.enabled&(active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11" );
   cop -> add_action( "divine_star,if=talent.divine_star.enabled&active_enemies>3&target.distance<=24" );
   cop -> add_action( "shadow_word_pain,if=miss_react&!ticking&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
   cop -> add_action( "vampiric_touch,if=remains<cast_time&miss_react&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
