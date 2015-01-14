@@ -87,8 +87,8 @@ finger1=timeless_solium_band_of_the_bulwark,id=118298,enchant=gift_of_versatilit
 finger2=stonefist_band,id=113938,enchant=gift_of_versatility
 trinket1=blast_furnace_door,id=113893
 trinket2=pillar_of_the_earth,id=113650
-main_hand=the_bladefist,id=113591,enchant_id=5352
-off_hand=the_bladefist,id=113591,enchant_id=5352
+main_hand=iron_soldiers_saber,id=113980,enchant_id=5352
+off_hand=iron_soldiers_saber,id=113980,enchant_id=5352
 save=Monk_Brewmaster_1h_CE_T17N.simc
 
 # Brewmaster 1h Serenity
@@ -115,8 +115,8 @@ finger1=timeless_solium_band_of_the_bulwark,id=118298,enchant=gift_of_versatilit
 finger2=stonefist_band,id=113938,enchant=gift_of_versatility
 trinket1=blast_furnace_door,id=113893
 trinket2=pillar_of_the_earth,id=113650
-main_hand=the_bladefist,id=113591,enchant_id=5352
-off_hand=the_bladefist,id=113591,enchant_id=5352
+main_hand=iron_soldiers_saber,id=113980,enchant_id=5352
+off_hand=iron_soldiers_saber,id=113980,enchant_id=5352
 save=Monk_Brewmaster_1h_Serenity_T17N.simc
 
 # Brewmaster 2h Chi Explosion
