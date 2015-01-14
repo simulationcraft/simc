@@ -211,7 +211,6 @@ public:
     natures_vigil_proc_t* natures_vigil;
     ursocs_vigor_t*       ursocs_vigor;
     yseras_gift_t*        yseras_gift;
-    spell_t*              starfall_ticking;
   } active;
 
   // Pets
@@ -4497,11 +4496,6 @@ struct displacer_beast_t : public druid_spell_t
 
     p() -> buff.cat_form -> trigger();
     p() -> buff.displacer_beast -> trigger();
-    if ( p() -> active.starfall_ticking )
-    {
-      p() -> active.starfall_ticking -> get_dot() -> cancel();
-      p() -> buff.starfall -> expire();
-    }
   }
 };
 
@@ -5395,6 +5389,7 @@ struct starfall_t : public druid_spell_t
 
     hasted_ticks = false;
     may_multistrike = 0;
+    spell_power_mod.tick = spell_power_mod.direct = 0;
     cooldown = player -> cooldown.starfallsurge;
     base_multiplier *= 1.0 + player -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
     add_child( starfall );
@@ -5402,20 +5397,18 @@ struct starfall_t : public druid_spell_t
     starfall_cd -> duration = timespan_t::from_seconds( 10 );
   }
 
-  void tick( dot_t* )
+  void tick( dot_t*d )
   {
-    starfall -> execute();
+    druid_spell_t::tick( d );
+    if ( p() -> buff.moonkin_form -> check() )
+    { // Only ticks while in moonkin form.
+      starfall -> execute();
+    }
   }
 
-  void last_tick( dot_t* d )
-  {
-    druid_spell_t::last_tick( d );
-    p() -> active.starfall_ticking = 0;
-  }
   void execute()
   {
     p() -> buff.starfall -> trigger();
-    p() -> active.starfall_ticking = this;
     druid_spell_t::execute();
     starfall_cd -> start();
   }
@@ -5439,7 +5432,6 @@ struct starsurge_t : public druid_spell_t
     parse_options( options_str );
 
     base_multiplier *= 1.0 + player -> sets.set( SET_CASTER, T13, B4 ) -> effectN( 2 ).percent();
-
     base_multiplier *= 1.0 + p() -> sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
 
     base_crit += p() -> sets.set( SET_CASTER, T15, B2 ) -> effectN( 1 ).percent();

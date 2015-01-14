@@ -1068,7 +1068,7 @@ public:
     if ( ! p() -> spec.icicles -> ok() )
       return;
 
-    if ( ! ( result_is_hit( state -> result ) | result_is_multistrike( state -> result ) ) )
+    if ( ! result_is_hit_or_multistrike( state -> result ) )
       return;
 
     // Icicles do not double dip on target based multipliers
@@ -1547,7 +1547,7 @@ struct arcane_blast_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    if ( result_is_hit_or_multistrike( s -> result ) )
     {
       if ( p() -> talents.unstable_magic -> ok() )
       {
@@ -2387,13 +2387,12 @@ struct fireball_t : public mage_spell_t
       }
     }
 
-    if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
+    if ( result_is_hit_or_multistrike( s -> result) )
     {
       if ( p() -> talents.unstable_magic -> ok() )
       {
         trigger_unstable_magic( s );
       }
-
       trigger_ignite( s );
     }
   }
@@ -2474,7 +2473,7 @@ struct flamestrike_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    if ( result_is_hit_or_multistrike( s -> result ) )
     {
       trigger_ignite( s );
     }
@@ -2644,7 +2643,7 @@ struct frostbolt_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result) )
+    if ( result_is_hit_or_multistrike( s -> result ) )
     {
       if ( p() -> talents.unstable_magic -> ok() )
       {
@@ -2829,7 +2828,7 @@ struct frostfire_bolt_t : public mage_spell_t
       }
     }
 
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    if ( result_is_hit_or_multistrike( s -> result ) )
     {
       if ( p() -> specialization() == MAGE_FIRE )
       {
@@ -3331,7 +3330,7 @@ struct inferno_blast_t : public mage_spell_t
       }
     }
 
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    if ( result_is_hit_or_multistrike( s -> result ) )
     {
       trigger_ignite( s );
     }
@@ -3456,7 +3455,7 @@ struct meteor_impact_t : public mage_spell_t
   virtual void impact( action_state_t* s )
   {
     mage_spell_t::impact( s );
-    if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
+    if ( result_is_hit_or_multistrike( s -> result) )
       trigger_ignite( s );
   }
 };
@@ -3727,7 +3726,7 @@ struct pyroblast_t : public mage_spell_t
       }
     }
 
-    if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
+    if ( result_is_hit_or_multistrike( s -> result) )
     {
       trigger_ignite( s );
     }
@@ -3848,7 +3847,7 @@ struct scorch_t : public mage_spell_t
       trigger_hot_streak( s );
     }
 
-    if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
+    if ( result_is_hit_or_multistrike( s -> result) )
     {
       trigger_ignite( s );
     }

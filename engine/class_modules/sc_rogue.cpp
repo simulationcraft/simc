@@ -2003,7 +2003,7 @@ struct crimson_tempest_t : public rogue_attack_t
   {
     rogue_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    if ( result_is_hit_or_multistrike( s -> result ) )
     {
       residual_action::trigger( ct_dot, s -> target, s -> result_amount * ct_dot -> data().effectN( 1 ).percent() );
 
@@ -3424,7 +3424,7 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
   if ( ! state -> action -> weapon )
     return;
 
-  if ( ! state -> action -> result_is_hit( state -> result ) )
+  if ( ! state -> action -> result_is_hit_or_multistrike( state -> result ) )
     return;
 
   if ( sim -> active_enemies == 1 )
@@ -4333,7 +4333,7 @@ struct shadow_reflection_pet_t : public pet_t
     {
       shadow_reflection_attack_t::impact( s );
 
-      if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+      if ( result_is_hit_or_multistrike( s -> result ) )
         residual_action::trigger( dot, s -> target, s -> result_amount * dot -> data().effectN( 1 ).percent() );
     }
   };

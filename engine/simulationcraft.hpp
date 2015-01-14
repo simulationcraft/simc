@@ -6398,7 +6398,7 @@ inline proc_types action_state_t::proc_type() const
 inline proc_types2 action_state_t::execute_proc_type2() const
 {
   // Bunch up all non-damaging harmful attacks that land into "hit"
-  if ( action -> harmful && ( action -> result_is_hit( result ) || action -> result_is_multistrike( result ) ) )
+  if ( action -> harmful && action -> result_is_hit_or_multistrike( result ) )
     return PROC2_LANDED;
   else if ( result == RESULT_DODGE )
     return PROC2_DODGE;

@@ -914,7 +914,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       sef_melee_attack_t::impact( state );
 
       if ( ( p() -> current.position == POSITION_BACK || p() -> o() -> glyph.blackout_kick ) &&
-           ( result_is_hit( state -> result ) || result_is_multistrike( state -> result ) ) )
+           result_is_hit_or_multistrike( state -> result ) )
       {
         residual_action::trigger( dot,
                                   state -> target,
@@ -2607,7 +2607,7 @@ struct melee_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    if ( result_is_hit_or_multistrike( s -> result ) )
       p() -> buff.tiger_strikes -> trigger();
 
     if ( p() -> spec.brewing_elusive_brew -> ok() && s -> result == RESULT_CRIT )

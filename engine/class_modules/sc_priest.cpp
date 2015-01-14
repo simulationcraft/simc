@@ -2138,27 +2138,24 @@ struct mind_blast_t : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    if ( result_is_hit( s -> result ) )
     {
-      if ( result_is_hit( s -> result ) )
+      generate_shadow_orb( 1, priest.gains.shadow_orb_mind_blast );
+
+      // Glyph of Mind Harvest
+      if ( priest.glyphs.mind_harvest -> ok() )
       {
-        generate_shadow_orb( 1, priest.gains.shadow_orb_mind_blast );
-
-        // Glyph of Mind Harvest
-        if ( priest.glyphs.mind_harvest -> ok() )
+        priest_td_t& td = get_td( s -> target );
+        if ( !td.glyph_of_mind_harvest_consumed )
         {
-          priest_td_t& td = get_td( s -> target );
-          if ( ! td.glyph_of_mind_harvest_consumed )
-          {
-            td.glyph_of_mind_harvest_consumed = true;
-            generate_shadow_orb( 2, priest.gains.shadow_orb_mind_harvest ); // no sensible spell data available, 2014/06/09
+          td.glyph_of_mind_harvest_consumed = true;
+          generate_shadow_orb( 2, priest.gains.shadow_orb_mind_harvest ); // no sensible spell data available, 2014/06/09
 
-            if ( sim -> debug )
-              sim -> out_debug.printf( "%s consumed Glyph of Mind Harvest on target %s.", priest.name(), s -> target -> name() );
-          }
+          if ( sim -> debug )
+            sim -> out_debug.printf( "%s consumed Glyph of Mind Harvest on target %s.", priest.name(), s -> target -> name() );
         }
-        priest.buffs.glyph_of_mind_spike -> expire();
       }
+      priest.buffs.glyph_of_mind_spike -> expire();
     }
   }
 
@@ -2999,7 +2996,7 @@ struct devouring_plague_t : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    if ( result_is_hit_or_multistrike( s -> result ) )
     {
       trigger_dp_dot( s );
       transfer_dmg_to_dot( s );
