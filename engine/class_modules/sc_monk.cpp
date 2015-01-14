@@ -541,7 +541,13 @@ public:
 
   // Monk specific
   double current_stagger_dmg();
+  double current_stagger_dmg_percent();
   double stagger_pct();
+  // Blizzard rounds it's stagger damage; anything higher than half a percent beyond 
+  // the threshold will switch to the next threshold
+  const double light_stagger_threshold = 0;
+  const double moderate_stagger_threshold = 0.035;
+  const double heavy_stagger_threshold = 0.065;
   void apl_combat_brewmaster();
   void apl_combat_mistweaver();
   void apl_combat_windwalker();
@@ -3684,12 +3690,13 @@ struct purifying_brew_t: public monk_spell_t
       player -> resource_gain( RESOURCE_HEALTH, stagger_heal, p() -> gain.tier16_4pc_tank, this );
     }
 
+    // Tier 17 4 pieces Brewmaster: Purifying Brew generates 1 stacks of Elusive Brew.
+    // Hotfix Jan 13, 2014 - Only procs on Moderate or Heavy Stagger
+    if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) & p() -> current_stagger_dmg_percent() > p() -> moderate_stagger_threshold )
+      trigger_brew( p() -> sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
+
     // Optional addition: Track and report amount of damage cleared
     p() -> active_actions.stagger_self_damage -> clear_all_damage();
-
-    // Tier 17 4 pieces Brewmaster: Purifying Brew generates 1 stacks of Elusive Brew.
-    if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) )
-      trigger_brew( p() -> sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
   }
 
   bool ready()
@@ -5833,7 +5840,7 @@ double monk_t::stagger_pct()
   return stagger;
 }
 
-// monk_t::stagger_dmg ==================================================
+// monk_t::current_stagger_dmg ==================================================
 
 double monk_t::current_stagger_dmg()
 {
@@ -5848,6 +5855,13 @@ double monk_t::current_stagger_dmg()
     }
   }
   return dmg;
+}
+
+// monk_t::current_stagger_dmg_percent ==================================================
+
+double monk_t::current_stagger_dmg_percent()
+{
+  return current_stagger_dmg() / resources.max[RESOURCE_HEALTH];
 }
 
 // monk_t::create_expression ==================================================
@@ -5868,7 +5882,7 @@ expr_t* monk_t::create_expression( action_t* a, const std::string& name_str )
 
       virtual double evaluate()
       {
-        return ( player.current_stagger_dmg() / player.resources.max[RESOURCE_HEALTH] ) > stagger_health_pct;
+        return player.current_stagger_dmg_percent() > stagger_health_pct;
       }
     };
     struct stagger_amount_expr_t: public expr_t
@@ -5885,14 +5899,12 @@ expr_t* monk_t::create_expression( action_t* a, const std::string& name_str )
       }
     };
 
-    // Blizzard rounds it's stagger damage; anything higher than half a percent beyond 
-    // the threshold will switch to the next threshold
     if ( splits[1] == "light" )
-      return new stagger_threshold_expr_t( *this, 0.0 );
+      return new stagger_threshold_expr_t( *this, light_stagger_threshold );
     else if ( splits[1] == "moderate" )
-      return new stagger_threshold_expr_t( *this, 0.035 );
+      return new stagger_threshold_expr_t( *this, moderate_stagger_threshold );
     else if ( splits[1] == "heavy" )
-      return new stagger_threshold_expr_t( *this, 0.065 );
+      return new stagger_threshold_expr_t( *this, heavy_stagger_threshold );
     else if ( splits[1] == "amount" )
       return new stagger_amount_expr_t( *this );
   }
