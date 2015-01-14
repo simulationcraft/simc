@@ -3692,7 +3692,7 @@ struct purifying_brew_t: public monk_spell_t
 
     // Tier 17 4 pieces Brewmaster: Purifying Brew generates 1 stacks of Elusive Brew.
     // Hotfix Jan 13, 2014 - Only procs on Moderate or Heavy Stagger
-    if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) & p() -> current_stagger_dmg_percent() > p() -> moderate_stagger_threshold )
+    if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) && ( p() -> current_stagger_dmg_percent() > p() -> moderate_stagger_threshold  ) )
       trigger_brew( p() -> sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
 
     // Optional addition: Track and report amount of damage cleared

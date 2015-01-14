@@ -5902,7 +5902,7 @@ double paladin_t::composite_rating_multiplier( rating_e r ) const
     case RATING_MELEE_HASTE:
     case RATING_RANGED_HASTE:
     case RATING_SPELL_HASTE:
-      m *= 1.0 + ( wod_hotfix ? 0.3 : passives.sacred_duty -> effectN( 1 ).percent() ); 
+      m *= 1.0 + ( passives.sacred_duty -> ok() ? ( wod_hotfix ? 0.3 : passives.sacred_duty -> effectN( 1 ).percent() ) : 0 ); 
       break;
     case RATING_MASTERY:
       m *= 1.0 + passives.righteous_vengeance -> effectN( 1 ).percent();
