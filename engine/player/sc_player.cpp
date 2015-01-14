@@ -2178,9 +2178,15 @@ void player_t::create_buffs()
   buffs.courageous_primal_diamond_lucidity = buff_creator_t( this, "lucidity" )
                                              .spell( find_spell( 137288 ) );
 
-  buffs.body_and_soul             = buff_creator_t( this, "body_and_soul" )
-                                    .max_stack( 1 )
-                                    .duration( timespan_t::from_seconds( 4.0 ) );
+  buffs.body_and_soul = buff_creator_t( this, "body_and_soul" )
+                        .spell( find_spell( 64129 ) )
+                        .max_stack( 1 )
+                        .duration( timespan_t::from_seconds( 4.0 ) );
+
+  buffs.angelic_feather = buff_creator_t( this, "angelic_feather" )
+                          .spell( find_spell( 121557 ) )
+                          .max_stack( 1 )
+                          .duration( timespan_t::from_seconds( 6.0 ) );
 
   struct raid_movement_buff_t : public buff_t
   {
@@ -2815,7 +2821,11 @@ double player_t::temporary_movement_modifier() const
   if ( buffs.stampeding_roar -> up() )
     temporary = std::max( buffs.stampeding_roar -> data().effectN( 1 ).percent(), temporary );
 
-  temporary = std::max( buffs.body_and_soul -> current_value, temporary );
+  if ( buffs.body_and_soul -> up() )
+    temporary = std::max( buffs.body_and_soul -> data().effectN( 1 ).percent(), temporary );
+
+  if ( buffs.angelic_feather -> up() )
+    temporary = std::max( buffs.angelic_feather -> data().effectN( 1 ).percent(), temporary );
 
   if ( buffs.aspect_of_the_pack -> up() )
     temporary = std::max( buffs.aspect_of_the_pack -> data().effectN( 1 ).percent(), temporary );
