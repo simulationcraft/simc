@@ -39,14 +39,19 @@ actions+=/blood_fury,if=buff.shadow_dance.up
 actions+=/berserking,if=buff.shadow_dance.up
 actions+=/arcane_torrent,if=energy<60&buff.shadow_dance.up
 actions+=/premeditation,if=combo_points<4|(talent.anticipation.enabled&(combo_points+anticipation_charges<9))
-actions+=/hemorrhage,if=!ticking&time<1
+actions+=/pool_resource,for_next=1
+actions+=/garrote,if=time<1
 actions+=/wait,sec=buff.subterfuge.remains-0.1,if=buff.subterfuge.remains>0.5&buff.subterfuge.remains<1.6&time>6
 actions+=/pool_resource,for_next=1,extra_amount=50
 actions+=/shadow_dance,if=energy>=50&buff.stealth.down&buff.vanish.down&debuff.find_weakness.remains<2|(buff.bloodlust.up&(dot.hemorrhage.ticking|dot.garrote.ticking|dot.rupture.ticking))
 actions+=/pool_resource,for_next=1,extra_amount=50
 actions+=/vanish,if=talent.shadow_focus.enabled&energy>=45&energy<=75&(combo_points<4|(talent.anticipation.enabled&combo_points+anticipation_charges<9))&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.remains<2
+actions+=/pool_resource,for_next=1,extra_amount=50
+actions+=/shadowmeld,if=talent.shadow_focus.enabled&energy>=45&energy<=75&(combo_points<4|(talent.anticipation.enabled&combo_points+anticipation_charges<9))&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.remains<2
 actions+=/pool_resource,for_next=1,extra_amount=90
 actions+=/vanish,if=talent.subterfuge.enabled&energy>=90&(combo_points<4|(talent.anticipation.enabled&combo_points+anticipation_charges<9))&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.remains<2
+actions+=/pool_resource,for_next=1,extra_amount=90
+actions+=/shadowmeld,if=talent.subterfuge.enabled&energy>=90&(combo_points<4|(talent.anticipation.enabled&combo_points+anticipation_charges<9))&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.remains<2
 actions+=/marked_for_death,if=combo_points=0
 actions+=/run_action_list,name=finisher,if=combo_points=5
 actions+=/run_action_list,name=generator,if=combo_points<4|(combo_points=4&cooldown.honor_among_thieves.remains>1&energy>70-energy.regen)|(talent.anticipation.enabled&anticipation_charges<4)
@@ -61,7 +66,7 @@ actions.generator+=/ambush
 actions.generator+=/fan_of_knives,if=active_enemies>1
 actions.generator+=/hemorrhage,if=(remains<duration*0.3&target.time_to_die>=remains+duration+8&debuff.find_weakness.down)|!ticking|position_front
 actions.generator+=/shuriken_toss,if=energy<65&energy.regen<16
-actions.generator+=/backstab,if=energy>=energy.max-energy.regen|target.time_to_die<10
+actions.generator+=/backstab,if=!talent.death_from_above.enabled|energy>=energy.max-energy.regen|target.time_to_die<10
 actions.generator+=/run_action_list,name=pool
 
 # Combo point finishers
