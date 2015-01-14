@@ -58,6 +58,8 @@ robocopy . %install% %install%.7z config.txt
 copy /b %install%\7ZSD.sfx + %install%\config.txt + %install%\%install%.7z %install%.exe
 call start winscp /command "open downloads" "put %download%\%install%.exe -nopreservetime -nopermissions -transfer=binary" "exit"
 
+
+set redist="C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\x86\Microsoft.VC120.CRT"
 set install=simc-%simcversion%-win32
 set qt_dir=C:\Qt\5.4\msvc2013
 "%MSBUILDDIR%msbuild.exe" E:\simulationcraft\simc_vs2013.sln /p:configuration=webkit /p:platform=win32 /nr:true /m:8
