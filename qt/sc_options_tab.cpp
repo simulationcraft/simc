@@ -17,22 +17,6 @@ struct OptionEntry
   const char* tooltip;
 };
 
-const OptionEntry buffOptions[] =
-{
-  { "Toggle All Buffs",             "",                                 "Toggle all buffs on/off"                         },
-  { "Attack Power Multiplier",      "override.attack_power_multiplier", "+10% Attack Power Multiplier"                    },
-  { "Spell Power Multiplier",       "override.spell_power_multiplier",  "+10% Spell Power Multiplier"                     },
-  { "Critical Strike",              "override.critical_strike",         "+5% Critical Strike Chance"                      },
-  { "Haste",                        "override.haste",                   "+5% Haste"                                       },
-  { "Multistrike",                  "override.multistrike",             "+5% Multistrike"                                 },
-  { "Mastery",                      "override.mastery",                 "+Mastery Rating"                                 },
-  { "Stamina",                      "override.stamina",                 "+10% Stamina"                                    },
-  { "Strength, Agility, Intellect", "override.str_agi_int",             "+5% Strength, Agility, Intellect"                },
-  { "Versatility",                  "override.versatility",             "+3% Versatility"                                 },
-  { "Bloodlust",                    "override.bloodlust",               "Ancient Hysteria\nBloodlust\nHeroism\nTime Warp" },
-  { NULL, NULL, NULL }
-};
-
 const OptionEntry itemSourceOptions[] =
 {
   { "Local Item Database", "local",   "Use Simulationcraft item database" },
@@ -44,14 +28,6 @@ const OptionEntry itemSourceOptions[] =
 #if SC_BETA
   { "Wowhead.com (Beta)",  SC_BETA_STR "head", "Remote Wowhead.com Beta item data source" },
 #endif
-};
-
-const OptionEntry debuffOptions[] =
-{
-  { "Toggle All Debuffs",     "",                                "Toggle all debuffs on/off"      },
-  { "Bleeding",               "override.bleeding",               "Rip\nRupture"                   },
-  { "Mortal Wounds",          "override.mortal_wounds",          "Healing Debuff"                 },
-  { NULL, NULL, NULL }
 };
 
 const OptionEntry scalingOptions[] =
@@ -138,6 +114,17 @@ QComboBox* createChoice( int count, ... )
   va_end( vap );
   return choice;
 }
+
+void appendCheckBox( const QString& label, const QString& option, const QString& tooltip, QLayout* layout, QButtonGroup* group )
+{
+  QCheckBox* checkBox = new QCheckBox( label );
+  checkBox->setObjectName( option );  // store key of option as object name
+  checkBox -> setToolTip( tooltip );
+  if (group)
+    group -> addButton( checkBox );
+  layout -> addWidget( checkBox );
+}
+
 } // end unnamed namespace
 
 SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
@@ -302,33 +289,34 @@ void SC_OptionsTab::createGlobalsTab()
 void SC_OptionsTab::createBuffsDebuffsTab()
 {
   // Buffs
-  QVBoxLayout* buffsLayout = new QVBoxLayout(); // Buff Layout
+  QVBoxLayout* buffsLayout = new QVBoxLayout();               // Buff Layout
   buffsButtonGroup = new QButtonGroup();
   buffsButtonGroup -> setExclusive( false );
-  for ( int i = 0; buffOptions[ i ].label; ++i )
-  {
-    QCheckBox* checkBox = new QCheckBox( buffOptions[ i ].label );
 
-    checkBox -> setToolTip( buffOptions[ i ].tooltip );
-    buffsButtonGroup -> addButton( checkBox );
-    buffsLayout -> addWidget( checkBox );
-  }
+  appendCheckBox( tr( "Toggle All Buffs" ),             "",                                 tr( "Toggle all buffs on/off" ),                         buffsLayout, buffsButtonGroup );
+  appendCheckBox( tr( "Attack Power Multiplier" ),      "override.attack_power_multiplier", tr( "+10% Attack Power Multiplier" ),                    buffsLayout, buffsButtonGroup );
+  appendCheckBox( tr( "Spell Power Multiplier" ),       "override.spell_power_multiplier",  tr( "+10% Spell Power Multiplier" ),                     buffsLayout, buffsButtonGroup );
+  appendCheckBox( tr( "Critical Strike" ),              "override.critical_strike",         tr( "+5% Critical Strike Chance" ),                      buffsLayout, buffsButtonGroup );
+  appendCheckBox( tr( "Haste" ),                        "override.haste",                   tr( "+5% Haste" ),                                       buffsLayout, buffsButtonGroup );
+  appendCheckBox( tr( "Multistrike" ),                  "override.multistrike",             tr( "+5% Multistrike" ),                                 buffsLayout, buffsButtonGroup );
+  appendCheckBox( tr( "Mastery" ),                      "override.mastery",                 tr( "+Mastery Rating" ),                                 buffsLayout, buffsButtonGroup );
+  appendCheckBox( tr( "Stamina" ),                      "override.stamina",                 tr( "+10% Stamina" ),                                    buffsLayout, buffsButtonGroup );
+  appendCheckBox( tr( "Strength, Agility, Intellect" ), "override.str_agi_int",             tr( "+5% Strength, Agility, Intellect" ),                buffsLayout, buffsButtonGroup );
+  appendCheckBox( tr( "Versatility" ),                  "override.versatility",             tr( "+3% Versatility" ),                                 buffsLayout, buffsButtonGroup );
+  appendCheckBox( tr( "Bloodlust" ),                    "override.bloodlust",               tr( "Ancient Hysteria\nBloodlust\nHeroism\nTime Warp" ), buffsLayout, buffsButtonGroup );
   buffsLayout -> addStretch( 1 );
 
-  QGroupBox* buffsGroupBox = new QGroupBox( tr( "Buffs" ) ); // Buff Widget
+  QGroupBox* buffsGroupBox = new QGroupBox( tr( "Buffs" ) );  // Buff Widget
   buffsGroupBox -> setLayout( buffsLayout );
 
   // Debuffs
   QVBoxLayout* debuffsLayout = new QVBoxLayout(); // Debuff Layout
   debuffsButtonGroup = new QButtonGroup();
   debuffsButtonGroup -> setExclusive( false );
-  for ( int i = 0; debuffOptions[ i ].label; ++i )
-  {
-    QCheckBox* checkBox = new QCheckBox( debuffOptions[ i ].label );
-    checkBox -> setToolTip( debuffOptions[ i ].tooltip );
-    debuffsButtonGroup -> addButton( checkBox );
-    debuffsLayout -> addWidget( checkBox );
-  }
+
+  appendCheckBox( tr( "Toggle All Debuffs" ),           "",                                 tr( "Toggle all debuffs on/off" ), debuffsLayout, debuffsButtonGroup );
+  appendCheckBox( tr( "Bleeding" ),                     "override.bleeding",                tr( "Rip\nRupture" ),              debuffsLayout, debuffsButtonGroup );
+  appendCheckBox( tr( "Mortal Wounds" ),                "override.mortal_wounds",           tr( "Healing Debuff" ),            debuffsLayout, debuffsButtonGroup );
   debuffsLayout -> addStretch( 1 );
 
   QGroupBox* debuffsGroupBox = new QGroupBox( tr( "Debuffs" ) ); // Debuff Widget
@@ -1046,21 +1034,16 @@ QString SC_OptionsTab::get_globalSettings()
   options += "\n";
 
   options += "optimal_raid=0\n";
-  QList<QAbstractButton*> buttons = buffsButtonGroup -> buttons();
-  for ( int i = 1; buffOptions[ i ].label; i++ )
+
+  foreach ( QAbstractButton* button, buffsButtonGroup -> buttons() )
   {
-    options += buffOptions[ i ].option;
-    options += "=";
-    options += buttons.at( i )->isChecked() ? "1" : "0";
-    options += "\n";
+    if ( !button -> objectName().isEmpty() )
+      options += QString( "%1=%2\n" ).arg( button -> objectName() ).arg( button -> isChecked() ? "1" : "0" );
   }
-  buttons = debuffsButtonGroup->buttons();
-  for ( int i = 1; debuffOptions[ i ].label; i++ )
+  foreach ( QAbstractButton* button, debuffsButtonGroup->buttons() )
   {
-    options += debuffOptions[ i ].option;
-    options += "=";
-    options += buttons.at( i )->isChecked() ? "1" : "0";
-    options += "\n";
+    if ( !button -> objectName().isEmpty() )
+      options += QString( "%1=%2\n" ).arg( button -> objectName() ).arg( button -> isChecked() ? "1" : "0" );
   }
 
   if ( choice.deterministic_rng->currentIndex() == 0 )
