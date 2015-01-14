@@ -4840,6 +4840,11 @@ void rogue_t::init_action_list()
 
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
+      if ( race == RACE_NIGHT_ELF )
+      {
+        continue;
+      }
+
       if ( racial_actions[i] == "arcane_torrent" )
         def -> add_action( racial_actions[i] + ",if=energy<60&buff.shadow_dance.up" );
       else
@@ -4848,14 +4853,25 @@ void rogue_t::init_action_list()
 
     // Shadow Dancing and Vanishing and Marking for the Deathing
     def -> add_action( this, "Premeditation", "if=combo_points<4|(talent.anticipation.enabled&(combo_points+anticipation_charges<9))" );
-    def -> add_action( this, "Hemorrhage", "if=!ticking&time<1" );
+    def -> add_action( this, find_class_spell( "Garrote" ), "pool_resource", "for_next=1" );
+    def -> add_action( this, "Garrote", "if=time<1" );
     def -> add_action( "wait,sec=buff.subterfuge.remains-0.1,if=buff.subterfuge.remains>0.5&buff.subterfuge.remains<1.6&time>6" );
+
     def -> add_action( this, find_class_spell( "Shadow Dance" ), "pool_resource", "for_next=1,extra_amount=50" );
     def -> add_action( this, "Shadow Dance", "if=energy>=50&buff.stealth.down&buff.vanish.down&debuff.find_weakness.remains<2|(buff.bloodlust.up&(dot.hemorrhage.ticking|dot.garrote.ticking|dot.rupture.ticking))" );
+
     def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=50" );
     def -> add_action( this, "Vanish", "if=talent.shadow_focus.enabled&energy>=45&energy<=75&(combo_points<4|(talent.anticipation.enabled&combo_points+anticipation_charges<9))&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.remains<2" );
+
+    def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=50" );
+    def -> add_action( "shadowmeld,if=talent.shadow_focus.enabled&energy>=45&energy<=75&(combo_points<4|(talent.anticipation.enabled&combo_points+anticipation_charges<9))&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.remains<2" );
+
     def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=90" );
     def -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&energy>=90&(combo_points<4|(talent.anticipation.enabled&combo_points+anticipation_charges<9))&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.remains<2" );
+
+    def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=90" );
+    def -> add_action( "shadowmeld,if=talent.subterfuge.enabled&energy>=90&(combo_points<4|(talent.anticipation.enabled&combo_points+anticipation_charges<9))&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.remains<2" );
+
     def -> add_talent( this, "Marked for Death", "if=combo_points=0" );
 
     // Rotation
@@ -4871,7 +4887,7 @@ void rogue_t::init_action_list()
     gen -> add_action( this, "Fan of Knives", "if=active_enemies>1", "If simulating AoE, it is recommended to use Anticipation as the level 90 talent." );
     gen -> add_action( this, "Hemorrhage", "if=(remains<duration*0.3&target.time_to_die>=remains+duration+8&debuff.find_weakness.down)|!ticking|position_front" );
     gen -> add_talent( this, "Shuriken Toss", "if=energy<65&energy.regen<16" );
-    gen -> add_action( this, "Backstab", "if=energy>=energy.max-energy.regen|target.time_to_die<10" );
+    gen -> add_action( this, "Backstab", "if=!talent.death_from_above.enabled|energy>=energy.max-energy.regen|target.time_to_die<10" );
     gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool" );
 
     // Combo point finishers

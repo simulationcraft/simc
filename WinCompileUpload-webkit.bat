@@ -10,7 +10,7 @@ set /p revision=<bla.txt
 :: Hacky hack because windows command prompt is annoying.
 del bla.txt
 
-set simcversion=603-24
+set simcversion=603-25
 set install=simc-%simcversion%-source
 cd>bla.txt
 set /p download=<bla.txt
