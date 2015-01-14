@@ -3943,6 +3943,9 @@ void warrior_t::init_spells()
   if ( glyphs.rallying_cry -> ok() ) active_rallying_cry_heal = new rallying_cry_heal_t( this );
   if ( talents.second_wind -> ok() ) active_second_wind = new second_wind_t( this );
   if ( sets.has_set_bonus( SET_TANK, T16, B2 ) ) active_t16_2pc = new tier16_2pc_tank_heal_t( this );
+
+  if ( !talents.gladiators_resolve -> ok() )
+    gladiator = false;
 }
 
 // warrior_t::init_base =====================================================
@@ -5402,7 +5405,7 @@ void warrior_t::invalidate_cache( cache_e c )
 role_e warrior_t::primary_role() const
 {
   // For now, assume "Default role"/ROLE_NONE wants to be a gladiator dps.
-  if ( specialization() == WARRIOR_PROTECTION && ( player_t::primary_role() == ROLE_TANK || !player_t::find_talent_spell( "Gladiator's Resolve" ) ) )
+  if ( specialization() == WARRIOR_PROTECTION && ( player_t::primary_role() == ROLE_TANK || !gladiator ) )
   {
     return ROLE_TANK;
   }
