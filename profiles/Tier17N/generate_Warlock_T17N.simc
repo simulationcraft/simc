@@ -14,7 +14,7 @@ warlock=Warlock_Affliction_T17N
 level=100
 race=gnome
 spec=affliction
-talents=0000113
+talents=0000213
 head=shadow_councils_hood,id=115586
 neck=gruuls_lip_ring,id=113872,enchant_id=5318
 shoulder=hexweave_mantle,id=114809,bonus_id=118/559
@@ -60,7 +60,7 @@ level=100
 race=dwarf
 role=spell
 spec=destruction
-talents=0000113
+talents=0000213
 head=shadow_councils_hood,id=115586
 neck=whispering_taladite_pendant,id=115801,bonus_id=56/559,enchant_id=5317
 shoulder=shadow_councils_mantle,id=115589
