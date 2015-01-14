@@ -30,32 +30,6 @@ const OptionEntry itemSourceOptions[] =
 #endif
 };
 
-const OptionEntry scalingOptions[] =
-{
-  { "Toggle All Character Stats", "",       "Toggles all stats except Latency."                    },
-  { "Strength",                 "str",      "Calculate scale factors for Strength"                 },
-  { "Agility",                  "agi",      "Calculate scale factors for Agility"                  },
-  { "Stamina",                  "sta",      "Calculate scale factors for Stamina"                  },
-  { "Intellect",                "int",      "Calculate scale factors for Intellect"                },
-  { "Spirit",                   "spi",      "Calculate scale factors for Spirit"                   },
-  { "Spell Power",              "sp",       "Calculate scale factors for Spell Power"              },
-  { "Attack Power",             "ap",       "Calculate scale factors for Attack Power"             },
-  { "Crit Rating",              "crit",     "Calculate scale factors for Crit Rating"              },
-  { "Haste Rating",             "haste",    "Calculate scale factors for Haste Rating"             },
-  { "Mastery Rating",           "mastery",  "Calculate scale factors for Mastery Rating"           },
-  { "Multistrike Rating",       "mult",     "Calculate scale factors for Multistrike Rating"       },
-  { "Versatility Rating",       "vers",     "Calculate scale factors for Versatility Rating"       },
-  { "Weapon DPS",               "wdps",     "Calculate scale factors for Weapon DPS"               },
-  { "Off-hand Weapon DPS",      "wohdps",   "Calculate scale factors for Off-hand Weapon DPS"      },
-  { "Armor",                    "armor",    "Calculate scale factors for Armor"                    },
-  { "Bonus Armor",              "bonusarmor","Calculate scale factors for Bonus Armor"             },
-  { "Avoidance (tertiary)",     "avoidance", "Calculate scale factors for Avoidance (tertiary stat)" },
-  { "Leech (tertiary)",         "leech",    "Calculate scale factors for Leech (tertiary stat)"    },
-  { "Movement Speed (tertiary)", "speed",   "Calculate scale factors for Movement Speed (tertiary stat)" },
-  { "Latency",                  "",         "Calculate scale factors for Latency"                  },
-  { NULL, NULL, NULL }
-};
-
 const OptionEntry plotOptions[] =
 {
   { "Strength",           "str",        "Generate Scaling curve for Strength"         },
@@ -290,7 +264,7 @@ void SC_OptionsTab::createBuffsDebuffsTab()
 {
   // Buffs
   QVBoxLayout* buffsLayout = new QVBoxLayout();               // Buff Layout
-  buffsButtonGroup = new QButtonGroup();
+  buffsButtonGroup = new QButtonGroup( this );
   buffsButtonGroup -> setExclusive( false );
 
   appendCheckBox( tr( "Toggle All Buffs" ),             "",                                 tr( "Toggle all buffs on/off" ),                         buffsLayout, buffsButtonGroup );
@@ -311,7 +285,7 @@ void SC_OptionsTab::createBuffsDebuffsTab()
 
   // Debuffs
   QVBoxLayout* debuffsLayout = new QVBoxLayout(); // Debuff Layout
-  debuffsButtonGroup = new QButtonGroup();
+  debuffsButtonGroup = new QButtonGroup( this );
   debuffsButtonGroup -> setExclusive( false );
 
   appendCheckBox( tr( "Toggle All Debuffs" ),           "",                                 tr( "Toggle all debuffs on/off" ), debuffsLayout, debuffsButtonGroup );
@@ -353,13 +327,10 @@ void SC_OptionsTab::createScalingTab()
   QLabel* enableScalingButtonLabel = new QLabel( tr( "This button enables/disables scale factor calculations, allowing you to toggle scaling while keeping a particular set of stats selected." ) );
   enableScalingButtonGroupBoxLayout -> addWidget( enableScalingButtonLabel );
   
-  scalingButtonGroup = new QButtonGroup();
+  scalingButtonGroup = new QButtonGroup( this );
   scalingButtonGroup -> setExclusive( false );
 
-  QCheckBox* enableScalingBox = new QCheckBox( tr("Enable Scaling" ) );
-  enableScalingBox -> setToolTip( tr( "Enable Scaling. This box MUST be checked to enable scaling calculations." ) );
-  scalingButtonGroup -> addButton( enableScalingBox );
-  enableScalingButtonGroupBoxLayout -> addWidget( enableScalingBox );
+  appendCheckBox( tr("Enable Scaling" ), "", tr( "Enable Scaling. This box MUST be checked to enable scaling calculations." ), enableScalingButtonGroupBoxLayout, scalingButtonGroup );
   enableScalingButtonGroupBox -> setLayout( enableScalingButtonGroupBoxLayout );
   
   // Box containing additional options
@@ -386,35 +357,45 @@ void SC_OptionsTab::createScalingTab()
   scalingButtonsGroupBox -> setTitle( tr( "Stats to scale" ) );
   scalingLayout -> addWidget( scalingButtonsGroupBox );
 
-  QVBoxLayout* scalingButtonsGroupBoxLayout = new QVBoxLayout();
+  QVBoxLayout* scalingButtonsLayout = new QVBoxLayout();
 
   QLabel* scalingButtonToggleAllLabel = new QLabel( tr( "This button toggles scaling for all stats except Latency.\nNote that additional simulations will only be run for RELEVANT stats.\nIn other words, Agility and Intellect would be skipped for a Warrior even if they are checked." ) );
-  scalingButtonsGroupBoxLayout -> addWidget( scalingButtonToggleAllLabel );
+  scalingButtonsLayout -> addWidget( scalingButtonToggleAllLabel );
 
-  QCheckBox* checkBox = new QCheckBox( scalingOptions[ 0 ].label );
-  checkBox -> setToolTip( scalingOptions[ 0 ].tooltip );
-  scalingButtonGroup -> addButton( checkBox );
-  scalingButtonsGroupBoxLayout -> addWidget( checkBox );
+  appendCheckBox( tr( "Toggle All Character Stats" ), "",           tr( "Toggles all stats except Latency."                          ), scalingButtonsLayout, scalingButtonGroup );
 
   // spacer to separate toggle all button from rest of options
   QSpacerItem* spacer0 = new QSpacerItem( 20, 20 );
-  scalingButtonsGroupBoxLayout -> addSpacerItem( spacer0 );
+  scalingButtonsLayout -> addSpacerItem( spacer0 );
 
   QLabel* plotHelpertext = new QLabel( tr( "Calculate scale factors for:" ) );
-  scalingButtonsGroupBoxLayout -> addWidget( plotHelpertext );
+  scalingButtonsLayout -> addWidget( plotHelpertext );
 
-  for ( int i = 1; scalingOptions[ i ].label; i++ )
-  {
-    checkBox = new QCheckBox( scalingOptions[ i ].label );
-    checkBox -> setToolTip( scalingOptions[ i ].tooltip );
-    scalingButtonGroup -> addButton( checkBox );
-    scalingButtonsGroupBoxLayout -> addWidget( checkBox );
-  }
+  appendCheckBox( tr( "Strength"                   ), "str",        tr( "Calculate scale factors for Strength"                       ), scalingButtonsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Agility"                    ), "agi",        tr( "Calculate scale factors for Agility"                        ), scalingButtonsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Stamina"                    ), "sta",        tr( "Calculate scale factors for Stamina"                        ), scalingButtonsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Intellect"                  ), "int",        tr( "Calculate scale factors for Intellect"                      ), scalingButtonsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Spirit"                     ), "spi",        tr( "Calculate scale factors for Spirit"                         ), scalingButtonsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Spell Power"                ), "sp",         tr( "Calculate scale factors for Spell Power"                    ), scalingButtonsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Attack Power"               ), "ap",         tr( "Calculate scale factors for Attack Power"                   ), scalingButtonsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Crit Rating"                ), "crit",       tr( "Calculate scale factors for Crit Rating"                    ), scalingButtonsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Haste Rating"               ), "haste",      tr( "Calculate scale factors for Haste Rating"                   ), scalingButtonsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Mastery Rating"             ), "mastery",    tr( "Calculate scale factors for Mastery Rating"                 ), scalingButtonsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Multistrike Rating"         ), "mult",       tr( "Calculate scale factors for Multistrike Rating"             ), scalingButtonsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Versatility Rating"         ), "vers",       tr( "Calculate scale factors for Versatility Rating"             ), scalingButtonsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Weapon DPS"                 ), "wdps",       tr( "Calculate scale factors for Weapon DPS"                     ), scalingButtonsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Off-hand Weapon DPS"        ), "wohdps",     tr( "Calculate scale factors for Off-hand Weapon DPS"            ), scalingButtonsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Armor"                      ), "armor",      tr( "Calculate scale factors for Armor"                          ), scalingButtonsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Bonus Armor"                ), "bonusarmor", tr( "Calculate scale factors for Bonus Armor"                    ), scalingButtonsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Avoidance (tertiary)"       ), "avoidance",  tr( "Calculate scale factors for Avoidance (tertiary stat)"      ), scalingButtonsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Leech (tertiary)"           ), "leech",      tr( "Calculate scale factors for Leech (tertiary stat)"          ), scalingButtonsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Movement Speed (tertiary)"  ), "speed",      tr( "Calculate scale factors for Movement Speed (tertiary stat)" ), scalingButtonsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Latency"                    ), "latency",    tr( "Calculate scale factors for Latency"                        ), scalingButtonsLayout, scalingButtonGroup );
 
   // spacer to eat up rest of space (makes scalingButtonsGroupBoxLayout look less silly)
   QSpacerItem* spacer1 = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Expanding );
-  scalingButtonsGroupBoxLayout -> addSpacerItem( spacer1 );
-  scalingButtonsGroupBox -> setLayout( scalingButtonsGroupBoxLayout );
+  scalingButtonsLayout -> addSpacerItem( spacer1 );
+  scalingButtonsGroupBox -> setLayout( scalingButtonsLayout );
 
   // Now put the tab together
   QScrollArea* scalingGroupBoxScrollArea = new QScrollArea;
@@ -1074,28 +1055,23 @@ QString SC_OptionsTab::mergeOptions()
   // skip if enable checkbox isn't checked
   if ( buttons.at( 0 ) -> isChecked() )
   {
-    for ( int i = 2; i < buttons.size(); i++ )
+    // make a list of enabled scaling
+    QStringList scales;
+    foreach ( QAbstractButton* button, buttons )
     {
-      if ( buttons.at( i ) -> isChecked() )
-      {
-        options += "calculate_scale_factors=1\n";
-        break;
-      }
+      if ( !button -> objectName().isEmpty() && button -> isChecked() )
+        scales.append( button -> objectName() );
     }
 
-    // latency is always the last button
-    if ( buttons.at( buttons.size() - 1 )->isChecked() ) options += "scale_lag=1\n";
-
-    options += "scale_only=none";
-    for ( int i = 1; scalingOptions[ i ].label; i++ )
+    if ( scales.count() > 0 )
     {
-      if ( buttons.at( i + 1 ) -> isChecked() )
+      options += "calculate_scale_factors=1\n";
+      if ( scales.removeAll( "latency" ) > 0 )  // "latency" needs to be removed
       {
-        options += ",";
-        options += scalingOptions[ i ].option;
+        options += "scale_lag=1\n";
       }
+      options += "scale_only=" + scales.join(",") + "\n"; // dump list of scaling
     }
-    options += "\n";
 
     if ( choice.center_scale_delta->currentIndex() == 0 )
     {
