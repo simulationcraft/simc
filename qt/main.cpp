@@ -53,7 +53,7 @@ bool checkWindowsVersion()
   // After a few months we can probably remove this targetting for the GUI and only leave it in for CLI. - 01/08/2015
   if ( !IsWindows7SP1OrGreater() && IsWindows7OrGreater() ) // Winxp cannot access fancy-pants methods to determine if the OS has Win7 SP1... which is probably ok.
   {
-    int msgboxID = MessageBox( NULL,  // Added to warn people to install SP1 before posting issues about simc not loading, as it fixes the issue in a majority of cases.
+    MessageBox( NULL,  // Added to warn people to install SP1 before posting issues about simc not loading, as it fixes the issue in a majority of cases.
       (LPCWSTR)L"SimulationCraft GUI is known to have issues with Windows 7 when Service Pack 1 is not installed.\nThe program will continue to load, but if you run into any problems, please install Service Pack 1.",
       (LPCWSTR)L"SimulationCraft", MB_OK );
     return true;
@@ -61,15 +61,10 @@ bool checkWindowsVersion()
 #endif
   if ( !bIsWindowsXPorLater )
   {
-    int msgboxID = MessageBox( NULL,
-      (LPCWSTR)L"SimulationCraft GUI is no longer officially supported on Windows XP as of January 2015.\nIt will continue to work for the next few months after, but be warned that it may stop functioning at any time.\nThe command line interface - simc.exe - should continue to function for the foreseeable future.",
-      (LPCWSTR)L"SimulationCraft", MB_OK );
-#if defined SC_USE_WEBENGINE
-    int msgboxID = MessageBox( NULL,
+    MessageBox( NULL,
       (LPCWSTR)L"SimulationCraft GUI is no longer supported on Windows XP as of January 2015. \nIf you wish to continue using Simulationcraft, you may do so by the command line interface -- simc.exe.",
       (LPCWSTR)L"SimulationCraft", MB_OK );
     return false; // Do not continue loading.
-#endif
   }
 #if defined ( SC_USE_WEBENGINE ) && ! defined ( VS_XP_TARGET )
   if ( !IsWindows8OrGreater() && IsWindows7OrGreater() )
