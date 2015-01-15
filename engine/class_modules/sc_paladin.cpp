@@ -1302,6 +1302,10 @@ struct censure_t : public paladin_spell_t
     {
       base_multiplier *= 1.0 + p -> glyphs.immediate_truth -> effectN( 2 ).percent();
     }
+
+    // 1/15 hotfix reduces damage by 80% for prot
+    if ( p -> passives.guarded_by_the_light -> ok() )
+      base_multiplier /= 5;
   }
   
   virtual void impact( action_state_t* s )
@@ -4328,6 +4332,10 @@ struct seal_of_truth_proc_t : public paladin_melee_attack_t
     
     // Retribution T14 4-piece boosts seal damage
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent();
+
+    // 1/15 hotfix reduces damage by 80% for prot
+    if ( p -> passives.guarded_by_the_light -> ok() )
+      base_multiplier /= 5;
   }
 
 };
