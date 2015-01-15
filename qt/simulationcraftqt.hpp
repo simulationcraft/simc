@@ -1708,6 +1708,17 @@ namespace automation {
 
 } // end automation namespace
 
+class SC_OverridesTab : public SC_TextEdit
+{
+public:
+    SC_OverridesTab( QWidget* parent ) :
+        SC_TextEdit( parent )
+    {
+
+        setPlainText( tr("# User-specified persistent global and player parameters will be set here.\n") );
+    }
+};
+
 #ifdef SC_PAPERDOLL
 
 class PaperdollThread : public QThread

@@ -704,13 +704,7 @@ void SC_MainWindow::createSimulateTab()
 
 void SC_MainWindow::createOverridesTab()
 {
-  overridesText = new SC_TextEdit( this );
-  overridesText -> setPlainText( "# User-specified persistent global and player parameters will be set here.\n" );
-
-  // Set a bigger font size, it's not like people put much into the override tab
-  QFont override_font = QFont();
-  override_font.setPixelSize( 24 );
-  overridesText -> setFont( override_font );
+  overridesText = new SC_OverridesTab( this );
 
   mainTab -> addTab( overridesText, tr( "Overrides" ) );
 }
@@ -1275,7 +1269,7 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
   }
   else
   {
-    QString resultsName = QString( "Results %1" ).arg( ++simResults );
+    QString resultsName = tr( "Results %1" ).arg( ++simResults );
     SC_SingleResultTab* resultsEntry = new SC_SingleResultTab( this, resultsTab );
     if ( resultsTab -> count() != 0 )
     {

@@ -135,7 +135,11 @@ The profiles are created with a lot of help from the theorycrafting community.
 They are only as good as the thorough testing done on them, and the feedback and critic we receive from the community, including yourself.
 If you have ideas for improvements, try to simulate them. If they result in increased dps, please open a ticket on our Issue tracker.
 The more people help improve BiS profiles, the better will they reach their goal of representing the highest possible dps.</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Beispiels-Profile sind ein Versuch, das die bestmögliche Ausrüstungs, Talente, Glyphen und Prioritätenliste zu erreichen, mit dem Ziel eines möglichst hohen durchschnittlichen Schadens pro Sekunde
+In die Profile fliesst eine Menge an Hilfe und Feedback aus der Theorycrafting Community mit ein.
+Sie sind also nur so gut wie die Anstrengung, Überprüfung und Feedback, welches in sie hineingeflossen ist, inklusive deines.
+Falls du Verbesserungsvorschläge hast, scheue dich bitte nicht auf der Projektseite ein Ticket zu eröffnen.
+Je mehr Leute uns helfen, die Best-in-Slot Profile zu verbessern, umso näher kommen sie ihrem Ziel der höchstmöglichen DPS.</translation>
     </message>
     <message>
         <location filename="../qt/sc_window.cpp" line="665"/>
@@ -189,52 +193,57 @@ The more people help improve BiS profiles, the better will they reach their goal
         <translation>Simulieren</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="715"/>
+        <location filename="../qt/sc_window.cpp" line="709"/>
         <source>Overrides</source>
         <translation>Übersteuerung</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="723"/>
+        <location filename="../qt/sc_window.cpp" line="717"/>
         <source>Log</source>
         <translation>Aufzeichnungen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="730"/>
+        <location filename="../qt/sc_window.cpp" line="724"/>
         <source>Help</source>
         <translation>Hilfe</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="739"/>
+        <location filename="../qt/sc_window.cpp" line="733"/>
         <source>Results</source>
         <translation>Resultate</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="745"/>
+        <location filename="../qt/sc_window.cpp" line="739"/>
         <source>Spell Query</source>
-        <translation>Spell-Abfrage</translation>
+        <translation>Zauberl-Abfrage</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="984"/>
+        <location filename="../qt/sc_window.cpp" line="978"/>
         <source>Importing</source>
         <translation>Importiere</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1061"/>
+        <location filename="../qt/sc_window.cpp" line="1055"/>
         <source>Import Failed</source>
         <translation>Import fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1244"/>
+        <location filename="../qt/sc_window.cpp" line="1238"/>
         <source>Finished!</source>
         <translation>Fertig!</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1653"/>
+        <location filename="../qt/sc_window.cpp" line="1272"/>
+        <source>Results %1</source>
+        <translation>Resultat %1</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_window.cpp" line="1647"/>
         <source>Close Result Tab</source>
         <translation>Resultate-Tab schliessen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="1653"/>
+        <location filename="../qt/sc_window.cpp" line="1647"/>
         <source>Do you really want to close this result?</source>
         <translation>Wollen Sie dieses Resultat wirklich schliessen?</translation>
     </message>
@@ -322,296 +331,297 @@ The more people help improve BiS profiles, the better will they reach their goal
 <context>
     <name>SC_OptionsTab</name>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="176"/>
+        <location filename="../qt/sc_options_tab.cpp" line="137"/>
         <source>Armory Region</source>
-        <translation>Armory Region</translation>
+        <translation>BNet Region</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="177"/>
+        <location filename="../qt/sc_options_tab.cpp" line="138"/>
         <source>Armory Spec</source>
-        <translation>Armory Spezialisierung</translation>
+        <translation>BNet Spezialisierung</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="180"/>
-        <location filename="../qt/sc_options_tab.cpp" line="183"/>
-        <location filename="../qt/sc_options_tab.cpp" line="185"/>
+        <location filename="../qt/sc_options_tab.cpp" line="141"/>
+        <location filename="../qt/sc_options_tab.cpp" line="144"/>
+        <location filename="../qt/sc_options_tab.cpp" line="146"/>
         <source>Version</source>
         <translation>Version</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="188"/>
+        <location filename="../qt/sc_options_tab.cpp" line="149"/>
         <source>Target Error</source>
         <translation>Soll-Fehler</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="189"/>
+        <location filename="../qt/sc_options_tab.cpp" line="150"/>
         <source>Iterations</source>
         <translation>Iterationen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="190"/>
+        <location filename="../qt/sc_options_tab.cpp" line="151"/>
         <source>Length (sec)</source>
         <translation>Kampflänge (sekunden)</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="191"/>
+        <location filename="../qt/sc_options_tab.cpp" line="152"/>
         <source>Vary Length</source>
         <translation>Variiere Kampflänge</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="192"/>
+        <location filename="../qt/sc_options_tab.cpp" line="153"/>
         <source>Fight Style</source>
         <translation>Kampfstil</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="193"/>
+        <location filename="../qt/sc_options_tab.cpp" line="154"/>
         <source>Challenge Mode</source>
         <translation>Herausforderungs-Modus</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="194"/>
+        <location filename="../qt/sc_options_tab.cpp" line="155"/>
         <source>Player Skill</source>
         <translation>Spieler Können</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="195"/>
+        <location filename="../qt/sc_options_tab.cpp" line="156"/>
         <source>Default Role</source>
         <translation>Vorgegebene Rolle</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="196"/>
+        <location filename="../qt/sc_options_tab.cpp" line="157"/>
         <source>GUI Localization</source>
-        <translation type="unfinished"></translation>
+        <translation>GUI Lokalisierung</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="198"/>
-        <location filename="../qt/sc_options_tab.cpp" line="1347"/>
+        <location filename="../qt/sc_options_tab.cpp" line="159"/>
+        <location filename="../qt/sc_options_tab.cpp" line="1306"/>
         <source>Reset all Settings</source>
         <translation>Alle Einstellungen zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="202"/>
+        <location filename="../qt/sc_options_tab.cpp" line="163"/>
         <source>Can also be used to fix corrupt settings that are crashing the simulator.</source>
         <translation>Dient auch zur Behebung korrupter Einstellungen nach einem Absturz</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="207"/>
+        <location filename="../qt/sc_options_tab.cpp" line="168"/>
         <source>Basic Options</source>
         <translation>Grundopotionen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="214"/>
+        <location filename="../qt/sc_options_tab.cpp" line="175"/>
         <source>Num Enemies</source>
         <translation>Anzahl Feinde</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="215"/>
+        <location filename="../qt/sc_options_tab.cpp" line="176"/>
         <source>Target Level</source>
         <translation>Stufe des Zieles</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="216"/>
+        <location filename="../qt/sc_options_tab.cpp" line="177"/>
         <source>PVP Crit Damage Reduction</source>
-        <translation>PvP Kritischer Schaden Reduzierung</translation>
+        <translation>PvP Krit. Schadens-Reduzierung</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="217"/>
+        <location filename="../qt/sc_options_tab.cpp" line="178"/>
         <source>Target Race</source>
         <translation>Rasse des Zieles</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="218"/>
+        <location filename="../qt/sc_options_tab.cpp" line="179"/>
         <source>Target Type</source>
         <translation>Typ des Zieles</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="219"/>
+        <location filename="../qt/sc_options_tab.cpp" line="180"/>
         <source>Tank Dummy</source>
         <translation>Tank Ziel</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="220"/>
+        <location filename="../qt/sc_options_tab.cpp" line="181"/>
         <source>TMI Standard Boss</source>
         <translation>TMI Standard Boss</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="221"/>
+        <location filename="../qt/sc_options_tab.cpp" line="182"/>
         <source>TMI Window (sec)</source>
         <translation>TMI Fenster (sek)</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="222"/>
+        <location filename="../qt/sc_options_tab.cpp" line="183"/>
         <source>Show ETMI</source>
         <translation>Zeige ETMI</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="224"/>
+        <location filename="../qt/sc_options_tab.cpp" line="185"/>
         <source>Target and Tanking Options</source>
         <translation>Ziel und Tank Optionen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="230"/>
+        <location filename="../qt/sc_options_tab.cpp" line="191"/>
         <source>Threads</source>
         <translation>Threads</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="231"/>
+        <location filename="../qt/sc_options_tab.cpp" line="192"/>
         <source>Thread Priority</source>
         <translation>Thread Priorität</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="232"/>
+        <location filename="../qt/sc_options_tab.cpp" line="193"/>
         <source>World Lag</source>
         <translation>Welt Lag</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="233"/>
+        <location filename="../qt/sc_options_tab.cpp" line="194"/>
         <source>Generate Debug</source>
         <translation>Genriere Debug Informationen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="234"/>
+        <location filename="../qt/sc_options_tab.cpp" line="195"/>
         <source>Report Pets Separately</source>
         <translation>Berichte Pets separat</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="235"/>
+        <location filename="../qt/sc_options_tab.cpp" line="196"/>
         <source>Report Print Style</source>
         <translation>Berichts-Stil</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="236"/>
+        <location filename="../qt/sc_options_tab.cpp" line="197"/>
         <source>Statistics Level</source>
         <translation>Statistik-Level</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="237"/>
+        <location filename="../qt/sc_options_tab.cpp" line="198"/>
         <source>Deterministic RNG</source>
         <translation>Deterministischer Zufallsgenerator</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="241"/>
+        <location filename="../qt/sc_options_tab.cpp" line="202"/>
         <source>Armory API Key</source>
         <translation>Armory API Schlüssel</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="246"/>
+        <location filename="../qt/sc_options_tab.cpp" line="207"/>
         <source>Advanced Options</source>
         <translation>Erweiterte Optionen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="260"/>
+        <location filename="../qt/sc_options_tab.cpp" line="221"/>
         <source>Globals</source>
         <translation>Global</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="270"/>
+        <location filename="../qt/sc_options_tab.cpp" line="231"/>
         <source>Toggle All Buffs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="270"/>
+        <location filename="../qt/sc_options_tab.cpp" line="231"/>
         <source>Toggle all buffs on/off</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="271"/>
+        <location filename="../qt/sc_options_tab.cpp" line="232"/>
         <source>Attack Power Multiplier</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="271"/>
+        <location filename="../qt/sc_options_tab.cpp" line="232"/>
         <source>+10% Attack Power Multiplier</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="272"/>
+        <location filename="../qt/sc_options_tab.cpp" line="233"/>
         <source>Spell Power Multiplier</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="272"/>
+        <location filename="../qt/sc_options_tab.cpp" line="233"/>
         <source>+10% Spell Power Multiplier</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="273"/>
+        <location filename="../qt/sc_options_tab.cpp" line="234"/>
         <source>Critical Strike</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="273"/>
+        <location filename="../qt/sc_options_tab.cpp" line="234"/>
         <source>+5% Critical Strike Chance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="274"/>
+        <location filename="../qt/sc_options_tab.cpp" line="235"/>
         <source>Haste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="274"/>
+        <location filename="../qt/sc_options_tab.cpp" line="235"/>
         <source>+5% Haste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="275"/>
+        <location filename="../qt/sc_options_tab.cpp" line="236"/>
         <source>Multistrike</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="275"/>
+        <location filename="../qt/sc_options_tab.cpp" line="236"/>
         <source>+5% Multistrike</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="276"/>
+        <location filename="../qt/sc_options_tab.cpp" line="237"/>
         <source>Mastery</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="276"/>
+        <location filename="../qt/sc_options_tab.cpp" line="237"/>
         <source>+Mastery Rating</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="277"/>
-        <location filename="../qt/sc_options_tab.cpp" line="376"/>
+        <location filename="../qt/sc_options_tab.cpp" line="238"/>
+        <location filename="../qt/sc_options_tab.cpp" line="337"/>
+        <location filename="../qt/sc_options_tab.cpp" line="426"/>
         <source>Stamina</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="277"/>
+        <location filename="../qt/sc_options_tab.cpp" line="238"/>
         <source>+10% Stamina</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="278"/>
+        <location filename="../qt/sc_options_tab.cpp" line="239"/>
         <source>Strength, Agility, Intellect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="278"/>
+        <location filename="../qt/sc_options_tab.cpp" line="239"/>
         <source>+5% Strength, Agility, Intellect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="279"/>
+        <location filename="../qt/sc_options_tab.cpp" line="240"/>
         <source>Versatility</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="279"/>
+        <location filename="../qt/sc_options_tab.cpp" line="240"/>
         <source>+3% Versatility</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="280"/>
+        <location filename="../qt/sc_options_tab.cpp" line="241"/>
         <source>Bloodlust</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="280"/>
+        <location filename="../qt/sc_options_tab.cpp" line="241"/>
         <source>Ancient Hysteria
 Bloodlust
 Heroism
@@ -619,429 +629,634 @@ Time Warp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="283"/>
+        <location filename="../qt/sc_options_tab.cpp" line="244"/>
         <source>Buffs</source>
         <translation>Buffs</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="291"/>
+        <location filename="../qt/sc_options_tab.cpp" line="252"/>
         <source>Toggle All Debuffs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="291"/>
+        <location filename="../qt/sc_options_tab.cpp" line="252"/>
         <source>Toggle all debuffs on/off</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="292"/>
+        <location filename="../qt/sc_options_tab.cpp" line="253"/>
         <source>Bleeding</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="292"/>
+        <location filename="../qt/sc_options_tab.cpp" line="253"/>
         <source>Rip
 Rupture</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="293"/>
+        <location filename="../qt/sc_options_tab.cpp" line="254"/>
         <source>Mortal Wounds</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="293"/>
+        <location filename="../qt/sc_options_tab.cpp" line="254"/>
         <source>Healing Debuff</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="296"/>
+        <location filename="../qt/sc_options_tab.cpp" line="257"/>
         <source>Debuffs</source>
         <translation>Debuffs</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="311"/>
+        <location filename="../qt/sc_options_tab.cpp" line="272"/>
         <source>Buffs / Debuffs</source>
         <translation>Buffs / Debuffs</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="321"/>
-        <location filename="../qt/sc_options_tab.cpp" line="333"/>
+        <location filename="../qt/sc_options_tab.cpp" line="282"/>
+        <location filename="../qt/sc_options_tab.cpp" line="294"/>
         <source>Enable Scaling</source>
         <translation>Erlaube Skalierung</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="327"/>
+        <location filename="../qt/sc_options_tab.cpp" line="288"/>
         <source>This button enables/disables scale factor calculations, allowing you to toggle scaling while keeping a particular set of stats selected.</source>
         <translation>Schaltet Skalierungsfaktor-Berechnung ein/aus.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="333"/>
+        <location filename="../qt/sc_options_tab.cpp" line="294"/>
         <source>Enable Scaling. This box MUST be checked to enable scaling calculations.</source>
         <translation>Erlaube Skalierung. Diese Option MUSS ausgewählt sein, um Skalierungsfaktoren zu berechnen.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="339"/>
+        <location filename="../qt/sc_options_tab.cpp" line="300"/>
         <source>Scaling Options</source>
         <translation>Skalierungs-Optionen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="347"/>
+        <location filename="../qt/sc_options_tab.cpp" line="308"/>
         <source>Center Scale Delta</source>
         <translation>Zentriere Skalierungsdelta</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="350"/>
+        <location filename="../qt/sc_options_tab.cpp" line="311"/>
         <source>Scale Over</source>
         <translation>Skaliere über</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="357"/>
+        <location filename="../qt/sc_options_tab.cpp" line="318"/>
         <source>Stats to scale</source>
         <translation>Stats zu skalieren</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="362"/>
+        <location filename="../qt/sc_options_tab.cpp" line="323"/>
         <source>This button toggles scaling for all stats except Latency.
 Note that additional simulations will only be run for RELEVANT stats.
 In other words, Agility and Intellect would be skipped for a Warrior even if they are checked.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="365"/>
+        <location filename="../qt/sc_options_tab.cpp" line="326"/>
         <source>Toggle All Character Stats</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="365"/>
+        <location filename="../qt/sc_options_tab.cpp" line="326"/>
         <source>Toggles all stats except Latency.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="371"/>
+        <location filename="../qt/sc_options_tab.cpp" line="332"/>
         <source>Calculate scale factors for:</source>
         <translation>Kalkuliere Skalierungsfaktoren für:</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="374"/>
+        <location filename="../qt/sc_options_tab.cpp" line="335"/>
+        <location filename="../qt/sc_options_tab.cpp" line="424"/>
         <source>Strength</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="374"/>
+        <location filename="../qt/sc_options_tab.cpp" line="335"/>
         <source>Calculate scale factors for Strength</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="375"/>
+        <location filename="../qt/sc_options_tab.cpp" line="336"/>
+        <location filename="../qt/sc_options_tab.cpp" line="425"/>
         <source>Agility</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="375"/>
+        <location filename="../qt/sc_options_tab.cpp" line="336"/>
         <source>Calculate scale factors for Agility</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="376"/>
+        <location filename="../qt/sc_options_tab.cpp" line="337"/>
         <source>Calculate scale factors for Stamina</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="377"/>
+        <location filename="../qt/sc_options_tab.cpp" line="338"/>
+        <location filename="../qt/sc_options_tab.cpp" line="427"/>
         <source>Intellect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="377"/>
+        <location filename="../qt/sc_options_tab.cpp" line="338"/>
         <source>Calculate scale factors for Intellect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="378"/>
+        <location filename="../qt/sc_options_tab.cpp" line="339"/>
+        <location filename="../qt/sc_options_tab.cpp" line="428"/>
         <source>Spirit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="378"/>
+        <location filename="../qt/sc_options_tab.cpp" line="339"/>
         <source>Calculate scale factors for Spirit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="379"/>
+        <location filename="../qt/sc_options_tab.cpp" line="340"/>
+        <location filename="../qt/sc_options_tab.cpp" line="429"/>
         <source>Spell Power</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="379"/>
+        <location filename="../qt/sc_options_tab.cpp" line="340"/>
         <source>Calculate scale factors for Spell Power</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="380"/>
+        <location filename="../qt/sc_options_tab.cpp" line="341"/>
+        <location filename="../qt/sc_options_tab.cpp" line="430"/>
         <source>Attack Power</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="380"/>
+        <location filename="../qt/sc_options_tab.cpp" line="341"/>
         <source>Calculate scale factors for Attack Power</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="381"/>
+        <location filename="../qt/sc_options_tab.cpp" line="342"/>
+        <location filename="../qt/sc_options_tab.cpp" line="431"/>
         <source>Crit Rating</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="381"/>
+        <location filename="../qt/sc_options_tab.cpp" line="342"/>
         <source>Calculate scale factors for Crit Rating</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="382"/>
+        <location filename="../qt/sc_options_tab.cpp" line="343"/>
+        <location filename="../qt/sc_options_tab.cpp" line="432"/>
         <source>Haste Rating</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="382"/>
+        <location filename="../qt/sc_options_tab.cpp" line="343"/>
         <source>Calculate scale factors for Haste Rating</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="383"/>
+        <location filename="../qt/sc_options_tab.cpp" line="344"/>
+        <location filename="../qt/sc_options_tab.cpp" line="433"/>
         <source>Mastery Rating</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="383"/>
+        <location filename="../qt/sc_options_tab.cpp" line="344"/>
         <source>Calculate scale factors for Mastery Rating</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="384"/>
+        <location filename="../qt/sc_options_tab.cpp" line="345"/>
+        <location filename="../qt/sc_options_tab.cpp" line="434"/>
         <source>Multistrike Rating</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="384"/>
+        <location filename="../qt/sc_options_tab.cpp" line="345"/>
         <source>Calculate scale factors for Multistrike Rating</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="385"/>
+        <location filename="../qt/sc_options_tab.cpp" line="346"/>
+        <location filename="../qt/sc_options_tab.cpp" line="435"/>
         <source>Versatility Rating</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="385"/>
+        <location filename="../qt/sc_options_tab.cpp" line="346"/>
         <source>Calculate scale factors for Versatility Rating</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="386"/>
+        <location filename="../qt/sc_options_tab.cpp" line="347"/>
+        <location filename="../qt/sc_options_tab.cpp" line="436"/>
         <source>Weapon DPS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="386"/>
+        <location filename="../qt/sc_options_tab.cpp" line="347"/>
         <source>Calculate scale factors for Weapon DPS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="387"/>
+        <location filename="../qt/sc_options_tab.cpp" line="348"/>
         <source>Off-hand Weapon DPS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="387"/>
+        <location filename="../qt/sc_options_tab.cpp" line="348"/>
         <source>Calculate scale factors for Off-hand Weapon DPS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="388"/>
+        <location filename="../qt/sc_options_tab.cpp" line="349"/>
+        <location filename="../qt/sc_options_tab.cpp" line="438"/>
         <source>Armor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="388"/>
+        <location filename="../qt/sc_options_tab.cpp" line="349"/>
         <source>Calculate scale factors for Armor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="389"/>
+        <location filename="../qt/sc_options_tab.cpp" line="350"/>
+        <location filename="../qt/sc_options_tab.cpp" line="439"/>
         <source>Bonus Armor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="389"/>
+        <location filename="../qt/sc_options_tab.cpp" line="350"/>
         <source>Calculate scale factors for Bonus Armor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="390"/>
+        <location filename="../qt/sc_options_tab.cpp" line="351"/>
         <source>Avoidance (tertiary)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="390"/>
+        <location filename="../qt/sc_options_tab.cpp" line="351"/>
         <source>Calculate scale factors for Avoidance (tertiary stat)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="391"/>
+        <location filename="../qt/sc_options_tab.cpp" line="352"/>
         <source>Leech (tertiary)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="391"/>
+        <location filename="../qt/sc_options_tab.cpp" line="352"/>
         <source>Calculate scale factors for Leech (tertiary stat)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="392"/>
+        <location filename="../qt/sc_options_tab.cpp" line="353"/>
         <source>Movement Speed (tertiary)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="392"/>
+        <location filename="../qt/sc_options_tab.cpp" line="353"/>
         <source>Calculate scale factors for Movement Speed (tertiary stat)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="393"/>
+        <location filename="../qt/sc_options_tab.cpp" line="354"/>
         <source>Latency</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="393"/>
+        <location filename="../qt/sc_options_tab.cpp" line="354"/>
         <source>Calculate scale factors for Latency</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="403"/>
+        <location filename="../qt/sc_options_tab.cpp" line="364"/>
         <source>Scaling</source>
         <translation>Skalierungsfaktoren</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="413"/>
+        <location filename="../qt/sc_options_tab.cpp" line="374"/>
         <source>Enable Scaling Plots</source>
         <translation>Schalte Skalierungs-Plots ein</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="419"/>
+        <location filename="../qt/sc_options_tab.cpp" line="380"/>
         <source>This button enables/disables scaling plots, allowing you to toggle calculation of scaling plots while keeping a particular set of stats selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="425"/>
+        <location filename="../qt/sc_options_tab.cpp" line="386"/>
         <source>Enable Plots</source>
         <translation>Plots einschalten</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="426"/>
+        <location filename="../qt/sc_options_tab.cpp" line="386"/>
         <source>Enable scaling plots. This box MUST be checked to generate scaling plots.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="434"/>
+        <location filename="../qt/sc_options_tab.cpp" line="392"/>
         <source>Scaling Plot Options</source>
         <translation>Skalierungs-Plot Optionen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="442"/>
+        <location filename="../qt/sc_options_tab.cpp" line="400"/>
         <source>Number of Plot Points</source>
         <translation>Nummer von Plot-Punkten</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="445"/>
+        <location filename="../qt/sc_options_tab.cpp" line="403"/>
         <source>Plot Step Amount</source>
         <translation>Plot Schritt-Wert</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="448"/>
+        <location filename="../qt/sc_options_tab.cpp" line="406"/>
         <source>Plot Target Error</source>
         <translation>Plot Soll-Fehler</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="451"/>
+        <location filename="../qt/sc_options_tab.cpp" line="409"/>
         <source>Plot Iterations</source>
         <translation>Plot Iterationen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="458"/>
+        <location filename="../qt/sc_options_tab.cpp" line="416"/>
         <source>Stats to plot</source>
         <translation>Stats zum plotten</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="463"/>
+        <location filename="../qt/sc_options_tab.cpp" line="421"/>
         <source>Check the box for each stat you would like to show on the scaling plots.
 
 Plot scaling for:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="483"/>
+        <location filename="../qt/sc_options_tab.cpp" line="424"/>
+        <source>Generate Scaling curve for Strength</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="425"/>
+        <source>Generate Scaling curve for Agility</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="426"/>
+        <source>Generate Scaling curve for Stamina</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="427"/>
+        <source>Generate Scaling curve for Intellect</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="428"/>
+        <source>Generate Scaling curve for Spirit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="429"/>
+        <source>Generate Scaling curve for Spell Power</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="430"/>
+        <source>Generate Scaling curve for Attack Power</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="431"/>
+        <source>Generate Scaling curve for Crit Rating</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="432"/>
+        <source>Generate Scaling curve for Haste Rating</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="433"/>
+        <source>Generate Scaling curve for Mastery Rating</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="434"/>
+        <source>Generate Scaling curve for Multistrike Rating</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="435"/>
+        <source>Generate Scaling curve for Versatility Rating</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="436"/>
+        <source>Generate Scaling curve for Weapon DPS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="437"/>
+        <source>Weapon OH DPS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="437"/>
+        <source>Generate Scaling curve for Weapon OH DPS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="438"/>
+        <source>Generate Scaling curve for Armor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="439"/>
+        <source>Generate Scaling curve for Bonus Armor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="450"/>
         <source>Plots</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="493"/>
+        <location filename="../qt/sc_options_tab.cpp" line="460"/>
         <source>Reforge Amount</source>
         <translation>Umschiede-Menge</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="496"/>
+        <location filename="../qt/sc_options_tab.cpp" line="463"/>
         <source>Step Amount</source>
         <translation>Schritt-Menge</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="498"/>
+        <location filename="../qt/sc_options_tab.cpp" line="465"/>
         <source>A maximum of three stats may be ran at once.
 </source>
         <translation>Maximal drei Stats können gleichzeitig berechnet werden.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="501"/>
+        <location filename="../qt/sc_options_tab.cpp" line="471"/>
         <source>Secondary Stats</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="516"/>
+        <location filename="../qt/sc_options_tab.cpp" line="474"/>
+        <source>Plot Reforge Options for Spirit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="474"/>
+        <source>Generate reforge plot data for Spirit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="475"/>
+        <source>Plot Reforge Options for Crit Rating</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="475"/>
+        <source>Generate reforge plot data for Crit Rating</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="476"/>
+        <source>Plot Reforge Options for Haste Rating</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="476"/>
+        <source>Generate reforge plot data for Haste Rating</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="477"/>
+        <source>Plot Reforge Options for Mastery Rating</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="477"/>
+        <source>Generate reforge plot data for Mastery Rating</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="478"/>
+        <source>Plot Reforge Options for Multistrike Rating</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="478"/>
+        <source>Generate reforge plot data for Multistrike Rating</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="479"/>
+        <source>Plot Reforge Options for Versatility Rating</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="479"/>
+        <source>Generate reforge plot data for Versatility Rating</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="480"/>
+        <source>Plot Reforge Options for Bonus Armor Rating</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="480"/>
+        <source>Generate reforge plot data for Bonus Armor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="482"/>
         <source>Primary Stats</source>
         <translation>Primär-Stat</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="535"/>
+        <location filename="../qt/sc_options_tab.cpp" line="485"/>
+        <source>Plot Reforge Options for Strength</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="485"/>
+        <location filename="../qt/sc_options_tab.cpp" line="488"/>
+        <source>Generate reforge plot data for Intellect</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="486"/>
+        <source>Plot Reforge Options for Agility</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="486"/>
+        <source>Generate reforge plot data for Agility</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="487"/>
+        <source>Plot Reforge Options for Stamina</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="487"/>
+        <source>Generate reforge plot data for Stamina</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="488"/>
+        <source>Plot Reforge Options for Intellect</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="496"/>
         <source>Reforge Plots</source>
         <translation>Umschiede-Plots</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="793"/>
+        <location filename="../qt/sc_options_tab.cpp" line="754"/>
         <source>Live:  Use mechanics on Live servers. ( WoW Build %1 )</source>
         <translation>Live: Nutzt Mechaniken von den Live-Servern. ( WoW Build %1 )</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="795"/>
+        <location filename="../qt/sc_options_tab.cpp" line="756"/>
         <source>Beta:  Use mechanics on Beta servers. ( WoW Build %1 )</source>
         <translation>Beta: Nutzt Mechaniken von den Beta-Servern. ( WoW Build %1 )</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="796"/>
+        <location filename="../qt/sc_options_tab.cpp" line="757"/>
         <source>Both: Create Evil Twin with Beta mechanics</source>
         <translation>Beide: Erstellt einen bösen Zwilling mit Beta-Mechaniken</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="798"/>
+        <location filename="../qt/sc_options_tab.cpp" line="759"/>
         <source>PTR:  Use mechanics on PTR servers. ( WoW Build %1 )</source>
         <translation>PTR: Nutzt Mechaniken von den PTR-Servern. ( WoW Build %1 )</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="799"/>
+        <location filename="../qt/sc_options_tab.cpp" line="760"/>
         <source>Both: Create Evil Twin with PTR mechanics</source>
         <translation>Beide: Erstellt einen bösen Zwilling mit PTR-Mechaniken</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="801"/>
+        <location filename="../qt/sc_options_tab.cpp" line="762"/>
         <source>This options sets a target error threshold and
 runs iterations until that threshold is reached.
 </source>
@@ -1053,68 +1268,68 @@ runs iterations until that threshold is reached.
         <translation type="vanished">Simuliere, bis Soll-Fehler erreicht.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="803"/>
-        <location filename="../qt/sc_options_tab.cpp" line="912"/>
+        <location filename="../qt/sc_options_tab.cpp" line="764"/>
+        <location filename="../qt/sc_options_tab.cpp" line="873"/>
         <source>N/A:  Do not use this feature.
 </source>
         <translation>Nicht verfügbar.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="804"/>
+        <location filename="../qt/sc_options_tab.cpp" line="765"/>
         <source>Auto: use sim defaults based on other options
      (0.2%, 0.05% for scale factors).
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="805"/>
+        <location filename="../qt/sc_options_tab.cpp" line="766"/>
         <source>X%:   Run until DPS error is less than X%.</source>
         <translation>X%:  Simuliere bis DPS-Fehler geringer ist als X%.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="806"/>
+        <location filename="../qt/sc_options_tab.cpp" line="767"/>
         <source>%1:    Fast and Rough</source>
         <translation>%1:    Schnell und dreckig</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="807"/>
+        <location filename="../qt/sc_options_tab.cpp" line="768"/>
         <source>%1:   Sufficient for DPS Analysis</source>
         <translation>%1:   Ausreichend für DPS-Analyse</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="808"/>
+        <location filename="../qt/sc_options_tab.cpp" line="769"/>
         <source>%1: Recommended for Scale Factor Generation</source>
         <translation>%1: Empfohlen für Skalierungsfaktoren</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="809"/>
+        <location filename="../qt/sc_options_tab.cpp" line="770"/>
         <source>%1: Use if %2 isn&apos;t enough for Scale Factors</source>
         <translation>%1: Falls %2 für Skalierungsfaktoren nicht ausreichen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="810"/>
+        <location filename="../qt/sc_options_tab.cpp" line="771"/>
         <source>%1: If you&apos;re patient</source>
         <translation>%1: Für Geduldige</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="812"/>
+        <location filename="../qt/sc_options_tab.cpp" line="773"/>
         <source>Varying the fight length over a given spectrum improves
 the analysis of trinkets and abilities with long cooldowns.</source>
         <translation>Varrieren der Kampflänge erhöht die Analysekraft when Trinket-Procs oder lange Cooldowns betrachtet werden. </translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="815"/>
+        <location filename="../qt/sc_options_tab.cpp" line="776"/>
         <source>Patchwerk: Tank-n-Spank</source>
         <translation>Patchwerk: Blindes Draufhauen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="816"/>
+        <location filename="../qt/sc_options_tab.cpp" line="777"/>
         <source>HecticAddCleave:
     Heavy Movement, Frequent Add Spawns</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="818"/>
+        <location filename="../qt/sc_options_tab.cpp" line="779"/>
         <source>HelterSkelter:
     Movement, Stuns, Interrupts,
     Target-Switching (every 2min)</source>
@@ -1123,14 +1338,14 @@ the analysis of trinkets and abilities with long cooldowns.</source>
     Ziel-Wechsel (alle 2min)</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="821"/>
+        <location filename="../qt/sc_options_tab.cpp" line="782"/>
         <source>Ultraxion:
     Periodic Stuns, Raid Damage</source>
         <translation>Ultraxion:
     Periodische Betäubungen; Raid Schaden</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="823"/>
+        <location filename="../qt/sc_options_tab.cpp" line="784"/>
         <source>LightMovement:
     %1s Movement, %2s CD,
     %3% into the fight until %4% before the end</source>
@@ -1139,7 +1354,7 @@ the analysis of trinkets and abilities with long cooldowns.</source>
     ab %3% in den Kampf hinein bis %4% vor Ende</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="826"/>
+        <location filename="../qt/sc_options_tab.cpp" line="787"/>
         <source>HeavyMovement:
     %1s Movement, %2s CD,
     beginning %3s into the fight</source>
@@ -1148,145 +1363,145 @@ the analysis of trinkets and abilities with long cooldowns.</source>
     ab %3sek in den Kampf hinein</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="830"/>
+        <location filename="../qt/sc_options_tab.cpp" line="791"/>
         <source>Race of the target and any adds.</source>
         <translation>Rasse des Zieles und aller Adds.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="832"/>
+        <location filename="../qt/sc_options_tab.cpp" line="793"/>
         <source>Enables/Disables the challenge mode setting, downscaling items to level 630.</source>
         <translation>Schalte Herausforderungsmodus-Skalierung ein/aus. Skalierung auf Stufe 630.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="834"/>
+        <location filename="../qt/sc_options_tab.cpp" line="795"/>
         <source>Number of enemies.</source>
         <translation>Anzahl Feinde.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="836"/>
+        <location filename="../qt/sc_options_tab.cpp" line="797"/>
         <source>Level of the target and any adds.</source>
         <translation>Rasse des Zieles und aller Adds.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="838"/>
+        <location filename="../qt/sc_options_tab.cpp" line="799"/>
         <source>In PVP, critical strikes deal 150% damage instead of 200%. Multistrikes are also limited to one roll instead of two.
 Enabling this option will set target level to max player level.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="841"/>
+        <location filename="../qt/sc_options_tab.cpp" line="802"/>
         <source>Elite:       No mistakes.  No cheating either.</source>
         <translation>Elite:       Keine Fehler.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="842"/>
+        <location filename="../qt/sc_options_tab.cpp" line="803"/>
         <source>Fire-is-Hot: Frequent DoT-clipping and skipping high-priority abilities.</source>
         <translation>Feuer ist heiss: Häufiges abschneiden von DoT&apos;s und auslassen von prioritären Fähigkeiten.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="844"/>
+        <location filename="../qt/sc_options_tab.cpp" line="805"/>
         <source>Match the number of CPUs for optimal performance.
 Most modern desktops have at least two CPU cores.</source>
         <translation>Passe der Number der Kerne deines Prozessors an für optimale Leistung.
 Die meisten modernen Desktop-Computer haben mindestens zwei Prozessor-Kerne.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="847"/>
+        <location filename="../qt/sc_options_tab.cpp" line="808"/>
         <source>This can allow for a more responsive computer while simulations are running.
 When set to &apos;Lowest&apos;, it will be possible to use your computer as normal while SimC runs in the background.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="850"/>
+        <location filename="../qt/sc_options_tab.cpp" line="811"/>
         <source>United States, Europe, Taiwan, China, Korea</source>
         <translation>Vereinigte Staaten, Europa, Taiwan, China, Korea</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="852"/>
+        <location filename="../qt/sc_options_tab.cpp" line="813"/>
         <source>Controls which Talent/Glyph specification is used when importing profiles from the Armory.</source>
         <translation>Bestimmt welche Talent/Glyphen Spezifikation benutzt wird beim Armory-Import.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="854"/>
+        <location filename="../qt/sc_options_tab.cpp" line="815"/>
         <source>Controls the GUI display language.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="856"/>
+        <location filename="../qt/sc_options_tab.cpp" line="817"/>
         <source>Specify the character role during import to ensure correct action priority list.</source>
         <translation>Bestimmt welche Charakter-Rolle während des Imports verwendet wird, damit die passende Fähigkeitsliste geladen wird.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="858"/>
+        <location filename="../qt/sc_options_tab.cpp" line="819"/>
         <source>Choose the type of target. Some choices can be refined further by the next two drop-down boxes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="860"/>
+        <location filename="../qt/sc_options_tab.cpp" line="821"/>
         <source>If &quot;Tank Dummy&quot; is chosen above, this drop-down selects the type of tank dummy used.
 Leaving at *None* will default back to a Fluffy Pillow.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="863"/>
+        <location filename="../qt/sc_options_tab.cpp" line="824"/>
         <source>If &quot;TMI Standard Boss&quot; is chosen in &quot;Target Type&quot;, this box selects the TMI standard.
 TMI Standard Bosses provide damage output similar to bosses in the appropriate tier.
 Leaving at *None* will default back to a Fluffy Pillow.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="867"/>
+        <location filename="../qt/sc_options_tab.cpp" line="828"/>
         <source>Specify window duration for calculating TMI. Default is 6 sec.
 Reducing this increases the metric&apos;s sensitivity to shorter damage spikes.
 Set to 0 if you want to vary on a per-player basis in the Simulate tab using &quot;tmi_window=#&quot;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="871"/>
+        <location filename="../qt/sc_options_tab.cpp" line="832"/>
         <source>Controls when ETMI is displayed in the HTML report.
 TMI only includes damage taken and self-healing/absorbs, and treats overhealing as effective healing.
 ETMI includes all sources of healing and absorption, and ignores overhealing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="875"/>
+        <location filename="../qt/sc_options_tab.cpp" line="836"/>
         <source>Specify if pets get reported separately in detail.</source>
         <translation>Bestimmt ob Begleiter separat im Bericht aufgeführt werden.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="877"/>
+        <location filename="../qt/sc_options_tab.cpp" line="838"/>
         <source>Specify HTML report print style.</source>
         <translation>Bestimmt den html-Bericht Stil.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="879"/>
+        <location filename="../qt/sc_options_tab.cpp" line="840"/>
         <source>Determines how much detailed statistical information besides count &amp; mean will be collected during simulation.
  Higher Statistics Level require more memory.</source>
         <translation>Legt fest wie viel detailierte Statistik-Informationen währen der Simulation erzeugt werden.
 Höhere Statistikstufen benötigen mehr Arbeitsspeicher.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="881"/>
+        <location filename="../qt/sc_options_tab.cpp" line="842"/>
         <source> Level %1: Only Simulation Length data is collected.</source>
         <translation> Stufe %1: Nur Simulationslänge wird aufgezeichnet.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="882"/>
+        <location filename="../qt/sc_options_tab.cpp" line="843"/>
         <source> Level %1: DPS/HPS data is collected. *default*</source>
         <translation> Stufe %1: DPS/HPS wird aufgezeichnet. *standard*</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="883"/>
+        <location filename="../qt/sc_options_tab.cpp" line="844"/>
         <source> Level %1: Player Fight Length, Death Time, DPS(e), HPS(e), DTPS, HTPS, DMG, HEAL data is collected.</source>
         <translation> Stufe %1: Spieler Kampflänge, Todeszeitpunkt, DPS(e), HPS(e), DTPS, HTPS, SCHADEN, HEILUNG wird aufgezeichnet.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="884"/>
+        <location filename="../qt/sc_options_tab.cpp" line="845"/>
         <source> Level %1: Ability Amount and  portion APS is collected.</source>
         <translation> Stufe %1: Fähigkeits-Menge und Menge/s werden aufgezeichnet. </translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="886"/>
+        <location filename="../qt/sc_options_tab.cpp" line="847"/>
         <source>When a log is generated, only one iteration is used.
 Gory details are very gory.  No documentation will be forthcoming.
 Due to the forced single iteration, no scale factor calculation.</source>
@@ -1295,7 +1510,7 @@ Grässliche Details sind sehr detailreich. Keine Dokumentation geplant.
 Durch die erzwungene einzige Iteration ist keine Skalierungsfaktor-Berechnung möglich.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="890"/>
+        <location filename="../qt/sc_options_tab.cpp" line="851"/>
         <source>Deterministic Random Number Generator creates all random numbers with a given, constant seed.
 This allows to better observe marginal changes which aren&apos;t influenced by rng, 
  or check for other influences without having to reduce statistic noise</source>
@@ -1304,7 +1519,7 @@ Dies erlaubt eine genauere Betrachtung von marginalen Veränderungen, welche nic
 oder um andere Einflüsse zu untersuchen, ohne aufwendig den statistischen Fehler reduzieren zu müssen.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="894"/>
+        <location filename="../qt/sc_options_tab.cpp" line="855"/>
         <source>World Lag is the equivalent of the &apos;world lag&apos; shown in the WoW Client.
 It is currently used to extend the cooldown duration of user executable abilities  that have a cooldown.
 Each setting adds an amount of &apos;lag&apos; with a default standard deviation of 10%:</source>
@@ -1313,104 +1528,113 @@ Es wird verwendet, um die Dauer der Cooldowns von Spielerfähigkeiten zu verlän
 Jeder Wert kommt mit einer Standardabweichung von 10%.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="898"/>
+        <location filename="../qt/sc_options_tab.cpp" line="859"/>
         <source>    &apos;Super Low&apos; : %1ms</source>
         <translation>   &apos;Super Tief&apos; : %1ms</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="899"/>
+        <location filename="../qt/sc_options_tab.cpp" line="860"/>
         <source>    &apos;Low&apos;   : %1ms</source>
         <translation>     &apos;Tief&apos;   : %1ms</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="900"/>
+        <location filename="../qt/sc_options_tab.cpp" line="861"/>
         <source>    &apos;Medium&apos;: %1ms</source>
         <translation>    &apos;Mittel&apos;: %1ms</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="901"/>
+        <location filename="../qt/sc_options_tab.cpp" line="862"/>
         <source>    &apos;High&apos;  : %1ms</source>
         <translation>     &apos;Hoch&apos;  : %1ms</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="902"/>
+        <location filename="../qt/sc_options_tab.cpp" line="863"/>
         <source>    &apos;Australia&apos; : %1ms</source>
         <translation>   &apos;Australien&apos; : %1ms</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="904"/>
+        <location filename="../qt/sc_options_tab.cpp" line="865"/>
         <source>Controls the simulations that the tool compares to determine stat weights.
 If set to No, it will sim once at profile stats and again with +2X of each selected stat.
 If set to Yes, it will sim once at profile-X and once at profile+X.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="905"/>
+        <location filename="../qt/sc_options_tab.cpp" line="866"/>
         <source>Choose the stat over which you&apos;re primarily interested in scaling.
 This is the metric that will be displayed on the Scale Factors plot.
 Note that the sim will still generate and display scale factors for all other metrics in tabular form.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="907"/>
+        <location filename="../qt/sc_options_tab.cpp" line="868"/>
         <source>The number of points that will appear on the graph</source>
         <translation>Anzahl Punkte auf dem Graphen</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="908"/>
+        <location filename="../qt/sc_options_tab.cpp" line="869"/>
         <source>The delta between two points of the graph.
 The deltas on the horizontal axis will be within the [-points * steps / 2 ; +points * steps / 2] interval</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="911"/>
+        <location filename="../qt/sc_options_tab.cpp" line="872"/>
         <source>Target error for plots.
 </source>
         <translation>Soll-Fehler für Plots</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="913"/>
+        <location filename="../qt/sc_options_tab.cpp" line="874"/>
         <source>Auto: Use simulation defaults (0.5%).
 </source>
         <translation>Auto: Nutze Simulations-Vorgaben (0.5%).</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="914"/>
+        <location filename="../qt/sc_options_tab.cpp" line="875"/>
         <source>X%:   Each plot point will sim until less than X% DPS error is reached.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="915"/>
+        <location filename="../qt/sc_options_tab.cpp" line="876"/>
         <source>Number of iterations for each plot point.
 </source>
         <translation>Anzahl Iterationen for jeden Plot-Punkt.</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="916"/>
+        <location filename="../qt/sc_options_tab.cpp" line="877"/>
         <source>Iter/10 and Iter/100 scale with the number of
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="917"/>
+        <location filename="../qt/sc_options_tab.cpp" line="878"/>
         <source>iterations selected on the general options tab.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="919"/>
+        <location filename="../qt/sc_options_tab.cpp" line="880"/>
         <source>The maximum amount to reforge per stat.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="920"/>
+        <location filename="../qt/sc_options_tab.cpp" line="881"/>
         <source>The stat difference between two points.
 It&apos;s NOT the number of steps: a lower value will generate more points!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="1347"/>
+        <location filename="../qt/sc_options_tab.cpp" line="1306"/>
         <source>Do you really want to reset all Settings to default?</source>
         <translation>Wollen Sie wirklich alle Einstellungen zurücksetzen?</translation>
+    </message>
+</context>
+<context>
+    <name>SC_OverridesTab</name>
+    <message>
+        <location filename="../qt/simulationcraftqt.hpp" line="1718"/>
+        <source># User-specified persistent global and player parameters will be set here.
+</source>
+        <translation># Globale optionen können hier manuell und permanent überschrieben werden.</translation>
     </message>
 </context>
 <context>
@@ -1532,12 +1756,12 @@ It&apos;s NOT the number of steps: a lower value will generate more points!</sou
 <context>
     <name>SC_SingleResultTab</name>
     <message>
-        <location filename="../qt/sc_window.cpp" line="2008"/>
+        <location filename="../qt/sc_window.cpp" line="2002"/>
         <source>Save Result</source>
         <translation>Speichere Resultat</translation>
     </message>
     <message>
-        <location filename="../qt/sc_window.cpp" line="2008"/>
+        <location filename="../qt/sc_window.cpp" line="2002"/>
         <source>Result saved to %1</source>
         <translation>Resultate gespeichert unter %1</translation>
     </message>

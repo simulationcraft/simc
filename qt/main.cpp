@@ -3,7 +3,7 @@
 #include <QLocale>
 #include <QtWidgets/QApplication>
 #include <locale>
-#if defined SC_WINDOWS
+#if defined SC_VS
 #include <windows.h>
 #include <stdio.h>
 #ifndef VS_XP_TARGET
@@ -40,7 +40,7 @@ void parse_additional_args( SC_MainWindow& w, QStringList args )
 
 bool checkWindowsVersion()
 {
-#if defined SC_WINDOWS
+#if defined SC_VS
   OSVERSIONINFO osvi;
   BOOL bIsWindowsXPorLater;
   ZeroMemory( &osvi, sizeof( OSVERSIONINFO ) );
