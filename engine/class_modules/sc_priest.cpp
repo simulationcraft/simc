@@ -6232,7 +6232,7 @@ void priest_t::apl_shadow()
 
   // Choose which APL to use based on talents and fight conditions.
   decision -> add_action( "call_action_list,name=main,if=!talent.clarity_of_power.enabled&!talent.void_entropy.enabled" );
-  decision -> add_action( "call_action_list,name=vent,if=talent.void_entropy.enabled&!talent.clarity_of_power.enabled&talent.auspicious_spirits.enabled" );
+  decision -> add_action( "call_action_list,name=vent,if=talent.void_entropy.enabled&!talent.clarity_of_power.enabled&!talent.auspicious_spirits.enabled" );
   decision -> add_action( "call_action_list,name=cop,if=talent.clarity_of_power.enabled&!talent.insanity.enabled" );
   decision -> add_action( "call_action_list,name=cop_dotweave,if=talent.clarity_of_power.enabled&talent.insanity.enabled&target.health.pct>20&active_enemies<=5" );
   decision -> add_action( "call_action_list,name=cop_mfi,if=talent.clarity_of_power.enabled&talent.insanity.enabled" );

@@ -36,7 +36,7 @@ actions+=/call_action_list,name=pvp_dispersion,if=set_bonus.pvp_2pc
 actions+=/call_action_list,name=decision
 
 actions.decision=call_action_list,name=main,if=!talent.clarity_of_power.enabled&!talent.void_entropy.enabled
-actions.decision+=/call_action_list,name=vent,if=talent.void_entropy.enabled&!talent.clarity_of_power.enabled&talent.auspicious_spirits.enabled
+actions.decision+=/call_action_list,name=vent,if=talent.void_entropy.enabled&!talent.clarity_of_power.enabled&!talent.auspicious_spirits.enabled
 actions.decision+=/call_action_list,name=cop,if=talent.clarity_of_power.enabled&!talent.insanity.enabled
 actions.decision+=/call_action_list,name=cop_dotweave,if=talent.clarity_of_power.enabled&talent.insanity.enabled&target.health.pct>20&active_enemies<=5
 actions.decision+=/call_action_list,name=cop_mfi,if=talent.clarity_of_power.enabled&talent.insanity.enabled
