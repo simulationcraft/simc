@@ -30,45 +30,6 @@ const OptionEntry itemSourceOptions[] =
 #endif
 };
 
-const OptionEntry plotOptions[] =
-{
-  { "Strength",           "str",        "Generate Scaling curve for Strength"         },
-  { "Agility",            "agi",        "Generate Scaling curve for Agility"          },
-  { "Stamina",            "sta",        "Generate Scaling curve for Stamina"          },
-  { "Intellect",          "int",        "Generate Scaling curve for Intellect"        },
-  { "Spirit",             "spi",        "Generate Scaling curve for Spirit"           },
-  { "Spell Power",        "sp",         "Generate Scaling curve for Spell Power"      },
-  { "Attack Power",       "ap",         "Generate Scaling curve for Attack Power"     },
-  { "Crit Rating",        "crit",       "Generate Scaling curve for Crit Rating"      },
-  { "Haste Rating",       "haste",      "Generate Scaling curve for Haste Rating"     },
-  { "Mastery Rating",     "mastery",    "Generate Scaling curve for Mastery Rating"   },
-  { "Multistrike Rating", "mult",       "Generate Scaling curve for Multistrike Rating" },
-  { "Versatility Rating", "vers",       "Generate Scaling curve for Versatility Rating" },
-  { "Weapon DPS",         "wdps",       "Generate Scaling curve for Weapon DPS"       },
-  { "Weapon OH DPS",      "wohdps",     "Generate Scaling curve for Weapon OH DPS"    },
-  { "Armor",              "armor",      "Generate Scaling curve for Armor"            },
-  { "Bonus Armor",        "bonusarmor", "Generate Scaling curve for Bonus Armor"      },
-  { NULL, NULL, NULL }
-};
-
-const OptionEntry reforgePlotOptions[] =
-{
-  { "Plot Reforge Options for Spirit",           "spi",     "Generate reforge plot data for Spirit"           },
-  { "Plot Reforge Options for Crit Rating",      "crit",    "Generate reforge plot data for Crit Rating"      },
-  { "Plot Reforge Options for Haste Rating",     "haste",   "Generate reforge plot data for Haste Rating"     },
-  { "Plot Reforge Options for Mastery Rating",   "mastery", "Generate reforge plot data for Mastery Rating"   },
-  { "Plot Reforge Options for Multistrike Rating", "mult",  "Generate reforge plot data for Multistrike Rating" },
-  { "Plot Reforge Options for Versatility Rating", "vers",  "Generate reforge plot data for Versatility Rating" },
-  { "Plot Reforge Options for Bonus Armor Rating", "bonusarmor", "Generate reforge plot data for Bonus Armor" },
-
-  { "Plot Reforge Options for Strength",         "str",     "Generate reforge plot data for Intellect"        },
-  { "Plot Reforge Options for Agility",          "agi",     "Generate reforge plot data for Agility"          },
-  { "Plot Reforge Options for Stamina",          "sta",     "Generate reforge plot data for Stamina"          },
-  { "Plot Reforge Options for Intellect",        "int",     "Generate reforge plot data for Intellect"        },
-  { NULL, NULL, NULL }
-};
-const int reforgePlotOption_cut = 7; // separate between secondary and primary stats
-
 QComboBox* createChoiceFromRange( int lowerInclusive, int upperInclusive ) {
   QComboBox* choice = new QComboBox();
   for ( int i = lowerInclusive; i <= upperInclusive; i++ ) {
@@ -419,13 +380,10 @@ void SC_OptionsTab::createPlotsTab()
   QLabel* enablePlotsButtonLabel = new QLabel( tr( "This button enables/disables scaling plots, allowing you to toggle calculation of scaling plots while keeping a particular set of stats selected." ) );
   enablePlotsButtonGroupBoxLayout -> addWidget( enablePlotsButtonLabel );
   
-  plotsButtonGroup = new QButtonGroup();
+  plotsButtonGroup = new QButtonGroup( this );
   plotsButtonGroup -> setExclusive( false );
 
-  QCheckBox* enablePlotsBox = new QCheckBox( tr("Enable Plots" ) );
-  enablePlotsBox -> setToolTip( tr( "Enable scaling plots. This box MUST be checked to generate scaling plots." ) );
-  plotsButtonGroup -> addButton( enablePlotsBox );
-  enablePlotsButtonGroupBoxLayout -> addWidget( enablePlotsBox );
+  appendCheckBox( tr("Enable Plots" ), "", tr( "Enable scaling plots. This box MUST be checked to generate scaling plots." ), enablePlotsButtonGroupBoxLayout, plotsButtonGroup );
   enablePlotsButtonGroupBox -> setLayout( enablePlotsButtonGroupBoxLayout );
   
   // Box containing additional options
@@ -458,23 +416,32 @@ void SC_OptionsTab::createPlotsTab()
   plotButtonsGroupBox -> setTitle( tr( "Stats to plot" ) );
   plotLayout -> addWidget( plotButtonsGroupBox );
 
-  QVBoxLayout* plotButtonsGroupBoxLayout = new QVBoxLayout();
+  QVBoxLayout* plotButtonsLayout = new QVBoxLayout();
 
-  QLabel* plotHelpertext = new QLabel( tr( "Check the box for each stat you would like to show on the scaling plots.\n\nPlot scaling for:" ) );
-  plotButtonsGroupBoxLayout -> addWidget( plotHelpertext );
+  QLabel* plotHelperText = new QLabel( tr( "Check the box for each stat you would like to show on the scaling plots.\n\nPlot scaling for:" ) );
+  plotButtonsLayout -> addWidget( plotHelperText );
 
-  for ( int i = 0; plotOptions[ i ].label; i++ )
-  {
-    QCheckBox* checkBox = new QCheckBox( plotOptions[ i ].label );
-    checkBox -> setToolTip( plotOptions[ i ].tooltip );
-    plotsButtonGroup -> addButton( checkBox );
-    plotButtonsGroupBoxLayout -> addWidget( checkBox );
-  }
+  appendCheckBox( tr( "Strength"           ), "str",        tr( "Generate Scaling curve for Strength"           ), plotButtonsLayout, plotsButtonGroup );
+  appendCheckBox( tr( "Agility"            ), "agi",        tr( "Generate Scaling curve for Agility"            ), plotButtonsLayout, plotsButtonGroup );
+  appendCheckBox( tr( "Stamina"            ), "sta",        tr( "Generate Scaling curve for Stamina"            ), plotButtonsLayout, plotsButtonGroup );
+  appendCheckBox( tr( "Intellect"          ), "int",        tr( "Generate Scaling curve for Intellect"          ), plotButtonsLayout, plotsButtonGroup );
+  appendCheckBox( tr( "Spirit"             ), "spi",        tr( "Generate Scaling curve for Spirit"             ), plotButtonsLayout, plotsButtonGroup );
+  appendCheckBox( tr( "Spell Power"        ), "sp",         tr( "Generate Scaling curve for Spell Power"        ), plotButtonsLayout, plotsButtonGroup );
+  appendCheckBox( tr( "Attack Power"       ), "ap",         tr( "Generate Scaling curve for Attack Power"       ), plotButtonsLayout, plotsButtonGroup );
+  appendCheckBox( tr( "Crit Rating"        ), "crit",       tr( "Generate Scaling curve for Crit Rating"        ), plotButtonsLayout, plotsButtonGroup );
+  appendCheckBox( tr( "Haste Rating"       ), "haste",      tr( "Generate Scaling curve for Haste Rating"       ), plotButtonsLayout, plotsButtonGroup );
+  appendCheckBox( tr( "Mastery Rating"     ), "mastery",    tr( "Generate Scaling curve for Mastery Rating"     ), plotButtonsLayout, plotsButtonGroup );
+  appendCheckBox( tr( "Multistrike Rating" ), "mult",       tr( "Generate Scaling curve for Multistrike Rating" ), plotButtonsLayout, plotsButtonGroup );
+  appendCheckBox( tr( "Versatility Rating" ), "vers",       tr( "Generate Scaling curve for Versatility Rating" ), plotButtonsLayout, plotsButtonGroup );
+  appendCheckBox( tr( "Weapon DPS"         ), "wdps",       tr( "Generate Scaling curve for Weapon DPS"         ), plotButtonsLayout, plotsButtonGroup );
+  appendCheckBox( tr( "Weapon OH DPS"      ), "wohdps",     tr( "Generate Scaling curve for Weapon OH DPS"      ), plotButtonsLayout, plotsButtonGroup );
+  appendCheckBox( tr( "Armor"              ), "armor",      tr( "Generate Scaling curve for Armor"              ), plotButtonsLayout, plotsButtonGroup );
+  appendCheckBox( tr( "Bonus Armor"        ), "bonusarmor", tr( "Generate Scaling curve for Bonus Armor"        ), plotButtonsLayout, plotsButtonGroup );
 
   // spacer to eat up rest of space (makes plotsButtonGroupBox look less silly)
   QSpacerItem* spacer1 = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Expanding );
-  plotButtonsGroupBoxLayout -> addSpacerItem( spacer1 );
-  plotButtonsGroupBox -> setLayout( plotButtonsGroupBoxLayout );
+  plotButtonsLayout -> addSpacerItem( spacer1 );
+  plotButtonsGroupBox -> setLayout( plotButtonsLayout );
   
   // Now put the tab together
   QScrollArea* plotsGroupBoxScrollArea = new QScrollArea;
@@ -498,31 +465,31 @@ void SC_OptionsTab::createReforgePlotsTab()
   QLabel* messageText = new QLabel( tr( "A maximum of three stats may be ran at once.\n" ) );
   reforgePlotsLayout -> addRow( messageText );
 
+  reforgeplotsButtonGroup = new SC_ReforgeButtonGroup( this );
+  reforgeplotsButtonGroup -> setExclusive( false );
+
   messageText = new QLabel( tr( "Secondary Stats" ) );
   reforgePlotsLayout -> addRow( messageText );
 
-  reforgeplotsButtonGroup = new SC_ReforgeButtonGroup( this );
-  reforgeplotsButtonGroup -> setExclusive( false );
-  for ( int i = 0; i < reforgePlotOption_cut && reforgePlotOptions[ i ].label; i++ )
-  {
-    QCheckBox* checkBox = new QCheckBox( reforgePlotOptions[ i ].label );
-    checkBox -> setToolTip( reforgePlotOptions[ i ].tooltip );
-    reforgeplotsButtonGroup -> addButton( checkBox );
-    reforgePlotsLayout -> addWidget( checkBox );
-    QObject::connect( checkBox, SIGNAL( stateChanged( int ) ),
-                      reforgeplotsButtonGroup, SLOT( setSelected( int ) ) );
-  }
+  appendCheckBox( tr( "Plot Reforge Options for Spirit"             ), "spi",        tr( "Generate reforge plot data for Spirit"             ), reforgePlotsLayout, reforgeplotsButtonGroup );
+  appendCheckBox( tr( "Plot Reforge Options for Crit Rating"        ), "crit",       tr( "Generate reforge plot data for Crit Rating"        ), reforgePlotsLayout, reforgeplotsButtonGroup );
+  appendCheckBox( tr( "Plot Reforge Options for Haste Rating"       ), "haste",      tr( "Generate reforge plot data for Haste Rating"       ), reforgePlotsLayout, reforgeplotsButtonGroup );
+  appendCheckBox( tr( "Plot Reforge Options for Mastery Rating"     ), "mastery",    tr( "Generate reforge plot data for Mastery Rating"     ), reforgePlotsLayout, reforgeplotsButtonGroup );
+  appendCheckBox( tr( "Plot Reforge Options for Multistrike Rating" ), "mult",       tr( "Generate reforge plot data for Multistrike Rating" ), reforgePlotsLayout, reforgeplotsButtonGroup );
+  appendCheckBox( tr( "Plot Reforge Options for Versatility Rating" ), "vers",       tr( "Generate reforge plot data for Versatility Rating" ), reforgePlotsLayout, reforgeplotsButtonGroup );
+  appendCheckBox( tr( "Plot Reforge Options for Bonus Armor Rating" ), "bonusarmor", tr( "Generate reforge plot data for Bonus Armor"        ), reforgePlotsLayout, reforgeplotsButtonGroup );
 
   messageText = new QLabel( "\n" + tr( "Primary Stats" ) );
   reforgePlotsLayout -> addRow( messageText );
 
-  for ( int i = reforgePlotOption_cut; reforgePlotOptions[ i ].label; i++ )
+  appendCheckBox( tr( "Plot Reforge Options for Strength"           ), "str",        tr( "Generate reforge plot data for Intellect"          ), reforgePlotsLayout, reforgeplotsButtonGroup );
+  appendCheckBox( tr( "Plot Reforge Options for Agility"            ), "agi",        tr( "Generate reforge plot data for Agility"            ), reforgePlotsLayout, reforgeplotsButtonGroup );
+  appendCheckBox( tr( "Plot Reforge Options for Stamina"            ), "sta",        tr( "Generate reforge plot data for Stamina"            ), reforgePlotsLayout, reforgeplotsButtonGroup );
+  appendCheckBox( tr( "Plot Reforge Options for Intellect"          ), "int",        tr( "Generate reforge plot data for Intellect"          ), reforgePlotsLayout, reforgeplotsButtonGroup );
+
+  foreach ( QAbstractButton* button, reforgeplotsButtonGroup -> buttons() )
   {
-    QCheckBox* checkBox = new QCheckBox( reforgePlotOptions[ i ].label );
-    checkBox -> setToolTip( reforgePlotOptions[ i ].tooltip );
-    reforgeplotsButtonGroup -> addButton( checkBox );
-    reforgePlotsLayout -> addWidget( checkBox );
-    QObject::connect( checkBox, SIGNAL( stateChanged( int ) ),
+    QObject::connect( button, SIGNAL( stateChanged( int ) ),
                       reforgeplotsButtonGroup, SLOT( setSelected( int ) ) );
   }
 
@@ -1070,7 +1037,7 @@ QString SC_OptionsTab::mergeOptions()
       {
         options += "scale_lag=1\n";
       }
-      options += "scale_only=" + scales.join(",") + "\n"; // dump list of scaling
+      options += "scale_only=" + scales.join( "," ) + "\n"; // dump list of scaling
     }
 
     if ( choice.center_scale_delta->currentIndex() == 0 )
@@ -1088,66 +1055,64 @@ QString SC_OptionsTab::mergeOptions()
   }
 
   /////// DPS Plot Options ///////
-  buttons = plotsButtonGroup -> buttons();
   // skip if enable checkbox isn't checked
+  buttons = plotsButtonGroup -> buttons();
   if ( buttons.at( 0 ) -> isChecked() )
   {
-    options += "dps_plot_stat=none";
-    for ( int i = 1; plotOptions[i - 1].label; i++ )
+    QStringList plots;
+    foreach ( QAbstractButton* button, buttons)
     {
-      if ( buttons.at( i )->isChecked() )
-      {
-        options += ",";
-        options += plotOptions[i - 1].option;
-      }
+      if ( !button -> objectName().isEmpty() && button -> isChecked() )
+        plots.append( button -> objectName() );
     }
-    options += "\n";
-    options += "dps_plot_points=" + choice.plots_points -> currentText() + "\n";
-    options += "dps_plot_step=" + choice.plots_step -> currentText() + "\n";
-
-    if ( choice.plots_target_error -> currentIndex() < 2 )
+    if ( plots.count() > 0 )
     {
-      options += "dps_plot_target_error=0\n";
-      if ( choice.plots_target_error -> currentIndex() == 0 )
-      {
-        options += "dps_plot_iterations=";
+      options += "dps_plot_stat=" + plots.join( "," ) + "\n";
+      options += "dps_plot_points=" + choice.plots_points -> currentText() + "\n";
+      options += "dps_plot_step=" + choice.plots_step -> currentText() + "\n";
 
-        std::vector<std::string> splits = util::string_split( choice.plots_iterations -> currentText().toStdString(), "/" );
-        if ( splits.size() > 1 )
+      if ( choice.plots_target_error -> currentIndex() < 2 )
+      {
+        options += "dps_plot_target_error=0\n";
+        if ( choice.plots_target_error -> currentIndex() == 0 )
         {
-          int base_iter = util::str_to_num<int>( choice.iterations -> currentText().toStdString() );
-          int divisor = util::str_to_num<int>( splits[1].c_str() );
-          options += QString::number( base_iter / divisor ) + "\n";
+          options += "dps_plot_iterations=";
+
+          std::vector<std::string> splits = util::string_split( choice.plots_iterations -> currentText().toStdString(), "/" );
+          if ( splits.size() > 1 )
+          {
+            int base_iter = util::str_to_num<int>( choice.iterations -> currentText().toStdString() );
+            int divisor = util::str_to_num<int>( splits[1].c_str() );
+            options += QString::number( base_iter / divisor ) + "\n";
+          }
+          else
+            options += choice.plots_iterations -> currentText() + "\n";
         }
         else
-          options += choice.plots_iterations -> currentText() + "\n";
+          options += "dps_plot_iterations=0\n";
       }
       else
+      {
+        std::vector<std::string> splits = util::string_split( choice.plots_target_error -> currentText().toStdString(), "%" );
+        assert( splits.size() > 0 );
+        options += "dps_plot_target_error=" + QString( splits[0].c_str() ) + "\n";
         options += "dps_plot_iterations=0\n";
-    }
-    else
-    {
-      std::vector<std::string> splits = util::string_split( choice.plots_target_error -> currentText().toStdString(), "%" );
-      assert( splits.size() > 0 );
-      options += "dps_plot_target_error=" + QString( splits[0].c_str() ) + "\n";
-      options += "dps_plot_iterations=0\n";
+      }
     }
   }
   /////// Reforge Plot Options ///////
 
-  options += "reforge_plot_stat=none";
-  buttons = reforgeplotsButtonGroup->buttons();
-  for ( int i = 0; reforgePlotOptions[ i ].label; i++ )
+  QStringList reforges;
+  foreach ( QAbstractButton* button, reforgeplotsButtonGroup -> buttons() )
   {
-    if ( buttons.at( i )->isChecked() )
-    {
-      options += ",";
-      options += reforgePlotOptions[ i ].option;
-    }
+    reforges.append( button -> objectName() );
   }
-  options += "\n";
-  options += "reforge_plot_amount=" + choice.reforgeplot_amount -> currentText() + "\n";
-  options += "reforge_plot_step=" + choice.reforgeplot_step -> currentText() + "\n";
+  if ( reforges.count() > 0 )
+  {
+    options += "reforge_plot_stat=" + reforges.join( "," ) + "\n";
+    options += "reforge_plot_amount=" + choice.reforgeplot_amount -> currentText() + "\n";
+    options += "reforge_plot_step=" + choice.reforgeplot_step -> currentText() + "\n";
+  }
 
   if ( choice.statistics_level->currentIndex() >= 0 )
   {
