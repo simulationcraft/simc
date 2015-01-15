@@ -41,20 +41,21 @@ void parse_additional_args( SC_MainWindow& w, QStringList args )
 bool checkWindowsVersion()
 {
 #if defined SC_WINDOWS
-
   OSVERSIONINFO osvi;
   BOOL bIsWindowsXPorLater;
   ZeroMemory( &osvi, sizeof( OSVERSIONINFO ) );
   osvi.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
   GetVersionEx(&osvi);
   bIsWindowsXPorLater = osvi.dwMajorVersion >= 6; // 6.0 and up is Vista
-
-#ifndef VS_XP_TARGET // The 32 bit version should be built with xp toolchain so that it will give an error box with an explanation, instead of a generic appcrash that it would give
-                     // with the normal toolchain.. which would just mean more issues being posted. After a few months we can probably remove this targetting for the GUI and only leave it in for CLI. - 01/08/2015
+#ifndef VS_XP_TARGET 
+  // The 32 bit version should be built with xp toolchain so that it will give an error box with an explanation, instead of a generic
+  // appcrash that it would give with the normal toolchain.. which would just mean more issues being posted. 
+  // After a few months we can probably remove this targetting for the GUI and only leave it in for CLI. - 01/08/2015
   if ( !IsWindows7SP1OrGreater() && IsWindows7OrGreater() ) // Winxp cannot access fancy-pants methods to determine if the OS has Win7 SP1... which is probably ok.
   {
     int msgboxID = MessageBox( NULL,  // Added to warn people to install SP1 before posting issues about simc not loading, as it fixes the issue in a majority of cases.
-      (LPCWSTR)L"SimulationCraft GUI is known to have issues with Windows 7 when Service Pack 1 is not installed.\nThe program will continue to load, but if you run into any problems, please install Service Pack 1.",
+      (LPCWSTR)L"SimulationCraft GUI is known to have issues with Windows 7 when Service Pack 1 is not installed.\n"
+      "The program will continue to load, but if you run into any problems, please install Service Pack 1.",
       (LPCWSTR)L"SimulationCraft", MB_OK );
     return true;
   }
@@ -62,17 +63,30 @@ bool checkWindowsVersion()
   if ( !bIsWindowsXPorLater )
   {
     int msgboxID = MessageBox( NULL,
-      (LPCWSTR)L"SimulationCraft GUI is no longer supported on Windows XP as of January 2015. If you wish to continue using Simulationcraft, you may do so by the command line interface -- simc.exe.",
+      (LPCWSTR)L"SimulationCraft GUI is no longer officially supported on Windows XP as of January 2015.\n"
+      "It will continue to work for the next few months after, but be warned that it may stop functioning at any time.\n"
+      "The command line interface - simc.exe - should continue to function for the foreseeable future.",
+      (LPCWSTR)L"SimulationCraft", MB_OK );
+#if defined SC_USE_WEBENGINE
+    int msgboxID = MessageBox( NULL,
+      (LPCWSTR)L"SimulationCraft GUI is no longer supported on Windows XP as of January 2015. \n"
+      "If you wish to continue using Simulationcraft, you may do so by the command line interface -- simc.exe.",
       (LPCWSTR)L"SimulationCraft", MB_OK );
     return false; // Do not continue loading.
+#endif
   }
+#if defined ( SC_USE_WEBENGINE ) && ! defined ( VS_XP_TARGET )
+  if ( !IsWindows8OrGreater() && IsWindows7OrGreater() )
+    QApplication::setAttribute( Qt::AA_UseOpenGLES, true );
+  // This is to fix an issue with older video cards on windows 7.
+#endif
 #endif
   return true;
 }
 
 int main( int argc, char *argv[] )
 {
-  if ( !checkWindowsVersion() ) //Returns false on any windows version below Vista.
+  if ( !checkWindowsVersion() ) // Check for various windows oddities with QT.
   { return 0; }
   QLocale::setDefault( QLocale( "C" ) );
   std::locale::global( std::locale( "C" ) );
@@ -81,18 +95,12 @@ int main( int argc, char *argv[] )
   dbc::init();
   module_t::init();
 
-#if SC_USE_WEBENGINE
-  QApplication::setAttribute( Qt::AA_UseOpenGLES, true );
-#endif
   QApplication a( argc, argv );
   QCoreApplication::setApplicationName( "SimulationCraft" );
   QCoreApplication::setApplicationVersion( SC_VERSION );
   QCoreApplication::setOrganizationDomain( "http://code.google.com/p/simulationcraft/" );
   QCoreApplication::setOrganizationName( "SimulationCraft" );
   QSettings::setDefaultFormat( QSettings::IniFormat ); // Avoid Registry entries on Windows
-#if SC_USE_WEBENGINE
-  QWebEngineSettings::globalSettings() -> setAttribute( QWebEngineSettings::LocalContentCanAccessRemoteUrls, true );
-#endif
 
   QNetworkProxyFactory::setUseSystemConfiguration( true );
 
