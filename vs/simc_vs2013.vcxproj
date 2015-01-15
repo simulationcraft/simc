@@ -446,7 +446,7 @@
       <Profile>false</Profile>
       <LargeAddressAware>true</LargeAddressAware>
       <LinkTimeCodeGeneration>PGUpdate</LinkTimeCodeGeneration>
-      <ProfileGuidedDatabase>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\Simulationcraft64.pgd</ProfileGuidedDatabase>
+      <ProfileGuidedDatabase>$(SolutionDir)\</ProfileGuidedDatabase>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='PGO|x64'">
