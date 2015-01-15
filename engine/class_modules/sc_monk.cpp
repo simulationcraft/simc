@@ -914,7 +914,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       sef_melee_attack_t::impact( state );
 
       if ( ( p() -> current.position == POSITION_BACK || p() -> o() -> glyph.blackout_kick ) &&
-           ( result_is_hit( state -> result ) || result_is_multistrike( state -> result ) ) )
+           result_is_hit_or_multistrike( state -> result ) )
       {
         residual_action::trigger( dot,
                                   state -> target,
@@ -2607,7 +2607,7 @@ struct melee_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    if ( result_is_hit_or_multistrike( s -> result ) )
       p() -> buff.tiger_strikes -> trigger();
 
     if ( p() -> spec.brewing_elusive_brew -> ok() && s -> result == RESULT_CRIT )
@@ -3369,7 +3369,7 @@ struct storm_earth_and_fire_t: public monk_spell_t
           sef_idx.push_back( i );
         }
 
-        size_t idx = sef_idx[ rng().range( 0, sef_idx.size() ) ];
+        size_t idx = sef_idx[ static_cast<unsigned int>( rng().range(0.0, sef_idx.size()) ) ];
         assert( idx < sef_idx.size() );
 
         p() -> pet.sef[ idx ] -> target = execute_state -> target;
@@ -4754,7 +4754,8 @@ void monk_t::create_buffs()
 
   buff.power_strikes = buff_creator_t( this, "power_strikes", talent.power_strikes -> effectN( 1 ).trigger() );
 
-  double ts_proc_chance = main_hand_weapon.group() == WEAPON_1H ? ( spec.tiger_strikes -> proc_chance() / 10 * 6 ) : spec.tiger_strikes -> proc_chance();
+  double ts_proc_chance = ( ( main_hand_weapon.group() == WEAPON_1H ) && ( specialization() != MONK_MISTWEAVER ) ) 
+    ? ( spec.tiger_strikes -> proc_chance() / 8 * 5 ) : spec.tiger_strikes -> proc_chance();
   buff.tiger_strikes = buff_creator_t( this, "tiger_strikes", find_spell( 120273 ) )
     .chance( ts_proc_chance )
     .add_invalidate( CACHE_MULTISTRIKE );
@@ -5564,6 +5565,7 @@ void monk_t::apl_combat_brewmaster()
   action_priority_list_t* def = get_action_priority_list( "default" );
   action_priority_list_t* st = get_action_priority_list( "st" );
   action_priority_list_t* aoe = get_action_priority_list( "aoe" );
+  action_priority_list_t* tod = get_action_priority_list( "tod" );
 
   def -> add_action( "auto_attack" );
 
@@ -5571,7 +5573,7 @@ void monk_t::apl_combat_brewmaster()
     def -> add_action( racial_actions[i] + ",if=energy<=40" );
 
   def -> add_action( "chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4" );
-  def -> add_talent( this, "Chi Brew", "if=talent.chi_brew.enabled&chi.max-chi>=2&buff.elusive_brew_stacks.stack<=10&((charges=1&recharge_time<5)|charges=2|target.time_to_die<15)" );
+  def -> add_talent( this, "Chi Brew", "if=talent.chi_brew.enabled&chi.max-chi>=2&buff.elusive_brew_stacks.stack<=10&((charges=1&recharge_time<5)|charges=2|(target.time_to_die<15&(cooldown.touch_of_death.remains>target.time_to_die|glyph.touch_of_death.enabled)))" );
   def -> add_talent( this, "Chi Brew", "if=(chi<1&stagger.heavy)|(chi<2&buff.shuffle.down)" );
   def -> add_action( this, "Gift of the Ox", "if=buff.gift_of_the_ox.react&incoming_damage_1500ms" );
   def -> add_talent( this, "Diffuse Magic", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
@@ -5589,16 +5591,28 @@ void monk_t::apl_combat_brewmaster()
       def -> add_action( "potion,name=virmens_bite,if=(buff.fortifying_brew.down&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.elusive_brew_activated.down)" );
   }
   
+  def -> add_action( "call_action_list,name=tod,if=target.health.percent<10&target.time_to_die<8&cooldown.touch_of_death.remains=0&!glyph.touch_of_death.enabled" );
   def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
   def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
 
+  tod -> add_action( this, "Touch of Death" );
+  tod -> add_action( "chi_brew,if=chi<3&talent.chi_brew.enabled" ); 
+  tod -> add_action( this, "Keg Smash", "if=talent.chi_brew.enabled&chi<3" );
+  tod -> add_action( this, "Expel Harm", "if=chi<3&(cooldown.keg_smash.remains>target.time_to_die|((energy+(energy.regen*(cooldown.keg_smash.remains)))>=80)&cooldown.keg_smash.remains>=gcd)" );
+  tod -> add_action( this, "Jab", "if=chi<3&(cooldown.keg_smash.remains>target.time_to_die|((energy+(energy.regen*(cooldown.keg_smash.remains)))>=80)&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd)" );
+  tod -> add_action( this, "Tiger Palm", "if=talent.chi_brew.enabled&chi<3" ); 
+  
+  
   st -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.heavy" );
   st -> add_action( this, "Blackout Kick", "if=buff.shuffle.down" );
   st -> add_action( this, "Purifying Brew", "if=buff.serenity.up" );
   st -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.moderate&buff.shuffle.remains>=6" );
   st -> add_action( this, "Guard", "if=(charges=1&recharge_time<5)|charges=2|target.time_to_die<15" );
   st -> add_action( this, "Guard", "if=incoming_damage_10s>=health.max*0.5" );
+  st -> add_action( "chi_brew,if=target.health.percent<10&cooldown.touch_of_death.remains=0&chi<=3&chi>=1&(buff.shuffle.remains>=6|target.time_to_die<buff.shuffle.remains)&!glyph.touch_of_death.enabled" );
+  st -> add_action( this, "Touch of Death", "if=target.health.percent<10&(buff.shuffle.remains>=6|target.time_to_die<=buff.shuffle.remains)&!glyph.touch_of_death.enabled" );
   st -> add_action( this, "Keg Smash", "if=chi.max-chi>=1&!buff.serenity.remains" );
+  st -> add_action( this, "Touch of Death", "if=target.health.percent<10&glyph.touch_of_death.enabled" );
   st -> add_talent( this, "Chi Burst", "if=(energy+(energy.regen*gcd))<100" );
   st -> add_talent( this, "Chi Wave", "if=(energy+(energy.regen*gcd))<100" );
   st -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking&(energy+(energy.regen*gcd))<100" );
@@ -5616,8 +5630,11 @@ void monk_t::apl_combat_brewmaster()
   aoe -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.moderate&buff.shuffle.remains>=6" );
   aoe -> add_action( this, "Guard", "if=(charges=1&recharge_time<5)|charges=2|target.time_to_die<15" );
   aoe -> add_action( this, "Guard", "if=incoming_damage_10s>=health.max*0.5" );
+  aoe -> add_action( "chi_brew,if=target.health.percent<10&cooldown.touch_of_death.remains=0&chi<=3&chi>=1&(buff.shuffle.remains>=6|target.time_to_die<buff.shuffle.remains)&!glyph.touch_of_death.enabled" );
+  aoe -> add_action( this, "Touch of Death", "if=target.health.percent<10&(buff.shuffle.remains>=6|target.time_to_die<=buff.shuffle.remains)&!glyph.touch_of_death.enabled" );
   aoe -> add_action( this, "Breath of Fire", "if=(chi>=3|buff.serenity.up)&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=2.4&!talent.chi_explosion.enabled" );
   aoe -> add_action( this, "Keg Smash", "if=chi.max-chi>=1&!buff.serenity.remains" );
+  aoe -> add_action( this, "Touch of Death", "if=target.health.percent<10&glyph.touch_of_death.enabled" );
   aoe -> add_action( "rushing_jade_wind,if=chi.max-chi>=1&!buff.serenity.remains&talent.rushing_jade_wind.enabled" );
   aoe -> add_talent( this, "Chi Burst", "if=(energy+(energy.regen*gcd))<100" );
   aoe -> add_talent( this, "Chi Wave", "if=(energy+(energy.regen*gcd))<100" );
@@ -5675,6 +5692,7 @@ void monk_t::apl_combat_windwalker()
   def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&chi>=2&(buff.tigereye_brew.stack>=16|target.time_to_die<40)&debuff.rising_sun_kick.up&buff.tiger_power.up" );
   def -> add_action( this, "Rising Sun Kick", "if=(debuff.rising_sun_kick.down|debuff.rising_sun_kick.remains<3)" );
   def -> add_talent( this, "Serenity", "if=talent.serenity.enabled&chi>=2&buff.tiger_power.up&debuff.rising_sun_kick.up" );
+  
   def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
   def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
 

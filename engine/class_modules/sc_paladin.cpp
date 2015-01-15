@@ -3607,7 +3607,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
       p() -> trigger_grand_crusader();
 
     }
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    if ( result_is_hit_or_multistrike( s -> result ) )
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
   }
@@ -3699,7 +3699,7 @@ struct divine_storm_t : public paladin_melee_attack_t
       // expire Final Verdict buff, but delay by 50ms so that other targets hit by the AoE get the benefit in action_multiplier
       p() -> buffs.final_verdict -> expire( timespan_t::from_millis( 50 ) );
     }
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    if ( result_is_hit_or_multistrike( s -> result ) )
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
   }
@@ -3841,7 +3841,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       // Grand Crusader
       p() -> trigger_grand_crusader();
     }
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    if ( result_is_hit_or_multistrike( s -> result ) )
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
   }
@@ -3908,7 +3908,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
         }
       }
     }
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    if ( result_is_hit_or_multistrike( s -> result ) )
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
   }
@@ -4436,7 +4436,7 @@ struct final_verdict_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    if ( result_is_hit_or_multistrike( s -> result ) )
     {
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
@@ -4498,7 +4498,7 @@ struct templars_verdict_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    if ( result_is_hit_or_multistrike( s -> result ) )
     {
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );

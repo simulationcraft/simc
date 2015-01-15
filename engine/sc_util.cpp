@@ -221,7 +221,7 @@ double util::cpu_time() { return cpu_sw.elapsed(); }
 int util::cpu_thread_count()
 {
 // Use std::thread to determine logical thread count
-#if defined( SC_STD_THREAD )
+#if defined( SC_STD_THREAD ) && ! defined( SC_MINGW )
   return std::thread::hardware_concurrency();
 // OS X uses systemctl() to fetch the thread count for the CPU. This returns 8
 // (i.e., the logical thread count) on Hyperthreading enabled machines.

@@ -4854,8 +4854,7 @@ void shaman_t::trigger_fulmination_stack( const action_state_t* state )
   if ( ! buff.lightning_shield -> check() )
     return;
 
-  if ( ! ( spell -> result_is_hit( state -> result ) ||
-           spell -> result_is_multistrike( state -> result ) ) )
+  if ( ! spell -> result_is_hit_or_multistrike( state -> result ) )
     return;
 
   if ( rng().roll( spec.fulmination -> proc_chance() ) )

@@ -6,7 +6,7 @@
 #define SIMULATIONCRAFT_H
 
 #define SC_MAJOR_VERSION "603"
-#define SC_MINOR_VERSION "24"
+#define SC_MINOR_VERSION "25"
 #define SC_USE_PTR ( 1 )
 #define SC_BETA ( 0 )
 #define SC_BETA_STR "wod"
@@ -4588,6 +4588,7 @@ struct player_t : public actor_t
 
   struct buffs_t
   {
+    buff_t* angelic_feather;
     buff_t* aspect_of_the_fox;
     buff_t* aspect_of_the_pack;
     buff_t* beacon_of_light;
@@ -6398,7 +6399,7 @@ inline proc_types action_state_t::proc_type() const
 inline proc_types2 action_state_t::execute_proc_type2() const
 {
   // Bunch up all non-damaging harmful attacks that land into "hit"
-  if ( action -> harmful && ( action -> result_is_hit( result ) || action -> result_is_multistrike( result ) ) )
+  if ( action -> harmful && action -> result_is_hit_or_multistrike( result ) )
     return PROC2_LANDED;
   else if ( result == RESULT_DODGE )
     return PROC2_DODGE;

@@ -30,7 +30,7 @@ actions+=/blood_fury,if=energy<=40
 actions+=/berserking,if=energy<=40
 actions+=/arcane_torrent,if=energy<=40
 actions+=/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4
-actions+=/chi_brew,if=talent.chi_brew.enabled&chi.max-chi>=2&buff.elusive_brew_stacks.stack<=10&((charges=1&recharge_time<5)|charges=2|target.time_to_die<15)
+actions+=/chi_brew,if=talent.chi_brew.enabled&chi.max-chi>=2&buff.elusive_brew_stacks.stack<=10&((charges=1&recharge_time<5)|charges=2|(target.time_to_die<15&(cooldown.touch_of_death.remains>target.time_to_die|glyph.touch_of_death.enabled)))
 actions+=/chi_brew,if=(chi<1&stagger.heavy)|(chi<2&buff.shuffle.down)
 actions+=/gift_of_the_ox,if=buff.gift_of_the_ox.react&incoming_damage_1500ms
 actions+=/diffuse_magic,if=incoming_damage_1500ms&buff.fortifying_brew.down
@@ -40,6 +40,7 @@ actions+=/elusive_brew,if=buff.elusive_brew_stacks.react>=9&(buff.dampen_harm.do
 actions+=/invoke_xuen,if=talent.invoke_xuen.enabled&target.time_to_die>15&buff.shuffle.remains>=3&buff.serenity.down
 actions+=/serenity,if=talent.serenity.enabled&cooldown.keg_smash.remains>6
 actions+=/potion,name=draenic_armor,if=(buff.fortifying_brew.down&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.elusive_brew_activated.down)
+actions+=/call_action_list,name=tod,if=target.health.percent<10&target.time_to_die<8&cooldown.touch_of_death.remains=0&!glyph.touch_of_death.enabled
 actions+=/call_action_list,name=st,if=active_enemies<3
 actions+=/call_action_list,name=aoe,if=active_enemies>=3
 
@@ -49,7 +50,10 @@ actions.st+=/purifying_brew,if=buff.serenity.up
 actions.st+=/purifying_brew,if=!talent.chi_explosion.enabled&stagger.moderate&buff.shuffle.remains>=6
 actions.st+=/guard,if=(charges=1&recharge_time<5)|charges=2|target.time_to_die<15
 actions.st+=/guard,if=incoming_damage_10s>=health.max*0.5
+actions.st+=/chi_brew,if=target.health.percent<10&cooldown.touch_of_death.remains=0&chi<=3&chi>=1&(buff.shuffle.remains>=6|target.time_to_die<buff.shuffle.remains)&!glyph.touch_of_death.enabled
+actions.st+=/touch_of_death,if=target.health.percent<10&(buff.shuffle.remains>=6|target.time_to_die<=buff.shuffle.remains)&!glyph.touch_of_death.enabled
 actions.st+=/keg_smash,if=chi.max-chi>=1&!buff.serenity.remains
+actions.st+=/touch_of_death,if=target.health.percent<10&glyph.touch_of_death.enabled
 actions.st+=/chi_burst,if=(energy+(energy.regen*gcd))<100
 actions.st+=/chi_wave,if=(energy+(energy.regen*gcd))<100
 actions.st+=/zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking&(energy+(energy.regen*gcd))<100
@@ -67,8 +71,11 @@ actions.aoe+=/purifying_brew,if=buff.serenity.up
 actions.aoe+=/purifying_brew,if=!talent.chi_explosion.enabled&stagger.moderate&buff.shuffle.remains>=6
 actions.aoe+=/guard,if=(charges=1&recharge_time<5)|charges=2|target.time_to_die<15
 actions.aoe+=/guard,if=incoming_damage_10s>=health.max*0.5
+actions.aoe+=/chi_brew,if=target.health.percent<10&cooldown.touch_of_death.remains=0&chi<=3&chi>=1&(buff.shuffle.remains>=6|target.time_to_die<buff.shuffle.remains)&!glyph.touch_of_death.enabled
+actions.aoe+=/touch_of_death,if=target.health.percent<10&(buff.shuffle.remains>=6|target.time_to_die<=buff.shuffle.remains)&!glyph.touch_of_death.enabled
 actions.aoe+=/breath_of_fire,if=(chi>=3|buff.serenity.up)&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=2.4&!talent.chi_explosion.enabled
 actions.aoe+=/keg_smash,if=chi.max-chi>=1&!buff.serenity.remains
+actions.aoe+=/touch_of_death,if=target.health.percent<10&glyph.touch_of_death.enabled
 actions.aoe+=/rushing_jade_wind,if=chi.max-chi>=1&!buff.serenity.remains&talent.rushing_jade_wind.enabled
 actions.aoe+=/chi_burst,if=(energy+(energy.regen*gcd))<100
 actions.aoe+=/chi_wave,if=(energy+(energy.regen*gcd))<100
@@ -80,6 +87,13 @@ actions.aoe+=/blackout_kick,if=buff.serenity.up
 actions.aoe+=/expel_harm,if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80
 actions.aoe+=/jab,if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80
 actions.aoe+=/tiger_palm
+
+actions.tod=touch_of_death
+actions.tod+=/chi_brew,if=chi<3&talent.chi_brew.enabled
+actions.tod+=/keg_smash,if=talent.chi_brew.enabled&chi<3
+actions.tod+=/expel_harm,if=chi<3&(cooldown.keg_smash.remains>target.time_to_die|((energy+(energy.regen*(cooldown.keg_smash.remains)))>=80)&cooldown.keg_smash.remains>=gcd)
+actions.tod+=/jab,if=chi<3&(cooldown.keg_smash.remains>target.time_to_die|((energy+(energy.regen*(cooldown.keg_smash.remains)))>=80)&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd)
+actions.tod+=/tiger_palm,if=talent.chi_brew.enabled&chi<3
 
 head=acidic_jaws,id=113880,bonus_id=566
 neck=fiery_links_of_courage,id=113923,bonus_id=566,enchant=gift_of_versatility
@@ -95,18 +109,18 @@ finger1=spellbound_solium_band_of_sorcerous_invincibility,id=118303,enchant=gift
 finger2=stonefist_band,id=113938,bonus_id=566,enchant=gift_of_versatility
 trinket1=blast_furnace_door,id=113893,bonus_id=566
 trinket2=pillar_of_the_earth,id=113650,bonus_id=566
-main_hand=the_bladefist,id=113591,bonus_id=566,enchant_id=5352
-off_hand=the_bladefist,id=113591,bonus_id=566,enchant_id=5352
+main_hand=iron_soldiers_saber,id=113980,bonus_id=566,enchant_id=5352
+off_hand=iron_soldiers_saber,id=113980,bonus_id=566,enchant_id=5352
 
 # Gear Summary
-# gear_agility=2552
-# gear_stamina=4494
-# gear_crit_rating=1146
-# gear_haste_rating=317
+# gear_agility=2572
+# gear_stamina=4524
+# gear_crit_rating=1170
+# gear_haste_rating=451
 # gear_mastery_rating=370
 # gear_armor=1052
 # gear_bonus_armor=982
 # gear_multistrike_rating=289
-# gear_versatility_rating=1250
+# gear_versatility_rating=1114
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

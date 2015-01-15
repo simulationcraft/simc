@@ -1111,7 +1111,7 @@ static bool trigger_beast_cleave( action_state_t* s )
     }
   };
 
-  if ( !s -> action -> result_is_hit( s -> result ) && !s -> action -> result_is_multistrike( s -> result ) )
+  if ( !s -> action -> result_is_hit_or_multistrike( s -> result )  )
     return false;
 
   if ( s -> action -> sim -> active_enemies == 1 )

@@ -10,7 +10,7 @@ set /p revision=<bla.txt
 :: Hacky hack because windows command prompt is annoying.
 del bla.txt
 
-set simcversion=603-24
+set simcversion=603-25
 set install=simc-%simcversion%-source
 cd>bla.txt
 set /p download=<bla.txt
@@ -19,12 +19,8 @@ del bla.txt
 robocopy . %install% /s *.* /xd .git %install% /xf *.pgd /xn
 :: Don't zip up the PGO file, that's a large file.
 set filename=%install%-%mydate%-%revision%
-7z a -r %filename% %install% -mx9 -md=32m
-RD /s /q %install%
-robocopy E:\ %install% 7zsd.sfx
-robocopy . %install% %filename%.7z config.txt
-copy /b %install%\7ZSD.sfx + %install%\config.txt + %install%\%filename%.7z %filename%.exe
-call start winscp /command "open downloads" "put %download%\%filename%.exe -nopreservetime -nopermissions -transfer=binary" "exit"
+7z a -r -tzip %filename% %install% -mx9
+call start winscp /command "open downloads" "put %download%\%filename%.zip -nopreservetime -nopermissions -transfer=binary" "exit"
 :: Zips source code, calls winscp to upload it. If anyone else is attempting this 'downloads' is the nickname of whatever server you are trying to upload to in winscp.
 
 set install=simc-%simcversion%-win32

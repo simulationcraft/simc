@@ -5589,7 +5589,7 @@ void warlock_t::apl_precombat()
     if ( level == 100 && specialization() == WARLOCK_DEMONOLOGY )
       action_list_str += "/potion,name=draenic_intellect,if=buff.bloodlust.react|(buff.dark_soul.up&(trinket.proc.any.react|trinket.stacking_proc.any.react>6)&!buff.demonbolt.remains)|target.health.pct<20";
     else if ( level == 100 )
-      action_list_str += "/potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20";
+      action_list_str += "/potion,name=draenic_intellect,if=buff.bloodlust.react&buff.dark_soul.remains>10|target.time_to_die<=25|buff.dark_soul.remains>10";
     else if ( level >= 85 && specialization() == WARLOCK_DEMONOLOGY )
       action_list_str += "/potion,name=jade_serpent,if=buff.bloodlust.react|(buff.dark_soul.up&(trinket.proc.any.react|trinket.stacking_proc.any.react>6)&!buff.demonbolt.remains)|target.health.pct<20";
     else if ( level >= 85 )

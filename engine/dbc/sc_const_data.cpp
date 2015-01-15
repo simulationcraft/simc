@@ -1248,19 +1248,56 @@ double dbc_t::regen_base( pet_e t, unsigned level ) const
 int dbc_t::resolve_item_scaling( unsigned level ) const
 {
   assert( level > 0 && level <= MAX_LEVEL );
+#if SC_USE_PTR
+  return ptr ? __ptr_gt_item_scaling[level - 1] 
+             : __gt_item_scaling[level - 1];
+#else
   return __gt_item_scaling[ level - 1 ];
+#endif
+}
+
+item_bonus_tree_entry_t& dbc_t::resolve_item_bonus_tree_data( unsigned level ) const
+{
+    assert(level > 0 && level <= MAX_LEVEL);
+#if SC_USE_PTR
+    return ptr ? __ptr_item_bonus_tree_data[level - 1]
+               : __item_bonus_tree_data[level - 1];
+#else
+    return __item_bonus_tree_data[level - 1];
+#endif
+}
+
+item_bonus_node_entry_t& dbc_t::resolve_item_bonus_map_data( unsigned level ) const
+{
+    assert(level > 0 && level <= MAX_LEVEL);
+#if SC_USE_PTR
+    return ptr ? __ptr_item_bonus_map_data[level - 1] : 
+                 __item_bonus_map_data[level - 1];
+#else
+    return __item_bonus_map_data[level - 1];
+#endif
 }
 
 double dbc_t::resolve_level_scaling( unsigned level ) const
 {
   assert( level > 0 && level <= MAX_LEVEL );
-  return _gt_resolve_dps_by_level[ level - 1 ];
+#if SC_USE_PTR
+  return ptr ? _ptr_gt_resolve_dps_by_level[level - 1]
+             : _gt_resolve_dps_by_level[level - 1];
+#else
+  return _gt_resolve_dps_by_level[level - 1];
+#endif
 }
 
 double dbc_t::avoid_per_str_agi_by_level( unsigned level ) const
 {
   assert( level > 0 && level <= MAX_LEVEL );
-  return _gt_avoid_per_str_agi_by_level[ level - 1 ];
+#if SC_USE_PTR
+  return ptr ? _ptr_gt_avoid_per_str_agi_by_level[level - 1]
+             : _gt_avoid_per_str_agi_by_level[level - 1];
+#else
+  return _gt_avoid_per_str_agi_by_level[level - 1];
+#endif
 }
 
 double dbc_t::health_base( player_e t, unsigned level ) const

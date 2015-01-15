@@ -10,7 +10,7 @@ set /p revision=<bla.txt
 :: Hacky hack because windows command prompt is annoying.
 del bla.txt
 
-set simcversion=603-24
+set simcversion=603-25
 set install=simc-%simcversion%-source
 cd>bla.txt
 set /p download=<bla.txt
@@ -19,12 +19,8 @@ del bla.txt
 robocopy . %install% /s *.* /xd .git %install% /xf *.pgd /xn
 :: Don't zip up the PGO file, that's a large file.
 set filename=%install%-%mydate%-%revision%
-7z a -r %filename% %install% -mx9 -md=32m
-RD /s /q %install%
-robocopy E:\ %install% 7zsd.sfx
-robocopy . %install% %filename%.7z config.txt
-copy /b %install%\7ZSD.sfx + %install%\config.txt + %install%\%filename%.7z %filename%.exe
-call start winscp /command "open downloads" "put %download%\%filename%.exe -nopreservetime -nopermissions -transfer=binary" "exit"
+7z a -r -tzip %filename% %install% -mx9
+call start winscp /command "open downloads" "put %download%\%filename%.zip -nopreservetime -nopermissions -transfer=binary" "exit"
 :: Zips source code, calls winscp to upload it. If anyone else is attempting this 'downloads' is the nickname of whatever server you are trying to upload to in winscp.
 
 ::Webkit compilation.
@@ -36,7 +32,7 @@ rd %install% /s /q
 
 for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\12.0" /v MSBuildToolsPath') do SET MSBUILDDIR=%%B
 
-"%MSBUILDDIR%msbuild.exe" E:\simulationcraft\simc_vs2013.sln /p:configuration=webkit /p:platform=x64 /nr:true /m:8
+"%MSBUILDDIR%msbuild.exe" E:\simulationcraft\simc_vs2013.sln /p:configuration=webkit /p:platform=x64 /nr:true
 
 robocopy %redist%\ %install%\ msvcp120.dll msvcr120.dll vccorlib120.dll
 robocopy locale\ %install%\locale sc_de.qm sc_zh.qm
@@ -58,6 +54,8 @@ robocopy . %install% %install%.7z config.txt
 copy /b %install%\7ZSD.sfx + %install%\config.txt + %install%\%install%.7z %install%.exe
 call start winscp /command "open downloads" "put %download%\%install%.exe -nopreservetime -nopermissions -transfer=binary" "exit"
 
+
+set redist="C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\x86\Microsoft.VC120.CRT"
 set install=simc-%simcversion%-win32
 set qt_dir=C:\Qt\5.4\msvc2013
 "%MSBUILDDIR%msbuild.exe" E:\simulationcraft\simc_vs2013.sln /p:configuration=webkit /p:platform=win32 /nr:true /m:8
