@@ -1099,7 +1099,10 @@ QString SC_OptionsTab::mergeOptions()
   QStringList reforges;
   foreach ( QAbstractButton* button, reforgeplotsButtonGroup -> buttons() )
   {
-    reforges.append( button -> objectName() );
+    if ( button -> isChecked() )
+    {
+      reforges.append( button -> objectName() );
+    }
   }
   if ( reforges.count() > 0 )
   {
