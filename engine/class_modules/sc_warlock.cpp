@@ -8,8 +8,6 @@
 // ==========================================================================
 //
 // TODO:
-// check pet coefficients
-// Update action lists, especially AoE
 // Proper Stats calc for childs of cataclysm
 // ==========================================================================
 namespace { // unnamed namespace
@@ -305,7 +303,8 @@ public:
     gain_t* immolate;
     gain_t* immolate_fnb;
     gain_t* immolate_t17_2pc;
-    gain_t* shadowburn;
+    gain_t* shadowburn_mana;
+    gain_t* shadowburn_ember;
     gain_t* miss_refund;
     gain_t* siphon_life;
     gain_t* seed_of_corruption;
@@ -2483,29 +2482,37 @@ struct shadow_bolt_t: public warlock_spell_t
 
 struct shadowburn_t: public warlock_spell_t
 {
-  struct mana_event_t: public event_t
+  struct resource_event_t: public event_t
   {
     shadowburn_t* spell;
-    gain_t* gain;
+    player_t* target;
+    gain_t* mana_gain, *ember_gain;
 
-    mana_event_t( warlock_t* p, shadowburn_t* s ):
-      event_t( *p, "shadowburn_mana_return" ), spell( s ), gain( p -> gains.shadowburn )
+    resource_event_t( warlock_t* p, shadowburn_t* s, player_t* t ):
+      event_t( *p, "shadowburn_execute_gain" ), spell( s ), mana_gain( p -> gains.shadowburn_mana ), ember_gain( p -> gains.shadowburn_ember), target(t)
     {
       add_event( spell -> mana_delay );
     }
 
     virtual void execute()
     {
-      p() -> resource_gain( RESOURCE_MANA, p() -> resources.max[RESOURCE_MANA] * spell -> mana_amount, gain );
+      if (target -> is_sleeping()) //if it is dead return ember, else return mana
+      {
+          p() -> resource_gain(RESOURCE_BURNING_EMBER, 2, ember_gain); //TODO look up ember amount in shadowburn spell and test mana amount
+      }
+      else
+      {
+        p() -> resource_gain( RESOURCE_MANA, p() -> resources.max[RESOURCE_MANA] * spell -> mana_amount, mana_gain);
+      }
     }
   };
 
-  mana_event_t* mana_event;
+  resource_event_t* resource_event;
   double mana_amount;
   timespan_t mana_delay;
 
   shadowburn_t( warlock_t* p ):
-    warlock_spell_t( p, "Shadowburn" ), mana_event( 0 )
+    warlock_spell_t( p, "Shadowburn" ), resource_event( 0 )
   {
     min_gcd = timespan_t::from_millis( 500 );
     havoc_consume = 1;
@@ -2519,7 +2526,8 @@ struct shadowburn_t: public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    mana_event = new ( *sim ) mana_event_t( p(), this );
+    resource_event = new ( *sim ) resource_event_t( p(), this, s -> target );
+      
   }
 
   virtual double cost() const
@@ -5493,7 +5501,8 @@ void warlock_t::init_gains()
   gains.immolate = get_gain( "immolate" );
   gains.immolate_fnb = get_gain( "immolate_fnb" );
   gains.immolate_t17_2pc = get_gain( "immolate_t17_2pc" );
-  gains.shadowburn = get_gain( "shadowburn" );
+  gains.shadowburn_ember = get_gain( "shadowburn_ember" );
+  gains.shadowburn_mana = get_gain( "shadowburn_mana" );
   gains.miss_refund = get_gain( "miss_refund" );
   gains.siphon_life = get_gain( "siphon_life" );
   gains.seed_of_corruption = get_gain( "seed_of_corruption" );
