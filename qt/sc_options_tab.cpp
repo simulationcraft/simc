@@ -487,12 +487,6 @@ void SC_OptionsTab::createReforgePlotsTab()
   appendCheckBox( tr( "Plot Reforge Options for Stamina"            ), "sta",        tr( "Generate reforge plot data for Stamina"            ), reforgePlotsLayout, reforgeplotsButtonGroup );
   appendCheckBox( tr( "Plot Reforge Options for Intellect"          ), "int",        tr( "Generate reforge plot data for Intellect"          ), reforgePlotsLayout, reforgeplotsButtonGroup );
 
-  foreach ( QAbstractButton* button, reforgeplotsButtonGroup -> buttons() )
-  {
-    QObject::connect( button, SIGNAL( stateChanged( int ) ),
-                      reforgeplotsButtonGroup, SLOT( setSelected( int ) ) );
-  }
-
   QGroupBox* reforgeplotsGroupBox = new QGroupBox();
   reforgeplotsGroupBox -> setLayout( reforgePlotsLayout );
 

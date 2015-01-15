@@ -153,8 +153,8 @@ public:
 private:
   int selected;
 
-public slots:
-  void setSelected( int state );
+private slots:
+  void setSelected(int id, bool checked );
 };
 
 

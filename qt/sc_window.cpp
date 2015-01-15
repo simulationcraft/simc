@@ -1860,11 +1860,14 @@ QLineEdit( parent )
 
 SC_ReforgeButtonGroup::SC_ReforgeButtonGroup( QObject* parent ):
 QButtonGroup( parent ), selected( 0 )
-{}
-
-void SC_ReforgeButtonGroup::setSelected( int state )
 {
-  if ( state )
+  connect( this, SIGNAL( buttonToggled( int, bool ) ), this, SLOT( setSelected( int, bool ) ) );
+}
+
+void SC_ReforgeButtonGroup::setSelected( int id, bool checked )
+{
+  Q_UNUSED( id );
+  if ( checked )
     selected++;
   else
     selected--;
@@ -1872,20 +1875,17 @@ void SC_ReforgeButtonGroup::setSelected( int state )
   // Three selected, disallow selection of any more
   if ( selected >= 3 )
   {
-    QList< QAbstractButton* > b = buttons();
-    for ( QList< QAbstractButton* >::iterator i = b.begin(); i != b.end(); ++i )
+    foreach ( QAbstractButton* button, buttons() )
     {
-      if ( !(*i) -> isChecked() )
-        (*i) -> setEnabled( false );
+      button -> setEnabled( button -> isChecked() );
     }
   }
   // Less than three selected, allow selection of all/any
   else
   {
-    QList< QAbstractButton* > b = buttons();
-    for ( QList< QAbstractButton* >::iterator i = b.begin(); i != b.end(); ++i )
+    foreach ( QAbstractButton* button, buttons() )
     {
-      (*i) -> setEnabled( true );
+      button -> setEnabled( true );
     }
   }
 }
