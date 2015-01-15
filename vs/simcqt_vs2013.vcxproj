@@ -269,7 +269,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <Profile>false</Profile>
-      <ProfileGuidedDatabase>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\</ProfileGuidedDatabase>
+      <ProfileGuidedDatabase>$(SolutionDir)</ProfileGuidedDatabase>
       <GenerateMapFile>true</GenerateMapFile>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
@@ -320,7 +320,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <Profile>false</Profile>
-      <ProfileGuidedDatabase>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\</ProfileGuidedDatabase>
+      <ProfileGuidedDatabase>$(SolutionDir)</ProfileGuidedDatabase>
       <GenerateMapFile>true</GenerateMapFile>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
@@ -371,7 +371,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <Profile>false</Profile>
-      <ProfileGuidedDatabase>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\</ProfileGuidedDatabase>
+      <ProfileGuidedDatabase>$(SolutionDir)</ProfileGuidedDatabase>
       <GenerateMapFile>true</GenerateMapFile>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
@@ -472,7 +472,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <Profile>false</Profile>
-      <ProfileGuidedDatabase>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\</ProfileGuidedDatabase>
+      <ProfileGuidedDatabase>$(SolutionDir)</ProfileGuidedDatabase>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
   </ItemDefinitionGroup>
@@ -524,7 +524,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <Profile>false</Profile>
-      <ProfileGuidedDatabase>$(SolutionDir)\</ProfileGuidedDatabase>
+      <ProfileGuidedDatabase>$(SolutionDir)</ProfileGuidedDatabase>
       <GenerateMapFile>false</GenerateMapFile>
     </Link>
     <PostBuildEvent>
@@ -582,7 +582,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <Profile>false</Profile>
-      <ProfileGuidedDatabase>$(SolutionDir)\</ProfileGuidedDatabase>
+      <ProfileGuidedDatabase>$(SolutionDir)</ProfileGuidedDatabase>
       <GenerateMapFile>false</GenerateMapFile>
     </Link>
     <PostBuildEvent>
