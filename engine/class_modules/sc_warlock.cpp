@@ -303,7 +303,6 @@ public:
     gain_t* immolate;
     gain_t* immolate_fnb;
     gain_t* immolate_t17_2pc;
-    gain_t* shadowburn_mana;
     gain_t* shadowburn_ember;
     gain_t* miss_refund;
     gain_t* siphon_life;
@@ -2486,38 +2485,32 @@ struct shadowburn_t: public warlock_spell_t
   {
     shadowburn_t* spell;
     player_t* target;
-    gain_t* mana_gain, *ember_gain;
+    gain_t* ember_gain;
 
     resource_event_t( warlock_t* p, shadowburn_t* s, player_t* t ):
-      event_t( *p, "shadowburn_execute_gain" ), spell( s ), mana_gain( p -> gains.shadowburn_mana ), ember_gain( p -> gains.shadowburn_ember), target(t)
+      event_t( *p, "shadowburn_execute_gain" ), spell( s ), ember_gain( p -> gains.shadowburn_ember), target(t)
     {
-      add_event( spell -> mana_delay );
+      add_event( spell -> delay );
     }
 
     virtual void execute()
     {
       if (target -> is_sleeping()) //if it is dead return ember, else return mana
       {
-          p() -> resource_gain(RESOURCE_BURNING_EMBER, 2, ember_gain); //TODO look up ember amount in shadowburn spell and test mana amount
-      }
-      else
-      {
-        p() -> resource_gain( RESOURCE_MANA, p() -> resources.max[RESOURCE_MANA] * spell -> mana_amount, mana_gain);
+          p() -> resource_gain(RESOURCE_BURNING_EMBER, 2, ember_gain); //TODO look up ember amount in shadowburn spell
       }
     }
   };
 
   resource_event_t* resource_event;
-  double mana_amount;
-  timespan_t mana_delay;
+  timespan_t delay;
 
   shadowburn_t( warlock_t* p ):
     warlock_spell_t( p, "Shadowburn" ), resource_event( 0 )
   {
     min_gcd = timespan_t::from_millis( 500 );
     havoc_consume = 1;
-    mana_delay = data().effectN( 1 ).trigger() -> duration();
-    mana_amount = p -> find_spell( data().effectN( 1 ).trigger() -> effectN( 1 ).base_value() ) -> effectN( 1 ).percent();
+    delay = data().effectN( 1 ).trigger() -> duration();
     if ( p -> wod_hotfix )
       base_multiplier *= 1.08;
   }
@@ -5502,7 +5495,6 @@ void warlock_t::init_gains()
   gains.immolate_fnb = get_gain( "immolate_fnb" );
   gains.immolate_t17_2pc = get_gain( "immolate_t17_2pc" );
   gains.shadowburn_ember = get_gain( "shadowburn_ember" );
-  gains.shadowburn_mana = get_gain( "shadowburn_mana" );
   gains.miss_refund = get_gain( "miss_refund" );
   gains.siphon_life = get_gain( "siphon_life" );
   gains.seed_of_corruption = get_gain( "seed_of_corruption" );
