@@ -34,8 +34,8 @@ actions+=/berserking
 actions+=/arcane_torrent
 actions+=/use_item,slot=trinket2
 actions+=/potion,name=draenic_strength,if=buff.dark_transformation.up&target.time_to_die<=60
-actions+=/run_action_list,name=aoe,if=active_enemies>=2
-actions+=/run_action_list,name=single_target,if=active_enemies<2
+actions+=/run_action_list,name=aoe,if=(!talent.necrotic_plague.enabled&active_enemies>=2)|active_enemies>=4
+actions+=/run_action_list,name=single_target,if=(!talent.necrotic_plague.enabled&active_enemies<2)|active_enemies<4
 
 actions.aoe=unholy_blight
 actions.aoe+=/run_action_list,name=spread,if=(!dot.blood_plague.ticking|!dot.frost_fever.ticking)&!dot.necrotic_plague.ticking
@@ -63,7 +63,7 @@ actions.aoe+=/empower_rune_weapon
 actions.single_target=plague_leech,if=(cooldown.outbreak.remains<1)&((blood<1&frost<1)|(blood<1&unholy<1)|(frost<1&unholy<1))
 actions.single_target+=/plague_leech,if=((blood<1&frost<1)|(blood<1&unholy<1)|(frost<1&unholy<1))&disease.min_remains<3
 actions.single_target+=/plague_leech,if=disease.min_remains<1
-actions.single_target+=/outbreak,if=!talent.necrotic_plague.enabled&!disease.ticking
+actions.single_target+=/outbreak,if=!disease.min_ticking
 actions.single_target+=/unholy_blight,if=!talent.necrotic_plague.enabled&disease.min_remains<3
 actions.single_target+=/unholy_blight,if=talent.necrotic_plague.enabled&dot.necrotic_plague.remains<1
 actions.single_target+=/death_coil,if=runic_power>90
@@ -76,13 +76,14 @@ actions.single_target+=/festering_strike,if=cooldown.breath_of_sindragosa.remain
 actions.single_target+=/blood_tap,if=((target.health.pct-3*(target.health.pct%target.time_to_die))<=45)&cooldown.soul_reaper.remains=0
 actions.single_target+=/death_and_decay,if=unholy=2
 actions.single_target+=/defile,if=unholy=2
-actions.single_target+=/plague_strike,if=!disease.ticking&unholy=2
+actions.single_target+=/plague_strike,if=!disease.min_ticking&unholy=2
 actions.single_target+=/scourge_strike,if=unholy=2
 actions.single_target+=/death_coil,if=runic_power>80
+actions.single_target+=/festering_strike,if=talent.necrotic_plague.enabled&talent.unholy_blight.enabled&dot.necrotic_plague.remains<cooldown.unholy_blight.remains%2
 actions.single_target+=/festering_strike,if=blood=2&frost=2&(((Frost-death)>0)|((Blood-death)>0))
 actions.single_target+=/festering_strike,if=(blood=2|frost=2)&(((Frost-death)>0)&((Blood-death)>0))
 actions.single_target+=/defile,if=blood=2|frost=2
-actions.single_target+=/plague_strike,if=!disease.ticking&(blood=2|frost=2)
+actions.single_target+=/plague_strike,if=!disease.min_ticking&(blood=2|frost=2)
 actions.single_target+=/scourge_strike,if=blood=2|frost=2
 actions.single_target+=/festering_strike,if=((Blood-death)>1)
 actions.single_target+=/blood_boil,if=((Blood-death)>1)
@@ -92,7 +93,7 @@ actions.single_target+=/summon_gargoyle
 actions.single_target+=/death_and_decay
 actions.single_target+=/defile
 actions.single_target+=/blood_tap,if=cooldown.defile.remains=0
-actions.single_target+=/plague_strike,if=!disease.ticking
+actions.single_target+=/plague_strike,if=!disease.min_ticking
 actions.single_target+=/dark_transformation
 actions.single_target+=/blood_tap,if=buff.blood_charge.stack>10&(buff.sudden_doom.react|(buff.dark_transformation.down&unholy<=1))
 actions.single_target+=/death_coil,if=buff.sudden_doom.react|(buff.dark_transformation.down&unholy<=1)
@@ -124,11 +125,9 @@ actions.bos_aoe+=/plague_leech
 actions.bos_aoe+=/empower_rune_weapon
 actions.bos_aoe+=/death_coil,if=buff.sudden_doom.react
 
-actions.spread=blood_boil,cycle_targets=1,if=!disease.ticking&!talent.necrotic_plague.enabled
-actions.spread+=/outbreak,if=!talent.necrotic_plague.enabled&!disease.ticking
-actions.spread+=/outbreak,if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking
-actions.spread+=/plague_strike,if=!talent.necrotic_plague.enabled&!disease.ticking
-actions.spread+=/plague_strike,if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking
+actions.spread=blood_boil,cycle_targets=1,if=!disease.min_ticking
+actions.spread+=/outbreak,if=!disease.min_ticking
+actions.spread+=/plague_strike,if=!disease.min_ticking
 
 head=hardened_greathelm,id=113910,bonus_id=566
 neck=thogars_serrated_chain,id=113959,bonus_id=566,enchant=gift_of_multistrike
