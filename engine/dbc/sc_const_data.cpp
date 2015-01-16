@@ -315,23 +315,6 @@ void dbc::apply_hotfixes()
   // Mage
 
   // Paladin
-  // Build Last Checked: 16309
-  // Description: Seal of Truth should be replacing Seal of Command but is missing its ReplaceId value
-  s = spell_data_t::find( 31801, false );
-  if ( s && s -> ok() && s -> effectN( 1 ).ok() )
-  {
-    const_cast<spell_data_t&>( *s )._replace_spell_id = 105361;
-  }
-  // For some reason, the proc chance listed for Divine Purpose in the DBC is now 100%.
-  // Hotfix it to the value used on the tooltip.
-  // FIXME: Use effectN( 1 ).percent() as proc chance instead ...............
-  s = spell_data_t::find( 86172, false );
-  s -> _proc_chance = s -> effectN( 1 ).base_value();
-  if ( SC_USE_PTR )
-  {
-    s = spell_data_t::find( 86172, true );
-    s -> _proc_chance = s -> effectN( 1 ).base_value();
-  }
 
   // Priest
 

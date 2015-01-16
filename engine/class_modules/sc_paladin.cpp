@@ -682,7 +682,7 @@ public:
   virtual void trigger_free_hp_effects( double c )
   {
     // now we trigger new buffs.  Need to treat c=0 as c=3 for proc purposes
-    double c_effective = ( c == 0.0 ) ? 3 : c;
+    double c_effective = ( c == 0.0 || c > 3 ) ? 3 : c;
 
     // if Divine Purpose is talented, trigger a DP proc
     if ( p() -> talents.divine_purpose -> ok() )
@@ -3092,6 +3092,10 @@ struct seraphim_t : public paladin_spell_t
     may_multistrike = false; //necessary?
   }
 
+  // Seraphim cannot trigger free HP effects
+  virtual void trigger_free_hp_effects( double c )
+    {}
+
   virtual void execute()
   {
     paladin_spell_t::execute();
@@ -4902,7 +4906,8 @@ void paladin_t::create_buffs()
 
   // Talents
   buffs.divine_purpose         = buff_creator_t( this, "divine_purpose", talents.divine_purpose )
-                                 .duration( find_spell( talents.divine_purpose -> effectN( 1 ).trigger_spell_id() ) -> duration() );
+                                 .duration( find_spell( talents.divine_purpose -> effectN( 1 ).trigger_spell_id() ) -> duration() )
+                                 .chance( talents.divine_purpose -> effectN( 1 ).percent() ); // chance stored in effect
   buffs.final_verdict          = buff_creator_t( this, "final_verdict", talents.final_verdict );
   buffs.holy_avenger           = buff_creator_t( this, "holy_avenger", talents.holy_avenger ).cd( timespan_t::zero() ); // Let the ability handle the CD
   buffs.holy_shield_absorb     = absorb_buff_creator_t( this, "holy_shield", find_spell( 157122 ) )
@@ -4920,8 +4925,14 @@ void paladin_t::create_buffs()
                                  .add_invalidate( CACHE_ATTACK_POWER );
   buffs.turalyons_justice      = buff_creator_t( this, "turalyons_justice", find_spell( 156987 ) );
   buffs.uthers_insight         = buff_creator_t( this, "uthers_insight", find_spell( 156988 ) );
-  buffs.seraphim                       = stat_buff_creator_t( this, "seraphim", talents.seraphim )
-                                         .cd( timespan_t::zero() ); // Let the ability handle the CD
+  buffs.seraphim               = stat_buff_creator_t( this, "seraphim", talents.seraphim )
+                               .add_stat( STAT_HASTE_RATING, passives.bladed_armor -> ok() ? 750 : 1000 )
+                               .add_stat( STAT_CRIT_RATING, passives.bladed_armor -> ok() ? 750 : 1000 )
+                               .add_stat( STAT_MASTERY_RATING, passives.bladed_armor -> ok() ? 750 : 1000 )
+                               .add_stat( STAT_MULTISTRIKE_RATING, passives.bladed_armor -> ok() ? 750 : 1000 )
+                               .add_stat( STAT_VERSATILITY_RATING, passives.bladed_armor -> ok() ? 750 : 1000 )
+                               .add_stat( STAT_BONUS_ARMOR, passives.bladed_armor -> ok() ? 750 : 0 )
+                               .cd( timespan_t::zero() ); // Let the ability handle the CD
 
   // General
   buffs.avenging_wrath         = new buffs::avenging_wrath_buff_t( this );
