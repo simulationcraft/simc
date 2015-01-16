@@ -5821,7 +5821,7 @@ struct action_t : public noncopyable
   void   check_spec( specialization_e );
   void   check_spell( const spell_data_t* );
   const char* name() const { return name_str.c_str(); }
-  virtual school_e get_school() const { return school; }; // Use when damage schools change during runtime.
+  virtual school_e get_school() const { return school; } // Use when damage schools change during runtime.
 
   static bool result_is_hit( result_e r )
   {
@@ -7133,7 +7133,7 @@ const item_data_t* find_consumable( const dbc_t& dbc, const std::string& name, i
 const item_data_t* find_item_by_spell( const dbc_t& dbc, unsigned spell_id );
 
 expr_t* create_expression( action_t* a, const std::string& name_str );
-};
+}
 
 // Consumable ===============================================================
 
