@@ -31,6 +31,7 @@ namespace dbc {
 // Initialization
 void apply_hotfixes();
 void init();
+void init_item_data();
 void de_init();
 
 // Utily functions
@@ -996,7 +997,7 @@ public:
   const gem_property_data_t&     gem_property( unsigned gem_id ) const;
 
   const random_prop_data_t&      random_property( unsigned ilevel ) const;
-  int                            random_property_max_level() const;
+  unsigned                            random_property_max_level() const;
   const item_scale_data_t&       item_damage_1h( unsigned ilevel ) const;
   const item_scale_data_t&       item_damage_2h( unsigned ilevel ) const;
   const item_scale_data_t&       item_damage_caster_1h( unsigned ilevel ) const;
@@ -1094,5 +1095,92 @@ public:
   std::vector< const spell_data_t* > effect_affects_spells( unsigned, const spelleffect_data_t* ) const;
   std::vector< const spelleffect_data_t* > effects_affecting_spell( const spell_data_t* ) const;
 };
+// ==========================================================================
+// Indices to provide log time, constant space access to spells, effects, and talents by id.
+// ==========================================================================
 
+/* id_function_policy and id_member_policy are here to give a standard interface
+ * of accessing the id of a data type.
+ * Eg. spell_data_t on which the id_function_policy is used has a function 'id()' which returns its id
+ * and item_data_t on which id_member_policy is used has a member 'id' which stores its id.
+ */
+struct id_function_policy
+{
+  template <typename T> static unsigned id( const T& t )
+  { return static_cast<unsigned>( t.id() ); }
+};
+
+struct id_member_policy
+{
+  template <typename T> static unsigned id( const T& t )
+  { return static_cast<unsigned>( t.id ); }
+};
+
+template <typename T, typename KeyPolicy = id_function_policy>
+class dbc_index_t
+{
+private:
+  typedef std::pair<T*, T*> index_t; // first = lowest data; second = highest data
+// array of size 1 or 2, depending on whether we have PTR data
+#if SC_USE_PTR == 0
+  index_t idx[ 1 ];
+#else
+  index_t idx[ 2 ];
+#endif
+
+  /* populate idx with pointer to lowest and highest data from a given list
+   */
+  void populate( index_t& idx, T* list )
+  {
+    assert( list );
+    idx.first = list;
+    for ( unsigned last_id = 0; KeyPolicy::id( *list ); last_id = KeyPolicy::id( *list ), ++list )
+    {
+      // Validate the input range is in fact sorted by id.
+      assert( KeyPolicy::id( *list ) > last_id ); ( void )last_id;
+    }
+    idx.second = list;
+  }
+
+  struct id_compare
+  {
+    bool operator () ( const T& t, unsigned int id ) const
+    { return KeyPolicy::id( t ) < id; }
+    bool operator () ( unsigned int id, const T& t ) const
+    { return id < KeyPolicy::id( t ); }
+    bool operator () ( const T& l, const T& r ) const
+    { return KeyPolicy::id( l ) < KeyPolicy::id( r ); }
+  };
+
+public:
+  // Initialize index from given list
+  void init( T* list, bool ptr )
+  {
+    assert( ! initialized( maybe_ptr( ptr ) ) );
+    populate( idx[ maybe_ptr( ptr ) ], list );
+  }
+
+  // Initialize index under the assumption that 'T::list( bool ptr )' returns a list of data
+  void init()
+  {
+    init( T::list( false ), false );
+    if ( SC_USE_PTR )
+      init( T::list( true ), true );
+  }
+
+  bool initialized( bool ptr = false ) const
+  { return idx[ maybe_ptr( ptr ) ].first != 0; }
+
+  // Return the item with the given id, or NULL.
+  // Always returns non-NULL.
+  T* get( bool ptr, unsigned id ) const
+  {
+    assert( initialized( maybe_ptr( ptr ) ) );
+    T* p = std::lower_bound( idx[ maybe_ptr( ptr ) ].first, idx[ maybe_ptr( ptr ) ].second, id, id_compare() );
+    if ( p != idx[ maybe_ptr( ptr ) ].second && KeyPolicy::id( *p ) == id )
+      return p;
+    else
+      return NULL;
+  }
+};
 #endif // SC_DBC_HPP
