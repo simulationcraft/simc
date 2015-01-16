@@ -181,12 +181,12 @@ private:
 public:
   typedef player_t base_t;
 
+  simple_sample_data_t stagger_tick_damage;
   simple_sample_data_t stagger_total_damage;
   simple_sample_data_t purified_damage;
   simple_sample_data_t light_stagger_total_damage;
   simple_sample_data_t moderate_stagger_total_damage;
   simple_sample_data_t heavy_stagger_total_damage;
-  simple_sample_data_t all_damage;
 
   struct active_actions_t
   {
@@ -550,12 +550,12 @@ public:
   {
     monk_t& other_p = dynamic_cast<monk_t&>(other);
 
-    stagger_total_damage.merge(other_p.stagger_total_damage);
-    purified_damage.merge(other_p.purified_damage);
-    light_stagger_total_damage.merge(other_p.light_stagger_total_damage);
-    moderate_stagger_total_damage.merge(other_p.moderate_stagger_total_damage);
-    heavy_stagger_total_damage.merge(other_p.heavy_stagger_total_damage);
-    all_damage.merge(other_p.all_damage);
+    stagger_tick_damage.merge( other_p.stagger_tick_damage );
+    stagger_total_damage.merge( other_p.stagger_total_damage );
+    purified_damage.merge( other_p.purified_damage );
+    light_stagger_total_damage.merge( other_p.light_stagger_total_damage );
+    moderate_stagger_total_damage.merge( other_p.moderate_stagger_total_damage );
+    heavy_stagger_total_damage.merge( other_p.heavy_stagger_total_damage );
 
     player_t::merge(other);
   }
@@ -2091,7 +2091,7 @@ struct chi_explosion_t: public monk_melee_attack_t
 
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
-      if (resource_consumed >= 2)
+      if ( resource_consumed >= 2 )
       {
         if ( p() -> buff.shuffle -> check() )
           // hard code the 2 second shuffle 2 seconds per chi spent until an effect comes around 04/28/2014
@@ -3656,7 +3656,11 @@ struct mana_tea_t: public monk_spell_t
   }
 };
 
-struct stagger_self_damage_t: public residual_action::residual_periodic_action_t < monk_spell_t >
+// ==========================================================================
+// Stagger Damage
+// ==========================================================================
+
+struct stagger_self_damage_t : public residual_action::residual_periodic_action_t < monk_spell_t >
 {
   stagger_self_damage_t( monk_t* p ):
     base_t( "stagger_self_damage", p, p -> find_spell( 124255 ) )
@@ -3672,7 +3676,7 @@ struct stagger_self_damage_t: public residual_action::residual_periodic_action_t
     base_t::init();
 
     // We don't want this counted towards our dps
-    stats->type = STATS_NEUTRAL;
+    stats -> type = STATS_NEUTRAL;
   }
 
   /* Clears the dot and all damage. Used by Purifying Brew
@@ -3733,7 +3737,7 @@ struct purifying_brew_t: public monk_spell_t
       trigger_brew( p() -> sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
 
     // Optional addition: Track and report amount of damage cleared
-    if ( stagger_pct > p()->heavy_stagger_threshold )
+    if ( stagger_pct > p() -> heavy_stagger_threshold )
       p() -> heavy_stagger_total_damage.add( stagger_dmg );
     else if ( stagger_pct > p() -> moderate_stagger_threshold )
       p() -> moderate_stagger_total_damage.add( stagger_dmg );
@@ -5413,12 +5417,6 @@ void monk_t::target_mitigation( school_e school,
     double fort_reduction = buff.fortifying_brew -> data().effectN( 2 ).percent() - ( glyph.fortifying_brew -> ok() ? find_spell( 124997 ) -> effectN( 1 ).percent() : 0 );
     s -> result_amount *= 1.0 + fort_reduction; // Stored as +20
   }
-
-  if ( specialization() == MONK_BREWMASTER )
-  {
-    double result_amount = s -> result_amount;
-    all_damage.add( result_amount );
-  }
 }
 
 // monk_t::assess_damage ====================================================
@@ -5464,11 +5462,16 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
   if ( current_stance() != STURDY_OX )
     return;
 
+  double stagger_dmg = 0;
+
   // Stagger damage can't be staggered!
   if ( s -> action -> id == 124255 )
+  {
+    // Register the tick then exit
+    stagger_dmg = s -> result_amount;
+    stagger_tick_damage.add( stagger_dmg );
     return;
-
-  double stagger_dmg = 0;
+  }
 
   if ( school == SCHOOL_PHYSICAL )
     stagger_dmg += s -> result_amount > 0 ? s -> result_amount * stagger_pct() : 0.0;
@@ -6101,18 +6104,99 @@ public:
   {
   }
 
-  virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
+  virtual void html_customsection( report::sc_html_stream& os ) override
   {
-    (void)p;
-    /*// Custom Class Section
-    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
-    << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
-    << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+    // Custom Class Section
+    if (p.specialization() == MONK_BREWMASTER)
+    {
+      double stagger_total_dmg = p.stagger_total_damage.sum();
+      double stagger_tick_dmg = p.stagger_tick_damage.sum();
+      double purified_dmg = p.purified_damage.sum();
 
-    os << p.name();
+      os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
+        << "\t\t\t\t\t<h3 class=\"toggle open\">Stagger Analysis</h3>\n"
+        << "\t\t\t\t\t<div class=\"toggle-content\">\n";
 
-    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";
-    */
+      os << "\t\t\t\t\t\t<p style=\"color: red;\">This section is a work in progress</p>\n";
+
+      os << "\t\t\t\t\t\t<p>Percent amount of stagger that was purified: "
+       << ( ( purified_dmg / stagger_total_dmg ) / 100 ) << "%</p>\n"
+       << "\t\t\t\t\t\t<p>Percent amount of stagger that directly damaged the player: "
+       << ( ( stagger_tick_dmg / stagger_total_dmg ) / 100 ) << "%</p>\n\n";
+
+      os << "\t\t\t\t\t\t<table class=\"sc\">\n"
+        << "\t\t\t\t\t\t\t<tbody>\n"
+        << "\t\t\t\t\t\t\t\t<tr>\n"
+        << "\t\t\t\t\t\t\t\t\t<th class=\"left\">Damage Stats</th>\n"
+        << "\t\t\t\t\t\t\t\t\t<th>DTPS</th>\n"
+//        << "\t\t\t\t\t\t\t\t\t<th>DTPS%</th>\n"
+        << "\t\t\t\t\t\t\t\t\t<th>Execute</th>\n"
+        << "\t\t\t\t\t\t\t\t</tr>\n";
+
+      // Stagger info
+      os << "\t\t\t\t\t\t\t\t<tr>\n"
+       << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">\n"
+       << "\t\t\t\t\t\t\t\t\t\t<span class=\"toggle - details\">\n"
+       << "\t\t\t\t\t\t\t\t\t\t\t<a href = \"http://www.wowhead.com/spell=124255\" class = \" icontinyl icontinyl icontinyl\" "
+       << "style = \"background: url(http://wowimg.zamimg.com/images/wow/icons/tiny/ability_rogue_cheatdeath.gif) 0% 50% no-repeat;\"> "
+       << "<span style = \"margin - left: 18px; \">Stagger</span></a></span>\n"
+       << "\t\t\t\t\t\t\t\t\t</td>\n";
+      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
+        << ( p.stagger_tick_damage.mean() / 60 ) << "</td>\n";
+      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
+        << p.stagger_tick_damage.count() << "</td>\n";
+      os << "\t\t\t\t\t\t\t\t</tr>\n";
+
+      // Light Stagger info
+      os << "\t\t\t\t\t\t\t\t<tr>\n"
+       << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">\n"
+       << "\t\t\t\t\t\t\t\t\t\t<span class=\"toggle - details\">\n"
+       << "\t\t\t\t\t\t\t\t\t\t\t<a href = \"http://www.wowhead.com/spell=124275\" class = \" icontinyl icontinyl icontinyl\" "
+       << "style = \"background: url(http://wowimg.zamimg.com/images/wow/icons/tiny/priest_icon_chakra_green.gif) 0% 50% no-repeat;\"> "
+       << "<span style = \"margin - left: 18px; \">Light Stagger</span></a></span>\n"
+       << "\t\t\t\t\t\t\t\t\t</td>\n";
+      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
+        << ( p.light_stagger_total_damage.mean() / 60 ) << "</td>\n";
+      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
+        << p.light_stagger_total_damage.count() << "</td>\n";
+      os << "\t\t\t\t\t\t\t\t</tr>\n";
+
+      // Moderate Stagger info
+      os << "\t\t\t\t\t\t\t\t<tr>\n"
+        << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">\n"
+        << "\t\t\t\t\t\t\t\t\t\t<span class=\"toggle - details\">\n"
+        << "\t\t\t\t\t\t\t\t\t\t\t<a href = \"http://www.wowhead.com/spell=124274\" class = \" icontinyl icontinyl icontinyl\" "
+        << "style = \"background: url(http://wowimg.zamimg.com/images/wow/icons/tiny/priest_icon_chakra.gif) 0% 50% no-repeat;\"> "
+        << "<span style = \"margin - left: 18px; \">Moderate Stagger</span></a></span>\n"
+        << "\t\t\t\t\t\t\t\t\t</td>\n";
+      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
+        << ( p.moderate_stagger_total_damage.mean() / 60 ) << "</td>\n";
+      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
+        << p.moderate_stagger_total_damage.count() << "</td>\n";
+      os << "\t\t\t\t\t\t\t\t</tr>\n";
+
+      // Heavy Stagger info
+      os << "\t\t\t\t\t\t\t\t<tr>\n"
+        << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">\n"
+        << "\t\t\t\t\t\t\t\t\t\t<span class=\"toggle - details\">\n"
+        << "\t\t\t\t\t\t\t\t\t\t\t<a href = \"http://www.wowhead.com/spell=124273\" class = \" icontinyl icontinyl icontinyl\" "
+        << "style = \"background: url(http://wowimg.zamimg.com/images/wow/icons/tiny/priest_icon_chakra_red.gif) 0% 50% no-repeat;\"> "
+        << "<span style = \"margin - left: 18px; \">Heavy Stagger</span></a></span>\n"
+        << "\t\t\t\t\t\t\t\t\t</td>\n";
+      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
+        << ( p.heavy_stagger_total_damage.mean() / 60 ) << "</td>\n";
+      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
+        << p.heavy_stagger_total_damage.count() << "</td>\n";
+      os << "\t\t\t\t\t\t\t\t</tr>\n";
+
+      os << "\t\t\t\t\t\t\t</tbody>\n"
+       << "\t\t\t\t\t\t</table>\n";
+
+      os << "\t\t\t\t\t\t</div>\n"
+       << "\t\t\t\t\t</div>\n";
+    }
+    else
+      ( void )p;
   }
 private:
   monk_t& p;
