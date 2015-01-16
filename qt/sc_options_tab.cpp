@@ -873,9 +873,9 @@ void SC_OptionsTab::createToolTips()
                                            tr( "N/A:  Do not use this feature.\n" ) +
                                            tr( "Auto: Use simulation defaults (0.5%).\n" ) +
                                            tr( "X%:   Each plot point will sim until less than X% DPS error is reached." ) );
-  choice.plots_iterations -> setToolTip( tr( "Number of iterations for each plot point.\n" ) +
-                                         tr( "Iter/10 and Iter/100 scale with the number of\n" ) +
-                                         tr( "iterations selected on the general options tab." ) );
+  choice.plots_iterations -> setToolTip( tr( "Number of iterations for each plot point.\n"
+                                             "Iter/10 and Iter/100 scale with the number of\n"
+                                             "iterations selected on the general options tab." ) );
 
   choice.reforgeplot_amount -> setToolTip( tr( "The maximum amount to reforge per stat." ) );
   choice.reforgeplot_step -> setToolTip( tr( "The stat difference between two points.\n"

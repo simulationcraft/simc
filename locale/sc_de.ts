@@ -394,7 +394,7 @@ Je mehr Leute uns helfen, die Best-in-Slot Profile zu verbessern, umso näher ko
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="159"/>
-        <location filename="../qt/sc_options_tab.cpp" line="1306"/>
+        <location filename="../qt/sc_options_tab.cpp" line="1309"/>
         <source>Reset all Settings</source>
         <translation>Alle Einstellungen zurücksetzen</translation>
     </message>
@@ -1263,6 +1263,13 @@ runs iterations until that threshold is reached.
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../qt/sc_options_tab.cpp" line="876"/>
+        <source>Number of iterations for each plot point.
+Iter/10 and Iter/100 scale with the number of
+iterations selected on the general options tab.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>runs iterations until that threshold is reached.
 </source>
         <translation type="vanished">Simuliere, bis Soll-Fehler erreicht.</translation>
@@ -1595,21 +1602,9 @@ The deltas on the horizontal axis will be within the [-points * steps / 2 ; +poi
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="876"/>
         <source>Number of iterations for each plot point.
 </source>
-        <translation>Anzahl Iterationen for jeden Plot-Punkt.</translation>
-    </message>
-    <message>
-        <location filename="../qt/sc_options_tab.cpp" line="877"/>
-        <source>Iter/10 and Iter/100 scale with the number of
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qt/sc_options_tab.cpp" line="878"/>
-        <source>iterations selected on the general options tab.</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">Anzahl Iterationen for jeden Plot-Punkt.</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="880"/>
@@ -1623,7 +1618,7 @@ It&apos;s NOT the number of steps: a lower value will generate more points!</sou
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="1306"/>
+        <location filename="../qt/sc_options_tab.cpp" line="1309"/>
         <source>Do you really want to reset all Settings to default?</source>
         <translation>Wollen Sie wirklich alle Einstellungen zurücksetzen?</translation>
     </message>

@@ -272,7 +272,7 @@ The more people help improve BiS profiles, the better will they reach their goal
     <message>
         <location filename="../qt/sc_window.cpp" line="1272"/>
         <source>Results %1</source>
-        <translation type="unfinished"></translation>
+        <translation>结果 %1</translation>
     </message>
     <message>
         <location filename="../qt/sc_window.cpp" line="1647"/>
@@ -500,7 +500,7 @@ The more people help improve BiS profiles, the better will they reach their goal
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="159"/>
-        <location filename="../qt/sc_options_tab.cpp" line="1306"/>
+        <location filename="../qt/sc_options_tab.cpp" line="1309"/>
         <source>Reset all Settings</source>
         <translation>重设所有选项</translation>
     </message>
@@ -563,109 +563,109 @@ The more people help improve BiS profiles, the better will they reach their goal
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="231"/>
         <source>Toggle All Buffs</source>
-        <translation type="unfinished"></translation>
+        <translation>启用/禁用所有增益</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="231"/>
         <source>Toggle all buffs on/off</source>
-        <translation type="unfinished"></translation>
+        <translation>启用/禁用所有增益</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="232"/>
         <source>Attack Power Multiplier</source>
-        <translation type="unfinished"></translation>
+        <translation>攻击强度</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="232"/>
         <source>+10% Attack Power Multiplier</source>
-        <translation type="unfinished"></translation>
+        <translation>+10% 攻击强度</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="233"/>
         <source>Spell Power Multiplier</source>
-        <translation type="unfinished"></translation>
+        <translation>法术强度</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="233"/>
         <source>+10% Spell Power Multiplier</source>
-        <translation type="unfinished"></translation>
+        <translation>+10% 法术强度</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="234"/>
         <source>Critical Strike</source>
-        <translation type="unfinished"></translation>
+        <translation>爆击</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="234"/>
         <source>+5% Critical Strike Chance</source>
-        <translation type="unfinished"></translation>
+        <translation>+5% 爆击几率</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="235"/>
         <source>Haste</source>
-        <translation type="unfinished"></translation>
+        <translation>急速</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="235"/>
         <source>+5% Haste</source>
-        <translation type="unfinished"></translation>
+        <translation>+5% 急速</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="236"/>
         <source>Multistrike</source>
-        <translation type="unfinished"></translation>
+        <translation>溅射</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="236"/>
         <source>+5% Multistrike</source>
-        <translation type="unfinished"></translation>
+        <translation>+5% 溅射</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="237"/>
         <source>Mastery</source>
-        <translation type="unfinished"></translation>
+        <translation>精通</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="237"/>
         <source>+Mastery Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>+精通等级</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="238"/>
         <location filename="../qt/sc_options_tab.cpp" line="337"/>
         <location filename="../qt/sc_options_tab.cpp" line="426"/>
         <source>Stamina</source>
-        <translation type="unfinished"></translation>
+        <translation>耐力</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="238"/>
         <source>+10% Stamina</source>
-        <translation type="unfinished"></translation>
+        <translation>+10% 耐力</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="239"/>
         <source>Strength, Agility, Intellect</source>
-        <translation type="unfinished"></translation>
+        <translation>力量、敏捷、智力</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="239"/>
         <source>+5% Strength, Agility, Intellect</source>
-        <translation type="unfinished"></translation>
+        <translation>+5% 力量、敏捷、智力</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="240"/>
         <source>Versatility</source>
-        <translation type="unfinished"></translation>
+        <translation>全能</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="240"/>
         <source>+3% Versatility</source>
-        <translation type="unfinished"></translation>
+        <translation>+3% 全能</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="241"/>
         <source>Bloodlust</source>
-        <translation type="unfinished"></translation>
+        <translation>嗜血</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="241"/>
@@ -673,7 +673,10 @@ The more people help improve BiS profiles, the better will they reach their goal
 Bloodlust
 Heroism
 Time Warp</source>
-        <translation type="unfinished"></translation>
+        <translation>远古狂乱
+嗜血
+英勇
+时间扭曲</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="244"/>
@@ -683,33 +686,34 @@ Time Warp</source>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="252"/>
         <source>Toggle All Debuffs</source>
-        <translation type="unfinished"></translation>
+        <translation>启用/禁用全部减益</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="252"/>
         <source>Toggle all debuffs on/off</source>
-        <translation type="unfinished"></translation>
+        <translation>启用/禁用全部减益</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="253"/>
         <source>Bleeding</source>
-        <translation type="unfinished"></translation>
+        <translation>流血</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="253"/>
         <source>Rip
 Rupture</source>
-        <translation type="unfinished"></translation>
+        <translation>割裂 (德鲁伊)
+割裂 (潜行者)</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="254"/>
         <source>Mortal Wounds</source>
-        <translation type="unfinished"></translation>
+        <translation>致死之伤</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="254"/>
         <source>Healing Debuff</source>
-        <translation type="unfinished"></translation>
+        <translation>承受治疗降低</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="257"/>
@@ -769,12 +773,12 @@ In other words, Agility and Intellect would be skipped for a Warrior even if the
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="326"/>
         <source>Toggle All Character Stats</source>
-        <translation type="unfinished"></translation>
+        <translation>启用/禁用所有属性</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="326"/>
         <source>Toggles all stats except Latency.</source>
-        <translation type="unfinished"></translation>
+        <translation>启用/禁用除了延迟之外的所有属性。</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="332"/>
@@ -785,210 +789,210 @@ In other words, Agility and Intellect would be skipped for a Warrior even if the
         <location filename="../qt/sc_options_tab.cpp" line="335"/>
         <location filename="../qt/sc_options_tab.cpp" line="424"/>
         <source>Strength</source>
-        <translation type="unfinished"></translation>
+        <translation>力量</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="335"/>
         <source>Calculate scale factors for Strength</source>
-        <translation type="unfinished"></translation>
+        <translation>计算力量的权值</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="336"/>
         <location filename="../qt/sc_options_tab.cpp" line="425"/>
         <source>Agility</source>
-        <translation type="unfinished"></translation>
+        <translation>敏捷</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="336"/>
         <source>Calculate scale factors for Agility</source>
-        <translation type="unfinished"></translation>
+        <translation>计算敏捷的权值</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="337"/>
         <source>Calculate scale factors for Stamina</source>
-        <translation type="unfinished"></translation>
+        <translation>计算耐力的权值</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="338"/>
         <location filename="../qt/sc_options_tab.cpp" line="427"/>
         <source>Intellect</source>
-        <translation type="unfinished"></translation>
+        <translation>智力</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="338"/>
         <source>Calculate scale factors for Intellect</source>
-        <translation type="unfinished"></translation>
+        <translation>计算智力的权值</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="339"/>
         <location filename="../qt/sc_options_tab.cpp" line="428"/>
         <source>Spirit</source>
-        <translation type="unfinished"></translation>
+        <translation>精神</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="339"/>
         <source>Calculate scale factors for Spirit</source>
-        <translation type="unfinished"></translation>
+        <translation>计算精神的权值</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="340"/>
         <location filename="../qt/sc_options_tab.cpp" line="429"/>
         <source>Spell Power</source>
-        <translation type="unfinished"></translation>
+        <translation>法术强度</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="340"/>
         <source>Calculate scale factors for Spell Power</source>
-        <translation type="unfinished"></translation>
+        <translation>计算法术强度的权值</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="341"/>
         <location filename="../qt/sc_options_tab.cpp" line="430"/>
         <source>Attack Power</source>
-        <translation type="unfinished"></translation>
+        <translation>攻击强度</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="341"/>
         <source>Calculate scale factors for Attack Power</source>
-        <translation type="unfinished"></translation>
+        <translation>计算攻击强度的权值</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="342"/>
         <location filename="../qt/sc_options_tab.cpp" line="431"/>
         <source>Crit Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>爆击等级</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="342"/>
         <source>Calculate scale factors for Crit Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>计算爆击等级的权值</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="343"/>
         <location filename="../qt/sc_options_tab.cpp" line="432"/>
         <source>Haste Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>急速等级</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="343"/>
         <source>Calculate scale factors for Haste Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>计算急速等级的权值</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="344"/>
         <location filename="../qt/sc_options_tab.cpp" line="433"/>
         <source>Mastery Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>精通等级</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="344"/>
         <source>Calculate scale factors for Mastery Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>计算精通等级的权值</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="345"/>
         <location filename="../qt/sc_options_tab.cpp" line="434"/>
         <source>Multistrike Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>溅射等级</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="345"/>
         <source>Calculate scale factors for Multistrike Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>计算溅射等级的权值</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="346"/>
         <location filename="../qt/sc_options_tab.cpp" line="435"/>
         <source>Versatility Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>全能等级</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="346"/>
         <source>Calculate scale factors for Versatility Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>计算全能等级的权值</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="347"/>
         <location filename="../qt/sc_options_tab.cpp" line="436"/>
         <source>Weapon DPS</source>
-        <translation type="unfinished"></translation>
+        <translation>武器DPS</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="347"/>
         <source>Calculate scale factors for Weapon DPS</source>
-        <translation type="unfinished"></translation>
+        <translation>计算武器DPS的权值</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="348"/>
         <source>Off-hand Weapon DPS</source>
-        <translation type="unfinished"></translation>
+        <translation>副手武器DPS</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="348"/>
         <source>Calculate scale factors for Off-hand Weapon DPS</source>
-        <translation type="unfinished"></translation>
+        <translation>计算副手武器DPS的权值</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="349"/>
         <location filename="../qt/sc_options_tab.cpp" line="438"/>
         <source>Armor</source>
-        <translation type="unfinished"></translation>
+        <translation>护甲</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="349"/>
         <source>Calculate scale factors for Armor</source>
-        <translation type="unfinished"></translation>
+        <translation>计算护甲的权值</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="350"/>
         <location filename="../qt/sc_options_tab.cpp" line="439"/>
         <source>Bonus Armor</source>
-        <translation type="unfinished"></translation>
+        <translation>护甲加成</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="350"/>
         <source>Calculate scale factors for Bonus Armor</source>
-        <translation type="unfinished"></translation>
+        <translation>计算护甲加成的权值</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="351"/>
         <source>Avoidance (tertiary)</source>
-        <translation type="unfinished"></translation>
+        <translation>躲闪 (第三属性)</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="351"/>
         <source>Calculate scale factors for Avoidance (tertiary stat)</source>
-        <translation type="unfinished"></translation>
+        <translation>计算躲闪的权重 (第三属性)</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="352"/>
         <source>Leech (tertiary)</source>
-        <translation type="unfinished"></translation>
+        <translation>吸血 (第三属性)</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="352"/>
         <source>Calculate scale factors for Leech (tertiary stat)</source>
-        <translation type="unfinished"></translation>
+        <translation>计算吸血的权值 (第三属性)</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="353"/>
         <source>Movement Speed (tertiary)</source>
-        <translation type="unfinished"></translation>
+        <translation>移动速度 (第三属性)</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="353"/>
         <source>Calculate scale factors for Movement Speed (tertiary stat)</source>
-        <translation type="unfinished"></translation>
+        <translation>计算移动速度的权值 (第三属性)</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="354"/>
         <source>Latency</source>
-        <translation type="unfinished"></translation>
+        <translation>延迟</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="354"/>
         <source>Calculate scale factors for Latency</source>
-        <translation type="unfinished"></translation>
+        <translation>计算延迟的权值</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="364"/>
@@ -1057,193 +1061,193 @@ Plot scaling for:</source>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="424"/>
         <source>Generate Scaling curve for Strength</source>
-        <translation type="unfinished"></translation>
+        <translation>生成力量的收益曲线</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="425"/>
         <source>Generate Scaling curve for Agility</source>
-        <translation type="unfinished"></translation>
+        <translation>生成敏捷的收益曲线</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="426"/>
         <source>Generate Scaling curve for Stamina</source>
-        <translation type="unfinished"></translation>
+        <translation>生成耐力的收益曲线</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="427"/>
         <source>Generate Scaling curve for Intellect</source>
-        <translation type="unfinished"></translation>
+        <translation>生成智力的收益曲线</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="428"/>
         <source>Generate Scaling curve for Spirit</source>
-        <translation type="unfinished"></translation>
+        <translation>生成精神的收益曲线</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="429"/>
         <source>Generate Scaling curve for Spell Power</source>
-        <translation type="unfinished"></translation>
+        <translation>生成法术强度的收益曲线</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="430"/>
         <source>Generate Scaling curve for Attack Power</source>
-        <translation type="unfinished"></translation>
+        <translation>生成攻击强度的收益曲线</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="431"/>
         <source>Generate Scaling curve for Crit Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>生成爆击等级的收益曲线</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="432"/>
         <source>Generate Scaling curve for Haste Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>生成急速等级的收益曲线</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="433"/>
         <source>Generate Scaling curve for Mastery Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>生成精通等级的收益曲线</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="434"/>
         <source>Generate Scaling curve for Multistrike Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>生成溅射的收益曲线</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="435"/>
         <source>Generate Scaling curve for Versatility Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>生成全能的收益曲线</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="436"/>
         <source>Generate Scaling curve for Weapon DPS</source>
-        <translation type="unfinished"></translation>
+        <translation>生成武器DPS的收益曲线</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="437"/>
         <source>Weapon OH DPS</source>
-        <translation type="unfinished"></translation>
+        <translation>副手武器DPS</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="437"/>
         <source>Generate Scaling curve for Weapon OH DPS</source>
-        <translation type="unfinished"></translation>
+        <translation>生成副手武器DPS的收益曲线</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="438"/>
         <source>Generate Scaling curve for Armor</source>
-        <translation type="unfinished"></translation>
+        <translation>生成护甲的收益曲线</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="439"/>
         <source>Generate Scaling curve for Bonus Armor</source>
-        <translation type="unfinished"></translation>
+        <translation>生成护甲加成的收益曲线</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="474"/>
         <source>Plot Reforge Options for Spirit</source>
-        <translation type="unfinished"></translation>
+        <translation>重铸精神</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="474"/>
         <source>Generate reforge plot data for Spirit</source>
-        <translation type="unfinished"></translation>
+        <translation>生成精神的重铸图像数据</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="475"/>
         <source>Plot Reforge Options for Crit Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>重铸爆击等级</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="475"/>
         <source>Generate reforge plot data for Crit Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>生成爆击等级的重铸图像数据</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="476"/>
         <source>Plot Reforge Options for Haste Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>重铸急速等级</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="476"/>
         <source>Generate reforge plot data for Haste Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>生成急速等级的重铸图像数据</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="477"/>
         <source>Plot Reforge Options for Mastery Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>重铸精通等级</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="477"/>
         <source>Generate reforge plot data for Mastery Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>生成精通等级的重铸图像数据</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="478"/>
         <source>Plot Reforge Options for Multistrike Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>重铸溅射等级</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="478"/>
         <source>Generate reforge plot data for Multistrike Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>生成溅射等级的重铸图像数据</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="479"/>
         <source>Plot Reforge Options for Versatility Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>重铸全能等级</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="479"/>
         <source>Generate reforge plot data for Versatility Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>生成全能等级的重铸图像数据</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="480"/>
         <source>Plot Reforge Options for Bonus Armor Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>重铸护甲加成</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="480"/>
         <source>Generate reforge plot data for Bonus Armor</source>
-        <translation type="unfinished"></translation>
+        <translation>生成护甲加成的重铸图像数据</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="485"/>
         <source>Plot Reforge Options for Strength</source>
-        <translation type="unfinished"></translation>
+        <translation>重铸力量</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="485"/>
         <location filename="../qt/sc_options_tab.cpp" line="488"/>
         <source>Generate reforge plot data for Intellect</source>
-        <translation type="unfinished"></translation>
+        <translation>生成智力的重铸图像数据</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="486"/>
         <source>Plot Reforge Options for Agility</source>
-        <translation type="unfinished"></translation>
+        <translation>重铸敏捷</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="486"/>
         <source>Generate reforge plot data for Agility</source>
-        <translation type="unfinished"></translation>
+        <translation>生成敏捷的重铸图像数据</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="487"/>
         <source>Plot Reforge Options for Stamina</source>
-        <translation type="unfinished"></translation>
+        <translation>重铸耐力</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="487"/>
         <source>Generate reforge plot data for Stamina</source>
-        <translation type="unfinished"></translation>
+        <translation>生成耐力的重铸图像数据</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="488"/>
         <source>Plot Reforge Options for Intellect</source>
-        <translation type="unfinished"></translation>
+        <translation>重铸智力</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="754"/>
@@ -1299,7 +1303,7 @@ runs iterations until that threshold is reached.
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="815"/>
         <source>Controls the GUI display language.</source>
-        <translation type="unfinished"></translation>
+        <translation>界面显示语言。</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="819"/>
@@ -1366,6 +1370,15 @@ Note that the sim will still generate and display scale factors for all other me
         <translation>选择你最感兴趣的属性权值。
 在标准化属性权值中，其他属性都将相对于这个属性进行计算。
 注意，模拟时依然会为所有属性显示未标准化的权值。</translation>
+    </message>
+    <message>
+        <location filename="../qt/sc_options_tab.cpp" line="876"/>
+        <source>Number of iterations for each plot point.
+Iter/10 and Iter/100 scale with the number of
+iterations selected on the general options tab.</source>
+        <translation>每个取样点的迭代次数。
+如果指定“Iter/10”或“Iter/100”，则
+根据全局设置中的迭代数计算。</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="450"/>
@@ -1727,21 +1740,9 @@ The deltas on the horizontal axis will be within the [-points * steps / 2 ; +poi
         <translation>X%：每个样点都会持续模拟迭代，直到DPS误差低于X%。</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="876"/>
         <source>Number of iterations for each plot point.
 </source>
-        <translation>收益曲线中每个取样点的迭代次数。</translation>
-    </message>
-    <message>
-        <location filename="../qt/sc_options_tab.cpp" line="877"/>
-        <source>Iter/10 and Iter/100 scale with the number of
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qt/sc_options_tab.cpp" line="878"/>
-        <source>iterations selected on the general options tab.</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">收益曲线中每个取样点的迭代次数。</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="880"/>
@@ -1760,7 +1761,7 @@ It&apos;s NOT the number of steps: a lower value will generate more points!</sou
         <translation type="vanished">物品数据源顺序</translation>
     </message>
     <message>
-        <location filename="../qt/sc_options_tab.cpp" line="1306"/>
+        <location filename="../qt/sc_options_tab.cpp" line="1309"/>
         <source>Do you really want to reset all Settings to default?</source>
         <translation>确定要将所有设置重设为默认吗？</translation>
     </message>
@@ -1771,7 +1772,7 @@ It&apos;s NOT the number of steps: a lower value will generate more points!</sou
         <location filename="../qt/simulationcraftqt.hpp" line="1718"/>
         <source># User-specified persistent global and player parameters will be set here.
 </source>
-        <translation type="unfinished"></translation>
+        <translation># 写在这里的全局和角色选项，可以覆盖前面的设置。</translation>
     </message>
 </context>
 <context>
