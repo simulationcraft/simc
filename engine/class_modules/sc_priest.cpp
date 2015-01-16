@@ -2538,10 +2538,11 @@ struct mind_sear_tick_t : public priest_spell_t
   }
 };
 
-struct mind_sear_t : public priest_spell_t
+template <bool insanity = false>
+struct mind_sear_base_t : public priest_spell_t
 {
-  mind_sear_t( priest_t& p, const std::string& options_str ) :
-    priest_spell_t( "mind_sear", p, p.find_class_spell( "Mind Sear" ) )
+  mind_sear_base_t( priest_t& p, const std::string& options_str, const std::string& name = "mind_sear" ) :
+    priest_spell_t( name, p, p.find_class_spell( insanity ? "Searing Insanity" : "Mind Sear" ) )
   {
     parse_options( options_str );
     channeled    = true;
@@ -2551,7 +2552,7 @@ struct mind_sear_t : public priest_spell_t
     tick_zero    = false;
     instant_multistrike = false;
 
-    tick_action = new mind_sear_tick_t( p, p.find_class_spell( "Mind Sear" ) );
+    tick_action = new mind_sear_tick_t( p, p.find_class_spell( insanity ? "Searing Insanity" : "Mind Sear" ) );
   }
 
   virtual double action_multiplier() const override
@@ -2589,6 +2590,33 @@ struct mind_sear_t : public priest_spell_t
     }
 
     priest_spell_t::impact( s );
+  }
+};
+
+struct searing_insanity_t : public mind_sear_base_t<true>
+{
+  typedef mind_sear_base_t<true> base_t;
+
+  searing_insanity_t( priest_t& p, const std::string& options_str ) :
+    base_t( p, options_str, "searing_insanity" )
+  {
+  }
+
+  virtual double composite_persistent_multiplier( const action_state_t* s ) const override
+  {
+    double am = base_t::composite_persistent_multiplier( s );
+
+    am *= 2.0;
+
+    return am;
+  }
+
+  virtual bool ready() override
+  {
+    if ( !priest.buffs.shadow_word_insanity -> up() )
+      return false;
+
+    return base_t::ready();
   }
 };
 
@@ -3117,12 +3145,6 @@ struct insanity_t : public mind_flay_base_t<true>
     am *= 2.0;
 
     return am;
-  }
-
-  virtual void tick( dot_t * d )
-  {
-    priest_spell_t::tick( d );
-    priest.buffs.glyph_of_mind_flay -> trigger();
   }
 
   virtual bool ready() override
@@ -5589,8 +5611,9 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "mind_flay"              ) return new mind_flay_base_t<>      ( *this, options_str );
   if ( name == "insanity"               ) return new insanity_t              ( *this, options_str );
   if ( name == "mind_spike"             ) return new mind_spike_t            ( *this, options_str );
-  if ( name == "mind_sear"              ) return new mind_sear_t             ( *this, options_str );
+  if ( name == "mind_sear"              ) return new mind_sear_base_t<>      ( *this, options_str );
   if ( name == "penance"                ) return new penance_t               ( *this, options_str );
+  if ( name == "searing_insanity"       ) return new searing_insanity_t             ( *this, options_str );
   if ( name == "shadow_word_death"      ) return new shadow_word_death_t     ( *this, options_str );
   if ( name == "shadow_word_pain"       ) return new shadow_word_pain_t      ( *this, options_str );
   if ( name == "smite"                  ) return new smite_t                 ( *this, options_str );
@@ -6010,7 +6033,8 @@ void priest_t::create_buffs()
                               .default_value( glyphs.levitate -> effectN( 1 ).percent() );
 
   buffs.glyph_of_mind_flay = buff_creator_t( this, "glyph_of_mind_flay", glyphs.mind_flay )
-                               .default_value( glyphs.mind_flay -> effectN( 1 ).percent() );
+                             .default_value( glyphs.mind_flay -> effectN( 1 ).percent() )
+                             .duration( timespan_t::from_seconds( 5.0 ) );
 
   buffs.mental_instinct = buff_creator_t( this, "mental_instinct" )
                             .spell( sets.set( PRIEST_SHADOW, T17, B4 ) -> effectN( 1 ).trigger() )
