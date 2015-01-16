@@ -3328,6 +3328,7 @@ struct unleash_flame_t : public shaman_spell_t
   unleash_flame_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "unleash_flame", player, player -> find_specialization_spell( "Unleash Flame" ), options_str )
   {
+    harmful = false;
     may_crit     = false;
     may_miss     = false;
     may_proc_eoe = true;
