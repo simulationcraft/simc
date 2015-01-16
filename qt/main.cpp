@@ -53,32 +53,25 @@ bool checkWindowsVersion()
   // After a few months we can probably remove this targetting for the GUI and only leave it in for CLI. - 01/08/2015
   if ( !IsWindows7SP1OrGreater() && IsWindows7OrGreater() ) // Winxp cannot access fancy-pants methods to determine if the OS has Win7 SP1... which is probably ok.
   {
-    MessageBox( NULL,  // Added to warn people to install SP1 before posting issues about simc not loading, as it fixes the issue in a majority of cases.
-      (LPCWSTR)L"SimulationCraft GUI is known to have issues with Windows 7 when Service Pack 1 is not installed.\nThe program will continue to load, but if you run into any problems, please install Service Pack 1.",
-      (LPCWSTR)L"SimulationCraft", MB_OK );
+    QMessageBox Msgbox;
+    Msgbox.setText( "SimulationCraft GUI is known to have issues with Windows 7 when Service Pack 1 is not installed.\nThe program will continue to load, but if you run into any problems, please install Service Pack 1." );
+    Msgbox.exec();
     return true;
   }
 #endif
   if ( !bIsWindowsXPorLater )
   {
-    MessageBox( NULL,
-      (LPCWSTR)L"SimulationCraft GUI is no longer supported on Windows XP as of January 2015. \nIf you wish to continue using Simulationcraft, you may do so by the command line interface -- simc.exe.",
-      (LPCWSTR)L"SimulationCraft", MB_OK );
+    QMessageBox Msgbox;
+    Msgbox.setText( "SimulationCraft GUI is no longer supported on Windows XP as of January 2015. \nIf you wish to continue using Simulationcraft, you may do so by the command line interface -- simc.exe." );
+    Msgbox.exec();
     return false; // Do not continue loading.
   }
-#if defined ( SC_USE_WEBENGINE ) && ! defined ( VS_XP_TARGET )
-  if ( !IsWindows8OrGreater() && IsWindows7OrGreater() )
-    QApplication::setAttribute( Qt::AA_UseOpenGLES, true );
-  // This is to fix an issue with older video cards on windows 7.
-#endif
 #endif
   return true;
 }
 
 int main( int argc, char *argv[] )
 {
-  if ( !checkWindowsVersion() ) // Check for various windows oddities with QT.
-  { return 0; }
   QLocale::setDefault( QLocale( "C" ) );
   std::locale::global( std::locale( "C" ) );
   setlocale( LC_ALL, "C" );
@@ -86,7 +79,16 @@ int main( int argc, char *argv[] )
   dbc::init();
   module_t::init();
 
+#if defined ( SC_USE_WEBENGINE ) && ! defined ( VS_XP_TARGET )
+  if ( !IsWindows8OrGreater() && IsWindows7OrGreater() )
+    QApplication::setAttribute( Qt::AA_UseOpenGLES, true );
+  // This is to fix an issue with older video cards on windows 7.
+#endif
   QApplication a( argc, argv );
+
+  if ( !checkWindowsVersion() ) // Check for compatability.
+  { return 0; }
+
   QCoreApplication::setApplicationName( "SimulationCraft" );
   QCoreApplication::setApplicationVersion( SC_VERSION );
   QCoreApplication::setOrganizationDomain( "http://code.google.com/p/simulationcraft/" );
