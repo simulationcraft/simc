@@ -154,6 +154,7 @@ double monk_weapon_damage( action_t* action,
 struct monk_td_t: public actor_pair_t
 {
 public:
+
   struct dots_t
   {
     dot_t* enveloping_mist;
@@ -179,6 +180,13 @@ private:
   stance_e _active_stance;
 public:
   typedef player_t base_t;
+
+  simple_sample_data_t stagger_total_damage;
+  simple_sample_data_t purified_damage;
+  simple_sample_data_t light_stagger_total_damage;
+  simple_sample_data_t moderate_stagger_total_damage;
+  simple_sample_data_t heavy_stagger_total_damage;
+  simple_sample_data_t all_damage;
 
   struct active_actions_t
   {
@@ -538,16 +546,21 @@ public:
     }
     return td;
   }
+  virtual void       merge(player_t& other) override
+  {
+    monk_t& other_p = dynamic_cast<monk_t&>(other);
+
+    stagger_total_damage.merge(other_p.stagger_total_damage);
+    purified_damage.merge(other_p.purified_damage);
+    light_stagger_total_damage.merge(other_p.light_stagger_total_damage);
+    moderate_stagger_total_damage.merge(other_p.moderate_stagger_total_damage);
+    heavy_stagger_total_damage.merge(other_p.heavy_stagger_total_damage);
+    all_damage.merge(other_p.all_damage);
+
+    player_t::merge(other);
+  }
 
   // Monk specific
-  double current_stagger_dmg();
-  double current_stagger_dmg_percent();
-  double stagger_pct();
-  // Blizzard rounds it's stagger damage; anything higher than half a percent beyond 
-  // the threshold will switch to the next threshold
-  const double light_stagger_threshold = 0;
-  const double moderate_stagger_threshold = 0.035;
-  const double heavy_stagger_threshold = 0.065;
   void apl_combat_brewmaster();
   void apl_combat_mistweaver();
   void apl_combat_windwalker();
@@ -566,6 +579,14 @@ public:
   const spell_data_t& active_stance_data( stance_e ) const;
 
   // Custom Monk Functions
+  double current_stagger_dmg();
+  double current_stagger_dmg_percent();
+  double stagger_pct();
+  // Blizzard rounds it's stagger damage; anything higher than half a percent beyond 
+  // the threshold will switch to the next threshold
+  const double light_stagger_threshold = 0;
+  const double moderate_stagger_threshold = 0.035;
+  const double heavy_stagger_threshold = 0.065;
   void  clear_stagger();
   bool  has_stagger();
 };
@@ -2066,11 +2087,11 @@ struct chi_explosion_t: public monk_melee_attack_t
 
   void execute()
   {
-    monk_melee_attack_t::execute();
+    monk_melee_attack_t::execute(); 
 
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
-      if ( resource_consumed >= 2 )
+      if (resource_consumed >= 2)
       {
         if ( p() -> buff.shuffle -> check() )
           // hard code the 2 second shuffle 2 seconds per chi spent until an effect comes around 04/28/2014
@@ -2081,14 +2102,26 @@ struct chi_explosion_t: public monk_melee_attack_t
           p() -> buff.shuffle -> extend_duration( p(), timespan_t::from_seconds( 2 + ( 2 * resource_consumed ) ) );
         }
       }
-      if ( resource_consumed >= 3 )
+      if ( resource_consumed >= 3 && p() -> has_stagger() )
       {
-        // Tier 17 4 pieces Brewmaster: 3 stacks of Chi Explosion generates 1 stacks of Elusive Brew.
-        // Hotfix Jan 13, 2014 - Only procs on Moderate or Heavy Stagger
-        if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 )  && ( p() -> current_stagger_dmg_percent() > p() -> moderate_stagger_threshold ) )
-          trigger_brew( p() -> sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
+          double stagger_dmg = p() -> current_stagger_dmg();
+          double stagger_pct = p() -> current_stagger_dmg_percent();
 
-        if ( p() -> has_stagger() )
+          // Tier 17 4 pieces Brewmaster: 3 stacks of Chi Explosion generates 1 stacks of Elusive Brew.
+          // Hotfix Jan 13, 2014 - Only procs on Moderate or Heavy Stagger
+          if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) && ( stagger_pct > p() -> moderate_stagger_threshold) )
+            trigger_brew( p() -> sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
+
+          // Optional addition: Track and report amount of damage cleared
+          if ( stagger_pct > p() -> heavy_stagger_threshold )
+            p() -> heavy_stagger_total_damage.add( stagger_dmg );
+          else if ( stagger_pct > p() -> moderate_stagger_threshold )
+            p() -> moderate_stagger_total_damage.add( stagger_dmg );
+          else
+            p() -> light_stagger_total_damage.add( stagger_dmg );
+
+          p() -> purified_damage.add( stagger_dmg );
+
           p() -> clear_stagger();
       }
     }
@@ -3684,20 +3717,31 @@ struct purifying_brew_t: public monk_spell_t
   void execute()
   {
     monk_spell_t::execute();
+    double stagger_dmg = p() -> current_stagger_dmg();
+    double stagger_pct = p() -> current_stagger_dmg_percent();
 
     // Tier 16 4 pieces Brewmaster: Purifying Brew also heals you for 15% of the amount of staggered damage cleared.
     if ( p() -> sets.has_set_bonus( SET_TANK, T16, B4 ) )
     {
-      double stagger_heal = p() -> current_stagger_dmg() * p() -> sets.set( SET_TANK, T16, B4 ) -> effectN( 1 ).percent();
+      double stagger_heal = stagger_dmg * p() -> sets.set( SET_TANK, T16, B4 ) -> effectN( 1 ).percent();
       player -> resource_gain( RESOURCE_HEALTH, stagger_heal, p() -> gain.tier16_4pc_tank, this );
     }
 
     // Tier 17 4 pieces Brewmaster: Purifying Brew generates 1 stacks of Elusive Brew.
     // Hotfix Jan 13, 2014 - Only procs on Moderate or Heavy Stagger
-    if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) && ( p() -> current_stagger_dmg_percent() > p() -> moderate_stagger_threshold ) )
+    if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) && ( stagger_pct > p() -> moderate_stagger_threshold ) )
       trigger_brew( p() -> sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
 
     // Optional addition: Track and report amount of damage cleared
+    if ( stagger_pct > p()->heavy_stagger_threshold )
+      p() -> heavy_stagger_total_damage.add( stagger_dmg );
+    else if ( stagger_pct > p() -> moderate_stagger_threshold )
+      p() -> moderate_stagger_total_damage.add( stagger_dmg );
+    else
+      p() -> light_stagger_total_damage.add( stagger_dmg );
+
+    p() -> purified_damage.add( stagger_dmg );
+
     p() -> active_actions.stagger_self_damage -> clear_all_damage();
   }
 
@@ -5369,6 +5413,12 @@ void monk_t::target_mitigation( school_e school,
     double fort_reduction = buff.fortifying_brew -> data().effectN( 2 ).percent() - ( glyph.fortifying_brew -> ok() ? find_spell( 124997 ) -> effectN( 1 ).percent() : 0 );
     s -> result_amount *= 1.0 + fort_reduction; // Stored as +20
   }
+
+  if ( specialization() == MONK_BREWMASTER )
+  {
+    double result_amount = s -> result_amount;
+    all_damage.add( result_amount );
+  }
 }
 
 // monk_t::assess_damage ====================================================
@@ -5429,7 +5479,10 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
   s -> result_amount -= stagger_dmg;
   // Hook up Stagger Mechanism
   if ( stagger_dmg > 0 )
+  {
+    stagger_total_damage.add( stagger_dmg );
     residual_action::trigger( active_actions.stagger_self_damage, this, stagger_dmg );
+  }
 }
 
 // Brewmaster Pre-Combat Action Priority List ============================
