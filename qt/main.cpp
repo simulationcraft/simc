@@ -47,7 +47,7 @@ bool checkWindowsVersion()
   osvi.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
   GetVersionEx(&osvi);
   bIsWindowsXPorLater = osvi.dwMajorVersion >= 6; // 6.0 and up is Vista
-#ifndef VS_XP_TARGET 
+#if defined VS_WIN_NONXP_TARGET 
   // The 32 bit version should be built with xp toolchain so that it will give an error box with an explanation, instead of a generic
   // appcrash that it would give with the normal toolchain.. which would just mean more issues being posted. 
   // After a few months we can probably remove this targetting for the GUI and only leave it in for CLI. - 01/08/2015
@@ -79,7 +79,7 @@ int main( int argc, char *argv[] )
   dbc::init();
   module_t::init();
 
-#if defined ( SC_USE_WEBENGINE ) && ! defined ( VS_XP_TARGET )
+#if defined ( SC_USE_WEBENGINE ) && defined ( VS_WIN_NONXP_TARGET )
   if ( !IsWindows8OrGreater() && IsWindows7OrGreater() )
     QApplication::setAttribute( Qt::AA_UseOpenGLES, true );
   // This is to fix an issue with older video cards on windows 7.
