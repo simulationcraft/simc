@@ -1140,7 +1140,6 @@ namespace util
 {
 double wall_time();
 double cpu_time();
-int cpu_thread_count();
 
 template <typename T>
 T ability_rank( int player_level, T ability_value, int ability_level, ... );
