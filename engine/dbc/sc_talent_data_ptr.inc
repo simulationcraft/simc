@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (309)
 
-// 309 talents, wow build 19445
+// 309 talents, wow build 19480
 static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplaceID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   1,   1,   29838,         0,  0 },
@@ -263,7 +263,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Claws of Shirvallah"               , 21653, 0x00, 0x0400, 103,   2,   6,  171746,         0,  0 },
   { "Bristling Fur"                     , 21654, 0x00, 0x0400, 104,   2,   6,  155835,         0,  0 },
   { "Rampant Growth"                    , 21655, 0x00, 0x0400, 105,   2,   6,  155834,         0,  0 },
-  { "Focusing Shot"                     , 21662, 0x00, 0x0004, 254,   1,   6,  152245,     56641,  0 },
+  { "Focusing Shot"                     , 21662, 0x00, 0x0004, 254,   1,   6,  163485,     56641,  0 },
   { "Siegebreaker"                      , 21667, 0x00, 0x0001,  72,   2,   6,  176289,      5246,  0 },
   { "Beacon of Faith"                   , 21668, 0x00, 0x0002,  65,   0,   6,  156910,         0,  0 },
   { "Beacon of Insight"                 , 21671, 0x00, 0x0002,  65,   1,   6,  157007,         0,  0 },
@@ -311,7 +311,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Insanity"                          , 21753, 0x00, 0x0010, 258,   2,   2,  139139,         0,  0 },
   { "Spirit Shell"                      , 21754, 0x00, 0x0010, 256,   2,   4,  109964,         0,  0 },
   { "Shadowy Insight"                   , 21755, 0x00, 0x0010, 258,   2,   4,  162452,         0,  0 },
-  { "Focusing Shot"                     , 21756, 0x00, 0x0004,   0,   1,   6,  152245,     56641,  0 },
+  { "Focusing Shot"                     , 21756, 0x00, 0x0004,   0,   1,   6,  163485,     56641,  0 },
   { "Siegebreaker"                      , 21760, 0x00, 0x0001,   0,   2,   6,  176289,      5246,  0 },
   { "Unleashed Fury"                    , 21772, 0x00, 0x0040, 264,   0,   5,  165479,         0,  0 },
   { "Unleashed Fury"                    , 21773, 0x00, 0x0040,   0,   0,   5,  165477,         0,  0 },
