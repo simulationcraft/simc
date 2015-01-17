@@ -1942,7 +1942,7 @@ struct blackout_kick_t: public monk_melee_attack_t
     base_multiplier *= 5.375; // hardcoded into tooltip
 
     if ( p -> wod_hotfix )
-      base_multiplier *= 1 + p -> passives.hotfix_passive -> effectN( 3 ).percent();
+      base_multiplier *= 6.4 / 5.375;
 
     if ( p -> spec.teachings_of_the_monastery -> ok() )
       aoe = 1 + p -> spec.teachings_of_the_monastery -> effectN( 4 ).base_value();
@@ -3153,7 +3153,7 @@ struct zen_sphere_damage_t: public monk_spell_t
   {
     background = true;
 
-    attack_power_mod.direct = 0.069165; // fix this for the love of jebus
+    attack_power_mod.direct = 0.06864; // Hardcoded into Tooltip
     school = SCHOOL_NATURE;
   }
 };
@@ -3166,7 +3166,7 @@ struct zen_sphere_detonate_damage_t: public monk_spell_t
     background = true;
     aoe = -1;
 
-    attack_power_mod.direct = 0.47155; // hardcoded into tooltip
+    attack_power_mod.direct = 0.471; // hardcoded into tooltip
     school = SCHOOL_NATURE;
   }
 };
@@ -4248,7 +4248,7 @@ struct zen_sphere_t: public monk_heal_t
       background = dual = true;
       aoe = -1;
 
-      attack_power_mod.direct = 0.547; // hardcoded into tooltip
+      attack_power_mod.direct = 0.548; // hardcoded into tooltip
       school = SCHOOL_NATURE;
     }
   };
