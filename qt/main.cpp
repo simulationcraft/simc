@@ -6,7 +6,7 @@
 #if defined SC_VS
 #include <windows.h>
 #include <stdio.h>
-#ifndef VS_XP_TARGET
+#if defined VS_WIN_NONXP_TARGET
 #include <VersionHelpers.h>
 #endif
 #endif
