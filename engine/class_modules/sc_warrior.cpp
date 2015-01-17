@@ -1723,8 +1723,6 @@ struct execute_t: public warrior_attack_t
 
     sudden_death_rage = 30;
 
-    if ( p -> wod_hotfix ) 
-      weapon_multiplier *= 1.1; // I guess Blizzard messed up and applied this hotfix to all executes.
     if ( p -> spec.crazed_berserker -> ok() )
     {
       oh_attack = new execute_off_hand_t( p, "execute_oh", p -> find_spell( 163558 ) );
@@ -1735,9 +1733,13 @@ struct execute_t: public warrior_attack_t
     }
     else if ( p -> specialization() == WARRIOR_ARMS ) // There is no hotfix or blue post about this, but execute is definitely hitting for 150% weapon damage instead of 160% for arms.
     {
-      weapon_multiplier = 1.5;
+      weapon_multiplier -= 0.1;
       sudden_death_rage = 10;
     }
+
+    if ( p -> wod_hotfix ) 
+      weapon_multiplier *= 1.1; // I guess Blizzard messed up and applied this hotfix to all executes.
+
     weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
   }
 
