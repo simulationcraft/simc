@@ -1722,10 +1722,10 @@ struct execute_t: public warrior_attack_t
 
     sudden_death_rage = 30;
 
+    if ( p -> wod_hotfix ) 
+      weapon_multiplier *= 1.1; // I guess Blizzard messed up and applied this hotfix to all executes.
     if ( p -> spec.crazed_berserker -> ok() )
     {
-      if ( p -> wod_hotfix ) 
-        weapon_multiplier *= 1.1;
       oh_attack = new execute_off_hand_t( p, "execute_oh", p -> find_spell( 163558 ) );
       add_child( oh_attack );
       if ( p -> main_hand_weapon.group() == WEAPON_1H &&

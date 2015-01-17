@@ -1,4 +1,4 @@
-SimulationCraft 603-23 for World of Warcraft 6.0.3 Live (build level 19342)
+SimulationCraft 603-25 for World of Warcraft 6.0.3 Live (build level 19342)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -1422,7 +1422,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=43101)    : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.72000 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.48000 | Radius: 0 - 10 yards
 #2 (id=257363)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: runic_power
 Description      : Deals $s1 Shadow damage to all enemies within $A1 yards, and spreads your existing diseases from your target to all other enemies hit$?s49509[, refreshing them to full duration. Also increases the healing from your next Death Strike by $50421s1%][].$?s56835[  
@@ -1446,7 +1446,7 @@ Effects          :
 #2 (id=252146)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 10 | Scaled Value: 10
 #3 (id=252147)   : Apply Aura (6) | Unknown effect sub type (405)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 917504
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 917504
 Description      : Your attack speed is increased by $s1%, your Haste is increased by $s2%, and you gain $s3% more of the Haste stat from all sources.
 
 Name             : Anti-Magic Zone (id=51052) [Scaling Spell (-1), Spell Family (15)] 
@@ -1844,7 +1844,7 @@ Effects          :
 #1 (id=48018)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=48019)    : Weapon Damage% (31)
-                   Base Value: 110 | Scaled Value: 1.1 (avg=0)
+                   Base Value: 140 | Scaled Value: 1.4 (avg=0)
 #3 (id=48020)    : Trigger Spell: Scourge Strike (64)
                    Base Value: 25 | Scaled Value: 25 | Trigger Spell: 70890
 Description      : An unholy strike that deals $sw2 Physical damage and $70890sw2 Shadow damage.
@@ -3223,7 +3223,7 @@ Effects          :
 #1 (id=64510)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=214692)   : Weapon Damage% (31)
-                   Base Value: 55 | Scaled Value: 0.55 (avg=0)
+                   Base Value: 70 | Scaled Value: 0.7 (avg=0)
 Description      : $@spelldesc55090
 
 Name             : Mastery: Blood Shield (id=77513) [Spell Family (15), Passive] 
@@ -3548,7 +3548,7 @@ Effects          :
 #1 (id=87374)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 0 (avg=0.433)
 #2 (id=87375)    : Weapon Damage% (31)
-                   Base Value: 215 | Scaled Value: 2.15 (avg=0)
+                   Base Value: 275 | Scaled Value: 2.75 (avg=0)
 #3 (id=87376)    : Server Side Script (77)
                    Base Value: 6 | Scaled Value: 6
 Description      : Deals $sw2 Physical damage and increases the duration of your Blood Plague, Frost Fever, and Chains of Ice effects on the target by up to $s3 sec.$?s56835[  
@@ -5300,7 +5300,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127
 #3 (id=255133)   : Apply Aura (6) | Modify Absorb% Done (421)
                    Base Value: 0 | Scaled Value: 0
-Description      : Increases your healing and absorption done to yourself, based on Stamina and damage taken (before avoidance and mitigation) in the last 10 sec.
+Description      : Increases your healing and absorption done to yourself, based on damage taken (before avoidance and mitigation) in the last 10 sec.
 
 Name             : Glyph of Absorb Magic (id=159415) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
@@ -5444,7 +5444,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=223310)   : Apply Aura (6) | Periodic Energize Power: every 1 seconds (24)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 6
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 6
 Description      : $@spelldesc159429
 Tooltip          : Generating $/10;s1 Runic Power every $t1 sec.
 

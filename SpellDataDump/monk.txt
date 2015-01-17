@@ -1,4 +1,4 @@
-SimulationCraft 603-23 for World of Warcraft 6.0.3 Live (build level 19342)
+SimulationCraft 603-25 for World of Warcraft 6.0.3 Live (build level 19342)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -807,12 +807,10 @@ Effects          :
 #4 (id=156068)   : Apply Aura (6) | Unknown effect sub type (263)
                    Base Value: 1 | Scaled Value: 1
                    Affected Spells: Chi Brew (115399)
-Description      : You spin while kicking in the air, $?a115070&s116645[healing up to 6 allies within $117640A1 yards for ${4*$117640m1} over $d.][dealing ${(4*0.9*$<low>+4*0.9*$<high>)/2} damage over $d to enemies within $107270A1 yards]. Generates $129881m1 Chi if it strikes 3 or more targets.$?c1[
+Description      : You spin while kicking in the air, $?a115070&s116645[healing up to 6 allies within $117640A1 yards for ${4*$117640m1} over $d.][dealing ${(4*0.9*$<low>+4*0.9*$<high>)/2} damage over $d to enemies within $107270A1 yards.] Generates $129881m1 Chi if it strikes 3 or more targets.$?c1[
 
 Channeling Spinning Crane Kick does not prevent avoiding attacks.][]
-Tooltip          : Attacking all nearby enemies for physical damage every $101546t1 sec.$?s120479[][
-
-Movement speed is reduced by $101546s2%. ]
+Tooltip          : Attacking all nearby enemies for Physical damage every $101546t1 sec$?$w3>0[, and healing nearby injured allies for $117640m1 every $101546t1 sec] and ][.]
 Variables        : $stnc=$?a103985[${1.2}][${1.0}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
@@ -1193,7 +1191,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 127
 #4 (id=141313)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 917504
-Description      : Iincreases healing done by $s3%, and improves the functionality of Crackling Jade Lightning and Spinning Crane Kick.
+Description      : Increases healing done by $s3%, and improves the functionality of Crackling Jade Lightning and Spinning Crane Kick.
 
 Name             : Expel Harm (id=115072) [Spell Family (53)] 
 Class            : Monk
@@ -1220,7 +1218,7 @@ Description      : Heal yourself for ${7.5*$<low>} to ${7.5*$<high>}, and deal $
 
 This ability has no cooldown while below 35% health in Stance of the Sturdy Ox.][]
 Variables        : $stnc=$?a115070[${1.2}][${1.0}]
-$dwm=$?a108561|a115697[${1}][${0.898882275}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
 
 $offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
@@ -1545,9 +1543,9 @@ Attributes       : ........ ........ ........ ........   ..x...x. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Channeled (34), Channeled (38)
 Effects          :
-#1 (id=129048)   : Apply Aura (6) | Unknown effect sub type (21)
+#1 (id=129048)   : Apply Aura (6) | Periodic Energize Power: every 0.5 seconds (24)
                    Base Value: 4 | Scaled Value: 4
-Description      : Consumes 1 stack of Mana Tea per $t1 sec to restore $m1% of your maximum mana.
+Description      : Consumes 1 stack of Mana Tea per $t1 sec to restore mana equal to $s1 times your unbuffed Spirit.
 
 For each 4 Chi you spend, you gain 1 stack of Mana Tea, with a chance equal to your critical strike chance to generate 1 extra stack.
 Tooltip          : Restoring $m1% mana every $t1 sec.
@@ -1669,7 +1667,7 @@ Description      : Summons a Jade Serpent Statue at the target location for $115
 $@spelldesc117895
 
 |CFFFFFFFFSerpent's Accord |R
-When you cast Soothing Mist, the Jade Serpent Statue will also cast Soothing Mist on an injured ally within 40 yards.
+When you cast Soothing Mist while in Stance of the Wise Serpent, the Jade Serpent Statue will also cast Soothing Mist on an injured ally within 40 yards.
 
 Only one statue can be active at a time.
 
@@ -2381,7 +2379,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 127
 Description      : Encases the target in a cocoon of Chi energy, absorbing $<shield> damage and increasing periodic healing received by $m2%. Lasts for $d.$?s124989[ Usable while stunned.][]
 Tooltip          : Absorbing $w1 damage, and periodic healing received increased by $w2%.
-Variables        : $shield=${((($SP*31.164)+$m1))}
+Variables        : $shield=${((($SP*31.164)+$m1))*(1+$@versadmg)}
 
 Name             : Surging Mist (id=116995) [Spell Family (53)] 
 Class            : Monk
@@ -2452,7 +2450,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=133985)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 99 (avg=0) | Points Per Level: 1 | Radius: 0 - 20 yards
-Description      : When the Monk deals damage, the summoned Jade Serpent Statue will heal the lowest health nearby target within $117895A1 yards for $115313s3% of the damage done.
+Description      : When the Monk deals damage while in Stance of the Spirited Crane, the summoned Jade Serpent Statue will heal the lowest health nearby target within $117895A1 yards for $115313s3% of the damage done.
 
 Name             : Mastery: Elusive Brawler (id=117906) [Spell Family (53), Passive] 
 Class            : Brewmaster Monk
@@ -3241,7 +3239,7 @@ Spell Level      : 22
 Range            : 5 yards
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Affecting spells : Glyph of Touch of Karma (125678), Item - Monk WoD PvP Windwalker 4P Bonus (180743)
+Affecting spells : Glyph of Touch of Karma (125678), Item - Monk WoD PvP Windwalker 2P Bonus (180743)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ .......x ...x.... 
@@ -3416,7 +3414,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=155634)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 10
-Description      : When you use Breath of Fire on targets afflicted with your Dizzying Haze, they become Disoriented for $123393d.
+Description      : When you use Breath of Fire on targets afflicted with your Dizzying Haze, they become Incapacitated for $123393d.
 
 Name             : Breath of Fire (id=123395) 
 Class            : Monk
@@ -3746,13 +3744,14 @@ Effects          :
                    Base Value: 1 | Scaled Value: 0 (avg=0.104) | AP Coefficient: 0.15600
 #2 (id=181288)   : None (0)
                    Base Value: 35 | Scaled Value: 35
-Description      : Forms a Zen Sphere above the target, healing the target for $<healingperiodic> over $d and dealing $<damageperiodic> Nature damage every $t1 sec to the nearest enemy within $124098A1 yards.
+Description      : Forms a Zen Sphere above the target, healing the target for $o1 over $d and dealing $<damageperiodic> Nature damage every $t1 sec to the nearest enemy within $124098A1 yards.
 
 After $d, the Zen Sphere detonates, dealing $<damagedetonate> Nature damage and $<healingdetonate> healing to all targets within $124101A1 yards.  Triggered early if dispelled or the target is damaged below $m2% health.
 Tooltip          : Healing $w1 every $t1 sec.
-Variables        : $dmgMult=$?s103985[${1.2}][${1.0}]
-$healMult=$?s115070[${1.2}][${1.0}]
-$damageperiodic=${($124098m1+$<dmgMult>*$ap*0.09)}$healingperiodic=${($124081m1+$<healMult>*$ap*0.09)*8}$damagedetonate=${($125033m1+$<dmgMult>*$ap*0.368)}$healingdetonate=${($124101m1+$<healMult>*$ap*0.234)}
+Variables        : $dmgMult=$?s103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
+$healMult=$?s115070[${1.2*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
+$damageperiodic=${($124098m1+$<dmgMult>*$ap*0.06864)}
+$healingperiodic=${(1+$<healMult>*$ap*0.156)*8}$damagedetonate=${($125033m1+$<dmgMult>*$ap*0.471)}$healingdetonate=${($124101m1+$<healMult>*$ap*0.548)}
 
 
 Name             : Zen Sphere (id=124098) [Spell Family (53)] 
@@ -6127,7 +6126,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127
 #3 (id=255133)   : Apply Aura (6) | Modify Absorb% Done (421)
                    Base Value: 0 | Scaled Value: 0
-Description      : Increases your healing and absorption done to yourself, based on Stamina and damage taken (before avoidance and mitigation) in the last 10 sec.
+Description      : Increases your healing and absorption done to yourself, based on damage taken (before avoidance and mitigation) in the last 10 sec.
 
 Name             : Healer Level 90 Mana Fix (Passive) (id=158920) [Passive, Hidden] 
 Class            : Holy Discipline Holy Restoration Mistweaver Restoration Paladin, Priest, Shaman, Monk, Druid

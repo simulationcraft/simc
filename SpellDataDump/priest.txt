@@ -1,4 +1,4 @@
-SimulationCraft 603-23 for World of Warcraft 6.0.3 Live (build level 19342)
+SimulationCraft 603-25 for World of Warcraft 6.0.3 Live (build level 19342)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -25,7 +25,7 @@ Tooltip          : Absorbs $w1 damage.
 Variables        : $masteryMod=${$cond($gt($pl,79),1,0)}
 $mastery=$?s47540[${((100+$<masteryMod>*$77484m1)/100)}][${1.00}]
 $spirit=$?s87336[${((100+$87336m1)/100)}][${1.00}]
-$shield=${((($SP*5)+$m1)*$<mastery>)}
+$shield=${((($SP*5.1)+$m1)*$<mastery>)}
 
 Name             : Renew (id=139) [Spell Family (6)] 
 Class            : Holy Priest
@@ -1024,7 +1024,7 @@ Effects          :
 Description      : Places a spell on the target that heals them for ${$<mending>} the next time they take damage. When the heal occurs, Prayer of Mending jumps to an ally within $155793a1 yards. Jumps up to $41635u times and lasts $41635d after each jump.$?s55685[ The first bounce will heal for an additional $55685m1%.][]
 Variables        : $mult1=$?s87336[${1.25}][${1.0}]
 $mult2=$?s122098[${1.25*$<mult1>}][${$<mult1>}]
-$mending=${($m1+($SP*0.442787))*$pctH*$<mult2>}
+$mending=${(1+($SP*0.666))*$pctH*$<mult2>}
 
 
 
@@ -1056,7 +1056,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=23039)    : Apply Aura (6) | Dummy (4)
                    Base Value: 70 | Scaled Value: 70 | Misc Value: 5064
-Description      : Causes $s1% of the damage you absorb with Power Word: Shield to reflect back at the attacker.  This damage causes no threat.
+Description      : Causes $s1% of the damage you absorb with your own Power Word: Shield to reflect back at the attacker.  This damage causes no threat.
 
 Name             : Pain Suppression (id=33206) [Spell Family (6)] 
 Class            : Discipline Priest
@@ -1244,7 +1244,7 @@ Effects          :
 #2 (id=219082)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f
 Description      : $@spelldesc45243
-Tooltip          : All damage taken reduced by $s1%.$?w2!=0[  All damage dealt increased by $w2%.][]
+Tooltip          : All damage taken reduced by $s1%.$?$w2>0[  All damage dealt increased by $w2%.][]
 
 Name             : Focused Will (id=45243) [Passive] 
 Class            : Discipline Holy Priest
@@ -4607,7 +4607,7 @@ Effects          :
                    Affected Spells: Mind Flay (15407), Insanity (129197)
 #2 (id=257698)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 179338 | Scaled Value: 179338
-                   Affected Spells: Mind Sear (48045)
+                   Affected Spells: Mind Sear (48045), Searing Insanity (179338)
 Description      : $@spelldesc139139
 Tooltip          : Your Mind Flay is transformed into Insanity.
 
@@ -5990,5 +5990,42 @@ Effects          :
 #1 (id=251176)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Choose a level 90 talent.
+
+Name             : Searing Insanity (id=179337) [Spell Family (6)] 
+Class            : Priest
+Spell Level      : 1
+Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ........ 
+                 : ........ ........ ........ ......x.   x....... .x...... ........ .x...... 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Not a proc (105)
+Effects          :
+#1 (id=257696)   : School Damage: shadow (2)
+                   Base Value: -1 | Scaled Value: 0 (avg=0) | Value Range: 1 | SP Coefficient: 0.50000 | Radius: 10 yards
+Description      : Causes an explosion of shadow magic around the target, causing $49821s1 Shadow damage every $48045T1 sec for $48045d to all enemies within $49821a1 yards around the target.
+Tooltip          : Causing shadow damage to all targets within $a1 yards.
+
+Name             : Searing Insanity (id=179338) [Spell Family (6)] 
+Class            : Priest
+Resource         : 0.75% Base Mana (1200 @Level 100)
+Spell Level      : 28
+Range            : 40 yards
+GCD              : 1.5 seconds
+Duration         : 5 seconds
+Affecting spells : Insanity (132573), Lucidity (137323)
+Attributes       : ........ ........ x.....x. ........   ..x....x ........ ........ ........ 
+                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Channeled (34)
+Effects          :
+#1 (id=257697)   : Apply Aura (6) | Periodic Trigger Spell: Searing Insanity every 1 seconds (23)
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 179337
+Description      : Causes an explosion of shadow magic around the target, dealing ${$49821m1*5} Shadow damage over $48045d to all enemies within $49821a1 yards around the target.
+Tooltip          : Causing shadow damage to all targets within $49821a1 yards.
 
 
