@@ -3102,6 +3102,10 @@ struct lacerate_t : public bear_attack_t
     bear_attack_t::impact( state );
   }
 
+  // Treat direct damage as "bleed"
+  virtual double target_armor( player_t* ) const
+  { return 0.0; }
+
   virtual double composite_target_ta_multiplier( player_t* t ) const
   {
     double tm = bear_attack_t::composite_target_ta_multiplier( t );
