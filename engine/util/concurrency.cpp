@@ -5,6 +5,16 @@
 
 #include "concurrency.hpp"
 #include <iostream>
+// OS X 10.6 (our minimum supported target) does not have <thread>. We need to
+// use alternate means to fetch the number of concurrent threads on the system
+// (systemctl).
+#if defined( SC_STD_THREAD ) && ! defined( SC_OSX )
+#include <thread>
+#elif ! defined( SC_MINGW )
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#endif
+
 
 // Cross-Platform Support for Multi-Threading ===============================
 
