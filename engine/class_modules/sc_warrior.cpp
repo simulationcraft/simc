@@ -1546,7 +1546,8 @@ struct charge_t: public warrior_attack_t
     if ( p() -> current.distance_to_move < min_range ) // Cannot charge if too close to the target.
       return false;
 
-    if ( p() -> buff.heroic_leap_movement -> check() || p() -> buff.intervene_movement -> check() || p() -> buff.shield_charge -> check() )
+    if ( p() -> buff.charge_movement -> check() || p() -> buff.heroic_leap_movement -> check()
+      || p() -> buff.intervene_movement -> check() || p() -> buff.shield_charge -> check() )
       return false;
 
     return warrior_attack_t::ready();
