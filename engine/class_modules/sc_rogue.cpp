@@ -4752,7 +4752,7 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Rupture", "if=(remains<2|(combo_points=5&remains<=(duration*0.3)))&active_enemies=1" );
     def -> add_talent( this, "Shadow Reflection", "if=cooldown.vendetta.remains=0" );
     def -> add_action( this, "Vendetta", "if=buff.shadow_reflection.up|!talent.shadow_reflection.enabled" );
-    def -> add_talent( this, "Death From Above", "if=combo_points>4" );
+    def -> add_talent( this, "Death from Above", "if=combo_points>4" );
     def -> add_action( this, "Envenom", "cycle_targets=1,if=(combo_points>4&(cooldown.death_from_above.remains>2|!talent.death_from_above.enabled))&active_enemies<4&!dot.deadly_poison_dot.ticking" );
     def -> add_action( this, "Envenom", "if=(combo_points>4&(cooldown.death_from_above.remains>2|!talent.death_from_above.enabled))&active_enemies<4&(buff.envenom.remains<2|energy>55)" );
     def -> add_action( this, "Fan of Knives", "cycle_targets=1,if=active_enemies>2&!dot.deadly_poison_dot.ticking&debuff.vendetta.down" );
