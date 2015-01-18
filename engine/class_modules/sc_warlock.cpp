@@ -2484,8 +2484,8 @@ struct shadowburn_t: public warlock_spell_t
   struct resource_event_t: public event_t
   {
     shadowburn_t* spell;
-    player_t* target;
     gain_t* ember_gain;
+    player_t* target;
 
     resource_event_t( warlock_t* p, shadowburn_t* s, player_t* t ):
       event_t( *p, "shadowburn_execute_gain" ), spell( s ), ember_gain( p -> gains.shadowburn_ember), target(t)

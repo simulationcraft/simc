@@ -3093,7 +3093,7 @@ struct seraphim_t : public paladin_spell_t
   }
 
   // Seraphim cannot trigger free HP effects
-  virtual void trigger_free_hp_effects( double c )
+  virtual void trigger_free_hp_effects( double /* c */ )
     {}
 
   virtual void execute()
