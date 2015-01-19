@@ -352,6 +352,9 @@ public:
     const spell_data_t* purifying_brew;
     const spell_data_t* resolve;
     const spell_data_t* summon_black_ox_statue;
+    const spell_data_t* light_stagger;
+    const spell_data_t* moderate_stagger;
+    const spell_data_t* heavy_stagger;
 
     // Mistweaver
     const spell_data_t* brewing_mana_tea;
@@ -572,15 +575,15 @@ public:
   const spell_data_t& active_stance_data( stance_e ) const;
 
   // Custom Monk Functions
-  double current_stagger_dmg();
-  double current_stagger_dmg_percent();
+  double current_stagger_tick_dmg();
+  double current_stagger_tick_dmg_percent();
   double stagger_pct();
   // Blizzard rounds it's stagger damage; anything higher than half a percent beyond 
   // the threshold will switch to the next threshold
   const double light_stagger_threshold;
   const double moderate_stagger_threshold;
   const double heavy_stagger_threshold;
-  void  clear_stagger();
+  double  clear_stagger();
   bool  has_stagger();
 };
 
@@ -2097,8 +2100,8 @@ struct chi_explosion_t: public monk_melee_attack_t
       }
       if ( resource_consumed >= 3 && p() -> has_stagger() )
       {
-          double stagger_dmg = p() -> current_stagger_dmg();
-          double stagger_pct = p() -> current_stagger_dmg_percent();
+          double stagger_pct = p() -> current_stagger_tick_dmg_percent();
+          double stagger_dmg = p() -> clear_stagger();
 
           // Tier 17 4 pieces Brewmaster: 3 stacks of Chi Explosion generates 1 stacks of Elusive Brew.
           // Hotfix Jan 13, 2014 - Only procs on Moderate or Heavy Stagger
@@ -2114,8 +2117,6 @@ struct chi_explosion_t: public monk_melee_attack_t
             p() -> sample_datas.light_stagger_total_damage -> add( stagger_dmg );
 
           p() -> sample_datas.purified_damage -> add( stagger_dmg );
-
-          p() -> clear_stagger();
       }
     }
     else if ( p() -> specialization() == MONK_WINDWALKER )
@@ -2642,7 +2643,7 @@ struct melee_t: public monk_melee_attack_t
       if ( weapon -> group() == WEAPON_1H || weapon -> group() == WEAPON_SMALL )
         trigger_brew( 1.5 * weapon -> swing_time.total_seconds() / 2.6 );
       else
-        trigger_brew( 3.0 * weapon -> swing_time.total_seconds() / 3.6 );
+        trigger_brew( p() -> active_stance_data( STURDY_OX ).effectN( 11 ).base_value() * weapon->swing_time.total_seconds() / 3.6);
     }
 
     if ( p() -> spec.brewing_elusive_brew -> ok() && s -> result == RESULT_MULTISTRIKE )
@@ -3658,7 +3659,9 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
   stagger_self_damage_t( monk_t* p ):
     base_t( "stagger_self_damage", p, p -> find_spell( 124255 ) )
   {
-    dot_duration = timespan_t::from_seconds( 10.0 );
+    dot_duration = p -> spec.heavy_stagger -> duration();
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    hasted_ticks = tick_may_crit = false;
     target = p;
 
     callbacks = false;
@@ -3680,7 +3683,7 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
     dot_t* d = get_dot();
     double damage_remaining = 0.0;
     if ( d -> is_ticking() )
-      damage_remaining += d -> ticks_left() * base_td; // Assumes base_td == damage, no modifiers or crits
+      damage_remaining += d -> ticks_left() * d -> state -> result_amount; // Assumes base_td == damage, no modifiers or crits
 
     cancel();
     d -> cancel();
@@ -3714,8 +3717,8 @@ struct purifying_brew_t: public monk_spell_t
   void execute()
   {
     monk_spell_t::execute();
-    double stagger_dmg = p() -> current_stagger_dmg();
-    double stagger_pct = p() -> current_stagger_dmg_percent();
+    double stagger_pct = p() -> current_stagger_tick_dmg_percent();
+    double stagger_dmg = p() -> clear_stagger();
 
     // Tier 16 4 pieces Brewmaster: Purifying Brew also heals you for 15% of the amount of staggered damage cleared.
     if ( p() -> sets.has_set_bonus( SET_TANK, T16, B4 ) )
@@ -3738,8 +3741,6 @@ struct purifying_brew_t: public monk_spell_t
       p() -> sample_datas.light_stagger_total_damage -> add( stagger_dmg );
 
     p() -> sample_datas.purified_damage -> add( stagger_dmg );
-
-    p() -> active_actions.stagger_self_damage -> clear_all_damage();
   }
 
   bool ready()
@@ -4656,6 +4657,9 @@ void monk_t::init_spells()
   spec.resolve                       = find_specialization_spell( "Resolve" );
   spec.bladed_armor                  = find_specialization_spell( "Bladed Armor" );
   spec.ferment                       = find_specialization_spell( "Ferment" );
+  spec.light_stagger                 = find_spell( 124275 );
+  spec.moderate_stagger              = find_spell( 124274 );
+  spec.heavy_stagger                 = find_spell( 124273 );
 
   // Mistweaver Passives
   spec.brewing_mana_tea              = find_specialization_spell( "Brewing: Mana Tea" );
@@ -5003,9 +5007,9 @@ bool monk_t::has_stagger()
 {
   return active_actions.stagger_self_damage -> stagger_ticking();
 }
-void monk_t::clear_stagger()
+double monk_t::clear_stagger()
 {
-  active_actions.stagger_self_damage -> clear_all_damage();
+  return active_actions.stagger_self_damage -> clear_all_damage();
 }
 
 // monk_t::composite_attack_speed =========================================
@@ -5389,13 +5393,17 @@ void monk_t::target_mitigation( school_e school,
 {
   // Stagger is not reduced by damage mitigation effects
   if ( s -> action -> id == 124255 )
+  {
+    // Register the tick then exit
+    sample_datas.stagger_tick_damage -> add( s -> result_amount );
     return;
+  }
 
   player_t::target_mitigation( school, dt, s );
 
   // Passive sources (Sturdy Ox)
   if ( school != SCHOOL_PHYSICAL )
-    s -> result_amount *= 1.0 + ( wod_hotfix ? 0.15 : active_stance_data( STURDY_OX ).effectN( 4 ).percent() ); // Hotfix to 15% (up from 10%) on Nov 12, 2014
+    s -> result_amount *= 1.0 + ( wod_hotfix ? -0.15 : active_stance_data( STURDY_OX ).effectN( 4 ).percent() ); // Hotfix to -15% (up from -10%) on Nov 12, 2014
 
   // Damage Reduction Cooldowns
 
@@ -5463,28 +5471,26 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
   if ( current_stance() != STURDY_OX )
     return;
 
-  double stagger_dmg = 0;
-
   // Stagger damage can't be staggered!
   if ( s -> action -> id == 124255 )
-  {
-    // Register the tick then exit
-    stagger_dmg = s -> result_amount;
-    sample_datas.stagger_tick_damage -> add( stagger_dmg );
     return;
+
+  double stagger_dmg = 0;
+  
+  if ( s -> result_amount > 0 )
+  {
+    if (school == SCHOOL_PHYSICAL)
+      stagger_dmg += s -> result_amount * stagger_pct();
+
+    if ( school != SCHOOL_PHYSICAL && talent.soul_dance )
+      stagger_dmg += s -> result_amount * ( stagger_pct() * talent.soul_dance -> effectN( 1 ).percent() );
+
+    s -> result_amount -= stagger_dmg;
   }
-
-  if ( school == SCHOOL_PHYSICAL )
-    stagger_dmg += s -> result_amount > 0 ? s -> result_amount * stagger_pct() : 0.0;
-
-  if ( school != SCHOOL_PHYSICAL && talent.soul_dance )
-    stagger_dmg += s -> result_amount > 0 ? s -> result_amount * ( stagger_pct() * talent.soul_dance -> effectN( 1 ).percent() ) : 0.0;
-
-  s -> result_amount -= stagger_dmg;
   // Hook up Stagger Mechanism
   if ( stagger_dmg > 0 )
   {
-    sample_datas.stagger_total_damage -> add(stagger_dmg);
+    sample_datas.stagger_total_damage -> add( stagger_dmg );
     residual_action::trigger( active_actions.stagger_self_damage, this, stagger_dmg );
   }
 }
@@ -5917,9 +5923,9 @@ double monk_t::stagger_pct()
   return stagger;
 }
 
-// monk_t::current_stagger_dmg ==================================================
+// monk_t::current_stagger_tick_dmg ==================================================
 
-double monk_t::current_stagger_dmg()
+double monk_t::current_stagger_tick_dmg()
 {
   double dmg = 0;
   if ( active_actions.stagger_self_damage )
@@ -5936,9 +5942,9 @@ double monk_t::current_stagger_dmg()
 
 // monk_t::current_stagger_dmg_percent ==================================================
 
-double monk_t::current_stagger_dmg_percent()
+double monk_t::current_stagger_tick_dmg_percent()
 {
-  return current_stagger_dmg() / resources.max[RESOURCE_HEALTH];
+  return current_stagger_tick_dmg() / resources.max[RESOURCE_HEALTH];
 }
 
 // monk_t::create_expression ==================================================
@@ -5959,7 +5965,7 @@ expr_t* monk_t::create_expression( action_t* a, const std::string& name_str )
 
       virtual double evaluate()
       {
-        return player.current_stagger_dmg_percent() > stagger_health_pct;
+        return player.current_stagger_tick_dmg_percent() > stagger_health_pct;
       }
     };
     struct stagger_amount_expr_t: public expr_t
@@ -5972,7 +5978,7 @@ expr_t* monk_t::create_expression( action_t* a, const std::string& name_str )
 
       virtual double evaluate()
       {
-        return player.current_stagger_dmg();
+        return player.current_stagger_tick_dmg();
       }
     };
 
@@ -6110,9 +6116,9 @@ public:
     // Custom Class Section
     if (p.specialization() == MONK_BREWMASTER)
     {
-      double stagger_total_dmg = p.sample_datas.stagger_total_damage -> sum();
       double stagger_tick_dmg = p.sample_datas.stagger_tick_damage -> sum();
       double purified_dmg = p.sample_datas.purified_damage -> sum();
+      double stagger_total_dmg = stagger_tick_dmg + purified_dmg;
 
       os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
         << "\t\t\t\t\t<h3 class=\"toggle open\">Stagger Analysis</h3>\n"
@@ -6121,9 +6127,9 @@ public:
       os << "\t\t\t\t\t\t<p style=\"color: red;\">This section is a work in progress</p>\n";
 
       os << "\t\t\t\t\t\t<p>Percent amount of stagger that was purified: "
-       << ( ( purified_dmg / stagger_total_dmg ) / 100 ) << "%</p>\n"
+       << ( ( purified_dmg / stagger_total_dmg ) * 100 ) << "%</p>\n"
        << "\t\t\t\t\t\t<p>Percent amount of stagger that directly damaged the player: "
-       << ( ( stagger_tick_dmg / stagger_total_dmg ) / 100 ) << "%</p>\n\n";
+       << ( ( stagger_tick_dmg / stagger_total_dmg ) * 100 ) << "%</p>\n\n";
 
       os << "\t\t\t\t\t\t<table class=\"sc\">\n"
         << "\t\t\t\t\t\t\t<tbody>\n"
