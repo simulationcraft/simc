@@ -1709,7 +1709,7 @@ int cancel_dot( dot_t& dot )
 
 // Angelic Feather===========================================================
 
-struct angelic_feather_t final: public priest_spell_t
+struct angelic_feather_t : public priest_spell_t
 {
   angelic_feather_t( priest_t& p, const std::string& options_str ):
     priest_spell_t( "angelic_feather", p, p.find_class_spell( "Angelic Feather" ) )
