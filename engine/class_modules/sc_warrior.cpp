@@ -1797,10 +1797,11 @@ struct execute_t: public warrior_attack_t
     if ( p() -> buff.sudden_death -> check() || p() -> buff.tier16_4pc_death_sentence -> check() )
       return warrior_attack_t::ready();
 
-    if ( target -> health_percentage() > 20 )
+    // Call warrior_attack_t::ready() first for proper targeting support.
+    if ( warrior_attack_t::ready() && target -> health_percentage() < 20 )
+      return true;
+    else
       return false;
-
-    return warrior_attack_t::ready();
   }
 };
 
@@ -4009,10 +4010,17 @@ void warrior_t::apl_precombat()
   if ( sim -> allow_food )
   {
     std::string food_action = "food,type=";
-    if ( specialization() != WARRIOR_PROTECTION )
+    if ( specialization() == WARRIOR_FURY )
     {
       if ( level > 90 )
         food_action += "blackrock_barbecue";
+      else
+        food_action += "black_pepper_ribs_and_shrimp";
+    }
+    else if ( specialization() == WARRIOR_ARMS )
+    {
+      if ( level > 90 )
+        food_action += "sleeper_surprise";
       else
         food_action += "black_pepper_ribs_and_shrimp";
     }
@@ -4029,13 +4037,13 @@ void warrior_t::apl_precombat()
   if ( specialization() == WARRIOR_ARMS )
   {
     precombat -> add_action( "stance,choose=battle", "\n"
-                             "talent_override=bladestorm,if=raid_event.adds.count>=1|desired_targets>1|(raid_event.adds.duration<10&raid_event.adds.exists)\n"
+                             "talent_override=bladestorm,if=raid_event.adds.count>=1|desired_targets>2|(raid_event.adds.duration<10&raid_event.adds.exists)\n"
                              "talent_override=dragon_roar,if=raid_event.adds.count>=1|desired_targets>1\n"
                              "talent_override=taste_for_blood,if=raid_event.adds.count>=1|desired_targets>1\n"
                              "talent_override=ravager,if=raid_event.adds.count>=1|desired_targets>1" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
                              "# Generic on-use trinket line if needed when swapping trinkets out. \n"
-                             "#actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&buff.ravager.up)" );
+                             "# actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&(prev_gcd.ravager|(!talent.ravager.enabled&!cooldown.bladestorm.remains&dot.rend.ticking)))" );
   }
   else if ( specialization() == WARRIOR_FURY )
   {
@@ -4239,9 +4247,9 @@ void warrior_t::apl_arms()
       default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<25" );
   }
 
-  default_list -> add_action( this, "Recklessness", "if=(dot.rend.ticking&(target.time_to_die>190|target.health.pct<20)&(!talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)|buff.bloodbath.up))|target.time_to_die<10",
+  default_list -> add_action( this, "Recklessness", "if=(dot.rend.ticking&(target.time_to_die>190|target.health.pct<20)&((!talent.bloodbath.enabled&debuff.colossus_smash.up&(!cooldown.bladestorm.remains|!talent.bladestorm.enabled))|buff.bloodbath.up))|target.time_to_die<10",
                               "This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'" );
-  default_list -> add_talent( this, "Bloodbath", "if=(dot.rend.ticking&cooldown.colossus_smash.remains<5)|target.time_to_die<20" );
+  default_list -> add_talent( this, "Bloodbath", "if=(dot.rend.ticking&cooldown.colossus_smash.remains<5&((talent.ravager.enabled&prev_gcd.ravager)|!talent.ravager.enabled))|target.time_to_die<20" );
   default_list -> add_talent( this, "Avatar", "if=buff.recklessness.up|target.time_to_die<25" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -4265,39 +4273,38 @@ void warrior_t::apl_arms()
   movement -> add_talent( this, "Storm Bolt", "", "May as well throw storm bolt if we can." );
   movement -> add_action( this, "Heroic Throw" );
 
-  single_target -> add_action( this, "Rend", "if=!ticking&target.time_to_die>4" );
+  single_target -> add_action( this, "Rend", "if=target.time_to_die>4&dot.rend.remains<5.4&(target.health.pct>20|!debuff.colossus_smash.up)" );
   single_target -> add_talent( this, "Ravager", "if=cooldown.colossus_smash.remains<4&(!raid_event.adds.exists|raid_event.adds.in>55)" );
   single_target -> add_action( this, "Colossus Smash" );
-  single_target -> add_talent( this, "Bladestorm", "if=(debuff.colossus_smash.up|talent.anger_management.enabled)&rage<70&(!raid_event.adds.exists|raid_event.adds.in>55|(talent.anger_management.enabled&raid_event.adds.in>40))" );
-  single_target -> add_action( this, "Mortal Strike", "if=target.health.pct>20&cooldown.colossus_smash.remains>1" );
-  single_target -> add_talent( this, "Storm Bolt", "if=(cooldown.colossus_smash.remains>4|debuff.colossus_smash.up)&rage<90" );
+  single_target -> add_action( this, "Mortal Strike", "if=target.health.pct>20" );
+  single_target -> add_talent( this, "Bladestorm", "if=(((debuff.colossus_smash.up|cooldown.colossus_smash.remains>3)&target.health.pct>20)|(target.health.pct<20&rage<30&cooldown.colossus_smash.remains>4))&(!raid_event.adds.exists|raid_event.adds.in>55|(talent.anger_management.enabled&raid_event.adds.in>40))" );
+  single_target -> add_talent( this, "Storm Bolt", "if=target.health.pct>20|(target.health.pct<20&!debuff.colossus_smash.up)" );
   single_target -> add_talent( this, "Siegebreaker" );
-  single_target -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up&rage<90&(!raid_event.adds.exists|raid_event.adds.in>55|(talent.anger_management.enabled&raid_event.adds.in>40))" );
+  single_target -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up&(!raid_event.adds.exists|raid_event.adds.in>55|(talent.anger_management.enabled&raid_event.adds.in>40))" );
   single_target -> add_action( this, "Rend", "if=!debuff.colossus_smash.up&target.time_to_die>4&remains<5.4" );
   single_target -> add_action( this, "Execute", "if=buff.sudden_death.react" );
-  single_target -> add_action( this, "Execute", "if=target.health.pct<20&(debuff.colossus_smash.up|rage>=105|cooldown.colossus_smash.remains>10|target.time_to_die<5)" );
-  single_target -> add_talent( this, "Impending Victory", "if=rage<40&target.health.pct>20&cooldown.colossus_smash.remains>1&cooldown.mortal_strike.remains>1" );
-  single_target -> add_talent( this, "Slam", "if=(rage>20|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20&cooldown.colossus_smash.remains>1&cooldown.mortal_strike.remains>1" );
-  single_target -> add_action( this, "Thunder Clap", "sync=whirlwind_mh,if=glyph.resonating_power.enabled" );
-  single_target -> add_action( this, "Whirlwind", "if=!talent.slam.enabled&target.health.pct>20&(rage>=40|set_bonus.tier17_4pc|debuff.colossus_smash.up)&cooldown.colossus_smash.remains>1&cooldown.mortal_strike.remains>1" );
+  single_target -> add_action( this, "Execute", "if=!buff.sudden_death.react&(rage>72&cooldown.colossus_smash.remains>gcd)|debuff.colossus_smash.up|target.time_to_die<5" );
+  single_target -> add_talent( this, "Impending Victory", "if=rage<40&target.health.pct>20&cooldown.colossus_smash.remains>1" );
+  single_target -> add_talent( this, "Slam", "if=(rage>20|cooldown.colossus_smash.remains>gcd)&target.health.pct>20&cooldown.colossus_smash.remains>1" );
+  single_target -> add_action( this, "Thunder Clap", "if=!talent.slam.enabled&target.health.pct>20&(rage>=40|debuff.colossus_smash.up)&glyph.resonating_power.enabled&cooldown.colossus_smash.remains>gcd" );
+  single_target -> add_action( this, "Whirlwind", "if=!talent.slam.enabled&target.health.pct>20&(rage>=40|debuff.colossus_smash.up)&cooldown.colossus_smash.remains>gcd" );
   single_target -> add_talent( this, "Shockwave" );
 
   aoe -> add_action( this, "Sweeping Strikes" );
-  aoe -> add_action( this, "Execute", "cycle_targets=1,if=target.health.pct<20&debuff.colossus_smash.up" );
-  aoe -> add_action( this, "Rend", "if=remains<5.4&target.time_to_die>4" );
-  aoe -> add_action( this, "Rend", "cycle_targets=1,if=remains<5.4&target.time_to_die-remains>18&(active_enemies<=6|(talent.taste_for_blood.enabled&rage<25))" );
-  aoe -> add_talent( this, "Ravager", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
-  aoe -> add_talent( this, "Bladestorm" );
-  aoe -> add_action( this, "Colossus Smash", "cycle_targets=1,if=target.health.pct<20&active_enemies<=9" );
-  aoe -> add_action( this, "Colossus Smash", "if=active_enemies<=6" );
-  aoe -> add_action( this, "Execute", "cycle_targets=1,if=target.health.pct<20&active_enemies=2&(rage>=105|cooldown.colossus_smash.remains>8|target.time_to_die<5)" );
-  aoe -> add_action( this, "Execute", "cycle_targets=1,if=target.health.pct<20&active_enemies>2&active_enemies<=5" );
-  aoe -> add_action( this, "Mortal Strike", "if=cooldown.colossus_smash.remains>1.5&target.health.pct>20&active_enemies<=4" );
+  aoe -> add_action( this, "Rend", "if=ticks_remain<2&target.time_to_die>4&(target.health.pct>20|!debuff.colossus_smash.up)" );
+  aoe -> add_action( this, "Rend", "cycle_targets=1,max_cycle_targets=2,if=ticks_remain<2&target.time_to_die>8&!buff.colossus_smash_up.up&talent.taste_for_blood.enabled" );
+  aoe -> add_action( this, "Rend", "cycle_targets=1,if=ticks_remain<2&target.time_to_die-remains>18&!buff.colossus_smash_up.up&active_enemies<=8" );
+  aoe -> add_talent( this, "Ravager", "if=buff.bloodbath.up|cooldown.colossus_smash.remains<4" );
+  aoe -> add_talent( this, "Bladestorm", "if=((debuff.colossus_smash.up|cooldown.colossus_smash.remains>3)&target.health.pct>20)|(target.health.pct<20&rage<30&cooldown.colossus_smash.remains>4)" );
+  aoe -> add_action( this, "Colossus Smash", "if=dot.rend.ticking" );
+  aoe -> add_action( this, "Execute", "cycle_targets=1,if=!buff.sudden_death.react&active_enemies<=8&((rage>72&cooldown.colossus_smash.remains>gcd)|rage>80|target.time_to_die<5|debuff.colossus_smash.up)" );
+  aoe -> add_action( this, "Mortal Strike", "if=target.health.pct>20&active_enemies<=5" );
   aoe -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up" );
-  aoe -> add_action( this, "Thunder Clap", "sync=whirlwind_mh,if=glyph.resonating_power.enabled" );
-  aoe -> add_action( this, "Whirlwind", "if=target.health.pct>20|active_enemies>5" );
+  aoe -> add_action( this, "Thunder Clap", "if=(target.health.pct>20|active_enemies>=9)&glyph.resonating_power.enabled" );
+  aoe -> add_action( this, "Rend", "cycle_targets=1,if=ticks_remain<2&target.time_to_die>8&!buff.colossus_smash_up.up&active_enemies>=9&rage<50&!talent.taste_for_blood.enabled" );
+  aoe -> add_action( this, "Whirlwind", "if=target.health.pct>20|active_enemies>=9" );
   aoe -> add_talent( this, "Siegebreaker" );
-  aoe -> add_talent( this, "Storm Bolt", "if=cooldown.colossus_smash.remains>4|debuff.colossus_smash.up|active_enemies>6" );
+  aoe -> add_talent( this, "Storm Bolt", "if=cooldown.colossus_smash.remains>4|debuff.colossus_smash.up" );
   aoe -> add_talent( this, "Shockwave" );
   aoe -> add_action( this, "Execute", "if=buff.sudden_death.react" );
 }
