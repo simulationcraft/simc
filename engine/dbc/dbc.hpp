@@ -59,6 +59,9 @@ const std::string& get_token( unsigned int id_spell );
 bool add_token( unsigned int id_spell, const std::string& token_name, bool ptr );
 unsigned int get_token_id( const std::string& token );
 bool valid_gem_color( unsigned color );
+
+// Filtered data access
+const item_data_t* find_potion( bool ptr, const std::function<bool(const item_data_t*)>& finder );
 }
 
 // ==========================================================================
@@ -1116,6 +1119,17 @@ struct id_member_policy
   { return static_cast<unsigned>( t.id ); }
 };
 
+template<typename T, typename KeyPolicy = id_function_policy>
+struct id_compare
+{
+  bool operator () ( const T& t, unsigned int id ) const
+  { return KeyPolicy::id( t ) < id; }
+  bool operator () ( unsigned int id, const T& t ) const
+  { return id < KeyPolicy::id( t ); }
+  bool operator () ( const T& l, const T& r ) const
+  { return KeyPolicy::id( l ) < KeyPolicy::id( r ); }
+};
+
 template <typename T, typename KeyPolicy = id_function_policy>
 class dbc_index_t
 {
@@ -1142,16 +1156,6 @@ private:
     idx.second = list;
   }
 
-  struct id_compare
-  {
-    bool operator () ( const T& t, unsigned int id ) const
-    { return KeyPolicy::id( t ) < id; }
-    bool operator () ( unsigned int id, const T& t ) const
-    { return id < KeyPolicy::id( t ); }
-    bool operator () ( const T& l, const T& r ) const
-    { return KeyPolicy::id( l ) < KeyPolicy::id( r ); }
-  };
-
 public:
   // Initialize index from given list
   void init( T* list, bool ptr )
@@ -1176,11 +1180,73 @@ public:
   T* get( bool ptr, unsigned id ) const
   {
     assert( initialized( maybe_ptr( ptr ) ) );
-    T* p = std::lower_bound( idx[ maybe_ptr( ptr ) ].first, idx[ maybe_ptr( ptr ) ].second, id, id_compare() );
+    T* p = std::lower_bound( idx[ maybe_ptr( ptr ) ].first, idx[ maybe_ptr( ptr ) ].second, id, id_compare<T, KeyPolicy>() );
     if ( p != idx[ maybe_ptr( ptr ) ].second && KeyPolicy::id( *p ) == id )
       return p;
     else
       return NULL;
   }
 };
+
+template <typename T, typename Filter, typename KeyPolicy = id_function_policy>
+class filtered_dbc_index_t
+{
+#if SC_USE_PTR == 0
+  std::vector<T*> __filtered_index[ 1 ];
+#else
+  std::vector<T*> __filtered_index[ 2 ];
+#endif
+  Filter f;
+
+public:
+  typedef typename std::vector<T*>::const_iterator citerator;
+
+  citerator begin( bool ptr ) const
+  { return __filtered_index[ maybe_ptr( ptr ) ].begin(); }
+
+  citerator end( bool ptr ) const
+  { return __filtered_index[ maybe_ptr( ptr ) ].end(); }
+
+  // Initialize index from given list
+  void init( T* list, bool ptr )
+  {
+    T* i = list;
+
+    while ( KeyPolicy::id( *i ) )
+    {
+      if ( f( i ) )
+      {
+        __filtered_index[ maybe_ptr( ptr ) ].push_back( i );
+      }
+
+      i++;
+    }
+  }
+
+  const T* get( bool ptr, const std::function<bool(const T*)> f ) const
+  {
+    for ( citerator i = begin( ptr ), e = end( ptr ); i < e; ++i )
+    {
+      if ( f( *i ) )
+      {
+        return *i;
+      }
+    }
+
+    return 0;
+  }
+
+  const T* get( bool ptr, unsigned id ) const
+  {
+    const T* p = std::lower_bound( __filtered_index[ maybe_ptr( ptr ) ].begin(),
+                                   __filtered_index[ maybe_ptr( ptr ) ].end(),
+                                   id, id_compare<T, KeyPolicy>() );
+
+    if ( p != __filtered_index[ maybe_ptr( ptr ) ].end() && KeyPolicy::id( *p ) == id )
+      return p;
+    else
+      return NULL;
+  }
+};
+
 #endif // SC_DBC_HPP
