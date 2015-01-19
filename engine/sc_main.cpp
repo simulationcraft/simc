@@ -174,17 +174,25 @@ int sim_t::main( const std::vector<std::string>& args )
     return 1;
   }
 
+  bool setup_success = true;
+  std::string errmsg;
   try
   {
     setup( &control );
   }
   catch( const std::exception& e ){
-    std::cerr <<  "ERROR! Setup failure: " << e.what() << std::endl;
-    return 1;
+    errmsg = e.what();
+    setup_success = false;
   }
 
   util::printf("SimulationCraft %s for World of Warcraft %s %s (build level %s)\n",
       SC_VERSION, dbc.wow_version(), dbc.wow_ptr_status(), util::to_string(dbc.build_level()).c_str());
+
+  if ( ! setup_success )
+  {
+    std::cerr <<  "ERROR! Setup failure: " << errmsg << std::endl;
+    return 1;
+  }
 
   if ( canceled ) return 1;
 
