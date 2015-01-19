@@ -481,7 +481,10 @@ public:
     cooldown( cooldowns_t() ),
     passives( passives_t() ),
     pet( pets_t() ),
-    user_options( options_t() )
+    user_options( options_t() ),
+    light_stagger_threshold( 0 ),
+    moderate_stagger_threshold( 0.035 ),
+    heavy_stagger_threshold( 0.065 )
   {
     // actives
     _active_stance = FIERCE_TIGER;
@@ -584,9 +587,9 @@ public:
   double stagger_pct();
   // Blizzard rounds it's stagger damage; anything higher than half a percent beyond 
   // the threshold will switch to the next threshold
-  const double light_stagger_threshold = 0;
-  const double moderate_stagger_threshold = 0.035;
-  const double heavy_stagger_threshold = 0.065;
+  const double light_stagger_threshold;
+  const double moderate_stagger_threshold;
+  const double heavy_stagger_threshold;
   void  clear_stagger();
   bool  has_stagger();
 };
