@@ -181,12 +181,15 @@ private:
 public:
   typedef player_t base_t;
 
-  simple_sample_data_t stagger_tick_damage;
-  simple_sample_data_t stagger_total_damage;
-  simple_sample_data_t purified_damage;
-  simple_sample_data_t light_stagger_total_damage;
-  simple_sample_data_t moderate_stagger_total_damage;
-  simple_sample_data_t heavy_stagger_total_damage;
+  struct
+  {
+    luxurious_sample_data_t* stagger_tick_damage;
+    luxurious_sample_data_t* stagger_total_damage;
+    luxurious_sample_data_t* purified_damage;
+    luxurious_sample_data_t* light_stagger_total_damage;
+    luxurious_sample_data_t* moderate_stagger_total_damage;
+    luxurious_sample_data_t* heavy_stagger_total_damage;
+  } sample_datas;
 
   struct active_actions_t
   {
@@ -548,19 +551,6 @@ public:
       td = new monk_td_t( target, const_cast<monk_t*>( this ) );
     }
     return td;
-  }
-  virtual void       merge(player_t& other) override
-  {
-    monk_t& other_p = dynamic_cast<monk_t&>(other);
-
-    stagger_tick_damage.merge( other_p.stagger_tick_damage );
-    stagger_total_damage.merge( other_p.stagger_total_damage );
-    purified_damage.merge( other_p.purified_damage );
-    light_stagger_total_damage.merge( other_p.light_stagger_total_damage );
-    moderate_stagger_total_damage.merge( other_p.moderate_stagger_total_damage );
-    heavy_stagger_total_damage.merge( other_p.heavy_stagger_total_damage );
-
-    player_t::merge(other);
   }
 
   // Monk specific
@@ -2117,13 +2107,13 @@ struct chi_explosion_t: public monk_melee_attack_t
 
           // Optional addition: Track and report amount of damage cleared
           if ( stagger_pct > p() -> heavy_stagger_threshold )
-            p() -> heavy_stagger_total_damage.add( stagger_dmg );
+            p() -> sample_datas.heavy_stagger_total_damage -> add( stagger_dmg );
           else if ( stagger_pct > p() -> moderate_stagger_threshold )
-            p() -> moderate_stagger_total_damage.add( stagger_dmg );
+            p() -> sample_datas.moderate_stagger_total_damage -> add( stagger_dmg );
           else
-            p() -> light_stagger_total_damage.add( stagger_dmg );
+            p() -> sample_datas.light_stagger_total_damage -> add( stagger_dmg );
 
-          p() -> purified_damage.add( stagger_dmg );
+          p() -> sample_datas.purified_damage -> add( stagger_dmg );
 
           p() -> clear_stagger();
       }
@@ -3741,13 +3731,13 @@ struct purifying_brew_t: public monk_spell_t
 
     // Optional addition: Track and report amount of damage cleared
     if ( stagger_pct > p() -> heavy_stagger_threshold )
-      p() -> heavy_stagger_total_damage.add( stagger_dmg );
+      p() -> sample_datas.heavy_stagger_total_damage -> add( stagger_dmg );
     else if ( stagger_pct > p() -> moderate_stagger_threshold )
-      p() -> moderate_stagger_total_damage.add( stagger_dmg );
+      p() -> sample_datas.moderate_stagger_total_damage -> add( stagger_dmg );
     else
-      p() -> light_stagger_total_damage.add( stagger_dmg );
+      p() -> sample_datas.light_stagger_total_damage -> add( stagger_dmg );
 
-    p() -> purified_damage.add( stagger_dmg );
+    p() -> sample_datas.purified_damage -> add( stagger_dmg );
 
     p() -> active_actions.stagger_self_damage -> clear_all_damage();
   }
@@ -4717,6 +4707,14 @@ void monk_t::init_spells()
   mastery.elusive_brawler            = find_mastery_spell( MONK_BREWMASTER );
   mastery.gift_of_the_serpent        = find_mastery_spell( MONK_MISTWEAVER );
 
+  // Sample Data
+  sample_datas.stagger_total_damage           = get_sample_data("Total Stagger damage generated");
+  sample_datas.stagger_tick_damage            = get_sample_data("Stagger damage that was not purified");
+  sample_datas.purified_damage                = get_sample_data("Stagger damage that was purified");
+  sample_datas.light_stagger_total_damage     = get_sample_data("Amount of damage purified while at light stagger");
+  sample_datas.moderate_stagger_total_damage  = get_sample_data("Amount of damage purified while at moderate stagger");
+  sample_datas.heavy_stagger_total_damage     = get_sample_data("Amount of damage purified while at heavy stagger");
+
   //SPELLS
   active_actions.blackout_kick_dot    = new actions::dot_blackout_kick_t( this );
   //active_actions.blackout_kick_heal   = new actions::heal_blackout_kick_t( this );
@@ -5472,7 +5470,7 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
   {
     // Register the tick then exit
     stagger_dmg = s -> result_amount;
-    stagger_tick_damage.add( stagger_dmg );
+    sample_datas.stagger_tick_damage -> add( stagger_dmg );
     return;
   }
 
@@ -5486,7 +5484,7 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
   // Hook up Stagger Mechanism
   if ( stagger_dmg > 0 )
   {
-    stagger_total_damage.add( stagger_dmg );
+    sample_datas.stagger_total_damage -> add(stagger_dmg);
     residual_action::trigger( active_actions.stagger_self_damage, this, stagger_dmg );
   }
 }
@@ -6112,9 +6110,9 @@ public:
     // Custom Class Section
     if (p.specialization() == MONK_BREWMASTER)
     {
-      double stagger_total_dmg = p.stagger_total_damage.sum();
-      double stagger_tick_dmg = p.stagger_tick_damage.sum();
-      double purified_dmg = p.purified_damage.sum();
+      double stagger_total_dmg = p.sample_datas.stagger_total_damage -> sum();
+      double stagger_tick_dmg = p.sample_datas.stagger_tick_damage -> sum();
+      double purified_dmg = p.sample_datas.purified_damage -> sum();
 
       os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
         << "\t\t\t\t\t<h3 class=\"toggle open\">Stagger Analysis</h3>\n"
@@ -6145,9 +6143,9 @@ public:
        << "<span style = \"margin - left: 18px; \">Stagger</span></a></span>\n"
        << "\t\t\t\t\t\t\t\t\t</td>\n";
       os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-        << ( p.stagger_tick_damage.mean() / 60 ) << "</td>\n";
+        << (p.sample_datas.stagger_tick_damage -> mean() / 60) << "</td>\n";
       os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-        << p.stagger_tick_damage.count() << "</td>\n";
+        << p.sample_datas.stagger_tick_damage -> count() << "</td>\n";
       os << "\t\t\t\t\t\t\t\t</tr>\n";
 
       // Light Stagger info
@@ -6159,9 +6157,9 @@ public:
        << "<span style = \"margin - left: 18px; \">Light Stagger</span></a></span>\n"
        << "\t\t\t\t\t\t\t\t\t</td>\n";
       os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-        << ( p.light_stagger_total_damage.mean() / 60 ) << "</td>\n";
+        << (p.sample_datas.light_stagger_total_damage -> mean() / 60) << "</td>\n";
       os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-        << p.light_stagger_total_damage.count() << "</td>\n";
+        << p.sample_datas.light_stagger_total_damage -> count() << "</td>\n";
       os << "\t\t\t\t\t\t\t\t</tr>\n";
 
       // Moderate Stagger info
@@ -6173,9 +6171,9 @@ public:
         << "<span style = \"margin - left: 18px; \">Moderate Stagger</span></a></span>\n"
         << "\t\t\t\t\t\t\t\t\t</td>\n";
       os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-        << ( p.moderate_stagger_total_damage.mean() / 60 ) << "</td>\n";
+        << (p.sample_datas.moderate_stagger_total_damage -> mean() / 60) << "</td>\n";
       os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-        << p.moderate_stagger_total_damage.count() << "</td>\n";
+        << p.sample_datas.moderate_stagger_total_damage -> count() << "</td>\n";
       os << "\t\t\t\t\t\t\t\t</tr>\n";
 
       // Heavy Stagger info
@@ -6187,9 +6185,9 @@ public:
         << "<span style = \"margin - left: 18px; \">Heavy Stagger</span></a></span>\n"
         << "\t\t\t\t\t\t\t\t\t</td>\n";
       os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-        << ( p.heavy_stagger_total_damage.mean() / 60 ) << "</td>\n";
+        << (p.sample_datas.heavy_stagger_total_damage -> mean() / 60) << "</td>\n";
       os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
-        << p.heavy_stagger_total_damage.count() << "</td>\n";
+        << p.sample_datas.heavy_stagger_total_damage -> count() << "</td>\n";
       os << "\t\t\t\t\t\t\t\t</tr>\n";
 
       os << "\t\t\t\t\t\t\t</tbody>\n"

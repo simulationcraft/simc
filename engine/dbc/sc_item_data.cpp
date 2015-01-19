@@ -11,6 +11,14 @@
 #endif
 
 namespace {
+  template<typename T>
+  struct potion_filter_t
+  {
+    bool operator()(const T* obj) const
+    {
+      return obj -> item_class == ITEM_CLASS_CONSUMABLE && obj -> item_subclass == ITEM_SUBCLASS_POTION;
+    }
+  };
 
   item_upgrade_t nil_iu;
   item_upgrade_rule_t nil_iur;
@@ -20,6 +28,10 @@ namespace {
   gem_property_data_t nil_gpd;
   dbc_index_t<item_enchantment_data_t, id_member_policy> item_enchantment_data_index;
   dbc_index_t<item_data_t, id_member_policy> item_data_index;
+
+  typedef filtered_dbc_index_t<item_data_t, potion_filter_t<item_data_t>, id_member_policy> potion_data_t;
+
+  potion_data_t potion_data_index;
 }
 
 unsigned dbc_t::random_property_max_level() const
@@ -359,10 +371,12 @@ void dbc::init_item_data()
   // Create id-indexes
   item_data_index.init( __item_data, false );
   item_enchantment_data_index.init( __spell_item_ench_data, false );
+  potion_data_index.init( __item_data, false );
 
 #if SC_USE_PTR
   item_data_index.init( __ptr_item_data, true );
   item_enchantment_data_index.init( __ptr_spell_item_ench_data, true );
+  potion_data_index.init( __item_data, true );
 #endif
 }
 
@@ -1054,5 +1068,17 @@ size_t item_database::parse_tokens( std::vector<token_t>& tokens,
   }
 
   return splits.size();
+}
+
+const item_data_t* dbc::find_potion( bool ptr, const std::function<bool(const item_data_t*)>& f )
+{
+  if ( const item_data_t* i = potion_data_index.get( ptr, f ) )
+  {
+    return i;
+  }
+  else
+  {
+    return &( nil_item_data );
+  }
 }
 

@@ -2644,4 +2644,3 @@ bool spell_data_t::affected_by( const spelleffect_data_t* effect ) const
 
 bool spell_data_t::affected_by( const spelleffect_data_t& effect ) const
 { return affected_by( &effect ); }
-
