@@ -412,7 +412,7 @@ The more people help improve BiS profiles, the better will they reach their goal
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="178"/>
         <source>Target Race</source>
-        <translation>目标类型</translation>
+        <translation>目标种族</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="175"/>
@@ -1331,7 +1331,7 @@ TMI标准Boss提供了与对应团队副本相近的伤害输出。
         <source>Specify window duration for calculating TMI. Default is 6 sec.
 Reducing this increases the metric&apos;s sensitivity to shorter damage spikes.
 Set to 0 if you want to vary on a per-player basis in the Simulate tab using &quot;tmi_window=#&quot;.</source>
-        <translation>选贼TMI计算的窗口时长。默认为6秒。
+        <translation>选择TMI计算的窗口时长。默认为6秒。
 降低这个时长会提高TMI指数对突发伤害的敏感度。
 如果你想用“tmi_window=#”为不同角色设置不同的TMI窗口时长，将这个值设为0。</translation>
     </message>
