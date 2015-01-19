@@ -3324,10 +3324,11 @@ struct pulverize_t : public bear_attack_t
 
   virtual bool ready()
   {
-    if ( td( target ) -> lacerate_stack < 3 )
+    // Call bear_attack_t::ready() first for proper targeting support.
+    if ( bear_attack_t::ready() && td( target ) -> lacerate_stack >= 3 )
+      return true;
+    else
       return false;
-
-    return bear_attack_t::ready();
   }
 };
 
