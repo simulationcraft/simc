@@ -1359,8 +1359,9 @@ void action_t::tick( dot_t* d )
   {
     assert( ! d -> target -> is_sleeping() );
 
-    d -> state -> result = RESULT_HIT;
     update_state( d -> state, amount_type( d -> state, true ) );
+
+    d -> state -> result = RESULT_HIT;
 
     if ( tick_may_crit && rng().roll( d -> state -> composite_crit() ) )
       d -> state -> result = RESULT_CRIT;
