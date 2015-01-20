@@ -82,12 +82,24 @@ enum stance_e { STURDY_OX = 0x1, FIERCE_TIGER = 0x2, SPIRITED_CRANE = 0x4, WISE_
 enum sef_pet_e { SEF_FIRE = 0, SEF_STORM, SEF_EARTH, SEF_PET_MAX };
 enum sef_ability_e {
   SEF_NONE = -1,
+  // Attacks begin here
   SEF_JAB,
   SEF_TIGER_PALM,
   SEF_BLACKOUT_KICK,
   SEF_RISING_SUN_KICK,
   SEF_FISTS_OF_FURY,
   SEF_SPINNING_CRANE_KICK,
+  SEF_ATTACK_MAX,
+  // Attacks end here
+
+  // Spells begin here
+  SEF_CHI_WAVE,
+  SEF_SPELL_MAX,
+  // Spells end here
+
+  // Misc
+  SEF_SPELL_MIN = SEF_CHI_WAVE,
+  SEF_ATTACK_MIN = SEF_JAB,
   SEF_MAX
 };
 
@@ -629,95 +641,65 @@ struct storm_earth_and_fire_pet_t : public pet_t
   };
 
   // Storm, Earth, and Fire abilities begin =================================
-
-  struct sef_melee_attack_t : public melee_attack_t
+  template <typename BASE>
+  struct sef_action_base_t : public BASE
   {
-    weapon_t* main_hand;
-    weapon_t* off_hand;
+    typedef BASE super_t;
+    typedef sef_action_base_t<BASE> base_t;
 
     action_t* source_action;
 
-    sef_melee_attack_t( const std::string& n,
-                        storm_earth_and_fire_pet_t* p,
-                        const spell_data_t* data = spell_data_t::nil(),
-                        weapon_t* w = 0 ) :
-      melee_attack_t( n, p, data ),
-      // For special attacks, the SEF pets always use the owner's weapons.
-      main_hand( ! w ? &( o() -> main_hand_weapon ) : 0 ),
-      off_hand( ! w ? &( o() -> off_hand_weapon ) : 0 ),
-      source_action( 0 )
+    sef_action_base_t( const std::string& n,
+                       storm_earth_and_fire_pet_t* p,
+                       const spell_data_t* data = spell_data_t::nil() ) :
+      BASE( n, p, data ), source_action( 0 )
     {
       // Make SEF attacks always background, so they do not consume resources
       // or do anything associated with "foreground actions".
-      background = may_crit = true;
-      school = SCHOOL_PHYSICAL;
+      this -> background = this -> may_crit = true;
+      this -> callbacks = false;
 
       // Cooldowns are handled automatically by the mirror abilities, the SEF specific ones need none.
-      cooldown -> duration = timespan_t::zero();
+      this -> cooldown -> duration = timespan_t::zero();
 
       // No costs are needed either
-      base_costs[ RESOURCE_ENERGY ] = 0;
-      base_costs[ RESOURCE_CHI ] = 0;
-
-      if ( w )
-      {
-        weapon = w;
-      }
-    }
-
-    double target_armor( player_t* t ) const
-    {
-      double a = melee_attack_t::target_armor( t );
-
-      if ( p() -> tiger_power -> up() )
-        a *= 1.0 - p() -> tiger_power -> check() * p() -> tiger_power -> data().effectN( 1 ).percent();
-
-      return a;
-    }
-
-    double composite_target_multiplier( player_t* t ) const
-    {
-      double m = melee_attack_t::composite_target_multiplier( t );
-
-      const sef_td_t* tdata = td( t );
-      if ( tdata -> rising_sun_kick -> check() )
-        m *= 1.0 + ( player -> wod_hotfix ? 0.10 : tdata -> rising_sun_kick -> data().effectN( 1 ).percent() ); // Hotfix nerf to 10% (down from 20%) on 2014/12/08
-
-      return m;
+      this -> base_costs[ RESOURCE_ENERGY ] = 0;
+      this -> base_costs[ RESOURCE_CHI ] = 0;
     }
 
     sef_td_t* td( player_t* t ) const
-    { return p() -> get_target_data( t ); }
+    { return this -> p() -> get_target_data( t ); }
 
     monk_t* o()
-    { return debug_cast<monk_t*>( player -> cast_pet() -> owner ); }
+    { return debug_cast<monk_t*>( this -> player -> cast_pet() -> owner ); }
 
     const monk_t* o() const
-    { return debug_cast<const monk_t*>( player -> cast_pet() -> owner ); }
+    { return debug_cast<const monk_t*>( this -> player -> cast_pet() -> owner ); }
 
     const storm_earth_and_fire_pet_t* p() const
-    { return debug_cast<storm_earth_and_fire_pet_t*>( player ); }
+    { return debug_cast<storm_earth_and_fire_pet_t*>( this -> player ); }
 
     storm_earth_and_fire_pet_t* p()
-    { return debug_cast<storm_earth_and_fire_pet_t*>( player ); }
+    { return debug_cast<storm_earth_and_fire_pet_t*>( this -> player ); }
 
-    // SEF uses the "normal" monk weapon damage calculation, except for auto
-    // attacks.
-    double calculate_weapon_damage( double attack_power )
+    double composite_target_multiplier( player_t* t ) const
     {
-      if ( main_hand || ( main_hand && off_hand ) )
-        return monk_util::monk_weapon_damage( this, main_hand, off_hand, weapon_power_mod, attack_power );
-      else
-        return melee_attack_t::calculate_weapon_damage( attack_power );
+      double m = super_t::composite_target_multiplier( t );
+
+      const sef_td_t* tdata = td( t );
+      if ( tdata -> rising_sun_kick -> check() )
+        m *= 1.0 + ( this -> player -> wod_hotfix ? 0.10 : tdata -> rising_sun_kick -> data().effectN( 1 ).percent() ); // Hotfix nerf to 10% (down from 20%) on 2014/12/08
+
+      return m;
     }
 
     void schedule_execute( action_state_t* state = 0 )
     {
       // Target always follows the SEF clone's target, which is assigned during
       // summon time
-      target = player -> target;
+      this -> target = this -> player -> target;
 
-      melee_attack_t::schedule_execute( state );
+      super_t::schedule_execute( state );
     }
 
     // TODO: This may need a flag (similar to Shadow Reflection) to indincate
@@ -747,13 +729,13 @@ struct storm_earth_and_fire_pet_t : public pet_t
       // AP inheritance coefficient, and target multipliers because it has
       // its own debuffs.
       if ( flags & STATE_AP )
-        state -> attack_power = composite_attack_power() * player -> composite_attack_power_multiplier();
+        state -> attack_power = this -> composite_attack_power() * this -> player -> composite_attack_power_multiplier();
 
       if ( flags & STATE_TGT_MUL_DA )
-        state -> target_da_multiplier = composite_target_da_multiplier( state -> target );
+        state -> target_da_multiplier = this -> composite_target_da_multiplier( state -> target );
 
       if ( flags & STATE_TGT_MUL_TA )
-        state -> target_ta_multiplier = composite_target_ta_multiplier( state -> target );
+        state -> target_ta_multiplier = this -> composite_target_ta_multiplier( state -> target );
 
       // TODO: Check-recheck-figure out some day
       // Apply a -5% modifier to all damage generated by the pets.
@@ -762,6 +744,59 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       // Release the used owner state object
       action_state_t::release( owner_state );
+    }
+  };
+
+  struct sef_melee_attack_t : public sef_action_base_t<melee_attack_t>
+  {
+    weapon_t* main_hand;
+    weapon_t* off_hand;
+
+    sef_melee_attack_t( const std::string& n,
+                        storm_earth_and_fire_pet_t* p,
+                        const spell_data_t* data = spell_data_t::nil(),
+                        weapon_t* w = 0 ) :
+      base_t( n, p, data ),
+      // For special attacks, the SEF pets always use the owner's weapons.
+      main_hand( ! w ? &( o() -> main_hand_weapon ) : 0 ),
+      off_hand( ! w ? &( o() -> off_hand_weapon ) : 0 )
+    {
+      school = SCHOOL_PHYSICAL;
+
+      if ( w )
+      {
+        weapon = w;
+      }
+    }
+
+    double target_armor( player_t* t ) const
+    {
+      double a = melee_attack_t::target_armor( t );
+
+      if ( p() -> tiger_power -> up() )
+        a *= 1.0 - p() -> tiger_power -> check() * p() -> tiger_power -> data().effectN( 1 ).percent();
+
+      return a;
+    }
+
+    // SEF uses the "normal" monk weapon damage calculation, except for auto
+    // attacks.
+    double calculate_weapon_damage( double attack_power )
+    {
+      if ( main_hand || ( main_hand && off_hand ) )
+        return monk_util::monk_weapon_damage( this, main_hand, off_hand, weapon_power_mod, attack_power );
+      else
+        return melee_attack_t::calculate_weapon_damage( attack_power );
+    }
+  };
+
+  struct sef_spell_t : public sef_action_base_t<spell_t>
+  {
+    sef_spell_t( const std::string& n,
+                 storm_earth_and_fire_pet_t* p,
+                 const spell_data_t* data = spell_data_t::nil() ) :
+      base_t( n, p, data )
+    {
     }
   };
 
@@ -1072,12 +1107,36 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
+  struct sef_chi_wave_t : public sef_spell_t
+  {
+    sef_chi_wave_t( storm_earth_and_fire_pet_t* player ) :
+      sef_spell_t( "chi_wave", player, player -> o() -> find_talent_spell( "Chi Wave" ) )
+    {
+      may_crit = may_miss = hasted_ticks = false;
+      tick_zero = tick_may_crit = true;
+
+      dot_duration = timespan_t::from_seconds( 7.0 );
+      base_tick_time = timespan_t::from_seconds( 1.0 );
+
+      attack_power_mod.tick = 0.500; // Hard code 09/09/14
+    }
+
+    void tick( dot_t* d )
+    {
+      if ( d -> current_tick % 2 == 0 )
+      {
+        sef_spell_t::tick( d );
+      }
+    }
+  };
+
   // Storm, Earth, and Fire abilities end ===================================
 
   // SEF has its own Tiger Power armor penetration buff
   buff_t* tiger_power;
 
   std::vector<sef_melee_attack_t*> attacks;
+  std::vector<sef_spell_t*> spells;
 
 private:
   target_specific_t<sef_td_t*> target_data;
@@ -1085,7 +1144,7 @@ public:
 
   storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield ):
     pet_t( sim, owner, name, true ),
-    tiger_power( 0 ), attacks( SEF_MAX )
+    tiger_power( 0 ), attacks( SEF_ATTACK_MAX ), spells( SEF_SPELL_MAX - SEF_SPELL_MIN )
   {
     // Storm, Earth, and Fire pets have to become "Windwalkers", so we can get
     // around some sanity checks in the action execution code, that prevents
@@ -1146,6 +1205,8 @@ public:
     attacks[ SEF_RISING_SUN_KICK     ] = new sef_rising_sun_kick_t( this );
     attacks[ SEF_FISTS_OF_FURY       ] = new sef_fists_of_fury_t( this );
     attacks[ SEF_SPINNING_CRANE_KICK ] = new sef_spinning_crane_kick_t( this );
+
+    spells[ SEF_CHI_WAVE - SEF_SPELL_MIN ] = new sef_chi_wave_t( this );
   }
 
   void init_action_list()
@@ -1192,10 +1253,22 @@ public:
 
   void trigger_attack( sef_ability_e ability, action_t* action )
   {
-    assert( attacks[ ability ] );
+    if ( ability >= SEF_SPELL_MIN )
+    {
+      sef_ability_e spell = static_cast<sef_ability_e>( SEF_SPELL_MIN - ability );
+      assert( spells[ spell ] );
 
-    attacks[ ability ] -> source_action = action;
-    attacks[ ability ] -> schedule_execute();
+
+      spells[ spell ] -> source_action = action;
+      spells[ spell ] -> schedule_execute();
+    }
+    else
+    {
+      assert( attacks[ ability ] );
+
+      attacks[ ability ] -> source_action = action;
+      attacks[ ability ] -> schedule_execute();
+    }
   }
 };
 
@@ -3152,6 +3225,8 @@ struct chi_wave_t: public monk_spell_t
     damage( new chi_wave_dmg_tick_t( player, "chi_wave_damage" ) ),
     dmg( true )
   {
+    sef_ability = SEF_CHI_WAVE;
+
     parse_options( options_str );
     hasted_ticks = harmful = false;
     dot_duration = timespan_t::from_seconds( 7.0 );
