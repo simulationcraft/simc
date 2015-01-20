@@ -642,10 +642,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
                         const spell_data_t* data = spell_data_t::nil(),
                         weapon_t* w = 0 ) :
       melee_attack_t( n, p, data ),
-      // Automatically presume main- and off-hand weapons if there's no
-      // specific weapon given
-      main_hand( ! w ? &( p -> main_hand_weapon ) : 0 ),
-      off_hand( ! w ? &( p -> off_hand_weapon ) : 0 ),
+      // For special attacks, the SEF pets always use the owner's weapons.
+      main_hand( ! w ? &( o() -> main_hand_weapon ) : 0 ),
+      off_hand( ! w ? &( o() -> off_hand_weapon ) : 0 ),
       source_action( 0 )
     {
       // Make SEF attacks always background, so they do not consume resources
@@ -796,6 +795,33 @@ struct storm_earth_and_fire_pet_t : public pet_t
         sim -> errorf( "%s has no auto_attack in APL, Storm, Earth, and Fire pets cannot auto-attack.",
             o() -> name() );
       }
+    }
+
+    // A wild equation appears
+    double composite_attack_power() const
+    {
+      double ap = sef_melee_attack_t::composite_attack_power();
+
+      if ( o() -> main_hand_weapon.group() == WEAPON_2H )
+      {
+        ap += o() -> main_hand_weapon.dps * 3.5;
+      }
+      // 1h/dual wield equation. Note, this formula is slightly off (~3%) for
+      // owner dw/pet dw variation.
+      else
+      {
+        double total_dps = o() -> main_hand_weapon.dps;
+        double dw_mul = 1.0;
+        if ( o() -> off_hand_weapon.group() != WEAPON_NONE )
+        {
+          total_dps += o() -> off_hand_weapon.dps * 0.5;
+          dw_mul = 0.898882275;
+        }
+
+        ap += total_dps * 3.5 * dw_mul;
+      }
+
+      return ap;
     }
 
     // Since we use owner multipliers, we need to apply (or remove!) the auto
@@ -1067,13 +1093,6 @@ public:
     // that do not have the specialization.
     _spec = MONK_WINDWALKER;
 
-   /* double mh_dps = 0;
-    if ( owner -> items[ SLOT_MAIN_HAND ].parsed.data.id > 0 )
-    {
-      mh_dps = owner -> dbc.weapon_dps( owner -> items[ SLOT_MAIN_HAND ].parsed.data.id,
-                                        owner -> items[ SLOT_MAIN_HAND ].item_level() );
-    }
-    */
     main_hand_weapon.type = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( dual_wield ? 2.6 : 3.6 );
 
@@ -1083,75 +1102,7 @@ public:
       off_hand_weapon.swing_time = timespan_t::from_seconds( 2.6 );
     }
 
-    // TODO: Check if the 0.74164 is global, or AA only?
-    // Use 100% AP inheritance for now, Blizzard has 0.74164 for something but
-    // it does not seem to fit us.
     owner_coeff.ap_from_ap = 1.0;
-  }
-
-  void init_stats()
-  {
-    pet_t::init_stats();
-
-    unsigned owner_ilevel = owner -> items[ SLOT_MAIN_HAND ].item_level();
-    unsigned owner_quality = owner -> items[ SLOT_MAIN_HAND ].parsed.data.quality;
-    // Heirlooms?
-    if ( owner_quality > 6 )
-    {
-      owner_quality = 4;
-    }
-
-    double normalized_dps = 0;
-    bool owner_caster_weapon = ( owner -> items[ SLOT_MAIN_HAND ].parsed.data.flags_2 & ITEM_FLAG2_CASTER_WEAPON ) != 0;
-
-    // Use ilevel to figure out base dps
-    if ( owner_ilevel > 0 )
-    {
-      // Dual wielding pet, use one hand dps
-      if ( main_hand_weapon.swing_time == timespan_t::from_seconds( 2.6 ) )
-      {
-        if ( owner_caster_weapon )
-        {
-          normalized_dps = dbc.item_damage_caster_1h( owner_ilevel ).values[ owner_quality ];
-        }
-        else
-        {
-          normalized_dps = dbc.item_damage_1h( owner_ilevel ).values[ owner_quality ];
-        }
-      }
-      // 2h pet
-      else
-      {
-        if ( owner_caster_weapon )
-        {
-          normalized_dps = dbc.item_damage_caster_2h( owner_ilevel ).values[ owner_quality ];
-        }
-        else
-        {
-          normalized_dps = dbc.item_damage_2h( owner_ilevel ).values[ owner_quality ];
-        }
-      }
-    }
-    // Use min/max dmg of the weapon to approximate base dps
-    else
-    {
-      normalized_dps = owner -> main_hand_weapon.min_dmg + owner -> main_hand_weapon.max_dmg;
-      normalized_dps /= 2;
-      normalized_dps /= owner -> main_hand_weapon.swing_time.total_seconds();
-    }
-
-    // Very simplified version of weapon damage computation (see
-    // item_database::weapon_dps)
-    //
-    // TODO: Damage range always 0.4 for the pets?
-    main_hand_weapon.min_dmg = floor( normalized_dps * main_hand_weapon.swing_time.total_seconds() * ( 1 - 0.4 / 2 ) );
-    main_hand_weapon.max_dmg = ceil( normalized_dps * main_hand_weapon.swing_time.total_seconds() * ( 1 + 0.4 / 2 ) + 0.5 );
-
-    if ( main_hand_weapon.swing_time == timespan_t::from_seconds( 2.6 ) )
-    {
-      off_hand_weapon.min_dmg = floor( normalized_dps * off_hand_weapon.swing_time.total_seconds() * ( 1 - 0.4 / 2 ) );
-      off_hand_weapon.max_dmg = ceil( normalized_dps * off_hand_weapon.swing_time.total_seconds() * ( 1 + 0.4 / 2 ) + 0.5 );
-    }
   }
 
   timespan_t available() const
