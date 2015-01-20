@@ -94,6 +94,7 @@ enum sef_ability_e {
 
   // Spells begin here
   SEF_CHI_WAVE,
+  SEF_ZEN_SPHERE,
   SEF_SPELL_MAX,
   // Spells end here
 
@@ -1130,6 +1131,38 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
+  struct sef_zen_sphere_detonation_t : public sef_spell_t
+  {
+    sef_zen_sphere_detonation_t( storm_earth_and_fire_pet_t* player ) :
+      sef_spell_t( "zen_sphere_detonation", player, player -> find_spell( 125033 ) )
+    {
+      aoe = -1;
+      attack_power_mod.direct = 0.368;
+    }
+  };
+
+  struct sef_zen_sphere_t : public sef_spell_t
+  {
+    sef_zen_sphere_detonation_t* detonation;
+
+    sef_zen_sphere_t( storm_earth_and_fire_pet_t* player ) :
+      sef_spell_t( "zen_sphere", player, player -> o() -> find_talent_spell( "Zen Sphere" ) ),
+      detonation( new sef_zen_sphere_detonation_t( player ) )
+    {
+      attack_power_mod.tick = 0.09; // TODO: Check, discrepancy with tooltip and Monk AP coeff
+
+      add_child( detonation );
+    }
+
+    void last_tick( dot_t* d )
+    {
+      sef_spell_t::last_tick( d );
+
+      detonation -> target = d -> target;
+      detonation -> schedule_execute();
+    }
+  };
+
   // Storm, Earth, and Fire abilities end ===================================
 
   // SEF has its own Tiger Power armor penetration buff
@@ -1206,7 +1239,8 @@ public:
     attacks[ SEF_FISTS_OF_FURY       ] = new sef_fists_of_fury_t( this );
     attacks[ SEF_SPINNING_CRANE_KICK ] = new sef_spinning_crane_kick_t( this );
 
-    spells[ SEF_CHI_WAVE - SEF_SPELL_MIN ] = new sef_chi_wave_t( this );
+    spells[ SEF_CHI_WAVE - SEF_SPELL_MIN   ] = new sef_chi_wave_t( this );
+    spells[ SEF_ZEN_SPHERE - SEF_SPELL_MIN ] = new sef_zen_sphere_t( this );
   }
 
   void init_action_list()
@@ -1255,7 +1289,7 @@ public:
   {
     if ( ability >= SEF_SPELL_MIN )
     {
-      sef_ability_e spell = static_cast<sef_ability_e>( SEF_SPELL_MIN - ability );
+      size_t spell = static_cast<size_t>( ability - SEF_SPELL_MIN );
       assert( spells[ spell ] );
 
 
@@ -4281,6 +4315,8 @@ struct zen_sphere_t: public monk_heal_t
     zen_sphere_detonate_damage( new spells::zen_sphere_detonate_damage_t( &p ) ),
     zen_sphere_detonate_heal( new zen_sphere_detonate_heal_t( p ) )
   {
+    sef_ability = SEF_ZEN_SPHERE;
+
     parse_options( options_str );
 
     school = SCHOOL_NATURE;
@@ -4303,8 +4339,11 @@ struct zen_sphere_t: public monk_heal_t
   {
     monk_heal_t::last_tick( d );
 
-    zen_sphere_detonate_damage -> execute();
-    zen_sphere_detonate_heal -> execute();
+    if ( ! player -> is_sleeping() )
+    {
+      zen_sphere_detonate_damage -> execute();
+      zen_sphere_detonate_heal -> execute();
+    }
   }
 };
 
