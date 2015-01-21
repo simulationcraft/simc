@@ -11,7 +11,7 @@ level=100
 race=blood_elf
 role=attack
 position=back
-talents=3000032
+talents=3000023
 glyphs=vendetta/energy/disappearance
 spec=assassination
 head=bloodfeather_cowl,id=109976,bonus_id=524
