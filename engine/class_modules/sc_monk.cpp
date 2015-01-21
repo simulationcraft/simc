@@ -1366,14 +1366,20 @@ public:
       size_t spell = static_cast<size_t>( ability - SEF_SPELL_MIN );
       assert( spells[ spell ] );
 
-
-      spells[ spell ] -> schedule_execute();
+      // If the owner targeted this pet's target, don't mirror the ability
+      if ( spells[ spell ] -> source_action -> target != target )
+      {
+        spells[ spell ] -> schedule_execute();
+      }
     }
     else
     {
       assert( attacks[ ability ] );
 
-      attacks[ ability ] -> schedule_execute();
+      if ( attacks[ ability ] -> source_action -> target != target )
+      {
+        attacks[ ability ] -> schedule_execute();
+      }
     }
   }
 };
