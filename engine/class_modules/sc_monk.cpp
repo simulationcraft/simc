@@ -89,6 +89,7 @@ enum sef_ability_e {
   SEF_RISING_SUN_KICK,
   SEF_FISTS_OF_FURY,
   SEF_SPINNING_CRANE_KICK,
+  SEF_RUSHING_JADE_WIND,
   SEF_ATTACK_MAX,
   // Attacks end here
 
@@ -1175,6 +1176,21 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
+  struct sef_rushing_jade_wind_t : public sef_melee_attack_t
+  {
+    sef_rushing_jade_wind_t( storm_earth_and_fire_pet_t* player ) :
+      sef_melee_attack_t( "rushing_jade_wind", player, player -> o() -> find_talent_spell( "Rushing Jade Wind" ) )
+    {
+      tick_zero = hasted_ticks = true;
+
+      may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+
+      weapon_power_mod = 0;
+
+      tick_action = new sef_tick_action_t( "rushing_jade_wind_tick", player, &( data() ) );
+    }
+  };
+
   // SEF Chi Wave skips the healing ticks, delivering damage on every second
   // tick of the ability for simplicity.
   struct sef_chi_wave_t : public sef_spell_t
@@ -1324,6 +1340,7 @@ public:
     attacks[ SEF_RISING_SUN_KICK     ] = new sef_rising_sun_kick_t( this );
     attacks[ SEF_FISTS_OF_FURY       ] = new sef_fists_of_fury_t( this );
     attacks[ SEF_SPINNING_CRANE_KICK ] = new sef_spinning_crane_kick_t( this );
+    attacks[ SEF_RUSHING_JADE_WIND   ] = new sef_rushing_jade_wind_t( this );
 
     spells[ sef_spell_idx( SEF_CHI_WAVE )   ] = new sef_chi_wave_t( this );
     spells[ sef_spell_idx( SEF_ZEN_SPHERE ) ] = new sef_zen_sphere_t( this );
@@ -2478,6 +2495,8 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
   rushing_jade_wind_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "rushing_jade_wind", p, p -> talent.rushing_jade_wind )
   {
+    sef_ability = SEF_RUSHING_JADE_WIND;
+
     parse_options( options_str );
     stancemask = STURDY_OX | FIERCE_TIGER | WISE_SERPENT | SPIRITED_CRANE;
 
