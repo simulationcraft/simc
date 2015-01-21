@@ -1795,6 +1795,11 @@ public:
 
   void trigger_storm_earth_and_fire()
   {
+    if ( ! p() -> spec.storm_earth_and_fire -> ok() )
+    {
+      return;
+    }
+
     if ( sef_ability == SEF_NONE )
     {
       return;
