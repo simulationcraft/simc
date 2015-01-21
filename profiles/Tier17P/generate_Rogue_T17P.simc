@@ -14,22 +14,22 @@ position=back
 talents=3000023
 glyphs=vendetta/energy/disappearance
 spec=assassination
-head=bloodfeather_cowl,id=109976,bonus_id=524
-neck=fireblade_collar,id=109951,bonus_id=524,enchant=gift_of_mastery
-shoulders=blackwater_spaulders,id=109938,bonus_id=524
-back=sootscarred_longcloak,id=109918,bonus_id=524,enchant=gift_of_mastery
-chest=bloodfeather_chestwrap,id=109885,bonus_id=524
-wrists=bracers_of_burning_focus,id=109868,bonus_id=524
-hands=crystalbinder_gloves,id=109850,bonus_id=524
-waist=crystalbinder_belt,id=109831,bonus_id=524
-legs=blackwater_leggings,id=109823,bonus_id=524
-feet=boots_of_burning_focus,id=109787,bonus_id=524
-finger1=ancient_draenic_loop,id=109779,bonus_id=524,enchant=gift_of_mastery
-finger2=rogers_brown_diamond_seal,id=109759,bonus_id=524,enchant=gift_of_mastery
+head=spireflame_hood,id=114449,bonus_id=488
+neck=chainwrecker_gorget,id=114480,bonus_id=488,enchant_id=5319
+shoulder=spireflame_spaulders,id=114457,bonus_id=55
+chest=spireflame_chestguard,id=114436,bonus_id=488
+waist=spireflame_belt,id=114461,bonus_id=55
+legs=spireflame_legguards,id=114453,bonus_id=488
+feet=spireflame_boots,id=114441,bonus_id=488
+wrist=spireflame_bracers,id=114433,bonus_id=488
+hands=spireflame_gauntlets,id=114445,bonus_id=488
+finger1=unbowed_signet,id=114474,bonus_id=55,enchant_id=5326
+finger2=ancient_draenic_loop,id=109779,bonus_id=524,enchant_id=5326
 trinket1=kihras_adrenaline_injector,id=109997,bonus_id=524
 trinket2=blood_seal_of_azzakel,id=109995,bonus_id=524
-main_hand=felshanker,id=118738,bonus_id=524,enchant=mark_of_the_thunderlord
-off_hand=felshanker,id=118738,bonus_id=524,enchant=mark_of_the_thunderlord
+back=drape_of_softened_blows,id=114486,bonus_id=488,enchant_id=5312
+main_hand=turbulent_dagger,id=115322,bonus_id=488,enchant_id=5384
+off_hand=turbulent_dagger,id=115322,bonus_id=488,enchant_id=5384
 save=Rogue_Assassination_T17P.simc
 
 # Combat

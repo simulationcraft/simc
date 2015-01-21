@@ -1,6 +1,6 @@
 rogue="Rogue_Assassination_T17N"
 level=100
-race=troll
+race=blood_elf
 role=attack
 position=back
 talents=3000023
@@ -57,30 +57,30 @@ actions+=/mutilate,cycle_targets=1,if=active_enemies=2&!dot.deadly_poison_dot.ti
 actions+=/mutilate,if=active_enemies<5
 
 head=poisoners_helmet,id=115572
-neck=engineers_grounded_gorget,id=113892,enchant=gift_of_mastery
+neck=darklight_necklace,id=113865,enchant_id=5319
 shoulders=poisoners_spaulders,id=115574
-back=drape_of_the_dark_hunt,id=113971,enchant=gift_of_mastery
+back=drape_of_the_dark_hunt,id=113971,enchant_id=5312
 chest=poisoners_tunic,id=115570
 wrists=bracers_of_shattered_stalactites,id=113935
-hands=poisoners_gloves,id=115571
+hands=cannonball_loaders_grips,id=113949
 waist=conductors_multipocket_girdle,id=113964
-legs=shattering_smash_leggings,id=113989
+legs=poisoners_legguards,id=115573
 feet=treads_of_the_dark_hunt,id=113974
 finger1=timeless_solium_band_of_the_assassin,id=118297,enchant=gift_of_mastery
-finger2=unexploded_explosive_shard,id=113877,enchant=gift_of_mastery
-trinket1=scales_of_doom,id=113612
+finger2=unexploded_explosive_shard,id=113877,enchant_id=5326
+trinket1=humming_blackiron_trigger,id=113985
 trinket2=beating_heart_of_the_mountain,id=113931
-main_hand=oregorgers_acidetched_gutripper,id=113874,enchant=mark_of_bleeding_hollow
-off_hand=oregorgers_acidetched_gutripper,id=113874,enchant=mark_of_bleeding_hollow
+main_hand=oregorgers_acidetched_gutripper,id=113874,enchant_id=5384
+off_hand=oregorgers_acidetched_gutripper,id=113874,enchant_id=5384
 
 # Gear Summary
-# gear_agility=2755
+# gear_agility=2859
 # gear_stamina=3388
-# gear_crit_rating=658
-# gear_haste_rating=256
-# gear_mastery_rating=1079
+# gear_crit_rating=899
+# gear_haste_rating=308
+# gear_mastery_rating=990
 # gear_armor=976
-# gear_multistrike_rating=1150
+# gear_multistrike_rating=965
 # gear_versatility_rating=93
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
