@@ -642,6 +642,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
   };
 
   // Storm, Earth, and Fire abilities begin =================================
+
   template <typename BASE>
   struct sef_action_base_t : public BASE
   {
@@ -668,6 +669,38 @@ struct storm_earth_and_fire_pet_t : public pet_t
       this -> base_costs[ RESOURCE_CHI ] = 0;
     }
 
+    void init()
+    {
+      super_t::init();
+
+      // Find source_action from the owner by matching the action name and
+      // spell id with eachother. This basically means that by default, any
+      // spell-data driven ability with 1:1 mapping of name/spell id will
+      // always be chosen as the source action. In some cases this needs to be
+      // overridden (see sef_zen_sphere_t for example).
+      for ( size_t i = 0, end = o() -> action_list.size(); i < end; i++ )
+      {
+        action_t* a = o() -> action_list[ i ];
+
+        if ( util::str_compare_ci( this -> name_str, a -> name_str ) && this -> id == a -> id )
+        {
+          if ( source_action )
+          {
+            this -> sim -> errorf( "%s-%s %s overriding source action init (old=%s, current=%s)",
+                o() -> name(), this -> player -> name(), this -> name(),
+                source_action -> name(), a -> name() );
+          }
+          source_action = a;
+        }
+      }
+
+      if ( source_action )
+      {
+        this -> update_flags = source_action -> update_flags;
+        this -> snapshot_flags = source_action -> snapshot_flags;
+      }
+    }
+
     sef_td_t* td( player_t* t ) const
     { return this -> p() -> get_target_data( t ); }
 
@@ -683,6 +716,11 @@ struct storm_earth_and_fire_pet_t : public pet_t
     storm_earth_and_fire_pet_t* p()
     { return debug_cast<storm_earth_and_fire_pet_t*>( this -> player ); }
 
+    // Use SEF-specific override methods for target related multipliers as the
+    // pets seem to have their own functionality relating to it. The rest of
+    // the state-related stuff is actually mapped to the source (owner) action
+    // below.
+
     double composite_target_multiplier( player_t* t ) const
     {
       double m = super_t::composite_target_multiplier( t );
@@ -694,8 +732,61 @@ struct storm_earth_and_fire_pet_t : public pet_t
       return m;
     }
 
+    // Map the rest of the relevant state-related stuff into the source
+    // action's methods. In other words, use the owner's data. Note that attack
+    // power is not included here, as we will want to (just in case) snapshot
+    // AP through the pet's own AP system. This allows us to override the
+    // inheritance coefficient if need be in an easy way.
+
+    double attack_direct_power_coefficient( const action_state_t* state ) const
+    {
+      return source_action -> attack_direct_power_coefficient( state );
+    }
+
+    double attack_tick_power_coefficient( const action_state_t* state ) const
+    {
+      return source_action -> attack_tick_power_coefficient( state );
+    }
+
+    timespan_t composite_dot_duration( const action_state_t* s ) const
+    {
+      return source_action -> composite_dot_duration( s );
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const
+    {
+      return source_action -> composite_da_multiplier( s );
+    }
+
+    double composite_ta_multiplier( const action_state_t* s ) const
+    {
+      return source_action -> composite_ta_multiplier( s );
+    }
+
+    double composite_persistent_multiplier( const action_state_t* s ) const
+    {
+      return source_action -> composite_persistent_multiplier( s );
+    }
+
+    double composite_versatility( const action_state_t* s ) const
+    {
+      return source_action -> composite_versatility( s );
+    }
+
+    double composite_haste() const
+    {
+      return source_action -> composite_haste();
+    }
+
     void schedule_execute( action_state_t* state = 0 )
     {
+      // Never execute an ability if there's no source action. Things will crash.
+      if ( ! source_action )
+      {
+        action_state_t::release( state );
+        return;
+      }
+
       // Target always follows the SEF clone's target, which is assigned during
       // summon time
       this -> target = this -> player -> target;
@@ -703,55 +794,20 @@ struct storm_earth_and_fire_pet_t : public pet_t
       super_t::schedule_execute( state );
     }
 
-    // TODO: This may need a flag (similar to Shadow Reflection) to indincate
-    // that we're snapshotting for the SEF. This is necessary if we need to
-    // filter out specific multipliers because they do not affect the pets. For
-    // now, it's left out. If it is put in, owner caches have to be invalidated
-    // before and after the snapshotting.
-    //
-    // NOTE: Autoattacks need special handling, and they have their own
-    // override for snapshotting
     void snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt )
     {
-      // Get an owner state object, and populate it with owner current stats
-      action_state_t* owner_state = source_action -> get_state();
-      owner_state -> target = state -> target;
-      owner_state -> n_targets = state -> n_targets;
-      owner_state -> chain_target = state -> chain_target;
-      // We don't need to snapshot owner AP or target based multipliers, we
-      // will get those on our own
-      source_action -> snapshot_internal( owner_state, flags & ~( STATE_AP | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA ), rt );
-
-      // Copy owner stats to our state object, including any/all multipliers
-      // for the given ability.
-      state -> copy_state( owner_state );
-
-      // Storm, Earth, and Fire pets need to re-snapshot attack power due to
-      // AP inheritance coefficient, and target multipliers because it has
-      // its own debuffs.
-      if ( flags & STATE_AP )
-        state -> attack_power = this -> composite_attack_power() * this -> player -> composite_attack_power_multiplier();
-
-      if ( flags & STATE_TGT_MUL_DA )
-        state -> target_da_multiplier = this -> composite_target_da_multiplier( state -> target );
-
-      if ( flags & STATE_TGT_MUL_TA )
-        state -> target_ta_multiplier = this -> composite_target_ta_multiplier( state -> target );
+      super_t::snapshot_internal( state, flags, rt );
 
       // TODO: Check-recheck-figure out some day
       // Apply a -5% modifier to all damage generated by the pets.
       state -> da_multiplier /= 1.05;
       state -> ta_multiplier /= 1.05;
-
-      // Release the used owner state object
-      action_state_t::release( owner_state );
     }
   };
 
   struct sef_melee_attack_t : public sef_action_base_t<melee_attack_t>
   {
-    weapon_t* main_hand;
-    weapon_t* off_hand;
+    bool main_hand, off_hand;
 
     sef_melee_attack_t( const std::string& n,
                         storm_earth_and_fire_pet_t* p,
@@ -759,8 +815,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
                         weapon_t* w = 0 ) :
       base_t( n, p, data ),
       // For special attacks, the SEF pets always use the owner's weapons.
-      main_hand( ! w ? &( o() -> main_hand_weapon ) : 0 ),
-      off_hand( ! w ? &( o() -> off_hand_weapon ) : 0 )
+      main_hand( ! w ? true : false ), off_hand( ! w ? true : false )
     {
       school = SCHOOL_PHYSICAL;
 
@@ -784,8 +839,10 @@ struct storm_earth_and_fire_pet_t : public pet_t
     // attacks.
     double calculate_weapon_damage( double attack_power )
     {
+      // Actual weapon damage calculation is done with the OWNER weapons for
+      // special attacks, not SEF specific ones.
       if ( main_hand || ( main_hand && off_hand ) )
-        return monk_util::monk_weapon_damage( this, main_hand, off_hand, weapon_power_mod, attack_power );
+        return monk_util::monk_weapon_damage( this, &( o() -> main_hand_weapon ), &( o() -> off_hand_weapon ), weapon_power_mod, attack_power );
       else
         return melee_attack_t::calculate_weapon_damage( attack_power );
     }
@@ -797,8 +854,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
                  storm_earth_and_fire_pet_t* p,
                  const spell_data_t* data = spell_data_t::nil() ) :
       base_t( n, p, data )
-    {
-    }
+    { }
   };
 
   // Auto attack ============================================================
@@ -820,10 +876,21 @@ struct storm_earth_and_fire_pet_t : public pet_t
         base_hit -= 0.19;
       }
 
-      // NOTE: We don't care what hand is used, we just need the multipliers
-      // and from the owner, so we do not need to implement them globally for
-      // SEF pets.
-      source_action = player -> owner -> find_action( "melee_main_hand" );
+      if ( w == &( player -> main_hand_weapon ) )
+      {
+        source_action = player -> owner -> find_action( "melee_main_hand" );
+      }
+      else
+      {
+        source_action = player -> owner -> find_action( "melee_off_hand" );
+        // If owner is using a 2handed weapon, there's not going to be an
+        // off-hand action for autoattacks, thus just use main hand one then.
+        if ( ! source_action )
+        {
+          source_action = player -> owner -> find_action( "melee_main_hand" );
+        }
+      }
+
       // TODO: Can't really assert here, need to figure out a fallback if the
       // windwalker does not use autoattacks (how likely is that?)
       if ( sim -> debug )
@@ -1099,15 +1166,14 @@ struct storm_earth_and_fire_pet_t : public pet_t
       channeled = tick_zero = true;
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
-      base_tick_time *= 1.0 + o() -> perk.empowered_spinning_crane_kick -> effectN( 1 ).percent();
-      dot_duration *= 1.0 + o() -> perk.empowered_spinning_crane_kick -> effectN( 2 ).percent();
-
       weapon_power_mod = 0;
 
       tick_action = new sef_tick_action_t( "spinning_crane_kick_tick", player, &( data() ) );
     }
   };
 
+  // SEF Chi Wave skips the healing ticks, delivering damage on every second
+  // tick of the ability for simplicity.
   struct sef_chi_wave_t : public sef_spell_t
   {
     sef_chi_wave_t( storm_earth_and_fire_pet_t* player ) :
@@ -1115,11 +1181,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       may_crit = may_miss = hasted_ticks = false;
       tick_zero = tick_may_crit = true;
-
-      dot_duration = timespan_t::from_seconds( 7.0 );
-      base_tick_time = timespan_t::from_seconds( 1.0 );
-
-      attack_power_mod.tick = 0.500; // Hard code 09/09/14
     }
 
     void tick( dot_t* d )
@@ -1137,10 +1198,22 @@ struct storm_earth_and_fire_pet_t : public pet_t
       sef_spell_t( "zen_sphere_detonation", player, player -> find_spell( 125033 ) )
     {
       aoe = -1;
-      attack_power_mod.direct = 0.368;
+    }
+
+    void init()
+    {
+      sef_spell_t::init();
+
+      source_action = o() -> find_action( "zen_sphere_damage" );
+      if ( source_action )
+      {
+        update_flags = source_action -> update_flags;
+        snapshot_flags = source_action -> snapshot_flags;
+      }
     }
   };
 
+  // SEF Zen Sphere does not perform healing
   struct sef_zen_sphere_t : public sef_spell_t
   {
     sef_zen_sphere_detonation_t* detonation;
@@ -1149,8 +1222,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
       sef_spell_t( "zen_sphere", player, player -> o() -> find_talent_spell( "Zen Sphere" ) ),
       detonation( new sef_zen_sphere_detonation_t( player ) )
     {
-      attack_power_mod.tick = 0.09; // TODO: Check, discrepancy with tooltip and Monk AP coeff
-
       add_child( detonation );
     }
 
@@ -1158,8 +1229,11 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       sef_spell_t::last_tick( d );
 
-      detonation -> target = d -> target;
-      detonation -> schedule_execute();
+      if ( ! player -> is_sleeping() )
+      {
+        detonation -> target = d -> target;
+        detonation -> schedule_execute();
+      }
     }
   };
 
@@ -1285,7 +1359,7 @@ public:
     o() -> buff.storm_earth_and_fire -> decrement();
   }
 
-  void trigger_attack( sef_ability_e ability, action_t* action )
+  void trigger_attack( sef_ability_e ability )
   {
     if ( ability >= SEF_SPELL_MIN )
     {
@@ -1293,14 +1367,12 @@ public:
       assert( spells[ spell ] );
 
 
-      spells[ spell ] -> source_action = action;
       spells[ spell ] -> schedule_execute();
     }
     else
     {
       assert( attacks[ ability ] );
 
-      attacks[ ability ] -> source_action = action;
       attacks[ ability ] -> schedule_execute();
     }
   }
@@ -1677,7 +1749,7 @@ public:
       {
         continue;
       }
-      p() -> pet.sef[ i ] -> trigger_attack( sef_ability, this );
+      p() -> pet.sef[ i ] -> trigger_attack( sef_ability );
     }
   }
 };
@@ -3213,7 +3285,7 @@ struct zen_sphere_damage_t: public monk_spell_t
 struct zen_sphere_detonate_damage_t: public monk_spell_t
 {
   zen_sphere_detonate_damage_t( monk_t* player ):
-    monk_spell_t( "zen_sphere_damage", player, player -> find_spell( 125033 ) )
+    monk_spell_t( "zen_sphere_detonate_damage", player, player -> find_spell( 125033 ) )
   {
     background = true;
     aoe = -1;
