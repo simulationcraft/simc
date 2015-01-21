@@ -6347,11 +6347,11 @@ void druid_t::apl_precombat()
       if ( specialization() == DRUID_FERAL )
         food += "blackrock_barbecue";
       else if ( specialization() == DRUID_BALANCE )
-        food += "sleeper_surprise"; // PH: Attuned stat
+        food += "sleeper_surprise";
       else if ( specialization() == DRUID_GUARDIAN )
         food += "sleeper_surprise";
       else
-        food += "frosty_stew"; // PH: Attuned stat
+        food += "frosty_stew";
     }
     else if ( level > 85 )
       food += "seafood_magnifique_feast";
@@ -6499,51 +6499,52 @@ void druid_t::apl_feral()
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Skull Bash" );
   def -> add_talent( this, "Force of Nature", "if=charges=3|trinket.proc.all.react|target.time_to_die<20");
-  if ( sim -> allow_potions && level >= 80 )
-    def -> add_action( potion_action + ",if=target.time_to_die<=40" );
+  def -> add_action( this, "Berserk", "sync=tigers_fury,if=buff.king_of_the_jungle.up|!talent.incarnation.enabled" );
   // On-Use Items
   for ( size_t i = 0; i < item_actions.size(); i++ )
-    def -> add_action( item_actions[ i ] + ",sync=tigers_fury" );
+  {
+    def -> add_action( item_actions[ i ] + ",if=(prev.tigers_fury&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|prev.berserk|(buff.king_of_the_jungle.up&time<10)" );
+  }
+  if ( sim -> allow_potions && level >= 80 )
+    def -> add_action( potion_action + ",if=(buff.berserk.remains>10&(target.time_to_die<180|(trinket.proc.all.react&target.health.pct<25)))|target.time_to_die<=40" );
   // Racials
   for ( size_t i = 0; i < racial_actions.size(); i++ )
+  {
     def -> add_action( racial_actions[ i ] + ",sync=tigers_fury" );
-  if ( find_item( "assurance_of_consequence" ) )
-    def -> add_action( "incarnation,sync=tigers_fury" );
+  }
   def -> add_action( this, "Tiger's Fury", "if=(!buff.omen_of_clarity.react&energy.max-energy>=60)|energy.max-energy>=80" );
-  if ( ! find_item( "assurance_of_consequence" ) )
-    def -> add_action( "incarnation,if=cooldown.berserk.remains<10&energy.time_to_max>1" );
-  if ( sim -> allow_potions && level >= 80 )
-    def -> add_action( potion_action + ",sync=berserk,if=target.health.pct<25" );
-  def -> add_action( this, "Berserk", "if=buff.tigers_fury.up" );
+  def -> add_action( "incarnation,if=cooldown.berserk.remains<10&energy.time_to_max>1" );
   if ( race == RACE_NIGHT_ELF )
+  {
     def -> add_action( "shadowmeld,if=dot.rake.remains<4.5&energy>=35&dot.rake.pmultiplier<2&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>15)&!buff.king_of_the_jungle.up" );
+  }
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.health.pct<25",
                      "Keep Rip from falling off during execute range." );
   def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" );
-  def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
-  def -> add_action( "thrash_cat,cycle_targets=1,if=buff.omen_of_clarity.react&remains<4.5&active_enemies>1" );
-  def -> add_action( "thrash_cat,cycle_targets=1,if=!talent.bloodtalons.enabled&combo_points=5&remains<4.5&buff.omen_of_clarity.react");
+  def -> add_action( this, "Savage Roar", "if=buff.savage_roar.down" );
   def -> add_action( "pool_resource,for_next=1" );
-  def -> add_action( "thrash_cat,cycle_targets=1,if=remains<4.5&active_enemies>1" );
+  def -> add_action( "thrash_cat,cycle_targets=1,if=remains<4.5&(active_enemies>=2&set_bonus.tier17_2pc|active_enemies>=4)" );
 
-  // Finishers
+  // Finishers  
   finish -> add_action( this, "Ferocious Bite", "cycle_targets=1,max_energy=1,if=target.health.pct<25&dot.rip.ticking" );
-  finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<3&target.time_to_die-remains>18" );
   finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<7.2&persistent_multiplier>dot.rip.pmultiplier&target.time_to_die-remains>18" );
+  finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<7.2&persistent_multiplier=dot.rip.pmultiplier&(energy.time_to_max<=1|!talent.bloodtalons.enabled)&target.time_to_die-remains>18" );
+  finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<2&target.time_to_die-remains>18" );
   finish -> add_action( this, "Savage Roar", "if=(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<12.6" );
   finish -> add_action( this, "Ferocious Bite", "max_energy=1,if=(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)" );
 
   def -> add_action( "call_action_list,name=finisher,if=combo_points=5" );
+  def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<gcd" );
 
   // DoT Maintenance
-  maintain -> add_action( this, "Rake", "cycle_targets=1,if=!talent.bloodtalons.enabled&remains<3&combo_points<5&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)" );
-  maintain -> add_action( this, "Rake", "cycle_targets=1,if=!talent.bloodtalons.enabled&remains<4.5&combo_points<5&persistent_multiplier>dot.rake.pmultiplier&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)" );
-  maintain -> add_action( this, "Rake", "cycle_targets=1,if=talent.bloodtalons.enabled&remains<4.5&combo_points<5&(!buff.predatory_swiftness.up|buff.bloodtalons.up|persistent_multiplier>dot.rake.pmultiplier)&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)" );
-  maintain -> add_action( "thrash_cat,cycle_targets=1,if=talent.bloodtalons.enabled&combo_points=5&remains<4.5&buff.omen_of_clarity.react");
-  maintain -> add_action( "moonfire_cat,cycle_targets=1,if=combo_points<5&remains<4.2&active_enemies<6&target.time_to_die-remains>tick_time*5" );
-  maintain -> add_action( this, "Rake", "cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&combo_points<5&active_enemies=1" );
+  maintain -> add_action( this, "Rake", "cycle_targets=1,if=remains<3&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)" );
+  maintain -> add_action( this, "Rake", "cycle_targets=1,if=remains<4.5&(persistent_multiplier>=dot.rake.pmultiplier|(talent.bloodtalons.enabled&(buff.bloodtalons.up|!buff.predatory_swiftness.up)))&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)" );
+  maintain -> add_action( "moonfire_cat,cycle_targets=1,if=remains<4.2&active_enemies<=5&target.time_to_die-remains>tick_time*5" );
+  maintain -> add_action( this, "Rake", "cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&active_enemies=1&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)" );
 
-  def -> add_action( "call_action_list,name=maintain" );
+  def -> add_action( "call_action_list,name=maintain,if=combo_points<5" );
+  def -> add_action( "pool_resource,for_next=1" );
+  def -> add_action( "thrash_cat,cycle_targets=1,if=remains<4.5&active_enemies>=2" );
 
   // Generators
   generate -> add_action( this, "Swipe", "if=active_enemies>=3" );

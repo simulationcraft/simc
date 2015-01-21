@@ -1,4 +1,4 @@
-druid="Druid_Feral_T17H"
+druid="Druid_Feral_T17M_AoE"
 level=100
 race=night_elf
 role=attack
@@ -36,7 +36,7 @@ actions+=/auto_attack
 actions+=/skull_bash
 actions+=/force_of_nature,if=charges=3|trinket.proc.all.react|target.time_to_die<20
 actions+=/berserk,sync=tigers_fury,if=buff.king_of_the_jungle.up|!talent.incarnation.enabled
-actions+=/use_item,slot=trinket1,if=(prev.tigers_fury&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|prev.berserk|(buff.king_of_the_jungle.up&time<10)
+actions+=/use_item,slot=trinket2,if=(prev.tigers_fury&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|prev.berserk|(buff.king_of_the_jungle.up&time<10)
 actions+=/potion,name=draenic_agility,if=(buff.berserk.remains>10&(target.time_to_die<180|(trinket.proc.all.react&target.health.pct<25)))|target.time_to_die<=40
 actions+=/blood_fury,sync=tigers_fury
 actions+=/berserking,sync=tigers_fury
@@ -72,30 +72,30 @@ actions.maintain+=/rake,cycle_targets=1,if=persistent_multiplier>dot.rake.pmulti
 actions.generator=swipe,if=active_enemies>=3
 actions.generator+=/shred,if=active_enemies<3
 
-head=acidic_jaws,id=113880,bonus_id=566
-neck=darklight_necklace,id=113865,bonus_id=566,enchant=gift_of_critical_strike
-shoulders=living_wood_spaulders,id=115544,bonus_id=566
-back=drape_of_the_dark_hunt,id=113971,bonus_id=566,enchant=gift_of_critical_strike
-chest=living_wood_raiment,id=115540,bonus_id=566
-wrists=bracers_of_shattered_limbs,id=119333,bonus_id=566
-hands=living_wood_grips,id=115541,bonus_id=566
-waist=conductors_multipocket_girdle,id=113964,bonus_id=566
-legs=living_wood_legguards,id=115543,bonus_id=566
-feet=furnace_tenders_treads,id=113895,bonus_id=566
-finger1=spellbound_solium_band_of_fatal_strikes,id=118302,enchant=gift_of_critical_strike
-finger2=unexploded_explosive_shard,id=113877,bonus_id=566,enchant=gift_of_critical_strike
-trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=566
-trinket2=humming_blackiron_trigger,id=113985,bonus_id=566
-main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=566,enchant=mark_of_the_shattered_hand
+head=sorkas_nightshade_cowl,id=113978,bonus_id=567
+neck=engineers_grounded_gorget,id=113892,bonus_id=567,enchant=gift_of_mastery
+shoulders=living_wood_spaulders,id=115544,bonus_id=567
+back=drape_of_the_dark_hunt,id=113971,bonus_id=567,enchant=gift_of_mastery
+chest=living_wood_raiment,id=115540,bonus_id=567
+wrists=bracers_of_shattered_stalactites,id=113935,bonus_id=567
+hands=living_wood_grips,id=115541,bonus_id=567
+waist=conductors_multipocket_girdle,id=113964,bonus_id=567
+legs=living_wood_legguards,id=115543,bonus_id=567
+feet=treads_of_the_dark_hunt,id=113974,bonus_id=567
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_mastery
+finger2=unexploded_explosive_shard,id=113877,bonus_id=567,enchant=gift_of_mastery
+trinket1=humming_blackiron_trigger,id=113985,bonus_id=567
+trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=567
+main_hand=headlopper_skullscythe,id=119448,bonus_id=567,enchant_id=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_agility=3321
-# gear_stamina=3942
-# gear_crit_rating=1589
-# gear_haste_rating=294
-# gear_mastery_rating=466
-# gear_armor=1057
-# gear_multistrike_rating=995
-# gear_versatility_rating=389
+# gear_agility=3828
+# gear_stamina=4545
+# gear_crit_rating=919
+# gear_haste_rating=338
+# gear_mastery_rating=1561
+# gear_armor=1147
+# gear_multistrike_rating=1315
+# gear_versatility_rating=122
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
