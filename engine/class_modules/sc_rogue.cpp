@@ -4822,7 +4822,7 @@ void rogue_t::init_action_list()
     finisher -> add_talent( this, "Death from Above" );
     //finisher -> add_action( this, "Crimson Tempest", "if=active_enemies>6&remains<2" );
     //finisher -> add_action( this, "Crimson Tempest", "if=active_enemies>8" );
-    finisher -> add_action( this, "Eviscerate" );
+    finisher -> add_action( this, "Eviscerate", "if=(!talent.death_from_above.enabled|cooldown.death_from_above.remains)" );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
   {

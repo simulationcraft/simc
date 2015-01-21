@@ -16,7 +16,7 @@ level=100
 race=troll
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#ca!2....21
+talents=3000032
 glyphs=vendetta/energy/disappearance
 spec=assassination
 head=poisoners_helmet,id=115572
@@ -43,7 +43,7 @@ level=100
 race=troll
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#cZ!2000010
+talents=3000021
 spec=combat
 glyphs=energy/disappearance
 head=sorkas_nightshade_cowl,id=113978

@@ -11,7 +11,7 @@ level=100
 race=blood_elf
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#ca!2....21
+talents=3000032
 glyphs=vendetta/energy/disappearance
 spec=assassination
 head=bloodfeather_cowl,id=109976,bonus_id=524
@@ -38,7 +38,7 @@ level=100
 race=blood_elf
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#cZ!2000010
+talents=3000021
 spec=combat
 glyphs=energy/disappearance
 head=crystalbinder_helm,id=109977,bonus_id=524

@@ -3,7 +3,7 @@ level=100
 race=blood_elf
 role=attack
 position=back
-talents=3111121
+talents=3000021
 glyphs=energy/disappearance
 spec=combat
 
@@ -63,7 +63,7 @@ actions.generator+=/sinister_strike,if=dot.revealing_strike.ticking
 # Combo point finishers
 
 actions.finisher=death_from_above
-actions.finisher+=/eviscerate
+actions.finisher+=/eviscerate,if=(!talent.death_from_above.enabled|cooldown.death_from_above.remains)
 
 head=crystalbinder_helm,id=109977,bonus_id=524
 neck=windseal_necklace,id=109953,bonus_id=524,enchant=gift_of_haste
