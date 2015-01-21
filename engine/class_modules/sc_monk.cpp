@@ -95,6 +95,7 @@ enum sef_ability_e {
   // Spells begin here
   SEF_CHI_WAVE,
   SEF_ZEN_SPHERE,
+  SEF_CHI_BURST,
   SEF_SPELL_MAX,
   // Spells end here
 
@@ -103,6 +104,8 @@ enum sef_ability_e {
   SEF_ATTACK_MIN = SEF_JAB,
   SEF_MAX
 };
+
+#define sef_spell_idx( x ) ( ( x ) - SEF_SPELL_MIN )
 
 namespace monk_util
 {
@@ -1237,6 +1240,15 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
+  struct sef_chi_burst_t : public sef_spell_t
+  {
+    sef_chi_burst_t( storm_earth_and_fire_pet_t* player ) :
+      sef_spell_t( "chi_burst", player, player -> o() -> find_talent_spell( "Chi Burst" ) )
+    {
+      interrupt_auto_attack = false;
+    }
+  };
+
   // Storm, Earth, and Fire abilities end ===================================
 
   // SEF has its own Tiger Power armor penetration buff
@@ -1313,8 +1325,9 @@ public:
     attacks[ SEF_FISTS_OF_FURY       ] = new sef_fists_of_fury_t( this );
     attacks[ SEF_SPINNING_CRANE_KICK ] = new sef_spinning_crane_kick_t( this );
 
-    spells[ SEF_CHI_WAVE - SEF_SPELL_MIN   ] = new sef_chi_wave_t( this );
-    spells[ SEF_ZEN_SPHERE - SEF_SPELL_MIN ] = new sef_zen_sphere_t( this );
+    spells[ sef_spell_idx( SEF_CHI_WAVE )   ] = new sef_chi_wave_t( this );
+    spells[ sef_spell_idx( SEF_ZEN_SPHERE ) ] = new sef_zen_sphere_t( this );
+    spells[ sef_spell_idx( SEF_CHI_BURST )  ] = new sef_chi_burst_t( this );
   }
 
   void init_action_list()
@@ -3377,6 +3390,8 @@ struct chi_burst_t: public monk_spell_t
   chi_burst_t( monk_t* player, const std::string& options_str ):
     monk_spell_t( "chi_burst", player, player -> talent.chi_burst )
   {
+    sef_ability = SEF_CHI_BURST;
+
     parse_options( options_str );
     aoe = -1;
     interrupt_auto_attack = false;
