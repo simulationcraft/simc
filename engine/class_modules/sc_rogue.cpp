@@ -3463,6 +3463,11 @@ void rogue_t::trigger_shadow_reflection( const action_state_t* state )
   const rogue_attack_state_t* rs = debug_cast<const rogue_attack_state_t*>( state );
 
   new ( *sim ) shadow_reflect_event_t( rs -> cp, state -> action );
+  if ( bugs && attack -> ability_type == MUTILATE )
+  {
+    new ( *sim ) shadow_reflect_event_t( rs -> cp, state -> action );
+  }
+
   if ( sim -> debug )
     sim -> out_debug.printf( "%s shadow_reflection recording %s, cp=%d", name(), state -> action -> name(), rs -> cp );
 }
