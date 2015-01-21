@@ -90,6 +90,7 @@ enum sef_ability_e {
   SEF_FISTS_OF_FURY,
   SEF_SPINNING_CRANE_KICK,
   SEF_RUSHING_JADE_WIND,
+  SEF_CHI_TORPEDO,
   SEF_ATTACK_MAX,
   // Attacks end here
 
@@ -1191,6 +1192,15 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
+  struct sef_chi_torpedo_t : public sef_melee_attack_t
+  {
+    sef_chi_torpedo_t( storm_earth_and_fire_pet_t* player ) :
+      sef_melee_attack_t( "chi_torpedo", player, player -> o() -> talent.chi_torpedo -> ok() ? player -> find_spell( 117993 ) : spell_data_t::not_found() )
+    {
+      aoe = -1;
+    }
+  };
+
   // SEF Chi Wave skips the healing ticks, delivering damage on every second
   // tick of the ability for simplicity.
   struct sef_chi_wave_t : public sef_spell_t
@@ -1341,6 +1351,7 @@ public:
     attacks[ SEF_FISTS_OF_FURY       ] = new sef_fists_of_fury_t( this );
     attacks[ SEF_SPINNING_CRANE_KICK ] = new sef_spinning_crane_kick_t( this );
     attacks[ SEF_RUSHING_JADE_WIND   ] = new sef_rushing_jade_wind_t( this );
+    attacks[ SEF_CHI_TORPEDO         ] = new sef_chi_torpedo_t( this );
 
     spells[ sef_spell_idx( SEF_CHI_WAVE )   ] = new sef_chi_wave_t( this );
     spells[ sef_spell_idx( SEF_ZEN_SPHERE ) ] = new sef_zen_sphere_t( this );
@@ -3427,10 +3438,12 @@ struct chi_torpedo_t: public monk_spell_t
   chi_torpedo_t( monk_t* player, const std::string& options_str ):
     monk_spell_t( "chi_torpedo", player, player -> talent.chi_torpedo -> ok() ? player -> find_spell( 117993 ) : spell_data_t::not_found() )
   {
+    sef_ability = SEF_CHI_TORPEDO;
+
     parse_options( options_str );
     aoe = -1;
-    cooldown -> duration = data().charge_cooldown();
-    cooldown -> charges = data().charges();
+    cooldown -> duration = p() -> talent.chi_torpedo -> charge_cooldown();
+    cooldown -> charges = p() -> talent.chi_torpedo -> charges();
   }
 };
 
