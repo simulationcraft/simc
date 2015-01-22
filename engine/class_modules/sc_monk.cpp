@@ -89,12 +89,15 @@ enum sef_ability_e {
   SEF_RISING_SUN_KICK,
   SEF_FISTS_OF_FURY,
   SEF_SPINNING_CRANE_KICK,
+  SEF_RUSHING_JADE_WIND,
+  SEF_CHI_TORPEDO,
   SEF_ATTACK_MAX,
   // Attacks end here
 
   // Spells begin here
   SEF_CHI_WAVE,
   SEF_ZEN_SPHERE,
+  SEF_CHI_BURST,
   SEF_SPELL_MAX,
   // Spells end here
 
@@ -103,6 +106,8 @@ enum sef_ability_e {
   SEF_ATTACK_MIN = SEF_JAB,
   SEF_MAX
 };
+
+#define sef_spell_idx( x ) ( ( x ) - SEF_SPELL_MIN )
 
 namespace monk_util
 {
@@ -684,13 +689,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
         if ( util::str_compare_ci( this -> name_str, a -> name_str ) && this -> id == a -> id )
         {
-          if ( source_action )
-          {
-            this -> sim -> errorf( "%s-%s %s overriding source action init (old=%s, current=%s)",
-                o() -> name(), this -> player -> name(), this -> name(),
-                source_action -> name(), a -> name() );
-          }
           source_action = a;
+          break;
         }
       }
 
@@ -827,7 +827,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
     double target_armor( player_t* t ) const
     {
-      double a = melee_attack_t::target_armor( t );
+      double a = base_t::target_armor( t );
 
       if ( p() -> tiger_power -> up() )
         a *= 1.0 - p() -> tiger_power -> check() * p() -> tiger_power -> data().effectN( 1 ).percent();
@@ -844,7 +844,21 @@ struct storm_earth_and_fire_pet_t : public pet_t
       if ( main_hand || ( main_hand && off_hand ) )
         return monk_util::monk_weapon_damage( this, &( o() -> main_hand_weapon ), &( o() -> off_hand_weapon ), weapon_power_mod, attack_power );
       else
-        return melee_attack_t::calculate_weapon_damage( attack_power );
+        return base_t::calculate_weapon_damage( attack_power );
+    }
+
+    // Physical tick_action abilities need amount_type() override, so the
+    // tick_action multistrikes are properly physically mitigated.
+    dmg_e amount_type( const action_state_t* state, bool periodic ) const
+    {
+      if ( tick_action && tick_action -> school == SCHOOL_PHYSICAL )
+      {
+        return DMG_DIRECT;
+      }
+      else
+      {
+        return base_t::amount_type( state, periodic );
+      }
     }
   };
 
@@ -1156,6 +1170,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       tick_action = new sef_fists_of_fury_tick_t( player );
     }
+
   };
 
   struct sef_spinning_crane_kick_t : public sef_melee_attack_t
@@ -1169,6 +1184,30 @@ struct storm_earth_and_fire_pet_t : public pet_t
       weapon_power_mod = 0;
 
       tick_action = new sef_tick_action_t( "spinning_crane_kick_tick", player, &( data() ) );
+    }
+  };
+
+  struct sef_rushing_jade_wind_t : public sef_melee_attack_t
+  {
+    sef_rushing_jade_wind_t( storm_earth_and_fire_pet_t* player ) :
+      sef_melee_attack_t( "rushing_jade_wind", player, player -> o() -> find_talent_spell( "Rushing Jade Wind" ) )
+    {
+      tick_zero = hasted_ticks = true;
+
+      may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+
+      weapon_power_mod = 0;
+
+      tick_action = new sef_tick_action_t( "rushing_jade_wind_tick", player, &( data() ) );
+    }
+  };
+
+  struct sef_chi_torpedo_t : public sef_melee_attack_t
+  {
+    sef_chi_torpedo_t( storm_earth_and_fire_pet_t* player ) :
+      sef_melee_attack_t( "chi_torpedo", player, player -> o() -> talent.chi_torpedo -> ok() ? player -> find_spell( 117993 ) : spell_data_t::not_found() )
+    {
+      aoe = -1;
     }
   };
 
@@ -1234,6 +1273,15 @@ struct storm_earth_and_fire_pet_t : public pet_t
         detonation -> target = d -> target;
         detonation -> schedule_execute();
       }
+    }
+  };
+
+  struct sef_chi_burst_t : public sef_spell_t
+  {
+    sef_chi_burst_t( storm_earth_and_fire_pet_t* player ) :
+      sef_spell_t( "chi_burst", player, player -> o() -> find_talent_spell( "Chi Burst" ) )
+    {
+      interrupt_auto_attack = false;
     }
   };
 
@@ -1312,9 +1360,12 @@ public:
     attacks[ SEF_RISING_SUN_KICK     ] = new sef_rising_sun_kick_t( this );
     attacks[ SEF_FISTS_OF_FURY       ] = new sef_fists_of_fury_t( this );
     attacks[ SEF_SPINNING_CRANE_KICK ] = new sef_spinning_crane_kick_t( this );
+    attacks[ SEF_RUSHING_JADE_WIND   ] = new sef_rushing_jade_wind_t( this );
+    attacks[ SEF_CHI_TORPEDO         ] = new sef_chi_torpedo_t( this );
 
-    spells[ SEF_CHI_WAVE - SEF_SPELL_MIN   ] = new sef_chi_wave_t( this );
-    spells[ SEF_ZEN_SPHERE - SEF_SPELL_MIN ] = new sef_zen_sphere_t( this );
+    spells[ sef_spell_idx( SEF_CHI_WAVE )   ] = new sef_chi_wave_t( this );
+    spells[ sef_spell_idx( SEF_ZEN_SPHERE ) ] = new sef_zen_sphere_t( this );
+    spells[ sef_spell_idx( SEF_CHI_BURST )  ] = new sef_chi_burst_t( this );
   }
 
   void init_action_list()
@@ -1744,6 +1795,11 @@ public:
 
   void trigger_storm_earth_and_fire()
   {
+    if ( ! p() -> spec.storm_earth_and_fire -> ok() )
+    {
+      return;
+    }
+
     if ( sef_ability == SEF_NONE )
     {
       return;
@@ -2465,6 +2521,8 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
   rushing_jade_wind_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "rushing_jade_wind", p, p -> talent.rushing_jade_wind )
   {
+    sef_ability = SEF_RUSHING_JADE_WIND;
+
     parse_options( options_str );
     stancemask = STURDY_OX | FIERCE_TIGER | WISE_SERPENT | SPIRITED_CRANE;
 
@@ -3377,6 +3435,8 @@ struct chi_burst_t: public monk_spell_t
   chi_burst_t( monk_t* player, const std::string& options_str ):
     monk_spell_t( "chi_burst", player, player -> talent.chi_burst )
   {
+    sef_ability = SEF_CHI_BURST;
+
     parse_options( options_str );
     aoe = -1;
     interrupt_auto_attack = false;
@@ -3393,10 +3453,12 @@ struct chi_torpedo_t: public monk_spell_t
   chi_torpedo_t( monk_t* player, const std::string& options_str ):
     monk_spell_t( "chi_torpedo", player, player -> talent.chi_torpedo -> ok() ? player -> find_spell( 117993 ) : spell_data_t::not_found() )
   {
+    sef_ability = SEF_CHI_TORPEDO;
+
     parse_options( options_str );
     aoe = -1;
-    cooldown -> duration = data().charge_cooldown();
-    cooldown -> charges = data().charges();
+    cooldown -> duration = p() -> talent.chi_torpedo -> charge_cooldown();
+    cooldown -> charges = p() -> talent.chi_torpedo -> charges();
   }
 };
 
@@ -3534,8 +3596,9 @@ struct storm_earth_and_fire_t: public monk_spell_t
           sef_idx.push_back( i );
         }
 
-        size_t idx = sef_idx[ static_cast<unsigned int>( rng().range(0.0, static_cast<double>( sef_idx.size() )) ) ];
-        assert( idx < sef_idx.size() );
+        unsigned rng_idx = static_cast<unsigned>( rng().range( 0.0, static_cast<double>( sef_idx.size() ) ) );
+        assert( rng_idx < sef_idx.size() );
+        size_t idx = sef_idx[ rng_idx ];
 
         p() -> pet.sef[ idx ] -> target = execute_state -> target;
         p() -> pet.sef[ idx ] -> summon();
@@ -4704,9 +4767,13 @@ void monk_t::create_pets()
   base_t::create_pets();
 
   create_pet( "xuen_the_white_tiger" );
-  pet.sef[ SEF_FIRE ] = new pets::storm_earth_and_fire_pet_t( "fire_spirit", sim, this, true );
-  pet.sef[ SEF_STORM ] = new pets::storm_earth_and_fire_pet_t( "storm_spirit", sim, this, true );
-  pet.sef[ SEF_EARTH ] = new pets::storm_earth_and_fire_pet_t( "earth_spirit", sim, this, false );
+
+  if ( specialization() == MONK_WINDWALKER )
+  {
+    pet.sef[ SEF_FIRE ] = new pets::storm_earth_and_fire_pet_t( "fire_spirit", sim, this, true );
+    pet.sef[ SEF_STORM ] = new pets::storm_earth_and_fire_pet_t( "storm_spirit", sim, this, true );
+    pet.sef[ SEF_EARTH ] = new pets::storm_earth_and_fire_pet_t( "earth_spirit", sim, this, false );
+  }
 }
 
 // monk_t::init_spells ======================================================

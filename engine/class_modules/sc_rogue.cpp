@@ -3463,6 +3463,11 @@ void rogue_t::trigger_shadow_reflection( const action_state_t* state )
   const rogue_attack_state_t* rs = debug_cast<const rogue_attack_state_t*>( state );
 
   new ( *sim ) shadow_reflect_event_t( rs -> cp, state -> action );
+  if ( bugs && attack -> ability_type == MUTILATE )
+  {
+    new ( *sim ) shadow_reflect_event_t( rs -> cp, state -> action );
+  }
+
   if ( sim -> debug )
     sim -> out_debug.printf( "%s shadow_reflection recording %s, cp=%d", name(), state -> action -> name(), rs -> cp );
 }
@@ -4754,7 +4759,7 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Vendetta", "if=buff.shadow_reflection.up|!talent.shadow_reflection.enabled" );
     def -> add_talent( this, "Death from Above", "if=combo_points>4" );
     def -> add_action( this, "Envenom", "cycle_targets=1,if=(combo_points>4&(cooldown.death_from_above.remains>2|!talent.death_from_above.enabled))&active_enemies<4&!dot.deadly_poison_dot.ticking" );
-    def -> add_action( this, "Envenom", "if=(combo_points>4&(cooldown.death_from_above.remains>2|!talent.death_from_above.enabled))&active_enemies<4&(buff.envenom.remains<2|energy>55)" );
+    def -> add_action( this, "Envenom", "if=(combo_points>4&(cooldown.death_from_above.remains>2|!talent.death_from_above.enabled))&active_enemies<4&(buff.envenom.remains<=1.8|energy>55)" );
     def -> add_action( this, "Fan of Knives", "cycle_targets=1,if=active_enemies>2&!dot.deadly_poison_dot.ticking&debuff.vendetta.down" );
     def -> add_action( this, "Mutilate", "cycle_targets=1,if=target.health.pct>35&(combo_points<4|(talent.anticipation.enabled&anticipation_charges<3))&active_enemies=2&!dot.deadly_poison_dot.ticking&debuff.vendetta.down" );
     def -> add_action( this, "Mutilate", "if=target.health.pct>35&(combo_points<4|(talent.anticipation.enabled&anticipation_charges<3))&active_enemies<5" );
