@@ -91,6 +91,7 @@ enum sef_ability_e {
   SEF_SPINNING_CRANE_KICK,
   SEF_RUSHING_JADE_WIND,
   SEF_CHI_TORPEDO,
+  SEF_HURRICANE_STRIKE,
   SEF_ATTACK_MAX,
   // Attacks end here
 
@@ -753,6 +754,11 @@ struct storm_earth_and_fire_pet_t : public pet_t
       return source_action -> composite_dot_duration( s );
     }
 
+    timespan_t tick_time( double haste ) const
+    {
+      return source_action -> tick_time( haste );
+    }
+
     double composite_da_multiplier( const action_state_t* s ) const
     {
       return source_action -> composite_da_multiplier( s );
@@ -776,6 +782,11 @@ struct storm_earth_and_fire_pet_t : public pet_t
     double composite_haste() const
     {
       return source_action -> composite_haste();
+    }
+
+    timespan_t travel_time() const
+    {
+      return source_action -> travel_time();
     }
 
     void schedule_execute( action_state_t* state = 0 )
@@ -1211,12 +1222,48 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
+  struct sef_hurricane_strike_tick_t : public sef_tick_action_t
+  {
+    sef_hurricane_strike_tick_t( storm_earth_and_fire_pet_t* p ):
+      sef_tick_action_t( "hurricane_strike_tick", p, p -> find_spell( 158221 ) )
+    {
+      aoe = 0;
+    }
+  };
+
+  struct sef_hurricane_strike_t : public sef_melee_attack_t
+  {
+    sef_hurricane_strike_t( storm_earth_and_fire_pet_t* player ) :
+      sef_melee_attack_t( "hurricane_strike", player, player -> o() -> find_talent_spell( "Hurricane Strike" ) )
+    {
+      channeled = true;
+
+      may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+
+      weapon_power_mod = 0;
+
+      tick_action = new sef_hurricane_strike_tick_t( player );
+    }
+  };
+
+  struct sef_chi_wave_damage_t : public sef_spell_t
+  {
+    sef_chi_wave_damage_t( storm_earth_and_fire_pet_t* player ) :
+      sef_spell_t( "chi_wave_damage", player, player -> o() -> find_talent_spell( "Chi Wave" ) )
+    {
+      dual = true;
+    }
+  };
+
   // SEF Chi Wave skips the healing ticks, delivering damage on every second
   // tick of the ability for simplicity.
   struct sef_chi_wave_t : public sef_spell_t
   {
+    sef_chi_wave_damage_t* wave;
+
     sef_chi_wave_t( storm_earth_and_fire_pet_t* player ) :
-      sef_spell_t( "chi_wave", player, player -> o() -> find_talent_spell( "Chi Wave" ) )
+      sef_spell_t( "chi_wave", player, player -> o() -> find_talent_spell( "Chi Wave" ) ),
+      wave( new sef_chi_wave_damage_t( player ) )
     {
       may_crit = may_miss = hasted_ticks = false;
       tick_zero = tick_may_crit = true;
@@ -1227,6 +1274,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
       if ( d -> current_tick % 2 == 0 )
       {
         sef_spell_t::tick( d );
+        wave -> target = d -> target;
+        wave -> schedule_execute();
       }
     }
   };
@@ -1362,6 +1411,7 @@ public:
     attacks[ SEF_SPINNING_CRANE_KICK ] = new sef_spinning_crane_kick_t( this );
     attacks[ SEF_RUSHING_JADE_WIND   ] = new sef_rushing_jade_wind_t( this );
     attacks[ SEF_CHI_TORPEDO         ] = new sef_chi_torpedo_t( this );
+    attacks[ SEF_HURRICANE_STRIKE    ] = new sef_hurricane_strike_t( this );
 
     spells[ sef_spell_idx( SEF_CHI_WAVE )   ] = new sef_chi_wave_t( this );
     spells[ sef_spell_idx( SEF_ZEN_SPHERE ) ] = new sef_zen_sphere_t( this );
@@ -1928,6 +1978,20 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
       m *= 1.0 + ( p() -> wod_hotfix ? 0.10 : td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent() ); // Hotfix to 10% (down from 20%) on Dec 08, 2014
 
     return m;
+  }
+
+  // Physical tick_action abilities need amount_type() override, so the
+  // tick_action multistrikes are properly physically mitigated.
+  dmg_e amount_type( const action_state_t* state, bool periodic ) const
+  {
+    if ( tick_action && tick_action -> school == SCHOOL_PHYSICAL )
+    {
+      return DMG_DIRECT;
+    }
+    else
+    {
+      return base_t::amount_type( state, periodic );
+    }
   }
 };
 
@@ -2536,11 +2600,6 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     tick_action = new tick_action_t( "rushing_jade_wind_tick", p, &( data() ) );
   }
 
-  // Physical tick_action abilities need amount_type() override, so the
-  // tick_action multistrikes are properly physically mitigated.
-  dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ ) const
-  { return DMG_DIRECT; }
-
   // N full ticks, but never additional ones.
   timespan_t composite_dot_duration( const action_state_t* s ) const
   {
@@ -2603,11 +2662,6 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
 
     tick_action = new tick_action_t( "spinning_crane_kick_tick", p, &( data() ) );
   }
-
-  // Physical tick_action abilities need amount_type() override, so the
-  // tick_action multistrikes are properly physically mitigated.
-  dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ ) const
-  { return DMG_DIRECT; }
 
   void execute()
   {
@@ -2687,11 +2741,6 @@ struct fists_of_fury_t: public monk_melee_attack_t
     tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
   }
 
-  // Physical tick_action abilities need amount_type() override, so the
-  // tick_action multistrikes are properly physically mitigated.
-  dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ ) const
-  { return DMG_DIRECT; }
-
   void consume_resource()
   {
     monk_melee_attack_t::consume_resource();
@@ -2715,34 +2764,40 @@ struct hurricane_strike_tick_t: public monk_melee_attack_t
   hurricane_strike_tick_t( const std::string& name, monk_t* p, const spell_data_t* s ):
     monk_melee_attack_t( name, p, s )
   {
+    background = true;
+
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier *= 2.0; // hardcoded into tooltip
-    dual = true;
+  }
+
+  virtual timespan_t travel_time() const
+  {
+    return timespan_t::zero();
   }
 };
 
 struct hurricane_strike_t: public monk_melee_attack_t
 {
-  hurricane_strike_tick_t* hs_tick;
   hurricane_strike_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( "hurricane_strike", p, p -> talent.hurricane_strike ),
-    hs_tick( new hurricane_strike_tick_t( "hurricane_strike_tick", p, p -> find_spell( 158221 ) ) )
+    monk_melee_attack_t( "hurricane_strike", p, p -> talent.hurricane_strike )
   {
+    sef_ability = SEF_HURRICANE_STRIKE;
+
     parse_options( options_str );
     stancemask = FIERCE_TIGER;
-    add_child( hs_tick );
-    hasted_ticks = interrupt_auto_attack = callbacks = false;
+    interrupt_auto_attack = callbacks = false;
     channeled = true;
     dot_duration = data().duration();
     base_tick_time = dot_duration / 15;
-    tick_zero = false;
+    base_multiplier *= 2.0;
+
+    tick_action = new hurricane_strike_tick_t( "hurricane_strike_tick", p, p -> find_spell( 158221 ) );
   }
 
-  void tick( dot_t*d )
+  timespan_t composite_dot_duration( const action_state_t* s ) const
   {
-    monk_melee_attack_t::tick( d );
-    hs_tick -> execute();
+    timespan_t tt = tick_time( s -> haste );
+    return tt * 15;
   }
 
   void consume_resource()
@@ -2752,11 +2807,6 @@ struct hurricane_strike_t: public monk_melee_attack_t
     double savings = base_costs[RESOURCE_CHI] - cost();
     if ( result_is_hit( execute_state -> result ) )
       p() -> track_chi_consumption += savings;
-  }
-
-  virtual timespan_t travel_time() const
-  {
-    return timespan_t::zero();
   }
 };
 
