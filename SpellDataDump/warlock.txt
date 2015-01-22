@@ -1,4 +1,4 @@
-SimulationCraft 603-23 for World of Warcraft 6.0.3 Live (build level 19342)
+SimulationCraft 603-25 for World of Warcraft 6.0.3 Live (build level 19342)
 
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -154,7 +154,7 @@ Spell Level      : 7
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Haunt (48181), Metamorphosis (103958), Harvest Life (108371), Grimoire of Sacrifice (108503), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Item - Warlock T15 DPS 4P Bonus (138134), Haunting Spirits (157698), 
+Affecting spells : Haunt (48181), Glyph of Drain Life (63302), Metamorphosis (103958), Harvest Life (108371), Grimoire of Sacrifice (108503), Chaotic Energy (111546), Kil'jaeden's Cunning (137587), Item - Warlock T15 DPS 4P Bonus (138134), Haunting Spirits (157698), 
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..... 
                  : ........ ...x.... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -166,13 +166,13 @@ Effects          :
 #1 (id=271)      : Apply Aura (6) | Periodic Damage: shadow every 1 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25050
 #2 (id=92509)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 10
+                   Base Value: 6 | Scaled Value: 6 | Misc Value: 10
 #3 (id=186635)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 10
-Description      : Drains life from the target, causing ${($689m1*6)} Shadow damage$?a104315&!a54879[,][ and] restoring $?s63302[${2*6*($689m2/10)}][${6*($689m2/10)}]% of the caster's health$?a104315&!a54879[ and generating ${$m3*6} Demonic Fury][] over $d.
+Description      : Drains life from the target, causing ${($689m1*6)} Shadow damage$?a104315&!a54879[,][ and] restoring $689m2% of the caster's health$?a104315&!a54879[ and generating ${$m3*6} Demonic Fury][] over $d.
 Tooltip          : Suffering $w1 Shadow damage every $t1 seconds. 
 
-Restoring ${$689m2/10}.1% of maximum health to the caster when Drain Life deals damage.
+Restoring ${$689m2/6}.1% of maximum health to the caster when Drain Life deals damage.
 
 Name             : Summon Felhunter (Summon) (id=691) [Spell Family (5)] 
 Class            : Warlock
@@ -921,7 +921,7 @@ Effects          :
                    Base Value: 40 | Scaled Value: 0 (avg=1.943)
 #2 (id=9347)     : Apply Aura (6) | Taunt (11)
                    Base Value: 200 | Scaled Value: 200
-Description      : The $?s108499[Voidlord][Voidwalker] taunts the target to attack it, and increases threat that it generates against the target by for $d.
+Description      : The $?s108499[Voidlord][Voidwalker] taunts the target to attack it for $d, and increases its threat against the target.
 
 |cFFFFFFFFAuto-Cast:|r
 Taunts the current target if it is not attacking the $?s108499[Voidlord][Voidwalker] and taunts any target who attacks its master.
@@ -2414,6 +2414,9 @@ Effects          :
 #1 (id=57423)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 100 | Scaled Value: 100
                    Affected Spells: Drain Life (89653)
+#2 (id=262269)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 2 (108)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 12
+                   Affected Spells: Drain Life (689)
 Description      : Increases the healing of your Drain Life by $s1%.
 
 Name             : Glyph of Ember Tap (Destruction) (id=63304) [Spell Family (5), Passive, Hidden] 
@@ -2684,14 +2687,14 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68066)    : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75000 | Misc Value: 0x7f
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 0x7f
 #2 (id=124552)   : Apply Aura (6) | Unknown effect sub type (429)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #3 (id=92147)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000
                    Affected Spells: Doom (603), Touch of Chaos (103964), Soul Fire (104027), Chaos Wave (124915), Immolation Aura (129476), Demonbolt (157695)
 #4 (id=251445)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Misc Value: 22
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Misc Value: 22
                    Affected Spells: Doom (603), Touch of Chaos (103964), Soul Fire (104027), Chaos Wave (124915), Immolation Aura (129476), Demonbolt (157695)
 Description      : Increases all damage done by you and your demon servants by $s1%.
 
@@ -2897,7 +2900,7 @@ Description      : $@spelldesc27243
 
 Name             : Drain Life (id=89653) [Spell Family (5)] 
 Class            : Warlock
-Affecting spells : Glyph of Drain Life (63302), Kil'jaeden's Cunning (137587)
+Affecting spells : Glyph of Drain Life (63302), Harvest Life (108371), Kil'jaeden's Cunning (137587)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .x...... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3568,8 +3571,11 @@ Effects          :
 #1 (id=119453)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 22
                    Affected Spells: Drain Life (689)
-#2 (id=119454)   : Dummy (3)
+#2 (id=119454)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 100 | Scaled Value: 100
+                   Affected Spells: Drain Life (89653)
+#3 (id=262268)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 2 (108)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 12
                    Affected Spells: Drain Life (689)
 Description      : Drain Life deals $s1% more damage and $s2% more healing.
 
@@ -3676,7 +3682,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=119636)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 5 | Misc Value 2: 0xe655
+                   Base Value: 20 | Scaled Value: 20
 #2 (id=242865)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 23
                    Affected Spells: Immolation (20153), Doom Bolt (85692)
@@ -3883,10 +3889,10 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=119851)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.725) | SP Coefficient: 1.70100 | Radius: 0 - 10 yards
+                   Base Value: 1 | Scaled Value: 0 (avg=1.725) | SP Coefficient: 2.04100 | Radius: 0 - 10 yards
 #2 (id=119852)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | Radius: 10 yards
-Description      : Target enemy instantly explodes, dealing ${40*(100+$77220m1)/100/100*$m1)} Fire damage to all enemies within $A1 yards of the target$?s56235[ and reducing their movement speed by $s2% for $d.][.
+Description      : Target enemy instantly explodes, dealing ${35*(100+$77220m1)/100/100*$m1)} Fire damage to all enemies within $A1 yards of the target$?s56235[ and reducing their movement speed by $s2% for $d.][.
 
 If the target is afflicted by Immolate, their movement speed is reduced by $s2% for $17962d.]
 
@@ -4094,7 +4100,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
 #3 (id=181888)   : Apply Aura (6) | Unknown effect sub type (305)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000
-Description      : Iincrease your movement speed by $s1%, but also deals damage to you equal to $s2% of your maximum health per second. Movement-impairing effects may not reduce you below $s3% of normal movement speed. Lasts $d.
+Description      : Increase your movement speed by $s1%, but also deals damage to you equal to $s2% of your maximum health per second. Movement-impairing effects may not reduce you below $s3% of normal movement speed. Lasts $d.
 Tooltip          : Movement speed increased by $s1%.
 
 Name             : Chaotic Energy (id=111546) [Spell Family (5), Passive, Hidden] 
@@ -4549,11 +4555,12 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=126900)   : Apply Aura (6) | Unknown effect sub type (318)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 33554432
-Description      : Your soul is infused with demonic knowledge, increasing your mastery by $113861m1% for $113861d.$?s56228[
+Description      : Your soul is infused with demonic knowledge, increasing your mastery by ${$113861m1*$<Coefficient>}.1% for $113861d.$?s56228[
 
 |cFFFFFFFFPassive:|r
 Increases your mastery by ${$113861m1/$56228m1}%. This effect is disabled while on cooldown.][]
 Tooltip          : Mastery increased by $s1%.
+Variables        : $Coefficient=${0.75}
 
 Name             : Demonic Gateway (id=113886) [Spell Family (5)] 
 Class            : Warlock
@@ -4647,7 +4654,7 @@ Class            : Destruction Warlock
 Resource         : 1 Burning Ember
 Spell Level      : 15
 GCD              : 1 seconds
-Affecting spells : Glyph of Ember Tap (63304), Mastery: Emberstorm (77220), Metamorphosis (103958), Kil'jaeden's Cunning (137587)
+Affecting spells : Glyph of Ember Tap (63304), Mastery: Emberstorm (77220), Metamorphosis (103958), Kil'jaeden's Cunning (137587), Searing Flames (174848)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4662,7 +4669,7 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150
 #3 (id=181881)   : Apply Aura (6) | Periodic Heal%: every 2 seconds (20)
                    Base Value: 3 | Scaled Value: 3
-Description      : $?s63304[Heals ${(($m1+$m1*$77220m1*.01)*16/11*$<masteryMod>)}.2% of your health over $d.][Heals ${($m1+$m1*$77220m1*.01*$<masteryMod>)}.2% of your health.]
+Description      : $?s63304[Heals ${(($m1+$m1*$77220m1*.01)*1.4*$<masteryMod>)}.2% of your health over $d.][Heals ${($m1+$m1*$77220m1*.01*$<masteryMod>)}.2% of your health.]
 Tooltip          : $w3% of your health restored every $t3 sec.
 Variables        : $masteryMod=${$cond($gt($pl,79),1,0)}
 
@@ -6486,6 +6493,44 @@ Description      : $@spelldesc348
 Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 Variables        : $mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]
 
+Name             : Grimoire: Doomguard (Summon) (id=157900) 
+Class            : Warlock
+Range            : 40 yards
+GCD              : 1.5 seconds
+Duration         : 22 seconds
+Cooldown         : 120 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=220223)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
+#2 (id=220224)   : Summon (28)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 78158 | Misc Value 2: 0xda5 | Radius: 5 yards
+Description      : Summons a Doomguard who attacks the target for $108501s1 sec.
+
+Name             : Grimoire: Infernal (Summon) (id=157901) 
+Class            : Warlock
+Range            : 40 yards
+GCD              : 1.5 seconds
+Duration         : 22 seconds
+Cooldown         : 120 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=220225)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
+#2 (id=220226)   : Summon (28)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 78217 | Misc Value 2: 0xda6 | Radius: 5 yards
+Description      : Summons an Infernal who attacks the target for $108501s1 sec.
+
 Name             : Warlock (id=157903) [Passive, Hidden] 
 Class            : Warlock
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -6718,7 +6763,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=233398)   : Apply Aura (6) | Unknown effect sub type (405)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 1792
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 1792
 Description      : You gain $s1% more of the Critical Strike stat from all sources.
 
 Name             : Eradication (id=165367) [Passive] 
@@ -6964,7 +7009,7 @@ Effects          :
 #1 (id=244288)   : Unknown effect type (174) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Radius: 100 yards
 Description      : When you or your demon deal damage, there is a chance to trigger Demonic Synergy, granting the other one $171982s1% increased damage for $171982d.
-Tooltip          : Damage done by Warlock and demon pet have a chance to grant each other $171982s1% increased damage for $171982d.
+Tooltip          : When they deal damage, the Warlock and the Warlock's demon pet have a chance to grant each other $171982s1% increased damage for $171982d.
 
 Name             : Demonic Synergy (id=171982) [Spell Family (5)] 
 Class            : Warlock
@@ -6994,8 +7039,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=249568)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50
+#1 (id=249568)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 3
+                   Affected Spells: Ember Tap (114635)
 #2 (id=249569)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 14
 Description      : Ember Tap causes $s1% more healing, and refunds $s2% of its Burning Ember cost.

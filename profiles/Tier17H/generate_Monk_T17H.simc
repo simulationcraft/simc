@@ -86,8 +86,8 @@ finger1=spellbound_solium_band_of_sorcerous_invincibility,id=118303,enchant=gift
 finger2=stonefist_band,id=113938,bonus_id=566,enchant=gift_of_versatility
 trinket1=blast_furnace_door,id=113893,bonus_id=566
 trinket2=pillar_of_the_earth,id=113650,bonus_id=566
-main_hand=the_bladefist,id=113591,bonus_id=566,enchant_id=5352
-off_hand=the_bladefist,id=113591,bonus_id=566,enchant_id=5352
+main_hand=iron_soldiers_saber,id=113980,bonus_id=566,enchant_id=5352
+off_hand=iron_soldiers_saber,id=113980,bonus_id=566,enchant_id=5352
 save=Monk_Brewmaster_1h_CE_T17H.simc
 
 # Brewmaster 1h Serenity

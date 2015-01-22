@@ -764,6 +764,24 @@ bool parse_maximize_reporting( sim_t*             sim,
 
   return true;
 }
+
+/**
+ * Parse threads option, and if equal or lower than 0, adjust
+ * the number of threads to the number of cpu cores minus the absolute value given as a thread option.
+ * So eg. threads=-2 on a 8 core machine will result in 6 threads.
+ */
+void adjust_threads( int& threads )
+{
+  // This is to resolve https://code.google.com/p/simulationcraft/issues/detail?id=2305
+  int max_threads = sc_thread_t::cpu_thread_count();
+  if ( threads <= 0 && max_threads > 0 ) //max_threads will return 0 if it has no clue how many threads it can use.
+  {
+    threads *= -1;
+    if ( threads <= max_threads )
+      threads = max_threads - threads;
+  }
+}
+
 // Proxy cast ===============================================================
 
 struct proxy_cast_check_t : public event_t
@@ -2859,16 +2877,7 @@ void sim_t::setup( sim_control_t* c )
     print_options();
   }
 
-#if defined( SC_STD_THREAD ) || defined( SC_OSX )
-  // This is to resolve https://code.google.com/p/simulationcraft/issues/detail?id=2305
-  int max_threads = util::cpu_thread_count();
-  if ( threads <= 0 && max_threads > 0 ) //max_threads will return 0 if it has no clue how many threads it can use.
-  {
-    threads *= -1;
-    if ( threads <= max_threads )
-      threads = max_threads - threads;
-  }
-#endif // SC_STD_THREAD
+  adjust_threads( threads );
 
   if ( log )
   {

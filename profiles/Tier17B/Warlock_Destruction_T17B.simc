@@ -3,7 +3,7 @@ level=100
 race=dwarf
 role=spell
 position=back
-talents=0000113
+talents=0000213
 spec=destruction
 
 # This default action priority list is automatically created based on your character.
@@ -28,7 +28,7 @@ actions.precombat+=/incinerate
 
 # Executed every time the actor is available.
 
-actions=potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20
+actions=potion,name=draenic_intellect,if=buff.bloodlust.react&buff.dark_soul.remains>10|target.time_to_die<=25|buff.dark_soul.remains>10
 actions+=/berserking
 actions+=/blood_fury
 actions+=/arcane_torrent
@@ -42,6 +42,8 @@ actions+=/run_action_list,name=aoe,if=active_enemies>=6
 
 actions.single_target=havoc,target=2
 actions.single_target+=/shadowburn,if=talent.charred_remains.enabled&(burning_ember>=2.5|buff.dark_soul.up|target.time_to_die<10)
+actions.single_target+=/kiljaedens_cunning,if=(talent.cataclysm.enabled&!cooldown.cataclysm.remains)
+actions.single_target+=/kiljaedens_cunning,moving=1,if=!talent.cataclysm.enabled
 actions.single_target+=/cataclysm,if=active_enemies>1
 actions.single_target+=/fire_and_brimstone,if=buff.fire_and_brimstone.down&dot.immolate.remains<=action.immolate.cast_time&(cooldown.cataclysm.remains>action.immolate.cast_time|!talent.cataclysm.enabled)&active_enemies>4
 actions.single_target+=/immolate,cycle_targets=1,if=remains<=cast_time&(cooldown.cataclysm.remains>cast_time|!talent.cataclysm.enabled)
@@ -72,6 +74,8 @@ actions.aoe=rain_of_fire,if=remains<=tick_time
 actions.aoe+=/havoc,target=2
 actions.aoe+=/shadowburn,if=buff.havoc.remains
 actions.aoe+=/chaos_bolt,if=buff.havoc.remains>cast_time&buff.havoc.stack>=3
+actions.aoe+=/kiljaedens_cunning,if=(talent.cataclysm.enabled&!cooldown.cataclysm.remains)
+actions.aoe+=/kiljaedens_cunning,moving=1,if=!talent.cataclysm.enabled
 actions.aoe+=/cataclysm
 actions.aoe+=/fire_and_brimstone,if=buff.fire_and_brimstone.down
 actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&!dot.immolate.ticking

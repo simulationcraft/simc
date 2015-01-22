@@ -1155,17 +1155,51 @@ buff_t* buff_t::find( const std::vector<buff_t*>& buffs,
   return NULL;
 }
 
+namespace
+{
+  struct potion_spell_filter
+  {
+    unsigned spell_id;
+
+    potion_spell_filter( unsigned sid ) : spell_id( sid )
+    { }
+
+    bool operator()( const item_data_t* item ) const
+    {
+      for ( size_t spell_idx = 0, end = sizeof_array( item -> id_spell ); spell_idx < end; spell_idx++ )
+      {
+        if ( item -> id_spell[ spell_idx ] == static_cast<int>( spell_id ) )
+        {
+          return true;
+        }
+      }
+
+      return false;
+    }
+  };
+}
+
 static buff_t* find_potion_buff( const std::vector<buff_t*>& buffs, player_t* source )
 {
   for ( size_t i = 0, end = buffs.size(); i < end; i++ )
   {
     buff_t* b = buffs[ i ];
     player_t* p = b -> player;
+    if ( b -> data().id() == 0 )
+    {
+      continue;
+    }
 
-    const item_data_t* item = unique_gear::find_item_by_spell( p -> dbc, b -> data().id() );
-    if ( item && item -> item_class == 0 && item -> item_subclass == ITEM_SUBCLASS_POTION &&
-         ( ! source || ( source == b -> source ) ) )
+    if ( source && source != b -> source )
+    {
+      continue;
+    }
+
+    const item_data_t* item = dbc::find_potion( maybe_ptr( p -> dbc.ptr ), potion_spell_filter( b -> data().id() ) );
+    if ( item )
+    {
       return b;
+    }
   }
 
   return 0;

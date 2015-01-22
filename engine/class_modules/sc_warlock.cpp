@@ -8,8 +8,6 @@
 // ==========================================================================
 //
 // TODO:
-// check pet coefficients
-// Update action lists, especially AoE
 // Proper Stats calc for childs of cataclysm
 // ==========================================================================
 namespace { // unnamed namespace
@@ -305,7 +303,7 @@ public:
     gain_t* immolate;
     gain_t* immolate_fnb;
     gain_t* immolate_t17_2pc;
-    gain_t* shadowburn;
+    gain_t* shadowburn_ember;
     gain_t* miss_refund;
     gain_t* siphon_life;
     gain_t* seed_of_corruption;
@@ -1072,7 +1070,7 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   {
     double mastery = o() -> cache.mastery();
     if ( wod_hotfix )
-      mastery *= 1.33;
+      mastery *= 4.0 / 3.0;
     m *= 1.0 + mastery * o() -> mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
   }
 
@@ -1260,8 +1258,8 @@ struct voidwalker_pet_t: public warlock_pet_t
 
 struct infernal_pet_t: public warlock_pet_t
 {
-  infernal_pet_t( sim_t* sim, warlock_t* owner ):
-    warlock_pet_t( sim, owner, "infernal", PET_INFERNAL, true )
+  infernal_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "infernal"   ):
+    warlock_pet_t( sim, owner, name, PET_INFERNAL, name != "infernal" )
   {
     owner_coeff.ap_from_sp = 0.065934;
   }
@@ -1287,8 +1285,8 @@ struct infernal_pet_t: public warlock_pet_t
 
 struct doomguard_pet_t: public warlock_pet_t
 {
-  doomguard_pet_t( sim_t* sim, warlock_t* owner ):
-    warlock_pet_t( sim, owner, "doomguard", PET_DOOMGUARD, true )
+    doomguard_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "doomguard"  ):
+    warlock_pet_t( sim, owner, name, PET_DOOMGUARD, name != "doomguard" )
   {
     owner_coeff.ap_from_sp = 0.065934;
     action_list_str = "doom_bolt";
@@ -1610,7 +1608,7 @@ struct inner_demon_t : public pet_t
     {
       double mastery = o() -> cache.mastery();
       if ( wod_hotfix )
-        mastery *= 1.33;
+        mastery *= 4.0 / 3.0;
       m *= 1.0 + mastery * o() -> mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
     }
 
@@ -1954,7 +1952,7 @@ public:
     {
       double mastery = p() -> cache.mastery();
       if ( p() -> wod_hotfix )
-        mastery *= 1.33;
+        mastery *= 4.0 / 3.0;
       pm *= 1.0 + mastery * p() -> mastery_spells.master_demonologist -> effectN( 3 ).mastery_value();
     }
 
@@ -2214,7 +2212,7 @@ struct doom_t: public warlock_spell_t
 
     double mastery = p() -> cache.mastery();
     if ( p() -> wod_hotfix )
-      mastery *= 1.33;
+      mastery *= 4.0 / 3.0;
 
     am *= 1.0 + mastery * p() -> mastery_spells.master_demonologist -> effectN( 3 ).mastery_value();
 
@@ -2483,34 +2481,36 @@ struct shadow_bolt_t: public warlock_spell_t
 
 struct shadowburn_t: public warlock_spell_t
 {
-  struct mana_event_t: public event_t
+  struct resource_event_t: public event_t
   {
     shadowburn_t* spell;
-    gain_t* gain;
+    gain_t* ember_gain;
+    player_t* target;
 
-    mana_event_t( warlock_t* p, shadowburn_t* s ):
-      event_t( *p, "shadowburn_mana_return" ), spell( s ), gain( p -> gains.shadowburn )
+    resource_event_t( warlock_t* p, shadowburn_t* s, player_t* t ):
+      event_t( *p, "shadowburn_execute_gain" ), spell( s ), ember_gain( p -> gains.shadowburn_ember), target(t)
     {
-      add_event( spell -> mana_delay );
+      add_event( spell -> delay );
     }
 
     virtual void execute()
     {
-      p() -> resource_gain( RESOURCE_MANA, p() -> resources.max[RESOURCE_MANA] * spell -> mana_amount, gain );
+      if (target -> is_sleeping()) //if it is dead return ember, else return mana
+      {
+          p() -> resource_gain(RESOURCE_BURNING_EMBER, 2, ember_gain); //TODO look up ember amount in shadowburn spell
+      }
     }
   };
 
-  mana_event_t* mana_event;
-  double mana_amount;
-  timespan_t mana_delay;
+  resource_event_t* resource_event;
+  timespan_t delay;
 
   shadowburn_t( warlock_t* p ):
-    warlock_spell_t( p, "Shadowburn" ), mana_event( 0 )
+    warlock_spell_t( p, "Shadowburn" ), resource_event( 0 )
   {
     min_gcd = timespan_t::from_millis( 500 );
     havoc_consume = 1;
-    mana_delay = data().effectN( 1 ).trigger() -> duration();
-    mana_amount = p -> find_spell( data().effectN( 1 ).trigger() -> effectN( 1 ).base_value() ) -> effectN( 1 ).percent();
+    delay = data().effectN( 1 ).trigger() -> duration();
     if ( p -> wod_hotfix )
       base_multiplier *= 1.08;
   }
@@ -2519,7 +2519,8 @@ struct shadowburn_t: public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    mana_event = new ( *sim ) mana_event_t( p(), this );
+    resource_event = new ( *sim ) resource_event_t( p(), this, s -> target );
+      
   }
 
   virtual double cost() const
@@ -4920,7 +4921,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   {
     double mastery = cache.mastery();
     if ( wod_hotfix )
-      mastery *= 1.33;
+      mastery *= 4.0 / 3.0;
     m *= 1.0 + mastery * mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
   }
 
@@ -5009,19 +5010,19 @@ double warlock_t::composite_rating_multiplier( rating_e rating ) const
     m *= 1.0 + spec.eradication -> effectN( 1 ).percent();
     break;
   case RATING_SPELL_CRIT:
-    if ( wod_hotfix )
+    if ( wod_hotfix && specialization() == WARLOCK_DESTRUCTION )
       m *= 1.15;
     else
       m *= 1.0 + spec.devastation -> effectN( 1 ).percent();
     break;
   case RATING_MELEE_CRIT:
-    if ( wod_hotfix )
+    if ( wod_hotfix && specialization() == WARLOCK_DESTRUCTION )
       m *= 1.15;
     else
       m *= 1.0 + spec.devastation -> effectN( 1 ).percent();
     break;
   case RATING_RANGED_CRIT:
-    if ( wod_hotfix )
+    if ( wod_hotfix && specialization() == WARLOCK_DESTRUCTION )
       m *= 1.15;
     else
       m *= 1.0 + spec.devastation -> effectN( 1 ).percent();
@@ -5150,7 +5151,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "service_voidwalker"    ) a = new grimoire_of_service_t( this, "voidwalker" );
   else if ( action_name == "service_infernal"      ) a = new grimoire_of_service_t( this, "infernal" );
   else if ( action_name == "service_doomguard"     ) a = new grimoire_of_service_t( this, "doomguard" );
-  else if ( action_name == "service_pet"           ) a = new grimoire_of_service_t( this, default_pet );
+  else if ( action_name == "service_pet"           ) a = new grimoire_of_service_t( this,  talents.demonic_servitude -> ok() ? "doomguard" : default_pet );
   else return player_t::create_action( action_name, options_str );
 
   a -> parse_options( options_str );
@@ -5189,8 +5190,8 @@ pet_t* warlock_t::create_pet( const std::string& pet_name,
   if ( pet_name == "service_imp"          ) return new         imp_pet_t( sim, this, pet_name );
   if ( pet_name == "service_succubus"     ) return new    succubus_pet_t( sim, this, pet_name );
   if ( pet_name == "service_voidwalker"   ) return new  voidwalker_pet_t( sim, this, pet_name );
-  if ( pet_name == "service_doomguard"    ) return new   doomguard_pet_t( sim, this           );
-  if ( pet_name == "service_infernal"     ) return new    infernal_pet_t( sim, this           );
+  if ( pet_name == "service_doomguard"    ) return new   doomguard_pet_t( sim, this, pet_name );
+  if ( pet_name == "service_infernal"     ) return new    infernal_pet_t( sim, this, pet_name );
 
   return 0;
 }
@@ -5493,7 +5494,7 @@ void warlock_t::init_gains()
   gains.immolate = get_gain( "immolate" );
   gains.immolate_fnb = get_gain( "immolate_fnb" );
   gains.immolate_t17_2pc = get_gain( "immolate_t17_2pc" );
-  gains.shadowburn = get_gain( "shadowburn" );
+  gains.shadowburn_ember = get_gain( "shadowburn_ember" );
   gains.miss_refund = get_gain( "miss_refund" );
   gains.siphon_life = get_gain( "siphon_life" );
   gains.seed_of_corruption = get_gain( "seed_of_corruption" );
@@ -5580,7 +5581,7 @@ void warlock_t::apl_precombat()
     if ( level == 100 && specialization() == WARLOCK_DEMONOLOGY )
       action_list_str += "/potion,name=draenic_intellect,if=buff.bloodlust.react|(buff.dark_soul.up&(trinket.proc.any.react|trinket.stacking_proc.any.react>6)&!buff.demonbolt.remains)|target.health.pct<20";
     else if ( level == 100 )
-      action_list_str += "/potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20";
+      action_list_str += "/potion,name=draenic_intellect,if=buff.bloodlust.react&buff.dark_soul.remains>10|target.time_to_die<=25|buff.dark_soul.remains>10";
     else if ( level >= 85 && specialization() == WARLOCK_DEMONOLOGY )
       action_list_str += "/potion,name=jade_serpent,if=buff.bloodlust.react|(buff.dark_soul.up&(trinket.proc.any.react|trinket.stacking_proc.any.react>6)&!buff.demonbolt.remains)|target.health.pct<20";
     else if ( level >= 85 )

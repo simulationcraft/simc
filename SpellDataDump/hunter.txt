@@ -1,4 +1,4 @@
-SimulationCraft 603-23 for World of Warcraft 6.0.3 Live (build level 19342)
+SimulationCraft 603-25 for World of Warcraft 6.0.3 Live (build level 19342)
 
 Name             : Mend Pet (id=136) [Scaling Spell (3), Spell Family (9)] 
 Class            : Hunter
@@ -130,7 +130,7 @@ Spell Level      : 28
 GCD              : 1 seconds
 Duration         : 60 seconds
 Cooldown         : 30 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Trap Cooldown Reduction (61255), Trap Mastery (63458), Trap Launcher (77769), Camouflage (119450), Enhanced Traps (157751)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Trap Cooldown Reduction (61255), Trap Launcher (77769), Camouflage (119450), Enhanced Traps (157751)
 Attributes       : ........ ........ x...x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -354,7 +354,7 @@ Range            : 40 yards
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Duration         : 20 seconds
-Cooldown         : 30 seconds
+Cooldown         : 24 seconds
 Affecting spells : Freezing Trap (3355), Camouflage (51755), Trap Cooldown Reduction (61255), Trap Mastery (63458), Camouflage (119450), Lone Wolf (155228), Guide: Sharpshooting (178549)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -613,7 +613,7 @@ Spell Level      : 46
 GCD              : 1 seconds
 Duration         : 60 seconds
 Cooldown         : 30 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Trap Cooldown Reduction (61255), Trap Mastery (63458), Trap Launcher (77769), Camouflage (119450), Enhanced Traps (157751)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Trap Cooldown Reduction (61255), Trap Launcher (77769), Camouflage (119450), Enhanced Traps (157751)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -671,7 +671,7 @@ Spell Level      : 38
 GCD              : 1 seconds
 Duration         : 60 seconds
 Cooldown         : 30 seconds
-Affecting spells : Freezing Trap (3355), Camouflage (51755), Trap Cooldown Reduction (61255), Trap Mastery (63458), Trap Launcher (77769), Camouflage (119450), Enhanced Traps (157751)
+Affecting spells : Freezing Trap (3355), Camouflage (51755), Trap Cooldown Reduction (61255), Trap Launcher (77769), Camouflage (119450), Enhanced Traps (157751)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3035,10 +3035,7 @@ Effects          :
                    Affected Spells: Black Arrow (3674), Explosive Trap (13812)
 #3 (id=57616)    : Apply Aura (6) | Add Flat Modifier: Spell Tick Time (107)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 8
-#4 (id=139435)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
-                   Base Value: -6000 | Scaled Value: -6000 | Misc Value: 11
-                   Affected Spells: Freezing Trap (1499), Black Arrow (3674), Ice Trap (13809), Explosive Trap (13813)
-Description      : Reduces the cooldown of all traps and Black Arrow by $/1000;s4 sec, and provides additional benefits on each Trap:
+Description      : Provides benefits to each Trap:
 
 Ice Trap and Freezing Trap - Increases duration by $s1%.
 
@@ -3227,11 +3224,11 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=67988)    : Apply Aura (6) | Unknown effect sub type (429)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000
 #2 (id=90635)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 200 | Scaled Value: 200
+                   Base Value: 225 | Scaled Value: 225
 #3 (id=171318)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000
                    Affected Spells: A Murder of Crows (131894), A Murder of Crows (131900)
 Description      : Increases the damage done by your pets by $s1%.
 
@@ -3681,7 +3678,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 0 (avg=1.1)
 #2 (id=93521)    : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
                    Base Value: 1 | Scaled Value: 0 (avg=0.423)
-Description      : The Spirit Beast heals the current friendly target for ${$m1+(($RAP*0.35)*0.75)} plus an additional ${$m2+(($RAP*0.35)*0.5)} over $d.
+Description      : The Spirit Beast heals the current friendly target for ${$m1+(($RAP*0.35)*3)} plus an additional ${$m2+(($RAP*0.35)*2)} over $d.
 Tooltip          : Heals $w2 every $t2 sec for $d.
 
 Name             : Qiraji Fortitude (Exotic Ability) (id=90364) [Spell Family (9)] 
@@ -5461,7 +5458,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 #2 (id=219909)   : Weapon Damage% (31)
                    Base Value: 785 | Scaled Value: 7.85 (avg=0)
-Description      : You attempt to finish the wounded target off, firing a long range attack dealing $sw2 Physical damage. Kill Shot can only be used on enemies that have 35% or less health.  If the target dies, the Hunter will regain $164851s1% of maximum health.
+Description      : You attempt to finish the wounded target off, firing a long range attack dealing $sw2 Physical damage. Kill Shot can only be used on enemies that have 35% or less health. If the target dies, the Hunter will regain $164851s1% of maximum health.
 
 If Kill Shot fails to kill the target, the cooldown is instantly reset, but cannot be reset more often than once every $90967d.
 
@@ -5583,7 +5580,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=219961)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 11
+                   Base Value: -33 | Scaled Value: -33 | Misc Value: 11
                    Affected Spells: Freezing Trap (1499), Ice Trap (13809), Explosive Trap (13813), Bullheaded (63896)
 Description      : Reduces the cooldown on all your traps by $s1%.
 

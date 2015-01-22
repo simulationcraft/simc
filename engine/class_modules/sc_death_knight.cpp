@@ -4150,6 +4150,7 @@ struct festering_strike_t : public death_knight_melee_attack_t
     if ( p -> wod_hotfix )
     {
       weapon_multiplier -= 0.1;
+      weapon_multiplier *= 1.28;
     }
 
     if ( p -> spec.reaping -> ok() )
@@ -5224,6 +5225,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       {
         weapon_multiplier -= 0.04;
         weapon_multiplier *= 1.5;
+        weapon_multiplier *= 1.28;
       }
     }
 
@@ -5250,6 +5252,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     {
       weapon_multiplier -= 0.02;
       weapon_multiplier *= 1.5;
+      weapon_multiplier *= 1.28;
     }
 
     // TODO-WOD: Do we need to inherit damage or is it a separate roll in WoD?
@@ -6775,20 +6778,18 @@ void death_knight_t::init_action_list()
     bos_aoe -> add_action( this, "Death Coil", "if=buff.sudden_doom.react" );
 
     action_priority_list_t* spread = get_action_priority_list( "spread" );
-    spread -> add_action( "blood_boil,cycle_targets=1,if=!disease.ticking&!talent.necrotic_plague.enabled" );
-    spread -> add_action( this, "Outbreak", "if=!talent.necrotic_plague.enabled&!disease.ticking" );
-    spread -> add_action( this, "Outbreak", "if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking" );
-    spread -> add_action( this, "Plague Strike", "if=!talent.necrotic_plague.enabled&!disease.ticking" );
-    spread -> add_action( this, "Plague Strike", "if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking" );
+    spread -> add_action( this, "Blood Boil", "cycle_targets=1,if=!disease.min_ticking" );
+    spread -> add_action( this, "Outbreak", "if=!disease.min_ticking" );
+    spread -> add_action( this, "Plague Strike", "if=!disease.min_ticking" );
 
     //decide between single_target and aoe rotation
-    def -> add_action( "run_action_list,name=aoe,if=active_enemies>=2" );
-    def -> add_action( "run_action_list,name=single_target,if=active_enemies<2" );
+    def -> add_action( "run_action_list,name=aoe,if=(!talent.necrotic_plague.enabled&active_enemies>=2)|active_enemies>=4" );
+    def -> add_action( "run_action_list,name=single_target,if=(!talent.necrotic_plague.enabled&active_enemies<2)|active_enemies<4" );
     // Plague Leech
     st -> add_talent( this, "Plague Leech", "if=(cooldown.outbreak.remains<1)&((blood<1&frost<1)|(blood<1&unholy<1)|(frost<1&unholy<1))" );
     st -> add_talent( this, "Plague Leech", "if=((blood<1&frost<1)|(blood<1&unholy<1)|(frost<1&unholy<1))&disease.min_remains<3" );
     st -> add_talent( this, "Plague Leech", "if=disease.min_remains<1" );
-    st -> add_action( this, "Outbreak", "if=!talent.necrotic_plague.enabled&!disease.ticking" );
+    st -> add_action( this, "Outbreak", "if=!disease.min_ticking" );
     st -> add_talent( this, "Unholy Blight", "if=!talent.necrotic_plague.enabled&disease.min_remains<3" );
     st -> add_talent( this, "Unholy Blight", "if=talent.necrotic_plague.enabled&dot.necrotic_plague.remains<1" );
     st -> add_action( this, "Death Coil", "if=runic_power>90" );
@@ -6805,13 +6806,14 @@ void death_knight_t::init_action_list()
     st -> add_talent( this, "Blood Tap", "if=((target.health.pct-3*(target.health.pct%target.time_to_die))<=" + soul_reaper_pct + ")&cooldown.soul_reaper.remains=0" );
     st -> add_action( this, "Death and Decay", "if=unholy=2" );
     st -> add_talent( this, "Defile", "if=unholy=2" );
-    st -> add_action( this, "Plague Strike", "if=!disease.ticking&unholy=2" );
+    st -> add_action( this, "Plague Strike", "if=!disease.min_ticking&unholy=2" );
     st -> add_action( this, "Scourge Strike", "if=unholy=2" );
     st -> add_action( this, "Death Coil", "if=runic_power>80" );
+    st -> add_action( this, "Festering Strike", "if=talent.necrotic_plague.enabled&talent.unholy_blight.enabled&dot.necrotic_plague.remains<cooldown.unholy_blight.remains%2" );
     st -> add_action( this, "Festering Strike", "if=blood=2&frost=2&(((Frost-death)>0)|((Blood-death)>0))" );
     st -> add_action( this, "Festering Strike", "if=(blood=2|frost=2)&(((Frost-death)>0)&((Blood-death)>0))" );
     st -> add_talent( this, "Defile", "if=blood=2|frost=2" );
-    st -> add_action( this, "Plague Strike", "if=!disease.ticking&(blood=2|frost=2)" );
+    st -> add_action( this, "Plague Strike", "if=!disease.min_ticking&(blood=2|frost=2)" );
     st -> add_action( this, "Scourge Strike", "if=blood=2|frost=2" );
     st -> add_action( this, "Festering Strike", "if=((Blood-death)>1)" );
     st -> add_action( this, "Blood Boil", "if=((Blood-death)>1)" );
@@ -6821,7 +6823,7 @@ void death_knight_t::init_action_list()
     st -> add_action( this, "Death and Decay" );
     st -> add_talent( this, "Defile" );
     st -> add_talent( this, "Blood Tap", "if=cooldown.defile.remains=0" );
-    st -> add_action( this, "Plague Strike", "if=!disease.ticking" );
+    st -> add_action( this, "Plague Strike", "if=!disease.min_ticking" );
     st -> add_action( this, "Dark Transformation" );
     st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10&(buff.sudden_doom.react|(buff.dark_transformation.down&unholy<=1))" );
     st -> add_action( this, "Death Coil", "if=buff.sudden_doom.react|(buff.dark_transformation.down&unholy<=1)" );
@@ -6838,7 +6840,7 @@ void death_knight_t::init_action_list()
 
     //AoE
     aoe -> add_talent( this, "Unholy Blight" );
-    aoe -> add_action( "run_action_list,name=spread,if=(!dot.blood_plague.ticking|!dot.frost_fever.ticking)&!dot.necrotic_plague.ticking" );
+    aoe -> add_action( "run_action_list,name=spread,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking|!dot.necrotic_plague.ticking" );
     // AoE defile
     aoe -> add_talent( this, "Defile" );
     // AoE Breath of Sindragosa in use, cast and then keep up
@@ -7493,7 +7495,7 @@ double death_knight_t::composite_rating_multiplier( rating_e rating ) const
     case RATING_SPELL_HASTE:
     case RATING_MELEE_HASTE:
     case RATING_RANGED_HASTE:
-      m *= 1.0 + ( wod_hotfix ? 0.2 : spec.icy_talons -> effectN( 3 ).percent() );
+      m *= 1.0 + ( wod_hotfix && specialization() == DEATH_KNIGHT_FROST ? 0.2 : spec.icy_talons -> effectN( 3 ).percent() );
       break;
     default:
       break;

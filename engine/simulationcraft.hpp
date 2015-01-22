@@ -6,7 +6,7 @@
 #define SIMULATIONCRAFT_H
 
 #define SC_MAJOR_VERSION "603"
-#define SC_MINOR_VERSION "23"
+#define SC_MINOR_VERSION "25"
 #define SC_USE_PTR ( 1 )
 #define SC_BETA ( 0 )
 #define SC_BETA_STR "wod"
@@ -1140,7 +1140,6 @@ namespace util
 {
 double wall_time();
 double cpu_time();
-int cpu_thread_count();
 
 template <typename T>
 T ability_rank( int player_level, T ability_value, int ability_level, ... );
@@ -4588,6 +4587,7 @@ struct player_t : public actor_t
 
   struct buffs_t
   {
+    buff_t* angelic_feather;
     buff_t* aspect_of_the_fox;
     buff_t* aspect_of_the_pack;
     buff_t* beacon_of_light;
@@ -5820,7 +5820,7 @@ struct action_t : public noncopyable
   void   check_spec( specialization_e );
   void   check_spell( const spell_data_t* );
   const char* name() const { return name_str.c_str(); }
-  virtual school_e get_school() const { return school; }; // Use when damage schools change during runtime.
+  virtual school_e get_school() const { return school; } // Use when damage schools change during runtime.
 
   static bool result_is_hit( result_e r )
   {
@@ -6398,7 +6398,7 @@ inline proc_types action_state_t::proc_type() const
 inline proc_types2 action_state_t::execute_proc_type2() const
 {
   // Bunch up all non-damaging harmful attacks that land into "hit"
-  if ( action -> harmful && ( action -> result_is_hit( result ) || action -> result_is_multistrike( result ) ) )
+  if ( action -> harmful && action -> result_is_hit_or_multistrike( result ) )
     return PROC2_LANDED;
   else if ( result == RESULT_DODGE )
     return PROC2_DODGE;
@@ -7130,9 +7130,10 @@ bool initialize_special_effect( special_effect_t& effect, const item_t& item, un
 
 const item_data_t* find_consumable( const dbc_t& dbc, const std::string& name, item_subclass_consumable type );
 const item_data_t* find_item_by_spell( const dbc_t& dbc, unsigned spell_id );
+const item_data_t* find_potion_by_spell( const dbc_t& dbc, unsigned spell_id );
 
 expr_t* create_expression( action_t* a, const std::string& name_str );
-};
+}
 
 // Consumable ===============================================================
 

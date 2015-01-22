@@ -11,7 +11,6 @@
 #include "sc_spell_data.inc"
 #include "sc_spell_lists.inc"
 #include "sc_extra_data.inc"
-#include "sc_item_data.inc"
 
 #if SC_USE_PTR
 #include "sc_scale_data_ptr.inc"
@@ -19,7 +18,6 @@
 #include "sc_spell_data_ptr.inc"
 #include "sc_spell_lists_ptr.inc"
 #include "sc_extra_data_ptr.inc"
-#include "sc_item_data_ptr.inc"
 #endif
 
 namespace { // ANONYMOUS namespace ==========================================
@@ -77,107 +75,12 @@ public:
 };
 spelltoken_t tokens;
 
-random_suffix_data_t nil_rsd;
-item_enchantment_data_t nil_ied;
-gem_property_data_t nil_gpd;
-item_upgrade_t nil_iu;
-item_upgrade_rule_t nil_iur;
-item_data_t nil_item_data;
 
-// ==========================================================================
-// Indices to provide log time, constant space access to spells, effects, and talents by id.
-// ==========================================================================
 
-/* id_function_policy and id_member_policy are here to give a standard interface
- * of accessing the id of a data type.
- * Eg. spell_data_t on which the id_function_policy is used has a function 'id()' which returns its id
- * and item_data_t on which id_member_policy is used has a member 'id' which stores its id.
- */
-struct id_function_policy
-{
-  template <typename T> static unsigned id( const T& t )
-  { return static_cast<unsigned>( t.id() ); }
-};
-
-struct id_member_policy
-{
-  template <typename T> static unsigned id( const T& t )
-  { return static_cast<unsigned>( t.id ); }
-};
-
-template <typename T, typename KeyPolicy = id_function_policy>
-class dbc_index_t
-{
-private:
-  typedef std::pair<T*, T*> index_t; // first = lowest data; second = highest data
-// array of size 1 or 2, depending on whether we have PTR data
-#if SC_USE_PTR == 0
-  index_t idx[ 1 ];
-#else
-  index_t idx[ 2 ];
-#endif
-
-  /* populate idx with pointer to lowest and highest data from a given list
-   */
-  void populate( index_t& idx, T* list )
-  {
-    assert( list );
-    idx.first = list;
-    for ( unsigned last_id = 0; KeyPolicy::id( *list ); last_id = KeyPolicy::id( *list ), ++list )
-    {
-      // Validate the input range is in fact sorted by id.
-      assert( KeyPolicy::id( *list ) > last_id ); ( void )last_id;
-    }
-    idx.second = list;
-  }
-
-  struct id_compare
-  {
-    bool operator () ( const T& t, unsigned int id ) const
-    { return KeyPolicy::id( t ) < id; }
-    bool operator () ( unsigned int id, const T& t ) const
-    { return id < KeyPolicy::id( t ); }
-    bool operator () ( const T& l, const T& r ) const
-    { return KeyPolicy::id( l ) < KeyPolicy::id( r ); }
-  };
-
-public:
-  // Initialize index from given list
-  void init( T* list, bool ptr )
-  {
-    assert( ! initialized( maybe_ptr( ptr ) ) );
-    populate( idx[ maybe_ptr( ptr ) ], list );
-  }
-
-  // Initialize index under the assumption that 'T::list( bool ptr )' returns a list of data
-  void init()
-  {
-    init( T::list( false ), false );
-    if ( SC_USE_PTR )
-      init( T::list( true ), true );
-  }
-
-  bool initialized( bool ptr = false ) const
-  { return idx[ maybe_ptr( ptr ) ].first != 0; }
-
-  // Return the item with the given id, or NULL.
-  // Always returns non-NULL.
-  T* get( bool ptr, unsigned id ) const
-  {
-    assert( initialized( maybe_ptr( ptr ) ) );
-    T* p = std::lower_bound( idx[ maybe_ptr( ptr ) ].first, idx[ maybe_ptr( ptr ) ].second, id, id_compare() );
-    if ( p != idx[ maybe_ptr( ptr ) ].second && KeyPolicy::id( *p ) == id )
-      return p;
-    else
-      return NULL;
-  }
-};
 
 dbc_index_t<spell_data_t> spell_data_index;
 dbc_index_t<spelleffect_data_t> spelleffect_data_index;
 dbc_index_t<talent_data_t> talent_data_index;
-dbc_index_t<item_data_t, id_member_policy> item_data_index;
-dbc_index_t<item_enchantment_data_t, id_member_policy> item_enchantment_data_index;
 
 std::vector< std::vector< const spell_data_t* > > class_family_index;
 std::vector< std::vector< const spell_data_t* > > ptr_class_family_index;
@@ -186,11 +89,11 @@ std::vector< std::vector< const spell_data_t* > > ptr_class_family_index;
 
 int dbc::build_level( bool ptr )
 {
-  return maybe_ptr( ptr ) ? 19342 : 19342;
+  return maybe_ptr( ptr ) ? 19480 : 19342;
 }
 
 const char* dbc::wow_version( bool ptr )
-{ return maybe_ptr( ptr ) ? "6.0.3" : "6.0.3"; }
+{ return maybe_ptr( ptr ) ? "6.1.0" : "6.0.3"; }
 
 const char* dbc::wow_ptr_status( bool ptr )
 { return ( maybe_ptr( ptr ) ?
@@ -226,68 +129,6 @@ std::size_t dbc::n_set_bonus( bool ptr )
   return n;
 }
 
-const item_data_t* dbc::items( bool ptr )
-{
-  ( void )ptr;
-
-  const item_data_t* p = __item_data;
-#if SC_USE_PTR
-  if ( ptr )
-    p = __ptr_item_data;
-#endif
-  return p;
-}
-
-size_t dbc::n_items( bool ptr )
-{
-  ( void )ptr;
-
-  size_t n = ITEM_SIZE;
-#if SC_USE_PTR
-  if ( ptr )
-    n = PTR_ITEM_SIZE;
-#endif
-
-  return n;
-}
-
-const item_enchantment_data_t* dbc::item_enchantments( bool ptr )
-{
-  ( void )ptr;
-
-  const item_enchantment_data_t* p = __spell_item_ench_data;
-#if SC_USE_PTR
-  if ( ptr )
-    p = __ptr_spell_item_ench_data;
-#endif
-  return p;
-}
-
-size_t dbc::n_item_enchantments( bool ptr )
-{
-  ( void )ptr;
-
-  size_t n = SPELL_ITEM_ENCH_SIZE;
-#if SC_USE_PTR
-  if ( ptr )
-    n = PTR_SPELL_ITEM_ENCH_SIZE;
-#endif
-
-  return n;
-}
-
-const gem_property_data_t* dbc::gem_properties( bool ptr )
-{
-  ( void )ptr;
-
-  const gem_property_data_t* p = __gem_property_data;
-#if SC_USE_PTR
-  if ( ptr )
-    p = __ptr_gem_property_data;
-#endif
-  return p;
-}
-
 /* Here we modify the spell data to match in-game values if the data differs thanks to bugs or hotfixes.
  *
  */
@@ -315,23 +156,6 @@ void dbc::apply_hotfixes()
   // Mage
 
   // Paladin
-  // Build Last Checked: 16309
-  // Description: Seal of Truth should be replacing Seal of Command but is missing its ReplaceId value
-  s = spell_data_t::find( 31801, false );
-  if ( s && s -> ok() && s -> effectN( 1 ).ok() )
-  {
-    const_cast<spell_data_t&>( *s )._replace_spell_id = 105361;
-  }
-  // For some reason, the proc chance listed for Divine Purpose in the DBC is now 100%.
-  // Hotfix it to the value used on the tooltip.
-  // FIXME: Use effectN( 1 ).percent() as proc chance instead ...............
-  s = spell_data_t::find( 86172, false );
-  s -> _proc_chance = s -> effectN( 1 ).base_value();
-  if ( SC_USE_PTR )
-  {
-    s = spell_data_t::find( 86172, true );
-    s -> _proc_chance = s -> effectN( 1 ).base_value();
-  }
 
   // Priest
 
@@ -436,13 +260,7 @@ void dbc::init()
   spell_data_index.init();
   spelleffect_data_index.init();
   talent_data_index.init();
-  item_data_index.init( __item_data, false );
-  item_enchantment_data_index.init( __spell_item_ench_data, false );
-
-#if SC_USE_PTR
-  item_data_index.init( __ptr_item_data, true );
-  item_enchantment_data_index.init( __ptr_spell_item_ench_data, true );
-#endif
+  init_item_data();
 
   // runtime linking, eg. from spell_data to all its effects
   spell_data_t::link( false );
@@ -1248,19 +1066,34 @@ double dbc_t::regen_base( pet_e t, unsigned level ) const
 int dbc_t::resolve_item_scaling( unsigned level ) const
 {
   assert( level > 0 && level <= MAX_LEVEL );
+#if SC_USE_PTR
+  return ptr ? __ptr_gt_item_scaling[level - 1] 
+             : __gt_item_scaling[level - 1];
+#else
   return __gt_item_scaling[ level - 1 ];
+#endif
 }
 
 double dbc_t::resolve_level_scaling( unsigned level ) const
 {
   assert( level > 0 && level <= MAX_LEVEL );
-  return _gt_resolve_dps_by_level[ level - 1 ];
+#if SC_USE_PTR
+  return ptr ? _ptr_gt_resolve_dps_by_level[level - 1]
+             : _gt_resolve_dps_by_level[level - 1];
+#else
+  return _gt_resolve_dps_by_level[level - 1];
+#endif
 }
 
 double dbc_t::avoid_per_str_agi_by_level( unsigned level ) const
 {
   assert( level > 0 && level <= MAX_LEVEL );
-  return _gt_avoid_per_str_agi_by_level[ level - 1 ];
+#if SC_USE_PTR
+  return ptr ? _ptr_gt_avoid_per_str_agi_by_level[level - 1]
+             : _gt_avoid_per_str_agi_by_level[level - 1];
+#else
+  return _gt_avoid_per_str_agi_by_level[level - 1];
+#endif
 }
 
 double dbc_t::health_base( player_e t, unsigned level ) const
@@ -1563,204 +1396,6 @@ unsigned dbc_t::set_bonus_spell_size() const
 #endif
 }
 
-int dbc_t::random_property_max_level() const
-{
-  size_t n = RAND_PROP_POINTS_SIZE;
-#if SC_USE_PTR
-  if ( ptr )
-    n = PTR_RAND_PROP_POINTS_SIZE;
-#endif
-  assert( n > 0 );
-  return as<int>( n );
-}
-
-const random_prop_data_t& dbc_t::random_property( unsigned ilevel ) const
-{
-#if SC_USE_PTR
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
-  return ptr ? __ptr_rand_prop_points_data[ ilevel - 1 ] : __rand_prop_points_data[ ilevel - 1 ];
-#else
-  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
-  return __rand_prop_points_data[ ilevel - 1 ];
-#endif
-}
-
-double dbc_t::item_socket_cost( unsigned ilevel ) const
-{
-  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
-#if SC_USE_PTR
-  return ptr ? __ptr_gt_item_socket_cost_per_level[ ilevel - 1 ]
-             : __gt_item_socket_cost_per_level[ ilevel - 1 ];
-#else
-  return __gt_item_socket_cost_per_level[ ilevel - 1 ];
-#endif
-}
-
-const item_scale_data_t& dbc_t::item_damage_1h( unsigned ilevel ) const
-{
-#if SC_USE_PTR
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
-  return ptr ? __ptr_itemdamageonehand_data[ ilevel - 1 ] : __itemdamageonehand_data[ ilevel - 1 ];
-#else
-  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
-  return __itemdamageonehand_data[ ilevel - 1 ];
-#endif
-}
-
-const item_scale_data_t& dbc_t::item_damage_2h( unsigned ilevel ) const
-{
-#if SC_USE_PTR
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
-  return ptr ? __ptr_itemdamagetwohand_data[ ilevel - 1 ] : __itemdamagetwohand_data[ ilevel - 1 ];
-#else
-  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
-  return __itemdamagetwohand_data[ ilevel - 1 ];
-#endif
-}
-
-const item_scale_data_t& dbc_t::item_damage_caster_1h( unsigned ilevel ) const
-{
-#if SC_USE_PTR
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
-  return ptr ? __ptr_itemdamageonehandcaster_data[ ilevel - 1 ] : __itemdamageonehandcaster_data[ ilevel - 1 ];
-#else
-  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
-  return __itemdamageonehandcaster_data[ ilevel - 1 ];
-#endif
-}
-
-const item_scale_data_t& dbc_t::item_damage_caster_2h( unsigned ilevel ) const
-{
-#if SC_USE_PTR
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
-  return ptr ? __ptr_itemdamagetwohandcaster_data[ ilevel - 1 ] : __itemdamagetwohandcaster_data[ ilevel - 1 ];
-#else
-  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
-  return __itemdamagetwohandcaster_data[ ilevel - 1 ];
-#endif
-}
-
-const item_scale_data_t& dbc_t::item_damage_ranged( unsigned ilevel ) const
-{
-#if SC_USE_PTR
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
-  return ptr ? __ptr_itemdamageranged_data[ ilevel - 1 ] : __itemdamageranged_data[ ilevel - 1 ];
-#else
-  return __itemdamageranged_data[ ilevel - 1 ];
-#endif
-}
-
-const item_scale_data_t& dbc_t::item_damage_thrown( unsigned ilevel ) const
-{
-#if SC_USE_PTR
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
-  return ptr ? __ptr_itemdamagethrown_data[ ilevel - 1 ] : __itemdamagethrown_data[ ilevel - 1 ];
-#else
-  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
-  return __itemdamagethrown_data[ ilevel - 1 ];
-#endif
-}
-
-const item_scale_data_t& dbc_t::item_damage_wand( unsigned ilevel ) const
-{
-#if SC_USE_PTR
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
-  return ptr ? __ptr_itemdamagewand_data[ ilevel - 1 ] : __itemdamagewand_data[ ilevel - 1 ];
-#else
-  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
-  return __itemdamagewand_data[ ilevel - 1 ];
-#endif
-}
-
-const item_scale_data_t& dbc_t::item_armor_quality( unsigned ilevel ) const
-{
-#if SC_USE_PTR
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
-  return ptr ? __ptr_itemarmorquality_data[ ilevel - 1 ] : __itemarmorquality_data[ ilevel - 1 ];
-#else
-  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
-  return __itemarmorquality_data[ ilevel - 1 ];
-#endif
-}
-
-const item_scale_data_t& dbc_t::item_armor_shield( unsigned ilevel ) const
-{
-#if SC_USE_PTR
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
-  return ptr ? __ptr_itemarmorshield_data[ ilevel - 1 ] : __itemarmorshield_data[ ilevel - 1 ];
-#else
-  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
-  return __itemarmorshield_data[ ilevel - 1 ];
-#endif
-}
-
-const item_armor_type_data_t& dbc_t::item_armor_total( unsigned ilevel ) const
-{
-#if SC_USE_PTR
-  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
-  return ptr ? __ptr_itemarmortotal_data[ ilevel - 1 ] : __itemarmortotal_data[ ilevel - 1 ];
-#else
-  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
-  return __itemarmortotal_data[ ilevel - 1 ];
-#endif
-}
-
-double dbc_t::armor_mitigation_constant( unsigned level ) const
-{
-  assert( level > 0 && level <= ( MAX_SCALING_LEVEL + 3 ) );
-#if SC_USE_PTR
-  return ptr ? __ptr_gt_armor_mitigation_by_lvl[ level - 1 ] : __gt_armor_mitigation_by_lvl[ level - 1 ];
-#else
-  return __gt_armor_mitigation_by_lvl[ level - 1 ];
-#endif
-}
-
-const item_armor_type_data_t& dbc_t::item_armor_inv_type( unsigned inv_type ) const
-{
-  assert( inv_type > 0 && inv_type <= 23 );
-#if SC_USE_PTR
-  return ptr ? __ptr_armor_slot_data[ inv_type - 1 ] : __armor_slot_data[ inv_type - 1 ];
-#else
-  return __armor_slot_data[ inv_type - 1 ];
-#endif
-}
-
-const item_upgrade_t& dbc_t::item_upgrade( unsigned upgrade_id ) const
-{
-#if SC_USE_PTR
-  const item_upgrade_t* p = ptr ? __ptr_item_upgrade_data : __item_upgrade_data;
-#else
-  const item_upgrade_t* p = __item_upgrade_data;
-#endif
-
-  do
-  {
-    if ( p -> id == upgrade_id )
-      return *p;
-  }
-  while ( ( p++ ) -> id );
-
-  return nil_iu;
-}
-
-const item_upgrade_rule_t& dbc_t::item_upgrade_rule( unsigned item_id, unsigned upgrade_level ) const
-{
-#if SC_USE_PTR
-  const item_upgrade_rule_t* p = ptr ? __ptr_item_upgrade_rule_data : __item_upgrade_rule_data;
-#else
-  const item_upgrade_rule_t* p = __item_upgrade_rule_data;
-#endif
-
-  do
-  {
-    if ( p -> item_id == item_id && p -> upgrade_ilevel == upgrade_level )
-      return *p;
-  }
-  while ( ( p++ ) -> id );
-
-  return nil_iur;
-}
-
 const rppm_modifier_t& dbc_t::real_ppm_modifier( specialization_e spec, unsigned spell_id ) const
 {
 #if SC_USE_PTR
@@ -1777,75 +1412,6 @@ const rppm_modifier_t& dbc_t::real_ppm_modifier( specialization_e spec, unsigned
   }
 
   return *p;
-}
-
-std::vector<const item_bonus_entry_t*> dbc_t::item_bonus( unsigned bonus_id ) const
-{
-#if SC_USE_PTR
-  const item_bonus_entry_t* p = ptr ? __ptr_item_bonus_data : __item_bonus_data;
-#else
-  const item_bonus_entry_t* p = __item_bonus_data;
-#endif
-
-  std::vector<const item_bonus_entry_t*> entries;
-
-  while ( p -> id != 0 )
-  {
-    if ( p -> bonus_id == bonus_id )
-      entries.push_back(p);
-    p++;
-  }
-
-  return entries;
-}
-
-const random_suffix_data_t& dbc_t::random_suffix( unsigned suffix_id ) const
-{
-#if SC_USE_PTR
-  const random_suffix_data_t* p = ptr ? __ptr_rand_suffix_data : __rand_suffix_data;
-#else
-  const random_suffix_data_t* p = __rand_suffix_data;
-#endif
-
-  do
-  {
-    if ( p -> id == suffix_id )
-      return *p;
-  }
-  while ( ( p++ ) -> id );
-
-  return nil_rsd;
-}
-
-const item_enchantment_data_t& dbc_t::item_enchantment( unsigned enchant_id ) const
-{
-  if ( const item_enchantment_data_t* p = item_enchantment_data_index.get( maybe_ptr( ptr ), enchant_id ) )
-    return *p;
-  else
-    return nil_ied;
-}
-
-const item_data_t* dbc_t::item( unsigned item_id ) const
-{ return item_data_index.get( ptr, item_id ); }
-
-const gem_property_data_t& dbc_t::gem_property( unsigned gem_id ) const
-{
-  ( void )ptr;
-
-#if SC_USE_PTR
-  const gem_property_data_t* p = ptr ? __ptr_gem_property_data : __gem_property_data;
-#else
-  const gem_property_data_t* p = __gem_property_data;
-#endif
-
-  do
-  {
-    if ( p -> id == gem_id )
-      return *p;
-  }
-  while ( ( p++ ) -> id );
-
-  return nil_gpd;
 }
 
 spell_data_t* spell_data_t::list( bool ptr )
@@ -1921,6 +1487,27 @@ double spelleffect_data_t::average( const item_t* item ) const
     m_scale = item_database::item_budget( item, _spell -> max_scaling_level() );
 
   return scaled_average( m_scale, item -> item_level() );
+}
+
+double dbc_t::item_socket_cost( unsigned ilevel ) const
+{
+  assert( ilevel > 0 && ( ilevel <= random_property_max_level() ) );
+#if SC_USE_PTR
+  return ptr ? __ptr_gt_item_socket_cost_per_level[ ilevel - 1 ]
+             : __gt_item_socket_cost_per_level[ ilevel - 1 ];
+#else
+  return __gt_item_socket_cost_per_level[ ilevel - 1 ];
+#endif
+}
+
+double dbc_t::armor_mitigation_constant( unsigned level ) const
+{
+  assert( level > 0 && level <= ( MAX_SCALING_LEVEL + 3 ) );
+#if SC_USE_PTR
+  return ptr ? __ptr_gt_armor_mitigation_by_lvl[ level - 1 ] : __gt_armor_mitigation_by_lvl[ level - 1 ];
+#else
+  return __gt_armor_mitigation_by_lvl[ level - 1 ];
+#endif
 }
 
 double spelleffect_data_t::scaled_delta( double budget ) const
@@ -2044,14 +1631,6 @@ talent_data_t* talent_data_t::list( bool ptr )
 #else
   return __talent_data;
 #endif
-}
-
-item_data_t* item_data_t::find( unsigned id, bool ptr )
-{
-  item_data_t* i = item_data_index.get( ptr, id );
-  if ( ! i )
-    return &nil_item_data;
-  return i;
 }
 
 spell_data_t* spell_data_t::find( unsigned spell_id, bool ptr )
@@ -3065,4 +2644,3 @@ bool spell_data_t::affected_by( const spelleffect_data_t* effect ) const
 
 bool spell_data_t::affected_by( const spelleffect_data_t& effect ) const
 { return affected_by( &effect ); }
-

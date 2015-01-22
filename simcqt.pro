@@ -4,7 +4,10 @@ CONFIG(qt) {
   TARGET = SimulationCraft
 
   QT += core gui network
-
+  
+  lessThan( QT_MAJOR_VERSION, 5 ) {
+    error( "SimulationCraft requires QT 5 or higher." )
+  }
   contains ( QT_MAJOR_VERSION , 5 ) {
     greaterThan( QT_MINOR_VERSION, 3 ) {
       QT += webengine webenginewidgets

@@ -211,7 +211,6 @@ public:
     natures_vigil_proc_t* natures_vigil;
     ursocs_vigor_t*       ursocs_vigor;
     yseras_gift_t*        yseras_gift;
-    spell_t*              starfall_ticking;
   } active;
 
   // Pets
@@ -3103,6 +3102,10 @@ struct lacerate_t : public bear_attack_t
     bear_attack_t::impact( state );
   }
 
+  // Treat direct damage as "bleed"
+  virtual double target_armor( player_t* ) const
+  { return 0.0; }
+
   virtual double composite_target_ta_multiplier( player_t* t ) const
   {
     double tm = bear_attack_t::composite_target_ta_multiplier( t );
@@ -3321,10 +3324,11 @@ struct pulverize_t : public bear_attack_t
 
   virtual bool ready()
   {
-    if ( td( target ) -> lacerate_stack < 3 )
+    // Call bear_attack_t::ready() first for proper targeting support.
+    if ( bear_attack_t::ready() && td( target ) -> lacerate_stack >= 3 )
+      return true;
+    else
       return false;
-
-    return bear_attack_t::ready();
   }
 };
 
@@ -4497,11 +4501,6 @@ struct displacer_beast_t : public druid_spell_t
 
     p() -> buff.cat_form -> trigger();
     p() -> buff.displacer_beast -> trigger();
-    if ( p() -> active.starfall_ticking )
-    {
-      p() -> active.starfall_ticking -> get_dot() -> cancel();
-      p() -> buff.starfall -> expire();
-    }
   }
 };
 
@@ -5395,6 +5394,7 @@ struct starfall_t : public druid_spell_t
 
     hasted_ticks = false;
     may_multistrike = 0;
+    spell_power_mod.tick = spell_power_mod.direct = 0;
     cooldown = player -> cooldown.starfallsurge;
     base_multiplier *= 1.0 + player -> sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
     add_child( starfall );
@@ -5402,20 +5402,18 @@ struct starfall_t : public druid_spell_t
     starfall_cd -> duration = timespan_t::from_seconds( 10 );
   }
 
-  void tick( dot_t* )
+  void tick( dot_t*d )
   {
-    starfall -> execute();
+    druid_spell_t::tick( d );
+    if ( p() -> buff.moonkin_form -> check() )
+    { // Only ticks while in moonkin form.
+      starfall -> execute();
+    }
   }
 
-  void last_tick( dot_t* d )
-  {
-    druid_spell_t::last_tick( d );
-    p() -> active.starfall_ticking = 0;
-  }
   void execute()
   {
     p() -> buff.starfall -> trigger();
-    p() -> active.starfall_ticking = this;
     druid_spell_t::execute();
     starfall_cd -> start();
   }
@@ -5439,7 +5437,6 @@ struct starsurge_t : public druid_spell_t
     parse_options( options_str );
 
     base_multiplier *= 1.0 + player -> sets.set( SET_CASTER, T13, B4 ) -> effectN( 2 ).percent();
-
     base_multiplier *= 1.0 + p() -> sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
 
     base_crit += p() -> sets.set( SET_CASTER, T15, B2 ) -> effectN( 1 ).percent();
@@ -6350,11 +6347,11 @@ void druid_t::apl_precombat()
       if ( specialization() == DRUID_FERAL )
         food += "blackrock_barbecue";
       else if ( specialization() == DRUID_BALANCE )
-        food += "sleeper_surprise"; // PH: Attuned stat
+        food += "sleeper_surprise";
       else if ( specialization() == DRUID_GUARDIAN )
         food += "sleeper_surprise";
       else
-        food += "frosty_stew"; // PH: Attuned stat
+        food += "frosty_stew";
     }
     else if ( level > 85 )
       food += "seafood_magnifique_feast";
@@ -6502,51 +6499,52 @@ void druid_t::apl_feral()
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Skull Bash" );
   def -> add_talent( this, "Force of Nature", "if=charges=3|trinket.proc.all.react|target.time_to_die<20");
-  if ( sim -> allow_potions && level >= 80 )
-    def -> add_action( potion_action + ",if=target.time_to_die<=40" );
+  def -> add_action( this, "Berserk", "sync=tigers_fury,if=buff.king_of_the_jungle.up|!talent.incarnation.enabled" );
   // On-Use Items
   for ( size_t i = 0; i < item_actions.size(); i++ )
-    def -> add_action( item_actions[ i ] + ",sync=tigers_fury" );
+  {
+    def -> add_action( item_actions[ i ] + ",if=(prev.tigers_fury&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|prev.berserk|(buff.king_of_the_jungle.up&time<10)" );
+  }
+  if ( sim -> allow_potions && level >= 80 )
+    def -> add_action( potion_action + ",if=(buff.berserk.remains>10&(target.time_to_die<180|(trinket.proc.all.react&target.health.pct<25)))|target.time_to_die<=40" );
   // Racials
   for ( size_t i = 0; i < racial_actions.size(); i++ )
+  {
     def -> add_action( racial_actions[ i ] + ",sync=tigers_fury" );
-  if ( find_item( "assurance_of_consequence" ) )
-    def -> add_action( "incarnation,sync=tigers_fury" );
+  }
   def -> add_action( this, "Tiger's Fury", "if=(!buff.omen_of_clarity.react&energy.max-energy>=60)|energy.max-energy>=80" );
-  if ( ! find_item( "assurance_of_consequence" ) )
-    def -> add_action( "incarnation,if=cooldown.berserk.remains<10&energy.time_to_max>1" );
-  if ( sim -> allow_potions && level >= 80 )
-    def -> add_action( potion_action + ",sync=berserk,if=target.health.pct<25" );
-  def -> add_action( this, "Berserk", "if=buff.tigers_fury.up" );
+  def -> add_action( "incarnation,if=cooldown.berserk.remains<10&energy.time_to_max>1" );
   if ( race == RACE_NIGHT_ELF )
+  {
     def -> add_action( "shadowmeld,if=dot.rake.remains<4.5&energy>=35&dot.rake.pmultiplier<2&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>15)&!buff.king_of_the_jungle.up" );
+  }
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.health.pct<25",
                      "Keep Rip from falling off during execute range." );
   def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" );
-  def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
-  def -> add_action( "thrash_cat,cycle_targets=1,if=buff.omen_of_clarity.react&remains<4.5&active_enemies>1" );
-  def -> add_action( "thrash_cat,cycle_targets=1,if=!talent.bloodtalons.enabled&combo_points=5&remains<4.5&buff.omen_of_clarity.react");
+  def -> add_action( this, "Savage Roar", "if=buff.savage_roar.down" );
   def -> add_action( "pool_resource,for_next=1" );
-  def -> add_action( "thrash_cat,cycle_targets=1,if=remains<4.5&active_enemies>1" );
+  def -> add_action( "thrash_cat,cycle_targets=1,if=remains<4.5&(active_enemies>=2&set_bonus.tier17_2pc|active_enemies>=4)" );
 
-  // Finishers
+  // Finishers  
   finish -> add_action( this, "Ferocious Bite", "cycle_targets=1,max_energy=1,if=target.health.pct<25&dot.rip.ticking" );
-  finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<3&target.time_to_die-remains>18" );
   finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<7.2&persistent_multiplier>dot.rip.pmultiplier&target.time_to_die-remains>18" );
+  finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<7.2&persistent_multiplier=dot.rip.pmultiplier&(energy.time_to_max<=1|!talent.bloodtalons.enabled)&target.time_to_die-remains>18" );
+  finish -> add_action( this, "Rip", "cycle_targets=1,if=remains<2&target.time_to_die-remains>18" );
   finish -> add_action( this, "Savage Roar", "if=(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<12.6" );
   finish -> add_action( this, "Ferocious Bite", "max_energy=1,if=(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)" );
 
   def -> add_action( "call_action_list,name=finisher,if=combo_points=5" );
+  def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<gcd" );
 
   // DoT Maintenance
-  maintain -> add_action( this, "Rake", "cycle_targets=1,if=!talent.bloodtalons.enabled&remains<3&combo_points<5&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)" );
-  maintain -> add_action( this, "Rake", "cycle_targets=1,if=!talent.bloodtalons.enabled&remains<4.5&combo_points<5&persistent_multiplier>dot.rake.pmultiplier&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)" );
-  maintain -> add_action( this, "Rake", "cycle_targets=1,if=talent.bloodtalons.enabled&remains<4.5&combo_points<5&(!buff.predatory_swiftness.up|buff.bloodtalons.up|persistent_multiplier>dot.rake.pmultiplier)&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)" );
-  maintain -> add_action( "thrash_cat,cycle_targets=1,if=talent.bloodtalons.enabled&combo_points=5&remains<4.5&buff.omen_of_clarity.react");
-  maintain -> add_action( "moonfire_cat,cycle_targets=1,if=combo_points<5&remains<4.2&active_enemies<6&target.time_to_die-remains>tick_time*5" );
-  maintain -> add_action( this, "Rake", "cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&combo_points<5&active_enemies=1" );
+  maintain -> add_action( this, "Rake", "cycle_targets=1,if=remains<3&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)" );
+  maintain -> add_action( this, "Rake", "cycle_targets=1,if=remains<4.5&(persistent_multiplier>=dot.rake.pmultiplier|(talent.bloodtalons.enabled&(buff.bloodtalons.up|!buff.predatory_swiftness.up)))&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)" );
+  maintain -> add_action( "moonfire_cat,cycle_targets=1,if=remains<4.2&active_enemies<=5&target.time_to_die-remains>tick_time*5" );
+  maintain -> add_action( this, "Rake", "cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&active_enemies=1&((target.time_to_die-remains>3&active_enemies<3)|target.time_to_die-remains>6)" );
 
-  def -> add_action( "call_action_list,name=maintain" );
+  def -> add_action( "call_action_list,name=maintain,if=combo_points<5" );
+  def -> add_action( "pool_resource,for_next=1" );
+  def -> add_action( "thrash_cat,cycle_targets=1,if=remains<4.5&active_enemies>=2" );
 
   // Generators
   generate -> add_action( this, "Swipe", "if=active_enemies>=3" );

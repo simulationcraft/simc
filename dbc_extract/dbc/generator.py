@@ -1368,6 +1368,7 @@ class SpellDataGenerator(DataGenerator):
             ( 127627, 3 ), ( 127628, 3 ), # Shadow Cascade
             ( 127626, 0, False ), # Devouring Plague heal (deactive)
             ( 129197, 3 ), # Mind Flay (Insanity)
+            ( 179338, 3 ), # Searing Insanity
             ( 165628, 0 ), # Item - Priest T17 Shadow 2P Bonus
             ( 165623, 0 ), # Item - Priest T17 Shadow 2P Bonus - dot spell
 

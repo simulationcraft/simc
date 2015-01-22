@@ -5,6 +5,389 @@
 
 #include "simulationcraft.hpp"
 
+#include "sc_item_data.inc"
+#if SC_USE_PTR
+#include "sc_item_data_ptr.inc"
+#endif
+
+namespace {
+  template<typename T>
+  struct potion_filter_t
+  {
+    bool operator()(const T* obj) const
+    {
+      return obj -> item_class == ITEM_CLASS_CONSUMABLE && obj -> item_subclass == ITEM_SUBCLASS_POTION;
+    }
+  };
+
+  item_upgrade_t nil_iu;
+  item_upgrade_rule_t nil_iur;
+  item_data_t nil_item_data;
+  random_suffix_data_t nil_rsd;
+  item_enchantment_data_t nil_ied;
+  gem_property_data_t nil_gpd;
+  dbc_index_t<item_enchantment_data_t, id_member_policy> item_enchantment_data_index;
+  dbc_index_t<item_data_t, id_member_policy> item_data_index;
+
+  typedef filtered_dbc_index_t<item_data_t, potion_filter_t<item_data_t>, id_member_policy> potion_data_t;
+
+  potion_data_t potion_data_index;
+}
+
+unsigned dbc_t::random_property_max_level() const
+{
+  int n = RAND_PROP_POINTS_SIZE;
+#if SC_USE_PTR
+  if ( ptr )
+    n = PTR_RAND_PROP_POINTS_SIZE;
+#endif
+  assert( n > 0 );
+  return as<unsigned>( n );
+}
+
+const random_prop_data_t& dbc_t::random_property( unsigned ilevel ) const
+{
+#if SC_USE_PTR
+  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
+  return ptr ? __ptr_rand_prop_points_data[ ilevel - 1 ] : __rand_prop_points_data[ ilevel - 1 ];
+#else
+  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
+  return __rand_prop_points_data[ ilevel - 1 ];
+#endif
+}
+
+const item_scale_data_t& dbc_t::item_damage_1h( unsigned ilevel ) const
+{
+#if SC_USE_PTR
+  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
+  return ptr ? __ptr_itemdamageonehand_data[ ilevel - 1 ] : __itemdamageonehand_data[ ilevel - 1 ];
+#else
+  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
+  return __itemdamageonehand_data[ ilevel - 1 ];
+#endif
+}
+
+const item_scale_data_t& dbc_t::item_damage_2h( unsigned ilevel ) const
+{
+#if SC_USE_PTR
+  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
+  return ptr ? __ptr_itemdamagetwohand_data[ ilevel - 1 ] : __itemdamagetwohand_data[ ilevel - 1 ];
+#else
+  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
+  return __itemdamagetwohand_data[ ilevel - 1 ];
+#endif
+}
+
+const item_scale_data_t& dbc_t::item_damage_caster_1h( unsigned ilevel ) const
+{
+#if SC_USE_PTR
+  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
+  return ptr ? __ptr_itemdamageonehandcaster_data[ ilevel - 1 ] : __itemdamageonehandcaster_data[ ilevel - 1 ];
+#else
+  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
+  return __itemdamageonehandcaster_data[ ilevel - 1 ];
+#endif
+}
+
+const item_scale_data_t& dbc_t::item_damage_caster_2h( unsigned ilevel ) const
+{
+#if SC_USE_PTR
+  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
+  return ptr ? __ptr_itemdamagetwohandcaster_data[ ilevel - 1 ] : __itemdamagetwohandcaster_data[ ilevel - 1 ];
+#else
+  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
+  return __itemdamagetwohandcaster_data[ ilevel - 1 ];
+#endif
+}
+
+const item_scale_data_t& dbc_t::item_damage_ranged( unsigned ilevel ) const
+{
+#if SC_USE_PTR
+  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
+  return ptr ? __ptr_itemdamageranged_data[ ilevel - 1 ] : __itemdamageranged_data[ ilevel - 1 ];
+#else
+  return __itemdamageranged_data[ ilevel - 1 ];
+#endif
+}
+
+const item_scale_data_t& dbc_t::item_damage_thrown( unsigned ilevel ) const
+{
+#if SC_USE_PTR
+  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
+  return ptr ? __ptr_itemdamagethrown_data[ ilevel - 1 ] : __itemdamagethrown_data[ ilevel - 1 ];
+#else
+  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
+  return __itemdamagethrown_data[ ilevel - 1 ];
+#endif
+}
+
+const item_scale_data_t& dbc_t::item_damage_wand( unsigned ilevel ) const
+{
+#if SC_USE_PTR
+  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
+  return ptr ? __ptr_itemdamagewand_data[ ilevel - 1 ] : __itemdamagewand_data[ ilevel - 1 ];
+#else
+  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
+  return __itemdamagewand_data[ ilevel - 1 ];
+#endif
+}
+
+const item_scale_data_t& dbc_t::item_armor_quality( unsigned ilevel ) const
+{
+#if SC_USE_PTR
+  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
+  return ptr ? __ptr_itemarmorquality_data[ ilevel - 1 ] : __itemarmorquality_data[ ilevel - 1 ];
+#else
+  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
+  return __itemarmorquality_data[ ilevel - 1 ];
+#endif
+}
+
+const item_scale_data_t& dbc_t::item_armor_shield( unsigned ilevel ) const
+{
+#if SC_USE_PTR
+  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
+  return ptr ? __ptr_itemarmorshield_data[ ilevel - 1 ] : __itemarmorshield_data[ ilevel - 1 ];
+#else
+  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
+  return __itemarmorshield_data[ ilevel - 1 ];
+#endif
+}
+
+const item_armor_type_data_t& dbc_t::item_armor_total( unsigned ilevel ) const
+{
+#if SC_USE_PTR
+  assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
+  return ptr ? __ptr_itemarmortotal_data[ ilevel - 1 ] : __itemarmortotal_data[ ilevel - 1 ];
+#else
+  assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
+  return __itemarmortotal_data[ ilevel - 1 ];
+#endif
+}
+
+const item_upgrade_t& dbc_t::item_upgrade( unsigned upgrade_id ) const
+{
+#if SC_USE_PTR
+  const item_upgrade_t* p = ptr ? __ptr_item_upgrade_data : __item_upgrade_data;
+#else
+  const item_upgrade_t* p = __item_upgrade_data;
+#endif
+
+  do
+  {
+    if ( p -> id == upgrade_id )
+      return *p;
+  }
+  while ( ( p++ ) -> id );
+
+  return nil_iu;
+}
+
+const item_upgrade_rule_t& dbc_t::item_upgrade_rule( unsigned item_id, unsigned upgrade_level ) const
+{
+#if SC_USE_PTR
+  const item_upgrade_rule_t* p = ptr ? __ptr_item_upgrade_rule_data : __item_upgrade_rule_data;
+#else
+  const item_upgrade_rule_t* p = __item_upgrade_rule_data;
+#endif
+
+  do
+  {
+    if ( p -> item_id == item_id && p -> upgrade_ilevel == upgrade_level )
+      return *p;
+  }
+  while ( ( p++ ) -> id );
+
+  return nil_iur;
+}
+
+std::vector<const item_bonus_entry_t*> dbc_t::item_bonus( unsigned bonus_id ) const
+{
+#if SC_USE_PTR
+  const item_bonus_entry_t* p = ptr ? __ptr_item_bonus_data : __item_bonus_data;
+#else
+  const item_bonus_entry_t* p = __item_bonus_data;
+#endif
+
+  std::vector<const item_bonus_entry_t*> entries;
+
+  while ( p -> id != 0 )
+  {
+    if ( p -> bonus_id == bonus_id )
+      entries.push_back(p);
+    p++;
+  }
+
+  return entries;
+}
+
+const random_suffix_data_t& dbc_t::random_suffix( unsigned suffix_id ) const
+{
+#if SC_USE_PTR
+  const random_suffix_data_t* p = ptr ? __ptr_rand_suffix_data : __rand_suffix_data;
+#else
+  const random_suffix_data_t* p = __rand_suffix_data;
+#endif
+
+  do
+  {
+    if ( p -> id == suffix_id )
+      return *p;
+  }
+  while ( ( p++ ) -> id );
+
+  return nil_rsd;
+}
+
+const item_enchantment_data_t& dbc_t::item_enchantment( unsigned enchant_id ) const
+{
+  if ( const item_enchantment_data_t* p = item_enchantment_data_index.get( maybe_ptr( ptr ), enchant_id ) )
+    return *p;
+  else
+    return nil_ied;
+}
+
+const item_data_t* dbc_t::item( unsigned item_id ) const
+{ return item_data_index.get( ptr, item_id ); }
+
+const gem_property_data_t& dbc_t::gem_property( unsigned gem_id ) const
+{
+  ( void )ptr;
+
+#if SC_USE_PTR
+  const gem_property_data_t* p = ptr ? __ptr_gem_property_data : __gem_property_data;
+#else
+  const gem_property_data_t* p = __gem_property_data;
+#endif
+
+  do
+  {
+    if ( p -> id == gem_id )
+      return *p;
+  }
+  while ( ( p++ ) -> id );
+
+  return nil_gpd;
+}
+
+const item_data_t* dbc::items( bool ptr )
+{
+  ( void )ptr;
+
+  const item_data_t* p = __item_data;
+#if SC_USE_PTR
+  if ( ptr )
+    p = __ptr_item_data;
+#endif
+  return p;
+}
+
+size_t dbc::n_items( bool ptr )
+{
+  ( void )ptr;
+
+  size_t n = ITEM_SIZE;
+#if SC_USE_PTR
+  if ( ptr )
+    n = PTR_ITEM_SIZE;
+#endif
+
+  return n;
+}
+
+const item_enchantment_data_t* dbc::item_enchantments( bool ptr )
+{
+  ( void )ptr;
+
+  const item_enchantment_data_t* p = __spell_item_ench_data;
+#if SC_USE_PTR
+  if ( ptr )
+    p = __ptr_spell_item_ench_data;
+#endif
+  return p;
+}
+
+size_t dbc::n_item_enchantments( bool ptr )
+{
+  ( void )ptr;
+
+  size_t n = SPELL_ITEM_ENCH_SIZE;
+#if SC_USE_PTR
+  if ( ptr )
+    n = PTR_SPELL_ITEM_ENCH_SIZE;
+#endif
+
+  return n;
+}
+
+const gem_property_data_t* dbc::gem_properties( bool ptr )
+{
+  ( void )ptr;
+
+  const gem_property_data_t* p = __gem_property_data;
+#if SC_USE_PTR
+  if ( ptr )
+    p = __ptr_gem_property_data;
+#endif
+  return p;
+}
+
+item_bonus_tree_entry_t& dbc_t::resolve_item_bonus_tree_data( unsigned level ) const
+{
+    assert(level > 0 && level <= MAX_LEVEL);
+#if SC_USE_PTR
+    return ptr ? __ptr_item_bonus_tree_data[level - 1]
+               : __item_bonus_tree_data[level - 1];
+#else
+    return __item_bonus_tree_data[level - 1];
+#endif
+}
+
+item_bonus_node_entry_t& dbc_t::resolve_item_bonus_map_data( unsigned level ) const
+{
+    assert(level > 0 && level <= MAX_LEVEL);
+#if SC_USE_PTR
+    return ptr ? __ptr_item_bonus_map_data[level - 1] :
+                 __item_bonus_map_data[level - 1];
+#else
+    return __item_bonus_map_data[level - 1];
+#endif
+}
+
+const item_armor_type_data_t& dbc_t::item_armor_inv_type( unsigned inv_type ) const
+{
+  assert( inv_type > 0 && inv_type <= 23 );
+#if SC_USE_PTR
+  return ptr ? __ptr_armor_slot_data[ inv_type - 1 ] : __armor_slot_data[ inv_type - 1 ];
+#else
+  return __armor_slot_data[ inv_type - 1 ];
+#endif
+}
+
+/* Initialize item database
+ */
+void dbc::init_item_data()
+{
+  // Create id-indexes
+  item_data_index.init( __item_data, false );
+  item_enchantment_data_index.init( __spell_item_ench_data, false );
+  potion_data_index.init( __item_data, false );
+
+#if SC_USE_PTR
+  item_data_index.init( __ptr_item_data, true );
+  item_enchantment_data_index.init( __ptr_spell_item_ench_data, true );
+  potion_data_index.init( __item_data, true );
+#endif
+}
+
+item_data_t* item_data_t::find( unsigned id, bool ptr )
+{
+  item_data_t* i = item_data_index.get( ptr, id );
+  if ( ! i )
+    return &nil_item_data;
+  return i;
+}
+
 bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& entry )
 {
   switch ( entry.type )
@@ -685,5 +1068,17 @@ size_t item_database::parse_tokens( std::vector<token_t>& tokens,
   }
 
   return splits.size();
+}
+
+const item_data_t* dbc::find_potion( bool ptr, const std::function<bool(const item_data_t*)>& f )
+{
+  if ( const item_data_t* i = potion_data_index.get( ptr, f ) )
+  {
+    return i;
+  }
+  else
+  {
+    return &( nil_item_data );
+  }
 }
 

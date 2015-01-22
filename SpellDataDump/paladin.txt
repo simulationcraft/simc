@@ -1,4 +1,4 @@
-SimulationCraft 603-23 for World of Warcraft 6.0.3 Live (build level 19342)
+SimulationCraft 603-25 for World of Warcraft 6.0.3 Live (build level 19342)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -194,7 +194,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7
 #2 (id=384)      : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11
-Description      : Places a Hand on the friendly target, granting immunity to movement impairing effects for $d.  Players may only have one Hand on them per Paladin at any one time.
+Description      : Places a Hand on the friendly target, granting immunity to movement impairing effects for $d.  Players may only have one Hand on them per Paladin at any one time.  Usable while stunned.
 Tooltip          : Immune to movement impairing effects.
 
 Name             : Denounce (id=2812) [Scaling Spell (6), Spell Family (10)] 
@@ -1036,7 +1036,7 @@ Effects          :
 #2 (id=21514)    : Apply Aura (6) | Dummy (4)
                    Base Value: 12 | Scaled Value: 12
 Description      : $?s159548[][Reduce damage taken by $s1% for $d. ]While Ardent Defender is active, the next attack that would otherwise kill you will instead cause you to be healed for $s2% of your maximum health.$?s159548[ If this effect expires without triggering, its cooldown will be reset to $159548s1 sec.][]
-Tooltip          : Damage taken reduced by $?a171427[${$m1+10}%][$m1%].
+Tooltip          : Damage taken reduced by $w1%.
 The next attack that would otherwise kill you will instead cause you to be healed for $w2% of your maximum health.
 
 Name             : Supplication (id=31868) [Spell Family (10), Passive] 
@@ -2996,7 +2996,6 @@ Description      : Increases your Intellect by $s1% while wearing only Plate arm
 Name             : Divine Purpose (id=86172) [Spell Family (10), Passive] 
 Class            : Paladin
 Spell Level      : 1
-Proc Chance      : 25%
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4415,7 +4414,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=150580)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 10 | Scaled Value: 10
+                   Base Value: 3 | Scaled Value: 3
                    Affected Spells: Shield of the Righteous (53600)
 Description      : $@spelldesc63222
 Tooltip          : Increases Shield of the Righteous damage by $s1%.
@@ -5555,7 +5554,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127
 #3 (id=255133)   : Apply Aura (6) | Modify Absorb% Done (421)
                    Base Value: 0 | Scaled Value: 0
-Description      : Increases your healing and absorption done to yourself, based on Stamina and damage taken (before avoidance and mitigation) in the last 10 sec.
+Description      : Increases your healing and absorption done to yourself, based on damage taken (before avoidance and mitigation) in the last 10 sec.
 
 Name             : Healer Level 90 Mana Fix (Passive) (id=158920) [Passive, Hidden] 
 Class            : Holy Discipline Holy Restoration Mistweaver Restoration Paladin, Priest, Shaman, Monk, Druid
@@ -5972,7 +5971,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=233413)   : Apply Aura (6) | Unknown effect sub type (405)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 917504
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 917504
 Description      : You gain $s1% more of the Haste stat from all sources.
 
 Name             : Sanctified Light (id=165380) [Passive] 
@@ -6020,38 +6019,6 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Radius: 100 yards
 Description      : You radiate holy energy, granting all nearby party and raid members $s1% Versatility.
 Tooltip          : Versatility increased by $s1%.
-
-Name             : Item - Paladin WoD PvP Protection 4P Bonus (id=171427) [Spell Family (10), Passive, Hidden] 
-Class            : Paladin
-Proc Chance      : 101%
-Proc Flags       : ....x... ..x...x. ........ ........ 
-                 : Yellow Melee, AOE Heal, Heal
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=243362)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3
-                   Affected Spells: Ardent Defender (31850), Ardent Defender (66235)
-Description      : Reduces damage taken while Ardent Defender is active by an additional $s1%, and when you activate Ardent Defender, it will also apply to the nearest ally within $171431a1 yards.
-
-Name             : Item - WoD PvP Set Bonus Tank PBAOE Target Finder (id=171431) [Spell Family (10), Hidden] 
-Class            : Paladin
-Attributes       : .......x ........ ........ ........   ........ ........ ...x.... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ x....... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : Hidden (7)
-Effects          :
-#1 (id=243384)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | Radius: 15 yards
-Description      : Reduces damage taken while Ardent Defender is active by an additional $s1%, and when you activate Ardent Defender, it will also apply to the nearest ally.
 
 Name             : Sanctified Wrath (id=171648) [Spell Family (10), Passive] 
 Class            : Paladin

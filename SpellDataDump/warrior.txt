@@ -1,4 +1,4 @@
-SimulationCraft 603-23 for World of Warcraft 6.0.3 Live (build level 19342)
+SimulationCraft 603-25 for World of Warcraft 6.0.3 Live (build level 19342)
 
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior
@@ -521,7 +521,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 #2 (id=229536)   : Weapon Damage% (31)
                    Base Value: 350 | Scaled Value: 3.5 (avg=0)
-Description      : Attempt to finish off a wounded foe, causing $sw2 Physical damage$?s23881[ with your main-hand and $163558sw2 Physical damage with your off-hand][]. Only usable on enemies that have less than 20% health.$?s146971[ Successfully killing an enemy with Execute grants you $147352s1 rage.][]
+Description      : Attempt to finish off a wounded foe, causing $sw2 Physical damage$?s23881[ with your main-hand and $163558sw2 Physical damage with your off-hand][]. Only usable on enemies that have less than 20% health.$?s146971[ Successfully killing an enemy with Execute grants you ${$147352m1/10} rage.][]
 
 Name             : Thunder Clap (id=6343) [Spell Family (4)] 
 Class            : Arms Protection Warrior
@@ -539,7 +539,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2203)     : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.84000 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.17600 | Radius: 0 - 8 yards
 #2 (id=236564)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards
 Description      : Blasts all enemies within $6343A1 yards for $?s12712[${$6343m1*1.2}][$6343m1] damage and reduces their movement speed by $s2% for $d.
@@ -596,7 +596,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2316)     : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.52000 | Chain Multiplier: 0.5
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.52800 | Chain Multiplier: 0.5
 #2 (id=159566)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | AP Coefficient: 1.28000 | Misc Value: rage
 #3 (id=248185)   : Dummy (3)
@@ -1019,7 +1019,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=102316)   : Weapon Damage% (31)
-                   Base Value: 210 | Scaled Value: 2.1 (avg=0)
+                   Base Value: 250 | Scaled Value: 2.5 (avg=0)
 #2 (id=11313)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 Description      : Deals $sw1 Physical damage, and has a $46953s1% chance to reset the cooldown on Shield Slam and cause it to generate $/10;50227s1 more Rage.
@@ -1188,8 +1188,10 @@ Effects          :
 #3 (id=156243)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: rage
 Description      : Slam the target with your shield, causing ${$<shieldslam>} damage$?s58375[, dispelling 1 magical effect,][] and generating $/10;s3 Rage.  Critical strikes with Shield Slam cause your next Heroic Strike to cost no Rage and be a critical strike.
-Variables        : $apmult=${0.305+$gte($PL,80)*0.355+$gte($PL,85)*2.05}
-$shieldslam=${$AP*$<apmult>}
+Variables        : $apmult=${0.366+$gte($PL,80)*0.426+$gte($PL,85)*2.46}
+$gladmult=$?a156291[${1.05}][${1.0}]
+$shieldchargemult=$?a169667[${1.25}][${1.0}]
+$shieldslam=${$AP*$<apmult>*$<gladmult>*$<shieldchargemult>*(1+$@versadmg)}
 
 
 Name             : Sweeping Strikes (id=26654) [Spell Family (4)] 
@@ -1478,7 +1480,7 @@ Effects          :
                    Affected Spells: Wild Strike (100130)
 #3 (id=158698)   : Apply Aura (6) | Unknown effect sub type (408)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 100130
-Description      : Your Bloodthirst hits have a $46915s1% chance of granting 3 charges of Wild Strike that cost no Rage.
+Description      : Your Bloodthirst hits have a $46915s1% chance of granting $46915s2 charges of Wild Strike that cost no Rage.
 Tooltip          : Wild Strike costs no Rage.
 
 Name             : Titan's Grip (id=46917) [Spell Family (4), Passive, Hidden] 
@@ -2665,10 +2667,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68041)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.50000
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.50000
                    Affected Spells: Heroic Strike (78), Execute (5308), Mortal Strike (12294), Colossus Smash (86346), Colossus Smash (108126), Ignite Weapon (156288), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Execute (168874)
 #2 (id=89760)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 350 | Scaled Value: 350
+                   Base Value: 550 | Scaled Value: 550
 Description      : Increases the damage of your Mortal Strike, $?s156288[Ignite Weapon, ][]Colossus Smash, and Execute abilities by $s1%.
 
 Name             : Mastery: Unshackled Fury (id=76856) [Spell Family (4), Passive] 
@@ -3491,7 +3493,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=129821)   : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.60000
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.84000
 Description      : Your Mortal Strike, Bloodthirst, Devastate, and Thunder Clap cause the target to bleed for $115767o1 Physical damage over $115767d.
 
 This effect is cancelled if the target reaches full health.
@@ -4698,7 +4700,7 @@ Attributes       : ....x... ........ x.x..... x..xxx.x   ........ ..x..... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=217513)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x1
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 0x1
 #2 (id=217574)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 156321 | Scaled Value: 156321
                    Affected Spells: Shield Block (2565), Shield Charge (156321)
@@ -4889,7 +4891,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127
 #3 (id=255133)   : Apply Aura (6) | Modify Absorb% Done (421)
                    Base Value: 0 | Scaled Value: 0
-Description      : Increases your healing and absorption done to yourself, based on Stamina and damage taken (before avoidance and mitigation) in the last 10 sec.
+Description      : Increases your healing and absorption done to yourself, based on damage taken (before avoidance and mitigation) in the last 10 sec.
 
 Name             : Headlong Rush (id=158836) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -5098,7 +5100,7 @@ Effects          :
 #1 (id=223860)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 23
                    Affected Spells: Die by the Sword (118038)
-Description      : You have a $s1% reduced chance for attacks against you to be critical strikes while Die By the Sword is active.
+Description      : You have a $s1% reduced chance for attacks against you to be critical strikes while Die by the Sword is active.
 
 Name             : Cleave (id=159882) 
 Class            : Warrior
@@ -5283,7 +5285,7 @@ Effects          :
                    Base Value: 175 | Scaled Value: 1.75 (avg=0)
 #3 (id=239183)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
-Description      : Attempt to finish off a foe, causing $sw2 Physical damage to the target, and consuming up to $m3 additional Rage to deal up to $168874sw2 additional damage. Only usable on enemies that have less than 20% health. $?s146971[ Successfully killing an enemy with Execute grants you $147352s1 rage.][]
+Description      : Attempt to finish off a foe, causing $sw2 Physical damage to the target, and consuming up to $m3 additional Rage to deal up to $168874sw2 additional damage. Only usable on enemies that have less than 20% health. $?s146971[ Successfully killing an enemy with Execute grants you ${$147352m1/10} rage.][]
 
 Name             : Execute Off-Hand (id=163558) [Spell Family (4)] 
 Class            : Warrior

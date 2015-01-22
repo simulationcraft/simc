@@ -1,4 +1,4 @@
-SimulationCraft 603-23 for World of Warcraft 6.0.3 Live (build level 19342)
+SimulationCraft 603-25 for World of Warcraft 6.0.3 Live (build level 19342)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -186,7 +186,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : Disable target procs (113)
 Effects          :
 #1 (id=487)      : Dummy (3)
-                   Base Value: 7 | Scaled Value: 7 | Radius: 0 - 100 yards
+                   Base Value: 6 | Scaled Value: 6 | Radius: 0 - 100 yards
 Description      : Ignites your Flame Shock spell on up to $s1 nearby enemies, causing each of them to emit a wave of flames that deals $8349s2 Fire damage to every other enemy within $8349A2 yards.
 
 Name             : Ancestral Spirit (id=2008) [Spell Family (11)] 
@@ -225,7 +225,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=614)      : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 15430 | Misc Value 2: 0x51 | Radius: 5 yards
-Description      : Summons an Earth Totem with $s1 health at the feet of the caster, calling forth a Greater Earth Elemental to protect the caster and $ghis:her; allies.  Lasts $d.
+Description      : Summons an Earth Totem with $?s63298[${$m1+$63298m1*$MHP/100}][$s1] health at the feet of the caster, calling forth a Greater Earth Elemental to protect the caster and $ghis:her; allies.  Lasts $d.
 
 Name             : Earthbind Totem (Earth Totem) (id=2484) [Spell Family (11)] 
 Class            : Shaman
@@ -315,7 +315,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=876)      : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 15439 | Misc Value 2: 0x3f | Radius: 5 yards
-Description      : Summons a Fire Totem with $s1 health at the feet of the caster, calling forth a Greater Fire Elemental to rain destruction on the caster's enemies.  Lasts $d.
+Description      : Summons a Fire Totem with $?s63298[${$m1+$63298m1*$MHP/100}][$s1] health at the feet of the caster, calling forth a Greater Fire Elemental to rain destruction on the caster's enemies.  Lasts $d.
 
 Name             : Heavy Linen Bandage (id=3276) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
@@ -427,8 +427,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3527 | Misc Value 2: 0xd4a
 #2 (id=247804)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 1 | Scaled Value: 1
-Description      : Summons a Water Totem with $?s63298[$s1% of the caster's][$s1] health at the feet of the caster that heals $?s147074[two injured party or raid members][an injured party or raid member] within $52042A1 yards for ${(($SP*0.2571)*$<bonus>)} every $t2 sec.$?s55456[  Healed allies take $119523s1% less Fire, Frost, and Nature damage for $d.][]  Lasts $d.
-Variables        : $purification=$?s16213[${1.875}][${1.0}]
+Description      : Summons a Water Totem with $?s63298[$s1% of the caster's][$s1] health at the feet of the caster that heals $?s147074[two injured party or raid members][an injured party or raid member] within $52042A1 yards for ${(($SP*0.525)*$<bonus>)} every $t2 sec.$?s55456[  Healed allies take $119523s1% less Fire, Frost, and Nature damage for $d.][]  Lasts $d.
+Variables        : $purification=$?s16213[${1.95}][${1.0}]
 $soothe=$?s16205[${1.50}]?s16187[${1.25}][${1.0}]
 $rushing=$?s147074[${1.15}][${1.0}]
 $bonus=${($<purification>*$<soothe>*$<rushing>)}
@@ -1175,7 +1175,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=21915)    : Weapon Damage% (31)
-                   Base Value: 360 | Scaled Value: 3.6 (avg=0) | SP Coefficient: 1.00000
+                   Base Value: 400 | Scaled Value: 4 (avg=0) | SP Coefficient: 1.00000
 #2 (id=172084)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc17364
@@ -1193,7 +1193,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=21916)    : Weapon Damage% (31)
-                   Base Value: 360 | Scaled Value: 3.6 (avg=0) | SP Coefficient: 1.00000
+                   Base Value: 400 | Scaled Value: 4 (avg=0) | SP Coefficient: 1.00000
 #2 (id=172085)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc17364
@@ -2739,7 +2739,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100
 #3 (id=257246)   : Unknown effect type (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3691
-Description      : You cause the earth at the target location to tremble and break, dealing ${$SPN*0.11*10} Physical damage over $d to enemies in an $a1 yard radius$?s55437[ and reducing their movement speed by $55437s1% for $77478d][], with a $77478s2% chance of knocking down affected targets.
+Description      : You cause the earth at the target location to tremble and break,  dealing ${$SPN*0.11*10*(1+$170374m3/100)} Physical damage over $d to enemies in an $a1 yard radius$?s55437[ and reducing their movement speed by $55437s1% for $77478d][], with a $77478s2% chance of knocking down affected targets.
 Tooltip          : Suffering Physical damage every $t2 sec with a chance to be knocked down.
 
 Name             : Shamanism (id=62099) [Spell Family (11), Passive, Hidden] 
@@ -3541,7 +3541,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=91262)    : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15
-Description      : While Lightning Shield is active, damage and multistrike damage from your Lightning Bolt$?s117014[, Elemental Blast,][] and Chain Lightning spells generate an additional Lightning Shield charge, up to a maximum of $s1 charges.
+Description      : While Lightning Shield is active, damage and multistrike damage from your Lightning Bolt$?s117014|s157774[, ][]$?s117014[ Elemental Blast,][ ]$?s157774[ Lava Burst, ][ ]and Chain Lightning spells generate an additional Lightning Shield charge, up to a maximum of $s1 charges.
 
 Your Earth Shock spell will consume any charges beyond 1, dealing their total damage to the enemy target.
 
@@ -4198,7 +4198,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=129139)   : Weapon Damage% (31)
-                   Base Value: 360 | Scaled Value: 3.6 (avg=0)
+                   Base Value: 400 | Scaled Value: 4 (avg=0)
 #2 (id=197633)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc115356
@@ -4217,7 +4217,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=129143)   : Weapon Damage% (31)
-                   Base Value: 360 | Scaled Value: 3.6 (avg=0)
+                   Base Value: 400 | Scaled Value: 4 (avg=0)
 #2 (id=197634)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc115356
@@ -4281,7 +4281,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=132331)   : Apply Aura (6) | Dummy (4)
                    Base Value: 80 | Scaled Value: 80
-Description      : Your Earth, Storm and Fire Elemental Totems draw forth primal elementals $s1% more powerful than regular elementals, with additional abilities, and acting directly under your control.
+Description      : Your Earth and Fire Elemental Totems draw forth primal elementals $s1% more powerful than regular elementals, with additional abilities, and acting directly under your control.  Also grants additional abilities and control to your Storm Elemental Totem.
 
 Name             : Elemental Blast (id=117014) [Spell Family (11)] 
 Class            : Shaman
@@ -5104,7 +5104,7 @@ Attributes       : ........ x....... ........ ....x...   ........ ........ .x...
 Effects          :
 #1 (id=201241)   : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1096
-Description      : $@spelldesc63279
+Description      : $@spelldesc147787
 
 Name             : Rain of Frogs (id=148106) 
 Class            : Shaman

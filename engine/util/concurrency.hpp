@@ -57,6 +57,7 @@ public:
 
   static void sleep_seconds( double );
   static void set_calling_thread_priority( priority_e );
+  static int cpu_thread_count();
 };
 
 class auto_lock_t

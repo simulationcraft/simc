@@ -82,12 +82,25 @@ enum stance_e { STURDY_OX = 0x1, FIERCE_TIGER = 0x2, SPIRITED_CRANE = 0x4, WISE_
 enum sef_pet_e { SEF_FIRE = 0, SEF_STORM, SEF_EARTH, SEF_PET_MAX };
 enum sef_ability_e {
   SEF_NONE = -1,
+  // Attacks begin here
   SEF_JAB,
   SEF_TIGER_PALM,
   SEF_BLACKOUT_KICK,
   SEF_RISING_SUN_KICK,
   SEF_FISTS_OF_FURY,
   SEF_SPINNING_CRANE_KICK,
+  SEF_ATTACK_MAX,
+  // Attacks end here
+
+  // Spells begin here
+  SEF_CHI_WAVE,
+  SEF_ZEN_SPHERE,
+  SEF_SPELL_MAX,
+  // Spells end here
+
+  // Misc
+  SEF_SPELL_MIN = SEF_CHI_WAVE,
+  SEF_ATTACK_MIN = SEF_JAB,
   SEF_MAX
 };
 
@@ -154,6 +167,7 @@ double monk_weapon_damage( action_t* action,
 struct monk_td_t: public actor_pair_t
 {
 public:
+
   struct dots_t
   {
     dot_t* enveloping_mist;
@@ -179,6 +193,16 @@ private:
   stance_e _active_stance;
 public:
   typedef player_t base_t;
+
+  struct
+  {
+    luxurious_sample_data_t* stagger_tick_damage;
+    luxurious_sample_data_t* stagger_total_damage;
+    luxurious_sample_data_t* purified_damage;
+    luxurious_sample_data_t* light_stagger_total_damage;
+    luxurious_sample_data_t* moderate_stagger_total_damage;
+    luxurious_sample_data_t* heavy_stagger_total_damage;
+  } sample_datas;
 
   struct active_actions_t
   {
@@ -341,6 +365,9 @@ public:
     const spell_data_t* purifying_brew;
     const spell_data_t* resolve;
     const spell_data_t* summon_black_ox_statue;
+    const spell_data_t* light_stagger;
+    const spell_data_t* moderate_stagger;
+    const spell_data_t* heavy_stagger;
 
     // Mistweaver
     const spell_data_t* brewing_mana_tea;
@@ -473,7 +500,10 @@ public:
     cooldown( cooldowns_t() ),
     passives( passives_t() ),
     pet( pets_t() ),
-    user_options( options_t() )
+    user_options( options_t() ),
+    light_stagger_threshold( 0 ),
+    moderate_stagger_threshold( 0.035 ),
+    heavy_stagger_threshold( 0.065 )
   {
     // actives
     _active_stance = FIERCE_TIGER;
@@ -540,8 +570,6 @@ public:
   }
 
   // Monk specific
-  double current_stagger_dmg();
-  double stagger_pct();
   void apl_combat_brewmaster();
   void apl_combat_mistweaver();
   void apl_combat_windwalker();
@@ -560,7 +588,15 @@ public:
   const spell_data_t& active_stance_data( stance_e ) const;
 
   // Custom Monk Functions
-  void  clear_stagger();
+  double current_stagger_tick_dmg();
+  double current_stagger_tick_dmg_percent();
+  double stagger_pct();
+  // Blizzard rounds it's stagger damage; anything higher than half a percent beyond 
+  // the threshold will switch to the next threshold
+  const double light_stagger_threshold;
+  const double moderate_stagger_threshold;
+  const double heavy_stagger_threshold;
+  double  clear_stagger();
   bool  has_stagger();
 };
 
@@ -607,35 +643,181 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
   // Storm, Earth, and Fire abilities begin =================================
 
-  struct sef_melee_attack_t : public melee_attack_t
+  template <typename BASE>
+  struct sef_action_base_t : public BASE
   {
-    weapon_t* main_hand;
-    weapon_t* off_hand;
+    typedef BASE super_t;
+    typedef sef_action_base_t<BASE> base_t;
 
     action_t* source_action;
+
+    sef_action_base_t( const std::string& n,
+                       storm_earth_and_fire_pet_t* p,
+                       const spell_data_t* data = spell_data_t::nil() ) :
+      BASE( n, p, data ), source_action( 0 )
+    {
+      // Make SEF attacks always background, so they do not consume resources
+      // or do anything associated with "foreground actions".
+      this -> background = this -> may_crit = true;
+      this -> callbacks = false;
+
+      // Cooldowns are handled automatically by the mirror abilities, the SEF specific ones need none.
+      this -> cooldown -> duration = timespan_t::zero();
+
+      // No costs are needed either
+      this -> base_costs[ RESOURCE_ENERGY ] = 0;
+      this -> base_costs[ RESOURCE_CHI ] = 0;
+    }
+
+    void init()
+    {
+      super_t::init();
+
+      // Find source_action from the owner by matching the action name and
+      // spell id with eachother. This basically means that by default, any
+      // spell-data driven ability with 1:1 mapping of name/spell id will
+      // always be chosen as the source action. In some cases this needs to be
+      // overridden (see sef_zen_sphere_t for example).
+      for ( size_t i = 0, end = o() -> action_list.size(); i < end; i++ )
+      {
+        action_t* a = o() -> action_list[ i ];
+
+        if ( util::str_compare_ci( this -> name_str, a -> name_str ) && this -> id == a -> id )
+        {
+          if ( source_action )
+          {
+            this -> sim -> errorf( "%s-%s %s overriding source action init (old=%s, current=%s)",
+                o() -> name(), this -> player -> name(), this -> name(),
+                source_action -> name(), a -> name() );
+          }
+          source_action = a;
+        }
+      }
+
+      if ( source_action )
+      {
+        this -> update_flags = source_action -> update_flags;
+        this -> snapshot_flags = source_action -> snapshot_flags;
+      }
+    }
+
+    sef_td_t* td( player_t* t ) const
+    { return this -> p() -> get_target_data( t ); }
+
+    monk_t* o()
+    { return debug_cast<monk_t*>( this -> player -> cast_pet() -> owner ); }
+
+    const monk_t* o() const
+    { return debug_cast<const monk_t*>( this -> player -> cast_pet() -> owner ); }
+
+    const storm_earth_and_fire_pet_t* p() const
+    { return debug_cast<storm_earth_and_fire_pet_t*>( this -> player ); }
+
+    storm_earth_and_fire_pet_t* p()
+    { return debug_cast<storm_earth_and_fire_pet_t*>( this -> player ); }
+
+    // Use SEF-specific override methods for target related multipliers as the
+    // pets seem to have their own functionality relating to it. The rest of
+    // the state-related stuff is actually mapped to the source (owner) action
+    // below.
+
+    double composite_target_multiplier( player_t* t ) const
+    {
+      double m = super_t::composite_target_multiplier( t );
+
+      const sef_td_t* tdata = td( t );
+      if ( tdata -> rising_sun_kick -> check() )
+        m *= 1.0 + ( this -> player -> wod_hotfix ? 0.10 : tdata -> rising_sun_kick -> data().effectN( 1 ).percent() ); // Hotfix nerf to 10% (down from 20%) on 2014/12/08
+
+      return m;
+    }
+
+    // Map the rest of the relevant state-related stuff into the source
+    // action's methods. In other words, use the owner's data. Note that attack
+    // power is not included here, as we will want to (just in case) snapshot
+    // AP through the pet's own AP system. This allows us to override the
+    // inheritance coefficient if need be in an easy way.
+
+    double attack_direct_power_coefficient( const action_state_t* state ) const
+    {
+      return source_action -> attack_direct_power_coefficient( state );
+    }
+
+    double attack_tick_power_coefficient( const action_state_t* state ) const
+    {
+      return source_action -> attack_tick_power_coefficient( state );
+    }
+
+    timespan_t composite_dot_duration( const action_state_t* s ) const
+    {
+      return source_action -> composite_dot_duration( s );
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const
+    {
+      return source_action -> composite_da_multiplier( s );
+    }
+
+    double composite_ta_multiplier( const action_state_t* s ) const
+    {
+      return source_action -> composite_ta_multiplier( s );
+    }
+
+    double composite_persistent_multiplier( const action_state_t* s ) const
+    {
+      return source_action -> composite_persistent_multiplier( s );
+    }
+
+    double composite_versatility( const action_state_t* s ) const
+    {
+      return source_action -> composite_versatility( s );
+    }
+
+    double composite_haste() const
+    {
+      return source_action -> composite_haste();
+    }
+
+    void schedule_execute( action_state_t* state = 0 )
+    {
+      // Never execute an ability if there's no source action. Things will crash.
+      if ( ! source_action )
+      {
+        action_state_t::release( state );
+        return;
+      }
+
+      // Target always follows the SEF clone's target, which is assigned during
+      // summon time
+      this -> target = this -> player -> target;
+
+      super_t::schedule_execute( state );
+    }
+
+    void snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt )
+    {
+      super_t::snapshot_internal( state, flags, rt );
+
+      // TODO: Check-recheck-figure out some day
+      // Apply a -5% modifier to all damage generated by the pets.
+      state -> da_multiplier /= 1.05;
+      state -> ta_multiplier /= 1.05;
+    }
+  };
+
+  struct sef_melee_attack_t : public sef_action_base_t<melee_attack_t>
+  {
+    bool main_hand, off_hand;
 
     sef_melee_attack_t( const std::string& n,
                         storm_earth_and_fire_pet_t* p,
                         const spell_data_t* data = spell_data_t::nil(),
                         weapon_t* w = 0 ) :
-      melee_attack_t( n, p, data ),
-      // Automatically presume main- and off-hand weapons if there's no
-      // specific weapon given
-      main_hand( ! w ? &( p -> main_hand_weapon ) : 0 ),
-      off_hand( ! w ? &( p -> off_hand_weapon ) : 0 ),
-      source_action( 0 )
+      base_t( n, p, data ),
+      // For special attacks, the SEF pets always use the owner's weapons.
+      main_hand( ! w ? true : false ), off_hand( ! w ? true : false )
     {
-      // Make SEF attacks always background, so they do not consume resources
-      // or do anything associated with "foreground actions".
-      background = may_crit = true;
       school = SCHOOL_PHYSICAL;
-
-      // Cooldowns are handled automatically by the mirror abilities, the SEF specific ones need none.
-      cooldown -> duration = timespan_t::zero();
-
-      // No costs are needed either
-      base_costs[ RESOURCE_ENERGY ] = 0;
-      base_costs[ RESOURCE_CHI ] = 0;
 
       if ( w )
       {
@@ -653,94 +835,26 @@ struct storm_earth_and_fire_pet_t : public pet_t
       return a;
     }
 
-    double composite_target_multiplier( player_t* t ) const
-    {
-      double m = melee_attack_t::composite_target_multiplier( t );
-
-      const sef_td_t* tdata = td( t );
-      if ( tdata -> rising_sun_kick -> check() )
-        m *= 1.0 + ( player -> wod_hotfix ? 0.10 : tdata -> rising_sun_kick -> data().effectN( 1 ).percent() ); // Hotfix nerf to 10% (down from 20%) on 2014/12/08
-
-      return m;
-    }
-
-    sef_td_t* td( player_t* t ) const
-    { return p() -> get_target_data( t ); }
-
-    monk_t* o()
-    { return debug_cast<monk_t*>( player -> cast_pet() -> owner ); }
-
-    const monk_t* o() const
-    { return debug_cast<const monk_t*>( player -> cast_pet() -> owner ); }
-
-    const storm_earth_and_fire_pet_t* p() const
-    { return debug_cast<storm_earth_and_fire_pet_t*>( player ); }
-
-    storm_earth_and_fire_pet_t* p()
-    { return debug_cast<storm_earth_and_fire_pet_t*>( player ); }
-
     // SEF uses the "normal" monk weapon damage calculation, except for auto
     // attacks.
     double calculate_weapon_damage( double attack_power )
     {
+      // Actual weapon damage calculation is done with the OWNER weapons for
+      // special attacks, not SEF specific ones.
       if ( main_hand || ( main_hand && off_hand ) )
-        return monk_util::monk_weapon_damage( this, main_hand, off_hand, weapon_power_mod, attack_power );
+        return monk_util::monk_weapon_damage( this, &( o() -> main_hand_weapon ), &( o() -> off_hand_weapon ), weapon_power_mod, attack_power );
       else
         return melee_attack_t::calculate_weapon_damage( attack_power );
     }
+  };
 
-    void schedule_execute( action_state_t* state = 0 )
-    {
-      // Target always follows the SEF clone's target, which is assigned during
-      // summon time
-      target = player -> target;
-
-      melee_attack_t::schedule_execute( state );
-    }
-
-    // TODO: This may need a flag (similar to Shadow Reflection) to indincate
-    // that we're snapshotting for the SEF. This is necessary if we need to
-    // filter out specific multipliers because they do not affect the pets. For
-    // now, it's left out. If it is put in, owner caches have to be invalidated
-    // before and after the snapshotting.
-    //
-    // NOTE: Autoattacks need special handling, and they have their own
-    // override for snapshotting
-    void snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt )
-    {
-      // Get an owner state object, and populate it with owner current stats
-      action_state_t* owner_state = source_action -> get_state();
-      owner_state -> target = state -> target;
-      owner_state -> n_targets = state -> n_targets;
-      owner_state -> chain_target = state -> chain_target;
-      // We don't need to snapshot owner AP or target based multipliers, we
-      // will get those on our own
-      source_action -> snapshot_internal( owner_state, flags & ~( STATE_AP | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA ), rt );
-
-      // Copy owner stats to our state object, including any/all multipliers
-      // for the given ability.
-      state -> copy_state( owner_state );
-
-      // Storm, Earth, and Fire pets need to re-snapshot attack power due to
-      // AP inheritance coefficient, and target multipliers because it has
-      // its own debuffs.
-      if ( flags & STATE_AP )
-        state -> attack_power = composite_attack_power() * player -> composite_attack_power_multiplier();
-
-      if ( flags & STATE_TGT_MUL_DA )
-        state -> target_da_multiplier = composite_target_da_multiplier( state -> target );
-
-      if ( flags & STATE_TGT_MUL_TA )
-        state -> target_ta_multiplier = composite_target_ta_multiplier( state -> target );
-
-      // TODO: Check-recheck-figure out some day
-      // Apply a -5% modifier to all damage generated by the pets.
-      state -> da_multiplier /= 1.05;
-      state -> ta_multiplier /= 1.05;
-
-      // Release the used owner state object
-      action_state_t::release( owner_state );
-    }
+  struct sef_spell_t : public sef_action_base_t<spell_t>
+  {
+    sef_spell_t( const std::string& n,
+                 storm_earth_and_fire_pet_t* p,
+                 const spell_data_t* data = spell_data_t::nil() ) :
+      base_t( n, p, data )
+    { }
   };
 
   // Auto attack ============================================================
@@ -762,10 +876,21 @@ struct storm_earth_and_fire_pet_t : public pet_t
         base_hit -= 0.19;
       }
 
-      // NOTE: We don't care what hand is used, we just need the multipliers
-      // and from the owner, so we do not need to implement them globally for
-      // SEF pets.
-      source_action = player -> owner -> find_action( "melee_main_hand" );
+      if ( w == &( player -> main_hand_weapon ) )
+      {
+        source_action = player -> owner -> find_action( "melee_main_hand" );
+      }
+      else
+      {
+        source_action = player -> owner -> find_action( "melee_off_hand" );
+        // If owner is using a 2handed weapon, there's not going to be an
+        // off-hand action for autoattacks, thus just use main hand one then.
+        if ( ! source_action )
+        {
+          source_action = player -> owner -> find_action( "melee_main_hand" );
+        }
+      }
+
       // TODO: Can't really assert here, need to figure out a fallback if the
       // windwalker does not use autoattacks (how likely is that?)
       if ( sim -> debug )
@@ -773,6 +898,33 @@ struct storm_earth_and_fire_pet_t : public pet_t
         sim -> errorf( "%s has no auto_attack in APL, Storm, Earth, and Fire pets cannot auto-attack.",
             o() -> name() );
       }
+    }
+
+    // A wild equation appears
+    double composite_attack_power() const
+    {
+      double ap = sef_melee_attack_t::composite_attack_power();
+
+      if ( o() -> main_hand_weapon.group() == WEAPON_2H )
+      {
+        ap += o() -> main_hand_weapon.dps * 3.5;
+      }
+      // 1h/dual wield equation. Note, this formula is slightly off (~3%) for
+      // owner dw/pet dw variation.
+      else
+      {
+        double total_dps = o() -> main_hand_weapon.dps;
+        double dw_mul = 1.0;
+        if ( o() -> off_hand_weapon.group() != WEAPON_NONE )
+        {
+          total_dps += o() -> off_hand_weapon.dps * 0.5;
+          dw_mul = 0.898882275;
+        }
+
+        ap += total_dps * 3.5 * dw_mul;
+      }
+
+      return ap;
     }
 
     // Since we use owner multipliers, we need to apply (or remove!) the auto
@@ -908,7 +1060,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       sef_melee_attack_t::impact( state );
 
       if ( ( p() -> current.position == POSITION_BACK || p() -> o() -> glyph.blackout_kick ) &&
-           ( result_is_hit( state -> result ) || result_is_multistrike( state -> result ) ) )
+           result_is_hit_or_multistrike( state -> result ) )
       {
         residual_action::trigger( dot,
                                   state -> target,
@@ -1014,12 +1166,74 @@ struct storm_earth_and_fire_pet_t : public pet_t
       channeled = tick_zero = true;
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
-      base_tick_time *= 1.0 + o() -> perk.empowered_spinning_crane_kick -> effectN( 1 ).percent();
-      dot_duration *= 1.0 + o() -> perk.empowered_spinning_crane_kick -> effectN( 2 ).percent();
-
       weapon_power_mod = 0;
 
       tick_action = new sef_tick_action_t( "spinning_crane_kick_tick", player, &( data() ) );
+    }
+  };
+
+  // SEF Chi Wave skips the healing ticks, delivering damage on every second
+  // tick of the ability for simplicity.
+  struct sef_chi_wave_t : public sef_spell_t
+  {
+    sef_chi_wave_t( storm_earth_and_fire_pet_t* player ) :
+      sef_spell_t( "chi_wave", player, player -> o() -> find_talent_spell( "Chi Wave" ) )
+    {
+      may_crit = may_miss = hasted_ticks = false;
+      tick_zero = tick_may_crit = true;
+    }
+
+    void tick( dot_t* d )
+    {
+      if ( d -> current_tick % 2 == 0 )
+      {
+        sef_spell_t::tick( d );
+      }
+    }
+  };
+
+  struct sef_zen_sphere_detonation_t : public sef_spell_t
+  {
+    sef_zen_sphere_detonation_t( storm_earth_and_fire_pet_t* player ) :
+      sef_spell_t( "zen_sphere_detonation", player, player -> find_spell( 125033 ) )
+    {
+      aoe = -1;
+    }
+
+    void init()
+    {
+      sef_spell_t::init();
+
+      source_action = o() -> find_action( "zen_sphere_damage" );
+      if ( source_action )
+      {
+        update_flags = source_action -> update_flags;
+        snapshot_flags = source_action -> snapshot_flags;
+      }
+    }
+  };
+
+  // SEF Zen Sphere does not perform healing
+  struct sef_zen_sphere_t : public sef_spell_t
+  {
+    sef_zen_sphere_detonation_t* detonation;
+
+    sef_zen_sphere_t( storm_earth_and_fire_pet_t* player ) :
+      sef_spell_t( "zen_sphere", player, player -> o() -> find_talent_spell( "Zen Sphere" ) ),
+      detonation( new sef_zen_sphere_detonation_t( player ) )
+    {
+      add_child( detonation );
+    }
+
+    void last_tick( dot_t* d )
+    {
+      sef_spell_t::last_tick( d );
+
+      if ( ! player -> is_sleeping() )
+      {
+        detonation -> target = d -> target;
+        detonation -> schedule_execute();
+      }
     }
   };
 
@@ -1029,6 +1243,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
   buff_t* tiger_power;
 
   std::vector<sef_melee_attack_t*> attacks;
+  std::vector<sef_spell_t*> spells;
 
 private:
   target_specific_t<sef_td_t*> target_data;
@@ -1036,7 +1251,7 @@ public:
 
   storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield ):
     pet_t( sim, owner, name, true ),
-    tiger_power( 0 ), attacks( SEF_MAX )
+    tiger_power( 0 ), attacks( SEF_ATTACK_MAX ), spells( SEF_SPELL_MAX - SEF_SPELL_MIN )
   {
     // Storm, Earth, and Fire pets have to become "Windwalkers", so we can get
     // around some sanity checks in the action execution code, that prevents
@@ -1044,13 +1259,6 @@ public:
     // that do not have the specialization.
     _spec = MONK_WINDWALKER;
 
-   /* double mh_dps = 0;
-    if ( owner -> items[ SLOT_MAIN_HAND ].parsed.data.id > 0 )
-    {
-      mh_dps = owner -> dbc.weapon_dps( owner -> items[ SLOT_MAIN_HAND ].parsed.data.id,
-                                        owner -> items[ SLOT_MAIN_HAND ].item_level() );
-    }
-    */
     main_hand_weapon.type = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( dual_wield ? 2.6 : 3.6 );
 
@@ -1060,75 +1268,7 @@ public:
       off_hand_weapon.swing_time = timespan_t::from_seconds( 2.6 );
     }
 
-    // TODO: Check if the 0.74164 is global, or AA only?
-    // Use 100% AP inheritance for now, Blizzard has 0.74164 for something but
-    // it does not seem to fit us.
     owner_coeff.ap_from_ap = 1.0;
-  }
-
-  void init_stats()
-  {
-    pet_t::init_stats();
-
-    unsigned owner_ilevel = owner -> items[ SLOT_MAIN_HAND ].item_level();
-    unsigned owner_quality = owner -> items[ SLOT_MAIN_HAND ].parsed.data.quality;
-    // Heirlooms?
-    if ( owner_quality > 6 )
-    {
-      owner_quality = 4;
-    }
-
-    double normalized_dps = 0;
-    bool owner_caster_weapon = ( owner -> items[ SLOT_MAIN_HAND ].parsed.data.flags_2 & ITEM_FLAG2_CASTER_WEAPON ) != 0;
-
-    // Use ilevel to figure out base dps
-    if ( owner_ilevel > 0 )
-    {
-      // Dual wielding pet, use one hand dps
-      if ( main_hand_weapon.swing_time == timespan_t::from_seconds( 2.6 ) )
-      {
-        if ( owner_caster_weapon )
-        {
-          normalized_dps = dbc.item_damage_caster_1h( owner_ilevel ).values[ owner_quality ];
-        }
-        else
-        {
-          normalized_dps = dbc.item_damage_1h( owner_ilevel ).values[ owner_quality ];
-        }
-      }
-      // 2h pet
-      else
-      {
-        if ( owner_caster_weapon )
-        {
-          normalized_dps = dbc.item_damage_caster_2h( owner_ilevel ).values[ owner_quality ];
-        }
-        else
-        {
-          normalized_dps = dbc.item_damage_2h( owner_ilevel ).values[ owner_quality ];
-        }
-      }
-    }
-    // Use min/max dmg of the weapon to approximate base dps
-    else
-    {
-      normalized_dps = owner -> main_hand_weapon.min_dmg + owner -> main_hand_weapon.max_dmg;
-      normalized_dps /= 2;
-      normalized_dps /= owner -> main_hand_weapon.swing_time.total_seconds();
-    }
-
-    // Very simplified version of weapon damage computation (see
-    // item_database::weapon_dps)
-    //
-    // TODO: Damage range always 0.4 for the pets?
-    main_hand_weapon.min_dmg = floor( normalized_dps * main_hand_weapon.swing_time.total_seconds() * ( 1 - 0.4 / 2 ) );
-    main_hand_weapon.max_dmg = ceil( normalized_dps * main_hand_weapon.swing_time.total_seconds() * ( 1 + 0.4 / 2 ) + 0.5 );
-
-    if ( main_hand_weapon.swing_time == timespan_t::from_seconds( 2.6 ) )
-    {
-      off_hand_weapon.min_dmg = floor( normalized_dps * off_hand_weapon.swing_time.total_seconds() * ( 1 - 0.4 / 2 ) );
-      off_hand_weapon.max_dmg = ceil( normalized_dps * off_hand_weapon.swing_time.total_seconds() * ( 1 + 0.4 / 2 ) + 0.5 );
-    }
   }
 
   timespan_t available() const
@@ -1172,6 +1312,9 @@ public:
     attacks[ SEF_RISING_SUN_KICK     ] = new sef_rising_sun_kick_t( this );
     attacks[ SEF_FISTS_OF_FURY       ] = new sef_fists_of_fury_t( this );
     attacks[ SEF_SPINNING_CRANE_KICK ] = new sef_spinning_crane_kick_t( this );
+
+    spells[ SEF_CHI_WAVE - SEF_SPELL_MIN   ] = new sef_chi_wave_t( this );
+    spells[ SEF_ZEN_SPHERE - SEF_SPELL_MIN ] = new sef_zen_sphere_t( this );
   }
 
   void init_action_list()
@@ -1216,12 +1359,28 @@ public:
     o() -> buff.storm_earth_and_fire -> decrement();
   }
 
-  void trigger_attack( sef_ability_e ability, action_t* action )
+  void trigger_attack( sef_ability_e ability )
   {
-    assert( attacks[ ability ] );
+    if ( ability >= SEF_SPELL_MIN )
+    {
+      size_t spell = static_cast<size_t>( ability - SEF_SPELL_MIN );
+      assert( spells[ spell ] );
 
-    attacks[ ability ] -> source_action = action;
-    attacks[ ability ] -> schedule_execute();
+      // If the owner targeted this pet's target, don't mirror the ability
+      if ( spells[ spell ] -> source_action -> target != target )
+      {
+        spells[ spell ] -> schedule_execute();
+      }
+    }
+    else
+    {
+      assert( attacks[ ability ] );
+
+      if ( attacks[ ability ] -> source_action -> target != target )
+      {
+        attacks[ ability ] -> schedule_execute();
+      }
+    }
   }
 };
 
@@ -1596,7 +1755,7 @@ public:
       {
         continue;
       }
-      p() -> pet.sef[ i ] -> trigger_attack( sef_ability, this );
+      p() -> pet.sef[ i ] -> trigger_attack( sef_ability );
     }
   }
 };
@@ -1915,7 +2074,7 @@ struct blackout_kick_t: public monk_melee_attack_t
     base_multiplier *= 5.375; // hardcoded into tooltip
 
     if ( p -> wod_hotfix )
-      base_multiplier *= 1 + p -> passives.hotfix_passive -> effectN( 3 ).percent();
+      base_multiplier *= 6.4 / 5.375;
 
     if ( p -> spec.teachings_of_the_monastery -> ok() )
       aoe = 1 + p -> spec.teachings_of_the_monastery -> effectN( 4 ).base_value();
@@ -2060,7 +2219,7 @@ struct chi_explosion_t: public monk_melee_attack_t
 
   void execute()
   {
-    monk_melee_attack_t::execute();
+    monk_melee_attack_t::execute(); 
 
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
@@ -2075,13 +2234,25 @@ struct chi_explosion_t: public monk_melee_attack_t
           p() -> buff.shuffle -> extend_duration( p(), timespan_t::from_seconds( 2 + ( 2 * resource_consumed ) ) );
         }
       }
-      if ( resource_consumed >= 3 )
+      if ( resource_consumed >= 3 && p() -> has_stagger() )
       {
-        if ( p() -> has_stagger() )
-          p() -> clear_stagger();
+          double stagger_pct = p() -> current_stagger_tick_dmg_percent();
+          double stagger_dmg = p() -> clear_stagger();
 
-        if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) )
-          trigger_brew( p() -> sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
+          // Tier 17 4 pieces Brewmaster: 3 stacks of Chi Explosion generates 1 stacks of Elusive Brew.
+          // Hotfix Jan 13, 2014 - Only procs on Moderate or Heavy Stagger
+          if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) && ( stagger_pct > p() -> moderate_stagger_threshold) )
+            trigger_brew( p() -> sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
+
+          // Optional addition: Track and report amount of damage cleared
+          if ( stagger_pct > p() -> heavy_stagger_threshold )
+            p() -> sample_datas.heavy_stagger_total_damage -> add( stagger_dmg );
+          else if ( stagger_pct > p() -> moderate_stagger_threshold )
+            p() -> sample_datas.moderate_stagger_total_damage -> add( stagger_dmg );
+          else
+            p() -> sample_datas.light_stagger_total_damage -> add( stagger_dmg );
+
+          p() -> sample_datas.purified_damage -> add( stagger_dmg );
       }
     }
     else if ( p() -> specialization() == MONK_WINDWALKER )
@@ -2599,7 +2770,7 @@ struct melee_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    if ( result_is_hit_or_multistrike( s -> result ) )
       p() -> buff.tiger_strikes -> trigger();
 
     if ( p() -> spec.brewing_elusive_brew -> ok() && s -> result == RESULT_CRIT )
@@ -2608,7 +2779,7 @@ struct melee_t: public monk_melee_attack_t
       if ( weapon -> group() == WEAPON_1H || weapon -> group() == WEAPON_SMALL )
         trigger_brew( 1.5 * weapon -> swing_time.total_seconds() / 2.6 );
       else
-        trigger_brew( 3.0 * weapon -> swing_time.total_seconds() / 3.6 );
+        trigger_brew( p() -> active_stance_data( STURDY_OX ).effectN( 11 ).base_value() * weapon->swing_time.total_seconds() / 3.6);
     }
 
     if ( p() -> spec.brewing_elusive_brew -> ok() && s -> result == RESULT_MULTISTRIKE )
@@ -3112,7 +3283,7 @@ struct zen_sphere_damage_t: public monk_spell_t
   {
     background = true;
 
-    attack_power_mod.direct = 0.069165; // fix this for the love of jebus
+    attack_power_mod.direct = 0.06864; // Hardcoded into Tooltip
     school = SCHOOL_NATURE;
   }
 };
@@ -3120,12 +3291,12 @@ struct zen_sphere_damage_t: public monk_spell_t
 struct zen_sphere_detonate_damage_t: public monk_spell_t
 {
   zen_sphere_detonate_damage_t( monk_t* player ):
-    monk_spell_t( "zen_sphere_damage", player, player -> find_spell( 125033 ) )
+    monk_spell_t( "zen_sphere_detonate_damage", player, player -> find_spell( 125033 ) )
   {
     background = true;
     aoe = -1;
 
-    attack_power_mod.direct = 0.47155; // hardcoded into tooltip
+    attack_power_mod.direct = 0.471; // hardcoded into tooltip
     school = SCHOOL_NATURE;
   }
 };
@@ -3166,6 +3337,8 @@ struct chi_wave_t: public monk_spell_t
     damage( new chi_wave_dmg_tick_t( player, "chi_wave_damage" ) ),
     dmg( true )
   {
+    sef_ability = SEF_CHI_WAVE;
+
     parse_options( options_str );
     hasted_ticks = harmful = false;
     dot_duration = timespan_t::from_seconds( 7.0 );
@@ -3361,7 +3534,7 @@ struct storm_earth_and_fire_t: public monk_spell_t
           sef_idx.push_back( i );
         }
 
-        size_t idx = sef_idx[ rng().range( 0, sef_idx.size() ) ];
+        size_t idx = sef_idx[ static_cast<unsigned int>( rng().range(0.0, static_cast<double>( sef_idx.size() )) ) ];
         assert( idx < sef_idx.size() );
 
         p() -> pet.sef[ idx ] -> target = execute_state -> target;
@@ -3615,12 +3788,18 @@ struct mana_tea_t: public monk_spell_t
   }
 };
 
-struct stagger_self_damage_t: public residual_action::residual_periodic_action_t < monk_spell_t >
+// ==========================================================================
+// Stagger Damage
+// ==========================================================================
+
+struct stagger_self_damage_t : public residual_action::residual_periodic_action_t < monk_spell_t >
 {
   stagger_self_damage_t( monk_t* p ):
     base_t( "stagger_self_damage", p, p -> find_spell( 124255 ) )
   {
-    dot_duration = timespan_t::from_seconds( 10.0 );
+    dot_duration = p -> spec.heavy_stagger -> duration();
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    hasted_ticks = tick_may_crit = false;
     target = p;
 
     callbacks = false;
@@ -3631,7 +3810,7 @@ struct stagger_self_damage_t: public residual_action::residual_periodic_action_t
     base_t::init();
 
     // We don't want this counted towards our dps
-    stats->type = STATS_NEUTRAL;
+    stats -> type = STATS_NEUTRAL;
   }
 
   /* Clears the dot and all damage. Used by Purifying Brew
@@ -3642,7 +3821,7 @@ struct stagger_self_damage_t: public residual_action::residual_periodic_action_t
     dot_t* d = get_dot();
     double damage_remaining = 0.0;
     if ( d -> is_ticking() )
-      damage_remaining += d -> ticks_left() * base_td; // Assumes base_td == damage, no modifiers or crits
+      damage_remaining += d -> ticks_left() * d -> state -> result_amount; // Assumes base_td == damage, no modifiers or crits
 
     cancel();
     d -> cancel();
@@ -3676,20 +3855,30 @@ struct purifying_brew_t: public monk_spell_t
   void execute()
   {
     monk_spell_t::execute();
+    double stagger_pct = p() -> current_stagger_tick_dmg_percent();
+    double stagger_dmg = p() -> clear_stagger();
 
     // Tier 16 4 pieces Brewmaster: Purifying Brew also heals you for 15% of the amount of staggered damage cleared.
     if ( p() -> sets.has_set_bonus( SET_TANK, T16, B4 ) )
     {
-      double stagger_heal = p() -> current_stagger_dmg() * p() -> sets.set( SET_TANK, T16, B4 ) -> effectN( 1 ).percent();
+      double stagger_heal = stagger_dmg * p() -> sets.set( SET_TANK, T16, B4 ) -> effectN( 1 ).percent();
       player -> resource_gain( RESOURCE_HEALTH, stagger_heal, p() -> gain.tier16_4pc_tank, this );
     }
 
-    // Optional addition: Track and report amount of damage cleared
-    p() -> active_actions.stagger_self_damage -> clear_all_damage();
-
     // Tier 17 4 pieces Brewmaster: Purifying Brew generates 1 stacks of Elusive Brew.
-    if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) )
+    // Hotfix Jan 13, 2014 - Only procs on Moderate or Heavy Stagger
+    if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) && ( stagger_pct > p() -> moderate_stagger_threshold ) )
       trigger_brew( p() -> sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
+
+    // Optional addition: Track and report amount of damage cleared
+    if ( stagger_pct > p() -> heavy_stagger_threshold )
+      p() -> sample_datas.heavy_stagger_total_damage -> add( stagger_dmg );
+    else if ( stagger_pct > p() -> moderate_stagger_threshold )
+      p() -> sample_datas.moderate_stagger_total_damage -> add( stagger_dmg );
+    else
+      p() -> sample_datas.light_stagger_total_damage -> add( stagger_dmg );
+
+    p() -> sample_datas.purified_damage -> add( stagger_dmg );
   }
 
   bool ready()
@@ -4191,7 +4380,7 @@ struct zen_sphere_t: public monk_heal_t
       background = dual = true;
       aoe = -1;
 
-      attack_power_mod.direct = 0.547; // hardcoded into tooltip
+      attack_power_mod.direct = 0.548; // hardcoded into tooltip
       school = SCHOOL_NATURE;
     }
   };
@@ -4204,6 +4393,8 @@ struct zen_sphere_t: public monk_heal_t
     zen_sphere_detonate_damage( new spells::zen_sphere_detonate_damage_t( &p ) ),
     zen_sphere_detonate_heal( new zen_sphere_detonate_heal_t( p ) )
   {
+    sef_ability = SEF_ZEN_SPHERE;
+
     parse_options( options_str );
 
     school = SCHOOL_NATURE;
@@ -4226,8 +4417,11 @@ struct zen_sphere_t: public monk_heal_t
   {
     monk_heal_t::last_tick( d );
 
-    zen_sphere_detonate_damage -> execute();
-    zen_sphere_detonate_heal -> execute();
+    if ( ! player -> is_sleeping() )
+    {
+      zen_sphere_detonate_damage -> execute();
+      zen_sphere_detonate_heal -> execute();
+    }
   }
 };
 
@@ -4606,6 +4800,9 @@ void monk_t::init_spells()
   spec.resolve                       = find_specialization_spell( "Resolve" );
   spec.bladed_armor                  = find_specialization_spell( "Bladed Armor" );
   spec.ferment                       = find_specialization_spell( "Ferment" );
+  spec.light_stagger                 = find_spell( 124275 );
+  spec.moderate_stagger              = find_spell( 124274 );
+  spec.heavy_stagger                 = find_spell( 124273 );
 
   // Mistweaver Passives
   spec.brewing_mana_tea              = find_specialization_spell( "Brewing: Mana Tea" );
@@ -4656,6 +4853,14 @@ void monk_t::init_spells()
   mastery.bottled_fury               = find_mastery_spell( MONK_WINDWALKER );
   mastery.elusive_brawler            = find_mastery_spell( MONK_BREWMASTER );
   mastery.gift_of_the_serpent        = find_mastery_spell( MONK_MISTWEAVER );
+
+  // Sample Data
+  sample_datas.stagger_total_damage           = get_sample_data("Total Stagger damage generated");
+  sample_datas.stagger_tick_damage            = get_sample_data("Stagger damage that was not purified");
+  sample_datas.purified_damage                = get_sample_data("Stagger damage that was purified");
+  sample_datas.light_stagger_total_damage     = get_sample_data("Amount of damage purified while at light stagger");
+  sample_datas.moderate_stagger_total_damage  = get_sample_data("Amount of damage purified while at moderate stagger");
+  sample_datas.heavy_stagger_total_damage     = get_sample_data("Amount of damage purified while at heavy stagger");
 
   //SPELLS
   active_actions.blackout_kick_dot    = new actions::dot_blackout_kick_t( this );
@@ -4745,7 +4950,8 @@ void monk_t::create_buffs()
 
   buff.power_strikes = buff_creator_t( this, "power_strikes", talent.power_strikes -> effectN( 1 ).trigger() );
 
-  double ts_proc_chance = main_hand_weapon.group() == WEAPON_1H ? ( spec.tiger_strikes -> proc_chance() / 10 * 5 ) : spec.tiger_strikes -> proc_chance();
+  double ts_proc_chance = ( ( main_hand_weapon.group() == WEAPON_1H ) && ( specialization() != MONK_MISTWEAVER ) ) 
+    ? ( spec.tiger_strikes -> proc_chance() / 8 * 5 ) : spec.tiger_strikes -> proc_chance();
   buff.tiger_strikes = buff_creator_t( this, "tiger_strikes", find_spell( 120273 ) )
     .chance( ts_proc_chance )
     .add_invalidate( CACHE_MULTISTRIKE );
@@ -4944,9 +5150,9 @@ bool monk_t::has_stagger()
 {
   return active_actions.stagger_self_damage -> stagger_ticking();
 }
-void monk_t::clear_stagger()
+double monk_t::clear_stagger()
 {
-  active_actions.stagger_self_damage -> clear_all_damage();
+  return active_actions.stagger_self_damage -> clear_all_damage();
 }
 
 // monk_t::composite_attack_speed =========================================
@@ -5330,13 +5536,17 @@ void monk_t::target_mitigation( school_e school,
 {
   // Stagger is not reduced by damage mitigation effects
   if ( s -> action -> id == 124255 )
+  {
+    // Register the tick then exit
+    sample_datas.stagger_tick_damage -> add( s -> result_amount );
     return;
+  }
 
   player_t::target_mitigation( school, dt, s );
 
   // Passive sources (Sturdy Ox)
   if ( school != SCHOOL_PHYSICAL )
-    s -> result_amount *= 1.0 + ( wod_hotfix ? 0.15 : active_stance_data( STURDY_OX ).effectN( 4 ).percent() ); // Hotfix to 15% (up from 10%) on Nov 12, 2014
+    s -> result_amount *= 1.0 + ( wod_hotfix ? -0.15 : active_stance_data( STURDY_OX ).effectN( 4 ).percent() ); // Hotfix to -15% (up from -10%) on Nov 12, 2014
 
   // Damage Reduction Cooldowns
 
@@ -5409,17 +5619,23 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
     return;
 
   double stagger_dmg = 0;
+  
+  if ( s -> result_amount > 0 )
+  {
+    if (school == SCHOOL_PHYSICAL)
+      stagger_dmg += s -> result_amount * stagger_pct();
 
-  if ( school == SCHOOL_PHYSICAL )
-    stagger_dmg += s -> result_amount > 0 ? s -> result_amount * stagger_pct() : 0.0;
+    if ( school != SCHOOL_PHYSICAL && talent.soul_dance )
+      stagger_dmg += s -> result_amount * ( stagger_pct() * talent.soul_dance -> effectN( 1 ).percent() );
 
-  if ( school != SCHOOL_PHYSICAL && talent.soul_dance )
-    stagger_dmg += s -> result_amount > 0 ? s -> result_amount * ( stagger_pct() * talent.soul_dance -> effectN( 1 ).percent() ) : 0.0;
-
-  s -> result_amount -= stagger_dmg;
+    s -> result_amount -= stagger_dmg;
+  }
   // Hook up Stagger Mechanism
   if ( stagger_dmg > 0 )
+  {
+    sample_datas.stagger_total_damage -> add( stagger_dmg );
     residual_action::trigger( active_actions.stagger_self_damage, this, stagger_dmg );
+  }
 }
 
 // Brewmaster Pre-Combat Action Priority List ============================
@@ -5555,6 +5771,7 @@ void monk_t::apl_combat_brewmaster()
   action_priority_list_t* def = get_action_priority_list( "default" );
   action_priority_list_t* st = get_action_priority_list( "st" );
   action_priority_list_t* aoe = get_action_priority_list( "aoe" );
+  action_priority_list_t* tod = get_action_priority_list( "tod" );
 
   def -> add_action( "auto_attack" );
 
@@ -5562,7 +5779,7 @@ void monk_t::apl_combat_brewmaster()
     def -> add_action( racial_actions[i] + ",if=energy<=40" );
 
   def -> add_action( "chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4" );
-  def -> add_talent( this, "Chi Brew", "if=talent.chi_brew.enabled&chi.max-chi>=2&buff.elusive_brew_stacks.stack<=10&((charges=1&recharge_time<5)|charges=2|target.time_to_die<15)" );
+  def -> add_talent( this, "Chi Brew", "if=talent.chi_brew.enabled&chi.max-chi>=2&buff.elusive_brew_stacks.stack<=10&((charges=1&recharge_time<5)|charges=2|(target.time_to_die<15&(cooldown.touch_of_death.remains>target.time_to_die|glyph.touch_of_death.enabled)))" );
   def -> add_talent( this, "Chi Brew", "if=(chi<1&stagger.heavy)|(chi<2&buff.shuffle.down)" );
   def -> add_action( this, "Gift of the Ox", "if=buff.gift_of_the_ox.react&incoming_damage_1500ms" );
   def -> add_talent( this, "Diffuse Magic", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
@@ -5580,16 +5797,28 @@ void monk_t::apl_combat_brewmaster()
       def -> add_action( "potion,name=virmens_bite,if=(buff.fortifying_brew.down&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.elusive_brew_activated.down)" );
   }
   
+  def -> add_action( "call_action_list,name=tod,if=target.health.percent<10&target.time_to_die<8&cooldown.touch_of_death.remains=0&!glyph.touch_of_death.enabled" );
   def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
   def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
 
+  tod -> add_action( this, "Touch of Death" );
+  tod -> add_action( "chi_brew,if=chi<3&talent.chi_brew.enabled" ); 
+  tod -> add_action( this, "Keg Smash", "if=talent.chi_brew.enabled&chi<3" );
+  tod -> add_action( this, "Expel Harm", "if=chi<3&(cooldown.keg_smash.remains>target.time_to_die|((energy+(energy.regen*(cooldown.keg_smash.remains)))>=80)&cooldown.keg_smash.remains>=gcd)" );
+  tod -> add_action( this, "Jab", "if=chi<3&(cooldown.keg_smash.remains>target.time_to_die|((energy+(energy.regen*(cooldown.keg_smash.remains)))>=80)&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd)" );
+  tod -> add_action( this, "Tiger Palm", "if=talent.chi_brew.enabled&chi<3" ); 
+  
+  
   st -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.heavy" );
   st -> add_action( this, "Blackout Kick", "if=buff.shuffle.down" );
   st -> add_action( this, "Purifying Brew", "if=buff.serenity.up" );
   st -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.moderate&buff.shuffle.remains>=6" );
   st -> add_action( this, "Guard", "if=(charges=1&recharge_time<5)|charges=2|target.time_to_die<15" );
   st -> add_action( this, "Guard", "if=incoming_damage_10s>=health.max*0.5" );
+  st -> add_action( "chi_brew,if=target.health.percent<10&cooldown.touch_of_death.remains=0&chi<=3&chi>=1&(buff.shuffle.remains>=6|target.time_to_die<buff.shuffle.remains)&!glyph.touch_of_death.enabled" );
+  st -> add_action( this, "Touch of Death", "if=target.health.percent<10&(buff.shuffle.remains>=6|target.time_to_die<=buff.shuffle.remains)&!glyph.touch_of_death.enabled" );
   st -> add_action( this, "Keg Smash", "if=chi.max-chi>=1&!buff.serenity.remains" );
+  st -> add_action( this, "Touch of Death", "if=target.health.percent<10&glyph.touch_of_death.enabled" );
   st -> add_talent( this, "Chi Burst", "if=(energy+(energy.regen*gcd))<100" );
   st -> add_talent( this, "Chi Wave", "if=(energy+(energy.regen*gcd))<100" );
   st -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking&(energy+(energy.regen*gcd))<100" );
@@ -5607,8 +5836,11 @@ void monk_t::apl_combat_brewmaster()
   aoe -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.moderate&buff.shuffle.remains>=6" );
   aoe -> add_action( this, "Guard", "if=(charges=1&recharge_time<5)|charges=2|target.time_to_die<15" );
   aoe -> add_action( this, "Guard", "if=incoming_damage_10s>=health.max*0.5" );
+  aoe -> add_action( "chi_brew,if=target.health.percent<10&cooldown.touch_of_death.remains=0&chi<=3&chi>=1&(buff.shuffle.remains>=6|target.time_to_die<buff.shuffle.remains)&!glyph.touch_of_death.enabled" );
+  aoe -> add_action( this, "Touch of Death", "if=target.health.percent<10&(buff.shuffle.remains>=6|target.time_to_die<=buff.shuffle.remains)&!glyph.touch_of_death.enabled" );
   aoe -> add_action( this, "Breath of Fire", "if=(chi>=3|buff.serenity.up)&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=2.4&!talent.chi_explosion.enabled" );
   aoe -> add_action( this, "Keg Smash", "if=chi.max-chi>=1&!buff.serenity.remains" );
+  aoe -> add_action( this, "Touch of Death", "if=target.health.percent<10&glyph.touch_of_death.enabled" );
   aoe -> add_action( "rushing_jade_wind,if=chi.max-chi>=1&!buff.serenity.remains&talent.rushing_jade_wind.enabled" );
   aoe -> add_talent( this, "Chi Burst", "if=(energy+(energy.regen*gcd))<100" );
   aoe -> add_talent( this, "Chi Wave", "if=(energy+(energy.regen*gcd))<100" );
@@ -5666,6 +5898,7 @@ void monk_t::apl_combat_windwalker()
   def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&chi>=2&(buff.tigereye_brew.stack>=16|target.time_to_die<40)&debuff.rising_sun_kick.up&buff.tiger_power.up" );
   def -> add_action( this, "Rising Sun Kick", "if=(debuff.rising_sun_kick.down|debuff.rising_sun_kick.remains<3)" );
   def -> add_talent( this, "Serenity", "if=talent.serenity.enabled&chi>=2&buff.tiger_power.up&debuff.rising_sun_kick.up" );
+  
   def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
   def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
 
@@ -5833,9 +6066,9 @@ double monk_t::stagger_pct()
   return stagger;
 }
 
-// monk_t::stagger_dmg ==================================================
+// monk_t::current_stagger_tick_dmg ==================================================
 
-double monk_t::current_stagger_dmg()
+double monk_t::current_stagger_tick_dmg()
 {
   double dmg = 0;
   if ( active_actions.stagger_self_damage )
@@ -5848,6 +6081,13 @@ double monk_t::current_stagger_dmg()
     }
   }
   return dmg;
+}
+
+// monk_t::current_stagger_dmg_percent ==================================================
+
+double monk_t::current_stagger_tick_dmg_percent()
+{
+  return current_stagger_tick_dmg() / resources.max[RESOURCE_HEALTH];
 }
 
 // monk_t::create_expression ==================================================
@@ -5868,7 +6108,7 @@ expr_t* monk_t::create_expression( action_t* a, const std::string& name_str )
 
       virtual double evaluate()
       {
-        return ( player.current_stagger_dmg() / player.resources.max[RESOURCE_HEALTH] ) > stagger_health_pct;
+        return player.current_stagger_tick_dmg_percent() > stagger_health_pct;
       }
     };
     struct stagger_amount_expr_t: public expr_t
@@ -5881,18 +6121,16 @@ expr_t* monk_t::create_expression( action_t* a, const std::string& name_str )
 
       virtual double evaluate()
       {
-        return player.current_stagger_dmg();
+        return player.current_stagger_tick_dmg();
       }
     };
 
-    // Blizzard rounds it's stagger damage; anything higher than half a percent beyond 
-    // the threshold will switch to the next threshold
     if ( splits[1] == "light" )
-      return new stagger_threshold_expr_t( *this, 0.0 );
+      return new stagger_threshold_expr_t( *this, light_stagger_threshold );
     else if ( splits[1] == "moderate" )
-      return new stagger_threshold_expr_t( *this, 0.035 );
+      return new stagger_threshold_expr_t( *this, moderate_stagger_threshold );
     else if ( splits[1] == "heavy" )
-      return new stagger_threshold_expr_t( *this, 0.065 );
+      return new stagger_threshold_expr_t( *this, heavy_stagger_threshold );
     else if ( splits[1] == "amount" )
       return new stagger_amount_expr_t( *this );
   }
@@ -6016,18 +6254,99 @@ public:
   {
   }
 
-  virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
+  virtual void html_customsection( report::sc_html_stream& os ) override
   {
-    (void)p;
-    /*// Custom Class Section
-    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
-    << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
-    << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+    // Custom Class Section
+    if (p.specialization() == MONK_BREWMASTER)
+    {
+      double stagger_tick_dmg = p.sample_datas.stagger_tick_damage -> sum();
+      double purified_dmg = p.sample_datas.purified_damage -> sum();
+      double stagger_total_dmg = stagger_tick_dmg + purified_dmg;
 
-    os << p.name();
+      os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
+        << "\t\t\t\t\t<h3 class=\"toggle open\">Stagger Analysis</h3>\n"
+        << "\t\t\t\t\t<div class=\"toggle-content\">\n";
 
-    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";
-    */
+      os << "\t\t\t\t\t\t<p style=\"color: red;\">This section is a work in progress</p>\n";
+
+      os << "\t\t\t\t\t\t<p>Percent amount of stagger that was purified: "
+       << ( ( purified_dmg / stagger_total_dmg ) * 100 ) << "%</p>\n"
+       << "\t\t\t\t\t\t<p>Percent amount of stagger that directly damaged the player: "
+       << ( ( stagger_tick_dmg / stagger_total_dmg ) * 100 ) << "%</p>\n\n";
+
+      os << "\t\t\t\t\t\t<table class=\"sc\">\n"
+        << "\t\t\t\t\t\t\t<tbody>\n"
+        << "\t\t\t\t\t\t\t\t<tr>\n"
+        << "\t\t\t\t\t\t\t\t\t<th class=\"left\">Damage Stats</th>\n"
+        << "\t\t\t\t\t\t\t\t\t<th>DTPS</th>\n"
+//        << "\t\t\t\t\t\t\t\t\t<th>DTPS%</th>\n"
+        << "\t\t\t\t\t\t\t\t\t<th>Execute</th>\n"
+        << "\t\t\t\t\t\t\t\t</tr>\n";
+
+      // Stagger info
+      os << "\t\t\t\t\t\t\t\t<tr>\n"
+       << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">\n"
+       << "\t\t\t\t\t\t\t\t\t\t<span class=\"toggle - details\">\n"
+       << "\t\t\t\t\t\t\t\t\t\t\t<a href = \"http://www.wowhead.com/spell=124255\" class = \" icontinyl icontinyl icontinyl\" "
+       << "style = \"background: url(http://wowimg.zamimg.com/images/wow/icons/tiny/ability_rogue_cheatdeath.gif) 0% 50% no-repeat;\"> "
+       << "<span style = \"margin - left: 18px; \">Stagger</span></a></span>\n"
+       << "\t\t\t\t\t\t\t\t\t</td>\n";
+      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
+        << (p.sample_datas.stagger_tick_damage -> mean() / 60) << "</td>\n";
+      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
+        << p.sample_datas.stagger_tick_damage -> count() << "</td>\n";
+      os << "\t\t\t\t\t\t\t\t</tr>\n";
+
+      // Light Stagger info
+      os << "\t\t\t\t\t\t\t\t<tr>\n"
+       << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">\n"
+       << "\t\t\t\t\t\t\t\t\t\t<span class=\"toggle - details\">\n"
+       << "\t\t\t\t\t\t\t\t\t\t\t<a href = \"http://www.wowhead.com/spell=124275\" class = \" icontinyl icontinyl icontinyl\" "
+       << "style = \"background: url(http://wowimg.zamimg.com/images/wow/icons/tiny/priest_icon_chakra_green.gif) 0% 50% no-repeat;\"> "
+       << "<span style = \"margin - left: 18px; \">Light Stagger</span></a></span>\n"
+       << "\t\t\t\t\t\t\t\t\t</td>\n";
+      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
+        << (p.sample_datas.light_stagger_total_damage -> mean() / 60) << "</td>\n";
+      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
+        << p.sample_datas.light_stagger_total_damage -> count() << "</td>\n";
+      os << "\t\t\t\t\t\t\t\t</tr>\n";
+
+      // Moderate Stagger info
+      os << "\t\t\t\t\t\t\t\t<tr>\n"
+        << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">\n"
+        << "\t\t\t\t\t\t\t\t\t\t<span class=\"toggle - details\">\n"
+        << "\t\t\t\t\t\t\t\t\t\t\t<a href = \"http://www.wowhead.com/spell=124274\" class = \" icontinyl icontinyl icontinyl\" "
+        << "style = \"background: url(http://wowimg.zamimg.com/images/wow/icons/tiny/priest_icon_chakra.gif) 0% 50% no-repeat;\"> "
+        << "<span style = \"margin - left: 18px; \">Moderate Stagger</span></a></span>\n"
+        << "\t\t\t\t\t\t\t\t\t</td>\n";
+      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
+        << (p.sample_datas.moderate_stagger_total_damage -> mean() / 60) << "</td>\n";
+      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
+        << p.sample_datas.moderate_stagger_total_damage -> count() << "</td>\n";
+      os << "\t\t\t\t\t\t\t\t</tr>\n";
+
+      // Heavy Stagger info
+      os << "\t\t\t\t\t\t\t\t<tr>\n"
+        << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">\n"
+        << "\t\t\t\t\t\t\t\t\t\t<span class=\"toggle - details\">\n"
+        << "\t\t\t\t\t\t\t\t\t\t\t<a href = \"http://www.wowhead.com/spell=124273\" class = \" icontinyl icontinyl icontinyl\" "
+        << "style = \"background: url(http://wowimg.zamimg.com/images/wow/icons/tiny/priest_icon_chakra_red.gif) 0% 50% no-repeat;\"> "
+        << "<span style = \"margin - left: 18px; \">Heavy Stagger</span></a></span>\n"
+        << "\t\t\t\t\t\t\t\t\t</td>\n";
+      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
+        << (p.sample_datas.heavy_stagger_total_damage -> mean() / 60) << "</td>\n";
+      os << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">"
+        << p.sample_datas.heavy_stagger_total_damage -> count() << "</td>\n";
+      os << "\t\t\t\t\t\t\t\t</tr>\n";
+
+      os << "\t\t\t\t\t\t\t</tbody>\n"
+       << "\t\t\t\t\t\t</table>\n";
+
+      os << "\t\t\t\t\t\t</div>\n"
+       << "\t\t\t\t\t</div>\n";
+    }
+    else
+      ( void )p;
   }
 private:
   monk_t& p;
