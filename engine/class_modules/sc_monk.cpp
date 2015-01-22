@@ -1246,12 +1246,24 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
+  struct sef_chi_wave_damage_t : public sef_spell_t
+  {
+    sef_chi_wave_damage_t( storm_earth_and_fire_pet_t* player ) :
+      sef_spell_t( "chi_wave_damage", player, player -> o() -> find_talent_spell( "Chi Wave" ) )
+    {
+      dual = true;
+    }
+  };
+
   // SEF Chi Wave skips the healing ticks, delivering damage on every second
   // tick of the ability for simplicity.
   struct sef_chi_wave_t : public sef_spell_t
   {
+    sef_chi_wave_damage_t* wave;
+
     sef_chi_wave_t( storm_earth_and_fire_pet_t* player ) :
-      sef_spell_t( "chi_wave", player, player -> o() -> find_talent_spell( "Chi Wave" ) )
+      sef_spell_t( "chi_wave", player, player -> o() -> find_talent_spell( "Chi Wave" ) ),
+      wave( new sef_chi_wave_damage_t( player ) )
     {
       may_crit = may_miss = hasted_ticks = false;
       tick_zero = tick_may_crit = true;
@@ -1262,6 +1274,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
       if ( d -> current_tick % 2 == 0 )
       {
         sef_spell_t::tick( d );
+        wave -> target = d -> target;
+        wave -> schedule_execute();
       }
     }
   };
@@ -2764,10 +2778,8 @@ struct hurricane_strike_tick_t: public monk_melee_attack_t
 
 struct hurricane_strike_t: public monk_melee_attack_t
 {
-  hurricane_strike_tick_t* hs_tick;
   hurricane_strike_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( "hurricane_strike", p, p -> talent.hurricane_strike ),
-    hs_tick(  )
+    monk_melee_attack_t( "hurricane_strike", p, p -> talent.hurricane_strike )
   {
     sef_ability = SEF_HURRICANE_STRIKE;
 
