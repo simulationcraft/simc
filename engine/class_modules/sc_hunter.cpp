@@ -3645,8 +3645,7 @@ void hunter_t::init_base_stats()
 //  if ( sets.has_set_bonus( SET_MELEE, PVP, B4 ) )
 //    base_focus_regen_per_second *= 1.25;
 
-  resources.base[RESOURCE_FOCUS] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
-  resources.base[RESOURCE_FOCUS] = 100 + perks.improved_focus -> effectN( 1 ).resource( RESOURCE_FOCUS );
+  resources.base[RESOURCE_FOCUS] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS ) + perks.improved_focus -> effectN( 1 ).resource( RESOURCE_FOCUS );
 
   // Orc racial
   if ( race == RACE_ORC )
