@@ -34,7 +34,7 @@ save=Warlock_Affliction_T17N.simc
 
 warlock=Warlock_Demonology_T17N
 level=100
-race=troll
+race=orc
 spec=demonology
 talents=0000111
 glyphs=dark_soul
