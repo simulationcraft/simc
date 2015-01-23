@@ -3490,7 +3490,7 @@ struct chi_burst_t: public monk_spell_t
     parse_options( options_str );
     aoe = -1;
     interrupt_auto_attack = false;
-    attack_power_mod.direct = 1.345; // hardcoded into tooltip
+    attack_power_mod.direct = 1.344; // hardcoded into tooltip
   }
 };
 
