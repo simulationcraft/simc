@@ -12,6 +12,7 @@ Change expel harm to heal later on.
 GENERAL:
 - Fortuitous Sphers - Finish implementing
 - Break up Healing Elixers and Fortuitous into two spells; one for proc and one for heal
+- Zen Meditation
 
 WINDWALKER:
 - Make Sure the healing for Blackout Kick is working
@@ -56,8 +57,9 @@ Gift of the Serpent Proc Coefficients:
 
 BREWMASTER:
 
-  - Add some form of cooldown for Expel harm below 35% to better model what is in-game
-- Zen Meditation
+- Guard's healing is from Self-cast spells only, not from ALL sources.
+- Add some form of cooldown for Expel harm below 35% to better model what is in-game
+
 */
 #include "simulationcraft.hpp"
 
@@ -4573,7 +4575,7 @@ struct healing_elixirs_t: public monk_heal_t
   healing_elixirs_t( monk_t& p ):
     monk_heal_t( "healing_elixirs", p, p.talent.healing_elixirs )
   {
-    harmful = may_crit = false;
+    harmful = may_crit = may_multistrike = false;
     trigger_gcd = timespan_t::zero();
     pct_heal = p.passives.healing_elixirs -> effectN( 1 ).percent();
     cooldown -> duration = data().effectN( 1 ).period();
@@ -4651,7 +4653,7 @@ struct power_strikes_event_t: public event_t
     event_t( player, "power_strikes" )
   {
     // Safety clamp
-    tick_time = clamp( tick_time, timespan_t::zero(), timespan_t::from_seconds( 15.0 ) );
+    tick_time = clamp( tick_time, timespan_t::zero(), player.talent.power_strikes -> effectN( 1 ).period() );
     add_event( tick_time );
   }
 
@@ -4661,7 +4663,7 @@ struct power_strikes_event_t: public event_t
 
     p -> buff.power_strikes -> trigger();
 
-    new ( sim() ) power_strikes_event_t( *p, timespan_t::from_seconds( 15.0 ) );
+    new ( sim() ) power_strikes_event_t( *p, p -> talent.power_strikes -> effectN( 1 ).period() );
   }
 };
 
@@ -4706,16 +4708,16 @@ namespace buffs
     // Extra Health is set by current max_health, doesn't change when max_health changes.
     health_gain = static_cast<int>( monk.resources.max[RESOURCE_HEALTH] * ( monk.glyph.fortifying_brew -> ok() ? monk.find_spell( 124997 ) -> effectN( 2 ).percent() :
       monk.spec.fortifying_brew -> effectN( 1 ).percent() ) );
-    monk.stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
-    monk.stat_gain( STAT_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
+    monk.stat_gain( STAT_MAX_HEALTH, health_gain, ( gain_t* )0, ( action_t* )0, true );
+    monk.stat_gain( STAT_HEALTH, health_gain, ( gain_t* )0, ( action_t* )0, true );
     return base_t::trigger( stacks, value, chance, duration );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration )
   {
     base_t::expire_override( expiration_stacks, remaining_duration );
-    monk.stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
-    monk.stat_loss( STAT_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
+    monk.stat_loss( STAT_MAX_HEALTH, health_gain, ( gain_t* )0, ( action_t* )0, true );
+    monk.stat_loss( STAT_HEALTH, health_gain, ( gain_t* )0, ( action_t* )0, true );
   }
 };
 }
@@ -5338,7 +5340,7 @@ double monk_t::composite_player_heal_multiplier( const action_state_t* s ) const
   if ( current_stance() == WISE_SERPENT )
     m *= 1.0 + active_stance_data( WISE_SERPENT ).effectN( 3 ).percent();
 
-  if ( buff.guard -> up() )
+  if ( buff.guard -> up() && s -> action -> player == s -> target )
     m *= 1.0 + spec.guard -> effectN( 2 ).percent();
 
   return m;
