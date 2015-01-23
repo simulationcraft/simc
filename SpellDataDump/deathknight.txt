@@ -1,4 +1,4 @@
-SimulationCraft 603-25 for World of Warcraft 6.0.3 Live (build level 19342)
+SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19480)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -890,7 +890,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x....x .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=40963)    : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 12
@@ -1048,7 +1048,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=41319)    : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 27829 | Misc Value 2: 0xca6 | Radius: 3 yards
@@ -3385,7 +3385,7 @@ Effects          :
 #3 (id=227084)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22
                    Affected Spells: Blood Plague (55078), Frost Fever (55095), Necrotic Plague (155159)
-Description      : Your successful melee attacks on targets infected with your Blood Plague have a $h% chance to make your next Blood Boil or Death and Decay cost no runes.
+Description      : Your successful melee attacks on targets infected with your Blood Plague have a $h% chance to make your next Blood Boil, Deflie, or Death and Decay cost no runes.
 
 Name             : Crimson Scourge (id=81141) [Spell Family (15)] 
 Class            : Death Knight
@@ -3405,7 +3405,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14
                    Affected Spells: Death and Decay (43265), Blood Boil (50842), Defile (152280)
 Description      : $@spelldesc81136
-Tooltip          : Your next Blood Boil or Death and Decay will consume no runes.
+Tooltip          : Your next Blood Boil, Defile, or Death and Decay will consume no runes.
 
 Name             : Will of the Necropolis (id=81164) [Spell Family (15), Passive] 
 Class            : Blood Death Knight
@@ -4997,7 +4997,7 @@ Tooltip          : Suffering $w1 Shadowfrost damage every $t1 sec.
 
 Each time it deals damage, it gains 1 stack, and infects another nearby enemy if possible.
 
-The Death Knight will gain 5 Runic Power whenever an infected target attempts to attack them.
+The Death Knight will gain ${$155165m~1/10} Runic Power whenever an infected target attempts to attack them.
 
 Name             : Necrotic Plague (id=155165) 
 Class            : Death Knight

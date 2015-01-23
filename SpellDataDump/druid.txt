@@ -1,4 +1,4 @@
-SimulationCraft 603-25 for World of Warcraft 6.0.3 Live (build level 19342)
+SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19480)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
@@ -198,14 +198,14 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6
 Description      : Finishing move that causes Bleed damage over $d.  Damage increases per combo point:
 
-   1 point : ${$floor(1*$<rip>)*8} damage
-   2 points: ${$floor(2*$<rip>)*8} damage
-   3 points: ${$floor(3*$<rip>)*8} damage
-   4 points: ${$floor(4*$<rip>)*8} damage
-   5 points: ${$floor(5*$<rip>)*8} damage
+   1 point : ${$floor(1*$<rip>*12)} damage
+   2 points: ${$floor(2*$<rip>*12)} damage
+   3 points: ${$floor(3*$<rip>*12)} damage
+   4 points: ${$floor(4*$<rip>*12)} damage
+   5 points: ${$floor(5*$<rip>*12)} damage
 Tooltip          : Bleeding for $w1 damage every $t1 seconds.
 Variables        : $mastery=$?s77493[${((100+$77493m1)/100)}][${1.00}]
-$rip=${0.086*$AP*$<mastery>}
+$rip=${0.096*$AP*$<mastery>*(1+$@versadmg)}
 
 Name             : Mark of the Wild (id=1126) [Spell Family (7)] 
 Class            : Druid
@@ -293,7 +293,7 @@ Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=571)      : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 70 | Scaled Value: 70
@@ -1194,7 +1194,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | AP Coefficient: 3.80000 | Chain Multiplier: 0.7
 #2 (id=12791)    : None (0)
                    Base Value: 25 | Scaled Value: 25
-Description      : Finishing move that causes damage per combo point$?s67598[, consumes up to 25 additional Energy to increase damage by up to 100%, and heals you for $67598m1% of your total maximum health for each $67598m2 Energy used.][ and consumes up to 25 additional Energy to increase damage by up to 100%.]$?s1079[
+Description      : Finishing move that causes damage per combo point$?s67598[, consumes up to 25 additional Energy to increase damage by up to 100%, and heals you for ${$67598m1/10}.1% of your total maximum health for each $67598m2 Energy used.][ and consumes up to 25 additional Energy to increase damage by up to 100%.]$?s1079[
 
 When used on targets below 25% health, Ferocious Bite will also refresh the duration of your Rip on your target.][]
 
@@ -1454,9 +1454,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=23639)    : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.36729
-Description      : Heals the target for $o1 over $d.  When Lifebloom expires or is dispelled, the target is instantly healed for $33778s1.
+Description      : Heals the target for $o1 over $d.  When Lifebloom expires or is dispelled, the target is instantly healed for $33778s1.$?s121840[][
 
-Duration refreshed by casting Regrowth or Healing Touch on the target.
+Duration refreshed by casting Regrowth or Healing Touch on the target.]
 
 Lifebloom can be active only on one target at a time.
 Tooltip          : Healing $w1 every second.
@@ -1556,7 +1556,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... x....
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=23806)    : Apply Aura (6) | Shapeshift (36)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Misc Value 2: 0x7
@@ -1923,7 +1923,7 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=42515)    : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1.00000 | Misc Value: 17
@@ -2990,7 +2990,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=68693)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.56445 | Radius: 0 - 10 yards
-Description      : Restores ${$18562m1*0.12} health to $?p138284[four][three] injured allies within $81269A1 yards of the initial target every $81262t2 sec for $81262d.
+Description      : Restores $s1 health to $?p138284[four][three] injured allies within $81269A1 yards of the initial target every $81262t2 sec for $81262d.
 
 Name             : Fungal Growth (id=81281) [Spell Family (7)] 
 Class            : Druid
@@ -3602,7 +3602,7 @@ Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... x....
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ......x. ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=111355)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 102547 | Scaled Value: 102547
@@ -3655,7 +3655,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=111383)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11
@@ -3683,7 +3683,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=111387)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7e
@@ -3710,7 +3710,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=111576)   : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 54983 | Misc Value 2: 0xc19
-Description      : Summons a Treant which will immediately cast Swiftmend on your current target.  The Treant will cast Healing Touch on that target or a nearby ally periodically, healing for ${$113828m1/1.1}.  Lasts $d.  Maximum 3 charges. 
+Description      : Summons a Treant which will immediately cast Swiftmend on your current target.  The Treant will cast Healing Touch on that target or a nearby ally periodically, healing for ${$113828m1/1.1*0.333}.  Lasts $d.  Maximum 3 charges. 
 
 Name             : Force of Nature (Feral, Talent) (id=102703) [Scaling Spell (2), Spell Family (7)] 
 Class            : Druid
@@ -4006,7 +4006,7 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=117476)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -50 | Scaled Value: -50 | SP Coefficient: 1.00000 | Misc Value: 14
@@ -4029,7 +4029,7 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=117478)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
@@ -4280,7 +4280,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=124660)   : Apply Aura (6) | Periodic Dummy: every 0.1 seconds (226)
                    Base Value: 0 | Scaled Value: 0
@@ -4408,7 +4408,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=126851)   : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.80000 | Radius: 0 - 40 yards
-Description      : Heals one of the most injured nearby friendly targets for $s1.
+Description      : Heals one of the most injured nearby friendly targets for ${$m1*0.333/1.1}.
 
 Name             : Soul of the Forest (id=114107) [Spell Family (7), Passive] 
 Class            : Druid
@@ -4671,7 +4671,7 @@ Effects          :
 #2 (id=166017)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1
                    Affected Spells: Lifebloom (33763), Lifebloom (33778)
-Description      : Increases the bloom heal of your Lifebloom when it expires by $s1%, but its duration is reduced by ${$m2/-1000} sec and your Healing Touch and Regrowth abilities no longer refresh the duration.
+Description      : Increases the bloom heal of your Lifebloom when it expires by $s1%, but its duration is reduced by ${$m2/1000} sec and your Healing Touch and Regrowth abilities no longer refresh the duration.
 
 Name             : Chosen of Elune (id=122114) [Spell Family (7), Hidden] 
 Class            : Druid
@@ -5029,7 +5029,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | SP Coefficient: 1.00000 | Trigger Spell: 135286
 Description      : Your autoattacks in Bear Form have a $h% chance to empower your next Maul for $135286d.  Empowered Maul causes its primary victim's next autoattack to deal ${$AP*2.4} less damage.
 
-You can accumulate up to $s1 charges of Tooth and Claw.
+You can accumulate up to $?s157283[${$m1+$157283m1}][$m1] charges of Tooth and Claw.
 
 Name             : Tooth and Claw (id=135597) [Spell Family (7), Hidden] 
 Class            : Druid
@@ -5438,7 +5438,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 47649 | Misc Value 2: 0xd80
 #3 (id=195466)   : None (0)
                    Base Value: 6 | Scaled Value: 6
-Description      : Grow a magical mushroom with $88747s1 health at the target ally's location, restoring ${$18562m1*0.12} health to $?p138284[four][three] injured allies within $81269A1 yards of its location every $81262t2 sec for $81262d.
+Description      : Grow a magical mushroom with $88747s1 health at the target ally's location, restoring $81269s1 health to $?p138284[four][three] injured allies within $81269A1 yards of its location every $81262t2 sec for $81262d.
 
 Only 1 mushroom can be placed at a time.
 
@@ -5709,7 +5709,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.11700 | Trigger Spell: 155598
 #2 (id=216243)   : Apply Aura (6) | Unknown effect sub type (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2613
-Description      : You summon a flurry of solar bolts from the sky which strike targets$?s146655[] afflicted by your Moonfire or Sunfire] within $50286a yards. Deals $50288s1 Nature damage to up to $?s157233[3][2] targets every $t1 sec for $d.
+Description      : You summon a flurry of solar bolts from the sky which strike targets$?s146655[][ afflicted by your Moonfire or Sunfire] within $50286a yards. Deals $50288s1 Nature damage to up to $?s157233[3][2] targets every $t1 sec for $d.
 
 Max 3 charges. Charges shared with Starsurge.
 
@@ -6260,8 +6260,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : When you cast Swiftmend, you gain Soul of the Forest. 
 
-Soul of the Forest reduces the cast time of your next Healing Touch by $114108s1%, or increases the healing of your next Regrowth or Rejuvenation by $114108s2%, or increases the healing of your next Wild Growth by $114108s3%.
-
+Soul of the Forest reduces the cast time of your next Healing Touch by $114108s1%, or increases the healing of your next Regrowth or Rejuvenation by $114108s2%, or increases the healing of your next Wild Growth by $114108s3%.
 
 Name             : Dream of Cenarius (id=158497) [Spell Family (7), Passive] 
 Class            : Druid

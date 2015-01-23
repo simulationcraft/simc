@@ -1,4 +1,4 @@
-SimulationCraft 603-25 for World of Warcraft 6.0.3 Live (build level 19342)
+SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19480)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -1214,7 +1214,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 #2 (id=154922)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: chi
-Description      : Heal yourself for ${7.5*$<low>} to ${7.5*$<high>}, and deal $115129s2% of the amount healed as Nature damage to an enemy within $115129A1 yards. Generates $m2 Chi.$?s115069[
+Description      : Heal yourself for ${7.5*$<low>*(1+$@versadmg)} to ${7.5*$<high>*(1+$@versadmg)}, and deal $115129s2% of the amount healed as Nature damage to an enemy within $115129A1 yards. Generates $m2 Chi.$?s115069[
 
 This ability has no cooldown while below 35% health in Stance of the Sturdy Ox.][]
 Variables        : $stnc=$?a115070[${1.2}][${1.0}]
@@ -1317,10 +1317,10 @@ Effects          :
 #1 (id=128771)   : Dummy (3)
                    Base Value: 7 | Scaled Value: 7
 Description      : A wave of Chi energy to flows through friends and foes, dealing $<damage> Nature damage or $<healing> healing.  Bounces up to $115098s1 times to targets within $132466a2 yards.
-Variables        : $dmgMult=$?s113656[${1.2}][${1.0}]
+Variables        : $dmgMult=$?a103985[${1.05}][${1.0}]
 $healMult=$?a115070[${1.2}][${1.0}]
-$damage=${$<dmgMult>*$AP*0.500}
-$healing=${$<healMult>*$AP*0.500}
+$damage=${$<dmgMult>*$AP*0.500*(1+$@versadmg)}
+$healing=${$<healMult>*$AP*0.500*(1+$@versadmg)}
 
 Name             : Expel Harm (id=115129) [Scaling Spell (5), Spell Family (53)] 
 Class            : Monk
@@ -1362,8 +1362,8 @@ Effects          :
 #2 (id=138129)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: chi
 #3 (id=177927)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.10998
-Description      : You surround the target with healing mists, restoring ${$115151m3*9} health over $119611d and generating $m2 Chi.
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.13748
+Description      : You surround the target with healing mists, restoring $?s157398[${$115151m3*12}][${$115151m3*10}] health over $119611d and generating $m2 Chi.
 
 Each time Renewing Mist heals, it also travels to the most injured ally within $<range> yards, up to $115151s1 times.
 Variables        : $range=$?s123334[${40}][${20}]
@@ -1382,7 +1382,7 @@ Effects          :
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1365
 #2 (id=135980)   : Apply Aura (6) | Unknown effect sub type (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1365
-Description      : Reduces the cooldown of Roll and Chi Torpedo by $m1 sec and increases their maximum number of charges by $m2.
+Description      : Reduces the cooldown of Roll and Chi Torpedo by ${$m1/1000} sec and increases their maximum number of charges by $m2.
 
 Name             : Momentum (id=115174) [Spell Family (53), Passive] 
 Class            : Monk
@@ -1439,7 +1439,7 @@ Attributes       : ........ ........ ........ ........   ..x...x. ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : Channeled (34), Channeled (38)
 Effects          :
 #1 (id=128872)   : Apply Aura (6) | Dummy (4)
@@ -1498,7 +1498,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ....x... ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ....x... ........ ........ ........ 
 Effects          :
 #1 (id=128913)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
@@ -1573,7 +1573,7 @@ Effects          :
 Description      : Guard against future attacks, absorbing $<absorb> damage and increasing all heals you apply to yourself by $m2%. Lasts $115295d.
 Tooltip          : Absorbing $w1 damage and increasing heals done to yourself by $w2%.
 Variables        : $mult=$?s123401[${1.1}][${1.0}]
-$absorb=${$<mult>*($AP*18)}
+$absorb=${$<mult>*($AP*18)*(1+$@versadmg)}
 
 
 Name             : Shuffle (id=115307) [Spell Family (53)] 
@@ -3653,10 +3653,10 @@ Effects          :
 Description      : Hurls a torrent of Chi energy up to 40 yds forward, dealing $<damage> Nature damage to all enemies, and $<healing> healing to the Monk and all allies in its path.$?c1[
 
 Casting Chi Burst does not prevent avoiding attacks.][]
-Variables        : $dmgMult=$?s103985[${1.2}][${1.0}]
-$healMult=$?s115070[${1.2}][${1.0}]
-$damage=${$148135m1+$<dmgMult>*$ap*2.036}
-$healing=${$130654m1+$<healMult>*$ap*1.00}
+Variables        : $dmgMult=$?a103985[${1.05}][${1.0}]
+$healMult=$?a115070[${1.2}][${1.0}]
+$damage=${$148135m1+$<dmgMult>*$AP*1.344*(1+$@versadmg)}
+$healing=${$130654m1+$<healMult>*$AP*2.03*(1+$@versadmg)}
 
 
 Name             : Crackling Tiger Lightning (id=123996) [Spell Family (53)] 
