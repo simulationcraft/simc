@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 19480
+// Class based active abilities, wow build 19508
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1006,7 +1006,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (28)
 
-// Talent tree specialization abilities, wow build 19480
+// Talent tree specialization abilities, wow build 19508
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1947,7 +1947,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 19480
+// Class mastery abilities, wow build 19508
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2170,7 +2170,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 19480
+// Racial abilities, wow build 19508
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2893,7 +2893,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 
 #define PTR_GLYPH_ABILITIES_SIZE (41)
 
-// Glyph spells for classes, wow build 19480
+// Glyph spells for classes, wow build 19508
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3298,7 +3298,6 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        63279, // Glyph of Deluge
       147788, // Glyph of Elemental Familiars
        58059, // Glyph of Far Sight
-      147772, // Glyph of Flaming Serpents
       159642, // Glyph of Ghostly Speed
        55444, // Glyph of Lava Lash
       147784, // Glyph of Lingering Ancestors
@@ -3308,6 +3307,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        62132, // Glyph of Thunderstorm
        58057, // Glyph of Totemic Encirclement
       147785, // Glyph of the Compy
+      147772, // Glyph of the Flaming Serpent
        55448, // Glyph of the Lakestrider
        58135, // Glyph of the Spectral Wolf
            0,
@@ -3534,7 +3534,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 19480
+// Tier item set bonuses for class, wow build 19508
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {
@@ -3957,9 +3957,9 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
   },
 };
 
-#define PTR_SET_BONUS_DATA_SIZE (381)
+#define PTR_SET_BONUS_DATA_SIZE (382)
 
-// Set bonus data, wow build 19480
+// Set bonus data, wow build 19508
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,              {   0 },    0,   73, 165641, { 111239, 111240, 111241, 111242, 111243,  0 } },
@@ -4023,6 +4023,7 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   2,  10,              {   0 },    1,  270, 170799, { 111168, 111164, 111165, 111166, 111167,  0 } },
   { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   4,  10,              {   0 },    1,  270, 165697, { 111168, 111164, 111165, 111166, 111167,  0 } },
   { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   2,  10,              {   0 },    2,  269, 180743, { 111168, 111164, 111165, 111166, 111167,  0 } },
+  { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   4,  10,              {   0 },    2,  269, 181742, { 111168, 111164, 111165, 111166, 111167,  0 } },
   { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   2,  11,              {   0 },    0,  104, 171408, { 111107, 111108, 111109, 111110, 111111,  0 } },
   { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   4,  11,              {   0 },    0,  104, 171489, { 111107, 111108, 111109, 111110, 111111,  0 } },
   { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   2,  11,              {   0 },    1,  105, 170853, { 111107, 111108, 111109, 111110, 111111,  0 } },
@@ -4038,8 +4039,8 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   4,   1,              {   0 },    2,   71, 179140, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
   { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   4,   1,              {   0 },    2,   72, 179140, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
   { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   2,   2,              {   0 },    0,   66, 179142, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
-  { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   4,   2,              {   0 },    0,   66, 179143, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   4,   2,              {   0 },    0,   66, 179143, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
   { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   2,   2,              {   0 },    1,   65, 179145, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
   { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   4,   2,              {   0 },    1,   65, 179146, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
   { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   2,   2,              {   0 },    2,   70, 179139, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
@@ -4064,8 +4065,8 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Ebonflame Raiment"                          ,  "tier17lfr",      1,  1248,   17,   4,   5,              {   0 },    3,  258, 179107, { 120378, 120377, 120376, 120375, 120374, 120373,  0 } },
   { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   2,   6,              {   0 },    0,  250, 179142, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
   { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   4,   6,              {   0 },    0,  250, 179143, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
-  { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   2,   6,              {   0 },    2,  251, 179139, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   2,   6,              {   0 },    2,  251, 179139, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
   { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   2,   6,              {   0 },    2,  252, 179139, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
   { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   4,   6,              {   0 },    2,  251, 179140, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
   { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   4,   6,              {   0 },    2,  252, 179140, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
@@ -4090,8 +4091,8 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   2,  10,              {   0 },    0,  268, 179127, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
   { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   4,  10,              {   0 },    0,  268, 179128, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
   { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   2,  10,              {   0 },    1,  270, 179121, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
-  { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   4,  10,              {   0 },    1,  270, 179122, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   4,  10,              {   0 },    1,  270, 179122, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
   { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   2,  10,              {   0 },    2,  269, 179114, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
   { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   4,  10,              {   0 },    2,  269, 179115, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
   { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   2,  11,              {   0 },    0,  104, 179127, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
@@ -4116,8 +4117,8 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Battleplate of Radiant Glory"               ,     "tier13",      3,  1064,   13,   4,   2,              {  70 },    2,   -1, 105820, {  76874,  76875,  76876,  76877,  76878,  0 } },
   { "Wyrmstalker Battlegear"                     ,     "tier13",      3,  1061,   13,   2,   3,    { 253, 254, 255 },    2,   -1, 105732, {  77028,  77029,  77030,  77031,  77032,  0 } },
   { "Wyrmstalker Battlegear"                     ,     "tier13",      3,  1061,   13,   4,   3,    { 253, 254, 255 },    2,   -1, 105921, {  77028,  77029,  77030,  77031,  77032,  0 } },
-  { "Blackfang Battleweave"                      ,     "tier13",      3,  1068,   13,   2,   4,    { 259, 260, 261 },    2,   -1, 105849, {  77023,  77024,  77025,  77026,  77027,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Blackfang Battleweave"                      ,     "tier13",      3,  1068,   13,   2,   4,    { 259, 260, 261 },    2,   -1, 105849, {  77023,  77024,  77025,  77026,  77027,  0 } },
   { "Blackfang Battleweave"                      ,     "tier13",      3,  1068,   13,   4,   4,    { 259, 260, 261 },    2,   -1, 105865, {  77023,  77024,  77025,  77026,  77027,  0 } },
   { "Vestments of Dying Light"                   ,     "tier13",      3,  1066,   13,   2,   5,         { 256, 257 },    1,   -1, 105827, {  76357,  76358,  76359,  76360,  76361,  0 } },
   { "Vestments of Dying Light"                   ,     "tier13",      3,  1066,   13,   4,   5,         { 256, 257 },    1,   -1, 105832, {  76357,  76358,  76359,  76360,  76361,  0 } },
@@ -4142,8 +4143,8 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Deep Earth Battlegarb"                      ,     "tier13",      3,  1058,   13,   2,  11,              { 103 },    2,   -1, 105725, {  77013,  77014,  77015,  77016,  77017,  0 } },
   { "Deep Earth Battlegarb"                      ,     "tier13",      3,  1058,   13,   4,  11,              { 103 },    2,   -1,  60142, {  77013,  77014,  77015,  77016,  77017,  0 } },
   { "Deep Earth Regalia"                         ,     "tier13",      3,  1059,   13,   2,  11,              { 102 },    3,   -1, 105722, {  77018,  77019,  77020,  77021,  77022,  0 } },
-  { "Deep Earth Regalia"                         ,     "tier13",      3,  1059,   13,   4,  11,              { 102 },    3,   -1, 105717, {  77018,  77019,  77020,  77021,  77022,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Deep Earth Regalia"                         ,     "tier13",      3,  1059,   13,   4,  11,              { 102 },    3,   -1, 105717, {  77018,  77019,  77020,  77021,  77022,  0 } },
   { "Plate of Resounding Rings"                  ,     "tier14",      4,  1145,   14,   2,   1,              {  73 },    0,   -1, 123146, {  85324,  85325,  85326,  85327,  85328,  0 } },
   { "Plate of Resounding Rings"                  ,     "tier14",      4,  1145,   14,   4,   1,              {  73 },    0,   -1, 123147, {  85324,  85325,  85326,  85327,  85328,  0 } },
   { "Battleplate of Resounding Rings"            ,     "tier14",      4,  1144,   14,   2,   1,         {  71,  72 },    2,   -1, 123142, {  85329,  85330,  85331,  85332,  85333,  0 } },
@@ -4168,8 +4169,8 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Battlegear of the Lost Catacomb"            ,     "tier14",      4,  1123,   14,   4,   6,         { 251, 252 },    2,   -1, 123078, {  85334,  85335,  85336,  85337,  85338,  0 } },
   { "Vestments of the Firebird"                  ,     "tier14",      4,  1140,   14,   2,   7,              { 264 },    1,   -1, 123134, {  85349,  85350,  85351,  85352,  85353,  0 } },
   { "Vestments of the Firebird"                  ,     "tier14",      4,  1140,   14,   4,   7,              { 264 },    1,   -1, 123135, {  85349,  85350,  85351,  85352,  85353,  0 } },
-  { "Battlegear of the Firebird"                 ,     "tier14",      4,  1142,   14,   2,   7,              { 263 },    2,   -1, 123132, {  85284,  85285,  85286,  85287,  85288,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Battlegear of the Firebird"                 ,     "tier14",      4,  1142,   14,   2,   7,              { 263 },    2,   -1, 123132, {  85284,  85285,  85286,  85287,  85288,  0 } },
   { "Battlegear of the Firebird"                 ,     "tier14",      4,  1142,   14,   4,   7,              { 263 },    2,   -1, 123133, {  85284,  85285,  85286,  85287,  85288,  0 } },
   { "Regalia of the Firebird"                    ,     "tier14",      4,  1141,   14,   2,   7,              { 262 },    3,   -1, 123123, {  85293,  85292,  85291,  85290,  85289,  0 } },
   { "Regalia of the Firebird"                    ,     "tier14",      4,  1141,   14,   4,   7,              { 262 },    3,   -1, 123124, {  85293,  85292,  85291,  85290,  85289,  0 } },
@@ -4194,8 +4195,8 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Plate of the Last Mogu"                     ,     "tier15",      5,  1173,   15,   2,   1,              {  73 },    0,   -1, 138280, {  95335,  95336,  95337,  95338,  95339,  0 } },
   { "Plate of the Last Mogu"                     ,     "tier15",      5,  1173,   15,   4,   1,              {  73 },    0,   -1, 138281, {  95335,  95336,  95337,  95338,  95339,  0 } },
   { "Battleplate of the Last Mogu"               ,     "tier15",      5,  1172,   15,   2,   1,         {  71,  72 },    2,   -1, 138120, {  95330,  95331,  95332,  95333,  95334,  0 } },
-  { "Battleplate of the Last Mogu"               ,     "tier15",      5,  1172,   15,   4,   1,         {  71,  72 },    2,   -1, 138126, {  95330,  95331,  95332,  95333,  95334,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Battleplate of the Last Mogu"               ,     "tier15",      5,  1172,   15,   4,   1,         {  71,  72 },    2,   -1, 138126, {  95330,  95331,  95332,  95333,  95334,  0 } },
   { "Plate of the Lightning Emperor"             ,     "tier15",      5,  1164,   15,   2,   2,              {  66 },    0,   -1, 138238, {  95290,  95291,  95292,  95293,  95294,  0 } },
   { "Plate of the Lightning Emperor"             ,     "tier15",      5,  1164,   15,   4,   2,              {  66 },    0,   -1, 138244, {  95290,  95291,  95292,  95293,  95294,  0 } },
   { "Vestments of the Lightning Emperor"         ,     "tier15",      5,  1163,   15,   2,   2,              {  65 },    1,   -1, 138291, {  95285,  95286,  95287,  95288,  95289,  0 } },
@@ -4220,8 +4221,8 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Battlegear of the Witch Doctor"             ,     "tier15",      5,  1169,   15,   4,   7,              { 263 },    2,   -1, 138141, {  95315,  95316,  95317,  95318,  95319,  0 } },
   { "Regalia of the Witch Doctor"                ,     "tier15",      5,  1170,   15,   2,   7,              { 262 },    3,   -1, 138145, {  95320,  95321,  95322,  95323,  95324,  0 } },
   { "Regalia of the Witch Doctor"                ,     "tier15",      5,  1170,   15,   4,   7,              { 262 },    3,   -1, 138144, {  95320,  95321,  95322,  95323,  95324,  0 } },
-  { "Regalia of the Chromatic Hydra"             ,     "tier15",      5,  1158,   15,   2,   8,    {  62,  63,  64 },    3,   -1, 138316, {  95260,  95261,  95262,  95263,  95264,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Regalia of the Chromatic Hydra"             ,     "tier15",      5,  1158,   15,   2,   8,    {  62,  63,  64 },    3,   -1, 138316, {  95260,  95261,  95262,  95263,  95264,  0 } },
   { "Regalia of the Chromatic Hydra"             ,     "tier15",      5,  1158,   15,   4,   8,    {  62,  63,  64 },    3,   -1, 138376, {  95260,  95261,  95262,  95263,  95264,  0 } },
   { "Regalia of the Thousandfold Hells"          ,     "tier15",      5,  1171,   15,   2,   9,    { 265, 266, 267 },    3,   -1, 138129, {  95325,  95326,  95327,  95328,  95329,  0 } },
   { "Regalia of the Thousandfold Hells"          ,     "tier15",      5,  1171,   15,   4,   9,    { 265, 266, 267 },    3,   -1, 138134, {  95325,  95326,  95327,  95328,  95329,  0 } },
@@ -4246,8 +4247,8 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Plate of Winged Triumph"                    ,     "tier16",      6,  1188,   16,   2,   2,              {  66 },    0,   -1, 144580, {  99126,  99127,  99128,  99129,  99130,  0 } },
   { "Plate of Winged Triumph"                    ,     "tier16",      6,  1188,   16,   4,   2,              {  66 },    0,   -1, 144566, {  99126,  99127,  99128,  99129,  99130,  0 } },
   { "Vestments of Winged Triumph"                ,     "tier16",      6,  1189,   16,   2,   2,              {  65 },    1,   -1, 144625, {  99133,  99124,  99125,  99134,  99135,  0 } },
-  { "Vestments of Winged Triumph"                ,     "tier16",      6,  1189,   16,   4,   2,              {  65 },    1,   -1, 144613, {  99133,  99124,  99125,  99134,  99135,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Vestments of Winged Triumph"                ,     "tier16",      6,  1189,   16,   4,   2,              {  65 },    1,   -1, 144613, {  99133,  99124,  99125,  99134,  99135,  0 } },
   { "Battlegear of Winged Triumph"               ,     "tier16",      6,  1190,   16,   2,   2,              {  70 },    2,   -1, 144586, {  99132,  99136,  99137,  99138,  99139,  0 } },
   { "Battlegear of Winged Triumph"               ,     "tier16",      6,  1190,   16,   4,   2,              {  70 },    2,   -1, 144593, {  99132,  99136,  99137,  99138,  99139,  0 } },
   { "Battlegear of the Unblinking Vigil"         ,     "tier16",      6,  1195,   16,   2,   3,    { 253, 254, 255 },    2,   -1, 144637, {  99157,  99158,  99159,  99167,  99168,  0 } },
@@ -4272,8 +4273,8 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Chronomancer Regalia"                       ,     "tier16",      6,  1194,   16,   4,   8,    {  62,  63,  64 },    3,   -1, 145257, {  99152,  99153,  99160,  99161,  99162,  0 } },
   { "Regalia of the Horned Nightmare"            ,     "tier16",      6,  1181,   16,   2,   9,    { 265, 266, 267 },    3,   -1, 145072, {  99096,  99097,  99098,  99204,  99205,  0 } },
   { "Regalia of the Horned Nightmare"            ,     "tier16",      6,  1181,   16,   4,   9,    { 265, 266, 267 },    3,   -1, 145091, {  99096,  99097,  99098,  99204,  99205,  0 } },
-  { "Armor of Seven Sacred Seals"                ,     "tier16",      6,  1191,   16,   2,  10,              { 268 },    0,   -1, 145049, {  99142,  99143,  99144,  99140,  99141,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Armor of Seven Sacred Seals"                ,     "tier16",      6,  1191,   16,   2,  10,              { 268 },    0,   -1, 145049, {  99142,  99143,  99144,  99140,  99141,  0 } },
   { "Armor of Seven Sacred Seals"                ,     "tier16",      6,  1191,   16,   4,  10,              { 268 },    0,   -1, 145055, {  99142,  99143,  99144,  99140,  99141,  0 } },
   { "Vestments of Seven Sacred Seals"            ,     "tier16",      6,  1192,   16,   2,  10,              { 270 },    1,   -1, 145439, {  99151,  99147,  99148,  99149,  99150,  0 } },
   { "Vestments of Seven Sacred Seals"            ,     "tier16",      6,  1192,   16,   4,  10,              { 270 },    1,   -1, 145449, {  99151,  99147,  99148,  99149,  99150,  0 } },
@@ -4298,8 +4299,8 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Battlegear of Guiding Light"                ,     "tier17",      7,  1238,   17,   2,   2,              {   0 },    1,   65, 165438, { 115565, 115566, 115567, 115568, 115569,  0 } },
   { "Battlegear of Guiding Light"                ,     "tier17",      7,  1238,   17,   4,   2,              {   0 },    1,   65, 167697, { 115565, 115566, 115567, 115568, 115569,  0 } },
   { "Battlegear of Guiding Light"                ,     "tier17",      7,  1238,   17,   2,   2,              {   0 },    2,   70, 165440, { 115565, 115566, 115567, 115568, 115569,  0 } },
-  { "Battlegear of Guiding Light"                ,     "tier17",      7,  1238,   17,   4,   2,              {   0 },    2,   70, 165439, { 115565, 115566, 115567, 115568, 115569,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Battlegear of Guiding Light"                ,     "tier17",      7,  1238,   17,   4,   2,              {   0 },    2,   70, 165439, { 115565, 115566, 115567, 115568, 115569,  0 } },
   { "Rylakstalker's Battlegear"                  ,     "tier17",      7,  1236,   17,   2,   3,              {   0 },    2,  253, 165517, { 115545, 115546, 115547, 115548, 115549,  0 } },
   { "Rylakstalker's Battlegear"                  ,     "tier17",      7,  1236,   17,   2,   3,              {   0 },    2,  254, 165519, { 115545, 115546, 115547, 115548, 115549,  0 } },
   { "Rylakstalker's Battlegear"                  ,     "tier17",      7,  1236,   17,   2,   3,              {   0 },    2,  255, 165544, { 115545, 115546, 115547, 115548, 115549,  0 } },
@@ -4324,8 +4325,8 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Ogreskull Boneplate Battlegear"             ,     "tier17",      7,  1234,   17,   2,   6,              {   0 },    2,  252, 165575, { 115535, 115536, 115537, 115538, 115539,  0 } },
   { "Ogreskull Boneplate Battlegear"             ,     "tier17",      7,  1234,   17,   4,   6,              {   0 },    2,  251, 165568, { 115535, 115536, 115537, 115538, 115539,  0 } },
   { "Ogreskull Boneplate Battlegear"             ,     "tier17",      7,  1234,   17,   4,   6,              {   0 },    2,  252, 165574, { 115535, 115536, 115537, 115538, 115539,  0 } },
-  { "Windspeaker's Regalia"                      ,     "tier17",      7,  1241,   17,   2,   7,              {   0 },    1,  264, 165576, { 115575, 115576, 115577, 115578, 115579,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Windspeaker's Regalia"                      ,     "tier17",      7,  1241,   17,   2,   7,              {   0 },    1,  264, 165576, { 115575, 115576, 115577, 115578, 115579,  0 } },
   { "Windspeaker's Regalia"                      ,     "tier17",      7,  1241,   17,   4,   7,              {   0 },    1,  264, 167702, { 115575, 115576, 115577, 115578, 115579,  0 } },
   { "Windspeaker's Regalia"                      ,     "tier17",      7,  1241,   17,   2,   7,              {   0 },    2,  263, 165605, { 115575, 115576, 115577, 115578, 115579,  0 } },
   { "Windspeaker's Regalia"                      ,     "tier17",      7,  1241,   17,   4,   7,              {   0 },    2,  263, 165610, { 115575, 115576, 115577, 115578, 115579,  0 } },
@@ -4350,8 +4351,8 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Battlegear of the Somber Gaze"              ,     "tier17",      7,  1237,   17,   2,  10,              {   0 },    2,  269, 165403, { 115555, 115556, 115557, 115558, 115559,  0 } },
   { "Battlegear of the Somber Gaze"              ,     "tier17",      7,  1237,   17,   4,  10,              {   0 },    2,  269, 165402, { 115555, 115556, 115557, 115558, 115559,  0 } },
   { "Living Wood Battlegear"                     ,     "tier17",      7,  1233,   17,   2,  11,              {   0 },    0,  104, 165410, { 115540, 115541, 115542, 115543, 115544,  0 } },
-  { "Living Wood Battlegear"                     ,     "tier17",      7,  1233,   17,   4,  11,              {   0 },    0,  104, 165423, { 115540, 115541, 115542, 115543, 115544,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Living Wood Battlegear"                     ,     "tier17",      7,  1233,   17,   4,  11,              {   0 },    0,  104, 165423, { 115540, 115541, 115542, 115543, 115544,  0 } },
   { "Living Wood Battlegear"                     ,     "tier17",      7,  1233,   17,   2,  11,              {   0 },    1,  105, 165437, { 115540, 115541, 115542, 115543, 115544,  0 } },
   { "Living Wood Battlegear"                     ,     "tier17",      7,  1233,   17,   4,  11,              {   0 },    1,  105, 167714, { 115540, 115541, 115542, 115543, 115544,  0 } },
   { "Living Wood Battlegear"                     ,     "tier17",      7,  1233,   17,   2,  11,              {   0 },    2,  103, 165431, { 115540, 115541, 115542, 115543, 115544,  0 } },
@@ -4362,7 +4363,7 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
 
 #define PTR_PERK_SIZE (4)
 
-// Perk specialization abilities, wow build 19480
+// Perk specialization abilities, wow build 19508
 static unsigned __ptr_perk_data[][MAX_SPECS_PER_CLASS][PTR_PERK_SIZE] = {
   {
     {
@@ -4670,7 +4671,7 @@ static unsigned __ptr_perk_data[][MAX_SPECS_PER_CLASS][PTR_PERK_SIZE] = {
   },
 };
 
-// Glyph properties, wow build 19480
+// Glyph properties, wow build 19508
 static glyph_property_data_t __ptr_glyph_property_data[486] = {
   {   162,  54811 },
   {   163,  54812 },
