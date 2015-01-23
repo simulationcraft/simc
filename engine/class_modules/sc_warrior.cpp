@@ -555,7 +555,7 @@ public:
 
     if ( weapons_master )
     {
-      am *= 1.0 + ( ab::player -> cache.mastery_value() * ( p() -> wod_hotfix ? 1.571 : 1.0 ) );
+      am *= 1.0 + ( ab::player -> cache.mastery_value() * ( p() -> wod_hotfix ? 1.29 : 1.0 ) );
     }
 
     return am;
