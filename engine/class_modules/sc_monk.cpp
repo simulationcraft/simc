@@ -2791,7 +2791,9 @@ struct hurricane_strike_t: public monk_melee_attack_t
     channeled = true;
     dot_duration = data().duration();
     base_tick_time = dot_duration / 15;
-    base_multiplier *= 2.0;
+    base_multiplier = 2.0;
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      base_multiplier *= 1.25;
 
     tick_action = new hurricane_strike_tick_t( "hurricane_strike_tick", p, p -> find_spell( 158221 ) );
   }
@@ -3407,6 +3409,8 @@ struct zen_sphere_detonate_damage_t: public monk_spell_t
     aoe = -1;
 
     attack_power_mod.direct = 0.471; // hardcoded into tooltip
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      attack_power_mod.direct *= 1.97;
     school = SCHOOL_NATURE;
   }
 };
@@ -3493,6 +3497,8 @@ struct chi_burst_t: public monk_spell_t
     aoe = -1;
     interrupt_auto_attack = false;
     attack_power_mod.direct = 1.344; // hardcoded into tooltip
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      attack_power_mod.direct *= 1.51; // hardcoded till next PTR build
   }
 };
 
@@ -3511,6 +3517,8 @@ struct chi_torpedo_t: public monk_spell_t
     aoe = -1;
     cooldown -> duration = p() -> talent.chi_torpedo -> charge_cooldown();
     cooldown -> charges = p() -> talent.chi_torpedo -> charges();
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      attack_power_mod.direct *= 2.50;
   }
 };
 
@@ -3895,10 +3903,20 @@ struct mana_tea_t: public monk_spell_t
 
     int max_stacks_consumable = 2;
 
-    double mana_gain = player -> resources.max[RESOURCE_MANA]
-      * data().effectN( 1 ).percent()
-      * std::min( p() -> buff.mana_tea -> stack(), max_stacks_consumable );
-    player->resource_gain( RESOURCE_MANA, mana_gain, p() -> gain.mana_tea, this );
+    double mana_gain = 0;
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      mana_gain = player -> resources.base[STAT_SPIRIT]
+        * 0.03    // Hardcode for now.
+        * std::min( p() -> buff.mana_tea -> stack(), max_stacks_consumable );
+    }
+    else
+    {
+      mana_gain = player -> resources.max[RESOURCE_MANA]
+        * data().effectN( 1 ).percent()
+        * std::min( p() -> buff.mana_tea -> stack(), max_stacks_consumable );
+    }
+    player -> resource_gain( RESOURCE_MANA, mana_gain, p() -> gain.mana_tea, this );
     p() -> buff.mana_tea -> decrement( max_stacks_consumable );
   }
 };
@@ -4496,6 +4514,8 @@ struct zen_sphere_t: public monk_heal_t
       aoe = -1;
 
       attack_power_mod.direct = 0.548; // hardcoded into tooltip
+      if ( maybe_ptr( p() -> dbc.ptr ) )
+        attack_power_mod.direct *= 1.7;
       school = SCHOOL_NATURE;
     }
   };
@@ -4517,6 +4537,8 @@ struct zen_sphere_t: public monk_heal_t
       attack_power_mod.tick = 0.156 * 1.2; // hardcoded into tooltip
     else
       attack_power_mod.tick = 0.156;  // hardcoded into tooltip
+    if ( maybe_ptr( player -> dbc.ptr ) )
+      attack_power_mod.tick *= 0.61;
 
     cooldown -> duration = data().cooldown();
   }
@@ -5004,7 +5026,7 @@ void monk_t::init_base_stats()
   if ( specialization() != MONK_MISTWEAVER )
     base_gcd = timespan_t::from_seconds( 1.0 );
 
-  resources.base[RESOURCE_CHI] = 4 + talent.ascension -> effectN( 1 ).base_value() + perk.empowered_chi -> effectN( 1 ).base_value();
+  resources.base[RESOURCE_CHI] = 4 + ( !maybe_ptr( dbc.ptr ) ? talent.ascension -> effectN( 1 ).base_value() : 0 ) + perk.empowered_chi -> effectN( 1 ).base_value();
   resources.base[RESOURCE_ENERGY] = 100;
   resources.base_multiplier[RESOURCE_MANA] *= 1.0 + talent.ascension -> effectN( 2 ).percent();
 
@@ -5327,6 +5349,9 @@ double monk_t::composite_attribute_multiplier( attribute_e attr ) const
 
   if ( attr == ATTR_STAMINA )
     cam *= 1.0 + active_stance_data( STURDY_OX ).effectN( 5 ).percent();
+
+  if ( attr == STAT_SPIRIT && specialization() == MONK_MISTWEAVER )
+    cam *= 1.0 + ( maybe_ptr( dbc.ptr ) ? talent.ascension -> effectN( 2 ).percent() : 0 );
 
   return cam;
 }
