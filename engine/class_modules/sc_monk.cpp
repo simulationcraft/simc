@@ -57,7 +57,6 @@ Gift of the Serpent Proc Coefficients:
 
 BREWMASTER:
 
-- Guard's healing is from Self-cast spells only, not from ALL sources.
 - Add some form of cooldown for Expel harm below 35% to better model what is in-game
 
 */
@@ -5026,9 +5025,9 @@ void monk_t::init_base_stats()
   if ( specialization() != MONK_MISTWEAVER )
     base_gcd = timespan_t::from_seconds( 1.0 );
 
-  resources.base[RESOURCE_CHI] = 4 + ( !maybe_ptr( dbc.ptr ) ? talent.ascension -> effectN( 1 ).base_value() : 0 ) + perk.empowered_chi -> effectN( 1 ).base_value();
+  resources.base[RESOURCE_CHI] = 4 + talent.ascension -> effectN( 1 ).base_value() + perk.empowered_chi -> effectN( 1 ).base_value();
   resources.base[RESOURCE_ENERGY] = 100;
-  resources.base_multiplier[RESOURCE_MANA] *= 1.0 + talent.ascension -> effectN( 2 ).percent();
+  resources.base_multiplier[RESOURCE_MANA] *= 1.0 + ( !maybe_ptr( dbc.ptr ) ? talent.ascension -> effectN( 2 ).percent() : 0 );
 
   base_chi_regen_per_second = 0;
   base_energy_regen_per_second = 10.0;
