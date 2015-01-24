@@ -76,6 +76,7 @@ actions.init_water_jet+=/frostbolt
 actions.water_jet=frostbolt,if=prev.water_jet
 actions.water_jet+=/ice_lance,if=buff.fingers_of_frost.react=2&action.frostbolt.in_flight
 actions.water_jet+=/frostbolt,if=debuff.water_jet.remains>cast_time+travel_time
+actions.water_jet+=/ice_lance,if=prev_gcd.frostbolt
 actions.water_jet+=/call_action_list,name=single_target
 
 # AoE sequence
