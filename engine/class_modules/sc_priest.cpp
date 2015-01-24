@@ -592,7 +592,7 @@ struct base_fiend_pet_t : public priest_pet_t
 
     duration += timespan_t::from_seconds( 0.01 );
 
-    if ( maybe_ptr( dbc.ptr ) && pet_type == PET_MINDBENDER )
+    if ( dbc.ptr && pet_type == PET_MINDBENDER )
     {
       duration += timespan_t::from_seconds( 5.0 );
     }
@@ -2082,7 +2082,7 @@ struct shadowy_apparition_spell_t : public priest_spell_t
     trigger_gcd       = timespan_t::zero();
     travel_speed      = 6.0;
 
-    if ( !priest.talents.auspicious_spirits -> ok() || maybe_ptr( priest.dbc.ptr ) )
+    if ( !priest.talents.auspicious_spirits -> ok() || priest.dbc.ptr )
     {
       const spell_data_t* dmg_data = p.find_spell( 148859 ); // Hardcoded into tooltip 2014/06/01
 
@@ -2125,7 +2125,7 @@ struct shadowy_apparition_spell_t : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier( state );
 
-    if ( maybe_ptr( priest.dbc.ptr ) && priest.talents.auspicious_spirits -> ok() )
+    if ( priest.dbc.ptr && priest.talents.auspicious_spirits -> ok() )
     {
       d *= 2.0;
     }
@@ -3781,14 +3781,14 @@ struct cascade_t : public cascade_base_t<priest_spell_t>
       {
         targets.push_back( t );
 
-        if ( maybe_ptr( priest.dbc.ptr ) && priest.specialization() != PRIEST_SHADOW && _target_list_source.size() > 1)
+        if ( priest.dbc.ptr && priest.specialization() != PRIEST_SHADOW && _target_list_source.size() > 1)
         {
           targets.push_back( t );
         }
       }
     }
 
-    if ( maybe_ptr( priest.dbc.ptr ) && priest.specialization() != PRIEST_SHADOW )
+    if ( priest.dbc.ptr && priest.specialization() != PRIEST_SHADOW )
     {
       targets.push_back( target );
     }
@@ -3798,7 +3798,7 @@ struct cascade_t : public cascade_base_t<priest_spell_t>
   {
     double d = priest_spell_t::composite_da_multiplier( state );
 
-    if ( maybe_ptr( priest.dbc.ptr ) && priest.specialization() != PRIEST_SHADOW )
+    if ( priest.dbc.ptr && priest.specialization() != PRIEST_SHADOW )
     {
       d *= 0.65;
     }
@@ -3966,18 +3966,6 @@ struct divine_star_t : public priest_spell_t
     _base_spell -> execute();
   }
 
-  virtual double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double d = priest_spell_t::composite_da_multiplier( state );
-
-    if ( maybe_ptr( priest.dbc.ptr ) && priest.specialization() == PRIEST_SHADOW )
-    {
-      d *= 1.2;
-    }
-
-    return d;
-  }
-
   virtual bool usable_moving() const override
   {
     // Holy/Disc version is usable while moving, Shadow version is instant cast anyway.
@@ -4009,7 +3997,7 @@ struct void_entropy_t : public priest_spell_t
     tick_zero = false;
     instant_multistrike = false;
 
-    if ( maybe_ptr( priest.dbc.ptr ) )
+    if ( priest.dbc.ptr )
     {
       spell_power_mod.tick *= 1.8;
     }
@@ -5013,7 +5001,7 @@ struct saving_grace_t : public priest_heal_t
   {
     double am = priest_heal_t::action_multiplier();
 
-    /*if ( maybe_ptr( priest.dbc.ptr ) )
+    /*if ( priest.dbc.ptr )
     {
       am *= 1.5;
     }*/
@@ -5023,7 +5011,7 @@ struct saving_grace_t : public priest_heal_t
 
   virtual timespan_t execute_time() const override
   {
-    if ( maybe_ptr( priest.dbc.ptr ) )
+    if ( priest.dbc.ptr )
     {
       return timespan_t::zero();
     }
@@ -5561,7 +5549,7 @@ double priest_t::composite_player_multiplier( school_e school ) const
   {
     if ( buffs.chakra_chastise -> check() )
     {
-      if ( maybe_ptr( dbc.ptr ))
+      if ( dbc.ptr)
       {
         m *= 1.0 + 0.8;
       }
@@ -5605,7 +5593,7 @@ double priest_t::composite_player_heal_multiplier( const action_state_t* s ) con
 
   if ( buffs.saving_grace_penalty -> check() )
   {
-    if ( maybe_ptr( dbc.ptr ) )
+    if ( dbc.ptr )
     {
       m *= 1.0 + buffs.saving_grace_penalty -> check() * 0.15;
     }
@@ -6031,7 +6019,7 @@ void priest_t::create_buffs()
                          .spell( find_spell( 109186 ) )
                          .chance( talents.surge_of_light -> effectN( 1 ).percent() );
 
-  if ( maybe_ptr( dbc.ptr ) && talents.surge_of_darkness -> ok() )
+  if ( dbc.ptr && talents.surge_of_darkness -> ok() )
   {
     buffs.surge_of_darkness = buff_creator_t( this, "surge_of_darkness" )
                               .spell( find_spell( 87160 ) )
