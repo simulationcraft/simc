@@ -5485,6 +5485,12 @@ struct stellar_flare_t : public druid_spell_t
     druid_spell_t( "stellar_flare", player, player -> talent.stellar_flare )
   {
     parse_options( options_str );
+    if ( player -> dbc.ptr )
+    {
+      spell_power_mod.direct *= 1.16;
+      spell_power_mod.tick *= 1.16;
+      dot_duration = timespan_t::from_seconds( 24 );
+    }
   }
 
   double action_multiplier() const
