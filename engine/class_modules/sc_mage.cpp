@@ -3789,6 +3789,8 @@ struct pyroblast_t : public mage_spell_t
 
   void reset()
   {
+    mage_spell_t::reset();
+
     is_hot_streak = false;
     dot_is_hot_streak = false;
   }
