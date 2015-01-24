@@ -1894,6 +1894,16 @@ struct monk_heal_t: public monk_action_t < heal_t >
   {
     harmful = false;
   }
+
+  virtual double composite_target_multiplier( player_t* target ) const
+  {
+    double m = base_t::composite_target_multiplier( target );
+
+    if ( p() -> buff.guard -> up() && player == target )
+      m *= 1.0 + p() -> spec.guard -> effectN( 2 ).percent();
+
+    return m;
+  }
 };
 
 namespace attacks {
@@ -5123,7 +5133,6 @@ void monk_t::create_buffs()
     .cd( timespan_t::zero() );
 
   buff.guard = absorb_buff_creator_t( this, "guard", spec.guard )
-    .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
     .source( get_stats( "guard" ) )
     .cd( timespan_t::zero() );
 
@@ -5363,9 +5372,6 @@ double monk_t::composite_player_heal_multiplier( const action_state_t* s ) const
 
   if ( current_stance() == WISE_SERPENT )
     m *= 1.0 + active_stance_data( WISE_SERPENT ).effectN( 3 ).percent();
-
-  if ( buff.guard -> up() && s -> action -> player == s -> target )
-    m *= 1.0 + spec.guard -> effectN( 2 ).percent();
 
   return m;
 }
