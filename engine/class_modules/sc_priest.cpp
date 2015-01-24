@@ -5013,10 +5013,10 @@ struct saving_grace_t : public priest_heal_t
   {
     double am = priest_heal_t::action_multiplier();
 
-    if ( maybe_ptr( priest.dbc.ptr ) )
+    /*if ( maybe_ptr( priest.dbc.ptr ) )
     {
       am *= 1.5;
-    }
+    }*/
 
     return am;
   }
