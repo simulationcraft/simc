@@ -1328,13 +1328,8 @@ struct kill_command_t: public hunter_main_pet_attack_t
     school = SCHOOL_PHYSICAL;
 
     // The hardcoded parameter is taken from the $damage value in teh tooltip. e.g., 1.36 below
-    // $damage = ${ 1.5*($83381m1 + ($RAP*  1.36   ))*$<bmMastery> }
-    attack_power_mod.direct  = 1.36; // Hard-coded in tooltip.
-
-    if ( p -> wod_hotfix )
-    {
-      attack_power_mod.direct *= 1.2;
-    }
+    // $damage = ${ 1.5*($83381m1 + ($RAP*  1.632   ))*$<bmMastery> }
+    attack_power_mod.direct  = 1.632; // Hard-coded in tooltip.
   }
 
   // Override behavior so that Kill Command uses hunter's attack power rather than the pet's
@@ -2222,7 +2217,8 @@ struct black_arrow_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
 
-    cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
+    if ( !p() -> dbc.ptr )
+      cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
     base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
     
     starved_proc = player -> get_proc( "starved: black_arrow" );
@@ -2317,7 +2313,7 @@ struct freezing_trap_t: public hunter_ranged_attack_t
     parse_options( options_str );
 
     cooldown -> duration = data().cooldown();
-    cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
+       cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
     if ( p() -> perks.enhanced_traps -> ok() )
       cooldown -> duration *= ( 1.0 + p() -> perks.enhanced_traps -> effectN( 1 ).percent() );
 
@@ -2349,7 +2345,7 @@ struct explosive_trap_t: public hunter_ranged_attack_t
     aoe = -1;
 
     cooldown -> duration = data().cooldown();
-    cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
+       cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
     if ( p() -> perks.enhanced_traps -> ok() )
       cooldown -> duration *= ( 1.0 + p() -> perks.enhanced_traps -> effectN( 1 ).percent() );
     hasted_ticks = false;
@@ -2512,7 +2508,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     parse_options( options_str );
     may_block = false;
 
-    attack_power_mod.tick = 0.429; //Welcome to the hard-coded tooltip club!
+    attack_power_mod.tick = 0.553; //Welcome to the hard-coded tooltip club!
     attack_power_mod.direct = attack_power_mod.tick;
     // the inital impact is not part of the rolling dot
     dot_duration = timespan_t::zero();
@@ -2520,13 +2516,6 @@ struct explosive_shot_t: public hunter_ranged_attack_t
 
     starved_proc = player -> get_proc( "starved: explosive_shot" );
     tier16_4pc = player -> get_proc( "tier16_4pc: skip lnl reset" );
-
-    // Last minute Celestalon fixes before WoD release
-    if ( p() -> wod_hotfix ) 
-    {
-      attack_power_mod.tick *= 1.12 * 1.15;
-      attack_power_mod.direct *= 1.12 * 1.15;
-    }
   }
 
   void init()
