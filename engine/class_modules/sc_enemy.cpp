@@ -118,12 +118,7 @@ struct enemy_action_t : public ACTION_TYPE
   void init()
   {
     action_type_t::init();
-
-    if ( aoe_tanks == 1 )
-      this -> aoe = -1;
-    else
-      this -> aoe = aoe_tanks;
-
+    
     this -> name_str = this -> name_str + "_" + this -> target -> name();
     this -> cooldown = this -> player -> get_cooldown( this -> name_str );
 
@@ -269,23 +264,40 @@ struct melee_t : public enemy_action_t<melee_attack_t>
 
 struct auto_attack_t : public enemy_action_t<attack_t>
 {
-  melee_t* mh;
+  std::vector<melee_t*> mh_list;
 
   // default constructor
   auto_attack_t( player_t* p, const std::string& options_str ) :
-    base_t( "auto_attack", p ), mh( 0 )
+    base_t( "auto_attack", p ), mh_list( 0 )
   {
     parse_options( options_str );
 
     use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
+    
+    size_t num_attacks = aoe_tanks;
+    if ( num_attacks == 1 || num_attacks < 0 )
+       num_attacks = this -> player -> sim -> actor_list.size();
 
-    mh = new melee_t( "melee_main_hand", p, options_str );
-    mh -> weapon = &( p -> main_hand_weapon );
-    if ( ! mh -> target )
-      mh -> target = target;
+    std::vector<player_t*> target_list;
+    if ( aoe_tanks )
+    {
+      for ( size_t i = 0; i < sim -> player_no_pet_list.size(); i++ )
+        if ( target_list.size() < num_attacks && sim -> player_no_pet_list[ i ] -> primary_role() == ROLE_TANK )
+          target_list.push_back( sim -> player_no_pet_list[ i ] );
+    }
+    else
+      target_list.push_back( target );
 
-    p -> main_hand_attack = mh;
+    for ( size_t i = 0; i < target_list.size(); i++ )
+    {
+      melee_t* mh = new melee_t( "melee_main_hand", p, options_str );
+      mh -> weapon = &( p -> main_hand_weapon );
+      mh -> target = target_list[ i ];
+      mh_list.push_back( mh );
+    }
+
+    p -> main_hand_attack = mh_list[ 0 ];
   }
 
   void init()
@@ -294,15 +306,19 @@ struct auto_attack_t : public enemy_action_t<attack_t>
 
     if ( enemy_t* e = dynamic_cast< enemy_t* >( player ) )
     {
-      // if the number of debuff stacks hasn't been specified yet, set it
-      if ( mh -> num_debuff_stacks == -1e6 )
+      for ( size_t i = 0; i < mh_list.size(); i++ )
       {
-        if ( e -> apply_damage_taken_debuff == 0 )
-          mh -> num_debuff_stacks = 0;
-        else
+        melee_t* mh = mh_list[ i ];
+        // if the number of debuff stacks hasn't been specified yet, set it
+        if ( mh -> num_debuff_stacks == -1e6 )
         {
-          mh -> apply_debuff = true;
-          mh -> num_debuff_stacks = e -> apply_damage_taken_debuff;
+          if ( e -> apply_damage_taken_debuff == 0 )
+            mh -> num_debuff_stacks = 0;
+          else
+          {
+            mh -> apply_debuff = true;
+            mh -> num_debuff_stacks = e -> apply_damage_taken_debuff;
+          }
         }
       }
     }
@@ -310,8 +326,9 @@ struct auto_attack_t : public enemy_action_t<attack_t>
 
   virtual void execute()
   {
-    player -> main_hand_attack = mh;
-    player -> main_hand_attack -> schedule_execute();
+    player -> main_hand_attack = mh_list[ 0 ];
+    for (size_t i = 0; i < mh_list.size(); i++ )
+      mh_list[ i ] -> schedule_execute();
   }
 
   virtual bool ready()
@@ -325,23 +342,40 @@ struct auto_attack_t : public enemy_action_t<attack_t>
 
 struct auto_attack_off_hand_t : public enemy_action_t<attack_t>
 {
-  melee_t* oh;
+  std::vector<melee_t*> oh_list;
 
   // default constructor
   auto_attack_off_hand_t( player_t* p, const std::string& options_str ) :
-    base_t( "auto_attack_off_hand", p ), oh( 0 )
+    base_t( "auto_attack_off_hand", p ), oh_list( 0 )
   {
     parse_options( options_str );
 
     use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
+    
+    size_t num_attacks = aoe_tanks;
+    if ( num_attacks == 1 || num_attacks < 0 )
+       num_attacks = this -> player -> sim -> actor_list.size();
+    
+    std::vector<player_t*> target_list;
+    if ( aoe_tanks )
+    {
+      for ( size_t i = 0; i < sim -> player_no_pet_list.size(); i++ )
+        if ( target_list.size() < num_attacks && sim -> player_no_pet_list[ i ] -> primary_role() == ROLE_TANK )
+          target_list.push_back( sim -> player_no_pet_list[ i ] );
+    }
+    else
+      target_list.push_back( target );
 
-    oh = new melee_t( "melee_off_hand", p, options_str );
-    oh -> weapon = &( p -> off_hand_weapon );
-    if ( !oh -> target )
-      oh -> target = target;
+    for ( size_t i = 0; i < target_list.size(); i++ )
+    {
+      melee_t* oh = new melee_t( "melee_off_hand", p, options_str );
+      oh -> weapon = &( p -> off_hand_weapon );
+      oh -> target = target_list[ i ];
+      oh_list.push_back( oh );
+    }
 
-    p -> off_hand_attack = oh;
+    p -> off_hand_attack = oh_list[ 0 ];
   }
 
   void init()
@@ -350,15 +384,19 @@ struct auto_attack_off_hand_t : public enemy_action_t<attack_t>
 
     if ( enemy_t* e = dynamic_cast< enemy_t* >( player ) )
     {
-      // if the number of debuff stacks hasn't been specified yet, set it
-      if ( oh && oh -> num_debuff_stacks == -1e6 )
+      for ( size_t i = 0; i < oh_list.size(); i++ )
       {
-        if ( e -> apply_damage_taken_debuff == 0 )
-          oh -> num_debuff_stacks = 0;
-        else
+        melee_t* oh = oh_list[ i ];
+        // if the number of debuff stacks hasn't been specified yet, set it
+        if ( oh && oh -> num_debuff_stacks == -1e6 )
         {
-          oh -> apply_debuff = true;
-          oh -> num_debuff_stacks = e -> apply_damage_taken_debuff;
+          if ( e -> apply_damage_taken_debuff == 0 )
+            oh -> num_debuff_stacks = 0;
+          else
+          {
+            oh -> apply_debuff = true;
+            oh -> num_debuff_stacks = e -> apply_damage_taken_debuff;
+          }
         }
       }
     }
@@ -366,9 +404,12 @@ struct auto_attack_off_hand_t : public enemy_action_t<attack_t>
 
   virtual void execute()
   {
-    oh -> first = true;
-    player -> off_hand_attack = oh;
-    player -> off_hand_attack -> schedule_execute();
+    player -> off_hand_attack = oh_list[ 0 ];
+    for ( size_t i = 0; i < oh_list.size(); i++ )
+    {
+      oh_list[ i ] -> first = true;
+      oh_list[ i ] -> schedule_execute();
+    }
 
   }
 
