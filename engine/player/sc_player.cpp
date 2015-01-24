@@ -2723,24 +2723,46 @@ double player_t::composite_mitigation_versatility() const
 
 double player_t::composite_leech() const
 {
-  return composite_leech_rating() / current.rating.leech;
+  if ( dbc.ptr )
+  {
+    assert( dbc.build_level == 19508 ); // Check to see if sc_scale_data_ptr has new rating conversions.
+    return composite_leech_rating() / ( current.rating.leech / 4 );
+  }
+  else
+  {
+    return composite_leech_rating() / current.rating.leech;
+  }
 }
-
 
 // player_t::composite_run_speed ================================================
 
 double player_t::composite_run_speed() const
 {
-  return composite_speed_rating() / current.rating.speed;
+  if ( dbc.ptr )
+  {
+    assert( dbc.build_level == 19508 ); // Check to see if sc_scale_data_ptr has new rating conversions.
+    return composite_speed_rating() / ( current.rating.speed / 4 );
+  }
+  else
+  {
+    return composite_speed_rating() / current.rating.speed;
+  }
 }
 
 // player_t::composite_avoidance ================================================
 
 double player_t::composite_avoidance() const
 {
-  return composite_avoidance_rating() / current.rating.avoidance;
+  if ( dbc.ptr )
+  {
+    assert( dbc.build_level == 19508 ); // Check to see if sc_scale_data_ptr has new rating conversions.
+    return composite_avoidance_rating() / ( current.rating.avoidance / 4 );
+  }
+  else
+  {
+    return composite_avoidance_rating() / current.rating.avoidance;
+  }
 }
-
 
 // player_t::composite_player_multiplier ====================================
 
