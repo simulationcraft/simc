@@ -1170,8 +1170,10 @@ struct force_of_nature_feral_t : public pet_t
     main_hand_weapon.min_dmg    = owner -> find_spell( 102703 ) -> effectN( 1 ).min( owner );
     main_hand_weapon.max_dmg    = owner -> find_spell( 102703 ) -> effectN( 1 ).max( owner );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    owner_coeff.sp_from_sp = 1.0 /3 ;
-    owner_coeff.ap_from_ap = 1.0 /3 ;
+    owner_coeff.sp_from_sp = 1.0 / 3.0;
+    owner_coeff.ap_from_ap = 1.0 / 3.0;
+    if ( p -> dbc.ptr )
+      owner_coeff.ap_from_ap *= 1.8;
     regen_type = REGEN_DISABLED;
   }
 
@@ -4372,6 +4374,8 @@ struct bristling_fur_t : public druid_spell_t
     druid_spell_t( "bristling_fur", player, player -> talent.bristling_fur, options_str  )
   {
     harmful = false;
+    if ( player -> dbc.ptr && cooldown -> duration == timespan_t::from_seconds( 60.0 ) )
+      cooldown -> duration -= timespan_t::from_seconds( 30.0 );
   }
 
   void execute()
@@ -5191,6 +5195,13 @@ struct prowl_t : public druid_spell_t
 
 struct savage_defense_t : public druid_spell_t
 {
+private:
+  double dodge() const
+  {
+    // Get total dodge chance excluding SD.
+    return p() -> cache.dodge() - p() -> buff.savage_defense -> check() * p() -> buff.savage_defense -> default_value;
+  }
+public:
   savage_defense_t( druid_t* p, const std::string& options_str ) :
     druid_spell_t( "savage_defense", p, p -> find_specialization_spell( "Savage Defense" ), options_str )
   {
@@ -5228,12 +5239,19 @@ struct savage_defense_t : public druid_spell_t
     double cdr = druid_spell_t::cooldown_reduction();
 
     if ( p() -> talent.guardian_of_elune -> ok() )
-    {
-      double dodge = p() -> cache.dodge() - p() -> buff.savage_defense -> check() * p() -> buff.savage_defense -> default_value;
-      cdr /= 1 + dodge;
-    }
+      cdr /= 1 + dodge();
 
     return cdr;
+  }
+
+  double cost() const
+  {
+    double c = druid_spell_t::cost();
+
+    if ( p() -> talent.guardian_of_elune -> ok() && p() -> dbc.ptr )
+      c /= 1 + dodge();
+
+    return c;
   }
 
   bool ready() 
