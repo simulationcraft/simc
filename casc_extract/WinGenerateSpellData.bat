@@ -9,5 +9,5 @@ del hi.txt
 cd ..
 cd ..
 cd dbc_extract
-generate.bat %wowdir% E:\simulationcraft\casc_extract\wow\
+call generate.bat %wowdir% E:\simulationcraft\casc_extract\wow\
 pause
