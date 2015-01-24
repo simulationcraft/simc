@@ -5349,7 +5349,7 @@ double monk_t::composite_attribute_multiplier( attribute_e attr ) const
   if ( attr == ATTR_STAMINA )
     cam *= 1.0 + active_stance_data( STURDY_OX ).effectN( 5 ).percent();
 
-  if ( attr == STAT_SPIRIT && specialization() == MONK_MISTWEAVER )
+  if ( attr == ATTR_SPIRIT && specialization() == MONK_MISTWEAVER )
     cam *= 1.0 + ( maybe_ptr( dbc.ptr ) ? talent.ascension -> effectN( 2 ).percent() : 0 );
 
   return cam;
