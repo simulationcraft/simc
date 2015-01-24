@@ -2725,7 +2725,7 @@ double player_t::composite_leech() const
 {
   if ( dbc.ptr )
   {
-    assert( dbc.build_level == 19508 ); // Check to see if sc_scale_data_ptr has new rating conversions.
+    assert( dbc.build_level() == 19508 ); // Check to see if sc_scale_data_ptr has new rating conversions.
     return composite_leech_rating() / ( current.rating.leech / 4 );
   }
   else
@@ -2740,7 +2740,7 @@ double player_t::composite_run_speed() const
 {
   if ( dbc.ptr )
   {
-    assert( dbc.build_level == 19508 ); // Check to see if sc_scale_data_ptr has new rating conversions.
+    assert( dbc.build_level() == 19508 ); // Check to see if sc_scale_data_ptr has new rating conversions.
     return composite_speed_rating() / ( current.rating.speed / 4 );
   }
   else
@@ -2755,7 +2755,7 @@ double player_t::composite_avoidance() const
 {
   if ( dbc.ptr )
   {
-    assert( dbc.build_level == 19508 ); // Check to see if sc_scale_data_ptr has new rating conversions.
+    assert( dbc.build_level() == 19508 ); // Check to see if sc_scale_data_ptr has new rating conversions.
     return composite_avoidance_rating() / ( current.rating.avoidance / 4 );
   }
   else
