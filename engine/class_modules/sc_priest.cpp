@@ -592,6 +592,11 @@ struct base_fiend_pet_t : public priest_pet_t
 
     duration += timespan_t::from_seconds( 0.01 );
 
+    if ( maybe_ptr( dbc.ptr ) && pet_type == PET_MINDBENDER )
+    {
+      duration += timespan_t::from_seconds( 5.0 );
+    }
+
     priest_pet_t::summon( duration );
 
     if ( shadowcrawl_action )
@@ -2076,7 +2081,8 @@ struct shadowy_apparition_spell_t : public priest_spell_t
 
     trigger_gcd       = timespan_t::zero();
     travel_speed      = 6.0;
-    if ( ! priest.talents.auspicious_spirits -> ok() )
+
+    if ( !priest.talents.auspicious_spirits -> ok() || maybe_ptr( priest.dbc.ptr ) )
     {
       const spell_data_t* dmg_data = p.find_spell( 148859 ); // Hardcoded into tooltip 2014/06/01
 
@@ -2089,7 +2095,7 @@ struct shadowy_apparition_spell_t : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    if ( priest.talents.auspicious_spirits -> ok() )
+    if ( priest.talents.auspicious_spirits -> ok() && result_is_hit( s -> result ) )
     {
       generate_shadow_orb( 1, priest.gains.shadow_orb_auspicious_spirits );
     }
@@ -2112,8 +2118,19 @@ struct shadowy_apparition_spell_t : public priest_spell_t
         td.dots.vampiric_touch -> extend_duration( extend_duration );
         priest.procs.t15_2pc_caster_vampiric_touch -> occur();
       }
-
     }
+  }
+
+  virtual double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier( state );
+
+    if ( maybe_ptr( priest.dbc.ptr ) && priest.talents.auspicious_spirits -> ok() )
+    {
+      d *= 2.0;
+    }
+
+    return d;
   }
 
   /* Trigger a shadowy apparition
@@ -3650,15 +3667,25 @@ public:
     return new cascade_state_t( this, ab::target );
   }
 
-  player_t* get_next_player()
+  player_t* get_next_player( player_t* currentTarget )
   {
     player_t* t = nullptr;
 
     // Get target at first position
-    if ( ! targets.empty() )
+    if ( !targets.empty() )
     {
-      t = targets.back();
-      targets.pop_back(); // Remove chosen target from the list.
+      for ( std::vector<player_t*>::iterator it = targets.begin(); it != targets.end(); it++ )
+      {
+        t = *it;
+
+        if ( t != currentTarget )
+        {
+          targets.erase( it );
+          return t;
+        }
+      }
+
+      t = nullptr;
     }
 
     return t;
@@ -3686,16 +3713,16 @@ public:
 
     if ( cs -> jump_counter < ab::data().effectN( 1 ).base_value() )
     {
+      player_t* currentTarget = q -> target;
       for ( int i = 0; i < ab::data().effectN( 2 ).base_value(); ++i )
       {
-        player_t* t = get_next_player();
+        player_t* t = get_next_player( currentTarget );
 
         if ( t )
         {
           if ( ab::sim -> debug )
             ab::sim -> out_debug.printf( "%s action %s jumps to player %s",
                                ab::player -> name(), ab::name(), t -> name() );
-
 
           // Copy-Pasted action_t::execute() code. Additionally increasing jump counter by one.
           cascade_state_t* s = debug_cast<cascade_state_t*>( ab::get_state() );
@@ -3751,9 +3778,34 @@ struct cascade_t : public cascade_base_t<priest_spell_t>
     {
       player_t* t = _target_list_source[i];
       if ( t != target )
+      {
         targets.push_back( t );
+
+        if ( maybe_ptr( priest.dbc.ptr ) && priest.specialization() != PRIEST_SHADOW && _target_list_source.size() > 1)
+        {
+          targets.push_back( t );
+        }
+      }
+    }
+
+    if ( maybe_ptr( priest.dbc.ptr ) && priest.specialization() != PRIEST_SHADOW )
+    {
+      targets.push_back( target );
     }
   }
+
+  virtual double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier( state );
+
+    if ( maybe_ptr( priest.dbc.ptr ) && priest.specialization() != PRIEST_SHADOW )
+    {
+      d *= 0.65;
+    }
+
+    return d;
+  }
+
 private:
   const spell_data_t* get_spell_data( priest_t& p ) const
   {
@@ -3766,6 +3818,7 @@ private:
     {
       return sim -> target_list;
     }
+    else
     {
       return sim -> player_list;
     }
@@ -3913,6 +3966,18 @@ struct divine_star_t : public priest_spell_t
     _base_spell -> execute();
   }
 
+  virtual double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier( state );
+
+    if ( maybe_ptr( priest.dbc.ptr ) && priest.specialization() == PRIEST_SHADOW )
+    {
+      d *= 1.2;
+    }
+
+    return d;
+  }
+
   virtual bool usable_moving() const override
   {
     // Holy/Disc version is usable while moving, Shadow version is instant cast anyway.
@@ -3943,6 +4008,11 @@ struct void_entropy_t : public priest_spell_t
     may_crit = false;
     tick_zero = false;
     instant_multistrike = false;
+
+    if ( maybe_ptr( priest.dbc.ptr ) )
+    {
+      spell_power_mod.tick *= 1.8;
+    }
   }
 
   virtual void consume_resource() override
@@ -3978,13 +4048,6 @@ struct void_entropy_t : public priest_spell_t
                      name(), player -> resources.current[ current_resource() ] );
 
     stats -> consume_resource( current_resource(), resource_consumed );
-  }
-
-  virtual double composite_persistent_multiplier( const action_state_t* s ) const override
-  {
-    double m = priest_spell_t::composite_persistent_multiplier( s );
-
-    return m;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4946,6 +5009,30 @@ struct saving_grace_t : public priest_heal_t
     priest.buffs.saving_grace_penalty -> trigger();
   }
 
+  virtual double action_multiplier() const override
+  {
+    double am = priest_heal_t::action_multiplier();
+
+    if ( maybe_ptr( priest.dbc.ptr ) )
+    {
+      am *= 1.5;
+    }
+
+    return am;
+  }
+
+  virtual timespan_t execute_time() const override
+  {
+    if ( maybe_ptr( priest.dbc.ptr ) )
+    {
+      return timespan_t::zero();
+    }
+
+    timespan_t et = priest_heal_t::execute_time();
+
+    return et;
+  }
+
   virtual void execute() override
   {
     priest_heal_t::execute();
@@ -5474,7 +5561,14 @@ double priest_t::composite_player_multiplier( school_e school ) const
   {
     if ( buffs.chakra_chastise -> check() )
     {
-      m *= 1.0 + buffs.chakra_chastise -> data().effectN( 1 ).percent();
+      if ( maybe_ptr( dbc.ptr ))
+      {
+        m *= 1.0 + 0.8;
+      }
+      else
+      {
+        m *= 1.0 + buffs.chakra_chastise -> data().effectN( 1 ).percent();
+      }
     }
   }
 
@@ -5511,7 +5605,14 @@ double priest_t::composite_player_heal_multiplier( const action_state_t* s ) con
 
   if ( buffs.saving_grace_penalty -> check() )
   {
-    m *= 1.0 + buffs.saving_grace_penalty -> check() * buffs.saving_grace_penalty -> data().effectN( 1 ).percent();
+    if ( maybe_ptr( dbc.ptr ) )
+    {
+      m *= 1.0 + buffs.saving_grace_penalty -> check() * 0.15;
+    }
+    else
+    {
+      m *= 1.0 + buffs.saving_grace_penalty -> check() * buffs.saving_grace_penalty -> data().effectN( 1 ).percent();
+    }
   }
 
   return m;
@@ -5930,9 +6031,18 @@ void priest_t::create_buffs()
                          .spell( find_spell( 109186 ) )
                          .chance( talents.surge_of_light -> effectN( 1 ).percent() );
 
-  buffs.surge_of_darkness = buff_creator_t( this, "surge_of_darkness" )
-                            .spell( find_spell( 87160 ) )
-                            .chance( talents.surge_of_darkness -> effectN( 1 ).percent() );
+  if ( maybe_ptr( dbc.ptr ) && talents.surge_of_darkness -> ok() )
+  {
+    buffs.surge_of_darkness = buff_creator_t( this, "surge_of_darkness" )
+                              .spell( find_spell( 87160 ) )
+                              .chance( 0.12 );
+  }
+  else
+  {
+    buffs.surge_of_darkness = buff_creator_t( this, "surge_of_darkness" )
+                              .spell( find_spell( 87160 ) )
+                              .chance( talents.surge_of_darkness -> effectN( 1 ).percent() );
+  }
 
   buffs.divine_insight = buff_creator_t( this, "divine_insight" )
                          .spell( talents.divine_insight )
@@ -6277,11 +6387,13 @@ void priest_t::apl_shadow()
   main -> add_action( "devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)" );
   main -> add_action( "mind_blast,if=glyph.mind_harvest.enabled&mind_harvest=0,cycle_targets=1" );
   main -> add_action( "mind_blast,if=active_enemies<=5&cooldown_react" );
+  main -> add_action( "searing_insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
+  main -> add_action( "searing_insanity,if=active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
   main -> add_action( "insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies<=2,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1|shadow_orb=5)" );
   main -> add_action( "insanity,chain=1,if=active_enemies<=2,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1|shadow_orb=5)" );
   main -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&active_enemies>2" );
   main -> add_action( "cascade,if=talent.cascade.enabled&active_enemies>2&target.distance<=40" );
-  main -> add_action( "divine_star,if=talent.divine_star.enabled&active_enemies>4&target.distance<=24" );
+  main -> add_action( "divine_star,if=talent.divine_star.enabled&active_enemies>4&target.distance<=24" ); // TODO: Update enemies threshold after 6.1 is released
   main -> add_action( "shadow_word_pain,if=talent.auspicious_spirits.enabled&remains<(18*0.3)&miss_react,cycle_targets=1" );
   main -> add_action( "shadow_word_pain,if=!talent.auspicious_spirits.enabled&remains<(18*0.3)&miss_react&active_enemies<=5,cycle_targets=1,max_cycle_targets=5" );
   main -> add_action( "vampiric_touch,if=remains<(15*0.3+cast_time)&miss_react&active_enemies<=5,cycle_targets=1,max_cycle_targets=5" );
@@ -6309,16 +6421,20 @@ void priest_t::apl_shadow()
   vent -> add_action( "mindbender,if=talent.mindbender.enabled&cooldown.mind_blast.remains>=gcd" );
   vent -> add_action( "shadowfiend,if=!talent.mindbender.enabled&cooldown.mind_blast.remains>=gcd" );
   vent -> add_action( "void_entropy,if=shadow_orb=3&!ticking&target.time_to_die>60&active_enemies=1" );
-  vent -> add_action( "void_entropy,if=!dot.void_entropy.ticking&shadow_orb=5&active_enemies>=1&target.time_to_die>60,cycle_targets=1,max_cycle_targets=(60%(cooldown.mind_blast.duration*3*spell_haste))" );
+  vent -> add_action( "void_entropy,if=!dot.void_entropy.ticking&shadow_orb=5&active_enemies>=1&target.time_to_die>60,cycle_targets=1,max_cycle_targets=6" );
   vent -> add_action( "devouring_plague,if=dot.void_entropy.ticking&dot.void_entropy.remains<=gcd*2&cooldown_react,cycle_targets=1" );
-  vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<10,cycle_targets=1" );
-  vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<20,cycle_targets=1" );
+  vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<5,cycle_targets=1" );
+  vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<10&active_enemies>2,cycle_targets=1" );
+  vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<15&active_enemies>3,cycle_targets=1" );
+  vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<20&active_enemies>4,cycle_targets=1" );
   vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains,cycle_targets=1" );
   vent -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&active_enemies>=4" );
   vent -> add_action( "mind_blast,if=glyph.mind_harvest.enabled&mind_harvest=0&shadow_orb<=2,cycle_targets=1" );
   vent -> add_action( "devouring_plague,if=glyph.mind_harvest.enabled&mind_harvest=0&shadow_orb>=3,cycle_targets=1" );
   vent -> add_action( "mind_blast,if=active_enemies<=10&cooldown_react&shadow_orb<=4" );
   vent -> add_action( "shadow_word_death,if=target.health.pct<20&cooldown_react&shadow_orb<=4,cycle_targets=1" );
+  vent -> add_action( "searing_insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
+  vent -> add_action( "searing_insanity,if=active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
   vent -> add_action( "shadow_word_pain,if=shadow_orb=4&remains<(18*0.50)&set_bonus.tier17_2pc&cooldown.mind_blast.remains<1.2*gcd&cooldown.mind_blast.remains>0.2*gcd" );
   vent -> add_action( "insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies<=3&cooldown.mind_blast.remains>0.5*gcd,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
   vent -> add_action( "insanity,chain=1,if=active_enemies<=3&cooldown.mind_blast.remains>0.5*gcd,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
@@ -6327,7 +6443,7 @@ void priest_t::apl_shadow()
   vent -> add_action( "vampiric_touch,if=remains<(15*0.35)&miss_react,cycle_targets=1,max_cycle_targets=5" );
   vent -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&cooldown.mind_blast.remains>0.5*gcd" );
   vent -> add_action( "cascade,if=talent.cascade.enabled&target.distance<=40&cooldown.mind_blast.remains>0.5*gcd" );
-  vent -> add_action( "divine_star,if=talent.divine_star.enabled&active_enemies>4&target.distance<=24&cooldown.mind_blast.remains>0.5*gcd" );
+  vent -> add_action( "divine_star,if=talent.divine_star.enabled&active_enemies>4&target.distance<=24&cooldown.mind_blast.remains>0.5*gcd" ); // TODO: Update enemies threshold after 6.1 is released
   vent -> add_action( "mind_spike,if=active_enemies<=5&buff.surge_of_darkness.react&cooldown.mind_blast.remains>0.5*gcd" );
   vent -> add_action( "mind_sear,chain=1,if=active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
   vent -> add_action( "mind_flay,if=cooldown.mind_blast.remains>0.5*gcd,interrupt=1,chain=1" );
@@ -6344,6 +6460,8 @@ void priest_t::apl_shadow()
   cop_dotweave -> add_action( "devouring_plague,if=(target.dot.vampiric_touch.ticking&target.dot.shadow_word_pain.ticking&!buff.shadow_word_insanity.remains&cooldown.mind_blast.remains>0.4*gcd)" );
   cop_dotweave -> add_action( "mind_blast,if=glyph.mind_harvest.enabled&mind_harvest=0&shadow_orb<=2,cycle_targets=1" );
   cop_dotweave -> add_action( "mind_blast,if=shadow_orb<=4&cooldown_react" );
+  cop_dotweave -> add_action( "searing_insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
+  cop_dotweave -> add_action( "searing_insanity,if=active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
   cop_dotweave -> add_action( "shadowfiend,if=!talent.mindbender.enabled&!buff.shadow_word_insanity.remains" );
   cop_dotweave -> add_action( "mindbender,if=talent.mindbender.enabled&!buff.shadow_word_insanity.remains" );
   cop_dotweave -> add_action( "shadow_word_pain,if=shadow_orb=4&set_bonus.tier17_2pc&!target.dot.shadow_word_pain.ticking&!target.dot.devouring_plague.ticking&cooldown.mind_blast.remains<1.2*gcd&cooldown.mind_blast.remains>0.2*gcd" );
@@ -6354,7 +6472,7 @@ void priest_t::apl_shadow()
   cop_dotweave -> add_action( "vampiric_touch,if=shadow_orb>=2&target.dot.vampiric_touch.remains>=5&cooldown.mind_blast.remains>0.5*gcd&buff.bloodlust.up&!set_bonus.tier17_2pc" );
   cop_dotweave -> add_action( "halo,if=cooldown.mind_blast.remains>0.5*gcd&talent.halo.enabled&target.distance<=30&target.distance>=17" );
   cop_dotweave -> add_action( "cascade,if=cooldown.mind_blast.remains>0.5*gcd&talent.cascade.enabled&((active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11)" );
-  cop_dotweave -> add_action( "divine_star,if=talent.divine_star.enabled&cooldown.mind_blast.remains>0.5*gcd&active_enemies>3&target.distance<=24" );
+  cop_dotweave -> add_action( "divine_star,if=talent.divine_star.enabled&cooldown.mind_blast.remains>0.5*gcd&active_enemies>3&target.distance<=24" ); // TODO: Update enemies threshold after 6.1 is released
   cop_dotweave -> add_action( "shadow_word_pain,if=primary_target=0&!ticking,cycle_targets=1,max_cycle_targets=5" );
   cop_dotweave -> add_action( "vampiric_touch,if=primary_target=0&!ticking,cycle_targets=1,max_cycle_targets=5" );
   cop_dotweave -> add_action( "divine_star,if=talent.divine_star.enabled&cooldown.mind_blast.remains>0.5*gcd&active_enemies=3&target.distance<=24" );
@@ -6378,6 +6496,8 @@ void priest_t::apl_shadow()
   cop_mfi -> add_action( "mind_blast,if=active_enemies<=5&cooldown_react" );
   cop_mfi -> add_action( "shadow_word_death,if=target.health.pct<20,cycle_targets=1" );
   cop_mfi -> add_action( "devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<gcd*1.0|target.health.pct<20&cooldown.shadow_word_death.remains<gcd*1.0)" );
+  cop_mfi -> add_action( "searing_insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
+  cop_mfi -> add_action( "searing_insanity,if=active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
   cop_mfi -> add_action( "mindbender,if=talent.mindbender.enabled" );
   cop_mfi -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
   cop_mfi -> add_action( "shadow_word_pain,if=remains<(18*0.3)&miss_react&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
@@ -6386,7 +6506,7 @@ void priest_t::apl_shadow()
   cop_mfi -> add_action( "insanity,if=active_enemies<=2,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|(cooldown.shadow_word_death.remains<=0.1&target.health.pct<20))" );
   cop_mfi -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&target.distance>=17" );
   cop_mfi -> add_action( "cascade,if=talent.cascade.enabled&((active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11)" );
-  cop_mfi -> add_action( "divine_star,if=talent.divine_star.enabled&active_enemies>2&target.distance<=24" );
+  cop_mfi -> add_action( "divine_star,if=talent.divine_star.enabled&active_enemies>2&target.distance<=24" ); // TODO: Update enemies threshold after 6.1 is released
   cop_mfi -> add_action( "mind_sear,if=active_enemies>=6,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
   cop_mfi -> add_action( "mind_spike" );
   cop_mfi -> add_action( "shadow_word_death,moving=1,if=movement.remains>=1*gcd" );
@@ -6403,11 +6523,13 @@ void priest_t::apl_shadow()
   cop -> add_action( "mind_blast,if=mind_harvest=0,cycle_targets=1" );
   cop -> add_action( "mind_blast,if=active_enemies<=5&cooldown_react" );
   cop -> add_action( "shadow_word_death,if=target.health.pct<20,cycle_targets=1" );
+  cop -> add_action( "searing_insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
+  cop -> add_action( "searing_insanity,if=active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
   cop -> add_action( "mindbender,if=talent.mindbender.enabled" );
   cop -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
   cop -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&target.distance>=17" );
   cop -> add_action( "cascade,if=talent.cascade.enabled&(active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11" );
-  cop -> add_action( "divine_star,if=talent.divine_star.enabled&active_enemies>3&target.distance<=24" );
+  cop -> add_action( "divine_star,if=talent.divine_star.enabled&active_enemies>3&target.distance<=24" ); // TODO: Update enemies threshold after 6.1 is released
   cop -> add_action( "shadow_word_pain,if=miss_react&!ticking&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
   cop -> add_action( "vampiric_touch,if=remains<cast_time&miss_react&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
   cop -> add_action( "divine_star,if=talent.divine_star.enabled&active_enemies=3&target.distance<=24" );
