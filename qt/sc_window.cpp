@@ -242,74 +242,38 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   QDir::home().mkpath( "Library/Application Support/SimulationCraft" );
   AppDataDir = ResultsDestDir = TmpDir = QDir::home().absoluteFilePath( "Library/Application Support/SimulationCraft" );
 #endif
-#ifdef SC_TO_INSTALL // GUI will be installed, use default AppData & Temp location for files created
-#ifdef Q_OS_WIN32
-  QDir::home().mkpath( "SimulationCraft" );
-  AppDataDir = TmpDir = QDir::home().absoluteFilePath( "SimulationCraft" );
-  ResultsDestDir = QDir::homePath();
-#endif
-#endif
 
   QStringList s = QStandardPaths::standardLocations( QStandardPaths::CacheLocation );
   if ( !s.empty() )
   {
-    QDir a( s.first() );
-    if ( a.isReadable() )
-      TmpDir = s.first();
+    TmpDir = s.first();
   }
   else
   {
     s = QStandardPaths::standardLocations( QStandardPaths::TempLocation ); // Fallback
     if ( !s.empty() )
     {
-      QDir a( s.first() );
-      if ( a.isReadable() )
-        TmpDir = s.first();
+      TmpDir = s.first();
     }
   }
-
   // Set ResultsDestDir
   s = QStandardPaths::standardLocations( QStandardPaths::DocumentsLocation );
   if ( !s.empty() )
   {
-    QDir a( s.first() );
-    if ( a.isReadable() )
-      ResultsDestDir = s.first();
+    ResultsDestDir = s.first();
   }
   else
   {
     s = QStandardPaths::standardLocations( QStandardPaths::HomeLocation ); // Fallback, just use home path
     if ( !s.empty() )
     {
-      QDir a( s.first() );
-      if ( a.isReadable() )
-        ResultsDestDir = s.first();
+      ResultsDestDir = s.first();
     }
   }
 
-#ifdef SC_TO_INSTALL // GUI will be installed, use default AppData location for files created
-  QStringList z = QStandardPaths::standardLocations( QStandardPaths::DataLocation );
-  if ( ! z.empty() )
-  {
-    QDir a( z.first() );
-    if ( a.isReadable() )
-      AppDataDir = z.first();
-  }
-#endif
 #if defined( SC_LINUX_PACKAGING )
-  QString path_prefix;
-  const char* env = getenv( "XDG_CACHE_HOME" );
-  if ( ! env )
-  {
-    env = getenv( "HOME" );
-    if ( env )
-      path_prefix = QString::fromLocal8Bit( env ) + "/.cache";
-    else
-      path_prefix = "/tmp"; // back out
-  }
-  else
-    path_prefix = QString( env );
-  AppDataDir = ResultsDestDir = TmpDir = path_prefix + "/SimulationCraft";
+  s = QStandardPaths::standardLocations( QStandardPaths::CacheLocation );
+  AppDataDir = ResultsDestDir = TmpDir = s.first() + "/SimulationCraft";
   QDir::root().mkpath( AppDataDir );
 #endif
 
@@ -360,13 +324,10 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
 #ifdef SC_PAPERDOLL
   paperdollThread = new PaperdollThread( this );
   connect( paperdollThread, SIGNAL( finished() ), this, SLOT( paperdollFinished() ) );
-
   connect( paperdollProfile,    SIGNAL( profileChanged() ), this, SLOT( start_intermediate_paperdoll_sim() ) );
   connect( optionsTab,          SIGNAL( optionsChanged() ), this, SLOT( start_intermediate_paperdoll_sim() ) );
 #endif
-
   setAcceptDrops( true );
-
   loadHistory();
 }
 
@@ -498,9 +459,9 @@ void SC_MainWindow::createBestInSlotTab()
 
   const int TIER_MAX = 2;
 #if SC_BETA == 1
-  const char* tierNames[] = { "T16", "T17" };
+  const char* tierNames[] = { "T17", "T18" };
 #else
-  const char* tierNames[] = { "T16", "T17" };
+  const char* tierNames[] = { "T17", "T18" };
 #endif
   QTreeWidgetItem* playerItems[PLAYER_MAX];
   range::fill( playerItems, 0 );
@@ -510,13 +471,22 @@ void SC_MainWindow::createBestInSlotTab()
     range::fill( rootItems[i], 0 );
   }
 
+  QStringList appdatalocation =  QStandardPaths::standardLocations( QStandardPaths::AppDataLocation );
+
+  QString appdata = QStandardPaths::findExecutable( "simulationcraft", appdatalocation );
+  if ( appdata.isEmpty() )
+  {
+    appdata = QStandardPaths::findExecutable( "simulationcraft64", appdatalocation );
+    appdata.replace( QString( "/simulationcraft64.exe" ), QString( "" ), Qt::CaseInsensitive );
+  }
+  else
+  {
+    appdata.replace( QString( "/simulationcraft.exe" ), QString( "" ), Qt::CaseInsensitive );
+  }
+
   // Scan all subfolders in /profiles/ and create a list
 #if ! defined( Q_OS_MAC )
-#if defined( SC_LINUX_PACKAGING )
-  QDir tdir( SC_LINUX_PACKAGING "/profiles" );
-#else
-  QDir tdir( "profiles" );
-#endif
+  QDir tdir( appdata + "/profiles" );
 #else
   CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "profiles" ), 0, 0 );
   QDir tdir;
@@ -537,11 +507,7 @@ void SC_MainWindow::createBestInSlotTab()
   for ( int i = 0; i < tnumProfiles; i++ )
   {
 #if ! defined( Q_OS_MAC )
-#if defined( SC_LINUX_PACKAGING )
-    QDir dir( SC_LINUX_PACKAGING "/profiles/" + tprofileList[ i ] );
-#else
-    QDir dir = QString( "profiles/" + tprofileList[i] );
-#endif
+    QDir dir( appdata + "/profiles/" + tprofileList[ i ] );
 #else
     CFURLRef fileRef = CFBundleCopyResourceURL( CFBundleGetMainBundle(),
                                                 CFStringCreateWithCString( NULL,

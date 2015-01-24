@@ -14,12 +14,12 @@ optimal_raid=1
 Death_Knight_Frost_1h_T17N.simc
 Death_Knight_Frost_2h_T17N.simc
 Death_Knight_Unholy_T17N.simc
-#Death_Knight_Blood_T17N.simc
+Death_Knight_Blood_T17N.simc
 
 Druid_Feral_T17N.simc
 Druid_Balance_T17N.simc
 talents=0002002
-#Druid_Guardian_T17N.simc
+Druid_Guardian_T17N.simc
 
 Hunter_BM_T17N.simc
 talents=0003233
@@ -35,14 +35,14 @@ talents=1000123
 Mage_Frost_T17N.simc
 talents=1000121
 
-#Monk_Brewmaster_1h_Serenity_T17N.simc
-#Monk_Brewmaster_2h_Serenity_T17N.simc
+Monk_Brewmaster_1h_Serenity_T17N.simc
+Monk_Brewmaster_2h_Serenity_T17N.simc
 Monk_Windwalker_1h_T17N.simc
 talents=0130012
 Monk_Windwalker_2h_T17N.simc
 talents=0130012
 
-#Paladin_Protection_T17N.simc
+Paladin_Protection_T17N.simc
 Paladin_Retribution_T17N.simc
 talents=2000323
 #Paladin_Holy_T17N.simc
@@ -77,6 +77,6 @@ Warrior_Fury_1h_T17N.simc
 talent_override=bladestorm
 Warrior_Fury_2h_T17N.simc
 talent_override=bladestorm
-#Warrior_Protection_T17N.simc
+Warrior_Protection_T17N.simc
 Warrior_Gladiator_T17N.simc
 talent_override=bladestorm

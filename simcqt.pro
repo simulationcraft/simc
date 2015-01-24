@@ -170,20 +170,18 @@ unix:!mac {
 
   # Disable strip
   QMAKE_STRIP=echo
-
-  isEmpty(PREFIX): PREFIX=~/SimulationCraft
-  isEmpty(DESTDIR): DESTDIR=
+  !isEmpty(DESTDIR): PREFIX=$$DESTDIR/$$PREFIX
+  isEmpty(PREFIX): PREFIX=/usr/local
+  isEmpty(DATADIR): DATADIR=$$PREFIX/share
+  isEmpty(SEARCH): SEARCH=$$DATADIR/simulationcraft
+  isEmpty(BINDIR): BINDIR=$$PREFIX/bin
   INSTALLS += target \
               profiles \
               data \
               icon \
               locale
 
-  SHAREPATH = $$DESTDIR$$PREFIX/share/SimulationCraft
-
-  CONFIG(linux_packaging) {
-    DEFINES += SC_LINUX_PACKAGING=\\\"$$PREFIX/share/SimulationCraft\\\"
-  }
+  SHAREPATH = $$DESTDIR$$PREFIX/share/simulationcraft
 
   target.path = $$DESTDIR$$PREFIX/bin/
 
