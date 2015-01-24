@@ -2284,10 +2284,7 @@ struct revenge_t: public warrior_attack_t
     base_add_multiplier = data().effectN( 3 ).percent();
     aoe = 3;
     rage_gain = data().effectN( 2 ).resource( RESOURCE_RAGE );
-    if ( !p -> dbc.ptr )
-    {
-      attack_power_mod.direct *= 1.4;
-    }
+    attack_power_mod.direct = 3.528; //Fix
   }
 
   double action_multiplier() const
