@@ -2345,7 +2345,10 @@ struct explosive_trap_t: public hunter_ranged_attack_t
     aoe = -1;
 
     cooldown -> duration = data().cooldown();
-       cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
+    if ( !player -> dbc.ptr )
+    {
+      cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
+    }
     if ( p() -> perks.enhanced_traps -> ok() )
       cooldown -> duration *= ( 1.0 + p() -> perks.enhanced_traps -> effectN( 1 ).percent() );
     hasted_ticks = false;
