@@ -4,10 +4,11 @@
 // ==========================================================================
 /*
   TODO:
-  5.4: Remove Unbreakable Spirit code
-  Selfless Healer?
-  Sacred Shield proxy buff for APL trickery
-  Not sure if it's intended, but currently Hammer of Wrath procs seals on beta. 8/30/14 - Alex
+  -Bunch of Holy Stuff (search for TODO)
+  -Remove Alabaster Shield post-6.1
+  -Remove unnecessary Harsh Words code for prot post-6.1
+  -Confirm AGI/INT mail and AGI/STR gear behavior
+  -Test if Grand Crusader can proc from misses
 */
 #include "simulationcraft.hpp"
 
@@ -157,7 +158,6 @@ public:
     gain_t* glyph_divine_shield;
 
     // Mana
-    gain_t* divine_plea;
     gain_t* extra_regen;
     gain_t* glyph_of_divinity;
     gain_t* glyph_of_illumination;
@@ -1479,33 +1479,6 @@ struct devotion_aura_t : public paladin_spell_t
   }
 };
 
-// Divine Plea ==============================================================
-
-struct divine_plea_t : public paladin_spell_t
-{
-  divine_plea_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "divine_plea", p, p -> find_class_spell( "Divine Plea" ) )
-  {
-    parse_options( options_str );
-
-    harmful = false;
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    paladin_spell_t::impact( s );
-
-    // Mana gain
-    p() -> resource_gain( RESOURCE_MANA, 
-                          data().effectN( 2 ).base_value() / 10000.0 * p() -> resources.max[ RESOURCE_MANA ], 
-                          p() -> gains.divine_plea );
-  }
-
-  // TODO: may need to override cost if this cannot consume divine purpose!
-
-  
-};
-
 // Divine Protection ========================================================
 
 struct divine_protection_t : public paladin_spell_t
@@ -2306,8 +2279,7 @@ struct holy_shield_proc_t : public paladin_spell_t
     background = true;
     proc = true;
     may_miss = false;
-    // may_crit = true; TODO: test?
-    // may_multistrike = false; TODO: test?
+    may_crit = true;
   }
 
 };
@@ -3194,7 +3166,7 @@ struct uthers_insight_t : public paladin_heal_t
   {
     p() -> buffs.uthers_insight -> trigger();
 
-    paladin_heal_t::execute(); // TODO: is there a direct heal? does this matter?
+    paladin_heal_t::execute();
   }
   
   virtual void tick( dot_t* d )
@@ -3340,9 +3312,9 @@ struct harsh_word_t : public paladin_spell_t
 
     base_costs[RESOURCE_HOLY_POWER] = 1;
 
-    base_execute_time = timespan_t::from_seconds( 1.5 ); // TODO: test if this still has a cast time as holy with HW glyph; irrelevant for prot/ret
+    base_execute_time = timespan_t::from_seconds( 1.5 );
 
-    // remove GCD constraints & cast time for prot
+    // remove GCD constraints & cast time for prot - TODO: remove after 6.1
     if ( p -> passives.guarded_by_the_light -> ok() )
     {
       trigger_gcd = timespan_t::zero();
@@ -3744,7 +3716,6 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
   {
     // AoE effect always hits if single-target attack succeeds
     // Doesn't proc seals or Grand Crusader
-    // TODO: need to re-test all of this
     may_dodge = false;
     may_parry = false;
     may_miss  = false;
@@ -4400,7 +4371,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
-    // Alabaster Shield bonus
+    // Alabaster Shield bonus - TODO: Remove in 6.1
     am *= 1.0 + p() -> buffs.alabaster_shield -> stack() * ( p() -> wod_hotfix ? 0.03 : p() -> spells.alabaster_shield -> effectN( 1 ).percent() );
 
     return am;
@@ -4419,10 +4390,8 @@ struct final_verdict_t : public paladin_melee_attack_t
     parse_options( options_str );
     trigger_seal       = true;
 
-    // Tier 13 Retribution 4-piece boosts damage (TODO: test?)
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T13, B4 ) -> effectN( 1 ).percent();
 
-    // Tier 14 Retribution 2-piece boosts damage (TODO: test?)
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
     if ( p -> wod_hotfix )
@@ -4671,7 +4640,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "crusader_strike"           ) return new crusader_strike_t          ( this, options_str );
   if ( name == "denounce"                  ) return new denounce_t                 ( this, options_str );
   if ( name == "devotion_aura"             ) return new devotion_aura_t            ( this, options_str );
-  if ( name == "divine_plea"               ) return new divine_plea_t              ( this, options_str );
   if ( name == "divine_protection"         ) return new divine_protection_t        ( this, options_str );
   if ( name == "divine_shield"             ) return new divine_shield_t            ( this, options_str );
   if ( name == "divine_storm"              ) return new divine_storm_t             ( this, options_str );
@@ -4821,7 +4789,6 @@ void paladin_t::init_gains()
   player_t::init_gains();
 
   // Mana
-  gains.divine_plea                 = get_gain( "divine_plea"            );
   gains.extra_regen                 = get_gain( ( specialization() == PALADIN_RETRIBUTION ) ? "sword_of_light" : "guarded_by_the_light" );
   gains.glyph_of_divinity           = get_gain( "glyph_of_divinity" );
   gains.glyph_of_illumination       = get_gain( "glyph_of_illumination" );
@@ -5062,7 +5029,7 @@ void paladin_t::generate_action_prio_list_prot()
   {
     // no need for off/def pot options - Draenic Armor gives more AP than Draenic STR,
     // and Mountains potion is pathetic at L90
-    if ( level > 90 ) //TODO: change back to >= once L100 available
+    if ( level > 90 )
       potion_type = "draenic_armor";
     else if ( level >= 80 )
       potion_type = "mogu_power";
@@ -5099,21 +5066,15 @@ void paladin_t::generate_action_prio_list_prot()
     def -> add_action( racial_actions[ i ] );
 
   def -> add_action( "run_action_list,name=max_dps,if=role.attack|0",
-                     "This line will shortcut to a high-DPS (but low-survival) action list. Change 0 to 1 if you want to do this all the time." );
+                     "\n#This line will shortcut to a high-DPS (but low-survival) action list. Change 0 to 1 if you want to do this all the time." );
   def -> add_action( "run_action_list,name=max_survival,if=0",
-                     "This line will shortcut to a high-survival (but low-DPS) action list. Change 0 to 1 if you want it to do this all the time." );
-  // potions
+                     "\n#This line will shortcut to a high-survival (but low-DPS) action list. Change 0 to 1 if you want it to do this all the time." );
+
+  std::string line = "-----------------";
+
+  def -> add_talent( this, "Holy Avenger", "", "\n#" + line + " Standard survival priority list starts here " + line + "\n# This section covers off-GCD spells." );
   if ( sim -> allow_potions && potion_type.length() > 0 )
-  {
-    std::string potion_action = "potion,name=" + potion_type;
-    if ( primary_role() == ROLE_ATTACK )
-      potion_action += ",if=buff.holy_avenger.react|buff.bloodlust.react|target.time_to_die<=60";
-    else
-      potion_action += ",if=buff.shield_of_the_righteous.down&buff.seraphim.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down&buff.ardent_defender.down";
-    def -> add_action( potion_action );
-  }
-  
-  def -> add_talent( this, "Holy Avenger", "", "Standard survival priority list starts here\n# This section covers off-GCD spells." );
+    def -> add_action ( "potion,name=" + potion_type + ",if=buff.shield_of_the_righteous.down&buff.seraphim.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down&buff.ardent_defender.down" );
   def -> add_talent( this, "Seraphim" );
   def -> add_action( this, "Divine Protection", "if=time<5|!talent.seraphim.enabled|(buff.seraphim.down&cooldown.seraphim.remains>5&cooldown.seraphim.remains<9)" );
   def -> add_action( this, "Guardian of Ancient Kings", "if=time<5|(buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down)" ); 
@@ -5127,7 +5088,6 @@ void paladin_t::generate_action_prio_list_prot()
   
   def -> add_action( this, "Seal of Insight", "if=talent.empowered_seals.enabled&!seal.insight&buff.uthers_insight.remains<cooldown.judgment.remains", "GCD-bound spells start here" );
   def -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.uthers_insight.remains>cooldown.judgment.remains&buff.liadrins_righteousness.down" );
-  def -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&!seal.truth&buff.uthers_insight.remains>cooldown.judgment.remains&buff.liadrins_righteousness.remains>cooldown.judgment.remains&buff.maraads_truth.down" );
   def -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react&active_enemies>1&!glyph.focused_shield.enabled" );
   def -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=3" );
   def -> add_action( this, "Crusader Strike" );
@@ -5149,16 +5109,16 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<8" );
   def -> add_action( this, "Consecration", "if=target.debuff.flying.down" );
   def -> add_action( this, "Holy Wrath" );
-  def -> add_action( this, "Seal of Insight", "if=talent.empowered_seals.enabled&!seal.insight&buff.uthers_insight.remains<=buff.liadrins_righteousness.remains&buff.uthers_insight.remains<=buff.maraads_truth.remains" );
-  def -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.liadrins_righteousness.remains<=buff.uthers_insight.remains&buff.liadrins_righteousness.remains<=buff.maraads_truth.remains" );
-  def -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&!seal.truth&buff.maraads_truth.remains<buff.uthers_insight.remains&buff.maraads_truth.remains<buff.liadrins_righteousness.remains" );
+  def -> add_action( this, "Seal of Insight", "if=talent.empowered_seals.enabled&!seal.insight&buff.uthers_insight.remains<=buff.liadrins_righteousness.remains" );
+  def -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.liadrins_righteousness.remains<=buff.uthers_insight.remains" );
   def -> add_talent( this, "Sacred Shield" );
   def -> add_action( this, "Flash of Light", "if=talent.selfless_healer.enabled&buff.selfless_healer.stack>=3" );
 
   
   // Max-DPS priority queue
-  dps -> add_action( "potion,name=" + potion_type + ",if=buff.holy_avenger.react|buff.bloodlust.react|target.time_to_die<=60" );
-  dps -> add_talent( this, "Holy Avenger", "", "Max-DPS priority list starts here.\n# This section covers off-GCD spells." );
+  dps -> add_talent( this, "Holy Avenger", "", line + "Max-DPS priority list starts here " + line + "\n# This section covers off-GCD spells." );
+  if ( sim -> allow_potions && potion_type.length() > 0 )
+    dps -> add_action( "potion,name=" + potion_type + ",if=buff.holy_avenger.react|buff.bloodlust.react|target.time_to_die<=60" );
   dps -> add_talent( this, "Seraphim" );
   dps -> add_talent( this, "Divine Protection", "if=time<5|!talent.seraphim.enabled|(buff.seraphim.down&cooldown.seraphim.remains>5&cooldown.seraphim.remains<9)" );
   dps -> add_talent( this, "Guardian of Ancient Kings", "if=time<5|(buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down)" );
@@ -5166,10 +5126,10 @@ void paladin_t::generate_action_prio_list_prot()
   dps -> add_action( this, "Shield of the Righteous", "if=(holy_power>=5|talent.holy_avenger.enabled)&(!talent.seraphim.enabled|cooldown.seraphim.remains>5)" );
   dps -> add_action( this, "Shield of the Righteous", "if=buff.holy_avenger.remains>time_to_hpg&(!talent.seraphim.enabled|cooldown.seraphim.remains>time_to_hpg)" );
 
-  dps -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react&active_enemies>1&!glyph.focused_shield.enabled", "#GCD-bound spells start here." );
+  dps -> add_action( this, "Avenger's Shield", "if=buff.grand_crusader.react&active_enemies>1&!glyph.focused_shield.enabled", "GCD-bound spells start here." );
   dps -> add_action( this, "Holy Wrath", "if=talent.sanctified_wrath.enabled&(buff.seraphim.react|(glyph.final_wrath.enabled&target.health.pct<=20))" );
   dps -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=3" );
-  dps -> add_action( this, "Judgment", "if=talent.empowered_seals.enabled&(buff.maraads_truth.down|buff.liadrins_righteousness.down)" );
+  dps -> add_action( this, "Judgment", "if=talent.empowered_seals.enabled&buff.liadrins_righteousness.down" );
   dps -> add_action( this, "Crusader Strike" );
   dps -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.35");
   dps -> add_action( "judgment,cycle_targets=1,if=glyph.double_jeopardy.enabled&last_judgment_target!=target" );
@@ -5181,8 +5141,7 @@ void paladin_t::generate_action_prio_list_prot()
   dps -> add_talent( this, "Execution Sentence", "if=active_enemies<3" );
   dps -> add_action( this, "Holy Wrath", "if=glyph.final_wrath.enabled&target.health.pct<=20" );
   dps -> add_action( this, "Avenger's Shield" );
-  dps -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&!seal.truth&buff.maraads_truth.remains<cooldown.judgment.remains" );
-  dps -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.maraads_truth.remains>cooldown.judgment.remains&buff.liadrins_righteousness.down" );
+  dps -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness" );
   dps -> add_talent( this, "Light's Hammer" );
   dps -> add_talent( this, "Holy Prism" );
   dps -> add_action( this, "Consecration", "if=target.debuff.flying.down&active_enemies>=3" );
@@ -5190,14 +5149,13 @@ void paladin_t::generate_action_prio_list_prot()
   dps -> add_action( this, "Hammer of Wrath" );
   dps -> add_action( this, "Consecration", "if=target.debuff.flying.down" );
   dps -> add_action( this, "Holy Wrath" );
-  dps -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&!seal.truth&buff.maraads_truth.remains<buff.liadrins_righteousness.remains" );
-  dps -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&!seal.righteousness&buff.liadrins_righteousness.remains<buff.maraads_truth.remains" );
   dps -> add_talent( this, "Sacred Shield" );
   dps -> add_action( this, "Flash of Light", "if=talent.selfless_healer.enabled&buff.selfless_healer.stack>=3" );
 
   // Max Survival priority queue
-  surv -> add_action( "potion,name=" + potion_type + ",if=buff.shield_of_the_righteous.down&buff.seraphim.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down&buff.ardent_defender.down" );
-  surv -> add_talent( this, "Holy Avenger", "", "Max survival priority list starts here\n# This section covers off-GCD spells." );
+  surv -> add_talent( this, "Holy Avenger", "", line + "Max survival priority list starts here " + line + "\n# This section covers off-GCD spells." );
+  if ( sim -> allow_potions && potion_type.length() > 0 )
+    surv -> add_action( "potion,name=" + potion_type + ",if=buff.shield_of_the_righteous.down&buff.seraphim.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down&buff.ardent_defender.down" );
   surv -> add_action( this, "Divine Protection", "if=time<5|!talent.seraphim.enabled|(buff.seraphim.down&cooldown.seraphim.remains>5&cooldown.seraphim.remains<9)" );
   surv -> add_talent( this, "Seraphim", "if=buff.divine_protection.down&cooldown.divine_protection.remains>0" );
   surv -> add_action( this, "Guardian of Ancient Kings", "if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down" ); 
@@ -5208,7 +5166,7 @@ void paladin_t::generate_action_prio_list_prot()
   surv -> add_action( this, "Shield of the Righteous", "if=(holy_power>=5|incoming_damage_1500ms>=health.max*0.3)&(!talent.seraphim.enabled|cooldown.seraphim.remains>5)" );
   surv -> add_action( this, "Shield of the Righteous", "if=buff.holy_avenger.remains>time_to_hpg&(!talent.seraphim.enabled|cooldown.seraphim.remains>time_to_hpg)" );
   
-  surv -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=3" );
+  surv -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=3", "GCD-bound spells start here." );
   surv -> add_action( this, "Crusader Strike" );
   surv -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.35");
   surv -> add_action( "judgment,cycle_targets=1,if=glyph.double_jeopardy.enabled&last_judgment_target!=target" );
@@ -5796,8 +5754,12 @@ void paladin_t::init_spells()
   if ( talents.holy_shield -> ok() )
     active_holy_shield_proc = new holy_shield_proc_t( this );
 
-  // TODO: check if this benefit is only for the paladin (as coded) or for all targets
-  debuffs.forbearance -> buff_duration += timespan_t::from_millis( perk.improved_forbearance -> effectN( 1 ).base_value() );
+  const spell_data_t* temp_forbearance = find_spell( 25771 );
+  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
+  {
+    player_t* p = sim -> actor_list[ i ];
+    p -> debuffs.forbearance -> buff_duration = temp_forbearance -> duration() + timespan_t::from_millis( perk.improved_forbearance -> effectN( 1 ).base_value() );
+  }
   
   rppm_defender_of_the_light.set_frequency( sets.set( PALADIN_PROTECTION, T17, B4 ) -> real_ppm() );
 
@@ -6219,7 +6181,6 @@ double paladin_t::composite_block_reduction() const
 {
   double br = player_t::composite_block_reduction();
 
-  // Prot T17 4-pc increases block by 50% (TODO: check if additive or multiplicative)
   if ( buffs.defender_of_the_light -> up() )
     br += buffs.defender_of_the_light -> value();
 
