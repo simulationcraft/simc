@@ -120,6 +120,25 @@ struct enemy_action_t : public ACTION_TYPE
     this -> name_str = this -> name_str + "_" + this -> target -> name();
   }
 
+  // this is only used by helper structures
+  std::string filter_options_list( const std::string options_str )
+  {
+    std::vector<std::string> splits = util::string_split( options_str, "," );
+    std::string filtered_options = "";
+    for ( size_t i = 0; i < splits.size(); i++ )
+    {
+      if ( util::str_in_str_ci( splits[ i ], "if=" ) )
+        splits[ i ].erase();
+      else
+      {
+        if ( filtered_options.length() > 0 )
+          filtered_options += ",";
+        filtered_options += splits[ i ];
+      }
+    }
+    return filtered_options;
+  }
+
   void init()
   {
     action_type_t::init();
@@ -495,7 +514,7 @@ struct melee_nuke_helper_t : public enemy_action_t<attack_t>
 
     for ( size_t i = 0; i < target_list.size(); i++ )
     {
-      melee_nuke_t* ch = new melee_nuke_t( p, options_str );
+      melee_nuke_t* ch = new melee_nuke_t( p, filter_options_list( options_str ) );
       ch -> target = target_list[ i ];
       ch_list.push_back( ch );
     }
@@ -575,7 +594,7 @@ struct spell_nuke_helper_t : public enemy_action_t<spell_t>
 
     for ( size_t i = 0; i < target_list.size(); i++ )
     {
-      spell_nuke_t* ch = new spell_nuke_t( p, options_str );
+      spell_nuke_t* ch = new spell_nuke_t( p, filter_options_list( options_str ) );
       ch -> target = target_list[ i ];
       ch_list.push_back( ch );
     }
@@ -669,7 +688,7 @@ struct spell_dot_helper_t : public enemy_action_t<spell_t>
 
     for ( size_t i = 0; i < target_list.size(); i++ )
     {
-      spell_dot_t* ch = new spell_dot_t( p, options_str );
+      spell_dot_t* ch = new spell_dot_t( p, filter_options_list( options_str ) );
       ch -> target = target_list[ i ];
       ch_list.push_back( ch );
     }
