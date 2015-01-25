@@ -733,7 +733,7 @@ public:
       p() -> resource_gain( RESOURCE_RAGE, rage*0.8, p() -> gain.avoided_attacks );
   }
 
-  void anger_management( double rage )
+  virtual void anger_management( double rage )
   {
     if ( rage > 0 )
     {
@@ -1799,11 +1799,17 @@ struct execute_t: public warrior_attack_t
          p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
          oh_attack -> execute();
 
-    if ( p() -> buff.sudden_death -> check() && p() -> talents.anger_management -> ok() )
-      base_t::anger_management( sudden_death_rage ); // Even though it doesn't consume rage, anger management still grants cooldown reduction from the original cost.
-
     p() -> buff.sudden_death -> expire(); // Consumes both buffs
     p() -> buff.tier16_4pc_death_sentence -> expire();
+  }
+
+  void anger_management( double )
+  {
+    double newrage = resource_consumed;
+    if ( p() -> buff.sudden_death -> check() )
+      newrage += sudden_death_rage;
+
+    base_t::anger_management( newrage );
   }
 
   bool ready()
@@ -1839,6 +1845,7 @@ struct hamstring_t: public warrior_attack_t
 
 struct heroic_strike_t: public warrior_attack_t
 {
+  double anger_management_rage;
   heroic_strike_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "heroic_strike", p, p -> find_class_spell( "Heroic Strike" ) )
   {
@@ -1850,6 +1857,7 @@ struct heroic_strike_t: public warrior_attack_t
     if ( p -> glyphs.cleave -> ok() )
       aoe = 2;
 
+    anger_management_rage = base_costs[RESOURCE_RAGE];
     use_off_gcd = true;
   }
 
@@ -1861,6 +1869,11 @@ struct heroic_strike_t: public warrior_attack_t
       am *= 1.0 + p() -> buff.shield_charge -> default_value;
 
     return am;
+  }
+
+  void anger_management( double )
+  {
+    base_t::anger_management( anger_management_rage );
   }
 
   void assess_damage( dmg_e type, action_state_t* s )
