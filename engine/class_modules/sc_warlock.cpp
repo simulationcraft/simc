@@ -1388,7 +1388,6 @@ struct wrathguard_pet_t: public warlock_pet_t
   wrathguard_pet_t( sim_t* sim, warlock_t* owner ):
     warlock_pet_t( sim, owner, "wrathguard", PET_FELGUARD )
   {
-    action_list_str = "mortal_cleave";
     owner_coeff.ap_from_sp = 0.66599;
   }
 
@@ -5617,6 +5616,7 @@ void warlock_t::apl_precombat()
   {
     action_list_str += "/felguard:felstorm";
     action_list_str += "/wrathguard:wrathstorm";
+    action_list_str += "/wrathguard:mortal_cleave";
     action_list_str += "/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&(((set_bonus.tier17_4pc=0&((charges=1&recharge_time<4)|charges=2))|(charges=3|(charges=2&recharge_time<13.8-travel_time*2))&((cooldown.cataclysm.remains>dot.shadowflame.duration)|!talent.cataclysm.enabled))|dot.shadowflame.remains>travel_time)";
     action_list_str += "/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&talent.demonbolt.enabled&((set_bonus.tier17_4pc=0&((charges=1&recharge_time<4)|charges=2))|(charges=3|(charges=2&recharge_time<13.8-travel_time*2))|dot.shadowflame.remains>travel_time)";
     action_list_str += "/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<3.7&time<5&buff.demonbolt.remains<gcd*2&(charges>=2|set_bonus.tier17_4pc=0)&action.dark_soul.charges>=1";
