@@ -78,7 +78,7 @@ timespan_t cooldown_t::cooldown_duration( const cooldown_t* cd,
 {
   timespan_t ret;
 
-  if ( override_duration > timespan_t::zero() )
+  if ( override_duration >= timespan_t::zero() )
   {
     ret = override_duration;
   }
@@ -256,6 +256,11 @@ void cooldown_t::start( action_t* action, timespan_t _override, timespan_t delay
   reset_react = timespan_t::zero();
 
   timespan_t event_duration = cooldown_duration( this, _override, action );
+  if ( event_duration == timespan_t::zero() )
+  {
+    return;
+  }
+
   if ( delay > timespan_t::zero() )
   {
     event_duration += delay;
