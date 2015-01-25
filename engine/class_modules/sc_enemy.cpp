@@ -577,7 +577,7 @@ struct spell_nuke_helper_t : public enemy_action_t<spell_t>
     base_execute_time = timespan_t::from_seconds( 3.0 );
 
     parse_options( options_str );
-
+    base_dd_min = base_dd_max = 0;
     size_t num_attacks = aoe_tanks;
     if ( num_attacks == 1 || num_attacks < 0 )
        num_attacks = this -> player -> sim -> actor_list.size();
@@ -671,7 +671,7 @@ struct spell_dot_helper_t : public enemy_action_t<spell_t>
     add_option( opt_timespan( "dot_duration", dot_duration ) );
     add_option( opt_timespan( "tick_time", base_tick_time ) );
     parse_options( options_str );
-
+    base_dd_min = base_dd_max = 0;
     size_t num_attacks = aoe_tanks;
     if ( num_attacks == 1 || num_attacks < 0 )
        num_attacks = this -> player -> sim -> actor_list.size();

@@ -460,6 +460,7 @@ struct warlock_pet_t: public pet_t
 {
   gain_t* owner_fury_gain;
   action_t* special_action;
+  action_t* special_action_two;
   melee_attack_t* melee_attack;
   stats_t* summon_stats;
   const spell_data_t* supremacy;
@@ -1405,6 +1406,7 @@ struct wrathguard_pet_t: public warlock_pet_t
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
   {
     if ( name == "mortal_cleave" ) return new actions::mortal_cleave_t( this );
+    if ( name == "wrathstorm" ) return new actions::wrathstorm_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
   }
