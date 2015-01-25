@@ -298,10 +298,12 @@ struct auto_attack_t : public enemy_action_t<attack_t>
 
     use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
-    
-    size_t num_attacks = aoe_tanks;
-    if ( num_attacks == 1 || num_attacks < 0 )
+
+    size_t num_attacks = 0;
+    if ( aoe_tanks == 1 || aoe_tanks < 0 )
        num_attacks = this -> player -> sim -> actor_list.size();
+    else
+      num_attacks = static_cast<size_t>( aoe_tanks );
 
     std::vector<player_t*> target_list;
     if ( aoe_tanks )
@@ -384,11 +386,13 @@ struct auto_attack_off_hand_t : public enemy_action_t<attack_t>
 
     use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
-    
-    size_t num_attacks = aoe_tanks;
-    if ( num_attacks == 1 || num_attacks < 0 )
+
+    size_t num_attacks = 0;
+    if ( aoe_tanks == 1 || aoe_tanks < 0 )
        num_attacks = this -> player -> sim -> actor_list.size();
-    
+    else
+      num_attacks = static_cast<size_t>( aoe_tanks );
+
     std::vector<player_t*> target_list;
     if ( aoe_tanks )
     {
@@ -498,10 +502,12 @@ struct melee_nuke_helper_t : public enemy_action_t<attack_t>
 
     parse_options( options_str );
 
-    size_t num_attacks = aoe_tanks;
-    if ( num_attacks == 1 || num_attacks < 0 )
+    size_t num_attacks = 0;
+    if ( aoe_tanks == 1 || aoe_tanks < 0 )
        num_attacks = this -> player -> sim -> actor_list.size();
-    
+    else
+      num_attacks = static_cast<size_t>( aoe_tanks );
+
     std::vector<player_t*> target_list;
     if ( aoe_tanks )
     {
@@ -578,10 +584,13 @@ struct spell_nuke_helper_t : public enemy_action_t<spell_t>
 
     parse_options( options_str );
     base_dd_min = base_dd_max = 0;
-    size_t num_attacks = aoe_tanks;
-    if ( num_attacks == 1 || num_attacks < 0 )
+
+    size_t num_attacks = 0;
+    if ( aoe_tanks == 1 || aoe_tanks < 0 )
        num_attacks = this -> player -> sim -> actor_list.size();
-    
+    else
+      num_attacks = static_cast<size_t>( aoe_tanks );
+
     std::vector<player_t*> target_list;
     if ( aoe_tanks )
     {
@@ -615,7 +624,7 @@ struct spell_nuke_helper_t : public enemy_action_t<spell_t>
     base_t::execute();
   }
 
-  virtual void impact()
+  virtual void impact( action_state_t* )
   {}
 };
 
@@ -672,9 +681,11 @@ struct spell_dot_helper_t : public enemy_action_t<spell_t>
     add_option( opt_timespan( "tick_time", base_tick_time ) );
     parse_options( options_str );
     base_dd_min = base_dd_max = 0;
-    size_t num_attacks = aoe_tanks;
-    if ( num_attacks == 1 || num_attacks < 0 )
+    size_t num_attacks = 0;
+    if ( aoe_tanks == 1 || aoe_tanks < 0 )
        num_attacks = this -> player -> sim -> actor_list.size();
+    else
+      num_attacks = static_cast<size_t>( aoe_tanks );
     
     std::vector<player_t*> target_list;
     if ( aoe_tanks )
@@ -709,8 +720,8 @@ struct spell_dot_helper_t : public enemy_action_t<spell_t>
     base_t::execute();
   }
 
-  virtual void impact()
-  {}
+  virtual void impact( action_state_t* )
+  { }
 };
 
 // Spell AoE ================================================================
