@@ -3966,6 +3966,18 @@ struct divine_star_t : public priest_spell_t
     _base_spell -> execute();
   }
 
+  virtual double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier( state );
+
+    if ( maybe_ptr( priest.dbc.ptr ) && priest.specialization() == PRIEST_SHADOW )
+    {
+      d *= 1.2;
+    }
+
+    return d;
+  }
+
   virtual bool usable_moving() const override
   {
     // Holy/Disc version is usable while moving, Shadow version is instant cast anyway.
