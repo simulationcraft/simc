@@ -965,7 +965,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   player_non_sleeping_list(),
   active_player( 0 ),
   num_players( 0 ),
-  num_enemies( 0 ), healing( 0 ),
+  num_enemies( 0 ), enemy_targets( 0 ), healing( 0 ),
   global_spawn_index( 0 ),
   max_player_level( -1 ),
   queue_lag( timespan_t::from_seconds( 0.005 ) ), queue_lag_stddev( timespan_t::zero() ),
@@ -2442,7 +2442,7 @@ expr_t* sim_t::create_expression( action_t* a,
     return make_ref_expr( name_str, event_mgr.current_time );
 
   if ( util::str_compare_ci( name_str, "enemies" ) )
-    return make_ref_expr( name_str, num_enemies );
+    return make_ref_expr( name_str, enemy_targets );
 
   if ( util::str_compare_ci( name_str, "active_enemies" ) )
     return make_ref_expr( name_str, active_enemies );

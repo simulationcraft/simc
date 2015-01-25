@@ -5141,7 +5141,7 @@ void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
 void shaman_t::trigger_improved_lava_lash( const action_state_t* state )
 {
   // Do not spread the love when there is only poor Fluffy Pillow against you
-  if ( sim -> num_enemies == 1 )
+  if ( sim -> enemy_targets == 1 )
     return;
 
   if ( ! state -> action -> result_is_hit( state -> result ) )

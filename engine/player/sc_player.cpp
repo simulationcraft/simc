@@ -562,9 +562,13 @@ player_t::player_t( sim_t*             s,
     }
     index = ++( sim -> num_players );
   }
-  else if ( type != HEALING_ENEMY ) // Not actually a enemy target.
+  else
   {
-    index = - ( ++( sim -> num_enemies ) );
+    if ( type != HEALING_ENEMY ) // Not actually a enemy target.
+    {
+      ++( sim -> enemy_targets );
+    }
+    index = -( ++( sim -> num_enemies ) );
   }
 
   // Fill healng lists with all non-enemy players.
