@@ -9,6 +9,7 @@
 # * EXCEPTION: 680 Legendary Ring can be used. (accessibility)
 
 optimal_raid=1
+override.bloodlust=0
 # Raid Tier17N
 
 Death_Knight_Frost_1h_T17N.simc
@@ -68,7 +69,10 @@ talents=0003013
 
 Warlock_Affliction_T17N.simc
 Warlock_Destruction_T17N.simc
+talent_override=cataclysm
 Warlock_Demonology_T17N.simc
+talent_override=cataclysm
+
 
 Warrior_Arms_T17N.simc
 talent_override=taste_for_blood
