@@ -22,6 +22,9 @@
 
 namespace { // UNNAMED NAMESPACE
 
+typedef std::pair<std::string, simple_sample_data_with_min_max_t> data_t;
+typedef std::pair<std::string, simple_sample_data_t> simple_data_t;
+
 struct shaman_t;
 
 enum totem_e { TOTEM_NONE = 0, TOTEM_AIR, TOTEM_EARTH, TOTEM_FIRE, TOTEM_WATER, TOTEM_MAX };
@@ -111,6 +114,10 @@ public:
   timespan_t ls_reset;
   bool       lava_surge_during_lvb;
   std::vector<counter_t*> counters;
+
+  // Data collection for cooldown waste
+  auto_dispose< std::vector<data_t*> > cd_waste_exec, cd_waste_cumulative;
+  auto_dispose< std::vector<simple_data_t*> > cd_waste_iter;
 
   // Options
   timespan_t uf_expiration_delay;
@@ -350,6 +357,7 @@ public:
   {
     const spell_data_t* resurgence;
     const spell_data_t* ancestral_swiftness;
+    const spell_data_t* echo_of_the_elements;
     const spell_data_t* flame_shock;
     const spell_data_t* lightning_strike;
     const spell_data_t* eruption;
@@ -481,6 +489,9 @@ public:
   virtual void      reset();
   virtual void      merge( player_t& other );
 
+  virtual void     datacollection_begin();
+  virtual void     datacollection_end();
+
   target_specific_t<shaman_td_t*> target_data;
 
   virtual shaman_td_t* get_target_data( player_t* target ) const
@@ -491,6 +502,21 @@ public:
       td = new shaman_td_t( target, const_cast<shaman_t*>(this) );
     }
     return td;
+  }
+
+  template <typename T_CONTAINER, typename T_DATA>
+  T_CONTAINER* get_data_entry( const std::string& name, std::vector<T_DATA*>& entries )
+  {
+    for ( size_t i = 0; i < entries.size();i ++ )
+    {
+      if ( entries[ i ] -> first == name )
+      {
+        return &( entries[ i ] -> second );
+      }
+    }
+
+    entries.push_back( new T_DATA( name, T_CONTAINER() ) );
+    return &( entries.back() -> second );
   }
 };
 
@@ -590,14 +616,19 @@ public:
   // Elemental Fusion tracking
   proc_t*     ef_proc;
 
+  // Cooldown tracking
+  simple_sample_data_with_min_max_t* cd_wasted_exec, *cd_wasted_cumulative;
+  simple_sample_data_t* cd_wasted_iter;
+
   shaman_action_t( const std::string& n, shaman_t* player,
                    const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
     totem( false ), shock( false ),
-    may_proc_eoe( false ), uses_eoe( false ),
+    may_proc_eoe( false ), uses_eoe( ab::data().affected_by( player -> spell.echo_of_the_elements -> effectN( 1 ) ) ),
     hasted_cd( ab::data().affected_by( player -> spec.flurry -> effectN( 1 ) ) ),
     hasted_gcd( ab::data().affected_by( player -> spec.flurry -> effectN( 2 ) ) ),
-    ef_proc( 0 )
+    ef_proc( 0 ),
+    cd_wasted_exec( 0 ), cd_wasted_cumulative( 0 ), cd_wasted_iter( 0 )
   {
     ab::may_crit = true;
   }
@@ -607,17 +638,32 @@ public:
     ab::init();
 
     // Allow ~everything to proc the new RPPM Echo of the Elements
-    if ( ! ab::background )
-      may_proc_eoe = true;
+    if ( ! maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( ! ab::background )
+        may_proc_eoe = true;
 
-    if ( uses_eoe && ab::s_data )
-      used_eoe = p() -> get_proc( "Echo of the Elements: " + std::string( ab::s_data -> name_cstr() ) + " (consume)" );
+      if ( uses_eoe && ab::s_data )
+        used_eoe = p() -> get_proc( "Echo of the Elements: " + std::string( ab::s_data -> name_cstr() ) + " (consume)" );
 
-    if ( may_proc_eoe && ab::s_data )
-      generated_eoe = p() -> get_proc( "Echo of the Elements: " + std::string( ab::s_data -> name_cstr() ) + " (generate)" );
+      if ( may_proc_eoe && ab::s_data )
+        generated_eoe = p() -> get_proc( "Echo of the Elements: " + std::string( ab::s_data -> name_cstr() ) + " (generate)" );
+    }
 
     if ( shock && p() -> talent.elemental_fusion -> ok() )
       ef_proc = p() -> get_proc( "Elemental Fusion: " + std::string( ab::s_data -> name_cstr() ) );
+
+    if ( uses_eoe && ab::cooldown -> duration > timespan_t::zero() )
+    {
+      cd_wasted_exec = p() -> template get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p() -> cd_waste_exec );
+      cd_wasted_cumulative = p() -> template get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p() -> cd_waste_cumulative );
+      cd_wasted_iter = p() -> template get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p() -> cd_waste_iter );
+    }
+
+    if ( maybe_ptr( p() -> dbc.ptr ) && uses_eoe )
+    {
+      ab::cooldown -> charges = 2;
+    }
   }
 
   shaman_t* p()
@@ -661,7 +707,9 @@ public:
   {
     ab::execute();
 
-    if ( p() -> talent.echo_of_the_elements -> ok() &&
+    // Live Echo of the Elements
+    if ( ! maybe_ptr( p() -> dbc.ptr ) &&
+         p() -> talent.echo_of_the_elements -> ok() &&
          may_proc_eoe &&
          ab::result_is_hit( ab::execute_state -> result ) &&
          p() -> rppm_echo_of_the_elements.trigger() )
@@ -671,22 +719,37 @@ public:
     }
   }
 
+  double cooldown_reduction() const
+  {
+    double cdr = ab::cooldown_reduction();
+
+    if ( hasted_cd )
+    {
+      cdr *= ab::player -> cache.attack_haste();
+    }
+
+    return cdr;
+  }
+
   void update_ready( timespan_t cd )
   {
-    if ( uses_eoe && p() -> buff.echo_of_the_elements -> up() &&
+    // Live Echo of the Elements
+    if ( ! maybe_ptr( p() -> dbc.ptr ) && uses_eoe && p() -> buff.echo_of_the_elements -> up() &&
          ( p() -> specialization() != SHAMAN_ELEMENTAL || ! p() -> buff.ascendance -> check() ) )
     {
       cd = timespan_t::zero();
       p() -> buff.echo_of_the_elements -> expire();
       used_eoe -> occur();
     }
-    else if ( hasted_cd )
+
+    if ( cd_wasted_exec &&
+         ab::cooldown -> current_charge == ab::cooldown -> charges &&
+         ab::cooldown -> last_charged > timespan_t::zero() &&
+         ab::cooldown -> last_charged < ab::sim -> current_time() )
     {
-      if ( cd == timespan_t::min() && ab::cooldown && ab::cooldown -> duration > timespan_t::zero() )
-      {
-        cd = ab::cooldown -> duration;
-        cd *= ab::player -> cache.attack_haste();
-      }
+      double time_ = ( ab::sim -> current_time() - ab::cooldown -> last_charged ).total_seconds();
+      cd_wasted_exec -> add( time_ );
+      cd_wasted_iter -> add( time_ );
     }
 
     ab::update_ready( cd );
@@ -2191,7 +2254,6 @@ struct lava_lash_t : public shaman_attack_t
     ft_bonus( data().effectN( 2 ).percent() )
   {
     check_spec( SHAMAN_ENHANCEMENT );
-    uses_eoe = true;
     school = SCHOOL_FIRE;
 
     base_multiplier *= 1.0 + player -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
@@ -2348,7 +2410,6 @@ struct stormstrike_t : public shaman_attack_t
     weapon               = &( p() -> main_hand_weapon );
     weapon_multiplier    = 0.0;
     may_crit             = false;
-    uses_eoe             = true;
     cooldown             = p() -> cooldown.strike;
     cooldown -> duration = p() -> dbc.spell( id ) -> cooldown();
 
@@ -2423,7 +2484,6 @@ struct windstrike_t : public shaman_attack_t
     weapon               = &( p() -> main_hand_weapon );
     weapon_multiplier    = 0.0;
     may_crit             = false;
-    uses_eoe             = true;
     cooldown             = p() -> cooldown.strike;
     cooldown -> duration = p() -> dbc.spell( id ) -> cooldown();
 
@@ -2844,7 +2904,6 @@ struct fire_nova_t : public shaman_spell_t
     shaman_spell_t( "fire_nova", player, player -> find_specialization_spell( "Fire Nova" ), options_str )
   {
     may_crit = may_miss = callbacks = false;
-    uses_eoe  = true;
     aoe       = -1;
     uses_unleash_flame = true;
 
@@ -2912,7 +2971,6 @@ struct lava_burst_t : public shaman_spell_t
     {
       base_multiplier *= 1.485;
     }
-    uses_eoe = player -> specialization() == SHAMAN_ELEMENTAL;
   }
 
   virtual double composite_target_multiplier( player_t* target ) const
@@ -3277,7 +3335,7 @@ struct earthquake_t : public shaman_spell_t
   earthquake_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "earthquake", player, player -> find_specialization_spell( "Earthquake" ), options_str )
   {
-    harmful = hasted_ticks = uses_eoe = true;
+    harmful = hasted_ticks = true;
     may_miss = may_crit = may_proc_eoe = callbacks = false;
 
     base_td = base_dd_min = base_dd_max = 0;
@@ -3542,7 +3600,6 @@ struct frost_shock_t : public shaman_spell_t
     shaman_spell_t( "frost_shock", player, player -> find_class_spell( "Frost Shock" ), options_str )
   {
     base_multiplier      *= 1.0 + player -> perk.improved_shocks -> effectN( 1 ).percent();
-    uses_eoe = player -> specialization() == SHAMAN_ELEMENTAL;
     uses_elemental_fusion = true;
     cooldown              = player -> cooldown.shock;
     shock      = true;
@@ -4754,6 +4811,22 @@ void shaman_t::init_spells()
   spell.lightning_strike             = find_spell( 168557 );
   spell.eruption                     = find_spell( 168556 );
   spell.unleash_flame                = find_spell( 165462 );
+  if ( specialization() == SHAMAN_ELEMENTAL )
+  {
+    spell.echo_of_the_elements       = find_spell( 159101 );
+  }
+  else if ( specialization() == SHAMAN_ENHANCEMENT )
+  {
+    spell.echo_of_the_elements       = find_spell( 159103 );
+  }
+  else if ( specialization() == SHAMAN_RESTORATION )
+  {
+    spell.echo_of_the_elements       = find_spell( 159105 );
+  }
+  else
+  {
+    spell.echo_of_the_elements       = spell_data_t::not_found();
+  }
 
   // Constants
   constant.speed_attack_ancestral_swiftness = 1.0 / ( 1.0 + spell.ancestral_swiftness -> effectN( 2 ).percent() );
@@ -5850,10 +5923,46 @@ void shaman_t::merge( player_t& other )
 {
   player_t::merge( other );
 
-  shaman_t& s = static_cast<shaman_t&>( other );
+  const shaman_t& s = static_cast<shaman_t&>( other );
 
   for ( size_t i = 0, end = counters.size(); i < end; i++ )
     counters[ i ] -> merge( *s.counters[ i ] );
+
+  for ( size_t i = 0, end = cd_waste_exec.size(); i < end; i++ )
+  {
+    cd_waste_exec[ i ] -> second.merge( s.cd_waste_exec[ i ] -> second );
+    cd_waste_cumulative[ i ] -> second.merge( s.cd_waste_cumulative[ i ] -> second );
+  }
+}
+
+// shaman_t::datacollection_begin ===========================================
+
+void shaman_t::datacollection_begin()
+{
+  if ( active_during_iteration )
+  {
+    for ( size_t i = 0, end = cd_waste_iter.size(); i < end; ++i )
+    {
+      cd_waste_iter[ i ] -> second.reset();
+    }
+  }
+
+  player_t::datacollection_begin();
+}
+
+// shaman_t::datacollection_end =============================================
+
+void shaman_t::datacollection_end()
+{
+  player_t::datacollection_end();
+
+  if ( ! requires_data_collection() )
+    return;
+
+  for ( size_t i = 0, end = cd_waste_iter.size(); i < end; ++i )
+  {
+    cd_waste_cumulative[ i ] -> second.add( cd_waste_iter[ i ] -> second.sum() );
+  }
 }
 
 // shaman_t::primary_role ===================================================
@@ -5940,12 +6049,36 @@ public:
          << "<tr><th>casts</th><th>charges</th></tr>\n";
   }
 
+  void cdwaste_table_header( report::sc_html_stream& os )
+  {
+    os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n"
+         << "<tr>\n"
+           << "<th></th>\n"
+           << "<th colspan=\"3\">Seconds per Execute</th>\n"
+           << "<th colspan=\"3\">Seconds per Iteration</th>\n"
+         << "</tr>\n"
+         << "<tr>\n"
+           << "<th>Ability</th>\n"
+           << "<th>Average</th>\n"
+           << "<th>Minimum</th>\n"
+           << "<th>Maximum</th>\n"
+           << "<th>Average</th>\n"
+           << "<th>Minimum</th>\n"
+           << "<th>Maximum</th>\n"
+         << "</tr>\n";
+  }
+
   void mwgen_table_footer( report::sc_html_stream& os )
   {
     os << "</table>\n";
   }
 
   void mwuse_table_footer( report::sc_html_stream& os )
+  {
+    os << "</table>\n";
+  }
+
+  void cdwaste_table_footer( report::sc_html_stream& os )
   {
     os << "</table>\n";
   }
@@ -6108,6 +6241,44 @@ public:
     }
   }
 
+  void cdwaste_table_contents( report::sc_html_stream& os )
+  {
+    size_t n = 0;
+    wowhead::wowhead_e domain = SC_BETA ? wowhead::BETA : p.dbc.ptr ? wowhead::PTR : wowhead::LIVE;
+
+    for ( size_t i = 0; i < p.cd_waste_exec.size(); i++ )
+    {
+      const data_t* entry = p.cd_waste_exec[ i ];
+      if ( entry -> second.count() == 0 )
+      {
+        continue;
+      }
+
+      const data_t* iter_entry = p.cd_waste_cumulative[ i ];
+
+      action_t* a = p.find_action( entry -> first );
+      std::string name_str = entry -> first;
+      if ( a )
+      {
+        name_str = wowhead::decorated_action_name( entry -> first, a, domain );
+      }
+
+      std::string row_class_str = "";
+      if ( ++n & 1 )
+        row_class_str = " class=\"odd\"";
+
+      os.printf( "<tr%s>", row_class_str.c_str() );
+      os << "<td class=\"left\">" << name_str << "</td>";
+      os.printf("<td class=\"right\">%.3f</td>", entry -> second.mean() );
+      os.printf("<td class=\"right\">%.3f</td>", entry -> second.min() );
+      os.printf("<td class=\"right\">%.3f</td>", entry -> second.max() );
+      os.printf("<td class=\"right\">%.3f</td>", iter_entry -> second.mean() );
+      os.printf("<td class=\"right\">%.3f</td>", iter_entry -> second.min() );
+      os.printf("<td class=\"right\">%.3f</td>", iter_entry -> second.max() );
+      os << "</tr>\n";
+    }
+  }
+
   virtual void html_customsection( report::sc_html_stream& os ) override
   {
     if ( p.specialization() != SHAMAN_ENHANCEMENT )
@@ -6126,10 +6297,25 @@ public:
     mwuse_table_contents( os );
     mwuse_table_footer( os );
 
+    os << "\t\t\t\t\t\t</div>\n";
+
     os << "<div class=\"clear\"></div>\n";
 
-    os << "\t\t\t\t\t\t</div>\n"
-       << "\t\t\t\t\t</div>\n";
+    if ( p.cd_waste_exec.size() > 0 )
+    {
+      os << "\t\t\t\t\t<h3 class=\"toggle open\">Cooldown waste details</h3>\n"
+         << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+
+      cdwaste_table_header( os );
+      cdwaste_table_contents( os );
+      cdwaste_table_footer( os );
+
+      os << "\t\t\t\t\t</div>\n";
+
+      os << "<div class=\"clear\"></div>\n";
+    }
+
+    os << "\t\t\t\t\t</div>\n";
   }
 private:
   shaman_t& p;
