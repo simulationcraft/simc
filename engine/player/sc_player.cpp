@@ -2016,8 +2016,6 @@ bool player_t::init_actions()
         a = create_action( action_name, action_options );
       }
 
-
-
       if ( a )
       {
         bool skip = false;

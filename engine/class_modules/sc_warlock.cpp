@@ -458,6 +458,14 @@ namespace pets {
 
 struct warlock_pet_t: public pet_t
 {
+  public:
+  typedef pet_t base_t;
+
+  warlock_pet_t( sim_t& sim, warlock_t& owner, const std::string& pet_name, pet_e pt = PET_HUNTER, bool guardian = false ):
+    base_t( &sim, &owner, pet_name, pt, guardian )
+  {
+  }
+
   gain_t* owner_fury_gain;
   action_t* special_action;
   action_t* special_action_two;
@@ -493,17 +501,18 @@ struct warlock_pet_t: public pet_t
   {
     buff_t* demonic_synergy;
   } buffs;
+
+  virtual action_t* create_action( const std::string& name, const std::string& options_str );
 };
 
 namespace actions {
 
 // Template for common warlock pet action code. See priest_action_t.
-template <class ACTION_BASE>
-struct warlock_pet_action_t: public ACTION_BASE
+template <class T_PET, class Base>
+struct warlock_pet_action_t: public Base
 {
-public:
 private:
-  typedef ACTION_BASE ab; // action base, eg. spell_t
+  typedef Base ab; // action base, eg. spell_t
 public:
   typedef warlock_pet_action_t base_t;
 
@@ -518,13 +527,13 @@ public:
   }
   virtual ~warlock_pet_action_t() {}
 
-  warlock_pet_t* p()
+  T_PET* p()
   {
-    return static_cast<warlock_pet_t*>( ab::player );
+    return static_cast<T_PET*>( ab::player );
   }
-  const warlock_pet_t* p() const
+  const T_PET* p() const
   {
-    return static_cast<warlock_pet_t*>( ab::player );
+    return static_cast<T_PET*>( ab::player );
   }
 
   virtual void execute()
@@ -607,9 +616,11 @@ struct warlock_pet_melee_t: public melee_attack_t
   }
 };
 
-struct warlock_pet_melee_attack_t: public warlock_pet_action_t < melee_attack_t >
+template <class Base>
+struct warlock_pet_melee_attack_t: public warlock_pet_action_t < warlock_pet_t, Base >
 {
 private:
+  typedef warlock_pet_action_t<warlock_pet_t, Base> ab;
   void _init_warlock_pet_melee_attack_t()
   {
     weapon = &( player -> main_hand_weapon );
@@ -617,42 +628,46 @@ private:
   }
 
 public:
+  typedef warlock_pet_melee_attack_t base_t;
   warlock_pet_melee_attack_t( warlock_pet_t* p, const std::string& n ):
-    base_t( n, p, p -> find_pet_spell( n ) )
+    ab( n, p, p -> find_pet_spell( n ) )
   {
     _init_warlock_pet_melee_attack_t();
   }
 
   warlock_pet_melee_attack_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() ):
-    base_t( token, p, s )
+    ab( token, p, s )
   {
     _init_warlock_pet_melee_attack_t();
   }
 };
 
-struct warlock_pet_spell_t: public warlock_pet_action_t < spell_t >
+template <class Base>
+struct warlock_pet_spell_t: public warlock_pet_action_t < warlock_pet_t, Base >
 {
 private:
+  typedef warlock_pet_action_t<warlock_pet_t, Base> ab;
   void _init_warlock_pet_spell_t()
   {
     parse_spell_coefficient( *this );
   }
 
 public:
+  typedef warlock_pet_spell_t base_t;
   warlock_pet_spell_t( warlock_pet_t* p, const std::string& n ):
-    base_t( n, p, p -> find_pet_spell( n ) )
+    ab( n, p, p -> find_pet_spell( n ) )
   {
     _init_warlock_pet_spell_t();
   }
 
   warlock_pet_spell_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() ):
-    base_t( token, p, s )
+    ab( token, p, s )
   {
     _init_warlock_pet_spell_t();
   }
 };
 
-struct firebolt_t: public warlock_pet_spell_t
+struct firebolt_t: public warlock_pet_spell_t < spell_t >
 {
   firebolt_t( warlock_pet_t* p ):
     warlock_pet_spell_t( p, "Firebolt" )
@@ -674,7 +689,7 @@ struct firebolt_t: public warlock_pet_spell_t
   }
 };
 
-struct legion_strike_t: public warlock_pet_melee_attack_t
+struct legion_strike_t: public warlock_pet_melee_attack_t < melee_attack_t >
 {
   legion_strike_t( warlock_pet_t* p ):
     warlock_pet_melee_attack_t( p, "Legion Strike" )
@@ -692,7 +707,7 @@ struct legion_strike_t: public warlock_pet_melee_attack_t
   }
 };
 
-struct felstorm_tick_t: public warlock_pet_melee_attack_t
+struct felstorm_tick_t: public warlock_pet_melee_attack_t < melee_attack_t >
 {
   felstorm_tick_t( warlock_pet_t* p, const spell_data_t& s ):
     warlock_pet_melee_attack_t( "felstorm_tick", p, s.effectN( 1 ).trigger() )
@@ -703,7 +718,7 @@ struct felstorm_tick_t: public warlock_pet_melee_attack_t
   }
 };
 
-struct felstorm_t: public warlock_pet_melee_attack_t
+struct felstorm_t: public warlock_pet_melee_attack_t < melee_attack_t >
 {
   felstorm_t( warlock_pet_t* p ):
     warlock_pet_melee_attack_t( "felstorm", p, p -> find_spell( 89751 ) )
@@ -741,14 +756,14 @@ struct felstorm_t: public warlock_pet_melee_attack_t
   }
 };
 
-struct shadow_bite_t: public warlock_pet_spell_t
+struct shadow_bite_t: public warlock_pet_spell_t < spell_t >
 {
   shadow_bite_t( warlock_pet_t* p ):
     warlock_pet_spell_t( p, "Shadow Bite" )
   { }
 };
 
-struct lash_of_pain_t: public warlock_pet_spell_t
+struct lash_of_pain_t: public warlock_pet_spell_t < spell_t >
 {
   lash_of_pain_t( warlock_pet_t* p ):
     warlock_pet_spell_t( p, "Lash of Pain" )
@@ -757,7 +772,7 @@ struct lash_of_pain_t: public warlock_pet_spell_t
   }
 };
 
-struct whiplash_t: public warlock_pet_spell_t
+struct whiplash_t: public warlock_pet_spell_t < spell_t >
 {
   whiplash_t( warlock_pet_t* p ):
     warlock_pet_spell_t( p, "Whiplash" )
@@ -766,14 +781,14 @@ struct whiplash_t: public warlock_pet_spell_t
   }
 };
 
-struct torment_t: public warlock_pet_spell_t
+struct torment_t: public warlock_pet_spell_t < spell_t >
 {
   torment_t( warlock_pet_t* p ):
     warlock_pet_spell_t( p, "Torment" )
   { }
 };
 
-struct felbolt_t: public warlock_pet_spell_t
+struct felbolt_t: public warlock_pet_spell_t < spell_t >
 {
   felbolt_t( warlock_pet_t* p ):
     warlock_pet_spell_t( p, "Felbolt" )
@@ -792,7 +807,7 @@ struct felbolt_t: public warlock_pet_spell_t
   }
 };
 
-struct mortal_cleave_t: public warlock_pet_melee_attack_t
+struct mortal_cleave_t: public warlock_pet_melee_attack_t < melee_attack_t >
 {
   mortal_cleave_t( warlock_pet_t* p ):
     warlock_pet_melee_attack_t( "mortal_cleave", p, p -> find_spell( 115625 ))
@@ -810,7 +825,7 @@ struct mortal_cleave_t: public warlock_pet_melee_attack_t
   }
 };
 
-struct wrathstorm_tick_t: public warlock_pet_melee_attack_t
+struct wrathstorm_tick_t: public warlock_pet_melee_attack_t < melee_attack_t >
 {
   wrathstorm_tick_t( warlock_pet_t* p, const spell_data_t& s ):
     warlock_pet_melee_attack_t( "wrathstorm_tick", p, s.effectN( 1 ).trigger() )
@@ -821,7 +836,7 @@ struct wrathstorm_tick_t: public warlock_pet_melee_attack_t
   }
 };
 
-struct wrathstorm_t: public warlock_pet_melee_attack_t
+struct wrathstorm_t: public warlock_pet_melee_attack_t < melee_attack_t >
 {
   wrathstorm_t( warlock_pet_t* p ):
     warlock_pet_melee_attack_t( "wrathstorm", p, p -> find_spell( 115831 ) )
@@ -858,7 +873,7 @@ struct wrathstorm_t: public warlock_pet_melee_attack_t
   }
 };
 
-struct tongue_lash_t: public warlock_pet_spell_t
+struct tongue_lash_t: public warlock_pet_spell_t < spell_t >
 {
   tongue_lash_t( warlock_pet_t* p ):
     warlock_pet_spell_t( p, "Tongue Lash" )
@@ -866,7 +881,7 @@ struct tongue_lash_t: public warlock_pet_spell_t
 };
 
 
-struct bladedance_t: public warlock_pet_spell_t
+struct bladedance_t: public warlock_pet_spell_t < spell_t >
 {
   bladedance_t( warlock_pet_t* p ):
     warlock_pet_spell_t( p, "Bladedance" )
@@ -875,7 +890,7 @@ struct bladedance_t: public warlock_pet_spell_t
   }
 };
 
-struct fellash_t: public warlock_pet_spell_t
+struct fellash_t: public warlock_pet_spell_t < spell_t >
 {
   fellash_t( warlock_pet_t* p ):
     warlock_pet_spell_t( p, "Fellash" )
@@ -884,7 +899,7 @@ struct fellash_t: public warlock_pet_spell_t
   }
 };
 
-struct immolation_tick_t: public warlock_pet_spell_t
+struct immolation_tick_t: public warlock_pet_spell_t < spell_t >
 {
   immolation_tick_t( warlock_pet_t* p, const spell_data_t& s ):
     warlock_pet_spell_t( "immolation_tick", p, s.effectN( 1 ).trigger() )
@@ -895,7 +910,7 @@ struct immolation_tick_t: public warlock_pet_spell_t
   }
 };
 
-struct immolation_t: public warlock_pet_spell_t
+struct immolation_t: public warlock_pet_spell_t < spell_t >
 {
   immolation_t( warlock_pet_t* p, const std::string& options_str ):
     warlock_pet_spell_t( "immolation", p, p -> find_spell( 19483 ) )
@@ -931,7 +946,7 @@ struct immolation_t: public warlock_pet_spell_t
   }
 };
 
-struct doom_bolt_t: public warlock_pet_spell_t
+struct doom_bolt_t: public warlock_pet_spell_t < spell_t >
 {
   doom_bolt_t( warlock_pet_t* p ):
     warlock_pet_spell_t( "Doom Bolt", p, p -> find_spell( 85692 ) )
@@ -950,7 +965,7 @@ struct doom_bolt_t: public warlock_pet_spell_t
   }
 };
 
-struct meteor_strike_t: public warlock_pet_spell_t
+struct meteor_strike_t: public warlock_pet_spell_t < spell_t >
 {
   meteor_strike_t( warlock_pet_t* p, const std::string& options_str ):
     warlock_pet_spell_t( "Meteor Strike", p, p -> find_spell( 171018 ) )
@@ -960,7 +975,7 @@ struct meteor_strike_t: public warlock_pet_spell_t
   }
 };
 
-struct wild_firebolt_t: public warlock_pet_spell_t
+struct wild_firebolt_t: public warlock_pet_spell_t < spell_t >
 {
   wild_firebolt_t( warlock_pet_t* p ):
     warlock_pet_spell_t( "fel_firebolt", p, p -> find_spell( 104318 ) )
@@ -997,13 +1012,41 @@ struct wild_firebolt_t: public warlock_pet_spell_t
 } // pets::actions
 
 warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian ):
-pet_t( sim, owner, pet_name, pt, guardian ), special_action( 0 ), melee_attack( 0 ), summon_stats( 0 )
+pet_t( sim, owner, pet_name, pt, guardian ), special_action( 0 ), special_action_two( 0 ), melee_attack( 0 ), summon_stats( 0 )
 {
   owner_fury_gain = owner -> get_gain( pet_name );
   owner_coeff.ap_from_sp = 1.0;
   owner_coeff.sp_from_sp = 1.0;
   supremacy = find_spell( 115578 );
   command = find_spell( 21563 );
+}
+
+action_t* warlock_pet_t::create_action( const std::string& name,
+                                            const std::string& options_str )
+{
+  action_t* a = 0;
+  using namespace actions;
+
+  if ( name == "firebolt" ) a = new actions::firebolt_t( this );
+  else if ( name == "legion_strike" ) a = new actions::legion_strike_t( this );
+  else if ( name == "shadow_bite" ) a = new actions::shadow_bite_t( this );
+  else if ( name == "lash_of_pain" ) a = new actions::lash_of_pain_t( this );
+  else if ( name == "torment" ) a = new actions::torment_t( this );
+  else if ( name == "immolation" ) a = new actions::immolation_t( this, options_str );
+  else if ( name == "meteor_strike" ) a = new actions::meteor_strike_t( this, options_str );
+  else if ( name == "doom_bolt" ) a = new actions::doom_bolt_t( this );
+  else if ( name == "felbolt" ) a = new actions::felbolt_t( this );
+  else if ( name == "mortal_cleave" ) a = new actions::mortal_cleave_t( this );
+  else if ( name == "wrathstorm" ) a = new actions::wrathstorm_t( this );
+  else if ( name == "tongue_lash" ) a = new actions::tongue_lash_t( this );
+  else if ( name == "bladedance" ) a = new actions::bladedance_t( this );
+
+  if ( !a )
+    return base_t::create_action( name, options_str );
+
+  a -> parse_options( options_str );
+
+  return a;
 }
 
 void warlock_pet_t::init_base_stats()
@@ -1033,6 +1076,14 @@ void warlock_pet_t::init_action_list()
       special_action -> background = true;
     else
       special_action -> action_list = get_action_priority_list( "default" );
+  }
+
+  if ( special_action_two )
+  {
+    if ( type == PLAYER_PET )
+      special_action_two -> background = true;
+    else
+      special_action_two -> action_list = get_action_priority_list( "default" );
   }
 
   pet_t::init_action_list();
@@ -1150,13 +1201,6 @@ struct imp_pet_t: public warlock_pet_t
     action_list_str = "firebolt";
     owner_coeff.ap_from_sp = 1.0;
   }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
-  {
-    if ( name == "firebolt" ) return new actions::firebolt_t( this );
-
-    return warlock_pet_t::create_action( name, options_str );
-  }
 };
 
 struct felguard_pet_t: public warlock_pet_t
@@ -1175,13 +1219,6 @@ struct felguard_pet_t: public warlock_pet_t
     melee_attack = new actions::warlock_pet_melee_t( this );
     special_action = new actions::felstorm_t( this );
   }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
-  {
-    if ( name == "legion_strike" ) return new actions::legion_strike_t( this );
-
-    return warlock_pet_t::create_action( name, options_str );
-  }
 };
 
 struct felhunter_pet_t: public warlock_pet_t
@@ -1198,13 +1235,6 @@ struct felhunter_pet_t: public warlock_pet_t
     warlock_pet_t::init_base_stats();
 
     melee_attack = new actions::warlock_pet_melee_t( this );
-  }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
-  {
-    if ( name == "shadow_bite" ) return new actions::shadow_bite_t( this );
-
-    return warlock_pet_t::create_action( name, options_str );
   }
 };
 
@@ -1226,13 +1256,6 @@ struct succubus_pet_t: public warlock_pet_t
     if ( ! util::str_compare_ci( name_str, "service_succubus" ) )
       special_action = new actions::whiplash_t( this );
   }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
-  {
-    if ( name == "lash_of_pain" ) return new actions::lash_of_pain_t( this );
-
-    return warlock_pet_t::create_action( name, options_str );
-  }
 };
 
 struct voidwalker_pet_t: public warlock_pet_t
@@ -1249,13 +1272,6 @@ struct voidwalker_pet_t: public warlock_pet_t
     warlock_pet_t::init_base_stats();
 
     melee_attack = new actions::warlock_pet_melee_t( this );
-  }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
-  {
-    if ( name == "torment" ) return new actions::torment_t( this );
-
-    return warlock_pet_t::create_action( name, options_str );
   }
 };
 
@@ -1276,14 +1292,6 @@ struct infernal_pet_t: public warlock_pet_t
     resources.base[RESOURCE_ENERGY] = 100;
     melee_attack = new actions::warlock_pet_melee_t( this );
   }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
-  {
-    if ( name == "immolation" ) return new actions::immolation_t( this, options_str );
-    if ( name == "meteor_strike" ) return new actions::meteor_strike_t( this, options_str );
-
-    return warlock_pet_t::create_action( name, options_str );
-  }
 };
 
 struct doomguard_pet_t: public warlock_pet_t
@@ -1300,13 +1308,6 @@ struct doomguard_pet_t: public warlock_pet_t
     warlock_pet_t::init_base_stats();
 
     resources.base[RESOURCE_ENERGY] = 100;
-  }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
-  {
-    if ( name == "doom_bolt" ) return new actions::doom_bolt_t( this );
-
-    return warlock_pet_t::create_action( name, options_str );
   }
 };
 
@@ -1332,7 +1333,7 @@ struct wild_imp_pet_t: public warlock_pet_t
     base_energy_regen_per_second = 0;
   }
 
-  virtual action_t* create_action( const std::string& name,
+  action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
     if ( name == "firebolt" )
@@ -1375,24 +1376,17 @@ struct fel_imp_pet_t: public warlock_pet_t
     action_list_str = "felbolt";
     owner_coeff.ap_from_sp = 1;
   }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
-  {
-    if ( name == "felbolt" ) return new actions::felbolt_t( this );
-
-    return warlock_pet_t::create_action( name, options_str );
-  }
 };
 
 struct wrathguard_pet_t: public warlock_pet_t
 {
-  wrathguard_pet_t( sim_t* sim, warlock_t* owner ):
-    warlock_pet_t( sim, owner, "wrathguard", PET_FELGUARD )
+  wrathguard_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "wrathguard" ):
+    warlock_pet_t( sim, owner, name, PET_WRATHGUARD, name != "wrathguard" )
   {
     owner_coeff.ap_from_sp = 0.66599;
   }
 
-  virtual void init_base_stats()
+  void init_base_stats()
   {
     warlock_pet_t::init_base_stats();
 
@@ -1401,14 +1395,7 @@ struct wrathguard_pet_t: public warlock_pet_t
 
     melee_attack = new actions::warlock_pet_melee_t( this );
     special_action = new actions::wrathstorm_t( this );
-  }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
-  {
-    if ( name == "mortal_cleave" ) return new actions::mortal_cleave_t( this );
-    if ( name == "wrathstorm" ) return new actions::wrathstorm_t( this );
-
-    return warlock_pet_t::create_action( name, options_str );
+    special_action_two = new actions::mortal_cleave_t( this );
   }
 };
 
@@ -1426,13 +1413,6 @@ struct observer_pet_t: public warlock_pet_t
     warlock_pet_t::init_base_stats();
 
     melee_attack = new actions::warlock_pet_melee_t( this );
-  }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
-  {
-    if ( name == "tongue_lash" ) return new actions::tongue_lash_t( this );
-
-    return warlock_pet_t::create_action( name, options_str );
   }
 };
 
@@ -1456,13 +1436,6 @@ struct shivarra_pet_t: public warlock_pet_t
     melee_attack = new actions::warlock_pet_melee_t( this );
     special_action = new actions::fellash_t( this );
   }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
-  {
-    if ( name == "bladedance" ) return new actions::bladedance_t( this );
-
-    return warlock_pet_t::create_action( name, options_str );
-  }
 };
 
 struct voidlord_pet_t: public warlock_pet_t
@@ -1479,13 +1452,6 @@ struct voidlord_pet_t: public warlock_pet_t
     warlock_pet_t::init_base_stats();
 
     melee_attack = new actions::warlock_pet_melee_t( this );
-  }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
-  {
-    if ( name == "torment" ) return new actions::torment_t( this );
-
-    return warlock_pet_t::create_action( name, options_str );
   }
 };
 
@@ -1508,14 +1474,6 @@ struct abyssal_pet_t: public warlock_pet_t
 
     melee_attack = new actions::warlock_pet_melee_t( this );
   }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
-  {
-    if ( name == "immolation" ) return new actions::immolation_t( this, options_str );
-    if ( name == "meteor_strike" ) return new actions::meteor_strike_t( this, options_str );
-
-    return warlock_pet_t::create_action( name, options_str );
-  }
 };
 
 struct terrorguard_pet_t: public warlock_pet_t
@@ -1532,13 +1490,6 @@ struct terrorguard_pet_t: public warlock_pet_t
     warlock_pet_t::init_base_stats();
 
     resources.base[RESOURCE_ENERGY] = 100;
-  }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
-  {
-    if ( name == "doom_bolt" ) return new actions::doom_bolt_t( this );
-
-    return warlock_pet_t::create_action( name, options_str );
   }
 };
 
@@ -5093,7 +5044,7 @@ static const std::string supremacy_pet( const std::string& pet_name, bool transl
 action_t* warlock_t::create_action( const std::string& action_name,
                                     const std::string& options_str )
 {
-  action_t* a;
+  action_t* a = 0;
 
   if ( ( action_name == "summon_pet" || action_name == "service_pet" ) && default_pet.empty() )
   {
@@ -5103,7 +5054,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
 
   using namespace actions;
 
-  if      ( action_name == "conflagrate"           ) a = new           conflagrate_t( this );
+  if ( action_name == "conflagrate"           ) a = new           conflagrate_t( this );
   else if ( action_name == "corruption"            ) a = new            corruption_t( this );
   else if ( action_name == "agony"                 ) a = new                 agony_t( this );
   else if ( action_name == "demonbolt"             ) a = new             demonbolt_t( this );
@@ -5118,8 +5069,8 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "immolate"              ) a = new              immolate_t( this );
   else if ( action_name == "incinerate"            ) a = new            incinerate_t( this );
   else if ( action_name == "life_tap"              ) a = new              life_tap_t( this );
-  else if ( action_name == "metamorphosis"         ) a = new activate_t( this );
-  else if ( action_name == "cancel_metamorphosis"  ) a = new  cancel_t( this );
+  else if ( action_name == "metamorphosis"         ) a = new              activate_t( this );
+  else if ( action_name == "cancel_metamorphosis"  ) a = new                cancel_t( this );
   else if ( action_name == "mortal_coil"           ) a = new           mortal_coil_t( this );
   else if ( action_name == "shadow_bolt"           ) a = new           shadow_bolt_t( this );
   else if ( action_name == "shadowburn"            ) a = new            shadowburn_t( this );
@@ -5157,13 +5108,14 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "service_infernal"      ) a = new grimoire_of_service_t( this, "infernal" );
   else if ( action_name == "service_doomguard"     ) a = new grimoire_of_service_t( this, "doomguard" );
   else if ( action_name == "service_pet"           ) a = new grimoire_of_service_t( this,  talents.demonic_servitude -> ok() ? "doomguard" : default_pet );
-  else return player_t::create_action( action_name, options_str );
+
+  if ( !a )
+    return player_t::create_action( action_name, options_str );
 
   a -> parse_options( options_str );
 
   return a;
 }
-
 
 pet_t* warlock_t::create_pet( const std::string& pet_name,
                               const std::string& /* pet_type */ )
@@ -5618,7 +5570,7 @@ void warlock_t::apl_precombat()
   {
     action_list_str += "/felguard:felstorm";
     action_list_str += "/wrathguard:wrathstorm";
-    action_list_str += "/wrathguard:mortal_cleave";
+    action_list_str += "/wrathguard:mortal_cleave,if=pet.wrathguard.cooldown.wrathstorm.remains>5";
     action_list_str += "/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&(((set_bonus.tier17_4pc=0&((charges=1&recharge_time<4)|charges=2))|(charges=3|(charges=2&recharge_time<13.8-travel_time*2))&((cooldown.cataclysm.remains>dot.shadowflame.duration)|!talent.cataclysm.enabled))|dot.shadowflame.remains>travel_time)";
     action_list_str += "/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&talent.demonbolt.enabled&((set_bonus.tier17_4pc=0&((charges=1&recharge_time<4)|charges=2))|(charges=3|(charges=2&recharge_time<13.8-travel_time*2))|dot.shadowflame.remains>travel_time)";
     action_list_str += "/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<3.7&time<5&buff.demonbolt.remains<gcd*2&(charges>=2|set_bonus.tier17_4pc=0)&action.dark_soul.charges>=1";

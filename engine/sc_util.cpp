@@ -548,6 +548,7 @@ const char* util::pet_type_string( pet_e type )
     case PET_SPOREBAT:            return "sporebat";
     case PET_WIND_SERPENT:        return "wind_serpent";
     case PET_FELGUARD:            return "felguard";
+    case PET_WRATHGUARD:          return "wrathguard";
     case PET_FELHUNTER:           return "felhunter";
     case PET_IMP:                 return "imp";
     case PET_VOIDWALKER:          return "voidwalker";
