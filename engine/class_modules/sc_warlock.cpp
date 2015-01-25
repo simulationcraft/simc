@@ -997,7 +997,7 @@ struct wild_firebolt_t: public warlock_pet_spell_t
 } // pets::actions
 
 warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian ):
-pet_t( sim, owner, pet_name, pt, guardian ), special_action( 0 ), melee_attack( 0 ), summon_stats( 0 )
+pet_t( sim, owner, pet_name, pt, guardian ), special_action( 0 ), special_action_two( 0 ), melee_attack( 0 ), summon_stats( 0 )
 {
   owner_fury_gain = owner -> get_gain( pet_name );
   owner_coeff.ap_from_sp = 1.0;
@@ -1033,6 +1033,14 @@ void warlock_pet_t::init_action_list()
       special_action -> background = true;
     else
       special_action -> action_list = get_action_priority_list( "default" );
+  }
+
+  if ( special_action_two )
+  {
+    if ( type == PLAYER_PET )
+      special_action_two -> background = true;
+    else
+      special_action_two -> action_list = get_action_priority_list( "default" );
   }
 
   pet_t::init_action_list();
@@ -1401,6 +1409,7 @@ struct wrathguard_pet_t: public warlock_pet_t
 
     melee_attack = new actions::warlock_pet_melee_t( this );
     special_action = new actions::wrathstorm_t( this );
+    special_action_two = new actions::mortal_cleave_t( this );
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
@@ -5618,7 +5627,7 @@ void warlock_t::apl_precombat()
   {
     action_list_str += "/felguard:felstorm";
     action_list_str += "/wrathguard:wrathstorm";
-    action_list_str += "/wrathguard:mortal_cleave";
+    action_list_str += "/wrathguard:mortal_cleave,if=pet.wrathguard.cooldown.wrathstorm.remains>5";
     action_list_str += "/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&(((set_bonus.tier17_4pc=0&((charges=1&recharge_time<4)|charges=2))|(charges=3|(charges=2&recharge_time<13.8-travel_time*2))&((cooldown.cataclysm.remains>dot.shadowflame.duration)|!talent.cataclysm.enabled))|dot.shadowflame.remains>travel_time)";
     action_list_str += "/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&talent.demonbolt.enabled&((set_bonus.tier17_4pc=0&((charges=1&recharge_time<4)|charges=2))|(charges=3|(charges=2&recharge_time<13.8-travel_time*2))|dot.shadowflame.remains>travel_time)";
     action_list_str += "/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<3.7&time<5&buff.demonbolt.remains<gcd*2&(charges>=2|set_bonus.tier17_4pc=0)&action.dark_soul.charges>=1";
