@@ -301,6 +301,12 @@ public:
     _count += other._count;
     _sum  += other._sum;
   }
+
+  void reset()
+  {
+    _count = 0;
+    _sum = 0;
+  }
 };
 
 /* Second simplest Samplest Data container. Tracks sum, count as well as min/max

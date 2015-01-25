@@ -1608,13 +1608,9 @@ void action_t::reschedule_execute( timespan_t time )
 
 void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
 {
-  timespan_t delay = timespan_t::zero();
-
-  if ( cd_duration < timespan_t::zero() )
-    cd_duration = cooldown -> duration * cooldown_reduction();
-
-  if ( cd_duration > timespan_t::zero() && ! dual )
+  if ( ( cd_duration > timespan_t::zero() || cooldown -> duration > timespan_t::zero() ) && ! dual )
   {
+    timespan_t delay = timespan_t::zero();
 
     if ( ! background && ! proc )
     { /*This doesn't happen anymore due to the gcd queue, in WoD if an ability has a cooldown of 20 seconds,
@@ -1637,7 +1633,7 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
         delay = timespan_t::zero();
     }
 
-    cooldown -> start( this, cd_duration * cooldown_reduction(), delay );
+    cooldown -> start( this, cd_duration, delay );
 
     if ( sim -> debug )
       sim -> out_debug.printf( "%s starts cooldown for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready.total_seconds() );
@@ -2278,43 +2274,20 @@ expr_t* action_t::create_expression( const std::string& name_str )
     return new persistent_multiplier_expr_t( this );
   }
   else if ( name_str == "charges" )
-    return make_ref_expr( name_str, cooldown -> current_charge );
+  {
+    return cooldown -> create_expression( this, name_str );
+  }
   else if ( name_str == "charges_fractional" )
   {
-    struct charges_fractional_expr_t : public expr_t
-    {
-      action_t* action;
-      charges_fractional_expr_t( action_t* a ) :
-        expr_t( "charges_fractional" ), action( a )
-      {}
-      virtual double evaluate()
-      {
-        cooldown_t* c = action -> cooldown;
-        double charges = c -> current_charge;
-        if ( action -> cooldown -> recharge_event )
-          charges += 1 - ( c -> recharge_event -> remains() / c -> duration );
-        return charges;
-      }
-    };
-    return new charges_fractional_expr_t( this );
+    return cooldown -> create_expression( this, name_str );
   }
   else if ( name_str == "max_charges" )
-    return make_ref_expr( name_str, cooldown -> charges );
+  {
+    return cooldown -> create_expression( this, name_str );
+  }
   else if ( name_str == "recharge_time" )
   {
-    struct recharge_time_expr_t : public expr_t
-    {
-      action_t* action;
-      recharge_time_expr_t( action_t* a ) : expr_t( "recharge_time" ), action( a ) {}
-      virtual double evaluate()
-      {
-        if ( action -> cooldown -> recharge_event )
-          return action -> cooldown -> recharge_event -> remains().total_seconds();
-        else
-          return action -> cooldown -> duration.total_seconds();
-      }
-    };
-    return new recharge_time_expr_t( this );
+    return cooldown -> create_expression( this, name_str );
   }
   else if ( name_str == "hit_damage" )
     return new amount_expr_t( name_str, DMG_DIRECT, RESULT_HIT, *this );
