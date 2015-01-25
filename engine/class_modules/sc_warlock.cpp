@@ -5127,8 +5127,8 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "immolate"              ) a = new              immolate_t( this );
   else if ( action_name == "incinerate"            ) a = new            incinerate_t( this );
   else if ( action_name == "life_tap"              ) a = new              life_tap_t( this );
-  else if ( action_name == "metamorphosis"         ) a = new activate_t( this );
-  else if ( action_name == "cancel_metamorphosis"  ) a = new  cancel_t( this );
+  else if ( action_name == "metamorphosis"         ) a = new              activate_t( this );
+  else if ( action_name == "cancel_metamorphosis"  ) a = new                cancel_t( this );
   else if ( action_name == "mortal_coil"           ) a = new           mortal_coil_t( this );
   else if ( action_name == "shadow_bolt"           ) a = new           shadow_bolt_t( this );
   else if ( action_name == "shadowburn"            ) a = new            shadowburn_t( this );
@@ -5172,7 +5172,6 @@ action_t* warlock_t::create_action( const std::string& action_name,
 
   return a;
 }
-
 
 pet_t* warlock_t::create_pet( const std::string& pet_name,
                               const std::string& /* pet_type */ )

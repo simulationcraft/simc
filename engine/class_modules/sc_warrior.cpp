@@ -613,16 +613,16 @@ public:
     return t;
   }
 
-  virtual void update_ready( timespan_t cd_duration )
+  virtual double cooldown_reduction() const
   {
-    //Head Long Rush reduces the cooldown depending on the amount of haste.
+    double cdr = ab::cooldown_reduction();
+
     if ( headlongrush )
     {
-      if ( cd_duration < timespan_t::zero() )
-        cd_duration = ab::cooldown -> duration;
-      cd_duration *= ab::player -> cache.attack_haste();
+      cdr *= ab::player -> cache.attack_haste();
     }
-    ab::update_ready( cd_duration );
+
+    return cdr;
   }
 
   virtual bool ready()
@@ -2142,7 +2142,7 @@ struct mortal_strike_t: public warrior_attack_t
 
   double composite_crit() const
   {
-    double cc = melee_attack_t::composite_crit();
+    double cc = warrior_attack_t::composite_crit();
 
     if ( p() -> buff.pvp_2pc_arms -> up() )
     {
@@ -2153,15 +2153,14 @@ struct mortal_strike_t: public warrior_attack_t
     return cc;
   }
 
-  void update_ready( timespan_t cd_duration )
+  double cooldown_reduction() const
   {
-    cd_duration = cooldown -> duration;
-    if ( headlongrush )
-      cd_duration *= p() -> cache.attack_haste();
-    if ( p() -> buff.tier17_2pc_arms -> up() )
-      cd_duration *= 1.0 + p() -> buff.tier17_2pc_arms -> data().effectN( 1 ).percent();
+    double cdr = warrior_attack_t::cooldown_reduction();
 
-    action_t::update_ready( cd_duration );
+    if ( p() -> buff.tier17_2pc_arms -> up() )
+      cdr *= 1.0 + p() -> buff.tier17_2pc_arms -> data().effectN( 1 ).percent();
+
+    return cdr;
   }
 
   bool ready()
@@ -3413,6 +3412,7 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     parse_options( options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
     use_off_gcd = true;
+    may_crit = false;
     range = -1;
     target = player;
     attack_power_mod.direct = 1.125; // No spell data.
@@ -4075,33 +4075,33 @@ void warrior_t::apl_precombat()
 
   if ( specialization() == WARRIOR_ARMS )
   {
-    precombat -> add_action( "stance,choose=battle", "\n"
-                             "talent_override=bladestorm,if=raid_event.adds.count>=1|desired_targets>2|(raid_event.adds.duration<10&raid_event.adds.exists)\n"
-                             "talent_override=dragon_roar,if=raid_event.adds.count>=1|desired_targets>1\n"
-                             "talent_override=taste_for_blood,if=raid_event.adds.count>=1|desired_targets>1\n"
-                             "talent_override=ravager,if=raid_event.adds.count>=1|desired_targets>1" );
+    talent_overrides_str += "bladestorm,if=raid_event.adds.count>=1|enemies>1/"
+      "dragon_roar,if=raid_event.adds.count>=1|enemies>1/"
+      "taste_for_blood,if=raid_event.adds.count>=1|enemies>1/"
+      "ravager,if=raid_event.adds.count>=1|enemies>1";
+    precombat -> add_action( "stance,choose=battle" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
-                             "# Generic on-use trinket line if needed when swapping trinkets out. \n"
-                             "# actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&(prev_gcd.ravager|(!talent.ravager.enabled&!cooldown.bladestorm.remains&dot.rend.ticking)))" );
+      "# Generic on-use trinket line if needed when swapping trinkets out. \n"
+      "# actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>=2&(prev_gcd.ravager|(!talent.ravager.enabled&!cooldown.bladestorm.remains&dot.rend.ticking)))" );
   }
   else if ( specialization() == WARRIOR_FURY )
   {
-    precombat -> add_action( "stance,choose=battle", "\n"
-                             "talent_override=bladestorm,if=raid_event.adds.count>=1|desired_targets>1|(raid_event.adds.duration<10&raid_event.adds.exists)\n"
-                             "talent_override=dragon_roar,if=raid_event.adds.count>=1|desired_targets>1\n"
-                             "talent_override=ravager,if=raid_event.adds.count>=1|desired_targets>1" );
+    talent_overrides_str += "bladestorm,if=raid_event.adds.count>=1|enemies>1/"
+      "dragon_roar,if=raid_event.adds.count>=1|enemies>1/"
+      "ravager,if=raid_event.adds.count>=1|enemies>1";
+    precombat -> add_action( "stance,choose=battle" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
-                             "# Generic on-use trinket line if needed when swapping trinkets out. \n"
-                             "#actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&(buff.avatar.up|!talent.avatar.enabled)))|(active_enemies>=2&buff.ravager.up)" );
+      "# Generic on-use trinket line if needed when swapping trinkets out. \n"
+      "#actions+=/use_item,slot=trinket1,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&(buff.avatar.up|!talent.avatar.enabled)))|(active_enemies>=2&buff.ravager.up)" );
   }
   else if ( gladiator )
   {
-    precombat -> add_action( "stance,choose=gladiator", "\n"
-                             "talent_override=bladestorm,if=raid_event.adds.count>1|desired_targets>2|(raid_event.adds.duration<10&raid_event.adds.exists)\n"
-                             "talent_override=dragon_roar,if=raid_event.adds.count>=1|desired_targets>1" );
+    talent_overrides_str += "bladestorm,if=raid_event.adds.count>=1|enemies>1/"
+      "dragon_roar,if=raid_event.adds.count>=1|enemies>1";
+    precombat -> add_action( "stance,choose=gladiator" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
-                             "# Generic on-use trinket line if needed when swapping trinkets out. \n"
-                             "#actions+=/use_item,slot=trinket1,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10" );
+      "# Generic on-use trinket line if needed when swapping trinkets out. \n"
+      "#actions+=/use_item,slot=trinket1,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10" );
   }
   else
   {

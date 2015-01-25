@@ -4,6 +4,8 @@ race=tauren
 role=attack
 position=back
 talents=2133323
+talent_override=bladestorm,if=raid_event.adds.count>=1|enemies>1
+talent_override=dragon_roar,if=raid_event.adds.count>=1|enemies>1
 glyphs=58098/58355/123779/159701
 spec=protection
 
@@ -17,9 +19,6 @@ spec=protection
 
 actions.precombat=flask,type=greater_draenic_strength_flask
 actions.precombat+=/food,type=blackrock_barbecue
-# 
-talent_override=bladestorm,if=raid_event.adds.count>1|desired_targets>2|(raid_event.adds.duration<10&raid_event.adds.exists)
-talent_override=dragon_roar,if=raid_event.adds.count>=1|desired_targets>1
 actions.precombat+=/stance,choose=gladiator
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 # Generic on-use trinket line if needed when swapping trinkets out. 

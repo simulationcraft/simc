@@ -562,7 +562,7 @@ player_t::player_t( sim_t*             s,
     }
     index = ++( sim -> num_players );
   }
-  else
+  else if ( type != HEALING_ENEMY ) // Not actually a enemy target.
   {
     index = - ( ++( sim -> num_enemies ) );
   }
