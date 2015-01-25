@@ -79,7 +79,7 @@ int main( int argc, char *argv[] )
   dbc::init();
   module_t::init();
 
-#if defined ( SC_USE_WEBENGINE ) && defined ( VS_WIN_NONXP_TARGET )
+#if defined ( VS_WIN_NONXP_TARGET )
   if ( !IsWindows8OrGreater() && IsWindows7OrGreater() )
     QApplication::setAttribute( Qt::AA_UseOpenGLES, true );
   // This is to fix an issue with older video cards on windows 7.
@@ -129,14 +129,10 @@ int main( int argc, char *argv[] )
   }
   a.installTranslator( &myappTranslator );
 
-  // Setup search paths for resources
-  {
-    QString appDirPath = a.applicationDirPath();
-    QDir::addSearchPath( "icon", ":/icons/" );
-    QDir::addSearchPath( "icon", QString( "%1/../Resources/" ).arg( appDirPath ) );
-    QDir::addSearchPath( "icon", QString( "%1/qt/icons/" ).arg( appDirPath ) );
-    QDir::addSearchPath( "icon", "./qt/icons/" );
-  }
+  QString iconlocation = QStandardPaths::locate( QStandardPaths::AppDataLocation,
+                                                 QString( "icon" ),
+                                                 QStandardPaths::LocateDirectory );
+  QDir::addSearchPath( "icon", iconlocation );
 
   SC_MainWindow w;
 
