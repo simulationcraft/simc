@@ -36,8 +36,10 @@ talents=1000123
 Mage_Frost_T17N.simc
 talents=1000121
 
-Monk_Brewmaster_1h_Serenity_T17N.simc
-Monk_Brewmaster_2h_Serenity_T17N.simc
+Monk_Brewmaster_1h_CE_T17N.simc
+talents=2333112
+Monk_Brewmaster_2h_CE_T17N.simc
+talents=2333112
 Monk_Windwalker_1h_T17N.simc
 talents=0320012
 Monk_Windwalker_2h_T17N.simc
