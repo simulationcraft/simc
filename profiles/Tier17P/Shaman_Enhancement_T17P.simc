@@ -39,7 +39,7 @@ actions+=/storm_elemental_totem
 actions+=/fire_elemental_totem,if=(talent.primal_elementalist.enabled&active_enemies<=10)|active_enemies<=6
 actions+=/ascendance
 actions+=/feral_spirit
-actions+=/liquid_magma,if=pet.searing_totem.remains>=15|pet.magma_totem.remains>=15|pet.fire_elemental_totem.remains>=15
+actions+=/liquid_magma,if=pet.searing_totem.remains>10|pet.magma_totem.remains>10|pet.fire_elemental_totem.remains>10
 actions+=/ancestral_swiftness
 # If only one enemy, priority follows the 'single' action list.
 actions+=/call_action_list,name=single,if=active_enemies=1

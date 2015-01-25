@@ -617,6 +617,7 @@ public:
   proc_t*     ef_proc;
 
   // Cooldown tracking
+  bool        track_cd_waste;
   simple_sample_data_with_min_max_t* cd_wasted_exec, *cd_wasted_cumulative;
   simple_sample_data_t* cd_wasted_iter;
 
@@ -628,7 +629,7 @@ public:
     uses_eoe( p() -> talent.echo_of_the_elements -> ok() && ab::data().affected_by( player -> spell.echo_of_the_elements -> effectN( 1 ) ) ),
     hasted_cd( ab::data().affected_by( player -> spec.flurry -> effectN( 1 ) ) ),
     hasted_gcd( ab::data().affected_by( player -> spec.flurry -> effectN( 2 ) ) ),
-    ef_proc( 0 ),
+    ef_proc( 0 ), track_cd_waste( ab::cooldown -> duration > timespan_t::zero()  ),
     cd_wasted_exec( 0 ), cd_wasted_cumulative( 0 ), cd_wasted_iter( 0 )
   {
     ab::may_crit = true;
@@ -654,7 +655,7 @@ public:
     if ( shock && p() -> talent.elemental_fusion -> ok() )
       ef_proc = p() -> get_proc( "Elemental Fusion: " + std::string( ab::s_data -> name_cstr() ) );
 
-    if ( uses_eoe && ab::cooldown -> duration > timespan_t::zero() )
+    if ( track_cd_waste )
     {
       cd_wasted_exec = p() -> template get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p() -> cd_waste_exec );
       cd_wasted_cumulative = p() -> template get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p() -> cd_waste_cumulative );
@@ -744,13 +745,19 @@ public:
     }
 
     if ( cd_wasted_exec &&
+         ( cd > timespan_t::zero() || ( cd <= timespan_t::zero() && ab::cooldown -> duration > timespan_t::zero() ) ) &&
          ab::cooldown -> current_charge == ab::cooldown -> charges &&
          ab::cooldown -> last_charged > timespan_t::zero() &&
          ab::cooldown -> last_charged < ab::sim -> current_time() )
     {
       double time_ = ( ab::sim -> current_time() - ab::cooldown -> last_charged ).total_seconds();
-      cd_wasted_exec -> add( time_ );
-      cd_wasted_iter -> add( time_ );
+      time_ -= ab::time_to_execute.total_seconds();
+
+      if ( time_ > 0 )
+      {
+        cd_wasted_exec -> add( time_ );
+        cd_wasted_iter -> add( time_ );
+      }
     }
 
     ab::update_ready( cd );
@@ -1715,6 +1722,8 @@ struct lightning_charge_t : public shaman_spell_t
 
     if ( player -> spec.fulmination -> ok() )
       id = player -> spec.fulmination -> id();
+
+    cooldown -> duration = timespan_t::zero();
   }
 
   double composite_target_crit( player_t* target ) const
@@ -3004,7 +3013,10 @@ struct lava_burst_t : public shaman_spell_t
     // Lava Surge has procced during the cast of Lava Burst, the cooldown 
     // reset is deferred to the finished cast, instead of "eating" it.
     if ( p() -> lava_surge_during_lvb )
+    {
       d = timespan_t::zero();
+      cooldown -> last_charged = sim -> current_time();
+    }
 
     shaman_spell_t::update_ready( d );
   }
@@ -3311,7 +3323,7 @@ struct earthquake_rumble_t : public shaman_spell_t
   earthquake_rumble_t( shaman_t* player ) :
     shaman_spell_t( "earthquake_rumble", player, player -> find_spell( 77478 ) )
   {
-    may_proc_eoe = false;
+    may_proc_eoe = uses_eoe = false;
     harmful = background = true;
     aoe = -1;
     school = SCHOOL_PHYSICAL;
@@ -3543,6 +3555,7 @@ struct flame_shock_t : public shaman_spell_t
     shock                 = true;
     uses_elemental_fusion = true;
     uses_unleash_flame    = true; // Disabled in spell data for some weird reason
+    track_cd_waste        = false;
   }
 
   void execute()
@@ -4523,6 +4536,12 @@ inline bool ascendance_buff_t::trigger( int stacks, double value, double chance,
   }
 
   ascendance( p -> ascendance_mh, p -> ascendance_oh, timespan_t::zero() );
+  // Don't record CD waste during Ascendance.
+  if ( lava_burst )
+  {
+    lava_burst -> cooldown -> last_charged = timespan_t::zero();
+  }
+
   return buff_t::trigger( stacks, value, chance, duration );
 }
 
@@ -4531,6 +4550,12 @@ inline void ascendance_buff_t::expire_override( int expiration_stacks, timespan_
   shaman_t* p = debug_cast< shaman_t* >( player );
 
   ascendance( p -> melee_mh, p -> melee_oh, lava_burst ? lava_burst -> data().cooldown() : timespan_t::zero() );
+  // Start CD waste recollection from when Ascendance buff fades, since Lava
+  // Burst is guaranteed to be very much ready when Ascendance ends.
+  if ( lava_burst )
+  {
+    lava_burst -> cooldown -> last_charged = sim -> current_time();
+  }
   buff_t::expire_override( expiration_stacks, remaining_duration );
 }
 
@@ -5458,7 +5483,7 @@ void shaman_t::init_action_list()
     def -> add_action( this, "Fire Elemental Totem", "if=(talent.primal_elementalist.enabled&active_enemies<=10)|active_enemies<=6" );
     def -> add_action( this, "Ascendance" );
     def -> add_action( this, "Feral Spirit" );
-    def -> add_talent( this, "Liquid Magma", "if=pet.searing_totem.remains>=15|pet.magma_totem.remains>=15|pet.fire_elemental_totem.remains>=15" );
+    def -> add_talent( this, "Liquid Magma", "if=pet.searing_totem.remains>10|pet.magma_totem.remains>10|pet.fire_elemental_totem.remains>10" );
     def -> add_talent( this, "Ancestral Swiftness" );
 
     // Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
@@ -5957,15 +5982,15 @@ void shaman_t::datacollection_begin()
 
 void shaman_t::datacollection_end()
 {
-  player_t::datacollection_end();
-
-  if ( ! requires_data_collection() )
-    return;
-
-  for ( size_t i = 0, end = cd_waste_iter.size(); i < end; ++i )
+  if ( requires_data_collection() )
   {
-    cd_waste_cumulative[ i ] -> second.add( cd_waste_iter[ i ] -> second.sum() );
+    for ( size_t i = 0, end = cd_waste_iter.size(); i < end; ++i )
+    {
+      cd_waste_cumulative[ i ] -> second.add( cd_waste_iter[ i ] -> second.sum() );
+    }
   }
+
+  player_t::datacollection_end();
 }
 
 // shaman_t::primary_role ===================================================
