@@ -6284,25 +6284,26 @@ public:
 
   virtual void html_customsection( report::sc_html_stream& os ) override
   {
-    if ( p.specialization() != SHAMAN_ENHANCEMENT )
-      return;
-
     // Custom Class Section
-    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
-        << "\t\t\t\t\t<h3 class=\"toggle open\">Maelstrom Weapon details</h3>\n"
-        << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+    os << "\t\t\t\t<div class=\"player-section custom_section\">\n";
 
-    mwgen_table_header( os );
-    mwgen_table_contents( os );
-    mwgen_table_footer( os );
+    if ( p.specialization() == SHAMAN_ENHANCEMENT )
+    {
+      os << "\t\t\t\t\t<h3 class=\"toggle open\">Maelstrom Weapon details</h3>\n"
+         << "\t\t\t\t\t<div class=\"toggle-content\">\n";
 
-    mwuse_table_header( os );
-    mwuse_table_contents( os );
-    mwuse_table_footer( os );
+      mwgen_table_header( os );
+      mwgen_table_contents( os );
+      mwgen_table_footer( os );
 
-    os << "\t\t\t\t\t\t</div>\n";
+      mwuse_table_header( os );
+      mwuse_table_contents( os );
+      mwuse_table_footer( os );
 
-    os << "<div class=\"clear\"></div>\n";
+      os << "\t\t\t\t\t\t</div>\n";
+
+      os << "<div class=\"clear\"></div>\n";
+    }
 
     if ( p.cd_waste_exec.size() > 0 )
     {
