@@ -624,7 +624,8 @@ public:
                    const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
     totem( false ), shock( false ),
-    may_proc_eoe( false ), uses_eoe( ab::data().affected_by( player -> spell.echo_of_the_elements -> effectN( 1 ) ) ),
+    may_proc_eoe( false ),
+    uses_eoe( p() -> talent.echo_of_the_elements -> ok() && ab::data().affected_by( player -> spell.echo_of_the_elements -> effectN( 1 ) ) ),
     hasted_cd( ab::data().affected_by( player -> spec.flurry -> effectN( 1 ) ) ),
     hasted_gcd( ab::data().affected_by( player -> spec.flurry -> effectN( 2 ) ) ),
     ef_proc( 0 ),
@@ -3641,9 +3642,11 @@ struct ascendance_t : public shaman_spell_t
   cooldown_t* strike_cd;
 
   ascendance_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "ascendance", player, player -> find_class_spell( "Ascendance" ), options_str )
+    shaman_spell_t( "ascendance", player, player -> find_specialization_spell( "Ascendance" ), options_str )
   {
     harmful = false;
+
+    cooldown -> duration = timespan_t::from_seconds( 180 );
 
     strike_cd = p() -> cooldown.strike;
   }
