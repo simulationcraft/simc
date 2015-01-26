@@ -584,7 +584,6 @@ public:
 
   virtual void execute()
   {
-    ab::execute(); // Execute the ability first, as there is some player-lag in swapping stances. 
     if ( p() -> cooldown.stance_swap -> up() && p() -> swapping == false && !p() -> talents.gladiators_resolve -> ok() )
     { // If player is able to swap stances, has not disabled automated swapping in simc, not specced into gladiator's resolve, (continued)
       if ( p() -> active_stance == STANCE_DEFENSE &&        // currently in defensive stance,
@@ -598,6 +597,7 @@ public:
                 p() -> primary_role() == ROLE_TANK )             // is reallly reallyyyy a tank, and not some strange person trying to dps in battle stance without gladiator's resolve, :p
                 p() -> stance_swap();                            // Swap back to defensive stance.
     }
+    ab::execute();
   }
 
   virtual timespan_t gcd() const
