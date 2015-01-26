@@ -1128,72 +1128,72 @@ Skalierungsplot für:</translation>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="474"/>
         <source>Plot Reforge Options for Spirit</source>
-        <translation type="unfinished"></translation>
+        <translation>Umschmiedeplotoptionen für Geisteskraft</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="474"/>
         <source>Generate reforge plot data for Spirit</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeuge Umschiedeplotdaten für Geisteskraft</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="475"/>
         <source>Plot Reforge Options for Crit Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>Umschmiedeplotoptionen für kritische Trefferwertung</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="475"/>
         <source>Generate reforge plot data for Crit Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeuge Umschiedeplotdaten für kritische Trefferwertung</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="476"/>
         <source>Plot Reforge Options for Haste Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>Umschmiedeplotoptionen für Tempo</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="476"/>
         <source>Generate reforge plot data for Haste Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeuge Umschiedeplotdaten für Tempo</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="477"/>
         <source>Plot Reforge Options for Mastery Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>Umschmiedeplotoptionen für Meisterschaft</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="477"/>
         <source>Generate reforge plot data for Mastery Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeuge Umschiedeplotdaten für Meisterschaft</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="478"/>
         <source>Plot Reforge Options for Multistrike Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>Umschmiedeplotoptionen für Mehrfachschlag</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="478"/>
         <source>Generate reforge plot data for Multistrike Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeuge Umschiedeplotdaten für Mehrfachschlag</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="479"/>
         <source>Plot Reforge Options for Versatility Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>Umschmiedeplotoptionen für Vielseitigkeit</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="479"/>
         <source>Generate reforge plot data for Versatility Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeuge Umschiedeplotdaten für Vielseitigkeit</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="480"/>
         <source>Plot Reforge Options for Bonus Armor Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>Umschmiedeplotoptionen für Bonusrüstung</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="480"/>
         <source>Generate reforge plot data for Bonus Armor</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeuge Umschiedeplotdaten für Bonusrüstung</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="482"/>
@@ -1203,38 +1203,38 @@ Skalierungsplot für:</translation>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="485"/>
         <source>Plot Reforge Options for Strength</source>
-        <translation type="unfinished"></translation>
+        <translation>Umschmiedeplotoptionen für Stärke</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="485"/>
         <location filename="../qt/sc_options_tab.cpp" line="488"/>
         <source>Generate reforge plot data for Intellect</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeuge Umschiedeplotdaten für Intelligenz</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="486"/>
         <source>Plot Reforge Options for Agility</source>
-        <translation type="unfinished"></translation>
+        <translation>Umschmiedeplotoptionen für Beweglichkeit</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="486"/>
         <source>Generate reforge plot data for Agility</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeuge Umschiedeplotdaten für Beweglichkeit</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="487"/>
         <source>Plot Reforge Options for Stamina</source>
-        <translation type="unfinished"></translation>
+        <translation>Umschmiedeplotoptionen für Ausdauer</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="487"/>
         <source>Generate reforge plot data for Stamina</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeuge Umschiedeplotdaten für Ausdauer</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="488"/>
         <source>Plot Reforge Options for Intellect</source>
-        <translation type="unfinished"></translation>
+        <translation>Umschmiedeplotoptionen für Intelligenz</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="496"/>
@@ -1254,7 +1254,7 @@ Skalierungsplot für:</translation>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="757"/>
         <source>Both: Create Evil Twin with Beta mechanics</source>
-        <translation type="unfinished">Beide: Erstellt eine Kopie des Profils mit Beta-Mechaniken</translation>
+        <translation>Beide: Erstellt eine Kopie des Profils mit Beta-Mechaniken</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="759"/>
@@ -1264,14 +1264,14 @@ Skalierungsplot für:</translation>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="760"/>
         <source>Both: Create Evil Twin with PTR mechanics</source>
-        <translation type="unfinished">Beide: Erstellt eine Kopie des Profils mit PTR-Mechaniken</translation>
+        <translation>Beide: Erstellt eine Kopie des Profils mit PTR-Mechaniken</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="762"/>
         <source>This options sets a target error threshold and
 runs iterations until that threshold is reached.
 </source>
-        <translation type="unfinished">Diese Option gibt einen Sollfehler vor und 
+        <translation>Diese Option gibt einen Sollfehler vor und 
 iteriert bis dieser Sollfehler erreicht ist.</translation>
     </message>
     <message>
@@ -1279,12 +1279,14 @@ iteriert bis dieser Sollfehler erreicht ist.</translation>
         <source>Number of iterations for each plot point.
 Iter/10 and Iter/100 scale with the number of
 iterations selected on the general options tab.</source>
-        <translation type="unfinished"></translation>
+        <translation>Anzahl der Iteration für jeden Plotpunkt.
+Iter/10 und Iter/100 skaliert mit der Anzahl an Iterationen,
+ die in den allgemeinen Optionen ausgewählt wurde.</translation>
     </message>
     <message>
         <source>runs iterations until that threshold is reached.
 </source>
-        <translation type="unfinished">Simuliere bis der Sollfehler erreicht ist.</translation>
+        <translation>Simuliere bis der Sollfehler erreicht ist.</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="764"/>
@@ -1463,7 +1465,7 @@ Auf der Stufe &quot;Am niedrigsten&quot; ist der PC normal benutzbar, während S
         <location filename="../qt/sc_options_tab.cpp" line="821"/>
         <source>If &quot;Tank Dummy&quot; is chosen above, this drop-down selects the type of tank dummy used.
 Leaving at *None* will default back to a Fluffy Pillow.</source>
-        <translation type="unfinished">Wenn &quot;Tankziel&quot; ausgewählt ist, dann bestimmt diese Box wälche Art von Tankziel benutzt wird.
+        <translation>Wenn &quot;Tankziel&quot; ausgewählt ist, dann bestimmt diese Box wälche Art von Tankziel benutzt wird.
 *None* wählt standardmässig Fluffy Pillow aus.</translation>
     </message>
     <message>
@@ -1471,7 +1473,7 @@ Leaving at *None* will default back to a Fluffy Pillow.</source>
         <source>If &quot;TMI Standard Boss&quot; is chosen in &quot;Target Type&quot;, this box selects the TMI standard.
 TMI Standard Bosses provide damage output similar to bosses in the appropriate tier.
 Leaving at *None* will default back to a Fluffy Pillow.</source>
-        <translation type="unfinished">Wenn &quot;TMI-Standard-Boss&quot; ausgewählt ist in &quot;Art des Ziels&quot;, bestimmt diese Box den TMI-Standard.
+        <translation>Wenn &quot;TMI-Standard-Boss&quot; ausgewählt ist in &quot;Art des Ziels&quot;, bestimmt diese Box den TMI-Standard.
 TMI-Standard-Bosse besitzen in etwa den selben Schadensausstoß wie Bosse im jeweiligen Raidtier.
 *None* wählt standardmässig Fluffy Pillow aus.</translation>
     </message>
@@ -1480,7 +1482,7 @@ TMI-Standard-Bosse besitzen in etwa den selben Schadensausstoß wie Bosse im jew
         <source>Specify window duration for calculating TMI. Default is 6 sec.
 Reducing this increases the metric&apos;s sensitivity to shorter damage spikes.
 Set to 0 if you want to vary on a per-player basis in the Simulate tab using &quot;tmi_window=#&quot;.</source>
-        <translation type="unfinished">Spezifiziere das Zeitfenster um den TMI zu berechnen. Standard is 6s.
+        <translation>Spezifiziere das Zeitfenster um den TMI zu berechnen. Standard is 6s.
 Reduzieren macht den Index empfindlicher für kurze Schadensspitzen.
 Auf 0 setzen, wenn es für jeden Spieler im Simulierentab über &quot;tmi_window=#&quot; festgelegt werden soll.</translation>
     </message>
@@ -1489,7 +1491,7 @@ Auf 0 setzen, wenn es für jeden Spieler im Simulierentab über &quot;tmi_window
         <source>Controls when ETMI is displayed in the HTML report.
 TMI only includes damage taken and self-healing/absorbs, and treats overhealing as effective healing.
 ETMI includes all sources of healing and absorption, and ignores overhealing.</source>
-        <translation type="unfinished">Regelt wann ETMI im HTML Bericht angezeigt wird.
+        <translation>Regelt wann ETMI im HTML Bericht angezeigt wird.
 TMI beinhaltet nur genommenen Schaden und Selbstheilung/-schilden, zu dem with Überheilung als effektive Heilung behandelt.
 ETMI beinhaltet alle Quellen von Heilung und Schilden außerdem wird Überheilung ignoriert.</translation>
     </message>
@@ -1501,13 +1503,13 @@ ETMI beinhaltet alle Quellen von Heilung und Schilden außerdem wird Überheilun
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="838"/>
         <source>Specify HTML report print style.</source>
-        <translation type="unfinished">Bestimmt den html-Berichtstil.</translation>
+        <translation>Bestimmt den html-Berichtstil.</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="840"/>
         <source>Determines how much detailed statistical information besides count &amp; mean will be collected during simulation.
  Higher Statistics Level require more memory.</source>
-        <translation type="unfinished">Legt fest wie detailiert Statistikinformationen während der Simulation erzeugt werden.
+        <translation>Legt fest wie detailiert Statistikinformationen während der Simulation erzeugt werden.
 Höhere Statistikstufen benötigen mehr Arbeitsspeicher.</translation>
     </message>
     <message>
@@ -1518,17 +1520,17 @@ Höhere Statistikstufen benötigen mehr Arbeitsspeicher.</translation>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="843"/>
         <source> Level %1: DPS/HPS data is collected. *default*</source>
-        <translation type="unfinished"> Stufe %1: DPS/HPS wird aufgezeichnet. *Standard*</translation>
+        <translation> Stufe %1: DPS/HPS wird aufgezeichnet. *Standard*</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="844"/>
         <source> Level %1: Player Fight Length, Death Time, DPS(e), HPS(e), DTPS, HTPS, DMG, HEAL data is collected.</source>
-        <translation type="unfinished"> Stufe %1: Spieler Kampflänge, Todeszeitpunkt, DPS(e), HPS(e), DTPS, HTPS, Schaden, Heilung wird aufgezeichnet.</translation>
+        <translation> Stufe %1: Spieler Kampflänge, Todeszeitpunkt, DPS(e), HPS(e), DTPS, HTPS, Schaden, Heilung wird aufgezeichnet.</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="845"/>
         <source> Level %1: Ability Amount and  portion APS is collected.</source>
-        <translation type="unfinished"> Stufe %1: Fähigkeits-Menge und Menge/s werden aufgezeichnet.</translation>
+        <translation> Stufe %1: Fähigkeits-Menge und Menge/s werden aufgezeichnet.</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="847"/>
@@ -1544,7 +1546,7 @@ Durch die erzwungene einzige Iteration ist keine Skalierungsfaktor-Berechnung m�
         <source>Deterministic Random Number Generator creates all random numbers with a given, constant seed.
 This allows to better observe marginal changes which aren&apos;t influenced by rng, 
  or check for other influences without having to reduce statistic noise</source>
-        <translation type="unfinished">Deterministischer Zufallszahlengenerator erzeugt alle Zufallszahlen mit einem gegebenen, konstanten Seed.
+        <translation>Deterministischer Zufallszahlengenerator erzeugt alle Zufallszahlen mit einem gegebenen, konstanten Seed.
 Dies erlaubt eine genauere Betrachtung von marginalen Veränderungen, welche nicht durch den Zufall beeinflusst sind,
 oder um andere Einflüsse zu untersuchen, ohne aufwendig den statistischen Fehler reduzieren zu müssen.</translation>
     </message>
@@ -1553,7 +1555,7 @@ oder um andere Einflüsse zu untersuchen, ohne aufwendig den statistischen Fehle
         <source>World Lag is the equivalent of the &apos;world lag&apos; shown in the WoW Client.
 It is currently used to extend the cooldown duration of user executable abilities  that have a cooldown.
 Each setting adds an amount of &apos;lag&apos; with a default standard deviation of 10%:</source>
-        <translation type="unfinished">Weltlag ist äquivalent zum &apos;Weltlag&apos;, welches im WoW Client angezeigt wird.
+        <translation>Weltlag ist äquivalent zum &apos;Weltlag&apos;, welches im WoW Client angezeigt wird.
 Es wird verwendet, um die Dauer der Cooldowns von Spielerfähigkeiten zu verlängern.
 Für jeden Wert wird eine Standardabweichung von 10% benutzt.</translation>
     </message>
@@ -1587,14 +1589,18 @@ Für jeden Wert wird eine Standardabweichung von 10% benutzt.</translation>
         <source>Controls the simulations that the tool compares to determine stat weights.
 If set to No, it will sim once at profile stats and again with +2X of each selected stat.
 If set to Yes, it will sim once at profile-X and once at profile+X.</source>
-        <translation type="unfinished"></translation>
+        <translation>Steuert die Simulationen, die benutzt werden, um Statgewichte zu bestimmen.
+Nein, simuliert einmal das Profil wie es ist und dann mit +2x für jede ausgewählte Stat.
+Ja, simuliert einmal das Profil mit -x und einmal mit +x für jede ausgewählte Stat.</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="866"/>
         <source>Choose the stat over which you&apos;re primarily interested in scaling.
 This is the metric that will be displayed on the Scale Factors plot.
 Note that the sim will still generate and display scale factors for all other metrics in tabular form.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle die Stat, an der du primär interessiert bist, wie sie skaliert.
+Diese Stat wird im Skalierungsfaktorplot angezeigt.
+Beachte das die Simulation trotzdem für alle ausgewählten Stats Skalierungsfaktoren berechnet und in Tabellenform ausgibt.</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="868"/>
@@ -1605,13 +1611,14 @@ Note that the sim will still generate and display scale factors for all other me
         <location filename="../qt/sc_options_tab.cpp" line="869"/>
         <source>The delta between two points of the graph.
 The deltas on the horizontal axis will be within the [-points * steps / 2 ; +points * steps / 2] interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Abstand zwischen zwei Punkten auf dem Graph.
+Die Abstände auf der Horizontalachse liegen im Intervall [- Anzahl der Punkte/2 * Abstand; Anzahl der Punkte/2 Abstand]</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="872"/>
         <source>Target error for plots.
 </source>
-        <translation type="unfinished">Sollfehler für Plots.</translation>
+        <translation>Sollfehler für Plots.</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="874"/>
@@ -1622,7 +1629,7 @@ The deltas on the horizontal axis will be within the [-points * steps / 2 ; +poi
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="875"/>
         <source>X%:   Each plot point will sim until less than X% DPS error is reached.</source>
-        <translation type="unfinished"></translation>
+        <translation>X%:   Die Simulation für jeden Plotpunkt läuft bis der Fehler kleiner ist als der Sollfehler X%.</translation>
     </message>
     <message>
         <source>Number of iterations for each plot point.
@@ -1632,13 +1639,14 @@ The deltas on the horizontal axis will be within the [-points * steps / 2 ; +poi
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="880"/>
         <source>The maximum amount to reforge per stat.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die maximale Menge, die pro Stat umgeschmiedet werden soll.</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="881"/>
         <source>The stat difference between two points.
 It&apos;s NOT the number of steps: a lower value will generate more points!</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Statdifferenz zwischen zwei Punkten.
+Dies ist nicht die Anzahl der Schritte. Ein niedrigerer Wert wird mehr Punkte erzeugen!</translation>
     </message>
     <message>
         <location filename="../qt/sc_options_tab.cpp" line="1309"/>
@@ -1866,27 +1874,29 @@ It&apos;s NOT the number of steps: a lower value will generate more points!</sou
         <source>Argument, what you&apos;re searching for within the filtered data.
 
  For more complicated queries, set the Data Source and Filter to blank and write your full query string in here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Argument, welches innerhalb der gefilterten Daten gesucht wird.
+
+Für kompliziertere Abfragen, setze die Datenquelle und den Filter auf leer und schreibe den vollständigen Abfragestring hier hinein.</translation>
     </message>
     <message>
         <location filename="../qt/sc_spell_query_tab.cpp" line="331"/>
         <source>Enabling this will save the results to a file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mit dieser Option wird das Resultat in einer Datei gespeichert.</translation>
     </message>
     <message>
         <location filename="../qt/sc_spell_query_tab.cpp" line="332"/>
         <source>Browse for the file name of the results file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suche nach dem Namen der Resultatedatei.</translation>
     </message>
     <message>
         <location filename="../qt/sc_spell_query_tab.cpp" line="333"/>
         <source>Filename of the results file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Name der Resultatedatei.</translation>
     </message>
     <message>
         <location filename="../qt/sc_spell_query_tab.cpp" line="335"/>
         <source>Result of the query.</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultat der Abfrage.</translation>
     </message>
 </context>
 <context>
