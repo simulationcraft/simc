@@ -1,9 +1,10 @@
 monk="Monk_Windwalker_2h_T17N"
 level=100
-race=troll
-role=dps
+race=blood_elf
+role=hybrid
 position=back
-talents=0130023
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!.02..12
+glyphs=touch_of_death
 spec=windwalker
 
 # This default action priority list is automatically created based on your character.
@@ -23,83 +24,122 @@ actions.precombat+=/potion,name=draenic_agility
 # Executed every time the actor is available.
 
 actions=auto_attack
-actions+=/invoke_xuen,if=talent.invoke_xuen.enabled&time>5
+actions+=/invoke_xuen
+actions+=/call_action_list,name=opener,if=talent.serenity.enabled&talent.chi_brew.enabled&time<13
 actions+=/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4
 actions+=/potion,name=draenic_agility,if=buff.serenity.up|(!talent.serenity.enabled&trinket.proc.agility.react)
 actions+=/blood_fury,if=buff.tigereye_brew_use.up|target.time_to_die<18
 actions+=/berserking,if=buff.tigereye_brew_use.up|target.time_to_die<18
 actions+=/arcane_torrent,if=chi.max-chi>=1&(buff.tigereye_brew_use.up|target.time_to_die<18)
 actions+=/chi_brew,if=chi.max-chi>=2&((charges=1&recharge_time<=10)|charges=2|target.time_to_die<charges*10)&buff.tigereye_brew.stack<=16
-actions+=/tiger_palm,if=buff.tiger_power.remains<6
+actions+=/tiger_palm,if=buff.tiger_power.remains<6.6
 actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack=20
-actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=10&buff.serenity.up
-actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=10&cooldown.fists_of_fury.up&chi>=3&debuff.rising_sun_kick.up&buff.tiger_power.up
-actions+=/tigereye_brew,if=talent.hurricane_strike.enabled&buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=10&cooldown.hurricane_strike.up&chi>=3&debuff.rising_sun_kick.up&buff.tiger_power.up
+actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=9&buff.serenity.up
+actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=9&cooldown.fists_of_fury.up&chi>=3&debuff.rising_sun_kick.up&buff.tiger_power.up
+actions+=/tigereye_brew,if=talent.hurricane_strike.enabled&buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=9&cooldown.hurricane_strike.up&chi>=3&debuff.rising_sun_kick.up&buff.tiger_power.up
 actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&chi>=2&(buff.tigereye_brew.stack>=16|target.time_to_die<40)&debuff.rising_sun_kick.up&buff.tiger_power.up
 actions+=/rising_sun_kick,if=(debuff.rising_sun_kick.down|debuff.rising_sun_kick.remains<3)
-actions+=/serenity,if=talent.serenity.enabled&chi>=2&buff.tiger_power.up&debuff.rising_sun_kick.up
-actions+=/call_action_list,name=aoe,if=active_enemies>=3
-actions+=/call_action_list,name=st,if=active_enemies<3
+actions+=/serenity,if=chi>=2&buff.tiger_power.up&debuff.rising_sun_kick.up
+actions+=/fists_of_fury,if=buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&!buff.serenity.remains
+actions+=/fortifying_brew,if=target.health.percent<10&cooldown.touch_of_death.remains=0&(glyph.touch_of_death.enabled|chi>=3)
+actions+=/touch_of_death,if=target.health.percent<10&(glyph.touch_of_death.enabled|chi>=3)
+actions+=/hurricane_strike,if=energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&buff.energizing_brew.down
+actions+=/energizing_brew,if=cooldown.fists_of_fury.remains>6&(!talent.serenity.enabled|(!buff.serenity.remains&cooldown.serenity.remains>4))&energy+energy.regen*gcd<50
+actions+=/call_action_list,name=st,if=active_enemies<3&(level<100|!talent.chi_explosion.enabled)
+actions+=/call_action_list,name=st_chix,if=active_enemies=1&talent.chi_explosion.enabled
+actions+=/call_action_list,name=cleave_chix,if=active_enemies=2&talent.chi_explosion.enabled
+actions+=/call_action_list,name=aoe,if=active_enemies>=3&!talent.rushing_jade_wind.enabled
+actions+=/call_action_list,name=aoe_rjw,if=active_enemies>=3&talent.rushing_jade_wind.enabled
 
-actions.st=fists_of_fury,if=buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&!buff.serenity.remains
-actions.st+=/fortifying_brew,if=target.health.percent<10&cooldown.touch_of_death.remains=0&chi>=3
-actions.st+=/touch_of_death,if=target.health.percent<10
-actions.st+=/hurricane_strike,if=talent.hurricane_strike.enabled&energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&buff.energizing_brew.down
-actions.st+=/energizing_brew,if=cooldown.fists_of_fury.remains>6&(!talent.serenity.enabled|(!buff.serenity.remains&cooldown.serenity.remains>4))&energy+energy.regen*gcd<50
-actions.st+=/rising_sun_kick,if=!talent.chi_explosion.enabled
+actions.opener=tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=10
+actions.opener+=/blood_fury,if=buff.tigereye_brew_use.up
+actions.opener+=/berserking,if=buff.tigereye_brew_use.up
+actions.opener+=/arcane_torrent,if=buff.tigereye_brew_use.up
+actions.opener+=/tiger_palm,if=buff.tiger_power.remains<2
+actions.opener+=/rising_sun_kick
+actions.opener+=/blackout_kick,if=chi.max-chi<=1&cooldown.chi_brew.up
+actions.opener+=/chi_brew,if=chi.max-chi>=2
+actions.opener+=/serenity
+actions.opener+=/fists_of_fury,if=buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&buff.serenity.remains<1.5
+actions.opener+=/blackout_kick,if=buff.combo_breaker_bok.react|buff.serenity.up
+actions.opener+=/jab,if=chi.max-chi>=2&!buff.serenity.up
+
+actions.st=rising_sun_kick
+actions.st+=/blackout_kick,if=buff.combo_breaker_bok.react|buff.serenity.up
+actions.st+=/tiger_palm,if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2
 actions.st+=/chi_wave,if=energy.time_to_max>2&buff.serenity.down
-actions.st+=/chi_burst,if=talent.chi_burst.enabled&energy.time_to_max>2&buff.serenity.down
+actions.st+=/chi_burst,if=energy.time_to_max>2&buff.serenity.down
 actions.st+=/zen_sphere,cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking&buff.serenity.down
-actions.st+=/blackout_kick,if=!talent.chi_explosion.enabled&(buff.combo_breaker_bok.react|buff.serenity.up)
-actions.st+=/chi_explosion,if=talent.chi_explosion.enabled&chi>=3&buff.combo_breaker_ce.react&cooldown.fists_of_fury.remains>3
-actions.st+=/tiger_palm,if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<6
-actions.st+=/blackout_kick,if=!talent.chi_explosion.enabled&chi.max-chi<2
-actions.st+=/chi_explosion,if=talent.chi_explosion.enabled&chi>=3&cooldown.fists_of_fury.remains>3
+actions.st+=/chi_torpedo,,if=energy.time_to_max>2&buff.serenity.down
+actions.st+=/blackout_kick,if=chi.max-chi<2
+actions.st+=/expel_harm,if=chi.max-chi>=2&health.percent<95
 actions.st+=/jab,if=chi.max-chi>=2
-actions.st+=/jab,if=chi.max-chi>=1&talent.chi_explosion.enabled&cooldown.fists_of_fury.remains<=3
 
-actions.aoe=chi_explosion,if=chi>=4&(cooldown.fists_of_fury.remains>3|!talent.rushing_jade_wind.enabled)
-actions.aoe+=/rushing_jade_wind
-actions.aoe+=/energizing_brew,if=cooldown.fists_of_fury.remains>6&(!talent.serenity.enabled|(!buff.serenity.remains&cooldown.serenity.remains>4))&energy+energy.regen*gcd<50
-actions.aoe+=/rising_sun_kick,if=!talent.rushing_jade_wind.enabled&chi=chi.max
-actions.aoe+=/fists_of_fury,if=talent.rushing_jade_wind.enabled&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&!buff.serenity.remains
-actions.aoe+=/fortifying_brew,if=target.health.percent<10&cooldown.touch_of_death.remains=0
-actions.aoe+=/touch_of_death,if=target.health.percent<10
-actions.aoe+=/hurricane_strike,if=talent.rushing_jade_wind.enabled&talent.hurricane_strike.enabled&energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&buff.energizing_brew.down
-actions.aoe+=/zen_sphere,cycle_targets=1,if=!dot.zen_sphere.ticking
+actions.st_chix=chi_explosion,if=chi>=2&buff.combo_breaker_ce.react&cooldown.fists_of_fury.remains>2
+actions.st_chix+=/tiger_palm,if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2
+actions.st_chix+=/chi_wave,if=energy.time_to_max>2&buff.serenity.down
+actions.st_chix+=/chi_burst,if=energy.time_to_max>2&buff.serenity.down
+actions.st_chix+=/zen_sphere,cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking
+actions.st_chix+=/rising_sun_kick
+actions.st_chix+=/tiger_palm,if=chi=4&!buff.combo_breaker_tp.react
+actions.st_chix+=/chi_explosion,if=chi>=3&cooldown.fists_of_fury.remains>4
+actions.st_chix+=/chi_torpedo,,if=energy.time_to_max>2
+actions.st_chix+=/expel_harm,if=chi.max-chi>=2&health.percent<95
+actions.st_chix+=/jab,if=chi.max-chi>=2
+
+actions.cleave_chix=chi_explosion,if=chi>=4&cooldown.fists_of_fury.remains>4
+actions.cleave_chix+=/tiger_palm,if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2
+actions.cleave_chix+=/chi_wave,if=energy.time_to_max>2&buff.serenity.down
+actions.cleave_chix+=/chi_burst,if=energy.time_to_max>2&buff.serenity.down
+actions.cleave_chix+=/zen_sphere,cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking
+actions.cleave_chix+=/chi_torpedo,,if=energy.time_to_max>2
+actions.cleave_chix+=/expel_harm,if=chi.max-chi>=2&health.percent<95
+actions.cleave_chix+=/jab,if=chi.max-chi>=2
+
+actions.aoe=chi_explosion,if=chi>=4&cooldown.fists_of_fury.remains>4
+actions.aoe+=/rising_sun_kick,if=chi=chi.max
 actions.aoe+=/chi_wave,if=energy.time_to_max>2&buff.serenity.down
-actions.aoe+=/chi_burst,if=talent.chi_burst.enabled&energy.time_to_max>2&buff.serenity.down
-actions.aoe+=/blackout_kick,if=talent.rushing_jade_wind.enabled&!talent.chi_explosion.enabled&(buff.combo_breaker_bok.react|buff.serenity.up)
-actions.aoe+=/tiger_palm,if=talent.rushing_jade_wind.enabled&buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2
-actions.aoe+=/blackout_kick,if=talent.rushing_jade_wind.enabled&!talent.chi_explosion.enabled&chi.max-chi<2&(cooldown.fists_of_fury.remains>3|!talent.rushing_jade_wind.enabled)
+actions.aoe+=/chi_burst,if=energy.time_to_max>2&buff.serenity.down
+actions.aoe+=/zen_sphere,cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking
+actions.aoe+=/chi_torpedo,,if=energy.time_to_max>2
 actions.aoe+=/spinning_crane_kick
-actions.aoe+=/jab,if=talent.rushing_jade_wind.enabled&chi.max-chi>=2
-actions.aoe+=/jab,if=talent.rushing_jade_wind.enabled&chi.max-chi>=1&talent.chi_explosion.enabled&cooldown.fists_of_fury.remains<=3
+
+actions.aoe_rjw=chi_explosion,if=chi>=4&cooldown.fists_of_fury.remains>4
+actions.aoe_rjw+=/rushing_jade_wind
+actions.aoe_rjw+=/chi_wave,if=energy.time_to_max>2&buff.serenity.down
+actions.aoe_rjw+=/chi_burst,if=energy.time_to_max>2&buff.serenity.down
+actions.aoe_rjw+=/zen_sphere,cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking
+actions.aoe_rjw+=/blackout_kick,if=buff.combo_breaker_bok.react|buff.serenity.up
+actions.aoe_rjw+=/tiger_palm,if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2
+actions.aoe_rjw+=/blackout_kick,if=chi.max-chi<2&(cooldown.fists_of_fury.remains>3|!talent.rushing_jade_wind.enabled)
+actions.aoe_rjw+=/chi_torpedo,,if=energy.time_to_max>2
+actions.aoe_rjw+=/expel_harm,if=chi.max-chi>=2&health.percent<95
+actions.aoe_rjw+=/jab,if=chi.max-chi>=2
 
 head=helm_of_the_somber_gaze,id=115556
-neck=darklight_necklace,id=113865,enchant=gift_of_multistrike
+neck=darklight_necklace,id=113865,enchant_id=gift_of_multistrike
 shoulders=mantle_of_the_somber_gaze,id=115559
-back=drape_of_the_dark_hunt,id=113971,enchant=gift_of_multistrike
+back=drape_of_the_dark_hunt,id=113971,enchant_id=gift_of_multistrike
 chest=vest_of_forceful_fury,id=113870
 wrists=bracers_of_shattered_limbs,id=119333
 hands=handwraps_of_the_somber_gaze,id=115555
 waist=conductors_multipocket_girdle,id=113964
 legs=legwraps_of_the_somber_gaze,id=115557
 feet=furnace_tenders_treads,id=113895
-finger1=cinderwolf_signet,id=113917,enchant=gift_of_multistrike
-finger2=timeless_solium_band_of_the_assassin,id=118297,enchant=gift_of_multistrike
+finger1=timeless_solium_band_of_the_assassin,id=118297,enchant=gift_of_multistrike
+finger2=unexploded_explosive_shard,id=113877,enchant_id=gift_of_multistrike
 trinket1=humming_blackiron_trigger,id=113985
 trinket2=scales_of_doom,id=113612
-main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,enchant=mark_of_the_frostwolf
+main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,enchant_id=mark_of_the_frostwolf
 
 # Gear Summary
 # gear_agility=2826
 # gear_stamina=3437
-# gear_crit_rating=1172
+# gear_crit_rating=1260
 # gear_haste_rating=154
 # gear_mastery_rating=232
 # gear_armor=976
-# gear_multistrike_rating=1478
-# gear_versatility_rating=256
+# gear_multistrike_rating=1239
+# gear_versatility_rating=190
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
