@@ -391,7 +391,7 @@ public:
     double pm = pet_multiplier;
     if ( mastery.master_of_beasts -> ok() )
     {
-      pm *= 1.0 + (cache.mastery_value() * ( !dbc.ptr ? 1.125 : 1.0 ) );
+      pm *= 1.0 + (cache.mastery_value() * ( wod_hotfix ? 1.125 : 1.0 ) );
     }
 
     return pm;
@@ -965,7 +965,7 @@ public:
     // Pet combat experience
     if ( o() -> talents.adaptation -> ok() )
     {
-      if ( !o() -> dbc.ptr )
+      if ( o() -> wod_hotfix )
       {
         m *= 1.7;
       }
@@ -1594,7 +1594,9 @@ struct dire_critter_t: public hunter_pet_t
       may_crit = true;
       special = false;
       focus_gain = player -> find_spell( 120694 ) -> effectN( 1 ).base_value();
-      base_multiplier *= 1.15;       // hotfix applies to both live and ptr
+
+      if ( player -> wod_hotfix || player -> dbc.ptr )
+        base_multiplier *= 1.15;                        // hotfix applies to both live and ptr
     }
 
     virtual void impact( action_state_t* s )
@@ -1995,7 +1997,7 @@ struct aimed_shot_t: public hunter_ranged_attack_t
 
     crit_gain = p -> perks.enhanced_aimed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS );
     crit_gain += p -> sets.set( HUNTER_MARKSMANSHIP, T17, B2 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
-    if ( !player -> dbc.ptr )
+    if ( player -> wod_hotfix )
     {
       weapon_multiplier *= 1.15;
       weapon_multiplier *= 0.9;
@@ -2049,7 +2051,7 @@ struct glaive_toss_strike_t: public ranged_attack_t
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
     aoe = -1;    
-    if ( !player -> dbc.ptr )
+    if ( player -> wod_hotfix )
       base_multiplier *= 1.15;
     if ( player -> dbc.ptr )
       base_multiplier *= 1.25;
@@ -2078,7 +2080,7 @@ struct glaive_rebound_t: public ranged_attack_t
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
     aoe = -1;   
-    if ( !player -> dbc.ptr )
+    if ( player -> wod_hotfix )
       base_multiplier *= 1.15;
   }
 
@@ -2188,10 +2190,8 @@ struct powershot_t: public hunter_ranged_attack_t
     aoe = -1;
     // based on tooltip
     base_aoe_multiplier *= 0.5;
-    if ( !player -> dbc.ptr )
+    if ( player -> wod_hotfix )
       base_multiplier *= 1.15;
-    if ( player -> dbc.ptr )
-      base_multiplier *= 1.62;
   }
 
   virtual double action_multiplier() const
@@ -2220,14 +2220,14 @@ struct black_arrow_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
 
-    if ( !p() -> dbc.ptr )
+    if ( p() -> wod_hotfix )
       cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
     base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
     
     starved_proc = player -> get_proc( "starved: black_arrow" );
 
     // Last minute Celestalon fixes before WoD release
-    if ( !p() -> dbc.ptr ) 
+    if ( p() -> wod_hotfix ) 
     {
       attack_power_mod.tick *= 1.12 * 1.15;
       attack_power_mod.direct *= 1.12 * 1.15;
@@ -2348,7 +2348,7 @@ struct explosive_trap_t: public hunter_ranged_attack_t
     aoe = -1;
 
     cooldown -> duration = data().cooldown();
-    if ( !player -> dbc.ptr )
+    if ( player -> wod_hotfix )
     {
       cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
     }
@@ -2360,7 +2360,7 @@ struct explosive_trap_t: public hunter_ranged_attack_t
     base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
     attack_power_mod.direct = p() -> find_spell( 13812 ) -> effectN( 1 ).ap_coeff();
 
-    if ( !player -> dbc.ptr )
+    if ( player -> wod_hotfix )
     {
       attack_power_mod.direct *= 1.15;
       attack_power_mod.direct *= 2.0;
@@ -2442,7 +2442,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
     if ( p() -> sets.has_set_bonus( SET_MELEE, T13, B2 ) )
       focus_gain *= 2.0;
 
-    if ( !player -> dbc.ptr )
+    if ( player -> wod_hotfix )
       weapon_multiplier *= 1.15;
   }
 
@@ -2598,7 +2598,7 @@ struct kill_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "kill_shot", player, player -> find_specialization_spell( "Kill Shot" ) )
   {
     parse_options( options_str );
-    if ( !player -> dbc.ptr )
+    if ( player -> wod_hotfix )
     {
       weapon_multiplier *= 1.15;
       weapon_multiplier *= 0.9;
@@ -2639,7 +2639,7 @@ struct serpent_sting_t: public hunter_ranged_attack_t
     hasted_ticks = false;
 
     // Last minute Celestalon fixes before WoD release
-    if ( !p() -> dbc.ptr ) 
+    if ( p() -> wod_hotfix ) 
     {
       attack_power_mod.tick *= 1.12 * 1.15 * 1.6;
       attack_power_mod.direct *= 1.12 * 1.15 * 1.6;
@@ -2655,7 +2655,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "arcane_shot", player, player -> find_spell( "Arcane Shot" ) )
   {
     parse_options( options_str );
-    if ( !player -> dbc.ptr )
+    if ( player -> wod_hotfix )
       weapon_multiplier *= 1.15;
 
     base_multiplier *= 1.0 + player -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
@@ -2705,7 +2705,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
     parse_options( options_str );
 
     aoe = -1;
-    if ( !player -> dbc.ptr )
+    if ( player -> wod_hotfix )
       weapon_multiplier *= 1.3;
 
     base_multiplier *= 1.0 + player -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
@@ -2771,7 +2771,7 @@ struct focusing_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
     focus_gain = data().effectN( 2 ).base_value();
-    if ( !player -> dbc.ptr )
+    if ( player -> wod_hotfix )
     {
       base_multiplier *= 1.15;
       base_multiplier *= 1.25;
@@ -2822,7 +2822,7 @@ struct steady_shot_t: public hunter_ranged_attack_t
     if ( p() -> sets.has_set_bonus( SET_MELEE, T13, B2 ) )
       focus_gain *= 2.0;
 
-    if ( !player -> dbc.ptr )
+    if ( player -> wod_hotfix )
       weapon_multiplier *= 1.15;
   }
 
@@ -3000,7 +3000,7 @@ struct barrage_t: public hunter_spell_t
       // FIXME AoE is just approximate from tooltips
       aoe = -1;
       base_aoe_multiplier = 0.5;
-      if ( !player -> dbc.ptr )
+      if ( player -> wod_hotfix )
         weapon_multiplier *= 1.15;
       if ( player -> dbc.ptr )
         weapon_multiplier *= 1.21;
@@ -3054,7 +3054,7 @@ struct peck_t: public ranged_attack_t
     travel_speed = 0.0;
 
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
-    if ( !player -> dbc.ptr )
+    if ( player -> wod_hotfix )
       attack_power_mod.direct *= 1.8;
   }
 
@@ -4161,7 +4161,7 @@ double hunter_t::composite_attack_power_multiplier() const
   if ( perks.improved_focus_fire -> ok() && buffs.focus_fire -> check() )
   {
     double stacks = buffs.focus_fire -> current_value / specs.focus_fire -> effectN( 1 ).percent();
-    mult += stacks * ( perks.improved_focus_fire -> effectN( 1 ).percent() + ( !dbc.ptr ? 0.03 : 0 ) );
+    mult += stacks * ( perks.improved_focus_fire -> effectN( 1 ).percent() + ( wod_hotfix ? 0.03 : 0 ) );
   }
   return mult;
 }

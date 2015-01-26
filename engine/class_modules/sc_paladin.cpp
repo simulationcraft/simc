@@ -5331,13 +5331,15 @@ void paladin_t::generate_action_prio_list_ret()
   single -> add_talent( this, "Final Verdict", "if=buff.avenging_wrath.up|target.health.pct<35" );
   single -> add_action( this, "Templar's Verdict","if=buff.avenging_wrath.up|target.health.pct<35&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*5)" );
 
-  single -> add_action( this, "Crusader Strike", "if=holy_power<=3|(holy_power=4&(cooldown.hammer_of_wrath.remains>=gcd&(target.health.pct<35|buff.avenging_wrath.remains>=gcd)))" );
+  single -> add_action( this, "Crusader Strike", "if=holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down)" );
+  single -> add_action( this, "Crusader Strike", "if=holy_power=4&cooldown.hammer_of_wrath.remains>=gcd*2&target.health.pct<35" );
 
   single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&(buff.avenging_wrath.up|target.health.pct<35)&!talent.final_verdict.enabled" );
+  single -> add_action( this, "Judgment", "cycle_targets=1,if=last_judgment_target!=target&glyph.double_jeopardy.enabled&holy_power<5" );
+  single -> add_action( this, "Exorcism", "if=glyph.mass_exorcism.enabled&active_enemies>=2&holy_power<5&!glyph.double_jeopardy.enabled" );
 
-  single -> add_action( this, "Judgment", "cycle_targets=1,if=last_judgment_target!=target&glyph.double_jeopardy.enabled&(holy_power<=3|(holy_power=4&(cooldown.crusader_strike.remains>=gcd|(cooldown.hammer_of_wrath.remains>=gcd&(target.health.pct<35|buff.avenging_wrath.remains>=gcd)))))" );
-  single -> add_action( this, "Exorcism", "if=glyph.mass_exorcism.enabled&active_enemies>=2&(holy_power<=3|(holy_power=4&(cooldown.crusader_strike.remains>=gcd|(cooldown.hammer_of_wrath.remains>=gcd&(target.health.pct<35|buff.avenging_wrath.remains>=gcd)))))&!glyph.double_jeopardy.enabled" );
-  single -> add_action( this, "Judgment", "if=holy_power<=3|(holy_power=4&(cooldown.crusader_strike.remains>=gcd|(cooldown.hammer_of_wrath.remains>=gcd&(target.health.pct<35|buff.avenging_wrath.remains>=gcd))))" );
+  single -> add_action( this, "Judgment", "if=holy_power<=3|(holy_power=4&cooldown.crusader_strike.remains>=gcd*2&target.health.pct>35&buff.avenging_wrath.down)" );
+  single -> add_action( this, "Judgment", "if=holy_power=4&cooldown.hammer_of_wrath.remains>=gcd*2&(target.health.pct<35|buff.avenging_wrath.remains>cooldown.hammer_of_wrath.remains)");
 
   single -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&buff.final_verdict.up" );
   single -> add_action( this, "Divine Storm", "if=active_enemies=2&holy_power>=4&buff.final_verdict.up" );
@@ -5351,7 +5353,8 @@ void paladin_t::generate_action_prio_list_ret()
   single -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&buff.maraads_truth.remains<cooldown.judgment.duration" );
   single -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&buff.liadrins_righteousness.remains<cooldown.judgment.duration&!buff.bloodlust.up" );
 
-  single -> add_action( this, "Exorcism", "if=holy_power<=3|(holy_power=4&(cooldown.judgment.remains>=gcd|cooldown.crusader_strike.remains>=gcd|(cooldown.hammer_of_wrath.remains>=gcd&(target.health.pct<35|buff.avenging_wrath.remains>=gcd))))" );
+  single -> add_action( this, "Exorcism", "if=holy_power<=3|(holy_power=4&(cooldown.judgment.remains>=gcd*2&cooldown.crusader_strike.remains>=gcd*2&target.health.pct>35&buff.avenging_wrath.down))" );
+  single -> add_action( this, "Exorcism", "if=holy_power=4&cooldown.hammer_of_wrath.remains>=gcd*2&(target.health.pct<35|buff.avenging_wrath.remains>cooldown.hammer_of_wrath.remains)" );
   single -> add_action( this, "Divine Storm","if=active_enemies=2&holy_power>=3&buff.final_verdict.up" );
   single -> add_talent( this, "Final Verdict", "if=holy_power>=3" );
   single -> add_action( this, "Templar's Verdict", "if=holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*6)" );
