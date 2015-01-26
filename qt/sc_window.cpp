@@ -471,7 +471,7 @@ void SC_MainWindow::createBestInSlotTab()
     range::fill( rootItems[i], 0 );
   }
 
-  QStringList appdatalocation =  QStandardPaths::standardLocations( QStandardPaths::AppDataLocation );
+  QStringList appdatalocation =  QStandardPaths::standardLocations( QStandardPaths::DataLocation );
 
   QString appdata = QStandardPaths::findExecutable( "simulationcraft", appdatalocation );
   if ( appdata.isEmpty() )

@@ -38,16 +38,10 @@ void parse_additional_args( SC_MainWindow& w, QStringList args )
   }
 }
 
+#if defined SC_WINDOWS
 bool checkWindowsVersion()
 {
-#if defined SC_VS
-  OSVERSIONINFO osvi;
-  BOOL bIsWindowsXPorLater;
-  ZeroMemory( &osvi, sizeof( OSVERSIONINFO ) );
-  osvi.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
-  GetVersionEx(&osvi);
-  bIsWindowsXPorLater = osvi.dwMajorVersion >= 6; // 6.0 and up is Vista
-#if defined VS_WIN_NONXP_TARGET 
+#if defined VS_WIN_NONXP_TARGET && defined SC_VS
   // The 32 bit version should be built with xp toolchain so that it will give an error box with an explanation, instead of a generic
   // appcrash that it would give with the normal toolchain.. which would just mean more issues being posted. 
   // After a few months we can probably remove this targetting for the GUI and only leave it in for CLI. - 01/08/2015
@@ -59,16 +53,16 @@ bool checkWindowsVersion()
     return true;
   }
 #endif
-  if ( !bIsWindowsXPorLater )
+  if ( QSysInfo::WindowsVersion < QSysInfo::WV_VISTA )
   {
     QMessageBox Msgbox;
     Msgbox.setText( "SimulationCraft GUI is no longer supported on Windows XP as of January 2015. \nIf you wish to continue using Simulationcraft, you may do so by the command line interface -- simc.exe." );
     Msgbox.exec();
     return false; // Do not continue loading.
   }
-#endif
   return true;
 }
+#endif
 
 int main( int argc, char *argv[] )
 {
@@ -79,15 +73,18 @@ int main( int argc, char *argv[] )
   dbc::init();
   module_t::init();
 
-#if defined ( VS_WIN_NONXP_TARGET )
-  if ( !IsWindows8OrGreater() && IsWindows7OrGreater() )
+#if defined SC_WINDOWS
+  if ( QSysInfo::WindowsVersion == QSysInfo::WV_WINDOWS7 )
     QApplication::setAttribute( Qt::AA_UseOpenGLES, true );
-  // This is to fix an issue with older video cards on windows 7.
+  // This is to fix an issue with older video cards on windows 7. It must be called before the application.
 #endif
+
   QApplication a( argc, argv );
 
-  if ( !checkWindowsVersion() ) // Check for compatability.
+#if defined SC_WINDOWS
+  if ( !checkWindowsVersion() ) // Check for compatability. Must be called after application.
   { return 0; }
+#endif
 
   QCoreApplication::setApplicationName( "SimulationCraft" );
   QCoreApplication::setApplicationVersion( SC_VERSION );
@@ -129,7 +126,7 @@ int main( int argc, char *argv[] )
   }
   a.installTranslator( &myappTranslator );
 
-  QString iconlocation = QStandardPaths::locate( QStandardPaths::AppDataLocation,
+  QString iconlocation = QStandardPaths::locate( QStandardPaths::DataLocation,
                                                  QString( "icon" ),
                                                  QStandardPaths::LocateDirectory );
   QDir::addSearchPath( "icon", iconlocation );
