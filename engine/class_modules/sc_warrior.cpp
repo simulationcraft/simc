@@ -4321,7 +4321,6 @@ void warrior_t::apl_arms()
   single_target -> add_talent( this, "Storm Bolt", "if=target.health.pct>20|(target.health.pct<20&!debuff.colossus_smash.up)" );
   single_target -> add_talent( this, "Siegebreaker" );
   single_target -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up&(!raid_event.adds.exists|raid_event.adds.in>55|(talent.anger_management.enabled&raid_event.adds.in>40))" );
-  single_target -> add_action( this, "Rend", "if=!debuff.colossus_smash.up&target.time_to_die>4&remains<5.4" );
   single_target -> add_action( this, "Execute", "if=buff.sudden_death.react" );
   single_target -> add_action( this, "Execute", "if=!buff.sudden_death.react&(rage>72&cooldown.colossus_smash.remains>gcd)|debuff.colossus_smash.up|target.time_to_die<5" );
   single_target -> add_talent( this, "Impending Victory", "if=rage<40&target.health.pct>20&cooldown.colossus_smash.remains>1" );
