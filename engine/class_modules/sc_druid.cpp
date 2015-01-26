@@ -3681,6 +3681,9 @@ struct healing_touch_t : public druid_heal_t
     if ( p() -> buff.natures_swiftness -> check() )
       return 0;
 
+    if ( p() -> buff.dream_of_cenarius -> check() )
+      return 0;
+
     return druid_heal_t::cost();
   }
 
@@ -5248,7 +5251,12 @@ public:
     double c = druid_spell_t::cost();
 
     if ( p() -> talent.guardian_of_elune -> ok() && p() -> dbc.ptr )
+    {
       c /= 1 + dodge();
+
+      if ( sim -> debug )
+        sim -> out_debug.printf( "druid_spell_t::cost: %s %.2f %s", name(), c, util::resource_type_string( current_resource() ) );
+    }
 
     return c;
   }
