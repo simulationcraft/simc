@@ -1080,7 +1080,7 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   if ( o() -> mastery_spells.master_demonologist -> ok() )
   {
     double mastery = o() -> cache.mastery();
-    if ( !dbc.ptr )
+    if ( wod_hotfix )
       mastery *= 4.0 / 3.0;
     m *= 1.0 + mastery * o() -> mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
   }
@@ -1619,7 +1619,7 @@ struct inner_demon_t : public pet_t
     if ( o() -> mastery_spells.master_demonologist -> ok() )
     {
       double mastery = o() -> cache.mastery();
-      if ( !dbc.ptr )
+      if ( wod_hotfix )
         mastery *= 4.0 / 3.0;
       m *= 1.0 + mastery * o() -> mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
     }
@@ -1963,7 +1963,7 @@ public:
     if ( p() -> buffs.metamorphosis -> up() && demo_mastery )
     {
       double mastery = p() -> cache.mastery();
-      if (! p() -> dbc.ptr )
+      if ( p() -> wod_hotfix )
         mastery *= 4.0 / 3.0;
       pm *= 1.0 + mastery * p() -> mastery_spells.master_demonologist -> effectN( 3 ).mastery_value();
     }
@@ -2171,7 +2171,7 @@ struct agony_t: public warlock_spell_t
     warlock_spell_t( p, "Agony" )
   {
     may_crit = false;
-    if ( !p -> dbc.ptr )
+    if ( p ->wod_hotfix )
       spell_power_mod.tick *= 1.08;
   }
 
@@ -2212,7 +2212,7 @@ struct doom_t: public warlock_spell_t
   doom_t( warlock_t* p ):
     warlock_spell_t( "doom", p, p -> spec.doom )
   {
-    if ( !p -> dbc.ptr )
+    if ( p -> wod_hotfix )
       spell_power_mod.tick *= 0.8;
     may_crit = false;
     base_crit += p -> perk.empowered_doom -> effectN( 1 ).percent();
@@ -2223,7 +2223,7 @@ struct doom_t: public warlock_spell_t
     double am = spell_t::action_multiplier();
 
     double mastery = p() -> cache.mastery();
-    if ( !p() -> dbc.ptr )
+    if ( p() -> wod_hotfix )
       mastery *= 4.0 / 3.0;
 
     am *= 1.0 + mastery * p() -> mastery_spells.master_demonologist -> effectN( 3 ).mastery_value();
@@ -2272,7 +2272,7 @@ struct demonbolt_t: public warlock_spell_t
   demonbolt_t( warlock_t* p ):
     warlock_spell_t( "demonbolt", p, p -> talents.demonbolt )
   {
-    if ( !p -> dbc.ptr )
+    if ( p -> wod_hotfix )
       base_multiplier *= 0.77;
   }
 
@@ -2323,7 +2323,7 @@ struct havoc_t: public warlock_spell_t
     cooldown -> duration = data().cooldown() + p -> glyphs.havoc -> effectN( 2 ).time_value();
     cooldown -> duration += p -> perk.enhanced_havoc -> effectN( 1 ).time_value();
     cooldown -> charges = data().charges() + p -> glyphs.havoc -> effectN( 1 ).base_value();
-    if ( !p -> dbc.ptr )
+    if ( p -> wod_hotfix )
       cooldown -> duration -= timespan_t::from_seconds( 5 );
 
   }
@@ -2345,7 +2345,7 @@ struct shadowflame_t: public warlock_spell_t
     background = true;
     may_miss = false;
     generate_fury = 2;
-    if ( !p -> dbc.ptr )
+    if ( p -> wod_hotfix )
       spell_power_mod.tick *= 0.8;
   }
 
@@ -2394,7 +2394,8 @@ struct hand_of_guldan_t: public warlock_spell_t
   {
     aoe = -1;
 
-    base_multiplier *= 0.8; // Hotfixed on both live and ptr.
+    if ( p -> wod_hotfix || p -> dbc.ptr )
+      base_multiplier *= 0.8;               // Hotfixed on both live and ptr.
 
     cooldown -> duration = timespan_t::from_seconds( 15 );
     cooldown -> charges = 2 + p -> sets.set( WARLOCK_DEMONOLOGY, T17, B4 ) -> effectN( 1 ).base_value();
@@ -2525,7 +2526,7 @@ struct shadowburn_t: public warlock_spell_t
     min_gcd = timespan_t::from_millis( 500 );
     havoc_consume = 1;
     delay = data().effectN( 1 ).trigger() -> duration();
-    if ( !p -> dbc.ptr )
+    if ( p -> wod_hotfix )
       base_multiplier *= 1.08;
   }
 
@@ -2591,7 +2592,7 @@ struct corruption_t: public warlock_spell_t
     dot_duration = data().effectN( 1 ).trigger() -> duration();
     spell_power_mod.tick = data().effectN( 1 ).trigger() -> effectN( 1 ).sp_coeff();
     base_tick_time = data().effectN( 1 ).trigger() -> effectN( 1 ).period();
-    if ( !p -> dbc.ptr )
+    if ( p -> wod_hotfix )
       spell_power_mod.tick *= 0.9;
   }
 
@@ -2749,7 +2750,7 @@ struct unstable_affliction_t: public warlock_spell_t
     warlock_spell_t( p, "Unstable Affliction" )
   {
     may_crit = false;
-    if ( !p -> dbc.ptr )
+    if ( p -> wod_hotfix )
       spell_power_mod.tick *= 1.08;
     if ( p -> glyphs.unstable_affliction -> ok() )
       base_execute_time *= 1.0 + p -> glyphs.unstable_affliction -> effectN( 1 ).percent();
@@ -2856,7 +2857,7 @@ struct immolate_t: public warlock_spell_t
     base_tick_time = p -> find_spell( 157736 ) -> effectN( 1 ).period();
     dot_duration = p -> find_spell( 157736 ) -> duration();
     spell_power_mod.tick = p -> spec.immolate -> effectN( 1 ).sp_coeff();
-    if ( !p -> dbc.ptr )
+    if ( p -> wod_hotfix )
     {
       spell_power_mod.tick *= 1.08;
       spell_power_mod.direct *= 1.08;
@@ -2874,7 +2875,7 @@ struct immolate_t: public warlock_spell_t
     hasted_ticks = true;
     tick_may_crit = true;
     spell_power_mod.tick = data().effectN( 1 ).sp_coeff();
-    if ( !p -> dbc.ptr )
+    if ( p -> wod_hotfix )
     {
       spell_power_mod.tick *= 1.08;
       spell_power_mod.direct *= 1.08;
@@ -2998,7 +2999,7 @@ struct conflagrate_t: public warlock_spell_t
     if ( p -> talents.charred_remains -> ok() ){
       base_multiplier *= 1.0 + p -> talents.charred_remains -> effectN( 1 ).percent();
     }
-    if ( !p -> dbc.ptr )
+    if ( p -> wod_hotfix )
       base_multiplier *= 1.08;
     havoc_consume = 1;
     base_costs[RESOURCE_MANA] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
@@ -3013,7 +3014,7 @@ struct conflagrate_t: public warlock_spell_t
     gain = p -> get_gain( "conflagrate_fnb" );
     if ( p -> talents.charred_remains -> ok() )
       base_multiplier *= 1.0 + p -> talents.charred_remains -> effectN( 1 ).percent();
-    if ( !p -> dbc.ptr )
+    if ( p -> wod_hotfix )
       base_multiplier *= 1.08;
   }
 
@@ -3116,12 +3117,12 @@ struct incinerate_t: public warlock_spell_t
   {
     if ( p -> talents.charred_remains -> ok() )
     {
-      if (p->dbc.ptr)
+      if ( p -> dbc.ptr )
         base_multiplier *= 0.5;
       else
         base_multiplier *= 1.0 + p -> talents.charred_remains -> effectN( 1 ).percent();
     }
-    if ( !p -> dbc.ptr )
+    if ( p -> wod_hotfix )
       base_multiplier *= 1.08;
     havoc_consume = 1;
     base_costs[RESOURCE_MANA] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
@@ -3142,7 +3143,7 @@ struct incinerate_t: public warlock_spell_t
       else
         base_multiplier *= 1.0 + p -> talents.charred_remains -> effectN( 1 ).percent();
     }
-    if ( !p -> dbc.ptr )
+    if ( p -> wod_hotfix )
       base_multiplier *= 1.08;
   }
 
@@ -3359,7 +3360,7 @@ struct chaos_bolt_t: public warlock_spell_t
   {
     if ( !p -> talents.charred_remains -> ok() )
       fnb = 0;
-    if ( !p -> dbc.ptr )
+    if ( p -> wod_hotfix )
       base_multiplier *= 1.08;
 
     havoc_consume = 3;
@@ -3375,7 +3376,7 @@ struct chaos_bolt_t: public warlock_spell_t
     backdraft_consume = 3;
     base_execute_time += p -> perk.enhanced_chaos_bolt -> effectN( 1 ).time_value();
 
-    if ( !p -> dbc.ptr )
+    if ( p -> wod_hotfix )
       base_multiplier *= 1.08;
 
     stats = p -> get_stats( "chaos_bolt_fnb", this );
@@ -3610,7 +3611,8 @@ struct chaos_wave_dmg_t: public warlock_spell_t
     background = true;
     dual = true;
 
-    base_multiplier *= 0.8; // Hotfixed on both live and ptr.
+    if ( p -> wod_hotfix || p -> dbc.ptr )
+      base_multiplier *= 0.8;               // Hotfixed on both live and ptr.
   }
 };
 
@@ -4090,13 +4092,13 @@ struct rain_of_fire_tick_t: public warlock_spell_t
   {
     aoe = -1;
     background = true;
-    if ( !p -> dbc.ptr )
+    if ( p -> wod_hotfix )
       spell_power_mod.direct *= 0.4;
   }
 
   void schedule_travel( action_state_t* s )
   {
-    if ( !p() -> dbc.ptr )
+    if ( p() -> wod_hotfix )
     {
       if ( result_is_hit( s -> result ) )
         trigger_ember_gain( p(), 0.2, p() -> gains.rain_of_fire, 0.125 );
@@ -4974,7 +4976,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   if ( mastery_spells.master_demonologist -> ok() )
   {
     double mastery = cache.mastery();
-    if ( !dbc.ptr )
+    if ( wod_hotfix )
       mastery *= 4.0 / 3.0;
     m *= 1.0 + mastery * mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
   }
@@ -5064,19 +5066,19 @@ double warlock_t::composite_rating_multiplier( rating_e rating ) const
     m *= 1.0 + spec.eradication -> effectN( 1 ).percent();
     break;
   case RATING_SPELL_CRIT:
-    if ( !dbc.ptr && specialization() == WARLOCK_DESTRUCTION)
+    if ( wod_hotfix && specialization() == WARLOCK_DESTRUCTION)
       m *= 1.15;
     else
       m *= 1.0 + spec.devastation -> effectN( 1 ).percent();
     break;
   case RATING_MELEE_CRIT:
-    if ( !dbc.ptr && specialization() == WARLOCK_DESTRUCTION)
+    if ( wod_hotfix && specialization() == WARLOCK_DESTRUCTION)
       m *= 1.15;
     else
       m *= 1.0 + spec.devastation -> effectN( 1 ).percent();
     break;
   case RATING_RANGED_CRIT:
-    if ( !dbc.ptr && specialization() == WARLOCK_DESTRUCTION)
+    if ( wod_hotfix && specialization() == WARLOCK_DESTRUCTION)
       m *= 1.15;
     else
       m *= 1.0 + spec.devastation -> effectN( 1 ).percent();
