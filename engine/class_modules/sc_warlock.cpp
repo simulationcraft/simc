@@ -2393,8 +2393,8 @@ struct hand_of_guldan_t: public warlock_spell_t
     warlock_spell_t( p, "Hand of Gul'dan" )
   {
     aoe = -1;
-    if ( !p -> dbc.ptr )
-      base_multiplier *= 0.8;
+
+    base_multiplier *= 0.8; // Hotfixed on both live and ptr.
 
     cooldown -> duration = timespan_t::from_seconds( 15 );
     cooldown -> charges = 2 + p -> sets.set( WARLOCK_DEMONOLOGY, T17, B4 ) -> effectN( 1 ).base_value();
@@ -3609,8 +3609,8 @@ struct chaos_wave_dmg_t: public warlock_spell_t
     aoe = -1;
     background = true;
     dual = true;
-    if ( !p -> dbc.ptr )
-      base_multiplier *= 0.8;
+
+    base_multiplier *= 0.8; // Hotfixed on both live and ptr.
   }
 };
 
