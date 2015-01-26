@@ -585,15 +585,17 @@ public:
   virtual void execute()
   {
     if ( p() -> cooldown.stance_swap -> up() && p() -> swapping == false && !p() -> talents.gladiators_resolve -> ok() )
-    {
-      if ( p() -> active_stance == STANCE_DEFENSE &&
-           p() -> specialization() != WARRIOR_PROTECTION &&
-           ( ( stancemask & STANCE_BATTLE ) != 0 ) )
-           p() -> stance_swap();
-      else if ( p() -> active_stance == STANCE_BATTLE &&
-                p() -> specialization() == WARRIOR_PROTECTION &&
-                ( ( stancemask & STANCE_DEFENSE ) != 0 ) )
-                p() -> stance_swap();
+    { // If player is able to swap stances, has not disabled automated swapping in simc, not specced into gladiator's resolve, (continued)
+      if ( p() -> active_stance == STANCE_DEFENSE &&        // currently in defensive stance,
+           p() -> specialization() != WARRIOR_PROTECTION && // not protection specced,
+           ( ( stancemask & STANCE_BATTLE ) != 0 ) )        // and is able to use this ability in battle stance.
+           p() -> stance_swap();                            // Go ahead and swap to battle.
+
+      else if ( p() -> active_stance == STANCE_BATTLE &&         // On the other side, if player is in battle stance,
+                p() -> specialization() == WARRIOR_PROTECTION && // is a tank,
+                ( ( stancemask & STANCE_DEFENSE ) != 0 ) &&      // can use the ability in defensive stance,
+                p() -> primary_role() == ROLE_TANK )             // is reallly reallyyyy a tank, and not some strange person trying to dps in battle stance without gladiator's resolve, :p
+                p() -> stance_swap();                            // Swap back to defensive stance.
     }
     ab::execute();
   }
@@ -634,16 +636,10 @@ public:
       // -1 melee range implies that the ability can be used at any distance from the target. Battle shout, stance swaps, etc.
       return false;
 
-    if ( p() -> active_stance == STANCE_GLADIATOR ) // Gladiator can use all abilities no matter the stance.
-      return true;
-
     // Attack available in current stance?
     if ( ( ( stancemask & p() -> active_stance ) == 0 ) && p() -> cooldown.stance_swap -> up() )
     {
-      if ( p() -> talents.gladiators_resolve -> ok() && p() -> in_combat )
-        return false; // Protection cannot swap in/out of gladiator stance during combat.
-      else
-        p() -> stance_swap();
+      p() -> stance_swap(); // Force the stance swap, the sim will try to use it again in 0.1 seconds.
       return false;
     }
     else if ( ( ( stancemask & p() -> active_stance ) == 0 ) && p() -> cooldown.stance_swap -> down() )
@@ -1621,7 +1617,7 @@ struct devastate_t: public warrior_attack_t
     warrior_attack_t( "devastate", p, p -> spec.devastate )
   {
     parse_options( options_str );
-    stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
+    stancemask = STANCE_GLADIATOR | STANCE_DEFENSE | STANCE_BATTLE;
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 2.5; // Fix
   }
@@ -1873,7 +1869,10 @@ struct heroic_strike_t: public warrior_attack_t
 
   void anger_management( double )
   {
-    base_t::anger_management( anger_management_rage );
+    if ( p() -> buff.ultimatum -> check() ) // Ultimatum does not grant cooldown reduction from anger management.
+      return;
+
+    base_t::anger_management( anger_management_rage ); // However, unyielding strikes grants cooldown reduction based on the original cost of heroic strike.
   }
 
   void assess_damage( dmg_e type, action_state_t* s )
@@ -2599,7 +2598,7 @@ struct shield_slam_t: public warrior_attack_t
     shield_block_2pc( new shield_block_2pc_t( p ) )
   {
     parse_options( options_str );
-    stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
+    stancemask = STANCE_GLADIATOR | STANCE_DEFENSE | STANCE_BATTLE;
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
 
     attack_power_mod.direct = 0.366; // Low level value for shield slam.
@@ -2719,7 +2718,7 @@ struct slam_t: public warrior_attack_t
     warrior_attack_t( "slam", p, p -> talents.slam )
   {
     parse_options( options_str );
-    stancemask = STANCE_BATTLE;
+    stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     weapon = &( p -> main_hand_weapon );
     base_costs[RESOURCE_RAGE] = 10;
     if ( !p -> dbc.ptr )
@@ -3628,6 +3627,8 @@ struct stance_t: public warrior_spell_t
     parse_options( options_str );
     range = -1;
 
+    stancemask = STANCE_DEFENSE | STANCE_GLADIATOR | STANCE_BATTLE;
+
     if ( p -> specialization() != WARRIOR_PROTECTION )
       starting_stance = STANCE_BATTLE;
     else if ( p -> primary_role() == ROLE_ATTACK && p -> talents.gladiators_resolve )
@@ -3716,7 +3717,7 @@ struct stance_t: public warrior_spell_t
     if ( p() -> in_combat && p() -> talents.gladiators_resolve -> ok() )
       return false;
     if ( p() -> cooldown.stance_swap -> down() || cooldown -> down() || 
-         ( swap == 0 && p() -> active_stance == switch_to_stance ) )
+       ( swap == 0 && p() -> active_stance == switch_to_stance ) )
          return false;
 
     return warrior_spell_t::ready();
@@ -5460,7 +5461,7 @@ void warrior_t::invalidate_cache( cache_e c )
 role_e warrior_t::primary_role() const
 {
   // For now, assume "Default role"/ROLE_NONE wants to be a gladiator dps.
-  if ( specialization() == WARRIOR_PROTECTION && ( player_t::primary_role() == ROLE_TANK || !gladiator ) )
+  if ( specialization() == WARRIOR_PROTECTION && player_t::primary_role() == ROLE_TANK )
   {
     return ROLE_TANK;
   }
@@ -5670,9 +5671,11 @@ void warrior_t::copy_from( player_t* source )
 
 void warrior_t::stance_swap()
 {
-  // Blizzard has automated stance swapping with defensive and battle stance. This class will swap to the stance automatically if
+  // Blizzard has automated stance swapping with defensive and battle stance. This function will swap to the stance automatically if
   // The ability that we are trying to use is not usable in the current stance.
   warrior_stance swap;
+  if ( talents.gladiators_resolve -> ok() && in_combat ) // Cannot swap stances with gladiator's resolve in combat.
+    return;
   switch ( active_stance )
   {
   case STANCE_BATTLE:
