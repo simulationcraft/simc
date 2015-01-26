@@ -1072,7 +1072,7 @@ public:
       return;
 
     // Icicles do not double dip on target based multipliers
-    double amount = state -> result_amount / state -> target_da_multiplier * p() -> cache.mastery_value();
+    double amount = state -> result_amount / ( state -> target_da_multiplier * state -> versatility ) * p() -> cache.mastery_value();
 
     assert( as<int>( p() -> icicles.size() ) <= p() -> spec.icicles -> effectN( 2 ).base_value() );
     // Shoot one
