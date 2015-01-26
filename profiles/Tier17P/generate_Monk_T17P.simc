@@ -17,21 +17,21 @@ glyphs=touch_of_death
 initial_chi=5
 
 head=blackwater_helm,id=109979,bonus_id=524
-neck=windseal_necklace,id=109953,bonus_id=524,enchant_id=gift_of_multistrike
+neck=windseal_necklace,id=109953,bonus_id=524,enchant=gift_of_multistrike
 shoulder=spireflame_spaulders,id=114457,bonus_id=489
-back=deadshot_greatcloak,id=109905,bonus_id=524,enchant_id=gift_of_multistrike
+back=deadshot_greatcloak,id=109905,bonus_id=524,enchant=gift_of_multistrike
 chest=spireflame_chestguard,id=114436,bonus_id=489
 wrist=spireflame_bracers,id=114433,bonus_id=489
 hands=blackwater_grips,id=109862,bonus_id=524
 waist=belt_of_burning_focus,id=109829,bonus_id=524
 legs=bloodfeather_leggings,id=109810,bonus_id=524
 feet=spireflame_boots,id=114441,bonus_id=489
-finger1=signet_of_radiant_leaves,id=109762,bonus_id=524,enchant_id=gift_of_multistrike
-finger2=solium_band_of_dexterity,id=118292,enchant_id=gift_of_multistrike
+finger1=signet_of_radiant_leaves,id=109762,bonus_id=524,enchant=gift_of_multistrike
+finger2=solium_band_of_dexterity,id=118292,enchant=gift_of_multistrike
 trinket1=thundertowers_targeting_reticle,id=109996,bonus_id=524
 trinket2=blood_seal_of_azzakel,id=109995,bonus_id=524
-main_hand=turbulent_warmace,id=115323,bonus_id=489,enchant_id=mark_of_the_frostwolf
-off_hand=turbulent_warmace,id=115323,bonus_id=489,enchant_id=mark_of_the_frostwolf
+main_hand=turbulent_warmace,id=115323,bonus_id=489,enchant=mark_of_the_frostwolf
+off_hand=turbulent_warmace,id=115323,bonus_id=489,enchant=mark_of_the_frostwolf
 save=Monk_Windwalker_1h_T17P.simc
 
 # Windwalker 2h Serenity
@@ -46,20 +46,20 @@ glyphs=touch_of_death
 initial_chi=5
 
 head=blackwater_helm,id=109979,bonus_id=524
-neck=windseal_necklace,id=109953,bonus_id=524,enchant_id=gift_of_multistrike
+neck=windseal_necklace,id=109953,bonus_id=524,enchant=gift_of_multistrike
 shoulder=spireflame_spaulders,id=114457,bonus_id=489
-back=deadshot_greatcloak,id=109905,bonus_id=524,enchant_id=gift_of_multistrike
+back=deadshot_greatcloak,id=109905,bonus_id=524,enchant=gift_of_multistrike
 chest=spireflame_chestguard,id=114436,bonus_id=489
 wrist=spireflame_bracers,id=114433,bonus_id=489
 hands=blackwater_grips,id=109862,bonus_id=524
 waist=belt_of_burning_focus,id=109829,bonus_id=524
 legs=bloodfeather_leggings,id=109810,bonus_id=524
 feet=spireflame_boots,id=114441,bonus_id=489
-finger1=signet_of_radiant_leaves,id=109762,bonus_id=524,enchant_id=gift_of_multistrike
-finger2=solium_band_of_dexterity,id=118292,enchant_id=gift_of_multistrike
+finger1=signet_of_radiant_leaves,id=109762,bonus_id=524,enchant=gift_of_multistrike
+finger2=solium_band_of_dexterity,id=118292,enchant=gift_of_multistrike
 trinket1=thundertowers_targeting_reticle,id=109996,bonus_id=524
 trinket2=blood_seal_of_azzakel,id=109995,bonus_id=524
-main_hand=turbulent_polearm,id=115324,bonus_id=489,enchant_id=mark_of_the_frostwolf
+main_hand=turbulent_polearm,id=115324,bonus_id=489,enchant=mark_of_the_frostwolf
 save=Monk_Windwalker_2h_T17P.simc
 
 # Brewmaster 1H Chi Explosion

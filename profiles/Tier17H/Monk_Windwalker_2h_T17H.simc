@@ -117,9 +117,9 @@ actions.aoe_rjw+=/expel_harm,if=chi.max-chi>=2&health.percent<95
 actions.aoe_rjw+=/jab,if=chi.max-chi>=2
 
 head=helm_of_the_somber_gaze,id=115556,bonus_id=566
-neck=darklight_necklace,id=113865,bonus_id=566,enchant_id=gift_of_multistrike
+neck=darklight_necklace,id=113865,bonus_id=566,enchant=gift_of_multistrike
 shoulders=mantle_of_the_somber_gaze,id=115559,bonus_id=566
-back=drape_of_the_dark_hunt,id=113971,bonus_id=566,enchant_id=gift_of_multistrike
+back=drape_of_the_dark_hunt,id=113971,bonus_id=566,enchant=gift_of_multistrike
 chest=vest_of_forceful_fury,id=113870,bonus_id=566
 wrists=bracers_of_shattered_limbs,id=119333,bonus_id=566
 hands=handwraps_of_the_somber_gaze,id=115555,bonus_id=566
@@ -127,10 +127,10 @@ waist=conductors_multipocket_girdle,id=113964,bonus_id=566
 legs=legwraps_of_the_somber_gaze,id=115557,bonus_id=566
 feet=furnace_tenders_treads,id=113895,bonus_id=566
 finger1=spellbound_solium_band_of_fatal_strikes,id=118302,enchant=gift_of_multistrike
-finger2=unexploded_explosive_shard,id=113877,bonus_id=566,enchant_id=gift_of_multistrike
+finger2=unexploded_explosive_shard,id=113877,bonus_id=566,enchant=gift_of_multistrike
 trinket1=humming_blackiron_trigger,id=113985,bonus_id=566
 trinket2=scales_of_doom,id=113612,bonus_id=566
-main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=566,enchant_id=mark_of_the_frostwolf
+main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=566,enchant=mark_of_the_frostwolf
 
 # Gear Summary
 # gear_agility=3244
@@ -139,7 +139,7 @@ main_hand=talrak_bloody_skull_of_the_thunderlords,id=113939,bonus_id=566,enchant
 # gear_haste_rating=177
 # gear_mastery_rating=266
 # gear_armor=1057
-# gear_multistrike_rating=1415
+# gear_multistrike_rating=1640
 # gear_versatility_rating=212
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
