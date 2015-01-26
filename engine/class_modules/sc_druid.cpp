@@ -2371,7 +2371,7 @@ struct ferocious_bite_t : public cat_attack_t
 
     p -> max_fb_energy = max_excess_energy + cost();
 
-    if ( p -> wod_hotfix )
+    if ( ! p -> dbc.ptr )
       base_multiplier *= 1.12;
   }
 
@@ -2508,7 +2508,7 @@ struct rake_t : public cat_attack_t
     attack_power_mod.tick = bleed_spell -> effectN( 1 ).ap_coeff();
     dot_duration          = bleed_spell -> duration();
     base_tick_time        = bleed_spell -> effectN( 1 ).period();
-    if ( p -> wod_hotfix )
+    if ( ! p -> dbc.ptr )
       base_multiplier *= 1.12;
 
     ir_counter = new snapshot_counter_t( p, p -> buff.prowl );
@@ -2626,7 +2626,7 @@ struct rip_t : public cat_attack_t
     dot_behavior = DOT_REFRESH;
 
     dot_duration += player -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
-    if ( p -> wod_hotfix )
+    if ( ! p -> dbc.ptr )
       base_multiplier *= 1.12;
 
     trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
@@ -2703,7 +2703,7 @@ struct shred_t : public cat_attack_t
   {
     base_multiplier *= 1.0 + player -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     special = true;
-    if ( p -> wod_hotfix )
+    if ( ! p -> dbc.ptr )
       base_multiplier *= 1.12;
   }
 
@@ -2790,7 +2790,7 @@ public:
   {
     aoe = -1;
     combo_point_gain = data().effectN( 1 ).base_value(); // Effect is not labelled correctly as CP gain
-    if ( player -> wod_hotfix )
+    if ( ! player -> dbc.ptr )
       base_multiplier *= 1.25;
   }
 
@@ -2870,7 +2870,7 @@ struct thrash_cat_t : public cat_attack_t
     aoe                    = -1;
     dot_behavior           = DOT_REFRESH;
     spell_power_mod.direct = 0;
-    if ( p -> wod_hotfix )
+    if ( ! p -> dbc.ptr )
       base_multiplier *= 1.12;
 
     trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
@@ -3086,7 +3086,7 @@ struct lacerate_t : public bear_attack_t
     dot_behavior = DOT_REFRESH;
 
     rage_amount = data().effectN( 3 ).resource( RESOURCE_RAGE );
-    if ( p -> wod_hotfix )
+    if ( ! p -> dbc.ptr )
       base_multiplier *= 1.05;
   }
 
@@ -3147,7 +3147,7 @@ struct mangle_t : public bear_attack_t
       base_crit += p() -> talent.dream_of_cenarius -> effectN( 3 ).percent();
 
     base_multiplier *= 1.0 + player -> talent.soul_of_the_forest -> effectN( 2 ).percent();
-    if ( player -> wod_hotfix )
+    if ( ! player -> dbc.ptr )
       base_multiplier *= 1.05;
   }
 
@@ -3233,7 +3233,7 @@ struct maul_t : public bear_attack_t
         cost_reduction = p() -> find_spell( 165410 ) -> effectN( 1 ).resource( RESOURCE_RAGE ) * -1.0;
     }
 
-    if ( player -> wod_hotfix )
+    if ( ! player -> dbc.ptr )
       base_multiplier *= 1.05;
 
     normalize_weapon_speed = false;
@@ -3304,7 +3304,7 @@ struct pulverize_t : public bear_attack_t
   {
     parse_options( options_str );
 
-    if ( player -> wod_hotfix )
+    if ( ! player -> dbc.ptr )
       base_multiplier *= 1.05;
 
     normalize_weapon_speed = false;
@@ -3349,7 +3349,7 @@ struct thrash_bear_t : public bear_attack_t
     // 9/28/2014: Damage multiplier to fix damage inconsistency vs in-game.
     base_multiplier *= 4.0;
 
-    if ( player -> wod_hotfix )
+    if ( ! player -> dbc.ptr )
       attack_power_mod.direct *= 0.5;
 
     rage_amount = rage_tick_amount = p() -> find_spell( 158723 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
@@ -3658,20 +3658,19 @@ struct healing_touch_t : public druid_heal_t
     // redirect to self if not specified
     if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == DRUID_GUARDIAN ) )
       target = p;
+    
+    if ( p -> talent.dream_of_cenarius -> ok() && p -> specialization() == DRUID_GUARDIAN )
+      attack_power_mod.direct = spell_power_mod.direct;
   }
 
   double spell_direct_power_coefficient( const action_state_t* /* state */ ) const
   {
-    if ( p() -> specialization() == DRUID_GUARDIAN && p() -> buff.dream_of_cenarius -> check() )
-      return 0.0;
-    return data().effectN( 1 ).sp_coeff();
+    return spell_power_mod.direct * ! p() -> buff.dream_of_cenarius -> check();
   }
 
   double attack_direct_power_coefficient( const action_state_t* /* state */ ) const
   {
-    if ( p() -> specialization() == DRUID_GUARDIAN && p() -> buff.dream_of_cenarius -> check() )
-      return data().effectN( 1 ).sp_coeff();
-    return 0.0;
+    return attack_power_mod.direct * p() -> buff.dream_of_cenarius -> check();
   }
 
   virtual double cost() const
@@ -3952,7 +3951,7 @@ struct rejuvenation_t : public druid_heal_t
   {
     tick_zero = true;
     ignore_false_positive = true; // Prevents cat/bear from failing a skill check and going into caster form.
-    if ( p -> wod_hotfix )
+    if ( ! p -> dbc.ptr )
       base_multiplier *= 0.95;
   }
 
@@ -4166,7 +4165,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 
       double mastery;
       mastery = p -> cache.mastery_value();
-      if ( p -> wod_hotfix )
+      if ( ! p -> dbc.ptr )
         mastery *= 1.067;
       mastery += p -> spec.eclipse -> effectN( 1 ).percent();
 
@@ -5048,7 +5047,7 @@ struct moonfire_cat_t : public druid_spell_t
   {
     parse_options( options_str );
 
-    if ( player -> wod_hotfix )
+    if ( ! player -> dbc.ptr )
       base_multiplier *= 1.12;
   }
 
@@ -5334,7 +5333,7 @@ struct starfire_t : public druid_spell_t
   {
     parse_options( options_str );
     base_execute_time *= 1 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
-    if ( player -> wod_hotfix )
+    if ( ! player -> dbc.ptr )
     {
       spell_power_mod.direct *= 1.25;
     }
@@ -5392,7 +5391,7 @@ struct starfall_pulse_t : public druid_spell_t
   {
     direct_tick = true;
     aoe = -1;
-    if ( player -> wod_hotfix )
+    if ( ! player -> dbc.ptr )
     {
       spell_power_mod.direct *= 1.75;
     }
@@ -5461,7 +5460,7 @@ struct starsurge_t : public druid_spell_t
     cooldown = player -> cooldown.starfallsurge;
     base_execute_time *= 1.0 + player -> perk.enhanced_starsurge -> effectN( 1 ).percent();
 
-    if ( player -> wod_hotfix )
+    if ( ! player -> dbc.ptr )
     {
       spell_power_mod.direct *= 1.25;
     }
@@ -5501,7 +5500,7 @@ struct stellar_flare_t : public druid_spell_t
     balance = p() -> clamped_eclipse_amount;
     double mastery;
     mastery = p() -> cache.mastery_value();
-    if ( p() -> wod_hotfix )
+    if ( ! player -> dbc.ptr )
       mastery *= 1.067;
     mastery += p() -> spec.eclipse -> effectN(1).percent();
 
@@ -5683,7 +5682,7 @@ struct wrath_t : public druid_spell_t
   {
     parse_options( options_str );
     base_execute_time *= 1 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
-    if ( player -> wod_hotfix )
+    if ( ! player -> dbc.ptr )
     {
       spell_power_mod.direct *= 1.25;
     }
