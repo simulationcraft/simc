@@ -97,7 +97,7 @@ void SC_MainWindow::loadHistory()
     settings.clear();
     settings.setValue( "options/apikey", saveApiKey );
     QMessageBox msgBox;
-    msgBox.setText( "We have reset your configuration settings due to major changes to the GUI" );
+    msgBox.setText( tr("We have reset your configuration settings due to major changes to the GUI") );
     msgBox.exec();
   }
 
@@ -166,7 +166,7 @@ void SC_MainWindow::loadHistory()
 
   if ( simulateTab -> count() <= 1 )
   { // If we haven't retrieved any simulate tabs from history, add a default one.
-    simulateTab -> add_Text( defaultSimulateText, "Simulate!" );
+    simulateTab -> add_Text( defaultSimulateText, tr("Simulate!") );
   }
 }
 
@@ -639,7 +639,7 @@ void SC_MainWindow::createCustomTab()
   QHBoxLayout* customLayout = new QHBoxLayout();
   QGroupBox* customGroupBox = new QGroupBox();
   customGroupBox -> setLayout( customLayout );
-  importTab -> addTab( customGroupBox, "Custom Profile" );
+  importTab -> addTab( customGroupBox, tr("Custom Profile") );
   customLayout -> addWidget( createCustomCharData = new QGroupBox( tr( "Character Data" ) ), 1 );
   createCustomCharData -> setObjectName( QString::fromUtf8( "createCustomCharData" ) );
   customLayout -> addWidget( createCustomProfileDock = new QTabWidget(), 1 );
@@ -679,7 +679,7 @@ void SC_MainWindow::createLogTab()
 {
   logText = new SC_TextEdit( this, false );
   logText -> setReadOnly( true );
-  logText -> setPlainText( "Look here for error messages and simple text-only reporting.\n" );
+  logText -> setPlainText( tr("Look here for error messages and simple text-only reporting.\n") );
   mainTab -> addTab( logText, tr( "Log" ) );
 }
 
@@ -743,7 +743,7 @@ void SC_MainWindow::createPaperdoll()
   paperdollMainLayout -> addWidget( items );
   paperdollMainLayout -> addWidget( paperdoll );
 
-  mainTab -> addTab( paperdollTab, "Paperdoll" );
+  mainTab -> addTab( paperdollTab, tr("Paperdoll") );
 }
 #endif
 
@@ -823,9 +823,8 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
 
     if ( !simulateThread -> success )
     {
-      logText -> setformat_error();
       logText -> append( simulateThread -> error_str );
-      logText -> append( "Simulation failed!" );
+      logText -> append( tr("Simulation failed!") );
     }
 
     if ( !logFileOpenedSuccessfully )
@@ -917,8 +916,6 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
       logText -> append( contents );
       logText -> moveCursor( QTextCursor::End );
     }
-    logText -> resetformat();
-
   }
 }
 
@@ -1019,10 +1016,8 @@ void SC_MainWindow::importFinished()
   else
   {
     simulateTab -> setTabText( simulateTab -> currentIndex(), tr( "Import Failed" ) );
-    simulateTab -> current_Text() -> setformat_error(); // Print error message in big letters
-    simulateTab -> append_Text( "# Unable to generate profile from: " + importThread -> url + "\n" );
+    simulateTab -> append_Text( tr("# Unable to generate profile from: ") + importThread -> url + "\n" );
     deleteSim( import_sim, simulateTab -> current_Text() ); import_sim = 0;
-    simulateTab -> current_Text() -> resetformat(); // Reset font
   }
 
   if ( !simRunning() )
@@ -1104,7 +1099,7 @@ player_t* SC_MainWindow::init_paperdoll_sim( sim_t*& sim )
 
   PaperdollProfile* profile = paperdollProfile;
   const module_t* module = module_t::get( profile -> currentClass() );
-  player_t* player = module ? module -> create_player( sim, "Paperdoll Player", profile -> currentRace() ) : NULL;
+  player_t* player = module ? module -> create_player( sim, tr("Paperdoll Player"), profile -> currentRace() ) : NULL;
 
   if ( player )
   {
@@ -1205,9 +1200,7 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
   bool sim_was_debug = sim -> debug || sim -> log;
   if ( ! simulateThread -> success )
   {
-    logText -> setformat_error();
     logText -> moveCursor( QTextCursor::End );
-    logText -> resetformat();
     if ( mainTab -> currentTab() != TAB_SPELLQUERY )
       mainTab -> setCurrentTab( TAB_LOG );
 
@@ -1290,7 +1283,7 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
 
     // Plot Data
     SC_TextEdit* resultsPlotView = new SC_TextEdit( resultsEntry );
-    resultsEntry -> addTab( resultsPlotView, "plot data" );
+    resultsEntry -> addTab( resultsPlotView, tr("plot data") );
     QFile plot_file( sim -> reforge_plot_output_file_str.c_str() );
     if ( xml_file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
@@ -1359,7 +1352,7 @@ void SC_MainWindow::saveLog()
     file.close();
   }
 
-  logText->append( QString( "Log saved to: %1\n" ).arg( cmdLine -> commandLineText( TAB_LOG ) ) );
+  logText->append( QString( tr("Log saved to: %1\n") ).arg( cmdLine -> commandLineText( TAB_LOG ) ) );
 }
 
 void SC_MainWindow::saveResults()
@@ -1650,7 +1643,7 @@ void SC_MainWindow::bisDoubleClicked( QTreeWidgetItem* item, int /* col */ )
   QString profile = item -> text( 1 );
   if ( profile.isEmpty() )
     return;
-  QString s = "Unable to import profile " + profile;
+  QString s = tr("Unable to import profile ") + profile;
 
   QFile file( profile );
   if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
@@ -1762,7 +1755,7 @@ void SimulateThread::run()
   catch ( const std::exception& e )
   {
     success = false;
-    error_str = QString( "Option parsing error: " ) + e.what();
+    error_str = QString( tr("Option parsing error: ") ) + e.what();
     return;
   }
 
@@ -1773,7 +1766,7 @@ void SimulateThread::run()
   catch ( const std::exception& e )
   {
     success = false;
-    error_str = QString( "Simulation setup error: " ) + e.what();
+    error_str = QString( tr("Simulation setup error: ") ) + e.what();
     return;
   }
 
@@ -1940,7 +1933,7 @@ void SC_SingleResultTab::save_result()
   f.setAcceptMode( QFileDialog::AcceptSave );
   f.setDefaultSuffix( extension );
   f.selectFile( destination );
-  f.setWindowTitle( "Save results" );
+  f.setWindowTitle( tr("Save results") );
 
   if ( f.exec() )
   {
@@ -1966,7 +1959,7 @@ void SC_SingleResultTab::save_result()
       }
       file.close();
       QMessageBox::information( this, tr( "Save Result" ), tr( "Result saved to %1" ).arg( file.fileName() ), QMessageBox::Ok, QMessageBox::Ok );
-      mainWindow -> logText -> append( QString( "Results saved to: %1\n" ).arg( file.fileName() ) );
+      mainWindow -> logText -> append( QString( tr("Results saved to: %1\n") ).arg( file.fileName() ) );
     }
   }
 }

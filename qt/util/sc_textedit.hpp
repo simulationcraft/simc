@@ -30,27 +30,6 @@ public:
 
   SC_TextEdit( QWidget* parent = nullptr, bool accept_drops = true, bool enable_search = true );
 
-  void setformat_error()
-  { //setCurrentCharFormat( textformat_error );
-  }
-
-  void resetformat()
-  { //setCurrentCharFormat( textformat_default );
-  }
-
-  /*
-  protected:
-  virtual void dragEnterEvent( QDragEnterEvent* e )
-  {
-    e -> acceptProposedAction();
-  }
-  virtual void dropEvent( QDropEvent* e )
-  {
-    appendPlainText( e -> mimeData()-> text() );
-    e -> acceptProposedAction();
-  }
-  */
-
   void addIgnoreKeyPressEvent( Qt::Key k, QList<Qt::KeyboardModifier> s);
 
   bool removeIgnoreKeyPressEvent( Qt::Key k, QList<Qt::KeyboardModifier> s);
