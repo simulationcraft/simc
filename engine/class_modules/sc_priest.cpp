@@ -358,6 +358,8 @@ public:
     const spell_data_t* vampiric_embrace;
   } glyphs;
 
+  int shadowy_apparitions_in_flight;
+
   priest_t( sim_t* sim, const std::string& name, race_e r ) :
     player_t( sim, PRIEST, name, r ),
     buffs(),
@@ -372,7 +374,8 @@ public:
     active_spells(),
     pets(),
     options(),
-    glyphs()
+    glyphs(),
+    shadowy_apparitions_in_flight( 0 )
   {
     base.distance = 27.0; // Halo
 
@@ -2095,6 +2098,8 @@ struct shadowy_apparition_spell_t : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
+    priest.shadowy_apparitions_in_flight--;
+
     if ( priest.talents.auspicious_spirits -> ok() && result_is_hit( s -> result ) )
     {
       generate_shadow_orb( 1, priest.gains.shadow_orb_auspicious_spirits );
@@ -2141,6 +2146,7 @@ struct shadowy_apparition_spell_t : public priest_spell_t
       priest.sim -> out_debug << priest.name() << " triggered shadowy apparition.";
 
     priest.procs.shadowy_apparition -> occur();
+    priest.shadowy_apparitions_in_flight++;
     schedule_execute();
   }
 };
@@ -5214,6 +5220,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
 void priest_td_t::reset()
 {
   glyph_of_mind_harvest_consumed = false;
+  priest.shadowy_apparitions_in_flight = 0;
 }
 
 void priest_td_t::target_demise()
@@ -5414,6 +5421,24 @@ expr_t* priest_t::create_expression( action_t* a,
       }
     };
     return new primary_target_t( *this, *a );
+  }
+  if ( name_str == "shadowy_apparitions_in_flight" )
+  {
+    struct shadowy_apparitions_in_flight_t : public expr_t
+    {
+      priest_t& player;
+      action_t& action;
+      shadowy_apparitions_in_flight_t( priest_t& p, action_t& act ) :
+        expr_t( "shadowy_apparitions_in_flight" ), player( p ), action( act )
+      {
+      }
+
+      virtual double evaluate()
+      {
+        return player.shadowy_apparitions_in_flight;
+      }
+    };
+    return new shadowy_apparitions_in_flight_t( *this, *a );
   }
   else
   {
@@ -6383,6 +6408,8 @@ void priest_t::apl_shadow()
   main -> add_action( "mind_blast,if=glyph.mind_harvest.enabled&shadow_orb<=2&active_enemies<=5&cooldown_react" );
   main -> add_action( "devouring_plague,if=shadow_orb=5&!target.dot.devouring_plague_dot.ticking&(talent.surge_of_darkness.enabled|set_bonus.tier17_4pc),cycle_targets=1" );
   main -> add_action( "devouring_plague,if=shadow_orb=5" );
+  main -> add_action( "devouring_plague,if=shadow_orb>=3&talent.auspicious_spirits.enabled&shadowy_apparitions_in_flight>=3" );
+  main -> add_action( "devouring_plague,if=shadow_orb>=4&talent.auspicious_spirits.enabled&shadowy_apparitions_in_flight>=2" );
   main -> add_action( "devouring_plague,if=shadow_orb>=3&buff.mental_instinct.remains<gcd&buff.mental_instinct.remains>(gcd*0.7)&buff.mental_instinct.remains" );
   main -> add_action( "devouring_plague,if=shadow_orb>=4&talent.auspicious_spirits.enabled&((cooldown.mind_blast.remains<gcd&!set_bonus.tier17_2pc)|(target.health.pct<20&cooldown.shadow_word_death.remains<gcd))&!target.dot.devouring_plague_tick.ticking&talent.surge_of_darkness.enabled,cycle_targets=1" );
   main -> add_action( "devouring_plague,if=shadow_orb>=4&talent.auspicious_spirits.enabled&((cooldown.mind_blast.remains<gcd&!set_bonus.tier17_2pc)|(target.health.pct<20&cooldown.shadow_word_death.remains<gcd))" );
