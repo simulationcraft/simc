@@ -14,7 +14,6 @@ position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!.02..12
 spec=windwalker
 glyphs=touch_of_death
-initial_chi=5
 
 head=blackwater_helm,id=109979,bonus_id=524
 neck=windseal_necklace,id=109953,bonus_id=524,enchant=gift_of_multistrike
@@ -43,7 +42,6 @@ position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!.02..12
 spec=windwalker
 glyphs=touch_of_death
-initial_chi=5
 
 head=blackwater_helm,id=109979,bonus_id=524
 neck=windseal_necklace,id=109953,bonus_id=524,enchant=gift_of_multistrike
