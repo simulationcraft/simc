@@ -49,7 +49,7 @@ spec=windwalker
 glyphs=touch_of_death
 
 head=helm_of_the_somber_gaze,id=115556,bonus_id=567
-neck=darklight_necklace,id=113865,bonus_id=567,enchant_id=gift_of_multistrike
+neck=darklight_necklace,id=113865,bonus_id=567,enchant=gift_of_multistrike
 shoulders=mantle_of_the_somber_gaze,id=115559,bonus_id=567
 back=drape_of_the_dark_hunt,id=113971,bonus_id=567,enchant=gift_of_multistrike
 chest=vest_of_the_somber_gaze,id=115558,bonus_id=567

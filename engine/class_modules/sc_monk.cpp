@@ -6062,7 +6062,7 @@ void monk_t::apl_combat_windwalker()
   def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&chi>=2&(buff.tigereye_brew.stack>=16|target.time_to_die<40)&debuff.rising_sun_kick.up&buff.tiger_power.up" );
   def -> add_action( this, "Rising Sun Kick", "if=(debuff.rising_sun_kick.down|debuff.rising_sun_kick.remains<3)" );
   def -> add_talent( this, "Serenity", "if=chi>=2&buff.tiger_power.up&debuff.rising_sun_kick.up" );
-  def -> add_action( this, "Fists of Fury", "if=buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&energy.time_to_max>cast_time&!buff.serenity.remains" );
+  def -> add_action( this, "Fists of Fury", "if=buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&energy.time_to_max>cast_time&!buff.serenity.up" );
   def -> add_action( this, "Fortifying Brew", "if=target.health.percent<10&cooldown.touch_of_death.remains=0&(glyph.touch_of_death.enabled|chi>=3)" );
   def -> add_action( this, "Touch of Death", "if=target.health.percent<10&(glyph.touch_of_death.enabled|chi>=3)" );
   def -> add_talent( this, "Hurricane Strike", "if=energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&buff.energizing_brew.down" );
