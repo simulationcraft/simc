@@ -1175,8 +1175,6 @@ struct force_of_nature_feral_t : public pet_t
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     owner_coeff.sp_from_sp = 1.0 / 3.0;
     owner_coeff.ap_from_ap = 1.0 / 3.0;
-    if ( p -> dbc.ptr )
-      owner_coeff.ap_from_ap *= 1.8;
     regen_type = REGEN_DISABLED;
   }
 
@@ -4379,8 +4377,6 @@ struct bristling_fur_t : public druid_spell_t
     druid_spell_t( "bristling_fur", player, player -> talent.bristling_fur, options_str  )
   {
     harmful = false;
-    if ( player -> dbc.ptr && cooldown -> duration == timespan_t::from_seconds( 60.0 ) )
-      cooldown -> duration -= timespan_t::from_seconds( 30.0 );
   }
 
   void execute()
@@ -5498,12 +5494,6 @@ struct stellar_flare_t : public druid_spell_t
     druid_spell_t( "stellar_flare", player, player -> talent.stellar_flare )
   {
     parse_options( options_str );
-    if ( player -> dbc.ptr )
-    {
-      spell_power_mod.direct *= 1.16;
-      spell_power_mod.tick *= 1.16;
-      dot_duration = timespan_t::from_seconds( 24 );
-    }
   }
 
   double action_multiplier() const
