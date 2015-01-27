@@ -926,6 +926,7 @@ static const help_box_t help_boxes[] =
     { "HPS%", "Percentage of total HPS (including absorb) contributed by a particular action."},
     { "Theck-Meloree Index", "Measure of damage smoothness, calculated over entire fight length. Related to max spike damage, 1k TMI is roughly equivalent to 1% of your health. TMI ignores external healing and absorbs. Lower is better."},
     { "TMI bin size", "Time bin size used to calculate TMI and MSD, in seconds."},
+    { "Type", "Direct or Periodic damage." },
     { "Max Spike Damage Frequency", "This is roughly how many spikes as large as MSD Mean you take per iteration. Calculated from TMI and MSD values."},
     { "Dynamic Buffs", "Temporary buffs received during combat, perhaps multiple times."},
     { "Glance%", "Percentage of executes that resulted in glancing blows."},
