@@ -1701,6 +1701,8 @@ private:
     mg_tick_stats = player -> get_stats( name_str + "_mg", this );
     mg_tick_stats -> school = school;
 
+    havoc_proc = 0;
+
     parse_spell_coefficient( *this );
   }
 
@@ -1713,6 +1715,8 @@ public:
   mutable std::vector< player_t* > havoc_targets;
 
   int havoc_consume, backdraft_consume;
+
+  proc_t* havoc_proc;
 
   struct cost_event_t: event_t
   {
@@ -1805,6 +1809,11 @@ public:
     spell_t::init();
 
     if ( harmful && ! tick_action ) trigger_gcd += p() -> spec.chaotic_energy -> effectN( 3 ).time_value();
+
+    if ( havoc_consume > 0 )
+    {
+      havoc_proc = player -> get_proc( "Havoc: " + ( data().id() ? std::string( data().name_cstr() ) : name_str ) );
+    }
   }
 
   virtual void reset()
@@ -1898,6 +1907,8 @@ public:
 
     if ( use_havoc() )
     {
+      havoc_proc -> occur();
+
       p() -> buffs.havoc -> decrement( havoc_consume );
       if ( p() -> buffs.havoc -> check() == 0 )
         p() -> havoc_target = 0;
