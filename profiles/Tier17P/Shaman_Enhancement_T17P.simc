@@ -66,7 +66,7 @@ actions.single+=/searing_totem,if=pet.searing_totem.remains<=20&!pet.fire_elemen
 
 actions.aoe=unleash_elements,if=active_enemies>=4&dot.flame_shock.ticking&(cooldown.shock.remains>cooldown.fire_nova.remains|cooldown.fire_nova.remains=0)
 actions.aoe+=/fire_nova,if=active_dot.flame_shock>=3
-actions.aoe+=/wait,sec=cooldown.fire_nova.remains,if=active_dot.flame_shock>=4&cooldown.fire_nova.remains<=action.fire_nova.gcd
+actions.aoe+=/wait,sec=cooldown.fire_nova.remains,if=active_dot.flame_shock>=4&cooldown.fire_nova.remains<=action.fire_nova.gcd%2
 actions.aoe+=/magma_totem,if=!totem.fire.active
 actions.aoe+=/lava_lash,if=dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies|!talent.echo_of_the_elements.enabled|!buff.echo_of_the_elements.up)
 actions.aoe+=/elemental_blast,if=!buff.unleash_flame.up&(buff.maelstrom_weapon.react>=4|buff.ancestral_swiftness.up)
