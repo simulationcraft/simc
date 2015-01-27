@@ -1503,9 +1503,11 @@ struct arcane_blast_t : public mage_spell_t
     p() -> buffs.arcane_charge -> trigger();
     p() -> buffs.profound_magic -> expire();
 
-    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) && p() -> rppm_arcane_instability.trigger() )
+    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) &&
+         p() -> rppm_arcane_instability.trigger() )
+    {
       p() -> buffs.arcane_instability -> trigger();
-
+    }
   }
 
   virtual double action_multiplier() const
@@ -1606,8 +1608,11 @@ struct arcane_explosion_t : public mage_spell_t
       {
         p() -> buffs.arcane_charge -> trigger();
 
-        if( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) && p() -> rppm_arcane_instability.trigger() )
+        if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) &&
+             p() -> rppm_arcane_instability.trigger() )
+        {
           p() -> buffs.arcane_instability -> trigger();
+        }
       }
       else
       {
@@ -1766,6 +1771,12 @@ struct arcane_orb_bolt_t : public mage_spell_t
     {
       p() -> buffs.arcane_charge -> trigger();
       p() -> buffs.arcane_missiles -> trigger();
+
+      if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) &&
+           p() -> rppm_arcane_instability.trigger() )
+      {
+        p() -> buffs.arcane_instability -> trigger();
+      }
     }
   }
 
@@ -1807,8 +1818,11 @@ struct arcane_orb_t : public mage_spell_t
     mage_spell_t::execute();
     p() -> buffs.arcane_charge -> trigger();
 
-    if( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) && p() -> rppm_arcane_instability.trigger() )
+    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B4 ) &&
+         p() -> rppm_arcane_instability.trigger() )
+    {
       p() -> buffs.arcane_instability -> trigger();
+    }
   }
 
 
