@@ -595,11 +595,6 @@ struct base_fiend_pet_t : public priest_pet_t
 
     duration += timespan_t::from_seconds( 0.01 );
 
-    if ( dbc.ptr && pet_type == PET_MINDBENDER )
-    {
-      duration += timespan_t::from_seconds( 5.0 );
-    }
-
     priest_pet_t::summon( duration );
 
     if ( shadowcrawl_action )
@@ -3800,18 +3795,6 @@ struct cascade_t : public cascade_base_t<priest_spell_t>
     }
   }
 
-  virtual double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double d = priest_spell_t::composite_da_multiplier( state );
-
-    if ( priest.dbc.ptr && priest.specialization() != PRIEST_SHADOW )
-    {
-      d *= 0.65;
-    }
-
-    return d;
-  }
-
 private:
   const spell_data_t* get_spell_data( priest_t& p ) const
   {
@@ -3972,18 +3955,6 @@ struct divine_star_t : public priest_spell_t
     _base_spell -> execute();
   }
 
-  virtual double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double d = priest_spell_t::composite_da_multiplier( state );
-
-    if ( maybe_ptr( priest.dbc.ptr ) && priest.specialization() == PRIEST_SHADOW )
-    {
-      d *= 1.2;
-    }
-
-    return d;
-  }
-
   virtual bool usable_moving() const override
   {
     // Holy/Disc version is usable while moving, Shadow version is instant cast anyway.
@@ -4014,11 +3985,6 @@ struct void_entropy_t : public priest_spell_t
     may_crit = false;
     tick_zero = false;
     instant_multistrike = false;
-
-    if ( priest.dbc.ptr )
-    {
-      spell_power_mod.tick *= 1.8;
-    }
   }
 
   virtual void consume_resource() override
@@ -5015,25 +4981,8 @@ struct saving_grace_t : public priest_heal_t
     priest.buffs.saving_grace_penalty -> trigger();
   }
 
-  virtual double action_multiplier() const override
-  {
-    double am = priest_heal_t::action_multiplier();
-
-    /*if ( priest.dbc.ptr )
-    {
-      am *= 1.5;
-    }*/
-
-    return am;
-  }
-
   virtual timespan_t execute_time() const override
   {
-    if ( priest.dbc.ptr )
-    {
-      return timespan_t::zero();
-    }
-
     timespan_t et = priest_heal_t::execute_time();
 
     return et;
@@ -5570,7 +5519,7 @@ double priest_t::composite_player_multiplier( school_e school ) const
   {
     if ( buffs.chakra_chastise -> check() )
     {
-      if ( dbc.ptr)
+      if ( dbc.ptr )
       {
         m *= 1.0 + 0.8;
       }
@@ -5614,14 +5563,7 @@ double priest_t::composite_player_heal_multiplier( const action_state_t* s ) con
 
   if ( buffs.saving_grace_penalty -> check() )
   {
-    if ( dbc.ptr )
-    {
-      m *= 1.0 + buffs.saving_grace_penalty -> check() * 0.15;
-    }
-    else
-    {
-      m *= 1.0 + buffs.saving_grace_penalty -> check() * buffs.saving_grace_penalty -> data().effectN( 1 ).percent();
-    }
+    m *= 1.0 + buffs.saving_grace_penalty -> check() * buffs.saving_grace_penalty -> data().effectN( 1 ).percent();
   }
 
   return m;
@@ -6040,18 +5982,9 @@ void priest_t::create_buffs()
                          .spell( find_spell( 109186 ) )
                          .chance( talents.surge_of_light -> effectN( 1 ).percent() );
 
-  if ( dbc.ptr && talents.surge_of_darkness -> ok() )
-  {
-    buffs.surge_of_darkness = buff_creator_t( this, "surge_of_darkness" )
-                              .spell( find_spell( 87160 ) )
-                              .chance( 0.12 );
-  }
-  else
-  {
-    buffs.surge_of_darkness = buff_creator_t( this, "surge_of_darkness" )
-                              .spell( find_spell( 87160 ) )
-                              .chance( talents.surge_of_darkness -> effectN( 1 ).percent() );
-  }
+  buffs.surge_of_darkness = buff_creator_t( this, "surge_of_darkness" )
+                            .spell( find_spell( 87160 ) )
+                            .chance( talents.surge_of_darkness -> effectN( 1 ).percent() );
 
   buffs.divine_insight = buff_creator_t( this, "divine_insight" )
                          .spell( talents.divine_insight )
