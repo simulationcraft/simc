@@ -4886,8 +4886,7 @@ void rogue_t::init_action_list()
 
     // Combo point generators
     action_priority_list_t* gen = get_action_priority_list( "generator", "Combo point generators" );
-    gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool,if=set_bonus.tier17_2pc=1&buff.master_of_subtlety.down&buff.shadow_dance.down&debuff.find_weakness.down&(energy+50+cooldown.shadow_dance.remains*energy.regen<=energy.max|energy+15+cooldown.vanish.remains*energy.regen<=energy.max)" );
-    gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool,if=set_bonus.tier17_2pc=0&buff.master_of_subtlety.down&buff.shadow_dance.down&debuff.find_weakness.down&(energy+cooldown.shadow_dance.remains*energy.regen<=energy.max|energy+cooldown.vanish.remains*energy.regen<=energy.max)");
+    gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool,if=buff.master_of_subtlety.down&buff.shadow_dance.down&debuff.find_weakness.down&(energy+set_bonus.tier17_2pc*50+cooldown.shadow_dance.remains*energy.regen<=energy.max|energy+15+cooldown.vanish.remains*energy.regen<=energy.max)" );
     gen -> add_action( this, find_class_spell( "Ambush" ), "pool_resource", "for_next=1" );
     gen -> add_action( this, "Ambush" );
     gen -> add_action( this, "Fan of Knives", "if=active_enemies>1", "If simulating AoE, it is recommended to use Anticipation as the level 90 talent." );
