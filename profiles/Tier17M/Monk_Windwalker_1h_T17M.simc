@@ -56,7 +56,7 @@ actions.opener=tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.s
 actions.opener+=/use_item,name=beating_heart_of_the_mountain,if=buff.tigereye_brew_use.up
 actions.opener+=/blood_fury,if=buff.tigereye_brew_use.up
 actions.opener+=/berserking,if=buff.tigereye_brew_use.up
-actions.opener+=/arcane_torrent,if=buff.tigereye_brew_use.up
+actions.opener+=/arcane_torrent,if=buff.tigereye_brew_use.up&chi.max-chi>=1
 actions.opener+=/fists_of_fury,if=buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&buff.serenity.up&buff.serenity.remains<1.5
 actions.opener+=/tiger_palm,if=buff.tiger_power.remains<2
 actions.opener+=/rising_sun_kick

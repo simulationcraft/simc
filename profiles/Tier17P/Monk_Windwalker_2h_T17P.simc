@@ -54,7 +54,7 @@ actions+=/call_action_list,name=aoe_rjw,if=active_enemies>=3&talent.rushing_jade
 actions.opener=tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=9
 actions.opener+=/blood_fury,if=buff.tigereye_brew_use.up
 actions.opener+=/berserking,if=buff.tigereye_brew_use.up
-actions.opener+=/arcane_torrent,if=buff.tigereye_brew_use.up
+actions.opener+=/arcane_torrent,if=buff.tigereye_brew_use.up&chi.max-chi>=1
 actions.opener+=/fists_of_fury,if=buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&buff.serenity.up&buff.serenity.remains<1.5
 actions.opener+=/tiger_palm,if=buff.tiger_power.remains<2
 actions.opener+=/rising_sun_kick

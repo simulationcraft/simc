@@ -6141,7 +6141,7 @@ void monk_t::apl_combat_windwalker()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
-      opener -> add_action( racial_actions[i] + ",if=buff.tigereye_brew_use.up" );
+      opener -> add_action( racial_actions[i] + ",if=buff.tigereye_brew_use.up&chi.max-chi>=1" );
     else
       opener -> add_action( racial_actions[i] + ",if=buff.tigereye_brew_use.up" );
   }
