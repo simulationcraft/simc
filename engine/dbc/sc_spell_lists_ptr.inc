@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 19508
+// Class based active abilities, wow build 19533
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -149,7 +149,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        85222, // Light of Dawn
            0,
     },
-    // Protection tree, 11 abilities
+    // Protection tree, 10 abilities
     {
        31850, // Ardent Defender
        31935, // Avenger's Shield
@@ -160,7 +160,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
         1038, // Hand of Salvation
       119072, // Holy Wrath
        20154, // Seal of Righteousness
-       31801, // Seal of Truth
        53600, // Shield of the Righteous (Active Mitigation)
            0,
     },
@@ -489,23 +488,21 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        48265, // Unholy Presence
            0,
     },
-    // Blood tree, 6 abilities
+    // Blood tree, 5 abilities
     {
        49222, // Bone Shield
        49028, // Dancing Rune Weapon
        56222, // Dark Command
        48982, // Rune Tap (Active Mitigation)
-      114866, // Soul Reaper
        55233, // Vampiric Blood
            0,
     },
-    // Frost tree, 5 abilities
+    // Frost tree, 4 abilities
     {
        49143, // Frost Strike
        49184, // Howling Blast
        49020, // Obliterate
        51271, // Pillar of Frost
-      130735, // Soul Reaper
            0,
     },
     // Unholy tree, 5 abilities
@@ -906,7 +903,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Druid
   {
-    // General tree, 25 abilities
+    // General tree, 26 abilities
     {
         5487, // Bear Form (Shapeshift)
          768, // Cat Form (Shapeshift)
@@ -914,6 +911,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
         1850, // Dash
          339, // Entangling Roots
        22568, // Ferocious Bite
+      165962, // Flight Form (Shapeshift)
        22842, // Frenzied Regeneration
         6795, // Growl
         5185, // Healing Touch
@@ -1006,7 +1004,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (28)
 
-// Talent tree specialization abilities, wow build 19508
+// Talent tree specialization abilities, wow build 19533
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1079,6 +1077,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       167105, // Colossus Smash
       118038, // Die by the Sword
       163201, // Execute
+      177851, // Gladiator Stance
       137049, // Hotfix Passive
       167188, // Inspiring Presence
        76838, // Mastery: Weapons Master
@@ -1105,6 +1104,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       118038, // Die by the Sword
        13046, // Enrage
         5308, // Execute
+      177851, // Gladiator Stance
       137050, // Hotfix Passive
       167188, // Inspiring Presence
        76856, // Mastery: Unshackled Fury
@@ -1132,6 +1132,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        20243, // Devastate
        13046, // Enrage
         5308, // Execute
+      177851, // Gladiator Stance
       137048, // Hotfix Passive
        12975, // Last Stand
        76857, // Mastery: Critical Block
@@ -1206,7 +1207,6 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       165375, // Sacred Duty
       105805, // Sanctuary
        20154, // Seal of Righteousness
-       31801, // Seal of Truth
        53600, // Shield of the Righteous
       159374, // Shining Protector
       162702, // Stat Negation Aura - Strength Tank
@@ -1927,9 +1927,9 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        92364, // Malfurion's Gift
        77495, // Mastery: Harmony
        85101, // Meditation
+       17073, // Natural Healing
       112857, // Natural Insight
       165374, // Naturalist
-       17073, // Naturalist
        88423, // Nature's Cure
       132158, // Nature's Swiftness
       113043, // Omen of Clarity
@@ -1947,7 +1947,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 19508
+// Class mastery abilities, wow build 19533
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2170,7 +2170,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 19508
+// Racial abilities, wow build 19533
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2893,7 +2893,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 
 #define PTR_GLYPH_ABILITIES_SIZE (41)
 
-// Glyph spells for classes, wow build 19508
+// Glyph spells for classes, wow build 19533
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2914,7 +2914,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        58367, // Glyph of Bloodthirst
        94372, // Glyph of Bull Rush
       159701, // Glyph of Cleave
-       63325, // Glyph of Death From Above
+       63325, // Glyph of Death from Above
        58386, // Glyph of Die by the Sword
        58355, // Glyph of Enraged Speed
       159761, // Glyph of Flawless Defense
@@ -2967,7 +2967,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Paladin
   {
-    // Major Glyphs (36 spells)
+    // Major Glyphs (35 spells)
     {
       159548, // Glyph of Ardent Defender
        54927, // Glyph of Avenging Wrath
@@ -3001,7 +3001,6 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        93466, // Glyph of Protector of the Innocent
        54926, // Glyph of Templar's Verdict
        54936, // Glyph of Word of Glory
-       63222, // Glyph of the Alabaster Shield
       119477, // Glyph of the Battle Healer
       159557, // Glyph of the Consecrator
       159573, // Glyph of the Liberator
@@ -3534,7 +3533,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 19508
+// Tier item set bonuses for class, wow build 19533
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {
@@ -3959,7 +3958,7 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
 
 #define PTR_SET_BONUS_DATA_SIZE (382)
 
-// Set bonus data, wow build 19508
+// Set bonus data, wow build 19533
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,              {   0 },    0,   73, 165641, { 111239, 111240, 111241, 111242, 111243,  0 } },
@@ -4363,7 +4362,7 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
 
 #define PTR_PERK_SIZE (4)
 
-// Perk specialization abilities, wow build 19508
+// Perk specialization abilities, wow build 19533
 static unsigned __ptr_perk_data[][MAX_SPECS_PER_CLASS][PTR_PERK_SIZE] = {
   {
     {
@@ -4671,8 +4670,8 @@ static unsigned __ptr_perk_data[][MAX_SPECS_PER_CLASS][PTR_PERK_SIZE] = {
   },
 };
 
-// Glyph properties, wow build 19508
-static glyph_property_data_t __ptr_glyph_property_data[486] = {
+// Glyph properties, wow build 19533
+static glyph_property_data_t __ptr_glyph_property_data[485] = {
   {   162,  54811 },
   {   163,  54812 },
   {   164, 114338 },
@@ -4921,7 +4920,6 @@ static glyph_property_data_t __ptr_glyph_property_data[486] = {
   {   701,  63218 },
   {   702,  63219 },
   {   703,  63220 },
-  {   704,  63222 },
   {   706,  63224 },
   {   708,  63229 },
   {   709, 119850 },
