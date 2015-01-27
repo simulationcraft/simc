@@ -626,7 +626,9 @@ public:
     ab( n, player, s ),
     totem( false ), shock( false ),
     may_proc_eoe( false ),
-    uses_eoe( p() -> talent.echo_of_the_elements -> ok() && ab::data().affected_by( player -> spell.echo_of_the_elements -> effectN( 1 ) ) ),
+    // 6.1 Echo of the Elements can no longer use class flags to determine what
+    // spells are affected
+    uses_eoe( p() -> talent.echo_of_the_elements -> ok() && ! maybe_ptr( p() -> dbc.ptr ) && ab::data().affected_by( player -> spell.echo_of_the_elements -> effectN( 1 ) ) ),
     hasted_cd( ab::data().affected_by( player -> spec.flurry -> effectN( 1 ) ) ),
     hasted_gcd( ab::data().affected_by( player -> spec.flurry -> effectN( 2 ) ) ),
     ef_proc( 0 ), track_cd_waste( ab::cooldown -> duration > timespan_t::zero()  ),
@@ -664,7 +666,8 @@ public:
 
     if ( maybe_ptr( p() -> dbc.ptr ) && uses_eoe )
     {
-      ab::cooldown -> charges = 2;
+      ab::cooldown -> duration = ab::data().charge_cooldown();
+      ab::cooldown -> charges = ab::data().charges() + p() -> talent.echo_of_the_elements -> effectN( 1 ).base_value();
     }
   }
 
@@ -2279,6 +2282,11 @@ struct lava_lash_t : public shaman_attack_t
 
     if ( weapon -> type == WEAPON_NONE )
       background = true; // Do not allow execution.
+
+    if ( maybe_ptr( player -> dbc.ptr ) )
+    {
+      uses_eoe = player -> talent.echo_of_the_elements -> ok();
+    }
   }
 
   void impact( action_state_t* state )
@@ -2433,6 +2441,11 @@ struct stormstrike_t : public shaman_attack_t
       stormstrike_oh = new stormstrike_attack_t( "stormstrike_offhand", player, data().effectN( 3 ).trigger(), &( player -> off_hand_weapon ) );
       add_child( stormstrike_oh );
     }
+
+    if ( maybe_ptr( player -> dbc.ptr ) )
+    {
+      uses_eoe = player -> talent.echo_of_the_elements -> ok();
+    }
   }
 
   void execute()
@@ -2509,6 +2522,11 @@ struct windstrike_t : public shaman_attack_t
       windstrike_oh -> normalize_weapon_speed = true;
       windstrike_oh -> school = SCHOOL_PHYSICAL;
       add_child( windstrike_oh );
+    }
+
+    if ( maybe_ptr( player -> dbc.ptr ) )
+    {
+      uses_eoe = player -> talent.echo_of_the_elements -> ok();
     }
   }
 
@@ -2918,6 +2936,11 @@ struct fire_nova_t : public shaman_spell_t
     uses_unleash_flame = true;
 
     impact_action = new fire_nova_explosion_t( player );
+
+    if ( maybe_ptr( player -> dbc.ptr ) )
+    {
+      uses_eoe = player -> talent.echo_of_the_elements -> ok();
+    }
   }
 
   // Override assess_damage, as fire_nova_explosion is going to do all the
@@ -2980,6 +3003,11 @@ struct lava_burst_t : public shaman_spell_t
     if ( player -> wod_hotfix )
     {
       base_multiplier *= 1.485;
+    }
+
+    if ( maybe_ptr( player -> dbc.ptr ) )
+    {
+      uses_eoe = player -> talent.echo_of_the_elements -> ok();
     }
   }
 
@@ -3356,6 +3384,11 @@ struct earthquake_t : public shaman_spell_t
     ignore_false_positive = true;
 
     tick_action = new earthquake_rumble_t( player );
+
+    if ( maybe_ptr( player -> dbc.ptr ) )
+    {
+      uses_eoe = player -> talent.echo_of_the_elements -> ok();
+    }
   }
 
   void init()
@@ -3753,6 +3786,11 @@ struct riptide_t : public shaman_heal_t
     shaman_heal_t( player, player -> find_specialization_spell( "Riptide" ), options_str )
   {
     resurgence_gain = 0.6 * p() -> spell.resurgence -> effectN( 1 ).average( player ) * p() -> spec.resurgence -> effectN( 1 ).percent();
+
+    if ( maybe_ptr( player -> dbc.ptr ) )
+    {
+      uses_eoe = player -> talent.echo_of_the_elements -> ok();
+    }
   }
 };
 
