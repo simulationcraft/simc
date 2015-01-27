@@ -5423,7 +5423,7 @@ expr_t* priest_t::create_expression( action_t* a,
     return new primary_target_t( *this, *a );
   }
   if ( name_str == "shadowy_apparitions_in_flight" )
-    return make_ref_expr( "in_combat", this->shadowy_apparitions_in_flight );
+    return make_ref_expr( "shadowy_apparitions_in_flight", this->shadowy_apparitions_in_flight );
 
 
   return player_t::create_expression( a, name_str );
