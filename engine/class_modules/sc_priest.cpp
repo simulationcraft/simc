@@ -5423,27 +5423,11 @@ expr_t* priest_t::create_expression( action_t* a,
     return new primary_target_t( *this, *a );
   }
   if ( name_str == "shadowy_apparitions_in_flight" )
-  {
-    struct shadowy_apparitions_in_flight_t : public expr_t
-    {
-      priest_t& player;
-      action_t& action;
-      shadowy_apparitions_in_flight_t( priest_t& p, action_t& act ) :
-        expr_t( "shadowy_apparitions_in_flight" ), player( p ), action( act )
-      {
-      }
+    return make_ref_expr( "in_combat", this->shadowy_apparitions_in_flight );
 
-      virtual double evaluate()
-      {
-        return player.shadowy_apparitions_in_flight;
-      }
-    };
-    return new shadowy_apparitions_in_flight_t( *this, *a );
-  }
-  else
-  {
-    return player_t::create_expression( a, name_str );
-  }
+
+  return player_t::create_expression( a, name_str );
+
 }
 
 void priest_t::init_resources( bool force )
