@@ -4709,7 +4709,14 @@ void paladin_t::trigger_shining_protector( action_state_t* s )
   if ( ! passives.shining_protector -> ok() || s -> action == active_shining_protector_proc )
     return;
 
-  // Attempt to proc the heal
+  // Attempt to proc the first heal
+  if ( rng().roll( composite_multistrike() ) )
+  {
+    active_shining_protector_proc -> base_dd_max = active_shining_protector_proc -> base_dd_min = s -> result_amount;
+    active_shining_protector_proc -> schedule_execute();
+  }
+
+  // Attempt to proc the second heal
   if ( rng().roll( composite_multistrike() ) )
   {
     active_shining_protector_proc -> base_dd_max = active_shining_protector_proc -> base_dd_min = s -> result_amount;
