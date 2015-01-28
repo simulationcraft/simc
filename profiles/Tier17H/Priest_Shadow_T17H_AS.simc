@@ -53,7 +53,7 @@ actions.main+=/devouring_plague,if=shadow_orb=5&!target.dot.devouring_plague_dot
 actions.main+=/devouring_plague,if=shadow_orb=5
 actions.main+=/devouring_plague,if=shadow_orb>=3&talent.auspicious_spirits.enabled&shadowy_apparitions_in_flight>=3
 actions.main+=/devouring_plague,if=shadow_orb>=4&talent.auspicious_spirits.enabled&shadowy_apparitions_in_flight>=2
-actions.main+=/devouring_plague,if=shadow_orb>=3&buff.mental_instinct.remains<(gcd*1.7)&buff.mental_instinct.remains>(gcd*0.7)&buff.mental_instinct.remains
+actions.main+=/devouring_plague,if=shadow_orb>=3&buff.mental_instinct.remains<gcd&buff.mental_instinct.remains>(gcd*0.7)&buff.mental_instinct.remains
 actions.main+=/devouring_plague,if=shadow_orb>=4&talent.auspicious_spirits.enabled&((cooldown.mind_blast.remains<gcd&!set_bonus.tier17_2pc)|(target.health.pct<20&cooldown.shadow_word_death.remains<gcd))&!target.dot.devouring_plague_tick.ticking&talent.surge_of_darkness.enabled,cycle_targets=1
 actions.main+=/devouring_plague,if=shadow_orb>=4&talent.auspicious_spirits.enabled&((cooldown.mind_blast.remains<gcd&!set_bonus.tier17_2pc)|(target.health.pct<20&cooldown.shadow_word_death.remains<gcd))
 actions.main+=/devouring_plague,if=shadow_orb>=3&!talent.auspicious_spirits.enabled&((cooldown.mind_blast.remains<gcd&!set_bonus.tier17_2pc)|(target.health.pct<20&cooldown.shadow_word_death.remains<gcd))&!target.dot.devouring_plague_tick.ticking&talent.surge_of_darkness.enabled,cycle_targets=1
@@ -159,7 +159,7 @@ actions.cop_dotweave+=/devouring_plague,moving=1
 actions.cop_dotweave+=/shadow_word_pain,if=primary_target=0,moving=1,cycle_targets=1
 
 actions.cop_mfi=devouring_plague,if=shadow_orb=5
-actions.cop_mfi+=/devouring_plague,if=buff.mental_instinct.remains<gcd&buff.mental_instinct.remains>(gcd*0.7)&buff.mental_instinct.remains
+actions.cop_mfi+=/devouring_plague,if=buff.mental_instinct.remains<(gcd*1.7)&buff.mental_instinct.remains>(gcd*0.7)&buff.mental_instinct.remains
 actions.cop_mfi+=/mind_blast,if=glyph.mind_harvest.enabled&mind_harvest=0,cycle_targets=1
 actions.cop_mfi+=/mind_blast,if=active_enemies<=5&cooldown_react
 actions.cop_mfi+=/shadow_word_death,if=target.health.pct<20,cycle_targets=1

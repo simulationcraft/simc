@@ -6327,7 +6327,7 @@ void priest_t::apl_shadow()
   main -> add_action( "devouring_plague,if=shadow_orb=5" );
   main -> add_action( "devouring_plague,if=shadow_orb>=3&talent.auspicious_spirits.enabled&shadowy_apparitions_in_flight>=3" );
   main -> add_action( "devouring_plague,if=shadow_orb>=4&talent.auspicious_spirits.enabled&shadowy_apparitions_in_flight>=2" );
-  main -> add_action( "devouring_plague,if=shadow_orb>=3&buff.mental_instinct.remains<(gcd*1.7)&buff.mental_instinct.remains>(gcd*0.7)&buff.mental_instinct.remains" );
+  main -> add_action( "devouring_plague,if=shadow_orb>=3&buff.mental_instinct.remains<gcd&buff.mental_instinct.remains>(gcd*0.7)&buff.mental_instinct.remains" );
   main -> add_action( "devouring_plague,if=shadow_orb>=4&talent.auspicious_spirits.enabled&((cooldown.mind_blast.remains<gcd&!set_bonus.tier17_2pc)|(target.health.pct<20&cooldown.shadow_word_death.remains<gcd))&!target.dot.devouring_plague_tick.ticking&talent.surge_of_darkness.enabled,cycle_targets=1" );
   main -> add_action( "devouring_plague,if=shadow_orb>=4&talent.auspicious_spirits.enabled&((cooldown.mind_blast.remains<gcd&!set_bonus.tier17_2pc)|(target.health.pct<20&cooldown.shadow_word_death.remains<gcd))" );
   main -> add_action( "devouring_plague,if=shadow_orb>=3&!talent.auspicious_spirits.enabled&((cooldown.mind_blast.remains<gcd&!set_bonus.tier17_2pc)|(target.health.pct<20&cooldown.shadow_word_death.remains<gcd))&!target.dot.devouring_plague_tick.ticking&talent.surge_of_darkness.enabled,cycle_targets=1" );
@@ -6438,7 +6438,7 @@ void priest_t::apl_shadow()
 
   // Clarity of Power with Insanity
   cop_mfi -> add_action( "devouring_plague,if=shadow_orb=5" );
-  cop_mfi -> add_action( "devouring_plague,if=buff.mental_instinct.remains<gcd&buff.mental_instinct.remains>(gcd*0.7)&buff.mental_instinct.remains" );
+  cop_mfi -> add_action( "devouring_plague,if=buff.mental_instinct.remains<(gcd*1.7)&buff.mental_instinct.remains>(gcd*0.7)&buff.mental_instinct.remains" );
   cop_mfi -> add_action( "mind_blast,if=glyph.mind_harvest.enabled&mind_harvest=0,cycle_targets=1" );
   cop_mfi -> add_action( "mind_blast,if=active_enemies<=5&cooldown_react" );
   cop_mfi -> add_action( "shadow_word_death,if=target.health.pct<20,cycle_targets=1" );
