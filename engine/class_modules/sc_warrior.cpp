@@ -3318,7 +3318,10 @@ struct ravager_tick_t: public warrior_spell_t
   {
     aoe = -1;
     dual = may_crit = true;
-    attack_power_mod.direct *= 0.75; //I guess they're going to leave this spell hotfixed for life. 
+    if ( !p -> dbc.ptr )
+    {
+      attack_power_mod.direct *= 0.75;
+    }
   }
 };
 
