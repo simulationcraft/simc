@@ -2127,7 +2127,7 @@ struct shadowy_apparition_spell_t : public priest_spell_t
 
     if ( priest.dbc.ptr && priest.talents.auspicious_spirits -> ok() )
     {
-      d *= 2.0;
+      d *= 1.0 + priest.talents.auspicious_spirits -> effectN( 1 ).percent();
     }
 
     return d;
