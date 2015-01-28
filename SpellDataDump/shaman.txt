@@ -1,4 +1,4 @@
-SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19480)
+SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19533)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -175,8 +175,8 @@ Resource         : 13.7% Base Mana (4383 @Level 100)
 Spell Level      : 44
 Range            : 100 yards
 GCD              : 1.5 seconds
-Cooldown         : 4.5 seconds
-Affecting spells : Flurry (16282), Elemental Reach (29000), Mental Quickness (30814), Lucidity (137326), Elemental Discharge (144999), Echo of the Elements (159103)
+Charges          : 1 (4.5 seconds cooldown)
+Affecting spells : Flurry (16282), Elemental Reach (29000), Mental Quickness (30814), Lucidity (137326), Elemental Discharge (144999)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ .x...... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -543,7 +543,7 @@ Range            : 25 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 6 seconds
-Affecting spells : Flurry (16282), Elemental Reach (29000), Mental Quickness (30814), Shaman Shock Range Bonus (32973), Elemental Fury (60188), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Glyph of Shocks (159649)
+Affecting spells : Flurry (16282), Elemental Reach (29000), Mental Quickness (30814), Shaman Shock Range Bonus (32973), Telluric Currents (55453), Elemental Fury (60188), Spiritual Insight (123099), Lucidity (137326), Elemental Discharge (144999), Glyph of Shocks (159649)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -568,7 +568,7 @@ Range            : 25 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 6 seconds
-Affecting spells : Flurry (16282), Elemental Reach (29000), Mental Quickness (30814), Shaman Shock Range Bonus (32973), Glyph of Frost Shock (55443), Elemental Fury (60188), Lucidity (137326), Elemental Fusion (157174), Echo of the Elements (159101), Glyph of Shocks (159649)
+Affecting spells : Flurry (16282), Elemental Reach (29000), Mental Quickness (30814), Shaman Shock Range Bonus (32973), Glyph of Frost Shock (55443), Elemental Fury (60188), Lucidity (137326), Elemental Fusion (157174), Glyph of Shocks (159649)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -902,9 +902,9 @@ Spell Level      : 26
 Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Cooldown         : 7.5 seconds
+Charges          : 1 (7.5 seconds cooldown)
 Proc Chance      : 100%
-Affecting spells : Flurry (16282), Ascendance (114051), Item - Shaman T14 Enhancement 4P Bonus (123133), Echo of the Elements (159103)
+Affecting spells : Flurry (16282), Ascendance (114051), Item - Shaman T14 Enhancement 4P Bonus (123133)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -978,7 +978,7 @@ Attributes       : ......x. ........ .......x ........   ........ ........ .....
 Effects          :
 #1 (id=11607)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
-Description      : Allows you to resurrect yourself upon death with $21169s1% health and mana.
+Description      : Allows you to resurrect yourself upon death with $21169s1% health and mana.  This effect can occur only once every 30 minutes.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
@@ -1427,8 +1427,8 @@ Range            : 30 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
-Cooldown         : 8 seconds
-Affecting spells : Elemental Reach (29000), Elemental Fury (60188), Unleash Flame (73683), Spiritwalker's Grace (79206), Ascendance (114050), Unleashed Fury (118470), Lucidity (137326), Elemental Discharge (144999), Echo of the Elements (159101), Unleash Flame (165462)
+Charges          : 1 (8 seconds cooldown)
+Affecting spells : Elemental Reach (29000), Telluric Currents (55453), Elemental Fury (60188), Unleash Flame (73683), Spiritwalker's Grace (79206), Ascendance (114050), Unleashed Fury (118470), Lucidity (137326), Elemental Discharge (144999), Unleash Flame (165462)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1438,7 +1438,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=43841)    : School Damage: fire (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.14400
-Description      : You hurl molten lava at the target, dealing $s1 Fire damage.  Lava Burst will always deal a critical strike.  If your Flame Shock is on the target, Lava Burst will deal $8050m3% additional damage.
+Description      : You hurl molten lava at the target, dealing $s1 Fire damage. Lava Burst will always deal a critical strike. If your Flame Shock is on the target, Lava Burst will deal $8050m3% additional damage.
 
 Name             : Hex (id=51514) [Spell Family (11)] 
 Class            : Shaman
@@ -1984,24 +1984,30 @@ Effects          :
                    Affected Spells: Chain Heal (1064)
 Description      : Increases the jump distance of your Chain Heal spell by $s2%, but Chain Heal now has a ${$m1/1000} sec cooldown.
 
-Name             : Telluric Currents (Restoration) (id=55453) [Spell Family (11), Passive, Hidden] 
+Name             : Telluric Currents (Restoration) (id=55453) [Spell Family (11), Passive] 
 Class            : Restoration Shaman
 Spell Level      : 10
-Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
 Effects          :
 #1 (id=48406)    : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14
-                   Affected Spells: Lightning Bolt (403)
+                   Affected Spells: Lightning Bolt (403), Flame Shock (8050), Lava Burst (51505)
 #2 (id=225410)   : Apply Aura (6) | Dummy (4)
                    Base Value: 125 | Scaled Value: 125 | Misc Value: 14
                    Affected Spells: Lightning Bolt (403)
-Description      : Your attunement to natural energies causes your Lightning Bolt spell to cost no mana.
+#3 (id=263447)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 100 | Scaled Value: 100
+                   Affected Spells: Lightning Bolt (403), Flame Shock (8050), Lava Burst (51505)
+#4 (id=263448)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 22
+                   Affected Spells: Lightning Bolt (403), Flame Shock (8050), Lava Burst (51505)
+Description      : Your attunement to natural energies causes your Lightning Bolt, Lava Burst, and Flame Shock spells to cost no mana, and deal $s3% increased damage.
 
 Name             : Glyph of Spirit Walk (Enhancement) (id=55454) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -2641,8 +2647,8 @@ Resource         : 1% Base Mana (320 @Level 100)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
-Cooldown         : 10.5 seconds
-Affecting spells : Flurry (16282), Glyph of Lava Lash (55444), Item - Shaman T14 Enhancement 2P Bonus (123132), Echo of the Elements (159103)
+Charges          : 1 (10.5 seconds cooldown)
+Affecting spells : Flurry (16282), Glyph of Lava Lash (55444), Item - Shaman T14 Enhancement 2P Bonus (123132)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2683,8 +2689,8 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 18 seconds
-Cooldown         : 6 seconds
-Affecting spells : Restorative Waves (16213), Healing Trance (60515), Glyph of Riptide (63273), Unleash Life (73685), Mastery: Deep Healing (77226), Spiritual Stimulus (105763), Lucidity (137326), Improved Riptide (157812), Echo of the Elements (159105), 
+Charges          : 1 (6 seconds cooldown)
+Affecting spells : Restorative Waves (16213), Healing Trance (60515), Glyph of Riptide (63273), Unleash Life (73685), Mastery: Deep Healing (77226), Spiritual Stimulus (105763), Lucidity (137326), Improved Riptide (157812)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -2723,9 +2729,9 @@ Range            : 35 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Duration         : 10 seconds
-Cooldown         : 10 seconds
+Charges          : 1 (10 seconds cooldown)
 Proc Chance      : 100%
-Affecting spells : Ancestral Swiftness (16188), Glyph of Unstable Earth (55437), Elemental Fury (60188), Spiritwalker's Grace (79206), Lucidity (137326), Echo of the Elements (159101), Mastery: Molten Earth (170374)
+Affecting spells : Ancestral Swiftness (16188), Glyph of Unstable Earth (55437), Elemental Fury (60188), Spiritwalker's Grace (79206), Lucidity (137326), Mastery: Molten Earth (170374)
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -2843,9 +2849,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=57386)    : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 11
-                   Affected Spells: Riptide (61295)
+#1 (id=57386)    : Apply Aura (6) | Unknown effect sub type (454)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1228
 #2 (id=134226)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: -75 | Scaled Value: -75
                    Affected Spells: Riptide (61295)
@@ -3198,12 +3203,12 @@ Spell Level      : 81
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
-Cooldown         : 15 seconds
+Charges          : 1 (15 seconds cooldown)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
-Affecting spells : Restorative Waves (16213), Mastery: Deep Healing (77226), Temporal Maelstrom (105869), Echo of the Elements (159105), 
+Affecting spells : Restorative Waves (16213), Mastery: Deep Healing (77226), Temporal Maelstrom (105869)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3229,7 +3234,7 @@ Resource         : 9.4% Base Mana (3008 @Level 100)
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1.5 seconds
-Cooldown         : 8 seconds
+Charges          : 1 (7.5 seconds cooldown)
 Proc Chance      : 100%
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3296,7 +3301,7 @@ Spell Level      : 18
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (8 seconds cooldown)
-Affecting spells : Lucidity (137326), Echo of the Elements (159105), 
+Affecting spells : Lucidity (137326)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3369,7 +3374,7 @@ Class            : Shaman
 Spell Level      : 50
 Range            : 100 yards
 Duration         : 3 seconds
-Affecting spells : Ancestral Swiftness (16188), Glyph of Unstable Earth (55437), Elemental Fury (60188), Spiritwalker's Grace (79206), Lucidity (137326), Echo of the Elements (159101), Mastery: Molten Earth (170374)
+Affecting spells : Ancestral Swiftness (16188), Glyph of Unstable Earth (55437), Elemental Fury (60188), Spiritwalker's Grace (79206), Lucidity (137326), Mastery: Molten Earth (170374)
 Attributes       : ........ ........ ........ x..x....   ...x...x ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -3598,7 +3603,7 @@ Resource         : 11% Base Mana (3520 @Level 100)
 Spell Level      : 70
 GCD              : 1 seconds
 Duration         : 6 seconds
-Cooldown         : 180 seconds
+Charges          : 1 (180 seconds cooldown)
 Affecting spells : Lucidity (137326)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3795,8 +3800,8 @@ Class            : Shaman
 Duration         : 10 seconds
 Cooldown         : 120 seconds
 Proc Chance      : 100%
-Proc Flags       : ..x.x.x. x...x.x. x....... ........ 
-                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Hostile Spell, Heal, Hostile Spell
+Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........ 
+                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3806,7 +3811,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=119338)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20
-Description      : For the next $d, $s1% of your direct damage and healing is converted to healing on up to 3 nearby injured party or raid members.
+Description      : For the next $d, $s1% of your damage and healing, including multistrikes, is converted to healing on up to 3 nearby injured party or raid members.
 Tooltip          : A percentage of damage or healing dealt is copied as healing to up to 3 nearby injured party or raid members.
 
 Name             : Conductivity (id=108282) [Spell Family (11), Passive] 
@@ -3835,21 +3840,46 @@ Description      : $?s974[Your Healing Wave, Healing Surge, and Chain Heal incre
 
 Name             : Echo of the Elements (id=108283) [Spell Family (11), Passive] 
 Class            : Shaman
-Proc Chance      : 100%
-Real PPM         : 3.75
-Proc Flags       : ....x... ......x. x....... ........ 
-                 : Yellow Melee, Heal, Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=119340)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0
-Description      : Your spells and abilities have a chance to cause your next $?c0[short cooldown spell or ability][]$?c1[Lava Burst, Frost Shock, or Earthquake][]$?c2[Lava Lash, Stormstrike, or Fire Nova][]$?c3[Riptide, Unleash Life, or Purify Spirit][] not to incur its cooldown.
+#1 (id=119340)   : Apply Aura (6) | Modify Cooldown Charge (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1536
+#2 (id=263356)   : Apply Aura (6) | Modify Cooldown Charge (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1537
+#3 (id=263363)   : Apply Aura (6) | Modify Cooldown Charge (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1254
+#4 (id=263364)   : Apply Aura (6) | Modify Cooldown Charge (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1538
+#5 (id=263365)   : Apply Aura (6) | Modify Cooldown Charge (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1259
+#6 (id=263368)   : Apply Aura (6) | Modify Cooldown Charge (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1228
+#7 (id=263370)   : Apply Aura (6) | Modify Cooldown Charge (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1539
+#8 (id=263371)   : Apply Aura (6) | Modify Cooldown Charge (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1540
+Description      : The following spells and abilities now have 2 charges. Other effects that reset their cooldown will instead grant 1 full charge.
+
+$?c0[$@spellicon51505 $@spellname51505
+$@spellicon61882 $@spellname61882
+$@spellicon17364 $@spellname17364
+$@spellicon60103 $@spellname60103 
+$@spellicon1535 $@spellname1535
+$@spellicon61295 $@spellname61295
+$@spellicon73685 $@spellname73685
+$@spellicon98008 $@spellname98008][]$?c1[$@spellicon51505 $@spellname51505
+$@spellicon61882 $@spellname61882][]$?c2[$@spellicon17364 $@spellname17364
+$@spellicon60103 $@spellname60103 
+$@spellicon1535 $@spellname1535][]$?c3[$@spellicon51505 $@spellname51505
+$@spellicon61295 $@spellname61295
+$@spellicon73685 $@spellname73685
+$@spellicon98008 $@spellname98008][]
 
 Name             : Totemic Persistence (id=108284) [Passive] 
 Class            : Shaman
@@ -3973,6 +4003,7 @@ Replaces         : Ascendance (id=114049)
 Class            : Enhancement Shaman
 Spell Level      : 87
 Duration         : 15 seconds
+Cooldown         : 180 seconds
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4164,9 +4195,9 @@ Spell Level      : 26
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Cooldown         : 7.5 seconds
+Charges          : 1 (7.5 seconds cooldown)
 Proc Chance      : 100%
-Affecting spells : Flurry (16282), Item - Shaman T14 Enhancement 4P Bonus (123133), Echo of the Elements (159103)
+Affecting spells : Flurry (16282), Item - Shaman T14 Enhancement 4P Bonus (123133)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4460,7 +4491,7 @@ Name             : Unleashed Fury (id=118473) [Spell Family (11)]
 Class            : Shaman
 Range            : 100 yards
 Duration         : 10 seconds
-Affecting spells : Restorative Waves (16213), Mastery: Deep Healing (77226), Temporal Maelstrom (105869), Echo of the Elements (159105), 
+Affecting spells : Restorative Waves (16213), Mastery: Deep Healing (77226), Temporal Maelstrom (105869)
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... .....xx.   ........ .x...... ........ .....xx. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -5242,7 +5273,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219326)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.15000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.19500
 #2 (id=219344)   : Trigger Missiles (32)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 157333
 Description      : Conjures a gust of wind that deals $s1 Nature damage to an enemy. Soothing winds also cause $157333s1 healing to all allies within $157333A1 yds of the enemy, split evenly between them.
@@ -5260,7 +5291,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=219340)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.22500 | Radius: 0 - 15 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.30000 | Radius: 0 - 15 yards
 Description      : Conjures a gust of wind that deals $s1 Nature damage to an enemy. Soothing winds also cause $s2 healing to all allies within 8 yds of the enemy, split evenly between them.
 
 Name             : Call Lightning (id=157348) [Spell Family (11)] 
@@ -5279,7 +5310,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219409)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.30000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.39000
 #2 (id=219410)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 300 | Scaled Value: 300 | Misc Value: 0x7f
 #3 (id=219411)   : Apply Aura (6) | Modify Healing% Done (136)
@@ -5484,69 +5515,6 @@ Effects          :
                    Base Value: 100 | Scaled Value: 0 (avg=0) | Points Per Level: -10
 Description      : Your mana regeneration is increased by $s1%.
 Tooltip          : Increases your mana regeneration by $s1%.
-
-Name             : Echo of the Elements (id=159101) [Spell Family (11)] 
-Class            : Shaman
-Duration         : 20 seconds
-Stacks           : 1 initial, 1 maximum
-Proc Chance      : 100%
-Proc Flags       : ........ ......x. x....... ........ 
-                 : Heal, Hostile Spell
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=222791)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 11
-                   Affected Spells: Frost Shock (8056), Lava Burst (51505), Earthquake (61882), Earthquake (77478)
-Description      : $@spelldesc108283
-Tooltip          : Your next Lava Burst, Frost Shock, or Earthquake will not incur its cooldown.
-
-Name             : Echo of the Elements (id=159103) [Spell Family (11)] 
-Class            : Shaman
-Duration         : 20 seconds
-Stacks           : 1 initial, 1 maximum
-Proc Chance      : 100%
-Proc Flags       : ....x... ......x. x....... ........ 
-                 : Yellow Melee, Heal, Hostile Spell
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=222793)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 11
-                   Affected Spells: Fire Nova (1535), Stormstrike (17364), Lava Lash (60103), Windstrike (115356)
-Description      : $@spelldesc108283
-Tooltip          : Your next Lava Lash, Stormstrike, or Fire Nova will not incur its cooldown.
-
-Name             : Echo of the Elements (id=159105) [Spell Family (11)] 
-Class            : Shaman
-Duration         : 20 seconds
-Stacks           : 1 initial, 1 maximum
-Proc Chance      : 100%
-Proc Flags       : ........ ......x. x....... ........ 
-                 : Heal, Hostile Spell
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=222795)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 11
-                   Affected Spells: Riptide (61295), Unleash Life (73685), Purify Spirit (77130), Unleashed Fury (118473)
-#2 (id=255310)   : Apply Aura (6) | Unknown effect sub type (454)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1513
-                   Affected Spells: Riptide (61295), Unleash Life (73685), Purify Spirit (77130), Unleashed Fury (118473)
-Description      : $@spelldesc108283
-Tooltip          : Your next Riptide, Unleash Life, Purify Spirit will not incur its cooldown.
 
 Name             : Glyph of Ephemeral Spirits (Enhancement) (id=159640) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -6183,7 +6151,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=244141)   : Apply Aura (6) | Unknown effect sub type (411)
+#1 (id=244141)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1513
 #2 (id=244142)   : Apply Aura (6) | Unknown effect sub type (453)
                    Base Value: 4000 | Scaled Value: 4000 | Misc Value: 1513

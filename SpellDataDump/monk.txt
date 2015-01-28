@@ -1,4 +1,4 @@
-SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19480)
+SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19533)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -85,7 +85,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Dream of Cenarius (158504), Solar Empowerment (164545), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719)
+Affecting spells : Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Dream of Cenarius (158504), Solar Empowerment (164545), Naturalist (165374), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -662,7 +662,7 @@ Description      : Jab the target, dealing ${1.38*$<low>} to ${1.38*$<high>} dam
 Jab has a $137384m1% chance to make your next Tiger Palm or Blackout Kick cost no Chi.][]$?s115070[
 
 Not useable in Stance of the Wise Serpent.][]
-Variables        : $stnc=$?a103985[${1.2}][${1.0}]
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
 
@@ -702,7 +702,7 @@ If behind the target, you deal an additional $m2% damage over $128531d. If in fr
 Eminence healing from this ability heals up to $139598s2 targets for $139598s3% of the damage done.][]$?s115070[
 
 Not useable in Stance of the Wise Serpent.][]
-Variables        : $stnc=$?a103985[${1.2}][${1.0}]
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
 
@@ -736,7 +736,7 @@ Effects          :
 Description      : Attack with the palm of your hand, dealing $?s116645[${7.2*$<low>} to ${7.2*$<high>}][${3.6*$<low>} to ${3.6*$<high>}] damage, and causing your attacks to ignore $125359m1% of armor for $125359d.$?s115070[
 
 Not useable in Stance of the Wise Serpent.][]
-Variables        : $stnc=$?a103985[${1.2}][${1.0}]
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
 
@@ -811,7 +811,7 @@ Description      : You spin while kicking in the air, $?a115070&s116645[healing 
 
 Channeling Spinning Crane Kick does not prevent avoiding attacks.][]
 Tooltip          : Attacking all nearby enemies for Physical damage every $101546t1 sec$?$w3>0[, and healing nearby injured allies for $117640m1 every $101546t1 sec] and ][.]
-Variables        : $stnc=$?a103985[${1.2}][${1.0}]
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
 
@@ -868,7 +868,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Radius: 10 yards
 #6 (id=214834)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21
-                   Affected Spells: Jab (100780), Blackout Kick (100784), Tiger Palm (100787), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Jab (108557), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Legacy of the Emperor (115921), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Charging Ox Wave (119392), Transcendence: Transfer (119996), Chi Burst (123986), Zen Sphere (124081), Zen Sphere (124098), Zen Sphere: Detonate (124101), Zen Sphere: Detonate (125033), Blackout Kick (128531), Rising Sun Kick (130320), Chi Burst (130654), Chi Burst (148135), Chi Explosion (157680)
+                   Affected Spells: Jab (100780), Blackout Kick (100784), Tiger Palm (100787), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Jab (108557), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Legacy of the Emperor (115921), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Charging Ox Wave (119392), Transcendence: Transfer (119996), Chi Burst (123986), Zen Sphere (124081), Zen Sphere (124098), Zen Sphere: Detonate (124101), Zen Sphere: Detonate (125033), Blackout Kick (128531), Rising Sun Kick (130320), Chi Burst (130654), Chi Burst (148135), Chi Explosion (157680), Zen Sphere (182032)
 #7 (id=257979)   : Apply Aura (6) | Unknown effect sub type (395)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 2763
 Description      : Increases all damage dealt by $s3%.
@@ -911,7 +911,7 @@ Effects          :
 #1 (id=118198)   : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1
 Description      : You kick upwards, dealing ${10.56*$<low>} to ${10.56*$<high>} damage$?s128595[, reducing the effectiveness of healing on the target for $115804d,][] and causing all enemies within $130320A1 yards to take $130320m1% increased damage from your abilities for $130320d.
-Variables        : $stnc=$?a103985[${1.2}][${1.0}]
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
 
@@ -964,7 +964,7 @@ Description      : Clobber the target with your staff, dealing ${1.38*$<low>} to
 Jab has a $137384m1% chance to make your next Tiger Palm or Blackout Kick cost no Chi.][]$?s115070[
 
 Not useable in Stance of the Wise Serpent.][]
-Variables        : $stnc=$?a103985[${1.2}][${1.0}]
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
 
@@ -1066,7 +1066,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Pummel all targets in front of you,$?s159490[][ stunning them and] dealing ${(5*7.755*$<low>+5*7.755*$<high>)/2} damage over $113656d. Deals reduced damage to secondary targets.$?s125671[  Your parry chance is increased by 100% while channeling.][]
 Tooltip          : $w2 damage every $t2 sec. $?s125671[Parrying all attacks.][]
-Variables        : $stnc=$?a103985[${1.2}][${1.0}]
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
 
@@ -1156,7 +1156,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3
 #10 (id=214843)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21
-                   Affected Spells: Jab (100780), Blackout Kick (100784), Tiger Palm (100787), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Jab (108557), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Legacy of the Emperor (115921), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Charging Ox Wave (119392), Transcendence: Transfer (119996), Chi Burst (123986), Zen Sphere (124081), Zen Sphere (124098), Zen Sphere: Detonate (124101), Zen Sphere: Detonate (125033), Blackout Kick (128531), Rising Sun Kick (130320), Chi Burst (130654), Chi Burst (148135), Chi Explosion (157680)
+                   Affected Spells: Jab (100780), Blackout Kick (100784), Tiger Palm (100787), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Jab (108557), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Legacy of the Emperor (115921), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Charging Ox Wave (119392), Transcendence: Transfer (119996), Chi Burst (123986), Zen Sphere (124081), Zen Sphere (124098), Zen Sphere: Detonate (124101), Zen Sphere: Detonate (125033), Blackout Kick (128531), Rising Sun Kick (130320), Chi Burst (130654), Chi Burst (148135), Chi Explosion (157680), Zen Sphere (182032)
 #11 (id=218370)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 3 | Scaled Value: 3
                    Affected Spells: Elusive Brew (115308)
@@ -1217,7 +1217,7 @@ Effects          :
 Description      : Heal yourself for ${7.5*$<low>*(1+$@versadmg)} to ${7.5*$<high>*(1+$@versadmg)}, and deal $115129s2% of the amount healed as Nature damage to an enemy within $115129A1 yards. Generates $m2 Chi.$?s115069[
 
 This ability has no cooldown while below 35% health in Stance of the Sturdy Ox.][]
-Variables        : $stnc=$?a115070[${1.2}][${1.0}]
+Variables        : $stnc=$?a115070[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
 
@@ -1380,7 +1380,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=128868)   : Apply Aura (6) | Unknown effect sub type (453)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1365
-#2 (id=135980)   : Apply Aura (6) | Unknown effect sub type (411)
+#2 (id=135980)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1365
 Description      : Reduces the cooldown of Roll and Chi Torpedo by ${$m1/1000} sec and increases their maximum number of charges by $m2.
 
@@ -1544,11 +1544,11 @@ Attributes       : ........ ........ ........ ........   ..x...x. ........ .....
                  : Channeled (34), Channeled (38)
 Effects          :
 #1 (id=129048)   : Apply Aura (6) | Periodic Energize Power: every 0.5 seconds (24)
-                   Base Value: 4 | Scaled Value: 4
+                   Base Value: 3 | Scaled Value: 3
 Description      : Consumes 1 stack of Mana Tea per $t1 sec to restore mana equal to $s1 times your unbuffed Spirit.
 
 For each 4 Chi you spend, you gain 1 stack of Mana Tea, with a chance equal to your critical strike chance to generate 1 extra stack.
-Tooltip          : Restoring $m1% mana every $t1 sec.
+Tooltip          : Restoring mana equal to $s1 times your unbuffed Spirit every $t1 sec.
 
 Name             : Guard (id=115295) [Spell Family (53)] 
 Class            : Brewmaster Monk
@@ -1703,11 +1703,11 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=129188)   : Apply Aura (6) | Increase Energy (35)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12
-#2 (id=177614)   : Apply Aura (6) | Unknown effect sub type (132)
-                   Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1.00000
+#2 (id=177614)   : Apply Aura (6) | Modify Total Stat% (137)
+                   Base Value: 10 | Scaled Value: 10 | SP Coefficient: 1.00000 | Misc Value 2: 0x10
 #3 (id=177615)   : Apply Aura (6) | Mod Power Regen (110)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 3
-Description      : Increases your maximum Chi by $s1, your Energy regeneration by $s3%, and your maximum mana by $s2%. 
+Description      : Increases your maximum Chi by $s1, your Energy regeneration by $s3%, and your Spirit by $s2%. 
 
 Name             : Chi Brew (id=115399) [Scaling Spell (5), Spell Family (53)] 
 Class            : Monk
@@ -2346,7 +2346,7 @@ Description      : Summon a whirling tornado around you, causing $?a115070[${$16
 
 Replaces Spinning Crane Kick.
 Tooltip          : Dealing physical damage to nearby enemies or healing to nearby allies every $116847t1 sec.
-Variables        : $stnc=$?a103985[${1.2}][${1.0}]
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
 
@@ -2579,7 +2579,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=134138)   : School Damage: nature (2)
-                   Base Value: 0 | Scaled Value: 1 - 3 (avg=0) | Value Range: 3 | AP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 1 - 3 (avg=0) | Value Range: 3 | AP Coefficient: 2.50000
 Description      : $@spelldesc115008
 
 Name             : Leer of the Ox (id=118585) [Spell Family (53)] 
@@ -3139,7 +3139,7 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards
 Description      : Smash a keg of brew on the target, dealing ${14.5*$<low>} to ${14.5*$<high>} damage to all enemies within $A1 yards and reducing their movement speed by $m2% for $d. Generates $127796m1 Chi.
 Tooltip          : Movement speed reduced by $m2%
-Variables        : $stnc=$?a103985[${1.2}][${1.0}]
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
 
@@ -3230,7 +3230,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=153853)   : Direct Heal% (136)
-                   Base Value: 11 | Scaled Value: 11
+                   Base Value: 15 | Scaled Value: 15
 Description      : $@spelldesc122280
 
 Name             : Touch of Karma (id=122470) [Spell Family (53)] 
@@ -3493,7 +3493,7 @@ Effects          :
                    Base Value: -70 | Scaled Value: -70 | AP Coefficient: 0.90000 | Radius: 0 - 8 yards
 Description      : $@spelldesc101545
 Tooltip          : Movement speed reduced by $m2%.
-Variables        : $stnc=$?a103985[${1.2}][${1.0}]
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
 
@@ -3703,7 +3703,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=156816)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=7.68) | AP Coefficient: 1.05900
+                   Base Value: 1 | Scaled Value: 0 (avg=7.68) | AP Coefficient: 1.50000
 Description      : $@spelldesc115008
 
 Name             : Gift of the Serpent (id=124041) [Spell Family (53)] 
@@ -3741,12 +3741,12 @@ Attributes       : ........ ........ ........ ...x....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=156956)   : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.104) | AP Coefficient: 0.15600
+                   Base Value: 1 | Scaled Value: 0 (avg=0.104)
 #2 (id=181288)   : None (0)
                    Base Value: 35 | Scaled Value: 35
-Description      : Forms a Zen Sphere above the target, healing the target for $o1 over $d and dealing $<damageperiodic> Nature damage every $t1 sec to the nearest enemy within $124098A1 yards.
+Description      : Forms a Zen Sphere above the target, healing the target for $182032s1, and dealing $182032s2 Nature damage to a nearby enemy, every $t1 for $d.
 
-After $d, the Zen Sphere detonates, dealing $<damagedetonate> Nature damage and $<healingdetonate> healing to all targets within $124101A1 yards.  Triggered early if dispelled or the target is damaged below $m2% health.
+After $d, the Zen Sphere detonates, dealing $182032s4 Nature damage and $182032s4 healing to all targets within $124101A1 yards. Triggered early if dispelled or the target is damaged below $m2% health.
 Tooltip          : Healing $w1 every $t1 sec.
 Variables        : $dmgMult=$?s103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $healMult=$?s115070[${1.2*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
@@ -4915,7 +4915,7 @@ Attributes       : ....x... ........ ........ ........   ........ .xx..... .....
 Effects          :
 #1 (id=167487)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 10 | Scaled Value: 10 | Radius: 0 - 8 yards
-                   Affected Spells: Jab (100780), Blackout Kick (100784), Tiger Palm (100787), Spinning Crane Kick (107270), Rising Sun Kick (107428), Jab (108557), Expel Harm (115072), Touch of Death (115080), Rushing Jade Wind (116847), Fists of Fury (117418), Crackling Jade Lightning (117952), Chi Torpedo (117993), Flying Serpent Kick (123586), Chi Burst (123986), Crackling Tiger Lightning (123996), Zen Sphere (124081), Zen Sphere (124098), Zen Sphere: Detonate (124101), Zen Sphere: Detonate (125033), Blackout Kick (128531), Rising Sun Kick (130320), Chi Burst (130654), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Chi Explosion (152174), Chi Explosion (157675), Chi Explosion (157676), Chi Explosion (157680), Chi Explosion (157681)
+                   Affected Spells: Jab (100780), Blackout Kick (100784), Tiger Palm (100787), Spinning Crane Kick (107270), Rising Sun Kick (107428), Jab (108557), Expel Harm (115072), Touch of Death (115080), Rushing Jade Wind (116847), Fists of Fury (117418), Crackling Jade Lightning (117952), Chi Torpedo (117993), Flying Serpent Kick (123586), Chi Burst (123986), Crackling Tiger Lightning (123996), Zen Sphere (124081), Zen Sphere (124098), Zen Sphere: Detonate (124101), Zen Sphere: Detonate (125033), Blackout Kick (128531), Rising Sun Kick (130320), Chi Burst (130654), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Chi Explosion (152174), Chi Explosion (157675), Chi Explosion (157676), Chi Explosion (157680), Chi Explosion (157681), Zen Sphere (182032), Chi Explosion (182078)
 Description      : $@spelldesc107428
 Tooltip          : Damage taken from abilities dealt by the Monk increased by $w1%.
 
@@ -5277,7 +5277,7 @@ Name             : Incapacitated (id=137460) [Scaling Spell (5), Spell Family (5
 Class            : Monk
 Spell Level      : 1
 Range            : 50000 yards
-Duration         : 3 seconds
+Duration         : 5 seconds
 Attributes       : ........ ........ .......x x..x....   .....x.x ..x..... ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ ........ ..x..... ......x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -5696,9 +5696,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #3 (id=220666)   : Apply Aura (6) | Unknown effect sub type (147)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1733
-Description      : Unleash a rapid series of kicks toward random enemies within $158221A1 yards, dealing a total of ${15*2*$<low>} to ${15*2*$<high>} damage over $d. While kicking, you are immune to movement impairing and loss of control effects.
+Description      : Unleash a rapid series of kicks toward random enemies within $158221A1 yards, dealing a total of ${15*2.5*$<low>} to ${15*2.5*$<high>} damage over $d. While kicking, you are immune to movement impairing and loss of control effects.
 Tooltip          : Unleashing kicks rapidly, and immune to movement impairing and loss of control effects.
-Variables        : $stnc=$?a103985[${1.2}][${1.0}]
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
 
@@ -5818,7 +5818,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=219438)   : Apply Aura (6) | Unknown effect sub type (411)
+#1 (id=219438)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 1474
 #2 (id=229989)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
                    Base Value: -29000 | Scaled Value: -29000 | Misc Value: 11
@@ -5961,7 +5961,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ ...x.
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=219749)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.30000 | Radius: 20 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.45000 | Radius: 20 yards
 Description      : $@spelldesc157535
 
 Name             : Breath of the Serpent (id=157627) 
@@ -5994,19 +5994,19 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x.x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=219858)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.21500
-#2 (id=219868)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.21500 | Radius: 0 - 8 yards
+#1 (id=219858)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1
 Description      : Consumes up to 4 Chi to cause the target to explode with Chi energy, causing additional effects based on Chi consumed:
 
-1+ Chi: Heals an ally for $s1 plus $s1 per Chi consumed.
+1+ Chi: Heals an ally for $182078s1 plus $182078s1 per Chi consumed.
 2+ Chi: Causes an additional $157681s2% healing over $157681d.
-3+ Chi: This healing is evenly divided among all allies within $A2 yards of the target.
-4   Chi: Also summons 8 Healing Spheres in an $A2 yard radius ring around the target that last $157682d.
+3+ Chi: This healing is evenly divided among all allies within $182078A2 yards of the target.
+4   Chi: Also summons 8 Healing Spheres in an $182078A2 yard radius ring around the target that last $157682d.
+
+While channeling Soothing Mist, this ability is Instant and will heal the soothed target.
 
 Replaces Blackout Kick. Chi Explosion is Instant and provides different effects while in Stance of the Spirited Crane.
 
@@ -6165,7 +6165,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #3 (id=223281)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Chi Explosion (152174), Chi Explosion (157675), Chi Explosion (157676), Chi Explosion (157681)
+                   Affected Spells: Chi Explosion (152174), Chi Explosion (157675), Chi Explosion (157676), Chi Explosion (157681), Chi Explosion (182078)
 Description      : $@spelldesc137384
 Tooltip          : Your next Chi Explosion refunds $s1 Chi.
 
@@ -6478,7 +6478,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=228215)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.39500 | Radius: 0 - 10 yards
-Description      : While channeling Spinning Crane Kick, you also heal nearby injured allies for $162530m1 every $101546t1 sec for $101546d. Healing yourself does not count for Chi generation.
+Description      : While channeling Rushing Jade Wind, you also heal nearby injured allies for $162530m1 every $101546t1 sec for $101546d. Healing yourself does not count for Chi generation.
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
 Class            : Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
@@ -6668,7 +6668,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=244127)   : Apply Aura (6) | Unknown effect sub type (411)
+#1 (id=244127)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1511
 #2 (id=244128)   : Apply Aura (6) | Unknown effect sub type (453)
                    Base Value: 4000 | Scaled Value: 4000 | Misc Value: 1511
@@ -6726,9 +6726,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=247750)   : Apply Aura (6) | Unknown effect sub type (411)
+#1 (id=247750)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 1517
-#2 (id=247778)   : Apply Aura (6) | Unknown effect sub type (411)
+#2 (id=247778)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 1518
 #3 (id=253771)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22
@@ -6799,5 +6799,44 @@ Effects          :
 #1 (id=256907)   : Apply Aura (6) | Unknown effect sub type (309)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
+
+Name             : Zen Sphere (id=182032) [Spell Family (53)] 
+Class            : Monk
+Spell Level      : 1
+Range            : 50000 yards
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Rising Sun Kick (130320)
+Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ........ .x...... ......x.   ........ ........ ........ .x....x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .x...x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=263203)   : Direct Heal (10)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.09500
+#2 (id=263204)   : School Damage: nature (2)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.09500
+#3 (id=263205)   : Direct Heal (10)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.25000 | Radius: 0 - 10 yards
+#4 (id=263206)   : School Damage: nature (2)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.25000 | Radius: 0 - 10 yards
+
+Name             : Chi Explosion (id=182078) [Spell Family (53)] 
+Class            : Monk
+Range            : 40 yards
+Cast Time        : 1.5 seconds
+Affecting spells : Rising Sun Kick (130320), Combo Breaker: Chi Explosion (159407)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x.x. ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=263271)   : Direct Heal (10)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.70000
+#2 (id=263272)   : Direct Heal (10)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.70000 | Radius: 0 - 8 yards
+Description      : $@spelldesc157675
 
 

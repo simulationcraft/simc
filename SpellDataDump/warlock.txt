@@ -1,4 +1,4 @@
-SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19480)
+SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19533)
 
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -3710,7 +3710,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : Hidden (7)
 Effects          :
 #1 (id=119638)   : Dummy (3)
-                   Base Value: 20 | Scaled Value: 20
+                   Base Value: 25 | Scaled Value: 25
 Description      : Instantly summon a second demon which fights for $s1 sec. The demon will instantly use one of its special abilities when summoned:
 
 $@spellicon111859 $@spellname111859: Cleanses a harmful magic effect from its master.
@@ -3740,11 +3740,14 @@ Effects          :
 #3 (id=124410)   : Apply Aura (6) | Unknown effect sub type (133)
                    Base Value: 20 | Scaled Value: 20
 #4 (id=154191)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20
+                   Base Value: 25 | Scaled Value: 25
                    Affected Spells: Corruption (172), Agony (980), Shadowburn (17877), Seed of Corruption (27243), Incinerate (29722), Unstable Affliction (30108), Haunt (48181), Harvest Life (108371), Incinerate (114654), Seed of Corruption (114790), Chaos Bolt (116858), Unstable Affliction (131736), Agony (131737), Corruption (131740), Seed of Corruption (132566), Corruption (146739)
 #5 (id=245910)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 22
                    Affected Spells: Drain Life (689), Drain Soul (103103)
+#6 (id=263533)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 3 (108)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 23
+                   Affected Spells: Drain Soul (103103)
 Description      : Sacrifice your demon to gain one of its abilities, and to increase the damage of your $?s30108[Drain Soul, Haunt, and Drain Life by $s4%.][Incinerate, Chaos Bolt, and Shadowburn by $s4%. Does not apply to spells affected by Fire and Brimstone.]
 
 Also $?s108415[increases your maximum health by $s3%, and ][]causes you to regenerate $s2% of maximum health every $t2 sec.
@@ -3765,7 +3768,7 @@ Attributes       : ....x.x. ........ ........ x..x....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Disable player procs (112), Disable target procs (113)
 Effects          :
-#1 (id=119643)   : Apply Aura (6) | Unknown effect sub type (411)
+#1 (id=119643)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 1447
 #2 (id=200034)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11
@@ -4179,7 +4182,7 @@ Class            : Warlock
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 20 seconds
+Duration         : 27 seconds
 Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   .......x ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4200,7 +4203,7 @@ Name             : Grimoire: Voidwalker (Summon) (id=111895)
 Class            : Warlock
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 22 seconds
+Duration         : 27 seconds
 Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4221,7 +4224,7 @@ Name             : Grimoire: Succubus (Summon) (id=111896)
 Class            : Warlock
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 22 seconds
+Duration         : 27 seconds
 Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4242,7 +4245,7 @@ Name             : Grimoire: Felhunter (Summon) (id=111897)
 Class            : Warlock
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 22 seconds
+Duration         : 27 seconds
 Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   .......x ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4264,7 +4267,7 @@ Class            : Warlock
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 22 seconds
+Duration         : 27 seconds
 Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   .......x ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5865,7 +5868,7 @@ Name             : Kil'jaeden's Cunning (id=137587) [Spell Family (5)]
 Class            : Warlock
 Spell Level      : 1
 Duration         : 8 seconds
-Cooldown         : 60 seconds
+Cooldown         : 35 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -6215,7 +6218,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=210584)   : School Damage: shadowflame (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.50000 | Radius: 8 yards
-Description      : Conjures a cataclysm at the target location, dealing $s1 Shadowflame damage to all enemies within $A1 yards, and applying $?s980[Agony][]$?s104315[Corruption][]$?s348[Immolate][]$?!s980&!s104315&!s348[Agony, Corruption, or Immolate][].
+Description      : Conjures a cataclysm at the target location, dealing $s1 Shadowflame damage to all enemies within $A1 yards, and applying $?s980[Agony and Unstable Affliction][]$?s104315[Corruption][]$?s348[Immolate][]$?!s980&!s104315&!s348[Agony, Unstable Affliction, Corruption, or Immolate][].
 
 Name             : Soulburn: Haunt (id=152109) [Passive] 
 Class            : Warlock
@@ -6446,7 +6449,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=219886)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: -60 | Scaled Value: -60
+                   Base Value: -50 | Scaled Value: -50
                    Affected Spells: Conflagrate (17962), Incinerate (29722), Conflagrate (108685), Incinerate (114654)
 #2 (id=219894)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200
@@ -6497,7 +6500,7 @@ Name             : Grimoire: Doomguard (Summon) (id=157900)
 Class            : Warlock
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 22 seconds
+Duration         : 27 seconds
 Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6516,7 +6519,7 @@ Name             : Grimoire: Infernal (Summon) (id=157901)
 Class            : Warlock
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 22 seconds
+Duration         : 27 seconds
 Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

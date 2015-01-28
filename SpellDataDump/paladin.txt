@@ -1,4 +1,4 @@
-SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19480)
+SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19533)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -214,7 +214,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=849)      : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=3.05, dl=0.17) | SP Coefficient: 1.09800
+                   Base Value: 1 | Scaled Value: 0 (avg=3.05, dl=0.17) | SP Coefficient: 1.65000
 #2 (id=850)      : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: -100 | Scaled Value: -100
 Description      : Casts down the enemy with a bolt of Holy Light, causing $s1 Holy damage and preventing the target from causing critical effects for the next $d.
@@ -514,6 +514,7 @@ Effects          :
                    Base Value: 132331 | Scaled Value: 132331 | Misc Value: 35395 | Misc Value 2: 0x204eb
 
 Name             : Seal of Righteousness (id=20154) [Spell Family (10)] 
+Replaces         : Seal of Command (id=105361)
 Class            : Protection Retribution Paladin
 Spell Level      : 42
 GCD              : 1 seconds
@@ -653,7 +654,7 @@ Spell Level      : 5
 Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Sanctity of Battle (25956), Proc Mana Regen (38334), Sword of Light (53503), Guarded by the Light (53592), Glyph of Double Jeopardy (54922), Judgment Range Increase (61776), Item - Paladin T10 Retribution 4P Bonus (70762), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Item - Icecrown 25 Heroic Dagger Proc (71892), Item - Proc Mastery Rating (95878), Holy Avenger (105809), Holy Insight (112859), Sanctified Wrath (114232), Glyph of Double Jeopardy (121027), Lucidity (137288), Exorcism (138162), Glyph of Judgment (159592)
+Affecting spells : Sanctity of Battle (25956), Proc Mana Regen (38334), Sword of Light (53503), Guarded by the Light (53592), Glyph of Double Jeopardy (54922), Judgment Range Increase (61776), Item - Paladin T10 Retribution 4P Bonus (70762), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Item - Proc Mastery Rating (95878), Holy Avenger (105809), Holy Insight (112859), Sanctified Wrath (114232), Glyph of Double Jeopardy (121027), Lucidity (137288), Exorcism (138162), Glyph of Judgment (159592)
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -806,7 +807,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=15851)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.25, dl=0.08) | SP Coefficient: 1.40000
+                   Base Value: 1 | Scaled Value: 0 (avg=1.25, dl=0.08) | SP Coefficient: 2.10000
 Description      : Blasts the target with Holy energy, causing $25912s1 Holy damage to an enemy, or $25914s1 healing to an ally, and granting a charge of Holy Power.
 
 Name             : Holy Shock (id=25914) [Scaling Spell (6), Spell Family (10)] 
@@ -917,8 +918,7 @@ Description      : Heals the target for $s2% of the caster's total health over $
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Seal of Truth (id=31801) [Spell Family (10)] 
-Replaces         : Seal of Command (id=105361)
-Class            : Protection Retribution Paladin
+Class            : Retribution Paladin
 Spell Level      : 24
 GCD              : 1 seconds
 Duration         : Aura (infinite)
@@ -1485,7 +1485,7 @@ Resource         : 3 Holy Power
 Spell Level      : 40
 Range            : 5 yards
 Cooldown         : 1.5 seconds
-Affecting spells : Sanctity of Battle (25956), Glyph of the Alabaster Shield (63222), Divine Purpose (90174), Alabaster Shield (121467)
+Affecting spells : Sanctity of Battle (25956), Divine Purpose (90174)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2435,24 +2435,6 @@ Effects          :
                    Affected Spells: Templar's Verdict (85256), Final Verdict (157048)
 Description      : Your Divine Storm also heals you for $115515s1% of your maximum health.
 
-Name             : Glyph of the Alabaster Shield (Protection) (id=63222) [Spell Family (10), Passive, Hidden] 
-Class            : Paladin
-Proc Chance      : 100%
-Proc Flags       : ...x.... .....x.. ........ ........ 
-                 : White Melee Taken, AOE Hostile Spell Taken
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=57325)    : Apply Aura (6) | Proc Trigger Spell: Alabaster Shield (42)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 121467
-                   Affected Spells: Shield of the Righteous (53600)
-Description      : Your successful blocks increase the damage of your next Shield of the Righteous by $121467s1%. Stacks up to $121467u1 times.
-
 Name             : Glyph of Holy Shock (Holy) (id=63224) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -2511,18 +2493,6 @@ Attributes       : ........ x....... ........ ....x...   ........ ........ .x...
 Effects          :
 #1 (id=58069)    : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 703
-
-Name             : Alabaster Shield (Protection) (id=63868) 
-Class            : Paladin
-Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=58070)    : Unknown effect type (74)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 704
 
 Name             : Holy Shock (Holy) (id=63870) 
 Class            : Paladin
@@ -3513,13 +3483,13 @@ Attributes       : ....x.x. ........ ..x..... ........   .....x.. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=115549)   : Apply Aura (6) | Unknown effect sub type (411)
+#1 (id=115549)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 1390
-#2 (id=166895)   : Apply Aura (6) | Unknown effect sub type (411)
+#2 (id=166895)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 1392
-#3 (id=166896)   : Apply Aura (6) | Unknown effect sub type (411)
+#3 (id=166896)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 1186
-#4 (id=166897)   : Apply Aura (6) | Unknown effect sub type (411)
+#4 (id=166897)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 1391
 #5 (id=166942)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
                    Base Value: -24000 | Scaled Value: -24000 | Misc Value: 11
@@ -3687,7 +3657,7 @@ Effects          :
 #1 (id=127140)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 80 | Scaled Value: 80 | Misc Value: 127
 #2 (id=180043)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7f
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 0x7f
 Description      : Places a Hand on the friendly target, reducing damage taken by $s2% and damage over time by an additional $s1% for $d. Players may only have one Hand on them per Paladin at any one time.
 Tooltip          : Damage over time taken reduced by $s1%.
 Damage taken reduced by $s2%.
@@ -3983,7 +3953,7 @@ Effects          :
 #1 (id=128468)   : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
                    Base Value: 1 | Scaled Value: 0 (avg=0.426)
 #2 (id=163021)   : Dummy (3)
-                   Base Value: 6742 | Scaled Value: 6742
+                   Base Value: 13484 | Scaled Value: 13484
 Description      : A hammer slowly falls from the sky, causing ${$SPH*$114917m2/1000+26.72716306*$114917m1} healing over $114917d. This healing is a large burst at first, and then decreases over time.
 Tooltip          : Healing every $t1 sec, decreasing over time.
 
@@ -4398,26 +4368,6 @@ Effects          :
 #2 (id=192294)   : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 10 yards
 Description      : Your next Holy Shock will heal up to 6 allies within $A2 yards of the target.
-
-Name             : Alabaster Shield (id=121467) [Spell Family (10)] 
-Class            : Paladin
-Duration         : 12 seconds
-Stacks           : 1 initial, 3 maximum
-Proc Chance      : 100%
-Proc Flags       : ....x... ..x...x. ........ ........ 
-                 : Yellow Melee, AOE Heal, Heal
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=150580)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 3 | Scaled Value: 3
-                   Affected Spells: Shield of the Righteous (53600)
-Description      : $@spelldesc63222
-Tooltip          : Increases Shield of the Righteous damage by $s1%.
 
 Name             : Emancipate (id=121783) [Spell Family (10)] 
 Class            : Retribution Paladin
@@ -5039,7 +4989,7 @@ Effects          :
 
 Name             : Sacred Shield (id=148039) [Scaling Spell (6), Spell Family (10)] 
 Class            : Paladin
-Resource         : 14.4% Base Mana (4608 @Level 100)
+Resource         : 9.5% Base Mana (3040 @Level 100)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
@@ -5237,7 +5187,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=218703)   : Apply Aura (6) | Periodic Heal%: every 2 seconds (20)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 2 | Scaled Value: 2
 Description      : $@spelldesc152263
 Tooltip          : Healing $s1% of your maximum health every $t1 sec.
 
@@ -5252,7 +5202,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=218704)   : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 15 | Scaled Value: 15
+                   Base Value: 20 | Scaled Value: 20
 Description      : $@spelldesc152263
 Tooltip          : Haste increased by $s1%.
 
@@ -6052,7 +6002,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=244136)   : Apply Aura (6) | Unknown effect sub type (411)
+#1 (id=244136)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1512
 #2 (id=244137)   : Apply Aura (6) | Unknown effect sub type (453)
                    Base Value: 4000 | Scaled Value: 4000 | Misc Value: 1512

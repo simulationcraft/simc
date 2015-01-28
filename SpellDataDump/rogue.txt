@@ -1,4 +1,4 @@
-SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19480)
+SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19533)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -365,7 +365,7 @@ $dur4=$?s56801[${6+8+4}][${6+8}]
 $dur5=$?s56801[${6+10+4}][${6+10}]
 $sang=$?s79147[${1.1*1.2}][${1*1}]
 $resolve=$?s84601[${1.15}][${1}]
-$bonus=$?s31220[${(((100+$76808m1))/100)*$<sang>}][${$<resolve>}]
+$bonus=$?s31220[${(((100+$76808m1))/100)*$<sang>*(1+$@versadmg)}][${$<resolve>*(1+$@versadmg)}]
 
 Name             : Feint (id=1966) [Spell Family (8)] 
 Class            : Rogue
@@ -640,7 +640,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Dream of Cenarius (158504), Solar Empowerment (164545), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719)
+Affecting spells : Item - Druid T13 Balance 2P Bonus (Insect Swarm) (105722), Restoration Overrides Passive (106735), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Lucidity (137247), Item - Druid T16 Balance 2P Bonus (144767), Empowered Moonkin (157228), Dream of Cenarius (158504), Solar Empowerment (164545), Naturalist (165374), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -938,7 +938,7 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 3
 #2 (id=136652)   : Apply Aura (6) | Add Percent Modifier: Spell Proc Chance (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 18
-                   Affected Spells: Crippling Poison (3408), Crippling Poison (3409), Leeching Poison (108211), Leeching Poison (112961), Debilitating Poison (115196)
+                   Affected Spells: Crippling Poison (3408), Crippling Poison (3409), Leeching Poison (108211), Debilitating Poison (115196)
 #3 (id=180823)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35
 #4 (id=181788)   : Dummy (3)
@@ -1397,7 +1397,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 1 seconds
 Affecting spells : Rogue Tier 6 Trinket (40460), Mastery: Potent Poisons (76803), Mastery: Executioner (76808), Vendetta (79140), Fury of the Destroyer (109949), Sanguinary Vein (124271), Item - Rogue T15 4P Bonus (138150), Empowered Envenom (157569), Enhanced Vendetta (158108), Death from Above (163786), Cold Blood (170882)
-Attributes       : ....x... ........ x.x..... ........   ........ .x...... ....x... ...x.... 
+Attributes       : ....x... ........ x.x..... ........   ........ .x...... ....x... ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : x..x.... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1426,7 +1426,7 @@ Description      : Finishing move that deals instant Nature damage$?s157513[][, 
 
 Replaces Eviscerate. 
 Tooltip          : Poison application chance increased by $s2%.
-Variables        : $mult2=$?s84601[${1.15*1.05}][${1.00*1.05}]
+Variables        : $mult2=$?s84601[${1.15*1.05*(1+$@versadmg)}][${1.00*1.05*(1+$@versadmg)}]
 $mult=$?s76803[${$<mult2>*((100+$76803m1)/100)}][$<mult2>*${1.00}]
 
 Name             : Interrupt (id=32747) 
@@ -3240,9 +3240,6 @@ Name             : Leeching Poison (id=108211) [Spell Family (8)]
 Class            : Rogue
 Cast Time        : 3 seconds
 Duration         : 3600 seconds
-Proc Chance      : 50%
-Proc Flags       : ..x.x... x....... ........ ........ 
-                 : White Melee, Yellow Melee, Yellow Ranged
 Affecting spells : Blade Flurry (13877), Envenom (32645), Glyph of Poisons (58038)
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
@@ -3251,13 +3248,13 @@ Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=119252)   : Apply Aura (6) | Proc Trigger Spell: Leeching Poison (42)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 112961
-Description      : Coats your weapons with a Non-Lethal Poison that lasts for $d.  Your melee attacks have a $h% chance to poison the target for $112961d, causing subsequent melee attacks to heal you for $112961s1% of damage dealt.$?s5938[
+#1 (id=119252)   : Apply Aura (6) | Unknown effect sub type (443)
+                   Base Value: 10 | Scaled Value: 10
+Description      : Coats your weapons with a Non-Lethal Poison that lasts for $d, granting you $s1% Leech.$?s5938[
 
 |CFFFFFFFFShiv Effect:|R 
 Instantly restores $116921s1% of the Rogue's health.][]
-Tooltip          : Weapon strikes have a chance to poison the target, causing the Rogue's subsequent weapon strikes to heal the Rogue for $112961s1% of damage dealt.
+Tooltip          : Leech increased by $s1%.
 
 Name             : Burst of Speed (id=108212) [Spell Family (8)] 
 Class            : Rogue
@@ -3350,38 +3347,6 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 127
 Description      : Kidney Shot and Cheap Shot also reduce damage dealt by the target by up to $s1% and healing done by the target by $s2% for $d after their effect fades.
 Tooltip          : Damage dealt reduced by $w1% and healing done reduced by $s2%.
-
-Name             : Leeching Poison (Talent) (id=112961) [Spell Family (8)] 
-Class            : Rogue
-Duration         : 12 seconds
-Proc Chance      : 100%
-Proc Flags       : ...x.x.. ........ ........ ........ 
-                 : White Melee Taken, Yellow Melee Taken
-Affecting spells : Blade Flurry (13877)
-Attributes       : ........ ........ .....x.. ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=125623)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15
-Description      : Poisons an enemy for $d.  Subsequent weapon strikes against the poisoned target will heal the Rogue for $s1% of damage dealt.
-Tooltip          : Melee attacks suffered from the poisoning Rogue will heal the Rogue for $s1% of damage received.
-
-Name             : Leeching Poison (Talent) (id=112974) 
-Class            : Rogue
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .....x..   ........ ........ ........ .....x.. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=125640)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0
-Description      : Poisons an enemy for $112961d.  Subsequent weapon strikes against the poisoned target will heal the Rogue for $112961s1% of damage dealt.
 
 Name             : Swiftblade's Cunning (Passive) (id=113742) [Spell Family (8), Passive] 
 Class            : Rogue
@@ -4208,7 +4173,7 @@ Effects          :
 #1 (id=210639)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=217580)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.33300 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.66600 | Radius: 0 - 8 yards
 #3 (id=217591)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #4 (id=217594)   : Apply Aura (6) | Unknown effect sub type (288)
@@ -4221,7 +4186,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1733
 Description      : Finishing move that consumes combo points on the target to empower your weapons with shadow energy and perform a devastating two-part attack. 
 
-You whirl around, dealing up to $s2 damage to all enemies within 8 yds, then leap into the air and $?s32645[Envenom][Eviscerate] your target on the way back down, with such force that it deals an additional $163786s2% damage.
+You whirl around, dealing up to $s2 damage to all enemies within 8 yds, then leap into the air and $?s32645[Envenom][Eviscerate] your target on the way back down, with such force that it has a $163786s2% stronger effect.
 
 Name             : Shadow Reflection (id=152151) 
 Class            : Rogue
@@ -4794,6 +4759,9 @@ Effects          :
                    Affected Spells: Eviscerate (2098), Envenom (32645)
 #3 (id=250144)   : Apply Aura (6) | Add Flat Modifier: Spell Range (107)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 5
+                   Affected Spells: Eviscerate (2098), Envenom (32645)
+#4 (id=263265)   : Apply Aura (6) | Add Percent Modifier: Spell Duration (108)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 1
                    Affected Spells: Eviscerate (2098), Envenom (32645)
 
 Name             : Master Poisoner (id=165390) [Passive] 
