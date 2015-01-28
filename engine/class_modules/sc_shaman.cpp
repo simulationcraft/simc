@@ -5229,16 +5229,26 @@ void shaman_t::trigger_enhanced_chain_lightning( const action_state_t* state )
   if ( ! perk.enhanced_chain_lightning -> ok() )
     return;
 
-  // Trigger as many stacks as there are targets, if the buff is not up
-  if ( ! buff.enhanced_chain_lightning -> check() )
-    buff.enhanced_chain_lightning -> trigger( (int)state -> n_targets );
+  if ( maybe_ptr( dbc.ptr ) )
+  {
+    if ( static_cast<const int>( state -> n_targets ) >= perk.enhanced_chain_lightning -> effectN( 1 ).base_value() )
+    {
+      buff.enhanced_chain_lightning -> trigger();
+    }
+  }
   else
   {
-    // Stacks are only refreshed if the new number is higher than the current
-    if ( state -> n_targets >= static_cast<size_t>( buff.enhanced_chain_lightning -> check() ) )
-    {
-      buff.enhanced_chain_lightning -> expire();
+    // Trigger as many stacks as there are targets, if the buff is not up
+    if ( ! buff.enhanced_chain_lightning -> check() )
       buff.enhanced_chain_lightning -> trigger( (int)state -> n_targets );
+    else
+    {
+      // Stacks are only refreshed if the new number is higher than the current
+      if ( state -> n_targets >= static_cast<size_t>( buff.enhanced_chain_lightning -> check() ) )
+      {
+        buff.enhanced_chain_lightning -> expire();
+        buff.enhanced_chain_lightning -> trigger( (int)state -> n_targets );
+      }
     }
   }
 }
