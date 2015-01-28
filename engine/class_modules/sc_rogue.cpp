@@ -1823,6 +1823,13 @@ struct envenom_t : public rogue_attack_t
       envenom_duration += p() -> buffs.envenom -> data().duration();
 
     p() -> buffs.envenom -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, envenom_duration );
+
+    if ( p() -> buffs.death_from_above -> check() && maybe_ptr( p() -> dbc.ptr ) )
+    {
+      timespan_t extend_increase = p() -> buffs.envenom -> remains() * p() -> buffs.death_from_above -> data().effectN( 4 ).percent();
+      p() -> buffs.envenom -> extend_duration( player, extend_increase );
+    }
+
     p() -> buffs.enhanced_vendetta -> expire();
   }
 
