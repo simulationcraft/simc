@@ -6084,7 +6084,6 @@ void druid_t::init_spells()
   spell.cat_form                        = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 3025 )   : spell_data_t::not_found();
   spell.cat_form_speed                  = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 113636 ) : spell_data_t::not_found();
   spell.frenzied_regeneration           = find_class_spell( "Frenzied Regeneration"       ) -> ok() ? find_spell( 22842  ) : spell_data_t::not_found();
-  spell.t17_gushing_wounds              = sets.has_set_bonus( DRUID_FERAL, T17, B4 )                ? find_spell( 165432 ) : spell_data_t::not_found();
   spell.moonkin_form                    = find_class_spell( "Moonkin Form"                ) -> ok() ? find_spell( 24905  ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
   spell.regrowth                        = find_class_spell( "Regrowth"                    ) -> ok() ? find_spell( 93036  ) : spell_data_t::not_found(); // Regrowth refresh
 
