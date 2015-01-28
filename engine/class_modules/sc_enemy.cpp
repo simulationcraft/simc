@@ -1460,7 +1460,12 @@ void enemy_t::create_pets()
 
 double enemy_t::health_percentage() const
 {
-  if ( fixed_health_percentage > 0 ) return fixed_health_percentage;
+  if ( fixed_health_percentage > 0 && sim -> current_time() < sim -> expected_iteration_time )
+  {
+    return fixed_health_percentage;
+  }
+  else if ( fixed_health_percentage > 0 )
+    return 0.0;
 
   if ( resources.base[ RESOURCE_HEALTH ] == 0 || sim -> fixed_time ) // first iteration or fixed time sim.
   {
