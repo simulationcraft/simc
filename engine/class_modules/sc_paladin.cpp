@@ -812,9 +812,10 @@ struct paladin_spell_t : public paladin_spell_base_t<spell_t>
 
 struct paladin_heal_t : public paladin_spell_base_t<heal_t>
 {
+  const spell_data_t* tower_of_radiance;
   paladin_heal_t( const std::string& n, paladin_t* p,
                   const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( n, p, s )
+    base_t( n, p, s ), tower_of_radiance( p -> find_spell( 88852 ) )
   {
     may_crit          = true;
     tick_may_crit     = true;
@@ -2084,9 +2085,9 @@ struct flash_of_light_t : public paladin_heal_t
         sim -> out_debug.printf("=================== Flash of Light applies GoFoL buff ====================");      
     }
         
-    // Grant Holy Power if healing the beacon target
+    // Grant Mana if healing the beacon target
     if ( s -> target == p() -> beacon_target ){
-        int g = static_cast<int>( p() -> find_spell( 88852 ) -> effectN(1).percent() * flash_of_light_t::cost() );
+        int g = static_cast<int>( tower_of_radiance -> effectN(1).percent() * cost() );
         p() -> resource_gain( RESOURCE_MANA, g, p() -> gains.mana_beacon_of_light );
 
     }
@@ -2259,9 +2260,9 @@ struct holy_light_t : public paladin_heal_t
   {
     paladin_heal_t::impact( s );
     
-    // Grant Holy Power if healing the beacon target
+    // Grant Mana if healing the beacon target
     if ( s -> target == p() -> beacon_target ){
-        int g = static_cast<int>( p() -> find_spell( 88852 ) -> effectN(1).percent() * holy_light_t::cost() );
+        int g = static_cast<int>( tower_of_radiance -> effectN(1).percent() * cost() );
         p() -> resource_gain( RESOURCE_MANA, g, p() -> gains.mana_beacon_of_light );
 
     }
@@ -2768,7 +2769,7 @@ struct lay_on_hands_t : public paladin_heal_t
 
     target -> debuffs.forbearance -> trigger();
     if ( p() -> glyphs.divinity -> ok() ){
-        p() -> resource_gain(RESOURCE_MANA, p() -> find_spell( 54986 ) -> effectN(1).percent() * p() -> resources.max[RESOURCE_MANA], p() -> gains.glyph_of_divinity);
+        p() -> resource_gain(RESOURCE_MANA, mana_return_pct * p() -> resources.max[RESOURCE_MANA], p() -> gains.glyph_of_divinity);
     }
   }
 
