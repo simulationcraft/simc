@@ -90,9 +90,7 @@ actions.main+=/divine_star,moving=1,if=talent.divine_star.enabled&target.distanc
 actions.main+=/cascade,moving=1,if=talent.cascade.enabled&target.distance<=40
 actions.main+=/shadow_word_pain,moving=1,cycle_targets=1
 
-actions.vent=mindbender,if=talent.mindbender.enabled&cooldown.mind_blast.remains>=gcd
-actions.vent+=/shadowfiend,if=!talent.mindbender.enabled&cooldown.mind_blast.remains>=gcd
-actions.vent+=/void_entropy,if=shadow_orb=3&!ticking&target.time_to_die>60&active_enemies=1
+actions.vent=void_entropy,if=shadow_orb=3&!ticking&target.time_to_die>60&active_enemies=1
 actions.vent+=/void_entropy,if=!dot.void_entropy.ticking&shadow_orb=5&active_enemies>=1&target.time_to_die>60,cycle_targets=1,max_cycle_targets=6
 actions.vent+=/devouring_plague,if=dot.void_entropy.ticking&dot.void_entropy.remains<=gcd*2&cooldown_react,cycle_targets=1
 actions.vent+=/devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<5,cycle_targets=1
@@ -100,6 +98,8 @@ actions.vent+=/devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<10&acti
 actions.vent+=/devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<15&active_enemies>3,cycle_targets=1
 actions.vent+=/devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<20&active_enemies>4,cycle_targets=1
 actions.vent+=/devouring_plague,if=shadow_orb=5&dot.void_entropy.remains,cycle_targets=1
+actions.vent+=/mindbender,if=talent.mindbender.enabled&cooldown.mind_blast.remains>=gcd
+actions.vent+=/shadowfiend,if=!talent.mindbender.enabled&cooldown.mind_blast.remains>=gcd
 actions.vent+=/halo,if=talent.halo.enabled&target.distance<=30&active_enemies>=4
 actions.vent+=/mind_blast,if=glyph.mind_harvest.enabled&mind_harvest=0&shadow_orb<=2,cycle_targets=1
 actions.vent+=/devouring_plague,if=glyph.mind_harvest.enabled&mind_harvest=0&shadow_orb>=3,cycle_targets=1
@@ -159,10 +159,12 @@ actions.cop_dotweave+=/devouring_plague,moving=1
 actions.cop_dotweave+=/shadow_word_pain,if=primary_target=0,moving=1,cycle_targets=1
 
 actions.cop_mfi=devouring_plague,if=shadow_orb=5
+actions.cop_mfi+=/devouring_plague,if=buff.mental_instinct.remains<gcd&buff.mental_instinct.remains>(gcd*0.7)&buff.mental_instinct.remains
 actions.cop_mfi+=/mind_blast,if=glyph.mind_harvest.enabled&mind_harvest=0,cycle_targets=1
 actions.cop_mfi+=/mind_blast,if=active_enemies<=5&cooldown_react
 actions.cop_mfi+=/shadow_word_death,if=target.health.pct<20,cycle_targets=1
-actions.cop_mfi+=/devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<gcd*1.0|target.health.pct<20&cooldown.shadow_word_death.remains<gcd*1.0)
+actions.cop_mfi+=/devouring_plague,if=shadow_orb>=3&!set_bonus.tier17_2pc&!set_bonus.tier17_4pc&(cooldown.mind_blast.remains<gcd|(target.health.pct<20&cooldown.shadow_word_death.remains<gcd))
+actions.cop_mfi+=/devouring_plague,if=shadow_orb>=3&set_bonus.tier17_2pc&!set_bonus.tier17_4pc&(cooldown.mind_blast.remains<=2|(target.health.pct<20&cooldown.shadow_word_death.remains<gcd))
 actions.cop_mfi+=/searing_insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)
 actions.cop_mfi+=/searing_insanity,if=active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)
 actions.cop_mfi+=/mindbender,if=talent.mindbender.enabled
@@ -177,15 +179,23 @@ actions.cop_mfi+=/divine_star,if=talent.divine_star.enabled&active_enemies>2&tar
 actions.cop_mfi+=/mind_sear,if=active_enemies>=6,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)
 actions.cop_mfi+=/mind_spike
 actions.cop_mfi+=/shadow_word_death,moving=1,if=movement.remains>=1*gcd
-actions.cop_mfi+=/power_word_shield,moving=1,if=talent.body_and_soul.enabled&movement.distance>=15
+actions.cop_mfi+=/power_word_shield,moving=1,if=talent.body_and_soul.enabled&movement.distance>=25
 actions.cop_mfi+=/halo,if=talent.halo.enabled&target.distance<=30,moving=1
 actions.cop_mfi+=/divine_star,if=talent.divine_star.enabled&target.distance<=28,moving=1
 actions.cop_mfi+=/cascade,if=talent.cascade.enabled&target.distance<=40,moving=1
 actions.cop_mfi+=/devouring_plague,moving=1
 actions.cop_mfi+=/shadow_word_pain,if=primary_target=0,moving=1,cycle_targets=1
 
-actions.cop=devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<=gcd*1.0|(cooldown.shadow_word_death.remains<=gcd*1.0&target.health.pct<20))&primary_target=0,cycle_targets=1
-actions.cop+=/devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<=gcd*1.0|(cooldown.shadow_word_death.remains<=gcd*1.0&target.health.pct<20))
+actions.cop=devouring_plague,if=shadow_orb=5&primary_target=0&!target.dot.devouring_plague_dot.ticking&target.time_to_die>=(gcd*4*7%6),cycle_targets=1
+actions.cop+=/devouring_plague,if=shadow_orb=5&!target.dot.devouring_plague_dot.ticking
+actions.cop+=/devouring_plague,if=shadow_orb=5&primary_target=0&target.time_to_die>=(gcd*4*7%6)&(cooldown.mind_blast.remains<=gcd|(cooldown.shadow_word_death.remains<=gcd&target.health.pct<20)),cycle_targets=1
+actions.cop+=/devouring_plague,if=shadow_orb=5&(cooldown.mind_blast.remains<=gcd|(cooldown.shadow_word_death.remains<=gcd&target.health.pct<20))
+actions.cop+=/devouring_plague,if=primary_target=0&buff.mental_instinct.remains<gcd&buff.mental_instinct.remains>(gcd*0.7)&buff.mental_instinct.remains,cycle_targets=1
+actions.cop+=/devouring_plague,if=buff.mental_instinct.remains<gcd&buff.mental_instinct.remains>(gcd*0.7)&buff.mental_instinct.remains
+actions.cop+=/devouring_plague,if=shadow_orb>=3&!set_bonus.tier17_2pc&!set_bonus.tier17_4pc&(cooldown.mind_blast.remains<=gcd|(cooldown.shadow_word_death.remains<=gcd&target.health.pct<20))&primary_target=0&target.time_to_die>=(gcd*4*7%6),cycle_targets=1
+actions.cop+=/devouring_plague,if=shadow_orb>=3&!set_bonus.tier17_2pc&!set_bonus.tier17_4pc&(cooldown.mind_blast.remains<=gcd|(cooldown.shadow_word_death.remains<=gcd&target.health.pct<20))
+actions.cop+=/devouring_plague,if=shadow_orb>=3&set_bonus.tier17_2pc&!set_bonus.tier17_4pc&(cooldown.mind_blast.remains<=2|(cooldown.shadow_word_death.remains<=gcd&target.health.pct<20))&primary_target=0&target.time_to_die>=(gcd*4*7%6),cycle_targets=1
+actions.cop+=/devouring_plague,if=shadow_orb>=3&set_bonus.tier17_2pc&!set_bonus.tier17_4pc&(cooldown.mind_blast.remains<=2|(cooldown.shadow_word_death.remains<=gcd&target.health.pct<20))
 actions.cop+=/mind_blast,if=mind_harvest=0,cycle_targets=1
 actions.cop+=/mind_blast,if=active_enemies<=5&cooldown_react
 actions.cop+=/shadow_word_death,if=target.health.pct<20,cycle_targets=1
@@ -205,10 +215,11 @@ actions.cop+=/mind_sear,if=active_enemies>=3,chain=1,interrupt_if=(cooldown.mind
 actions.cop+=/mind_flay,if=target.dot.devouring_plague_tick.ticks_remain>1&active_enemies=1,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)
 actions.cop+=/mind_spike
 actions.cop+=/shadow_word_death,moving=1,if=movement.remains>=1*gcd
-actions.cop+=/power_word_shield,moving=1,if=talent.body_and_soul.enabled&movement.distance>=15
+actions.cop+=/power_word_shield,moving=1,if=talent.body_and_soul.enabled&movement.distance>=25
 actions.cop+=/halo,moving=1,if=talent.halo.enabled&target.distance<=30
 actions.cop+=/divine_star,if=talent.divine_star.enabled&target.distance<=28,moving=1
 actions.cop+=/cascade,if=talent.cascade.enabled&target.distance<=40,moving=1
+actions.cop+=/devouring_plague,moving=1
 
 head=slagbombers_hood,id=113981
 neck=gruuls_lip_ring,id=113872,enchant=gift_of_mastery
