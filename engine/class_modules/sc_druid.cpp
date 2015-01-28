@@ -503,6 +503,7 @@ public:
     const spell_data_t* primal_fury; // Primal fury gain
     const spell_data_t* regrowth; // Old GoRegrowth
     const spell_data_t* survival_instincts; // Survival instincts aura
+    const spell_data_t* gushing_wound; // Feral t17 4pc driver
   } spell;
 
   // Talents
@@ -746,17 +747,10 @@ struct gushing_wound_t : public residual_action::residual_periodic_action_t< att
   druid_t* p() const
   { return static_cast<druid_t*>( player ); }
 
-  virtual void init()
-  {
-    attack_t::init();
-
-    // Don't double dip!
-    snapshot_flags &= STATE_NO_MULTIPLIER;
-  }
-
   virtual void tick( dot_t* d )
   {
-    attack_t::tick( d );
+    residual_periodic_action_t::tick( d );
+
     if ( trigger_t17_2p )
       p() -> resource_gain( RESOURCE_ENERGY,
                             p() -> sets.set( DRUID_FERAL, T17, B2 ) -> effectN( 1 ).base_value(),
@@ -1809,13 +1803,13 @@ public:
 
   void trigger_gushing_wound( player_t* t, double dmg )
   {
-    if ( ! ( p() -> buff.berserk -> check() && ab::special && ab::harmful ) )
+    if ( ! ( p() -> buff.berserk -> check() && ab::special && ab::harmful && dmg > 0 ) )
       return;
 
     residual_action::trigger(
       p() -> active.gushing_wound, // ignite spell
       t, // target
-      p() -> find_spell( 165432 ) -> effectN( 1 ).percent() * dmg );
+      p() -> spell.gushing_wound -> effectN( 1 ).percent() * dmg );
   }
 
   virtual expr_t* create_expression( const std::string& name_str )
@@ -6090,6 +6084,9 @@ void druid_t::init_spells()
     spell.primal_fury = find_spell( 16953 );
   else if ( specialization() == DRUID_GUARDIAN )
     spell.primal_fury = find_spell( 16959 );
+
+  if ( specialization() == DRUID_FERAL )
+    spell.gushing_wound = find_spell( 165432 );
 
   // Perks
 
