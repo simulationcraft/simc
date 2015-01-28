@@ -9,8 +9,6 @@ namespace
 { // UNNAMED NAMESPACE
 // ==========================================================================
 // Warrior
-// Check EVERYTHING with dbc.ptr after next patch. Also devastate.
-// They may have reverted the nerf to Ravager on ptr. Worth checking.
 // ==========================================================================
 
 struct warrior_t;
@@ -189,6 +187,7 @@ public:
     const spell_data_t* intervene;
     const spell_data_t* headlong_rush;
     const spell_data_t* heroic_leap;
+    const spell_data_t* t17_prot_2p;
   } spell;
 
   // Glyphs
@@ -556,7 +555,7 @@ public:
 
     if ( weapons_master )
     {
-      am *= 1.0 + ( ab::player -> cache.mastery_value() * ( !p() -> dbc.ptr ? 1.2857 : 0.8181 ) );
+      am *= 1.0 + ( ab::player -> cache.mastery_value() * ( !p() -> dbc.ptr ? 1.2857 : 1.0 ) );
     }
 
     return am;
@@ -1958,8 +1957,10 @@ struct heroic_throw_t: public warrior_attack_t
 
 struct heroic_leap_t: public warrior_attack_t
 {
+  const spell_data_t* heroic_leap_damage;
   heroic_leap_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "heroic_leap", p, p -> spell.heroic_leap )
+    warrior_attack_t( "heroic_leap", p, p -> spell.heroic_leap ),
+    heroic_leap_damage( p -> find_spell( 52174 ) )
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
@@ -1970,7 +1971,7 @@ struct heroic_leap_t: public warrior_attack_t
     base_teleport_distance = data().max_range();
     base_teleport_distance += p -> glyphs.death_from_above -> effectN( 2 ).base_value();
     range = -1;
-    attack_power_mod.direct = p -> find_spell( 52174 ) -> effectN( 1 ).ap_coeff();
+    attack_power_mod.direct = heroic_leap_damage -> effectN( 1 ).ap_coeff();
 
     cooldown -> duration = data().cooldown();
     cooldown -> duration += p -> glyphs.death_from_above -> effectN( 1 ).time_value();
@@ -1995,7 +1996,7 @@ struct heroic_leap_t: public warrior_attack_t
 
   void impact( action_state_t* s )
   {
-    if ( p() -> current.distance_to_move > p() -> find_spell( 52174 ) -> effectN( 1 ).radius() )
+    if ( p() -> current.distance_to_move > heroic_leap_damage -> effectN( 1 ).radius() )
       s -> result_amount = 0;
     warrior_attack_t::impact( s );
     p() -> buff.heroic_leap_glyph -> trigger();
@@ -2382,14 +2383,7 @@ struct second_wind_t: public warrior_heal_t
   {
     callbacks = false;
     background = true;
-    if ( p -> dbc.ptr )
-    {
-      heal_pct = 0.25;
-    }
-    else
-    {
-      heal_pct = 0.1;
-    }
+    heal_pct = data().effectN ( 1 ).percent();
   }
 
   void execute()
@@ -2497,10 +2491,6 @@ struct siegebreaker_off_hand_t: public warrior_attack_t
     may_dodge = may_parry = may_block = may_miss = false;
     dual = true;
     weapon = &( p -> off_hand_weapon );
-    if ( p -> dbc.ptr )
-    {
-      weapon_multiplier *= 1.5;
-    }
   }
 };
 
@@ -2519,10 +2509,6 @@ struct siegebreaker_t: public warrior_attack_t
     {
       oh_attack = new siegebreaker_off_hand_t( p, "siegebreaker_oh", data().effectN( 5 ).trigger() );
       add_child( oh_attack );
-    }
-    if ( p -> dbc.ptr )
-    {
-      weapon_multiplier *= 1.5;
     }
   }
 
@@ -3109,10 +3095,6 @@ struct avatar_t: public warrior_spell_t
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
-    if ( p -> dbc.ptr )
-    {
-      cooldown -> duration = timespan_t::from_seconds( 90 );
-    }
   }
 
   void execute()
@@ -3336,10 +3318,7 @@ struct ravager_tick_t: public warrior_spell_t
   {
     aoe = -1;
     dual = may_crit = true;
-    if ( !p -> dbc.ptr )
-    {
-      attack_power_mod.direct *= 0.75;
-    }
+    attack_power_mod.direct *= 0.75; //I guess they're going to leave this spell hotfixed for life. 
   }
 };
 
@@ -3987,6 +3966,9 @@ void warrior_t::init_spells()
   if ( glyphs.rallying_cry -> ok() ) active_rallying_cry_heal = new rallying_cry_heal_t( this );
   if ( talents.second_wind -> ok() ) active_second_wind = new second_wind_t( this );
   if ( sets.has_set_bonus( SET_TANK, T16, B2 ) ) active_t16_2pc = new tier16_2pc_tank_heal_t( this );
+
+  if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )
+    spell.t17_prot_2p = find_spell( 169688 );
 
   if ( !talents.gladiators_resolve -> ok() )
     gladiator = false;
@@ -4756,8 +4738,7 @@ void warrior_t::create_buffs()
 
   buff.avatar = buff_creator_t( this, "avatar", talents.avatar )
     .cd( timespan_t::zero() )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    .duration( dbc.ptr ? timespan_t::from_seconds( 20 ) : timespan_t::from_seconds( 24 ) );
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.battle_stance = new buffs::battle_stance_t( *this, "battle_stance", find_class_spell( "Battle Stance" ) );
 
@@ -5295,7 +5276,7 @@ double warrior_t::composite_block_reduction() const
   if ( buff.shield_block -> up() )
   {
     if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )
-      br += find_spell( 169688 ) -> effectN( 1 ).percent();
+      br += spell.t17_prot_2p -> effectN( 1 ).percent();
   }
 
   return br;
