@@ -5476,9 +5476,7 @@ double monk_t::composite_armor_multiplier() const
 {
   double a = player_t::composite_armor_multiplier();
 
-  a += active_stance_data( STURDY_OX ).effectN( 13 ).percent();
-  if ( wod_hotfix )
-    a *= 1.5; // Hotfix to 75% (up from 50%) on Nov 12, 2014 
+  a += ( active_stance_data( STURDY_OX ).effectN( 13 ).percent() * ( wod_hotfix ? 1.5 : 1.0  ) );
 
   return a;
 }
