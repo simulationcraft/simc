@@ -2267,8 +2267,6 @@ struct kiljaedens_cunning_t: public warlock_spell_t
   kiljaedens_cunning_t( warlock_t* p ):
     warlock_spell_t( "kiljaedens_cunning", p, p -> talents.kiljaedens_cunning )
   {
-    if ( p -> dbc.ptr )
-      cooldown -> duration = timespan_t::from_seconds( 35 );
   }
 
   void execute()
@@ -2566,9 +2564,6 @@ struct shadowburn_t: public warlock_spell_t
     if ( p() -> mastery_spells.emberstorm -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
 
-    if ( p() -> dbc.ptr )
-      m *= 1.0 + 0.25 * p() -> buffs.grimoire_of_sacrifice -> stack();
-    else
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
@@ -2802,9 +2797,6 @@ struct haunt_t: public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    if ( p() -> dbc.ptr )
-      m *= 1.0 + 0.25 * p() -> buffs.grimoire_of_sacrifice -> stack();
-    else
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
@@ -3128,9 +3120,7 @@ struct incinerate_t: public warlock_spell_t
   {
     if ( p -> talents.charred_remains -> ok() )
     {
-      if ( p -> dbc.ptr )
-        base_multiplier *= 0.5;
-      else
+      if ( p -> talents.charred_remains -> ok() )
         base_multiplier *= 1.0 + p -> talents.charred_remains -> effectN( 1 ).percent();
     }
     if ( p -> wod_hotfix )
@@ -3149,9 +3139,7 @@ struct incinerate_t: public warlock_spell_t
     gain = p -> get_gain( "incinerate_fnb" );
     if ( p -> talents.charred_remains -> ok() )
     {
-      if ( p -> dbc.ptr )
-        base_multiplier *= 0.5;
-      else
+      if ( p -> talents.charred_remains -> ok() )
         base_multiplier *= 1.0 + p -> talents.charred_remains -> effectN( 1 ).percent();
     }
     if ( p -> wod_hotfix )
@@ -3203,9 +3191,6 @@ struct incinerate_t: public warlock_spell_t
       m *= p() -> buffs.fire_and_brimstone -> data().effectN( 5 ).percent();
     }
 
-    if ( p() -> dbc.ptr )
-      m *= 1.0 + 0.25 * p() -> buffs.grimoire_of_sacrifice -> stack();
-    else
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     m *= 1.0 + p() -> mastery_spells.emberstorm -> effectN( 3 ).percent() + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 3 ).mastery_value();
@@ -3442,9 +3427,6 @@ struct chaos_bolt_t: public warlock_spell_t
 
     m *= 1.0 + p() -> cache.spell_crit();
 
-    if ( p() -> dbc.ptr )
-      m *= 1.0 + 0.25 * p() -> buffs.grimoire_of_sacrifice -> stack();
-    else
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
@@ -3758,10 +3740,7 @@ struct drain_soul_t: public warlock_spell_t
 
     m *= 1.0 + p() -> sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).percent();
 
-    if ( p() -> dbc.ptr )
-      m *= 1.0 + 0.25 * p() -> buffs.grimoire_of_sacrifice -> stack();
-    else
-      m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
 
     if ( p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
@@ -3778,11 +3757,8 @@ struct drain_soul_t: public warlock_spell_t
     trigger_soul_leech( p(), d -> state -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
 
     double multiplier = data().effectN( 3 ).percent();
-    
-    if ( p() -> dbc.ptr )
-      multiplier *= 1.0 + 0.25 * p() -> buffs.grimoire_of_sacrifice -> stack();
-    else
-      multiplier *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+
+    multiplier *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     trigger_extra_tick( td( d -> state -> target ) -> dots_agony, multiplier );
     trigger_extra_tick( td( d -> state -> target ) -> dots_corruption, multiplier );
@@ -4884,10 +4860,7 @@ struct grimoire_of_service_t: public summon_pet_t
   {
     cooldown = p -> get_cooldown( "grimoire_of_service" );
     cooldown -> duration = data().cooldown();
-    if ( p -> dbc.ptr )
-      summoning_duration = timespan_t::from_seconds( 25 );
-    else
-      summoning_duration = data().duration();
+    summoning_duration = data().duration();
     if ( pet )
       pet -> summon_stats = stats;
   }
