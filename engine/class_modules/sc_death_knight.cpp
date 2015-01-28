@@ -6840,7 +6840,7 @@ void death_knight_t::init_action_list()
 
     //AoE
     aoe -> add_talent( this, "Unholy Blight" );
-    aoe -> add_action( "run_action_list,name=spread,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking|!dot.necrotic_plague.ticking" );
+    aoe -> add_action( "run_action_list,name=spread,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking|(!dot.necrotic_plague.ticking&talent.necrotic_plague.enabled)" );
     // AoE defile
     aoe -> add_talent( this, "Defile" );
     // AoE Breath of Sindragosa in use, cast and then keep up
