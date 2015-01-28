@@ -3337,6 +3337,7 @@ struct ravager_t: public warrior_spell_t
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     hasted_ticks = callbacks = false;
     dot_duration = timespan_t::from_seconds( data().effectN( 4 ).base_value() );
+    attack_power_mod.direct = attack_power_mod.tick = 0;
     add_child( ravager );
   }
 
@@ -3347,9 +3348,10 @@ struct ravager_t: public warrior_spell_t
     warrior_spell_t::execute();
   }
 
-  void tick( dot_t* )
+  void tick( dot_t*d )
   {
     ravager -> execute();
+    warrior_spell_t::tick( d );
   }
 };
 
