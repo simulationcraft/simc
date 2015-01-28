@@ -7003,7 +7003,7 @@ double druid_t::composite_attack_power_multiplier() const
   double ap = player_t::composite_attack_power_multiplier();
 
   if ( mastery.primal_tenacity -> ok() )
-    ap *= 1.0 + cache.mastery() * mastery.primal_tenacity_AP -> effectN( 1 ).sp_coeff();
+    ap *= 1.0 + cache.mastery() * mastery.primal_tenacity_AP -> effectN( 1 ).mastery_value();
 
   return ap;
 }
