@@ -1937,7 +1937,16 @@ struct ghoul_pet_t : public death_knight_pet_t
       am *= 1.0 + p -> o() -> buffs.shadow_infusion -> stack() * p -> o() -> buffs.shadow_infusion -> data().effectN( 1 ).percent();
 
       if ( p -> o() -> buffs.dark_transformation -> up() )
-        am *= 1.0 + p -> o() -> buffs.dark_transformation -> data().effectN( 1 ).percent();
+      {
+        double dtb = p -> o() -> buffs.dark_transformation -> data().effectN( 1 ).percent();
+        // TODO: DBCification
+        if ( p -> o() -> sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T17, B2 ) )
+        {
+          dtb += 0.4;
+        }
+
+        am *= 1.0 + dtb;
+      }
 
       am *= 0.8;
 
