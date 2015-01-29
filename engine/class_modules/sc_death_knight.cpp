@@ -7939,8 +7939,13 @@ void death_knight_t::trigger_t17_4pc_unholy( const action_state_t* )
   size_t n_regened = 0;
   for ( size_t i = 0; i < _runes.slot.size() && n_regened < max_runes; i++ )
   {
-    if ( _runes.slot[ i ].state != STATE_REGENERATING )
+    if ( _runes.slot[ i ].state != STATE_DEPLETED )
       continue;
+
+    if ( _runes.slot[ i ].paired_rune -> value >= 0.9 )
+    {
+      continue;
+    }
 
     rune_t* regen_rune = &( _runes.slot[ i ] );
 
@@ -7957,6 +7962,34 @@ void death_knight_t::trigger_t17_4pc_unholy( const action_state_t* )
     if ( sim -> log ) sim -> out_log.printf( "%s regened rune %d", name(), i );
     n_regened++;
   }
+
+  // Reeeeewinddd
+  for ( size_t i = 0; i < 4 && n_regened < max_runes; i++ )
+  {
+    if ( _runes.slot[ i ].value >= 0.5 )
+    {
+      continue;
+    }
+
+    rune_t* regen_rune = &( _runes.slot[ i ] );
+
+    double gain = 1 - _runes.slot[ i ].value;
+
+    regen_rune -> fill_rune();
+    regen_rune -> type |= RUNE_TYPE_DEATH;
+
+    if ( regen_rune -> is_blood() )
+      gains.t17_4pc_unholy_blood -> add( RESOURCE_RUNE, gain, 1 - gain );
+    else if ( regen_rune -> is_frost() )
+      gains.t17_4pc_unholy_frost -> add( RESOURCE_RUNE, gain, 1 - gain );
+    else if ( regen_rune -> is_unholy() )
+      gains.t17_4pc_unholy_unholy -> add( RESOURCE_RUNE, gain, 1 - gain );
+
+    if ( sim -> log ) sim -> out_log.printf( "%s regened rune %d (fallback, wasted %.2f)", name(), i, 1 - gain );
+    n_regened++;
+  }
+
+  // TODO: ReeeeREEEEEEEEEEEEEEEEEEEEEEeeeeeeeeeeeewind
 
   for ( size_t i = 0; i < max_runes - n_regened; i++ )
     gains.t17_4pc_unholy_waste -> add( RESOURCE_RUNE, 1, 0 );
