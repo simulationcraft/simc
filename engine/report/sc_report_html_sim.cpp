@@ -824,6 +824,11 @@ void print_html_scale_factors( report::sc_html_stream& os, sim_t* sim )
   {
     player_t* p = sim -> players_by_name[ i ];
 
+    if ( p -> type == HEALING_ENEMY )
+    {
+      continue;
+    }
+
     if ( p -> type != prev_type )
     {
       prev_type = p -> type;
