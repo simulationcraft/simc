@@ -5865,12 +5865,6 @@ void warlock_t::init_resources( bool force )
 
   if ( pets.active )
     pets.active -> init_resources( force );
-}
-
-void warlock_t::combat_begin()
-{
-  player_t::combat_begin();
-
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
     buffs.demonic_calling -> trigger();
@@ -5879,6 +5873,10 @@ void warlock_t::combat_begin()
   }
 }
 
+void warlock_t::combat_begin()
+{
+  player_t::combat_begin();
+}
 
 void warlock_t::reset()
 {
