@@ -539,6 +539,9 @@ struct rogue_attack_t : public melee_attack_t
   bool proc_ruthlessness_cp_;
   bool proc_ruthlessness_energy_;
 
+  // Relentless strikes things
+  bool proc_relentless_strikes_;
+
   rogue_attack_t( const std::string& token, rogue_t* p,
                   const spell_data_t* s = spell_data_t::nil(),
                   const std::string& options = std::string() ) :
@@ -549,7 +552,8 @@ struct rogue_attack_t : public melee_attack_t
     combo_points_spent( 0 ),
     ability_type( ABILITY_NONE ),
     proc_ruthlessness_cp_( data().affected_by( p -> spell.ruthlessness_cp_driver -> effectN( 1 ) ) ),
-    proc_ruthlessness_energy_( data().affected_by( p -> spell.ruthlessness_driver -> effectN( 2 ) ) )
+    proc_ruthlessness_energy_( data().affected_by( p -> spell.ruthlessness_driver -> effectN( 2 ) ) ),
+    proc_relentless_strikes_( data().affected_by( p -> spec.relentless_strikes -> effectN( 1 ) ) )
   {
     parse_options( options );
 
@@ -613,6 +617,9 @@ struct rogue_attack_t : public melee_attack_t
   virtual bool procs_ruthlessness_energy() const
   { return proc_ruthlessness_energy_; }
 
+  virtual bool procs_relentless_strikes() const
+  { return proc_relentless_strikes_; }
+
   // Adjust poison proc chance
   virtual double composite_poison_flat_modifier( const action_state_t* ) const
   { return 0.0; }
@@ -638,7 +645,6 @@ struct rogue_attack_t : public melee_attack_t
 
   rogue_td_t* td( player_t* t ) const
   { return p() -> get_target_data( t ); }
-
 
   virtual double cost() const;
   virtual void   execute();
@@ -3384,6 +3390,10 @@ void rogue_t::trigger_relentless_strikes( const action_state_t* state )
 
   const actions::rogue_attack_state_t* s = actions::rogue_attack_t::cast_state( state );
   if ( s -> cp == 0 )
+    return;
+
+  actions::rogue_attack_t* attack = debug_cast<actions::rogue_attack_t*>( state -> action );
+  if ( ! attack -> procs_relentless_strikes() )
     return;
 
   double chance = spec.relentless_strikes -> effectN( 1 ).pp_combo_points() * s -> cp / 100.0;
