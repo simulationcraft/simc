@@ -3421,15 +3421,12 @@ struct living_bomb_t : public mage_spell_t
     mage_spell_t::impact( s );
   }
 
-  void tick( dot_t* d )
+  void last_tick( dot_t* d )
   {
-    mage_spell_t::tick( d );
+    mage_spell_t::last_tick( d );
 
-    if ( d -> ticks_left() == 0 )
-    {
-      explosion -> target = d -> target;
-      explosion -> execute();
-    }
+    explosion -> target = d -> target;
+    explosion -> execute();
   }
 };
 
