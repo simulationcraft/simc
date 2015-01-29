@@ -344,7 +344,6 @@ struct rogue_t : public player_t
     proc_t* no_revealing_strike;
     proc_t* t16_2pc_melee;
 
-    proc_t* combo_points_wasted;
     proc_t* anticipation_wasted;
   } procs;
 
@@ -3515,25 +3514,24 @@ void rogue_t::trigger_combo_point_gain( const action_state_t* state, int cp_over
   if ( gain_obj == 0 && attack && attack -> cp_gain )
     gain_obj = attack -> cp_gain;
 
-  if ( added > 0 )
+  if ( ! talent.anticipation -> ok() )
   {
-    resource_gain( RESOURCE_COMBO_POINT, added,
-        gain_obj ? gain_obj : 0,
-        state ? state -> action : 0 );
+    resource_gain( RESOURCE_COMBO_POINT, n_cp, gain_obj, state ? state -> action : 0 );
   }
-
-  if ( anticipation_added > 0 )
+  else
   {
-    buffs.anticipation -> trigger( anticipation_added );
-    if ( gain_obj )
-      gain_obj -> add( RESOURCE_COMBO_POINT, anticipation_added, 0 );
+    if ( added > 0 )
+    {
+      resource_gain( RESOURCE_COMBO_POINT, added, gain_obj, state ? state -> action : 0 );
+    }
+
+    if ( anticipation_added + anticipation_overflow > 0 )
+    {
+      buffs.anticipation -> trigger( anticipation_added + anticipation_overflow );
+      if ( gain_obj )
+        gain_obj -> add( RESOURCE_COMBO_POINT, anticipation_added, anticipation_overflow );
+    }
   }
-
-  for ( int i = 0; i < overflow; i++ )
-    procs.combo_points_wasted -> occur();
-
-  for ( int i = 0; i < anticipation_overflow; i++ )
-    procs.anticipation_wasted -> occur();
 
   if ( sim -> log )
   {
@@ -5191,8 +5189,7 @@ void rogue_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.anticipation_wasted      = get_proc( "Anticipation Charges (wasted)" );
-  procs.combo_points_wasted      = get_proc( "Combo Points (wasted)" );
+  procs.anticipation_wasted      = get_proc( "Anticipation Charges (wasted during replenish)" );
   procs.honor_among_thieves      = get_proc( "Honor Among Thieves" );
   procs.honor_among_thieves_proxy= get_proc( "Honor Among Thieves (Proxy action)" );
   procs.no_revealing_strike      = get_proc( "Finisher with no Revealing Strike" );
