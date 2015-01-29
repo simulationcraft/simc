@@ -10,6 +10,7 @@
 
 optimal_raid=1
 max_time=300
+tmi_boss=TMI_Standard_Boss_T17H
 vary_combat_length=0.2
 # Raid Tier17N
 
