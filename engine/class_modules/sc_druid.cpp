@@ -752,7 +752,7 @@ struct gushing_wound_t : public residual_action::residual_periodic_action_t< att
 
   virtual void tick( dot_t* d )
   {
-    residual_periodic_action_t<attack_t>::tick( d );
+    residual_action::residual_periodic_action_t<attack_t>::tick( d );
 
     if ( trigger_t17_2p )
       p() -> resource_gain( RESOURCE_ENERGY,
