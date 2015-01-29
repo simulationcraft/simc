@@ -740,7 +740,7 @@ struct gushing_wound_t : public residual_action::residual_periodic_action_t< att
 {
   bool trigger_t17_2p;
   gushing_wound_t( druid_t* p ) :
-    base_t( "gushing_wound", p, p -> find_spell( 166638 ) ),
+    residual_action::residual_periodic_action_t< attack_t >( "gushing_wound", p, p -> find_spell( 166638 ) ),
     trigger_t17_2p( false )
   {
     background = dual = proc = true;
@@ -752,7 +752,7 @@ struct gushing_wound_t : public residual_action::residual_periodic_action_t< att
 
   virtual void tick( dot_t* d )
   {
-    residual_periodic_action_t::tick( d );
+    residual_periodic_action_t<attack_t>::tick( d );
 
     if ( trigger_t17_2p )
       p() -> resource_gain( RESOURCE_ENERGY,
