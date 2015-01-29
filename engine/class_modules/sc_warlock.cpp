@@ -5871,9 +5871,6 @@ void warlock_t::combat_begin()
 {
   player_t::combat_begin();
 
-  resources.current[RESOURCE_BURNING_EMBER] = initial_burning_embers;
-  resources.current[RESOURCE_DEMONIC_FURY] = initial_demonic_fury;
-
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
     buffs.demonic_calling -> trigger();
