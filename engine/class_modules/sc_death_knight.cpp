@@ -7973,19 +7973,19 @@ void death_knight_t::trigger_t17_4pc_unholy( const action_state_t* )
 
     rune_t* regen_rune = &( _runes.slot[ i ] );
 
-    double gain = 1 - _runes.slot[ i ].value;
+    double overflow = _runes.slot[ i ].value;
 
     regen_rune -> fill_rune();
     regen_rune -> type |= RUNE_TYPE_DEATH;
 
     if ( regen_rune -> is_blood() )
-      gains.t17_4pc_unholy_blood -> add( RESOURCE_RUNE, gain, 1 - gain );
+      gains.t17_4pc_unholy_blood -> add( RESOURCE_RUNE, 1 - overflow, overflow );
     else if ( regen_rune -> is_frost() )
-      gains.t17_4pc_unholy_frost -> add( RESOURCE_RUNE, gain, 1 - gain );
+      gains.t17_4pc_unholy_frost -> add( RESOURCE_RUNE, 1 - overflow, overflow );
     else if ( regen_rune -> is_unholy() )
-      gains.t17_4pc_unholy_unholy -> add( RESOURCE_RUNE, gain, 1 - gain );
+      gains.t17_4pc_unholy_unholy -> add( RESOURCE_RUNE, 1 - overflow, overflow );
 
-    if ( sim -> log ) sim -> out_log.printf( "%s regened rune %d (fallback, wasted %.2f)", name(), i, 1 - gain );
+    if ( sim -> log ) sim -> out_log.printf( "%s regened rune %d (fallback, wasted %.2f)", name(), i, overflow );
     n_regened++;
   }
 
