@@ -52,7 +52,8 @@ talents=2000323
 
 #Priest_Discipline_T17N_Heal.simc
 #Priest_Holy_T17N_Heal.simc
-#Priest_Holy_T17N_Dmg.simc
+Priest_Holy_T17N_Dmg.simc
+Priest_Discipline_T17N_Dmg.simc
 Priest_Shadow_T17N_COP.simc
 talents=0020132
 Priest_Shadow_T17N_VE.simc
@@ -79,10 +80,14 @@ talent_override=cataclysm
 Warrior_Arms_T17N.simc
 talent_override=taste_for_blood
 talent_override=bladestorm
+talent_override=ravager
 Warrior_Fury_1h_T17N.simc
 talent_override=bladestorm
+talent_override=ravager
 Warrior_Fury_2h_T17N.simc
 talent_override=bladestorm
+talent_override=ravager
 Warrior_Protection_T17N.simc
 Warrior_Gladiator_T17N.simc
 talent_override=bladestorm
+talent_override=ravager
