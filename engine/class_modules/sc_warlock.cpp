@@ -315,6 +315,7 @@ public:
   {
     proc_t* wild_imp;
     proc_t* t17_2pc_demo;
+    proc_t* havoc_waste;
   } procs;
 
   struct spells_t
@@ -5453,6 +5454,23 @@ void warlock_t::init_scaling()
   player_t::init_scaling();
 }
 
+struct havoc_buff_t : public buff_t
+{
+  havoc_buff_t( warlock_t* p ) :
+    buff_t( buff_creator_t( p, "havoc", p -> find_specialization_spell( "Havoc" ) ).cd( timespan_t::zero() ) )
+  { }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    if ( remaining_duration == timespan_t::zero() )
+    {
+      debug_cast<warlock_t*>( player ) -> procs.havoc_waste -> occur();
+    }
+  }
+};
+
 void warlock_t::create_buffs()
 {
   player_t::create_buffs();
@@ -5472,8 +5490,7 @@ void warlock_t::create_buffs()
   buffs.fire_and_brimstone = buff_creator_t( this, "fire_and_brimstone", spec.fire_and_brimstone )
     .cd( timespan_t::zero() );
   buffs.soul_swap = buff_creator_t( this, "soul_swap", find_spell( 86211 ) );
-  buffs.havoc = buff_creator_t( this, "havoc", find_class_spell( "Havoc" ) )
-    .cd( timespan_t::zero() );
+  buffs.havoc = new havoc_buff_t( this );
   buffs.demonic_rebirth = buff_creator_t( this, "demonic_rebirth", find_spell( 88448 ) ).cd( find_spell( 89140 ) -> duration() );
   buffs.mannoroths_fury = buff_creator_t( this, "mannoroths_fury", talents.mannoroths_fury );
 
@@ -5548,6 +5565,7 @@ void warlock_t::init_procs()
 
   procs.wild_imp = get_proc( "wild_imp" );
   procs.t17_2pc_demo = get_proc( "t17_2pc_demo" );
+  procs.havoc_waste = get_proc( "Havoc: Buff expiration" );
 }
 
 void warlock_t::apl_precombat()
