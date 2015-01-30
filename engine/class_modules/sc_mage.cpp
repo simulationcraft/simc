@@ -4737,6 +4737,7 @@ void mage_t::create_buffs()
   }
   buffs.presence_of_mind      = buff_creator_t( this, "presence_of_mind", find_spell( 12043 ) )
                                   .activated( true )
+                                  .cd( timespan_t::zero() )
                                   .duration( timespan_t::zero() );
   buffs.improved_blink        = buff_creator_t( this, "improved_blink", perks.improved_blink )
                                   .default_value( perks.improved_blink -> effectN( 1 ).percent() );
