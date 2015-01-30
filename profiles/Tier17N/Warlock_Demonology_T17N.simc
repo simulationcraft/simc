@@ -1,9 +1,9 @@
 warlock="Warlock_Demonology_T17N"
 level=100
-race=orc
+race=troll
 role=spell
 position=back
-talents=0000111
+talents=0000311
 glyphs=dark_soul
 spec=demonology
 
