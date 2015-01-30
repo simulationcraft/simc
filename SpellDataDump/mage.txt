@@ -1,4 +1,4 @@
-SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19533)
+SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19551)
 
 Name             : Blizzard (id=10) [Spell Family (3)] 
 Class            : Frost Mage
@@ -800,10 +800,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=5512)     : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
-#3 (id=260628)   : Apply Aura (6) | Decrease Movement Speed% (33)
+#3 (id=260628)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc12846
-Tooltip          : Deals $w1 Fire damage every $t1 sec.$?$w3<0[
+Tooltip          : Deals $w1 Fire damage every $t1 sec.$?$w3>0[
 Movement speed reduced by $w3%.][]
 
 Name             : Mastery: Ignite (id=12846) [Spell Family (3), Passive] 
@@ -2092,7 +2092,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=99306)    : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: -40 | Scaled Value: -40 | Misc Value: 23
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 23
                    Affected Spells: Ignite (12654)
 Description      : Causes your Ignite to also slow the target's movement speed by $s1%.
 
@@ -4503,14 +4503,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=220252)   : Apply Aura (6) | Unknown effect sub type (184)
-                   Base Value: -100 | Scaled Value: -100
-#2 (id=220293)   : Apply Aura (6) | Unknown effect sub type (185)
-                   Base Value: -100 | Scaled Value: -100
-#3 (id=220294)   : Apply Aura (6) | Unknown effect sub type (287)
-                   Base Value: 100 | Scaled Value: 100
-#4 (id=220295)   : Apply Aura (6) | Unknown effect sub type (288)
-                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000
+#1 (id=220252)   : Apply Aura (6) | School Immunity (39)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127
 Description      : Fade into the nether, avoiding all attacks against you for $d. Castable while another spell is in progress and unaffected by global cooldown.
 
 Replaces Ice Block.

@@ -1,4 +1,4 @@
-SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19533)
+SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19551)
 
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior
@@ -4737,8 +4737,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .xx..... .....
 Effects          :
 #1 (id=217568)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
-#2 (id=242676)   : Trigger Spell: Warrior Charge Drop Fire Periodic (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 126661
+#2 (id=242676)   : Trigger Spell (64)
+                   Base Value: 0 | Scaled Value: 0
 Description      : Raise your shield and charge a short distance to your target, increasing the damage of Shield Slam, Revenge, and Heroic Strike by $169667s1% for $169667d.
 
 Maximum 2 charges.
@@ -5324,7 +5324,7 @@ Effects          :
 #2 (id=240433)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14
                    Affected Spells: Colossus Smash (86346), Colossus Smash (108126), Colossus Smash (167105)
-Description      : Colossus Smash now generates 30 rage.
+Description      : Colossus Smash now generates ${$169587m1/10} Rage.
 
 Name             : Item - Warrior T17 Fury 2P Bonus (id=165337) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -5632,7 +5632,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
 Effects          :
 #1 (id=240430)   : Energize Power (30)
-                   Base Value: 300 | Scaled Value: 300 | Misc Value: rage
+                   Base Value: 200 | Scaled Value: 200 | Misc Value: rage
 Description      : $@spelldesc165336
 
 Name             : Shield Charge (id=169667) [Spell Family (4)] 
@@ -5893,7 +5893,7 @@ Effects          :
 #3 (id=252260)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 10.00000
 #4 (id=252299)   : Knock Back (98)
-                   Base Value: 90 | Scaled Value: 90 | Misc Value: 240
+                   Base Value: 60 | Scaled Value: 60 | Misc Value: 240
 #5 (id=252300)   : Trigger Spell: Siegebreaker Off-Hand (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 176318
 Description      : Use your full strength to slam the target with $?s23881[both weapons][your weapon], dealing $sw2 damage, and knocking them back and down for $d.

@@ -1,4 +1,4 @@
-SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19533)
+SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19551)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -754,7 +754,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=14488)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.40000
 Description      : Hurls a magical hammer that strikes an enemy for $s1 Holy damage$?s53503[ and generates a charge of Holy Power][]. Only usable on enemies that have 20% or less health$?s53503[ or during Avenging Wrath][].
 
 Name             : Forbearance (id=25771) [Spell Family (10)] 
@@ -1739,7 +1739,7 @@ Effects          :
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 23
 Description      : Your Holy Shock criticals grant $s1% mana return, but reduces your base mana regeneration before Spirit by $s2%.
 
-Name             : Glyph of Harsh Words (id=54938) [Spell Family (10), Passive, Hidden] 
+Name             : Glyph of Harsh Words (Holy) (id=54938) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
 Proc Chance      : 100%
 Proc Flags       : ........ ....x... ........ ........ 
@@ -1999,7 +1999,7 @@ Effects          :
 #1 (id=48057)    : Unknown effect type (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 195
 
-Name             : Harsh Words (id=55122) 
+Name             : Harsh Words (Holy) (id=55122) 
 Class            : Paladin
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4326,11 +4326,12 @@ Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Glyph of Flash of Light (54957), Holy Insight (112859)
 Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ .x....x. 
+                 : ..x..... ........ ........ ........   ........ .x...... ........ .x....x. 
                  : ........ ........ ........ ........   ........ x....... ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Not a proc (105)
 Effects          :
 #1 (id=139112)   : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 0 (avg=3.179, dl=0.2) | SP Coefficient: 0.67000 | Radius: 0 - 10 yards
@@ -5542,7 +5543,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=223218)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30
-Description      : All heals you receive, including multistrikes, have a chance equal to your multistrike chance to trigger Shining Protector, healing you for an additional $s1% of the triggering heal.
+Description      : All heals you receive, including multistrikes, have two chances equal to your multistrike chance to trigger Shining Protector, healing you for an additional $s1% of the triggering heal.
 
 Name             : Glyph of Ardent Defender (Protection) (id=159548) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin

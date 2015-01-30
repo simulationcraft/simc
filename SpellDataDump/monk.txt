@@ -1,4 +1,4 @@
-SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19533)
+SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19551)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -733,7 +733,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 125359
 #3 (id=184683)   : Energize Power% (137)
                    Base Value: 0 | Scaled Value: 0
-Description      : Attack with the palm of your hand, dealing $?s116645[${7.2*$<low>} to ${7.2*$<high>}][${3.6*$<low>} to ${3.6*$<high>}] damage, and causing your attacks to ignore $125359m1% of armor for $125359d.$?s115070[
+Description      : Attack with the palm of your hand, dealing ${6*$<low>} to ${6*$<high>} damage, and causing your attacks to ignore $125359m1% of armor for $125359d.$?s115070[
 
 Not useable in Stance of the Wise Serpent.][]
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
@@ -868,12 +868,12 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Radius: 10 yards
 #6 (id=214834)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21
-                   Affected Spells: Jab (100780), Blackout Kick (100784), Tiger Palm (100787), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Jab (108557), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Legacy of the Emperor (115921), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Charging Ox Wave (119392), Transcendence: Transfer (119996), Chi Burst (123986), Zen Sphere (124081), Zen Sphere (124098), Zen Sphere: Detonate (124101), Zen Sphere: Detonate (125033), Blackout Kick (128531), Rising Sun Kick (130320), Chi Burst (130654), Chi Burst (148135), Chi Explosion (157680), Zen Sphere (182032)
+                   Affected Spells: Jab (100780), Blackout Kick (100784), Tiger Palm (100787), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Jab (108557), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Legacy of the Emperor (115921), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Charging Ox Wave (119392), Transcendence: Transfer (119996), Charging Ox Wave (123687), Chi Burst (123986), Zen Sphere (124081), Zen Sphere (124098), Zen Sphere: Detonate (124101), Zen Sphere: Detonate (125033), Blackout Kick (128531), Rising Sun Kick (130320), Chi Burst (130654), Chi Burst (148135), Chi Explosion (157680), Zen Sphere (182032)
 #7 (id=257979)   : Apply Aura (6) | Unknown effect sub type (395)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 2763
 Description      : Increases all damage dealt by $s3%.
 
-Grants you and your allies within $161568m1 yards $166646s1% increased movement speed, and improves the functionality of Jab, Expel Harm, Tiger Palm, Blackout Kick, and Rising Sun Kick.
+Grants you and your allies within $m7 yards $166646s1% increased movement speed, and improves the functionality of Jab, Expel Harm, Tiger Palm, Blackout Kick, and Rising Sun Kick.
 
 Name             : Spinning Crane Kick (id=107270) [Spell Family (53)] 
 Class            : Monk
@@ -1007,7 +1007,6 @@ Effects          :
 
 Name             : Way of the Monk (Passive) (id=108977) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
-Affecting spells : Teachings of the Monastery (116645)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1156,7 +1155,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3
 #10 (id=214843)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21
-                   Affected Spells: Jab (100780), Blackout Kick (100784), Tiger Palm (100787), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Jab (108557), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Legacy of the Emperor (115921), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Charging Ox Wave (119392), Transcendence: Transfer (119996), Chi Burst (123986), Zen Sphere (124081), Zen Sphere (124098), Zen Sphere: Detonate (124101), Zen Sphere: Detonate (125033), Blackout Kick (128531), Rising Sun Kick (130320), Chi Burst (130654), Chi Burst (148135), Chi Explosion (157680), Zen Sphere (182032)
+                   Affected Spells: Jab (100780), Blackout Kick (100784), Tiger Palm (100787), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Jab (108557), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Legacy of the Emperor (115921), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Charging Ox Wave (119392), Transcendence: Transfer (119996), Charging Ox Wave (123687), Chi Burst (123986), Zen Sphere (124081), Zen Sphere (124098), Zen Sphere: Detonate (124101), Zen Sphere: Detonate (125033), Blackout Kick (128531), Rising Sun Kick (130320), Chi Burst (130654), Chi Burst (148135), Chi Explosion (157680), Zen Sphere (182032)
 #11 (id=218370)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 3 | Scaled Value: 3
                    Affected Spells: Elusive Brew (115308)
@@ -1214,7 +1213,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1
 #2 (id=154922)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: chi
-Description      : Heal yourself for ${7.5*$<low>*(1+$@versadmg)} to ${7.5*$<high>*(1+$@versadmg)}, and deal $115129s2% of the amount healed as Nature damage to an enemy within $115129A1 yards. Generates $m2 Chi.$?s115069[
+Description      : Heal yourself for ${7.5*$<low>} to ${7.5*$<high>}, and deal $115129s2% of the amount healed as Nature damage to an enemy within $115129A1 yards. Generates $m2 Chi.$?s115069[
 
 This ability has no cooldown while below 35% health in Stance of the Sturdy Ox.][]
 Variables        : $stnc=$?a115070[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
@@ -2066,16 +2065,15 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=131760)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100
-#2 (id=154886)   : Apply Aura (6) | Add Flat Modifier: Spell Tick Time (107)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 8
-                   Affected Spells: Way of the Monk (108977), Way of the Monk (140729)
+#2 (id=154886)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 8
 #3 (id=171057)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 17
                    Affected Spells: Blackout Kick (100784), Blackout Kick (128531), Chi Explosion (157680)
 #4 (id=184195)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50
 #5 (id=184196)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 100 | Scaled Value: 100
+                   Base Value: 0 | Scaled Value: 0
                    Affected Spells: Tiger Palm (100787)
 Description      : Causes your Spinning Crane Kick to heal nearby injured allies for $117640m1 every $101546t1 sec for $101546d. Healing yourself does not count for Chi generation from Spinning Crane Kick.
 
@@ -2734,9 +2732,9 @@ Tooltip          : Stunned.
 Name             : Charging Ox Wave (id=119392) [Scaling Spell (5), Spell Family (53)] 
 Class            : Monk
 Spell Level      : 45
+Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 15 yards/sec
-Duration         : 3 seconds
+Duration         : 2 seconds
 Cooldown         : 30 seconds
 Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2746,14 +2744,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=136679)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 30 yards
-#2 (id=136680)   : Apply Aura (6) | Stun (12)
-                   Base Value: 1 | Scaled Value: 1 | Radius: 30 yards
-#3 (id=158513)   : Trigger Spell: Charging Ox Wave (64)
-                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 125084
-Description      : A mighty Ox effigy rushes forward $A1 yards, stunning all enemies in its path for $d.
-Tooltip          : Stunned.
+#1 (id=136679)   : Unknown effect type (179)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 362
+Description      : A mighty Ox effigy rushes forward $s1 yards, stunning all enemies in its path for $123687d.
 
 Name             : Purifying Brew (id=119582) [Scaling Spell (5), Spell Family (53)] 
 Class            : Brewmaster Monk
@@ -3504,6 +3497,22 @@ $low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
 $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
+Name             : Charging Ox Wave (id=123687) [Scaling Spell (5), Spell Family (53)] 
+Class            : Monk
+Spell Level      : 1
+Range            : 50000 yards
+Duration         : 3 seconds
+Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069)
+Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
+                 : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
+                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=156106)   : Apply Aura (6) | Stun (12)
+                   Base Value: 1 | Scaled Value: 1
+
 Name             : Breath of Fire (id=123725) [Spell Family (53)] 
 Class            : Monk
 Spell Level      : 1
@@ -3655,8 +3664,8 @@ Description      : Hurls a torrent of Chi energy up to 40 yds forward, dealing $
 Casting Chi Burst does not prevent avoiding attacks.][]
 Variables        : $dmgMult=$?a103985[${1.05}][${1.0}]
 $healMult=$?a115070[${1.2}][${1.0}]
-$damage=${$148135m1+$<dmgMult>*$AP*1.344*(1+$@versadmg)}
-$healing=${$130654m1+$<healMult>*$AP*2.03*(1+$@versadmg)}
+$damage=${$148135m1+$<dmgMult>*$AP*2.75*(1+$@versadmg)}
+$healing=${$130654m1+$<healMult>*$AP*2.75*(1+$@versadmg)}
 
 
 Name             : Crackling Tiger Lightning (id=123996) [Spell Family (53)] 
@@ -3748,11 +3757,6 @@ Description      : Forms a Zen Sphere above the target, healing the target for $
 
 After $d, the Zen Sphere detonates, dealing $182032s4 Nature damage and $182032s4 healing to all targets within $124101A1 yards. Triggered early if dispelled or the target is damaged below $m2% health.
 Tooltip          : Healing $w1 every $t1 sec.
-Variables        : $dmgMult=$?s103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
-$healMult=$?s115070[${1.2*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
-$damageperiodic=${($124098m1+$<dmgMult>*$ap*0.06864)}
-$healingperiodic=${(1+$<healMult>*$ap*0.156)*8}$damagedetonate=${($125033m1+$<dmgMult>*$ap*0.471)}$healingdetonate=${($124101m1+$<healMult>*$ap*0.548)}
-
 
 Name             : Zen Sphere (id=124098) [Spell Family (53)] 
 Class            : Monk
@@ -4028,21 +4032,6 @@ Effects          :
 #1 (id=158418)   : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 10 yards
 Description      : $@spelldesc124081
-
-Name             : Charging Ox Wave (id=125084) [Spell Family (53), Hidden] 
-Class            : Monk
-Range            : 50000 yards
-Velocity         : 15 yards/sec
-Attributes       : ....x..x x....... ........ .....x..   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7)
-Effects          :
-#1 (id=158505)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
 
 Name             : Glyph of Rising Tiger Kick (Mistweaver, Windwalker) (id=125151) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
@@ -5425,7 +5414,6 @@ Crackling Jade Lightning channels $s1% faster and generates 1 Chi each time it d
 
 Name             : Way of the Monk (Passive) (id=140729) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
-Affecting spells : Teachings of the Monastery (116645)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

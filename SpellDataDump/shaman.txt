@@ -1,4 +1,4 @@
-SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19533)
+SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19551)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -155,7 +155,7 @@ Spell Level      : 44
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Ancestral Swiftness (16188), Restorative Waves (16213), Maelstrom Weapon (53817), Glyph of Unstable Earth (55437), Glyph of Chaining (55452), Healing Trance (60515), Unleash Life (73685), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Lucidity (137326), High Tide (157154), Harmony of the Elements (167703)
+Affecting spells : Ancestral Swiftness (16188), Restorative Waves (16213), Maelstrom Weapon (53817), Glyph of Chaining (55452), Healing Trance (60515), Unleash Life (73685), Mastery: Deep Healing (77226), Spiritwalker's Grace (79206), Spiritual Stimulus (105763), Temporal Maelstrom (105869), Lucidity (137326), High Tide (157154), Harmony of the Elements (167703)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1428,7 +1428,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Charges          : 1 (8 seconds cooldown)
-Affecting spells : Elemental Reach (29000), Telluric Currents (55453), Elemental Fury (60188), Unleash Flame (73683), Spiritwalker's Grace (79206), Ascendance (114050), Unleashed Fury (118470), Lucidity (137326), Elemental Discharge (144999), Unleash Flame (165462)
+Affecting spells : Elemental Reach (29000), Telluric Currents (55453), Elemental Fury (60188), Unleash Flame (73683), Spiritwalker's Grace (79206), Unleashed Fury (118470), Lucidity (137326), Elemental Discharge (144999), Unleash Flame (165462)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1499,7 +1499,7 @@ Attributes       : ....x.x. x....... ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=43874)    : Apply Aura (6) | Proc Trigger Spell: Maelstrom Weapon (42)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 53817
-Description      : When you deal damage with a melee weapon, you have a chance to gain an application of Maelstrom Weapon. Each application of Maelstrom Weapon reduces the cast time of your next Nature spell by $53817s1% and increases its direct healing done by $53817s3%. Does not apply to Ancestral Spirit or Hex. Stacks up to 5 times.
+Description      : When you deal damage with a melee weapon, you have a chance to gain an application of Maelstrom Weapon. Each application of Maelstrom Weapon reduces the cast time and mana cost of your next Nature spell by $53817s1% and increases its direct healing done by $53817s3%. Does not apply to Ancestral Spirit or Hex. Stacks up to 5 times.
 
 Name             : Feral Spirit (id=51533) [Spell Family (11)] 
 Class            : Enhancement Shaman
@@ -1668,7 +1668,7 @@ Effects          :
 #1 (id=46517)    : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 10
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Healing Surge (8004), Healing Rain (73920), Conductivity (108282), Elemental Blast (117014)
-#2 (id=46518)    : Apply Aura (6) | Dummy (4)
+#2 (id=46518)    : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 14
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Healing Surge (8004), Healing Rain (73920), Conductivity (108282), Elemental Blast (117014)
 #3 (id=90327)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
@@ -1681,7 +1681,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Elemental Blast (117014)
 Description      : $@spelldesc51530
-Tooltip          : Reduces the cast time$?$w5!=0[, and increases the damage and healing,][] of your next Nature spell with a base cast time shorter than 10 seconds by $53817s1%. $?$w5!=0[][Next direct healing spell's healing effectiveness increased by $w3%.]
+Tooltip          : Reduces the cast time and mana cost$?$w5!=0[, and increases the damage and healing,][] of your next Nature spell with a base cast time shorter than 10 seconds by $53817s1%. $?$w5!=0[][Next direct healing spell's healing effectiveness increased by $w3%.]
 
 Name             : Glyph of Water Shield (Restoration) (id=55436) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -1711,13 +1711,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=48374)    : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: -40 | Scaled Value: -40 | Misc Value: 23
-                   Affected Spells: Earthquake (61882), Earthquake (77478)
-#2 (id=48375)    : Apply Aura (6) | Add Percent Modifier: Spell Target Bonus (108)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 20
-                   Affected Spells: Chain Heal (1064)
-Description      : Causes your Earthquake spell to also reduce the movement speed of affected targets by $s1% for $77478d.
+#1 (id=48374)    : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+                   Base Value: -40 | Scaled Value: -40 | Misc Value: 12
+Description      : Causes your Earthquake spell to also reduce the movement speed of affected targets by $s1%.
 
 Name             : Glyph of Totemic Recall (id=55438) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -2731,7 +2727,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Charges          : 1 (10 seconds cooldown)
 Proc Chance      : 100%
-Affecting spells : Ancestral Swiftness (16188), Glyph of Unstable Earth (55437), Elemental Fury (60188), Spiritwalker's Grace (79206), Lucidity (137326), Mastery: Molten Earth (170374)
+Affecting spells : Ancestral Swiftness (16188), Elemental Fury (60188), Spiritwalker's Grace (79206), Lucidity (137326), Mastery: Molten Earth (170374)
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -2739,14 +2735,13 @@ Attributes       : ........ ........ x....... ........   ...x...x ..x..... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
 Effects          :
-#1 (id=55819)    : Persistent Area Aura (27) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.11000 | Radius: 8 yards
+#1 (id=55819)    : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards
 #2 (id=55820)    : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 100 | Scaled Value: 100
-#3 (id=257246)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3691
+#3 (id=263791)   : Unknown effect type (179)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3691 | Radius: 0 - 8 yards
 Description      : You cause the earth at the target location to tremble and break,  dealing ${$SPN*0.11*10*(1+$170374m3/100)} Physical damage over $d to enemies in an $a1 yard radius$?s55437[ and reducing their movement speed by $55437s1% for $77478d][], with a $77478s2% chance of knocking down affected targets.
-Tooltip          : Suffering Physical damage every $t2 sec with a chance to be knocked down.
 
 Name             : Shamanism (id=62099) [Spell Family (11), Passive, Hidden] 
 Class            : Elemental Shaman
@@ -3373,8 +3368,7 @@ Name             : Earthquake (id=77478) [Spell Family (11)]
 Class            : Shaman
 Spell Level      : 50
 Range            : 100 yards
-Duration         : 3 seconds
-Affecting spells : Ancestral Swiftness (16188), Glyph of Unstable Earth (55437), Elemental Fury (60188), Spiritwalker's Grace (79206), Lucidity (137326), Mastery: Molten Earth (170374)
+Affecting spells : Ancestral Swiftness (16188), Elemental Fury (60188), Spiritwalker's Grace (79206), Lucidity (137326), Mastery: Molten Earth (170374)
 Attributes       : ........ ........ ........ x..x....   ...x...x ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -3386,10 +3380,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards
 #2 (id=68095)    : Server Side Script (77)
                    Base Value: 10 | Scaled Value: 10 | Radius: 0 - 8 yards
-#3 (id=160471)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
 Description      : $@spelldesc61882
-Tooltip          : $?$w3!=0[Movement speed reduced by $w3%.][]
 
 Name             : Lava Surge (id=77756) [Spell Family (11), Passive] 
 Class            : Elemental Shaman
@@ -3987,9 +3978,8 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=127153)   : Apply Aura (6) | Unknown effect sub type (56)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 59346 | Misc Value 2: 0x7
-#2 (id=127166)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 11
-                   Affected Spells: Lava Burst (51505)
+#2 (id=127166)   : Apply Aura (6) | Unknown effect sub type (453)
+                   Base Value: -8000 | Scaled Value: -8000 | Misc Value: 1536
 #3 (id=127189)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 114074 | Scaled Value: 114074
                    Affected Spells: Chain Lightning (421)
@@ -5390,7 +5380,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=219987)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3
-Description      : When your Chain Lightning or Lava Beam strikes $s1 or more targets, the damage of your next Earthquake is increased by $157766s1%.
+Description      : When your Chain Lightning or Lava Beam strikes $s1 or more targets, the your next Earthquake is instant and its damage is increased by $157766s1%.
 
 Name             : Enhanced Chain Lightning (id=157766) [Spell Family (11)] 
 Class            : Shaman
@@ -5403,9 +5393,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219988)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 300 | Scaled Value: 300 | Trigger Spell: 61882
+                   Base Value: 300 | Scaled Value: 300
+#2 (id=263764)   : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 10
 Description      : $@spelldesc157765
-Tooltip          : Damage of your next Earthquake increased by $w1%.
+Tooltip          : Your next Earthquake is Instant, and its damage is increased by $w1%.
 
 Name             : Improved Lightning Shield (id=157774) [Spell Family (11), Passive] 
 Class            : Shaman

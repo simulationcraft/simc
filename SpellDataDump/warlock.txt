@@ -1,4 +1,4 @@
-SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19533)
+SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19551)
 
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -3748,7 +3748,7 @@ Effects          :
 #6 (id=263533)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 3 (108)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 23
                    Affected Spells: Drain Soul (103103)
-Description      : Sacrifice your demon to gain one of its abilities, and to increase the damage of your $?s30108[Drain Soul, Haunt, and Drain Life by $s4%.][Incinerate, Chaos Bolt, and Shadowburn by $s4%. Does not apply to spells affected by Fire and Brimstone.]
+Description      : Sacrifice your demon to gain one of its abilities, and to increase the damage done by your $?s30108[Drain Soul, Haunt, and Drain Life by $s4%.][Incinerate, Chaos Bolt, and Shadowburn by $s4%. Does not apply to spells affected by Fire and Brimstone.]
 
 Also $?s108415[increases your maximum health by $s3%, and ][]causes you to regenerate $s2% of maximum health every $t2 sec.
 
@@ -4091,11 +4091,12 @@ Class            : Warlock
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ xx...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Disable player procs (112), Disable target procs (113)
 Effects          :
 #1 (id=123718)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000

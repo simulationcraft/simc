@@ -1,4 +1,4 @@
-SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19533)
+SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19551)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -3013,7 +3013,7 @@ GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Power Gain       : 10 Runic Power
 Duration         : 30 seconds
-Affecting spells : Enhanced Dark Transformation (157412)
+Affecting spells : Enhanced Dark Transformation (157412), Item - Death Knight T17 Unholy 2P Bonus (165575)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. .x...... ........ ........   ........ ........ ........ ........ 
