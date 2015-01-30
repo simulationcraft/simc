@@ -1939,10 +1939,9 @@ struct ghoul_pet_t : public death_knight_pet_t
       if ( p -> o() -> buffs.dark_transformation -> up() )
       {
         double dtb = p -> o() -> buffs.dark_transformation -> data().effectN( 1 ).percent();
-        // TODO: DBCification
-        if ( p -> o() -> sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T17, B2 ) )
+        if ( maybe_ptr( p -> dbc.ptr ) )
         {
-          dtb += 0.4;
+          dtb += p -> o() -> sets.set( DEATH_KNIGHT_UNHOLY, T17, B2 ) -> effectN( 2 ).percent();
         }
 
         am *= 1.0 + dtb;
