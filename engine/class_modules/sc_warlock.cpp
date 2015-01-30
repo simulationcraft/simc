@@ -4086,7 +4086,7 @@ struct rain_of_fire_tick_t: public warlock_spell_t
 
   void schedule_travel( action_state_t* s )
   {
-    if ( p() -> wod_hotfix )
+    if ( !p() -> wod_hotfix && !p() -> dbc.ptr )
     {
       if ( result_is_hit( s -> result ) )
         trigger_ember_gain( p(), 0.2, p() -> gains.rain_of_fire, 0.125 );
