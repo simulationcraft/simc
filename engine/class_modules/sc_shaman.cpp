@@ -3408,6 +3408,18 @@ struct earthquake_t : public shaman_spell_t
     p() -> buff.enhanced_chain_lightning -> expire();
   }
 
+  timespan_t execute_time() const
+  {
+    timespan_t et = shaman_spell_t::execute_time();
+
+    if ( p() -> buff.enhanced_chain_lightning -> check() )
+    {
+      et *= 1.0 + p() -> buff.enhanced_chain_lightning -> data().effectN( 2 ).percent();
+    }
+
+    return et;
+  }
+
   double action_multiplier() const
   {
     double m = shaman_spell_t::action_multiplier();
