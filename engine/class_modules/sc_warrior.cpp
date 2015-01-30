@@ -1497,7 +1497,7 @@ struct charge_t: public warrior_attack_t
     movement_directionality = MOVEMENT_TOWARDS;
 
     if ( p -> talents.double_time -> ok() )
-      cooldown -> charges = 2;
+      cooldown -> charges = p -> talents.double_time -> effectN( 1 ).base_value();
     else if ( p -> talents.juggernaut -> ok() )
       cooldown -> duration += p -> talents.juggernaut -> effectN( 1 ).time_value();
   }
@@ -3452,8 +3452,8 @@ struct shield_block_t: public warrior_spell_t
   {
     parse_options( options_str );
     stancemask = STANCE_DEFENSE | STANCE_BATTLE;
-    cooldown -> duration = timespan_t::from_seconds( 12.0 );
-    cooldown -> charges = 2;
+    cooldown -> duration = data().charge_cooldown();
+    cooldown -> charges = data().charges();
     use_off_gcd = true;
     block_cd = p -> get_cooldown( "block_cd" );
     block_cd -> duration = timespan_t::from_seconds( 1.5 );
@@ -3503,8 +3503,8 @@ struct shield_charge_t: public warrior_spell_t
   {
     parse_options( options_str );
     stancemask = STANCE_GLADIATOR;
-    cooldown -> charges = 2;
-    cooldown -> duration = timespan_t::from_seconds( 15 );
+    cooldown -> duration = data().charge_cooldown();
+    cooldown -> charges = data().charges();
     movement_directionality = MOVEMENT_TOWARDS;
     use_off_gcd = true;
 

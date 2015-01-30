@@ -4038,17 +4038,16 @@ struct judgment_t : public paladin_melee_attack_t
         // apply gain, attribute gain to Judgment
         p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_judgment );
       }
-
-      // Trigger Long Arm of the Law
-      if ( p() -> talents.long_arm_of_the_law -> ok() )
-        p() -> buffs.long_arm_of_the_law -> trigger();
-
-      // +1 Holy Power for Prot via hidden Judgments of the Wise passive
+        // +1 Holy Power for Prot via hidden Judgments of the Wise passive
       else if ( p() -> passives.judgments_of_the_wise -> ok() )
       {
         // apply gain, attribute gain to Judgments of the Wise
         p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_judgment );
       }
+
+      // Trigger Long Arm of the Law
+      if ( p() -> talents.long_arm_of_the_law -> ok() )
+        p() -> buffs.long_arm_of_the_law -> trigger();
 
       // Holy Avenger adds 2 more Holy Power if active
       if ( p() -> buffs.holy_avenger -> check() )
