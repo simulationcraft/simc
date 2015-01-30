@@ -4587,7 +4587,17 @@ inline void ascendance_buff_t::expire_override( int expiration_stacks, timespan_
 {
   shaman_t* p = debug_cast< shaman_t* >( player );
 
-  ascendance( p -> melee_mh, p -> melee_oh, lava_burst ? lava_burst -> data().cooldown() : timespan_t::zero() );
+  timespan_t lvbcd;
+  if ( maybe_ptr( p -> dbc.ptr ) )
+  {
+    lvbcd = lava_burst ? lava_burst -> data().charge_cooldown() : timespan_t::zero();
+  }
+  else
+  {
+    lvbcd = lava_burst ? lava_burst -> data().cooldown() : timespan_t::zero();
+  }
+
+  ascendance( p -> melee_mh, p -> melee_oh, lvbcd );
   // Start CD waste recollection from when Ascendance buff fades, since Lava
   // Burst is guaranteed to be very much ready when Ascendance ends.
   if ( lava_burst )
