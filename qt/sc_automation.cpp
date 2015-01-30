@@ -20,7 +20,7 @@
 QString classSpecText[ 11 ][ 5 ] = {
     { "Death Knight", "Blood", "Frost", "Unholy", "N/A" },
     { "Druid", "Balance", "Feral", "Guardian", "Restoration" },
-    { "Hunter", "Beast Master", "Marksmanship", "Survival", "N/A" },
+    { "Hunter", "Beast Mastery", "Marksmanship", "Survival", "N/A" },
     { "Mage", "Arcane", "Fire", "Frost", "N/A" },
     { "Monk", "Brewmaster", "Mistweaver", "Windwalker", "N/A" },
     { "Paladin", "Holy", "Protection", "Retribution", "N/A" },
