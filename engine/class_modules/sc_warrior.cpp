@@ -5173,9 +5173,12 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   if ( buff.rude_interruption -> up() )
     m *= 1.0 + buff.rude_interruption -> value();
 
-  if ( active_stance == STANCE_GLADIATOR && school == SCHOOL_PHYSICAL )
+  if ( active_stance == STANCE_GLADIATOR )
   {
-    m *= 1.0 +  0.05; //Fix
+    if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
+    {
+      m *= 1.0 + 0.05; //Fix
+    }
   }
 
   return m;

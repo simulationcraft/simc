@@ -25,6 +25,7 @@ enum exotic_munitions { NO_AMMO = 0, FROZEN_AMMO = 2, INCENDIARY_AMMO = 4, POISO
 
 struct hunter_td_t: public actor_pair_t
 {
+  buff_t* debuffs_pvp_surv_4p_black_fire;
   struct dots_t
   {
     dot_t* serpent_sting;
@@ -91,7 +92,6 @@ public:
     buff_t* tier16_4pc_mm_keen_eye;
     buff_t* tier16_4pc_bm_brutal_kinship;
     buff_t* heavy_shot; // t17 SV 4pc
-
   } buffs;
 
   // Cooldowns
@@ -450,7 +450,22 @@ public:
     return m;
   }
 
-  virtual double cost() const
+  virtual double composite_target_multiplier( player_t* t ) const
+  {
+    double m = ab::composite_target_multiplier( t );
+
+    if ( dbc::is_school( ab::school, SCHOOL_FIRE ) )
+    {
+      if ( td( t ) -> debuffs_pvp_surv_4p_black_fire -> check() )
+      {
+        m *= 1.0 + ( p() -> sets.set( HUNTER_SURVIVAL, PVP, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() * td( t ) -> debuffs_pvp_surv_4p_black_fire -> current_stack );
+      }
+    }
+
+    return m;
+  }
+
+  virtual double cost() const 
   {
     double c = ab::cost();
 
@@ -2032,6 +2047,10 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
     aimed_in_ca -> update( p() -> buffs.careful_aim -> check() != 0 );
     consume_thrill_of_the_hunt();
+    if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, PVP, B4 ) )
+    {
+      p() -> cooldowns.rapid_fire -> adjust( p() -> sets.set( HUNTER_MARKSMANSHIP, PVP, B4 ) -> effectN( 1 ).time_value() );
+    }
   }
 };
 
@@ -2248,6 +2267,8 @@ struct black_arrow_t: public hunter_ranged_attack_t
       p() -> cooldowns.explosive_shot -> reset( true );
       p() -> procs.lock_and_load -> occur();
     }
+
+    td( d -> target ) -> debuffs_pvp_surv_4p_black_fire -> trigger();
   }
 
   virtual void execute()
@@ -3384,6 +3405,8 @@ dots( dots_t() )
 {
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
   dots.poisoned_ammo = target -> get_dot( "poisoned_ammo", p );
+
+  debuffs_pvp_surv_4p_black_fire = buff_creator_t( *this, "debuffs_pvp_surv_4p_black_fire", p -> sets.set( HUNTER_SURVIVAL, PVP, B4 ) -> effectN( 1 ).trigger() );
 }
 
 // hunter_t::create_action ==================================================
@@ -3635,8 +3658,6 @@ void hunter_t::init_base_stats()
   base.attack_power_per_agility  = 1.0;
 
   base_focus_regen_per_second = 4;
-//  if ( sets.has_set_bonus( SET_MELEE, PVP, B4 ) )
-//    base_focus_regen_per_second *= 1.25;
 
   resources.base[RESOURCE_FOCUS] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS ) + perks.improved_focus -> effectN( 1 ).resource( RESOURCE_FOCUS );
 
