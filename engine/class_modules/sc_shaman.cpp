@@ -664,7 +664,7 @@ public:
       cd_wasted_iter = p() -> template get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p() -> cd_waste_iter );
     }
 
-    if ( maybe_ptr( p() -> dbc.ptr ) && uses_eoe )
+    if ( maybe_ptr( p() -> dbc.ptr ) )
     {
       ab::cooldown -> duration = ab::data().charge_cooldown();
       ab::cooldown -> charges = ab::data().charges() + p() -> talent.echo_of_the_elements -> effectN( 1 ).base_value();

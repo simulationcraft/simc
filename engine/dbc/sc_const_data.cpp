@@ -163,29 +163,6 @@ void dbc::apply_hotfixes()
 
   // Shaman
 
-  if ( SC_USE_PTR )
-  {
-    s = spell_data_t::find( 51505, true );
-    assert( s -> _cooldown == 0 && "Check Cooldown for Lava Burst" );
-    s -> _cooldown = 8000;
-
-    s = spell_data_t::find( 61882, true );
-    assert( s -> _cooldown == 0 && "Check Cooldown for Earthquake" );
-    s -> _cooldown = 10000;
-
-    s = spell_data_t::find( 17364, true );
-    assert( s -> _cooldown == 0 && "Check Cooldown for Stormstrike" );
-    s -> _cooldown = 7500;
-
-    s = spell_data_t::find( 60103, true );
-    assert( s -> _cooldown == 0 && "Check Cooldown for Lava Lash" );
-    s -> _cooldown = 10500;
-
-    s = spell_data_t::find( 1535, true );
-    assert( s -> _cooldown == 0 && "Check Cooldown for Fire Nova" );
-    s -> _cooldown = 4500;
-  }
-
   // Warlock
 
   e = spelleffect_data_t::find( 129530, false );
