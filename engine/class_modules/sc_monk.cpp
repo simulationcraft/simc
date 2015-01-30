@@ -728,7 +728,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       const sef_td_t* tdata = td( t );
       if ( tdata -> rising_sun_kick -> check() )
-        m *= 1.0 + ( this -> player -> wod_hotfix ? 0.10 : tdata -> rising_sun_kick -> data().effectN( 1 ).percent() ); // Hotfix nerf to 10% (down from 20%) on 2014/12/08
+        m *= 1.0 + ( !this -> player -> dbc.ptr ? 0.10 : tdata -> rising_sun_kick -> data().effectN( 1 ).percent() ); // Hotfix nerf to 10% (down from 20%) on 2014/12/08
 
       return m;
     }
@@ -960,11 +960,11 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       if ( ! o() -> dual_wield() && player -> dual_wield() )
       {
-        state -> da_multiplier *= 1.0 + ( p() -> wod_hotfix ? 0.25 : o() -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent() ); // Hotfix to 25% (down from 40%) on Jan 07, 2015
+        state -> da_multiplier *= 1.0 + ( !p() -> dbc.ptr ? 0.25 : o() -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent() ); // Hotfix to 25% (down from 40%) on Jan 07, 2015
       }
       else if ( o() -> dual_wield() && ! player -> dual_wield() )
       {
-        state -> da_multiplier /= 1.0 + ( p() -> wod_hotfix ? 0.25 : o() -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent() ); // Hotfix to 25% (down from 40%) on Jan 07, 2015
+        state -> da_multiplier /= 1.0 + ( !p() -> dbc.ptr ? 0.25 : o() -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent() ); // Hotfix to 25% (down from 40%) on Jan 07, 2015
       }
     }
 
@@ -973,7 +973,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       timespan_t t = sef_melee_attack_t::execute_time();
 
       if ( ! player -> dual_wield() )
-        t *= 1.0 / ( 1.0 + ( p() -> wod_hotfix ? 0.55 : o() -> spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() ) ); // Hotfix to 55% (up from 40%) on Jan 07, 2015
+        t *= 1.0 / ( 1.0 + ( !p() -> dbc.ptr ? 0.55 : o() -> spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() ) ); // Hotfix to 55% (up from 40%) on Jan 07, 2015
 
       return t;
     }
@@ -1587,9 +1587,7 @@ public:
     main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level );
     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
-    owner_coeff.ap_from_ap = 0.33;
-    if ( o() -> wod_hotfix )
-      owner_coeff.ap_from_ap = 0.60; // Hotfix applied on Oct 17, 2014
+    owner_coeff.ap_from_ap = 0.60; // Hotfix applied on Oct 17, 2014
   }
 
   monk_t* o()
@@ -1869,7 +1867,7 @@ struct monk_spell_t: public monk_action_t < spell_t >
     double m = base_t::composite_target_multiplier( t );
 
     if ( td( t ) -> debuff.rising_sun_kick -> check() )
-      m *= 1.0 + ( p() -> wod_hotfix ? 0.10 : td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent() ); // Hotfix to 10% (down from 20%) on Dec 08, 2014
+      m *= 1.0 + ( !p() -> dbc.ptr ? 0.10 : td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent() ); // Hotfix to 10% (down from 20%) on Dec 08, 2014
 
     return m;
   }
@@ -1975,7 +1973,7 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
     double m = base_t::composite_target_multiplier( t );
 
     if ( td( t ) -> debuff.rising_sun_kick -> check() && special )
-      m *= 1.0 + ( p() -> wod_hotfix ? 0.10 : td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent() ); // Hotfix to 10% (down from 20%) on Dec 08, 2014
+      m *= 1.0 + ( !p() -> dbc.ptr ? 0.10 : td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent() ); // Hotfix to 10% (down from 20%) on Dec 08, 2014
 
     return m;
   }
@@ -2019,9 +2017,7 @@ struct jab_t: public monk_melee_attack_t
 
     base_costs[RESOURCE_ENERGY] = ( p -> specialization() == MONK_WINDWALKER ? 45 : 40 );
 
-    base_multiplier *= 1.15; // hardcoded into tooltip
-    if ( p -> wod_hotfix )
-      base_multiplier *= 1 + p -> passives.hotfix_passive -> effectN( 3 ).percent();
+    base_multiplier *= 1.38; // hardcoded into tooltip
   }
 
   double combo_breaker_chance()
@@ -2087,10 +2083,10 @@ struct tiger_palm_t: public monk_melee_attack_t
     stancemask = STURDY_OX | FIERCE_TIGER | SPIRITED_CRANE;
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier *= 3; // hardcoded into tooltip
-    if ( p -> wod_hotfix )
-      base_multiplier *= 1 + p -> passives.hotfix_passive -> effectN( 3 ).percent();
-    if ( p -> specialization() == MONK_MISTWEAVER )
+    base_multiplier = 3.6; // hardcoded into tooltip
+    if ( p -> dbc.ptr )
+      base_multiplier = 6;
+    if ( p -> specialization() == MONK_MISTWEAVER && !p -> dbc.ptr)
       base_multiplier *= 2;
     base_costs[RESOURCE_CHI] *= 1.0 + p -> spec.brewmaster_training -> effectN( 2 ).percent();
   }
@@ -2191,10 +2187,7 @@ struct blackout_kick_t: public monk_melee_attack_t
       background = true;
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier *= 5.375; // hardcoded into tooltip
-
-    if ( p -> wod_hotfix )
-      base_multiplier *= 6.4 / 5.375;
+    base_multiplier *= 6.4; // hardcoded into tooltip
 
     if ( p -> spec.teachings_of_the_monastery -> ok() )
       aoe = 1 + p -> spec.teachings_of_the_monastery -> effectN( 4 ).base_value();
@@ -2488,9 +2481,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     stancemask = FIERCE_TIGER;
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier *= 8; // hardcoded into tooltip
-    if ( p -> wod_hotfix )
-      base_multiplier *= 1 + p -> passives.hotfix_passive -> effectN( 1 ).percent();
+    base_multiplier *= 10.56; // hardcoded into tooltip
   }
 
   virtual void impact( action_state_t* s )
@@ -2595,9 +2586,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
     tick_zero = hasted_ticks = true;
 
-    base_multiplier *= 0.6; // hardcoded into tooltip
-    if ( p -> wod_hotfix )
-      base_multiplier *= 1 + p -> passives.hotfix_passive -> effectN( 3 ).percent();
+    base_multiplier *= 0.72; // hardcoded into tooltip
 
     tick_action = new tick_action_t( "rushing_jade_wind_tick", p, &( data() ) );
   }
@@ -2655,9 +2644,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
     tick_zero = channeled = true;
 
-    base_multiplier *= 0.75; // hardcoded into tooltip
-    if ( p -> wod_hotfix )
-      base_multiplier *= 1 + p -> passives.hotfix_passive -> effectN( 3 ).percent();
+    base_multiplier *= 0.9; // hardcoded into tooltip
 
     base_tick_time *= 1.0 + p -> perk.empowered_spinning_crane_kick -> effectN( 1 ).percent();
     dot_duration *= 1.0 + p -> perk.empowered_spinning_crane_kick -> effectN( 2 ).percent();
@@ -2732,9 +2719,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
     channeled = tick_zero = true;
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
-    base_multiplier *= 5.875; // hardcoded into tooltip
-    if ( p -> wod_hotfix )
-      base_multiplier *= 1 + p -> passives.hotfix_passive -> effectN( 1 ).percent();
+    base_multiplier *= 7.755; // hardcoded into tooltip
 
     // T14 WW 2PC
     cooldown -> duration = data().cooldown();
@@ -2792,8 +2777,8 @@ struct hurricane_strike_t: public monk_melee_attack_t
     dot_duration = data().duration();
     base_tick_time = dot_duration / 15;
     base_multiplier = 2.0;
-    if ( maybe_ptr( p -> dbc.ptr ) )
-      base_multiplier *= 1.25;
+    if ( p -> dbc.ptr )
+      base_multiplier = 2.5;
 
     tick_action = new hurricane_strike_tick_t( "hurricane_strike_tick", p, p -> find_spell( 158221 ) );
   }
@@ -2835,7 +2820,7 @@ struct melee_t: public monk_melee_attack_t
     if ( player -> dual_wield() )
     {
       base_hit -= 0.19;
-      base_multiplier *= 1.0 + ( player -> wod_hotfix ? 0.25 : player -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent() ); // Hotfix to 25% (down from 40%) on Jan 07, 2015
+      base_multiplier *= 1.0 + ( !player -> dbc.ptr ? 0.25 : player -> spec.way_of_the_monk_aa_damage -> effectN( 1 ).percent() ); // Hotfix to 25% (down from 40%) on Jan 07, 2015
     }
   }
 
@@ -2850,7 +2835,7 @@ struct melee_t: public monk_melee_attack_t
     timespan_t t = monk_melee_attack_t::execute_time();
 
     if ( ! p() -> dual_wield() )
-      t *= 1.0 / ( 1.0 + ( p() -> wod_hotfix ? 0.55 : p() -> spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() ) ); // Hotfix to 55% (up from 40%) on Jan 07, 2015
+      t *= 1.0 / ( 1.0 + ( !p() -> dbc.ptr ? 0.55 : p() -> spec.way_of_the_monk_aa_speed -> effectN( 1 ).percent() ) ); // Hotfix to 55% (up from 40%) on Jan 07, 2015
 
     if ( first )
       return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::zero() ) : t / 2 ) : timespan_t::zero();
@@ -3396,6 +3381,8 @@ struct zen_sphere_damage_t: public monk_spell_t
     background = true;
 
     attack_power_mod.direct = 0.06864; // Hardcoded into Tooltip
+    if ( p() -> dbc.ptr )
+      attack_power_mod.direct = 0.095;
     school = SCHOOL_NATURE;
   }
 };
@@ -3409,8 +3396,8 @@ struct zen_sphere_detonate_damage_t: public monk_spell_t
     aoe = -1;
 
     attack_power_mod.direct = 0.471; // hardcoded into tooltip
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      attack_power_mod.direct *= 1.97;
+    if ( p() -> dbc.ptr )
+      attack_power_mod.direct = 1.25;
     school = SCHOOL_NATURE;
   }
 };
@@ -3497,8 +3484,8 @@ struct chi_burst_t: public monk_spell_t
     aoe = -1;
     interrupt_auto_attack = false;
     attack_power_mod.direct = 1.344; // hardcoded into tooltip
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      attack_power_mod.direct *= 1.51; // hardcoded till next PTR build
+    if ( p() -> dbc.ptr )
+      attack_power_mod.direct = 2.75; // hardcoded
   }
 };
 
@@ -3515,8 +3502,6 @@ struct chi_torpedo_t: public monk_spell_t
     aoe = -1;
     cooldown -> duration = p() -> talent.chi_torpedo -> charge_cooldown() - timespan_t::from_seconds( p() -> talent.celerity -> effectN( 4 ).base_value() );
     cooldown -> charges = p() -> talent.chi_torpedo -> charges() + p() -> talent.celerity -> effectN( 3 ).base_value();
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      attack_power_mod.direct *= 2.50;
   }
 };
 
@@ -3902,9 +3887,10 @@ struct mana_tea_t: public monk_spell_t
     int max_stacks_consumable = 2;
 
     double mana_gain = 0;
-    if ( maybe_ptr( p() -> dbc.ptr ) )
+    if ( p() -> dbc.ptr )
     {
-      mana_gain = player -> resources.base[STAT_SPIRIT]
+      // TODO Make sure this is getting the Buffed but not Temporary Proc SPIRIT amount
+      mana_gain = player -> resources.initial[STAT_SPIRIT]
         * 0.03    // Hardcode for now.
         * std::min( p() -> buff.mana_tea -> stack(), max_stacks_consumable );
     }
@@ -4238,7 +4224,7 @@ struct enveloping_mist_t: public monk_heal_t
     may_crit = may_miss = false;
     resource_current = RESOURCE_CHI;
     base_costs[RESOURCE_CHI] = 3.0;
-    if ( p.wod_hotfix )
+    if ( !p.dbc.ptr )
       spell_power_mod.tick *= 1.5; // Hotfix from Nov 26, 2014
   }
 
@@ -4505,8 +4491,8 @@ struct zen_sphere_t: public monk_heal_t
       aoe = -1;
 
       attack_power_mod.direct = 0.548; // hardcoded into tooltip
-      if ( maybe_ptr( p() -> dbc.ptr ) )
-        attack_power_mod.direct *= 1.7;
+      if ( p() -> dbc.ptr )
+        attack_power_mod.direct = 1.25;
       school = SCHOOL_NATURE;
     }
   };
@@ -4528,8 +4514,8 @@ struct zen_sphere_t: public monk_heal_t
       attack_power_mod.tick = 0.156 * 1.2; // hardcoded into tooltip
     else
       attack_power_mod.tick = 0.156;  // hardcoded into tooltip
-    if ( maybe_ptr( player -> dbc.ptr ) )
-      attack_power_mod.tick *= 0.61;
+    if ( player -> dbc.ptr )
+      attack_power_mod.tick = 0.095;
 
     cooldown -> duration = data().cooldown();
   }
@@ -4638,9 +4624,7 @@ struct guard_t: public monk_absorb_t
     target = &p;
     cooldown -> duration = data().charge_cooldown();
     cooldown -> charges = p.perk.improved_guard -> effectN( 1 ).base_value();
-    attack_power_mod.direct = 9; // hardcoded into tooltip 2014/09/09
-    if ( p.wod_hotfix )
-      attack_power_mod.direct *= 2; // hardcoded hotfix from Nov 24, 2014
+    attack_power_mod.direct = 18; // hardcoded into tooltip
     base_multiplier += p.sets.set( SET_TANK, T14, B4 ) -> effectN( 1 ).percent();
     if ( p.glyph.guard -> ok() )
       base_multiplier += p.glyph.guard -> effectN( 1 ).percent();
@@ -5019,7 +5003,7 @@ void monk_t::init_base_stats()
 
   resources.base[RESOURCE_CHI] = 4 + talent.ascension -> effectN( 1 ).base_value() + perk.empowered_chi -> effectN( 1 ).base_value();
   resources.base[RESOURCE_ENERGY] = 100;
-  resources.base_multiplier[RESOURCE_MANA] *= 1.0 + ( !maybe_ptr( dbc.ptr ) ? talent.ascension -> effectN( 2 ).percent() : 0 );
+  resources.base_multiplier[RESOURCE_MANA] *= 1.0 + ( !dbc.ptr ? talent.ascension -> effectN( 2 ).percent() : 0 );
 
   base_chi_regen_per_second = 0;
   base_energy_regen_per_second = 10.0;
@@ -5316,7 +5300,7 @@ double monk_t::composite_player_multiplier( school_e school ) const
 {
   double m = base_t::composite_player_multiplier( school );
 
-  m *= 1.0 + ( wod_hotfix ? 0.05 : active_stance_data( FIERCE_TIGER ).effectN( 3 ).percent() ); // Hotfix to 5% (down from 10%) on Dec 15, 2014
+  m *= 1.0 + ( !dbc.ptr ? 0.05 : active_stance_data( FIERCE_TIGER ).effectN( 3 ).percent() ); // Hotfix to 5% (down from 10%) on Dec 15, 2014
 
   m *= 1.0 + buff.tigereye_brew_use -> value();
 
@@ -5341,7 +5325,7 @@ double monk_t::composite_attribute_multiplier( attribute_e attr ) const
     cam *= 1.0 + active_stance_data( STURDY_OX ).effectN( 5 ).percent();
 
   if ( attr == ATTR_SPIRIT && specialization() == MONK_MISTWEAVER )
-    cam *= 1.0 + ( maybe_ptr( dbc.ptr ) ? talent.ascension -> effectN( 2 ).percent() : 0 );
+    cam *= 1.0 + ( dbc.ptr ? talent.ascension -> effectN( 2 ).percent() : 0 );
 
   return cam;
 }
@@ -5476,7 +5460,7 @@ double monk_t::composite_armor_multiplier() const
 {
   double a = player_t::composite_armor_multiplier();
 
-  a += ( active_stance_data( STURDY_OX ).effectN( 13 ).percent() * ( wod_hotfix ? 1.5 : 1.0  ) );
+  a += ( active_stance_data( STURDY_OX ).effectN( 13 ).percent() * ( !dbc.ptr ? 1.5 : 1.0  ) );
 
   return a;
 }
@@ -5675,7 +5659,7 @@ void monk_t::target_mitigation( school_e school,
 
   // Passive sources (Sturdy Ox)
   if ( school != SCHOOL_PHYSICAL )
-    s -> result_amount *= 1.0 + ( wod_hotfix ? -0.15 : active_stance_data( STURDY_OX ).effectN( 4 ).percent() ); // Hotfix to -15% (up from -10%) on Nov 12, 2014
+    s -> result_amount *= 1.0 + ( !dbc.ptr ? -0.15 : active_stance_data( STURDY_OX ).effectN( 4 ).percent() ); // Hotfix to -15% (up from -10%) on Nov 12, 2014
 
   // Damage Reduction Cooldowns
 
@@ -5834,9 +5818,9 @@ void monk_t::apl_pre_windwalker()
   if ( sim -> allow_food )
   {
     // Food
-    if (level > 90)
+    if ( level > 90 )
     {
-      if ( maybe_ptr( dbc.ptr ) )
+      if ( dbc.ptr )
         precombat += "/food,type=salty_squid_roll";
       else
         precombat += "/food,type=rylak_crepes";
@@ -6259,7 +6243,7 @@ double monk_t::stagger_pct()
   if ( current_stance() == STURDY_OX ) // no stagger without active stance
   {
     stagger += static_stance_data( STURDY_OX ).effectN( 8 ).percent();
-    if ( wod_hotfix )
+    if ( !dbc.ptr )
       stagger *= 1.5; // Hotfix to 30% baseline on Nov 24, 2014
 
     if ( buff.shuffle -> check() )
