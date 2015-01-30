@@ -5422,7 +5422,7 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
 
   void consume_resource()
   {
-    if ( td( target ) -> dots_breath_of_sindragosa -> current_tick > 0 )
+    if ( maybe_ptr( p() -> dbc.ptr ) || td( target ) -> dots_breath_of_sindragosa -> current_tick > 0 )
     {
       death_knight_spell_t::consume_resource();
     }
@@ -5472,7 +5472,14 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
     tick_zero = true;
 
     tick_action = new breath_of_sindragosa_tick_t( p, this );
-    tick_action -> base_costs[ RESOURCE_RUNIC_POWER ] = base_costs[ RESOURCE_RUNIC_POWER ];
+    if ( ! maybe_ptr( p -> dbc.ptr ) )
+    {
+      tick_action -> base_costs[ RESOURCE_RUNIC_POWER ] = base_costs[ RESOURCE_RUNIC_POWER ];
+    }
+    else
+    {
+      tick_action -> base_costs[ RESOURCE_RUNIC_POWER ] = data().powerN( 1 ).cost_per_second();
+    }
     school = tick_action -> school;
   }
 
