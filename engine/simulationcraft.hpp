@@ -717,6 +717,7 @@ enum scale_metric_e
 {
   SCALE_METRIC_NONE = 0,
   SCALE_METRIC_DPS,
+  SCALE_METRIC_DPSP,
   SCALE_METRIC_DPSE,
   SCALE_METRIC_HPS,
   SCALE_METRIC_HPSE,
@@ -2509,7 +2510,7 @@ private:
 struct sim_report_information_t
 {
   bool charts_generated;
-  std::vector<std::string> dps_charts, hps_charts, dtps_charts, tmi_charts, gear_charts, dpet_charts;
+  std::vector<std::string> dps_charts, priority_dps_charts, hps_charts, dtps_charts, tmi_charts, gear_charts, dpet_charts;
   std::string timeline_chart, downtime_chart;
   sim_report_information_t() { charts_generated = false; }
 };
@@ -2722,7 +2723,7 @@ struct sim_t : private sc_thread_t
   reforge_plot_t* const reforge_plot;
   double elapsed_cpu;
   double elapsed_time;
-  double     iteration_dmg, iteration_heal, iteration_absorb;
+  double     iteration_dmg, priority_iteration_dmg,  iteration_heal, iteration_absorb;
   simple_sample_data_t raid_dps, total_dmg, raid_hps, total_heal, total_absorb, raid_aps;
   extended_sample_data_t simulation_length;
   // Deterministic simulation iteration data collectors for specific iteration
@@ -2737,6 +2738,7 @@ struct sim_t : private sc_thread_t
   timespan_t bloodlust_time;
   std::string reference_player_str;
   std::vector<player_t*> players_by_dps;
+  std::vector<player_t*> players_by_priority_dps;
   std::vector<player_t*> players_by_hps;
   std::vector<player_t*> players_by_hps_plus_aps;
   std::vector<player_t*> players_by_dtps;
@@ -4009,6 +4011,7 @@ struct player_collected_data_t
   // DMG
   extended_sample_data_t dmg;
   extended_sample_data_t compound_dmg;
+  extended_sample_data_t prioritydps;
   extended_sample_data_t dps;
   extended_sample_data_t dpse;
   extended_sample_data_t dtps;
@@ -4546,7 +4549,7 @@ struct player_t : public actor_t
   player_collected_data_t collected_data;
 
   // Damage
-  double iteration_dmg, iteration_dmg_taken; // temporary accumulators
+  double iteration_dmg, priority_iteration_dmg, iteration_dmg_taken; // temporary accumulators
   double dpr;
   std::vector<std::pair<timespan_t, double> > incoming_damage; // for tank active mitigation conditionals
 

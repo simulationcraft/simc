@@ -1065,9 +1065,9 @@ void report::generate_sim_report_information( sim_t* s , sim_report_information_
     return;
 
   ri.downtime_chart = chart::raid_downtime( s -> players_by_name, s -> print_styles );
-
-
+  
   chart::raid_aps     ( ri.dps_charts, s, s -> players_by_dps, "dps" );
+  chart::raid_aps     ( ri.priority_dps_charts, s, s -> players_by_priority_dps, "prioritydps" );
   chart::raid_aps     ( ri.hps_charts, s, s -> players_by_hps_plus_aps, "hps" );
   chart::raid_aps     ( ri.dtps_charts, s, s -> players_by_dtps, "dtps" );
   chart::raid_aps     ( ri.tmi_charts, s, s -> players_by_tmi, "tmi" );

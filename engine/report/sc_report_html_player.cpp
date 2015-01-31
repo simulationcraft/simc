@@ -2231,6 +2231,7 @@ void print_html_player_statistics( report::sc_html_stream& os, player_t* p, play
   int sd_counter = 0;
   report::print_html_sample_data( os, p -> sim, p -> collected_data.fight_length, "Fight Length", sd_counter );
   report::print_html_sample_data( os, p -> sim, p -> collected_data.dps, "DPS", sd_counter );
+  report::print_html_sample_data( os, p -> sim, p -> collected_data.prioritydps, "Priority Target DPS", sd_counter );
   report::print_html_sample_data( os, p -> sim, p -> collected_data.dpse, "DPS(e)", sd_counter );
   report::print_html_sample_data( os, p -> sim, p -> collected_data.dmg, "Damage", sd_counter );
   report::print_html_sample_data( os, p -> sim, p -> collected_data.dtps, "DTPS", sd_counter );
@@ -2965,9 +2966,10 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
 
   const std::string n = util::encode_html( p -> name() );
   if ( p -> collected_data.dps.mean() >= p -> collected_data.hps.mean() || p -> primary_role() == ROLE_TANK )
-    os.printf( "\">%s&#160;:&#160;%.0f dps",
+    os.printf( "\">%s&#160;:&#160;%.0f dps (%.0f dps to main target)",
                n.c_str(),
-               p -> collected_data.dps.mean() );
+               p -> collected_data.dps.mean(),
+               p -> collected_data.prioritydps.mean() );
   else
     os.printf( "\">%s&#160;:&#160;%.0f hps (%.0f aps)",
                n.c_str(),

@@ -653,6 +653,15 @@ void print_html_raid_summary( report::sc_html_stream& os, const sim_t* sim, cons
   // Right side charts: hps+aps
   os << "<div class=\"charts\">\n";
 
+  for ( size_t i = 0; i < ri.priority_dps_charts.size(); i++ )
+  {
+    os.printf(
+      "<map id='PRIORITYDPSMAP%d' name='PRIORITYDPSMAP%d'></map>\n", (int)i, (int)i );
+    os.printf(
+      "<img id='PRIORITYDPSIMG%d' src=\"%s\" alt=\"Priority DPS Chart\" />\n",
+      (int)i, ri.priority_dps_charts[i].c_str() );
+  }
+
   for ( size_t i = 0; i < ri.hps_charts.size(); i++ )
   {
     os.printf(  "<map id='HPSMAP%d' name='HPSMAP%d'></map>\n", ( int )i, ( int )i );
@@ -698,20 +707,28 @@ void print_html_raid_summary( report::sc_html_stream& os, const sim_t* sim, cons
 
 // print_html_raid_imagemaps ================================================
 
-void print_html_raid_imagemap( report::sc_html_stream& os, sim_t* sim, size_t num, bool dps )
+void print_html_raid_imagemap( report::sc_html_stream& os, sim_t* sim, size_t num, int dps )
 {
-  std::vector<player_t*> player_list = ( dps ) ? sim -> players_by_dps : sim -> players_by_hps;
+  std::vector<player_t*> player_list;
+  if ( dps == 1 )
+    player_list = sim -> players_by_dps;
+  else if ( dps == 2 )
+    player_list = sim -> players_by_priority_dps;
+  else if ( dps == 3 )
+    player_list = sim -> players_by_hps;
+
   size_t start = num * MAX_PLAYERS_PER_CHART;
   size_t end = start + MAX_PLAYERS_PER_CHART;
 
   for ( size_t i = 0; i < player_list.size(); i++ )
   {
     player_t* p = player_list[ i ];
-    if ( ( dps ? p -> collected_data.dps.mean() : p -> collected_data.hps.mean() ) <= 0 )
-    {
-      player_list.resize( i );
-      break;
-    }
+    if ( dps == 1 && p -> collected_data.dps.mean() <= 0 )
+    { player_list.resize( i ); break; }
+    else if ( dps == 2 && p -> collected_data.prioritydps.mean() <= 0 )
+    { player_list.resize( i ); break; }
+    else if ( dps == 3 && p -> collected_data.hps.mean() <= 0 )
+    { player_list.resize( i ); break; }
   }
 
   if ( end > player_list.size() ) end = player_list.size();
@@ -724,8 +741,8 @@ void print_html_raid_imagemap( report::sc_html_stream& os, sim_t* sim, size_t nu
   }
   os << "];\n";
 
-  std::string imgid = str::format( "%sIMG%u", ( dps ) ? "DPS" : "HPS", as<unsigned>( num ) );
-  std::string mapid = str::format( "%sMAP%u", ( dps ) ? "DPS" : "HPS", as<unsigned>( num ) );
+  std::string imgid = str::format( "%sIMG%u", ( dps == 1 ) ? "DPS" : ( ( dps == 2 ) ? "PRIORITYDPS" : "HPS" ), as<unsigned>( num ) );
+  std::string mapid = str::format( "%sMAP%u", ( dps == 1 ) ? "DPS" : ( ( dps == 2 ) ? "PRIORITYDPS" : "HPS" ), as<unsigned>( num ) );
 
   os.printf(
     "u = document.getElementById('%s').src;\n"
@@ -762,16 +779,20 @@ void print_html_raid_imagemaps( report::sc_html_stream& os, sim_t* sim, sim_repo
 
   for ( size_t i = 0; i < ri.dps_charts.size(); i++ )
   {
-    print_html_raid_imagemap( os, sim, i, true );
+    print_html_raid_imagemap( os, sim, i, 1 );
+  }
+
+  for ( size_t i = 0; i < ri.priority_dps_charts.size(); i++ )
+  {
+    print_html_raid_imagemap( os, sim, i, 2 );
   }
 
   for ( size_t i = 0; i < ri.hps_charts.size(); i++ )
   {
-    print_html_raid_imagemap( os, sim, i, false );
+    print_html_raid_imagemap( os, sim, i, 3 );
   }
 
   os << "</script>\n";
-
 }
 
 // print_html_scale_factors =================================================
@@ -785,7 +806,6 @@ void print_html_scale_factors( report::sc_html_stream& os, sim_t* sim )
   std::string SF = sf;
   std::transform(SF.begin(), SF.end(), SF.begin(), toupper);
   
-
   os << "<div id=\"raid-scale-factors\" class=\"section grouped-first\">\n\n"
      << "<h2 class=\"toggle\">" 
      << SF
@@ -961,7 +981,6 @@ static const help_box_t help_boxes[] =
     { "Timeline Distribution", "The simulated encounter's duration can vary based on the health of the target and variation in the raid DPS. This chart shows how often the duration of the encounter varied by how much time."},
     { "Waiting", "This is the percentage of time in which no action can be taken other than autoattacks. This can be caused by resource starvation, lockouts, and timers."},
     { "Scale Factor Ranking", "This row ranks the scale factors from highest to lowest, checking whether one scale factor is higher/lower than another with statistical significance."},
-
 };
 
 void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
@@ -1189,7 +1208,6 @@ void print_html_( report::sc_html_stream& os, sim_t* sim )
 
   print_html_beta_warning( os );
 
-
   if ( sim -> simulation_length.sum() == 0 ) {
     print_nothing_to_report( os, "Sum of all Simulation Durations is zero." );
   }
@@ -1283,13 +1301,11 @@ void print_html( sim_t* sim )
 {
   if ( sim -> html_file_str.empty() ) return;
 
-
   // Setup file stream and open file
   report::sc_html_stream s;
   s.open( sim -> html_file_str );
   if ( ! s )
   {
-
     sim -> errorf( "Failed to open html output file '%s'.", sim -> html_file_str.c_str() );
     return;
   }

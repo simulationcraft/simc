@@ -509,7 +509,7 @@ player_t::player_t( sim_t*             s,
   tmi_window( 6.0 ),
   collected_data( name_str, *sim ),
   // Damage
-  iteration_dmg( 0 ), iteration_dmg_taken( 0 ),
+  iteration_dmg( 0 ), priority_iteration_dmg( 0 ), iteration_dmg_taken( 0 ),
   dpr( 0 ),
   dps_convergence( 0 ),
   // Heal
@@ -3266,6 +3266,7 @@ void player_t::datacollection_begin()
   iteration_waiting_time = timespan_t::zero();
   iteration_executed_foreground_actions = 0;
   iteration_dmg = 0;
+  priority_iteration_dmg = 0;
   iteration_heal = 0;
   iteration_absorb = 0.0;
   iteration_absorb_taken = 0.0;
@@ -3327,6 +3328,7 @@ void player_t::datacollection_end()
   if ( ! is_enemy() && ! is_add() )
   {
     sim -> iteration_dmg += iteration_dmg;
+    sim -> priority_iteration_dmg += priority_iteration_dmg;
     sim -> iteration_heal += iteration_heal;
     sim -> iteration_absorb += iteration_absorb;
   }
@@ -8751,6 +8753,7 @@ void player_t::analyze( sim_t& s )
   if (  !  quiet && !  is_enemy() && !  is_add() && ! (  is_pet() && s.report_pets_separately ) )
   {
     s.players_by_dps.push_back( this );
+    s.players_by_priority_dps.push_back( this );
     s.players_by_hps.push_back( this );
     s.players_by_hps_plus_aps.push_back( this );
     s.players_by_dtps.push_back( this );
@@ -8822,6 +8825,9 @@ player_t::scales_over_t player_t::scales_over()
   if ( util::str_compare_ci( so, "dps" ) )
     return q -> collected_data.dps;
 
+  if ( util::str_compare_ci( so, "prioritydps" ) )
+    return q -> collected_data.prioritydps;
+
   if ( util::str_compare_ci( so, "dpse" ) )
     return q -> collected_data.dpse;
 
@@ -8866,6 +8872,7 @@ player_t::scales_over_t player_t::scaling_for_metric( scale_metric_e metric )
   switch ( metric )
   {
     case SCALE_METRIC_DPS:        return q -> collected_data.dps;
+    case SCALE_METRIC_DPSP:       return q -> collected_data.prioritydps;
     case SCALE_METRIC_DPSE:       return q -> collected_data.dpse;
     case SCALE_METRIC_HPS:        return q -> collected_data.hps;
     case SCALE_METRIC_HPSE:       return q -> collected_data.hpse;
@@ -9604,6 +9611,7 @@ player_collected_data_t::player_collected_data_t( const std::string& player_name
   dmg( player_name + " Damage", s.statistics_level < 2 ),
   compound_dmg( player_name + " Total Damage", s.statistics_level < 2 ),
   dps( player_name + " Damage Per Second", s.statistics_level < 1 ),
+  prioritydps( player_name + " Priority Target Damage Per Second", s.statistics_level < 1 ),
   dpse( player_name + " Damage Per Second (Effective)", s.statistics_level < 2 ),
   dtps( player_name + " Damage Taken Per Second", s.statistics_level < 2 ),
   dmg_taken( player_name + " Damage Taken", s.statistics_level < 2 ),
@@ -9641,6 +9649,7 @@ void player_collected_data_t::reserve_memory( const player_t& p )
   dmg.reserve( size );
   compound_dmg.reserve( size );
   dps.reserve( size );
+  prioritydps.reserve( size );
   dpse.reserve( size );
   dtps.reserve( size );
   // HEAL
@@ -9668,6 +9677,7 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
   dmg.merge( other.dmg );
   compound_dmg.merge( other.compound_dmg );
   dps.merge( other.dps );
+  prioritydps.merge( other.prioritydps );
   dtps.merge( other.dtps );
   dpse.merge( other.dpse );
   dmg_taken.merge( other.dmg_taken );
@@ -9721,6 +9731,7 @@ void player_collected_data_t::analyze( const player_t& p )
   dmg.analyze_all();
   compound_dmg.analyze_all();
   dps.analyze_all();
+  prioritydps.analyze_all();
   dpse.analyze_all();
   dmg_taken.analyze_all();
   dtps.analyze_all();
@@ -9863,7 +9874,6 @@ double player_collected_data_t::calculate_tmi( const health_changes_timeline_t& 
 
 void player_collected_data_t::collect_data( const player_t& p )
 {
-
   double f_length = p.iteration_fight_length.total_seconds();
   double sim_length = p.sim -> current_time().total_seconds();
   double w_time = p.iteration_waiting_time.total_seconds();
@@ -9882,7 +9892,12 @@ void player_collected_data_t::collect_data( const player_t& p )
   double total_iteration_dmg = p.iteration_dmg; // player + pet dmg
   for ( size_t i = 0; i < p.pet_list.size(); ++i )
   {
-    total_iteration_dmg += p.pet_list[ i ] -> iteration_dmg;
+    total_iteration_dmg += p.pet_list[i] -> iteration_dmg;
+  }
+  double total_priority_iteration_dmg = p.priority_iteration_dmg;
+  for ( size_t i = 0; i < p.pet_list.size(); ++i )
+  {
+    total_priority_iteration_dmg += p.pet_list[i] -> priority_iteration_dmg;
   }
   double total_iteration_heal = p.iteration_heal; // player + pet heal
   for ( size_t i = 0; i < p.pet_list.size(); ++i )
@@ -9896,6 +9911,7 @@ void player_collected_data_t::collect_data( const player_t& p )
   }
 
   compound_dmg.add( total_iteration_dmg );
+  prioritydps.add( f_length ? total_priority_iteration_dmg / f_length : 0 );
   dps.add( f_length ? total_iteration_dmg / f_length : 0 );
   dpse.add( sim_length ? total_iteration_dmg / sim_length : 0 );
   double dps_metric = f_length ? ( total_iteration_dmg / f_length ) : 0;
@@ -10001,6 +10017,7 @@ std::ostream& player_collected_data_t::data_str( std::ostream& s ) const
   dmg.data_str( s );
   compound_dmg.data_str( s );
   dps.data_str( s );
+  prioritydps.data_str( s );
   dpse.data_str( s );
   dtps.data_str( s );
   dmg_taken.data_str( s );

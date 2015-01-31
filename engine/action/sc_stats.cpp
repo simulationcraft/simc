@@ -259,7 +259,6 @@ void stats_t::datacollection_end()
   portion_aps.add( player -> iteration_fight_length != timespan_t::zero() ? iaa / player -> iteration_fight_length.total_seconds() : 0 );
   portion_apse.add( sim.current_time() != timespan_t::zero() ? iaa / sim.current_time().total_seconds() : 0 );
 
-
   num_executes.add( iteration_num_executes );
   num_ticks.add( iteration_num_ticks );
   num_refreshes.add( iteration_num_refreshes );

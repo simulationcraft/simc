@@ -1003,7 +1003,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   reforge_plot( new reforge_plot_t( this ) ),
   elapsed_cpu( 0.0 ),
   elapsed_time( 0.0 ),
-  iteration_dmg( 0 ), iteration_heal( 0 ), iteration_absorb( 0 ),
+  iteration_dmg( 0 ), priority_iteration_dmg( 0 ), iteration_heal( 0 ), iteration_absorb( 0 ),
   raid_dps(), total_dmg(), raid_hps(), total_heal(), total_absorb(), raid_aps(),
   simulation_length( "Simulation Length", false ),
   report_iteration_data( 0.025 ), min_report_iteration_data( -1 ),
@@ -1282,7 +1282,7 @@ void sim_t::combat_begin()
 
   reset();
 
-  iteration_dmg = iteration_heal = 0;
+  iteration_dmg = priority_iteration_dmg = iteration_heal = 0;
 
   // Always call begin() to ensure various counters are initialized.
   datacollection_begin();
@@ -1436,7 +1436,7 @@ void sim_t::datacollection_begin()
 {
   if ( debug ) out_debug << "Sim Data Collection Begin";
 
-  iteration_dmg = iteration_heal = iteration_absorb = 0.0;
+  iteration_dmg = priority_iteration_dmg = iteration_heal = iteration_absorb = 0.0;
 
   for ( size_t i = 0; i < target_list.size(); ++i )
   {
@@ -1973,6 +1973,16 @@ struct compare_dps
   }
 };
 
+// compare_priority_dps ==============================================================
+
+struct compare_priority_dps
+{
+  bool operator()( player_t* l, player_t* r ) const
+  {
+    return l -> collected_data.prioritydps.mean() > r -> collected_data.prioritydps.mean();
+  }
+};
+
 // compare_hps ==============================================================
 
 struct compare_hps
@@ -2046,6 +2056,7 @@ void sim_t::analyze()
     actor_list[ i ] -> analyze( *this );
 
   range::sort( players_by_dps,  compare_dps() );
+  range::sort( players_by_priority_dps, compare_priority_dps() );
   range::sort( players_by_hps,  compare_hps() );
   range::sort( players_by_hps_plus_aps, compare_hps_plus_aps() );
   range::sort( players_by_dtps, compare_dtps() );

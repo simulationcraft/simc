@@ -1057,6 +1057,14 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_report_informatio
     writer.print_attribute_unescaped( "img_src", ri.dps_charts[ i ] );
     writer.end_tag( "chart" );
   }
+  count = ri.priority_dps_charts.size();
+  for ( size_t i = 0; i < count; i++ )
+  {
+    writer.begin_tag( "chart" );
+    writer.print_attribute( "type", "prioritydps" );
+    writer.print_attribute_unescaped( "img_src", ri.priority_dps_charts[i] );
+    writer.end_tag( "chart" );
+  }
   count = ri.hps_charts.size();
   for ( size_t i = 0; i < count; i++ )
   {
@@ -1086,6 +1094,7 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_report_informatio
   writer.begin_tag( "dmg" );
   writer.print_attribute( "total", util::to_string( sim -> total_dmg.mean(), 0 ) );
   writer.print_attribute( "dps", util::to_string( sim -> raid_dps.mean(), 0 ) );
+  //
   writer.end_tag( "dmg" );
 
   writer.begin_tag( "heal" );
@@ -1105,6 +1114,19 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_report_informatio
     writer.end_tag( "player" );
   }
   writer.end_tag( "player_by_dps" );
+
+  writer.begin_tag( "player_by_priority_dps" );
+  count = sim -> players_by_dps.size();
+  for ( size_t i = 0; i < count; i++ )
+  {
+    player_t* p = sim -> players_by_dps[ i ];
+    writer.begin_tag( "player" );
+    writer.print_attribute( "name", p -> name() );
+    writer.print_attribute( "index", util::to_string( i ) );
+    writer.print_attribute( "dps", util::to_string( p -> collected_data.prioritydps.mean() ) );
+    writer.end_tag( "player" );
+  }
+  writer.end_tag( "player_by_priority_dps" );
 
   writer.begin_tag( "player_by_hps" );
   count = sim -> players_by_dps.size();

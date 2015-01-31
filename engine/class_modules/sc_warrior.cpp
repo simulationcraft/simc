@@ -42,11 +42,7 @@ public:
   // Also set to true whenever gladiator's resolve is talented.
   bool gladiator; //Check a bunch of crap to see if this guy wants to be gladiator dps or not.
 
-  simple_sample_data_t cs_damage;
-  simple_sample_data_t priority_damage;
-  simple_sample_data_t all_damage;
   simple_sample_data_t shield_charge_damage;
-
   // Active
   action_t* active_blood_craze;
   action_t* active_bloodbath_dot;
@@ -469,12 +465,7 @@ public:
   virtual void       merge( player_t& other ) override
   {
     warrior_t& other_p = dynamic_cast<warrior_t&>( other );
-
-    cs_damage.merge( other_p.cs_damage );
-    all_damage.merge( other_p.all_damage );
-    priority_damage.merge( other_p.priority_damage );
     shield_charge_damage.merge( other_p.shield_charge_damage );
-
     player_t::merge( other );
   }
 
@@ -696,21 +687,6 @@ public:
         d -> state -> composite_da_multiplier(),
         d -> state -> action -> action_ta_multiplier() );
     }
-  }
-
-  virtual void assess_damage( dmg_e type,
-                              action_state_t* s )
-  {
-    ab::assess_damage( type, s );
-
-    if ( td( s -> target ) -> debuffs_colossus_smash -> up() && s -> result_amount > 0 )
-      p() -> cs_damage.add( s -> result_amount );
-
-    if ( ( s -> target == p() -> sim -> target ) && s -> result_amount > 0 )
-      p() -> priority_damage.add( s -> result_amount );
-
-    if ( s -> result_amount > 0 && s -> target != p() )
-      p() -> all_damage.add( s -> result_amount );
   }
 
   virtual void consume_resource()
@@ -5742,9 +5718,7 @@ public:
 
   virtual void html_customsection( report::sc_html_stream& os ) override
   {
-    double cs_damage = p.cs_damage.sum();
-    double all_damage = p.all_damage.sum();
-    double priority_damage = p.priority_damage.sum();
+    double all_damage = p.collected_data.dps.sum();
     double shield_charge_dmg = p.shield_charge_damage.sum();
 
     // Custom Class Section
@@ -5755,15 +5729,6 @@ public:
     os << p.name() << "\n<br>";
     os << "\t\t\t\t\t<p>Overall DPS</p>\n";
     os << p.collected_data.dps.mean() << "</p>\n";
-    os << "\t\t\t\t\t<p>Percentage of damage dealt to primary target</p>\n";
-    os << "%" << ( ( priority_damage / all_damage ) * 100 ) << "</p>\n";
-    if ( cs_damage > 0 )
-    {
-      os << "\t\t\t\t\t<p>Percentage of primary target damage that occurs inside of Colossus Smash</p>\n";
-      os << "%" << ( ( cs_damage / priority_damage ) * 100 ) << "</p>\n";
-    }
-    os << "\t\t\t\t\t<p> Dps done to primary target </p>\n";
-    os << ( ( priority_damage / all_damage ) * p.collected_data.dps.mean() ) << "</p>\n";
 
     if ( shield_charge_dmg > 0 )
     {
@@ -5773,7 +5738,6 @@ public:
       os << "\t\t\t\t\t<p> Percentage of overall damage </p>\n";
       os << ( ( shield_charge_dmg / all_damage ) * 100 ) << "</p>\n";
     }
-
     os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";
   }
 private:

@@ -393,7 +393,9 @@ struct filter_non_performing_players
   bool operator()( player_t* p ) const
   { 
     if ( type == "dps" && p -> collected_data.dps.mean() <= 0 ) 
-        return true;
+      return true;
+    else if ( type == "prioritydps" && p -> collected_data.prioritydps.mean() <= 0 )
+      return true;
     else if ( type == "hps" && p -> collected_data.hps.mean() <= 0 ) 
       return true; 
     else if ( type == "dtps" && p -> collected_data.dtps.mean() <= 0 ) 
@@ -735,6 +737,11 @@ size_t chart::raid_aps( std::vector<std::string>& images,
     max_aps = players_by_aps[ 0 ] -> collected_data.dps.mean();
     title_str = "DPS";
   }
+  else if ( type == "prioritydps" )
+  {
+    max_aps = players_by_aps[ 0 ] -> collected_data.prioritydps.mean();
+    title_str = "Priority Target/Boss DPS";
+  }
   else if ( type == "hps" )
   {
     max_aps = players_by_aps[ 0 ] -> collected_data.hps.mean() + players_by_aps[ 0 ] -> collected_data.aps.mean();
@@ -797,6 +804,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
       player_t* p = player_list[ i ];
       double player_mean = 0.0;
       if      ( type == "dps" )  { player_mean = p -> collected_data.dps.mean(); }
+      else if ( type == "prioritydps" ) { player_mean = p -> collected_data.prioritydps.mean(); }
       else if ( type == "hps" )  { player_mean = p -> collected_data.hps.mean() + p -> collected_data.aps.mean(); }
       else if ( type == "dtps" ) { player_mean = p -> collected_data.dtps.mean(); }
       else if ( type == "tmi" )  { player_mean = p -> collected_data.theck_meloree_index.mean() / 1000.0; }
@@ -820,6 +828,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
       util::urlencode( formatted_name );
       double player_mean = 0.0;
       if      ( type == "dps" )  { player_mean = p -> collected_data.dps.mean(); }
+      else if ( type == "prioritydps" ) { player_mean = p -> collected_data.prioritydps.mean(); }
       else if ( type == "hps" )  { player_mean = p -> collected_data.hps.mean() + p -> collected_data.aps.mean(); }
       else if ( type == "dtps" ) { player_mean = p -> collected_data.dtps.mean(); }
       else if ( type == "tmi" )  { player_mean = p -> collected_data.theck_meloree_index.mean() / 1000.0; }
@@ -827,8 +836,6 @@ size_t chart::raid_aps( std::vector<std::string>& images,
       str::format( s, "%st++%.0f%s++%s,%s,%d,0,15", ( i ? "|" : "" ), player_mean, tmi_letter.c_str(), formatted_name.c_str(), get_color( p ).c_str(), ( int )i ); 
     }
     s += amp;
-
-
 
     images.push_back( s );
 
