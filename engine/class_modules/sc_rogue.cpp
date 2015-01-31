@@ -2888,12 +2888,46 @@ struct death_from_above_t : public rogue_attack_t
     aoe = -1;
   }
 
+  void adjust_attack( attack_t* attack, const timespan_t& oor_delay )
+  {
+    if ( ! attack || ! attack -> execute_event )
+    {
+      return;
+    }
+
+    if ( attack -> execute_event -> remains() >= oor_delay )
+    {
+      return;
+    }
+
+    timespan_t next_swing = attack -> execute_event -> remains();
+    timespan_t initial_next_swing = next_swing;
+    while ( next_swing < oor_delay )
+    {
+      next_swing += timespan_t::from_millis( 500 );
+    }
+
+    attack -> execute_event -> reschedule( next_swing );
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "%s %s swing pushback: orig_next=%.3f next=%.3f lands=%.3f",
+          player -> name(), name(), initial_next_swing.total_seconds(),
+          next_swing.total_seconds(),
+          attack -> execute_event -> occurs().total_seconds() );
+    }
+  }
+
   void execute()
   {
     rogue_attack_t::execute();
 
     p() -> buffs.death_from_above -> trigger();
+/*
+    timespan_t oor_delay = timespan_t::from_seconds( rng().gauss( 1.3, 0.025 ) );
 
+    adjust_attack( player -> main_hand_attack, oor_delay );
+    adjust_attack( player -> off_hand_attack, oor_delay );
+*/
     // Apparently DfA is out of range for ~0.8 seconds during the "attack", so
     // ensure that we have a swing timer of at least 800ms on both hands. Note
     // that this can sync autoattacks which also happens in game.
@@ -3108,11 +3142,11 @@ struct blade_flurry_attack_t : public rogue_attack_t
   {
     tl.clear();
 
-    for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+    for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
     {
-      player_t* t = sim -> actor_list[ i ];
+      player_t* t = sim -> target_non_sleeping_list[ i ];
 
-      if ( ! t -> is_sleeping() && t -> is_enemy() && t != target )
+      if ( t -> is_enemy() && t != target )
         tl.push_back( t );
     }
 
