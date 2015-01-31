@@ -92,12 +92,15 @@ actions.main+=/shadow_word_pain,moving=1,cycle_targets=1
 
 actions.vent=void_entropy,if=shadow_orb=3&!ticking&target.time_to_die>60&active_enemies=1
 actions.vent+=/void_entropy,if=!dot.void_entropy.ticking&shadow_orb=5&active_enemies>=1&target.time_to_die>60,cycle_targets=1,max_cycle_targets=6
-actions.vent+=/devouring_plague,if=dot.void_entropy.ticking&dot.void_entropy.remains<=gcd*2&cooldown_react,cycle_targets=1
-actions.vent+=/devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<5,cycle_targets=1
+actions.vent+=/devouring_plague,if=shadow_orb=5&dot.void_entropy.ticking&dot.void_entropy.remains<=gcd*2&cooldown_react&active_enemies=1
+actions.vent+=/devouring_plague,if=dot.void_entropy.ticking&dot.void_entropy.remains<=gcd*2&cooldown_react&active_enemies>1,cycle_targets=1
+actions.vent+=/devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<5&active_enemies>1,cycle_targets=1
 actions.vent+=/devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<10&active_enemies>2,cycle_targets=1
 actions.vent+=/devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<15&active_enemies>3,cycle_targets=1
 actions.vent+=/devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<20&active_enemies>4,cycle_targets=1
-actions.vent+=/devouring_plague,if=shadow_orb=5&dot.void_entropy.remains,cycle_targets=1
+actions.vent+=/devouring_plague,if=shadow_orb=5&dot.void_entropy.remains&(cooldown.mind_blast.remains<=gcd*2|(natural_shadow_word_death_range&cooldown.shadow_word_death.remains<=gcd*2))&active_enemies=1
+actions.vent+=/devouring_plague,if=shadow_orb=5&dot.void_entropy.remains&(cooldown.mind_blast.remains<=gcd*2|(natural_shadow_word_death_range&cooldown.shadow_word_death.remains<=gcd*2))&active_enemies>1,cycle_targets=1
+actions.vent+=/devouring_plague,if=shadow_orb>=3&dot.void_entropy.ticking&active_enemies=1&buff.mental_instinct.remains<(gcd*1.4)&buff.mental_instinct.remains>(gcd*0.7)&buff.mental_instinct.remains
 actions.vent+=/mindbender,if=talent.mindbender.enabled&cooldown.mind_blast.remains>=gcd
 actions.vent+=/shadowfiend,if=!talent.mindbender.enabled&cooldown.mind_blast.remains>=gcd
 actions.vent+=/halo,if=talent.halo.enabled&target.distance<=30&active_enemies>=4
@@ -152,6 +155,7 @@ actions.cop_dotweave+=/divine_star,if=talent.divine_star.enabled&cooldown.mind_b
 actions.cop_dotweave+=/shadow_word_pain,if=primary_target=0&(!ticking|remains<=18*0.3),cycle_targets=1,max_cycle_targets=5
 actions.cop_dotweave+=/vampiric_touch,if=primary_target=0&(!ticking|remains<=15*0.3),cycle_targets=1,max_cycle_targets=5
 actions.cop_dotweave+=/mind_spike
+actions.cop_dotweave+=/shadow_word_death,moving=1,if=!target.dot.shadow_word_pain.ticking&!target.dot.vampiric_touch.ticking,cycle_targets=1
 actions.cop_dotweave+=/shadow_word_death,moving=1,if=movement.remains>=1*gcd
 actions.cop_dotweave+=/power_word_shield,moving=1,if=talent.body_and_soul.enabled&movement.distance>=25
 actions.cop_dotweave+=/halo,if=talent.halo.enabled&target.distance<=30,moving=1
@@ -181,6 +185,7 @@ actions.cop_mfi+=/cascade,if=talent.cascade.enabled&((active_enemies>1|target.di
 actions.cop_mfi+=/divine_star,if=talent.divine_star.enabled&active_enemies>2&target.distance<=24
 actions.cop_mfi+=/mind_sear,if=active_enemies>=6,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)
 actions.cop_mfi+=/mind_spike
+actions.cop_mfi+=/shadow_word_death,moving=1,if=!target.dot.shadow_word_pain.ticking&!target.dot.vampiric_touch.ticking,cycle_targets=1
 actions.cop_mfi+=/shadow_word_death,moving=1,if=movement.remains>=1*gcd
 actions.cop_mfi+=/power_word_shield,moving=1,if=talent.body_and_soul.enabled&movement.distance>=25
 actions.cop_mfi+=/halo,if=talent.halo.enabled&target.distance<=30,moving=1
@@ -218,6 +223,7 @@ actions.cop+=/mind_spike,if=active_enemies<=4&buff.surge_of_darkness.react
 actions.cop+=/mind_sear,if=active_enemies>=3,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)
 actions.cop+=/mind_flay,if=target.dot.devouring_plague_tick.ticks_remain>1&active_enemies=1,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)
 actions.cop+=/mind_spike
+actions.cop+=/shadow_word_death,moving=1,if=!target.dot.shadow_word_pain.ticking&!target.dot.vampiric_touch.ticking,cycle_targets=1
 actions.cop+=/shadow_word_death,moving=1,if=movement.remains>=1*gcd
 actions.cop+=/power_word_shield,moving=1,if=talent.body_and_soul.enabled&movement.distance>=25
 actions.cop+=/halo,moving=1,if=talent.halo.enabled&target.distance<=30
