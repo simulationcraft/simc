@@ -4340,8 +4340,11 @@ struct cataclysm_t: public warlock_spell_t
       case WARLOCK_AFFLICTION:
         agony -> target = s -> target;
         agony -> execute();
-        unstable_affliction -> target = s -> target;
-        unstable_affliction -> execute();
+        if (p() -> dbc.ptr )
+        {
+            unstable_affliction -> target = s -> target;
+            unstable_affliction -> execute();
+        }
         break;
       case WARLOCK_DEMONOLOGY:
         if ( p() -> buffs.metamorphosis -> check() )
