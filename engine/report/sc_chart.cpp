@@ -394,7 +394,7 @@ struct filter_non_performing_players
   { 
     if ( type == "dps" && p -> collected_data.dps.mean() <= 0 ) 
       return true;
-    else if ( type == "prioritydps" && p -> collected_data.prioritydps.mean() <= 0 )
+    else if ( type == "prioritydps" && p -> collected_data.prioritydps.mean() <= 0  )
       return true;
     else if ( type == "hps" && p -> collected_data.hps.mean() <= 0 ) 
       return true; 
@@ -775,7 +775,6 @@ size_t chart::raid_aps( std::vector<std::string>& images,
   while ( true )
   {
     if ( num_players > max_players ) num_players = max_players;
-
 
     // Check if any player name contains non-ascii characters.
     // If true, add a special char ("\xE4\xB8\x80")  to the title, which fixes a weird bug with google image charts.

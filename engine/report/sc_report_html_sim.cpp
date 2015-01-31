@@ -653,13 +653,16 @@ void print_html_raid_summary( report::sc_html_stream& os, const sim_t* sim, cons
   // Right side charts: hps+aps
   os << "<div class=\"charts\">\n";
 
-  for ( size_t i = 0; i < ri.priority_dps_charts.size(); i++ )
+  if ( sim -> num_enemies > 1 )
   {
-    os.printf(
-      "<map id='PRIORITYDPSMAP%d' name='PRIORITYDPSMAP%d'></map>\n", (int)i, (int)i );
-    os.printf(
-      "<img id='PRIORITYDPSIMG%d' src=\"%s\" alt=\"Priority DPS Chart\" />\n",
-      (int)i, ri.priority_dps_charts[i].c_str() );
+    for ( size_t i = 0; i < ri.priority_dps_charts.size(); i++ )
+    {
+      os.printf(
+        "<map id='PRIORITYDPSMAP%d' name='PRIORITYDPSMAP%d'></map>\n", (int)i, (int)i );
+      os.printf(
+        "<img id='PRIORITYDPSIMG%d' src=\"%s\" alt=\"Priority DPS Chart\" />\n",
+        (int)i, ri.priority_dps_charts[i].c_str() );
+    }
   }
 
   for ( size_t i = 0; i < ri.hps_charts.size(); i++ )
