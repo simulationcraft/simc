@@ -42,7 +42,7 @@ actions+=/liquid_magma,if=pet.searing_totem.remains>=15|pet.fire_elemental_totem
 # If only one enemy, priority follows the 'single' action list.
 actions+=/call_action_list,name=single,if=active_enemies=1
 # On multiple enemies, the priority follows the 'aoe' action list.
-actions+=/call_action_list,name=aoe,if=active_enemies>1
+actions+=/call_action_list,name=aoe,if=active_enemies>2
 
 # Single target action priority list
 

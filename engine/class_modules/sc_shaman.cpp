@@ -5647,7 +5647,7 @@ void shaman_t::init_action_list()
     def -> add_action( init_use_profession_actions().erase( 0, 1 ) );
 
     def -> add_action( "call_action_list,name=single,if=active_enemies=1", "If only one enemy, priority follows the 'single' action list." );
-    def -> add_action( "call_action_list,name=aoe,if=active_enemies>1", "On multiple enemies, the priority follows the 'aoe' action list." );
+    def -> add_action( "call_action_list,name=aoe,if=active_enemies>2", "On multiple enemies, the priority follows the 'aoe' action list." );
 
     single -> add_action( this, "Unleash Flame", "moving=1" );
     single -> add_action( this, "Spiritwalker's Grace", "moving=1,if=buff.ascendance.up" );
