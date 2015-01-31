@@ -2761,6 +2761,7 @@ void action_t::impact( action_state_t* s )
         impact_action -> pre_execute_state = impact_action -> get_state( s );
 
       assert( impact_action -> background );
+      impact_action -> target = s -> target;
       impact_action -> execute();
     }
   }
