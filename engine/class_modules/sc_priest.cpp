@@ -6391,12 +6391,15 @@ void priest_t::apl_shadow()
   // Void Entropy
   vent -> add_action( "void_entropy,if=shadow_orb=3&!ticking&target.time_to_die>60&active_enemies=1" );
   vent -> add_action( "void_entropy,if=!dot.void_entropy.ticking&shadow_orb=5&active_enemies>=1&target.time_to_die>60,cycle_targets=1,max_cycle_targets=6" );
-  vent -> add_action( "devouring_plague,if=dot.void_entropy.ticking&dot.void_entropy.remains<=gcd*2&cooldown_react,cycle_targets=1" );
-  vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<5,cycle_targets=1" );
+  vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.ticking&dot.void_entropy.remains<=gcd*2&cooldown_react&active_enemies=1" );
+  vent -> add_action( "devouring_plague,if=dot.void_entropy.ticking&dot.void_entropy.remains<=gcd*2&cooldown_react&active_enemies>1,cycle_targets=1" );
+  vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<5&active_enemies>1,cycle_targets=1" );
   vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<10&active_enemies>2,cycle_targets=1" );
   vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<15&active_enemies>3,cycle_targets=1" );
   vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains<20&active_enemies>4,cycle_targets=1" );
-  vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains,cycle_targets=1" );
+  vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains&(cooldown.mind_blast.remains<=gcd*2|(natural_shadow_word_death_range&cooldown.shadow_word_death.remains<=gcd*2))&active_enemies=1" );
+  vent -> add_action( "devouring_plague,if=shadow_orb=5&dot.void_entropy.remains&(cooldown.mind_blast.remains<=gcd*2|(natural_shadow_word_death_range&cooldown.shadow_word_death.remains<=gcd*2))&active_enemies>1,cycle_targets=1" );
+  vent -> add_action( "devouring_plague,if=shadow_orb>=3&dot.void_entropy.ticking&active_enemies=1&buff.mental_instinct.remains<(gcd*1.4)&buff.mental_instinct.remains>(gcd*0.7)&buff.mental_instinct.remains" );
   vent -> add_action( "mindbender,if=talent.mindbender.enabled&cooldown.mind_blast.remains>=gcd" );
   vent -> add_action( "shadowfiend,if=!talent.mindbender.enabled&cooldown.mind_blast.remains>=gcd" );
   vent -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&active_enemies>=4" );
@@ -6454,6 +6457,7 @@ void priest_t::apl_shadow()
 //cop_dotweave -> add_action( "mind_spike,if=buff.shadow_word_insanity.remains<=gcd&buff.bloodlust.up&!target.dot.shadow_word_pain.remains&!target.dot.vampiric_touch.remains" );
 //cop_dotweave -> add_action( "mind_spike,if=((target.dot.shadow_word_pain.remains&!target.dot.vampiric_touch.remains)|(!target.dot.shadow_word_pain.remains&target.dot.vampiric_touch.remains))&shadow_orb<=2&cooldown.mind_blast.remains>0.5*gcd" );
   cop_dotweave -> add_action( "mind_spike" );
+  cop_dotweave -> add_action( "shadow_word_death,moving=1,if=!target.dot.shadow_word_pain.ticking&!target.dot.vampiric_touch.ticking,cycle_targets=1" );
   cop_dotweave -> add_action( "shadow_word_death,moving=1,if=movement.remains>=1*gcd" );
   cop_dotweave -> add_action( "power_word_shield,moving=1,if=talent.body_and_soul.enabled&movement.distance>=25" );
   cop_dotweave -> add_action( "halo,if=talent.halo.enabled&target.distance<=30,moving=1" );
@@ -6484,6 +6488,7 @@ void priest_t::apl_shadow()
   cop_mfi -> add_action( "divine_star,if=talent.divine_star.enabled&active_enemies>2&target.distance<=24" ); // TODO: Update enemies threshold after 6.1 is released
   cop_mfi -> add_action( "mind_sear,if=active_enemies>=6,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
   cop_mfi -> add_action( "mind_spike" );
+  cop_mfi -> add_action( "shadow_word_death,moving=1,if=!target.dot.shadow_word_pain.ticking&!target.dot.vampiric_touch.ticking,cycle_targets=1" );
   cop_mfi -> add_action( "shadow_word_death,moving=1,if=movement.remains>=1*gcd" );
   cop_mfi -> add_action( "power_word_shield,moving=1,if=talent.body_and_soul.enabled&movement.distance>=25" );
   cop_mfi -> add_action( "halo,if=talent.halo.enabled&target.distance<=30,moving=1" );
@@ -6522,6 +6527,7 @@ void priest_t::apl_shadow()
   cop -> add_action( "mind_sear,if=active_enemies>=3,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
   cop -> add_action( "mind_flay,if=target.dot.devouring_plague_tick.ticks_remain>1&active_enemies=1,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
   cop -> add_action( "mind_spike" );
+  cop -> add_action( "shadow_word_death,moving=1,if=!target.dot.shadow_word_pain.ticking&!target.dot.vampiric_touch.ticking,cycle_targets=1" );
   cop -> add_action( "shadow_word_death,moving=1,if=movement.remains>=1*gcd" );
   cop -> add_action( "power_word_shield,moving=1,if=talent.body_and_soul.enabled&movement.distance>=25" );
   cop -> add_action( "halo,moving=1,if=talent.halo.enabled&target.distance<=30" );
