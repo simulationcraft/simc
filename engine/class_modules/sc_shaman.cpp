@@ -2911,6 +2911,13 @@ struct fire_nova_explosion_t : public shaman_spell_t
     stats = player -> get_stats( "fire_nova" );
   }
 
+  void execute()
+  {
+    // The explosion has to regenerate target cache every time
+    target_cache.is_valid = false;
+    shaman_spell_t::execute();
+  }
+
   // Fire nova does not damage the main target.
   size_t available_targets( std::vector< player_t* >& tl ) const
   {
