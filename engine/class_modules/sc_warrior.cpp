@@ -1569,9 +1569,11 @@ struct colossus_smash_t: public warrior_attack_t
     warrior_attack_t::execute();
 
     if ( p() -> sets.has_set_bonus( WARRIOR_ARMS, T17, B4 ) )
-      p() -> resource_gain( RESOURCE_RAGE,
-      p() -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
-      p() -> gain.tier17_4pc_arms );
+    {
+      p() -> resource_gain( RESOURCE_RAGE, ( p() -> dbc.ptr ? 20 : // Fix
+        p() -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ) ),
+        p() -> gain.tier17_4pc_arms );
+    }
     if ( p() -> sets.set( WARRIOR_ARMS, T17, B2 ) )
       if ( p() -> buff.tier17_2pc_arms -> trigger() )
         p() -> proc.t17_2pc_arms -> occur();
