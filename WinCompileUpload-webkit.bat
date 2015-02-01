@@ -25,7 +25,7 @@ call start winscp /command "open downloads" "put %download%\%filename%.zip -nopr
 
 ::Webkit compilation.
 set install=simc-%simcversion%-win64
-set qt_dir=C:\Qt\5.4\msvc2013_64
+set qt_dir=C:\Qt\Qt5.4.1\5.4\msvc2013_64
 set redist="C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\x64\Microsoft.VC120.CRT"
 
 rd %install% /s /q
@@ -57,7 +57,7 @@ call start winscp /command "open downloads" "put %download%\%install%.exe -nopre
 
 set redist="C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\x86\Microsoft.VC120.CRT"
 set install=simc-%simcversion%-win32
-set qt_dir=C:\Qt\5.4\msvc2013
+set qt_dir=C:\Qt\Qt5.4.1\5.4\msvc2013
 "%MSBUILDDIR%msbuild.exe" E:\simulationcraft\simc_vs2013.sln /p:configuration=webkit /p:platform=win32 /nr:true /m:8
 
 robocopy %redist%\ %install%\ msvcp120.dll msvcr120.dll vccorlib120.dll

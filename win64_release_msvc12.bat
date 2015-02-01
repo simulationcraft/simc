@@ -4,10 +4,10 @@
 :: Qt-Framework is simply the Qt runtime dlls built against the MSVC 2013 compiler
 :: It can be found at: http://qt-project.org/downloads
 :: As of this writing, the default locations from which to gather the dlls are:
-:: Qt-Framework: C:\Qt\Qt5.4.0\
+:: Qt-Framework: C:\Qt\Qt5.4.1\
 
 :: Update the qt_dir as necessary
-set qt_dir=C:\Qt\5.4\msvc2013_64
+set qt_dir=C:\Qt\Qt5.4.1\msvc2013_64
 set redist="C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\x64\Microsoft.VC120.CRT"
 
 :: IMPORTANT NOTE FOR DEBUGGING
