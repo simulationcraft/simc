@@ -144,11 +144,11 @@ feet=sabatons_of_fractal_earth,id=113936,bonus_id=567
 finger1=seal_of_the_savage_howl,id=113940,bonus_id=567,enchant=gift_of_mastery
 finger2=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_mastery
 trinket1=vial_of_convulsive_shadows,id=113969,bonus_id=567
-trinket2=forgemasters_insignia,id=113983,bonus_id=567
+trinket2=horn_of_screaming_spirits,id=119193,bonus_id=567
 main_hand=thogars_control_rod,id=113953,bonus_id=567,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_strength=3876
+# gear_strength=3809
 # gear_stamina=4545
 # gear_crit_rating=1048
 # gear_haste_rating=809
