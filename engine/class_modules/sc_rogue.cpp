@@ -2903,7 +2903,9 @@ struct death_from_above_t : public rogue_attack_t
 
     timespan_t next_swing = attack -> execute_event -> remains();
     timespan_t initial_next_swing = next_swing;
-    while ( next_swing < oor_delay )
+    // Fit the next autoattack swing into a set of increasing 500ms values,
+    // which seems to be what is occurring with OOR+autoattacks in game.
+    while ( next_swing <= oor_delay )
     {
       next_swing += timespan_t::from_millis( 500 );
     }
@@ -2911,8 +2913,8 @@ struct death_from_above_t : public rogue_attack_t
     attack -> execute_event -> reschedule( next_swing );
     if ( sim -> debug )
     {
-      sim -> out_debug.printf( "%s %s swing pushback: orig_next=%.3f next=%.3f lands=%.3f",
-          player -> name(), name(), initial_next_swing.total_seconds(),
+      sim -> out_debug.printf( "%s %s swing pushback: oor_time=%.3f orig_next=%.3f next=%.3f lands=%.3f",
+          player -> name(), name(), oor_delay.total_seconds(), initial_next_swing.total_seconds(),
           next_swing.total_seconds(),
           attack -> execute_event -> occurs().total_seconds() );
     }
@@ -2923,12 +2925,12 @@ struct death_from_above_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     p() -> buffs.death_from_above -> trigger();
-/*
+
     timespan_t oor_delay = timespan_t::from_seconds( rng().gauss( 1.3, 0.025 ) );
 
     adjust_attack( player -> main_hand_attack, oor_delay );
     adjust_attack( player -> off_hand_attack, oor_delay );
-*/
+/*
     // Apparently DfA is out of range for ~0.8 seconds during the "attack", so
     // ensure that we have a swing timer of at least 800ms on both hands. Note
     // that this can sync autoattacks which also happens in game.
@@ -2943,7 +2945,7 @@ struct death_from_above_t : public rogue_attack_t
       if ( player -> off_hand_attack -> execute_event -> remains() < timespan_t::from_seconds( 0.8 ) )
         player -> off_hand_attack -> execute_event -> reschedule( timespan_t::from_seconds( 0.8 ) );
     }
-
+*/
     action_state_t* driver_state = driver -> get_state( execute_state );
     driver_state -> target = target;
     driver -> schedule_execute( driver_state );
