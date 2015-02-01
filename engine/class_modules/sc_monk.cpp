@@ -92,6 +92,7 @@ enum sef_ability_e {
   SEF_SPINNING_CRANE_KICK,
   SEF_RUSHING_JADE_WIND,
   SEF_HURRICANE_STRIKE,
+  SEF_CHI_EXPLOSION,
   SEF_ATTACK_MAX,
   // Attacks end here
 
@@ -655,7 +656,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     typedef BASE super_t;
     typedef sef_action_base_t<BASE> base_t;
 
-    action_t* source_action;
+    const action_t* source_action;
 
     sef_action_base_t( const std::string& n,
                        storm_earth_and_fire_pet_t* p,
@@ -788,6 +789,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       return source_action -> travel_time();
     }
+
+    int n_targets() const
+    { return source_action ? source_action -> n_targets() : super_t::n_targets(); }
 
     void schedule_execute( action_state_t* state = 0 )
     {
@@ -1237,6 +1241,85 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
+  struct sef_chi_explosion_t : public sef_melee_attack_t
+  {
+    struct sef_chi_explosion_dot_t: public residual_action::residual_periodic_action_t < melee_attack_t >
+    {
+      sef_chi_explosion_dot_t( storm_earth_and_fire_pet_t* p ):
+        residual_action_t( "chi_explosion_dot", p, p -> find_spell( 157680 ) )
+      {
+        may_miss = may_crit = false;
+        weapon_power_mod = 0;
+        school = SCHOOL_NATURE;
+      }
+    };
+
+    sef_chi_explosion_dot_t* dot;
+
+    sef_chi_explosion_t( storm_earth_and_fire_pet_t* player ) :
+      sef_melee_attack_t( "chi_explosion", player, player -> o() -> find_spell( 152174 ) ),
+      dot( new sef_chi_explosion_dot_t( player ) )
+    {
+      weapon_power_mod = 0;
+      school = SCHOOL_NATURE;
+    }
+
+    int n_targets() const
+    {
+      if ( source_action )
+      {
+        if ( source_action -> resource_consumed >= 4 )
+          return -1;
+      }
+
+      return 0;
+    }
+
+    // Chi explosion grabs the multiplier from the owner's current CHI, which
+    // is not correct as the attack is triggered after the owner Chi Explosion.
+    // This causes the current CHI of the owner to already be consumed when the
+    // SEF Chi Explosion executes. Thus, we divide the multiplier with the
+    // owner's current CHI status to eliminate the owner-specific CHI
+    // multiplier, and then use the owner's consumed Chi as the correct
+    // multiplier.
+    double composite_da_multiplier( const action_state_t* s ) const
+    {
+      double m = sef_melee_attack_t::composite_da_multiplier( s );
+
+      if ( o() -> resources.current[ RESOURCE_CHI ] > 0 )
+      {
+        m /= 1.0 + o() -> resources.current[ RESOURCE_CHI ];
+      }
+
+      m *= 1.0 + source_action -> resource_consumed;
+
+      return m;
+    }
+
+    // Damage must be divided on non-main target by the number of targets
+    double composite_aoe_multiplier( const action_state_t* state ) const
+    {
+      if ( state -> target != target )
+      {
+        return 1.0 / state -> n_targets;
+      }
+
+      return 1.0;
+    }
+
+    void impact( action_state_t* state )
+    {
+      sef_melee_attack_t::impact( state );
+
+      if ( result_is_hit_or_multistrike( state -> result ) &&
+           source_action -> resource_consumed >= 2 )
+      {
+        double amount = state -> result_amount * dot -> data().effectN( 2 ).percent();
+        residual_action::trigger( dot, state -> target, amount );
+      }
+    }
+  };
+
   struct sef_chi_wave_damage_t : public sef_spell_t
   {
     sef_chi_wave_damage_t( storm_earth_and_fire_pet_t* player ) :
@@ -1402,6 +1485,7 @@ public:
     attacks[ SEF_SPINNING_CRANE_KICK ] = new sef_spinning_crane_kick_t( this );
     attacks[ SEF_RUSHING_JADE_WIND   ] = new sef_rushing_jade_wind_t( this );
     attacks[ SEF_HURRICANE_STRIKE    ] = new sef_hurricane_strike_t( this );
+    attacks[ SEF_CHI_EXPLOSION       ] = new sef_chi_explosion_t( this );
 
     spells[ sef_spell_idx( SEF_CHI_WAVE )   ] = new sef_chi_wave_t( this );
     spells[ sef_spell_idx( SEF_ZEN_SPHERE ) ] = new sef_zen_sphere_t( this );
@@ -1450,7 +1534,7 @@ public:
     o() -> buff.storm_earth_and_fire -> decrement();
   }
 
-  void trigger_attack( sef_ability_e ability )
+  void trigger_attack( sef_ability_e ability, const action_t* source_action )
   {
     if ( ability >= SEF_SPELL_MIN )
     {
@@ -1458,8 +1542,9 @@ public:
       assert( spells[ spell ] );
 
       // If the owner targeted this pet's target, don't mirror the ability
-      if ( spells[ spell ] -> source_action -> target != target )
+      if ( source_action -> target != target )
       {
+        spells[ spell ] -> source_action = source_action;
         spells[ spell ] -> schedule_execute();
       }
     }
@@ -1467,8 +1552,9 @@ public:
     {
       assert( attacks[ ability ] );
 
-      if ( attacks[ ability ] -> source_action -> target != target )
+      if ( source_action -> target != target )
       {
+        attacks[ ability ] -> source_action = source_action;
         attacks[ ability ] -> schedule_execute();
       }
     }
@@ -1828,10 +1914,10 @@ public:
     }*/
     ab::execute();
 
-    trigger_storm_earth_and_fire();
+    trigger_storm_earth_and_fire( this );
   }
 
-  void trigger_storm_earth_and_fire()
+  void trigger_storm_earth_and_fire( const action_t* a )
   {
     if ( ! p() -> spec.storm_earth_and_fire -> ok() )
     {
@@ -1849,7 +1935,7 @@ public:
       {
         continue;
       }
-      p() -> pet.sef[ i ] -> trigger_attack( sef_ability );
+      p() -> pet.sef[ i ] -> trigger_attack( sef_ability, a );
     }
   }
 };
@@ -2315,6 +2401,7 @@ struct chi_explosion_t: public monk_melee_attack_t
     windwalker_chi_explosion_dot( p -> find_spell( 157680 ) )
   {
     parse_options( options_str );
+    sef_ability = SEF_CHI_EXPLOSION;
   }
 
 
@@ -2323,7 +2410,7 @@ struct chi_explosion_t: public monk_melee_attack_t
     if ( p() -> specialization() == MONK_BREWMASTER ||
          p() -> specialization() == MONK_WINDWALKER )
     {
-      if ( p() -> resources.current[ RESOURCE_CHI ] == 4 )
+      if ( p() -> resources.current[ RESOURCE_CHI ] >= 4 )
       {
         return -1;
       }
@@ -2415,6 +2502,8 @@ struct chi_explosion_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::consume_resource();
 
+    assert( resource_consumed > 0 );
+
     if ( p() -> buff.combo_breaker_ce -> up() )
     {
       player -> resource_gain( RESOURCE_CHI, p() -> buff.combo_breaker_ce -> data().effectN( 1 ).base_value(), p() -> gain.combo_breaker_ce, this );
@@ -2482,6 +2571,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     base_multiplier *= 10.56; // hardcoded into tooltip
+    sef_ability = SEF_RISING_SUN_KICK;
   }
 
   virtual void impact( action_state_t* s )
@@ -3500,8 +3590,18 @@ struct chi_torpedo_t: public monk_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    cooldown -> duration = p() -> talent.chi_torpedo -> charge_cooldown() - timespan_t::from_seconds( p() -> talent.celerity -> effectN( 4 ).base_value() );
-    cooldown -> charges = p() -> talent.chi_torpedo -> charges() + p() -> talent.celerity -> effectN( 3 ).base_value();
+    cooldown -> duration = p() -> talent.chi_torpedo -> charge_cooldown();
+    cooldown -> charges = p() -> talent.chi_torpedo -> charges();
+    if ( p() -> dbc.ptr )
+    {
+      cooldown -> duration += p() -> talent.celerity -> effectN( 1 ).time_value();
+      cooldown -> charges += p() -> talent.celerity -> effectN( 2 ).base_value();
+    }
+    else
+    { 
+      cooldown -> duration -= timespan_t::from_seconds( p() -> talent.celerity -> effectN( 4 ).base_value() );
+      cooldown -> charges += p() -> talent.celerity -> effectN( 3 ).base_value();
+    }
   }
 };
 
@@ -6002,9 +6102,10 @@ void monk_t::apl_combat_windwalker()
   def -> add_action( "auto_attack" );
 
   def -> add_action( "invoke_xuen" );
+
 // TODO: Will activate these lines once Storm, Earth, and Fire is finished; too spammy right now
-//  def -> add_action( "storm_earth_and_fire,target=2,if=debuff.storm_earth_and_fire_target.down&active_enemies>=2" );
-//  def -> add_action( "storm_earth_and_fire,target=3,if=debuff.storm_earth_and_fire_target.down&active_enemies>=3" );
+  def -> add_action( "storm_earth_and_fire,target=2,if=debuff.storm_earth_and_fire_target.down" );
+  def -> add_action( "storm_earth_and_fire,target=3,if=debuff.storm_earth_and_fire_target.down" );
   def -> add_action( "call_action_list,name=opener,if=talent.serenity.enabled&talent.chi_brew.enabled&cooldown.fists_of_fury.up&time<20" );
   def -> add_action( "chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4" );
 

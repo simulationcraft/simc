@@ -7312,6 +7312,7 @@ private:
   typedef Base ab; // typedef for the templated action type, spell_t, or heal_t
 public:
   typedef residual_periodic_action_t base_t;
+  typedef residual_periodic_action_t<Base> residual_action_t;
 
   template <typename T>
   residual_periodic_action_t( const std::string& n, T& p, const spell_data_t* s ) :
