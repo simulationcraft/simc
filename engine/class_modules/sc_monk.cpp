@@ -3590,8 +3590,18 @@ struct chi_torpedo_t: public monk_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    cooldown -> duration = p() -> talent.chi_torpedo -> charge_cooldown() - timespan_t::from_seconds( p() -> talent.celerity -> effectN( 4 ).base_value() );
-    cooldown -> charges = p() -> talent.chi_torpedo -> charges() + p() -> talent.celerity -> effectN( 3 ).base_value();
+    cooldown -> duration = p() -> talent.chi_torpedo -> charge_cooldown();
+    cooldown -> charges = p() -> talent.chi_torpedo -> charges();
+    if ( p() -> dbc.ptr )
+    {
+      cooldown -> duration += p() -> talent.celerity -> effectN( 1 ).time_value();
+      cooldown -> charges += p() -> talent.celerity -> effectN( 2 ).base_value();
+    }
+    else
+    { 
+      cooldown -> duration -= timespan_t::from_seconds( p() -> talent.celerity -> effectN( 4 ).base_value() );
+      cooldown -> charges += p() -> talent.celerity -> effectN( 3 ).base_value();
+    }
   }
 };
 
