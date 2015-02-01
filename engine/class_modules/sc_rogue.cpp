@@ -1768,6 +1768,7 @@ struct envenom_t : public rogue_attack_t
     weapon_multiplier = weapon_power_mod = 0.0;
     base_multiplier *= 1.05; // Hard-coded tooltip.
     base_dd_min = base_dd_max = 0;
+    proc_relentless_strikes_ = true;
   }
 
   void consume_resource()
