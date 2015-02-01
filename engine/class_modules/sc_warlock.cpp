@@ -5886,16 +5886,17 @@ void warlock_t::init_resources( bool force )
 
   if ( pets.active )
     pets.active -> init_resources( force );
+}
+
+void warlock_t::combat_begin()
+{
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
     buffs.demonic_calling -> trigger();
     demonic_calling_event = new ( *sim ) demonic_calling_event_t( this, rng().range( timespan_t::zero(),
       timespan_t::from_seconds( ( spec.wild_imps -> effectN( 1 ).period().total_seconds() + spec.imp_swarm -> effectN( 3 ).base_value() ) * composite_spell_speed() ) ) );
   }
-}
 
-void warlock_t::combat_begin()
-{
   player_t::combat_begin();
 }
 
