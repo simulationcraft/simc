@@ -55,6 +55,7 @@ talents=0020133
 Rogue_Assassination_T17H.simc
 Rogue_Combat_T17H.simc
 Rogue_Subtlety_T17H.simc
+talent_override=anticipation
 
 Shaman_Elemental_T17H.simc
 talents=0003013
