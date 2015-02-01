@@ -89,28 +89,28 @@ main_hand=fang_of_the_earth,id=113934,bonus_id=566,enchant=mark_of_shadowmoon
 off_hand=heart_of_the_clefthoof,id=113946,bonus_id=566
 save=Paladin_Holy_T17H.simc
 
-paladin="Paladin_Holy_T17H_DPS"
-level=100
-race=blood_elf
-role=spell
-position=back
-talents=1132232
-glyphs=holy_shock/harsh_words/merciful_wrath
-spec=holy
-head=lavadipped_greathelm,id=113894,bonus_id=567
-neck=choker_of_bloody_flame,id=120077,bonus_id=567,enchant_id=5320
-shoulders=pauldrons_of_guiding_light,id=115565,bonus_id=567
-back=runescribed_gronncloak,id=120078,bonus_id=567,enchant_id=5313
-chest=chestplate_of_arcane_volatility,id=113831,bonus_id=567
-wrists=bracers_of_visceral_force,id=119331,bonus_id=567
-hands=gauntlets_of_guiding_light,id=115567,bonus_id=567
-waist=ironcrushers_collar,id=113950,bonus_id=567
-legs=legplates_of_guiding_light,id=115569,bonus_id=567
-feet=iron_bellow_sabatons,id=113961,bonus_id=567
-finger1=spellbound_runic_band_of_infinite_preservation,id=118309,enchant_id=5327
-finger2=epicenter_loop,id=113947,bonus_id=567,enchant_id=5327
-trinket1=goren_soul_repository,id=119194,bonus_id=567
-trinket2=blackiron_micro_crucible,id=113984,bonus_id=567
-main_hand=koloch_na_the_blood_feast,id=113973,bonus_id=567,enchant_id=5334
-off_hand=enginestokers_lantern,id=113960,bonus_id=567
-save=Paladin_Holy_T17H_DPS.simc
+# paladin="Paladin_Holy_T17H_DPS"
+# level=100
+# race=blood_elf
+# role=spell
+# position=back
+# talents=1132232
+# glyphs=holy_shock/harsh_words/merciful_wrath
+# spec=holy
+# head=lavadipped_greathelm,id=113894,bonus_id=567
+# neck=choker_of_bloody_flame,id=120077,bonus_id=567,enchant_id=5320
+# shoulders=pauldrons_of_guiding_light,id=115565,bonus_id=567
+# back=runescribed_gronncloak,id=120078,bonus_id=567,enchant_id=5313
+# chest=chestplate_of_arcane_volatility,id=113831,bonus_id=567
+# wrists=bracers_of_visceral_force,id=119331,bonus_id=567
+# hands=gauntlets_of_guiding_light,id=115567,bonus_id=567
+# waist=ironcrushers_collar,id=113950,bonus_id=567
+# legs=legplates_of_guiding_light,id=115569,bonus_id=567
+# feet=iron_bellow_sabatons,id=113961,bonus_id=567
+# finger1=spellbound_runic_band_of_infinite_preservation,id=118309,enchant_id=5327
+# finger2=epicenter_loop,id=113947,bonus_id=567,enchant_id=5327
+# trinket1=goren_soul_repository,id=119194,bonus_id=567
+# trinket2=blackiron_micro_crucible,id=113984,bonus_id=567
+# main_hand=koloch_na_the_blood_feast,id=113973,bonus_id=567,enchant_id=5334
+# off_hand=enginestokers_lantern,id=113960,bonus_id=567
+# save=Paladin_Holy_T17H_DPS.simc
