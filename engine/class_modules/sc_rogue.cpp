@@ -129,6 +129,9 @@ struct rogue_t : public player_t
   actions::melee_t* melee_main_hand;
   actions::melee_t* melee_off_hand;
 
+  // Data collection
+  luxurious_sample_data_t* dfa_mh, *dfa_oh;
+
   // Buffs
   struct buffs_t
   {
@@ -365,6 +368,7 @@ struct rogue_t : public player_t
     active_main_gauche( 0 ),
     active_venomous_wound( 0 ),
     auto_attack( 0 ), melee_main_hand( 0 ), melee_off_hand( 0 ),
+    dfa_mh( 0 ), dfa_oh( 0 ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
@@ -2910,6 +2914,15 @@ struct death_from_above_t : public rogue_attack_t
       next_swing += timespan_t::from_millis( 500 );
     }
 
+    if ( attack == player -> main_hand_attack )
+    {
+      p() -> dfa_mh -> add( ( next_swing - oor_delay ).total_seconds() );
+    }
+    else if ( attack == player -> off_hand_attack )
+    {
+      p() -> dfa_oh -> add( ( next_swing - oor_delay ).total_seconds() );
+    }
+
     attack -> execute_event -> reschedule( next_swing );
     if ( sim -> debug )
     {
@@ -5263,6 +5276,11 @@ void rogue_t::init_procs()
     }
   }
 
+  if ( talent.death_from_above -> ok() )
+  {
+    dfa_mh = get_sample_data( "dfa_mh" );
+    dfa_oh = get_sample_data( "dfa_oh" );
+  }
 }
 
 // rogue_t::init_scaling ====================================================
@@ -5571,17 +5589,51 @@ public:
 
   }
 
-  virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
+  virtual void html_customsection( report::sc_html_stream& os ) override
   {
-    (void) p;
-    /*// Custom Class Section
-    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
-        << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
-        << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+    os << "<div class=\"player-section custom_section\">\n";
+    if ( p.talent.death_from_above -> ok() )
+    {
+      os << "<h3 class=\"toggle open\">Death from Above swing time loss</h3>\n"
+         << "<div class=\"toggle-content\">\n";
 
-    os << p.name();
+      os << "<p>";
+      os <<
+        "Death from Above causes out of range time for the Rogue while the"
+        " animation is performing. This out of range time translates to a"
+        " potential loss of auto-attack swing time. The following table"
+        " represents the total auto-attack swing time loss, when performing Death"
+        " from Above during the length of the combat. It is computed as the"
+        " interval between the out of range delay (an average of 1.3 seconds in"
+        " simc), and the next time the hand swings after the out of range delay"
+        " elapsed.";
+      os << "</p>";
+      os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n";
 
-    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
+      os << "<tr><th></th><th colspan=\"3\">Lost time per iteration (sec)</th></tr>";
+      os << "<tr><th>Weapon hand</th><th>Minimum</th><th>Average</th><th>Maximum</th></tr>";
+
+      os << "<tr>";
+      os << "<td class=\"left\">Main hand</td>";
+      os.printf("<td class=\"right\">%.3f</td>", p.dfa_mh -> min() );
+      os.printf("<td class=\"right\">%.3f</td>", p.dfa_mh -> mean() );
+      os.printf("<td class=\"right\">%.3f</td>", p.dfa_mh -> max() );
+      os << "</tr>";
+
+      os << "<tr>";
+      os << "<td class=\"left\">Off hand</td>";
+      os.printf("<td class=\"right\">%.3f</td>", p.dfa_oh -> min() );
+      os.printf("<td class=\"right\">%.3f</td>", p.dfa_oh -> mean() );
+      os.printf("<td class=\"right\">%.3f</td>", p.dfa_oh -> max() );
+      os << "</tr>";
+
+      os << "</table>";
+
+      os << "</div>\n";
+
+      os << "<div class=\"clear\"></div>\n";
+    }
+    os << "</div>\n";
   }
 private:
   rogue_t& p;
