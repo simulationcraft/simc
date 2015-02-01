@@ -214,12 +214,14 @@ static void format_double( std::string& buffer, double d, int min_width, int pre
     fraction = modf( d, &integer );
 
     // integer part (reverse order)
+    const size_t max_digits = 30;
+    size_t n_digits = 0;
     do
     {
       digit = modf( integer / 10.0, &integer );
       str += digits[ int((digit * 10.0) + 0.5) ];
     }
-    while( integer > 0.0 );
+    while( integer > 0.0 && ++n_digits < max_digits );
   }
 
   if( negative )
