@@ -498,7 +498,7 @@ player_t::player_t( sim_t*             s,
   // Actions
   use_default_action_list( 0 ),
   precombat_action_list( 0 ), active_action_list( 0 ), active_off_gcd_list( 0 ), restore_action_list( 0 ),
-  no_action_list_provided(),
+  no_action_list_provided(), use_apl( "" ),
   // Reporting
   quiet( false ),
   report_extension( new player_report_extension_t() ),
@@ -1951,6 +1951,9 @@ bool player_t::init_actions()
 
     skip_actions = util::string_split( action_list_skip, "/" );
   }
+
+  if ( ! use_apl.empty() )
+    copy_action_priority_list( "default", use_apl );
 
   if ( ! action_list_str.empty() )
     get_action_priority_list( "default" ) -> action_list_str = action_list_str;
@@ -5132,6 +5135,24 @@ void player_t::clear_action_priority_lists() const
   }
 }
 
+// player_t::copy_action_priority_lists() ==================================
+// Replaces "old_list" action_priority_list data with "new_list" action_priority_list data
+
+void player_t::copy_action_priority_list( const std::string& old_list, const std::string& new_list )
+{
+  action_priority_list_t* ol = find_action_priority_list( old_list );
+  action_priority_list_t* nl = find_action_priority_list( new_list );
+
+  if ( ol && nl )
+  {
+    ol -> action_list = nl -> action_list;
+    ol -> action_list_str = nl -> action_list_str;
+    ol -> foreground_action_list = nl -> foreground_action_list;
+    ol -> off_gcd_actions = nl -> off_gcd_actions;
+    ol -> random = nl -> random;
+  }
+}
+
 template <typename T>
 T* find_vector_member( const std::vector<T*>& list, const std::string& name )
 {
@@ -7674,6 +7695,28 @@ expr_t* player_t::create_expression( action_t* a,
     // FIXME: report error and return?
   }
 
+  else if ( splits[ 0 ] == "using_apl" && splits.size() == 2 )
+  {
+    struct use_apl_expr_t : public expr_t
+    {
+      bool is_match;
+      std::string apl_name;
+
+      use_apl_expr_t( player_t* p, const std::string& apl_str, const std::string& use_apl ) :
+        expr_t( "using_apl_" + apl_str ), apl_name( apl_str )
+      {
+        is_match = util::str_compare_ci( apl_str, use_apl );
+      }
+
+      double evaluate()
+      {
+        return is_match;
+      }
+    };
+
+    return new use_apl_expr_t( this, splits[ 1 ], use_apl );
+  }
+  
 
   else if ( splits.size() == 3 )
   {
@@ -8398,6 +8441,7 @@ void player_t::copy_from( player_t* source )
   glyphs_str = source -> glyphs_str;
   action_list_str = source -> action_list_str;
   alist_map = source -> alist_map;
+  use_apl = source -> use_apl;
 
   meta_gem = source -> meta_gem;
   for ( size_t i = 0; i < items.size(); i++ )
@@ -8596,6 +8640,7 @@ void player_t::create_options()
     // Misc
     add_option( opt_string( "skip_actions", action_list_skip ) );
     add_option( opt_string( "modify_action", modify_action ) );
+    add_option( opt_string( "use_apl", use_apl ) );
     add_option( opt_timespan( "reaction_time_mean", reaction_mean ) );
     add_option( opt_timespan( "reaction_time_stddev", reaction_stddev ) );
     add_option( opt_timespan( "reaction_time_nu", reaction_nu ) );
