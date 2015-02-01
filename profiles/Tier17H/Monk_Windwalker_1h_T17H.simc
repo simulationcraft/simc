@@ -25,6 +25,8 @@ actions.precombat+=/potion,name=draenic_agility
 
 actions=auto_attack
 actions+=/invoke_xuen
+actions+=/storm_earth_and_fire,target=2,if=debuff.storm_earth_and_fire_target.down
+actions+=/storm_earth_and_fire,target=3,if=debuff.storm_earth_and_fire_target.down
 actions+=/call_action_list,name=opener,if=talent.serenity.enabled&talent.chi_brew.enabled&cooldown.fists_of_fury.up&time<20
 actions+=/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4
 actions+=/potion,name=draenic_agility,if=buff.serenity.up|(!talent.serenity.enabled&trinket.proc.agility.react)

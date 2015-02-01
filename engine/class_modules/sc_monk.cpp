@@ -6092,9 +6092,10 @@ void monk_t::apl_combat_windwalker()
   def -> add_action( "auto_attack" );
 
   def -> add_action( "invoke_xuen" );
+
 // TODO: Will activate these lines once Storm, Earth, and Fire is finished; too spammy right now
-//  def -> add_action( "storm_earth_and_fire,target=2,if=debuff.storm_earth_and_fire_target.down&active_enemies>=2" );
-//  def -> add_action( "storm_earth_and_fire,target=3,if=debuff.storm_earth_and_fire_target.down&active_enemies>=3" );
+  def -> add_action( "storm_earth_and_fire,target=2,if=debuff.storm_earth_and_fire_target.down" );
+  def -> add_action( "storm_earth_and_fire,target=3,if=debuff.storm_earth_and_fire_target.down" );
   def -> add_action( "call_action_list,name=opener,if=talent.serenity.enabled&talent.chi_brew.enabled&cooldown.fists_of_fury.up&time<20" );
   def -> add_action( "chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4" );
 
