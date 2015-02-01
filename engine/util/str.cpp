@@ -142,6 +142,7 @@ static void format_double( std::string& buffer, double d, int min_width, int pre
 
   str.reserve( 32 );
 
+#ifndef __FAST_MATH__
   if( sc_isnan( d ) )
   {
     str         = "NaN";  // reverse
@@ -156,6 +157,7 @@ static void format_double( std::string& buffer, double d, int min_width, int pre
     if( d < 0 ) negative = true;
   }
   else
+#endif /* __FAST_MATH__ */
   {
     if( min_width == -1 ) min_width = 0;  // defaults
     if( precision == -1 ) precision = 6;
