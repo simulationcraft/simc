@@ -6408,6 +6408,11 @@ void death_knight_t::default_apl_blood()
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
   action_priority_list_t* def       = get_action_priority_list( "default"   );
+  action_priority_list_t* bt       = get_action_priority_list( "bt"   );
+  action_priority_list_t* re       = get_action_priority_list( "re"   );
+  action_priority_list_t* rc       = get_action_priority_list( "rc"   );
+  action_priority_list_t* nrt       = get_action_priority_list( "nrt"   );
+
 
   std::string srpct     = sets.has_set_bonus( SET_MELEE, T15, B4 ) ? "45" : "35";
   std::string flask_str = "flask,type=";
@@ -6478,13 +6483,41 @@ void death_knight_t::default_apl_blood()
     def -> add_action( this, "Plague Strike", "if=(!talent.necrotic_plague.enabled&!dot.blood_plague.ticking)|(talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking)" );
     def -> add_action( this, "Icy Touch", "if=(!talent.necrotic_plague.enabled&!dot.frost_fever.ticking)|(talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking)" );
     def -> add_talent( this, "Defile" );
-    def -> add_action( this, "Death Strike", "if=(unholy=2|frost=2)" );
-    def -> add_action( this, "Death Coil", "if=runic_power>70" );
-    def -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + srpct + "&blood>=1" );
-    def -> add_action( this, "Blood Boil", "if=blood=2" );
-    def -> add_talent( this, "Blood Tap" );
+    def -> add_talent( this, "Plague Leech", "if=((!blood&!unholy)|(!blood&!frost)|(!unholy&!frost))&cooldown.outbreak.remains<=gcd" );
+    def -> add_action( "call_action_list,name=bt,if=talent.blood_tap.enabled" );
+    def -> add_action( "call_action_list,name=re,if=talent.runic_empowerment.enabled" );
+    def -> add_action( "call_action_list,name=rc,if=talent.runic_corruption.enabled" );
+    def -> add_action( "call_action_list,name=nrt,if=!talent.blood_tap.enabled&!talent.runic_empowerment.enabled&!talent.runic_corruption.enabled" );
+    def -> add_talent( this, "Defile", "if=buff.crimson_scourge.react" );
+    def -> add_action( this, "Death and Decay", "if=buff.crimson_scourge.react" );
+    def -> add_action( this, "Blood Boil", "if=buff.crimson_scourge.react" );
     def -> add_action( this, "Death Coil" );
     def -> add_action( this, "Empower Rune Weapon", "if=!blood&!unholy&!frost" );
+
+    bt -> add_action( this, "Death Strike", "if=unholy=2|frost=2" );
+    bt -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=5&!blood" );
+    bt -> add_action( this, "Death Strike", "if=buff.blood_charge.stack>=10&unholy&frost" );
+    bt -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=10&!unholy&!frost" );
+    bt -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=5&(!unholy|!frost)" );
+    bt -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=5&blood.death&!unholy&!frost" );
+    bt -> add_action( this, "Death Coil", "if=runic_power>70" );
+    bt -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35&(blood=2|(blood&!blood.death))" );
+    bt -> add_action( this, "Blood Boil", "if=blood=2|(blood&!blood.death)" );
+
+    rc -> add_action( this, "Death Strike", "if=unholy=2|frost=2" );
+    rc -> add_action( this, "Death Coil", "if=runic_power>70" );
+    rc -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35&blood>=1" );
+    rc -> add_action( this, "Blood Boil", "if=blood=2" );
+
+    re -> add_action( this, "Death Strike", "if=unholy&frost" );
+    re -> add_action( this, "Death Coil", "if=runic_power>70" );
+    re -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35&blood>=1" );
+    re -> add_action( this, "Blood Boil", "if=blood=2" );
+
+    nrt -> add_action( this, "Death Strike", "if=unholy=2|frost=2" );
+    nrt -> add_action( this, "Death Coil", "if=runic_power>70" );
+    nrt -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35&blood>=1" );
+    nrt -> add_action( this, "Blood Boil", "if=blood>=1" );
   }
   else
   {
