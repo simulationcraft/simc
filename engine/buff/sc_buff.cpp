@@ -1454,7 +1454,16 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
         amount = util::round( effect.average( player, std::min( MAX_LEVEL, player -> level ) ) );
 
       if ( effect.subtype() == A_MOD_STAT )
-        s = static_cast< stat_e >( effect.misc_value1() + 1 );
+      {
+        if ( effect.misc_value1() >= 0 )
+        {
+          s = static_cast< stat_e >( effect.misc_value1() + 1 );
+        }
+        else if ( effect.misc_value1() == -1 )
+        {
+          s = STAT_ALL;
+        }
+      }
       else if ( effect.subtype() == A_MOD_RATING )
       {
         std::vector<stat_e> k = util::translate_all_rating_mod( effect.misc_value1() );

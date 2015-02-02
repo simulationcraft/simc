@@ -193,24 +193,61 @@ const food_data_t food_data[] =
   { FOOD_TALADOR_SURF_AND_TURF,        STAT_STAMINA,            112 },
 };
 
-struct flask_t : public action_t
+struct flask_base_t : public action_t
 {
-  buff_t* buff;
   gain_t* gain;
+
+  flask_base_t( player_t* p, const std::string& action_name_str ) :
+    action_t( ACTION_USE, action_name_str, p ),
+    gain( p -> get_gain( action_name_str ) )
+  {
+    harmful = callbacks = false;
+
+    trigger_gcd = timespan_t::zero();
+  }
+
+  virtual void execute()
+  {
+    if ( sim -> log )
+      sim -> out_log.printf( "%s performs %s", player -> name(), player -> consumables.flask -> name() );
+
+    player -> consumables.flask -> trigger();
+  }
+
+  virtual bool ready()
+  {
+    if ( ! player -> sim -> allow_flasks )
+      return false;
+
+    if ( ! player -> consumables.flask )
+      return false;
+
+    if ( player -> consumables.flask && player -> consumables.flask -> check() )
+      return false;
+
+    if ( player -> consumables.battle_elixir && player -> consumables.battle_elixir -> check() )
+      return false;
+
+    if( player -> consumables.guardian_elixir && player -> consumables.guardian_elixir -> check() )
+      return false;
+
+    return action_t::ready();
+  }
+};
+
+struct flask_t : public flask_base_t
+{
   std::string flask_name;
   bool alchemist;
 
   flask_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_USE, "flask", p ),
-    buff( 0 ), gain( p -> get_gain( "flask" ) ), alchemist( false )
+    flask_base_t( p, "flask" ),
+    alchemist( false )
   {
     std::string type_str;
 
     add_option( opt_string( "type", type_str ) );
     parse_options( options_str );
-
-    trigger_gcd = timespan_t::zero();
-    harmful = false;
 
     const item_data_t* item;
     for ( item = dbc::items( maybe_ptr( p -> dbc.ptr ) ); item -> id != 0; item++ )
@@ -292,9 +329,6 @@ struct flask_t : public action_t
 
   virtual void execute()
   {
-    if ( sim -> log )
-      sim -> out_log.printf( "%s performs %s", player -> name(), player -> consumables.flask -> name() );
-
     if ( alchemist )
     {
       double v = player -> consumables.flask -> data().effectN( 1 ).average( player );
@@ -322,27 +356,7 @@ struct flask_t : public action_t
         player -> consumables.flask -> stats[ 2 ].amount = v;
     }
 
-    player -> consumables.flask -> trigger();
-  }
-
-  virtual bool ready()
-  {
-    if ( ! player -> sim -> allow_flasks )
-      return false;
-
-    if ( ! player -> consumables.flask )
-      return false;
-
-    if ( player -> consumables.flask &&  player -> consumables.flask -> check() )
-      return false;
-
-    if ( player -> consumables.battle_elixir && player -> consumables.battle_elixir -> check() )
-      return false;
-
-    if( player -> consumables.guardian_elixir && player -> consumables.guardian_elixir -> check() )
-      return false;
-
-    return action_t::ready();
+    flask_base_t::execute();
   }
 };
 
@@ -941,6 +955,38 @@ struct augmentation_t : public action_t
   }
 };
 
+// Misc consumables
+
+struct oralius_whispering_crystal_t : public flask_base_t
+{
+  oralius_whispering_crystal_t( player_t* p, const std::string& options_str ) :
+    flask_base_t( p, "oralius_whispering_crystal" )
+  {
+    parse_options( options_str );
+
+    const spell_data_t* spell = p -> find_spell( 176151 );
+
+    std::string buff_name = spell -> name_cstr();
+    util::tokenize( buff_name );
+    p -> consumables.flask = stat_buff_creator_t( p, buff_name, spell );
+  }
+};
+
+struct crystal_of_insanity_t : public flask_base_t
+{
+  crystal_of_insanity_t( player_t* p, const std::string& options_str ) :
+    flask_base_t( p, "crystal_of_insanity" )
+  {
+    parse_options( options_str );
+
+    const spell_data_t* spell = p -> find_spell( 127230 );
+
+    std::string buff_name = spell -> name_cstr();
+    util::tokenize( buff_name );
+    p -> consumables.flask = stat_buff_creator_t( p, buff_name, spell );
+  }
+};
+
 } // END UNNAMED NAMESPACE
 
 // ==========================================================================
@@ -958,6 +1004,10 @@ action_t* consumable::create_action( player_t*          p,
   if ( name == "health_stone"         ) return new health_stone_t( p, options_str );
   if ( name == "mana_potion"          ) return new  mana_potion_t( p, options_str );
   if ( name == "augmentation"         ) return new augmentation_t( p, options_str );
+
+  // Misc consumables
+  if ( name == "oralius_whispering_crystal" ) return new oralius_whispering_crystal_t( p, options_str );
+  if ( name == "crystal_of_insanity" ) return new crystal_of_insanity_t( p, options_str );
 
   return 0;
 }
