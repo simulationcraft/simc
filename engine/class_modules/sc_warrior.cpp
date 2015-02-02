@@ -5471,7 +5471,7 @@ void warrior_t::assess_damage( school_e school,
     }
   }
 
-  if ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY )
+  if ( ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY ) && active_stance == STANCE_DEFENSE )
     cooldown.revenge -> reset( true );
 
   if ( s -> result == RESULT_PARRY && buff.die_by_the_sword -> up() && glyphs.drawn_sword )
