@@ -399,8 +399,8 @@ public:
     cooldown.storm_bolt               = get_cooldown( "storm_bolt" );
 
     initial_rage = 0;
-    arms_rage_mult = 1.695;
-    crit_rage_mult = 2.325;
+    arms_rage_mult = 1.7;
+    crit_rage_mult = 2.285;
     swapping = false;
     gladiator = true; //Gladiator until proven otherwise.
     base.distance = 5.0;
@@ -811,7 +811,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   {
     // WoD: base rage gain is 3.5 * weaponspeed and half that for off-hand
     // Defensive/Gladiator stance: -100%
-    // Arms warriors get 1.695 times the rage per swing, and 2.325 times more rage on a crit.
+    // Arms warriors get 1.7 times the rage per swing, and 2.285 times more rage on a crit./3
     // They get 10 rage while in defensive stance, 20 on a crit.
 
     if ( p() -> active_stance != STANCE_BATTLE && p() -> specialization() != WARRIOR_ARMS )
@@ -1792,12 +1792,19 @@ struct execute_t: public warrior_attack_t
 
 struct hamstring_t: public warrior_attack_t
 {
+  double anger_management_rage;
   hamstring_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "hamstring", p, p -> find_class_spell( "Hamstring" ) )
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     weapon = &( p -> main_hand_weapon );
+    anger_management_rage = 5.0; // Hamstring reduces AM by 5 rage, not 10.
+  }
+
+  void anger_management( double )
+  {
+    base_t::anger_management( anger_management_rage );
   }
 };
 
