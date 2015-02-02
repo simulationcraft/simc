@@ -2328,7 +2328,6 @@ struct black_arrow_t: public hunter_ranged_attack_t
 struct freezing_trap_t: public hunter_ranged_attack_t
 {
   gain_t* freezing_trap_gain;
-
   freezing_trap_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "freezing_trap", player, player -> find_class_spell( "Freezing Trap" ) )
   {
@@ -2348,7 +2347,7 @@ struct freezing_trap_t: public hunter_ranged_attack_t
   virtual void impact( action_state_t* s )
   {
     hunter_ranged_attack_t::impact( s );
-    if ( p() -> sets.has_set_bonus( p() -> specialization(), PVP, B2 ) )
+    if ( p() -> sets.has_set_bonus( p() -> specialization(), PVP, B2 ) && result_is_hit( s -> result ) )
     {
       int focus = p() -> sets.set( p() -> specialization(), PVP, B2 ) ->  effectN( 1 ).trigger() -> effectN( 1 ).base_value();
       p() -> resource_gain( RESOURCE_FOCUS, focus, freezing_trap_gain );
@@ -2422,7 +2421,7 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
     frost( NULL ), nature( NULL )
   {
     parse_options( options_str );
-    callbacks = false;
+    callbacks = may_multistrike = false;
     aoe = 2;
     frost = new chimaera_shot_impact_t( player, "chimaera_shot_frost", player -> find_spell( 171454 ) );
     add_child( frost );

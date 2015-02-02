@@ -2672,7 +2672,7 @@ struct savage_roar_t : public cat_attack_t
     cat_attack_t( "savage_roar", p, p -> find_specialization_spell( "Savage Roar" ), options_str )
   {
     base_costs[ RESOURCE_COMBO_POINT ] = 1;
-    may_miss = harmful = false;
+    may_multistrike = may_crit = may_miss = harmful = false;
     dot_duration  = timespan_t::zero();
     base_tick_time = timespan_t::zero();
 

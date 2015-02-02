@@ -4736,7 +4736,7 @@ struct guard_t: public monk_absorb_t
     stats -> add_result( 0.0, s -> result_amount, ABSORB, s -> result, s -> block_result, s -> target );
   }
 };
-} // end namespace asborbs
+} // end namespace absorbs
 
 using namespace attacks;
 using namespace spells;

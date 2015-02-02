@@ -3484,7 +3484,7 @@ struct meteor_t : public mage_spell_t
     add_option( opt_int( "targets", targets ) );
     parse_options( options_str );
 
-    callbacks = false;
+    callbacks = may_multistrike = false;
     add_child( meteor_impact );
     dot_duration = timespan_t::zero();
     school = SCHOOL_FIRE;
