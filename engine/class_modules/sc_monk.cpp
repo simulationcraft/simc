@@ -1819,9 +1819,10 @@ public:
     if ( p() -> spec.brewing_tigereye_brew -> ok() )
     {
       int stacks = static_cast<int>( base_stacks );
+      double mastery = p() -> cache.mastery_value();
       // Look through each ability stack and test against mastery value for extra stack
       for ( int x = 0; x < base_stacks; ++x ){
-        stacks += ( ab::rng().roll( p() -> cache.mastery_value() ) ) ? 1 : 0;
+        stacks += ( ab::rng().roll( mastery ) ) ? std::floor( mastery ) + 1 : 0;
       }
       p() -> buff.tigereye_brew -> trigger( stacks );
     }
