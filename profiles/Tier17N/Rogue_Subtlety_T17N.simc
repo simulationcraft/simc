@@ -71,7 +71,7 @@ actions.generator+=/run_action_list,name=pool
 
 # Combo point finishers
 
-actions.finisher=rupture,cycle_targets=1,if=(!ticking|remains<duration*0.3)&active_enemies<=8&(!talent.shadow_reflections.enabled|(buff.shadow_reflection.remains>8&dot.rupture.remains<12&buff.shadow_reflection.remains<10))&target.time_to_die>=8
+actions.finisher=rupture,cycle_targets=1,if=!ticking|remains<duration*0.3|(buff.shadow_reflection.remains>8&dot.rupture.remains<12)&target.time_to_die>=8
 actions.finisher+=/slice_and_dice,if=(buff.slice_and_dice.remains<10.8)&buff.slice_and_dice.remains<target.time_to_die
 actions.finisher+=/death_from_above
 actions.finisher+=/crimson_tempest,if=(active_enemies>=2&debuff.find_weakness.down)|active_enemies>=3&(cooldown.death_from_above.remains>0|!talent.death_from_above.enabled)
