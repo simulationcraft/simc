@@ -6511,7 +6511,7 @@ void death_knight_t::default_apl_blood()
 
     re -> add_action( this, "Death Strike", "if=unholy&frost" );
     re -> add_action( this, "Death Coil", "if=runic_power>70" );
-    re -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35&blood>=1" );
+    re -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35&blood=2" );
     re -> add_action( this, "Blood Boil", "if=blood=2" );
 
     nrt -> add_action( this, "Death Strike", "if=unholy=2|frost=2" );

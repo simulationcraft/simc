@@ -72,7 +72,7 @@ actions.bt+=/blood_boil,if=blood=2|(blood&!blood.death)
 
 actions.re=death_strike,if=unholy&frost
 actions.re+=/death_coil,if=runic_power>70
-actions.re+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35&blood>=1
+actions.re+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35&blood=2
 actions.re+=/blood_boil,if=blood=2
 
 actions.rc=death_strike,if=unholy=2|frost=2
