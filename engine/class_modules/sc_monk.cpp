@@ -1820,9 +1820,11 @@ public:
     {
       int stacks = static_cast<int>( base_stacks );
       double mastery = p() -> cache.mastery_value();
+      int whole = static_cast<int>( mastery );
+      double partial = ( whole > 0 ? whole - mastery : mastery );
       // Look through each ability stack and test against mastery value for extra stack
       for ( int x = 0; x < base_stacks; ++x ){
-        stacks += ( ab::rng().roll( mastery ) ) ? std::floor( mastery ) + 1 : 0;
+        stacks += whole + ( ab::rng().roll( partial ) ) ? 1 : 0;
       }
       p() -> buff.tigereye_brew -> trigger( stacks );
     }
