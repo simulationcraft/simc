@@ -2696,11 +2696,14 @@ struct savage_roar_t : public cat_attack_t
     return d;
   }
 
-  virtual void impact( action_state_t* state )
+  virtual void execute()
   {
-    cat_attack_t::impact( state );
+    // Grab duration before we go and spend all of our combo points.
+    timespan_t d = duration();
 
-    p() -> buff.savage_roar -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration() );
+    cat_attack_t::execute();
+
+    p() -> buff.savage_roar -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
   }
 
   virtual bool ready()
@@ -4616,6 +4619,7 @@ struct growl_t: public druid_spell_t
   {
     parse_options( options_str );
     ignore_false_positive = true;
+    may_crit = false;
     use_off_gcd = true;
   }
 
