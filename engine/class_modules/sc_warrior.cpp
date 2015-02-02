@@ -400,7 +400,7 @@ public:
 
     initial_rage = 0;
     arms_rage_mult = 1.7;
-    crit_rage_mult = 2.285;
+    crit_rage_mult = 2.3;
     swapping = false;
     gladiator = true; //Gladiator until proven otherwise.
     base.distance = 5.0;
@@ -811,7 +811,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   {
     // WoD: base rage gain is 3.5 * weaponspeed and half that for off-hand
     // Defensive/Gladiator stance: -100%
-    // Arms warriors get 1.7 times the rage per swing, and 2.285 times more rage on a crit./3
+    // Arms warriors get 1.7 times the rage per swing, and 2.3 times more rage on a crit./3
     // They get 10 rage while in defensive stance, 20 on a crit.
 
     if ( p() -> active_stance != STANCE_BATTLE && p() -> specialization() != WARRIOR_ARMS )
