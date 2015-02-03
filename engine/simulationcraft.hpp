@@ -1290,6 +1290,7 @@ bool str_prefix_ci ( const std::string& str, const std::string& prefix );
 double floor( double X, unsigned int decplaces = 0 );
 double ceil( double X, unsigned int decplaces = 0 );
 double round( double X, unsigned int decplaces = 0 );
+double get_avg_itemlvl( const player_t* p );
 
 std::string& tolower( std::string& str );
 
@@ -2774,6 +2775,7 @@ struct sim_t : private sc_thread_t
   int global_item_upgrade_level;
   bool maximize_reporting;
   std::string apikey;
+  bool ilevel_raid_report;
 
   sim_report_information_t report_information;
 

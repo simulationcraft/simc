@@ -1021,6 +1021,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   global_item_upgrade_level( 0 ),
   maximize_reporting( false ),
   apikey( "" ),
+  ilevel_raid_report( false ),
   report_information(),
   // Multi-Threading
   threads( 0 ), thread_index( index ), thread_priority( sc_thread_t::NORMAL ),
@@ -2741,6 +2742,7 @@ void sim_t::create_options()
   add_option( opt_bool( "monitor_cpu", event_mgr.monitor_cpu ) );
   add_option( opt_func( "maximize_reporting", parse_maximize_reporting ) );
   add_option( opt_string( "apikey", apikey ) );
+  add_option( opt_bool( "ilevel_raid_report", ilevel_raid_report ) );
   add_option( opt_int( "global_item_upgrade_level", global_item_upgrade_level ) );
   add_option( opt_int( "wowhead_tooltips", wowhead_tooltips ) );
 }

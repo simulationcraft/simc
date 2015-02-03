@@ -2589,6 +2589,29 @@ std::string util::google_image_chart_encode( const std::string& str )
   return temp;
 }
 
+// get_avg_itemlvl ==========================================================
+
+double util::get_avg_itemlvl( const player_t* p )
+{
+  double avg_ilvl = 0.0;
+  int num_ilvl_items = 0;
+  for ( size_t i = 0; i < p->items.size(); i++ )
+  {
+    const item_t& item = p->items[i];
+    if ( item.slot != SLOT_SHIRT && item.slot != SLOT_TABARD
+        && item.slot != SLOT_RANGED && item.active() )
+    {
+      avg_ilvl += item.item_level();
+      num_ilvl_items++;
+    }
+  }
+
+  if ( num_ilvl_items > 1 )
+    avg_ilvl /= num_ilvl_items;
+
+  return avg_ilvl;
+}
+
 // create_blizzard_talent_url ===============================================
 
 std::string util::create_blizzard_talent_url( const player_t* p )

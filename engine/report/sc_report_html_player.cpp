@@ -991,29 +991,9 @@ int print_html_action_resource( report::sc_html_stream& os, stats_t* s, int j )
   return j;
 }
 
-double get_avg_itemlvl( const player_t* p )
-{
-  double avg_ilvl = 0.0;
-  int num_ilvl_items = 0;
-  for ( size_t i = 0; i < p->items.size(); i++ )
-  {
-    const item_t& item = p->items[i];
-    if ( item.slot != SLOT_SHIRT && item.slot != SLOT_TABARD
-        && item.slot != SLOT_RANGED && item.active() )
-    {
-      avg_ilvl += item.item_level();
-      num_ilvl_items++;
-    }
-  }
-
-  if ( num_ilvl_items > 1 )
-    avg_ilvl /= num_ilvl_items;
-
-  return avg_ilvl;
-}
 // print_html_gear ==========================================================
 
-void print_html_gear ( report::sc_html_stream& os, player_t* p )
+void print_html_gear( report::sc_html_stream& os, player_t* p )
 {
   if ( p -> items.empty() )
     return;
@@ -1028,7 +1008,7 @@ void print_html_gear ( report::sc_html_stream& os, player_t* p )
     "<th>Slot</th>\n"
     "<th>Average Item Level: %.2f</th>\n"
     "</tr>\n",
-    get_avg_itemlvl( p ) );
+     util::get_avg_itemlvl( p ) );
 
   for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
   {
