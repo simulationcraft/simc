@@ -35,14 +35,15 @@ struct warrior_t: public player_t
 {
 public:
   int initial_rage;
-  double arms_rage_mult;
-  double crit_rage_mult;
+  double base_rage_generation;
+  double arms_battle_stance;
+  double arms_defensive_stance;
+  double battle_stance;
   bool swapping; // Disables automated swapping when it's not required to use the ability.
   // Set to true whenever a player uses the swap option inside of stance_t, as we should assume they are intentionally sitting in defensive stance.
   // Also set to true whenever gladiator's resolve is talented.
   bool gladiator; //Check a bunch of crap to see if this guy wants to be gladiator dps or not.
 
-  simple_sample_data_t shield_charge_damage;
   // Active
   action_t* active_blood_craze;
   action_t* active_bloodbath_dot;
@@ -399,8 +400,10 @@ public:
     cooldown.storm_bolt               = get_cooldown( "storm_bolt" );
 
     initial_rage = 0;
-    arms_rage_mult = 1.7;
-    crit_rage_mult = 2.3;
+    base_rage_generation = 1.75;
+    arms_battle_stance = 3.40;
+    arms_defensive_stance = 1.60;
+    battle_stance = 2.00; //Base rage generation is 100%, normal battle stance increases it to 200%.
     swapping = false;
     gladiator = true; //Gladiator until proven otherwise.
     base.distance = 5.0;
@@ -462,12 +465,6 @@ public:
   virtual stat_e     convert_hybrid_stat( stat_e s ) const;
   virtual void       assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void       copy_from( player_t* source );
-  virtual void       merge( player_t& other ) override
-  {
-    warrior_t& other_p = dynamic_cast<warrior_t&>( other );
-    shield_charge_damage.merge( other_p.shield_charge_damage );
-    player_t::merge( other );
-  }
 
   // Custom Warrior Functions
   void enrage();
@@ -809,36 +806,32 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
 
   void trigger_rage_gain( action_state_t* s )
   {
-    // WoD: base rage gain is 3.5 * weaponspeed and half that for off-hand
-    // Defensive/Gladiator stance: -100%
-    // Arms warriors get 1.7 times the rage per swing, and 2.3 times more rage on a crit./3
-    // They get 10 rage while in defensive stance, 20 on a crit.
-
     if ( p() -> active_stance != STANCE_BATTLE && p() -> specialization() != WARRIOR_ARMS )
       return;
 
     weapon_t*  w = weapon;
-    double rage_gain = 3.5 * w -> swing_time.total_seconds();
+    double rage_gain = w -> swing_time.total_seconds() * p() -> base_rage_generation;
 
     if ( p() -> specialization() == WARRIOR_ARMS )
     {
       if ( p() -> active_stance == STANCE_BATTLE )
-        rage_gain *= p() -> arms_rage_mult;
-      else
-        rage_gain = 10;
-
-      if ( s -> result == RESULT_CRIT )
       {
-        if ( p() -> active_stance == STANCE_BATTLE )
-          rage_gain *= p() -> crit_rage_mult;
+        if ( s -> result == RESULT_CRIT )
+          rage_gain *= rng().range( 7.4375, 7.875 ); // Wild random numbers appear! Accurate as of 2015/02/02
         else
-          rage_gain *= 2;
+          rage_gain *= p() -> arms_battle_stance;
       }
+      else
+        rage_gain *= p() -> arms_defensive_stance;
     }
-    else if ( w -> slot == SLOT_OFF_HAND )
-      rage_gain /= 2.0;
+    else
+    {
+      rage_gain *= p() -> battle_stance;
+      if ( w -> slot == SLOT_OFF_HAND )
+        rage_gain *= 0.5;
+    }
 
-    rage_gain = util::floor( rage_gain, 1 );
+    rage_gain = util::round( rage_gain, 1 );
 
     if ( p() -> specialization() == WARRIOR_ARMS && s -> result == RESULT_CRIT )
     {
@@ -1846,17 +1839,6 @@ struct heroic_strike_t: public warrior_attack_t
     base_t::anger_management( anger_management_rage ); // However, unyielding strikes grants cooldown reduction based on the original cost of heroic strike.
   }
 
-  void assess_damage( dmg_e type, action_state_t* s )
-  {
-    warrior_attack_t::assess_damage( type, s );
-
-    if ( p() -> buff.shield_charge -> check() && s -> result_amount > 0 )
-    {
-      double original_damage = s -> result_amount;
-      p() -> shield_charge_damage.add( original_damage );
-    }
-  }
-
   double cost() const
   {
     double c = warrior_attack_t::cost();
@@ -2292,17 +2274,6 @@ struct revenge_t: public warrior_attack_t
     }
   }
 
-  void assess_damage( dmg_e type, action_state_t* s )
-  {
-    warrior_attack_t::assess_damage( type, s );
-
-    if ( p() -> buff.shield_charge -> check() && s -> result_amount > 0 )
-    {
-      double original_damage = s -> result_amount;
-      p() -> shield_charge_damage.add( original_damage );
-    }
-  }
-
   bool ready()
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
@@ -2584,17 +2555,6 @@ struct shield_slam_t: public warrior_attack_t
     }
 
     return c;
-  }
-
-  void assess_damage( dmg_e type, action_state_t* s )
-  {
-    warrior_attack_t::assess_damage( type, s );
-
-    if ( p() -> buff.shield_charge -> check() && s -> result_amount > 0 )
-    {
-      double original_damage = s -> result_amount;
-      p() -> shield_charge_damage.add( original_damage );
-    }
   }
 
   void execute()
@@ -5522,8 +5482,6 @@ void warrior_t::create_options()
   player_t::create_options();
 
   add_option( opt_int( "initial_rage", initial_rage ) );
-  add_option( opt_float( "arms_rage_mult", arms_rage_mult ) );
-  add_option( opt_float( "crit_rage_mult", crit_rage_mult ) );
   add_option( opt_bool( "swapping", swapping ) );
 }
 
@@ -5610,8 +5568,6 @@ void warrior_t::copy_from( player_t* source )
 
   initial_rage = p -> initial_rage;
   swapping = p -> swapping;
-  arms_rage_mult = p -> arms_rage_mult;
-  crit_rage_mult = p -> crit_rage_mult;
 }
 
 void warrior_t::stance_swap()
@@ -5686,29 +5642,17 @@ public:
     p( player )
   {}
 
-  virtual void html_customsection( report::sc_html_stream& os ) override
+  virtual void html_customsection( report::sc_html_stream& /*os*/ ) override
   {
-    double all_damage = p.collected_data.dps.sum();
-    double shield_charge_dmg = p.shield_charge_damage.sum();
-
-    // Custom Class Section
+    (void)p;
+    /*// Custom Class Section
     os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
-      << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
-      << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+    << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
+    << "\t\t\t\t\t<div class=\"toggle-content\">\n";
 
-    os << p.name() << "\n<br>";
-    os << "\t\t\t\t\t<p>Overall DPS</p>\n";
-    os << p.collected_data.dps.mean() << "</p>\n";
+    os << p.name();
 
-    if ( shield_charge_dmg > 0 )
-    {
-      os << "\t\t\t\t\t<p> DPS occuring inside of shield charge + benefiting from shield charge </p>\n";
-      os << ( ( shield_charge_dmg / all_damage ) * p.collected_data.dps.mean() ) << "</p>\n";
-
-      os << "\t\t\t\t\t<p> Percentage of overall damage </p>\n";
-      os << ( ( shield_charge_dmg / all_damage ) * 100 ) << "</p>\n";
-    }
-    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";
+    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
   }
 private:
   warrior_t& p;
