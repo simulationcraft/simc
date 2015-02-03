@@ -1528,6 +1528,11 @@ struct colossus_smash_t: public warrior_attack_t
     base_costs[RESOURCE_RAGE] *= 1.0 + p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 2 ).percent();
   }
 
+  double target_armor( player_t* t ) const
+  {
+    return ab::target_armor( t ); // Skip warrior target armor so that multistrikes from colossus smash do not benefit from colossus smash.
+  } // If they ever bring back a resetting colossus smash, this will need to be adjusted.
+
   void execute()
   {
     warrior_attack_t::execute();
