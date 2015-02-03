@@ -1530,7 +1530,7 @@ struct colossus_smash_t: public warrior_attack_t
 
   double target_armor( player_t* t ) const
   {
-    return ab::target_armor( t ); // Skip warrior target armor so that multistrikes from colossus smash do not benefit from colossus smash.
+    return attack_t::target_armor( t ); // Skip warrior target armor so that multistrikes from colossus smash do not benefit from colossus smash.
   } // If they ever bring back a resetting colossus smash, this will need to be adjusted.
 
   void execute()
