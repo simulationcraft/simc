@@ -16,7 +16,7 @@ level=100
 race=blood_elf
 role=attack
 position=back
-talents=3000023
+talents=3000032
 glyphs=vendetta/energy/disappearance
 spec=assassination
 head=poisoners_helmet,id=115572,bonus_id=566
