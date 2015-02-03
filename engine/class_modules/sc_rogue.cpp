@@ -492,9 +492,6 @@ static void break_stealth( rogue_t* p )
 
   if ( p -> buffs.vanish -> check() )
     p -> buffs.vanish -> expire();
-
-  if ( p -> player_t::buffs.shadowmeld -> check() )
-    p -> player_t::buffs.shadowmeld -> expire();
 }
 
 // ==========================================================================
@@ -1344,9 +1341,13 @@ void rogue_attack_t::execute()
 
   if ( harmful && stealthed() )
   {
+    player -> buffs.shadowmeld -> expire();
+
     if ( ! p() -> talent.subterfuge -> ok() )
       break_stealth( p() );
-    else if ( ! p() -> buffs.subterfuge -> check() )
+    // Check stealthed again after shadowmeld is popped. If we're still
+    // stealthed, trigger subterfuge
+    else if ( stealthed() && ! p() -> buffs.subterfuge -> check() )
       p() -> buffs.subterfuge -> trigger();
   }
 }
