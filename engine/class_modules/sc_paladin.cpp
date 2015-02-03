@@ -1790,7 +1790,7 @@ struct eternal_flame_t : public paladin_heal_t
     }
 
     // Shield of Glory (Tier 15 protection 2-piece bonus)
-    if ( p() -> sets.has_set_bonus( SET_TANK, T15, B2 ) )
+    if ( p() -> sets.has_set_bonus( SET_TANK, T15, B2 ) && p() -> level < 100 ) // 2015-02-02 hotfix disabled this for level 100 characters.
       p() -> buffs.shield_of_glory -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> buffs.shield_of_glory -> buff_duration * hopo );
     
     // consume BoG stacks and Bastion of Power if used on self
@@ -3283,7 +3283,7 @@ struct word_of_glory_t : public paladin_heal_t
     }
 
     // Shield of Glory (Tier 15 protection 2-piece bonus)
-    if ( p() -> sets.has_set_bonus( SET_TANK, T15, B2 ) )
+    if ( p() -> sets.has_set_bonus( SET_TANK, T15, B2 ) && p() -> level < 100 ) // Disabled in 2015-02-02 hotfix for level 100 characters
       p() -> buffs.shield_of_glory -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> buffs.shield_of_glory -> buff_duration * hopo );
         
     // consume BoG stacks and Bastion of Power if used on self
