@@ -15,7 +15,7 @@ race=blood_elf
 role=hybrid
 position=back
 talents=2112333
-glyphs=winged_vengeance/templars_verdict/righteous_retreat/fire_from_the_heavens/judgment/
+glyphs=winged_vengeance/templars_verdict/righteous_retreat/fire_from_the_heavens/judgment/mass_exorcism
 spec=retribution
  
 head=helmet_of_guiding_light,id=115568,bonus_id=566
