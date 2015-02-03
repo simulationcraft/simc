@@ -2,7 +2,8 @@ function sim() {
   PROFILE_NAME="$(basename ${SIMC_PROFILE})"
   OPTIONS="$@"
   cd "${SIMC_PROFILES_PATH}"
-  run ${SIMC_TIMEOUT} 300 "${SIMC_CLI_PATH}" "${SIMC_PROFILE}" iterations=${SIMC_ITERATIONS} output=/dev/null $@
+#  run ${SIMC_TIMEOUT} 300 "${SIMC_CLI_PATH}" "${SIMC_PROFILE}" iterations=${SIMC_ITERATIONS} output=/dev/null $@
+  run "${SIMC_CLI_PATH}" "${SIMC_PROFILE}" iterations=${SIMC_ITERATIONS} $@
   cd -
 }
 
