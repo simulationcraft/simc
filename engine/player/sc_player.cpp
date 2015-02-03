@@ -1028,10 +1028,17 @@ bool player_t::init_items()
   // value was overridden by a command line option.
   // This is also where the conversion of hybrid primary stats into
   // STR, AGI, or INT happens, via convert_hybrid_stat()
+
+  // First, convert all hybrid primaries to their primary form (STR / AGI / INT)
+  gear_stats_t temp_item_stats;
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
+    temp_item_stats.add_stat( convert_hybrid_stat( i ), item_stats.get_stat( i ) );
+
+  // Then merge that into gear, provided it hasn't already been overridden by command line option
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     if ( gear.get_stat( i ) == 0 )
-        gear.add_stat( convert_hybrid_stat( i ), item_stats.get_stat( i ) );
+        gear.add_stat( i, temp_item_stats.get_stat( i ) );
   }
 
   // Sanity check - there should be no more hybrid STR/INT, AGI/STR, or AGI/INT stats leftover here!
