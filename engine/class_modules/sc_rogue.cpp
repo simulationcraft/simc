@@ -3674,7 +3674,8 @@ bool rogue_t::trigger_t17_4pc_combat( const action_state_t* state )
   if ( ! state -> action -> result_is_hit( state -> result ) )
     return false;
 
-  if ( ! rng().roll( sets.set( ROGUE_COMBAT, T17, B4 ) -> proc_chance() ) )
+  const rogue_attack_state_t* rs = debug_cast<const rogue_attack_state_t*>( state );
+  if ( ! rng().roll( sets.set( ROGUE_COMBAT, T17, B4 ) -> proc_chance() / 5.0 * rs -> cp ) )
     return false;
 
   trigger_combo_point_gain( state, buffs.deceit -> data().effectN( 2 ).base_value(), gains.deceit );
