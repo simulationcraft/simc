@@ -2174,7 +2174,7 @@ struct tiger_palm_t: public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
     base_multiplier = 3.6; // hardcoded into tooltip
     if ( p -> dbc.ptr )
-      base_multiplier = 6;
+      base_multiplier = 3;
     if ( p -> specialization() == MONK_MISTWEAVER && !p -> dbc.ptr)
       base_multiplier *= 2;
     base_costs[RESOURCE_CHI] *= 1.0 + p -> spec.brewmaster_training -> effectN( 2 ).percent();
