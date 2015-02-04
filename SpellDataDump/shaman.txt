@@ -1,4 +1,4 @@
-SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19551)
+SimulationCraft 603-27 for World of Warcraft 6.1.0 PTR (build level 19551)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -167,7 +167,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.62500 | Chain Multiplier: 0.9
 #2 (id=219186)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
-Description      : Heals the friendly target for $s1, then jumps to heal the most injured nearby targets. Healing is reduced by $s2% after each jump. Heals $x1 total targets.
+Description      : Heals the friendly target for $s1, then jumps to heal the most injured nearby party or raid members. Healing is reduced by $s2% after each jump. Heals $x1 total targets.
 
 Name             : Fire Nova (id=1535) [Spell Family (11)] 
 Class            : Enhancement Shaman
@@ -638,7 +638,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=3336)     : Summon (28)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 5925 | Misc Value 2: 0xd4e
-Description      : Summons an Air Totem with $?s63298[$s1% of the caster's][$s1] health at the feet of the caster that will $?s55441[reflect one harmful spell cast on a nearby party member back at the caster][redirect one harmful spell cast on a nearby party member to itself], destroying the totem.  Will not redirect area of effect spells.  Lasts $d.
+Description      : Summons an Air Totem with $?s63298[$s1% of the caster's][$s1] health at the feet of the caster that will $?s55441[reflect one harmful spell cast on a nearby party or raid member back at the caster][redirect one harmful spell cast on a nearby party or raid member to itself], destroying the totem. Will not redirect area of effect spells. Lasts $d.
 
 Name             : Magma Totem (id=8187) [Scaling Spell (9), Spell Family (11)] 
 Class            : Shaman
@@ -892,6 +892,12 @@ Effects          :
 #2 (id=235789)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 11
                    Affected Spells: Stormstrike (17364), Lava Lash (60103), Unleash Elements (73680), Windstrike (115356)
+#3 (id=263872)   : Apply Aura (6) | Unknown effect sub type (457)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1254
+                   Affected Spells: Fire Nova (1535), Earth Shock (8042), Flame Shock (8050), Frost Shock (8056), Stormstrike (17364), Lava Lash (60103), Unleash Elements (73680), Windstrike (115356)
+#4 (id=263873)   : Apply Aura (6) | Unknown effect sub type (457)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1538
+                   Affected Spells: Fire Nova (1535), Earth Shock (8042), Flame Shock (8050), Frost Shock (8056), Stormstrike (17364), Lava Lash (60103), Unleash Elements (73680), Windstrike (115356)
 Description      : Melee haste effects lower the cooldown and global cooldown of your Stormstrike, Lava Lash, Shocks, Unleash Elements, and Fire Nova.
 
 Name             : Stormstrike (id=17364) [Spell Family (11)] 
@@ -3827,7 +3833,7 @@ Effects          :
                    Base Value: 40000 | Scaled Value: 40000
 #4 (id=205450)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2
-Description      : $?s974[Your Healing Wave, Healing Surge, and Chain Heal increase the duration of your Healing Rain by ${$73920t2*$m4/1000}.2 sec]?s117014[Your Lightning Bolt, Chain Lightning, Elemental Blast, Earth Shock, and Stormstrike increase the duration of your Healing Rain by ${$73920t2*$m4/1000}.2 sec][Your Lightning Bolt, Chain Lightning, Earth Shock, and Stormstrike increase the duration of your Healing Rain by ${$73920t2*$m4/1000}.2 sec], up to a maximum increase of 30 sec.
+Description      : $?s974[Your Healing Wave, Healing Surge, and Chain Heal increase the duration of your Healing Rain by ${$73920t2*$m4}.2 sec]?s117014[Your Lightning Bolt, Chain Lightning, Elemental Blast, Earth Shock, and Stormstrike increase the duration of your Healing Rain by ${$73920t2*$m4}.2 sec][Your Lightning Bolt, Chain Lightning, Earth Shock, and Stormstrike increase the duration of your Healing Rain by ${$73920t2*$m4}.2 sec], up to a maximum increase of 30 sec.
 
 Name             : Echo of the Elements (id=108283) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -3947,7 +3953,7 @@ Attributes       : ........ x....... x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=127152)   : Dummy (3)
@@ -3969,7 +3975,7 @@ Class            : Elemental Shaman
 Spell Level      : 87
 Duration         : 15 seconds
 Cooldown         : 180 seconds
-Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3994,7 +4000,7 @@ Class            : Enhancement Shaman
 Spell Level      : 87
 Duration         : 15 seconds
 Cooldown         : 180 seconds
-Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4020,7 +4026,7 @@ Cooldown         : 180 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ..x..x.. ........ 
                  : Heal, Periodic, Trap Triggered
-Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5528,7 +5534,7 @@ Description      : Reduces the cooldown on Feral Spirit by ${$m1/-1000} and redu
 
 Name             : Glyph of Ghostly Speed (id=159642) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
-Attributes       : ....x.xx x....... ........ ........   ...x...x ........ ........ ........ 
+Attributes       : ....x.xx x......x ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5540,7 +5546,7 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60
 Description      : Ghost Wolf grants an additional $s1% movement speed.  This movement speed bonus will not be granted if Ghost Wolf is activated while in combat.
 
-This effect is disabled in battlegrounds and arenas and cannot be combined with other speed increases.
+This effect is disabled indoors and in battlegrounds and arenas and cannot be combined with other speed increases.
 
 Name             : Glyph of Grounding (id=159643) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman

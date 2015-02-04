@@ -1,4 +1,4 @@
-SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19551)
+SimulationCraft 603-27 for World of Warcraft 6.1.0 PTR (build level 19551)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -155,7 +155,7 @@ Effects          :
 Description      : A word of darkness that causes $s1 Shadow damage and an additional $o2 Shadow damage over $d.
 Tooltip          : $w2 Shadow damage every $t2 seconds.
 
-Name             : Prayer of Healing (id=596) [Scaling Spell (7), Spell Family (6)] 
+Name             : Prayer of Healing (id=596) [Spell Family (6)] 
 Class            : Discipline Holy Priest
 Resource         : 7.13% Base Mana (11408 @Level 100)
 Spell Level      : 46
@@ -171,7 +171,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=243)      : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=8.28, dl=0.055) | SP Coefficient: 2.21664 | Radius: 0 - 30 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.21664 | Radius: 0 - 30 yards
 #2 (id=105332)   : Trigger Spell: Prayer of Healing (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 98367
 Description      : A powerful prayer heals the friendly target's party members within $A1 yards for $s1.
@@ -219,7 +219,7 @@ Effects          :
 Description      : Allows the friendly party or raid target to levitate, floating a few feet above the ground.  While levitating, the target will fall at a reduced speed and travel over water.  Any damage will cancel the effect.  Lasts $111758d.
 Tooltip          : Levitating.
 
-Name             : Heal (id=2060) [Scaling Spell (7), Spell Family (6)] 
+Name             : Heal (id=2060) [Spell Family (6)] 
 Class            : Discipline Holy Priest
 Resource         : 2% Base Mana (3200 @Level 100)
 Spell Level      : 34
@@ -235,7 +235,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=612)      : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=21.658, dl=0.15) | SP Coefficient: 3.32640
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.32640
 Description      : A slow casting spell that heals a single target for $s1.
 
 Name             : Flash Heal (id=2061) [Spell Family (6)] 
@@ -1023,7 +1023,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=22870)    : Trigger Spell: Prayer of Mending (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 41637
-Description      : Places a spell on the target that heals them for ${$<mending>} the next time they take damage. When the heal occurs, Prayer of Mending jumps to an ally within $155793a1 yards. Jumps up to $41635u times and lasts $41635d after each jump.$?s55685[ The first bounce will heal for an additional $55685m1%.][]
+Description      : Places a spell on a party or raid member that heals them for ${$<mending>} the next time they take damage. When the heal occurs, Prayer of Mending jumps to a party or raid member within $155793a1 yards. Jumps up to $41635u times and lasts $41635d after each jump.$?s55685[ The first bounce will heal for an additional $55685m1%.][]
 Variables        : $mult1=$?s87336[${1.25}][${1.0}]
 $mult2=$?s122098[${1.25*$<mult1>}][${$<mult1>}]
 $mending=${(1+($SP*0.666))*$pctH*$<mult2>}
@@ -3833,7 +3833,7 @@ Spell Level      : 46
 Range            : 30 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Duration         : 5.5 seconds
+Duration         : 3.2 seconds
 Cooldown         : 40 seconds
 Affecting spells : Holy Word: Serenity (88684), Lucidity (137323), Enhanced Leap of Faith (157146)
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
@@ -3951,7 +3951,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 657
 Description      : Creates a ring of Shadow energy around you that quickly expands and grows in power, up to 30 yds away. Deals up to $120696s1 Shadow damage to enemies, with the greatest effect at 25 yds.
 
-Name             : Halo (id=120692) [Scaling Spell (7), Spell Family (6)] 
+Name             : Halo (id=120692) [Spell Family (6)] 
 Class            : Priest
 Range            : 100 yards
 Affecting spells : Holy Word: Serenity (88684), Enhanced Leap of Faith (157146)
@@ -3963,7 +3963,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=140516)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=32.11, dl=0.5) | SP Coefficient: 2.87400
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.87400
 Description      : $@spelldesc120517
 
 Name             : Halo (id=120696) [Scaling Spell (7), Spell Family (6)] 
@@ -3993,7 +3993,7 @@ Attributes       : ........ ........ x....... ........   .......x ..x..... .....
                  : ........ ........ ...x.... ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=149390)   : Dummy (3)
@@ -4993,7 +4993,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=215710)   : Dummy (3)
@@ -5046,7 +5046,7 @@ Description      : Your Shadowy Apparitions now deal $s1% increased damage and g
 Name             : Saving Grace (id=155274) 
 Class            : Priest
 Duration         : 8 seconds
-Stacks           : 10 maximum
+Stacks           : 6 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5591,7 +5591,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
 Effects          :
 #1 (id=227170)   : Apply Aura (6) | Unknown effect sub type (201)
                    Base Value: 0 | Scaled Value: 0
-Description      : Ascend into the air, keeping you out of harm's way. Lasts $d. Can only be used while in Ashran
+Description      : Ascend into the air, keeping you out of harm's way. Lasts $d. Can only be used while in Ashran.
 Tooltip          : Flying.
 
 Name             : Mind Blast Marker (id=162414) [Spell Family (6), Hidden] 

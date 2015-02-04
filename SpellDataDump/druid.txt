@@ -1,4 +1,4 @@
-SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19551)
+SimulationCraft 603-27 for World of Warcraft 6.1.0 PTR (build level 19551)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
@@ -445,7 +445,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15
 Description      : A Solar spell that causes $s1 Nature damage to the target.
 
-Name             : Healing Touch (id=5185) [Scaling Spell (2), Spell Family (7)] 
+Name             : Healing Touch (id=5185) [Spell Family (7)] 
 Class            : Druid
 Resource         : 10.35% Base Mana (3312 @Level 100)
 Spell Level      : 26
@@ -471,6 +471,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 50 seconds
+Affecting spells : Bear Form (5487)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -626,7 +627,7 @@ Effects          :
                    Affected Spells: Maul (6807), Frenzied Regeneration (22842), Lacerate (33745), Mangle (33917), Thrash (77758), Maul (168883)
 #5 (id=222312)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11
-                   Affected Spells: Maul (6807), Frenzied Regeneration (22842), Lacerate (33745), Mangle (33917), Savage Defense (62606), Thrash (77758), Savage Defense (132402), Maul (168883)
+                   Affected Spells: Mighty Bash (5211), Maul (6807), Frenzied Regeneration (22842), Lacerate (33745), Incarnation: Tree of Life (33891), Mangle (33917), Savage Defense (62606), Thrash (77758), Pulverize (80313), Stampeding Roar (97993), Cenarion Ward (102351), Cenarion Ward (102352), Incarnation: King of the Jungle (102543), Incarnation: Son of Ursoc (102558), Incarnation: Chosen of Elune (102560), Savage Defense (132402), Pulverize (158792), Maul (168883)
 Description      : Shapeshift into Bear Form, increasing armor by $m3% and Stamina by $1178s2%.$?s16931[
 
 Also reduces all magical damage taken by $16931s1%, reduces the chance the Druid will be critically hit by $16931s2%, and reduces the chance for attacks to be parried by $16931s3%.][]
@@ -725,7 +726,7 @@ Description      : Creates 3 vials of Anti-Venom.
 
 Name             : Moonfire (Lunar) (id=8921) [Spell Family (7)] 
 Class            : Druid
-Resource         : 3.3% Base Mana (1056 @Level 100)
+Resource         : 1.5% Base Mana (480 @Level 100)
 Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1550,7 +1551,7 @@ Cooldown         : 180 seconds
 Proc Chance      : 100%
 Proc Flags       : .....x.. .x.x.x.x .x...... ........ 
                  : Yellow Melee Taken, Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken
-Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Glyph of the Master Shapeshifter (116172), Incarnation (117679)
+Affecting spells : Bear Form (5487), Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Glyph of the Master Shapeshifter (116172), Incarnation (117679)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... x....... ........ 
                  : .x...... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -1588,7 +1589,7 @@ Effects          :
 #1 (id=23847)    : Weapon Damage (58)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=216150)   : Weapon Damage% (31)
-                   Base Value: 315 | Scaled Value: 3.15 (avg=0)
+                   Base Value: 400 | Scaled Value: 4 (avg=0)
 #3 (id=216151)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: rage
 Description      : Mangle the target for $sw2 Physical damage, $?s48484[reducing the target's movement speed by $58180s1% for $58180d, and][] generating ${$m3/10} Rage.
@@ -2751,7 +2752,7 @@ Tooltip          : True form activated, movement speed increased by an additiona
 Name             : Predatory Swiftness (id=69369) [Spell Family (7)] 
 Class            : Druid
 Duration         : 12 seconds
-Affecting spells : Item - Druid T17 Restoration 2P Bonus (165437), Item - Druid WoD PvP Restoration 4P Bonus (165707), 
+Affecting spells : Item - Druid T17 Restoration 2P Bonus (165437)
 Attributes       : ........ ........ ..x..... .x......   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -2917,6 +2918,7 @@ Class            : Druid
 Spell Level      : 50
 Range            : 5 yards
 GCD              : 1.5 seconds
+Affecting spells : Bear Form (5487)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3148,7 +3150,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (8 seconds cooldown)
 Affecting spells : Lucidity (137247)
-Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3368,7 +3370,7 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 10
                    Affected Spells: Healing Touch (5185)
 Description      : While Rejuvenation is active on three or more targets, the cast time of your Healing Touch is reduced.
-Tooltip          : Cast time of Nourish reduced by $s1%.
+Tooltip          : Cast time of Healing Touch reduced by $s1%.
 
 Name             : Solar Beam (id=97547) [Scaling Spell (2), Spell Family (7)] 
 Class            : Druid
@@ -3404,7 +3406,7 @@ Description      : Removes snares and roots.
 Name             : Stampeding Roar (id=97993) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 84
-Affecting spells : Berserk (106951), Glyph of Stampeding Roar (114222), 
+Affecting spells : Bear Form (5487), Berserk (106951), Glyph of Stampeding Roar (114222), 
 Attributes       : ....x... ........ ..x..... ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ...x...x ........ ........   ........ ........ ........ .......x 
@@ -3459,7 +3461,7 @@ Spell Level      : 64
 Range            : 40 yards
 Duration         : 12 seconds
 Cooldown         : 60 seconds
-Affecting spells : Empowered Ironbark (157305)
+Affecting spells : Reduced Ironbark Cooldown (131739), Empowered Ironbark (157305)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3488,7 +3490,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Harmony (100977), Ironbark (102342), Heart of the Wild (108291), Heart of the Wild (108292), Heart of the Wild (108293), Lucidity (137247)
+Affecting spells : Bear Form (5487), Harmony (100977), Ironbark (102342), Heart of the Wild (108291), Heart of the Wild (108292), Heart of the Wild (108293), Lucidity (137247)
 Attributes       : ....x... ...x.... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3501,21 +3503,21 @@ Effects          :
 Description      : Protects a friendly target for $d.  Any damage taken will consume the ward and heal the target for $102352o1 over $102352d.
 Tooltip          : Taking damage will grant $w1 healing every $102352t sec for $102352d.
 
-Name             : Cenarion Ward (id=102352) [Scaling Spell (2), Spell Family (7)] 
+Name             : Cenarion Ward (id=102352) [Spell Family (7)] 
 Class            : Druid
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 6 seconds
-Affecting spells : Harmony (100977), Ironbark (102342), Heart of the Wild (108291), Heart of the Wild (108292), Heart of the Wild (108293), Lucidity (137247)
+Affecting spells : Bear Form (5487), Harmony (100977), Ironbark (102342), Heart of the Wild (108291), Heart of the Wild (108292), Heart of the Wild (108293), Lucidity (137247)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ .......x ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
-                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=111087)   : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
-                   Base Value: 1 | Scaled Value: 0 (avg=11.28) | SP Coefficient: 2.93300
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.93300
 Description      : Heals the target for $m1 every $t1 sec for $d.
 Tooltip          : Heals $w1 damage every $t1 seconds.
 
@@ -3610,7 +3612,7 @@ Spell Level      : 1
 GCD              : 1 seconds
 Duration         : 30 seconds
 Cooldown         : 180 seconds
-Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Glyph of the Master Shapeshifter (116172), Incarnation (117679), Lucidity (137247)
+Affecting spells : Bear Form (5487), Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Glyph of the Master Shapeshifter (116172), Incarnation (117679), Lucidity (137247)
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -3663,7 +3665,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 180 seconds
-Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Glyph of the Master Shapeshifter (116172), Incarnation (117679), Lucidity (137247)
+Affecting spells : Bear Form (5487), Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Glyph of the Master Shapeshifter (116172), Incarnation (117679), Lucidity (137247)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -3691,7 +3693,7 @@ Spell Level      : 10
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 180 seconds
-Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Glyph of Stars (114301), Glyph of the Master Shapeshifter (116172), Incarnation (117679), Enhanced Moonkin Form (157227), Glyph of Moonwarding (159455), 
+Affecting spells : Bear Form (5487), Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Glyph of Stars (114301), Glyph of the Master Shapeshifter (116172), Incarnation (117679), Enhanced Moonkin Form (157227), Glyph of Moonwarding (159455), 
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -4110,7 +4112,7 @@ Effects          :
 #1 (id=117636)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14
                    Affected Spells: Mark of the Wild (1126)
-Description      : Each time you shapeshift into Cat Form or Bear Form, your shapeshifted form will have a random hair color.
+Description      : Each time you shapeshift into Cat Form or Bear Form, your shapeshifted form will have a random hair color.$?s5217[ Does not apply to Claws of Shirvallah.][]
 
 Name             : Renewal (id=108238) [Scaling Spell (7), Spell Family (7)] 
 Class            : Druid
@@ -4685,7 +4687,7 @@ Effects          :
 #2 (id=166017)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1
                    Affected Spells: Lifebloom (33763), Lifebloom (33778)
-Description      : Increases the bloom heal of your Lifebloom when it expires by $s1%, but its duration is reduced by ${$m2/1000} sec and your Healing Touch and Regrowth abilities no longer refresh the duration.
+Description      : Increases the bloom heal of your Lifebloom when it expires by $s1%, but its duration is reduced by ${$m2/-1000} sec and your Healing Touch and Regrowth abilities no longer refresh the duration.
 
 Name             : Chosen of Elune (id=122114) [Spell Family (7), Hidden] 
 Class            : Druid
@@ -4928,7 +4930,7 @@ Name             : Nature's Swiftness (id=132158) [Spell Family (7)]
 Class            : Restoration Druid
 Duration         : Aura (infinite)
 Cooldown         : 60 seconds
-Affecting spells : Item - Druid T17 Restoration 2P Bonus (165437), Item - Druid WoD PvP Restoration 4P Bonus (165707), 
+Affecting spells : Item - Druid T17 Restoration 2P Bonus (165437)
 Attributes       : ........ ........ ..x..... .x......   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5410,7 +5412,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
-Affecting spells : Item - Druid T17 Restoration 2P Bonus (165437), Item - Druid WoD PvP Restoration 4P Bonus (165707), 
+Affecting spells : Item - Druid T17 Restoration 2P Bonus (165437)
 Attributes       : ........ ........ ..x..... .x......   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6366,7 +6368,7 @@ Effects          :
                    Affected Spells: Wrath (5176), Wrath (113769)
 #2 (id=221553)   : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | SP Coefficient: 1.00000
-Description      : Increases Wrath damage by $s1% and your Wrath spell causes a nearby ally to be healed for $s2% of the damage done.
+Description      : Increases Wrath damage by $s1% and your Wrath spell causes a nearby ally to be healed for $s2% of the damage done, including multistrikes.
 
 Name             : Thrash (id=158723) 
 Class            : Druid
@@ -6385,6 +6387,7 @@ Name             : Pulverize (id=158792) [Spell Family (7)]
 Class            : Druid
 Spell Level      : 50
 Duration         : 12 seconds
+Affecting spells : Bear Form (5487)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6821,7 +6824,7 @@ Affecting spells : Lucidity (137247)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .x...x.. ........ ........ 
-                 : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ..xx....   ........ ........ ........ ........ 
                  : ........ .x..x... .x...... x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -7201,7 +7204,7 @@ Description      : While Berserk is active, special attacks deal an additional $
 Name             : Flight Form (Shapeshift) (id=165962) [Spell Family (7)] 
 Class            : Druid
 Resource         : 7.4% Base Mana (2368 @Level 100)
-Spell Level      : 1
+Spell Level      : 58
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Glyph of the Master Shapeshifter (116172), Lucidity (137247)

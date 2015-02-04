@@ -1,4 +1,4 @@
-SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19551)
+SimulationCraft 603-27 for World of Warcraft 6.1.0 PTR (build level 19551)
 
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior
@@ -8,7 +8,7 @@ Cooldown         : 1.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
-Affecting spells : Glyph of the Subtle Defender (146969), Gladiator's Resolve (152276), Headlong Rush (158836)
+Affecting spells : Bladestorm (46924), Glyph of the Subtle Defender (146969), Gladiator's Resolve (152276), Headlong Rush (158836)
 Attributes       : ....x... ........ x.x..... x..x.x.x   ........ ..x..... .x...... ........ 
                  : ....x... ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -1520,7 +1520,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1733
 #3 (id=39084)    : Apply Aura (6) | Unknown effect sub type (263)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Shield Block (2565), Last Stand (12975), Enraged Regeneration (55694), Shield Barrier (112048), Demoralizing Shout (125565), Shield Charge (156321), Shield Barrier (174926)
+                   Affected Spells: Defensive Stance (71), Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Shield Block (2565), Last Stand (12975), Enraged Regeneration (55694), Shield Barrier (112048), Demoralizing Shout (125565), Shield Charge (156321), Shield Barrier (174926)
 Description      : Become an unstoppable storm of destructive force, striking all targets within $50622A1 yards $?s23881[for $50622sw2 Physical damage with your main-hand and $95738sw2 Physical damage with your off-hand][for $168969sw2 Physical damage] every $t1 sec for $d.  You are immune to movement impairing and loss of control effects, but can only use Taunt and other defensive abilities.$?c1[
 
 Channeling Bladestorm does not prevent avoiding attacks.][]

@@ -1,4 +1,4 @@
-SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19551)
+SimulationCraft 603-27 for World of Warcraft 6.1.0 PTR (build level 19551)
 
 Name             : Eye of Kilrogg (Summon) (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -2629,7 +2629,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 911
 
 Name             : Soulburn (id=74434) [Spell Family (5)] 
-Class            : Affliction Affliction Affliction Warlock
+Class            : Affliction Warlock
 Resource         : 1 Soul Shard
 Spell Level      : 19
 Duration         : 30 seconds
@@ -4564,7 +4564,7 @@ Description      : Your soul is infused with demonic knowledge, increasing your 
 |cFFFFFFFFPassive:|r
 Increases your mastery by ${$113861m1/$56228m1}%. This effect is disabled while on cooldown.][]
 Tooltip          : Mastery increased by $s1%.
-Variables        : $Coefficient=${0.75}
+Variables        : $Coefficient=${1}
 
 Name             : Demonic Gateway (id=113886) [Spell Family (5)] 
 Class            : Warlock
@@ -4649,7 +4649,7 @@ Attributes       : ......x. ........ .......x x..x.x.x   .....x.. ..x..... .....
 Effects          :
 #1 (id=127965)   : Apply Aura (6) | Periodic Trigger Spell: Demonic Calling every 20 seconds (23)
                    Base Value: 8 | Scaled Value: 8 | Trigger Spell: 114925
-Description      : Every $?s56242[${($t+4000)/1000}.2][$t] sec, you gain Demonic Calling, causing your Shadow Bolt, Soul Fire, and Touch of Chaos hits to summon a Wild Imp from the Twisting Nether. 
+Description      : Every $?s56242[${($t1+4)}.2][$t1] sec, you gain Demonic Calling, causing your Shadow Bolt, Soul Fire, and Touch of Chaos hits to summon a Wild Imp from the Twisting Nether. 
 
 Each Wild Imp will cast 10 Firebolts before departing. Each Firebolt generates $104318s3 Demonic Fury, and has a $m1% chance to reduce the cast time and mana cost of your next Soul Fire by $122355s1%.
 

@@ -1,4 +1,4 @@
-SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19551)
+SimulationCraft 603-27 for World of Warcraft 6.1.0 PTR (build level 19551)
 
 Name             : Blizzard (id=10) [Spell Family (3)] 
 Class            : Frost Mage
@@ -60,7 +60,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Duration         : 15 seconds
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Frosty Zap (24392), Item - Mage T15 2P Bonus (138316), Enhanced Frostbolt (157646), Enhanced Frostbolt (157648), Ice Shard (166869), 
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Frosty Zap (24392), Ice Floes (108839), Item - Mage T15 2P Bonus (138316), Enhanced Frostbolt (157646), Enhanced Frostbolt (157648), Ice Shard (166869), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -151,7 +151,7 @@ Range            : 40 yards
 Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Critical Mass (117216), Item - Mage T15 2P Bonus (138316), Enhanced Pyrotechnics (157644), Ignition (165979), Firestarter (171170)
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Ice Floes (108839), Critical Mass (117216), Item - Mage T15 2P Bonus (138316), Enhanced Pyrotechnics (157644), Ignition (165979), Firestarter (171170)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -273,7 +273,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 12 seconds
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Improved Flamestrike (157621)
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Ice Floes (108839), Improved Flamestrike (157621)
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ......x. 
@@ -461,7 +461,7 @@ Name             : Mage Armor (id=6117) [Scaling Spell (-1), Spell Family (3), P
 Class            : Arcane Mage
 Spell Level      : 80
 Cast Time        : 3 seconds
-Affecting spells : Presence of Mind (12043), Glyph of Rapid Teleportation (89749)
+Affecting spells : Presence of Mind (12043), Glyph of Rapid Teleportation (89749), Ice Floes (108839)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -505,7 +505,7 @@ Spell Level      : 54
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
-Affecting spells : Presence of Mind (12043), Shatter (12982), Glyph of Rapid Teleportation (89749)
+Affecting spells : Presence of Mind (12043), Shatter (12982), Glyph of Rapid Teleportation (89749), Ice Floes (108839)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -963,7 +963,7 @@ Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
-Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Arcane Charge (36032), Item - Mage T15 2P Bonus (138316), Profound Magic (145252), Arcane Affinity (166871), Arcane Focus (171375)
+Affecting spells : Arcane Power (12042), Presence of Mind (12043), Icy Veins (12472), Shatter (12982), Arcane Charge (36032), Ice Floes (108839), Item - Mage T15 2P Bonus (138316), Profound Magic (145252), Arcane Affinity (166871), Arcane Focus (171375)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1020,7 +1020,7 @@ $fingersMult=${(2.00*$<masteryMult>)}
 Name             : Molten Armor (id=30482) [Spell Family (3), Passive] 
 Class            : Fire Mage
 Spell Level      : 34
-Affecting spells : Presence of Mind (12043), Glyph of Rapid Teleportation (89749)
+Affecting spells : Presence of Mind (12043), Glyph of Rapid Teleportation (89749), Ice Floes (108839)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1098,7 +1098,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Cooldown         : 60 seconds
-Affecting spells : Presence of Mind (12043), Glyph of Remove Curse (115700), Glyph of Ice Block (115723), Improved Water Elemental (157738)
+Affecting spells : Presence of Mind (12043), Ice Floes (108839), Glyph of Remove Curse (115700), Glyph of Ice Block (115723), Improved Water Elemental (157738)
 Attributes       : ........ ........ x....... ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1462,8 +1462,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=36517)    : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0
-Description      : Stuns the target for $d. Only usable on Frozen targets. Damage from Ice Lance will break this effect.
-Tooltip          : Stunned and Frozen.  This effect will break if the target is struck with Ice Lance.
+Description      : Stuns the target for $d. Only usable on Frozen targets. Damage from Ice Lance or Ice Nova will break this effect.
+Tooltip          : Stunned and Frozen.  This effect will break if the target is struck with Ice Lance or Ice Nova.
 Variables        : $arctic1=$?s31674[${1.01}][${1}]
 $arctic2=$?s31675[${1.02}][${$<arctic1>}]
 $arctic3=$?s31676[${1.03}][${$<arctic2>}]
@@ -2784,7 +2784,7 @@ Cooldown         : 20 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Presence of Mind (12043), Icy Veins (12472)
+Affecting spells : Presence of Mind (12043), Icy Veins (12472), Ice Floes (108839)
 Attributes       : ........ ........ ..x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2807,8 +2807,8 @@ Charges          : 3 (20 seconds cooldown)
 Internal Cooldown: 0.1 seconds
 Stacks           : 1 initial, 3 maximum
 Proc Chance      : 100%
-Proc Flags       : ........ ......x. x....... ........ 
-                 : Heal, Hostile Spell
+Proc Flags       : ........ ..x.x.x. x....... ........ 
+                 : AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -2816,9 +2816,10 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=120042)   : Apply Aura (6) | Unknown effect sub type (377)
+#1 (id=120042)   : Apply Aura (6) | Unknown effect sub type (330)
                    Base Value: 0 | Scaled Value: 0
-Description      : Your next spell can be cast while moving. Castable while another spell is in progress and unaffected by global cooldown.  Max 3 charges.
+                   Affected Spells: Frostbolt (116), Fireball (133), Flamestrike (2120), Mage Armor (6117), Frost Armor (7302), Arcane Blast (30451), Molten Armor (30482), Summon Water Elemental (31687), Frostjaw (102051), Frost Bomb (112948), Rune of Power (116011), Ancient Teleport: Dalaran (120145), Conjure Familiar (126578)
+Description      : Your next Mage spell can be cast while moving. Castable while another spell is in progress and unaffected by global cooldown.  Max 3 charges.
 Tooltip          : Able to move while casting spells.
 
 Name             : Blazing Speed (id=108843) [Spell Family (3)] 
@@ -2994,7 +2995,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 12 seconds
-Affecting spells : Presence of Mind (12043)
+Affecting spells : Presence of Mind (12043), Ice Floes (108839)
 Attributes       : ........ ........ x....... ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -3394,7 +3395,7 @@ Range            : 30 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 180 seconds
-Affecting spells : Presence of Mind (12043)
+Affecting spells : Presence of Mind (12043), Ice Floes (108839)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -3513,6 +3514,7 @@ Resource         : 3% Base Mana (4800 @Level 100)
 Spell Level      : 71
 Cast Time        : 10 seconds
 GCD              : 1.5 seconds
+Affecting spells : Ice Floes (108839)
 Attributes       : ........ ........ x....... ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3560,7 +3562,7 @@ Class            : Mage
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Affecting spells : Presence of Mind (12043), Icy Veins (12472)
+Affecting spells : Presence of Mind (12043), Icy Veins (12472), Ice Floes (108839)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4581,7 +4583,6 @@ Class            : Mage
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Cooldown         : 3 seconds
 Charges          : 2 (25 seconds cooldown)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4606,7 +4607,6 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
-Cooldown         : 3 seconds
 Charges          : 2 (25 seconds cooldown)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4632,7 +4632,6 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
-Cooldown         : 3 seconds
 Charges          : 2 (25 seconds cooldown)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
@@ -4649,9 +4648,9 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100
 #2 (id=220384)   : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.50000 | Radius: 0 - 8 yards
-#3 (id=220385)   : Apply Aura (6) | Stun (12)
+#3 (id=220385)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards
-Description      : Causes a whirl of icy wind around the target enemy or ally, dealing $s2 Frost damage to all enemies within $A2 yards, and freezing for $d. A primary enemy target will take $s1% increased damage. Max 2 charges.
+Description      : Causes a whirl of icy wind around the target enemy or ally, dealing $s2 Frost damage to all enemies within $A2 yards, and freezing them in place for $d. A primary enemy target will take $s1% increased damage. Max 2 charges.
 
 Replaces Frost Nova.
 Tooltip          : Frozen.

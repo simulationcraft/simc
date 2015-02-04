@@ -1,4 +1,4 @@
-SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19551)
+SimulationCraft 603-27 for World of Warcraft 6.1.0 PTR (build level 19551)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -452,7 +452,7 @@ Description      : Places a Blessing on the friendly target, increasing mastery 
 If the target is in your party or raid, all party and raid members will be affected.  Players may only have one Blessing on them per Paladin at any one time.
 Tooltip          : Mastery increased by $s1.
 
-Name             : Flash of Light (id=19750) [Scaling Spell (6), Spell Family (10)] 
+Name             : Flash of Light (id=19750) [Spell Family (10)] 
 Class            : Holy Protection Retribution Paladin
 Resource         : 20% Base Mana (6400 @Level 100)
 Spell Level      : 14
@@ -468,7 +468,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=10981)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=11.04, dl=0.115) | SP Coefficient: 2.40000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.40000
 Description      : Heals a friendly target for $s1. $?s57955[In addition, the value of your next heal on the target within $54957d will be increased by $57955s1%.][]
 
 Name             : Repentance (id=20066) [Spell Family (10)] 
@@ -654,7 +654,7 @@ Spell Level      : 5
 Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Sanctity of Battle (25956), Proc Mana Regen (38334), Sword of Light (53503), Guarded by the Light (53592), Glyph of Double Jeopardy (54922), Judgment Range Increase (61776), Item - Paladin T10 Retribution 4P Bonus (70762), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Item - Proc Mastery Rating (95878), Holy Avenger (105809), Holy Insight (112859), Sanctified Wrath (114232), Glyph of Double Jeopardy (121027), Lucidity (137288), Exorcism (138162), Glyph of Judgment (159592)
+Affecting spells : Sanctity of Battle (25956), Proc Mana Regen (38334), Sword of Light (53503), Guarded by the Light (53592), Glyph of Double Jeopardy (54922), Item - Paladin T10 Retribution 4P Bonus (70762), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Item - Proc Mastery Rating (95878), Holy Avenger (105809), Holy Insight (112859), Sanctified Wrath (114232), Glyph of Double Jeopardy (121027), Lucidity (137288), Exorcism (138162), Glyph of Judgment (159592)
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2754,7 +2754,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.00000
 Description      : Heals a friendly target for $s1.
 
-Name             : Holy Radiance (id=82327) [Scaling Spell (6), Spell Family (10)] 
+Name             : Holy Radiance (id=82327) [Spell Family (10)] 
 Class            : Holy Paladin
 Resource         : 35.64% Base Mana (11404 @Level 100)
 Spell Level      : 28
@@ -2766,13 +2766,15 @@ Attributes       : ........ ...x.... ........ ........   ........ ........ .....
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=81810)    : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 #2 (id=110901)   : Direct Heal (10)
-                   Base Value: 51 | Scaled Value: 0 (avg=4.96, dl=0.2) | Value Range: 12 | SP Coefficient: 1.51319 | Radius: 0 - 10 yards
+                   Base Value: 51 | Scaled Value: 52 - 63 (avg=0) | Value Range: 12 | SP Coefficient: 1.51319 | Radius: 0 - 10 yards
+#3 (id=264355)   : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0
 Description      : Imbues a friendly target with radiant energy, healing that target for $s2 and up to 6 allies within $A2 yards for half that amount. Grants 1 Holy Power.
 
 Name             : Consecration (id=82366) [Spell Family (10), Hidden] 
@@ -3037,9 +3039,9 @@ Range            : 30 yards
 Duration         : 8 seconds
 Cooldown         : 180 seconds
 Affecting spells : Item - Paladin T13 Protection 4P Bonus (Divine Guardian) (105744)
-Attributes       : ........ x....... ........ .......x   ........ ..x..... ........ ........ 
+Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : x....... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
@@ -4577,7 +4579,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
 Effects          :
 #1 (id=178644)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
-Description      : Consumes up to 3 Holy Power to heal a friendly target for $130551s1 $?s54938[or harm an enemy target for $130552s1 ][]per charge of Holy Power. $?s93466[
+Description      : Consumes up to 3 Holy Power to heal a friendly target for up to $130551s1 $?s54938[or harm an enemy target for up to $130552s1 ][]. $?s93466[
 
 If used to heal another target, you will be healed for $93466s1% of the amount healed.][]$?s54936[
 
@@ -5179,7 +5181,7 @@ Tooltip          : Movement speed increased by $s1%.
 
 Name             : Uther's Insight (id=156988) 
 Class            : Paladin
-Duration         : 20 seconds
+Duration         : 21 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5187,7 +5189,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=218703)   : Apply Aura (6) | Periodic Heal%: every 2 seconds (20)
+#1 (id=218703)   : Apply Aura (6) | Periodic Heal%: every 3 seconds (20)
                    Base Value: 2 | Scaled Value: 2
 Description      : $@spelldesc152263
 Tooltip          : Healing $s1% of your maximum health every $t1 sec.
@@ -5244,7 +5246,7 @@ Effects          :
                    Affected Spells: Lay on Hands (633), Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Eternal Flame (114163), Word of Glory (130551), Word of Glory (136494)
 #2 (id=262827)   : Apply Aura (6) | Dummy (4)
                    Base Value: 90 | Scaled Value: 90
-Description      : Places a beacon of insight on an ally, increasing their healing received from your next direct single-target heal, or Holy Radiance, within $d by $s1%. When consumed, or when the target reaches at least $s2% health, it moves to the most injured ally within 40 yards. Limit 1.
+Description      : Places a beacon of insight on a party or raid member, increasing their healing received from your next direct single-target heal, or Holy Radiance, within $d by $s1%. When consumed, or when the target reaches at least $s2% health, it moves to the most injured party or raid member within 40 yards. Limit 1.
 Tooltip          : Increases single-target healing received from the casting Paladin.
 
 Name             : Saved by the Light (id=157047) [Passive] 
@@ -5817,7 +5819,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=246845)   : Apply Aura (6) | Periodic Trigger Spell (23)
                    Base Value: 0 | Scaled Value: 0
-Description      : Stuns the target Player for $d. If the judgment holds for $d, the enemy will be instantly teleported to your jail.
+Description      : Stuns the target Player for $d. If the judgment holds for $d, the enemy will be instantly teleported to your jail. Can only be used while in Ashran.
 Tooltip          : Teleporting.
 
 Name             : Glyph of Merciful Wrath (Holy) (id=162604) [Spell Family (10), Passive, Hidden] 

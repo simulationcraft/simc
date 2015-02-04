@@ -1,4 +1,4 @@
-SimulationCraft 603-25 for World of Warcraft 6.1.0 PTR (build level 19551)
+SimulationCraft 603-27 for World of Warcraft 6.1.0 PTR (build level 19551)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -733,7 +733,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 125359
 #3 (id=184683)   : Energize Power% (137)
                    Base Value: 0 | Scaled Value: 0
-Description      : Attack with the palm of your hand, dealing ${6*$<low>} to ${6*$<high>} damage, and causing your attacks to ignore $125359m1% of armor for $125359d.$?s115070[
+Description      : Attack with the palm of your hand, dealing ${3*$<low>} to ${3*$<high>} damage, and causing your attacks to ignore $125359m1% of armor for $125359d.$?s115070[
 
 Not useable in Stance of the Wise Serpent.][]
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
@@ -790,7 +790,7 @@ Spell Level      : 46
 GCD              : 1.5 seconds
 Duration         : 2.25 seconds
 Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Lucidity (137331), Focus and Harmony (154555), Empowered Spinning Crane Kick (157415), 
-Attributes       : ....x... ........ x.x..... ........   ..x...x. .x...... ........ ........ 
+Attributes       : ....x... ........ x.x..... ........   ..x...x. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
@@ -1666,7 +1666,7 @@ Description      : Summons a Jade Serpent Statue at the target location for $115
 $@spelldesc117895
 
 |CFFFFFFFFSerpent's Accord |R
-When you cast Soothing Mist while in Stance of the Wise Serpent, the Jade Serpent Statue will also cast Soothing Mist on an injured ally within 40 yards.
+When you cast Soothing Mist while in Stance of the Wise Serpent, the Jade Serpent Statue will also cast Soothing Mist on an injured party or raid member within 40 yards.
 
 Only one statue can be active at a time.
 
@@ -2331,7 +2331,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 6 seconds
 Affecting spells : Stance of the Fierce Tiger (103985), Stance of the Sturdy Ox (115069), Fighting Style (115074), Rising Sun Kick (130320), Lucidity (137331), Focus and Harmony (154555)
-Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
+Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
@@ -2514,7 +2514,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.28182
 #2 (id=225417)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200
-Description      : Channel Jade lightning, causing $<damage> Nature damage over $117952d to the target$?a154436[, generating 1 Chi each time it deals damage,][] and sometimes knocking back melee attackers.
+Description      : Channel Jade lightning, causing $o1 Nature damage over $117952d to the target$?a154436[, generating 1 Chi each time it deals damage,][] and sometimes knocking back melee attackers.
 Tooltip          : Taking $w1 damage every $t1 sec.
 Variables        : $dmgMult=$?s113656[${12}][${1.0}]
 $healMult=$?s115070[${1.2}][${1.0}]
@@ -4983,7 +4983,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=170737)   : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
-                   Base Value: 1 | Scaled Value: 0 (avg=6.767) | SP Coefficient: 1.10000
+                   Base Value: 1 | Scaled Value: 0 (avg=6.767) | SP Coefficient: 1.65000
 #2 (id=170738)   : Apply Aura (6) | Unknown effect sub type (283)
                    Base Value: 30 | Scaled Value: 30
                    Affected Spells: Soothing Mist (115175), Soothing Mist (125950), Soothing Mist (125953)
