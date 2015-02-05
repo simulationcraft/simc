@@ -591,21 +591,21 @@ int expression_t::precedence( token_e expr_token_type )
   {
     case TOK_FLOOR:
     case TOK_CEIL:
-      return 6;
+      return 8;
 
     case TOK_NOT:
     case TOK_PLUS:
     case TOK_MINUS:
     case TOK_ABS:
-      return 5;
+      return 7;
 
     case TOK_MULT:
     case TOK_DIV:
-      return 4;
+      return 6;
 
     case TOK_ADD:
     case TOK_SUB:
-      return 3;
+      return 5;
 
     case TOK_EQ:
     case TOK_NOTEQ:
@@ -615,11 +615,15 @@ int expression_t::precedence( token_e expr_token_type )
     case TOK_GTEQ:
     case TOK_IN:
     case TOK_NOTIN:
+      return 4;
+
+    case TOK_XOR:
+      return 3;
+
+    case TOK_OR:
       return 2;
 
     case TOK_AND:
-    case TOK_OR:
-    case TOK_XOR:
       return 1;
 
     default:
