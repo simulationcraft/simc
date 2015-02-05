@@ -1824,7 +1824,7 @@ public:
       double partial = ( whole > 0 ? whole - mastery : mastery );
       // Look through each ability stack and test against mastery value for extra stack
       for ( int x = 0; x < base_stacks; ++x ){
-        stacks += whole + ( ab::rng().roll( partial ) ) ? 1 : 0;
+        stacks += whole + ( ab::rng().roll( partial ) ? 1 : 0 );
       }
       p() -> buff.tigereye_brew -> trigger( stacks );
     }
