@@ -1523,7 +1523,9 @@ struct ambush_t : public rogue_attack_t
     requires_position = POSITION_BACK;
     requires_stealth  = true;
     if ( p -> wod_hotfix )
-      weapon_multiplier *= 1.13;
+    {
+      weapon_multiplier = 3.15;
+    }
   }
 
   double action_multiplier() const
@@ -1616,8 +1618,7 @@ struct backstab_t : public rogue_attack_t
     requires_position = POSITION_BACK;
     if ( p -> wod_hotfix )
     {
-      weapon_multiplier *= 1.13;
-      weapon_multiplier *= 1.2;
+      weapon_multiplier = 2.10;
     }
   }
 
@@ -2073,8 +2074,8 @@ struct hemorrhage_t : public rogue_attack_t
     may_multistrike = true;
     if ( p -> wod_hotfix )
     {
-      weapon_multiplier *= 1.2 * 1.3;
-      attack_power_mod.tick *= 1.2 * 1.3;
+      weapon_multiplier = 0.65;
+      attack_power_mod.tick = 0.055;
     }
   }
 
@@ -4229,7 +4230,9 @@ struct shadow_reflection_pet_t : public pet_t
     {
       requires_position = POSITION_BACK;
       if ( p -> wod_hotfix )
-        weapon_multiplier *= 1.13;
+      {
+        weapon_multiplier = 3.15;
+      }
     }
   };
 
@@ -4243,8 +4246,8 @@ struct shadow_reflection_pet_t : public pet_t
       dot_behavior = DOT_REFRESH;
       if ( p -> wod_hotfix )
       {
-        weapon_multiplier *= 1.2 * 1.3;
-        attack_power_mod.tick *= 1.2 * 1.3;
+        weapon_multiplier = 0.65;
+        attack_power_mod.tick = 0.055;
       }
     }
   };
@@ -4257,8 +4260,7 @@ struct shadow_reflection_pet_t : public pet_t
       requires_position = POSITION_BACK;
       if ( p -> wod_hotfix )
       {
-        weapon_multiplier *= 1.13;
-        weapon_multiplier *= 1.2;
+        weapon_multiplier = 2.15;
       }
     }
   };
