@@ -62,7 +62,7 @@
 #endif
 
 // Workaround for LLVM/Clang 3.2+ using glibc headers.
-#if defined( SC_CLANG ) && SC_CLANG >= 30200
+#if defined( SC_CLANG ) && SC_CLANG >= 30200 && SC_CLANG < 30500
 # define __extern_always_inline extern __always_inline __attribute__(( __gnu_inline__ ))
 #endif
 
