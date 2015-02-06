@@ -495,10 +495,11 @@ player_t::player_t( sim_t*             s,
   last_foreground_action( 0 ), last_gcd_action( 0 ),
   off_gcdactions(),
   cast_delay_reaction( timespan_t::zero() ), cast_delay_occurred( timespan_t::zero() ),
+  use_apl( "" ),
   // Actions
   use_default_action_list( 0 ),
   precombat_action_list( 0 ), active_action_list( 0 ), active_off_gcd_list( 0 ), restore_action_list( 0 ),
-  no_action_list_provided(), use_apl( "" ),
+  no_action_list_provided(),
   // Reporting
   quiet( false ),
   report_extension( new player_report_extension_t() ),
@@ -7712,6 +7713,7 @@ expr_t* player_t::create_expression( action_t* a,
       use_apl_expr_t( player_t* p, const std::string& apl_str, const std::string& use_apl ) :
         expr_t( "using_apl_" + apl_str ), apl_name( apl_str )
       {
+        (void) p;
         is_match = util::str_compare_ci( apl_str, use_apl );
       }
 
