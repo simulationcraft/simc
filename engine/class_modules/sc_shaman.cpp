@@ -654,7 +654,7 @@ public:
         generated_eoe = p() -> get_proc( "Echo of the Elements: " + std::string( ab::s_data -> name_cstr() ) + " (generate)" );
     }
 
-    if ( shock && p() -> talent.elemental_fusion -> ok() )
+    if ( shock && p() -> talent.elemental_fusion -> ok() && ab::s_data )
       ef_proc = p() -> get_proc( "Elemental Fusion: " + std::string( ab::s_data -> name_cstr() ) );
 
     if ( track_cd_waste )

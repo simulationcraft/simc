@@ -3566,7 +3566,7 @@ void rogue_t::trigger_combo_point_gain( const action_state_t* state, int cp_over
     anticipation_added = std::min( anticipation_fill, overflow );
     anticipation_overflow = overflow - anticipation_added;
     if ( anticipation_added > 0 || anticipation_overflow > 0 )
-      overflow = 0;
+      overflow = 0; // this is never used further???
   }
 
   gain_t* gain_obj = gain;
@@ -3595,10 +3595,13 @@ void rogue_t::trigger_combo_point_gain( const action_state_t* state, int cp_over
   if ( sim -> log )
   {
     std::string cp_name;
-    if ( gain != 0)
+    if ( gain )
       cp_name = gain -> name_str;
     else
+    {
+      assert( state -> action );
       cp_name = state -> action -> name();
+    }
 
     if ( anticipation_added > 0 || anticipation_overflow > 0 )
       sim -> out_log.printf( "%s gains %d (%d) anticipation charges from %s (%d)",

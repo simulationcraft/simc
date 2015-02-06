@@ -1637,7 +1637,7 @@ void player_t::init_glyphs()
   for ( size_t i = 0; i < glyph_names.size(); i++ )
   {
     unsigned glyph_id = util::to_unsigned( glyph_names[ i ] );
-    const spell_data_t* g = spell_data_t::not_found();
+    const spell_data_t* g;
     if ( glyph_id > 0 && dbc.is_glyph_spell( glyph_id ) )
       g = find_spell( glyph_id );
     else
