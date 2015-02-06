@@ -597,6 +597,7 @@ public:
   // Custom Monk Functions
   double current_stagger_tick_dmg();
   double current_stagger_tick_dmg_percent();
+  double current_stagger_dot_remains();
   double stagger_pct();
   // Blizzard rounds it's stagger damage; anything higher than half a percent beyond 
   // the threshold will switch to the next threshold
@@ -4041,7 +4042,7 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
     dot_t* d = get_dot();
     double damage_remaining = 0.0;
     if ( d -> is_ticking() )
-      damage_remaining += d -> ticks_left() * d -> state -> result_amount; // Assumes base_td == damage, no modifiers or crits
+      damage_remaining += d -> state -> result_amount; // Assumes base_td == damage, no modifiers or crits
 
     cancel();
     d -> cancel();
@@ -4053,6 +4054,14 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
   {
     dot_t* d = get_dot();
     return d -> is_ticking();
+  }
+
+  double tick_amount()
+  {
+    dot_t* d = get_dot();
+    if ( d && d -> state )
+      return calculate_tick_amount( d -> state, 1 );
+    return 0;
   }
 };
 
@@ -5744,6 +5753,38 @@ void monk_t::combat_begin()
     buff.bladed_armor -> trigger();
 }
 
+// monk_t::assess_damage ====================================================
+
+void monk_t::assess_damage(school_e school,
+  dmg_e    dtype,
+  action_state_t* s)
+{
+  buff.shuffle -> up();
+  buff.fortifying_brew -> up();
+  buff.elusive_brew_activated -> up();
+  if ( s -> result_total > 0 && school == SCHOOL_PHYSICAL && !glyph.guard -> ok() )
+    buff.guard -> up();
+  else if ( s -> result_total > 0 && school != SCHOOL_PHYSICAL && glyph.guard -> ok() )
+    buff.guard -> up();
+
+  // TODO: Add some form of cooldown to better model what is in-game
+  //    Need to add in some Option to control how often player falls below 35% or else this will be triggering
+  //    for half the fight.
+  //if ( health_percentage() < 35 )
+  //  cooldown.expel_harm -> reset( true );
+
+  if ( health_percentage() < glyph.fortuitous_spheres -> effectN( 1 ).base_value() && glyph.fortuitous_spheres -> ok() )
+  {
+    if ( cooldown.healing_sphere -> up() )
+      active_actions.healing_sphere -> execute();
+  }
+
+  if ( s -> result == RESULT_DODGE && sets.set( MONK_BREWMASTER, T17, B2 ) )
+    resource_gain( RESOURCE_ENERGY, sets.set( MONK_BREWMASTER, T17, B2 ) -> effectN( 1 ).base_value(), gain.energy_refund );
+
+  base_t::assess_damage( school, dtype, s );
+}
+
 // monk_t::target_mitigation ====================================================
 
 void monk_t::target_mitigation( school_e school,
@@ -5787,38 +5828,6 @@ void monk_t::target_mitigation( school_e school,
   }
 }
 
-// monk_t::assess_damage ====================================================
-
-void monk_t::assess_damage( school_e school,
-                            dmg_e    dtype,
-                            action_state_t* s )
-{
-  buff.shuffle -> up();
-  buff.fortifying_brew -> up();
-  buff.elusive_brew_activated -> up();
-  if ( s -> result_total > 0 && school == SCHOOL_PHYSICAL && !glyph.guard -> ok() )
-    buff.guard -> up();
-  else if ( s -> result_total > 0 && school != SCHOOL_PHYSICAL && glyph.guard -> ok() )
-    buff.guard -> up();
-
-  // TODO: Add some form of cooldown to better model what is in-game
-  //    Need to add in some Option to control how often player falls below 35% or else this will be triggering
-  //    for half the fight.
-  //if ( health_percentage() < 35 )
-  //  cooldown.expel_harm -> reset( true );
-
-  if ( health_percentage() < glyph.fortuitous_spheres -> effectN( 1 ).base_value() && glyph.fortuitous_spheres -> ok() )
-  {
-    if ( cooldown.healing_sphere -> up() )
-      active_actions.healing_sphere -> execute();
-  }
-
-  if ( s -> result == RESULT_DODGE && sets.set( MONK_BREWMASTER, T17, B2 ) )
-    resource_gain( RESOURCE_ENERGY, sets.set( MONK_BREWMASTER, T17, B2 ) -> effectN( 1 ).base_value(), gain.energy_refund );
-
-  base_t::assess_damage( school, dtype, s );
-}
-
 // monk_t::assess_damage_imminent_pre_absorb ==============================
 
 void monk_t::assess_damage_imminent_pre_absorb( school_e school,
@@ -5834,11 +5843,12 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
   if ( s -> action -> id == 124255 )
     return;
 
+  // Stagger Calculation
   double stagger_dmg = 0;
-  
+
   if ( s -> result_amount > 0 )
   {
-    if (school == SCHOOL_PHYSICAL)
+    if ( school == SCHOOL_PHYSICAL )
       stagger_dmg += s -> result_amount * stagger_pct();
 
     if ( school != SCHOOL_PHYSICAL && talent.soul_dance )
@@ -6063,6 +6073,7 @@ void monk_t::apl_combat_brewmaster()
   st -> add_action( this, "Blackout Kick", "if=buff.serenity.up" );  
   st -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
   st -> add_action( this, "Jab", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
+  st -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.pct>2.2&buff.shuffle.remains>=6");
   st -> add_action( this, "Tiger Palm" );
 
   aoe -> add_action( this, "Purifying Brew", "if=stagger.heavy" );
@@ -6086,6 +6097,7 @@ void monk_t::apl_combat_brewmaster()
   aoe -> add_action( this, "Blackout Kick", "if=buff.serenity.up" );  
   aoe -> add_action( this, "Expel Harm", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
   aoe -> add_action( this, "Jab", "if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
+  aoe -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.pct>2.2&buff.shuffle.remains>=6");
   aoe -> add_action( this, "Tiger Palm" );
 }
 
@@ -6368,14 +6380,19 @@ double monk_t::stagger_pct()
 double monk_t::current_stagger_tick_dmg()
 {
   double dmg = 0;
+  //double duration = 0;
+  //double time_to_tick = 0;
   if ( active_actions.stagger_self_damage )
   {
-    dot_t* dot = active_actions.stagger_self_damage -> get_dot();
+    dmg = active_actions.stagger_self_damage -> tick_amount();
+/*    dot_t* dot = active_actions.stagger_self_damage -> get_dot();
 
     if ( dot && dot -> state )
     {
-      dmg = dot -> state -> result_amount;
+      dmg = dot -> state -> result_total;
+      // dmg /= dot -> ticks_left();
     }
+    */
   }
   return dmg;
 }
@@ -6385,6 +6402,20 @@ double monk_t::current_stagger_tick_dmg()
 double monk_t::current_stagger_tick_dmg_percent()
 {
   return current_stagger_tick_dmg() / resources.max[RESOURCE_HEALTH];
+}
+
+// monk_t::current_stagger_dot_duration ==================================================
+
+double monk_t::current_stagger_dot_remains()
+{
+  double remains = 0;
+  if ( active_actions.stagger_self_damage )
+  {
+    dot_t* dot = active_actions.stagger_self_damage -> get_dot();
+
+    remains = dot -> ticks_left();
+  }
+  return remains;
 }
 
 // monk_t::create_expression ==================================================
@@ -6421,6 +6452,32 @@ expr_t* monk_t::create_expression( action_t* a, const std::string& name_str )
         return player.current_stagger_tick_dmg();
       }
     };
+    struct stagger_percent_expr_t : public expr_t
+    {
+      monk_t& player;
+      stagger_percent_expr_t( monk_t& p ) :
+        expr_t( "stagger_percent" ),
+        player( p )
+      { }
+
+      virtual double evaluate()
+      {
+        return player.current_stagger_tick_dmg_percent() * 100;
+      }
+    };
+    struct stagger_remains_expr_t : public expr_t
+    {
+      monk_t& player;
+      stagger_remains_expr_t(monk_t& p) :
+        expr_t("stagger_remains"),
+        player(p)
+      { }
+
+      virtual double evaluate()
+      {
+        return player.current_stagger_dot_remains();
+      }
+    };
 
     if ( splits[1] == "light" )
       return new stagger_threshold_expr_t( *this, light_stagger_threshold );
@@ -6430,6 +6487,10 @@ expr_t* monk_t::create_expression( action_t* a, const std::string& name_str )
       return new stagger_threshold_expr_t( *this, heavy_stagger_threshold );
     else if ( splits[1] == "amount" )
       return new stagger_amount_expr_t( *this );
+    else if ( splits[1] == "pct" )
+      return new stagger_percent_expr_t( *this );
+    else if ( splits[1] == "remains" )
+      return new stagger_remains_expr_t( *this );
   }
 
   return base_t::create_expression( a, name_str );
