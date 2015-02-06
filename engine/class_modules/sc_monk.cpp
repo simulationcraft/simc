@@ -6380,20 +6380,8 @@ double monk_t::stagger_pct()
 double monk_t::current_stagger_tick_dmg()
 {
   double dmg = 0;
-  //double duration = 0;
-  //double time_to_tick = 0;
   if ( active_actions.stagger_self_damage )
-  {
     dmg = active_actions.stagger_self_damage -> tick_amount();
-/*    dot_t* dot = active_actions.stagger_self_damage -> get_dot();
-
-    if ( dot && dot -> state )
-    {
-      dmg = dot -> state -> result_total;
-      // dmg /= dot -> ticks_left();
-    }
-    */
-  }
   return dmg;
 }
 
