@@ -282,32 +282,34 @@ public:
     if( left_always_false || right_always_false )
     {
       if( EXPRESSION_DEBUG ) printf( "%*d %s and expression reduced to false\n", spacing, id_, name().c_str() );
-      delete this;
       delete left;
       delete right;
+      delete this;
       return new const_expr_t( "const_and", 0.0 );
     }
     if( left_always_true && right_always_true )
     {
       if( EXPRESSION_DEBUG ) printf( "%*d %s and expression reduced to true\n", spacing, id_, name().c_str() );
-      delete this;
       delete left;
       delete right;
+      delete this;
       return new const_expr_t( "const_and", 1.0 );
     }
     if( left_always_true )
     {
       if( EXPRESSION_DEBUG ) printf( "%*d %s and expression reduced to right\n", spacing, id_, name().c_str() );
-      delete this;
       delete left;
-      return right;
+      expr_t* prev_right = right;
+      delete this;
+      return prev_right;
     }
     if( right_always_true )
     {
       if( EXPRESSION_DEBUG ) printf( "%*d %s and expression reduced to left\n", spacing, id_, name().c_str() );
-      delete this;
+      expr_t* prev_left = left;
       delete right;
-      return left;
+      delete this;
+      return prev_left;
     }
     // We need to separate constant propagation and flattening for proper term sorting.
     if( left_false < right_false ) 
@@ -368,32 +370,34 @@ public:
     if( left_always_true || right_always_true )
     {
       if( EXPRESSION_DEBUG ) printf( "%*d %s or expression reduced to true\n", spacing, id_, name().c_str() );
-      delete this;
       delete left;
       delete right;
+      delete this;
       return new const_expr_t( "const_or", 1.0 );
     }
     if( left_always_false && right_always_false )
     {
       if( EXPRESSION_DEBUG ) printf( "%*d %s or expression reduced to false\n", spacing, id_, name().c_str() );
-      delete this;
       delete left;
       delete right;
+      delete this;
       return new const_expr_t( "const_or", 0.0 );
     }
     if( left_always_false )
     {
       if( EXPRESSION_DEBUG ) printf( "%*d %s or expression reduced to right\n", spacing, id_, name().c_str() );
-      delete this;
       delete left;
-      return right;
+      expr_t* prev_right = right;
+      delete this;
+      return prev_right;
     }
     if( right_always_false )
     {
       if( EXPRESSION_DEBUG ) printf( "%*d %s or expression reduced to left\n", spacing, id_, name().c_str() );
-      delete this;
+      expr_t* prev_left = left;
       delete right;
-      return left;
+      delete this;
+      return prev_left;
     }
     // We need to separate constant propagation and flattening for proper term sorting.
     if( left_true < right_true )
@@ -457,31 +461,33 @@ public:
     if( left_always_false )
     {
       if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to right\n", spacing, id_, name().c_str() );
-      delete this;
       delete left;
-      return right;
+      expr_t* prev_right = right;
+      delete this;
+      return prev_right;
     }
     if( right_always_false )
     {
       if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to left\n", spacing, id_, name().c_str() );
-      delete this;
+      expr_t* prev_left = left;
       delete right;
-      return left;
+      delete this;
+      return prev_left;
     }
     if( left_always_true )
     {
       if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to !right\n", spacing, id_, name().c_str() );
       expr_t* not_expr = select_unary( "not_xor", TOK_NOT, right );
-      delete this;
       delete left;
+      delete this;
       return not_expr;
     }
     if( right_always_true )
     {
       if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to !left\n", spacing, id_, name().c_str() );
       expr_t* not_expr = select_unary( "not_xor", TOK_NOT, left );
-      delete this;
       delete right;
+      delete this;
       return not_expr;
     }
     expr_t* xor_expr = new logical_xor_t( name(), left, right );
@@ -518,8 +524,9 @@ public:
       if( EXPRESSION_DEBUG ) printf( "%*d %s binary expression reduced to %f\n", spacing, id_, name().c_str(), result );
       delete left;
       delete right;
+      expr_t* reduced = new const_expr_t( "const_binary", result );
       delete this;
-      return new const_expr_t( "const_binary", result );
+      return reduced;
     }
     if( left_constant )
     {
@@ -532,8 +539,8 @@ public:
   double evaluate() { return F<double>()( left, right -> eval() ); }
       };
       expr_t* reduced = new left_reduced_t( name(), op_, left_value, right );
-      delete this;
       delete left;
+      delete this;
       return reduced;
     }
     if( right_constant )

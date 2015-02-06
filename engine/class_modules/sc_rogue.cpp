@@ -3594,12 +3594,11 @@ void rogue_t::trigger_combo_point_gain( const action_state_t* state, int cp_over
 
   if ( sim -> log )
   {
-    std::string cp_name;
+    std::string cp_name = "unknown";
     if ( gain )
       cp_name = gain -> name_str;
-    else
+    else if ( state && state -> action )
     {
-      assert( state -> action );
       cp_name = state -> action -> name();
     }
 
