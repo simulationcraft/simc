@@ -444,18 +444,18 @@ public:
   ( left_always_false && right_always_true  ) )
     {
       if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to true\n", spacing, id_, name().c_str() );
-      delete this;
       delete left;
       delete right;
+      delete this;
       return new const_expr_t( "const_xor", 1.0 );
     }
     if( ( left_always_true  && right_always_true  ) ||
   ( left_always_false && right_always_false ) )
     {
       if( EXPRESSION_DEBUG ) printf( "%*d %s xor expression reduced to false\n", spacing, id_, name().c_str() );
-      delete this;
       delete left;
       delete right;
+      delete this;
       return new const_expr_t( "const_xor", 0.0 );
     }
     if( left_always_false )
