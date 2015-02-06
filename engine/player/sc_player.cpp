@@ -9839,7 +9839,7 @@ void player_collected_data_t::print_tmi_debug_csv( const sc_timeline_t* nma, con
 
     for ( size_t i = 0; i < health_changes.timeline.data().size(); i++ )
     {
-      f.printf( "%f,%f,%f,%f,%f,%f\n", timeline_dmg_taken.data()[ i ],
+      f.format( "%f,%f,%f,%f,%f,%f\n", timeline_dmg_taken.data()[ i ],
           timeline_healing_taken.data()[ i ],
           health_changes.timeline.data()[ i ],
           health_changes.timeline_normalized.data()[ i ],
