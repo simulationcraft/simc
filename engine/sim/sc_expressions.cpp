@@ -617,13 +617,13 @@ int expression_t::precedence( token_e expr_token_type )
     case TOK_NOTIN:
       return 4;
 
-    case TOK_XOR:
+    case TOK_AND:
       return 3;
 
-    case TOK_OR:
+    case TOK_XOR:
       return 2;
 
-    case TOK_AND:
+    case TOK_OR:
       return 1;
 
     default:
