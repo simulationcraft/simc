@@ -6357,8 +6357,9 @@ void priest_t::apl_shadow()
   main -> add_action( "devouring_plague,if=shadow_orb>=3&!talent.auspicious_spirits.enabled&((cooldown.mind_blast.remains<gcd&!set_bonus.tier17_2pc)|(natural_shadow_word_death_range&cooldown.shadow_word_death.remains<gcd))&!target.dot.devouring_plague_tick.ticking&talent.surge_of_darkness.enabled,cycle_targets=1" );
   main -> add_action( "devouring_plague,if=shadow_orb>=3&!talent.auspicious_spirits.enabled&((cooldown.mind_blast.remains<gcd&!set_bonus.tier17_2pc)|(target.health.pct<20&cooldown.shadow_word_death.remains<gcd))" );
   main -> add_action( "mind_blast,if=glyph.mind_harvest.enabled&mind_harvest=0,cycle_targets=1" );
-  main -> add_action( "mind_blast,if=active_enemies<=5&cooldown_react" );
-  main -> add_action( "shadow_word_pain,if=talent.auspicious_spirits.enabled&remains<(18*0.3)&miss_react,cycle_targets=1" );
+  main -> add_action( "mind_blast,if=talent.auspicious_spirits.enabled&active_enemies<=4&cooldown_react" );
+  main -> add_action( "shadow_word_pain,if=talent.auspicious_spirits.enabled&remains<(18*0.3)&miss_react,cycle_targets=1,max_cycle_targets=7" );
+  main -> add_action( "mind_blast,if=cooldown_react" );
   main -> add_action( "searing_insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
   main -> add_action( "searing_insanity,if=active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
   main -> add_action( "insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies<=2,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1|shadow_orb=5)" );
@@ -6440,7 +6441,7 @@ void priest_t::apl_shadow()
   cop_dotweave -> add_action( "searing_insanity,if=active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
   cop_dotweave -> add_action( "shadowfiend,if=!talent.mindbender.enabled&!buff.shadow_word_insanity.remains" );
   cop_dotweave -> add_action( "mindbender,if=talent.mindbender.enabled&!buff.shadow_word_insanity.remains" );
-  cop_dotweave -> add_action( "shadow_word_pain,if=shadow_orb=4&set_bonus.tier17_2pc&!target.dot.shadow_word_pain.ticking&!target.dot.devouring_plague.ticking&cooldown.mind_blast.remains<1.2*gcd&cooldown.mind_blast.remains>0.2*gcd" );
+  cop_dotweave -> add_action( "shadow_word_pain,if=shadow_orb=4&set_bonus.tier17_2pc&!target.dot.shadow_word_pain.ticking&!target.dot.devouring_plague.ticking&cooldown.mind_blast.remains<gcd&cooldown.mind_blast.remains>0" );
   cop_dotweave -> add_action( "shadow_word_pain,if=shadow_orb=5&!target.dot.devouring_plague.ticking&!target.dot.shadow_word_pain.ticking" );
   cop_dotweave -> add_action( "vampiric_touch,if=shadow_orb=5&!target.dot.devouring_plague.ticking&!target.dot.vampiric_touch.ticking" );
   cop_dotweave -> add_action( "insanity,if=buff.shadow_word_insanity.remains,chain=1,interrupt_if=cooldown.mind_blast.remains<=0.1" );
