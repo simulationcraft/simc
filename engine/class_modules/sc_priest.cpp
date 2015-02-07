@@ -3782,7 +3782,7 @@ struct cascade_t : public cascade_base_t<priest_spell_t>
       {
         targets.push_back( t );
 
-        if ( priest.dbc.ptr && priest.specialization() != PRIEST_SHADOW && _target_list_source.size() > 1)
+        if ( priest.dbc.ptr && _target_list_source.size() > 1)
         {
           targets.push_back( t );
         }
