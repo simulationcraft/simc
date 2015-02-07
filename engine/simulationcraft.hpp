@@ -2213,7 +2213,7 @@ struct expr_t
   }
 
   static int unique_id;
-  mutex_t unique_id_mutex;
+  static mutex_t unique_id_mutex;
 };
 
 // Reference Expression - ref_expr_t
