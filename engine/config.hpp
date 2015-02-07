@@ -75,7 +75,7 @@
 // ==========================================================================
 // C++11
 // ==========================================================================
-#if __cplusplus < 201103L && ( ! defined( SC_GCC ) || ! __GXX_EXPERIMENTAL_CXX0X__ || SC_GCC < 40600 ) && ( ! defined( SC_VS ) )
+#if __cplusplus < 201103L && ( ! defined( SC_GCC ) || !defined(__GXX_EXPERIMENTAL_CXX0X__) || SC_GCC < 40600 ) && ( ! defined( SC_VS ) )
 namespace std {
 class nullptr_t
 {
@@ -88,7 +88,7 @@ public:
 #define nullptr ( std::nullptr_t() )
 #endif
 
-#if __cplusplus < 201103L && ( ! defined( SC_GCC ) || ! __GXX_EXPERIMENTAL_CXX0X__ || SC_GCC < 40700 ) && ( ! defined( SC_VS ) )
+#if __cplusplus < 201103L && ( ! defined( SC_GCC ) || !defined(__GXX_EXPERIMENTAL_CXX0X__) || SC_GCC < 40700 ) && ( ! defined( SC_VS ) )
 #define override
 #endif
 
@@ -100,7 +100,7 @@ public:
 #define USE_TR1_NAMESPACE 1
 #endif
 
-# if ( SC_VS >= 11 || __cplusplus >= 201103L ) && ! defined( SC_OSX )
+# if ( ( defined( SC_VS ) && SC_VS >= 11 ) || __cplusplus >= 201103L ) && ! defined( SC_OSX )
 # define SC_STD_THREAD // Enables std::thread:hardware_concurrency, which returns the number of logical processors.
 #endif
 

@@ -345,7 +345,7 @@ std::string& str::format( std::string& buffer, const char *fmt, va_list args )
       bool mod_size           = false;
       int  width              = -1;
       int  precision          = -1;
-      char* str;
+      const char* str;
       unsigned long long unum;
 
       // %[#0- +][#*][.][#*][hlL][dioxXucsfeEgGpn%]
@@ -500,7 +500,7 @@ std::string& str::format( std::string& buffer, const char *fmt, va_list args )
         break;
       case 's':
         str = va_arg( args, char* );
-        if( ! str ) str = (char*) "";
+        if( ! str ) str =  "";
         format_string( buffer, str, static_cast<int>(strlen(str)), width, precision,
                        flags_left_justify, flags_zero_pad );
         c++;
