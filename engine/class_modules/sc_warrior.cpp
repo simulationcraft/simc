@@ -4779,7 +4779,6 @@ void warrior_t::create_buffs()
     .chance( sets.set( WARRIOR_ARMS, T17, B2 ) -> proc_chance() );
 
   buff.tier17_4pc_fury = buff_creator_t( this, "rampage", sets.set( WARRIOR_FURY, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
-    .default_value( sets.set( WARRIOR_FURY, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_ATTACK_SPEED )
     .add_invalidate( CACHE_CRIT );
 
@@ -5293,7 +5292,11 @@ double warrior_t::composite_melee_speed() const
 {
   double s = player_t::composite_melee_speed();
 
-  s /= 1.0 + buff.tier17_4pc_fury -> current_stack * buff.tier17_4pc_fury -> default_value;
+  if ( buff.tier17_4pc_fury -> check() )
+  {
+    s /= 1.0 + buff.tier17_4pc_fury -> current_stack *
+      sets.set( WARRIOR_FURY, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
+  }
 
   return s;
 }
@@ -5304,7 +5307,11 @@ double warrior_t::composite_melee_crit() const
 {
   double c = player_t::composite_melee_crit();
 
-  c += buff.tier17_4pc_fury -> current_stack * buff.tier17_4pc_fury -> default_value;
+  if ( buff.tier17_4pc_fury -> check() )
+  {
+    c += buff.tier17_4pc_fury -> current_stack *
+      sets.set( WARRIOR_FURY, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() -> effectN( 2 ).percent();
+  }
 
   return c;
 }
@@ -5313,11 +5320,7 @@ double warrior_t::composite_melee_crit() const
 
 double warrior_t::composite_spell_crit() const
 {
-  double c = player_t::composite_spell_crit();
-
-  c += buff.tier17_4pc_fury -> current_stack * buff.tier17_4pc_fury -> default_value;
-
-  return c;
+  return composite_melee_crit();
 }
 
 // warrior_t::temporary_movement_modifier ==================================
