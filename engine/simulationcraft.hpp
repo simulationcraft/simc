@@ -91,6 +91,9 @@ inline std::ostream& operator<<(std::ostream &os, const timespan_t& x )
 // String Utilities
 #include "util/str.hpp"
 
+// mutex, thread
+#include "util/concurrency.hpp"
+
 // Forward Declarations =====================================================
 
 struct absorb_buff_t;
@@ -2178,7 +2181,7 @@ struct expression_t
 
 struct expr_t
 {
-  expr_t( const std::string& name, token_e op=TOK_UNKNOWN ) : name_( name ), op_( op ) { id_=++unique_id; }
+  expr_t( const std::string& name, token_e op=TOK_UNKNOWN ) : name_( name ), op_( op ) { id_=get_global_id(); }
   virtual ~expr_t() {}
 
   const std::string& name() { return name_; }
@@ -2203,7 +2206,14 @@ struct expr_t
   token_e op_;
   int id_;
 
+  int get_global_id()
+  {
+    auto_lock_t lock( unique_id_mutex );
+    return ++unique_id;
+  }
+
   static int unique_id;
+  mutex_t unique_id_mutex;
 };
 
 // Reference Expression - ref_expr_t
@@ -2311,9 +2321,6 @@ struct spell_data_expr_t
   static spell_data_expr_t* parse( sim_t* sim, const std::string& expr_str );
   static spell_data_expr_t* create_spell_expression( sim_t* sim, const std::string& name_str );
 };
-
-// mutex, thread
-#include "util/concurrency.hpp"
 
 // Iteration data entry for replayability
 struct iteration_data_entry_t
