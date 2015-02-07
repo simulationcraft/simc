@@ -106,7 +106,7 @@ Spell Level      : 28
 Range            : 30 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Affecting spells : Ancestral Swiftness (16188), Stormstrike (17364), Elemental Reach (29000), Maelstrom Weapon (53817), Glyph of Chain Lightning (55449), Elemental Fury (60188), Shamanism (62099), Spiritwalker's Grace (79206), Temporal Maelstrom (105869), Ascendance (114050), Windstrike (115356), Lucidity (137326), Elemental Discharge (144999)
+Affecting spells : Ancestral Swiftness (16188), Stormstrike (17364), Elemental Reach (29000), Maelstrom Weapon (53817), Glyph of Chain Lightning (55449), Elemental Fury (60188), Shamanism (62099), Spiritwalker's Grace (79206), Temporal Maelstrom (105869), Ascendance (114050), Windstrike (115356), Lucidity (137326), Elemental Discharge (144999), Enhanced Chain Lightning (157766)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5402,6 +5402,7 @@ Effects          :
                    Base Value: 300 | Scaled Value: 300
 #2 (id=263764)   : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10
+                   Affected Spells: Chain Lightning (421)
 Description      : $@spelldesc157765
 Tooltip          : Your next Earthquake is Instant, and its damage is increased by $w1%.
 

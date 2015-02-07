@@ -2968,7 +2968,7 @@ Effects          :
 #1 (id=85447)    : Apply Aura (6) | Increase Energy (35)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1.00000 | Misc Value: 3
 #2 (id=85448)    : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f
+                   Base Value: 17 | Scaled Value: 17 | Misc Value: 0x7f
 Description      : While wielding daggers, your maximum Energy is increased by $s1 and your damage is increased by $s2%.
 
 Name             : Revealing Strike (id=84617) [Spell Family (8)] 
@@ -3658,7 +3658,6 @@ Effects          :
                    Base Value: 240 | Scaled Value: 240
 Description      : $@spelldesc121411
 Tooltip          : Suffering $w1 damage every $t1 sec.
-Variables        : $mult=$?s16511[${(((100+$76808m1))*0.88/100)}][${1.00*0.88}]
 
 Name             : Sanguinary Vein (id=124271) [Spell Family (8), Hidden] 
 Class            : Rogue
@@ -4282,7 +4281,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ....x... ........ ........ 
+                 : ........ ....x... ........ ...x....   ........ ....x... ........ ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=217581)   : Dummy (3)

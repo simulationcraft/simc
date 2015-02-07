@@ -1007,6 +1007,7 @@ Effects          :
 
 Name             : Way of the Monk (Passive) (id=108977) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
+Affecting spells : Mana Meditation (121278)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3143,7 +3144,7 @@ $low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
 $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
-Name             : Mana Meditation (id=121278) [Passive] 
+Name             : Mana Meditation (id=121278) [Spell Family (53), Passive] 
 Class            : Mistweaver Monk
 Spell Level      : 10
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -3156,6 +3157,9 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=150073)   : Apply Aura (6) | Unknown effect sub type (134)
                    Base Value: 50 | Scaled Value: 50
+#2 (id=264538)   : Apply Aura (6) | Add Flat Modifier: Spell Tick Time (107)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 8
+                   Affected Spells: Way of the Monk (108977), Way of the Monk (140729)
 Description      : Allows $s1% of your mana regeneration from Spirit to continue while you are in combat.
 
 Name             : Power Strikes (Passive Talent) (id=121817) [Spell Family (53), Passive] 
@@ -5414,6 +5418,7 @@ Crackling Jade Lightning channels $s1% faster and generates 1 Chi each time it d
 
 Name             : Way of the Monk (Passive) (id=140729) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
+Affecting spells : Mana Meditation (121278)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

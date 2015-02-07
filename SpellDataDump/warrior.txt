@@ -5006,7 +5006,7 @@ Effects          :
                    Base Value: 70 | Scaled Value: 70 | Misc Value: 1
 Description      : Increases your speed by $133278s1% for $133278d after using Heroic Leap.
 
-Name             : Glyph of Mocking Banner (id=159738) [Spell Family (4), Passive, Hidden] 
+Name             : Glyph of Mocking Banner (Protection) (id=159738) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

@@ -4941,15 +4941,15 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=210837)   : Apply Aura (6) | Periodic Trigger Spell: Mark of Sindragosa every 1 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 155166
-Description      : Continuously deals $155166s2 Shadowfrost damage every $t1 sec to enemies in a cone in front of you within $155166a1 yards, and affects them with Mark of Sindragosa for $155166d. Deals reduced damage to secondary targets. You will continue breathing until cancelled or Runic Power is exhausted.
+Description      : Continuously deals $155166s2 Shadowfrost damage every $t1 sec to enemies in a cone in front of you within $155166a1 yards$?c1[, and affects them with Mark of Sindragosa for $155166d][]. Deals reduced damage to secondary targets. You will continue breathing until cancelled or Runic Power is exhausted.$?c1[
 
-Mark of Sindragosa causes you to be healed for $155166s1% of spell damage dealt by afflicted enemies.
-Tooltip          : Continuously dealing Shadowfrost damage every $t1 sec to enemies in a cone in front of you, and applying Mark of Sindragosa.
+Mark of Sindragosa causes you to be healed for $155166s1% of spell damage dealt by afflicted enemies.][]
+Tooltip          : Continuously dealing Shadowfrost damage every $t1 sec to enemies in a cone in front of you$?$w1>0[, and applying Mark of Sindragosa][].
 
 Name             : Defile (id=152280) [Spell Family (15)] 
 Class            : Death Knight
@@ -4975,9 +4975,9 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3
 #4 (id=216897)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 127
-Description      : Defiles the ground targeted by the Death Knight. Every $t3 sec, if there are any enemies standing in the Defile, it deals $156000s1 Shadowfrost damage to them, and grows in radius and damage by ${$m2/100}.1%. 
+Description      : Defiles the ground targeted by the Death Knight. Every $t3 sec, if there are any enemies standing in the Defile, it deals $156000s1 Shadowfrost damage to them, and grows in radius and damage by ${$m2/100}.1%. $?c1[
 
-Enemies standing in your Defile deal $s4% less damage to you.
+Enemies standing in your Defile deal $s4% less damage to you.][]
 
 Replaces Death and Decay.
 
@@ -4996,9 +4996,9 @@ Effects          :
                    Affected Spells: Blood Plague (55078), Frost Fever (55095)
 #2 (id=218272)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
-Description      : A powerful disease that deals $155159s1 Shadowfrost damage per stack every $155159t1 sec for $155159d. Each time it deals damage, it gains 1 stack, and infects another nearby enemy within $s2 yards if possible. 
+Description      : A powerful disease that deals $155159s1 Shadowfrost damage per stack every $155159t1 sec for $155159d. Each time it deals damage, it gains 1 stack, and infects another nearby enemy within $s2 yards if possible. $?c1[
 
-You gain ${$155165m1/10} Runic Power whenever a target infected with Necrotic Plague attempts to attack you.
+You gain ${$155165m1/10} Runic Power whenever a target infected with Necrotic Plague attempts to attack you.][]
 
 Replaces Blood Plague and Frost Fever, and is applied by any ability which applied either. This effect cannot be refreshed; it gains 1 stack instead.
 
@@ -5035,12 +5035,14 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=215528)   : Apply Aura (6) | Periodic Damage: shadowfrost every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.03200
+#2 (id=264708)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc152281
 Tooltip          : Suffering $w1 Shadowfrost damage every $t1 sec.
 
-Each time it deals damage, it gains 1 stack, and infects another nearby enemy if possible.
+Each time it deals damage, it gains 1 stack, and infects another nearby enemy if possible.$?$w2>0[
 
-The Death Knight will gain ${$155165m~1/10} Runic Power whenever an infected target attempts to attack them.
+The Death Knight will gain ${$155165m~1/10} Runic Power whenever an infected target attempts to attack them.][]
 
 Name             : Necrotic Plague (id=155165) 
 Class            : Death Knight
@@ -5097,7 +5099,7 @@ Name             : Defile (id=156000) [Spell Family (15)]
 Class            : Death Knight
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .......x 
                  : x....... ........ ........ ........   ........ .......x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

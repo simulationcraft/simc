@@ -1022,8 +1022,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=22870)    : Trigger Spell: Prayer of Mending (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 41637
-Description      : Places a spell on a party or raid member that heals them for ${$<mending>} the next time they take damage. When the heal occurs, Prayer of Mending jumps to a party or raid member within $155793a1 yards. Jumps up to $41635u times and lasts $41635d after each jump.$?s55685[ The first bounce will heal for an additional $55685m1%.][]
+                   Base Value: 5 | Scaled Value: 5 | Trigger Spell: 41637
+Description      : Places a spell on a party or raid member that heals them for ${$<mending>} the next time they take damage. When the heal occurs, Prayer of Mending jumps to a party or raid member within $155793a1 yards. Jumps up to $s1 times and lasts $41635d after each jump.$?s55685[ The first bounce will heal for an additional $55685m1%.][]
 Variables        : $mult1=$?s87336[${1.25}][${1.0}]
 $mult2=$?s122098[${1.25*$<mult1>}][${$<mult1>}]
 $mending=${(1+($SP*0.666))*$pctH*$<mult2>}
@@ -4988,6 +4988,7 @@ Class            : Priest
 Resource         : 4.6% Base Mana (7360 @Level 100)
 Range            : 40 yards
 Cast Time        : 2.5 seconds
+GCD              : 1.5 seconds
 Affecting spells : Serendipity (63735), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
