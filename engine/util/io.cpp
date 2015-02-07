@@ -131,7 +131,7 @@ FILE* fopen( const std::string& filename, const char* mode )
 { return _wfopen( widen( filename ).c_str(), widen( mode ).c_str() ); }
 #endif
 
-ofstream& ofstream::printf( const char* fmt, ... )
+ofstream& ofstream::format( const char* fmt, ... )
 {
   va_list fmtargs;
   va_start( fmtargs, fmt );

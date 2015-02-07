@@ -580,7 +580,7 @@ void print_text_iteration_data( FILE* file, sim_t* sim )
 
     for ( size_t i = 0; i < sim -> low_iteration_data.size(); i++ )
     {
-      fprintf( file, "| %9.1f | %20llu | %10llu | | %9.1f | %20llu | %10llu |\n",
+      util::fprintf( file, "| %9.1f | %20" PRId64 " | %10" PRId64 " | | %9.1f | %20llu | %10" PRId64 " |\n",
           sim -> low_iteration_data[ i ].metric,
           sim -> low_iteration_data[ i ].seed,
           sim -> low_iteration_data[ i ].target_health,
@@ -600,7 +600,7 @@ void print_text_iteration_data( FILE* file, sim_t* sim )
 
     for ( size_t i = 0; i < sim -> iteration_data.size(); i++ )
     {
-      fprintf( file, "| %9.1f | %20llu | %10llu |\n",
+      util::fprintf( file, "| %9.1f | %20" PRId64 " | %10" PRId64 " |\n",
           sim -> iteration_data[ i ].metric,
           sim -> iteration_data[ i ].seed,
           sim -> iteration_data[ i ].target_health );

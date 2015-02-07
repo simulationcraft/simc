@@ -2421,7 +2421,8 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
     frost( NULL ), nature( NULL )
   {
     parse_options( options_str );
-    callbacks = may_multistrike = false;
+    callbacks = false;
+    may_multistrike = 0;
     aoe = 2;
     frost = new chimaera_shot_impact_t( player, "chimaera_shot_frost", player -> find_spell( 171454 ) );
     add_child( frost );

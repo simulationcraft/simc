@@ -744,7 +744,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
         const char* p_data;
         if ( data_type == DATA_TALENT )
           p_data = reinterpret_cast<const char*>( sim -> dbc.talent( *i ) );
-        if ( data_type == DATA_SET_BONUS )
+        else if ( data_type == DATA_SET_BONUS )
           p_data = reinterpret_cast<const char*>( (dbc::set_bonus( sim -> dbc.ptr ) + *i) );
         else if ( data_type == DATA_EFFECT )
           p_data = reinterpret_cast<const char*>( sim -> dbc.effect( *i ) );

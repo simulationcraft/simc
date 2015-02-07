@@ -654,7 +654,7 @@ public:
         generated_eoe = p() -> get_proc( "Echo of the Elements: " + std::string( ab::s_data -> name_cstr() ) + " (generate)" );
     }
 
-    if ( shock && p() -> talent.elemental_fusion -> ok() )
+    if ( shock && p() -> talent.elemental_fusion -> ok() && ab::s_data )
       ef_proc = p() -> get_proc( "Elemental Fusion: " + std::string( ab::s_data -> name_cstr() ) );
 
     if ( track_cd_waste )
@@ -6227,7 +6227,7 @@ public:
         if ( ++n & 1 )
           row_class_str = " class=\"odd\"";
 
-        os.printf("<tr%s><td class=\"left\">%s</td><td class=\"right\">%.2f</td><td class=\"right\">%.2f (%.2f%%)</td></tr>\n",
+        os.format("<tr%s><td class=\"left\">%s</td><td class=\"right\">%.2f</td><td class=\"right\">%.2f (%.2f%%)</td></tr>\n",
             row_class_str.c_str(),
             name_str.c_str(),
             util::round( n_generated, 2 ),
@@ -6235,7 +6235,7 @@ public:
       }
     }
 
-    os.printf("<tr><td class=\"left\">Total</td><td class=\"right\">%.2f</td><td class=\"right\">%.2f (%.2f%%)</td></tr>\n",
+    os.format("<tr><td class=\"left\">Total</td><td class=\"right\">%.2f</td><td class=\"right\">%.2f (%.2f%%)</td></tr>\n",
         total_generated, total_wasted, 100.0 * total_wasted / total_generated );
   }
 
@@ -6303,7 +6303,7 @@ public:
                                                                stats -> action_list[ 0 ],
                                                                domain );
 
-        os.printf("<tr%s><td rowspan=\"2\" class=\"left\" style=\"vertical-align: top;\">%s</td>",
+        os.format("<tr%s><td rowspan=\"2\" class=\"left\" style=\"vertical-align: top;\">%s</td>",
             row_class_str.c_str(), name_str.c_str() );
 
         os << "<td class=\"left\">Cast</td>";
@@ -6315,17 +6315,17 @@ public:
             pct = 100.0 * n_cast[ j ] / n_cast[ MAX_MAELSTROM_STACK + 1 ];
 
           if ( j < end2 - 1 )
-            os.printf("<td class=\"right\">%.1f (%.1f%%)</td>", util::round( n_cast[ j ], 1 ), util::round( pct, 1 ) );
+            os.format("<td class=\"right\">%.1f (%.1f%%)</td>", util::round( n_cast[ j ], 1 ), util::round( pct, 1 ) );
           else
           {
-            os.printf("<td class=\"right\">%.1f</td>", util::round( n_cast[ j ], 1 ) );
-            os.printf("<td class=\"right\">%.1f</td>", util::round( n_cast_charges, 1 ) );
+            os.format("<td class=\"right\">%.1f</td>", util::round( n_cast[ j ], 1 ) );
+            os.format("<td class=\"right\">%.1f</td>", util::round( n_cast_charges, 1 ) );
           }
         }
 
         os << "</tr>\n";
 
-        os.printf("<tr%s>", row_class_str.c_str() );
+        os.format("<tr%s>", row_class_str.c_str() );
 
         os << "<td class=\"left\">Execute</td>";
 
@@ -6336,11 +6336,11 @@ public:
             pct = 100.0 * n_executed[ j ] / n_executed[ MAX_MAELSTROM_STACK + 1 ];
 
           if ( j < end2 - 1 )
-            os.printf("<td class=\"right\">%.1f (%.1f%%)</td>", util::round( n_executed[ j ], 1 ), util::round( pct, 1 ) );
+            os.format("<td class=\"right\">%.1f (%.1f%%)</td>", util::round( n_executed[ j ], 1 ), util::round( pct, 1 ) );
           else
           {
-            os.printf("<td class=\"right\">%.1f</td>", util::round( n_executed[ j ], 1 ) );
-            os.printf("<td class=\"right\">%.1f</td>", util::round( n_executed_charges, 1 ) );
+            os.format("<td class=\"right\">%.1f</td>", util::round( n_executed[ j ], 1 ) );
+            os.format("<td class=\"right\">%.1f</td>", util::round( n_executed_charges, 1 ) );
           }
         }
 
@@ -6375,14 +6375,14 @@ public:
       if ( ++n & 1 )
         row_class_str = " class=\"odd\"";
 
-      os.printf( "<tr%s>", row_class_str.c_str() );
+      os.format( "<tr%s>", row_class_str.c_str() );
       os << "<td class=\"left\">" << name_str << "</td>";
-      os.printf("<td class=\"right\">%.3f</td>", entry -> second.mean() );
-      os.printf("<td class=\"right\">%.3f</td>", entry -> second.min() );
-      os.printf("<td class=\"right\">%.3f</td>", entry -> second.max() );
-      os.printf("<td class=\"right\">%.3f</td>", iter_entry -> second.mean() );
-      os.printf("<td class=\"right\">%.3f</td>", iter_entry -> second.min() );
-      os.printf("<td class=\"right\">%.3f</td>", iter_entry -> second.max() );
+      os.format("<td class=\"right\">%.3f</td>", entry -> second.mean() );
+      os.format("<td class=\"right\">%.3f</td>", entry -> second.min() );
+      os.format("<td class=\"right\">%.3f</td>", entry -> second.max() );
+      os.format("<td class=\"right\">%.3f</td>", iter_entry -> second.mean() );
+      os.format("<td class=\"right\">%.3f</td>", iter_entry -> second.min() );
+      os.format("<td class=\"right\">%.3f</td>", iter_entry -> second.max() );
       os << "</tr>\n";
     }
   }

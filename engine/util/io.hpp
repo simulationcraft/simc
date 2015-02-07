@@ -67,7 +67,7 @@ public:
 class ofstream : public std::ofstream
 {
 public:
-  ofstream& printf( const char* format, ... ) PRINTF_ATTRIBUTE( 2, 3 );
+  ofstream& format( const char* format, ... );
   void open( const char* filename, openmode mode = out | trunc );
   void open( const std::string& filename, openmode mode = out | trunc )
   { return open( filename.c_str(), mode ); }

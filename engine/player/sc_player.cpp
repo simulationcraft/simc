@@ -495,10 +495,11 @@ player_t::player_t( sim_t*             s,
   last_foreground_action( 0 ), last_gcd_action( 0 ),
   off_gcdactions(),
   cast_delay_reaction( timespan_t::zero() ), cast_delay_occurred( timespan_t::zero() ),
+  use_apl( "" ),
   // Actions
   use_default_action_list( 0 ),
   precombat_action_list( 0 ), active_action_list( 0 ), active_off_gcd_list( 0 ), restore_action_list( 0 ),
-  no_action_list_provided(), use_apl( "" ),
+  no_action_list_provided(),
   // Reporting
   quiet( false ),
   report_extension( new player_report_extension_t() ),
@@ -1636,7 +1637,7 @@ void player_t::init_glyphs()
   for ( size_t i = 0; i < glyph_names.size(); i++ )
   {
     unsigned glyph_id = util::to_unsigned( glyph_names[ i ] );
-    const spell_data_t* g = spell_data_t::not_found();
+    const spell_data_t* g;
     if ( glyph_id > 0 && dbc.is_glyph_spell( glyph_id ) )
       g = find_spell( glyph_id );
     else
@@ -7712,6 +7713,7 @@ expr_t* player_t::create_expression( action_t* a,
       use_apl_expr_t( player_t* p, const std::string& apl_str, const std::string& use_apl ) :
         expr_t( "using_apl_" + apl_str ), apl_name( apl_str )
       {
+        (void) p;
         is_match = util::str_compare_ci( apl_str, use_apl );
       }
 
@@ -9839,7 +9841,7 @@ void player_collected_data_t::print_tmi_debug_csv( const sc_timeline_t* nma, con
 
     for ( size_t i = 0; i < health_changes.timeline.data().size(); i++ )
     {
-      f.printf( "%f,%f,%f,%f,%f,%f\n", timeline_dmg_taken.data()[ i ],
+      f.format( "%f,%f,%f,%f,%f,%f\n", timeline_dmg_taken.data()[ i ],
           timeline_healing_taken.data()[ i ],
           health_changes.timeline.data()[ i ],
           health_changes.timeline_normalized.data()[ i ],
