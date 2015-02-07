@@ -8,6 +8,7 @@
 #define EXPRESSION_DEBUG false
 
 int expr_t::unique_id=0;
+mutex_t expr_t::unique_id_mutex;
 
 namespace { // ANONYMOUS ====================================================
 
