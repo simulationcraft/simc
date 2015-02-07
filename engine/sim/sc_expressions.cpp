@@ -45,7 +45,6 @@ public:
 };
 
 namespace unary {
-inline double plus ( double val ) { return val; }
 inline double minus( double val ) { return -val; }
 inline double lnot ( double val ) { return val == 0; }
 inline double abs  ( double val ) { return std::fabs( val ); }
@@ -57,7 +56,7 @@ expr_t* select_unary( const std::string& name, token_e op, expr_t* input )
 {
   switch ( op )
   {
-    case TOK_PLUS:  return input;
+    case TOK_PLUS:  return input; // No need to modify input
     case TOK_MINUS: return new expr_unary_t<unary::minus>( name, op, input );
     case TOK_NOT:   return new expr_unary_t<unary::lnot> ( name, op, input );
     case TOK_ABS:   return new expr_unary_t<unary::abs>  ( name, op, input );
