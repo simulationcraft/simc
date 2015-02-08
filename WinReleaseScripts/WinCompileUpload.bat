@@ -1,5 +1,5 @@
 :: Used to automate everything for Alex so he can be lazy.
-
+cd ..
 git clean -f -x -d
 :: Clean the directory up, otherwise it'll zip up all sorts of stuff.
 For /f "tokens=2-4 delims=/ " %%a in ('date /t') do (set mydate=%%a-%%b)
@@ -24,8 +24,10 @@ call start winscp /command "open downloads" "put %download%\%filename%.zip -nopr
 :: Zips source code, calls winscp to upload it. If anyone else is attempting this 'downloads' is the nickname of whatever server you are trying to upload to in winscp.
 
 set install=simc-%simcversion%-win32
+cd winreleasescripts
 call win32_release_msvc12.bat
 iscc.exe "setup32.iss"
+cd ..
 call start winscp /command "open downloads" "put %download%\SimcSetup-%simcversion%-win32.exe -nopreservetime -nopermissions -transfer=binary" "exit"
 7z a -r %install% %install% -mx9 -md=32m
 RD /s /q %install%
@@ -35,8 +37,10 @@ copy /b %install%\7ZSD.sfx + %install%\config.txt + %install%\%install%.7z %inst
 call start winscp /command "open downloads" "put %download%\%install%.exe -nopreservetime -nopermissions -transfer=binary" "exit"
 
 set install=simc-%simcversion%-win64
+cd winreleasescripts
 call win64_release_msvc12.bat
 iscc.exe "setup64.iss"
+cd ..
 call start winscp /command "open downloads" "put %download%\SimcSetup-%simcversion%-win64.exe  -nopreservetime -nopermissions -transfer=binary" "exit"
 7z a -r %install% %install% -mx9 -md=32m
 RD /s /q %install%

@@ -1,5 +1,5 @@
 :: Used to automate everything for Alex so he can be lazy.
-
+cd ..
 git clean -f -x -d
 :: Clean the directory up, otherwise it'll zip up all sorts of stuff.
 For /f "tokens=2-4 delims=/ " %%a in ('date /t') do (set mydate=%%a-%%b)
@@ -45,7 +45,9 @@ robocopy . %install%\ Welcome.html Welcome.png Simulationcraft64.exe simc64.exe 
 robocopy C:\OpenSSL-Win64\bin %install%\ libeay32.dll ssleay32.dll 
 robocopy Profiles\ %install%\profiles\ *.* /S
 
+cd winreleasescripts
 iscc.exe "setup64.iss"
+cd ..
 call start winscp /command "open downloads" "put %download%\SimcSetup-%simcversion%-win64.exe -nopreservetime -nopermissions -transfer=binary" "exit"
 7z a -r %install% %install% -mx9 -md=32m
 RD /s /q %install%
@@ -71,7 +73,9 @@ robocopy . %install%\ Welcome.html Welcome.png Simulationcraft.exe simc.exe read
 robocopy C:\OpenSSL-Win32\bin %install%\ libeay32.dll ssleay32.dll 
 robocopy Profiles\ %install%\profiles\ *.* /S
 
+cd winreleasescripts
 iscc.exe "setup32.iss"
+cd ..
 call start winscp /command "open downloads" "put %download%\SimcSetup-%simcversion%-win32.exe -nopreservetime -nopermissions -transfer=binary" "exit"
 7z a -r %install% %install% -mx9 -md=32m
 RD /s /q %install%
