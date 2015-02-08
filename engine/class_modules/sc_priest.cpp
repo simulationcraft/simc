@@ -5393,7 +5393,25 @@ expr_t* priest_t::create_expression( action_t* a,
     return new natural_shadow_word_death_range_t( *a );
   }
   if ( name_str == "shadowy_apparitions_in_flight" )
-    return make_ref_expr( "shadowy_apparitions_in_flight", this->shadowy_apparitions_in_flight );
+  {
+    struct shadowy_apparitions_in_flight_t : public expr_t
+    {
+      priest_t& priest;
+      shadowy_apparitions_in_flight_t( priest_t& p ) :
+        expr_t( "natural_shadow_word_death_range" ), priest( p )
+      {
+      }
+
+      virtual double evaluate()
+      {
+        if ( !priest.active_spells.shadowy_apparitions )
+          return 0.0;
+
+        return priest.active_spells.shadowy_apparitions -> get_num_travel_events();
+      }
+    };
+    return new shadowy_apparitions_in_flight_t( *this );
+  }
 
 
   return player_t::create_expression( a, name_str );
