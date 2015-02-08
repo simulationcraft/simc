@@ -124,6 +124,41 @@ void set_bonus_t::initialize_items()
   }
 }
 
+std::vector<const item_set_bonus_t*> set_bonus_t::enabled_set_bonus_data() const
+{
+  std::vector<const item_set_bonus_t*> bonuses;
+  // Disable all set bonuses, and set bonus options if challenge mode is set
+  if ( actor -> sim -> challenge_mode == 1 )
+    return bonuses;
+
+  if ( actor -> sim -> disable_set_bonuses == 1 ) // Or if global disable set bonus override is used.
+    return bonuses;
+
+  for ( size_t idx = 0; idx < set_bonus_spec_data.size(); idx++ )
+  {
+    for ( size_t spec_idx = 0; spec_idx < set_bonus_spec_data[ idx ].size(); spec_idx++ )
+    {
+      for ( size_t bonus_idx = 0; bonus_idx < set_bonus_spec_data[ idx ][ spec_idx ].size(); bonus_idx++ )
+      {
+        const set_bonus_data_t& data = set_bonus_spec_data[ idx ][ spec_idx ][ bonus_idx ];
+        // Most specs have the fourth specialization empty, or only have
+        // limited number of roles, so there's no set bonuses for those entries
+        if ( data.bonus == 0 )
+          continue;
+
+        if ( data.spell -> id() == 0 )
+        {
+          continue;
+        }
+
+        bonuses.push_back( data.bonus );
+      }
+    }
+  }
+
+  return bonuses;
+}
+
 void set_bonus_t::initialize()
 {
   // Disable all set bonuses, and set bonus options if challenge mode is set

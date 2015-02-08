@@ -5267,14 +5267,14 @@ void rogue_t::init_procs()
     for ( size_t i = 0; i < sim -> player_no_pet_list.size(); i++ )
     {
       player_t* p = sim -> player_no_pet_list[ i ];
-      special_effect_t effect( p );
-      effect.spell_id = spec.honor_among_thieves -> id();
-      effect.proc_flags2_ = PF2_CRIT;
-      effect.cooldown_ = timespan_t::zero();
+      special_effect_t* effect = new special_effect_t( p );
+      effect -> spell_id = spec.honor_among_thieves -> id();
+      effect -> proc_flags2_ = PF2_CRIT;
+      effect -> cooldown_ = timespan_t::zero();
 
       p -> special_effects.push_back( effect );
 
-      honor_among_thieves_callback_t* cb = new honor_among_thieves_callback_t( p, this, p -> special_effects.back() );
+      honor_among_thieves_callback_t* cb = new honor_among_thieves_callback_t( p, this, *p -> special_effects.back() );
       cb -> initialize();
     }
   }

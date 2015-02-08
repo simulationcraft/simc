@@ -219,7 +219,7 @@ bool enchant::initialize_item_enchant( item_t& item,
     {
       // "Chance on Hit", we need to help simc a bit with proc flags
       case ITEM_ENCHANTMENT_COMBAT_SPELL:
-        // Require that "chance on hit" enchant effects are hit with the 
+        // Require that "chance on hit" enchant effects are hit with the
         // correct weapon
         effect.weapon_proc = true;
         effect.type = SPECIAL_EFFECT_EQUIP;
@@ -261,8 +261,8 @@ bool enchant::initialize_item_enchant( item_t& item,
     }
 
     // First phase initialize the spell effect
-    if ( effect.type != SPECIAL_EFFECT_NONE && 
-         ! unique_gear::initialize_special_effect( effect, item, enchant.ench_prop[ i ] ) )
+    if ( effect.type != SPECIAL_EFFECT_NONE &&
+         ! unique_gear::initialize_special_effect( effect, enchant.ench_prop[ i ] ) )
       return false;
 
     // If this enchant has any kind of special effect, we need to encode it's
@@ -274,7 +274,7 @@ bool enchant::initialize_item_enchant( item_t& item,
         item.parsed.encoded_enchant = encoded_enchant_name( item.player -> dbc, enchant );
       else if ( source == SPECIAL_EFFECT_SOURCE_ADDON )
         item.parsed.encoded_addon = encoded_enchant_name( item.player -> dbc, enchant );
-      item.parsed.special_effects.push_back( effect );
+      item.parsed.special_effects.push_back( new special_effect_t( effect ) );
     }
   }
 

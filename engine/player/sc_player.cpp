@@ -544,8 +544,6 @@ player_t::player_t( sim_t*             s,
   visited_apls_( 0 ),
   action_list_id_( 0 )
 {
-  special_effects.reserve( 8 ); // TODO: Fix this properly, really really ugly hack
-
   actor_index = sim -> actor_list.size();
   sim -> actor_list.push_back( this );
 
@@ -1180,16 +1178,42 @@ void player_t::init_weapon( weapon_t& w )
 
 void player_t::init_special_effects()
 {
+  if ( is_pet() || is_enemy() )
+  {
+    return;
+  }
+
   if ( sim -> debug ) sim -> out_debug.printf( "Initializing special effects for player (%s)", name() );
 
   const spell_data_t* totg = find_racial_spell( "Touch of the Grave" );
   if ( totg -> ok() )
   {
-    special_effect_t effect( this );
-    effect.spell_id = totg -> id();
+    special_effect_t* effect = new special_effect_t( this );
+    effect -> type = SPECIAL_EFFECT_EQUIP;
+    effect -> spell_id = totg -> id();
     special_effects.push_back( effect );
+  }
 
-    new dbc_proc_callback_t( this, special_effects.back() );
+  // Set bonus initialization. Note that we err on the side of caution here and
+  // require that the set bonus is "custom" (and as such, specified in the
+  // master list of custom special effect in unique gear). This is to avoid
+  // false positives with class-specific set bonuses that have to always be
+  // implemented inside the class module anyhow.
+  std::vector<const item_set_bonus_t*> bonuses = sets.enabled_set_bonus_data();
+  for ( size_t i = 0; i < bonuses.size(); i++ )
+  {
+    special_effect_t effect( this );
+    if ( ! unique_gear::initialize_special_effect( effect, bonuses[ i ] -> spell_id ) )
+    {
+      continue;
+    }
+
+    if ( effect.type != SPECIAL_EFFECT_CUSTOM )
+    {
+      continue;
+    }
+
+    special_effects.push_back( new special_effect_t( effect ) );
   }
 
   unique_gear::init( this );
@@ -2251,6 +2275,11 @@ double player_t::energy_regen_per_second() const
   double r = 0;
   if ( base_energy_regen_per_second )
     r = base_energy_regen_per_second * ( 1.0 / cache.attack_haste() );
+
+  if ( buffs.surge_of_energy && buffs.surge_of_energy -> up() )
+  {
+    r *= 1.0 + buffs.surge_of_energy -> data().effectN( 1 ).percent();
+  }
   return r;
 }
 
@@ -2758,6 +2787,11 @@ double player_t::composite_avoidance() const
 double player_t::composite_player_multiplier( school_e /* school */ ) const
 {
   double m = 1.0;
+
+  if ( buffs.brute_strength && buffs.brute_strength -> up() )
+  {
+    m *= 1.0 + buffs.brute_strength -> data().effectN( 1 ).percent();
+  }
 
   return m;
 }

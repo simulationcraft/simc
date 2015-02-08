@@ -79,16 +79,16 @@ bool item_t::has_special_effect( special_effect_source_e source, special_effect_
 
 const special_effect_t& item_t::special_effect( special_effect_source_e source, special_effect_e type )
 {
-  static special_effect_t nonevalue(this);
+  static special_effect_t nonevalue( this );
 
   // Note note returns first available, but odds that there are several on-
   // equip enchants in an item is slim to none
   for ( size_t i = 0; i < parsed.special_effects.size(); i++ )
   {
-    if ( ( source == SPECIAL_EFFECT_SOURCE_NONE || parsed.special_effects[ i ].source == source ) && 
-         ( type == SPECIAL_EFFECT_NONE || type == parsed.special_effects[ i ].type ) )
+    if ( ( source == SPECIAL_EFFECT_SOURCE_NONE || parsed.special_effects[ i ] -> source == source ) &&
+         ( type == SPECIAL_EFFECT_NONE || type == parsed.special_effects[ i ] -> type ) )
     {
-      return parsed.special_effects[ i ];
+      return *parsed.special_effects[ i ];
     }
   }
 
@@ -240,7 +240,7 @@ std::string item_t::to_string()
   for ( size_t i = 0; i < parsed.special_effects.size(); i++ )
   {
     s << " effect={ ";
-    s << parsed.special_effects[ i ].to_string();
+    s << parsed.special_effects[ i ] -> to_string();
     s << " }";
   }
 
@@ -674,7 +674,7 @@ std::string item_t::encoded_comment()
   {
     for ( size_t i = 0; i < parsed.special_effects.size(); i++ )
     {
-      const special_effect_t& se = parsed.special_effects[ i ];
+      const special_effect_t& se = *parsed.special_effects[ i ];
       if ( se.type == SPECIAL_EFFECT_EQUIP && se.source == SPECIAL_EFFECT_SOURCE_ITEM )
         s << "equip=" << se.encoding_str << ",";
     }
@@ -684,7 +684,7 @@ std::string item_t::encoded_comment()
   {
     for ( size_t i = 0; i < parsed.special_effects.size(); i++ )
     {
-      const special_effect_t& se = parsed.special_effects[ i ];
+      const special_effect_t& se = *parsed.special_effects[ i ];
       if ( se.type == SPECIAL_EFFECT_USE && se.source == SPECIAL_EFFECT_SOURCE_ITEM )
         s << "use=" << se.encoding_str << ",";
     }
@@ -1257,12 +1257,12 @@ bool item_t::decode_equip_effect()
   // If the user has defined an equip= string, use it
   if ( ! option_equip_str.empty() )
   {
-    if ( ( ret = special_effect::parse_special_effect_encoding( effect, *this, option_equip_str ) ) )
+    if ( ( ret = special_effect::parse_special_effect_encoding( effect, option_equip_str ) ) )
     {
       effect.name_str = name_str;
       effect.type = SPECIAL_EFFECT_EQUIP;
       effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
-      parsed.special_effects.push_back( effect );
+      parsed.special_effects.push_back( new special_effect_t( effect ) );
     }
   }
   // Otherwise, use fancy schmancy database
@@ -1283,10 +1283,10 @@ bool item_t::decode_equip_effect()
       // First phase initialization of the special effect. Sets up the relevant
       // fields in special_effect_t to create the proc. In the future, most of 
       // the manual field setup can also be removed ...
-      if ( ( ret = unique_gear::initialize_special_effect( effect, *this, parsed.data.id_spell[ i ] ) ) &&
+      if ( ( ret = unique_gear::initialize_special_effect( effect, parsed.data.id_spell[ i ] ) ) &&
            effect.type != SPECIAL_EFFECT_NONE )
       {
-        parsed.special_effects.push_back( effect );
+        parsed.special_effects.push_back( new special_effect_t( effect ) );
         effects++;
       }
     }
@@ -1306,12 +1306,12 @@ bool item_t::decode_use_effect()
   // If the user has defined an use= string, use it
   if ( ! option_use_str.empty() )
   {
-    if ( ( ret = special_effect::parse_special_effect_encoding( effect, *this, option_use_str ) ) )
+    if ( ( ret = special_effect::parse_special_effect_encoding( effect, option_use_str ) ) )
     {
       effect.name_str = name_str;
       effect.type = SPECIAL_EFFECT_USE;
       effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
-      parsed.special_effects.push_back( effect );
+      parsed.special_effects.push_back( new special_effect_t( effect ) );
     }
   }
   // Otherwise, use fancy schmancy database
@@ -1331,10 +1331,10 @@ bool item_t::decode_use_effect()
       // First phase initialization of the special effect. Sets up the relevant
       // fields in special_effect_t to create the use effect. In the future,
       // most of the manual field setup can also be removed ...
-      if ( ( ret = unique_gear::initialize_special_effect( effect, *this, parsed.data.id_spell[ i ] ) ) && 
+      if ( ( ret = unique_gear::initialize_special_effect( effect, parsed.data.id_spell[ i ] ) ) &&
            effect.type != SPECIAL_EFFECT_NONE )
       {
-        parsed.special_effects.push_back( effect );
+        parsed.special_effects.push_back( new special_effect_t( effect ) );
         effects++;
       }
       else

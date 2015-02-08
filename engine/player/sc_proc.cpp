@@ -914,12 +914,14 @@ std::string special_effect_t::to_string() const
 // special_effect::parse_special_effect =====================================
 
 bool special_effect::parse_special_effect_encoding( special_effect_t& effect,
-                                          const item_t& item,
                                           const std::string& encoding )
 {
   if ( encoding.empty() || encoding == "custom" || encoding == "none" ) return true;
 
   std::vector<item_database::token_t> tokens;
+
+  const item_t* item = effect.item;
+  const player_t* player = effect.player;
 
   size_t num_tokens = item_database::parse_tokens( tokens, encoding );
 
@@ -1071,7 +1073,8 @@ bool special_effect::parse_special_effect_encoding( special_effect_t& effect,
       parse_proc_flags( t.full, __proc2_opts, effect.proc_flags2_ );
     else
     {
-      item.sim -> errorf( "Player %s has unknown 'use/equip=' token '%s' at slot %s\n", item.player -> name(), t.full.c_str(), item.slot_name() );
+      player -> sim -> errorf( "Player %s has unknown 'use/equip=' token '%s' at slot %s\n",
+          player -> name(), t.full.c_str(), item ? item -> slot_name() : "none" );
       return false;
     }
   }
