@@ -360,8 +360,6 @@ public:
     const spell_data_t* vampiric_embrace;
   } glyphs;
 
-  int shadowy_apparitions_in_flight;
-
   priest_t( sim_t* sim, const std::string& name, race_e r ) :
     player_t( sim, PRIEST, name, r ),
     buffs(),
@@ -376,8 +374,7 @@ public:
     active_spells(),
     pets(),
     options(),
-    glyphs(),
-    shadowy_apparitions_in_flight( 0 )
+    glyphs()
   {
     base.distance = 27.0; // Halo
 
@@ -2095,8 +2092,6 @@ struct shadowy_apparition_spell_t : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    priest.shadowy_apparitions_in_flight--;
-
     if ( priest.talents.auspicious_spirits -> ok() && result_is_hit( s -> result ) )
     {
       generate_shadow_orb( 1, priest.gains.shadow_orb_auspicious_spirits );
@@ -2143,7 +2138,6 @@ struct shadowy_apparition_spell_t : public priest_spell_t
       priest.sim -> out_debug << priest.name() << " triggered shadowy apparition.";
 
     priest.procs.shadowy_apparition -> occur();
-    priest.shadowy_apparitions_in_flight++;
     schedule_execute();
   }
 };
@@ -5166,7 +5160,6 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
 void priest_td_t::reset()
 {
   glyph_of_mind_harvest_consumed = false;
-  priest.shadowy_apparitions_in_flight = 0;
 }
 
 void priest_td_t::target_demise()
