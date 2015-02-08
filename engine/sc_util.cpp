@@ -2505,7 +2505,7 @@ int util::printf( const char *format,  ... )
   return retcode;
 }
 
-// snprintf =================================================================
+// snformat =================================================================
 
 int util::snformat( char* buf, size_t size, const char* fmt, ... )
 {

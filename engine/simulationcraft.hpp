@@ -6037,7 +6037,7 @@ public:
   void add_travel_event( travel_event_t* e ) { travel_events.push_back( e ); }
   void remove_travel_event( travel_event_t* e );
   bool has_travel_events() const { return ! travel_events.empty(); }
-  bool get_num_travel_events() const { return travel_events.size(); }
+  size_t get_num_travel_events() const { return travel_events.size(); }
   bool has_travel_events_for( const player_t* target ) const;
   const std::vector<travel_event_t*>& current_travel_events() const
   { return travel_events; }
