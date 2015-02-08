@@ -5405,7 +5405,7 @@ expr_t* priest_t::create_expression( action_t* a,
         if ( !priest.active_spells.shadowy_apparitions )
           return 0.0;
 
-        return static_cast<double>( priest.active_spells.shadowy_apparitions -> get_num_travel_events() );
+        return priest.active_spells.shadowy_apparitions -> get_num_travel_events();
       }
     };
     return new shadowy_apparitions_in_flight_t( *this );
