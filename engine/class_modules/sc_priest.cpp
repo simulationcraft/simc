@@ -10,6 +10,7 @@ namespace { // UNNAMED NAMESPACE
 /* Forward declarations
  */
 struct priest_t;
+namespace actions { namespace spells { struct shadowy_apparition_spell_t; } }
 
 /* Priest target data
  * Contains target specific things
@@ -284,6 +285,7 @@ public:
   {
     const spell_data_t* surge_of_darkness;
     action_t* echo_of_light;
+    actions::spells::shadowy_apparition_spell_t* shadowy_apparitions;
   } active_spells;
 
   // Pets
@@ -3178,11 +3180,8 @@ struct insanity_t : public mind_flay_base_t<true>
 
 struct shadow_word_pain_t : public priest_spell_t
 {
-  shadowy_apparition_spell_t* proc_shadowy_apparition;
-
   shadow_word_pain_t( priest_t& p, const std::string& options_str ) :
-    priest_spell_t( "shadow_word_pain", p, p.find_class_spell( "Shadow Word: Pain" ) ),
-    proc_shadowy_apparition( nullptr )
+    priest_spell_t( "shadow_word_pain", p, p.find_class_spell( "Shadow Word: Pain" ) )
   {
     parse_options( options_str );
 
@@ -3195,10 +3194,9 @@ struct shadow_word_pain_t : public priest_spell_t
 
     dot_duration += p.sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
 
-    if ( priest.specs.shadowy_apparitions -> ok() )
+    if ( priest.specs.shadowy_apparitions -> ok() && ! priest.active_spells.shadowy_apparitions )
     {
-      proc_shadowy_apparition = new shadowy_apparition_spell_t( p );
-      add_child( proc_shadowy_apparition );
+      priest.active_spells.shadowy_apparitions = new shadowy_apparition_spell_t( p );
     }
   }
 
@@ -3206,11 +3204,11 @@ struct shadow_word_pain_t : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    if ( proc_shadowy_apparition && ( d -> state -> result_amount > 0 ) )
+    if ( priest.active_spells.shadowy_apparitions && ( d -> state -> result_amount > 0 ) )
     {
       if ( d -> state -> result == RESULT_CRIT )
       {
-        proc_shadowy_apparition -> trigger();
+        priest.active_spells.shadowy_apparitions -> trigger();
       }
     }
 
@@ -3251,19 +3249,18 @@ struct vampiric_embrace_t : public priest_spell_t
 
 struct vampiric_touch_t : public priest_spell_t
 {
-  shadowy_apparition_spell_t* proc_shadowy_apparition;
-
   vampiric_touch_t( priest_t& p, const std::string& options_str ) :
-    priest_spell_t( "vampiric_touch", p, p.find_class_spell( "Vampiric Touch" ) ),
-    proc_shadowy_apparition( nullptr )
+    priest_spell_t( "vampiric_touch", p, p.find_class_spell( "Vampiric Touch" ) )
   {
     parse_options( options_str );
     may_crit   = false;
 
     dot_duration += p.sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
 
-    if ( priest.specs.shadowy_apparitions -> ok() )
-      proc_shadowy_apparition = new shadowy_apparition_spell_t( p );
+    if ( priest.specs.shadowy_apparitions -> ok() && !priest.active_spells.shadowy_apparitions )
+    {
+      priest.active_spells.shadowy_apparitions = new shadowy_apparition_spell_t( p );
+    }
   }
 
   virtual void tick( dot_t* d ) override
@@ -3275,13 +3272,13 @@ struct vampiric_touch_t : public priest_spell_t
 
     if ( priest.sets.has_set_bonus( SET_CASTER, T15, B4 ) )
     {
-      if ( proc_shadowy_apparition && ( d -> state -> result_amount > 0 )  )
+      if ( priest.active_spells.shadowy_apparitions && ( d -> state -> result_amount > 0 )  )
       {
         if ( rng().roll( priest.sets.set( SET_CASTER, T15, B4 ) -> proc_chance() ) )
         {
           priest.procs.t15_4pc_caster -> occur();
 
-          proc_shadowy_apparition -> trigger();
+          priest.active_spells.shadowy_apparitions -> trigger();
         }
       }
     }
