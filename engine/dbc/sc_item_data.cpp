@@ -545,7 +545,7 @@ std::string item_database::stat_to_str( int stat, int stat_amount )
     if ( s != STAT_NONE )
     {
       char stat_buf[64];
-      snformat( stat_buf, sizeof( stat_buf ), "%d%s", stat_amount, util::stat_type_abbrev( s ) );
+      util::snformat( stat_buf, sizeof( stat_buf ), "%d%s", stat_amount, util::stat_type_abbrev( s ) );
       stat_str = stat_buf;
 
       util::tokenize( stat_str );

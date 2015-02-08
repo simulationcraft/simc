@@ -335,8 +335,8 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   char tmp_buffer[512],
        tmp_buffer2[64];
 
-  snformat( tmp_buffer2, sizeof( tmp_buffer2 ), "(id=%u)", e -> id() );
-  snformat( tmp_buffer, sizeof( tmp_buffer ), "#%d %-*s: ", e -> index() + 1, 14, tmp_buffer2 );
+  util::snformat( tmp_buffer2, sizeof( tmp_buffer2 ), "(id=%u)", e -> id() );
+  util::snformat( tmp_buffer, sizeof( tmp_buffer ), "#%d %-*s: ", e -> index() + 1, 14, tmp_buffer2 );
   s << tmp_buffer;
 
   if ( e -> type() < static_cast< int >( sizeof( _effect_type_strings ) / sizeof( const char* ) ) &&
@@ -457,7 +457,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
 
   if ( e -> real_ppl() != 0 )
   {
-    snformat( tmp_buffer, sizeof( tmp_buffer ), "%f", e -> real_ppl() );
+    util::snformat( tmp_buffer, sizeof( tmp_buffer ), "%f", e -> real_ppl() );
     s << " | Points Per Level: " << e -> real_ppl();
   }
 
@@ -468,13 +468,13 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
 
   if ( e -> sp_coeff() != 0 )
   {
-    snformat( tmp_buffer, sizeof( tmp_buffer ), "%.5f", e -> sp_coeff() );
+    util::snformat( tmp_buffer, sizeof( tmp_buffer ), "%.5f", e -> sp_coeff() );
     s << " | SP Coefficient: " << tmp_buffer;
   }
 
   if ( e -> ap_coeff() != 0 )
   {
-    snformat( tmp_buffer, sizeof( tmp_buffer ), "%.5f", e -> ap_coeff() );
+    util::snformat( tmp_buffer, sizeof( tmp_buffer ), "%.5f", e -> ap_coeff() );
     s << " | AP Coefficient: " << tmp_buffer;
   }
 
@@ -487,17 +487,17 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
          e -> subtype() == A_MOD_DAMAGE_TAKEN ||
          e -> subtype() == A_MOD_DAMAGE_PERCENT_DONE ||
          e -> subtype() == A_MOD_DAMAGE_PERCENT_TAKEN )
-      snformat( tmp_buffer, sizeof( tmp_buffer ), "%#.x", e -> misc_value1() );
+      util::snformat( tmp_buffer, sizeof( tmp_buffer ), "%#.x", e -> misc_value1() );
     else if ( e -> type() == E_ENERGIZE )
-      snformat( tmp_buffer, sizeof( tmp_buffer ), "%s", util::resource_type_string( util::translate_power_type( static_cast<power_e>( e -> misc_value1() ) ) ) );
+      util::snformat( tmp_buffer, sizeof( tmp_buffer ), "%s", util::resource_type_string( util::translate_power_type( static_cast<power_e>( e -> misc_value1() ) ) ) );
     else
-      snformat( tmp_buffer, sizeof( tmp_buffer ), "%d", e -> misc_value1() );
+      util::snformat( tmp_buffer, sizeof( tmp_buffer ), "%d", e -> misc_value1() );
     s << " | Misc Value: " << tmp_buffer;
   }
 
   if ( e -> misc_value2() != 0 )
   {
-    snformat( tmp_buffer, sizeof( tmp_buffer ), "%#.x", e -> misc_value2() );
+    util::snformat( tmp_buffer, sizeof( tmp_buffer ), "%#.x", e -> misc_value2() );
     s << " | Misc Value 2: " << tmp_buffer;
   }
 
