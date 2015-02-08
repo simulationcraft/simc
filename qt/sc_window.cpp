@@ -477,11 +477,19 @@ void SC_MainWindow::createBestInSlotTab()
   if ( appdata.isEmpty() )
   {
     appdata = QStandardPaths::findExecutable( "simulationcraft64", appdatalocation );
+#if defined ( SC_WINDOWS )
     appdata.replace( QString( "/simulationcraft64.exe" ), QString( "" ), Qt::CaseInsensitive );
+#else
+    appdata.replace( QString( "/simulationcraft64" ), QString( "" ), Qt::CaseInsensitive );
+#endif
   }
   else
   {
+#if defined ( SC_WINDOWS )
     appdata.replace( QString( "/simulationcraft.exe" ), QString( "" ), Qt::CaseInsensitive );
+#else
+    appdata.replace( QString( "/simulationcraft" ), QString( "" ), Qt::CaseInsensitive );
+#endif
   }
 
   // Scan all subfolders in /profiles/ and create a list
