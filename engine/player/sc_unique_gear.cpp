@@ -87,6 +87,7 @@ namespace set_bonus
   void t17_lfr_4pc_leacaster( special_effect_t& );
   void t17_lfr_4pc_mailcaster( special_effect_t& );
   void t17_lfr_4pc_platemelee( special_effect_t& );
+  void t17_lfr_4pc_clothcaster( special_effect_t& );
 }
 
 /**
@@ -356,20 +357,21 @@ static const special_effect_db_item_t __special_effect_db[] = {
 
   /* T17 LFR set bonuses */
   { 179108, 0,                    set_bonus::t17_lfr_passive_stat }, /* 2P Cloth DPS */
+  { 179107, 0,                 set_bonus::t17_lfr_4pc_clothcaster },
   { 179110, 0,                    set_bonus::t17_lfr_passive_stat }, /* 2P Cloth Healer */
   { 179114, 0,                    set_bonus::t17_lfr_passive_stat }, /* 2P Leather Melee */
   { 179115, 0,                    set_bonus::t17_lfr_4pc_leamelee },
   { 179117, 0,                    set_bonus::t17_lfr_passive_stat }, /* 2P Leather Caster */
-  { 179118, 0,                    set_bonus::t17_lfr_4pc_leacaster },
+  { 179118, 0,                   set_bonus::t17_lfr_4pc_leacaster },
   { 179121, 0,                    set_bonus::t17_lfr_passive_stat }, /* 2P Leather Healer */
   { 179127, 0,                    set_bonus::t17_lfr_passive_stat }, /* 2P Leather Tank */
   { 179130, 0,                    set_bonus::t17_lfr_passive_stat }, /* 2P Mail Agility */
   { 179131, 0,                    set_bonus::t17_lfr_4pc_agimelee },
   { 179133, 0,                    set_bonus::t17_lfr_passive_stat }, /* 2P Mail Caster */
-  { 179134, 0,                    set_bonus::t17_lfr_4pc_mailcaster },
+  { 179134, 0,                  set_bonus::t17_lfr_4pc_mailcaster },
   { 179137, 0,                    set_bonus::t17_lfr_passive_stat }, /* 2P Mail Healer */
   { 179139, 0,                    set_bonus::t17_lfr_passive_stat }, /* 2P Plate Melee */
-  { 179140, 0,                    set_bonus::t17_lfr_4pc_platemelee },
+  { 179140, 0,                  set_bonus::t17_lfr_4pc_platemelee },
   { 179142, 0,                    set_bonus::t17_lfr_passive_stat }, /* 2P Plate Tank */
   { 179145, 0,                    set_bonus::t17_lfr_passive_stat }, /* 2P Plate Healer */
 
@@ -1266,6 +1268,58 @@ void set_bonus::t17_lfr_4pc_platemelee( special_effect_t& effect )
   effect.player -> buffs.brute_strength = buff_creator_t( effect.player, "brute_strength", driver -> effectN( 1 ).trigger() )
                                           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   effect.custom_buff = effect.player -> buffs.brute_strength;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void set_bonus::t17_lfr_4pc_clothcaster( special_effect_t& effect )
+{
+  const spell_data_t* spell = spell_data_t::nil();
+
+  switch ( effect.player -> specialization() )
+  {
+    case MAGE_ARCANE:
+      spell = effect.player -> find_spell( 179157 );
+      break;
+    case MAGE_FIRE:
+      spell = effect.player -> find_spell( 179154 );
+      break;
+    case MAGE_FROST:
+      spell = effect.player -> find_spell( 179156 );
+      break;
+    case PRIEST_SHADOW:
+    case WARLOCK_AFFLICTION:
+    case WARLOCK_DEMONOLOGY:
+    case WARLOCK_DESTRUCTION:
+      spell = effect.player -> find_spell( 179155 );
+      break;
+    default:
+      break;
+  }
+
+  if ( spell -> id() == 0 )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
+  effect.proc_flags_ = PF_ALL_DAMAGE;
+  effect.proc_flags2_ = PF2_CAST;
+
+  std::string spell_name = spell -> name_cstr();
+  util::tokenize( spell_name );
+
+  struct eruption_t : public spell_t
+  {
+    eruption_t( const std::string& name, player_t* player, const spell_data_t* s ) :
+      spell_t( name, player, s )
+    {
+      background = proc = may_crit = true;
+      callbacks = false;
+    }
+  };
+
+  effect.execute_action = new eruption_t( spell_name, effect.player, spell );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
