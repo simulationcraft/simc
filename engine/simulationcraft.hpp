@@ -1115,7 +1115,7 @@ int vsnprintf_simc( char* buf, size_t size, const char* fmt, va_list ap );
 #define vsnprintf vsnprintf_simc
 
 #undef snprintf
-inline int snprintf( char* buf, size_t size, const char* fmt, ... ) PRINTF_ATTRIBUTE( 3, 4 );
+inline int snprintf( char* buf, size_t size, const char* fmt, ... )
 {
   va_list ap;
   va_start( ap, fmt );
