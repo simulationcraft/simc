@@ -1115,7 +1115,7 @@ int vsnprintf_simc( char* buf, size_t size, const char* fmt, va_list ap );
 #define vsnprintf vsnprintf_simc
 
 #undef snprintf
-inline int snprintf( char* buf, size_t size, const char* fmt, ... )
+inline int snformat( char* buf, size_t size, const char* fmt, ... )
 {
   va_list ap;
   va_start( ap, fmt );
@@ -1302,7 +1302,7 @@ std::string inverse_tokenize( const std::string& name );
 
 bool is_number( const std::string& s );
 
-int snprintf( char* buf, size_t size, const char* fmt, ... ) PRINTF_ATTRIBUTE( 3, 4 );
+int snformat( char* buf, size_t size, const char* fmt, ... );
 void fuzzy_stats( std::string& encoding, const std::string& description );
 
 template <class T>

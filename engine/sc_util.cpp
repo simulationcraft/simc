@@ -2507,7 +2507,7 @@ int util::printf( const char *format,  ... )
 
 // snprintf =================================================================
 
-int util::snprintf( char* buf, size_t size, const char* fmt, ... )
+int util::snformat( char* buf, size_t size, const char* fmt, ... )
 {
   va_list ap;
   va_start( ap, fmt );

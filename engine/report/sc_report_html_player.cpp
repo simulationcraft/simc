@@ -1885,9 +1885,9 @@ void print_html_sample_sequence_string_entry( report::sc_html_stream& os,
   std::string targetname = data -> action -> harmful ? data -> target -> name() : "none";
   std::array<char,100> time;
   if ( precombat )
-    util::snprintf( time.data(), time.size(), "Pre" );
+    util::snformat( time.data(), time.size(), "Pre" );
   else
-    util::snprintf( time.data(), time.size(), "%d:%02d.%03d",
+    util::snformat( time.data(), time.size(), "%d:%02d.%03d",
                     (int) data->time.total_minutes(),
                     (int) data->time.total_seconds() % 60,
                     (int) data->time.total_millis() % 1000 );
