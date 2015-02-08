@@ -3202,20 +3202,3 @@ std::ostream& stream_printf( std::ostream& stream, const char* fmt, ... )
 }
 
 } // namespace util
-
-#ifdef _MSC_VER
-
-// vsnprintf ================================================================
-
-int vsnprintf_simc( char* buf, size_t size, const char* fmt, va_list ap )
-{
-  if ( buf && size )
-  {
-    std::string buffer = str::format( fmt, ap );
-    strncpy( buf, buffer.c_str(), size-1 );
-    return static_cast<int>( buffer.size() );
-  }
-  return vfprintf_helper( stdout, fmt, ap );
-}
-
-#endif
