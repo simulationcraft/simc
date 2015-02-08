@@ -1107,7 +1107,7 @@ struct stat_data_t
 
 // Utilities ================================================================
 
-#if defined ( SC_VS ) && SC_VS < 13 // VS 2014 adds in support for a C99-compliant snprintf
+#if defined ( SC_VS ) && SC_VS < 13 // VS 2015 adds in support for a C99-compliant snprintf
 // C99-compliant snprintf - MSVC _snprintf is NOT the same.
 
 #undef vsnprintf
