@@ -3191,6 +3191,11 @@ struct shadow_word_pain_t : public priest_spell_t
     if ( priest.specs.shadowy_apparitions -> ok() && ! priest.active_spells.shadowy_apparitions )
     {
       priest.active_spells.shadowy_apparitions = new shadowy_apparition_spell_t( p );
+      if ( ! priest.sets.has_set_bonus( SET_CASTER, T15, B4 ) )
+      {
+        // If SW:P is the only action having SA, then we can add it as a child stat
+        add_child( priest.active_spells.shadowy_apparitions );
+      }
     }
   }
 
@@ -3251,7 +3256,7 @@ struct vampiric_touch_t : public priest_spell_t
 
     dot_duration += p.sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
 
-    if ( priest.specs.shadowy_apparitions -> ok() && !priest.active_spells.shadowy_apparitions )
+    if ( priest.specs.shadowy_apparitions -> ok() && priest.sets.has_set_bonus( SET_CASTER, T15, B4 ) && !priest.active_spells.shadowy_apparitions )
     {
       priest.active_spells.shadowy_apparitions = new shadowy_apparition_spell_t( p );
     }
