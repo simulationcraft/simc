@@ -3153,14 +3153,19 @@ struct uthers_insight_t : public paladin_heal_t
     background = true;
     proc = true;
     target = player;
-    may_crit = tick_may_crit = false; // tested, see CtA thread
-    may_multistrike = true; // tested, see CtA thread
+    may_crit = tick_may_crit = false; // tested 6.0.3
+    may_multistrike = false; // tested 6.0.3
+    hasted_ticks = false; // tested 6.0.3
+    benefits_from_seal_of_insight = false; // tested 6.0.3
 
-    // spell info isn't parsing out of the effect well
-    base_tick_time = timespan_t::from_millis( data().effectN( 1 )._amplitude );
-    dot_duration = data().duration();
-    // pick up the % heal amount from effect #1
+    // spell info isn't parsing out of the effect well, some manual adjustments necessary
+
+    // % heal amount is in effect #1
     parse_effect_data( data().effectN( 1 ) );
+
+    // tick interval is hidden in the _amplitude field of the effect
+    // appears unnecessary now, leaving for future reference 
+    // base_tick_time = timespan_t::from_millis( data().effectN( 1 )._amplitude );
   }
 
   virtual void execute()
