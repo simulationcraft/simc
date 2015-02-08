@@ -1291,6 +1291,7 @@ class SpellDataGenerator(DataGenerator):
          143924,                    # Leech
          54861, 133022,             # Nitro boosts
          175457, 175456, 175439,    # Focus Augmentation / Hyper Augmentation / Stout Augmentation
+         179154, 179155, 179156, 179157, # T17 LFR cloth dps set bonus nukes
         ),
 
         # Warrior:
