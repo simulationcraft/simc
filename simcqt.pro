@@ -173,7 +173,7 @@ unix:!mac {
   !isEmpty(DESTDIR): PREFIX=$$DESTDIR/$$PREFIX
   isEmpty(PREFIX): PREFIX=/usr/local
   isEmpty(DATADIR): DATADIR=$$PREFIX/share
-  isEmpty(SEARCH): SEARCH=$$DATADIR/simulationcraft
+  isEmpty(SEARCH): SEARCH=$$DATADIR/SimulationCraft
   isEmpty(BINDIR): BINDIR=$$PREFIX/bin
   INSTALLS += target \
               profiles \
@@ -181,7 +181,7 @@ unix:!mac {
               icon \
               locale
 
-  SHAREPATH = $$DESTDIR$$PREFIX/share/simulationcraft
+  SHAREPATH = $$DESTDIR$$PREFIX/share/SimulationCraft
 
   target.path = $$DESTDIR$$PREFIX/bin/
 

@@ -448,6 +448,85 @@ void SC_MainWindow::createImportTab()
   // createCustomTab();
 }
 
+QDir build_profiledir(  QString profiledir, QString subdir )
+{
+#if defined( Q_OS_WINDOWS )
+    QString appdata = QStandardPaths::findExecutable( "simulationcraft", appdatalocation );
+    if ( appdata.isEmpty() )
+    {
+      appdata = QStandardPaths::findExecutable( "simulationcraft64", appdatalocation );
+      appdata.replace( QString( "/simulationcraft64.exe" ), QString( "" ), Qt::CaseInsensitive );
+    }
+    else
+    {
+      appdata.replace( QString( "/simulationcraft.exe" ), QString( "" ), Qt::CaseInsensitive );
+    }
+    appdata += "/profiles" );
+    if ( !subdir.isEmpty() )
+    {
+        appdata += "/";
+        appdata += subdir;
+    }
+    return QDir( appdata );
+#elif defined( Q_OS_MAC )
+
+        CFURLRef fileRef;
+        if ( !subdir.isEmpty() )
+        {
+        fileRef = CFBundleCopyResourceURL( CFBundleGetMainBundle(),
+                                                    CFStringCreateWithCString( NULL,
+                                                    subdir.toUtf8().constData(),
+                                                    kCFStringEncodingUTF8 ),
+                                                    0,
+                                           CFStringCreateWithCString( NULL,
+                                           profiledir.toUtf8().constData(),
+                                           kCFStringEncodingUTF8 ) );
+        }
+        else
+        {
+            fileRef = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFStringCreateWithCString( NULL,
+                                                                                                   profiledir.toUtf8().constData(),
+                                                                                                   kCFStringEncodingUTF8 ), 0, 0 );
+        }
+
+        QDir dir;
+        if ( fileRef )
+        {
+          CFStringRef macPath = CFURLCopyFileSystemPath( fileRef, kCFURLPOSIXPathStyle );
+          dir            = QString( CFStringGetCStringPtr( macPath, CFStringGetSystemEncoding() ) );
+
+          CFRelease( fileRef );
+          CFRelease( macPath );
+        }
+        return dir;
+    }
+#else
+
+    QDir out;
+    QStringList appdatalocation =  QStandardPaths::standardLocations( QStandardPaths::DataLocation );
+    //qDebug() << "linux appdatalocation: " << appdatalocation;
+    for( int i = 0; i < appdatalocation.size(); ++i )
+    {
+        QString path = appdatalocation[ i ];
+
+        path += "/";
+        path += profiledir;
+        if ( !subdir.isEmpty() )
+        {
+            path += "/";
+            path += subdir;
+        }
+        QDir dir( path );
+        if ( dir.exists() )
+        {
+            out = dir;
+            break;
+        }
+    }
+    return out;
+#endif
+}
+
 void SC_MainWindow::createBestInSlotTab()
 {
   // Create BiS Tree ( table with profiles )
@@ -457,12 +536,9 @@ void SC_MainWindow::createBestInSlotTab()
   bisTree -> setColumnCount( 1 );
   bisTree -> setHeaderLabels( headerLabels );
 
-  const int TIER_MAX = 2;
-#if SC_BETA == 1
-  const char* tierNames[] = { "T17", "T18" };
-#else
-  const char* tierNames[] = { "T17", "T18" };
-#endif
+  static const char* tierNames[] = { "T17", "T18" };
+  static const int TIER_MAX = 2; // = sizeof_array( tierNames );
+
   QTreeWidgetItem* playerItems[PLAYER_MAX];
   range::fill( playerItems, 0 );
   QTreeWidgetItem* rootItems[PLAYER_MAX][TIER_MAX];
@@ -471,42 +547,9 @@ void SC_MainWindow::createBestInSlotTab()
     range::fill( rootItems[i], 0 );
   }
 
-  QStringList appdatalocation =  QStandardPaths::standardLocations( QStandardPaths::DataLocation );
 
-  QString appdata = QStandardPaths::findExecutable( "simulationcraft", appdatalocation );
-  if ( appdata.isEmpty() )
-  {
-    appdata = QStandardPaths::findExecutable( "simulationcraft64", appdatalocation );
-#if defined ( SC_WINDOWS )
-    appdata.replace( QString( "/simulationcraft64.exe" ), QString( "" ), Qt::CaseInsensitive );
-#else
-    appdata.replace( QString( "/simulationcraft64" ), QString( "" ), Qt::CaseInsensitive );
-#endif
-  }
-  else
-  {
-#if defined ( SC_WINDOWS )
-    appdata.replace( QString( "/simulationcraft.exe" ), QString( "" ), Qt::CaseInsensitive );
-#else
-    appdata.replace( QString( "/simulationcraft" ), QString( "" ), Qt::CaseInsensitive );
-#endif
-  }
 
-  // Scan all subfolders in /profiles/ and create a list
-#if ! defined( Q_OS_MAC )
-  QDir tdir( appdata + "/profiles" );
-#else
-  CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "profiles" ), 0, 0 );
-  QDir tdir;
-  if ( fileRef )
-  {
-    CFStringRef macPath = CFURLCopyFileSystemPath( fileRef, kCFURLPOSIXPathStyle );
-    tdir            = QString( CFStringGetCStringPtr( macPath, CFStringGetSystemEncoding() ) );
-
-    CFRelease( fileRef );
-    CFRelease( macPath );
-  }
-#endif
+  QDir tdir = build_profiledir( "profiles", "" );
   tdir.setFilter( QDir::Dirs );
 
   QStringList tprofileList = tdir.entryList();
@@ -514,25 +557,7 @@ void SC_MainWindow::createBestInSlotTab()
   // Main loop through all subfolders of ./profiles/
   for ( int i = 0; i < tnumProfiles; i++ )
   {
-#if ! defined( Q_OS_MAC )
-    QDir dir( appdata + "/profiles/" + tprofileList[ i ] );
-#else
-    CFURLRef fileRef = CFBundleCopyResourceURL( CFBundleGetMainBundle(),
-                                                CFStringCreateWithCString( NULL,
-                                                tprofileList[ i ].toUtf8().constData(),
-                                                kCFStringEncodingUTF8 ),
-                                                0,
-                                                CFSTR( "profiles" ) );
-    QDir dir;
-    if ( fileRef )
-    {
-      CFStringRef macPath = CFURLCopyFileSystemPath( fileRef, kCFURLPOSIXPathStyle );
-      dir            = QString( CFStringGetCStringPtr( macPath, CFStringGetSystemEncoding() ) );
-
-      CFRelease( fileRef );
-      CFRelease( macPath );
-    }
-#endif
+    QDir dir = build_profiledir( "profiles", tprofileList[ i ] );
     dir.setSorting( QDir::Name );
     dir.setFilter( QDir::Files );
     dir.setNameFilters( QStringList( "*.simc" ) );

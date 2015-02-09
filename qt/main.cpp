@@ -89,7 +89,7 @@ int main( int argc, char *argv[] )
   QCoreApplication::setApplicationName( "SimulationCraft" );
   QCoreApplication::setApplicationVersion( SC_VERSION );
   QCoreApplication::setOrganizationDomain( "http://code.google.com/p/simulationcraft/" );
-  QCoreApplication::setOrganizationName( "SimulationCraft" );
+  //QCoreApplication::setOrganizationName( "SimulationCraft" );
   QSettings::setDefaultFormat( QSettings::IniFormat ); // Avoid Registry entries on Windows
 
   QNetworkProxyFactory::setUseSystemConfiguration( true );
