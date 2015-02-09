@@ -5,31 +5,32 @@
 
 #include "simulationcraft.hpp"
 
-namespace {
-#ifndef NDEBUG
-const bool ACTOR_EVENT_BOOKKEEPING = true;
-#else
-const bool ACTOR_EVENT_BOOKKEEPING = false;
-#endif
-}
-
 // ==========================================================================
 // Event
 // ==========================================================================
 
 core_event_t::core_event_t( sim_t& s ) :
   _sim( s ), next( nullptr ),  time( timespan_t::zero() ),
-  reschedule_time( timespan_t::zero() ),actor( nullptr ), id( 0 ), canceled( false ), recycled( false )
+  reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false ), recycled( false )
+#if ACTOR_EVENT_BOOKKEEPING
+  ,actor( nullptr )
+#endif
 {}
 
 core_event_t::core_event_t( sim_t& s, actor_t* a ) :
   _sim( s ), next( nullptr ), time( timespan_t::zero() ),
-  reschedule_time( timespan_t::zero() ), actor( a ), id( 0 ), canceled( false ), recycled( false )
+  reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false ), recycled( false )
+#if ACTOR_EVENT_BOOKKEEPING
+  ,actor( a )
+#endif
 {}
 
 core_event_t::core_event_t( actor_t& a ) :
   _sim( *a.sim ), next( nullptr ), time( timespan_t::zero() ),
-  reschedule_time( timespan_t::zero() ), actor( &a ), id( 0 ), canceled( false ), recycled( false )
+  reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false ), recycled( false )
+#if ACTOR_EVENT_BOOKKEEPING
+  ,actor( &a )
+#endif
 {}
 
 // event_t::reschedule ======================================================
@@ -56,7 +57,8 @@ void core_event_t::cancel( core_event_t*& e )
 {
   if ( ! e ) return;
 
-  if ( ACTOR_EVENT_BOOKKEEPING && e -> _sim.debug  && e -> actor && ! e -> canceled )
+#if ACTOR_EVENT_BOOKKEEPING
+  if ( e -> _sim.debug  && e -> actor && ! e -> canceled )
   {
     e -> actor -> event_counter--;
     if ( e -> actor -> event_counter < 0 )
@@ -66,6 +68,7 @@ void core_event_t::cancel( core_event_t*& e )
       assert( false );
     }
   }
+#endif
 
   e -> canceled = true;
   e = 0;
@@ -229,17 +232,19 @@ void event_manager_t::add_event( core_event_t* e,
   if ( ++events_remaining > max_events_remaining ) max_events_remaining = events_remaining;
 
   if ( sim -> debug )
-    sim -> out_debug.printf( "Add Event: %s time=%.4f rs-time=%.4f id=%d actor=%s",
+    sim -> out_debug.printf( "Add Event: %s time=%.4f rs-time=%.4f id=%d",
 			     e -> name(), e -> time.total_seconds(),
 			     e -> reschedule_time.total_seconds(),
-			     e -> id, e -> actor ? e -> actor -> name() : "" );
+			     e -> id );
 
-  if ( ACTOR_EVENT_BOOKKEEPING && sim -> debug && e -> actor )
+#if ACTOR_EVENT_BOOKKEEPING
+  if ( sim -> debug && e -> actor )
   {
     e -> actor -> event_counter++;
     sim -> out_debug.printf( "Actor %s has %d scheduled events",
 			     e -> actor -> name(), e -> actor -> event_counter );
   }
+#endif
 }
 
 // event_manager_t::reschedule_event ========================================
@@ -259,7 +264,8 @@ bool event_manager_t::execute()
   {
     current_time = e -> time;
 
-    if ( ACTOR_EVENT_BOOKKEEPING && sim -> debug && e -> actor && ! e -> canceled )
+#if ACTOR_EVENT_BOOKKEEPING
+    if ( sim -> debug && e -> actor && ! e -> canceled )
     {
       // Perform actor event bookkeeping first
       e -> actor -> event_counter--;
@@ -269,6 +275,7 @@ bool event_manager_t::execute()
         assert( false );
       }
     }
+#endif
 
     if ( e -> canceled )
     {
@@ -283,11 +290,16 @@ bool event_manager_t::execute()
     else
     {
       if ( sim -> debug )
-        sim -> out_debug.printf( "Executing event: %s %s", e -> name(), e -> actor ? e -> actor -> name() : "" );
+        sim -> out_debug.printf( "Executing event: %s", e -> name() );
 
       if ( monitor_cpu )
       {
+#if ACTOR_EVENT_BOOKKEEPING
         stopwatch_t& sw = e -> actor ? e -> actor -> event_stopwatch : event_stopwatch;
+#else
+
+        stopwatch_t& sw = event_stopwatch;
+#endif
         sw.mark();
         e -> execute();
         sw.accumulate();

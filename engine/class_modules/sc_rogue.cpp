@@ -2351,13 +2351,13 @@ struct premeditation_t : public rogue_attack_t
     { return "premeditation"; }
     void execute()
     {
-      rogue_t* p = static_cast< rogue_t* >( actor );
+      rogue_t* p = static_cast< rogue_t* >( player() );
 
       p -> resources.current[ RESOURCE_COMBO_POINT ] -= combo_points;
       if ( sim().log )
       {
         sim().out_log.printf( "%s loses %d temporary combo_points from premeditation (%d)",
-                    actor -> name(), combo_points, p -> resources.current[ RESOURCE_COMBO_POINT ] );
+                    player() -> name(), combo_points, p -> resources.current[ RESOURCE_COMBO_POINT ] );
       }
 
       assert( p -> resources.current[ RESOURCE_COMBO_POINT ] >= 0 );

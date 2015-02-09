@@ -364,7 +364,7 @@ public:
     { return  "demonic_calling"; }
     virtual void execute()
     {
-      warlock_t* p = static_cast<warlock_t*>( actor );
+      warlock_t* p = static_cast<warlock_t*>( player() );
       p -> demonic_calling_event = new ( sim() ) demonic_calling_event_t( p,
                                                                           timespan_t::from_seconds( ( p -> spec.wild_imps -> effectN( 1 ).period().total_seconds() + p -> spec.imp_swarm -> effectN( 3 ).base_value() ) * p -> cache.spell_speed() ) );
       if ( ! initiator ) p -> buffs.demonic_calling -> trigger();

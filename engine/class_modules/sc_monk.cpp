@@ -4769,7 +4769,7 @@ struct power_strikes_event_t: public event_t
   { return  "power_strikes"; }
   virtual void execute()
   {
-    monk_t* p = debug_cast<monk_t*>( actor );
+    monk_t* p = debug_cast<monk_t*>( player() );
 
     p -> buff.power_strikes -> trigger();
 

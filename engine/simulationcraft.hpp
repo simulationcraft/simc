@@ -2522,6 +2522,11 @@ struct sim_report_information_t
   sim_report_information_t() { charts_generated = false; }
 };
 
+#ifndef NDEBUG
+#define ACTOR_EVENT_BOOKKEEPING 1
+#else
+#define ACTOR_EVENT_BOOKKEEPING 0
+#endif
 // Event Manager ============================================================
 
 struct event_manager_t
@@ -3087,10 +3092,12 @@ struct core_event_t
   core_event_t*    next;
   timespan_t  time;
   timespan_t  reschedule_time;
-  actor_t*    actor;
   uint32_t    id;
   bool        canceled;
   bool        recycled;
+#if ACTOR_EVENT_BOOKKEEPING
+  actor_t*    actor;
+#endif
   core_event_t( sim_t& s );
   core_event_t( sim_t& s, actor_t* p );
   core_event_t( actor_t& p );
@@ -3100,6 +3107,12 @@ struct core_event_t
 
   void reschedule( timespan_t new_time );
   void add_event( timespan_t delta_time );
+  sim_t& sim()
+  { return _sim; }
+  const sim_t& sim() const
+  { return _sim; }
+  rng_t& rng() { return sim().rng(); }
+  rng_t& rng() const { return sim().rng(); }
 
   virtual void execute() = 0; // MUST BE IMPLEMENTED IN SUB-CLASS!
   virtual const char* name() const
@@ -5317,23 +5330,20 @@ private:
 
 struct event_t : public core_event_t
 {
-
+  player_t* _player;
   event_t( sim_t& s ) :
-    core_event_t( s ) {}
+    core_event_t( s ),
+    _player( nullptr ){}
   event_t( player_t& p ) :
-    core_event_t( p ) {}
+    core_event_t( p ),
+    _player( &p ){}
   event_t( sim_t& s, player_t* p ) :
-    core_event_t( s, p ) {}
+    core_event_t( s, p ),
+    _player( p ) {}
   player_t* p()
   { return player(); }
   player_t* player()
-  { return static_cast<player_t*>( actor ); }
-  sim_t& sim()
-  { return static_cast<sim_t&>( _sim ); }
-  const sim_t& sim() const
-  { return static_cast<sim_t&>( _sim ); }
-  rng_t& rng() { return sim().rng(); }
-  rng_t& rng() const { return sim().rng(); }
+  { return _player; }
   virtual const char* name() const override
   { return "event_t"; }
 };

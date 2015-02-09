@@ -173,7 +173,7 @@ void pet_t::summon( timespan_t summon_duration )
       { return "pet_summon_duration"; }
       virtual void execute()
       {
-        pet_t& pet = static_cast<pet_t&>( *actor );
+        pet_t& pet = static_cast<pet_t&>( *player() );
 
         pet.expiration = nullptr;
 
