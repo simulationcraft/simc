@@ -165,11 +165,12 @@ void pet_t::summon( timespan_t summon_duration )
     struct expiration_t : public event_t
     {
       expiration_t( pet_t& p, timespan_t duration ) :
-        event_t( p, "pet_summon_duration" )
+        event_t( p )
       {
         sim().add_event( this, duration );
       }
-
+      virtual const char* name() const override
+      { return "pet_summon_duration"; }
       virtual void execute()
       {
         pet_t& pet = static_cast<pet_t&>( *actor );

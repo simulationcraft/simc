@@ -17,19 +17,19 @@ const bool ACTOR_EVENT_BOOKKEEPING = false;
 // Event
 // ==========================================================================
 
-core_event_t::core_event_t( sim_t& s, const char* n ) :
+core_event_t::core_event_t( sim_t& s ) :
   _sim( s ), next( nullptr ),  time( timespan_t::zero() ),
-  reschedule_time( timespan_t::zero() ),actor( nullptr ), id( 0 ), canceled( false ), recycled( false ), name( n )
+  reschedule_time( timespan_t::zero() ),actor( nullptr ), id( 0 ), canceled( false ), recycled( false )
 {}
 
-core_event_t::core_event_t( sim_t& s, actor_t* a, const char* n ) :
+core_event_t::core_event_t( sim_t& s, actor_t* a ) :
   _sim( s ), next( nullptr ), time( timespan_t::zero() ),
-  reschedule_time( timespan_t::zero() ), actor( a ), id( 0 ), canceled( false ), recycled( false ), name( n )
+  reschedule_time( timespan_t::zero() ), actor( a ), id( 0 ), canceled( false ), recycled( false )
 {}
 
-core_event_t::core_event_t( actor_t& a, const char* n ) :
+core_event_t::core_event_t( actor_t& a ) :
   _sim( *a.sim ), next( nullptr ), time( timespan_t::zero() ),
-  reschedule_time( timespan_t::zero() ), actor( &a ), id( 0 ), canceled( false ), recycled( false ), name( n )
+  reschedule_time( timespan_t::zero() ), actor( &a ), id( 0 ), canceled( false ), recycled( false )
 {}
 
 // event_t::reschedule ======================================================
@@ -40,7 +40,7 @@ void core_event_t::reschedule( timespan_t new_delta_time )
 
   if ( _sim.debug )
     _sim.out_debug.printf( "Rescheduling event %s (%d) from %.2f to %.2f",
-                name, id, time.total_seconds(), reschedule_time.total_seconds() );
+                name(), id, time.total_seconds(), reschedule_time.total_seconds() );
 }
 
 // event_t::add_event =======================================================
@@ -62,7 +62,7 @@ void core_event_t::cancel( core_event_t*& e )
     if ( e -> actor -> event_counter < 0 )
     {
       std::cerr << "event_t::cancel assertion error: e -> player -> events < 0."
-          << "event '" << e -> name << "' from '" << e -> actor -> name() << "'.\n";
+          << "event '" << e -> name() << "' from '" << e -> actor -> name() << "'.\n";
       assert( false );
     }
   }
@@ -230,7 +230,7 @@ void event_manager_t::add_event( core_event_t* e,
 
   if ( sim -> debug )
     sim -> out_debug.printf( "Add Event: %s time=%.4f rs-time=%.4f id=%d actor=%s",
-			     e -> name, e -> time.total_seconds(),
+			     e -> name(), e -> time.total_seconds(),
 			     e -> reschedule_time.total_seconds(),
 			     e -> id, e -> actor ? e -> actor -> name() : "" );
 
@@ -246,7 +246,7 @@ void event_manager_t::add_event( core_event_t* e,
 
 void event_manager_t::reschedule_event( core_event_t* e )
 {
-  if ( sim -> debug ) sim -> out_debug.printf( "Reschedule Event: %s %d", e -> name, e -> id );
+  if ( sim -> debug ) sim -> out_debug.printf( "Reschedule Event: %s %d", e -> name(), e -> id );
 
   add_event( e, ( e -> reschedule_time - current_time ) );
 }
@@ -265,7 +265,7 @@ bool event_manager_t::execute()
       e -> actor -> event_counter--;
       if ( e -> actor -> event_counter < 0 )
       {
-        util::fprintf( stderr, "sim_t::combat assertion error! canceling event %s leaves negative event count for user %s.\n", e -> name, e -> actor -> name() );
+        util::fprintf( stderr, "sim_t::combat assertion error! canceling event %s leaves negative event count for user %s.\n", e -> name(), e -> actor -> name() );
         assert( false );
       }
     }
@@ -273,7 +273,7 @@ bool event_manager_t::execute()
     if ( e -> canceled )
     {
       if ( sim -> debug )
-        sim -> out_debug.printf( "Canceled event: %s", e -> name );
+        sim -> out_debug.printf( "Canceled event: %s", e -> name() );
     }
     else if ( e -> reschedule_time > e -> time )
     {
@@ -283,7 +283,7 @@ bool event_manager_t::execute()
     else
     {
       if ( sim -> debug )
-        sim -> out_debug.printf( "Executing event: %s %s", e -> name, e -> actor ? e -> actor -> name() : "" );
+        sim -> out_debug.printf( "Executing event: %s %s", e -> name(), e -> actor ? e -> actor -> name() : "" );
 
       if ( monitor_cpu )
       {

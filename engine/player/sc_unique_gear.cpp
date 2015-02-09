@@ -1224,12 +1224,13 @@ void set_bonus::t17_lfr_4pc_mailcaster( special_effect_t& effect )
     unsigned pulse_id;
 
     electric_orb_event_t( player_t* player, electric_orb_aoe_t* a, player_t* t, unsigned pulse ) :
-      event_t( *player, "electric_orb_event" ),
+      event_t( *player ),
       aoe( a ), target( t ), pulse_id( pulse )
     {
       add_event( timespan_t::from_seconds( 2.0 ) );
     }
-
+    virtual const char* name() const override
+    { return "electric_orb_event"; }
     void execute()
     {
       aoe -> target = target;

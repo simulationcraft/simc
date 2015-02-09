@@ -4103,12 +4103,13 @@ struct sniper_training_event_t : public event_t
   hunter_t* hunter;
 
   sniper_training_event_t( hunter_t* h ) :
-    event_t( *h -> sim, "sniper_training_event" ),
+    event_t( *h -> sim ),
     hunter( h )
   {
     add_event( timespan_t::from_seconds( 0.5 ) );
   }
-
+  virtual const char* name() const override
+  { return "sniper_training_event"; }
   void execute()
   {
     if ( ! hunter -> is_moving() )

@@ -4055,7 +4055,7 @@ struct totem_pulse_event_t : public event_t
   timespan_t real_amplitude;
 
   totem_pulse_event_t( shaman_totem_pet_t& t, timespan_t amplitude ) :
-    event_t( t, "totem_pulse" ),
+    event_t( t ),
     totem( &t ), real_amplitude( amplitude )
   {
     if ( totem -> pulse_action -> hasted_pulse )
@@ -4063,7 +4063,8 @@ struct totem_pulse_event_t : public event_t
 
     add_event( real_amplitude );
   }
-
+  virtual const char* name() const override
+  { return  "totem_pulse"; }
   virtual void execute()
   {
     if ( totem -> pulse_action )
@@ -4451,11 +4452,12 @@ struct unleash_flame_expiration_delay_t : public event_t
   unleash_flame_buff_t* buff;
 
   unleash_flame_expiration_delay_t( shaman_t& player, unleash_flame_buff_t* b ) :
-    event_t( player, "unleash_flame_expiration_delay" ), buff( b )
+    event_t( player ), buff( b )
   {
     add_event( sim().rng().gauss( player.uf_expiration_delay, player.uf_expiration_delay_stddev ) );
   }
-
+  virtual const char* name() const override
+  { return  "unleash_flame_expiration_delay"; }
   virtual void execute()
   {
     // Call real expire after a delay

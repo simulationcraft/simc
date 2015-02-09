@@ -14,20 +14,20 @@ struct recharge_event_t : event_t
   timespan_t duration_, event_duration_;
 
   recharge_event_t( cooldown_t* cd, action_t* a, timespan_t base_duration ) :
-    event_t( *cd -> player, "recharge_event" ), cooldown_( cd ), action_( a ),
+    event_t( *cd -> player ), cooldown_( cd ), action_( a ),
     duration_( base_duration ),
     event_duration_( cooldown_t::cooldown_duration( cd, base_duration, a ) )
   {
     sim().add_event( this, event_duration_ );
   }
-
+  virtual const char* name() const override
+  { return "recharge_event"; }
   recharge_event_t( cooldown_t* cd, action_t* a, timespan_t event_duration, timespan_t base_duration ) :
-    event_t( *cd -> player, "recharge_event" ), cooldown_( cd ), action_( a ),
+    event_t( *cd -> player ), cooldown_( cd ), action_( a ),
     duration_( base_duration ), event_duration_( event_duration )
   {
     sim().add_event( this, event_duration_ );
   }
-
   virtual void execute()
   {
     assert( cooldown_ -> current_charge < cooldown_ -> charges );
@@ -57,12 +57,13 @@ struct ready_trigger_event_t : public event_t
   cooldown_t* cooldown;
 
   ready_trigger_event_t( player_t& p, cooldown_t* cd ) :
-    event_t( p, "ready_trigger_event" ),
+    event_t( p ),
     cooldown( cd )
   {
     sim().add_event( this, cd -> ready - sim().current_time() );
   }
-
+  virtual const char* name() const override
+  { return "ready_trigger_event"; }
   void execute()
   {
     cooldown -> ready_trigger_event = 0;

@@ -14,14 +14,15 @@ namespace { // anonymous namespace
 struct player_gcd_event_t : public event_t
 {
   player_gcd_event_t( player_t& p, timespan_t delta_time ) :
-      event_t( p, "Player-Ready-GCD" )
+      event_t( p )
   {
     if ( sim().debug )
       sim().out_debug << "New Player-Ready-GCD Event: " << p.name();
 
     sim().add_event( this, delta_time );
   }
-
+  virtual const char* name() const override
+  { return "Player-Ready-GCD"; }
   virtual void execute()
   {
     for ( std::vector<action_t*>::const_iterator i = p() -> active_off_gcd_list -> off_gcd_actions.begin();
@@ -71,7 +72,7 @@ struct action_execute_event_t : public event_t
 
   action_execute_event_t( action_t* a, timespan_t time_to_execute,
                           action_state_t* state = 0 ) :
-      event_t( *a->player, "Action-Execute" ), action( a ),
+      event_t( *a->player ), action( a ),
         execute_state( state )
   {
     if ( sim().debug )
@@ -82,7 +83,8 @@ struct action_execute_event_t : public event_t
 
     sim().add_event( this, time_to_execute );
   }
-
+  virtual const char* name() const override
+  { return "Action-Execute"; }
   // Ensure we properly release the carried execute_state even if this event
   // is never executed.
   ~action_execute_event_t()

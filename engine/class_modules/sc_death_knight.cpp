@@ -612,12 +612,13 @@ struct np_spread_event_t : public event_t
 {
   dot_t* dot;
   np_spread_event_t( dot_t* dot_ ) :
-    event_t( *dot_ -> source -> sim, "necrotic_plague_spread" ),
+    event_t( *dot_ -> source -> sim ),
     dot( dot_ )
   {
     sim().add_event( this, timespan_t::zero() );
   }
-
+  virtual const char* name() const override
+  { return "necrotic_plague_spread"; }
   void execute()
   {
     if ( dot -> target -> is_sleeping() )
@@ -7352,12 +7353,13 @@ struct vottw_regen_event_t : public event_t
   death_knight_t* dk;
 
   vottw_regen_event_t( death_knight_t* player ) :
-    event_t( *player, "veteran_of_the_third_war" ),
+    event_t( *player ),
     dk( player )
   {
     sim().add_event( this, timespan_t::from_seconds( 1 ) );
   }
-
+  virtual const char* name() const override
+  { return "veteran_of_the_third_war"; }
   void execute()
   {
     dk -> resource_gain( RESOURCE_RUNIC_POWER,

@@ -15,14 +15,15 @@ struct player_ready_event_t : public event_t
 {
   player_ready_event_t( player_t& p,
                         timespan_t delta_time ) :
-                          event_t( p, "Player-Ready" )
+                          event_t( p )
   {
     if ( sim().debug )
       sim().out_debug.printf( "New Player-Ready Event: %s", p.name() );
 
     sim().add_event( this, delta_time );
   }
-
+  virtual const char* name() const override
+  { return "Player-Ready"; }
   virtual void execute()
   {
     // Player that's checking for off gcd actions to use, cancels that checking when there's a ready event firing.
@@ -55,14 +56,15 @@ struct demise_event_t : public event_t
 {
   demise_event_t( player_t& p,
                   timespan_t delta_time = timespan_t::zero() /* Instantly kill the player */ ) :
-     event_t( p, "Player-Demise" )
+     event_t( p )
   {
     if ( sim().debug )
       sim().out_debug.printf( "New Player-Demise Event: %s", p.name() );
 
     sim().add_event( this, delta_time );
   }
-
+  virtual const char* name() const override
+  { return "Player-Demise"; }
   virtual void execute()
   {
     p() -> demise();
@@ -372,7 +374,7 @@ void residual_action::trigger( action_t* residual_action, player_t* t, double am
     action_t* action;
 
     delay_event_t( player_t* t, action_t* a, double amount ) :
-      event_t( *a -> player, "residual_action_delay_event" ),
+      event_t( *a -> player ),
       additional_residual_amount( amount ), target( t ), action( a )
     {
       // Use same delay as in buff application
@@ -384,7 +386,8 @@ void residual_action::trigger( action_t* residual_action, player_t* t, double am
 
       sim().add_event( this, delay_duration );
     }
-
+    virtual const char* name() const override
+    { return "residual_action_delay_event"; }
     virtual void execute()
     {
       // Don't ignite on targets that are not active
@@ -10295,11 +10298,12 @@ struct manager_t::damage_event_list_t
 struct manager_t::update_event_t : public event_t
 {
   update_event_t( player_t& p ) :
-    event_t( p, "resolve_update_event_t" )
+    event_t( p )
   {
     sim().add_event( this, timespan_t::from_seconds( 1.0 ) ); // this is the automatic resolve update interval
   }
-
+  virtual const char* name() const override
+  { return "resolve_update_event_t"; }
   virtual void execute() override
   {
     assert( p() -> resolve_manager._update_event == this );
