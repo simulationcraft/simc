@@ -2546,7 +2546,7 @@ struct event_manager_t
 #ifdef EVENT_QUEUE_DEBUG
   unsigned max_queue_depth, n_allocated_events, n_end_insert;
   uint64_t events_traversed, events_added;
-  std::vector<unsigned> event_queue_depth_samples;
+  std::vector<std::pair<unsigned, unsigned> > event_queue_depth_samples;
 #endif /* EVENT_QUEUE_DEBUG */
 
   event_manager_t( sim_t* );

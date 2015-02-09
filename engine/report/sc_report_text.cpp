@@ -658,14 +658,15 @@ void print_text_performance( FILE* file, sim_t* sim )
 
   for ( size_t i = 0; i < sim -> event_mgr.event_queue_depth_samples.size(); ++i )
   {
-    if ( sim -> event_mgr.event_queue_depth_samples[ i ] == 0 )
+    if ( sim -> event_mgr.event_queue_depth_samples[ i ].first == 0 )
     {
       continue;
     }
 
-    double p = 100.0 * static_cast<double>( sim -> event_mgr.event_queue_depth_samples[ i ] ) / sim -> event_mgr.events_added;
-    util::fprintf( file, "Depth: %-4u Samples: %-7u (%.3f%%)\n",
-        i, sim -> event_mgr.event_queue_depth_samples[ i ], p );
+    double p = 100.0 * static_cast<double>( sim -> event_mgr.event_queue_depth_samples[ i ].first ) / sim -> event_mgr.events_added;
+    double p2 = 100.0 * static_cast<double>( sim -> event_mgr.event_queue_depth_samples[ i ].second ) / sim -> event_mgr.event_queue_depth_samples[ i ].first;
+    util::fprintf( file, "Depth: %-4u Samples: %-7u (%.3f%% / %.3f%%)\n",
+        i, sim -> event_mgr.event_queue_depth_samples[ i ], p, p2 );
 
     total_p += p;
   }

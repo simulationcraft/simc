@@ -205,10 +205,6 @@ void event_manager_t::add_event( core_event_t* e,
 #endif
   }
 #ifdef EVENT_QUEUE_DEBUG
-  if ( ! *prev && traversed )
-  {
-    n_end_insert++;
-  }
   events_added++;
   events_traversed += traversed;
   if ( traversed > max_queue_depth )
@@ -219,7 +215,12 @@ void event_manager_t::add_event( core_event_t* e,
   {
     event_queue_depth_samples.resize( traversed + 1 );
   }
-  event_queue_depth_samples[ traversed ]++;
+  event_queue_depth_samples[ traversed ].first++;
+  if ( ! *prev && traversed )
+  {
+    event_queue_depth_samples[ traversed ].second++;
+    n_end_insert++;
+  }
 #endif
   // insert event
   e -> next = *prev;
@@ -423,7 +424,8 @@ void event_manager_t::merge( event_manager_t& other )
 
   for ( size_t i = 0; i < other.event_queue_depth_samples.size(); ++i )
   {
-    event_queue_depth_samples[ i ] += other.event_queue_depth_samples[ i ];
+    event_queue_depth_samples[ i ].first += other.event_queue_depth_samples[ i ].first;
+    event_queue_depth_samples[ i ].second += other.event_queue_depth_samples[ i ].second;
   }
 #endif
 }
