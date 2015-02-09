@@ -97,6 +97,8 @@ event_manager_t::event_manager_t( sim_t* s ) :
 #ifdef EVENT_QUEUE_DEBUG
   monitor_cpu( false ),
   max_queue_depth( 0 ),
+  n_allocated_events( 0 ),
+  n_end_insert( 0 ),
   events_traversed( 0 ),
   events_added( 0 )
 #else
@@ -141,6 +143,9 @@ void* event_manager_t::allocate_event( std::size_t size )
     }
     else
     {
+#ifdef EVENT_QUEUE_DEBUG
+      n_allocated_events++;
+#endif
       allocated_events.push_back( e );
     }
   }
@@ -200,6 +205,10 @@ void event_manager_t::add_event( core_event_t* e,
 #endif
   }
 #ifdef EVENT_QUEUE_DEBUG
+  if ( ! *prev && traversed )
+  {
+    n_end_insert++;
+  }
   events_added++;
   events_traversed += traversed;
   if ( traversed > max_queue_depth )
@@ -400,6 +409,8 @@ void event_manager_t::merge( event_manager_t& other )
 #ifdef EVENT_QUEUE_DEBUG
   events_traversed += other.events_traversed;
   events_added += other.events_added;
+  n_allocated_events += other.n_allocated_events;
+  n_end_insert += other.n_end_insert;
   if ( other.max_queue_depth > max_queue_depth )
   {
     max_queue_depth = other.max_queue_depth;

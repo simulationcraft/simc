@@ -624,6 +624,8 @@ void print_text_performance( FILE* file, sim_t* sim )
                  "  TotalEvents   = %lu\n"
                  "  MaxEventQueue = %lu\n"
 #ifdef EVENT_QUEUE_DEBUG
+                 "  AllocEvents   = %u\n"
+                 "  EndInsert     = %u (%.3f%%)\n"
                  "  MaxQueueDepth = %u\n"
                  "  AvgQueueDepth = %.3f\n"
 #endif
@@ -638,6 +640,9 @@ void print_text_performance( FILE* file, sim_t* sim )
                  sim -> event_mgr.total_events_processed,
                  sim -> event_mgr.max_events_remaining,
 #ifdef EVENT_QUEUE_DEBUG
+                 sim -> event_mgr.n_allocated_events,
+                 sim -> event_mgr.n_end_insert,
+                 100.0 * static_cast<double>( sim -> event_mgr.n_end_insert ) / sim -> event_mgr.events_added,
                  sim -> event_mgr.max_queue_depth,
                  static_cast<double>( sim -> event_mgr.events_traversed ) / sim -> event_mgr.events_added,
 #endif
