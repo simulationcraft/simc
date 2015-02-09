@@ -35,6 +35,7 @@ actions+=/auto_attack
 actions+=/call_action_list,name=movement,if=movement.distance>5
 actions+=/berserker_rage,if=buff.enrage.down|(talent.unquenchable_thirst.enabled&buff.raging_blow.down)
 actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists
+actions+=/use_item,name=vial_of_convulsive_shadows,if=(talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.bloodbath.up|talent.avatar.enabled
 actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25
 # Skip cooldown usage if we can line them up with bladestorm on a large set of adds, or if movement is coming soon.
 actions+=/call_action_list,name=single_target,if=(raid_event.adds.cooldown<60&raid_event.adds.count>2&active_enemies=1)|raid_event.movement.cooldown<5
@@ -113,30 +114,29 @@ actions.aoe+=/bloodthirst
 actions.aoe+=/wild_strike,if=buff.bloodsurge.up
 
 head=blackhands_faceguard,id=115584,bonus_id=566
-neck=vertebrae_protector,id=113900,bonus_id=566,enchant=gift_of_critical_strike
+neck=vertebrae_protector,id=113900,bonus_id=566,enchant_id=5317
 shoulders=overdriven_spaulders,id=113990,bonus_id=566
 back=cloak_of_sanguine_terror,id=113972,bonus_id=566,enchant=gift_of_critical_strike
 chest=blackhands_chestguard,id=115582,bonus_id=566
 wrists=fleshmelter_bracers,id=113896,bonus_id=566
 hands=blackhands_handguards,id=115583,bonus_id=566
-waist=ironcrushers_collar,id=113950,bonus_id=566
+waist=uktars_belt_of_chiming_rings,id=113976,bonus_id=566
 legs=blackhands_legguards,id=115580,bonus_id=566
-feet=iron_bellow_sabatons,id=113961,bonus_id=566
+feet=doomslag_greatboots,id=119341,bonus_id=566
 finger1=spellbound_solium_band_of_sorcerous_strength,id=118300,enchant=gift_of_critical_strike
 finger2=seal_of_the_savage_howl,id=113940,bonus_id=566,enchant=gift_of_critical_strike
-trinket1=horn_of_screaming_spirits,id=119193,bonus_id=566
-trinket2=forgemasters_insignia,id=113983,bonus_id=566
-main_hand=crescent_of_living_magma,id=113886,bonus_id=566,enchant=mark_of_the_thunderlord
-off_hand=crescent_of_living_magma,id=113886,bonus_id=566,enchant=mark_of_the_thunderlord
+trinket1=vial_of_convulsive_shadows,id=113969,bonus_id=566
+trinket2=horn_of_screaming_spirits,id=119193,bonus_id=566
+main_hand=the_black_hand,id=113979,bonus_id=566,enchant=mark_of_the_thunderlord
+off_hand=the_black_hand,id=113979,bonus_id=566,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_strength=3572
+# gear_strength=3571
 # gear_stamina=4341
-# gear_crit_rating=1673
-# gear_haste_rating=424
-# gear_mastery_rating=776
+# gear_crit_rating=1699
+# gear_haste_rating=394
+# gear_mastery_rating=1367
 # gear_armor=2148
-# gear_multistrike_rating=1061
-# gear_versatility_rating=127
+# gear_multistrike_rating=612
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
