@@ -671,6 +671,24 @@ void print_text_performance( FILE* file, sim_t* sim )
     total_p += p;
   }
   util::fprintf( file, "Total: %.3f%% Samples: %llu\n", total_p, sim -> event_mgr.events_added );
+
+  util::fprintf( file, "\nEvent Queue Allocation:\n" );
+  double total_a = 0;
+  for ( size_t i = 0; i < sim -> event_mgr.event_requested_size_count.size(); ++i )
+  {
+    if ( sim -> event_mgr.event_requested_size_count[ i ] == 0 )
+    {
+      continue;
+    }
+
+    double p = 100.0 * static_cast<double>( sim -> event_mgr.event_requested_size_count[ i ] ) / sim -> event_mgr.n_requested_events;
+    util::fprintf( file, "Alloc-Size: %-4u Samples: %-7u (%.3f%%)\n",
+        i, sim -> event_mgr.event_requested_size_count[ i ], p );
+
+    total_a += p;
+  }
+
+  util::fprintf( file, "Total: %.3f%% Alloc Samples: %llu\n", total_p, sim -> event_mgr.n_requested_events );
 #endif
 }
 

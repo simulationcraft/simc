@@ -125,13 +125,20 @@ event_manager_t::~event_manager_t()
 
 // event_manager_t::allocate_event ==========================================
 
-void* event_manager_t::allocate_event( std::size_t size )
+void* event_manager_t::allocate_event( const std::size_t size )
 {
   static const std::size_t SIZE = 2 * sizeof( core_event_t );
   assert( SIZE > size ); ( void ) size;
 
   core_event_t* e = recycled_event_list;
-
+#ifdef EVENT_QUEUE_DEBUG
+      n_requested_events++;
+      if ( size >= event_requested_size_count.size() )
+      {
+        event_requested_size_count.resize( size );
+      }
+      event_requested_size_count[ size ]++;
+#endif
   if ( e )
   {
     recycled_event_list = e -> next;
@@ -424,6 +431,7 @@ void event_manager_t::merge( event_manager_t& other )
   events_added += other.events_added;
   n_allocated_events += other.n_allocated_events;
   n_end_insert += other.n_end_insert;
+  n_requested_events += other.n_requested_events;
   if ( other.max_queue_depth > max_queue_depth )
   {
     max_queue_depth = other.max_queue_depth;
@@ -439,5 +447,10 @@ void event_manager_t::merge( event_manager_t& other )
     event_queue_depth_samples[ i ].first += other.event_queue_depth_samples[ i ].first;
     event_queue_depth_samples[ i ].second += other.event_queue_depth_samples[ i ].second;
   }
+  for ( size_t i = 0; i < other.event_requested_size_count.size(); ++i )
+  {
+    event_requested_size_count[ i ] += other.event_requested_size_count[ i ];
+  }
+
 #endif
 }
