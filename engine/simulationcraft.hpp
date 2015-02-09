@@ -2543,6 +2543,12 @@ struct event_manager_t
   bool monitor_cpu;
   bool canceled;
 
+#ifdef EVENT_QUEUE_DEBUG
+  unsigned max_queue_depth;
+  uint64_t events_traversed, events_added;
+  std::vector<unsigned> event_queue_depth_samples;
+#endif /* EVENT_QUEUE_DEBUG */
+
   event_manager_t( sim_t* );
  ~event_manager_t();
   void* allocate_event( std::size_t size );

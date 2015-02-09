@@ -94,7 +94,14 @@ event_manager_t::event_manager_t( sim_t* s ) :
   wheel_granularity( 0.0 ),
   wheel_time( timespan_t::zero() ),
   event_stopwatch( STOPWATCH_THREAD ),
+#ifdef EVENT_QUEUE_DEBUG
+  monitor_cpu( false ),
+  max_queue_depth( 0 ),
+  events_traversed( 0 ),
+  events_added( 0 )
+#else
   monitor_cpu( false )
+#endif /* EVENT_QUEUE_DEBUG */
 {
   allocated_events.reserve( 100 );
 }
@@ -181,8 +188,30 @@ void event_manager_t::add_event( core_event_t* e,
 
   // Insert event into the event list at the appropriate time
   core_event_t** prev = &( timing_wheel[ slice ] );
+#ifdef EVENT_QUEUE_DEBUG
+  unsigned traversed = 0;
+#endif
+
   while ( ( *prev ) && ( *prev ) -> time <= e -> time ) // Find position in the list
-  { prev = &( ( *prev ) -> next ); }
+  {
+    prev = &( ( *prev ) -> next );
+#ifdef EVENT_QUEUE_DEBUG
+    traversed++;
+#endif
+  }
+#ifdef EVENT_QUEUE_DEBUG
+  events_added++;
+  events_traversed += traversed;
+  if ( traversed > max_queue_depth )
+  {
+    max_queue_depth = traversed;
+  }
+  if ( traversed >= event_queue_depth_samples.size() )
+  {
+    event_queue_depth_samples.resize( traversed + 1 );
+  }
+  event_queue_depth_samples[ traversed ]++;
+#endif
   // insert event
   e -> next = *prev;
   *prev = e;
@@ -368,4 +397,22 @@ void event_manager_t::merge( event_manager_t& other )
 {
   max_events_remaining = std::max( max_events_remaining, other.max_events_remaining );
   total_events_processed += other.total_events_processed;
+#ifdef EVENT_QUEUE_DEBUG
+  events_traversed += other.events_traversed;
+  events_added += other.events_added;
+  if ( other.max_queue_depth > max_queue_depth )
+  {
+    max_queue_depth = other.max_queue_depth;
+  }
+
+  if ( other.event_queue_depth_samples.size() > event_queue_depth_samples.size() )
+  {
+    event_queue_depth_samples.resize( other.event_queue_depth_samples.size() );
+  }
+
+  for ( size_t i = 0; i < other.event_queue_depth_samples.size(); ++i )
+  {
+    event_queue_depth_samples[ i ] += other.event_queue_depth_samples[ i ];
+  }
+#endif
 }

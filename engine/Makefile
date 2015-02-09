@@ -76,6 +76,12 @@ ifeq (${OPENSSL},)
 endif
 endif
 
+ifneq (${DEBUG},)
+  CPP_FLAGS += -g
+endif
+ifneq (${EVENT_QUEUE_DEBUG},)
+  CPP_FLAGS += -DEVENT_QUEUE_DEBUG
+endif
 ifneq (${NO_DEBUG},)
   CPP_FLAGS += -DNDEBUG
 endif
