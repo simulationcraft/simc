@@ -2309,7 +2309,7 @@ double player_t::composite_melee_haste() const
 {
   double h;
 
-  if ( wod_hotfix )
+  if ( wod_hotfix || maybe_ptr( dbc.ptr ) )
   {
     h = std::max( 0.0, composite_melee_haste_rating() ) / ( current.rating.attack_haste / 1.111 );
   }
@@ -2588,7 +2588,7 @@ double player_t::composite_spell_haste() const
 {
   double h;
 
-  if ( wod_hotfix )
+  if ( wod_hotfix || maybe_ptr( dbc.ptr ) )
   {
     h = std::max( 0.0, composite_spell_haste_rating() ) / ( current.rating.spell_haste / 1.111 );
   }
