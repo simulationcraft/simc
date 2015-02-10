@@ -1929,13 +1929,14 @@ struct exotic_munitions_poisoned_ammo_t: public residual_action::residual_period
   {
     may_crit = true;
     tick_may_crit = true;
+    may_multistrike = 1;
   }
 
   void init()
   {
     base_t::init();
 
-    snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
+    snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT ;
   }
 };
 
