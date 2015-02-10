@@ -2486,7 +2486,7 @@ struct death_knight_action_t : public Base
   bool reap_runes( const rune_t& consumed_rune,
                    const rune_consume_data_t& use_data )
   {
-    if ( ! p() -> bugs )
+    if ( ! p() -> bugs || maybe_ptr( p() -> dbc.ptr ) )
     {
       return false;
     }
