@@ -42,7 +42,7 @@ level=100
 race=troll
 role=attack
 position=back
-talents=3000021
+talents=3000031
 spec=combat
 glyphs=energy/disappearance
 head=poisoners_helmet,id=115572,bonus_id=566
