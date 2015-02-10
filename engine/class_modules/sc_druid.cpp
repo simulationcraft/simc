@@ -194,6 +194,7 @@ public:
   double time_to_next_lunar; // Amount of seconds until eclipse energy reaches 100 (Lunar Eclipse)
   double time_to_next_solar; // Amount of seconds until eclipse energy reaches -100 (Solar Eclipse)
   bool alternate_stellar_flare; // Player request.
+  bool stellar_flare_cast; //Hacky way of not consuming lunar/solar peak.
   int active_rejuvenations; // Number of rejuvenations on raid.  May be useful for Nature's Vigil timing or resto stuff.
   double max_fb_energy;
 
@@ -576,6 +577,7 @@ public:
     time_to_next_lunar( 10 ),
     time_to_next_solar( 30 ),
     alternate_stellar_flare( 0 ),
+    stellar_flare_cast( 0 ),
     active_rejuvenations( 0 ),
     max_fb_energy( 0 ),
     t16_2pc_starfall_bolt( nullptr ),
@@ -4892,7 +4894,7 @@ struct sunfire_t: public druid_spell_t
 
   double spell_direct_power_coefficient( const action_state_t* s ) const
   {
-    if ( s -> target != s -> action -> target )
+    if ( s -> target != s -> action -> target || p() -> stellar_flare_cast )
       return 0; // Sunfire will not deal direct damage to the targets that the dot is spread to.
 
     return druid_spell_t::spell_direct_power_coefficient( s );
@@ -4912,7 +4914,10 @@ struct sunfire_t: public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p() -> buff.solar_peak -> expire();
+    if ( !p() -> stellar_flare_cast )
+    {
+      p() -> buff.solar_peak -> expire();
+    }
   }
 
   void tick( dot_t* d )
@@ -5006,6 +5011,14 @@ struct moonfire_t : public druid_spell_t
       sunfire = new sunfire_CA_t( player );
   }
 
+  double spell_direct_power_coefficient( const action_state_t* s ) const
+  {
+    if ( p() -> stellar_flare_cast )
+      return 0; // With this proposed stellar flare change, it does not deal direct damage.
+
+    return druid_spell_t::spell_direct_power_coefficient( s );
+  }
+
   void tick( dot_t* d )
   {
     druid_spell_t::tick( d );
@@ -5028,7 +5041,10 @@ struct moonfire_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p() -> buff.lunar_peak -> expire();
+    if ( !p() -> stellar_flare_cast )
+    {
+      p() -> buff.lunar_peak -> expire();
+    }
   }
 
   void schedule_execute( action_state_t* state = 0 )
@@ -5559,10 +5575,12 @@ struct stellar_flare_t : public druid_spell_t
     druid_spell_t::execute();
     if ( p() -> alternate_stellar_flare )
     {
+      p() -> stellar_flare_cast = true;
       if ( p() -> eclipse_amount < 0 )
         sunfire_ -> execute();
       else
         moonfire_ -> execute();
+      p() -> stellar_flare_cast = false;
     }
   }
 };
