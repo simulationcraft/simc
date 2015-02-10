@@ -7019,7 +7019,7 @@ void runeforge::fallen_crusader( special_effect_t& effect )
 
   effect.ppm_ = -1.0 * dk -> fallen_crusader_rppm;
   // TODO: Check in 6.1
-  effect.rppm_scale = effect.item -> player -> bugs ? RPPM_HASTE_SPEED : RPPM_HASTE;
+  effect.rppm_scale = ( effect.item -> player -> bugs && ! maybe_ptr( dk -> dbc.ptr ) ) ? RPPM_HASTE_SPEED : RPPM_HASTE;
   effect.custom_buff = b;
   effect.execute_action = heal;
 
