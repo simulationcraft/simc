@@ -1305,7 +1305,7 @@ void set_bonus::t17_lfr_4pc_clothcaster( special_effect_t& effect )
   }
 
   effect.proc_flags_ = PF_ALL_DAMAGE;
-  effect.proc_flags2_ = PF2_CAST;
+  effect.proc_flags2_ = PF2_ALL_HIT;
 
   std::string spell_name = spell -> name_cstr();
   util::tokenize( spell_name );
