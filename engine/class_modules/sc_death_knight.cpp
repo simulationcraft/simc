@@ -7348,12 +7348,12 @@ void death_knight_t::reset()
 
 // death_knight_t::combat_begin =============================================
 
-struct vottw_regen_event_t : public player_event_t
+struct vottw_regen_event_t : public event_t
 {
   death_knight_t* dk;
 
   vottw_regen_event_t( death_knight_t* player ) :
-    player_event_t( *player ),
+    event_t( *player ),
     dk( player )
   {
     sim().add_event( this, timespan_t::from_seconds( 1 ) );

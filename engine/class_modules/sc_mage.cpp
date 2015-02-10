@@ -4356,14 +4356,14 @@ struct water_jet_t : public action_t
 
 namespace events {
 
-struct icicle_event_t : public player_event_t
+struct icicle_event_t : public event_t
 {
   mage_t* mage;
   player_t* target;
   icicle_data_t state;
 
   icicle_event_t( mage_t& m, const icicle_data_t& s, player_t* t, bool first = false ) :
-    player_event_t( m ), mage( &m ), target( t ), state( s )
+    event_t( m ), mage( &m ), target( t ), state( s )
   {
     double cast_time = first ? 0.25 : 0.75;
     cast_time *= mage -> cache.spell_speed();
