@@ -869,7 +869,6 @@ static void trigger_sweeping_strikes( action_state_t* s )
 {
   struct sweeping_strikes_aoe_attack_t: public warrior_attack_t
   {
-    double pct_damage;
     sweeping_strikes_aoe_attack_t( warrior_t* p ):
       warrior_attack_t( "sweeping_strikes_attack", p, p -> spec.sweeping_strikes )
     {
@@ -878,10 +877,9 @@ static void trigger_sweeping_strikes( action_state_t* s )
       aoe = 1;
       school = SCHOOL_PHYSICAL;
       weapon = &p -> main_hand_weapon;
-      weapon_multiplier = 1;
+      weapon_multiplier = 0.5;
       base_costs[RESOURCE_RAGE] = 0; //Resource consumption already accounted for in the buff application.
       cooldown -> duration = timespan_t::zero(); // Cooldown accounted for in the buff.
-      pct_damage = data().effectN( 1 ).percent();
     }
 
     size_t available_targets( std::vector< player_t* >& tl ) const
@@ -897,11 +895,10 @@ static void trigger_sweeping_strikes( action_state_t* s )
       return tl.size();
     }
 
-    void impact( action_state_t* s )
+    void execute()
     {
-      warrior_attack_t::impact( s );
-
-      if ( result_is_hit( s -> result ) && p() -> glyphs.sweeping_strikes -> ok() )
+      warrior_attack_t::execute();
+      if ( result_is_hit( execute_state -> result ) && p() -> glyphs.sweeping_strikes -> ok() )
         p() -> resource_gain( RESOURCE_RAGE, p() -> glyphs.sweeping_strikes -> effectN( 1 ).base_value(), p() -> gain.sweeping_strikes );
     }
   };
@@ -932,6 +929,9 @@ static void trigger_sweeping_strikes( action_state_t* s )
       base_dd_min *= pct_damage;
 
       warrior_attack_t::execute();
+
+      if ( result_is_hit( execute_state -> result ) && p() -> glyphs.sweeping_strikes -> ok() )
+        p() -> resource_gain( RESOURCE_RAGE, p() -> glyphs.sweeping_strikes -> effectN( 1 ).base_value(), p() -> gain.sweeping_strikes );
     }
 
     size_t available_targets( std::vector< player_t* >& tl ) const
@@ -945,14 +945,6 @@ static void trigger_sweeping_strikes( action_state_t* s )
       }
 
       return tl.size();
-    }
-
-    void impact( action_state_t* s )
-    {
-      warrior_attack_t::impact( s );
-
-      if ( result_is_hit( s -> result ) && p() -> glyphs.sweeping_strikes -> ok() )
-        p() -> resource_gain( RESOURCE_RAGE, p() -> glyphs.sweeping_strikes -> effectN( 1 ).base_value(), p() -> gain.sweeping_strikes );
     }
   };
 
@@ -982,7 +974,7 @@ static void trigger_sweeping_strikes( action_state_t* s )
     p -> active_aoe_sweeping_strikes -> init();
   }
 
-  if ( !s -> action -> aoe )
+  if ( !s -> action -> is_aoe() )
   {
     p -> active_sweeping_strikes -> base_dd_min = s -> result_total;
     p -> active_sweeping_strikes -> base_dd_max = s -> result_total;
