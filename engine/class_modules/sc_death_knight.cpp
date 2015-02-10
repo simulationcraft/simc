@@ -608,11 +608,11 @@ inline void rune_t::fill_rune()
 // Event to spread Necrotic Plague from a source actor to a target actor
 
 template<typename TARGETDATA>
-struct np_spread_event_t : public event_t
+struct np_spread_event_t : public core_event_t
 {
   dot_t* dot;
   np_spread_event_t( dot_t* dot_ ) :
-    event_t( *dot_ -> source -> sim ),
+    core_event_t( *dot_ -> source -> sim ),
     dot( dot_ )
   {
     sim().add_event( this, timespan_t::zero() );

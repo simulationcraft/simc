@@ -4098,12 +4098,12 @@ void hunter_t::reset()
 
 // hunter_t::arise ==========================================================
 
-struct sniper_training_event_t : public event_t
+struct sniper_training_event_t : public core_event_t
 {
   hunter_t* hunter;
 
   sniper_training_event_t( hunter_t* h ) :
-    event_t( *h -> sim ),
+    core_event_t( *h -> sim ),
     hunter( h )
   {
     add_event( timespan_t::from_seconds( 0.5 ) );

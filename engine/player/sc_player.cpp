@@ -367,14 +367,14 @@ bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
 // There is still a delay between the impact of the triggering spell and the dot application/refresh and damage calculation.
 void residual_action::trigger( action_t* residual_action, player_t* t, double amount )
 {
-  struct delay_event_t : public event_t
+  struct delay_event_t : public core_event_t
   {
     double additional_residual_amount;
     player_t* target;
     action_t* action;
 
     delay_event_t( player_t* t, action_t* a, double amount ) :
-      event_t( *a -> player ),
+      core_event_t( *a -> player ),
       additional_residual_amount( amount ), target( t ), action( a )
     {
       // Use same delay as in buff application
@@ -382,7 +382,7 @@ void residual_action::trigger( action_t* residual_action, player_t* t, double am
 
       if ( sim().debug )
         sim().out_debug.printf( "%s %s residual_action delay_event_start amount=%f",
-                    p() -> name(), action -> name(), amount );
+                                a -> player -> name(), action -> name(), amount );
 
       sim().add_event( this, delay_duration );
     }

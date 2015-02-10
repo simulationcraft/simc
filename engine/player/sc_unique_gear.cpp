@@ -1217,14 +1217,14 @@ void set_bonus::t17_lfr_4pc_mailcaster( special_effect_t& effect )
     }
   };
 
-  struct electric_orb_event_t : public event_t
+  struct electric_orb_event_t : public core_event_t
   {
     electric_orb_aoe_t* aoe;
     player_t* target;
     unsigned pulse_id;
 
-    electric_orb_event_t( player_t* player, electric_orb_aoe_t* a, player_t* t, unsigned pulse ) :
-      event_t( *player ),
+    electric_orb_event_t( sim_t& sim, electric_orb_aoe_t* a, player_t* t, unsigned pulse ) :
+      core_event_t( sim ),
       aoe( a ), target( t ), pulse_id( pulse )
     {
       add_event( timespan_t::from_seconds( 2.0 ) );
@@ -1238,7 +1238,7 @@ void set_bonus::t17_lfr_4pc_mailcaster( special_effect_t& effect )
 
       if ( ++pulse_id < 5 )
       {
-        new ( sim() ) electric_orb_event_t( player(), aoe, target, pulse_id );
+        new ( sim() ) electric_orb_event_t( sim(), aoe, target, pulse_id );
       }
     }
   };
@@ -1254,7 +1254,7 @@ void set_bonus::t17_lfr_4pc_mailcaster( special_effect_t& effect )
 
     void execute( action_t* /* a */, action_state_t* state )
     {
-      new ( *listener -> sim ) electric_orb_event_t( listener, aoe, state -> target, 0 );
+      new ( *listener -> sim ) electric_orb_event_t(*listener -> sim, aoe, state -> target, 0 );
     }
   };
 

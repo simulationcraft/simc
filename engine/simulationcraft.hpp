@@ -5332,15 +5332,9 @@ private:
 struct event_t : public core_event_t
 {
   player_t* _player;
-  event_t( sim_t& s ) :
-    core_event_t( s ),
-    _player( nullptr ){}
   event_t( player_t& p ) :
     core_event_t( p ),
     _player( &p ){}
-  event_t( sim_t& s, player_t* p ) :
-    core_event_t( s, p ),
-    _player( p ) {}
   player_t* p()
   { return player(); }
   player_t* player()
@@ -6459,7 +6453,7 @@ inline proc_types2 action_state_t::execute_proc_type2() const
 
 // DoT Tick Event ===========================================================
 
-struct dot_tick_event_t : public event_t
+struct dot_tick_event_t : public core_event_t
 {
 public:
   dot_tick_event_t( dot_t* d, timespan_t time_to_tick );
@@ -6473,7 +6467,7 @@ private:
 
 // DoT End Event ===========================================================
 
-struct dot_end_event_t : public event_t
+struct dot_end_event_t : public core_event_t
 {
 public:
   dot_end_event_t( dot_t* d, timespan_t time_to_end );
@@ -6549,12 +6543,12 @@ private:
 };
 
 inline dot_tick_event_t::dot_tick_event_t( dot_t* d, timespan_t time_to_tick ) :
-  event_t( *d -> source ),
+    core_event_t( *d -> source ),
   dot( d )
 {
   if ( sim().debug )
     sim().out_debug.printf( "New DoT Tick Event: %s %s %d-of-%d %.4f",
-                p() -> name(), dot -> name(), dot -> current_tick + 1, dot -> num_ticks, time_to_tick.total_seconds() );
+                d -> source -> name(), dot -> name(), dot -> current_tick + 1, dot -> num_ticks, time_to_tick.total_seconds() );
 
   sim().add_event( this, time_to_tick );
 }
@@ -6603,12 +6597,12 @@ inline void dot_tick_event_t::execute()
 }
 
 inline dot_end_event_t::dot_end_event_t( dot_t* d, timespan_t time_to_end ) :
-    event_t( *d -> source ),
+    core_event_t( *d -> source ),
     dot( d )
 {
   if ( sim().debug )
     sim().out_debug.printf( "New DoT End Event: %s %s %.3f",
-                p() -> name(), dot -> name(), time_to_end.total_seconds() );
+                d -> source -> name(), dot -> name(), time_to_end.total_seconds() );
 
   sim().add_event( this, time_to_end );
 }
@@ -6971,7 +6965,7 @@ struct action_priority_list_t
                                  const std::string& comment = std::string() );
 };
 
-struct travel_event_t : public event_t
+struct travel_event_t : public core_event_t
 {
   action_t* action;
   action_state_t* state;
@@ -6982,12 +6976,12 @@ struct travel_event_t : public event_t
   { return "Stateless Action Travel"; }
 };
 
-struct multistrike_execute_event_t : public event_t
+struct multistrike_execute_event_t : public core_event_t
 {
   action_state_t* state;
 
   multistrike_execute_event_t( action_state_t* s, int ms_count = 0 ) :
-      event_t( *s -> action -> player ), state( s )
+    core_event_t( *s -> action -> player ), state( s )
   {
     if ( sim().debug )
     {

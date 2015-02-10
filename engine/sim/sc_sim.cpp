@@ -784,7 +784,7 @@ void adjust_threads( int& threads )
 
 // Proxy cast ===============================================================
 
-struct proxy_cast_check_t : public event_t
+struct proxy_cast_check_t : public core_event_t
 {
   int uses;
   const int& _override;
@@ -793,7 +793,7 @@ struct proxy_cast_check_t : public event_t
   timespan_t duration;
 
   proxy_cast_check_t( sim_t& s, int u, timespan_t st, timespan_t i, timespan_t cd, timespan_t d, const int& o ) :
-    event_t( s ),
+    core_event_t( s ),
     uses( u ), _override( o ), start_time( st ), cooldown( cd ), duration( d )
   {
     sim().add_event( this, i );
@@ -842,10 +842,10 @@ struct proxy_cast_check_t : public event_t
   }
 };
 
-struct sim_end_event_t : event_t
+struct sim_end_event_t : core_event_t
 {
   sim_end_event_t( sim_t& s, timespan_t end_time ) :
-    event_t( s )
+    core_event_t( s )
   {
     sim().add_event( this, end_time );
   }
@@ -875,10 +875,10 @@ struct sim_safeguard_end_event_t : public sim_end_event_t
   }
 };
 
-struct resource_timeline_collect_event_t : public event_t
+struct resource_timeline_collect_event_t : public core_event_t
 {
   resource_timeline_collect_event_t( sim_t& s ) :
-    event_t( s )
+    core_event_t( s )
   {
     sim().add_event( this, timespan_t::from_seconds( 1 ) );
   }
@@ -908,10 +908,10 @@ struct resource_timeline_collect_event_t : public event_t
   }
 };
 
-struct regen_event_t : public event_t
+struct regen_event_t : public core_event_t
 {
   regen_event_t( sim_t& s ) :
-    event_t( s )
+    core_event_t( s )
   {
     if ( sim().debug ) sim().out_debug.printf( "New Regen Event" );
 
@@ -1341,10 +1341,10 @@ void sim_t::combat_begin()
   {
     // Setup a periodic check for Bloodlust
 
-    struct bloodlust_check_t : public event_t
+    struct bloodlust_check_t : public core_event_t
     {
       bloodlust_check_t( sim_t& sim ) :
-        event_t( sim )
+        core_event_t( sim )
       {
         add_event( timespan_t::from_seconds( 1.0 ) );
       }

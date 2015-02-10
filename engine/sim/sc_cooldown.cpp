@@ -7,14 +7,14 @@
 
 namespace { // UNNAMED NAMESPACE
 
-struct recharge_event_t : event_t
+struct recharge_event_t : core_event_t
 {
   cooldown_t* cooldown_;
   action_t* action_;
   timespan_t duration_, event_duration_;
 
   recharge_event_t( cooldown_t* cd, action_t* a, timespan_t base_duration ) :
-    event_t( *cd -> player ), cooldown_( cd ), action_( a ),
+    core_event_t( cd -> sim ), cooldown_( cd ), action_( a ),
     duration_( base_duration ),
     event_duration_( cooldown_t::cooldown_duration( cd, base_duration, a ) )
   {
@@ -23,7 +23,7 @@ struct recharge_event_t : event_t
   virtual const char* name() const override
   { return "recharge_event"; }
   recharge_event_t( cooldown_t* cd, action_t* a, timespan_t event_duration, timespan_t base_duration ) :
-    event_t( *cd -> player ), cooldown_( cd ), action_( a ),
+    core_event_t( *cd -> player ), cooldown_( cd ), action_( a ),
     duration_( base_duration ), event_duration_( event_duration )
   {
     sim().add_event( this, event_duration_ );
