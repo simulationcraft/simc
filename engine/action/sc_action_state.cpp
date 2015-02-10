@@ -191,7 +191,7 @@ void action_state_t::debug()
 travel_event_t::travel_event_t( action_t* a,
                                 action_state_t* state,
                                 timespan_t time_to_travel ) :
-    core_event_t( *a -> player ), action( a ), state( state )
+    event_t( *a -> player ), action( a ), state( state )
 {
   if ( sim().debug )
     sim().out_debug.printf( "New Stateless Action Travel Event: %s %s %.2f",

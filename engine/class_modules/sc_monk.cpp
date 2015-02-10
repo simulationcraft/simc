@@ -4756,10 +4756,10 @@ using namespace heals;
 using namespace absorbs;
 } // end namespace actions;
 
-struct power_strikes_event_t: public event_t
+struct power_strikes_event_t: public player_event_t
 {
   power_strikes_event_t( monk_t& player, timespan_t tick_time ):
-    event_t( player )
+    player_event_t( player )
   {
     // Safety clamp
     tick_time = clamp( tick_time, timespan_t::zero(), player.talent.power_strikes -> effectN( 1 ).period() );

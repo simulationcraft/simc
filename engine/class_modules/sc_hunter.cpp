@@ -38,7 +38,7 @@ struct hunter_td_t: public actor_pair_t
 struct hunter_t: public player_t
 {
 public:
-  core_event_t* sniper_training;
+  event_t* sniper_training;
   const spell_data_t* sniper_training_cd;
   timespan_t movement_ended;
 
@@ -4098,12 +4098,12 @@ void hunter_t::reset()
 
 // hunter_t::arise ==========================================================
 
-struct sniper_training_event_t : public core_event_t
+struct sniper_training_event_t : public event_t
 {
   hunter_t* hunter;
 
   sniper_training_event_t( hunter_t* h ) :
-    core_event_t( *h -> sim ),
+    event_t( *h -> sim ),
     hunter( h )
   {
     add_event( timespan_t::from_seconds( 0.5 ) );

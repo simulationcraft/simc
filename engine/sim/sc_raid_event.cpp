@@ -231,13 +231,13 @@ struct flying_event_t : public raid_event_t
 
 // Movement =================================================================
 
-struct movement_ticker_t : public core_event_t
+struct movement_ticker_t : public event_t
 {
   const std::vector<player_t*>& players;
   timespan_t duration;
 
   movement_ticker_t( sim_t& s, const std::vector<player_t*>& p, timespan_t d = timespan_t::zero() ) :
-    core_event_t( s ), players( p )
+    event_t( s ), players( p )
   {
     if ( d > timespan_t::zero() ) duration = d;
     else duration = next_execute();
@@ -776,12 +776,12 @@ void raid_event_t::schedule()
 {
   if ( sim -> debug ) sim -> out_debug.printf( "Scheduling raid event: %s", name_str.c_str() );
 
-  struct duration_event_t : public core_event_t
+  struct duration_event_t : public event_t
   {
     raid_event_t* raid_event;
 
     duration_event_t( sim_t& s, raid_event_t* re, timespan_t time ) :
-      core_event_t( s ),
+      event_t( s ),
       raid_event( re )
     {
       sim().add_event( this, time );
@@ -795,12 +795,12 @@ void raid_event_t::schedule()
     }
   };
 
-  struct cooldown_event_t : public core_event_t
+  struct cooldown_event_t : public event_t
   {
     raid_event_t* raid_event;
 
     cooldown_event_t( sim_t& s, raid_event_t* re, timespan_t time ) :
-      core_event_t( s ),
+      event_t( s ),
       raid_event( re )
     {
       sim().add_event( this, time );

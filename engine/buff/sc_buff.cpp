@@ -7,12 +7,12 @@
 
 namespace { // UNNAMED NAMESPACE
 
-struct buff_event_t : public core_event_t
+struct buff_event_t : public event_t
 {
   buff_t* buff;
 
   buff_event_t( buff_t* b, timespan_t d ) :
-    core_event_t( *b -> sim, b -> player  ), buff( b )
+    event_t( *b -> sim, b -> player  ), buff( b )
   { sim().add_event( this, d ); }
   virtual const char* name() const override
   { return buff -> name(); }
@@ -715,7 +715,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
       reschedule_time = rng().gauss( lag, dev );
     }
 
-    core_event_t::cancel( expiration );
+    event_t::cancel( expiration );
 
     expiration = new ( *sim ) expiration_t( this, reschedule_time );
 
@@ -825,10 +825,10 @@ void buff_t::refresh( int        stacks,
   // infinite duration
   if ( d <= timespan_t::zero() )
   {
-    core_event_t::cancel( expiration );
+    event_t::cancel( expiration );
     // Infinite ticking buff refreshes shouldnt happen, but cancel ongoing 
     // tick event just to be sure.
-    core_event_t::cancel( tick_event );
+    event_t::cancel( tick_event );
   }
   else
   {
@@ -842,14 +842,14 @@ void buff_t::refresh( int        stacks,
         expiration -> reschedule( d );
       else if ( duration_remains > d )
       {
-        core_event_t::cancel( expiration );
+        event_t::cancel( expiration );
         expiration = new ( *sim ) expiration_t( this, d );
       }
     }
 
     if ( tick_event && tick_behavior == BUFF_TICK_CLIP )
     {
-      core_event_t::cancel( tick_event );
+      event_t::cancel( tick_event );
       timespan_t tick_time = buff_period;
       // Reorder the last tick to happen 1ms before expiration
       if ( tick_time == d )
@@ -958,7 +958,7 @@ void buff_t::expire( timespan_t delay )
   }
   else
   {
-    core_event_t::cancel( expiration_delay );
+    event_t::cancel( expiration_delay );
   }
 
   timespan_t remaining_duration = timespan_t::zero();
@@ -966,8 +966,8 @@ void buff_t::expire( timespan_t delay )
   if ( expiration )
     remaining_duration = expiration -> remains();
 
-  core_event_t::cancel( expiration );
-  core_event_t::cancel( tick_event );
+  event_t::cancel( expiration );
+  event_t::cancel( tick_event );
 
   assert( as<std::size_t>( current_stack ) < stack_uptime.size() );
   stack_uptime[ current_stack ] -> update( false, sim -> current_time() );
@@ -1029,7 +1029,7 @@ void buff_t::expire( timespan_t delay )
   if ( reactable && player && player -> ready_type == READY_TRIGGER )
   {
     for ( size_t i = 0; i < stack_react_ready_triggers.size(); i++ )
-      core_event_t::cancel( stack_react_ready_triggers[ i ] );
+      event_t::cancel( stack_react_ready_triggers[ i ] );
   }
 
   expire_override( expiration_stacks, remaining_duration ); // virtual expire call
@@ -1088,9 +1088,9 @@ void buff_t::aura_loss()
 
 void buff_t::reset()
 {
-  core_event_t::cancel( delay );
-  core_event_t::cancel( expiration_delay );
-  core_event_t::cancel( tick_event );
+  event_t::cancel( delay );
+  event_t::cancel( expiration_delay );
+  event_t::cancel( tick_event );
   cooldown -> reset( false );
   expire();
   last_start = timespan_t::min();

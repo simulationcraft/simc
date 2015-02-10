@@ -576,7 +576,7 @@ struct ascendance_buff_t : public buff_t
 
 struct unleash_flame_buff_t : public buff_t
 {
-  core_event_t* expiration_delay;
+  event_t* expiration_delay;
 
   unleash_flame_buff_t( shaman_t* p ) :
     buff_t( buff_creator_t( p, 73683, "unleash_flame" ) ),
@@ -3894,7 +3894,7 @@ struct shaman_totem_pet_t : public pet_t
 
   // Pulse related functionality
   totem_pulse_action_t* pulse_action;
-  core_event_t*         pulse_event;
+  event_t*         pulse_event;
   timespan_t            pulse_amplitude;
 
   // Summon related functionality
@@ -4049,13 +4049,13 @@ struct liquid_magma_action_t : public totem_pulse_action_t
   }
 };
 
-struct totem_pulse_event_t : public event_t
+struct totem_pulse_event_t : public player_event_t
 {
   shaman_totem_pet_t* totem;
   timespan_t real_amplitude;
 
   totem_pulse_event_t( shaman_totem_pet_t& t, timespan_t amplitude ) :
-    event_t( t ),
+    player_event_t( t ),
     totem( &t ), real_amplitude( amplitude )
   {
     if ( totem -> pulse_action -> hasted_pulse )
@@ -4103,7 +4103,7 @@ void shaman_totem_pet_t::dismiss()
     pulse_action -> execute();
   }
 
-  core_event_t::cancel( pulse_event );
+  event_t::cancel( pulse_event );
 
   if ( summon_pet )
     summon_pet -> dismiss();
@@ -4447,12 +4447,12 @@ inline void maelstrom_weapon_buff_t::reset()
   trigger_actions.clear();
 }
 
-struct unleash_flame_expiration_delay_t : public event_t
+struct unleash_flame_expiration_delay_t : public player_event_t
 {
   unleash_flame_buff_t* buff;
 
   unleash_flame_expiration_delay_t( shaman_t& player, unleash_flame_buff_t* b ) :
-    event_t( player ), buff( b )
+    player_event_t( player ), buff( b )
   {
     add_event( sim().rng().gauss( player.uf_expiration_delay, player.uf_expiration_delay_stddev ) );
   }
@@ -4492,14 +4492,14 @@ inline void unleash_flame_buff_t::expire_override( int expiration_stacks, timesp
   else
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
-    core_event_t::cancel( expiration_delay );
+    event_t::cancel( expiration_delay );
   }
 }
 
 inline void unleash_flame_buff_t::reset()
 {
   buff_t::reset();
-  core_event_t::cancel( expiration_delay );
+  event_t::cancel( expiration_delay );
 }
 
 void ascendance_buff_t::ascendance( attack_t* mh, attack_t* oh, timespan_t lvb_cooldown )
@@ -4522,7 +4522,7 @@ void ascendance_buff_t::ascendance( attack_t* mh, attack_t* oh, timespan_t lvb_c
         assert( 0 );
       }
 #endif
-      core_event_t::cancel( player -> main_hand_attack -> execute_event );
+      event_t::cancel( player -> main_hand_attack -> execute_event );
     }
 
     player -> main_hand_attack = mh;
@@ -4556,7 +4556,7 @@ void ascendance_buff_t::ascendance( attack_t* mh, attack_t* oh, timespan_t lvb_c
           assert( 0 );
         }
 #endif
-        core_event_t::cancel( player -> off_hand_attack -> execute_event );
+        event_t::cancel( player -> off_hand_attack -> execute_event );
       }
 
       player -> off_hand_attack = oh;

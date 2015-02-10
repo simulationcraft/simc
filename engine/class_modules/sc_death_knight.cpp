@@ -608,11 +608,11 @@ inline void rune_t::fill_rune()
 // Event to spread Necrotic Plague from a source actor to a target actor
 
 template<typename TARGETDATA>
-struct np_spread_event_t : public core_event_t
+struct np_spread_event_t : public event_t
 {
   dot_t* dot;
   np_spread_event_t( dot_t* dot_ ) :
-    core_event_t( *dot_ -> source -> sim ),
+    event_t( *dot_ -> source -> sim ),
     dot( dot_ )
   {
     sim().add_event( this, timespan_t::zero() );
@@ -4801,7 +4801,7 @@ struct blood_boil_spread_t : public death_knight_spell_t
         {
           dot_t* d = tdata -> dots_blood_plague;
 
-          core_event_t::cancel( d -> tick_event );
+          event_t::cancel( d -> tick_event );
           d -> tick_event = new ( *sim ) dot_tick_event_t( d, d -> current_action -> base_tick_time );
           // Recalculate last_tick_factor. This will be relevant, if spreading
           // occurs on the last ongoing tick.
@@ -4825,7 +4825,7 @@ struct blood_boil_spread_t : public death_knight_spell_t
         {
           dot_t* d = tdata -> dots_frost_fever;
 
-          core_event_t::cancel( d -> tick_event );
+          event_t::cancel( d -> tick_event );
           d -> tick_event = new ( *sim ) dot_tick_event_t( d, d -> current_action -> base_tick_time );
           // Recalculate last_tick_factor. This will be relevant, if spreading
           // occurs on the last ongoing tick.
@@ -4857,7 +4857,7 @@ struct blood_boil_spread_t : public death_knight_spell_t
         {
           dot_t* d = tdata -> dots_necrotic_plague;
 
-          core_event_t::cancel( d -> tick_event );
+          event_t::cancel( d -> tick_event );
           d -> tick_event = new ( *sim ) dot_tick_event_t( d, d -> current_action -> base_tick_time );
           // Recalculate last_tick_factor. This will be relevant, if spreading
           // occurs on the last ongoing tick.
@@ -7348,12 +7348,12 @@ void death_knight_t::reset()
 
 // death_knight_t::combat_begin =============================================
 
-struct vottw_regen_event_t : public event_t
+struct vottw_regen_event_t : public player_event_t
 {
   death_knight_t* dk;
 
   vottw_regen_event_t( death_knight_t* player ) :
-    event_t( *player ),
+    player_event_t( *player ),
     dk( player )
   {
     sim().add_event( this, timespan_t::from_seconds( 1 ) );

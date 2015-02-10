@@ -11,11 +11,11 @@ namespace {
 
 // Player Ready Event =======================================================
 
-struct player_ready_event_t : public event_t
+struct player_ready_event_t : public player_event_t
 {
   player_ready_event_t( player_t& p,
                         timespan_t delta_time ) :
-                          event_t( p )
+                          player_event_t( p )
   {
     if ( sim().debug )
       sim().out_debug.printf( "New Player-Ready Event: %s", p.name() );
@@ -27,7 +27,7 @@ struct player_ready_event_t : public event_t
   virtual void execute()
   {
     // Player that's checking for off gcd actions to use, cancels that checking when there's a ready event firing.
-    core_event_t::cancel( p() -> off_gcd );
+    event_t::cancel( p() -> off_gcd );
 
     if ( ! p() -> execute_action() )
     {
@@ -52,11 +52,11 @@ struct player_ready_event_t : public event_t
  * - Reason for it are that we need to finish the current action ( eg. a dot tick ) without
  * killing off target dependent things ( eg. dot state ).
  */
-struct demise_event_t : public event_t
+struct demise_event_t : public player_event_t
 {
   demise_event_t( player_t& p,
                   timespan_t delta_time = timespan_t::zero() /* Instantly kill the player */ ) :
-     event_t( p )
+     player_event_t( p )
   {
     if ( sim().debug )
       sim().out_debug.printf( "New Player-Demise Event: %s", p.name() );
@@ -367,14 +367,14 @@ bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
 // There is still a delay between the impact of the triggering spell and the dot application/refresh and damage calculation.
 void residual_action::trigger( action_t* residual_action, player_t* t, double amount )
 {
-  struct delay_event_t : public core_event_t
+  struct delay_event_t : public event_t
   {
     double additional_residual_amount;
     player_t* target;
     action_t* action;
 
     delay_event_t( player_t* t, action_t* a, double amount ) :
-      core_event_t( *a -> player ),
+      event_t( *a -> player ),
       additional_residual_amount( amount ), target( t ), action( a )
     {
       // Use same delay as in buff application
@@ -3934,7 +3934,7 @@ void player_t::demise()
   current.sleeping = true;
   if ( readying )
   {
-    core_event_t::cancel( readying );
+    event_t::cancel( readying );
     readying = 0;
   }
 
@@ -3949,7 +3949,7 @@ void player_t::demise()
     sim -> player_non_sleeping_list.find_and_erase_unordered( this );
   }
 
-  core_event_t::cancel( off_gcd );
+  event_t::cancel( off_gcd );
 
   // stops resolve and clear resolve_source_list
   resolve_manager.stop();
@@ -3959,8 +3959,8 @@ void player_t::demise()
     buff_t* b = buff_list[ i ];
     b -> expire();
     // Dead actors speak no lies .. or proc aura delayed buffs
-    core_event_t::cancel( b -> delay );
-    core_event_t::cancel( b -> expiration_delay );
+    event_t::cancel( b -> delay );
+    event_t::cancel( b -> expiration_delay );
   }
   for ( size_t i = 0; i < action_list.size(); ++i )
     action_list[ i ] -> cancel();
@@ -3998,8 +3998,8 @@ void player_t::interrupt()
 
   if ( buffs.stunned -> check() )
   {
-    if ( readying ) core_event_t::cancel( readying );
-    if ( off_gcd ) core_event_t::cancel( off_gcd );
+    if ( readying ) event_t::cancel( readying );
+    if ( off_gcd ) event_t::cancel( off_gcd );
   }
   else
   {
@@ -5689,10 +5689,10 @@ struct shadowmeld_t : public racial_spell_t
 
     // Shadowmeld stops autoattacks
     if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
-      core_event_t::cancel( player -> main_hand_attack -> execute_event );
+      event_t::cancel( player -> main_hand_attack -> execute_event );
 
     if ( player -> off_hand_attack && player -> off_hand_attack -> execute_event )
-      core_event_t::cancel( player -> off_hand_attack -> execute_event );
+      event_t::cancel( player -> off_hand_attack -> execute_event );
   }
 };
 
@@ -10295,10 +10295,10 @@ struct manager_t::damage_event_list_t
 };
 
 // periodic update event for resolve
-struct manager_t::update_event_t : public event_t
+struct manager_t::update_event_t : public player_event_t
 {
   update_event_t( player_t& p ) :
-    event_t( p )
+    player_event_t( p )
   {
     sim().add_event( this, timespan_t::from_seconds( 1.0 ) ); // this is the automatic resolve update interval
   }

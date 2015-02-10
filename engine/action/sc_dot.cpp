@@ -119,7 +119,7 @@ void dot_t::reduce_duration( timespan_t remove_seconds, uint32_t state_flags )
   remains -= remove_seconds;
   if ( remains != end_event -> remains() )
   {
-    core_event_t::cancel( end_event );
+    event_t::cancel( end_event );
     end_event = new ( sim ) dot_end_event_t( this, remains );
   }
 
@@ -149,8 +149,8 @@ void dot_t::reset()
   if ( ticking )
     source -> remove_active_dot( current_action -> internal_id );
 
-  core_event_t::cancel( tick_event );
-  core_event_t::cancel( end_event );
+  event_t::cancel( tick_event );
+  event_t::cancel( end_event );
   time_to_tick = timespan_t::zero();
   ticking = false;
   current_tick = 0;
@@ -240,8 +240,8 @@ void dot_t::copy( player_t* other_target, dot_copy_e copy_type )
       assert( other_dot -> end_event && other_dot -> tick_event );
 
       // Cancel target's ongoing events, we are about to re-do them
-      core_event_t::cancel( other_dot -> end_event );
-      core_event_t::cancel( other_dot -> tick_event );
+      event_t::cancel( other_dot -> end_event );
+      event_t::cancel( other_dot -> tick_event );
     }
     // No target dot ticking, just copy the source's remaining time
     else
@@ -670,7 +670,7 @@ void dot_t::start( timespan_t duration )
   // Only schedule a tick if thre's enough time to tick at least once.
   // Otherwise, next tick is the last tick, and the end event will handle it
   if ( current_duration <= time_to_tick )
-    core_event_t::cancel( tick_event );
+    event_t::cancel( tick_event );
 }
 
 /* Precondition: ticking == true
@@ -689,7 +689,7 @@ void dot_t::refresh( timespan_t duration )
   // occurs between the second to last, and the last tick. This will cause the
   // event ordering in the sim to flip (last tick happens before end event),
   // causing the dot to tick twice at the end of the duration.
-  core_event_t::cancel( end_event );
+  event_t::cancel( end_event );
   end_event = new ( sim ) dot_end_event_t( this, current_duration );
 
   check_tick_zero();

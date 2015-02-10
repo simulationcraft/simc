@@ -9,7 +9,7 @@
 // Event
 // ==========================================================================
 
-core_event_t::core_event_t( sim_t& s ) :
+event_t::event_t( sim_t& s ) :
   _sim( s ), next( nullptr ),  time( timespan_t::zero() ),
   reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false ), recycled( false )
 #if ACTOR_EVENT_BOOKKEEPING
@@ -17,7 +17,7 @@ core_event_t::core_event_t( sim_t& s ) :
 #endif
 {}
 
-core_event_t::core_event_t( sim_t& s, actor_t* a ) :
+event_t::event_t( sim_t& s, actor_t* a ) :
   _sim( s ), next( nullptr ), time( timespan_t::zero() ),
   reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false ), recycled( false )
 #if ACTOR_EVENT_BOOKKEEPING
@@ -25,7 +25,7 @@ core_event_t::core_event_t( sim_t& s, actor_t* a ) :
 #endif
 {}
 
-core_event_t::core_event_t( actor_t& a ) :
+event_t::event_t( actor_t& a ) :
   _sim( *a.sim ), next( nullptr ), time( timespan_t::zero() ),
   reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false ), recycled( false )
 #if ACTOR_EVENT_BOOKKEEPING
@@ -35,7 +35,7 @@ core_event_t::core_event_t( actor_t& a ) :
 
 // event_t::reschedule ======================================================
 
-void core_event_t::reschedule( timespan_t new_delta_time )
+void event_t::reschedule( timespan_t new_delta_time )
 {
   reschedule_time = _sim.event_mgr.current_time + new_delta_time;
 
@@ -46,14 +46,14 @@ void core_event_t::reschedule( timespan_t new_delta_time )
 
 // event_t::add_event =======================================================
 
-void core_event_t::add_event( timespan_t delta_time )
+void event_t::add_event( timespan_t delta_time )
 {
   _sim.event_mgr.add_event( this, delta_time );
 }
 
 // event_t::cancel ==========================================================
 
-void core_event_t::cancel( core_event_t*& e )
+void event_t::cancel( event_t*& e )
 {
   if ( ! e ) return;
 
@@ -117,7 +117,7 @@ event_manager_t::~event_manager_t()
 {
   while ( recycled_event_list )
   {
-    core_event_t* e = recycled_event_list;
+    event_t* e = recycled_event_list;
     recycled_event_list = e -> next;
     free( e );
   }
@@ -127,10 +127,10 @@ event_manager_t::~event_manager_t()
 
 void* event_manager_t::allocate_event( const std::size_t size )
 {
-  static const std::size_t SIZE = 2 * sizeof( core_event_t );
+  static const std::size_t SIZE = 2 * sizeof( event_t );
   assert( SIZE > size ); ( void ) size;
 
-  core_event_t* e = recycled_event_list;
+  event_t* e = recycled_event_list;
 #ifdef EVENT_QUEUE_DEBUG
       n_requested_events++;
       if ( size >= event_requested_size_count.size() )
@@ -145,7 +145,7 @@ void* event_manager_t::allocate_event( const std::size_t size )
   }
   else
   {
-    e = (core_event_t*) malloc( SIZE );
+    e = (event_t*) malloc( SIZE );
 
     if ( ! e )
     {
@@ -165,9 +165,9 @@ void* event_manager_t::allocate_event( const std::size_t size )
 
 // event_manager_t::recycle_event ===========================================
 
-void event_manager_t::recycle_event( core_event_t* e )
+void event_manager_t::recycle_event( event_t* e )
 {
-  e -> ~core_event_t();
+  e -> ~event_t();
   e -> recycled = true;
   e -> next = recycled_event_list;
   recycled_event_list = e;
@@ -175,7 +175,7 @@ void event_manager_t::recycle_event( core_event_t* e )
 
 // event_manager_t::add_event ===============================================
 
-void event_manager_t::add_event( core_event_t* e,
+void event_manager_t::add_event( event_t* e,
 				 timespan_t delta_time )
 {
   e -> id = ++global_event_id;
@@ -202,7 +202,7 @@ void event_manager_t::add_event( core_event_t* e,
 #endif
 
   // Insert event into the event list at the appropriate time
-  core_event_t** prev = &( timing_wheel[ slice ] );
+  event_t** prev = &( timing_wheel[ slice ] );
 #ifdef EVENT_QUEUE_DEBUG
   unsigned traversed = 0;
 #endif
@@ -256,7 +256,7 @@ void event_manager_t::add_event( core_event_t* e,
 
 // event_manager_t::reschedule_event ========================================
 
-void event_manager_t::reschedule_event( core_event_t* e )
+void event_manager_t::reschedule_event( event_t* e )
 {
   if ( sim -> debug ) sim -> out_debug.printf( "Reschedule Event: %s %d", e -> name(), e -> id );
 
@@ -267,7 +267,7 @@ void event_manager_t::reschedule_event( core_event_t* e )
 
 bool event_manager_t::execute()
 {
-  while ( core_event_t* e = next_event() )
+  while ( event_t* e = next_event() )
   {
     current_time = e -> time;
 
@@ -341,10 +341,10 @@ void event_manager_t::flush()
 {
   for( size_t i = 0, size = allocated_events.size(); i < size; ++i )
   {
-    core_event_t* e = allocated_events[ i ];
+    event_t* e = allocated_events[ i ];
     if( e -> recycled ) continue;
-    core_event_t* null_e = e; // necessary evil
-    core_event_t::cancel( null_e );
+    event_t* null_e = e; // necessary evil
+    event_t::cancel( null_e );
     recycle_event( e );
   }
 
@@ -380,17 +380,17 @@ void event_manager_t::init()
 
 // event_manager_t::next_event ==============================================
 
-core_event_t* event_manager_t::next_event()
+event_t* event_manager_t::next_event()
 {
   if ( events_remaining == 0 )
     return nullptr;
 
   while ( true )
   {
-    core_event_t*& event_list = timing_wheel[ timing_slice ];
+    event_t*& event_list = timing_wheel[ timing_slice ];
     if ( event_list )
     {
-      core_event_t* e = event_list;
+      event_t* e = event_list;
       event_list = e -> next;
       events_remaining--;
       events_processed++;

@@ -63,7 +63,7 @@ public:
   // Icicles
   std::vector<icicle_tuple_t> icicles;
   action_t* icicle;
-  core_event_t* icicle_event;
+  event_t* icicle_event;
 
   // Active
   actions::ignite_t* active_ignite;
@@ -4356,14 +4356,14 @@ struct water_jet_t : public action_t
 
 namespace events {
 
-struct icicle_event_t : public event_t
+struct icicle_event_t : public player_event_t
 {
   mage_t* mage;
   player_t* target;
   icicle_data_t state;
 
   icicle_event_t( mage_t& m, const icicle_data_t& s, player_t* t, bool first = false ) :
-    event_t( m ), mage( &m ), target( t ), state( s )
+    player_event_t( m ), mage( &m ), target( t ), state( s )
   {
     double cast_time = first ? 0.25 : 0.75;
     cast_time *= mage -> cache.spell_speed();
@@ -5596,7 +5596,7 @@ void mage_t::reset()
   current_target = target;
 
   icicles.clear();
-  core_event_t::cancel( icicle_event );
+  event_t::cancel( icicle_event );
   rppm_pyromaniac.reset();
   rppm_arcane_instability.reset();
   last_bomb_target = 0;

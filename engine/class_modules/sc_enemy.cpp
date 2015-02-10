@@ -1509,9 +1509,9 @@ bool enemy_t::taunt( player_t* source )
 {
   current_target = (int) source -> actor_index;
   if ( main_hand_attack && main_hand_attack -> execute_event )
-    core_event_t::cancel( main_hand_attack -> execute_event );
+    event_t::cancel( main_hand_attack -> execute_event );
   if ( off_hand_attack && off_hand_attack -> execute_event )
-    core_event_t::cancel( off_hand_attack -> execute_event );
+    event_t::cancel( off_hand_attack -> execute_event );
 
   return true;
 }
