@@ -874,6 +874,7 @@ static void trigger_sweeping_strikes( action_state_t* s )
       warrior_attack_t( "sweeping_strikes_attack", p, p -> spec.sweeping_strikes )
     {
       may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
+      may_multistrike = 1; // Yep. It can multistrike.
       aoe = 1;
       school = SCHOOL_PHYSICAL;
       weapon = &p -> main_hand_weapon;
@@ -881,16 +882,6 @@ static void trigger_sweeping_strikes( action_state_t* s )
       base_costs[RESOURCE_RAGE] = 0; //Resource consumption already accounted for in the buff application.
       cooldown -> duration = timespan_t::zero(); // Cooldown accounted for in the buff.
       pct_damage = data().effectN( 1 ).percent();
-    }
-
-    double composite_crit() const
-    {
-      return 0;
-    }
-
-    double action_multiplier() const
-    {
-      return ( 1.0 + p() -> cache.damage_versatility() ) * pct_damage; // Double dips on versatility.
     }
 
     size_t available_targets( std::vector< player_t* >& tl ) const
@@ -922,6 +913,7 @@ static void trigger_sweeping_strikes( action_state_t* s )
       warrior_attack_t( "sweeping_strikes_attack", p, p -> spec.sweeping_strikes )
     {
       may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
+      may_multistrike = 1;
       aoe = 1;
       weapon_multiplier = 0;
       base_costs[RESOURCE_RAGE] = 0; //Resource consumption already accounted for in the buff application.
@@ -997,9 +989,10 @@ static void trigger_sweeping_strikes( action_state_t* s )
     p -> active_sweeping_strikes -> execute();
   }
   else
-    // For reasons unknown to mankind, aoe abilities proc a sweeping strike that deals half the damage of a autoattack, and double dips from versatility.
-    // Thus, we handle it in a different manner.
+  {
+    // aoe abilities proc a sweeping strike that deals half the damage of a autoattack
     p -> active_aoe_sweeping_strikes -> execute();
+  }
 
   return;
 }
@@ -1046,12 +1039,7 @@ void warrior_attack_t::impact( action_state_t* s )
 
   if ( s -> result_amount > 0 )
   {
-    if ( p() -> buff.sweeping_strikes -> up() )
-    {
-      if ( result_is_multistrike( s -> result) && !aoe )
-        trigger_sweeping_strikes( s );
-    }
-    if ( result_is_hit_or_multistrike( s -> result )  )
+    if ( result_is_hit_or_multistrike( s -> result ) )
     {
       if ( p() -> buff.bloodbath -> up() && special )
         trigger_bloodbath_dot( s -> target, s -> result_amount );
