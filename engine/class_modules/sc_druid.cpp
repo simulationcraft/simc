@@ -193,6 +193,7 @@ public:
   double eclipse_change; // Amount of seconds until eclipse changes.
   double time_to_next_lunar; // Amount of seconds until eclipse energy reaches 100 (Lunar Eclipse)
   double time_to_next_solar; // Amount of seconds until eclipse energy reaches -100 (Solar Eclipse)
+  bool alternate_stellar_flare; // Player request.
   int active_rejuvenations; // Number of rejuvenations on raid.  May be useful for Nature's Vigil timing or resto stuff.
   double max_fb_energy;
 
@@ -574,6 +575,7 @@ public:
     eclipse_change( 20 ),
     time_to_next_lunar( 10 ),
     time_to_next_solar( 30 ),
+    alternate_stellar_flare( 0 ),
     active_rejuvenations( 0 ),
     max_fb_energy( 0 ),
     t16_2pc_starfall_bolt( nullptr ),
@@ -681,6 +683,7 @@ public:
   virtual action_t* create_proc_action( const std::string& name );
   virtual bool      create_profile( std::string& profile_str, save_e type = SAVE_ALL, bool save_html = false );
   virtual void      recalculate_resource_max( resource_e r );
+  virtual void      copy_from( player_t* source );
 
   void              apl_precombat();
   void              apl_default();
@@ -4872,7 +4875,6 @@ struct sunfire_t: public druid_spell_t
     druid_spell_t( "sunfire", player, player -> find_spell( 93402 ) )
   {
     parse_options( options_str );
-    dot_behavior = DOT_REFRESH;
     const spell_data_t* dmg_spell = player -> find_spell( 164815 );
     dot_duration = dmg_spell -> duration();
     dot_duration += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
@@ -4882,9 +4884,8 @@ struct sunfire_t: public druid_spell_t
 
     base_td_multiplier *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
 
-    if ( p() -> spec.astral_showers -> ok() )
+    if ( player -> spec.astral_showers -> ok() )
       aoe = -1;
-
     if ( player -> specialization() == DRUID_BALANCE )
       moonfire = new moonfire_CA_t( player );
   }
@@ -4960,7 +4961,6 @@ struct moonfire_t : public druid_spell_t
       druid_spell_t( "sunfire", player, player -> find_spell( 93402 ) )
     {
       const spell_data_t* dmg_spell = player -> find_spell( 164815 );
-      dot_behavior = DOT_REFRESH;
       dot_duration                  = dmg_spell -> duration();
       dot_duration                 += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
       base_tick_time                = dmg_spell -> effectN( 2 ).period();
@@ -4993,7 +4993,6 @@ struct moonfire_t : public druid_spell_t
     parse_options( options_str );
     const spell_data_t* dmg_spell = player -> find_spell( 164812 );
 
-    dot_behavior = DOT_REFRESH;
     dot_duration                  = dmg_spell -> duration(); 
     dot_duration                 *= 1 + player -> spec.astral_showers -> effectN( 1 ).percent();
     dot_duration                 += player -> sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
@@ -5514,10 +5513,23 @@ struct starsurge_t : public druid_spell_t
 
 struct stellar_flare_t : public druid_spell_t
 {
+  moonfire_t* moonfire_;
+  sunfire_t* sunfire_;
+
   stellar_flare_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "stellar_flare", player, player -> talent.stellar_flare )
+    druid_spell_t( "stellar_flare", player, player -> talent.stellar_flare ),
+    moonfire_( 0 ), sunfire_( 0 )
   {
     parse_options( options_str );
+    if ( player -> alternate_stellar_flare )
+    {
+      moonfire_ = new moonfire_t( player, options_str );
+      sunfire_ = new sunfire_t( player, options_str );
+      moonfire_ -> background = true;
+      moonfire_ -> base_costs[RESOURCE_MANA] = 0;
+      sunfire_ -> background = true;
+      sunfire_ -> base_costs[RESOURCE_MANA] = 0;
+    }
   }
 
   double action_multiplier() const
@@ -5540,6 +5552,18 @@ struct stellar_flare_t : public druid_spell_t
     if ( sim -> log || sim -> debug )
       sim -> out_debug.printf("Action modifier %f", m);
     return m;
+  }
+
+  void execute()
+  {
+    druid_spell_t::execute();
+    if ( p() -> alternate_stellar_flare )
+    {
+      if ( p() -> eclipse_amount < 0 )
+        sunfire_ -> execute();
+      else
+        moonfire_ -> execute();
+    }
   }
 };
 
@@ -7396,6 +7420,18 @@ void druid_t::create_options()
 {
   player_t::create_options();
 
+  add_option( opt_bool( "alternate_stellar_flare", alternate_stellar_flare ) );
+}
+
+// druid_t::copy_from =======================================================
+
+void druid_t::copy_from( player_t* source )
+{
+  player_t::copy_from( source );
+
+  druid_t* p = debug_cast<druid_t*>( source );
+
+  alternate_stellar_flare = p -> alternate_stellar_flare;
 }
 
 // druid_t::create_proc_action =============================================
