@@ -1,4 +1,4 @@
-SimulationCraft 603-27 for World of Warcraft 6.1.0 PTR (build level 19551)
+SimulationCraft 603-27 for World of Warcraft 6.1.0 PTR (build level 19611)
 
 Name             : Blizzard (id=10) [Spell Family (3)] 
 Class            : Frost Mage
@@ -4069,7 +4069,7 @@ Name             : Comet Storm (id=153595) [Spell Family (3)]
 Class            : Mage
 Resource         : 1% Base Mana (1600 @Level 100)
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Cooldown         : 30 seconds
 Affecting spells : Shatter (12982)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4096,7 +4096,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=212872)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.51600 | Radius: 0 - 4 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Radius: 0 - 4 yards
 Description      : $@spelldesc153595
 
 Name             : Arcane Orb (id=153626) 

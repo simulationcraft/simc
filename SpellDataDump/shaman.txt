@@ -1,4 +1,4 @@
-SimulationCraft 603-27 for World of Warcraft 6.1.0 PTR (build level 19551)
+SimulationCraft 603-27 for World of Warcraft 6.1.0 PTR (build level 19611)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -106,7 +106,7 @@ Spell Level      : 28
 Range            : 30 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Affecting spells : Ancestral Swiftness (16188), Stormstrike (17364), Elemental Reach (29000), Maelstrom Weapon (53817), Glyph of Chain Lightning (55449), Elemental Fury (60188), Shamanism (62099), Spiritwalker's Grace (79206), Temporal Maelstrom (105869), Ascendance (114050), Windstrike (115356), Lucidity (137326), Elemental Discharge (144999), Enhanced Chain Lightning (157766)
+Affecting spells : Ancestral Swiftness (16188), Stormstrike (17364), Elemental Reach (29000), Maelstrom Weapon (53817), Glyph of Chain Lightning (55449), Elemental Fury (60188), Shamanism (62099), Spiritwalker's Grace (79206), Temporal Maelstrom (105869), Ascendance (114050), Windstrike (115356), Lucidity (137326), Elemental Discharge (144999)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2692,7 +2692,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 18 seconds
 Charges          : 1 (6 seconds cooldown)
-Affecting spells : Restorative Waves (16213), Healing Trance (60515), Glyph of Riptide (63273), Unleash Life (73685), Mastery: Deep Healing (77226), Spiritual Stimulus (105763), Lucidity (137326), Improved Riptide (157812)
+Affecting spells : Restorative Waves (16213), Healing Trance (60515), Glyph of Riptide (63273), Unleash Life (73685), Mastery: Deep Healing (77226), Spiritual Stimulus (105763), Lucidity (137326)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -2733,7 +2733,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Charges          : 1 (10 seconds cooldown)
 Proc Chance      : 100%
-Affecting spells : Ancestral Swiftness (16188), Elemental Fury (60188), Spiritwalker's Grace (79206), Lucidity (137326), Mastery: Molten Earth (170374)
+Affecting spells : Ancestral Swiftness (16188), Elemental Fury (60188), Spiritwalker's Grace (79206), Lucidity (137326), Enhanced Chain Lightning (157766), Mastery: Molten Earth (170374)
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -3374,7 +3374,7 @@ Name             : Earthquake (id=77478) [Spell Family (11)]
 Class            : Shaman
 Spell Level      : 50
 Range            : 100 yards
-Affecting spells : Ancestral Swiftness (16188), Elemental Fury (60188), Spiritwalker's Grace (79206), Lucidity (137326), Mastery: Molten Earth (170374)
+Affecting spells : Ancestral Swiftness (16188), Elemental Fury (60188), Spiritwalker's Grace (79206), Lucidity (137326), Enhanced Chain Lightning (157766), Mastery: Molten Earth (170374)
 Attributes       : ........ ........ ........ x..x....   ...x...x ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -5402,7 +5402,7 @@ Effects          :
                    Base Value: 300 | Scaled Value: 300
 #2 (id=263764)   : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10
-                   Affected Spells: Chain Lightning (421)
+                   Affected Spells: Earthquake (61882), Earthquake (77478)
 Description      : $@spelldesc157765
 Tooltip          : Your next Earthquake is Instant, and its damage is increased by $w1%.
 
@@ -5480,9 +5480,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=220048)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
-                   Base Value: -1000 | Scaled Value: -1000 | Misc Value: 11
-                   Affected Spells: Riptide (61295)
+#1 (id=220048)   : Apply Aura (6) | Unknown effect sub type (453)
+                   Base Value: -1000 | Scaled Value: -1000 | Misc Value: 1228
 Description      : Reduces the cooldown of Riptide by ${$m1/-1000} sec.
 
 Name             : Improved Chain Heal (id=157813) [Spell Family (11), Passive] 
