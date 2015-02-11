@@ -331,82 +331,25 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   loadHistory();
 }
 
-QString build_sharedpath(  QString profiledir, QString subdir = "" )
+QString getDataPath()
 {
-#if defined( Q_OS_WINDOWS )
-    QString appdata = QStandardPaths::findExecutable( "simulationcraft", appdatalocation );
-    if ( appdata.isEmpty() )
-    {
-      appdata = QStandardPaths::findExecutable( "simulationcraft64", appdatalocation );
-      appdata.replace( QString( "/simulationcraft64.exe" ), QString( "" ), Qt::CaseInsensitive );
-    }
-    else
-    {
-      appdata.replace( QString( "/simulationcraft.exe" ), QString( "" ), Qt::CaseInsensitive );
-    }
-    appdata += "/profiles" );
-    if ( !subdir.isEmpty() )
-    {
-        appdata += "/";
-        appdata += subdir;
-    }
-    return appdata;
+#if defined( Q_OS_WIN )
+    return QCoreApplication::applicationDirPath();
 #elif defined( Q_OS_MAC )
-
-        CFURLRef fileRef;
-        if ( !subdir.isEmpty() )
-        {
-        fileRef = CFBundleCopyResourceURL( CFBundleGetMainBundle(),
-                                                    CFStringCreateWithCString( NULL,
-                                                    subdir.toUtf8().constData(),
-                                                    kCFStringEncodingUTF8 ),
-                                                    0,
-                                           CFStringCreateWithCString( NULL,
-                                           profiledir.toUtf8().constData(),
-                                           kCFStringEncodingUTF8 ) );
-        }
-        else
-        {
-            fileRef = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFStringCreateWithCString( NULL,
-                                                                                                   profiledir.toUtf8().constData(),
-                                                                                                   kCFStringEncodingUTF8 ), 0, 0 );
-        }
-
-        QDir dir;
-        if ( fileRef )
-        {
-          CFStringRef macPath = CFURLCopyFileSystemPath( fileRef, kCFURLPOSIXPathStyle );
-          dir            = QString( CFStringGetCStringPtr( macPath, CFStringGetSystemEncoding() ) );
-
-          CFRelease( fileRef );
-          CFRelease( macPath );
-        }
-        return dir.path();
-    }
+    return QCoreApplication::applicationDirPath() + "../Resources/";
 #else
-
-    QDir out;
+    QString shared_path;
     QStringList appdatalocation =  QStandardPaths::standardLocations( QStandardPaths::DataLocation );
-    //qDebug() << "linux appdatalocation: " << appdatalocation;
     for( int i = 0; i < appdatalocation.size(); ++i )
     {
-        QString path = appdatalocation[ i ];
-
-        path += "/";
-        path += profiledir;
-        if ( !subdir.isEmpty() )
-        {
-            path += "/";
-            path += subdir;
-        }
-        QDir dir( path );
+      QDir dir( appdatalocation[ i ]);
         if ( dir.exists() )
         {
-            out = dir;
+          shared_path = dir.path();
             break;
         }
     }
-    return out.path();
+    return shared_path;
 #endif
 }
 
@@ -463,7 +406,7 @@ void SC_WelcomeTabWidget::welcomeLoadSlot()
 SC_WelcomeTabWidget::SC_WelcomeTabWidget( SC_MainWindow* parent ) :
   SC_WebEngineView( parent )
 {
-  QString welcomeFile = build_sharedpath( "" ) + "/Welcome.html";
+  QString welcomeFile = getDataPath() + "/Welcome.html";
 
 
 #ifndef SC_USE_WEBKIT
@@ -537,7 +480,7 @@ void SC_MainWindow::createBestInSlotTab()
 
 
 
-  QDir tdir = build_sharedpath( "profiles", "" );
+  QDir tdir = getDataPath() + "/profiles";
   tdir.setFilter( QDir::Dirs );
 
   QStringList tprofileList = tdir.entryList();
@@ -545,7 +488,7 @@ void SC_MainWindow::createBestInSlotTab()
   // Main loop through all subfolders of ./profiles/
   for ( int i = 0; i < tnumProfiles; i++ )
   {
-    QDir dir = build_sharedpath( "profiles", tprofileList[ i ] );
+    QDir dir = getDataPath() + "/profiles" + "/" + tprofileList[ i ];
     dir.setSorting( QDir::Name );
     dir.setFilter( QDir::Files );
     dir.setNameFilters( QStringList( "*.simc" ) );
