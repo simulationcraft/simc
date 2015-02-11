@@ -203,7 +203,7 @@ unix:!mac {
   icon.commands = @echo Installing icon to $$SHAREPATH
 
   locale.path = $$SHAREPATH/locale
-  locale.files += locale/*
+  locale.files += locale/*.qm
   locale.commands = @echo Installing localizations to $$SHAREPATH/locale
 }
   
