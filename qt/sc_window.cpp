@@ -266,42 +266,23 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
 
 #if defined( Q_OS_MAC )
   QDir::home().mkpath( "Library/Application Support/SimulationCraft" );
-  AppDataDir = ResultsDestDir = TmpDir = QDir::home().absoluteFilePath( "Library/Application Support/SimulationCraft" );
+  AppDataDir = QDir::home().absoluteFilePath( "Library/Application Support/SimulationCraft" );
+#elif defined( Q_OS_WIN )
+  AppDataDir = QCoreApplication::applicationDirPath();
+#else
+  QStringList s = QStandardPaths::standardLocations( QStandardPaths::CacheLocation );
+  assert( !s.isEmpty() );
+  AppDataDir = s.first();
 #endif
 
   QStringList s = QStandardPaths::standardLocations( QStandardPaths::CacheLocation );
-  if ( !s.empty() )
-  {
-    TmpDir = s.first();
-  }
-  else
-  {
-    s = QStandardPaths::standardLocations( QStandardPaths::TempLocation ); // Fallback
-    if ( !s.empty() )
-    {
-      TmpDir = s.first();
-    }
-  }
+  assert( !s.isEmpty() );
+  TmpDir = s.first();
+
   // Set ResultsDestDir
   s = QStandardPaths::standardLocations( QStandardPaths::DocumentsLocation );
-  if ( !s.empty() )
-  {
-    ResultsDestDir = s.first();
-  }
-  else
-  {
-    s = QStandardPaths::standardLocations( QStandardPaths::HomeLocation ); // Fallback, just use home path
-    if ( !s.empty() )
-    {
-      ResultsDestDir = s.first();
-    }
-  }
-
-#if defined( SC_LINUX_PACKAGING )
-  s = QStandardPaths::standardLocations( QStandardPaths::CacheLocation );
-  AppDataDir = ResultsDestDir = TmpDir = s.first() + "/SimulationCraft";
-  QDir::root().mkpath( AppDataDir );
-#endif
+  assert( !s.isEmpty() );
+  ResultsDestDir = s.first();
 
   logFileText = AppDataDir + "/" + "log.txt";
   resultsFileText = AppDataDir + "/" + "results.html";

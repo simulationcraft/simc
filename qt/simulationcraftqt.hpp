@@ -1102,9 +1102,9 @@ public:
   int soloimport;
   int simResults;
 
-  QString AppDataDir;
-  QString ResultsDestDir;
-  QString TmpDir;
+  QString AppDataDir; // output goes here
+  QString ResultsDestDir; // user documents dir, default location offered to persitently save reports
+  QString TmpDir; // application specific temporary dir
 
   QString cmdLineText;
   QString logFileText;
