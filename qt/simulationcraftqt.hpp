@@ -84,6 +84,11 @@ typedef QWebView SC_WebEngineView;
 typedef QWebPage SC_WebEnginePage;
 #endif
 
+struct SC_PATHS
+{
+    static QString getDataPath();
+};
+
 // ============================================================================
 // SC_StringHistory
 // ============================================================================

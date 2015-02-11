@@ -41,6 +41,32 @@ struct HtmlOutputFunctor
 } // UNNAMED NAMESPACE
 
 // ==========================================================================
+// SC_PATHS
+// ==========================================================================
+
+QString SC_PATHS::getDataPath()
+{
+#if defined( Q_OS_WIN )
+    return QCoreApplication::applicationDirPath();
+#elif defined( Q_OS_MAC )
+    return QCoreApplication::applicationDirPath() + "/../Resources";
+#else
+    QString shared_path;
+    QStringList appdatalocation =  QStandardPaths::standardLocations( QStandardPaths::DataLocation );
+    for( int i = 0; i < appdatalocation.size(); ++i )
+    {
+      QDir dir( appdatalocation[ i ]);
+        if ( dir.exists() )
+        {
+          shared_path = dir.path();
+            break;
+        }
+    }
+    return shared_path;
+#endif
+}
+
+// ==========================================================================
 // SC_MainWindow
 // ==========================================================================
 
@@ -331,28 +357,6 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   loadHistory();
 }
 
-QString getDataPath()
-{
-#if defined( Q_OS_WIN )
-    return QCoreApplication::applicationDirPath();
-#elif defined( Q_OS_MAC )
-    return QCoreApplication::applicationDirPath() + "../Resources/";
-#else
-    QString shared_path;
-    QStringList appdatalocation =  QStandardPaths::standardLocations( QStandardPaths::DataLocation );
-    for( int i = 0; i < appdatalocation.size(); ++i )
-    {
-      QDir dir( appdatalocation[ i ]);
-        if ( dir.exists() )
-        {
-          shared_path = dir.path();
-            break;
-        }
-    }
-    return shared_path;
-#endif
-}
-
 void SC_MainWindow::createCmdLine()
 {
   cmdLine = new SC_MainWindowCommandLine( this );
@@ -406,7 +410,7 @@ void SC_WelcomeTabWidget::welcomeLoadSlot()
 SC_WelcomeTabWidget::SC_WelcomeTabWidget( SC_MainWindow* parent ) :
   SC_WebEngineView( parent )
 {
-  QString welcomeFile = getDataPath() + "/Welcome.html";
+  QString welcomeFile = SC_PATHS::getDataPath() + "/Welcome.html";
 
 
 #ifndef SC_USE_WEBKIT
@@ -480,7 +484,7 @@ void SC_MainWindow::createBestInSlotTab()
 
 
 
-  QDir tdir = getDataPath() + "/profiles";
+  QDir tdir = SC_PATHS::getDataPath() + "/profiles";
   tdir.setFilter( QDir::Dirs );
 
   QStringList tprofileList = tdir.entryList();
@@ -488,7 +492,7 @@ void SC_MainWindow::createBestInSlotTab()
   // Main loop through all subfolders of ./profiles/
   for ( int i = 0; i < tnumProfiles; i++ )
   {
-    QDir dir = getDataPath() + "/profiles" + "/" + tprofileList[ i ];
+    QDir dir = SC_PATHS::getDataPath() + "/profiles" + "/" + tprofileList[ i ];
     dir.setSorting( QDir::Name );
     dir.setFilter( QDir::Files );
     dir.setNameFilters( QStringList( "*.simc" ) );
