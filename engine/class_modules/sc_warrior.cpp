@@ -5272,7 +5272,7 @@ double warrior_t::composite_melee_speed() const
 {
   double s = player_t::composite_melee_speed();
 
-  if ( buff.tier17_4pc_fury -> check() )
+  if ( buff.tier17_4pc_fury -> up() )
   {
     s /= 1.0 + buff.tier17_4pc_fury -> current_stack *
       sets.set( WARRIOR_FURY, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
@@ -5287,10 +5287,10 @@ double warrior_t::composite_melee_crit() const
 {
   double c = player_t::composite_melee_crit();
 
-  if ( buff.tier17_4pc_fury -> check() )
+  if ( buff.tier17_4pc_fury -> up() )
   {
     c += buff.tier17_4pc_fury -> current_stack *
-      sets.set( WARRIOR_FURY, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() -> effectN( 2 ).percent();
+      sets.set( WARRIOR_FURY, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
   }
 
   return c;
