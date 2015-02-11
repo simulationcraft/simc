@@ -270,9 +270,9 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
 #elif defined( Q_OS_WIN )
   AppDataDir = QCoreApplication::applicationDirPath();
 #else
-  QStringList s = QStandardPaths::standardLocations( QStandardPaths::CacheLocation );
-  assert( !s.isEmpty() );
-  AppDataDir = s.first();
+  QStringList q = QStandardPaths::standardLocations( QStandardPaths::CacheLocation );
+  assert( !q.isEmpty() );
+  AppDataDir = q.first();
 #endif
 
   QStringList s = QStandardPaths::standardLocations( QStandardPaths::CacheLocation );
