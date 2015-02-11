@@ -4951,7 +4951,7 @@ void rogue_t::init_action_list()
     def -> add_talent( this, "Marked for Death", "if=combo_points=0" );
 
     // Rotation
-    def -> add_action( "run_action_list,name=finisher,if=combo_points=5" );
+    def -> add_action( "run_action_list,name=finisher,if=combo_points=5&(buff.vanish.down|!talent.shadow_focus.enabled)" );
     def -> add_action( "run_action_list,name=generator,if=combo_points<4|(combo_points=4&cooldown.honor_among_thieves.remains>1&energy>70-energy.regen)|(talent.anticipation.enabled&anticipation_charges<4)" );
     def -> add_action( "run_action_list,name=pool" );
 
