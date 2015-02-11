@@ -31,10 +31,12 @@ BIN_INSTALL_PATH = $(PREFIX)
 SHARE_INSTALL_PATH = 
 
 ifneq (${PREFIX},..)
-  SHARED_DATA = $(PREFIX)/share/SimulationCraft
+  ORG_NAME = SimulationCraft
+  APP_NAME = SimulationCraft
+  SHARED_DATA = $(PREFIX)/share/$(ORG_NAME)/$(APP_NAME)
 
   BIN_INSTALL_PATH = $(BASE_DIR)/bin
-  SHARE_INSTALL_PATH = $(BASE_DIR)/share/SimulationCraft
+  SHARE_INSTALL_PATH = $(BASE_DIR)/share/$(ORG_NAME)/$(APP_NAME)
 endif
 
 ifeq (${OS},Windows_NT)

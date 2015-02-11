@@ -1,5 +1,7 @@
 TEMPLATE = app
-
+ORG_NAME = SimulationCraft
+APP_NAME = SimulationCraft
+  
 CONFIG(qt) {
   TARGET = SimulationCraft
 
@@ -140,7 +142,7 @@ include(source_files/QT_engine.pri)
 CONFIG(console) {
 include(source_files/QT_engine_main.pri)
   !isEmpty(PREFIX)|!isEmpty(DESTDIR) {
-    DEFINES += SC_SHARED_DATA=\\\"$$PREFIX/share/SimulationCraft\\\"
+    DEFINES += SC_SHARED_DATA=\\\"$$PREFIX/share/$$ORG_NAME/$$APP_NAME\\\"
   }
 }
 
@@ -173,7 +175,7 @@ unix:!mac {
   !isEmpty(DESTDIR): PREFIX=$$DESTDIR/$$PREFIX
   isEmpty(PREFIX): PREFIX=/usr/local
   isEmpty(DATADIR): DATADIR=$$PREFIX/share
-  isEmpty(SEARCH): SEARCH=$$DATADIR/SimulationCraft
+  isEmpty(SEARCH): SEARCH=$$DATADIR/$$ORG_NAME/$$APP_NAME
   isEmpty(BINDIR): BINDIR=$$PREFIX/bin
   INSTALLS += target \
               profiles \
@@ -181,7 +183,7 @@ unix:!mac {
               icon \
               locale
 
-  SHAREPATH = $$DESTDIR$$PREFIX/share/SimulationCraft
+  SHAREPATH = $$DESTDIR$$PREFIX/share/$$ORG_NAME/$$APP_NAME
 
   target.path = $$DESTDIR$$PREFIX/bin/
 
