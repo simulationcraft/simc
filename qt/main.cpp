@@ -117,7 +117,7 @@ int main( int argc, char *argv[] )
   QTranslator myappTranslator;
   if ( !lang.isEmpty() && !lang.startsWith( "en" ) )
   {
-    QString path_to_locale( "locale" );
+    QString path_to_locale = SC_PATHS::getDataPath() + "/locale";
 
     QString qm_file = QString( "sc_" ) + lang;
     //qDebug() << "qm file: " << qm_file;

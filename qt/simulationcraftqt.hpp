@@ -84,6 +84,11 @@ typedef QWebView SC_WebEngineView;
 typedef QWebPage SC_WebEnginePage;
 #endif
 
+struct SC_PATHS
+{
+    static QString getDataPath();
+};
+
 // ============================================================================
 // SC_StringHistory
 // ============================================================================
@@ -1097,9 +1102,9 @@ public:
   int soloimport;
   int simResults;
 
-  QString AppDataDir;
-  QString ResultsDestDir;
-  QString TmpDir;
+  QString AppDataDir; // output goes here
+  QString ResultsDestDir; // user documents dir, default location offered to persitently save reports
+  QString TmpDir; // application specific temporary dir
 
   QString cmdLineText;
   QString logFileText;
