@@ -302,7 +302,7 @@ void attack_t::reschedule_auto_attack( double old_swing_haste )
       execute_event -> reschedule( new_time_to_hit );
     else
     {
-      core_event_t::cancel( execute_event );
+      event_t::cancel( execute_event );
       execute_event = start_action_execute_event( new_time_to_hit );
     }
   }

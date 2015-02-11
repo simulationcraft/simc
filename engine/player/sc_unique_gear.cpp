@@ -568,7 +568,7 @@ void enchant::mark_of_the_frostwolf( special_effect_t& effect )
 void enchant::mark_of_the_shattered_hand( special_effect_t& effect )
 {
   // TODO: Check in 6.1
-  effect.rppm_scale = effect.item -> player -> bugs ? RPPM_HASTE_SPEED : RPPM_HASTE;
+  effect.rppm_scale = ( effect.item -> player -> bugs && ! maybe_ptr( effect.player -> dbc.ptr ) ) ? RPPM_HASTE_SPEED : RPPM_HASTE;
   effect.trigger_spell_id = 159238;
   effect.name_str = effect.item -> player -> find_spell( 159238 ) -> name_cstr();
 
@@ -1223,13 +1223,14 @@ void set_bonus::t17_lfr_4pc_mailcaster( special_effect_t& effect )
     player_t* target;
     unsigned pulse_id;
 
-    electric_orb_event_t( player_t* player, electric_orb_aoe_t* a, player_t* t, unsigned pulse ) :
-      event_t( *player, "electric_orb_event" ),
+    electric_orb_event_t( sim_t& sim, electric_orb_aoe_t* a, player_t* t, unsigned pulse ) :
+      event_t( sim ),
       aoe( a ), target( t ), pulse_id( pulse )
     {
       add_event( timespan_t::from_seconds( 2.0 ) );
     }
-
+    virtual const char* name() const override
+    { return "electric_orb_event"; }
     void execute()
     {
       aoe -> target = target;
@@ -1237,7 +1238,7 @@ void set_bonus::t17_lfr_4pc_mailcaster( special_effect_t& effect )
 
       if ( ++pulse_id < 5 )
       {
-        new ( sim() ) electric_orb_event_t( player(), aoe, target, pulse_id );
+        new ( sim() ) electric_orb_event_t( sim(), aoe, target, pulse_id );
       }
     }
   };
@@ -1253,7 +1254,7 @@ void set_bonus::t17_lfr_4pc_mailcaster( special_effect_t& effect )
 
     void execute( action_t* /* a */, action_state_t* state )
     {
-      new ( *listener -> sim ) electric_orb_event_t( listener, aoe, state -> target, 0 );
+      new ( *listener -> sim ) electric_orb_event_t(*listener -> sim, aoe, state -> target, 0 );
     }
   };
 
@@ -1304,7 +1305,7 @@ void set_bonus::t17_lfr_4pc_clothcaster( special_effect_t& effect )
   }
 
   effect.proc_flags_ = PF_ALL_DAMAGE;
-  effect.proc_flags2_ = PF2_CAST;
+  effect.proc_flags2_ = PF2_ALL_HIT;
 
   std::string spell_name = spell -> name_cstr();
   util::tokenize( spell_name );

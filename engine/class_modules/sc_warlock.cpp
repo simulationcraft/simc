@@ -351,26 +351,27 @@ public:
 
   } soul_swap_buffer;
 
-  struct demonic_calling_event_t: event_t
+  struct demonic_calling_event_t: player_event_t
   {
     bool initiator;
 
     demonic_calling_event_t( player_t* p, timespan_t delay, bool init = false ):
-      event_t( *p, "demonic_calling" ), initiator( init )
+      player_event_t( *p ), initiator( init )
     {
       add_event( delay );
     }
-
+    virtual const char* name() const override
+    { return  "demonic_calling"; }
     virtual void execute()
     {
-      warlock_t* p = static_cast<warlock_t*>( actor );
+      warlock_t* p = static_cast<warlock_t*>( player() );
       p -> demonic_calling_event = new ( sim() ) demonic_calling_event_t( p,
                                                                           timespan_t::from_seconds( ( p -> spec.wild_imps -> effectN( 1 ).period().total_seconds() + p -> spec.imp_swarm -> effectN( 3 ).base_value() ) * p -> cache.spell_speed() ) );
       if ( ! initiator ) p -> buffs.demonic_calling -> trigger();
     }
   };
 
-  core_event_t* demonic_calling_event;
+  event_t* demonic_calling_event;
 
   int initial_burning_embers, initial_demonic_fury;
   std::string default_pet;
@@ -1719,18 +1720,19 @@ public:
 
   proc_t* havoc_proc;
 
-  struct cost_event_t: event_t
+  struct cost_event_t: player_event_t
   {
     warlock_spell_t* spell;
     resource_e resource;
 
     cost_event_t( player_t* p, warlock_spell_t* s, resource_e r = RESOURCE_NONE ):
-      event_t( *p, "cost_event" ), spell( s ), resource( r )
+      player_event_t( *p ), spell( s ), resource( r )
     {
       if ( resource == RESOURCE_NONE ) resource = spell -> current_resource();
       add_event( timespan_t::from_seconds( 1 ) );
     }
-
+    virtual const char* name() const override
+    { return  "cost_event"; }
     virtual void execute()
     {
       spell -> cost_event = new ( sim() ) cost_event_t( p(), spell, resource );
@@ -1738,7 +1740,7 @@ public:
     }
   };
 
-  core_event_t* cost_event;
+  event_t* cost_event;
 
   warlock_spell_t( warlock_t* p, const std::string& n ):
     spell_t( n, p, p -> find_class_spell( n ) ),
@@ -1821,7 +1823,7 @@ public:
   {
     spell_t::reset();
 
-    core_event_t::cancel( cost_event );
+    event_t::cancel( cost_event );
   }
 
   virtual int n_targets() const
@@ -2506,18 +2508,19 @@ struct shadow_bolt_t: public warlock_spell_t
 
 struct shadowburn_t: public warlock_spell_t
 {
-  struct resource_event_t: public event_t
+  struct resource_event_t: public player_event_t
   {
     shadowburn_t* spell;
     gain_t* ember_gain;
     player_t* target;
 
     resource_event_t( warlock_t* p, shadowburn_t* s, player_t* t ):
-      event_t( *p, "shadowburn_execute_gain" ), spell( s ), ember_gain( p -> gains.shadowburn_ember), target(t)
+      player_event_t( *p ), spell( s ), ember_gain( p -> gains.shadowburn_ember), target(t)
     {
       add_event( spell -> delay );
     }
-
+    virtual const char* name() const override
+    { return "shadowburn_execute_gain"; }
     virtual void execute()
     {
       if (target -> is_sleeping()) //if it is dead return ember, else return mana
@@ -3536,7 +3539,7 @@ struct t: public warlock_spell_t
       p() -> buffs.immolation_aura -> expire();
     }
     p() -> buffs.metamorphosis -> expire();
-    core_event_t::cancel( cost_event );
+    event_t::cancel( cost_event );
   }
 };
 
@@ -3885,7 +3888,7 @@ struct imp_swarm_t: public warlock_spell_t
 
     warlock_spell_t::execute();
 
-    core_event_t::cancel( p() -> demonic_calling_event );
+    event_t::cancel( p() -> demonic_calling_event );
     p() -> demonic_calling_event = new ( *sim ) warlock_t::demonic_calling_event_t( player, cooldown -> duration, true );
 
     int imp_count = data().effectN( 1 ).base_value();
@@ -5914,7 +5917,7 @@ void warlock_t::reset()
   pets.active = 0;
   ember_react = ( initial_burning_embers >= 1.0 ) ? timespan_t::zero() : timespan_t::max();
   shard_react = timespan_t::zero();
-  core_event_t::cancel( demonic_calling_event );
+  event_t::cancel( demonic_calling_event );
   havoc_target = 0;
 
   grimoire_of_synergy.reset();

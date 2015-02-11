@@ -11,17 +11,18 @@
 
 namespace { // anonymous namespace
 
-struct player_gcd_event_t : public event_t
+struct player_gcd_event_t : public player_event_t
 {
   player_gcd_event_t( player_t& p, timespan_t delta_time ) :
-      event_t( p, "Player-Ready-GCD" )
+      player_event_t( p )
   {
     if ( sim().debug )
       sim().out_debug << "New Player-Ready-GCD Event: " << p.name();
 
     sim().add_event( this, delta_time );
   }
-
+  virtual const char* name() const override
+  { return "Player-Ready-GCD"; }
   virtual void execute()
   {
     for ( std::vector<action_t*>::const_iterator i = p() -> active_off_gcd_list -> off_gcd_actions.begin();
@@ -64,14 +65,14 @@ struct player_gcd_event_t : public event_t
 };
 // Action Execute Event =====================================================
 
-struct action_execute_event_t : public event_t
+struct action_execute_event_t : public player_event_t
 {
   action_t* action;
   action_state_t* execute_state;
 
   action_execute_event_t( action_t* a, timespan_t time_to_execute,
                           action_state_t* state = 0 ) :
-      event_t( *a->player, "Action-Execute" ), action( a ),
+      player_event_t( *a->player ), action( a ),
         execute_state( state )
   {
     if ( sim().debug )
@@ -82,7 +83,8 @@ struct action_execute_event_t : public event_t
 
     sim().add_event( this, time_to_execute );
   }
-
+  virtual const char* name() const override
+  { return "Action-Execute"; }
   // Ensure we properly release the carried execute_state even if this event
   // is never executed.
   ~action_execute_event_t()
@@ -133,7 +135,7 @@ struct action_execute_event_t : public event_t
       return;
 
     // Kick off the during-gcd checker, first run is immediately after
-    core_event_t::cancel( p() -> off_gcd );
+    event_t::cancel( p() -> off_gcd );
 
     if ( ! p() -> channeling )
       p() -> off_gcd = new ( sim() ) player_gcd_event_t( *p(), timespan_t::zero() );
@@ -1604,7 +1606,7 @@ void action_t::reschedule_execute( timespan_t time )
   else // Impossible to reschedule events "early".  Need to be canceled and re-created.
   {
     action_state_t* state = debug_cast<action_execute_event_t*>( execute_event ) -> execute_state;
-    core_event_t::cancel( execute_event );
+    event_t::cancel( execute_event );
     execute_event = start_action_execute_event( time, state );
   }
 }
@@ -1978,7 +1980,7 @@ void action_t::cancel()
     player -> channeling  = 0;
   }
 
-  core_event_t::cancel( execute_event );
+  event_t::cancel( execute_event );
 
   player -> debuffs.casting -> expire();
 
@@ -2009,7 +2011,7 @@ void action_t::interrupt_action()
     dot -> cancel();
   }
 
-  core_event_t::cancel( execute_event );
+  event_t::cancel( execute_event );
 
   player -> debuffs.casting -> expire();
 }
@@ -2709,7 +2711,7 @@ double action_t::composite_target_crit( player_t* target ) const
   return std::min( player -> level - target -> level, 0 ) / 100.0;
 }
 
-core_event_t* action_t::start_action_execute_event( timespan_t t, action_state_t* execute_event )
+event_t* action_t::start_action_execute_event( timespan_t t, action_state_t* execute_event )
 {
   return new ( *sim ) action_execute_event_t( this, t, execute_event );
 }

@@ -155,7 +155,7 @@ void pet_t::summon( timespan_t summon_duration )
   // Take care of remaining expiration
   if ( expiration )
   {
-    core_event_t::cancel( expiration );
+    event_t::cancel( expiration );
     expiration = nullptr;
   }
 
@@ -164,16 +164,17 @@ void pet_t::summon( timespan_t summon_duration )
     duration = summon_duration;
     struct expiration_t : public event_t
     {
+      pet_t& pet;
       expiration_t( pet_t& p, timespan_t duration ) :
-        event_t( p, "pet_summon_duration" )
+        event_t( p ),
+        pet( p )
       {
         sim().add_event( this, duration );
       }
-
+      virtual const char* name() const override
+      { return "pet_summon_duration"; }
       virtual void execute()
       {
-        pet_t& pet = static_cast<pet_t&>( *actor );
-
         pet.expiration = nullptr;
 
         if ( ! pet.is_sleeping() )
@@ -201,7 +202,7 @@ void pet_t::dismiss()
 
   if ( expiration )
   {
-    core_event_t::cancel( expiration );
+    event_t::cancel( expiration );
     expiration = nullptr;
   }
 

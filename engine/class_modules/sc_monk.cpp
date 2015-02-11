@@ -4756,19 +4756,20 @@ using namespace heals;
 using namespace absorbs;
 } // end namespace actions;
 
-struct power_strikes_event_t: public event_t
+struct power_strikes_event_t: public player_event_t
 {
   power_strikes_event_t( monk_t& player, timespan_t tick_time ):
-    event_t( player, "power_strikes" )
+    player_event_t( player )
   {
     // Safety clamp
     tick_time = clamp( tick_time, timespan_t::zero(), player.talent.power_strikes -> effectN( 1 ).period() );
     add_event( tick_time );
   }
-
+  virtual const char* name() const override
+  { return  "power_strikes"; }
   virtual void execute()
   {
-    monk_t* p = debug_cast<monk_t*>( actor );
+    monk_t* p = debug_cast<monk_t*>( player() );
 
     p -> buff.power_strikes -> trigger();
 

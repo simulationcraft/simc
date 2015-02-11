@@ -237,7 +237,7 @@ struct movement_ticker_t : public event_t
   timespan_t duration;
 
   movement_ticker_t( sim_t& s, const std::vector<player_t*>& p, timespan_t d = timespan_t::zero() ) :
-    event_t( s, "Player Movement Event" ), players( p )
+    event_t( s ), players( p )
   {
     if ( d > timespan_t::zero() ) duration = d;
     else duration = next_execute();
@@ -245,7 +245,8 @@ struct movement_ticker_t : public event_t
     add_event( duration );
     if ( sim().debug ) sim().out_debug.printf( "New movement event" );
   }
-
+  virtual const char* name() const override
+  { return "Player Movement Event"; }
   timespan_t next_execute() const
   {
     timespan_t min_time = timespan_t::max();
@@ -780,13 +781,14 @@ void raid_event_t::schedule()
     raid_event_t* raid_event;
 
     duration_event_t( sim_t& s, raid_event_t* re, timespan_t time ) :
-      event_t( s, re -> name() ),
+      event_t( s ),
       raid_event( re )
     {
       sim().add_event( this, time );
       re -> set_next( time );
     }
-
+    virtual const char* name() const override
+    { return raid_event -> name(); }
     virtual void execute()
     {
       raid_event -> finish();
@@ -798,13 +800,14 @@ void raid_event_t::schedule()
     raid_event_t* raid_event;
 
     cooldown_event_t( sim_t& s, raid_event_t* re, timespan_t time ) :
-      event_t( s, re -> name() ),
+      event_t( s ),
       raid_event( re )
     {
       sim().add_event( this, time );
       re -> set_next( time );
     }
-
+    virtual const char* name() const override
+    { return raid_event -> name(); }
     virtual void execute()
     {
       raid_event -> saved_duration = raid_event -> duration_time();

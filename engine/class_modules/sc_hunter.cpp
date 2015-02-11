@@ -38,7 +38,7 @@ struct hunter_td_t: public actor_pair_t
 struct hunter_t: public player_t
 {
 public:
-  core_event_t* sniper_training;
+  event_t* sniper_training;
   const spell_data_t* sniper_training_cd;
   timespan_t movement_ended;
 
@@ -1929,13 +1929,14 @@ struct exotic_munitions_poisoned_ammo_t: public residual_action::residual_period
   {
     may_crit = true;
     tick_may_crit = true;
+    may_multistrike = 1;
   }
 
   void init()
   {
     base_t::init();
 
-    snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
+    snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT ;
   }
 };
 
@@ -4103,12 +4104,13 @@ struct sniper_training_event_t : public event_t
   hunter_t* hunter;
 
   sniper_training_event_t( hunter_t* h ) :
-    event_t( *h -> sim, "sniper_training_event" ),
+    event_t( *h -> sim ),
     hunter( h )
   {
     add_event( timespan_t::from_seconds( 0.5 ) );
   }
-
+  virtual const char* name() const override
+  { return "sniper_training_event"; }
   void execute()
   {
     if ( ! hunter -> is_moving() )

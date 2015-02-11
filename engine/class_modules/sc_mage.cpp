@@ -63,7 +63,7 @@ public:
   // Icicles
   std::vector<icicle_tuple_t> icicles;
   action_t* icicle;
-  core_event_t* icicle_event;
+  event_t* icicle_event;
 
   // Active
   actions::ignite_t* active_ignite;
@@ -4363,14 +4363,15 @@ struct icicle_event_t : public event_t
   icicle_data_t state;
 
   icicle_event_t( mage_t& m, const icicle_data_t& s, player_t* t, bool first = false ) :
-    event_t( m, "icicle_event" ), mage( &m ), target( t ), state( s )
+    event_t( m ), mage( &m ), target( t ), state( s )
   {
     double cast_time = first ? 0.25 : 0.75;
     cast_time *= mage -> cache.spell_speed();
 
     add_event( timespan_t::from_seconds( cast_time ) );
   }
-
+  virtual const char* name() const override
+  { return "icicle_event"; }
   void execute()
   {
     // If the target of the icicle is ded, stop the chain
@@ -5595,7 +5596,7 @@ void mage_t::reset()
   current_target = target;
 
   icicles.clear();
-  core_event_t::cancel( icicle_event );
+  event_t::cancel( icicle_event );
   rppm_pyromaniac.reset();
   rppm_arcane_instability.reset();
   last_bomb_target = 0;

@@ -793,12 +793,13 @@ struct proxy_cast_check_t : public event_t
   timespan_t duration;
 
   proxy_cast_check_t( sim_t& s, int u, timespan_t st, timespan_t i, timespan_t cd, timespan_t d, const int& o ) :
-    event_t( s, "proxy_cast_check" ),
+    event_t( s ),
     uses( u ), _override( o ), start_time( st ), cooldown( cd ), duration( d )
   {
     sim().add_event( this, i );
   }
-
+  virtual const char* name() const override
+  { return "proxy_cast_check"; }
   virtual bool proxy_check() = 0;
   virtual void proxy_execute() = 0;
   virtual proxy_cast_check_t* proxy_schedule( timespan_t interval ) = 0;
@@ -843,11 +844,13 @@ struct proxy_cast_check_t : public event_t
 
 struct sim_end_event_t : event_t
 {
-  sim_end_event_t( sim_t& s, const char* n, timespan_t end_time ) :
-    event_t( s, n )
+  sim_end_event_t( sim_t& s, timespan_t end_time ) :
+    event_t( s )
   {
     sim().add_event( this, end_time );
   }
+  virtual const char* name() const override
+  { return "sim_end_expected_time"; }
   virtual void execute()
   {
     sim().cancel_iteration();
@@ -859,10 +862,11 @@ struct sim_end_event_t : event_t
  */
 struct sim_safeguard_end_event_t : public sim_end_event_t
 {
-  sim_safeguard_end_event_t( sim_t& s, const char* n, timespan_t end_time ) :
-    sim_end_event_t( s, n, end_time )
+  sim_safeguard_end_event_t( sim_t& s, timespan_t end_time ) :
+    sim_end_event_t( s, end_time )
   { }
-
+  virtual const char* name() const override
+  { return "sim_end_twice_expected_time"; }
   virtual void execute()
   {
     sim().errorf( "Simulation has been forcefully cancelled at %.2f because twice the expected combat length has been exceeded.", sim().current_time().total_seconds() );
@@ -874,11 +878,12 @@ struct sim_safeguard_end_event_t : public sim_end_event_t
 struct resource_timeline_collect_event_t : public event_t
 {
   resource_timeline_collect_event_t( sim_t& s ) :
-    event_t( s, "resource_timeline_collect_event_t" )
+    event_t( s )
   {
     sim().add_event( this, timespan_t::from_seconds( 1 ) );
   }
-
+  virtual const char* name() const override
+  { return "resource_timeline_collect_event_t"; }
   virtual void execute()
   {
     if ( sim().iterations == 1 || sim().current_iteration > 0 )
@@ -906,13 +911,14 @@ struct resource_timeline_collect_event_t : public event_t
 struct regen_event_t : public event_t
 {
   regen_event_t( sim_t& s ) :
-    event_t( s, "Regen Event" )
+    event_t( s )
   {
     if ( sim().debug ) sim().out_debug.printf( "New Regen Event" );
 
     add_event( sim().regen_periodicity );
   }
-
+  virtual const char* name() const override
+  { return "Regen Event"; }
   virtual void execute()
   {
     // targets do not get any resource regen for performance reasons
@@ -1089,7 +1095,7 @@ sim_t::~sim_t()
 
 // sim_t::add_event (Please use core_event_t::add_event instead) ============
 
-void sim_t::add_event( core_event_t* e,
+void sim_t::add_event( event_t* e,
                        timespan_t delta_time )
 {
   event_mgr.add_event( e, delta_time );
@@ -1338,10 +1344,12 @@ void sim_t::combat_begin()
     struct bloodlust_check_t : public event_t
     {
       bloodlust_check_t( sim_t& sim ) :
-        event_t( sim, "Bloodlust Check" )
+        event_t( sim )
       {
         add_event( timespan_t::from_seconds( 1.0 ) );
       }
+      virtual const char* name() const override
+      { return "Bloodlust Check"; }
       virtual void execute()
       {
         sim_t& sim = this -> sim();
@@ -1372,14 +1380,14 @@ void sim_t::combat_begin()
 
   if ( fixed_time || ( target -> resources.base[ RESOURCE_HEALTH ] == 0 ) )
   {
-    new ( *this ) sim_end_event_t( *this, "sim_end_expected_time", expected_iteration_time );
+    new ( *this ) sim_end_event_t( *this, expected_iteration_time );
     target -> death_pct = enemy_death_pct;
   }
   else
   {
     target -> death_pct = enemy_death_pct;
   }
-  new ( *this ) sim_safeguard_end_event_t( *this, "sim_end_twice_expected_time", expected_iteration_time + expected_iteration_time );
+  new ( *this ) sim_safeguard_end_event_t( *this, expected_iteration_time + expected_iteration_time );
 }
 
 // sim_t::combat_end ========================================================
