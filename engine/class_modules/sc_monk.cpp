@@ -471,6 +471,7 @@ public:
     const spell_data_t* storm_earth_and_fire;
     const spell_data_t* surging_mist;
     const spell_data_t* tier15_2pc_melee;
+    const spell_data_t* forceful_winds;
 
     // 6.0.2 Hotfixes consolidated into a single spell in build 19057
     const spell_data_t* hotfix_passive;
@@ -2961,7 +2962,7 @@ struct melee_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    if ( result_is_hit_or_multistrike( s -> result ) )
+    if ( result_is_hit_or_multistrike( s -> result ) && p() -> current_stance() != WISE_SERPENT )
       p() -> buff.tiger_strikes -> trigger();
 
     if ( p() -> spec.brewing_elusive_brew -> ok() && s -> result == RESULT_CRIT )
@@ -3014,7 +3015,8 @@ struct auto_attack_t: public monk_melee_attack_t
 
   virtual void execute()
   {
-    p() -> main_hand_attack -> schedule_execute();
+    if ( player -> main_hand_attack )
+      p() -> main_hand_attack -> schedule_execute();
 
     if ( player -> off_hand_attack )
       p() -> off_hand_attack -> schedule_execute();
@@ -3400,7 +3402,7 @@ struct tigereye_brew_t: public monk_spell_t
 
     if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T17, B4 ) )
     {
-      double fw_use_value = teb_stacks_used * p()->buff.forceful_winds->s_data->effectN( 1 ).percent();
+      double fw_use_value = teb_stacks_used * p() -> passives.forceful_winds -> effectN( 1 ).percent();
       p() -> buff.forceful_winds -> trigger( 1, fw_use_value );
     }
   }
@@ -5066,6 +5068,7 @@ void monk_t::init_spells()
   passives.surging_mist              = find_class_spell( "Surging Mist" );
   passives.healing_elixirs           = find_spell( 122281 );
   passives.storm_earth_and_fire      = find_spell( 138228 );
+  passives.forceful_winds            = find_spell( 166603 );
   passives.hotfix_passive            = find_spell( 137022 );
 
   // GLYPHS
@@ -5180,8 +5183,8 @@ void monk_t::create_buffs()
   buff.power_strikes = buff_creator_t( this, "power_strikes", talent.power_strikes -> effectN( 1 ).trigger() );
 
   double ts_proc_chance = ( ( main_hand_weapon.group() == WEAPON_1H ) && ( specialization() != MONK_MISTWEAVER ) ) 
-    ? ( spec.tiger_strikes -> proc_chance() / 8 * 5 ) : spec.tiger_strikes -> proc_chance();
-  buff.tiger_strikes = buff_creator_t( this, "tiger_strikes", find_spell( 120273 ) )
+    ? ( ( spec.tiger_strikes -> proc_chance() / 8 ) * 5 ) : spec.tiger_strikes -> proc_chance();
+  buff.tiger_strikes = buff_creator_t( this, "tiger_strikes", spec.tiger_strikes -> effectN( 1 ).trigger() )
     .chance( ts_proc_chance )
     .add_invalidate( CACHE_MULTISTRIKE );
 
@@ -5236,8 +5239,7 @@ void monk_t::create_buffs()
 
   buff.energizing_brew = buff_creator_t( this, "energizing_brew", spec.energizing_brew )
     .max_stack( 1 )
-    .tick_callback( energizing_brew_energize )
-    .add_invalidate( CACHE_MULTISTRIKE );
+    .tick_callback( energizing_brew_energize );
 
   buff.energizing_brew -> buff_duration += sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value(); //verify working
 
@@ -5250,7 +5252,7 @@ void monk_t::create_buffs()
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                               .cd( timespan_t::zero() );
 
-  buff.forceful_winds = buff_creator_t( this, "forceful_winds", find_spell( 166603 ) );
+  buff.forceful_winds = buff_creator_t( this, "forceful_winds", passives.forceful_winds );
 }
 
 // monk_t::init_gains =======================================================
