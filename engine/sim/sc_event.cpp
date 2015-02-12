@@ -135,7 +135,7 @@ void* event_manager_t::allocate_event( const std::size_t size )
       n_requested_events++;
       if ( size >= event_requested_size_count.size() )
       {
-        event_requested_size_count.resize( size );
+        event_requested_size_count.resize( size + 1 );
       }
       event_requested_size_count[ size ]++;
 #endif
