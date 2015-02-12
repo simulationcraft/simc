@@ -136,7 +136,7 @@ role=heal
 position=back
 glyphs=prayer_of_mending/circle_of_healing/deep_wells
 head=soul_priests_hood,id=115563,bonus_id=567/523/448/42,gem_id=115809
-neck=feldspars_control_choker,id=113890,bonus_id=566,enchant=gift_of_critical_strike
+neck=feldspars_control_choker,id=113890,bonus_id=567/523/448/42,gem_id=115809,enchant=gift_of_critical_strike
 shoulders=soul_priests_shoulderguards,id=115561,bonus_id=567/523/448/42,gem_id=115809
 back=barrage_dodger_cloak,id=113878,bonus_id=567/523/448/42,gem_id=115809,enchant=gift_of_critical_strike
 chest=soul_priests_raiment,id=115560,bonus_id=567/523/448/42,gem_id=115809
@@ -164,7 +164,7 @@ glyphs=smite/holy_fire/inquisitor
 head=soul_priests_hood,id=115563
 neck=choker_of_bloody_flame,id=120077,bonus_id=567/523/448/42,gem_id=115809,enchant=gift_of_critical_strike
 shoulders=soul_priests_shoulderguards,id=115561,bonus_id=567/523/448/42,gem_id=115809
-back=runescribed_gronncloak,id=120078,bonus_id=566,enchant=gift_of_critical_strike
+back=runescribed_gronncloak,id=120078,bonus_id=567/523/448/42,gem_id=115809,enchant=gift_of_critical_strike
 chest=eyecatching_gilded_robe,id=113898,bonus_id=567/523/448/42,gem_id=115809
 wrists=bracers_of_enkindled_power,id=113956,bonus_id=567/523/448/42,gem_id=115809
 hands=soul_priests_gloves,id=115562,bonus_id=567/523/448/42,gem_id=115809
