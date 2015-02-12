@@ -1,4 +1,4 @@
-priest="Priest_Holy_T17N_DMG"
+priest="Priest_Holy_T17B_DMG"
 level=100
 race=draenei
 role=spell
@@ -41,31 +41,32 @@ actions+=/smite
 actions+=/holy_word,moving=1
 actions+=/shadow_word_pain,moving=1
 
-head=soul_priests_hood,id=115563
-neck=choker_of_bloody_flame,id=120077,enchant=gift_of_multistrike
-shoulders=soul_priests_shoulderguards,id=115561
-back=runescribed_gronncloak,id=120078,enchant=gift_of_multistrike
-chest=eyecatching_gilded_robe,id=113898
-wrists=bracers_of_enkindled_power,id=113956
-hands=soul_priests_gloves,id=115562
-waist=deckhands_rope_belt,id=113967
-legs=leggings_of_the_molten_torrent,id=113914
-feet=inferno_breath_sandals,id=113942
-finger1=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_multistrike
-finger2=signet_of_crystalline_barrage,id=113651,enchant=gift_of_multistrike
-trinket1=darmacs_unstable_talisman,id=113948
-trinket2=goren_soul_repository,id=119194
-main_hand=franzoks_headsmasher,id=113904,enchant=mark_of_the_frostwolf
-off_hand=enginestokers_lantern,id=113960
+head=soul_priests_hood,id=115563,bonus_id=567/523/448/42,gem_id=115813
+neck=choker_of_bloody_flame,id=120077,bonus_id=567/523/448/42,gem_id=115813,enchant=gift_of_multistrike
+shoulders=soul_priests_shoulderguards,id=115561,bonus_id=567/523/448/42,gem_id=115813
+back=runescribed_gronncloak,id=120078,bonus_id=567/523/448/42,gem_id=115813,enchant=gift_of_multistrike
+chest=eyecatching_gilded_robe,id=113898,bonus_id=567/523/448/42,gem_id=115813
+wrists=bracers_of_enkindled_power,id=113956,bonus_id=567/523/448/42,gem_id=115813
+hands=soul_priests_gloves,id=115562,bonus_id=567/523/448/42,gem_id=115813
+waist=deckhands_rope_belt,id=113967,bonus_id=567/523/448/42,gem_id=115813
+legs=leggings_of_the_molten_torrent,id=113914,bonus_id=567/523/448/42,gem_id=115813
+feet=inferno_breath_sandals,id=113942,bonus_id=567/523/448/42,gem_id=115813
+finger1=epicenter_loop,id=113947,bonus_id=567/523/448/42,gem_id=115813,enchant=gift_of_multistrike
+finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
+trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567/523/448/42,gem_id=115813
+trinket2=goren_soul_repository,id=119194,bonus_id=567/523/448/42,gem_id=115813
+main_hand=franzoks_headsmasher,id=113904,bonus_id=567/523/448/42,gem_id=115813,enchant=mark_of_the_frostwolf
+off_hand=enginestokers_lantern,id=113960,bonus_id=567/523/448/42,gem_id=115813
 
 # Gear Summary
-# gear_stamina=3417
-# gear_intellect=2817
-# gear_spell_power=1328
-# gear_crit_rating=822
-# gear_haste_rating=882
-# gear_mastery_rating=113
-# gear_armor=700
-# gear_multistrike_rating=1108
-# gear_versatility_rating=313
+# gear_stamina=4781
+# gear_intellect=3938
+# gear_spell_power=1855
+# gear_crit_rating=1257
+# gear_haste_rating=1122
+# gear_mastery_rating=149
+# gear_armor=909
+# gear_multistrike_rating=2076
+# gear_versatility_rating=560
+# gear_speed_rating=1982
 # set_bonus=tier17_2pc=1

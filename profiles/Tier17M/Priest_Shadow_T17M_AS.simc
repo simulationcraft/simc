@@ -245,7 +245,7 @@ finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_cri
 finger2=epicenter_loop,id=113947,bonus_id=567,enchant=gift_of_critical_strike
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=567
 trinket2=goren_soul_repository,id=119194,bonus_id=567
-main_hand=blackhand_doomstaff,id=113988,bonus_id=567,enchant=mark_of_warsong
+main_hand=blackhand_doomstaff,id=113988,bonus_id=567,enchant=mark_of_the_thunderlord
 
 # Gear Summary
 # gear_stamina=4499

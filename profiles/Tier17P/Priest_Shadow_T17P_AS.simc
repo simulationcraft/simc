@@ -245,7 +245,7 @@ finger1=diamondglow_circle,id=109763,bonus_id=524,enchant=gift_of_critical_strik
 finger2=darkflame_loop,id=109766,bonus_id=524,enchant=gift_of_critical_strike
 trinket1=coagulated_genesaur_blood,id=110004,bonus_id=524
 trinket2=crushtos_runic_alarm,id=110000,bonus_id=524
-main_hand=thunderlord_flamestaff,id=110054,bonus_id=524,enchant=mark_of_warsong
+main_hand=thunderlord_flamestaff,id=110054,bonus_id=524,enchant=mark_of_the_thunderlord
 
 # Gear Summary
 # gear_stamina=2465

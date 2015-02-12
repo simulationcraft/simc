@@ -52,19 +52,20 @@ waist=deckhands_rope_belt,id=113967
 legs=leggings_of_the_molten_torrent,id=113914
 feet=inferno_breath_sandals,id=113942
 finger1=epicenter_loop,id=113947,enchant=gift_of_critical_strike
-finger2=signet_of_crystalline_barrage,id=113651,enchant=gift_of_critical_strike
+finger2=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_critical_strike
 trinket1=darmacs_unstable_talisman,id=113948
 trinket2=goren_soul_repository,id=119194
 main_hand=franzoks_headsmasher,id=113904,enchant=mark_of_thunderlord
 off_hand=enginestokers_lantern,id=113960
 
 # Gear Summary
-# gear_stamina=3388
-# gear_intellect=2797
+# gear_stamina=3435
+# gear_intellect=2828
 # gear_spell_power=1328
 # gear_crit_rating=1175
-# gear_haste_rating=882
+# gear_haste_rating=803
+# gear_mastery_rating=113
 # gear_armor=700
-# gear_multistrike_rating=833
-# gear_versatility_rating=327
+# gear_multistrike_rating=754
+# gear_versatility_rating=405
 # set_bonus=tier17_2pc=1

@@ -58,17 +58,17 @@ waist=seeking_ember_girdle,id=113941,bonus_id=567
 legs=soul_priests_leggings,id=115564,bonus_id=567
 feet=cavedwellers_climbers,id=113864,bonus_id=567
 finger1=sixeyed_band,id=113901,bonus_id=567,enchant=gift_of_multistrike
-finger2=firemenders_smoldering_signet,id=113957,bonus_id=567,enchant=gift_of_multistrike
+finger2=spellbound_runic_band_of_infinite_preservation,id=118309,enchant=gift_of_multistrike
 trinket1=autorepairing_autoclave,id=113986,bonus_id=567
 trinket2=ironspike_chew_toy,id=119192,bonus_id=567
 main_hand=infernoflame_staff,id=113869,bonus_id=567,enchant=mark_of_shadowmoon
 
 # Gear Summary
-# gear_stamina=4506
-# gear_intellect=3255
+# gear_stamina=4545
+# gear_intellect=3281
 # gear_spell_power=1753
-# gear_crit_rating=936
-# gear_haste_rating=1076
+# gear_crit_rating=808
+# gear_haste_rating=1185
 # gear_mastery_rating=928
 # gear_armor=870
 # gear_multistrike_rating=824

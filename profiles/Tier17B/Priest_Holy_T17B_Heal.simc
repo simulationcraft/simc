@@ -1,4 +1,4 @@
-priest="Priest_Holy_T17N_Heal"
+priest="Priest_Holy_T17B_Heal"
 level=100
 race=draenei
 role=heal
@@ -47,30 +47,31 @@ actions+=/heal,if=buff.serendipity.react>=2&mana.pct>40
 actions+=/prayer_of_mending
 actions+=/heal
 
-head=soul_priests_hood,id=115563
-neck=talisman_of_the_fomor,id=113932,enchant=gift_of_multistrike
-shoulders=soul_priests_shoulderguards,id=115561
-back=flame_infusion_drape,id=113945,enchant=gift_of_multistrike
-chest=soul_priests_raiment,id=115560
-wrists=bracers_of_enkindled_power,id=113956
-hands=soul_priests_gloves,id=115562
-waist=seeking_ember_girdle,id=113941
-legs=soul_priests_leggings,id=115564
-feet=cavedwellers_climbers,id=113864
-finger1=sixeyed_band,id=113901,enchant=gift_of_multistrike
-finger2=timeless_solium_band_of_lifegiving,id=118299,enchant=gift_of_multistrike
-trinket1=autorepairing_autoclave,id=113986
-trinket2=ironspike_chew_toy,id=119192
-main_hand=infernoflame_staff,id=113869,enchant=mark_of_shadowmoon
+head=soul_priests_hood,id=115563,bonus_id=567/523/448/42,gem_id=115813
+neck=talisman_of_the_fomor,id=113932,bonus_id=567/523/448/42,gem_id=115813,enchant=gift_of_multistrike
+shoulders=soul_priests_shoulderguards,id=115561,bonus_id=567/523/448/42,gem_id=115813
+back=flame_infusion_drape,id=113945,bonus_id=567/523/448/42,gem_id=115813,enchant=gift_of_multistrike
+chest=soul_priests_raiment,id=115560,bonus_id=567/523/448/42,gem_id=115813
+wrists=bracers_of_enkindled_power,id=113956,bonus_id=567/523/448/42,gem_id=115813
+hands=soul_priests_gloves,id=115562,bonus_id=567/523/448/42,gem_id=115813
+waist=seeking_ember_girdle,id=113941,bonus_id=567/523/448/42,gem_id=115813
+legs=soul_priests_leggings,id=115564,bonus_id=567/523/448/42,gem_id=115813
+feet=cavedwellers_climbers,id=113864,bonus_id=567/523/448/42,gem_id=115813
+finger1=sixeyed_band,id=113901,bonus_id=567/523/448/42,gem_id=115813,enchant=gift_of_multistrike
+finger2=spellbound_runic_band_of_infinite_preservation,id=118309,enchant=gift_of_multistrike
+trinket1=autorepairing_autoclave,id=113986,bonus_id=567/523/448/42,gem_id=115813
+trinket2=ironspike_chew_toy,id=119192,bonus_id=567/523/448/42,gem_id=115813
+main_hand=infernoflame_staff,id=113869,bonus_id=567/523/448/42,gem_id=115813,enchant=mark_of_shadowmoon
 
 # Gear Summary
-# gear_stamina=3437
-# gear_intellect=2480
-# gear_spell_power=1325
-# gear_crit_rating=610
-# gear_haste_rating=897
-# gear_mastery_rating=701
-# gear_armor=700
-# gear_multistrike_rating=690
+# gear_stamina=4785
+# gear_intellect=3451
+# gear_spell_power=1852
+# gear_crit_rating=854
+# gear_haste_rating=1247
+# gear_mastery_rating=981
+# gear_armor=909
+# gear_multistrike_rating=1554
+# gear_speed_rating=1984
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

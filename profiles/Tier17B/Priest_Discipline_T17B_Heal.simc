@@ -1,4 +1,4 @@
-priest="Priest_Discipline_T17N_Heal"
+priest="Priest_Discipline_T17B_Heal"
 level=100
 race=draenei
 role=heal
@@ -41,30 +41,31 @@ actions+=/heal,if=buff.power_infusion.up|mana.pct>20
 actions+=/prayer_of_mending
 actions+=/heal
 
-head=soul_priests_hood,id=115563
-neck=feldspars_control_choker,id=113890,enchant=gift_of_critical_strike
-shoulders=soul_priests_shoulderguards,id=115561
-back=barrage_dodger_cloak,id=113878,enchant=gift_of_critical_strike
-chest=soul_priests_raiment,id=115560
-wrists=bracers_of_enkindled_power,id=113956
-hands=soul_priests_gloves,id=115562
-waist=seeking_ember_girdle,id=113941
-legs=soul_priests_leggings,id=115564
-feet=cavedwellers_climbers,id=113864
-finger1=timeless_solium_band_of_lifegiving,id=118299,enchant=gift_of_critical_strike
-finger2=firemenders_smoldering_signet,id=113957,enchant=gift_of_critical_strike
-trinket1=autorepairing_autoclave,id=113986
-trinket2=ironspike_chew_toy,id=119192
-main_hand=blackhand_doomstaff,id=113988,enchant=mark_of_shadowmoon
+head=soul_priests_hood,id=115563,bonus_id=567/523/448/42,gem_id=115809
+neck=feldspars_control_choker,id=113890,bonus_id=566,enchant=gift_of_critical_strike
+shoulders=soul_priests_shoulderguards,id=115561,bonus_id=567/523/448/42,gem_id=115809
+back=barrage_dodger_cloak,id=113878,bonus_id=567/523/448/42,gem_id=115809,enchant=gift_of_critical_strike
+chest=soul_priests_raiment,id=115560,bonus_id=567/523/448/42,gem_id=115809
+wrists=bracers_of_enkindled_power,id=113956,bonus_id=567/523/448/42,gem_id=115809
+hands=soul_priests_gloves,id=115562,bonus_id=567/523/448/42,gem_id=115809
+waist=seeking_ember_girdle,id=113941,bonus_id=567/523/448/42,gem_id=115809
+legs=soul_priests_leggings,id=115564,bonus_id=567/523/448/42,gem_id=115809
+feet=cavedwellers_climbers,id=113864,bonus_id=567/523/448/42,gem_id=115809
+finger1=spellbound_runic_band_of_infinite_preservation,id=118309,enchant=gift_of_critical_strike
+finger2=firemenders_smoldering_signet,id=113957,bonus_id=567/523/448/42,gem_id=115809,enchant=gift_of_critical_strike
+trinket1=autorepairing_autoclave,id=113986,bonus_id=567/523/448/42,gem_id=115809
+trinket2=ironspike_chew_toy,id=119192,bonus_id=567/523/448/42,gem_id=115809
+main_hand=blackhand_doomstaff,id=113988,bonus_id=567/523/448/42,gem_id=115809,enchant=mark_of_shadowmoon
 
 # Gear Summary
-# gear_stamina=3437
-# gear_intellect=2480
-# gear_spell_power=1325
-# gear_crit_rating=1335
-# gear_haste_rating=680
-# gear_mastery_rating=657
-# gear_armor=700
-# gear_multistrike_rating=248
+# gear_stamina=4737
+# gear_intellect=3419
+# gear_spell_power=1852
+# gear_crit_rating=2384
+# gear_haste_rating=943
+# gear_mastery_rating=920
+# gear_armor=909
+# gear_multistrike_rating=346
+# gear_speed_rating=1880
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

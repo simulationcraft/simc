@@ -245,7 +245,7 @@ finger1=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_critica
 finger2=epicenter_loop,id=113947,bonus_id=566,enchant=gift_of_critical_strike
 trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
 trinket2=goren_soul_repository,id=119194,bonus_id=566
-main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant=mark_of_warsong
+main_hand=blackhand_doomstaff,id=113988,bonus_id=566,enchant=mark_of_the_thunderlord
 
 # Gear Summary
 # gear_stamina=3900
