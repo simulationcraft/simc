@@ -34,7 +34,7 @@ class SC_SearchBox : public QWidget
   bool grabFocusOnShow;
   bool highlightTextOnShow;
 public:
-  SC_SearchBox( QWidget* parent = nullptr,
+  SC_SearchBox( QWidget* parent = 0,
       Qt::Corner corner = Qt::BottomLeftCorner,
       bool show_arrows = true,
       QBoxLayout::Direction direction = QBoxLayout::LeftToRight );

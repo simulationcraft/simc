@@ -96,13 +96,13 @@ private:
     QObject* parentObject = parent();
     QWidget* parentWidget = qobject_cast< QWidget* >( parentObject );
 
-    while( widget != nullptr )
+    while( widget != 0 )
     {
       if ( widget == this )
       {
         return true;
       }
-      else if ( parentWidget != nullptr ) // could be one if, but gcc complains about nullptr cast
+      else if ( parentWidget != 0 ) // could be one if, but gcc complains about nullptr cast
       {
         if ( widget == parentWidget )
         {
@@ -139,7 +139,7 @@ private:
       widgetRect.setWidth( normalGeometry_.width() );
       widgetRect.setHeight( normalGeometry_.height() );
     }
-    if ( layout_ != nullptr )
+    if ( layout_ != 0 )
     {
       QSize sizeHint = layout_ -> sizeHint();
       if ( widgetRect.height() < sizeHint.height() )

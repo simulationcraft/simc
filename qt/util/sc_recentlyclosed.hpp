@@ -25,7 +25,7 @@ class SC_TabWidgetCloseAll : public QTabWidget
   QString closeOtherTabsBodyText;
   SC_TabBar* scTabBar;
 public:
-  SC_TabWidgetCloseAll(QWidget* parent = nullptr,
+  SC_TabWidgetCloseAll(QWidget* parent = 0,
                        Qt::Corner corner = Qt::TopRightCorner,
                        QString closeAllWarningTitle = "Close all tabs?",
                        QString closeAllWarningText = "Close all tabs?",
@@ -88,7 +88,7 @@ class SC_RecentlyClosedTabItemModel : public QStandardItemModel
 {
   Q_OBJECT
 public:
-  SC_RecentlyClosedTabItemModel( QObject* parent = nullptr );
+  SC_RecentlyClosedTabItemModel( QObject* parent = 0 );
 signals:
   void removePreview( QWidget* );
   void newTabAdded( QWidget* widget, const QString& title, const QString& tooltip, const QIcon& icon );
@@ -126,9 +126,9 @@ class SC_RecentlyClosedTabWidget: public QWidget
   bool enableClearHistoryContextMenu;
   bool enableRestoreAllContextMenu;
   public:
-  SC_RecentlyClosedTabWidget( QWidget* parent = nullptr,
+  SC_RecentlyClosedTabWidget( QWidget* parent = 0,
     QBoxLayout::Direction grow = QBoxLayout::LeftToRight,
-    SC_RecentlyClosedTabItemModel* modelToUse = nullptr );
+    SC_RecentlyClosedTabItemModel* modelToUse = 0 );
   SC_RecentlyClosedTabItemModel* getModel()
   {
     return model;
@@ -149,9 +149,9 @@ signals:
       previewNext();
   }
   public slots:
-  void removePreview( QWidget* widget = nullptr );
+  void removePreview( QWidget* widget = 0 );
   bool addIndexToPreview( const QModelIndex& index );
-  bool previewNext( QWidget* exclude = nullptr );
+  bool previewNext( QWidget* exclude = 0 );
 
   void removePreviewAndAddNextOrHide( QWidget* widget )
   {
@@ -174,7 +174,7 @@ signals:
     model -> addTab( widget, title, tooltip, icon );
   }
 
-  void previewNextOrHide( QWidget* exclude = nullptr )
+  void previewNextOrHide( QWidget* exclude = 0 )
   {
     if ( !previewNext( exclude ) )
       emit( hideRequest() );
@@ -214,7 +214,7 @@ signals:
   {
     if ( model -> rowCount() > 0 )
     {
-      int confirm = QMessageBox::warning( nullptr, tr( "Clear history" ), tr( "Clear entire history?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+      int confirm = QMessageBox::warning( 0, tr( "Clear history" ), tr( "Clear entire history?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
       if ( confirm == QMessageBox::Yes )
         clearHistory();
     }
@@ -255,8 +255,8 @@ class SC_RecentlyClosedTab : public SC_TabWidgetCloseAll
   SC_RelativePopup* recentlyClosedPopup;
   SC_RecentlyClosedTabWidget* recentlyClosedTab;
 public:
-  SC_RecentlyClosedTab(QWidget* parent = nullptr,
-                       SC_RecentlyClosedTabItemModel* modelToUse = nullptr,
+  SC_RecentlyClosedTab(QWidget* parent = 0,
+                       SC_RecentlyClosedTabItemModel* modelToUse = 0,
                        bool enableRecentlyClosedTabs = true,
                        Qt::Corner corner = Qt::TopRightCorner );
   virtual int insertAt()

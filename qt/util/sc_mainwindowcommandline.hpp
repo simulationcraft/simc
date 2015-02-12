@@ -121,7 +121,7 @@ protected:
   state_e current_state;
 
 public:
-  SC_MainWindowCommandLine( QWidget* parent = nullptr );
+  SC_MainWindowCommandLine( QWidget* parent = 0 );
   state_e currentState() const;
   void setSimulatingProgress( int value, QString format, QString toolTip );
   int getSimulatingProgress();
@@ -172,7 +172,7 @@ protected:
   int getProgressBarProgressForState( progressbar_states_e state );
   void updateProgressBars();
   void adjustText( state_e state, tabs_e tab, widgets_e widget, QString text );
-  void setText( state_e state, tabs_e tab, widgets_e widget, QString* text, QString* tooltip = nullptr );
+  void setText( state_e state, tabs_e tab, widgets_e widget, QString* text, QString* tooltip = 0 );
   void setProgressBarState( state_e state, tabs_e tab, progressbar_states_e progressbar_state );
   progressbar_states_e getProgressBarStateForState( state_e state, tabs_e tab );
   void updateWidget( state_e state, tabs_e tab, widgets_e widget );

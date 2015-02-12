@@ -6,7 +6,7 @@
 #include "sc_mainwindowcommandline.hpp"
 
 SC_MainWindowCommandLine::SC_MainWindowCommandLine( QWidget* parent ) :
-    QWidget( parent ), statesStackedLayout( nullptr ),
+    QWidget( parent ), statesStackedLayout( 0 ),
       current_tab( CMDLINE_TAB_WELCOME ), current_state( IDLE )
 {
   init();
@@ -84,7 +84,7 @@ QString SC_MainWindowCommandLine::commandLineText( tabs_e tab )
   QString* text = getText( current_state, tab, TEXTEDIT_CMDLINE );
   QString retval;
 
-  if ( text != nullptr )
+  if ( text != 0 )
   {
     retval = *text;
   }
@@ -208,7 +208,7 @@ void SC_MainWindowCommandLine::initWidgetsToNull()
   {
     for ( widgets_e widget = BUTTON_MAIN; widget < WIDGET_COUNT; widget++ )
     {
-      widgets[state][widget] = nullptr;
+      widgets[state][widget] = 0;
     }
   }
 }
@@ -247,8 +247,8 @@ void SC_MainWindowCommandLine::initStatesStructToNull()
     {
       for ( widgets_e widget = BUTTON_MAIN; widget < WIDGET_COUNT; widget++ )
       {
-        states[state][tab][widget].text = nullptr;
-        states[state][tab][widget].tool_tip = nullptr;
+        states[state][tab][widget].text = 0;
+        states[state][tab][widget].tool_tip = 0;
         states[state][tab][widget].progressbar_state = PROGRESSBAR_IGNORE;
       }
     }
@@ -573,7 +573,7 @@ void SC_MainWindowCommandLine::createCommandLine( state_e state,
 bool SC_MainWindowCommandLine::tryToHideWidget( QString* text, QWidget* widget )
 {
   // if the widget has the special text to hide it, then hide it; else show
-  if ( text != nullptr )
+  if ( text != 0 )
   {
     if ( text == text_hide_widget )
     {
@@ -590,7 +590,7 @@ bool SC_MainWindowCommandLine::tryToHideWidget( QString* text, QWidget* widget )
 void SC_MainWindowCommandLine::emitSignal( QString* text )
 {
   // emit the proper signal for the given button text
-  if ( text != nullptr )
+  if ( text != 0 )
   {
     if ( text == text_pause )
       emit( pauseClicked() );
@@ -669,7 +669,7 @@ void SC_MainWindowCommandLine::updateProgressBars()
   // actually updates currently visible progressbar's progress
   QProgressBar* progressBar = qobject_cast<QProgressBar*>(
       getWidget( current_state, PROGRESSBAR_WIDGET ) );
-  if ( progressBar != nullptr )
+  if ( progressBar != 0 )
   {
     progressBar->setValue(
         getProgressBarProgressForState(
@@ -681,7 +681,7 @@ void SC_MainWindowCommandLine::adjustText( state_e state, tabs_e tab,
                                            widgets_e widget, QString text )
 {
   // only change the text's value, not where it points to, only if its not null
-  if ( states[state][tab][widget].text != nullptr )
+  if ( states[state][tab][widget].text != 0 )
   {
     ( *states[state][tab][widget].text ) = text;
   }
@@ -720,7 +720,7 @@ void SC_MainWindowCommandLine::updateWidget( state_e state, tabs_e tab,
   // update a given widget
   QString* text = getText( state, tab, widget );
   QString* toolTip = getToolTip( state, tab, widget );
-  if ( text != nullptr )
+  if ( text != 0 )
   {
     if ( tab == current_tab )
     {
@@ -730,10 +730,10 @@ void SC_MainWindowCommandLine::updateWidget( state_e state, tabs_e tab,
       {
         SC_CommandLine* commandLine = qobject_cast<SC_CommandLine*>(
             getWidget( state, TEXTEDIT_CMDLINE ) );
-        if ( commandLine != nullptr )
+        if ( commandLine != 0 )
         {
           commandLine->setText( *text );
-          if ( toolTip != nullptr )
+          if ( toolTip != 0 )
           {
             commandLine->setToolTip( *toolTip );
           }
@@ -744,13 +744,13 @@ void SC_MainWindowCommandLine::updateWidget( state_e state, tabs_e tab,
       {
         QProgressBar* progressBar = qobject_cast<QProgressBar*>(
             getWidget( state, PROGRESSBAR_WIDGET ) );
-        if ( progressBar != nullptr )
+        if ( progressBar != 0 )
         {
           progressBar->setFormat( *text );
           progressBar->setValue(
               getProgressBarProgressForState(
                   getProgressBarStateForState( current_state, current_tab ) ) );
-          if ( toolTip != nullptr )
+          if ( toolTip != 0 )
           {
             progressBar->setToolTip( *toolTip );
           }
@@ -760,10 +760,10 @@ void SC_MainWindowCommandLine::updateWidget( state_e state, tabs_e tab,
       default:
         QPushButton* button = qobject_cast<QPushButton*>(
             getWidget( state, widget ) );
-        if ( button != nullptr )
+        if ( button != 0 )
         {
           button->setText( *text );
-          if ( toolTip != nullptr )
+          if ( toolTip != 0 )
           {
             button->setToolTip( *toolTip );
           }
@@ -879,7 +879,7 @@ void SC_MainWindowCommandLine::setTab( tabs_e tab )
   for ( widgets_e widget = BUTTON_MAIN; widget < WIDGET_COUNT; widget++ )
   {
     QWidget* wdgt = getWidget( current_state, widget );
-    if ( wdgt != nullptr )
+    if ( wdgt != 0 )
     {
       if ( !tryToHideWidget( getText( current_state, current_tab, widget ),
                              wdgt ) )
@@ -903,7 +903,7 @@ void SC_MainWindowCommandLine::commandLineTextEditedSlot( const QString& text )
 {
   QString* current_text = getText( current_state, current_tab,
                                    TEXTEDIT_CMDLINE );
-  if ( current_text != nullptr )
+  if ( current_text != 0 )
   {
     ( *current_text ) = text;
   } else

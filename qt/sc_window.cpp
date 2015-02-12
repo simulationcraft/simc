@@ -245,8 +245,8 @@ void SC_MainWindow::saveHistory()
 SC_MainWindow::SC_MainWindow( QWidget *parent )
   : QWidget( parent ),
   visibleWebView( 0 ),
-  cmdLine( nullptr ), // segfault in updateWebView() if not null
-  recentlyClosedTabModel( nullptr ),
+  cmdLine( 0 ), // segfault in updateWebView() if not null
+  recentlyClosedTabModel( 0 ),
   sim( 0 ),
   import_sim( 0 ),
   paperdoll_sim( 0 ),
@@ -392,7 +392,6 @@ SC_WelcomeTabWidget::SC_WelcomeTabWidget( SC_MainWindow* parent ) :
   SC_WebEngineView( parent )
 {
   QString welcomeFile = SC_PATHS::getDataPath() + "/Welcome.html";
-
 
 #ifndef SC_USE_WEBKIT
   welcome_uri = "file:///" + welcomeFile;
@@ -700,7 +699,7 @@ void SC_MainWindow::updateWebView( SC_WebView* wv )
 {
   assert( wv );
   visibleWebView = wv;
-  if ( cmdLine != nullptr ) // can be called before widget is setup
+  if ( cmdLine != 0 ) // can be called before widget is setup
   {
     if ( visibleWebView == battleNetView )
     {
@@ -748,7 +747,7 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
 
     delete sim -> pause_mutex;
     delete sim;
-    sim = nullptr;
+    sim = 0;
 
     QString contents;
     bool logFileOpenedSuccessfully = false;
@@ -900,7 +899,7 @@ void SC_MainWindow::stopImport()
 
 bool SC_MainWindow::importRunning()
 {
-  return ( import_sim != nullptr );
+  return ( import_sim != 0 );
 }
 
 void SC_MainWindow::itemWasEnqueuedTryToSim()
@@ -932,6 +931,7 @@ void SC_MainWindow::importFinished()
 {
   importSimPhase = "%p%";
   simProgress = 100;
+  importSimProgress = 100;
   cmdLine -> setImportingProgress( importSimProgress, importSimPhase.c_str(), "" );
   if ( importThread -> player )
   {
@@ -1533,11 +1533,11 @@ void SC_MainWindow::importTabChanged( int index )
        index == TAB_RECENT )
   {
     cmdLine -> setTab( static_cast<import_tabs_e>( index ) );
-    visibleWebView = 0;
   }
   else
   {
     updateWebView( debug_cast<SC_WebView*>( importTab -> widget( index ) ) );
+    cmdLine -> setTab( static_cast<import_tabs_e>( index ) );
   }
 }
 
@@ -1618,7 +1618,7 @@ void SC_MainWindow::simulateTabRestored( QWidget*, const QString&, const QString
 
 void SC_MainWindow::switchToASubTab( int direction )
 {
-  QTabWidget* tabWidget = nullptr;
+  QTabWidget* tabWidget = 0;
   switch ( mainTab -> currentTab() )
   {
   case TAB_SIMULATE:
