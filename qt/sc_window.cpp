@@ -1037,7 +1037,7 @@ void SC_MainWindow::stopAllSim()
 
 bool SC_MainWindow::simRunning()
 {
-  return ( sim != nullptr );
+  return ( sim != 0 );
 }
 
 #ifdef SC_PAPERDOLL
