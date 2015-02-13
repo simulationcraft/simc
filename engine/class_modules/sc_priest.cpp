@@ -413,6 +413,7 @@ public:
   virtual double    composite_melee_crit() const override;
   virtual double    spirit() const;
   virtual double    composite_player_multiplier( school_e school ) const override;
+  virtual double    composite_player_absorb_multiplier( const action_state_t* s ) const override;
   virtual double    composite_player_heal_multiplier( const action_state_t* s ) const override;
   virtual double    temporary_movement_modifier() const;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
@@ -5606,6 +5607,20 @@ double priest_t::composite_player_heal_multiplier( const action_state_t* s ) con
   return m;
 }
 
+double priest_t::composite_player_absorb_multiplier( const action_state_t* s ) const
+{
+  double m = player_t::composite_player_absorb_multiplier( s );
+
+  if ( specs.grace -> ok () )
+    m *= 1.0 + specs.grace -> effectN( 2 ).percent();
+
+  if ( buffs.saving_grace_penalty -> check() )
+  {
+    m *= 1.0 + buffs.saving_grace_penalty -> check() * buffs.saving_grace_penalty -> data().effectN( 2 ).percent();
+  }
+
+  return m;
+}
 // priest_t::temporary_movement_modifier =======================================
 
 double priest_t::temporary_movement_modifier() const
@@ -6592,6 +6607,7 @@ void priest_t::apl_disc_heal()
   def -> add_action( this, "Flash Heal", "if=buff.surge_of_light.react" );
   def -> add_action( this, "Heal", "if=buff.power_infusion.up|mana.pct>20" );
   def -> add_action( "prayer_of_mending" );
+  def -> add_talent( this, "Clarity of Will" );
   def -> add_action( "heal" );
 }
 
