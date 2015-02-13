@@ -4802,7 +4802,7 @@ struct blood_boil_spread_t : public death_knight_spell_t
 
         // Bugged Blood Boil spreads diseases for Frost/Unholy so that the
         // target dot actually resets the tick timer, but keeps the duration.
-        if ( player -> bugs )
+        if ( player -> bugs && ! maybe_ptr( player -> dbc.ptr ) )
         {
           dot_t* d = tdata -> dots_blood_plague;
 
@@ -4826,7 +4826,7 @@ struct blood_boil_spread_t : public death_knight_spell_t
 
         // Bugged Blood Boil spreads diseases for Frost/Unholy so that the
         // target dot actually resets the tick timer, but keeps the duration.
-        if ( player -> bugs )
+        if ( player -> bugs && ! maybe_ptr( player -> dbc.ptr ) )
         {
           dot_t* d = tdata -> dots_frost_fever;
 
@@ -4858,7 +4858,7 @@ struct blood_boil_spread_t : public death_knight_spell_t
 
         // Bugged Blood Boil spreads diseases for Frost/Unholy so that the
         // target dot actually resets the tick timer, but keeps the duration.
-        if ( player -> bugs )
+        if ( player -> bugs && ! maybe_ptr( player -> dbc.ptr ) )
         {
           dot_t* d = tdata -> dots_necrotic_plague;
 
