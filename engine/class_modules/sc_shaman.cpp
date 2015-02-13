@@ -631,7 +631,8 @@ public:
     uses_eoe( p() -> talent.echo_of_the_elements -> ok() && ! maybe_ptr( p() -> dbc.ptr ) && ab::data().affected_by( player -> spell.echo_of_the_elements -> effectN( 1 ) ) ),
     hasted_cd( ab::data().affected_by( player -> spec.flurry -> effectN( 1 ) ) ),
     hasted_gcd( ab::data().affected_by( player -> spec.flurry -> effectN( 2 ) ) ),
-    ef_proc( 0 ), track_cd_waste( ab::cooldown -> duration > timespan_t::zero()  ),
+    ef_proc( 0 ),
+    track_cd_waste( s -> cooldown() > timespan_t::zero() || s -> charge_cooldown() > timespan_t::zero() ),
     cd_wasted_exec( 0 ), cd_wasted_cumulative( 0 ), cd_wasted_iter( 0 )
   {
     ab::may_crit = true;
@@ -754,6 +755,11 @@ public:
          ab::cooldown -> last_charged < ab::sim -> current_time() )
     {
       double time_ = ( ab::sim -> current_time() - ab::cooldown -> last_charged ).total_seconds();
+      if ( p() -> sim -> debug )
+      {
+        p() -> sim -> out_debug.printf( "%s %s cooldown waste tracking waste=%.3f exec_time=%.3f",
+            p() -> name(), ab::name(), time_, ab::time_to_execute.total_seconds() );
+      }
       time_ -= ab::time_to_execute.total_seconds();
 
       if ( time_ > 0 )
