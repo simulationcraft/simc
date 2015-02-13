@@ -1940,6 +1940,11 @@ struct ghoul_pet_t : public death_knight_pet_t
       if ( p -> o() -> buffs.dark_transformation -> up() )
       {
         double dtb = p -> o() -> buffs.dark_transformation -> data().effectN( 1 ).percent();
+
+        if ( p -> o() -> wod_hotfix )
+        {
+          dtb += 0.4;
+        }
         if ( maybe_ptr( p -> dbc.ptr ) )
         {
           dtb += p -> o() -> sets.set( DEATH_KNIGHT_UNHOLY, T17, B2 ) -> effectN( 2 ).percent();
