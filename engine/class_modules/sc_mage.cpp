@@ -5258,11 +5258,17 @@ void mage_t::apl_fire()
   single_target -> add_action( this, "Pyroblast",
                                "if=buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight",
                                "Pyro camp during regular sequence; Do not use Pyro procs without HU and first using fireball" );
+  single_target -> add_action( this, "Pyroblast",
+                               "if=set_bonus.tier17_2pc&buff.pyroblast.up&cooldown.combustion.remains>8&action.inferno_blast.charges_fractional>0.85",
+                               "Aggressively use Pyro with 2T17 and IB available" );
   single_target -> add_action( this, "Inferno Blast",
                                "if=buff.pyroblast.down&buff.heating_up.up" );
   single_target -> add_action( "call_action_list,name=active_talents" );
   single_target -> add_action( this, "Inferno Blast",
                                "if=buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight" );
+  single_target -> add_action( this, "Inferno Blast",
+                               "if=set_bonus.tier17_2pc&charges_fractional>1.85",
+                               "Aggressively use IB with 2T17" );
   single_target -> add_action( this, "Fireball" );
   single_target -> add_action( this, "Scorch", "moving=1" );
 }

@@ -100,9 +100,13 @@ actions.single_target+=/pyroblast,if=set_bonus.tier16_2pc_caster&buff.pyroblast.
 actions.single_target+=/pyroblast,if=set_bonus.tier17_4pc&buff.pyromaniac.react
 # Pyro camp during regular sequence; Do not use Pyro procs without HU and first using fireball
 actions.single_target+=/pyroblast,if=buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight
+# Aggressively use Pyro with 2T17 and IB available
+actions.single_target+=/pyroblast,if=set_bonus.tier17_2pc&buff.pyroblast.up&cooldown.combustion.remains>8&action.inferno_blast.charges_fractional>0.85
 actions.single_target+=/inferno_blast,if=buff.pyroblast.down&buff.heating_up.up
 actions.single_target+=/call_action_list,name=active_talents
 actions.single_target+=/inferno_blast,if=buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight
+# Aggressively use IB with 2T17
+actions.single_target+=/inferno_blast,if=set_bonus.tier17_2pc&charges_fractional>1.85
 actions.single_target+=/fireball
 actions.single_target+=/scorch,moving=1
 
