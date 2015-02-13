@@ -271,6 +271,8 @@ void SC_SpellQueryTab::run_spell_query()
   if ( arg.empty() )
     return;
 
+  util::tokenize( arg );
+
   // construct the query string
   QString command = "spell_query=";
 
