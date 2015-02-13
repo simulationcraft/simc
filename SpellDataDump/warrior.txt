@@ -5516,7 +5516,7 @@ Effects          :
 #1 (id=235406)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
                    Base Value: 6 | Scaled Value: 6
 #2 (id=235407)   : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 5 | Scaled Value: 5
+                   Base Value: 6 | Scaled Value: 6
 Description      : $@spelldesc165349
 Tooltip          : Increases attack speed and critical strike chance by $s1%.
 

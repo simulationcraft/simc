@@ -1524,7 +1524,6 @@ Name             : Beacon of Light (id=53652) [Spell Family (10)]
 Class            : Paladin
 Spell Level      : 1
 Range            : 60 yards
-Affecting spells : Glyph of Flash of Light (54957)
 Attributes       : ........ ........ x.x..... ...x....   ........ ........ ........ ........ 
                  : ...x.... ........ ........ .....x..   ........ .x...... ........ .....x.. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1832,7 +1831,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=47855)    : Apply Aura (6) | Unknown effect sub type (283)
                    Base Value: 10 | Scaled Value: 10
-                   Affected Spells: Lay on Hands (633), Flash of Light (19750), Holy Shock (25914), Beacon of Light (53652), Holy Light (82326), Holy Radiance (82327), Light of Dawn (85222), Word of Glory (85673), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Stay of Execution (114917), Arcing Light (119952), Word of Glory (130551), Word of Glory (136494)
+                   Affected Spells: Lay on Hands (633), Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Holy Radiance (82327), Light of Dawn (85222), Word of Glory (85673), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Stay of Execution (114917), Arcing Light (119952), Word of Glory (130551), Word of Glory (136494)
 Description      : Increases healing received by the Paladin's next spell by $57955s1%.
 Tooltip          : Healing received from the Paladin's next spell increased by $57955s1%.
 
