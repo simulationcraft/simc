@@ -2359,7 +2359,7 @@ struct shadowflame_t: public warlock_spell_t
     background = true;
     may_miss = false;
     generate_fury = 2;
-    if ( p -> wod_hotfix )
+    if ( p -> wod_hotfix || p -> dbc.ptr )
       spell_power_mod.tick *= 0.8;
   }
 
