@@ -4678,13 +4678,7 @@ struct power_word_shield_t : public priest_absorb_t
     add_option( opt_bool( "ignore_debuff", ignore_debuff ) );
     parse_options( options_str );
 
-    //TODO: Check and see if this override is needed anymore. -Twintop 2014/07/07
-    // Tooltip is wrong.
-    // direct_power_mod = 0.87; // hardcoded into tooltip
-    // spell_power_mod.direct = 1.8709; // matches in-game actual value
-
-    spell_power_mod.direct = 5.0; // hardcoded into tooltip 14/12/03
-
+    spell_power_mod.direct = 5.0; // hardcoded into tooltip 15/02/14
     if ( p.wod_hotfix )
     {
       base_multiplier *= 1.0 + 0.20; // 2014/11/12 Power Word: Shield now absorbs 20% more damage.
@@ -4937,13 +4931,12 @@ struct clarity_of_will_t : public priest_absorb_t
   {
     parse_options( options_str );
 
-    // TODO: implement mechanic
-    spell_power_mod.direct = 6.0; // hardcoded into tooltip 14/12/03
+    spell_power_mod.direct = 6.0; // hardcoded into tooltip 15/02/14
 
     if ( p.wod_hotfix )
       base_multiplier *= 1.1; // Seems to match relative to PW:S. 14/12/03
 
-    // TODO: implement buff value overflow at 50% of either target or priest health. 14/12/03
+    // TODO: implement buff value overflow of 75% of casting priest health. 15/02/14
   }
 };
 
