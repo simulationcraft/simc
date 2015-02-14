@@ -440,6 +440,7 @@ public:
   virtual double    composite_melee_speed() const;
   virtual double    composite_melee_crit() const;
   virtual double    composite_spell_crit() const;
+  virtual double    composite_player_critical_damage_multiplier() const;
   virtual void      teleport( double yards, timespan_t duration );
   virtual void      interrupt();
   virtual void      halt();
@@ -557,16 +558,6 @@ public:
       cc += p() -> buff.recklessness -> value();
 
     return cc;
-  }
-
-  virtual double total_crit_bonus() const
-  {
-    double cdm = ab::total_crit_bonus();
-
-    if ( p() -> buff.recklessness -> up() && recklessness )
-      cdm *= 1.0 + p() -> buff.recklessness -> data().effectN( 2 ).percent() * ( 1.0 + p() -> glyphs.recklessness -> effectN( 1 ).percent() );
-
-    return cdm;
   }
 
   virtual void execute()
@@ -5294,6 +5285,18 @@ double warrior_t::composite_melee_crit() const
   }
 
   return c;
+}
+
+// warrior_t::composite_player_critical_damage_multiplier ==================
+
+double warrior_t::composite_player_critical_damage_multiplier() const
+{
+  double cdm = player_t::composite_player_critical_damage_multiplier();
+
+  if ( buff.recklessness -> up() )
+    cdm += ( buff.recklessness -> data().effectN( 2 ).percent() * ( 1 + glyphs.recklessness -> effectN( 1 ).percent() ) );
+
+  return cdm;
 }
 
 // warrior_t::composite_spell_crit =========================================
