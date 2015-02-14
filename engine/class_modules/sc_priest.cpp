@@ -4686,7 +4686,10 @@ struct power_word_shield_t : public priest_absorb_t
     spell_power_mod.direct = 5.0; // hardcoded into tooltip 14/12/03
 
     if ( p.wod_hotfix )
-      base_multiplier *= 1.2;
+    {
+      base_multiplier *= 1.0 + 0.20; // 2014/11/12 Power Word: Shield now absorbs 20% more damage.
+      base_multiplier *= 1.0 - 0.15; // 2015/01/12 Power Word: Shield’s absorption has been reduced by 15%.
+    }
 
     if ( p.glyphs.power_word_shield -> ok() )
     {
