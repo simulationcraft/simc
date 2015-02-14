@@ -4231,10 +4231,6 @@ double hunter_t::composite_player_critical_damage_multiplier() const
 {
   double cdm = player_t::composite_player_critical_damage_multiplier();
 
-  double mastery = cache.mastery();
-  if ( dbc.ptr )
-    mastery *= 1.25;
-
   if ( buffs.sniper_training -> up() )
     cdm += cache.mastery_value();
 
