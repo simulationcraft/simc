@@ -63,7 +63,6 @@ actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent
 actions.cooldowns+=/potion,name=draenic_intellect,if=buff.bloodlust.up|buff.icy_veins.up
-actions.cooldowns+=/use_item,slot=trinket1
 
 # Water Jet initialization
 actions.init_water_jet=frost_bomb,if=remains<3.6
@@ -111,8 +110,8 @@ actions.single_target+=/call_action_list,name=init_water_jet,if=pet.water_elemen
 actions.single_target+=/frostbolt
 actions.single_target+=/ice_lance,moving=1
 
-head=arcanoshatter_hood,id=115553,bonus_id=566
-neck=gruuls_lip_ring,id=113872,bonus_id=566,enchant=gift_of_multistrike
+head=flareeyed_hood,id=113868,bonus_id=566
+neck=choker_of_bloody_flame,id=120077,bonus_id=566,enchant=gift_of_multistrike
 shoulders=arcanoshatter_mantle,id=115551,bonus_id=566
 back=runescribed_gronncloak,id=120078,bonus_id=566,enchant=gift_of_multistrike
 chest=arcanoshatter_robes,id=115550,bonus_id=566
@@ -121,21 +120,21 @@ hands=arcanoshatter_gloves,id=115552,bonus_id=566
 waist=deckhands_rope_belt,id=113967,bonus_id=566
 legs=arcanoshatter_leggings,id=115554,bonus_id=566
 feet=inferno_breath_sandals,id=113942,bonus_id=566
-finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=566,enchant=gift_of_multistrike
+finger1=epicenter_loop,id=113947,bonus_id=566,enchant=gift_of_multistrike
 finger2=spellbound_solium_band_of_the_kirintor,id=118301,enchant=gift_of_multistrike
-trinket1=shards_of_nothing,id=113835,bonus_id=566
-trinket2=quiescent_runestone,id=113859,bonus_id=566
+trinket1=darmacs_unstable_talisman,id=113948,bonus_id=566
+trinket2=blackiron_micro_crucible,id=113984,bonus_id=566
 main_hand=infernoflame_staff,id=113869,bonus_id=566,enchant=mark_of_the_frostwolf
 
 # Gear Summary
 # gear_stamina=3942
-# gear_intellect=3153
+# gear_intellect=3306
 # gear_spell_power=1524
-# gear_crit_rating=818
-# gear_haste_rating=852
-# gear_mastery_rating=975
+# gear_crit_rating=911
+# gear_haste_rating=613
+# gear_mastery_rating=597
 # gear_armor=780
-# gear_multistrike_rating=1284
-# gear_versatility_rating=86
+# gear_multistrike_rating=1130
+# gear_versatility_rating=450
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
