@@ -2399,6 +2399,8 @@ struct ferocious_bite_t : public cat_attack_t
 
     if ( ! p -> dbc.ptr )
       base_multiplier *= 1.12;
+    else if ( sim -> dbc.build_level() == 19611 )
+      attack_power_mod.direct *= 1.05;
   }
 
   virtual bool ready()
@@ -2536,6 +2538,11 @@ struct rake_t : public cat_attack_t
     base_tick_time        = bleed_spell -> effectN( 1 ).period();
     if ( ! p -> dbc.ptr )
       base_multiplier *= 1.12;
+    else if ( sim -> dbc.build_level() == 19611 )
+    {
+      attack_power_mod.direct *= 1.05;
+      attack_power_mod.tick *= 1.05;
+    }
 
     ir_counter = new snapshot_counter_t( p, p -> buff.prowl );
     ir_counter -> add_buff( p -> buff.king_of_the_jungle );
@@ -2654,6 +2661,8 @@ struct rip_t : public cat_attack_t
     dot_duration += player -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
     if ( ! p -> dbc.ptr )
       base_multiplier *= 1.12;
+    else if ( sim -> dbc.build_level() == 19611 )
+      attack_power_mod.tick *= 1.05;
 
     trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
   }
@@ -2734,6 +2743,8 @@ struct shred_t : public cat_attack_t
     special = true;
     if ( ! p -> dbc.ptr )
       base_multiplier *= 1.12;
+    else if ( sim -> dbc.build_level() == 19611 )
+      weapon_multiplier *= 1.20;
   }
 
   virtual void execute()
@@ -2821,6 +2832,8 @@ public:
     combo_point_gain = data().effectN( 1 ).base_value(); // Effect is not labelled correctly as CP gain
     if ( ! player -> dbc.ptr )
       base_multiplier *= 1.25;
+    else if ( sim -> dbc.build_level() == 19611 )
+      weapon_multiplier *= 1.20;
   }
 
   virtual void impact( action_state_t* s )
@@ -2901,6 +2914,11 @@ struct thrash_cat_t : public cat_attack_t
     spell_power_mod.direct = 0;
     if ( ! p -> dbc.ptr )
       base_multiplier *= 1.12;
+    else if ( sim -> dbc.build_level() == 19611 )
+    {
+      attack_power_mod.direct *= 1.20;
+      attack_power_mod.tick *= 1.20;
+    }
 
     trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
   }
@@ -5093,6 +5111,11 @@ struct moonfire_cat_t : public druid_spell_t
 
     if ( ! player -> dbc.ptr )
       base_multiplier *= 1.12;
+    else if ( sim -> dbc.build_level() == 19611 )
+    {
+      attack_power_mod.direct *= 1.05;
+      attack_power_mod.tick *= 1.05;
+    }
   }
 
   virtual void impact( action_state_t* s )
@@ -5443,6 +5466,10 @@ struct starfall_pulse_t : public druid_spell_t
     if ( ! player -> dbc.ptr )
     {
       spell_power_mod.direct *= 1.75;
+    }
+    else if ( sim -> dbc.build_level() == 19611 )
+    {
+      spell_power_mod.direct *= 5.0 / 6.0;
     }
   }
 };
