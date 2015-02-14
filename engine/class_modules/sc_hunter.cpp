@@ -10,6 +10,7 @@ namespace
 
 // ==========================================================================
 // Hunter
+// Check composite_player_critical_damage_multiplier to see if they update spelldata for sniper training from ptr.
 // ==========================================================================
 
 struct hunter_t;
@@ -4113,7 +4114,6 @@ void hunter_t::reset()
 struct sniper_training_event_t : public event_t
 {
   hunter_t* hunter;
-
   sniper_training_event_t( hunter_t* h ) :
     event_t( *h -> sim ),
     hunter( h )
@@ -4124,7 +4124,7 @@ struct sniper_training_event_t : public event_t
   { return "sniper_training_event"; }
   void execute()
   {
-    if ( ! hunter -> is_moving() )
+    if ( !hunter -> is_moving() )
     {
       if ( sim().current_time() - hunter -> movement_ended >= hunter -> sniper_training_cd -> duration() )
         hunter -> buffs.sniper_training -> trigger();
@@ -4232,7 +4232,12 @@ double hunter_t::composite_player_critical_damage_multiplier() const
   double cdm = player_t::composite_player_critical_damage_multiplier();
 
   if ( buffs.sniper_training -> up() )
-    cdm += cache.mastery_value();
+  {
+    double mastery = cache.mastery_value();
+    if ( dbc.ptr ) // 6.1 PTR Patch Change. Fix later if they ever update spelldata.
+      mastery *= 1.25;
+    cdm += mastery;
+  }
 
   // we use check() for rapid_fire becuase it's usage is reported from value() above
   if ( sets.has_set_bonus( HUNTER_MARKSMANSHIP, T17, B4 ) && buffs.rapid_fire -> check() )
@@ -4261,7 +4266,13 @@ double hunter_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.bestial_wrath -> data().effectN( 7 ).percent();
 
   if ( buffs.sniper_training -> up() )
-    m *= 1.0 + cache.mastery_value();
+  {
+    double mastery = cache.mastery_value();
+    if ( dbc.ptr )
+      mastery *= 1.25;
+
+    m *= 1.0 + mastery;
+  }
 
   if ( sets.has_set_bonus( SET_MELEE, T16, B4 ) )
     m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> stack() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
