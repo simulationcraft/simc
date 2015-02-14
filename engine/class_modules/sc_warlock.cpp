@@ -2286,6 +2286,8 @@ struct demonbolt_t: public warlock_spell_t
   {
     if ( p -> wod_hotfix )
       base_multiplier *= 0.77;
+    if ( p -> dbc.ptr )
+      base_multiplier *= 0.75;
   }
 
   virtual double cost() const
