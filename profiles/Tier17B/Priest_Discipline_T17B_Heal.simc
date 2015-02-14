@@ -39,6 +39,7 @@ actions+=/penance_heal
 actions+=/flash_heal,if=buff.surge_of_light.react
 actions+=/heal,if=buff.power_infusion.up|mana.pct>20
 actions+=/prayer_of_mending
+actions+=/clarity_of_will
 actions+=/heal
 
 head=soul_priests_hood,id=115563,bonus_id=567/523/448/42,gem_id=115809
