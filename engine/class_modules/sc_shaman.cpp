@@ -5598,9 +5598,11 @@ void shaman_t::init_action_list()
     // AoE
     aoe -> add_action( this, "Unleash Elements", "if=active_enemies>=4&dot.flame_shock.ticking&(cooldown.shock.remains>cooldown.fire_nova.remains|cooldown.fire_nova.remains=0)" );
     aoe -> add_action( this, "Fire Nova", "if=active_dot.flame_shock>=3" );
-    aoe -> add_action( "wait,sec=cooldown.fire_nova.remains,if=active_dot.flame_shock>=4&cooldown.fire_nova.remains<=action.fire_nova.gcd%2" );
+    aoe -> add_action( "wait,sec=cooldown.fire_nova.remains,if=ptr=1&!talent.echo_of_the_elements.enabled&active_dot.flame_shock>=4&cooldown.fire_nova.remains<=action.fire_nova.gcd%2" );
+    aoe -> add_action( "wait,sec=cooldown.fire_nova.remains,if=ptr=0&active_dot.flame_shock>=4&cooldown.fire_nova.remains<=action.fire_nova.gcd%2" );
     aoe -> add_action( this, "Magma Totem", "if=!totem.fire.active" );
-    aoe -> add_action( this, "Lava Lash", "if=dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies|!talent.echo_of_the_elements.enabled|!buff.echo_of_the_elements.up)" );
+    aoe -> add_action( this, "Lava Lash", "if=ptr=1&dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies)" );
+    aoe -> add_action( this, "Lava Lash", "if=ptr=0&dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies|!talent.echo_of_the_elements.enabled|!buff.echo_of_the_elements.up)" );
     aoe -> add_talent( this, "Elemental Blast", "if=!buff.unleash_flame.up&(buff.maelstrom_weapon.react>=4|buff.ancestral_swiftness.up)" );
     aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=buff.maelstrom_weapon.react=5&((glyph.chain_lightning.enabled&active_enemies>=3)|(!glyph.chain_lightning.enabled&active_enemies>=2))" );
     aoe -> add_action( this, "Unleash Elements", "if=active_enemies<4" );
@@ -5611,7 +5613,6 @@ void shaman_t::init_action_list()
     aoe -> add_action( this, find_specialization_spell( "Ascendance" ), "Windstrike" );
     aoe -> add_talent( this, "Elemental Blast", "if=!buff.unleash_flame.up&buff.maelstrom_weapon.react>=3" );
     aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=(buff.maelstrom_weapon.react>=3|buff.ancestral_swiftness.up)&((glyph.chain_lightning.enabled&active_enemies>=4)|(!glyph.chain_lightning.enabled&active_enemies>=3))" );
-    aoe -> add_action( this, "Fire Nova", "if=active_dot.flame_shock>=2" );
     aoe -> add_action( this, "Magma Totem", "if=pet.magma_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up" );
     aoe -> add_action( this, "Lightning Bolt", "if=buff.maelstrom_weapon.react=5&glyph.chain_lightning.enabled&active_enemies<3" );
     aoe -> add_action( this, "Stormstrike", "target=1,if=!debuff.stormstrike.up" );
