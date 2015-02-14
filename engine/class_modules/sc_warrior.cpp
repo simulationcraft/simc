@@ -5293,8 +5293,8 @@ double warrior_t::composite_player_critical_damage_multiplier() const
 {
   double cdm = player_t::composite_player_critical_damage_multiplier();
 
-  if ( buff.recklessness -> up() )
-    cdm += ( buff.recklessness -> data().effectN( 2 ).percent() * ( 1 + glyphs.recklessness -> effectN( 1 ).percent() ) );
+  if ( buff.recklessness -> check() )
+    cdm += ( buff.recklessness -> data().effectN( 2 ).percent() * ( 1.0 + glyphs.recklessness -> effectN( 1 ).percent() ) );
 
   return cdm;
 }
