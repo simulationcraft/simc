@@ -1842,7 +1842,7 @@ public:
     else if ( p() -> spec.brewing_mana_tea -> ok() )
     {
       // Manatee
-      //                      _.---.._
+      //                   _.---.._
       //     _        _.-'         ''-.
       //   .'  '-,_.-'                 '''.
       //  (       _                     o  :
@@ -1958,7 +1958,7 @@ struct monk_spell_t: public monk_action_t < spell_t >
     double m = base_t::composite_target_multiplier( t );
 
     if ( td( t ) -> debuff.rising_sun_kick -> check() )
-      m *= 1.0 + ( !p() -> dbc.ptr ? 0.10 : td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent() ); // Hotfix to 10% (down from 20%) on Dec 08, 2014
+      m *= 1.0 + ( !p() -> dbc.ptr ? 0.10 : 0.20 ); //td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent() ); // Hotfix to 10% (down from 20%) on Dec 08, 2014
 
     return m;
   }
@@ -2971,7 +2971,7 @@ struct melee_t: public monk_melee_attack_t
       if ( weapon -> group() == WEAPON_1H || weapon -> group() == WEAPON_SMALL )
         trigger_brew( 1.5 * weapon -> swing_time.total_seconds() / 2.6 );
       else
-        trigger_brew( p() -> active_stance_data( STURDY_OX ).effectN( 11 ).base_value() * weapon->swing_time.total_seconds() / 3.6);
+        trigger_brew( p() -> active_stance_data( STURDY_OX ).effectN( 11 ).base_value() * weapon -> swing_time.total_seconds() / 3.6);
     }
 
     if ( p() -> spec.brewing_elusive_brew -> ok() && s -> result == RESULT_MULTISTRIKE )
