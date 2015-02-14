@@ -63,7 +63,6 @@ actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent
 actions.cooldowns+=/potion,name=draenic_intellect,if=buff.bloodlust.up|buff.icy_veins.up
-actions.cooldowns+=/use_item,slot=trinket1
 
 # Water Jet initialization
 actions.init_water_jet=frost_bomb,if=remains<3.6
@@ -111,32 +110,32 @@ actions.single_target+=/call_action_list,name=init_water_jet,if=pet.water_elemen
 actions.single_target+=/frostbolt
 actions.single_target+=/ice_lance,moving=1
 
-head=arcanoshatter_hood,id=115553,bonus_id=42/562/565/567,gem_id=115813
+head=flareeyed_hood,id=113868,bonus_id=42/562/565/567,gem_id=115813
 neck=gruuls_lip_ring,id=113872,bonus_id=42/562/565/567,gem_id=115813,enchant=gift_of_multistrike
 shoulders=arcanoshatter_mantle,id=115551,bonus_id=42/562/565/567,gem_id=115813
 back=runescribed_gronncloak,id=120078,bonus_id=42/562/565/567,gem_id=115813,enchant=gift_of_multistrike
 chest=arcanoshatter_robes,id=115550,bonus_id=42/562/565/567,gem_id=115813
-wrists=bracers_of_spattered_steel,id=113887,bonus_id=42/562/565/567,gem_id=115813
+wrists=bracers_of_darkened_skies,id=119332,bonus_id=42/562/565/567,gem_id=115813
 hands=arcanoshatter_gloves,id=115552,bonus_id=42/562/565/567,gem_id=115813
 waist=deckhands_rope_belt,id=113967,bonus_id=42/562/565/567,gem_id=115813
 legs=arcanoshatter_leggings,id=115554,bonus_id=42/562/565/567,gem_id=115813
 feet=inferno_breath_sandals,id=113942,bonus_id=42/562/565/567,gem_id=115813
-finger1=ukuroggs_corrupted_seal,id=113975,bonus_id=42/562/565/567,gem_id=115813,enchant=gift_of_multistrike
+finger1=epicenter_loop,id=113947,bonus_id=42/562/565/567,gem_id=115813,enchant=gift_of_multistrike
 finger2=spellbound_solium_band_of_the_kirintor,id=118301,gem_id=115813,enchant=gift_of_multistrike
-trinket1=shards_of_nothing,id=113835,bonus_id=42/562/565/567,gem_id=115813
-trinket2=quiescent_runestone,id=113859,bonus_id=42/562/565/567,gem_id=115813
+trinket1=darmacs_unstable_talisman,id=113948,bonus_id=42/562/565/567,gem_id=115813
+trinket2=blackiron_micro_crucible,id=113984,bonus_id=42/562/565/567,gem_id=115813
 main_hand=infernoflame_staff,id=113869,bonus_id=42/562/565/567,gem_id=115813,enchant=mark_of_the_frostwolf
 
 # Gear Summary
 # gear_stamina=4734
-# gear_intellect=3791
+# gear_intellect=3976
 # gear_spell_power=1852
-# gear_crit_rating=993
-# gear_haste_rating=1035
-# gear_mastery_rating=1160
+# gear_crit_rating=970
+# gear_haste_rating=725
+# gear_mastery_rating=941
 # gear_armor=909
-# gear_multistrike_rating=2249
-# gear_versatility_rating=86
-# gear_speed_rating=1960
+# gear_multistrike_rating=2089
+# gear_versatility_rating=424
+# gear_speed_rating=1984
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
