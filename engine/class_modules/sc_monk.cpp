@@ -2873,7 +2873,7 @@ struct hurricane_strike_t: public monk_melee_attack_t
     base_tick_time = dot_duration / 15;
     base_multiplier = 2.0;
     if ( p -> dbc.ptr )
-      base_multiplier = 4.5;
+      base_multiplier = 2.5;
 
     tick_action = new hurricane_strike_tick_t( "hurricane_strike_tick", p, p -> find_spell( 158221 ) );
   }
