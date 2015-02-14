@@ -75,6 +75,7 @@ public:
     buff_t* enraged_regeneration;
     buff_t* gladiator_stance;
     buff_t* ravager;
+    buff_t* ravager_protection;
     buff_t* sudden_death;
     // Glyphs
     buff_t* enraged_speed;
@@ -443,7 +444,6 @@ public:
   virtual double    composite_player_critical_damage_multiplier() const;
   virtual void      teleport( double yards, timespan_t duration );
   virtual void      interrupt();
-  virtual void      halt();
   virtual void      reset();
   virtual void      moving();
   virtual void      create_options();
@@ -3239,7 +3239,10 @@ struct ravager_t: public warrior_spell_t
 
   void execute()
   {
-    p() -> buff.ravager -> trigger();
+    if ( p() -> specialization() == WARRIOR_PROTECTION )
+      p() -> buff.ravager_protection -> trigger();
+    else
+      p() -> buff.ravager -> trigger();
 
     warrior_spell_t::execute();
   }
@@ -4255,7 +4258,7 @@ void warrior_t::apl_prot()
   for ( size_t i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=active_enemies=1&(buff.bloodbath.up|!talent.bloodbath.enabled)|(active_enemies>=2&buff.ravager.up)" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=active_enemies=1&(buff.bloodbath.up|!talent.bloodbath.enabled)|(active_enemies>=2&buff.ravager_protection.up)" );
   }
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|buff.avatar.up" );
@@ -4263,24 +4266,24 @@ void warrior_t::apl_prot()
   default_list -> add_action( "call_action_list,name=prot" );
 
   //defensive
-  prot -> add_action( this, "Shield Block", "if=!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up)" );
+  prot -> add_action( this, "Shield Block", "if=!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up)" );
   prot -> add_action( this, "Shield Barrier", "if=buff.shield_barrier.down&((buff.shield_block.down&action.shield_block.charges_fractional<0.75)|rage>=85)" );
-  prot -> add_action( this, "Demoralizing Shout", "if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)" );
-  prot -> add_talent( this, "Enraged Regeneration", "if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)" );
-  prot -> add_action( this, "Shield Wall", "if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)" );
-  prot -> add_action( this, "Last Stand", "if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)" );
+  prot -> add_action( this, "Demoralizing Shout", "if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)" );
+  prot -> add_talent( this, "Enraged Regeneration", "if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)" );
+  prot -> add_action( this, "Shield Wall", "if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)" );
+  prot -> add_action( this, "Last Stand", "if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)" );
 
   //potion
   if ( sim -> allow_potions )
   {
     if ( level > 90 )
-      prot -> add_action( "potion,name=draenic_armor,if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)|target.time_to_die<=25" );
+      prot -> add_action( "potion,name=draenic_armor,if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)|target.time_to_die<=25" );
     else if ( level >= 80 )
-      prot -> add_action( "potion,name=mountains,if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)|target.time_to_die<=25" );
+      prot -> add_action( "potion,name=mountains,if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)|target.time_to_die<=25" );
   }
 
   //stoneform
-  prot -> add_action( "stoneform,if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)" );
+  prot -> add_action( "stoneform,if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.potion.up)" );
 
   //dps-single-target
   prot -> add_action( "call_action_list,name=prot_aoe,if=active_enemies>3" );
@@ -4709,9 +4712,10 @@ void warrior_t::create_buffs()
 
   buff.rallying_cry = new buffs::rallying_cry_t( *this, "rallying_cry", find_spell( 97463 ) );
 
-  buff.ravager = buff_creator_t( this, "ravager", talents.ravager )
-    .add_invalidate( CACHE_PARRY )
-    .chance( spec.shield_slam -> ok() ? 1.0 : 0 );
+  buff.ravager = buff_creator_t( this, "ravager", talents.ravager );
+
+  buff.ravager_protection = buff_creator_t( this, "ravager_protection", talents.ravager )
+    .add_invalidate( CACHE_PARRY );
 
   buff.recklessness = buff_creator_t( this, "recklessness", spec.recklessness )
     .duration( spec.recklessness -> duration() * ( 1.0 + glyphs.recklessness -> effectN( 2 ).percent() ) )
@@ -4721,9 +4725,8 @@ void warrior_t::create_buffs()
     .default_value( glyphs.rude_interruption -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buff.shield_barrier = absorb_buff_creator_t( this, "shield_barrier", specialization() == WARRIOR_PROTECTION ?
-                                               find_spell( 112048 ) : spec.shield_barrier )
-                                               .source( get_stats( "shield_barrier" ) );
+  buff.shield_barrier = absorb_buff_creator_t( this, "shield_barrier", specialization() == WARRIOR_PROTECTION ? find_spell( 112048 ) : spec.shield_barrier )
+    .source( get_stats( "shield_barrier" ) );
 
   buff.shield_block = buff_creator_t( this, "shield_block", find_spell( 132404 ) )
     .cd( timespan_t::zero() )
@@ -4773,8 +4776,7 @@ void warrior_t::create_buffs()
     .default_value( sets.set( WARRIOR_PROTECTION, PVP, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   buff.unyielding_strikes = buff_creator_t( this, "unyielding_strikes", talents.unyielding_strikes -> effectN( 1 ).trigger() )
-    .default_value( talents.unyielding_strikes -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ) )
-    .max_stack( 6 );
+    .default_value( talents.unyielding_strikes -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ) );
 
   buff.ultimatum = buff_creator_t( this, "ultimatum", spec.ultimatum -> effectN( 1 ).trigger() );
 }
@@ -4861,7 +4863,7 @@ void warrior_t::init_rng()
   t15_2pc_melee.set_frequency( 1.11 );
 }
 
-// warrior_t::init_resources ===========================================
+// warrior_t::init_resources ================================================
 
 void warrior_t::init_resources( bool force )
 {
@@ -4930,7 +4932,7 @@ void warrior_t::init_action_list()
         }
       }
     }
-    if ( gladiator && !(player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_ATTACK) )
+    if ( gladiator && !( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_ATTACK ) )
     {
       sim -> out_debug.printf( "%s: Has been imported as a Gladiator DPS, due to not wearing a stamina trinket and not having Mark of Blackrock enchanted. If you wish to override this, set role to tank, and re-import.", name() );
     }
@@ -4975,7 +4977,7 @@ void warrior_t::arise()
   else if ( active_stance == STANCE_DEFENSE )
     buff.defensive_stance -> trigger();
 
-  if ( specialization() != WARRIOR_PROTECTION  && !sim -> overrides.versatility )
+  if ( specialization() != WARRIOR_PROTECTION  && !sim -> overrides.versatility && level >= 80 ) // Currently it is impossible to remove this.
     sim -> auras.versatility -> trigger();
 }
 
@@ -5024,11 +5026,6 @@ void warrior_t::interrupt()
   player_t::interrupt();
 }
 
-void warrior_t::halt()
-{
-  player_t::halt();
-}
-
 void warrior_t::teleport( double, timespan_t )
 {
   return; // All movement "teleports" are modeled.
@@ -5057,7 +5054,7 @@ double warrior_t::composite_player_multiplier( school_e school ) const
 
   if ( main_hand_weapon.group() == WEAPON_1H &&
        off_hand_weapon.group() == WEAPON_1H )
-       m *= 1.0 + spec.singleminded_fury -> effectN( 1 ).percent();
+    m *= 1.0 + spec.singleminded_fury -> effectN( 1 ).percent();
 
   // --- Buffs / Procs ---
   if ( buff.rude_interruption -> up() )
@@ -5154,7 +5151,7 @@ double warrior_t::matching_gear_multiplier( attribute_e attr ) const
   return 0.0;
 }
 
-// warrior_t::composite_block ==========================================
+// warrior_t::composite_block ================================================
 
 double warrior_t::composite_block() const
 {
@@ -5168,12 +5165,12 @@ double warrior_t::composite_block() const
 
   // shield block adds 100% block chance
   if ( buff.shield_block -> up() )
-      b += buff.shield_block -> data().effectN( 1 ).percent();
+    b += buff.shield_block -> data().effectN( 1 ).percent();
 
   return b;
 }
 
-// warrior_t::composite_block_reduction =======================================
+// warrior_t::composite_block_reduction ======================================
 
 double warrior_t::composite_block_reduction() const
 {
@@ -5213,13 +5210,13 @@ double warrior_t::composite_parry_rating() const
   return p;
 }
 
-// warrior_t::composite_parry ==========================================
+// warrior_t::composite_parry =================================================
 
 double warrior_t::composite_parry() const
 {
   double parry = player_t::composite_parry();
 
-  if ( buff.ravager -> up() )
+  if ( buff.ravager_protection -> up() )
     parry += talents.ravager -> effectN( 1 ).percent();
 
   if ( buff.die_by_the_sword -> up() )
@@ -5228,7 +5225,7 @@ double warrior_t::composite_parry() const
   return parry;
 }
 
-// warrior_t::composite_attack_power_multiplier ========================
+// warrior_t::composite_attack_power_multiplier ==============================
 
 double warrior_t::composite_attack_power_multiplier() const
 {
@@ -5567,6 +5564,8 @@ void warrior_t::copy_from( player_t* source )
   initial_rage = p -> initial_rage;
   swapping = p -> swapping;
 }
+
+// warrior_t::stance_swap ==================================================
 
 void warrior_t::stance_swap()
 {
