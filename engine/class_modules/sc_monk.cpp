@@ -5186,6 +5186,7 @@ void monk_t::create_buffs()
     ? ( ( spec.tiger_strikes -> proc_chance() / 8 ) * 5 ) : spec.tiger_strikes -> proc_chance();
   buff.tiger_strikes = buff_creator_t( this, "tiger_strikes", spec.tiger_strikes -> effectN( 1 ).trigger() )
     .chance( ts_proc_chance )
+    .refresh_behavior( BUFF_REFRESH_DURATION )
     .add_invalidate( CACHE_MULTISTRIKE );
 
   buff.tiger_power = buff_creator_t( this, "tiger_power", find_class_spell( "Tiger Palm" ) -> effectN( 2 ).trigger() )
