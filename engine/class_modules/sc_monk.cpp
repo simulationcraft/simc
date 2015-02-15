@@ -2813,6 +2813,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     channeled = tick_zero = true;
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+    interrupt_auto_attack = true;
 
     base_multiplier *= 7.755; // hardcoded into tooltip
 
