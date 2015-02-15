@@ -2966,18 +2966,18 @@ struct melee_t: public monk_melee_attack_t
     if ( result_is_hit_or_multistrike( s -> result ) && p() -> current_stance() != WISE_SERPENT )
       p() -> buff.tiger_strikes -> trigger();
 
-    if ( p() -> spec.brewing_elusive_brew -> ok() && s -> result == RESULT_CRIT )
+    if ( p() -> spec.brewing_elusive_brew -> ok() )
     {
-      // Formula taken from http://www.wowhead.com/spell=128938  2013/04/15
-      if ( weapon -> group() == WEAPON_1H || weapon -> group() == WEAPON_SMALL )
-        trigger_brew( 1.5 * weapon -> swing_time.total_seconds() / 2.6 );
-      else
-        trigger_brew( p() -> active_stance_data( STURDY_OX ).effectN( 11 ).base_value() * weapon -> swing_time.total_seconds() / 3.6);
-    }
-
-    if ( p() -> spec.brewing_elusive_brew -> ok() && s -> result == RESULT_MULTISTRIKE )
-    {
-      p() -> buff.gift_of_the_ox -> trigger();
+      if ( s -> result == RESULT_CRIT )
+      {
+        // Formula taken from http://www.wowhead.com/spell=128938  2013/04/15
+        if ( weapon -> group() == WEAPON_1H || weapon -> group() == WEAPON_SMALL )
+          trigger_brew( 1.5 * weapon -> swing_time.total_seconds() / 2.6 );
+        else
+          trigger_brew( p() -> active_stance_data( STURDY_OX ).effectN( 11 ).base_value() * weapon -> swing_time.total_seconds() / 3.6);
+      }
+      if ( result_is_multistrike( s -> result ) )
+        p() -> buff.gift_of_the_ox -> trigger();
     }
   }
 };
