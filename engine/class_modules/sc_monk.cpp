@@ -5183,11 +5183,12 @@ void monk_t::create_buffs()
 
   buff.power_strikes = buff_creator_t( this, "power_strikes", talent.power_strikes -> effectN( 1 ).trigger() );
 
-  double ts_proc_chance = ( ( main_hand_weapon.group() == WEAPON_1H ) && ( specialization() != MONK_MISTWEAVER ) ) 
+  double ts_proc_chance = ( ( main_hand_weapon.group() == WEAPON_1H ) ) 
     ? ( ( spec.tiger_strikes -> proc_chance() / 8 ) * 5 ) : spec.tiger_strikes -> proc_chance();
   buff.tiger_strikes = buff_creator_t( this, "tiger_strikes", spec.tiger_strikes -> effectN( 1 ).trigger() )
     .chance( ts_proc_chance )
     .refresh_behavior( BUFF_REFRESH_DURATION )
+    .cd( timespan_t::from_seconds( 0.5 ) )
     .add_invalidate( CACHE_MULTISTRIKE );
 
   buff.tiger_power = buff_creator_t( this, "tiger_power", find_class_spell( "Tiger Palm" ) -> effectN( 2 ).trigger() )
@@ -5204,7 +5205,8 @@ void monk_t::create_buffs()
 
   buff.serenity = buff_creator_t( this, "serenity", talent.serenity );
 
-  buff.death_note = buff_creator_t( this, "death_note", find_spell( 121125 ) );
+  buff.death_note = buff_creator_t( this, "death_note", find_spell( 121125 ) )
+    .duration( timespan_t::from_minutes( 60 ) );
 
   // Brewmaster
   buff.bladed_armor = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
@@ -5213,8 +5215,7 @@ void monk_t::create_buffs()
   buff.elusive_brew_stacks = buff_creator_t( this, "elusive_brew_stacks", find_spell( 128939 ) );
 
   buff.elusive_brew_activated = buff_creator_t( this, "elusive_brew_activated", spec.elusive_brew )
-    .add_invalidate( CACHE_DODGE )
-    .cd( timespan_t::zero() );
+    .add_invalidate( CACHE_DODGE );
 
   buff.guard = absorb_buff_creator_t( this, "guard", spec.guard )
     .source( get_stats( "guard" ) )
@@ -5223,6 +5224,8 @@ void monk_t::create_buffs()
   buff.shuffle = buff_creator_t( this, "shuffle" ).spell( find_spell( 115307 ) )
     .add_invalidate( CACHE_PARRY );
 
+  buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox" ).max_stack( 99 );
+
   // Mistweaver
   buff.channeling_soothing_mist = buff_creator_t( this, "channeling_soothing_mist", spell_data_t::nil() );
 
@@ -5230,8 +5233,6 @@ void monk_t::create_buffs()
 
   // Windwalker
   buff.chi_sphere = buff_creator_t( this, "chi_sphere" ).max_stack( 5 );
-
-  buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox" ).max_stack( 99 );
 
   buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok", find_class_spell( "Combo Breaker: Blackout Kick" ) );
 
@@ -5766,28 +5767,30 @@ void monk_t::assess_damage(school_e school,
 {
   buff.shuffle -> up();
   buff.fortifying_brew -> up();
-  buff.elusive_brew_activated -> up();
-  if ( s -> result_total > 0 && school == SCHOOL_PHYSICAL && !glyph.guard -> ok() )
-    buff.guard -> up();
-  else if ( s -> result_total > 0 && school != SCHOOL_PHYSICAL && glyph.guard -> ok() )
-    buff.guard -> up();
+  if ( specialization() == MONK_BREWMASTER )
+  {
+    buff.elusive_brew_activated -> up();
+    if ( s -> result_total > 0 && school == SCHOOL_PHYSICAL && !glyph.guard -> ok() )
+      buff.guard -> up();
+    else if ( s -> result_total > 0 && school != SCHOOL_PHYSICAL && glyph.guard -> ok() )
+      buff.guard -> up();
 
-  // TODO: Add some form of cooldown to better model what is in-game
-  //    Need to add in some Option to control how often player falls below 35% or else this will be triggering
-  //    for half the fight.
-  //if ( health_percentage() < 35 )
-  //  cooldown.expel_harm -> reset( true );
+    // TODO: Add some form of cooldown to better model what is in-game
+    //    Need to add in some Option to control how often player falls below 35% or else this will be triggering
+    //    for half the fight.
+    //if ( health_percentage() < 35 )
+    //  cooldown.expel_harm -> reset( true );
 
-  if ( health_percentage() < glyph.fortuitous_spheres -> effectN( 1 ).base_value() && glyph.fortuitous_spheres -> ok() )
+    if ( s -> result == RESULT_DODGE && sets.set( MONK_BREWMASTER, T17, B2 ) )
+      resource_gain( RESOURCE_ENERGY, sets.set( MONK_BREWMASTER, T17, B2 ) -> effectN( 1 ).base_value(), gain.energy_refund );
+  }
+
+  if ( health_percentage() < glyph.fortuitous_spheres-> effectN( 1 ).base_value() && glyph.fortuitous_spheres -> ok() )
   {
     if ( cooldown.healing_sphere -> up() )
       active_actions.healing_sphere -> execute();
   }
-
-  if ( s -> result == RESULT_DODGE && sets.set( MONK_BREWMASTER, T17, B2 ) )
-    resource_gain( RESOURCE_ENERGY, sets.set( MONK_BREWMASTER, T17, B2 ) -> effectN( 1 ).base_value(), gain.energy_refund );
-
-  base_t::assess_damage( school, dtype, s );
+  base_t::assess_damage(school, dtype, s);
 }
 
 // monk_t::target_mitigation ====================================================
@@ -5804,10 +5807,8 @@ void monk_t::target_mitigation( school_e school,
     return;
   }
 
-  player_t::target_mitigation( school, dt, s );
-
   // Passive sources (Sturdy Ox)
-  if ( school != SCHOOL_PHYSICAL )
+  if ( school != SCHOOL_PHYSICAL && specialization() == MONK_BREWMASTER )
     s -> result_amount *= 1.0 + ( !dbc.ptr ? -0.15 : active_stance_data( STURDY_OX ).effectN( 4 ).percent() ); // Hotfix to -15% (up from -10%) on Nov 12, 2014
 
   // Damage Reduction Cooldowns
@@ -5827,10 +5828,9 @@ void monk_t::target_mitigation( school_e school,
 
   // Fortifying Brew
   if ( buff.fortifying_brew -> up() )
-  {
-    double fort_reduction = buff.fortifying_brew -> data().effectN( 2 ).percent() - ( glyph.fortifying_brew -> ok() ? find_spell( 124997 ) -> effectN( 1 ).percent() : 0 );
-    s -> result_amount *= 1.0 + fort_reduction; // Stored as +20
-  }
+    s -> result_amount *= 1.0 + ( glyph.fortifying_brew -> ok() ? glyph.fortifying_brew -> effectN( 1 ).percent() : 0 );
+
+  player_t::target_mitigation(school, dt, s);
 }
 
 // monk_t::assess_damage_imminent_pre_absorb ==============================
