@@ -105,7 +105,8 @@ int main( int argc, char *argv[] )
   lang = settings.value( "options/gui_localization", "auto" ).toString();
   if ( lang == "auto" )
   {
-    lang = QLocale::system().name();
+    lang = QLocale::system().name().split('_').at(1).toLower();
+    qDebug() << "QLocale system language: " << lang;
   }
   QTranslator myappTranslator;
   if ( !lang.isEmpty() && !lang.startsWith( "en" ) )
