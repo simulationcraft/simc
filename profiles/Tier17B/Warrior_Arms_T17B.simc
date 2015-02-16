@@ -30,7 +30,7 @@ actions.precombat+=/potion,name=draenic_strength
 
 # Executed every time the actor is available.
 
-actions=charge
+actions=charge,if=debuff.charge.down
 actions+=/auto_attack
 # This is mostly to prevent cooldowns from being accidentally used during movement.
 actions+=/call_action_list,name=movement,if=movement.distance>5
@@ -47,6 +47,9 @@ actions+=/call_action_list,name=single,if=active_enemies=1
 actions+=/call_action_list,name=aoe,if=active_enemies>1
 
 actions.movement=heroic_leap
+actions.movement+=/charge,cycle_targets=1,if=debuff.charge.down
+# If possible, charge a target that will give us rage. Otherwise, just charge to get back in range.
+actions.movement+=/charge
 # May as well throw storm bolt if we can.
 actions.movement+=/storm_bolt
 actions.movement+=/heroic_throw
@@ -75,6 +78,7 @@ actions.aoe+=/ravager,if=buff.bloodbath.up|cooldown.colossus_smash.remains<4
 actions.aoe+=/bladestorm,if=((debuff.colossus_smash.up|cooldown.colossus_smash.remains>3)&target.health.pct>20)|(target.health.pct<20&rage<30&cooldown.colossus_smash.remains>4)
 actions.aoe+=/colossus_smash,if=dot.rend.ticking
 actions.aoe+=/execute,cycle_targets=1,if=!buff.sudden_death.react&active_enemies<=8&((rage>72&cooldown.colossus_smash.remains>gcd)|rage>80|target.time_to_die<5|debuff.colossus_smash.up)
+actions.aoe+=/heroic_charge,cycle_targets=1,if=target.health.pct<20&rage<70&swing.mh.remains>2&debuff.charge.down
 actions.aoe+=/mortal_strike,if=target.health.pct>20&active_enemies<=5
 actions.aoe+=/dragon_roar,if=!debuff.colossus_smash.up
 actions.aoe+=/thunder_clap,if=(target.health.pct>20|active_enemies>=9)&glyph.resonating_power.enabled
