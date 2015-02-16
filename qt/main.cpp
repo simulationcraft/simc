@@ -100,19 +100,12 @@ int main( int argc, char *argv[] )
     QLibraryInfo::location( QLibraryInfo::TranslationsPath ) );
   a.installTranslator( &qtTranslator );
 
-  QString lang( "" );
+  QString lang;
   QSettings settings;
-  settings.beginGroup( "options" );
-  if ( settings.contains( "gui_localization" ) )
-  {
-    lang = settings.value( "gui_localization" ).toString();
-    qDebug() << "simc gui localization: " << lang;
-  }
-  settings.endGroup();
+  lang = settings.value( "options/gui_localization", "auto" ).toString();
   if ( lang == "auto" )
   {
     lang = QLocale::system().name();
-    //qDebug() << "using auto localization: " << lang;
   }
   QTranslator myappTranslator;
   if ( !lang.isEmpty() && !lang.startsWith( "en" ) )
