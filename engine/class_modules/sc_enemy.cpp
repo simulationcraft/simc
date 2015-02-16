@@ -818,13 +818,13 @@ struct summon_add_t : public spell_t
 
 action_t* enemy_create_action( player_t* p, const std::string& name, const std::string& options_str )
 {
-  if ( name == "auto_attack" )          return new          auto_attack_t( p, options_str );
-  if ( name == "auto_attack_off_hand" ) return new auto_attack_off_hand_t( p, options_str );
+  if ( name == "auto_attack" )          return new                 auto_attack_t( p, options_str );
+  if ( name == "auto_attack_off_hand" ) return new        auto_attack_off_hand_t( p, options_str );
   if ( name == "melee_nuke"  )          return new           melee_nuke_helper_t( p, options_str );
   if ( name == "spell_nuke"  )          return new           spell_nuke_helper_t( p, options_str );
   if ( name == "spell_dot"   )          return new            spell_dot_helper_t( p, options_str );
-  if ( name == "spell_aoe"   )          return new            spell_aoe_t( p, options_str );
-  if ( name == "summon_add"  )          return new           summon_add_t( p, options_str );
+  if ( name == "spell_aoe"   )          return new                   spell_aoe_t( p, options_str );
+  if ( name == "summon_add"  )          return new                  summon_add_t( p, options_str );
 
   return NULL;
 }
@@ -1010,7 +1010,7 @@ struct tmi_enemy_t : public enemy_t
     std::string als = "";
     const int num_bosses = TMI_MAX;
     assert( tmi_boss_enum < TMI_MAX );
-    int aa_damage[ num_bosses ] = { 0, 40000, 50000, 65000, 80000, 100000, 130000, 170000, 210000 };
+    int aa_damage[ num_bosses ] = { 0, 40000, 50000, 65000, 80000, 150000, 195000, 255000, 315000 };
 
     als += "/auto_attack,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] ) + ",attack_speed=1.5,aoe_tanks=1";
     als += "/spell_dot,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] * 2 / 15 ) + ",tick_time=2,dot_duration=30,aoe_tanks=1,if=!ticking";
