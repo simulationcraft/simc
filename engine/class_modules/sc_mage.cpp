@@ -4647,10 +4647,7 @@ void mage_t::init_spells()
   if ( spec.icicles -> ok() ) icicle = new actions::icicle_t( this );
 
   // RPPM
-  if ( dbc.ptr )
-  { rppm_pyromaniac.set_frequency( 0.7 ); }
-  else
-  { rppm_pyromaniac.set_frequency( find_spell( 165459 ) -> real_ppm() ); }
+  rppm_pyromaniac.set_frequency( find_spell( 165459 ) -> real_ppm() );
   rppm_arcane_instability.set_frequency( find_spell( 165476 ) -> real_ppm() );
 }
 
