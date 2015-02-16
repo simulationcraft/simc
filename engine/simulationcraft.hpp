@@ -186,6 +186,7 @@ enum movement_direction_e
   MOVEMENT_OMNI,
   MOVEMENT_TOWARDS,
   MOVEMENT_AWAY,
+  MOVEMENT_BOOMERANG,
   MOVEMENT_RANDOM, // Reserved for raid event
   MOVEMENT_DIRECTION_MAX,
   MOVEMENT_RANDOM_MIN = MOVEMENT_OMNI,
@@ -4428,6 +4429,7 @@ struct player_t : public actor_t
     double spell_crit, attack_crit, block_reduction, mastery;
     double skill, skill_debuff, distance;
     double distance_to_move;
+    double moving_away;
     movement_direction_e movement_direction;
     double armor_coeff;
   private:
@@ -5140,8 +5142,8 @@ struct player_t : public actor_t
   // to the millisecond accuracy in our timing system.
   virtual timespan_t time_to_move() const
   {
-    if ( current.distance_to_move > 0 )
-      return timespan_t::from_seconds( current.distance_to_move / composite_movement_speed() + 0.001 );
+    if ( current.distance_to_move > 0 || current.moving_away > 0 )
+      return timespan_t::from_seconds( ( current.distance_to_move + current.moving_away ) / composite_movement_speed() + 0.001 );
     else
       return timespan_t::zero();
   }
@@ -5159,7 +5161,10 @@ struct player_t : public actor_t
       do_update_movement( 9999 );
     else
     {
-      current.distance_to_move = distance;
+      if ( direction == MOVEMENT_BOOMERANG )
+        current.moving_away = distance;
+      else
+        current.distance_to_move = distance;
       current.movement_direction = direction;
       buffs.raid_movement -> trigger();
     }
@@ -5260,14 +5265,25 @@ private:
   // Update movement data, and also control the buff
   void do_update_movement( double yards )
   {
-    if ( yards >= current.distance_to_move )
+    if ( ( yards >= current.distance_to_move ) && current.moving_away <= 0 )
     {
       current.distance_to_move = 0;
       current.movement_direction = MOVEMENT_NONE;
       buffs.raid_movement -> expire();
     }
     else
-      current.distance_to_move -= yards;
+    {
+      if ( current.moving_away > 0 )
+      {
+        current.moving_away -= yards;
+        current.distance_to_move += yards;
+      }
+      else
+      {
+        current.moving_away = 0;
+        current.distance_to_move -= yards;
+      }
+    }
   }
 public:
 

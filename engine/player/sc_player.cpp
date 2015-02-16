@@ -664,6 +664,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
   skill_debuff( 0.0 ),
   distance( 0 ),
   distance_to_move( 0 ),
+  moving_away( 0 ),
   armor_coeff( 0 ),
   sleeping( false ),
   rating(),

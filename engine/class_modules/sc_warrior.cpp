@@ -23,6 +23,7 @@ struct warrior_td_t: public actor_pair_t
   dot_t* dots_rend;
 
   buff_t* debuffs_colossus_smash;
+  buff_t* debuffs_charge;
   buff_t* debuffs_demoralizing_shout;
   buff_t* debuffs_slam;
   buff_t* debuffs_taunt;
@@ -34,7 +35,10 @@ struct warrior_td_t: public actor_pair_t
 struct warrior_t: public player_t
 {
 public:
+  event_t* heroic_charge;
   int initial_rage;
+  bool warrior_fixed_health;
+  player_t* last_target_charged;
   double base_rage_generation;
   double arms_battle_stance;
   double arms_defensive_stance;
@@ -124,7 +128,9 @@ public:
   struct cooldowns_t
   {
     // All Warriors
+    cooldown_t* charge;
     cooldown_t* heroic_leap;
+    cooldown_t* rage_from_charge;
     cooldown_t* revenge;
     cooldown_t* stance_cooldown;
     cooldown_t* stance_swap;
@@ -357,6 +363,7 @@ public:
 
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ):
     player_t( sim, WARRIOR, name, r ),
+    heroic_charge( 0 ),
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),
     gain( gains_t() ),
@@ -384,11 +391,14 @@ public:
     cooldown.avatar                   = get_cooldown( "avatar" );
     cooldown.bladestorm               = get_cooldown( "bladestorm" );
     cooldown.bloodbath                = get_cooldown( "bloodbath" );
+    cooldown.charge                   = get_cooldown( "charge" );
     cooldown.demoralizing_shout       = get_cooldown( "demoralizing_shout" );
     cooldown.die_by_the_sword         = get_cooldown( "die_by_the_sword" );
     cooldown.dragon_roar              = get_cooldown( "dragon_roar" );
     cooldown.heroic_leap              = get_cooldown( "heroic_leap" );
     cooldown.last_stand               = get_cooldown( "last_stand" );
+    cooldown.rage_from_charge         = get_cooldown( "rage_from_charge" );
+    cooldown.rage_from_charge -> duration = timespan_t::from_seconds( 12.0 );
     cooldown.rage_from_crit_block     = get_cooldown( "rage_from_crit_block" );
     cooldown.rage_from_crit_block    -> duration = timespan_t::from_seconds( 3.0 );
     cooldown.recklessness             = get_cooldown( "recklessness" );
@@ -401,6 +411,8 @@ public:
     cooldown.storm_bolt               = get_cooldown( "storm_bolt" );
 
     initial_rage = 0;
+    warrior_fixed_health = true;
+    last_target_charged = 0;
     base_rage_generation = 1.75;
     arms_battle_stance = 3.40;
     arms_defensive_stance = 1.60;
@@ -443,6 +455,7 @@ public:
   virtual double    composite_spell_crit() const;
   virtual double    composite_player_critical_damage_multiplier() const;
   virtual void      teleport( double yards, timespan_t duration );
+  virtual void      update_movement( timespan_t duration );
   virtual void      interrupt();
   virtual void      reset();
   virtual void      moving();
@@ -1408,29 +1421,25 @@ struct charge_t: public warrior_attack_t
 {
   bool first_charge;
   double movement_speed_increase;
-  cooldown_t* rage_from_charge;
-  player_t* last_target_charged;
   double min_range;
   double rage_gain;
   charge_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "charge", p, p -> spell.charge ),
     first_charge( true ), 
-    movement_speed_increase( 5.0 ), 
-    rage_from_charge( p -> get_cooldown( "rage_from_charge" ) ), // Rage can only be gained every 12 seconds, only matters with double time talent.
-    last_target_charged( 0 ),
+    movement_speed_increase( 5.0 ),
+
     min_range( data().min_range() ),
     rage_gain( data().effectN( 2 ).resource( RESOURCE_RAGE ) )
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
-    ignore_false_positive = true;
-
-    rage_from_charge -> duration = timespan_t::from_seconds( 12.0 );
+    ignore_false_positive = use_off_gcd = true;
     rage_gain += p -> glyphs.bull_rush -> effectN( 2 ).resource( RESOURCE_RAGE );
 
     range += p -> glyphs.long_charge -> effectN( 1 ).base_value();
-    movement_directionality = MOVEMENT_TOWARDS;
+    movement_directionality = MOVEMENT_OMNI;
 
+    cooldown -> duration = data().cooldown();
     if ( p -> talents.double_time -> ok() )
       cooldown -> charges = p -> talents.double_time -> effectN( 1 ).base_value();
     else if ( p -> talents.juggernaut -> ok() )
@@ -1443,6 +1452,7 @@ struct charge_t: public warrior_attack_t
     {
       p() -> buff.charge_movement -> trigger( 1, movement_speed_increase, 1, timespan_t::from_seconds(
         p() -> current.distance_to_move / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() + movement_speed_increase ) ) ) );
+      p() -> current.moving_away = 0;
     }
 
     warrior_attack_t::execute();
@@ -1454,11 +1464,14 @@ struct charge_t: public warrior_attack_t
     if ( first_charge )
       first_charge = !first_charge;
 
-    if ( rage_from_charge -> up() && last_target_charged != execute_state -> target )
+    if ( p() -> cooldown.rage_from_charge -> up() && !td( execute_state -> target ) -> debuffs_charge -> up() )
     { // Blizz hack, not mine. Charge will not grant rage unless the last target charged was different than the current. 
-      rage_from_charge -> start();
+      p() -> cooldown.rage_from_charge -> start();
       p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.charge );
-      last_target_charged = execute_state -> target;
+      td( execute_state -> target ) -> debuffs_charge -> trigger();
+      if ( p() -> last_target_charged )
+        td( p() -> last_target_charged ) -> debuffs_charge -> expire();
+      p() -> last_target_charged = execute_state -> target;
     }
   }
 
@@ -1466,7 +1479,6 @@ struct charge_t: public warrior_attack_t
   {
     action_t::reset();
     first_charge = true;
-    last_target_charged = 0;
   }
 
   bool ready()
@@ -2032,6 +2044,7 @@ struct intervene_t: public warrior_attack_t
     {
       p() -> buff.intervene_movement -> trigger( 1, movement_speed_increase, 1,
                                                  timespan_t::from_seconds( p() -> current.distance_to_move / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() + movement_speed_increase ) ) ) );
+      p() -> current.moving_away = 0;
     }
   }
 
@@ -2041,6 +2054,109 @@ struct intervene_t: public warrior_attack_t
       return false;
 
     return warrior_attack_t::ready();
+  }
+};
+
+// Mortal Strike ============================================================
+
+struct heroic_charge_movement_ticker_t: public event_t
+{
+  timespan_t duration;
+  warrior_t* warrior;
+  heroic_charge_movement_ticker_t( sim_t& s, warrior_t*p, timespan_t d = timespan_t::zero() ):
+    event_t( s, p ), warrior( p )
+  {
+    if ( d > timespan_t::zero() )
+      duration = d;
+    else
+      duration = next_execute();
+
+    add_event( duration );
+    if ( sim().debug ) sim().out_debug.printf( "New movement event" );
+  }
+
+  timespan_t next_execute() const
+  {
+    timespan_t min_time = timespan_t::max();
+    bool any_movement = false;
+    timespan_t time_to_finish = warrior -> time_to_move();
+    if ( time_to_finish != timespan_t::zero() )
+    {
+      any_movement = true;
+
+      if ( time_to_finish < min_time )
+        min_time = time_to_finish;
+    }
+
+    if ( min_time > timespan_t::from_seconds( 0.05 ) ) // Update a little more than usual, since we're moving a lot faster.
+      min_time = timespan_t::from_seconds( 0.05 );
+
+    if ( !any_movement )
+      return timespan_t::zero();
+    else
+      return min_time;
+  }
+
+  void execute()
+  {
+    if ( warrior -> time_to_move() > timespan_t::zero() )
+      warrior -> update_movement( duration );
+
+    timespan_t next = next_execute();
+    if ( next > timespan_t::zero() )
+      warrior -> heroic_charge = new ( sim() ) heroic_charge_movement_ticker_t( sim(), warrior, next );
+    else
+    {
+      warrior -> heroic_charge = 0;
+      warrior -> buff.heroic_leap_movement -> expire();
+    }
+  }
+};
+
+struct heroic_charge_t: public warrior_attack_t
+{
+  action_t*leap;
+  heroic_charge_movement_ticker_t* charge;
+  heroic_charge_t( warrior_t* p, const std::string& options_str ):
+    warrior_attack_t( "heroic_charge", p, spell_data_t::nil() )
+  {
+    parse_options( options_str );
+    stancemask = STANCE_DEFENSE | STANCE_GLADIATOR | STANCE_BATTLE;
+    leap = new heroic_leap_t( p, options_str );
+    trigger_gcd = timespan_t::zero();
+    use_off_gcd = true;
+    ignore_false_positive = true;
+    callbacks = may_crit = false;
+  }
+
+  void execute()
+  {
+    warrior_attack_t::execute();
+
+    if ( p() -> cooldown.heroic_leap -> up() )
+    {// We are moving 10 yards, and heroic leap always executes in 0.25 seconds.
+      // Do some hacky math to ensure it will only take 0.25 seconds, since it will certainly
+      // be the highest temporary movement speed buff.
+      double speed;
+      speed = 10 / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() ) ) / 0.25;
+      p() -> buff.heroic_leap_movement -> trigger( 1, speed, 1, timespan_t::from_millis( 250 ) );
+      leap -> execute();
+      p() -> trigger_movement( 10.0, MOVEMENT_BOOMERANG ); // Leap 10 yards out, because it's impossible to precisely land 8 yards away.
+      p() -> heroic_charge = new ( *sim ) heroic_charge_movement_ticker_t( *sim, p() );
+    }
+    else
+    {
+      p() -> trigger_movement( 9.0, MOVEMENT_BOOMERANG );
+      p() -> heroic_charge = new ( *sim ) heroic_charge_movement_ticker_t( *sim, p() );
+    }
+  }
+
+  bool ready()
+  {
+    if ( p() -> cooldown.rage_from_charge -> up() && p() -> cooldown.charge -> up() && !p() -> buffs.raid_movement -> check() )
+      return warrior_attack_t::ready();
+    else
+      return false;
   }
 };
 
@@ -3399,7 +3515,7 @@ struct shield_charge_t: public warrior_spell_t
     stancemask = STANCE_GLADIATOR;
     cooldown -> duration = data().charge_cooldown();
     cooldown -> charges = data().charges();
-    movement_directionality = MOVEMENT_TOWARDS;
+    movement_directionality = MOVEMENT_OMNI;
     use_off_gcd = true;
 
     shield_charge_cd = p -> get_cooldown( "shield_charge_cd" );
@@ -3415,6 +3531,7 @@ struct shield_charge_t: public warrior_spell_t
       p() -> buff.shield_charge_movement -> trigger( 1, movement_speed_increase, 1,
                                                      timespan_t::from_seconds( p() -> current.distance_to_move / ( p() -> base_movement_speed * 
                                                      ( 1 + p() -> passive_movement_modifier() + movement_speed_increase ) ) ) );
+      p() -> current.moving_away = 0;
     }
 
     if ( p() -> buff.shield_charge -> check() )
@@ -3690,6 +3807,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "enraged_regeneration" ) return new enraged_regeneration_t ( this, options_str );
   if ( name == "execute"              ) return new execute_t              ( this, options_str );
   if ( name == "hamstring"            ) return new hamstring_t            ( this, options_str );
+  if ( name == "heroic_charge"        ) return new heroic_charge_t        ( this, options_str );
   if ( name == "heroic_leap"          ) return new heroic_leap_t          ( this, options_str );
   if ( name == "heroic_strike"        ) return new heroic_strike_t        ( this, options_str );
   if ( name == "heroic_throw"         ) return new heroic_throw_t         ( this, options_str );
@@ -4036,7 +4154,7 @@ void warrior_t::apl_fury()
   action_priority_list_t* three_targets       = get_action_priority_list( "three_targets" );
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
 
-  default_list -> add_action( this, "Charge" );
+  default_list -> add_action( this, "Charge", "if=debuff.charge.down" );
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( "call_action_list,name=movement,if=movement.distance>5", "This is mostly to prevent cooldowns from being accidentally used during movement." );
   default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down|(talent.unquenchable_thirst.enabled&buff.raging_blow.down)" );
@@ -4078,6 +4196,8 @@ void warrior_t::apl_fury()
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>3" );
 
   movement -> add_action( this, "Heroic Leap" );
+  movement -> add_action( this, "Charge", "cycle_targets=1,if=debuff.charge.down" );
+  movement -> add_action( this, "Charge", "", "If possible, charge a target that will give rage. Otherwise, just charge to get back in range." );
   for ( size_t i = 0; i < num_items; i++ )
   {
     if ( items[i].parsed.encoded_addon == "nitro_boosts" )
@@ -4111,6 +4231,7 @@ void warrior_t::apl_fury()
   two_targets -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<50|buff.raging_blow.down" );
   two_targets -> add_action( this, "Execute", "target=2" );
   two_targets -> add_action( this, "Execute", "if=target.health.pct<20|buff.sudden_death.react" );
+  two_targets -> add_action( "heroic_charge,cycle_targets=1,if=target.health.pct<20&rage<70&swing.mh.remains>2&debuff.charge.down" );
   two_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.up" );
   two_targets -> add_action( this, "Whirlwind", "if=!buff.meat_cleaver.up" );
   two_targets -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up&rage>75" );
@@ -4156,7 +4277,7 @@ void warrior_t::apl_arms()
   action_priority_list_t* single_target       = get_action_priority_list( "single" );
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
 
-  default_list -> add_action( this, "charge" );
+  default_list -> add_action( this, "Charge", "if=debuff.charge.down" );
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( "call_action_list,name=movement,if=movement.distance>5", "This is mostly to prevent cooldowns from being accidentally used during movement." );
 
@@ -4195,6 +4316,8 @@ void warrior_t::apl_arms()
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>1" );
 
   movement -> add_action( this, "Heroic Leap" );
+  movement -> add_action( this, "Charge", "cycle_targets=1,if=debuff.charge.down" );
+  movement -> add_action( this, "Charge", "", "If possible, charge a target that will give us rage. Otherwise, just charge to get back in range." );
   for ( size_t i = 0; i < num_items; i++ )
   {
     if ( items[i].parsed.encoded_addon == "nitro_boosts" )
@@ -4227,6 +4350,7 @@ void warrior_t::apl_arms()
   aoe -> add_talent( this, "Bladestorm", "if=((debuff.colossus_smash.up|cooldown.colossus_smash.remains>3)&target.health.pct>20)|(target.health.pct<20&rage<30&cooldown.colossus_smash.remains>4)" );
   aoe -> add_action( this, "Colossus Smash", "if=dot.rend.ticking" );
   aoe -> add_action( this, "Execute", "cycle_targets=1,if=!buff.sudden_death.react&active_enemies<=8&((rage>72&cooldown.colossus_smash.remains>gcd)|rage>80|target.time_to_die<5|debuff.colossus_smash.up)" );
+  aoe -> add_action( "heroic_charge,cycle_targets=1,if=target.health.pct<20&rage<70&swing.mh.remains>2&debuff.charge.down" );
   aoe -> add_action( this, "Mortal Strike", "if=target.health.pct>20&active_enemies<=5" );
   aoe -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up" );
   aoe -> add_action( this, "Thunder Clap", "if=(target.health.pct>20|active_enemies>=9)&glyph.resonating_power.enabled" );
@@ -4630,6 +4754,9 @@ actor_pair_t( target, &p ), warrior( p )
     .duration( p.spec.colossus_smash -> duration() )
     .cd( timespan_t::zero() );
 
+  debuffs_charge = buff_creator_t( *this, "charge" )
+    .duration( timespan_t::zero() );
+
   debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this );
   debuffs_taunt = buff_creator_t( *this, "taunt", p.find_class_spell( "Taunt" ) );
   debuffs_slam = buff_creator_t( *this, "slam", p.talents.slam )
@@ -4985,6 +5112,27 @@ void warrior_t::arise()
 
 void warrior_t::combat_begin()
 {
+  if ( !sim -> fixed_time )
+  {
+    if ( warrior_fixed_health )
+    {
+      for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+      {
+        player_t* p = sim -> player_list[i];
+        if ( p -> specialization() != WARRIOR_FURY && p -> specialization() != WARRIOR_ARMS )
+        {
+          warrior_fixed_health = false;
+          break;
+        }
+      }
+      if ( warrior_fixed_health )
+      {
+        sim -> fixed_time = true;
+        sim -> errorf( "To fix issues with the target exploding <20% range due to execute, fixed_time=1 has been enabled. This gives similar results" );
+        sim -> errorf( "to execute's usage in a raid sim, without taking an eternity to simulate. To disable this option, add warrior_fixed_health=0 to your sim." );
+      }
+    }
+  }
   player_t::combat_begin();
 
   if ( initial_rage > 0 )
@@ -5005,6 +5153,8 @@ void warrior_t::reset()
     active_stance = STANCE_GLADIATOR;
 
   swapping = false;
+  heroic_charge = 0;
+  last_target_charged = 0;
 
   t15_2pc_melee.reset();
   sudden_death.reset();
@@ -5023,12 +5173,24 @@ void warrior_t::interrupt()
   buff.heroic_leap_movement -> expire();
   buff.shield_charge_movement -> expire();
   buff.intervene_movement -> expire();
+  event_t::cancel( heroic_charge );
   player_t::interrupt();
 }
 
 void warrior_t::teleport( double, timespan_t )
 {
   return; // All movement "teleports" are modeled.
+}
+
+void warrior_t::update_movement( timespan_t duration )
+{
+  if ( heroic_charge )
+    player_t::update_movement( duration );
+  else
+  { // Cancel heroic leap if it's running to make sure nothing weird happens when movement from another source is attempted.
+    event_t::cancel( heroic_charge );
+    player_t::update_movement( duration );
+  }
 }
 
 // warrior_t::composite_player_multiplier ===================================
@@ -5477,6 +5639,7 @@ void warrior_t::create_options()
   player_t::create_options();
 
   add_option( opt_int( "initial_rage", initial_rage ) );
+  add_option( opt_bool( "warrior_fixed_health", warrior_fixed_health ) );
   add_option( opt_bool( "swapping", swapping ) );
 }
 
@@ -5562,6 +5725,7 @@ void warrior_t::copy_from( player_t* source )
   warrior_t* p = debug_cast<warrior_t*>( source );
 
   initial_rage = p -> initial_rage;
+  warrior_fixed_health = p -> warrior_fixed_health;
   swapping = p -> swapping;
 }
 
