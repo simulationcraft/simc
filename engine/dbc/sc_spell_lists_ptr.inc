@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 19622
+// Class based active abilities, wow build 19634
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -186,14 +186,13 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Hunter
   {
-    // General tree, 33 abilities
+    // General tree, 32 abilities
     {
         3044, // Arcane Shot
         5118, // Aspect of the Cheetah
       172106, // Aspect of the Fox
        13159, // Aspect of the Pack
         1462, // Beast Lore
-      117526, // Binding Shot
          883, // Call Pet 1
        83242, // Call Pet 2
        83243, // Call Pet 3
@@ -1005,7 +1004,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (28)
 
-// Talent tree specialization abilities, wow build 19622
+// Talent tree specialization abilities, wow build 19634
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1946,7 +1945,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 19622
+// Class mastery abilities, wow build 19634
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2169,7 +2168,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 19622
+// Racial abilities, wow build 19634
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2892,7 +2891,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 
 #define PTR_GLYPH_ABILITIES_SIZE (41)
 
-// Glyph spells for classes, wow build 19622
+// Glyph spells for classes, wow build 19634
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3532,7 +3531,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 19622
+// Tier item set bonuses for class, wow build 19634
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {
@@ -3957,7 +3956,7 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
 
 #define PTR_SET_BONUS_DATA_SIZE (382)
 
-// Set bonus data, wow build 19622
+// Set bonus data, wow build 19634
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,              {   0 },    0,   73, 165641, { 111239, 111240, 111241, 111242, 111243,  0 } },
@@ -4361,7 +4360,7 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
 
 #define PTR_PERK_SIZE (4)
 
-// Perk specialization abilities, wow build 19622
+// Perk specialization abilities, wow build 19634
 static unsigned __ptr_perk_data[][MAX_SPECS_PER_CLASS][PTR_PERK_SIZE] = {
   {
     {
@@ -4669,7 +4668,7 @@ static unsigned __ptr_perk_data[][MAX_SPECS_PER_CLASS][PTR_PERK_SIZE] = {
   },
 };
 
-// Glyph properties, wow build 19622
+// Glyph properties, wow build 19634
 static glyph_property_data_t __ptr_glyph_property_data[485] = {
   {   162,  54811 },
   {   163,  54812 },
