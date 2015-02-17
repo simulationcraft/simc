@@ -2256,7 +2256,11 @@ struct raging_blow_attack_t: public warrior_attack_t
     if ( aoe ) ++aoe;
 
     warrior_attack_t::execute();
-    if ( execute_state -> result == RESULT_CRIT )
+  }
+  
+  void impact( action_state_t* s )
+  {
+    if ( s -> result == RESULT_CRIT )
     { // Can proc off MH/OH individually from each meat cleaver hit.
       if ( rng().roll( p() -> sets.set( WARRIOR_FURY, T17, B2 ) -> proc_chance() ) )
       {
