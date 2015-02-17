@@ -589,6 +589,8 @@ public:
                 p() -> stance_swap();                            // Swap back to defensive stance.
     }
     ab::execute();
+    if ( p() -> buff.sweeping_strikes -> up() )
+      trigger_sweeping_strikes( execute_state );
   }
 
   virtual timespan_t gcd() const
@@ -772,8 +774,6 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     special = true;
   }
 
-  virtual void   execute();
-
   virtual void   impact( action_state_t* s );
 
   virtual double calculate_weapon_damage( double attack_power )
@@ -799,9 +799,6 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
 
   void trigger_bloodbath_dot( player_t* t, double dmg )
   {
-    if ( !p() -> buff.bloodbath -> check() )
-      return;
-
     residual_action::trigger(
       p() -> active_bloodbath_dot, // ignite spell
       t, // target
@@ -1017,15 +1014,6 @@ static bool trigger_t15_2pc_melee( warrior_attack_t* a )
 // ==========================================================================
 // Warrior Attacks
 // ==========================================================================
-
-// warrior_attack_t::execute ================================================
-
-void warrior_attack_t::execute()
-{
-  base_t::execute();
-  if ( p() -> buff.sweeping_strikes -> up() )
-    trigger_sweeping_strikes( execute_state );
-  }
 
 // warrior_attack_t::impact =================================================
 
@@ -1261,7 +1249,6 @@ struct bladestorm_t: public warrior_attack_t
 {
   attack_t* bladestorm_mh;
   attack_t* bladestorm_oh;
-
   bladestorm_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "bladestorm", p, p -> talents.bladestorm ),
     bladestorm_mh( new bladestorm_tick_t( p, "bladestorm_mh" ) ),
@@ -1527,9 +1514,8 @@ struct colossus_smash_t: public warrior_attack_t
 
       if ( p() -> sets.has_set_bonus( WARRIOR_ARMS, T17, B4 ) )
       {
-        p() -> resource_gain( RESOURCE_RAGE, ( p() -> dbc.ptr ? 20 : // Fix
-          p() -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ) ),
-          p() -> gain.tier17_4pc_arms );
+        p() -> resource_gain( RESOURCE_RAGE, p() -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
+        p() -> gain.tier17_4pc_arms );
       }
       if ( p() -> sets.set( WARRIOR_ARMS, T17, B2 ) )
       {
@@ -1642,7 +1628,13 @@ struct execute_off_hand_t: public warrior_attack_t
          weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
 
     if ( !p -> dbc.ptr )
-      weapon_multiplier *= 1.1;
+    {
+      weapon_multiplier *= 1.1; // I guess Blizzard messed up and applied this hotfix to all executes.
+    }
+    else
+    {
+      weapon_multiplier *= 0.886; // "Whoops we buffed it too much!"
+    }
 
     weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
   }
@@ -1696,7 +1688,7 @@ struct execute_t: public warrior_attack_t
       {
         if ( p() -> buff.sudden_death -> check() )
         { // If the target is below 20% hp, arms execute with sudden death procced will consume x rage, but hit the target as if it had x + 10 rage. 
-          am *= 4.0 * std::min( 40.0, ( p() -> resources.current[RESOURCE_RAGE] + 10 ) ) / 40;
+          am *= 4.0 * std::min( 40.0, ( p() -> resources.current[RESOURCE_RAGE] + sudden_death_rage ) ) / 40;
         }
         else
         {
@@ -1943,11 +1935,10 @@ struct heroic_leap_t: public warrior_attack_t
   {
     if ( p() -> current.distance_to_move > heroic_leap_damage -> effectN( 1 ).radius() )
       s -> result_amount = 0;
+
     warrior_attack_t::impact( s );
-    if ( result_is_hit( s -> result ) )
-    {
-      p() -> buff.heroic_leap_glyph -> trigger();
-    }
+
+    p() -> buff.heroic_leap_glyph -> trigger();
   }
 
   bool ready()
@@ -2407,7 +2398,7 @@ struct second_wind_t: public warrior_heal_t
   {
     callbacks = false;
     background = true;
-    heal_pct = data().effectN ( 1 ).percent();
+    heal_pct = data().effectN( 1 ).percent();
   }
 
   void execute()
@@ -2438,9 +2429,8 @@ struct enraged_regeneration_t: public warrior_heal_t
 
   void execute()
   {
-    p() -> buff.enraged_regeneration -> trigger();
-
     warrior_heal_t::execute();
+    p() -> buff.enraged_regeneration -> trigger();
   }
 };
 
@@ -2750,7 +2740,7 @@ struct slam_t: public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     if ( td( target ) -> debuffs_slam -> up() )
-      am *= 1.0 + ( ( (double)td( target ) -> debuffs_slam -> current_stack ) / 2 );
+      am *= 1.0 + ( ( static_cast<double>( td( target ) -> debuffs_slam -> current_stack ) ) / 2.0 );
 
     return am;
   }
@@ -3438,8 +3428,7 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     amount = s -> result_amount;
     amount *= cost() / 20;
     if ( !p() -> buff.shield_barrier -> check() ||
-         ( p() -> buff.shield_barrier -> check() && p() -> buff.shield_barrier -> current_value < amount )
-         )
+         ( p() -> buff.shield_barrier -> check() && p() -> buff.shield_barrier -> current_value < amount ) )
     {
       p() -> buff.shield_barrier -> trigger( 1, amount );
       stats -> add_result( 0.0, amount, ABSORB, s -> result, s -> block_result, p() );
@@ -3996,9 +3985,7 @@ void warrior_t::init_spells()
   if ( glyphs.rallying_cry -> ok() ) active_rallying_cry_heal = new rallying_cry_heal_t( this );
   if ( talents.second_wind -> ok() ) active_second_wind = new second_wind_t( this );
   if ( sets.has_set_bonus( SET_TANK, T16, B2 ) ) active_t16_2pc = new tier16_2pc_tank_heal_t( this );
-
-  if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )
-    spell.t17_prot_2p = find_spell( 169688 );
+  if ( sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )  spell.t17_prot_2p = find_spell( 169688 );
 
   if ( !talents.gladiators_resolve -> ok() )
     gladiator = false;
@@ -5647,30 +5634,6 @@ void warrior_t::create_options()
   add_option( opt_bool( "swapping", swapping ) );
 }
 
-// Specialized attacks =========================================================
-
-struct warrior_flurry_of_xuen_t: public warrior_attack_t
-{
-  warrior_flurry_of_xuen_t( warrior_t* p ):
-    warrior_attack_t( "flurry_of_xuen", p, p -> find_spell( 147891 ) )
-  {
-    attack_power_mod.tick = data().extra_coeff();
-    proc = false;
-    aoe = 5;
-    special = may_miss = may_parry = may_block = may_dodge = may_crit = background = true;
-  }
-};
-
-struct warrior_lightning_strike_t: public warrior_attack_t
-{
-  warrior_lightning_strike_t( warrior_t* p ):
-    warrior_attack_t( "lightning_strike", p, p -> find_spell( 137597 ) )
-  {
-    background = true;
-    may_dodge = may_parry = false;
-  }
-};
-
 // Mark of the Shattered Hand ===============================================
 
 struct warrior_shattered_bleed_t: public warrior_attack_t
@@ -5703,8 +5666,6 @@ struct warrior_shattered_bleed_t: public warrior_attack_t
 
 action_t* warrior_t::create_proc_action( const std::string& name )
 {
-  if ( name == "flurry_of_xuen" ) return new warrior_flurry_of_xuen_t( this );
-  if ( name == "lightning_strike" ) return new warrior_lightning_strike_t( this );
   if ( name == "shattered_bleed" ) return new warrior_shattered_bleed_t(this);
 
   return 0;
