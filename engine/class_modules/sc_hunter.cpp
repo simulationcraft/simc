@@ -828,8 +828,8 @@ public:
 
     buffs.tier16_4pc_bm_brutal_kinship = buff_creator_t( this, 145737, "tier16_4pc_brutal_kinship" );
     buffs.tier17_4pc_bm = buff_creator_t( this, 178875, "tier17_4pc_bm" )
-      .duration( o() -> specs.bestial_wrath -> duration() )
-      .default_value( owner -> find_spell( 178875 ) -> effectN( 2 ).percent() );
+      .default_value( owner -> find_spell( 178875 ) -> effectN( 2 ).percent() )
+      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   virtual void init_gains()
@@ -923,8 +923,8 @@ public:
     base_t::summon( duration );
     // pet appears at the target
     current.distance = 0;
-    owner_coeff.ap_from_ap = 1.0 / 3.0;
-    owner_coeff.sp_from_ap = 1.0 / 3.0;
+    owner_coeff.ap_from_ap = 0.6;
+    owner_coeff.sp_from_ap = 0.6;
 
     buffs.tier17_4pc_bm -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
 
