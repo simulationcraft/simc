@@ -45,6 +45,7 @@ actions.single_target+=/moonfire,if=!talent.balance_of_power.enabled&(buff.lunar
 actions.single_target+=/moonfire,if=talent.balance_of_power.enabled&(remains<4|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2&remains<eclipse_change+20))
 actions.single_target+=/wrath,if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)
 actions.single_target+=/starfire,if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)
+actions.single_target+=/wrath
 
 actions.aoe=celestial_alignment,if=lunar_max<8|target.time_to_die<20
 actions.aoe+=/incarnation,if=buff.celestial_alignment.up
@@ -57,6 +58,7 @@ actions.aoe+=/starsurge,if=buff.lunar_empowerment.down&eclipse_energy>20&active_
 actions.aoe+=/starsurge,if=buff.solar_empowerment.down&eclipse_energy<-40&active_enemies=2
 actions.aoe+=/wrath,if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)
 actions.aoe+=/starfire,if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)
+actions.aoe+=/wrath
 
 head=living_wood_headpiece,id=115542
 neck=gruuls_lip_ring,id=113872,enchant=gift_of_critical_strike

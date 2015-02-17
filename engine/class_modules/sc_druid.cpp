@@ -6721,6 +6721,7 @@ void druid_t::apl_balance()
   single_target -> add_action( this, "Moonfire", "if=talent.balance_of_power.enabled&(remains<4|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2&remains<eclipse_change+20))" );
   single_target -> add_action( this, "Wrath", "if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)" );
   single_target -> add_action( this, "Starfire", "if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)" );
+  single_target -> add_action( this, "Wrath" );
 
   aoe -> add_action( this, "Celestial Alignment", "if=lunar_max<8|target.time_to_die<20" );
   aoe -> add_action( "incarnation,if=buff.celestial_alignment.up" );
@@ -6733,6 +6734,7 @@ void druid_t::apl_balance()
   aoe -> add_action( this, "Starsurge", "if=buff.solar_empowerment.down&eclipse_energy<-40&active_enemies=2" );
   aoe -> add_action( this, "Wrath", "if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)" );
   aoe -> add_action( this, "Starfire", "if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)" );
+  aoe -> add_action( this, "Wrath" );
 }
 
 // Guardian Combat Action Priority List ==============================
