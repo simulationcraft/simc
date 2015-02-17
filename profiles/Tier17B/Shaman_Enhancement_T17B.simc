@@ -76,10 +76,10 @@ actions.aoe+=/elemental_blast,if=!buff.unleash_flame.up&(buff.maelstrom_weapon.r
 actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.react=5&((glyph.chain_lightning.enabled&active_enemies>=3)|(!glyph.chain_lightning.enabled&active_enemies>=2))
 actions.aoe+=/unleash_elements,if=active_enemies<4
 actions.aoe+=/flame_shock,if=dot.flame_shock.remains<=9|!ticking
-actions.aoe+=/Windstrike,target=1,if=!debuff.stormstrike.up
-actions.aoe+=/Windstrike,target=2,if=!debuff.stormstrike.up
-actions.aoe+=/Windstrike,target=3,if=!debuff.stormstrike.up
-actions.aoe+=/Windstrike
+actions.aoe+=/windstrike,target=1,if=!debuff.stormstrike.up
+actions.aoe+=/windstrike,target=2,if=!debuff.stormstrike.up
+actions.aoe+=/windstrike,target=3,if=!debuff.stormstrike.up
+actions.aoe+=/windstrike
 actions.aoe+=/elemental_blast,if=!buff.unleash_flame.up&buff.maelstrom_weapon.react>=3
 actions.aoe+=/chain_lightning,if=(buff.maelstrom_weapon.react>=3|buff.ancestral_swiftness.up)&((glyph.chain_lightning.enabled&active_enemies>=4)|(!glyph.chain_lightning.enabled&active_enemies>=3))
 actions.aoe+=/magma_totem,if=pet.magma_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up

@@ -5607,10 +5607,10 @@ void shaman_t::init_action_list()
     aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=buff.maelstrom_weapon.react=5&((glyph.chain_lightning.enabled&active_enemies>=3)|(!glyph.chain_lightning.enabled&active_enemies>=2))" );
     aoe -> add_action( this, "Unleash Elements", "if=active_enemies<4" );
     aoe -> add_action( this, "Flame Shock", "if=dot.flame_shock.remains<=9|!ticking" );
-    aoe -> add_action( this, find_specialization_spell( "Ascendance" ), "Windstrike", "target=1,if=!debuff.stormstrike.up" );
-    aoe -> add_action( this, find_specialization_spell( "Ascendance" ), "Windstrike", "target=2,if=!debuff.stormstrike.up" );
-    aoe -> add_action( this, find_specialization_spell( "Ascendance" ), "Windstrike", "target=3,if=!debuff.stormstrike.up" );
-    aoe -> add_action( this, find_specialization_spell( "Ascendance" ), "Windstrike" );
+    aoe -> add_action( this, find_specialization_spell( "Ascendance" ), "windstrike", "target=1,if=!debuff.stormstrike.up" );
+    aoe -> add_action( this, find_specialization_spell( "Ascendance" ), "windstrike", "target=2,if=!debuff.stormstrike.up" );
+    aoe -> add_action( this, find_specialization_spell( "Ascendance" ), "windstrike", "target=3,if=!debuff.stormstrike.up" );
+    aoe -> add_action( this, find_specialization_spell( "Ascendance" ), "windstrike" );
     aoe -> add_talent( this, "Elemental Blast", "if=!buff.unleash_flame.up&buff.maelstrom_weapon.react>=3" );
     aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=(buff.maelstrom_weapon.react>=3|buff.ancestral_swiftness.up)&((glyph.chain_lightning.enabled&active_enemies>=4)|(!glyph.chain_lightning.enabled&active_enemies>=3))" );
     aoe -> add_action( this, "Magma Totem", "if=pet.magma_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up" );
