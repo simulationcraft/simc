@@ -5206,7 +5206,7 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   if ( buff.avatar -> up() )
     m *= 1.0 + buff.avatar -> data().effectN( 1 ).percent();
 
-  if ( main_hand_weapon.group() == WEAPON_2H && spec.seasoned_soldier )
+  if ( main_hand_weapon.group() == WEAPON_2H && spec.seasoned_soldier -> ok() )
     m *= 1.0 + spec.seasoned_soldier -> effectN( 1 ).percent();
 
   // --- Enrages ---
@@ -5602,7 +5602,7 @@ void warrior_t::assess_damage( school_e school,
   if ( ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY ) && !s -> action -> is_aoe() ) // AoE attacks do not reset revenge.
     cooldown.revenge -> reset( true );
 
-  if ( s -> result == RESULT_PARRY && buff.die_by_the_sword -> up() && glyphs.drawn_sword )
+  if ( s -> result == RESULT_PARRY && buff.die_by_the_sword -> up() && glyphs.drawn_sword -> ok() )
   {
     player_t::resource_gain( RESOURCE_RAGE,
                              glyphs.drawn_sword -> effectN( 1 ).resource( RESOURCE_RAGE ),
