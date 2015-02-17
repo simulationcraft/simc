@@ -1,4 +1,4 @@
-SimulationCraft 603-27 for World of Warcraft 6.1.0 PTR (build level 19611)
+SimulationCraft 603-27 for World of Warcraft 6.1.0 PTR (build level 19634)
 
 Name             : Mend Pet (id=136) [Scaling Spell (3), Spell Family (9)] 
 Class            : Hunter
@@ -331,7 +331,7 @@ Proc Chance      : 101%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Camouflage (51755), Glyph of No Escape (53299), Trap Mastery (63458), Glyph of Camouflage (119449), Camouflage (119450), Glyph of Aspects (122492)
-Attributes       : ........ ........ ........ x..x..x.   .....x.. ..x..... ..x..... ........ 
+Attributes       : ........ ........ ........ x..x..x.   .....x.. ..x..... ..x..... .x...... 
                  : ..x..... ......x. ...x.... ........   ........ ........ ........ ..x..... 
                  : .......x ...x.... ........ .....x..   ...x.x.. ........ .xx..... ........ 
                  : ........ ....x... .......x ........   ........ ........ ........ ......x. 
@@ -821,7 +821,7 @@ Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Freezing Trap (3355), Camouflage (51755), Camouflage (119450), Sniper Training (168811), Guide: Sharpshooting (178549)
-Attributes       : .x..x... ........ x...x... ........   ........ ..x..... .x...... ...x.... 
+Attributes       : .x..x... ........ x...x... ........   ........ ..x..... .x...... .x.x.... 
                  : ........ ........ .x...... ........   x....... ........ ........ ........ 
                  : ........ ........ .......x ...x....   .....x.. ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -1521,7 +1521,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=24502)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | Misc Value: 3
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 3
 #2 (id=87830)    : Apply Aura (6) | Dummy (4)
                    Base Value: 80 | Scaled Value: 80
 Description      : Increases the critical strike chance of your Steady Shot, Focusing Shot, and Aimed Shot by $s1% on targets who are above $s2% health or while Rapid Fire is active.
@@ -3271,10 +3271,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=67994)    : Apply Aura (6) | Add Flat Modifier: Spell Tick Time (107)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Misc Value: 8
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | Misc Value: 8
                    Affected Spells: Sniper Training (168811)
 #2 (id=90636)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50
+                   Base Value: 61 | Scaled Value: 62 - 63 (avg=0) | Value Range: 2
 #3 (id=239108)   : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6
 Description      : When you stand still for $168809d, you gain Sniper Training for $s3 sec, which increases your damage, shot range, and critical strike damage by $s1%.
@@ -4189,7 +4189,7 @@ Range            : 100 yards
 Duration         : 5 seconds
 Attributes       : ........ ........ ..x..... x.xx...x   ...x.x.x ........ ..x..... ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ......x. 
-                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
                  : ........ ....x... .......x ....x...   ........ ...x.... ........ ........ 
                  : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
                  : ........ ........ x.....x. ........   ........ ........ ........ ..x..... 
@@ -5433,7 +5433,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=219905)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5
+                   Base Value: 8 | Scaled Value: 8
 Description      : Focus Fire now also grants $s1% increase to attack power per Frenzy stack consumed.
 
 Name             : Enhanced Kill Shot (id=157707) [Spell Family (9), Passive] 
@@ -6527,7 +6527,7 @@ Effects          :
 #1 (id=243431)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=243432)   : Weapon Damage% (31)
-                   Base Value: 510 | Scaled Value: 5.1 (avg=0)
+                   Base Value: 660 | Scaled Value: 6.6 (avg=0)
 Description      : $@spelldesc53209
 
 Name             : Chimaera Shot (id=171457) [Spell Family (9)] 
@@ -6547,7 +6547,7 @@ Effects          :
 #1 (id=243435)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=243436)   : Weapon Damage% (31)
-                   Base Value: 510 | Scaled Value: 5.1 (avg=0)
+                   Base Value: 665 | Scaled Value: 6.65 (avg=0)
 Description      : $@spelldesc53209
 
 Name             : Aspect of the Fox (id=172106) [Spell Family (9)] 

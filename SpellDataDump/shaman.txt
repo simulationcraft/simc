@@ -1,4 +1,4 @@
-SimulationCraft 603-27 for World of Warcraft 6.1.0 PTR (build level 19611)
+SimulationCraft 603-27 for World of Warcraft 6.1.0 PTR (build level 19634)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -862,10 +862,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=7992)     : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 30 | Scaled Value: 30
+                   Base Value: 40 | Scaled Value: 40
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Unleashed Fury (118473)
 #2 (id=86701)    : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 22
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 22
                    Affected Spells: Riptide (61295)
 #3 (id=133083)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50
@@ -1459,7 +1459,7 @@ Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Glyph of Hex (63291), Spiritwalker's Grace (79206), Lucidity (137326)
-Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... ........ 
+Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
                  : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ........ ........ .....x..   .....x.. ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 

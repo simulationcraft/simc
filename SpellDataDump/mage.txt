@@ -1,4 +1,4 @@
-SimulationCraft 603-27 for World of Warcraft 6.1.0 PTR (build level 19611)
+SimulationCraft 603-27 for World of Warcraft 6.1.0 PTR (build level 19634)
 
 Name             : Blizzard (id=10) [Spell Family (3)] 
 Class            : Frost Mage

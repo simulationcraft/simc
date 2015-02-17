@@ -1,4 +1,4 @@
-SimulationCraft 603-27 for World of Warcraft 6.1.0 PTR (build level 19611)
+SimulationCraft 603-27 for World of Warcraft 6.1.0 PTR (build level 19634)
 
 Name             : Defensive Stance (id=71) [Spell Family (4)] 
 Class            : Warrior
@@ -520,7 +520,7 @@ Effects          :
 #1 (id=1900)     : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=229536)   : Weapon Damage% (31)
-                   Base Value: 350 | Scaled Value: 3.5 (avg=0)
+                   Base Value: 310 | Scaled Value: 3.1 (avg=0)
 Description      : Attempt to finish off a wounded foe, causing $sw2 Physical damage$?s23881[ with your main-hand and $163558sw2 Physical damage with your off-hand][]. Only usable on enemies that have less than 20% health.$?s146971[ Successfully killing an enemy with Execute grants you ${$147352m1/10} rage.][]
 
 Name             : Thunder Clap (id=6343) [Spell Family (4)] 
@@ -3302,7 +3302,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 127
 Description      : Raise your shield, absorbing $<barrier> damage for the next $d. Consumes up to 40 additional Rage to increase the amount absorbed.
 Tooltip          : Absorbs $w1 damage.
-Variables        : $barrier=${$AP*1.125*(1+$@versadmg)}
+Variables        : $barrier=${$AP*1.4*(1+$@versadmg)}
 
 Name             : Crow Feast (id=112792) 
 Class            : Warrior
@@ -4852,7 +4852,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=219603)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 23
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 23
                    Affected Spells: Unwavering Sentinel (29144)
 Description      : Defensive Stance now increases your armor by $s1%.
 
@@ -5282,7 +5282,7 @@ Effects          :
 #1 (id=229520)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=229537)   : Weapon Damage% (31)
-                   Base Value: 175 | Scaled Value: 1.75 (avg=0)
+                   Base Value: 155 | Scaled Value: 1.55 (avg=0)
 #3 (id=239183)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 Description      : Attempt to finish off a foe, causing $sw2 Physical damage to the target, and consuming up to $m3 additional Rage to deal up to $168874sw2 additional damage. Only usable on enemies that have less than 20% health. $?s146971[ Successfully killing an enemy with Execute grants you ${$147352m1/10} rage.][]
@@ -5303,7 +5303,7 @@ Effects          :
 #1 (id=230085)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1
 #2 (id=230086)   : Weapon Damage% (31)
-                   Base Value: 350 | Scaled Value: 3.5 (avg=0)
+                   Base Value: 310 | Scaled Value: 3.1 (avg=0)
 Description      : $@spelldesc5308
 
 Name             : Item - Warrior T17 Arms 2P Bonus (id=165336) [Spell Family (4), Passive, Hidden] 
@@ -5823,7 +5823,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 127
 Description      : Improve your defenses, absorbing $<barrier> damage for the next $d. Consumes up to 40 additional Rage to increase the amount absorbed.
 Tooltip          : Absorbs $w1 damage.
-Variables        : $barrier=${$AP*1.125*(1+$@versadmg)}
+Variables        : $barrier=${$AP*1.4*(1+$@versadmg)}
 
 Name             : Concussion Blow (id=175708) 
 Class            : Warrior

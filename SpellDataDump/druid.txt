@@ -1,4 +1,4 @@
-SimulationCraft 603-27 for World of Warcraft 6.1.0 PTR (build level 19611)
+SimulationCraft 603-27 for World of Warcraft 6.1.0 PTR (build level 19634)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
@@ -32,7 +32,7 @@ Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Cat Form (3025), Glyph of Entangling Roots (54760), Predatory Swiftness (69369), Incarnation: Tree of Life (81097), Nature's Swiftness (132158), Lucidity (137247), Entangling Energy (164991), Claws of Shirvallah (171745)
-Attributes       : ........ ........ x....... ......x.   ........ ..x..... ........ ........ 
+Attributes       : ........ ........ x....... ......x.   ........ ..x..... ........ .x...... 
                  : ........ ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ...x.... ....x... .....x..   .....x.. ........ ........ ........ 
                  : ........ ........ .....x.x .x......   ........ ........ ........ ........ 
@@ -191,7 +191,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... ....x
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=390)      : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.09600
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000
 #2 (id=117625)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=117626)   : Dummy (3)
@@ -205,7 +205,7 @@ Description      : Finishing move that causes Bleed damage over $d.  Damage incr
    5 points: ${$floor(5*$<rip>*12)} damage
 Tooltip          : Bleeding for $w1 damage every $t1 seconds.
 Variables        : $mastery=$?s77493[${((100+$77493m1)/100)}][${1.00}]
-$rip=${0.096*$AP*$<mastery>*(1+$@versadmg)}
+$rip=${0.1*$AP*$<mastery>*(1+$@versadmg)}
 
 Name             : Mark of the Wild (id=1126) [Spell Family (7)] 
 Class            : Druid
@@ -273,7 +273,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=559)      : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.44800
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.47000
 #2 (id=560)      : Add Combo Points (80)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.60000
 #3 (id=561)      : Trigger Spell: Rake (64)
@@ -551,7 +551,7 @@ Effects          :
 #2 (id=1860)     : Add Combo Points (80)
                    Base Value: 1 | Scaled Value: 1
 #3 (id=1861)     : Weapon Damage% (31)
-                   Base Value: 450 | Scaled Value: 4.5 (avg=0)
+                   Base Value: 540 | Scaled Value: 5.4 (avg=0)
 Description      : Shred the target, causing $sw1 Physical damage to the target$?s48484[ and reducing the target's movement speed by $58180s1% for $58180d][].  Awards $s2 combo $lpoint:points;.
 
 Being stealthed increases damage by $5215m4% and doubles critical strike chance. Damage increased by $106785s2% against bleeding targets.
@@ -1192,7 +1192,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... ....x
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=12790)    : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | AP Coefficient: 3.80000 | Chain Multiplier: 0.7
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | AP Coefficient: 4.00000 | Chain Multiplier: 0.7
 #2 (id=12791)    : None (0)
                    Base Value: 25 | Scaled Value: 25
 Description      : Finishing move that causes damage per combo point$?s67598[, consumes up to 25 additional Energy to increase damage by up to 100%, and heals you for ${$67598m1/10}.1% of your total maximum health for each $67598m2 Energy used.][ and consumes up to 25 additional Energy to increase damage by up to 100%.]$?s1079[
@@ -1229,7 +1229,7 @@ Effects          :
 #2 (id=12793)    : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=100815)   : Weapon Damage% (31)
-                   Base Value: 60 | Scaled Value: 0.6 (avg=0) | Points Per Combo Point: 10
+                   Base Value: 65 | Scaled Value: 0.65 (avg=0) | Points Per Combo Point: 10
 Description      : Finishing move that causes Physical damage and stuns the target. Damage and duration increased per combo point:
 
    1 point  : $168877sw3 damage, 1 sec
@@ -1905,7 +1905,7 @@ Attributes       : ........ ........ ........ ........   .......x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=42452)    : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.58, dl=0.15) | SP Coefficient: 0.35000
+                   Base Value: 1 | Scaled Value: 0 (avg=0.58, dl=0.15) | SP Coefficient: 0.29200
 Description      : $@spelldesc48505
 
 Name             : Survival Instincts (id=50322) [Spell Family (7), Hidden] 
@@ -3572,7 +3572,7 @@ Cooldown         : 30 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Attributes       : ........ ........ ........ ......x.   ........ ..x..... ........ ........ 
+Attributes       : ........ ........ ........ ......x.   ........ ..x..... ........ .x...... 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ...x.... ....x... .....x..   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -3927,7 +3927,7 @@ Effects          :
 #2 (id=222211)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 8 yards
 #3 (id=222212)   : Weapon Damage% (31)
-                   Base Value: 220 | Scaled Value: 2.2 (avg=0) | Radius: 0 - 8 yards
+                   Base Value: 265 | Scaled Value: 2.65 (avg=0) | Radius: 0 - 8 yards
 Description      : Swipe nearby enemies, inflicting $sw3 Physical damage.  Awards $s1 combo $lpoint:points;.
 
 Deals $s2% additional damage against bleeding targets.
@@ -3948,9 +3948,9 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=117262)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | AP Coefficient: 0.35300 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | AP Coefficient: 0.42400 | Radius: 0 - 8 yards
 #2 (id=117263)   : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.25200 | Radius: 0 - 8 yards
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.30200 | Radius: 0 - 8 yards
 #3 (id=216428)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards
 Description      : Strikes all enemy targets within $A2 yards, dealing $m1 bleed damage and an additional $o2 damage over $d.
@@ -5750,7 +5750,7 @@ Attributes       : ........ ........ ........ ........   .......x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=216251)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.35000
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.29200
 Description      : $@spelldesc155592
 
 Name             : Sunfall (id=155598) [Spell Family (7), Hidden] 
@@ -5784,9 +5784,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=216287)   : Apply Aura (6) | Periodic Damage: arcane every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.58200
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.61100
 #2 (id=216288)   : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.67200
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.70600
 #3 (id=216290)   : Add Combo Points (80)
                    Base Value: 1 | Scaled Value: 1
 Description      : Burns the enemy for $s2 Arcane damage and then an additional $o1 Arcane damage over $d. Generates $s3 combo point.
@@ -5872,7 +5872,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=216427)   : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.44800
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.47000
 Description      : $@spelldesc1822
 Tooltip          : Bleeding for $w2 damage every $t2 seconds.
 
