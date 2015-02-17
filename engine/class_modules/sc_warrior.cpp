@@ -589,8 +589,6 @@ public:
                 p() -> stance_swap();                            // Swap back to defensive stance.
     }
     ab::execute();
-    if ( p() -> buff.sweeping_strikes -> up() )
-      trigger_sweeping_strikes( execute_state );
   }
 
   virtual timespan_t gcd() const
@@ -773,6 +771,8 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   {
     special = true;
   }
+
+  virtual void   execute();
 
   virtual void   impact( action_state_t* s );
 
@@ -1014,6 +1014,15 @@ static bool trigger_t15_2pc_melee( warrior_attack_t* a )
 // ==========================================================================
 // Warrior Attacks
 // ==========================================================================
+
+// warrior_attack_t::execute ================================================
+
+void warrior_attack_t::execute()
+{
+  base_t::execute();
+  if ( p() -> buff.sweeping_strikes -> up() )
+    trigger_sweeping_strikes( execute_state );
+  }
 
 // warrior_attack_t::impact =================================================
 
