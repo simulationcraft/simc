@@ -731,7 +731,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       const sef_td_t* tdata = td( t );
       if ( tdata -> rising_sun_kick -> check() )
-        m *= 1.0 + ( !this -> player -> dbc.ptr ? 0.10 : tdata -> rising_sun_kick -> data().effectN( 1 ).percent() ); // Hotfix nerf to 10% (down from 20%) on 2014/12/08
+        m *= 1.0 + ( !this -> player -> dbc.ptr ? 0.10 : tdata -> rising_sun_kick -> data().effectN( 1 ).percent() );
 
       return m;
     }
@@ -1675,7 +1675,7 @@ public:
     main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level );
     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
-    owner_coeff.ap_from_ap = 0.60; // Hotfix applied on Oct 17, 2014
+    owner_coeff.ap_from_ap = 0.60;
   }
 
   monk_t* o()
@@ -1958,7 +1958,7 @@ struct monk_spell_t: public monk_action_t < spell_t >
     double m = base_t::composite_target_multiplier( t );
 
     if ( td( t ) -> debuff.rising_sun_kick -> check() )
-      m *= 1.0 + ( !p() -> dbc.ptr ? 0.10 : td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent() ); // Hotfix to 10% (down from 20%) on Dec 08, 2014
+      m *= 1.0 + ( !p() -> dbc.ptr ? 0.10 : td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent() );
 
     return m;
   }
@@ -2064,7 +2064,7 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
     double m = base_t::composite_target_multiplier( t );
 
     if ( td( t ) -> debuff.rising_sun_kick -> check() && special )
-      m *= 1.0 + ( !p() -> dbc.ptr ? 0.10 : td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent() ); // Hotfix to 10% (down from 20%) on Dec 08, 2014
+      m *= 1.0 + ( !p() -> dbc.ptr ? 0.10 : td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent() );
 
     return m;
   }
