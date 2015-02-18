@@ -10,7 +10,6 @@ namespace
 
 // ==========================================================================
 // Hunter
-// Check composite_player_critical_damage_multiplier to see if they update spelldata for sniper training from ptr.
 // ==========================================================================
 
 struct hunter_t;
@@ -2031,10 +2030,9 @@ struct aimed_shot_t: public hunter_ranged_attack_t
   virtual double composite_target_crit( player_t* t ) const
   {
     double cc = hunter_ranged_attack_t::composite_target_crit( t );
-    if ( !p() -> dbc.ptr )
-      cc += p() -> buffs.careful_aim -> value();
-    if ( p() -> dbc.ptr && p() -> buffs.careful_aim -> check() )
-      cc += 0.5;
+
+    cc += p() -> buffs.careful_aim -> value();
+
     cc += p() -> sets.set( SET_MELEE, T16, B4 ) -> effectN( 2 ).percent();
     return cc;
   }
@@ -2412,8 +2410,7 @@ struct chimaera_shot_impact_t: public hunter_ranged_attack_t
   {
     double am = hunter_ranged_attack_t::action_multiplier();
     am *= 1.0 + p() -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 2 ).percent();
-    if ( p() -> dbc.ptr )
-      am *= 1.304;
+
     return am;
   }
 };
@@ -2813,10 +2810,9 @@ struct focusing_shot_t: public hunter_ranged_attack_t
   virtual double composite_target_crit( player_t* t ) const
   {
     double cc = hunter_ranged_attack_t::composite_target_crit( t );
-    if ( !p() -> dbc.ptr )
-      cc += p() -> buffs.careful_aim -> value();
-    if ( p() -> dbc.ptr && p() -> buffs.careful_aim -> check() )
-      cc += 0.5;
+
+    cc += p() -> buffs.careful_aim -> value();
+
     return cc;
   }
 
@@ -2874,10 +2870,9 @@ struct steady_shot_t: public hunter_ranged_attack_t
   virtual double composite_target_crit( player_t* t ) const
   {
     double cc = hunter_ranged_attack_t::composite_target_crit( t );
-    if ( !p() -> dbc.ptr )
-      cc += p() -> buffs.careful_aim -> value();
-    if ( p() -> dbc.ptr && p() -> buffs.careful_aim -> check() )
-      cc += 0.5;
+
+    cc += p() -> buffs.careful_aim -> value();
+
     return cc;
   }
 };
@@ -4191,7 +4186,7 @@ double hunter_t::composite_attack_power_multiplier() const
   if ( perks.improved_focus_fire -> ok() && buffs.focus_fire -> check() )
   {
     double stacks = buffs.focus_fire -> current_value / specs.focus_fire -> effectN( 1 ).percent();
-    mult += stacks * ( perks.improved_focus_fire -> effectN( 1 ).percent() + ( ( wod_hotfix || dbc.ptr ) ? 0.03 : 0 ) );
+    mult += ( stacks * perks.improved_focus_fire -> effectN( 1 ).percent() );
   }
   return mult;
 }
@@ -4233,10 +4228,7 @@ double hunter_t::composite_player_critical_damage_multiplier() const
 
   if ( buffs.sniper_training -> up() )
   {
-    double mastery = cache.mastery_value();
-    if ( dbc.ptr ) // 6.1 PTR Patch Change. Fix later if they ever update spelldata.
-      mastery *= 1.25;
-    cdm += mastery;
+    cdm += cache.mastery_value();
   }
 
   // we use check() for rapid_fire becuase it's usage is reported from value() above
@@ -4267,11 +4259,7 @@ double hunter_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.sniper_training -> up() )
   {
-    double mastery = cache.mastery_value();
-    if ( dbc.ptr )
-      mastery *= 1.25;
-
-    m *= 1.0 + mastery;
+    m *= 1.0 + cache.mastery_value();
   }
 
   if ( sets.has_set_bonus( SET_MELEE, T16, B4 ) )
