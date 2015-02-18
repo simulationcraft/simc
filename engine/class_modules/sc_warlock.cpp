@@ -2286,8 +2286,6 @@ struct demonbolt_t: public warlock_spell_t
   {
     if ( p -> wod_hotfix )
       base_multiplier *= 0.77;
-    if ( p -> dbc.ptr )
-      base_multiplier *= 0.75;
   }
 
   virtual double cost() const
@@ -4345,7 +4343,7 @@ struct cataclysm_t: public warlock_spell_t
       case WARLOCK_AFFLICTION:
         agony -> target = s -> target;
         agony -> execute();
-        if (p() -> dbc.ptr )
+        if ( p() -> dbc.ptr )
         {
             unstable_affliction -> target = s -> target;
             unstable_affliction -> execute();
