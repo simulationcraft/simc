@@ -1640,10 +1640,6 @@ struct execute_off_hand_t: public warrior_attack_t
     {
       weapon_multiplier *= 1.1; // I guess Blizzard messed up and applied this hotfix to all executes.
     }
-    else
-    {
-      weapon_multiplier *= 0.886; // "Whoops we buffed it too much!"
-    }
 
     weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
   }
@@ -1680,10 +1676,7 @@ struct execute_t: public warrior_attack_t
     {
       weapon_multiplier *= 1.1; // I guess Blizzard messed up and applied this hotfix to all executes.
     }
-    else
-    {
-      weapon_multiplier *= 0.886; // "Whoops we buffed it too much!"
-    }
+
     weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
   }
 
@@ -3420,7 +3413,7 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     attack_power_mod.direct = 1.125; // No spell data.
     if ( p -> dbc.ptr )
     {
-      attack_power_mod.direct *= 1.244;
+      attack_power_mod.direct = 1.4;
     }
   }
 
@@ -5260,7 +5253,7 @@ double warrior_t::composite_armor_multiplier() const
 
   if ( active_stance == STANCE_DEFENSE )
   {
-    a *= 1.0 + ( dbc.ptr ? 0.1 : perk.improved_defensive_stance -> effectN( 1 ).percent() );
+    a *= 1.0 + perk.improved_defensive_stance -> effectN( 1 ).percent();
   }
 
   return a;
