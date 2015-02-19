@@ -5410,8 +5410,6 @@ void mage_t::apl_frost()
   single_target -> add_action( this, "Frostfire Bolt",
                                "if=buff.brain_freeze.react" );
   single_target -> add_action( this, "Ice Lance",
-                               "if=set_bonus.tier17_4pc&talent.thermal_void.enabled&talent.mirror_image.enabled&dot.frozen_orb.ticking" );
-  single_target -> add_action( this, "Ice Lance",
                                "if=talent.frost_bomb.enabled&buff.fingers_of_frost.react&debuff.frost_bomb.remains>travel_time&(!talent.thermal_void.enabled|cooldown.icy_veins.remains>8)" );
   single_target -> add_action( this, "Frostbolt",
                                "if=set_bonus.tier17_2pc&buff.ice_shard.up&!(talent.thermal_void.enabled&buff.icy_veins.up&buff.icy_veins.remains<10)",
