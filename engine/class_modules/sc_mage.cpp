@@ -779,7 +779,7 @@ struct prismatic_crystal_t : public pet_t
       // execute with a state
       const prismatic_crystal_aoe_state_t* st = debug_cast<const prismatic_crystal_aoe_state_t*>( pre_execute_state );
 
-      if ( p() -> proxy_stats.size() < st -> owner_action -> internal_id ||
+      if ( p() -> proxy_stats.size() <= st -> owner_action -> internal_id ||
            ! p() -> proxy_stats[ st -> owner_action -> internal_id ] )
       {
         p() -> add_proxy_stats( st -> owner_action );
