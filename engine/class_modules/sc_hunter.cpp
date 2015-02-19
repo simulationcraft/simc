@@ -349,6 +349,7 @@ public:
   virtual double    composite_spell_crit() const;
   virtual double    composite_melee_haste() const;
   virtual double    composite_player_critical_damage_multiplier() const;
+  virtual double    composite_player_multistrike_damage_multiplier() const;
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
@@ -440,14 +441,6 @@ public:
       am *= 1.0 + p() -> talents.lone_wolf -> effectN( 1 ).percent();
 
     return am;
-  }
-
-  virtual double composite_multistrike_multiplier( const action_state_t* s ) const
-  {
-    double m = ab::composite_multistrike_multiplier( s );
-    m *= 1.0 + p() -> specs.survivalist -> effectN( 2 ).percent();
-    m *= 1.0 + p() -> buffs.heavy_shot -> value();
-    return m;
   }
 
   virtual double composite_target_multiplier( player_t* t ) const
@@ -4242,6 +4235,16 @@ double hunter_t::composite_player_critical_damage_multiplier() const
   }
 
   return cdm;
+}
+
+// hunter_t::composite_player_multistrike_damage_multiplier ====================
+
+double hunter_t::composite_player_multistrike_damage_multiplier() const
+{
+  double m = player_t::composite_player_multistrike_damage_multiplier();
+  m *= 1.0 + specs.survivalist -> effectN( 2 ).percent();
+  m *= 1.0 + buffs.heavy_shot -> value();
+  return m;
 }
 
 // hunter_t::composite_player_multiplier ====================================
