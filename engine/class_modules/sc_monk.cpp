@@ -5109,7 +5109,7 @@ void monk_t::init_base_stats()
   if ( specialization() != MONK_MISTWEAVER )
     base_gcd = timespan_t::from_seconds( 1.0 );
 
-  resources.base[RESOURCE_CHI] = 4 + talent.ascension -> effectN( 1 ).base_value() + perk.empowered_chi -> effectN( 1 ).base_value();
+  resources.base[RESOURCE_CHI] = 5 + talent.ascension -> effectN( 1 ).base_value() + perk.empowered_chi -> effectN( 1 ).base_value();
   resources.base[RESOURCE_ENERGY] = 100;
   resources.base_multiplier[RESOURCE_MANA] *= 1.0 + ( !dbc.ptr ? talent.ascension -> effectN( 2 ).percent() : 0 );
 
