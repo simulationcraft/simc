@@ -473,7 +473,8 @@ public:
   virtual double    composite_spell_power_multiplier() const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    composite_rating_multiplier( rating_e rating ) const;
-  virtual double    composite_multistrike() const;
+  virtual double    composite_multistrike() const;  
+  virtual double    composite_player_multistrike_damage_multiplier() const override;
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual void      create_options();
@@ -1068,17 +1069,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
     if ( uses_elemental_fusion )
       m *= 1.0 + p() -> buff.elemental_fusion -> stack() * p() -> buff.elemental_fusion -> data().effectN( 1 ).percent();
-
-    return m;
-  }
-
-  double composite_multistrike_multiplier( const action_state_t* state ) const
-  {
-    double m = base_t::composite_multistrike_multiplier( state );
-
-    m *= 1.0 + p() -> spec.elemental_overload -> effectN( 3 ).percent();
-
-    m *= 1.0 + p() -> buff.focus_of_the_elements -> value();
 
     return m;
   }
@@ -5950,6 +5940,16 @@ double shaman_t::composite_rating_multiplier( rating_e rating ) const
     default: break;
   }
 
+  return m;
+}
+
+// Multistrike Effect Multipliers ====================
+
+double shaman_t::composite_player_multistrike_damage_multiplier() const
+{
+  double m = player_t::composite_player_multistrike_damage_multiplier();
+  m *= 1.0 + spec.elemental_overload -> effectN( 3 ).percent();
+  m *= 1.0 + buff.focus_of_the_elements -> value();
   return m;
 }
 

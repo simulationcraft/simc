@@ -542,6 +542,7 @@ public:
   virtual double    composite_crit_avoidance() const;
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    composite_multistrike() const;
+  virtual double    composite_player_multistrike_damage_multiplier() const;
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual void      init_spells();
@@ -1804,16 +1805,6 @@ public:
       return ab::current_resource();
 
     return resource_by_stance;
-  }
-
-  virtual double composite_multistrike_multiplier( const action_state_t* s ) const
-  {
-    double m = ab::composite_multistrike_multiplier( s );
-
-    if ( p() -> buff.forceful_winds -> up() )
-      m *= 1 + p() -> buff.forceful_winds -> value();
-
-    return m;
   }
 
   void trigger_brew( double base_stacks )
@@ -5568,6 +5559,17 @@ double monk_t::composite_multistrike() const
 
   if ( buff.tiger_strikes -> check() )
     m += buff.tiger_strikes -> data().effectN( 1 ).percent();
+
+  return m;
+}
+
+// monk_t::composite_player_multistrike_damage_multiplier ====================
+
+double monk_t::composite_player_multistrike_damage_multiplier() const
+{
+  double m = player_t::composite_player_multistrike_damage_multiplier();
+  if ( buff.forceful_winds -> up() )
+    m *= 1 + buff.forceful_winds -> value();
 
   return m;
 }
