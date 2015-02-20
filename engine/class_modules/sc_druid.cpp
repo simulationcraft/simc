@@ -2568,6 +2568,10 @@ struct rake_t : public cat_attack_t
     if ( p() -> mastery.razor_claws -> ok() )
       dm *= 1.0 + p() -> cache.mastery_value();
 
+    // 02/20/2015: Rake direct damage double dips on bloodtalons modifier
+    if ( p() -> bugs && p() -> talent.bloodtalons -> ok() && consume_bloodtalons && p() -> buff.bloodtalons -> check() )
+      dm *= 1.0 + p() -> buff.bloodtalons -> data().effectN( 1 ).percent();
+
     return dm;
   }
 
@@ -2916,6 +2920,10 @@ struct thrash_cat_t : public cat_attack_t
 
     if ( p() -> mastery.razor_claws -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
+
+    // 02/20/2015: Thrash direct damage double dips on bloodtalons modifier
+    if ( p() -> bugs && p() -> talent.bloodtalons -> ok() && consume_bloodtalons && p() -> buff.bloodtalons -> check() )
+      m *= 1.0 + p() -> buff.bloodtalons -> data().effectN( 1 ).percent();
 
     return m;
   }
