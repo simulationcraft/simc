@@ -1666,9 +1666,13 @@ struct execute_t: public warrior_attack_t
            p -> off_hand_weapon.group() == WEAPON_1H )
            weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
     }
-    else if ( p -> specialization() == WARRIOR_ARMS ) // There is no hotfix or blue post about this, but execute is definitely hitting for 150% weapon damage instead of 160% for arms.
+    else if ( p -> specialization() == WARRIOR_ARMS )
     {
-      weapon_multiplier -= 0.1;
+      if ( !p -> dbc.ptr )
+      {
+        weapon_multiplier -= 0.1; // There is no hotfix or blue post about this, but execute is definitely hitting for 150% weapon damage instead of 160% for arms.
+      }
+
       sudden_death_rage = 10;
     }
 
