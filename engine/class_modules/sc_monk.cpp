@@ -2401,14 +2401,28 @@ struct dot_chi_explosion_t: public residual_action::residual_periodic_action_t <
 struct chi_explosion_t: public monk_melee_attack_t
 {
   const spell_data_t* windwalker_chi_explosion_dot;
+  const spell_data_t* spirited_crane_chi_explosion;
   chi_explosion_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "chi_explosion", p, p -> talent.chi_explosion ),
-    windwalker_chi_explosion_dot( p -> find_spell( 157680 ) )
+    windwalker_chi_explosion_dot( p -> find_spell( 157680 ) ),
+    spirited_crane_chi_explosion( p -> find_spell( 159620 ) )
   {
     parse_options( options_str );
     sef_ability = SEF_CHI_EXPLOSION;
   }
 
+  double spell_direct_power_coefficient( const action_state_t* state ) const
+  {
+    if ( p() -> specialization() == MONK_MISTWEAVER )
+    {
+      if ( p() -> current_stance() == SPIRITED_CRANE )
+        return spirited_crane_chi_explosion -> effectN( 1 ).sp_coeff();
+      else
+        return spell_power_mod.direct;
+    }
+    else
+      return 0.0;
+  }
 
   int n_targets() const
   {
@@ -2426,7 +2440,7 @@ struct chi_explosion_t: public monk_melee_attack_t
 
   void execute()
   {
-    monk_melee_attack_t::execute(); 
+    monk_melee_attack_t::execute();
 
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
@@ -2443,29 +2457,34 @@ struct chi_explosion_t: public monk_melee_attack_t
       }
       if ( resource_consumed >= 3 && p() -> has_stagger() )
       {
-          double stagger_pct = p() -> current_stagger_tick_dmg_percent();
-          double stagger_dmg = p() -> clear_stagger();
+        double stagger_pct = p() -> current_stagger_tick_dmg_percent();
+        double stagger_dmg = p() -> clear_stagger();
 
-          // Tier 17 4 pieces Brewmaster: 3 stacks of Chi Explosion generates 1 stacks of Elusive Brew.
-          // Hotfix Jan 13, 2014 - Only procs on Moderate or Heavy Stagger
-          if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) && ( stagger_pct > p() -> moderate_stagger_threshold) )
-            trigger_brew( p() -> sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
+        // Tier 17 4 pieces Brewmaster: 3 stacks of Chi Explosion generates 1 stacks of Elusive Brew.
+        // Hotfix Jan 13, 2014 - Only procs on Moderate or Heavy Stagger
+        if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) && ( stagger_pct > p() -> moderate_stagger_threshold ) )
+          trigger_brew( p() -> sets.set( MONK_BREWMASTER, T17, B4 ) -> effectN( 1 ).base_value() );
 
-          // Optional addition: Track and report amount of damage cleared
-          if ( stagger_pct > p() -> heavy_stagger_threshold )
-            p() -> sample_datas.heavy_stagger_total_damage -> add( stagger_dmg );
-          else if ( stagger_pct > p() -> moderate_stagger_threshold )
-            p() -> sample_datas.moderate_stagger_total_damage -> add( stagger_dmg );
-          else
-            p() -> sample_datas.light_stagger_total_damage -> add( stagger_dmg );
+        // Optional addition: Track and report amount of damage cleared
+        if ( stagger_pct > p() -> heavy_stagger_threshold )
+          p() -> sample_datas.heavy_stagger_total_damage -> add( stagger_dmg );
+        else if ( stagger_pct > p() -> moderate_stagger_threshold )
+          p() -> sample_datas.moderate_stagger_total_damage -> add( stagger_dmg );
+        else
+          p() -> sample_datas.light_stagger_total_damage -> add( stagger_dmg );
 
-          p() -> sample_datas.purified_damage -> add( stagger_dmg );
+        p() -> sample_datas.purified_damage -> add( stagger_dmg );
       }
     }
     else if ( p() -> specialization() == MONK_WINDWALKER )
     {
       if ( resource_consumed >= 3 )
         trigger_brew( 1 );
+    }
+    else if ( p() -> current_stance() == SPIRITED_CRANE )
+    {
+      if ( resource_consumed >= 2 )
+        p() -> buff.cranes_zeal -> trigger();
     }
   }
 
@@ -6083,7 +6102,6 @@ void monk_t::apl_combat_brewmaster()
   tod -> add_action( this, "Expel Harm", "if=chi<3&(cooldown.keg_smash.remains>target.time_to_die|((energy+(energy.regen*(cooldown.keg_smash.remains)))>=80)&cooldown.keg_smash.remains>=gcd)" );
   tod -> add_action( this, "Jab", "if=chi<3&(cooldown.keg_smash.remains>target.time_to_die|((energy+(energy.regen*(cooldown.keg_smash.remains)))>=80)&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd)" );
   tod -> add_action( this, "Tiger Palm", "if=talent.chi_brew.enabled&chi<3" ); 
-  
   
   st -> add_action( this, "Purifying Brew", "if=!talent.chi_explosion.enabled&stagger.heavy" );
   st -> add_action( this, "Blackout Kick", "if=buff.shuffle.down" );
