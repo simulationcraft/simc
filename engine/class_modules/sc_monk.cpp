@@ -233,6 +233,7 @@ public:
     buff_t* combo_breaker_bok;
     buff_t* combo_breaker_ce;
     buff_t* combo_breaker_tp;
+    buff_t* cranes_zeal;
     buff_t* dampen_harm;
     buff_t* death_note;
     buff_t* diffuse_magic;
@@ -2276,6 +2277,13 @@ struct blackout_kick_t: public monk_melee_attack_t
       aoe = 1 + p -> spec.teachings_of_the_monastery -> effectN( 4 ).base_value();
 
     sef_ability = SEF_BLACKOUT_KICK;
+  }
+
+  void execute()
+  {
+    monk_melee_attack_t::execute();
+    if ( p() -> spec.teachings_of_the_monastery )
+      p() -> buff.cranes_zeal -> trigger();
   }
 
   virtual void impact( action_state_t* s )
@@ -5223,6 +5231,8 @@ void monk_t::create_buffs()
   // Mistweaver
   buff.channeling_soothing_mist = buff_creator_t( this, "channeling_soothing_mist", spell_data_t::nil() );
 
+  buff.cranes_zeal = buff_creator_t( this, "cranes_zeal", find_spell( 127722 ) );
+
   buff.mana_tea = buff_creator_t( this, "mana_tea", find_spell( 115867 ) );
 
   // Windwalker
@@ -5392,6 +5402,11 @@ double monk_t::composite_melee_crit() const
 
   crit += spec.critical_strikes -> effectN( 1 ).percent();
 
+  if ( buff.cranes_zeal -> check() )
+  {
+    crit += buff.cranes_zeal -> data().effectN( 1 ).percent();
+  }
+
   return crit;
 }
 
@@ -5402,6 +5417,11 @@ double monk_t::composite_spell_crit() const
   double crit = player_t::composite_spell_crit();
 
   crit += spec.critical_strikes -> effectN( 1 ).percent();
+
+  if ( buff.cranes_zeal -> check() )
+  {
+    crit += buff.cranes_zeal -> data().effectN( 1 ).percent();
+  }
 
   return crit;
 }
