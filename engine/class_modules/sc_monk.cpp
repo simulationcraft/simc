@@ -5467,7 +5467,7 @@ double monk_t::composite_melee_expertise( weapon_t* weapon ) const
 double monk_t::composite_melee_attack_power() const
 {
   if ( current_stance() == SPIRITED_CRANE )
-    return composite_spell_power( SCHOOL_MAX ) * static_stance_data( SPIRITED_CRANE ).effectN( 3 ).percent();
+    return composite_spell_power( SCHOOL_MAX );
 
   double ap = player_t::composite_melee_attack_power();
 
