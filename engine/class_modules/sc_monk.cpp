@@ -521,8 +521,11 @@ public:
     cooldown.touch_of_death   = get_cooldown( "touch_of_death" );
 
     regen_type = REGEN_DYNAMIC;
-    regen_caches[CACHE_HASTE] = true;
-    regen_caches[CACHE_ATTACK_HASTE] = true;
+    if ( specialization() != MONK_MISTWEAVER )
+    {
+      regen_caches[CACHE_HASTE] = true;
+      regen_caches[CACHE_ATTACK_HASTE] = true;
+    }
   }
 
   // player_t overrides
@@ -5630,7 +5633,7 @@ void monk_t::copy_from( player_t* source )
 
 resource_e monk_t::primary_resource() const
 {
-  if ( current_stance() == WISE_SERPENT )
+  if ( current_stance() == WISE_SERPENT || current_stance() == SPIRITED_CRANE )
     return RESOURCE_MANA;
 
   return RESOURCE_ENERGY;
