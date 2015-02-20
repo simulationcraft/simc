@@ -1487,6 +1487,7 @@ class SpellDataGenerator(DataGenerator):
           ( 108557, 1, False ), # Brewmaster Jab
           ( 126890, 0, False ), # Eminence false positives for activatable abilities
           ( 117895, 0, False ),
+	      ( 159620, 0 ), # Spirited Crane Chi Explosion
           ( 140737, 0 ), # Way of the Monk 2-Hander Weapon Speed modifier
           ( 138228, 0 ), # Storm, Earth, and Fire buff
         ),
