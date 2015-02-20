@@ -5231,7 +5231,8 @@ void monk_t::create_buffs()
   // Mistweaver
   buff.channeling_soothing_mist = buff_creator_t( this, "channeling_soothing_mist", spell_data_t::nil() );
 
-  buff.cranes_zeal = buff_creator_t( this, "cranes_zeal", find_spell( 127722 ) );
+  buff.cranes_zeal = buff_creator_t( this, "cranes_zeal", find_spell( 127722 ) )
+    .add_invalidate( CACHE_CRIT );
 
   buff.mana_tea = buff_creator_t( this, "mana_tea", find_spell( 115867 ) );
 
