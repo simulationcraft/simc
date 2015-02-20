@@ -164,6 +164,8 @@ const food_data_t food_data[] =
 
   { FOOD_BRAISED_BASILISK,             STAT_MASTERY_RATING,     75 },
 
+  { FOOD_BUTTERED_STURGEON,            STAT_HASTE_RATING,       125 },
+
   { FOOD_CALAMARI_CREPES,              STAT_MULTISTRIKE_RATING, 100 },
 
   { FOOD_CLEFTHOOF_SAUSAGES,           STAT_VERSATILITY_RATING, 75 },
@@ -180,17 +182,27 @@ const food_data_t food_data[] =
 
   { FOOD_HEARTY_ELEKK_STEAK,           STAT_STAMINA,            75 },
 
+  { FOOD_JUMBO_SEA_DOG,                STAT_VERSATILITY_RATING, 125 },
+
   { FOOD_PAN_SEARED_TALBUK,            STAT_HASTE_RATING,       75 },
+
+  { FOOD_PICKLED_EEL,                  STAT_CRIT_RATING,        125 },
 
   { FOOD_RYLAK_CREPES,                 STAT_MULTISTRIKE_RATING, 75 },
 
+  { FOOD_SALTY_SQUID_ROLL,             STAT_MULTISTRIKE_RATING, 125 },
+
   { FOOD_SLEEPER_SURPRISE,             STAT_MASTERY_RATING,     100 },
+
+  { FOOD_SLEEPER_SUSHI,                STAT_MASTERY_RATING,     125 },
 
   { FOOD_STEAMED_SCORPION,             STAT_STAMINA,            75 },
 
   { FOOD_STURGEON_STEW,                STAT_HASTE_RATING,       75 },
 
   { FOOD_TALADOR_SURF_AND_TURF,        STAT_STAMINA,            112 },
+
+  { FOOD_WHIPTAIL_FILLET,              STAT_STAMINA,            125 },
 };
 
 struct flask_base_t : public action_t

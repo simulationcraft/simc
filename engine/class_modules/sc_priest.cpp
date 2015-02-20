@@ -4661,7 +4661,7 @@ struct power_word_shield_t : public priest_absorb_t
     if ( p.wod_hotfix )
     {
       base_multiplier *= 1.0 + 0.20; // 2014/11/12 Power Word: Shield now absorbs 20% more damage.
-      base_multiplier *= 1.0 - 0.15; // 2015/01/12 Power Word: Shield’s absorption has been reduced by 15%.
+      base_multiplier *= 1.0 - 0.15; // 2015/01/12 Power Word: Shieldâ€™s absorption has been reduced by 15%.
     }
 
     if ( p.glyphs.power_word_shield -> ok() )
@@ -6201,21 +6201,21 @@ void priest_t::apl_precombat()
       {
         case PRIEST_DISCIPLINE:
           if ( primary_role() != ROLE_HEAL )
-            food_action += "calamari_crepes";
+            food_action += "salty_squid_roll";
           else
-            food_action += "blackrock_barbecue";
+            food_action += "pickled_eel";
           break;
         case PRIEST_HOLY:
-          food_action += "calamari_crepes";
+          food_action += "salty_squid_roll";
           break;
         case PRIEST_SHADOW:
         default:
           if ( talents.clarity_of_power -> ok() )
-            food_action += "sleeper_surprise";
+            food_action += "sleeper_sushi";
           else if ( talents.auspicious_spirits -> ok() )
-            food_action += "blackrock_barbecue";
+            food_action += "pickled_eel";
           else
-            food_action += "frosty_stew";
+            food_action += "buttered_sturgeon";
           break;
       }
     }

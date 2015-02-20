@@ -1100,6 +1100,7 @@ const char* util::food_type_string( food_e food )
     case FOOD_BLACKROCK_BARBECUE:               return "blackrock_barbecue";
     case FOOD_BLACKROCK_HAM:                    return "blackrock_ham";
     case FOOD_BRAISED_BASILISK:                 return "braised_basilisk";
+    case FOOD_BUTTERED_STURGEON:                return "buttered_sturgeon";
     case FOOD_CALAMARI_CREPES:                  return "calamari_crepes";
     case FOOD_CLEFTHOOF_SAUSAGES:               return "clefthoof_sausages";
     case FOOD_FAT_SLEEPER_CAKES:                return "fat_sleeper_cakes";
@@ -1110,14 +1111,20 @@ const char* util::food_type_string( food_e food )
     case FOOD_GORGROND_CHOWDER:                 return "gorgrond_chowder";
     case FOOD_GRILLED_GULPER:                   return "grilled_gulper";
     case FOOD_HEARTY_ELEKK_STEAK:               return "hearty_elekk_steak";
+    case FOOD_JUMBO_SEA_DOG:                    return "jumbo_sea_dog";
     case FOOD_PAN_SEARED_TALBUK:                return "pan_seared_talbuk";
+    case FOOD_PICKLED_EEL:                      return "pickled_eel";
     case FOOD_RYLAK_CREPES:                     return "rylak_crepes";
+    case FOOD_SALTY_SQUID_ROLL:                 return "salty_squid_roll";
     case FOOD_SAVAGE_FEAST:                     return "savage_feast";
     case FOOD_SLEEPER_SURPRISE:                 return "sleeper_surprise";
+    case FOOD_SLEEPER_SUSHI:                    return "sleeper_sushi";
     case FOOD_STEAMED_SCORPION:                 return "steamed_scorpion";
     case FOOD_STURGEON_STEW:                    return "sturgeon_stew";
     case FOOD_TALADOR_SURF_AND_TURF:            return "talador_surf_and_turf";
     case FOOD_WHIPTAIL_CHOWDER:                 return "whiptail_chowder";
+    case FOOD_WHIPTAIL_FILLET:                  return "whiptail_fillet";
+
     default:                                    return "unknown";
   }
 }
