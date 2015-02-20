@@ -3959,17 +3959,17 @@ regardless of if the glyph is actually present.
 struct mana_tea_t: public monk_spell_t
 {
   mana_tea_t( monk_t& p, const std::string& options_str ):
-    monk_spell_t( "mana_tea", &p, p.spec.mana_tea )
+    monk_spell_t( "mana_tea", &p, p.find_spell( 123761 ) )
   {
     parse_options( options_str );
 
-    stancemask = WISE_SERPENT;
+    stancemask = WISE_SERPENT | SPIRITED_CRANE;
     harmful = false;
   }
 
   virtual bool ready()
   {
-    if ( p() -> buff.mana_tea -> stack() == 0 )
+    if ( p() -> buff.mana_tea -> current_stack == 0 )
       return false;
 
     return monk_spell_t::ready();
@@ -3986,6 +3986,8 @@ struct mana_tea_t: public monk_spell_t
     }
 
     int max_stacks_consumable = 2;
+    int stacks_to_consume = 0;
+    stacks_to_consume = std::min( p() -> buff.mana_tea -> current_stack, max_stacks_consumable );
 
     double mana_gain = 0;
     if ( p() -> dbc.ptr )
@@ -3993,16 +3995,16 @@ struct mana_tea_t: public monk_spell_t
       // TODO Make sure this is getting the Buffed but not Temporary Proc SPIRIT amount
       mana_gain = player -> resources.initial[STAT_SPIRIT]
         * 0.03    // Hardcode for now.
-        * std::min( p() -> buff.mana_tea -> stack(), max_stacks_consumable );
+        * stacks_to_consume;
     }
     else
     {
       mana_gain = player -> resources.max[RESOURCE_MANA]
         * data().effectN( 1 ).percent()
-        * std::min( p() -> buff.mana_tea -> stack(), max_stacks_consumable );
+        * stacks_to_consume;
     }
     player -> resource_gain( RESOURCE_MANA, mana_gain, p() -> gain.mana_tea, this );
-    p() -> buff.mana_tea -> decrement( max_stacks_consumable );
+    p() -> buff.mana_tea -> decrement( stacks_to_consume );
   }
 };
 
@@ -5223,7 +5225,7 @@ void monk_t::create_buffs()
   // Mistweaver
   buff.channeling_soothing_mist = buff_creator_t( this, "channeling_soothing_mist", spell_data_t::nil() );
 
-  buff.mana_tea = buff_creator_t( this, "mana_tea", spec.mana_tea );
+  buff.mana_tea = buff_creator_t( this, "mana_tea", find_spell( 115867 ) );
 
   // Windwalker
   buff.chi_sphere = buff_creator_t( this, "chi_sphere" ).max_stack( 5 );
