@@ -5287,6 +5287,9 @@ stat_e priest_t::convert_hybrid_stat( stat_e s ) const
   case STAT_STR_AGI:
     return STAT_NONE;
   case STAT_SPIRIT:
+    if ( specialization() != PRIEST_SHADOW )
+      return s;
+    else
       return STAT_NONE;
   case STAT_BONUS_ARMOR:
       return STAT_NONE;
