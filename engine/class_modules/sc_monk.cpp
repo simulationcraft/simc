@@ -2171,16 +2171,14 @@ struct tiger_palm_t: public monk_melee_attack_t
     base_multiplier = 3.6; // hardcoded into tooltip
     if ( p -> dbc.ptr )
       base_multiplier = 3;
-    if ( p -> specialization() == MONK_MISTWEAVER && !p -> dbc.ptr)
-      base_multiplier *= 2;
+    if ( p -> specialization() == MONK_MISTWEAVER )
+      base_multiplier *= 1.0 + p -> spec.teachings_of_the_monastery -> effectN( 5 ).percent();
     base_costs[RESOURCE_CHI] *= 1.0 + p -> spec.brewmaster_training -> effectN( 2 ).percent();
   }
 
   double action_multiplier() const
   {
     double m = monk_melee_attack_t::action_multiplier();
-
-    m *= 1.0 + p() -> spec.teachings_of_the_monastery -> effectN( 5 ).percent();
 
     if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_tp -> check() )
       m *= 1.0 + ( p() -> sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).base_value() / 100 );
