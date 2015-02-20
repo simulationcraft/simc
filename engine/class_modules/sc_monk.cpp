@@ -2566,7 +2566,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     cooldown -> duration = data().charge_cooldown();
     cooldown -> charges = data().charges();
     parse_options( options_str );
-    stancemask = FIERCE_TIGER;
+    stancemask = FIERCE_TIGER | SPIRITED_CRANE;
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     base_multiplier *= 10.56; // hardcoded into tooltip
