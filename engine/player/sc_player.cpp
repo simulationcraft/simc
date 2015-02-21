@@ -2310,14 +2310,7 @@ double player_t::composite_melee_haste() const
 {
   double h;
 
-  if ( wod_hotfix )
-  {
-    h = std::max( 0.0, composite_melee_haste_rating() ) / ( current.rating.attack_haste / 1.111 );
-  }
-  else
-  {
-    h = std::max( 0.0, composite_melee_haste_rating() ) / current.rating.attack_haste;
-  }
+  h = std::max( 0.0, composite_melee_haste_rating() ) / current.rating.attack_haste;
 
   h = 1.0 / ( 1.0 + h );
 
@@ -2589,14 +2582,7 @@ double player_t::composite_spell_haste() const
 {
   double h;
 
-  if ( wod_hotfix )
-  {
-    h = std::max( 0.0, composite_spell_haste_rating() ) / ( current.rating.spell_haste / 1.111 );
-  }
-  else
-  {
-    h = std::max( 0.0, composite_spell_haste_rating() ) / current.rating.spell_haste;
-  }
+  h = std::max( 0.0, composite_spell_haste_rating() ) / current.rating.spell_haste;
 
   h = 1.0 / ( 1.0 + h );
 
