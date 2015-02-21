@@ -2281,7 +2281,7 @@ struct blackout_kick_t: public monk_melee_attack_t
   void execute()
   {
     monk_melee_attack_t::execute();
-    if ( p() -> spec.teachings_of_the_monastery )
+    if ( p() -> spec.teachings_of_the_monastery -> ok() )
       p() -> buff.cranes_zeal -> trigger();
   }
 
@@ -2291,8 +2291,8 @@ struct blackout_kick_t: public monk_melee_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if (p()->spec.brewmaster_training->ok())
-        p()->buff.shuffle->trigger();
+      if ( p() -> spec.brewmaster_training -> ok() )
+        p() -> buff.shuffle -> trigger();
     }
   }
 
@@ -5202,10 +5202,10 @@ void monk_t::create_buffs()
     .source( get_stats( "guard" ) )
     .cd( timespan_t::zero() );
 
-  buff.shuffle = buff_creator_t(this, "shuffle", passives.shuffle)
-    .duration(talent.chi_explosion->ok() ? timespan_t::from_millis(10) : passives.shuffle->duration())
-    .refresh_behavior(BUFF_REFRESH_EXTEND)
-    .add_invalidate(CACHE_PARRY);
+  buff.shuffle = buff_creator_t( this, "shuffle", passives.shuffle )
+    .duration( talent.chi_explosion -> ok() ? timespan_t::from_millis( 10 ) : passives.shuffle -> duration())
+    .refresh_behavior( BUFF_REFRESH_EXTEND )
+    .add_invalidate( CACHE_PARRY );
 
   buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox" ).max_stack( 99 );
 
@@ -5385,9 +5385,7 @@ double monk_t::composite_melee_crit() const
   crit += spec.critical_strikes -> effectN( 1 ).percent();
 
   if ( buff.cranes_zeal -> check() )
-  {
     crit += buff.cranes_zeal -> data().effectN( 1 ).percent();
-  }
 
   return crit;
 }
@@ -5717,9 +5715,7 @@ void monk_t::pre_analyze_hook()
   if ( stats_t* zen_sphere = find_stats( "zen_sphere" ) )
   {
     if ( stats_t* zen_sphere_dmg = find_stats( "zen_sphere_damage" ) )
-    {
       zen_sphere_dmg -> total_execute_time = zen_sphere -> total_execute_time;
-    }
   }
 }
 
@@ -6255,7 +6251,7 @@ void monk_t::apl_combat_windwalker()
     if (items[i].has_special_effect(SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE))
       opener->add_action("use_item,name=" + items[i].name_str);
   }
-  opener->add_action(this, "Rising Sun Kick");
+  opener -> add_action( this, "Rising Sun Kick" );
   opener -> add_action( this, "Blackout Kick", "if=chi.max-chi<=1&cooldown.chi_brew.up|buff.serenity.up" );
   opener -> add_talent( this, "Chi Brew", "if=chi.max-chi>=2" );
   opener -> add_talent( this, "Serenity", "if=chi.max-chi<=2" );
