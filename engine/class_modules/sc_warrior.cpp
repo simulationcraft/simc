@@ -1661,6 +1661,7 @@ struct execute_t: public warrior_attack_t
     }
     else if ( p -> specialization() == WARRIOR_ARMS )
     {
+      weapon_multiplier = 1.5; // Hurray for inaccurate spell data.
       sudden_death_rage = 10;
     }
 
