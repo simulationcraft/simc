@@ -1404,11 +1404,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
       drw_spell_t( "blood_boil", p, p -> owner -> find_class_spell( "Blood Boil" ) )
     {
       aoe = -1;
-
-      if ( p -> wod_hotfix )
-      {
-        base_multiplier *= 0.667;
-      }
     }
 
     virtual void impact( action_state_t* s )
@@ -3118,8 +3113,6 @@ struct necrotic_plague_t : public death_knight_spell_t
     background = tick_may_crit = true;
     base_multiplier *= 1.0 + p -> spec.ebon_plaguebringer -> effectN( 2 ).percent();
     dot_behavior = DOT_REFRESH;
-    if ( p -> wod_hotfix )
-      base_multiplier *= 1.2;
   }
 
   double composite_target_multiplier( player_t* target ) const
@@ -3188,10 +3181,6 @@ struct necrosis_t : public death_knight_spell_t
     death_knight_spell_t( "necrosis", player, player -> spec.necrosis -> effectN( 2 ).trigger() )
   {
     background = true;
-    if ( player -> wod_hotfix )
-    { 
-      base_multiplier *= 1.67;
-    }
   }
 };
 
@@ -3449,12 +3438,6 @@ struct conversion_t : public death_knight_heal_t
         break;
       }
     }
-
-    if ( p -> wod_hotfix && p -> specialization() == DEATH_KNIGHT_FROST )
-    {
-      base_costs[ RESOURCE_RUNIC_POWER ] = 15;
-    }
-
     target = p;
   }
 
@@ -3705,8 +3688,6 @@ struct death_and_decay_t : public death_knight_spell_t
     dot_duration = data().duration(); // 11 with tick_zero
     tick_may_crit = tick_zero = true;
     hasted_ticks     = false;
-    if ( p -> wod_hotfix )
-      attack_power_mod.tick *= 1.2;
     ignore_false_positive = true;
   }
 
@@ -3779,8 +3760,6 @@ struct defile_t : public death_knight_spell_t
     dot_duration = data().duration();
     tick_may_crit = true;
     hasted_ticks = tick_zero = false;
-    if ( p -> wod_hotfix )
-      attack_power_mod.tick *= 1.2;
     ignore_false_positive = true;
   }
 
@@ -3861,10 +3840,7 @@ struct death_coil_t : public death_knight_spell_t
   {
     parse_options( options_str );
 
-    attack_power_mod.direct = 0.85;
-
-    if ( p -> wod_hotfix )
-      attack_power_mod.direct *= 0.95;
+    attack_power_mod.direct = 0.80;
   }
 
   virtual double cost() const
@@ -4042,9 +4018,6 @@ struct death_strike_t : public death_knight_melee_attack_t
     may_parry = false;
     base_multiplier = 1.0 + p -> spec.veteran_of_the_third_war -> effectN( 7 ).percent();
 
-    if ( p -> wod_hotfix )
-      weapon_multiplier *= 1.20;
-
     always_consume = true; // Death Strike always consumes runes, even if doesn't hit
 
     if ( p -> spec.blood_rites -> ok() )
@@ -4150,13 +4123,6 @@ struct festering_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t( "festering_strike", p, p -> find_specialization_spell( "Festering Strike" ) )
   {
     parse_options( options_str );
-
-    if ( p -> wod_hotfix )
-    {
-      weapon_multiplier -= 0.1;
-      weapon_multiplier *= 1.28;
-    }
-
     if ( p -> spec.reaping -> ok() )
       convert_runes = 1.0;
   }
@@ -4192,10 +4158,6 @@ struct frost_strike_offhand_t : public death_knight_melee_attack_t
     special          = true;
     base_multiplier *= 1.0 + p -> spec.threat_of_thassarian -> effectN( 3 ).percent();
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
-    if ( p -> wod_hotfix )
-    {
-      weapon_multiplier += 0.05;
-    }
 
     rp_gain = 0; // Incorrectly set to 10 in the DBC
   }
@@ -4220,10 +4182,6 @@ struct frost_strike_t : public death_knight_melee_attack_t
   {
     special = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
-    if ( p -> wod_hotfix )
-    {
-      weapon_multiplier += 0.05;
-    }
 
     parse_options( options_str );
 
@@ -4312,14 +4270,8 @@ struct howling_blast_t : public death_knight_spell_t
 
     aoe                 = -1;
     base_aoe_multiplier = data().effectN( 1 ).percent();
-    //attack_power_mod.direct    = 1.207;
 
     assert( p -> active_spells.frost_fever );
-
-    if ( p -> wod_hotfix )
-    {
-      base_multiplier *= 1.07;
-    }
   }
 
   virtual double action_multiplier() const
@@ -4549,11 +4501,6 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
     weapon           = &( p -> off_hand_weapon );
     special          = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
-
-    if ( p -> wod_hotfix )
-    {
-      weapon_multiplier += 0.3;
-    }
   }
 
   virtual double composite_crit() const
@@ -4574,14 +4521,8 @@ struct obliterate_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t( "obliterate", p, p -> find_class_spell( "Obliterate" ) ), oh_attack( 0 )
   {
     parse_options( options_str );
-
     special = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
-
-    if ( p -> wod_hotfix )
-    {
-      weapon_multiplier += 0.3;
-    }
 
     weapon = &( p -> main_hand_weapon );
 
@@ -4838,13 +4779,6 @@ struct blood_boil_t : public death_knight_spell_t
       convert_runes = 1.0;
 
     base_multiplier *= 1.0 + p -> spec.crimson_scourge -> effectN( 1 ).percent();
-
-    if ( p -> wod_hotfix )
-    {
-      attack_power_mod.direct *= 1.20;
-      attack_power_mod.direct *= 0.667;
-    }
-
     rp_gain = data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
 
     aoe = -1;
@@ -5185,13 +5119,6 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       weapon = &( player -> main_hand_weapon );
       dual = true;
       school = SCHOOL_SHADOW;
-
-      if ( p -> wod_hotfix )
-      {
-        weapon_multiplier -= 0.04;
-        weapon_multiplier *= 1.5;
-        weapon_multiplier *= 1.28;
-      }
     }
 
     void impact( action_state_t* state )
@@ -5212,13 +5139,6 @@ struct scourge_strike_t : public death_knight_melee_attack_t
 
     special = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
-
-    if ( p -> wod_hotfix )
-    {
-      weapon_multiplier -= 0.02;
-      weapon_multiplier *= 1.5;
-      weapon_multiplier *= 1.28;
-    }
 
     // TODO-WOD: Do we need to inherit damage or is it a separate roll in WoD?
     add_child( scourge_strike_shadow );
@@ -6175,14 +6095,7 @@ void death_knight_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  if ( wod_hotfix && spec.unholy_might -> ok() )
-  {
-    base.attribute_multiplier[ATTR_STRENGTH] *= 1.05;
-  }
-  else
-  {
-    base.attribute_multiplier[ATTR_STRENGTH] *= 1.0 + spec.unholy_might -> effectN( 1 ).percent();
-  }
+  base.attribute_multiplier[ATTR_STRENGTH] *= 1.0 + spec.unholy_might -> effectN( 1 ).percent();
 
   base.attack_power_per_strength = 1.0;
   base.attack_power_per_agility = 0.0;
@@ -7490,7 +7403,7 @@ double death_knight_t::composite_rating_multiplier( rating_e rating ) const
     case RATING_SPELL_HASTE:
     case RATING_MELEE_HASTE:
     case RATING_RANGED_HASTE:
-      m *= 1.0 + ( wod_hotfix && specialization() == DEATH_KNIGHT_FROST ? 0.2 : spec.icy_talons -> effectN( 3 ).percent() );
+      m *= 1.0 + spec.icy_talons -> effectN( 3 ).percent();
       break;
     default:
       break;
