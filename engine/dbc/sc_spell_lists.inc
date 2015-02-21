@@ -1,11 +1,11 @@
-#define CLASS_ABILITY_SIZE (50)
-#define CLASS_ABILITY_TREE_SIZE (6)
+#define PTR_CLASS_ABILITY_SIZE (51)
+#define PTR_CLASS_ABILITY_TREE_SIZE (6)
 
-#ifndef MAX_CLASS
-#define MAX_CLASS (12)
+#ifndef ptr_MAX_CLASS
+#define ptr_MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 19342
-static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
+// Class based active abilities, wow build 19658
+static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
            0,
@@ -92,7 +92,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        12975, // Last Stand
       114192, // Mocking Banner
         6572, // Revenge
-        2565, // Shield Block
+        2565, // Shield Block (Active Mitigation)
        23922, // Shield Slam
          871, // Shield Wall
         6343, // Thunder Clap
@@ -149,7 +149,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        85222, // Light of Dawn
            0,
     },
-    // Protection tree, 11 abilities
+    // Protection tree, 10 abilities
     {
        31850, // Ardent Defender
        31935, // Avenger's Shield
@@ -160,8 +160,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         1038, // Hand of Salvation
       119072, // Holy Wrath
        20154, // Seal of Righteousness
-       31801, // Seal of Truth
-       53600, // Shield of the Righteous
+       53600, // Shield of the Righteous (Active Mitigation)
            0,
     },
     // Retribution tree, 10 abilities
@@ -251,7 +250,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 50 abilities
+    // Pet tree, 51 abilities
     {
       160011, // Agile Reflexes (Special Ability)
        90355, // Ancient Hysteria (Exotic Ability)
@@ -280,6 +279,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        50256, // Invigorating Roar (Special Ability)
       138374, // Lightning Blast
        54680, // Monstrous Bite (Exotic Ability)
+      160452, // Netherwinds
       160073, // Plainswalking (Special Ability)
        90347, // Play (Bonus Ability)
        24450, // Prowl (Bonus Ability)
@@ -430,7 +430,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          139, // Renew
            0,
     },
-    // Shadow tree, 12 abilities
+    // Shadow tree, 13 abilities
     {
         2944, // Devouring Plague
        47585, // Dispersion
@@ -439,6 +439,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        15407, // Mind Flay
        73510, // Mind Spike
        64044, // Psychic Horror
+      179338, // Searing Insanity
        32379, // Shadow Word: Death
        15473, // Shadowform
        15487, // Silence
@@ -469,7 +470,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        47541, // Death Coil
        49576, // Death Grip
       175678, // Death Heal
-       49998, // Death Strike
+       49998, // Death Strike (Active Mitigation)
        43265, // Death and Decay
        47568, // Empower Rune Weapon
        48266, // Frost Presence
@@ -487,23 +488,21 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        48265, // Unholy Presence
            0,
     },
-    // Blood tree, 6 abilities
+    // Blood tree, 5 abilities
     {
        49222, // Bone Shield
        49028, // Dancing Rune Weapon
        56222, // Dark Command
-       48982, // Rune Tap
-      114866, // Soul Reaper
+       48982, // Rune Tap (Active Mitigation)
        55233, // Vampiric Blood
            0,
     },
-    // Frost tree, 5 abilities
+    // Frost tree, 4 abilities
     {
        49143, // Frost Strike
        49184, // Howling Blast
        49020, // Obliterate
        51271, // Pillar of Frost
-      130735, // Soul Reaper
            0,
     },
     // Unholy tree, 5 abilities
@@ -561,9 +560,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       115356, // Windstrike
            0,
     },
-    // Elemental tree, 8 abilities
+    // Elemental tree, 7 abilities
     {
-      165339, // Ascendance
         8042, // Earth Shock
        61882, // Earthquake
        51505, // Lava Burst
@@ -573,9 +571,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       165462, // Unleash Flame
            0,
     },
-    // Enhancement tree, 9 abilities
+    // Enhancement tree, 8 abilities
     {
-      165341, // Ascendance
        51533, // Feral Spirit
         1535, // Fire Nova
        60103, // Lava Lash
@@ -586,9 +583,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        73680, // Unleash Elements
            0,
     },
-    // Restoration tree, 12 abilities
+    // Restoration tree, 11 abilities
     {
-      165344, // Ascendance
         1064, // Chain Heal
          974, // Earth Shield
       108280, // Healing Tide Totem (Water Totem)
@@ -853,7 +849,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
       115181, // Breath of Fire
       115180, // Dizzying Haze
-      115308, // Elusive Brew
+      115308, // Elusive Brew (Active Mitigation)
       115295, // Guard
       121253, // Keg Smash
       116781, // Legacy of the White Tiger
@@ -907,7 +903,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Druid
   {
-    // General tree, 28 abilities
+    // General tree, 26 abilities
     {
         5487, // Bear Form (Shapeshift)
          768, // Cat Form (Shapeshift)
@@ -915,13 +911,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         1850, // Dash
          339, // Entangling Roots
        22568, // Ferocious Bite
+      165962, // Flight Form (Shapeshift)
        22842, // Frenzied Regeneration
         6795, // Growl
         5185, // Healing Touch
        16914, // Hurricane (Solar)
-      102560, // Incarnation: Chosen of Elune (Talent, Shapeshift)
-      102543, // Incarnation: King of the Jungle (Talent, Shapeshift)
-      102558, // Incarnation: Son of Ursoc (Talent, Shapeshift)
        33917, // Mangle
         1126, // Mark of the Wild
         8921, // Moonfire (Lunar)
@@ -979,7 +973,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        33745, // Lacerate
         6807, // Maul
         2782, // Remove Corruption
-       62606, // Savage Defense
+       62606, // Savage Defense (Active Mitigation)
       106839, // Skull Bash
        61336, // Survival Instincts
            0,
@@ -1008,10 +1002,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
 };
 
-#define TREE_SPECIALIZATION_SIZE (28)
+#define PTR_TREE_SPECIALIZATION_SIZE (28)
 
-// Talent tree specialization abilities, wow build 19342
-static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
+// Talent tree specialization abilities, wow build 19658
+static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
     // Specialization abilities for Ferocity
@@ -1083,6 +1077,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       167105, // Colossus Smash
       118038, // Die by the Sword
       163201, // Execute
+      177851, // Gladiator Stance
       137049, // Hotfix Passive
       167188, // Inspiring Presence
        76838, // Mastery: Weapons Master
@@ -1109,6 +1104,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       118038, // Die by the Sword
        13046, // Enrage
         5308, // Execute
+      177851, // Gladiator Stance
       137050, // Hotfix Passive
       167188, // Inspiring Presence
        76856, // Mastery: Unshackled Fury
@@ -1136,6 +1132,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        20243, // Devastate
        13046, // Enrage
         5308, // Execute
+      177851, // Gladiator Stance
       137048, // Hotfix Passive
        12975, // Last Stand
        76857, // Mastery: Critical Block
@@ -1210,7 +1207,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       165375, // Sacred Duty
       105805, // Sanctuary
        20154, // Seal of Righteousness
-       31801, // Seal of Truth
        53600, // Shield of the Righteous
       159374, // Shining Protector
       162702, // Stat Negation Aura - Strength Tank
@@ -1526,7 +1522,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
   {
     // Specialization abilities for Elemental
     {
-      165339, // Ascendance
+      114050, // Ascendance
         8042, // Earth Shock
        61882, // Earthquake
        60188, // Elemental Fury
@@ -1549,7 +1545,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     },
     // Specialization abilities for Enhancement
     {
-      165341, // Ascendance
+      114051, // Ascendance
       157444, // Critical Strikes
        86629, // Dual Wield
       166221, // Enhanced Weapons
@@ -1576,7 +1572,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     },
     // Specialization abilities for Restoration
     {
-      165344, // Ascendance
+      114052, // Ascendance
         1064, // Chain Heal
          974, // Earth Shield
       158920, // Healer Level 90 Mana Fix
@@ -1684,8 +1680,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       117198, // Soul Shards
        86121, // Soul Swap
        74434, // Soulburn
-       74434, // Soulburn
-       74434, // Soulburn
        30108, // Unstable Affliction
            0,
     },
@@ -1693,8 +1687,8 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     {
       113861, // Dark Soul: Knowledge
       108869, // Decimation
-      104315, // Demonic Fury
       109145, // Demonic Fury
+      104315, // Demonic Fury
       109151, // Demonic Leap
       165392, // Demonic Tactics
       124913, // Doom
@@ -1848,6 +1842,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        77492, // Mastery: Total Eclipse
        24858, // Moonkin Form
       112857, // Natural Insight
+      179333, // Nature's Bounty
         2782, // Remove Corruption
        93399, // Shooting Stars
        78675, // Solar Beam
@@ -1930,9 +1925,9 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        92364, // Malfurion's Gift
        77495, // Mastery: Harmony
        85101, // Meditation
+       17073, // Natural Healing
       112857, // Natural Insight
       165374, // Naturalist
-       17073, // Naturalist
        88423, // Nature's Cure
       132158, // Nature's Swiftness
       113043, // Omen of Clarity
@@ -1948,10 +1943,10 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
   },
 };
 
-#define CLASS_MASTERY_ABILITY_SIZE (1)
+#define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 19342
-static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
+// Class mastery abilities, wow build 19658
+static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
           0,
@@ -2167,14 +2162,14 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
   },
 };
 
-#define RACE_ABILITY_SIZE (4)
+#define PTR_RACE_ABILITY_SIZE (4)
 
-#ifndef MAX_RACE
-#define MAX_RACE (28)
+#ifndef ptr_MAX_RACE
+#define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 19342
-static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
+// Racial abilities, wow build 19658
+static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
     {     0, },
@@ -2894,10 +2889,10 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   },
 };
 
-#define GLYPH_ABILITIES_SIZE (41)
+#define PTR_GLYPH_ABILITIES_SIZE (41)
 
-// Glyph spells for classes, wow build 19342
-static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
+// Glyph spells for classes, wow build 19658
+static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
            0,
@@ -2917,7 +2912,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        58367, // Glyph of Bloodthirst
        94372, // Glyph of Bull Rush
       159701, // Glyph of Cleave
-       63325, // Glyph of Death From Above
+       63325, // Glyph of Death from Above
        58386, // Glyph of Die by the Sword
        58355, // Glyph of Enraged Speed
       159761, // Glyph of Flawless Defense
@@ -2970,7 +2965,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Paladin
   {
-    // Major Glyphs (36 spells)
+    // Major Glyphs (35 spells)
     {
       159548, // Glyph of Ardent Defender
        54927, // Glyph of Avenging Wrath
@@ -3004,7 +2999,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        93466, // Glyph of Protector of the Innocent
        54926, // Glyph of Templar's Verdict
        54936, // Glyph of Word of Glory
-       63222, // Glyph of the Alabaster Shield
       119477, // Glyph of the Battle Healer
       159557, // Glyph of the Consecrator
       159573, // Glyph of the Liberator
@@ -3301,7 +3295,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        63279, // Glyph of Deluge
       147788, // Glyph of Elemental Familiars
        58059, // Glyph of Far Sight
-      147772, // Glyph of Flaming Serpents
       159642, // Glyph of Ghostly Speed
        55444, // Glyph of Lava Lash
       147784, // Glyph of Lingering Ancestors
@@ -3311,6 +3304,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        62132, // Glyph of Thunderstorm
        58057, // Glyph of Totemic Encirclement
       147785, // Glyph of the Compy
+      147772, // Glyph of the Flaming Serpent
        55448, // Glyph of the Lakestrider
        58135, // Glyph of the Spectral Wolf
            0,
@@ -3332,9 +3326,9 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       115710, // Glyph of Deep Freeze
       159485, // Glyph of Dragon's Breath
        56376, // Glyph of Frost Nova
-       61205, // Glyph of Frostfire Bolt
       115723, // Glyph of Ice Block
        56364, // Glyph of Icy Veins
+       61205, // Glyph of Ignite
        89926, // Glyph of Inferno Blast
        56375, // Glyph of Polymorph
       146659, // Glyph of Rapid Displacement
@@ -3449,8 +3443,9 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       159492, // Glyph of the Flying Serpent
            0,
     },
-    // Minor Glyphs (9 spells)
+    // Minor Glyphs (10 spells)
     {
+      132005, // Glyph of Blackout Kick
       125931, // Glyph of Crackling Tiger Lightning
       125872, // Glyph of Fighting Pose
       123403, // Glyph of Flying Serpent Kick
@@ -3468,7 +3463,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Druid
   {
-    // Major Glyphs (34 spells)
+    // Major Glyphs (33 spells)
     {
       159432, // Glyph of Astral Communion
        63057, // Glyph of Barkskin
@@ -3483,7 +3478,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       114237, // Glyph of Fae Silence
        94386, // Glyph of Faerie Fire
        67598, // Glyph of Ferocious Bite
-      146655, // Glyph of Guided Stars
        54825, // Glyph of Healing Touch
        54831, // Glyph of Hurricane
       159434, // Glyph of Imbued Bark
@@ -3506,7 +3500,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       171752, // Savagery
            0,
     },
-    // Minor Glyphs (15 spells)
+    // Minor Glyphs (16 spells)
     {
        57856, // Glyph of Aquatic Form
        57855, // Glyph of Charm Woodland Creature
@@ -3514,6 +3508,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       146656, // Glyph of One With Nature
       114301, // Glyph of Stars
       159456, // Glyph of Travel
+      146655, // Glyph of Untamed Stars
       107059, // Glyph of the Chameleon
       131113, // Glyph of the Cheetah
       164997, // Glyph of the Flapping Owl
@@ -3531,13 +3526,13 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
 };
 
-#define TIER_BONUSES_SIZE (8)
-#define TIER_BONUSES_MAX_TIER (5)
+#define PTR_TIER_BONUSES_SIZE (8)
+#define PTR_TIER_BONUSES_MAX_TIER (5)
 
-#define TIER_BONUSES_TIER_BASE (13)
+#define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 19342
-static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
+// Tier item set bonuses for class, wow build 19658
+static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {
           0,
@@ -3959,10 +3954,10 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   },
 };
 
-#define SET_BONUS_DATA_SIZE (382)
+#define PTR_SET_BONUS_DATA_SIZE (382)
 
-// Set bonus data, wow build 19342
-static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
+// Set bonus data, wow build 19658
+static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,              {   0 },    0,   73, 165641, { 111239, 111240, 111241, 111242, 111243,  0 } },
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   4,   1,              {   0 },    0,   73, 165670, { 111239, 111240, 111241, 111242, 111243,  0 } },
@@ -3973,7 +3968,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   2,   2,              {   0 },    0,   66, 165905, { 111169, 111170, 111171, 111172, 111173,  0 } },
   { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   4,   2,              {   0 },    0,   66, 171427, { 111169, 111170, 111171, 111172, 111173,  0 } },
   { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   2,   2,              {   0 },    1,   65, 170860, { 111169, 111170, 111171, 111172, 111173,  0 } },
-  { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   4,   2,              {   0 },    1,   65, 165881, { 111169, 111170, 111171, 111172, 111173,  0 } },
+  { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   4,   2,              {   0 },    1,   65, 180766, { 111169, 111170, 111171, 111172, 111173,  0 } },
   { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   2,   2,              {   0 },    2,   70, 165886, { 111169, 111170, 111171, 111172, 111173,  0 } },
   { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   4,   2,              {   0 },    2,   70, 165895, { 111169, 111170, 111171, 111172, 111173,  0 } },
   { "Gladiator's Pursuit"                        ,        "pvp",      0,  1222,    0,   2,   3,              {   0 },    2,  255, 166005, { 111112, 111113, 111114, 111115, 111116,  0 } },
@@ -4009,10 +4004,10 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Gladiator's Wartide"                        ,        "pvp",      0,  1228,    0,   4,   7,              {   0 },    3,  262, 171109, { 111193, 111194, 111195, 111196, 111197,  0 } },
   { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   2,   8,              {   0 },    3,   62, 171349, { 111150, 111151, 111152, 111153, 111154,  0 } },
   { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   2,   8,              {   0 },    3,   63, 165977, { 111150, 111151, 111152, 111153, 111154,  0 } },
-  { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   2,   8,              {   0 },    3,   64, 165981, { 111150, 111151, 111152, 111153, 111154,  0 } },
+  { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   2,   8,              {   0 },    3,   64, 180721, { 111150, 111151, 111152, 111153, 111154,  0 } },
   { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   4,   8,              {   0 },    3,   62, 171351, { 111150, 111151, 111152, 111153, 111154,  0 } },
   { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   4,   8,              {   0 },    3,   63, 171169, { 111150, 111151, 111152, 111153, 111154,  0 } },
-  { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   4,   8,              {   0 },    3,   64, 171178, { 111150, 111151, 111152, 111153, 111154,  0 } },
+  { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   4,   8,              {   0 },    3,   64, 180741, { 111150, 111151, 111152, 111153, 111154,  0 } },
   { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   2,   9,              {   0 },    3,  265, 171377, { 111234, 111235, 111236, 111237, 111238,  0 } },
   { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   2,   9,              {   0 },    3,  266, 171393, { 111234, 111235, 111236, 111237, 111238,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
@@ -4024,8 +4019,8 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   4,  10,              {   0 },    0,  268, 171445, { 111168, 111164, 111165, 111166, 111167,  0 } },
   { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   2,  10,              {   0 },    1,  270, 170799, { 111168, 111164, 111165, 111166, 111167,  0 } },
   { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   4,  10,              {   0 },    1,  270, 165697, { 111168, 111164, 111165, 111166, 111167,  0 } },
-  { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   2,  10,              {   0 },    2,  269, 165691, { 111168, 111164, 111165, 111166, 111167,  0 } },
-  { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   4,  10,              {   0 },    2,  269, 165696, { 111168, 111164, 111165, 111166, 111167,  0 } },
+  { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   2,  10,              {   0 },    2,  269, 180743, { 111168, 111164, 111165, 111166, 111167,  0 } },
+  { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   4,  10,              {   0 },    2,  269, 181742, { 111168, 111164, 111165, 111166, 111167,  0 } },
   { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   2,  11,              {   0 },    0,  104, 171408, { 111107, 111108, 111109, 111110, 111111,  0 } },
   { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   4,  11,              {   0 },    0,  104, 171489, { 111107, 111108, 111109, 111110, 111111,  0 } },
   { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   2,  11,              {   0 },    1,  105, 170853, { 111107, 111108, 111109, 111110, 111111,  0 } },
@@ -4033,7 +4028,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   2,  11,              {   0 },    2,  103, 170848, { 111107, 111108, 111109, 111110, 111111,  0 } },
   { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   4,  11,              {   0 },    2,  103, 165698, { 111107, 111108, 111109, 111110, 111111,  0 } },
   { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   2,  11,              {   0 },    3,  102, 165701, { 111107, 111108, 111109, 111110, 111111,  0 } },
-  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   4,  11,              {   0 },    3,  102, 165705, { 111107, 111108, 111109, 111110, 111111,  0 } },
+  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   4,  11,              {   0 },    3,  102, 180717, { 111107, 111108, 111109, 111110, 111111,  0 } },
   { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   2,   1,              {   0 },    0,   73, 179142, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
   { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   4,   1,              {   0 },    0,   73, 179143, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
   { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   2,   1,              {   0 },    2,   71, 179139, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
@@ -4363,10 +4358,10 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Living Wood Battlegear"                     ,     "tier17",      7,  1233,   17,   4,  11,              {   0 },    3,  102, 166677, { 115540, 115541, 115542, 115543, 115544,  0 } },
 };
 
-#define PERK_SIZE (4)
+#define PTR_PERK_SIZE (4)
 
-// Perk specialization abilities, wow build 19342
-static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
+// Perk specialization abilities, wow build 19658
+static unsigned __ptr_perk_data[][MAX_SPECS_PER_CLASS][PTR_PERK_SIZE] = {
   {
     {
            0,
@@ -4673,8 +4668,8 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   },
 };
 
-// Glyph properties, wow build 19342
-static glyph_property_data_t __glyph_property_data[485] = {
+// Glyph properties, wow build 19658
+static glyph_property_data_t __ptr_glyph_property_data[485] = {
   {   162,  54811 },
   {   163,  54812 },
   {   164, 114338 },
@@ -4923,7 +4918,6 @@ static glyph_property_data_t __glyph_property_data[485] = {
   {   701,  63218 },
   {   702,  63219 },
   {   703,  63220 },
-  {   704,  63222 },
   {   706,  63224 },
   {   708,  63229 },
   {   709, 119850 },
@@ -5033,6 +5027,7 @@ static glyph_property_data_t __glyph_property_data[485] = {
   {  1052, 126745 },
   {  1053, 126746 },
   {  1054, 131113 },
+  {  1055, 132005 },
   {  1058, 135557 },
   {  1060, 145722 },
   {  1061, 147707 },
