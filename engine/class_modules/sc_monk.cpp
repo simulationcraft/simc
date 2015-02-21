@@ -1721,7 +1721,7 @@ struct monk_action_t: public Base
 {
   int stancemask;
   sef_ability_e sef_ability;
-
+  bool focus_and_harmony_hasted_gcd;
 private:
   std::array < resource_e, WISE_SERPENT + 1 > _resource_by_stance;
   typedef Base ab; // action base, eg. spell_t
@@ -1732,7 +1732,8 @@ public:
                  const spell_data_t* s = spell_data_t::nil() ):
                  ab( n, player, s ),
                  stancemask( STURDY_OX | FIERCE_TIGER | WISE_SERPENT | SPIRITED_CRANE ),
-                 sef_ability( SEF_NONE )
+                 sef_ability( SEF_NONE ),
+                 focus_and_harmony_hasted_gcd( ab::data().affected_by( player -> spec.focus_and_harmony -> effectN( 1 ) ) )
   {
     ab::may_crit = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
@@ -1915,6 +1916,21 @@ public:
     ab::execute();
 
     trigger_storm_earth_and_fire( this );
+  }
+
+  virtual timespan_t gcd() const
+  {
+    timespan_t t = ab::action_t::gcd();
+
+    if ( t == timespan_t::zero() )
+      return t;
+
+    if ( focus_and_harmony_hasted_gcd )
+      t *= ab::player -> cache.attack_haste();
+    if ( t < ab::min_gcd )
+      t = ab::min_gcd;
+
+    return t;
   }
 
   void trigger_storm_earth_and_fire( const action_t* a )
@@ -4005,8 +4021,9 @@ struct mana_tea_t: public monk_spell_t
 
     double mana_gain = 0;
     // TODO Make sure this is getting the Buffed but not Temporary Proc SPIRIT amount
-    mana_gain = player -> resources.initial[STAT_SPIRIT]
-      * 0.03    // Hardcode for now.
+    // Meh, there are no spirit procs yet. 
+    mana_gain = p() -> cache.spirit()
+      * data().effectN( 1 ).base_value()
       * stacks_to_consume;
     player -> resource_gain( RESOURCE_MANA, mana_gain, p() -> gain.mana_tea, this );
     p() -> buff.mana_tea -> decrement( stacks_to_consume );
