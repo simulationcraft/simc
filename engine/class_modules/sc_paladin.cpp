@@ -999,9 +999,6 @@ struct avengers_shield_t : public paladin_spell_t
     // Focused Shield gives another multiplicative factor of 1.3 (tested 5/26/2013, multiplicative with HA)
     if ( p -> glyphs.focused_shield -> ok() )
       base_multiplier *= 1.0 + p -> glyphs.focused_shield -> effectN( 2 ).percent();
-
-    if ( p -> wod_hotfix )
-      attack_power_mod.direct *= 1.05;
   }
 
   // Multiplicative damage effects
@@ -1355,8 +1352,6 @@ struct consecration_tick_t : public paladin_spell_t
     direct_tick = true;
     background  = true;
     may_crit    = true;
-    if ( p -> wod_hotfix )
-      attack_power_mod.direct *= 1.05;
   }
 };
 
@@ -1713,18 +1708,14 @@ struct eternal_flame_t : public paladin_heal_t
       target = p;
     // attach HoT as child object - doesn't seem to work?
     add_child( hot );
-       
+
     // Holy Insight buffs all healing by 25% & WoG/EF/LoD by 50%.
     // The 25% buff is already in paladin_heal_t, so we need to divide by that first & then apply 50%
     base_multiplier /= 1.0 + p -> passives.holy_insight -> effectN( 6 ).percent();
     base_multiplier *= 1.0 + p -> passives.holy_insight -> effectN( 9 ).percent();
-    
+
     // Sword of light
     base_multiplier *= 1.0 + p -> passives.sword_of_light -> effectN( 3 ).percent();
-
-    // WoD hotfixes
-    if ( p -> wod_hotfix & ( p -> specialization() == PALADIN_PROTECTION || p -> specialization() == PALADIN_RETRIBUTION ) )
-      base_multiplier *= 1.25;
   }
 
   virtual double cost() const
@@ -1945,7 +1936,7 @@ struct exorcism_t : public paladin_spell_t
   {
     parse_options( options_str );
 
-    may_crit                     = true;
+    may_crit = true;
 
     if ( p -> glyphs.mass_exorcism -> ok() )
     {
@@ -1955,8 +1946,6 @@ struct exorcism_t : public paladin_spell_t
 
     cooldown = p -> cooldowns.exorcism;
     cooldown -> duration = data().cooldown();
-    if ( p -> wod_hotfix )
-      attack_power_mod.direct *= 1.2;
   }
 
   virtual double action_multiplier() const
@@ -2018,13 +2007,9 @@ struct flash_of_light_t : public paladin_heal_t
     paladin_heal_t( "flash_of_light", p, p -> find_class_spell( "Flash of Light" ) )
   {
     parse_options( options_str );
-    
+
     // Sword of light
     base_multiplier *= 1.0 + p -> passives.sword_of_light -> effectN( 6 ).percent();
-
-    // WoD hotfixes
-    if ( p -> wod_hotfix & ( p -> specialization() == PALADIN_PROTECTION || p -> specialization() == PALADIN_RETRIBUTION ) )
-      base_multiplier *= 0.8;
   }
 
   virtual double cost() const
@@ -2688,14 +2673,11 @@ struct holy_wrath_t : public paladin_spell_t
     if ( ! p -> glyphs.focused_wrath -> ok() )
       aoe = -1;
 
-    may_crit   = true;
+    may_crit = true;
     split_aoe_damage = true;
 
     base_multiplier += p -> talents.sanctified_wrath -> effectN( 1 ).percent();
     hp_granted += (int) p -> talents.sanctified_wrath -> effectN( 2 ).base_value();
-    if ( p -> wod_hotfix )
-      attack_power_mod.direct *= 1.05;
-
   }
 
   virtual double action_multiplier() const
@@ -3221,11 +3203,6 @@ struct word_of_glory_t : public paladin_heal_t
 
     // Sword of light
     base_multiplier *= 1.0 + p -> passives.sword_of_light -> effectN( 3 ).percent();
-
-    // WoD hotfixes
-    if ( p -> wod_hotfix & ( p -> specialization() == PALADIN_PROTECTION || p -> specialization() == PALADIN_RETRIBUTION ) )
-      base_multiplier *= 1.25;
-
   }
 
   virtual double cost() const
@@ -3551,8 +3528,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
     base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
                                        +  p -> passives.sword_of_light -> effectN( 4 ).percent();
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
-    if ( p -> wod_hotfix )
-      weapon_multiplier *= 1.2;
   }
 
   virtual double action_multiplier() const
@@ -3632,8 +3607,6 @@ struct divine_storm_t : public paladin_melee_attack_t
     {
       glyph_heal = new glyph_of_divine_storm_t( p );
     }
-    if ( p -> wod_hotfix )
-      weapon_multiplier *= 1.2;
   }
 
   virtual double cost() const
@@ -3858,8 +3831,6 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     {
       cooldown_mult = 1.0 + p -> spells.sanctified_wrath -> effectN( 3 ).percent();
     }
-    if ( p -> wod_hotfix )
-      spell_power_mod.direct *= 1.2;
   }
 
   virtual void execute()
@@ -4023,11 +3994,6 @@ struct judgment_t : public paladin_melee_attack_t
 
     if ( p -> talents.empowered_seals -> ok() )
       uthers_insight = new uthers_insight_t( p );
-    if ( p -> wod_hotfix )
-    {
-      attack_power_mod.direct *= 1.2;
-      spell_power_mod.direct *= 1.2;
-    }
   }
 
   virtual void execute()
@@ -4344,8 +4310,6 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 
     // no weapon multiplier
     weapon_multiplier = 0.0;
-    if ( p -> wod_hotfix )
-      attack_power_mod.direct *= 1.05;
   }
 
   virtual void execute()
@@ -4377,7 +4341,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     double am = paladin_melee_attack_t::action_multiplier();
 
     // Alabaster Shield bonus - TODO: Remove in 6.1
-    am *= 1.0 + p() -> buffs.alabaster_shield -> stack() * ( p() -> wod_hotfix ? 0.03 : p() -> spells.alabaster_shield -> effectN( 1 ).percent() );
+    am *= 1.0 + p() -> buffs.alabaster_shield -> stack() * p() -> spells.alabaster_shield -> effectN( 1 ).percent();
 
     return am;
   }
@@ -4396,11 +4360,7 @@ struct final_verdict_t : public paladin_melee_attack_t
     trigger_seal       = true;
 
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T13, B4 ) -> effectN( 1 ).percent();
-
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
-
-    if ( p -> wod_hotfix )
-      weapon_multiplier *= 1.2;
   }
 
   virtual void execute ()
@@ -4446,14 +4406,11 @@ struct templars_verdict_t : public paladin_melee_attack_t
 
     // Tier 13 Retribution 4-piece boosts damage
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T13, B4 ) -> effectN( 1 ).percent();
-
     // Tier 14 Retribution 2-piece boosts damage
     base_multiplier *= 1.0 + p -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
     // disable if Final Verdict is taken
     background = p -> talents.final_verdict -> ok();
-    if ( p -> wod_hotfix )
-      weapon_multiplier *= 1.2;
   }
 
   virtual school_e get_school() const
@@ -5898,7 +5855,7 @@ double paladin_t::composite_rating_multiplier( rating_e r ) const
     case RATING_MELEE_HASTE:
     case RATING_RANGED_HASTE:
     case RATING_SPELL_HASTE:
-      m *= 1.0 + ( passives.sacred_duty -> ok() ? ( wod_hotfix ? 0.3 : passives.sacred_duty -> effectN( 1 ).percent() ) : 0 ); 
+      m *= 1.0 + passives.sacred_duty -> effectN( 1 ).percent(); 
       break;
     case RATING_MASTERY:
       m *= 1.0 + passives.righteous_vengeance -> effectN( 1 ).percent();
@@ -6069,16 +6026,8 @@ double paladin_t::composite_player_multiplier( school_e school ) const
 
   // WoD Ret PvP 4-piece buffs everything
   if ( buffs.vindicators_fury -> check() )
-  {
-    if ( wod_hotfix )
-    {
-      m *= 1.0 + buffs.vindicators_fury -> value() * 0.02;
-    }
-    else
-    {
-      m *= 1.0 + buffs.vindicators_fury -> value() * buffs.vindicators_fury -> data().effectN( 1 ).percent();
-    }
-  }
+    m *= 1.0 + buffs.vindicators_fury -> value() * buffs.vindicators_fury -> data().effectN( 1 ).percent();
+
   return m;
 }
 
@@ -6093,18 +6042,9 @@ double paladin_t::composite_player_heal_multiplier( const action_state_t* s ) co
 
   // WoD Ret PvP 4-piece buffs everything
   if ( buffs.vindicators_fury -> check() )
-  {
-    if ( wod_hotfix )
-    {
-      m *= 1.0 + buffs.vindicators_fury -> value() * 0.02;
-    }
-    else
-    {
-      m *= 1.0 + buffs.vindicators_fury -> value() * buffs.vindicators_fury -> data().effectN( 2 ).percent();
-    }
-  }
-  return m;
+    m *= 1.0 + buffs.vindicators_fury -> value() * buffs.vindicators_fury -> data().effectN( 2 ).percent();
 
+  return m;
 }
 
 // paladin_t::composite_spell_power =========================================
@@ -6316,10 +6256,7 @@ void paladin_t::target_mitigation( school_e school,
   {
     // split his out to make it more readable / easier to debug
     double sotr_mitigation;
-    if ( wod_hotfix )
-      sotr_mitigation = - 0.25 - cache.mastery() * 0.005;
-    else
-      sotr_mitigation = buffs.shield_of_the_righteous -> data().effectN( 1 ).percent() + cache.mastery() * passives.divine_bulwark -> effectN( 4 ).mastery_value();
+    sotr_mitigation = buffs.shield_of_the_righteous -> data().effectN( 1 ).percent() + cache.mastery() * passives.divine_bulwark -> effectN( 4 ).mastery_value();
     sotr_mitigation *= 1.0 + sets.set( SET_TANK, T14, B4 ) -> effectN( 2 ).percent();
 
     // clamp is hardcoded in tooltip, not shown in effects
