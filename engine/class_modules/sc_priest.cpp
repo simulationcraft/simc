@@ -2058,13 +2058,9 @@ struct shadowy_apparition_spell_t : public priest_spell_t
 
     trigger_gcd       = timespan_t::zero();
     travel_speed      = 6.0;
+    const spell_data_t* dmg_data = p.find_spell( 148859 ); // Hardcoded into tooltip 2014/06/01
 
-    if ( !priest.talents.auspicious_spirits -> ok() || priest.dbc.ptr )
-    {
-      const spell_data_t* dmg_data = p.find_spell( 148859 ); // Hardcoded into tooltip 2014/06/01
-
-      parse_effect_data( dmg_data -> effectN( 1 ) );
-    }
+    parse_effect_data( dmg_data -> effectN( 1 ) );
     school            = SCHOOL_SHADOW;
   }
 
@@ -2102,10 +2098,7 @@ struct shadowy_apparition_spell_t : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier( state );
 
-    if ( priest.dbc.ptr && priest.talents.auspicious_spirits -> ok() )
-    {
-      d *= 1.0 + priest.talents.auspicious_spirits -> effectN( 1 ).percent();
-    }
+    d *= 1.0 + priest.talents.auspicious_spirits -> effectN( 1 ).percent();
 
     return d;
   }
@@ -2256,14 +2249,10 @@ struct mind_blast_t : public priest_spell_t
 
     if ( priest.mastery_spells.mental_anguish -> ok() )
     {
-      d *= 1.0 + priest.cache.mastery_value() * ( priest.wod_hotfix ? 1.25 : 1 ); // Increases damage by 3.125% per point, rather than 2.5%.
+      d *= 1.0 + priest.cache.mastery_value();
     }
 
     d *= 1.0 + priest.sets.set( SET_CASTER, T16, B2 ) -> effectN( 1 ).percent();
-
-    // Hotfix, via -- http://blue.mmo-champion.com/topic/318876-warlords-of-draenor-theorycraft-discussion/#post636 -- 2014/10/13
-    if ( player -> wod_hotfix )
-      d *= 1.1;
 
     return d;
   }
@@ -2470,7 +2459,7 @@ struct mind_spike_t : public priest_spell_t
 
     if ( priest.mastery_spells.mental_anguish -> ok() )
     {
-      d *= 1.0 + priest.cache.mastery_value() * ( priest.wod_hotfix ? 1.25 : 1 ); // Increases damage by 3.125% per point, rather than 2.5%.
+      d *= 1.0 + priest.cache.mastery_value();
     }
 
     if ( priest.buffs.empowered_shadows -> check() )
@@ -2479,10 +2468,6 @@ struct mind_spike_t : public priest_spell_t
     priest_td_t& td = get_td( target );
     if ( priest.talents.clarity_of_power -> ok() && !td.dots.shadow_word_pain -> is_ticking() && !td.dots.vampiric_touch -> is_ticking() )
       d *= 1.0 + priest.talents.clarity_of_power -> effectN( 1 ).percent();
-
-    // Hotfix, via -- http://blue.mmo-champion.com/topic/318876-warlords-of-draenor-theorycraft-discussion/#post636 -- 2014/10/13
-    if ( player -> wod_hotfix )
-      d *= 1.1;
 
     return d;
   }
@@ -2526,9 +2511,6 @@ struct mind_sear_tick_t : public priest_spell_t
     direct_tick = true;
     instant_multistrike = false;
     use_off_gcd  = true;
-
-    if ( p.wod_hotfix )
-      spell_power_mod.direct *= 1.1;
   }
 };
 
@@ -3106,12 +3088,8 @@ struct mind_flay_base_t : public priest_spell_t
 
     if ( priest.mastery_spells.mental_anguish -> ok() )
     {
-      am *= 1.0 + priest.cache.mastery_value() * ( priest.wod_hotfix ? 1.25 : 1 ); // Increases damage by 3.125% per point, rather than 2.5%.
+      am *= 1.0 + priest.cache.mastery_value();
     }
-
-    // Hotfix, via -- http://blue.mmo-champion.com/topic/318876-warlords-of-draenor-theorycraft-discussion/#post636 -- 2014/10/13
-    if ( player -> wod_hotfix )
-      am *= 1.1;
 
     return am;
   }
@@ -3417,8 +3395,6 @@ struct penance_t : public priest_spell_t
       can_trigger_atonement = priest.specs.atonement -> ok();
 
       this -> stats = stats;
-      if ( p.wod_hotfix )
-        base_multiplier *= 1.2;
     }
 
     void init() override
@@ -3758,14 +3734,14 @@ struct cascade_t : public cascade_base_t<priest_spell_t>
       {
         targets.push_back( t );
 
-        if ( priest.dbc.ptr && _target_list_source.size() > 1)
+        if ( _target_list_source.size() > 1)
         {
           targets.push_back( t );
         }
       }
     }
 
-    if ( priest.dbc.ptr && priest.specialization() != PRIEST_SHADOW )
+    if ( priest.specialization() != PRIEST_SHADOW )
     {
       targets.push_back( target );
     }
@@ -4636,11 +4612,6 @@ struct power_word_shield_t : public priest_absorb_t
     void trigger( action_state_t* s )
     {
       base_dd_min = base_dd_max = priest.glyphs.power_word_shield -> effectN( 1 ).percent() * s -> result_amount;
-      if ( priest.wod_hotfix )
-      {
-        base_dd_min *= 0.85;
-        base_dd_max = base_dd_min;
-      }
       target = s -> target;
       execute();
     }
@@ -4658,11 +4629,6 @@ struct power_word_shield_t : public priest_absorb_t
     parse_options( options_str );
 
     spell_power_mod.direct = 5.0; // hardcoded into tooltip 15/02/14
-    if ( p.wod_hotfix )
-    {
-      base_multiplier *= 1.0 + 0.20; // 2014/11/12 Power Word: Shield now absorbs 20% more damage.
-      base_multiplier *= 1.0 - 0.15; // 2015/01/12 Power Word: Shield’s absorption has been reduced by 15%.
-    }
 
     if ( p.glyphs.power_word_shield -> ok() )
     {
@@ -4911,9 +4877,6 @@ struct clarity_of_will_t : public priest_absorb_t
     parse_options( options_str );
 
     spell_power_mod.direct = 6.0; // hardcoded into tooltip 15/02/14
-
-    if ( p.wod_hotfix )
-      base_multiplier *= 1.1; // Seems to match relative to PW:S. 14/12/03
 
     // TODO: implement buff value overflow of 75% of casting priest health. 15/02/14
   }
@@ -5551,14 +5514,7 @@ double priest_t::composite_player_multiplier( school_e school ) const
   {
     if ( buffs.chakra_chastise -> check() )
     {
-      if ( dbc.ptr )
-      {
-        m *= 1.0 + 0.8;
-      }
-      else
-      {
-        m *= 1.0 + buffs.chakra_chastise -> data().effectN( 1 ).percent();
-      }
+      m *= 1.0 + 0.8;
     }
   }
 
