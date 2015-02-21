@@ -488,6 +488,8 @@ public:
   struct options_t
   {
     int initial_chi;
+    double goto_throttle;
+    double eh_reset_throttle;
   } user_options;
 
 private:
@@ -5235,7 +5237,12 @@ void monk_t::create_buffs()
     .refresh_behavior( BUFF_REFRESH_EXTEND )
     .add_invalidate( CACHE_PARRY );
 
-  buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox" ).max_stack( 99 );
+  // Players don't pick up ALL of the gift of the ox orbs, mostly due to fight mechanics. 
+  // Defaulting to 60% pickup, but users can adjust as needed
+  double goto_chance = ( user_options.goto_throttle > 0 ? user_options.goto_throttle / 100 : 0.60 );
+  buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox" )
+    .chance( goto_chance )
+    .max_stack( 99 );
 
   // Mistweaver
   buff.channeling_soothing_mist = buff_creator_t( this, "channeling_soothing_mist", spell_data_t::nil() );
@@ -5644,6 +5651,8 @@ void monk_t::create_options()
   base_t::create_options();
 
   add_option( opt_int( "initial_chi", user_options.initial_chi ) );
+  add_option( opt_float( "goto_throttle", user_options.goto_throttle ) );
+  add_option( opt_float( "eh_reset_throttle", user_options.eh_reset_throttle ) );
 }
 
 // monk_t::copy_from =========================================================
@@ -5806,11 +5815,14 @@ void monk_t::assess_damage(school_e school,
     else if ( s -> result_total > 0 && school != SCHOOL_PHYSICAL && glyph.guard -> ok() )
       buff.guard -> up();
 
-    // TODO: Add some form of cooldown to better model what is in-game
-    //    Need to add in some Option to control how often player falls below 35% or else this will be triggering
-    //    for half the fight.
-    //if ( health_percentage() < 35 )
-    //  cooldown.expel_harm -> reset( true );
+    // Given that most of the fight in the sim, the Brewmaster is below 35% HP, we need to throttle how often this actually procs
+    // currently giving this a 10% chance to reset, but the user can determin how often to reset this.
+    if ( health_percentage() < 35 )
+    {
+      bool eh_reset = rng().roll( user_options.eh_reset_throttle > 0 ? user_options.eh_reset_throttle / 100 : 0.10 );
+      if ( eh_reset )
+        cooldown.expel_harm -> reset( true );
+    }
 
     if ( s -> result == RESULT_DODGE && sets.set( MONK_BREWMASTER, T17, B2 ) )
       resource_gain( RESOURCE_ENERGY, sets.set( MONK_BREWMASTER, T17, B2 ) -> effectN( 1 ).base_value(), gain.energy_refund );
