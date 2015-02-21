@@ -1941,14 +1941,7 @@ struct ghoul_pet_t : public death_knight_pet_t
       {
         double dtb = p -> o() -> buffs.dark_transformation -> data().effectN( 1 ).percent();
 
-        if ( p -> o() -> wod_hotfix && p -> o() -> sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T17, B2 ) )
-        {
-          dtb += 0.4;
-        }
-        if ( maybe_ptr( p -> dbc.ptr ) )
-        {
-          dtb += p -> o() -> sets.set( DEATH_KNIGHT_UNHOLY, T17, B2 ) -> effectN( 2 ).percent();
-        }
+        dtb += p -> o() -> sets.set( DEATH_KNIGHT_UNHOLY, T17, B2 ) -> effectN( 2 ).percent();
 
         am *= 1.0 + dtb;
       }
@@ -2491,10 +2484,7 @@ struct death_knight_action_t : public Base
   bool reap_runes( const rune_t& consumed_rune,
                    const rune_consume_data_t& use_data )
   {
-    if ( ! p() -> bugs || maybe_ptr( p() -> dbc.ptr ) )
-    {
-      return false;
-    }
+    return false; // Fixed in 6.1, leaving code here just in case it comes back... maybe?
 
     if ( ! p() -> spec.reaping -> ok() )
     {
@@ -4799,19 +4789,6 @@ struct blood_boil_spread_t : public death_knight_spell_t
         if ( tdata -> dots_blood_plague -> is_ticking() )
           tdata -> dots_blood_plague -> cancel();
         bp -> copy( s -> target, DOT_COPY_CLONE );
-
-        // Bugged Blood Boil spreads diseases for Frost/Unholy so that the
-        // target dot actually resets the tick timer, but keeps the duration.
-        if ( player -> bugs && ! maybe_ptr( player -> dbc.ptr ) )
-        {
-          dot_t* d = tdata -> dots_blood_plague;
-
-          event_t::cancel( d -> tick_event );
-          d -> tick_event = new ( *sim ) dot_tick_event_t( d, d -> current_action -> base_tick_time );
-          // Recalculate last_tick_factor. This will be relevant, if spreading
-          // occurs on the last ongoing tick.
-          d -> last_tick_factor = std::min( 1.0, d -> end_event -> remains() / d -> current_action -> base_tick_time );
-        }
       }
 
       // Spread Frost Fever
@@ -4823,19 +4800,6 @@ struct blood_boil_spread_t : public death_knight_spell_t
         if ( tdata -> dots_frost_fever -> is_ticking() )
           tdata -> dots_frost_fever -> cancel();
         ff -> copy( s -> target, DOT_COPY_CLONE );
-
-        // Bugged Blood Boil spreads diseases for Frost/Unholy so that the
-        // target dot actually resets the tick timer, but keeps the duration.
-        if ( player -> bugs && ! maybe_ptr( player -> dbc.ptr ) )
-        {
-          dot_t* d = tdata -> dots_frost_fever;
-
-          event_t::cancel( d -> tick_event );
-          d -> tick_event = new ( *sim ) dot_tick_event_t( d, d -> current_action -> base_tick_time );
-          // Recalculate last_tick_factor. This will be relevant, if spreading
-          // occurs on the last ongoing tick.
-          d -> last_tick_factor = std::min( 1.0, d -> end_event -> remains() / d -> current_action -> base_tick_time );
-        }
       }
 
       // Spread Necrotic Plague
@@ -4855,19 +4819,6 @@ struct blood_boil_spread_t : public death_knight_spell_t
 
         int orig_stacks = tdata2 -> debuffs_necrotic_plague -> check();
         tdata -> debuffs_necrotic_plague -> trigger( orig_stacks );
-
-        // Bugged Blood Boil spreads diseases for Frost/Unholy so that the
-        // target dot actually resets the tick timer, but keeps the duration.
-        if ( player -> bugs && ! maybe_ptr( player -> dbc.ptr ) )
-        {
-          dot_t* d = tdata -> dots_necrotic_plague;
-
-          event_t::cancel( d -> tick_event );
-          d -> tick_event = new ( *sim ) dot_tick_event_t( d, d -> current_action -> base_tick_time );
-          // Recalculate last_tick_factor. This will be relevant, if spreading
-          // occurs on the last ongoing tick.
-          d -> last_tick_factor = std::min( 1.0, d -> end_event -> remains() / d -> current_action -> base_tick_time );
-        }
       }
     }
   }
@@ -5426,14 +5377,6 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
     resource_current = RESOURCE_RUNIC_POWER;
   }
 
-  void consume_resource()
-  {
-    if ( maybe_ptr( p() -> dbc.ptr ) || td( target ) -> dots_breath_of_sindragosa -> current_tick > 0 )
-    {
-      death_knight_spell_t::consume_resource();
-    }
-  }
-
   void execute()
   {
     death_knight_spell_t::execute();
@@ -5478,14 +5421,7 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
     tick_zero = true;
 
     tick_action = new breath_of_sindragosa_tick_t( p, this );
-    if ( ! maybe_ptr( p -> dbc.ptr ) )
-    {
-      tick_action -> base_costs[ RESOURCE_RUNIC_POWER ] = base_costs[ RESOURCE_RUNIC_POWER ];
-    }
-    else
-    {
-      tick_action -> base_costs[ RESOURCE_RUNIC_POWER ] = data().powerN( 1 ).cost_per_second();
-    }
+    tick_action -> base_costs[ RESOURCE_RUNIC_POWER ] = data().powerN( 1 ).cost_per_second();
     school = tick_action -> school;
   }
 
@@ -7024,7 +6960,7 @@ void runeforge::fallen_crusader( special_effect_t& effect )
 
   effect.ppm_ = -1.0 * dk -> fallen_crusader_rppm;
   // TODO: Check in 6.1
-  effect.rppm_scale = ( effect.item -> player -> bugs && ! maybe_ptr( dk -> dbc.ptr ) ) ? RPPM_HASTE_SPEED : RPPM_HASTE;
+  effect.rppm_scale = RPPM_HASTE;
   effect.custom_buff = b;
   effect.execute_action = heal;
 
