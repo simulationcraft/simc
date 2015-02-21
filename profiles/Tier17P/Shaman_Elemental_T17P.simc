@@ -52,7 +52,7 @@ actions.single+=/earth_shock,if=buff.lightning_shield.react=buff.lightning_shiel
 actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)
 actions.single+=/unleash_flame,if=talent.unleashed_fury.enabled&!buff.ascendance.up
 actions.single+=/flame_shock,if=dot.flame_shock.remains<=9
-actions.single+=/earth_shock,if=(set_bonus.tier17_4pc&buff.lightning_shield.react>=15-ptr*3&!buff.lava_surge.up)|(!set_bonus.tier17_4pc&buff.lightning_shield.react>15)
+actions.single+=/earth_shock,if=(set_bonus.tier17_4pc&buff.lightning_shield.react>=12&!buff.lava_surge.up)|(!set_bonus.tier17_4pc&buff.lightning_shield.react>15)
 actions.single+=/earthquake,if=!talent.unleashed_fury.enabled&((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=(1.875+(1.25*0.226305)+1.25*(2*0.226305*stat.multistrike_pct%100)))&target.time_to_die>10&buff.elemental_mastery.down&buff.bloodlust.down
 actions.single+=/earthquake,if=!talent.unleashed_fury.enabled&((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=1.3*(1.875+(1.25*0.226305)+1.25*(2*0.226305*stat.multistrike_pct%100)))&target.time_to_die>10&(buff.elemental_mastery.up|buff.bloodlust.up)
 actions.single+=/earthquake,if=!talent.unleashed_fury.enabled&((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=(1.875+(1.25*0.226305)+1.25*(2*0.226305*stat.multistrike_pct%100)))&target.time_to_die>10&(buff.elemental_mastery.remains>=10|buff.bloodlust.remains>=10)
@@ -70,7 +70,6 @@ actions.single+=/lightning_bolt
 # Multi target action priority list
 
 actions.aoe=earthquake,cycle_targets=1,if=!ticking&(buff.enhanced_chain_lightning.up|level<=90)&active_enemies>=2
-actions.aoe+=/lava_beam
 actions.aoe+=/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
 actions.aoe+=/thunderstorm,if=active_enemies>=10
 actions.aoe+=/searing_totem,if=(!talent.liquid_magma.enabled&!totem.fire.active)|(talent.liquid_magma.enabled&pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up)
@@ -85,7 +84,7 @@ chest=lavalink_ringmail,id=109890,bonus_id=524
 wrists=morningscale_bracers,id=109883,bonus_id=524
 hands=sharpeye_gauntlets,id=109853,bonus_id=524
 waist=sharpeye_belt,id=109834,bonus_id=524
-legs=lavalink_kilt,id=109816,bonus_id=524
+legs=lavalink_legguards,id=109816,bonus_id=524
 feet=rockhide_treads,id=109792,bonus_id=524
 finger1=mark_of_ice,id=109764,bonus_id=524,enchant=gift_of_multistrike
 finger2=darkflame_loop,id=109766,bonus_id=524,enchant=gift_of_multistrike

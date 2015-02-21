@@ -16,7 +16,7 @@ spec=shadow
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_intellect_flask
-actions.precombat+=/food,type=blackrock_barbecue
+actions.precombat+=/food,type=pickled_eel
 actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
 actions.precombat+=/shadowform,if=!buff.shadowform.up
 # Snapshot raid buffed stats before combat begins and pre-potting is done.

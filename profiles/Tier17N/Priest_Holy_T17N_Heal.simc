@@ -16,7 +16,7 @@ spec=holy
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_intellect_flask
-actions.precombat+=/food,type=calamari_crepes
+actions.precombat+=/food,type=salty_squid_roll
 actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
 actions.precombat+=/chakra_serenity
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
@@ -66,6 +66,7 @@ main_hand=infernoflame_staff,id=113869,enchant=mark_of_shadowmoon
 # Gear Summary
 # gear_stamina=3437
 # gear_intellect=2480
+# gear_spirit=805
 # gear_spell_power=1325
 # gear_crit_rating=610
 # gear_haste_rating=897

@@ -11,7 +11,7 @@ race=blood_elf
 spec=protection
 role=tank
 position=front
-glyphs=focused_shield/alabaster_shield/divine_protection
+glyphs=focused_shield/divine_protection
 
 head=verdant_plate_crown,id=109986,bonus_id=524
 neck=reinforced_bloodsteel_gorget,id=109966,bonus_id=524,enchant=gift_of_mastery

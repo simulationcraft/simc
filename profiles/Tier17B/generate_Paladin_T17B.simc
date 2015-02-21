@@ -41,7 +41,7 @@ race=blood_elf
 spec=protection
 role=tank
 position=front
-glyphs=focused_shield/alabaster_shield/divine_protection
+glyphs=focused_shield/divine_protection
 
 head=helmet_of_guiding_light,id=115568,bonus_id=567/523/448,gem_id=115811
 neck=choker_of_bestial_force,id=113952,bonus_id=567/523/448,gem_id=115811,enchant=gift_of_haste

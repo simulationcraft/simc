@@ -16,7 +16,7 @@ spec=holy
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_intellect_flask
-actions.precombat+=/food,type=calamari_crepes
+actions.precombat+=/food,type=salty_squid_roll
 actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
 actions.precombat+=/chakra_chastise
 # Snapshot raid buffed stats before combat begins and pre-potting is done.

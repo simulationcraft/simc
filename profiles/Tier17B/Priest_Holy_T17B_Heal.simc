@@ -16,7 +16,7 @@ spec=holy
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_intellect_flask
-actions.precombat+=/food,type=calamari_crepes
+actions.precombat+=/food,type=salty_squid_roll
 actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
 actions.precombat+=/chakra_serenity
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
@@ -66,6 +66,7 @@ main_hand=infernoflame_staff,id=113869,bonus_id=567/523/448/42,gem_id=115813,enc
 # Gear Summary
 # gear_stamina=4785
 # gear_intellect=3451
+# gear_spirit=1115
 # gear_spell_power=1852
 # gear_crit_rating=854
 # gear_haste_rating=1247

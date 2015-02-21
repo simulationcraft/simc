@@ -4,7 +4,7 @@ race=blood_elf
 role=tank
 position=front
 talents=3032322
-glyphs=focused_shield/alabaster_shield/divine_protection
+glyphs=focused_shield/divine_protection
 spec=protection
 
 # This default action priority list is automatically created based on your character.

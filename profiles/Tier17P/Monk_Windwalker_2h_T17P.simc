@@ -16,7 +16,7 @@ spec=windwalker
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_agility_flask
-actions.precombat+=/food,type=rylak_crepes
+actions.precombat+=/food,type=salty_squid_roll
 actions.precombat+=/stance,choose=fierce_tiger
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_agility
