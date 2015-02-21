@@ -3,7 +3,7 @@ level=100
 race=dwarf
 role=spell
 position=back
-talents=0000213
+talents=0000311
 spec=destruction
 
 # This default action priority list is automatically created based on your character.

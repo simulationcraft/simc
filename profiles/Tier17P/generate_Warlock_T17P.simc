@@ -10,7 +10,6 @@ level=100
 race=gnome
 spec=affliction
 talents=0000213
-
 head=hood_of_swirling_light,id=109972,bonus_id=524
 neck=torq_of_soothing_waters,id=114478,bonus_id=487,enchant_id=5318
 shoulder=frosttouched_shoulderpads,id=109931,bonus_id=524
@@ -34,9 +33,7 @@ warlock=Warlock_Demonology_T17P
 level=100
 race=troll
 spec=demonology
-talents=0000311
-glyphs=dark_soul
-
+talents=0000213
 head=hood_of_arcane_mystery,id=109970,bonus_id=524
 neck=arcane_masters_chain,id=114477,bonus_id=488,enchant_id=5319
 shoulder=felflame_spaulders,id=109948,bonus_id=524
@@ -60,8 +57,7 @@ level=100
 race=dwarf
 role=spell
 spec=destruction
-talents=0000213
-
+talents=0000311
 head=hood_of_arcane_mystery,id=109970,bonus_id=524
 neck=magisters_chain,id=109954,bonus_id=524,enchant_id=5317
 shoulders=felflame_spaulders,id=109948,bonus_id=524
