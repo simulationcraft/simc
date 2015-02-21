@@ -5558,7 +5558,7 @@ void shaman_t::init_action_list()
 
     // AoE
     aoe -> add_action( this, "Earthquake", "cycle_targets=1,if=!ticking&(buff.enhanced_chain_lightning.up|level<=90)&active_enemies>=2" );
-    aoe -> add_action( this, find_class_spell( "Ascendance" ), "lava_beam" );
+    aoe -> add_action( this, find_specialization_spell( "Ascendance" ), "lava_beam" );
     aoe -> add_action( this, spec.fulmination, "earth_shock", "if=buff.lightning_shield.react=buff.lightning_shield.max_stack" );
     aoe -> add_action( this, "Thunderstorm", "if=active_enemies>=10" );
     aoe -> add_action( this, "Searing Totem", "if=(!talent.liquid_magma.enabled&!totem.fire.active)|(talent.liquid_magma.enabled&pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up)" );
