@@ -3,7 +3,7 @@ level=100
 race=night_elf
 role=tank
 position=front
-talents=2133112
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fa!1022001
 glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 spec=brewmaster
 
@@ -15,8 +15,8 @@ spec=brewmaster
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_stamina_flask
-actions.precombat+=/food,type=whiptail_fillet
+actions.precombat=flask,type=greater_draenic_agility_flask
+actions.precombat+=/food,type=sleeper_sushi
 actions.precombat+=/stance,choose=sturdy_ox
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -40,89 +40,76 @@ actions+=/elusive_brew,if=buff.elusive_brew_stacks.react>=9&(buff.dampen_harm.do
 actions+=/invoke_xuen,if=talent.invoke_xuen.enabled&target.time_to_die>15&buff.shuffle.remains>=3&buff.serenity.down
 actions+=/serenity,if=talent.serenity.enabled&cooldown.keg_smash.remains>6
 actions+=/potion,name=draenic_armor,if=(buff.fortifying_brew.down&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.elusive_brew_activated.down)
-actions+=/call_action_list,name=tod,if=target.health.percent<10&target.time_to_die<8&cooldown.touch_of_death.remains=0&!glyph.touch_of_death.enabled
+actions+=/touch_of_death,if=target.health.percent<10&cooldown.touch_of_death.remains=0&((!glyph.touch_of_death.enabled&chi>=3&target.time_to_die<8)|(glyph.touch_of_death.enabled&target.time_to_die<5))
 actions+=/call_action_list,name=st,if=active_enemies<3
 actions+=/call_action_list,name=aoe,if=active_enemies>=3
 
-actions.st=purifying_brew,if=!talent.chi_explosion.enabled&stagger.heavy
+actions.st=purifying_brew,if=stagger.heavy
 actions.st+=/blackout_kick,if=buff.shuffle.down
 actions.st+=/purifying_brew,if=buff.serenity.up
-actions.st+=/purifying_brew,if=!talent.chi_explosion.enabled&stagger.moderate&buff.shuffle.remains>=6
+actions.st+=/chi_explosion,if=chi>=3
+actions.st+=/purifying_brew,if=stagger.moderate&buff.shuffle.remains>=6
 actions.st+=/guard,if=(charges=1&recharge_time<5)|charges=2|target.time_to_die<15
 actions.st+=/guard,if=incoming_damage_10s>=health.max*0.5
 actions.st+=/chi_brew,if=target.health.percent<10&cooldown.touch_of_death.remains=0&chi<=3&chi>=1&(buff.shuffle.remains>=6|target.time_to_die<buff.shuffle.remains)&!glyph.touch_of_death.enabled
-actions.st+=/touch_of_death,if=target.health.percent<10&(buff.shuffle.remains>=6|target.time_to_die<=buff.shuffle.remains)&!glyph.touch_of_death.enabled
 actions.st+=/keg_smash,if=chi.max-chi>=1&!buff.serenity.remains
-actions.st+=/touch_of_death,if=target.health.percent<10&glyph.touch_of_death.enabled
-actions.st+=/chi_burst,if=(energy+(energy.regen*gcd))<100
-actions.st+=/chi_wave,if=(energy+(energy.regen*gcd))<100
-actions.st+=/zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking&(energy+(energy.regen*gcd))<100
-actions.st+=/chi_explosion,if=chi>=3
-actions.st+=/blackout_kick,if=chi>=4
+actions.st+=/chi_burst,if=energy.time_to_max>2&buff.serenity.down
+actions.st+=/chi_wave,if=energy.time_to_max>2&buff.serenity.down
+actions.st+=/zen_sphere,cycle_targets=1,if=!dot.zen_sphere.ticking&energy.time_to_max>2&buff.serenity.down
+actions.st+=/blackout_kick,if=chi.max-chi<2
 actions.st+=/blackout_kick,if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=gcd
 actions.st+=/blackout_kick,if=buff.serenity.up
 actions.st+=/expel_harm,if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80
 actions.st+=/jab,if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80
-actions.st+=/purifying_brew,if=!talent.chi_explosion.enabled&stagger.pct>2.2&buff.shuffle.remains>=6
 actions.st+=/tiger_palm
 
 actions.aoe=purifying_brew,if=stagger.heavy
 actions.aoe+=/blackout_kick,if=buff.shuffle.down
 actions.aoe+=/purifying_brew,if=buff.serenity.up
-actions.aoe+=/purifying_brew,if=!talent.chi_explosion.enabled&stagger.moderate&buff.shuffle.remains>=6
+actions.aoe+=/chi_explosion,if=chi>=4
+actions.aoe+=/purifying_brew,if=stagger.moderate&buff.shuffle.remains>=6
 actions.aoe+=/guard,if=(charges=1&recharge_time<5)|charges=2|target.time_to_die<15
 actions.aoe+=/guard,if=incoming_damage_10s>=health.max*0.5
 actions.aoe+=/chi_brew,if=target.health.percent<10&cooldown.touch_of_death.remains=0&chi<=3&chi>=1&(buff.shuffle.remains>=6|target.time_to_die<buff.shuffle.remains)&!glyph.touch_of_death.enabled
-actions.aoe+=/touch_of_death,if=target.health.percent<10&(buff.shuffle.remains>=6|target.time_to_die<=buff.shuffle.remains)&!glyph.touch_of_death.enabled
 actions.aoe+=/breath_of_fire,if=(chi>=3|buff.serenity.up)&buff.shuffle.remains>=6&dot.breath_of_fire.remains<=2.4&!talent.chi_explosion.enabled
 actions.aoe+=/keg_smash,if=chi.max-chi>=1&!buff.serenity.remains
-actions.aoe+=/touch_of_death,if=target.health.percent<10&glyph.touch_of_death.enabled
 actions.aoe+=/rushing_jade_wind,if=chi.max-chi>=1&!buff.serenity.remains&talent.rushing_jade_wind.enabled
-actions.aoe+=/chi_burst,if=(energy+(energy.regen*gcd))<100
-actions.aoe+=/chi_wave,if=(energy+(energy.regen*gcd))<100
-actions.aoe+=/zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking&(energy+(energy.regen*gcd))<100
-actions.aoe+=/chi_explosion,if=chi>=4
+actions.aoe+=/chi_burst,if=energy.time_to_max>2&buff.serenity.down
+actions.aoe+=/chi_wave,if=energy.time_to_max>2&buff.serenity.down
+actions.aoe+=/zen_sphere,cycle_targets=1,if=!dot.zen_sphere.ticking&energy.time_to_max>2&buff.serenity.down
 actions.aoe+=/blackout_kick,if=chi>=4
 actions.aoe+=/blackout_kick,if=buff.shuffle.remains<=3&cooldown.keg_smash.remains>=gcd
 actions.aoe+=/blackout_kick,if=buff.serenity.up
 actions.aoe+=/expel_harm,if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80
 actions.aoe+=/jab,if=chi.max-chi>=1&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80
-actions.aoe+=/purifying_brew,if=!talent.chi_explosion.enabled&stagger.pct>2.2&buff.shuffle.remains>=6
 actions.aoe+=/tiger_palm
 
-actions.tod=touch_of_death
-actions.tod+=/chi_brew,if=chi<3&talent.chi_brew.enabled
-actions.tod+=/keg_smash,if=talent.chi_brew.enabled&chi<3
-actions.tod+=/expel_harm,if=chi<3&(cooldown.keg_smash.remains>target.time_to_die|((energy+(energy.regen*(cooldown.keg_smash.remains)))>=80)&cooldown.keg_smash.remains>=gcd)
-actions.tod+=/jab,if=chi<3&(cooldown.keg_smash.remains>target.time_to_die|((energy+(energy.regen*(cooldown.keg_smash.remains)))>=80)&cooldown.keg_smash.remains>=gcd&cooldown.expel_harm.remains>=gcd)
-actions.tod+=/tiger_palm,if=talent.chi_brew.enabled&chi<3
-
-head=sorkas_nightshade_cowl,id=113978,bonus_id=567
-neck=choker_of_bestial_force,id=113952,bonus_id=567,enchant_id=5319
+head=helm_of_the_somber_gaze,id=115556,bonus_id=567
+neck=gluttons_kerchief,id=113882,bonus_id=567,enchant=gift_of_mastery
 shoulders=mantle_of_the_somber_gaze,id=115559,bonus_id=567
-back=ravenous_greatcloak,id=113883,bonus_id=567,enchant_id=5312
-chest=vest_of_the_somber_gaze,id=115558,bonus_id=567
+back=ravenous_greatcloak,id=113883,bonus_id=567,enchant=gift_of_mastery
+chest=unrendable_wolfhide_robes,id=113951,bonus_id=567
 wrists=bracers_of_shattered_stalactites,id=113935,bonus_id=567
 hands=handwraps_of_the_somber_gaze,id=115555,bonus_id=567
 waist=conductors_multipocket_girdle,id=113964,bonus_id=567
 legs=legwraps_of_the_somber_gaze,id=115557,bonus_id=567
 feet=treads_of_the_dark_hunt,id=113974,bonus_id=567
-finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,enchant_id=5326
-finger2=razoredge_blade_ring,id=113908,bonus_id=567,enchant_id=5326
+finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,enchant=gift_of_mastery
+finger2=razoredge_blade_ring,id=113908,bonus_id=567,enchant=gift_of_mastery
 trinket1=blast_furnace_door,id=113893,bonus_id=567
 trinket2=tablet_of_turnbuckle_teamwork,id=113905,bonus_id=567
-main_hand=sorkas_chainfist,id=113965,bonus_id=567,enchant_id=5336
-off_hand=sorkas_chainfist,id=113965,bonus_id=567,enchant_id=5384
+main_hand=phemos_double_slasher,id=113667,bonus_id=567,enchant=mark_of_bleeding_hollow
+off_hand=phemos_double_slasher,id=113667,bonus_id=567,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
-# gear_agility=2986
-# gear_stamina=4478
-# gear_crit_rating=704
-# gear_haste_rating=363
-# gear_mastery_rating=2101
+# gear_agility=2962
+# gear_stamina=4444
+# gear_crit_rating=525
+# gear_haste_rating=204
+# gear_mastery_rating=1963
 # gear_armor=1147
-# gear_bonus_armor=942
-# gear_multistrike_rating=974
+# gear_bonus_armor=931
+# gear_multistrike_rating=1455
 # gear_versatility_rating=119
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
