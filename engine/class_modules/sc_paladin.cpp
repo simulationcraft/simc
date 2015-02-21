@@ -5,7 +5,6 @@
 /*
   TODO:
   -Bunch of Holy Stuff (search for TODO)
-  -Remove Alabaster Shield post-6.1
   -Remove unnecessary Harsh Words code for prot post-6.1
   -Confirm AGI/INT mail and AGI/STR gear behavior
   -Test if Grand Crusader can proc from misses
@@ -110,7 +109,6 @@ public:
     buff_t* shield_of_the_righteous;
 
     // glyphs
-    buff_t* alabaster_shield;
     buff_t* blessed_life;
     buff_t* double_jeopardy;
     buff_t* glyph_templars_verdict;
@@ -259,7 +257,6 @@ public:
   // Spells
   struct spells_t
   {
-    const spell_data_t* alabaster_shield;
     const spell_data_t* holy_light;
     const spell_data_t* glyph_of_word_of_glory;
     const spell_data_t* sanctified_wrath; // needed to pull out spec-specific effects
@@ -295,7 +292,6 @@ public:
   // Glyphs
   struct glyphs_t
   {
-    const spell_data_t* alabaster_shield;
     const spell_data_t* ardent_defender;
     const spell_data_t* avenging_wrath;
     const spell_data_t* battle_healer;
@@ -3294,16 +3290,8 @@ struct harsh_word_t : public paladin_spell_t
       background = true;
 
     base_costs[RESOURCE_HOLY_POWER] = 1;
-
     base_execute_time = timespan_t::from_seconds( 1.5 );
 
-    // remove GCD constraints & cast time for prot - TODO: remove after 6.1
-    if ( p -> passives.guarded_by_the_light -> ok() )
-    {
-      trigger_gcd = timespan_t::zero();
-      use_off_gcd = true;
-      base_execute_time *= 1 + p -> passives.guarded_by_the_light -> effectN( 9 ).percent();
-    }
     // remove cast time for ret
     if ( p -> passives.sword_of_light -> ok() )
     {
@@ -3334,7 +3322,6 @@ struct harsh_word_t : public paladin_spell_t
     }
   }
 };
-
 
 // ==========================================================================
 // End Spells, Heals, and Absorbs
@@ -4331,19 +4318,6 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     // if we're using T16_4PC_TANK, apply the bastion_of_power buff if BoG stacks > 3
     if ( p() -> sets.has_set_bonus( SET_TANK, T16, B4 ) && p() -> buffs.bastion_of_glory -> stack() >= 3 )
       p() -> buffs.bastion_of_power -> trigger();
-
-    // clear any Alabaster Shield stacks we may have
-    p() -> buffs.alabaster_shield -> expire();
-  }
-
-  virtual double action_multiplier() const
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-
-    // Alabaster Shield bonus - TODO: Remove in 6.1
-    am *= 1.0 + p() -> buffs.alabaster_shield -> stack() * p() -> spells.alabaster_shield -> effectN( 1 ).percent();
-
-    return am;
   }
 };
 
@@ -4825,8 +4799,6 @@ void paladin_t::create_buffs()
   player_t::create_buffs();
 
   // Glyphs
-  buffs.alabaster_shield       = buff_creator_t( this, "alabaster_shield", find_spell( 121467 ) ) // alabaster shield glyph spell contains no useful data
-                                 .cd( timespan_t::zero() );
   buffs.blessed_life           = buff_creator_t( this, "glyph_blessed_life", glyphs.blessed_life )
                                  .cd( timespan_t::from_seconds( glyphs.blessed_life -> effectN( 2 ).base_value() ) );
   buffs.double_jeopardy        = buff_creator_t( this, "glyph_double_jeopardy", glyphs.double_jeopardy )
@@ -5668,9 +5640,8 @@ void paladin_t::init_spells()
   perk.empowered_divine_storm     = find_perk_spell( "Empowered Divine Storm" );
   perk.empowered_hammer_of_wrath  = find_perk_spell( "Empowered Hammer of Wrath" );
   perk.enhanced_hand_of_sacrifice = find_perk_spell( "Enhanced Hand of Sacrifice" );
-  
+
   // Glyphs
-  glyphs.alabaster_shield         = find_glyph_spell( "Glyph of the Alabaster Shield" );
   glyphs.ardent_defender          = find_glyph_spell( "Glyph of Ardent Defender" );
   glyphs.avenging_wrath           = find_glyph_spell( "Glyph of Avenging Wrath" );
   glyphs.battle_healer            = find_glyph_spell( "Glyph of the Battle Healer" );
@@ -5697,9 +5668,8 @@ void paladin_t::init_spells()
   glyphs.merciful_wrath           = find_glyph_spell( "Glyph of Merciful Wrath" );
   glyphs.templars_verdict         = find_glyph_spell( "Glyph of Templar's Verdict" );
   glyphs.word_of_glory            = find_glyph_spell( "Glyph of Word of Glory"   );
-  
+
   // more spells, these need the glyph check to be present before they can be executed
-  spells.alabaster_shield              = glyphs.alabaster_shield -> ok() ? find_spell( 121467 ) : spell_data_t::not_found(); // this is the spell containing Alabaster Shield's effects
   spells.glyph_of_word_of_glory        = glyphs.word_of_glory -> ok() ? find_spell( 115522 ) : spell_data_t::not_found();
 
 
@@ -6399,12 +6369,9 @@ void paladin_t::assess_damage( school_e school,
     return;
   }
 
-  // On a block event, trigger Alabaster Shield & Holy Shield & Defender of the Light
+  // On a block event, trigger Holy Shield & Defender of the Light
   if ( s -> block_result == BLOCK_RESULT_BLOCKED )
   {
-    if ( glyphs.alabaster_shield -> ok() )
-      buffs.alabaster_shield -> trigger();
-    
     trigger_holy_shield();
 
     if ( sets.set( PALADIN_PROTECTION, T17, B4 ) -> ok() && rppm_defender_of_the_light.trigger() )
