@@ -5416,7 +5416,7 @@ void shaman_t::init_action_list()
     // In-combat potion
     if ( sim -> allow_potions && level >= 80  )
     {
-      std::string potion_action = "potion,name=" + potion_name + ",if=(talent.storm_elemental_totem.enabled&pet.storm_elemental_totem.remains>=25)|(!talent.storm_elemental_totem.enabled&pet.fire_elemental_totem.remains>=25)|target.time_to_die<=30";
+      std::string potion_action = "potion,name=" + potion_name + ",if=(talent.storm_elemental_totem.enabled&(pet.storm_elemental_totem.remains>=25|(cooldown.storm_elemental_totem.remains>target.time_to_die&pet.fire_elemental_totem.remains>=25)))|(!talent.storm_elemental_totem.enabled&pet.fire_elemental_totem.remains>=25)|target.time_to_die<=30";
 
       def -> add_action( potion_action, "In-combat potion is preferentially linked to the Fire or Storm Elemental, depending on talents, unless combat will end shortly" );
     }
@@ -5426,11 +5426,11 @@ void shaman_t::init_action_list()
     def -> add_action( "berserking" );
     def -> add_talent( this, "Elemental Mastery" );
     def -> add_talent( this, "Storm Elemental Totem" );
-    def -> add_action( this, "Fire Elemental Totem", "if=(talent.primal_elementalist.enabled&active_enemies<=10)|active_enemies<=6" );
-    def -> add_action( this, "Ascendance" );
+    def -> add_action( this, "Fire Elemental Totem" );
     def -> add_action( this, "Feral Spirit" );
     def -> add_talent( this, "Liquid Magma", "if=pet.searing_totem.remains>10|pet.magma_totem.remains>10|pet.fire_elemental_totem.remains>10" );
     def -> add_talent( this, "Ancestral Swiftness" );
+    def -> add_action( this, "Ascendance" );
 
     // Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
     def -> add_action( init_use_profession_actions( ",if=(glyph.fire_elemental_totem.enabled&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active))|!glyph.fire_elemental_totem.enabled" ).erase( 0, 1 ) );
