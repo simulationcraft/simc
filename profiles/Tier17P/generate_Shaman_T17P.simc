@@ -39,7 +39,7 @@ race=draenei
 spec=enhancement
 role=attack
 position=back
-talents=0001023
+talents=0002012
 glyphs=chain_lightning/frost_shock
 head=rockhide_casque,id=109982,bonus_id=524
 neck=windseal_necklace,id=109953,bonus_id=524,enchant=gift_of_haste

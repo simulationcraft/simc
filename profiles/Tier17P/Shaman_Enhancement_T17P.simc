@@ -3,7 +3,7 @@ level=100
 race=draenei
 role=attack
 position=back
-talents=0001023
+talents=0002012
 glyphs=chain_lightning/frost_shock
 spec=enhancement
 
@@ -30,17 +30,17 @@ actions+=/bloodlust,if=target.health.pct<25|time>0.500
 actions+=/auto_attack
 actions+=/use_item,name=kihras_adrenaline_injector
 # In-combat potion is preferentially linked to the Fire or Storm Elemental, depending on talents, unless combat will end shortly
-actions+=/potion,name=draenic_agility,if=(talent.storm_elemental_totem.enabled&pet.storm_elemental_totem.remains>=25)|(!talent.storm_elemental_totem.enabled&pet.fire_elemental_totem.remains>=25)|target.time_to_die<=30
+actions+=/potion,name=draenic_agility,if=(talent.storm_elemental_totem.enabled&(pet.storm_elemental_totem.remains>=25|(cooldown.storm_elemental_totem.remains>target.time_to_die&pet.fire_elemental_totem.remains>=25)))|(!talent.storm_elemental_totem.enabled&pet.fire_elemental_totem.remains>=25)|target.time_to_die<=30
 actions+=/blood_fury
 actions+=/arcane_torrent
 actions+=/berserking
 actions+=/elemental_mastery
 actions+=/storm_elemental_totem
-actions+=/fire_elemental_totem,if=(talent.primal_elementalist.enabled&active_enemies<=10)|active_enemies<=6
-actions+=/ascendance
+actions+=/fire_elemental_totem
 actions+=/feral_spirit
 actions+=/liquid_magma,if=pet.searing_totem.remains>10|pet.magma_totem.remains>10|pet.fire_elemental_totem.remains>10
 actions+=/ancestral_swiftness
+actions+=/ascendance
 # If only one enemy, priority follows the 'single' action list.
 actions+=/call_action_list,name=single,if=active_enemies=1
 # On multiple enemies, the priority follows the 'aoe' action list.
