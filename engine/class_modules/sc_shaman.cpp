@@ -400,7 +400,7 @@ public:
     glyph(),
     spell(),
     // TODO: Check in 6.1
-    rppm_echo_of_the_elements( *this, 0, bugs ? RPPM_HASTE_SPEED : RPPM_HASTE )
+    rppm_echo_of_the_elements( *this, 0, RPPM_HASTE )
   {
     for ( size_t i = 0; i < sizeof_array( pet_feral_spirit ); i++ )
       pet_feral_spirit[ i ] = 0;
@@ -605,10 +605,7 @@ public:
   bool        shock;
 
   // Echo of Elements functionality
-  bool        may_proc_eoe;
   bool        uses_eoe;
-  proc_t*     used_eoe;
-  proc_t*     generated_eoe;
 
   // Flurry
   bool        hasted_cd;
@@ -626,10 +623,7 @@ public:
                    const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
     totem( false ), shock( false ),
-    may_proc_eoe( false ),
-    // 6.1 Echo of the Elements can no longer use class flags to determine what
-    // spells are affected
-    uses_eoe( p() -> talent.echo_of_the_elements -> ok() && ! maybe_ptr( p() -> dbc.ptr ) && ab::data().affected_by( player -> spell.echo_of_the_elements -> effectN( 1 ) ) ),
+    uses_eoe( false ),
     hasted_cd( ab::data().affected_by( player -> spec.flurry -> effectN( 1 ) ) ),
     hasted_gcd( ab::data().affected_by( player -> spec.flurry -> effectN( 2 ) ) ),
     ef_proc( 0 ),
@@ -643,19 +637,6 @@ public:
   {
     ab::init();
 
-    // Allow ~everything to proc the new RPPM Echo of the Elements
-    if ( ! maybe_ptr( p() -> dbc.ptr ) )
-    {
-      if ( ! ab::background )
-        may_proc_eoe = true;
-
-      if ( uses_eoe && ab::s_data )
-        used_eoe = p() -> get_proc( "Echo of the Elements: " + std::string( ab::s_data -> name_cstr() ) + " (consume)" );
-
-      if ( may_proc_eoe && ab::s_data )
-        generated_eoe = p() -> get_proc( "Echo of the Elements: " + std::string( ab::s_data -> name_cstr() ) + " (generate)" );
-    }
-
     if ( shock && p() -> talent.elemental_fusion -> ok() && ab::s_data )
       ef_proc = p() -> get_proc( "Elemental Fusion: " + std::string( ab::s_data -> name_cstr() ) );
 
@@ -666,7 +647,7 @@ public:
       cd_wasted_iter = p() -> template get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p() -> cd_waste_iter );
     }
 
-    if ( maybe_ptr( p() -> dbc.ptr ) && ab::data().charges() > 0 )
+    if ( ab::data().charges() > 0 )
     {
       ab::cooldown -> duration = ab::data().charge_cooldown();
       ab::cooldown -> charges = ab::data().charges() + p() -> talent.echo_of_the_elements -> effectN( 1 ).base_value();
@@ -713,17 +694,6 @@ public:
   void execute()
   {
     ab::execute();
-
-    // Live Echo of the Elements
-    if ( ! maybe_ptr( p() -> dbc.ptr ) &&
-         p() -> talent.echo_of_the_elements -> ok() &&
-         may_proc_eoe &&
-         ab::result_is_hit( ab::execute_state -> result ) &&
-         p() -> rppm_echo_of_the_elements.trigger() )
-    {
-      p() -> buff.echo_of_the_elements -> trigger();
-      generated_eoe -> occur();
-    }
   }
 
   double cooldown_reduction() const
@@ -740,15 +710,6 @@ public:
 
   void update_ready( timespan_t cd )
   {
-    // Live Echo of the Elements
-    if ( ! maybe_ptr( p() -> dbc.ptr ) && uses_eoe && p() -> buff.echo_of_the_elements -> up() &&
-         ( p() -> specialization() != SHAMAN_ELEMENTAL || ! p() -> buff.ascendance -> check() ) )
-    {
-      cd = timespan_t::zero();
-      p() -> buff.echo_of_the_elements -> expire();
-      used_eoe -> occur();
-    }
-
     if ( cd_wasted_exec &&
          ( cd > timespan_t::zero() || ( cd <= timespan_t::zero() && ab::cooldown -> duration > timespan_t::zero() ) ) &&
          ab::cooldown -> current_charge == ab::cooldown -> charges &&
@@ -1885,10 +1846,6 @@ struct stormstrike_attack_t : public shaman_attack_t
     may_miss = may_dodge = may_parry = false;
     weapon = w;
     base_multiplier *= 1.0 + p() -> perk.improved_stormstrike -> effectN( 1 ).percent();
-    if ( player -> wod_hotfix )
-    {
-      base_multiplier *= 1.60;
-    }
   }
 };
 
@@ -2267,22 +2224,14 @@ struct lava_lash_t : public shaman_attack_t
 
     base_multiplier *= 1.0 + player -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + player -> perk.improved_lava_lash_2 -> effectN( 1 ).percent();
-    if ( player -> wod_hotfix )
-    {
-      base_multiplier *= 1.4375;
-    }
 
     parse_options( options_str );
-
     weapon              = &( player -> off_hand_weapon );
 
     if ( weapon -> type == WEAPON_NONE )
       background = true; // Do not allow execution.
 
-    if ( maybe_ptr( player -> dbc.ptr ) )
-    {
-      uses_eoe = player -> talent.echo_of_the_elements -> ok();
-    }
+    uses_eoe = player -> talent.echo_of_the_elements -> ok();
   }
 
   void impact( action_state_t* state )
@@ -2420,7 +2369,6 @@ struct stormstrike_t : public shaman_attack_t
 
     parse_options( options_str );
 
-    may_proc_eoe         = true;
     weapon               = &( p() -> main_hand_weapon );
     weapon_multiplier    = 0.0;
     may_crit             = false;
@@ -2438,10 +2386,7 @@ struct stormstrike_t : public shaman_attack_t
       add_child( stormstrike_oh );
     }
 
-    if ( maybe_ptr( player -> dbc.ptr ) )
-    {
-      uses_eoe = player -> talent.echo_of_the_elements -> ok();
-    }
+    uses_eoe = player -> talent.echo_of_the_elements -> ok();
   }
 
   void execute()
@@ -2498,7 +2443,6 @@ struct windstrike_t : public shaman_attack_t
 
     parse_options( options_str );
 
-    may_proc_eoe         = true;
     school               = SCHOOL_PHYSICAL;
     weapon               = &( p() -> main_hand_weapon );
     weapon_multiplier    = 0.0;
@@ -2520,10 +2464,7 @@ struct windstrike_t : public shaman_attack_t
       add_child( windstrike_oh );
     }
 
-    if ( maybe_ptr( player -> dbc.ptr ) )
-    {
-      uses_eoe = player -> talent.echo_of_the_elements -> ok();
-    }
+    uses_eoe = player -> talent.echo_of_the_elements -> ok();
   }
 
   void execute()
@@ -2577,7 +2518,6 @@ struct unleash_elements_t : public shaman_attack_t
     may_crit     = false;
     may_miss     = false;
     callbacks    = false;
-    may_proc_eoe = true;
   }
 
   virtual void execute()
@@ -2691,10 +2631,6 @@ struct chain_lightning_t : public shaman_spell_t
     cooldown -> duration += player -> spec.shamanism -> effectN( 4 ).time_value();
     base_multiplier      *= 1.0 + player -> spec.shamanism -> effectN( 2 ).percent();
     base_multiplier      *= 1.0 + player -> glyph.chain_lightning -> effectN( 2 ).percent();
-    if ( player -> wod_hotfix )
-    {
-      base_multiplier *= 1.32;
-    }
     aoe                   = player -> glyph.chain_lightning -> effectN( 1 ).base_value() + 3;
     base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
   }
@@ -2801,10 +2737,6 @@ struct lava_beam_t : public shaman_spell_t
     may_fulmination       = player -> spec.fulmination -> ok() &&
                             player -> perk.improved_lightning_shield -> ok();
     base_multiplier      *= 1.0 + p() -> spec.shamanism -> effectN( 2 ).percent();
-    if ( player -> wod_hotfix )
-    {
-      base_multiplier *= 1.32;
-    }
     aoe                   = 5;
     base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
   }
@@ -2939,11 +2871,7 @@ struct fire_nova_t : public shaman_spell_t
     uses_unleash_flame = true;
 
     impact_action = new fire_nova_explosion_t( player );
-
-    if ( maybe_ptr( player -> dbc.ptr ) )
-    {
-      uses_eoe = player -> talent.echo_of_the_elements -> ok();
-    }
+    uses_eoe = player -> talent.echo_of_the_elements -> ok();
   }
 
   // Override assess_damage, as fire_nova_explosion is going to do all the
@@ -2976,7 +2904,7 @@ struct fire_nova_t : public shaman_spell_t
     // Fire Nova now has a maximum of 7 novas that can be triggered if more than 7 targets are affected by Flame Shock.
     for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); ++i )
     {
-      if ( fire_nova_targets == 6 && ( p() -> wod_hotfix || maybe_ptr( p() -> dbc.ptr ) ) )
+      if ( fire_nova_targets == 6 )
         break;
       player_t* e = sim -> target_non_sleeping_list[ i ];
       if ( ! e -> is_enemy() )
@@ -2997,21 +2925,13 @@ struct fire_nova_t : public shaman_spell_t
 
 struct lava_burst_t : public shaman_spell_t
 {
-  lava_burst_t( shaman_t* player, const std::string& options_str ) :
+  lava_burst_t( shaman_t* player, const std::string& options_str ):
     shaman_spell_t( "lava_burst", player, player -> find_class_spell( "Lava Burst" ), options_str )
   {
     may_fulmination = player -> spec.fulmination -> ok() && player -> perk.improved_lightning_shield -> ok();
 
-    base_multiplier     *= 1.0 + player -> perk.improved_lava_burst -> effectN( 1 ).percent();
-    if ( player -> wod_hotfix )
-    {
-      base_multiplier *= 1.485;
-    }
-
-    if ( maybe_ptr( player -> dbc.ptr ) )
-    {
-      uses_eoe = player -> talent.echo_of_the_elements -> ok();
-    }
+    base_multiplier *= 1.0 + player -> perk.improved_lava_burst -> effectN( 1 ).percent();
+    uses_eoe = player -> talent.echo_of_the_elements -> ok();
   }
 
   virtual double composite_target_multiplier( player_t* target ) const
@@ -3134,19 +3054,9 @@ struct lightning_bolt_t : public shaman_spell_t
     shaman_spell_t( "lightning_bolt", player, player -> find_class_spell( "Lightning Bolt" ), options_str )
   {
     may_fulmination    = player -> spec.fulmination -> ok();
-    if ( player -> wod_hotfix && player -> spec.shamanism -> ok() )
-    {
-      base_multiplier *= 1.87;
-    }
-    else if ( player -> wod_hotfix )
-    {
-      base_multiplier *= 1.1;
-    }
-    else
-    {
-      base_multiplier *= 1.0 + player -> spec.shamanism -> effectN( 1 ).percent();
-    }
-    base_multiplier   *= 1.0 + player -> perk.improved_lightning_bolt -> effectN( 1 ).percent();
+
+    base_multiplier *= 1.0 + player -> spec.shamanism -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + player -> perk.improved_lightning_bolt -> effectN( 1 ).percent();
     base_execute_time += player -> spec.shamanism -> effectN( 3 ).time_value();
   }
 
@@ -3202,10 +3112,6 @@ struct elemental_blast_t : public shaman_spell_t
   {
     may_fulmination    = player -> spec.fulmination -> ok();
     base_multiplier *= 1.0 + player -> spec.mental_quickness -> effectN( 5 ).percent();
-    if ( player -> wod_hotfix )
-    {
-      base_multiplier *= 1.32759;
-    }
   }
 
   virtual void execute()
@@ -3354,7 +3260,6 @@ struct earthquake_rumble_t : public shaman_spell_t
   earthquake_rumble_t( shaman_t* player ) :
     shaman_spell_t( "earthquake_rumble", player, player -> find_spell( 77478 ) )
   {
-    may_proc_eoe = uses_eoe = false;
     harmful = background = true;
     aoe = -1;
     school = SCHOOL_PHYSICAL;
@@ -3380,7 +3285,7 @@ struct earthquake_t : public shaman_spell_t
     shaman_spell_t( "earthquake", player, player -> find_specialization_spell( "Earthquake" ), options_str )
   {
     harmful = hasted_ticks = true;
-    may_miss = may_crit = may_proc_eoe = callbacks = false;
+    may_miss = may_crit = callbacks = false;
 
     base_td = base_dd_min = base_dd_max = 0;
     spell_power_mod.direct = 0;
@@ -3388,10 +3293,7 @@ struct earthquake_t : public shaman_spell_t
 
     tick_action = new earthquake_rumble_t( player );
 
-    if ( maybe_ptr( player -> dbc.ptr ) )
-    {
-      uses_eoe = player -> talent.echo_of_the_elements -> ok();
-    }
+    uses_eoe = player -> talent.echo_of_the_elements -> ok();
   }
 
   void init()
@@ -3415,12 +3317,9 @@ struct earthquake_t : public shaman_spell_t
   {
     timespan_t et = shaman_spell_t::execute_time();
 
-    if ( p() -> dbc.ptr )
+    if ( p() -> buff.enhanced_chain_lightning -> check() )
     {
-      if ( p() -> buff.enhanced_chain_lightning -> check() )
-      {
-        et *= 1.0 + p() -> buff.enhanced_chain_lightning -> data().effectN( 2 ).percent();
-      }
+      et *= 1.0 + p() -> buff.enhanced_chain_lightning -> data().effectN( 2 ).percent();
     }
 
     return et;
@@ -3453,7 +3352,6 @@ struct unleash_flame_t : public shaman_spell_t
     harmful = false;
     may_crit     = false;
     may_miss     = false;
-    may_proc_eoe = true;
     callbacks = false;
   }
 
@@ -3805,10 +3703,7 @@ struct riptide_t : public shaman_heal_t
   {
     resurgence_gain = 0.6 * p() -> spell.resurgence -> effectN( 1 ).average( player ) * p() -> spec.resurgence -> effectN( 1 ).percent();
 
-    if ( maybe_ptr( player -> dbc.ptr ) )
-    {
-      uses_eoe = player -> talent.echo_of_the_elements -> ok();
-    }
+    uses_eoe = player -> talent.echo_of_the_elements -> ok();
   }
 };
 
@@ -3844,7 +3739,6 @@ struct healing_rain_t : public shaman_heal_t
     {
       background = true;
       aoe = -1;
-      // Can proc Echo of the Elements?
     }
   };
 
@@ -4608,14 +4502,7 @@ inline void ascendance_buff_t::expire_override( int expiration_stacks, timespan_
   shaman_t* p = debug_cast< shaman_t* >( player );
 
   timespan_t lvbcd;
-  if ( maybe_ptr( p -> dbc.ptr ) )
-  {
-    lvbcd = lava_burst ? lava_burst -> data().charge_cooldown() : timespan_t::zero();
-  }
-  else
-  {
-    lvbcd = lava_burst ? lava_burst -> data().cooldown() : timespan_t::zero();
-  }
+  lvbcd = lava_burst ? lava_burst -> data().charge_cooldown() : timespan_t::zero();
 
   ascendance( p -> melee_mh, p -> melee_oh, lvbcd );
   // Start CD waste recollection from when Ascendance buff fades, since Lava
@@ -5149,7 +5036,6 @@ void shaman_t::trigger_tier15_2pc_caster( const action_state_t* s )
   if ( ! s -> action -> result_is_hit( s -> result ) )
     return;
 
-  // Do Echo of the Elements procs trigger this?
   if ( rng().roll( sets.set( SET_CASTER, T15, B2 ) -> proc_chance() ) )
   {
     action_lightning_strike -> target = s -> target;
@@ -5256,30 +5142,12 @@ void shaman_t::trigger_improved_lava_lash( const action_state_t* state )
 
 void shaman_t::trigger_enhanced_chain_lightning( const action_state_t* state )
 {
-  if ( ! perk.enhanced_chain_lightning -> ok() )
+  if ( !perk.enhanced_chain_lightning -> ok() )
     return;
 
-  if ( maybe_ptr( dbc.ptr ) )
+  if ( static_cast<const int>( state -> n_targets ) >= perk.enhanced_chain_lightning -> effectN( 1 ).base_value() )
   {
-    if ( static_cast<const int>( state -> n_targets ) >= perk.enhanced_chain_lightning -> effectN( 1 ).base_value() )
-    {
-      buff.enhanced_chain_lightning -> trigger();
-    }
-  }
-  else
-  {
-    // Trigger as many stacks as there are targets, if the buff is not up
-    if ( ! buff.enhanced_chain_lightning -> check() )
-      buff.enhanced_chain_lightning -> trigger( (int)state -> n_targets );
-    else
-    {
-      // Stacks are only refreshed if the new number is higher than the current
-      if ( state -> n_targets >= static_cast<size_t>( buff.enhanced_chain_lightning -> check() ) )
-      {
-        buff.enhanced_chain_lightning -> expire();
-        buff.enhanced_chain_lightning -> trigger( (int)state -> n_targets );
-      }
-    }
+    buff.enhanced_chain_lightning -> trigger();
   }
 }
 
@@ -5588,11 +5456,9 @@ void shaman_t::init_action_list()
     // AoE
     aoe -> add_action( this, "Unleash Elements", "if=active_enemies>=4&dot.flame_shock.ticking&(cooldown.shock.remains>cooldown.fire_nova.remains|cooldown.fire_nova.remains=0)" );
     aoe -> add_action( this, "Fire Nova", "if=active_dot.flame_shock>=3" );
-    aoe -> add_action( "wait,sec=cooldown.fire_nova.remains,if=ptr=1&!talent.echo_of_the_elements.enabled&active_dot.flame_shock>=4&cooldown.fire_nova.remains<=action.fire_nova.gcd%2" );
-    aoe -> add_action( "wait,sec=cooldown.fire_nova.remains,if=ptr=0&active_dot.flame_shock>=4&cooldown.fire_nova.remains<=action.fire_nova.gcd%2" );
+    aoe -> add_action( "wait,sec=cooldown.fire_nova.remains,if=!talent.echo_of_the_elements.enabled&active_dot.flame_shock>=4&cooldown.fire_nova.remains<=action.fire_nova.gcd%2" );
     aoe -> add_action( this, "Magma Totem", "if=!totem.fire.active" );
-    aoe -> add_action( this, "Lava Lash", "if=ptr=1&dot.flame_shock.ticking&active_dot.flame_shock<active_enemies" );
-    aoe -> add_action( this, "Lava Lash", "if=ptr=0&dot.flame_shock.ticking&active_dot.flame_shock<active_enemies&(!talent.echo_of_the_elements.enabled|!buff.echo_of_the_elements.up)" );
+    aoe -> add_action( this, "Lava Lash", "if=dot.flame_shock.ticking&active_dot.flame_shock<active_enemies" );
     aoe -> add_talent( this, "Elemental Blast", "if=!buff.unleash_flame.up&(buff.maelstrom_weapon.react>=4|buff.ancestral_swiftness.up)" );
     aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=buff.maelstrom_weapon.react=5&((glyph.chain_lightning.enabled&active_enemies>=3)|(!glyph.chain_lightning.enabled&active_enemies>=2))" );
     aoe -> add_action( this, "Unleash Elements", "if=active_enemies<4" );
@@ -5670,7 +5536,7 @@ void shaman_t::init_action_list()
     single -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)" );
     single -> add_action( this, "Unleash Flame", "if=talent.unleashed_fury.enabled&!buff.ascendance.up" );
     single -> add_action( this, "Flame Shock", "if=dot.flame_shock.remains<=9" );
-    single -> add_action( this, spec.fulmination, "earth_shock", "if=(set_bonus.tier17_4pc&buff.lightning_shield.react>=15-ptr*3&!buff.lava_surge.up)|(!set_bonus.tier17_4pc&buff.lightning_shield.react>15)" );
+    single -> add_action( this, spec.fulmination, "earth_shock", "if=(set_bonus.tier17_4pc&buff.lightning_shield.react>=12&!buff.lava_surge.up)|(!set_bonus.tier17_4pc&buff.lightning_shield.react>15)" );
     single -> add_action( this, "Earthquake", "if=!talent.unleashed_fury.enabled&((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=(1.875+(1.25*0.226305)+1.25*(2*0.226305*stat.multistrike_pct%100)))&target.time_to_die>10&buff.elemental_mastery.down&buff.bloodlust.down" );
     single -> add_action( this, "Earthquake", "if=!talent.unleashed_fury.enabled&((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=1.3*(1.875+(1.25*0.226305)+1.25*(2*0.226305*stat.multistrike_pct%100)))&target.time_to_die>10&(buff.elemental_mastery.up|buff.bloodlust.up)" );
     single -> add_action( this, "Earthquake", "if=!talent.unleashed_fury.enabled&((1+stat.spell_haste)*(1+(mastery_value*2%4.5))>=(1.875+(1.25*0.226305)+1.25*(2*0.226305*stat.multistrike_pct%100)))&target.time_to_die>10&(buff.elemental_mastery.remains>=10|buff.bloodlust.remains>=10)" );
