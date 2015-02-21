@@ -576,11 +576,6 @@ struct water_elemental_pet_t : public pet_t
                  o() -> incanters_flow_stack_mult;
     }
 
-    if ( o() -> wod_hotfix )
-    {
-      m *= 1.0 + 0.05 + 0.2;
-    }
-
     m *= o() -> pet_multiplier;
 
     return m;
@@ -1452,11 +1447,6 @@ struct arcane_barrage_t : public mage_spell_t
                 ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 )
                             -> effectN( 1 ).percent() );
 
-    if ( p() -> wod_hotfix )
-    {
-      am *= 1.0 - 0.05 + 0.15;
-    }
-
     return am;
   }
 };
@@ -1524,11 +1514,6 @@ struct arcane_blast_t : public mage_spell_t
                 p() -> spec.arcane_charge -> effectN( 1 ).percent() *
                 ( 1.0 + p() -> sets.set( SET_CASTER, T15, B4 )
                             -> effectN( 1 ).percent() );
-
-    if ( p() -> wod_hotfix )
-    {
-      am *= (1.0 - 0.05 + 0.15) * (1.0 + 0.1);
-    }
 
     return am;
   }
@@ -1626,19 +1611,6 @@ struct arcane_explosion_t : public mage_spell_t
       }
     }
   }
-
-  virtual double action_multiplier() const
-  {
-    double am = mage_spell_t::action_multiplier();
-
-    if ( p() -> wod_hotfix )
-    {
-      am *= 1.0 + 0.1;
-    }
-
-    return am;
-
-  }
 };
 
 // Arcane Missiles Spell ====================================================
@@ -1685,11 +1657,6 @@ struct arcane_missiles_t : public mage_spell_t
     if ( p() -> sets.has_set_bonus( SET_CASTER, T14, B2 ) )
     {
       am *= 1.07;
-    }
-
-    if ( p() -> wod_hotfix )
-    {
-      am *= 1.0 - 0.05 + 0.15;
     }
 
     return am;
@@ -1784,18 +1751,6 @@ struct arcane_orb_bolt_t : public mage_spell_t
         p() -> buffs.arcane_instability -> trigger();
       }
     }
-  }
-
-  virtual double action_multiplier() const
-  {
-    double am = mage_spell_t::action_multiplier();
-
-    if ( p() -> wod_hotfix )
-    {
-      am *= 1.0 + 0.1;
-    }
-
-    return am;
   }
 };
 
@@ -2151,18 +2106,6 @@ struct comet_storm_projectile_t : public mage_spell_t
     t = timespan_t::from_seconds( 1.0 );
     return t;
   }
-
-  virtual double action_multiplier() const
-  {
-    double am = mage_spell_t::action_multiplier();
-
-    if ( p() -> wod_hotfix )
-    {
-      am *= 1.0 + 0.25;
-    }
-
-    return am;
-  }
 };
 
 struct comet_storm_t : public mage_spell_t
@@ -2417,18 +2360,6 @@ struct fireball_t : public mage_spell_t
     }
   }
 
-  virtual double action_multiplier() const
-  {
-    double am = mage_spell_t::action_multiplier();
-
-    if ( p() -> wod_hotfix )
-    {
-      am *= 1.0 + 0.05 - 0.2;
-    }
-
-    return am;
-  }
-
   double composite_target_crit( player_t* target ) const
   {
     double c = mage_spell_t::composite_target_crit( target );
@@ -2447,16 +2378,9 @@ struct fireball_t : public mage_spell_t
   {
     double c = mage_spell_t::composite_crit();
 
-    if ( p() -> wod_hotfix )
-    {
-      c += p() -> buffs.enhanced_pyrotechnics -> stack() * 0.1;
-    }
-    else
-    {
       c += p() -> buffs.enhanced_pyrotechnics -> stack() *
            p() -> perks.enhanced_pyrotechnics -> effectN( 1 ).trigger()
                                               -> effectN( 1 ).percent();
-    }
 
     return c;
   }
@@ -2518,18 +2442,6 @@ struct frost_bomb_explosion_t : public mage_spell_t
 
   virtual timespan_t travel_time() const
   { return timespan_t::zero(); }
-
-  virtual double action_multiplier() const
-  {
-    double am = mage_spell_t::action_multiplier();
-
-    if ( p() -> wod_hotfix )
-    {
-      am *= 1.0 + 0.25;
-    }
-
-    return am;
-  }
 };
 
 struct frost_bomb_t : public mage_spell_t
@@ -2704,11 +2616,6 @@ struct frostbolt_t : public mage_spell_t
     if ( p() -> buffs.ice_shard -> up() )
     {
       am *= 1.0 + ( p() -> buffs.ice_shard -> stack() * p() -> buffs.ice_shard -> data().effectN( 2 ).percent() );
-    }
-
-    if ( p() -> wod_hotfix )
-    {
-      am *= 1.25;
     }
 
     return am;
@@ -2913,19 +2820,7 @@ struct frostfire_bolt_t : public mage_spell_t
 
     if ( p() -> buffs.brain_freeze -> up() )
     {
-      if ( p() -> wod_hotfix )
-      {
-        am *= 1.0 + 0.85;
-      }
-      else
-      {
-        am *= 1.0 + p() -> spec.brain_freeze -> effectN( 3 ).percent();
-      }
-    }
-
-    if ( p() -> wod_hotfix )
-    {
-      am *= 1.0 + 0.05 - 0.2;
+      am *= 1.0 + p() -> spec.brain_freeze -> effectN( 3 ).percent();
     }
 
     return am;
@@ -2957,18 +2852,6 @@ struct frozen_orb_bolt_t : public mage_spell_t
       p() -> buffs.fingers_of_frost
           -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
     }
-  }
-
-  virtual double action_multiplier() const
-  {
-    double am = mage_spell_t::action_multiplier();
-
-    if ( p() -> wod_hotfix )
-    {
-      am *= 1.0 + 0.05 + 0.2;
-    }
-
-    return am;
   }
 };
 
@@ -3163,11 +3046,6 @@ struct ice_lance_t : public mage_spell_t
       am *= ( 1.0 + p() -> buffs.frozen_thoughts -> data().effectN( 1 ).percent() );
     }
 
-    if ( p() -> wod_hotfix )
-    {
-      am *= 1.0 + 0.05 + 0.2;
-    }
-
     return am;
   }
 };
@@ -3193,21 +3071,7 @@ struct ice_nova_t : public mage_spell_t
     cooldown -> duration = timespan_t::from_seconds( 25.0 );
     cooldown -> charges = 2;
   }
-
-  virtual double action_multiplier() const
-  {
-    double am = mage_spell_t::action_multiplier();
-
-    if ( p() -> wod_hotfix )
-    {
-      am *= 1.0 + 0.25;
-    }
-
-    return am;
-  }
 };
-
-
 
 // Icy Veins Spell ==========================================================
 
@@ -3356,18 +3220,6 @@ struct inferno_blast_t : public mage_spell_t
     }
   }
 
-  virtual double action_multiplier() const
-  {
-    double am = mage_spell_t::action_multiplier();
-
-    if ( p() -> wod_hotfix )
-    {
-      am *= 1.0 + 0.05 - 0.2;
-    }
-
-    return am;
-  }
-
   // Inferno Blast always crits
   virtual double composite_crit() const
   { return 1.0; }
@@ -3448,10 +3300,6 @@ struct meteor_impact_t : public mage_spell_t
     parse_spell_data( *p -> dbc.spell( 155158 ) );
 
     spell_power_mod.direct = p -> find_spell( 153564 ) -> effectN( 1 ).sp_coeff();
-    if ( p -> wod_hotfix )
-    {
-      spell_power_mod.tick *= 1.0 + 0.25;
-    }
 
     dot_duration = timespan_t::from_seconds( 7.0 );
     hasted_ticks = may_miss = false;
@@ -3559,11 +3407,6 @@ struct nether_tempest_aoe_t: public mage_spell_t
   {
     aoe = -1;
     background = true;
-    if ( p -> wod_hotfix )
-    {
-      // NOTE: Nether Tempest is double dipping on Dec 8 hotfix 10% buff (bug?)
-      spell_power_mod.direct *= 1.0 + 0.1;
-    }
   }
 
   virtual resource_e current_resource() const
@@ -3626,18 +3469,6 @@ struct nether_tempest_t : public mage_spell_t
                 p() -> spec.arcane_charge -> effectN( 1 ).percent();
 
     return m;
-  }
-
-  virtual double action_multiplier() const
-  {
-    double am = mage_spell_t::action_multiplier();
-
-    if ( p() -> wod_hotfix )
-    {
-      am *= 1.0 + 0.1;
-    }
-
-    return am;
   }
 };
 
@@ -3780,11 +3611,6 @@ struct pyroblast_t : public mage_spell_t
       am *= 1.0 + p() -> buffs.pyroblast -> data().effectN( 3 ).percent();
     }
 
-    if ( p() -> wod_hotfix )
-    {
-      am *= 255.0 / 221.2 * (1.0 - 0.05);
-    }
-
     return am;
   }
 
@@ -3795,11 +3621,6 @@ struct pyroblast_t : public mage_spell_t
     if ( dot_is_hot_streak )
     {
       am *= 1.0 + p() -> buffs.pyroblast -> data().effectN( 3 ).percent();
-    }
-
-    if ( p() -> wod_hotfix )
-    {
-      am *= (1.0 + 0.184) * (1.0 - 0.05);
     }
 
     return am;
@@ -3948,18 +3769,6 @@ struct supernova_t : public mage_spell_t
       // NOTE: Supernova AOE effect causes secondary trigger chance for AM
       p() -> buffs.arcane_missiles -> trigger();
     }
-  }
-
-  virtual double action_multiplier() const
-  {
-    double am = mage_spell_t::action_multiplier();
-
-    if ( p() -> wod_hotfix )
-    {
-      am *= 1.0 - 0.15 + 0.1;
-    }
-
-    return am;
   }
 };
 
@@ -5452,10 +5261,7 @@ double mage_t::composite_rating_multiplier( rating_e rating) const
   case RATING_MULTISTRIKE:
     return m *= 1.0 + spec.ice_shards -> effectN( 1 ).percent();
   case RATING_SPELL_CRIT:
-    if ( wod_hotfix && specialization() == MAGE_FIRE)
-      return m *= 1.0 + 0.15;
-    else
-      return m *= 1.0 + spec.incineration -> effectN( 1 ).percent();
+    return m *= 1.0 + spec.incineration -> effectN( 1 ).percent();
   case RATING_MASTERY:
     return m *= 1.0 + spec.arcane_mind -> effectN( 1 ).percent();
   default:
@@ -5463,9 +5269,7 @@ double mage_t::composite_rating_multiplier( rating_e rating) const
   }
 
   return m;
-
 }
-
 
 // mage_t::composite_player_multiplier =======================================
 
@@ -5534,14 +5338,7 @@ double mage_t::composite_spell_crit() const
 
   if ( buffs.molten_armor -> up() )
   {
-    if ( wod_hotfix )
-    {
-      c += 0.15;
-    }
-    else
-    {
-      c += buffs.molten_armor -> data().effectN( 1 ).percent();
-    }
+    c += buffs.molten_armor -> data().effectN( 1 ).percent();
   }
 
   return c;
