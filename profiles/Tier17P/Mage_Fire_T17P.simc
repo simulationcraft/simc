@@ -16,7 +16,7 @@ spec=fire
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_intellect_flask
-actions.precombat+=/food,type=blackrock_barbecue
+actions.precombat+=/food,type=pickled_eel
 actions.precombat+=/arcane_brilliance
 actions.precombat+=/snapshot_stats
 actions.precombat+=/rune_of_power
