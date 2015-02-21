@@ -1,4 +1,4 @@
-hunter="Hunter_SV_T17H"
+hunter="Hunter_SV_T17B"
 level=100
 race=orc
 role=attack
@@ -63,31 +63,31 @@ actions.aoe+=/multishot,if=focus>=70|talent.focusing_shot.enabled
 actions.aoe+=/focusing_shot
 actions.aoe+=/cobra_shot
 
-head=blastproof_cowl,id=113891,bonus_id=566
-neck=darklight_necklace,id=113865,bonus_id=566,enchant=gift_of_multistrike
-shoulders=rylakstalkers_spaulders,id=115547,bonus_id=566
-back=drape_of_the_dark_hunt,id=113971,bonus_id=566,enchant=gift_of_multistrike
-chest=rylakstalkers_tunic,id=115548,bonus_id=566
-wrists=bloodwhirl_bracers,id=113968,bonus_id=566
-hands=rylakstalkers_gloves,id=115549,bonus_id=566
-waist=grenadiers_belt,id=113955,bonus_id=566
-legs=rylakstalkers_legguards,id=115546,bonus_id=566
-feet=treads_of_the_veteran_smith,id=119339,bonus_id=566
-finger1=unexploded_explosive_shard,id=113877,bonus_id=566,enchant=gift_of_multistrike
-finger2=spellbound_solium_band_of_fatal_strikes,id=118302,enchant=gift_of_multistrike
-trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=566
-trinket2=scales_of_doom,id=113612,bonus_id=566
-main_hand=garans_brutal_spearlauncher,id=113966,bonus_id=566,enchant=oglethorpes_missile_splitter
+head=rylakstalkers_headguard,id=115545,bonus_id=41/562/565/567,gem_id=115813
+neck=darklight_necklace,id=113865,bonus_id=41/562/565/567,gem_id=115813,enchant_id=5320
+shoulders=rylakstalkers_spaulders,id=115547,bonus_id=41/562/565/567,gem_id=115813
+back=drape_of_the_dark_hunt,id=113971,bonus_id=41/562/565/567,gem_id=115813,enchant_id=5313
+chest=rylakstalkers_tunic,id=115548,bonus_id=41/562/565/567,gem_id=115813
+wrists=bloodwhirl_bracers,id=113968,bonus_id=41/562/565/567,gem_id=115813
+hands=rylakstalkers_gloves,id=115549,bonus_id=41/562/565/567,gem_id=115813
+waist=grenadiers_belt,id=113955,bonus_id=41/562/565/567,gem_id=115813
+legs=legguards_of_the_stampede,id=113944,bonus_id=41/562/565/567,gem_id=115813
+feet=treads_of_the_veteran_smith,id=119339,bonus_id=41/562/565/567,gem_id=115813
+finger2=unexploded_explosive_shard,id=113877,bonus_id=41/562/565/567,gem_id=115813,enchant_id=5327
+trinket1=scales_of_doom,id=113612,bonus_id=41/562/565/567,gem_id=115813
+trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=41/562/565/567,gem_id=115813
+main_hand=garans_brutal_spearlauncher,id=113966,bonus_id=41/562/565/567,gem_id=115813,enchant_id=5275
 
 # Gear Summary
-# gear_agility=3201
-# gear_stamina=3942
-# gear_crit_rating=720
-# gear_haste_rating=510
-# gear_mastery_rating=563
-# gear_armor=1370
-# gear_multistrike_rating=1693
-# gear_versatility_rating=238
+# gear_agility=3684
+# gear_stamina=4488
+# gear_crit_rating=710
+# gear_haste_rating=425
+# gear_mastery_rating=914
+# gear_armor=1503
+# gear_multistrike_rating=2635
+# gear_versatility_rating=166
+# gear_leech_rating=1972
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 summon_pet=cat

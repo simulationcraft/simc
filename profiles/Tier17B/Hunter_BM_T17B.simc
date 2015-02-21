@@ -1,4 +1,4 @@
-hunter="Hunter_BM_T17N"
+hunter="Hunter_BM_T17B"
 level=100
 race=orc
 role=attack
@@ -28,7 +28,6 @@ actions.precombat+=/focusing_shot,if=!talent.glaive_toss.enabled
 # Executed every time the actor is available.
 
 actions=auto_shot
-actions+=/use_item,name=beating_heart_of_the_mountain
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
@@ -56,31 +55,30 @@ actions+=/arcane_shot,if=(buff.thrill_of_the_hunt.react&focus>35)|buff.bestial_w
 actions+=/arcane_shot,if=focus>=64
 actions+=/cobra_shot
 
-head=rylakstalkers_headguard,id=115545
-neck=darklight_necklace,id=113865,enchant=gift_of_critical_strike
-shoulders=rylakstalkers_spaulders,id=115547
-back=drape_of_the_dark_hunt,id=113971,enchant=gift_of_critical_strike
-chest=chestguard_of_the_siegemaker,id=113982
-wrists=bracers_of_the_wolfs_cunning,id=113943
-hands=rylakstalkers_gloves,id=115549
-waist=grenadiers_belt,id=113955
-legs=rylakstalkers_legguards,id=115546
-feet=slagstomper_treads,id=113888
-finger1=unexploded_explosive_shard,id=113877,enchant=gift_of_critical_strike
-finger2=timeless_solium_band_of_the_assassin,id=118297,enchant=gift_of_critical_strike
-trinket1=humming_blackiron_trigger,id=113985
-trinket2=beating_heart_of_the_mountain,id=113931
-main_hand=mouth_of_the_fury,id=113885,enchant=megawatt_filament
+head=rylakstalkers_headguard,id=115545,bonus_id=41/562/565/567,gem_id=115812
+neck=engineers_grounded_gorget,id=113892,bonus_id=41/562/565/567,gem_id=115812,enchant_id=5319
+shoulders=rylakstalkers_spaulders,id=115547,bonus_id=41/562/565/567,gem_id=115812
+back=cloak_of_delving_secrets,id=113929,bonus_id=41/562/565/567,gem_id=115812,enchant_id=5312
+chest=chestguard_of_the_siegemaker,id=113982,bonus_id=41/562/565/567,gem_id=115812
+wrists=bloodwhirl_bracers,id=113968,bonus_id=41/562/565/567,gem_id=115812
+hands=rylakstalkers_gloves,id=115549,bonus_id=41/562/565/567,gem_id=115812
+waist=grenadiers_belt,id=113955,bonus_id=41/562/565/567,gem_id=115812
+legs=rylakstalkers_legguards,id=115546,bonus_id=41/562/565/567,gem_id=115812
+feet=railwalkers_ratcheted_boots,id=113954,bonus_id=41/562/565/567,gem_id=115812
+finger2=unexploded_explosive_shard,id=113877,bonus_id=41/562/565/567,gem_id=115812,enchant_id=5326
+trinket1=meaty_dragonspine_trophy,id=118114,bonus_id=41/562/565/567,gem_id=115812
+trinket2=humming_blackiron_trigger,id=113985,bonus_id=41/562/565/567,gem_id=115812
+main_hand=garans_brutal_spearlauncher,id=113966,bonus_id=41/562/565/567,gem_id=115812,enchant_id=5383
 
 # Gear Summary
-# gear_agility=2892
-# gear_stamina=3437
-# gear_crit_rating=1396
-# gear_haste_rating=424
-# gear_mastery_rating=534
-# gear_armor=1286
-# gear_multistrike_rating=765
-# gear_versatility_rating=180
+# gear_agility=3812
+# gear_stamina=4488
+# gear_crit_rating=690
+# gear_haste_rating=337
+# gear_mastery_rating=2409
+# gear_armor=1503
+# gear_multistrike_rating=1418
+# gear_leech_rating=1984
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
 summon_pet=cat
