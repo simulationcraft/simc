@@ -4013,21 +4013,21 @@ void warrior_t::apl_precombat()
     if ( specialization() == WARRIOR_FURY )
     {
       if ( level > 90 )
-        food_action += "blackrock_barbecue";
+        food_action += "pickled_eel";
       else
         food_action += "black_pepper_ribs_and_shrimp";
     }
     else if ( specialization() == WARRIOR_ARMS )
     {
       if ( level > 90 )
-        food_action += "sleeper_surprise";
+        food_action += "sleeper_sushi";
       else
         food_action += "black_pepper_ribs_and_shrimp";
     }
     else
     {
       if ( level > 90 )
-        food_action += "blackrock_barbecue";
+        food_action += "pickled_eel";
       else
         food_action += "chun_tian_spring_rolls";
     }

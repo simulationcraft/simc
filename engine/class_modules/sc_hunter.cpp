@@ -3771,7 +3771,7 @@ void hunter_t::init_action_list()
     {
       std::string food_action = "food,type=";
       if ( level > 90 )
-        food_action += "calamari_crepes";
+        food_action += "salty_squid_roll";
       else
         food_action += ( level > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
       precombat -> add_action( food_action );

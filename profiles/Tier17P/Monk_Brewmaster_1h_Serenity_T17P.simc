@@ -16,7 +16,7 @@ spec=brewmaster
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_stamina_flask
-actions.precombat+=/food,type=talador_surf_and_turf
+actions.precombat+=/food,type=whiptail_fillet
 actions.precombat+=/stance,choose=sturdy_ox
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats

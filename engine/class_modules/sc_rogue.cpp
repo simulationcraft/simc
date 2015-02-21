@@ -4695,11 +4695,11 @@ void rogue_t::init_action_list()
   {
     std::string food_action = "food,type=";
     if ( specialization() == ROGUE_ASSASSINATION )
-      food_action += ( ( level >= 100 ) ? "sleeper_surprise" : ( level > 85 ) ? "sea_mist_rice_noodles" : ( level > 80 ) ? "seafood_magnifique_feast" : "" );
+      food_action += ( ( level >= 100 ) ? "sleeper_sushi" : ( level > 85 ) ? "sea_mist_rice_noodles" : ( level > 80 ) ? "seafood_magnifique_feast" : "" );
     else if ( specialization() == ROGUE_COMBAT )
-      food_action += ( ( level >= 100 ) ? "frosty_stew" : ( level > 85 ) ? "sea_mist_rice_noodles" : ( level > 80 ) ? "seafood_magnifique_feast" : "" );
+      food_action += ( ( level >= 100 ) ? "buttered_sturgeon" : ( level > 85 ) ? "sea_mist_rice_noodles" : ( level > 80 ) ? "seafood_magnifique_feast" : "" );
     else if ( specialization() == ROGUE_SUBTLETY )
-      food_action += ( ( level >= 100 ) ? "calamari_crepes" : ( level > 85 ) ? "sea_mist_rice_noodles" : ( level > 80 ) ? "seafood_magnifique_feast" : "" );
+      food_action += ( ( level >= 100 ) ? "salty_squid_roll" : ( level > 85 ) ? "sea_mist_rice_noodles" : ( level > 80 ) ? "seafood_magnifique_feast" : "" );
 
     precombat -> add_action( food_action );
   }

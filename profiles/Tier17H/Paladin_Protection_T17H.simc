@@ -17,8 +17,8 @@ spec=protection
 
 actions.precombat=flask,type=greater_draenic_stamina_flask
 actions.precombat+=/flask,type=greater_draenic_strength_flask,if=role.attack|using_apl.max_dps
-actions.precombat+=/food,type=talador_surf_and_turf
-actions.precombat+=/food,type=blackrock_barbecue,if=role.attack|using_apl.max_dps
+actions.precombat+=/food,type=whiptail_fillet
+actions.precombat+=/food,type=pickled_eel,if=role.attack|using_apl.max_dps
 actions.precombat+=/blessing_of_kings,if=(!aura.str_agi_int.up)&(aura.mastery.up)
 actions.precombat+=/blessing_of_might,if=!aura.mastery.up
 actions.precombat+=/seal_of_insight

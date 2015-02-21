@@ -6365,13 +6365,13 @@ void death_knight_t::default_apl_blood()
   {
     potion_str += ( level > 90 ) ? "draenic_armor" : ( level >= 85 ) ? "mountains" : "earthen";
     flask_str += ( level > 90 ) ? "greater_draenic_stamina_flask" : ( level >= 85 ) ? "earth" : "steelskin";
-    food_str += ( level > 90 ) ? "talador_surf_and_turf" : ( level >= 85 ) ? "chun_tian_spring_rolls" : "beer_basted_crocolisk";
+    food_str += ( level > 90 ) ? "whiptail_fillet" : ( level >= 85 ) ? "chun_tian_spring_rolls" : "beer_basted_crocolisk";
   }
   else
   {
     potion_str += ( level > 90 ) ? "draenic_strength" : ( level >= 85 ) ? "mogu_power" : "golemblood";
     flask_str += ( level > 90 ) ? "greater_draenic_strength_flask" : ( level >= 85 ) ? "winters_bite" : "titanic_strength";
-    food_str += ( level > 90 ) ? "calamari_crepes" : ( level >= 85 ) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
+    food_str += ( level > 90 ) ? "salty_squid_roll" : ( level >= 85 ) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
   }
 
   // Precombat actions
@@ -6527,8 +6527,8 @@ void death_knight_t::init_action_list()
   std::string soul_reaper_pct = (perk.improved_soul_reaper -> ok() || sets.has_set_bonus( SET_MELEE, T15, B4 )) ? "45" : "35";
   std::string flask_str = "flask,type=";
   std::string food_str = "food,type=";
-  std::string food_mastery = "food,type=sleeper_surprise";
-  std::string food_ms = "food,type=calamari_crepes";
+  std::string food_mastery = "food,type=sleeper_sushi";
+  std::string food_ms = "food,type=salty_squid_roll";
   std::string potion_str = "potion,name=";
   potion_str += (level > 90) ? "draenic_strength" : ((level >= 85) ? "mogu_power" : "golemblood");
   food_str += (level >= 85) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";

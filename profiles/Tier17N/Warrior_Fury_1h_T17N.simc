@@ -19,7 +19,7 @@ spec=fury
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_strength_flask
-actions.precombat+=/food,type=blackrock_barbecue
+actions.precombat+=/food,type=pickled_eel
 actions.precombat+=/stance,choose=battle
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 # Generic on-use trinket line if needed when swapping trinkets out. 

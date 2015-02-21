@@ -6382,13 +6382,13 @@ void druid_t::apl_precombat()
     if ( level > 90 )
     {
       if ( specialization() == DRUID_FERAL )
-        food += "blackrock_barbecue";
+        food += "pickled_eel";
       else if ( specialization() == DRUID_BALANCE )
-        food += "sleeper_surprise";
+        food += "sleeper_sushi";
       else if ( specialization() == DRUID_GUARDIAN )
-        food += "sleeper_surprise";
+        food += "sleeper_sushi";
       else
-        food += "frosty_stew";
+        food += "buttered_sturgeon";
     }
     else if ( level > 85 )
       food += "seafood_magnifique_feast";

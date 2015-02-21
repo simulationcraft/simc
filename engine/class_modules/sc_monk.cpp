@@ -5897,7 +5897,7 @@ void monk_t::apl_pre_brewmaster()
   if ( sim -> allow_food && level >= 80 )
   {
     if ( level > 90 )
-      pre -> add_action( "food,type=talador_surf_and_turf" );
+      pre -> add_action( "food,type=whiptail_fillet" );
     else if ( level >= 85 )
       pre -> add_action( "food,type=mogu_fish_stew" );
     else

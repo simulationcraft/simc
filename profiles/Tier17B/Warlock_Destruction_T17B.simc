@@ -15,7 +15,7 @@ spec=destruction
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_intellect_flask
-actions.precombat+=/food,type=blackrock_barbecue
+actions.precombat+=/food,type=pickled_eel
 actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
 actions.precombat+=/summon_pet,if=!talent.demonic_servitude.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down)
 actions.precombat+=/summon_doomguard,if=talent.demonic_servitude.enabled&active_enemies<5

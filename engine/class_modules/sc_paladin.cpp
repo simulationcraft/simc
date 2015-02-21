@@ -4932,8 +4932,8 @@ void paladin_t::generate_action_prio_list_prot()
   {
     if ( level > 90 )
     {
-      precombat -> add_action( "food,type=talador_surf_and_turf" );
-      precombat -> add_action( "food,type=blackrock_barbecue,if=role.attack|using_apl.max_dps" );
+      precombat -> add_action( "food,type=whiptail_fillet" );
+      precombat -> add_action( "food,type=pickled_eel,if=role.attack|using_apl.max_dps" );
     }
     else if ( level > 85 )
       precombat -> add_action( "food,type=chun_tian_spring_rolls" );
@@ -5149,7 +5149,7 @@ void paladin_t::generate_action_prio_list_ret()
   {
     std::string food_action = "food,type=";
     if ( level > 90 )
-      food_action += "sleeper_surprise";
+      food_action += "sleeper_sushi";
     else
       food_action += ( level > 85 ) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
 
@@ -5368,7 +5368,7 @@ void paladin_t::generate_action_prio_list_holy_dps()
   {
     std::string food_action = "food,type=";
     if ( level > 90 )
-      food_action += "blackrock_barbecue";
+      food_action += "pickled_eel";
     else
       food_action += ( level > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
     precombat -> add_action( food_action );
@@ -5435,7 +5435,7 @@ void paladin_t::generate_action_prio_list_holy()
   {
     std::string food_action = "food,type=";
     if ( level > 90 )
-      food_action += "blackrock_barbecue";
+      food_action += "pickled_eel";
     else
       food_action += ( level > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
     precombat -> add_action( food_action );
