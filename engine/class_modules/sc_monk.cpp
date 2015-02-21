@@ -2104,6 +2104,7 @@ struct jab_t: public monk_melee_attack_t
     base_costs[RESOURCE_ENERGY] = ( p -> specialization() == MONK_WINDWALKER ? 45 : 40 );
 
     base_multiplier *= 1.38; // hardcoded into tooltip
+    spell_power_mod.direct = 0.0;
   }
 
   double combo_breaker_chance()
@@ -2173,6 +2174,7 @@ struct tiger_palm_t: public monk_melee_attack_t
     if ( p -> specialization() == MONK_MISTWEAVER )
       base_multiplier *= 1.0 + p -> spec.teachings_of_the_monastery -> effectN( 5 ).percent();
     base_costs[RESOURCE_CHI] *= 1.0 + p -> spec.brewmaster_training -> effectN( 2 ).percent();
+    spell_power_mod.direct = 0.0;
   }
 
   double action_multiplier() const
@@ -2270,6 +2272,7 @@ struct blackout_kick_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     base_multiplier *= 6.4; // hardcoded into tooltip
+    spell_power_mod.direct = 0.0;
 
     if ( p -> spec.teachings_of_the_monastery -> ok() )
       aoe = p -> spec.teachings_of_the_monastery -> effectN( 3 ).base_value(); // Tooltip says effect 4, but I think 4 targets is more reasonable than 50.
@@ -2591,6 +2594,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     base_multiplier *= 10.56; // hardcoded into tooltip
+    spell_power_mod.direct = 0.0;
     sef_ability = SEF_RISING_SUN_KICK;
   }
 
@@ -2697,6 +2701,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     tick_zero = hasted_ticks = true;
 
     base_multiplier *= 0.72; // hardcoded into tooltip
+    spell_power_mod.direct = 0.0;
 
     tick_action = new tick_action_t( "rushing_jade_wind_tick", p, &( data() ) );
   }
@@ -2755,6 +2760,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     tick_zero = channeled = true;
 
     base_multiplier *= 0.9; // hardcoded into tooltip
+    spell_power_mod.direct = 0.0;
 
     base_tick_time *= 1.0 + p -> perk.empowered_spinning_crane_kick -> effectN( 1 ).percent();
     dot_duration *= 1.0 + p -> perk.empowered_spinning_crane_kick -> effectN( 2 ).percent();
@@ -2831,6 +2837,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
     interrupt_auto_attack = true;
 
     base_multiplier *= 7.755; // hardcoded into tooltip
+    spell_power_mod.direct = 0.0;
 
     // T14 WW 2PC
     cooldown -> duration = data().cooldown();
@@ -2888,6 +2895,7 @@ struct hurricane_strike_t: public monk_melee_attack_t
     dot_duration = data().duration();
     base_tick_time = dot_duration / 15;
     base_multiplier = 2.5;
+    spell_power_mod.direct = 0.0;
 
     tick_action = new hurricane_strike_tick_t( "hurricane_strike_tick", p, p -> find_spell( 158221 ) );
   }
@@ -3235,6 +3243,7 @@ struct expel_harm_t: public monk_melee_attack_t
 
     if ( p -> glyph.targeted_expulsion -> ok() )
       base_multiplier *= 1.0 - p -> glyph.targeted_expulsion -> effectN( 2 ).percent();
+    spell_power_mod.direct = 0.0;
   }
 
   virtual double cost() const
