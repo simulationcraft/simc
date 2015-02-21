@@ -1019,21 +1019,13 @@ struct force_of_nature_balance_t : public pet_t
 
   druid_t* o() { return static_cast< druid_t* >( owner ); }
 
-  force_of_nature_balance_t( sim_t* sim, druid_t* owner ) :
+  force_of_nature_balance_t( sim_t* sim, druid_t* owner ):
     pet_t( sim, owner, "treant", true /*GUARDIAN*/, true )
   {
-    if ( owner -> dbc.ptr )
-    {
-      owner_coeff.sp_from_sp      = 0.45;
-      owner_coeff.ap_from_ap      = 0.60;
-      owner_coeff.health          = 1.35; // needs checking
-      owner_coeff.armor           = 1.80; // needs checking
-    } 
-    else 
-    {
-      owner_coeff.sp_from_sp      = 1.0 /3 ;
-      owner_coeff.ap_from_ap      = 1.0 /3 ;
-    }
+    owner_coeff.sp_from_sp = 0.45;
+    owner_coeff.ap_from_ap = 0.60;
+    owner_coeff.health = 1.35; // needs checking
+    owner_coeff.armor = 1.80; // needs checking
     action_list_str = "wrath";
     regen_type = REGEN_DISABLED;
   }
@@ -1127,9 +1119,6 @@ struct force_of_nature_feral_t : public pet_t
       dot_behavior     = DOT_REFRESH;
       special = may_crit = tick_may_crit = true;
       owner            = p -> o();
-
-      if ( ! owner -> dbc.ptr )
-        base_multiplier *= 1.12;
     }
 
     force_of_nature_feral_t* p()
@@ -1177,26 +1166,18 @@ struct force_of_nature_feral_t : public pet_t
   };
   
   melee_t* melee;
-  force_of_nature_feral_t( sim_t* sim, druid_t* p ) :
+  force_of_nature_feral_t( sim_t* sim, druid_t* p ):
     pet_t( sim, p, "treant", true, true ), melee( 0 )
   {
-    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.type = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-    main_hand_weapon.min_dmg    = owner -> find_spell( 102703 ) -> effectN( 1 ).min( owner );
-    main_hand_weapon.max_dmg    = owner -> find_spell( 102703 ) -> effectN( 1 ).max( owner );
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    if ( p -> dbc.ptr )
-    {
-      owner_coeff.sp_from_sp    = 0.45;
-      owner_coeff.ap_from_ap    = 0.60;
-      owner_coeff.health        = 1.35; // needs checking
-      owner_coeff.armor         = 1.80; // needs checking
-    } 
-    else 
-    {
-      owner_coeff.sp_from_sp    = 1.0 / 3.0;
-      owner_coeff.ap_from_ap    = 1.0 / 3.0;
-    }
+    main_hand_weapon.min_dmg = owner -> find_spell( 102703 ) -> effectN( 1 ).min( owner );
+    main_hand_weapon.max_dmg = owner -> find_spell( 102703 ) -> effectN( 1 ).max( owner );
+    main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    owner_coeff.sp_from_sp = 0.45;
+    owner_coeff.ap_from_ap = 0.60;
+    owner_coeff.health = 1.35; // needs checking
+    owner_coeff.armor = 1.80; // needs checking
     regen_type = REGEN_DISABLED;
   }
 
@@ -1276,22 +1257,19 @@ struct force_of_nature_guardian_t : public pet_t
     }
   };
 
-  force_of_nature_guardian_t( sim_t* sim, druid_t* p ) :
+  force_of_nature_guardian_t( sim_t* sim, druid_t* p ):
     pet_t( sim, p, "treant", true, true ), melee( 0 )
   {
-    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.type = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-    main_hand_weapon.min_dmg    = owner -> find_spell( 102706 ) -> effectN( 1 ).min( owner ) * 0.2;
-    main_hand_weapon.max_dmg    = owner -> find_spell( 102706 ) -> effectN( 1 ).max( owner ) * 0.2;
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    owner_coeff.ap_from_ap      = 0.2 * 1.2;
-    if ( dbc.ptr )
-    {
-      owner_coeff.ap_from_ap     *= 1.8;
-      owner_coeff.sp_from_sp      = 0.45;
-      owner_coeff.health          = 1.35; // needs checking
-      owner_coeff.armor           = 1.80; // needs checking
-    }
+    main_hand_weapon.min_dmg = owner -> find_spell( 102706 ) -> effectN( 1 ).min( owner ) * 0.2;
+    main_hand_weapon.max_dmg = owner -> find_spell( 102706 ) -> effectN( 1 ).max( owner ) * 0.2;
+    main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    owner_coeff.ap_from_ap = 0.2 * 1.2;
+    owner_coeff.ap_from_ap *= 1.8;
+    owner_coeff.sp_from_sp = 0.45;
+    owner_coeff.health = 1.35; // needs checking
+    owner_coeff.armor = 1.80; // needs checking
     regen_type = REGEN_DISABLED;
   }
 
@@ -2400,9 +2378,6 @@ struct ferocious_bite_t : public cat_attack_t
       glyph_effect = new glyph_of_ferocious_bite_t( p );
 
     p -> max_fb_energy = max_excess_energy + cost();
-
-    if ( ! p -> dbc.ptr )
-      base_multiplier *= 1.12;
   }
 
   virtual bool ready()
@@ -2538,8 +2513,6 @@ struct rake_t : public cat_attack_t
     attack_power_mod.tick = bleed_spell -> effectN( 1 ).ap_coeff();
     dot_duration          = bleed_spell -> duration();
     base_tick_time        = bleed_spell -> effectN( 1 ).period();
-    if ( ! p -> dbc.ptr )
-      base_multiplier *= 1.12;
 
     ir_counter = new snapshot_counter_t( p, p -> buff.prowl );
     ir_counter -> add_buff( p -> buff.king_of_the_jungle );
@@ -2658,10 +2631,7 @@ struct rip_t : public cat_attack_t
     special      = true;
     may_crit     = false;
     dot_behavior = DOT_REFRESH;
-
     dot_duration += player -> sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
-    if ( ! p -> dbc.ptr )
-      base_multiplier *= 1.12;
 
     trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
   }
@@ -2740,8 +2710,6 @@ struct shred_t : public cat_attack_t
   {
     base_multiplier *= 1.0 + player -> sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     special = true;
-    if ( ! p -> dbc.ptr )
-      base_multiplier *= 1.12;
   }
 
   virtual void execute()
@@ -2827,8 +2795,6 @@ public:
   {
     aoe = -1;
     combo_point_gain = data().effectN( 1 ).base_value(); // Effect is not labelled correctly as CP gain
-    if ( ! player -> dbc.ptr )
-      base_multiplier *= 1.25;
   }
 
   virtual void impact( action_state_t* s )
@@ -2907,8 +2873,6 @@ struct thrash_cat_t : public cat_attack_t
     aoe                    = -1;
     dot_behavior           = DOT_REFRESH;
     spell_power_mod.direct = 0;
-    if ( ! p -> dbc.ptr )
-      base_multiplier *= 1.12;
 
     trigger_t17_2p = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
   }
@@ -3127,8 +3091,6 @@ struct lacerate_t : public bear_attack_t
     dot_behavior = DOT_REFRESH;
 
     rage_amount = data().effectN( 3 ).resource( RESOURCE_RAGE );
-    if ( ! p -> dbc.ptr )
-      base_multiplier *= 1.05;
   }
 
   virtual void impact( action_state_t* state )
@@ -3188,8 +3150,6 @@ struct mangle_t : public bear_attack_t
       base_crit += p() -> talent.dream_of_cenarius -> effectN( 3 ).percent();
 
     base_multiplier *= 1.0 + player -> talent.soul_of_the_forest -> effectN( 2 ).percent();
-    if ( ! player -> dbc.ptr )
-      base_multiplier *= 1.05;
   }
 
   void update_ready( timespan_t )
@@ -3274,9 +3234,6 @@ struct maul_t : public bear_attack_t
         cost_reduction = p() -> find_spell( 165410 ) -> effectN( 1 ).resource( RESOURCE_RAGE ) * -1.0;
     }
 
-    if ( ! player -> dbc.ptr )
-      base_multiplier *= 1.05;
-
     normalize_weapon_speed = false;
   }
 
@@ -3345,9 +3302,6 @@ struct pulverize_t : public bear_attack_t
   {
     parse_options( options_str );
 
-    if ( ! player -> dbc.ptr )
-      base_multiplier *= 1.05;
-
     normalize_weapon_speed = false;
   }
 
@@ -3389,9 +3343,6 @@ struct thrash_bear_t : public bear_attack_t
 
     // 9/28/2014: Damage multiplier to fix damage inconsistency vs in-game.
     base_multiplier *= 4.0;
-
-    if ( ! player -> dbc.ptr )
-      attack_power_mod.direct *= 0.5;
 
     rage_amount = rage_tick_amount = p() -> find_spell( 158723 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
   }
@@ -3995,8 +3946,6 @@ struct rejuvenation_t : public druid_heal_t
   {
     tick_zero = true;
     ignore_false_positive = true; // Prevents cat/bear from failing a skill check and going into caster form.
-    if ( ! p -> dbc.ptr )
-      base_multiplier *= 0.95;
   }
 
   virtual void execute()
@@ -4209,8 +4158,6 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 
       double mastery;
       mastery = p -> cache.mastery_value();
-      if ( ! p -> dbc.ptr )
-        mastery *= 1.067;
       mastery += p -> spec.eclipse -> effectN( 1 ).percent();
 
       if ( ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) ) &&
@@ -5102,9 +5049,6 @@ struct moonfire_cat_t : public druid_spell_t
     druid_spell_t( "moonfire_cat", player, player -> find_spell( 155625 ) )
   {
     parse_options( options_str );
-
-    if ( ! player -> dbc.ptr )
-      base_multiplier *= 1.12;
   }
 
   virtual void impact( action_state_t* s )
@@ -5303,7 +5247,7 @@ public:
   {
     double c = druid_spell_t::cost();
 
-    if ( p() -> talent.guardian_of_elune -> ok() && p() -> dbc.ptr )
+    if ( p() -> talent.guardian_of_elune -> ok() )
     {
       c /= 1 + dodge();
 
@@ -5394,10 +5338,6 @@ struct starfire_t : public druid_spell_t
   {
     parse_options( options_str );
     base_execute_time *= 1 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
-    if ( ! player -> dbc.ptr )
-    {
-      spell_power_mod.direct *= 1.25;
-    }
   }
 
   double action_multiplier() const
@@ -5452,10 +5392,6 @@ struct starfall_pulse_t : public druid_spell_t
   {
     direct_tick = true;
     aoe = -1;
-    if ( ! player -> dbc.ptr )
-    {
-      spell_power_mod.direct *= 1.75;
-    }
   }
 };
 
@@ -5520,11 +5456,6 @@ struct starsurge_t : public druid_spell_t
     base_crit += p() -> sets.set( SET_CASTER, T15, B2 ) -> effectN( 1 ).percent();
     cooldown = player -> cooldown.starfallsurge;
     base_execute_time *= 1.0 + player -> perk.enhanced_starsurge -> effectN( 1 ).percent();
-
-    if ( ! player -> dbc.ptr )
-    {
-      spell_power_mod.direct *= 1.25;
-    }
   }
 
   void execute()
@@ -5568,8 +5499,6 @@ struct stellar_flare_t : public druid_spell_t
     balance = p() -> clamped_eclipse_amount;
     double mastery;
     mastery = p() -> cache.mastery_value();
-    if ( ! player -> dbc.ptr )
-      mastery *= 1.067;
     mastery += p() -> spec.eclipse -> effectN(1).percent();
 
     if ( p() -> buff.celestial_alignment -> up() )
@@ -5764,10 +5693,6 @@ struct wrath_t : public druid_spell_t
   {
     parse_options( options_str );
     base_execute_time *= 1 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
-    if ( ! player -> dbc.ptr )
-    {
-      spell_power_mod.direct *= 1.25;
-    }
   }
 
   double action_multiplier() const
