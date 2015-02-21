@@ -2901,7 +2901,7 @@ struct fire_nova_t : public shaman_spell_t
     target_cache.list.clear();
     int fire_nova_targets = 0;
     // WoD Hotfix - 10-30-14
-    // Fire Nova now has a maximum of 7 novas that can be triggered if more than 7 targets are affected by Flame Shock.
+    // Fire Nova now has a maximum of 6 novas that can be triggered if more than 6 targets are affected by Flame Shock.
     for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); ++i )
     {
       if ( fire_nova_targets == 6 )
@@ -3263,7 +3263,7 @@ struct earthquake_rumble_t : public shaman_spell_t
     harmful = background = true;
     aoe = -1;
     school = SCHOOL_PHYSICAL;
-    spell_power_mod.direct = 0.10; // Hardcoded into tooltip because it's cool
+    spell_power_mod.direct = 0.11; // Hardcoded into tooltip because it's cool
   }
 
   virtual double composite_spell_power() const

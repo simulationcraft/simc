@@ -1986,11 +1986,9 @@ struct crimson_tempest_t : public rogue_attack_t
     ability_type = CRIMSON_TEMPEST;
     aoe = -1;
     base_costs[ RESOURCE_COMBO_POINT ] = 1;
-    attack_power_mod.direct = 0.0602;
+    attack_power_mod.direct = 0.09;
     weapon = &( p -> main_hand_weapon );
     weapon_power_mod = weapon_multiplier = 0;
-    // Hard-coded tooltip.
-    attack_power_mod.direct *= 1.5;
     ct_dot = new crimson_tempest_dot_t( p );
     base_dd_min = base_dd_max = 0;
   }
@@ -2029,7 +2027,6 @@ struct garrote_t : public rogue_attack_t
   {
     may_crit          = false;
     requires_stealth  = true;
-    attack_power_mod.tick    = 0.078;
   }
 
   void impact( action_state_t* state )
@@ -4180,6 +4177,7 @@ struct shadow_reflection_pet_t : public pet_t
     {
       base_costs[ RESOURCE_COMBO_POINT ] = 1;
       attack_power_mod.direct = 0.577;
+      attack_power_mod.direct *= 0.88;
       weapon_multiplier = 0;
     }
   };
@@ -4360,7 +4358,7 @@ struct shadow_reflection_pet_t : public pet_t
     {
       aoe = -1;
       base_costs[ RESOURCE_COMBO_POINT ] = 1;
-      attack_power_mod.direct = 0.0602;
+      attack_power_mod.direct = 0.09;
       weapon_multiplier = 0;
       add_child( dot );
     }

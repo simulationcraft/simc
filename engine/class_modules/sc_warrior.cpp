@@ -1562,7 +1562,6 @@ struct devastate_t: public warrior_attack_t
     parse_options( options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE | STANCE_BATTLE;
     weapon = &( p -> main_hand_weapon );
-    weapon_multiplier = 2.5; // Fix
   }
 
   void execute()
@@ -2322,7 +2321,6 @@ struct revenge_t: public warrior_attack_t
     base_add_multiplier = data().effectN( 3 ).percent();
     aoe = 3;
     rage_gain = data().effectN( 2 ).resource( RESOURCE_RAGE );
-    attack_power_mod.direct = 3.528; //Fix
   }
 
   double action_multiplier() const
@@ -5179,7 +5177,7 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   {
     if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
     {
-      m *= 1.0 + 0.05; //Fix
+      m *= 1.0 + buff.gladiator_stance -> data().effectN( 1 ).percent();
     }
   }
 

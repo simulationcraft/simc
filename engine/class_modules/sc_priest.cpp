@@ -835,12 +835,10 @@ struct fiend_melee_t : public priest_pet_melee_t
 struct lightwell_renew_t : public heal_t
 {
   lightwell_renew_t( lightwell_pet_t& p ) :
-    heal_t( "lightwell_renew", &p, p.find_spell( 7001 ) )
+    heal_t( "lightwell_renew", &p, p.find_spell( 126154 ) )
   {
     may_crit = false;
     tick_may_crit = true;
-
-    spell_power_mod.direct = 0.308;
   }
 
   lightwell_pet_t& p()
@@ -2642,13 +2640,13 @@ struct shadow_word_death_t : public priest_spell_t
   shadow_word_death_backlash_t* backlash;
 
   shadow_word_death_t( priest_t& p, const std::string& options_str ) :
-    priest_spell_t( "shadow_word_death", p, p.find_class_spell( "Shadow Word: Death" ) ),
+    priest_spell_t( "shadow_word_death", p, p.find_specialization_spell( "Shadow Word: Death" ) ),
     backlash( new shadow_word_death_backlash_t( p ) )
   {
     parse_options( options_str );
     instant_multistrike = false;
 
-    spell_power_mod.direct = 2.7; // Is really 270% SP, tooltip value is incorrect. -- Twintop 2014/10/22
+    spell_power_mod.direct = data().effectN( 2 ).sp_coeff();
     base_multiplier *= 1.0 + p.sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
   }
 
@@ -4628,7 +4626,7 @@ struct power_word_shield_t : public priest_absorb_t
     add_option( opt_bool( "ignore_debuff", ignore_debuff ) );
     parse_options( options_str );
 
-    spell_power_mod.direct = 5.0; // hardcoded into tooltip 15/02/14
+    spell_power_mod.direct = 4.59; // last checked 2015/02/21
 
     if ( p.glyphs.power_word_shield -> ok() )
     {
@@ -4744,7 +4742,7 @@ struct prayer_of_mending_t : public priest_heal_t
     add_option( opt_bool( "single", single ) );
     parse_options( options_str );
 
-    spell_power_mod.direct = 0.442787; // hardcoded into tooltip 14/12/03
+    spell_power_mod.direct = 0.666; // last checked 2015/02/21
     base_dd_min = base_dd_max = data().effectN( 1 ).min( &p );
 
     aoe = 5;
@@ -4876,7 +4874,7 @@ struct clarity_of_will_t : public priest_absorb_t
   {
     parse_options( options_str );
 
-    spell_power_mod.direct = 6.0; // hardcoded into tooltip 15/02/14
+    spell_power_mod.direct = 6.6; // Last checked 2015/02/21
 
     // TODO: implement buff value overflow of 75% of casting priest health. 15/02/14
   }

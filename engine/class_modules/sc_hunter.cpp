@@ -1480,7 +1480,7 @@ struct froststorm_breath_t: public hunter_main_pet_spell_t
     froststorm_breath_tick_t( hunter_main_pet_t* player ):
       hunter_main_pet_spell_t( "froststorm_breath_tick", player, player -> find_spell( 95725 ) )
     {
-      attack_power_mod.direct = 0.144; // hardcoded into tooltip, 29/08/2012
+      attack_power_mod.direct = 0.144; // hardcoded into tooltip, 2012/08 checked 2015/02/21
       background = true;
       direct_tick = true;
     }
@@ -2942,8 +2942,6 @@ struct barrage_t: public hunter_spell_t
       may_crit = true;
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
-
-      // FIXME AoE is just approximate from tooltips
       aoe = -1;
       base_aoe_multiplier = 0.5;
     }
@@ -2994,8 +2992,6 @@ struct peck_t: public ranged_attack_t
     may_block = false;
     may_dodge = false;
     travel_speed = 0.0;
-
-    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
   }
 
   hunter_t* p() const { return static_cast<hunter_t*>( player ); }

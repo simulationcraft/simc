@@ -4,7 +4,7 @@
 // ==========================================================================
 /*
 TODO:
-  **Check Zen Sphere attack power coeff**
+
 Add all buffs
 - Crackling Jade Lightning
 Change expel harm to heal later on.
@@ -16,7 +16,6 @@ GENERAL:
 
 WINDWALKER:
 - Make Sure the healing for Blackout Kick is working
-- Implement Storm, Earth, and Fire
 
 MISTWEAVER: Pretty much everything. I have no plans of fixing mistweaver. -alex 8/26/14
 Implement the following spells:
@@ -2273,7 +2272,7 @@ struct blackout_kick_t: public monk_melee_attack_t
     base_multiplier *= 6.4; // hardcoded into tooltip
 
     if ( p -> spec.teachings_of_the_monastery -> ok() )
-      aoe = 1 + p -> spec.teachings_of_the_monastery -> effectN( 4 ).base_value();
+      aoe = p -> spec.teachings_of_the_monastery -> effectN( 3 ).base_value(); // Tooltip says effect 4, but I think 4 targets is more reasonable than 50.
 
     sef_ability = SEF_BLACKOUT_KICK;
   }
@@ -2428,6 +2427,10 @@ struct chi_explosion_t: public monk_melee_attack_t
         return -1;
       }
     }
+    else if ( p() -> resources.current[RESOURCE_CHI] >= 2 )
+    {
+      return p() -> spec.teachings_of_the_monastery -> effectN( 3 ).base_value(); // Tooltip says effect 4, but I think 4 targets is more reasonable than 50.
+    }
 
     return 0;
   }
@@ -2485,7 +2488,6 @@ struct chi_explosion_t: public monk_melee_attack_t
   double action_multiplier() const
   {
     double m = monk_melee_attack_t::action_multiplier();
-
 
     // check for melee 2p and CB: TP, for the 50% dmg bonus
     if ( p() -> sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_ce -> check() ) {
