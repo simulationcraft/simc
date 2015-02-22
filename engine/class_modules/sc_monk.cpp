@@ -1859,6 +1859,8 @@ public:
   {
     ab::consume_resource();
 
+    if ( !ab::execute_state ) // Fixes rare crashes at combat_end.
+      return;
     // Handle Tigereye Brew and Mana Tea
     if ( ab::result_is_hit( ab::execute_state -> result ) )
     {
