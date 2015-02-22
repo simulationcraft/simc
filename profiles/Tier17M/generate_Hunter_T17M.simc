@@ -16,7 +16,7 @@ race=orc
 spec=beast_mastery
 position=ranged_back
 role=attack
-talents=0001233
+talents=0001333
 head=rylakstalkers_headguard,id=115545,bonus_id=567
 neck=engineers_grounded_gorget,id=113892,bonus_id=567,enchant_id=5319
 shoulders=rylakstalkers_spaulders,id=115547,bonus_id=567
