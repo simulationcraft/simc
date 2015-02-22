@@ -1188,14 +1188,13 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_fists_of_fury_t( storm_earth_and_fire_pet_t* player ) :
       sef_melee_attack_t( "fists_of_fury", player, player -> o() -> find_specialization_spell( "Fists of Fury" ) )
     {
-      channeled = tick_zero = true;
+      channeled = tick_zero = interrupt_auto_attack = true;
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
       weapon_power_mod = 0;
 
       tick_action = new sef_fists_of_fury_tick_t( player );
     }
-
   };
 
   struct sef_spinning_crane_kick_t : public sef_melee_attack_t
@@ -1481,6 +1480,11 @@ public:
 
     tiger_power = buff_creator_t( this, "tiger_power", o() -> find_class_spell( "Tiger Palm" ) -> effectN( 2 ).trigger() )
       .refresh_behavior( BUFF_REFRESH_PANDEMIC );
+  }
+
+  void moving()
+  {
+    return;
   }
 
   void init_spells()
