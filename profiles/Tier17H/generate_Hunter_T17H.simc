@@ -16,7 +16,7 @@ race=orc
 spec=beast_mastery
 position=ranged_back
 role=attack
-talents=0002333
+talents=0001333
 head=rylakstalkers_headguard,id=115545,bonus_id=566
 neck=darklight_necklace,id=113865,bonus_id=566,enchant=gift_of_critical_strike
 shoulders=rylakstalkers_spaulders,id=115547,bonus_id=566

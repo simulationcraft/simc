@@ -3862,9 +3862,10 @@ void hunter_t::apl_bm()
 
   default_list -> add_talent( this, "Dire Beast");
   default_list -> add_action( this, "Explosive Trap", "if=active_enemies>1" );
-  default_list -> add_action( this, "Bestial Wrath", "if=focus>60&!buff.bestial_wrath.up");
+  default_list -> add_action( this, "Bestial Wrath", "if=focus>60&!buff.bestial_wrath.up" );
+  default_list -> add_action( this, "Multi-Shot", "if=active_enemies>1&pet.cat.buff.beast_cleave.down" );
   default_list -> add_talent( this, "Barrage", "if=active_enemies>1" );
-  default_list -> add_action( this, "Multi-Shot", "if=active_enemies>5|(active_enemies>1&pet.cat.buff.beast_cleave.down)");
+  default_list -> add_action( this, "Multi-Shot", "if=active_enemies>5");
   default_list -> add_action( this, "Focus Fire", "five_stacks=1");
   default_list -> add_talent( this, "Barrage", "if=active_enemies>1");
   default_list -> add_talent( this, "A Murder of Crows");
