@@ -39,9 +39,8 @@ actions+=/stampede,if=buff.bloodlust.up|buff.focus_fire.up|target.time_to_die<=2
 actions+=/dire_beast
 actions+=/explosive_trap,if=active_enemies>1
 actions+=/bestial_wrath,if=focus>60&!buff.bestial_wrath.up
-actions+=/multishot,if=active_enemies>1&pet.cat.buff.beast_cleave.down
 actions+=/barrage,if=active_enemies>1
-actions+=/multishot,if=active_enemies>5
+actions+=/multishot,if=active_enemies>5|(active_enemies>1&pet.cat.buff.beast_cleave.down)
 actions+=/focus_fire,five_stacks=1
 actions+=/barrage,if=active_enemies>1
 actions+=/a_murder_of_crows
