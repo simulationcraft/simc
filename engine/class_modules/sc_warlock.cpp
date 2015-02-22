@@ -1771,7 +1771,7 @@ public:
     return new warlock_state_t( this, target );
   }
 
-  bool use_havoc() const
+  virtual bool use_havoc() const
   {
     if ( ! p() -> havoc_target || target == p() -> havoc_target || ! havoc_consume )
       return false;
@@ -3339,6 +3339,14 @@ struct chaos_bolt_t: public warlock_spell_t
       warlock_spell_t::schedule_execute( state );
   }
 
+  bool use_havoc() const
+  {
+    if ( p() -> buffs.fire_and_brimstone -> check() )
+      return false;
+
+    return warlock_spell_t::use_havoc();
+  }
+
   virtual double composite_crit() const
   {
     return 1.0;
@@ -3366,7 +3374,7 @@ struct chaos_bolt_t: public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    if (p()->buffs.fire_and_brimstone->check())
+    if ( p()-> buffs.fire_and_brimstone -> check() )
     {
       m *= p() -> buffs.fire_and_brimstone -> data().effectN( 5 ).percent();
       m *= 1.0 + p() -> cache.mastery_value();
@@ -3377,7 +3385,10 @@ struct chaos_bolt_t: public warlock_spell_t
 
     m *= 1.0 + p() -> cache.spell_crit();
 
+    if ( !p() -> buffs.fire_and_brimstone -> check() )
+    {
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+    }
 
     return m;
   }
