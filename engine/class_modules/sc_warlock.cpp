@@ -3146,6 +3146,7 @@ struct incinerate_t: public warlock_spell_t
       m *= p() -> buffs.fire_and_brimstone -> data().effectN( 5 ).percent();
     }
 
+    if ( !p() -> buffs.fire_and_brimstone -> check() )
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     m *= 1.0 + p() -> mastery_spells.emberstorm -> effectN( 3 ).percent() + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 3 ).mastery_value();
@@ -3377,6 +3378,7 @@ struct chaos_bolt_t: public warlock_spell_t
 
     m *= 1.0 + p() -> cache.spell_crit();
 
+    if ( !p() -> buffs.fire_and_brimstone -> check() )
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
