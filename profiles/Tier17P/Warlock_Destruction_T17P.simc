@@ -35,8 +35,8 @@ actions+=/arcane_torrent
 actions+=/mannoroths_fury
 actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|trinket.proc.any.react|trinket.stacking_any.intellect.react>6|target.time_to_die<40))
 actions+=/service_pet,if=talent.grimoire_of_service.enabled&(target.time_to_die>120|target.time_to_die<20|(buff.dark_soul.remains&target.health.pct<20))
-actions+=/summon_doomguard,if=!talent.demonic_servitude.enabled&active_enemies<5
-actions+=/summon_infernal,if=!talent.demonic_servitude.enabled&active_enemies>=5
+actions+=/summon_doomguard,if=!talent.demonic_servitude.enabled&active_enemies<9
+actions+=/summon_infernal,if=!talent.demonic_servitude.enabled&active_enemies>=9
 actions+=/run_action_list,name=single_target,if=active_enemies<6&(!talent.charred_remains.enabled|active_enemies<4)
 actions+=/run_action_list,name=aoe,if=active_enemies>=6|(talent.charred_remains.enabled&active_enemies>=4)
 

@@ -5602,8 +5602,8 @@ void warlock_t::apl_precombat()
 
   action_list_str += "/service_pet,if=talent.grimoire_of_service.enabled&(target.time_to_die>120|target.time_to_die<20|(buff.dark_soul.remains&target.health.pct<20))";
 
-  add_action( "Summon Doomguard", "if=!talent.demonic_servitude.enabled&active_enemies<5" );
-  add_action( "Summon Infernal", "if=!talent.demonic_servitude.enabled&active_enemies>=5" );
+  add_action( "Summon Doomguard", "if=!talent.demonic_servitude.enabled&active_enemies<9" );
+  add_action( "Summon Infernal", "if=!talent.demonic_servitude.enabled&active_enemies>=9" );
 }
 
 void warlock_t::apl_global_filler()
