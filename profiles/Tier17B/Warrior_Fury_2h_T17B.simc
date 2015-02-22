@@ -35,6 +35,7 @@ actions+=/auto_attack
 actions+=/call_action_list,name=movement,if=movement.distance>5
 actions+=/berserker_rage,if=buff.enrage.down|(talent.unquenchable_thirst.enabled&buff.raging_blow.down)
 actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists
+actions+=/use_item,name=vial_of_convulsive_shadows,if=(talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.bloodbath.up|talent.avatar.enabled
 actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25
 # Skip cooldown usage if we can line them up with bladestorm on a large set of adds, or if movement is coming soon.
 actions+=/call_action_list,name=single_target,if=(raid_event.adds.cooldown<60&raid_event.adds.count>2&active_enemies=1)|raid_event.movement.cooldown<5
@@ -118,29 +119,28 @@ actions.aoe+=/wild_strike,if=buff.bloodsurge.up
 
 head=blackhands_faceguard,id=115584,bonus_id=567/523/448,gem_id=115809
 neck=vertebrae_protector,id=113900,bonus_id=567/523/448,gem_id=115809,enchant=gift_of_critical_strike
-shoulders=overdriven_spaulders,id=113990,bonus_id=567/523/448,gem_id=115809
-back=charbreath_firecloak,id=113916,bonus_id=567/523/448,gem_id=115809,enchant=gift_of_critical_strike
+shoulders=blackhands_shoulderguards,id=115581,bonus_id=567/523/448,gem_id=115809
+back=cloak_of_sanguine_terror,id=113972,bonus_id=567/523/448,gem_id=115809,enchant=gift_of_critical_strike
 chest=blackhands_chestguard,id=115582,bonus_id=567/523/448,gem_id=115809
 wrists=bracers_of_visceral_force,id=119331,bonus_id=567/523/448,gem_id=115809
-hands=blackhands_handguards,id=115583,bonus_id=567/523/448,gem_id=115809
-waist=ironcrushers_collar,id=113950,bonus_id=567/523/448,gem_id=115809
+hands=gauntlets_of_dramatic_blows,id=113906,bonus_id=567/523/448,gem_id=115809
+waist=uktars_belt_of_chiming_rings,id=113976,bonus_id=567/523/448,gem_id=115809
 legs=blackhands_legguards,id=115580,bonus_id=567/523/448,gem_id=115809
-feet=iron_bellow_sabatons,id=113961,bonus_id=567/523/448,gem_id=115809
+feet=doomslag_greatboots,id=119341,bonus_id=567/523/448,gem_id=115809
 finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_critical_strike
 finger2=seal_of_the_savage_howl,id=113940,bonus_id=567/523/448,gem_id=115809,enchant=gift_of_critical_strike
-trinket1=horn_of_screaming_spirits,id=119193,bonus_id=567/523/448,gem_id=115809
-trinket2=forgemasters_insignia,id=113983,bonus_id=567/523/448,gem_id=115809
+trinket1=vial_of_convulsive_shadows,id=113969,bonus_id=567/523/448,gem_id=115809
+trinket2=horn_of_screaming_spirits,id=119193,bonus_id=567/523/448,gem_id=115809
 main_hand=crescent_of_living_magma,id=113886,bonus_id=567/523/448,gem_id=115809,enchant=mark_of_the_thunderlord
 off_hand=crescent_of_living_magma,id=113886,bonus_id=567/523/448,gem_id=115809,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_strength=4333
+# gear_strength=4332
 # gear_stamina=5270
-# gear_crit_rating=2743
-# gear_haste_rating=743
-# gear_mastery_rating=676
+# gear_crit_rating=2930
+# gear_haste_rating=757
+# gear_mastery_rating=1096
 # gear_armor=2294
-# gear_multistrike_rating=1319
-# gear_versatility_rating=154
+# gear_multistrike_rating=853
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

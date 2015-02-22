@@ -119,11 +119,11 @@ actions.aoe+=/wild_strike,if=buff.bloodsurge.up
 
 head=blackhands_faceguard,id=115584
 neck=vertebrae_protector,id=113900,enchant=gift_of_critical_strike
-shoulders=overdriven_spaulders,id=113990
+shoulders=blackhands_shoulderguards,id=115581
 back=cloak_of_sanguine_terror,id=113972,enchant=gift_of_critical_strike
 chest=blackhands_chestguard,id=115582
-wrists=fleshmelter_bracers,id=113896
-hands=blackhands_handguards,id=115583
+wrists=bracers_of_visceral_force,id=119331
+hands=gauntlets_of_dramatic_blows,id=113906
 waist=uktars_belt_of_chiming_rings,id=113976
 legs=blackhands_legguards,id=115580
 feet=doomslag_greatboots,id=119341
@@ -137,10 +137,10 @@ off_hand=the_black_hand,id=113979,enchant=mark_of_the_thunderlord
 # Gear Summary
 # gear_strength=3110
 # gear_stamina=3784
-# gear_crit_rating=1519
-# gear_haste_rating=343
-# gear_mastery_rating=1187
+# gear_crit_rating=1626
+# gear_haste_rating=542
+# gear_mastery_rating=1084
 # gear_armor=2052
-# gear_multistrike_rating=536
+# gear_multistrike_rating=345
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

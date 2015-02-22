@@ -3,7 +3,7 @@ level=100
 race=dwarf
 role=spell
 position=back
-talents=0000211
+talents=0000311
 spec=destruction
 
 # This default action priority list is automatically created based on your character.
@@ -37,8 +37,8 @@ actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_
 actions+=/service_pet,if=talent.grimoire_of_service.enabled&(target.time_to_die>120|target.time_to_die<20|(buff.dark_soul.remains&target.health.pct<20))
 actions+=/summon_doomguard,if=!talent.demonic_servitude.enabled&active_enemies<5
 actions+=/summon_infernal,if=!talent.demonic_servitude.enabled&active_enemies>=5
-actions+=/run_action_list,name=single_target,if=active_enemies<6&(!talent.charred_remains.enabled|active_enemies<4)
-actions+=/run_action_list,name=aoe,if=active_enemies>=6|(talent.charred_remains.enabled&active_enemies>=4)
+actions+=/run_action_list,name=single_target,if=active_enemies<6
+actions+=/run_action_list,name=aoe,if=active_enemies>=6
 
 actions.single_target=havoc,target=2
 actions.single_target+=/shadowburn,if=talent.charred_remains.enabled&(burning_ember>=2.5|buff.dark_soul.up|target.time_to_die<10)
@@ -70,10 +70,10 @@ actions.single_target+=/immolate,cycle_targets=1,if=remains<=(duration*0.3)
 actions.single_target+=/conflagrate
 actions.single_target+=/incinerate
 
-actions.aoe=rain_of_fire,if=!talent.charred_remains.enabled&remains<=tick_time
-actions.aoe+=/havoc,target=2,if=(active_enemies<5|buff.fire_and_brimstone.down)
-actions.aoe+=/shadowburn,if=buff.havoc.remains&active_enemies<5
-actions.aoe+=/chaos_bolt,if=buff.havoc.remains>cast_time&buff.havoc.stack>=3&active_enemies<5&buff.fire_and_brimstone.down
+actions.aoe=rain_of_fire,if=remains<=tick_time
+actions.aoe+=/havoc,target=2
+actions.aoe+=/shadowburn,if=buff.havoc.remains
+actions.aoe+=/chaos_bolt,if=buff.havoc.remains>cast_time&buff.havoc.stack>=3
 actions.aoe+=/kiljaedens_cunning,if=(talent.cataclysm.enabled&!cooldown.cataclysm.remains)
 actions.aoe+=/kiljaedens_cunning,moving=1,if=!talent.cataclysm.enabled
 actions.aoe+=/cataclysm

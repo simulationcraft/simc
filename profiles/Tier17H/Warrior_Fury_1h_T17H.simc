@@ -118,17 +118,17 @@ actions.aoe+=/bloodthirst
 actions.aoe+=/wild_strike,if=buff.bloodsurge.up
 
 head=blackhands_faceguard,id=115584,bonus_id=566
-neck=vertebrae_protector,id=113900,bonus_id=566,enchant_id=5317
-shoulders=overdriven_spaulders,id=113990,bonus_id=566
-back=cloak_of_sanguine_terror,id=113972,bonus_id=566,enchant_id=5310
+neck=vertebrae_protector,id=113900,bonus_id=566,enchant=gift_of_critical_strike
+shoulders=blackhands_shoulderguards,id=115581,bonus_id=566
+back=cloak_of_sanguine_terror,id=113972,bonus_id=566,enchant=gift_of_critical_strike
 chest=blackhands_chestguard,id=115582,bonus_id=566
-wrists=fleshmelter_bracers,id=113896,bonus_id=566
-hands=blackhands_handguards,id=115583,bonus_id=566
+wrists=bracers_of_visceral_force,id=119331,bonus_id=566
+hands=gauntlets_of_dramatic_blows,id=113906,bonus_id=566
 waist=uktars_belt_of_chiming_rings,id=113976,bonus_id=566
 legs=blackhands_legguards,id=115580,bonus_id=566
 feet=doomslag_greatboots,id=119341,bonus_id=566
 finger1=spellbound_solium_band_of_sorcerous_strength,id=118300,enchant=gift_of_critical_strike
-finger2=seal_of_the_savage_howl,id=113940,bonus_id=566,enchant_id=5324
+finger2=seal_of_the_savage_howl,id=113940,bonus_id=566,enchant=gift_of_critical_strike
 trinket1=vial_of_convulsive_shadows,id=113969,bonus_id=566
 trinket2=horn_of_screaming_spirits,id=119193,bonus_id=566
 main_hand=taners_terrible_spine,id=113862,bonus_id=566,enchant=mark_of_the_thunderlord
@@ -137,10 +137,10 @@ off_hand=taners_terrible_spine,id=113862,bonus_id=566,enchant=mark_of_the_thunde
 # Gear Summary
 # gear_strength=3267
 # gear_stamina=3885
-# gear_crit_rating=1491
-# gear_haste_rating=394
-# gear_mastery_rating=1021
+# gear_crit_rating=1614
+# gear_haste_rating=622
+# gear_mastery_rating=901
 # gear_armor=2148
-# gear_multistrike_rating=764
+# gear_multistrike_rating=544
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

@@ -118,12 +118,12 @@ actions.aoe+=/bloodthirst
 actions.aoe+=/wild_strike,if=buff.bloodsurge.up
 
 head=blackhands_faceguard,id=115584,bonus_id=566
-neck=vertebrae_protector,id=113900,bonus_id=566,enchant_id=5317
-shoulders=overdriven_spaulders,id=113990,bonus_id=566
+neck=vertebrae_protector,id=113900,bonus_id=566,enchant=gift_of_critical_strike
+shoulders=blackhands_shoulderguards,id=115581,bonus_id=566
 back=cloak_of_sanguine_terror,id=113972,bonus_id=566,enchant=gift_of_critical_strike
 chest=blackhands_chestguard,id=115582,bonus_id=566
-wrists=fleshmelter_bracers,id=113896,bonus_id=566
-hands=blackhands_handguards,id=115583,bonus_id=566
+wrists=bracers_of_visceral_force,id=119331,bonus_id=566
+hands=gauntlets_of_dramatic_blows,id=113906,bonus_id=566
 waist=uktars_belt_of_chiming_rings,id=113976,bonus_id=566
 legs=blackhands_legguards,id=115580,bonus_id=566
 feet=doomslag_greatboots,id=119341,bonus_id=566
@@ -137,10 +137,10 @@ off_hand=the_black_hand,id=113979,bonus_id=566,enchant=mark_of_the_thunderlord
 # Gear Summary
 # gear_strength=3571
 # gear_stamina=4341
-# gear_crit_rating=1699
-# gear_haste_rating=394
-# gear_mastery_rating=1367
+# gear_crit_rating=1822
+# gear_haste_rating=622
+# gear_mastery_rating=1247
 # gear_armor=2148
-# gear_multistrike_rating=612
+# gear_multistrike_rating=392
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
