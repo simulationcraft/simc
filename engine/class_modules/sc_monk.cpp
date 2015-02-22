@@ -472,6 +472,7 @@ public:
     const spell_data_t* surging_mist;
     const spell_data_t* shuffle;
     const spell_data_t* tier15_2pc_melee;
+    const spell_data_t* tier17_2pc_tank;
     const spell_data_t* forceful_winds;
 
     // 6.0.2 Hotfixes consolidated into a single spell in build 19057
@@ -5078,6 +5079,7 @@ void monk_t::init_spells()
   stance_data.spirited_crane         = find_specialization_spell( "Stance of the Spirited Crane" );
 
   passives.tier15_2pc_melee          = find_spell( 138311 );
+  passives.tier17_2pc_tank           = find_spell( 165356 );
   passives.enveloping_mist           = find_class_spell( "Enveloping Mist" );
   passives.surging_mist              = find_class_spell( "Surging Mist" );
   passives.healing_elixirs           = find_spell( 122281 );
@@ -5827,7 +5829,7 @@ void monk_t::assess_damage(school_e school,
     }
 
     if ( s -> result == RESULT_DODGE && sets.set( MONK_BREWMASTER, T17, B2 ) )
-      resource_gain( RESOURCE_ENERGY, sets.set( MONK_BREWMASTER, T17, B2 ) -> effectN( 1 ).base_value(), gain.energy_refund );
+      resource_gain( RESOURCE_ENERGY, passives.tier17_2pc_tank -> effectN( 1 ).base_value(), gain.energy_refund );
   }
 
   if ( health_percentage() < glyph.fortuitous_spheres-> effectN( 1 ).base_value() && glyph.fortuitous_spheres -> ok() )
