@@ -16,7 +16,7 @@ level=100
 race=blood_elf
 role=dps
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!.02..12
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!.12..12
 spec=windwalker
 glyphs=touch_of_death
 
@@ -44,7 +44,7 @@ level=100
 race=blood_elf
 role=dps
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!.02..12
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!.12..12
 spec=windwalker
 glyphs=touch_of_death
 
@@ -72,7 +72,7 @@ race=night_elf
 spec=brewmaster
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#faa!1022001
+talents=http://us.battle.net/wow/en/tool/talent-calculator#faa!1022011
 glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 
 head=helm_of_the_somber_gaze,id=115556,bonus_id=567

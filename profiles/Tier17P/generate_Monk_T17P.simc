@@ -11,7 +11,7 @@ level=100
 race=blood_elf
 role=dps
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!.02..12
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!.12..12
 spec=windwalker
 glyphs=touch_of_death
 
@@ -39,7 +39,7 @@ level=100
 race=blood_elf
 role=dps
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!.02..12
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!.12..12
 spec=windwalker
 glyphs=touch_of_death
 
