@@ -72,7 +72,7 @@ race=night_elf
 spec=brewmaster
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#faa!1022011
+talents=http://us.battle.net/wow/en/tool/talent-calculator#faa!1022001
 glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 
 head=helm_of_the_somber_gaze,id=115556,bonus_id=567
