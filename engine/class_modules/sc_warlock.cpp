@@ -5522,8 +5522,8 @@ void warlock_t::apl_precombat()
 
   precombat_list += "/summon_pet,if=!talent.demonic_servitude.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down)";
 
-  precombat_list += "/summon_doomguard,if=talent.demonic_servitude.enabled&active_enemies<5";    
-  precombat_list += "/summon_infernal,if=talent.demonic_servitude.enabled&active_enemies>=5";
+  precombat_list += "/summon_doomguard,if=talent.demonic_servitude.enabled&active_enemies<9";    
+  precombat_list += "/summon_infernal,if=talent.demonic_servitude.enabled&active_enemies>=9";
   precombat_list += "/snapshot_stats";
 
   if ( specialization() != WARLOCK_DEMONOLOGY )
@@ -5714,8 +5714,8 @@ void warlock_t::apl_destruction()
   action_priority_list_t* single_target       = get_action_priority_list( "single_target" );    
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
 
-  action_list_str +="/run_action_list,name=single_target,if=active_enemies<6";
-  action_list_str +="/run_action_list,name=aoe,if=active_enemies>=6";
+  action_list_str +="/run_action_list,name=single_target,if=active_enemies<6&(!talent.charred_remains.enabled|active_enemies<4)";
+  action_list_str +="/run_action_list,name=aoe,if=active_enemies>=6|(talent.charred_remains.enabled&active_enemies>=4)";
 
   single_target -> action_list_str += "/havoc,target=2";
   single_target -> action_list_str += "/shadowburn,if=talent.charred_remains.enabled&(burning_ember>=2.5|buff.dark_soul.up|target.time_to_die<10)";
@@ -5751,10 +5751,10 @@ void warlock_t::apl_destruction()
   single_target -> action_list_str += "/conflagrate";
   single_target -> action_list_str += "/incinerate";
 
-  aoe -> action_list_str += "/rain_of_fire,if=remains<=tick_time";
-  aoe -> action_list_str += "/havoc,target=2";
-  aoe -> action_list_str += "/shadowburn,if=buff.havoc.remains";
-  aoe -> action_list_str += "/chaos_bolt,if=buff.havoc.remains>cast_time&buff.havoc.stack>=3";
+  aoe -> action_list_str += "/rain_of_fire,if=!talent.charred_remains.enabled&remains<=tick_time";
+  aoe -> action_list_str += "/havoc,target=2,if=(!talent.charred_remains.enabled|buff.fire_and_brimstone.down)";
+  aoe -> action_list_str += "/shadowburn,if=!talent.charred_remains.enabled&buff.havoc.remains";
+  aoe -> action_list_str += "/chaos_bolt,if=!talent.charred_remains.enabled&buff.havoc.remains>cast_time&buff.havoc.stack>=3";
   aoe -> action_list_str += "/kiljaedens_cunning,if=(talent.cataclysm.enabled&!cooldown.cataclysm.remains)";
   aoe -> action_list_str += "/kiljaedens_cunning,moving=1,if=!talent.cataclysm.enabled";
   aoe -> action_list_str += "/cataclysm";
@@ -5762,7 +5762,7 @@ void warlock_t::apl_destruction()
   aoe -> action_list_str += "/immolate,if=buff.fire_and_brimstone.up&!dot.immolate.ticking";
   aoe -> action_list_str += "/conflagrate,if=buff.fire_and_brimstone.up&charges=2";
   aoe -> action_list_str += "/immolate,if=buff.fire_and_brimstone.up&dot.immolate.remains<=(dot.immolate.duration*0.3)";
-  aoe -> action_list_str += "/chaos_bolt,if=talent.charred_remains.enabled&buff.fire_and_brimstone.up&burning_ember>=2.5";
+  aoe -> action_list_str += "/chaos_bolt,if=talent.charred_remains.enabled&buff.fire_and_brimstone.up";
   aoe -> action_list_str += "/incinerate";
 
 }

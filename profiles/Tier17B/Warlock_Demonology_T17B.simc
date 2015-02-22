@@ -18,8 +18,8 @@ actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=sleeper_sushi
 actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
 actions.precombat+=/summon_pet,if=!talent.demonic_servitude.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down)
-actions.precombat+=/summon_doomguard,if=talent.demonic_servitude.enabled&active_enemies<5
-actions.precombat+=/summon_infernal,if=talent.demonic_servitude.enabled&active_enemies>=5
+actions.precombat+=/summon_doomguard,if=talent.demonic_servitude.enabled&active_enemies<9
+actions.precombat+=/summon_infernal,if=talent.demonic_servitude.enabled&active_enemies>=9
 actions.precombat+=/snapshot_stats
 actions.precombat+=/service_pet,if=talent.grimoire_of_service.enabled
 actions.precombat+=/potion,name=draenic_intellect
