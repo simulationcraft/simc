@@ -6310,7 +6310,7 @@ void priest_t::apl_shadow()
   decision -> add_action( "call_action_list,name=main,if=!talent.clarity_of_power.enabled&!talent.void_entropy.enabled" );
   decision -> add_action( "call_action_list,name=vent,if=talent.void_entropy.enabled&!talent.clarity_of_power.enabled&!talent.auspicious_spirits.enabled" );
   decision -> add_action( "call_action_list,name=cop,if=talent.clarity_of_power.enabled&!talent.insanity.enabled" );
-  decision -> add_action( "call_action_list,name=cop_dotweave,if=talent.clarity_of_power.enabled&talent.insanity.enabled&target.health.pct>20&active_enemies<=5" );
+  decision -> add_action( "call_action_list,name=cop_dotweave,if=talent.clarity_of_power.enabled&talent.insanity.enabled&target.health.pct>20&active_enemies<=6" );
   decision -> add_action( "call_action_list,name=cop_mfi,if=talent.clarity_of_power.enabled&talent.insanity.enabled" );
 
   // Use the PVP 2P to get a boost.
@@ -6445,7 +6445,7 @@ void priest_t::apl_shadow()
   cop_dotweave -> add_action( "shadow_word_pain,if=primary_target=0,moving=1,cycle_targets=1" );
 
   // Clarity of Power with Insanity
-  cop_mfi -> add_action( "devouring_plague,if=shadow_orb=5" );
+  cop_mfi -> add_action( "devouring_plague,if=shadow_orb=5|(active_enemies>=5&!buff.shadow_word_insanity.remains)" );
   cop_mfi -> add_action( "devouring_plague,if=buff.mental_instinct.remains<(gcd*1.7)&buff.mental_instinct.remains>(gcd*0.7)&buff.mental_instinct.remains" );
   cop_mfi -> add_action( "mind_blast,if=glyph.mind_harvest.enabled&mind_harvest=0,cycle_targets=1" );
   cop_mfi -> add_action( "mind_blast,if=active_enemies<=5&cooldown_react" );
@@ -6454,7 +6454,7 @@ void priest_t::apl_shadow()
   cop_mfi -> add_action( "devouring_plague,if=shadow_orb>=3&!set_bonus.tier17_2pc&!set_bonus.tier17_4pc&(cooldown.mind_blast.remains<gcd|(natural_shadow_word_death_range&cooldown.shadow_word_death.remains<gcd)),cycle_targets=1" );
   cop_mfi -> add_action( "devouring_plague,if=shadow_orb>=3&set_bonus.tier17_2pc&!set_bonus.tier17_4pc&(cooldown.mind_blast.remains<=2|(natural_shadow_word_death_range&cooldown.shadow_word_death.remains<gcd)),cycle_targets=1" );
   cop_mfi -> add_action( "searing_insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
-  cop_mfi -> add_action( "searing_insanity,if=active_enemies>=3&cooldown.mind_blast.remains>0.5*gcd,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
+  cop_mfi -> add_action( "searing_insanity,if=active_enemies>=5,chain=1,interrupt_if=(cooldown.mind_blast.remains<=0.1|cooldown.shadow_word_death.remains<=0.1)" );
   cop_mfi -> add_action( "mindbender,if=talent.mindbender.enabled" );
   cop_mfi -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
   cop_mfi -> add_action( "shadow_word_pain,if=remains<(18*0.3)&target.time_to_die>(18*0.75)&miss_react&active_enemies<=5&primary_target=0,cycle_targets=1,max_cycle_targets=5" );
