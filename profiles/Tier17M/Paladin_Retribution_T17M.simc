@@ -51,9 +51,10 @@ actions.single=divine_storm,if=buff.divine_crusader.react&(holy_power=5|buff.hol
 actions.single+=/divine_storm,if=buff.divine_crusader.react&(holy_power=5|buff.holy_avenger.up&holy_power>=3)&active_enemies=2&!talent.final_verdict.enabled
 actions.single+=/divine_storm,if=(holy_power=5|buff.holy_avenger.up&holy_power>=3)&active_enemies=2&buff.final_verdict.up
 actions.single+=/divine_storm,if=buff.divine_crusader.react&(holy_power=5|buff.holy_avenger.up&holy_power>=3)&(talent.seraphim.enabled&cooldown.seraphim.remains<gcd*4)
-actions.single+=/templars_verdict,if=holy_power=5|buff.holy_avenger.up&holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*4)
+actions.single+=/templars_verdict,if=(holy_power=5|buff.holy_avenger.up&holy_power>=3)&(buff.avenging_wrath.down|target.health.pct>35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*4)
 actions.single+=/templars_verdict,if=buff.divine_purpose.react&buff.divine_purpose.remains<3
 actions.single+=/divine_storm,if=buff.divine_crusader.react&buff.divine_crusader.remains<3&!talent.final_verdict.enabled
+actions.single+=/divine_storm,if=buff.divine_crusader.react&buff.divine_crusader.remains<3&buff.final_verdict.up
 actions.single+=/final_verdict,if=holy_power=5|buff.holy_avenger.up&holy_power>=3
 actions.single+=/final_verdict,if=buff.divine_purpose.react&buff.divine_purpose.remains<3
 actions.single+=/hammer_of_wrath
@@ -75,7 +76,7 @@ actions.single+=/crusader_strike,if=holy_power<5&talent.seraphim.enabled
 actions.single+=/crusader_strike,if=holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down)
 actions.single+=/divine_storm,if=buff.divine_crusader.react&(buff.avenging_wrath.up|target.health.pct<35)&!talent.final_verdict.enabled
 actions.single+=/judgment,cycle_targets=1,if=last_judgment_target!=target&glyph.double_jeopardy.enabled&holy_power<5
-actions.single+=/exorcism,if=glyph.mass_exorcism.enabled&active_enemies>=2&holy_power<5&!glyph.double_jeopardy.enabled
+actions.single+=/exorcism,if=glyph.mass_exorcism.enabled&active_enemies>=2&holy_power<5&!glyph.double_jeopardy.enabled&!set_bonus.tier17_4pc=1
 actions.single+=/judgment,if=holy_power<5&talent.seraphim.enabled
 actions.single+=/judgment,if=holy_power<=3|(holy_power=4&cooldown.crusader_strike.remains>=gcd*2&target.health.pct>35&buff.avenging_wrath.down)
 actions.single+=/divine_storm,if=buff.divine_crusader.react&buff.final_verdict.up
@@ -114,7 +115,7 @@ actions.cleave+=/hammer_of_the_righteous,if=active_enemies>=4&holy_power<5&talen
 actions.cleave+=/hammer_of_the_righteous,,if=active_enemies>=4&(holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down))
 actions.cleave+=/crusader_strike,if=holy_power<5&talent.seraphim.enabled
 actions.cleave+=/crusader_strike,if=holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down)
-actions.cleave+=/exorcism,if=glyph.mass_exorcism.enabled&holy_power<5
+actions.cleave+=/exorcism,if=glyph.mass_exorcism.enabled&holy_power<5&!set_bonus.tier17_4pc=1
 actions.cleave+=/judgment,cycle_targets=1,if=glyph.double_jeopardy.enabled&holy_power<5
 actions.cleave+=/judgment,if=holy_power<5&talent.seraphim.enabled
 actions.cleave+=/judgment,if=holy_power<=3|(holy_power=4&cooldown.crusader_strike.remains>=gcd*2&target.health.pct>35&buff.avenging_wrath.down)
@@ -130,6 +131,7 @@ actions.cleave+=/exorcism,if=holy_power<=3|(holy_power=4&(cooldown.judgment.rema
 actions.cleave+=/divine_storm,if=holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*6)&!talent.final_verdict.enabled
 actions.cleave+=/divine_storm,if=holy_power>=3&buff.final_verdict.up
 actions.cleave+=/final_verdict,if=holy_power>=3&buff.final_verdict.down
+actions.cleave+=/holy_prism,target=self
 
 head=helmet_of_guiding_light,id=115568,bonus_id=567
 neck=thogars_serrated_chain,id=113959,bonus_id=567,enchant=gift_of_mastery

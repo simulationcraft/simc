@@ -1,7 +1,7 @@
 paladin="Paladin_Retribution_T17H"
 level=100
-race=blood_elf
-role=hybrid
+race=draenei
+role=attack
 position=back
 talents=2112333
 glyphs=winged_vengeance/templars_verdict/righteous_retreat/fire_from_the_heavens/judgment/mass_exorcism
@@ -51,9 +51,10 @@ actions.single=divine_storm,if=buff.divine_crusader.react&(holy_power=5|buff.hol
 actions.single+=/divine_storm,if=buff.divine_crusader.react&(holy_power=5|buff.holy_avenger.up&holy_power>=3)&active_enemies=2&!talent.final_verdict.enabled
 actions.single+=/divine_storm,if=(holy_power=5|buff.holy_avenger.up&holy_power>=3)&active_enemies=2&buff.final_verdict.up
 actions.single+=/divine_storm,if=buff.divine_crusader.react&(holy_power=5|buff.holy_avenger.up&holy_power>=3)&(talent.seraphim.enabled&cooldown.seraphim.remains<gcd*4)
-actions.single+=/templars_verdict,if=holy_power=5|buff.holy_avenger.up&holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*4)
+actions.single+=/templars_verdict,if=(holy_power=5|buff.holy_avenger.up&holy_power>=3)&(buff.avenging_wrath.down|target.health.pct>35)&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*4)
 actions.single+=/templars_verdict,if=buff.divine_purpose.react&buff.divine_purpose.remains<3
 actions.single+=/divine_storm,if=buff.divine_crusader.react&buff.divine_crusader.remains<3&!talent.final_verdict.enabled
+actions.single+=/divine_storm,if=buff.divine_crusader.react&buff.divine_crusader.remains<3&buff.final_verdict.up
 actions.single+=/final_verdict,if=holy_power=5|buff.holy_avenger.up&holy_power>=3
 actions.single+=/final_verdict,if=buff.divine_purpose.react&buff.divine_purpose.remains<3
 actions.single+=/hammer_of_wrath
@@ -75,7 +76,7 @@ actions.single+=/crusader_strike,if=holy_power<5&talent.seraphim.enabled
 actions.single+=/crusader_strike,if=holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down)
 actions.single+=/divine_storm,if=buff.divine_crusader.react&(buff.avenging_wrath.up|target.health.pct<35)&!talent.final_verdict.enabled
 actions.single+=/judgment,cycle_targets=1,if=last_judgment_target!=target&glyph.double_jeopardy.enabled&holy_power<5
-actions.single+=/exorcism,if=glyph.mass_exorcism.enabled&active_enemies>=2&holy_power<5&!glyph.double_jeopardy.enabled
+actions.single+=/exorcism,if=glyph.mass_exorcism.enabled&active_enemies>=2&holy_power<5&!glyph.double_jeopardy.enabled&!set_bonus.tier17_4pc=1
 actions.single+=/judgment,if=holy_power<5&talent.seraphim.enabled
 actions.single+=/judgment,if=holy_power<=3|(holy_power=4&cooldown.crusader_strike.remains>=gcd*2&target.health.pct>35&buff.avenging_wrath.down)
 actions.single+=/divine_storm,if=buff.divine_crusader.react&buff.final_verdict.up
@@ -114,7 +115,7 @@ actions.cleave+=/hammer_of_the_righteous,if=active_enemies>=4&holy_power<5&talen
 actions.cleave+=/hammer_of_the_righteous,,if=active_enemies>=4&(holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down))
 actions.cleave+=/crusader_strike,if=holy_power<5&talent.seraphim.enabled
 actions.cleave+=/crusader_strike,if=holy_power<=3|(holy_power=4&target.health.pct>=35&buff.avenging_wrath.down)
-actions.cleave+=/exorcism,if=glyph.mass_exorcism.enabled&holy_power<5
+actions.cleave+=/exorcism,if=glyph.mass_exorcism.enabled&holy_power<5&!set_bonus.tier17_4pc=1
 actions.cleave+=/judgment,cycle_targets=1,if=glyph.double_jeopardy.enabled&holy_power<5
 actions.cleave+=/judgment,if=holy_power<5&talent.seraphim.enabled
 actions.cleave+=/judgment,if=holy_power<=3|(holy_power=4&cooldown.crusader_strike.remains>=gcd*2&target.health.pct>35&buff.avenging_wrath.down)
@@ -130,31 +131,31 @@ actions.cleave+=/exorcism,if=holy_power<=3|(holy_power=4&(cooldown.judgment.rema
 actions.cleave+=/divine_storm,if=holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>gcd*6)&!talent.final_verdict.enabled
 actions.cleave+=/divine_storm,if=holy_power>=3&buff.final_verdict.up
 actions.cleave+=/final_verdict,if=holy_power>=3&buff.final_verdict.down
+actions.cleave+=/holy_prism,target=self
 
 head=helmet_of_guiding_light,id=115568,bonus_id=566
-neck=vertebrae_protector,id=113900,bonus_id=566,enchant=gift_of_mastery
+neck=thogars_serrated_chain,id=113959,bonus_id=566,enchant=gift_of_mastery
 shoulders=pauldrons_of_guiding_light,id=115565,bonus_id=566
-back=charbreath_firecloak,id=113916,bonus_id=566,enchant=gift_of_mastery
+back=cloak_of_sanguine_terror,id=113972,bonus_id=566,enchant=gift_of_mastery
 chest=battleplate_of_guiding_light,id=115566,bonus_id=566
-wrists=bracers_of_martial_perfection,id=113871,bonus_id=566
-hands=gauntlets_of_guiding_light,id=115567,bonus_id=566
+wrists=bracers_of_visceral_force,id=119331,bonus_id=566
+hands=flamefury_gauntlets,id=113925,bonus_id=566
 waist=uktars_belt_of_chiming_rings,id=113976,bonus_id=566
-legs=firestorm_legplates,id=113921,bonus_id=566
-feet=iron_bellow_sabatons,id=113961,bonus_id=566
-finger1=phosphorescent_seal,id=113866,bonus_id=566,enchant=gift_of_mastery
+legs=legplates_of_guiding_light,id=115569,bonus_id=566
+feet=sabatons_of_fractal_earth,id=113936,bonus_id=566
+finger1=seal_of_the_savage_howl,id=113940,bonus_id=566,enchant=gift_of_mastery
 finger2=spellbound_solium_band_of_sorcerous_strength,id=118300,enchant=gift_of_mastery
-trinket1=forgemasters_insignia,id=113983,bonus_id=566
-trinket2=vial_of_convulsive_shadows,id=113969,bonus_id=566
+trinket1=vial_of_convulsive_shadows,id=113969,bonus_id=566
+trinket2=horn_of_screaming_spirits,id=119193,bonus_id=566
 main_hand=thogars_control_rod,id=113953,bonus_id=566,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_strength=3363
+# gear_strength=3305
 # gear_stamina=3942
-# gear_crit_rating=714
-# gear_haste_rating=1334
-# gear_mastery_rating=1038
+# gear_crit_rating=782
+# gear_haste_rating=815
+# gear_mastery_rating=1523
 # gear_armor=2148
-# gear_multistrike_rating=317
-# gear_versatility_rating=293
+# gear_multistrike_rating=586
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

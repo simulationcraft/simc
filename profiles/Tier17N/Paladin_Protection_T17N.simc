@@ -4,7 +4,7 @@ race=blood_elf
 role=tank
 position=front
 talents=3032322
-glyphs=focused_shield/divine_protection
+glyphs=focused_shield/divine_protection/final_wrath
 spec=protection
 
 # This default action priority list is automatically created based on your character.
@@ -44,7 +44,6 @@ actions+=/guardian_of_ancient_kings,if=time<5|(buff.holy_avenger.down&buff.shiel
 actions+=/ardent_defender,if=time<5|(buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down)
 actions+=/eternal_flame,if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react|buff.bastion_of_power.react)
 actions+=/eternal_flame,if=buff.bastion_of_power.react&buff.bastion_of_glory.react>=5
-actions+=/harsh_word,if=glyph.harsh_words.enabled&holy_power>=3
 actions+=/shield_of_the_righteous,if=buff.divine_purpose.react
 actions+=/shield_of_the_righteous,if=(holy_power>=5|incoming_damage_1500ms>=health.max*0.3)&(!talent.seraphim.enabled|cooldown.seraphim.remains>5)
 actions+=/shield_of_the_righteous,if=buff.holy_avenger.remains>time_to_hpg&(!talent.seraphim.enabled|cooldown.seraphim.remains>time_to_hpg)

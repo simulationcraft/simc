@@ -20,7 +20,7 @@ spec=retribution
  
 head=helmet_of_guiding_light,id=115568,bonus_id=567
 neck=thogars_serrated_chain,id=113959,bonus_id=567,enchant=gift_of_mastery
-shoulders=pauldrons_of_guiding_light,id=115565,bonus_id=567
+shoulder=pauldrons_of_guiding_light,id=115565,bonus_id=567
 back=cloak_of_sanguine_terror,id=113972,bonus_id=567,enchant=gift_of_mastery
 chest=battleplate_of_guiding_light,id=115566,bonus_id=567
 wrists=bracers_of_visceral_force,id=119331,bonus_id=567
@@ -42,7 +42,7 @@ race=blood_elf
 spec=protection
 role=tank
 position=front
-glyphs=focused_shield/divine_protection
+glyphs=focused_shield/divine_protection/final_wrath
 
 head=helmet_of_guiding_light,id=115568,bonus_id=567
 neck=choker_of_bestial_force,id=113952,bonus_id=567,enchant=gift_of_haste
