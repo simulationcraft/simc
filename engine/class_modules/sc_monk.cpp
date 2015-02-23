@@ -3991,22 +3991,45 @@ struct elusive_brew_t: public monk_spell_t
 // ==========================================================================
 // Mana Tea
 // ==========================================================================
-/*
-FIX ME: Current behavior resembles the glyphed ability
-regardless of if the glyph is actually present.
-*/
+
 struct mana_tea_t: public monk_spell_t
 {
+  bool glyphed;
+  int mana_percent_return;
   mana_tea_t( monk_t& p, const std::string& options_str ):
-    monk_spell_t( "mana_tea", &p, p.find_spell( 123761 ) )
+    monk_spell_t( "mana_tea", &p, ( p.glyph.mana_tea -> ok() ? p.find_spell( 123761 ) : p.find_specialization_spell( "Mana Tea" ) )),
+    glyphed( p.glyph.mana_tea -> ok() ),
+    mana_percent_return( data().effectN( 1 ).base_value() )
   {
     parse_options( options_str );
+
+    if ( !glyphed )
+    {
+      channeled = true;
+      hasted_ticks = false;
+    }
 
     stancemask = WISE_SERPENT | SPIRITED_CRANE;
     harmful = false;
   }
 
-  virtual bool ready()
+  timespan_t composite_dot_duration( const action_state_t*s ) const
+  {
+    if ( glyphed )
+      return timespan_t::zero();
+    else
+      return data().effectN( 1 ).period() * std::min( p() -> buff.mana_tea -> current_stack, 6 ) ;
+  }
+
+  void tick( dot_t* d )
+  {
+    monk_spell_t::tick( d );
+
+    player -> resource_gain( RESOURCE_MANA, p() -> initial.stats.attribute[STAT_SPIRIT] * mana_percent_return, p() -> gain.mana_tea, this );
+    p() -> buff.mana_tea -> decrement( 1 );
+  }
+
+  bool ready()
   {
     if ( p() -> buff.mana_tea -> current_stack == 0 )
       return false;
@@ -4014,7 +4037,7 @@ struct mana_tea_t: public monk_spell_t
     return monk_spell_t::ready();
   }
 
-  virtual void execute()
+  void execute()
   {
     monk_spell_t::execute();
 
@@ -4024,18 +4047,19 @@ struct mana_tea_t: public monk_spell_t
         p() -> active_actions.healing_elixir -> execute();
     }
 
-    int max_stacks_consumable = 2;
-    int stacks_to_consume = 0;
-    stacks_to_consume = std::min( p() -> buff.mana_tea -> current_stack, max_stacks_consumable );
+    if ( glyphed )
+    {
+      int max_stacks_consumable = 2;
+      int stacks_to_consume = 0;
+      stacks_to_consume = std::min( p() -> buff.mana_tea -> current_stack, max_stacks_consumable );
 
-    double mana_gain = 0;
-    // TODO Make sure this is getting the Buffed but not Temporary Proc SPIRIT amount
-    // Meh, there are no spirit procs yet. 
-    mana_gain = p() -> initial.stats.attribute[STAT_SPIRIT]
-      * data().effectN( 1 ).base_value()
-      * stacks_to_consume;
-    player -> resource_gain( RESOURCE_MANA, mana_gain, p() -> gain.mana_tea, this );
-    p() -> buff.mana_tea -> decrement( stacks_to_consume );
+      double mana_gain = 0;
+      mana_gain = p() -> initial.stats.attribute[STAT_SPIRIT]
+        * mana_percent_return
+        * stacks_to_consume;
+      player -> resource_gain( RESOURCE_MANA, mana_gain, p() -> gain.mana_tea, this );
+      p() -> buff.mana_tea -> decrement( stacks_to_consume );
+    }
   }
 };
 
