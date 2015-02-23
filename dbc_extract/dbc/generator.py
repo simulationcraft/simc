@@ -1490,6 +1490,9 @@ class SpellDataGenerator(DataGenerator):
 	      ( 159620, 0 ), # Spirited Crane Chi Explosion
           ( 140737, 0 ), # Way of the Monk 2-Hander Weapon Speed modifier
           ( 138228, 0 ), # Storm, Earth, and Fire buff
+          ( 124503, 0 ), # Gift of the Ox Orb Left
+          ( 124506, 0 ), # Gift of the Ox Orb Right
+          ( 178173, 0 ), # Gift of the Ox Explosion
         ),
 
         # Druid:

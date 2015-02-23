@@ -5272,7 +5272,7 @@ void monk_t::create_buffs()
   // Players don't pick up ALL of the gift of the ox orbs, mostly due to fight mechanics. 
   // Defaulting to 60% pickup, but users can adjust as needed
   double goto_chance = ( user_options.goto_throttle > 0 ? user_options.goto_throttle / 100 : 0.60 );
-  buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox" )
+  buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox", find_spell( 124503 ) )
     .chance( goto_chance )
     .max_stack( 99 );
 
@@ -5860,7 +5860,7 @@ void monk_t::assess_damage(school_e school,
       resource_gain( RESOURCE_ENERGY, passives.tier17_2pc_tank -> effectN( 1 ).base_value(), gain.energy_refund );
   }
 
-  if ( health_percentage() < glyph.fortuitous_spheres-> effectN( 1 ).base_value() && glyph.fortuitous_spheres -> ok() )
+  if ( health_percentage() < glyph.fortuitous_spheres -> effectN( 1 ).base_value() && glyph.fortuitous_spheres -> ok() )
   {
     if ( cooldown.healing_sphere -> up() )
       active_actions.healing_sphere -> execute();
