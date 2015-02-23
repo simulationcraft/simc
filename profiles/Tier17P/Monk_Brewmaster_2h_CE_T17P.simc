@@ -3,7 +3,7 @@ level=100
 race=night_elf
 role=tank
 position=front
-talents=0130122
+talents=http://us.battle.net/wow/en/tool/talent-calculator#faa!.02.011
 glyphs=fortifying_brew,expel_harm,fortuitous_spheres
 spec=brewmaster
 
@@ -28,6 +28,7 @@ actions.precombat+=/dampen_harm
 actions=auto_attack
 actions+=/blood_fury,if=energy<=40
 actions+=/berserking,if=energy<=40
+actions+=/arcane_torrent,if=chi.max-chi>=1&energy<=40
 actions+=/arcane_torrent,if=energy<=40
 actions+=/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4
 actions+=/chi_brew,if=talent.chi_brew.enabled&chi.max-chi>=2&buff.elusive_brew_stacks.stack<=10&((charges=1&recharge_time<5)|charges=2|(target.time_to_die<15&(cooldown.touch_of_death.remains>target.time_to_die|glyph.touch_of_death.enabled)))

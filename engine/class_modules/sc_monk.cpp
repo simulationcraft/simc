@@ -6102,8 +6102,12 @@ void monk_t::apl_combat_brewmaster()
 
   def -> add_action( "auto_attack" );
 
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
+  for (size_t i = 0; i < racial_actions.size(); i++)
+  {
+    if ( racial_actions[i] == "arcane_torrent" )
+      def -> add_action( racial_actions[i] + ",if=chi.max-chi>=1&energy<=40" );
     def -> add_action( racial_actions[i] + ",if=energy<=40" );
+  }
 
   def -> add_action( "chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4" );
   def -> add_talent( this, "Chi Brew", "if=talent.chi_brew.enabled&chi.max-chi>=2&buff.elusive_brew_stacks.stack<=10&((charges=1&recharge_time<5)|charges=2|(target.time_to_die<15&(cooldown.touch_of_death.remains>target.time_to_die|glyph.touch_of_death.enabled)))" );
@@ -6112,6 +6116,14 @@ void monk_t::apl_combat_brewmaster()
   def -> add_talent( this, "Diffuse Magic", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
   def -> add_talent( this, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down&buff.elusive_brew_activated.down" );
   def -> add_action( this, "Fortifying Brew", "if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.elusive_brew_activated.down" );
+
+  int num_items = (int)items.size();
+  for (int i = 0; i < num_items; i++)
+  {
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+      def -> add_action( "use_item,name=" + items[i].name_str + ",if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.fortifying_brew.down&buff.elusive_brew_activated.down" );
+  }
+
   def -> add_action( this, "Elusive Brew", "if=buff.elusive_brew_stacks.react>=9&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.elusive_brew_activated.down" );
   def -> add_action( "invoke_xuen,if=talent.invoke_xuen.enabled&target.time_to_die>15&buff.shuffle.remains>=3&buff.serenity.down" );
   def -> add_talent( this, "Serenity", "if=talent.serenity.enabled&cooldown.keg_smash.remains>6" );
@@ -6320,8 +6332,8 @@ void monk_t::apl_combat_windwalker()
   opener -> add_action( this, "Tiger Palm", "if=buff.tiger_power.remains<2" );
   for (int i = 0; i < num_items; i++)
   {
-    if (items[i].has_special_effect(SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE))
-      opener->add_action("use_item,name=" + items[i].name_str);
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+      opener -> add_action( "use_item,name=" + items[i].name_str );
   }
   opener -> add_action( this, "Rising Sun Kick" );
   opener -> add_action( this, "Blackout Kick", "if=chi.max-chi<=1&cooldown.chi_brew.up|buff.serenity.up" );
