@@ -5749,7 +5749,7 @@ struct action_t : public noncopyable
   resource_e resource_current;
   int aoe; // Number of targets the action will impact. -1 = no target limit.
   int pre_combat, may_multistrike;
-  bool instant_multistrike; // true if multistrikes occur immediately
+  int instant_multistrike; // -1 = autodetect (NYI), 0 = multistrikes have a delay, 1 = multistrikes occur immediately
   bool dual; // true if this action should not be counted for executes.
   bool callbacks; // When set to false, action will not trigger trinkets, enchants, rppm.
   bool special, channeled, sequence;
@@ -7027,10 +7027,10 @@ struct multistrike_execute_event_t : public event_t
 
     timespan_t multistrike_offset = timespan_t::zero();
 
-    if ( !state -> action -> instant_multistrike )
+    if ( state -> action -> instant_multistrike == 0 )
     {
-      // Values taken from Celestalon's second post about this -- Twintop 2014/10/30
-      // http://us.battle.net/wow/en/forum/topic/13087818929?page=22#429
+      // Values taken from Celestalon's second post about this -- Twintop 2015/02/23 (updated link)
+      // http://www.wowhead.com/bluetracker?topic=13087818929#135924364017
       if ( ms_count == 0 )
         multistrike_offset = timespan_t::from_millis( 333 );
       else
