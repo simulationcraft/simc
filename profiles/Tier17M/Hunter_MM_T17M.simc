@@ -75,7 +75,7 @@ waist=grenadiers_belt,id=113955,bonus_id=567
 legs=rylakstalkers_legguards,id=115546,bonus_id=567
 feet=slagstomper_treads,id=113888,bonus_id=567
 finger1=unexploded_explosive_shard,id=113877,bonus_id=567,enchant_id=5324
-finger2=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_critical_strike
+finger2=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5324
 trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=567
 trinket2=humming_blackiron_trigger,id=113985,bonus_id=567
 main_hand=mouth_of_the_fury,id=113885,bonus_id=567,enchant_id=5276

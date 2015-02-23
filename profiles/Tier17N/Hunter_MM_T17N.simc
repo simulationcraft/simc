@@ -65,29 +65,29 @@ actions.careful_aim+=/focusing_shot,if=50+cast_regen<focus.deficit
 actions.careful_aim+=/steady_shot
 
 head=rylakstalkers_headguard,id=115545
-neck=darklight_necklace,id=113865,enchant=gift_of_critical_strike
-shoulders=neckbreaker_shoulderguards,id=113899
-back=drape_of_the_dark_hunt,id=113971,enchant=gift_of_critical_strike
-chest=rylakstalkers_tunic,id=115548
+neck=darklight_necklace,id=113865,enchant_id=5317
+shoulders=rylakstalkers_spaulders,id=115547
+back=drape_of_the_dark_hunt,id=113971,enchant_id=5310
+chest=chestguard_of_the_siegemaker,id=113982
 wrists=bracers_of_the_wolfs_cunning,id=113943
 hands=rylakstalkers_gloves,id=115549
 waist=grenadiers_belt,id=113955
 legs=rylakstalkers_legguards,id=115546
 feet=slagstomper_treads,id=113888
-finger1=unexploded_explosive_shard,id=113877,enchant=gift_of_critical_strike
-finger2=timeless_solium_band_of_the_assassin,id=118297,enchant=gift_of_critical_strike
-trinket1=humming_blackiron_trigger,id=113985
-trinket2=beating_heart_of_the_mountain,id=113931
-main_hand=mouth_of_the_fury,id=113885,enchant=megawatt_filament
+finger1=unexploded_explosive_shard,id=113877,enchant_id=5324
+finger2=timeless_solium_band_of_the_assassin,id=118297,enchant_id=5324
+trinket1=beating_heart_of_the_mountain,id=113931
+trinket2=humming_blackiron_trigger,id=113985
+main_hand=mouth_of_the_fury,id=113885,enchant_id=5276
 
 # Gear Summary
 # gear_agility=2892
 # gear_stamina=3437
-# gear_crit_rating=1484
-# gear_haste_rating=589
-# gear_mastery_rating=410
+# gear_crit_rating=1396
+# gear_haste_rating=424
+# gear_mastery_rating=534
 # gear_armor=1286
-# gear_multistrike_rating=630
+# gear_multistrike_rating=765
 # gear_versatility_rating=180
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
