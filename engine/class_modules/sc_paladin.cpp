@@ -750,7 +750,7 @@ public:
     if ( s -> action -> base_costs[ RESOURCE_HOLY_POWER ] > 0 )
     {
       // T17 Ret set bonus procs off of hit/miss on each target, but need to filter out multistrike impacts
-      if ( ! result_is_multistrike( s -> result ) )
+      if ( ! this -> result_is_multistrike( s -> result ) )
       {
         // trigger T17 Ret set bonus
         if ( p() -> buffs.crusaders_fury -> trigger() )
