@@ -4,6 +4,11 @@ race=dwarf
 role=spell
 position=back
 talents=0000311
+talent_override=charred_remains,if=enemies>=4
+talent_override=cataclysm,if=enemies>1&enemies<4
+talent_override=grimoire_of_sacrifice,if=enemies>1&enemies<4|(enemies=1&talent.charred_remains.enabled)
+talent_override=grimoire_of_supremacy,if=(enemies>=4&!talent.demonic_servitude.enabled)|(enemies=1&talent.cataclysm.enabled)
+talent_override=grimoire_of_service,if=talent.demonic_servitude.enabled
 spec=destruction
 
 # This default action priority list is automatically created based on your character.
@@ -84,33 +89,33 @@ actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&dot.immolate.remains<=(dot.
 actions.aoe+=/chaos_bolt,if=talent.charred_remains.enabled&buff.fire_and_brimstone.up
 actions.aoe+=/incinerate
 
-head=shadow_councils_hood,id=115586,bonus_id=41/561/565/567,gem_id=115809
-neck=gruuls_lip_ring,id=113872,bonus_id=41/562/565/567,gem_id=115809,enchant_id=5317
-shoulders=shadow_councils_mantle,id=115589,bonus_id=41/561/565/567,gem_id=115809
-back=runefrenzy_greatcloak,id=113937,bonus_id=41/562/565/567,gem_id=115809,enchant_id=5310
-chest=shadow_councils_robes,id=115588,bonus_id=41/561/564/567,gem_id=115809
-wrists=bracers_of_spattered_steel,id=113887,bonus_id=41/562/565/567,gem_id=115809
-hands=shadow_councils_gloves,id=115585,bonus_id=41/561/565/567,gem_id=115809
-waist=deckhands_rope_belt,id=113967,bonus_id=41/562/565/567,gem_id=115809
-legs=turret_mechanics_legwraps,id=113970,bonus_id=41/562/565/567,gem_id=115809
-feet=cavedwellers_climbers,id=113864,bonus_id=41/562/565/567,gem_id=115809
-finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,bonus_id=524,enchant_id=5324
-finger2=epicenter_loop,id=113947,bonus_id=41/562/565/567,gem_id=115809,enchant_id=5324
-trinket1=goren_soul_repository,id=119194,bonus_id=41/562/565/567,gem_id=115809
-trinket2=blackiron_micro_crucible,id=113984,bonus_id=41/562/565/567,gem_id=115809
-main_hand=fang_of_the_earth,id=113934,bonus_id=41/562/565/567,gem_id=115809,enchant_id=5384
-off_hand=caged_living_ooze,id=113879,bonus_id=41/562/565/567,gem_id=115809
+head=shadow_councils_hood,id=115586,bonus_id=41/562/565/567,gem_id=115812
+neck=gruuls_lip_ring,id=113872,bonus_id=41/562/565/567,gem_id=115812,enchant_id=5319
+shoulders=shadow_councils_mantle,id=115589,bonus_id=41/562/565/567,gem_id=115812
+back=runefrenzy_greatcloak,id=113937,bonus_id=41/562/565/567,gem_id=115812,enchant_id=5312
+chest=shadow_councils_robes,id=115588,bonus_id=41/562/565/567,gem_id=115812
+wrists=bracers_of_darkened_skies,id=119332,bonus_id=41/562/565/567,gem_id=115812
+hands=shadow_councils_gloves,id=115585,bonus_id=41/562/565/567,gem_id=115812
+waist=seeking_ember_girdle,id=113941,bonus_id=41/562/565/567,gem_id=115812
+legs=turret_mechanics_legwraps,id=113970,bonus_id=41/562/565/567,gem_id=115812
+feet=cavedwellers_climbers,id=113864,bonus_id=41/562/565/567,gem_id=115812
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,bonus_id=524,enchant_id=5326
+finger2=ukuroggs_corrupted_seal,id=113975,bonus_id=41/562/565/567,gem_id=115812,enchant_id=5326
+trinket1=goren_soul_repository,id=119194,bonus_id=41/562/565/567,gem_id=115812
+trinket2=darmacs_unstable_talisman,id=113948,bonus_id=41/562/565/567,gem_id=115812
+main_hand=dagger_of_blazing_radiance,id=113920,bonus_id=41/562/565/567,gem_id=115812,enchant_id=5384
+off_hand=caged_living_ooze,id=113879,bonus_id=41/562/565/567,gem_id=115812
 
 # Gear Summary
 # gear_stamina=4781
-# gear_intellect=4008
+# gear_intellect=3938
 # gear_spell_power=1855
-# gear_crit_rating=2415
-# gear_haste_rating=676
-# gear_mastery_rating=1323
+# gear_crit_rating=913
+# gear_haste_rating=935
+# gear_mastery_rating=2853
 # gear_armor=909
-# gear_multistrike_rating=416
-# gear_versatility_rating=358
+# gear_multistrike_rating=267
+# gear_versatility_rating=230
 # gear_leech_rating=1982
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
