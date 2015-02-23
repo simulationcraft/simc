@@ -25,7 +25,7 @@ legs=rylakstalkers_legguards,id=115546,bonus_id=41/562/565/567,gem_id=115812
 feet=railwalkers_ratcheted_boots,id=113954,bonus_id=41/562/565/567,gem_id=115812
 wrist=bloodwhirl_bracers,id=113968,bonus_id=41/562/565/567,gem_id=115812
 hands=rylakstalkers_gloves,id=115549,bonus_id=41/562/565/567,gem_id=115812
-finger2=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5326
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,bonus_id=524,enchant_id=5326
 finger2=unexploded_explosive_shard,id=113877,bonus_id=41/562/565/567,gem_id=115812,enchant_id=5326
 trinket1=meaty_dragonspine_trophy,id=118114,bonus_id=41/562/565/567,gem_id=115812
 trinket2=humming_blackiron_trigger,id=113985,bonus_id=41/562/565/567,gem_id=115812
@@ -50,7 +50,7 @@ legs=rylakstalkers_legguards,id=115546,bonus_id=41/562/565/567,gem_id=115809
 feet=slagstomper_treads,id=113888,bonus_id=41/562/565/567,gem_id=115809
 wrist=bracers_of_the_wolfs_cunning,id=113943,bonus_id=41/562/565/567,gem_id=115809
 hands=rylakstalkers_gloves,id=115549,bonus_id=41/562/565/567,gem_id=115809
-finger2=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5324
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,bonus_id=524,enchant_id=5324
 finger2=unexploded_explosive_shard,id=113877,bonus_id=41/562/565/567,gem_id=115809,enchant_id=5324
 trinket1=humming_blackiron_trigger,id=113985,bonus_id=41/562/565/567,gem_id=115809
 trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=41/562/565/567,gem_id=115809
@@ -75,7 +75,7 @@ legs=legguards_of_the_stampede,id=113944,bonus_id=41/562/565/567,gem_id=115813
 feet=treads_of_the_veteran_smith,id=119339,bonus_id=41/562/565/567,gem_id=115813
 wrist=bloodwhirl_bracers,id=113968,bonus_id=41/562/565/567,gem_id=115813
 hands=rylakstalkers_gloves,id=115549,bonus_id=41/562/565/567,gem_id=115813
-finger2=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5327
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,bonus_id=524,enchant_id=5327
 finger2=unexploded_explosive_shard,id=113877,bonus_id=41/562/565/567,gem_id=115813,enchant_id=5327
 trinket1=scales_of_doom,id=113612,bonus_id=41/562/565/567,gem_id=115813
 trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=41/562/565/567,gem_id=115813

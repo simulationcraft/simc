@@ -74,20 +74,21 @@ hands=rylakstalkers_gloves,id=115549,bonus_id=41/562/565/567,gem_id=115809
 waist=grenadiers_belt,id=113955,bonus_id=41/562/565/567,gem_id=115809
 legs=rylakstalkers_legguards,id=115546,bonus_id=41/562/565/567,gem_id=115809
 feet=slagstomper_treads,id=113888,bonus_id=41/562/565/567,gem_id=115809
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,bonus_id=524,enchant_id=5324
 finger2=unexploded_explosive_shard,id=113877,bonus_id=41/562/565/567,gem_id=115809,enchant_id=5324
 trinket1=humming_blackiron_trigger,id=113985,bonus_id=41/562/565/567,gem_id=115809
 trinket2=beating_heart_of_the_mountain,id=113931,bonus_id=41/562/565/567,gem_id=115809
 main_hand=mouth_of_the_fury,id=113885,bonus_id=41/562/565/567,gem_id=115809,enchant_id=5276
 
 # Gear Summary
-# gear_agility=3829
-# gear_stamina=4488
-# gear_crit_rating=2346
+# gear_agility=4027
+# gear_stamina=4785
+# gear_crit_rating=2534
 # gear_haste_rating=593
 # gear_mastery_rating=746
 # gear_armor=1503
 # gear_multistrike_rating=1066
-# gear_versatility_rating=121
+# gear_versatility_rating=243
 # gear_leech_rating=1984
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

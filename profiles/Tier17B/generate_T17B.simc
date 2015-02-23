@@ -16,7 +16,7 @@
 generate_Druid_T17B.simc
 
 # Hunter
-#generate_Hunter_T17B.simc UPDATE
+generate_Hunter_T17B.simc
 
 # Mage
 generate_Mage_T17B.simc

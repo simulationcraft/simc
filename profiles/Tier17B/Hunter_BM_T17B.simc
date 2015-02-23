@@ -67,19 +67,21 @@ hands=rylakstalkers_gloves,id=115549,bonus_id=41/562/565/567,gem_id=115812
 waist=grenadiers_belt,id=113955,bonus_id=41/562/565/567,gem_id=115812
 legs=rylakstalkers_legguards,id=115546,bonus_id=41/562/565/567,gem_id=115812
 feet=railwalkers_ratcheted_boots,id=113954,bonus_id=41/562/565/567,gem_id=115812
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,bonus_id=524,enchant_id=5326
 finger2=unexploded_explosive_shard,id=113877,bonus_id=41/562/565/567,gem_id=115812,enchant_id=5326
 trinket1=meaty_dragonspine_trophy,id=118114,bonus_id=41/562/565/567,gem_id=115812
 trinket2=humming_blackiron_trigger,id=113985,bonus_id=41/562/565/567,gem_id=115812
 main_hand=garans_brutal_spearlauncher,id=113966,bonus_id=41/562/565/567,gem_id=115812,enchant_id=5383
 
 # Gear Summary
-# gear_agility=3812
-# gear_stamina=4488
-# gear_crit_rating=690
+# gear_agility=4010
+# gear_stamina=4785
+# gear_crit_rating=828
 # gear_haste_rating=337
-# gear_mastery_rating=2409
+# gear_mastery_rating=2459
 # gear_armor=1503
 # gear_multistrike_rating=1418
+# gear_versatility_rating=122
 # gear_leech_rating=1984
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
