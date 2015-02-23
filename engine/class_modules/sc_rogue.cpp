@@ -312,6 +312,7 @@ struct rogue_t : public player_t
   {
     const spell_data_t* disappearance;
     const spell_data_t* energy;
+    const spell_data_t* feint;
     const spell_data_t* hemorrhaging_veins;
     const spell_data_t* kick;
     const spell_data_t* sprint;
@@ -5094,6 +5095,7 @@ void rogue_t::init_spells()
   // Glyphs
   glyph.disappearance       = find_glyph_spell( "Glyph of Disappearance" );
   glyph.energy              = find_glyph_spell( "Glyph of Energy" );
+  glyph.feint               = find_glyph_spell( "Glyph of Feint" );
   glyph.hemorrhaging_veins  = find_glyph_spell( "Glyph of Hemorrhaging Veins" );
   glyph.kick                = find_glyph_spell( "Glyph of Kick" );
   glyph.sprint              = find_glyph_spell( "Glyph of Sprint" );
@@ -5317,7 +5319,8 @@ void rogue_t::create_buffs()
                               .add_invalidate( CACHE_ATTACK_SPEED );
   buffs.blindside           = buff_creator_t( this, "blindside", spec.blindside -> effectN( 1 ).trigger() )
                               .chance( spec.blindside -> proc_chance() );
-  buffs.feint               = buff_creator_t( this, "feint", find_class_spell( "Feint" ) );
+  buffs.feint               = buff_creator_t( this, "feint", find_class_spell( "Feint" ) )
+    .duration( find_class_spell( "Feint" ) -> duration() + glyph.feint -> effectN( 1 ).time_value() );
   buffs.master_of_subtlety_passive = buff_creator_t( this, "master_of_subtlety_passive", spec.master_of_subtlety )
                                      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.master_of_subtlety  = buff_creator_t( this, "master_of_subtlety", find_spell( 31666 ) )
