@@ -2402,6 +2402,7 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
 struct cobra_shot_t: public hunter_ranged_attack_t
 {
   double focus_gain;
+  proc_t* cast_in_BW;
 
   cobra_shot_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "cobra_shot", player, player -> find_specialization_spell( "Cobra Shot" ) )
@@ -2413,6 +2414,8 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
     if ( p() -> sets.has_set_bonus( SET_MELEE, T13, B2 ) )
       focus_gain *= 2.0;
+
+    cast_in_BW = player -> get_proc( "cobra_shot during bestial_wrath" );
   }
 
   virtual void try_steady_focus()
@@ -2423,6 +2426,9 @@ struct cobra_shot_t: public hunter_ranged_attack_t
   virtual void execute()
   {
     hunter_ranged_attack_t::execute();
+
+    if (p() -> buffs.bestial_wrath -> check() )
+      cast_in_BW -> occur();
 
     if ( result_is_hit( execute_state -> result ) )
       trigger_tier15_2pc_melee();
@@ -2716,12 +2722,15 @@ struct multi_shot_t: public hunter_ranged_attack_t
 
 struct focusing_shot_t: public hunter_ranged_attack_t
 {
-  double focus_gain;
+  double focus_gain;;
+  proc_t* cast_in_BW;
+
   focusing_shot_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "focusing_shot", player, player -> talents.focusing_shot )
   {
     parse_options( options_str );
     focus_gain = data().effectN( 2 ).base_value();
+    cast_in_BW = player -> get_proc( "focusing_shot during bestial_wrath" );
   }
 
   bool usable_moving() const
@@ -2746,6 +2755,9 @@ struct focusing_shot_t: public hunter_ranged_attack_t
   virtual void execute()
   {
     hunter_ranged_attack_t::execute();
+
+    if (p() -> buffs.bestial_wrath -> check() )
+      cast_in_BW -> occur();
 
     if ( result_is_hit( execute_state -> result ) )
       p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.focusing_shot );

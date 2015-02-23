@@ -18,8 +18,8 @@ actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=pickled_eel
 actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
 actions.precombat+=/summon_pet,if=!talent.demonic_servitude.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down)
-actions.precombat+=/summon_doomguard,if=talent.demonic_servitude.enabled&active_enemies<5
-actions.precombat+=/summon_infernal,if=talent.demonic_servitude.enabled&active_enemies>=5
+actions.precombat+=/summon_doomguard,if=talent.demonic_servitude.enabled&active_enemies<9
+actions.precombat+=/summon_infernal,if=talent.demonic_servitude.enabled&active_enemies>=9
 actions.precombat+=/snapshot_stats
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled&!talent.demonic_servitude.enabled
 actions.precombat+=/service_pet,if=talent.grimoire_of_service.enabled
@@ -35,10 +35,10 @@ actions+=/arcane_torrent
 actions+=/mannoroths_fury
 actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|trinket.proc.any.react|trinket.stacking_any.intellect.react>6|target.time_to_die<40))
 actions+=/service_pet,if=talent.grimoire_of_service.enabled&(target.time_to_die>120|target.time_to_die<20|(buff.dark_soul.remains&target.health.pct<20))
-actions+=/summon_doomguard,if=!talent.demonic_servitude.enabled&active_enemies<5
-actions+=/summon_infernal,if=!talent.demonic_servitude.enabled&active_enemies>=5
-actions+=/run_action_list,name=single_target,if=active_enemies<6
-actions+=/run_action_list,name=aoe,if=active_enemies>=6
+actions+=/summon_doomguard,if=!talent.demonic_servitude.enabled&active_enemies<9
+actions+=/summon_infernal,if=!talent.demonic_servitude.enabled&active_enemies>=9
+actions+=/run_action_list,name=single_target,if=active_enemies<6&(!talent.charred_remains.enabled|active_enemies<4)
+actions+=/run_action_list,name=aoe,if=active_enemies>=6|(talent.charred_remains.enabled&active_enemies>=4)
 
 actions.single_target=havoc,target=2
 actions.single_target+=/shadowburn,if=talent.charred_remains.enabled&(burning_ember>=2.5|buff.dark_soul.up|target.time_to_die<10)
@@ -70,10 +70,10 @@ actions.single_target+=/immolate,cycle_targets=1,if=remains<=(duration*0.3)
 actions.single_target+=/conflagrate
 actions.single_target+=/incinerate
 
-actions.aoe=rain_of_fire,if=remains<=tick_time
-actions.aoe+=/havoc,target=2
-actions.aoe+=/shadowburn,if=buff.havoc.remains
-actions.aoe+=/chaos_bolt,if=buff.havoc.remains>cast_time&buff.havoc.stack>=3
+actions.aoe=rain_of_fire,if=!talent.charred_remains.enabled&remains<=tick_time
+actions.aoe+=/havoc,target=2,if=(!talent.charred_remains.enabled|buff.fire_and_brimstone.down)
+actions.aoe+=/shadowburn,if=!talent.charred_remains.enabled&buff.havoc.remains
+actions.aoe+=/chaos_bolt,if=!talent.charred_remains.enabled&buff.havoc.remains>cast_time&buff.havoc.stack>=3
 actions.aoe+=/kiljaedens_cunning,if=(talent.cataclysm.enabled&!cooldown.cataclysm.remains)
 actions.aoe+=/kiljaedens_cunning,moving=1,if=!talent.cataclysm.enabled
 actions.aoe+=/cataclysm
@@ -81,7 +81,7 @@ actions.aoe+=/fire_and_brimstone,if=buff.fire_and_brimstone.down
 actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&!dot.immolate.ticking
 actions.aoe+=/conflagrate,if=buff.fire_and_brimstone.up&charges=2
 actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&dot.immolate.remains<=(dot.immolate.duration*0.3)
-actions.aoe+=/chaos_bolt,if=talent.charred_remains.enabled&buff.fire_and_brimstone.up&burning_ember>=2.5
+actions.aoe+=/chaos_bolt,if=talent.charred_remains.enabled&buff.fire_and_brimstone.up
 actions.aoe+=/incinerate
 
 head=shadow_councils_hood,id=115586,bonus_id=567
