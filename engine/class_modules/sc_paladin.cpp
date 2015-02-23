@@ -5063,7 +5063,7 @@ void paladin_t::generate_action_prio_list_prot()
   // Max-DPS priority queue
   dps -> add_talent( this, "Holy Avenger", "", "Off-GCD spells." );
   if ( sim -> allow_potions && potion_type.length() > 0 )
-    dps -> add_action( "potion,name=" + potion_type + ",if=buff.holy_avenger.react|buff.bloodlust.react|target.time_to_die<=60" );
+    dps -> add_action( "potion,name=" + potion_type + ",if=buff.holy_avenger.up|(!talent.holy_avenger.enabled&(buff.seraphim.up|(!talent.seraphim.enabled&buff.bloodlust.react)))|target.time_to_die<=20" );
   dps -> add_talent( this, "Seraphim" );
   dps -> add_talent( this, "Divine Protection", "if=time<5|!talent.seraphim.enabled|(buff.seraphim.down&cooldown.seraphim.remains>5&cooldown.seraphim.remains<9)" );
   dps -> add_talent( this, "Guardian of Ancient Kings", "if=time<5|(buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down)" );
