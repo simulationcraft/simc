@@ -4031,7 +4031,7 @@ struct mana_tea_t: public monk_spell_t
     double mana_gain = 0;
     // TODO Make sure this is getting the Buffed but not Temporary Proc SPIRIT amount
     // Meh, there are no spirit procs yet. 
-    mana_gain = p() -> cache.spirit()
+    mana_gain = p() -> initial.stats.attribute[STAT_SPIRIT]
       * data().effectN( 1 ).base_value()
       * stacks_to_consume;
     player -> resource_gain( RESOURCE_MANA, mana_gain, p() -> gain.mana_tea, this );
