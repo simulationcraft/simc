@@ -144,6 +144,7 @@ struct rogue_t : public player_t
     buff_t* deadly_poison;
     buff_t* deadly_proc;
     buff_t* death_from_above;
+    buff_t* feint;
     buff_t* killing_spree;
     buff_t* master_of_subtlety;
     buff_t* master_of_subtlety_passive;
@@ -1959,6 +1960,22 @@ struct fan_of_knives_t: public rogue_attack_t
     rogue_attack_t::impact( state );
     if ( p() -> perk.empowered_fan_of_knives -> ok() && result_is_hit( state -> result ) )
       p() -> trigger_combo_point_gain( state, 1, p() -> gains.empowered_fan_of_knives );
+  }
+};
+
+// Feint ====================================================================
+
+struct feint_t : public rogue_attack_t
+{
+  feint_t( rogue_t* p, const std::string& options_str ):
+  rogue_attack_t( "feint", p, p -> find_class_spell( "Feint" ), options_str )
+  {
+  }
+
+  void execute()
+  {
+    rogue_attack_t::execute();
+    p() -> buffs.feint -> trigger();
   }
 };
 
@@ -4952,6 +4969,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "envenom"             ) return new envenom_t            ( this, options_str );
   if ( name == "eviscerate"          ) return new eviscerate_t         ( this, options_str );
   if ( name == "fan_of_knives"       ) return new fan_of_knives_t      ( this, options_str );
+  if ( name == "feint"               ) return new feint_t              ( this, options_str );
   if ( name == "garrote"             ) return new garrote_t            ( this, options_str );
   if ( name == "hemorrhage"          ) return new hemorrhage_t         ( this, options_str );
   if ( name == "honor_among_thieves" ) return new honor_among_thieves_t( this, options_str );
@@ -5299,6 +5317,7 @@ void rogue_t::create_buffs()
                               .add_invalidate( CACHE_ATTACK_SPEED );
   buffs.blindside           = buff_creator_t( this, "blindside", spec.blindside -> effectN( 1 ).trigger() )
                               .chance( spec.blindside -> proc_chance() );
+  buffs.feint               = buff_creator_t( this, "feint", find_class_spell( "Feint" ) );
   buffs.master_of_subtlety_passive = buff_creator_t( this, "master_of_subtlety_passive", spec.master_of_subtlety )
                                      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.master_of_subtlety  = buff_creator_t( this, "master_of_subtlety", find_spell( 31666 ) )
