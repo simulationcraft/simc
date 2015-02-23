@@ -3022,6 +3022,7 @@ struct melee_t: public monk_melee_attack_t
         else
           trigger_brew( p() -> active_stance_data( STURDY_OX ).effectN( 11 ).base_value() * weapon -> swing_time.total_seconds() / 3.6);
       }
+      // TODO: Add BLOCK_RESULT_MULTISTRIKE and BLOCK_RESULT_MULTISTRIKE_CRIT
       if ( result_is_multistrike( s -> result ) )
         p() -> buff.gift_of_the_ox -> trigger();
     }
@@ -5226,7 +5227,7 @@ void monk_t::create_buffs()
 
   buff.power_strikes = buff_creator_t( this, "power_strikes", talent.power_strikes -> effectN( 1 ).trigger() );
 
-  double ts_proc_chance = ( ( main_hand_weapon.group() == WEAPON_1H ) ) 
+  double ts_proc_chance = ( main_hand_weapon.group() == WEAPON_1H ) 
     ? ( ( spec.tiger_strikes -> proc_chance() / 8 ) * 5 ) : spec.tiger_strikes -> proc_chance();
   buff.tiger_strikes = buff_creator_t( this, "tiger_strikes", spec.tiger_strikes -> effectN( 1 ).trigger() )
     .chance( ts_proc_chance )
@@ -5271,7 +5272,8 @@ void monk_t::create_buffs()
 
   // Players don't pick up ALL of the gift of the ox orbs, mostly due to fight mechanics. 
   // Defaulting to 60% pickup, but users can adjust as needed
-  double goto_chance = ( user_options.goto_throttle > 0 ? user_options.goto_throttle / 100 : 0.60 );
+  double goto_chance = ( user_options.goto_throttle > 0 ? user_options.goto_throttle / 100 : 0.60 )
+    * ( ( main_hand_weapon.group() == WEAPON_1H ) ? 2/3 : 1 );
   buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox", find_spell( 124503 ) )
     .chance( goto_chance )
     .max_stack( 99 );
