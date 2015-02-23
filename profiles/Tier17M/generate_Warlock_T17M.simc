@@ -15,6 +15,9 @@ level=100
 race=gnome
 spec=affliction
 talents=0000111
+talent_override=grimoire_of_service,if=talent.demonic_servitude.enabled
+talent_override=soulburn_haunt,if=enemies=2
+talent_override=cataclysm,if=enemies>2
 head=shadow_councils_hood,id=115586,bonus_id=567
 neck=gruuls_lip_ring,id=113872,bonus_id=567,enchant_id=5318
 shoulder=earthripple_shoulderpads,id=113928,bonus_id=567
@@ -60,6 +63,11 @@ race=dwarf
 role=spell
 spec=destruction
 talents=0000311
+talent_override=charred_remains,if=enemies>=4
+talent_override=cataclysm,if=enemies>1&enemies<4
+talent_override=grimoire_of_sacrifice,if=enemies>1&enemies<4|(enemies=1&talent.charred_remains.enabled)
+talent_override=grimoire_of_supremacy,if=(enemies>=4&!talent.demonic_servitude.enabled)|(enemies=1&talent.cataclysm.enabled)
+talent_override=grimoire_of_service,if=talent.demonic_servitude.enabled
 head=shadow_councils_hood,id=115586,bonus_id=567
 neck=gruuls_lip_ring,id=113872,bonus_id=567,enchant_id=5317
 shoulder=shadow_councils_mantle,id=115589,bonus_id=567
