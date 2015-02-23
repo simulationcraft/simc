@@ -5222,7 +5222,7 @@ void monk_t::create_buffs()
 
   buff.power_strikes = buff_creator_t( this, "power_strikes", talent.power_strikes -> effectN( 1 ).trigger() );
 
-  double ts_proc_chance = ( main_hand_weapon.group() == WEAPON_1H ) 
+  double ts_proc_chance = ( main_hand_weapon.group() == WEAPON_1H || main_hand_weapon.group() == WEAPON_SMALL ) 
     ? ( ( spec.tiger_strikes -> proc_chance() / 8 ) * 5 ) : spec.tiger_strikes -> proc_chance();
   buff.tiger_strikes = buff_creator_t( this, "tiger_strikes", spec.tiger_strikes -> effectN( 1 ).trigger() )
     .chance( ts_proc_chance )
@@ -5265,11 +5265,11 @@ void monk_t::create_buffs()
     .refresh_behavior( BUFF_REFRESH_EXTEND )
     .add_invalidate( CACHE_PARRY );
 
+  double goto_chance = ( ( main_hand_weapon.group() == WEAPON_1H || main_hand_weapon.group() == WEAPON_SMALL ) ? 0.66666666666666667 : 1.0 );
   // Players don't pick up ALL of the gift of the ox orbs, mostly due to fight mechanics. 
   // Defaulting to 60% pickup, but users can adjust as needed
-  double goto_chance = ( user_options.goto_throttle > 0 ? user_options.goto_throttle / 100 : 0.60 )
-    * ( ( main_hand_weapon.group() == WEAPON_1H ) ? 2/3 : 1 );
-  buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox", find_spell( 124503 ) )
+  goto_chance *= ( user_options.goto_throttle > 0 ? user_options.goto_throttle / 100 : 0.60 );
+  buff.gift_of_the_ox = buff_creator_t( this, "gift_of_the_ox" ) //, find_spell( 124503 ) Until the Spell ID is regenerated, I'll keep this like this
     .chance( goto_chance )
     .max_stack( 99 );
 
