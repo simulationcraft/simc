@@ -1854,6 +1854,9 @@ public:
   {
     double c = spell_t::cost();
 
+    if ( current_resource() == RESOURCE_MANA && p() -> glyphs.life_pact -> ok() )
+      c *= ( 1 - p() -> glyphs.life_pact -> effectN( 2 ).percent() );
+
     if ( current_resource() == RESOURCE_DEMONIC_FURY && p() -> buffs.dark_soul -> check() )
       c *= 1.0 + p() -> sets.set( SET_CASTER, T15, B2 ) -> effectN( 3 ).percent();
 
@@ -3439,6 +3442,8 @@ struct life_tap_t: public warlock_spell_t
   life_tap_t( warlock_t* p ):
     warlock_spell_t( p, "Life Tap" )
   {
+    if ( p -> glyphs.life_pact -> ok() )
+      background = true;
     harmful = false;
     ignore_false_positive = true;
   }
