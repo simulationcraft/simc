@@ -37,7 +37,7 @@ actions+=/potion,name=draenic_agility,if=talent.stampede.enabled&cooldown.stampe
 actions+=/stampede,if=buff.bloodlust.up|buff.focus_fire.up|target.time_to_die<=25
 actions+=/dire_beast
 actions+=/explosive_trap,if=active_enemies>1
-actions+=/focus_fire,if=cooldown.bestial_wrath.remains<1&buff.focus_fire.down
+actions+=/focus_fire,if=buff.focus_fire.down&(cooldown.bestial_wrath.remains<1|(talent.stampede.enabled&buff.stampede.remains))
 actions+=/bestial_wrath,if=focus>30&!buff.bestial_wrath.up
 actions+=/multishot,if=active_enemies>1&pet.cat.buff.beast_cleave.down
 actions+=/barrage,if=active_enemies>1
