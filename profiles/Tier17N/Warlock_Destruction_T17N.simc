@@ -90,30 +90,30 @@ actions.aoe+=/chaos_bolt,if=talent.charred_remains.enabled&buff.fire_and_brimsto
 actions.aoe+=/incinerate
 
 head=shadow_councils_hood,id=115586
-neck=whispering_taladite_pendant,id=115801,bonus_id=56/559,enchant_id=5317
+neck=gruuls_lip_ring,id=113872,enchant_id=5319
 shoulders=shadow_councils_mantle,id=115589
-back=rinnilas_regal_cloak,id=118810,enchant_id=5310
+back=runefrenzy_greatcloak,id=113937,enchant_id=5312
 chest=shadow_councils_robes,id=115588
-wrists=bracers_of_spattered_steel,id=113887
+wrists=bracers_of_enkindled_power,id=113956
 hands=shadow_councils_gloves,id=115585
-waist=hexweave_belt,id=114816,bonus_id=55/559
-legs=hexweave_leggings,id=114811,bonus_id=55/559
+waist=seeking_ember_girdle,id=113941
+legs=turret_mechanics_legwraps,id=113970
 feet=cavedwellers_climbers,id=113864
-finger1=ukuroggs_corrupted_seal,id=113975,enchant_id=5324
-finger2=timeless_solium_band_of_the_archmage,id=118296,enchant_id=5324
-trinket1=blackiron_micro_crucible,id=113984
+finger1=timeless_solium_band_of_the_archmage,id=118296,enchant_id=5326
+finger2=ukuroggs_corrupted_seal,id=113975,enchant_id=5326
+trinket1=darmacs_unstable_talisman,id=113948
 trinket2=goren_soul_repository,id=119194
 main_hand=blackhand_doomstaff,id=113988,enchant_id=5384
 
 # Gear Summary
-# gear_stamina=3475
-# gear_intellect=2905
+# gear_stamina=3437
+# gear_intellect=2830
 # gear_spell_power=1325
-# gear_crit_rating=1502
-# gear_haste_rating=339
-# gear_mastery_rating=1217
-# gear_armor=706
-# gear_multistrike_rating=172
+# gear_crit_rating=901
+# gear_haste_rating=716
+# gear_mastery_rating=1469
+# gear_armor=700
+# gear_multistrike_rating=102
 # gear_versatility_rating=78
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
