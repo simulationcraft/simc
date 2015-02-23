@@ -1406,6 +1406,11 @@ void action_t::last_tick( dot_t* d )
     if ( b -> current_value > 0 ) b -> current_value -= 1.0;
     if ( b -> current_value == 0 ) b -> expire();
   }
+
+  if ( channeled && player -> channeling == this )
+  {
+    player -> channeling = 0;
+  }
 }
 
 // action_t::update_resolve ======================================================

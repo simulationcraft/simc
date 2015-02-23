@@ -1482,11 +1482,6 @@ public:
       .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   }
 
-  void moving()
-  {
-    return;
-  }
-
   void init_spells()
   {
     pet_t::init_spells();
