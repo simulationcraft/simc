@@ -5224,8 +5224,7 @@ void monk_t::create_buffs()
 
   buff.power_strikes = buff_creator_t( this, "power_strikes", talent.power_strikes -> effectN( 1 ).trigger() );
 
-  double ts_proc_chance = main_hand_weapon.group() == WEAPON_1H 
-    ? ( ( spec.tiger_strikes -> proc_chance() / 8 ) * 5 ) : spec.tiger_strikes -> proc_chance();
+  double ts_proc_chance = spec.tiger_strikes -> proc_chance() * ( main_hand_weapon.group() == WEAPON_1H ? 0.5 : 1 ); // Tooltips are wrong....
   buff.tiger_strikes = buff_creator_t( this, "tiger_strikes", spec.tiger_strikes -> effectN( 1 ).trigger() )
     .chance( ts_proc_chance )
     .refresh_behavior( BUFF_REFRESH_DURATION )
@@ -5267,8 +5266,8 @@ void monk_t::create_buffs()
     .refresh_behavior( BUFF_REFRESH_EXTEND )
     .add_invalidate( CACHE_PARRY );
 
-  // 1-Handers have a 50% chance to proc while 2-Handers have 100% chance to proc
-  double goto_chance = main_hand_weapon.group() == WEAPON_1H  ? 0.5 : 1.0;
+  // 1-Handers have a 62.5% chance to proc while 2-Handers have 100% chance to proc
+  double goto_chance = main_hand_weapon.group() == WEAPON_1H  ? 0.625 : 1.0;
   // Players don't pick up ALL of the gift of the ox orbs, mostly due to fight mechanics. 
   // Defaulting to 60% pickup, but users can adjust as needed
   goto_chance *= ( user_options.goto_throttle > 0 ? user_options.goto_throttle / 100 : 0.60 );
