@@ -3392,6 +3392,8 @@ struct chaos_bolt_t: public warlock_spell_t
     warlock_spell_t::execute();
 
     if ( !result_is_hit( execute_state -> result ) ) refund_embers( p() );
+
+    p() -> buffs.chaotic_infusion -> expire();
   }
 
   //overwrite MS behavior for the T17 4pc buff
@@ -3408,7 +3410,8 @@ struct chaos_bolt_t: public warlock_spell_t
 
     int n_strikes = 0;
 
-    if ( p() -> buffs.chaotic_infusion -> up() )
+    // Only first two targets get the T17 4PC bonus
+    if ( p() -> buffs.chaotic_infusion -> up() && state -> chain_target <= 1 )
     {
       int extra_ms = static_cast<int>( p() -> buffs.chaotic_infusion -> value() );
       for ( int i = 0; i < extra_ms; i++ )
@@ -3430,7 +3433,6 @@ struct chaos_bolt_t: public warlock_spell_t
 
         n_strikes++;
       }
-      p() -> buffs.chaotic_infusion -> expire();
     }
 
     return n_strikes + action_t::schedule_multistrike( state, type, tick_multiplier );
