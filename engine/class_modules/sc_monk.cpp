@@ -6102,11 +6102,12 @@ void monk_t::apl_combat_brewmaster()
 
   def -> add_action( "auto_attack" );
 
-  for (size_t i = 0; i < racial_actions.size(); i++)
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
       def -> add_action( racial_actions[i] + ",if=chi.max-chi>=1&energy<=40" );
-    def -> add_action( racial_actions[i] + ",if=energy<=40" );
+    else
+      def -> add_action( racial_actions[i] + ",if=energy<=40" );
   }
 
   def -> add_action( "chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4" );
@@ -6118,7 +6119,7 @@ void monk_t::apl_combat_brewmaster()
   def -> add_action( this, "Fortifying Brew", "if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.elusive_brew_activated.down" );
 
   int num_items = (int)items.size();
-  for (int i = 0; i < num_items; i++)
+  for ( int i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
       def -> add_action( "use_item,name=" + items[i].name_str + ",if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.fortifying_brew.down&buff.elusive_brew_activated.down" );
