@@ -1642,11 +1642,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
     {
       if ( priest.buffs.insanity -> up() )
       {
-        priest.buffs.insanity -> trigger(1, 0, 1, timespan_t::from_seconds( 2.0 * orbs * s -> haste + priest.buffs.insanity -> remains().total_seconds() ) );
+        priest.buffs.insanity -> trigger(1, 0, 1, timespan_t::from_seconds( priest.buffs.insanity -> default_value * orbs * s -> haste + priest.buffs.insanity -> remains().total_seconds() ) );
       }
       else
       {
-        priest.buffs.insanity -> trigger(1, 0, 1, timespan_t::from_seconds( 2.0 * orbs * s -> haste ) );
+        priest.buffs.insanity -> trigger(1, 0, 1, timespan_t::from_seconds( priest.buffs.insanity -> default_value * orbs * s -> haste ) );
       }
     }
   }
@@ -5992,10 +5992,11 @@ void priest_t::create_buffs()
 
   buffs.shadowy_insight = buff_creator_t( this, "shadowy_insight" )
                           .spell( talents.shadowy_insight )
-                          .chance( talents.shadowy_insight -> effectN( 4 ).percent());
+                          .chance( talents.shadowy_insight -> effectN( 4 ).percent() );
 
   buffs.insanity = buff_creator_t( this, "insanity")
-                               .spell( find_spell( 132572 ) );
+                   .spell( find_spell( 132573 ) )
+                   .default_value( talents.insanity -> max_stacks() );
 
   // Discipline
   buffs.archangel = new buffs::archangel_t( *this );
@@ -6081,13 +6082,6 @@ void priest_t::create_buffs()
                           .add_invalidate( CACHE_SPELL_HASTE )
                           .add_invalidate( CACHE_HASTE );
 
-  buffs.glyph_of_levitate = buff_creator_t( this, "glyph_of_levitate", glyphs.levitate )
-                              .default_value( glyphs.levitate -> effectN( 1 ).percent() );
-
-  buffs.glyph_of_mind_flay = buff_creator_t( this, "glyph_of_mind_flay", glyphs.mind_flay )
-                             .default_value( glyphs.mind_flay -> effectN( 1 ).percent() )
-                             .duration( timespan_t::from_seconds( 5.0 ) );
-
   buffs.mental_instinct = buff_creator_t( this, "mental_instinct" )
                             .spell( sets.set( PRIEST_SHADOW, T17, B4 ) -> effectN( 1 ).trigger() )
                             .chance( sets.has_set_bonus( PRIEST_SHADOW, T17, B4 ) )
@@ -6102,6 +6096,16 @@ void priest_t::create_buffs()
                        .spell( find_spell( 171150 ) )
                        .chance( sets.has_set_bonus( PRIEST_SHADOW, PVP, B2 ) )
                        .add_invalidate( CACHE_VERSATILITY );
+
+  //Glyphs
+  buffs.glyph_of_levitate = buff_creator_t( this, "glyph_of_levitate", glyphs.levitate )
+                              .default_value( glyphs.levitate -> effectN( 1 ).percent() );
+
+  buffs.glyph_of_mind_flay = buff_creator_t( this, "glyph_of_mind_flay", glyphs.mind_flay )
+                             .default_value( glyphs.mind_flay -> effectN( 1 ).percent() )
+                             .duration( timespan_t::from_seconds( 5.0 ) );
+
+
 }
 
 // ALL Spec Pre-Combat Action Priority List
