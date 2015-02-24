@@ -4108,18 +4108,18 @@ void warrior_t::apl_fury()
   default_list -> add_action( this, "Charge", "if=debuff.charge.down" );
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( "call_action_list,name=movement,if=movement.distance>5", "This is mostly to prevent cooldowns from being accidentally used during movement." );
-  default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down|(talent.unquenchable_thirst.enabled&buff.raging_blow.down)|(prev_gcd.bloodthirst&buff.raging_blow.stack<2)" );
+  default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down|(prev_gcd.bloodthirst&buff.raging_blow.stack<2)" );
   default_list -> add_action( this, "Heroic Leap", "if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists" );
 
   size_t num_items = items.size();
   for ( size_t i = 0; i < num_items; i++ )
   {
     if ( items[i].name_str == "scabbard_of_kyanos" )
-      default_list -> add_action( "use_item,name=" + items[i].name_str );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(active_enemies>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.avatar.up|buff.bloodbath.up|target.time_to_die<25)" );
     else if ( items[i].name_str == "vial_of_convulsive_shadows" )
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.recklessness.up|target.time_to_die<25|!talent.anger_management.enabled" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(active_enemies>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.recklessness.up|target.time_to_die<25|!talent.anger_management.enabled)" );
     else if ( items[i].name_str != "nitro_boosts" && items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.bloodbath.up|talent.avatar.enabled" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(active_enemies>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.recklessness.up|buff.avatar.up|buff.bloodbath.up|target.time_to_die<25)" );
   }
 
   if ( sim -> allow_potions )
@@ -4133,7 +4133,7 @@ void warrior_t::apl_fury()
   default_list -> add_action( "call_action_list,name=single_target,if=(raid_event.adds.cooldown<60&raid_event.adds.count>2&active_enemies=1)|raid_event.movement.cooldown<5", "Skip cooldown usage if we can line them up with bladestorm on a large set of adds, or if movement is coming soon." );
   default_list -> add_action( this, "Recklessness", "if=((target.time_to_die>190|target.health.pct<20)&(buff.bloodbath.up|!talent.bloodbath.enabled))|target.time_to_die<=12|talent.anger_management.enabled",
                               "This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown, unless the boss will die before the ability is usable again, and then use it with execute.'" );
-  default_list -> add_talent( this, "Avatar" );
+  default_list -> add_talent( this, "Avatar", "if=buff.recklessness.up|cooldown.recklessness.remains>60|target.time_to_die<30" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
@@ -4161,16 +4161,17 @@ void warrior_t::apl_fury()
 
   single_target -> add_talent( this, "Bloodbath" );
   single_target -> add_action( this, "Recklessness", "if=target.health.pct<20&raid_event.adds.exists" );
-  single_target -> add_action( this, "Wild Strike", "if=rage>110&target.health.pct>20" );
-  single_target -> add_action( this, "Bloodthirst", "if=(!talent.unquenchable_thirst.enabled&rage<80)|buff.enrage.down" );
+  single_target -> add_action( this, "Wild Strike", "if=(rage>rage.max-20)&target.health.pct>20" );
+  single_target -> add_action( this, "Bloodthirst", "if=(!talent.unquenchable_thirst.enabled&(rage<rage.max-40))|buff.enrage.down|buff.raging_blow.stack<2" );
   single_target -> add_talent( this, "Ravager", "if=buff.bloodbath.up|(!talent.bloodbath.enabled&(!raid_event.adds.exists|raid_event.adds.cooldown>60|target.time_to_die<40))" );
-  single_target -> add_action( this, "Execute", "if=buff.sudden_death.react" );
   single_target -> add_talent( this, "Siegebreaker" );
+  single_target -> add_action( this, "Execute", "if=buff.sudden_death.react" );
   single_target -> add_talent( this, "Storm Bolt" );
   single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up" );
   single_target -> add_action( this, "Execute", "if=buff.enrage.up|target.time_to_die<12" );
   single_target -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   single_target -> add_action( this, "Raging Blow" );
+  single_target -> add_action( "wait,sec=cooldown.bloodthirst.remains,if=cooldown.bloodthirst.remains<0.5&rage<50" );
   single_target -> add_action( this, "Wild Strike", "if=buff.enrage.up&target.health.pct>20" );
   single_target -> add_talent( this, "Bladestorm", "if=!raid_event.adds.exists" );
   single_target -> add_talent( this, "Shockwave", "if=!talent.unquenchable_thirst.enabled" );
@@ -4182,9 +4183,8 @@ void warrior_t::apl_fury()
   two_targets -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   two_targets -> add_talent( this, "Bladestorm", "if=buff.enrage.up" );
   two_targets -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<50|buff.raging_blow.down" );
-  two_targets -> add_action( this, "Execute", "target=2" );
-  two_targets -> add_action( this, "Execute", "if=target.health.pct<20|buff.sudden_death.react" );
-  two_targets -> add_action( "heroic_charge,cycle_targets=1,if=target.health.pct<20&rage<70&swing.mh.remains>2&debuff.charge.down" );
+  two_targets -> add_talent( this, "Siegebreaker" );
+  two_targets -> add_action( this, "Execute", "cycle_targets=1" );
   two_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.up" );
   two_targets -> add_action( this, "Whirlwind", "if=!buff.meat_cleaver.up" );
   two_targets -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up&rage>75" );
@@ -4197,9 +4197,8 @@ void warrior_t::apl_fury()
   three_targets -> add_talent( this, "Bladestorm", "if=buff.enrage.up" );
   three_targets -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<50|buff.raging_blow.down" );
   three_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack>=2" );
-  three_targets -> add_action( this, "Execute", "if=buff.sudden_death.react" );
-  three_targets -> add_action( this, "Execute", "target=2" );
-  three_targets -> add_action( this, "Execute", "target=3" );
+  three_targets -> add_talent( this, "Siegebreaker" );
+  three_targets -> add_action( this, "Execute", "cycle_targets=1" );
   three_targets -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   three_targets -> add_action( this, "Whirlwind" );
   three_targets -> add_action( this, "Bloodthirst" );
@@ -4213,6 +4212,7 @@ void warrior_t::apl_fury()
   aoe -> add_action( this, "Recklessness", "sync=bladestorm" );
   aoe -> add_talent( this, "Bladestorm", "if=buff.enrage.remains>6" );
   aoe -> add_action( this, "Whirlwind" );
+  aoe -> add_talent( this, "Siegebreaker" );
   aoe -> add_action( this, "Execute", "if=buff.sudden_death.react" );
   aoe -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   aoe -> add_action( this, "Bloodthirst" );
