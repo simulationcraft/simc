@@ -5224,7 +5224,7 @@ void monk_t::create_buffs()
 
   buff.power_strikes = buff_creator_t( this, "power_strikes", talent.power_strikes -> effectN( 1 ).trigger() );
 
-  double ts_proc_chance = spec.tiger_strikes -> proc_chance() * ( main_hand_weapon.group() == WEAPON_1H ? 0.5 : 1 ); // Tooltips are wrong....
+  double ts_proc_chance = spec.tiger_strikes -> proc_chance() * ( ( main_hand_weapon.group() == WEAPON_1H && specialization() != MONK_MISTWEAVER ) ? 0.5 : 1 ); // Tooltips are wrong....
   buff.tiger_strikes = buff_creator_t( this, "tiger_strikes", spec.tiger_strikes -> effectN( 1 ).trigger() )
     .chance( ts_proc_chance )
     .refresh_behavior( BUFF_REFRESH_DURATION )
