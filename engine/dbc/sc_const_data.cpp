@@ -142,12 +142,6 @@ void dbc::apply_hotfixes()
   spell_data_t* s;
   spelleffect_data_t* e;
 
-  s = spell_data_t::find( 137595, false );
-  
-  assert( s -> internal_cooldown() != timespan_t::from_seconds( 0.25 ) && "Capacitive Primal Diamond" );
-  if ( s && s -> ok() )
-    s -> _internal_cooldown = 250;
-
   // Hunter
 
   // Mage

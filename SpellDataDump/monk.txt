@@ -1,4 +1,4 @@
-SimulationCraft 603-27 for World of Warcraft 6.1.0 PTR (build level 19634)
+SimulationCraft 610-02 for World of Warcraft 6.1.0 Live (build level 19678)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk
@@ -1569,7 +1569,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 127
 #2 (id=133909)   : Apply Aura (6) | Unknown effect sub type (283)
                    Base Value: 30 | Scaled Value: 30
-                   Affected Spells: Expel Harm (115072), Detonate Chi (115460), Healing Elixirs (122281), Chi Torpedo (124040), Gift of the Serpent (124041), Zen Sphere (124081), Zen Sphere: Detonate (124101), Gift of the Ox (124507), Chi Burst (130654), Chi Wave (132463), Gift of the Serpent (135920), Summon Healing Sphere (147494), Healing Sphere (163212)
+                   Affected Spells: Expel Harm (115072), Detonate Chi (115460), Healing Elixirs (122281), Chi Torpedo (124040), Gift of the Serpent (124041), Zen Sphere (124081), Zen Sphere: Detonate (124101), Gift of the Ox (124507), Chi Burst (130654), Chi Wave (132463), Gift of the Serpent (135920), Summon Healing Sphere (147494), Healing Sphere (163212), Gift of the Ox (178173)
 Description      : Guard against future attacks, absorbing $<absorb> damage and increasing all heals you apply to yourself by $m2%. Lasts $115295d.
 Tooltip          : Absorbing $w1 damage and increasing heals done to yourself by $w2%.
 Variables        : $mult=$?s123401[${1.1}][${1.0}]
@@ -3927,11 +3927,45 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 15
 Description      : Your autoattack multistrikes can trigger Gift of the Ox, summoning a Healing Sphere visible only to you. Moving through this Healing Sphere will heal you for $124507s1.
 
+Name             : Gift of the Ox (id=124503) [Spell Family (53)] 
+Class            : Monk
+Spell Level      : 1
+Range            : 100 yards
+Duration         : 30 seconds
+Affecting spells : Lucidity (137331)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .......x 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=157617)   : Unknown effect type (179)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 373 | Radius: 1.5 yards
+Description      : $@spelldesc124502
+
+Name             : Gift of the Ox (id=124506) [Spell Family (53)] 
+Class            : Monk
+Spell Level      : 1
+Range            : 100 yards
+Duration         : 30 seconds
+Affecting spells : Lucidity (137331)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .......x 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=157620)   : Unknown effect type (179)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 373 | Radius: 1.5 yards
+Description      : $@spelldesc124502
+
 Name             : Gift of the Ox (id=124507) [Spell Family (53)] 
 Class            : Monk
 Range            : 50000 yards
 Affecting spells : Guard (115295)
-Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
+Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ .x...... ........ 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -4908,7 +4942,7 @@ Attributes       : ....x... ........ ........ ........   ........ .xx..... .....
 Effects          :
 #1 (id=167487)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 8 yards
-                   Affected Spells: Jab (100780), Blackout Kick (100784), Tiger Palm (100787), Spinning Crane Kick (107270), Rising Sun Kick (107428), Jab (108557), Expel Harm (115072), Touch of Death (115080), Rushing Jade Wind (116847), Fists of Fury (117418), Crackling Jade Lightning (117952), Chi Torpedo (117993), Flying Serpent Kick (123586), Chi Burst (123986), Crackling Tiger Lightning (123996), Zen Sphere (124081), Zen Sphere (124098), Zen Sphere: Detonate (124101), Zen Sphere: Detonate (125033), Blackout Kick (128531), Rising Sun Kick (130320), Chi Burst (130654), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Chi Explosion (152174), Chi Explosion (157675), Chi Explosion (157676), Chi Explosion (157680), Chi Explosion (157681), Zen Sphere (182032), Chi Explosion (182078)
+                   Affected Spells: Jab (100780), Blackout Kick (100784), Tiger Palm (100787), Spinning Crane Kick (107270), Rising Sun Kick (107428), Jab (108557), Expel Harm (115072), Touch of Death (115080), Rushing Jade Wind (116847), Fists of Fury (117418), Crackling Jade Lightning (117952), Chi Torpedo (117993), Flying Serpent Kick (123586), Chi Burst (123986), Crackling Tiger Lightning (123996), Zen Sphere (124081), Zen Sphere (124098), Zen Sphere: Detonate (124101), Zen Sphere: Detonate (125033), Blackout Kick (128531), Rising Sun Kick (130320), Chi Burst (130654), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Chi Explosion (152174), Chi Explosion (157675), Chi Explosion (157676), Chi Explosion (157680), Chi Explosion (157681), Chi Explosion (159620), Zen Sphere (182032), Chi Explosion (182078)
 Description      : $@spelldesc107428
 Tooltip          : Damage taken from abilities dealt by the Monk increased by $w1%.
 
@@ -6158,7 +6192,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #3 (id=223281)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Chi Explosion (152174), Chi Explosion (157675), Chi Explosion (157676), Chi Explosion (157681), Chi Explosion (182078)
+                   Affected Spells: Chi Explosion (152174), Chi Explosion (157675), Chi Explosion (157676), Chi Explosion (157681), Chi Explosion (159620), Chi Explosion (182078)
 Description      : $@spelldesc137384
 Tooltip          : Your next Chi Explosion refunds $s1 Chi.
 
@@ -6332,6 +6366,34 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 9
 Description      : $@spelldesc124487
 Tooltip          : Immune to Silence and Interrupt effects.
+
+Name             : Chi Explosion (Talent) (id=159620) [Spell Family (53)] 
+Class            : Monk
+Resource         : 1 Chi
+Range            : 30 yards
+GCD              : 1.5 seconds
+Affecting spells : Rising Sun Kick (130320), Combo Breaker: Chi Explosion (159407)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=223606)   : School Damage: nature (2)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.70000
+#2 (id=223607)   : Direct Heal (10)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.50000
+#3 (id=225453)   : Direct Heal (10)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.50000 | Radius: 0 - 8 yards
+Description      : Consumes up to 4 Chi to cause the target to explode with Chi energy, causing additional effects based on Chi consumed:
+
+1+ Chi: Deals Nature damage to an enemy equal to $s1 plus $s1 per Chi consumed.
+2+ Chi: Heals yourself for $s2 plus $s2 per Chi consumed.
+3+ Chi: This healing also heals all allies within $A3 yards of you.
+4   Chi: Also summons 8 Healing Spheres in an $A3 yard radius ring around you that last $157682d.
+
+Replaces Blackout Kick.
 
 Name             : Expel Harm (Brewmaster) (id=159832) 
 Class            : Monk
@@ -6762,6 +6824,22 @@ Effects          :
 #1 (id=251171)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Choose a level 60 talent.
+
+Name             : Gift of the Ox (id=178173) [Spell Family (53)] 
+Class            : Monk
+Range            : 50000 yards
+Affecting spells : Guard (115295)
+Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
+                 : ..x..... ......x. ........ ........   ........ ........ .x...... ......x. 
+                 : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
+                 : Disable target procs (113)
+Effects          :
+#1 (id=255483)   : Direct Heal (10)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.00000 | Radius: 0 - 6 yards
+Description      : $@spelldesc124502
 
 Name             : Player Damage Reduction Level 95 (id=178839) [Passive, Hidden] 
 Class            : Death Knight, Shaman, Mage, Warlock, Monk
