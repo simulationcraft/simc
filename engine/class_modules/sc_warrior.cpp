@@ -2477,7 +2477,7 @@ struct rend_t: public warrior_attack_t
 
   void last_tick( dot_t* d )
   {
-    if ( d -> ticks_left() == 0 )
+    if ( d -> ticks_left() == 0 && !target -> is_sleeping() )
     {
       burst -> execute();
     }

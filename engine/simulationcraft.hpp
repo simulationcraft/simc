@@ -4442,7 +4442,7 @@ struct player_t : public actor_t
   private:
     friend struct player_t;
     bool sleeping;
-    rating_t    rating;
+    rating_t rating;
   public:
 
     std::array<double, ATTRIBUTE_MAX> attribute_multiplier;
