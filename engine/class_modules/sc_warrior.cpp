@@ -4038,7 +4038,7 @@ void warrior_t::apl_precombat()
     talent_overrides_str += "bladestorm,if=raid_event.adds.count>=1|enemies>1/"
       "dragon_roar,if=raid_event.adds.count>=1|enemies>1/"
       "taste_for_blood,if=raid_event.adds.count>=1|enemies>1/"
-      "ravager,if=raid_event.adds.cooldown>=60";
+      "ravager,if=raid_event.adds.cooldown>=60&raid_event.adds.exists";
     precombat -> add_action( "stance,choose=battle" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
       "# Generic on-use trinket line if needed when swapping trinkets out. \n"
@@ -4048,7 +4048,7 @@ void warrior_t::apl_precombat()
   {
     talent_overrides_str += "bladestorm,if=raid_event.adds.count>=1|enemies>1/"
       "dragon_roar,if=raid_event.adds.count>=1|enemies>1/"
-      "ravager,if=raid_event.adds.cooldown>=60";
+      "ravager,if=raid_event.adds.cooldown>=60&raid_event.adds.exists";
     precombat -> add_action( "stance,choose=battle" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
       "# Generic on-use trinket line if needed when swapping trinkets out. \n"
@@ -4104,6 +4104,7 @@ void warrior_t::apl_fury()
   action_priority_list_t* two_targets         = get_action_priority_list( "two_targets" );
   action_priority_list_t* three_targets       = get_action_priority_list( "three_targets" );
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
+  action_priority_list_t* bladestorm          = get_action_priority_list( "bladestorm" );
 
   default_list -> add_action( this, "Charge", "if=debuff.charge.down" );
   default_list -> add_action( "auto_attack" );
@@ -4131,7 +4132,7 @@ void warrior_t::apl_fury()
   }
 
   default_list -> add_action( "call_action_list,name=single_target,if=(raid_event.adds.cooldown<60&raid_event.adds.count>2&active_enemies=1)|raid_event.movement.cooldown<5", "Skip cooldown usage if we can line them up with bladestorm on a large set of adds, or if movement is coming soon." );
-  default_list -> add_action( this, "Recklessness", "if=((target.time_to_die>190|target.health.pct<20)&(buff.bloodbath.up|!talent.bloodbath.enabled))|target.time_to_die<=12|talent.anger_management.enabled",
+  default_list -> add_action( this, "Recklessness", "if=(((target.time_to_die>190|target.health.pct<20)&(buff.bloodbath.up|!talent.bloodbath.enabled))|target.time_to_die<=12|talent.anger_management.enabled)&((desired_targets=1&!raid_event.adds.exists)|!talent.bladestorm.enabled)",
                               "This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown, unless the boss will die before the ability is usable again, and then use it with execute.'" );
   default_list -> add_talent( this, "Avatar", "if=buff.recklessness.up|cooldown.recklessness.remains>60|target.time_to_die<30" );
 
@@ -4163,7 +4164,7 @@ void warrior_t::apl_fury()
   single_target -> add_action( this, "Recklessness", "if=target.health.pct<20&raid_event.adds.exists" );
   single_target -> add_action( this, "Wild Strike", "if=(rage>rage.max-20)&target.health.pct>20" );
   single_target -> add_action( this, "Bloodthirst", "if=(!talent.unquenchable_thirst.enabled&(rage<rage.max-40))|buff.enrage.down|buff.raging_blow.stack<2" );
-  single_target -> add_talent( this, "Ravager", "if=buff.bloodbath.up|(!talent.bloodbath.enabled&(!raid_event.adds.exists|raid_event.adds.cooldown>60|target.time_to_die<40))" );
+  single_target -> add_talent( this, "Ravager", "if=buff.bloodbath.up|(!talent.bloodbath.enabled&(!raid_event.adds.exists|raid_event.adds.in>60|target.time_to_die<40))" );
   single_target -> add_talent( this, "Siegebreaker" );
   single_target -> add_action( this, "Execute", "if=buff.sudden_death.react" );
   single_target -> add_talent( this, "Storm Bolt" );
@@ -4181,42 +4182,44 @@ void warrior_t::apl_fury()
   two_targets -> add_talent( this, "Bloodbath" );
   two_targets -> add_talent( this, "Ravager", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   two_targets -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
-  two_targets -> add_talent( this, "Bladestorm", "if=buff.enrage.up" );
-  two_targets -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<50|buff.raging_blow.down" );
+  two_targets -> add_action( "call_action_list,name=bladestorm" );
+  two_targets -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<40|buff.raging_blow.down" );
   two_targets -> add_talent( this, "Siegebreaker" );
   two_targets -> add_action( this, "Execute", "cycle_targets=1" );
-  two_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.up" );
-  two_targets -> add_action( this, "Whirlwind", "if=!buff.meat_cleaver.up" );
-  two_targets -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up&rage>75" );
-  two_targets -> add_action( this, "Bloodthirst" );
-  two_targets -> add_action( this, "Whirlwind", "if=rage>rage.max-20" );
+  two_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.up|target.health.pct<20" );
+  two_targets -> add_action( this, "Whirlwind", "if=!buff.meat_cleaver.up&target.health.pct>20" );
   two_targets -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up" );
+  two_targets -> add_action( this, "Bloodthirst" );
+  two_targets -> add_action( this, "Whirlwind" );
 
   three_targets -> add_talent( this, "Bloodbath" );
   three_targets -> add_talent( this, "Ravager", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
-  three_targets -> add_talent( this, "Bladestorm", "if=buff.enrage.up" );
+  three_targets -> add_action( "call_action_list,name=bladestorm" );
   three_targets -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<50|buff.raging_blow.down" );
   three_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack>=2" );
   three_targets -> add_talent( this, "Siegebreaker" );
   three_targets -> add_action( this, "Execute", "cycle_targets=1" );
   three_targets -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
-  three_targets -> add_action( this, "Whirlwind" );
+  three_targets -> add_action( this, "Whirlwind", "if=target.health.pct>20" );
   three_targets -> add_action( this, "Bloodthirst" );
   three_targets -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up" );
+  three_targets -> add_action( this, "Raging Blow" );
 
   aoe -> add_talent( this, "Bloodbath" );
   aoe -> add_talent( this, "Ravager", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   aoe -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack>=3&buff.enrage.up" );
   aoe -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<50|buff.raging_blow.down" );
   aoe -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack>=3" );
-  aoe -> add_action( this, "Recklessness", "sync=bladestorm" );
-  aoe -> add_talent( this, "Bladestorm", "if=buff.enrage.remains>6" );
+  aoe -> add_action( "call_action_list,name=bladestorm" );
   aoe -> add_action( this, "Whirlwind" );
   aoe -> add_talent( this, "Siegebreaker" );
   aoe -> add_action( this, "Execute", "if=buff.sudden_death.react" );
   aoe -> add_talent( this, "Dragon Roar", "if=buff.bloodbath.up|!talent.bloodbath.enabled" );
   aoe -> add_action( this, "Bloodthirst" );
   aoe -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up" );
+
+  bladestorm -> add_action( this, "Recklessness", "sync=bladestorm,if=buff.enrage.remains>6&((talent.anger_management.enabled&raid_event.adds.in>45)|(!talent.anger_management.enabled&raid_event.adds.in>60)|!raid_event.adds.exists|active_enemies>desired_targets)", "oh god why" );
+  bladestorm -> add_talent( this, "Bladestorm", "if=buff.enrage.remains>6&((talent.anger_management.enabled&raid_event.adds.in>45)|(!talent.anger_management.enabled&raid_event.adds.in>60)|!raid_event.adds.exists|active_enemies>desired_targets)" );
 }
 
 // Arms Warrior Action Priority List ========================================
