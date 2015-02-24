@@ -4038,7 +4038,7 @@ void warrior_t::apl_precombat()
     talent_overrides_str += "bladestorm,if=raid_event.adds.count>=1|enemies>1/"
       "dragon_roar,if=raid_event.adds.count>=1|enemies>1/"
       "taste_for_blood,if=raid_event.adds.count>=1|enemies>1/"
-      "ravager,if=raid_event.adds.count>=1|enemies>1";
+      "ravager,if=raid_event.adds.cooldown>=60";
     precombat -> add_action( "stance,choose=battle" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
       "# Generic on-use trinket line if needed when swapping trinkets out. \n"
@@ -4048,7 +4048,7 @@ void warrior_t::apl_precombat()
   {
     talent_overrides_str += "bladestorm,if=raid_event.adds.count>=1|enemies>1/"
       "dragon_roar,if=raid_event.adds.count>=1|enemies>1/"
-      "ravager,if=raid_event.adds.count>=1|enemies>1";
+      "ravager,if=raid_event.adds.cooldown>=60";
     precombat -> add_action( "stance,choose=battle" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.\n"
       "# Generic on-use trinket line if needed when swapping trinkets out. \n"
