@@ -5228,7 +5228,7 @@ void monk_t::create_buffs()
   buff.tiger_strikes = buff_creator_t( this, "tiger_strikes", spec.tiger_strikes -> effectN( 1 ).trigger() )
     .chance( ts_proc_chance )
     .refresh_behavior( BUFF_REFRESH_DURATION )
-    .cd( timespan_t::from_seconds( 0.5 ) )
+    .cd( timespan_t::from_seconds( 0.2 ) )
     .add_invalidate( CACHE_MULTISTRIKE );
 
   buff.tiger_power = buff_creator_t( this, "tiger_power", find_class_spell( "Tiger Palm" ) -> effectN( 2 ).trigger() )
