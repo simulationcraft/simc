@@ -2370,11 +2370,16 @@ expr_t* action_t::create_expression( const std::string& name_str )
       struct prev_gcd_expr_t: public action_expr_t
       {
         std::string prev_gcd_action;
-        prev_gcd_expr_t( action_t& a, const std::string& prev_action ): action_expr_t( "prev_gcd", a ), prev_gcd_action( prev_action ) {}
+        int exact_spell_gcd_id;
+        prev_gcd_expr_t( action_t& a, const std::string& prev_action ): action_expr_t( "prev_gcd", a ),
+          prev_gcd_action( prev_action ),
+          exact_spell_gcd_id( action.player -> find_spell( prev_action ) -> id() )
+        {
+        }
         virtual double evaluate()
         {
           if ( action.player -> last_gcd_action )
-            return action.player -> last_gcd_action -> name_str == prev_gcd_action;
+            return action.player -> last_gcd_action -> id == exact_spell_gcd_id;
           return false;
         }
       };
@@ -2385,13 +2390,21 @@ expr_t* action_t::create_expression( const std::string& name_str )
       struct prev_gcd_expr_t: public action_expr_t
       {
         std::string offgcdaction;
-        prev_gcd_expr_t( action_t& a, const std::string& offgcdaction ): action_expr_t( "prev_off_gcd", a ), offgcdaction( offgcdaction ) {}
+        int exact_spell_off_gcd;
+        prev_gcd_expr_t( action_t& a, const std::string& offgcdaction ): action_expr_t( "prev_off_gcd", a ),
+          offgcdaction( offgcdaction ),
+          exact_spell_off_gcd( action.player -> find_spell( offgcdaction ) -> id() )
+        {
+        }
         virtual double evaluate()
         {
-          for ( size_t i = 0; i < action.player -> off_gcdactions.size(); i++ )
+          if ( action.player -> off_gcdactions.size() > 0 )
           {
-            if ( action.player -> off_gcdactions[ i ] -> name_str == offgcdaction )
-              return true;
+            for ( size_t i = 0; i < action.player -> off_gcdactions.size(); i++ )
+            {
+              if ( action.player -> off_gcdactions[i] -> id == exact_spell_off_gcd )
+                return true;
+            }
           }
           return false;
         }
