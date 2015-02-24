@@ -5,8 +5,6 @@
 
 optimal_raid=1
 tmi_boss=TMI_Standard_Boss_T17L
-max_time=300
-vary_combat_length=0.2
 # Raid Tier17PR
 
 Death_Knight_Frost_1h_T17P.simc

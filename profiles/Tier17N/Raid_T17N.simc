@@ -10,10 +10,8 @@
 
 optimal_raid=1
 tmi_boss=TMI_Standard_Boss_T17N
-max_time=300
-vary_combat_length=0.2
-# Raid Tier17N
 
+# Raid Tier17N
 Death_Knight_Frost_1h_T17N.simc
 Death_Knight_Frost_2h_T17N.simc
 Death_Knight_Unholy_T17N.simc
@@ -41,9 +39,9 @@ Paladin_Retribution_T17N.simc
 #Paladin_Holy_T17N.simc
 
 #Priest_Discipline_T17N_Heal.simc
-Priest_Discipline_T17N_Dmg.simc
+#Priest_Discipline_T17N_Dmg.simc
 #Priest_Holy_T17N_Heal.simc
-Priest_Holy_T17N_Dmg.simc
+#Priest_Holy_T17N_Dmg.simc
 Priest_Shadow_T17N_COP.simc
 Priest_Shadow_T17N_VE.simc
 Priest_Shadow_T17N_AS.simc

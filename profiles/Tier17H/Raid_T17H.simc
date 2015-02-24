@@ -9,9 +9,7 @@
 # * EXCEPTION: 690 Legendary Ring can be used. (accessibility)
 
 optimal_raid=1
-max_time=300
 tmi_boss=TMI_Standard_Boss_T17H
-vary_combat_length=0.2
 # Raid Tier17N
 
 Death_Knight_Frost_1h_T17H.simc
@@ -40,9 +38,9 @@ Paladin_Protection_T17H.simc
 Paladin_Retribution_T17H.simc
 
 #Priest_Discipline_T17H_Heal.simc
-Priest_Discipline_T17H_Dmg.simc
+#Priest_Discipline_T17H_Dmg.simc
 #Priest_Holy_T17H_Heal.simc
-Priest_Holy_T17H_Dmg.simc
+#Priest_Holy_T17H_Dmg.simc
 Priest_Shadow_T17H_COP.simc
 Priest_Shadow_T17H_VE.simc
 Priest_Shadow_T17H_AS.simc
