@@ -3300,7 +3300,7 @@ struct harsh_word_t : public paladin_spell_t
     may_crit = true;
 
     //disable if not glyphed or if not holy
-    if ( ! p -> glyphs.harsh_words -> ok() || ! p -> specialization() == PALADIN_HOLY )
+    if ( ! ( p -> glyphs.harsh_words -> ok() || p -> specialization() == PALADIN_HOLY ) )
       background = true;
 
     base_costs[RESOURCE_HOLY_POWER] = 1;

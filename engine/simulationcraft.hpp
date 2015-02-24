@@ -2614,6 +2614,7 @@ struct sim_t : private sc_thread_t
   player_t*   active_player;
   int         num_players;
   int         num_enemies;
+  int         num_tanks;
   int         enemy_targets;
   int         healing; // Creates healing targets. Useful for ferals, I guess.
   int global_spawn_index;

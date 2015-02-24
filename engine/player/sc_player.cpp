@@ -9743,6 +9743,7 @@ void player_collected_data_t::reserve_memory( const player_t& p )
   {
     theck_meloree_index.reserve( size );
     effective_theck_meloree_index.reserve( size );
+    p.sim -> num_tanks++;
   }
 }
 

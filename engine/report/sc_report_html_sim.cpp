@@ -612,13 +612,18 @@ void print_html_raid_summary( report::sc_html_stream& os, const sim_t* sim, cons
       ( int )i, ri.dps_charts[ i ].c_str() );
   }
 
-  for ( size_t i = 0; i < ri.dtps_charts.size(); i++ )
-  {
-    os.format(
-      "<map id='DTPSMAP%d' name='DTPSMAP%d'></map>\n", ( int )i, ( int )i );
-    os.format(
-      "<img id='DTPSIMG%d' src=\"%s\" alt=\"DTPS Chart\" />\n",
-      ( int )i, ri.dtps_charts[ i ].c_str() );
+  bool dtps_chart_printed = false;
+  if ( sim -> num_enemies > 1 || ( ( ( sim -> num_tanks * 2 ) >= sim -> num_players ) && sim -> num_enemies == 1 ) )
+  { // Put this chart on the left side to prevent blank space.
+    dtps_chart_printed = true;
+    for ( size_t i = 0; i < ri.dtps_charts.size(); i++ )
+    {
+      os.format(
+        "<map id='DTPSMAP%d' name='DTPSMAP%d'></map>\n", (int)i, (int)i );
+      os.format(
+        "<img id='DTPSIMG%d' src=\"%s\" alt=\"DTPS Chart\" />\n",
+        (int)i, ri.dtps_charts[i].c_str() );
+    }
   }
 
   if ( ! sim -> raid_events_str.empty() )
@@ -664,7 +669,17 @@ void print_html_raid_summary( report::sc_html_stream& os, const sim_t* sim, cons
         (int)i, ri.priority_dps_charts[i].c_str() );
     }
   }
-
+  else if ( !dtps_chart_printed )
+  {
+    for ( size_t i = 0; i < ri.dtps_charts.size(); i++ )
+    {
+      os.format(
+        "<map id='DTPSMAP%d' name='DTPSMAP%d'></map>\n", (int)i, (int)i );
+      os.format(
+        "<img id='DTPSIMG%d' src=\"%s\" alt=\"DTPS Chart\" />\n",
+        (int)i, ri.dtps_charts[i].c_str() );
+    }
+  }
   for ( size_t i = 0; i < ri.hps_charts.size(); i++ )
   {
     os.format(  "<map id='HPSMAP%d' name='HPSMAP%d'></map>\n", ( int )i, ( int )i );
