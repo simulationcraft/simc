@@ -2370,7 +2370,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       struct prev_gcd_expr_t: public action_expr_t
       {
         std::string prev_gcd_action;
-        int exact_spell_gcd_id;
+        unsigned exact_spell_gcd_id;
         prev_gcd_expr_t( action_t& a, const std::string& prev_action ): action_expr_t( "prev_gcd", a ),
           prev_gcd_action( prev_action ),
           exact_spell_gcd_id( action.player -> find_spell( prev_action ) -> id() )
@@ -2390,7 +2390,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       struct prev_gcd_expr_t: public action_expr_t
       {
         std::string offgcdaction;
-        int exact_spell_off_gcd;
+        unsigned exact_spell_off_gcd;
         prev_gcd_expr_t( action_t& a, const std::string& offgcdaction ): action_expr_t( "prev_off_gcd", a ),
           offgcdaction( offgcdaction ),
           exact_spell_off_gcd( action.player -> find_spell( offgcdaction ) -> id() )

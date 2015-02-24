@@ -2427,7 +2427,7 @@ struct chi_explosion_t: public monk_melee_attack_t
     sef_ability = SEF_CHI_EXPLOSION;
   }
 
-  double spell_direct_power_coefficient( const action_state_t* state ) const
+  double spell_direct_power_coefficient( const action_state_t* ) const
   {
     if ( p() -> specialization() == MONK_MISTWEAVER )
     {
@@ -4011,7 +4011,7 @@ struct mana_tea_t: public monk_spell_t
     harmful = false;
   }
 
-  timespan_t composite_dot_duration( const action_state_t*s ) const
+  timespan_t composite_dot_duration( const action_state_t* ) const
   {
     if ( glyphed )
       return timespan_t::zero();

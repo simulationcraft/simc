@@ -23,7 +23,11 @@ event_t::event_t( sim_t& s, actor_t* a ) :
 #if ACTOR_EVENT_BOOKKEEPING
   ,actor( a )
 #endif
-{}
+{
+#if ! ACTOR_EVENT_BOOKKEEPING
+  (void)a;
+#endif
+  }
 
 event_t::event_t( actor_t& a ) :
   _sim( *a.sim ), next( nullptr ), time( timespan_t::zero() ),
