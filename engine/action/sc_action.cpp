@@ -2354,12 +2354,14 @@ expr_t* action_t::create_expression( const std::string& name_str )
     {
       struct prev_expr_t : public action_expr_t
       {
-        std::string prev_action;
-        prev_expr_t( action_t& a, const std::string& prev_action ) : action_expr_t( "prev", a ), prev_action( prev_action ) {}
+        action_t* prev;
+        prev_expr_t( action_t& a, const std::string& prev_action ) : action_expr_t( "prev", a ),
+          prev( a.player -> find_action( prev_action ) )
+        {}
         virtual double evaluate()
         {
           if ( action.player -> last_foreground_action )
-            return action.player -> last_foreground_action -> name_str == prev_action;
+            return action.player -> last_foreground_action -> id == prev -> id;
           return false;
         }
       };
@@ -2369,17 +2371,15 @@ expr_t* action_t::create_expression( const std::string& name_str )
     {
       struct prev_gcd_expr_t: public action_expr_t
       {
-        std::string prev_gcd_action;
-        unsigned exact_spell_gcd_id;
+        action_t* previously_used;
         prev_gcd_expr_t( action_t& a, const std::string& prev_action ): action_expr_t( "prev_gcd", a ),
-          prev_gcd_action( prev_action ),
-          exact_spell_gcd_id( action.player -> find_spell( prev_action ) -> id() )
+          previously_used( a.player -> find_action( prev_action ) )
         {
         }
         virtual double evaluate()
         {
           if ( action.player -> last_gcd_action )
-            return action.player -> last_gcd_action -> id == exact_spell_gcd_id;
+            return action.player -> last_gcd_action -> id == previously_used -> id;
           return false;
         }
       };
@@ -2389,11 +2389,9 @@ expr_t* action_t::create_expression( const std::string& name_str )
     {
       struct prev_gcd_expr_t: public action_expr_t
       {
-        std::string offgcdaction;
-        unsigned exact_spell_off_gcd;
+        action_t* previously_off_gcd;
         prev_gcd_expr_t( action_t& a, const std::string& offgcdaction ): action_expr_t( "prev_off_gcd", a ),
-          offgcdaction( offgcdaction ),
-          exact_spell_off_gcd( action.player -> find_spell( offgcdaction ) -> id() )
+          previously_off_gcd( a.player -> find_action( offgcdaction ) )
         {
         }
         virtual double evaluate()
@@ -2402,7 +2400,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
           {
             for ( size_t i = 0; i < action.player -> off_gcdactions.size(); i++ )
             {
-              if ( action.player -> off_gcdactions[i] -> id == exact_spell_off_gcd )
+              if ( action.player -> off_gcdactions[i] -> id == previously_off_gcd -> id )
                 return true;
             }
           }

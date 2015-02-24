@@ -36,7 +36,7 @@ actions+=/auto_attack
 actions+=/call_action_list,name=movement,if=movement.distance>5
 actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<25
 # This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'
-actions+=/recklessness,if=(dot.rend.ticking&(target.time_to_die>190|target.health.pct<20)&((!talent.bloodbath.enabled&debuff.colossus_smash.up&(!cooldown.bladestorm.remains|!talent.bladestorm.enabled))|buff.bloodbath.up))|target.time_to_die<10
+actions+=/recklessness,if=(((target.time_to_die>190|target.health.pct<20)&(buff.bloodbath.up|!talent.bloodbath.enabled))|target.time_to_die<=12|talent.anger_management.enabled)&((desired_targets=1&!raid_event.adds.exists)|!talent.bladestorm.enabled)
 actions+=/bloodbath,if=(dot.rend.ticking&cooldown.colossus_smash.remains<5&((talent.ravager.enabled&prev_gcd.ravager)|!talent.ravager.enabled))|target.time_to_die<20
 actions+=/avatar,if=buff.recklessness.up|target.time_to_die<25
 actions+=/blood_fury,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up

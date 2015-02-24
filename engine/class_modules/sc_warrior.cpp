@@ -4254,7 +4254,7 @@ void warrior_t::apl_arms()
       default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<25" );
   }
 
-  default_list -> add_action( this, "Recklessness", "if=(dot.rend.ticking&(target.time_to_die>190|target.health.pct<20)&((!talent.bloodbath.enabled&debuff.colossus_smash.up&(!cooldown.bladestorm.remains|!talent.bladestorm.enabled))|buff.bloodbath.up))|target.time_to_die<10",
+  default_list -> add_action( this, "Recklessness", "if=(((target.time_to_die>190|target.health.pct<20)&(buff.bloodbath.up|!talent.bloodbath.enabled))|target.time_to_die<=12|talent.anger_management.enabled)&((desired_targets=1&!raid_event.adds.exists)|!talent.bladestorm.enabled)",
                               "This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'" );
   default_list -> add_talent( this, "Bloodbath", "if=(dot.rend.ticking&cooldown.colossus_smash.remains<5&((talent.ravager.enabled&prev_gcd.ravager)|!talent.ravager.enabled))|target.time_to_die<20" );
   default_list -> add_talent( this, "Avatar", "if=buff.recklessness.up|target.time_to_die<25" );
