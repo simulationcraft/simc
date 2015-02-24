@@ -3728,14 +3728,11 @@ struct cascade_t : public cascade_base_t<priest_spell_t>
     for ( size_t i = 0; i < _target_list_source.size(); ++i )
     {
       player_t* t = _target_list_source[i];
-      if ( t != target )
+
+      if ( _target_list_source.size() > 1)
       {
         targets.push_back( t );
-
-        if ( _target_list_source.size() > 1)
-        {
-          targets.push_back( t );
-        }
+        targets.push_back( t );
       }
     }
 
@@ -5512,7 +5509,7 @@ double priest_t::composite_player_multiplier( school_e school ) const
   {
     if ( buffs.chakra_chastise -> check() )
     {
-      m *= 1.0 + 0.8;
+      m *= 1.0 + buffs.chakra_chastise -> data().effectN( 1 ).percent();
     }
   }
 
