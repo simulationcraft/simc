@@ -567,8 +567,7 @@ void enchant::mark_of_the_frostwolf( special_effect_t& effect )
 
 void enchant::mark_of_the_shattered_hand( special_effect_t& effect )
 {
-  // TODO: Check in 6.1
-  effect.rppm_scale = ( effect.item -> player -> bugs && ! maybe_ptr( effect.player -> dbc.ptr ) ) ? RPPM_HASTE_SPEED : RPPM_HASTE;
+  effect.rppm_scale = RPPM_HASTE;
   effect.trigger_spell_id = 159238;
   effect.name_str = effect.item -> player -> find_spell( 159238 ) -> name_cstr();
 
