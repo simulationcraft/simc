@@ -2430,7 +2430,7 @@ struct ferocious_bite_t : public cat_attack_t
       if ( p() -> buff.berserk -> check() )
         max_amount *= 1.0 + p() -> spell.berserk_cat -> effectN( 1 ).percent();
 
-      double amount = std::min( p() -> resources.current[ RESOURCE_ENERGY ], max_excess_energy );
+      double amount = std::min( p() -> resources.current[ RESOURCE_ENERGY ], max_amount );
       p() -> resource_loss( current_resource(), amount );
       stats -> consume_resource( current_resource(), amount );
     }
