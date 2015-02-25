@@ -2110,10 +2110,6 @@ public:
     if ( p() -> buff.savage_roar -> check() )
       duration += std::min( p() -> buff.savage_roar -> remains(), duration * 0.3 );
 
-    // 01/02/2015: Glyph of Savage Roar only pandemics up to 51.0 seconds instead of 54.6
-    if ( p() -> bugs )
-      duration = std::min( timespan_t::from_seconds( 51.0 ), duration );
-
     p() -> buff.savage_roar -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
   }
 
@@ -2427,6 +2423,17 @@ struct ferocious_bite_t : public cat_attack_t
           td( state -> target ) -> dots.rip -> refresh_duration( 0 );
       }
     }
+    // 02/24/2015: Ferocious Bite multistrikes trigger the extra energy consumption.
+    else if ( p() -> bugs && result_is_multistrike( state -> result ) )
+    {
+      double max_amount = data().effectN( 2 ).base_value();
+      if ( p() -> buff.berserk -> check() )
+        max_amount *= 1.0 + p() -> spell.berserk_cat -> effectN( 1 ).percent();
+
+      double amount = std::min( p() -> resources.current[ RESOURCE_ENERGY ], max_excess_energy );
+      p() -> resource_loss( current_resource(), amount );
+      stats -> consume_resource( current_resource(), amount );
+    }
   }
 
   virtual void consume_resource()
@@ -2540,10 +2547,6 @@ struct rake_t : public cat_attack_t
 
     if ( p() -> mastery.razor_claws -> ok() )
       dm *= 1.0 + p() -> cache.mastery_value();
-
-    // 02/20/2015: Rake direct damage double dips on bloodtalons modifier
-    if ( p() -> bugs && p() -> talent.bloodtalons -> ok() && consume_bloodtalons && p() -> buff.bloodtalons -> check() )
-      dm *= 1.0 + p() -> buff.bloodtalons -> data().effectN( 1 ).percent();
 
     return dm;
   }
@@ -2884,10 +2887,6 @@ struct thrash_cat_t : public cat_attack_t
 
     if ( p() -> mastery.razor_claws -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
-
-    // 02/20/2015: Thrash direct damage double dips on bloodtalons modifier
-    if ( p() -> bugs && p() -> talent.bloodtalons -> ok() && consume_bloodtalons && p() -> buff.bloodtalons -> check() )
-      m *= 1.0 + p() -> buff.bloodtalons -> data().effectN( 1 ).percent();
 
     return m;
   }
