@@ -354,7 +354,7 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <AdditionalIncludeDirectories>$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWebKit-PGO;$(QTDIR)\include\QtWebEngineWidgets;$(QTDIR)\include\QtWebKit-PGOWidgets;$(QTDIR)\include\QtWebEngine;$(QTDIR)\include;$(QTDIR)\include\ActiveQt;$(QTDIR)\include\QtANGLE;$(QTDIR)\mkspecs\default;$(SolutionDir);$(SolutionDir)vs;$(SolutionDir)engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>SC_DEFAULT_APIKEY="$(SC_DEFAULT_APIKEY)";SC_USE_WEBENGINE;QT_NO_Debug-WebEngine;NDebug-WebEngine;_WINDOWS;UNICODE;WIN32;Q_OS_WIN;QT_LARGEFILE_SUPPORT;QT_VERSION_5;QT_DLL;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SC_DEFAULT_APIKEY="$(SC_DEFAULT_APIKEY)";SC_USE_WEBENGINE;_DEBUG;_QT_NO_DEBUG;_WINDOWS;UNICODE;WIN32;Q_OS_WIN;QT_LARGEFILE_SUPPORT;QT_VERSION_5;QT_DLL;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -377,7 +377,7 @@
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>QT_NO_Debug-WebEngine;NDebug-WebEngine;_WINDOWS;UNICODE;WIN32;Q_OS_WIN;QT_LARGEFILE_SUPPORT;QT_DLL;QT_NO_Debug-WebEngine;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>QT_NO_DEBUG;_DEBUG;_WINDOWS;UNICODE;WIN32;Q_OS_WIN;QT_LARGEFILE_SUPPORT;QT_DLL;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>qtmain.lib;wininet.lib;Qt5WebEngine.lib;Qt5Network.lib;Qt5Gui.lib;Qt5Core.lib;Qt5WebKit-PGO.lib;Qt5WebKit-PGOWidgets.lib;Qt5Widgets.lib;Qt5WebEngineWidgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -428,7 +428,7 @@
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>QT_NO_DEBUG;NDEBUG;_WINDOWS;UNICODE;WIN32;Q_OS_WIN;QT_LARGEFILE_SUPPORT;QT_DLL;QT_NO_DEBUG;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;UNICODE;WIN32;Q_OS_WIN;QT_LARGEFILE_SUPPORT;QT_DLL;QT_NO_DEBUG;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>qtmain.lib;wininet.lib;Qt5WebEngine.lib;Qt5Network.lib;Qt5Gui.lib;Qt5Core.lib;Qt5WebKit.lib;Qt5WebKitWidgets.lib;Qt5Widgets.lib;Qt5WebEngineWidgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -456,7 +456,7 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <AdditionalIncludeDirectories>$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWebKit-PGO;$(QTDIR)\include\QtWebEngineWidgets;$(QTDIR)\include\QtWebKit-PGOWidgets;$(QTDIR)\include\QtWebEngine;$(QTDIR)\include;$(QTDIR)\include\ActiveQt;$(QTDIR)\include\QtANGLE;$(QTDIR)\mkspecs\default;$(SolutionDir);$(SolutionDir)vs;$(SolutionDir)engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>QT_NO_DEBUG;NDEBUG;_WINDOWS;UNICODE;WIN32;Q_OS_WIN;QT_LARGEFILE_SUPPORT;QT_DLL;QT_NO_DEBUG;QT_WEBKIT_LIB;SC_USE_WEBKIT;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;UNICODE;WIN32;Q_OS_WIN;QT_LARGEFILE_SUPPORT;QT_DLL;QT_NO_DEBUG;QT_WEBKIT_LIB;SC_USE_WEBKIT;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -479,7 +479,7 @@
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>QT_NO_DEBUG;NDEBUG;_WINDOWS;UNICODE;WIN32;Q_OS_WIN;QT_LARGEFILE_SUPPORT;QT_DLL;QT_NO_DEBUG;QT_WEBKIT_LIB;SC_USE_WEBKIT;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;UNICODE;WIN32;Q_OS_WIN;QT_LARGEFILE_SUPPORT;QT_DLL;QT_NO_DEBUG;QT_WEBKIT_LIB;SC_USE_WEBKIT;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>qtmain.lib;wininet.lib;Qt5WebEngine.lib;Qt5Network.lib;Qt5Gui.lib;Qt5Core.lib;Qt5WebKit.lib;Qt5WebKitWidgets.lib;Qt5Widgets.lib;Qt5WebEngineWidgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -530,7 +530,7 @@
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>QT_NO_DEBUG;NDEBUG;_WINDOWS;UNICODE;WIN32;Q_OS_WIN;QT_LARGEFILE_SUPPORT;QT_DLL;QT_NO_DEBUG;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;UNICODE;WIN32;Q_OS_WIN;QT_LARGEFILE_SUPPORT;QT_DLL;QT_NO_DEBUG;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>qtmain.lib;wininet.lib;Qt5WebEngine.lib;Qt5Network.lib;Qt5Gui.lib;Qt5Core.lib;Qt5WebKit.lib;Qt5WebKitWidgets.lib;Qt5Widgets.lib;Qt5WebEngineWidgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -632,7 +632,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;QT_LARGEFILE_SUPPORT;Q_OS_WIN;QT_DLL;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;_Debug-WebEngine;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;QT_LARGEFILE_SUPPORT;Q_OS_WIN;QT_DLL;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>qtmaind.lib;wininet.lib;Qt5Webkit.lib;Qt5Networkd.lib;Qt5Guid.lib;Qt5Cored.lib;Qt5Widgetsd.lib;Qt5WebKitWidgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -678,7 +678,7 @@
       <BrowseInformation>false</BrowseInformation>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>QT_NO_DEBUG;NDEBUG;_WINDOWS;UNICODE;WIN32;Q_OS_WIN;QT_LARGEFILE_SUPPORT;QT_DLL;QT_NO_DEBUG;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;UNICODE;WIN32;Q_OS_WIN;QT_LARGEFILE_SUPPORT;QT_DLL;QT_NO_DEBUG;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>qtmain.lib;wininet.lib;Qt5WebEngine.lib;Qt5Network.lib;Qt5Gui.lib;Qt5Core.lib;Qt5WebKit.lib;Qt5WebKitWidgets.lib;Qt5Widgets.lib;Qt5WebEngineWidgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -730,7 +730,7 @@
       <BrowseInformation>false</BrowseInformation>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>QT_NO_DEBUG;NDEBUG;_WINDOWS;UNICODE;WIN32;Q_OS_WIN;QT_LARGEFILE_SUPPORT;QT_DLL;QT_NO_DEBUG;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;UNICODE;WIN32;Q_OS_WIN;QT_LARGEFILE_SUPPORT;QT_DLL;QT_NO_DEBUG;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>qtmain.lib;wininet.lib;Qt5WebEngine.lib;Qt5Network.lib;Qt5Gui.lib;Qt5Core.lib;Qt5WebKit.lib;Qt5WebKitWidgets.lib;Qt5Widgets.lib;Qt5WebEngineWidgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -788,7 +788,7 @@
       <BrowseInformation>false</BrowseInformation>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>QT_NO_DEBUG;NDEBUG;_WINDOWS;UNICODE;WIN32;Q_OS_WIN;QT_LARGEFILE_SUPPORT;QT_DLL;QT_NO_DEBUG;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;UNICODE;WIN32;Q_OS_WIN;QT_LARGEFILE_SUPPORT;QT_DLL;QT_NO_DEBUG;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>qtmain.lib;wininet.lib;Qt5WebEngine.lib;Qt5Network.lib;Qt5Gui.lib;Qt5Core.lib;Qt5WebKit.lib;Qt5WebKitWidgets.lib;Qt5Widgets.lib;Qt5WebEngineWidgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
