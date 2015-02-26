@@ -5441,15 +5441,20 @@ void shaman_t::init_action_list()
     single -> add_action( this, "Searing Totem", "if=!totem.fire.active" );
     single -> add_action( this, "Unleash Elements", "if=(talent.unleashed_fury.enabled|set_bonus.tier16_2pc_melee=1)" );
     single -> add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.react>=4|buff.ancestral_swiftness.up" );
-    single -> add_action( this, find_specialization_spell( "Ascendance" ), "windstrike" );
+    single -> add_action( this, find_specialization_spell( "Ascendance" ), "windstrike", "if=!talent.echo_of_the_elements.enabled|(talent.echo_of_the_elements.enabled&(charges=2|(action.windstrike.charges_fractional>1.75)|(charges=1&buff.ascendance.remains<1.5)))" );
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react=5" );
-    single -> add_action( this, "Stormstrike" );
+    single -> add_action( this, "Stormstrike", "if=!talent.echo_of_the_elements.enabled|(talent.echo_of_the_elements.enabled&(charges=2|(action.stormstrike.charges_fractional>1.75)|target.time_to_die<6))" );
     single -> add_action( this, "Primal Strike" );
-    single -> add_action( this, "Lava Lash" );
+    single -> add_action( this, "Lava Lash", "if=!talent.echo_of_the_elements.enabled|(talent.echo_of_the_elements.enabled&(charges=2|(action.lava_lash.charges_fractional>1.8)|target.time_to_die<8))" );
     single -> add_action( this, "Flame Shock", "if=(talent.elemental_fusion.enabled&buff.elemental_fusion.stack=2&buff.unleash_flame.up&dot.flame_shock.remains<16)|(!talent.elemental_fusion.enabled&buff.unleash_flame.up&dot.flame_shock.remains<=9)|!ticking" );
     single -> add_action( this, "Unleash Elements" );
+    single -> add_action( this, find_specialization_spell( "Ascendance" ), "windstrike", "if=talent.echo_of_the_elements.enabled" );
+    single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=(buff.maelstrom_weapon.react>=3&!buff.ascendance.up)|buff.ancestral_swiftness.up" );
+    single -> add_action( this, "Lava Lash", "if=talent.echo_of_the_elements.enabled" );
     single -> add_action( this, "Frost Shock", "if=(talent.elemental_fusion.enabled&dot.flame_shock.remains>=16)|!talent.elemental_fusion.enabled" );
     single -> add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.react>=1" );
+    single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=talent.echo_of_the_elements.enabled&((buff.maelstrom_weapon.react>=2&!buff.ascendance.up)|buff.ancestral_swiftness.up)" );
+    single -> add_action( this, "Stormstrike", "if=talent.echo_of_the_elements.enabled" );
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=(buff.maelstrom_weapon.react>=1&!buff.ascendance.up)|buff.ancestral_swiftness.up" );
     single -> add_action( this, "Searing Totem", "if=pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up" );
 
