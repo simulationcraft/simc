@@ -20,14 +20,14 @@ rd %install% /s /q
 
 for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\12.0" /v MSBuildToolsPath') do SET MSBUILDDIR=%%B
 
-"%MSBUILDDIR%msbuild.exe" E:\simulationcraft\simc_vs2013.sln /p:configuration=release /p:platform=x64 /nr:true
+"%MSBUILDDIR%msbuild.exe" E:\simulationcraft\simc_vs2013.sln /p:configuration=WebEngine-PGO /p:platform=x64 /nr:true
 
 forfiles -s -m generate_????.simc -c "cmd /c echo Running @path && %~dp0simc64.exe @file"
 
 robocopy %redist%\ %install%\ msvcp120.dll msvcr120.dll vccorlib120.dll
 robocopy locale\ %install%\locale sc_de.qm sc_zh.qm
 robocopy %qt_dir%\bin\ %install%\ Qt5Core.dll Qt5Quick.dll Qt5Qml.dll Qt5Svg.dll Qt5Gui.dll Qt5Widgets.dll Qt5Network.dll Qt5WebEngineCore.dll Qt5WebEngine.dll Qt5WebEngineWidgets.dll libGLESv2.dll icudt53.dll icuin53.dll icuuc53.dll libEGL.dll D3DCompiler_47.dll QtWebEngineProcess.exe Qt5OpenGl.dll
-robocopy winreleasescripts\ %install%\ qt.conf
+robocopy vs\ %install%\ qt.conf
 robocopy %qt_dir%\ %install%\ icudtl.dat qtwebengine_resources.pak
 robocopy %qt_dir%\plugins\platforms %install%\platforms\ qwindows.dll
 robocopy %qt_dir%\plugins\imageformats %install%\imageformats qdds.dll qgif.dll qicns.dll qico.dll qjp2.dll qjpeg.dll qmng.dll qsvg.dll qtga.dll qtiff.dll qwbmp.dll qwebp.dll
