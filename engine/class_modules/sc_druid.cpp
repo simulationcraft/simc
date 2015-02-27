@@ -1829,6 +1829,8 @@ public:
 template <class Base>
 struct druid_attack_t : public druid_action_t< Base >
 {
+protected:
+  bool attackHit;
 private:
   typedef druid_action_t< Base > ab;
 public:
@@ -1841,7 +1843,7 @@ public:
   druid_attack_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ), consume_bloodtalons( false ), bt_counter( 0 ),
-    tf_counter( 0 )
+    tf_counter( 0 ), attackHit( false )
   {
     ab::may_glance    = false;
     ab::special       = true;
@@ -1862,21 +1864,25 @@ public:
 
   virtual void execute()
   {
+    attackHit = false;
+
     ab::execute();
 
-    if( consume_bloodtalons )
+    if( consume_bloodtalons && attackHit )
     {
       bt_counter -> count_execute();
       tf_counter -> count_execute();
-    }
 
-    if ( ab::p() -> talent.bloodtalons -> ok() && consume_bloodtalons & ab::p() -> buff.bloodtalons -> up() )
       ab::p() -> buff.bloodtalons -> decrement();
+    }
   }
 
   virtual void impact( action_state_t* s )
   {
     ab::impact( s );
+
+    if ( ab::result_is_hit( s -> result ) )
+      attackHit = true;
 
     if ( ab::p() -> spec.leader_of_the_pack -> ok() && s -> result == RESULT_CRIT )
       trigger_lotp( s );
@@ -2778,12 +2784,11 @@ struct shred_t : public cat_attack_t
 struct swipe_t : public cat_attack_t
 {
 private:
-  bool hit;
-  bool critical;
+  bool attackCritical;
 public:
   swipe_t( druid_t* player, const std::string& options_str ) :
     cat_attack_t( "swipe", player, player -> spec.swipe, options_str ),
-    hit( false ), critical( false )
+    attackCritical( false )
   {
     aoe = -1;
     combo_point_gain = data().effectN( 1 ).base_value(); // Effect is not labelled correctly as CP gain
@@ -2793,25 +2798,20 @@ public:
   {
     cat_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
-    {
-      hit = true;
-      if ( s -> result == RESULT_CRIT )
-        critical = true;
-    }
+    if ( s -> result == RESULT_CRIT )
+      attackCritical = true;
   }
 
   virtual void execute()
   {
-    // Reset our combo point helper variables.
-    hit = critical = false;
+    attackCritical = false;
 
     cat_attack_t::execute();
     
-    if ( hit )
+    if ( attackHit )
     {
       p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.swipe );
-      if ( critical && p() -> spell.primal_fury -> ok() )
+      if ( attackCritical && p() -> spell.primal_fury -> ok() )
       {
         p() -> proc.primal_fury -> occur();
         p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> spell.primal_fury -> effectN( 1 ).base_value(), p() -> gain.primal_fury );
