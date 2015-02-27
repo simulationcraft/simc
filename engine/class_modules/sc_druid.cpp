@@ -5037,6 +5037,9 @@ struct moonfire_cat_t : public druid_spell_t
     druid_spell_t( "moonfire_cat", player, player -> find_spell( 155625 ) )
   {
     parse_options( options_str );
+
+    if ( p() -> wod_hotfix )
+      base_multiplier *= 1.2;
   }
 
   virtual void impact( action_state_t* s )
