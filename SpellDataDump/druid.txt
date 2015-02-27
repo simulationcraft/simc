@@ -1,4 +1,4 @@
-SimulationCraft 610-02 for World of Warcraft 6.1.0 Live (build level 19678)
+SimulationCraft 610-03 for World of Warcraft 6.1.0 Live (build level 19702)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Druid
