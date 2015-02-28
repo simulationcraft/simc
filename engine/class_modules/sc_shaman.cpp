@@ -2863,12 +2863,16 @@ struct fire_nova_explosion_t : public shaman_spell_t
 
 struct fire_nova_t : public shaman_spell_t
 {
-  fire_nova_t( shaman_t* player, const std::string& options_str ) :
+  fire_nova_t( shaman_t* player, const std::string& options_str ):
     shaman_spell_t( "fire_nova", player, player -> find_specialization_spell( "Fire Nova" ), options_str )
   {
     may_crit = may_miss = callbacks = false;
-    aoe       = -1;
+    aoe = -1;
     uses_unleash_flame = true;
+    if ( player -> wod_hotfix )
+    {
+      hasted_gcd = true; // Hotfix from 2015-02-28
+    }
 
     impact_action = new fire_nova_explosion_t( player );
     uses_eoe = player -> talent.echo_of_the_elements -> ok();
