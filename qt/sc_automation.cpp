@@ -334,6 +334,7 @@ QString automation::auto_rotation_sim( QString player_class,
                                        QString sidebar_text
                                      )
 {
+  Q_UNUSED(player_spec);
   QString profile;
 
   for ( int i = 0; i < rotation_list.size(); i++ )

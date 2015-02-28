@@ -1842,8 +1842,8 @@ public:
 
   druid_attack_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, player, s ), consume_bloodtalons( false ), bt_counter( 0 ),
-    tf_counter( 0 ), attackHit( false )
+    ab( n, player, s ), attackHit( false ), consume_bloodtalons( false ),
+    bt_counter( 0 ), tf_counter( 0 )
   {
     ab::may_glance    = false;
     ab::special       = true;
