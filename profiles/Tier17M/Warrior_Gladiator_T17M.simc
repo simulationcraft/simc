@@ -34,6 +34,7 @@ actions+=/auto_attack
 actions+=/call_action_list,name=movement,if=movement.distance>5
 actions+=/avatar
 actions+=/bloodbath
+actions+=/use_item,name=vial_of_convulsive_shadows,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<15
 actions+=/blood_fury,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10
 actions+=/berserking,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10
 actions+=/arcane_torrent,if=rage<rage.max-40
@@ -73,31 +74,31 @@ actions.aoe+=/devastate,cycle_targets=1,if=dot.deep_wounds.remains<5&cooldown.sh
 actions.aoe+=/devastate,if=cooldown.shield_slam.remains>execute_time*0.4
 
 head=blackhands_faceguard,id=115584,bonus_id=567
-neck=gluttons_kerchief,id=113882,bonus_id=567,enchant=gift_of_critical_strike
+neck=gluttons_kerchief,id=113882,bonus_id=567,enchant_id=5317
 shoulders=blackhands_shoulderguards,id=115581,bonus_id=567
-back=gronnstitched_greatcloak,id=113873,bonus_id=567,enchant=gift_of_critical_strike
+back=gronnstitched_greatcloak,id=113873,bonus_id=567,enchant_id=5310
 chest=blackhands_chestguard,id=115582,bonus_id=567
 wrists=bracers_of_visceral_force,id=119331,bonus_id=567
-hands=gauntlets_of_dramatic_blows,id=113906,bonus_id=567
-waist=ironcrushers_collar,id=113950,bonus_id=567
+hands=blackhands_handguards,id=115583,bonus_id=567
+waist=uktars_belt_of_chiming_rings,id=113976,bonus_id=567
 legs=blackhands_legguards,id=115580,bonus_id=567
 feet=iron_bellow_sabatons,id=113961,bonus_id=567
 finger1=spellbound_runic_band_of_elemental_invincibility,id=118308,enchant=gift_of_critical_strike
-finger2=siege_bombers_band,id=113963,bonus_id=567,enchant=gift_of_critical_strike
-trinket1=evergaze_arcane_eidolon,id=113861,bonus_id=567
-trinket2=tectus_beating_heart,id=113645,bonus_id=567
-main_hand=taners_terrible_spine,id=113862,bonus_id=567,enchant=mark_of_the_thunderlord
+finger2=siege_bombers_band,id=113963,bonus_id=567,enchant_id=5324
+trinket1=vial_of_convulsive_shadows,id=113969,bonus_id=567
+trinket2=blast_furnace_door,id=113893,bonus_id=567
+main_hand=taners_terrible_spine,id=113862,bonus_id=567,enchant_id=5330
 off_hand=kromogs_protecting_palm,id=113926,bonus_id=567
 
 # Gear Summary
-# gear_strength=3312
+# gear_strength=3449
 # gear_stamina=4540
-# gear_crit_rating=1452
-# gear_haste_rating=639
-# gear_mastery_rating=893
+# gear_crit_rating=1310
+# gear_haste_rating=777
+# gear_mastery_rating=683
 # gear_armor=3041
-# gear_bonus_armor=468
-# gear_multistrike_rating=688
-# gear_versatility_rating=490
+# gear_bonus_armor=944
+# gear_multistrike_rating=664
+# gear_versatility_rating=344
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

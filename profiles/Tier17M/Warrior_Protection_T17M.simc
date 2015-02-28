@@ -77,7 +77,7 @@ actions.prot_aoe+=/devastate
 
 head=blackhands_faceguard,id=115584,bonus_id=567
 neck=gluttons_kerchief,id=113882,bonus_id=567,enchant=gift_of_critical_strike
-shoulders=overdriven_spaulders,id=113990,bonus_id=566
+shoulders=overdriven_spaulders,id=113990,bonus_id=567
 back=gronnstitched_greatcloak,id=113873,bonus_id=567,enchant=gift_of_critical_strike
 chest=blackhands_chestguard,id=115582,bonus_id=567
 wrists=bracers_of_visceral_force,id=119331,bonus_id=567
@@ -93,14 +93,14 @@ main_hand=taners_terrible_spine,id=113862,bonus_id=567,enchant=mark_of_the_thund
 off_hand=kromogs_protecting_palm,id=113926,bonus_id=567
 
 # Gear Summary
-# gear_strength=3722
-# gear_stamina=4495
+# gear_strength=3752
+# gear_stamina=4540
 # gear_crit_rating=1487
 # gear_haste_rating=486
-# gear_mastery_rating=503
-# gear_armor=3029
+# gear_mastery_rating=524
+# gear_armor=3041
 # gear_bonus_armor=468
-# gear_multistrike_rating=952
+# gear_multistrike_rating=971
 # gear_versatility_rating=667
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
