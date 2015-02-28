@@ -1629,6 +1629,7 @@ struct execute_off_hand_t: public warrior_attack_t
     may_miss = may_dodge = may_parry = may_block = false;
     weapon = &( p -> off_hand_weapon );
 
+    weapon_multiplier = 3.5; // Hotfix from 2015-02-27, Fury only.
     if ( p -> main_hand_weapon.group() == WEAPON_1H &&
          p -> off_hand_weapon.group() == WEAPON_1H )
          weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
@@ -1650,6 +1651,7 @@ struct execute_t: public warrior_attack_t
 
     sudden_death_rage = 30;
 
+    weapon_multiplier = 3.5; // Hotfix from 2015-02-27, Fury/Prot only.
     if ( p -> spec.crazed_berserker -> ok() )
     {
       oh_attack = new execute_off_hand_t( p, "execute_oh", p -> find_spell( 163558 ) );
@@ -1660,7 +1662,7 @@ struct execute_t: public warrior_attack_t
     }
     else if ( p -> specialization() == WARRIOR_ARMS )
     {
-      weapon_multiplier = 1.5; // Hurray for inaccurate spell data.
+      weapon_multiplier = 1.35; // Was hotfixed sometime during PTR. 
       sudden_death_rage = 10;
     }
 
@@ -1757,19 +1759,12 @@ struct execute_t: public warrior_attack_t
 
 struct hamstring_t: public warrior_attack_t
 {
-  double anger_management_rage;
   hamstring_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "hamstring", p, p -> find_class_spell( "Hamstring" ) )
   {
     parse_options( options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     weapon = &( p -> main_hand_weapon );
-    anger_management_rage = 5.0; // Hamstring reduces AM by 5 rage, not 10.
-  }
-
-  void anger_management( double )
-  {
-    base_t::anger_management( anger_management_rage );
   }
 };
 
