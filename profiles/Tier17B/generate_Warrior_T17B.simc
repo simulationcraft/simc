@@ -31,8 +31,8 @@ finger2=seal_of_the_savage_howl,id=113940,bonus_id=567/523/448,gem_id=115809,enc
 trinket1=vial_of_convulsive_shadows,id=113969,bonus_id=567/523/448,gem_id=115809
 trinket2=horn_of_screaming_spirits,id=119193,bonus_id=567/523/448,gem_id=115809
 back=cloak_of_sanguine_terror,id=113972,bonus_id=567/523/448,gem_id=115809,enchant=gift_of_critical_strike
-main_hand=taners_terrible_spine,id=113862,bonus_id=567/523/448,gem_id=115809,enchant=mark_of_the_thunderlord
-off_hand=taners_terrible_spine,id=113862,bonus_id=567/523/448,gem_id=115809,enchant=mark_of_the_thunderlord
+main_hand=kromogs_brutal_fist,id=113927,bonus_id=567/523/448,gem_id=115809,enchant=mark_of_the_thunderlord
+off_hand=kromogs_brutal_fist,id=113927,bonus_id=567/523/448,gem_id=115809,enchant=mark_of_the_thunderlord
 save=Warrior_Fury_1h_T17B.simc
 
 # Warrior Fury 2h T17B
