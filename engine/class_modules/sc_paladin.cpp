@@ -2474,7 +2474,7 @@ struct holy_shock_damage_t : public paladin_spell_t
 
     // this grabs the 100% base crit bonus from 20473
     crit_chance_multiplier = p -> find_class_spell( "Holy Shock" ) -> effectN( 1 ).base_value() / 10.0;
-    spell_power_mod.direct *= 1.0 + p -> glyphs.holy_shock -> effectN( 2 ).percent();
+    spell_power_mod.direct *= 1.0 + ( p -> wod_hotfix ? 0.25 : p -> glyphs.holy_shock -> effectN( 2 ).percent() );
   }
 
   virtual double composite_crit() const
@@ -2536,7 +2536,7 @@ struct holy_shock_heal_t : public paladin_heal_t
     // Daybreak gives this a 75% splash heal
     daybreak = new daybreak_t( p );
     //add_child( daybreak );
-    spell_power_mod.direct *= 1.0 + p -> glyphs.holy_shock -> effectN( 1 ).percent();
+    spell_power_mod.direct *= 1.0 + ( p -> wod_hotfix ? -0.25 : p -> glyphs.holy_shock -> effectN( 2 ).percent() );
   }
 
   virtual double composite_crit() const
