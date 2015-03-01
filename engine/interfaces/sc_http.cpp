@@ -125,36 +125,45 @@ bool download( url_cache_entry_t& entry,
 
   union
   {
-    char chars[ NETBUFSIZE ];
-    wchar_t wchars[ ( NETBUFSIZE + 1 ) / 2 ];
+    char *chars;
+    wchar_t *wchars;
   } buffer;
-  buffer.chars[ 0 ] = '\0';
-  DWORD amount = sizeof( buffer );
-  if ( ! HttpQueryInfoA( hFile, HTTP_QUERY_STATUS_CODE, buffer.chars, &amount, 0 ) )
-    return false;
-
-  if ( ! std::strcmp( buffer.chars, "304" ) )
+  buffer.chars = ( char * ) malloc( NETBUFSIZE );
+  buffer.wchars = ( wchar_t * ) malloc( ( NETBUFSIZE + 1 ) / 2 );
+  if ( buffer.chars != NULL )
   {
-    entry.validated = cache::era();
-    return true;
+    buffer.chars[0] = '\0';
+    DWORD amount = sizeof( buffer );
+    if ( !HttpQueryInfoA( hFile, HTTP_QUERY_STATUS_CODE, buffer.chars, &amount, 0 ) )
+      return false;
+
+    if ( !std::strcmp( buffer.chars, "304" ) )
+    {
+      entry.validated = cache::era();
+      return true;
+    }
+
+    entry.result.clear();
+    while ( InternetReadFile( hFile, buffer.chars, sizeof( buffer ), &amount ) )
+    {
+      if ( amount == 0 )
+        break;
+      entry.result.append( buffer.chars, buffer.chars + amount );
+    }
+
+    entry.modified = entry.validated = cache::era();
+
+    entry.last_modified_header.clear();
+    amount = sizeof( buffer );
+    DWORD index = 0;
+    if ( buffer.wchars != NULL )
+    {
+      if ( HttpQueryInfoW( hFile, HTTP_QUERY_LAST_MODIFIED, buffer.wchars, &amount, &index ) )
+        entry.last_modified_header = io::narrow( buffer.wchars );
+    }
+
+    free( buffer.chars );
   }
-
-  entry.result.clear();
-  while ( InternetReadFile( hFile, buffer.chars, sizeof( buffer ), &amount ) )
-  {
-    if ( amount == 0 )
-      break;
-    entry.result.append( buffer.chars, buffer.chars + amount );
-  }
-
-  entry.modified = entry.validated = cache::era();
-
-  entry.last_modified_header.clear();
-  amount = sizeof( buffer );
-  DWORD index = 0;
-  if ( HttpQueryInfoW( hFile, HTTP_QUERY_LAST_MODIFIED, buffer.wchars, &amount, &index ) )
-    entry.last_modified_header = io::narrow( buffer.wchars );
-
   return true;
 }
 
