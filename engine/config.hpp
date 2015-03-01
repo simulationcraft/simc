@@ -100,10 +100,6 @@ public:
 #define USE_TR1_NAMESPACE 1
 #endif
 
-# if ( ( defined( SC_VS ) && SC_VS >= 11 ) || __cplusplus >= 201103L ) && ! defined( SC_OSX )
-# define SC_STD_THREAD // Enables std::thread:hardware_concurrency, which returns the number of logical processors.
-#endif
-
 #if ( defined( _LIBCPP_VERSION ) )
 #ifdef USE_TR1_NAMESPACE
 #undef USE_TR1_NAMESPACE

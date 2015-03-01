@@ -5,12 +5,12 @@
 
 #include "concurrency.hpp"
 #include <iostream>
-// OS X 10.6 (our minimum supported target) does not have <thread>. We need to
-// use alternate means to fetch the number of concurrent threads on the system
-// (systemctl).
-#if defined( SC_STD_THREAD ) && ! defined( SC_OSX )
-#include <thread>
-#elif ! defined( SC_MINGW )
+
+// CPU thread detection
+#if defined( SC_WINDOWS )
+// Need sysinfoapi.h, but MSVC may complain. windows.h works for all compliers
+#include <windows.h>
+#else
 #include <sys/types.h>
 #include <sys/sysctl.h>
 #endif
@@ -297,9 +297,10 @@ void sc_thread_t::sleep_seconds( double t )
  */
 int sc_thread_t::cpu_thread_count()
 {
-// Use std::thread to determine logical thread count
-#if defined( SC_STD_THREAD ) && ! defined( SC_MINGW )
-  return std::thread::hardware_concurrency();
+#if defined( SC_WINDOWS )
+  SYSTEM_INFO sysinfo;
+  GetSystemInfo(&sysinfo);
+  return sysinfo.dwNumberOfProcessors;
 // OS X uses systemctl() to fetch the thread count for the CPU. This returns 8
 // (i.e., the logical thread count) on Hyperthreading enabled machines.
 #elif defined( SC_OSX )
@@ -320,6 +321,6 @@ int sc_thread_t::cpu_thread_count()
   {
     return n_threads;
   }
-#endif // SC_STD_THREAD
+#endif // SC_WINDOWS
   return 0;
 }
