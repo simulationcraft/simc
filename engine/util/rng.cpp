@@ -11,12 +11,7 @@
 // Pseudo-Random Number Generation ==========================================
 
 #if defined(__SSE2__) || ( defined( SC_VS ) && ( defined(_M_X64) || ( defined(_M_IX86_FP) && _M_IX86_FP >= 2 ) ) )
-#  if ( defined( SC_MINGW ) && ( !__x86_64__ ) )
-#    // Leads to crashes with multithreading, tested 2015-03-01 with Mingw4.8 and 4.9 from QT
-#    // Not worth fixing for now.
-#  else
-#    define RNG_USE_SSE2
-#  endif
+#  define RNG_USE_SSE2
 #endif
 
 #if defined( WIN32 ) || defined( _WIN32 ) || defined( __WIN32 )

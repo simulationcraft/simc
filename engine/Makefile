@@ -63,10 +63,11 @@ LINK_LIBS  =
 # Include build setting from user configuration file
 -include ../build.conf
 
-# Force on SSE2 to avoid problems with older GCC versions
-ifeq (${CXX},g++)
-OPTS += -msse2 -mfpmath=sse
-endif
+# Leads to crashes with Mingw and RNG_SSE2. Disabled 2015-03-01
+# 	Force on SSE2 to avoid problems with older GCC versions
+#	ifeq (${CXX},g++)
+#		OPTS += -msse2 -mfpmath=sse
+#	endif
 
 # Force use of old libstdc++ on OS X + Clang so paths to tr/* work
 ifeq (${FLAVOR},Darwin)
