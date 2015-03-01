@@ -11,7 +11,9 @@
 // Pseudo-Random Number Generation ==========================================
 
 #if defined(__SSE2__) || ( defined( SC_VS ) && ( defined(_M_X64) || ( defined(_M_IX86_FP) && _M_IX86_FP >= 2 ) ) )
-#  define RNG_USE_SSE2
+#  if !( defined( SC_MINGW ) && ( !__x86_64__ ) )
+#    define RNG_USE_SSE2
+#  endif
 #endif
 
 #if defined( WIN32 ) || defined( _WIN32 ) || defined( __WIN32 )
