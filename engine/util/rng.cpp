@@ -510,7 +510,13 @@ struct rng_sfmt_t : public rng_t
   { return _mm_free( p ); }
 #endif
 
-  virtual const char* name() { return "sfmt"; }
+  virtual const char* name() {
+#ifdef RNG_USE_SSE2
+    return "sse2-sfmt";
+#else
+    return "sfmt";
+#endif
+  }
   
   virtual void seed( uint64_t start )
   { 
