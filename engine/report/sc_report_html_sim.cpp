@@ -1294,7 +1294,8 @@ void print_html_( report::sc_html_stream& os, sim_t* sim )
 
   // jQuery
   // The /1/ url auto-updates to the latest minified version
-  os << "<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js\"></script>\n";
+  //os << "<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js\"></script>\n";
+  os << "<script type=\"text/javascript\" src=\"http://code.jquery.com/jquery-1.11.2.min.js\"></script>";
 
   if ( sim -> hosted_html )
   {
