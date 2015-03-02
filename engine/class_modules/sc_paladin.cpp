@@ -4661,8 +4661,16 @@ void paladin_t::trigger_grand_crusader()
 
 void paladin_t::trigger_shining_protector( action_state_t* s )
 {
-  if ( ! passives.shining_protector -> ok() || s -> action == active_shining_protector_proc )
+  if ( ! passives.shining_protector -> ok() || s -> action == active_shining_protector_proc || s -> result_raw == 0.0 )
     return;
+
+  // flush out percent heals
+  if ( s -> action -> type == ACTION_HEAL )
+  {
+    heal_t* heal_cast = debug_cast<heal_t*>( s -> action );
+    if ( heal_cast -> pct_heal > 0 || heal_cast -> tick_pct_heal > 0 )
+      return;
+  }
 
   // Attempt to proc the first heal
   if ( rng().roll( composite_multistrike() ) )
