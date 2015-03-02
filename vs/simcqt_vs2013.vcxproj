@@ -340,6 +340,7 @@
       <LinkTimeCodeGeneration>
       </LinkTimeCodeGeneration>
       <LargeAddressAware>true</LargeAddressAware>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
