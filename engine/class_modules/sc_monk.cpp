@@ -4729,7 +4729,7 @@ struct healing_elixirs_t: public monk_heal_t
   healing_elixirs_t( monk_t& p ):
     monk_heal_t( "healing_elixirs", p, p.talent.healing_elixirs )
   {
-    harmful = may_crit = false;
+    harmful = may_crit = may_multistrike = false;
     trigger_gcd = timespan_t::zero();
     pct_heal = p.passives.healing_elixirs -> effectN( 1 ).percent();
     cooldown -> duration = data().effectN( 1 ).period();
