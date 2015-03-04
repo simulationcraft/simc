@@ -4668,7 +4668,7 @@ void paladin_t::trigger_shining_protector( action_state_t* s )
   if ( s -> action -> type == ACTION_HEAL )
   {
     heal_t* heal_cast = debug_cast<heal_t*>( s -> action );
-    if ( heal_cast -> pct_heal > 0 || heal_cast -> tick_pct_heal > 0 )
+    if ( ( s -> result_type == HEAL_DIRECT && heal_cast -> pct_heal > 0 ) || ( s -> result_type == HEAL_OVER_TIME && heal_cast -> tick_pct_heal > 0 ) )
       return;
   }
 
