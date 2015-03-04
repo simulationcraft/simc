@@ -4114,7 +4114,7 @@ struct hellfire_t: public warlock_spell_t
   hellfire_t( warlock_t* p ):
     warlock_spell_t( p, "Hellfire" )
   {
-    tick_zero = true;
+    tick_zero = false;
     may_miss = false;
     channeled = true;
     may_crit = false;
@@ -4192,7 +4192,7 @@ struct immolation_aura_t: public warlock_spell_t
     warlock_spell_t( "immolation_aura", p, p -> find_spell( 104025 ) )
   {
     may_miss = may_crit = callbacks = hasted_ticks = false;
-    tick_zero = true;
+    tick_zero = false;
     ignore_false_positive = true;
 
     tick_action = new immolation_aura_tick_t( p, this );
