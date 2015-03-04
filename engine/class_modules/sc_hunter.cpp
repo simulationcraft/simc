@@ -1242,10 +1242,7 @@ struct basic_attack_t: public hunter_main_pet_attack_t
   void consume_resource()
   {
     if ( p() -> buffs.enhanced_basic_attacks -> up() )
-    {
       p() -> buffs.enhanced_basic_attacks -> expire();
-      return;
-    }
     hunter_main_pet_attack_t::consume_resource();
   }
 
@@ -1285,10 +1282,14 @@ struct basic_attack_t: public hunter_main_pet_attack_t
 
   double cost() const
   {
-    double c = hunter_main_pet_attack_t::cost();
+    double base_cost = hunter_main_pet_attack_t::cost();
+    double c = base_cost;
 
     if ( use_wild_hunt() )
       c *= 1.0 + p() -> specs.wild_hunt -> effectN( 2 ).percent();
+
+    if ( p() -> buffs.enhanced_basic_attacks -> check() )
+      c -= base_cost;
 
     return c;
   }
@@ -3152,14 +3153,20 @@ struct bestial_wrath_t: public hunter_spell_t
 
 struct focus_fire_t: public hunter_spell_t
 {
-  int five_stacks;
+  int min_stacks;
 
   focus_fire_t( hunter_t* player, const std::string& options_str ):
     hunter_spell_t( "focus_fire", player, player -> find_spell( 82692 ) ),
-    five_stacks( 0 )
+    min_stacks( 0 )
   {
+    int five_stacks = 0;
     add_option( opt_bool( "five_stacks", five_stacks ) );
+    add_option( opt_int( "stacks", min_stacks ) );
     parse_options( options_str );
+    if ( five_stacks )
+      min_stacks = 5;
+    else if ( min_stacks == 0 )
+      min_stacks = 1;
 
     harmful = false;
   }
@@ -3168,7 +3175,7 @@ struct focus_fire_t: public hunter_spell_t
   {
     double stacks = p() -> active.pet -> buffs.frenzy -> stack();
     double value = stacks * p() -> specs.focus_fire -> effectN( 1 ).percent();
-    p() -> buffs.focus_fire -> trigger( 1, value );
+    p() -> buffs.focus_fire -> trigger( stacks, value );
 
     double gain = stacks * p() -> specs.focus_fire -> effectN( 2 ).resource( RESOURCE_FOCUS );
     p() -> active.pet -> resource_gain( RESOURCE_FOCUS, gain, p() -> active.pet -> gains.focus_fire );
@@ -3186,7 +3193,7 @@ struct focus_fire_t: public hunter_spell_t
     if ( !p() -> active.pet -> buffs.frenzy -> check() )
       return false;
 
-    if ( five_stacks && p() -> active.pet -> buffs.frenzy -> stack_react() < 5 )
+    if ( p() -> active.pet -> buffs.frenzy -> stack_react() < min_stacks )
       return false;
 
     return hunter_spell_t::ready();
@@ -3620,6 +3627,7 @@ void hunter_t::create_buffs()
   buffs.cobra_strikes               = buff_creator_t( this, 53257, "cobra_strikes" ).chance( specs.cobra_strikes -> proc_chance() );
 
   buffs.focus_fire                  = buff_creator_t( this, 82692, "focus_fire" )
+    .max_stack( find_spell( 19615 ) -> max_stacks() )
     .add_invalidate( CACHE_ATTACK_HASTE )
     .add_invalidate( CACHE_ATTACK_POWER );
 
@@ -4109,10 +4117,7 @@ double hunter_t::composite_attack_power_multiplier() const
 {
   double mult = player_t::composite_attack_power_multiplier();
   if ( perks.improved_focus_fire -> ok() && buffs.focus_fire -> check() )
-  {
-    double stacks = buffs.focus_fire -> current_value / specs.focus_fire -> effectN( 1 ).percent();
-    mult += stacks * perks.improved_focus_fire -> effectN( 1 ).percent();
-  }
+    mult += buffs.focus_fire -> current_stack * perks.improved_focus_fire -> effectN( 1 ).percent();
   return mult;
 }
 
